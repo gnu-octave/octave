@@ -124,6 +124,11 @@ namespace octave
     // Provided for convenience.
     bool gui_running (void) const;
 
+    bool have_terminal_window (void) const
+    {
+      return ! m_terminal_widget.isNull ();
+    }
+
     resource_manager& get_resource_manager (void)
     {
       return m_resource_manager;

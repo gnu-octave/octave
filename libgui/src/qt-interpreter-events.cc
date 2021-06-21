@@ -485,7 +485,7 @@ namespace octave
   void qt_interpreter_events::interpreter_output (const std::string& msg)
   {
     if (m_octave_qobj.experimental_terminal_widget ()
-        && m_octave_qobj.gui_running ())
+        && m_octave_qobj.have_terminal_window ())
       emit interpreter_output_signal (QString::fromStdString (msg));
     else
       {
@@ -498,7 +498,7 @@ namespace octave
                                                  bool beep)
   {
     if (m_octave_qobj.experimental_terminal_widget ()
-        && m_octave_qobj.gui_running ())
+        && m_octave_qobj.have_terminal_window ())
       {
         std::ostringstream buf;
         ee.display (buf);

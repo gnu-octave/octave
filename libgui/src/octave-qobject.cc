@@ -460,6 +460,12 @@ namespace octave
             connect (cmd_widget, &command_widget::interpreter_stop,
                      this, &base_qobject::interpreter_stop);
 
+            connect (qt_link (), &qt_interpreter_events::interpreter_output_signal,
+                     m_terminal_widget, &terminal_dock_widget::interpreter_output);
+
+            connect (qt_link (), &qt_interpreter_events::update_prompt_signal,
+                     m_terminal_widget, &terminal_dock_widget::update_prompt);
+
             connect_interpreter_events (cmd_widget);
           }
         else
@@ -513,6 +519,9 @@ namespace octave
     else if (! m_file_browser_widget)
       m_file_browser_widget
         = QPointer<files_dock_widget> (new files_dock_widget (mw, *this));
+
+    connect (qt_link (), &qt_interpreter_events::directory_changed_signal,
+             m_file_browser_widget, &files_dock_widget::update_octave_directory);
 
     return m_file_browser_widget;
   }

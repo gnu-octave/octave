@@ -169,21 +169,6 @@ namespace octave
 
     adopt_dock_widgets ();
 
-    m_previous_dock = m_command_window;
-
-    // Set active editor depending on editor window.  If the latter is
-    // not initialized (qscintilla not present), use the external editor.
-    if (m_editor_window)
-      {
-        m_editor_menubar = m_editor_window->menubar ();
-        m_active_editor = m_editor_window;
-      }
-    else
-      {
-        m_editor_menubar = nullptr;
-        m_active_editor = m_external_editor;
-      }
-
 #if defined (HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME)
     QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
 #endif
@@ -231,10 +216,6 @@ namespace octave
 
     emit init_window_menu ();
 
-#if defined (HAVE_QSCINTILLA)
-    m_editor_window->enable_menu_shortcuts (false);
-#endif
-
     focus_command_window ();
   }
 
@@ -257,6 +238,8 @@ namespace octave
     adopt_workspace_widget ();
     adopt_editor_widget ();
     adopt_variable_editor_widget ();
+
+    m_previous_dock = m_command_window;
   }
 
   void main_window::adopt_terminal_widget (void)
@@ -336,6 +319,15 @@ namespace octave
 
     connect (m_file_browser_window, &files_dock_widget::run_file_signal,
              this, &main_window::run_file_in_terminal);
+
+    connect (m_file_browser_window, &files_dock_widget::load_file_signal,
+             this, &main_window::handle_load_workspace_request);
+
+    connect (m_file_browser_window, &files_dock_widget::open_any_signal,
+             this, &main_window::handle_open_any_request);
+
+    connect (m_file_browser_window, &files_dock_widget::find_files_signal,
+             this, &main_window::find_files);
   }
 
   void main_window::adopt_history_widget (void)
@@ -397,11 +389,72 @@ namespace octave
     connect (editor, &file_editor::debug_quit_signal,
              this, &main_window::debug_quit);
 
+    connect (this, &main_window::editor_focus_changed,
+             editor, &file_editor::enable_menu_shortcuts);
+
+    connect (this, &main_window::step_into_file_signal,
+             editor, &file_editor::request_step_into_file);
+
+    connect (editor, &file_editor::editor_tabs_changed_signal,
+             this, &main_window::editor_tabs_changed);
+
+    connect (editor, &file_editor::request_open_file_external,
+             m_external_editor, &external_editor_interface::call_custom_editor);
+
+    connect (m_external_editor, &external_editor_interface::request_settings_dialog,
+             this, &main_window::process_settings_dialog_request);
+
+    connect (this, &main_window::insert_debugger_pointer_signal,
+             editor, &file_editor::handle_insert_debugger_pointer_request);
+
+    connect (this, &main_window::delete_debugger_pointer_signal,
+             editor, &file_editor::handle_delete_debugger_pointer_request);
+
+    connect (this, &main_window::update_breakpoint_marker_signal,
+             editor, &file_editor::handle_update_breakpoint_marker_request);
+
+    // Signals for removing/renaming files/dirs in the file browser
+    connect (m_file_browser_window, &files_dock_widget::file_remove_signal,
+             editor, &file_editor::handle_file_remove);
+
+    connect (m_file_browser_window, &files_dock_widget::file_renamed_signal,
+             editor, &file_editor::handle_file_renamed);
+
+    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
+
+    qt_interpreter_events *qt_link = interp_qobj->qt_link ();
+
+    // Signals for removing/renaming files/dirs in the terminal window
+    connect (qt_link, &qt_interpreter_events::file_renamed_signal,
+             editor, &file_editor::handle_file_renamed);
+
+    // Signals for entering/exiting debug mode
+    connect (qt_link, &qt_interpreter_events::enter_debugger_signal,
+             editor, &file_editor::handle_enter_debug_mode);
+
+    connect (qt_link, &qt_interpreter_events::exit_debugger_signal,
+             editor, &file_editor::handle_exit_debug_mode);
+
+    connect (qt_link, &qt_interpreter_events::directory_changed_signal,
+             editor, &file_editor::update_octave_directory);
+
     m_editor_window = editor;
+
+    m_editor_menubar = m_editor_window->menubar ();
+
+    m_active_editor = m_editor_window;
+
+    m_editor_window->enable_menu_shortcuts (false);
 #else
     m_editor_window = nullptr;
+
+    m_editor_menubar = nullptr;
+
+    m_active_editor = m_external_editor;
 #endif
 
+    connect (qt_link, SIGNAL (edit_file_signal (const QString&)),
+             m_active_editor, SLOT (handle_edit_file_request (const QString&)));
   }
 
   void main_window::adopt_variable_editor_widget (void)
@@ -421,6 +474,13 @@ namespace octave
 
     connect (this, &main_window::active_dock_changed,
              dw, &octave_dock_widget::handle_active_dock_changed);
+
+    // FIXME: shouldn't this action should be associated with closing
+    // the main window, not with exiting the application?  At one time,
+    // those two actions happened together, but now it is possible to
+    // close the main window without exiting the application.
+    connect (qApp, &QApplication::aboutToQuit,
+             dw, &octave_dock_widget::save_settings);
   }
 
   bool main_window::command_window_has_focus (void) const
@@ -2116,28 +2176,8 @@ namespace octave
 
     construct_tool_bar ();
 
-    // Order is important.  Deleting gui_settings must be last.
-    connect (qApp, &QApplication::aboutToQuit,
-             m_command_window, &terminal_dock_widget::save_settings);
-
-    connect (qApp, &QApplication::aboutToQuit,
-             m_history_window, &history_dock_widget::save_settings);
-
-    connect (qApp, &QApplication::aboutToQuit,
-             m_file_browser_window, &files_dock_widget::save_settings);
-
-    connect (qApp, &QApplication::aboutToQuit,
-             m_doc_browser_window, &documentation_dock_widget::save_settings);
-
-    connect (qApp, &QApplication::aboutToQuit,
-             m_workspace_window, &workspace_view::save_settings);
-
-    connect (qApp, &QApplication::aboutToQuit,
-             m_editor_window, &file_editor_interface::save_settings);
-
-    connect (qApp, &QApplication::aboutToQuit,
-             m_variable_editor_window, &variable_editor::save_settings);
-
+    // FIXME: Is this action intended to be about quitting application
+    // or closing the main window?
     connect (qApp, &QApplication::aboutToQuit,
              this, &main_window::prepare_to_exit);
 
@@ -2146,33 +2186,6 @@ namespace octave
 
     connect (this, &main_window::settings_changed,
              this, [=] (const gui_settings *settings) { notice_settings (settings); });
-
-    connect (this, SIGNAL (editor_focus_changed (bool)),
-             m_editor_window, SLOT (enable_menu_shortcuts (bool)));
-
-    connect (this, SIGNAL (step_into_file_signal (void)),
-             m_editor_window, SLOT (request_step_into_file (void)));
-
-    connect (m_editor_window, SIGNAL (editor_tabs_changed_signal (bool, bool)),
-             this, SLOT (editor_tabs_changed (bool, bool)));
-
-    connect (m_editor_window,
-             SIGNAL (request_open_file_external (const QString&, int)),
-             m_external_editor,
-             SLOT (call_custom_editor (const QString&, int)));
-
-    connect (m_external_editor,
-             SIGNAL (request_settings_dialog (const QString&)),
-             this, SLOT (process_settings_dialog_request (const QString&)));
-
-    connect (m_file_browser_window, &files_dock_widget::load_file_signal,
-             this, &main_window::handle_load_workspace_request);
-
-    connect (m_file_browser_window, &files_dock_widget::open_any_signal,
-             this, &main_window::handle_open_any_request);
-
-    connect (m_file_browser_window, &files_dock_widget::find_files_signal,
-             this, &main_window::find_files);
 
     // Connections for signals from the interpreter thread where the slot
     // should be executed by the gui thread
@@ -2183,49 +2196,6 @@ namespace octave
     setWindowTitle ("Octave");
 
     setStatusBar (m_status_bar);
-
-#if defined (HAVE_QSCINTILLA)
-    connect (this,
-             SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-             m_editor_window,
-             SLOT (handle_insert_debugger_pointer_request (const QString&,
-                                                           int)));
-
-    connect (this,
-             SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-             m_editor_window,
-             SLOT (handle_delete_debugger_pointer_request (const QString&,
-                                                           int)));
-
-    connect (this,
-             SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
-                                                      int, const QString&)),
-             m_editor_window,
-             SLOT (handle_update_breakpoint_marker_request (bool,
-                                                            const QString&,
-                                                            int,
-                                                            const QString&)));
-
-    // Signals for removing/renaming files/dirs in the file browser
-    connect (m_file_browser_window,
-             SIGNAL (file_remove_signal (const QString&, const QString&)),
-             m_editor_window,
-             SLOT (handle_file_remove (const QString&, const QString&)));
-
-    connect (m_file_browser_window, SIGNAL (file_renamed_signal (bool)),
-             m_editor_window, SLOT (handle_file_renamed (bool)));
-
-    // Signals for removing/renaming files/dirs in the terminal window
-    connect (qt_link, SIGNAL (file_renamed_signal (bool)),
-             m_editor_window, SLOT (handle_file_renamed (bool)));
-
-    // Signals for entering/exiting debug mode
-    connect (qt_link, SIGNAL (enter_debugger_signal (void)),
-             m_editor_window, SLOT (handle_enter_debug_mode (void)));
-
-    connect (qt_link, SIGNAL (exit_debugger_signal (void)),
-             m_editor_window, SLOT (handle_exit_debug_mode (void)));
-#endif
 
     // Signals for removing/renaming files/dirs in the temrinal window
     connect (qt_link, &qt_interpreter_events::file_remove_signal,
@@ -2252,23 +2222,8 @@ namespace octave
     connect (qt_link, &qt_interpreter_events::apply_new_settings,
              this, &main_window::request_reload_settings);
 
-    if (m_octave_qobj.experimental_terminal_widget ())
-      {
-        connect (qt_link, &qt_interpreter_events::interpreter_output_signal,
-                 m_command_window, &terminal_dock_widget::interpreter_output);
-
-        connect (qt_link, &qt_interpreter_events::update_prompt_signal,
-                 m_command_window, &terminal_dock_widget::update_prompt);
-      }
-
     connect (qt_link, &qt_interpreter_events::directory_changed_signal,
              this, &main_window::update_octave_directory);
-
-    connect (qt_link, &qt_interpreter_events::directory_changed_signal,
-             m_file_browser_window, &files_dock_widget::update_octave_directory);
-
-    connect (qt_link, SIGNAL (directory_changed_signal (QString)),
-             m_editor_window, SLOT (update_octave_directory (QString)));
 
     connect (qt_link, &qt_interpreter_events::execute_command_in_terminal_signal,
              this, &main_window::execute_command_in_terminal);
@@ -2281,11 +2236,6 @@ namespace octave
 
     connect (qt_link, &qt_interpreter_events::show_preferences_signal,
              this, [=] () { process_settings_dialog_request (); });
-
-    connect (qt_link,
-             SIGNAL (edit_file_signal (const QString&)),
-             m_active_editor,
-             SLOT (handle_edit_file_request (const QString&)));
 
     connect (qt_link, &qt_interpreter_events::insert_debugger_pointer_signal,
              this, &main_window::handle_insert_debugger_pointer_request);

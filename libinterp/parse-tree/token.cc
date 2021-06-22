@@ -86,6 +86,8 @@ namespace octave
   {
     if (m_type_tag == string_token)
       delete m_tok_info.m_str;
+    else if (m_type_tag == numeric_token)
+      delete m_tok_info.m_num;
     else if (m_type_tag == scls_name_token)
       delete m_tok_info.m_superclass_info;
   }

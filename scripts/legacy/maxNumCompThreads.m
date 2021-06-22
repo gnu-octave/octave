@@ -24,23 +24,22 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{n} = } maxNumCompThreads ()
-## @deftypefnx {} {@var{old} =} maxNumCompThreads (@var{n})
-## @deftypefnx {} {@var{old} =} maxNumCompThreads ("automatic")
-## This function is provided for Matlab compatibility only.  It uses the
-## @code{nproc} function to return the number of available processors.
-## It may also be called with an argument to set the number of
-## computational threads but that setting has no effect.
+## @deftypefn  {} {@var{n} =} maxNumCompThreads ()
+## @deftypefnx {} {@var{n_old} =} maxNumCompThreads (@var{n})
+## @deftypefnx {} {@var{n_old} =} maxNumCompThreads ("automatic")
+## This function is provided for @sc{matlab} compatibility only.
+##
+## The output @var{n} is the number of available processors as determined by
+## the @code{nproc} function.
+##
+## Programming Note: The function may be called with an argument to set the
+## number of computational threads, but that setting has @strong{no effect}.
 ## @seealso{nproc}
 ## @end deftypefn
 
 function retval = maxNumCompThreads (arg)
 
   persistent nthreads = nproc ();
-
-  if (nargin > 1)
-    print_usage ();
-  endif
 
   retval = nthreads;
 
@@ -53,10 +52,13 @@ function retval = maxNumCompThreads (arg)
                "maxNumCompThreads: setting number of threads has no effect");
     elseif (ischar (arg) && strcmpi (arg, "automatic"))
       nthreads = nproc ();
+    else
+      error ("maxNumCompThreads: invalid input argument");
     endif
   endif
 
 endfunction
+
 
 %!test
 %! maxNumCompThreads ("automatic");
@@ -67,4 +69,5 @@ endfunction
 %! maxNumCompThreads (4);
 %! assert (maxNumCompThreads ("automatic"), 4);
 
-%!error <called with too many inputs> maxNumCompThreads (1, 2);
+%!error <invalid input argument> maxNumCompThreads ([1, 2])
+%!error <invalid input argument> maxNumCompThreads ("foobar")

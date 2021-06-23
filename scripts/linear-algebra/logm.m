@@ -195,8 +195,14 @@ endfunction
 %! A = [0.2510, 1.2808, -1.2252; ...
 %!      0.2015, 1.0766, 0.5630; ...
 %!      -1.9769, -1.0922, -0.5831];
+%! if (ismac ())
+%!   ## The math libraries on macOS seem to require larger tolerances
+%!   tol = 60*eps;
+%! else
+%!   tol = 40*eps;
+%! endif
 %! warning ("off", "Octave:logm:non-principal", "local");
-%! assert (expm (logm (A)), A, 40*eps);
+%! assert (expm (logm (A)), A, tol);
 %!assert (expm (logm (eye (3))), eye (3));
 %!assert (expm (logm (zeros (3))), zeros (3));
 

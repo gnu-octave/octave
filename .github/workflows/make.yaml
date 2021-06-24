@@ -258,11 +258,6 @@ jobs:
       - name: ccache status
         run: ccache -s
 
-      - name: install
-        # Install Octave prior to running the test suite for "mkoctfile" to
-        # work correctly.
-        run: make -C ./.build install V=1
-
       - name: check
         # Continuing on error in this step means that jobs will be "green" even
         # if the test suite crashes.  But if we don't continue, we'll loose the

@@ -132,7 +132,7 @@ endfunction
 %!test
 %! ## this should have more than 65535 unique colors
 %! rgb = nchoosek (0:80, 3) / 80;
-%! nr = rows (rgb)
+%! nr = rows (rgb);
 %! assert (nr > 65535);
 %! rgb = reshape (rgb, [1, nr, 3]);
 %! [ind, map] = rgb2ind (rgb);
@@ -141,7 +141,7 @@ endfunction
 %!
 %! ## and this should have between 256 and 65535 unique colors
 %! rgb = nchoosek (0:40, 3) / 80;
-%! nr = rows (rgb)
+%! nr = rows (rgb);
 %! assert (nr >= 256 && nr <= 65535);
 %! rgb = reshape (rgb, [1, nr, 3]);
 %! [ind, map] = rgb2ind (rgb);
@@ -150,7 +150,7 @@ endfunction
 %!
 %! ## and this one should have fewer than than 256 unique colors
 %! rgb = nchoosek (0:10, 3) / 80;
-%! nr = rows (rgb)
+%! nr = rows (rgb);
 %! assert (nr < 256);
 %! rgb = reshape (rgb, [1, nr, 3]);
 %! [ind, map] = rgb2ind (rgb);

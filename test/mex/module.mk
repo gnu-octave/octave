@@ -35,6 +35,7 @@ MKOCTFILELDFLAGS = \
   -L$(top_builddir)/liboctave/.libs
 
 MKOCTFILE = \
+  DL_LDFLAGS="$(DL_LDFLAGS)" \
   $(top_builddir)/src/mkoctfile $(MKOCTFILECPPFLAGS) $(MKOCTFILELDFLAGS)
 
 MKMEXFILECPPFLAGS = \
@@ -45,6 +46,7 @@ MKMEXFILELDFLAGS = \
   -L$(top_builddir)/liboctave/.libs
 
 MKMEXFILE = \
+  DL_LDFLAGS="$(DL_LDFLAGS)" \
   $(top_builddir)/src/mkoctfile --mex $(MKMEXFILECPPFLAGS) $(MKMEXFILELDFLAGS)
 
 $(MEX_TEST_FUNCTIONS) : %.mex : %.c | %reldir%/$(octave_dirstamp)

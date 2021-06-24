@@ -33,8 +33,8 @@ MKOCTFILECPPFLAGS = \
   -I$(top_srcdir)/libinterp/corefcn \
   -Ilibinterp/corefcn
 MKOCTFILELDFLAGS = \
-  -L$(top_builddir)/libinterp/.lib \
-  -L$(top_builddir)/liboctave/.lib
+  -L$(top_builddir)/libinterp/.libs \
+  -L$(top_builddir)/liboctave/.libs
 
 MKOCTFILE = \
   $(top_builddir)/src/mkoctfile $(MKOCTFILECPPFLAGS) $(MKOCTFILELDFLAGS)
@@ -43,8 +43,8 @@ MKMEXFILECPPFLAGS = \
   -I$(top_srcdir)/libinterp/corefcn \
   -Ilibinterp/corefcn
 MKMEXFILELDFLAGS = \
-  -L$(top_builddir)/libinterp/.lib \
-  -L$(top_builddir)/liboctave/.lib
+  -L$(top_builddir)/libinterp/.libs \
+  -L$(top_builddir)/liboctave/.libs
 
 MKMEXFILE = \
   $(top_builddir)/src/mkoctfile --mex $(MKMEXFILECPPFLAGS) $(MKMEXFILELDFLAGS)

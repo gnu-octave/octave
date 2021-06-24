@@ -458,17 +458,32 @@ map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
 
 DEFUN (log2, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} log2 (@var{x})
+@deftypefn  {} {@var{y} =} log2 (@var{x})
 @deftypefnx {} {[@var{f}, @var{e}] =} log2 (@var{x})
 Compute the base-2 logarithm of each element of @var{x}.
 
-If called with two output arguments, split @var{x} into
-binary mantissa and exponent so that
+If called with one output, compute the base-2 logarithm such that
+@tex
+$2^y = x$.
+@end tex
+@ifnottex
+@code{2^@var{y} = @var{x}}.
+@end ifnottex
+
+If called with two output arguments, split @var{x} into binary mantissa
+(@var{f}) and exponent (@var{e}) such that
+@tex
+$x = f \cdot 2^e$
+@end tex
+@ifnottex
+@code{@var{x} = @var{f} * 2^@var{e}}
+@end ifnottex
+where
 @tex
 ${1 \over 2} \le \left| f \right| < 1$
 @end tex
 @ifnottex
-@w{@code{1/2 <= abs(f) < 1}}
+@w{@code{1/2 <= abs (@var{f}) < 1}}
 @end ifnottex
 and @var{e} is an integer.  If
 @tex

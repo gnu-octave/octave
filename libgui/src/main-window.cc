@@ -46,9 +46,7 @@
 #include <QMessageBox>
 #include <QStyle>
 #include <QStyleFactory>
-#include <QStyleFactory>
 #include <QTextBrowser>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QThread>
 #include <QTimer>
@@ -78,23 +76,16 @@
 #include "shortcut-manager.h"
 #include "welcome-wizard.h"
 
-#include "Array.h"
 #include "cmd-edit.h"
 #include "oct-env.h"
 #include "url-transfer.h"
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
-#include "defun.h"
-#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
-#include "oct-map.h"
-#include "octave.h"
-#include "parse.h"
-#include "syminfo.h"
-#include "symscope.h"
 #include "utils.h"
+#include "syminfo.h"
 #include "version.h"
 
 namespace octave

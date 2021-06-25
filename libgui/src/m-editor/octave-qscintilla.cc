@@ -853,7 +853,7 @@ namespace octave
             // Define commands for not showing bp location and for resetting
             // this in case "keyboard" was within a comment
             next_bp_quiet = "__db_next_breakpoint_quiet__;\n";
-            next_bp_quiet_reset = "__db_next_breakpoint_quiet__(false);\n";
+            next_bp_quiet_reset = "\n__db_next_breakpoint_quiet__(false);";
           }
 
         // Add codeline

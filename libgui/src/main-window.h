@@ -107,6 +107,8 @@ namespace octave
     void open_file_signal (const QString& file, const QString& enc, int line);
     void step_into_file_signal (void);
 
+    void show_community_news_signal (int serial);
+
     void update_gui_lexer_signal (bool);
 
     void insert_debugger_pointer_signal (const QString& file, int line);
@@ -145,8 +147,6 @@ namespace octave
     void file_remove_proxy (const QString& o, const QString& n);
     void open_online_documentation_page (void);
     void display_release_notes (void);
-    void load_and_display_community_news (int serial = -1);
-    void display_community_news (const QString& news);
     void open_bug_tracker_page (void);
     void open_octave_packages_page (void);
     void open_contribute_page (void);
@@ -422,8 +422,6 @@ namespace octave
     //! Release notes window.
 
     QWidget *m_release_notes_window;
-
-    QWidget *m_community_news_window;
 
     QClipboard *m_clipboard;
 

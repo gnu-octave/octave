@@ -286,6 +286,11 @@ namespace octave
     emit show_workspace_signal ();
   }
 
+  void qt_interpreter_events::show_community_news (int serial)
+  {
+    emit show_community_news_signal (serial);
+  }
+
   bool qt_interpreter_events::edit_file (const std::string& file)
   {
     emit edit_file_signal (QString::fromStdString (file));

@@ -41,6 +41,7 @@
 #include "QTerminal.h"
 
 #include "command-widget.h"
+#include "community-news.h"
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
 #include "history-dock-widget.h"
@@ -277,6 +278,9 @@ namespace octave
     connect (qt_link (), &qt_interpreter_events::edit_variable_signal,
              this, &base_qobject::show_variable_editor_window);
 
+    connect (qt_link (), &qt_interpreter_events::show_community_news_signal,
+             this, &base_qobject::show_community_news);
+
     if (m_app_context.experimental_terminal_widget ())
       {
         m_qapplication->setQuitOnLastWindowClosed (false);
@@ -286,6 +290,9 @@ namespace octave
         if (gui_app)
           {
             m_main_window = new main_window (*this);
+
+            connect (m_main_window, &main_window::show_community_news_signal,
+                     this, &base_qobject::show_community_news);
 
             if (m_interpreter_ready)
               m_main_window->handle_octave_ready ();
@@ -352,6 +359,9 @@ namespace octave
 
         if (m_variable_editor_widget)
           m_variable_editor_widget->close ();
+
+        if (m_community_news)
+          m_community_news->close ();
       }
     else
       {
@@ -365,6 +375,7 @@ namespace octave
     delete m_workspace_widget;
     delete m_editor_widget;
     delete m_variable_editor_widget;
+    delete m_community_news;
 
     delete m_interpreter_qobj;
     delete m_qsci_tr;
@@ -707,6 +718,15 @@ namespace octave
     return m_variable_editor_widget;
   }
 
+  QPointer<community_news> base_qobject::community_news_widget (int serial)
+  {
+    if (! m_community_news)
+      m_community_news
+        = QPointer<community_news> (new community_news (*this, serial));
+
+    return m_community_news;
+  }
+
   bool base_qobject::confirm_shutdown (void)
   {
     // Currently, we forward to main_window::confirm_shutdown instead of
@@ -735,6 +755,9 @@ namespace octave
 
         connect (m_main_window, &main_window::close_gui_signal,
                  this, &base_qobject::close_gui);
+
+        connect (m_main_window, &main_window::show_community_news_signal,
+                 this, &base_qobject::show_community_news);
 
         if (m_interpreter_ready)
           m_main_window->handle_octave_ready ();
@@ -853,6 +876,14 @@ namespace octave
 
          xevmgr.set_workspace (true, tw.get_symbol_info (), false);
        });
+  }
+
+  void base_qobject::show_community_news (int serial)
+  {
+    // Ensure widget exists.
+    community_news_widget (serial);
+
+    m_community_news->display ();
   }
 
   void base_qobject::execute_command (const QString& command)

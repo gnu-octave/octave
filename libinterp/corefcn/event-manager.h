@@ -161,6 +161,8 @@ namespace octave
 
     virtual void show_workspace (void) { }
 
+    virtual void show_community_news (int /*serial*/) { }
+
     virtual bool edit_file (const std::string& /*file*/) { return false; }
 
     virtual void
@@ -483,6 +485,12 @@ namespace octave
     {
       if (enabled ())
         instance->show_workspace ();
+    }
+
+    void show_community_news (int serial = -1)
+    {
+      if (enabled ())
+        instance->show_community_news (serial);
     }
 
     bool edit_file (const std::string& file)

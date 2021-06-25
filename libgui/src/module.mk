@@ -135,6 +135,7 @@ endif
 OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-external-editor-interface.cc \
   %reldir%/moc-command-widget.cc \
+  %reldir%/moc-community-news.cc \
   %reldir%/moc-dialog.cc \
   %reldir%/moc-documentation-dock-widget.cc \
   %reldir%/moc-documentation.cc \
@@ -188,6 +189,7 @@ BUILT_SOURCES += $(octave_gui_UI_H)
 
 noinst_HEADERS += \
   %reldir%/command-widget.h \
+  %reldir%/community-news.h \
   %reldir%/dialog.h \
   %reldir%/octave-dock-widget.h \
   %reldir%/documentation-dock-widget.h \
@@ -253,6 +255,7 @@ noinst_HEADERS += \
 
 %canon_reldir%_%canon_reldir%_la_SOURCES = \
   %reldir%/command-widget.cc \
+  %reldir%/community-news.cc \
   %reldir%/dialog.cc \
   %reldir%/documentation-dock-widget.cc \
   %reldir%/documentation.cc \

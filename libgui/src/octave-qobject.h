@@ -40,6 +40,7 @@
 
 namespace octave
 {
+  class community_news;
   class main_window;
   class qt_application;
   class qt_interpreter_events;
@@ -183,6 +184,8 @@ namespace octave
     QPointer<variable_editor>
     variable_editor_widget (main_window *mw = nullptr);
 
+    QPointer<community_news> community_news_widget (int serial = -1);
+
     QThread *main_thread (void) { return m_main_thread; }
 
     // Declared virtual so that a derived class may redefine this
@@ -222,6 +225,8 @@ namespace octave
                                       const octave_value& value);
 
     void handle_variable_editor_update (void);
+
+    void show_community_news (int serial);
 
     void interpreter_ready (void);
 
@@ -290,6 +295,8 @@ namespace octave
     QPointer<file_editor_interface> m_editor_widget;
 
     QPointer<variable_editor> m_variable_editor_widget;
+
+    QPointer<community_news> m_community_news;
 
     main_window *m_main_window;
   };

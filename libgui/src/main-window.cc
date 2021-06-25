@@ -101,7 +101,7 @@ namespace octave
       m_external_editor (new external_editor_interface (this, m_octave_qobj)),
       m_active_editor (m_external_editor), m_settings_dlg (nullptr),
       m_find_files_dlg (nullptr), m_set_path_dlg (nullptr),
-      m_release_notes_window (nullptr), m_community_news_window (nullptr),
+      m_release_notes_window (nullptr),
       m_clipboard (QApplication::clipboard ()),
       m_prevent_readline_conflicts (true),
       m_prevent_readline_conflicts_menu (false),
@@ -192,7 +192,7 @@ namespace octave
 
     if (connect_to_web
         && (! last_checked.isValid () || one_day_ago > last_checked))
-      load_and_display_community_news (serial);
+      emit show_community_news_signal (serial);
 
     construct_octave_qt_link ();
 
@@ -217,7 +217,6 @@ namespace octave
     // the functions where they are constructed.
 
     delete m_release_notes_window;
-    delete m_community_news_window;
   }
 
   void main_window::adopt_dock_widgets (void)
@@ -911,96 +910,6 @@ namespace octave
 
     m_release_notes_window->raise ();
     m_release_notes_window->activateWindow ();
-  }
-
-  void main_window::load_and_display_community_news (int serial)
-  {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-
-    bool connect_to_web
-      = (settings
-         ? settings->value (nr_allow_connection).toBool ()
-         : true);
-
-    QString base_url = "https://octave.org";
-    QString page = "community-news.html";
-
-    QThread *worker_thread = new QThread;
-
-    news_reader *reader = new news_reader (m_octave_qobj, base_url, page,
-                                           serial, connect_to_web);
-
-    reader->moveToThread (worker_thread);
-
-    connect (reader, &news_reader::display_news_signal,
-             this, &main_window::display_community_news);
-
-    connect (worker_thread, &QThread::started,
-             reader, &news_reader::process);
-
-    connect (reader, &news_reader::finished, worker_thread, &QThread::quit);
-
-    connect (reader, &news_reader::finished, reader, &news_reader::deleteLater);
-
-    connect (worker_thread, &QThread::finished,
-             worker_thread, &QThread::deleteLater);
-
-    worker_thread->start ();
-  }
-
-  void main_window::display_community_news (const QString& news)
-  {
-    if (! m_community_news_window)
-      {
-        // We want the window manager to give the community news window
-        // a title bar, so don't its parent to main_window.  Do remember
-        // to delete in the main_window destructor.
-
-        m_community_news_window = new QWidget ();
-
-        QTextBrowser *browser = new QTextBrowser (m_community_news_window);
-
-        browser->setHtml (news);
-        browser->setObjectName ("OctaveNews");
-        browser->setOpenExternalLinks (true);
-
-        QVBoxLayout *vlayout = new QVBoxLayout;
-
-        vlayout->addWidget (browser);
-
-        m_community_news_window->setLayout (vlayout);
-        m_community_news_window->setWindowTitle (tr ("Octave Community News"));
-
-        int win_x, win_y;
-        get_screen_geometry (&win_x, &win_y);
-
-        m_community_news_window->resize (win_x/2, win_y/2);
-        m_community_news_window->move ((win_x - m_community_news_window->width ())/2,
-                                       (win_y - m_community_news_window->height ())/2);
-      }
-    else
-      {
-        // Window already exists, just update the browser contents
-        QTextBrowser *browser
-
-          = m_community_news_window->findChild<QTextBrowser *>("OctaveNews"
-                                                               , Qt::FindDirectChildrenOnly
-                                                              );
-        if (browser)
-          browser->setHtml (news);
-      }
-
-    if (! m_community_news_window->isVisible ())
-      m_community_news_window->show ();
-    else if (m_community_news_window->isMinimized ())
-      m_community_news_window->showNormal ();
-
-    // same icon as release notes
-    m_community_news_window->setWindowIcon (QIcon (m_release_notes_icon));
-
-    m_community_news_window->raise ();
-    m_community_news_window->activateWindow ();
   }
 
   void main_window::open_bug_tracker_page (void)
@@ -2680,8 +2589,14 @@ namespace octave
     m_release_notes_action = add_action (news_menu, QIcon (),
                                          tr ("Release Notes"), SLOT (display_release_notes ()));
 
-    m_current_news_action = add_action (news_menu, QIcon (),
-                                        tr ("Community News"), SLOT (load_and_display_community_news ()));
+    // Currently a special case so we can use a lambda expression.
+    m_current_news_action
+      = news_menu->addAction (QIcon (), tr ("Community News"),
+                              [=] () {
+                                emit show_community_news_signal (-1);
+                              });
+    addAction (m_current_news_action);
+    m_current_news_action->setShortcutContext (Qt::ApplicationShortcut);
   }
 
   void main_window::construct_tool_bar (void)

@@ -721,6 +721,19 @@ Undocumented internal function.
   return ovl ();
 }
 
+DEFMETHOD (__event_manager_show_community_news__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_community_news__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_community_news ();
+
+  return ovl ();
+}
+
 DEFMETHOD (__event_manager_gui_status_update__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_gui_status_update__ (@var{feature}, @var{status})

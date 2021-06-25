@@ -699,7 +699,7 @@ namespace octave
 
         connect (qt_link (),
                  &qt_interpreter_events::refresh_variable_editor_signal,
-                 this, &base_qobject::refresh_variable_editor);
+                 m_variable_editor_widget, &variable_editor::refresh);
 
         connect_interpreter_events<variable_editor> (m_variable_editor_widget);
       }
@@ -853,11 +853,6 @@ namespace octave
 
          xevmgr.set_workspace (true, tw.get_symbol_info (), false);
        });
-  }
-
-  void base_qobject::refresh_variable_editor (void)
-  {
-    m_variable_editor_widget->refresh ();
   }
 
   void base_qobject::execute_command (const QString& command)

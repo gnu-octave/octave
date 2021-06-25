@@ -223,8 +223,6 @@ namespace octave
 
     void handle_variable_editor_update (void);
 
-    void refresh_variable_editor (void);
-
     void interpreter_ready (void);
 
     void interpreter_event (const fcn_callback& fcn);

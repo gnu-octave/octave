@@ -896,7 +896,7 @@ namespace octave
         browser->document ()->adjustSize ();
 
         int win_x, win_y;
-        get_screen_geometry (&win_x, &win_y);
+        get_screen_geometry (win_x, win_y);
 
         m_release_notes_window->resize (win_x*2/5, win_y*2/3);
         m_release_notes_window->move (20, 20);  // move to the top left corner
@@ -2857,13 +2857,12 @@ namespace octave
   }
 
   // Get size of screen where the main window is located
-  void main_window::get_screen_geometry (int *width, int *height)
+  void main_window::get_screen_geometry (int& width, int& height)
   {
-    QRect screen_geometry
-        = QApplication::desktop ()->availableGeometry (this);
+    QRect screen_geometry = QApplication::desktop ()->availableGeometry (this);
 
-    *width = screen_geometry.width ();
-    *height = screen_geometry.height ();
+    width = screen_geometry.width ();
+    height = screen_geometry.height ();
   }
 
   void main_window::resize_dock (QDockWidget *dw, int width, int height)
@@ -2891,7 +2890,7 @@ namespace octave
   void main_window::set_default_geometry ()
   {
     int win_x, win_y;
-    get_screen_geometry (&win_x, &win_y);
+    get_screen_geometry (win_x, win_y);
 
     move (0, 0);
     resize (2*win_x/3, 7*win_y/8);

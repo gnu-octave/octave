@@ -299,7 +299,7 @@ namespace octave
 
     void update_default_encoding (const QString& default_encoding);
 
-    void get_screen_geometry (int *width, int *height);
+    void get_screen_geometry (int& width, int& height);
     void set_default_geometry (void);
     void resize_dock (QDockWidget *dw, int width, int height);
 

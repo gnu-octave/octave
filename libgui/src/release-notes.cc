@@ -1,0 +1,129 @@
+////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2011-2021 The Octave Project Developers
+//
+// See the file COPYRIGHT.md in the top-level directory of this
+// distribution or <https://octave.org/copyright/>.
+//
+// This file is part of Octave.
+//
+// Octave is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Octave is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Octave; see the file COPYING.  If not, see
+// <https://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////
+
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
+
+#include <QDesktopWidget>
+#include <QFile>
+#include <QIcon>
+#include <QLayout>
+#include <QTextBrowser>
+#include <QTextStream>
+#include <QThread>
+
+#include "release-notes.h"
+#include "gui-preferences-nr.h"
+#include "news-reader.h"
+#include "octave-qobject.h"
+
+#include "defaults.h"
+
+namespace octave
+{
+  release_notes::release_notes (void)
+    : QWidget (nullptr), m_browser (nullptr),
+      m_release_notes_icon (":/actions/icons/logo.png")
+  {
+#if 0
+    // The following code was in main-window.cc.  How should that be
+    // handled here?
+    if (dw_icon_set_names[icon_set_found].name != "NONE")
+      m_release_notes_icon = dw_icon_set_names[icon_set_found].path
+        + "ReleaseWidget.png";
+    else
+      m_release_notes_icon = ":/actions/icons/logo.png";
+#endif
+
+    std::string news_file = config::oct_etc_dir () + "/NEWS";
+
+    QString news;
+
+    QFile *file = new QFile (QString::fromStdString (news_file));
+    if (file->open (QFile::ReadOnly))
+      {
+        QTextStream *stream = new QTextStream (file);
+        news = stream->readAll ();
+        if (! news.isEmpty ())
+          {
+            // Convert '<', '>' which would be interpreted as HTML
+            news.replace ("<", "&lt;");
+            news.replace (">", "&gt;");
+            // Add HTML tags for pre-formatted text
+            news.prepend ("<pre>");
+            news.append ("</pre>");
+          }
+        else
+          news = (tr ("The release notes file '%1' is empty.")
+                  . arg (QString::fromStdString (news_file)));
+      }
+    else
+      news = (tr ("The release notes file '%1' cannot be read.")
+              . arg (QString::fromStdString (news_file)));
+
+
+    m_browser = new QTextBrowser (this);
+    m_browser->setText (news);
+
+    QVBoxLayout *vlayout = new QVBoxLayout;
+    vlayout->addWidget (m_browser);
+
+    setLayout (vlayout);
+    setWindowTitle (tr ("Octave Release Notes"));
+
+    m_browser->document ()->adjustSize ();
+
+    int win_x, win_y;
+    get_screen_geometry (win_x, win_y);
+
+    resize (win_x*2/5, win_y*2/3);
+    move (20, 20);  // move to the top left corner
+  }
+
+  void release_notes::display (void)
+  {
+    if (! isVisible ())
+      show ();
+    else if (isMinimized ())
+      showNormal ();
+
+    setWindowIcon (QIcon (m_release_notes_icon));
+
+    raise ();
+    activateWindow ();
+  }
+
+  // FIXME: This function is duplicated in main_window.cc.  Maybe it
+  // should be a utility function?
+
+  void release_notes::get_screen_geometry (int& width, int& height)
+  {
+    QRect screen_geometry = QApplication::desktop ()->availableGeometry (this);
+
+    width = screen_geometry.width ();
+    height = screen_geometry.height ();
+  }
+}

@@ -128,6 +128,7 @@ namespace octave
     void show_workspace (void);
 
     void show_community_news (int serial);
+    void show_release_notes (void);
 
     bool edit_file (const std::string& file);
 
@@ -282,6 +283,7 @@ namespace octave
     void show_workspace_signal (void);
 
     void show_community_news_signal (int serial);
+    void show_release_notes_signal (void);
 
     // Note: this signal currently not used by the old terminal widget.
     void interpreter_output_signal (const QString& msg);

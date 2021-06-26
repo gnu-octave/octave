@@ -101,7 +101,6 @@ namespace octave
       m_external_editor (new external_editor_interface (this, m_octave_qobj)),
       m_active_editor (m_external_editor), m_settings_dlg (nullptr),
       m_find_files_dlg (nullptr), m_set_path_dlg (nullptr),
-      m_release_notes_window (nullptr),
       m_clipboard (QApplication::clipboard ()),
       m_prevent_readline_conflicts (true),
       m_prevent_readline_conflicts_menu (false),
@@ -210,14 +209,7 @@ namespace octave
     focus_command_window ();
   }
 
-  main_window::~main_window (void)
-  {
-    // These must be explicitly deleted because they are not
-    // intentionally not children of main_window.  See the comments in
-    // the functions where they are constructed.
-
-    delete m_release_notes_window;
-  }
+  main_window::~main_window (void) { }
 
   void main_window::adopt_dock_widgets (void)
   {
@@ -847,71 +839,6 @@ namespace octave
       (QUrl ("https://octave.org/doc/interpreter/index.html"));
   }
 
-  void main_window::display_release_notes (void)
-  {
-    if (! m_release_notes_window)
-      {
-        std::string news_file = config::oct_etc_dir () + "/NEWS";
-
-        QString news;
-
-        QFile *file = new QFile (QString::fromStdString (news_file));
-        if (file->open (QFile::ReadOnly))
-          {
-            QTextStream *stream = new QTextStream (file);
-            news = stream->readAll ();
-            if (! news.isEmpty ())
-              {
-                // Convert '<', '>' which would be interpreted as HTML
-                news.replace ("<", "&lt;");
-                news.replace (">", "&gt;");
-                // Add HTML tags for pre-formatted text
-                news.prepend ("<pre>");
-                news.append ("</pre>");
-              }
-            else
-              news = (tr ("The release notes file '%1' is empty.")
-                      . arg (QString::fromStdString (news_file)));
-          }
-        else
-          news = (tr ("The release notes file '%1' cannot be read.")
-                  . arg (QString::fromStdString (news_file)));
-
-        // We want the window manager to give the release notes window
-        // a title bar, so don't its parent to main_window.  Do remember
-        // to delete in the main_window destructor.
-
-        m_release_notes_window = new QWidget ();
-
-        QTextBrowser *browser = new QTextBrowser (m_release_notes_window);
-        browser->setText (news);
-
-        QVBoxLayout *vlayout = new QVBoxLayout;
-        vlayout->addWidget (browser);
-
-        m_release_notes_window->setLayout (vlayout);
-        m_release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
-
-        browser->document ()->adjustSize ();
-
-        int win_x, win_y;
-        get_screen_geometry (win_x, win_y);
-
-        m_release_notes_window->resize (win_x*2/5, win_y*2/3);
-        m_release_notes_window->move (20, 20);  // move to the top left corner
-      }
-
-    if (! m_release_notes_window->isVisible ())
-      m_release_notes_window->show ();
-    else if (m_release_notes_window->isMinimized ())
-      m_release_notes_window->showNormal ();
-
-    m_release_notes_window->setWindowIcon (QIcon (m_release_notes_icon));
-
-    m_release_notes_window->raise ();
-    m_release_notes_window->activateWindow ();
-  }
-
   void main_window::open_bug_tracker_page (void)
   {
     QDesktopServices::openUrl (QUrl ("https://octave.org/bugs.html"));
@@ -1014,11 +941,6 @@ namespace octave
             widget->setWindowIcon (QIcon (icon));
           }
       }
-    if (dw_icon_set_names[icon_set_found].name != "NONE")
-      m_release_notes_icon = dw_icon_set_names[icon_set_found].path
-                             + "ReleaseWidget.png";
-    else
-      m_release_notes_icon = ":/actions/icons/logo.png";
 
     int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
@@ -2586,10 +2508,14 @@ namespace octave
   {
     QMenu *news_menu = m_add_menu (p, tr ("&News"));
 
-    m_release_notes_action = add_action (news_menu, QIcon (),
-                                         tr ("Release Notes"), SLOT (display_release_notes ()));
+    m_release_notes_action
+      = news_menu->addAction (QIcon (), tr ("Release Notes"),
+                              [=] () {
+                                emit show_release_notes_signal ();
+                              });
+    addAction (m_release_notes_action);
+    m_release_notes_action->setShortcutContext (Qt::ApplicationShortcut);
 
-    // Currently a special case so we can use a lambda expression.
     m_current_news_action
       = news_menu->addAction (QIcon (), tr ("Community News"),
                               [=] () {

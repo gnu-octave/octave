@@ -108,6 +108,7 @@ namespace octave
     void step_into_file_signal (void);
 
     void show_community_news_signal (int serial);
+    void show_release_notes_signal (void);
 
     void update_gui_lexer_signal (bool);
 
@@ -146,7 +147,6 @@ namespace octave
     void edit_mfile (const QString&, int);
     void file_remove_proxy (const QString& o, const QString& n);
     void open_online_documentation_page (void);
-    void display_release_notes (void);
     void open_bug_tracker_page (void);
     void open_octave_packages_page (void);
     void open_contribute_page (void);
@@ -332,8 +332,6 @@ namespace octave
 
     octave_dock_widget *m_previous_dock;
     octave_dock_widget *m_active_dock;
-
-    QString m_release_notes_icon;
 
     QToolBar *m_main_tool_bar;
 

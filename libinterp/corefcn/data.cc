@@ -6350,6 +6350,9 @@ DEFUN (mrdivide, args, ,
 Return the matrix right division of @var{x} and @var{y}.
 
 This function and @w{@tcode{@var{x} / @var{y}}} are equivalent.
+
+If the system is not square, or if the coefficient matrix is singular, a
+minimum norm solution is computed.
 @seealso{mldivide, rdivide, plus, minus}
 @end deftypefn */)
 {
@@ -6374,7 +6377,10 @@ DEFUN (mldivide, args, ,
 Return the matrix left division of @var{x} and @var{y}.
 
 This function and @w{@tcode{@var{x} @backslashchar{} @var{y}}} are equivalent.
-@seealso{mrdivide, ldivide, rdivide}
+
+If the system is not square, or if the coefficient matrix is singular, a
+minimum norm solution is computed.
+@seealso{mrdivide, ldivide, rdivide, linsolve}
 @end deftypefn */)
 {
   return binary_op_defun_body (octave_value::op_ldiv, args);

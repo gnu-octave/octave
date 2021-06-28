@@ -255,7 +255,7 @@ r = ind2sub (dims, ind)
     @result{} r =  2   8
 @end group
 @end example
-@seealso{ind2sub, size}
+@seealso{sub2ind, size}
 @end deftypefn */)
 {
   if (args.length () != 2)

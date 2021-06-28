@@ -304,14 +304,14 @@ xpow (const DiagMatrix& a, double b)
     {
       DiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
-        r.dgelem (i) = std::pow (a.dgelem (i), b);
+        r.dgxelem (i) = std::pow (a.dgxelem (i), b);
       retval = r;
     }
   else
     {
       ComplexDiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
-        r.dgelem (i) = std::pow (static_cast<Complex> (a.dgelem (i)), b);
+        r.dgxelem (i) = std::pow (static_cast<Complex> (a.dgxelem (i)), b);
       retval = r;
     }
 
@@ -605,7 +605,7 @@ xpow (const ComplexDiagMatrix& a, const Complex& b)
 
   ComplexDiagMatrix r (nr, nc);
   for (octave_idx_type i = 0; i < nc; i++)
-    r(i, i) = std::pow (a(i, i), b);
+    r.dgxelem (i) = std::pow (a.dgxelem (i), b);
   retval = r;
 
   return retval;
@@ -1718,14 +1718,14 @@ xpow (const FloatDiagMatrix& a, float b)
     {
       FloatDiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
-        r.dgelem (i) = std::pow (a.dgelem (i), b);
+        r.dgxelem (i) = std::pow (a.dgxelem (i), b);
       retval = r;
     }
   else
     {
       FloatComplexDiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
-        r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)), b);
+        r.dgxelem (i) = std::pow (static_cast<FloatComplex> (a.dgxelem (i)), b);
       retval = r;
     }
 
@@ -2009,7 +2009,7 @@ xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b)
 
   FloatComplexDiagMatrix r (nr, nc);
   for (octave_idx_type i = 0; i < nc; i++)
-    r(i, i) = std::pow (a(i, i), b);
+    r.dgxelem (i) = std::pow (a.dgxelem (i), b);
   retval = r;
 
   return retval;

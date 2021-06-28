@@ -132,29 +132,9 @@ xpow (double a, const Matrix& b)
       ComplexColumnVector lambda (b_eig.eigenvalues ());
       ComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (a < 0.0)
-        {
-          Complex acplx (a);
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              Complex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (acplx, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              Complex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-        }
+      for (octave_idx_type i = 0; i < nr; i++)
+        lambda(i) = std::pow (a, lambda(i));
+
       ComplexDiagMatrix D (lambda);
 
       ComplexMatrix C = Q * D * Q.inverse ();
@@ -201,29 +181,9 @@ xpow (double a, const ComplexMatrix& b)
       ComplexColumnVector lambda (b_eig.eigenvalues ());
       ComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (a < 0.0)
-        {
-          Complex acplx (a);
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              Complex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (acplx, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              Complex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-        }
+      for (octave_idx_type i = 0; i < nr; i++)
+        lambda(i) = std::pow (a, lambda(i));
+
       ComplexDiagMatrix D (lambda);
 
       retval = ComplexMatrix (Q * D * Q.inverse ());
@@ -442,13 +402,8 @@ xpow (const Complex& a, const Matrix& b)
       ComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
-        {
-          Complex elt = lambda(i);
-          if (std::imag (elt) == 0.0)
-            lambda(i) = std::pow (a, std::real (elt));
-          else
-            lambda(i) = std::pow (a, elt);
-        }
+        lambda(i) = std::pow (a, lambda(i));
+
       ComplexDiagMatrix D (lambda);
 
       retval = ComplexMatrix (Q * D * Q.inverse ());
@@ -493,13 +448,8 @@ xpow (const Complex& a, const ComplexMatrix& b)
       ComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
-        {
-          Complex elt = lambda(i);
-          if (std::imag (elt) == 0.0)
-            lambda(i) = std::pow (a, std::real (elt));
-          else
-            lambda(i) = std::pow (a, elt);
-        }
+        lambda(i) = std::pow (a, lambda(i));
+
       ComplexDiagMatrix D (lambda);
 
       retval = ComplexMatrix (Q * D * Q.inverse ());
@@ -1595,29 +1545,9 @@ xpow (float a, const FloatMatrix& b)
       FloatComplexColumnVector lambda (b_eig.eigenvalues ());
       FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (a < 0.0)
-        {
-          FloatComplex acplx (a);
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              FloatComplex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (acplx, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              FloatComplex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-        }
+      for (octave_idx_type i = 0; i < nr; i++)
+        lambda(i) = std::pow (a, lambda(i));
+
       FloatComplexDiagMatrix D (lambda);
 
       FloatComplexMatrix C = Q * D * Q.inverse ();
@@ -1665,29 +1595,9 @@ xpow (float a, const FloatComplexMatrix& b)
       FloatComplexColumnVector lambda (b_eig.eigenvalues ());
       FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (a < 0.0)
-        {
-          FloatComplex acplx (a);
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              FloatComplex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (acplx, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              FloatComplex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-        }
+      for (octave_idx_type i = 0; i < nr; i++)
+        lambda(i) = std::pow (a, lambda(i));
+
       FloatComplexDiagMatrix D (lambda);
 
       retval = FloatComplexMatrix (Q * D * Q.inverse ());
@@ -1896,13 +1806,8 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
       FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
-        {
-          FloatComplex elt = lambda(i);
-          if (std::imag (elt) == 0.0)
-            lambda(i) = std::pow (a, std::real (elt));
-          else
-            lambda(i) = std::pow (a, elt);
-        }
+        lambda(i) = std::pow (a, lambda(i));
+
       FloatComplexDiagMatrix D (lambda);
 
       retval = FloatComplexMatrix (Q * D * Q.inverse ());
@@ -1947,13 +1852,8 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
       FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
       for (octave_idx_type i = 0; i < nr; i++)
-        {
-          FloatComplex elt = lambda(i);
-          if (std::imag (elt) == 0.0)
-            lambda(i) = std::pow (a, std::real (elt));
-          else
-            lambda(i) = std::pow (a, elt);
-        }
+        lambda(i) = std::pow (a, lambda(i));
+
       FloatComplexDiagMatrix D (lambda);
 
       retval = FloatComplexMatrix (Q * D * Q.inverse ());

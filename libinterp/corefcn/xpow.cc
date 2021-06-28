@@ -302,9 +302,10 @@ xpow (const DiagMatrix& a, double b)
 
   if (xisint (b))
     {
+      int bint = static_cast<int> (b);
       DiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
-        r.dgxelem (i) = std::pow (a.dgxelem (i), b);
+        r.dgxelem (i) = std::pow (a.dgxelem (i), bint);
       retval = r;
     }
   else
@@ -1179,7 +1180,38 @@ elem_xpow (const NDArray& a, double b)
 {
   octave_value retval;
 
-  if (! xisint (b))
+  if (xisint (b))
+    {
+      NDArray result (a.dims ());
+
+      int bint = static_cast<int> (b);
+      if (bint == 2)
+        {
+          for (octave_idx_type i = 0; i < a.numel (); i++)
+            result.xelem (i) = a(i) * a(i);
+        }
+      else if (bint == 3)
+        {
+          for (octave_idx_type i = 0; i < a.numel (); i++)
+            result.xelem (i) = a(i) * a(i) * a(i);
+        }
+      else if (bint == -1)
+        {
+          for (octave_idx_type i = 0; i < a.numel (); i++)
+            result.xelem (i) = 1.0 / a(i);
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < a.numel (); i++)
+            {
+              octave_quit ();
+              result.xelem (i) = std::pow (a(i), bint);
+            }
+        }
+
+      retval = result;
+    }
+  else
     {
       if (a.any_element_is_negative ())
         {
@@ -1205,37 +1237,6 @@ elem_xpow (const NDArray& a, double b)
 
           retval = result;
         }
-    }
-  else
-    {
-      NDArray result (a.dims ());
-
-      int ib = static_cast<int> (b);
-      if (ib == 2)
-        {
-          for (octave_idx_type i = 0; i < a.numel (); i++)
-            result.xelem (i) = a(i) * a(i);
-        }
-      else if (ib == 3)
-        {
-          for (octave_idx_type i = 0; i < a.numel (); i++)
-            result.xelem (i) = a(i) * a(i) * a(i);
-        }
-      else if (ib == -1)
-        {
-          for (octave_idx_type i = 0; i < a.numel (); i++)
-            result.xelem (i) = 1.0 / a(i);
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < a.numel (); i++)
-            {
-              octave_quit ();
-              result.xelem (i) = std::pow (a(i), ib);
-            }
-        }
-
-      retval = result;
     }
 
   return retval;
@@ -1716,9 +1717,10 @@ xpow (const FloatDiagMatrix& a, float b)
 
   if (xisint (b))
     {
+      int bint = static_cast<int> (b);
       FloatDiagMatrix r (nr, nc);
       for (octave_idx_type i = 0; i < nc; i++)
-        r.dgxelem (i) = std::pow (a.dgxelem (i), b);
+        r.dgxelem (i) = std::pow (a.dgxelem (i), bint);
       retval = r;
     }
   else
@@ -2496,7 +2498,38 @@ elem_xpow (const FloatNDArray& a, float b)
 {
   octave_value retval;
 
-  if (! xisint (b))
+  if (xisint (b))
+    {
+      FloatNDArray result (a.dims ());
+
+      int bint = static_cast<int> (b);
+      if (bint == 2)
+        {
+          for (octave_idx_type i = 0; i < a.numel (); i++)
+            result.xelem (i) = a(i) * a(i);
+        }
+      else if (bint == 3)
+        {
+          for (octave_idx_type i = 0; i < a.numel (); i++)
+            result.xelem (i) = a(i) * a(i) * a(i);
+        }
+      else if (bint == -1)
+        {
+          for (octave_idx_type i = 0; i < a.numel (); i++)
+            result.xelem (i) = 1.0f / a(i);
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < a.numel (); i++)
+            {
+              octave_quit ();
+              result.xelem (i) = std::pow (a(i), bint);
+            }
+        }
+
+      retval = result;
+    }
+  else
     {
       if (a.any_element_is_negative ())
         {
@@ -2524,37 +2557,6 @@ elem_xpow (const FloatNDArray& a, float b)
 
           retval = result;
         }
-    }
-  else
-    {
-      FloatNDArray result (a.dims ());
-
-      int ib = static_cast<int> (b);
-      if (ib == 2)
-        {
-          for (octave_idx_type i = 0; i < a.numel (); i++)
-            result.xelem (i) = a(i) * a(i);
-        }
-      else if (ib == 3)
-        {
-          for (octave_idx_type i = 0; i < a.numel (); i++)
-            result.xelem (i) = a(i) * a(i) * a(i);
-        }
-      else if (ib == -1)
-        {
-          for (octave_idx_type i = 0; i < a.numel (); i++)
-            result.xelem (i) = 1.0f / a(i);
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < a.numel (); i++)
-            {
-              octave_quit ();
-              result.xelem (i) = std::pow (a(i), ib);
-            }
-        }
-
-      retval = result;
     }
 
   return retval;

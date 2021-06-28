@@ -125,10 +125,10 @@ xpow (double a, const Matrix& b)
   if (nr != nc)
     err_nonsquare_matrix ();
 
+  EIG b_eig (b);
+
   try
     {
-      EIG b_eig (b);
-
       ComplexColumnVector lambda (b_eig.eigenvalues ());
       ComplexMatrix Q (b_eig.right_eigenvectors ());
 

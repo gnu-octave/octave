@@ -100,9 +100,9 @@ xpow (double a, double b)
 
   if (a < 0.0 && ! xisint (b))
     {
-      Complex atmp (a);
+      Complex acplx (a);
 
-      return std::pow (atmp, b);
+      return std::pow (acplx, b);
     }
   else
     retval = std::pow (a, b);
@@ -665,14 +665,14 @@ elem_xpow (double a, const Matrix& b)
 
   if (a < 0.0 && ! b.all_integers (d1, d2))
     {
-      Complex atmp (a);
+      Complex acplx (a);
       ComplexMatrix result (nr, nc);
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result(i, j) = std::pow (atmp, b(i, j));
+            result(i, j) = std::pow (acplx, b(i, j));
           }
 
       retval = result;
@@ -702,13 +702,13 @@ elem_xpow (double a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   ComplexMatrix result (nr, nc);
-  Complex atmp (a);
+  Complex acplx (a);
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = std::pow (atmp, b(i, j));
+        result(i, j) = std::pow (acplx, b(i, j));
       }
 
   return result;
@@ -778,9 +778,9 @@ elem_xpow (const Matrix& a, double b)
           {
             octave_quit ();
 
-            Complex atmp (a(i, j));
+            Complex acplx (a(i, j));
 
-            result(i, j) = std::pow (atmp, b);
+            result(i, j) = std::pow (acplx, b);
           }
 
       retval = result;
@@ -841,9 +841,9 @@ done:
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            Complex atmp (a(i, j));
-            Complex btmp (b(i, j));
-            complex_result(i, j) = std::pow (atmp, btmp);
+            Complex acplx (a(i, j));
+            Complex bcplx (b(i, j));
+            complex_result(i, j) = std::pow (acplx, bcplx);
           }
 
       retval = complex_result;
@@ -1133,12 +1133,12 @@ elem_xpow (double a, const NDArray& b)
 
   if (a < 0.0 && ! b.all_integers ())
     {
-      Complex atmp (a);
+      Complex acplx (a);
       ComplexNDArray result (b.dims ());
       for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
-          result(i) = std::pow (atmp, b(i));
+          result(i) = std::pow (acplx, b(i));
         }
 
       retval = result;
@@ -1188,8 +1188,8 @@ elem_xpow (const NDArray& a, double b)
           for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
-              Complex atmp (a(i));
-              result(i) = std::pow (atmp, b);
+              Complex acplx (a(i));
+              result(i) = std::pow (acplx, b);
             }
 
           retval = result;
@@ -1289,8 +1289,8 @@ done:
       for (octave_idx_type i = 0; i < len; i++)
         {
           octave_quit ();
-          Complex atmp (a(i));
-          complex_result(i) = std::pow (atmp, b(i));
+          Complex acplx (a(i));
+          complex_result(i) = std::pow (acplx, b(i));
         }
 
       retval = complex_result;
@@ -1513,9 +1513,9 @@ xpow (float a, float b)
 
   if (a < 0.0 && ! xisint (b))
     {
-      FloatComplex atmp (a);
+      FloatComplex acplx (a);
 
-      return std::pow (atmp, b);
+      return std::pow (acplx, b);
     }
   else
     retval = std::pow (a, b);
@@ -2069,14 +2069,14 @@ elem_xpow (float a, const FloatMatrix& b)
 
   if (a < 0.0 && ! b.all_integers (d1, d2))
     {
-      FloatComplex atmp (a);
+      FloatComplex acplx (a);
       FloatComplexMatrix result (nr, nc);
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            result(i, j) = std::pow (atmp, b(i, j));
+            result(i, j) = std::pow (acplx, b(i, j));
           }
 
       retval = result;
@@ -2106,13 +2106,13 @@ elem_xpow (float a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   FloatComplexMatrix result (nr, nc);
-  FloatComplex atmp (a);
+  FloatComplex acplx (a);
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = std::pow (atmp, b(i, j));
+        result(i, j) = std::pow (acplx, b(i, j));
       }
 
   return result;
@@ -2136,9 +2136,9 @@ elem_xpow (const FloatMatrix& a, float b)
           {
             octave_quit ();
 
-            FloatComplex atmp (a(i, j));
+            FloatComplex acplx (a(i, j));
 
-            result(i, j) = std::pow (atmp, b);
+            result(i, j) = std::pow (acplx, b);
           }
 
       retval = result;
@@ -2199,9 +2199,9 @@ done:
         for (octave_idx_type i = 0; i < nr; i++)
           {
             octave_quit ();
-            FloatComplex atmp (a(i, j));
-            FloatComplex btmp (b(i, j));
-            complex_result(i, j) = std::pow (atmp, btmp);
+            FloatComplex acplx (a(i, j));
+            FloatComplex bcplx (b(i, j));
+            complex_result(i, j) = std::pow (acplx, bcplx);
           }
 
       retval = complex_result;
@@ -2450,12 +2450,12 @@ elem_xpow (float a, const FloatNDArray& b)
 
   if (a < 0.0 && ! b.all_integers ())
     {
-      FloatComplex atmp (a);
+      FloatComplex acplx (a);
       FloatComplexNDArray result (b.dims ());
       for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
-          result(i) = std::pow (atmp, b(i));
+          result(i) = std::pow (acplx, b(i));
         }
 
       retval = result;
@@ -2506,9 +2506,9 @@ elem_xpow (const FloatNDArray& a, float b)
             {
               octave_quit ();
 
-              FloatComplex atmp (a(i));
+              FloatComplex acplx (a(i));
 
-              result(i) = std::pow (atmp, b);
+              result(i) = std::pow (acplx, b);
             }
 
           retval = result;
@@ -2608,8 +2608,8 @@ done:
       for (octave_idx_type i = 0; i < len; i++)
         {
           octave_quit ();
-          FloatComplex atmp (a(i));
-          complex_result(i) = std::pow (atmp, b(i));
+          FloatComplex acplx (a(i));
+          complex_result(i) = std::pow (acplx, b(i));
         }
 
       retval = complex_result;

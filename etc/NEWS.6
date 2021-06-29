@@ -1,8 +1,6 @@
 Summary of bugs fixed for version 6.3.0 (tbd)
 ---------------------------------------------
 
-See: tbd
-
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Important notice
@@ -45,6 +43,25 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Avoid ambiguous match of overloaded function (bug #60531).
 - `lscov.m`: Relax BIST tolerance to pass with OpenBLAS (bug #60552).
 - `print`: Fix error when `"px"` word is present in a figure (bug #60641).
+- `logm.m`: Fix check for real negative values in complex vector (bug #60738).
+- build: Set necessary flags to allow execution on Windows Vista (bug #60746).
+- Declare base_parser destructor virtual.
+- `hist.m`: Improve handling and docstring for third parameter "norm" (bug #60783).
+- `logm.m`: Allow tolerance in check for real negative values in complex vector (bug #60738).
+- `expm.m`, `logm.m`: Use function `isdiag` to detect if input is a diagonal matrix (bug #60738).
+- tests: Relax tolerance for some tests on macOS.
+- `logspace.m`: Mark tests as known to fail on macOS (bug #55538).
+- `hist.m`: Use deterministic test (bug #60783).
+- `rgb2ind.m`: Reduce memory usage and eliminate randomness in test.
+- `logm.m`: Allow larger tolerance for test on macOS.
+- build: Use correct path to `octave` binary in build tree on macOS.
+- build: Fix typo in folder to libraries when building `.oct` or `.mex` files.
+- build: Set DL_LDFLAGS in the build rules for .oct or .mex files.
+- `rgb2ind.m`: Suppress output in test.
+- Improve documentation for `log2` function (bug #60817).
+- `ind2sub`: Fix typo in "see also" section of docstring (bug #60842).
+- `mrdivide`, `mldivide`: Document that functions might return minimum norm solutions (bug #60839).
+- Fix scoping issue for handles to sibling nested functions (bug #60845).
 
 ### GUI
 
@@ -58,6 +75,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Avoid crash in GUI for `rmdir("")` (bug #60473).
 - Fix EOL mode when saving files under new names (bug #60585).
 - Fix auto indentation of switch-structure in GUI editor (bug #60649).
+- Avoid crash when closing GUI with open editor tabs (bug #60500).
+- `octave-qscintilla.cc` (`contextmenu_run`): Fix keyboard command handling.
 
 ### Documentation
 

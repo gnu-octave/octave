@@ -86,6 +86,7 @@ jobs:
         run: ./bootstrap
 
       - name: configure
+        timeout-minutes: 30
         env:
           MY_CC: ${{ matrix.cc }}
           MY_CXX: ${{ matrix.cxx }}
@@ -117,14 +118,7 @@ jobs:
         run: ccache -s
 
       - name: check
-        # Continuing on error in this step means that jobs will be "green" even
-        # if the test suite crashes.  But if we don't continue, we'll loose the
-        # ccache and other jobs will be cancelled.
-        # It would be nice if we could mark the job as "yellow" (and continue)
-        # in that case.
-        # It would also be nice if we could analyze the test suite results
-        # automatically.
-        continue-on-error: true
+        timeout-minutes: 60
         env:
           XDG_RUNTIME_DIR: "/home/runner/tmp"
         run: xvfb-run -a make -C ./.build check V=1 | tee ./test-suite.log
@@ -216,6 +210,7 @@ jobs:
           ./bootstrap
 
       - name: configure
+        timeout-minutes: 30
         env:
           MY_CC: ${{ matrix.cc }}
           MY_CXX: ${{ matrix.cxx }}
@@ -267,6 +262,7 @@ jobs:
         # It would also be nice if we could analyze the test suite results
         # automatically.
         continue-on-error: true
+        timeout-minutes: 60
         run: make -C ./.build check V=1
 
 
@@ -279,7 +275,9 @@ jobs:
         shell: C:/msys64/usr/bin/bash.exe --login -eo pipefail "{0}"
 
     strategy:
+      # Allow other runners in the matrix to continue if some fail
       fail-fast: false
+
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
         os: [windows-2019]
@@ -328,12 +326,14 @@ jobs:
         # The first block is for mandatory dependencies.
         # The second block is for optional dependencies needed when building from a release tarball.
         # The third block is for additional dependencies needed when building from a repository checkout.
+        # The fourth block is for additional run-time dependencies that aren't needed to build (to run test suite)
         run: |
           pacman --noconfirm -Syu
           pacman --noconfirm -S --needed --overwrite * \
             base-devel ${TARGET_PREFIX}-toolchain ${TARGET_PREFIX}-lapack ${TARGET_PREFIX}-openblas ${TARGET_PREFIX}-pcre \
             ${TARGET_PREFIX}-arpack ${TARGET_PREFIX}-curl ${TARGET_PREFIX}-cvode ${TARGET_PREFIX}-fftw ${TARGET_PREFIX}-fltk ${TARGET_PREFIX}-gl2ps ${TARGET_PREFIX}-glpk ${TARGET_PREFIX}-ghostscript ${TARGET_PREFIX}-gnuplot ${TARGET_PREFIX}-graphicsmagick ${TARGET_PREFIX}-hdf5 ${TARGET_PREFIX}-libsndfile ${TARGET_PREFIX}-portaudio ${TARGET_PREFIX}-qhull ${TARGET_PREFIX}-qrupdate ${TARGET_PREFIX}-qscintilla ${TARGET_PREFIX}-qt5 ${TARGET_PREFIX}-rapidjson ${TARGET_PREFIX}-suitesparse \
-            git ${TARGET_PREFIX}-ccache ${TARGET_PREFIX}-icoutils ${TARGET_PREFIX}-librsvg texinfo
+            git ${TARGET_PREFIX}-ccache ${TARGET_PREFIX}-icoutils ${TARGET_PREFIX}-librsvg texinfo \
+            unzip zip
 
       - name: checkout repository
         uses: actions/checkout@v2
@@ -427,6 +427,7 @@ jobs:
         # It would also be nice if we could analyze the test suite results
         # automatically.
         continue-on-error: true
+        timeout-minutes: 60
 
         # We cannot run "make check" in the MSYS2 shell because it will fail with backslash as a file separator.
         # Instead, use the CMD shell and set up the environment to pick up what we just built.

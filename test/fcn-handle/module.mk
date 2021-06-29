@@ -21,7 +21,7 @@ fcn_handle_TEST_FILES = \
   %reldir%/bug60845.m \
   %reldir%/derived-resolution.tst \
   %reldir%/f1.m \
-  %reldir%/handle-to-sibling.m \
+  %reldir%/handle-to-sibling.tst \
   %reldir%/keyword.tst \
   %reldir%/object-method.tst \
   %reldir%/package-function.tst \

@@ -1727,14 +1727,20 @@ namespace octave
                       = m_call_stack.get_current_stack_frame ();
 
                     // If we are creating a handle to the current
-                    // function, then use the calling stack frame as the
-                    // context.
+                    // function or a handle to a sibling function (i.e.,
+                    // not a child of the current function), then use
+                    // the calling stack frame as the context instead of
+                    // the current stack frame.
 
-                    std::string curr_fcn_name;
-                    if (curr_fcn)
-                      curr_fcn_name = curr_fcn->name ();
+                    // FIXME:  Do we need both checks here or is it
+                    // sufficient to check that the parent of curr_fcn
+                    // is the same as the parent of fcn?  Is there any
+                    // case where curr_fcn could be nullptr, or does
+                    // that indicate an internal error of some kind?
 
-                    if (fcn_name == curr_fcn_name)
+                    if (curr_fcn
+                        && (fcn_name == curr_fcn->name ()
+                            || fcn->parent_fcn_name () == curr_fcn->parent_fcn_name ()))
                       frame = frame->access_link ();
 
                     octave_fcn_handle *fh

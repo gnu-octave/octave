@@ -31,6 +31,7 @@
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 
@@ -138,17 +139,8 @@ DEFCATOP (scm_cm, sparse_complex_matrix, complex_matrix)
          (v1.sparse_complex_matrix_value ().concat (tmp, ra_idx));
 }
 
-DEFASSIGNOP (assign, sparse_complex_matrix, complex_matrix)
-{
-  octave_sparse_complex_matrix& v1
-    = dynamic_cast<octave_sparse_complex_matrix&> (a1);
-  const octave_complex_matrix& v2
-    = dynamic_cast<const octave_complex_matrix&> (a2);
-
-  SparseComplexMatrix tmp (v2.complex_matrix_value ());
-  v1.assign (idx, tmp);
-  return octave_value ();
-}
+DEFNDASSIGNOP_FN (assign, sparse_complex_matrix, complex_matrix, complex_matrix, assign);
+DEFNDASSIGNOP_FN (sgl_assign, sparse_complex_matrix, float_complex_matrix, complex_matrix, assign);
 
 void
 install_scm_cm_ops (octave::type_info& ti)
@@ -199,4 +191,6 @@ install_scm_cm_ops (octave::type_info& ti)
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_complex_matrix,
                        octave_complex_matrix, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_complex_matrix,
+                       octave_float_complex_matrix, sgl_assign);
 }

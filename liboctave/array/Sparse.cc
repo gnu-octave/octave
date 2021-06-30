@@ -2020,6 +2020,18 @@ Sparse<T>::assign (const octave::idx_vector& idx, const Sparse<T>& rhs)
 template <typename T>
 OCTAVE_API
 void
+Sparse<T>::assign (const octave::idx_vector& idx, const T& rhs)
+{
+  // FIXME: Converting the RHS and forwarding to the sparse matrix
+  // assignment function is simpler, but it might be good to have a
+  // specialization...
+
+  assign (idx, Sparse<T> (1, 1, rhs));
+}
+
+template <typename T>
+OCTAVE_API
+void
 Sparse<T>::assign (const octave::idx_vector& idx_i,
                    const octave::idx_vector& idx_j, const Sparse<T>& rhs)
 {
@@ -2253,6 +2265,19 @@ Sparse<T>::assign (const octave::idx_vector& idx_i,
     }
   else
     octave::err_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
+}
+
+template <typename T>
+OCTAVE_API
+void
+Sparse<T>::assign (const octave::idx_vector& idx_i,
+                   const octave::idx_vector& idx_j, const T& rhs)
+{
+  // FIXME: Converting the RHS and forwarding to the sparse matrix
+  // assignment function is simpler, but it might be good to have a
+  // specialization...
+
+  assign (idx_i, idx_j, Sparse<T> (1, 1, rhs));
 }
 
 // Can't use versions of these in Array.cc due to duplication of the

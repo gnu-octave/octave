@@ -31,6 +31,7 @@
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ov-complex.h"
+#include "ov-flt-complex.h"
 #include "ops.h"
 #include "xpow.h"
 
@@ -147,5 +148,8 @@ install_sm_cs_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_sparse_matrix, octave_complex, sm_cs);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_sparse_matrix, octave_complex,
+                         octave_sparse_complex_matrix);
+
+  INSTALL_ASSIGNCONV_TI (ti, octave_sparse_matrix, octave_float_complex,
                          octave_sparse_complex_matrix);
 }

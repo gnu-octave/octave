@@ -31,6 +31,7 @@
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 
@@ -172,6 +173,9 @@ install_sm_cm_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_sparse_matrix, octave_complex_matrix, sm_cm);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_sparse_matrix, octave_complex_matrix,
+                         octave_sparse_complex_matrix);
+
+  INSTALL_ASSIGNCONV_TI (ti, octave_sparse_matrix, octave_float_complex_matrix,
                          octave_sparse_complex_matrix);
 
   INSTALL_WIDENOP_TI (ti, octave_sparse_matrix, octave_complex_matrix,

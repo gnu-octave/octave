@@ -48,6 +48,7 @@ TEST_FILES += \
   %reldir%/return.tst \
   %reldir%/single-index.tst \
   %reldir%/slice.tst \
+  %reldir%/sparse-assign.tst \
   %reldir%/struct.tst \
   %reldir%/switch.tst \
   %reldir%/system.tst \

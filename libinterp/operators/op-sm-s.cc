@@ -31,6 +31,7 @@
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ov-scalar.h"
+#include "ov-float.h"
 #include "ops.h"
 #include "xpow.h"
 
@@ -121,15 +122,8 @@ DEFCATOP (sm_s, sparse_matrix, scalar)
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
 }
 
-DEFASSIGNOP (assign, sparse_matrix, scalar)
-{
-  octave_sparse_matrix& v1 = dynamic_cast<octave_sparse_matrix&> (a1);
-  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
-
-  SparseMatrix tmp (1, 1, v2.scalar_value ());
-  v1.assign (idx, tmp);
-  return octave_value ();
-}
+DEFNDASSIGNOP_FN (assign, sparse_matrix, scalar, scalar, assign);
+DEFNDASSIGNOP_FN (sgl_assign, sparse_matrix, float_scalar, scalar, assign);
 
 void
 install_sm_s_ops (octave::type_info& ti)
@@ -158,4 +152,6 @@ install_sm_s_ops (octave::type_info& ti)
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_scalar,
                        assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_float_scalar,
+                       sgl_assign);
 }

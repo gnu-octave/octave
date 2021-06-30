@@ -525,8 +525,13 @@ public:
 
   OCTAVE_API void assign (const octave::idx_vector& i, const Sparse<T>& rhs);
 
+  OCTAVE_API void assign (const octave::idx_vector& i, const T& rhs);
+
   OCTAVE_API void
   assign (const octave::idx_vector& i, const octave::idx_vector& j, const Sparse<T>& rhs);
+
+  OCTAVE_API void
+  assign (const octave::idx_vector& i, const octave::idx_vector& j, const T& rhs);
 
   OCTAVE_API void
   print_info (std::ostream& os, const std::string& prefix) const;

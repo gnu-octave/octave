@@ -179,59 +179,6 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
   return retval;
 }
 
-template <typename T>
-void
-octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
-{
-
-  octave_idx_type len = idx.length ();
-
-  // If we catch an indexing error in index_vector, we flag an error in
-  // index k.  Ensure it is the right value before each idx_vector call.
-  // Same variable as used in the for loop in the default case.
-
-  octave_idx_type k = 0;
-
-  try
-    {
-      switch (len)
-        {
-        case 1:
-          {
-            octave::idx_vector i = idx (0).index_vector ();
-
-            matrix.assign (i, rhs);
-
-            break;
-          }
-
-        case 2:
-          {
-            octave::idx_vector i = idx (0).index_vector ();
-
-            k = 1;
-            octave::idx_vector j = idx (1).index_vector ();
-
-            matrix.assign (i, j, rhs);
-
-            break;
-          }
-
-        default:
-          error ("sparse indexing needs 1 or 2 indices");
-        }
-    }
-  catch (octave::index_exception& ie)
-    {
-      // Rethrow to allow more info to be reported later.
-      ie.set_pos_if_unset (len, k+1);
-      throw;
-    }
-
-  // Invalidate matrix type.
-  typ.invalidate_type ();
-}
-
 template <typename MT>
 void
 octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)

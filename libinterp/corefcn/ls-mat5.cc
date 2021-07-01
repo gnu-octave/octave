@@ -2395,7 +2395,7 @@ save_mat5_binary_element (std::ostream& os,
           // + 12 bytes.  Reality is it must be larger again than that.
           std::string buf_str = buf.str ();
           uLongf srcLen = buf_str.length ();
-          uLongf destLen = srcLen * 101 / 100 + 12;
+          uLongf destLen = compressBound (srcLen);
           OCTAVE_LOCAL_BUFFER (char, out_buf, destLen);
 
           if (compress (reinterpret_cast<Bytef *> (out_buf), &destLen,

@@ -842,6 +842,12 @@ namespace octave
                 break;
               }
           }
+        catch (const quit_debug_exception&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            // FIXME: Does anything else need to happen here?
+          }
         catch (const std::bad_alloc&)
           {
             m_interpreter.recover_from_exception ();

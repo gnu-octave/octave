@@ -464,6 +464,139 @@ namespace octave
     return fname;
   }
 
+  int tree_evaluator::repl (void)
+  {
+    // The big loop.  Read, Eval, Print, Loop.  Normally user
+    // interaction at the command line in a terminal session, but we may
+    // also end up here when reading from a pipe or when stdin is
+    // connected to a file by the magic of input redirection.
+
+    int exit_status = 0;
+
+    // FIXME: should this choice be a command-line option?  Note that we
+    // intend that the push parser interface only be used for
+    // interactive sessions.
+
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+    static bool use_command_line_push_parser = true;
+#else
+    static bool use_command_line_push_parser = false;
+#endif
+
+    // The following logic is written as it is to allow easy transition
+    // to setting USE_COMMAND_LINE_PUSH_PARSER at run time and to
+    // simplify the logic of the main loop below by using the same
+    // base_parser::run interface for both push and pull parsers.
+
+    std::shared_ptr<base_parser> repl_parser;
+
+    if (m_interpreter.interactive ())
+      {
+        if (use_command_line_push_parser)
+          {
+            push_parser *pp = new push_parser (m_interpreter,
+                                               new input_reader (m_interpreter));
+            repl_parser = std::shared_ptr<base_parser> (pp);
+          }
+        else
+          {
+            parser *pp = new parser (new lexer (m_interpreter));
+            repl_parser = std::shared_ptr<base_parser> (pp);
+          }
+      }
+    else
+      {
+        parser *pp = new parser (new lexer (stdin, m_interpreter));
+        repl_parser = std::shared_ptr<base_parser> (pp);
+      }
+
+    do
+      {
+        try
+          {
+            unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+
+            repl_parser->reset ();
+
+            if (at_top_level ())
+              {
+                dbstep_flag (0);
+                reset_debug_state ();
+              }
+
+            exit_status = repl_parser->run ();
+
+            if (exit_status == 0)
+              {
+                std::shared_ptr<tree_statement_list>
+                  stmt_list = repl_parser->statement_list ();
+
+                if (stmt_list)
+                  {
+                    command_editor::increment_current_command_number ();
+
+                    eval (stmt_list, m_interpreter.interactive ());
+                  }
+                else if (repl_parser->at_end_of_input ())
+                  {
+                    exit_status = EOF;
+                    break;
+                  }
+              }
+          }
+        catch (const interrupt_exception&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interpreter.interactive ())
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            error_system& es = m_interpreter.get_error_system ();
+
+            es.save_exception (ee);
+            es.display_exception (ee, std::cerr);
+
+            if (m_interpreter.interactive ())
+              m_interpreter.recover_from_exception ();
+            else
+              {
+                // We should exit with a nonzero status.
+                exit_status = 1;
+                break;
+              }
+          }
+        catch (const std::bad_alloc&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (exit_status == 0);
+
+    if (exit_status == EOF)
+      {
+        if (m_interpreter.interactive ())
+          octave_stdout << "\n";
+
+        exit_status = 0;
+      }
+
+    return exit_status;
+  }
+
   octave_value_list
   tree_evaluator::eval_string (const std::string& eval_str, bool silent,
                                int& parse_status, int nargout)

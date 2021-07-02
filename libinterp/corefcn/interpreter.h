@@ -187,7 +187,7 @@ namespace octave
 
     bool in_top_level_repl (void) const
     {
-      return m_in_top_level_repl;
+      return m_evaluator.in_top_level_repl ();
     }
 
     bool initialized (void) const
@@ -559,9 +559,6 @@ namespace octave
     bool m_load_path_initialized;
 
     bool m_history_initialized;
-
-    // TRUE if we are in the top level interactive read eval print loop.
-    bool m_in_top_level_repl;
 
     bool m_cancel_quit;
 

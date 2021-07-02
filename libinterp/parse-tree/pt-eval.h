@@ -136,10 +136,10 @@ namespace octave
         m_silent_functions (false), m_string_fill_char (' '),
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
-        m_echo_files (), m_in_loop_command (false),
-        m_breaking (0), m_continuing (0), m_returning (0),
-        m_indexed_object (), m_index_list (), m_index_type (),
-        m_index_position (0), m_num_indices (0)
+        m_echo_files (), m_in_top_level_repl (false),
+        m_in_loop_command (false), m_breaking (0), m_continuing (0),
+        m_returning (0), m_indexed_object (), m_index_list (),
+        m_index_type (), m_index_position (0), m_num_indices (0)
     { }
 
     // No copying!
@@ -151,6 +151,10 @@ namespace octave
     ~tree_evaluator (void) = default;
 
     bool at_top_level (void) const;
+
+    int repl (void);
+
+    bool in_top_level_repl (void) const { return m_in_top_level_repl; }
 
     void eval (std::shared_ptr<tree_statement_list>& stmt_list,
                bool interactive);
@@ -851,6 +855,9 @@ namespace octave
     std::size_t m_echo_file_pos;
 
     std::map<std::string, bool> m_echo_files;
+
+    // TRUE if we are in the top level interactive read eval print loop.
+    bool m_in_top_level_repl;
 
     // TRUE means we are evaluating some kind of looping construct.
     bool m_in_loop_command;

@@ -1,6 +1,9 @@
 Summary of important user-visible changes for version 7 (yyyy-mm-dd):
 ----------------------------------------------------------------------
 
+- `ls-mat5.cc`: Avoid integer overflow in calculation of buffer size for zlib (bug #55427).
+- Move top-level REPL from interpreter to evaluator.
+- Avoid crash with `dbquit` when executing command in terminal from GUI (bug #60813).
 ### General improvements
 
 - Many functions in Octave can be called in a command form---no

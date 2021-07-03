@@ -62,6 +62,9 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `ind2sub`: Fix typo in "see also" section of docstring (bug #60842).
 - `mrdivide`, `mldivide`: Document that functions might return minimum norm solutions (bug #60839).
 - Fix scoping issue for handles to sibling nested functions (bug #60845).
+- `ls-mat5.cc`: Avoid integer overflow in calculation of buffer size for zlib (bug #55427).
+- Move top-level REPL from interpreter to evaluator.
+- Avoid crash with `dbquit` when executing command in terminal from GUI (bug #60813).
 
 ### GUI
 

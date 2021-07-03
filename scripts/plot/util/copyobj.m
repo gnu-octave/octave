@@ -203,9 +203,9 @@ endfunction
 %! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 
-%!testif HAVE_MAGICK; any (strcmp ("gnuplot", available_graphics_toolkits ()))
+%!testif HAVE_MAGICK; (have_window_system () && __have_feature__ ("QT_OFFSCREEN") && strcmp ("qt", graphics_toolkit ()))
 %! toolkit = graphics_toolkit ();
-%! graphics_toolkit ("gnuplot");
+%! graphics_toolkit ("qt");
 %! unwind_protect
 %!   h1 = figure ("visible", "off", "paperposition", [0.25, 2.5, 8.0, 6.0]);
 %!   x = 0:0.1:2*pi;
@@ -223,7 +223,6 @@ endfunction
 %!         "color", [0 0.5 0], "horizontalalignment", "center");
 %!   s1 = hdl2struct (h1);
 %!   h2 = struct2hdl (s1);
-%!   s2 = hdl2struct (h2);
 %!   png1 = [tempname() ".png"];
 %!   png2 = [tempname() ".png"];
 %!   unwind_protect

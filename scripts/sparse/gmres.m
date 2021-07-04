@@ -332,7 +332,7 @@ function [x_min, flag, relres, it, resvec] = ...
   u = feval (Afun, x_old, varargin{:});
   try
     warning ("error", "Octave:singular-matrix", "local");
-    prec_res = feval (M1fun, b - u, varargin{:}); # M1*(b-u)
+    prec_res = feval (M1fun, b - u, varargin{:});  # M1*(b-u)
     prec_res = feval (M2fun, prec_res, varargin{:});
     presn = norm (prec_res, 2);
     resvec(1) = presn;
@@ -365,7 +365,7 @@ function [x_min, flag, relres, it, resvec] = ...
     tmp = feval (M1fun, u, varargin{:});
     tmp = feval (M2fun, tmp, varargin{:});
     [V(:,restart_it + 1), H(1:restart_it + 1, restart_it)] = ...
-    mgorth (tmp, V(:,1:restart_it));
+      mgorth (tmp, V(:,1:restart_it));
     Y = (H(1:restart_it + 1, 1:restart_it) \ B(1:restart_it + 1));
     little_res = B(1:restart_it + 1) - ...
                  H(1:restart_it + 1, 1:restart_it) * Y(1:restart_it);
@@ -456,7 +456,7 @@ endfunction
 %! A = spdiags ([-ones(dim,1) 2*ones(dim,1) ones(dim,1)], [-1:1], dim, dim);
 %! b = ones (dim, 1);
 %! [x, flag, relres, iter, resvec] = ...
-%! gmres (A, b, 10, 1e-10, dim, @(x) x ./ diag (A), [], b)
+%!   gmres (A, b, 10, 1e-10, dim, @(x) x ./ diag (A), [], b)
 
 %!demo # simplest use
 %! n = 20;
@@ -468,24 +468,24 @@ endfunction
 %! [M1, M2] = ilu (A + 0.1 * eye (n));
 %! M = M1 * M2;
 %! x = gmres (A, b, [], [], n);
-%! x = gmres (A, b, restart, [], n); # gmres with restart
+%! x = gmres (A, b, restart, [], n);  # gmres with restart
 %! Afun = @(x) A * x;
 %! x = gmres (Afun, b, [], [], n);
-%! x = gmres (A, b,[], 1e-6, n, M); # gmres without restart
+%! x = gmres (A, b, [], 1e-6, n, M);  # gmres without restart
 %! x = gmres (A, b, [], 1e-6, n, M1, M2);
 %! Mfun = @(x) M \ x;
 %! x = gmres (Afun, b, [], 1e-6, n, Mfun);
 %! M1fun = @(x) M1 \ x;
 %! M2fun = @(x) M2 \ x;
 %! x = gmres (Afun, b, [], 1e-6, n, M1fun, M2fun);
-%! function y = Ap (A, x, p) # compute A^p * x
+%! function y = Ap (A, x, p)  # compute A^p * x
 %!    y = x;
 %!    for i = 1:p
 %!      y = A * y;
 %!    endfor
 %!  endfunction
 %! Afun = @(x, p) Ap (A, x, p);
-%! x = gmres (Afun, b, [], [], n, [], [], [], 2); # solution of A^2 * x = b
+%! x = gmres (Afun, b, [], [], n, [], [], [], 2);  # solution of A^2 * x = b
 
 %!demo
 %! n = 10;
@@ -493,7 +493,7 @@ endfunction
 %!     toeplitz (sparse (1, 2, -1, 1, n) * n / 2, ...
 %!     sparse (1, 2, 1, 1, n) * n / 2);
 %! b = A * ones (n, 1);
-%! [M1, M2] = ilu (A + 0.1 * eye (n)); # factorization of A perturbed
+%! [M1, M2] = ilu (A + 0.1 * eye (n));  # factorization of A perturbed
 %! M = M1 * M2;
 %!
 %! ## reference solution computed by gmres after one iteration
@@ -501,7 +501,7 @@ endfunction
 %! x_ref
 %!
 %! ## left preconditioning
-%! [x, fl] = gmres ( M \ A, M \ b, [], [], 1);
+%! [x, fl] = gmres (M \ A, M \ b, [], [], 1);
 %! x # compare x and x_ref
 
 %!test
@@ -536,7 +536,7 @@ endfunction
 
 %!test
 %! dim = 100;
-%! A = spdiags ([-ones(dim,1) 2*ones(dim,1) ones(dim,1)], [-1:1], dim, dim);
+%! A = spdiags ([-ones(dim,1), 2*ones(dim,1), ones(dim,1)], [-1:1], dim, dim);
 %! b = ones (dim, 1);
 %! [x, flag] = gmres (A, b, 10, 1e-10, dim, @(x) x ./ diag (A), [], b);
 %! assert (x, A\b, 1e-9*norm (x, Inf));
@@ -546,27 +546,27 @@ endfunction
 %!test
 %! dim = 100;
 %! A = spdiags ([[1./(2:2:2*(dim-1)) 0]; 1./(1:2:2*dim-1); ...
-%! [0 1./(2:2:2*(dim-1))]]', -1:1, dim, dim);
+%!               [0 1./(2:2:2*(dim-1))]]', -1:1, dim, dim);
 %! A = A'*A;
 %! b = rand (dim, 1);
-%! [x, resvec] = gmres (@(x) A*x, b, dim, 1e-10, dim,...
+%! [x, resvec] = gmres (@(x) A*x, b, dim, 1e-10, dim, ...
 %!                      @(x) x./diag (A), [], []);
 %! assert (x, A\b, 1e-9*norm (x, Inf));
-%! [x, flag] = gmres (@(x) A*x, b, dim, 1e-10, 1e6,...
+%! [x, flag] = gmres (@(x) A*x, b, dim, 1e-10, 1e5, ...
 %!                    @(x) diag (diag (A)) \ x, [], []);
 %! assert (x, A\b, 1e-9*norm (x, Inf));
-%! [x, flag] = gmres (@(x) A*x, b, dim, 1e-10, 1e6,...
+%! [x, flag] = gmres (@(x) A*x, b, dim, 1e-10, 1e5, ...
 %!                    @(x) x ./ diag (A), [], []);
 %! assert (x, A\b, 1e-7*norm (x, Inf));
 
 %!test
 %! ## gmres solves complex linear systems
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0])) + ...
-%! 1i * toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
+%!     1i * toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! [x, flag] = gmres(A, b, [], [], 5);
 %! assert (flag, 0);
-%! assert (x, ones (5, 1), -1e-06);
+%! assert (x, ones (5, 1), -1e-6);
 
 %!test
 %! ## Maximum number of iteration reached
@@ -580,8 +580,8 @@ endfunction
 %! AA = 2 * eye (3);
 %! bb = ones (3, 1);
 %! I = eye (3);
-%! M = [1 0 0; 0 1 0; 0 0 0]; # the last row is zero
-%! [x, flag] = gmres(@(y) AA * y, bb, [], [], [], @(y) M \ y, @(y) y);
+%! M = [1 0 0; 0 1 0; 0 0 0];  # the last row is zero
+%! [x, flag] = gmres (@(y) AA * y, bb, [], [], [], @(y) M \ y, @(y) y);
 %! assert (flag, 2);
 
 %!test
@@ -600,7 +600,7 @@ endfunction
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = A * ones (5, 1);
 %! [x, flag, relres, iter] = gmres (A, b, [], [], [], [], [], ...
-%! ones (5, 1) + 1e-8);
+%!                                  ones (5, 1) + 1e-8);
 %! assert (iter, [0, 0]);
 
 %!test

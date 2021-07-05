@@ -337,6 +337,10 @@ namespace octave
 
   void main_window::adopt_editor_widget (void)
   {
+    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
+
+    qt_interpreter_events *qt_link = interp_qobj->qt_link ();
+
 #if defined (HAVE_QSCINTILLA)
     file_editor *editor = new file_editor (this, m_octave_qobj);
 
@@ -401,10 +405,6 @@ namespace octave
 
     connect (m_file_browser_window, &files_dock_widget::file_renamed_signal,
              editor, &file_editor::handle_file_renamed);
-
-    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
-
-    qt_interpreter_events *qt_link = interp_qobj->qt_link ();
 
     // Signals for removing/renaming files/dirs in the terminal window
     connect (qt_link, &qt_interpreter_events::file_renamed_signal,

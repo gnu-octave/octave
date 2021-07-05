@@ -1098,13 +1098,14 @@ namespace octave
       {
         octave_value value = varval (sym);
 
-        if (value.is_defined ())
-          {
-            symbol_info syminf (sym.name (), value, sym.is_formal (),
-                                is_global (sym), is_persistent (sym));
+        if (! value.is_defined ()
+            || (is_user_fcn_frame () && sym.frame_offset () > 0))
+          continue;
 
-            symbol_stats.append (syminf);
-          }
+        symbol_info syminf (sym.name (), value, sym.is_formal (),
+                            is_global (sym), is_persistent (sym));
+
+        symbol_stats.append (syminf);
       }
 
     return symbol_stats;

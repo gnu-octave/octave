@@ -5173,7 +5173,8 @@ The following command sequences are available:
 
 @table @code
 @item %a
-Prints attributes of variables (g=global, p=persistent, f=formal parameter).
+Prints attributes of variables (c=complex, s=sparse, f=formal parameter,
+g=global, p=persistent).
 
 @item %b
 Prints number of bytes occupied by variables.
@@ -5220,7 +5221,9 @@ the left of the specified balance column.
 
 The default format is:
 
-@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@backslashchar{}n"}
+@example
+"  %la:5; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@backslashchar{}n"
+@end example
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

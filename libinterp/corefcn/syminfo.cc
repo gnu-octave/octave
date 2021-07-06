@@ -109,13 +109,14 @@ namespace octave
               {
               case 'a':
                 {
-                  char tmp[5];
+                  char tmp[6];
 
                   tmp[0] = (m_is_complex ? 'c' : ' ');
-                  tmp[1] = (m_is_formal ? 'f' : ' ');
-                  tmp[2] = (m_is_global ? 'g' : ' ');
-                  tmp[3] = (m_is_persistent ? 'p' : ' ');
-                  tmp[4] = 0;
+                  tmp[1] = (m_is_sparse ? 's' : ' ');
+                  tmp[2] = (m_is_formal ? 'f' : ' ');
+                  tmp[3] = (m_is_global ? 'g' : ' ');
+                  tmp[4] = (m_is_persistent ? 'p' : ' ');
+                  tmp[5] = 0;
 
                   os << tmp;
                 }
@@ -393,8 +394,8 @@ namespace octave
     for (std::size_t i = 0; i < param_string.length (); i++)
       param_length(i) = param_names(i).length ();
 
-    // The attribute column needs size 5.
-    param_length(pos_a) = 5;
+    // The attribute column needs size 6.
+    param_length(pos_a) = 6;
 
     // Calculating necessary spacing for name column,
     // bytes column, elements column and class column

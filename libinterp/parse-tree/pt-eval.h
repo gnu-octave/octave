@@ -133,7 +133,7 @@ namespace octave
         m_call_stack (*this), m_profiler (), m_debug_frame (0),
         m_debug_mode (false), m_quiet_breakpoint_flag (false),
         m_debugger_stack (), m_exit_status (0), m_max_recursion_depth (256),
-        m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
+        m_whos_line_format ("  %la:5; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
         m_silent_functions (false), m_string_fill_char (' '), m_PS4 ("+ "),
         m_dbstep_flag (0), m_break_on_next_stmt (false), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),

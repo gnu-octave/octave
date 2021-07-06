@@ -76,8 +76,8 @@ constants in array expressions with leading zeros so that they use the
 same number of digits for each value such as
 `[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
-- For Octave on Windows OS, the minimum required version of the Windows
-API is now 6.1 (Windows 7 or newer).
+- The `whos` function now displays an additional attribute 's' when
+the variable is a sparse type.
 
 - As part of GSoC 2020, Abdallah K. Elshamy implemented the
 `jsondecode` and `jsonencode` functions to read and write JSON data.
@@ -86,6 +86,9 @@ API is now 6.1 (Windows 7 or newer).
 where $DATA is a platform dependent location for (roaming) user data
 files (e.g., ${XDG_DATA_HOME} or, if that is not set, ~/.local/share on
 Unix-like operating systems or %APPDATA% on Windows).
+
+- For Octave on Windows OS, the minimum required version of the Windows
+API is now 6.1 (Windows 7 or newer).
 
 - The non-re-entrant version of the QHull library "libqhull" was
 deprecated upstream.  Octave now requires the re-entrant version of

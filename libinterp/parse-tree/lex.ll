@@ -1817,8 +1817,6 @@ ANY_INCLUDING_NL (.|{NL})
 "=" {
     curr_lexer->lexer_debug ("=");
 
-    curr_lexer->maybe_mark_previous_token_as_variable ();
-
     return curr_lexer->handle_op ('=');
   }
 
@@ -2223,6 +2221,12 @@ namespace octave
     // The closest paren, brace, or bracket nesting is not an object
     // index.
     m_looking_at_object_index.push_front (false);
+
+    // Provide an initial set to store variables at the top-level.
+    // Don't clear this one when resetting lexical_feedback state.
+    // It should persist since the top-level scope does.  Hmm maybe
+    // we should just use the symbol scope object for this job?
+    m_pending_local_variables.push_front (std::set<std::string> ());
   }
 
   void
@@ -2280,7 +2284,9 @@ namespace octave
     while (! m_parsed_function_name.empty ())
       m_parsed_function_name.pop ();
 
-    m_pending_local_variables.clear ();
+    while (m_pending_local_variables.size () > 1)
+      m_pending_local_variables.pop_front ();
+
     m_symtab_context.clear ();
     m_nesting_level.reset ();
     m_tokens.clear ();
@@ -2353,19 +2359,34 @@ namespace octave
   }
 
   void
-  lexical_feedback::maybe_mark_previous_token_as_variable (void)
+  lexical_feedback::mark_as_variable (const std::string& nm)
   {
-    token *tok = m_tokens.front ();
-
-    if (tok && tok->isstring ())
-      m_pending_local_variables.insert (tok->text ());
+    auto& vars = m_pending_local_variables.front ();
+    vars.insert (nm);
   }
 
   void
   lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
   {
-    for (const auto& var : lst)
-      m_pending_local_variables.insert (var);
+    auto& vars = m_pending_local_variables.front ();
+    for (const auto& nm : lst)
+      vars.insert (nm);
+  }
+
+  bool
+  lexical_feedback::is_variable (const std::string& nm) const
+  {
+    if (m_interpreter.at_top_level () && m_interpreter.is_variable (nm))
+      return true;
+
+    // Search current scope, then parents.
+    for (const auto& vars : m_pending_local_variables)
+      {
+        if (vars.find (nm) != vars.end ())
+          return true;
+      }
+
+    return false;
   }
 }
 
@@ -2654,15 +2675,6 @@ namespace octave
       }
 
     return retval;
-  }
-
-  bool
-  base_lexer::is_variable (const std::string& name)
-  {
-    return ((m_interpreter.at_top_level ()
-             && m_interpreter.is_variable (name))
-            || (m_pending_local_variables.find (name)
-                != m_pending_local_variables.end ()));
   }
 
   int

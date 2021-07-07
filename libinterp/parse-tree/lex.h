@@ -347,10 +347,10 @@ namespace octave
 
     bool previous_token_may_be_command (void) const;
 
-    void maybe_mark_previous_token_as_variable (void);
-
     void mark_as_variable (const std::string& nm);
     void mark_as_variables (const std::list<std::string>& lst);
+
+    bool is_variable (const std::string& nm) const;
 
     interpreter& m_interpreter;
 
@@ -515,8 +515,10 @@ namespace octave
     // current_function_level > 0
     std::stack<bool> m_parsed_function_name;
 
-    // set of identifiers that might be local variable names.
-    std::set<std::string> m_pending_local_variables;
+    // A list of sets of identifiers that might be local variable names.
+    // The front of the list corresponds to the current scope.  The next
+    // element is for the parent scope, etc.
+    std::list<std::set<std::string>> m_pending_local_variables;
 
     // Track current symbol table scope and context.
     symbol_table_context m_symtab_context;
@@ -656,8 +658,6 @@ namespace octave
     bool looking_at_space (void);
 
     bool inside_any_object_index (void);
-
-    bool is_variable (const std::string& name);
 
     int make_keyword_token (const std::string& s);
 

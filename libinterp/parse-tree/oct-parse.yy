@@ -1451,7 +1451,8 @@ param_list_beg  : '('
                     if (lexer.m_looking_at_function_handle)
                       {
                         // Will get a real name later.
-                        lexer.m_symtab_context.push (octave::symbol_scope ("parser:param_lsit_beg"));
+                        lexer.m_symtab_context.push (octave::symbol_scope ("parser:param_list_beg"));
+                        lexer.m_pending_local_variables.push_front (std::set<std::string> ());
                         lexer.m_looking_at_function_handle--;
                         lexer.m_looking_at_anon_fcn_args = true;
                       }
@@ -1607,6 +1608,7 @@ push_script_symtab : // empty
                     // This scope may serve as the parent scope for local
                     // functions in classdef files..
                     lexer.m_symtab_context.push (octave::symbol_scope ("parser:push_script_symtab"));
+                    lexer.m_pending_local_variables.push_front (std::set<std::string> ());
                   }
                 ;
 
@@ -1628,6 +1630,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
 
                         // Unused symbol table context.
                         lexer.m_symtab_context.pop ();
+                        lexer.m_pending_local_variables.pop_front ();
 
                         delete $3;
                       }
@@ -1650,6 +1653,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
 
                     // Unused symbol table context.
                     lexer.m_symtab_context.pop ();
+                    lexer.m_pending_local_variables.pop_front ();
 
                     parser.finish_classdef_file ($3, $6);
 
@@ -1952,6 +1956,7 @@ classdef_beg    : CLASSDEF
 
                     // Create invalid parent scope.
                     lexer.m_symtab_context.push (octave::symbol_scope ());
+                    lexer.m_pending_local_variables.push_front (std::set<std::string> ());
                     lexer.m_parsing_classdef = true;
                     lexer.m_parsing_classdef_decl = true;
                     lexer.m_classdef_element_names_are_keywords = true;
@@ -2824,6 +2829,7 @@ namespace octave
 
     // Will get a real name later.
     m_lexer.m_symtab_context.push (symbol_scope ("parser:push_fcn_symtab"));
+    m_lexer.m_pending_local_variables.push_front (std::set<std::string> ());
     m_function_scopes.push (m_lexer.m_symtab_context.curr_scope ());
 
     if (! m_lexer.m_reading_script_file && m_curr_fcn_depth == 0
@@ -2938,6 +2944,7 @@ namespace octave
     symbol_scope parent_scope = m_lexer.m_symtab_context.parent_scope ();
 
     m_lexer.m_symtab_context.pop ();
+    m_lexer.m_pending_local_variables.pop_front ();
 
     expr->set_print_flag (false);
 
@@ -3428,6 +3435,8 @@ namespace octave
           {
             tree_expression *tmp = lhs->remove_front ();
 
+            m_lexer.mark_as_variable (tmp->name ());
+
             retval = new tree_simple_for_command (parfor, tmp, expr, maxproc,
                                                   body, lc, tc, l, c);
 
@@ -3444,9 +3453,11 @@ namespace octave
 
                 bison_error ("invalid syntax for parfor statement");
               }
-            else
-              retval = new tree_complex_for_command (lhs, expr, body,
-                                                     lc, tc, l, c);
+
+            m_lexer.mark_as_variables (lhs->variable_names ());
+
+            retval = new tree_complex_for_command (lhs, expr, body,
+                                                   lc, tc, l, c);
           }
       }
     else
@@ -3769,6 +3780,8 @@ namespace octave
 
         delete lhs;
 
+        m_lexer.mark_as_variable (tmp->name ());
+
         return new tree_simple_assignment (tmp, rhs, false, l, c, t);
       }
     else
@@ -3788,6 +3801,8 @@ namespace octave
                 return nullptr;
               }
           }
+
+        m_lexer.mark_as_variables (names);
 
         return new tree_multi_assignment (lhs, rhs, false, l, c);
       }
@@ -3816,6 +3831,7 @@ namespace octave
                                 cmds, m_lexer.m_help_text);
 
     m_lexer.m_symtab_context.pop ();
+    m_lexer.m_pending_local_variables.pop_front ();
     m_lexer.m_help_text = "";
 
     sys::time now;
@@ -4216,6 +4232,7 @@ namespace octave
   base_parser::recover_from_parsing_function (void)
   {
     m_lexer.m_symtab_context.pop ();
+    m_lexer.m_pending_local_variables.pop_front ();
 
     if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
         && ! m_parsing_subfunctions)
@@ -4251,6 +4268,7 @@ namespace octave
     tree_classdef *retval = nullptr;
 
     m_lexer.m_symtab_context.pop ();
+    m_lexer.m_pending_local_variables.pop_front ();
 
     std::string cls_name = id->name ();
 

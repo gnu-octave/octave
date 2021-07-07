@@ -90,6 +90,12 @@ is stored in the audio file.
 
   octave::unwind_action close_open_file ([=] () { sf_close (file); });
 
+  // FIXME: It would be nicer to use a C++ expandable data container and
+  // read a file of unknown length into memory in chunks and determine the
+  // number of samples after reading.  See bug #60888.
+  if (info.frames == SF_COUNT_MAX)
+    error ("audioread: malformed header does not specify number of samples");
+
   OCTAVE_LOCAL_BUFFER (double, data, info.frames * info.channels);
 
   sf_read_double (file, data, info.frames * info.channels);
@@ -624,11 +630,20 @@ Audio bit rate.  Unused, only present for compatibility with @sc{matlab}.
   result.assign ("CompressionMethod", "");
   result.assign ("NumChannels", info.channels);
   result.assign ("SampleRate", info.samplerate);
-  result.assign ("TotalSamples", info.frames);
+  double dframes;
+  if (info.frames != SF_COUNT_MAX)
+    dframes = info.frames;
+  else
+    dframes = -1;
+  result.assign ("TotalSamples", dframes);
 
-  double dframes = info.frames;
-  double drate = info.samplerate;
-  result.assign ("Duration", dframes / drate);
+  if (dframes != -1)
+    {
+      double drate = info.samplerate;
+      result.assign ("Duration", dframes / drate);
+    }
+  else
+    result.assign ("Duration", -1);
 
   int bits;
   switch (info.format & SF_FORMAT_SUBMASK)

@@ -227,9 +227,9 @@ endfunction
 %!   png1 = [tempname() ".png"];
 %!   png2 = [tempname() ".png"];
 %!   unwind_protect
-%!     print (h1, png1);
+%!     print (h1, "-r100", png1);
 %!     [img1, map1, alpha1] = imread (png1);
-%!     print (h2, png2);
+%!     print (h2, "-r100", png2);
 %!     [img2, map2, alpha2] = imread (png2);
 %!   unwind_protect_cleanup
 %!     unlink (png1);

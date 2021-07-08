@@ -90,7 +90,9 @@ function hgsave (h, filename, fmt = "-binary")
 endfunction
 
 
-%!testif HAVE_MAGICK; (have_window_system () && __have_feature__ ("QT_OFFSCREEN") && strcmp ("qt", graphics_toolkit ())) || strcmp ("gnuplot", graphics_toolkit ());
+%!testif HAVE_MAGICK; (have_window_system () && __have_feature__ ("QT_OFFSCREEN") && any (strcmp ("qt", available_graphics_toolkits ())));
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("qt");
 %! h1 = figure ("visible", "off", "paperposition", [0.25, 2.5, 8.0, 6.0]);
 %! unwind_protect
 %!   x = 0:0.1:2*pi;
@@ -127,6 +129,7 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (h1);
 %!   close (h2);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 ## Test input validation

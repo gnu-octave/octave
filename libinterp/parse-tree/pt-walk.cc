@@ -31,9 +31,17 @@
 
 namespace octave
 {
-  void tree_walker::visit_anon_fcn_handle (tree_anon_fcn_handle&)
+  void tree_walker::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
   {
-    // FIXME?
+    tree_parameter_list *parameter_list = afh.parameter_list ();
+
+    if (parameter_list)
+      parameter_list->accept (*this);
+
+    tree_expression *expression = afh.expression ();
+
+    if (expression)
+      expression->accept (*this);
   }
 
   void tree_walker::visit_argument_list (tree_argument_list& lst)
@@ -49,34 +57,78 @@ namespace octave
       }
   }
 
-  void tree_walker::visit_arguments_block (tree_arguments_block&)
+  void tree_walker::visit_arguments_block (tree_arguments_block& blk)
   {
-    // FIXME?
+    tree_args_block_attribute_list *attribute_list = blk.attribute_list ();
+
+    if (attribute_list)
+      attribute_list->accept (*this);
+
+    tree_args_block_validation_list *validation_list = blk.validation_list ();
+
+    if (validation_list)
+      validation_list->accept (*this);
   }
 
-  void tree_walker::visit_args_block_attribute_list (tree_args_block_attribute_list&)
+  void tree_walker::visit_args_block_attribute_list (tree_args_block_attribute_list& lst)
   {
-    // FIXME?
+    tree_identifier * attribute = lst.attribute ();
+
+    if (attribute)
+      attribute->accept (*this);
   }
 
-  void tree_walker::visit_args_block_validation_list (tree_args_block_validation_list&)
+  void tree_walker::visit_args_block_validation_list (tree_args_block_validation_list& lst)
   {
-    // FIXME?
+    for (auto *elt : lst)
+      {
+        if (elt)
+          elt->accept (*this);
+      }
   }
 
-  void tree_walker::visit_arg_validation (tree_arg_validation&)
+  void tree_walker::visit_arg_validation (tree_arg_validation& val)
   {
-    // FIXME?
+    tree_expression *arg_name = val.identifier_expression ();
+
+    if (arg_name)
+      arg_name->accept (*this);
+
+    tree_arg_size_spec *size_spec = val.size_spec ();
+
+    if (size_spec)
+      size_spec->accept (*this);
+
+    tree_identifier *class_name = val.class_name ();
+
+    if (class_name)
+      class_name->accept (*this);
+
+    tree_arg_validation_fcns *validation_fcns = val.validation_fcns ();
+
+    if (validation_fcns)
+      validation_fcns->accept (*this);
+
+    tree_expression *default_value = val.initializer_expression ();
+
+    if (default_value)
+      default_value->accept (*this);
   }
 
-  void tree_walker::visit_arg_size_spec (tree_arg_size_spec&)
+  void tree_walker::visit_arg_size_spec (tree_arg_size_spec& spec)
   {
-    // FIXME?
+    tree_argument_list *size_args = spec.size_args ();
+
+    if (size_args)
+      size_args->accept (*this);
   }
 
-  void tree_walker::visit_arg_validation_fcns (tree_arg_validation_fcns&)
+  void tree_walker::visit_arg_validation_fcns (tree_arg_validation_fcns& spec)
   {
-    // FIXME?
+    tree_argument_list *fcn_args = spec.fcn_args ();
+
+    if (fcn_args)
+      fcn_args->accept (*this);
   }
 
   void tree_walker::visit_binary_expression (tree_binary_expression& expr)
@@ -553,96 +605,184 @@ namespace octave
 
   void tree_walker::visit_superclass_ref (tree_superclass_ref&)
   {
-    // FIXME?
+    // Nothing to do.
   }
 
   void tree_walker::visit_metaclass_query (tree_metaclass_query&)
   {
-    // FIXME?
+    // Nothing to do.
   }
 
-  void tree_walker::visit_classdef_attribute (tree_classdef_attribute&)
+  void tree_walker::visit_classdef_attribute (tree_classdef_attribute& attr)
   {
-    // FIXME?
+    tree_identifier *id = attr.ident ();
+
+    if (id)
+      id->accept (*this);
+
+    tree_expression *expr = attr.expression ();
+
+    if (expr)
+      expr->accept (*this);
   }
 
-  void tree_walker::visit_classdef_attribute_list (tree_classdef_attribute_list&)
+  void tree_walker::visit_classdef_attribute_list (tree_classdef_attribute_list& lst)
   {
-    // FIXME?
+    for (auto *elt : lst)
+      {
+        if (elt)
+          elt->accept (*this);
+      }
   }
 
   void tree_walker::visit_classdef_superclass (tree_classdef_superclass&)
   {
-    // FIXME?
+    // Nothing to do.
   }
 
-  void tree_walker::visit_classdef_superclass_list (tree_classdef_superclass_list&)
+  void tree_walker::visit_classdef_superclass_list (tree_classdef_superclass_list& lst)
   {
-    // FIXME?
+    for (auto *elt : lst)
+      {
+        if (elt)
+          elt->accept (*this);
+      }
   }
 
   void tree_walker::visit_classdef_property (tree_classdef_property&)
   {
-    // FIXME?
+    // FIXME: Should we operate on the tree_arg_validation object or the
+    // identifier and expression parts separately?
   }
 
-  void tree_walker::visit_classdef_property_list (tree_classdef_property_list&)
+  void tree_walker::visit_classdef_property_list (tree_classdef_property_list& lst)
   {
-    // FIXME?
+    for (auto *elt : lst)
+      {
+        if (elt)
+          elt->accept (*this);
+      }
   }
 
-  void tree_walker::visit_classdef_properties_block (tree_classdef_properties_block&)
+  void tree_walker::visit_classdef_properties_block (tree_classdef_properties_block& blk)
   {
-    // FIXME?
+    tree_classdef_property_list *property_list = blk.element_list ();
+
+    if (property_list)
+      property_list->accept (*this);
   }
 
-  void tree_walker::visit_classdef_methods_list (tree_classdef_methods_list&)
+  void tree_walker::visit_classdef_methods_list (tree_classdef_methods_list& lst)
   {
-    // FIXME?
+    for (auto ov_meth : lst)
+      {
+        octave_user_function *meth = ov_meth.user_function_value ();
+
+        if (meth)
+          meth->accept (*this);
+      }
   }
 
-  void tree_walker::visit_classdef_methods_block (tree_classdef_methods_block&)
+  void tree_walker::visit_classdef_methods_block (tree_classdef_methods_block& blk)
   {
-    // FIXME?
+    tree_classdef_methods_list *methods_list = blk.element_list ();
+
+    if (methods_list)
+      methods_list->accept (*this);
   }
 
   void tree_walker::visit_classdef_event (tree_classdef_event&)
   {
-    // FIXME?
+    // Nothing to do.
   }
 
-  void tree_walker::visit_classdef_events_list (tree_classdef_events_list&)
+  void tree_walker::visit_classdef_events_list (tree_classdef_events_list& lst)
   {
-    // FIXME?
+    for (auto *elt : lst)
+      {
+        if (elt)
+          elt->accept (*this);
+      }
   }
 
-  void tree_walker::visit_classdef_events_block (tree_classdef_events_block&)
+  void tree_walker::visit_classdef_events_block (tree_classdef_events_block& blk)
   {
-    // FIXME?
+    tree_classdef_events_list *events_list = blk.element_list ();
+
+    if (events_list)
+      events_list->accept (*this);
   }
 
   void tree_walker::visit_classdef_enum (tree_classdef_enum&)
   {
-    // FIXME?
+    // Nothing to do.
   }
 
-  void tree_walker::visit_classdef_enum_list (tree_classdef_enum_list&)
+  void tree_walker::visit_classdef_enum_list (tree_classdef_enum_list& lst)
   {
-    // FIXME?
+    for (auto *elt : lst)
+      {
+        if (elt)
+          elt->accept (*this);
+      }
   }
 
-  void tree_walker::visit_classdef_enum_block (tree_classdef_enum_block&)
+  void tree_walker::visit_classdef_enum_block (tree_classdef_enum_block& blk)
   {
-    // FIXME?
+    tree_classdef_enum_list *enum_list = blk.element_list ();
+
+    if (enum_list)
+      enum_list->accept (*this);
   }
 
-  void tree_walker::visit_classdef_body (tree_classdef_body&)
+  void tree_walker::visit_classdef_body (tree_classdef_body& body)
   {
-    // FIXME?
+    for (auto *elt : body.properties_list ())
+      {
+        if (elt)
+          elt->accept (*this);
+      }
+
+    for (auto *elt : body.methods_list ())
+      {
+        if (elt)
+          elt->accept (*this);
+      }
+
+
+    for (auto *elt : body.events_list ())
+      {
+        if (elt)
+          elt->accept (*this);
+      }
+
+    for (auto *elt : body.enum_list ())
+      {
+        if (elt)
+          elt->accept (*this);
+      }
   }
 
-  void tree_walker::visit_classdef (tree_classdef&)
+  void tree_walker::visit_classdef (tree_classdef& cdef)
   {
-    // FIXME?
+    tree_classdef_attribute_list *attribute_list = cdef.attribute_list ();
+
+    if (attribute_list)
+      attribute_list->accept (*this);
+
+    tree_identifier *ident = cdef.ident ();
+
+    if (ident)
+      ident->accept (*this);
+
+    tree_classdef_superclass_list *superclass_list = cdef.superclass_list ();
+
+    if (superclass_list)
+      superclass_list->accept (*this);
+
+    tree_classdef_body *body = cdef.body ();
+
+    if (body)
+      body->accept (*this);
   }
 }

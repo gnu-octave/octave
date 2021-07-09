@@ -60,6 +60,8 @@ namespace octave
       delete m_size_args;
     }
 
+    tree_argument_list * size_args (void) { return m_size_args; }
+
     void accept (tree_walker& tw)
     {
       tw.visit_arg_size_spec (*this);
@@ -88,6 +90,8 @@ namespace octave
     {
       delete m_fcn_args;
     }
+
+    tree_argument_list * fcn_args (void) { return m_fcn_args; }
 
     void accept (tree_walker& tw)
     {
@@ -160,7 +164,8 @@ namespace octave
     tree_expression *m_default_value;
   };
 
-  class tree_args_block_validation_list : public base_list<tree_arg_validation *>
+  class tree_args_block_validation_list
+    : public base_list<tree_arg_validation *>
   {
   public:
 
@@ -193,8 +198,8 @@ namespace octave
   {
   public:
 
-    tree_args_block_attribute_list (tree_identifier *id = nullptr)
-      : m_id (id)
+    tree_args_block_attribute_list (tree_identifier *attr = nullptr)
+      : m_attr (attr)
     { }
 
     // No copying!
@@ -205,8 +210,10 @@ namespace octave
 
     ~tree_args_block_attribute_list (void)
     {
-      delete m_id;
+      delete m_attr;
     }
+
+    tree_identifier * attribute (void) { return m_attr; }
 
     void accept (tree_walker& tw)
     {
@@ -215,7 +222,7 @@ namespace octave
 
   private:
 
-    tree_identifier *m_id;
+    tree_identifier *m_attr;
   };
 
   // Arguments block.
@@ -245,6 +252,16 @@ namespace octave
 
       delete m_lead_comm;
       delete m_trail_comm;
+    }
+
+    tree_args_block_attribute_list * attribute_list (void)
+    {
+      return m_attr_list;
+    }
+
+    tree_args_block_validation_list * validation_list (void)
+    {
+      return m_validation_list;
     }
 
     comment_list * leading_comment (void) { return m_lead_comm; }

@@ -269,10 +269,10 @@ namespace octave
   {
   public:
 
-    tree_classdef_element (tree_classdef_attribute_list *a,
-                           base_list<T> *elist, comment_list *lc,
-                           comment_list *tc, int l = -1, int c = -1)
-      : tree (l, c), m_attr_list (a), m_elt_list (elist),
+    tree_classdef_element (tree_classdef_attribute_list *a, T *elt_list,
+                           comment_list *lc, comment_list *tc,
+                           int l = -1, int c = -1)
+      : tree (l, c), m_attr_list (a), m_elt_list (elt_list),
         m_lead_comm (lc), m_trail_comm (tc)
     { }
 
@@ -292,7 +292,7 @@ namespace octave
 
     tree_classdef_attribute_list * attribute_list (void) { return m_attr_list; }
 
-    base_list<T> * element_list (void) { return m_elt_list; }
+    T * element_list (void) { return m_elt_list; }
 
     comment_list * leading_comment (void) { return m_lead_comm; }
 
@@ -306,7 +306,7 @@ namespace octave
     tree_classdef_attribute_list *m_attr_list;
 
     // The list of objects contained in this block.
-    base_list<T> *m_elt_list;
+    T *m_elt_list;
 
     // Comments preceding the token marking the beginning of the block.
     comment_list *m_lead_comm;
@@ -381,7 +381,7 @@ namespace octave
   };
 
   class tree_classdef_properties_block
-    : public tree_classdef_element<tree_classdef_property *>
+    : public tree_classdef_element<tree_classdef_property_list>
   {
   public:
 
@@ -389,7 +389,7 @@ namespace octave
                                     tree_classdef_property_list *plist,
                                     comment_list *lc, comment_list *tc,
                                     int l = -1, int c = -1)
-      : tree_classdef_element<tree_classdef_property *> (a, plist, lc, tc, l, c)
+      : tree_classdef_element<tree_classdef_property_list> (a, plist, lc, tc, l, c)
     { }
 
     // No copying!
@@ -433,7 +433,8 @@ namespace octave
     }
   };
 
-  class tree_classdef_methods_block : public tree_classdef_element<octave_value>
+  class tree_classdef_methods_block
+    : public tree_classdef_element<tree_classdef_methods_list>
   {
   public:
 
@@ -441,7 +442,7 @@ namespace octave
                                  tree_classdef_methods_list *mlist,
                                  comment_list *lc, comment_list *tc,
                                  int l = -1, int c = -1)
-      : tree_classdef_element<octave_value> (a, mlist, lc, tc, l, c)
+      : tree_classdef_element<tree_classdef_methods_list> (a, mlist, lc, tc, l, c)
     { }
 
     // No copying!
@@ -527,7 +528,7 @@ namespace octave
   };
 
   class tree_classdef_events_block
-    : public tree_classdef_element<tree_classdef_event *>
+    : public tree_classdef_element<tree_classdef_events_list>
   {
   public:
 
@@ -535,7 +536,7 @@ namespace octave
                                 tree_classdef_events_list *elist,
                                 comment_list *lc, comment_list *tc,
                                 int l = -1, int c = -1)
-      : tree_classdef_element<tree_classdef_event *> (a, elist, lc, tc, l, c)
+      : tree_classdef_element<tree_classdef_events_list> (a, elist, lc, tc, l, c)
     { }
 
     // No copying!
@@ -624,7 +625,7 @@ namespace octave
   };
 
   class tree_classdef_enum_block
-    : public tree_classdef_element<tree_classdef_enum *>
+    : public tree_classdef_element<tree_classdef_enum_list>
   {
   public:
 
@@ -632,7 +633,7 @@ namespace octave
                               tree_classdef_enum_list *elist,
                               comment_list *lc, comment_list *tc,
                               int l = -1, int c = -1)
-      : tree_classdef_element<tree_classdef_enum *> (a, elist, lc, tc, l, c)
+      : tree_classdef_element<tree_classdef_enum_list> (a, elist, lc, tc, l, c)
     { }
 
     // No copying!

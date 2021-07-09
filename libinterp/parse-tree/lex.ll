@@ -183,7 +183,19 @@ and after the nested call.
      }                                                                  \
    while (0)
 
-#define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK)                         \
+#if 0
+// Use the following to handle computed assignment operators
+// (+=, -=, etc.) in word list commands in a way that is compatible
+// with Matlab.  However, that will also make it impossible to use
+// these operators with a space before them:
+//
+//   x = 1;
+//   x+=2;   ## ok
+//   x+= 2;  ## ok
+//   x +=2;  ## error: invalid use of symbol as both variable and command
+//   x += 2; ## error: invalid use of symbol as both variable and command
+//
+#  define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK)                       \
    do                                                                   \
      {                                                                  \
        curr_lexer->lexer_debug (PATTERN);                               \
@@ -198,6 +210,10 @@ and after the nested call.
          return curr_lexer->handle_op (TOK, false, false);              \
      }                                                                  \
    while (0)
+#else
+#  define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK)                       \
+   return curr_lexer->handle_op (TOK, false, false)
+#endif
 
 #define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT)                           \
    do                                                                   \
@@ -2221,12 +2237,6 @@ namespace octave
     // The closest paren, brace, or bracket nesting is not an object
     // index.
     m_looking_at_object_index.push_front (false);
-
-    // Provide an initial set to store variables at the top-level.
-    // Don't clear this one when resetting lexical_feedback state.
-    // It should persist since the top-level scope does.  Hmm maybe
-    // we should just use the symbol scope object for this job?
-    m_pending_local_variables.push_front (std::set<std::string> ());
   }
 
   void
@@ -2283,9 +2293,6 @@ namespace octave
 
     while (! m_parsed_function_name.empty ())
       m_parsed_function_name.pop ();
-
-    while (m_pending_local_variables.size () > 1)
-      m_pending_local_variables.pop_front ();
 
     m_symtab_context.clear ();
     m_nesting_level.reset ();
@@ -2348,6 +2355,24 @@ namespace octave
     return tok ? tok->iskeyword () : false;
   }
 
+  void
+  lexical_feedback::mark_as_variable (const std::string& nm)
+  {
+    symbol_scope scope = m_symtab_context.curr_scope ();
+
+    if (scope)
+      scope.mark_as_variable (nm);
+  }
+
+  void
+  lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
+  {
+    symbol_scope scope = m_symtab_context.curr_scope ();
+
+    if (scope)
+      scope.mark_as_variables (lst);
+  }
+
   bool
   lexical_feedback::previous_token_may_be_command (void) const
   {
@@ -2356,37 +2381,6 @@ namespace octave
 
     const token *tok = m_tokens.front ();
     return tok ? tok->may_be_command () : false;
-  }
-
-  void
-  lexical_feedback::mark_as_variable (const std::string& nm)
-  {
-    auto& vars = m_pending_local_variables.front ();
-    vars.insert (nm);
-  }
-
-  void
-  lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
-  {
-    auto& vars = m_pending_local_variables.front ();
-    for (const auto& nm : lst)
-      vars.insert (nm);
-  }
-
-  bool
-  lexical_feedback::is_variable (const std::string& nm) const
-  {
-    if (m_interpreter.at_top_level () && m_interpreter.is_variable (nm))
-      return true;
-
-    // Search current scope, then parents.
-    for (const auto& vars : m_pending_local_variables)
-      {
-        if (vars.find (nm) != vars.end ())
-          return true;
-      }
-
-    return false;
   }
 }
 
@@ -3599,7 +3593,6 @@ namespace octave
 
     if (m_at_beginning_of_statement
         && ! (m_parsing_anon_fcn_body
-              || is_variable (ident)
               || ident == "e" || ident == "pi"
               || ident == "I" || ident == "i"
               || ident == "J" || ident == "j"

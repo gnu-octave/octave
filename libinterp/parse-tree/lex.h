@@ -313,7 +313,6 @@ namespace octave
         m_package_name (),
         m_looking_at_object_index (),
         m_parsed_function_name (),
-        m_pending_local_variables (),
         m_symtab_context (interp),
         m_nesting_level (),
         m_tokens ()
@@ -349,8 +348,6 @@ namespace octave
 
     void mark_as_variable (const std::string& nm);
     void mark_as_variables (const std::list<std::string>& lst);
-
-    bool is_variable (const std::string& nm) const;
 
     interpreter& m_interpreter;
 
@@ -514,11 +511,6 @@ namespace octave
     // of the current function.  should only matter if
     // current_function_level > 0
     std::stack<bool> m_parsed_function_name;
-
-    // A list of sets of identifiers that might be local variable names.
-    // The front of the list corresponds to the current scope.  The next
-    // element is for the parent scope, etc.
-    std::list<std::set<std::string>> m_pending_local_variables;
 
     // Track current symbol table scope and context.
     symbol_table_context m_symtab_context;

@@ -417,19 +417,22 @@ input           : simple_list '\n'
                     OCTAVE_YYUSE ($2);
 
                     $$ = nullptr;
-                    std::shared_ptr<octave::tree_statement_list> tmp_lst ($1);
-                    parser.statement_list (tmp_lst);
-                    YYACCEPT;
+
+                    if (! parser.finish_input ($1))
+                      YYABORT;
+                    else
+                      YYACCEPT;
                   }
                 | simple_list END_OF_INPUT
                   {
                     OCTAVE_YYUSE ($2);
 
                     $$ = nullptr;
-                    lexer.m_end_of_input = true;
-                    std::shared_ptr<octave::tree_statement_list> tmp_lst ($1);
-                    parser.statement_list (tmp_lst);
-                    YYACCEPT;
+
+                    if (! parser.finish_input ($1, true))
+                      YYABORT;
+                    else
+                      YYACCEPT;
                   }
                 | parse_error
                   {
@@ -1452,7 +1455,6 @@ param_list_beg  : '('
                       {
                         // Will get a real name later.
                         lexer.m_symtab_context.push (octave::symbol_scope ("parser:param_list_beg"));
-                        lexer.m_pending_local_variables.push_front (std::set<std::string> ());
                         lexer.m_looking_at_function_handle--;
                         lexer.m_looking_at_anon_fcn_args = true;
                       }
@@ -1608,7 +1610,6 @@ push_script_symtab : // empty
                     // This scope may serve as the parent scope for local
                     // functions in classdef files..
                     lexer.m_symtab_context.push (octave::symbol_scope ("parser:push_script_symtab"));
-                    lexer.m_pending_local_variables.push_front (std::set<std::string> ());
                   }
                 ;
 
@@ -1630,9 +1631,11 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
 
                         // Unused symbol table context.
                         lexer.m_symtab_context.pop ();
-                        lexer.m_pending_local_variables.pop_front ();
 
                         delete $3;
+
+                        if (! parser.validate_primary_fcn ())
+                          YYABORT;
                       }
                     else
                       {
@@ -1641,6 +1644,9 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                                              $4->beg_pos (), $4->end_pos ());
 
                         parser.make_script ($3, end_of_script);
+
+                        if (! parser.validate_primary_fcn ())
+                          YYABORT;
                       }
 
                     $$ = nullptr;
@@ -1653,9 +1659,9 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
 
                     // Unused symbol table context.
                     lexer.m_symtab_context.pop ();
-                    lexer.m_pending_local_variables.pop_front ();
 
-                    parser.finish_classdef_file ($3, $6);
+                    if (! parser.finish_classdef_file ($3, $6))
+                      YYABORT;
 
                     $$ = nullptr;
                   }
@@ -1956,7 +1962,6 @@ classdef_beg    : CLASSDEF
 
                     // Create invalid parent scope.
                     lexer.m_symtab_context.push (octave::symbol_scope ());
-                    lexer.m_pending_local_variables.push_front (std::set<std::string> ());
                     lexer.m_parsing_classdef = true;
                     lexer.m_parsing_classdef_decl = true;
                     lexer.m_classdef_element_names_are_keywords = true;
@@ -2560,6 +2565,131 @@ yyerror (octave::base_parser& parser, const char *s)
 
 namespace octave
 {
+  class parse_exception : public std::runtime_error
+  {
+  public:
+
+    parse_exception (const std::string& message,
+                     const std::string& fcn_name = "",
+                     const std::string& file_name = "",
+                     int line = -1, int column = -1)
+      : runtime_error (message), m_message (message),
+        m_fcn_name (fcn_name), m_file_name (file_name),
+        m_line (line), m_column (column)
+    { }
+
+    parse_exception (const parse_exception&) = default;
+
+    parse_exception& operator = (const parse_exception&) = default;
+
+    ~parse_exception (void) = default;
+
+    std::string message (void) const { return m_message; }
+
+    // Provided for std::exception interface.
+    const char * what (void) const noexcept { return m_message.c_str (); }
+
+    std::string fcn_name (void) const { return m_fcn_name; }
+    std::string file_name (void) const { return m_file_name; }
+
+    int line (void) const { return m_line; }
+    int column (void) const { return m_column; }
+
+    // virtual void display (std::ostream& os) const;
+
+  private:
+
+    std::string m_message;
+
+    std::string m_fcn_name;
+    std::string m_file_name;
+    int m_line;
+    int m_column;
+  };
+
+  class parse_tree_validator : public tree_walker
+  {
+  public:
+
+    parse_tree_validator (void)
+      : m_scope (), m_error_list ()
+    { }
+
+    parse_tree_validator (const parse_tree_validator&) = delete;
+
+    parse_tree_validator& operator = (const parse_tree_validator&) = delete;
+
+    ~parse_tree_validator (void) = default;
+
+    symbol_scope get_scope (void) const { return m_scope; }
+
+    bool ok (void) const { return m_error_list.empty (); }
+
+    std::list<parse_exception> error_list (void) const
+    {
+      return m_error_list;
+    }
+
+    void visit_octave_user_script (octave_user_script& script)
+    {
+      unwind_protect_var<symbol_scope> restore_var (m_scope, script.scope ());
+
+      tree_statement_list *stmt_list = script.body ();
+
+      if (stmt_list)
+        stmt_list->accept (*this);
+    }
+
+    void visit_octave_user_function (octave_user_function& fcn)
+    {
+      unwind_protect_var<symbol_scope> restore_var (m_scope, fcn.scope ());
+
+      tree_statement_list *stmt_list = fcn.body ();
+
+      if (stmt_list)
+        stmt_list->accept (*this);
+
+      std::map<std::string, octave_value> subfcns = fcn.subfunctions ();
+
+      if (! subfcns.empty ())
+        {
+          for (auto& nm_val : subfcns)
+            {
+              octave_user_function *subfcn
+                = nm_val.second.user_function_value ();
+
+              if (subfcn)
+                subfcn->accept (*this);
+            }
+        }
+    }
+
+    void visit_index_expression (tree_index_expression& idx_expr)
+    {
+      if (idx_expr.is_word_list_cmd ())
+        {
+          std::string sym_nm = idx_expr.name ();
+
+          if (m_scope.is_variable (sym_nm))
+            {
+              std::string message
+                = sym_nm + ": invalid use of symbol as both variable and command";
+              parse_exception pe (message, m_scope.fcn_name (),
+                                  m_scope.fcn_file_name (),
+                                  idx_expr.line (), idx_expr.column ());
+
+              m_error_list.push_back (pe);
+            }
+        }
+    }
+
+  private:
+
+    symbol_scope m_scope;
+
+    std::list<parse_exception> m_error_list;
+  };
+
   std::size_t
   base_parser::parent_scope_info::size (void) const
   {
@@ -2829,7 +2959,6 @@ namespace octave
 
     // Will get a real name later.
     m_lexer.m_symtab_context.push (symbol_scope ("parser:push_fcn_symtab"));
-    m_lexer.m_pending_local_variables.push_front (std::set<std::string> ());
     m_function_scopes.push (m_lexer.m_symtab_context.curr_scope ());
 
     if (! m_lexer.m_reading_script_file && m_curr_fcn_depth == 0
@@ -2944,7 +3073,6 @@ namespace octave
     symbol_scope parent_scope = m_lexer.m_symtab_context.parent_scope ();
 
     m_lexer.m_symtab_context.pop ();
-    m_lexer.m_pending_local_variables.pop_front ();
 
     expr->set_print_flag (false);
 
@@ -3808,8 +3936,6 @@ namespace octave
       }
   }
 
-  // Define a script.
-
   void
   base_parser::make_script (tree_statement_list *cmds,
                             tree_statement *end_script)
@@ -3831,7 +3957,6 @@ namespace octave
                                 cmds, m_lexer.m_help_text);
 
     m_lexer.m_symtab_context.pop ();
-    m_lexer.m_pending_local_variables.pop_front ();
     m_lexer.m_help_text = "";
 
     sys::time now;
@@ -4232,7 +4357,6 @@ namespace octave
   base_parser::recover_from_parsing_function (void)
   {
     m_lexer.m_symtab_context.pop ();
-    m_lexer.m_pending_local_variables.pop_front ();
 
     if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
         && ! m_parsing_subfunctions)
@@ -4268,7 +4392,6 @@ namespace octave
     tree_classdef *retval = nullptr;
 
     m_lexer.m_symtab_context.pop ();
-    m_lexer.m_pending_local_variables.pop_front ();
 
     std::string cls_name = id->name ();
 
@@ -4579,12 +4702,39 @@ namespace octave
     return new tree_function_def (fcn, l, c);
   }
 
-  void
+  bool
   base_parser::finish_classdef_file (tree_classdef *cls,
                                      tree_statement_list *local_fcns)
   {
-    if (m_lexer.m_reading_classdef_file)
-      m_classdef_object = std::shared_ptr<tree_classdef> (cls);
+    parse_tree_validator validator;
+
+    cls->accept (validator);
+
+    if (local_fcns)
+      {
+        for (tree_statement *elt : *local_fcns)
+          {
+            tree_command *cmd = elt->command ();
+
+            tree_function_def *fcn_def
+              = dynamic_cast<tree_function_def *> (cmd);
+
+            fcn_def->accept (validator);
+          }
+      }
+
+    if (! validator.ok ())
+      {
+        delete cls;
+        delete local_fcns;
+
+        bison_error (validator.error_list ());
+
+        return false;
+      }
+
+    // Require all validations to succeed before installing any local
+    // functions or defining the classdef object for later use.
 
     if (local_fcns)
       {
@@ -4599,7 +4749,8 @@ namespace octave
               = dynamic_cast<tree_function_def *> (cmd);
 
             octave_value ov_fcn = fcn_def->function ();
-            octave_function *fcn = ov_fcn.function_value ();
+            octave_user_function *fcn = ov_fcn.user_function_value ();
+
             std::string nm = fcn->name ();
             std::string file = fcn->fcn_file_name ();
 
@@ -4608,6 +4759,12 @@ namespace octave
 
         delete local_fcns;
       }
+
+    // FIXME: Is it possible for the following condition to be false?
+    if (m_lexer.m_reading_classdef_file)
+      m_classdef_object = std::shared_ptr<tree_classdef> (cls);
+
+    return true;
   }
 
   // Make an index expression.
@@ -5167,6 +5324,23 @@ namespace octave
     m_parse_error_msg = output_buf.str ();
   }
 
+  void
+  base_parser::bison_error (const parse_exception& pe)
+  {
+    bison_error (pe.message (), pe.line (), pe.column ());
+  }
+
+  void
+  base_parser::bison_error (const std::list<parse_exception>& pe_list)
+  {
+    // For now, we just report the first error found.  Reporting all
+    // errors will require a bit more refactoring.
+
+    parse_exception pe = pe_list.front ();
+
+    bison_error (pe.message (), pe.line (), pe.column ());
+  }
+
   int
   parser::run (void)
   {
@@ -5421,6 +5595,57 @@ namespace octave
       }
 
     return octave_value ();
+  }
+
+  bool
+  base_parser::finish_input (tree_statement_list *lst, bool at_eof)
+  {
+    m_lexer.m_end_of_input = at_eof;
+
+    if (lst)
+      {
+        parse_tree_validator validator;
+
+        lst->accept (validator);
+
+        if (! validator.ok ())
+          {
+            delete lst;
+
+            bison_error (validator.error_list ());
+
+            return false;
+          }
+      }
+
+    std::shared_ptr<octave::tree_statement_list> tmp_lst (lst);
+
+    statement_list (tmp_lst);
+
+    return true;
+  }
+
+  // Check script or function for semantic errors.
+  bool
+  base_parser::validate_primary_fcn (void)
+  {
+    octave_user_code *code = m_primary_fcn.user_code_value ();
+
+    if (code)
+      {
+        parse_tree_validator validator;
+
+        code->accept (validator);
+
+        if (! validator.ok ())
+          {
+            bison_error (validator.error_list ());
+
+            return false;
+          }
+      }
+
+    return true;
   }
 
   // Maybe print a warning if an assignment expression is used as the

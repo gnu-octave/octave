@@ -58,6 +58,9 @@ namespace octave
     // (symbol added to a static workspace)
     static const unsigned int added_static = 4;
 
+    // this symbol was recognized as a variable from syntax
+    static const unsigned int variable = 8;
+
   private:
 
     class symbol_record_rep
@@ -101,6 +104,11 @@ namespace octave
         return m_storage_class & added_static;
       }
 
+      bool is_variable (void) const
+      {
+        return m_storage_class & variable;
+      }
+
       void mark_local (void)
       {
         m_storage_class |= local;
@@ -108,12 +116,18 @@ namespace octave
 
       void mark_formal (void)
       {
-        m_storage_class |= formal;
+        // Formal parameters are also variables.
+        m_storage_class |= (formal | variable);
       }
 
       void mark_added_static (void)
       {
         m_storage_class |= added_static;
+      }
+
+      void mark_as_variable (void)
+      {
+        m_storage_class |= variable;
       }
 
       void unmark_local (void)
@@ -129,6 +143,11 @@ namespace octave
       void unmark_added_static (void)
       {
         m_storage_class &= ~added_static;
+      }
+
+      void unmark_as_variable (void)
+      {
+        m_storage_class &= ~variable;
       }
 
       unsigned int storage_class (void) const { return m_storage_class; }
@@ -189,14 +208,17 @@ namespace octave
     bool is_local (void) const { return m_rep->is_local (); }
     bool is_formal (void) const { return m_rep->is_formal (); }
     bool is_added_static (void) const { return m_rep->is_added_static (); }
+    bool is_variable (void) const { return m_rep->is_variable (); }
 
     void mark_local (void) { m_rep->mark_local (); }
     void mark_formal (void) { m_rep->mark_formal (); }
     void mark_added_static (void) { m_rep->mark_added_static (); }
+    void mark_as_variable (void) { m_rep->mark_as_variable (); }
 
     void unmark_local (void) { m_rep->unmark_local (); }
     void unmark_formal (void) { m_rep->unmark_formal (); }
     void unmark_added_static (void) { m_rep->unmark_added_static (); }
+    void unmark_as_variable (void) { m_rep->unmark_as_variable (); }
 
     unsigned int storage_class (void) const { return m_rep->storage_class (); }
 

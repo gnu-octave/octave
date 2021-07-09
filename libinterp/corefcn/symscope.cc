@@ -253,6 +253,39 @@ namespace octave
     return false;
   }
 
+  void symbol_scope_rep::mark_as_variable (const std::string& nm)
+  {
+    table_iterator p = m_symbols.find (nm);
+
+    if (p != m_symbols.end ())
+      p->second.mark_as_variable ();
+  }
+
+  void symbol_scope_rep::mark_as_variables (const std::list<std::string>& lst)
+  {
+    for (const auto& nm : lst)
+      mark_as_variable (nm);
+  }
+
+  bool symbol_scope_rep::is_variable (const std::string& nm) const
+  {
+    table_const_iterator p = m_symbols.find (nm);
+
+    // FIXME: maybe we should also mark formal parameters as variables?
+
+    if (p != m_symbols.end () && p->second.is_variable ())
+      return true;
+
+    if (is_nested ())
+      {
+        auto t_parent = m_parent.lock ();
+
+        return t_parent ? t_parent->is_variable (nm) : false;
+      }
+
+    return false;
+  }
+
   void symbol_scope_rep::update_nest (void)
   {
     auto t_parent = m_parent.lock ();

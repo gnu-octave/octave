@@ -292,6 +292,11 @@ namespace octave
 
     bool is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const;
 
+    void mark_as_variable (const std::string& nm);
+    void mark_as_variables (const std::list<std::string>& lst);
+
+    bool is_variable (const std::string& nm) const;
+
     void update_nest (void);
 
     bool look_nonlocal (const std::string& name, std::size_t offset,
@@ -668,6 +673,23 @@ namespace octave
     bool is_relative (const symbol_scope& scope) const
     {
       return m_rep ? m_rep->is_relative (scope.get_rep ()) : false;
+    }
+
+    void mark_as_variable (const std::string& nm)
+    {
+      if (m_rep)
+        m_rep->mark_as_variable (nm);
+    }
+
+    void mark_as_variables (const std::list<std::string>& lst)
+    {
+      if (m_rep)
+        m_rep->mark_as_variables (lst);
+    }
+
+    bool is_variable (const std::string& nm) const
+    {
+      return m_rep ? m_rep->is_variable (nm) : false;
     }
 
     void update_nest (void)

@@ -172,7 +172,7 @@
 
 %!test
 %! x = 1;
-%! try error ("foo"); catch x end_try_catch
+%! try error ("foo"); catch x; end_try_catch
 %! assert (x.message, "foo");
 
 %!test

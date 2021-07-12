@@ -364,6 +364,9 @@ static inline void * maybe_mark_foreign (void *ptr);
 #define CONST_MUTATION_METHOD(RET_TYPE, FCN_NAME, ARG_LIST, RET_VAL)    \
   RET_TYPE FCN_NAME ARG_LIST const { request_mutation (); return RET_VAL; }
 
+#define GET_DATA_METHOD(RT, FCN_NAME, ID, COMPLEXITY)                   \
+  RT * FCN_NAME (void) const { return get_data<RT> (ID, COMPLEXITY); }
+
 class mxArray_octave_value : public mxArray_base
 {
 public:
@@ -657,54 +660,57 @@ public:
   {
     T *retval = static_cast<T *> (val.mex_get_data (class_id, complexity));
 
-    if (retval)
-      maybe_mark_foreign (retval);
-    else
-      request_mutation ();
+    if (retval && (complexity == mxREAL || m_interleaved))
+      {
+        maybe_mark_foreign (retval);
+        return retval;
+      }
 
-    return retval;
+    request_mutation ();
+    return nullptr;
   }
 
-  CONST_MUTATION_METHOD (mxDouble *, get_doubles, (void), nullptr);
+  GET_DATA_METHOD (mxDouble, get_doubles, mxDOUBLE_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxSingle *, get_singles, (void), nullptr);
+  GET_DATA_METHOD (mxSingle, get_singles, mxSINGLE_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxInt8 *, get_int8s, (void), nullptr);
+  GET_DATA_METHOD (mxInt8, get_int8s, mxINT8_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxInt16 *, get_int16s, (void), nullptr);
+  GET_DATA_METHOD (mxInt16, get_int16s, mxINT16_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxInt32 *, get_int32s, (void), nullptr);
+  GET_DATA_METHOD (mxInt32, get_int32s, mxINT32_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxInt64 *, get_int64s, (void), nullptr);
+  GET_DATA_METHOD (mxInt64, get_int64s, mxINT64_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxUint8 *, get_uint8s, (void), nullptr);
+  GET_DATA_METHOD (mxUint8, get_uint8s, mxUINT8_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxUint16 *, get_uint16s, (void), nullptr);
+  GET_DATA_METHOD (mxUint16, get_uint16s, mxUINT16_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxUint32 *, get_uint32s, (void), nullptr);
+  GET_DATA_METHOD (mxUint32, get_uint32s, mxUINT32_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxUint64 *, get_uint64s, (void), nullptr);
+  GET_DATA_METHOD (mxUint64, get_uint64s, mxUINT64_CLASS, mxREAL);
 
-  CONST_MUTATION_METHOD (mxComplexDouble *, get_complex_doubles, (void), nullptr);
-  CONST_MUTATION_METHOD (mxComplexSingle *, get_complex_singles, (void), nullptr);
+  GET_DATA_METHOD (mxComplexDouble, get_complex_doubles, mxDOUBLE_CLASS, mxCOMPLEX);
+
+  GET_DATA_METHOD (mxComplexSingle, get_complex_singles, mxDOUBLE_CLASS, mxCOMPLEX);
 
 #if 0
   /* We don't have these yet. */
-  CONST_MUTATION_METHOD (mxComplexInt8 *, get_complex_int8s, (void), nullptr);
+  GET_DATA_METHOD (mxComplexInt8 *, get_complex_int8s, (void), nullptr);
 
-  CONST_MUTATION_METHOD (mxComplexInt16 *, get_complex_int16s, (void), nullptr);
+  GET_DATA_METHOD (mxComplexInt16 *, get_complex_int16s, (void), nullptr);
 
-  CONST_MUTATION_METHOD (mxComplexInt32 *, get_complex_int32s, (void), nullptr);
+  GET_DATA_METHOD (mxComplexInt32 *, get_complex_int32s, (void), nullptr);
 
-  CONST_MUTATION_METHOD (mxComplexInt64 *, get_complex_int64s, (void), nullptr);
+  GET_DATA_METHOD (mxComplexInt64 *, get_complex_int64s, (void), nullptr);
 
-  CONST_MUTATION_METHOD (mxComplexUint8 *, get_complex_uint8s, (void), nullptr);
+  GET_DATA_METHOD (mxComplexUint8 *, get_complex_uint8s, (void), nullptr);
 
-  CONST_MUTATION_METHOD (mxComplexUint16 *, get_complex_uint16s, (void), nullptr);
+  GET_DATA_METHOD (mxComplexUint16 *, get_complex_uint16s, (void), nullptr);
 
-  CONST_MUTATION_METHOD (mxComplexUint32 *, get_complex_uint32s, (void), nullptr);
+  GET_DATA_METHOD (mxComplexUint32 *, get_complex_uint32s, (void), nullptr);
 
-  CONST_MUTATION_METHOD (mxComplexUint64 *, get_complex_uint64s, (void), nullptr);
+  GET_DATA_METHOD (mxComplexUint64 *, get_complex_uint64s, (void), nullptr);
 #endif
 
   void * get_imag_data (void) const

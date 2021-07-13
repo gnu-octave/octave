@@ -7,8 +7,65 @@
 //   double array
 //   complex double array
 //
-// Will return arrays of the same type, but created internally to test
-// the mxArray -> octave_value conversion
+// Returns copies of the input arrays to test the mxArray ->
+// octave_value conversion.
+
+#define MAKE_INTERLEAVED_COPY(TYPE, ID, CPLXTY, RHS, GET, LHS, SET)     \
+  do                                                                    \
+    {                                                                   \
+      size_t i;                                                         \
+      TYPE *data = GET (RHS);                                           \
+      const mwSize *data_dims = mxGetDimensions (RHS);                  \
+      mwSize data_ndims = mxGetNumberOfDimensions (RHS);                \
+      size_t numel = mxGetNumberOfElements (RHS);                       \
+      TYPE *data_copy = mxMalloc (numel * sizeof (TYPE));               \
+      for (i = 0; i < numel; i++)                                       \
+        data_copy[i] = data[i];                                         \
+      LHS = mxCreateNumericMatrix (0, 0, ID, CPLXTY);                   \
+      SET (LHS, data_copy);                                             \
+      mxSetDimensions (LHS, data_dims, data_ndims);                     \
+    }                                                                   \
+  while (0)
+
+#define MAKE_REAL_COPY(TYPE, ID, RHS, LHS)                      \
+  do                                                            \
+    {                                                           \
+      size_t i;                                                 \
+      TYPE *data = mxGetData (RHS);                             \
+      const mwSize *data_dims = mxGetDimensions (RHS);          \
+      mwSize data_ndims = mxGetNumberOfDimensions (RHS);        \
+      size_t numel = mxGetNumberOfElements (RHS);               \
+      TYPE *data_copy = mxMalloc (numel * sizeof (TYPE));       \
+      for (i = 0; i < numel; i++)                               \
+        data_copy[i] = data[i];                                 \
+      LHS = mxCreateNumericMatrix (0, 0, ID, mxREAL);           \
+      mxSetData (LHS, data_copy);                               \
+      mxSetDimensions (LHS, data_dims, data_ndims);             \
+    }                                                           \
+  while (0)
+
+#define MAKE_CPLX_COPY(TYPE, ID, RHS, LHS)                      \
+  do                                                            \
+    {                                                           \
+      size_t i;                                                 \
+      TYPE *real_data = mxGetData (RHS);                        \
+      TYPE *imag_data = mxGetImagData (RHS);                    \
+      const mwSize *data_dims = mxGetDimensions (RHS);          \
+      mwSize data_ndims = mxGetNumberOfDimensions (RHS);        \
+      size_t numel = mxGetNumberOfElements (RHS);               \
+      TYPE *real_data_copy = mxMalloc (numel * sizeof (TYPE));  \
+      TYPE *imag_data_copy = mxMalloc (numel * sizeof (TYPE));  \
+      for (i = 0; i < numel; i++)                               \
+        {                                                       \
+          real_data_copy[i] = real_data[i];                     \
+          imag_data_copy[i] = imag_data[i];                     \
+        }                                                       \
+      LHS = mxCreateNumericMatrix (0, 0, ID, mxCOMPLEX);        \
+      mxSetData (LHS, real_data_copy);                          \
+      mxSetImagData (LHS, imag_data_copy);                      \
+      mxSetDimensions (LHS, data_dims, data_ndims);             \
+    }                                                           \
+  while (0)
 
 void
 mexFunction (int nlhs, mxArray *plhs[],
@@ -17,74 +74,29 @@ mexFunction (int nlhs, mxArray *plhs[],
   if (nrhs != 4 || nlhs != 4)
     mexErrMsgTxt ("invalid arguments");
 
-  const mxArray *sngl_ra = prhs[0];
-  const mxArray *cplx_sngl_ra = prhs[1];
-  const mxArray *dble_ra = prhs[2];
-  const mxArray *cplx_dble_ra = prhs[3];
-
 #if MX_HAS_INTERLEAVED_COMPLEX
 
-  mxSingle *sngl_data = mxGetSingles (sngl_ra);
-  size_t sngl_data_nr = mxGetM (sngl_ra);
-  size_t sngl_data_nc = mxGetN (sngl_ra);
+  MAKE_INTERLEAVED_COPY (mxSingle, mxSINGLE_CLASS, mxREAL, prhs[0],
+                         mxGetSingles, plhs[0], mxSetSingles);
 
-  plhs[0] = mxCreateNumericMatrix (sngl_data_nr, sngl_data_nc, mxSINGLE_CLASS, mxREAL);
-  mxSetSingles (plhs[0], sngl_data);
+  MAKE_INTERLEAVED_COPY (mxComplexSingle, mxSINGLE_CLASS, mxCOMPLEX, prhs[1],
+                         mxGetComplexSingles, plhs[1], mxSetComplexSingles);
 
-  mxComplexSingle *cplx_sngl_data = mxGetComplexSingles (cplx_sngl_ra);
-  size_t cplx_sngl_data_nr = mxGetM (cplx_sngl_ra);
-  size_t cplx_sngl_data_nc = mxGetN (cplx_sngl_ra);
+  MAKE_INTERLEAVED_COPY (mxDouble, mxDOUBLE_CLASS, mxREAL, prhs[2],
+                         mxGetDoubles, plhs[2], mxSetDoubles);
 
-  plhs[1] = mxCreateNumericMatrix (cplx_sngl_data_nr, cplx_sngl_data_nc, mxSINGLE_CLASS, mxCOMPLEX);
-  mxSetComplexSingles (plhs[1], cplx_sngl_data);
-
-  mxDouble *dble_data = mxGetDoubles (dble_ra);
-  size_t dble_data_nr = mxGetM (dble_ra);
-  size_t dble_data_nc = mxGetN (dble_ra);
-
-  plhs[2] = mxCreateNumericMatrix (dble_data_nr, dble_data_nc, mxDOUBLE_CLASS, mxREAL);
-  mxSetDoubles (plhs[2], dble_data);
-
-  mxComplexDouble *cplx_dble_data = mxGetComplexDoubles (cplx_dble_ra);
-  size_t cplx_dble_data_nr = mxGetM (cplx_dble_ra);
-  size_t cplx_dble_data_nc = mxGetN (cplx_dble_ra);
-
-  plhs[3] = mxCreateNumericMatrix (cplx_dble_data_nr, cplx_dble_data_nc, mxDOUBLE_CLASS, mxCOMPLEX);
-  mxSetComplexDoubles (plhs[3], cplx_dble_data);
+  MAKE_INTERLEAVED_COPY (mxComplexDouble, mxDOUBLE_CLASS, mxCOMPLEX, prhs[3],
+                         mxGetComplexDoubles, plhs[3], mxSetComplexDoubles);
 
 #else
 
-  mxSingle *sngl_data = (mxSingle *) mxGetData (sngl_ra);
-  size_t sngl_data_nr = mxGetM (sngl_ra);
-  size_t sngl_data_nc = mxGetN (sngl_ra);
+  MAKE_REAL_COPY (mxSingle, mxSINGLE_CLASS, prhs[0], plhs[0]);
 
-  mxSingle *cplx_sngl_data_real = (mxSingle *) mxGetData (cplx_sngl_ra);
-  mxSingle *cplx_sngl_data_imag = (mxSingle *) mxGetImagData (cplx_sngl_ra);
-  size_t cplx_sngl_data_nr = mxGetM (cplx_sngl_ra);
-  size_t cplx_sngl_data_nc = mxGetN (cplx_sngl_ra);
+  MAKE_CPLX_COPY (mxSingle, mxSINGLE_CLASS, prhs[1], plhs[1]);
 
-  mxDouble *dble_data = (mxDouble *) mxGetData (dble_ra);
-  size_t dble_data_nr = mxGetM (dble_ra);
-  size_t dble_data_nc = mxGetN (dble_ra);
+  MAKE_REAL_COPY (mxDouble, mxDOUBLE_CLASS, prhs[2], plhs[2]);
 
-  mxDouble *cplx_dble_data_real = (mxDouble *) mxGetData (cplx_dble_ra);
-  mxDouble *cplx_dble_data_imag = (mxDouble *) mxGetImagData (cplx_dble_ra);
-  size_t cplx_dble_data_nr = mxGetM (cplx_dble_ra);
-  size_t cplx_dble_data_nc = mxGetN (cplx_dble_ra);
-
-  plhs[0] = mxCreateNumericMatrix (sngl_data_nr, sngl_data_nc, mxSINGLE_CLASS, mxREAL);
-  mxSetData (plhs[0], sngl_data);
-
-  plhs[1] = mxCreateNumericMatrix (cplx_sngl_data_nr, cplx_sngl_data_nc, mxSINGLE_CLASS, mxCOMPLEX);
-  mxSetData (plhs[1], cplx_sngl_data_real);
-  mxSetImagData (plhs[1], cplx_sngl_data_imag);
-
-  plhs[2] = mxCreateNumericMatrix (dble_data_nr, dble_data_nc, mxDOUBLE_CLASS, mxREAL);
-  mxSetData (plhs[2], dble_data);
-
-  plhs[3] = mxCreateNumericMatrix (cplx_dble_data_nr, cplx_dble_data_nc, mxDOUBLE_CLASS, mxCOMPLEX);
-  mxSetData (plhs[3], cplx_dble_data_real);
-  mxSetImagData (plhs[3], cplx_dble_data_imag);
+  MAKE_CPLX_COPY (mxDouble, mxDOUBLE_CLASS, prhs[3], plhs[3]);
 
 #endif
 

@@ -30,40 +30,67 @@
 
 #include "oct-cmplx.h"
 
-#define DECLARE_XNORM_FUNCS(PREFIX, RTYPE)              \
-  class PREFIX##Matrix;                                 \
-  class PREFIX##ColumnVector;                           \
-  class PREFIX##RowVector;                              \
-                                                        \
-  extern OCTAVE_API RTYPE                               \
-  xnorm (const PREFIX##ColumnVector&, RTYPE p = 2);     \
-  extern OCTAVE_API RTYPE                               \
-  xnorm (const PREFIX##RowVector&, RTYPE p = 2);        \
-  extern OCTAVE_API RTYPE                               \
-  xnorm (const PREFIX##Matrix&, RTYPE p = 2);           \
-  extern OCTAVE_API RTYPE                               \
-  xfrobnorm (const PREFIX##Matrix&);
+class Matrix;
+class ColumnVector;
+class RowVector;
 
-DECLARE_XNORM_FUNCS(, double)
-DECLARE_XNORM_FUNCS(Complex, double)
-DECLARE_XNORM_FUNCS(Float, float)
-DECLARE_XNORM_FUNCS(FloatComplex, float)
+class ComplexMatrix;
+class ComplexColumnVector;
+class ComplexRowVector;
 
-DECLARE_XNORM_FUNCS(Sparse, double)
-DECLARE_XNORM_FUNCS(SparseComplex, double)
+class FloatMatrix;
+class FloatColumnVector;
+class FloatRowVector;
 
-#define DECLARE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE)       \
-  extern OCTAVE_API RPREFIX##RowVector                          \
-  xcolnorms (const PREFIX##Matrix&, RTYPE p = 2);               \
-  extern OCTAVE_API RPREFIX##ColumnVector                       \
-  xrownorms (const PREFIX##Matrix&, RTYPE p = 2);               \
+class FloatComplexMatrix;
+class FloatComplexColumnVector;
+class FloatComplexRowVector;
 
-DECLARE_COLROW_NORM_FUNCS(, , double)
-DECLARE_COLROW_NORM_FUNCS(Complex, , double)
-DECLARE_COLROW_NORM_FUNCS(Float, Float, float)
-DECLARE_COLROW_NORM_FUNCS(FloatComplex, Float, float)
+class SparseMatrix;
+class SparseComplexMatrix;
 
-DECLARE_COLROW_NORM_FUNCS(Sparse, , double)
-DECLARE_COLROW_NORM_FUNCS(SparseComplex, , double)
+extern OCTAVE_API double xnorm (const ColumnVector&, double p = 2);
+extern OCTAVE_API double xnorm (const RowVector&, double p = 2);
+extern OCTAVE_API double xnorm (const Matrix&, double p = 2);
+extern OCTAVE_API double xfrobnorm (const Matrix&);
+
+extern OCTAVE_API double xnorm (const ComplexColumnVector&, double p = 2);
+extern OCTAVE_API double xnorm (const ComplexRowVector&, double p = 2);
+extern OCTAVE_API double xnorm (const ComplexMatrix&, double p = 2);
+extern OCTAVE_API double xfrobnorm (const ComplexMatrix&);
+
+extern OCTAVE_API float xnorm (const FloatColumnVector&, float p = 2);
+extern OCTAVE_API float xnorm (const FloatRowVector&, float p = 2);
+extern OCTAVE_API float xnorm (const FloatMatrix&, float p = 2);
+extern OCTAVE_API float xfrobnorm (const FloatMatrix&);
+
+extern OCTAVE_API float xnorm (const FloatComplexColumnVector&, float p = 2);
+extern OCTAVE_API float xnorm (const FloatComplexRowVector&, float p = 2);
+extern OCTAVE_API float xnorm (const FloatComplexMatrix&, float p = 2);
+extern OCTAVE_API float xfrobnorm (const FloatComplexMatrix&);
+
+extern OCTAVE_API double xnorm (const SparseMatrix&, double p = 2);
+extern OCTAVE_API double xfrobnorm (const SparseMatrix&);
+
+extern OCTAVE_API double xnorm (const SparseComplexMatrix&, double p = 2);
+extern OCTAVE_API double xfrobnorm (const SparseComplexMatrix&);
+
+extern OCTAVE_API RowVector xcolnorms (const Matrix&, double p = 2);
+extern OCTAVE_API ColumnVector xrownorms (const Matrix&, double p = 2);
+
+extern OCTAVE_API RowVector xcolnorms (const ComplexMatrix&, double p = 2);
+extern OCTAVE_API ColumnVector xrownorms (const ComplexMatrix&, double p = 2);
+
+extern OCTAVE_API FloatRowVector xcolnorms (const FloatMatrix&, float p = 2);
+extern OCTAVE_API FloatColumnVector xrownorms (const FloatMatrix&, float p = 2);
+
+extern OCTAVE_API FloatRowVector xcolnorms (const FloatComplexMatrix&, float p = 2);
+extern OCTAVE_API FloatColumnVector xrownorms (const FloatComplexMatrix&, float p = 2);
+
+extern OCTAVE_API RowVector xcolnorms (const SparseMatrix&, double p = 2);
+extern OCTAVE_API ColumnVector xrownorms (const SparseMatrix&, double p = 2);
+
+extern OCTAVE_API RowVector xcolnorms (const SparseComplexMatrix&, double p = 2);
+extern OCTAVE_API ColumnVector xrownorms (const SparseComplexMatrix&, double p = 2);
 
 #endif

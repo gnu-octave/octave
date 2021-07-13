@@ -647,12 +647,14 @@ public:
   {
     void *retval = val.mex_get_data ();
 
-    if (retval)
-      maybe_mark_foreign (retval);
-    else
-      request_mutation ();
+    if (retval && (val.isreal () || m_interleaved))
+      {
+        maybe_mark_foreign (retval);
+        return retval;
+      }
 
-    return retval;
+    request_mutation ();
+    return nullptr;
   }
 
   template <typename T>

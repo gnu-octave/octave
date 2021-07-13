@@ -227,7 +227,7 @@ namespace octave
       CHOLMOD_NAME(start) (cm);
       cm->prefer_zomplex = false;
 
-      double spu = octave_sparse_params::get_key ("spumoni");
+      double spu = sparse_params::get_key ("spumoni");
 
       if (spu == 0.)
         {

@@ -1106,11 +1106,11 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
       double *control = Control.fortran_vec ();
       UMFPACK_ZNAME (defaults) (control);
 
-      double tmp = octave_sparse_params::get_key ("spumoni");
+      double tmp = octave::sparse_params::get_key ("spumoni");
       if (! octave::math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
-      tmp = octave_sparse_params::get_key ("piv_tol");
+      tmp = octave::sparse_params::get_key ("piv_tol");
       if (! octave::math::isnan (tmp))
         {
           Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -1118,7 +1118,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
         }
 
       // Set whether we are allowed to modify Q or not
-      tmp = octave_sparse_params::get_key ("autoamd");
+      tmp = octave::sparse_params::get_key ("autoamd");
       if (! octave::math::isnan (tmp))
         Control (UMFPACK_FIXQ) = tmp;
 
@@ -5557,10 +5557,10 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double& rcond,
   double *control = Control.fortran_vec ();
   UMFPACK_ZNAME (defaults) (control);
 
-  double tmp = octave_sparse_params::get_key ("spumoni");
+  double tmp = octave::sparse_params::get_key ("spumoni");
   if (! octave::math::isnan (tmp))
     Control (UMFPACK_PRL) = tmp;
-  tmp = octave_sparse_params::get_key ("piv_tol");
+  tmp = octave::sparse_params::get_key ("piv_tol");
   if (! octave::math::isnan (tmp))
     {
       Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -5568,7 +5568,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double& rcond,
     }
 
   // Set whether we are allowed to modify Q or not
-  tmp = octave_sparse_params::get_key ("autoamd");
+  tmp = octave::sparse_params::get_key ("autoamd");
   if (! octave::math::isnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
@@ -5705,7 +5705,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           CHOLMOD_NAME(start) (cm);
           cm->prefer_zomplex = false;
 
-          double spu = octave_sparse_params::get_key ("spumoni");
+          double spu = octave::sparse_params::get_key ("spumoni");
           if (spu == 0.)
             {
               cm->print = -1;
@@ -5944,7 +5944,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           CHOLMOD_NAME(start) (cm);
           cm->prefer_zomplex = false;
 
-          double spu = octave_sparse_params::get_key ("spumoni");
+          double spu = octave::sparse_params::get_key ("spumoni");
           if (spu == 0.)
             {
               cm->print = -1;
@@ -6234,7 +6234,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           CHOLMOD_NAME(start) (cm);
           cm->prefer_zomplex = false;
 
-          double spu = octave_sparse_params::get_key ("spumoni");
+          double spu = octave::sparse_params::get_key ("spumoni");
           if (spu == 0.)
             {
               cm->print = -1;
@@ -6452,7 +6452,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           CHOLMOD_NAME(start) (cm);
           cm->prefer_zomplex = false;
 
-          double spu = octave_sparse_params::get_key ("spumoni");
+          double spu = octave::sparse_params::get_key ("spumoni");
           if (spu == 0.)
             {
               cm->print = -1;

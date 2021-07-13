@@ -65,7 +65,7 @@ warn_calculating_sparse_type (void)
 
 MatrixType::MatrixType (void)
   : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_bandden ()),
+    sp_bandden (octave::sparse_params::get_bandden ()),
     bandden (0), upper_band (0),
     lower_band (0), dense (false), full (false), nperm (0), perm (nullptr) { }
 
@@ -243,10 +243,10 @@ MatrixType::MatrixType (const MSparse<T>& a)
   octave_idx_type nm = (ncols < nrows ? ncols : nrows);
   octave_idx_type nnz = a.nnz ();
 
-  if (octave_sparse_params::get_key ("spumoni") != 0.)
+  if (octave::sparse_params::get_key ("spumoni") != 0.)
     warn_calculating_sparse_type ();
 
-  sp_bandden = octave_sparse_params::get_bandden ();
+  sp_bandden = octave::sparse_params::get_bandden ();
   bool maybe_hermitian = false;
   typ = MatrixType::Full;
 
@@ -559,7 +559,7 @@ MatrixType::MatrixType (const MSparse<T>& a)
 
 MatrixType::MatrixType (const matrix_type t, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_bandden ()),
+    sp_bandden (octave::sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (nullptr)
 {
@@ -576,7 +576,7 @@ MatrixType::MatrixType (const matrix_type t, bool _full)
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
                         const octave_idx_type *p, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_bandden ()),
+    sp_bandden (octave::sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (nullptr)
 {
@@ -596,7 +596,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
                         const octave_idx_type kl, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_bandden ()),
+    sp_bandden (octave::sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (nullptr)
 {
@@ -653,16 +653,16 @@ int
 MatrixType::type (bool quiet)
 {
   if (typ != MatrixType::Unknown
-      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
+      && (full || sp_bandden == octave::sparse_params::get_bandden ()))
     {
-      if (! quiet && octave_sparse_params::get_key ("spumoni") != 0.)
+      if (! quiet && octave::sparse_params::get_key ("spumoni") != 0.)
         warn_cached ();
 
       return typ;
     }
 
   if (typ != MatrixType::Unknown
-      && octave_sparse_params::get_key ("spumoni") != 0.)
+      && octave::sparse_params::get_key ("spumoni") != 0.)
     (*current_liboctave_warning_with_id_handler)
       ("Octave:matrix-type-info", "invalidating matrix type");
 
@@ -675,9 +675,9 @@ int
 MatrixType::type (const SparseMatrix& a)
 {
   if (typ != MatrixType::Unknown
-      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
+      && (full || sp_bandden == octave::sparse_params::get_bandden ()))
     {
-      if (octave_sparse_params::get_key ("spumoni") != 0.)
+      if (octave::sparse_params::get_key ("spumoni") != 0.)
         warn_cached ();
 
       return typ;
@@ -707,9 +707,9 @@ int
 MatrixType::type (const SparseComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown
-      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
+      && (full || sp_bandden == octave::sparse_params::get_bandden ()))
     {
-      if (octave_sparse_params::get_key ("spumoni") != 0.)
+      if (octave::sparse_params::get_key ("spumoni") != 0.)
         warn_cached ();
 
       return typ;
@@ -740,7 +740,7 @@ MatrixType::type (const Matrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
-      if (octave_sparse_params::get_key ("spumoni") != 0.)
+      if (octave::sparse_params::get_key ("spumoni") != 0.)
         warn_cached ();
 
       return typ;
@@ -766,7 +766,7 @@ MatrixType::type (const ComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
-      if (octave_sparse_params::get_key ("spumoni") != 0.)
+      if (octave::sparse_params::get_key ("spumoni") != 0.)
         warn_cached ();
 
       return typ;
@@ -792,7 +792,7 @@ MatrixType::type (const FloatMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
-      if (octave_sparse_params::get_key ("spumoni") != 0.)
+      if (octave::sparse_params::get_key ("spumoni") != 0.)
         warn_cached ();
 
       return typ;
@@ -818,7 +818,7 @@ MatrixType::type (const FloatComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
-      if (octave_sparse_params::get_key ("spumoni") != 0.)
+      if (octave::sparse_params::get_key ("spumoni") != 0.)
         warn_cached ();
 
       return typ;
@@ -842,7 +842,7 @@ MatrixType::type (const FloatComplexMatrix& a)
 void
 MatrixType::info () const
 {
-  if (octave_sparse_params::get_key ("spumoni") != 0.)
+  if (octave::sparse_params::get_key ("spumoni") != 0.)
     {
       if (typ == MatrixType::Unknown)
         (*current_liboctave_warning_with_id_handler)

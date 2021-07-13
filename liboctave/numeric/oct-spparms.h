@@ -34,91 +34,89 @@
 #include "str-vec.h"
 #include "dColVector.h"
 
-class NDArray;
+template <typename T> class Array;
 
 #define OCTAVE_SPARSE_CONTROLS_SIZE 13
 
-class
-OCTAVE_API
-octave_sparse_params
+namespace octave
 {
-protected:
-
-  octave_sparse_params (void)
-    : params (OCTAVE_SPARSE_CONTROLS_SIZE),
-      keys (OCTAVE_SPARSE_CONTROLS_SIZE)
+  class OCTAVE_API sparse_params
   {
-    init_keys ();
-    do_defaults ();
-  }
+  protected:
 
-public:
+    sparse_params (void)
+      : m_params (OCTAVE_SPARSE_CONTROLS_SIZE),
+        m_keys (OCTAVE_SPARSE_CONTROLS_SIZE)
+    {
+      init_keys ();
+      do_defaults ();
+    }
 
-  octave_sparse_params (const octave_sparse_params& a)
-    : params (a.params), keys (a.keys) { }
+  public:
 
-  octave_sparse_params& operator = (const octave_sparse_params& a)
-  {
-    if (&a != this)
-      {
-        params = a.params;
-        keys = a.keys;
-      }
+    sparse_params (const sparse_params&) = default;
 
-    return *this;
-  }
+    sparse_params& operator = (const sparse_params&) = default;
 
-  ~octave_sparse_params (void) = default;
+    ~sparse_params (void) = default;
 
-  static bool instance_ok (void);
+    static bool instance_ok (void);
 
-  static void defaults (void);
+    static void defaults (void);
 
-  static void tight (void);
+    static void tight (void);
 
-  static string_vector get_keys (void);
+    static string_vector get_keys (void);
 
-  static ColumnVector get_vals (void);
+    static ColumnVector get_vals (void);
 
-  static bool set_vals (const NDArray& vals);
+    static bool set_vals (const Array<double>& vals);
 
-  static bool set_key (const std::string& key, const double& val);
+    static bool set_key (const std::string& key, const double& val);
 
-  static double get_key (const std::string& key);
+    static double get_key (const std::string& key);
 
-  static double get_bandden (void);
+    static double get_bandden (void);
 
-  static void print_info (std::ostream& os, const std::string& prefix);
+    static void print_info (std::ostream& os, const std::string& prefix);
 
-private:
+  private:
 
-  ColumnVector params;
+    ColumnVector m_params;
 
-  string_vector keys;
+    string_vector m_keys;
 
-  static octave_sparse_params *instance;
+    static sparse_params *s_instance;
 
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    static void cleanup_instance (void)
+    {
+      delete s_instance;
+      s_instance = nullptr;
+    }
 
-  void do_defaults (void);
+    void do_defaults (void);
 
-  void do_tight (void);
+    void do_tight (void);
 
-  string_vector do_get_keys (void) const { return keys; }
+    string_vector do_get_keys (void) const { return m_keys; }
 
-  ColumnVector do_get_vals (void) const { return params; }
+    ColumnVector do_get_vals (void) const { return m_params; }
 
-  bool do_set_vals (const NDArray& vals);
+    bool do_set_vals (const Array<double>& vals);
 
-  bool do_set_key (const std::string& key, const double& val);
+    bool do_set_key (const std::string& key, const double& val);
 
-  double do_get_key (const std::string& key);
+    double do_get_key (const std::string& key);
 
-  double do_get_bandden (void);
+    double do_get_bandden (void);
 
-  void do_print_info (std::ostream& os, const std::string& prefix) const;
+    void do_print_info (std::ostream& os, const std::string& prefix) const;
 
-  void init_keys (void);
-};
+    void init_keys (void);
+  };
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::sparse_params' instead")
+typedef octave::sparse_params octave_sparse_params;
 
 #endif

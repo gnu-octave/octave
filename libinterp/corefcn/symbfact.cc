@@ -215,7 +215,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   cholmod_common *cm = &Common;
   CHOLMOD_NAME(start) (cm);
 
-  double spu = octave_sparse_params::get_key ("spumoni");
+  double spu = octave::sparse_params::get_key ("spumoni");
   if (spu == 0.0)
     {
       cm->print = -1;

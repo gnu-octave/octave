@@ -418,7 +418,7 @@ namespace octave
       double *control = Control.fortran_vec ();
       umfpack_defaults<lu_elt_type> (control);
 
-      double tmp = octave_sparse_params::get_key ("spumoni");
+      double tmp = sparse_params::get_key ("spumoni");
       if (! math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
@@ -434,17 +434,17 @@ namespace octave
         }
       else
         {
-          tmp = octave_sparse_params::get_key ("piv_tol");
+          tmp = sparse_params::get_key ("piv_tol");
           if (! math::isnan (tmp))
             Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
-          tmp = octave_sparse_params::get_key ("sym_tol");
+          tmp = sparse_params::get_key ("sym_tol");
           if (! math::isnan (tmp))
             Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
         }
 
       // Set whether we are allowed to modify Q or not
-      tmp = octave_sparse_params::get_key ("autoamd");
+      tmp = sparse_params::get_key ("autoamd");
       if (! math::isnan (tmp))
         Control (UMFPACK_FIXQ) = tmp;
 
@@ -636,7 +636,7 @@ namespace octave
       double *control = Control.fortran_vec ();
       umfpack_defaults<lu_elt_type> (control);
 
-      double tmp = octave_sparse_params::get_key ("spumoni");
+      double tmp = sparse_params::get_key ("spumoni");
       if (! math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
@@ -651,11 +651,11 @@ namespace octave
         }
       else
         {
-          tmp = octave_sparse_params::get_key ("piv_tol");
+          tmp = sparse_params::get_key ("piv_tol");
           if (! math::isnan (tmp))
             Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
-          tmp = octave_sparse_params::get_key ("sym_tol");
+          tmp = sparse_params::get_key ("sym_tol");
           if (! math::isnan (tmp))
             Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
         }
@@ -668,7 +668,7 @@ namespace octave
         Control (UMFPACK_FIXQ) = 1.0;
       else
         {
-          tmp = octave_sparse_params::get_key ("autoamd");
+          tmp = sparse_params::get_key ("autoamd");
           if (! math::isnan (tmp))
             Control (UMFPACK_FIXQ) = tmp;
         }

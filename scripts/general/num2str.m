@@ -95,7 +95,11 @@ function retval = num2str (x, arg)
       if (ischar (arg))
         fmt = arg;
       elseif (isnumeric (arg) && isscalar (arg) && arg >= 0 && arg == fix (arg))
-        fmt = sprintf ("%%%d.%dg", arg+7, arg);
+        if (isfloat (x))
+          fmt = sprintf ("%%%d.%dg", arg+7, arg);
+        else
+          fmt = sprintf ("%%%dd", arg);
+        endif
       else
         error ("num2str: PRECISION must be a scalar integer >= 0");
       endif
@@ -225,6 +229,7 @@ endfunction
 %!assert (num2str (complex (NA, 1)), "NA+1i")
 %!assert (num2str (complex (1, NA)), "1+NAi")
 %!assert (num2str (int64 (-flintmax ()) - 1), "-9007199254740993")
+%!assert (num2str (int64 (-flintmax ()) - 1, 18), "-9007199254740993")
 
 ## ND-arrays are concatenated in columns
 %!shared m, x

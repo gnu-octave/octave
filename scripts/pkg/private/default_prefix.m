@@ -42,7 +42,7 @@ function [prefix, archprefix] = default_prefix (global_install, desc)
     endif
   else
     prefix = fullfile (user_data_dir (), "octave", ...
-                       __octave_config_info__ ("major_version"), "packages");
+                       __octave_config_info__ ("api_version"), "packages");
     archprefix = prefix;
   endif
 

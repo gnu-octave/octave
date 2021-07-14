@@ -482,8 +482,8 @@ Undocumented internal function.
       SparseMatrix U, L;
 
       ilu_crout <SparseMatrix, double> (sm_l, sm_u, L, U,
-                                        xcolnorms (sm).fortran_vec (),
-                                        xrownorms (sm).fortran_vec (),
+                                        octave::xcolnorms (sm).fortran_vec (),
+                                        octave::xrownorms (sm).fortran_vec (),
                                         droptol, milu);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
@@ -496,8 +496,8 @@ Undocumented internal function.
       SparseComplexMatrix sm_u = Ftriu (ovl (sm))(0).sparse_complex_matrix_value ();
       SparseComplexMatrix sm_l = Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ();
       SparseComplexMatrix U, L;
-      Array<Complex> cols_norm = xcolnorms (sm);
-      Array<Complex> rows_norm = xrownorms (sm);
+      Array<Complex> cols_norm = octave::xcolnorms (sm);
+      Array<Complex> rows_norm = octave::xrownorms (sm);
 
       ilu_crout <SparseComplexMatrix, Complex> (sm_l, sm_u, L, U,
                                                 cols_norm.fortran_vec (),
@@ -923,9 +923,9 @@ Undocumented internal function.
       nnz_l = (Ftril (ovl (sm, -1))(0).sparse_matrix_value ()).nnz ();
       Array <double> rc_norm;
       if (milu == "row")
-        rc_norm = xrownorms (sm);
+        rc_norm = octave::xrownorms (sm);
       else
-        rc_norm = xcolnorms (sm);
+        rc_norm = octave::xcolnorms (sm);
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
 
       ilu_tp <SparseMatrix, double> (sm, L, U, nnz_u, nnz_l,
@@ -964,9 +964,9 @@ Undocumented internal function.
       nnz_l = (Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ()).nnz ();
       Array <Complex> rc_norm;
       if (milu == "row")
-        rc_norm = xrownorms (sm);
+        rc_norm = octave::xrownorms (sm);
       else
-        rc_norm = xcolnorms (sm);
+        rc_norm = octave::xcolnorms (sm);
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
 
       ilu_tp <SparseComplexMatrix, Complex>

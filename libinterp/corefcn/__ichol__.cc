@@ -435,7 +435,7 @@ Undocumented internal function.
       SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
-               (sm_l, L, xcolnorms (sm_l, 1).fortran_vec (), droptol, michol);
+        (sm_l, L, octave::xcolnorms (sm_l, 1).fortran_vec (), droptol, michol);
 
       return ovl (L);
     }
@@ -444,7 +444,7 @@ Undocumented internal function.
       SparseComplexMatrix L;
       SparseComplexMatrix sm_l
         = Ftril (args(0))(0).sparse_complex_matrix_value ();
-      Array <Complex> cols_norm = xcolnorms (sm_l, 1);
+      Array <Complex> cols_norm = octave::xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
                Complex, ichol_mult_complex, ichol_checkpivot_complex>
                (sm_l, L, cols_norm.fortran_vec (),

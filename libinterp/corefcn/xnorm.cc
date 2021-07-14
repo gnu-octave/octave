@@ -50,41 +50,41 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
   else if (isvector)
     {
       if (isfloat & iscomplex)
-        retval = xnorm (x.float_complex_column_vector_value (),
-                        p.float_value ());
+        retval = octave::xnorm (x.float_complex_column_vector_value (),
+                                p.float_value ());
       else if (isfloat)
-        retval = xnorm (x.float_column_vector_value (),
-                        p.float_value ());
+        retval = octave::xnorm (x.float_column_vector_value (),
+                                p.float_value ());
       else if (iscomplex)
-        retval = xnorm (x.complex_column_vector_value (),
-                        p.double_value ());
+        retval = octave::xnorm (x.complex_column_vector_value (),
+                                p.double_value ());
       else
-        retval = xnorm (x.column_vector_value (),
-                        p.double_value ());
+        retval = octave::xnorm (x.column_vector_value (),
+                                p.double_value ());
     }
   else if (issparse)
     {
       if (iscomplex)
-        retval = xnorm (x.sparse_complex_matrix_value (),
-                        p.double_value ());
+        retval = octave::xnorm (x.sparse_complex_matrix_value (),
+                                p.double_value ());
       else
-        retval = xnorm (x.sparse_matrix_value (),
-                        p.double_value ());
+        retval = octave::xnorm (x.sparse_matrix_value (),
+                                p.double_value ());
     }
   else
     {
       if (isfloat & iscomplex)
-        retval = xnorm (x.float_complex_matrix_value (),
-                        p.float_value ());
+        retval = octave::xnorm (x.float_complex_matrix_value (),
+                                p.float_value ());
       else if (isfloat)
-        retval = xnorm (x.float_matrix_value (),
-                        p.float_value ());
+        retval = octave::xnorm (x.float_matrix_value (),
+                                p.float_value ());
       else if (iscomplex)
-        retval = xnorm (x.complex_matrix_value (),
-                        p.double_value ());
+        retval = octave::xnorm (x.complex_matrix_value (),
+                                p.double_value ());
       else
-        retval = xnorm (x.matrix_value (),
-                        p.double_value ());
+        retval = octave::xnorm (x.matrix_value (),
+                                p.double_value ());
     }
 
   return retval;
@@ -104,26 +104,26 @@ octave_value xcolnorms (const octave_value& x, const octave_value& p)
   if (issparse)
     {
       if (iscomplex)
-        retval = xcolnorms (x.sparse_complex_matrix_value (),
-                            p.double_value ());
+        retval = octave::xcolnorms (x.sparse_complex_matrix_value (),
+                                    p.double_value ());
       else
-        retval = xcolnorms (x.sparse_matrix_value (),
-                            p.double_value ());
+        retval = octave::xcolnorms (x.sparse_matrix_value (),
+                                    p.double_value ());
     }
   else
     {
       if (isfloat & iscomplex)
-        retval = xcolnorms (x.float_complex_matrix_value (),
-                            p.float_value ());
+        retval = octave::xcolnorms (x.float_complex_matrix_value (),
+                                    p.float_value ());
       else if (isfloat)
-        retval = xcolnorms (x.float_matrix_value (),
-                            p.float_value ());
+        retval = octave::xcolnorms (x.float_matrix_value (),
+                                    p.float_value ());
       else if (iscomplex)
-        retval = xcolnorms (x.complex_matrix_value (),
-                            p.double_value ());
+        retval = octave::xcolnorms (x.complex_matrix_value (),
+                                    p.double_value ());
       else
-        retval = xcolnorms (x.matrix_value (),
-                            p.double_value ());
+        retval = octave::xcolnorms (x.matrix_value (),
+                                    p.double_value ());
     }
 
   return retval;
@@ -143,26 +143,26 @@ octave_value xrownorms (const octave_value& x, const octave_value& p)
   if (issparse)
     {
       if (iscomplex)
-        retval = xrownorms (x.sparse_complex_matrix_value (),
-                            p.double_value ());
+        retval = octave::xrownorms (x.sparse_complex_matrix_value (),
+                                    p.double_value ());
       else
-        retval = xrownorms (x.sparse_matrix_value (),
-                            p.double_value ());
+        retval = octave::xrownorms (x.sparse_matrix_value (),
+                                    p.double_value ());
     }
   else
     {
       if (isfloat & iscomplex)
-        retval = xrownorms (x.float_complex_matrix_value (),
-                            p.float_value ());
+        retval = octave::xrownorms (x.float_complex_matrix_value (),
+                                    p.float_value ());
       else if (isfloat)
-        retval = xrownorms (x.float_matrix_value (),
-                            p.float_value ());
+        retval = octave::xrownorms (x.float_matrix_value (),
+                                    p.float_value ());
       else if (iscomplex)
-        retval = xrownorms (x.complex_matrix_value (),
-                            p.double_value ());
+        retval = octave::xrownorms (x.complex_matrix_value (),
+                                    p.double_value ());
       else
-        retval = xrownorms (x.matrix_value (),
-                            p.double_value ());
+        retval = octave::xrownorms (x.matrix_value (),
+                                    p.double_value ());
     }
 
   return retval;
@@ -182,20 +182,20 @@ octave_value xfrobnorm (const octave_value& x)
   if (issparse)
     {
       if (iscomplex)
-        retval = xfrobnorm (x.sparse_complex_matrix_value ());
+        retval = octave::xfrobnorm (x.sparse_complex_matrix_value ());
       else
-        retval = xfrobnorm (x.sparse_matrix_value ());
+        retval = octave::xfrobnorm (x.sparse_matrix_value ());
     }
   else
     {
       if (isfloat & iscomplex)
-        retval = xfrobnorm (x.float_complex_matrix_value ());
+        retval = octave::xfrobnorm (x.float_complex_matrix_value ());
       else if (isfloat)
-        retval = xfrobnorm (x.float_matrix_value ());
+        retval = octave::xfrobnorm (x.float_matrix_value ());
       else if (iscomplex)
-        retval = xfrobnorm (x.complex_matrix_value ());
+        retval = octave::xfrobnorm (x.complex_matrix_value ());
       else
-        retval = xfrobnorm (x.matrix_value ());
+        retval = octave::xfrobnorm (x.matrix_value ());
     }
 
   return retval;

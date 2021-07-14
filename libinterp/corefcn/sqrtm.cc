@@ -148,7 +148,7 @@ do_sqrtm (const octave_value& arg)
         }
 
       if (iscomplex)
-        cutoff = 10 * x.rows () * eps * xnorm (x, one);
+        cutoff = 10 * x.rows () * eps * octave::xnorm (x, one);
     }
 
   if (iscomplex)
@@ -191,7 +191,7 @@ do_sqrtm (const octave_value& arg)
             x = u * x; // original x no longer needed.
             ComplexMatrix res = xgemm (x, u, blas_no_trans, blas_conj_trans);
 
-            if (cutoff > 0 && xnorm (imag (res), one) <= cutoff)
+            if (cutoff > 0 && octave::xnorm (imag (res), one) <= cutoff)
               retval = real (res);
             else
               retval = res;

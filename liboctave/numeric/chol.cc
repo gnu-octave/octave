@@ -442,7 +442,7 @@ namespace octave
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond)
-        anorm = xnorm (a, 1);
+        anorm = octave::xnorm (a, 1);
 
       if (is_upper)
         F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
@@ -618,7 +618,7 @@ namespace octave
       // Calculate the norm of the matrix, for later use.
       float anorm = 0;
       if (calc_cond)
-        anorm = xnorm (a, 1);
+        anorm = octave::xnorm (a, 1);
 
       if (is_upper)
         F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
@@ -796,7 +796,7 @@ namespace octave
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond)
-        anorm = xnorm (a, 1);
+        anorm = octave::xnorm (a, 1);
 
       if (is_upper)
         F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n,
@@ -988,7 +988,7 @@ namespace octave
       // Calculate the norm of the matrix, for later use.
       float anorm = 0;
       if (calc_cond)
-        anorm = xnorm (a, 1);
+        anorm = octave::xnorm (a, 1);
 
       if (is_upper)
         F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1),

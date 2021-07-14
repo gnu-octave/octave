@@ -119,7 +119,11 @@ function retval = num2str (x, arg)
           if (any (! valid))
             ndgt = max (ndgt, 5);     # Allow space for Inf/NaN
           endif
-          fmt = sprintf ("%%%d.0f", ndgt);
+          if (isfloat (x))
+            fmt = sprintf ("%%%d.0f", ndgt);
+          else
+            fmt = sprintf ("%%%dd", ndgt);
+          endif
         endif
       else
         ## Logical input
@@ -220,6 +224,7 @@ endfunction
 %!assert (num2str (NA), "NA")
 %!assert (num2str (complex (NA, 1)), "NA+1i")
 %!assert (num2str (complex (1, NA)), "1+NAi")
+%!assert (num2str (int64 (-flintmax ()) - 1), "-9007199254740993")
 
 ## ND-arrays are concatenated in columns
 %!shared m, x

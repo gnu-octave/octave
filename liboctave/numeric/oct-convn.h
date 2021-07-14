@@ -28,22 +28,25 @@
 
 #include "octave-config.h"
 
-#include "CColVector.h"
-#include "CMatrix.h"
-#include "CNDArray.h"
-#include "CRowVector.h"
-#include "dColVector.h"
-#include "dMatrix.h"
-#include "dNDArray.h"
-#include "dRowVector.h"
-#include "fCColVector.h"
-#include "fCMatrix.h"
-#include "fCNDArray.h"
-#include "fCRowVector.h"
-#include "fColVector.h"
-#include "fMatrix.h"
-#include "fNDArray.h"
-#include "fRowVector.h"
+class ColumnVector;
+class RowVector;
+class Matrix;
+class NDArray;
+
+class ComplexColumnVector;
+class ComplexRowVector;
+class ComplexMatrix;
+class ComplexNDArray;
+
+class FloatColumnVector;
+class FloatRowVector;
+class FloatMatrix;
+class FloatNDArray;
+
+class FloatComplexColumnVector;
+class FloatComplexRowVector;
+class FloatComplexMatrix;
+class FloatComplexNDArray;
 
 enum convn_type
 {
@@ -52,23 +55,78 @@ enum convn_type
   convn_valid
 };
 
-#define CONV_DECLS(TPREF, RPREF)                                        \
-  extern OCTAVE_API TPREF ## NDArray                                    \
-  convn (const TPREF ## NDArray& a, const RPREF ## NDArray& b,          \
-         convn_type ct);                                                \
-  extern OCTAVE_API TPREF ## Matrix                                     \
-  convn (const TPREF ## Matrix& a, const RPREF ## Matrix& b,            \
-         convn_type ct);                                                \
-  extern OCTAVE_API TPREF ## Matrix                                     \
-  convn (const TPREF ## Matrix& a, const RPREF ## ColumnVector& c,      \
-         const RPREF ## RowVector& r, convn_type ct)
+// double real X double real
 
+extern OCTAVE_API NDArray
+convn (const NDArray& a, const NDArray& b, convn_type ct);
 
-CONV_DECLS ( , );
-CONV_DECLS (Complex, );
-CONV_DECLS (Complex, Complex);
-CONV_DECLS (Float, Float);
-CONV_DECLS (FloatComplex, Float);
-CONV_DECLS (FloatComplex, FloatComplex);
+extern OCTAVE_API Matrix
+convn (const Matrix& a, const Matrix& b, convn_type ct);
+
+extern OCTAVE_API Matrix
+convn (const Matrix& a, const ColumnVector& c, const RowVector& r,
+       convn_type ct);
+
+// double complex X double real
+
+extern OCTAVE_API ComplexNDArray
+convn (const ComplexNDArray& a, const NDArray& b, convn_type ct);
+
+extern OCTAVE_API ComplexMatrix
+convn (const ComplexMatrix& a, const Matrix& b, convn_type ct);
+
+extern OCTAVE_API ComplexMatrix
+convn (const ComplexMatrix& a, const ColumnVector& c, const RowVector& r,
+       convn_type ct);
+
+// double complex X double complex
+
+extern OCTAVE_API ComplexNDArray
+convn (const ComplexNDArray& a, const ComplexNDArray& b, convn_type ct);
+
+extern OCTAVE_API ComplexMatrix
+convn (const ComplexMatrix& a, const ComplexMatrix& b, convn_type ct);
+
+extern OCTAVE_API ComplexMatrix
+convn (const ComplexMatrix& a, const ComplexColumnVector& c,
+       const ComplexRowVector& r, convn_type ct);
+
+// float real X float real
+
+extern OCTAVE_API FloatNDArray
+convn (const FloatNDArray& a, const FloatNDArray& b, convn_type ct);
+
+extern OCTAVE_API FloatMatrix
+convn (const FloatMatrix& a, const FloatMatrix& b, convn_type ct);
+
+extern OCTAVE_API FloatMatrix
+convn (const FloatMatrix& a, const FloatColumnVector& c,
+       const FloatRowVector& r, convn_type ct);
+
+// float complex X float real
+
+extern OCTAVE_API FloatComplexNDArray
+convn (const FloatComplexNDArray& a, const FloatNDArray& b, convn_type ct);
+
+extern OCTAVE_API FloatComplexMatrix
+convn (const FloatComplexMatrix& a, const FloatMatrix& b, convn_type ct);
+
+extern OCTAVE_API FloatComplexMatrix
+convn (const FloatComplexMatrix& a, const FloatColumnVector& c,
+       const FloatRowVector& r, convn_type ct);
+
+// float complex X float complex
+
+extern OCTAVE_API FloatComplexNDArray
+convn (const FloatComplexNDArray& a, const FloatComplexNDArray& b,
+       convn_type ct);
+
+extern OCTAVE_API FloatComplexMatrix
+convn (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+       convn_type ct);
+
+extern OCTAVE_API FloatComplexMatrix
+convn (const FloatComplexMatrix& a, const FloatComplexColumnVector& c,
+       const FloatComplexRowVector& r, convn_type ct);
 
 #endif

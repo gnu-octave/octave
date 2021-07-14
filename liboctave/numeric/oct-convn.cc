@@ -30,8 +30,24 @@
 #include <algorithm>
 
 #include "Array.h"
+#include "CColVector.h"
+#include "CMatrix.h"
+#include "CNDArray.h"
+#include "CRowVector.h"
 #include "MArray.h"
+#include "dColVector.h"
+#include "dMatrix.h"
+#include "dNDArray.h"
+#include "dRowVector.h"
 #include "f77-fcn.h"
+#include "fCColVector.h"
+#include "fCMatrix.h"
+#include "fCNDArray.h"
+#include "fCRowVector.h"
+#include "fColVector.h"
+#include "fMatrix.h"
+#include "fNDArray.h"
+#include "fRowVector.h"
 #include "oct-convn.h"
 
 // 2d convolution with a matrix kernel.

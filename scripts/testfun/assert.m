@@ -263,70 +263,80 @@ function assert (cond, varargin)
           A = cond;
           B = expected;
 
-          ## Check exceptional values.
-          errvec = (  isna (real (A)) != isna (real (B))
-                    | isna (imag (A)) != isna (imag (B)));
-          erridx = find (errvec);
-          if (! isempty (erridx))
-            err.index(end+1:end+length (erridx)) = ...
-              ind2tuple (size (A), erridx);
-            err.observed(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (A(erridx) (:))));
-            err.expected(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (B(erridx) (:))));
-            err.reason(end+1:end+length (erridx)) = ...
-              repmat ({"'NA' mismatch"}, length (erridx), 1);
-          endif
-          errseen = errvec;
+          if (isfloat (A))
+            ## Check exceptional values.
+            errvec = (  isna (real (A)) != isna (real (B))
+                      | isna (imag (A)) != isna (imag (B)));
+            erridx = find (errvec);
+            if (! isempty (erridx))
+              err.index(end+1:end+length (erridx)) = ...
+                ind2tuple (size (A), erridx);
+              err.observed(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (A(erridx) (:))));
+              err.expected(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (B(erridx) (:))));
+              err.reason(end+1:end+length (erridx)) = ...
+                repmat ({"'NA' mismatch"}, length (erridx), 1);
+            endif
+            errseen = errvec;
 
-          errvec = (  isnan (real (A)) != isnan (real (B))
-                    | isnan (imag (A)) != isnan (imag (B)));
-          erridx = find (errvec & ! errseen);
-          if (! isempty (erridx))
-            err.index(end+1:end+length (erridx)) = ...
-              ind2tuple (size (A), erridx);
-            err.observed(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (A(erridx) (:))));
-            err.expected(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (B(erridx) (:))));
-            err.reason(end+1:end+length (erridx)) = ...
-              repmat ({"'NaN' mismatch"}, length (erridx), 1);
-          endif
-          errseen |= errvec;
+            errvec = (  isnan (real (A)) != isnan (real (B))
+                      | isnan (imag (A)) != isnan (imag (B)));
+            erridx = find (errvec & ! errseen);
+            if (! isempty (erridx))
+              err.index(end+1:end+length (erridx)) = ...
+                ind2tuple (size (A), erridx);
+              err.observed(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (A(erridx) (:))));
+              err.expected(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (B(erridx) (:))));
+              err.reason(end+1:end+length (erridx)) = ...
+                repmat ({"'NaN' mismatch"}, length (erridx), 1);
+            endif
+            errseen |= errvec;
 
-          errvec =   ((isinf (real (A)) | isinf (real (B))) ...
-                      & (real (A) != real (B)))             ...
-                   | ((isinf (imag (A)) | isinf (imag (B))) ...
-                      & (imag (A) != imag (B)));
-          erridx = find (errvec & ! errseen);
-          if (! isempty (erridx))
-            err.index(end+1:end+length (erridx)) = ...
-              ind2tuple (size (A), erridx);
-            err.observed(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (A(erridx) (:))));
-            err.expected(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (B(erridx) (:))));
-            err.reason(end+1:end+length (erridx)) = ...
-              repmat ({"'Inf' mismatch"}, length (erridx), 1);
-          endif
-          errseen |= errvec;
+            errvec =   ((isinf (real (A)) | isinf (real (B))) ...
+                        & (real (A) != real (B)))             ...
+                     | ((isinf (imag (A)) | isinf (imag (B))) ...
+                        & (imag (A) != imag (B)));
+            erridx = find (errvec & ! errseen);
+            if (! isempty (erridx))
+              err.index(end+1:end+length (erridx)) = ...
+                ind2tuple (size (A), erridx);
+              err.observed(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (A(erridx) (:))));
+              err.expected(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (B(erridx) (:))));
+              err.reason(end+1:end+length (erridx)) = ...
+                repmat ({"'Inf' mismatch"}, length (erridx), 1);
+            endif
+            errseen |= errvec;
 
-          ## Check normal values.
-          ## Replace exceptional values already checked above by zero.
-          A_null_real = real (A);
-          B_null_real = real (B);
-          exclude = errseen ...
-                    | ! isfinite (A_null_real) & ! isfinite (B_null_real);
-          A_null_real(exclude) = 0;
-          B_null_real(exclude) = 0;
-          A_null_imag = imag (A);
-          B_null_imag = imag (B);
-          exclude = errseen ...
-                    | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
-          A_null_imag(exclude) = 0;
-          B_null_imag(exclude) = 0;
-          A_null = complex (A_null_real, A_null_imag);
-          B_null = complex (B_null_real, B_null_imag);
+            ## Check normal values.
+            ## Replace exceptional values already checked above by zero.
+            A_null_real = real (A);
+            B_null_real = real (B);
+            exclude = errseen ...
+                      | ! isfinite (A_null_real) & ! isfinite (B_null_real);
+            A_null_real(exclude) = 0;
+            B_null_real(exclude) = 0;
+            A_null_imag = imag (A);
+            B_null_imag = imag (B);
+            exclude = errseen ...
+                      | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
+            A_null_imag(exclude) = 0;
+            B_null_imag(exclude) = 0;
+            A_null = complex (A_null_real, A_null_imag);
+            clear A_null_real A_null_imag;
+            B_null = complex (B_null_real, B_null_imag);
+            clear B_null_real B_null_imag;
+          else
+            ## Non-floating point numbers don't need to tread exceptional or
+            ## complex values.
+            A_null = A;
+            B_null = B;
+          endif
+
           if (isscalar (tol))
             mtol = tol * ones (size (A));
           else

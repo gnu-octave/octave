@@ -121,7 +121,13 @@ jobs:
         timeout-minutes: 60
         env:
           XDG_RUNTIME_DIR: "/home/runner/tmp"
-        run: xvfb-run -a make -C ./.build check V=1 | tee ./test-suite.log
+        run: xvfb-run -a make -C ./.build check | tee ./test-suite.log
+        
+      - name: display test log
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
@@ -263,7 +269,13 @@ jobs:
         # automatically.
         continue-on-error: true
         timeout-minutes: 60
-        run: make -C ./.build check V=1
+        run: make -C ./.build check
+
+      - name: display test log
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
 
 
   windows:
@@ -449,7 +461,7 @@ jobs:
           rem Start Octave and run test suite
           octave-gui --eval "__run_test_suite__"
 
-      - name: display test results
+      - name: display test log
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5

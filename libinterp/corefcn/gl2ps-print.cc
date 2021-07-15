@@ -64,8 +64,8 @@ namespace octave
 
     gl2ps_renderer (opengl_functions& glfcns, FILE *_fp,
                     const std::string& _term)
-      : opengl_renderer (glfcns), fp (_fp), term (_term), fontsize (),
-        fontname (), buffer_overflow (false), m_svg_def_index (0)
+      : opengl_renderer (glfcns), m_fp (_fp), m_term (_term), m_fontsize (),
+        m_fontname (), m_buffer_overflow (false), m_svg_def_index (0)
     { }
 
     ~gl2ps_renderer (void) = default;
@@ -165,7 +165,7 @@ namespace octave
       else if (state == GL2PS_ERROR)
         error ("gl2ps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");
 
-      buffer_overflow |= (state == GL2PS_OVERFLOW);
+      m_buffer_overflow |= (state == GL2PS_OVERFLOW);
 
       // Don't draw background for subsequent viewports (legends, subplots,
       // etc.)
@@ -282,11 +282,11 @@ namespace octave
 
     int alignment_to_mode (int ha, int va) const;
 
-    FILE *fp;
-    caseless_str term;
-    double fontsize;
-    std::string fontname;
-    bool buffer_overflow;
+    FILE *m_fp;
+    caseless_str m_term;
+    double m_fontsize;
+    std::string m_fontname;
+    bool m_buffer_overflow;
     std::size_t m_svg_def_index;
   };
 
@@ -338,24 +338,24 @@ namespace octave
         in_draw = true;
 
         GLint gl2ps_term = GL2PS_PS;
-        if (term.find ("eps") != std::string::npos)
+        if (m_term.find ("eps") != std::string::npos)
           gl2ps_term = GL2PS_EPS;
-        else if (term.find ("pdf") != std::string::npos)
+        else if (m_term.find ("pdf") != std::string::npos)
           gl2ps_term = GL2PS_PDF;
-        else if (term.find ("ps") != std::string::npos)
+        else if (m_term.find ("ps") != std::string::npos)
           gl2ps_term = GL2PS_PS;
-        else if (term.find ("svg") != std::string::npos)
+        else if (m_term.find ("svg") != std::string::npos)
           gl2ps_term = GL2PS_SVG;
-        else if (term.find ("pgf") != std::string::npos)
+        else if (m_term.find ("pgf") != std::string::npos)
           gl2ps_term = GL2PS_PGF;
-        else if (term.find ("tex") != std::string::npos)
+        else if (m_term.find ("tex") != std::string::npos)
           gl2ps_term = GL2PS_TEX;
         else
           warning ("gl2ps_renderer::draw: Unknown terminal %s, using 'ps'",
-                   term.c_str ());
+                   m_term.c_str ());
 
         GLint gl2ps_text = 0;
-        if (term.find ("notxt") != std::string::npos)
+        if (m_term.find ("notxt") != std::string::npos)
           gl2ps_text = GL2PS_NO_TEXT;
 
         // Default sort order optimizes for 3D plots
@@ -375,16 +375,16 @@ namespace octave
         frame.add ([=] () { std::fclose (tmpf); });
 
         // Reset buffsize, unless this is 2nd pass of a texstandalone print.
-        if (term.find ("tex") == std::string::npos)
+        if (m_term.find ("tex") == std::string::npos)
           buffsize = 2*1024*1024;
         else
           buffsize /= 2;
 
-        buffer_overflow = true;
+        m_buffer_overflow = true;
 
-        while (buffer_overflow)
+        while (m_buffer_overflow)
           {
-            buffer_overflow = false;
+            m_buffer_overflow = false;
             buffsize *= 2;
 
             std::fseek (tmpf, 0, SEEK_SET);
@@ -448,10 +448,10 @@ namespace octave
 
             opengl_renderer::draw (go);
 
-            if (buffer_overflow)
+            if (m_buffer_overflow)
               warning ("gl2ps_renderer::draw: retrying with buffer size: %.1E B\n", double (2*buffsize));
 
-            if (! buffer_overflow)
+            if (! m_buffer_overflow)
               old_print_cmd = print_cmd;
 
             // Don't check return value of gl2psEndPage, it is not meaningful.
@@ -469,8 +469,8 @@ namespace octave
         // In EPS terminal read the header line by line and insert a
         // new procedure
         const char* fcn = "/SRX  { gsave FCT moveto rotate xshow grestore } BD\n";
-        bool header_found = ! (term.find ("eps") != std::string::npos
-                               || term.find ("svg") != std::string::npos);
+        bool header_found = ! (m_term.find ("eps") != std::string::npos
+                               || m_term.find ("svg") != std::string::npos);
 
         while (! feof (tmpf) && nread)
           {
@@ -484,7 +484,7 @@ namespace octave
                 if (! header_found && std::strncmp (str, "/SBCR", 5) == 0)
                   {
                     header_found = true;
-                    nwrite = std::fwrite (fcn, 1, strlen (fcn), fp);
+                    nwrite = std::fwrite (fcn, 1, strlen (fcn), m_fp);
                     if (nwrite != strlen (fcn))
                       {
                         // FIXME: is this the best thing to do here?
@@ -492,7 +492,7 @@ namespace octave
                         error ("gl2ps_renderer::draw: internal pipe error");
                       }
                   }
-                else if (term.find ("svg") != std::string::npos)
+                else if (m_term.find ("svg") != std::string::npos)
                   {
                     // FIXME: gl2ps uses pixel units for SVG format.
                     //        Modify resulting svg to use points instead.
@@ -515,7 +515,7 @@ namespace octave
                       }
                   }
 
-                nwrite = std::fwrite (str, 1, nread, fp);
+                nwrite = std::fwrite (str, 1, nread, m_fp);
                 if (nwrite != nread)
                   {
                     // FIXME: is this the best thing to do here?
@@ -1061,14 +1061,14 @@ namespace octave
         std::string str;
         if (txtobj.get_code ())
           {
-            fontname = "Symbol";
+            m_fontname = "Symbol";
             str = code_to_symbol (txtobj.get_code ());
           }
         else
           {
-            fontname = select_font (txtobj.get_name (),
-                                    txtobj.get_weight () == "bold",
-                                    txtobj.get_angle () == "italic");
+            m_fontname = select_font (txtobj.get_name (),
+                                      txtobj.get_weight () == "bold",
+                                      txtobj.get_angle () == "italic");
 
             // Check that the string is composed of single byte characters
             const std::string tmpstr = txtobj.get_string ();
@@ -1126,7 +1126,7 @@ namespace octave
 
         ss << "10] " << rotation << " " << txtobj.get_x ()
            << " " << txtobj.get_y () << " " << txtobj.get_size ()
-           << " /" << fontname << " SRX\n";
+           << " /" << m_fontname << " SRX\n";
       }
 
     ss << "grestore\n";
@@ -1139,7 +1139,7 @@ namespace octave
                                double x, double y, double z,
                                int ha, int va, double rotation)
   {
-    std::string saved_font = fontname;
+    std::string saved_font = m_fontname;
 
     if (txt.empty ())
       return Matrix (1, 4, 0.0);
@@ -1152,13 +1152,13 @@ namespace octave
     m_glfcns.glRasterPos3d (x, y, z);
 
     // For svg/eps directly dump a preformated text element into gl2ps output
-    if (term.find ("svg") != std::string::npos)
+    if (m_term.find ("svg") != std::string::npos)
       {
         std::string elt = strlist_to_svg (x, y, z, bbox, rotation, lst);
         if (! elt.empty ())
           gl2psSpecial (GL2PS_SVG, elt.c_str ());
       }
-    else if (term.find ("eps") != std::string::npos)
+    else if (m_term.find ("eps") != std::string::npos)
       {
         std::string elt = strlist_to_ps (x, y, z, bbox, rotation, lst);
         if (! elt.empty ())
@@ -1166,10 +1166,10 @@ namespace octave
 
       }
     else
-      gl2psTextOpt (str.c_str (), fontname.c_str (), fontsize,
+      gl2psTextOpt (str.c_str (), m_fontname.c_str (), m_fontsize,
                     alignment_to_mode (ha, va), rotation);
 
-    fontname = saved_font;
+    m_fontname = saved_font;
 
     return bbox;
   }
@@ -1183,7 +1183,7 @@ namespace octave
     if (props.has_property ("interpreter"))
       set_interpreter (props.get ("interpreter").string_value ());
 
-    fontsize = props.get ("__fontsize_points__").double_value ();
+    m_fontsize = props.get ("__fontsize_points__").double_value ();
 
     caseless_str fn = props.get ("fontname").xtolower ().string_value ();
     bool isbold
@@ -1191,7 +1191,7 @@ namespace octave
     bool isitalic
       = (props.get ("fontangle").xtolower ().string_value () == "italic");
 
-    fontname = select_font (fn, isbold, isitalic);
+    m_fontname = select_font (fn, isbold, isitalic);
   }
 
   void
@@ -1229,8 +1229,8 @@ namespace octave
       y(1) = y(1) + (h-1);
 
 
-    const ColumnVector p0 = xform.transform (x(0), y(0), 0);
-    const ColumnVector p1 = xform.transform (x(1), y(1), 0);
+    const ColumnVector p0 = m_xform.transform (x(0), y(0), 0);
+    const ColumnVector p1 = m_xform.transform (x(1), y(1), 0);
 
     if (math::isnan (p0(0)) || math::isnan (p0(1))
         || math::isnan (p1(0)) || math::isnan (p1(1)))
@@ -1251,7 +1251,7 @@ namespace octave
       }
     else
       {
-        const ColumnVector p1w = xform.transform (x(1) + 1, y(1), 0);
+        const ColumnVector p1w = m_xform.transform (x(1) + 1, y(1), 0);
         pix_dx = p1w(0) - p0(0);
         nor_dx = 1;
       }
@@ -1263,7 +1263,7 @@ namespace octave
       }
     else
       {
-        const ColumnVector p1h = xform.transform (x(1), y(1) + 1, 0);
+        const ColumnVector p1h = m_xform.transform (x(1), y(1) + 1, 0);
         pix_dy = p1h(1) - p0(1);
         nor_dy = 1;
       }
@@ -1285,9 +1285,9 @@ namespace octave
     Matrix vp = get_viewport_scaled ();
 
     ColumnVector vp_lim_min
-      = xform.untransform (std::numeric_limits <float>::epsilon (),
+      = m_xform.untransform (std::numeric_limits <float>::epsilon (),
                            std::numeric_limits <float>::epsilon ());
-    ColumnVector vp_lim_max = xform.untransform (vp(2), vp(3));
+    ColumnVector vp_lim_max = m_xform.untransform (vp(2), vp(3));
 
     if (vp_lim_min(0) > vp_lim_max(0))
       std::swap (vp_lim_min(0), vp_lim_max(0));
@@ -1296,16 +1296,16 @@ namespace octave
       std::swap (vp_lim_min(1), vp_lim_max(1));
 
     float clip_xmin
-      = do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0);
+      = do_clip ? (vp_lim_min(0) > m_xmin ? vp_lim_min(0) : m_xmin) : vp_lim_min(0);
 
     float clip_ymin
-      = do_clip ? (vp_lim_min(1) > ymin ? vp_lim_min(1) : ymin) : vp_lim_min(1);
+      = do_clip ? (vp_lim_min(1) > m_ymin ? vp_lim_min(1) : m_ymin) : vp_lim_min(1);
 
     float clip_xmax
-      = do_clip ? (vp_lim_max(0) < xmax ? vp_lim_max(0) : xmax) : vp_lim_max(0);
+      = do_clip ? (vp_lim_max(0) < m_xmax ? vp_lim_max(0) : m_xmax) : vp_lim_max(0);
 
     float clip_ymax
-      = do_clip ? (vp_lim_max(1) < ymax ? vp_lim_max(1) : ymax) : vp_lim_max(1);
+      = do_clip ? (vp_lim_max(1) < m_ymax ? vp_lim_max(1) : m_ymax) : vp_lim_max(1);
 
     if (im_xmin < clip_xmin)
       j0 += (clip_xmin - im_xmin)/nor_dx + 1;
@@ -1513,7 +1513,7 @@ namespace octave
     set_font (props);
     set_color (props.get_color_rgb ());
 
-    std::string saved_font = fontname;
+    std::string saved_font = m_fontname;
 
     // Alignment
     int halign = 0;
@@ -1560,7 +1560,7 @@ namespace octave
 
     bool have_cmd = stream.length () > 1 && stream[0] == '|';
 
-    FILE *fp = nullptr;
+    FILE *m_fp = nullptr;
 
     unwind_protect frame;
 
@@ -1570,27 +1570,27 @@ namespace octave
 
         std::string cmd = stream.substr (1);
 
-        fp = popen (cmd.c_str (), "w");
+        m_fp = popen (cmd.c_str (), "w");
 
-        if (! fp)
+        if (! m_fp)
           error (R"(print: failed to open pipe "%s")", stream.c_str ());
 
         // Need octave:: qualifier here to avoid ambiguity.
-        frame.add ([=] () { octave::pclose (fp); });
+        frame.add ([=] () { octave::pclose (m_fp); });
       }
     else
       {
         // Write gl2ps output directly to file.
 
-        fp = sys::fopen (stream.c_str (), "w");
+        m_fp = sys::fopen (stream.c_str (), "w");
 
-        if (! fp)
+        if (! m_fp)
           error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());
 
-        frame.add ([=] () { std::fclose (fp); });
+        frame.add ([=] () { std::fclose (m_fp); });
       }
 
-    gl2ps_renderer rend (glfcns, fp, term);
+    gl2ps_renderer rend (glfcns, m_fp, term);
 
     Matrix pos = fig.get ("position").matrix_value ();
     rend.set_viewport (pos(2), pos(3));

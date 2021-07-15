@@ -49,13 +49,13 @@ Array<T>::nil_rep (void)
 // Note we can't specialize a member without also specializing the class.
 template <typename T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
-  : dimensions (dv), rep (a.rep),
-    slice_data (a.slice_data), slice_len (a.slice_len)
+  : m_dimensions (dv), m_rep (a.m_rep),
+    m_slice_data (a.m_slice_data), m_slice_len (a.m_slice_len)
 {
-  if (dimensions.safe_numel () != a.numel ())
+  if (m_dimensions.safe_numel () != a.numel ())
     {
-      std::string dimensions_str = a.dimensions.str ();
-      std::string new_dims_str = dimensions.str ();
+      std::string dimensions_str = a.m_dimensions.str ();
+      std::string new_dims_str = m_dimensions.str ();
 
       (*current_liboctave_error_handler)
         ("reshape: can't reshape %s array to %s array",
@@ -64,52 +64,52 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
 
   // This goes here because if an exception is thrown by the above,
   // destructor will be never called.
-  rep->count++;
-  dimensions.chop_trailing_singletons ();
+  m_rep->m_count++;
+  m_dimensions.chop_trailing_singletons ();
 }
 
 template <typename T>
 void
 Array<T>::fill (const T& val)
 {
-  if (rep->count > 1)
+  if (m_rep->m_count > 1)
     {
-      --rep->count;
-      rep = new ArrayRep (numel (), val);
-      slice_data = rep->data;
+      --m_rep->m_count;
+      m_rep = new ArrayRep (numel (), val);
+      m_slice_data = m_rep->m_data;
     }
   else
-    std::fill_n (slice_data, slice_len, val);
+    std::fill_n (m_slice_data, m_slice_len, val);
 }
 
 template <typename T>
 void
 Array<T>::clear (void)
 {
-  if (--rep->count == 0)
-    delete rep;
+  if (--m_rep->m_count == 0)
+    delete m_rep;
 
-  rep = nil_rep ();
-  rep->count++;
-  slice_data = rep->data;
-  slice_len = rep->len;
+  m_rep = nil_rep ();
+  m_rep->m_count++;
+  m_slice_data = m_rep->m_data;
+  m_slice_len = m_rep->m_len;
 
-  dimensions = dim_vector ();
+  m_dimensions = dim_vector ();
 }
 
 template <typename T>
 void
 Array<T>::clear (const dim_vector& dv)
 {
-  if (--rep->count == 0)
-    delete rep;
+  if (--m_rep->m_count == 0)
+    delete m_rep;
 
-  rep = new ArrayRep (dv.safe_numel ());
-  slice_data = rep->data;
-  slice_len = rep->len;
+  m_rep = new ArrayRep (dv.safe_numel ());
+  m_slice_data = m_rep->m_data;
+  m_slice_len = m_rep->m_len;
 
-  dimensions = dv;
-  dimensions.chop_trailing_singletons ();
+  m_dimensions = dv;
+  m_dimensions.chop_trailing_singletons ();
 }
 
 template <typename T>
@@ -122,16 +122,16 @@ Array<T>::squeeze (void) const
     {
       bool dims_changed = false;
 
-      dim_vector new_dimensions = dimensions;
+      dim_vector new_dimensions = m_dimensions;
 
       int k = 0;
 
       for (int i = 0; i < ndims (); i++)
         {
-          if (dimensions(i) == 1)
+          if (m_dimensions(i) == 1)
             dims_changed = true;
           else
-            new_dimensions(k++) = dimensions(i);
+            new_dimensions(k++) = m_dimensions(i);
         }
 
       if (dims_changed)
@@ -169,7 +169,7 @@ template <typename T>
 octave_idx_type
 Array<T>::compute_index (octave_idx_type i, octave_idx_type j) const
 {
-  return ::compute_index (i, j, dimensions);
+  return ::compute_index (i, j, m_dimensions);
 }
 
 template <typename T>
@@ -177,25 +177,25 @@ octave_idx_type
 Array<T>::compute_index (octave_idx_type i, octave_idx_type j,
                          octave_idx_type k) const
 {
-  return ::compute_index (i, j, k, dimensions);
+  return ::compute_index (i, j, k, m_dimensions);
 }
 
 template <typename T>
 octave_idx_type
 Array<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
-  return ::compute_index (ra_idx, dimensions);
+  return ::compute_index (ra_idx, m_dimensions);
 }
 
 template <typename T>
 T&
 Array<T>::checkelem (octave_idx_type n)
 {
-  // Do checks directly to avoid recomputing slice_len.
+  // Do checks directly to avoid recomputing m_slice_len.
   if (n < 0)
     octave::err_invalid_index (n);
-  if (n >= slice_len)
-    octave::err_index_out_of_range (1, 1, n+1, slice_len, dimensions);
+  if (n >= m_slice_len)
+    octave::err_index_out_of_range (1, 1, n+1, m_slice_len, m_dimensions);
 
   return elem (n);
 }
@@ -225,11 +225,11 @@ template <typename T>
 typename Array<T>::crefT
 Array<T>::checkelem (octave_idx_type n) const
 {
-  // Do checks directly to avoid recomputing slice_len.
+  // Do checks directly to avoid recomputing m_slice_len.
   if (n < 0)
     octave::err_invalid_index (n);
-  if (n >= slice_len)
-    octave::err_index_out_of_range (1, 1, n+1, slice_len, dimensions);
+  if (n >= m_slice_len)
+    octave::err_index_out_of_range (1, 1, n+1, m_slice_len, m_dimensions);
 
   return elem (n);
 }
@@ -260,7 +260,7 @@ template <typename T>
 Array<T>
 Array<T>::column (octave_idx_type k) const
 {
-  octave_idx_type r = dimensions(0);
+  octave_idx_type r = m_dimensions(0);
 
   return Array<T> (*this, dim_vector (r, 1), k*r, k*r + r);
 }
@@ -269,8 +269,8 @@ template <typename T>
 Array<T>
 Array<T>::page (octave_idx_type k) const
 {
-  octave_idx_type r = dimensions(0);
-  octave_idx_type c = dimensions(1);
+  octave_idx_type r = m_dimensions(0);
+  octave_idx_type c = m_dimensions(1);
   octave_idx_type p = r*c;
 
   return Array<T> (*this, dim_vector (r, c), k*p, k*p + p);
@@ -726,7 +726,7 @@ Array<T>::index (const octave::idx_vector& i) const
   else
     {
       if (i.extent (n) != n)
-        octave::err_index_out_of_range (1, 1, i.extent (n), n, dimensions);
+        octave::err_index_out_of_range (1, 1, i.extent (n), n, m_dimensions);
 
       dim_vector result_dims = i.orig_dimensions ();
       octave_idx_type idx_len = i.length ();
@@ -765,7 +765,7 @@ Array<T>
 Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
 {
   // Get dimensions, allowing Fortran indexing in the 2nd dim.
-  dim_vector dv = dimensions.redim (2);
+  dim_vector dv = m_dimensions.redim (2);
   octave_idx_type r = dv(0);
   octave_idx_type c = dv(1);
   Array<T> retval;
@@ -778,9 +778,9 @@ Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
   else
     {
       if (i.extent (r) != r)
-        octave::err_index_out_of_range (2, 1, i.extent (r), r, dimensions); // throws
+        octave::err_index_out_of_range (2, 1, i.extent (r), r, m_dimensions); // throws
       if (j.extent (c) != c)
-        octave::err_index_out_of_range (2, 2, j.extent (c), c, dimensions); // throws
+        octave::err_index_out_of_range (2, 2, j.extent (c), c, m_dimensions); // throws
 
       octave_idx_type n = numel ();
       octave_idx_type il = i.length (r);
@@ -833,7 +833,7 @@ Array<T>::index (const Array<octave::idx_vector>& ia) const
   else if (ial > 0)
     {
       // Get dimensions, allowing Fortran indexing in the last dim.
-      dim_vector dv = dimensions.redim (ial);
+      dim_vector dv = m_dimensions.redim (ial);
 
       // Check for out of bounds conditions.
       bool all_colons = true;
@@ -841,7 +841,7 @@ Array<T>::index (const Array<octave::idx_vector>& ia) const
         {
           if (ia(i).extent (dv(i)) != dv(i))
             octave::err_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i),
-                                            dimensions); // throws
+                                            m_dimensions); // throws
 
           all_colons = all_colons && ia(i).is_colon ();
         }
@@ -923,19 +923,19 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
   if (n == nx - 1 && n > 0)
     {
       // Stack "pop" operation.
-      if (rep->count == 1)
-        slice_data[slice_len-1] = T ();
-      slice_len--;
-      dimensions = dv;
+      if (m_rep->m_count == 1)
+        m_slice_data[m_slice_len-1] = T ();
+      m_slice_len--;
+      m_dimensions = dv;
     }
   else if (n == nx + 1 && nx > 0)
     {
       // Stack "push" operation.
-      if (rep->count == 1
-          && slice_data + slice_len < rep->data + rep->len)
+      if (m_rep->m_count == 1
+          && m_slice_data + m_slice_len < m_rep->m_data + m_rep->m_len)
         {
-          slice_data[slice_len++] = rfv;
-          dimensions = dv;
+          m_slice_data[m_slice_len++] = rfv;
+          m_dimensions = dv;
         }
       else
         {
@@ -1013,14 +1013,14 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
   int dvl = dv.ndims ();
   if (dvl == 2)
     resize2 (dv(0), dv(1), rfv);
-  else if (dimensions != dv)
+  else if (m_dimensions != dv)
     {
-      if (dimensions.ndims () > dvl || dv.any_neg ())
+      if (m_dimensions.ndims () > dvl || dv.any_neg ())
         octave::err_invalid_resize ();
 
       Array<T> tmp (dv);
       // Prepare for recursive resizing.
-      rec_resize_helper rh (dv, dimensions.redim (dvl));
+      rec_resize_helper rh (dv, m_dimensions.redim (dvl));
 
       // Do it.
       rh.resize_fill (data (), tmp.fortran_vec (), rfv);
@@ -1060,7 +1060,7 @@ Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j,
   Array<T> tmp = *this;
   if (resize_ok)
     {
-      dim_vector dv = dimensions.redim (2);
+      dim_vector dv = m_dimensions.redim (2);
       octave_idx_type r = dv(0);
       octave_idx_type c = dv(1);
       octave_idx_type rx = i.extent (r);
@@ -1089,7 +1089,7 @@ Array<T>::index (const Array<octave::idx_vector>& ia,
   if (resize_ok)
     {
       int ial = ia.numel ();
-      dim_vector dv = dimensions.redim (ial);
+      dim_vector dv = m_dimensions.redim (ial);
       dim_vector dvx = dim_vector::alloc (ial);
       for (int i = 0; i < ial; i++)
         dvx(i) = ia(i).extent (dv(i));
@@ -1103,7 +1103,7 @@ Array<T>::index (const Array<octave::idx_vector>& ia,
           else
             tmp.resize (dvx, rfv);
 
-          if (tmp.dimensions != dvx)
+          if (tmp.m_dimensions != dvx)
             return Array<T> ();
         }
     }
@@ -1127,7 +1127,7 @@ Array<T>::assign (const octave::idx_vector& i, const Array<T>& rhs, const T& rfv
   if (nx != n)
     {
       // Optimize case A = []; A(1:n) = X with A empty.
-      if (dimensions.zero_by_zero () && colon)
+      if (m_dimensions.zero_by_zero () && colon)
         {
           if (rhl == 1)
             *this = Array<T> (dim_vector (1, nx), rhs(0));
@@ -1146,7 +1146,7 @@ Array<T>::assign (const octave::idx_vector& i, const Array<T>& rhs, const T& rfv
       if (rhl == 1)
         fill (rhs(0));
       else
-        *this = rhs.reshape (dimensions);
+        *this = rhs.reshape (m_dimensions);
     }
   else
     {
@@ -1163,15 +1163,15 @@ void
 Array<T>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
                   const Array<T>& rhs, const T& rfv)
 {
-  bool initial_dims_all_zero = dimensions.all_zero ();
+  bool initial_dims_all_zero = m_dimensions.all_zero ();
 
   // Get RHS extents, discarding singletons.
   dim_vector rhdv = rhs.dims ();
 
   // Get LHS extents, allowing Fortran indexing in the second dim.
-  dim_vector dv = dimensions.redim (2);
+  dim_vector dv = m_dimensions.redim (2);
 
-  // Check for out-of-bounds and form resizing dimensions.
+  // Check for out-of-bounds and form resizing m_dimensions.
   dim_vector rdv;
 
   // In the special when all dimensions are zero, colons are allowed
@@ -1211,7 +1211,7 @@ Array<T>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
             }
 
           resize (rdv, rfv);
-          dv = dimensions;
+          dv = m_dimensions;
         }
 
       if (all_colons)
@@ -1220,7 +1220,7 @@ Array<T>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
           if (isfill)
             fill (rhs(0));
           else
-            *this = rhs.reshape (dimensions);
+            *this = rhs.reshape (m_dimensions);
         }
       else
         {
@@ -1276,13 +1276,13 @@ Array<T>::assign (const Array<octave::idx_vector>& ia,
     assign (ia(0), ia(1), rhs, rfv);
   else if (ial > 0)
     {
-      bool initial_dims_all_zero = dimensions.all_zero ();
+      bool initial_dims_all_zero = m_dimensions.all_zero ();
 
       // Get RHS extents, discarding singletons.
       dim_vector rhdv = rhs.dims ();
 
       // Get LHS extents, allowing Fortran indexing in the second dim.
-      dim_vector dv = dimensions.redim (ial);
+      dim_vector dv = m_dimensions.redim (ial);
 
       // Get the extents forced by indexing.
       dim_vector rdv;
@@ -1344,7 +1344,7 @@ Array<T>::assign (const Array<octave::idx_vector>& ia,
               if (isfill)
                 fill (rhs(0));
               else
-                *this = rhs.reshape (dimensions);
+                *this = rhs.reshape (m_dimensions);
             }
           else
             {
@@ -1406,7 +1406,7 @@ Array<T>::delete_elements (const octave::idx_vector& i)
 
       octave_idx_type l, u;
       bool col_vec = ndims () == 2 && columns () == 1 && rows () != 1;
-      if (i.is_scalar () && i(0) == n-1 && dimensions.isvector ())
+      if (i.is_scalar () && i(0) == n-1 && m_dimensions.isvector ())
         {
           // Stack "pop" operation.
           resize1 (n-1);
@@ -1437,7 +1437,7 @@ Array<T>::delete_elements (int dim, const octave::idx_vector& i)
   if (dim < 0 || dim >= ndims ())
     (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
 
-  octave_idx_type n = dimensions(dim);
+  octave_idx_type n = m_dimensions(dim);
   if (i.is_colon ())
     {
       *this = Array<T> ();
@@ -1455,10 +1455,10 @@ Array<T>::delete_elements (int dim, const octave::idx_vector& i)
           octave_idx_type nd = n + l - u;
           octave_idx_type dl = 1;
           octave_idx_type du = 1;
-          dim_vector rdv = dimensions;
+          dim_vector rdv = m_dimensions;
           rdv(dim) = nd;
-          for (int k = 0; k < dim; k++) dl *= dimensions(k);
-          for (int k = dim + 1; k < ndims (); k++) du *= dimensions(k);
+          for (int k = 0; k < dim; k++) dl *= m_dimensions(k);
+          for (int k = dim + 1; k < ndims (); k++) du *= m_dimensions(k);
 
           // Special case deleting a contiguous range.
           Array<T> tmp = Array<T> (rdv);
@@ -1509,7 +1509,7 @@ Array<T>::delete_elements (const Array<octave::idx_vector>& ia)
         }
       if (dim < 0)
         {
-          dim_vector dv = dimensions;
+          dim_vector dv = m_dimensions;
           dv(0) = 0;
           *this = Array<T> (dv);
         }
@@ -1538,7 +1538,7 @@ Array<T>::delete_elements (const Array<octave::idx_vector>& ia)
 
           for (int i = 0; i < ial; i++)
             {
-              octave_idx_type dim_len = (i >= nd ? 1 : dimensions(i));
+              octave_idx_type dim_len = (i >= nd ? 1 : m_dimensions(i));
 
               if (ia(i).length (dim_len) == 0)
                 {
@@ -1577,7 +1577,7 @@ Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
       idx(0) = i;
       idx(1) = j;
       for (int k = 2; k < a.ndims (); k++)
-        idx(k) = octave::idx_vector (0, a.dimensions(k));
+        idx(k) = octave::idx_vector (0, a.m_dimensions(k));
       assign (idx, a);
     }
 
@@ -1746,7 +1746,7 @@ Array<T>::fortran_vec (void)
 {
   make_unique ();
 
-  return slice_data;
+  return m_slice_data;
 }
 
 // Non-real types don't have NaNs.
@@ -2299,9 +2299,9 @@ Array<T>::find (octave_idx_type n, bool backward) const
 
   if ((numel () == 1 && retval.isempty ())
       || (rows () == 0 && dims ().numel (1) == 0))
-    retval.dimensions = dim_vector ();
+    retval.m_dimensions = dim_vector ();
   else if (rows () == 1 && ndims () == 2)
-    retval.dimensions = dim_vector (1, retval.numel ());
+    retval.m_dimensions = dim_vector (1, retval.numel ());
 
   return retval;
 }
@@ -2740,12 +2740,12 @@ template <typename T>
 void
 Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 {
-  os << prefix << "rep address: " << rep << '\n'
-     << prefix << "rep->len:    " << rep->len << '\n'
-     << prefix << "rep->data:   " << static_cast<void *> (rep->data) << '\n'
-     << prefix << "rep->count:  " << rep->count << '\n'
-     << prefix << "slice_data:  " << static_cast<void *> (slice_data) << '\n'
-     << prefix << "slice_len:   " << slice_len << '\n';
+  os << prefix << "m_rep address:   " << m_rep << '\n'
+     << prefix << "m_rep->m_len:    " << m_rep->m_len << '\n'
+     << prefix << "m_rep->m_data:   " << static_cast<void *> (m_rep->m_data) << '\n'
+     << prefix << "m_rep->m_count:  " << m_rep->m_count << '\n'
+     << prefix << "m_slice_data:    " << static_cast<void *> (m_slice_data) << '\n'
+     << prefix << "m_slice_len:     " << m_slice_len << '\n';
 
   // 2D info:
   //
@@ -2756,9 +2756,9 @@ Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 template <typename T>
 bool Array<T>::optimize_dimensions (const dim_vector& dv)
 {
-  bool retval = dimensions == dv;
+  bool retval = m_dimensions == dv;
   if (retval)
-    dimensions = dv;
+    m_dimensions = dv;
 
   return retval;
 }

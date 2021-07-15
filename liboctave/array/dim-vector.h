@@ -95,9 +95,9 @@ dim_vector
 {
 private:
 
-  octave_idx_type *rep;
+  octave_idx_type *m_rep;
 
-  octave_idx_type& count (void) const { return rep[-2]; }
+  octave_idx_type& count (void) const { return m_rep[-2]; }
 
   octave_idx_type increment_count (void)
   {
@@ -121,7 +121,7 @@ private:
     return r;
   }
 
-  //! Clone this->rep.
+  //! Clone this->m_rep.
 
   octave_idx_type * clonerep (void)
   {
@@ -129,12 +129,12 @@ private:
 
     octave_idx_type *r = newrep (nd);
 
-    std::copy_n (rep, nd, r);
+    std::copy_n (m_rep, nd, r);
 
     return r;
   }
 
-  //! Clone and resize this->rep to length n, filling by given value.
+  //! Clone and resize this->m_rep to length n, filling by given value.
 
   octave_idx_type * resizerep (int n, octave_idx_type fill_value)
   {
@@ -148,7 +148,7 @@ private:
     if (nd > n)
       nd = n;
 
-    std::copy_n (rep, nd, r);
+    std::copy_n (m_rep, nd, r);
     std::fill_n (r + nd, n - nd, fill_value);
 
     return r;
@@ -159,7 +159,7 @@ private:
   void freerep (void)
   {
     assert (count () == 0);
-    delete [] (rep - 2);
+    delete [] (m_rep - 2);
   }
 
   void make_unique (void)
@@ -171,7 +171,7 @@ private:
         if (decrement_count () == 0)
           freerep ();
 
-        rep = new_rep;
+        m_rep = new_rep;
       }
   }
 
@@ -214,19 +214,19 @@ public:
 
   template <typename... Ints>
   dim_vector (const octave_idx_type r, const octave_idx_type c,
-              Ints... lengths) : rep (newrep (2 + sizeof... (Ints)))
+              Ints... lengths) : m_rep (newrep (2 + sizeof... (Ints)))
   {
     std::initializer_list<octave_idx_type> all_lengths = {r, c, lengths...};
     for (const octave_idx_type l: all_lengths)
-      *rep++ = l;
-    rep -= all_lengths.size ();
+      *m_rep++ = l;
+    m_rep -= all_lengths.size ();
   }
 
   // Fast access with absolutely no checking
 
-  octave_idx_type& xelem (int i) { return rep[i]; }
+  octave_idx_type& xelem (int i) { return m_rep[i]; }
 
-  octave_idx_type xelem (int i) const { return rep[i]; }
+  octave_idx_type xelem (int i) const { return m_rep[i]; }
 
   // Safe access to to elements
 
@@ -241,13 +241,13 @@ public:
   void chop_trailing_singletons (void)
   {
     int nd = ndims ();
-    if (nd > 2 && rep[nd-1] == 1)
+    if (nd > 2 && m_rep[nd-1] == 1)
       {
         make_unique ();
         do
           nd--;
-        while (nd > 2 && rep[nd-1] == 1);
-        rep[-1] = nd;
+        while (nd > 2 && m_rep[nd-1] == 1);
+        m_rep[-1] = nd;
       }
   }
 
@@ -256,7 +256,7 @@ public:
   // WARNING: Only call by jit
   octave_idx_type * to_jit (void) const
   {
-    return rep;
+    return m_rep;
   }
 
 private:
@@ -267,16 +267,16 @@ public:
 
   static OCTAVE_API octave_idx_type dim_max (void);
 
-  explicit dim_vector (void) : rep (nil_rep ())
+  explicit dim_vector (void) : m_rep (nil_rep ())
   { increment_count (); }
 
-  dim_vector (const dim_vector& dv) : rep (dv.rep)
+  dim_vector (const dim_vector& dv) : m_rep (dv.m_rep)
   { increment_count (); }
 
-  dim_vector (dim_vector&& dv) : rep (dv.rep) { dv.rep = nullptr; }
+  dim_vector (dim_vector&& dv) : m_rep (dv.m_rep) { dv.m_rep = nullptr; }
 
 // FIXME: Should be private, but required by array constructor for jit
-  explicit dim_vector (octave_idx_type *r) : rep (r) { }
+  explicit dim_vector (octave_idx_type *r) : m_rep (r) { }
 
   static dim_vector alloc (int n)
   {
@@ -290,7 +290,7 @@ public:
         if (decrement_count () == 0)
           freerep ();
 
-        rep = dv.rep;
+        m_rep = dv.m_rep;
         increment_count ();
       }
 
@@ -302,14 +302,14 @@ public:
     if (&dv != this)
       {
         // Because we define a move constructor and a move assignment
-        // operator, rep may be a nullptr here.  We should only need to
+        // operator, m_rep may be a nullptr here.  We should only need to
         // protect the destructor in a similar way.
 
-        if (rep && decrement_count () == 0)
+        if (m_rep && decrement_count () == 0)
           freerep ();
 
-        rep = dv.rep;
-        dv.rep = nullptr;
+        m_rep = dv.m_rep;
+        dv.m_rep = nullptr;
       }
 
     return *this;
@@ -318,10 +318,10 @@ public:
   ~dim_vector (void)
   {
     // Because we define a move constructor and a move assignment
-    // operator, rep may be a nullptr here.  We should only need to
+    // operator, m_rep may be a nullptr here.  We should only need to
     // protect the move assignment operator in a similar way.
 
-    if (rep && decrement_count () == 0)
+    if (m_rep && decrement_count () == 0)
       freerep ();
   }
 
@@ -331,7 +331,7 @@ public:
   //! elements in the dim_vector including trailing singletons.  It is also
   //! the number of dimensions an Array with this dim_vector would have.
 
-  octave_idx_type ndims (void) const { return rep[-1]; }
+  octave_idx_type ndims (void) const { return m_rep[-1]; }
 
   //! Number of dimensions.
   //! Synonymous with ndims().
@@ -357,7 +357,7 @@ public:
         if (decrement_count () == 0)
           freerep ();
 
-        rep = r;
+        m_rep = r;
       }
   }
 
@@ -365,7 +365,7 @@ public:
 
   bool all_zero (void) const
   {
-    return std::all_of (rep, rep + ndims (),
+    return std::all_of (m_rep, m_rep + ndims (),
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
@@ -381,7 +381,7 @@ public:
 
   bool any_zero (void) const
   {
-    return std::any_of (rep, rep + ndims (),
+    return std::any_of (m_rep, m_rep + ndims (),
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
@@ -422,7 +422,7 @@ public:
 
   bool any_neg (void) const
   {
-    return std::any_of (rep, rep + ndims (),
+    return std::any_of (m_rep, m_rep + ndims (),
                         [] (octave_idx_type dim) { return dim < 0; });
   }
 
@@ -527,7 +527,7 @@ public:
   {
     octave_idx_type k = 0;
     for (int i = nidx - 1; i >= 0; i--)
-      k = rep[i] * k + idx[i];
+      k = m_rep[i] * k + idx[i];
 
     return k;
   }
@@ -541,7 +541,7 @@ public:
     int i;
     for (i = start; i < ndims (); i++)
       {
-        if (++(*idx) == rep[i])
+        if (++(*idx) == m_rep[i])
           *idx++ = 0;
         else
           break;
@@ -558,7 +558,7 @@ public:
 
     octave_idx_type k = 1;
     for (int i = 0; i < nd; i++)
-      retval.rep[i] = (k *= rep[i]);
+      retval.m_rep[i] = (k *= m_rep[i]);
 
     return retval;
   }
@@ -571,7 +571,7 @@ public:
     octave_idx_type k = idx[0];
 
     for (int i = 1; i < ndims (); i++)
-      k += rep[i-1] * idx[i];
+      k += m_rep[i-1] * idx[i];
 
     return k;
   }
@@ -586,7 +586,7 @@ inline bool
 operator == (const dim_vector& a, const dim_vector& b)
 {
   // Fast case.
-  if (a.rep == b.rep)
+  if (a.m_rep == b.m_rep)
     return true;
 
   int a_len = a.ndims ();
@@ -595,7 +595,7 @@ operator == (const dim_vector& a, const dim_vector& b)
   if (a_len != b_len)
     return false;
 
-  return std::equal (a.rep, a.rep + a_len, b.rep);
+  return std::equal (a.m_rep, a.m_rep + a_len, b.m_rep);
 }
 
 inline bool

@@ -54,12 +54,13 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
 
 // Element by element MDiagArray2 by scalar ops.
 
-#define MARRAY_DAS_OP(OP, FN)                                           \
-  template <typename T>                                                 \
-  MDiagArray2<T>                                                        \
-  operator OP (const MDiagArray2<T>& a, const T& s)                     \
-  {                                                                     \
-    return MDiagArray2<T> (do_ms_binary_op<T, T, T> (a, s, FN), a.d1, a.d2); \
+#define MARRAY_DAS_OP(OP, FN)                                   \
+  template <typename T>                                         \
+  MDiagArray2<T>                                                \
+  operator OP (const MDiagArray2<T>& a, const T& s)             \
+  {                                                             \
+    return MDiagArray2<T> (do_ms_binary_op<T, T, T> (a, s, FN), \
+                           a.m_d1, a.m_d2);                     \
   }
 
 MARRAY_DAS_OP (*, mx_inline_mul)
@@ -72,7 +73,7 @@ MDiagArray2<T>
 operator * (const T& s, const MDiagArray2<T>& a)
 {
   return MDiagArray2<T> (do_sm_binary_op<T, T, T> (s, a, mx_inline_mul),
-                         a.d1, a.d2);
+                         a.m_d1, a.m_d2);
 }
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
@@ -82,10 +83,11 @@ operator * (const T& s, const MDiagArray2<T>& a)
   MDiagArray2<T>                                                        \
   FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b)                \
   {                                                                     \
-    if (a.d1 != b.d1 || a.d2 != b.d2)                                   \
-      octave::err_nonconformant (#FCN, a.d1, a.d2, b.d1, b.d2);                 \
+    if (a.m_d1 != b.m_d1 || a.m_d2 != b.m_d2)                           \
+      octave::err_nonconformant (#FCN, a.m_d1, a.m_d2, b.m_d1, b.m_d2); \
                                                                         \
-    return MDiagArray2<T> (do_mm_binary_op<T, T, T> (a, b, FN, FN, FN, #FCN), a.d1, a.d2); \
+    return MDiagArray2<T> (do_mm_binary_op<T, T, T> (a, b, FN, FN, FN, #FCN), \
+                           a.m_d1, a.m_d2);                             \
   }
 
 MARRAY_DADA_OP (operator +, +, mx_inline_add)
@@ -106,5 +108,5 @@ MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
   return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus),
-                         a.d1, a.d2);
+                         a.m_d1, a.m_d2);
 }

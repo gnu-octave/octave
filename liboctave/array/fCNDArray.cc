@@ -521,10 +521,11 @@ FloatComplexNDArray::insert (const NDArray& a,
                              octave_idx_type r, octave_idx_type c)
 {
   dim_vector a_dv = a.dims ();
+  dim_vector dv = dims ();
 
   int n = a_dv.ndims ();
 
-  if (n == dimensions.ndims ())
+  if (n == dv.ndims ())
     {
       Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.ndims (), 1), 0);
 
@@ -533,7 +534,7 @@ FloatComplexNDArray::insert (const NDArray& a,
 
       for (int i = 0; i < n; i++)
         {
-          if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dimensions(i))
+          if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dv(i))
             (*current_liboctave_error_handler)
               ("Array<T>::insert: range error for insert");
         }

@@ -71,14 +71,14 @@ dim_vector::chop_all_singletons (void)
 
   for (int i = 0; i < nd; i++)
     {
-      if (rep[i] != 1)
-        rep[j++] = rep[i];
+      if (m_rep[i] != 1)
+        m_rep[j++] = m_rep[i];
     }
 
   if (j == 1)
-    rep[1] = 1;
+    m_rep[1] = 1;
 
-  rep[-1] = (j > 2 ? j : 2);
+  m_rep[-1] = (j > 2 ? j : 2);
 }
 
 std::string
@@ -120,9 +120,9 @@ dim_vector::safe_numel (void) const
 
   for (int i = 0; i < n_dims; i++)
     {
-      n *= rep[i];
-      if (rep[i] != 0)
-        idx_max /= rep[i];
+      n *= m_rep[i];
+      if (m_rep[i] != 0)
+        idx_max /= m_rep[i];
       if (idx_max <= 0)
         throw std::bad_alloc ();
     }
@@ -170,7 +170,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 
   for (int i = 0; i < ndb; i++)
     {
-      if (i != dim && rep[i] != dvb(i))
+      if (i != dim && m_rep[i] != dvb(i))
         {
           match = false;
           break;
@@ -179,7 +179,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 
   for (int i = ndb; i < new_nd; i++)
     {
-      if (i != dim && rep[i] != 1)
+      if (i != dim && m_rep[i] != 1)
         {
           match = false;
           break;
@@ -187,13 +187,13 @@ dim_vector::concat (const dim_vector& dvb, int dim)
     }
 
   if (match)
-    rep[dim] += (dim < ndb ? dvb(dim) : 1);
+    m_rep[dim] += (dim < ndb ? dvb(dim) : 1);
   else
     {
       // Dimensions don't match.  The only allowed fix is to omit 0x0.
       if (ndb == 2 && dvb(0) == 0 && dvb(1) == 0)
         match = true;
-      else if (orig_nd == 2 && rep[0] == 0 && rep[1] == 0)
+      else if (orig_nd == 2 && m_rep[0] == 0 && m_rep[1] == 0)
         {
           *this = dvb;
           match = true;
@@ -223,7 +223,7 @@ dim_vector::hvcat (const dim_vector& dvb, int dim)
     return true;
   else if (ndims () == 2 && dvb.ndims () == 2)
     {
-      bool e2dv = rep[0] + rep[1] == 1;
+      bool e2dv = m_rep[0] + m_rep[1] == 1;
       bool e2dvb = dvb(0) + dvb(1) == 1;
       if (e2dvb)
         {
@@ -252,8 +252,8 @@ dim_vector::redim (int n) const
     {
       dim_vector retval = alloc (n);
 
-      std::copy_n (rep, n_dims, retval.rep);
-      std::fill_n (retval.rep + n_dims, n - n_dims, 1);
+      std::copy_n (m_rep, n_dims, retval.m_rep);
+      std::fill_n (retval.m_rep + n_dims, n - n_dims, 1);
 
       return retval;
     }
@@ -264,18 +264,18 @@ dim_vector::redim (int n) const
 
       dim_vector retval = alloc (n);
 
-      std::copy_n (rep, n-1, retval.rep);
+      std::copy_n (m_rep, n-1, retval.m_rep);
 
       // Accumulate overflow dimensions into last remaining dimension
-      int k = rep[n-1];
+      int k = m_rep[n-1];
       for (int i = n; i < n_dims; i++)
-        k *= rep[i];
+        k *= m_rep[i];
 
-      retval.rep[n-1] = k;
+      retval.m_rep[n-1] = k;
 
       // All dim_vectors are at least 2-D.  Make Nx1 if necessary.
       if (n == 1)
-        retval.rep[1] = 1;
+        retval.m_rep[1] = 1;
 
       return retval;
     }

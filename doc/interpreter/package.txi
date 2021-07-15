@@ -142,7 +142,7 @@ packages by default install in a system-wide directory that defaults to
 @file{@var{OCTAVE_HOME}/share/octave/packages/}.  If the user is not
 @code{root} (or without elevated rights), packages are installed
 locally.  The default installation directory for local packages is
-@file{@var{user_data_dir}/octave/@var{OCTAVE_MAJOR_VERSION}/packages}.
+@file{@var{user_data_dir}/octave/@var{OCTAVE_API_VERSION}/packages}.
 Packages will be installed in a subdirectory of the installation
 directory that will be named after the package.  It is possible to
 change the installation directory by using the @code{pkg prefix}
@@ -162,7 +162,7 @@ current_installation_directory = pkg ("prefix")
 The package manager stores some information about the installed
 packages in configuration files.  For per-user (local) packages, this
 information is stored in the file
-@file{@var{user_config_dir}/octave/@var{OCTAVE_MAJOR_VERSION}/octave_packages}
+@file{@var{user_config_dir}/octave/@var{OCTAVE_API_VERSION}/octave_packages}
 by default.  For system-wide (global) installations, it is stored in
 @file{@var{OCTAVE_HOME}/share/octave/octave_packages}.  The path to the
 per-user file can be changed with the @code{pkg local_list} command:

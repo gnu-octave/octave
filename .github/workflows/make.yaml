@@ -68,7 +68,7 @@ jobs:
         #        See: https://github.com/actions/cache/issues/92
         uses: pat-s/always-upload-cache@v2
         with:
-          path: /home/runner/.ccache
+          path: ~/.ccache
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
@@ -78,8 +78,8 @@ jobs:
         env:
           CCACHE_MAX: ${{ matrix.ccache-max }}
         run: |
-          test -d /home/runner/.ccache || mkdir /home/runner/.ccache
-          echo "max_size = $CCACHE_MAX" >> /home/runner/.ccache/ccache.conf
+          test -d ~/.ccache || mkdir ~/.ccache
+          echo "max_size = $CCACHE_MAX" >> ~/.ccache/ccache.conf
           ccache -s
 
       - name: bootstrap
@@ -104,24 +104,18 @@ jobs:
             LDFLAGS="-L/usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/hdf5/serial"
 
       - name: build
-        env:
-          XDG_RUNTIME_DIR: "/home/runner/tmp"
         # Parallel make seems to fail intermittently when creating the figures
         # for the manual. The error message says it fails to connect to a
         # display. Maybe an xvfb issue?
         # Use single job make for now which seems to work more reliably.
-        run: |
-          test -d $XDG_RUNTIME_DIR || mkdir $XDG_RUNTIME_DIR
-          xvfb-run -a make -C ./.build all V=1
+        run: XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build all V=1
 
       - name: ccache status
         run: ccache -s
 
       - name: check
         timeout-minutes: 60
-        env:
-          XDG_RUNTIME_DIR: "/home/runner/tmp"
-        run: xvfb-run -a make -C ./.build check | tee ./test-suite.log
+        run: XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check | tee ./test-suite.log
         
       - name: display test log
         continue-on-error: true

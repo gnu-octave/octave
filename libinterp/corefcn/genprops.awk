@@ -154,9 +154,9 @@ function emit_get_accessor (i, rtype, faccess)
   printf ("  %s get_%s (void) const", rtype, name[i]);
 
   if (emit_get[i] == "definition" && deprecated[i])
-    printf ("\n  {\n    warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n    return %s.%s ();\n  }\n", name[i], name[i], faccess);
+    printf ("\n  {\n    warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n    return m_%s.%s ();\n  }\n", name[i], name[i], faccess);
   else if (emit_get[i] == "definition")
-    printf (" { return %s.%s (); }\n", name[i], faccess);
+    printf (" { return m_%s.%s (); }\n", name[i], faccess);
   else
     printf (";\n");
 }
@@ -168,7 +168,7 @@ function emit_get_bool (i)
   printf ("  bool is_%s (void) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { return %s.is_on (); }\n", name[i]);
+    printf (" { return m_%s.is_on (); }\n", name[i]);
   else
     printf (";\n");
 
@@ -182,7 +182,7 @@ function emit_get_radio (i)
   printf ("  bool %s_is (const std::string& v) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { return %s.is (v); }\n", name[i]);
+    printf (" { return m_%s.is (v); }\n", name[i]);
   else
     printf (";\n");
 
@@ -193,19 +193,19 @@ function emit_get_radio (i)
 
 function emit_get_color (i)
 {
-  printf ("  bool %s_is_rgb (void) const { return %s.is_rgb (); }\n", name[i], name[i]);
+  printf ("  bool %s_is_rgb (void) const { return m_%s.is_rgb (); }\n", name[i], name[i]);
 
   printf ("  bool %s_is (const std::string& v) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { return %s.is (v); }\n", name[i]);
+    printf (" { return m_%s.is (v); }\n", name[i]);
   else
     printf (";\n");
 
   printf ("  Matrix get_%s_rgb (void) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { return (%s.is_rgb () ? %s.rgb () : Matrix ()); }\n", name[i], name[i]);
+    printf (" { return (m_%s.is_rgb () ? m_%s.rgb () : Matrix ()); }\n", name[i], name[i]);
   else
     printf (";\n");
 
@@ -216,19 +216,19 @@ function emit_get_color (i)
 
 function emit_get_double_radio (i)
 {
-  printf ("  bool %s_is_double (void) const { return %s.is_double (); }\n", name[i], name[i]);
+  printf ("  bool %s_is_double (void) const { return m_%s.is_double (); }\n", name[i], name[i]);
 
   printf ("  bool %s_is (const std::string& v) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { return %s.is (v); }\n", name[i]);
+    printf (" { return m_%s.is (v); }\n", name[i]);
   else
     printf (";\n");
 
   printf ("  double get_%s_double (void) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { return (%s.is_double () ? %s.double_value () : 0); }\n", name[i], name[i]);
+    printf (" { return (m_%s.is_double () ? m_%s.double_value () : 0); }\n", name[i], name[i]);
   else
     printf (";\n");
 
@@ -242,7 +242,7 @@ function emit_get_callback (i)
   printf ("  void execute_%s (const octave_value& new_data = octave_value ()) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { %s.execute (new_data); }\n", name[i]);
+    printf (" { m_%s.execute (new_data); }\n", name[i]);
   else
     printf (";\n");
 
@@ -263,14 +263,14 @@ function emit_get_string_array (i)
   printf ("  std::string get_%s_string (void) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { return %s.string_value (); }\n", name[i]);
+    printf (" { return m_%s.string_value (); }\n", name[i]);
   else
     printf (";\n");
 
   printf ("  string_vector get_%s_vector (void) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { return %s.string_vector_value (); }\n", name[i]);
+    printf (" { return m_%s.string_vector_value (); }\n", name[i]);
   else
     printf (";\n");
 
@@ -309,7 +309,7 @@ function emit_declarations ()
     print (base ? "protected:\n" : "private:\n");
 
   for (i = 1; i <= idx; i++)
-    printf ("  %s%s %s;\n", mutable[i] ? "mutable " : "", type[i], name[i]);
+    printf ("  %s%s m_%s;\n", mutable[i] ? "mutable " : "", type[i], name[i]);
 
   if (idx > 0)
     print "\npublic:\n";
@@ -360,7 +360,7 @@ function emit_declarations ()
         printf ("  %s get_%s (void) const", type[i], name[i]);
 
         if (emit_get[i] == "definition")
-          printf (" { return %s; }\n", name[i]);
+          printf (" { return m_%s; }\n", name[i]);
         else
           printf (";\n");
       }
@@ -393,7 +393,7 @@ function emit_declarations ()
         else
           has_builtin_listeners = 0;
 
-        printf ("\n  {\n    if (%s.set (val, %s))\n      {\n",
+        printf ("\n  {\n    if (m_%s.set (val, %s))\n      {\n",
           name[i], (has_builtin_listeners ? "false" : "true"));
         if (mode[i])
           printf ("        set_%smode (\"manual\");\n", name[i]);
@@ -404,7 +404,7 @@ function emit_declarations ()
         if (limits[i])
           printf ("        update_axis_limits (\"%s\");\n", name[i]);
         if (has_builtin_listeners)
-          printf ("        %s.run_listeners (GCB_POSTSET);\n", name[i]);
+          printf ("        m_%s.run_listeners (GCB_POSTSET);\n", name[i]);
         if (! mutable[i])
           printf ("        mark_modified ();\n");
         printf ("      }\n");
@@ -460,9 +460,9 @@ function emit_source ()
     for (i = 1; i <= idx; i++)
     {
       if (ptype[i])
-        printf ("    %s (\"%s\", mh, %s)", name[i], name[i], defval[i]);
+        printf ("    m_%s (\"%s\", mh, %s)", name[i], name[i], defval[i]);
       else
-        printf ("    %s (%s)", name[i], defval[i]);
+        printf ("    m_%s (%s)", name[i], defval[i]);
       if (i < idx)
         printf (",");
       printf ("\n");
@@ -474,9 +474,9 @@ function emit_source ()
     {
       if (ptype[i])
       {
-        printf ("  %s.set_id (ID_%s);\n", name[i], toupper(name[i]));
+        printf ("  m_%s.set_id (ID_%s);\n", name[i], toupper(name[i]));
         if (hidden[i])
-          printf ("  %s.set_hidden (true);\n", name[i]);
+          printf ("  m_%s.set_hidden (true);\n", name[i]);
       }
     }
 
@@ -578,7 +578,7 @@ function emit_source ()
       {
         printf ("  %sif (pname.compare (\"%s\"))\n",
                 (i > 1 ? "else " : ""), name[i]);
-        printf ("    return property (&%s, true);\n", name[i]);
+        printf ("    return property (&m_%s, true);\n", name[i]);
       }
     }
 
@@ -683,7 +683,7 @@ function emit_source ()
       printf ("%s::properties", class_name);
     printf ("::all_property_names (void) const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n");
     if (base)
-      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names ();\n  retval.insert (dyn_props.begin (), dyn_props.end ());\n  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator p = all_props.begin ();\n       p != all_props.end (); p++)\n    retval.insert (p->first);\n\n  return retval;\n}\n\n");
+      printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names ();\n  retval.insert (dyn_props.begin (), dyn_props.end ());\n  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator p = m_all_props.begin ();\n       p != m_all_props.end (); p++)\n    retval.insert (p->first);\n\n  return retval;\n}\n\n");
     else
       printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> base_props = base_properties::all_property_names ();\n  retval.insert (base_props.begin (), base_props.end ());\n\n  return retval;\n}\n\n");
 

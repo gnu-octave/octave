@@ -131,6 +131,11 @@ namespace octave
       return ! m_terminal_widget.isNull ();
     }
 
+    main_window* get_main_window (void)
+    {
+      return m_main_window;
+    }
+
     resource_manager& get_resource_manager (void)
     {
       return m_resource_manager;

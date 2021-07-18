@@ -48,10 +48,11 @@
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "ovl.h"
-#include "options-usage.h"
+#include "options.h"
 #include "ov.h"
 #include "parse.h"
 #include "sysdep.h"
+#include "usage.h"
 
 namespace octave
 {

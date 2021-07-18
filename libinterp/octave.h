@@ -38,7 +38,7 @@ class octave_value;
 
 namespace octave
 {
-  // Command line arguments.  See also options-usage.h.
+  // Command line arguments.  See also options.h.
 
   class OCTINTERP_API cmdline_options
   {

@@ -54,6 +54,7 @@
 #undef OCTAVE_API
 #define OCTAVE_API
 #include "fcntl-wrappers.h"
+#include "getopt-wrapper.h"
 #include "signal-wrappers.h"
 #include "unistd-wrappers.h"
 #include "wait-wrappers.h"
@@ -79,6 +80,7 @@
 #endif
 
 #include "display-available.h"
+#include "options.h"
 #include "shared-fcns.h"
 
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
@@ -270,107 +272,107 @@ main (int argc, char **argv)
   // --address-sanitizer option.
   static char **new_argv = new char * [argc + 2];
 
+  int next_optind = 1;
   int k = 1;
 
   bool warn_display = true;
   bool no_display = false;
 
-  for (int i = 1; i < argc; i++)
+  while (true)
     {
-      if (! strcmp (argv[i], "--no-gui-libs"))
-        {
-          // Run the version of Octave that is not linked with any GUI
-          // libraries.  It may not be possible to do plotting or any
-          // ui* calls, but it will be a little faster to start and
-          // require less memory.  Don't pass the --no-gui-libs option
-          // on as that option is not recognized by Octave.
+      int long_idx;
 
-          gui_libs = false;
-          file = octave_cli;
-        }
-      else if (! strcmp (argv[i], "--no-gui"))
-        {
-          // If we see this option, then we can just exec octave; we
-          // don't have to create a child process and wait for it to
-          // exit.  But do exec "octave-gui", not "octave-cli", because
-          // even if the --no-gui option is given, we may be asked to do
-          // some plotting or ui* calls.
+      int optc = octave_getopt_long_wrapper (argc, argv, short_opts, long_opts,
+                                             &long_idx);
+      int old_optind = next_optind;
+      next_optind = octave_optind_wrapper ();
 
-          start_gui = false;
-          new_argv[k++] = argv[i];
-        }
-      else if (! strcmp (argv[i], "--gui") || ! strcmp (argv[i], "--force-gui"))
-        {
-          // If we see this option, then we fork and exec octave with
-          // the --gui option, while continuing to handle signals in the
-          // terminal.
-          // Do not copy the arg now, since we still not know if the
-          // gui should really be launched.  Just store the index.
+      if (optc < 0)
+        break;
 
-          start_gui = true;
-          idx_gui = i;
-        }
-      else if (! strcmp (argv[i], "--experimental-terminal-widget"))
+      switch (optc)
         {
-          // If we see this option, then we don't fork and exec.
+          case NO_GUI_LIBS_OPTION:
+            // Run the version of Octave that is not linked with any GUI
+            // libraries.  It may not be possible to do plotting or any ui*
+            // calls, but it will be a little faster to start and require less
+            // memory.  Don't pass the --no-gui-libs option on as that option
+            // is not recognized by Octave.
+            gui_libs = false;
+            file = octave_cli;
+            break;
 
-          fork_and_exec = false;
-          new_argv[k++] = argv[i];
-        }
-      else if (! strcmp (argv[i], "--persist"))
-        {
-          // FIXME: How can we reliably detect if this option appears
-          //        after a FILE argument.  In this case octave ignores
-          //        the option, but the GUI might still be launched if
-          //        --gui is also given.
+          case NO_GUI_OPTION:
+            // If we see this option, then we can just exec octave; we don't
+            // have to create a child process and wait for it to exit.  But do
+            // exec "octave-gui", not "octave-cli", because even if the
+            // --no-gui option is given, we may be asked to do some plotting or
+            // ui* calls.
+            start_gui = false;
+            new_argv[k++] = argv[old_optind];
+            break;
 
-          persist_octave = true;
-          new_argv[k++] = argv[i];
-        }
-      else if (! strcmp (argv[i], "--server"))
-        {
-          server = true;
-          new_argv[k++] = argv[i];
-        }
-      else if (! strcmp (argv[i], "--eval") ||
-               (strlen (argv[i]) > 0 && argv[i][0] != '-'))
-        {
-          eval_code = true;
-          new_argv[k++] = argv[i];
-        }
-      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet"))
-        {
-          warn_display = false;
-          new_argv[k++] = argv[i];
-        }
-      else if (! strcmp (argv[i], "--no-window-system"))
-        {
-          no_display = true;
-          new_argv[k++] = argv[i];
-        }
-      else if (strlen (argv[i]) > 1 && argv[i][0] == '-' && argv[i][1] != '-')
-        {
-          // Handle all single-letter command line options here; they may
-          // occur alone or may be aggregated into a single argument.
+          case GUI_OPTION:
+            // If we see this option, then we fork and exec octave with the
+            // --gui option, while continuing to handle signals in the
+            // terminal.
+            // Do not copy the arg now, since we still not know if the gui
+            // should really be launched.  Just store the index.
+            start_gui = true;
+            idx_gui = old_optind;
+            break;
 
-          std::size_t len = strlen (argv[i]);
+          case EXPERIMENTAL_TERMINAL_WIDGET_OPTION:
+            // If we see this option, then we don't fork and exec.
+            fork_and_exec = false;
+            new_argv[k++] = argv[old_optind];
+            break;
 
-          for (std::size_t j = 1; j < len; j++)
-            switch (argv[i][j])
-              {
-              case 'W':
-                no_display = true;
-                break;
-              case 'q':
-                warn_display = false;
-                break;
-              default:
-                break;
-              }
+          case PERSIST_OPTION:
+            // FIXME: How can we reliably detect if this option appears after
+            //        a FILE argument.  In this case octave ignores the option,
+            //        but the GUI might still be launched if --gui is also
+            //        given.
+            persist_octave = true;
+            new_argv[k++] = argv[old_optind];
+            break;
 
-          new_argv[k++] = argv[i];
+          case SERVER_OPTION:
+            server = true;
+            new_argv[k++] = argv[old_optind];
+            break;
+
+          case EVAL_OPTION:
+          case 0:
+            eval_code = true;
+            for (int i = old_optind; i < next_optind; i++)
+              new_argv[k++] = argv[i];
+            break;
+
+          case 'q':
+            // options "--silent" or "--quiet"
+            warn_display = false;
+            new_argv[k++] = argv[old_optind];
+            break;
+
+          case 'W':
+            // option "--no-window-system"
+            no_display = true;
+            new_argv[k++] = argv[old_optind];
+            break;
+
+          default:
+            for (int i = old_optind; i < next_optind; i++)
+              new_argv[k++] = argv[i];
+            break;
         }
-      else
+    }
+
+  // Tread trailing arguments as commands to be executed
+  if (next_optind < argc)
+    {
+      eval_code = true;
+      for (int i = next_optind; i < argc; i++)
         new_argv[k++] = argv[i];
     }
 

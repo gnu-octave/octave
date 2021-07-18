@@ -92,7 +92,8 @@ octinclude_HEADERS += \
   $(PARSER_INC)
 
 noinst_HEADERS += \
-  %reldir%/options-usage.h \
+  %reldir%/options.h \
+  %reldir%/usage.h \
   $(NOINSTALL_LIBINTERP_OPERATORS_INC)
 
 nodist_octinclude_HEADERS += \

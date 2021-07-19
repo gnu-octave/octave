@@ -296,7 +296,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
       increment_indent_level ();
 
       indent (os);
-      os << class_name () << " m_object";
+      os << class_name () << " object";
       if (is_array)
         os << " array";
       os << " with properties:";

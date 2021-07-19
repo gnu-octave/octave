@@ -103,20 +103,19 @@ namespace octave
 
     m_title_widget->setLayout (h_layout);
 
-    main_window* mw = oct_qobj.get_main_window ();
-    if (mw)
+    if (p)
       {
         // Only connect the when a parent (main window) is given
         // copy & paste handling
-        connect (mw, SIGNAL (copyClipboard_signal ()),
+        connect (p, SIGNAL (copyClipboard_signal ()),
                 this, SLOT (copyClipboard ()));
-        connect (mw, SIGNAL (pasteClipboard_signal ()),
+        connect (p, SIGNAL (pasteClipboard_signal ()),
                 this, SLOT (pasteClipboard ()));
-        connect (mw, SIGNAL (selectAll_signal ()),
+        connect (p, SIGNAL (selectAll_signal ()),
                 this, SLOT (selectAll ()));
 
         // undo handling
-        connect (mw, SIGNAL (undo_signal ()), this, SLOT (do_undo ()));
+        connect (p, SIGNAL (undo_signal ()), this, SLOT (do_undo ()));
       }
   }
 

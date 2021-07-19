@@ -131,6 +131,8 @@ namespace octave
         m_octave_qobj.config_translators ();
       }
 
+    setObjectName (gui_obj_name_main_window);
+
     rmgr.update_network_settings ();
 
     // We provide specific terminal capabilities, so ensure that

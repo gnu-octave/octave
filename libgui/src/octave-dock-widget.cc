@@ -103,7 +103,7 @@ namespace octave
 
     m_title_widget->setLayout (h_layout);
 
-    if (p)
+    if (p && (p->objectName () == gui_obj_name_main_window))
       {
         // Only connect the when a parent (main window) is given
         // copy & paste handling

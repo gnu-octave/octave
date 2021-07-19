@@ -28,6 +28,10 @@
 
 #include "gui-preferences.h"
 
+// Constants
+
+const QString gui_obj_name_main_window = "MainWindow";
+
 // Global preferences
 
 // Get the default monospaced font

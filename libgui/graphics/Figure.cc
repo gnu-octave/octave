@@ -125,11 +125,11 @@ namespace QtHandles
     m_container = new Container (win, oct_qobj, interp);
     win->setCentralWidget (m_container);
 
-    connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),
-             this, SIGNAL (interpeter_event (const fcn_callback&)));
+    connect (m_container, QOverload<const octave::fcn_callback&>::of (&Container::interpreter_event),
+             this, QOverload<const octave::fcn_callback&>::of (&Figure::interpreter_event));
 
-    connect (m_container, SIGNAL (interpeter_event (const meth_callback&)),
-             this, SIGNAL (interpeter_event (const meth_callback&)));
+    connect (m_container, QOverload<const octave::meth_callback&>::of (&Container::interpreter_event),
+             this, QOverload<const octave::meth_callback&>::of (&Figure::interpreter_event));
 
     figure::properties& fp = properties<figure> ();
 

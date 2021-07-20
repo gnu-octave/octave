@@ -30,6 +30,7 @@
 // Instantiate Sparse matrix of double values.
 
 #include "lo-mappers.h"
+#include "Array.h"
 #include "Sparse.h"
 #include "Sparse.cc"
 

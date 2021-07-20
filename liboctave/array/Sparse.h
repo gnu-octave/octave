@@ -35,9 +35,8 @@
 #include <iosfwd>
 #include <string>
 
-#include "Array.h"
-
 class PermMatrix;
+template <typename T> class Array;
 
 // Two dimensional sparse class.  Handles the reference counting for
 // all the derived classes.

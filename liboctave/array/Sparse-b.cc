@@ -29,6 +29,7 @@
 
 // Instantiate Sparse matrix of double values.
 
+#include "Array.h"
 #include "Sparse.h"
 #include "Sparse.cc"
 

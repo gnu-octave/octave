@@ -3568,9 +3568,7 @@ namespace octave
               || ident == "I" || ident == "i"
               || ident == "J" || ident == "j"
               || ident == "Inf" || ident == "inf"
-              || ident == "NaN" || ident == "nan"
-              || (m_interpreter.at_top_level ()
-                  && m_interpreter.is_variable (ident))))
+              || ident == "NaN" || ident == "nan"))
       tok->mark_may_be_command ();
 
     push_token (tok);

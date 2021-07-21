@@ -60,7 +60,7 @@ function text = strip_superfluous_endlines (text)
   groups = [els(1), 1]; # list containing [start, length] of each group
   for k = 1:length (dels)
     if (dels (k) == 1)
-      groups(end, 2) ++;
+      groups(end, 2)++;
     else
       groups(end+1, 1:2) = [els(k+1), 1];
     endif

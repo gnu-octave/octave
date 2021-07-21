@@ -1866,8 +1866,6 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
-                      info = -2;
-
                       if (sing_handler)
                         sing_handler (rcon);
                       else

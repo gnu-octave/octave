@@ -1535,8 +1535,6 @@ Matrix::fsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
-                      info = -2;
-
                       if (sing_handler)
                         sing_handler (rcon);
                       else

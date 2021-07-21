@@ -183,38 +183,6 @@ and after the nested call.
      }                                                                  \
    while (0)
 
-#if 0
-// Use the following to handle computed assignment operators
-// (+=, -=, etc.) in word list commands in a way that is compatible
-// with Matlab.  However, that will also make it impossible to use
-// these operators with a space before them:
-//
-//   x = 1;
-//   x+=2;   ## ok
-//   x+= 2;  ## ok
-//   x +=2;  ## error: invalid use of symbol as both variable and command
-//   x += 2; ## error: invalid use of symbol as both variable and command
-//
-#  define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK)                       \
-   do                                                                   \
-     {                                                                  \
-       curr_lexer->lexer_debug (PATTERN);                               \
-                                                                        \
-       if (curr_lexer->previous_token_may_be_command ()                 \
-           && curr_lexer->space_follows_previous_token ())              \
-         {                                                              \
-           yyless (0);                                                  \
-           curr_lexer->push_start_state (COMMAND_START);                \
-         }                                                              \
-       else                                                             \
-         return curr_lexer->handle_op (TOK, false, false);              \
-     }                                                                  \
-   while (0)
-#else
-#  define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK)                       \
-   return curr_lexer->handle_op (TOK, false, false)
-#endif
-
 #define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT)                           \
    do                                                                   \
      {                                                                  \
@@ -1836,22 +1804,22 @@ ANY_INCLUDING_NL (.|{NL})
     return curr_lexer->handle_op ('=');
   }
 
-"+="   { CMD_OR_COMPUTED_ASSIGN_OP ("+=", ADD_EQ); }
-"-="   { CMD_OR_COMPUTED_ASSIGN_OP ("-=", SUB_EQ); }
-"*="   { CMD_OR_COMPUTED_ASSIGN_OP ("*=", MUL_EQ); }
-"/="   { CMD_OR_COMPUTED_ASSIGN_OP ("/=", DIV_EQ); }
-"\\="  { CMD_OR_COMPUTED_ASSIGN_OP ("\\=", LEFTDIV_EQ); }
-".+="  { CMD_OR_COMPUTED_ASSIGN_OP (".+=", ADD_EQ); }
-".-="  { CMD_OR_COMPUTED_ASSIGN_OP (".-=", SUB_EQ); }
-".*="  { CMD_OR_COMPUTED_ASSIGN_OP (".*=", EMUL_EQ); }
-"./="  { CMD_OR_COMPUTED_ASSIGN_OP ("./=", EDIV_EQ); }
-".\\=" { CMD_OR_COMPUTED_ASSIGN_OP (".\\=", ELEFTDIV_EQ); }
-"^="   { CMD_OR_COMPUTED_ASSIGN_OP ("^=", POW_EQ); }
-"**="  { CMD_OR_COMPUTED_ASSIGN_OP ("^=", POW_EQ); }
-".^="  { CMD_OR_COMPUTED_ASSIGN_OP (".^=", EPOW_EQ); }
-".**=" { CMD_OR_COMPUTED_ASSIGN_OP (".^=", EPOW_EQ); }
-"&="   { CMD_OR_COMPUTED_ASSIGN_OP ("&=", AND_EQ); }
-"|="   { CMD_OR_COMPUTED_ASSIGN_OP ("|=", OR_EQ); }
+"+="   { CMD_OR_OP ("+=", ADD_EQ, false); }
+"-="   { CMD_OR_OP ("-=", SUB_EQ, false); }
+"*="   { CMD_OR_OP ("*=", MUL_EQ, false); }
+"/="   { CMD_OR_OP ("/=", DIV_EQ, false); }
+"\\="  { CMD_OR_OP ("\\=", LEFTDIV_EQ, false); }
+".+="  { CMD_OR_OP (".+=", ADD_EQ, false); }
+".-="  { CMD_OR_OP (".-=", SUB_EQ, false); }
+".*="  { CMD_OR_OP (".*=", EMUL_EQ, false); }
+"./="  { CMD_OR_OP ("./=", EDIV_EQ, false); }
+".\\=" { CMD_OR_OP (".\\=", ELEFTDIV_EQ, false); }
+"^="   { CMD_OR_OP ("^=", POW_EQ, false); }
+"**="  { CMD_OR_OP ("^=", POW_EQ, false); }
+".^="  { CMD_OR_OP (".^=", EPOW_EQ, false); }
+".**=" { CMD_OR_OP (".^=", EPOW_EQ, false); }
+"&="   { CMD_OR_OP ("&=", AND_EQ, false); }
+"|="   { CMD_OR_OP ("|=", OR_EQ, false); }
 
 %{
 // In Matlab, '{' may also trigger command syntax.
@@ -3584,12 +3552,15 @@ namespace octave
 
     token *tok = new token (NAME, ident, m_tok_beg, m_tok_end);
 
-    // The following symbols are handled specially so that things like
+    // For compatibility with Matlab, the following symbols are
+    // handled specially so that things like
     //
     //   pi +1
     //
     // are parsed as an addition expression instead of as a command-style
-    // function call with the argument "+1".
+    // function call with the argument "+1".  Also for compatibility with
+    // Matlab, if we are at the top level workspace, do not consider IDENT
+    // as a possible command if it is already known to be a variable.
 
     if (m_at_beginning_of_statement
         && ! (m_parsing_anon_fcn_body
@@ -3597,7 +3568,9 @@ namespace octave
               || ident == "I" || ident == "i"
               || ident == "J" || ident == "j"
               || ident == "Inf" || ident == "inf"
-              || ident == "NaN" || ident == "nan"))
+              || ident == "NaN" || ident == "nan"
+              || (m_interpreter.at_top_level ()
+                  && m_interpreter.is_variable (ident))))
       tok->mark_may_be_command ();
 
     push_token (tok);

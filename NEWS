@@ -178,6 +178,10 @@ dimensions greater than `ndims (x)`.
 - The function `importdata` now produces more compatible results when
 the file contains a 2-D text matrix.
 
+- `uimenu` now accepts property `"Text"` which is identical to
+`"Label"`.  Matlab recommends using `"Text"` in new code, although there
+is no announced date for deprecating `"Label"`.
+
 - The functions `scatter` and `scatter3` now return a handle to a
 scatter graphics object.  For compatibility, they return an `hggroup` of
 patch graphics objects when the `"gnuplot"` graphics toolkit is used.  In

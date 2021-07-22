@@ -5752,14 +5752,26 @@ public:
       bool_property checked , "off"
       bool_property enable , "on"
       color_property foregroundcolor , color_values (0, 0, 0)
-      string_property label , ""
+      string_property label gs , ""
       double_property position , 0
       bool_property separator , "off"
+      string_property text , ""
 
       // Octave-specific properties
       string_property __fltk_label__ h , ""
       any_property __object__ h , Matrix ()
     END_PROPERTIES
+
+    // Redirect calls from "Label" to "Text".
+    std::string get_label (void) const
+    {
+      return get_text ();
+    }
+
+    void set_label (const octave_value& val)
+    {
+      set_text (val);
+    }
 
   protected:
     void init (void)

@@ -567,12 +567,20 @@ namespace octave
         m_interactive = (! is_octave_program && stdin_is_tty
                          && octave_isatty_wrapper (fileno (stdout)));
 
+        // Don't force interactive if we're already interactive (bug #60696).
+        bool forced_interactive = options.forced_interactive ();
+        if (m_interactive)
+          {
+            m_app_context->forced_interactive (false);
+            forced_interactive = false;
+          }
+
         // Check if the user forced an interactive session.
-        if (options.forced_interactive ())
+        if (forced_interactive)
           m_interactive = true;
 
         line_editing = options.line_editing ();
-        if ((! m_interactive || options.forced_interactive ())
+        if ((! m_interactive || forced_interactive)
             && ! options.forced_line_editing ())
           line_editing = false;
 

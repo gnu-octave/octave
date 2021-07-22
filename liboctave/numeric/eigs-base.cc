@@ -157,6 +157,8 @@ arpack_errno2str (const octave_idx_type& errnum, const std::string& fcn_name)
       else if (fcn_name.compare ("dseupd") == 0)
         msg = "DSAUPD did not find any eigenvalues to sufficient accuracy.";
 
+      msg += "  Consider changing tolerance (TOL), maximum iterations (MAXIT), number of Lanzcos basis vectors (P), or starting vector (V0) in OPTS structure.";
+
       break;
 
     case -15:
@@ -207,9 +209,8 @@ arpack_errno2str (const octave_idx_type& errnum, const std::string& fcn_name)
 
     }
 
-  if ((errno != -9) & (errno != -14) & (errno != -9999))
-    // This is a bug in Octave interface to ARPACK
-    msg.append (bug_msg);
+  if ((errnum != -9) && (errnum != -14) && (errnum != -9999))
+    msg.append (bug_msg);  // This is a bug in Octave interface to ARPACK
 
   return msg;
 }

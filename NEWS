@@ -106,14 +106,36 @@ variables in the editor panel.
 - Support for Qt4 for both graphics and the GUI has been removed.
 
 - If a working LaTeX tool chain is found on the path, including `latex`,
-`dvipng`, and `dvisvgm` binaries, then text strings can now be rendered properly
-when using the `"latex"` value for the text objects' `"interpreter"` property
-and axes objects' `"ticklabelinterpreter"`.  Type `doc "latex interpreter"`
-for further info.
+`dvipng`, and `dvisvgm` binaries, then text strings can now be rendered
+properly when using the `"latex"` value for the text objects'
+`"interpreter"` property and axes objects' `"ticklabelinterpreter"`.
+Type `doc "latex interpreter"` for further info.
+
+- The `FMT` format argument for plot commands now accepts long forms for
+color names which may be more understandable than the existing
+one-letter codes.  For example, the RGB value `[0 0 0]` can now be
+specified by `"black"` in addition to `"k"`.
+
+- The color graphics properties, for example `"EdgeColor"` or
+`"FaceColor"`, now accept HTML specifications.  An HTML specification is
+a string that begins with the character '#' and is followed by either 3
+or 6 hexadecimal digits.  For example, magenta which is 100% red and
+blue values can specified by `"#FF00FF"` or `"#F0F"`.
 
 - The additional property `"contextmenu"` has been added to all graphics
 objects.  It is equivalent to the previously used `"uicontextmenu"`
 property which is hidden now.
+
+- `uicontrol` objects now fully implement the `"Off"` and `"Inactive"`
+values of the `"Enable"` property.  When the value is `"Off"`, no
+interaction with the object occurs and the `uicontrol` changes color
+(typically to gray) to indicate it is disabled.  When the value is
+`"Inactive"`, the object appears normally (no change in color), but it
+is not possible to change the value of the object (such as modifying
+text in an `Edit` box or clicking on a `RadioButton`).
+
+- The `"ListBoxTop"` property for `uicontrol` objects has been
+implemented for `set` commands.
 
 - Additional properties have been added to the `axes` graphics object:
     * `"alphamap"` (not yet implemented)
@@ -155,25 +177,6 @@ dimensions greater than `ndims (x)`.
 
 - The function `importdata` now produces more compatible results when
 the file contains a 2-D text matrix.
-
-- The `FMT` format argument for plot commands now accepts long forms for
-color names which may be more understandable than the existing
-one-letter codes.  For example, the RGB value `[0 0 0]` can now be
-specified by `"black"` in addition to `"k"`.
-
-- The color graphics properties, for example `"EdgeColor"` or
-`"FaceColor"`, now accept HTML specifications.  An HTML specification is
-a string that begins with the character '#' and is followed by either 3
-or 6 hexadecimal digits.  For example, magenta which is 100% red and
-blue values can specified by `"#FF00FF"` or `"#F0F"`.
-
-- `uicontrol` objects now fully implement the `"Off"` and `"Inactive"`
-values of the `"Enable"` property.  When the value is `"Off"`, no
-interaction with the object occurs and the `uicontrol` changes color
-(typically to gray) to indicate it is disabled.  When the value is
-`"Inactive"`, the object appears normally (no change in color), but it is
-not possible to change the value of the object (such as modifying text
-in an `Edit` box or clicking on a `RadioButton`).
 
 - The functions `scatter` and `scatter3` now return a handle to a
 scatter graphics object.  For compatibility, they return an `hggroup` of

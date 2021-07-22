@@ -152,13 +152,21 @@ namespace QtHandles
         break;
 
       case uicontrol::properties::ID_MIN:
-
       case uicontrol::properties::ID_MAX:
         if ((up.get_max () - up.get_min ()) > 1)
           list->setSelectionMode (QAbstractItemView::ExtendedSelection);
         else
           list->setSelectionMode (QAbstractItemView::SingleSelection);
         break;
+
+      case uicontrol::properties::ID_LISTBOXTOP:
+        {
+          int idx = octave::math::fix (up.get_listboxtop ());
+          if (idx > 0)
+            list->scrollToItem (list->item (idx-1),
+                                QAbstractItemView::PositionAtTop);
+          break;
+        }
 
       case uicontrol::properties::ID_VALUE:
         m_blockCallback = true;

@@ -52,6 +52,9 @@ extern OCTAVE_API char * octave_optarg_wrapper (void);
 
 extern OCTAVE_API int octave_optind_wrapper (void);
 
+extern OCTAVE_API int octave_get_opterr_wrapper (void);
+extern OCTAVE_API int octave_set_opterr_wrapper (int val);
+
 #if defined __cplusplus
 }
 #endif

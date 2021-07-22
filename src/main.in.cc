@@ -278,6 +278,13 @@ main (int argc, char **argv)
   bool warn_display = true;
   bool no_display = false;
 
+  // Disable error reporting in getopt.  We want to silently recognize
+  // and process a few special arguments here and pass everything on to
+  // the real Octave program where incorrect usage errors may be
+  // reported.
+
+  octave_set_opterr_wrapper (0);
+
   while (true)
     {
       int long_idx;

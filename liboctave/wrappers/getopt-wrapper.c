@@ -121,3 +121,20 @@ octave_optind_wrapper (void)
 {
   return optind;
 }
+
+int
+octave_get_opterr_wrapper (void)
+{
+  return opterr;
+}
+
+int
+octave_set_opterr_wrapper (int val)
+{
+  int retval = opterr;
+
+  opterr = val;
+
+  return retval;
+}
+

@@ -161,6 +161,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: install dependencies
+        # This step sometimes takes long and still recovers. But sometimes it
+        # seems to hang indefinitely.
+        # Use a pretty long timeout (but still less than the default 6 hours).
+        timeout-minutes: 75
+
         # It looks like "gfortran" isn't working correctly unless "gcc" is
         # re-installed.
 

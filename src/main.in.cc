@@ -343,7 +343,6 @@ main (int argc, char **argv)
             break;
 
           case EVAL_OPTION:
-          case 0:
             eval_code = true;
             for (int i = old_optind; i < next_optind; i++)
               new_argv[k++] = argv[i];
@@ -368,7 +367,7 @@ main (int argc, char **argv)
         }
     }
 
-  // Tread trailing arguments as commands to be executed
+  // Treat trailing arguments as commands to be executed
   if (next_optind < argc)
     {
       eval_code = true;

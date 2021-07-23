@@ -76,6 +76,9 @@ constants in array expressions with leading zeros so that they use the
 same number of digits for each value such as
 `[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
+- The `mldivide` function (i.e., the `\` operator) now uses a LU
+decomposition to solve (close to) singular full square matrices.
+
 - The `whos` function now displays an additional attribute 's' when
 the variable is a sparse type.
 
@@ -91,8 +94,8 @@ Unix-like operating systems or %APPDATA% on Windows).
 API is now 6.1 (Windows 7 or newer).
 
 - The non-re-entrant version of the QHull library "libqhull" was
-deprecated upstream.  Octave now requires the re-entrant version of
-that library "libqhull_r" instead.
+deprecated upstream.  Octave now (optionally) requires the re-entrant
+version of that library "libqhull_r" instead.
 
 ### Graphical User Interface
 

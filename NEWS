@@ -76,8 +76,10 @@ constants in array expressions with leading zeros so that they use the
 same number of digits for each value such as
 `[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
-- The `mldivide` function (i.e., the `\` operator) now uses a LU
-decomposition to solve (close to) singular full square matrices.
+- The `mldivide` function (i.e., the `\` operator) now uses an LU
+decomposition to solve nearly singular full square matrices.  This is
+Matlab-compatible and yields results which more nearly minimize `norm
+(A*x - b)`.  Previously, Octave computed a minimum-norm solution.
 
 - The `whos` function now displays an additional attribute 's' when
 the variable is a sparse type.

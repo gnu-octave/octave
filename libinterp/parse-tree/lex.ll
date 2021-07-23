@@ -1880,40 +1880,52 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
-// Unrecognized input is a lexical error.
+// Unrecognized input.  If the previous token may be a command and is
+// followed by a space, parse the remainder of this statement as a
+// command-style function call.  Otherwise, unrecognized input is a
+// lexical error.
 %}
 
 . {
     curr_lexer->lexer_debug (".");
 
-    curr_lexer->xunput (yytext[0]);
-
-    int c = curr_lexer->text_yyinput ();
-
-    if (c == 1)
-      return -1;
-    else if (c == EOF)
-      return curr_lexer->handle_end_of_input ();
+    if (curr_lexer->previous_token_may_be_command ()
+        && curr_lexer->space_follows_previous_token ())
+      {
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
     else
       {
-        std::ostringstream buf;
+        curr_lexer->xunput (yytext[0]);
 
-        buf << "invalid character '"
-            << octave::undo_string_escape (static_cast<char> (c))
-            << "' (ASCII " << c << ")";
+        int c = curr_lexer->text_yyinput ();
 
-        // Use current file position for error token.
-        octave::token *tok
-          = new octave::token (LEXICAL_ERROR, buf.str (),
-                               curr_lexer->m_filepos, curr_lexer->m_filepos);
+        if (c == 1)
+          return -1;
+        else if (c == EOF)
+          return curr_lexer->handle_end_of_input ();
+        else
+          {
+            std::ostringstream buf;
 
-        curr_lexer->push_token (tok);
+            buf << "invalid character '"
+                << octave::undo_string_escape (static_cast<char> (c))
+                << "' (ASCII " << c << ")";
 
-        curr_lexer->m_filepos.increment_column ();
+            // Use current file position for error token.
+            octave::token *tok
+              = new octave::token (LEXICAL_ERROR, buf.str (),
+                                   curr_lexer->m_filepos, curr_lexer->m_filepos);
 
-        return curr_lexer->count_token_internal (LEXICAL_ERROR);
+            curr_lexer->push_token (tok);
+
+            curr_lexer->m_filepos.increment_column ();
+
+            return curr_lexer->count_token_internal (LEXICAL_ERROR);
+          }
       }
-  }
+}
 
 %{
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)

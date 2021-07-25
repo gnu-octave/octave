@@ -386,7 +386,6 @@ jobs:
         # configure sometimes hangs while compiling 32bit Fortran.
         # It should take much less than 30 minutes. Cancel the step if it takes longer.
         timeout-minutes: 30
-        # PortAudio requires linking to libuuid. But its pkg-config file doesn't reference the path to that library.
         # FIXME: Fix building with Java support. Override JAVA_HOME for now.
         # FIXME: How do we get a working TeX environment in MSYS2? Disable building the documentation for now.
         # Linking with ncurses fails. Use termcap library instead.
@@ -410,12 +409,9 @@ jobs:
         # Spawning processes seems to have a big overhead on this platform. Use a somewhat larger number of parallel processes to compensate for that.
         # MSYS2's "fltk-config" returns wrong LIBS. Override them for make.
         # See: https://github.com/msys2/MINGW-packages/issues/8806
-        # MSYS2's "portaudio" doesn't depend on uuid. But its package-config file still contains "-luuid". Override the flags for make.
-        # See: https://github.com/msys2/MINGW-packages/issues/8805
         run: |
           make -C ./.build all -j8 V=1 \
-            FLTK_LIBS="-lfltk_gl -lopengl32 -lglu32 -lfltk -lpthread" \
-            PORTAUDIO_LIBS="-lportaudio -ldsound -lsetupapi -lwinmm -lm -lole32"
+            FLTK_LIBS="-lfltk_gl -lopengl32 -lglu32 -lfltk -lpthread"
 
       - name: ccache status
         continue-on-error: true

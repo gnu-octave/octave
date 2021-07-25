@@ -126,12 +126,12 @@ function yi = interp1 (x, y, varargin)
   extrap = NA;
   xi = [];
   ispp = false;
-  firstnumeric = true;
+  have_xi = false;
   rightcontinuous = NaN;
 
   if (nargin > 2)
-    for i = 1:length (varargin)
-      arg = varargin{i};
+    for i_arg = 1:length (varargin)
+      arg = varargin{i_arg};
       if (ischar (arg))
         arg = tolower (arg);
         switch (arg)
@@ -147,9 +147,9 @@ function yi = interp1 (x, y, varargin)
             method = arg;
         endswitch
       else
-        if (firstnumeric)
+        if (i_arg == 1)
           xi = arg;
-          firstnumeric = false;
+          have_xi = true;
         else
           extrap = arg;
         endif
@@ -157,7 +157,7 @@ function yi = interp1 (x, y, varargin)
     endfor
   endif
 
-  if (isempty (xi) && firstnumeric && ! ispp)
+  if (! have_xi && ! ispp)
     xi = y;
     y = x;
     if (isvector (y))
@@ -524,6 +524,8 @@ endfunction
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!assert (interp1 (yp, xi, style, 0), ...
+%!        interp1 (1:numel (yp), yp, xi, style, 0), 10*eps)
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 
@@ -561,6 +563,8 @@ endfunction
 #%!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!assert (interp1 (yp, xi, style, 0), ...
+%!        interp1 (1:numel (yp), yp, xi, style, 0), 10*eps)
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 
@@ -596,6 +600,8 @@ endfunction
 #%!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!assert (interp1 (yp, xi, style, 0), ...
+%!        interp1 (1:numel (yp), yp, xi, style, 0), 10*eps)
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 
@@ -631,6 +637,8 @@ endfunction
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!assert (interp1 (yp, xi, style, 0), ...
+%!        interp1 (1:numel (yp), yp, xi, style, 0), 10*eps)
 %!assert (interp1 ([1 2 2 3], [1 2 3 4], 2), 3)
 %!assert (interp1 ([3 2 2 1], [4 3 2 1], 2), 2)
 %!error interp1 (1,1,1, style)
@@ -668,6 +676,8 @@ endfunction
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),100*eps)
+%!assert (interp1 (yp, xi, style, 0), ...
+%!        interp1 (1:numel (yp), yp, xi, style, 0), 10*eps)
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 
@@ -703,6 +713,8 @@ endfunction
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!assert (interp1 (yp, xi, style, 0), ...
+%!        interp1 (1:numel (yp), yp, xi, style, 0), 10*eps)
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 
@@ -738,6 +750,8 @@ endfunction
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!assert (interp1 (yp, xi, style, 0), ...
+%!        interp1 (1:numel (yp), yp, xi, style, 0), 10*eps)
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 ## ENDBLOCKTEST

@@ -106,9 +106,17 @@ function h = figure (varargin)
 
   ## When switching to figure N, make figure visible and on top of stack,
   ## unless visibility is explicitly switched off.
-  if (! init_new_figure && ! any (strcmpi (varargin(1:2:end), "visible")
-                                  && strcmpi (varargin(2:2:end), "off")))
-    set (f, "visible", "on");
+  if (! init_new_figure)
+    vis_on = true;
+    idx = find (strcmpi (varargin(1:2:end), "visible"), 1) * 2 - 1;
+    if (! isempty (idx))
+      if (idx < numel (varargin) && strcmpi (varargin{idx+1}, "off"))
+        vis_on = false;
+      endif
+    endif
+    if (vis_on)
+      set (f, "visible", "on");
+    endif
     __show_figure__ (f);
   endif
 

@@ -45,56 +45,56 @@ octave_fields
   class fields_rep : public std::map<std::string, octave_idx_type>
   {
   public:
-    fields_rep (void) : std::map<std::string, octave_idx_type> (), count (1) { }
+    fields_rep (void) : std::map<std::string, octave_idx_type> (), m_count (1) { }
     fields_rep (const fields_rep& other)
-      : std::map<std::string, octave_idx_type> (other), count (1) { }
+      : std::map<std::string, octave_idx_type> (other), m_count (1) { }
 
-    octave::refcount<octave_idx_type> count;
+    octave::refcount<octave_idx_type> m_count;
 
   private:
     fields_rep& operator = (const fields_rep&); // no assignment!
   };
 
-  fields_rep *rep;
+  fields_rep *m_rep;
 
   static fields_rep *nil_rep (void);
 
 public:
 
-  octave_fields (void) : rep (nil_rep ()) { rep->count++; }
+  octave_fields (void) : m_rep (nil_rep ()) { m_rep->m_count++; }
   octave_fields (const string_vector&);
   octave_fields (const char * const *);
 
   ~octave_fields (void)
   {
-    if (--rep->count == 0)
-      delete rep;
+    if (--m_rep->m_count == 0)
+      delete m_rep;
   }
 
   void make_unique (void)
   {
-    if (rep->count > 1)
+    if (m_rep->m_count > 1)
       {
-        fields_rep *r = new fields_rep (*rep);
+        fields_rep *r = new fields_rep (*m_rep);
 
-        if (--rep->count == 0)
-          delete rep;
+        if (--m_rep->m_count == 0)
+          delete m_rep;
 
-        rep = r;
+        m_rep = r;
       }
   }
 
-  octave_fields (const octave_fields& o) : rep (o.rep) { rep->count++; }
+  octave_fields (const octave_fields& o) : m_rep (o.m_rep) { m_rep->m_count++; }
 
   octave_fields&
   operator = (const octave_fields& o)
   {
     if (&o != this)
       {
-        o.rep->count++;
-        if (--rep->count == 0)
-          delete rep;
-        rep = o.rep;
+        o.m_rep->m_count++;
+        if (--m_rep->m_count == 0)
+          delete m_rep;
+        m_rep = o.m_rep;
       }
 
     return *this;
@@ -105,22 +105,22 @@ public:
   typedef std::map<std::string, octave_idx_type>::const_iterator const_iterator;
   typedef const_iterator iterator;
 
-  const_iterator begin (void) const { return rep->begin (); }
-  const_iterator end (void) const { return rep->end (); }
+  const_iterator begin (void) const { return m_rep->begin (); }
+  const_iterator end (void) const { return m_rep->end (); }
 
-  const_iterator cbegin (void) const { return rep->cbegin (); }
-  const_iterator cend (void) const { return rep->cend (); }
+  const_iterator cbegin (void) const { return m_rep->cbegin (); }
+  const_iterator cend (void) const { return m_rep->cend (); }
 
   std::string key (const_iterator p) const { return p->first; }
   octave_idx_type index (const_iterator p) const { return p->second; }
 
   const_iterator seek (const std::string& k) const
-  { return rep->find (k); }
+  { return m_rep->find (k); }
 
   // high-level methods.
 
   // number of fields.
-  octave_idx_type nfields (void) const { return rep->size (); }
+  octave_idx_type nfields (void) const { return m_rep->size (); }
 
   // check whether a field exists.
   bool isfield (const std::string& name) const;
@@ -146,7 +146,7 @@ public:
                           Array<octave_idx_type>& perm) const;
 
   bool is_same (const octave_fields& other) const
-  { return rep == other.rep; }
+  { return m_rep == other.m_rep; }
 
   // Returns the fields as a vector of strings.
   string_vector fieldnames (void) const;
@@ -163,22 +163,22 @@ octave_scalar_map
 public:
 
   octave_scalar_map (const octave_fields& k)
-    : xkeys (k), xvals (k.nfields ()) { }
+    : m_keys (k), m_vals (k.nfields ()) { }
 
-  octave_scalar_map (void) : xkeys (), xvals () { }
+  octave_scalar_map (void) : m_keys (), m_vals () { }
 
   octave_scalar_map (const string_vector& k)
-    : xkeys (k), xvals (k.numel ()) { }
+    : m_keys (k), m_vals (k.numel ()) { }
 
   octave_scalar_map (const octave_scalar_map& m)
-    : xkeys (m.xkeys), xvals (m.xvals) { }
+    : m_keys (m.m_keys), m_vals (m.m_vals) { }
 
   octave_scalar_map (const std::map<std::string, octave_value>& m);
 
   octave_scalar_map& operator = (const octave_scalar_map& m)
   {
-    xkeys = m.xkeys;
-    xvals = m.xvals;
+    m_keys = m.m_keys;
+    m_vals = m.m_vals;
 
     return *this;
   }
@@ -189,43 +189,43 @@ public:
   typedef octave_fields::const_iterator const_iterator;
   typedef const_iterator iterator;
 
-  const_iterator begin (void) const { return xkeys.begin (); }
-  const_iterator end (void) const { return xkeys.end (); }
+  const_iterator begin (void) const { return m_keys.begin (); }
+  const_iterator end (void) const { return m_keys.end (); }
 
-  const_iterator cbegin (void) const { return xkeys.cbegin (); }
-  const_iterator cend (void) const { return xkeys.cend (); }
+  const_iterator cbegin (void) const { return m_keys.cbegin (); }
+  const_iterator cend (void) const { return m_keys.cend (); }
 
-  const_iterator seek (const std::string& k) const { return xkeys.seek (k); }
+  const_iterator seek (const std::string& k) const { return m_keys.seek (k); }
 
   std::string key (const_iterator p) const
-  { return xkeys.key (p); }
+  { return m_keys.key (p); }
   octave_idx_type index (const_iterator p) const
-  { return xkeys.index (p); }
+  { return m_keys.index (p); }
 
   const octave_value& contents (const_iterator p) const
-  { return xvals[xkeys.index (p)]; }
+  { return m_vals[m_keys.index (p)]; }
 
   octave_value& contents (iterator p)
-  { return xvals[xkeys.index (p)]; }
+  { return m_vals[m_keys.index (p)]; }
 
   const octave_value& contents (octave_idx_type i) const
-  { return xvals[i]; }
+  { return m_vals[i]; }
 
   octave_value& contents (octave_idx_type i)
-  { return xvals[i]; }
+  { return m_vals[i]; }
 
   // number of fields.
-  octave_idx_type nfields (void) const { return xkeys.nfields (); }
+  octave_idx_type nfields (void) const { return m_keys.nfields (); }
 
   // check whether a field exists.
   bool isfield (const std::string& name) const
-  { return xkeys.isfield (name); }
+  { return m_keys.isfield (name); }
 
   bool contains (const std::string& name) const
   { return isfield (name); }
 
   string_vector fieldnames (void) const
-  { return xkeys.fieldnames (); }
+  { return m_keys.fieldnames (); }
 
   string_vector keys (void) const
   { return fieldnames (); }
@@ -254,16 +254,16 @@ public:
 
   void clear (void)
   {
-    xkeys.clear ();
-    xvals.clear ();
+    m_keys.clear ();
+    m_vals.clear ();
   }
 
   friend class octave_map;
 
 private:
 
-  octave_fields xkeys;
-  std::vector<octave_value> xvals;
+  octave_fields m_keys;
+  std::vector<octave_value> m_vals;
 
 };
 
@@ -278,33 +278,33 @@ octave_map
 public:
 
   octave_map (const octave_fields& k)
-    : xkeys (k), xvals (k.nfields ()), dimensions () { }
+    : m_keys (k), m_vals (k.nfields ()), m_dimensions () { }
 
   octave_map (const dim_vector& dv, const octave_fields& k)
-    : xkeys (k), xvals (k.nfields (), Cell (dv)), dimensions (dv) { }
+    : m_keys (k), m_vals (k.nfields (), Cell (dv)), m_dimensions (dv) { }
 
   typedef octave_scalar_map element_type;
 
-  octave_map (void) : xkeys (), xvals (), dimensions () { }
+  octave_map (void) : m_keys (), m_vals (), m_dimensions () { }
 
-  octave_map (const dim_vector& dv) : xkeys (), xvals (), dimensions (dv) { }
+  octave_map (const dim_vector& dv) : m_keys (), m_vals (), m_dimensions (dv) { }
 
   octave_map (const string_vector& k)
-    : xkeys (k), xvals (k.numel (), Cell (1, 1)), dimensions (1, 1) { }
+    : m_keys (k), m_vals (k.numel (), Cell (1, 1)), m_dimensions (1, 1) { }
 
   octave_map (const dim_vector& dv, const string_vector& k)
-    : xkeys (k), xvals (k.numel (), Cell (dv)), dimensions (dv) { }
+    : m_keys (k), m_vals (k.numel (), Cell (dv)), m_dimensions (dv) { }
 
   octave_map (const octave_map& m)
-    : xkeys (m.xkeys), xvals (m.xvals), dimensions (m.dimensions) { }
+    : m_keys (m.m_keys), m_vals (m.m_vals), m_dimensions (m.m_dimensions) { }
 
   octave_map (const octave_scalar_map& m);
 
   octave_map& operator = (const octave_map& m)
   {
-    xkeys = m.xkeys;
-    xvals = m.xvals;
-    dimensions = m.dimensions;
+    m_keys = m.m_keys;
+    m_vals = m.m_vals;
+    m_dimensions = m.m_dimensions;
 
     return *this;
   }
@@ -315,43 +315,43 @@ public:
   typedef octave_fields::const_iterator const_iterator;
   typedef const_iterator iterator;
 
-  const_iterator begin (void) const { return xkeys.begin (); }
-  const_iterator end (void) const { return xkeys.end (); }
+  const_iterator begin (void) const { return m_keys.begin (); }
+  const_iterator end (void) const { return m_keys.end (); }
 
-  const_iterator cbegin (void) const { return xkeys.cbegin (); }
-  const_iterator cend (void) const { return xkeys.cend (); }
+  const_iterator cbegin (void) const { return m_keys.cbegin (); }
+  const_iterator cend (void) const { return m_keys.cend (); }
 
-  const_iterator seek (const std::string& k) const { return xkeys.seek (k); }
+  const_iterator seek (const std::string& k) const { return m_keys.seek (k); }
 
   std::string key (const_iterator p) const
-  { return xkeys.key (p); }
+  { return m_keys.key (p); }
   octave_idx_type index (const_iterator p) const
-  { return xkeys.index (p); }
+  { return m_keys.index (p); }
 
   const Cell& contents (const_iterator p) const
-  { return xvals[xkeys.index (p)]; }
+  { return m_vals[m_keys.index (p)]; }
 
   Cell& contents (iterator p)
-  { return xvals[xkeys.index (p)]; }
+  { return m_vals[m_keys.index (p)]; }
 
   const Cell& contents (octave_idx_type i) const
-  { return xvals[i]; }
+  { return m_vals[i]; }
 
   Cell& contents (octave_idx_type i)
-  { return xvals[i]; }
+  { return m_vals[i]; }
 
   // number of fields.
-  octave_idx_type nfields (void) const { return xkeys.nfields (); }
+  octave_idx_type nfields (void) const { return m_keys.nfields (); }
 
   // check whether a field exists.
   bool isfield (const std::string& name) const
-  { return xkeys.isfield (name); }
+  { return m_keys.isfield (name); }
 
   bool contains (const std::string& name) const
   { return isfield (name); }
 
   string_vector fieldnames (void) const
-  { return xkeys.fieldnames (); }
+  { return m_keys.fieldnames (); }
 
   string_vector keys (void) const
   { return fieldnames (); }
@@ -360,7 +360,7 @@ public:
   Cell getfield (const std::string& key) const;
 
   // set contents of a given field.  add if not exist.  checks for
-  // correct dimensions.
+  // correct m_dimensions.
   void setfield (const std::string& key, const Cell& val);
   void assign (const std::string& k, const Cell& val)
   { setfield (k, val); }
@@ -381,18 +381,18 @@ public:
 
   void clear (void)
   {
-    xkeys.clear ();
-    xvals.clear ();
+    m_keys.clear ();
+    m_vals.clear ();
   }
 
   // The Array-like methods.
-  octave_idx_type numel (void) const { return dimensions.numel (); }
+  octave_idx_type numel (void) const { return m_dimensions.numel (); }
   octave_idx_type length (void) const { return numel (); }
-  bool isempty (void) const { return dimensions.any_zero (); }
+  bool isempty (void) const { return m_dimensions.any_zero (); }
 
-  octave_idx_type rows (void) const { return dimensions(0); }
-  octave_idx_type cols (void) const { return dimensions(1); }
-  octave_idx_type columns (void) const { return dimensions(1); }
+  octave_idx_type rows (void) const { return m_dimensions(0); }
+  octave_idx_type cols (void) const { return m_dimensions(1); }
+  octave_idx_type columns (void) const { return m_dimensions(1); }
 
   // Extract a scalar substructure.
   // FIXME: actually check something.
@@ -427,9 +427,9 @@ public:
 
   octave_map permute (const Array<int>& vec, bool inv = false) const;
 
-  dim_vector dims (void) const { return dimensions; }
+  dim_vector dims (void) const { return m_dimensions; }
 
-  int ndims (void) const { return dimensions.ndims (); }
+  int ndims (void) const { return m_dimensions.ndims (); }
 
   octave_map transpose (void) const;
 
@@ -487,9 +487,9 @@ public:
 
 private:
 
-  octave_fields xkeys;
-  std::vector<Cell> xvals;
-  dim_vector dimensions;
+  octave_fields m_keys;
+  std::vector<Cell> m_vals;
+  dim_vector m_dimensions;
 
   void optimize_dimensions (void);
   void extract_scalar (octave_scalar_map& dest,

@@ -43,60 +43,60 @@ octave_fields::nil_rep (void)
 }
 
 octave_fields::octave_fields (const string_vector& fields)
-  : rep (new fields_rep)
+  : m_rep (new fields_rep)
 {
   octave_idx_type n = fields.numel ();
   for (octave_idx_type i = 0; i < n; i++)
-    (*rep)[fields(i)] = i;
+    (*m_rep)[fields(i)] = i;
 }
 
 octave_fields::octave_fields (const char * const *fields)
-  : rep (new fields_rep)
+  : m_rep (new fields_rep)
 {
   octave_idx_type n = 0;
   while (*fields)
-    (*rep)[std::string (*fields++)] = n++;
+    (*m_rep)[std::string (*fields++)] = n++;
 }
 
 bool
 octave_fields::isfield (const std::string& field) const
 {
-  return rep->find (field) != rep->end ();
+  return m_rep->find (field) != m_rep->end ();
 }
 
 octave_idx_type
 octave_fields::getfield (const std::string& field) const
 {
-  auto p = rep->find (field);
-  return (p != rep->end ()) ? p->second : -1;
+  auto p = m_rep->find (field);
+  return (p != m_rep->end ()) ? p->second : -1;
 }
 
 octave_idx_type
 octave_fields::getfield (const std::string& field)
 {
-  auto p = rep->find (field);
-  if (p != rep->end ())
+  auto p = m_rep->find (field);
+  if (p != m_rep->end ())
     return p->second;
   else
     {
       make_unique ();
-      octave_idx_type n = rep->size ();
-      return (*rep)[field] = n;
+      octave_idx_type n = m_rep->size ();
+      return (*m_rep)[field] = n;
     }
 }
 
 octave_idx_type
 octave_fields::rmfield (const std::string& field)
 {
-  auto p = rep->find (field);
-  if (p == rep->end ())
+  auto p = m_rep->find (field);
+  if (p == m_rep->end ())
     return -1;
   else
     {
       octave_idx_type n = p->second;
       make_unique ();
-      rep->erase (field);
-      for (auto& fld_idx : *rep)
+      m_rep->erase (field);
+      for (auto& fld_idx : *m_rep)
         {
           if (fld_idx.second >= n)
             fld_idx.second--;
@@ -109,12 +109,12 @@ octave_fields::rmfield (const std::string& field)
 void
 octave_fields::orderfields (Array<octave_idx_type>& perm)
 {
-  octave_idx_type n = rep->size ();
+  octave_idx_type n = m_rep->size ();
   perm.clear (n, 1);
 
   make_unique ();
   octave_idx_type i = 0;
-  for (auto& fld_idx : *rep)
+  for (auto& fld_idx : *m_rep)
     {
       octave_idx_type j = fld_idx.second;
       fld_idx.second = i;
@@ -170,38 +170,38 @@ octave_scalar_map::octave_scalar_map
   (const std::map<std::string, octave_value>& m)
 {
   std::size_t sz = m.size ();
-  xvals.resize (sz);
+  m_vals.resize (sz);
   std::size_t i = 0;
   for (const auto& k_v : m)
     {
-      xkeys.getfield (k_v.first);
-      xvals[i++] = k_v.second;
+      m_keys.getfield (k_v.first);
+      m_vals[i++] = k_v.second;
     }
 }
 
 octave_value
 octave_scalar_map::getfield (const std::string& k) const
 {
-  octave_idx_type idx = xkeys.getfield (k);
-  return (idx >= 0) ? xvals[idx] : octave_value ();
+  octave_idx_type idx = m_keys.getfield (k);
+  return (idx >= 0) ? m_vals[idx] : octave_value ();
 }
 
 void
 octave_scalar_map::setfield (const std::string& k, const octave_value& val)
 {
-  octave_idx_type idx = xkeys.getfield (k);
-  if (idx < static_cast<octave_idx_type> (xvals.size ()))
-    xvals[idx] = val;
+  octave_idx_type idx = m_keys.getfield (k);
+  if (idx < static_cast<octave_idx_type> (m_vals.size ()))
+    m_vals[idx] = val;
   else
-    xvals.push_back (val);
+    m_vals.push_back (val);
 }
 
 void
 octave_scalar_map::rmfield (const std::string& k)
 {
-  octave_idx_type idx = xkeys.rmfield (k);
+  octave_idx_type idx = m_keys.rmfield (k);
   if (idx >= 0)
-    xvals.erase (xvals.begin () + idx);
+    m_vals.erase (m_vals.begin () + idx);
 }
 
 octave_scalar_map
@@ -214,12 +214,12 @@ octave_scalar_map::orderfields (void) const
 octave_scalar_map
 octave_scalar_map::orderfields (Array<octave_idx_type>& perm) const
 {
-  octave_scalar_map retval (xkeys);
-  retval.xkeys.orderfields (perm);
+  octave_scalar_map retval (m_keys);
+  retval.m_keys.orderfields (perm);
 
   octave_idx_type nf = nfields ();
   for (octave_idx_type i = 0; i < nf; i++)
-    retval.xvals[i] = xvals[perm.xelem (i)];
+    retval.m_vals[i] = m_vals[perm.xelem (i)];
 
   return retval;
 }
@@ -228,17 +228,17 @@ octave_scalar_map
 octave_scalar_map::orderfields (const octave_scalar_map& other,
                                 Array<octave_idx_type>& perm) const
 {
-  if (xkeys.is_same (other.xkeys))
+  if (m_keys.is_same (other.m_keys))
     return *this;
   else
     {
-      octave_scalar_map retval (other.xkeys);
-      if (! other.xkeys.equal_up_to_order (xkeys, perm))
+      octave_scalar_map retval (other.m_keys);
+      if (! other.m_keys.equal_up_to_order (m_keys, perm))
         error ("orderfields: structs must have same fields up to order");
 
       octave_idx_type nf = nfields ();
       for (octave_idx_type i = 0; i < nf; i++)
-        retval.xvals[i] = xvals[perm.xelem (i)];
+        retval.m_vals[i] = m_vals[perm.xelem (i)];
 
       return retval;
     }
@@ -253,53 +253,53 @@ octave_scalar_map::contents (const std::string& k) const
 octave_value&
 octave_scalar_map::contents (const std::string& k)
 {
-  octave_idx_type idx = xkeys.getfield (k);
-  if (idx >= static_cast<octave_idx_type> (xvals.size ()))
-    xvals.resize (idx+1);
-  return xvals[idx];
+  octave_idx_type idx = m_keys.getfield (k);
+  if (idx >= static_cast<octave_idx_type> (m_vals.size ()))
+    m_vals.resize (idx+1);
+  return m_vals[idx];
 }
 
 octave_map::octave_map (const octave_scalar_map& m)
-  : xkeys (m.xkeys), xvals (), dimensions (1, 1)
+  : m_keys (m.m_keys), m_vals (), m_dimensions (1, 1)
 {
   octave_idx_type nf = m.nfields ();
-  xvals.reserve (nf);
+  m_vals.reserve (nf);
   for (octave_idx_type i = 0; i < nf; i++)
     {
-      xvals.push_back (Cell (dimensions));
-      xvals[i].xelem (0) = m.xvals[i];
+      m_vals.push_back (Cell (m_dimensions));
+      m_vals[i].xelem (0) = m.m_vals[i];
     }
 }
 
 Cell
 octave_map::getfield (const std::string& k) const
 {
-  octave_idx_type idx = xkeys.getfield (k);
-  return (idx >= 0) ? xvals[idx] : Cell ();
+  octave_idx_type idx = m_keys.getfield (k);
+  return (idx >= 0) ? m_vals[idx] : Cell ();
 }
 
 void
 octave_map::setfield (const std::string& k, const Cell& val)
 {
   if (nfields () == 0)
-    dimensions = val.dims ();
+    m_dimensions = val.dims ();
 
-  if (val.dims () != dimensions)
+  if (val.dims () != m_dimensions)
     error ("octave_map::setfield: internal error");
 
-  octave_idx_type idx = xkeys.getfield (k);
-  if (idx < static_cast<octave_idx_type> (xvals.size ()))
-    xvals[idx] = val;
+  octave_idx_type idx = m_keys.getfield (k);
+  if (idx < static_cast<octave_idx_type> (m_vals.size ()))
+    m_vals[idx] = val;
   else
-    xvals.push_back (val);
+    m_vals.push_back (val);
 }
 
 void
 octave_map::rmfield (const std::string& k)
 {
-  octave_idx_type idx = xkeys.rmfield (k);
+  octave_idx_type idx = m_keys.rmfield (k);
   if (idx >= 0)
-    xvals.erase (xvals.begin () + idx);
+    m_vals.erase (m_vals.begin () + idx);
 }
 
 octave_map
@@ -312,12 +312,12 @@ octave_map::orderfields (void) const
 octave_map
 octave_map::orderfields (Array<octave_idx_type>& perm) const
 {
-  octave_map retval (xkeys);
-  retval.xkeys.orderfields (perm);
+  octave_map retval (m_keys);
+  retval.m_keys.orderfields (perm);
 
   octave_idx_type nf = nfields ();
   for (octave_idx_type i = 0; i < nf; i++)
-    retval.xvals[i] = xvals[perm.xelem (i)];
+    retval.m_vals[i] = m_vals[perm.xelem (i)];
 
   return retval;
 }
@@ -326,17 +326,17 @@ octave_map
 octave_map::orderfields (const octave_map& other,
                          Array<octave_idx_type>& perm) const
 {
-  if (xkeys.is_same (other.xkeys))
+  if (m_keys.is_same (other.m_keys))
     return *this;
   else
     {
-      octave_map retval (other.xkeys);
-      if (! other.xkeys.equal_up_to_order (xkeys, perm))
+      octave_map retval (other.m_keys);
+      if (! other.m_keys.equal_up_to_order (m_keys, perm))
         error ("orderfields: structs must have same fields up to order");
 
       octave_idx_type nf = nfields ();
       for (octave_idx_type i = 0; i < nf; i++)
-        retval.xvals[i] = xvals[perm.xelem (i)];
+        retval.m_vals[i] = m_vals[perm.xelem (i)];
 
       return retval;
     }
@@ -351,10 +351,10 @@ octave_map::contents (const std::string& k) const
 Cell&
 octave_map::contents (const std::string& k)
 {
-  octave_idx_type idx = xkeys.getfield (k);
-  if (idx >= static_cast<octave_idx_type> (xvals.size ()))
-    xvals.push_back (Cell (dimensions)); // auto-set correct dims.
-  return xvals[idx];
+  octave_idx_type idx = m_keys.getfield (k);
+  if (idx >= static_cast<octave_idx_type> (m_vals.size ()))
+    m_vals.push_back (Cell (m_dimensions)); // auto-set correct dims.
+  return m_vals[idx];
 }
 
 void
@@ -363,16 +363,16 @@ octave_map::extract_scalar (octave_scalar_map& dest,
 {
   octave_idx_type nf = nfields ();
   for (octave_idx_type i = 0; i < nf; i++)
-    dest.xvals[i] = xvals[i](idx);
+    dest.m_vals[i] = m_vals[i](idx);
 }
 
 octave_scalar_map
 octave_map::elem (octave_idx_type n) const
 {
-  octave_scalar_map retval (xkeys);
+  octave_scalar_map retval (m_keys);
 
   // Optimize this so that there is just one check.
-  extract_scalar (retval, compute_index (n, dimensions));
+  extract_scalar (retval, compute_index (n, m_dimensions));
 
   return retval;
 }
@@ -380,10 +380,10 @@ octave_map::elem (octave_idx_type n) const
 octave_scalar_map
 octave_map::elem (octave_idx_type i, octave_idx_type j) const
 {
-  octave_scalar_map retval (xkeys);
+  octave_scalar_map retval (m_keys);
 
   // Optimize this so that there is just one check.
-  extract_scalar (retval, compute_index (i, j, dimensions));
+  extract_scalar (retval, compute_index (i, j, m_dimensions));
 
   return retval;
 }
@@ -391,10 +391,10 @@ octave_map::elem (octave_idx_type i, octave_idx_type j) const
 octave_scalar_map
 octave_map::elem (const Array<octave_idx_type>& ra_idx) const
 {
-  octave_scalar_map retval (xkeys);
+  octave_scalar_map retval (m_keys);
 
   // Optimize this so that there is just one check.
-  extract_scalar (retval, compute_index (ra_idx, dimensions));
+  extract_scalar (retval, compute_index (ra_idx, m_dimensions));
 
   return retval;
 }
@@ -402,7 +402,7 @@ octave_map::elem (const Array<octave_idx_type>& ra_idx) const
 octave_scalar_map
 octave_map::fast_elem_extract (octave_idx_type n) const
 {
-  octave_scalar_map retval (xkeys);
+  octave_scalar_map retval (m_keys);
 
   extract_scalar (retval, n);
 
@@ -416,20 +416,20 @@ octave_map::fast_elem_insert (octave_idx_type n,
   bool retval = false;
 
   octave_idx_type nf = nfields ();
-  if (rhs.xkeys.is_same (xkeys))
+  if (rhs.m_keys.is_same (m_keys))
     {
       for (octave_idx_type i = 0; i < nf; i++)
-        xvals[i](n) = rhs.xvals[i];
+        m_vals[i](n) = rhs.m_vals[i];
 
       retval = true;
     }
   else
     {
       OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, nf);
-      if (xkeys.equal_up_to_order (rhs.xkeys, perm))
+      if (m_keys.equal_up_to_order (rhs.m_keys, perm))
         {
           for (octave_idx_type i = 0; i < nf; i++)
-            xvals[i](n) = rhs.xvals[perm[i]];
+            m_vals[i](n) = rhs.m_vals[perm[i]];
 
           retval = true;
         }
@@ -444,10 +444,10 @@ octave_map::squeeze (void) const
   octave_map retval (*this);
   octave_idx_type nf = nfields ();
 
-  retval.dimensions = dimensions.squeeze ();
+  retval.m_dimensions = m_dimensions.squeeze ();
 
   for (octave_idx_type i = 0; i < nf; i++)
-    retval.xvals[i] = xvals[i].squeeze ();
+    retval.m_vals[i] = m_vals[i].squeeze ();
 
   retval.optimize_dimensions ();
 
@@ -455,7 +455,7 @@ octave_map::squeeze (void) const
 }
 
 /*
-## test preservation of xkeys by squeeze
+## test preservation of m_keys by squeeze
 %!test
 %! x(1,1,1,1).d = 10;  x(3,5,1,7).a = "b";  x(2,4,1,7).f = 27;
 %! assert (fieldnames (squeeze (x)), {"d"; "a"; "f"});
@@ -464,23 +464,23 @@ octave_map::squeeze (void) const
 octave_map
 octave_map::permute (const Array<int>& vec, bool inv) const
 {
-  octave_map retval (xkeys);
+  octave_map retval (m_keys);
   octave_idx_type nf = nfields ();
 
   for (octave_idx_type i = 0; i < nf; i++)
-    retval.xvals[i] = xvals[i].permute (vec, inv);
+    retval.m_vals[i] = m_vals[i].permute (vec, inv);
 
   // FIXME:
   // There is no dim_vector::permute for technical reasons.
   // We pick the dim vector from results if possible, otherwise use a dummy
   // array to get it.  Need (?) a better solution to this problem.
   if (nf > 0)
-    retval.dimensions = retval.xvals[0].dims ();
+    retval.m_dimensions = retval.m_vals[0].dims ();
   else
     {
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy = dummy.permute (vec, inv);
-      retval.dimensions = dummy.dims ();
+      retval.m_dimensions = dummy.dims ();
     }
 
   retval.optimize_dimensions ();
@@ -500,13 +500,13 @@ octave_map::transpose (void) const
 {
   assert (ndims () == 2);
 
-  octave_map retval (xkeys);
+  octave_map retval (m_keys);
 
-  retval.dimensions = dim_vector (dimensions (1), dimensions (0));
+  retval.m_dimensions = dim_vector (m_dimensions (1), m_dimensions (0));
 
   octave_idx_type nf = nfields ();
   for (octave_idx_type i = 0; i < nf; i++)
-    retval.xvals[i] = xvals[i].transpose ();
+    retval.m_vals[i] = m_vals[i].transpose ();
 
   retval.optimize_dimensions ();
 
@@ -525,25 +525,25 @@ octave_map::transpose (void) const
 octave_map
 octave_map::reshape (const dim_vector& dv) const
 {
-  octave_map retval (xkeys);
-  retval.dimensions = dv;
+  octave_map retval (m_keys);
+  retval.m_dimensions = dv;
 
-  // When reshaping xvals the Array constructor chops trailing singletons,
+  // When reshaping m_vals the Array constructor chops trailing singletons,
   // hence we need to do the same for the whole map.
-  retval.dimensions.chop_trailing_singletons ();
+  retval.m_dimensions.chop_trailing_singletons ();
 
   octave_idx_type nf = nfields ();
   if (nf > 0)
     {
-      retval.xvals.reserve (nf);
+      retval.m_vals.reserve (nf);
       for (octave_idx_type i = 0; i < nf; i++)
-        retval.xvals[i] = xvals[i].reshape (dv);
+        retval.m_vals[i] = m_vals[i].reshape (dv);
     }
   else
     {
       // FIXME: Do it with a dummy array, to reuse error message.
       // Need (?) a better solution.
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy.reshape (dv);
     }
 
@@ -581,20 +581,20 @@ octave_map::resize (const dim_vector& dv, bool fill)
       for (octave_idx_type i = 0; i < nf; i++)
         {
           if (fill)
-            xvals[i].resize (dv, Matrix ());
+            m_vals[i].resize (dv, Matrix ());
           else
-            xvals[i].resize (dv);
+            m_vals[i].resize (dv);
         }
     }
   else
     {
       // FIXME: Do it with a dummy array, to reuse error message.
       // Need (?) a better solution.
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy.resize (dv);
     }
 
-  dimensions = dv;
+  m_dimensions = dv;
   optimize_dimensions ();
 }
 
@@ -604,19 +604,19 @@ octave_map::do_cat (int dim, octave_idx_type n,
                     octave_map& retval)
 {
   octave_idx_type nf = retval.nfields ();
-  retval.xvals.reserve (nf);
+  retval.m_vals.reserve (nf);
 
-  dim_vector& rd = retval.dimensions;
+  dim_vector& rd = retval.m_dimensions;
   rd.resize (dim+1, 1);
   rd(0) = rd(1) = 1;
   rd(dim) = n;
 
   for (octave_idx_type j = 0; j < nf; j++)
     {
-      retval.xvals.push_back (Cell (rd));
-      assert (retval.xvals[j].numel () == n);
+      retval.m_vals.push_back (Cell (rd));
+      assert (retval.m_vals[j].numel () == n);
       for (octave_idx_type i = 0; i < n; i++)
-        retval.xvals[j].xelem (i) = map_list[i].xvals[j];
+        retval.m_vals[j].xelem (i) = map_list[i].m_vals[j];
     }
 }
 
@@ -625,18 +625,18 @@ octave_map::do_cat (int dim, octave_idx_type n, const octave_map *map_list,
                     octave_map& retval)
 {
   octave_idx_type nf = retval.nfields ();
-  retval.xvals.reserve (nf);
+  retval.m_vals.reserve (nf);
 
   OCTAVE_LOCAL_BUFFER (Array<octave_value>, field_list, n);
 
   for (octave_idx_type j = 0; j < nf; j++)
     {
       for (octave_idx_type i = 0; i < n; i++)
-        field_list[i] = map_list[i].xvals[j];
+        field_list[i] = map_list[i].m_vals[j];
 
-      retval.xvals.push_back (Array<octave_value>::cat (dim, n, field_list));
+      retval.m_vals.push_back (Array<octave_value>::cat (dim, n, field_list));
       if (j == 0)
-        retval.dimensions = retval.xvals[j].dims ();
+        retval.m_dimensions = retval.m_vals[j].dims ();
     }
 }
 
@@ -707,7 +707,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
           nf = map_list[idx].nfields ();
           if (nf > 0)
             {
-              retval.xkeys = map_list[idx].xkeys;
+              retval.m_keys = map_list[idx].m_keys;
               break;
             }
         }
@@ -718,7 +718,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
           bool all_same = true;
           for (octave_idx_type i = 0; i < n; i++)
             {
-              all_same = map_list[idx].xkeys.is_same (map_list[i].xkeys);
+              all_same = map_list[idx].m_keys.is_same (map_list[i].m_keys);
               if (! all_same)
                 break;
             }
@@ -738,7 +738,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
         }
       else
         {
-          dim_vector& rd = retval.dimensions;
+          dim_vector& rd = retval.m_dimensions;
           rd.resize (dim+1, 1);
           rd(0) = rd(1) = 1;
           rd(dim) = n;
@@ -772,7 +772,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
           nf = map_list[idx].nfields ();
           if (nf > 0)
             {
-              retval.xkeys = map_list[idx].xkeys;
+              retval.m_keys = map_list[idx].m_keys;
               break;
             }
         }
@@ -784,7 +784,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
         {
           for (octave_idx_type i = 0; i < n; i++)
             {
-              all_same = map_list[idx].xkeys.is_same (map_list[i].xkeys);
+              all_same = map_list[idx].m_keys.is_same (map_list[i].m_keys);
 
               if (! all_same)
                 break;
@@ -806,15 +806,15 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
             }
           else
             {
-              dim_vector dv = map_list[0].dimensions;
+              dim_vector dv = map_list[0].m_dimensions;
 
               for (octave_idx_type i = 1; i < n; i++)
                 {
-                  if (! dv.concat (map_list[i].dimensions, dim))
+                  if (! dv.concat (map_list[i].m_dimensions, dim))
                     error ("dimension mismatch in struct concatenation");
                 }
 
-              retval.dimensions = dv;
+              retval.m_dimensions = dv;
             }
         }
 
@@ -847,20 +847,20 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
 octave_map
 octave_map::index (const octave::idx_vector& i, bool resize_ok) const
 {
-  octave_map retval (xkeys);
+  octave_map retval (m_keys);
   octave_idx_type nf = nfields ();
 
   for (octave_idx_type k = 0; k < nf; k++)
-    retval.xvals[k] = xvals[k].index (i, resize_ok);
+    retval.m_vals[k] = m_vals[k].index (i, resize_ok);
 
   if (nf > 0)
-    retval.dimensions = retval.xvals[0].dims ();
+    retval.m_dimensions = retval.m_vals[0].dims ();
   else
     {
       // Use dummy array.  FIXME: Need(?) a better solution.
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy = dummy.index (i, resize_ok);
-      retval.dimensions = dummy.dims ();
+      retval.m_dimensions = dummy.dims ();
     }
 
   retval.optimize_dimensions ();
@@ -872,20 +872,20 @@ octave_map
 octave_map::index (const octave::idx_vector& i, const octave::idx_vector& j,
                    bool resize_ok) const
 {
-  octave_map retval (xkeys);
+  octave_map retval (m_keys);
   octave_idx_type nf = nfields ();
 
   for (octave_idx_type k = 0; k < nf; k++)
-    retval.xvals[k] = xvals[k].index (i, j, resize_ok);
+    retval.m_vals[k] = m_vals[k].index (i, j, resize_ok);
 
   if (nf > 0)
-    retval.dimensions = retval.xvals[0].dims ();
+    retval.m_dimensions = retval.m_vals[0].dims ();
   else
     {
       // Use dummy array.  FIXME: Need(?) a better solution.
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy = dummy.index (i, j, resize_ok);
-      retval.dimensions = dummy.dims ();
+      retval.m_dimensions = dummy.dims ();
     }
 
   retval.optimize_dimensions ();
@@ -896,20 +896,20 @@ octave_map::index (const octave::idx_vector& i, const octave::idx_vector& j,
 octave_map
 octave_map::index (const Array<octave::idx_vector>& ia, bool resize_ok) const
 {
-  octave_map retval (xkeys);
+  octave_map retval (m_keys);
   octave_idx_type nf = nfields ();
 
   for (octave_idx_type k = 0; k < nf; k++)
-    retval.xvals[k] = xvals[k].index (ia, resize_ok);
+    retval.m_vals[k] = m_vals[k].index (ia, resize_ok);
 
   if (nf > 0)
-    retval.dimensions = retval.xvals[0].dims ();
+    retval.m_dimensions = retval.m_vals[0].dims ();
   else
     {
       // Use dummy array.  FIXME: Need(?) a better solution.
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy = dummy.index (ia, resize_ok);
-      retval.dimensions = dummy.dims ();
+      retval.m_dimensions = dummy.dims ();
     }
 
   retval.optimize_dimensions ();
@@ -993,28 +993,28 @@ octave_map::page (octave_idx_type k) const
 void
 octave_map::assign (const octave::idx_vector& i, const octave_map& rhs)
 {
-  if (rhs.xkeys.is_same (xkeys))
+  if (rhs.m_keys.is_same (m_keys))
     {
       octave_idx_type nf = nfields ();
 
       for (octave_idx_type k = 0; k < nf; k++)
-        xvals[k].assign (i, rhs.xvals[k], Matrix ());
+        m_vals[k].assign (i, rhs.m_vals[k], Matrix ());
 
       if (nf > 0)
-        dimensions = xvals[0].dims ();
+        m_dimensions = m_vals[0].dims ();
       else
         {
           // Use dummy array.  FIXME: Need(?) a better solution.
-          Array<char> dummy (dimensions), rhs_dummy (rhs.dimensions);
+          Array<char> dummy (m_dimensions), rhs_dummy (rhs.m_dimensions);
           dummy.assign (i, rhs_dummy);;
-          dimensions = dummy.dims ();
+          m_dimensions = dummy.dims ();
         }
 
       optimize_dimensions ();
     }
   else if (nfields () == 0)
     {
-      octave_map tmp (dimensions, rhs.xkeys);
+      octave_map tmp (m_dimensions, rhs.m_keys);
       tmp.assign (i, rhs);
       *this = tmp;
     }
@@ -1032,7 +1032,7 @@ octave_map::assign (const octave::idx_vector& i, const octave_map& rhs)
           error (ee, "incompatible fields in struct assignment");
         }
 
-      assert (rhs1.xkeys.is_same (xkeys));
+      assert (rhs1.m_keys.is_same (m_keys));
       assign (i, rhs1);
     }
 }
@@ -1041,28 +1041,28 @@ void
 octave_map::assign (const octave::idx_vector& i, const octave::idx_vector& j,
                     const octave_map& rhs)
 {
-  if (rhs.xkeys.is_same (xkeys))
+  if (rhs.m_keys.is_same (m_keys))
     {
       octave_idx_type nf = nfields ();
 
       for (octave_idx_type k = 0; k < nf; k++)
-        xvals[k].assign (i, j, rhs.xvals[k], Matrix ());
+        m_vals[k].assign (i, j, rhs.m_vals[k], Matrix ());
 
       if (nf > 0)
-        dimensions = xvals[0].dims ();
+        m_dimensions = m_vals[0].dims ();
       else
         {
           // Use dummy array.  FIXME: Need(?) a better solution.
-          Array<char> dummy (dimensions), rhs_dummy (rhs.dimensions);
+          Array<char> dummy (m_dimensions), rhs_dummy (rhs.m_dimensions);
           dummy.assign (i, j, rhs_dummy);;
-          dimensions = dummy.dims ();
+          m_dimensions = dummy.dims ();
         }
 
       optimize_dimensions ();
     }
   else if (nfields () == 0)
     {
-      octave_map tmp (dimensions, rhs.xkeys);
+      octave_map tmp (m_dimensions, rhs.m_keys);
       tmp.assign (i, j, rhs);
       *this = tmp;
     }
@@ -1080,7 +1080,7 @@ octave_map::assign (const octave::idx_vector& i, const octave::idx_vector& j,
           error (ee, "incompatible fields in struct assignment");
         }
 
-      assert (rhs1.xkeys.is_same (xkeys));
+      assert (rhs1.m_keys.is_same (m_keys));
       assign (i, j, rhs1);
     }
 }
@@ -1089,28 +1089,28 @@ void
 octave_map::assign (const Array<octave::idx_vector>& ia,
                     const octave_map& rhs)
 {
-  if (rhs.xkeys.is_same (xkeys))
+  if (rhs.m_keys.is_same (m_keys))
     {
       octave_idx_type nf = nfields ();
 
       for (octave_idx_type k = 0; k < nf; k++)
-        xvals[k].assign (ia, rhs.xvals[k], Matrix ());
+        m_vals[k].assign (ia, rhs.m_vals[k], Matrix ());
 
       if (nf > 0)
-        dimensions = xvals[0].dims ();
+        m_dimensions = m_vals[0].dims ();
       else
         {
           // Use dummy array.  FIXME: Need(?) a better solution.
-          Array<char> dummy (dimensions), rhs_dummy (rhs.dimensions);
+          Array<char> dummy (m_dimensions), rhs_dummy (rhs.m_dimensions);
           dummy.assign (ia, rhs_dummy);;
-          dimensions = dummy.dims ();
+          m_dimensions = dummy.dims ();
         }
 
       optimize_dimensions ();
     }
   else if (nfields () == 0)
     {
-      octave_map tmp (dimensions, rhs.xkeys);
+      octave_map tmp (m_dimensions, rhs.m_keys);
       tmp.assign (ia, rhs);
       *this = tmp;
     }
@@ -1128,7 +1128,7 @@ octave_map::assign (const Array<octave::idx_vector>& ia,
           error (ee, "incompatible fields in struct assignment");
         }
 
-      assert (rhs1.xkeys.is_same (xkeys));
+      assert (rhs1.m_keys.is_same (m_keys));
       assign (ia, rhs1);
     }
 }
@@ -1196,19 +1196,19 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
   Cell& ref = (p != end () ? contents (p) : tmp);
 
   if (&ref == &tmp)
-    ref = Cell (dimensions);
+    ref = Cell (m_dimensions);
 
   ref.assign (idx, rhs);
 
-  if (ref.dims () != dimensions)
+  if (ref.dims () != m_dimensions)
     {
-      dimensions = ref.dims ();
+      m_dimensions = ref.dims ();
 
       octave_idx_type nf = nfields ();
       for (octave_idx_type i = 0; i < nf; i++)
         {
-          if (&xvals[i] != &ref)
-            xvals[i].resize (dimensions, Matrix ());
+          if (&m_vals[i] != &ref)
+            m_vals[i].resize (m_dimensions, Matrix ());
         }
 
       optimize_dimensions ();
@@ -1230,16 +1230,16 @@ octave_map::delete_elements (const octave::idx_vector& i)
 {
   octave_idx_type nf = nfields ();
   for (octave_idx_type k = 0; k < nf; k++)
-    xvals[k].delete_elements (i);
+    m_vals[k].delete_elements (i);
 
   if (nf > 0)
-    dimensions = xvals[0].dims ();
+    m_dimensions = m_vals[0].dims ();
   else
     {
       // Use dummy array.  FIXME: Need(?) a better solution.
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy.delete_elements (i);
-      dimensions = dummy.dims ();
+      m_dimensions = dummy.dims ();
     }
 
   optimize_dimensions ();
@@ -1250,16 +1250,16 @@ octave_map::delete_elements (int dim, const octave::idx_vector& i)
 {
   octave_idx_type nf = nfields ();
   for (octave_idx_type k = 0; k < nf; k++)
-    xvals[k].delete_elements (dim, i);
+    m_vals[k].delete_elements (dim, i);
 
   if (nf > 0)
-    dimensions = xvals[0].dims ();
+    m_dimensions = m_vals[0].dims ();
   else
     {
       // Use dummy array.  FIXME: Need(?) a better solution.
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy.delete_elements (dim, i);
-      dimensions = dummy.dims ();
+      m_dimensions = dummy.dims ();
     }
 
   optimize_dimensions ();
@@ -1270,16 +1270,16 @@ octave_map::delete_elements (const Array<octave::idx_vector>& ia)
 {
   octave_idx_type nf = nfields ();
   for (octave_idx_type k = 0; k < nf; k++)
-    xvals[k].delete_elements (ia);
+    m_vals[k].delete_elements (ia);
 
   if (nf > 0)
-    dimensions = xvals[0].dims ();
+    m_dimensions = m_vals[0].dims ();
   else
     {
       // Use dummy array.  FIXME: Need(?) a better solution.
-      Array<char> dummy (dimensions);
+      Array<char> dummy (m_dimensions);
       dummy.delete_elements (ia);
-      dimensions = dummy.dims ();
+      m_dimensions = dummy.dims ();
     }
 
   optimize_dimensions ();
@@ -1351,7 +1351,7 @@ octave_map::optimize_dimensions (void)
 
   for (octave_idx_type i = 0; i < nf; i++)
     {
-      if (! xvals[i].optimize_dimensions (dimensions))
+      if (! m_vals[i].optimize_dimensions (m_dimensions))
         error ("internal error: dimension mismatch across fields in struct");
     }
 

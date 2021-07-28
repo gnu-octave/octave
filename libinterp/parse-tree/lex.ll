@@ -1666,6 +1666,12 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 "\\" {
+    // FIXME: After backslash is no longer handled as a line
+    // continuation marker outside of character strings, this
+    // action may be replaced with
+    //
+    //   CMD_OR_OP ("\\", LEFTDIV, true);
+
     curr_lexer->lexer_debug ("\\");
 
     return curr_lexer->handle_op (LEFTDIV);

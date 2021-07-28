@@ -270,6 +270,22 @@ major release after 7):
     * Any trailing whitespace after a `'\'` line continuation has been
     deprecated.  Delete unnecessary trailing whitespace.
 
+
+The following functions were deprecated in Octave 6 and will be removed
+from Octave 8 (or whatever version is the second major release after 6):
+
+- Functions
+
+  Function               | Replacement
+  -----------------------|------------------
+  `runtests`             | `oruntests`
+
+- The environment variable used by `mkoctfile` for linker flags is now
+  `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,
+  and a warning is now emitted if it is used, but it will continue to
+  work.
+
+
 ### Removed functions and properties
 
 The following functions and properties were deprecated in Octave 5

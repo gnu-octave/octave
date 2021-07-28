@@ -407,11 +407,8 @@ jobs:
 
       - name: build
         # Spawning processes seems to have a big overhead on this platform. Use a somewhat larger number of parallel processes to compensate for that.
-        # MSYS2's "fltk-config" returns wrong LIBS. Override them for make.
-        # See: https://github.com/msys2/MINGW-packages/issues/8806
         run: |
-          make -C ./.build all -j8 V=1 \
-            FLTK_LIBS="-lfltk_gl -lopengl32 -lglu32 -lfltk -lpthread"
+          make -C ./.build all -j8 V=1
 
       - name: ccache status
         continue-on-error: true

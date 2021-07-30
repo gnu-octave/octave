@@ -30,6 +30,7 @@
 #  include "config.h"
 #endif
 
+#include <clocale>
 #include <cmath>
 #include <cctype>
 #include <fstream>
@@ -330,6 +331,15 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
             input->putback (buf[i_ret]);
         }
     }
+
+  // Set "C" locale for the remainder of this function to avoid the performance
+  // panelty of frequently switching the locale when reading floating point
+  // values from the stream.
+  char *prev_locale = std::setlocale (LC_ALL, nullptr);
+  std::string old_locale (prev_locale ? prev_locale : "");
+  std::setlocale (LC_ALL, "C");
+  octave::unwind_action act
+    ([old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
 
   std::string line;
 

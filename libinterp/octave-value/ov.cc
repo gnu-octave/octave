@@ -3636,15 +3636,15 @@ DEFUN (disable_permutation_matrix, args, nargout,
 @deftypefn  {} {@var{val} =} disable_permutation_matrix ()
 @deftypefnx {} {@var{old_val} =} disable_permutation_matrix (@var{new_val})
 @deftypefnx {} {} disable_permutation_matrix (@var{new_val}, "local")
-Query or set the internal variable that controls whether permutation
-matrices are stored in a special space-efficient format.
+Query or set whether storing permutation matrices in a special space-efficient
+format is disabled.
 
-The default value is true.  If this option is disabled Octave will store
+The default value is false.  If this option is set to true, Octave will store
 permutation matrices as full matrices.
 
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
+When called from inside a function with the @qcode{"local"} option, the setting
+is changed locally for the function and any subroutines it calls.  The original
+setting is restored when exiting the function.
 @seealso{disable_range, disable_diagonal_matrix}
 @end deftypefn */)
 {
@@ -3666,15 +3666,15 @@ DEFUN (disable_diagonal_matrix, args, nargout,
 @deftypefn  {} {@var{val} =} disable_diagonal_matrix ()
 @deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})
 @deftypefnx {} {} disable_diagonal_matrix (@var{new_val}, "local")
-Query or set the internal variable that controls whether diagonal
-matrices are stored in a special space-efficient format.
+Query or set whether storing diagonal matrices in a special space-efficient
+format is disabled.
 
-The default value is true.  If this option is disabled Octave will store
+The default value is false.  If this option is set to true, Octave will store
 diagonal matrices as full matrices.
 
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
+When called from inside a function with the @qcode{"local"} option, the setting
+is changed locally for the function and any subroutines it calls. The original
+setting is restored when exiting the function.
 @seealso{disable_range, disable_permutation_matrix}
 @end deftypefn */)
 {
@@ -3710,15 +3710,15 @@ DEFUN (disable_range, args, nargout,
 @deftypefn  {} {@var{val} =} disable_range ()
 @deftypefnx {} {@var{old_val} =} disable_range (@var{new_val})
 @deftypefnx {} {} disable_range (@var{new_val}, "local")
-Query or set the internal variable that controls whether ranges are stored
-in a special space-efficient format.
+Query or set whether storing ranges in a special space-efficient format is
+disabled.
 
-The default value is true.  If this option is disabled Octave will store
+The default value is false.  If this option is set to true, Octave will store
 ranges as full matrices.
 
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
+When called from inside a function with the @qcode{"local"} option, the setting
+is changed locally for the function and any subroutines it calls.  The original
+setting is restored when exiting the function.
 @seealso{disable_diagonal_matrix, disable_permutation_matrix}
 @end deftypefn */)
 {

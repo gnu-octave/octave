@@ -737,7 +737,7 @@ namespace octave
       octave_idx_type nc = N->L->n;
       octave_idx_type nr = nrows;
 
-      const double *bvec = b.fortran_vec ();
+      const double *bvec = b.data ();
 
       Matrix ret (b_nr, b_nc);
       double *vec = ret.fortran_vec ();
@@ -1672,7 +1672,7 @@ namespace octave
       octave_idx_type nc = N->L->n;
       octave_idx_type nr = nrows;
       const cs_complex_t *bvec
-        = reinterpret_cast<const cs_complex_t *> (b.fortran_vec ());
+        = reinterpret_cast<const cs_complex_t *> (b.data ());
       ComplexMatrix ret (b_nr, b_nc);
       Complex *vec = ret.fortran_vec ();
 
@@ -2374,7 +2374,7 @@ namespace octave
       octave_idx_type b_nr = b.rows ();
 
       const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *>
-                                 (b.fortran_vec ());
+                                 (b.data ());
 
       ComplexMatrix x (nc, b_nc);
       cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
@@ -2437,7 +2437,7 @@ namespace octave
       octave_idx_type b_nr = b.rows ();
 
       const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *>
-                                 (b.fortran_vec ());
+                                 (b.data ());
 
       ComplexMatrix x (nc, b_nc);
       cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());

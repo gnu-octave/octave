@@ -739,7 +739,7 @@ FloatMatrix::fourier (void) const
       nsamples = nc;
     }
 
-  const float *in (fortran_vec ());
+  const float *in (data ());
   FloatComplex *out (retval.fortran_vec ());
 
   octave::fftw::fft (in, out, npts, nsamples);
@@ -782,7 +782,7 @@ FloatMatrix::fourier2d (void) const
 {
   dim_vector dv (rows (), cols ());
 
-  const float *in = fortran_vec ();
+  const float *in = data ();
   FloatComplexMatrix retval (rows (), cols ());
   octave::fftw::fftNd (in, retval.fortran_vec (), 2, dv);
 
@@ -1045,7 +1045,7 @@ FloatMatrix::rcond (MatrixType& mattype) const
       // Only calculate the condition number for LU/Cholesky
       if (typ == MatrixType::Upper)
         {
-          const float *tmp_data = fortran_vec ();
+          const float *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'U';
@@ -1073,7 +1073,7 @@ FloatMatrix::rcond (MatrixType& mattype) const
           ("permuted triangular matrix not implemented");
       else if (typ == MatrixType::Lower)
         {
-          const float *tmp_data = fortran_vec ();
+          const float *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'L';
@@ -1219,7 +1219,7 @@ FloatMatrix::utsolve (MatrixType& mattype, const FloatMatrix& b,
               ("permuted triangular matrix not implemented");
           else
             {
-              const float *tmp_data = fortran_vec ();
+              const float *tmp_data = data ();
 
               retval = b;
               float *result = retval.fortran_vec ();
@@ -1322,7 +1322,7 @@ FloatMatrix::ltsolve (MatrixType& mattype, const FloatMatrix& b,
               ("permuted triangular matrix not implemented");
           else
             {
-              const float *tmp_data = fortran_vec ();
+              const float *tmp_data = data ();
 
               retval = b;
               float *result = retval.fortran_vec ();

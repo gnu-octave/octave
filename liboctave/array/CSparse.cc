@@ -5754,7 +5754,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_REAL;
 
-          B->x = const_cast<double *>(b.fortran_vec ());
+          B->x = const_cast<double *> (b.data ());
 
           cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
@@ -5835,7 +5835,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
               const octave_idx_type *Ai = ridx ();
               const Complex *Ax = data ();
 #if defined (UMFPACK_SEPARATE_SPLIT)
-              const double *Bx = b.fortran_vec ();
+              const double *Bx = b.data ();
               OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
               for (octave_idx_type i = 0; i < b_nr; i++)
                 Bz[i] = 0.;
@@ -6283,7 +6283,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_COMPLEX;
 
-          B->x = const_cast<Complex *>(b.fortran_vec ());
+          B->x = const_cast<Complex *> (b.data ());
 
           cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
@@ -6363,7 +6363,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
               const octave_idx_type *Ap = cidx ();
               const octave_idx_type *Ai = ridx ();
               const Complex *Ax = data ();
-              const Complex *Bx = b.fortran_vec ();
+              const Complex *Bx = b.data ();
 
               retval.resize (b_nr, b_nc);
               Complex *Xx = retval.fortran_vec ();

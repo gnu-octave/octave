@@ -251,7 +251,7 @@ num2hex (const Array<T>& v, bool swap_bytes)
 
   string_vector sv (nel);
 
-  const T *pv = v.fortran_vec ();
+  const T *pv = v.data ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     {

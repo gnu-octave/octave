@@ -168,7 +168,8 @@ public:
 
   const T * data (void) const { return Array<T>::data (); }
 
-  const T * fortran_vec (void) const { return Array<T>::fortran_vec (); }
+  OCTAVE_DEPRECATED (7, "for read-only access, use 'data' method instead")
+  const T * fortran_vec (void) const { return Array<T>::data (); }
 
   T * fortran_vec (void) { return Array<T>::fortran_vec (); }
 

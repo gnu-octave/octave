@@ -350,7 +350,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
       if (imvec[def_elem].matte () && nargout >= 3)
         {
           const Matrix amap = maps(1).matrix_value ();
-          const double *amap_fvec = amap.fortran_vec ();
+          const double *amap_fvec = amap.data ();
 
           NDArray alpha (dim_vector (nRows, nCols, 1, nFrames));
           double *alpha_fvec = alpha.fortran_vec ();
@@ -958,7 +958,7 @@ img_float2uint (const T& img)
   uint32NDArray out (img.dims ());
 
   octave_uint32 *out_fvec = out.fortran_vec ();
-  const P       *img_fvec = img.fortran_vec ();
+  const P       *img_fvec = img.data ();
 
   const octave_uint32 max = octave_uint32::max ();
   const octave_idx_type numel = img.numel ();
@@ -1028,7 +1028,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
   // even if it's always the same.  We can least get a vector for the Colors.
   std::vector<Magick::ColorRGB> colormap;
   {
-    const double *cmap_fvec = cmap.fortran_vec ();
+    const double *cmap_fvec = cmap.data ();
     const octave_idx_type G_offset = cmap_size;
     const octave_idx_type B_offset = cmap_size * 2;
     for (octave_idx_type map_idx = 0; map_idx < cmap_size; map_idx++)
@@ -1061,7 +1061,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
       // over the order of that colormap.  And that's why we set both.
       Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
       Magick::IndexPacket *ind = m_img.getIndexes ();
-      const P *img_fvec        = img.fortran_vec ();
+      const P *img_fvec        = img.data ();
 
       octave_idx_type GM_idx = 0;
       for (octave_idx_type column = 0; column < nCols; column++)
@@ -1092,7 +1092,7 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
   // The initialized image will be black, this is for the other pixels
   const Magick::Color white ("white");
 
-  const bool *img_fvec = img.fortran_vec ();
+  const bool *img_fvec = img.data ();
   octave_idx_type img_idx = 0;
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
@@ -1181,8 +1181,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   const double divisor = static_cast<double> ((uint64_t (1) << bitdepth) - 1)
                          / MaxRGB;
 
-  const P *img_fvec = img.fortran_vec ();
-  const P *a_fvec   = alpha.fortran_vec ();
+  const P *img_fvec = img.data ();
+  const P *a_fvec   = alpha.data ();
   switch (type)
     {
     case Magick::GrayscaleType:
@@ -1251,7 +1251,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 
     case Magick::TrueColorType:
       {
-        // The fortran_vec offset for the green and blue channels
+        // The data offset for the green and blue channels
         const octave_idx_type G_offset = nCols * nRows;
         const octave_idx_type B_offset = nCols * nRows * 2;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
@@ -1287,7 +1287,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 
     case Magick::TrueColorMatteType:
       {
-        // The fortran_vec offset for the green and blue channels
+        // The data offset for the green and blue channels
         const octave_idx_type G_offset = nCols * nRows;
         const octave_idx_type B_offset = nCols * nRows * 2;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
@@ -1325,7 +1325,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 
     case Magick::ColorSeparationType:
       {
-        // The fortran_vec offset for the Magenta, Yellow, and blacK channels
+        // The data offset for the Magenta, Yellow, and blacK channels
         const octave_idx_type M_offset = nCols * nRows;
         const octave_idx_type Y_offset = nCols * nRows * 2;
         const octave_idx_type K_offset = nCols * nRows * 3;
@@ -1363,7 +1363,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 
     case Magick::ColorSeparationMatteType:
       {
-        // The fortran_vec offset for the Magenta, Yellow, and blacK channels
+        // The data offset for the Magenta, Yellow, and blacK channels
         const octave_idx_type M_offset = nCols * nRows;
         const octave_idx_type Y_offset = nCols * nRows * 2;
         const octave_idx_type K_offset = nCols * nRows * 3;

@@ -583,6 +583,7 @@ public:
 
   const T * data (void) const { return m_slice_data; }
 
+  OCTAVE_DEPRECATED (7, "for read-only access, use 'data' method instead")
   const T * fortran_vec (void) const { return data (); }
 
   OCTARRAY_API T * fortran_vec (void);

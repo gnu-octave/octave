@@ -733,7 +733,7 @@ Matrix::fourier (void) const
       nsamples = nc;
     }
 
-  const double *in (fortran_vec ());
+  const double *in (data ());
   Complex *out (retval.fortran_vec ());
 
   octave::fftw::fft (in, out, npts, nsamples);
@@ -763,7 +763,7 @@ Matrix::ifourier (void) const
     }
 
   ComplexMatrix tmp (*this);
-  Complex *in (tmp.fortran_vec ());
+  const Complex *in (tmp.data ());
   Complex *out (retval.fortran_vec ());
 
   octave::fftw::ifft (in, out, npts, nsamples);
@@ -776,7 +776,7 @@ Matrix::fourier2d (void) const
 {
   dim_vector dv (rows (), cols ());
 
-  const double *in = fortran_vec ();
+  const double *in = data ();
   ComplexMatrix retval (rows (), cols ());
   octave::fftw::fftNd (in, retval.fortran_vec (), 2, dv);
 
@@ -1036,7 +1036,7 @@ Matrix::rcond (MatrixType& mattype) const
       // Only calculate the condition number for LU/Cholesky
       if (typ == MatrixType::Upper)
         {
-          const double *tmp_data = fortran_vec ();
+          const double *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'U';
@@ -1064,7 +1064,7 @@ Matrix::rcond (MatrixType& mattype) const
           ("permuted triangular matrix not implemented");
       else if (typ == MatrixType::Lower)
         {
-          const double *tmp_data = fortran_vec ();
+          const double *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'L';
@@ -1209,7 +1209,7 @@ Matrix::utsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
 
-      const double *tmp_data = fortran_vec ();
+      const double *tmp_data = data ();
 
       retval = b;
       double *result = retval.fortran_vec ();
@@ -1307,7 +1307,7 @@ Matrix::ltsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
 
-      const double *tmp_data = fortran_vec ();
+      const double *tmp_data = data ();
 
       retval = b;
       double *result = retval.fortran_vec ();

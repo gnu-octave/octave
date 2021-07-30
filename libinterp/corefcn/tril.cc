@@ -46,7 +46,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
-  const T *avec = a.fortran_vec ();
+  const T *avec = a.data ();
   octave_idx_type zero = 0;
 
   if (pack)
@@ -88,7 +88,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
-  const T *avec = a.fortran_vec ();
+  const T *avec = a.data ();
   octave_idx_type zero = 0;
 
   if (pack)

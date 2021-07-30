@@ -322,7 +322,7 @@ do_bitpack (const boolNDArray& bitp)
 
   ArrayType retval (get_vec_dims (bitp.dims (), n));
 
-  const bool *bits = bitp.fortran_vec ();
+  const bool *bits = bitp.data ();
   char *packed = reinterpret_cast<char *> (retval.fortran_vec ());
 
   octave_idx_type m = n * sizeof (T);
@@ -470,7 +470,7 @@ do_bitunpack (const ArrayType& array)
 
   boolNDArray retval (get_vec_dims (array.dims (), n));
 
-  const char *packed = reinterpret_cast<const char *> (array.fortran_vec ());
+  const char *packed = reinterpret_cast<const char *> (array.data ());
   bool *bits = retval.fortran_vec ();
 
   octave_idx_type m = n / std::numeric_limits<unsigned char>::digits;

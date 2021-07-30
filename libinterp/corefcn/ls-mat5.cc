@@ -2221,14 +2221,12 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (tc.is_single_type ())
         {
           const FloatNDArray m = tc.float_array_value ();
-          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                         save_as_floats);
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
         }
       else
         {
           const NDArray m = tc.array_value ();
-          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                         save_as_floats);
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
         }
     }
   else if (tc.iscell ())
@@ -2245,14 +2243,12 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (tc.is_single_type ())
         {
           const FloatComplexNDArray m = tc.float_complex_array_value ();
-          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                         save_as_floats);
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
         }
       else
         {
           const ComplexNDArray m = tc.complex_array_value ();
-          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                         save_as_floats);
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
         }
     }
   else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
@@ -2614,55 +2610,55 @@ save_mat5_binary_element (std::ostream& os,
     {
       int8NDArray m = tc.int8_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), -1, m.numel ());
+      write_mat5_integer_data (os, m.data (), -1, m.numel ());
     }
   else if (cname == "int16")
     {
       int16NDArray m = tc.int16_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), -2, m.numel ());
+      write_mat5_integer_data (os, m.data (), -2, m.numel ());
     }
   else if (cname == "int32")
     {
       int32NDArray m = tc.int32_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), -4, m.numel ());
+      write_mat5_integer_data (os, m.data (), -4, m.numel ());
     }
   else if (cname == "int64")
     {
       int64NDArray m = tc.int64_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), -8, m.numel ());
+      write_mat5_integer_data (os, m.data (), -8, m.numel ());
     }
   else if (cname == "uint8")
     {
       uint8NDArray m = tc.uint8_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), 1, m.numel ());
+      write_mat5_integer_data (os, m.data (), 1, m.numel ());
     }
   else if (cname == "uint16")
     {
       uint16NDArray m = tc.uint16_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), 2, m.numel ());
+      write_mat5_integer_data (os, m.data (), 2, m.numel ());
     }
   else if (cname == "uint32")
     {
       uint32NDArray m = tc.uint32_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), 4, m.numel ());
+      write_mat5_integer_data (os, m.data (), 4, m.numel ());
     }
   else if (cname == "uint64")
     {
       uint64NDArray m = tc.uint64_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), 8, m.numel ());
+      write_mat5_integer_data (os, m.data (), 8, m.numel ());
     }
   else if (tc.islogical ())
     {
       uint8NDArray m (tc.bool_array_value ());
 
-      write_mat5_integer_data (os, m.fortran_vec (), 1, m.numel ());
+      write_mat5_integer_data (os, m.data (), 1, m.numel ());
     }
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {

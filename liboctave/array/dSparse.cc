@@ -5796,7 +5796,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_REAL;
 
-          B->x = const_cast<double *>(b.fortran_vec ());
+          B->x = const_cast<double *> (b.data ());
 
           cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
@@ -5868,7 +5868,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
             {
               // one iterative refinement instead of the default two in UMFPACK
               Control (UMFPACK_IRSTEP) = 1;
-              const double *Bx = b.fortran_vec ();
+              const double *Bx = b.data ();
               retval.resize (b.rows (), b.cols ());
               double *result = retval.fortran_vec ();
               octave_idx_type b_nr = b.rows ();
@@ -6267,7 +6267,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_COMPLEX;
 
-          B->x = const_cast<Complex *>(b.fortran_vec ());
+          B->x = const_cast<Complex *> (b.data ());
 
           cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);

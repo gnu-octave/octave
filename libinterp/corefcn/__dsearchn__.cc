@@ -68,11 +68,11 @@ Undocumented internal function.
     }                                           \
   dd = sqrt (dd)
 
-  const double *pxi = xi.fortran_vec ();
+  const double *pxi = xi.data ();
   for (octave_idx_type i = 0; i < nxi; i++)
     {
       double d0;
-      const double *px = x.fortran_vec ();
+      const double *px = x.data ();
       DIST(d0, px, pxi, n);
       *pidx = 1.;
       for (octave_idx_type j = 1; j < nx; j++)

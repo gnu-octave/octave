@@ -245,7 +245,7 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
   double rcond;
   MatrixType ltyp (MatrixType::Lower);
   M retval (n, b_nc);
-  const double *qv = Q.fortran_vec ();
+  const double *qv = Q.data ();
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       for (octave_idx_type i = 0; i < n; i++)
@@ -266,7 +266,7 @@ utsolve (const SM& U, const ColumnVector& Q, const M& m)
   MatrixType utyp (MatrixType::Upper);
   M tmp = U.solve (utyp, m, err, rcond, nullptr);
   M retval;
-  const double *qv = Q.fortran_vec ();
+  const double *qv = Q.data ();
 
   if (! err)
     {
@@ -537,7 +537,7 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
           if (cholB)
             {
               Matrix tmp = sigma * b.transpose () * b;
-              const double *pB = permB.fortran_vec ();
+              const double *pB = permB.data ();
               double *p = AminusSigmaB.fortran_vec ();
 
               if (permB.numel ())
@@ -719,7 +719,7 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
           if (cholB)
             {
               ComplexMatrix tmp = sigma * b.hermitian () * b;
-              const double *pB = permB.fortran_vec ();
+              const double *pB = permB.data ();
               Complex *p = AminusSigmaB.fortran_vec ();
 
               if (permB.numel ())

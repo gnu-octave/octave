@@ -106,9 +106,9 @@ namespace octave
 
       OCTAVE_API PermMatrix Pr_mat (void) const;
 
-      const octave_idx_type * row_perm (void) const { return P.fortran_vec (); }
+      const octave_idx_type * row_perm (void) const { return P.data (); }
 
-      const octave_idx_type * col_perm (void) const { return Q.fortran_vec (); }
+      const octave_idx_type * col_perm (void) const { return Q.data (); }
 
       double rcond (void) const { return cond; }
 

@@ -5972,7 +5972,7 @@ cam2xform (const Array<double>& m)
 {
   ColumnVector retval (4, 1.0);
 
-  memcpy (retval.fortran_vec (), m.fortran_vec (), sizeof (double)*3);
+  memcpy (retval.fortran_vec (), m.data (), sizeof (double)*3);
 
   return retval;
 }

@@ -73,7 +73,7 @@ ComplexNDArray::fourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
-  const Complex *in (fortran_vec ());
+  const Complex *in (data ());
   ComplexNDArray retval (dv);
   Complex *out (retval.fortran_vec ());
 
@@ -104,7 +104,7 @@ ComplexNDArray::ifourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
-  const Complex *in (fortran_vec ());
+  const Complex *in (data ());
   ComplexNDArray retval (dv);
   Complex *out (retval.fortran_vec ());
 
@@ -124,7 +124,7 @@ ComplexNDArray::fourier2d (void) const
     return ComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
-  const Complex *in = fortran_vec ();
+  const Complex *in = data ();
   ComplexNDArray retval (dv);
   Complex *out = retval.fortran_vec ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
@@ -144,7 +144,7 @@ ComplexNDArray::ifourier2d (void) const
     return ComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
-  const Complex *in = fortran_vec ();
+  const Complex *in = data ();
   ComplexNDArray retval (dv);
   Complex *out = retval.fortran_vec ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
@@ -162,7 +162,7 @@ ComplexNDArray::fourierNd (void) const
   dim_vector dv = dims ();
   int rank = dv.ndims ();
 
-  const Complex *in (fortran_vec ());
+  const Complex *in (data ());
   ComplexNDArray retval (dv);
   Complex *out (retval.fortran_vec ());
 
@@ -177,7 +177,7 @@ ComplexNDArray::ifourierNd (void) const
   dim_vector dv = dims ();
   int rank = dv.ndims ();
 
-  const Complex *in (fortran_vec ());
+  const Complex *in (data ());
   ComplexNDArray retval (dv);
   Complex *out (retval.fortran_vec ());
 

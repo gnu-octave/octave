@@ -73,7 +73,7 @@ FloatNDArray::fourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
-  const float *in (fortran_vec ());
+  const float *in (data ());
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
@@ -123,7 +123,7 @@ FloatNDArray::fourier2d (void) const
     return FloatComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
-  const float *in = fortran_vec ();
+  const float *in = data ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
@@ -160,7 +160,7 @@ FloatNDArray::fourierNd (void) const
   dim_vector dv = dims ();
   int rank = dv.ndims ();
 
-  const float *in (fortran_vec ());
+  const float *in (data ());
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 

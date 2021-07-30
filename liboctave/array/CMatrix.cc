@@ -1349,7 +1349,7 @@ ComplexMatrix::rcond (MatrixType& mattype) const
       // Only calculate the condition number for LU/Cholesky
       if (typ == MatrixType::Upper)
         {
-          const Complex *tmp_data = fortran_vec ();
+          const Complex *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'U';
@@ -1377,7 +1377,7 @@ ComplexMatrix::rcond (MatrixType& mattype) const
           ("permuted triangular matrix not implemented");
       else if (typ == MatrixType::Lower)
         {
-          const Complex *tmp_data = fortran_vec ();
+          const Complex *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'L';
@@ -1530,7 +1530,7 @@ ComplexMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
 
-      const Complex *tmp_data = fortran_vec ();
+      const Complex *tmp_data = data ();
 
       retval = b;
       Complex *result = retval.fortran_vec ();
@@ -1628,7 +1628,7 @@ ComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
 
-      const Complex *tmp_data = fortran_vec ();
+      const Complex *tmp_data = data ();
 
       retval = b;
       Complex *result = retval.fortran_vec ();

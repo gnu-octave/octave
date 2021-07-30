@@ -346,8 +346,8 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
 
       NDA gg (dv), xx (dv), yy (dv);
 
-      const T *aptr = aa.fortran_vec ();
-      const T *bptr = bb.fortran_vec ();
+      const T *aptr = aa.data ();
+      const T *bptr = bb.data ();
 
       bool inca = aa.numel () != 1;
       bool incb = bb.numel () != 1;

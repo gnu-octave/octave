@@ -178,8 +178,8 @@ namespace octave
     if (c.isempty ())
       return c;
 
-    convolve_nd<T, R> (a.fortran_vec (), adims, adims.cumulative (),
-                       b.fortran_vec (), bdims, bdims.cumulative (),
+    convolve_nd<T, R> (a.data (), adims, adims.cumulative (),
+                       b.data (), bdims, bdims.cumulative (),
                        c.fortran_vec (), cdims.cumulative (),
                        nd, ct == convn_valid);
 

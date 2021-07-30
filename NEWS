@@ -180,6 +180,11 @@ vectors with rows corresponding to the input coordinate matrix.
 - The functions `quantile` and `prctile` now permit operating on
 dimensions greater than `ndims (x)`.
 
+- The function `iqr` now uses Matlab compatible interpolation for
+quantile values.  Dimension input now allows a vector, "all", and
+dimensions greater than `ndims (x)`.  The function compatibly handles
+`Inf` and `NaN` input values.
+
 - The function `importdata` now produces more compatible results when
 the file contains a 2-D text matrix.
 
@@ -211,10 +216,9 @@ been added which prints a warning when Octave's parser recognizes valid
 Matlab code, but for which Octave does not yet implement the
 functionality.  By default, this warning is enabled.
 
-- The function `iqr` now uses Matlab compatible interpolation for
-quantile values.  Dimension input now allows a vector, "all", and
-dimensions greater than `ndims (x)`.  The function compatibly handles
-`Inf` and `NaN` input values.
+- When Octave is started with the `--traditional` option for maximum
+compatibility the `print_struct_array_contents` internal variable is set
+to true.
 
 ### Alphabetical list of new functions added in Octave 7
 

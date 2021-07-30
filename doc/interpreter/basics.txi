@@ -256,6 +256,7 @@ disable_range                   = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
 print_empty_dimensions          = false
+print_struct_array_contents     = true
 save_default_options            = "-mat-binary"
 struct_levels_to_print          = 0
 @end group
@@ -269,6 +270,7 @@ and disable the following warnings
 Octave:abbreviated-property-match
 Octave:colon-nonscalar-argument
 Octave:data-file-in-path
+Octave:empty-index
 Octave:function-name-clash
 Octave:possible-matlab-short-circuit-operator
 @end group

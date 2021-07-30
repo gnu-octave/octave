@@ -2029,13 +2029,14 @@ namespace octave
     m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
 
     m_error_system.beep_on_error (true);
-    Fconfirm_recursive_rmdir (octave_value (false));
 
+    Fconfirm_recursive_rmdir (octave_value (false));
     Fdisable_diagonal_matrix (octave_value (true));
     Fdisable_permutation_matrix (octave_value (true));
     Fdisable_range (octave_value (true));
     Ffixed_point_format (octave_value (true));
     Fprint_empty_dimensions (octave_value (false));
+    Fprint_struct_array_contents (octave_value (true));
     Fstruct_levels_to_print (octave_value (0));
 
     disable_warning ("Octave:abbreviated-property-match");

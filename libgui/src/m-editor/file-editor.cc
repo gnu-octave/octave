@@ -1542,11 +1542,19 @@ namespace octave
                                        bool breakpoint_marker, bool insert,
                                        const QString& cond, int index)
   {
-    if (call_custom_editor (openFileName, line))
-      return;   // custom editor called
-
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
+
+    if (settings->value (global_use_custom_editor).toBool ())
+      {
+        // Custom editor
+        if (debug_pointer || breakpoint_marker)
+          return;   // Do not call custom editor during debugging
+
+        if (call_custom_editor (openFileName, line))
+          return;   // Custom editor called
+      }
+
     bool show_dbg_file
       = settings->value (ed_show_dbg_file).toBool ();
 

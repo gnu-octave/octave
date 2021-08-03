@@ -37,67 +37,65 @@
 #include "oct-cmplx.h"
 #include "quit.h"
 
-// Generic any/all test functionality with arbitrary predicate.
-
-template <typename F, typename T, bool zero>
-bool
-any_all_test (F fcn, const T *m, octave_idx_type len)
-{
-  octave_idx_type i;
-
-  for (i = 0; i < len - 3; i += 4)
-    {
-      octave_quit ();
-
-      if (fcn (m[i]) != zero
-          || fcn (m[i+1]) != zero
-          || fcn (m[i+2]) != zero
-          || fcn (m[i+3]) != zero)
-        return ! zero;
-    }
-
-  octave_quit ();
-
-  for (; i < len; i++)
-    if (fcn (m[i]) != zero)
-      return ! zero;
-
-  return zero;
-}
-
-extern OCTAVE_API bool xis_int_or_inf_or_nan (double x);
-
-template <typename T>
-bool
-xis_one_or_zero (const T& x)
-{
-  return x == T (0) || x == T (1);
-}
-
-template <typename T>
-bool
-xis_zero (const T& x)
-{
-  return x == T (0);
-}
-
-extern OCTAVE_API bool xtoo_large_for_float (double x);
-
-extern OCTAVE_API bool xtoo_large_for_float (const Complex&  x);
-
-extern OCTAVE_API bool xis_int_or_inf_or_nan (float x);
-extern OCTAVE_API bool xtoo_large_for_float (float x);
-
-extern OCTAVE_API char * strsave (const char *);
-
-extern OCTAVE_API std::string octave_fgets (std::FILE *);
-extern OCTAVE_API std::string octave_fgetl (std::FILE *);
-
-extern OCTAVE_API std::string octave_fgets (std::FILE *, bool& eof);
-extern OCTAVE_API std::string octave_fgetl (std::FILE *, bool& eof);
-
 namespace octave
 {
+  // Generic any/all test functionality with arbitrary predicate.
+
+  template <typename F, typename T, bool zero>
+  bool
+  any_all_test (F fcn, const T *m, octave_idx_type len)
+  {
+    octave_idx_type i;
+
+    for (i = 0; i < len - 3; i += 4)
+      {
+        octave_quit ();
+
+        if (fcn (m[i]) != zero
+            || fcn (m[i+1]) != zero
+            || fcn (m[i+2]) != zero
+            || fcn (m[i+3]) != zero)
+          return ! zero;
+      }
+
+    octave_quit ();
+
+    for (; i < len; i++)
+      if (fcn (m[i]) != zero)
+        return ! zero;
+
+    return zero;
+  }
+
+  extern OCTAVE_API bool xis_int_or_inf_or_nan (double x);
+
+  template <typename T>
+  bool is_one_or_zero (const T& x)
+  {
+    return x == T (0) || x == T (1);
+  }
+
+  template <typename T>
+  bool is_zero (const T& x)
+  {
+    return x == T (0);
+  }
+
+  extern OCTAVE_API bool too_large_for_float (double x);
+
+  extern OCTAVE_API bool too_large_for_float (const Complex&  x);
+
+  extern OCTAVE_API bool is_int_or_inf_or_nan (float x);
+  extern OCTAVE_API bool too_large_for_float (float x);
+
+  extern OCTAVE_API char * strsave (const char *);
+
+  extern OCTAVE_API std::string fgets (std::FILE *);
+  extern OCTAVE_API std::string fgetl (std::FILE *);
+
+  extern OCTAVE_API std::string fgets (std::FILE *, bool& eof);
+  extern OCTAVE_API std::string fgetl (std::FILE *, bool& eof);
+
   template <typename T> OCTAVE_API T read_value (std::istream& is);
 
   template <> OCTAVE_API double read_value (std::istream& is);
@@ -137,6 +135,90 @@ namespace octave
                            unsigned long long int *r);
 #endif
   }
+}
+
+template <typename F, typename T, bool zero>
+OCTAVE_DEPRECATED (7, "use 'octave::any_all_test' instead")
+bool
+any_all_test (F fcn, const T *m, octave_idx_type len)
+{
+  return octave::any_all_test<F, T, zero> (fcn, m, len);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::is_int_or_inf_or_nan' instead")
+inline bool xis_int_or_inf_or_nan (double x)
+{
+  return octave::is_int_or_inf_or_nan (x);
+}
+
+template <typename T>
+OCTAVE_DEPRECATED (7, "use 'octave::is_one_or_zero' instead")
+bool
+xis_one_or_zero (const T& x)
+{
+  return octave::is_one_or_zero (x);
+}
+
+template <typename T>
+OCTAVE_DEPRECATED (7, "use 'octave::is_zero' instead")
+bool
+xis_zero (const T& x)
+{
+  return octave::is_zero (x);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::' instead")
+inline bool xtoo_large_for_float (double x)
+{
+  return octave::too_large_for_float (x);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::' instead")
+inline bool xtoo_large_for_float (const Complex&  x)
+{
+  return octave::too_large_for_float (x);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::' instead")
+inline bool xis_int_or_inf_or_nan (float x)
+{
+  return octave::is_int_or_inf_or_nan (x);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::' instead")
+inline bool xtoo_large_for_float (float x)
+{
+  return octave::too_large_for_float (x);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::strsave' instead")
+inline char * strsave (const char *s)
+{
+  return octave::strsave (s);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::fgets' instead")
+inline std::string octave_fgets (std::FILE *f)
+{
+  return octave::fgets (f);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::fgetl' instead")
+inline std::string octave_fgetl (std::FILE *f)
+{
+  return octave::fgetl (f);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::fgets' instead")
+inline std::string octave_fgets (std::FILE *f, bool& eof)
+{
+  return octave::fgets (f, eof);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::fgetl' instead")
+inline std::string octave_fgetl (std::FILE *f, bool& eof)
+{
+  return octave::fgetl (f, eof);
 }
 
 OCTAVE_DEPRECATED (7, "use 'octave::read_value<T>' instead")

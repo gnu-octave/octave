@@ -1166,7 +1166,7 @@ namespace octave
     const std::string enc_prop = "encoding";
     while (! eof)
       {
-        std::string conf_str = octave_fgets (cfile, eof);
+        std::string conf_str = fgets (cfile, eof);
 
         // delete any preceeding whitespace
         auto it = std::find_if_not (conf_str.begin (), conf_str.end (),

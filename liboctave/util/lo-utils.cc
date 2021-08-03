@@ -45,140 +45,139 @@
 #include "lo-utils.h"
 #include "oct-inttypes.h"
 
-bool xis_int_or_inf_or_nan (double x)
-{ return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
-
-bool xtoo_large_for_float (double x)
-{
-  return (octave::math::isfinite (x)
-          && fabs (x) > std::numeric_limits<float>::max ());
-}
-
-bool xtoo_large_for_float (const Complex& x)
-{
-  return (xtoo_large_for_float (x.real ())
-          || xtoo_large_for_float (x.imag ()));
-}
-
-bool xis_int_or_inf_or_nan (float x)
-{ return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
-
-// Save a string.
-
-char *
-strsave (const char *s)
-{
-  if (! s)
-    return nullptr;
-
-  int len = strlen (s);
-  char *tmp = new char [len+1];
-  tmp = strcpy (tmp, s);
-  return tmp;
-}
-
-std::string
-octave_fgets (FILE *f)
-{
-  bool eof;
-  return octave_fgets (f, eof);
-}
-
-std::string
-octave_fgets (FILE *f, bool& eof)
-{
-  eof = false;
-
-  std::string retval;
-
-  int grow_size = 1024;
-  int max_size = grow_size;
-
-  char *buf = static_cast<char *> (std::malloc (max_size));
-  if (! buf)
-    (*current_liboctave_error_handler) ("octave_fgets: unable to malloc %d bytes", max_size);
-
-  char *bufptr = buf;
-  int len = 0;
-
-  do
-    {
-      if (std::fgets (bufptr, grow_size, f))
-        {
-          len = strlen (bufptr);
-
-          if (len == grow_size - 1)
-            {
-              int tmp = bufptr - buf + grow_size - 1;
-              grow_size *= 2;
-              max_size += grow_size;
-              auto tmpbuf = static_cast<char *> (std::realloc (buf, max_size));
-              if (! tmpbuf)
-                {
-                  free (buf);
-                  (*current_liboctave_error_handler) ("octave_fgets: unable to realloc %d bytes", max_size);
-                }
-              buf = tmpbuf;
-              bufptr = buf + tmp;
-
-              if (*(bufptr-1) == '\n')
-                {
-                  *bufptr = '\0';
-                  retval = buf;
-                }
-            }
-          else if (bufptr[len-1] != '\n')
-            {
-              bufptr[len++] = '\n';
-              bufptr[len] = '\0';
-              retval = buf;
-            }
-          else
-            retval = buf;
-        }
-      else
-        {
-          if (len == 0)
-            {
-              eof = true;
-
-              free (buf);
-
-              buf = nullptr;
-            }
-
-          break;
-        }
-    }
-  while (retval.empty ());
-
-  free (buf);
-
-  octave_quit ();
-
-  return retval;
-}
-
-std::string
-octave_fgetl (FILE *f)
-{
-  bool eof;
-  return octave_fgetl (f, eof);
-}
-
-std::string
-octave_fgetl (FILE *f, bool& eof)
-{
-  std::string retval = octave_fgets (f, eof);
-
-  if (! retval.empty () && retval.back () == '\n')
-    retval.pop_back ();
-
-  return retval;
-}
-
 namespace octave
 {
+  bool is_int_or_inf_or_nan (double x)
+  {
+    return math::isnan (x) || math::x_nint (x) == x;
+  }
+
+  bool too_large_for_float (double x)
+  {
+    return (math::isfinite (x)
+            && fabs (x) > std::numeric_limits<float>::max ());
+  }
+
+  bool too_large_for_float (const Complex& x)
+  {
+    return (too_large_for_float (x.real ())
+            || too_large_for_float (x.imag ()));
+  }
+
+  bool is_int_or_inf_or_nan (float x)
+  {
+    return math::isnan (x) || math::x_nint (x) == x;
+  }
+
+  // Save a string.
+
+  char * strsave (const char *s)
+  {
+    if (! s)
+      return nullptr;
+
+    int len = strlen (s);
+    char *tmp = new char [len+1];
+    tmp = strcpy (tmp, s);
+    return tmp;
+  }
+
+  std::string fgets (FILE *f)
+  {
+    bool eof;
+    return fgets (f, eof);
+  }
+
+  std::string fgets (FILE *f, bool& eof)
+  {
+    eof = false;
+
+    std::string retval;
+
+    int grow_size = 1024;
+    int max_size = grow_size;
+
+    char *buf = static_cast<char *> (std::malloc (max_size));
+    if (! buf)
+      (*current_liboctave_error_handler) ("octave_fgets: unable to malloc %d bytes", max_size);
+
+    char *bufptr = buf;
+    int len = 0;
+
+    do
+      {
+        if (std::fgets (bufptr, grow_size, f))
+          {
+            len = strlen (bufptr);
+
+            if (len == grow_size - 1)
+              {
+                int tmp = bufptr - buf + grow_size - 1;
+                grow_size *= 2;
+                max_size += grow_size;
+                auto tmpbuf = static_cast<char *> (std::realloc (buf, max_size));
+                if (! tmpbuf)
+                  {
+                    free (buf);
+                    (*current_liboctave_error_handler) ("octave_fgets: unable to realloc %d bytes", max_size);
+                  }
+                buf = tmpbuf;
+                bufptr = buf + tmp;
+
+                if (*(bufptr-1) == '\n')
+                  {
+                    *bufptr = '\0';
+                    retval = buf;
+                  }
+              }
+            else if (bufptr[len-1] != '\n')
+              {
+                bufptr[len++] = '\n';
+                bufptr[len] = '\0';
+                retval = buf;
+              }
+            else
+              retval = buf;
+          }
+        else
+          {
+            if (len == 0)
+              {
+                eof = true;
+
+                free (buf);
+
+                buf = nullptr;
+              }
+
+            break;
+          }
+      }
+    while (retval.empty ());
+
+    free (buf);
+
+    octave_quit ();
+
+    return retval;
+  }
+
+  std::string fgetl (FILE *f)
+  {
+    bool eof;
+    return fgetl (f, eof);
+  }
+
+  std::string fgetl (FILE *f, bool& eof)
+  {
+    std::string retval = fgets (f, eof);
+
+    if (! retval.empty () && retval.back () == '\n')
+      retval.pop_back ();
+
+    return retval;
+  }
+
   template <typename T>
   T
   read_value (std::istream& is)

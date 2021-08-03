@@ -376,7 +376,7 @@ ov_range<T>::bool_array_value (bool warn) const
 {
   Array<T> matrix = raw_array_value ();
 
-  if (warn && ! matrix.test_all (xis_one_or_zero<T>))
+  if (warn && ! matrix.test_all (octave::is_one_or_zero<T>))
     warn_logical_conversion ();
 
   return boolNDArray (matrix);

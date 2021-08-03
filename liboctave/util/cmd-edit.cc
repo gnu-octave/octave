@@ -976,7 +976,7 @@ namespace octave
     std::fputs (prompt.c_str (), output_stream);
     std::fflush (output_stream);
 
-    return octave_fgetl (input_stream, eof);
+    return fgetl (input_stream, eof);
   }
 
   void

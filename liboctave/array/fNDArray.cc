@@ -286,19 +286,19 @@ FloatNDArray::any_element_is_inf_or_nan (void) const
 bool
 FloatNDArray::any_element_not_one_or_zero (void) const
 {
-  return ! test_all (xis_one_or_zero);
+  return ! test_all (octave::is_one_or_zero);
 }
 
 bool
 FloatNDArray::all_elements_are_zero (void) const
 {
-  return test_all (xis_zero);
+  return test_all (octave::is_zero);
 }
 
 bool
 FloatNDArray::all_elements_are_int_or_inf_or_nan (void) const
 {
-  return test_all (xis_int_or_inf_or_nan);
+  return test_all (octave::is_int_or_inf_or_nan);
 }
 
 // Return nonzero if any element of M is not an integer.  Also extract

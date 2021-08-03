@@ -1045,7 +1045,7 @@ namespace octave
 
     eof = false;
 
-    std::string src_str = octave_fgets (m_file, eof);
+    std::string src_str = fgets (m_file, eof);
 
     std::string mfile_encoding;
 

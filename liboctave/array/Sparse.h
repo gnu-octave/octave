@@ -590,7 +590,7 @@ public:
   template <typename F, bool zero>
   bool test (F fcn) const
   {
-    return any_all_test<F, T, zero> (fcn, data (), nnz ());
+    return octave::any_all_test<F, T, zero> (fcn, data (), nnz ());
   }
 
   // Simpler calls.

@@ -7352,7 +7352,7 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
 bool
 SparseComplexMatrix::too_large_for_float (void) const
 {
-  return test_any (xtoo_large_for_float);
+  return test_any (octave::too_large_for_float);
 }
 
 // FIXME: Do these really belong here?  Maybe they should be in a base class?

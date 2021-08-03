@@ -329,19 +329,19 @@ NDArray::any_element_is_inf_or_nan (void) const
 bool
 NDArray::any_element_not_one_or_zero (void) const
 {
-  return ! test_all (xis_one_or_zero);
+  return ! test_all (octave::is_one_or_zero);
 }
 
 bool
 NDArray::all_elements_are_zero (void) const
 {
-  return test_all (xis_zero);
+  return test_all (octave::is_zero);
 }
 
 bool
 NDArray::all_elements_are_int_or_inf_or_nan (void) const
 {
-  return test_all (xis_int_or_inf_or_nan);
+  return test_all (octave::is_int_or_inf_or_nan);
 }
 
 // Return nonzero if any element of M is not an integer.  Also extract
@@ -386,7 +386,7 @@ NDArray::all_integers (void) const
 bool
 NDArray::too_large_for_float (void) const
 {
-  return test_any (xtoo_large_for_float);
+  return test_any (octave::too_large_for_float);
 }
 
 // FIXME: this is not quite the right thing.

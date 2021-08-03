@@ -7323,7 +7323,7 @@ SparseMatrix::all_integers (double& max_val, double& min_val) const
 bool
 SparseMatrix::too_large_for_float (void) const
 {
-  return test_any (xtoo_large_for_float);
+  return test_any (octave::too_large_for_float);
 }
 
 SparseBoolMatrix

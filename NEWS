@@ -142,6 +142,9 @@ text in an `Edit` box or clicking on a `RadioButton`).
 - The `"ListBoxTop"` property for `uicontrol` objects has been
 implemented for `set` commands.
 
+- The `Title` property for print formats such as PDF or SVG is now set
+to the title displayed on the figure window which contains the plot.
+
 - Additional properties have been added to the `axes` graphics object:
     * `"alphamap"` (not yet implemented)
     * `"alphascale"` (not yet implemented)

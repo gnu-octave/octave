@@ -322,6 +322,29 @@ namespace octave
     return retval;
   }
 
+  static std::string
+  get_title (const graphics_handle& h)
+  {
+    std::string retval;
+
+    gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::get_title");
+
+    graphics_object go = gh_mgr.get_object (h);
+
+    if (! go.valid_object ())
+      return retval;
+
+    if (go.isa ("figure"))
+      {
+        figure::properties& fp
+          = reinterpret_cast<figure::properties&> (go.get_properties ());
+
+        retval = fp.get_title ();
+      }
+
+    return retval;
+  }
+
   void
   gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
   {
@@ -358,12 +381,18 @@ namespace octave
         if (m_term.find ("notxt") != std::string::npos)
           gl2ps_text = GL2PS_NO_TEXT;
 
+        // Find Title for plot
+        const graphics_handle& myhandle = go.get ("__myhandle__");
+        std::string plot_title = get_title (myhandle);
+        if (plot_title.empty ())
+          plot_title = "Octave plot";
+
         // Default sort order optimizes for 3D plots
         GLint gl2ps_sort = GL2PS_BSP_SORT;
 
         // FIXME: gl2ps does not provide a way to change the sorting algorithm
         // on a viewport basis, we thus disable sorting only if all axes are 2D
-        if (has_2D_axes (go.get ("__myhandle__")))
+        if (has_2D_axes (myhandle))
           gl2ps_sort = GL2PS_NO_SORT;
 
         // Use a temporary file in case an overflow happens
@@ -431,7 +460,7 @@ namespace octave
             set_device_pixel_ratio (fprop.get___device_pixel_ratio__ ());
 
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
-            GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave",
+            GLint ret = gl2psBeginPage (plot_title.c_str (), "Octave",
                                         nullptr, gl2ps_term, gl2ps_sort,
                                         (GL2PS_BEST_ROOT
                                          | gl2ps_text

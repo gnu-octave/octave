@@ -72,13 +72,13 @@ public:
            "using the gnuplot graphics toolkit is discouraged\n\
 \n\
 The gnuplot graphics toolkit is not actively maintained and has a number\n\
-of limitations that are ulikely to be fixed.  Communication with gnuplot\n\
+of limitations that are unlikely to be fixed.  Communication with gnuplot\n\
 uses a one-directional pipe and limited information is passed back to the\n\
 Octave interpreter so most changes made interactively in the plot window\n\
 will not be reflected in the graphics properties managed by Octave.  For\n\
 example, if the plot window is closed with a mouse click, Octave will not\n\
 be notified and will not update it's internal list of open figure windows.\n\
-We recommend using the qt toolkit instead.\n");
+The qt toolkit is recommended instead.\n");
 
           warned = true;
       }

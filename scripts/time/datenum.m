@@ -84,7 +84,7 @@
 ## @end itemize
 ##
 ## @strong{Caution:} datenums represent a specific time for the Earth as a
-## a whole.  They do not take in to account time zones (shifts in time based
+## whole.  They do not take in to account time zones (shifts in time based
 ## on location), nor seasonal changes due to Daylight Savings Time (shifts in
 ## time based on local regulation).  Be aware that it is possible to create
 ## datenums that, when interpreted by a function which accounts for time zone

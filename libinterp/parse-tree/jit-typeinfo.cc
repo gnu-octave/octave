@@ -346,7 +346,7 @@ namespace octave
   octave_jit_end_matrix (jit_matrix *mat, octave_idx_type idx,
                          octave_idx_type count)
   {
-    octave_idx_type ndim = mat->m_dimensions[-1];
+    octave_idx_type ndim = mat->m_ndims;
     if (ndim == count)
       return mat->m_dimensions[idx];
     else if (ndim > count)

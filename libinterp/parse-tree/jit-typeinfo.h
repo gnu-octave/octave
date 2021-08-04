@@ -89,6 +89,7 @@ namespace octave
       m_ref_count = m_array->jit_ref_count ();
       m_slice_data = m_array->jit_slice_data () - 1;
       m_slice_len = m_array->numel ();
+      m_ndims = m_array->ndims ();
       m_dimensions = m_array->jit_dimensions ();
     }
 
@@ -107,6 +108,7 @@ namespace octave
 
     U *m_slice_data;
     octave_idx_type m_slice_len;
+    octave_idx_type m_ndims;
     octave_idx_type *m_dimensions;
 
     T *m_array;

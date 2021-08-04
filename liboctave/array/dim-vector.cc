@@ -36,21 +36,6 @@
 #include "Array.h"
 #include "dim-vector.h"
 
-octave_idx_type *
-dim_vector::nil_rep (void)
-{
-  // Create a statically allocated rep object with an initial reference
-  // count of 1.  The dim_vector constructor that uses this object will
-  // increment the reference count.  The dim_vector destructor and copy
-  // assignment operator will decrement the reference count but those
-  // operations can never cause the count to become zero so they will
-  // never call delete on this object.
-
-  static octave_idx_type nr[4] = { 1, 2, 0, 0 };
-
-  return &nr[2];
-}
-
 // The maximum allowed value for a dimension extent.  This will normally be a
 // tiny bit off the maximum value of octave_idx_type.
 // Currently 1 is subtracted to allow safe conversion of any 2D Array into
@@ -64,8 +49,6 @@ dim_vector::dim_max (void)
 void
 dim_vector::chop_all_singletons (void)
 {
-  make_unique ();
-
   int j = 0;
   int nd = ndims ();
 
@@ -78,7 +61,7 @@ dim_vector::chop_all_singletons (void)
   if (j == 1)
     m_rep[1] = 1;
 
-  m_rep[-1] = (j > 2 ? j : 2);
+  m_ndims = (j > 2 ? j : 2);
 }
 
 std::string
@@ -163,8 +146,6 @@ dim_vector::concat (const dim_vector& dvb, int dim)
     resize (new_nd, 1);
   else
     new_nd = orig_nd;
-
-  make_unique ();
 
   bool match = true;
 

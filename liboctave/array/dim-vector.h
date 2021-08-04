@@ -95,85 +95,9 @@ dim_vector
 {
 private:
 
+  octave_idx_type m_ndims;
+
   octave_idx_type *m_rep;
-
-  octave_idx_type& count (void) const { return m_rep[-2]; }
-
-  octave_idx_type increment_count (void)
-  {
-    return octave_atomic_increment (&(count ()));
-  }
-
-  octave_idx_type decrement_count (void)
-  {
-    return octave_atomic_decrement (&(count ()));
-  }
-
-  //! Construct a new rep with count = 1 and ndims given.
-
-  static octave_idx_type * newrep (int ndims)
-  {
-    octave_idx_type *r = new octave_idx_type [ndims + 2];
-
-    *r++ = 1;
-    *r++ = ndims;
-
-    return r;
-  }
-
-  //! Clone this->m_rep.
-
-  octave_idx_type * clonerep (void)
-  {
-    int nd = ndims ();
-
-    octave_idx_type *r = newrep (nd);
-
-    std::copy_n (m_rep, nd, r);
-
-    return r;
-  }
-
-  //! Clone and resize this->m_rep to length n, filling by given value.
-
-  octave_idx_type * resizerep (int n, octave_idx_type fill_value)
-  {
-    int nd = ndims ();
-
-    if (n < 2)
-      n = 2;
-
-    octave_idx_type *r = newrep (n);
-
-    if (nd > n)
-      nd = n;
-
-    std::copy_n (m_rep, nd, r);
-    std::fill_n (r + nd, n - nd, fill_value);
-
-    return r;
-  }
-
-  //! Free the rep.
-
-  void freerep (void)
-  {
-    assert (count () == 0);
-    delete [] (m_rep - 2);
-  }
-
-  void make_unique (void)
-  {
-    if (count () > 1)
-      {
-        octave_idx_type *new_rep = clonerep ();
-
-        if (decrement_count () == 0)
-          freerep ();
-
-        m_rep = new_rep;
-      }
-  }
 
 public:
 
@@ -214,12 +138,13 @@ public:
 
   template <typename... Ints>
   dim_vector (const octave_idx_type r, const octave_idx_type c,
-              Ints... lengths) : m_rep (newrep (2 + sizeof... (Ints)))
+              Ints... lengths)
+    : m_ndims (2 + sizeof... (Ints)), m_rep (new octave_idx_type [m_ndims])
   {
     std::initializer_list<octave_idx_type> all_lengths = {r, c, lengths...};
+    octave_idx_type *ptr = m_rep;
     for (const octave_idx_type l: all_lengths)
-      *m_rep++ = l;
-    m_rep -= all_lengths.size ();
+      *ptr++ = l;
   }
 
   // Fast access with absolutely no checking
@@ -232,7 +157,6 @@ public:
 
   octave_idx_type& elem (int i)
   {
-    make_unique ();
     return xelem (i);
   }
 
@@ -240,15 +164,8 @@ public:
 
   void chop_trailing_singletons (void)
   {
-    int nd = ndims ();
-    if (nd > 2 && m_rep[nd-1] == 1)
-      {
-        make_unique ();
-        do
-          nd--;
-        while (nd > 2 && m_rep[nd-1] == 1);
-        m_rep[-1] = nd;
-      }
+    while (m_ndims > 2 && m_rep[m_ndims-1] == 1)
+      m_ndims--;
   }
 
   OCTAVE_API void chop_all_singletons (void);
@@ -261,37 +178,52 @@ public:
 
 private:
 
-  static octave_idx_type *nil_rep (void);
+  explicit dim_vector (octave_idx_type ndims)
+    : m_ndims (ndims < 2 ? 2 : ndims), m_rep (new octave_idx_type [m_ndims])
+  {
+    std::fill_n (m_rep, m_ndims, 0);
+  }
 
 public:
 
   static OCTAVE_API octave_idx_type dim_max (void);
 
-  explicit dim_vector (void) : m_rep (nil_rep ())
-  { increment_count (); }
+  explicit dim_vector (void)
+    : m_ndims (2), m_rep (new octave_idx_type [m_ndims])
+  {
+    std::fill_n (m_rep, m_ndims, 0);
+  }
 
-  dim_vector (const dim_vector& dv) : m_rep (dv.m_rep)
-  { increment_count (); }
+  dim_vector (const dim_vector& dv)
+    : m_ndims (dv.m_ndims), m_rep (new octave_idx_type [m_ndims])
+  {
+    std::copy_n (dv.m_rep, m_ndims, m_rep);
+  }
 
-  dim_vector (dim_vector&& dv) : m_rep (dv.m_rep) { dv.m_rep = nullptr; }
-
-// FIXME: Should be private, but required by array constructor for jit
+  // FIXME: Should be private, but required by array constructor for jit
   explicit dim_vector (octave_idx_type *r) : m_rep (r) { }
+
+  dim_vector (dim_vector&& dv)
+    : m_ndims (0), m_rep (nullptr)
+  {
+    *this = std::move (dv);
+  }
 
   static dim_vector alloc (int n)
   {
-    return dim_vector (newrep (n < 2 ? 2 : n));
+    return dim_vector (n);
   }
 
   dim_vector& operator = (const dim_vector& dv)
   {
     if (&dv != this)
       {
-        if (decrement_count () == 0)
-          freerep ();
+        delete [] m_rep;
 
-        m_rep = dv.m_rep;
-        increment_count ();
+        m_ndims = dv.m_ndims;
+        m_rep = new octave_idx_type [m_ndims];
+
+        std::copy_n (dv.m_rep, m_ndims, m_rep);
       }
 
     return *this;
@@ -305,10 +237,12 @@ public:
         // operator, m_rep may be a nullptr here.  We should only need to
         // protect the destructor in a similar way.
 
-        if (m_rep && decrement_count () == 0)
-          freerep ();
+        delete [] m_rep;
 
+        m_ndims = dv.m_ndims;
         m_rep = dv.m_rep;
+
+        dv.m_ndims = 0;
         dv.m_rep = nullptr;
       }
 
@@ -321,8 +255,7 @@ public:
     // operator, m_rep may be a nullptr here.  We should only need to
     // protect the move assignment operator in a similar way.
 
-    if (m_rep && decrement_count () == 0)
-      freerep ();
+    delete [] m_rep;
   }
 
   //! Number of dimensions.
@@ -331,7 +264,7 @@ public:
   //! elements in the dim_vector including trailing singletons.  It is also
   //! the number of dimensions an Array with this dim_vector would have.
 
-  octave_idx_type ndims (void) const { return m_rep[-1]; }
+  octave_idx_type ndims (void) const { return m_ndims; }
 
   //! Number of dimensions.
   //! Synonymous with ndims().
@@ -348,17 +281,28 @@ public:
 
   void resize (int n, int fill_value = 0)
   {
-    int len = ndims ();
+    if (n < 2)
+      n = 2;
 
-    if (n != len)
+    if (n == m_ndims)
+      return;
+
+    if (n < m_ndims)
       {
-        octave_idx_type *r = resizerep (n, fill_value);
-
-        if (decrement_count () == 0)
-          freerep ();
-
-        m_rep = r;
+        m_ndims = n;
+        return;
       }
+
+    octave_idx_type *new_rep = new octave_idx_type [n];
+
+    std::copy_n (m_rep, m_ndims, new_rep);
+    std::fill_n (new_rep + m_ndims, n - m_ndims, fill_value);
+
+    delete [] m_rep;
+
+    m_rep = new_rep;
+
+    m_ndims = n;
   }
 
   OCTAVE_API std::string str (char sep = 'x') const;

@@ -164,7 +164,7 @@ public:
 
   void chop_trailing_singletons (void)
   {
-    while (m_ndims > 2 && m_rep[m_ndims-1] == 1)
+    while (m_ndims > 2 && xelem(m_ndims-1) == 1)
       m_ndims--;
   }
 
@@ -471,7 +471,7 @@ public:
   {
     octave_idx_type k = 0;
     for (int i = nidx - 1; i >= 0; i--)
-      k = m_rep[i] * k + idx[i];
+      k = xelem(i) * k + idx[i];
 
     return k;
   }
@@ -485,7 +485,7 @@ public:
     int i;
     for (i = start; i < ndims (); i++)
       {
-        if (++(*idx) == m_rep[i])
+        if (++(*idx) == xelem(i))
           *idx++ = 0;
         else
           break;
@@ -502,7 +502,7 @@ public:
 
     octave_idx_type k = 1;
     for (int i = 0; i < nd; i++)
-      retval.m_rep[i] = (k *= m_rep[i]);
+      retval.xelem(i) = (k *= xelem(i));
 
     return retval;
   }
@@ -515,7 +515,7 @@ public:
     octave_idx_type k = idx[0];
 
     for (int i = 1; i < ndims (); i++)
-      k += m_rep[i-1] * idx[i];
+      k += xelem(i-1) * idx[i];
 
     return k;
   }

@@ -54,12 +54,12 @@ dim_vector::chop_all_singletons (void)
 
   for (int i = 0; i < nd; i++)
     {
-      if (m_rep[i] != 1)
-        m_rep[j++] = m_rep[i];
+      if (xelem(i) != 1)
+        xelem(j++) = xelem(i);
     }
 
   if (j == 1)
-    m_rep[1] = 1;
+    xelem(1) = 1;
 
   m_ndims = (j > 2 ? j : 2);
 }
@@ -103,9 +103,9 @@ dim_vector::safe_numel (void) const
 
   for (int i = 0; i < n_dims; i++)
     {
-      n *= m_rep[i];
-      if (m_rep[i] != 0)
-        idx_max /= m_rep[i];
+      n *= xelem(i);
+      if (xelem(i) != 0)
+        idx_max /= xelem(i);
       if (idx_max <= 0)
         throw std::bad_alloc ();
     }
@@ -151,7 +151,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 
   for (int i = 0; i < ndb; i++)
     {
-      if (i != dim && m_rep[i] != dvb(i))
+      if (i != dim && xelem(i) != dvb(i))
         {
           match = false;
           break;
@@ -160,7 +160,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 
   for (int i = ndb; i < new_nd; i++)
     {
-      if (i != dim && m_rep[i] != 1)
+      if (i != dim && xelem(i) != 1)
         {
           match = false;
           break;
@@ -168,13 +168,13 @@ dim_vector::concat (const dim_vector& dvb, int dim)
     }
 
   if (match)
-    m_rep[dim] += (dim < ndb ? dvb(dim) : 1);
+    xelem(dim) += (dim < ndb ? dvb(dim) : 1);
   else
     {
       // Dimensions don't match.  The only allowed fix is to omit 0x0.
       if (ndb == 2 && dvb(0) == 0 && dvb(1) == 0)
         match = true;
-      else if (orig_nd == 2 && m_rep[0] == 0 && m_rep[1] == 0)
+      else if (orig_nd == 2 && xelem(0) == 0 && xelem(1) == 0)
         {
           *this = dvb;
           match = true;
@@ -204,7 +204,7 @@ dim_vector::hvcat (const dim_vector& dvb, int dim)
     return true;
   else if (ndims () == 2 && dvb.ndims () == 2)
     {
-      bool e2dv = m_rep[0] + m_rep[1] == 1;
+      bool e2dv = xelem(0) + xelem(1) == 1;
       bool e2dvb = dvb(0) + dvb(1) == 1;
       if (e2dvb)
         {
@@ -248,15 +248,15 @@ dim_vector::redim (int n) const
       std::copy_n (m_rep, n-1, retval.m_rep);
 
       // Accumulate overflow dimensions into last remaining dimension
-      int k = m_rep[n-1];
+      int k = xelem(n-1);
       for (int i = n; i < n_dims; i++)
-        k *= m_rep[i];
+        k *= xelem(i);
 
-      retval.m_rep[n-1] = k;
+      retval.xelem(n-1) = k;
 
       // All dim_vectors are at least 2-D.  Make Nx1 if necessary.
       if (n == 1)
-        retval.m_rep[1] = 1;
+        retval.xelem(1) = 1;
 
       return retval;
     }

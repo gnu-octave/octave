@@ -95,9 +95,9 @@ dim_vector
 {
 private:
 
-  octave_idx_type m_ndims;
+  octave_idx_type m_num_dims;
 
-  octave_idx_type *m_rep;
+  octave_idx_type *m_dims;
 
 public:
 
@@ -139,19 +139,19 @@ public:
   template <typename... Ints>
   dim_vector (const octave_idx_type r, const octave_idx_type c,
               Ints... lengths)
-    : m_ndims (2 + sizeof... (Ints)), m_rep (new octave_idx_type [m_ndims])
+    : m_num_dims (2 + sizeof... (Ints)), m_dims (new octave_idx_type [m_num_dims])
   {
     std::initializer_list<octave_idx_type> all_lengths = {r, c, lengths...};
-    octave_idx_type *ptr = m_rep;
+    octave_idx_type *ptr = m_dims;
     for (const octave_idx_type l: all_lengths)
       *ptr++ = l;
   }
 
   // Fast access with absolutely no checking
 
-  octave_idx_type& xelem (int i) { return m_rep[i]; }
+  octave_idx_type& xelem (int i) { return m_dims[i]; }
 
-  octave_idx_type xelem (int i) const { return m_rep[i]; }
+  octave_idx_type xelem (int i) const { return m_dims[i]; }
 
   // Safe access to to elements
 
@@ -164,8 +164,8 @@ public:
 
   void chop_trailing_singletons (void)
   {
-    while (m_ndims > 2 && xelem(m_ndims-1) == 1)
-      m_ndims--;
+    while (m_num_dims > 2 && xelem(m_num_dims-1) == 1)
+      m_num_dims--;
   }
 
   OCTAVE_API void chop_all_singletons (void);
@@ -173,15 +173,15 @@ public:
   // WARNING: Only call by jit
   octave_idx_type * to_jit (void) const
   {
-    return m_rep;
+    return m_dims;
   }
 
 private:
 
   explicit dim_vector (octave_idx_type ndims)
-    : m_ndims (ndims < 2 ? 2 : ndims), m_rep (new octave_idx_type [m_ndims])
+    : m_num_dims (ndims < 2 ? 2 : ndims), m_dims (new octave_idx_type [m_num_dims])
   {
-    std::fill_n (m_rep, m_ndims, 0);
+    std::fill_n (m_dims, m_num_dims, 0);
   }
 
 public:
@@ -189,22 +189,22 @@ public:
   static OCTAVE_API octave_idx_type dim_max (void);
 
   explicit dim_vector (void)
-    : m_ndims (2), m_rep (new octave_idx_type [m_ndims])
+    : m_num_dims (2), m_dims (new octave_idx_type [m_num_dims])
   {
-    std::fill_n (m_rep, m_ndims, 0);
+    std::fill_n (m_dims, m_num_dims, 0);
   }
 
   dim_vector (const dim_vector& dv)
-    : m_ndims (dv.m_ndims), m_rep (new octave_idx_type [m_ndims])
+    : m_num_dims (dv.m_num_dims), m_dims (new octave_idx_type [m_num_dims])
   {
-    std::copy_n (dv.m_rep, m_ndims, m_rep);
+    std::copy_n (dv.m_dims, m_num_dims, m_dims);
   }
 
   // FIXME: Should be private, but required by array constructor for jit
-  explicit dim_vector (octave_idx_type *r) : m_rep (r) { }
+  explicit dim_vector (octave_idx_type *r) : m_dims (r) { }
 
   dim_vector (dim_vector&& dv)
-    : m_ndims (0), m_rep (nullptr)
+    : m_num_dims (0), m_dims (nullptr)
   {
     *this = std::move (dv);
   }
@@ -218,12 +218,12 @@ public:
   {
     if (&dv != this)
       {
-        delete [] m_rep;
+        delete [] m_dims;
 
-        m_ndims = dv.m_ndims;
-        m_rep = new octave_idx_type [m_ndims];
+        m_num_dims = dv.m_num_dims;
+        m_dims = new octave_idx_type [m_num_dims];
 
-        std::copy_n (dv.m_rep, m_ndims, m_rep);
+        std::copy_n (dv.m_dims, m_num_dims, m_dims);
       }
 
     return *this;
@@ -234,16 +234,16 @@ public:
     if (&dv != this)
       {
         // Because we define a move constructor and a move assignment
-        // operator, m_rep may be a nullptr here.  We should only need to
+        // operator, m_dims may be a nullptr here.  We should only need to
         // protect the destructor in a similar way.
 
-        delete [] m_rep;
+        delete [] m_dims;
 
-        m_ndims = dv.m_ndims;
-        m_rep = dv.m_rep;
+        m_num_dims = dv.m_num_dims;
+        m_dims = dv.m_dims;
 
-        dv.m_ndims = 0;
-        dv.m_rep = nullptr;
+        dv.m_num_dims = 0;
+        dv.m_dims = nullptr;
       }
 
     return *this;
@@ -252,10 +252,10 @@ public:
   ~dim_vector (void)
   {
     // Because we define a move constructor and a move assignment
-    // operator, m_rep may be a nullptr here.  We should only need to
+    // operator, m_dims may be a nullptr here.  We should only need to
     // protect the move assignment operator in a similar way.
 
-    delete [] m_rep;
+    delete [] m_dims;
   }
 
   //! Number of dimensions.
@@ -264,7 +264,7 @@ public:
   //! elements in the dim_vector including trailing singletons.  It is also
   //! the number of dimensions an Array with this dim_vector would have.
 
-  octave_idx_type ndims (void) const { return m_ndims; }
+  octave_idx_type ndims (void) const { return m_num_dims; }
 
   //! Number of dimensions.
   //! Synonymous with ndims().
@@ -284,32 +284,32 @@ public:
     if (n < 2)
       n = 2;
 
-    if (n == m_ndims)
+    if (n == m_num_dims)
       return;
 
-    if (n < m_ndims)
+    if (n < m_num_dims)
       {
-        m_ndims = n;
+        m_num_dims = n;
         return;
       }
 
     octave_idx_type *new_rep = new octave_idx_type [n];
 
-    std::copy_n (m_rep, m_ndims, new_rep);
-    std::fill_n (new_rep + m_ndims, n - m_ndims, fill_value);
+    std::copy_n (m_dims, m_num_dims, new_rep);
+    std::fill_n (new_rep + m_num_dims, n - m_num_dims, fill_value);
 
-    delete [] m_rep;
+    delete [] m_dims;
 
-    m_rep = new_rep;
+    m_dims = new_rep;
 
-    m_ndims = n;
+    m_num_dims = n;
   }
 
   OCTAVE_API std::string str (char sep = 'x') const;
 
   bool all_zero (void) const
   {
-    return std::all_of (m_rep, m_rep + ndims (),
+    return std::all_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
@@ -325,7 +325,7 @@ public:
 
   bool any_zero (void) const
   {
-    return std::any_of (m_rep, m_rep + ndims (),
+    return std::any_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
@@ -366,7 +366,7 @@ public:
 
   bool any_neg (void) const
   {
-    return std::any_of (m_rep, m_rep + ndims (),
+    return std::any_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim < 0; });
   }
 
@@ -530,7 +530,7 @@ inline bool
 operator == (const dim_vector& a, const dim_vector& b)
 {
   // Fast case.
-  if (a.m_rep == b.m_rep)
+  if (a.m_dims == b.m_dims)
     return true;
 
   int a_len = a.ndims ();
@@ -539,7 +539,7 @@ operator == (const dim_vector& a, const dim_vector& b)
   if (a_len != b_len)
     return false;
 
-  return std::equal (a.m_rep, a.m_rep + a_len, b.m_rep);
+  return std::equal (a.m_dims, a.m_dims + a_len, b.m_dims);
 }
 
 inline bool

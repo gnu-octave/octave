@@ -61,7 +61,7 @@ dim_vector::chop_all_singletons (void)
   if (j == 1)
     xelem(1) = 1;
 
-  m_ndims = (j > 2 ? j : 2);
+  m_num_dims = (j > 2 ? j : 2);
 }
 
 std::string
@@ -233,8 +233,8 @@ dim_vector::redim (int n) const
     {
       dim_vector retval = alloc (n);
 
-      std::copy_n (m_rep, n_dims, retval.m_rep);
-      std::fill_n (retval.m_rep + n_dims, n - n_dims, 1);
+      std::copy_n (m_dims, n_dims, retval.m_dims);
+      std::fill_n (retval.m_dims + n_dims, n - n_dims, 1);
 
       return retval;
     }
@@ -245,7 +245,7 @@ dim_vector::redim (int n) const
 
       dim_vector retval = alloc (n);
 
-      std::copy_n (m_rep, n-1, retval.m_rep);
+      std::copy_n (m_dims, n-1, retval.m_dims);
 
       // Accumulate overflow dimensions into last remaining dimension
       int k = xelem(n-1);

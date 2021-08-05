@@ -77,7 +77,7 @@ uses a one-directional pipe and limited information is passed back to the\n\
 Octave interpreter so most changes made interactively in the plot window\n\
 will not be reflected in the graphics properties managed by Octave.  For\n\
 example, if the plot window is closed with a mouse click, Octave will not\n\
-be notified and will not update it's internal list of open figure windows.\n\
+be notified and will not update its internal list of open figure windows.\n\
 The qt toolkit is recommended instead.\n");
 
           warned = true;

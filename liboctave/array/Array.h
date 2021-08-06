@@ -177,11 +177,9 @@ protected:
 
     octave_idx_type numel (void) const { return m_len; }
 
-  private:
-
     // No assignment!
 
-    OCTARRAY_API ArrayRep& operator = (const ArrayRep& a);
+    ArrayRep& operator = (const ArrayRep&) = delete;
   };
 
   //--------------------------------------------------------------------

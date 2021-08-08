@@ -69,7 +69,7 @@ const gui_pref
 ed_code_completion ("editor/codeCompletion", QVariant (true));
 
 const gui_pref
-ed_code_completion_threshold ("editor/codeCompletion_threshold", QVariant (2));
+ed_code_completion_threshold ("editor/codeCompletion_threshold", QVariant (3));
 
 // Code formatting
 

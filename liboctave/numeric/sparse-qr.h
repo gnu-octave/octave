@@ -63,11 +63,11 @@ namespace octave
       OCTAVE_API sparse_qr (const SPARSE_T& a, int order = 0);
 #endif
 
-      OCTAVE_API sparse_qr (const sparse_qr& a) = default;
+      sparse_qr (const sparse_qr& a) = default;
 
-      OCTAVE_API ~sparse_qr (void) = default;
+      ~sparse_qr (void) = default;
 
-      OCTAVE_API sparse_qr& operator = (const sparse_qr& a) = default;
+      sparse_qr& operator = (const sparse_qr& a) = default;
 
       OCTAVE_API bool ok (void) const;
 

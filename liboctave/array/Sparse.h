@@ -164,7 +164,7 @@ protected:
 
     // No assignment!
 
-    OCTAVE_API SparseRep& operator = (const SparseRep&) = delete;
+    SparseRep& operator = (const SparseRep&) = delete;
   };
 
   //--------------------------------------------------------------------

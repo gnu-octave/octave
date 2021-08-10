@@ -386,12 +386,6 @@ specified option.
            { "ENABLE_FLOAT_TRUNCATE", false },
 #endif
 
-#if defined (ENABLE_JIT)
-           { "ENABLE_JIT", true },
-#else
-           { "ENABLE_JIT", false },
-#endif
-
 #if defined (OCTAVE_ENABLE_OPENMP)
            { "ENABLE_OPENMP", true },
 #else
@@ -521,9 +515,6 @@ specified option.
            { "LIBOCTAVE", octave::build_env::LIBOCTAVE },
            { "LIBOCTINTERP", octave::build_env::LIBOCTINTERP },
            { "LIBS", octave::build_env::LIBS },
-           { "LLVM_CPPFLAGS", octave::build_env::LLVM_CPPFLAGS },
-           { "LLVM_LDFLAGS", octave::build_env::LLVM_LDFLAGS },
-           { "LLVM_LIBS", octave::build_env::LLVM_LIBS },
            { "LN_S", octave::build_env::LN_S },
            { "MAGICK_CPPFLAGS", octave::build_env::MAGICK_CPPFLAGS },
            { "MAGICK_LDFLAGS", octave::build_env::MAGICK_LDFLAGS },

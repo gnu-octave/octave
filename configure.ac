@@ -1456,119 +1456,6 @@ OCTAVE_CHECK_LIB(bz2, BZIP2,
   [BZIP2 library not found.  Octave will not be able to compress or decompress bzip2 files.],
   [bzlib.h], [BZ2_bzCompressInit])
 
-### Check for the LLVM library (JIT compiler).
-
-ENABLE_JIT=no
-AC_ARG_ENABLE([jit],
-  [AS_HELP_STRING([--enable-jit],
-    [(EXPERIMENTAL) enable JIT compiler])],
-  [if test "$enableval" = yes; then ENABLE_JIT=yes; fi], [])
-
-LLVM_CPPFLAGS=
-LLVM_LDFLAGS=
-LLVM_LIBS=
-
-if test $ENABLE_JIT = yes; then
-
-  ## Find llvm-config program from environment variable or by searching
-  AC_ARG_VAR([LLVM_CONFIG], [path to llvm-config utility])
-  AC_CHECK_PROG([LLVM_CONFIG], llvm-config, llvm-config, [])
-
-  if test -z "$LLVM_CONFIG"; then
-    warn_llvm="llvm-config utility not found.  JIT compiler is disabled."
-  else
-    dnl Preset warning message in case compile fails
-    warn_llvm="LLVM was not found or is to old.  JIT compiler is disabled."
-
-    save_CPPFLAGS="$CPPFLAGS"
-    save_LDFLAGS="$LDFLAGS"
-
-    dnl Use -isystem if available because we don't want to see warnings in LLVM
-    LLVM_INCLUDE_FLAG=-I
-    OCTAVE_CC_FLAG([-isystem .], [
-      LLVM_INCLUDE_FLAG=-isystem
-      AC_MSG_NOTICE([using -isystem for LLVM headers])])
-
-    dnl Use -isystem so we don't get warnings from llvm headers
-    LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
-    LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
-
-    LDFLAGS="$LDFLAGS $LLVM_LDFLAGS"
-    LLVM_SO=LLVM-`$LLVM_CONFIG --version`
-    AC_CHECK_LIB([$LLVM_SO], [LLVMBuildAdd], [LLVM_LIBS="-l$LLVM_SO"],
-                 [LLVM_LIBS="`$LLVM_CONFIG --libs` `$LLVM_CONFIG --system-libs`"])
-
-    dnl Define some extra flags that LLVM requires in order to include headers.
-    dnl Ideally we should get these from llvm-config, but llvm-config isn't
-    dnl very helpful.
-    CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
-    AC_LANG_PUSH(C++)
-    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [warn_llvm=""])
-
-    have_function_h=no
-    AC_CHECK_HEADERS([llvm/IR/Function.h llvm/Function.h],
-                     [have_function_h=yes; break])
-    if test $have_function_h = no; then
-      warn_llvm="Missing LLVM file Function.h.  JIT compiler is disabled."
-    fi
-
-    have_irbuilder_h=no
-    AC_CHECK_HEADERS([llvm/Support/IRBuilder.h llvm/IR/IRBuilder.h \
-                      llvm/IRBuilder.h], [have_irbuilder_h=yes; break])
-    if test $have_irbuilder_h = no; then
-      warn_llvm="Missing LLVM file IRBuilder.h.  JIT compiler is disabled."
-    fi
-
-    have_llvm_data_h=no
-    AC_CHECK_HEADERS([llvm/Target/TargetData.h llvm/IR/DataLayout.h \
-                      llvm/DataLayout.h], [have_llvm_data_h=yes; break])
-    if test $have_llvm_data_h = no; then
-      warn_llvm="Missing LLVM file TargetData.h.  JIT compiler is disabled."
-    fi
-
-    AC_CHECK_HEADERS([llvm/IR/Verifier.h])
-    AC_CHECK_HEADERS([llvm/Analysis/BasicAliasAnalysis.h])
-    AC_CHECK_HEADERS([llvm/Transforms/Scalar/GVN.h])
-    AC_CHECK_HEADERS([llvm/Bitcode/ReaderWriter.h])
-
-    OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API
-    OCTAVE_LLVM_FUNCTION_ADDFNATTR_API
-    OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API
-    OCTAVE_LLVM_RAW_FD_OSTREAM_API
-    OCTAVE_LLVM_LEGACY_PASSMANAGER_API
-    OCTAVE_LLVM_IRBUILDER_API
-    OCTAVE_LLVM_HAS_CREATEALWAYSINLINERPASS
-    OCTAVE_LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_API
-
-    AC_LANG_POP(C++)
-    CPPFLAGS="$save_CPPFLAGS"
-    LDFLAGS="$save_LDFLAGS"
-  fi
-
-  if test -z "$warn_llvm"; then
-    AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
-  else
-    ENABLE_JIT=no
-    LLVM_CPPFLAGS=
-    LLVM_LDFLAGS=
-    LLVM_LIBS=
-    OCTAVE_CONFIGURE_WARNING([warn_llvm])
-  fi
-dnl FIXME: Re-instate when JIT is enabled by default
-dnl else
-dnl   ## JIT build disabled
-dnl   warn_llvm="JIT compiler disabled, some performance loss for loops"
-dnl   OCTAVE_CONFIGURE_WARNING([warn_llvm])
-fi
-if test $ENABLE_JIT = yes; then
-  AC_DEFINE(ENABLE_JIT, 1, [Define to 1 to enable JIT compiler.])
-fi
-
-AC_SUBST(LLVM_CPPFLAGS)
-AC_SUBST(LLVM_LDFLAGS)
-AC_SUBST(LLVM_LIBS)
-AM_CONDITIONAL([AMCOND_HAVE_LLVM], [test -z "$warn_llvm"])
-
 ### Check for HDF5 library.
 
 save_CPPFLAGS="$CPPFLAGS"
@@ -2966,9 +2853,9 @@ LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $SPARSE_XLDFLAGS $ARPACK_LDFLAGS $QRUPDATE_LD
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
 
-LIBOCTINTERP_LINK_DEPS="$FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $SPARSE_XLIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $LLVM_LIBS $JAVA_LIBS $LAPACK_LIBS"
+LIBOCTINTERP_LINK_DEPS="$FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $SPARSE_XLIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $JAVA_LIBS $LAPACK_LIBS"
 
-LIBOCTINTERP_LINK_OPTS="$FT2_LDFLAGS $HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $SPARSE_XLDFLAGS $FFTW_XLDFLAGS $LLVM_LDFLAGS"
+LIBOCTINTERP_LINK_OPTS="$FT2_LDFLAGS $HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $SPARSE_XLDFLAGS $FFTW_XLDFLAGS"
 
 OCTAVE_LINK_DEPS=""
 OCTAVE_LINK_OPTS=""
@@ -3240,9 +3127,6 @@ Octave is now configured for $canonical_host_type
   KLU LDFLAGS:                   $KLU_LDFLAGS
   KLU libraries:                 $KLU_LIBS
   LAPACK libraries:              $LAPACK_LIBS
-  LLVM CPPFLAGS:                 $LLVM_CPPFLAGS
-  LLVM LDFLAGS:                  $LLVM_LDFLAGS
-  LLVM libraries:                $LLVM_LIBS
   Magick++ CPPFLAGS:             $MAGICK_CPPFLAGS
   Magick++ LDFLAGS:              $MAGICK_LDFLAGS
   Magick++ libraries:            $MAGICK_LIBS
@@ -3302,7 +3186,6 @@ Octave is now configured for $canonical_host_type
   gnuplot:                       $GNUPLOT_BINARY
 
   Build Octave Qt GUI:                  $BUILD_QT_SUMMARY_MSG
-  JIT compiler for loops:               $ENABLE_JIT
   Build Java interface:                 $build_java
   Build static libraries:               $STATIC_LIBS
   Build shared libraries:               $SHARED_LIBS

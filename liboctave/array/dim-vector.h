@@ -170,12 +170,6 @@ public:
 
   OCTAVE_API void chop_all_singletons (void);
 
-  // WARNING: Only call by jit
-  octave_idx_type * to_jit (void) const
-  {
-    return m_dims;
-  }
-
 private:
 
   explicit dim_vector (octave_idx_type ndims)
@@ -199,9 +193,6 @@ public:
   {
     std::copy_n (dv.m_dims, m_num_dims, m_dims);
   }
-
-  // FIXME: Should be private, but required by array constructor for jit
-  explicit dim_vector (octave_idx_type *r) : m_dims (r) { }
 
   dim_vector (dim_vector&& dv)
     : m_num_dims (0), m_dims (nullptr)

@@ -536,8 +536,6 @@ jbig
 JConstant
 JDK
 JIS
-jit
-JIT
 JPattern
 jpeg
 JPEG
@@ -590,7 +588,6 @@ listdlg
 ListSize
 ListString
 literalspacing
-LLVM
 LM
 loadpath
 logarithmically

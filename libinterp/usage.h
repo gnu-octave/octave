@@ -34,12 +34,11 @@
 
 // Usage message
 static const char *usage_string =
-  "octave [-HVWdfhiqvx] [--debug] [--debug-jit] [--doc-cache-file file]\n\
-       [--echo-commands] [--eval CODE] [--exec-path path]\n\
-       [--experimental-terminal-widget] [--gui] [--help] [--image-path path]\n\
-       [--info-file file] [--info-program prog] [--interactive]\n\
-       [--jit-compiler] [--line-editing] [--no-gui] [--no-history]\n\
-       [--no-init-file] [--no-init-path] [--no-line-editing]\n\
+  "octave [-HVWdfhiqvx] [--debug] [--doc-cache-file file] [--echo-commands]\n\
+       [--eval CODE] [--exec-path path] [--experimental-terminal-widget]\n\
+       [--gui] [--help] [--image-path path] [--info-file file]\n\
+       [--info-program prog] [--interactive] [--line-editing] [--no-gui]\n\
+       [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
        [--no-site-file] [--no-window-system] [--norc] [-p path]\n\
        [--path path] [--persist] [--server] [--silent] [--traditional]\n\
        [--verbose] [--version] [file]";
@@ -58,7 +57,6 @@ Options:\n\
 \n\
   --built-in-docstrings-file FILE Use docs for built-ins from FILE.\n\
   --debug, -d             Enter parser debugging mode.\n\
-  --debug-jit             Enable JIT compiler debugging/tracing.\n\
   --doc-cache-file FILE   Use doc cache file FILE.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
@@ -71,7 +69,6 @@ Options:\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
-  --jit-compiler          Enable the JIT compiler.\n\
   --line-editing          Force readline use for command-line editing.\n\
   --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\

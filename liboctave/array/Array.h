@@ -242,14 +242,6 @@ private:
 
   static OCTARRAY_API typename Array<T>::ArrayRep *nil_rep (void);
 
-protected:
-
-  //! For jit support
-  Array (T *sdata, octave_idx_type slen, octave_idx_type *adims, void *arep)
-    : m_dimensions (adims),
-      m_rep (reinterpret_cast<typename Array<T>::ArrayRep *> (arep)),
-      m_slice_data (sdata), m_slice_len (slen) { }
-
 public:
 
   //! Empty ctor (0 by 0).
@@ -838,18 +830,6 @@ public:
   //! by a shallow copy of dv.  This is useful for maintaining several arrays
   //! with supposedly equal dimensions (e.g. structs in the interpreter).
   OCTARRAY_API bool optimize_dimensions (const dim_vector& dv);
-
-  //@{
-  //! WARNING: Only call these functions from jit
-
-  int jit_ref_count (void) { return m_rep->m_count.value (); }
-
-  T * jit_slice_data (void) const { return m_slice_data; }
-
-  octave_idx_type * jit_dimensions (void) const { return m_dimensions.to_jit (); }
-
-  void * jit_array_rep (void) const { return m_rep; }
-  //@}
 
 private:
   OCTARRAY_API static void instantiation_guard ();

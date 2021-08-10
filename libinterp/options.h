@@ -46,25 +46,22 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define IMAGE_PATH_OPTION 7
 #define INFO_FILE_OPTION 8
 #define INFO_PROG_OPTION 9
-#define DEBUG_JIT_OPTION 10
-#define JIT_COMPILER_OPTION 11
-#define LINE_EDITING_OPTION 12
-#define NO_GUI_OPTION 13
-#define NO_GUI_LIBS_OPTION 14
-#define NO_INIT_FILE_OPTION 15
-#define NO_INIT_PATH_OPTION 16
-#define NO_LINE_EDITING_OPTION 17
-#define NO_SITE_FILE_OPTION 18
-#define PERSIST_OPTION 19
-#define SERVER_OPTION 20
-#define TEXI_MACROS_FILE_OPTION 21
-#define TRADITIONAL_OPTION 22
+#define LINE_EDITING_OPTION 10
+#define NO_GUI_OPTION 11
+#define NO_GUI_LIBS_OPTION 12
+#define NO_INIT_FILE_OPTION 13
+#define NO_INIT_PATH_OPTION 14
+#define NO_LINE_EDITING_OPTION 15
+#define NO_SITE_FILE_OPTION 16
+#define PERSIST_OPTION 17
+#define SERVER_OPTION 18
+#define TEXI_MACROS_FILE_OPTION 19
+#define TRADITIONAL_OPTION 20
 struct octave_getopt_options long_opts[] =
 {
   { "braindead",                octave_no_arg,       nullptr, TRADITIONAL_OPTION },
   { "built-in-docstrings-file", octave_required_arg, nullptr, BUILT_IN_DOCSTRINGS_FILE_OPTION },
   { "debug",                    octave_no_arg,       nullptr, 'd' },
-  { "debug-jit",                octave_no_arg,       nullptr, DEBUG_JIT_OPTION },
   { "doc-cache-file",           octave_required_arg, nullptr, DOC_CACHE_FILE_OPTION },
   { "echo-commands",            octave_no_arg,       nullptr, 'x' },
   { "eval",                     octave_required_arg, nullptr, EVAL_OPTION },
@@ -77,7 +74,6 @@ struct octave_getopt_options long_opts[] =
   { "info-file",                octave_required_arg, nullptr, INFO_FILE_OPTION },
   { "info-program",             octave_required_arg, nullptr, INFO_PROG_OPTION },
   { "interactive",              octave_no_arg,       nullptr, 'i' },
-  { "jit-compiler",             octave_no_arg,       nullptr, JIT_COMPILER_OPTION },
   { "line-editing",             octave_no_arg,       nullptr, LINE_EDITING_OPTION },
   { "no-gui",                   octave_no_arg,       nullptr, NO_GUI_OPTION },
   { "no-gui-libs",              octave_no_arg,       nullptr, NO_GUI_LIBS_OPTION },

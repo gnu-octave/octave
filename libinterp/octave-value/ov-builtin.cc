@@ -87,18 +87,6 @@ octave_builtin::execute (octave::tree_evaluator& tw, int nargout,
   return retval;
 }
 
-octave::jit_type *
-octave_builtin::to_jit (void) const
-{
-  return m_jtype;
-}
-
-void
-octave_builtin::stash_jit (octave::jit_type& type)
-{
-  m_jtype = &type;
-}
-
 octave_builtin::fcn
 octave_builtin::function (void) const
 {

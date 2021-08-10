@@ -610,12 +610,6 @@ namespace octave
         if (! info_program.empty ())
           Finfo_program (*this, octave_value (info_program));
 
-        if (options.debug_jit ())
-          Fdebug_jit (octave_value (true));
-
-        if (options.jit_compiler ())
-          Fjit_enable (octave_value (true));
-
         std::string texi_macros_file = options.texi_macros_file ();
         if (! texi_macros_file.empty ())
           Ftexi_macros_file (*this, octave_value (texi_macros_file));

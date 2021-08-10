@@ -181,14 +181,6 @@ namespace octave
               m_info_program = octave_optarg_wrapper ();
             break;
 
-          case DEBUG_JIT_OPTION:
-            m_debug_jit = true;
-            break;
-
-          case JIT_COMPILER_OPTION:
-            m_jit_compiler = true;
-            break;
-
           case LINE_EDITING_OPTION:
             m_forced_line_editing = m_line_editing = true;
             break;
@@ -251,13 +243,11 @@ namespace octave
 
     m.assign ("sys_argc", sys_argc ());
     m.assign ("sys_argv", string_vector (sys_argv ()));
-    m.assign ("debug_jit", debug_jit ());
     m.assign ("echo_commands", echo_commands ());
     m.assign ("forced_interactive", forced_interactive ());
     m.assign ("forced_line_editing", forced_line_editing ());
     m.assign ("gui", gui ());
     m.assign ("inhibit_startup_message", inhibit_startup_message ());
-    m.assign ("jit_compiler", jit_compiler ());
     m.assign ("line_editing", line_editing ());
     m.assign ("no_window_system", no_window_system ());
     m.assign ("persist", persist ());

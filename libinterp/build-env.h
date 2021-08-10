@@ -121,9 +121,6 @@ namespace octave
     extern OCTINTERP_API const char *MAGICK_CPPFLAGS;
     extern OCTINTERP_API const char *MAGICK_LDFLAGS;
     extern OCTINTERP_API const char *MAGICK_LIBS;
-    extern OCTINTERP_API const char *LLVM_CPPFLAGS;
-    extern OCTINTERP_API const char *LLVM_LDFLAGS;
-    extern OCTINTERP_API const char *LLVM_LIBS;
     extern OCTINTERP_API const char *MKOCTFILE_DL_LDFLAGS;
     extern OCTINTERP_API const char *OCTAVE_LINK_DEPS;
     extern OCTINTERP_API const char *OCTAVE_LINK_OPTS;

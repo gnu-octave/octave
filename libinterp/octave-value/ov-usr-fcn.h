@@ -52,10 +52,6 @@ namespace octave
   class tree_evaluator;
   class tree_expression;
   class tree_walker;
-#if defined (HAVE_LLVM)
-  class jit_function_info;
-#endif
-
 }
 
 class
@@ -407,12 +403,6 @@ public:
 
   void accept (octave::tree_walker& tw);
 
-#if defined (HAVE_LLVM)
-  octave::jit_function_info * get_info (void) { return m_jit_info; }
-
-  void stash_info (octave::jit_function_info *info) { m_jit_info = info; }
-#endif
-
   octave_value dump (void) const;
 
 private:
@@ -477,10 +467,6 @@ private:
 
   // Enum describing whether this function is a method for a class.
   class_method_type m_class_method;
-
-#if defined (HAVE_LLVM)
-  octave::jit_function_info *m_jit_info;
-#endif
 
   void maybe_relocate_end_internal (void);
 

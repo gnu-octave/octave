@@ -55,7 +55,6 @@ namespace octave
     int sys_argc (void) const { return m_all_args.numel (); }
     char **sys_argv (void) const { return m_all_args.c_str_vec (); }
 
-    bool debug_jit (void) const { return m_debug_jit; }
     bool echo_commands (void) const { return m_echo_commands; }
 
     bool experimental_terminal_widget (void) const { return m_experimental_terminal_widget; }
@@ -63,7 +62,6 @@ namespace octave
     bool forced_line_editing (void) const { return m_forced_line_editing; }
     bool gui (void) const { return m_gui; }
     bool inhibit_startup_message (void) const { return m_inhibit_startup_message; }
-    bool jit_compiler (void) const { return m_jit_compiler; }
     bool line_editing (void) const { return m_line_editing; }
 
     bool no_window_system (void) const { return m_no_window_system; }
@@ -87,7 +85,6 @@ namespace octave
     string_vector all_args (void) const { return m_all_args; }
     string_vector remaining_args (void) const { return m_remaining_args; }
 
-    void debug_jit (bool arg) { m_debug_jit = arg; }
     void echo_commands (bool arg) { m_echo_commands = arg; }
 
     void experimental_terminal_widget (bool arg) { m_experimental_terminal_widget = arg; }
@@ -95,7 +92,6 @@ namespace octave
     void forced_interactive (bool arg) { m_forced_interactive = arg; }
     void gui (bool arg) { m_gui = arg; }
     void inhibit_startup_message (bool arg) { m_inhibit_startup_message = arg; }
-    void jit_compiler (bool arg) { m_jit_compiler = arg; }
     void line_editing (bool arg) { m_line_editing = arg; }
 
     void no_window_system (bool arg) { m_no_window_system = arg; }
@@ -123,10 +119,6 @@ namespace octave
 
   private:
 
-    // TRUE means enable debug tracing for the JIT compiler.
-    // (--debug-jit)
-    bool m_debug_jit = false;
-
     // If TRUE, echo commands as they are read and executed.
     // (--echo-commands, -x)
     bool m_echo_commands = false;
@@ -150,10 +142,6 @@ namespace octave
     // TRUE means we don't print the usual startup message.
     // (--quiet; --silent; -q)
     bool m_inhibit_startup_message = false;
-
-    // TRUE means enable the JIT compiler.
-    // (--jit-compiler)
-    bool m_jit_compiler = false;
 
     // TRUE means we are using readline.
     // (--no-line-editing)

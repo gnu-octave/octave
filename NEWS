@@ -293,7 +293,7 @@ from Octave 8 (or whatever version is the second major release after 6):
   work.
 
 
-### Removed functions and properties
+### Removed functions, properties, and features
 
 The following functions and properties were deprecated in Octave 5
 and have been removed from Octave 7.
@@ -314,6 +314,19 @@ and have been removed from Octave 7.
   `uicontrol`      | `fontangle`   | `"oblique"`
   `uipanel`        | `fontangle`   | `"oblique"`
   `uitable`        | `fontangle`   | `"oblique"`
+
+- The prototype JIT compiler has been removed from Octave.  Since it was
+first added as part of a Google Summer of Code project in 2012, no one
+has ever seriously taken on further development of it and it still does
+nothing significant.  It is out of date with the default interpreter
+that walks the parse tree.  Even though we have fixed the configure
+script to disable it by default, people still ask questions about how to
+build it, but it doesn’t seem that they are doing that to work on it but
+because they think it will make Octave code run faster (it never did,
+except for some extremely simple bits of code as examples for
+demonstration purposes only).  The following functions related to the
+JIT compiler have also been removed: `debug_jit`, `jit_enable`,
+`jit_failcnt`, and `jit_startcnt`.
 
 ### Old release news
 

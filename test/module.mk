@@ -36,7 +36,6 @@ TEST_FILES += \
   %reldir%/inline-fcn.tst \
   %reldir%/integer.tst \
   %reldir%/io.tst \
-  %reldir%/jit.tst \
   %reldir%/leftdiv.tst \
   %reldir%/line-continue.tst \
   %reldir%/logical-index.tst \
@@ -127,11 +126,6 @@ endef
 
 check-local: $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
 	$(AM_V_at)$(call run-octave-tests)
-
-if AMCOND_HAVE_LLVM
-check-jit: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
-	$(AM_V_at)$(call run-octave-tests,--jit-compiler)
-endif
 
 COVERAGE_DIR = %reldir%/coverage
 COVERAGE_INFO = $(COVERAGE_DIR)/$(PACKAGE).info

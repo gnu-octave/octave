@@ -71,9 +71,6 @@
 #include "utils.h"
 #include "variables.h"
 
-//FIXME: This should be part of tree_evaluator
-#include "pt-jit.h"
-
 namespace octave
 {
   // Normal evaluator.
@@ -3069,11 +3066,6 @@ namespace octave
 
     octave_value rhs = expr->evaluate (*this);
 
-#if defined (HAVE_LLVM)
-    if (tree_jit::execute (cmd, rhs))
-      return;
-#endif
-
     if (rhs.is_undefined ())
       return;
 
@@ -3434,14 +3426,6 @@ namespace octave
             error ("%s: function called with too many outputs", name.c_str ());
           }
       }
-
-    // FIXME: Is this in the right place now?
-
-#if defined (HAVE_LLVM)
-    if (user_function.is_special_expr ()
-        && tree_jit::execute (user_function, args, retval))
-      return retval;
-#endif
 
     bind_auto_fcn_vars (xargs.name_tags (), ignored_outputs, nargin,
                         nargout, user_function.takes_varargs (),
@@ -4162,11 +4146,6 @@ namespace octave
         line++;
       }
 
-#if defined (HAVE_LLVM)
-    if (tree_jit::execute (cmd))
-      return;
-#endif
-
     unwind_protect_var<bool> upv (m_in_loop_command, true);
 
     tree_expression *expr = cmd.condition ();
@@ -4209,11 +4188,6 @@ namespace octave
         echo_code (line);
         line++;
       }
-
-#if defined (HAVE_LLVM)
-    if (tree_jit::execute (cmd))
-      return;
-#endif
 
     unwind_protect_var<bool> upv (m_in_loop_command, true);
 

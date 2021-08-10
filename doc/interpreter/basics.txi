@@ -82,10 +82,6 @@ Enter parser debugging mode.  Using this option will cause Octave's
 parser to print a lot of information about the commands it reads, and is
 probably only useful if you are actually trying to debug the parser.
 
-@item --debug-jit
-@cindex @sortas{options, Octave command --debug-jit} @ @ @code{--debug-jit}
-Enable JIT compiler debugging and tracing.
-
 @item --doc-cache-file @var{filename}
 @cindex @sortas{options, Octave command --doc-cache-file} @ @ @code{--doc-cache-file @var{filename}}
 Specify the name of the doc cache file to use.  The value of @var{filename}
@@ -153,10 +149,6 @@ commands in the system or user startup files that use the
 @cindex @sortas{options, Octave command -i} @ @ @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.
-
-@item --jit-compiler
-@cindex @sortas{options, Octave command --jit-compiler} @ @ @code{--jit-compiler}
-Enable the JIT compiler used for accelerating loops.
 
 @item --line-editing
 @cindex @sortas{options, Octave command --line-editing} @ @ @code{--line-editing}

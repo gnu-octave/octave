@@ -42,7 +42,6 @@ namespace octave
 {
   class tree_evaluator;
   class interpreter;
-  class jit_type;
 }
 
 // Builtin functions.
@@ -54,8 +53,7 @@ octave_builtin : public octave_function
 public:
 
   octave_builtin (void)
-    : octave_function (), m_fcn (nullptr), m_meth (nullptr), m_file (),
-      m_jtype (nullptr)
+    : octave_function (), m_fcn (nullptr), m_meth (nullptr), m_file ()
   { }
 
   typedef octave_value_list (*meth) (octave::interpreter&,
@@ -65,26 +63,22 @@ public:
 
   octave_builtin (fcn ff, const std::string& nm = "",
                   const std::string& ds = "")
-    : octave_function (nm, ds), m_fcn (ff), m_meth (nullptr), m_file (),
-      m_jtype (nullptr)
+    : octave_function (nm, ds), m_fcn (ff), m_meth (nullptr), m_file ()
   { }
 
   octave_builtin (meth mm, const std::string& nm = "",
                   const std::string& ds = "")
-    : octave_function (nm, ds), m_fcn (nullptr), m_meth (mm), m_file (),
-      m_jtype (nullptr)
+    : octave_function (nm, ds), m_fcn (nullptr), m_meth (mm), m_file ()
   { }
 
   octave_builtin (fcn ff, const std::string& nm, const std::string& fnm,
                   const std::string& ds)
-    : octave_function (nm, ds), m_fcn (ff), m_meth (nullptr), m_file (fnm),
-      m_jtype (nullptr)
+    : octave_function (nm, ds), m_fcn (ff), m_meth (nullptr), m_file (fnm)
   { }
 
   octave_builtin (meth mm, const std::string& nm, const std::string& fnm,
                   const std::string& ds)
-    : octave_function (nm, ds), m_fcn (nullptr), m_meth (mm), m_file (fnm),
-      m_jtype (nullptr)
+    : octave_function (nm, ds), m_fcn (nullptr), m_meth (mm), m_file (fnm)
   { }
 
   // No copying!
@@ -105,10 +99,6 @@ public:
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ());
 
-  octave::jit_type * to_jit (void) const;
-
-  void stash_jit (octave::jit_type& type);
-
   fcn function (void) const;
 
   meth method (void) const;
@@ -128,9 +118,6 @@ protected:
 
   // The types this function has been declared to handle (if any).
   std::set<std::string> m_dispatch_classes;
-
-  // A pointer to the jit type that represents the function.
-  octave::jit_type *m_jtype;
 
 private:
 

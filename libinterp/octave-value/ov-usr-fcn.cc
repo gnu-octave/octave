@@ -46,7 +46,6 @@
 #include "ov.h"
 #include "pager.h"
 #include "pt-eval.h"
-#include "pt-jit.h"
 #include "pt-jump.h"
 #include "pt-misc.h"
 #include "pt-pr-code.h"
@@ -224,9 +223,6 @@ octave_user_function::octave_user_function
     m_subfunction (false), m_inline_function (false),
     m_anonymous_function (false), m_nested_function (false),
     m_class_constructor (none), m_class_method (none)
-#if defined (HAVE_LLVM)
-    , m_jit_info (0)
-#endif
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
@@ -238,10 +234,6 @@ octave_user_function::~octave_user_function (void)
   delete m_ret_list;
   delete m_lead_comm;
   delete m_trail_comm;
-
-#if defined (HAVE_LLVM)
-  delete m_jit_info;
-#endif
 }
 
 octave_user_function *

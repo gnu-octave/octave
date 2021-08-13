@@ -713,7 +713,7 @@ namespace octave
           return retval;
         }
 
-      octave::unwind_action close_file_handle (CloseHandle, h_file);
+      unwind_action close_file_handle (CloseHandle, h_file);
 
       const std::size_t buf_size = 32767;
       wchar_t buffer[buf_size] = L"";

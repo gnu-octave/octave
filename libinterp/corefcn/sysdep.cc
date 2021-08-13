@@ -698,8 +698,8 @@ namespace octave
   FILE * popen (const char *command, const char *mode)
   {
 #if defined (__MINGW32__) || defined (_MSC_VER)
-    std::wstring wcommand = octave::sys::u8_to_wstring (command);
-    std::wstring wmode = octave::sys::u8_to_wstring (mode);
+    std::wstring wcommand = sys::u8_to_wstring (command);
+    std::wstring wmode = sys::u8_to_wstring (mode);
 
     // Use binary mode on Windows if unspecified
     if (wmode.length () < 2)

@@ -186,7 +186,7 @@ namespace octave
   void event_manager::set_history (void)
   {
     if (enabled ())
-      instance->set_history (octave::command_history::list ());
+      instance->set_history (command_history::list ());
   }
 }
 

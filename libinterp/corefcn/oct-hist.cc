@@ -463,7 +463,7 @@ namespace octave
     volatile interrupt_handler old_interrupt_handler
       = ignore_interrupts ();
 
-    int status = octave::sys::system (cmd);
+    int status = sys::system (cmd);
 
     set_interrupt_handler (old_interrupt_handler);
 

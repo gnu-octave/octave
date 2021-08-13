@@ -112,11 +112,11 @@ namespace octave
   {
     if (nd == 2)
       {
-        F77_INT ad0 = octave::to_f77_int (ad(0));
-        F77_INT ad1 = octave::to_f77_int (ad(1));
+        F77_INT ad0 = to_f77_int (ad(0));
+        F77_INT ad1 = to_f77_int (ad(1));
 
-        F77_INT bd0 = octave::to_f77_int (bd(0));
-        F77_INT bd1 = octave::to_f77_int (bd(1));
+        F77_INT bd0 = to_f77_int (bd(0));
+        F77_INT bd1 = to_f77_int (bd(1));
 
         convolve_2d<T, R> (a, ad0, ad1, b, bd0, bd1, c, inner);
       }
@@ -186,10 +186,10 @@ namespace octave
     if (ct == convn_same)
       {
         // Pick the relevant part.
-        Array<octave::idx_vector> sidx (dim_vector (nd, 1));
+        Array<idx_vector> sidx (dim_vector (nd, 1));
 
         for (int i = 0; i < nd; i++)
-          sidx(i) = octave::idx_vector::make_range (bdims(i)/2, 1, adims(i));
+          sidx(i) = idx_vector::make_range (bdims(i)/2, 1, adims(i));
         c = c.index (sidx);
       }
 

@@ -5536,7 +5536,7 @@ namespace octave
     unwind_action act ([=] (void) { ::fclose (ffile); });
 
     // get the encoding for this folder
-    octave::input_system& input_sys = interp.get_input_system ();
+    input_system& input_sys = interp.get_input_system ();
     parser parser (ffile, interp, input_sys.dir_encoding (dir_name));
 
     parser.m_curr_class_name = dispatch_type;
@@ -5618,7 +5618,7 @@ namespace octave
           }
       }
 
-    std::shared_ptr<octave::tree_statement_list> tmp_lst (lst);
+    std::shared_ptr<tree_statement_list> tmp_lst (lst);
 
     statement_list (tmp_lst);
 

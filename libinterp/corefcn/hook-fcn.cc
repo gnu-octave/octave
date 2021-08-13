@@ -55,7 +55,7 @@ namespace octave
     if (m_data.is_defined ())
       args.append (m_data);
 
-    octave::feval (m_name, args, 0);
+    feval (m_name, args, 0);
   }
 
   void fcn_handle_hook_function::eval (const octave_value_list& initial_args)
@@ -65,6 +65,6 @@ namespace octave
     if (m_data.is_defined ())
       args.append (m_data);
 
-    octave::feval (m_fcn_handle, args, 0);
+    feval (m_fcn_handle, args, 0);
   }
 }

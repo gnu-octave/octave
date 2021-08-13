@@ -184,8 +184,8 @@ namespace octave
     template <typename U>
     void accum (U val)
     {
-      if (octave::math::isnan (val))
-        max = octave::numeric_limits<R>::NaN ();
+      if (math::isnan (val))
+        max = numeric_limits<R>::NaN ();
       else
         max = std::max (max, std::abs (val));
     }
@@ -198,12 +198,12 @@ namespace octave
   {
     R min;
   public:
-    norm_accumulator_minf () : min (octave::numeric_limits<R>::Inf ()) { }
+    norm_accumulator_minf () : min (numeric_limits<R>::Inf ()) { }
     template <typename U>
     void accum (U val)
     {
-      if (octave::math::isnan (val))
-        min = octave::numeric_limits<R>::NaN ();
+      if (math::isnan (val))
+        min = numeric_limits<R>::NaN ();
       else
         min = std::min (min, std::abs (val));
     }
@@ -407,7 +407,7 @@ namespace octave
   template <typename T, typename R>
   inline T elem_dual_p (T x, R p)
   {
-    return octave::math::signum (x) * std::pow (std::abs (x), p-1);
+    return math::signum (x) * std::pow (std::abs (x), p-1);
   }
 
   // the VectorT is used for vectors, but actually it has to be
@@ -494,8 +494,7 @@ namespace octave
     R res = 0;
     if (p == 2)
       {
-        octave::math::svd<MatrixT> fact
-          (m, octave::math::svd<MatrixT>::Type::sigma_only);
+        math::svd<MatrixT> fact (m, math::svd<MatrixT>::Type::sigma_only);
         res = fact.singular_values () (0,0);
       }
     else if (p == 1)

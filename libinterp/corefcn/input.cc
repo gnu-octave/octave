@@ -908,7 +908,7 @@ namespace octave
     file_reader (interpreter& interp, FILE *f_arg)
       : base_reader (interp), m_file (f_arg)
     {
-      octave::input_system& input_sys = interp.get_input_system ();
+      input_system& input_sys = interp.get_input_system ();
       m_encoding = input_sys.mfile_encoding ();
     }
 

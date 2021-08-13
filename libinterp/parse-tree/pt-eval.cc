@@ -189,7 +189,7 @@ namespace octave
 
             command_editor::run_event_hooks ();
 
-            octave::sleep (0.1);
+            sleep (0.1);
           }
         catch (const interrupt_exception&)
           {
@@ -899,7 +899,7 @@ namespace octave
 
             command_editor::run_event_hooks ();
 
-            octave::sleep (0.1);
+            sleep (0.1);
           }
         catch (const interrupt_exception&)
           {

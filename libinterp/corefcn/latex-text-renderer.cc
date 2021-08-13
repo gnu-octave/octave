@@ -84,7 +84,7 @@ namespace octave
     ~latex_renderer (void)
       {
         if (! m_tmp_dir.empty () && ! m_debug)
-          octave::sys::recursive_rmdir (m_tmp_dir);
+          sys::recursive_rmdir (m_tmp_dir);
       }
 
     void set_font (const std::string& /*name*/, const std::string& /*weight*/,
@@ -211,9 +211,9 @@ namespace octave
     if (m_tmp_dir.empty ())
       {
         //Create the temporary directory
-        m_tmp_dir = octave::sys::tempnam ("", "latex");
+        m_tmp_dir = sys::tempnam ("", "latex");
 
-        if (octave::sys::mkdir (m_tmp_dir, 0700) != 0)
+        if (sys::mkdir (m_tmp_dir, 0700) != 0)
           {
             warning_with_id ("Octave:LaTeX:internal-error",
                              "latex_renderer: unable to create temp directory");
@@ -222,7 +222,7 @@ namespace octave
       }
 
     std::string base_file_name
-      = octave::sys::file_ops::concat (m_tmp_dir, "default");
+      = sys::file_ops::concat (m_tmp_dir, "default");
 
     // Duplicate \n characters and align multi-line strings based on
     // horizontalalignment
@@ -296,14 +296,14 @@ namespace octave
         alpha = retval(2).xuint8_array_value ("latex_renderer::read_image: "
                                               "Wrong type for alpha");
       }
-    catch (const octave::execution_exception& ee)
+    catch (const execution_exception& ee)
       {
         warning_with_id ("Octave:LaTeX:internal-error",
                          "latex_renderer:: failed to read png data. %s",
                          ee.message ().c_str ());
 
-        octave::interpreter& interp
-          = octave::__get_interpreter__ ("latex_renderer::read_image");
+        interpreter& interp
+          = __get_interpreter__ ("latex_renderer::read_image");
 
         interp.recover_from_exception ();
 

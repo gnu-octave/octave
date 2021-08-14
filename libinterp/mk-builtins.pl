@@ -61,21 +61,8 @@ die "mk-builtins.pl: one of --header or --source must be specified" if (! $make_
 
 if ($make_header)
 {
-  print "// DO NOT EDIT!  Generated automatically by mk-builtins.pl.
-
-#if ! defined (octave_builtin_defun_decls_h)
-#define octave_builtin_defun_decls_h 1
-
-#include \"octave-config.h\"
-
-#include \"ovl.h\"
-
-namespace octave
-{
-  class interpreter;
-}
-
-";
+  @method_names = ();
+  @fcn_names = ();
 
   while ($file = shift (@ARGV))
   {
@@ -107,21 +94,59 @@ namespace octave
       {
         if ($is_method)
         {
-          print "extern OCTINTERP_API octave_value_list
-$name (octave::interpreter&, const octave_value_list& = octave_value_list (), int = 0);
-";
+          push (@method_names, $name);
         }
         else
         {
-          print "extern OCTINTERP_API octave_value_list
-$name (const octave_value_list& = octave_value_list (), int = 0);
-";
+          push (@fcn_names, $name);
         }
 
         $name = "";
         $is_method = 0;
       }
     }
+  }
+
+  print "// DO NOT EDIT!  Generated automatically by mk-builtins.pl.
+
+#if ! defined (octave_builtin_defun_decls_h)
+#define octave_builtin_defun_decls_h 1
+
+#include \"octave-config.h\"
+
+#include \"ovl.h\"
+
+namespace octave
+{
+  class interpreter;
+}
+
+";
+
+  if ($#method_names)
+  {
+    print "// Methods\n\n";
+  }
+
+  foreach $name (sort (@method_names))
+  {
+    print "extern OCTINTERP_API octave_value_list
+$name (octave::interpreter&, const octave_value_list& = octave_value_list (), int = 0);
+
+";
+  }
+
+  if ($#fcn_names)
+  {
+    print "// Functions\n\n";
+  }
+
+  foreach $name (sort (@fcn_names))
+  {
+    print "extern OCTINTERP_API octave_value_list
+$name (const octave_value_list& = octave_value_list (), int = 0);
+
+";
   }
 
   print "#endif\n";

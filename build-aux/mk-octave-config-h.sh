@@ -111,6 +111,9 @@ since all of Octave's header files already include it.
 #    include <inttypes.h>
 #  endif
 
+#  define OCTAVE_NAMESPACE_BEGIN namespace octave {
+#  define OCTAVE_NAMESPACE_END }
+
 #  if defined (__GNUC__)
 #    if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
 #      define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__ ("[" #ver "]: " msg)))

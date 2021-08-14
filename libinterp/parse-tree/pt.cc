@@ -72,7 +72,7 @@ namespace octave
 
         unwind_protect frame;
 
-        interpreter_try (frame);
+        octave::interpreter_try (frame);
 
         retval = true;                // default to stopping if any error
         try

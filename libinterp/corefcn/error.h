@@ -412,8 +412,6 @@ namespace octave
 #define panic_impossible()                                              \
   panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
 
-extern OCTINTERP_API int warning_enabled (const std::string& id);
-
 extern OCTINTERP_API void
 vmessage (const char *name, const char *fmt, va_list args);
 
@@ -509,9 +507,13 @@ OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN
 extern OCTINTERP_API void panic (const char *fmt, ...);
 
+OCTAVE_NAMESPACE_BEGIN
+
 //! Helper function for print_usage defined in defun.cc.
 
 extern OCTINTERP_API void defun_usage_message (const std::string& msg);
+
+// Convenience functions.
 
 extern OCTINTERP_API octave_value_list
 set_warning_state (const std::string& id, const std::string& state);
@@ -519,11 +521,52 @@ set_warning_state (const std::string& id, const std::string& state);
 extern OCTINTERP_API octave_value_list
 set_warning_state (const octave_value_list& args);
 
+extern OCTINTERP_API int warning_enabled (const std::string& id);
+
 extern OCTINTERP_API void disable_warning (const std::string& id);
 
 extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
+OCTAVE_NAMESPACE_END
+
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+OCTAVE_DEPRECATED (7, "use 'octave::defun_usage_message' instead")
+inline void defun_usage_message (const std::string& msg)
+{
+  octave::defun_usage_message (msg);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_warning_state' instead")
+inline octave_value_list
+set_warning_state (const std::string& id, const std::string& state)
+{
+  return octave::set_warning_state (id, state);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_warning_state' instead")
+inline octave_value_list set_warning_state (const octave_value_list& args)
+{
+  return octave::set_warning_state (args);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::warning_enabled' instead")
+extern OCTINTERP_API int warning_enabled (const std::string& id)
+{
+  return octave::warning_enabled (id);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::disable_warning' instead")
+inline void disable_warning (const std::string& id)
+{
+  octave::disable_warning (id);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::interpreter_try' instead")
+inline void interpreter_try (octave::unwind_protect& uwp)
+{
+  octave::interpreter_try (uwp);
+}
+
 OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
 extern OCTINTERP_API int error_state;
 

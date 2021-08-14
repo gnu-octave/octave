@@ -3946,7 +3946,7 @@ namespace octave
 
         unwind_protect frame;
 
-        interpreter_try (frame);
+        octave::interpreter_try (frame);
 
         // The catch code is *not* added to unwind_protect stack; it
         // doesn't need to be run on interrupts.

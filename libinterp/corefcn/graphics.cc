@@ -3243,15 +3243,15 @@ toggle_warn (std::string id, bool on, int state = -1)
 {
   if (! on)
     {
-      state = warning_enabled (id);
-      disable_warning (id);
+      state = octave::warning_enabled (id);
+      octave::disable_warning (id);
     }
   else
     {
       if (state == 1)
-        set_warning_state (id, "on");
+        octave::set_warning_state (id, "on");
       else if (state == 2)
-        set_warning_state (id, "error");
+        octave::set_warning_state (id, "error");
     }
   return state;
 }
@@ -3757,7 +3757,7 @@ base_graphics_object::remove_all_listeners (void)
 
       octave::unwind_protect frame;
 
-      interpreter_try (frame);
+      octave::interpreter_try (frame);
 
       try
         {

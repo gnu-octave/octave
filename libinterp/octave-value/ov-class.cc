@@ -1077,7 +1077,7 @@ octave_class::reconstruct_exemplar (void)
 
           // Simulate try/catch.
 
-          interpreter_try (frame);
+          octave::interpreter_try (frame);
 
           bool execution_error = false;
 

@@ -420,8 +420,8 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
       octave::unwind_action restore_warning_state
         ([] (const octave_value_list& old_warning_state)
          {
-           set_warning_state (old_warning_state);
-         }, set_warning_state ("Octave:classdef-to-struct", "off"));
+           octave::set_warning_state (old_warning_state);
+         }, octave::set_warning_state ("Octave:classdef-to-struct", "off"));
 
       encode_struct (writer, obj.scalar_map_value ().getfield ("map"),
                      ConvertInfAndNaN);
@@ -431,8 +431,8 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
       octave::unwind_action restore_warning_state
         ([] (const octave_value_list& old_warning_state)
          {
-           set_warning_state (old_warning_state);
-         }, set_warning_state ("Octave:classdef-to-struct", "off"));
+           octave::set_warning_state (old_warning_state);
+         }, octave::set_warning_state ("Octave:classdef-to-struct", "off"));
 
       encode_struct (writer, obj.scalar_map_value (), ConvertInfAndNaN);
     }

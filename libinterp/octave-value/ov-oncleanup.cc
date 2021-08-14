@@ -167,7 +167,7 @@ octave_oncleanup::call_object_destructor (void)
   octave::interpreter& interp
     = octave::__get_interpreter__ ("octave_oncleanup::call_object_destructor");
 
-  interpreter_try (frame);
+  octave::interpreter_try (frame);
 
   try
     {

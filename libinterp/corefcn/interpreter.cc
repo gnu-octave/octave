@@ -2035,12 +2035,12 @@ namespace octave
     Fprint_struct_array_contents (octave_value (true));
     Fstruct_levels_to_print (octave_value (0));
 
-    disable_warning ("Octave:abbreviated-property-match");
-    disable_warning ("Octave:colon-nonscalar-argument");
-    disable_warning ("Octave:data-file-in-path");
-    disable_warning ("Octave:empty-index");
-    disable_warning ("Octave:function-name-clash");
-    disable_warning ("Octave:possible-matlab-short-circuit-operator");
+    m_error_system.disable_warning ("Octave:abbreviated-property-match");
+    m_error_system.disable_warning ("Octave:colon-nonscalar-argument");
+    m_error_system.disable_warning ("Octave:data-file-in-path");
+    m_error_system.disable_warning ("Octave:empty-index");
+    m_error_system.disable_warning ("Octave:function-name-clash");
+    m_error_system.disable_warning ("Octave:possible-matlab-short-circuit-operator");
   }
 
   void interpreter::execute_pkg_add (const std::string& dir)

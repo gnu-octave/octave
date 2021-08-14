@@ -1051,13 +1051,6 @@ error_with_id_cfn (const char *id, const char *fmt, ...)
   va_end (args);
 }
 
-int warning_enabled (const std::string& id)
-{
-  octave::error_system& es = octave::__get_error_system__ ("warning_enabled");
-
-  return es.warning_enabled (id);
-}
-
 void
 vwarning (const char *fmt, va_list args)
 {
@@ -1137,11 +1130,15 @@ panic (const char *fmt, ...)
   va_end (args);
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 void
 defun_usage_message (const std::string& msg)
 {
-  defun_usage_message ("%s", msg.c_str ());
+  ::defun_usage_message ("%s", msg.c_str ());
 }
+
+OCTAVE_NAMESPACE_END
 
 DEFMETHOD (rethrow, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -1819,6 +1816,8 @@ expansion use a second backslash before the sequence (e.g.,
 
 */
 
+OCTAVE_NAMESPACE_BEGIN
+
 octave_value_list
 set_warning_state (const std::string& id, const std::string& state)
 {
@@ -1842,6 +1841,14 @@ set_warning_state (const octave_value_list& args)
   return Fwarning (interp, args, 1);
 }
 
+int
+warning_enabled (const std::string& id)
+{
+  octave::error_system& es = octave::__get_error_system__ ("warning_enabled");
+
+  return es.warning_enabled (id);
+}
+
 void
 disable_warning (const std::string& id)
 {
@@ -1849,6 +1856,8 @@ disable_warning (const std::string& id)
 
   es.disable_warning (id);
 }
+
+OCTAVE_NAMESPACE_END
 
 DEFMETHOD (lasterror, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -2176,6 +2185,8 @@ The original variable value is restored when exiting the function.
   return es.debug_on_warning (args, nargout);
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 void
 interpreter_try (octave::unwind_protect& frame)
 {
@@ -2184,6 +2195,8 @@ interpreter_try (octave::unwind_protect& frame)
 
   es.interpreter_try (frame);
 }
+
+OCTAVE_NAMESPACE_END
 
 // Deprecated variables and functions.
 

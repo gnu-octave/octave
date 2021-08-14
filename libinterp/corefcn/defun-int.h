@@ -41,7 +41,10 @@ namespace octave
 
 class octave_value;
 
+OCTAVE_NAMESPACE_BEGIN
+
 extern OCTINTERP_API void print_usage (void);
+
 extern OCTINTERP_API void print_usage (const std::string&);
 
 extern OCTINTERP_API void check_version (const std::string& version,
@@ -49,20 +52,22 @@ extern OCTINTERP_API void check_version (const std::string& version,
 
 extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-                      const octave::dynamic_library& shl, const std::string& doc,
+                      const dynamic_library& shl, const std::string& doc,
                       bool relative = false);
 
 extern OCTINTERP_API void
 install_dld_function (octave_dld_function::meth m, const std::string& name,
-                      const octave::dynamic_library& shl, const std::string& doc,
+                      const dynamic_library& shl, const std::string& doc,
                       bool relative = false);
 
 extern OCTINTERP_API void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-                      const octave::dynamic_library& shl, bool relative = false);
+                      const dynamic_library& shl, bool relative = false);
+
 // Gets the shlib of the currently executing DLD function, if any.
-extern OCTINTERP_API octave::dynamic_library
-get_current_shlib (void);
+extern OCTINTERP_API dynamic_library get_current_shlib (void);
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -81,6 +86,56 @@ namespace octave
 
     auto_shlib (const dynamic_library& shl) : dynamic_library (shl) { }
   };
+
+}
+
+// Some of these functions are widely used, so maybe we should avoid
+// deprecating them for now?
+
+inline void print_usage (void)
+{
+  octave::print_usage ();
+}
+
+inline void print_usage (const std::string& name)
+{
+  octave::print_usage (name);
+}
+
+inline void
+check_version (const std::string& version, const std::string& fcn)
+{
+  octave::check_version (version, fcn);
+}
+
+inline void
+install_dld_function (octave_dld_function::fcn f, const std::string& name,
+                      const octave::dynamic_library& shl,
+                      const std::string& doc, bool relative = false)
+{
+  octave::install_dld_function (f, name, shl, doc, relative);
+}
+
+inline void
+install_dld_function (octave_dld_function::meth m, const std::string& name,
+                      const octave::dynamic_library& shl,
+                      const std::string& doc, bool relative = false)
+{
+  octave::install_dld_function (m, name, shl, doc, relative);
+}
+
+inline void
+install_mex_function (void *fptr, bool fmex, const std::string& name,
+                      const octave::dynamic_library& shl,
+                      bool relative = false)
+{
+  octave::install_mex_function (fptr, fmex, name, shl, relative);
+}
+
+// Gets the shlib of the currently executing DLD function, if any.
+inline octave::dynamic_library get_current_shlib (void)
+{
+  return octave::get_current_shlib ();
 }
 
 #define FORWARD_DECLARE_FUNX(name)              \

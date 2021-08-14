@@ -116,7 +116,9 @@ namespace octave
   };
 }
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::sparse_params' instead")
 typedef octave::sparse_params octave_sparse_params;
+#endif
 
 #endif

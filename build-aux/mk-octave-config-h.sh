@@ -174,7 +174,7 @@ since all of Octave's header files already include it.
 #    endif
 #  endif
 
-#  define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
+#  define OCTAVE_PROVIDE_DEPRECATED_SYMBOLS 1
 
 #  if defined (__cplusplus)
 template <typename T>

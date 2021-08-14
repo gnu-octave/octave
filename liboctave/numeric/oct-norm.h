@@ -104,6 +104,7 @@ namespace octave
   extern OCTAVE_API ColumnVector xrownorms (const SparseComplexMatrix&, double p = 2);
 }
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
 inline double xnorm (const ColumnVector& v, double p = 2)
 {
@@ -295,5 +296,6 @@ inline ColumnVector xrownorms (const SparseComplexMatrix& m, double p = 2)
 {
   return octave::xrownorms (m, p);
 }
+#endif
 
 #endif

@@ -32,10 +32,12 @@
 
 #include <string>
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "use 'interpreter::mark_for_deletion' instead")
 extern OCTINTERP_API void mark_for_deletion (const std::string&);
 
 OCTAVE_DEPRECATED (6, "use 'interpreter::cleanup_tmp_files' instead")
 extern OCTINTERP_API void cleanup_tmp_files (void);
+#endif
 
 #endif

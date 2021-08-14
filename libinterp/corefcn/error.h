@@ -334,9 +334,12 @@ namespace octave
 
     OCTINTERP_API void save_exception (const execution_exception& ee);
 
+    // FIXME
+    //#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
     OCTAVE_DEPRECATED (7, "second argument is no longer accepted")
     OCTINTERP_API void display_exception (const execution_exception& ee,
                                           std::ostream& os) const;
+    //#endif
 
     OCTINTERP_API void display_exception (const execution_exception& ee) const;
 
@@ -520,10 +523,12 @@ extern OCTINTERP_API void disable_warning (const std::string& id);
 
 extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
 extern OCTINTERP_API int error_state;
 
 OCTAVE_DEPRECATED (6, "this function is obsolete and should not be needed")
 inline void reset_error_handler (void) { }
+#endif
 
 #endif

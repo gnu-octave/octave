@@ -56,11 +56,13 @@ extern OCTINTERP_API octave_function *
 is_valid_function (const std::string&, const std::string& = "",
                    bool warn = false);
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "use 'octave::get_function_handle' instead")
 extern OCTINTERP_API octave_function *
 extract_function (const octave_value& arg, const std::string& warn_for,
                   const std::string& fname, const std::string& header,
                   const std::string& trailer);
+#endif
 
 extern OCTINTERP_API int
 symbol_exist (const std::string& name, const std::string& type = "any");

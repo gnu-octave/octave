@@ -175,6 +175,7 @@ namespace octave
   }
 }
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::convn' instead")
 inline NDArray
 convn (const NDArray& a, const NDArray& b, convn_type ct)
@@ -320,5 +321,6 @@ convn (const FloatComplexMatrix& a, const FloatComplexColumnVector& c,
 {
   return octave::convn (a, c, r, octave::convert_enum (ct));
 }
+#endif
 
 #endif

@@ -1068,24 +1068,25 @@ octave_value::octave_value (const Array<std::string>& cellstr)
   maybe_mutate ();
 }
 
-octave_value::octave_value (double base, double limit, double inc)
-  : rep (new ov_range<double> (octave::range<double> (base, inc, limit)))
+// Remove when public constructor that uses this function is removed.
+octave_base_value *
+make_range_rep_deprecated (double base, double inc, double limit)
 {
-  maybe_mutate ();
+  return dynamic_cast<octave_base_value *>
+    (new ov_range<double> (octave::range<double> (base, inc, limit)));
 }
 
-octave_value::octave_value (const Range& r, bool force_range)
-  : rep (nullptr)
+// Remove when public constructor that uses this function is removed.
+octave_base_value *
+make_range_rep_deprecated (const Range& r, bool force_range)
 {
   if (! force_range && ! r.ok ())
     error ("invalid range");
 
   if (force_range || ! Vdisable_range)
-    rep = dynamic_cast<octave_base_value *> (new ov_range<double> (octave::range<double> (r.base (), r.increment (), r.limit ())));
+    return make_range_rep_deprecated (r.base (), r.increment (), r.limit ());
   else
-    rep = dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
-
-  maybe_mutate ();
+    return dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
 }
 
 octave_value::octave_value (const octave::range<char>& r, char type,

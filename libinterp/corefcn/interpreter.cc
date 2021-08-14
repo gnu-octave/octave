@@ -1992,7 +1992,8 @@ namespace octave
     return found;
   }
 
-  void interpreter::add_atexit_function (const std::string& fname)
+  // Remove when corresponding public deprecated function is removed.
+  void interpreter::add_atexit_function_deprecated (const std::string& fname)
   {
     interpreter& interp
       = __get_interpreter__ ("interpreter::add_atexit_function");
@@ -2000,7 +2001,8 @@ namespace octave
     interp.add_atexit_fcn (fname);
   }
 
-  bool interpreter::remove_atexit_function (const std::string& fname)
+  // Remove when corresponding public deprecated function is removed.
+  bool interpreter::remove_atexit_function_deprecated (const std::string& fname)
   {
     interpreter& interp
       = __get_interpreter__ ("interpreter::remove_atexit_function");

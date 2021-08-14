@@ -224,13 +224,16 @@ octave_exception
 */
 extern OCTAVE_API sig_atomic_t octave_interrupt_state;
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "'octave_exception_state' is an obsolete internal variable; any uses should be removed")
 extern OCTAVE_API sig_atomic_t octave_exception_state;
+#endif
 
 extern OCTAVE_API volatile sig_atomic_t octave_signal_caught;
 
 extern OCTAVE_API void octave_handle_signal (void);
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "use 'throw octave::interrupt_exception' instead")
 OCTAVE_NORETURN extern OCTAVE_API void octave_throw_interrupt_exception (void);
 
@@ -242,6 +245,7 @@ OCTAVE_NORETURN extern OCTAVE_API void octave_throw_bad_alloc (void);
 
 OCTAVE_DEPRECATED (6, "use 'throw' instead")
 extern OCTAVE_API void octave_rethrow_exception (void);
+#endif
 
 #if defined (__cplusplus)
 
@@ -308,8 +312,10 @@ inline void octave_quit (void)
 extern OCTAVE_API void (*octave_signal_hook) (void);
 extern OCTAVE_API void (*octave_interrupt_hook) (void);
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "'octave_bad_alloc_hook' is obsolete and no longer used")
 extern OCTAVE_API void (*octave_bad_alloc_hook) (void);
+#endif
 
 #endif
 

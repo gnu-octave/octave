@@ -137,6 +137,7 @@ namespace octave
   }
 }
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 template <typename F, typename T, bool zero>
 OCTAVE_DEPRECATED (7, "use 'octave::any_all_test' instead")
 bool
@@ -276,5 +277,6 @@ octave_write_float_complex (std::ostream& os, const FloatComplex& value)
 {
   octave::write_value<FloatComplex> (os, value);
 }
+#endif
 
 #endif

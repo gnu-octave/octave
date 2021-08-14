@@ -285,10 +285,12 @@ namespace octave
   };
 }
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "use 'octave::graphics_toolkit' instead")
 typedef octave::graphics_toolkit graphics_toolkit;
 
 OCTAVE_DEPRECATED (6, "use 'octave::base_graphics_toolkit' instead")
 typedef octave::base_graphics_toolkit base_graphics_toolkit;
+#endif
 
 #endif

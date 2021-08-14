@@ -722,93 +722,93 @@ namespace octave
     return octave_value (info_map);
   }
 
-  // DEPRECATED
-  bool symbol_table::at_top_level (void)
+  // Remove when corresponding public deprecated function is removed.
+  bool symbol_table::at_top_level_deprecated (void)
   {
     return m_interpreter.at_top_level ();
   }
 
-  // DEPRECATED
-  octave_value symbol_table::varval (const std::string& name) const
+  // Remove when corresponding public deprecated function is removed.
+  octave_value symbol_table::varval_deprecated (const std::string& name) const
   {
     return m_interpreter.varval (name);
   }
 
-  // DEPRECATED
-  octave_value symbol_table::global_varval (const std::string& name) const
+  // Remove when corresponding public deprecated function is removed.
+  octave_value symbol_table::global_varval_deprecated (const std::string& name) const
   {
     return m_interpreter.global_varval (name);
   }
 
-  // DEPRECATED
-  octave_value symbol_table::top_level_varval (const std::string& name) const
+  // Remove when corresponding public deprecated function is removed.
+  octave_value symbol_table::top_level_varval_deprecated (const std::string& name) const
   {
     return m_interpreter.top_level_varval (name);
   }
 
-  // DEPRECATED
-  std::list<std::string> symbol_table::global_variable_names (void)
+  // Remove when corresponding public deprecated function is removed.
+  std::list<std::string> symbol_table::global_variable_names_deprecated (void)
   {
     return m_interpreter.global_variable_names ();
   }
 
-  // DEPRECATED
-  std::list<std::string> symbol_table::top_level_variable_names (void)
+  // Remove when corresponding public deprecated function is removed.
+  std::list<std::string> symbol_table::top_level_variable_names_deprecated (void)
   {
     return m_interpreter.top_level_variable_names ();
   }
 
-  // DEPRECATED
-  std::list<std::string> symbol_table::variable_names (void)
+  // Remove when corresponding public deprecated function is removed.
+  std::list<std::string> symbol_table::variable_names_deprecated (void)
   {
     return m_interpreter.variable_names ();
   }
 
-  // DEPRECATED
-  void symbol_table::assign (const std::string& name, const octave_value& value)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::assign_deprecated (const std::string& name, const octave_value& value)
   {
     return m_interpreter.assign (name, value);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_all (bool force)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_all_deprecated (bool force)
   {
     return m_interpreter.clear_all (force);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_global (const std::string& name)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_global_deprecated (const std::string& name)
   {
     return m_interpreter.clear_global_variable (name);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_global_pattern (const std::string& pattern)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_global_pattern_deprecated (const std::string& pattern)
   {
     return m_interpreter.clear_global_variable_pattern (pattern);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_symbol (const std::string& name)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_symbol_deprecated (const std::string& name)
   {
     return m_interpreter.clear_symbol (name);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_symbol_pattern (const std::string& pattern)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_symbol_pattern_deprecated (const std::string& pattern)
   {
     return m_interpreter.clear_symbol_pattern (pattern);
   }
 
-  // DEPRECATED
-  void symbol_table::global_assign (const std::string& name,
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::global_assign_deprecated (const std::string& name,
                                     const octave_value& value)
   {
     return m_interpreter.global_assign (name, value);
   }
 
-  // DEPRECATED
-  void symbol_table::top_level_assign (const std::string& name,
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::top_level_assign_deprecated (const std::string& name,
                                        const octave_value& value)
   {
     return m_interpreter.top_level_assign (name, value);

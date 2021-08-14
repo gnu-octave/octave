@@ -728,37 +728,43 @@ operator >> (std::istream& is, Range& a)
   return is;
 }
 
-Range
-operator - (const Range& r)
+// DEPRECATED in Octave 7.
+Range operator - (const Range& r)
 {
   return Range (-r.base (), -r.limit (), -r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator + (double x, const Range& r)
 {
   return Range (x + r.base (), x + r.limit (), r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator + (const Range& r, double x)
 {
   return Range (r.base () + x, r.limit () + x, r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator - (double x, const Range& r)
 {
   return Range (x - r.base (), x - r.limit (), -r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator - (const Range& r, double x)
 {
   return Range (r.base () - x, r.limit () - x, r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator * (double x, const Range& r)
 {
   return Range (x * r.base (), x * r.limit (), x * r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator * (const Range& r, double x)
 {
   return Range (r.base () * x, r.limit () * x, r.increment () * x, r.numel ());

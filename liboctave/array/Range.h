@@ -375,6 +375,7 @@ Range
 {
 public:
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (void)
     : m_base (0), m_limit (0), m_inc (0), m_numel (0)
@@ -390,6 +391,7 @@ public:
     : m_base (r.base ()), m_limit (r.final_value ()), m_inc (r.increment ()),
       m_numel (r.numel ())
   { }
+#endif
 
   Range (const Range& r) = default;
 
@@ -397,6 +399,7 @@ public:
 
   ~Range (void) = default;
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (double b, double l)
     : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ())
@@ -426,6 +429,7 @@ public:
     if (! octave::math::isinf (m_limit))
       m_limit = limit_internal ();
   }
+#endif
 
   // The range has a finite number of elements.
   bool ok (void) const
@@ -537,6 +541,7 @@ protected:
   { }
 };
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator - (const Range& r);
 
@@ -557,5 +562,6 @@ extern OCTAVE_API Range operator * (double x, const Range& r);
 
 OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
 extern OCTAVE_API Range operator * (const Range& r, double x);
+#endif
 
 #endif

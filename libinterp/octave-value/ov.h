@@ -286,10 +286,35 @@ public:
                               bool cache_index = false);
   OCTINTERP_API octave_value (const Array<std::string>& cellstr);
   OCTINTERP_API octave_value (const octave::idx_vector& idx, bool lazy = true);
+
+private:
+
+  // Remove when public constructors that use this function are removed.
+  static OCTINTERP_API octave_base_value *
+  make_range_rep_deprecated (double base, double inc, double limit);
+
+  // Remove when public constructors that use this function are removed.
+  static OCTINTERP_API octave_base_value *
+  make_range_rep_deprecated (const Range& r, bool force_range);
+
+public:
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  OCTINTERP_API octave_value (double base, double limit, double inc);
+  OCTINTERP_API octave_value (double base, double limit, double inc)
+    : rep (make_range_rep_deprecated (base, inc, limit))
+  {
+    maybe_mutate ();
+  }
+
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  OCTINTERP_API octave_value (const Range& r, bool force_range = false);
+  OCTINTERP_API octave_value (const Range& r, bool force_range)
+    : rep (make_range_rep_deprecated (r, force_range))
+  {
+    maybe_mutate ();
+  }
+#endif
+
   OCTINTERP_API octave_value (const octave::range<char>& r, char type,
                               bool force_range = false);
   OCTINTERP_API octave_value (const octave::range<float>& r,
@@ -510,12 +535,14 @@ public:
     return rep->do_index_op (idx, resize_ok);
   }
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use 'octave_value::index_op' instead")
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
   {
     return index_op (idx, resize_ok);
   }
+#endif
 
   OCTINTERP_API octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
@@ -1397,22 +1424,26 @@ public:
 
   OCTINTERP_API octave_value& non_const_unary_op (unary_op op);
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use 'octave_value::non_const_unary_op' instead")
   octave_value& do_non_const_unary_op (unary_op op)
   {
     return non_const_unary_op (op);
   }
+#endif
 
   OCTINTERP_API octave_value&
   non_const_unary_op (unary_op op, const std::string& type,
                       const std::list<octave_value_list>& idx);
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use 'octave_value::non_const_unary_op' instead")
   octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
                                        const std::list<octave_value_list>& idx)
   {
     return non_const_unary_op (op, type, idx);
   }
+#endif
 
   const octave_base_value& get_rep (void) const { return *rep; }
 
@@ -1663,6 +1694,7 @@ namespace octave
   }
 }
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::unary_op' instead")
 inline octave_value
 do_unary_op (octave::type_info& ti, octave_value::unary_op op,
@@ -1676,8 +1708,8 @@ inline octave_value
 do_unary_op (octave_value::unary_op op, const octave_value& a)
 {
   return octave::unary_op (op, a);
-
 }
+
 OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
 inline octave_value
 do_binary_op (octave::type_info& ti, octave_value::binary_op op,
@@ -1741,6 +1773,7 @@ do_colon_op (const octave_value& base, const octave_value& limit,
 {
   return octave::colon_op (base, limit, is_for_cmd_expr);
 }
+#endif
 
 #define OV_UNOP_FN(name)                                \
   inline octave_value                                   \

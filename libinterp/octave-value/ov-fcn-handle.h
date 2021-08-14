@@ -374,9 +374,11 @@ is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2);
 
 namespace octave
 {
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (6, "use 'tree_evaluator::make_fcn_handle' instead")
   extern octave_value
   make_fcn_handle (interpreter& interp, const std::string& name);
+#endif
 }
 
 #endif

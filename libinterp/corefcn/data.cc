@@ -1707,6 +1707,8 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 octave_value
 do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 {
@@ -1774,6 +1776,8 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END
 
 static octave_value
 do_cat (const octave_value_list& xargs, int dim, std::string fname)
@@ -1857,7 +1861,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
 
       if (any_class_p)
         {
-          retval = do_class_concat (args, fname, dim);
+          retval = octave::do_class_concat (args, fname, dim);
         }
       else if (result_type == "double")
         {

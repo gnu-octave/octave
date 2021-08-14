@@ -35,6 +35,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 inline double max (double a, double b, double c)
 {
   if (a < b)
@@ -175,3 +177,5 @@ convex hull, @var{idx} is NaN.
 
 %!error tsearch ()
 */
+
+OCTAVE_NAMESPACE_END

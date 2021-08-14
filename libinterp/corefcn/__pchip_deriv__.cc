@@ -36,6 +36,8 @@
 #include "utils.h"
 #include "f77-fcn.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates
 // for piecewise polynomials.
 
@@ -138,3 +140,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

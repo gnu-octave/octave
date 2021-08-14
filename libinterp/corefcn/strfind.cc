@@ -43,6 +43,8 @@
 #include "unwind-prot.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // This allows safe indexing with char.
 // In C++, char may be (and often is) signed!
 #define ORD(ch) static_cast<unsigned char>(ch)
@@ -516,3 +518,5 @@ strrep ("This is a test string", "is", "&%$")
 %!error <PTN and REP arguments must be strings> strrep ("A", 1.0, "C")
 %!error <PTN and REP arguments must be strings> strrep ("A", "B", 1.0)
 */
+
+OCTAVE_NAMESPACE_END

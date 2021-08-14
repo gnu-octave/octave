@@ -579,6 +579,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (edit_history, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} edit_history
@@ -924,3 +926,5 @@ The original variable value is restored when exiting the function.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

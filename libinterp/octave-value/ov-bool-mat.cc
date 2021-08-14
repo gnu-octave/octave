@@ -582,6 +582,8 @@ octave_bool_matrix::as_mxArray (bool interleaved) const
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (logical, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} logical (@var{x})
@@ -630,3 +632,5 @@ Compatibility Note: Octave accepts complex values as input, whereas
 %!   assert (logical (eye (1, c{i})), s);
 %! endfor
 */
+
+OCTAVE_NAMESPACE_END

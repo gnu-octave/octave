@@ -41,6 +41,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Password file functions.  (Why not?)
 
 static octave_value
@@ -173,3 +175,5 @@ Close the password database.
 
   return ovl (static_cast<double> (status), msg);
 }
+
+OCTAVE_NAMESPACE_END

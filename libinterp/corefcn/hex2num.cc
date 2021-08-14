@@ -35,6 +35,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static inline bool
 is_little_endian (bool is_float)
 {
@@ -376,3 +378,5 @@ strings instead of a character array.
 %!error num2hex (1,2,3)
 %!error num2hex (1j)
 */
+
+OCTAVE_NAMESPACE_END

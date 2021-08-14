@@ -127,6 +127,8 @@ quad_float_user_function (float x)
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHODX ("quad", Fquad, interp, args, ,
             doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})
@@ -456,3 +458,5 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
 %!error quad_options (1, 2, 3)
 */
+
+OCTAVE_NAMESPACE_END

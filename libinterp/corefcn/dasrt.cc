@@ -194,6 +194,8 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (dasrt, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t})
@@ -522,3 +524,5 @@ parameters for @code{dasrt}.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

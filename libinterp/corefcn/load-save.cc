@@ -1547,6 +1547,8 @@ dump_octave_core (void)
   load_save_sys.dump_octave_core ();
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (load, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} load file
@@ -2054,3 +2056,5 @@ The original variable value is restored when exiting the function.
 
   return load_save_sys.save_header_format_string (args, nargout);
 }
+
+OCTAVE_NAMESPACE_END

@@ -156,6 +156,8 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (daspk, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
@@ -404,3 +406,5 @@ parameters for @code{daspk}.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

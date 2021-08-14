@@ -39,6 +39,8 @@
 #include "MatrixType.h"
 #include "oct-locbuf.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (matrix_type, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{type} =} matrix_type (@var{A})
@@ -560,3 +562,5 @@ LU@tie{}factorization.  Once the matrix has been factorized,
 %! a = matrix_type (ones (10,10), "Singular");
 %! assert (matrix_type (a), "Singular");
 */
+
+OCTAVE_NAMESPACE_END

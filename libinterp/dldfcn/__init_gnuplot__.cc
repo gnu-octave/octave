@@ -182,17 +182,17 @@ private:
         octave_value_list args;
         Matrix fids = pstream.matrix_value ();
 
-        Ffputs (m_interpreter, ovl (fids(0), "\nquit;\n"));
+        octave::Ffputs (m_interpreter, ovl (fids(0), "\nquit;\n"));
 
-        Ffflush (m_interpreter, ovl (fids(0)));
-        Fpclose (m_interpreter, ovl (fids(0)));
+        octave::Ffflush (m_interpreter, ovl (fids(0)));
+        octave::Fpclose (m_interpreter, ovl (fids(0)));
 
         if (fids.numel () > 1)
           {
-            Fpclose (m_interpreter, ovl (fids(1)));
+            octave::Fpclose (m_interpreter, ovl (fids(1)));
 
             if (fids.numel () > 2)
-              Fwaitpid (ovl (fids(2)));
+              octave::Fwaitpid (ovl (fids(2)));
           }
       }
   }
@@ -244,6 +244,8 @@ have_gnuplot_binary (void)
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Initialize the gnuplot graphics toolkit.
 
 DEFMETHOD_DLD (__init_gnuplot__, interp, , ,
@@ -280,3 +282,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

@@ -35,6 +35,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // This function should be merged with Fifft.
 
 static octave_value
@@ -257,3 +259,5 @@ of @var{A} is treated separately.
 %!
 %! assert (s, answer, 30*eps ("single"));
 */
+
+OCTAVE_NAMESPACE_END

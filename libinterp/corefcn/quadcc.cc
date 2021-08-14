@@ -1484,6 +1484,8 @@ downdate (double *c, int n, int d, int *nans, int nnans)
     }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 // The actual integration routine.
 
 DEFMETHOD (quadcc, interp, args, ,
@@ -2255,3 +2257,5 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 %!error <relative tolerance must be .=0> (quadcc (@sin, 0, pi, [1, -1]))
 %!error <SING.* must be .* real values> (quadcc (@sin, 0, pi, 1e-6, [ i ]))
 */
+
+OCTAVE_NAMESPACE_END

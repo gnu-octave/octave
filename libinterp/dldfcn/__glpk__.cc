@@ -304,6 +304,8 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 #define OCTAVE_GLPK_GET_REAL_PARAM(NAME, VAL)                           \
   do                                                                    \
     {                                                                   \
@@ -639,3 +641,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

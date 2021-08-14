@@ -815,6 +815,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (__dump_symtab_info__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} __dump_symtab_info__ ()
@@ -940,3 +942,6 @@ updated to use some other function.
 %! clear bar;
 %! assert (! strcmp (which ("bar"), ""));
 */
+
+OCTAVE_NAMESPACE_END
+

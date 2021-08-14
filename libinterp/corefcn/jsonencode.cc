@@ -185,7 +185,7 @@ encode_string (T& writer, const octave_value& obj,
               octave_value_list args (obj);
               args.append (conversion_dims);
 
-              Cell sub_arrays = Fnum2cell (args)(0).cell_value ();
+              Cell sub_arrays = octave::Fnum2cell (args)(0).cell_value ();
 
               writer.StartArray ();
 
@@ -368,7 +368,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
               octave_value_list args (obj);
               args.append (conversion_dims);
 
-              Cell sub_arrays = Fnum2cell (args)(0).cell_value ();
+              Cell sub_arrays = octave::Fnum2cell (args)(0).cell_value ();
 
               writer.StartArray ();
 
@@ -441,6 +441,8 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
 }
 
 #endif
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (jsonencode, args, ,
        doc: /* -*- texinfo -*-
@@ -668,3 +670,5 @@ Functional BIST tests are located in test/json/jsonencode_BIST.tst
 %!       "warning", 'the "PrettyPrint" option of RapidJSON was unavailable');
 
 */
+
+OCTAVE_NAMESPACE_END

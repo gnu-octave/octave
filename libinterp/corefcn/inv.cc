@@ -38,6 +38,8 @@
 #include "ov-flt-cx-diag.h"
 #include "ov-perm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (inv, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{x} =} inv (@var{A})
@@ -265,3 +267,5 @@ sparse matrix if possible.
 */
 
 DEFALIAS (inverse, inv);
+
+OCTAVE_NAMESPACE_END

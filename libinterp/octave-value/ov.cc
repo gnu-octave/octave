@@ -1282,6 +1282,8 @@ octave_value::maybe_mutate (void)
     }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (double, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} double (@var{x})
@@ -1542,6 +1544,8 @@ Convert @var{x} to unsigned 64-bit integer type.
 %!assert (uint64 (2^65), uint64 (2^64-1))
 %!assert (uint64 (-2^65), uint64 (0))
 */
+
+OCTAVE_NAMESPACE_END
 
 octave_value
 octave_value::single_subsref (const std::string& type,
@@ -3324,6 +3328,8 @@ install_types (octave::type_info& ti)
   octave_java::register_type (ti);
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (sizeof, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} sizeof (@var{val})
@@ -3738,3 +3744,5 @@ setting is restored when exiting the function.
 %!assert (typeinfo (__test_dr__ (false)), "range")
 %!assert (typeinfo (__test_dr__ (true)), "matrix")
 */
+
+OCTAVE_NAMESPACE_END

@@ -41,6 +41,8 @@
 #include "ov.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 /*
 ## Restore all rand* "state" values
 %!function restore_rand_states (state)
@@ -2034,3 +2036,5 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
 %! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps ("single"));
 */
+
+OCTAVE_NAMESPACE_END

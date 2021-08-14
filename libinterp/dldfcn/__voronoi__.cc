@@ -64,6 +64,8 @@ qhull command
 char qh_version[] = "__voronoi__.oct 2007-07-24";
 #  endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 static void
 free_qhull_memory (qhT *qh)
 {
@@ -343,3 +345,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

@@ -96,6 +96,8 @@ octave_null_sq_str::numeric_conversion_function (void) const
             octave_char_matrix_sq_str::static_type_id ());
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (isnull, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isnull (@var{x})
@@ -155,3 +157,5 @@ str(7:end) = ""                # indexed deletion
 %! x = [];
 %! assert (isnull (x), false);
 */
+
+OCTAVE_NAMESPACE_END

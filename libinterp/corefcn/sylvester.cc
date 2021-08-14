@@ -32,6 +32,8 @@
 #include "errwarn.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (sylvester, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{X} =} sylvester (@var{A}, @var{B}, @var{C})
@@ -99,7 +101,7 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
   if (b_nr != b_nc)
     err_square_matrix_required ("sylvester", "B");
   if (a_nr != c_nr || b_nr != c_nc)
-    err_nonconformant ();
+    ::err_nonconformant ();
 
   if (isfloat)
     {
@@ -168,3 +170,5 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
 %!error <B must be a square matrix> sylvester (ones (2,2), ones (2,3), ones (2,2))
 %!error <nonconformant matrices> sylvester (ones (2,2), ones (2,2), ones (3,3))
 */
+
+OCTAVE_NAMESPACE_END

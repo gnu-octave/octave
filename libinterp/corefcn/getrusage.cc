@@ -34,6 +34,8 @@
 #include "ov.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (getrusage, , ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} getrusage ()
@@ -155,3 +157,5 @@ elements @code{sec} (seconds) @code{usec} (microseconds).
 %! assert (isfield (r.utime, "sec"));
 %! assert (isfield (r.utime, "usec"));
 */
+
+OCTAVE_NAMESPACE_END

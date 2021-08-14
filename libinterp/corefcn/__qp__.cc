@@ -43,6 +43,8 @@
 #include "pr-output.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static octave_idx_type
 min_index (const ColumnVector& x)
 {
@@ -520,3 +522,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

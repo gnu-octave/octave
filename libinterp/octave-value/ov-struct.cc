@@ -1710,6 +1710,8 @@ octave_scalar_struct::fast_elem_insert_self (void *where,
     return false;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (struct, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} struct ()
@@ -2245,3 +2247,5 @@ The original variable value is restored when exiting the function.
 {
   return SET_INTERNAL_VARIABLE (print_struct_array_contents);
 }
+
+OCTAVE_NAMESPACE_END

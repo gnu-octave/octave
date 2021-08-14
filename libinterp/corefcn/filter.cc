@@ -41,6 +41,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
@@ -617,3 +619,5 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %! y = filter ([1 1 1], 1, x, [], 3);
 %! assert (y, y0);
 */
+
+OCTAVE_NAMESPACE_END

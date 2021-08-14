@@ -586,6 +586,8 @@ bool octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluat
   return false;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__meta_get_package__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __meta_get_package__ ()
@@ -756,6 +758,8 @@ Implements @code{methods} for Octave class objects and classnames.
 
   return ovl (Cell (sv));
 }
+
+OCTAVE_NAMESPACE_END
 
 /*
 ;;; Local Variables: ***

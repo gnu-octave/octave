@@ -2205,7 +2205,7 @@ octave_java::subsref (const std::string& type,
           ovl(0) = (idx.front ())(0);
           auto it = idx.begin ();
           ovl.append (*++it);
-          retval = FjavaMethod (ovl, 1);
+          retval = octave::FjavaMethod (ovl, 1);
           skip++;
         }
       else
@@ -2214,7 +2214,7 @@ octave_java::subsref (const std::string& type,
           count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
-          retval = F__java_get__ (ovl, 1);
+          retval = octave::F__java_get__ (ovl, 1);
         }
       break;
 
@@ -2270,7 +2270,7 @@ octave_java::subsasgn (const std::string& type,
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
           ovl(2) = rhs;
-          F__java_set__ (ovl);
+          octave::F__java_set__ (ovl);
 
           count++;
           retval = octave_value (this);
@@ -3029,6 +3029,8 @@ octave_java::release (void)
 #endif
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 // DEFUN blocks below must be outside of HAVE_JAVA block so that documentation
 // strings are always available, even when functions are not.
 
@@ -3592,3 +3594,5 @@ Return true if @var{x} is a Java object.
 %! frame.setResizable (true);
 %! assert (frame.isResizable ());
 */
+
+OCTAVE_NAMESPACE_END

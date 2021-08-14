@@ -38,6 +38,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 #if defined (OCTAVE_ENABLE_64)
 #  define CXSPARSE_NAME(name) cs_dl ## name
 #else
@@ -257,3 +259,5 @@ such the numerical rank of the matrix @var{S} is bounded by
 
 %!error sprank (1,2)
 */
+
+OCTAVE_NAMESPACE_END

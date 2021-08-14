@@ -141,7 +141,7 @@ handle_message (error_fun f, const char *id, const char *msg,
 
       if (have_fmt)
         {
-          octave_value_list tmp = Fsprintf (args, 1);
+          octave_value_list tmp = octave::Fsprintf (args, 1);
           arg = tmp(0);
         }
       else
@@ -1138,8 +1138,6 @@ defun_usage_message (const std::string& msg)
   ::defun_usage_message ("%s", msg.c_str ());
 }
 
-OCTAVE_NAMESPACE_END
-
 DEFMETHOD (rethrow, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} rethrow (@var{err})
@@ -1328,7 +1326,7 @@ disable escape sequence expansion use a second backslash before the sequence
 
           if (have_fmt)
             {
-              octave_value_list tmp = Fsprintf (nargs, 1);
+              octave_value_list tmp = octave::Fsprintf (nargs, 1);
               arg = tmp(0);
             }
           else
@@ -1816,8 +1814,6 @@ expansion use a second backslash before the sequence (e.g.,
 
 */
 
-OCTAVE_NAMESPACE_BEGIN
-
 octave_value_list
 set_warning_state (const std::string& id, const std::string& state)
 {
@@ -1829,7 +1825,7 @@ set_warning_state (const std::string& id, const std::string& state)
   octave::interpreter& interp
     = octave::__get_interpreter__ ("set_warning_state");
 
-  return Fwarning (interp, args, 1);
+  return octave::Fwarning (interp, args, 1);
 }
 
 octave_value_list
@@ -1838,7 +1834,7 @@ set_warning_state (const octave_value_list& args)
   octave::interpreter& interp
     = octave::__get_interpreter__ ("set_warning_state");
 
-  return Fwarning (interp, args, 1);
+  return octave::Fwarning (interp, args, 1);
 }
 
 int
@@ -1856,8 +1852,6 @@ disable_warning (const std::string& id)
 
   es.disable_warning (id);
 }
-
-OCTAVE_NAMESPACE_END
 
 DEFMETHOD (lasterror, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -2184,8 +2178,6 @@ The original variable value is restored when exiting the function.
 
   return es.debug_on_warning (args, nargout);
 }
-
-OCTAVE_NAMESPACE_BEGIN
 
 void
 interpreter_try (octave::unwind_protect& frame)

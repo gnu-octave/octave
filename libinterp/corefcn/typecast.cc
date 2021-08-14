@@ -38,6 +38,8 @@
 #include "ovl.h"
 #include "unwind-prot.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static dim_vector
 get_vec_dims (const dim_vector& old_dims, octave_idx_type n)
 {
@@ -589,3 +591,5 @@ column vector.
 %!error bitunpack (1, 2)
 %!error bitunpack ({})
 */
+
+OCTAVE_NAMESPACE_END

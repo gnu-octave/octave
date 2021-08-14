@@ -38,6 +38,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static double
 simple_gcd (double a, double b)
 {
@@ -534,3 +536,5 @@ gcd ([15, 9], [20, 18])
 %! s.a = 1;
 %! fail ("gcd (s)");
 */
+
+OCTAVE_NAMESPACE_END

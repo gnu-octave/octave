@@ -428,6 +428,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (isguirunning, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isguirunning ()
@@ -541,3 +543,5 @@ Return the last component of the value returned by
 %!assert (ischar (program_name ()))
 %!error program_name (1)
 */
+
+OCTAVE_NAMESPACE_END

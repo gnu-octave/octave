@@ -52,6 +52,8 @@
 #include "unwind-prot.h"
 #include "url-handle-manager.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (__ftp__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{handle} =} __ftp__ (@var{host})
@@ -477,3 +479,5 @@ Undocumented internal function
 
   return ovl ();
 }
+
+OCTAVE_NAMESPACE_END

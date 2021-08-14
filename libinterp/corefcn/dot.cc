@@ -35,6 +35,8 @@
 #include "error.h"
 #include "parse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static void
 get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
               dim_vector& z, F77_INT& m, F77_INT& n, F77_INT& k)
@@ -430,3 +432,5 @@ endfor
 %!error <A and B must be numeric> blkmm ([3,4], {1,2})
 %!error <A and B dimensions don't match> blkmm (ones (2,2), ones (3,3))
 */
+
+OCTAVE_NAMESPACE_END

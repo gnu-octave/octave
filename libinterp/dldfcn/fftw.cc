@@ -41,6 +41,8 @@
 #include "errwarn.h"
 #include "ov.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN_DLD (fftw, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{method} =} fftw ("planner")
@@ -398,3 +400,5 @@ used per default.
 %!error fftw ("threads", "invalid")
 %!error fftw ("threads", -3)
  */
+
+OCTAVE_NAMESPACE_END

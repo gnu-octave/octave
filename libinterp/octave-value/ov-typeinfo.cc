@@ -900,6 +900,8 @@ namespace octave_value_typeinfo
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (typeinfo, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} typeinfo ()
@@ -1039,3 +1041,5 @@ Undocumented internal function.
 
   return ovl (type_info.installed_type_info ());
 }
+
+OCTAVE_NAMESPACE_END

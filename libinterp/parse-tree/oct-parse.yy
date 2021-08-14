@@ -5854,6 +5854,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (autoload, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{autoload_map} =} autoload ()
@@ -5954,6 +5956,8 @@ the filename and the extension.
   return octave_value (interp.mfilename (opt));
 }
 
+OCTAVE_NAMESPACE_END
+
 namespace octave
 {
   // Execute the contents of a script file.  For compatibility with
@@ -5969,6 +5973,8 @@ namespace octave
     interp.source_file (file_name, context, verbose, require_file);
   }
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (source, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -6002,6 +6008,8 @@ context of the function that called the present function
 
   return octave_value_list ();
 }
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -6054,6 +6062,8 @@ namespace octave
     return interp.feval (args, nargout);
   }
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (feval, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -6146,6 +6156,8 @@ builtin ("sin", 0)
   return retval;
 }
 
+OCTAVE_NAMESPACE_END
+
 namespace octave
 {
   void
@@ -6158,6 +6170,8 @@ namespace octave
       }
   }
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (eval, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -6560,3 +6574,5 @@ Undocumented internal function.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

@@ -41,6 +41,8 @@
 #include "ov.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename CHOLT>
 static octave_value
 get_chol (const CHOLT& fact)
@@ -1329,3 +1331,5 @@ triangular, return the Cholesky@tie{}factorization of
 %! assert (norm (triu (R1)-R1, Inf), 0);
 %! assert (norm (R1'*R1 - single (Ac(p,p)), Inf) < 1e1*eps ("single"));
 */
+
+OCTAVE_NAMESPACE_END

@@ -36,6 +36,7 @@
 #include "errwarn.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
 
 static dim_vector
 get_dim_vector (const octave_value& val, const char *name)
@@ -317,3 +318,5 @@ r = ind2sub (dims, ind)
 %!error <index out of range> ind2sub ([2, 2, 2], 1:9)
 %!error <invalid index> ind2sub ([2, 2, 2], -1:8)
 */
+
+OCTAVE_NAMESPACE_END

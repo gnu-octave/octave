@@ -49,6 +49,8 @@
 #  include <sndfile.h>
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN_DLD (audioread, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{y}, @var{fs}] =} audioread (@var{filename})
@@ -780,3 +782,5 @@ with names that start with @var{format}.
 
   return octave_value_list ();
 }
+
+OCTAVE_NAMESPACE_END

@@ -52,8 +52,12 @@
 #include "parse.h"
 
 #if defined (HAVE_PORTAUDIO)
+#  include <portaudio.h>
+#endif
 
-#include <portaudio.h>
+#if defined (HAVE_PORTAUDIO)
+
+OCTAVE_NAMESPACE_BEGIN
 
 PaSampleFormat
 bits_to_format (int bits)
@@ -2841,3 +2845,5 @@ Undocumented internal function.
                         "audio playback and recording through PortAudio");
 #endif
 }
+
+OCTAVE_NAMESPACE_END

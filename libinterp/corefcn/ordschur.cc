@@ -32,6 +32,8 @@
 #include "lo-lapack-proto.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (ordschur, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})
@@ -222,3 +224,5 @@ is in the upper left corner, by doing:
 %! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")));
 
 */
+
+OCTAVE_NAMESPACE_END

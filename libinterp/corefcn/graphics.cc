@@ -10624,6 +10624,8 @@ surface::properties::update_vertex_normals (bool reset, bool force)
     m_vertexnormals = Matrix ();
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (__update_normals__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __update_normals__ (@var{h})
@@ -10690,6 +10692,8 @@ Update FaceNormals and VertexNormals of the patch or surface referred to by
 %!   close (hf);
 %! end_unwind_protect
 */
+
+OCTAVE_NAMESPACE_END
 
 // ---------------------------------------------------------------------
 
@@ -12634,6 +12638,8 @@ root_figure::init_factory_properties (void)
 
 // ---------------------------------------------------------------------
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (ishghandle, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} ishghandle (@var{h})
@@ -13405,6 +13411,8 @@ Undocumented internal function.
                                                                         \
   return octave_value (make_graphics_object (#TYPE, false, args));      \
 
+OCTAVE_NAMESPACE_END
+
 int
 calc_dimensions (const graphics_object& go)
 {
@@ -13440,6 +13448,8 @@ calc_dimensions (const graphics_object& go)
 
   return nd;
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__calc_dimensions__, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -14243,6 +14253,8 @@ addproperty ("my_style", gcf, "linelinestyle", "--");
   return ovl ();
 }
 
+OCTAVE_NAMESPACE_END
+
 octave_value
 get_property_from_handle (double handle, const std::string& property,
                           const std::string& func)
@@ -14276,6 +14288,8 @@ set_property_in_handle (double handle, const std::string& property,
 
   return true;
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 static bool
 compare_property_values (const octave_value& ov1, const octave_value& ov2)
@@ -14772,3 +14786,5 @@ Internal function.
 
   return ovl (txt_renderer.get_system_fonts ());
 }
+
+OCTAVE_NAMESPACE_END

@@ -54,6 +54,8 @@
 #include "errwarn.h"
 #include "ov.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN_DLD (__fltk_uigetfile__, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __fltk_uigetfile__ (@dots{})
@@ -160,3 +162,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

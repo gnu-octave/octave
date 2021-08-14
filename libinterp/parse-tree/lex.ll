@@ -2109,6 +2109,8 @@ display_character (char c)
       }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (iskeyword, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} iskeyword ()
@@ -2171,6 +2173,8 @@ If @var{name} is omitted, return a list of keywords.
 %!error <NAME must be a string> iskeyword (1)
 
 */
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {

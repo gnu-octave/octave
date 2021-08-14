@@ -320,6 +320,8 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
     }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (bsxfun, interp,args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
@@ -812,3 +814,5 @@ as the other array.
 %! assert (r(:,:,1), repmat (single ([0, 0, 1+i, 1+i]), [4, 1]));
 
 */
+
+OCTAVE_NAMESPACE_END

@@ -38,6 +38,8 @@
 #include "utils.h"
 #include "xnorm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename Matrix>
 static void
 sqrtm_utri_inplace (Matrix& T)
@@ -275,3 +277,5 @@ Mathematics, Manchester, England, January 1999.
 %! assert (y, z);
 %! assert (err, 0);   # Yes, this one has to hold exactly
 */
+
+OCTAVE_NAMESPACE_END

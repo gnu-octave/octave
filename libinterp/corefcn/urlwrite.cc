@@ -52,6 +52,8 @@
 #include "unwind-prot.h"
 #include "url-handle-manager.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (urlwrite, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} urlwrite (@var{url}, @var{localfile})
@@ -354,3 +356,5 @@ Undocumented internal function.
 
   return ovl (content.str ());
 }
+
+OCTAVE_NAMESPACE_END

@@ -42,6 +42,8 @@
 #include "ov-cx-sparse.h"
 #include "ov-bool-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (issparse, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} issparse (@var{x})
@@ -324,3 +326,5 @@ even if @var{nz} is 0.
 %!error <M, N, and NZ must be non-negative> spalloc (1, -1, 1)
 %!error <M, N, and NZ must be non-negative> spalloc (1, 1, -1)
 */
+
+OCTAVE_NAMESPACE_END

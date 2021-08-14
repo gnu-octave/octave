@@ -86,6 +86,8 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
 
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN_DLD (convhulln, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{h} =} convhulln (@var{pts})
@@ -329,3 +331,5 @@ convex hull is calculated.
 %! h = convhulln (triangle);
 %! assert (size (h), [3 2]);
 */
+
+OCTAVE_NAMESPACE_END

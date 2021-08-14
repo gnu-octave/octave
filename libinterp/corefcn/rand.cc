@@ -44,6 +44,8 @@
 #include "utils.h"
 #include "ov-re-mat.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 /*
 %% Restore all rand* "seed" and "state" values in order, so that the
 %% new "state" algorithm remains active after these tests complete.
@@ -1220,3 +1222,5 @@ likely.
 %!   assert (length (unique (p)), 30);
 %! endfor
 */
+
+OCTAVE_NAMESPACE_END

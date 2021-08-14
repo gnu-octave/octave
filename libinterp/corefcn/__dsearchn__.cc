@@ -35,6 +35,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__dsearchn__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})
@@ -100,3 +102,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

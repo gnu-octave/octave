@@ -1129,6 +1129,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (input, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{ans} =} input (@var{prompt})
@@ -1659,3 +1661,5 @@ The original variable value is restored when exiting the function.
 
   return input_sys.auto_repeat_debug_command (args, nargout);
 }
+
+OCTAVE_NAMESPACE_END

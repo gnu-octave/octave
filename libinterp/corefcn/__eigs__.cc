@@ -141,6 +141,8 @@ eigs_callback::eigs_complex_func (const ComplexColumnVector& x,
 
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (__eigs__, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{d} =} __eigs__ (@var{A})
@@ -699,3 +701,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

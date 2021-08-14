@@ -504,6 +504,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (diary, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} diary
@@ -752,3 +754,5 @@ The original variable value is restored when exiting the function.
 
   return output_sys.PAGER_FLAGS (args, nargout);
 }
+
+OCTAVE_NAMESPACE_END

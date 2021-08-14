@@ -46,6 +46,8 @@
 #include "ovl.h"
 #include "parse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (amd, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} amd (@var{S})
@@ -200,3 +202,5 @@ The author of the code itself is Timothy A. Davis
 %!error <S must be a square matrix|was unavailable or disabled> amd (A)
 %!error amd (A2, 2)
 */
+
+OCTAVE_NAMESPACE_END

@@ -31,6 +31,8 @@
 #include "error.h"
 #include "lo-specfun.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (ellipj, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})
@@ -847,3 +849,5 @@ and 16.15), Dover, 1965.
 %!error <Invalid size combination for U and M> ellipj (complex (1:4,1:4), [1:3])
 
 */
+
+OCTAVE_NAMESPACE_END

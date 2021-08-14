@@ -93,6 +93,8 @@ bool octave_interpreter_ready = false;
 // TRUE means we've processed all the init code and we are good to go.
 bool octave_initialized = false;
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__version_info__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})
@@ -305,6 +307,8 @@ Undocumented internal function.
 {
   return ovl (interp.traditional ());
 }
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {

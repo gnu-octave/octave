@@ -43,6 +43,8 @@
 #include <Magick++.h>
 #include <clocale>
 
+OCTAVE_NAMESPACE_BEGIN
+
 // In theory, it should be enough to check the class:
 // Magick::ClassType
 // PseudoClass:
@@ -2406,3 +2408,5 @@ Fill formats info with GraphicsMagick CoderInfo.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

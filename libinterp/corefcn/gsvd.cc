@@ -40,6 +40,7 @@
 #include "ovl.h"
 #include "ov.h"
 
+OCTAVE_NAMESPACE_BEGIN
 
 template <typename T>
 static typename octave::math::gsvd<T>::Type
@@ -497,3 +498,5 @@ and zggsvd routines.
 %! assert (class (R), "single");
 
 */
+
+OCTAVE_NAMESPACE_END

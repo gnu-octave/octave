@@ -76,6 +76,8 @@ namespace std
 }
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename OP, typename T>
 octave_value
 bitopxx (const OP& op, const std::string& fname,
@@ -973,3 +975,5 @@ by @code{intmax}.
 
 %!error sizemax (0)
 */
+
+OCTAVE_NAMESPACE_END

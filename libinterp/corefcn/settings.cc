@@ -56,6 +56,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (__display_tokens__, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __display_tokens__ ()
@@ -94,3 +96,5 @@ debug information as it processes an expression.
 
   return stgs.lexer_debug_flag (args, nargout);
 }
+
+OCTAVE_NAMESPACE_END

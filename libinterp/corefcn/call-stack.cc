@@ -1135,6 +1135,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (max_stack_depth, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} max_stack_depth ()
@@ -1301,3 +1303,5 @@ complex, nesting, persistent.
 
   return tw.do_who (argc, argv, nargout == 1, true);
 }
+
+OCTAVE_NAMESPACE_END

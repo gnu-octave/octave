@@ -160,6 +160,8 @@ extract_function (const octave_value& arg, const std::string& warn_for,
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (isglobal, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} isglobal (@var{name})
@@ -354,12 +356,14 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
   return 0;
 }
 
+OCTAVE_NAMESPACE_END
+
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
   octave::interpreter& interp = octave::__get_interpreter__ ("symbol_exist");
 
-  return symbol_exist (interp, name, type);
+  return octave::symbol_exist (interp, name, type);
 }
 
 
@@ -389,6 +393,8 @@ unique_symbol_name (const std::string& basename)
 
   return nm;
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (exist, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -574,6 +580,8 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 %!error <unrecognized type argument "foobar"> exist ("a", "foobar")
 
 */
+
+OCTAVE_NAMESPACE_END
 
 // Variable values.
 
@@ -883,6 +891,8 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 // NOTE: Calling Fmlock directly (without an associated stack frame)
 // will probably not do what you expect because it will lock the calling
@@ -1424,7 +1434,11 @@ variables.
 %!error clear -f -g
 */
 
+OCTAVE_NAMESPACE_END
+
 static std::string Vmissing_function_hook = "__unimplemented__";
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (missing_function_hook, args, nargout,
        doc: /* -*- texinfo -*-
@@ -1442,6 +1456,8 @@ The original variable value is restored when exiting the function.
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);
 }
+
+OCTAVE_NAMESPACE_END
 
 std::string
 maybe_missing_function_hook (const std::string& name)
@@ -1476,6 +1492,8 @@ maybe_missing_function_hook (const std::string& name)
 
   return "";
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__varval__, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -1556,3 +1574,5 @@ should return an error message to be displayed.
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);
 }
+
+OCTAVE_NAMESPACE_END

@@ -39,6 +39,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // The bulk of the work.
 template <typename T>
 static Array<T>
@@ -480,3 +482,5 @@ above another, and returned as a column vector.
 %!error tril ()
 %!error triu ()
 */
+
+OCTAVE_NAMESPACE_END

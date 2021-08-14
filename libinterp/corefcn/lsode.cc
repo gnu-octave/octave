@@ -142,6 +142,8 @@ lsode_user_jacobian (const ColumnVector& x, double t)
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (lsode, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})
@@ -490,3 +492,5 @@ fvdp = @@(@var{y},@var{t}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y
 
 %!error lsode_options ("foo", 1, 2)
 */
+
+OCTAVE_NAMESPACE_END

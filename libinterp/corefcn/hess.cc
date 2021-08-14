@@ -34,6 +34,8 @@
 #include "errwarn.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (hess, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{H} =} hess (@var{A})
@@ -151,3 +153,5 @@ IEEE Transactions on Automatic Control, 1979).
 %!error hess ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> hess ([1, 2; 3, 4; 5, 6])
 */
+
+OCTAVE_NAMESPACE_END

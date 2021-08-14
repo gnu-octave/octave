@@ -2401,6 +2401,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (genpath, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} genpath (@var{dir})
@@ -2771,3 +2773,5 @@ Undocumented internal function.
 
   return ovl ();
 }
+
+OCTAVE_NAMESPACE_END

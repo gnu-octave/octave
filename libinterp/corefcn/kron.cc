@@ -49,6 +49,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename R, typename T>
 static MArray<T>
 kron (const MArray<R>& a, const MArray<T>& b)
@@ -330,3 +332,5 @@ Since the Kronecker product is associative, this is well-defined.
 %! expected (6, 16) = 8;
 %! assert (kron (diag ([1, 2], 2), diag ([3, 4], 2)), expected);
 */
+
+OCTAVE_NAMESPACE_END

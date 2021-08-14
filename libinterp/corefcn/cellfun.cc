@@ -65,6 +65,8 @@
 
 #include "ov-fcn-handle.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static octave_value_list
 get_output_list (octave::error_system& es,
                  octave_idx_type count, octave_idx_type nargout,
@@ -2492,3 +2494,5 @@ indexing keyword @code{end} is not available.
 
   return octave_value (y);
 }
+
+OCTAVE_NAMESPACE_END

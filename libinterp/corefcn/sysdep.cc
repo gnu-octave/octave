@@ -190,6 +190,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__open_with_system_app__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __open_with_system_app__ (@var{file})
@@ -360,6 +362,8 @@ On non-Windows platforms, this function fails with an error.
   error ("__wmemory__: Function is only supported on Windows platforms");
 #endif
 }
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -805,6 +809,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (clc, , ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} clc ()
@@ -909,6 +915,8 @@ occurred.
 ## Test for unsetenv is in setenv test
 */
 
+OCTAVE_NAMESPACE_END
+
 #if defined (OCTAVE_USE_WINDOWS_API)
 
 namespace octave
@@ -1001,6 +1009,8 @@ namespace octave
 }
 
 #endif
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (winqueryreg, args, ,
        doc: /* -*- texinfo -*-
@@ -1486,3 +1496,5 @@ Undocumented internal function.
 {
   return ovl (octave::sys::lapack_version ());
 }
+
+OCTAVE_NAMESPACE_END

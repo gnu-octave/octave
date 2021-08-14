@@ -1545,6 +1545,8 @@ install_base_type_conversions (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_base_value, octave_cell, cell_conv);
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (sparse_auto_mutate, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} sparse_auto_mutate ()
@@ -1588,3 +1590,5 @@ The original variable value is restored when exiting the function.
 %! assert (typeinfo (s), "matrix");
 %! sparse_auto_mutate (false);
 */
+
+OCTAVE_NAMESPACE_END

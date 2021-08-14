@@ -34,6 +34,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 DEFUN (conv2, args, ,
@@ -568,3 +570,5 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %!error <SHAPE type not valid> convn (1,2, "NOT_A_SHAPE")
 %!error convn (rand (3), 1, 1)
 */
+
+OCTAVE_NAMESPACE_END

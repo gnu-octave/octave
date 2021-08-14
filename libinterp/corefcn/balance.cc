@@ -44,6 +44,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (balance, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{AA} =} balance (@var{A})
@@ -222,7 +224,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
         bal_job = args(2).xstring_value ("balance: OPT argument must be a string");
 
       if ((nn != args(1).columns ()) || (nn != args(1).rows ()))
-        err_nonconformant ();
+        ::err_nonconformant ();
 
       Matrix bb;
       ComplexMatrix cbb;
@@ -371,3 +373,5 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

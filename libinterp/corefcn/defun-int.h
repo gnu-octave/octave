@@ -34,12 +34,12 @@
 #include "ov-dld-fcn.h"
 #include "version.h"
 
+class octave_value;
+
 namespace octave
 {
   class interpreter;
 }
-
-class octave_value;
 
 OCTAVE_NAMESPACE_BEGIN
 
@@ -86,7 +86,6 @@ namespace octave
 
     auto_shlib (const dynamic_library& shl) : dynamic_library (shl) { }
   };
-
 }
 
 // Some of these functions are widely used, so maybe we should avoid

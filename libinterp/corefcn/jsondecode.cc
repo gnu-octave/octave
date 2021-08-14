@@ -426,6 +426,8 @@ decode (const rapidjson::Value& val,
 
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (jsondecode, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{object} =} jsondecode (@var{JSON_txt})
@@ -562,3 +564,5 @@ Functional BIST tests are located in test/json/jsondecode_BIST.tst
 %! fail ("jsondecode ('12-')", "parse error at offset 3");
 
 */
+
+OCTAVE_NAMESPACE_END

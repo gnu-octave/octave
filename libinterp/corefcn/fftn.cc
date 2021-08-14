@@ -35,6 +35,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // This function should be merged with Fifft.
 
 static octave_value
@@ -159,3 +161,5 @@ resized and padded with zeros.
 {
   return do_fftn (args, "ifftn", 1);
 }
+
+OCTAVE_NAMESPACE_END

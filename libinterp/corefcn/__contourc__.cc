@@ -46,6 +46,8 @@
 #include "defun.h"
 #include "ov.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // FIXME: this looks like trouble...
 static Matrix this_contour;
 static Matrix contourc;
@@ -298,6 +300,7 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
         drawcn (X, Y, Z, lvl, r, c, 0.0, 0.0, 255, true, mark);
 }
 
+
 DEFUN (__contourc__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{c} =} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})
@@ -323,3 +326,5 @@ Calculate Z-level contours (isolines).
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

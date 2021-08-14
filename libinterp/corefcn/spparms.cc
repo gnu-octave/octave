@@ -35,6 +35,8 @@
 
 #include "oct-spparms.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (spparms, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} { } spparms ()
@@ -199,3 +201,5 @@ longer running time.
 %!error spparms ("ths_rel", "hello")
 %!error <KEY not found> spparms ("UNKNOWN_KEY", 1)
 */
+
+OCTAVE_NAMESPACE_END

@@ -36,6 +36,8 @@
 #include "fEIG.h"
 #include "oct-string.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (eig, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{lambda} =} eig (@var{A})
@@ -638,3 +640,5 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!error <wrong type argument>
 %!  eig ([1 2 ; 2 3], [1 2 ; 2 3], [1 2 ; 2 3])
 */
+
+OCTAVE_NAMESPACE_END

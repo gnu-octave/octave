@@ -449,6 +449,7 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (OCTAVE_HOME, args, ,
        doc: /* -*- texinfo -*-
@@ -544,3 +545,4 @@ Return the (platform-specific) directory for user data.
 %!error user_data_dir (1)
 */
 
+OCTAVE_NAMESPACE_END

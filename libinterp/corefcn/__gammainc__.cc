@@ -30,6 +30,8 @@
 #include "defun.h"
 #include "fNDArray.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__gammainc__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{y} =} __gammainc__ (@var{x}, @var{a})
@@ -164,3 +166,5 @@ Continued fraction for incomplete gamma function.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

@@ -32,6 +32,8 @@
 #include "error.h"
 #include "errwarn.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename ColumnVector, typename Matrix, typename RowVector>
 static void
 do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
@@ -143,3 +145,5 @@ On exit, @var{y} is a unit vector such that:
 %! endfor
 %! assert (a' * a, eye (5), 1e10);
 */
+
+OCTAVE_NAMESPACE_END

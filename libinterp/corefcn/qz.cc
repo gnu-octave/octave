@@ -57,6 +57,8 @@
 #  include "pr-output.h"
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 // FIXME: Matlab does not produce lambda as the first output argument.
 // Compatibility problem?
 
@@ -275,7 +277,7 @@ compatibility with @sc{matlab}.
   F77_INT b_nc = octave::to_f77_int (args(1).columns ());
 
   if (nn != b_nc || nn != b_nr)
-    err_nonconformant ();
+    ::err_nonconformant ();
 
   Matrix bb;
   ComplexMatrix cbb;
@@ -950,3 +952,5 @@ compatibility with @sc{matlab}.
 %! assert (abs (lambda(1) < 1));
 %! assert (all (abs (lambda(2:4)) >= 1));
 */
+
+OCTAVE_NAMESPACE_END

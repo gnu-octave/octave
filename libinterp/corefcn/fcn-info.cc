@@ -1146,6 +1146,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (ignore_function_time_stamp, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} ignore_function_time_stamp ()
@@ -1227,3 +1229,5 @@ recompiled.
 %!error ignore_function_time_stamp ("UNKNOWN_VALUE")
 %!error ignore_function_time_stamp (42)
 */
+
+OCTAVE_NAMESPACE_END

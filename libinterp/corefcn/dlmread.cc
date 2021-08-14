@@ -167,6 +167,8 @@ parse_range_spec (const octave_value& range_spec,
   return stat;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (dlmread, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{data} =} dlmread (@var{file})
@@ -764,3 +766,5 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %! end_unwind_protect
 
 */
+
+OCTAVE_NAMESPACE_END

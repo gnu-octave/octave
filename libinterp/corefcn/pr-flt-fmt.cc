@@ -48,6 +48,8 @@ set_output_prec (int prec)
   Voutput_precision = prec;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (output_precision, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} output_precision ()
@@ -69,3 +71,5 @@ The original variable value is restored when exiting the function.
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, 0, 16);
 }
+
+OCTAVE_NAMESPACE_END

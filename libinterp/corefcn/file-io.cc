@@ -84,6 +84,8 @@
 #include "utils.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static void
 normalize_fopen_mode (std::string& mode, bool& use_zlib)
 {
@@ -3251,6 +3253,8 @@ It is useful for error messages and prompts.
   return const_value ("stderr", args, streams.stderr_file ());
 }
 
+OCTAVE_NAMESPACE_END
+
 // Deprecated variables and functions.
 
 // Deprecated in Octave 6.
@@ -3272,3 +3276,4 @@ cleanup_tmp_files (void)
 
   interp.cleanup_tmp_files ();
 }
+

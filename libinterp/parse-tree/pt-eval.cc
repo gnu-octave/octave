@@ -2234,6 +2234,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 // END is documented in op-kw-docs.
 DEFCONSTMETHOD (end, interp, args, ,
                 doc: /* -*- texinfo -*-
@@ -2277,6 +2279,8 @@ Example:
 %! assert (x(minus (end, 1)), 9);
 %! assert (x(minus (minus (end, 1), 1)), 8);
 */
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -5094,6 +5098,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (max_recursion_depth, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} max_recursion_depth ()
@@ -5370,3 +5376,5 @@ With no arguments, @code{echo} toggles the current echo state.
 %!error echo ("on", "invalid")
 %!error echo ("on", "all", "all")
 */
+
+OCTAVE_NAMESPACE_END

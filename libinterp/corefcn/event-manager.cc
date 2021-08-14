@@ -190,6 +190,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 // FIXME: Should the following function be __event_manager_desktop__
 // with the desktop function implemented in a .m file, similar to the
 // way the UI* functions work?
@@ -867,3 +869,5 @@ Show the GUI workspace window and give it the keyboard focus.
   evmgr.focus_window ("workspace");
   return ovl ();
 }
+
+OCTAVE_NAMESPACE_END

@@ -46,6 +46,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Replace backslash escapes in a string with the real values.  We need
 // two special functions instead of the one in utils.cc because the set
 // of escape sequences used for regexp patterns and replacement strings
@@ -1588,3 +1590,5 @@ function.
 %!test <*52810>
 %! assert (strcmp (regexprep ("\nabc", "^(\t*)(abc)$", "$1$2", "lineanchors"), "\nabc"))
 */
+
+OCTAVE_NAMESPACE_END

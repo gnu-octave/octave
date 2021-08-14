@@ -53,6 +53,8 @@
 #endif
 
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (ordqz, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{AR}, @var{BR}, @var{QR}, @var{ZR}] =} ordqz (@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{keyword})
@@ -216,7 +218,7 @@ Note: The keywords are compatible with the ones from @code{qr}.
   F77_INT b_nc = octave::to_f77_int (args(1).columns ());
 
   if (nn != b_nc || nn != b_nr)
-    err_nonconformant ();
+    ::err_nonconformant ();
 
   Matrix bb;
   ComplexMatrix cbb;
@@ -231,7 +233,7 @@ Note: The keywords are compatible with the ones from @code{qr}.
   F77_INT q_nc = octave::to_f77_int (args(2).columns ());
 
   if (nn != q_nc || nn != q_nr)
-    err_nonconformant ();
+    ::err_nonconformant ();
 
   Matrix qq;
   ComplexMatrix cqq;
@@ -246,7 +248,7 @@ Note: The keywords are compatible with the ones from @code{qr}.
   F77_INT z_nc = octave::to_f77_int (args(3).columns ());
 
   if (nn != z_nc || nn != z_nr)
-    err_nonconformant ();
+    ::err_nonconformant ();
 
   Matrix zz;
   ComplexMatrix czz;
@@ -676,3 +678,5 @@ Note: The keywords are compatible with the ones from @code{qr}.
 %! ordqz (AA, eye (2), eye (2), eye (2), "udi");
 
 */
+
+OCTAVE_NAMESPACE_END

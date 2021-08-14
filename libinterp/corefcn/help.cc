@@ -717,6 +717,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (get_help_text, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{text}, @var{format}] =} get_help_text (@var{name})
@@ -1107,3 +1109,5 @@ The original variable value is restored when exiting the function.
 
   return help_sys.texi_macros_file (args, nargout);
 }
+
+OCTAVE_NAMESPACE_END

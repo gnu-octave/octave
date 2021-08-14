@@ -383,6 +383,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Enable or disable the profiler data collection.
 DEFMETHOD (__profiler_enable__, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -446,3 +448,5 @@ Undocumented internal function.
   else
     return ovl (profiler.get_flat ());
 }
+
+OCTAVE_NAMESPACE_END

@@ -35,6 +35,8 @@
 
 #include "lo-specfun.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (psi, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} psi (@var{z})
@@ -232,3 +234,5 @@ can have any value real or complex value.  However, for polygamma functions
 %!error <Z must be real value for polygamma> psi (5, 5i)
 
 */
+
+OCTAVE_NAMESPACE_END

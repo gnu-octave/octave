@@ -48,6 +48,8 @@
 #include "parse.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (symbfact, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{R}] =} symbfact (@var{S})
@@ -429,3 +431,5 @@ cleanup:
 %! fail ("symbfact (sparse ([1, 2; 3, 4; 5, 6]))", "S must be a square matrix");
 
 */
+
+OCTAVE_NAMESPACE_END

@@ -37,6 +37,8 @@
 #include "error.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (abs, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} abs (@var{z})
@@ -2257,3 +2259,5 @@ DEFALIAS (upper, toupper);
 */
 
 DEFALIAS (gammaln, lgamma);
+
+OCTAVE_NAMESPACE_END

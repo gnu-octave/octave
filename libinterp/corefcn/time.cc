@@ -36,6 +36,8 @@
 #include "ov.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Date and time functions.
 
 static octave_scalar_map
@@ -511,3 +513,5 @@ you're absolutely sure the date string will be parsed correctly.
 
 %!error strptime ()
 */
+
+OCTAVE_NAMESPACE_END

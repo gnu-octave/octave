@@ -649,6 +649,8 @@ octave_user_function::restore_warning_states (void)
     }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (nargin, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} nargin ()
@@ -1030,3 +1032,5 @@ element-by-element and a logical array is returned.  At the top level,
 %! [~, b] = try_isargout2 ({try_isargout, try_isargout}, rand);
 %! assert (b, {0, 1, {-1, -1}});
 */
+
+OCTAVE_NAMESPACE_END

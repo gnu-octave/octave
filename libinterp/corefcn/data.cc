@@ -66,6 +66,8 @@
 #include "variables.h"
 #include "xnorm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (all, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} all (@var{x})
@@ -927,7 +929,6 @@ negative numbers or when the values are periodic.
 
 */
 
-
 #define DATA_REDUCTION(FCN)                                             \
                                                                         \
   int nargin = args.length ();                                          \
@@ -1707,8 +1708,6 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
   return retval;
 }
 
-OCTAVE_NAMESPACE_BEGIN
-
 octave_value
 do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 {
@@ -1776,8 +1775,6 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
   return retval;
 }
-
-OCTAVE_NAMESPACE_END
 
 static octave_value
 do_cat (const octave_value_list& xargs, int dim, std::string fname)
@@ -8377,3 +8374,5 @@ dimensions of the decoded array.
 %!error __base64_decode_bytes__ (1, "this is not a valid set of dimensions")
 %!error <input was not valid base64> __base64_decode_bytes__ (1)
 */
+
+OCTAVE_NAMESPACE_END

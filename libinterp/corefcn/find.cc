@@ -34,6 +34,8 @@
 #include "errwarn.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Find at most N_TO_FIND nonzero elements in NDA.  Search forward if
 // DIRECTION is 1, backward if it is -1.  NARGOUT is the number of
 // output arguments.  If N_TO_FIND is -1, find all nonzero elements.
@@ -599,3 +601,5 @@ b = sparse (i, j, v, sz(1), sz(2));
 
 %!error find ()
 */
+
+OCTAVE_NAMESPACE_END

@@ -154,6 +154,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (EDITOR, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} EDITOR ()
@@ -257,3 +259,5 @@ The original variable value is restored when exiting the function.
 
 %!error IMAGE_PATH (1, 2)
 */
+
+OCTAVE_NAMESPACE_END

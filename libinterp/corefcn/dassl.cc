@@ -155,6 +155,8 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (dassl, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
@@ -491,3 +493,5 @@ parameters for @code{dassl}.
 
 %!error dassl_options ("foo", 1, 2)
 */
+
+OCTAVE_NAMESPACE_END

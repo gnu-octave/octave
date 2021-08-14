@@ -62,6 +62,8 @@
 #include "utils.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // TRUE means we ask for confirmation before recursively removing a
 // directory tree.
 static bool Vconfirm_recursive_rmdir = true;
@@ -723,3 +725,5 @@ The original variable value is restored when exiting the function.
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);
 }
+
+OCTAVE_NAMESPACE_END

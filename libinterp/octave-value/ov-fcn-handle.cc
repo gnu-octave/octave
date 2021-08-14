@@ -3407,6 +3407,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (functions, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{s} =} functions (@var{fcn_handle})
@@ -3637,3 +3639,5 @@ Return true if @var{x} is a function handle.
 %! x = [1,2;3,4];
 %! assert (__f (@(i) x(:,i), 1), [1;3]);
 */
+
+OCTAVE_NAMESPACE_END

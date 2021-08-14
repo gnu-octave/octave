@@ -1722,6 +1722,8 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
   return true;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (class, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{classname} =} class (@var{obj})
@@ -2156,3 +2158,5 @@ Implements final construction for inline objects.
 
   return octave_value (new octave_inline (args(0).map_value ()));
 }
+
+OCTAVE_NAMESPACE_END

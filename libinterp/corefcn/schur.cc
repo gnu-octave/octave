@@ -37,6 +37,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename Matrix>
 static octave_value
 mark_upper_triangular (const Matrix& a)
@@ -342,3 +344,5 @@ Note also that @var{U} and @var{T} are not unique.
 %! [U, T] = rsf2csf (u,t);
 %! assert (U * T * U', A, 1e-14);
 */
+
+OCTAVE_NAMESPACE_END

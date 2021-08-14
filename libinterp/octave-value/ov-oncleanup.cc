@@ -202,6 +202,8 @@ octave_oncleanup::call_object_destructor (void)
     }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (onCleanup, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{obj} =} onCleanup (@var{function})
@@ -233,3 +235,5 @@ For similar functionality @xref{The unwind_protect Statement}.
 %!   warning (old_wstate);
 %! end_unwind_protect
 */
+
+OCTAVE_NAMESPACE_END

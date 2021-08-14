@@ -37,6 +37,8 @@
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename MT>
 static octave_value
 get_lu_l (const octave::math::lu<MT>& fact)
@@ -832,3 +834,5 @@ factorization from scratch.
 %! assert (norm (vec (triu (U)-U), Inf) == 0);
 %! assert (norm (vec (P'*L*U - single (Ac) - single (uc)*single (vc).'), Inf) < norm (single (Ac))*1e1*eps ("single"));
 */
+
+OCTAVE_NAMESPACE_END

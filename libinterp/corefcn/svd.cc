@@ -37,6 +37,8 @@
 #include "utils.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static std::string Vsvd_driver = "gesvd";
 
 template <typename T>
@@ -458,3 +460,5 @@ in Octave has been set to @qcode{"gesvd"}.
 %! assert (S1, S3, 6*eps);
 %! assert (V1, V3 .* z, 100*eps);
 */
+
+OCTAVE_NAMESPACE_END

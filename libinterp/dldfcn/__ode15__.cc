@@ -1246,6 +1246,8 @@ namespace octave
 #endif
 
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN_DLD (__ode15__, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{t}, @var{y} =} __ode15__ (@var{fun}, @var{tspan}, @var{y0}, @var{yp0}, @var{options}, @var{num_event_args})
@@ -1321,3 +1323,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

@@ -54,6 +54,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (have_window_system, interp, , ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} have_window_system ()
@@ -66,3 +68,5 @@ and false otherwise.
 
   return ovl (dpy_info.display_available ());
 }
+
+OCTAVE_NAMESPACE_END

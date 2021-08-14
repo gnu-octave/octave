@@ -488,6 +488,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (SIG, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} SIG ()
@@ -635,3 +637,5 @@ The original variable value is restored when exiting the function.
 
 %!error sigterm_dumps_octave_core (1, 2)
 */
+
+OCTAVE_NAMESPACE_END

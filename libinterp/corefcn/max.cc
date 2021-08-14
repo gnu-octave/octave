@@ -44,6 +44,8 @@
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename ArrayType>
 static octave_value_list
 do_minmax_red_op (const octave_value& arg,
@@ -1097,3 +1099,5 @@ iw = 1  2  2  4  4  4
 %!error cummax ()
 %!error cummax (1, 2, 3)
 */
+
+OCTAVE_NAMESPACE_END

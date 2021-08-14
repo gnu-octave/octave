@@ -3194,6 +3194,8 @@ octave_print_internal (std::ostream&, const octave_value&, bool)
   panic_impossible ();
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (rats, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} rats (@var{x})
@@ -4162,3 +4164,5 @@ The original variable value is restored when exiting the function.
 {
   return SET_INTERNAL_VARIABLE (split_long_rows);
 }
+
+OCTAVE_NAMESPACE_END

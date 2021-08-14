@@ -38,6 +38,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (colloc, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, "left", "right")
@@ -113,3 +115,5 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
 %!error <total number of roots .* must be .= 1> colloc (0)
 
 */
+
+OCTAVE_NAMESPACE_END

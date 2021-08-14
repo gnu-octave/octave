@@ -41,6 +41,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Group file functions.  (Why not?)
 
 static octave_value
@@ -167,3 +169,5 @@ Close the group database.
 
   return ovl (static_cast<double> (status), msg);
 }
+
+OCTAVE_NAMESPACE_END

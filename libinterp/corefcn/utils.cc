@@ -92,6 +92,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (isvarname, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isvarname (@var{name})
@@ -130,6 +132,8 @@ and the first character must not be a digit.
 %!error isvarname ()
 %!error isvarname ("foo", "bar")
 */
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -255,6 +259,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__make_valid_name__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{varname} =} __make_valid_name__ (@var{str})
@@ -292,6 +298,8 @@ For more documentation, see @code{matlab.lang.makeValidName}.
     error ("makeValidName: STR must be a string or cellstr");
 }
 
+OCTAVE_NAMESPACE_END
+
 namespace octave
 {
   // Return TRUE if F and G are both names for the same file.
@@ -301,6 +309,8 @@ namespace octave
     return same_file_internal (f, g);
   }
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (is_same_file, args, ,
        doc: /* -*- texinfo -*-
@@ -412,6 +422,7 @@ return true.
 %!error <arrays .* must be the same size> is_same_file ({"1", "2"}, {"1"; "2"})
 */
 
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -556,6 +567,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (file_in_loadpath, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{fname} =} file_in_loadpath (@var{file})
@@ -696,6 +709,8 @@ If no files are found, return an empty cell array.
 %!error file_in_path (path (), [])
 %!error file_in_path (path (), "plot.m", "bar")
 */
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -938,6 +953,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (do_string_escapes, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} do_string_escapes (@var{string})
@@ -993,6 +1010,8 @@ Escape sequences begin with a leading backslash
 %!warning <malformed hex escape sequence> do_string_escapes ('\xG');
 %!warning <unrecognized escape sequence> do_string_escapes ('\G');
 */
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -1053,6 +1072,8 @@ namespace octave
     return retval;
   }
 }
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (undo_string_escapes, args, ,
        doc: /* -*- texinfo -*-
@@ -1321,6 +1342,8 @@ Return a structure containing the system-dependent errno values.
 
 %!error errno_list ("foo")
 */
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -1646,6 +1669,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (isindex, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} isindex (@var{ind})
@@ -1703,6 +1728,8 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 %!error isindex ()
 %!error isindex (1:3, 2, 3)
 */
+
+OCTAVE_NAMESPACE_END
 
 namespace octave
 {
@@ -1789,6 +1816,8 @@ namespace octave
   }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (isstudent, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isstudent ()
@@ -1809,3 +1838,5 @@ Return true if running in the student edition of @sc{matlab}.
 
 %!error isstudent (1)
 */
+
+OCTAVE_NAMESPACE_END

@@ -2176,51 +2176,6 @@ The original variable value is restored when exiting the function.
   return es.debug_on_warning (args, nargout);
 }
 
-std::string
-last_error_message (void)
-{
-  octave::error_system& es
-    = octave::__get_error_system__ ("last_error_message");
-
-  return es.last_error_message ();
-}
-
-std::string
-last_error_id (void)
-{
-  octave::error_system& es
-    = octave::__get_error_system__ ("last_error_id");
-
-  return es.last_error_id ();
-}
-
-octave_map
-last_error_stack (void)
-{
-  octave::error_system& es
-    = octave::__get_error_system__ ("last_error_stack");
-
-  return es.last_error_stack ();
-}
-
-std::string
-last_warning_message (void)
-{
-  octave::error_system& es
-    = octave::__get_error_system__ ("last_warning_message");
-
-  return es.last_warning_message ();
-}
-
-std::string
-last_warning_id (void)
-{
-  octave::error_system& es
-    = octave::__get_error_system__ ("last_warning_id");
-
-  return es.last_warning_id ();
-}
-
 void
 interpreter_try (octave::unwind_protect& frame)
 {

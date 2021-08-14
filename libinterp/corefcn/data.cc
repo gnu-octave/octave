@@ -1709,7 +1709,8 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 }
 
 octave_value
-do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
+do_class_concat (const octave_value_list& ovl,
+                 const std::string& cattype, int dim)
 {
   octave_value retval;
 

@@ -210,7 +210,7 @@ Undocumented internal function.
 
   eigs_callback callback;
 
-  octave::unwind_protect_var<int> restore_var (call_depth);
+  unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -219,7 +219,7 @@ Undocumented internal function.
   if (args(0).is_function_handle () || args(0).is_inline_function ()
       || args(0).is_string ())
     {
-      callback.eigs_fcn = octave::get_function_handle (interp, args(0), "x");
+      callback.eigs_fcn = get_function_handle (interp, args(0), "x");
 
       if (callback.eigs_fcn.is_undefined ())
         error ("eigs: unknown function");
@@ -679,7 +679,7 @@ Undocumented internal function.
 
   if (! fcn_name.empty ())
     {
-      octave::symbol_table& symtab = interp.get_symbol_table ();
+      symbol_table& symtab = interp.get_symbol_table ();
 
       symtab.clear_function (fcn_name);
     }

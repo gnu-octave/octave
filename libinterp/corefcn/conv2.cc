@@ -75,7 +75,7 @@ When the third argument is a matrix, return the convolution of the matrix
 
   std::string shape = "full";   // default
   bool separable = false;
-  octave::convn_type ct = octave::convn_full;
+  convn_type ct = convn_full;
 
   if (nargin == 3)
     {
@@ -94,11 +94,11 @@ When the third argument is a matrix, return the convolution of the matrix
     error ("conv2: A and B must be 1-D vectors or 2-D matrices");
 
   if (shape == "full")
-    ct = octave::convn_full;
+    ct = convn_full;
   else if (shape == "same")
-    ct = octave::convn_same;
+    ct = convn_same;
   else if (shape == "valid")
-    ct = octave::convn_valid;
+    ct = convn_valid;
   else
     error ("conv2: SHAPE type not valid");
 
@@ -122,13 +122,13 @@ When the third argument is a matrix, return the convolution of the matrix
                 {
                   FloatColumnVector v1 (args(0).float_vector_value ());
                   FloatRowVector v2 (args(1).float_vector_value ());
-                  retval = octave::convn (a, v1, v2, ct);
+                  retval = convn (a, v1, v2, ct);
                 }
               else
                 {
                   FloatComplexColumnVector v1 (args(0).float_complex_vector_value ());
                   FloatComplexRowVector v2 (args(1).float_complex_vector_value ());
-                  retval = octave::convn (a, v1, v2, ct);
+                  retval = convn (a, v1, v2, ct);
                 }
             }
           else
@@ -136,7 +136,7 @@ When the third argument is a matrix, return the convolution of the matrix
               FloatColumnVector v1 (args(0).float_vector_value ());
               FloatRowVector v2 (args(1).float_vector_value ());
               FloatMatrix a (args(2).float_matrix_value ());
-              retval = octave::convn (a, v1, v2, ct);
+              retval = convn (a, v1, v2, ct);
             }
         }
       else
@@ -149,13 +149,13 @@ When the third argument is a matrix, return the convolution of the matrix
                 {
                   ColumnVector v1 (args(0).vector_value ());
                   RowVector v2 (args(1).vector_value ());
-                  retval = octave::convn (a, v1, v2, ct);
+                  retval = convn (a, v1, v2, ct);
                 }
               else
                 {
                   ComplexColumnVector v1 (args(0).complex_vector_value ());
                   ComplexRowVector v2 (args(1).complex_vector_value ());
-                  retval = octave::convn (a, v1, v2, ct);
+                  retval = convn (a, v1, v2, ct);
                 }
             }
           else
@@ -163,7 +163,7 @@ When the third argument is a matrix, return the convolution of the matrix
               ColumnVector v1 (args(0).vector_value ());
               RowVector v2 (args(1).vector_value ());
               Matrix a (args(2).matrix_value ());
-              retval = octave::convn (a, v1, v2, ct);
+              retval = convn (a, v1, v2, ct);
             }
         }
     } // if (separable)
@@ -177,19 +177,19 @@ When the third argument is a matrix, return the convolution of the matrix
               if (args(1).isreal ())
                 {
                   FloatMatrix b (args(1).float_matrix_value ());
-                  retval = octave::convn (a, b, ct);
+                  retval = convn (a, b, ct);
                 }
               else
                 {
                   FloatComplexMatrix b (args(1).float_complex_matrix_value ());
-                  retval = octave::convn (a, b, ct);
+                  retval = convn (a, b, ct);
                 }
             }
           else
             {
               FloatMatrix a (args(0).float_matrix_value ());
               FloatMatrix b (args(1).float_matrix_value ());
-              retval = octave::convn (a, b, ct);
+              retval = convn (a, b, ct);
             }
         }
       else
@@ -200,19 +200,19 @@ When the third argument is a matrix, return the convolution of the matrix
               if (args(1).isreal ())
                 {
                   Matrix b (args(1).matrix_value ());
-                  retval = octave::convn (a, b, ct);
+                  retval = convn (a, b, ct);
                 }
               else
                 {
                   ComplexMatrix b (args(1).complex_matrix_value ());
-                  retval = octave::convn (a, b, ct);
+                  retval = convn (a, b, ct);
                 }
             }
           else
             {
               Matrix a (args(0).matrix_value ());
               Matrix b (args(1).matrix_value ());
-              retval = octave::convn (a, b, ct);
+              retval = convn (a, b, ct);
             }
         }
 
@@ -334,17 +334,17 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
     print_usage ();
 
   std::string shape = "full";   // default
-  octave::convn_type ct = octave::convn_full;
+  convn_type ct = convn_full;
 
   if (nargin == 3)
     shape = args(2).xstring_value ("convn: SHAPE must be a string");
 
   if (shape == "full")
-    ct = octave::convn_full;
+    ct = convn_full;
   else if (shape == "same")
-    ct = octave::convn_same;
+    ct = convn_same;
   else if (shape == "valid")
-    ct = octave::convn_valid;
+    ct = convn_valid;
   else
     error ("convn: SHAPE type not valid");
 
@@ -358,19 +358,19 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
           if (args(1).isreal ())
             {
               FloatNDArray b (args(1).float_array_value ());
-              retval = octave::convn (a, b, ct);
+              retval = convn (a, b, ct);
             }
           else
             {
               FloatComplexNDArray b (args(1).float_complex_array_value ());
-              retval = octave::convn (a, b, ct);
+              retval = convn (a, b, ct);
             }
         }
       else
         {
           FloatNDArray a (args(0).float_array_value ());
           FloatNDArray b (args(1).float_array_value ());
-          retval = octave::convn (a, b, ct);
+          retval = convn (a, b, ct);
         }
     }
   else
@@ -381,19 +381,19 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
           if (args(1).isreal ())
             {
               NDArray b (args(1).array_value ());
-              retval = octave::convn (a, b, ct);
+              retval = convn (a, b, ct);
             }
           else
             {
               ComplexNDArray b (args(1).complex_array_value ());
-              retval = octave::convn (a, b, ct);
+              retval = convn (a, b, ct);
             }
         }
       else
         {
           NDArray a (args(0).array_value ());
           NDArray b (args(1).array_value ());
-          retval = octave::convn (a, b, ct);
+          retval = convn (a, b, ct);
         }
     }
 

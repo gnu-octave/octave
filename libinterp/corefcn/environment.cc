@@ -171,7 +171,7 @@ The original variable value is restored when exiting the function.
 @seealso{edit, edit_history}
 @end deftypefn */)
 {
-  octave::environment& env = interp.get_environment ();
+  environment& env = interp.get_environment ();
 
   return env.editor (args, nargout);
 }
@@ -208,7 +208,7 @@ The original variable value is restored when exiting the function.
 @seealso{IMAGE_PATH, OCTAVE_HOME, OCTAVE_EXEC_HOME}
 @end deftypefn */)
 {
-  octave::environment& env = interp.get_environment ();
+  environment& env = interp.get_environment ();
 
   return env.exec_path (args, nargout);
 }
@@ -240,7 +240,7 @@ The original variable value is restored when exiting the function.
 @seealso{EXEC_PATH, OCTAVE_HOME, OCTAVE_EXEC_HOME}
 @end deftypefn */)
 {
-  octave::environment& env = interp.get_environment ();
+  environment& env = interp.get_environment ();
 
   return env.image_path (args, nargout);
 }

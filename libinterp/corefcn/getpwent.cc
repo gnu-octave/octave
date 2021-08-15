@@ -46,7 +46,7 @@ OCTAVE_NAMESPACE_BEGIN
 // Password file functions.  (Why not?)
 
 static octave_value
-mk_pw_map (const octave::sys::password& pw)
+mk_pw_map (const sys::password& pw)
 {
   octave_value retval;
 
@@ -83,8 +83,8 @@ Once the end of the data has been reached, @code{getpwent} returns 0.
 
   std::string msg;
 
-  // octave::sys::password::getpwent may set msg.
-  octave_value val = mk_pw_map (octave::sys::password::getpwent (msg));
+  // sys::password::getpwent may set msg.
+  octave_value val = mk_pw_map (sys::password::getpwent (msg));
 
   return ovl (val, msg);
 }
@@ -104,15 +104,15 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.
 
   double dval = args(0).double_value ();
 
-  if (octave::math::x_nint (dval) != dval)
+  if (math::x_nint (dval) != dval)
     error ("getpwuid: UID must be an integer");
 
   uid_t uid = static_cast<uid_t> (dval);
 
   std::string msg;
 
-  // octave::sys::password::getpwuid may set msg.
-  octave_value val = mk_pw_map (octave::sys::password::getpwuid (uid, msg));
+  // sys::password::getpwuid may set msg.
+  octave_value val = mk_pw_map (sys::password::getpwuid (uid, msg));
 
   return ovl (val, msg);
 }
@@ -134,8 +134,8 @@ If the user name does not exist in the database, @code{getpwname} returns 0.
 
   std::string msg;
 
-  // octave::sys::password::getpwnam may set msg.
-  octave_value val = mk_pw_map (octave::sys::password::getpwnam (s, msg));
+  // sys::password::getpwnam may set msg.
+  octave_value val = mk_pw_map (sys::password::getpwnam (s, msg));
 
   return ovl (val, msg);
 }
@@ -152,8 +152,8 @@ Return the internal pointer to the beginning of the password database.
 
   std::string msg;
 
-  // octave::sys::password::setpwent may set msg.
-  int status = octave::sys::password::setpwent (msg);
+  // sys::password::setpwent may set msg.
+  int status = sys::password::setpwent (msg);
 
   return ovl (static_cast<double> (status), msg);
 }
@@ -170,8 +170,8 @@ Close the password database.
 
   std::string msg;
 
-  // octave::sys::password::endpwent may set msg.
-  int status = octave::sys::password::endpwent (msg);
+  // sys::password::endpwent may set msg.
+  int status = sys::password::endpwent (msg);
 
   return ovl (static_cast<double> (status), msg);
 }

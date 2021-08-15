@@ -732,7 +732,7 @@ The format is a string which is one of @qcode{"texinfo"}, @qcode{"html"}, or
 
   const std::string name = args(0).xstring_value ("get_help_text: NAME must be a string");
 
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   std::string text, format;
 
@@ -757,7 +757,7 @@ The format is a string which is one of @qcode{"texinfo"}, @qcode{"html"}, or
 
   const std::string fname = args(0).xstring_value ("get_help_text_from_file: NAME must be a string");
 
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   std::string text, format;
 
@@ -774,7 +774,7 @@ DEFUN (__operators__, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  return ovl (Cell (octave::operator_names));
+  return ovl (Cell (operator_names));
 }
 
 // Return a cell array of strings containing the names of all keywords.
@@ -791,7 +791,7 @@ DEFMETHOD (__builtins__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   const string_vector bif = symtab.built_in_function_names ();
 
@@ -820,13 +820,13 @@ the return value is an empty cell array.
   Cell retval;
 
   // Find the main function we are in.
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
   octave_user_code *caller = tw.debug_user_code ();
 
   if (! caller)
     return ovl (retval);
 
-  octave::symbol_scope scope = caller->scope ();
+  symbol_scope scope = caller->scope ();
 
   return ovl (Cell (scope.localfunctions ()));
 }
@@ -860,7 +860,7 @@ DEFMETHOD (__which__, interp, args, ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   string_vector argv = args.make_argv ();
 
@@ -909,7 +909,7 @@ in that directory.
 {
   octave_value retval;
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   if (args.length () == 0)
     {
@@ -955,7 +955,7 @@ Note: This variable is only used when Octave is initializing itself.
 Modifying it during a running session of Octave will have no effect.
 @end deftypefn */)
 {
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   return help_sys.built_in_docstrings_file (args, nargout);
 }
@@ -984,7 +984,7 @@ The original variable value is restored when exiting the function.
 @seealso{lookfor}
 @end deftypefn */)
 {
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   return help_sys.doc_cache_file (args, nargout);
 }
@@ -1010,7 +1010,7 @@ The original variable value is restored when exiting the function.
 @seealso{info_program, doc, help, makeinfo_program}
 @end deftypefn */)
 {
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   return help_sys.info_file (args, nargout);
 }
@@ -1033,7 +1033,7 @@ The original variable value is restored when exiting the function.
 @seealso{info_file, doc, help, makeinfo_program}
 @end deftypefn */)
 {
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   return help_sys.info_program (args, nargout);
 }
@@ -1055,7 +1055,7 @@ The original variable value is restored when exiting the function.
 @seealso{texi_macros_file, info_file, info_program, doc, help}
 @end deftypefn */)
 {
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   return help_sys.makeinfo_program (args, nargout);
 }
@@ -1074,7 +1074,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   return help_sys.suppress_verbose_help_message (args, nargout);
 }
@@ -1102,7 +1102,7 @@ The original variable value is restored when exiting the function.
 @seealso{makeinfo_program}
 @end deftypefn */)
 {
-  octave::help_system& help_sys = interp.get_help_system ();
+  help_system& help_sys = interp.get_help_system ();
 
   return help_sys.texi_macros_file (args, nargout);
 }

@@ -55,10 +55,10 @@ do_fft2 (const octave_value_list& args, const char *fcn, int type)
   if (nargin > 1)
     {
       double dval = args(1).double_value ();
-      if (octave::math::isnan (dval))
+      if (math::isnan (dval))
         error ("%s: number of rows (N) cannot be NaN", fcn);
 
-      n_rows = octave::math::nint_big (dval);
+      n_rows = math::nint_big (dval);
       if (n_rows < 0)
         error ("%s: number of rows (N) must be greater than zero", fcn);
     }
@@ -67,10 +67,10 @@ do_fft2 (const octave_value_list& args, const char *fcn, int type)
   if (nargin > 2)
     {
       double dval = args(2).double_value ();
-      if (octave::math::isnan (dval))
+      if (math::isnan (dval))
         error ("%s: number of columns (M) cannot be NaN", fcn);
 
-      n_cols = octave::math::nint_big (dval);
+      n_cols = math::nint_big (dval);
       if (n_cols < 0)
         error ("%s: number of columns (M) must be greater than zero", fcn);
     }

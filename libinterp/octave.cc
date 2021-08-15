@@ -289,9 +289,9 @@ OCTAVE_NAMESPACE_BEGIN
 
   // Note: Although the application destructor doesn't explicitly
   // perform any actions, it can't be declared "default" in the header
-  // file if the octave::interpreter is an incomplete type.  Providing
+  // file if the interpreter is an incomplete type.  Providing
   // an explicit definition of the destructor here is much simpler than
-  // including the full declaration of octave::interpreter in the
+  // including the full declaration of interpreter in the
   // octave.h header file.
   application::~application (void) { }
 
@@ -440,7 +440,7 @@ Return true if Octave is running in GUI mode and false otherwise.
   // FIXME: This isn't quite right, it just says that we intended to
   // start the GUI, not that it is actually running.
 
-  return ovl (octave::application::is_gui_running ());
+  return ovl (application::is_gui_running ());
 }
 
 /*
@@ -471,7 +471,7 @@ an example of how to create an executable Octave script.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (Cell (octave::application::argv ()));
+  return ovl (Cell (application::argv ()));
 }
 
 /*
@@ -489,12 +489,12 @@ passed to Octave.
   if (args.length () != 0)
     print_usage ();
 
-  octave::application *app = octave::application::app ();
+  application *app = application::app ();
 
   if (! app)
     error ("invalid application context!");
 
-  octave::cmdline_options opts = app->options ();
+  cmdline_options opts = app->options ();
 
   return ovl (opts.as_octave_value ());
 }
@@ -514,7 +514,7 @@ how to create an executable Octave script.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave::application::program_invocation_name ());
+  return ovl (application::program_invocation_name ());
 }
 
 /*
@@ -533,7 +533,7 @@ Return the last component of the value returned by
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave::application::program_name ());
+  return ovl (application::program_name ());
 }
 
 /*

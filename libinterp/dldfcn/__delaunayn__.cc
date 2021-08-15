@@ -173,7 +173,7 @@ Undocumented internal function.
       if (! errfile)
         error ("__delaunayn__: unable to redirect Qhull errors to /dev/null");
 
-      octave::unwind_action close_errfile ([=] () { std::fclose (errfile); });
+      unwind_action close_errfile ([=] () { std::fclose (errfile); });
 
       qhT context = { };
       qhT *qh = &context;
@@ -181,7 +181,7 @@ Undocumented internal function.
       int exitcode = qh_new_qhull (qh, dim, n, pt_array, ismalloc, &cmd[0],
                                    outfile, errfile);
 
-      octave::unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
+      unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
 
       if (exitcode)
         error ("__delaunayn__: qhull failed");

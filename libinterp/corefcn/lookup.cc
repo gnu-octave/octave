@@ -122,7 +122,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
               idx.xelem (i) = std::max (zero, std::min (j, n-2));
             }
 
-          retval = octave::idx_vector (idx);
+          retval = idx_vector (idx);
         }
       else if (left_inf)
         {
@@ -134,7 +134,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
               idx.xelem (i) = std::max (zero, j);
             }
 
-          retval = octave::idx_vector (idx);
+          retval = idx_vector (idx);
         }
       else if (right_inf)
         {

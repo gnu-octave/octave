@@ -46,7 +46,7 @@ OCTAVE_NAMESPACE_BEGIN
 // Group file functions.  (Why not?)
 
 static octave_value
-mk_gr_map (const octave::sys::group& gr)
+mk_gr_map (const sys::group& gr)
 {
   if (gr)
     {
@@ -77,8 +77,8 @@ Once the end of data has been reached, @code{getgrent} returns 0.
 
   std::string msg;
 
-  // octave::sys::group::getgrent may set msg.
-  octave_value val = mk_gr_map (octave::sys::group::getgrent (msg));
+  // sys::group::getgrent may set msg.
+  octave_value val = mk_gr_map (sys::group::getgrent (msg));
 
   return ovl (val, msg);
 }
@@ -98,15 +98,15 @@ If the group ID does not exist in the database, @code{getgrgid} returns 0.
 
   double dval = args(0).double_value ();
 
-  if (octave::math::x_nint (dval) != dval)
+  if (math::x_nint (dval) != dval)
     error ("getgrgid: GID must be an integer");
 
   gid_t gid = static_cast<gid_t> (dval);
 
   std::string msg;
 
-  // octave::sys::group::getgrgid may set msg.
-  octave_value val = mk_gr_map (octave::sys::group::getgrgid (gid, msg));
+  // sys::group::getgrgid may set msg.
+  octave_value val = mk_gr_map (sys::group::getgrgid (gid, msg));
 
   return ovl (val, msg);
 }
@@ -128,8 +128,8 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.
 
   std::string msg;
 
-  // octave::sys::group::getgrnam may set msg.
-  octave_value val = mk_gr_map (octave::sys::group::getgrnam (s.c_str (), msg));
+  // sys::group::getgrnam may set msg.
+  octave_value val = mk_gr_map (sys::group::getgrnam (s.c_str (), msg));
 
   return ovl (val, msg);
 }
@@ -146,8 +146,8 @@ Return the internal pointer to the beginning of the group database.
 
   std::string msg;
 
-  // octave::sys::group::setgrent may set msg.
-  int status = octave::sys::group::setgrent (msg);
+  // sys::group::setgrent may set msg.
+  int status = sys::group::setgrent (msg);
 
   return ovl (static_cast<double> (status), msg);
 }
@@ -164,8 +164,8 @@ Close the group database.
 
   std::string msg;
 
-  // octave::sys::group::endgrent may set msg.
-  int status = octave::sys::group::endgrent (msg);
+  // sys::group::endgrent may set msg.
+  int status = sys::group::endgrent (msg);
 
   return ovl (static_cast<double> (status), msg);
 }

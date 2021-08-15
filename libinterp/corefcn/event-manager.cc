@@ -201,7 +201,7 @@ If running in command-line mode, start the GUI desktop.
 {
   if (interp.experimental_terminal_widget ())
     {
-      if (! octave::application::is_gui_running ())
+      if (! application::is_gui_running ())
         {
           // FIXME: Currently, the following action is queued and
           // executed in a Qt event loop and we return immediately to
@@ -210,7 +210,7 @@ If running in command-line mode, start the GUI desktop.
           // waiting until the GUI exits to return to the command
           // prompt, similar to the way the UI* functions work?
 
-          octave::event_manager& evmgr = interp.get_event_manager ();
+          event_manager& evmgr = interp.get_event_manager ();
 
           evmgr.start_gui ();
         }
@@ -229,7 +229,7 @@ DEFMETHOD (__event_manager_enabled__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.enabled ());
 }
@@ -242,14 +242,14 @@ Undocumented internal function.
 {
   octave_value retval;
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   if (args.length () == 1)
     {
       std::string file
         = args(0).xstring_value ("first argument must be filename");
 
-      octave::flush_stdout ();
+      flush_stdout ();
 
       retval = evmgr.edit_file (file);
     }
@@ -258,7 +258,7 @@ Undocumented internal function.
       std::string file
         = args(0).xstring_value ("first argument must be filename");
 
-      octave::flush_stdout ();
+      flush_stdout ();
 
       retval = evmgr.prompt_new_edit_file (file);
     }
@@ -283,9 +283,9 @@ Undocumented internal function.
       std::string btn3 = args(4).xstring_value ("invalid arguments");
       std::string btndef = args(5).xstring_value ("invalid arguments");
 
-      octave::flush_stdout ();
+      flush_stdout ();
 
-      octave::event_manager& evmgr = interp.get_event_manager ();
+      event_manager& evmgr = interp.get_event_manager ();
 
       retval = evmgr.question_dialog (msg, title, btn1, btn2, btn3, btndef);
     }
@@ -313,16 +313,16 @@ Undocumented internal function.
 
   octave_idx_type nel;
 
-  octave::event_manager::filter_list filter_lst;
+  event_manager::filter_list filter_lst;
 
   for (octave_idx_type i = 0; i < flist.rows (); i++)
     filter_lst.push_back (std::make_pair (flist(i,0),
                                           (flist.columns () > 1
                                            ? flist(i,1) : "")));
 
-  octave::flush_stdout ();
+  flush_stdout ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   std::list<std::string> items_lst
     = evmgr.file_dialog (filter_lst, title, filename, pathname, multi_on);
@@ -401,9 +401,9 @@ Undocumented internal function.
   std::string ok_string = args(6).string_value ();
   std::string cancel_string = args(7).string_value ();
 
-  octave::flush_stdout ();
+  flush_stdout ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   std::pair<std::list<int>, int> result
     = evmgr.list_dialog (list_lst, mode, width, height, initial_lst,
@@ -454,9 +454,9 @@ Undocumented internal function.
   for (octave_idx_type i = 0; i < nel; i++)
     defaults_lst.push_back (tmp(i));
 
-  octave::flush_stdout ();
+  flush_stdout ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   std::list<std::string> items_lst
     = evmgr.input_dialog (prompt_lst, title, nr, nc, defaults_lst);
@@ -483,7 +483,7 @@ Undocumented internal function.
     {
       std::string icon_name = args(0).xstring_value ("invalid arguments");
 
-      octave::event_manager& evmgr = interp.get_event_manager ();
+      event_manager& evmgr = interp.get_event_manager ();
 
       retval = evmgr.get_named_icon (icon_name);
     }
@@ -497,7 +497,7 @@ DEFMETHOD (__event_manager_show_preferences__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.show_preferences ());
 }
@@ -508,7 +508,7 @@ DEFMETHOD (__event_manager_apply_preferences__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.apply_preferences ());
 }
@@ -531,9 +531,9 @@ Undocumented internal function.
   if (args.length () >= 2)
     value = args(1).string_value();
 
-  if (octave::application::is_gui_running ())
+  if (application::is_gui_running ())
     {
-      octave::event_manager& evmgr = interp.get_event_manager ();
+      event_manager& evmgr = interp.get_event_manager ();
 
       return ovl (evmgr.gui_preference (key, value));
     }
@@ -558,7 +558,7 @@ Undocumented internal function.
     error ("__event_manager_file_remove__: "
            "old and new name expected as arguments");
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.file_remove (old_name, new_name);
 
@@ -579,7 +579,7 @@ Undocumented internal function.
     error ("__event_manager_file_renamed__: "
            "first argument must be boolean for reload new named file");
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.file_renamed (load_new);
 
@@ -605,7 +605,7 @@ Open the variable @var{name} in the graphical Variable Editor.
   if (val.is_undefined ())
     error ("openvar: '%s' is not a variable", name.c_str ());
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.edit_variable (name, val);
 
@@ -626,7 +626,7 @@ Undocumented internal function.
 {
   std::string file;
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.show_terminal_window ();
 
@@ -644,7 +644,7 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.show_documentation (file));
 }
@@ -660,7 +660,7 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.register_documentation (file));
 }
@@ -676,7 +676,7 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.unregister_documentation (file));
 }
@@ -687,7 +687,7 @@ DEFMETHOD (__event_manager_show_file_browser__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.show_file_browser ();
 
@@ -700,7 +700,7 @@ DEFMETHOD (__event_manager_show_command_history__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.show_command_history ();
 
@@ -713,7 +713,7 @@ DEFMETHOD (__event_manager_show_workspace__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.show_workspace ();
 
@@ -726,7 +726,7 @@ DEFMETHOD (__event_manager_show_community_news__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.show_community_news ();
 
@@ -739,7 +739,7 @@ DEFMETHOD (__event_manager_show_release_notes__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.show_release_notes ();
 
@@ -775,7 +775,7 @@ Internal function for updating the status of some features in the GUI.
   feature = args(0).string_value ();
   status = args(1).string_value ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.gui_status_update (feature, status));
 }
@@ -786,7 +786,7 @@ DEFMETHOD (__event_manager_update_gui_lexer__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.update_gui_lexer ());
 }
@@ -802,7 +802,7 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.copy_image_to_clipboard (file);
   return ovl ();
 }
@@ -817,7 +817,7 @@ Show the GUI command history window and give it the keyboard focus.
   if (args.length () != 0)
     print_usage ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("history");
   return ovl ();
 }
@@ -832,7 +832,7 @@ Show the GUI command window and give it the keyboard focus.
   if (args.length () != 0)
     print_usage ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("command");
   return ovl ();
 }
@@ -847,7 +847,7 @@ Show the GUI file browser window and give it the keyboard focus.
   if (args.length () != 0)
     print_usage ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("filebrowser");
   return ovl ();
 }
@@ -862,7 +862,7 @@ Show the GUI workspace window and give it the keyboard focus.
   if (args.length () != 0)
     print_usage ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("workspace");
   return ovl ();
 }

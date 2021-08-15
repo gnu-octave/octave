@@ -85,6 +85,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 
 OCTAVE_NAMESPACE_BEGIN
+
   class invalid_fcn_handle : public base_fcn_handle
   {
   public:
@@ -3547,7 +3548,7 @@ functions.  This option is no longer supported.
         warning_with_id ("Octave:str2func-global-argument",
                          "str2func: second argument ignored");
 
-      octave::tree_evaluator& tw = interp.get_evaluator ();
+      tree_evaluator& tw = interp.get_evaluator ();
 
       return tw.make_fcn_handle (nm);
     }

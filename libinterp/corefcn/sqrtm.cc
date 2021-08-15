@@ -150,7 +150,7 @@ do_sqrtm (const octave_value& arg)
         }
 
       if (iscomplex)
-        cutoff = 10 * x.rows () * eps * octave::xnorm (x, one);
+        cutoff = 10 * x.rows () * eps * xnorm (x, one);
     }
 
   if (iscomplex)
@@ -193,7 +193,7 @@ do_sqrtm (const octave_value& arg)
             x = u * x; // original x no longer needed.
             ComplexMatrix res = xgemm (x, u, blas_no_trans, blas_conj_trans);
 
-            if (cutoff > 0 && octave::xnorm (imag (res), one) <= cutoff)
+            if (cutoff > 0 && xnorm (imag (res), one) <= cutoff)
               retval = real (res);
             else
               retval = res;
@@ -242,10 +242,10 @@ Mathematics, Manchester, England, January 1999.
     retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
     retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix,
-                         octave::math::schur<FloatComplexMatrix>> (arg);
+                         math::schur<FloatComplexMatrix>> (arg);
   else if (arg.isnumeric ())
     retval(0) = do_sqrtm<Matrix, ComplexMatrix,
-                         octave::math::schur<ComplexMatrix>> (arg);
+                         math::schur<ComplexMatrix>> (arg);
 
   if (nargout > 1)
     {

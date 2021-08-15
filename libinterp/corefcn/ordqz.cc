@@ -193,8 +193,8 @@ Note: The keywords are compatible with the ones from @code{qr}.
                    "ordqz: at most four output arguments possible");
 
   // Matrix A: check dimensions.
-  F77_INT nn = octave::to_f77_int (args(0).rows ());
-  F77_INT nc = octave::to_f77_int (args(0).columns ());
+  F77_INT nn = to_f77_int (args(0).rows ());
+  F77_INT nc = to_f77_int (args(0).columns ());
 
   if (args(0).isempty ())
     {
@@ -214,8 +214,8 @@ Note: The keywords are compatible with the ones from @code{qr}.
     aa = args(0).matrix_value ();
 
   // Extract argument 2 (bb, or cbb if complex).
-  F77_INT b_nr = octave::to_f77_int (args(1).rows ());
-  F77_INT b_nc = octave::to_f77_int (args(1).columns ());
+  F77_INT b_nr = to_f77_int (args(1).rows ());
+  F77_INT b_nc = to_f77_int (args(1).columns ());
 
   if (nn != b_nc || nn != b_nr)
     ::err_nonconformant ();
@@ -229,8 +229,8 @@ Note: The keywords are compatible with the ones from @code{qr}.
     bb = args(1).matrix_value ();
 
   // Extract argument 3 (qq, or cqq if complex).
-  F77_INT q_nr = octave::to_f77_int (args(2).rows ());
-  F77_INT q_nc = octave::to_f77_int (args(2).columns ());
+  F77_INT q_nr = to_f77_int (args(2).rows ());
+  F77_INT q_nc = to_f77_int (args(2).columns ());
 
   if (nn != q_nc || nn != q_nr)
     ::err_nonconformant ();
@@ -244,8 +244,8 @@ Note: The keywords are compatible with the ones from @code{qr}.
     qq = args(2).matrix_value ().transpose ();
 
   // Extract argument 4 (zz, or czz if complex).
-  F77_INT z_nr = octave::to_f77_int (args(3).rows ());
-  F77_INT z_nc = octave::to_f77_int (args(3).columns ());
+  F77_INT z_nr = to_f77_int (args(3).rows ());
+  F77_INT z_nc = to_f77_int (args(3).columns ());
 
   if (nn != z_nc || nn != z_nr)
     ::err_nonconformant ();

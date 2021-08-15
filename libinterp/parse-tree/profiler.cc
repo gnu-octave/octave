@@ -394,7 +394,7 @@ Undocumented internal function.
   if (nargin > 1)
     print_usage ();
 
-  octave::profiler& profiler = interp.get_profiler ();
+  profiler& profiler = interp.get_profiler ();
 
   if (nargin == 1)
     {
@@ -404,7 +404,7 @@ Undocumented internal function.
       if (args(0).bool_value ())
         status = "on";
 
-      octave::event_manager& evmgr = interp.get_event_manager ();
+      event_manager& evmgr = interp.get_event_manager ();
       evmgr.gui_status_update ("profiler", status);  // tell GUI
     }
 
@@ -421,7 +421,7 @@ Undocumented internal function.
   if (args.length () != 0)
     print_usage ();
 
-  octave::profiler& profiler = interp.get_profiler ();
+  profiler& profiler = interp.get_profiler ();
 
   profiler.reset ();
 
@@ -438,7 +438,7 @@ Undocumented internal function.
   if (args.length () != 0)
     print_usage ();
 
-  octave::profiler& profiler = interp.get_profiler ();
+  profiler& profiler = interp.get_profiler ();
 
   if (nargout > 1)
     return ovl (profiler.get_flat (), profiler.get_hierarchical ());

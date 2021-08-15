@@ -66,7 +66,7 @@ null (const Matrix& A, octave_idx_type& rank)
 
   if (! A.isempty ())
     {
-      octave::math::svd<Matrix> A_svd (A);
+      math::svd<Matrix> A_svd (A);
 
       DiagMatrix S = A_svd.singular_values ();
 
@@ -159,7 +159,7 @@ qp (const Matrix& H, const ColumnVector& q,
     {
       eigH = EIG (H);
     }
-  catch (octave::execution_exception& ee)
+  catch (execution_exception& ee)
     {
       error (ee, "qp: failed to compute eigenvalues of H");
     }
@@ -201,11 +201,11 @@ qp (const Matrix& H, const ColumnVector& q,
               // factorization since the Hessian is positive
               // definite.
 
-              octave::math::chol<Matrix> cholH (H);
+              math::chol<Matrix> cholH (H);
 
               R = cholH.chol_matrix ();
 
-              Matrix Hinv = octave::math::chol2inv (R);
+              Matrix Hinv = math::chol2inv (R);
 
               // Computing the unconstrained step.
               // p = -Hinv * g;
@@ -260,7 +260,7 @@ qp (const Matrix& H, const ColumnVector& q,
               // Computing the Cholesky factorization (pR = 0 means
               // that the reduced Hessian was positive definite).
 
-              octave::math::chol<Matrix> cholrH (rH, pR);
+              math::chol<Matrix> cholrH (rH, pR);
               Matrix tR = cholrH.chol_matrix ();
               if (pR == 0)
                 R = tR;
@@ -275,7 +275,7 @@ qp (const Matrix& H, const ColumnVector& q,
                 {
                   // Using the Cholesky factorization to invert rH
 
-                  Matrix rHinv = octave::math::chol2inv (R);
+                  Matrix rHinv = math::chol2inv (R);
 
                   ColumnVector pz = -rHinv * Zt * g;
 
@@ -300,7 +300,7 @@ qp (const Matrix& H, const ColumnVector& q,
                 {
                   eigrH = EIG (rH);
                 }
-              catch (octave::execution_exception& ee)
+              catch (execution_exception& ee)
                 {
                   error (ee, "qp: failed to compute eigenvalues of rH");
                 }

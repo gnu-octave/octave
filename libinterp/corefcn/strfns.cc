@@ -531,12 +531,12 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 template <typename T, typename T_size_type>
 static bool
 strcmp_ignore_n (const T& s1, const T& s2, T_size_type)
-{ return octave::string::strcmp (s1, s2); }
+{ return string::strcmp (s1, s2); }
 
 template <typename T, typename T_size_type>
 static bool
 strcmpi_ignore_n (const T& s1, const T& s2, T_size_type)
-{ return octave::string::strcmpi (s1, s2); }
+{ return string::strcmpi (s1, s2); }
 
 
 DEFUN (strcmp, args, ,
@@ -652,8 +652,8 @@ This is just the opposite of the corresponding C library function.
 
   if (n > 0)
     return ovl (do_strcmp_fun (args(0), args(1), n, "strncmp",
-                               octave::string::strncmp,
-                               octave::string::strncmp));
+                               string::strncmp,
+                               string::strncmp));
   else
     error ("strncmp: N must be greater than 0");
 }
@@ -732,8 +732,8 @@ This is just the opposite of the corresponding C library function.
 
   if (n > 0)
     return ovl (do_strcmp_fun (args(0), args(1), n, "strncmpi",
-                               octave::string::strncmpi,
-                               octave::string::strncmpi));
+                               string::strncmpi,
+                               string::strncmpi));
   else
     error ("strncmpi: N must be greater than 0");
 }
@@ -799,31 +799,31 @@ risk of using @code{eval} on unknown data.
   if (args(0).is_string ())
     {
       if (args(0).rows () == 0 || args(0).columns () == 0)
-        retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
+        retval = Matrix (1, 1, numeric_limits<double>::NaN ());
       else if (args(0).rows () == 1 && args(0).ndims () == 2)
-        retval = octave::string::str2double (args(0).string_value ());
+        retval = string::str2double (args(0).string_value ());
       else
         {
           const string_vector sv = args(0).string_vector_value ();
 
-          retval = sv.map<Complex> (octave::string::str2double);
+          retval = sv.map<Complex> (string::str2double);
         }
     }
   else if (args(0).iscell ())
     {
       const Cell cell = args(0).cell_value ();
 
-      ComplexNDArray output (cell.dims (), octave::numeric_limits<double>::NaN ());
+      ComplexNDArray output (cell.dims (), numeric_limits<double>::NaN ());
 
       for (octave_idx_type i = 0; i < cell.numel (); i++)
         {
           if (cell(i).is_string ())
-            output(i) = octave::string::str2double (cell(i).string_value ());
+            output(i) = string::str2double (cell(i).string_value ());
         }
       retval = output;
     }
   else
-    retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
+    retval = Matrix (1, 1, numeric_limits<double>::NaN ());
 
   return retval;
 }
@@ -910,7 +910,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
                codepage, std::strerror (errno));
     }
 
-  octave::unwind_action free_utf8_str ([=] () { ::free (utf8_str); });
+  unwind_action free_utf8_str ([=] () { ::free (utf8_str); });
 
   octave_idx_type len = length;
 
@@ -955,7 +955,7 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
                codepage, std::strerror (errno));
     }
 
-  octave::unwind_action free_native_bytes ([=] () { ::free (native_bytes); });
+  unwind_action free_native_bytes ([=] () { ::free (native_bytes); });
 
   octave_idx_type len = length;
 
@@ -1126,15 +1126,15 @@ U+0080–U+00FF with the same value as the byte (if @var{mode} is the string
   if (nargin == 2)
     mode = args(1).xstring_value ("__u8_validate__: MODE must be a string");
 
-  octave::string::u8_fallback_type fb_type;
+  string::u8_fallback_type fb_type;
   if (mode == "replace")
-    fb_type = octave::string::U8_REPLACEMENT_CHAR;
+    fb_type = string::U8_REPLACEMENT_CHAR;
   else if (mode == "unicode")
-    fb_type = octave::string::U8_ISO_8859_1;
+    fb_type = string::U8_ISO_8859_1;
   else
     error (R"(__u8_validate__: MODE must be either "replace" or "unicode")");
 
-  octave::string::u8_validate ("__u8_validate__", in_str, fb_type);
+  string::u8_validate ("__u8_validate__", in_str, fb_type);
 
   return ovl (in_str);
 }

@@ -58,10 +58,10 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
     error ("colloc: N must be a scalar");
 
   double tmp = args(0).double_value ();
-  if (octave::math::isnan (tmp))
+  if (math::isnan (tmp))
     error ("colloc: N cannot be NaN");
 
-  octave_idx_type ncol = octave::math::nint_big (tmp);
+  octave_idx_type ncol = math::nint_big (tmp);
   if (ncol < 0)
     error ("colloc: N must be positive");
 
@@ -87,7 +87,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
   if (ntot < 1)
     error (R"("colloc: the total number of roots (N + "left" + "right") must be >= 1)");
 
-  octave::CollocWt wts (ncol, left, right);
+  CollocWt wts (ncol, left, right);
 
   ColumnVector r = wts.roots ();
   Matrix A = wts.first ();

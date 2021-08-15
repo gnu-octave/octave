@@ -102,9 +102,9 @@ elements @code{sec} (seconds) @code{usec} (microseconds).
   octave_scalar_map ru_map;
   octave_scalar_map tv_map;
 
-  octave::sys::resource_usage rusage;
+  sys::resource_usage rusage;
 
-  octave::sys::cpu_time cpu = rusage.cpu ();
+  sys::cpu_time cpu = rusage.cpu ();
 
   tv_map.assign ("sec", cpu.user_sec ());
   tv_map.assign ("usec", cpu.user_usec ());

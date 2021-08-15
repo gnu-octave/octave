@@ -121,7 +121,7 @@ hash ("md5", fileread (file));
   std::string hash_type = args(0).string_value ();
   std::string str = args(1).string_value ();
 
-  return ovl (octave::crypto::hash (hash_type, str));
+  return ovl (crypto::hash (hash_type, str));
 }
 
 /*

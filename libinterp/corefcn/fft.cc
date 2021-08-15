@@ -57,10 +57,10 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
       if (! args(1).isempty ())
         {
           double dval = args(1).double_value ();
-          if (octave::math::isnan (dval))
+          if (math::isnan (dval))
             error ("%s: number of points (N) cannot be NaN", fcn);
 
-          n_points = octave::math::nint_big (dval);
+          n_points = math::nint_big (dval);
           if (n_points < 0)
             error ("%s: number of points (N) must be greater than zero", fcn);
         }
@@ -69,14 +69,14 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
   if (nargin > 2)
     {
       double dval = args(2).double_value ();
-      if (octave::math::isnan (dval))
+      if (math::isnan (dval))
         error ("%s: DIM cannot be NaN", fcn);
       else if (dval < 1 || dval > ndims)
         error ("%s: DIM must be a valid dimension along which to perform FFT",
                fcn);
       else
         // to be safe, cast it back to int since dim is an int
-        dim = octave::math::nint (dval) - 1;
+        dim = math::nint (dval) - 1;
     }
 
   // FIXME: This seems strange and unnecessary (10/21/16).
@@ -112,8 +112,8 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
     {
       octave_value_list idx (ndims);
       for (octave_idx_type i = 0; i < ndims; i++)
-        idx(i) = octave::idx_vector::colon;
-      idx(dim) = octave::idx_vector (0);
+        idx(i) = idx_vector::colon;
+      idx(dim) = idx_vector (0);
 
       return arg.index_op (idx);
     }

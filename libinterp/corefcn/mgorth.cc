@@ -47,7 +47,7 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
       x -= h(j) * Vcj;
     }
 
-  h(Vc) = octave::xnorm (x);
+  h(Vc) = xnorm (x);
   if (std::real (h(Vc)) > 0)
     x /= h(Vc);
 }

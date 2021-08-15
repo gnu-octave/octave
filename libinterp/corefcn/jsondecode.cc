@@ -523,7 +523,7 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
   if (! (nargin % 2))
     print_usage ();
 
-  octave::make_valid_name_options options (args.slice (1, nargin - 1));
+  make_valid_name_options options (args.slice (1, nargin - 1));
 
   if (! args(0).is_string ())
     error ("jsondecode: JSON_TXT must be a character string");

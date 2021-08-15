@@ -922,7 +922,7 @@ currently installed data types.
 
   if (nargin == 0)
     {
-      octave::type_info& type_info = interp.get_type_info ();
+      type_info& type_info = interp.get_type_info ();
 
       return ovl (Cell (type_info.installed_type_names ()));
     }
@@ -1038,7 +1038,7 @@ Undocumented internal function.
   if (args.length () > 0)
     print_usage ();
 
-  octave::type_info& type_info = interp.get_type_info ();
+  type_info& type_info = interp.get_type_info ();
 
   return ovl (type_info.installed_type_info ());
 }

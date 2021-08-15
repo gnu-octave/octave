@@ -214,7 +214,7 @@ sparse matrix if possible.
     }
 
   if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
-    octave::warn_singular_matrix (isfloat ? frcond : rcond);
+    warn_singular_matrix (isfloat ? frcond : rcond);
 
   return retval;
 }

@@ -602,9 +602,9 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
         error ("jsonencode: option value must be a logical scalar");
 
       std::string option_name = args(i++).string_value ();
-      if (octave::string::strcmpi (option_name, "ConvertInfAndNaN"))
+      if (string::strcmpi (option_name, "ConvertInfAndNaN"))
         ConvertInfAndNaN = args(i).bool_value ();
-      else if (octave::string::strcmpi (option_name, "PrettyPrint"))
+      else if (string::strcmpi (option_name, "PrettyPrint"))
         PrettyPrint = args(i).bool_value ();
       else
         error ("jsonencode: "

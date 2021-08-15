@@ -107,7 +107,7 @@ present working directory rather than changing to the user's home directory.
   octave_value_list retval;
 
   if (nargout > 0)
-    retval = octave_value (octave::sys::env::get_current_directory ());
+    retval = octave_value (sys::env::get_current_directory ());
 
   if (nargin == 1)
     {
@@ -118,7 +118,7 @@ present working directory rather than changing to the user's home directory.
     }
   else if (nargout == 0)
     {
-      std::string home_dir = octave::sys::env::get_home_directory ();
+      std::string home_dir = sys::env::get_home_directory ();
 
       if (! home_dir.empty ())
         interp.chdir (home_dir);
@@ -137,7 +137,7 @@ Return the current working directory.
 @seealso{cd, dir, ls, mkdir, rmdir}
 @end deftypefn */)
 {
-  return ovl (octave::sys::env::get_current_directory ());
+  return ovl (sys::env::get_current_directory ());
 }
 
 DEFUN (readdir, args, ,
@@ -161,12 +161,12 @@ error message.
 
   octave_value_list retval = ovl (Cell (), -1.0, "");
 
-  dirname = octave::sys::file_ops::tilde_expand (dirname);
+  dirname = sys::file_ops::tilde_expand (dirname);
 
   string_vector dirlist;
   std::string msg;
 
-  if (octave::sys::get_dirlist (dirname, dirlist, msg))
+  if (sys::get_dirlist (dirname, dirlist, msg))
     {
       retval(0) = Cell (dirlist.sort ());
       retval(1) = 0.0;
@@ -199,14 +199,14 @@ Internal function called by mkdir.m.
       std::string parent = args(0).xstring_value ("mkdir: PARENT must be a string");
       std::string dir = args(1).xstring_value ("mkdir: DIR must be a string");
 
-      dirname = octave::sys::file_ops::concat (parent, dir);
+      dirname = sys::file_ops::concat (parent, dir);
     }
   else if (nargin == 1)
     dirname = args(0).xstring_value ("mkdir: DIR must be a string");
 
-  dirname = octave::sys::file_ops::tilde_expand (dirname);
+  dirname = sys::file_ops::tilde_expand (dirname);
 
-  octave::sys::file_stat fs (dirname);
+  sys::file_stat fs (dirname);
 
   if (fs && fs.is_dir ())
     {
@@ -217,7 +217,7 @@ Internal function called by mkdir.m.
     {
       std::string msg;
 
-      int status = octave::sys::mkdir (dirname, 0777, msg);
+      int status = sys::mkdir (dirname, 0777, msg);
 
       if (status < 0)
         return ovl (false, msg, "mkdir");
@@ -251,12 +251,12 @@ identifier.
 
   std::string dirname = args(0).xstring_value ("rmdir: DIR must be a string");
 
-  std::string fulldir = octave::sys::file_ops::tilde_expand (dirname);
+  std::string fulldir = sys::file_ops::tilde_expand (dirname);
   octave_value_list retval;
   int status = -1;
   std::string msg;
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   if (nargin == 2)
     {
@@ -266,10 +266,10 @@ identifier.
       bool doit = true;
 
       if (interp.interactive ()
-          && ! octave::application::forced_interactive ()
+          && ! application::forced_interactive ()
           && Vconfirm_recursive_rmdir)
         {
-          octave::input_system& input_sys = interp.get_input_system ();
+          input_system& input_sys = interp.get_input_system ();
 
           std::string prompt = "remove entire contents of " + fulldir + "? ";
 
@@ -279,13 +279,13 @@ identifier.
       if (doit)
         {
           evmgr.file_remove (fulldir, "");
-          status = octave::sys::recursive_rmdir (fulldir, msg);
+          status = sys::recursive_rmdir (fulldir, msg);
         }
     }
   else
     {
       evmgr.file_remove (fulldir, "");
-      status = octave::sys::rmdir (fulldir, msg);
+      status = sys::rmdir (fulldir, msg);
     }
 
   evmgr.file_renamed (status >= 0);
@@ -324,13 +324,13 @@ error message.
   std::string from = args(0).xstring_value ("link: OLD must be a string");
   std::string to = args(1).xstring_value ("link: NEW must be a string");
 
-  from = octave::sys::file_ops::tilde_expand (from);
-  to = octave::sys::file_ops::tilde_expand (to);
+  from = sys::file_ops::tilde_expand (from);
+  to = sys::file_ops::tilde_expand (to);
 
   octave_value_list retval;
   std::string msg;
 
-  int status = octave::sys::link (from, to, msg);
+  int status = sys::link (from, to, msg);
 
   if (nargout == 0)
     {
@@ -366,13 +366,13 @@ error message.
   std::string from = args(0).xstring_value ("symlink: OLD must be a string");
   std::string to = args(1).xstring_value ("symlink: NEW must be a string");
 
-  from = octave::sys::file_ops::tilde_expand (from);
-  to = octave::sys::file_ops::tilde_expand (to);
+  from = sys::file_ops::tilde_expand (from);
+  to = sys::file_ops::tilde_expand (to);
 
   octave_value_list retval;
   std::string msg;
 
-  int status = octave::sys::symlink (from, to, msg);
+  int status = sys::symlink (from, to, msg);
 
   if (nargout == 0)
     {
@@ -408,11 +408,11 @@ error message.
 
   std::string symlink = args(0).xstring_value ("readlink: SYMLINK must be a string");
 
-  symlink = octave::sys::file_ops::tilde_expand (symlink);
+  symlink = sys::file_ops::tilde_expand (symlink);
 
   std::string result, msg;
 
-  int status = octave::sys::readlink (symlink, result, msg);
+  int status = sys::readlink (symlink, result, msg);
 
   if (status < 0)
     return ovl ("", -1.0, msg);
@@ -438,17 +438,17 @@ error message.
   std::string from = args(0).xstring_value ("rename: OLD must be a string");
   std::string to = args(1).xstring_value ("rename: NEW must be a string");
 
-  from = octave::sys::file_ops::tilde_expand (from);
-  to = octave::sys::file_ops::tilde_expand (to);
+  from = sys::file_ops::tilde_expand (from);
+  to = sys::file_ops::tilde_expand (to);
 
   octave_value_list retval;
   std::string msg;
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.file_remove (from, to);
 
-  int status = octave::sys::rename (from, to, msg);
+  int status = sys::rename (from, to, msg);
 
   evmgr.file_renamed (status >= 0);
 
@@ -529,7 +529,7 @@ supported.
   string_vector pat
     = args(0).xstring_vector_value ("glob: PATTERN must be a string");
 
-  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
+  glob_match pattern (sys::file_ops::tilde_expand (pat));
 
   return ovl (Cell (pattern.glob ()));
 }
@@ -596,9 +596,9 @@ glob ("*.*")
 
   string_vector pat = args(0).string_vector_value ();
 
-  string_vector pattern (octave::sys::file_ops::tilde_expand (pat));
+  string_vector pattern (sys::file_ops::tilde_expand (pat));
 
-  return ovl (Cell (octave::sys::windows_glob (pattern)));
+  return ovl (Cell (sys::windows_glob (pattern)));
 }
 
 /*
@@ -657,7 +657,7 @@ fnmatch ("a*b", @{"ab"; "axyzb"; "xyzab"@})
   string_vector pat = args(0).string_vector_value ();
   string_vector str = args(1).string_vector_value ();
 
-  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
+  glob_match pattern (sys::file_ops::tilde_expand (pat));
 
   return ovl (pattern.match (str));
 }
@@ -683,14 +683,14 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and
   octave_value retval;
 
   if (nargin == 0)
-    retval = octave::sys::file_ops::dir_sep_str ();
+    retval = sys::file_ops::dir_sep_str ();
   else
     {
       std::string s = args(0).xstring_value ("filesep: argument must be a string");
       if (s != "all")
         error (R"(filesep: argument must be "all")");
 
-      retval = octave::sys::file_ops::dir_sep_chars ();
+      retval = sys::file_ops::dir_sep_chars ();
     }
 
   return retval;
@@ -706,7 +706,7 @@ Query the character used to separate directories in a path.
   if (args.length () > 0)
     print_usage ();
 
-  return ovl (octave::directory_path::path_sep_str ());
+  return ovl (directory_path::path_sep_str ());
 }
 
 DEFUN (confirm_recursive_rmdir, args, nargout,

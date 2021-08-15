@@ -1752,7 +1752,7 @@ is derived.
       // Called as class constructor
       std::string id = args(1).xstring_value ("class: ID (class name) must be a string");
 
-      octave::tree_evaluator& tw = interp.get_evaluator ();
+      tree_evaluator& tw = interp.get_evaluator ();
 
       octave_function *fcn = tw.caller_function ();
 
@@ -1977,7 +1977,7 @@ may @emph{only} be called from a class constructor.
 @seealso{inferiorto}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   octave_function *fcn = tw.caller_function ();
 
@@ -1993,7 +1993,7 @@ may @emph{only} be called from a class constructor.
       if (is_built_in_class (inf_class))
         break;
 
-      octave::symbol_table& symtab = interp.get_symbol_table ();
+      symbol_table& symtab = interp.get_symbol_table ();
 
       std::string sup_class = fcn->name ();
       if (! symtab.set_class_relationship (sup_class, inf_class))
@@ -2015,7 +2015,7 @@ may @emph{only} be called from a class constructor.
 @seealso{superiorto}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   octave_function *fcn = tw.caller_function ();
 
@@ -2030,7 +2030,7 @@ may @emph{only} be called from a class constructor.
         error ("inferiorto: cannot give user-defined class lower "
                "precedence than built-in class");
 
-      octave::symbol_table& symtab = interp.get_symbol_table ();
+      symbol_table& symtab = interp.get_symbol_table ();
 
       std::string inf_class = fcn->name ();
       if (! symtab.set_class_relationship (sup_class, inf_class))
@@ -2080,14 +2080,14 @@ public:
   // execute the inline function and that will push a stack frame.
 
   octave_value_list
-  call (octave::tree_evaluator& tw, int nargout = 0,
+  call (tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ())
   {
     return execute (tw, nargout, args);
   }
 
   octave_value_list
-  execute (octave::tree_evaluator& tw, int nargout = 0,
+  execute (tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ());
 
 private:
@@ -2137,10 +2137,10 @@ private:
 };
 
 octave_value_list
-octave_inline_fcn::execute (octave::tree_evaluator& tw, int nargout,
+octave_inline_fcn::execute (tree_evaluator& tw, int nargout,
                             const octave_value_list& args)
 {
-  octave::interpreter& interp = tw.get_interpreter ();
+  interpreter& interp = tw.get_interpreter ();
 
   return interp.feval (octave_value (m_inline_obj, true), args, nargout);
 }

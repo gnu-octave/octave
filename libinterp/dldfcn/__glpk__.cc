@@ -429,10 +429,10 @@ Undocumented internal function.
   Array<int> freeLB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
-      if (octave::math::isinf (lb[i]))
+      if (math::isinf (lb[i]))
         {
           freeLB(i) = 1;
-          lb[i] = -octave::numeric_limits<double>::Inf ();
+          lb[i] = -numeric_limits<double>::Inf ();
         }
       else
         freeLB(i) = 0;
@@ -450,10 +450,10 @@ Undocumented internal function.
   Array<int> freeUB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
-      if (octave::math::isinf (ub[i]))
+      if (math::isinf (ub[i]))
         {
           freeUB(i) = 1;
-          ub[i] = octave::numeric_limits<double>::Inf ();
+          ub[i] = numeric_limits<double>::Inf ();
         }
       else
         freeUB(i) = 0;

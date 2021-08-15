@@ -42,34 +42,34 @@ OCTAVE_NAMESPACE_BEGIN
 static std::string Vsvd_driver = "gesvd";
 
 template <typename T>
-static typename octave::math::svd<T>::Type
+static typename math::svd<T>::Type
 svd_type (int nargin, int nargout, const octave_value_list & args, const T & A)
 {
   if (nargout == 0 || nargout == 1)
-    return octave::math::svd<T>::Type::sigma_only;
+    return math::svd<T>::Type::sigma_only;
   else if (nargin == 1)
-    return octave::math::svd<T>::Type::std;
+    return math::svd<T>::Type::std;
   else if (! args(1).is_real_scalar ())
-    return octave::math::svd<T>::Type::economy;
+    return math::svd<T>::Type::economy;
   else
     {
       if (A.rows () > A.columns ())
-        return octave::math::svd<T>::Type::economy;
+        return math::svd<T>::Type::economy;
       else
-        return octave::math::svd<T>::Type::std;
+        return math::svd<T>::Type::std;
     }
 }
 
 template <typename T>
-static typename octave::math::svd<T>::Driver
+static typename math::svd<T>::Driver
 svd_driver (void)
 {
   if (Vsvd_driver == "gejsv")
-      return octave::math::svd<T>::Driver::GEJSV;
+      return math::svd<T>::Driver::GEJSV;
   else if (Vsvd_driver == "gesdd")
-      return octave::math::svd<T>::Driver::GESDD;
+      return math::svd<T>::Driver::GESDD;
   else
-      return octave::math::svd<T>::Driver::GESVD;  // default
+      return math::svd<T>::Driver::GESVD;  // default
 }
 
 DEFUN (svd, args, nargout,
@@ -198,7 +198,7 @@ documentation for @code{svd_driver} for more information on choosing a driver.
           if (tmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          octave::math::svd<FloatMatrix> result
+          math::svd<FloatMatrix> result
             (tmp,
              svd_type<FloatMatrix> (nargin, nargout, args, tmp),
              svd_driver<FloatMatrix> ());
@@ -222,7 +222,7 @@ documentation for @code{svd_driver} for more information on choosing a driver.
           if (ctmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          octave::math::svd<FloatComplexMatrix> result
+          math::svd<FloatComplexMatrix> result
             (ctmp,
              svd_type<FloatComplexMatrix> (nargin, nargout, args, ctmp),
              svd_driver<FloatComplexMatrix> ());
@@ -249,7 +249,7 @@ documentation for @code{svd_driver} for more information on choosing a driver.
           if (tmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          octave::math::svd<Matrix> result
+          math::svd<Matrix> result
             (tmp,
              svd_type<Matrix> (nargin, nargout, args, tmp),
              svd_driver<Matrix> ());
@@ -273,7 +273,7 @@ documentation for @code{svd_driver} for more information on choosing a driver.
           if (ctmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          octave::math::svd<ComplexMatrix> result
+          math::svd<ComplexMatrix> result
             (ctmp,
              svd_type<ComplexMatrix> (nargin, nargout, args, ctmp),
              svd_driver<ComplexMatrix> ());

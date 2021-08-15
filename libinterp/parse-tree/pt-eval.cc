@@ -2260,7 +2260,7 @@ Example:
 @seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.evaluate_end_expression (args);
 }
@@ -3943,7 +3943,7 @@ Example:
 
         unwind_protect frame;
 
-        octave::interpreter_try (frame);
+        interpreter_try (frame);
 
         // The catch code is *not* added to unwind_protect stack; it
         // doesn't need to be run on interrupts.
@@ -5108,7 +5108,7 @@ The original variable value is restored when exiting the function.
 @seealso{max_stack_depth}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.max_recursion_depth (args, nargout);
 }
@@ -5201,7 +5201,7 @@ The original variable value is restored when exiting the function.
 @seealso{whos}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.whos_line_format (args, nargout);
 }
@@ -5223,7 +5223,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.silent_functions (args, nargout);
 }
@@ -5266,7 +5266,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.string_fill_char (args, nargout);
 }
@@ -5306,7 +5306,7 @@ The original variable value is restored when exiting the function.
 @seealso{echo, PS1, PS2}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.PS4 (args, nargout);
 }
@@ -5352,7 +5352,7 @@ With no arguments, @code{echo} toggles the current echo state.
 @seealso{PS4}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.echo (args, nargout);
 }

@@ -2426,7 +2426,7 @@ directories with those names.
     {
       std::string dirname = args(0).xstring_value ("genpath: DIR must be a string");
 
-      retval = octave::genpath (dirname);
+      retval = genpath (dirname);
     }
   else
     {
@@ -2437,7 +2437,7 @@ directories with those names.
       for (octave_idx_type i = 1; i < nargin; i++)
         skip[i-1] = args(i).xstring_value ("genpath: all arguments must be strings");
 
-      retval = octave::genpath (dirname, skip);
+      retval = genpath (dirname, skip);
     }
 
   return retval;
@@ -2449,7 +2449,7 @@ DEFUN (rehash, , ,
 Reinitialize Octave's load path directory cache.
 @end deftypefn */)
 {
-  octave::rehash_internal ();
+  rehash_internal ();
 
   return ovl ();
 }
@@ -2465,7 +2465,7 @@ Return the command line path variable.
   if (! args.empty ())
     print_usage ();
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   return ovl (lp.get_command_line_path ());
 }
@@ -2481,7 +2481,7 @@ Restore Octave's path to its initial state at startup.
   if (! args.empty ())
     print_usage ();
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   lp.initialize (true);
 
@@ -2499,7 +2499,7 @@ DEFMETHOD (__pathorig__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   return ovl (lp.system_path ());
 }
@@ -2529,18 +2529,18 @@ No checks are made for duplicate elements.
 
   string_vector argv = args.make_argv ("path");
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   if (nargin > 0)
     {
       std::string path = argv[1];
 
       for (int i = 2; i <= nargin; i++)
-        path += octave::directory_path::path_sep_str () + argv[i];
+        path += directory_path::path_sep_str () + argv[i];
 
       lp.set (path, true);
 
-      octave::rehash_internal ();
+      rehash_internal ();
     }
 
   if (nargout > 0)
@@ -2599,7 +2599,7 @@ For each directory that is added, and that was not already in the path,
   if (nargin == 0)
     print_usage ();
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   octave_value retval;
 
@@ -2647,7 +2647,7 @@ For each directory that is added, and that was not already in the path,
     {
       std::string arg = arglist(i).xstring_value ("addpath: all arguments must be strings");
 
-      std::list<std::string> dir_elts = octave::split_path (arg);
+      std::list<std::string> dir_elts = split_path (arg);
 
       if (! append)
         std::reverse (dir_elts.begin (), dir_elts.end ());
@@ -2664,11 +2664,11 @@ For each directory that is added, and that was not already in the path,
                      (it_start, dir.end (),
                       [] (char l, char r)
                       {
-                        return l == r && octave::sys::file_ops::is_dir_sep (l);
+                        return l == r && sys::file_ops::is_dir_sep (l);
                       }),
                      dir.end ());
 
-          auto pos = dir.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+          auto pos = dir.find_last_of (sys::file_ops::dir_sep_chars ());
           if (pos == std::string::npos)
             {
               if (! dir.empty () && dir[0] == '+')
@@ -2694,7 +2694,7 @@ For each directory that is added, and that was not already in the path,
     }
 
   if (need_to_update)
-    octave::rehash_internal ();
+    rehash_internal ();
 
   return retval;
 }
@@ -2728,7 +2728,7 @@ and runs it if it exists.
 
   octave_value retval;
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   if (nargout > 0)
     retval = lp.path ();
@@ -2738,7 +2738,7 @@ and runs it if it exists.
   for (int i = 0; i < nargin; i++)
     {
       std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
-      std::list<std::string> dir_elts = octave::split_path (arg);
+      std::list<std::string> dir_elts = split_path (arg);
 
       for (const auto& dir : dir_elts)
         {
@@ -2753,7 +2753,7 @@ and runs it if it exists.
     }
 
   if (need_to_update)
-    octave::rehash_internal ();
+    rehash_internal ();
 
   return retval;
 }
@@ -2764,7 +2764,7 @@ DEFMETHOD (__dump_load_path__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   lp.display (octave_stdout);
 

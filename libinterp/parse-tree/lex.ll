@@ -2142,7 +2142,7 @@ If @var{name} is omitted, return a list of keywords.
         {
           std::string kword = wordlist[i].name;
 
-          // FIXME: The following check is duplicated in octave::iskeyword.
+          // FIXME: The following check is duplicated in iskeyword.
           if (! (kword == "set" || kword == "get" || kword == "arguments"
                  || kword == "enumeration" || kword == "events"
                  || kword == "methods" || kword == "properties"))
@@ -2156,7 +2156,7 @@ If @var{name} is omitted, return a list of keywords.
   else
     {
       std::string name = args(0).xstring_value ("iskeyword: NAME must be a string");
-      retval = octave::iskeyword (name);
+      retval = iskeyword (name);
     }
 
   return retval;

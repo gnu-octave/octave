@@ -61,7 +61,7 @@ and false otherwise.
 @seealso{isguirunning}
 @end deftypefn */)
 {
-  octave::display_info& dpy_info = interp.get_display_info ();
+  display_info& dpy_info = interp.get_display_info ();
 
   return ovl (dpy_info.display_available ());
 }

@@ -312,7 +312,7 @@ do_regexp_rep_string_escapes (const std::string& s)
 }
 
 static void
-parse_options (octave::regexp::opts& options, const octave_value_list& args,
+parse_options (regexp::opts& options, const octave_value_list& args,
                const std::string& who, int skip, bool& extra_args)
 {
   extra_args = false;
@@ -376,13 +376,13 @@ octregexp (const octave_value_list& args, int nargout,
   // Rewrite pattern for PCRE
   pattern = do_regexp_ptn_string_escapes (pattern, args(1).is_sq_string ());
 
-  octave::regexp::opts options;
+  regexp::opts options;
   options.case_insensitive (case_insensitive);
   bool extra_options = false;
   parse_options (options, args, who, 2, extra_options);
 
-  const octave::regexp::match_data rx_lst
-    = octave::regexp::match (pattern, buffer, options, who);
+  const regexp::match_data rx_lst
+    = regexp::match (pattern, buffer, options, who);
 
   string_vector named_pats = rx_lst.named_patterns ();
 
@@ -1396,11 +1396,11 @@ octregexprep (const octave_value_list& args, const std::string& who)
     }
   regexpargs.resize (len);
 
-  octave::regexp::opts options;
+  regexp::opts options;
   bool extra_args = false;
   parse_options (options, regexpargs, who, 0, extra_args);
 
-  return octave::regexp::replace (pattern, buffer, replacement, options, who);
+  return regexp::replace (pattern, buffer, replacement, options, who);
 }
 
 DEFUN (regexprep, args, ,

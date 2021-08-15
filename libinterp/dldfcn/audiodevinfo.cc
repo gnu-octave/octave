@@ -599,8 +599,8 @@ octave_play_callback (const void *, void *output, unsigned long frames,
     error ("audioplayer callback function called without player");
 
   octave_value_list retval
-    = octave::feval (player->octave_callback_function,
-                     ovl (static_cast<double> (frames)), 1);
+    = feval (player->octave_callback_function,
+             ovl (static_cast<double> (frames)), 1);
 
   if (retval.length () < 2)
     error ("audioplayer callback function failed");
@@ -657,7 +657,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
       {
         static double scale_factor = std::pow (2.0, 23) - 1.0;
 
-        static int big_endian = octave::mach_info::words_big_endian ();
+        static int big_endian = mach_info::words_big_endian ();
 
         uint8_t *buffer = static_cast<uint8_t *> (output);
 
@@ -767,7 +767,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           {
             static double scale_factor = std::pow (2.0, 23) - 1.0;
 
-            static int big_endian = octave::mach_info::words_big_endian ();
+            static int big_endian = mach_info::words_big_endian ();
 
             uint8_t *buffer = static_cast<uint8_t *> (output);
 
@@ -1154,7 +1154,7 @@ audioplayer::playblocking (void)
   start = get_sample_number ();
   end = get_end_sample ();
 
-  octave::unwind_action stop_audioplayer ([=] () { stop (); });
+  unwind_action stop_audioplayer ([=] () { stop (); });
 
   for (unsigned int i = start; i < end; i += buffer_size)
     {
@@ -1436,7 +1436,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
     }
 
   octave_value_list retval
-    = octave::feval (recorder->octave_callback_function, ovl (sound), 1);
+    = feval (recorder->octave_callback_function, ovl (sound), 1);
 
   return retval(0).int_value ();
 }
@@ -1826,7 +1826,7 @@ audiorecorder::recordblocking (float seconds)
 
   unsigned int frames = seconds * get_fs ();
 
-  octave::unwind_action stop_audiorecorder ([=] () { stop (); });
+  unwind_action stop_audiorecorder ([=] () { stop (); });
 
   for (unsigned int i = 0; i < frames; i += buffer_size)
     {
@@ -1960,7 +1960,7 @@ Undocumented internal function.
 #if defined (HAVE_PORTAUDIO)
 
 static audiorecorder *
-get_recorder (octave::interpreter& interp, const octave_value& ov)
+get_recorder (interpreter& interp, const octave_value& ov)
 {
   interp.mlock ();
 
@@ -2407,7 +2407,7 @@ Undocumented internal function.
 #if defined (HAVE_PORTAUDIO)
 
 static audioplayer *
-get_player (octave::interpreter& interp, const octave_value& ov)
+get_player (interpreter& interp, const octave_value& ov)
 {
   interp.mlock ();
 

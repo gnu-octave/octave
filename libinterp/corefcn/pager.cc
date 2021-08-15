@@ -542,7 +542,7 @@ stored.
   if (nargin > 1)
     print_usage ();
 
-  octave::output_system& output_sys = interp.get_output_system ();
+  output_system& output_sys = interp.get_output_system ();
 
   if (nargout > 0)
     {
@@ -602,7 +602,7 @@ The current state can be determined via @code{page_screen_output}.
   if (nargin > 1)
     print_usage ();
 
-  octave::output_system& output_sys = interp.get_output_system ();
+  output_system& output_sys = interp.get_output_system ();
 
   if (nargin > 0)
     {
@@ -640,8 +640,8 @@ when using readline for command-line editing.
 
   RowVector size (2, 0.0);
 
-  size(0) = octave::command_editor::terminal_rows ();
-  size(1) = octave::command_editor::terminal_cols ();
+  size(0) = command_editor::terminal_rows ();
+  size(1) = command_editor::terminal_cols ();
 
   if (nargin == 1)
     {
@@ -650,13 +650,13 @@ when using readline for command-line editing.
       if (m.numel () != 2)
         error ("terminal_size: argument must be a 2-element array");
 
-      int rows = octave::math::x_nint (m(0));
-      int cols = octave::math::x_nint (m(1));
+      int rows = math::x_nint (m(0));
+      int cols = math::x_nint (m(1));
 
       if (rows <= 0 || cols <= 0)
         error ("terminal_size: rows and columns must be positive integers");
 
-      octave::command_editor::set_screen_size (rows, cols);
+      command_editor::set_screen_size (rows, cols);
     }
 
   return ovl (size);
@@ -681,7 +681,7 @@ The original variable value is restored when exiting the function.
 @seealso{page_screen_output, more, PAGER, PAGER_FLAGS}
 @end deftypefn */)
 {
-  octave::output_system& output_sys = interp.get_output_system ();
+  output_system& output_sys = interp.get_output_system ();
 
   return output_sys.page_output_immediately (args, nargout);
 }
@@ -705,7 +705,7 @@ The original variable value is restored when exiting the function.
 @seealso{more, page_output_immediately, PAGER, PAGER_FLAGS}
 @end deftypefn */)
 {
-  octave::output_system& output_sys = interp.get_output_system ();
+  output_system& output_sys = interp.get_output_system ();
 
   return output_sys.page_screen_output (args, nargout);
 }
@@ -728,7 +728,7 @@ The original variable value is restored when exiting the function.
 @seealso{PAGER_FLAGS, page_output_immediately, more, page_screen_output}
 @end deftypefn */)
 {
-  octave::output_system& output_sys = interp.get_output_system ();
+  output_system& output_sys = interp.get_output_system ();
 
   return output_sys.PAGER (args, nargout);
 }
@@ -747,7 +747,7 @@ The original variable value is restored when exiting the function.
 @seealso{PAGER, more, page_screen_output, page_output_immediately}
 @end deftypefn */)
 {
-  octave::output_system& output_sys = interp.get_output_system ();
+  output_system& output_sys = interp.get_output_system ();
 
   return output_sys.PAGER_FLAGS (args, nargout);
 }

@@ -1152,7 +1152,7 @@ The original variable value is restored when exiting the function.
 @seealso{max_recursion_depth}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.max_stack_depth (args, nargout);
 }
@@ -1208,7 +1208,7 @@ matching the given patterns.
 
   string_vector argv = args.make_argv ("who");
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.do_who (argc, argv, nargout == 1);
 }
@@ -1296,7 +1296,7 @@ complex, nesting, persistent.
 
   string_vector argv = args.make_argv ("whos");
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.do_who (argc, argv, nargout == 1, true);
 }

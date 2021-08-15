@@ -40,9 +40,9 @@ OCTAVE_NAMESPACE_BEGIN
 static inline bool
 is_little_endian (bool is_float)
 {
-  return ((is_float && (octave::mach_info::native_float_format ()
-                        == octave::mach_info::flt_fmt_ieee_little_endian))
-          || octave::mach_info::words_little_endian ());
+  return ((is_float && (mach_info::native_float_format ()
+                        == mach_info::flt_fmt_ieee_little_endian))
+          || mach_info::words_little_endian ());
 }
 
 static uint8_t

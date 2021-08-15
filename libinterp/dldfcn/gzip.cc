@@ -623,7 +623,7 @@ The optional output @var{filelist} is a list of the compressed files.
 {
 #if defined (HAVE_Z)
 
-  return octave::xzip<octave::gz> ("gzip", args);
+  return xzip<gz> ("gzip", args);
 
 #else
 
@@ -666,7 +666,7 @@ The optional output @var{filelist} is a list of the compressed files.
 {
 #if defined (HAVE_BZ2)
 
-  return octave::xzip<octave::bz2> ("bzip2", args);
+  return xzip<bz2> ("bzip2", args);
 
 #else
 

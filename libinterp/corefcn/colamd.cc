@@ -376,20 +376,20 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
     }
 
   // Allocate workspace for colamd
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, p, n_col+1);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, p, n_col+1);
   for (octave_idx_type i = 0; i < n_col+1; i++)
     p[i] = cidx[i];
 
   octave_idx_type Alen = COLAMD_NAME (_recommended) (nnz, n_row, n_col);
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, A, Alen);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, A, Alen);
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
   // Order the columns (destroys A)
   static_assert (COLAMD_STATS <= 40,
                  "colamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
-  octave::suitesparse_integer stats_storage[COLAMD_STATS];
-  octave::suitesparse_integer *stats = &stats_storage[0];
+  suitesparse_integer stats_storage[COLAMD_STATS];
+  suitesparse_integer *stats = &stats_storage[0];
   if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
     {
       COLAMD_NAME (_report)(stats);
@@ -594,11 +594,11 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
   static_assert (COLAMD_STATS <= 40,
                  "symamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
-  octave::suitesparse_integer stats_storage[COLAMD_STATS];
-  octave::suitesparse_integer *stats = &stats_storage[0];
-  if (! SYMAMD_NAME () (n_col, octave::to_suitesparse_intptr (ridx),
-                        octave::to_suitesparse_intptr (cidx),
-                        octave::to_suitesparse_intptr (perm),
+  suitesparse_integer stats_storage[COLAMD_STATS];
+  suitesparse_integer *stats = &stats_storage[0];
+  if (! SYMAMD_NAME () (n_col, to_suitesparse_intptr (ridx),
+                        to_suitesparse_intptr (cidx),
+                        to_suitesparse_intptr (perm),
                         knobs, stats, &calloc, &free))
     {
       SYMAMD_NAME (_report)(stats);

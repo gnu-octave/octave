@@ -258,9 +258,9 @@ Undocumented internal function.
     error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
   else if (! interp.mislocked ("__init_gnuplot__"))
     {
-      octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+      gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-      octave::graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
+      graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
       gtk_mgr.load_toolkit (tk);
 
       interp.mlock ();

@@ -43,7 +43,7 @@ OCTAVE_NAMESPACE_BEGIN
 static double
 simple_gcd (double a, double b)
 {
-  if (! octave::math::isinteger (a) || ! octave::math::isinteger (b))
+  if (! math::isinteger (a) || ! math::isinteger (b))
     error ("gcd: all values must be integers");
 
   double aa = fabs (a);
@@ -79,10 +79,10 @@ template <typename FP>
 static std::complex<FP>
 simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
 {
-  if (! octave::math::isinteger (a.real ())
-      || ! octave::math::isinteger (a.imag ())
-      || ! octave::math::isinteger (b.real ())
-      || ! octave::math::isinteger (b.imag ()))
+  if (! math::isinteger (a.real ())
+      || ! math::isinteger (a.imag ())
+      || ! math::isinteger (b.real ())
+      || ! math::isinteger (b.imag ()))
     error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
@@ -122,7 +122,7 @@ simple_gcd (const octave_int<T>& a, const octave_int<T>& b)
 static double
 extended_gcd (double a, double b, double& x, double& y)
 {
-  if (! octave::math::isinteger (a) || ! octave::math::isinteger (b))
+  if (! math::isinteger (a) || ! math::isinteger (b))
     error ("gcd: all values must be integers");
 
   double aa = fabs (a);
@@ -160,10 +160,10 @@ static std::complex<FP>
 extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
               std::complex<FP>& x, std::complex<FP>& y)
 {
-  if (! octave::math::isinteger (a.real ())
-      || ! octave::math::isinteger (a.imag ())
-      || ! octave::math::isinteger (b.real ())
-      || ! octave::math::isinteger (b.imag ()))
+  if (! math::isinteger (a.real ())
+      || ! math::isinteger (a.imag ())
+      || ! math::isinteger (b.real ())
+      || ! math::isinteger (b.imag ()))
     error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
@@ -344,7 +344,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       if (aa.numel () == 1)
         dv = bb.dims ();
       else if (bb.numel () != 1 && bb.dims () != dv)
-        octave::err_nonconformant ("gcd", a.dims (), b.dims ());
+        err_nonconformant ("gcd", a.dims (), b.dims ());
 
       NDA gg (dv), xx (dv), yy (dv);
 

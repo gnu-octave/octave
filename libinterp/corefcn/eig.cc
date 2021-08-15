@@ -151,17 +151,17 @@ The eigenvalues returned by @code{eig} are not ordered.
         err_wrong_type_arg ("eig", args(i));
 
       std::string arg_i = args(i).string_value ();
-      if (octave::string::strcmpi (arg_i, "qz"))
+      if (string::strcmpi (arg_i, "qz"))
         qz_flag = true;
-      else if (octave::string::strcmpi (arg_i, "chol"))
+      else if (string::strcmpi (arg_i, "chol"))
         chol_flag = true;
-      else if (octave::string::strcmpi (arg_i, "balance"))
+      else if (string::strcmpi (arg_i, "balance"))
         balance_flag = true;
-      else if (octave::string::strcmpi (arg_i, "nobalance"))
+      else if (string::strcmpi (arg_i, "nobalance"))
         no_balance_flag = true;
-      else if (octave::string::strcmpi (arg_i, "matrix"))
+      else if (string::strcmpi (arg_i, "matrix"))
         matrix_flag = true;
-      else if (octave::string::strcmpi (arg_i, "vector"))
+      else if (string::strcmpi (arg_i, "vector"))
         vector_flag = true;
       else
         error (R"(eig: invalid option "%s")", arg_i.c_str ());

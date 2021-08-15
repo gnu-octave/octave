@@ -496,7 +496,7 @@ Return a structure containing Unix signal names and their defined values.
   if (args.length () != 0)
     print_usage ();
 
-  static octave_scalar_map m = octave::make_sig_struct ();
+  static octave_scalar_map m = make_sig_struct ();
 
   return ovl (m);
 }
@@ -526,7 +526,7 @@ The original variable value is restored when exiting the function.
 @seealso{debug_on_error, debug_on_warning}
 @end deftypefn */)
 {
-  return set_internal_variable (octave::Vdebug_on_interrupt, args, nargout,
+  return set_internal_variable (Vdebug_on_interrupt, args, nargout,
                                 "debug_on_interrupt");
 }
 
@@ -556,7 +556,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return set_internal_variable (octave::Vsighup_dumps_octave_core,
+  return set_internal_variable (Vsighup_dumps_octave_core,
                                 args, nargout,
                                 "sighup_dumps_octave_core");
 }
@@ -587,7 +587,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return set_internal_variable (octave::Vsigquit_dumps_octave_core,
+  return set_internal_variable (Vsigquit_dumps_octave_core,
                                 args, nargout,
                                 "sigquit_dumps_octave_core");
 }
@@ -618,7 +618,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return set_internal_variable (octave::Vsigterm_dumps_octave_core,
+  return set_internal_variable (Vsigterm_dumps_octave_core,
                                 args, nargout,
                                 "sigterm_dumps_octave_core");
 }

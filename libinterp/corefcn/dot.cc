@@ -66,9 +66,9 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
         }
     }
 
-  m = octave::to_f77_int (tmp_m);
-  n = octave::to_f77_int (tmp_n);
-  k = octave::to_f77_int (tmp_k);
+  m = to_f77_int (tmp_m);
+  n = to_f77_int (tmp_n);
+  k = to_f77_int (tmp_k);
 }
 
 DEFUN (dot, args, ,
@@ -192,7 +192,7 @@ due to the limited range of integer objects.
       // exceed intmax.
       octave_value_list tmp;
       tmp(1) = dim + 1;
-      tmp(0) = octave::binary_op (octave_value::op_el_mul, argx, argy);
+      tmp(0) = binary_op (octave_value::op_el_mul, argx, argy);
 
       tmp = Fsum (tmp, 1);
       if (! tmp.empty ())
@@ -302,9 +302,9 @@ get_blkmm_dims (const dim_vector& dimx, const dim_vector& dimy,
 {
   int nd = dimx.ndims ();
 
-  m = octave::to_f77_int (dimx(0));
-  k = octave::to_f77_int (dimx(1));
-  n = octave::to_f77_int (dimy(1));
+  m = to_f77_int (dimx(0));
+  k = to_f77_int (dimx(1));
+  n = to_f77_int (dimy(1));
 
   octave_idx_type tmp_np = 1;
 
@@ -321,7 +321,7 @@ get_blkmm_dims (const dim_vector& dimx, const dim_vector& dimy,
       tmp_np *= dimz(i);
     }
 
-  np = octave::to_f77_int (tmp_np);
+  np = to_f77_int (tmp_np);
 
   if (! match)
     error ("blkmm: A and B dimensions don't match: (%s) and (%s)",

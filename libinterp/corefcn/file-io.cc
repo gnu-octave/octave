@@ -192,7 +192,7 @@ with gnuplot.
   if (args.length () != 1)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   return ovl (streams.remove (args(0), "fclose"));
 }
@@ -208,11 +208,11 @@ Clear the stream state for the file specified by the file descriptor
   if (args.length () != 1)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   int fid = streams.get_file_number (args(0));
 
-  octave::stream os = streams.lookup (fid, "fclear");
+  stream os = streams.lookup (fid, "fclear");
 
   os.clearerr ();
 
@@ -239,20 +239,20 @@ always a good idea to flush the standard output stream before calling
 
   octave_value retval = -1;
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   // FIXME: any way to avoid special case for stdout?
   int fid = streams.get_file_number (args(0));
 
   if (fid == 1)
     {
-      octave::flush_stdout ();
+      flush_stdout ();
 
       retval = 0;
     }
   else
     {
-      octave::stream os = streams.lookup (fid, "fflush");
+      stream os = streams.lookup (fid, "fflush");
 
       retval = os.flush ();
     }
@@ -287,9 +287,9 @@ To read a line and return the terminating newline,
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), who);
+  stream os = streams.lookup (args(0), who);
 
   octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -330,9 +330,9 @@ To read a line and discard the terminating newline,
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), who);
+  stream os = streams.lookup (args(0), who);
 
   octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -372,9 +372,9 @@ Returns the number of lines skipped (end-of-line sequences encountered).
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), who);
+  stream os = streams.lookup (args(0), who);
 
   octave_value count_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -388,11 +388,11 @@ Returns the number of lines skipped (end-of-line sequences encountered).
     return ovl ();
 }
 
-static octave::stream
+static stream
 do_stream_open (const std::string& name, const std::string& mode_arg,
                 const std::string& arch, std::string encoding, int& fid)
 {
-  octave::stream retval;
+  stream retval;
 
   fid = -1;
 
@@ -419,22 +419,22 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
   std::ios::openmode md = fopen_mode_to_ios_mode (mode);
 
-  octave::mach_info::float_format flt_fmt
-    = octave::mach_info::string_to_float_format (arch);
+  mach_info::float_format flt_fmt
+    = mach_info::string_to_float_format (arch);
 
-  std::string fname = octave::sys::file_ops::tilde_expand (name);
+  std::string fname = sys::file_ops::tilde_expand (name);
 
-  octave::sys::file_stat fs (fname);
+  sys::file_stat fs (fname);
 
   if (! (md & std::ios::out))
-    fname = octave::find_data_file_in_load_path ("fopen", fname);
+    fname = find_data_file_in_load_path ("fopen", fname);
 
   if (! fs.is_dir ())
     {
 #if defined (HAVE_ZLIB)
       if (use_zlib)
         {
-          FILE *fptr = octave::sys::fopen (fname.c_str (), mode.c_str ());
+          FILE *fptr = sys::fopen (fname.c_str (), mode.c_str ());
 
           if (fptr)
             {
@@ -451,7 +451,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
       else
 #endif
         {
-          FILE *fptr = octave::sys::fopen (fname, mode);
+          FILE *fptr = sys::fopen (fname, mode);
 
           retval = octave_stdiostream::create (fname, fptr, md, flt_fmt,
                                                encoding);
@@ -465,12 +465,12 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
   return retval;
 }
 
-static octave::stream
+static stream
 do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
                 const octave_value& tc_arch, const octave_value& tc_encoding,
                 const char *fcn, int& fid)
 {
-  octave::stream retval;
+  stream retval;
 
   fid = -1;
 
@@ -599,7 +599,7 @@ after data has been written then the write should be followed by a call to
 
   octave_value_list retval = ovl (-1.0);
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   if (nargin == 1)
     {
@@ -626,7 +626,7 @@ after data has been written then the write should be followed by a call to
 
   octave_value arch = (nargin > 2) ? args(2) : octave_value ("native");
 
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
   octave_value encoding = (nargin > 3) ? args(3)
                           : octave_value (input_sys.mfile_encoding ());
   if (encoding.string_value () == "system")
@@ -634,7 +634,7 @@ after data has been written then the write should be followed by a call to
 
   int fid = -1;
 
-  octave::stream os = do_stream_open (args(0), mode, arch, encoding, "fopen",
+  stream os = do_stream_open (args(0), mode, arch, encoding, "fopen",
                                       fid);
 
   if (os)
@@ -690,7 +690,7 @@ freport ()
   if (args.length () > 0)
     warning ("freport: ignoring extra arguments");
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   octave_stdout << streams.list_open_files ();
 
@@ -714,9 +714,9 @@ is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.
 
   int result = -1;
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), "frewind");
+  stream os = streams.lookup (args(0), "frewind");
 
   result = os.rewind ();
 
@@ -750,9 +750,9 @@ combinations of @var{origin} and @var{offset} can be realized.
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), "fseek");
+  stream os = streams.lookup (args(0), "fseek");
 
   octave_value origin_arg = (nargin == 3) ? args(2) : octave_value (-1.0);
 
@@ -770,15 +770,15 @@ beginning of the file specified by file descriptor @var{fid}.
   if (args.length () != 1)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), "ftell");
+  stream os = streams.lookup (args(0), "ftell");
 
   return ovl (os.tell ());
 }
 
 static octave_value_list
-printf_internal (octave::interpreter& interp, const std::string& who,
+printf_internal (interpreter& interp, const std::string& who,
                  const octave_value_list& args, int nargout)
 {
   int nargin = args.length ();
@@ -788,10 +788,10 @@ printf_internal (octave::interpreter& interp, const std::string& who,
 
   int result;
 
-  octave::stream os;
+  stream os;
   int fmt_n = 0;
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   if (args(0).is_string ())
     os = streams.lookup (1, who);
@@ -873,15 +873,15 @@ expanded even when the template string is defined with single quotes.
 }
 
 static octave_value_list
-puts_internal (octave::interpreter& interp, const std::string& who,
+puts_internal (interpreter& interp, const std::string& who,
                const octave_value_list& args)
 {
   if (args.length () != 2)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), who);
+  stream os = streams.lookup (args(0), who);
 
   return ovl (os.puts (args(1), who));
 }
@@ -953,8 +953,8 @@ expanded even when the template string is defined with single quotes.
   // from it to return.
   octave_ostrstream *ostr = new octave_ostrstream ();
 
-  // The octave::stream destructor will delete OSTR for us.
-  octave::stream os (ostr);
+  // The stream destructor will delete OSTR for us.
+  stream os (ostr);
 
   if (! os.is_valid ())
     error ("%s: unable to create output buffer", who.c_str ());
@@ -989,7 +989,7 @@ expanded even when the template string is defined with single quotes.
 }
 
 static octave_value_list
-scanf_internal (octave::interpreter& interp, const std::string& who,
+scanf_internal (interpreter& interp, const std::string& who,
                 const octave_value_list& args)
 {
   int nargin = args.length ();
@@ -999,9 +999,9 @@ scanf_internal (octave::interpreter& interp, const std::string& who,
 
   octave_value_list retval;
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), who);
+  stream os = streams.lookup (args(0), who);
 
   if (! args(1).is_string ())
     error ("%s: format TEMPLATE must be a string", who.c_str ());
@@ -1121,7 +1121,7 @@ character to be read is returned in @var{pos}.
 
   std::string data = get_scan_string_data (args(0), who);
 
-  octave::stream os = octave_istrstream::create (data);
+  stream os = octave_istrstream::create (data);
 
   if (! os.is_valid ())
     error ("%s: unable to create temporary input buffer", who.c_str ());
@@ -1182,13 +1182,13 @@ It is currently not useful to call @code{scanf} in interactive programs.
 }
 
 static octave_value_list
-textscan_internal (octave::interpreter& interp, const std::string& who,
+textscan_internal (interpreter& interp, const std::string& who,
                    const octave_value_list& args)
 {
   if (args.length () < 1)
     print_usage (who);
 
-  octave::stream os;
+  stream os;
 
   if (args(0).is_string ())
     {
@@ -1201,7 +1201,7 @@ textscan_internal (octave::interpreter& interp, const std::string& who,
     }
   else
     {
-      octave::stream_list& streams = interp.get_stream_list ();
+      stream_list& streams = interp.get_stream_list ();
 
       os = streams.lookup (args(0), who);
     }
@@ -1220,7 +1220,7 @@ textscan_internal (octave::interpreter& interp, const std::string& who,
       fmt = args(1).string_value ();
 
       if (args(1).is_sq_string ())
-        fmt = octave::do_string_escapes (fmt);
+        fmt = do_string_escapes (fmt);
 
       nskip++;
     }
@@ -2367,7 +2367,7 @@ as the name of the function when reporting errors.
 */
 
 static octave_value
-do_fread (octave::stream& os, const octave_value& size_arg,
+do_fread (stream& os, const octave_value& size_arg,
           const octave_value& prec_arg, const octave_value& skip_arg,
           const octave_value& arch_arg, octave_idx_type& count)
 {
@@ -2386,7 +2386,7 @@ do_fread (octave::stream& os, const octave_value& size_arg,
       oct_data_conv::string_to_data_type (prec, block_size,
                                           input_type, output_type);
     }
-  catch (octave::execution_exception& ee)
+  catch (execution_exception& ee)
     {
       error (ee, "fread: invalid PRECISION specified");
     }
@@ -2397,15 +2397,15 @@ do_fread (octave::stream& os, const octave_value& size_arg,
     {
       skip = skip_arg.int_value (true);
     }
-  catch (octave::execution_exception& ee)
+  catch (execution_exception& ee)
     {
       error (ee, "fread: SKIP must be an integer");
     }
 
   std::string arch = arch_arg.xstring_value ("fread: ARCH architecture type must be a string");
 
-  octave::mach_info::float_format flt_fmt
-    = octave::mach_info::string_to_float_format (arch);
+  mach_info::float_format flt_fmt
+    = mach_info::string_to_float_format (arch);
 
   return os.read (size, block_size, input_type, output_type, skip,
                   flt_fmt, count);
@@ -2573,9 +2573,9 @@ The optional return value @var{count} contains the number of elements read.
   if (nargin < 1 || nargin > 5)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), "fread");
+  stream os = streams.lookup (args(0), "fread");
 
   octave_value size = lo_ieee_inf_value ();
   octave_value prec = "uint8";
@@ -2609,7 +2609,7 @@ The optional return value @var{count} contains the number of elements read.
 }
 
 static int
-do_fwrite (octave::stream& os, const octave_value& data,
+do_fwrite (stream& os, const octave_value& data,
            const octave_value& prec_arg, const octave_value& skip_arg,
            const octave_value& arch_arg)
 {
@@ -2622,7 +2622,7 @@ do_fwrite (octave::stream& os, const octave_value& data,
     {
       oct_data_conv::string_to_data_type (prec, block_size, output_type);
     }
-  catch (octave::execution_exception& ee)
+  catch (execution_exception& ee)
     {
       error (ee, "fwrite: invalid PRECISION specified");
     }
@@ -2633,15 +2633,15 @@ do_fwrite (octave::stream& os, const octave_value& data,
     {
       skip = skip_arg.int_value (true);
     }
-  catch (octave::execution_exception& ee)
+  catch (execution_exception& ee)
     {
       error (ee, "fwrite: SKIP must be an integer");
     }
 
   std::string arch = arch_arg.xstring_value ("fwrite: ARCH architecture type must be a string");
 
-  octave::mach_info::float_format flt_fmt
-    = octave::mach_info::string_to_float_format (arch);
+  mach_info::float_format flt_fmt
+    = mach_info::string_to_float_format (arch);
 
   return os.write (data, block_size, output_type, skip, flt_fmt);
 }
@@ -2673,9 +2673,9 @@ are too large to fit in the specified precision.
   if (nargin < 2 || nargin > 5)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), "fwrite");
+  stream os = streams.lookup (args(0), "fwrite");
 
   octave_value prec = "uchar";
   octave_value skip = 0;
@@ -2717,9 +2717,9 @@ end-of-file condition.
   if (args.length () != 1)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), "feof");
+  stream os = streams.lookup (args(0), "feof");
 
   return ovl (os.eof () ? 1.0 : 0.0);
 }
@@ -2750,9 +2750,9 @@ whether the next operation will result in an error condition.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
-  octave::stream os = streams.lookup (args(0), "ferror");
+  stream os = streams.lookup (args(0), "ferror");
 
   bool clear = false;
 
@@ -2816,17 +2816,17 @@ endwhile
 
   octave_value retval;
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   if (mode == "r")
     {
-      octave::stream ips = octave_iprocstream::create (name);
+      stream ips = octave_iprocstream::create (name);
 
       retval = streams.insert (ips);
     }
   else if (mode == "w")
     {
-      octave::stream ops = octave_oprocstream::create (name);
+      stream ops = octave_oprocstream::create (name);
 
       retval = streams.insert (ops);
     }
@@ -2848,7 +2848,7 @@ The function @code{fclose} may also be used for the same purpose.
   if (args.length () != 1)
     print_usage ();
 
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   return ovl (streams.remove (args(0), "pclose"));
 }
@@ -2883,14 +2883,14 @@ by the time your program attempts to open it.  If this is a concern,
   if (nargin > 0)
     dir = args(0).xstring_value ("tempname: DIR must be a string");
   else
-    dir = octave::sys::env::getenv ("TMPDIR");
+    dir = sys::env::getenv ("TMPDIR");
 
   std::string pfx ("oct-");
 
   if (nargin > 1)
     pfx = args(1).xstring_value ("tempname: PREFIX must be a string");
 
-  return ovl (octave::sys::tempnam (dir, pfx));
+  return ovl (sys::tempnam (dir, pfx));
 }
 
 /*
@@ -2974,7 +2974,7 @@ system-dependent error message.
 
       std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
 
-      octave::stream s = octave_stdiostream::create (nm, fid, md);
+      stream s = octave_stdiostream::create (nm, fid, md);
 
       if (! s)
         {
@@ -2983,7 +2983,7 @@ system-dependent error message.
           error ("tmpfile: failed to create octave_stdiostream object");
         }
 
-      octave::stream_list& streams = interp.get_stream_list ();
+      stream_list& streams = interp.get_stream_list ();
 
       retval = ovl (streams.insert (s), "");
     }
@@ -3053,12 +3053,12 @@ message.
 
           std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
 
-          octave::stream s = octave_stdiostream::create (nm, fid, md);
+          stream s = octave_stdiostream::create (nm, fid, md);
 
           if (! s)
             error ("mkstemp: failed to create octave_stdiostream object");
 
-          octave::stream_list& streams = interp.get_stream_list ();
+          stream_list& streams = interp.get_stream_list ();
 
           retval(0) = streams.insert (s);
           retval(1) = nm;
@@ -3127,7 +3127,7 @@ for the new object are @code{@var{mode} - @var{mask}}.
 
   int oct_mask = convert (mask, 8, 10);
 
-  int status = convert (octave::sys::umask (oct_mask), 10, 8);
+  int status = convert (sys::umask (oct_mask), 10, 8);
 
   if (status >= 0)
     return ovl (status);
@@ -3160,7 +3160,7 @@ environment variable.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave::get_P_tmpdir ());
+  return ovl (get_P_tmpdir ());
 }
 
 // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
@@ -3219,7 +3219,7 @@ line editing functions.
 @seealso{stdout, stderr}
 @end deftypefn */)
 {
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   return const_value ("stdin", args, streams.stdin_file ());
 }
@@ -3233,7 +3233,7 @@ Data written to the standard output may be filtered through the pager.
 @seealso{stdin, stderr, page_screen_output}
 @end deftypefn */)
 {
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   return const_value ("stdout", args, streams.stdout_file ());
 }
@@ -3248,7 +3248,7 @@ It is useful for error messages and prompts.
 @seealso{stdin, stdout}
 @end deftypefn */)
 {
-  octave::stream_list& streams = interp.get_stream_list ();
+  stream_list& streams = interp.get_stream_list ();
 
   return const_value ("stderr", args, streams.stderr_file ());
 }

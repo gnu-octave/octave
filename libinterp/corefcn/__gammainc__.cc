@@ -70,7 +70,7 @@ Continued fraction for incomplete gamma function.
         a = args(1).float_array_value ();
 
       // Initialize variables used in algorithm
-      static const float tiny = octave::math::exp2 (-50.0f);
+      static const float tiny = math::exp2 (-50.0f);
       static const float eps = std::numeric_limits<float>::epsilon();
       float y, Cj, Dj, bj, aj, Deltaj;
       int j, maxit;
@@ -125,7 +125,7 @@ Continued fraction for incomplete gamma function.
         a = args(1).array_value ();
 
       // Initialize variables used in algorithm
-      static const double tiny = octave::math::exp2 (-100.0);
+      static const double tiny = math::exp2 (-100.0);
       static const double eps = std::numeric_limits<double>::epsilon();
       double y, Cj, Dj, bj, aj, Deltaj;
       int j, maxit;

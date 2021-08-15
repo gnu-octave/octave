@@ -697,7 +697,7 @@ Programming Note: @code{nargin} does not work on compiled functions
 
       if (func.is_string ())
         {
-          octave::symbol_table& symtab = interp.get_symbol_table ();
+          symbol_table& symtab = interp.get_symbol_table ();
 
           std::string name = func.string_value ();
           func = symtab.find_function (name);
@@ -721,7 +721,7 @@ Programming Note: @code{nargin} does not work on compiled functions
                  type.c_str ());
         }
 
-      octave::tree_parameter_list *m_param_list = fcn->parameter_list ();
+      tree_parameter_list *m_param_list = fcn->parameter_list ();
 
       retval = (m_param_list ? m_param_list->length () : 0);
       if (fcn->takes_varargs ())
@@ -729,9 +729,9 @@ Programming Note: @code{nargin} does not work on compiled functions
     }
   else
     {
-      octave::tree_evaluator& tw = interp.get_evaluator ();
+      tree_evaluator& tw = interp.get_evaluator ();
 
-      retval = tw.get_auto_fcn_var (octave::stack_frame::NARGIN);
+      retval = tw.get_auto_fcn_var (stack_frame::NARGIN);
 
       if (retval.is_undefined ())
         retval = 0;
@@ -808,7 +808,7 @@ returns -1 for all anonymous functions.
 
       if (func.is_string ())
         {
-          octave::symbol_table& symtab = interp.get_symbol_table ();
+          symbol_table& symtab = interp.get_symbol_table ();
 
           std::string name = func.string_value ();
           func = symtab.find_function (name);
@@ -843,7 +843,7 @@ returns -1 for all anonymous functions.
                  type.c_str ());
         }
 
-      octave::tree_parameter_list *m_ret_list = fcn->return_list ();
+      tree_parameter_list *m_ret_list = fcn->return_list ();
 
       retval = (m_ret_list ? m_ret_list->length () : 0);
 
@@ -855,9 +855,9 @@ returns -1 for all anonymous functions.
       if (interp.at_top_level ())
         error ("nargout: invalid call at top level");
 
-      octave::tree_evaluator& tw = interp.get_evaluator ();
+      tree_evaluator& tw = interp.get_evaluator ();
 
-      retval = tw.get_auto_fcn_var (octave::stack_frame::NARGOUT);
+      retval = tw.get_auto_fcn_var (stack_frame::NARGOUT);
 
       if (retval.is_undefined ())
         retval = 0;
@@ -897,7 +897,7 @@ static bool val_in_table (const Matrix& table, double val)
 
 static bool isargout1 (int nargout, const Matrix& ignored, double k)
 {
-  if (k != octave::math::fix (k) || k <= 0)
+  if (k != math::fix (k) || k <= 0)
     error ("isargout: K must be a positive integer");
 
   return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
@@ -927,17 +927,17 @@ element-by-element and a logical array is returned.  At the top level,
   if (interp.at_top_level ())
     error ("isargout: invalid call at top level");
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   octave_value tmp;
 
   int nargout1 = 0;
-  tmp = tw.get_auto_fcn_var (octave::stack_frame::NARGOUT);
+  tmp = tw.get_auto_fcn_var (stack_frame::NARGOUT);
   if (tmp.is_defined ())
     nargout1 = tmp.int_value ();
 
   Matrix ignored;
-  tmp = tw.get_auto_fcn_var (octave::stack_frame::IGNORED);
+  tmp = tw.get_auto_fcn_var (stack_frame::IGNORED);
   if (tmp.is_defined ())
     ignored = tmp.matrix_value ();
 

@@ -143,17 +143,17 @@ get_depth (Magick::Image& img)
 // width 1.  In those cases, the type will come as scalar instead of range
 // since that's the behavior of the colon operator (1:1:1 will be a scalar,
 // not a range).
-static octave::range<double>
+static range<double>
 get_region_range (const octave_value& region)
 {
-  octave::range<double> output;
+  range<double> output;
 
   if (region.is_range ())
     output = region.range_value ();
   else if (region.is_scalar_type ())
     {
       double value = region.scalar_value ();
-      output = octave::range<double> (value, value);
+      output = range<double> (value, value);
     }
   else if (region.is_matrix_type ())
     {
@@ -161,7 +161,7 @@ get_region_range (const octave_value& region)
       double base = array(0);
       double limit = array(array.numel () - 1);
       double incr = array(1) - base;
-      output = octave::range<double> (base, incr, limit);
+      output = range<double> (base, incr, limit);
     }
   else
     error ("__magick_read__: unknown datatype for Region option");
@@ -183,8 +183,8 @@ public:
 
     // Subtract 1 to account for 0 indexing.
 
-    const octave::range<double> rows = get_region_range (pixel_region (0));
-    const octave::range<double> cols = get_region_range (pixel_region (1));
+    const range<double> rows = get_region_range (pixel_region (0));
+    const range<double> cols = get_region_range (pixel_region (1));
 
     m_row_start = rows.base () - 1;
     m_col_start = cols.base () - 1;
@@ -761,7 +761,7 @@ read_file (const std::string& filename, std::vector<Magick::Image>& imvec)
   // to open files on disc.  In contrast, the API of ImageMagick uses UTF-8
   // encoded strings.  Should we somehow detect which is used on runtime and
   // pass the file names accordingly? (See also bug #58493.)
-  std::string ascii_fname = octave::sys::get_ASCII_filename (filename, true);
+  std::string ascii_fname = sys::get_ASCII_filename (filename, true);
 
   try
     {
@@ -790,7 +790,7 @@ maybe_initialize_magick (void)
       const std::string locale = (static_locale ? static_locale : "");
 
       const std::string program_name
-        = octave::sys::env::get_program_invocation_name ();
+        = sys::env::get_program_invocation_name ();
       Magick::InitializeMagick (program_name.c_str ());
 
       // Restore locale from before GraphicsMagick initialisation
@@ -1203,7 +1203,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    const double grey = octave::math::round (double (*img_fvec) / divisor);
+                    const double grey = math::round (double (*img_fvec) / divisor);
                     Magick::Color c (grey, grey, grey);
                     pix[GM_idx] = c;
                     img_fvec++;
@@ -1234,9 +1234,9 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    double grey = octave::math::round (double (*img_fvec) / divisor);
+                    double grey = math::round (double (*img_fvec) / divisor);
                     Magick::Color c (grey, grey, grey,
-                                     MaxRGB - octave::math::round (double (*a_fvec) / divisor));
+                                     MaxRGB - math::round (double (*a_fvec) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     a_fvec++;
@@ -1270,9 +1270,9 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c (octave::math::round (double (*img_fvec)          / divisor),
-                                     octave::math::round (double (img_fvec[G_offset]) / divisor),
-                                     octave::math::round (double (img_fvec[B_offset]) / divisor));
+                    Magick::Color c (math::round (double (*img_fvec)          / divisor),
+                                     math::round (double (img_fvec[G_offset]) / divisor),
+                                     math::round (double (img_fvec[B_offset]) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     GM_idx += nCols;
@@ -1306,10 +1306,10 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c (octave::math::round (double (*img_fvec)          / divisor),
-                                     octave::math::round (double (img_fvec[G_offset]) / divisor),
-                                     octave::math::round (double (img_fvec[B_offset]) / divisor),
-                                     MaxRGB - octave::math::round (double (*a_fvec) / divisor));
+                    Magick::Color c (math::round (double (*img_fvec)          / divisor),
+                                     math::round (double (img_fvec[G_offset]) / divisor),
+                                     math::round (double (img_fvec[B_offset]) / divisor),
+                                     MaxRGB - math::round (double (*a_fvec) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     a_fvec++;
@@ -1345,10 +1345,10 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c (octave::math::round (double (*img_fvec)          / divisor),
-                                     octave::math::round (double (img_fvec[M_offset]) / divisor),
-                                     octave::math::round (double (img_fvec[Y_offset]) / divisor),
-                                     octave::math::round (double (img_fvec[K_offset]) / divisor));
+                    Magick::Color c (math::round (double (*img_fvec)          / divisor),
+                                     math::round (double (img_fvec[M_offset]) / divisor),
+                                     math::round (double (img_fvec[Y_offset]) / divisor),
+                                     math::round (double (img_fvec[K_offset]) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     GM_idx += nCols;
@@ -1384,12 +1384,12 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c (octave::math::round (double (*img_fvec)          / divisor),
-                                     octave::math::round (double (img_fvec[M_offset]) / divisor),
-                                     octave::math::round (double (img_fvec[Y_offset]) / divisor),
-                                     octave::math::round (double (img_fvec[K_offset]) / divisor));
+                    Magick::Color c (math::round (double (*img_fvec)          / divisor),
+                                     math::round (double (img_fvec[M_offset]) / divisor),
+                                     math::round (double (img_fvec[Y_offset]) / divisor),
+                                     math::round (double (img_fvec[K_offset]) / divisor));
                     pix[GM_idx] = c;
-                    ind[GM_idx] = MaxRGB - octave::math::round (double (*a_fvec) / divisor);
+                    ind[GM_idx] = MaxRGB - math::round (double (*a_fvec) / divisor);
                     img_fvec++;
                     a_fvec++;
                     GM_idx += nCols;
@@ -1582,7 +1582,7 @@ Use @code{imwrite} instead.
   // If writemode is set to append, read the image and append to it.  Even
   // if set to append, make sure that something was read at all.
   const std::string writemode = options.getfield ("writemode").string_value ();
-  if (writemode == "append" && octave::sys::file_stat (filename).exists ())
+  if (writemode == "append" && sys::file_stat (filename).exists ())
     {
       std::vector<Magick::Image> ini_imvec;
       read_file (filename, ini_imvec);
@@ -1701,7 +1701,7 @@ This is a private internal function not intended for direct use.
   // to open files on disc.  In contrast, the API of ImageMagick uses UTF-8
   // encoded strings.  Should we somehow detect which is used on runtime and
   // pass the file names accordingly? (See also bug #58493.)
-  std::string ascii_fname = octave::sys::get_ASCII_filename (filename, true);
+  std::string ascii_fname = sys::get_ASCII_filename (filename, true);
 
   try
     {
@@ -2008,12 +2008,12 @@ Use @code{imfinfo} instead.
   // We can't actually get FormatVersion but even Matlab sometimes can't.
   template_info.setfield ("FormatVersion", octave_value (""));
 
-  const octave::sys::file_stat fs (filename);
+  const sys::file_stat fs (filename);
   if (! fs)
     error ("imfinfo: error reading '%s': %s", filename.c_str (),
            fs.error ().c_str ());
 
-  const octave::sys::localtime mtime (fs.mtime ());
+  const sys::localtime mtime (fs.mtime ());
   const std::string filetime = mtime.strftime ("%e-%b-%Y %H:%M:%S");
   template_info.setfield ("Filename",    octave_value (filename));
   template_info.setfield ("FileModDate", octave_value (filetime));

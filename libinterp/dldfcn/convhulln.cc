@@ -180,8 +180,8 @@ convex hull is calculated.
 
   int exitcode = qh_new_qhull (qh, dim, num_points, points.fortran_vec (),
                                ismalloc, &cmd[0], outfile, errfile);
- 
-  octave::unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
+
+  unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
 
   if (exitcode)
     error ("convhulln: qhull failed");

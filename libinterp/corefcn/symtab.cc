@@ -826,7 +826,7 @@ Undocumented internal function.
   if (nargin > 1)
     print_usage ();
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   if (nargin == 0)
     return symtab.dump ();
@@ -834,7 +834,7 @@ Undocumented internal function.
     {
       std::string fname = args(0).xstring_value ("__dump_symtab_info__: argument must be a function name");
 
-      octave::fcn_info *finfo = symtab.get_fcn_info (fname);
+      fcn_info *finfo = symtab.get_fcn_info (fname);
 
       if (finfo)
         return finfo->dump ();
@@ -854,7 +854,7 @@ Undocumented internal function.
 
   std::string name = args(0).xstring_value ("__get_cmdline_fcn_txt__: first argument must be function name");
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value ov = symtab.find_cmdline_function (name);
 
@@ -866,7 +866,7 @@ Undocumented internal function.
     {
       std::ostringstream buf;
 
-      octave::tree_print_code tpc (buf);
+      tree_print_code tpc (buf);
 
       f->accept (tpc);
 
@@ -885,7 +885,7 @@ Undocumented internal function.
 //
 //   std::string name = args(0).xstring_value ("set_variable: variable NAME must be a string");
 //
-//   octave::symbol_table& symtab = interp.get_symbol_table ();
+//   symbol_table& symtab = interp.get_symbol_table ();
 //
 //   symtab.assign (name, args(1));
 //
@@ -901,7 +901,7 @@ Undocumented internal function.
 //
 //   std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
 //
-//   octave::symbol_table& symtab = interp.get_symbol_table ();
+//   symbol_table& symtab = interp.get_symbol_table ();
 //
 //   retval = symtab.varval (name);
 //

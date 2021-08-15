@@ -73,10 +73,9 @@ Undocumented internal function
                        ? args(2).xstring_value ("__ftp__: PASSWD must be a string")
                        : "";
 
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_handle uh = uhm.make_url_handle (host, user, passwd,
-                                               octave_stdout);
+  url_handle uh = uhm.make_url_handle (host, user, passwd, octave_stdout);
 
   return ovl (uh.value ());
 }
@@ -87,9 +86,9 @@ DEFMETHOD (__ftp_pwd__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_pwd__: invalid ftp handle");
@@ -109,9 +108,9 @@ Undocumented internal function
   if (nargin > 1)
     path = args(1).xstring_value ("__ftp_cwd__: PATH must be a string");
 
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_cwd__: invalid ftp handle");
@@ -127,9 +126,9 @@ DEFMETHOD (__ftp_dir__, interp, args, nargout,
 Undocumented internal function
 @end deftypefn */)
 {
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_dir__: invalid ftp handle");
@@ -198,9 +197,9 @@ DEFMETHOD (__ftp_ascii__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_ascii__: invalid ftp handle");
@@ -216,9 +215,9 @@ DEFMETHOD (__ftp_binary__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_binary__: invalid ftp handle");
@@ -234,9 +233,9 @@ DEFMETHOD (__ftp_close__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_handle h = uhm.lookup (args(0));
+  url_handle h = uhm.lookup (args(0));
 
   if (! h.ok ())
     error ("__ftp_close__: invalid ftp handle");
@@ -252,9 +251,9 @@ DEFMETHOD (__ftp_mode__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_binary__: invalid ftp handle");
@@ -270,9 +269,9 @@ Undocumented internal function
 {
   std::string file = args(1).xstring_value ("__ftp_delete__: FILE must be a string");
 
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_delete__: invalid ftp handle");
@@ -290,9 +289,9 @@ Undocumented internal function
 {
   std::string dir = args(1).xstring_value ("__ftp_rmdir__: DIR must be a string");
 
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_rmdir__: invalid ftp handle");
@@ -310,9 +309,9 @@ Undocumented internal function
 {
   std::string dir = args(1).xstring_value ("__ftp_mkdir__: DIR must be a string");
 
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_mkdir__: invalid ftp handle");
@@ -331,9 +330,9 @@ Undocumented internal function
   std::string oldname = args(1).xstring_value ("__ftp_rename__: OLDNAME must be a string");
   std::string newname = args(2).xstring_value ("__ftp_rename__: NEWNAME must be a string");
 
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (url_xfer.is_valid ())
     error ("__ftp_rename__: invalid ftp handle");
@@ -351,23 +350,23 @@ Undocumented internal function
 {
   std::string pat = args(1).xstring_value ("__ftp_mput__: PATTERN must be a string");
 
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_mput__: invalid ftp handle");
 
   string_vector file_list;
 
-  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
+  glob_match pattern (sys::file_ops::tilde_expand (pat));
   string_vector files = pattern.glob ();
 
   for (octave_idx_type i = 0; i < files.numel (); i++)
     {
       std::string file = files(i);
 
-      octave::sys::file_stat fs (file);
+      sys::file_stat fs (file);
 
       if (! fs.exists ())
         error ("__ftp__mput: file does not exist");
@@ -383,7 +382,7 @@ Undocumented internal function
         {
           // FIXME: Does ascii mode need to be flagged here?
           std::ifstream ifile =
-            octave::sys::ifstream (file.c_str (),
+            sys::ifstream (file.c_str (),
                                    std::ios::in | std::ios::binary);
 
           if (! ifile.is_open ())
@@ -421,11 +420,11 @@ Undocumented internal function
 
   if (nargin == 3 && ! args(2).isempty ())
     target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string")
-             + octave::sys::file_ops::dir_sep_str ();
+             + sys::file_ops::dir_sep_str ();
 
-  octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
+  url_handle_manager& uhm = interp.get_url_handle_manager ();
 
-  octave::url_transfer url_xfer = uhm.get_object (args(0));
+  url_transfer url_xfer = uhm.get_object (args(0));
 
   if (! url_xfer.is_valid ())
     error ("__ftp_mget__: invalid ftp handle");
@@ -451,15 +450,14 @@ Undocumented internal function
           else
             {
               std::ofstream ofile =
-                octave::sys::ofstream ((target + sv(i)).c_str (),
+                sys::ofstream ((target + sv(i)).c_str (),
                                        std::ios::out | std::ios::binary);
 
               if (! ofile.is_open ())
                 error ("__ftp_mget__: unable to open file");
 
-              int(*unlink_fptr)(const std::string&) = octave::sys::unlink;
-              octave::unwind_action_safe delete_file
-                (unlink_fptr, target + sv(i));
+              int(*unlink_fptr)(const std::string&) = sys::unlink;
+              unwind_action_safe delete_file (unlink_fptr, target + sv(i));
 
               url_xfer.get (sv(i), ofile);
 

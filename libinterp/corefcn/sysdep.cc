@@ -201,7 +201,7 @@ Internal function.  Returns 1 on successful system call and 0 otherwise.
   std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-  std::wstring wfile = octave::sys::u8_to_wstring (file);
+  std::wstring wfile = sys::u8_to_wstring (file);
   HINSTANCE status = ShellExecuteW (0, 0, wfile.c_str (), 0, 0, SW_SHOWNORMAL);
 
   // ShellExecute returns a value greater than 32 if successful.
@@ -810,7 +810,7 @@ Clear the terminal screen and move the cursor to the upper left corner.
 {
   bool skip_redisplay = true;
 
-  octave::command_editor::clear_screen (skip_redisplay);
+  command_editor::clear_screen (skip_redisplay);
 
   return ovl ();
 }
@@ -838,7 +838,7 @@ returns a string containing the value of your path.
 
   std::string name = args(0).string_value ();
 
-  return ovl (octave::sys::env::getenv (name));
+  return ovl (sys::env::getenv (name));
 }
 
 /*
@@ -868,7 +868,7 @@ string.
                      ? args(1).xstring_value ("setenv: VALUE must be a string")
                      : "");
 
-  octave::sys::env::putenv (var, val);
+  sys::env::putenv (var, val);
 
   return ovl ();
 }
@@ -898,7 +898,7 @@ occurred.
 
   std::string tmp = args(0).string_value ();
 
-  return ovl (octave::sys::unsetenv_wrapper (tmp));
+  return ovl (sys::unsetenv_wrapper (tmp));
 }
 
 /*
@@ -1119,7 +1119,7 @@ On non-Windows platforms this function fails with an error.
     {
       std::list<std::string> fields;
 
-      LONG retval = octave::get_regkey_names (h_rootkey, subkey_name, fields);
+      LONG retval = get_regkey_names (h_rootkey, subkey_name, fields);
       if (retval != ERROR_SUCCESS)
         error ("winqueryreg: error %ld reading names from registry", retval);
 
@@ -1134,7 +1134,7 @@ On non-Windows platforms this function fails with an error.
   else
     {
       octave_value key_val;
-      LONG retval = octave::get_regkey_value (h_rootkey, subkey_name,
+      LONG retval = get_regkey_value (h_rootkey, subkey_name,
                                               value_name, key_val);
       if (retval == ERROR_FILE_NOT_FOUND)
         error ("winqueryreg: no value found for '%s' at %s\\%s",
@@ -1232,7 +1232,7 @@ returning the empty string if no key is available.
 
   Fdrawnow (interp);
 
-  int c = octave::kbhit (args.length () == 0);
+  int c = kbhit (args.length () == 0);
 
   if (c == -1)
     c = 0;
@@ -1330,13 +1330,13 @@ graphics callbacks execution.
       else
         dval = args(0).xdouble_value ("pause: N must be a scalar real value");
 
-      if (octave::math::isnan (dval))
+      if (math::isnan (dval))
         warning ("pause: NaN is an invalid delay");
       else
         {
           Fdrawnow (interp);
 
-          octave::sleep (dval, true);
+          sleep (dval, true);
         }
     }
 
@@ -1362,11 +1362,10 @@ for floating point calculations.
 No actual tests are performed.
 @end deftypefn */)
 {
-  octave::mach_info::float_format flt_fmt
-    = octave::mach_info::native_float_format ();
+  mach_info::float_format flt_fmt = mach_info::native_float_format ();
 
-  return ovl (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian
-              || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
+  return ovl (flt_fmt == mach_info::flt_fmt_ieee_little_endian
+              || flt_fmt == mach_info::flt_fmt_ieee_big_endian);
 }
 
 /*
@@ -1379,10 +1378,9 @@ DEFUN (native_float_format, , ,
 Return the native floating point format as a string.
 @end deftypefn */)
 {
-  octave::mach_info::float_format flt_fmt
-    = octave::mach_info::native_float_format ();
+  mach_info::float_format flt_fmt = mach_info::native_float_format ();
 
-  return ovl (octave::mach_info::float_format_as_string (flt_fmt));
+  return ovl (mach_info::float_format_as_string (flt_fmt));
 }
 
 /*
@@ -1424,7 +1422,7 @@ tilde_expand ("~/bin")
 
   string_vector sv = arg.xstring_vector_value ("tilde_expand: argument must be char or cellstr object");
 
-  sv = octave::sys::file_ops::tilde_expand (sv);
+  sv = sys::file_ops::tilde_expand (sv);
 
   if (arg.iscellstr ())
     return ovl (Cell (arg.dims (), sv));
@@ -1452,7 +1450,7 @@ equivalent to
 @seealso{getenv}
 @end deftypefn */)
 {
-  return ovl (octave::sys::env::get_home_directory ());
+  return ovl (sys::env::get_home_directory ());
 }
 
 /*
@@ -1468,7 +1466,7 @@ DEFUN (__blas_version__, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  return ovl (octave::sys::blas_version ());
+  return ovl (sys::blas_version ());
 }
 
 DEFUN (__lapack_version__, , ,
@@ -1477,7 +1475,7 @@ DEFUN (__lapack_version__, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  return ovl (octave::sys::lapack_version ());
+  return ovl (sys::lapack_version ());
 }
 
 OCTAVE_NAMESPACE_END

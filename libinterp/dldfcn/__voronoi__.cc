@@ -166,7 +166,7 @@ Undocumented internal function.
   int exitcode = qh_new_qhull (qh, dim, num_points, points.fortran_vec (),
                                ismalloc, &cmd[0], outfile, errfile);
 
-  octave::unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
+  unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
 
   if (exitcode)
     error ("%s: qhull failed", caller.c_str ());
@@ -250,7 +250,7 @@ Undocumented internal function.
   Matrix F (num_voronoi_vertices+1, dim);
 
   for (octave_idx_type d = 0; d < dim; d++)
-    F(0,d) = octave::numeric_limits<double>::Inf ();
+    F(0,d) = numeric_limits<double>::Inf ();
 
   // The cell array of vectors of indices into F that represent the
   // vertices of the Voronoi regions (cells).

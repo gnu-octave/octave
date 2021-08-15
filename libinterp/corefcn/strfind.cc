@@ -286,7 +286,7 @@ strfind ("abababa", "aba", "forcecelloutput", true)
         error ("strfind: first argument must be a string or cell array of strings");
     }
   else if (argpat.iscell ())
-    retval = octave::do_simple_cellfun (Fstrfind, "strfind", args);
+    retval = do_simple_cellfun (Fstrfind, "strfind", args);
   else
     error ("strfind: PATTERN must be a string or cell array of strings");
 
@@ -486,7 +486,7 @@ strrep ("This is a test string", "is", "&%$")
         error ("strrep: S must be a string or cell array of strings");
     }
   else if (argpat.iscell () || argrep.iscell ())
-    retval = octave::do_simple_cellfun (Fstrrep, "strrep", args);
+    retval = do_simple_cellfun (Fstrrep, "strrep", args);
   else
     error ("strrep: PTN and REP arguments must be strings or cell arrays of strings");
 

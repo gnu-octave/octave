@@ -63,7 +63,7 @@ lexer displays tokens as they are read.
 @seealso{__lexer_debug_flag__, __token_count__}
 @end deftypefn */)
 {
-  octave::settings& stgs = interp.get_settings ();
+  settings& stgs = interp.get_settings ();
 
   return stgs.display_tokens (args, nargout);
 }
@@ -75,7 +75,7 @@ Return the number of language tokens processed since Octave startup.
 @seealso{__lexer_debug_flag__, __display_tokens__}
 @end deftypefn */)
 {
-  octave::settings& stgs = interp.get_settings ();
+  settings& stgs = interp.get_settings ();
 
   return octave_value (stgs.token_count ());
 }
@@ -89,7 +89,7 @@ debug information as it processes an expression.
 @seealso{__display_tokens__, __token_count__, __parse_debug_flag__}
 @end deftypefn */)
 {
-  octave::settings& stgs = interp.get_settings ();
+  settings& stgs = interp.get_settings ();
 
   return stgs.lexer_debug_flag (args, nargout);
 }

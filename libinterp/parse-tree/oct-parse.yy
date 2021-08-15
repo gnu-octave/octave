@@ -5898,7 +5898,7 @@ not loaded anymore during the current Octave session.
   if (nargin == 1 || nargin > 3)
     print_usage ();
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   if (nargin == 0)
     return octave_value (tw.get_autoload_map ());
@@ -6127,7 +6127,7 @@ builtin ("sin", 0)
 
   const std::string name (args(0).xstring_value ("builtin: function name (F) must be a string"));
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value fcn = symtab.builtin_find (name);
 
@@ -6375,7 +6375,7 @@ s = evalc ("t = 42"), t
   // the eval, then the message is stored in the exception object and we
   // will display it later, after the buffers have been restored.
 
-  octave::unwind_action act ([=] (void)
+  unwind_action act ([=] (void)
                              {
                                octave_stdout.rdbuf (old_out_buf);
                                std::cerr.rdbuf (old_err_buf);
@@ -6518,9 +6518,9 @@ Undocumented internal function.
   std::string file
     = args(0).xstring_value ("__parse_file__: expecting filename as argument");
 
-  std::string full_file = octave::sys::file_ops::tilde_expand (file);
+  std::string full_file = sys::file_ops::tilde_expand (file);
 
-  full_file = octave::sys::env::make_absolute (full_file);
+  full_file = sys::env::make_absolute (full_file);
 
   std::string dir_name;
 
@@ -6530,10 +6530,10 @@ Undocumented internal function.
       || (file_len > 4 && file.substr (file_len-4) == ".mex")
       || (file_len > 2 && file.substr (file_len-2) == ".m"))
     {
-      file = octave::sys::env::base_pathname (file);
+      file = sys::env::base_pathname (file);
       file = file.substr (0, file.find_last_of ('.'));
 
-      std::size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
+      std::size_t pos = file.find_last_of (sys::file_ops::dir_sep_str ());
       if (pos != std::string::npos)
         {
           dir_name = file.substr (0, pos);

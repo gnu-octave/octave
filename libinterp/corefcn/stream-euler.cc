@@ -197,7 +197,7 @@ calculate_step_vector2d (const Cell2 X, const Vector2 V,
 static inline bool
 is_singular2d (const Vector2 V)
 {
-  return ((octave::math::isnan (V.x) || octave::math::isnan (V.y)) ||
+  return ((math::isnan (V.x) || math::isnan (V.y)) ||
           ((V.x == 0) && (V.y == 0)));
 }
 
@@ -369,8 +369,7 @@ calculate_step_vector3d (const Cell3 X, const Vector3 V,
 static inline bool
 is_singular3d (const Vector3 V)
 {
-  return ((octave::math::isnan (V.x) || octave::math::isnan (V.y) ||
-           octave::math::isnan (V.z)) ||
+  return ((math::isnan (V.x) || math::isnan (V.y) || math::isnan (V.z)) ||
           ((V.x == 0) && (V.y == 0) && (V.z == 0)));
 }
 

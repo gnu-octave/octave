@@ -453,7 +453,7 @@ map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
   for (octave_idx_type i = 0; i < x.numel (); i++)
     {
       int exp;
-      f.xelem (i) = octave::math::log2 (x(i), exp);
+      f.xelem (i) = math::log2 (x(i), exp);
       e.xelem (i) = exp;
     }
 }
@@ -664,29 +664,29 @@ periodic, @code{mod} is a better choice.
   else if (args(0).is_single_type () || args(1).is_single_type ())
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = octave::math::rem (args(0).float_value (), args(1).float_value ());
+        retval = math::rem (args(0).float_value (), args(1).float_value ());
       else
         {
           FloatNDArray a0 = args(0).float_array_value ();
           FloatNDArray a1 = args(1).float_array_value ();
-          retval = binmap<float> (a0, a1, octave::math::rem<float>, "rem");
+          retval = binmap<float> (a0, a1, math::rem<float>, "rem");
         }
     }
   else
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = octave::math::rem (args(0).scalar_value (), args(1).scalar_value ());
+        retval = math::rem (args(0).scalar_value (), args(1).scalar_value ());
       else if (args(0).issparse () || args(1).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, octave::math::rem<double>, "rem");
+          retval = binmap<double> (m0, m1, math::rem<double>, "rem");
         }
       else
         {
           NDArray a0 = args(0).array_value ();
           NDArray a1 = args(1).array_value ();
-          retval = binmap<double> (a0, a1, octave::math::rem<double>, "rem");
+          retval = binmap<double> (a0, a1, math::rem<double>, "rem");
         }
     }
 
@@ -846,29 +846,29 @@ negative numbers or when the values are periodic.
   else if (args(0).is_single_type () || args(1).is_single_type ())
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = octave::math::mod (args(0).float_value (), args(1).float_value ());
+        retval = math::mod (args(0).float_value (), args(1).float_value ());
       else
         {
           FloatNDArray a0 = args(0).float_array_value ();
           FloatNDArray a1 = args(1).float_array_value ();
-          retval = binmap<float> (a0, a1, octave::math::mod<float>, "mod");
+          retval = binmap<float> (a0, a1, math::mod<float>, "mod");
         }
     }
   else
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = octave::math::mod (args(0).scalar_value (), args(1).scalar_value ());
+        retval = math::mod (args(0).scalar_value (), args(1).scalar_value ());
       else if (args(0).issparse () || args(1).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, octave::math::mod<double>, "mod");
+          retval = binmap<double> (m0, m1, math::mod<double>, "mod");
         }
       else
         {
           NDArray a0 = args(0).array_value ();
           NDArray a1 = args(1).array_value ();
-          retval = binmap<double> (a0, a1, octave::math::mod<double>, "mod");
+          retval = binmap<double> (a0, a1, math::mod<double>, "mod");
         }
     }
 
@@ -1651,8 +1651,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("attempt_type_conversion");
+  symbol_table& symtab = __get_symbol_table__ ("attempt_type_conversion");
 
   octave_value fcn = symtab.find_method (dtype, cname);
 
@@ -1662,9 +1661,9 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = octave::feval (fcn, ovl (ov), 1);
+          result = feval (fcn, ovl (ov), 1);
         }
-      catch (octave::execution_exception& ee)
+      catch (execution_exception& ee)
         {
           error (ee, "conversion from %s to %s failed", dtype.c_str (),
                  cname.c_str ());
@@ -1690,9 +1689,9 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = octave::feval (fcn, ovl (ov), 1);
+          result = feval (fcn, ovl (ov), 1);
         }
-      catch (octave::execution_exception& ee)
+      catch (execution_exception& ee)
         {
           error (ee, "%s constructor failed for %s argument", dtype.c_str (),
                  cname.c_str ());
@@ -1716,9 +1715,9 @@ do_class_concat (const octave_value_list& ovl,
 
   // Get dominant type for list
 
-  std::string dtype = octave::get_dispatch_type (ovl);
+  std::string dtype = get_dispatch_type (ovl);
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("do_class_concat");
+  symbol_table& symtab = __get_symbol_table__ ("do_class_concat");
 
   octave_value fcn = symtab.find_method (cattype, dtype);
 
@@ -1730,9 +1729,9 @@ do_class_concat (const octave_value_list& ovl,
 
       try
         {
-          tmp2 = octave::feval (fcn, ovl, 1);
+          tmp2 = feval (fcn, ovl, 1);
         }
-      catch (octave::execution_exception& ee)
+      catch (execution_exception& ee)
         {
           error (ee, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
         }
@@ -1817,7 +1816,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               first_elem_is_struct = args(i).isstruct ();
             }
           else
-            result_type = octave::get_concat_class (result_type, args(i).class_name ());
+            result_type = get_concat_class (result_type, args(i).class_name ());
 
           if (all_strings_p && ! args(i).is_string ())
             all_strings_p = false;
@@ -1859,7 +1858,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
 
       if (any_class_p)
         {
-          retval = octave::do_class_concat (args, fname, dim);
+          retval = do_class_concat (args, fname, dim);
         }
       else if (result_type == "double")
         {
@@ -1893,7 +1892,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             warn_implicit_conversion ("Octave:num-to-str",
                                       "numeric", result_type);
           else
-            octave::maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
+            maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
           charNDArray result = do_single_type_concat<charNDArray> (args, dim);
 
@@ -1956,7 +1955,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           //
           // We might also start with a empty octave_value using
           //
-          //   tmp = octave::type_info::lookup_type (args(1).type_name());
+          //   tmp = type_info::lookup_type (args(1).type_name());
           //
           // and then directly resize.  However, for some types there might
           // be some additional setup needed, and so this should be avoided.
@@ -1972,7 +1971,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               // Can't fast return here to skip empty matrices as something
               // like cat (1,[],single ([])) must return an empty matrix of
               // the right type.
-              tmp = octave::cat_op (tmp, args(j), ra_idx);
+              tmp = cat_op (tmp, args(j), ra_idx);
 
               dim_vector dv_tmp = args(j).dims ();
 
@@ -2647,8 +2646,7 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.
     {
       // Don't use numel (const octave_value_list&) here as that corresponds to
       // an overloaded call, not to builtin!
-      retval = octave::dims_to_numel (args(0).dims (),
-                                      args.slice (1, nargin-1));
+      retval = dims_to_numel (args(0).dims (), args.slice (1, nargin-1));
     }
 
   return retval;
@@ -3988,7 +3986,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4003,7 +4001,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // FIXME: Perhaps this should be made extensible by using the class name
   //        to lookup a function to call to create the new value.
@@ -4088,7 +4086,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
           // benefit, then maybe there should be a special storage
           // type for constant value arrays.
           double dval = static_cast<double> (val);
-          retval = octave::range<double>::make_constant (dval, dims(1));
+          retval = range<double>::make_constant (dval, dims(1));
         }
       else
         retval = NDArray (dims, val);
@@ -4148,7 +4146,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4163,7 +4161,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4193,12 +4191,11 @@ fill_matrix (const octave_value_list& args, double val, float fval,
     case oct_data_conv::dt_double:
       if (iscomplex)
         retval = ComplexNDArray (dims, Complex (val, 0));
-      else if (dims.ndims () == 2 && dims(0) == 1
-               && octave::math::isfinite (val))
+      else if (dims.ndims () == 2 && dims(0) == 1 && math::isfinite (val))
         // FIXME: If this optimization provides a significant benefit,
         // then maybe there should be a special storage type for
         // constant value arrays.
-        retval = octave::range<double>::make_constant (val, dims(1));
+        retval = range<double>::make_constant (val, dims(1));
       else
         retval = NDArray (dims, val);
       break;
@@ -4236,7 +4233,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4251,7 +4248,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4263,11 +4260,11 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       break;
 
     case oct_data_conv::dt_double:
-      if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
+      if (dims.ndims () == 2 && dims(0) == 1 && math::isfinite (val))
         // FIXME: If this optimization provides a significant benefit,
         // then maybe there should be a special storage type for
         // constant value arrays.
-        retval = octave::range<double>::make_constant (val, dims(1));
+        retval = range<double>::make_constant (val, dims(1));
       else
         retval = NDArray (dims, val);
       break;
@@ -4306,7 +4303,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4321,7 +4318,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4384,7 +4381,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4399,7 +4396,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4769,14 +4766,14 @@ eps (const T& x)
   for (octave_idx_type i = 0; i < x.numel (); i++)
     {
       P val = epsval.xelem (i);
-      if (octave::math::isnan (val) || octave::math::isinf (val))
-        epsval(i) = octave::numeric_limits<P>::NaN ();
+      if (math::isnan (val) || math::isinf (val))
+        epsval(i) = numeric_limits<P>::NaN ();
       else if (val < std::numeric_limits<P>::min ())
         epsval(i) = std::numeric_limits<P>::denorm_min ();
       else
         {
           int exponent;
-          octave::math::frexp (val, &exponent);
+          math::frexp (val, &exponent);
           const P digits = std::numeric_limits<P>::digits;
           epsval(i) = std::pow (static_cast<P> (2.0),
                                 static_cast<P> (exponent - digits));
@@ -5330,14 +5327,14 @@ definitions are for compatibility with @sc{matlab}.
   else if (nargin == 1)
     {
       octave_idx_type nr, nc;
-      octave::get_dimensions (args(0), "eye", nr, nc);
+      get_dimensions (args(0), "eye", nr, nc);
 
       retval = identity_matrix (nr, nc, dt);
     }
   else
     {
       octave_idx_type nr, nc;
-      octave::get_dimensions (args(0), args(1), "eye", nr, nc);
+      get_dimensions (args(0), args(1), "eye", nr, nc);
 
       retval = identity_matrix (nr, nc, dt);
     }
@@ -6013,9 +6010,9 @@ compute the norms of each column and return a row vector.
       if (str == "fro")
         p_arg = octave_value (2);
       else if (str == "inf")
-        p_arg = octave::numeric_limits<double>::Inf ();
+        p_arg = numeric_limits<double>::Inf ();
       else if (str == "-inf")
-        p_arg = -octave::numeric_limits<double>::Inf ();
+        p_arg = -numeric_limits<double>::Inf ();
       else
         error ("norm: unrecognized option: %s", str.c_str ());
     }
@@ -6043,11 +6040,11 @@ compute the norms of each column and return a row vector.
       break;
 
     case sfinf:
-      retval = xnorm (x_arg, octave::numeric_limits<double>::Inf ());
+      retval = xnorm (x_arg, numeric_limits<double>::Inf ());
       break;
 
     case sfneginf:
-      retval = xnorm (x_arg, -octave::numeric_limits<double>::Inf ());
+      retval = xnorm (x_arg, -numeric_limits<double>::Inf ());
       break;
     }
 
@@ -6150,7 +6147,7 @@ unary_op_defun_body (octave_value::unary_op op,
   if (args.length () != 1)
     print_usage ();
 
-  return octave::unary_op (op, args(0));
+  return unary_op (op, args(0));
 }
 
 DEFUN (not, args, ,
@@ -6256,7 +6253,7 @@ binary_op_defun_body (octave_value::binary_op op,
   if (args.length () != 2)
     print_usage ();
 
-  return octave::binary_op (op, args(0), args(1));
+  return binary_op (op, args(0), args(1));
 }
 
 static octave_value
@@ -6272,10 +6269,10 @@ binary_assoc_op_defun_body (octave_value::binary_op op,
   octave_value retval;
 
   if (nargin == 2)
-    retval = octave::binary_op (op, args(0), args(1));
+    retval = binary_op (op, args(0), args(1));
   else
     {
-      retval = octave::binary_op (op, args(0), args(1));
+      retval = binary_op (op, args(0), args(1));
 
       for (int i = 2; i < nargin; i++)
         retval.assign (aop, args(i));
@@ -6577,8 +6574,8 @@ This function is equivalent to the operator syntax
     print_usage ();
 
   return (nargin == 2
-          ? octave::colon_op (args(0), args(1))
-          : octave::colon_op (args(0), args(1), args(2)));
+          ? colon_op (args(0), args(1))
+          : colon_op (args(0), args(1), args(2)));
 }
 
 static double tic_toc_timestamp = -1.0;
@@ -6639,7 +6636,7 @@ This may include time spent processing other jobs or doing nothing at all.
     warning ("tic: ignoring extra arguments");
 
   octave_value retval;
-  octave::sys::time now;
+  sys::time now;
   double tmp = now.double_value ();
 
   if (nargout > 0)
@@ -6699,7 +6696,7 @@ seconds elapsed since the timer @var{id} was initialized.
   if (start_time < 0)
     error ("toc: function called before timer initialization with tic()");
 
-  octave::sys::time now;
+  sys::time now;
 
   double etime = now.double_value () - start_time;
 
@@ -6741,7 +6738,7 @@ CPU time used is nonzero.
   if (args.length () != 0)
     print_usage ();
 
-  octave::sys::cpu_time cpu_tm;
+  sys::cpu_time cpu_tm;
 
   double usr = cpu_tm.user ();
   double sys = cpu_tm.system ();
@@ -6881,7 +6878,7 @@ ordered lists.
       // NOTE: Can not change this to ovl() call because arg.sort changes sidx
       //       and objects are declared const in ovl prototype.
       retval(0) = arg.sort (sidx, dim, smode);
-      retval(1) = octave::idx_vector (sidx, dv(dim));  // No checking, extent is known.
+      retval(1) = idx_vector (sidx, dv(dim));  // No checking, extent is known.
     }
   else
     retval = ovl (arg.sort (dim, smode));
@@ -7307,7 +7304,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
 
   try
     {
-      octave::idx_vector n = args(1).index_vector ();
+      idx_vector n = args(1).index_vector ();
 
       switch (argx.builtin_type ())
         {
@@ -7348,7 +7345,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
             err_wrong_type_arg ("nth_element", argx);
         }
     }
-  catch (const octave::index_exception& ie)
+  catch (const index_exception& ie)
     {
       error ("nth_element: invalid index %s", ie.what ());
     }
@@ -7373,7 +7370,7 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
 
 template <typename NDT>
 static NDT
-do_accumarray_sum (const octave::idx_vector& idx, const NDT& vals,
+do_accumarray_sum (const idx_vector& idx, const NDT& vals,
                    octave_idx_type n = -1)
 {
   typedef typename NDT::element_type T;
@@ -7412,7 +7409,7 @@ Undocumented internal function.
 
   try
     {
-      octave::idx_vector idx = args(0).index_vector ();
+      idx_vector idx = args(0).index_vector ();
       octave_idx_type n = -1;
       if (nargin == 3)
         n = args(2).idx_type_value (true);
@@ -7421,7 +7418,7 @@ Undocumented internal function.
 
       if (vals.is_range ())
         {
-          octave::range<double> r = vals.range_value ();
+          range<double> r = vals.range_value ();
           if (r.increment () == 0)
             vals = r.base ();
         }
@@ -7447,7 +7444,7 @@ Undocumented internal function.
       else
         err_wrong_type_arg ("accumarray", vals);
     }
-  catch (const octave::index_exception& ie)
+  catch (const index_exception& ie)
     {
       error ("__accumarray_sum__: invalid index %s", ie.what ());
     }
@@ -7457,7 +7454,7 @@ Undocumented internal function.
 
 template <typename NDT>
 static NDT
-do_accumarray_minmax (const octave::idx_vector& idx, const NDT& vals,
+do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
                       octave_idx_type n, bool ismin,
                       const typename NDT::element_type& zero_val)
 {
@@ -7470,7 +7467,7 @@ do_accumarray_minmax (const octave::idx_vector& idx, const NDT& vals,
   NDT retval (dim_vector (n, 1), zero_val);
 
   // Pick minimizer or maximizer.
-  void (MArray<T>::*op) (const octave::idx_vector&, const MArray<T>&)
+  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&)
     = ismin ? (&MArray<T>::idx_min) : (&MArray<T>::idx_max);
 
   octave_idx_type l = idx.length (n);
@@ -7500,7 +7497,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
 
   try
     {
-      octave::idx_vector idx = args(0).index_vector ();
+      idx_vector idx = args(0).index_vector ();
       octave_idx_type n = -1;
       if (nargin == 4)
         n = args(3).idx_type_value (true);
@@ -7558,7 +7555,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
           err_wrong_type_arg ("accumarray", vals);
         }
     }
-  catch (const octave::index_exception& ie)
+  catch (const index_exception& ie)
     {
       error ("do_accumarray_minmax_fun: invalid index %s", ie.what ());
     }
@@ -7586,7 +7583,7 @@ Undocumented internal function.
 
 template <typename NDT>
 static NDT
-do_accumdim_sum (const octave::idx_vector& idx, const NDT& vals,
+do_accumdim_sum (const idx_vector& idx, const NDT& vals,
                  int dim = -1, octave_idx_type n = -1)
 {
   typedef typename NDT::element_type T;
@@ -7633,7 +7630,7 @@ Undocumented internal function.
 
   try
     {
-      octave::idx_vector idx = args(0).index_vector ();
+      idx_vector idx = args(0).index_vector ();
       int dim = -1;
       if (nargin >= 3)
         dim = args(2).int_value () - 1;
@@ -7665,7 +7662,7 @@ Undocumented internal function.
       else
         err_wrong_type_arg ("accumdim", vals);
     }
-  catch (const octave::index_exception& ie)
+  catch (const index_exception& ie)
     {
       error ("__accumdim_sum__: invalid index %s", ie.what ());
     }
@@ -7855,7 +7852,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
       octave_idx_type k = retval.columns ();
       while (order > 0 && k > 0)
         {
-          octave::idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
+          idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (col1, sl1))
                    - SparseT (retval.index (col2, sl2));
           assert (retval.columns () == k-1);
@@ -7868,7 +7865,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
       octave_idx_type k = retval.rows ();
       while (order > 0 && k > 0)
         {
-          octave::idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
+          idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (sl1, col1))
                    - SparseT (retval.index (sl2, col2));
           assert (retval.rows () == k-1);
@@ -8183,18 +8180,18 @@ Encode a double matrix or array @var{x} into the base64 format string
 
   if (args(0).isinteger ())
     {
-#define MAKE_INT_BRANCH(X)                                               \
-      if (args(0).is_ ## X ## _type ())                                  \
-        {                                                                \
-          const X##NDArray in = args(0).  X## _array_value ();           \
-          std::size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char);  \
+#define MAKE_INT_BRANCH(X)                                              \
+      if (args(0).is_ ## X ## _type ())                                 \
+        {                                                               \
+          const X##NDArray in = args(0).  X## _array_value ();          \
+          std::size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char); \
           const char *inc = reinterpret_cast<const char *> (in.data ()); \
-          char *out;                                                     \
-          if (octave::base64_encode (inc, inlen, &out))                  \
-            {                                                            \
-              retval(0) = octave_value (out);                            \
-              ::free (out);                                              \
-            }                                                            \
+          char *out;                                                    \
+          if (base64_encode (inc, inlen, &out))                         \
+            {                                                           \
+              retval(0) = octave_value (out);                           \
+              ::free (out);                                             \
+            }                                                           \
         }
 
       MAKE_INT_BRANCH(int8)
@@ -8219,7 +8216,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       const char*  inc;
       inc = reinterpret_cast<const char *> (in.data ());
       char *out;
-      if (octave::base64_encode (inc, inlen, &out))
+      if (base64_encode (inc, inlen, &out))
         {
           retval(0) = octave_value (out);
           ::free (out);
@@ -8233,7 +8230,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       const char*  inc;
       inc = reinterpret_cast<const char *> (in.data ());
       char *out;
-      if (octave::base64_encode (inc, inlen, &out))
+      if (base64_encode (inc, inlen, &out))
         {
           retval(0) = octave_value (out);
           ::free (out);
@@ -8285,7 +8282,7 @@ dimensions of the decoded array.
 
   std::string str = args(0).string_value ();
 
-  Array<double> retval = octave::base64_decode (str);
+  Array<double> retval = base64_decode (str);
 
   if (nargin == 2)
     {
@@ -8341,7 +8338,7 @@ dimensions of the decoded array.
 
   std::string str = args(0).string_value ();
 
-  intNDArray<octave_uint8> retval = octave::base64_decode_bytes (str);
+  intNDArray<octave_uint8> retval = base64_decode_bytes (str);
 
   if (nargin == 2)
     {

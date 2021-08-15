@@ -599,7 +599,7 @@ Undocumented internal function.
 
   std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
 
-  return octave::to_ov (octave::lookup_package (cname));
+  return to_ov (lookup_package (cname));
 }
 
 DEFUN (metaclass, args, ,
@@ -611,9 +611,9 @@ Returns the meta.class object corresponding to the class of @var{obj}.
   if (args.length () != 1)
     print_usage ();
 
-  octave::cdef_object obj = octave::to_cdef (args(0));
+  cdef_object obj = to_cdef (args(0));
 
-  return octave::to_ov (obj.get_class ());
+  return to_ov (obj.get_class ());
 }
 
 // FIXME: What about dynamic properties if obj is a scalar, or the
@@ -651,14 +651,14 @@ attribute is public and if the @code{Hidden} attribute is false.
   else
     err_wrong_type_arg ("properties", arg);
 
-  octave::cdef_class cls;
+  cdef_class cls;
 
-  cls = octave::lookup_class (class_name, false, true);
+  cls = lookup_class (class_name, false, true);
 
   if (! cls.ok ())
     error ("invalid class: %s", class_name.c_str ());
 
-  std::map<std::string, octave::cdef_property> property_map =
+  std::map<std::string, cdef_property> property_map =
     cls.get_property_map ();
 
   std::list<std::string> property_names;
@@ -668,7 +668,7 @@ attribute is public and if the @code{Hidden} attribute is false.
       // FIXME: this loop duplicates a significant portion of the loops
       // in octave_classdef::print_raw.
 
-      const octave::cdef_property& prop = pname_prop.second;
+      const cdef_property& prop = pname_prop.second;
 
       std::string nm = prop.get_name ();
 
@@ -731,11 +731,11 @@ Implements @code{methods} for Octave class objects and classnames.
 
   string_vector sv;
 
-  octave::cdef_class cls = octave::lookup_class (class_name, false, true);
+  cdef_class cls = lookup_class (class_name, false, true);
 
   if (cls.ok ())
     {
-      std::map<std::string, octave::cdef_method> method_map
+      std::map<std::string, cdef_method> method_map
         = cls.get_method_map (false, true);
 
       std::list<std::string> method_names;
@@ -752,7 +752,7 @@ Implements @code{methods} for Octave class objects and classnames.
 
   // The following will also find methods for legacy @CLASS objects.
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   sv.append (lp.methods (class_name));
 

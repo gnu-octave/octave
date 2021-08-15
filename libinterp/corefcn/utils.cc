@@ -110,8 +110,8 @@ and the first character must not be a digit.
     {
       std::string varname = args(0).string_value ();
 
-      retval = (octave::valid_identifier (varname)
-                && ! octave::iskeyword (varname));
+      retval = (valid_identifier (varname)
+                && ! iskeyword (varname));
     }
 
   return retval;
@@ -241,8 +241,8 @@ and the first character must not be a digit.
           {
             m_prefix = args(i + 1).xstring_value ("makeValidName: "
               "'Prefix' value must be a string");
-            if (! octave::valid_identifier (m_prefix)
-                || octave::iskeyword (m_prefix))
+            if (! valid_identifier (m_prefix)
+                || iskeyword (m_prefix))
               error ("makeValidName: invalid 'Prefix' value '%s'",
                      m_prefix.c_str ());
           }
@@ -268,12 +268,12 @@ For more documentation, see @code{matlab.lang.makeValidName}.
   if (nargin < 1)
     print_usage ();
 
-  octave::make_valid_name_options options (args.slice (1, nargin - 1));
+  make_valid_name_options options (args.slice (1, nargin - 1));
 
   if (args(0).is_string ())
     {
       std::string varname = args(0).string_value ();
-      bool is_modified = octave::make_valid_name (varname, options);
+      bool is_modified = make_valid_name (varname, options);
       return ovl (varname, is_modified);
     }
   else if (args(0).iscellstr ())
@@ -281,7 +281,7 @@ For more documentation, see @code{matlab.lang.makeValidName}.
       Array<std::string> varnames = args(0).cellstr_value ();
       Array<bool> is_modified (varnames.dims ());
       for (auto i = 0; i < varnames.numel (); i++)
-        is_modified(i) = octave::make_valid_name (varnames(i), options);
+        is_modified(i) = make_valid_name (varnames(i), options);
       return ovl (varnames, is_modified);
     }
   else
@@ -335,7 +335,7 @@ return true.
       std::string file1 = args(0).string_value ();
       std::string file2 = args(1).string_value ();
 
-      retval = octave::same_file (file1, file2);
+      retval = same_file (file1, file2);
     }
   else if ((s1_string && s2_cellstr) || (s1_cellstr && s2_string))
     {
@@ -358,7 +358,7 @@ return true.
       boolNDArray output (cellstr.dims (), false);
 
       for (octave_idx_type idx = 0; idx < cellstr.numel (); idx++)
-        output(idx) = octave::same_file (str, cellstr(idx));
+        output(idx) = same_file (str, cellstr(idx));
 
       retval = output;
     }
@@ -376,7 +376,7 @@ return true.
       boolNDArray output (size1, false);
 
       for (octave_idx_type idx = 0; idx < cellstr1.numel (); idx++)
-        output(idx) = octave::same_file (cellstr1(idx), cellstr2(idx));
+        output(idx) = same_file (cellstr1(idx), cellstr2(idx));
 
       retval = output;
     }
@@ -578,10 +578,10 @@ If no files are found, return an empty cell array.
   if (names.empty ())
     error ("file_in_loadpath: FILE argument must not be empty");
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   if (nargin == 1)
-    return ovl (octave::sys::env::make_absolute (lp.find_first_of (names)));
+    return ovl (sys::env::make_absolute (lp.find_first_of (names)));
   else
     {
       std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
@@ -589,7 +589,7 @@ If no files are found, return an empty cell array.
       if (opt != "all")
         error (R"(file_in_loadpath: "all" is only valid second argument)");
 
-      return ovl (Cell (octave::make_absolute (lp.find_all_first_of (names))));
+      return ovl (Cell (make_absolute (lp.find_all_first_of (names))));
     }
 }
 
@@ -652,7 +652,7 @@ If no files are found, return an empty cell array.
     error ("file_in_path: FILE argument must not be empty");
 
   if (nargin == 2)
-    return ovl (octave::search_path_for_file (path, names));
+    return ovl (search_path_for_file (path, names));
   else
     {
       std::string opt = args(2).xstring_value ("file_in_path: optional third argument must be a string");
@@ -660,7 +660,7 @@ If no files are found, return an empty cell array.
       if (opt != "all")
         error (R"(file_in_path: "all" is only valid third argument)");
 
-      return ovl (Cell (octave::make_absolute (octave::search_path_for_all_files (path, names))));
+      return ovl (Cell (make_absolute (search_path_for_all_files (path, names))));
     }
 }
 
@@ -940,7 +940,7 @@ Escape sequences begin with a leading backslash
 
   std::string str = args(0).xstring_value ("do_string_escapes: STRING argument must be of type string");
 
-  return ovl (octave::do_string_escapes (str));
+  return ovl (do_string_escapes (str));
 }
 
 /*
@@ -1073,7 +1073,7 @@ replaces the unprintable alert character with its printable representation.
 
   std::string str = args(0).xstring_value ("undo_string_escapes: S argument must be a string");
 
-  return ovl (octave::undo_string_escapes (str));
+  return ovl (undo_string_escapes (str));
 }
 
 /*
@@ -1109,7 +1109,7 @@ Return true if @var{file} is an absolute filename.
     print_usage ();
 
   return ovl (args(0).is_string ()
-              && octave::sys::env::absolute_pathname (args(0).string_value ()));
+              && sys::env::absolute_pathname (args(0).string_value ()));
 }
 
 /*
@@ -1130,7 +1130,7 @@ Return true if @var{file} is a rooted-relative filename.
     print_usage ();
 
   return ovl (args(0).is_string ()
-              && octave::sys::env::rooted_relative_pathname (args(0).string_value ()));
+              && sys::env::rooted_relative_pathname (args(0).string_value ()));
 }
 
 /*
@@ -1156,7 +1156,7 @@ No check is done for the existence of @var{file}.  No tilde expansion of
 
   std::string nm = args(0).xstring_value ("make_absolute_filename: FILE argument must be a filename");
 
-  return ovl (octave::sys::env::make_absolute (nm));
+  return ovl (sys::env::make_absolute (nm));
 }
 
 /*
@@ -1198,7 +1198,7 @@ all name matches rather than just the first.
 
   dir = args(0).xstring_value ("dir_in_loadpath: DIR must be a directory name");
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   if (nargin == 1)
     return ovl (lp.find_dir (dir));
@@ -1657,14 +1657,14 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 
   try
     {
-      octave::idx_vector idx = args(0).index_vector (true);
+      idx_vector idx = args(0).index_vector (true);
 
       if (nargin == 2)
         retval = idx.extent (n) <= n;
       else
         retval = true;
     }
-  catch (const octave::execution_exception&)
+  catch (const execution_exception&)
     {
       interp.recover_from_exception ();
 

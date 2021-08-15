@@ -1304,8 +1304,7 @@ Undocumented internal function.
   if (num_event_args != 2 && num_event_args != 3)
     error ("__ode15__: number of input arguments in event callback must be 2 or 3");
 
-  return octave::do_ode15 (ida_fcn, tspan, numt, t0, y0, yp0, options,
-                           num_event_args);
+  return do_ode15 (ida_fcn, tspan, numt, t0, y0, yp0, options, num_event_args);
 
 #else
 

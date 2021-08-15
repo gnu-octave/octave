@@ -243,8 +243,8 @@ compatibility with @sc{matlab}.
 #endif
 
   // Matrix A: check dimensions.
-  F77_INT nn = octave::to_f77_int (args(0).rows ());
-  F77_INT nc = octave::to_f77_int (args(0).columns ());
+  F77_INT nn = to_f77_int (args(0).rows ());
+  F77_INT nc = to_f77_int (args(0).columns ());
 
 #if defined (DEBUG)
   octave_stdout << "Matrix A dimensions: (" << nn << ',' << nc << ')'
@@ -273,8 +273,8 @@ compatibility with @sc{matlab}.
 #endif
 
   // Extract argument 2 (bb, or cbb if complex).
-  F77_INT b_nr = octave::to_f77_int (args(1).rows ());
-  F77_INT b_nc = octave::to_f77_int (args(1).columns ());
+  F77_INT b_nr = to_f77_int (args(1).rows ());
+  F77_INT b_nc = to_f77_int (args(1).columns ());
 
   if (nn != b_nc || nn != b_nr)
     ::err_nonconformant ();
@@ -411,7 +411,7 @@ compatibility with @sc{matlab}.
       // Complex case.
 
       // The QR decomposition of cbb.
-      octave::math::qr<ComplexMatrix> cbqr (cbb);
+      math::qr<ComplexMatrix> cbqr (cbb);
       // The R matrix of QR decomposition for cbb.
       cbb = cbqr.R ();
       // (Q*)caa for following work.
@@ -479,7 +479,7 @@ compatibility with @sc{matlab}.
 #endif
 
       // Compute the QR factorization of bb.
-      octave::math::qr<Matrix> bqr (bb);
+      math::qr<Matrix> bqr (bb);
 
 #if defined (DEBUG)
       octave_stdout << "qz: qr (bb) done; now performing qz decomposition"
@@ -689,7 +689,7 @@ compatibility with @sc{matlab}.
               if (betar(i) != 0)
                 tmp(i) = Complex (alphar(i), alphai(i)) / betar(i);
               else
-                tmp(i) = octave::numeric_limits<double>::Inf ();
+                tmp(i) = numeric_limits<double>::Inf ();
             }
 
           gev = tmp;

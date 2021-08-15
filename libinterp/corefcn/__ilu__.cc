@@ -484,8 +484,8 @@ Undocumented internal function.
       SparseMatrix U, L;
 
       ilu_crout <SparseMatrix, double> (sm_l, sm_u, L, U,
-                                        octave::xcolnorms (sm).fortran_vec (),
-                                        octave::xrownorms (sm).fortran_vec (),
+                                        xcolnorms (sm).fortran_vec (),
+                                        xrownorms (sm).fortran_vec (),
                                         droptol, milu);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
@@ -498,8 +498,8 @@ Undocumented internal function.
       SparseComplexMatrix sm_u = Ftriu (ovl (sm))(0).sparse_complex_matrix_value ();
       SparseComplexMatrix sm_l = Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ();
       SparseComplexMatrix U, L;
-      Array<Complex> cols_norm = octave::xcolnorms (sm);
-      Array<Complex> rows_norm = octave::xrownorms (sm);
+      Array<Complex> cols_norm = xcolnorms (sm);
+      Array<Complex> rows_norm = xrownorms (sm);
 
       ilu_crout <SparseComplexMatrix, Complex> (sm_l, sm_u, L, U,
                                                 cols_norm.fortran_vec (),
@@ -894,7 +894,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
     {
       U = U.transpose ();
       // The diagonal, conveniently permuted is added to U
-      U += diag.index (octave::idx_vector::colon, perm_vec);
+      U += diag.index (idx_vector::colon, perm_vec);
       L = L.transpose ();
     }
 }
@@ -925,9 +925,9 @@ Undocumented internal function.
       nnz_l = (Ftril (ovl (sm, -1))(0).sparse_matrix_value ()).nnz ();
       Array <double> rc_norm;
       if (milu == "row")
-        rc_norm = octave::xrownorms (sm);
+        rc_norm = xrownorms (sm);
       else
-        rc_norm = octave::xcolnorms (sm);
+        rc_norm = xcolnorms (sm);
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
 
       ilu_tp <SparseMatrix, double> (sm, L, U, nnz_u, nnz_l,
@@ -940,8 +940,8 @@ Undocumented internal function.
           retval(0) = L + speye;
           if (nargout == 3)
             {
-              retval(1) = U.index (octave::idx_vector::colon, perm);
-              retval(2) = speye.index (octave::idx_vector::colon, perm);
+              retval(1) = U.index (idx_vector::colon, perm);
+              retval(2) = speye.index (idx_vector::colon, perm);
             }
           else
             retval(1) = U;
@@ -951,11 +951,11 @@ Undocumented internal function.
           retval(1) = U;
           if (nargout == 3)
             {
-              retval(0) = L.index (perm, octave::idx_vector::colon) + speye;
-              retval(2) = speye.index (perm, octave::idx_vector::colon);
+              retval(0) = L.index (perm, idx_vector::colon) + speye;
+              retval(2) = speye.index (perm, idx_vector::colon);
             }
           else
-            retval(0) = L + speye.index (octave::idx_vector::colon, perm);
+            retval(0) = L + speye.index (idx_vector::colon, perm);
         }
     }
   else
@@ -966,9 +966,9 @@ Undocumented internal function.
       nnz_l = (Ftril (ovl (sm, -1))(0).sparse_complex_matrix_value ()).nnz ();
       Array <Complex> rc_norm;
       if (milu == "row")
-        rc_norm = octave::xrownorms (sm);
+        rc_norm = xrownorms (sm);
       else
-        rc_norm = octave::xcolnorms (sm);
+        rc_norm = xcolnorms (sm);
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
 
       ilu_tp <SparseComplexMatrix, Complex>
@@ -981,8 +981,8 @@ Undocumented internal function.
           retval(0) = L + speye;
           if (nargout == 3)
             {
-              retval(1) = U.index (octave::idx_vector::colon, perm);
-              retval(2) = speye.index (octave::idx_vector::colon, perm);
+              retval(1) = U.index (idx_vector::colon, perm);
+              retval(2) = speye.index (idx_vector::colon, perm);
             }
           else if (nargout == 2)
             retval(1) = U;
@@ -992,11 +992,11 @@ Undocumented internal function.
           retval(1) = U;
           if (nargout == 3)
             {
-              retval(0) = L.index (perm, octave::idx_vector::colon) + speye;
-              retval(2) = speye.index (perm, octave::idx_vector::colon);
+              retval(0) = L.index (perm, idx_vector::colon) + speye;
+              retval(2) = speye.index (perm, idx_vector::colon);
             }
           else
-            retval(0) = L + speye.index (octave::idx_vector::colon, perm);
+            retval(0) = L + speye.index (idx_vector::colon, perm);
         }
     }
 

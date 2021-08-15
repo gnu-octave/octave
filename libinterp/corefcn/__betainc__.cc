@@ -79,7 +79,7 @@ Continued fraction for incomplete beta function.
         b = args(2).float_array_value ();
 
       // Initialize variables used in algorithm
-      static const float tiny = octave::math::exp2 (-50.0f);
+      static const float tiny = math::exp2 (-50.0f);
       static const float eps = std::numeric_limits<float>::epsilon ();
       float xj, x2, y, Cj, Dj, aj, bj, Deltaj, alpha_j, beta_j;
       int j, maxit;
@@ -150,7 +150,7 @@ Continued fraction for incomplete beta function.
         b = args(2).array_value ();
 
       // Initialize variables used in algorithm
-      static const double tiny = octave::math::exp2 (-100.0);
+      static const double tiny = math::exp2 (-100.0);
       static const double eps = std::numeric_limits<double>::epsilon ();
       double xj, x2, y, Cj, Dj, aj, bj, Deltaj, alpha_j, beta_j;
       int j, maxit;

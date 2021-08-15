@@ -1243,7 +1243,11 @@ OCTAVE_NAMESPACE_BEGIN
     return retval;
   }
 
+OCTAVE_NAMESPACE_END
+
 #endif
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (__ode15__, args, ,
            doc: /* -*- texinfo -*-

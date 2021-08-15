@@ -93,7 +93,11 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
   return true;
 }
 
+OCTAVE_NAMESPACE_END
+
 #endif
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (__voronoi__, args, ,
            doc: /* -*- texinfo -*-

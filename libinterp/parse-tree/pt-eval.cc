@@ -2234,8 +2234,8 @@ OCTAVE_NAMESPACE_BEGIN
   }
 
 // END is documented in op-kw-docs.
-DEFCONSTMETHOD (end, interp, args, ,
-                doc: /* -*- texinfo -*-
+DEFMETHOD (end, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} end
 Last element of an array or the end of any @code{for}, @code{parfor},
 @code{if}, @code{do}, @code{while}, @code{function}, @code{switch},

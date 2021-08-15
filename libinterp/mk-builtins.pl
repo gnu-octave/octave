@@ -79,10 +79,10 @@ if ($make_header)
 
     while (<$fh>)
     {
-      if (/^[ \t]*DEF(CONSTFUN|CONSTMETHOD|METHOD|UN)[ \t]*\( *([^ ,]*).*$/)
+      if (/^[ \t]*DEF(METHOD|UN)[ \t]*\( *([^ ,]*).*$/)
       {
         $name = "F$2";
-        $is_method = ($1 eq "METHOD" || $1 eq "CONSTMETHOD");
+        $is_method = ($1 eq "METHOD");
       }
       elsif (/^[ \t]*DEF(METHOD|UN)X[ \t]*\( *"[^"]*" *, *([^ ,]*).*$/)
       {
@@ -246,13 +246,6 @@ namespace octave
         $type = "fun";
         $fname = "$3";
         $name = "$2";
-      }
-      elsif ($line =~ /^ *DEFCONST(FUN|METHOD) *\( *([^ ,]*) *,.*$/)
-      {
-        $type = "fun";
-        $fname = "F$2";
-        $name = "$2";
-        $const_param = ", true";
       }
       elsif ($line =~ /^ *DEFALIAS *\( *([^ ,]*) *, *([^ )]*) *\).*$/)
       {

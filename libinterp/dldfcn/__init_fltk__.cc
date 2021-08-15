@@ -291,7 +291,7 @@ private:
   }
 };
 
-void script_cb (Fl_Widget *, void *data)
+static void script_cb (Fl_Widget *, void *data)
 {
   static_cast<uimenu::properties *> (data)->execute_callback ();
 }

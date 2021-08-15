@@ -78,7 +78,7 @@ struct control_params
   double tolobj;
 };
 
-int
+static int
 glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       double *a, double *b, char *ctype, int *freeLB, double *lb,
       int *freeUB, double *ub, int *vartype, int isMIP, int lpsolver,

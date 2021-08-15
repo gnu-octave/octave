@@ -59,7 +59,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 #if defined (HAVE_PORTAUDIO)
 
-PaSampleFormat
+static PaSampleFormat
 bits_to_format (int bits)
 {
   if (bits == 8)

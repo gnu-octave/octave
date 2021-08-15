@@ -1031,7 +1031,7 @@ OCTAVE_NAMESPACE_BEGIN
     // octave_stdout << " solutions of linear systems\n";
   }
 
-  ColumnVector
+  static ColumnVector
   ida_user_function (const ColumnVector& x, const ColumnVector& xdot,
                      double t, const octave_value& ida_fc)
   {
@@ -1049,7 +1049,7 @@ OCTAVE_NAMESPACE_BEGIN
     return tmp(0).vector_value ();
   }
 
-  Matrix
+  static Matrix
   ida_dense_jac (const ColumnVector& x, const ColumnVector& xdot,
                  double t, double cj, const octave_value& ida_jc)
   {
@@ -1067,7 +1067,7 @@ OCTAVE_NAMESPACE_BEGIN
     return tmp(0).matrix_value () + cj * tmp(1).matrix_value ();
   }
 
-  SparseMatrix
+  static SparseMatrix
   ida_sparse_jac (const ColumnVector& x, const ColumnVector& xdot,
                   double t, double cj, const octave_value& ida_jc)
   {
@@ -1085,20 +1085,20 @@ OCTAVE_NAMESPACE_BEGIN
     return tmp(0).sparse_matrix_value () + cj * tmp(1).sparse_matrix_value ();
   }
 
-  Matrix
+  static Matrix
   ida_dense_cell_jac (Matrix *dfdy, Matrix *dfdyp, double cj)
   {
     return (*dfdy) + cj * (*dfdyp);
   }
 
-  SparseMatrix
+  static SparseMatrix
   ida_sparse_cell_jac (SparseMatrix *spdfdy, SparseMatrix *spdfdyp,
                        double cj)
   {
     return (*spdfdy) + cj * (*spdfdyp);
   }
 
-  octave_value_list
+  static octave_value_list
   do_ode15 (const octave_value& ida_fcn,
             const ColumnVector& tspan,
             const octave_idx_type numt,

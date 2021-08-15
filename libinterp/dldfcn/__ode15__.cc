@@ -80,7 +80,11 @@
 #    include <sunlinsol/sunlinsol_klu.h>
 #  endif
 
+#endif
+
 OCTAVE_NAMESPACE_BEGIN
+
+#if defined (HAVE_SUNDIALS)
 
 #  if ! defined (HAVE_IDASETJACFN) && defined (HAVE_IDADLSSETJACFN)
   static inline int
@@ -1243,11 +1247,7 @@ OCTAVE_NAMESPACE_BEGIN
     return retval;
   }
 
-OCTAVE_NAMESPACE_END
-
 #endif
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (__ode15__, args, ,
            doc: /* -*- texinfo -*-

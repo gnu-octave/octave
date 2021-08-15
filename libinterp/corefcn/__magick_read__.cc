@@ -39,11 +39,13 @@
 #include "errwarn.h"
 
 #if defined (HAVE_MAGICK)
-
-#include <Magick++.h>
-#include <clocale>
+#  include <Magick++.h>
+#  include <clocale>
+#endif
 
 OCTAVE_NAMESPACE_BEGIN
+
+#if defined (HAVE_MAGICK)
 
 // In theory, it should be enough to check the class:
 // Magick::ClassType
@@ -824,11 +826,7 @@ maybe_initialize_magick (void)
     }
 }
 
-OCTAVE_NAMESPACE_END
-
 #endif
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__magick_read__, args, nargout,
        doc: /* -*- texinfo -*-
@@ -954,11 +952,7 @@ Use @code{imread} instead.
 %!assert (1)
 */
 
-OCTAVE_NAMESPACE_END
-
 #if defined (HAVE_MAGICK)
-
-OCTAVE_NAMESPACE_BEGIN
 
 template <typename T>
 static uint32NDArray
@@ -1485,11 +1479,7 @@ write_file (const std::string& filename,
     }
 }
 
-OCTAVE_NAMESPACE_END
-
 #endif
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__magick_write__, args, ,
        doc: /* -*- texinfo -*-
@@ -1745,11 +1735,7 @@ This is a private internal function not intended for direct use.
 #endif
 }
 
-OCTAVE_NAMESPACE_END
-
 #if defined (HAVE_MAGICK)
-
-OCTAVE_NAMESPACE_BEGIN
 
 static octave_value
 magick_to_octave_value (const Magick::CompressionType& magick)
@@ -1915,11 +1901,7 @@ fill_exif_floats (octave_scalar_map& map, Magick::Image& img,
   return;
 }
 
-OCTAVE_NAMESPACE_END
-
 #endif
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__magick_finfo__, args, ,
        doc: /* -*- texinfo -*-

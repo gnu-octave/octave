@@ -62,14 +62,15 @@
 #include "ovl.h"
 
 #if defined (HAVE_QHULL)
-
 #  include "oct-qhull.h"
-
 #  if defined (NEED_QHULL_R_VERSION)
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
 #  endif
+#endif
 
 OCTAVE_NAMESPACE_BEGIN
+
+#if defined (HAVE_QHULL)
 
 static void
 free_qhull_memory (qhT *qh)
@@ -98,11 +99,7 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
   return true;
 }
 
-OCTAVE_NAMESPACE_END
-
 #endif
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (__delaunayn__, args, ,
            doc: /* -*- texinfo -*-

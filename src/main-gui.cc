@@ -114,8 +114,8 @@ wmain (int argc, wchar_t **wargv)
     {
       argv_str.push_back (wchar_conv.to_bytes (wargv[i_arg]));
 
-      // Save the string becuase argv_str[i_arg] may return a temporary.
-      argv[i_arg] = strsave (&argv_str[i_arg][0]);
+      // Save the string because argv_str[i_arg] may return a temporary.
+      argv[i_arg] = octave::strsave (&argv_str[i_arg][0]);
     }
   argv[argc] = nullptr;
 

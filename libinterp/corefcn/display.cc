@@ -37,8 +37,8 @@
 #include "ov.h"
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   void display_info::initialize (void)
   {
     int avail = 0;
@@ -52,9 +52,6 @@ namespace octave
     if (msg)
       m_msg = msg;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (have_window_system, interp, , ,
            doc: /* -*- texinfo -*-

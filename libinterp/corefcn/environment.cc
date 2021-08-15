@@ -41,8 +41,8 @@
 #include "interpreter.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   static void append_to_shell_path (const std::string& exec_path)
   {
     // FIXME: should there be a way to remove a previous setting from
@@ -152,9 +152,6 @@ namespace octave
 
     return image_path;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (EDITOR, interp, args, nargout,
            doc: /* -*- texinfo -*-

@@ -33,8 +33,8 @@
 class octave_value;
 class octave_value_list;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Most settings for the interpreter are stored in the classes which
   // they affect (intput_system, output_system, load_path, etc.  Some
   // don't really fit anywhere else.  For example, there is no single
@@ -91,6 +91,7 @@ namespace octave
     // Internal variable for lexer debugging state.
     bool m_lexer_debug_flag = false;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

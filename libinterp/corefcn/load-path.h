@@ -39,8 +39,8 @@
 #include "pathsearch.h"
 #include "str-vec.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class
   OCTINTERP_API
   load_path
@@ -578,6 +578,7 @@ namespace octave
 
   extern std::string
   genpath (const std::string& dir, const string_vector& skip = "private");
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

@@ -90,8 +90,8 @@
 #  include "zfstream.h"
 #endif
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   OCTAVE_NORETURN static
   void
   err_file_open (const std::string& fcn, const std::string& file)
@@ -1536,18 +1536,6 @@ namespace octave
 
     return retval;
   }
-}
-
-void
-dump_octave_core (void)
-{
-  octave::load_save_system& load_save_sys
-    = octave::__get_load_save_system__ ("dump_octave_core");
-
-  load_save_sys.dump_octave_core ();
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (load, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -2058,3 +2046,12 @@ The original variable value is restored when exiting the function.
 }
 
 OCTAVE_NAMESPACE_END
+
+void
+dump_octave_core (void)
+{
+  octave::load_save_system& load_save_sys
+    = octave::__get_load_save_system__ ("dump_octave_core");
+
+  load_save_sys.dump_octave_core ();
+}

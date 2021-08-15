@@ -46,8 +46,8 @@ class octave_user_function;
 #include "ovl.h"
 #include "symscope.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class interpreter;
 
   class OCTINTERP_API symbol_table
@@ -391,6 +391,7 @@ namespace octave
     // This function is generated automatically by mk-builtins.pl.
     void install_builtins (void);
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

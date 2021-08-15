@@ -223,8 +223,8 @@ bool Vjava_matrix_autoconversion = false;
 bool Vjava_unsigned_autoconversion = true;
 bool Vdebug_java = false;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class JVMArgs
   {
   public:
@@ -317,8 +317,8 @@ namespace octave
 
     std::list<std::string> java_opts;
   };
-}
 
+OCTAVE_NAMESPACE_END
 
 //! The java initialization directory is given by the environment variable
 //! @c OCTAVE_JAVA_DIR if defined; otherwise it is the directory of Octave's
@@ -399,7 +399,6 @@ read_classpath_txt (const std::string& filepath)
 
   return (classpath);
 }
-
 
 //! Return the initial classpath.
 //!
@@ -535,13 +534,10 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-namespace octave
-{
   // Declare function defined in sysdep.cc
   extern LONG
   get_regkey_value (HKEY h_rootkey, const std::string subkey,
                     const std::string name, octave_value& value);
-}
 
 static std::string
 get_jvm_lib_path_from_registry ()
@@ -642,7 +638,6 @@ get_jvm_lib_path_from_registry ()
   return jvm_lib_path;
 }
 #endif
-
 
 //! Initialize the java virtual machine (jvm) and field #jvm if necessary.
 //!

@@ -47,8 +47,8 @@
 
 #include "default-defs.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   namespace config
   {
     // Variables that name directories or files are substituted into source
@@ -447,9 +447,6 @@ namespace octave
       return s_site_defaults_file;
     }
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (OCTAVE_HOME, args, ,
        doc: /* -*- texinfo -*-

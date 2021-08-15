@@ -33,8 +33,8 @@
 class octave_value;
 class octave_value_list;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class environment
   {
   public:
@@ -90,6 +90,7 @@ namespace octave
       return old_val;
     }
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

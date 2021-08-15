@@ -83,8 +83,8 @@
 #  include <zlib.h>
 #endif
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   //! RIIA wrapper for std::FILE*.
   //!
   //! If error handling is available for failing to close the file, use
@@ -594,9 +594,6 @@ namespace octave
         return octave_value (Cell (xzip<X> (source_patterns, out_dir)));
       }
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (gzip, args, ,
            doc: /* -*- texinfo -*-

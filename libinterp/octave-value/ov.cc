@@ -2628,8 +2628,8 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
     return octave_value (rhs.empty_clone ());
 }
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   OCTAVE_NORETURN static void
   err_binary_op (const std::string& on, const std::string& tn1,
                  const std::string& tn2)
@@ -3256,7 +3256,8 @@ namespace octave
 
     return unary_op (ti, op, v);
   }
-}
+
+OCTAVE_NAMESPACE_END
 
 void
 install_types (octave::type_info& ti)

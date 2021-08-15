@@ -47,8 +47,8 @@
 #include "symscope.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Use static fields for the best efficiency.
   // NOTE: C++0x will allow these two to be merged into one.
   static const char *bt_fieldnames[] =
@@ -1133,9 +1133,6 @@ namespace octave
   {
     return m_cs[m_curr_frame]->get_auto_fcn_var (avt);
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (max_stack_depth, interp, args, nargout,
            doc: /* -*- texinfo -*-

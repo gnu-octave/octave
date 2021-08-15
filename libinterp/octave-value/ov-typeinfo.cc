@@ -39,8 +39,8 @@
 #include "ov-typeinfo.h"
 #include "ov.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // FIXME: we should also store all class names and provide a
   // way to list them (calling class with nargin == 0?).
 
@@ -758,7 +758,8 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_NAMESPACE_END
 
 namespace octave_value_typeinfo
 {

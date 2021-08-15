@@ -31,10 +31,11 @@
 #include "ov.h"
 #include "ovl.h"
 
-namespace octave
-{
-  class type_info;
-}
+OCTAVE_NAMESPACE_BEGIN
+
+class type_info;
+
+OCTAVE_NAMESPACE_END
 
 typedef void *voidptr;
 

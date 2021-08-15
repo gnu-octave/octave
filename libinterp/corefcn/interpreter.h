@@ -70,8 +70,8 @@ extern OCTINTERP_API bool octave_initialized;
 
 #include "oct-time.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class profiler;
   class child_list;
   class push_parser;
@@ -669,6 +669,7 @@ namespace octave
 
     void execute_pkg_add (const std::string& dir);
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

@@ -36,8 +36,8 @@
 
 class octave_value;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class
   OCTINTERP_API
   profiler
@@ -213,6 +213,7 @@ namespace octave
     // it as a separate function.
     void add_current_time (void);
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

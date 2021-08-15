@@ -36,12 +36,9 @@
 
 class octave_value;
 
-namespace octave
-{
-  class interpreter;
-}
-
 OCTAVE_NAMESPACE_BEGIN
+
+class interpreter;
 
 extern OCTINTERP_API void print_usage (void);
 
@@ -67,10 +64,6 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 // Gets the shlib of the currently executing DLD function, if any.
 extern OCTINTERP_API dynamic_library get_current_shlib (void);
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   // FIXME: this class doesn't seem to be used in Octave.  Is it
   // really needed?
 
@@ -86,7 +79,8 @@ namespace octave
 
     auto_shlib (const dynamic_library& shl) : dynamic_library (shl) { }
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 // Some of these functions are widely used, so maybe we should avoid
 // deprecating them for now?

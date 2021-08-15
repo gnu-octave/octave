@@ -308,10 +308,6 @@ Undocumented internal function.
   return ovl (interp.traditional ());
 }
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   temporary_file_list::~temporary_file_list (void)
   {
     cleanup ();
@@ -2062,4 +2058,5 @@ namespace octave
         handle_exception (ee);
       }
   }
-}
+
+OCTAVE_NAMESPACE_END

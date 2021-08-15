@@ -233,8 +233,8 @@ maybe_extract_message_id (const std::string& caller,
   return have_fmt;
 }
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   static octave_scalar_map
   init_warning_options (const std::string& state)
   {
@@ -934,7 +934,8 @@ namespace octave
 
     evmgr.display_exception (ee, m_beep_on_error);
   }
-}
+
+OCTAVE_NAMESPACE_END
 
 void
 vmessage (const char *name, const char *fmt, va_list args)

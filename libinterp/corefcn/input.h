@@ -57,8 +57,8 @@ extern OCTINTERP_API octave::sys::time Vlast_prompt_time;
 
 class octave_value;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class interpreter;
 
   class input_system
@@ -308,6 +308,7 @@ namespace octave
 
     std::shared_ptr<base_reader> m_rep;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

@@ -80,8 +80,8 @@
 #    include <sunlinsol/sunlinsol_klu.h>
 #  endif
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
 #  if ! defined (HAVE_IDASETJACFN) && defined (HAVE_IDADLSSETJACFN)
   static inline int
   IDASetJacFn (void *ida_mem, IDADlsJacFn jac)
@@ -1242,11 +1242,8 @@ namespace octave
 
     return retval;
   }
-}
+
 #endif
-
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (__ode15__, args, ,
            doc: /* -*- texinfo -*-

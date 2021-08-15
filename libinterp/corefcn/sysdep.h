@@ -35,8 +35,8 @@
 #include "lo-ieee.h"
 #include "lo-sysdep.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   extern OCTINTERP_API void sysdep_init (void);
 
   extern OCTINTERP_API void set_application_id (void);
@@ -57,6 +57,7 @@ namespace octave
                                                 const std::string&);
 
   extern OCTINTERP_API bool drive_or_unc_share (const std::string&);
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

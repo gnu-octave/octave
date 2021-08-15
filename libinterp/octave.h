@@ -36,8 +36,8 @@
 
 class octave_value;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Command line arguments.  See also options.h.
 
   class OCTINTERP_API cmdline_options
@@ -378,6 +378,7 @@ namespace octave
 
     int execute (void);
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

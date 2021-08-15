@@ -94,8 +94,8 @@ bool Vdrawnow_requested = false;
 // the terminal.
 bool Vtrack_line_num = true;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   static std::string
   quoting_filename (const std::string& text, int, char quote)
   {
@@ -1127,9 +1127,6 @@ namespace octave
 
     return retval;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (input, interp, args, nargout,
            doc: /* -*- texinfo -*-

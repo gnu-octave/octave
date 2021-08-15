@@ -37,8 +37,8 @@
 
 class string_vector;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class
   OCTINTERP_API
   type_info
@@ -267,7 +267,8 @@ namespace octave
 
     Array<void *> widening_ops;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 namespace octave_value_typeinfo
 {

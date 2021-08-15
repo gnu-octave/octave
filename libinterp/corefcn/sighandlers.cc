@@ -58,8 +58,8 @@
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Nonzero means we have already printed a message for this series of
   // SIGPIPES.  We assume that the writer will eventually give up.
   int pipe_handler_error_count = 0;
@@ -486,9 +486,6 @@ namespace octave
 
     return m;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (SIG, args, ,
        doc: /* -*- texinfo -*-

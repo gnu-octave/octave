@@ -2563,8 +2563,8 @@ yyerror (octave::base_parser& parser, const char *s)
   parser.bison_error (s);
 }
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class parse_exception : public std::runtime_error
   {
   public:
@@ -5852,9 +5852,6 @@ namespace octave
 
     return retval;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (autoload, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -5956,10 +5953,6 @@ the filename and the extension.
   return octave_value (interp.mfilename (opt));
 }
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   // Execute the contents of a script file.  For compatibility with
   // Matlab, also execute a function file by calling the function it
   // defines with no arguments and nargout = 0.
@@ -5972,9 +5965,6 @@ namespace octave
 
     interp.source_file (file_name, context, verbose, require_file);
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (source, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -6009,10 +5999,6 @@ context of the function that called the present function
   return octave_value_list ();
 }
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   //! Evaluate an Octave function (built-in or interpreted) and return
   //! the list of result values.
   //!
@@ -6061,9 +6047,6 @@ namespace octave
 
     return interp.feval (args, nargout);
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (feval, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -6156,10 +6139,6 @@ builtin ("sin", 0)
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   void
   cleanup_statement_list (tree_statement_list **lst)
   {
@@ -6169,9 +6148,6 @@ namespace octave
         *lst = nullptr;
       }
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (eval, interp, args, nargout,
            doc: /* -*- texinfo -*-

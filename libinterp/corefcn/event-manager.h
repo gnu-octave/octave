@@ -42,8 +42,8 @@
 class octave_value;
 class string_vector;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   typedef std::function<void (void)> fcn_callback;
   typedef std::function<void (interpreter&)> meth_callback;
 
@@ -779,6 +779,7 @@ namespace octave
     bool debugging;
     bool link_enabled;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

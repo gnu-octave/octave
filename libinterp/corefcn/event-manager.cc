@@ -44,8 +44,8 @@
 
 #include "quit.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   static int readline_event_hook (void)
   {
     event_manager& evmgr = __get_event_manager__ ("octave_readline_hook");
@@ -188,9 +188,6 @@ namespace octave
     if (enabled ())
       instance->set_history (command_history::list ());
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 // FIXME: Should the following function be __event_manager_desktop__
 // with the desktop function implemented in a .m file, similar to the

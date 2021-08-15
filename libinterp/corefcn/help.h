@@ -36,8 +36,8 @@ class string_vector;
 class octave_value;
 class octave_value_list;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class interpreter;
 
   class help_system
@@ -202,6 +202,7 @@ namespace octave
   };
 
   extern string_vector make_name_list (void);
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

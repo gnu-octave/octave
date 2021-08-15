@@ -52,8 +52,8 @@
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   static bool
   pager_event_handler (pid_t pid, int status)
   {
@@ -502,9 +502,6 @@ namespace octave
 
     return output_sys.__diary__ ();
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (diary, interp, args, nargout,
            doc: /* -*- texinfo -*-

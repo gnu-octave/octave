@@ -70,8 +70,8 @@
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Return TRUE if S is a valid identifier.
 
   bool valid_identifier (const char *s)
@@ -90,9 +90,6 @@ namespace octave
   {
     return valid_identifier (s.c_str ());
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (isvarname, args, ,
        doc: /* -*- texinfo -*-
@@ -133,10 +130,6 @@ and the first character must not be a digit.
 %!error isvarname ("foo", "bar")
 */
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   bool
   make_valid_name (std::string& str, const make_valid_name_options& options)
   {
@@ -257,9 +250,6 @@ namespace octave
           error ("makeValidName: unknown property '%s'", parameter.c_str ());
       }
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__make_valid_name__, args, ,
        doc: /* -*- texinfo -*-
@@ -298,19 +288,12 @@ For more documentation, see @code{matlab.lang.makeValidName}.
     error ("makeValidName: STR must be a string or cellstr");
 }
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   // Return TRUE if F and G are both names for the same file.
 
   bool same_file (const std::string& f, const std::string& g)
   {
     return same_file_internal (f, g);
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (is_same_file, args, ,
        doc: /* -*- texinfo -*-
@@ -422,10 +405,6 @@ return true.
 %!error <arrays .* must be the same size> is_same_file ({"1", "2"}, {"1"; "2"})
 */
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   int almost_match (const std::string& std, const std::string& s,
                     int min_match_len, int case_sens)
   {
@@ -565,9 +544,6 @@ namespace octave
 
     return retval;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (file_in_loadpath, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -710,10 +686,6 @@ If no files are found, return an empty cell array.
 %!error file_in_path (path (), "plot.m", "bar")
 */
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   std::string file_in_path (const std::string& name, const std::string& suffix)
   {
     std::string nm = name;
@@ -951,9 +923,6 @@ namespace octave
 
     return retval;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (do_string_escapes, args, ,
        doc: /* -*- texinfo -*-
@@ -1011,10 +980,6 @@ Escape sequences begin with a leading backslash
 %!warning <unrecognized escape sequence> do_string_escapes ('\G');
 */
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   const char * undo_string_escape (char c)
   {
     if (! c)
@@ -1071,9 +1036,6 @@ namespace octave
 
     return retval;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (undo_string_escapes, args, ,
        doc: /* -*- texinfo -*-
@@ -1343,10 +1305,6 @@ Return a structure containing the system-dependent errno values.
 %!error errno_list ("foo")
 */
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   static void check_dimensions (octave_idx_type& nr, octave_idx_type& nc,
                                 const char *warnfor)
   {
@@ -1667,9 +1625,6 @@ namespace octave
           }
       }
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (isindex, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -1729,10 +1684,6 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 %!error isindex (1:3, 2, 3)
 */
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   octave_value_list
   do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
                      const char *fun_name, const octave_value_list& args,
@@ -1814,9 +1765,6 @@ namespace octave
 
     return retval;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (isstudent, args, ,
        doc: /* -*- texinfo -*-

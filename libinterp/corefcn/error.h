@@ -37,13 +37,11 @@
 #include "oct-map.h"
 
 class octave_value_list;
-namespace octave
-{
-  class execution_exception;
-}
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
+class execution_exception;
+
   class error_system
   {
   public:
@@ -401,7 +399,8 @@ namespace octave
     //! The last file in which an error occurred.
     octave_map m_last_error_stack;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 // FIXME: should we move the following functions inside the octave
 // namespace?  If so, should the functions outside of the namespace be

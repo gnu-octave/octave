@@ -54,8 +54,8 @@
 #include "sysdep.h"
 #include "usage.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   cmdline_options::cmdline_options (void)
   {
     m_all_args.resize (1);
@@ -426,9 +426,6 @@ namespace octave
 
     return status;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (isguirunning, args, ,
        doc: /* -*- texinfo -*-

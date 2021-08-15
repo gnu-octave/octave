@@ -34,8 +34,8 @@
 
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class interpreter;
 
   class OCTINTERP_API history_system
@@ -113,6 +113,7 @@ namespace octave
       return old_val;
     }
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

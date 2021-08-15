@@ -46,8 +46,8 @@
 
 class octave_user_code;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class symbol_info_list;
   class symbol_scope;
   class tree_decl_elt;
@@ -990,6 +990,7 @@ namespace octave
     int m_index_position;
     int m_num_indices;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

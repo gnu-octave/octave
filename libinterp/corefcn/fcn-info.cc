@@ -47,8 +47,8 @@
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   octave_value
   fcn_info::fcn_info_rep::load_private_function (const std::string& dir_name)
   {
@@ -1144,9 +1144,6 @@ namespace octave
 
     return octave_value (info_map);
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (ignore_function_time_stamp, args, nargout,
        doc: /* -*- texinfo -*-

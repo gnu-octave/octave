@@ -70,8 +70,8 @@ Software Foundation, Inc.
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Read the edited history lines from STREAM and return them
   // one at a time.  This can read unlimited length lines.  The
   // caller should free the storage.
@@ -577,9 +577,6 @@ namespace octave
       + sys::env::get_host_name ()
       + '>';
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (edit_history, interp, args, ,
            doc: /* -*- texinfo -*-

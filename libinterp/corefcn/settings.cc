@@ -34,8 +34,8 @@
 #include "settings.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   settings::settings (void)
     : m_display_tokens (false), m_token_count (0),
       m_lexer_debug_flag (false)
@@ -54,9 +54,6 @@ namespace octave
     return set_internal_variable (m_lexer_debug_flag, args, nargout,
                                   "__lexer_debug_flag__");
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__display_tokens__, interp, args, nargout,
            doc: /* -*- texinfo -*-

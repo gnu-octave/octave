@@ -48,8 +48,8 @@
 #include "symscope.h"
 #include "symtab.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   symbol_table::symbol_table (interpreter& interp)
     : m_interpreter (interp), m_fcn_table (), m_class_precedence_table (),
       m_parent_map ()
@@ -813,9 +813,6 @@ namespace octave
   {
     return m_interpreter.top_level_assign (name, value);
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__dump_symtab_info__, interp, args, ,
            doc: /* -*- texinfo -*-

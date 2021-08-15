@@ -71,8 +71,8 @@
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Normal evaluator.
 
   class quit_debug_exception
@@ -2232,9 +2232,6 @@ namespace octave
         ref.assign (octave_value::op_asn_eq, octave_value ());
       }
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 // END is documented in op-kw-docs.
 DEFCONSTMETHOD (end, interp, args, ,
@@ -2280,10 +2277,6 @@ Example:
 %! assert (x(minus (minus (end, 1), 1)), 8);
 */
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   octave_value_list
   tree_evaluator::convert_to_const_vector (tree_argument_list *args)
   {
@@ -5096,9 +5089,6 @@ namespace octave
 
     return full_name;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (max_recursion_depth, interp, args, nargout,
            doc: /* -*- texinfo -*-

@@ -35,8 +35,8 @@
 #include "pager.h"
 #include "profiler.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   profiler::stats::stats (void)
     : m_time (0.0), m_calls (0), m_recursive (false),
       m_parents (), m_children ()
@@ -381,9 +381,6 @@ namespace octave
         m_active_fcn->add_time (t - m_last_time);
       }
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 // Enable or disable the profiler data collection.
 DEFMETHOD (__profiler_enable__, interp, args, ,

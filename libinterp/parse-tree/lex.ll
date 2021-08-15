@@ -316,8 +316,8 @@ is_space_or_tab_or_eol (char c)
   return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   bool iskeyword (const std::string& s)
   {
     // Parsing function names like "set.property_name" inside
@@ -334,7 +334,8 @@ namespace octave
                   || s == "enumeration" || s == "events"
                   || s == "methods" || s == "properties"));
   }
-}
+
+OCTAVE_NAMESPACE_END
 
 %}
 
@@ -2174,10 +2175,6 @@ If @var{name} is omitted, return a list of keywords.
 
 */
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
   void
   lexical_feedback::symbol_table_context::clear (void)
   {
@@ -2369,7 +2366,6 @@ namespace octave
     const token *tok = m_tokens.front ();
     return tok ? tok->may_be_command () : false;
   }
-}
 
 static bool
 looks_like_copyright (const std::string& s)
@@ -2394,8 +2390,6 @@ looks_like_shebang (const std::string& s)
   return ((! s.empty ()) && (s[0] == '!'));
 }
 
-namespace octave
-{
   void
   base_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
   {
@@ -2966,7 +2960,6 @@ namespace octave
             || (m_nesting_level.is_brace ()
                 && ! m_looking_at_object_index.front ()));
   }
-}
 
 static inline bool
 looks_like_bin (const char *s, int len)
@@ -3030,8 +3023,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   return octave_value ();
 }
 
-namespace octave
-{
   template <>
   int
   base_lexer::handle_number<2> (void)
@@ -4173,4 +4164,5 @@ namespace octave
 
     return status;
   }
-}
+
+OCTAVE_NAMESPACE_END

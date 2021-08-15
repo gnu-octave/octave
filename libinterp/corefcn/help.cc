@@ -73,8 +73,8 @@
 
 #include "default-defs.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   const static char * const operators[] =
   {
     "!",
@@ -715,9 +715,6 @@ namespace octave
 
     return help_sys.make_name_list ();
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (get_help_text, interp, args, ,
            doc: /* -*- texinfo -*-

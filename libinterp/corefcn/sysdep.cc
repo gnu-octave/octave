@@ -103,8 +103,8 @@
 
 #endif
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
 
   static void
@@ -188,9 +188,6 @@ namespace octave
 
 #endif
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__open_with_system_app__, args, ,
        doc: /* -*- texinfo -*-
@@ -363,10 +360,6 @@ On non-Windows platforms, this function fails with an error.
 #endif
 }
 
-OCTAVE_NAMESPACE_END
-
-namespace octave
-{
 #if defined (__MINGW32__)
 
   static void
@@ -807,9 +800,6 @@ namespace octave
 
 #endif
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (clc, , ,
        doc: /* -*- texinfo -*-
@@ -915,12 +905,8 @@ occurred.
 ## Test for unsetenv is in setenv test
 */
 
-OCTAVE_NAMESPACE_END
-
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-namespace octave
-{
   static void
   reg_close_key_wrapper (HKEY key)
   {
@@ -1006,11 +992,8 @@ namespace octave
 
     return retval;
   }
-}
 
 #endif
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (winqueryreg, args, ,
        doc: /* -*- texinfo -*-

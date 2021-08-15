@@ -49,8 +49,8 @@
 #include "unwind-prot.h"
 #include "utils.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Canonicalize file name (keeping the path relative) if it exists.
   // Return it unmodified otherwise.
 
@@ -2399,9 +2399,6 @@ namespace octave
 
     return retval;
   }
-}
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (genpath, args, ,
        doc: /* -*- texinfo -*-

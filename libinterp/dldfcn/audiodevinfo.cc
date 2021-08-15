@@ -55,9 +55,9 @@
 #  include <portaudio.h>
 #endif
 
-#if defined (HAVE_PORTAUDIO)
-
 OCTAVE_NAMESPACE_BEGIN
+
+#if defined (HAVE_PORTAUDIO)
 
 PaSampleFormat
 bits_to_format (int bits)

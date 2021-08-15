@@ -273,6 +273,9 @@ typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 #  define OCTAVE_THREAD_LOCAL
 #endif
 
+/* Make all .oct file interpreter functions and methods static.  */
+#define OCTAVE_USE_STATIC_DEFUN
+
 /* Tag indicating Octave's autoconf-generated config.h has been
    included.  This symbol is provided because autoconf-generated
    config.h files do not define a multiple-inclusion guard.  See also

@@ -160,6 +160,20 @@ inline octave::dynamic_library get_current_shlib (void)
 #define DECLARE_METHOD(name, interp_name, args_name, nargout_name)      \
   DECLARE_METHODX (F ## name, interp_name, args_name, nargout_name)
 
+#define FORWARD_DECLARE_STATIC_FUNX(name)       \
+  static octave_value_list                      \
+  name (const octave_value_list&, int)
+
+#define FORWARD_DECLARE_STATIC_METHODX(name)                    \
+  static octave_value_list                                      \
+  name (octave::interpreter&, const octave_value_list&, int)
+
+#define FORWARD_DECLARE_STATIC_FUN(name)        \
+  FORWARD_DECLARE_STATIC_FUNX (F ## name)
+
+#define FORWARD_DECLARE_STATIC_METHOD(name)     \
+  FORWARD_DECLARE_STATIC_METHODX (F ## name)
+
 #define DECLARE_STATIC_FUNX(name, args_name, nargout_name)      \
   static octave_value_list                                      \
   name (const octave_value_list& args_name, int nargout_name)

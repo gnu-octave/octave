@@ -1830,15 +1830,8 @@ Array<T>::sort (int dim, sortmode mode) const
       for (octave_idx_type j = 0; j < iter; j++)
         {
           octave_idx_type offset = j;
-          octave_idx_type offset2 = 0;
-
-          while (offset >= stride)
-            {
-              offset -= stride;
-              offset2++;
-            }
-
-          offset += offset2 * stride * ns;
+          octave_idx_type n_strides = j / stride;
+          offset += n_strides * stride * (ns - 1);
 
           // gather and partition out NaNs.
           // FIXME: impact on integer types noticeable?
@@ -1964,15 +1957,8 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
       for (octave_idx_type j = 0; j < iter; j++)
         {
           octave_idx_type offset = j;
-          octave_idx_type offset2 = 0;
-
-          while (offset >= stride)
-            {
-              offset -= stride;
-              offset2++;
-            }
-
-          offset += offset2 * stride * ns;
+          octave_idx_type n_strides = j / stride;
+          offset += n_strides * stride * (ns - 1);
 
           // gather and partition out NaNs.
           // FIXME: impact on integer types noticeable?

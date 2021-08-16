@@ -150,7 +150,7 @@ $name (const octave_value_list& = octave_value_list (), int = 0);
 
   print "\nOCTAVE_NAMESPACE_END\n";
 
-  print "\n#if defined (OCTAVE_DECLARE_DEPRECATED_SYMBOLS)\n\n";
+  print "\n#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)\n\n";
 
   foreach $name (sort (@method_names))
   {
@@ -176,7 +176,7 @@ $name (const octave_value_list& args = octave_value_list (), int nargout = 0)
 ";
   }
 
-  ## end OCTAVE_DECLARE_DEPRECATED_SYMBOLS block
+  ## end OCTAVE_PROVIDE_DEPRECATED_SYMBOLS block
   print "\n\n#endif\n";
 
   print "\n#endif\n";

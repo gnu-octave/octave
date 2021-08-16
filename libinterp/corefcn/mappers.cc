@@ -476,10 +476,12 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.
 DEFUN (cbrt, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} cbrt (@var{x})
-Compute the real cube root of each element of @var{x}.
+Compute the real-valued cube root of each element of @var{x}.
 
 Unlike @code{@var{x}^(1/3)}, the result will be negative if @var{x} is
 negative.
+
+If any element of @var{x} is complex, @code{cbrt} aborts with an error.
 @seealso{nthroot}
 @end deftypefn */)
 {

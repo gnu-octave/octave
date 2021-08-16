@@ -534,10 +534,12 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
+OCTAVE_NAMESPACE_BEGIN
   // Declare function defined in sysdep.cc
   extern LONG
   get_regkey_value (HKEY h_rootkey, const std::string subkey,
                     const std::string name, octave_value& value);
+OCTAVE_NAMESPACE_END
 
 static std::string
 get_jvm_lib_path_from_registry ()

@@ -37,7 +37,7 @@
 ## @code{prod (@var{pf} .^ @var{n}) == @var{q}}.
 ##
 ## Implementation Note: The input @var{q} must be less than @code{flintmax}
-## (9.0072e+15) in order to factor correctly.
+## when the input is a floating point class (double or single).
 ## @seealso{gcd, lcm, isprime, primes}
 ## @end deftypefn
 
@@ -51,22 +51,25 @@ function [pf, n] = factor (q)
     error ("factor: Q must be a real non-negative integer");
   endif
 
-  ## Special case of no primes less than sqrt(q).
+  ## Special case of no primes less than sqrt (q).
   if (q < 4)
     pf = q;
     n = 1;
     return;
   endif
 
-  cls = class (q); # store class
-  q = double (q);  # internal algorithm relies on numbers being doubles.
-  qorig = q;
-  pf = [];
+  cls = class (q);  # store class
+  if (isfloat (q) && q > flintmax (q))
+    error ("factor: Q too large to factor (> flintmax");
+  endif
+
   ## There is at most one prime greater than sqrt(q), and if it exists,
   ## it has multiplicity 1, so no need to consider any factors greater
   ## than sqrt(q) directly.  [If there were two factors p1, p2 > sqrt(q),
   ## then q >= p1*p2 > sqrt(q)*sqrt(q) == q.  Contradiction.]
-  p = primes (sqrt (q));
+  max_p = feval (cls, sqrt (q));  # restore cls after sqrt conversion to double
+  p = primes (max_p);
+  pf = [];
   while (q > 1)
     ## Find prime factors in remaining q.
     p = p(rem (q, p) == 0);
@@ -75,18 +78,11 @@ function [pf, n] = factor (q)
       p = q;
     endif
     pf = [pf, p];
+
     ## Reduce q.
     q /= prod (p);
   endwhile
   pf = sort (pf);
-
-  ## Verify algorithm was successful
-  q = prod (pf);
-  if (q != qorig)
-    error ("factor: Q too large to factor");
-  elseif (q >= flintmax ())
-    warning ("factor: Q too large.  Answer is unreliable");
-  endif
 
   ## Determine multiplicity.
   if (nargout > 1)
@@ -95,13 +91,14 @@ function [pf, n] = factor (q)
     n = diff (idx);
   endif
 
- ## Restore class of input
- pf = feval (cls, pf);
-
 endfunction
 
 
+## Test special case input
 %!assert (factor (1), 1)
+%!assert (factor (2), 2)
+%!assert (factor (3), 3)
+
 %!test
 %! for i = 2:20
 %!   pf = factor (i);
@@ -121,7 +118,9 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> factor ()
-%!error <Q must be a real non-negative integer> factor (6i)
 %!error <Q must be a real non-negative integer> factor ([1,2])
-%!error <Q must be a real non-negative integer> factor (1.5)
+%!error <Q must be a real non-negative integer> factor (6i)
 %!error <Q must be a real non-negative integer> factor (-20)
+%!error <Q must be a real non-negative integer> factor (1.5)
+%!error <Q too large to factor> factor (flintmax ("single") + 2)
+%!error <Q too large to factor> factor (flintmax ("double") + 2)

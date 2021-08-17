@@ -180,6 +180,9 @@ vectors with rows corresponding to the input coordinate matrix.
 
 - The function `dec2bin` and `dec2hex` now support negative numbers.
 
+- The function `factor` now supports uint64 inputs larger than
+`flintmax`.
+
 - The functions `quantile` and `prctile` now permit operating on
 dimensions greater than `ndims (x)`.
 

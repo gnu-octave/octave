@@ -120,14 +120,9 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
         x_offset = num * x_len;
       else
         {
-          octave_idx_type x_offset2 = 0;
           x_offset = num;
-          while (x_offset >= x_stride)
-            {
-              x_offset -= x_stride;
-              x_offset2++;
-            }
-          x_offset += x_offset2 * x_stride * x_len;
+          octave_idx_type n_strides = num / x_stride;
+          x_offset += n_strides * x_stride * (x_len - 1);
         }
       octave_idx_type si_offset = num * si_len;
 

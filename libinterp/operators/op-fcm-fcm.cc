@@ -38,6 +38,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // unary complex matrix ops.
 
 DEFNDUNOP_OP (not, float_complex_matrix, float_complex_array, !)
@@ -350,3 +352,5 @@ install_fcm_fcm_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_el_div_eq, octave_float_complex_matrix,
                        octave_float_complex_matrix, assign_el_div);
 }
+
+OCTAVE_NAMESPACE_END

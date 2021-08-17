@@ -49,6 +49,8 @@
 #include "error.h"
 #include "xdiv.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static void
 solve_singularity_warning (double rcond)
 {
@@ -195,7 +197,7 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ)
 //                  +---+----+
 
 Matrix
-x_el_div (double a, const Matrix& b)
+elem_xdiv (double a, const Matrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.columns ();
@@ -213,7 +215,7 @@ x_el_div (double a, const Matrix& b)
 }
 
 ComplexMatrix
-x_el_div (double a, const ComplexMatrix& b)
+elem_xdiv (double a, const ComplexMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.columns ();
@@ -231,7 +233,7 @@ x_el_div (double a, const ComplexMatrix& b)
 }
 
 ComplexMatrix
-x_el_div (const Complex a, const Matrix& b)
+elem_xdiv (const Complex a, const Matrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.columns ();
@@ -249,7 +251,7 @@ x_el_div (const Complex a, const Matrix& b)
 }
 
 ComplexMatrix
-x_el_div (const Complex a, const ComplexMatrix& b)
+elem_xdiv (const Complex a, const ComplexMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.columns ();
@@ -276,7 +278,7 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 //                     +---+----+
 
 NDArray
-x_el_div (double a, const NDArray& b)
+elem_xdiv (double a, const NDArray& b)
 {
   NDArray result (b.dims ());
 
@@ -290,7 +292,7 @@ x_el_div (double a, const NDArray& b)
 }
 
 ComplexNDArray
-x_el_div (double a, const ComplexNDArray& b)
+elem_xdiv (double a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
@@ -304,7 +306,7 @@ x_el_div (double a, const ComplexNDArray& b)
 }
 
 ComplexNDArray
-x_el_div (const Complex a, const NDArray& b)
+elem_xdiv (const Complex a, const NDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
@@ -318,7 +320,7 @@ x_el_div (const Complex a, const NDArray& b)
 }
 
 ComplexNDArray
-x_el_div (const Complex a, const ComplexNDArray& b)
+elem_xdiv (const Complex a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
@@ -496,7 +498,7 @@ xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType& typ)
 //                  +---+----+
 
 FloatMatrix
-x_el_div (float a, const FloatMatrix& b)
+elem_xdiv (float a, const FloatMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.columns ();
@@ -514,7 +516,7 @@ x_el_div (float a, const FloatMatrix& b)
 }
 
 FloatComplexMatrix
-x_el_div (float a, const FloatComplexMatrix& b)
+elem_xdiv (float a, const FloatComplexMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.columns ();
@@ -532,7 +534,7 @@ x_el_div (float a, const FloatComplexMatrix& b)
 }
 
 FloatComplexMatrix
-x_el_div (const FloatComplex a, const FloatMatrix& b)
+elem_xdiv (const FloatComplex a, const FloatMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.columns ();
@@ -550,7 +552,7 @@ x_el_div (const FloatComplex a, const FloatMatrix& b)
 }
 
 FloatComplexMatrix
-x_el_div (const FloatComplex a, const FloatComplexMatrix& b)
+elem_xdiv (const FloatComplex a, const FloatComplexMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.columns ();
@@ -577,7 +579,7 @@ x_el_div (const FloatComplex a, const FloatComplexMatrix& b)
 //                     +---+----+
 
 FloatNDArray
-x_el_div (float a, const FloatNDArray& b)
+elem_xdiv (float a, const FloatNDArray& b)
 {
   FloatNDArray result (b.dims ());
 
@@ -591,7 +593,7 @@ x_el_div (float a, const FloatNDArray& b)
 }
 
 FloatComplexNDArray
-x_el_div (float a, const FloatComplexNDArray& b)
+elem_xdiv (float a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
@@ -605,7 +607,7 @@ x_el_div (float a, const FloatComplexNDArray& b)
 }
 
 FloatComplexNDArray
-x_el_div (const FloatComplex a, const FloatNDArray& b)
+elem_xdiv (const FloatComplex a, const FloatNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
@@ -619,7 +621,7 @@ x_el_div (const FloatComplex a, const FloatNDArray& b)
 }
 
 FloatComplexNDArray
-x_el_div (const FloatComplex a, const FloatComplexNDArray& b)
+elem_xdiv (const FloatComplex a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
@@ -1008,3 +1010,5 @@ xleftdiv (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
 FloatComplexDiagMatrix
 xleftdiv (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 { return dmdm_leftdiv_impl (a, b); }
+
+OCTAVE_NAMESPACE_END

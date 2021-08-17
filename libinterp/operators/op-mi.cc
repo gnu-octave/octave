@@ -35,6 +35,8 @@
 #include "ov-typeinfo.h"
 #include "ov.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Magic integer unary ops.  Only + and - are allowed so that
 // expressions like
 //
@@ -121,3 +123,5 @@ install_mi_ops (octave::type_info& ti)
   INSTALL_UNOP_TI (ti, op_uplus, octave_magic_int, signed_uplus);
   INSTALL_UNOP_TI (ti, op_uminus, octave_magic_int, signed_uminus);
 }
+
+OCTAVE_NAMESPACE_END

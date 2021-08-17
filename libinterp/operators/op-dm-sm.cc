@@ -37,6 +37,8 @@
 
 #include "sparse-xdiv.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // diagonal matrix by sparse matrix ops
 
 DEFBINOP (mul_dm_sm, diag_matrix, sparse_matrix)
@@ -203,3 +205,5 @@ install_dm_sm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_div, octave_sparse_matrix, octave_diag_matrix,
                     div_sm_dm);
 }
+
+OCTAVE_NAMESPACE_END

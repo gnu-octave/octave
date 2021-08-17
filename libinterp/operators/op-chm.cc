@@ -38,6 +38,8 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // char matrix unary ops.
 
 DEFUNOP (transpose, char_matrix)
@@ -110,3 +112,5 @@ install_chm_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_scalar, octave_char_matrix, s_chm);
   INSTALL_CATOP_TI (ti, octave_matrix, octave_char_matrix, m_chm);
 }
+
+OCTAVE_NAMESPACE_END

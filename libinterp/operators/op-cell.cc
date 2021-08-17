@@ -37,6 +37,8 @@
 #include "ov-null-mat.h"
 #include "ops.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // cell ops.
 
 DEFUNOP (transpose, cell)
@@ -71,3 +73,5 @@ install_cell_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_sq_str,
                        null_assign);
 }
+
+OCTAVE_NAMESPACE_END

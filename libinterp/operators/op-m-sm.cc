@@ -40,6 +40,8 @@
 #include "smx-m-sm.h"
 #include "ov-re-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // matrix by sparse matrix ops.
 
 DEFBINOP_OP (add, matrix, sparse_matrix, +)
@@ -165,3 +167,5 @@ install_m_sm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_matrix, octave_sparse_matrix,
                       sparse_matrix_conv);
 }
+
+OCTAVE_NAMESPACE_END

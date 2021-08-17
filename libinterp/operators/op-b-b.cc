@@ -54,6 +54,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // bool unary ops.
 
 // scalar unary ops.
@@ -142,3 +144,5 @@ install_b_b_ops (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_null_str, octave_bool_matrix);
   INSTALL_ASSIGNCONV_TI (ti, octave_bool, octave_null_sq_str, octave_bool_matrix);
 }
+
+OCTAVE_NAMESPACE_END

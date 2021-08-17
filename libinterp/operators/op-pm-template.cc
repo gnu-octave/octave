@@ -42,6 +42,8 @@
 #  define LDMATRIX LMATRIX
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 #define OCTAVE_LMATRIX CONCAT2(octave_, LMATRIX)
 #define OCTAVE_LDMATRIX CONCAT2(octave_, LDMATRIX)
 #define OCTAVE_RMATRIX CONCAT2(octave_, RMATRIX)
@@ -97,3 +99,5 @@ INST_NAME (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, OCTAVE_LMATRIX, octave_null_sq_str, OCTAVE_LDMATRIX);
 #endif
 }
+
+OCTAVE_NAMESPACE_END

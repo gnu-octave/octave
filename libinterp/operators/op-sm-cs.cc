@@ -42,6 +42,8 @@
 #include "smx-sm-cs.h"
 #include "smx-cs-sm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // sparse matrix by scalar ops.
 
 DEFBINOP_OP (add, sparse_matrix, complex, +)
@@ -153,3 +155,5 @@ install_sm_cs_ops (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, octave_sparse_matrix, octave_float_complex,
                          octave_sparse_complex_matrix);
 }
+
+OCTAVE_NAMESPACE_END

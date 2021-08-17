@@ -50,6 +50,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // bool matrix by bool ops.
 
 DEFNDBINOP_FN (el_and, bool_matrix, bool, bool_array, bool, mx_el_and)
@@ -121,3 +123,5 @@ install_bm_b_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_bool_matrix, octave_uint64_scalar,
                        conv_and_assign);
 }
+
+OCTAVE_NAMESPACE_END

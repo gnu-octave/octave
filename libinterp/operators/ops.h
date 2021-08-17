@@ -42,8 +42,6 @@ namespace octave
 #define CONCAT3X(x, y, z) x ## y ## z
 #define CONCAT3(x, y, z) CONCAT3X (x, y, z)
 
-extern void install_ops (octave::type_info&);
-
 #define INSTALL_UNOP_TI(ti, op, t, f)                                   \
   ti.install_unary_op                                                   \
   (octave_value::op, t::static_type_id (), CONCAT2 (oct_unop_, f));

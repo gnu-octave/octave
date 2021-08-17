@@ -36,6 +36,8 @@
 #include "ov-perm.h"
 #include "ov-cx-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // permutation matrix by sparse matrix ops
 
 DEFBINOP (mul_pm_scm, perm_matrix, sparse_complex_matrix)
@@ -106,3 +108,5 @@ install_pm_scm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_div, octave_sparse_complex_matrix, octave_perm_matrix,
                     div_scm_pm);
 }
+
+OCTAVE_NAMESPACE_END

@@ -36,6 +36,8 @@
 #include "ov-perm.h"
 #include "ov-re-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // permutation matrix by sparse matrix ops
 
 DEFBINOP (mul_pm_sm, perm_matrix, sparse_matrix)
@@ -102,3 +104,5 @@ install_pm_sm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_div, octave_sparse_matrix, octave_perm_matrix,
                     div_sm_pm);
 }
+
+OCTAVE_NAMESPACE_END

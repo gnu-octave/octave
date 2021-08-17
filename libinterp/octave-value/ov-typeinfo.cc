@@ -35,11 +35,12 @@
 #include "error.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
-#include "ops.h"
 #include "ov-typeinfo.h"
 #include "ov.h"
 
 OCTAVE_NAMESPACE_BEGIN
+
+  extern void install_ops (type_info& ti);
 
   // FIXME: we should also store all class names and provide a
   // way to list them (calling class with nargin == 0?).

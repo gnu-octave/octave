@@ -40,6 +40,8 @@
 #include "sparse-xdiv.h"
 #include "ov-cx-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // sparse complex matrix by complex scalar ops.
 
 DEFBINOP_OP (add, sparse_complex_matrix, complex, +)
@@ -170,3 +172,5 @@ install_scm_cs_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_complex_matrix,
                        octave_float_complex, sgl_assign);
 }
+
+OCTAVE_NAMESPACE_END

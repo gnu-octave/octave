@@ -38,6 +38,8 @@
 #include "ov-re-sparse.h"
 #include "ov-bool-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // unary sparse bool matrix ops.
 
 DEFUNOP_OP (not, sparse_bool_matrix, !)
@@ -107,3 +109,5 @@ install_sbm_sbm_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
                        octave_sparse_bool_matrix, assign);
 }
+
+OCTAVE_NAMESPACE_END

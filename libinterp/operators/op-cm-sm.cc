@@ -40,6 +40,8 @@
 #include "smx-cm-sm.h"
 #include "ov-re-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // complex matrix by sparse matrix ops.
 
 DEFBINOP_OP (add, complex_matrix, sparse_matrix, +)
@@ -172,3 +174,5 @@ install_cm_sm_ops (octave::type_info& ti)
                          octave_complex_matrix)
 
 }
+
+OCTAVE_NAMESPACE_END

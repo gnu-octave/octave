@@ -40,6 +40,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // unary complex scalar ops.
 
 DEFUNOP (not, complex)
@@ -178,3 +180,5 @@ install_cs_cs_ops (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, octave_complex, octave_null_sq_str,
                          octave_complex_matrix);
 }
+
+OCTAVE_NAMESPACE_END

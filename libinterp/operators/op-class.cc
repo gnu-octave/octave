@@ -43,6 +43,8 @@
 #include "symtab.h"
 #include "parse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 //! Default unary class operator.
 //!
 //! @param a operand
@@ -222,3 +224,5 @@ install_class_ops (octave::type_info& ti)
   ti.install_binary_class_op (octave_value::op_el_and,  oct_binop_and);
   ti.install_binary_class_op (octave_value::op_el_or,   oct_binop_or);
 }
+
+OCTAVE_NAMESPACE_END

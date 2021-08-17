@@ -35,6 +35,8 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // struct ops.
 
 DEFUNOP (transpose, struct)
@@ -110,3 +112,5 @@ install_struct_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_struct, octave_matrix, struct_matrix);
   INSTALL_CATOP_TI (ti, octave_matrix, octave_struct, matrix_struct);
 }
+
+OCTAVE_NAMESPACE_END

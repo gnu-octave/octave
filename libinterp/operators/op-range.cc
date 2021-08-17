@@ -36,6 +36,8 @@
 #include "ov-null-mat.h"
 #include "ops.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Allow +RNG_VAL to avoid conversion to array.
 DEFUNOP_OP (uplus, range, /* no-op */)
 
@@ -63,3 +65,5 @@ install_range_ops (octave::type_info& ti)
 
   INSTALL_WIDENOP_TI (ti, octave_range, octave_matrix, range_to_matrix);
 }
+
+OCTAVE_NAMESPACE_END

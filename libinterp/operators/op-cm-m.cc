@@ -42,6 +42,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // complex matrix by matrix ops.
 
 DEFNDBINOP_OP (add, complex_matrix, matrix, complex_array, array, +)
@@ -154,3 +156,5 @@ install_cm_m_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_complex_matrix, octave_matrix,
                        assign);
 }
+
+OCTAVE_NAMESPACE_END

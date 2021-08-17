@@ -44,6 +44,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // scalar by complex matrix ops.
 
 DEFNDBINOP_OP (add, float_scalar, float_complex_matrix, float_scalar,
@@ -98,7 +100,7 @@ DEFNDCMPLXCMPOP_FN (ne, float_scalar, float_complex_matrix, float_scalar,
 DEFNDBINOP_OP (el_mul, float_scalar, float_complex_matrix, float_scalar,
                float_complex_array, *)
 DEFNDBINOP_FN (el_div, float_scalar, float_complex_matrix, float_scalar,
-               float_complex_array, x_el_div)
+               float_complex_array, elem_xdiv)
 DEFNDBINOP_FN (el_pow, float_scalar, float_complex_matrix, float_scalar,
                float_complex_array, elem_xpow)
 
@@ -186,3 +188,5 @@ install_fs_fcm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_float_scalar, octave_float_complex_matrix,
                       float_complex_matrix_conv);
 }
+
+OCTAVE_NAMESPACE_END

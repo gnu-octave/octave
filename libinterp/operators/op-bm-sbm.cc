@@ -41,6 +41,8 @@
 #include "smx-bm-sbm.h"
 #include "smx-sbm-bm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // bool matrix by sparse bool matrix ops.
 
 DEFBINOP_FN (eq, bool_matrix, sparse_bool_matrix, mx_el_eq)
@@ -109,3 +111,5 @@ install_bm_sbm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_bool_matrix, octave_sparse_bool_matrix,
                       sparse_bool_matrix_conv);
 }
+
+OCTAVE_NAMESPACE_END

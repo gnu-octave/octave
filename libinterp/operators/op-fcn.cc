@@ -35,6 +35,8 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFBINOP (eq, fcn_handle, fcn_handle)
 {
   const octave_fcn_handle& v1 = dynamic_cast<const octave_fcn_handle&> (a1);
@@ -57,3 +59,5 @@ install_fcn_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_eq, octave_fcn_handle, octave_fcn_handle, eq);
   INSTALL_BINOP_TI (ti, op_ne, octave_fcn_handle, octave_fcn_handle, ne);
 }
+
+OCTAVE_NAMESPACE_END

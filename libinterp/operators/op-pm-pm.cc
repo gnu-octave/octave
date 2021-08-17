@@ -37,6 +37,8 @@
 #include "ops.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUNOP (transpose, perm_matrix)
 {
   const octave_perm_matrix& v = dynamic_cast<const octave_perm_matrix&> (a);
@@ -91,3 +93,5 @@ install_pm_pm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_perm_matrix, octave_matrix,
                       perm_matrix_to_matrix);
 }
+
+OCTAVE_NAMESPACE_END

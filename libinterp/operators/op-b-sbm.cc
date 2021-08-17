@@ -39,6 +39,8 @@
 #include "ov-re-sparse.h"
 #include "ov-bool-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // bool by sparse bool matrix ops.
 
 DEFBINOP_FN (ne, bool, sparse_bool_matrix, mx_el_ne)
@@ -101,3 +103,5 @@ install_b_sbm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_bool, octave_sparse_bool_matrix,
                       sparse_bool_matrix_conv);
 }
+
+OCTAVE_NAMESPACE_END

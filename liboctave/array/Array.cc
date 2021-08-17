@@ -1793,10 +1793,14 @@ Array<T>::sort (int dim, sortmode mode) const
 
   if (stride == 1)
     {
+      // Special case along first dimension avoids gather/scatter AND directly
+      // sorts into destination buffer for an 11% performance boost.
       for (octave_idx_type j = 0; j < iter; j++)
         {
-          // copy and partition out NaNs.
-          // FIXME: impact on integer types noticeable?
+          // Copy and partition out NaNs.
+          // No need to special case integer types <T> from floating point
+          // types <T> to avoid sort_isnan() test as it makes no discernible
+          // performance impact.
           octave_idx_type kl = 0;
           octave_idx_type ku = ns;
           for (octave_idx_type i = 0; i < ns; i++)
@@ -1834,7 +1838,6 @@ Array<T>::sort (int dim, sortmode mode) const
           offset += n_strides * stride * (ns - 1);
 
           // gather and partition out NaNs.
-          // FIXME: impact on integer types noticeable?
           octave_idx_type kl = 0;
           octave_idx_type ku = ns;
           for (octave_idx_type i = 0; i < ns; i++)
@@ -1906,10 +1909,11 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
 
   if (stride == 1)
     {
+      // Special case for dim 1 avoids gather/scatter for performance boost.
+      // See comments in Array::sort (dim, mode).
       for (octave_idx_type j = 0; j < iter; j++)
         {
           // copy and partition out NaNs.
-          // FIXME: impact on integer types noticeable?
           octave_idx_type kl = 0;
           octave_idx_type ku = ns;
           for (octave_idx_type i = 0; i < ns; i++)
@@ -1961,7 +1965,6 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
           offset += n_strides * stride * (ns - 1);
 
           // gather and partition out NaNs.
-          // FIXME: impact on integer types noticeable?
           octave_idx_type kl = 0;
           octave_idx_type ku = ns;
           for (octave_idx_type i = 0; i < ns; i++)
@@ -2394,7 +2397,6 @@ Array<T>::nth_element (const octave::idx_vector& n, int dim) const
       if (stride == 1)
         {
           // copy without NaNs.
-          // FIXME: impact on integer types noticeable?
           for (octave_idx_type i = 0; i < ns; i++)
             {
               T tmp = ov[i];
@@ -2410,7 +2412,6 @@ Array<T>::nth_element (const octave::idx_vector& n, int dim) const
         {
           octave_idx_type offset = j % stride;
           // copy without NaNs.
-          // FIXME: impact on integer types noticeable?
           for (octave_idx_type i = 0; i < ns; i++)
             {
               T tmp = ov[offset + i*stride];

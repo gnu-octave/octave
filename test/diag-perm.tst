@@ -187,10 +187,10 @@
 %! d = rand (mn, 1);
 %! D = diag (d, m, n);
 %! Dslice = D (1:(m-3), 1:(n-2));
-%! if (disable_range ())
-%!   assert (typeinfo (Dslice), "matrix");
-%! else
+%! if (optimize_range ())
 %!   assert (typeinfo (Dslice), "diagonal matrix");
+%! else
+%!   assert (typeinfo (Dslice), "matrix");
 %! endif
 
 ## preserve dense matrix structure when scaling

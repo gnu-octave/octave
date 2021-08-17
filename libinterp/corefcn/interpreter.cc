@@ -2027,9 +2027,9 @@ Undocumented internal function.
     m_error_system.beep_on_error (true);
 
     Fconfirm_recursive_rmdir (octave_value (false));
-    Fdisable_diagonal_matrix (octave_value (true));
-    Fdisable_permutation_matrix (octave_value (true));
-    Fdisable_range (octave_value (true));
+    Foptimize_diagonal_matrix (octave_value (false));
+    Foptimize_permutation_matrix (octave_value (false));
+    Foptimize_range (octave_value (false));
     Ffixed_point_format (octave_value (true));
     Fprint_empty_dimensions (octave_value (false));
     Fprint_struct_array_contents (octave_value (true));

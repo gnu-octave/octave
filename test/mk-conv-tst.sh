@@ -72,10 +72,10 @@ cat <<EOF
 %! ui64m = uint64 (rand (5) * 10);
 %!
 %!test
-%! if (disable_range ())
-%!   assert (typeinfo (r), "matrix")
-%! else
+%! if (optimize_range ())
 %!   assert (typeinfo (r), "range")
+%! else
+%!   assert (typeinfo (r), "matrix")
 %! endif
 %!assert (typeinfo (dq), "string")
 %!assert (typeinfo (sq), "sq_string")

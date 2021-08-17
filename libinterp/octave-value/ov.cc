@@ -96,17 +96,17 @@
 // We are likely to have a lot of octave_value objects to allocate, so
 // make the grow_size large.
 
-// If TRUE, don't create special diagonal matrix objects.
+// If TRUE, create special space-optimized diagonal matrix objects.
 
-static bool Vdisable_diagonal_matrix = false;
+static bool Voptimize_diagonal_matrix = true;
 
-// If TRUE, don't create special permutation matrix objects.
+// If TRUE, create special space-optimized permutation matrix objects.
 
-static bool Vdisable_permutation_matrix = false;
+static bool Voptimize_permutation_matrix = true;
 
-// If TRUE, don't create special range objects.
+// If TRUE, create special space-optimized range objects.
 
-static bool Vdisable_range = false;
+static bool Voptimize_range = true;
 
 // FIXME
 
@@ -572,49 +572,49 @@ octave_value::octave_value (const Array<float>& a)
 }
 
 octave_value::octave_value (const DiagArray2<double>& d)
-  : rep (Vdisable_diagonal_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d)))
-         : dynamic_cast<octave_base_value *> (new octave_diag_matrix (d)))
+  : rep (Voptimize_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_diag_matrix (d))
+         : dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d))))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<float>& d)
-  : rep (Vdisable_diagonal_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d)))
-         : dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d)))
+  : rep (Voptimize_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d))
+         : dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d))))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<Complex>& d)
-  : rep (Vdisable_diagonal_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d)))
-         : dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d)))
+  : rep (Voptimize_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d))
+         : dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d))))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<FloatComplex>& d)
-  : rep (Vdisable_diagonal_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d)))
-         : dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d)))
+  : rep (Voptimize_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d))
+         : dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d))))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagMatrix& d)
-  : rep (Vdisable_diagonal_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d)))
-         : dynamic_cast<octave_base_value *> (new octave_diag_matrix (d)))
+  : rep (Voptimize_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_diag_matrix (d))
+         : dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d))))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatDiagMatrix& d)
-  : rep (Vdisable_diagonal_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d)))
-         : dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d)))
+  : rep (Voptimize_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d))
+         : dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d))))
 {
   maybe_mutate ();
 }
@@ -692,17 +692,17 @@ octave_value::octave_value (const Array<FloatComplex>& a)
 }
 
 octave_value::octave_value (const ComplexDiagMatrix& d)
-  : rep (Vdisable_diagonal_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d)))
-         : dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d)))
+  : rep (Voptimize_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d))
+         : dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d))))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatComplexDiagMatrix& d)
-  : rep (Vdisable_diagonal_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d)))
-         : dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d)))
+  : rep (Voptimize_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d))
+         : dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d))))
 {
   maybe_mutate ();
 }
@@ -732,9 +732,9 @@ octave_value::octave_value (const FloatComplexColumnVector& v)
 }
 
 octave_value::octave_value (const PermMatrix& p)
-  : rep (Vdisable_permutation_matrix
-         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (p)))
-         : dynamic_cast<octave_base_value *> (new octave_perm_matrix (p)))
+  : rep (Voptimize_permutation_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_perm_matrix (p))
+         : dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (p))))
 {
   maybe_mutate ();
 }
@@ -1083,7 +1083,7 @@ make_range_rep_deprecated (const Range& r, bool force_range)
   if (! force_range && ! r.ok ())
     error ("invalid range");
 
-  if (force_range || ! Vdisable_range)
+  if (force_range || Voptimize_range)
     return make_range_rep_deprecated (r.base (), r.increment (), r.limit ());
   else
     return dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
@@ -1092,7 +1092,7 @@ make_range_rep_deprecated (const Range& r, bool force_range)
 octave_value::octave_value (const octave::range<char>& r, char type,
                             bool /*force_range*/)
 #if 0
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || optimize_range
          ? dynamic_cast<octave_base_value *> (new octave_char_range (r, type))
          : dynamic_cast<octave_base_value *> (type == '"'
                                               ? new octave_char_matrix_dq_str (r.array_value ())
@@ -1107,7 +1107,7 @@ octave_value::octave_value (const octave::range<char>& r, char type,
 }
 
 octave_value::octave_value (const octave::range<float>& r, bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<float> (r))
          : dynamic_cast<octave_base_value *> (new octave_float_matrix (r.array_value ())))
 {
@@ -1115,7 +1115,7 @@ octave_value::octave_value (const octave::range<float>& r, bool force_range)
 }
 
 octave_value::octave_value (const octave::range<double>& r, bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<double> (r))
          : dynamic_cast<octave_base_value *> (new octave_matrix (r.array_value ())))
 {
@@ -1124,7 +1124,7 @@ octave_value::octave_value (const octave::range<double>& r, bool force_range)
 
 octave_value::octave_value (const octave::range<octave_int8>& r,
                             bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<octave_int8> (r))
          : dynamic_cast<octave_base_value *> (new octave_int8_matrix (r.array_value ())))
 {
@@ -1133,7 +1133,7 @@ octave_value::octave_value (const octave::range<octave_int8>& r,
 
 octave_value::octave_value (const octave::range<octave_int16>& r,
                             bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<octave_int16> (r))
          : dynamic_cast<octave_base_value *> (new octave_int16_matrix (r.array_value ())))
 {
@@ -1142,7 +1142,7 @@ octave_value::octave_value (const octave::range<octave_int16>& r,
 
 octave_value::octave_value (const octave::range<octave_int32>& r,
                             bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<octave_int32> (r))
          : dynamic_cast<octave_base_value *> (new octave_int32_matrix (r.array_value ())))
 {
@@ -1151,7 +1151,7 @@ octave_value::octave_value (const octave::range<octave_int32>& r,
 
 octave_value::octave_value (const octave::range<octave_int64>& r,
                             bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<octave_int64> (r))
          : dynamic_cast<octave_base_value *> (new octave_int64_matrix (r.array_value ())))
 {
@@ -1160,7 +1160,7 @@ octave_value::octave_value (const octave::range<octave_int64>& r,
 
 octave_value::octave_value (const octave::range<octave_uint8>& r,
                             bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint8> (r))
          : dynamic_cast<octave_base_value *> (new octave_uint8_matrix (r.array_value ())))
 {
@@ -1169,7 +1169,7 @@ octave_value::octave_value (const octave::range<octave_uint8>& r,
 
 octave_value::octave_value (const octave::range<octave_uint16>& r,
                             bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint16> (r))
          : dynamic_cast<octave_base_value *> (new octave_uint16_matrix (r.array_value ())))
 {
@@ -1178,7 +1178,7 @@ octave_value::octave_value (const octave::range<octave_uint16>& r,
 
 octave_value::octave_value (const octave::range<octave_uint32>& r,
                             bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint32> (r))
          : dynamic_cast<octave_base_value *> (new octave_uint32_matrix (r.array_value ())))
 {
@@ -1187,7 +1187,7 @@ octave_value::octave_value (const octave::range<octave_uint32>& r,
 
 octave_value::octave_value (const octave::range<octave_uint64>& r,
                             bool force_range)
-  : rep (force_range || ! Vdisable_range
+  : rep (force_range || Voptimize_range
          ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint64> (r))
          : dynamic_cast<octave_base_value *> (new octave_uint64_matrix (r.array_value ())))
 {
@@ -3639,59 +3639,59 @@ Return true if @var{x} is a double-quoted character string.
 %!error is_dq_string ("foo", 2)
 */
 
-DEFUN (disable_permutation_matrix, args, nargout,
+DEFUN (optimize_permutation_matrix, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} disable_permutation_matrix ()
-@deftypefnx {} {@var{old_val} =} disable_permutation_matrix (@var{new_val})
-@deftypefnx {} {} disable_permutation_matrix (@var{new_val}, "local")
-Query or set whether storing permutation matrices in a special space-efficient
-format is disabled.
+@deftypefn  {} {@var{val} =} optimize_permutation_matrix ()
+@deftypefnx {} {@var{old_val} =} optimize_permutation_matrix (@var{new_val})
+@deftypefnx {} {} optimize_permutation_matrix (@var{new_val}, "local")
+Query or set whether a special space-efficient format is used for storing
+permutation matrices.
 
-The default value is false.  If this option is set to true, Octave will store
+The default value is true.  If this option is set to false, Octave will store
 permutation matrices as full matrices.
 
 When called from inside a function with the @qcode{"local"} option, the setting
 is changed locally for the function and any subroutines it calls.  The original
 setting is restored when exiting the function.
-@seealso{disable_range, disable_diagonal_matrix}
+@seealso{optimize_range, optimize_diagonal_matrix}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (disable_permutation_matrix);
+  return SET_INTERNAL_VARIABLE (optimize_permutation_matrix);
 }
 
 /*
 %!function p = __test_dpm__ (dpm)
-%!  disable_permutation_matrix (dpm, "local");
+%!  optimize_permutation_matrix (dpm, "local");
 %!  [~, ~, p] = lu ([1,2;3,4]);
 %!endfunction
 
-%!assert (typeinfo (__test_dpm__ (false)), "permutation matrix")
-%!assert (typeinfo (__test_dpm__ (true)), "matrix")
+%!assert (typeinfo (__test_dpm__ (true)), "permutation matrix")
+%!assert (typeinfo (__test_dpm__ (false)), "matrix")
 */
 
-DEFUN (disable_diagonal_matrix, args, nargout,
+DEFUN (optimize_diagonal_matrix, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} disable_diagonal_matrix ()
-@deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})
-@deftypefnx {} {} disable_diagonal_matrix (@var{new_val}, "local")
-Query or set whether storing diagonal matrices in a special space-efficient
-format is disabled.
+@deftypefn  {} {@var{val} =} optimize_diagonal_matrix ()
+@deftypefnx {} {@var{old_val} =} optimize_diagonal_matrix (@var{new_val})
+@deftypefnx {} {} optimize_diagonal_matrix (@var{new_val}, "local")
+Query or set whether a special space-efficient format is used for storing
+diagonal matrices.
 
-The default value is false.  If this option is set to true, Octave will store
+The default value is true.  If this option is set to false, Octave will store
 diagonal matrices as full matrices.
 
 When called from inside a function with the @qcode{"local"} option, the setting
 is changed locally for the function and any subroutines it calls. The original
 setting is restored when exiting the function.
-@seealso{disable_range, disable_permutation_matrix}
+@seealso{optimize_range, optimize_permutation_matrix}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (disable_diagonal_matrix);
+  return SET_INTERNAL_VARIABLE (optimize_diagonal_matrix);
 }
 
 /*
 %!function [x, xi, fx, fxi] = __test_ddm__ (ddm)
-%!  disable_diagonal_matrix (ddm, "local");
+%!  optimize_diagonal_matrix (ddm, "local");
 %!  x = eye (2);
 %!  xi = x*i;
 %!  fx = single (x);
@@ -3699,51 +3699,51 @@ setting is restored when exiting the function.
 %!endfunction
 
 %!shared x, xi, fx, fxi
-%!  [x, xi, fx, fxi] = __test_ddm__ (false);
+%!  [x, xi, fx, fxi] = __test_ddm__ (true);
 %!assert (typeinfo (x), "diagonal matrix")
 %!assert (typeinfo (xi), "complex diagonal matrix")
 %!assert (typeinfo (fx), "float diagonal matrix")
 %!assert (typeinfo (fxi), "float complex diagonal matrix")
 
 %!shared x, xi, fx, fxi
-%!  [x, xi, fx, fxi] = __test_ddm__ (true);
+%!  [x, xi, fx, fxi] = __test_ddm__ (false);
 %!assert (typeinfo (x), "matrix")
 %!assert (typeinfo (xi), "complex matrix")
 %!assert (typeinfo (fx), "float matrix")
 %!assert (typeinfo (fxi), "float complex matrix")
 */
 
-DEFUN (disable_range, args, nargout,
+DEFUN (optimize_range, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} disable_range ()
-@deftypefnx {} {@var{old_val} =} disable_range (@var{new_val})
-@deftypefnx {} {} disable_range (@var{new_val}, "local")
-Query or set whether storing ranges in a special space-efficient format is
-disabled.
+@deftypefn  {} {@var{val} =} optimize_range ()
+@deftypefnx {} {@var{old_val} =} optimize_range (@var{new_val})
+@deftypefnx {} {} optimize_range (@var{new_val}, "local")
+Query or set whether a special space-efficient format is used for storing
+ranges.
 
-The default value is false.  If this option is set to true, Octave will store
+The default value is true.  If this option is set to false, Octave will store
 ranges as full matrices.
 
 When called from inside a function with the @qcode{"local"} option, the setting
 is changed locally for the function and any subroutines it calls.  The original
 setting is restored when exiting the function.
-@seealso{disable_diagonal_matrix, disable_permutation_matrix}
+@seealso{optimize_diagonal_matrix, optimize_permutation_matrix}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (disable_range);
+  return SET_INTERNAL_VARIABLE (optimize_range);
 }
 
 /*
 %!function r = __test_dr__ (dr)
-%!  disable_range (dr, "local");
+%!  optimize_range (dr, "local");
 %!  ## Constant folding will produce range for 1:13.
 %!  base = 1;
 %!  limit = 13;
 %!  r = base:limit;
 %!endfunction
 
-%!assert (typeinfo (__test_dr__ (false)), "range")
-%!assert (typeinfo (__test_dr__ (true)), "matrix")
+%!assert (typeinfo (__test_dr__ (true)), "range")
+%!assert (typeinfo (__test_dr__ (false)), "matrix")
 */
 
 OCTAVE_NAMESPACE_END

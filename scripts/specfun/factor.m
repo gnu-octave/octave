@@ -60,7 +60,7 @@ function [pf, n] = factor (q)
 
   cls = class (q);  # store class
   if (isfloat (q) && q > flintmax (q))
-    error ("factor: Q too large to factor (> flintmax");
+    error ("factor: Q too large to factor (> flintmax)");
   endif
 
   ## There is at most one prime greater than sqrt(q), and if it exists,

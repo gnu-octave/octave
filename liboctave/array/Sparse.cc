@@ -2281,7 +2281,7 @@ Sparse<T>::assign (const octave::idx_vector& idx_i,
 }
 
 // Can't use versions of these in Array.cc due to duplication of the
-// instantiations for Array<double and Sparse<double>, etc
+// instantiations for Array<double and Sparse<double>, etc.
 template <typename T>
 OCTAVE_API
 bool
@@ -2313,11 +2313,11 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   if (m.numel () < 1 || dim > 1)
     return m;
 
-  if (dim > 0)
+  bool sort_by_column = (dim > 0);
+  if (sort_by_column)
     {
       m = m.transpose ();
-      nr = m.rows ();
-      nc = m.columns ();
+      std::swap (nr, nc);
     }
 
   octave_sort<T> lsort;
@@ -2361,7 +2361,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
       mridx += ns;
     }
 
-  if (dim > 0)
+  if (sort_by_column)
     m = m.transpose ();
 
   return m;
@@ -2384,11 +2384,11 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
       return m;
     }
 
-  if (dim > 0)
+  bool sort_by_column = (dim > 0);
+  if (sort_by_column)
     {
       m = m.transpose ();
-      nr = m.rows ();
-      nc = m.columns ();
+      std::swap (nr, nc);
     }
 
   octave_sort<T> indexed_sort;
@@ -2416,7 +2416,7 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
       if (ns == 0)
         {
           for (octave_idx_type k = 0; k < nr; k++)
-            sidx (offset + k) = k;
+            sidx(offset + k) = k;
         }
       else
         {
@@ -2446,18 +2446,18 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
               if (ii < ns && mridx[ii] == k)
                 ii++;
               else
-                sidx (offset + jj++) = k;
+                sidx(offset + jj++) = k;
             }
 
           for (octave_idx_type k = 0; k < i; k++)
             {
-              sidx (k + offset) = vi[k];
+              sidx(k + offset) = vi[k];
               mridx[k] = k;
             }
 
           for (octave_idx_type k = i; k < ns; k++)
             {
-              sidx (k - ns + nr + offset) = vi[k];
+              sidx(k - ns + nr + offset) = vi[k];
               mridx[k] = k - ns + nr;
             }
 
@@ -2466,7 +2466,7 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
         }
     }
 
-  if (dim > 0)
+  if (sort_by_column)
     {
       m = m.transpose ();
       sidx = sidx.transpose ();

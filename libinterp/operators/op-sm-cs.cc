@@ -108,8 +108,8 @@ DEFBINOP (el_ldiv, sparse_matrix, complex)
   const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
   const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
-  return octave_value (x_el_div (v2.complex_value (),
-                                 v1.sparse_matrix_value ()));
+  return octave_value (elem_xdiv (v2.complex_value (),
+                                  v1.sparse_matrix_value ()));
 }
 
 DEFBINOP_FN (el_and, sparse_matrix, complex, mx_el_and)

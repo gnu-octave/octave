@@ -36,6 +36,8 @@ class ComplexDiagMatrix;
 class SparseMatrix;
 class SparseComplexMatrix;
 
+OCTAVE_NAMESPACE_BEGIN
+
 extern Matrix xdiv (const Matrix& a, const SparseMatrix& b, MatrixType& typ);
 extern ComplexMatrix xdiv (const Matrix& a, const SparseComplexMatrix& b,
                            MatrixType& typ);
@@ -62,11 +64,11 @@ extern SparseComplexMatrix xdiv (const SparseComplexMatrix& a,
 extern SparseComplexMatrix xdiv (const SparseComplexMatrix& a,
                                  const ComplexDiagMatrix& b, MatrixType& typ);
 
-extern Matrix x_el_div (double a, const SparseMatrix& b);
-extern ComplexMatrix x_el_div (double a, const SparseComplexMatrix& b);
-extern ComplexMatrix x_el_div (const Complex a, const SparseMatrix& b);
-extern ComplexMatrix x_el_div (const Complex a,
-                               const SparseComplexMatrix& b);
+extern Matrix elem_xdiv (double a, const SparseMatrix& b);
+extern ComplexMatrix elem_xdiv (double a, const SparseComplexMatrix& b);
+extern ComplexMatrix elem_xdiv (const Complex& a, const SparseMatrix& b);
+extern ComplexMatrix elem_xdiv (const Complex& a,
+                                const SparseComplexMatrix& b);
 
 extern Matrix xleftdiv (const SparseMatrix& a, const Matrix& b,
                         MatrixType& typ);
@@ -99,5 +101,207 @@ extern SparseComplexMatrix xleftdiv (const DiagMatrix&,
 extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&,
                                      const SparseComplexMatrix&,
                                      MatrixType&);
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline Matrix
+xdiv (const Matrix& a, const SparseMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline ComplexMatrix
+xdiv (const Matrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline ComplexMatrix
+xdiv (const ComplexMatrix& a, const SparseMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline ComplexMatrix
+xdiv (const ComplexMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline SparseMatrix
+xdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline SparseComplexMatrix
+xdiv (const SparseMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline SparseComplexMatrix
+xdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline SparseComplexMatrix
+xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline SparseMatrix
+xdiv (const SparseMatrix& a, const DiagMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline SparseComplexMatrix
+xdiv (const SparseMatrix& a, const ComplexDiagMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline SparseComplexMatrix
+xdiv (const SparseComplexMatrix& a, const DiagMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
+inline SparseComplexMatrix
+xdiv (const SparseComplexMatrix& a, const ComplexDiagMatrix& b, MatrixType& typ)
+{
+  return octave::xdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xdiv' instead")
+inline Matrix
+x_el_div (double a, const SparseMatrix& b)
+{
+  return octave::elem_xdiv (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xdiv' instead")
+inline ComplexMatrix
+x_el_div (double a, const SparseComplexMatrix& b)
+{
+  return octave::elem_xdiv (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xdiv' instead")
+inline ComplexMatrix
+x_el_div (const Complex& a, const SparseMatrix& b)
+{
+  return octave::elem_xdiv (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xdiv' instead")
+inline ComplexMatrix
+x_el_div (const Complex& a, const SparseComplexMatrix& b)
+{
+  return octave::elem_xdiv (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline Matrix
+xleftdiv (const SparseMatrix& a, const Matrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline ComplexMatrix
+xleftdiv (const SparseMatrix& a, const ComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline ComplexMatrix
+xleftdiv (const SparseComplexMatrix& a, const Matrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline ComplexMatrix
+xleftdiv (const SparseComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline SparseMatrix
+xleftdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline SparseComplexMatrix
+xleftdiv (const SparseMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline SparseComplexMatrix
+xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline SparseComplexMatrix
+xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline SparseMatrix
+xleftdiv (const DiagMatrix& a, const SparseMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline SparseComplexMatrix
+xleftdiv (const ComplexDiagMatrix& a, const SparseMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline SparseComplexMatrix
+xleftdiv (const DiagMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
+inline SparseComplexMatrix
+xleftdiv (const ComplexDiagMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+{
+  return octave::xleftdiv (a, b, typ);
+}
+
+#endif
 
 #endif

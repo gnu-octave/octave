@@ -90,7 +90,7 @@ DEFBINOP_FN (gt, complex, sparse_matrix, mx_el_gt)
 DEFBINOP_FN (ne, complex, sparse_matrix, mx_el_ne)
 
 DEFBINOP_OP (el_mul, complex, sparse_matrix, *)
-DEFBINOP_FN (el_div, complex, sparse_matrix, x_el_div)
+DEFBINOP_FN (el_div, complex, sparse_matrix, elem_xdiv)
 DEFBINOP_FN (el_pow, complex, sparse_matrix, elem_xpow)
 
 DEFBINOP (el_ldiv, complex, sparse_matrix)

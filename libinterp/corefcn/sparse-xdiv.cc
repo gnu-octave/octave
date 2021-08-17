@@ -43,6 +43,8 @@
 #include "oct-spparms.h"
 #include "sparse-xdiv.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static void
 solve_singularity_warning (double rcond)
 {
@@ -370,7 +372,7 @@ xdiv (const SparseComplexMatrix& a, const ComplexDiagMatrix& b, MatrixType &)
 //                  +---+----+
 
 Matrix
-x_el_div (double a, const SparseMatrix& b)
+elem_xdiv (double a, const SparseMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
@@ -394,7 +396,7 @@ x_el_div (double a, const SparseMatrix& b)
 }
 
 ComplexMatrix
-x_el_div (double a, const SparseComplexMatrix& b)
+elem_xdiv (double a, const SparseComplexMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
@@ -413,7 +415,7 @@ x_el_div (double a, const SparseComplexMatrix& b)
 }
 
 ComplexMatrix
-x_el_div (const Complex a, const SparseMatrix& b)
+elem_xdiv (const Complex& a, const SparseMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
@@ -431,7 +433,7 @@ x_el_div (const Complex a, const SparseMatrix& b)
 }
 
 ComplexMatrix
-x_el_div (const Complex a, const SparseComplexMatrix& b)
+elem_xdiv (const Complex& a, const SparseComplexMatrix& b)
 {
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
@@ -633,3 +635,5 @@ xleftdiv (const ComplexDiagMatrix& d, const SparseComplexMatrix& a,
 {
   return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }
+
+OCTAVE_NAMESPACE_END

@@ -95,7 +95,7 @@ DEFBINOP_FN (gt, scalar, sparse_complex_matrix, mx_el_gt)
 DEFBINOP_FN (ne, scalar, sparse_complex_matrix, mx_el_ne)
 
 DEFBINOP_OP (el_mul, scalar, sparse_complex_matrix, *)
-DEFBINOP_FN (el_div, scalar, sparse_complex_matrix, x_el_div)
+DEFBINOP_FN (el_div, scalar, sparse_complex_matrix, elem_xdiv)
 DEFBINOP_FN (el_pow, scalar, sparse_complex_matrix, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, sparse_complex_matrix)

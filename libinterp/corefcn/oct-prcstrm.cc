@@ -32,6 +32,8 @@
 #include "oct-prcstrm.h"
 #include "sysdep.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 octave::stream
 octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
                             octave::mach_info::float_format ff,
@@ -44,8 +46,8 @@ octave_iprocstream::octave_iprocstream (const std::string& n,
                                         std::ios::openmode arg_md,
                                         octave::mach_info::float_format ff,
                                         const std::string& encoding)
-  : octave_stdiostream (n, octave::popen (n.c_str (), "r"),
-                        arg_md, ff, encoding, octave::pclose)
+  : octave::stdiostream (n, octave::popen (n.c_str (), "r"),
+                         arg_md, ff, encoding, octave::pclose)
 { }
 
 octave_iprocstream::~octave_iprocstream (void)
@@ -65,11 +67,13 @@ octave_oprocstream::octave_oprocstream (const std::string& n,
                                         std::ios::openmode arg_md,
                                         octave::mach_info::float_format ff,
                                         const std::string& encoding)
-  : octave_stdiostream (n, octave::popen (n.c_str (), "w"),
-                        arg_md, ff, encoding, octave::pclose)
+  : octave::stdiostream (n, octave::popen (n.c_str (), "w"),
+                         arg_md, ff, encoding, octave::pclose)
 { }
 
 octave_oprocstream::~octave_oprocstream (void)
 {
   do_close ();
 }
+
+OCTAVE_NAMESPACE_END

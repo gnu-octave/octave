@@ -55,6 +55,8 @@
 #include "errwarn.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 #if ! defined (SHELL_PATH)
 #  define SHELL_PATH "/bin/sh"
 #endif
@@ -65,7 +67,7 @@
 #if (! (defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)) \
      && defined (HAVE_UNISTD_H))
 
-static octave_procbuf *octave_procbuf_list = nullptr;
+static procbuf *procbuf_list = nullptr;
 
 #endif
 
@@ -73,8 +75,8 @@ static octave_procbuf *octave_procbuf_list = nullptr;
 #  define BUFSIZ 1024
 #endif
 
-octave_procbuf *
-octave_procbuf::open (const char *command, int mode)
+procbuf *
+procbuf::open (const char *command, int mode)
 {
 #if defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)
 
@@ -134,9 +136,9 @@ octave_procbuf::open (const char *command, int mode)
           octave_close_wrapper (child_end);
         }
 
-      while (octave_procbuf_list)
+      while (procbuf_list)
         {
-          FILE *fp = octave_procbuf_list->f;
+          FILE *fp = procbuf_list->f;
 
           if (fp)
             {
@@ -144,7 +146,7 @@ octave_procbuf::open (const char *command, int mode)
               fp = nullptr;
             }
 
-          octave_procbuf_list = octave_procbuf_list->next;
+          procbuf_list = procbuf_list->next;
         }
 
       execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (nullptr));
@@ -167,8 +169,8 @@ octave_procbuf::open (const char *command, int mode)
 
   open_p = true;
 
-  next = octave_procbuf_list;
-  octave_procbuf_list = this;
+  next = procbuf_list;
+  procbuf_list = this;
 
   return this;
 
@@ -179,8 +181,8 @@ octave_procbuf::open (const char *command, int mode)
 #endif
 }
 
-octave_procbuf *
-octave_procbuf::close (void)
+procbuf *
+procbuf::close (void)
 {
 #if defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)
 
@@ -202,7 +204,7 @@ octave_procbuf::close (void)
 
       int status = -1;
 
-      for (octave_procbuf **ptr = &octave_procbuf_list;
+      for (procbuf **ptr = &procbuf_list;
            *ptr != nullptr;
            ptr = &(*ptr)->next)
         {
@@ -238,3 +240,5 @@ octave_procbuf::close (void)
 
 #endif
 }
+
+OCTAVE_NAMESPACE_END

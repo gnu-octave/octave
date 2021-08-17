@@ -7326,7 +7326,7 @@ namespace octave
     : m_list (), m_lookup_cache (m_list.end ()), m_stdin_file (-1),
       m_stdout_file (-1), m_stderr_file (-1)
   {
-    stream stdin_stream = octave_istream::create (&std::cin, "stdin");
+    stream stdin_stream = istream::create (&std::cin, "stdin");
 
     // This uses octave_stdout (see pager.h), not std::cout so that
     // Octave's standard output stream will pass through the pager.
@@ -7336,9 +7336,9 @@ namespace octave
     output_system& output_sys = interp.get_output_system ();
 
     stream stdout_stream
-      = octave_ostream::create (&(output_sys.__stdout__ ()), "stdout");
+      = ostream::create (&(output_sys.__stdout__ ()), "stdout");
 
-    stream stderr_stream = octave_ostream::create (&std::cerr, "stderr");
+    stream stderr_stream = ostream::create (&std::cerr, "stderr");
 
     m_stdin_file = insert (stdin_stream);
     m_stdout_file = insert (stdout_stream);

@@ -35,6 +35,8 @@
 
 #include "oct-procbuf.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 class
 OCTINTERP_API
 procstreambase : virtual public std::ios
@@ -66,7 +68,7 @@ public:
 
 private:
 
-  octave_procbuf m_pb;
+  procbuf m_pb;
 
   void pb_init (void)
   {
@@ -182,5 +184,23 @@ private:
 
   procstream& operator = (const procstream&);
 };
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::procstreambase' instead")
+typedef octave::procstreambase procstreambase;
+
+OCTAVE_DEPRECATED (7, "use 'octave::iprocstream' instead")
+typedef octave::iprocstream iprocstream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::oprocstream' instead")
+typedef octave::oprocstream oprocstream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::procstream' instead")
+typedef octave::procstream procstream;
+
+#endif
 
 #endif

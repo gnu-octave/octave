@@ -33,8 +33,15 @@
 // FIXME: why don't these classes use iprocstream and oprocstream,
 //        which in turn use the octave_procbuf class?
 
+// Note: Even though these classes are now inside the octave namespace,
+// we can't rename them to iprocstream and oprocstream because we
+// already have classes with those names (see procstream.h).  We need to
+// find a way to resolve this naming issue.
+
+OCTAVE_NAMESPACE_BEGIN
+
 class
-octave_iprocstream : public octave_stdiostream
+octave_iprocstream : public octave::stdiostream
 {
 public:
 
@@ -62,7 +69,7 @@ protected:
 };
 
 class
-octave_oprocstream : public octave_stdiostream
+octave_oprocstream : public octave::stdiostream
 {
 public:
 
@@ -88,5 +95,17 @@ protected:
 
   ~octave_oprocstream (void);
 };
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::octave_iprocstream' instead")
+typedef octave::octave_iprocstream octave_iprocstream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::octave_oprocstream' instead")
+typedef octave::octave_oprocstream octave_oprocstream;
+
+#endif
 
 #endif

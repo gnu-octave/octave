@@ -300,11 +300,9 @@ exit status, it will linger until Octave exits.
   FILE *ifile = fdopen (filedesc[1], "r");
   FILE *ofile = fdopen (filedesc[0], "w");
 
-  stream is
-    = octave_stdiostream::create (exec_file + "-in", ifile, std::ios::in);
+  stream is = stdiostream::create (exec_file + "-in", ifile, std::ios::in);
 
-  stream os
-    = octave_stdiostream::create (exec_file + "-out", ofile, std::ios::out);
+  stream os = stdiostream::create (exec_file + "-out", ofile, std::ios::out);
 
   stream_list& streams = interp.get_stream_list ();
 
@@ -798,11 +796,9 @@ error message.
       FILE *ifile = fdopen (fid[0], "r");
       FILE *ofile = fdopen (fid[1], "w");
 
-      stream is
-        = octave_stdiostream::create ("pipe-in", ifile, std::ios::in);
+      stream is = stdiostream::create ("pipe-in", ifile, std::ios::in);
 
-      stream os
-        = octave_stdiostream::create ("pipe-out", ofile, std::ios::out);
+      stream os = stdiostream::create ("pipe-out", ofile, std::ios::out);
 
       stream_list& streams = interp.get_stream_list ();
 

@@ -32,26 +32,27 @@
 
 #include "oct-stream.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 class
-octave_base_iostream : public octave::base_stream
+base_iostream : public base_stream
 {
 public:
 
-  octave_base_iostream (const std::string& n = "",
-                        std::ios::openmode m = std::ios::in | std::ios::out,
-                        octave::mach_info::float_format ff
-                          = octave::mach_info::native_float_format ())
-    : octave::base_stream (m, ff), m_name (n) { }
+  base_iostream (const std::string& n = "",
+                 std::ios::openmode m = std::ios::in | std::ios::out,
+                 mach_info::float_format ff = mach_info::native_float_format ())
+    : base_stream (m, ff), m_name (n) { }
 
   // No copying!
 
-  octave_base_iostream (const octave_base_iostream&) = delete;
+  base_iostream (const base_iostream&) = delete;
 
-  octave_base_iostream& operator = (const octave_base_iostream&) = delete;
+  base_iostream& operator = (const base_iostream&) = delete;
 
 protected:
 
-  ~octave_base_iostream (void) = default;
+  ~base_iostream (void) = default;
 
 public:
 
@@ -83,17 +84,16 @@ private:
 };
 
 class
-octave_istream : public octave_base_iostream
+istream : public base_iostream
 {
 public:
 
-  octave_istream (std::istream *arg = nullptr, const std::string& n = "")
-    : octave_base_iostream (n, std::ios::in,
-                            octave::mach_info::native_float_format ()),
+  istream (std::istream *arg = nullptr, const std::string& n = "")
+    : base_iostream (n, std::ios::in, mach_info::native_float_format ()),
       m_istream (arg)
   { }
 
-  static octave::stream
+  static stream
   create (std::istream *arg = nullptr, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.
@@ -106,33 +106,32 @@ public:
 
 protected:
 
-  ~octave_istream (void) = default;
+  ~istream (void) = default;
 
 private:
 
   std::istream *m_istream;
 
-  const char * stream_type (void) const { return "octave_istream"; }
+  const char * stream_type (void) const { return "istream"; }
 
   // No copying!
 
-  octave_istream (const octave_istream&) = delete;
+  istream (const istream&) = delete;
 
-  octave_istream& operator = (const octave_istream&) = delete;
+  istream& operator = (const istream&) = delete;
 };
 
 class
-octave_ostream : public octave_base_iostream
+ostream : public base_iostream
 {
 public:
 
-  octave_ostream (std::ostream *arg, const std::string& n = "")
-    : octave_base_iostream (n, std::ios::out,
-                            octave::mach_info::native_float_format ()),
+  ostream (std::ostream *arg, const std::string& n = "")
+    : base_iostream (n, std::ios::out, mach_info::native_float_format ()),
       m_ostream (arg)
   { }
 
-  static octave::stream
+  static stream
   create (std::ostream *arg, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.
@@ -145,19 +144,34 @@ public:
 
 protected:
 
-  ~octave_ostream (void) = default;
+  ~ostream (void) = default;
 
 private:
 
   std::ostream *m_ostream;
 
-  const char * stream_type (void) const { return "octave_ostream"; }
+  const char * stream_type (void) const { return "ostream"; }
 
   // No copying!
 
-  octave_ostream (const octave_ostream&) = delete;
+  ostream (const ostream&) = delete;
 
-  octave_ostream& operator = (const octave_ostream&) = delete;
+  ostream& operator = (const ostream&) = delete;
 };
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::base_iostream' instead")
+typedef octave::base_iostream octave_base_iostream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::istream' instead")
+typedef octave::istream octave_istream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::ostream' instead")
+typedef octave::ostream octave_ostream;
+
+#endif
 
 #endif

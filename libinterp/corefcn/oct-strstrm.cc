@@ -29,12 +29,14 @@
 
 #include "oct-strstrm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_strstream::seek (off_t, int)
+base_strstream::seek (off_t, int)
 {
-  // Note: error is inherited from octave::base_stream, not ::error.
+  // Note: error is inherited from base_stream, not ::error.
   // This error function does not halt execution so "return ..." must exist.
   error ("fseek: invalid operation");
   return -1;
@@ -43,37 +45,36 @@ octave_base_strstream::seek (off_t, int)
 // Return current stream position.
 
 off_t
-octave_base_strstream::tell (void)
+base_strstream::tell (void)
 {
-  // Note: error is inherited from octave::base_stream, not ::error.
+  // Note: error is inherited from base_stream, not ::error.
   // This error function does not halt execution so "return ..." must exist.
   error ("ftell: invalid operation");
   return -1;
 }
 
-octave::stream
-octave_istrstream::create (const char *data, std::ios::openmode arg_md,
-                           octave::mach_info::float_format flt_fmt,
-                           const std::string& encoding)
+stream
+istrstream::create (const char *data, std::ios::openmode arg_md,
+                    mach_info::float_format flt_fmt,
+                    const std::string& encoding)
 {
-  return octave::stream (new octave_istrstream (data, arg_md, flt_fmt,
-                                                encoding));
+  return stream (new istrstream (data, arg_md, flt_fmt, encoding));
 }
 
-octave::stream
-octave_istrstream::create (const std::string& data, std::ios::openmode arg_md,
-                           octave::mach_info::float_format flt_fmt,
+stream
+istrstream::create (const std::string& data, std::ios::openmode arg_md,
+                           mach_info::float_format flt_fmt,
                            const std::string& encoding)
 {
-  return octave::stream (new octave_istrstream (data, arg_md, flt_fmt,
-                                                encoding));
+  return stream (new istrstream (data, arg_md, flt_fmt, encoding));
 }
 
-octave::stream
-octave_ostrstream::create (std::ios::openmode arg_md,
-                           octave::mach_info::float_format flt_fmt,
+stream
+ostrstream::create (std::ios::openmode arg_md,
+                           mach_info::float_format flt_fmt,
                            const std::string& encoding)
 {
-  return octave::stream (new octave_ostrstream (arg_md, flt_fmt,
-                                                encoding));
+  return stream (new ostrstream (arg_md, flt_fmt, encoding));
 }
+
+OCTAVE_NAMESPACE_END

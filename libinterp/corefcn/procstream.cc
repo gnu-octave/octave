@@ -31,6 +31,8 @@
 
 #include "procstream.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 procstreambase::procstreambase (const std::string& command, int mode)
 {
   pb_init ();
@@ -71,3 +73,5 @@ procstreambase::close (void)
 
   return status;
 }
+
+OCTAVE_NAMESPACE_END

@@ -442,8 +442,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
               gzFile gzf = ::gzdopen (fd, mode.c_str ());
 
-              retval = octave_zstdiostream::create (fname, gzf, fd, md,
-                                                    flt_fmt, encoding);
+              retval = zstdiostream::create (fname, gzf, fd, md, flt_fmt,
+                                             encoding);
             }
           else
             retval.error (std::strerror (errno));
@@ -453,8 +453,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
         {
           FILE *fptr = sys::fopen (fname, mode);
 
-          retval = octave_stdiostream::create (fname, fptr, md, flt_fmt,
-                                               encoding);
+          retval = stdiostream::create (fname, fptr, md, flt_fmt, encoding);
 
           if (! fptr)
             retval.error (std::strerror (errno));
@@ -948,10 +947,10 @@ expanded even when the template string is defined with single quotes.
   if (nargin == 0)
     print_usage ();
 
-  // We don't use octave_ostrstream::create here because need direct
+  // We don't use ostrstream::create here because need direct
   // access to the OSTR object so that we can extract a string object
   // from it to return.
-  octave_ostrstream *ostr = new octave_ostrstream ();
+  ostrstream *ostr = new ostrstream ();
 
   // The stream destructor will delete OSTR for us.
   stream os (ostr);
@@ -1121,7 +1120,7 @@ character to be read is returned in @var{pos}.
 
   std::string data = get_scan_string_data (args(0), who);
 
-  stream os = octave_istrstream::create (data);
+  stream os = istrstream::create (data);
 
   if (! os.is_valid ())
     error ("%s: unable to create temporary input buffer", who.c_str ());
@@ -1194,7 +1193,7 @@ textscan_internal (interpreter& interp, const std::string& who,
     {
       std::string data = get_scan_string_data (args(0), who);
 
-      os = octave_istrstream::create (data);
+      os = istrstream::create (data);
 
       if (! os.is_valid ())
         error ("%s: unable to create temporary input buffer", who.c_str ());
@@ -2974,13 +2973,13 @@ system-dependent error message.
 
       std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
 
-      stream s = octave_stdiostream::create (nm, fid, md);
+      stream s = stdiostream::create (nm, fid, md);
 
       if (! s)
         {
           fclose (fid);
 
-          error ("tmpfile: failed to create octave_stdiostream object");
+          error ("tmpfile: failed to create stdiostream object");
         }
 
       stream_list& streams = interp.get_stream_list ();
@@ -3053,10 +3052,10 @@ message.
 
           std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
 
-          stream s = octave_stdiostream::create (nm, fid, md);
+          stream s = stdiostream::create (nm, fid, md);
 
           if (! s)
-            error ("mkstemp: failed to create octave_stdiostream object");
+            error ("mkstemp: failed to create stdiostream object");
 
           stream_list& streams = interp.get_stream_list ();
 

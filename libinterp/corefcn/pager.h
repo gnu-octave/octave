@@ -35,11 +35,11 @@
 
 class octave_value;
 class octave_value_list;
-class oprocstream;
 
 OCTAVE_NAMESPACE_BEGIN
 
   class interpreter;
+class oprocstream;
 
   class
   OCTINTERP_API

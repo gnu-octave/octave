@@ -33,6 +33,8 @@
 
 #include "c-file-ptr-stream.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 #if ! defined (SEEK_SET)
 #  define SEEK_SET 0
 #endif
@@ -315,5 +317,7 @@ c_zfile_ptr_buf::buf_close (void)
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END
 
 #endif

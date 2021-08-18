@@ -247,7 +247,7 @@ due to the limited range of integer objects.
 */
 
 template <typename T>
-void
+static void
 blkmm_internal (const T& x, const T& y, T& z,
                 F77_INT m, F77_INT n, F77_INT k, F77_INT np);
 

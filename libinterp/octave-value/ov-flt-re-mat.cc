@@ -484,7 +484,7 @@ octave_float_matrix::save_binary (std::ostream& os, bool)
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const float *mtmp = m.data ();
@@ -604,7 +604,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 
       if (m.all_integers (max_val, min_val))
         save_type_hid
-          = save_type_to_hdf5 (get_save_type (max_val, min_val));
+          = save_type_to_hdf5 (octave::get_save_type (max_val, min_val));
     }
 #endif
 #if defined (HAVE_HDF5_18)

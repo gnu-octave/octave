@@ -32,6 +32,8 @@
 #include <istream>
 #include <sstream>
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Helper functions when reading from ascii files.
 
 // These functions take care of different line endings (LF, CR, CRLF)
@@ -177,3 +179,5 @@ read_until_newline (std::istream& is, bool keep_newline)
 
   return buf.str ();
 }
+
+OCTAVE_NAMESPACE_END

@@ -263,7 +263,7 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
     {
       double max_val, min_val;
       if (matrix.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   // add one to the printed indices to go from
@@ -569,7 +569,7 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id,
 
       if (m.all_integers (max_val, min_val))
         save_type_hid
-          = save_type_to_hdf5 (get_save_type (max_val, min_val));
+          = save_type_to_hdf5 (octave::get_save_type (max_val, min_val));
     }
 #endif
 

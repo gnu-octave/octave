@@ -204,7 +204,7 @@ octave_complex_diag_matrix::save_binary (std::ostream& os, bool save_as_floats)
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const Complex *mtmp = m.data ();

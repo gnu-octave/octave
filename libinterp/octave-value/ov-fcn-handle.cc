@@ -2098,7 +2098,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   bool base_anonymous_fcn_handle::load_ascii (std::istream& is)
   {
-    skip_preceeding_newline (is);
+    octave::skip_preceeding_newline (is);
 
     std::string buf;
 
@@ -2107,7 +2107,7 @@ OCTAVE_NAMESPACE_BEGIN
         // Get a line of text whitespace characters included, leaving
         // newline in the stream.
 
-        buf = read_until_newline (is, true);
+        buf = octave::read_until_newline (is, true);
       }
 
     std::streampos pos = is.tellg ();

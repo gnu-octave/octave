@@ -1663,7 +1663,7 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 
   double max_val, min_val;
   if (m.all_integers (max_val, min_val))
-    st = get_save_type (max_val, min_val);
+    st = octave::get_save_type (max_val, min_val);
 
   mat5_data_type mst;
   int size;
@@ -1748,7 +1748,7 @@ write_mat5_array (std::ostream& os, const FloatNDArray& m, bool)
 
   float max_val, min_val;
   if (m.all_integers (max_val, min_val))
-    st = get_save_type (max_val, min_val);
+    st = octave::get_save_type (max_val, min_val);
 
   mat5_data_type mst;
   int size;
@@ -1962,9 +1962,9 @@ save_mat5_array_length (const double *val, octave_idx_type nel,
             size = 4;
         }
 
-      // The code below is disabled since get_save_type currently doesn't
-      // deal with integer types.  This will need to be activated if
-      // get_save_type is changed.
+      // The code below is disabled since get_save_type currently
+      // doesn't deal with integer types.  This will need to be
+      // activated if get_save_type is changed.
 
       // double max_val = val[0];
       // double min_val = val[0];
@@ -2016,9 +2016,9 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
     {
       int size = 4;
 
-      // The code below is disabled since get_save_type currently doesn't
-      // deal with integer types.  This will need to be activated if
-      // get_save_type is changed.
+      // The code below is disabled since get_save_type currently
+      // doesn't deal with integer types.  This will need to be
+      // activated if get_save_type is changed.
 
       // float max_val = val[0];
       // float min_val = val[0];

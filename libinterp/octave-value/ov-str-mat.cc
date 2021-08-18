@@ -393,7 +393,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
         {
           char *ftmp = tmp.fortran_vec ();
 
-          skip_preceeding_newline (is);
+          octave::skip_preceeding_newline (is);
 
           if (! is.read (ftmp, dv.numel ()) || ! is)
             error ("load: failed to load string constant");

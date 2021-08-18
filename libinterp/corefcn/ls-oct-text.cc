@@ -115,13 +115,13 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
                 ; // Skip whitespace and the colon.
 
               is.putback (c);
-              retval = read_until_newline (is, false);
+              retval = octave::read_until_newline (is, false);
               break;
             }
           else if (next_only)
             break;
           else
-            skip_until_newline (is, false);
+            octave::skip_until_newline (is, false);
         }
     }
 
@@ -254,7 +254,7 @@ load_inline_fcn (std::istream& is, const std::string& filename)
       if (name == "0")
         name = "";
 
-      skip_preceeding_newline (is);
+      octave::skip_preceeding_newline (is);
 
       std::string buf;
 
@@ -263,7 +263,7 @@ load_inline_fcn (std::istream& is, const std::string& filename)
 
           // Get a line of text whitespace characters included,
           // leaving newline in the stream.
-          buf = read_until_newline (is, true);
+          buf = octave::read_until_newline (is, true);
         }
 
       if (is)

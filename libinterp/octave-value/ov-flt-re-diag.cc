@@ -193,7 +193,7 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const float *mtmp = m.data ();

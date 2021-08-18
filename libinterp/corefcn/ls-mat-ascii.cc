@@ -81,13 +81,13 @@ get_mat_data_input_line (std::istream& is)
           if (c == '\n' || c == '\r')
             {
               is.putback (c);
-              skip_preceeding_newline (is);
+              octave::skip_preceeding_newline (is);
               break;
             }
 
           if (c == '%' || c == '#')
             {
-              skip_until_newline (is, false);
+              octave::skip_until_newline (is, false);
               break;
             }
 

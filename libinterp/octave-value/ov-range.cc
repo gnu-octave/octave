@@ -626,7 +626,7 @@ skip_comments (std::istream& is)
         break;
     }
 
-  skip_until_newline (is, false);
+  octave::skip_until_newline (is, false);
 }
 
 template <typename T>

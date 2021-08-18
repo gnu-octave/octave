@@ -45,6 +45,8 @@
 #include "parse.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 #if defined (HAVE_ARPACK)
 
 struct eigs_callback {
@@ -56,7 +58,7 @@ struct eigs_callback {
 
   ColumnVector
   eigs_func (const ColumnVector& x, int& eigs_error);
-  
+
   ComplexColumnVector
   eigs_complex_func (const ComplexColumnVector& x, int& eigs_error);
 };
@@ -140,8 +142,6 @@ eigs_callback::eigs_complex_func (const ComplexColumnVector& x,
 }
 
 #endif
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__eigs__, interp, args, nargout,
            doc: /* -*- texinfo -*-

@@ -88,6 +88,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 {
   int typx = 0;
   int errnum = 0;
+  *status = -1;    // Initialize status to "bad" value
 
   clock_t t_start = clock ();
 

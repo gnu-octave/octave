@@ -54,7 +54,7 @@ namespace octave
         msg += " near line " + std::to_string (l);
 
         if (c > 0)
-          msg += ", column " + std::to_string (l);
+          msg += ", column " + std::to_string (c);
       }
 
     std::string missing_msg = maybe_missing_function_hook (name ());

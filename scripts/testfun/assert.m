@@ -263,10 +263,20 @@ function assert (cond, varargin)
           A = cond;
           B = expected;
 
-          if (isfloat (A))
+          if (isinteger (A) && isinteger (B))
+            ## Non-floating point numbers can't have exceptional or complex
+            ## values so skip tests.
+            A_null = A;
+            B_null = B;
+          else
             ## Check exceptional values.
-            errvec = (  isna (real (A)) != isna (real (B))
-                      | isna (imag (A)) != isna (imag (B)));
+            is_real = (isreal (A) && isreal (B));
+            if (is_real)
+              errvec = (isna (A) != isna (B));
+            else
+              errvec = (  isna (real (A)) != isna (real (B))
+                        | isna (imag (A)) != isna (imag (B)));
+            endif
             erridx = find (errvec);
             if (! isempty (erridx))
               err.index(end+1:end+length (erridx)) = ...
@@ -280,8 +290,12 @@ function assert (cond, varargin)
             endif
             errseen = errvec;
 
-            errvec = (  isnan (real (A)) != isnan (real (B))
-                      | isnan (imag (A)) != isnan (imag (B)));
+            if (is_real)
+              errvec = (isnan (A) != isnan (B));
+            else
+              errvec = (  isnan (real (A)) != isnan (real (B))
+                        | isnan (imag (A)) != isnan (imag (B)));
+            endif
             erridx = find (errvec & ! errseen);
             if (! isempty (erridx))
               err.index(end+1:end+length (erridx)) = ...
@@ -295,10 +309,14 @@ function assert (cond, varargin)
             endif
             errseen |= errvec;
 
-            errvec =   ((isinf (real (A)) | isinf (real (B))) ...
-                        & (real (A) != real (B)))             ...
-                     | ((isinf (imag (A)) | isinf (imag (B))) ...
-                        & (imag (A) != imag (B)));
+            if (is_real)
+              errvec = ((isinf (A) | isinf (B)) & (real (A) != real (B)));
+            else
+              errvec =   ((isinf (real (A)) | isinf (real (B))) ...
+                          & (real (A) != real (B)))             ...
+                       | ((isinf (imag (A)) | isinf (imag (B))) ...
+                          & (imag (A) != imag (B)));
+            endif
             erridx = find (errvec & ! errseen);
             if (! isempty (erridx))
               err.index(end+1:end+length (erridx)) = ...
@@ -314,27 +332,34 @@ function assert (cond, varargin)
 
             ## Check normal values.
             ## Replace exceptional values already checked above by zero.
-            A_null_real = real (A);
-            B_null_real = real (B);
+            if (is_real)
+              A_null_real = A;
+              B_null_real = B;
+            else
+              A_null_real = real (A);
+              B_null_real = real (B);
+            endif
             exclude = errseen ...
                       | ! isfinite (A_null_real) & ! isfinite (B_null_real);
             A_null_real(exclude) = 0;
             B_null_real(exclude) = 0;
-            A_null_imag = imag (A);
-            B_null_imag = imag (B);
-            exclude = errseen ...
-                      | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
-            A_null_imag(exclude) = 0;
-            B_null_imag(exclude) = 0;
-            A_null = complex (A_null_real, A_null_imag);
-            clear A_null_real A_null_imag;
-            B_null = complex (B_null_real, B_null_imag);
-            clear B_null_real B_null_imag;
-          else
-            ## Non-floating point numbers don't need to tread exceptional or
-            ## complex values.
-            A_null = A;
-            B_null = B;
+
+            if (is_real)
+              A_null = A_null_real;
+              B_null = B_null_real;
+            else
+              A_null_imag = imag (A);
+              B_null_imag = imag (B);
+              exclude = errseen ...
+                        | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
+              A_null_imag(exclude) = 0;
+              B_null_imag(exclude) = 0;
+              A_null = complex (A_null_real, A_null_imag);
+              B_null = complex (B_null_real, B_null_imag);
+            endif
+
+            clear A_null_real B_null_real;
+            clear A_null_imag B_null_imag;
           endif
 
           if (isscalar (tol))

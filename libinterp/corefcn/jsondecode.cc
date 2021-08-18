@@ -39,9 +39,11 @@
 #  include <rapidjson/error/en.h>
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 #if defined (HAVE_RAPIDJSON)
 
-octave_value
+static octave_value
 decode (const rapidjson::Value& val,
         const octave::make_valid_name_options* options);
 
@@ -59,7 +61,7 @@ decode (const rapidjson::Value& val,
 //! octave_value num = decode_number (d);
 //! @endcode
 
-octave_value
+static octave_value
 decode_number (const rapidjson::Value& val)
 {
   if (val.IsUint ())
@@ -91,7 +93,7 @@ decode_number (const rapidjson::Value& val)
 //! octave_value struct = decode_object (d, octave_value_list ());
 //! @endcode
 
-octave_value
+static octave_value
 decode_object (const rapidjson::Value& val,
                const octave::make_valid_name_options* options)
 {
@@ -125,7 +127,7 @@ decode_object (const rapidjson::Value& val,
 //! octave_value numeric_array = decode_numeric_array (d);
 //! @endcode
 
-octave_value
+static octave_value
 decode_numeric_array (const rapidjson::Value& val)
 {
   NDArray retval (dim_vector (val.Size (), 1));
@@ -150,7 +152,7 @@ decode_numeric_array (const rapidjson::Value& val)
 //! octave_value boolean_array = decode_boolean_array (d);
 //! @endcode
 
-octave_value
+static octave_value
 decode_boolean_array (const rapidjson::Value& val)
 {
   boolNDArray retval (dim_vector (val.Size (), 1));
@@ -184,7 +186,7 @@ decode_boolean_array (const rapidjson::Value& val)
 //! octave_value cell = decode_string_and_mixed_array (d, octave_value_list ());
 //! @endcode
 
-octave_value
+static octave_value
 decode_string_and_mixed_array (const rapidjson::Value& val,
                                const octave::make_valid_name_options* options)
 {
@@ -220,7 +222,7 @@ decode_string_and_mixed_array (const rapidjson::Value& val,
 //! octave_value object_array = decode_object_array (d, octave_value_list ());
 //! @endcode
 
-octave_value
+static octave_value
 decode_object_array (const rapidjson::Value& val,
                      const octave::make_valid_name_options* options)
 {
@@ -286,7 +288,7 @@ decode_object_array (const rapidjson::Value& val,
 //! octave_value cell = decode_array_of_arrays (d, octave_value_list ());
 //! @endcode
 
-octave_value
+static octave_value
 decode_array_of_arrays (const rapidjson::Value& val,
                         const octave::make_valid_name_options* options)
 {
@@ -396,7 +398,7 @@ decode_array_of_arrays (const rapidjson::Value& val,
 //! octave_value array = decode_array (d, octave_value_list ());
 //! @endcode
 
-octave_value
+static octave_value
 decode_array (const rapidjson::Value& val,
               const octave::make_valid_name_options* options)
 {
@@ -459,7 +461,7 @@ decode_array (const rapidjson::Value& val,
 //! octave_value value = decode (d, octave_value_list ());
 //! @endcode
 
-octave_value
+static octave_value
 decode (const rapidjson::Value& val,
         const octave::make_valid_name_options* options)
 {
@@ -480,8 +482,6 @@ decode (const rapidjson::Value& val,
 }
 
 #endif
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (jsondecode, args, ,
        doc: /* -*- texinfo -*-

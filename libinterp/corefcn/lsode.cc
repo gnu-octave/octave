@@ -49,6 +49,8 @@
 
 #include "LSODE-opts.cc"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Global pointer for user defined function required by lsode.
 static octave_value lsode_fcn;
 
@@ -62,7 +64,7 @@ static bool warned_jac_imaginary = false;
 // Is this a recursive call?
 static int call_depth = 0;
 
-ColumnVector
+static ColumnVector
 lsode_user_function (const ColumnVector& x, double t)
 {
   ColumnVector retval;
@@ -102,7 +104,7 @@ lsode_user_function (const ColumnVector& x, double t)
   return retval;
 }
 
-Matrix
+static Matrix
 lsode_user_jacobian (const ColumnVector& x, double t)
 {
   Matrix retval;
@@ -141,8 +143,6 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
   return retval;
 }
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (lsode, interp, args, nargout,
            doc: /* -*- texinfo -*-

@@ -37,7 +37,7 @@
 #include "oct-mutex.h"
 #include "utils.h"
 
-namespace QtHandles
+namespace octave
 {
 
   ObjectProxy::ObjectProxy (Object *obj)

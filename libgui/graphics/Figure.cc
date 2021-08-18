@@ -65,7 +65,7 @@
 #include "builtin-defun-decls.h"
 #include "interpreter.h"
 
-namespace QtHandles
+namespace octave
 {
 
   DECLARE_GENERICEVENTNOTIFY_SENDER(MenuBar, QMenuBar);

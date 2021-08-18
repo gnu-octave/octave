@@ -35,7 +35,7 @@
 #include "QtHandlesUtils.h"
 #include "octave-qobject.h"
 
-namespace QtHandles
+namespace octave
 {
   template <typename T>
   ToolBarButton<T>::ToolBarButton (octave::base_qobject& oct_qobj,

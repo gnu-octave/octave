@@ -32,7 +32,7 @@ class QEvent;
 class QObject;
 class QWidget;
 
-namespace QtHandles
+namespace octave
 {
 
   class GenericEventNotifyReceiver;

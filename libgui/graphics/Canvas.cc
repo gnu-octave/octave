@@ -51,7 +51,7 @@
 #include "interpreter.h"
 #include "oct-opengl.h"
 
-namespace QtHandles
+namespace octave
 {
 
   void

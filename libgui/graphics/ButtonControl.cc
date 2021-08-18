@@ -37,7 +37,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace QtHandles
+namespace octave
 {
 
   ButtonControl::ButtonControl (octave::base_qobject& oct_qobj,

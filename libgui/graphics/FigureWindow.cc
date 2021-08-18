@@ -31,7 +31,7 @@
 
 #include "FigureWindow.h"
 
-namespace QtHandles
+namespace octave
 {
 
   FigureWindow::FigureWindow (QWidget *xparent)

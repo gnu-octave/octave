@@ -54,8 +54,7 @@ namespace octave
 
     gh_mgr.enable_event_processing (true);
 
-    QtHandles::qt_graphics_toolkit *qt_gtk
-      = new QtHandles::qt_graphics_toolkit (interp, oct_qobj);
+    qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp, oct_qobj);
 
     if (QThread::currentThread ()
         != QApplication::instance ()->thread ())

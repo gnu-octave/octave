@@ -38,7 +38,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace QtHandles
+namespace octave
 {
 
   Container::Container (QWidget *xparent, octave::base_qobject& oct_qobj,

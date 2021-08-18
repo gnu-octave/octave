@@ -37,7 +37,7 @@ namespace octave
   class base_qobject;
 }
 
-namespace QtHandles
+namespace octave
 {
   class Object;
   class ObjectProxy;

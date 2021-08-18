@@ -36,7 +36,7 @@
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
 
-namespace QtHandles
+namespace octave
 {
 
   PopupMenuControl*

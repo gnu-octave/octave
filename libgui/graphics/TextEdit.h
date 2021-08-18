@@ -28,7 +28,7 @@
 
 #include <QTextEdit>
 
-namespace QtHandles
+namespace octave
 {
 
   class TextEdit : public QTextEdit

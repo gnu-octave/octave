@@ -39,7 +39,7 @@
 #include "annotation-dialog.h"
 #include "ui-annotation-dialog.h"
 
-using namespace QtHandles;
+using namespace octave;
 
 annotation_dialog::annotation_dialog (octave::base_qobject& oct_qobj,
                                       QWidget *p, const octave_value_list& pr):

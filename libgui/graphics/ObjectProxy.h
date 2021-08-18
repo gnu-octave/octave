@@ -32,7 +32,7 @@
 
 class QString;
 
-namespace QtHandles
+namespace octave
 {
 
   class Object;

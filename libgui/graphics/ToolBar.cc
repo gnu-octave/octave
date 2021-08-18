@@ -44,7 +44,7 @@
 #include "gui-preferences-global.h"
 #include "octave-qobject.h"
 
-namespace QtHandles
+namespace octave
 {
   static QIcon makeEmptyIcon (void)
   {

@@ -30,7 +30,7 @@
 
 class QMutex;
 
-namespace QtHandles
+namespace octave
 {
 
   class Logger

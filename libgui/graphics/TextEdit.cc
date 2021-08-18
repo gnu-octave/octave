@@ -31,7 +31,7 @@
 
 #include "TextEdit.h"
 
-namespace QtHandles
+namespace octave
 {
 
   void

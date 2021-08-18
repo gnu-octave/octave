@@ -73,7 +73,7 @@
 # define OCTAVE_PTR_SCALAR uint64_scalar_value
 //#endif
 
-namespace QtHandles
+namespace octave
 {
 
   static std::string
@@ -92,7 +92,7 @@ namespace QtHandles
              || go.isa ("uitoggletool"))
       return "__object__";
     else
-      qCritical ("QtHandles::qt_graphics_toolkit: no __object__ property known for object "
+      qCritical ("octave::qt_graphics_toolkit: no __object__ property known for object "
                  "of type %s", go.type ().c_str ());
 
     return "";

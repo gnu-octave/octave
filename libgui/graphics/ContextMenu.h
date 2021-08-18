@@ -39,7 +39,7 @@ namespace octave
   class interpreter;
 }
 
-namespace QtHandles
+namespace octave
 {
 
   class ContextMenu : public Object, public MenuContainer

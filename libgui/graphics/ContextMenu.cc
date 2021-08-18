@@ -37,7 +37,7 @@
 
 #include "interpreter.h"
 
-namespace QtHandles
+namespace octave
 {
 
   ContextMenu*

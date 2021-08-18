@@ -44,7 +44,7 @@
 #include "graphics.h"
 #include "ov.h"
 
-namespace QtHandles
+namespace octave
 {
 
   namespace Utils

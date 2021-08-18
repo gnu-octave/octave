@@ -51,7 +51,7 @@
 #include "interpreter.h"
 #include "oct-map.h"
 
-namespace QtHandles
+namespace octave
 {
 
   static int

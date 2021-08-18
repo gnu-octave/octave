@@ -239,13 +239,22 @@ decode_object_array (const rapidjson::Value& val,
   if (same_field_names)
     {
       octave_map struct_array;
-      Cell value (dim_vector (struct_cell.numel (), 1));
-      for (octave_idx_type i = 0; i < field_names.numel (); ++i)
+      dim_vector struct_array_dims = dim_vector (struct_cell.numel (), 1);
+
+      if (field_names.numel ())
         {
-          for (octave_idx_type k = 0; k < struct_cell.numel (); ++k)
-            value(k) = struct_cell(k).scalar_map_value ().getfield (field_names(i));
-          struct_array.assign (field_names(i), value);
+          Cell value (struct_array_dims);
+          for (octave_idx_type i = 0; i < field_names.numel (); ++i)
+            {
+              for (octave_idx_type k = 0; k < struct_cell.numel (); ++k)
+                value(k) = struct_cell(k).scalar_map_value ()
+                                         .getfield (field_names(i));
+              struct_array.assign (field_names(i), value);
+            }
         }
+      else
+        struct_array.resize (struct_array_dims, true);
+
       return struct_array;
     }
   else
@@ -286,6 +295,9 @@ decode_array_of_arrays (const rapidjson::Value& val,
 
   // Only arrays with sub-arrays of booleans and numericals will return NDArray
   bool is_bool = cell(0).is_bool_matrix ();
+  bool is_struct = cell(0).isstruct ();
+  string_vector field_names = is_struct ? cell(0).map_value ().fieldnames ()
+                                        : string_vector ();
   dim_vector sub_array_dims = cell(0).dims ();
   octave_idx_type sub_array_ndims = cell(0).ndims ();
   octave_idx_type cell_numel = cell.numel ();
@@ -302,6 +314,13 @@ decode_array_of_arrays (const rapidjson::Value& val,
       // return cell array
       if (cell(i).is_bool_matrix () != is_bool)
         return cell;
+      // If not struct arrays only, return cell array
+      if (cell(i).isstruct () != is_struct)
+        return cell;
+      // If struct arrays have different fields, return cell array
+      if (is_struct && (field_names.std_list ()
+                        != cell(i).map_value ().fieldnames ().std_list ()))
+        return cell;
     }
 
   // Calculate the dims of the output array
@@ -310,21 +329,55 @@ decode_array_of_arrays (const rapidjson::Value& val,
   array_dims(0) = cell_numel;
   for (auto i = 1; i < sub_array_ndims + 1; i++)
     array_dims(i) = sub_array_dims(i-1);
-  NDArray array (array_dims);
 
-  // Populate the array with specific order to generate MATLAB-identical output
-  octave_idx_type sub_array_numel = array.numel () / cell_numel;
-  for (octave_idx_type k = 0; k < cell_numel; ++k)
+  if (is_struct)
     {
-      NDArray sub_array_value = cell(k).array_value ();
-      for (octave_idx_type i = 0; i < sub_array_numel; ++i)
-        array(k + i*cell_numel) = sub_array_value(i);
-    }
+      octave_map struct_array;
+      array_dims.chop_trailing_singletons ();
 
-  if (is_bool)
-    return boolNDArray (array);
+      if (field_names.numel ())
+        {
+          Cell value (array_dims);
+          octave_idx_type sub_array_numel = sub_array_dims.numel ();
+
+          for (octave_idx_type j = 0; j < field_names.numel (); ++j)
+            {
+              // Populate the array with specific order to generate
+              // MATLAB-identical output.
+              for (octave_idx_type k = 0; k < cell_numel; ++k)
+                {
+                  Cell sub_array_value = cell(k).map_value ()
+                                                .getfield (field_names(j));
+                  for (octave_idx_type i = 0; i < sub_array_numel; ++i)
+                    value(k + i * cell_numel) = sub_array_value(i);
+                }
+              struct_array.assign (field_names(j), value);
+            }
+        }
+      else
+        struct_array.resize(array_dims, true);
+
+      return struct_array;
+    }
   else
-    return array;
+    {
+      NDArray array (array_dims);
+
+      // Populate the array with specific order to generate MATLAB-identical
+      // output.
+      octave_idx_type sub_array_numel = array.numel () / cell_numel;
+      for (octave_idx_type k = 0; k < cell_numel; ++k)
+        {
+          NDArray sub_array_value = cell(k).array_value ();
+          for (octave_idx_type i = 0; i < sub_array_numel; ++i)
+            array(k + i * cell_numel) = sub_array_value(i);
+        }
+
+      if (is_bool)
+        return boolNDArray (array);
+      else
+        return array;
+    }
 }
 
 //! Decodes any type of JSON arrays.  This function only serves as an interface

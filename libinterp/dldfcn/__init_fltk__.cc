@@ -105,6 +105,8 @@ To initialize:
 #include "parse.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 #define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"
 
 const char *help_text = "\
@@ -2549,3 +2551,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

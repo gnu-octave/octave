@@ -33,8 +33,6 @@
 
 #include "symtab.h"
 
-class gh_manager;
-
 namespace octave
 {
   class bp_table;
@@ -44,6 +42,7 @@ namespace octave
   class dynamic_loader;
   class error_system;
   class event_manager;
+  class gh_manager;
   class gtk_manager;
   class help_system;
   class input_system;

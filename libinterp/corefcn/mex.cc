@@ -4725,7 +4725,8 @@ mexGet_interleaved (double handle, const char *property)
 {
   mxArray *m = nullptr;
 
-  octave_value ret = get_property_from_handle (handle, property, "mexGet");
+  octave_value ret
+    = octave::get_property_from_handle (handle, property, "mexGet");
 
   if (ret.is_defined ())
     m = ret.as_mxArray (true);
@@ -4738,7 +4739,8 @@ mexGet (double handle, const char *property)
 {
   mxArray *m = nullptr;
 
-  octave_value ret = get_property_from_handle (handle, property, "mexGet");
+  octave_value ret
+    = octave::get_property_from_handle (handle, property, "mexGet");
 
   if (ret.is_defined ())
     m = ret.as_mxArray (false);
@@ -4792,9 +4794,9 @@ mexLock (void)
 int
 mexSet (double handle, const char *property, mxArray *val)
 {
-  bool ret
-    = set_property_in_handle (handle, property, mxArray::as_octave_value (val),
-                              "mexSet");
+  bool ret = octave::set_property_in_handle (handle, property,
+                                             mxArray::as_octave_value (val),
+                                             "mexSet");
   return (ret ? 0 : 1);
 }
 

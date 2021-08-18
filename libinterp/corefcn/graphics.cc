@@ -67,6 +67,8 @@
 #include "utils.h"
 #include "octave-default-image.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // forward declarations
 static octave_value xget (const graphics_handle& h, const caseless_str& name);
 
@@ -3451,7 +3453,7 @@ base_properties::set_parent (const octave_value& val)
 
   // Set parent property to new_parent and do adoption
   m_parent = new_parent.as_octave_value ();
-  ::adopt (m_parent.handle_value (), m___myhandle__);
+  octave::adopt (m_parent.handle_value (), m___myhandle__);
 }
 
 /*
@@ -5411,7 +5413,7 @@ axes::properties::set_text_child (handle_property& hp,
   graphics_object go = gh_mgr.get_object (gh_mgr.lookup (v));
 
   if (go.isa ("text"))
-    val = ::reparent (v, "set", who, m___myhandle__, false);
+    val = octave::reparent (v, "set", who, m___myhandle__, false);
   else
     {
       std::string cname = v.class_name ();
@@ -7397,13 +7399,13 @@ axes::properties::get___fontsize_points__ (double box_pix_height) const
 ColumnVector
 graphics_xform::xform_vector (double x, double y, double z)
 {
-  return ::xform_vector (x, y, z);
+  return octave::xform_vector (x, y, z);
 }
 
 Matrix
 graphics_xform::xform_eye (void)
 {
-  return ::xform_matrix ();
+  return octave::xform_matrix ();
 }
 
 ColumnVector
@@ -7416,14 +7418,14 @@ graphics_xform::transform (double x, double y, double z, bool use_scale) const
       z = m_sz.scale (z);
     }
 
-  return ::transform (m_xform, x, y, z);
+  return octave::transform (m_xform, x, y, z);
 }
 
 ColumnVector
 graphics_xform::untransform (double x, double y, double z,
                              bool use_scale) const
 {
-  ColumnVector v = ::transform (m_xform_inv, x, y, z);
+  ColumnVector v = octave::transform (m_xform_inv, x, y, z);
 
   if (use_scale)
     {
@@ -10624,8 +10626,6 @@ surface::properties::update_vertex_normals (bool reset, bool force)
     m_vertexnormals = Matrix ();
 }
 
-OCTAVE_NAMESPACE_BEGIN
-
 DEFMETHOD (__update_normals__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __update_normals__ (@var{h})
@@ -10692,8 +10692,6 @@ Update FaceNormals and VertexNormals of the patch or surface referred to by
 %!   close (hf);
 %! end_unwind_protect
 */
-
-OCTAVE_NAMESPACE_END
 
 // ---------------------------------------------------------------------
 
@@ -12638,8 +12636,6 @@ root_figure::init_factory_properties (void)
 
 // ---------------------------------------------------------------------
 
-OCTAVE_NAMESPACE_BEGIN
-
 DEFMETHOD (ishghandle, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} ishghandle (@var{h})
@@ -13411,8 +13407,6 @@ Undocumented internal function.
                                                                         \
   return octave_value (make_graphics_object (#TYPE, false, args));      \
 
-OCTAVE_NAMESPACE_END
-
 int
 calc_dimensions (const graphics_object& go)
 {
@@ -13448,8 +13442,6 @@ calc_dimensions (const graphics_object& go)
 
   return nd;
 }
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__calc_dimensions__, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -14253,8 +14245,6 @@ addproperty ("my_style", gcf, "linelinestyle", "--");
   return ovl ();
 }
 
-OCTAVE_NAMESPACE_END
-
 octave_value
 get_property_from_handle (double handle, const std::string& property,
                           const std::string& func)
@@ -14288,8 +14278,6 @@ set_property_in_handle (double handle, const std::string& property,
 
   return true;
 }
-
-OCTAVE_NAMESPACE_BEGIN
 
 static bool
 compare_property_values (const octave_value& ov1, const octave_value& ov2)

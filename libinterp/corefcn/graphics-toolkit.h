@@ -38,10 +38,9 @@
 #include "error.h"
 #include "graphics-handle.h"
 
-class graphics_object;
-
 namespace octave
 {
+  class graphics_object;
   class graphics_toolkit;
 
   class base_graphics_toolkit

@@ -57,6 +57,8 @@ To initialize:
 
 // PKG_ADD: if (__have_gnuplot__ ()) register_graphics_toolkit ("gnuplot"); endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 class gnuplot_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
@@ -243,8 +245,6 @@ have_gnuplot_binary (void)
 
   return retval;
 }
-
-OCTAVE_NAMESPACE_BEGIN
 
 // Initialize the gnuplot graphics toolkit.
 

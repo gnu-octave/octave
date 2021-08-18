@@ -47,6 +47,14 @@ static float lo_float_na;
 static int lo_ieee_hw;
 static int lo_ieee_lw;
 
+#if defined (HAVE_MIPS_NAN)
+  #define LO_IEEE_NA_HW 0x7FF040F4
+#else
+  #define LO_IEEE_NA_HW 0x7FF840F4
+#endif
+#define LO_IEEE_NA_LW 0x40000000
+#define LO_IEEE_NA_FLOAT 0x7FC207A2
+
 int
 __lo_ieee_is_NA (double x)
 {

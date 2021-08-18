@@ -92,7 +92,12 @@ OCTAVE_NAMESPACE_BEGIN
               << " -- stopping myself..." << std::endl;
 
     if (save_vars)
-      dump_octave_core ();
+      {
+        load_save_system& load_save_sys
+          = __get_load_save_system__ ("my_friendly_exit");
+
+        load_save_sys.dump_octave_core ();
+      }
 
     sysdep_cleanup ();
 

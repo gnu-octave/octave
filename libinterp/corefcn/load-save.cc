@@ -2047,6 +2047,8 @@ The original variable value is restored when exiting the function.
 
 OCTAVE_NAMESPACE_END
 
+// DEPRECATED in Octave 7
+
 void
 dump_octave_core (void)
 {

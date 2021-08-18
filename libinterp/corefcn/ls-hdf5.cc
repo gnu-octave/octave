@@ -1080,7 +1080,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 {
 #if defined (HAVE_HDF5)
 
-  check_hdf5_types ();
+  octave::check_hdf5_types ();
 
   std::string retval;
 
@@ -1501,7 +1501,7 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
 {
 #if defined (HAVE_HDF5)
 
-  check_hdf5_types ();
+  octave::check_hdf5_types ();
 
   hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 

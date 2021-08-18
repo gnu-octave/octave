@@ -29,8 +29,25 @@
 #include "octave-config.h"
 
 #if defined (__cplusplus)
+
 // This function only needs to be defined for C++.
+
+OCTAVE_NAMESPACE_BEGIN
+
 extern bool check_hdf5_types (bool warn = true);
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::check_hdf5_types' instead")
+inline bool check_hdf5_types (bool warn = true)
+{
+  return octave::check_hdf5_types (warn);
+}
+
+#endif
+
 #endif
 
 // Available for C and C++.

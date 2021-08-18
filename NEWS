@@ -183,6 +183,8 @@ vectors with rows corresponding to the input coordinate matrix.
 - The function `factor` now supports uint64 inputs larger than
 `flintmax`.
 
+- The function `primes` now supports char inputs.
+
 - The functions `quantile` and `prctile` now permit operating on
 dimensions greater than `ndims (x)`.
 

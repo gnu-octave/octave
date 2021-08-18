@@ -1516,7 +1516,7 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
             }
         }
     }
-  else if ( ev->button() == Qt::MidButton )
+  else if ( ev->button() == Qt::MiddleButton )
     {
       if ( _mouseMarks || (!_mouseMarks && (ev->modifiers() & Qt::ShiftModifier)) )
         emitSelection(true,ev->modifiers() & Qt::ControlModifier);
@@ -1601,7 +1601,7 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
       int button = 3;
       if (ev->buttons() & Qt::LeftButton)
         button = 0;
-      if (ev->buttons() & Qt::MidButton)
+      if (ev->buttons() & Qt::MiddleButton)
         button = 1;
       if (ev->buttons() & Qt::RightButton)
         button = 2;
@@ -1642,7 +1642,7 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
   if (_actSel == 0) return;
 
   // don't extend selection while pasting
-  if (ev->buttons() & Qt::MidButton) return;
+  if (ev->buttons() & Qt::MiddleButton) return;
 
   extendSelection( ev->pos() );
 }
@@ -1909,7 +1909,7 @@ void TerminalView::mouseReleaseEvent(QMouseEvent* ev)
 
   if ( !_mouseMarks &&
        ((ev->button() == Qt::RightButton && !(ev->modifiers() & Qt::ShiftModifier))
-        || ev->button() == Qt::MidButton) )
+        || ev->button() == Qt::MiddleButton) )
     {
       emit mouseSignal( 3,
                         charColumn + 1,

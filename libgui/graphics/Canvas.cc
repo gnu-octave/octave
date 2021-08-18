@@ -556,7 +556,7 @@ namespace octave
         retval = 1;
         break;
 
-      case Qt::MidButton:
+      case Qt::MiddleButton:
         retval = 2;
         break;
 
@@ -738,7 +738,7 @@ namespace octave
 
                         break;
 
-                      case Qt::MidButton:
+                      case Qt::MiddleButton:
                         {
                           axes::properties& ap =
                             Utils::properties<axes> (axesObj);

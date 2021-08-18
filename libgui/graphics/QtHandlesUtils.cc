@@ -187,7 +187,7 @@ namespace octave
                 return "normal";
               else if (buttons == Qt::RightButton)
                 return "alt";
-              else if (buttons == Qt::MidButton
+              else if (buttons == Qt::MiddleButton
                        || buttons == (Qt::LeftButton | Qt::RightButton))
                 return "extend";
             }

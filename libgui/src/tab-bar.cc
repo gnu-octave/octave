@@ -201,7 +201,7 @@ namespace octave
         if ((me->type () == QEvent::MouseButtonDblClick
              && me->button() == Qt::LeftButton)
             || (me->type () != QEvent::MouseButtonDblClick
-                && me->button() == Qt::MidButton))
+                && me->button() == Qt::MiddleButton))
           {
             // Middle click or double click -> close the tab
             // Make the clicked tab the current one and close it

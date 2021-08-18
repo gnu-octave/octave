@@ -120,46 +120,6 @@ is_valid_function (const octave_value& arg,
   return ans;
 }
 
-octave_function *
-extract_function (const octave_value& arg, const std::string& warn_for,
-                  const std::string& fname, const std::string& header,
-                  const std::string& trailer)
-{
-  octave_function *retval = is_valid_function (arg, warn_for, 0);
-
-  if (! retval)
-    {
-      std::string s = arg.xstring_value ("%s: argument must be a string",
-                                         warn_for.c_str ());
-
-      std::string cmd = header;
-      cmd.append (s);
-      cmd.append (trailer);
-
-      int parse_status;
-
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("extract_function");
-
-      interp.eval_string (cmd, true, parse_status, 0);
-
-      if (parse_status != 0)
-        error ("%s: '%s' is not valid as a function",
-               warn_for.c_str (), fname.c_str ());
-
-      retval = is_valid_function (fname, warn_for, 0);
-
-      if (! retval)
-        error ("%s: '%s' is not valid as a function",
-               warn_for.c_str (), fname.c_str ());
-
-      warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
-               warn_for.c_str ());
-    }
-
-  return retval;
-}
-
 OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (isglobal, interp, args, ,
@@ -356,8 +316,6 @@ symbol_exist (interpreter& interp, const std::string& name,
   return 0;
 }
 
-OCTAVE_NAMESPACE_END
-
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
@@ -393,8 +351,6 @@ unique_symbol_name (const std::string& basename)
 
   return nm;
 }
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (exist, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -580,8 +536,6 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 %!error <unrecognized type argument "foobar"> exist ("a", "foobar")
 
 */
-
-OCTAVE_NAMESPACE_END
 
 // Variable values.
 
@@ -891,8 +845,6 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 
   return retval;
 }
-
-OCTAVE_NAMESPACE_BEGIN
 
 // NOTE: Calling Fmlock directly (without an associated stack frame)
 // will probably not do what you expect because it will lock the calling
@@ -1434,11 +1386,7 @@ variables.
 %!error clear -f -g
 */
 
-OCTAVE_NAMESPACE_END
-
 static std::string Vmissing_function_hook = "__unimplemented__";
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (missing_function_hook, args, nargout,
        doc: /* -*- texinfo -*-
@@ -1454,10 +1402,9 @@ The original variable value is restored when exiting the function.
 @seealso{missing_component_hook}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (missing_function_hook);
+  return set_internal_variable (Vmissing_function_hook, args, nargout,
+                                "missing_function_hook");
 }
-
-OCTAVE_NAMESPACE_END
 
 std::string
 maybe_missing_function_hook (const std::string& name)
@@ -1492,8 +1439,6 @@ maybe_missing_function_hook (const std::string& name)
 
   return "";
 }
-
-OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__varval__, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -1572,7 +1517,50 @@ should return an error message to be displayed.
 @seealso{missing_function_hook}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (missing_component_hook);
+  return set_internal_variable (Vmissing_component_hook, args, nargout,
+                                "missing_component_hook");
 }
 
 OCTAVE_NAMESPACE_END
+
+// DEPRECATED in Octave 6
+
+octave_function *
+extract_function (const octave_value& arg, const std::string& warn_for,
+                  const std::string& fname, const std::string& header,
+                  const std::string& trailer)
+{
+  octave_function *retval = is_valid_function (arg, warn_for, 0);
+
+  if (! retval)
+    {
+      std::string s = arg.xstring_value ("%s: argument must be a string",
+                                         warn_for.c_str ());
+
+      std::string cmd = header;
+      cmd.append (s);
+      cmd.append (trailer);
+
+      int parse_status;
+
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("extract_function");
+
+      interp.eval_string (cmd, true, parse_status, 0);
+
+      if (parse_status != 0)
+        error ("%s: '%s' is not valid as a function",
+               warn_for.c_str (), fname.c_str ());
+
+      retval = is_valid_function (fname, warn_for, 0);
+
+      if (! retval)
+        error ("%s: '%s' is not valid as a function",
+               warn_for.c_str (), fname.c_str ());
+
+      warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
+               warn_for.c_str ());
+    }
+
+  return retval;
+}

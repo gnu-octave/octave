@@ -69,7 +69,8 @@ The original variable value is restored when exiting the function.
 @seealso{format, fixed_point_format}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, 0, 16);
+  return set_internal_variable (Voutput_precision, args, nargout,
+                                "output_precision", 0, 16);
 }
 
 OCTAVE_NAMESPACE_END

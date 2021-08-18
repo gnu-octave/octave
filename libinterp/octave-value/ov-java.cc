@@ -3385,7 +3385,8 @@ The original variable value is restored when exiting the function.
 {
 #if defined (HAVE_JAVA)
 
-  return SET_INTERNAL_VARIABLE (java_matrix_autoconversion);
+  return set_internal_variable (Vjava_matrix_autoconversion, args, nargout,
+                                "java_matrix_autoconversion");
 
 #else
 
@@ -3416,7 +3417,8 @@ The original variable value is restored when exiting the function.
 {
 #if defined (HAVE_JAVA)
 
-  return SET_INTERNAL_VARIABLE (java_unsigned_autoconversion);
+  return set_internal_variable (Vjava_unsigned_autoconversion, args, nargout,
+                                "java_unsigned_autoconversion");
 
 #else
 
@@ -3445,7 +3447,7 @@ The original variable value is restored when exiting the function.
 {
 #if defined (HAVE_JAVA)
 
-  return SET_INTERNAL_VARIABLE (debug_java);
+  return set_internal_variable (Vdebug_java, args, nargout, "debug_java");
 
 #else
 

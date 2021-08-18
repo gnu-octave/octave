@@ -438,7 +438,8 @@ in Octave has been set to @qcode{"gesvd"}.
 {
   static const char *driver_names[] = { "gesvd", "gesdd", "gejsv", nullptr };
 
-  return SET_INTERNAL_VARIABLE_CHOICES (svd_driver, driver_names);
+  return set_internal_variable (Vsvd_driver, args, nargout,
+                                "svd_driver", driver_names);
 }
 
 /*

@@ -723,7 +723,8 @@ The original variable value is restored when exiting the function.
 @seealso{rmdir}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);
+  return set_internal_variable (Vconfirm_recursive_rmdir, args, nargout,
+                                "confirm_recursive_rmdir");
 }
 
 OCTAVE_NAMESPACE_END

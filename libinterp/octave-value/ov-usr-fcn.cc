@@ -883,7 +883,8 @@ The original variable value is restored when exiting the function.
 @seealso{subsasgn}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
+  return set_internal_variable (Voptimize_subsasgn_calls, args, nargout,
+                                "optimize_subsasgn_calls");
 }
 
 static bool val_in_table (const Matrix& table, double val)

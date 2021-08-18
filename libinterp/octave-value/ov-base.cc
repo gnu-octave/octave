@@ -1576,7 +1576,8 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (sparse_auto_mutate);
+  return set_internal_variable (Vsparse_auto_mutate, args, nargout,
+                                "sparse_auto_mutate");
 }
 
 /*

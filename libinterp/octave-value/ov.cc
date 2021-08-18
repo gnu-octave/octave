@@ -3656,7 +3656,8 @@ setting is restored when exiting the function.
 @seealso{optimize_range, optimize_diagonal_matrix}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (optimize_permutation_matrix);
+  return set_internal_variable (Voptimize_permutation_matrix, args, nargout,
+                                "optimize_permutation_matrix");
 }
 
 /*
@@ -3686,7 +3687,8 @@ setting is restored when exiting the function.
 @seealso{optimize_range, optimize_permutation_matrix}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (optimize_diagonal_matrix);
+  return set_internal_variable (Voptimize_diagonal_matrix, args, nargout,
+                                "optimize_diagonal_matrix");
 }
 
 /*
@@ -3730,7 +3732,8 @@ setting is restored when exiting the function.
 @seealso{optimize_diagonal_matrix, optimize_permutation_matrix}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (optimize_range);
+  return set_internal_variable (Voptimize_range, args, nargout,
+                                "optimize_range");
 }
 
 /*

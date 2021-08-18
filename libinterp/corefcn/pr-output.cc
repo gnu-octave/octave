@@ -4093,7 +4093,8 @@ The original variable value is restored when exiting the function.
 @seealso{format, output_precision}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (fixed_point_format);
+  return set_internal_variable (Vfixed_point_format, args, nargout,
+                                "fixed_point_format");
 }
 
 DEFUN (print_empty_dimensions, args, nargout,
@@ -4123,7 +4124,8 @@ The original variable value is restored when exiting the function.
 @seealso{format}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (print_empty_dimensions);
+  return set_internal_variable (Vprint_empty_dimensions, args, nargout,
+                                "print_empty_dimensions");
 }
 
 DEFUN (split_long_rows, args, nargout,
@@ -4162,7 +4164,8 @@ The original variable value is restored when exiting the function.
 @seealso{format}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (split_long_rows);
+  return set_internal_variable (Vsplit_long_rows, args, nargout,
+                                "split_long_rows");
 }
 
 OCTAVE_NAMESPACE_END

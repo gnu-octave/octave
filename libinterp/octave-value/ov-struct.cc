@@ -2222,8 +2222,9 @@ The original variable value is restored when exiting the function.
 @seealso{print_struct_array_contents}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print, -1,
-                                            std::numeric_limits<int>::max ());
+  return set_internal_variable (Vstruct_levels_to_print, args, nargout,
+                                "struct_levels_to_print", -1,
+                                std::numeric_limits<int>::max ());
 }
 
 DEFUN (print_struct_array_contents, args, nargout,
@@ -2245,7 +2246,8 @@ The original variable value is restored when exiting the function.
 @seealso{struct_levels_to_print}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (print_struct_array_contents);
+  return set_internal_variable (Vprint_struct_array_contents, args, nargout,
+                                "print_struct_array_contents");
 }
 
 OCTAVE_NAMESPACE_END

@@ -66,39 +66,35 @@ cat << EOF
 //
 ////////////////////////////////////////////////////////////////////////
 
-/*
+// All Octave source files should begin with
+//
+//   #if defined (HAVE_CONFIG_H)
+//   #  include "config.h"
+//   #endif
+//
+// All public Octave header files should have the form
+//
+//   #if ! defined (INCLUSION_GUARD_SYMBOL)
+//   #define INCLUSION_GUARD_SYMBOL 1
+//
+//   #include "octave-config.h"
+//
+//   ... Contents of header file ...
+//
+//   #endif
 
-All Octave source files should begin with
-
-  #if defined (HAVE_CONFIG_H)
-  #  include "config.h"
-  #endif
-
-All public Octave header files should have the form
-
-  #if ! defined (INCLUSION_GUARD_SYMBOL)
-  #define INCLUSION_GUARD_SYMBOL 1
-
-  #include "octave-config.h"
-
-  // Contents of header file.
-
-  #endif
-
-In Octave source files, INCLUSION_GUARD_SYMBOL should have the form
-
-  octave_NAME_h
-
-with NAME formed from the header file name with '-' replaced by '_'.
-
-It is safe to include octave-config.h unconditionally since it will
-expand to an empty file if it is included after Octave's
-autoconf-generated config.h file.
-
-Users of Octave's libraries should not need to include octave-config.h
-since all of Octave's header files already include it.
-
-*/
+// In Octave source files, INCLUSION_GUARD_SYMBOL should have the form
+//
+//   octave_NAME_h
+//
+// with NAME formed from the header file name with '-' replaced by '_'.
+//
+// It is safe to include octave-config.h unconditionally since it will
+// expand to an empty file if it is included after Octave's
+// autoconf-generated config.h file.
+//
+// Users of Octave's libraries should not need to include octave-config.h
+// since all of Octave's header files already include it.
 
 #if ! defined (octave_octave_config_h)
 #define octave_octave_config_h 1

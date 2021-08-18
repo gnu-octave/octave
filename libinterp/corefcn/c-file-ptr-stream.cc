@@ -318,6 +318,6 @@ c_zfile_ptr_buf::buf_close (void)
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
-
 #endif
+
+OCTAVE_NAMESPACE_END

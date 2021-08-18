@@ -105,7 +105,11 @@ To initialize:
 #include "parse.h"
 #include "variables.h"
 
+#endif
+
 OCTAVE_NAMESPACE_BEGIN
+
+#if defined (HAVE_FLTK)
 
 #define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"
 

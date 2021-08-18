@@ -4195,7 +4195,7 @@ namespace octave
   }
 
   template <typename T>
-  std::istream&
+  static std::istream&
   octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
                  T *valptr)
   {
@@ -4284,7 +4284,7 @@ namespace octave
   }
 
   template <typename T>
-  std::istream&
+  static std::istream&
   octave_scan (std::istream& is, const scanf_format_elt& fmt, T *valptr)
   {
     if (fmt.width)
@@ -4332,17 +4332,6 @@ namespace octave
     return is;
   }
 
-  // Note that this specialization is only used for reading characters, not
-  // character strings.  See BEGIN_S_CONVERSION for details.
-
-  template <>
-  std::istream&
-  octave_scan<> (std::istream& is, const scanf_format_elt& /* fmt */,
-                 char *valptr)
-  {
-    return is >> valptr;
-  }
-
   template <>
   std::istream&
   octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double *valptr)
@@ -4381,7 +4370,7 @@ namespace octave
   }
 
   template <typename T>
-  void
+  static void
   do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
                  T valptr, Matrix& mval, double *data, octave_idx_type& idx,
                  octave_idx_type& conversion_count, octave_idx_type nr,
@@ -5604,7 +5593,7 @@ namespace octave
   // Ugh again and again.
 
   template <typename T>
-  int
+  static int
   do_printf_conv (std::ostream& os, const std::string& encoding,
                   const char *fmt, int nsa, int sa_1, int sa_2, T arg,
                   const std::string& who)

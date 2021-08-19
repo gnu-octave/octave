@@ -291,7 +291,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     OCTAVE_DEPRECATED (6, "use 'interpreter::assign' instead")
     void assign (const std::string& name,
-                 const octave_value& value = octave_value ());
+                 const octave_value& value = octave_value ())
     {
       assign_deprecated (name, value);
     }
@@ -299,13 +299,13 @@ OCTAVE_NAMESPACE_BEGIN
     // Note, FORCE_ADD no longer has any meaning.
     OCTAVE_DEPRECATED (6, "use 'interpreter::assign' instead")
     void assign (const std::string& name, const octave_value& value,
-                 bool /*force_add*/);
+                 bool /*force_add*/)
     {
       assign_deprecated (name, value);
     }
 
     OCTAVE_DEPRECATED (6, "use 'interpreter::clear_all' instead")
-    void clear_all (bool force = false);
+    void clear_all (bool force = false)
     {
       clear_all_deprecated (force);
     }
@@ -336,7 +336,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     OCTAVE_DEPRECATED (6, "use 'interpreter::global_assign' instead")
     void global_assign (const std::string& name,
-                        const octave_value& value = octave_value ());
+                        const octave_value& value = octave_value ())
     {
       global_assign_deprecated (name, value);
     }

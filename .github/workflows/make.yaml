@@ -137,7 +137,7 @@ jobs:
     strategy:
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [macos-10.15]
+        os: [macos-10.15, macos-11]
         # Most (or all) homebrew packages are compiled with clang and link
         # against libc++.  So we also use clang to avoid issues with symbols
         # that don't match.
@@ -268,7 +268,9 @@ jobs:
         # automatically.
         continue-on-error: true
         timeout-minutes: 60
-        run: make -C ./.build check
+        run: |
+          echo 'makeinfo_program ("/usr/local/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
+          make -C ./.build check
 
       - name: display test log
         continue-on-error: true

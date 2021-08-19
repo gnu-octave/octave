@@ -309,7 +309,7 @@ public:
   }
 
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  OCTINTERP_API octave_value (const Range& r, bool force_range)
+  OCTINTERP_API octave_value (const Range& r, bool force_range = false)
     : rep (make_range_rep_deprecated (r, force_range))
   {
     maybe_mutate ();

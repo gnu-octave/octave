@@ -1070,7 +1070,7 @@ octave_value::octave_value (const Array<std::string>& cellstr)
 
 // Remove when public constructor that uses this function is removed.
 octave_base_value *
-make_range_rep_deprecated (double base, double inc, double limit)
+octave_value::make_range_rep_deprecated (double base, double inc, double limit)
 {
   return dynamic_cast<octave_base_value *>
     (new ov_range<double> (octave::range<double> (base, inc, limit)));
@@ -1078,7 +1078,7 @@ make_range_rep_deprecated (double base, double inc, double limit)
 
 // Remove when public constructor that uses this function is removed.
 octave_base_value *
-make_range_rep_deprecated (const Range& r, bool force_range)
+octave_value::make_range_rep_deprecated (const Range& r, bool force_range)
 {
   if (! force_range && ! r.ok ())
     error ("invalid range");

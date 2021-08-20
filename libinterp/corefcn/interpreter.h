@@ -558,7 +558,7 @@ OCTAVE_NAMESPACE_BEGIN
     OCTAVE_DEPRECATED (6, "use interpreter::remove_atexit_fcn member function instead")
     static bool remove_atexit_function (const std::string& fname)
     {
-      return remove_atexitfunction_deprecated (fname);
+      return remove_atexit_function_deprecated (fname);
     }
     #endif
 

@@ -549,7 +549,7 @@ inline octave_value_list set_warning_state (const octave_value_list& args)
 }
 
 OCTAVE_DEPRECATED (7, "use 'octave::warning_enabled' instead")
-inline OCTINTERP_API int warning_enabled (const std::string& id)
+inline int warning_enabled (const std::string& id)
 {
   return octave::warning_enabled (id);
 }

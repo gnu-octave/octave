@@ -270,8 +270,25 @@ endfunction
 %!assert (class (betaincinv (0.5, single (1), 1)), "single")
 %!assert (class (betaincinv (0.5, 1, single (1))), "single")
 
-%!assert <*60528> (betaincinv (1e-6, 1, 3), 3.3333344444450657e-07, 5*eps)
-%!assert <*60528> (betaincinv (1-1e-6, 3, 1), 0.999999666666556, 5*eps)
+## Extreme values for y, a, b that really test the algorithm
+%!assert (betaincinv ([0, 1], 1, 3), [0, 1])
+%!assert <*60528> (betaincinv (1e-6, 1, 3), 3.3333344444450657e-07, 2*eps)
+%!assert <*60528> (betaincinv (1-1e-6, 3, 1), 0.999999666666556, 2*eps)
+%!assert (betainc (betaincinv (0.9, 1e-3, 1), 1e-3, 1), 0.9, 2*eps)
+%!assert (betainc (betaincinv (.01, 1, 1e-3), 1, 1e-3), .01, 6*eps)
+%!assert (betainc (betaincinv (0.5, 100, 1), 100, 1), 0.5, 8*eps)
+%!assert (betainc (betaincinv (0.5, 1, 100), 1, 100), 0.5, 22*eps)
+%!assert (betaincinv ([0, 1], 1, 3, "upper"), [1, 0])
+%!assert <*60528> (betaincinv (1e-6, 1, 3, "upper"), 0.99, 2*eps)
+%!assert <*60528> (betaincinv (1-1e-6, 3, 1,"upper"), .01000000000003977, 2*eps)
+%!assert (betainc (betaincinv (0.1, 1e-3, 1, "upper"), 1e-3, 1, "upper"),
+%!        0.1, 2*eps)
+%!assert (betainc (betaincinv (.99, 1, 1e-3, "upper"), 1, 1e-3, "upper"),
+%!        .99, 6*eps)
+%!assert (betainc (betaincinv (0.5, 100, 1, "upper"), 100, 1, "upper"),
+%!        0.5, 8*eps)
+%!assert (betainc (betaincinv (0.5, 1, 100, "upper"), 1, 100, "upper"),
+%!        0.5, 22*eps)
 
 ## Test input validation
 %!error <Invalid call> betaincinv ()

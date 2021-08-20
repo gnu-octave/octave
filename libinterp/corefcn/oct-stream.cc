@@ -46,6 +46,7 @@
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "oct-locbuf.h"
+#include "octave-preserve-stream-state.h"
 #include "quit.h"
 #include "str-vec.h"
 
@@ -5872,6 +5873,8 @@ namespace octave
     else
       {
         std::ostream& os = *osp;
+
+        preserve_stream_state stream_state (os);
 
         const printf_format_elt *elt = fmt_list.first ();
 

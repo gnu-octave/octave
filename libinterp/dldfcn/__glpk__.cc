@@ -88,6 +88,8 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 {
   int typx = 0;
   int errnum = 0;
+
+  *time = 0.0;
   *status = -1;    // Initialize status to "bad" value
 
   clock_t t_start = clock ();
@@ -605,8 +607,9 @@ Undocumented internal function.
   double fmin = octave_NA;
   ColumnVector lambda (mrowsA, octave_NA);
   ColumnVector redcosts (mrowsc, octave_NA);
-  double time;
-  int status;
+
+  double time = 0.0;
+  int status = -1;
 
   int errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
                      cn.fortran_vec (), a.fortran_vec (), b, ctype,

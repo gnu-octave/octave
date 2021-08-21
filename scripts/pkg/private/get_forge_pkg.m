@@ -43,7 +43,7 @@ function [ver, url] = get_forge_pkg (name)
   name = tolower (name);
 
   ## Try to download package's index page.
-  [html, succ] = urlread (sprintf ("https://packages.octave.org/%s/index.html",
+  [html, succ] = urlread (sprintf ("https://packages.octave.org/%s/index.html", ...
                                    name));
   if (succ)
     ## Remove blanks for simpler matching.
@@ -80,14 +80,16 @@ function [ver, url] = get_forge_pkg (name)
       len1 = length (name);
       len2 = length (x);
       if (len1 <= len2)
-        d = sum (abs (name(1:len1) - x(1:len1))) + sum (x(len1+1:end));
+        d = sum (abs (tolower (name(1:len1)) - tolower (x(1:len1)))) ...
+            + (len2 - len1)*23;
       else
-        d = sum (abs (name(1:len2) - x(1:len2))) + sum (name(len2+1:end));
+        d = sum (abs (tolower (name(1:len2)) - tolower (x(1:len2)))) ...
+            + (len1 - len2)*23;
       endif
     endfunction
     dist = cellfun ("fdist", t);
     [~, i] = min (dist);
-    error ("get_forge_pkg: package not found: ""%s"".  Maybe you meant ""%s?""",
+    error ("get_forge_pkg: package not found: ""%s"".  Did you mean ""%s""?", ...
            name, t{i});
   endif
 

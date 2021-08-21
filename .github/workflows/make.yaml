@@ -135,6 +135,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
         os: [macos-10.15, macos-11]

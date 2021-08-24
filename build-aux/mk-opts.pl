@@ -151,7 +151,7 @@ sub parse_option_block
           die "duplicate NAME" if defined $NAME[$OPT_NUM];
           $NAME[$OPT_NUM] = $1;
           ($OPT[$OPT_NUM] = $NAME[$OPT_NUM]) =~ s/\s+/_/g;
-          $OPTVAR[$OPT_NUM] = 'x_' . $OPT[$OPT_NUM];
+          $OPTVAR[$OPT_NUM] = 'm_' . $OPT[$OPT_NUM];
           $KW_TOK[$OPT_NUM] = [ split (' ', $NAME[$OPT_NUM]) ];
           $N_TOKS[$OPT_NUM] = @{$KW_TOK[$OPT_NUM]};
         }

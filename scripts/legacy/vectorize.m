@@ -84,11 +84,9 @@ endfunction
 %! finfo = functions (vectorize (fh));
 %! assert (finfo.function, "@(x, y, z) 1e-3 .* y + 2e4 .* z");
 
-%!assert (vectorize ("2**x^5"), "2.**x.^5")
-## Note that ** is transformed to ^ by the code that prints the parse
-## tree.  I don't care too much about that...
+%!assert (vectorize ("2^x^5"), "2.^x.^5")
 %!test
-%! fh = @(x) 2**x^5;
+%! fh = @(x) 2^x^5;
 %! finfo = functions (vectorize (fh));
 %! assert (finfo.function, "@(x) 2 .^ x .^ 5");
 

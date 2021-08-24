@@ -171,7 +171,7 @@ private:
   // This is enough to sort arrays of size up to about
   //     32 * phi ** MAX_MERGE_PENDING
   // where phi ~= 1.618.  85 is ridiculously large enough, good for an array
-  // with 2**64 elements.
+  // with 2^64 elements.
   static const int MAX_MERGE_PENDING = 85;
 
   // When we get into galloping mode, we stay there until both runs win less

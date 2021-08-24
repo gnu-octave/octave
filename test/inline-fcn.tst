@@ -30,4 +30,4 @@
 
 %!assert (formula (vectorize (fn)), "x.^2 + 1")
 %!assert (formula (vectorize (inline ("1e-3*y + 2e4*z"))), "1e-3.*y + 2e4.*z")
-%!assert (formula (vectorize (inline ("2**x^5"))), "2.**x.^5")
+%!assert (formula (vectorize (inline ("2^x^5"))), "2.^x.^5")

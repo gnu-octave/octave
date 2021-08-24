@@ -53,11 +53,11 @@ function [xr, yr, zr] = __rotate_around_axis__ (x, y, z, angle, dir, origin)
     one_m_ca = 1 - ca;
     tmp = u*x + v*y + w*z;
 
-    xr = ((a*(v**2 + w**2) - u*(b*v + c*w - tmp))*one_m_ca
+    xr = ((a*(v^2 + w^2) - u*(b*v + c*w - tmp))*one_m_ca
           + x*ca + (-c*v + b*w - w*y + v*z)*sa);
-    yr = ((b*(u**2 + w**2) - v*(a*u + c*w - tmp))*one_m_ca
+    yr = ((b*(u^2 + w^2) - v*(a*u + c*w - tmp))*one_m_ca
           + y*ca + (c*u - a*w + w*x - u*z)*sa);
-    zr = ((c*(u**2 + v**2) - w*(a*u + b*v - tmp))*one_m_ca
+    zr = ((c*(u^2 + v^2) - w*(a*u + b*v - tmp))*one_m_ca
           + z*ca + (-b*u + a*v - v*x + u*y)*sa);
   endif
 

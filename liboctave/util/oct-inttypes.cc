@@ -460,7 +460,7 @@ operator + (const octave_int64& x, const double& y)
       // probably), the above will work as expected.  If not, it's more
       // complicated - as long as y is within _twice_ the signed range, the
       // result may still be an integer.  An instance of such an operation is
-      // 3*2**62 + (1+intmin ('int64')) that should yield int64 (2**62) + 1.
+      // 3*2^62 + (1+intmin ('int64')) that should yield int64 (2^62) + 1.
       // So what we do is to try to convert y/2 and add it twice.  Note that
       // if y/2 overflows, the result must overflow as well, and that y/2
       // cannot be a fractional number.
@@ -492,12 +492,12 @@ operator - (const double& x, const octave_uint64& y)
   else
     {
       // Again a trick to get the corner cases right.  Things like
-      // 3**2**63 - intmax ('uint64') should produce the correct result, i.e.
-      // int64 (2**63) + 1.
+      // 3^2^63 - intmax ('uint64') should produce the correct result, i.e.
+      // int64 (2^63) + 1.
       const double p2_64 = std::pow (2.0, 64);
       if (y.bool_value ())
         {
-          const uint64_t p2_64my = (~y.value ()) + 1; // Equals 2**64 - y
+          const uint64_t p2_64my = (~y.value ()) + 1; // Equals 2^64 - y
           return octave_uint64 (x - p2_64) + octave_uint64 (p2_64my);
         }
       else
@@ -530,7 +530,7 @@ operator - (const double& x, const octave_int64& y)
 // Emulated mixed multiplications are tricky due to possible precision loss.
 // Here, after sorting out common cases for speed, we follow the strategy
 // of converting the double number into the form sign * 64-bit integer *
-// 2**exponent, multiply the 64-bit integers to get a 128-bit number, split that
+// 2^exponent, multiply the 64-bit integers to get a 128-bit number, split that
 // number into 32-bit words and form 4 double-valued summands (none of which
 // loses precision), then convert these into integers and sum them.  Though it
 // is not immediately obvious, this should work even w.r.t. rounding (none of
@@ -833,20 +833,20 @@ INSTANTIATE_INTTYPE (uint64_t);
 
 %!assert (intmax ("int64") / intmin ("int64"), int64 (-1))
 %!assert (intmin ("int64") / int64 (-1), intmax ("int64"))
-%!assert (int64 (2**63), intmax ("int64"))
-%!assert (uint64 (2**64), intmax ("uint64"))
+%!assert (int64 (2^63), intmax ("int64"))
+%!assert (uint64 (2^64), intmax ("uint64"))
 %!test
 %! a = 1.9*2^61; b = uint64 (a); b++; assert (b > a);
 %!test
 %! a = -1.9*2^61; b = int64 (a); b++; assert (b > a);
 %!test
-%! a = int64 (-2**60) + 2; assert (1.25*a == (5*a)/4);
+%! a = int64 (-2^60) + 2; assert (1.25*a == (5*a)/4);
 %!test
-%! a = uint64 (2**61) + 2; assert (1.25*a == (5*a)/4);
-%!assert (int32 (2**31+0.5), intmax ("int32"))
-%!assert (int32 (-2**31-0.5), intmin ("int32"))
-%!assert ((int64 (2**62)+1)**1, int64 (2**62)+1)
-%!assert ((int64 (2**30)+1)**2, int64 (2**60+2**31) + 1)
+%! a = uint64 (2^61) + 2; assert (1.25*a == (5*a)/4);
+%!assert (int32 (2^31+0.5), intmax ("int32"))
+%!assert (int32 (-2^31-0.5), intmin ("int32"))
+%!assert ((int64 (2^62)+1)^1, int64 (2^62)+1)
+%!assert ((int64 (2^30)+1)^2, int64 (2^60+2^31) + 1)
 
 %!assert <54382> (uint8 (char (128)), uint8 (128))
 %!assert <54382> (uint8 (char (255)), uint8 (255))

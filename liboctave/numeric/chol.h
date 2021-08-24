@@ -41,39 +41,39 @@ namespace octave
       typedef typename T::column_vector_type VT;
       typedef typename T::real_elt_type COND_T;
 
-      chol (void) : chol_mat (), xrcond (0), is_upper (true) { }
+      chol (void) : m_chol_mat (), m_rcond (0), m_is_upper (true) { }
 
       chol (const T& a, bool upper = true, bool calc_cond = false)
-        : chol_mat (), xrcond (0)
+        : m_chol_mat (), m_rcond (0)
       {
         init (a, upper, calc_cond);
       }
 
       chol (const T& a, octave_idx_type& info, bool upper = true,
             bool calc_cond = false)
-        : chol_mat (), xrcond (0)
+        : m_chol_mat (), m_rcond (0)
       {
         info = init (a, upper, calc_cond);
       }
 
       chol (const chol& a)
-        : chol_mat (a.chol_mat), xrcond (a.xrcond), is_upper (a.is_upper) { }
+        : m_chol_mat (a.m_chol_mat), m_rcond (a.m_rcond), m_is_upper (a.m_is_upper) { }
 
       chol& operator = (const chol& a)
       {
         if (this != &a)
           {
-            chol_mat = a.chol_mat;
-            xrcond = a.xrcond;
-            is_upper = a.is_upper;
+            m_chol_mat = a.m_chol_mat;
+            m_rcond = a.m_rcond;
+            m_is_upper = a.m_is_upper;
           }
 
         return *this;
       }
 
-      T chol_matrix (void) const { return chol_mat; }
+      T chol_matrix (void) const { return m_chol_mat; }
 
-      COND_T rcond (void) const { return xrcond; }
+      COND_T rcond (void) const { return m_rcond; }
 
       // Compute the inverse of a matrix using the Cholesky factorization.
       OCTAVE_API T inverse (void) const;
@@ -92,11 +92,11 @@ namespace octave
 
     private:
 
-      T chol_mat;
+      T m_chol_mat;
 
-      COND_T xrcond;
+      COND_T m_rcond;
 
-      bool is_upper;
+      bool m_is_upper;
 
       OCTAVE_API octave_idx_type init (const T& a, bool upper, bool calc_cond);
     };

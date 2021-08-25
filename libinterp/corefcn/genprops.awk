@@ -290,9 +290,9 @@ function emit_common_declarations ()
   printf ("  octave_value get (const std::string& pname) const\n  {\n    return get (caseless_str (pname));\n  }\n\n");
   printf ("  octave_value get (const char *pname) const\n  {\n    return get (caseless_str (pname));\n  }\n\n");
   printf ("  property get_property (const caseless_str& pname);\n\n");
-  printf ("  std::string graphics_object_name (void) const { return go_name; }\n\n");
+  printf ("  std::string graphics_object_name (void) const { return s_go_name; }\n\n");
   printf ("  static property_list::pval_map_type factory_defaults (void);\n\n");
-  printf ("private:\n  static std::string go_name;\n\n");
+  printf ("private:\n  static std::string s_go_name;\n\n");
 }
 
 function emit_declarations ()
@@ -454,7 +454,7 @@ function emit_source ()
     else
     {
       printf ("%s::properties::properties (const graphics_handle& mh, const graphics_handle& p)\n", class_name);
-      printf ("  : base_properties (go_name, mh, p),\n");
+      printf ("  : base_properties (s_go_name, mh, p),\n");
     }
 
     for (i = 1; i <= idx; i++)
@@ -491,7 +491,7 @@ function emit_source ()
               class_name);
 
     if (! base)
-        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"set\", go_name, pnames, pname_arg);\n\n  if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
+        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"set\", s_go_name, pnames, pname_arg);\n\n  if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
 
     first = 1;
 
@@ -545,7 +545,7 @@ function emit_source ()
     printf ("  octave_value retval;\n\n");
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n");
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", s_go_name, pnames, pname_arg);\n\n");
 
     for (i = 1; i<= idx; i++)
     {
@@ -570,7 +570,7 @@ function emit_source ()
               class_name);
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n");
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", s_go_name, pnames, pname_arg);\n\n");
 
     for (i = 1; i<= idx; i++)
     {
@@ -626,10 +626,10 @@ function emit_source ()
 
     printf ("\n  return m;\n}\n\n");
 
-    ## go_name static field
+    ## s_go_name static field
 
     if (! base)
-      printf ("std::string %s::properties::go_name (\"%s\");\n\n",
+      printf ("std::string %s::properties::s_go_name (\"%s\");\n\n",
               class_name, object_name);
 
     ## core_property_names

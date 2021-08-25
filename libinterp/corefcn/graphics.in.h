@@ -4946,7 +4946,7 @@ public:
     // The patch should then be ignored by the renderer.
     bool has_bad_data (std::string& msg) const
     {
-      msg = bad_data_msg;
+      msg = m_bad_data_msg;
       return ! msg.empty ();
     }
 
@@ -4962,7 +4962,7 @@ public:
 
     OCTINTERP_API bool get_do_lighting (void) const;
 
-    std::vector<std::vector<octave_idx_type>> coplanar_last_idx;
+    std::vector<std::vector<octave_idx_type>> m_coplanar_last_idx;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5071,7 +5071,7 @@ public:
 
 
   private:
-    std::string bad_data_msg;
+    std::string m_bad_data_msg;
 
     void update_faces (void) { update_data ();}
 
@@ -5219,7 +5219,7 @@ public:
     // The scatter object should then be ignored by the renderer.
     bool has_bad_data (std::string& msg) const
     {
-      msg = bad_data_msg;
+      msg = m_bad_data_msg;
       return ! msg.empty ();
     }
 
@@ -5328,7 +5328,7 @@ public:
     OCTINTERP_API void update_color (void);
 
   private:
-    std::string bad_data_msg;
+    std::string m_bad_data_msg;
 
     void update_xdata (void)
     {
@@ -5820,12 +5820,12 @@ public:
   public:
 
     void add_dependent_obj (graphics_handle gh)
-    { dependent_obj_list.push_back (gh); }
+    { m_dependent_obj_list.push_back (gh); }
 
     // FIXME: the list may contain duplicates.
     //        Should we return only unique elements?
     const std::list<graphics_handle> get_dependent_obj_list (void)
-    { return dependent_obj_list; }
+    { return m_dependent_obj_list; }
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5849,7 +5849,7 @@ public:
 
   private:
     // List of objects that might depend on this uicontextmenu object
-    std::list<graphics_handle> dependent_obj_list;
+    std::list<graphics_handle> m_dependent_obj_list;
 
     OCTINTERP_API void update_beingdeleted (void);
 

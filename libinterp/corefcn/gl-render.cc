@@ -3397,11 +3397,11 @@ namespace octave
                   continue;
 
                 bool is_non_planar = false;
-                if (props.coplanar_last_idx.size () > 0
-                    && props.coplanar_last_idx[i].size () > 1)
+                if (props.m_coplanar_last_idx.size () > 0
+                    && props.m_coplanar_last_idx[i].size () > 1)
                   {
                     is_non_planar = true;
-                    it = props.coplanar_last_idx[i].end ();
+                    it = props.m_coplanar_last_idx[i].end ();
                     it--;
                   }
 
@@ -3411,7 +3411,7 @@ namespace octave
                     if (is_non_planar)
                       {
                         i_end = *it;
-                        if (it == props.coplanar_last_idx[i].begin ())
+                        if (it == props.m_coplanar_last_idx[i].begin ())
                           i_start = 0;
                         else
                           {
@@ -3529,8 +3529,8 @@ namespace octave
             for (int i = 0; i < nf; i++)
               {
                 bool is_non_planar = false;
-                if (props.coplanar_last_idx.size () > 0
-                    && props.coplanar_last_idx[i].size () > 1)
+                if (props.m_coplanar_last_idx.size () > 0
+                    && props.m_coplanar_last_idx[i].size () > 1)
                   is_non_planar = true;
                 if (clip_f(i) || is_non_planar)
                   {

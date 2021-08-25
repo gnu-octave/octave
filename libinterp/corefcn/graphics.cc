@@ -9718,11 +9718,11 @@ patch::properties::update_fvc (void)
   Matrix zd = get_zdata ().matrix_value ();
   NDArray cd = get_cdata ().array_value ();
 
-  bad_data_msg = "";
+  m_bad_data_msg = "";
   if (xd.dims () != yd.dims ()
       || (xd.dims () != zd.dims () && ! zd.isempty ()))
     {
-      bad_data_msg = "x/y/zdata must have the same dimensions";
+      m_bad_data_msg = "x/y/zdata must have the same dimensions";
       return;
     }
 
@@ -9900,10 +9900,10 @@ patch::properties::update_data (void)
   octave_idx_type nvert = vert.rows ();
 
   // Check all vertices in faces are defined
-  bad_data_msg = "";
+  m_bad_data_msg = "";
   if (static_cast<double> (nvert) < idx.row_max ().max ())
     {
-      bad_data_msg = R"(some vertices in "faces" property are undefined)";
+      m_bad_data_msg = R"(some vertices in "faces" property are undefined)";
       return;
     }
 
@@ -9932,7 +9932,7 @@ patch::properties::update_data (void)
   if (fcmax > 3 && vert.columns () > 2
       && ! (facecolor_is ("none") && edgecolor_is ("none")))
     {
-      coplanar_last_idx.resize (idx.columns ());
+      m_coplanar_last_idx.resize (idx.columns ());
       for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
         {
           if (octave::math::isnan (idx(3,jj)))
@@ -9960,11 +9960,11 @@ patch::properties::update_data (void)
           if (is_unclosed)
             continue;
 
-          coplanar_last_idx[jj] = coplanar_partition (vert, idx, nc, jj);
+          m_coplanar_last_idx[jj] = coplanar_partition (vert, idx, nc, jj);
         }
     }
   else
-    coplanar_last_idx.resize (0);
+    m_coplanar_last_idx.resize (0);
 
   // Build cdata
   dim_vector dv = dim_vector::alloc (3);
@@ -10062,7 +10062,7 @@ patch::properties::calc_face_normals (Matrix& fn)
   for (octave_idx_type i = 0; i < num_f; i++)
     {
       bool is_coplanar = true;
-      if (coplanar_last_idx.size () > 0 && coplanar_last_idx[i].size () > 1)
+      if (m_coplanar_last_idx.size () > 0 && m_coplanar_last_idx[i].size () > 1)
         is_coplanar = false;
 
       // get number of corners
@@ -10301,11 +10301,11 @@ scatter::properties::update_data (void)
   Matrix cd = get_cdata ().matrix_value ();
   Matrix sd = get_sizedata ().matrix_value ();
 
-  bad_data_msg = "";
+  m_bad_data_msg = "";
   if (xd.dims () != yd.dims ()
       || (xd.dims () != zd.dims () && ! zd.isempty ()))
     {
-      bad_data_msg = "x/y/zdata must have the same dimensions";
+      m_bad_data_msg = "x/y/zdata must have the same dimensions";
       return;
     }
 
@@ -10316,7 +10316,7 @@ scatter::properties::update_data (void)
   if (! cd.isempty () && (c_rows != 1 || c_cols != 3)
       && (c_rows != x_rows || (c_cols != 1 && c_cols != 3)))
     {
-      bad_data_msg = "cdata must be an rgb triplet or have the same number of "
+      m_bad_data_msg = "cdata must be an rgb triplet or have the same number of "
                      "rows as X and one or three columns";
       return;
     }
@@ -10324,7 +10324,7 @@ scatter::properties::update_data (void)
   octave_idx_type s_rows = sd.rows ();
   if (s_rows != 1 && s_rows != x_rows)
     {
-      bad_data_msg = "sizedata must be a scalar or a vector with the same "
+      m_bad_data_msg = "sizedata must be a scalar or a vector with the same "
                      "dimensions as X";
       return;
     }

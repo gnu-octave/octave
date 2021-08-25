@@ -50,7 +50,7 @@
 namespace octave
 {
   static Matrix
-  chol2inv_internal (const Matrix& r, bool m_is_upper = true)
+  chol2inv_internal (const Matrix& r, bool is_upper = true)
   {
     Matrix retval;
 
@@ -66,7 +66,7 @@ namespace octave
     Matrix tmp = r;
     double *v = tmp.fortran_vec ();
 
-    if (m_is_upper)
+    if (is_upper)
       F77_XFCN (dpotri, DPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
                                  v, n, info
                                  F77_CHAR_ARG_LEN (1)));
@@ -82,7 +82,7 @@ namespace octave
 
     if (n > 1)
       {
-        if (m_is_upper)
+        if (is_upper)
           for (octave_idx_type j = 0; j < r_nc; j++)
             for (octave_idx_type i = j+1; i < r_nr; i++)
               tmp.xelem (i, j) = tmp.xelem (j, i);
@@ -98,7 +98,7 @@ namespace octave
   }
 
   static FloatMatrix
-  chol2inv_internal (const FloatMatrix& r, bool m_is_upper = true)
+  chol2inv_internal (const FloatMatrix& r, bool is_upper = true)
   {
     FloatMatrix retval;
 
@@ -114,7 +114,7 @@ namespace octave
     FloatMatrix tmp = r;
     float *v = tmp.fortran_vec ();
 
-    if (m_is_upper)
+    if (is_upper)
       F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
                                  v, n, info
                                  F77_CHAR_ARG_LEN (1)));
@@ -130,7 +130,7 @@ namespace octave
 
     if (n > 1)
       {
-        if (m_is_upper)
+        if (is_upper)
           for (octave_idx_type j = 0; j < r_nc; j++)
             for (octave_idx_type i = j+1; i < r_nr; i++)
               tmp.xelem (i, j) = tmp.xelem (j, i);
@@ -146,7 +146,7 @@ namespace octave
   }
 
   static ComplexMatrix
-  chol2inv_internal (const ComplexMatrix& r, bool m_is_upper = true)
+  chol2inv_internal (const ComplexMatrix& r, bool is_upper = true)
   {
     ComplexMatrix retval;
 
@@ -161,7 +161,7 @@ namespace octave
 
     ComplexMatrix tmp = r;
 
-    if (m_is_upper)
+    if (is_upper)
       F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
                                  F77_DBLE_CMPLX_ARG (tmp.fortran_vec ()), n, info
                                  F77_CHAR_ARG_LEN (1)));
@@ -175,7 +175,7 @@ namespace octave
 
     if (n > 1)
       {
-        if (m_is_upper)
+        if (is_upper)
           for (octave_idx_type j = 0; j < r_nc; j++)
             for (octave_idx_type i = j+1; i < r_nr; i++)
               tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
@@ -191,7 +191,7 @@ namespace octave
   }
 
   static FloatComplexMatrix
-  chol2inv_internal (const FloatComplexMatrix& r, bool m_is_upper = true)
+  chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
   {
     FloatComplexMatrix retval;
 
@@ -206,7 +206,7 @@ namespace octave
 
     FloatComplexMatrix tmp = r;
 
-    if (m_is_upper)
+    if (is_upper)
       F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
                                  F77_CMPLX_ARG (tmp.fortran_vec ()), n, info
                                  F77_CHAR_ARG_LEN (1)));
@@ -220,7 +220,7 @@ namespace octave
 
     if (n > 1)
       {
-        if (m_is_upper)
+        if (is_upper)
           for (octave_idx_type j = 0; j < r_nc; j++)
             for (octave_idx_type i = j+1; i < r_nr; i++)
               tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));

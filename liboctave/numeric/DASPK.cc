@@ -144,30 +144,30 @@ DASPK::do_integrate (double tout)
 
   ColumnVector retval;
 
-  if (! initialized || restart || DAEFunc::reset || DASPK_options::reset)
+  if (! m_initialized || restart || DAEFunc::m_reset || DASPK_options::m_reset)
     {
       integration_error = false;
 
-      initialized = true;
+      m_initialized = true;
 
-      info.resize (dim_vector (20, 1));
+      m_info.resize (dim_vector (20, 1));
 
       for (F77_INT i = 0; i < 20; i++)
-        info(i) = 0;
+        m_info(i) = 0;
 
       F77_INT n = octave::to_f77_int (size ());
 
       nn = n;
 
-      info(0) = 0;
+      m_info(0) = 0;
 
       if (stop_time_set)
         {
-          rwork(0) = stop_time;
-          info(3) = 1;
+          m_rwork(0) = stop_time;
+          m_info(3) = 1;
         }
       else
-        info(3) = 0;
+        m_info(3) = 0;
 
       // DAEFunc
 
@@ -200,42 +200,42 @@ DASPK::do_integrate (double tout)
           return retval;
         }
 
-      info(4) = (user_jac ? 1 : 0);
+      m_info(4) = (user_jac ? 1 : 0);
 
-      DAEFunc::reset = false;
+      DAEFunc::m_reset = false;
 
       octave_idx_type eiq = enforce_inequality_constraints ();
       octave_idx_type ccic = compute_consistent_initial_condition ();
       octave_idx_type eavfet = exclude_algebraic_variables_from_error_test ();
 
-      liw = 40 + n;
+      m_liw = 40 + n;
       if (eiq == 1 || eiq == 3)
-        liw += n;
+        m_liw += n;
       if (ccic == 1 || eavfet == 1)
-        liw += n;
+        m_liw += n;
 
-      lrw = 50 + 9*n + n*n;
+      m_lrw = 50 + 9*n + n*n;
       if (eavfet == 1)
-        lrw += n;
+        m_lrw += n;
 
-      iwork.resize (dim_vector (liw, 1));
-      rwork.resize (dim_vector (lrw, 1));
+      m_iwork.resize (dim_vector (m_liw, 1));
+      m_rwork.resize (dim_vector (m_lrw, 1));
 
       // DASPK_options
 
-      abs_tol = absolute_tolerance ();
-      rel_tol = relative_tolerance ();
+      m_abs_tol = absolute_tolerance ();
+      m_rel_tol = relative_tolerance ();
 
-      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
-      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (m_rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
-          info(1) = 0;
+          m_info(1) = 0;
         }
       else if (abs_tol_len == n && rel_tol_len == n)
         {
-          info(1) = 1;
+          m_info(1) = 1;
         }
       else
         {
@@ -250,28 +250,28 @@ DASPK::do_integrate (double tout)
       double hmax = maximum_step_size ();
       if (hmax >= 0.0)
         {
-          rwork(1) = hmax;
-          info(6) = 1;
+          m_rwork(1) = hmax;
+          m_info(6) = 1;
         }
       else
-        info(6) = 0;
+        m_info(6) = 0;
 
       double h0 = initial_step_size ();
       if (h0 >= 0.0)
         {
-          rwork(2) = h0;
-          info(7) = 1;
+          m_rwork(2) = h0;
+          m_info(7) = 1;
         }
       else
-        info(7) = 0;
+        m_info(7) = 0;
 
       octave_idx_type maxord = maximum_order ();
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord < 6)
             {
-              info(8) = 1;
-              iwork(2) = octave::to_f77_int (maxord);
+              m_info(8) = 1;
+              m_iwork(2) = octave::to_f77_int (maxord);
             }
           else
             {
@@ -305,7 +305,7 @@ DASPK::do_integrate (double tout)
                         integration_error = true;
                         return retval;
                       }
-                    iwork(40+i) = val;
+                    m_iwork(40+i) = val;
                   }
               }
             else
@@ -321,7 +321,7 @@ DASPK::do_integrate (double tout)
 
         case 0:
         case 2:
-          info(9) = octave::to_f77_int (eiq);
+          m_info(9) = octave::to_f77_int (eiq);
           break;
 
         default:
@@ -355,7 +355,7 @@ DASPK::do_integrate (double tout)
                        "%" OCTAVE_IDX_TYPE_FORMAT, eiq);
 
                   for (F77_INT i = 0; i < n; i++)
-                    iwork(lid+i) = (av(i) ? -1 : 1);
+                    m_iwork(lid+i) = (av(i) ? -1 : 1);
                 }
               else
                 {
@@ -375,12 +375,12 @@ DASPK::do_integrate (double tout)
               return retval;
             }
 
-          info(10) = octave::to_f77_int (ccic);
+          m_info(10) = octave::to_f77_int (ccic);
         }
 
       if (eavfet)
         {
-          info(15) = 1;
+          m_info(15) = 1;
 
           // FIXME: this code is duplicated above.
 
@@ -401,7 +401,7 @@ DASPK::do_integrate (double tout)
                    eiq);
 
               for (F77_INT i = 0; i < n; i++)
-                iwork(lid+i) = (av(i) ? -1 : 1);
+                m_iwork(lid+i) = (av(i) ? -1 : 1);
             }
         }
 
@@ -411,13 +411,13 @@ DASPK::do_integrate (double tout)
 
           if (ich.numel () == 6)
             {
-              iwork(31) = octave::to_f77_int (octave::math::nint_big (ich(0)));
-              iwork(32) = octave::to_f77_int (octave::math::nint_big (ich(1)));
-              iwork(33) = octave::to_f77_int (octave::math::nint_big (ich(2)));
-              iwork(34) = octave::to_f77_int (octave::math::nint_big (ich(3)));
+              m_iwork(31) = octave::to_f77_int (octave::math::nint_big (ich(0)));
+              m_iwork(32) = octave::to_f77_int (octave::math::nint_big (ich(1)));
+              m_iwork(33) = octave::to_f77_int (octave::math::nint_big (ich(2)));
+              m_iwork(34) = octave::to_f77_int (octave::math::nint_big (ich(3)));
 
-              rwork(13) = ich(4);
-              rwork(14) = ich(5);
+              m_rwork(13) = ich(4);
+              m_rwork(14) = ich(5);
             }
           else
             {
@@ -428,7 +428,7 @@ DASPK::do_integrate (double tout)
               return retval;
             }
 
-          info(16) = 1;
+          m_info(16) = 1;
         }
 
       octave_idx_type pici = print_initial_condition_info ();
@@ -437,7 +437,7 @@ DASPK::do_integrate (double tout)
         case 0:
         case 1:
         case 2:
-          info(17) = octave::to_f77_int (pici);
+          m_info(17) = octave::to_f77_int (pici);
           break;
 
         default:
@@ -449,7 +449,7 @@ DASPK::do_integrate (double tout)
           break;
         }
 
-      DASPK_options::reset = false;
+      DASPK_options::m_reset = false;
 
       restart = false;
     }
@@ -457,13 +457,13 @@ DASPK::do_integrate (double tout)
   double *px = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
 
-  F77_INT *pinfo = info.fortran_vec ();
+  F77_INT *pinfo = m_info.fortran_vec ();
 
-  double *prel_tol = rel_tol.fortran_vec ();
-  double *pabs_tol = abs_tol.fortran_vec ();
+  double *prel_tol = m_rel_tol.fortran_vec ();
+  double *pabs_tol = m_abs_tol.fortran_vec ();
 
-  double *prwork = rwork.fortran_vec ();
-  F77_INT *piwork = iwork.fortran_vec ();
+  double *prwork = m_rwork.fortran_vec ();
+  F77_INT *piwork = m_iwork.fortran_vec ();
 
   double *dummy = nullptr;
   F77_INT *idummy = nullptr;
@@ -471,8 +471,8 @@ DASPK::do_integrate (double tout)
   F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (ddaspk, DDASPK, (ddaspk_f, nn, t, px, pxdot, tout, pinfo,
-                             prel_tol, pabs_tol, tmp_istate, prwork, lrw,
-                             piwork, liw, dummy, idummy, ddaspk_j,
+                             prel_tol, pabs_tol, tmp_istate, prwork, m_lrw,
+                             piwork, m_liw, dummy, idummy, ddaspk_j,
                              ddaspk_psol));
 
   istate = tmp_istate;

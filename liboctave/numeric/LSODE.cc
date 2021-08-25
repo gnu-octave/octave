@@ -105,11 +105,11 @@ LSODE::do_integrate (double tout)
 
   static F77_INT nn = 0;
 
-  if (! initialized || restart || ODEFunc::reset || LSODE_options::reset)
+  if (! m_initialized || restart || ODEFunc::reset || LSODE_options::m_reset)
     {
       integration_error = false;
 
-      initialized = true;
+      m_initialized = true;
 
       istate = 1;
 
@@ -124,32 +124,32 @@ LSODE::do_integrate (double tout)
           max_maxord = 5;
 
           if (jac)
-            method_flag = 21;
+            m_method_flag = 21;
           else
-            method_flag = 22;
+            m_method_flag = 22;
 
-          liw = 20 + n;
-          lrw = 22 + n * (9 + n);
+          m_liw = 20 + n;
+          m_lrw = 22 + n * (9 + n);
         }
       else
         {
           max_maxord = 12;
 
-          method_flag = 10;
+          m_method_flag = 10;
 
-          liw = 20;
-          lrw = 22 + 16 * n;
+          m_liw = 20;
+          m_lrw = 22 + 16 * n;
         }
 
-      iwork.resize (dim_vector (liw, 1));
+      m_iwork.resize (dim_vector (m_liw, 1));
 
       for (F77_INT i = 4; i < 9; i++)
-        iwork(i) = 0;
+        m_iwork(i) = 0;
 
-      rwork.resize (dim_vector (lrw, 1));
+      m_rwork.resize (dim_vector (m_lrw, 1));
 
       for (F77_INT i = 4; i < 9; i++)
-        rwork(i) = 0;
+        m_rwork(i) = 0;
 
       octave_idx_type maxord = maximum_order ();
 
@@ -157,8 +157,8 @@ LSODE::do_integrate (double tout)
         {
           if (maxord > 0 && maxord <= max_maxord)
             {
-              iwork(4) = octave::to_f77_int (maxord);
-              iopt = 1;
+              m_iwork(4) = octave::to_f77_int (maxord);
+              m_iopt = 1;
             }
           else
             {
@@ -172,13 +172,13 @@ LSODE::do_integrate (double tout)
 
       if (stop_time_set)
         {
-          itask = 4;
-          rwork(0) = stop_time;
-          iopt = 1;
+          m_itask = 4;
+          m_rwork(0) = stop_time;
+          m_iopt = 1;
         }
       else
         {
-          itask = 1;
+          m_itask = 1;
         }
 
       restart = false;
@@ -210,15 +210,15 @@ LSODE::do_integrate (double tout)
 
       // LSODE_options
 
-      rel_tol = relative_tolerance ();
-      abs_tol = absolute_tolerance ();
+      m_rel_tol = relative_tolerance ();
+      m_abs_tol = absolute_tolerance ();
 
-      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.numel ());
 
       if (abs_tol_len == 1)
-        itol = 1;
+        m_itol = 1;
       else if (abs_tol_len == n)
-        itol = 2;
+        m_itol = 2;
       else
         {
           // FIXME: Should this be a warning?
@@ -232,46 +232,46 @@ LSODE::do_integrate (double tout)
       double iss = initial_step_size ();
       if (iss >= 0.0)
         {
-          rwork(4) = iss;
-          iopt = 1;
+          m_rwork(4) = iss;
+          m_iopt = 1;
         }
 
       double maxss = maximum_step_size ();
       if (maxss >= 0.0)
         {
-          rwork(5) = maxss;
-          iopt = 1;
+          m_rwork(5) = maxss;
+          m_iopt = 1;
         }
 
       double minss = minimum_step_size ();
       if (minss >= 0.0)
         {
-          rwork(6) = minss;
-          iopt = 1;
+          m_rwork(6) = minss;
+          m_iopt = 1;
         }
 
       F77_INT sl = octave::to_f77_int (step_limit ());
       if (sl > 0)
         {
-          iwork(5) = sl;
-          iopt = 1;
+          m_iwork(5) = sl;
+          m_iopt = 1;
         }
 
-      LSODE_options::reset = false;
+      LSODE_options::m_reset = false;
     }
 
   double *px = x.fortran_vec ();
 
-  double *pabs_tol = abs_tol.fortran_vec ();
+  double *pabs_tol = m_abs_tol.fortran_vec ();
 
-  F77_INT *piwork = iwork.fortran_vec ();
-  double *prwork = rwork.fortran_vec ();
+  F77_INT *piwork = m_iwork.fortran_vec ();
+  double *prwork = m_rwork.fortran_vec ();
 
   F77_INT tmp_istate = octave::to_f77_int (istate);
 
-  F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, t, tout, itol, rel_tol,
-                             pabs_tol, itask, tmp_istate, iopt, prwork, lrw,
-                             piwork, liw, lsode_j, method_flag));
+  F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, t, tout, m_itol, m_rel_tol,
+                             pabs_tol, m_itask, tmp_istate, m_iopt, prwork,
+                             m_lrw, piwork, m_liw, lsode_j, m_method_flag));
 
   istate = tmp_istate;
 

@@ -49,59 +49,59 @@ public:
                                 double t, double cj);
 
   DAEFunc (void)
-    : fun (nullptr), jac (nullptr), reset (true) { }
+    : m_fun (nullptr), m_jac (nullptr), m_reset (true) { }
 
   DAEFunc (DAERHSFunc f)
-    : fun (f), jac (nullptr), reset (true) { }
+    : m_fun (f), m_jac (nullptr), m_reset (true) { }
 
   DAEFunc (DAERHSFunc f, DAEJacFunc j)
-    : fun (f), jac (j), reset (true) { }
+    : m_fun (f), m_jac (j), m_reset (true) { }
 
   DAEFunc (const DAEFunc& a)
-    : fun (a.fun), jac (a.jac), reset (a.reset) { }
+    : m_fun (a.m_fun), m_jac (a.m_jac), m_reset (a.m_reset) { }
 
   DAEFunc& operator = (const DAEFunc& a)
   {
     if (this != &a)
       {
-        fun = a.fun;
-        jac = a.jac;
-        reset = a.reset;
+        m_fun = a.m_fun;
+        m_jac = a.m_jac;
+        m_reset = a.m_reset;
       }
     return *this;
   }
 
   virtual ~DAEFunc (void) = default;
 
-  DAERHSFunc function (void) const { return fun; }
+  DAERHSFunc function (void) const { return m_fun; }
 
   DAEFunc& set_function (DAERHSFunc f)
   {
-    fun = f;
-    reset = true;
+    m_fun = f;
+    m_reset = true;
     return *this;
   }
 
-  DAEJacFunc jacobian_function (void) const { return jac; }
+  DAEJacFunc jacobian_function (void) const { return m_jac; }
 
   DAEFunc& set_jacobian_function (DAEJacFunc j)
   {
-    jac = j;
-    reset = true;
+    m_jac = j;
+    m_reset = true;
     return *this;
   }
 
 protected:
 
-  DAERHSFunc fun;
-  DAEJacFunc jac;
+  DAERHSFunc m_fun;
+  DAEJacFunc m_jac;
 
   // This variable is TRUE when this object is constructed, and also
   // after any internal data has changed.  Derived classes may use
   // this information (and change it) to know when to (re)initialize
   // their own internal data related to this object.
 
-  bool reset;
+  bool m_reset;
 };
 
 #endif

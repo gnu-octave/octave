@@ -125,36 +125,36 @@ DASSL::do_integrate (double tout)
 {
   ColumnVector retval;
 
-  if (! initialized || restart || DAEFunc::reset || DASSL_options::reset)
+  if (! m_initialized || restart || DAEFunc::m_reset || DASSL_options::m_reset)
     {
       integration_error = false;
 
-      initialized = true;
+      m_initialized = true;
 
-      info.resize (dim_vector (15, 1));
+      m_info.resize (dim_vector (15, 1));
 
       for (F77_INT i = 0; i < 15; i++)
-        info(i) = 0;
+        m_info(i) = 0;
 
       F77_INT n = octave::to_f77_int (size ());
 
-      liw = 21 + n;
-      lrw = 40 + 9*n + n*n;
+      m_liw = 21 + n;
+      m_lrw = 40 + 9*n + n*n;
 
       nn = n;
 
-      iwork.resize (dim_vector (liw, 1));
-      rwork.resize (dim_vector (lrw, 1));
+      m_iwork.resize (dim_vector (m_liw, 1));
+      m_rwork.resize (dim_vector (m_lrw, 1));
 
-      info(0) = 0;
+      m_info(0) = 0;
 
       if (stop_time_set)
         {
-          rwork(0) = stop_time;
-          info(3) = 1;
+          m_rwork(0) = stop_time;
+          m_info(3) = 1;
         }
       else
-        info(3) = 0;
+        m_info(3) = 0;
 
       restart = false;
 
@@ -187,47 +187,47 @@ DASSL::do_integrate (double tout)
           return retval;
         }
 
-      info(4) = (user_jac ? 1 : 0);
+      m_info(4) = (user_jac ? 1 : 0);
 
-      DAEFunc::reset = false;
+      DAEFunc::m_reset = false;
 
       // DASSL_options
 
       double hmax = maximum_step_size ();
       if (hmax >= 0.0)
         {
-          rwork(1) = hmax;
-          info(6) = 1;
+          m_rwork(1) = hmax;
+          m_info(6) = 1;
         }
       else
-        info(6) = 0;
+        m_info(6) = 0;
 
       double h0 = initial_step_size ();
       if (h0 >= 0.0)
         {
-          rwork(2) = h0;
-          info(7) = 1;
+          m_rwork(2) = h0;
+          m_info(7) = 1;
         }
       else
-        info(7) = 0;
+        m_info(7) = 0;
 
       F77_INT sl = octave::to_f77_int (step_limit ());
 
       if (sl >= 0)
         {
-          info(11) = 1;
-          iwork(20) = sl;
+          m_info(11) = 1;
+          m_iwork(20) = sl;
         }
       else
-        info(11) = 0;
+        m_info(11) = 0;
 
       F77_INT maxord = octave::to_f77_int (maximum_order ());
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord < 6)
             {
-              info(8) = 1;
-              iwork(2) = maxord;
+              m_info(8) = 1;
+              m_iwork(2) = maxord;
             }
           else
             {
@@ -240,24 +240,24 @@ DASSL::do_integrate (double tout)
         }
 
       F77_INT enc = octave::to_f77_int (enforce_nonnegativity_constraints ());
-      info(9) = (enc ? 1 : 0);
+      m_info(9) = (enc ? 1 : 0);
 
       F77_INT ccic = octave::to_f77_int (compute_consistent_initial_condition ());
-      info(10) = (ccic ? 1 : 0);
+      m_info(10) = (ccic ? 1 : 0);
 
-      abs_tol = absolute_tolerance ();
-      rel_tol = relative_tolerance ();
+      m_abs_tol = absolute_tolerance ();
+      m_rel_tol = relative_tolerance ();
 
-      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
-      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (m_rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
-          info(1) = 0;
+          m_info(1) = 0;
         }
       else if (abs_tol_len == n && rel_tol_len == n)
         {
-          info(1) = 1;
+          m_info(1) = 1;
         }
       else
         {
@@ -268,19 +268,19 @@ DASSL::do_integrate (double tout)
           return retval;
         }
 
-      DASSL_options::reset = false;
+      DASSL_options::m_reset = false;
     }
 
   double *px = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
 
-  F77_INT *pinfo = info.fortran_vec ();
+  F77_INT *pinfo = m_info.fortran_vec ();
 
-  double *prel_tol = rel_tol.fortran_vec ();
-  double *pabs_tol = abs_tol.fortran_vec ();
+  double *prel_tol = m_rel_tol.fortran_vec ();
+  double *pabs_tol = m_abs_tol.fortran_vec ();
 
-  double *prwork = rwork.fortran_vec ();
-  F77_INT *piwork = iwork.fortran_vec ();
+  double *prwork = m_rwork.fortran_vec ();
+  F77_INT *piwork = m_iwork.fortran_vec ();
 
   double *dummy = nullptr;
   F77_INT *idummy = nullptr;
@@ -288,8 +288,8 @@ DASSL::do_integrate (double tout)
   F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (ddassl, DDASSL, (ddassl_f, nn, t, px, pxdot, tout, pinfo,
-                             prel_tol, pabs_tol, tmp_istate, prwork, lrw,
-                             piwork, liw, dummy, idummy, ddassl_j));
+                             prel_tol, pabs_tol, tmp_istate, prwork, m_lrw,
+                             piwork, m_liw, dummy, idummy, ddassl_j));
 
   istate = tmp_istate;
 

@@ -119,7 +119,7 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
 
 static F77_INT
 ddasrt_g (const F77_INT& neq, const double& t, const double *state,
-          const F77_INT& ng, double *gout, double *, F77_INT *)
+          const F77_INT& m_ng, double *gout, double *, F77_INT *)
 {
   F77_INT n = neq;
 
@@ -129,7 +129,7 @@ ddasrt_g (const F77_INT& neq, const double& t, const double *state,
 
   ColumnVector tmp_fval = (*user_csub) (tmp_state, t);
 
-  for (F77_INT i = 0; i < ng; i++)
+  for (F77_INT i = 0; i < m_ng; i++)
     gout[i] = tmp_fval(i);
 
   return 0;
@@ -142,17 +142,17 @@ DASRT::integrate (double tout)
   // call, or if anything about the problem has changed, we should
   // start completely fresh.
 
-  if (! initialized || restart
-      || DAEFunc::reset || DAERTFunc::reset || DASRT_options::reset)
+  if (! m_initialized || restart
+      || DAEFunc::m_reset || DAERTFunc::m_reset || DASRT_options::m_reset)
     {
       integration_error = false;
 
-      initialized = true;
+      m_initialized = true;
 
-      info.resize (dim_vector (15, 1));
+      m_info.resize (dim_vector (15, 1));
 
       for (F77_INT i = 0; i < 15; i++)
-        info(i) = 0;
+        m_info(i) = 0;
 
       F77_INT n = octave::to_f77_int (size ());
 
@@ -165,18 +165,18 @@ DASRT::integrate (double tout)
       if (user_csub)
         {
           ColumnVector tmp = (*user_csub) (x, t);
-          ng = octave::to_f77_int (tmp.numel ());
+          m_ng = octave::to_f77_int (tmp.numel ());
         }
       else
-        ng = 0;
+        m_ng = 0;
 
       F77_INT maxord = octave::to_f77_int (maximum_order ());
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord < 6)
             {
-              info(8) = 1;
-              iwork(2) = maxord;
+              m_info(8) = 1;
+              m_iwork(2) = maxord;
             }
           else
             {
@@ -187,21 +187,21 @@ DASRT::integrate (double tout)
             }
         }
 
-      liw = 21 + n;
-      lrw = 50 + 9*n + n*n + 3*ng;
+      m_liw = 21 + n;
+      m_lrw = 50 + 9*n + n*n + 3*m_ng;
 
-      iwork.resize (dim_vector (liw, 1));
-      rwork.resize (dim_vector (lrw, 1));
+      m_iwork.resize (dim_vector (m_liw, 1));
+      m_rwork.resize (dim_vector (m_lrw, 1));
 
-      info(0) = 0;
+      m_info(0) = 0;
 
       if (stop_time_set)
         {
-          info(3) = 1;
-          rwork(0) = stop_time;
+          m_info(3) = 1;
+          m_rwork(0) = stop_time;
         }
       else
-        info(3) = 0;
+        m_info(3) = 0;
 
       restart = false;
 
@@ -234,56 +234,56 @@ DASRT::integrate (double tout)
           return;
         }
 
-      info(4) = (user_jsub ? 1 : 0);
+      m_info(4) = (user_jsub ? 1 : 0);
 
-      DAEFunc::reset = false;
+      DAEFunc::m_reset = false;
 
-      jroot.resize (dim_vector (ng, 1), 1);
+      m_jroot.resize (dim_vector (m_ng, 1), 1);
 
-      DAERTFunc::reset = false;
+      DAERTFunc::m_reset = false;
 
       // DASRT_options
 
       double mss = maximum_step_size ();
       if (mss >= 0.0)
         {
-          rwork(1) = mss;
-          info(6) = 1;
+          m_rwork(1) = mss;
+          m_info(6) = 1;
         }
       else
-        info(6) = 0;
+        m_info(6) = 0;
 
       double iss = initial_step_size ();
       if (iss >= 0.0)
         {
-          rwork(2) = iss;
-          info(7) = 1;
+          m_rwork(2) = iss;
+          m_info(7) = 1;
         }
       else
-        info(7) = 0;
+        m_info(7) = 0;
 
       F77_INT sl = octave::to_f77_int (step_limit ());
       if (sl >= 0)
         {
-          info(11) = 1;
-          iwork(20) = sl;
+          m_info(11) = 1;
+          m_iwork(20) = sl;
         }
       else
-        info(11) = 0;
+        m_info(11) = 0;
 
-      abs_tol = absolute_tolerance ();
-      rel_tol = relative_tolerance ();
+      m_abs_tol = absolute_tolerance ();
+      m_rel_tol = relative_tolerance ();
 
-      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
-      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (m_rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
-          info.elem (1) = 0;
+          m_info.elem (1) = 0;
         }
       else if (abs_tol_len == n && rel_tol_len == n)
         {
-          info.elem (1) = 1;
+          m_info.elem (1) = 1;
         }
       else
         {
@@ -294,21 +294,21 @@ DASRT::integrate (double tout)
           return;
         }
 
-      DASRT_options::reset = false;
+      DASRT_options::m_reset = false;
     }
 
   double *px = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
 
-  F77_INT *pinfo = info.fortran_vec ();
+  F77_INT *pinfo = m_info.fortran_vec ();
 
-  double *prel_tol = rel_tol.fortran_vec ();
-  double *pabs_tol = abs_tol.fortran_vec ();
+  double *prel_tol = m_rel_tol.fortran_vec ();
+  double *pabs_tol = m_abs_tol.fortran_vec ();
 
-  double *prwork = rwork.fortran_vec ();
-  F77_INT *piwork = iwork.fortran_vec ();
+  double *prwork = m_rwork.fortran_vec ();
+  F77_INT *piwork = m_iwork.fortran_vec ();
 
-  F77_INT *pjroot = jroot.fortran_vec ();
+  F77_INT *pjroot = m_jroot.fortran_vec ();
 
   double *dummy = nullptr;
   F77_INT *idummy = nullptr;
@@ -316,9 +316,9 @@ DASRT::integrate (double tout)
   F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (ddasrt, DDASRT, (ddasrt_f, nn, t, px, pxdot, tout, pinfo,
-                             prel_tol, pabs_tol, tmp_istate, prwork, lrw,
-                             piwork, liw, dummy, idummy, ddasrt_j,
-                             ddasrt_g, ng, pjroot));
+                             prel_tol, pabs_tol, tmp_istate, prwork, m_lrw,
+                             piwork, m_liw, dummy, idummy, ddasrt_j,
+                             ddasrt_g, m_ng, pjroot));
 
   istate = tmp_istate;
 

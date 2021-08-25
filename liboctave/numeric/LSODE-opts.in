@@ -45,11 +45,11 @@ must match the dimension of the state vector.
       {
         $OPTVAR.resize (dim_vector (1, 1));
         $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (std::numeric_limits<double>::epsilon ());
-        reset = true;
+        m_reset = true;
       }
 
     void set_$OPT (const $TYPE& val)
-      { $OPTVAR = val; reset = true; }
+      { $OPTVAR = val; m_reset = true; }
   END_SET_CODE
 END_OPTION
 

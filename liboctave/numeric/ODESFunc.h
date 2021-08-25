@@ -53,62 +53,62 @@ public:
                                const ColumnVector& theta);
 
   ODESFunc (void)
-    : fsub (nullptr), bsub (nullptr), jsub (nullptr) { }
+    : m_fsub (nullptr), m_bsub (nullptr), m_jsub (nullptr) { }
 
   ODESFunc (ODES_fsub f)
-    : fsub (f), bsub (nullptr), jsub (nullptr) { }
+    : m_fsub (f), m_bsub (nullptr), m_jsub (nullptr) { }
 
   ODESFunc (ODES_fsub f, ODES_bsub b)
-    : fsub (f), bsub (b), jsub (nullptr) { }
+    : m_fsub (f), m_bsub (b), m_jsub (nullptr) { }
 
   ODESFunc (ODES_fsub f, ODES_bsub b, ODES_jsub j)
-    : fsub (f), bsub (b), jsub (j) { }
+    : m_fsub (f), m_bsub (b), m_jsub (j) { }
 
   ODESFunc (const ODESFunc& a)
-    : fsub (a.fsub), bsub (a.bsub), jsub (a.jsub) { }
+    : m_fsub (a.m_fsub), m_bsub (a.m_bsub), m_jsub (a.m_jsub) { }
 
   ODESFunc& operator = (const ODESFunc& a)
   {
     if (this != &a)
       {
-        fsub = a.fsub;
-        bsub = a.bsub;
-        jsub = a.jsub;
+        m_fsub = a.m_fsub;
+        m_bsub = a.m_bsub;
+        m_jsub = a.m_jsub;
       }
     return *this;
   }
 
   virtual ~ODESFunc (void) = default;
 
-  ODES_fsub fsub_function (void) const { return fsub; }
+  ODES_fsub fsub_function (void) const { return m_fsub; }
 
   ODESFunc& set_fsub_function (ODES_fsub f)
   {
-    fsub = f;
+    m_fsub = f;
     return *this;
   }
 
-  ODES_bsub bsub_function (void) const { return bsub; }
+  ODES_bsub bsub_function (void) const { return m_bsub; }
 
   ODESFunc& set_bsub_function (ODES_bsub b)
   {
-    bsub = b;
+    m_bsub = b;
     return *this;
   }
 
-  ODES_jsub jsub_function (void) const { return jsub; }
+  ODES_jsub jsub_function (void) const { return m_jsub; }
 
   ODESFunc& set_jsub_function (ODES_jsub j)
   {
-    jsub = j;
+    m_jsub = j;
     return *this;
   }
 
 protected:
 
-  ODES_fsub fsub;
-  ODES_bsub bsub;
-  ODES_jsub jsub;
+  ODES_fsub m_fsub;
+  ODES_bsub m_bsub;
+  ODES_jsub m_jsub;
 };
 
 #endif

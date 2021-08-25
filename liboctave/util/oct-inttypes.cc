@@ -32,10 +32,10 @@
 #include "oct-inttypes.h"
 
 template <typename T>
-const octave_int<T> octave_int<T>::zero (static_cast<T> (0));
+const octave_int<T> octave_int<T>::s_zero (static_cast<T> (0));
 
 template <typename T>
-const octave_int<T> octave_int<T>::one (static_cast<T> (1));
+const octave_int<T> octave_int<T>::s_one (static_cast<T> (1));
 
 // Define type names.
 
@@ -595,7 +595,7 @@ operator * (const octave_uint64& x, const double& y)
       dblesplit (y, sign, my, e);
       uint32_t w[4];
       umul128 (x.value (), my, w);
-      octave_uint64 res = octave_uint64::zero;
+      octave_uint64 res = octave_uint64::s_zero;
       for (short i = 0; i < 4; i++)
         {
           res += octave_uint64 (dbleget (sign, w[i], e));
@@ -631,7 +631,7 @@ operator * (const octave_int64& x, const double& y)
       uint32_t w[4];
       sign = (sign != (x.value () < 0));
       umul128 (octave_int_abs (x.value ()), my, w);
-      octave_int64 res = octave_int64::zero;
+      octave_int64 res = octave_int64::s_zero;
       for (short i = 0; i < 4; i++)
         {
           res += octave_int64 (dbleget (sign, w[i], e));
@@ -707,8 +707,8 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
 {
   octave_int<T> retval;
 
-  const octave_int<T> zero = octave_int<T>::zero;
-  const octave_int<T> one = octave_int<T>::one;
+  const octave_int<T> zero = octave_int<T>::s_zero;
+  const octave_int<T> one = octave_int<T>::s_one;
 
   if (b == zero || a == one)
     retval = one;

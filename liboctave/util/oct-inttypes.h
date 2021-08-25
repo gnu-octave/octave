@@ -910,7 +910,7 @@ public:
   static const OCTAVE_API char * type_name ();
 
   // The following are provided for convenience.
-  static const octave_int zero, one;
+  static const octave_int s_zero, s_one;
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.

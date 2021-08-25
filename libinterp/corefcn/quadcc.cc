@@ -51,14 +51,14 @@ OCTAVE_NAMESPACE_BEGIN
 static const int MIN_CQUAD_HEAPSIZE = 200;
 
 // Data of a single interval.
-typedef struct
+struct cquad_ival
 {
   double a, b;
   double c[64];
   double fx[33];
   double igral, err;
   int depth, rdepth, ndiv;
-} cquad_ival;
+};
 
 // Define relative tolerance used when deciding to drop an interval.
 static const double DROP_RELTOL = std::numeric_limits<double>::epsilon () * 10;

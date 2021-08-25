@@ -38,55 +38,55 @@ public:
   typedef ColumnVector (*DAERTConstrFunc) (const ColumnVector& x, double t);
 
   DAERTFunc (void)
-    : DAEFunc (), constr (nullptr), reset (true) { }
+    : DAEFunc (), m_constr (nullptr), m_reset (true) { }
 
   DAERTFunc (DAERHSFunc f)
-    : DAEFunc (f), constr (nullptr), reset (true) { }
+    : DAEFunc (f), m_constr (nullptr), m_reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAEJacFunc j)
-    : DAEFunc (f, j), constr (nullptr), reset (true) { }
+    : DAEFunc (f, j), m_constr (nullptr), m_reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAERTConstrFunc cf)
-    : DAEFunc (f), constr (cf), reset (true) { }
+    : DAEFunc (f), m_constr (cf), m_reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAERTConstrFunc cf, DAEJacFunc j)
-    : DAEFunc (f, j), constr (cf), reset (true) { }
+    : DAEFunc (f, j), m_constr (cf), m_reset (true) { }
 
   DAERTFunc (const DAERTFunc& a)
-    : DAEFunc (a), constr (a.constr), reset (a.reset) { }
+    : DAEFunc (a), m_constr (a.m_constr), m_reset (a.m_reset) { }
 
   DAERTFunc& operator = (const DAERTFunc& a)
   {
     if (this != &a)
       {
         DAEFunc::operator = (a);
-        constr = a.constr;
-        reset = a.reset;
+        m_constr = a.m_constr;
+        m_reset = a.m_reset;
       }
     return *this;
   }
 
   virtual ~DAERTFunc (void) = default;
 
-  DAERTConstrFunc constraint_function (void) const { return constr; }
+  DAERTConstrFunc constraint_function (void) const { return m_constr; }
 
   DAERTFunc& set_constraint_function (DAERTConstrFunc cf)
   {
-    constr = cf;
-    reset = true;
+    m_constr = cf;
+    m_reset = true;
     return *this;
   }
 
 protected:
 
-  DAERTConstrFunc constr;
+  DAERTConstrFunc m_constr;
 
   // This variable is TRUE when this object is constructed, and also
   // after any internal data has changed.  Derived classes may use
   // this information (and change it) to know when to (re)initialize
   // their own internal data related to this object.
 
-  bool reset;
+  bool m_reset;
 };
 
 #endif

@@ -40,59 +40,59 @@ public:
   typedef Matrix (*ODEJacFunc) (const ColumnVector&, double);
 
   ODEFunc (void)
-    : fun (nullptr), jac (nullptr), reset (true) { }
+    : m_fun (nullptr), m_jac (nullptr), m_reset (true) { }
 
   ODEFunc (ODERHSFunc f)
-    : fun (f), jac (nullptr), reset (true) { }
+    : m_fun (f), m_jac (nullptr), m_reset (true) { }
 
   ODEFunc (ODERHSFunc f, ODEJacFunc j)
-    : fun (f), jac (j), reset (true) { }
+    : m_fun (f), m_jac (j), m_reset (true) { }
 
   ODEFunc (const ODEFunc& a)
-    : fun (a.fun), jac (a.jac), reset (true) { }
+    : m_fun (a.m_fun), m_jac (a.m_jac), m_reset (true) { }
 
   ODEFunc& operator = (const ODEFunc& a)
   {
     if (this != &a)
       {
-        fun = a.fun;
-        jac = a.jac;
-        reset = a.reset;
+        m_fun = a.m_fun;
+        m_jac = a.m_jac;
+        m_reset = a.m_reset;
       }
     return *this;
   }
 
   virtual ~ODEFunc (void) = default;
 
-  ODERHSFunc function (void) const { return fun; }
+  ODERHSFunc function (void) const { return m_fun; }
 
   ODEFunc& set_function (ODERHSFunc f)
   {
-    fun = f;
-    reset = true;
+    m_fun = f;
+    m_reset = true;
     return *this;
   }
 
-  ODEJacFunc jacobian_function (void) const { return jac; }
+  ODEJacFunc jacobian_function (void) const { return m_jac; }
 
   ODEFunc& set_jacobian_function (ODEJacFunc j)
   {
-    jac = j;
-    reset = true;
+    m_jac = j;
+    m_reset = true;
     return *this;
   }
 
 protected:
 
-  ODERHSFunc fun;
-  ODEJacFunc jac;
+  ODERHSFunc m_fun;
+  ODEJacFunc m_jac;
 
   // This variable is TRUE when this object is constructed, and also
   // after any internal data has changed.  Derived classes may use
   // this information (and change it) to know when to (re)initialize
   // their own internal data related to this object.
 
-  bool reset;
+  bool m_reset;
 };
 
 #endif

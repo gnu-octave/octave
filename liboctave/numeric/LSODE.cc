@@ -105,7 +105,7 @@ LSODE::do_integrate (double tout)
 
   static F77_INT nn = 0;
 
-  if (! m_initialized || restart || ODEFunc::reset || LSODE_options::m_reset)
+  if (! m_initialized || restart || ODEFunc::m_reset || LSODE_options::m_reset)
     {
       integration_error = false;
 
@@ -123,7 +123,7 @@ LSODE::do_integrate (double tout)
         {
           max_maxord = 5;
 
-          if (jac)
+          if (m_jac)
             m_method_flag = 21;
           else
             m_method_flag = 22;
@@ -206,7 +206,7 @@ LSODE::do_integrate (double tout)
           return retval;
         }
 
-      ODEFunc::reset = false;
+      ODEFunc::m_reset = false;
 
       // LSODE_options
 

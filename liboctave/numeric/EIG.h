@@ -44,53 +44,53 @@ EIG
 
 public:
 
-  EIG (void) : lambda (), v (), w () { }
+  EIG (void) : m_lambda (), m_v (), m_w () { }
 
   EIG (const Matrix& a, bool calc_rev = true,
        bool calc_lev = true, bool balance = true)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     init (a, calc_rev, calc_lev, balance);
   }
 
   EIG (const Matrix& a, octave_idx_type& info,
        bool calc_rev = true, bool calc_lev = true, bool balance = true)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     info = init (a, calc_rev, calc_lev, balance);
   }
 
   EIG (const Matrix& a, const Matrix& b,
        bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     init (a, b, calc_rev, calc_lev, force_qz);
   }
 
   EIG (const Matrix& a, const Matrix& b, octave_idx_type& info,
        bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     info = init (a, b, calc_rev, calc_lev, force_qz);
   }
 
   EIG (const ComplexMatrix& a, bool calc_rev = true,
        bool calc_lev = true, bool balance = true)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     init (a, calc_rev, calc_lev, balance);
   }
 
   EIG (const ComplexMatrix& a, octave_idx_type& info,
        bool calc_rev = true, bool calc_lev = true, bool balance = true)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     info = init (a, calc_rev, calc_lev, balance);
   }
 
   EIG (const ComplexMatrix& a, const ComplexMatrix& b,
        bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     init (a, b, calc_rev, calc_lev, force_qz);
   }
@@ -98,37 +98,37 @@ public:
   EIG (const ComplexMatrix& a, const ComplexMatrix& b,
        octave_idx_type& info, bool calc_rev = true, bool calc_lev = true,
        bool force_qz = false)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     info = init (a, b, calc_rev, calc_lev, force_qz);
   }
 
-  EIG (const EIG& a) : lambda (a.lambda), v (a.v), w (a.w) { }
+  EIG (const EIG& a) : m_lambda (a.m_lambda), m_v (a.m_v), m_w (a.m_w) { }
 
   EIG& operator = (const EIG& a)
   {
     if (this != &a)
       {
-        lambda = a.lambda;
-        v = a.v;
-        w = a.w;
+        m_lambda = a.m_lambda;
+        m_v = a.m_v;
+        m_w = a.m_w;
       }
     return *this;
   }
 
   ~EIG (void) = default;
 
-  ComplexColumnVector eigenvalues (void) const { return lambda; }
-  ComplexMatrix right_eigenvectors (void) const { return v; }
-  ComplexMatrix left_eigenvectors (void) const { return w; }
+  ComplexColumnVector eigenvalues (void) const { return m_lambda; }
+  ComplexMatrix right_eigenvectors (void) const { return m_v; }
+  ComplexMatrix left_eigenvectors (void) const { return m_w; }
 
   friend std::ostream&  operator << (std::ostream& os, const EIG& a);
 
 private:
 
-  ComplexColumnVector lambda;
-  ComplexMatrix v;
-  ComplexMatrix w;
+  ComplexColumnVector m_lambda;
+  ComplexMatrix m_v;
+  ComplexMatrix m_w;
 
   octave_idx_type init (const Matrix& a, bool calc_rev, bool calc_lev,
                         bool balance);

@@ -51,10 +51,10 @@ OCTAVE_NAMESPACE_BEGIN
 
 struct eigs_callback {
   // Pointer for user defined function.
-  octave_value eigs_fcn;
+  octave_value m_eigs_fcn;
 
   // Have we warned about imaginary values returned from user function?
-  bool warned_imaginary = false;
+  bool m_warned_imaginary = false;
 
   ColumnVector
   eigs_func (const ColumnVector& x, int& eigs_error);
@@ -73,13 +73,13 @@ eigs_callback::eigs_func (const ColumnVector& x, int& eigs_error)
   octave_value_list args;
   args(0) = x;
 
-  if (eigs_fcn.is_defined ())
+  if (m_eigs_fcn.is_defined ())
     {
       octave_value_list tmp;
 
       try
         {
-          tmp = octave::feval (eigs_fcn, args, 1);
+          tmp = octave::feval (m_eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& ee)
         {
@@ -88,10 +88,10 @@ eigs_callback::eigs_func (const ColumnVector& x, int& eigs_error)
 
       if (tmp.length () && tmp(0).is_defined ())
         {
-          if (! warned_imaginary && tmp(0).iscomplex ())
+          if (! m_warned_imaginary && tmp(0).iscomplex ())
             {
               warning ("eigs: ignoring imaginary part returned from user-supplied function");
-              warned_imaginary = true;
+              m_warned_imaginary = true;
             }
 
           retval = tmp(0).xvector_value ("eigs: evaluation of user-supplied function failed");
@@ -114,13 +114,13 @@ eigs_callback::eigs_complex_func (const ComplexColumnVector& x,
   octave_value_list args;
   args(0) = x;
 
-  if (eigs_fcn.is_defined ())
+  if (m_eigs_fcn.is_defined ())
     {
       octave_value_list tmp;
 
       try
         {
-          tmp = octave::feval (eigs_fcn, args, 1);
+          tmp = octave::feval (m_eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& ee)
         {
@@ -219,9 +219,9 @@ Undocumented internal function.
   if (args(0).is_function_handle () || args(0).is_inline_function ()
       || args(0).is_string ())
     {
-      callback.eigs_fcn = get_function_handle (interp, args(0), "x");
+      callback.m_eigs_fcn = get_function_handle (interp, args(0), "x");
 
-      if (callback.eigs_fcn.is_undefined ())
+      if (callback.m_eigs_fcn.is_undefined ())
         error ("eigs: unknown function");
 
       if (nargin < 2)

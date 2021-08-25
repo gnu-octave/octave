@@ -238,18 +238,18 @@ public:
   {
   public:
     type_conv_info (type_conv_fcn f = nullptr, int t = -1)
-      : _fcn (f), _type_id (t) { }
+      : m_fcn (f), m_type_id (t) { }
 
-    operator type_conv_fcn (void) const { return _fcn; }
+    operator type_conv_fcn (void) const { return m_fcn; }
 
     octave_base_value * operator () (const octave_base_value& v) const
-    { return (*_fcn) (v); }
+    { return (*m_fcn) (v); }
 
-    int type_id (void) const { return _type_id; }
+    int type_id (void) const { return m_type_id; }
 
   private:
-    type_conv_fcn _fcn;
-    int _type_id;
+    type_conv_fcn m_fcn;
+    int m_type_id;
   };
 
   friend class octave_value;

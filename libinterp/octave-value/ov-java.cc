@@ -910,10 +910,10 @@ octave_java::is_java_string (void) const
 
   JNIEnv *current_env = thread_jni_env ();
 
-  if (current_env && java_object)
+  if (current_env && m_java_object)
     {
       jclass_ref cls (current_env, current_env->FindClass ("java/lang/String"));
-      return current_env->IsInstanceOf (TO_JOBJECT (java_object), cls);
+      return current_env->IsInstanceOf (TO_JOBJECT (m_java_object), cls);
     }
 
   return false;
@@ -938,13 +938,13 @@ octave_java::is_instance_of (const std::string& cls_name) const
   std::string cls_cpp = cls_name;
   std::replace (cls_cpp.begin (), cls_cpp.end (), '.', '/');
 
-  if (current_env && java_object)
+  if (current_env && m_java_object)
     {
       jclass_ref cls (current_env, current_env->FindClass (cls_cpp.c_str ()));
       if (current_env->ExceptionCheck ())
         current_env->ExceptionClear ();
       else
-        return current_env->IsInstanceOf (TO_JOBJECT (java_object), cls);
+        return current_env->IsInstanceOf (TO_JOBJECT (m_java_object), cls);
     }
   return false;
 
@@ -1264,23 +1264,23 @@ get_invoke_list (JNIEnv *jni_env, void *jobj_arg)
 }
 
 static octave_value
-convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
+convert_to_string (JNIEnv *jni_env, jobject m_java_object, bool force, char type)
 {
   octave_value retval;
 
-  if (jni_env && java_object)
+  if (jni_env && m_java_object)
     {
       jclass_ref cls (jni_env, jni_env->FindClass ("java/lang/String"));
 
-      if (jni_env->IsInstanceOf (java_object, cls))
-        retval = octave_value (jstring_to_string (jni_env, java_object), type);
+      if (jni_env->IsInstanceOf (m_java_object, cls))
+        retval = octave_value (jstring_to_string (jni_env, m_java_object), type);
       else if (force)
         {
           cls = jni_env->FindClass ("[Ljava/lang/String;");
 
-          if (jni_env->IsInstanceOf (java_object, cls))
+          if (jni_env->IsInstanceOf (m_java_object, cls))
             {
-              jobjectArray array = reinterpret_cast<jobjectArray> (java_object);
+              jobjectArray array = reinterpret_cast<jobjectArray> (m_java_object);
               int len = jni_env->GetArrayLength (array);
               Cell c (len, 1);
 
@@ -1305,7 +1305,7 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
                                                     "()Ljava/lang/String;");
               jstring_ref js (jni_env,
                               reinterpret_cast<jstring>
-                                (jni_env->CallObjectMethod (java_object,
+                                (jni_env->CallObjectMethod (m_java_object,
                                                             mID)));
 
               if (js)
@@ -2113,7 +2113,7 @@ Java_org_octave_Octave_needThreadedInvokation (JNIEnv *env, jclass)
 //! Ctor.
 
 octave_java::octave_java (void)
-  : octave_base_value (), java_object (nullptr), java_class (nullptr)
+  : octave_base_value (), m_java_object (nullptr), m_java_class (nullptr)
 {
 #if ! defined (HAVE_JAVA)
 
@@ -2123,7 +2123,7 @@ octave_java::octave_java (void)
 }
 
 octave_java::octave_java (const voidptr& jobj, void *jcls)
-  : octave_base_value (), java_object (nullptr), java_class (nullptr)
+  : octave_base_value (), m_java_object (nullptr), m_java_class (nullptr)
 {
 #if defined (HAVE_JAVA)
 
@@ -2165,8 +2165,8 @@ octave_java::dims (void) const
 
   JNIEnv *current_env = thread_jni_env ();
 
-  if (current_env && java_object)
-    return compute_array_dimensions (current_env, TO_JOBJECT (java_object));
+  if (current_env && m_java_object)
+    return compute_array_dimensions (current_env, TO_JOBJECT (m_java_object));
   else
     return dim_vector (1, 1);
 
@@ -2392,7 +2392,7 @@ octave_java::print (std::ostream& os, bool)
 void
 octave_java::print_raw (std::ostream& os, bool) const
 {
-  os << "<Java object: " << java_classname << '>';
+  os << "<Java object: " << m_java_classname << '>';
 }
 
 // FIXME: Need routines to actually save/load java objects through Serialize.
@@ -2960,27 +2960,27 @@ octave_java::init (void *jobj_arg, void *jcls_arg)
   if (current_env)
     {
       if (jobj)
-        java_object = current_env->NewGlobalRef (jobj);
+        m_java_object = current_env->NewGlobalRef (jobj);
 
       if (jcls)
-        java_class = current_env->NewGlobalRef (jcls);
-      else if (java_object)
+        m_java_class = current_env->NewGlobalRef (jcls);
+      else if (m_java_object)
         {
           jclass_ref ocls (current_env,
-                           current_env->GetObjectClass(TO_JOBJECT (java_object)));
-          java_class = current_env->NewGlobalRef (jclass (ocls));
+                           current_env->GetObjectClass(TO_JOBJECT (m_java_object)));
+          m_java_class = current_env->NewGlobalRef (jclass (ocls));
         }
 
-      if (java_class)
+      if (m_java_class)
         {
           jclass_ref clsCls (current_env,
-                             current_env->GetObjectClass (TO_JCLASS (java_class)));
+                             current_env->GetObjectClass (TO_JCLASS (m_java_class)));
           jmethodID mID = current_env->GetMethodID (clsCls,
                                                     "getCanonicalName",
                                                     "()Ljava/lang/String;");
           jobject_ref resObj (current_env,
-                              current_env->CallObjectMethod (TO_JCLASS (java_class), mID));
-          java_classname = jstring_to_string (current_env, resObj);
+                              current_env->CallObjectMethod (TO_JCLASS (m_java_class), mID));
+          m_java_classname = jstring_to_string (current_env, resObj);
         }
     }
 
@@ -3006,14 +3006,14 @@ octave_java::release (void)
 
   if (current_env)
     {
-      if (java_object)
-        current_env->DeleteGlobalRef (TO_JOBJECT (java_object));
+      if (m_java_object)
+        current_env->DeleteGlobalRef (TO_JOBJECT (m_java_object));
 
-      if (java_class)
-        current_env->DeleteGlobalRef (TO_JCLASS (java_class));
+      if (m_java_class)
+        current_env->DeleteGlobalRef (TO_JCLASS (m_java_class));
 
-      java_object = nullptr;
-      java_class = nullptr;
+      m_java_object = nullptr;
+      m_java_class = nullptr;
     }
 
 #else

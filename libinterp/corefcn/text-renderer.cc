@@ -37,13 +37,14 @@
 namespace octave
 {
   text_renderer::text_renderer (void)
-    : rep (make_ft_text_renderer ()), latex_rep (make_latex_text_renderer ())
+    : m_rep (make_ft_text_renderer ()),
+      m_latex_rep (make_latex_text_renderer ())
   { }
 
   text_renderer::~text_renderer (void)
   {
-    delete rep;
-    delete latex_rep;
+    delete m_rep;
+    delete m_latex_rep;
   }
 
   bool
@@ -51,7 +52,7 @@ namespace octave
   {
     static bool warned = false;
 
-    if (! rep)
+    if (! m_rep)
       {
         if (! warned)
           {
@@ -62,7 +63,7 @@ namespace octave
           }
       }
 
-    return rep != nullptr;
+    return m_rep != nullptr;
   }
 
   Matrix
@@ -70,7 +71,7 @@ namespace octave
   {
     static Matrix empty_extent (1, 4, 0.0);
 
-    return ok () ? rep->get_extent (elt, rotation) : empty_extent;
+    return ok () ? m_rep->get_extent (elt, rotation) : empty_extent;
   }
 
   Matrix
@@ -79,10 +80,10 @@ namespace octave
   {
     static Matrix retval (1, 4, 0.0);
 
-    if (interpreter == "latex" && latex_rep->ok ())
-      retval = latex_rep->get_extent (txt, rotation, interpreter);
+    if (interpreter == "latex" && m_latex_rep->ok ())
+      retval = m_latex_rep->get_extent (txt, rotation, interpreter);
     else if (ok ())
-      retval = rep->get_extent (txt, rotation, interpreter);
+      retval = m_rep->get_extent (txt, rotation, interpreter);
 
     return retval;
   }
@@ -91,7 +92,7 @@ namespace octave
   text_renderer::set_anti_aliasing (bool val)
   {
     if (ok ())
-      rep->set_anti_aliasing (val);
+      m_rep->set_anti_aliasing (val);
   }
 
   octave_map
@@ -100,7 +101,7 @@ namespace octave
     octave_map retval;
 
     if (ok ())
-      retval = rep->get_system_fonts ();
+      retval = m_rep->get_system_fonts ();
 
     return retval;
   }
@@ -111,8 +112,8 @@ namespace octave
   {
     if (ok ())
       {
-        rep->set_font (name, weight, angle, size);
-        latex_rep->set_font (name, weight, angle, size);
+        m_rep->set_font (name, weight, angle, size);
+        m_latex_rep->set_font (name, weight, angle, size);
       }
   }
 
@@ -121,8 +122,8 @@ namespace octave
   {
     if (ok ())
       {
-        rep->set_color (c);
-        latex_rep->set_color (c);
+        m_rep->set_color (c);
+        m_latex_rep->set_color (c);
       }
   }
 
@@ -136,12 +137,12 @@ namespace octave
     static Matrix empty_bbox (1, 4, 0.0);
     static uint8NDArray empty_pxls;
 
-    if (interpreter == "latex" && latex_rep->ok ())
-      latex_rep->text_to_pixels (txt, pxls, bbox, halign, valign, rotation,
-                                 interpreter, handle_rotation);
+    if (interpreter == "latex" && m_latex_rep->ok ())
+      m_latex_rep->text_to_pixels (txt, pxls, bbox, halign, valign, rotation,
+                                   interpreter, handle_rotation);
     else if (ok ())
-      rep->text_to_pixels (txt, pxls, bbox, halign, valign, rotation,
-                           interpreter, handle_rotation);
+      m_rep->text_to_pixels (txt, pxls, bbox, halign, valign, rotation,
+                             interpreter, handle_rotation);
     else
       {
         bbox = empty_bbox;
@@ -159,12 +160,12 @@ namespace octave
     static Matrix empty_bbox (1, 4, 0.0);
     static std::list<text_renderer::string> empty_lst;
 
-    if (interpreter == "latex" && latex_rep->ok ())
-      latex_rep->text_to_strlist (txt, lst, bbox, halign, valign, rotation,
-                                  interpreter);
+    if (interpreter == "latex" && m_latex_rep->ok ())
+      m_latex_rep->text_to_strlist (txt, lst, bbox, halign, valign, rotation,
+                                    interpreter);
     else if (ok ())
-      rep->text_to_strlist (txt, lst, bbox, halign, valign, rotation,
-                            interpreter);
+      m_rep->text_to_strlist (txt, lst, bbox, halign, valign, rotation,
+                              interpreter);
     else
       {
         bbox = empty_bbox;

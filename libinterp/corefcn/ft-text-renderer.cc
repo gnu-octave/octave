@@ -542,19 +542,19 @@ namespace octave
     public:
 
       ft_font (void)
-        : text_renderer::font (), face (nullptr) { }
+        : text_renderer::font (), m_face (nullptr) { }
 
       ft_font (const std::string& nm, const std::string& wt,
                const std::string& ang, double sz, FT_Face f = nullptr)
-        : text_renderer::font (nm, wt, ang, sz), face (f)
+        : text_renderer::font (nm, wt, ang, sz), m_face (f)
       { }
 
       ft_font (const ft_font& ft);
 
       ~ft_font (void)
       {
-        if (face)
-          FT_Done_Face (face);
+        if (m_face)
+          FT_Done_Face (m_face);
       }
 
       ft_font& operator = (const ft_font& ft);
@@ -565,7 +565,7 @@ namespace octave
 
     private:
 
-      mutable FT_Face face;
+      mutable FT_Face m_face;
     };
 
     void push_new_line (void);
@@ -1471,13 +1471,13 @@ namespace octave
   }
 
   ft_text_renderer::ft_font::ft_font (const ft_font& ft)
-    : text_renderer::font (ft), face (nullptr)
+    : text_renderer::font (ft), m_face (nullptr)
   {
 #if defined (HAVE_FT_REFERENCE_FACE)
     FT_Face ft_face = ft.get_face ();
 
     if (ft_face && FT_Reference_Face (ft_face) == 0)
-      face = ft_face;
+      m_face = ft_face;
 #endif
   }
 
@@ -1488,17 +1488,17 @@ namespace octave
       {
         text_renderer::font::operator = (ft);
 
-        if (face)
+        if (m_face)
           {
-            FT_Done_Face (face);
-            face = nullptr;
+            FT_Done_Face (m_face);
+            m_face = nullptr;
           }
 
 #if defined (HAVE_FT_REFERENCE_FACE)
         FT_Face ft_face = ft.get_face ();
 
         if (ft_face && FT_Reference_Face (ft_face) == 0)
-          face = ft_face;
+          m_face = ft_face;
 #endif
       }
 
@@ -1508,20 +1508,20 @@ namespace octave
   FT_Face
   ft_text_renderer::ft_font::get_face (void) const
   {
-    if (! face && ! name.empty ())
+    if (! m_face && ! m_name.empty ())
       {
-        face = ft_manager::get_font (name, weight, angle, size);
+        m_face = ft_manager::get_font (m_name, m_weight, m_angle, m_size);
 
-        if (face)
+        if (m_face)
           {
-            if (FT_Set_Char_Size (face, 0, size*64, 0, 0))
-              ::warning ("ft_text_renderer: unable to set font size to %g", size);
+            if (FT_Set_Char_Size (m_face, 0, m_size*64, 0, 0))
+              ::warning ("ft_text_renderer: unable to set font size to %g", m_size);
           }
         else
           ::warning ("ft_text_renderer: unable to load appropriate font");
       }
 
-    return face;
+    return m_face;
   }
 }
 

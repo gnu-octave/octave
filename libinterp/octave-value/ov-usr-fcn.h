@@ -304,7 +304,7 @@ public:
 
   octave_value_list all_va_args (const octave_value_list& args);
 
-  void stash_function_name (const std::string& s) { my_name = s; }
+  void stash_function_name (const std::string& s) { m_name = s; }
 
   void mark_as_subfunction (void) { m_subfunction = true; }
 

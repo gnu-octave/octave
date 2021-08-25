@@ -54,9 +54,9 @@ octave_function : public octave_base_value
 public:
 
   octave_function (void)
-    : relative (false), locked (false), private_function (false),
-      xdispatch_class (), xpackage_name (), my_name (), my_dir_name (),
-      doc () { }
+    : m_relative (false), m_locked (false), m_private (false),
+      m_dispatch_class (), m_package_name (), m_name (), m_dir_name (),
+      m_doc () { }
 
   // No copying!
 
@@ -88,9 +88,7 @@ public:
   { return octave::symbol_scope (); }
 
   virtual std::list<std::string> parent_fcn_names (void) const
-  {
-    return std::list<std::string> ();
-  }
+  { return std::list<std::string> (); }
 
   virtual void mark_fcn_file_up_to_date (const octave::sys::time&) { }
 
@@ -146,50 +144,47 @@ public:
   virtual bool handles_dispatch_class (const std::string&) const
   { return false; }
 
-  void stash_dispatch_class (const std::string& nm) { xdispatch_class = nm; }
+  void stash_dispatch_class (const std::string& nm) { m_dispatch_class = nm; }
 
-  std::string dispatch_class (void) const { return xdispatch_class; }
+  std::string dispatch_class (void) const { return m_dispatch_class; }
 
-  void stash_package_name (const std::string& pack) { xpackage_name = pack; }
+  void stash_package_name (const std::string& pack) { m_package_name = pack; }
 
-  std::string package_name (void) const { return xpackage_name; }
+  std::string package_name (void) const { return m_package_name; }
 
   virtual void
   mark_as_private_function (const std::string& cname = "")
   {
-    private_function = true;
-    xdispatch_class = cname;
+    m_private = true;
+    m_dispatch_class = cname;
   }
 
-  bool is_private_function (void) const { return private_function; }
+  bool is_private_function (void) const { return m_private; }
 
   bool is_private_function_of_class (const std::string& nm) const
-  { return private_function && xdispatch_class == nm; }
+  { return m_private && m_dispatch_class == nm; }
 
   virtual bool
   is_anonymous_function_of_class (const std::string& = "") const
   { return false; }
 
-  std::string dir_name (void) const { return my_dir_name; }
+  std::string dir_name (void) const { return m_dir_name; }
 
-  void stash_dir_name (const std::string& dir) { my_dir_name = dir; }
+  void stash_dir_name (const std::string& dir) { m_dir_name = dir; }
 
   void lock (void)
   {
     this->lock_subfunctions ();
-    locked = true;
+    m_locked = true;
   }
 
   void unlock (void)
   {
     this->unlock_subfunctions ();
-    locked = false;
+    m_locked = false;
   }
 
-  bool islocked (void) const
-  {
-    return locked;
-  }
+  bool islocked (void) const { return m_locked; }
 
   virtual void lock_subfunctions (void) { }
 
@@ -197,37 +192,32 @@ public:
 
   virtual void maybe_relocate_end (void) { }
 
-  // Not valid until after the function is completley parsed.
+  // Not valid until after the function is completely parsed.
   virtual bool has_subfunctions (void) const { return false; }
 
   virtual void stash_subfunction_names (const std::list<std::string>&) { }
 
   virtual std::list<std::string> subfunction_names (void) const
-  {
-    return std::list<std::string> ();
-  }
+  { return std::list<std::string> (); }
 
-  void mark_relative (void) { relative = true; }
+  void mark_relative (void) { m_relative = true; }
 
-  bool is_relative (void) const { return relative; }
+  bool is_relative (void) const { return m_relative; }
 
-  std::string name (void) const { return my_name; }
+  std::string name (void) const { return m_name; }
 
   std::string canonical_name (void) const
   {
-    if (xpackage_name.empty ())
-      return my_name;
+    if (m_package_name.empty ())
+      return m_name;
     else
-      return xpackage_name + '.' + my_name;
+      return m_package_name + '.' + m_name;
   }
 
-  void document (const std::string& ds) { doc = ds; }
+  void document (const std::string& ds) { m_doc = ds; }
 
   virtual std::string
-  doc_string (const std::string& /*meth_name*/ = "") const
-  {
-    return doc;
-  }
+  doc_string (const std::string& /*meth_name*/ = "") const { return m_doc; }
 
   virtual void unload (void) { }
 
@@ -251,36 +241,36 @@ protected:
 
   octave_function (const std::string& nm,
                    const std::string& ds = "")
-    : relative (false), locked (false), private_function (false),
-      xdispatch_class (), my_name (nm), my_dir_name (), doc (ds) { }
+    : m_relative (false), m_locked (false), m_private (false),
+      m_dispatch_class (), m_name (nm), m_dir_name (), m_doc (ds) { }
 
-  // TRUE if this function was found from a relative path element.
-  bool relative;
+  // TRUE if this function was found from a m_relative path element.
+  bool m_relative;
 
   // TRUE if this function is tagged so that it can't be cleared.
-  bool locked;
+  bool m_locked;
 
   // TRUE means this is a private function.
-  bool private_function;
+  bool m_private;
 
   // If this object is a class method or constructor, or a private
   // function inside a class directory, this is the name of the class
   // to which the method belongs.
-  std::string xdispatch_class;
+  std::string m_dispatch_class;
 
   // If this function is part of a package, this is the full name
   // of the package to which the function belongs.
-  std::string xpackage_name;
+  std::string m_package_name;
 
   // The name of this function.
-  std::string my_name;
+  std::string m_name;
 
   // The name of the directory in the path where we found this
-  // function.  May be relative.
-  std::string my_dir_name;
+  // function.  May be m_relative.
+  std::string m_dir_name;
 
   // The help text for this function.
-  std::string doc;
+  std::string m_doc;
 };
 
 #endif

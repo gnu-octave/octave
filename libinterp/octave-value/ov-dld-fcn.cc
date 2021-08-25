@@ -88,7 +88,7 @@ octave_dld_function::~octave_dld_function (void)
   octave::dynamic_loader& dyn_loader
     = octave::__get_dynamic_loader__ ("~octave_dld_function");
 
-  dyn_loader.remove_oct (my_name, sh_lib);
+  dyn_loader.remove_oct (m_name, sh_lib);
 }
 
 std::string

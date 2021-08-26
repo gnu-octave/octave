@@ -38,21 +38,21 @@ namespace octave
 
     pid_equal (pid_t v) : val (v) { }
 
-    bool operator () (const child& oc) const { return oc.pid == val; }
+    bool operator () (const child& oc) const { return oc.m_pid == val; }
 
   private:
 
     pid_t val;
   };
 
-  void child_list::remove (pid_t pid)
+  void child_list::remove (pid_t m_pid)
   {
-    m_list.remove_if (pid_equal (pid));
+    m_list.remove_if (pid_equal (m_pid));
   }
 
-  void child_list::child_list::insert (pid_t pid, child::child_event_handler f)
+  void child_list::child_list::insert (pid_t m_pid, child::child_event_handler f)
   {
-    m_list.append (child (pid, f));
+    m_list.append (child (m_pid, f));
   }
 
   void child_list::reap (void)
@@ -66,14 +66,14 @@ namespace octave
         // child_list::remove), so we increment the iterator
         // here.
 
-        if (oc.have_status)
+        if (oc.m_have_status)
           {
-            oc.have_status = 0;
+            oc.m_have_status = 0;
 
-            child::child_event_handler f = oc.handler;
+            child::child_event_handler f = oc.m_handler;
 
-            if (f && f (oc.pid, oc.status))
-              oc.pid = -1;
+            if (f && f (oc.m_pid, oc.m_status))
+              oc.m_pid = -1;
           }
       }
 
@@ -81,7 +81,7 @@ namespace octave
     remove (-1);
   }
 
-  // Wait on our children and record any changes in their status.
+  // Wait on our children and record any changes in their m_status.
 
   bool child_list::wait (void)
   {
@@ -89,17 +89,17 @@ namespace octave
 
     for (auto& oc : m_list)
       {
-        pid_t pid = oc.pid;
+        pid_t m_pid = oc.m_pid;
 
-        if (pid > 0)
+        if (m_pid > 0)
           {
-            int status;
+            int m_status;
 
-            if (sys::waitpid (pid, &status, sys::wnohang ()) > 0)
+            if (sys::waitpid (m_pid, &m_status, sys::wnohang ()) > 0)
               {
-                oc.have_status = 1;
+                oc.m_have_status = 1;
 
-                oc.status = status;
+                oc.m_status = m_status;
 
                 retval = true;
 

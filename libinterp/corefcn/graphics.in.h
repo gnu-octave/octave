@@ -3252,6 +3252,7 @@ public:
     void init (void)
     {
       m_alphamap.add_constraint (dim_vector (-1, 1));
+      m_alphamap.add_constraint (dim_vector (1, -1));
       m_colormap.add_constraint (dim_vector (-1, 3));
       m_colormap.add_constraint (dim_vector (0, 0));
       m_outerposition.add_constraint (dim_vector (1, 4));

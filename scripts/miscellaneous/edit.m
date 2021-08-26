@@ -310,7 +310,7 @@ function retval = edit (varargin)
     ## Search the entire path for the 1st instance of a file in the list.
     fileandpath = "";
     for n = 1:numel (filelist)
-      filetoedit = file_in_path (path, filelist{n});
+      filetoedit = file_in_loadpath (filelist{n});
       if (! isempty (filetoedit))
         ## The path is explicitly included.
         fileandpath = filetoedit;

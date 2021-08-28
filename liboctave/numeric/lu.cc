@@ -49,7 +49,7 @@ namespace octave
   namespace math
   {
     // FIXME: PermMatrix::col_perm_vec returns Array<octave_idx_type>
-    // but ipvt is an Array<octave_f77_int_type>.  This could cause
+    // but m_ipvt is an Array<octave_f77_int_type>.  This could cause
     // trouble for large arrays if octave_f77_int_type is 32-bits but
     // octave_idx_type is 64.  Since this constructor is called from
     // Fluupdate, it could be given values that are out of range.  We
@@ -57,7 +57,7 @@ namespace octave
 
     template <typename T>
     lu<T>::lu (const T& l, const T& u, const PermMatrix& p)
-      : a_fact (u), l_fact (l), ipvt (p.transpose ().col_perm_vec ())
+      : m_a_fact (u), m_l_fact (l), m_ipvt (p.transpose ().col_perm_vec ())
     {
       if (l.columns () != u.rows ())
         (*current_liboctave_error_handler) ("lu: dimension mismatch");
@@ -67,7 +67,7 @@ namespace octave
     bool
     lu<T>::packed (void) const
     {
-      return l_fact.dims () == dim_vector ();
+      return m_l_fact.dims () == dim_vector ();
     }
 
     template <typename T>
@@ -76,18 +76,18 @@ namespace octave
     {
       if (packed ())
         {
-          l_fact = L ();
-          a_fact = U (); // FIXME: sub-optimal
+          m_l_fact = L ();
+          m_a_fact = U (); // FIXME: sub-optimal
 
-          // FIXME: getp returns Array<octave_idx_type> but ipvt is
+          // FIXME: getp returns Array<octave_idx_type> but m_ipvt is
           // Array<octave_f77_int_type>.  However, getp produces its
-          // result from a valid ipvt array so validation should not be
+          // result from a valid m_ipvt array so validation should not be
           // necessary.  OTOH, it might be better to have a version of
           // getp that doesn't cause us to convert from
           // Array<octave_f77_int_type> to Array<octave_idx_type> and
           // back again.
 
-          ipvt = getp ();
+          m_ipvt = getp ();
         }
     }
 
@@ -97,8 +97,8 @@ namespace octave
     {
       if (packed ())
         {
-          octave_idx_type a_nr = a_fact.rows ();
-          octave_idx_type a_nc = a_fact.columns ();
+          octave_idx_type a_nr = m_a_fact.rows ();
+          octave_idx_type a_nc = m_a_fact.columns ();
           octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
 
           T l (a_nr, mn, ELT_T (0.0));
@@ -109,13 +109,13 @@ namespace octave
                 l.xelem (i, i) = 1.0;
 
               for (octave_idx_type j = 0; j < (i < a_nc ? i : a_nc); j++)
-                l.xelem (i, j) = a_fact.xelem (i, j);
+                l.xelem (i, j) = m_a_fact.xelem (i, j);
             }
 
           return l;
         }
       else
-        return l_fact;
+        return m_l_fact;
     }
 
     template <typename T>
@@ -124,8 +124,8 @@ namespace octave
     {
       if (packed ())
         {
-          octave_idx_type a_nr = a_fact.rows ();
-          octave_idx_type a_nc = a_fact.columns ();
+          octave_idx_type a_nr = m_a_fact.rows ();
+          octave_idx_type a_nc = m_a_fact.columns ();
           octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
 
           T u (mn, a_nc, ELT_T (0.0));
@@ -133,13 +133,13 @@ namespace octave
           for (octave_idx_type i = 0; i < mn; i++)
             {
               for (octave_idx_type j = i; j < a_nc; j++)
-                u.xelem (i, j) = a_fact.xelem (i, j);
+                u.xelem (i, j) = m_a_fact.xelem (i, j);
             }
 
           return u;
         }
       else
-        return a_fact;
+        return m_a_fact;
     }
 
     template <typename T>
@@ -150,7 +150,7 @@ namespace octave
         (*current_liboctave_error_handler)
           ("lu: Y () not implemented for unpacked form");
 
-      return a_fact;
+      return m_a_fact;
     }
 
     template <typename T>
@@ -159,16 +159,16 @@ namespace octave
     {
       if (packed ())
         {
-          octave_idx_type a_nr = a_fact.rows ();
+          octave_idx_type a_nr = m_a_fact.rows ();
 
           Array<octave_idx_type> pvt (dim_vector (a_nr, 1));
 
           for (octave_idx_type i = 0; i < a_nr; i++)
             pvt.xelem (i) = i;
 
-          for (octave_idx_type i = 0; i < ipvt.numel (); i++)
+          for (octave_idx_type i = 0; i < m_ipvt.numel (); i++)
             {
-              octave_idx_type k = ipvt.xelem (i);
+              octave_idx_type k = m_ipvt.xelem (i);
 
               if (k != i)
                 {
@@ -181,7 +181,7 @@ namespace octave
           return pvt;
         }
       else
-        return ipvt;
+        return m_ipvt;
     }
 
     template <typename T>
@@ -195,7 +195,7 @@ namespace octave
     ColumnVector
     lu<T>::P_vec (void) const
     {
-      octave_idx_type a_nr = a_fact.rows ();
+      octave_idx_type a_nr = m_a_fact.rows ();
 
       ColumnVector p (a_nr);
 
@@ -213,11 +213,11 @@ namespace octave
     {
       bool retval = true;
 
-      octave_idx_type k = std::min (a_fact.rows (), a_fact.columns ());
+      octave_idx_type k = std::min (m_a_fact.rows (), m_a_fact.columns ());
 
       for (octave_idx_type i = 0; i < k; i++)
         {
-          if (a_fact(i, i) == ELT_T ())
+          if (m_a_fact(i, i) == ELT_T ())
             {
               retval = false;
               break;
@@ -277,11 +277,11 @@ namespace octave
       F77_INT a_nc = to_f77_int (a.columns ());
       F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
-      ipvt.resize (dim_vector (mn, 1));
-      F77_INT *pipvt = ipvt.fortran_vec ();
+      m_ipvt.resize (dim_vector (mn, 1));
+      F77_INT *pipvt = m_ipvt.fortran_vec ();
 
-      a_fact = a;
-      double *tmp_data = a_fact.fortran_vec ();
+      m_a_fact = a;
+      double *tmp_data = m_a_fact.fortran_vec ();
 
       F77_INT info = 0;
 
@@ -300,8 +300,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      Matrix& l = l_fact;
-      Matrix& r = a_fact;
+      Matrix& l = m_l_fact;
+      Matrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -326,8 +326,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      Matrix& l = l_fact;
-      Matrix& r = a_fact;
+      Matrix& l = m_l_fact;
+      Matrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -359,8 +359,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      Matrix& l = l_fact;
-      Matrix& r = a_fact;
+      Matrix& l = m_l_fact;
+      Matrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -375,12 +375,12 @@ namespace octave
       ColumnVector utmp = u;
       ColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (double, w, m);
-      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
       F77_XFCN (dlup1up, DLUP1UP, (m, n, l.fortran_vec (),
                                    m, r.fortran_vec (), k,
-                                   ipvt.fortran_vec (),
+                                   m_ipvt.fortran_vec (),
                                    utmp.data (), vtmp.data (), w));
-      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) -= 1; // decrement
     }
 
     template <>
@@ -390,8 +390,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      Matrix& l = l_fact;
-      Matrix& r = a_fact;
+      Matrix& l = m_l_fact;
+      Matrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -407,17 +407,17 @@ namespace octave
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       OCTAVE_LOCAL_BUFFER (double, w, m);
-      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
       for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           ColumnVector utmp = u.column (i);
           ColumnVector vtmp = v.column (i);
           F77_XFCN (dlup1up, DLUP1UP, (m, n, l.fortran_vec (),
                                        m, r.fortran_vec (), k,
-                                       ipvt.fortran_vec (),
+                                       m_ipvt.fortran_vec (),
                                        utmp.data (), vtmp.data (), w));
         }
-      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) -= 1; // decrement
     }
 
 #endif
@@ -430,11 +430,11 @@ namespace octave
       F77_INT a_nc = to_f77_int (a.columns ());
       F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
-      ipvt.resize (dim_vector (mn, 1));
-      F77_INT *pipvt = ipvt.fortran_vec ();
+      m_ipvt.resize (dim_vector (mn, 1));
+      F77_INT *pipvt = m_ipvt.fortran_vec ();
 
-      a_fact = a;
-      float *tmp_data = a_fact.fortran_vec ();
+      m_a_fact = a;
+      float *tmp_data = m_a_fact.fortran_vec ();
 
       F77_INT info = 0;
 
@@ -454,8 +454,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatMatrix& l = l_fact;
-      FloatMatrix& r = a_fact;
+      FloatMatrix& l = m_l_fact;
+      FloatMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -481,8 +481,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatMatrix& l = l_fact;
-      FloatMatrix& r = a_fact;
+      FloatMatrix& l = m_l_fact;
+      FloatMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -515,8 +515,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatMatrix& l = l_fact;
-      FloatMatrix& r = a_fact;
+      FloatMatrix& l = m_l_fact;
+      FloatMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -531,12 +531,12 @@ namespace octave
       FloatColumnVector utmp = u;
       FloatColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (float, w, m);
-      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
       F77_XFCN (slup1up, SLUP1UP, (m, n, l.fortran_vec (),
                                    m, r.fortran_vec (), k,
-                                   ipvt.fortran_vec (),
+                                   m_ipvt.fortran_vec (),
                                    utmp.data (), vtmp.data (), w));
-      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) -= 1; // decrement
     }
 
     template <>
@@ -546,8 +546,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatMatrix& l = l_fact;
-      FloatMatrix& r = a_fact;
+      FloatMatrix& l = m_l_fact;
+      FloatMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -563,17 +563,17 @@ namespace octave
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       OCTAVE_LOCAL_BUFFER (float, w, m);
-      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
       for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           FloatColumnVector utmp = u.column (i);
           FloatColumnVector vtmp = v.column (i);
           F77_XFCN (slup1up, SLUP1UP, (m, n, l.fortran_vec (),
                                        m, r.fortran_vec (), k,
-                                       ipvt.fortran_vec (),
+                                       m_ipvt.fortran_vec (),
                                        utmp.data (), vtmp.data (), w));
         }
-      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) -= 1; // decrement
     }
 
 #endif
@@ -586,11 +586,11 @@ namespace octave
       F77_INT a_nc = to_f77_int (a.columns ());
       F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
-      ipvt.resize (dim_vector (mn, 1));
-      F77_INT *pipvt = ipvt.fortran_vec ();
+      m_ipvt.resize (dim_vector (mn, 1));
+      F77_INT *pipvt = m_ipvt.fortran_vec ();
 
-      a_fact = a;
-      Complex *tmp_data = a_fact.fortran_vec ();
+      m_a_fact = a;
+      Complex *tmp_data = m_a_fact.fortran_vec ();
 
       F77_INT info = 0;
 
@@ -611,8 +611,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      ComplexMatrix& l = l_fact;
-      ComplexMatrix& r = a_fact;
+      ComplexMatrix& l = m_l_fact;
+      ComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -639,8 +639,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      ComplexMatrix& l = l_fact;
-      ComplexMatrix& r = a_fact;
+      ComplexMatrix& l = m_l_fact;
+      ComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -676,8 +676,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      ComplexMatrix& l = l_fact;
-      ComplexMatrix& r = a_fact;
+      ComplexMatrix& l = m_l_fact;
+      ComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -692,14 +692,14 @@ namespace octave
       ComplexColumnVector utmp = u;
       ComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (Complex, w, m);
-      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
       F77_XFCN (zlup1up, ZLUP1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
                                    m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
-                                   ipvt.fortran_vec (),
+                                   m_ipvt.fortran_vec (),
                                    F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
                                    F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()),
                                    F77_DBLE_CMPLX_ARG (w)));
-      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) -= 1; // decrement
     }
 
     template <>
@@ -710,8 +710,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      ComplexMatrix& l = l_fact;
-      ComplexMatrix& r = a_fact;
+      ComplexMatrix& l = m_l_fact;
+      ComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -727,7 +727,7 @@ namespace octave
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       OCTAVE_LOCAL_BUFFER (Complex, w, m);
-      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
       for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           ComplexColumnVector utmp = u.column (i);
@@ -736,12 +736,12 @@ namespace octave
                                        F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
                                        m,
                                        F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
-                                       k, ipvt.fortran_vec (),
+                                       k, m_ipvt.fortran_vec (),
                                        F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
                                        F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()),
                                        F77_DBLE_CMPLX_ARG (w)));
         }
-      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) -= 1; // decrement
     }
 
 #endif
@@ -754,11 +754,11 @@ namespace octave
       F77_INT a_nc = to_f77_int (a.columns ());
       F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
-      ipvt.resize (dim_vector (mn, 1));
-      F77_INT *pipvt = ipvt.fortran_vec ();
+      m_ipvt.resize (dim_vector (mn, 1));
+      F77_INT *pipvt = m_ipvt.fortran_vec ();
 
-      a_fact = a;
-      FloatComplex *tmp_data = a_fact.fortran_vec ();
+      m_a_fact = a;
+      FloatComplex *tmp_data = m_a_fact.fortran_vec ();
 
       F77_INT info = 0;
 
@@ -779,8 +779,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatComplexMatrix& l = l_fact;
-      FloatComplexMatrix& r = a_fact;
+      FloatComplexMatrix& l = m_l_fact;
+      FloatComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -808,8 +808,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatComplexMatrix& l = l_fact;
-      FloatComplexMatrix& r = a_fact;
+      FloatComplexMatrix& l = m_l_fact;
+      FloatComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -843,8 +843,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatComplexMatrix& l = l_fact;
-      FloatComplexMatrix& r = a_fact;
+      FloatComplexMatrix& l = m_l_fact;
+      FloatComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -859,14 +859,14 @@ namespace octave
       FloatComplexColumnVector utmp = u;
       FloatComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
-      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
       F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
                                    m, F77_CMPLX_ARG (r.fortran_vec ()), k,
-                                   ipvt.fortran_vec (),
+                                   m_ipvt.fortran_vec (),
                                    F77_CONST_CMPLX_ARG (utmp.data ()),
                                    F77_CONST_CMPLX_ARG (vtmp.data ()),
                                    F77_CMPLX_ARG (w)));
-      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) -= 1; // decrement
     }
 
     template <>
@@ -877,8 +877,8 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatComplexMatrix& l = l_fact;
-      FloatComplexMatrix& r = a_fact;
+      FloatComplexMatrix& l = m_l_fact;
+      FloatComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
       F77_INT n = to_f77_int (r.columns ());
@@ -894,19 +894,19 @@ namespace octave
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
-      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
       for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           FloatComplexColumnVector utmp = u.column (i);
           FloatComplexColumnVector vtmp = v.column (i);
           F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
                                        m, F77_CMPLX_ARG (r.fortran_vec ()), k,
-                                       ipvt.fortran_vec (),
+                                       m_ipvt.fortran_vec (),
                                        F77_CONST_CMPLX_ARG (utmp.data ()),
                                        F77_CONST_CMPLX_ARG (vtmp.data ()),
                                        F77_CMPLX_ARG (w)));
         }
-      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) m_ipvt(i) -= 1; // decrement
     }
 
 #endif

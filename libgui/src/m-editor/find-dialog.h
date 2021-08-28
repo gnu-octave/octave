@@ -144,36 +144,36 @@ namespace octave
 
     octave_dock_widget *m_editor;
 
-    QLabel            *_search_label;
-    QComboBox         *_search_line_edit;
-    QLabel            *_replace_label;
-    QComboBox         *_replace_line_edit;
-    QCheckBox         *_case_check_box;
-    QCheckBox         *_from_start_check_box;
-    QCheckBox         *_wrap_check_box;
-    QCheckBox         *_whole_words_check_box;
-    QCheckBox         *_regex_check_box;
-    QCheckBox         *_search_selection_check_box;
-    QCheckBox         *_backward_check_box;
-    QDialogButtonBox  *_button_box;
-    QPushButton       *_find_next_button;
-    QPushButton       *_find_prev_button;
-    QPushButton       *_replace_button;
-    QPushButton       *_replace_all_button;
-    QPushButton       *_more_button;
-    QWidget           *_extension;
-    octave_qscintilla  *_edit_area;
-    bool               _find_result_available;
-    int                _rep_all;
-    bool               _rep_active;
+    QLabel *m_search_label;
+    QComboBox *m_search_line_edit;
+    QLabel *m_replace_label;
+    QComboBox *m_replace_line_edit;
+    QCheckBox *m_case_check_box;
+    QCheckBox *m_from_start_check_box;
+    QCheckBox *m_wrap_check_box;
+    QCheckBox *m_whole_words_check_box;
+    QCheckBox *m_regex_check_box;
+    QCheckBox *m_search_selection_check_box;
+    QCheckBox *m_backward_check_box;
+    QDialogButtonBox *m_button_box;
+    QPushButton *m_find_next_button;
+    QPushButton *m_find_prev_button;
+    QPushButton *m_replace_button;
+    QPushButton *m_replace_all_button;
+    QPushButton *m_more_button;
+    QWidget *m_extension;
+    octave_qscintilla *m_edit_area;
+    bool m_find_result_available;
+    int m_rep_all;
+    bool m_rep_active;
 
-    bool               m_in_sel;
-    int                m_sel_beg;
-    int                m_sel_end;
+    bool m_in_sel;
+    int m_sel_beg;
+    int m_sel_end;
 
-    QPoint             m_last_position;
+    QPoint m_last_position;
 
-    const int          m_mru_length = 10;
+    const int m_mru_length = 10;
   };
 }
 

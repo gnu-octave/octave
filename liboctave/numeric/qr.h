@@ -51,24 +51,24 @@ namespace octave
         economy
       };
 
-      qr (void) : q (), r () { }
+      qr (void) : m_q (), m_r () { }
 
       qr (const T& a, type qr_type = qr::std)
-        : q (), r ()
+        : m_q (), m_r ()
       {
         init (a, qr_type);
       }
 
-      OCTAVE_API qr (const T& q, const T& r);
+      OCTAVE_API qr (const T& m_q, const T& m_r);
 
-      qr (const qr& a) : q (a.q), r (a.r) { }
+      qr (const qr& a) : m_q (a.m_q), m_r (a.m_r) { }
 
       qr& operator = (const qr& a)
       {
         if (this != &a)
           {
-            q = a.q;
-            r = a.r;
+            m_q = a.m_q;
+            m_r = a.m_r;
           }
 
         return *this;
@@ -76,9 +76,9 @@ namespace octave
 
       virtual ~qr (void) = default;
 
-      T Q (void) const { return q; }
+      T Q (void) const { return m_q; }
 
-      T R (void) const { return r; }
+      T R (void) const { return m_r; }
 
       OCTAVE_API type get_type (void) const;
 
@@ -106,8 +106,8 @@ namespace octave
 
     protected:
 
-      T q;
-      T r;
+      T m_q;
+      T m_r;
 
       OCTAVE_API void
       form (octave_idx_type n, T& afact, ELT_T *tau, type qr_type);

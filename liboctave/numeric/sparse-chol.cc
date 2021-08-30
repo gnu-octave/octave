@@ -51,14 +51,14 @@ namespace octave
     public:
 
       sparse_chol_rep (void)
-        : m_is_pd (false), minor_p (0), m_perm (), m_rcond (0)
+        : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
         , m_L (nullptr), m_common ()
 #endif
       { }
 
       sparse_chol_rep (const chol_type& a, bool natural, bool force)
-        : m_is_pd (false), minor_p (0), m_perm (), m_rcond (0)
+        : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
         , m_L (nullptr), m_common ()
 #endif
@@ -68,7 +68,7 @@ namespace octave
 
       sparse_chol_rep (const chol_type& a, octave_idx_type& info,
                        bool natural, bool force)
-        : m_is_pd (false), minor_p (0), m_perm (), m_rcond (0)
+        : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
         , m_L (nullptr), m_common ()
 #endif
@@ -102,8 +102,8 @@ namespace octave
       octave_idx_type P (void) const
       {
 #if defined (HAVE_CHOLMOD)
-        return (minor_p == static_cast<octave_idx_type> (m_L->ncol) ?
-                0 : minor_p + 1);
+        return (m_minor_p == static_cast<octave_idx_type> (m_L->ncol) ?
+                0 : m_minor_p + 1);
 #else
         return 0;
 #endif
@@ -121,7 +121,7 @@ namespace octave
 
       bool m_is_pd;
 
-      octave_idx_type minor_p;
+      octave_idx_type m_minor_p;
 
       RowVector m_perm;
 
@@ -300,22 +300,22 @@ namespace octave
         {
           m_rcond = CHOLMOD_NAME(rcond) (Lfactor, cm);
 
-          minor_p = Lfactor->minor;
+          m_minor_p = Lfactor->minor;
 
           m_L = CHOLMOD_NAME(factor_to_sparse) (Lfactor, cm);
 
-          if (minor_p > 0 && minor_p < a_nr)
+          if (m_minor_p > 0 && m_minor_p < a_nr)
             {
               std::size_t n1 = a_nr + 1;
-              m_L->p = CHOLMOD_NAME(realloc) (minor_p+1,
-                                                  sizeof(octave_idx_type),
-                                                  m_L->p, &n1, cm);
+              m_L->p = CHOLMOD_NAME(realloc) (m_minor_p+1,
+                                              sizeof(octave_idx_type),
+                                              m_L->p, &n1, cm);
 
               CHOLMOD_NAME(reallocate_sparse)
-                (static_cast<octave_idx_type *>(m_L->p)[minor_p],
+                (static_cast<octave_idx_type *>(m_L->p)[m_minor_p],
                  m_L, cm);
 
-              m_L->ncol = minor_p;
+              m_L->ncol = m_minor_p;
             }
 
           drop_zeros (m_L);

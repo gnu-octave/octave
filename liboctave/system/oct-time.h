@@ -55,13 +55,13 @@ namespace octave
     public:
 
       time (void)
-        : ot_unix_time (0), ot_usec (0) { stamp (); }
+        : m_ot_unix_time (0), m_ot_usec (0) { stamp (); }
 
       time (time_t t)
-        : ot_unix_time (t), ot_usec (0) { }
+        : m_ot_unix_time (t), m_ot_usec (0) { }
 
       time (time_t t, long us)
-        : ot_unix_time (t), ot_usec ()
+        : m_ot_unix_time (t), m_ot_usec ()
       {
         long rem, extra;
 
@@ -78,8 +78,8 @@ namespace octave
             rem = 1000000 - us % 1000000;
           }
 
-        ot_usec = rem;
-        ot_unix_time += extra;
+        m_ot_usec = rem;
+        m_ot_unix_time += extra;
       }
 
       OCTAVE_API time (double d);
@@ -87,14 +87,14 @@ namespace octave
       OCTAVE_API time (const base_tm& tm);
 
       time (const time& ot)
-        : ot_unix_time (ot.ot_unix_time), ot_usec (ot.ot_usec) { }
+        : m_ot_unix_time (ot.m_ot_unix_time), m_ot_usec (ot.m_ot_usec) { }
 
       time& operator = (const time& ot)
       {
         if (this != &ot)
           {
-            ot_unix_time = ot.ot_unix_time;
-            ot_usec = ot.ot_usec;
+            m_ot_unix_time = ot.m_ot_unix_time;
+            m_ot_usec = ot.m_ot_usec;
           }
 
         return *this;
@@ -106,12 +106,12 @@ namespace octave
 
       double double_value (void) const
       {
-        return as_double (ot_unix_time, ot_usec);
+        return as_double (m_ot_unix_time, m_ot_usec);
       }
 
-      time_t unix_time (void) const { return ot_unix_time; }
+      time_t unix_time (void) const { return m_ot_unix_time; }
 
-      long usec (void) const { return ot_usec; }
+      long usec (void) const { return m_ot_usec; }
 
       OCTAVE_API std::string ctime (void) const;
 
@@ -120,10 +120,10 @@ namespace octave
     private:
 
       // Seconds since the epoch.
-      time_t ot_unix_time;
+      time_t m_ot_unix_time;
 
       // Additional microseconds.
-      long ot_usec;
+      long m_ot_usec;
     };
 
     inline bool

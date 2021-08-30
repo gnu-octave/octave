@@ -53,14 +53,14 @@ namespace octave
   namespace sys
   {
     time::time (double d)
-      : ot_unix_time (static_cast<time_t> (d)), ot_usec (0)
+      : m_ot_unix_time (static_cast<time_t> (d)), m_ot_usec (0)
     {
       double ip;
-      ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
+      m_ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
     }
 
     time::time (const base_tm& tm)
-      : ot_unix_time (), ot_usec ()
+      : m_ot_unix_time (), m_ot_usec ()
     {
       struct ::tm t;
 
@@ -84,13 +84,13 @@ namespace octave
       t.tm_zone = ps;
 #endif
 
-      ot_unix_time = octave_mktime_wrapper (&t);
+      m_ot_unix_time = octave_mktime_wrapper (&t);
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
       delete [] ps;
 #endif
 
-      ot_usec = tm.usec ();
+      m_ot_usec = tm.usec ();
     }
 
     std::string
@@ -104,8 +104,8 @@ namespace octave
     {
       preserve_stream_state stream_state (os);
 
-      os << ot.ot_unix_time << '.'
-         << std::setw (6) << std::setfill ('0') << ot.ot_usec;
+      os << ot.m_ot_unix_time << '.'
+         << std::setw (6) << std::setfill ('0') << ot.m_ot_usec;
 
       return os;
     }
@@ -113,7 +113,7 @@ namespace octave
     void
     time::stamp (void)
     {
-      octave_gettimeofday_wrapper (&ot_unix_time, &ot_usec);
+      octave_gettimeofday_wrapper (&m_ot_unix_time, &m_ot_usec);
     }
 
     // From the mktime() manual page:

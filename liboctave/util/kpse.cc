@@ -46,7 +46,7 @@
 #include "file-stat.h"
 #include "kpse.h"
 #include "oct-env.h"
-#include "oct-passwd.h"
+#include "oct-password.h"
 #include "oct-time.h"
 #include "pathsearch.h"
 #include "unistd-wrappers.h"

@@ -34,7 +34,7 @@
 #endif
 
 #include "lo-error.h"
-#include "oct-passwd.h"
+#include "oct-password.h"
 
 #define NOT_SUPPORTED(nm)                       \
   nm ": not supported on this system"

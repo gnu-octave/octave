@@ -8,7 +8,7 @@ SYSTEM_INC = \
   %reldir%/mach-info.h \
   %reldir%/oct-env.h \
   %reldir%/oct-group.h \
-  %reldir%/oct-passwd.h \
+  %reldir%/oct-password.h \
   %reldir%/oct-syscalls.h \
   %reldir%/oct-time.h \
   %reldir%/oct-uname.h
@@ -24,7 +24,7 @@ SYSTEM_SRC = \
   %reldir%/mach-info.cc \
   %reldir%/oct-env.cc \
   %reldir%/oct-group.cc \
-  %reldir%/oct-passwd.cc \
+  %reldir%/oct-password.cc \
   %reldir%/oct-syscalls.cc \
   %reldir%/oct-time.cc \
   %reldir%/oct-uname.cc

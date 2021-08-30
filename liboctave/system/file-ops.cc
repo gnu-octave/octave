@@ -49,7 +49,7 @@
 #include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
-#include "oct-passwd.h"
+#include "oct-password.h"
 #include "quit.h"
 #include "stat-wrappers.h"
 #include "str-vec.h"

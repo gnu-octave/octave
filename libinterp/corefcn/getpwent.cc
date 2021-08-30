@@ -31,7 +31,7 @@
 
 #include <sys/types.h>
 
-#include "oct-passwd.h"
+#include "oct-password.h"
 
 #include "defun.h"
 #include "error.h"

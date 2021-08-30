@@ -38,16 +38,16 @@ base_diff_eqn
 public:
 
   base_diff_eqn (void)
-    : x (), t (0.0), stop_time (0.0), stop_time_set (false),
-      restart (true), integration_error (false), istate (0) { }
+    : m_x (), m_t (0.0), m_stop_time (0.0), m_stop_time_set (false),
+      m_restart (true), m_integration_error (false), m_istate (0) { }
 
   base_diff_eqn (const ColumnVector& xx, double tt)
-    : x (xx), t (tt), stop_time (0.0), stop_time_set (false),
-      restart (true), integration_error (false), istate (0) { }
+    : m_x (xx), m_t (tt), m_stop_time (0.0), m_stop_time_set (false),
+      m_restart (true), m_integration_error (false), m_istate (0) { }
 
   base_diff_eqn (const base_diff_eqn& a)
-    : x (a.x), t (a.t), stop_time (0.0), stop_time_set (false),
-      restart (true), integration_error (false), istate (0) { }
+    : m_x (a.m_x), m_t (a.m_t), m_stop_time (0.0), m_stop_time_set (false),
+      m_restart (true), m_integration_error (false), m_istate (0) { }
 
   virtual ~base_diff_eqn (void) = default;
 
@@ -55,13 +55,13 @@ public:
   {
     if (this != &a)
       {
-        x = a.x;
-        t = a.t;
-        stop_time = a.stop_time;
-        stop_time_set = a.stop_time_set;
-        restart = a.restart;
-        integration_error = a.integration_error;
-        istate = a.istate;
+        m_x = a.m_x;
+        m_t = a.m_t;
+        m_stop_time = a.m_stop_time;
+        m_stop_time_set = a.m_stop_time_set;
+        m_restart = a.m_restart;
+        m_integration_error = a.m_integration_error;
+        m_istate = a.m_istate;
       }
 
     return *this;
@@ -69,55 +69,55 @@ public:
 
   void initialize (const ColumnVector& x0, double t0)
   {
-    x = x0;
-    t = t0;
-    integration_error = false;
-    istate = 0;
+    m_x = x0;
+    m_t = t0;
+    m_integration_error = false;
+    m_istate = 0;
     force_restart ();
   }
 
-  octave_idx_type size (void) const { return x.numel (); }
+  octave_idx_type size (void) const { return m_x.numel (); }
 
-  ColumnVector state (void) const { return x; }
+  ColumnVector state (void) const { return m_x; }
 
-  double time (void) const { return t; }
+  double time (void) const { return m_t; }
 
   void set_stop_time (double tt)
   {
-    stop_time_set = true;
-    stop_time = tt;
+    m_stop_time_set = true;
+    m_stop_time = tt;
     force_restart ();
   }
 
   void clear_stop_time (void)
   {
-    stop_time_set = false;
+    m_stop_time_set = false;
     force_restart ();
   }
 
-  virtual void force_restart (void) { restart = true; }
+  virtual void force_restart (void) { m_restart = true; }
 
-  bool integration_ok (void) const { return ! integration_error; }
+  bool integration_ok (void) const { return ! m_integration_error; }
 
-  octave_idx_type integration_state (void) const { return istate; }
+  octave_idx_type integration_state (void) const { return m_istate; }
 
   virtual std::string error_message (void) const = 0;
 
 protected:
 
-  ColumnVector x;
+  ColumnVector m_x;
 
-  double t;
+  double m_t;
 
-  double stop_time;
+  double m_stop_time;
 
-  bool stop_time_set;
+  bool m_stop_time_set;
 
-  bool restart;
+  bool m_restart;
 
-  bool integration_error;
+  bool m_integration_error;
 
-  octave_idx_type istate;
+  octave_idx_type m_istate;
 };
 
 #endif

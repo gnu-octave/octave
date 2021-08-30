@@ -105,13 +105,14 @@ LSODE::do_integrate (double tout)
 
   static F77_INT nn = 0;
 
-  if (! m_initialized || restart || ODEFunc::m_reset || LSODE_options::m_reset)
+  if (! m_initialized || m_restart || ODEFunc::m_reset
+      || LSODE_options::m_reset)
     {
-      integration_error = false;
+      m_integration_error = false;
 
       m_initialized = true;
 
-      istate = 1;
+      m_istate = 1;
 
       F77_INT n = octave::to_f77_int (size ());
 
@@ -165,15 +166,15 @@ LSODE::do_integrate (double tout)
               // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("lsode: invalid value for maximum order");
-              integration_error = true;
+              m_integration_error = true;
               return retval;
             }
         }
 
-      if (stop_time_set)
+      if (m_stop_time_set)
         {
           m_itask = 4;
-          m_rwork(0) = stop_time;
+          m_rwork(0) = m_stop_time;
           m_iopt = 1;
         }
       else
@@ -181,7 +182,7 @@ LSODE::do_integrate (double tout)
           m_itask = 1;
         }
 
-      restart = false;
+      m_restart = false;
 
       // ODEFunc
 
@@ -189,20 +190,20 @@ LSODE::do_integrate (double tout)
       //       In that case we have to create a temporary vector object
       //       and copy.
 
-      tmp_x = &x;
+      tmp_x = &m_x;
 
       user_fun = function ();
       user_jac = jacobian_function ();
 
-      ColumnVector xdot = (*user_fun) (x, t);
+      ColumnVector m_xdot = (*user_fun) (m_x, m_t);
 
-      if (x.numel () != xdot.numel ())
+      if (m_x.numel () != m_xdot.numel ())
         {
           // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("lsode: inconsistent sizes for state and derivative vectors");
 
-          integration_error = true;
+          m_integration_error = true;
           return retval;
         }
 
@@ -225,7 +226,7 @@ LSODE::do_integrate (double tout)
           (*current_liboctave_error_handler)
             ("lsode: inconsistent sizes for state and absolute tolerance vectors");
 
-          integration_error = true;
+          m_integration_error = true;
           return retval;
         }
 
@@ -260,27 +261,27 @@ LSODE::do_integrate (double tout)
       LSODE_options::m_reset = false;
     }
 
-  double *px = x.fortran_vec ();
+  double *px = m_x.fortran_vec ();
 
   double *pabs_tol = m_abs_tol.fortran_vec ();
 
   F77_INT *piwork = m_iwork.fortran_vec ();
   double *prwork = m_rwork.fortran_vec ();
 
-  F77_INT tmp_istate = octave::to_f77_int (istate);
+  F77_INT tmp_istate = octave::to_f77_int (m_istate);
 
-  F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, t, tout, m_itol, m_rel_tol,
+  F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, m_t, tout, m_itol, m_rel_tol,
                              pabs_tol, m_itask, tmp_istate, m_iopt, prwork,
                              m_lrw, piwork, m_liw, lsode_j, m_method_flag));
 
-  istate = tmp_istate;
+  m_istate = tmp_istate;
 
-  switch (istate)
+  switch (m_istate)
     {
     case 1:  // prior to initial integration step.
     case 2:  // lsode was successful.
-      retval = x;
-      t = tout;
+      retval = m_x;
+      m_t = tout;
       break;
 
     case -1:  // excess work done on this call (perhaps wrong mf).
@@ -292,14 +293,14 @@ LSODE::do_integrate (double tout)
     case -6:  // error weight became zero during problem. (solution
               // component i vanished, and atol or atol(i) = 0.)
     case -13: // return requested in user-supplied function.
-      integration_error = true;
+      m_integration_error = true;
       break;
 
     default:
-      integration_error = true;
+      m_integration_error = true;
       (*current_liboctave_error_handler)
         ("unrecognized value of istate (= %" OCTAVE_IDX_TYPE_FORMAT ") "
-         "returned from lsode", istate);
+         "returned from lsode", m_istate);
       break;
     }
 
@@ -312,10 +313,10 @@ LSODE::error_message (void) const
   std::string retval;
 
   std::ostringstream buf;
-  buf << t;
+  buf << m_t;
   std::string t_curr = buf.str ();
 
-  switch (istate)
+  switch (m_istate)
     {
     case 1:
       retval = "prior to initial integration step";
@@ -383,13 +384,13 @@ LSODE::do_integrate (const ColumnVector& tout)
       retval.resize (n_out, n);
 
       for (F77_INT i = 0; i < n; i++)
-        retval.elem (0, i) = x.elem (i);
+        retval.elem (0, i) = m_x.elem (i);
 
       for (octave_idx_type j = 1; j < n_out; j++)
         {
           ColumnVector x_next = do_integrate (tout.elem (j));
 
-          if (integration_error)
+          if (m_integration_error)
             return retval;
 
           for (F77_INT i = 0; i < n; i++)
@@ -413,7 +414,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
       retval.resize (n_out, n);
 
       for (F77_INT i = 0; i < n; i++)
-        retval.elem (0, i) = x.elem (i);
+        retval.elem (0, i) = m_x.elem (i);
 
       octave_idx_type n_crit = tcrit.numel ();
 
@@ -471,7 +472,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
               ColumnVector x_next = do_integrate (t_out);
 
-              if (integration_error)
+              if (m_integration_error)
                 return retval;
 
               if (save_output)
@@ -488,7 +489,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
         {
           retval = do_integrate (tout);
 
-          if (integration_error)
+          if (m_integration_error)
             return retval;
         }
     }

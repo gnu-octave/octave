@@ -144,9 +144,10 @@ DASPK::do_integrate (double tout)
 
   ColumnVector retval;
 
-  if (! m_initialized || restart || DAEFunc::m_reset || DASPK_options::m_reset)
+  if (! m_initialized || m_restart || DAEFunc::m_reset
+      || DASPK_options::m_reset)
     {
-      integration_error = false;
+      m_integration_error = false;
 
       m_initialized = true;
 
@@ -161,9 +162,9 @@ DASPK::do_integrate (double tout)
 
       m_info(0) = 0;
 
-      if (stop_time_set)
+      if (m_stop_time_set)
         {
-          m_rwork(0) = stop_time;
+          m_rwork(0) = m_stop_time;
           m_info(3) = 1;
         }
       else
@@ -178,15 +179,15 @@ DASPK::do_integrate (double tout)
         {
           octave_idx_type ires = 0;
 
-          ColumnVector res = (*user_fun) (x, xdot, t, ires);
+          ColumnVector res = (*user_fun) (m_x, m_xdot, m_t, ires);
 
-          if (res.numel () != x.numel ())
+          if (res.numel () != m_x.numel ())
             {
               // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: inconsistent sizes for state and residual vectors");
 
-              integration_error = true;
+              m_integration_error = true;
               return retval;
             }
         }
@@ -196,7 +197,7 @@ DASPK::do_integrate (double tout)
           (*current_liboctave_error_handler)
             ("daspk: no user supplied RHS subroutine!");
 
-          integration_error = true;
+          m_integration_error = true;
           return retval;
         }
 
@@ -243,7 +244,7 @@ DASPK::do_integrate (double tout)
           (*current_liboctave_error_handler)
             ("daspk: inconsistent sizes for tolerance arrays");
 
-          integration_error = true;
+          m_integration_error = true;
           return retval;
         }
 
@@ -278,7 +279,7 @@ DASPK::do_integrate (double tout)
               // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid value for maximum order");
-              integration_error = true;
+              m_integration_error = true;
               return retval;
             }
         }
@@ -302,7 +303,7 @@ DASPK::do_integrate (double tout)
                         // FIXME: Should this be a warning?
                         (*current_liboctave_error_handler)
                           ("daspk: invalid value for inequality constraint type");
-                        integration_error = true;
+                        m_integration_error = true;
                         return retval;
                       }
                     m_iwork(40+i) = val;
@@ -313,7 +314,7 @@ DASPK::do_integrate (double tout)
                 // FIXME: Should this be a warning?
                 (*current_liboctave_error_handler)
                   ("daspk: inequality constraint types size mismatch");
-                integration_error = true;
+                m_integration_error = true;
                 return retval;
               }
           }
@@ -328,7 +329,7 @@ DASPK::do_integrate (double tout)
           // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: invalid value for enforce inequality constraints option");
-          integration_error = true;
+          m_integration_error = true;
           return retval;
         }
 
@@ -362,7 +363,7 @@ DASPK::do_integrate (double tout)
                   // FIXME: Should this be a warning?
                   (*current_liboctave_error_handler)
                     ("daspk: algebraic variables size mismatch");
-                  integration_error = true;
+                  m_integration_error = true;
                   return retval;
                 }
             }
@@ -371,7 +372,7 @@ DASPK::do_integrate (double tout)
               // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid value for compute consistent initial condition option");
-              integration_error = true;
+              m_integration_error = true;
               return retval;
             }
 
@@ -424,7 +425,7 @@ DASPK::do_integrate (double tout)
               // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid initial condition heuristics option");
-              integration_error = true;
+              m_integration_error = true;
               return retval;
             }
 
@@ -444,18 +445,18 @@ DASPK::do_integrate (double tout)
           // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: invalid value for print initial condition info option");
-          integration_error = true;
+          m_integration_error = true;
           return retval;
           break;
         }
 
       DASPK_options::m_reset = false;
 
-      restart = false;
+      m_restart = false;
     }
 
-  double *px = x.fortran_vec ();
-  double *pxdot = xdot.fortran_vec ();
+  double *px = m_x.fortran_vec ();
+  double *pxdot = m_xdot.fortran_vec ();
 
   F77_INT *pinfo = m_info.fortran_vec ();
 
@@ -468,16 +469,16 @@ DASPK::do_integrate (double tout)
   double *dummy = nullptr;
   F77_INT *idummy = nullptr;
 
-  F77_INT tmp_istate = octave::to_f77_int (istate);
+  F77_INT tmp_istate = octave::to_f77_int (m_istate);
 
-  F77_XFCN (ddaspk, DDASPK, (ddaspk_f, nn, t, px, pxdot, tout, pinfo,
+  F77_XFCN (ddaspk, DDASPK, (ddaspk_f, nn, m_t, px, pxdot, tout, pinfo,
                              prel_tol, pabs_tol, tmp_istate, prwork, m_lrw,
                              piwork, m_liw, dummy, idummy, ddaspk_j,
                              ddaspk_psol));
 
-  istate = tmp_istate;
+  m_istate = tmp_istate;
 
-  switch (istate)
+  switch (m_istate)
     {
     case 1: // A step was successfully taken in intermediate-output
             // mode.  The code has not yet reached TOUT.
@@ -490,8 +491,8 @@ DASPK::do_integrate (double tout)
             // INFO(11) > 0, was successful, and INFO(14) = 1.
             // No integration steps were taken, and the solution
             // is not considered to have been started.
-      retval = x;
-      t = tout;
+      retval = m_x;
+      m_t = tout;
       break;
 
     case -1: // A large amount of work has been expended.  (~500 steps).
@@ -521,14 +522,14 @@ DASPK::do_integrate (double tout)
               // recover.  A message is printed explaining the trouble
               // and control is returned to the calling program.  For
               // example, this occurs when invalid input is detected.
-      integration_error = true;
+      m_integration_error = true;
       break;
 
     default:
-      integration_error = true;
+      m_integration_error = true;
       (*current_liboctave_error_handler)
-        ("unrecognized value of istate (= %" OCTAVE_IDX_TYPE_FORMAT ") "
-         "returned from ddaspk", istate);
+        ("unrecognized value of m_istate (= %" OCTAVE_IDX_TYPE_FORMAT ") "
+         "returned from ddaspk", m_istate);
       break;
     }
 
@@ -557,21 +558,21 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out)
 
       for (F77_INT i = 0; i < n; i++)
         {
-          retval.elem (0, i) = x.elem (i);
-          xdot_out.elem (0, i) = xdot.elem (i);
+          retval.elem (0, i) = m_x.elem (i);
+          xdot_out.elem (0, i) = m_xdot.elem (i);
         }
 
       for (octave_idx_type j = 1; j < n_out; j++)
         {
           ColumnVector x_next = do_integrate (tout.elem (j));
 
-          if (integration_error)
+          if (m_integration_error)
             return retval;
 
           for (F77_INT i = 0; i < n; i++)
             {
               retval.elem (j, i) = x_next.elem (i);
-              xdot_out.elem (j, i) = xdot.elem (i);
+              xdot_out.elem (j, i) = m_xdot.elem (i);
             }
         }
     }
@@ -602,8 +603,8 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
 
       for (F77_INT i = 0; i < n; i++)
         {
-          retval.elem (0, i) = x.elem (i);
-          xdot_out.elem (0, i) = xdot.elem (i);
+          retval.elem (0, i) = m_x.elem (i);
+          xdot_out.elem (0, i) = m_xdot.elem (i);
         }
 
       octave_idx_type n_crit = tcrit.numel ();
@@ -662,7 +663,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
 
               ColumnVector x_next = do_integrate (t_out);
 
-              if (integration_error)
+              if (m_integration_error)
                 return retval;
 
               if (save_output)
@@ -670,7 +671,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
                   for (F77_INT i = 0; i < n; i++)
                     {
                       retval.elem (i_out-1, i) = x_next.elem (i);
-                      xdot_out.elem (i_out-1, i) = xdot.elem (i);
+                      xdot_out.elem (i_out-1, i) = m_xdot.elem (i);
                     }
                 }
 
@@ -682,7 +683,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
         {
           retval = integrate (tout, xdot_out);
 
-          if (integration_error)
+          if (m_integration_error)
             return retval;
         }
     }
@@ -696,10 +697,10 @@ DASPK::error_message (void) const
   std::string retval;
 
   std::ostringstream buf;
-  buf << t;
+  buf << m_t;
   std::string t_curr = buf.str ();
 
-  switch (istate)
+  switch (m_istate)
     {
     case 1:
       retval = "a step was successfully taken in intermediate-output mode.";

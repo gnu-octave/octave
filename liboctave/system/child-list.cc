@@ -45,14 +45,14 @@ namespace octave
     pid_t val;
   };
 
-  void child_list::remove (pid_t m_pid)
+  void child_list::remove (pid_t pid)
   {
-    m_list.remove_if (pid_equal (m_pid));
+    m_list.remove_if (pid_equal (pid));
   }
 
-  void child_list::child_list::insert (pid_t m_pid, child::child_event_handler f)
+  void child_list::child_list::insert (pid_t pid, child::child_event_handler f)
   {
-    m_list.append (child (m_pid, f));
+    m_list.append (child (pid, f));
   }
 
   void child_list::reap (void)
@@ -77,11 +77,11 @@ namespace octave
           }
       }
 
-    // ??
+    // Remove PIDs that have completed above.
     remove (-1);
   }
 
-  // Wait on our children and record any changes in their m_status.
+  // Wait on our children and record any changes in their status.
 
   bool child_list::wait (void)
   {
@@ -89,17 +89,17 @@ namespace octave
 
     for (auto& oc : m_list)
       {
-        pid_t m_pid = oc.m_pid;
+        pid_t pid = oc.m_pid;
 
-        if (m_pid > 0)
+        if (pid > 0)
           {
-            int m_status;
+            int status;
 
-            if (sys::waitpid (m_pid, &m_status, sys::wnohang ()) > 0)
+            if (sys::waitpid (pid, &status, sys::wnohang ()) > 0)
               {
                 oc.m_have_status = 1;
 
-                oc.m_status = m_status;
+                oc.m_status = status;
 
                 retval = true;
 

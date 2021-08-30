@@ -48,8 +48,8 @@ namespace octave
 
     typedef bool (*child_event_handler) (pid_t, int);
 
-    child (pid_t id = -1, child_event_handler f = nullptr)
-      : m_pid (id), m_handler (f), m_have_status (0), m_status (0)
+    child (pid_t pid = -1, child_event_handler f = nullptr)
+      : m_pid (pid), m_handler (f), m_have_status (0), m_status (0)
     { }
 
     child (const child&) = default;
@@ -58,7 +58,7 @@ namespace octave
 
     ~child (void) = default;
 
-    // The process id of this child.
+    // The process ID of this child.
     pid_t m_pid;
 
     // The function we call if an event happens for this child.
@@ -78,9 +78,9 @@ namespace octave
 
     child_list (void) { }
 
-    void insert (pid_t m_pid, child::child_event_handler f);
+    void insert (pid_t pid, child::child_event_handler f);
 
-    void remove (pid_t m_pid);
+    void remove (pid_t pid);
 
     void reap (void);
 

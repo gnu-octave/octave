@@ -48,7 +48,7 @@ octave_dld_function : public octave_builtin
 public:
 
   octave_dld_function (void)
-    : sh_lib (), t_checked (), system_fcn_file ()
+    : m_sh_lib (), m_t_checked (), m_system_fcn_file ()
   { }
 
   octave_dld_function (octave_builtin::fcn ff,
@@ -69,15 +69,15 @@ public:
 
   ~octave_dld_function (void);
 
-  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t) { m_t_checked = t; }
 
   std::string fcn_file_name (void) const;
 
   octave::sys::time time_parsed (void) const;
 
-  octave::sys::time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return m_t_checked; }
 
-  bool is_system_fcn_file (void) const { return system_fcn_file; }
+  bool is_system_fcn_file (void) const { return m_system_fcn_file; }
 
   bool is_builtin_function (void) const { return false; }
 
@@ -94,20 +94,20 @@ public:
                                        const std::string& ds = "");
 
   octave::dynamic_library get_shlib (void) const
-  { return sh_lib; }
+  { return m_sh_lib; }
 
 private:
 
-  octave::dynamic_library sh_lib;
+  octave::dynamic_library m_sh_lib;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  mutable octave::sys::time t_checked;
+  mutable octave::sys::time m_t_checked;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
-  bool system_fcn_file;
+  bool m_system_fcn_file;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

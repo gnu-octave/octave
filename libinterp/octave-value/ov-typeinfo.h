@@ -237,35 +237,35 @@ OCTAVE_NAMESPACE_BEGIN
 
   private:
 
-    int num_types;
+    int m_num_types;
 
-    Array<std::string> types;
+    Array<std::string> m_types;
 
-    Array<octave_value *> vals;
+    Array<octave_value *> m_vals;
 
-    Array<void *> unary_class_ops;
+    Array<void *> m_unary_class_ops;
 
-    Array<void *> unary_ops;
+    Array<void *> m_unary_ops;
 
-    Array<void *> non_const_unary_ops;
+    Array<void *> m_non_const_unary_ops;
 
-    Array<void *> binary_class_ops;
+    Array<void *> m_binary_class_ops;
 
-    Array<void *> binary_ops;
+    Array<void *> m_binary_ops;
 
-    Array<void *> compound_binary_class_ops;
+    Array<void *> m_compound_binary_class_ops;
 
-    Array<void *> compound_binary_ops;
+    Array<void *> m_compound_binary_ops;
 
-    Array<void *> cat_ops;
+    Array<void *> m_cat_ops;
 
-    Array<void *> assign_ops;
+    Array<void *> m_assign_ops;
 
-    Array<void *> assignany_ops;
+    Array<void *> m_assignany_ops;
 
-    Array<int> pref_assign_conv;
+    Array<int> m_pref_assign_conv;
 
-    Array<void *> widening_ops;
+    Array<void *> m_widening_ops;
   };
 
 OCTAVE_NAMESPACE_END

@@ -96,8 +96,8 @@ double
 DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr)
 {
-  F77_INT npts = octave::to_f77_int (singularities.numel () + 2);
-  double *points = singularities.fortran_vec ();
+  F77_INT npts = octave::to_f77_int (m_singularities.numel () + 2);
+  double *points = m_singularities.fortran_vec ();
   double result = 0.0;
 
   F77_INT leniw = 183*npts - 122;
@@ -122,7 +122,7 @@ DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   F77_INT xneval, xier;
 
-  F77_XFCN (dqagp, DQAGP, (user_function, lower_limit, upper_limit,
+  F77_XFCN (dqagp, DQAGP, (user_function, m_lower_limit, m_upper_limit,
                            npts, points, abs_tol, rel_tol, result,
                            abserr, xneval, xier, leniw, lenw, last,
                            piwork, pwork));
@@ -157,7 +157,7 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   F77_INT last;
 
   F77_INT inf;
-  switch (type)
+  switch (m_type)
     {
     case bound_to_inf:
       inf = 1;
@@ -187,7 +187,7 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   F77_INT xneval, xier;
 
-  F77_XFCN (dqagi, DQAGI, (user_function, bound, inf, abs_tol, rel_tol,
+  F77_XFCN (dqagi, DQAGI, (user_function, m_bound, inf, abs_tol, rel_tol,
                            result, abserr, xneval, xier, leniw, lenw,
                            last, piwork, pwork));
 
@@ -213,8 +213,8 @@ float
 FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                             float& abserr)
 {
-  F77_INT npts = octave::to_f77_int (singularities.numel () + 2);
-  float *points = singularities.fortran_vec ();
+  F77_INT npts = octave::to_f77_int (m_singularities.numel () + 2);
+  float *points = m_singularities.fortran_vec ();
   float result = 0.0;
 
   F77_INT leniw = 183*npts - 122;
@@ -239,7 +239,7 @@ FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   F77_INT xneval, xier;
 
-  F77_XFCN (qagp, QAGP, (float_user_function, lower_limit, upper_limit,
+  F77_XFCN (qagp, QAGP, (float_user_function, m_lower_limit, m_upper_limit,
                          npts, points, abs_tol, rel_tol, result,
                          abserr, xneval, xier, leniw, lenw, last,
                          piwork, pwork));
@@ -274,7 +274,7 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   F77_INT last;
 
   F77_INT inf;
-  switch (type)
+  switch (m_type)
     {
     case bound_to_inf:
       inf = 1;
@@ -304,7 +304,7 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   F77_INT xneval, xier;
 
-  F77_XFCN (qagi, QAGI, (float_user_function, bound, inf, abs_tol, rel_tol,
+  F77_XFCN (qagi, QAGI, (float_user_function, m_bound, inf, abs_tol, rel_tol,
                          result, abserr, xneval, xier, leniw, lenw,
                          last, piwork, pwork));
 

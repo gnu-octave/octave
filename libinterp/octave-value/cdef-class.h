@@ -57,8 +57,8 @@ namespace octave
     {
     public:
       cdef_class_rep (void)
-        : cdef_meta_object_rep (), member_count (0), handle_class (false),
-          meta (false)
+        : cdef_meta_object_rep (), m_member_count (0), m_handle_class (false),
+          m_meta (false)
       { }
 
       OCTINTERP_API cdef_class_rep (const std::list<cdef_class>& superclasses);
@@ -103,9 +103,9 @@ namespace octave
 
       OCTINTERP_API string_vector get_names (void);
 
-      void set_directory (const std::string& dir) { directory = dir; }
+      void set_directory (const std::string& dir) { m_directory = dir; }
 
-      std::string get_directory (void) const { return directory; }
+      std::string get_directory (void) const { return m_directory; }
 
       OCTINTERP_API void delete_object (const cdef_object& obj);
 
@@ -132,30 +132,30 @@ namespace octave
       OCTINTERP_API void
       run_constructor (cdef_object& obj, const octave_value_list& args);
 
-      void mark_as_handle_class (void) { handle_class = true; }
+      void mark_as_handle_class (void) { m_handle_class = true; }
 
-      bool is_handle_class (void) const { return handle_class; }
+      bool is_handle_class (void) const { return m_handle_class; }
 
-      octave_idx_type static_count (void) const { return member_count; }
+      octave_idx_type static_count (void) const { return m_member_count; }
 
       void destroy (void)
       {
-        if (member_count)
+        if (m_member_count)
           {
             m_count++;
             cdef_class lock (this);
 
-            member_count = 0;
-            method_map.clear ();
-            property_map.clear ();
+            m_member_count = 0;
+            m_method_map.clear ();
+            m_property_map.clear ();
           }
         else
           delete this;
       }
 
-      void mark_as_meta_class (void) { meta = true; }
+      void mark_as_meta_class (void) { m_meta = true; }
 
-      bool is_meta_class (void) const { return meta; }
+      bool is_meta_class (void) const { return m_meta; }
 
       void doc_string (const std::string& txt) { m_doc_string = txt; }
 
@@ -184,36 +184,36 @@ namespace octave
       // The @-directory were this class is loaded from.
       // (not used yet)
 
-      std::string directory;
+      std::string m_directory;
 
       std::string m_doc_string;
 
       // The methods defined by this class.
 
-      std::map<std::string,cdef_method> method_map;
+      std::map<std::string,cdef_method> m_method_map;
 
       // The properties defined by this class.
 
-      std::map<std::string,cdef_property> property_map;
+      std::map<std::string,cdef_property> m_property_map;
 
       // The number of members in this class (methods, properties...)
 
-      octave_idx_type member_count;
+      octave_idx_type m_member_count;
 
       // TRUE if this class is a handle class.  A class is a handle
       // class when the abstract "handle" class is one of its superclasses.
 
-      bool handle_class;
+      bool m_handle_class;
 
       // The list of super-class constructors that are called implicitly by the
       // the classdef engine when creating an object.  These constructors are not
       // called explicitly by the class constructor.
 
-      std::list<cdef_class> implicit_ctor_list;
+      std::list<cdef_class> m_implicit_ctor_list;
 
       // TRUE if this class is a built-in meta class.
 
-      bool meta;
+      bool m_meta;
 
       // Utility iterator typedefs.
 

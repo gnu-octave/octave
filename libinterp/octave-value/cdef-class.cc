@@ -81,19 +81,19 @@ namespace octave
   }
 
   cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
-    : cdef_meta_object_rep (), member_count (0), handle_class (false),
-      meta (false)
+    : cdef_meta_object_rep (), m_member_count (0), m_handle_class (false),
+      m_meta (false)
   {
     put ("SuperClasses", to_ov (superclasses));
-    implicit_ctor_list = superclasses;
+    m_implicit_ctor_list = superclasses;
   }
 
   cdef_method
   cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
   {
-    auto it = method_map.find (nm);
+    auto it = m_method_map.find (nm);
 
-    if (it == method_map.end ())
+    if (it == m_method_map.end ())
       {
         // FIXME: look into class directory
       }
@@ -231,9 +231,9 @@ namespace octave
   void
   cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
   {
-    method_map[meth.get_name ()] = meth;
+    m_method_map[meth.get_name ()] = meth;
 
-    member_count++;
+    m_member_count++;
 
     if (meth.is_constructor ())
       {
@@ -270,7 +270,7 @@ namespace octave
                               << cdef_cls.get_name () << std::endl;
 #endif
 
-                    implicit_ctor_list.remove (cdef_cls);
+                    m_implicit_ctor_list.remove (cdef_cls);
                   }
               }
           }
@@ -320,7 +320,7 @@ namespace octave
 
     method_const_iterator it;
 
-    for (it = method_map.begin (); it != method_map.end (); ++it)
+    for (it = m_method_map.begin (); it != m_method_map.end (); ++it)
       {
         if (include_ctor || ! it->second.is_constructor ())
           {
@@ -357,9 +357,9 @@ namespace octave
   cdef_property
   cdef_class::cdef_class_rep::find_property (const std::string& nm)
   {
-    auto it = property_map.find (nm);
+    auto it = m_property_map.find (nm);
 
-    if (it != property_map.end ())
+    if (it != m_property_map.end ())
       {
         cdef_property& prop = it->second;
 
@@ -387,9 +387,9 @@ namespace octave
   void
   cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
   {
-    property_map[prop.get_name ()] = prop;
+    m_property_map[prop.get_name ()] = prop;
 
-    member_count++;
+    m_member_count++;
   }
 
   Cell
@@ -426,7 +426,7 @@ namespace octave
   {
     property_const_iterator it;
 
-    for (it = property_map.begin (); it != property_map.end (); ++it)
+    for (it = m_property_map.begin (); it != m_property_map.end (); ++it)
       {
         std::string nm = it->second.get_name ();
 
@@ -466,7 +466,7 @@ namespace octave
   {
     load_all_methods ();
 
-    for (const auto& cls_fnmap : method_map)
+    for (const auto& cls_fnmap : m_method_map)
       {
         if (! cls_fnmap.second.is_constructor ())
           {
@@ -485,7 +485,7 @@ namespace octave
           }
       }
 
-    for (const auto& pname_prop : property_map)
+    for (const auto& pname_prop : m_property_map)
       {
         std::string nm = pname_prop.second.get_name ();
 
@@ -650,7 +650,7 @@ namespace octave
     for (auto& cls : super_classes)
       cls.initialize_object (obj);
 
-    for (const auto& pname_prop : property_map)
+    for (const auto& pname_prop : m_property_map)
       {
         if (! pname_prop.second.get ("Dependent").bool_value ())
           {
@@ -673,7 +673,7 @@ namespace octave
   {
     octave_value_list empty_args;
 
-    for (const auto& cls : implicit_ctor_list)
+    for (const auto& cls : m_implicit_ctor_list)
       {
         cdef_class supcls = lookup_class (cls);
 
@@ -706,9 +706,9 @@ namespace octave
   octave_value
   cdef_class::cdef_class_rep::get_method (const std::string& name) const
   {
-    auto p = method_map.find (name);
+    auto p = m_method_map.find (name);
 
-    if (p == method_map.end ())
+    if (p == m_method_map.end ())
       return octave_value ();
 
     return p->second.get_function ();

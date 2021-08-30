@@ -57,25 +57,25 @@ namespace octave
   cdef_package::cdef_package_rep::install_class (const cdef_class& cls,
                                                  const std::string& nm)
   {
-    class_map[nm] = cls;
+    m_class_map[nm] = cls;
 
-    member_count++;
+    m_member_count++;
   }
 
   void
   cdef_package::cdef_package_rep::install_function (const octave_value& fcn,
                                                     const std::string& nm)
   {
-    function_map[nm] = fcn;
+    m_function_map[nm] = fcn;
   }
 
   void
   cdef_package::cdef_package_rep::install_package (const cdef_package& pack,
                                                    const std::string& nm)
   {
-    package_map[nm] = pack;
+    m_package_map[nm] = pack;
 
-    member_count++;
+    m_member_count++;
   }
 
   template <typename T1, typename T2>
@@ -94,19 +94,19 @@ namespace octave
   Cell
   cdef_package::cdef_package_rep::get_classes (void) const
   {
-    return map2Cell (class_map);
+    return map2Cell (m_class_map);
   }
 
   Cell
   cdef_package::cdef_package_rep::get_functions (void) const
   {
-    return map2Cell (function_map);
+    return map2Cell (m_function_map);
   }
 
   Cell
   cdef_package::cdef_package_rep::get_packages (void) const
   {
-    return map2Cell (package_map);
+    return map2Cell (m_package_map);
   }
 
   octave_value

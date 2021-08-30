@@ -313,7 +313,7 @@ namespace octave
         (*current_liboctave_error_handler)
           ("svd: U not computed because type == svd::sigma_only");
 
-      return left_sm;
+      return m_left_sm;
     }
 
     template <typename T>
@@ -324,7 +324,7 @@ namespace octave
         (*current_liboctave_error_handler)
           ("svd: V not computed because type == svd::sigma_only");
 
-      return right_sm;
+      return m_right_sm;
     }
 
     // GESVD specializations
@@ -668,7 +668,8 @@ namespace octave
 
     template<typename T>
     svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
-      : m_type (type), m_driver (driver), left_sm (), sigma (), right_sm ()
+      : m_type (type), m_driver (driver), m_left_sm (), m_sigma (),
+        m_right_sm ()
     {
       F77_INT info;
 
@@ -680,24 +681,24 @@ namespace octave
           switch (m_type)
             {
             case svd::Type::std:
-              left_sm = T (m, m, 0);
+              m_left_sm = T (m, m, 0);
               for (F77_INT i = 0; i < m; i++)
-                left_sm.xelem (i, i) = 1;
-              sigma = DM_T (m, n);
-              right_sm = T (n, n, 0);
+                m_left_sm.xelem (i, i) = 1;
+              m_sigma = DM_T (m, n);
+              m_right_sm = T (n, n, 0);
               for (F77_INT i = 0; i < n; i++)
-                right_sm.xelem (i, i) = 1;
+                m_right_sm.xelem (i, i) = 1;
               break;
 
             case svd::Type::economy:
-              left_sm = T (m, 0, 0);
-              sigma = DM_T (0, 0);
-              right_sm = T (n, 0, 0);
+              m_left_sm = T (m, 0, 0);
+              m_sigma = DM_T (0, 0);
+              m_right_sm = T (n, 0, 0);
               break;
 
             case svd::Type::sigma_only:
             default:
-              sigma = DM_T (0, 1);
+              m_sigma = DM_T (0, 1);
               break;
             }
           return;
@@ -741,22 +742,22 @@ namespace octave
         }
 
       if (! (jobu == 'N' || jobu == 'O'))
-        left_sm.resize (m, ncol_u);
+        m_left_sm.resize (m, ncol_u);
 
-      P *u = left_sm.fortran_vec ();
+      P *u = m_left_sm.fortran_vec ();
 
-      sigma.resize (nrow_s, ncol_s);
-      DM_P *s_vec = sigma.fortran_vec ();
+      m_sigma.resize (nrow_s, ncol_s);
+      DM_P *s_vec = m_sigma.fortran_vec ();
 
       if (! (jobv == 'N' || jobv == 'O'))
         {
           if (m_driver == svd::Driver::GEJSV)
-            right_sm.resize (n, nrow_vt);
+            m_right_sm.resize (n, nrow_vt);
           else
-            right_sm.resize (nrow_vt, n);
+            m_right_sm.resize (nrow_vt, n);
         }
 
-      P *vt = right_sm.fortran_vec ();
+      P *vt = m_right_sm.fortran_vec ();
 
       // Query _GESVD for the correct dimension of WORK.
 
@@ -800,8 +801,8 @@ namespace octave
               tmp_data = atmp.fortran_vec ();
 
               // Swap pointers of U and V.
-              u  = right_sm.fortran_vec ();
-              vt = left_sm.fortran_vec ();
+              u  = m_right_sm.fortran_vec ();
+              vt = m_left_sm.fortran_vec ();
             }
 
           // translate jobu and jobv from gesvd to gejsv.
@@ -845,15 +846,15 @@ namespace octave
         (*current_liboctave_error_handler) ("svd: unknown driver");
 
       // LAPACK can return -0 which is a small problem (bug #55710).
-      for (octave_idx_type i = 0; i < sigma.diag_length (); i++)
+      for (octave_idx_type i = 0; i < m_sigma.diag_length (); i++)
         {
-          if (! sigma.dgxelem (i))
-            sigma.dgxelem (i) = DM_P (0);
+          if (! m_sigma.dgxelem (i))
+            m_sigma.dgxelem (i) = DM_P (0);
         }
 
       // GESVD and GESDD return VT instead of V, GEJSV return V.
       if (! (jobv == 'N' || jobv == 'O') && (m_driver != svd::Driver::GEJSV))
-        right_sm = right_sm.hermitian ();
+        m_right_sm = m_right_sm.hermitian ();
     }
 
     // Instantiations we need.

@@ -53,7 +53,7 @@ namespace octave
       typedef typename lu_type::element_type lu_elt_type;
 
       sparse_lu (void)
-        : m_Lfact (), m_Ufact (), m_Rfact (), m_cond (0), m_P (), m_Q () { }
+        : m_L (), m_U (), m_R (), m_cond (0), m_P (), m_Q () { }
 
       OCTAVE_API
       sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
@@ -66,7 +66,7 @@ namespace octave
                  bool milu = false, bool udiag = false);
 
       sparse_lu (const sparse_lu& a)
-        : m_Lfact (a.m_Lfact), m_Ufact (a.m_Ufact), m_Rfact (),
+        : m_L (a.m_L), m_U (a.m_U), m_R (),
           m_cond (a.m_cond), m_P (a.m_P), m_Q (a.m_Q)
       { }
 
@@ -74,8 +74,8 @@ namespace octave
       {
         if (this != &a)
           {
-            m_Lfact = a.m_Lfact;
-            m_Ufact = a.m_Ufact;
+            m_L = a.m_L;
+            m_U = a.m_U;
             m_cond = a.m_cond;
             m_P = a.m_P;
             m_Q = a.m_Q;
@@ -86,11 +86,11 @@ namespace octave
 
       virtual ~sparse_lu (void) = default;
 
-      lu_type L (void) const { return m_Lfact; }
+      lu_type L (void) const { return m_L; }
 
-      lu_type U (void) const { return m_Ufact; }
+      lu_type U (void) const { return m_U; }
 
-      SparseMatrix R (void) const { return m_Rfact; }
+      SparseMatrix R (void) const { return m_R; }
 
       OCTAVE_API lu_type Y (void) const;
 
@@ -114,9 +114,9 @@ namespace octave
 
     protected:
 
-      lu_type m_Lfact;
-      lu_type m_Ufact;
-      SparseMatrix m_Rfact;
+      lu_type m_L;
+      lu_type m_U;
+      SparseMatrix m_R;
 
       double m_cond;
 

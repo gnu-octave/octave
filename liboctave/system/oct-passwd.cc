@@ -216,7 +216,7 @@ namespace octave
 
     password::password (void *p, std::string& msg)
       : m_name (), m_passwd (), m_uid (0), m_gid (0), m_gecos (),
-        m_dir (), m_shell (), valid (false)
+        m_dir (), m_shell (), m_valid (false)
     {
 #if defined (HAVE_PWD_H)
       msg = "";
@@ -233,7 +233,7 @@ namespace octave
           m_dir = pw->pw_dir;
           m_shell = pw->pw_shell;
 
-          valid = true;
+          m_valid = true;
         }
 #else
       octave_unused_parameter (p);

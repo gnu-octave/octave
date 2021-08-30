@@ -44,13 +44,13 @@ namespace octave
 
       password (void)
         : m_name (), m_passwd (), m_uid (0), m_gid (0), m_gecos (),
-          m_dir (), m_shell (), valid (false)
+          m_dir (), m_shell (), m_valid (false)
       { }
 
       password (const password& pw)
         : m_name (pw.m_name), m_passwd (pw.m_passwd),
           m_uid (pw.m_uid), m_gid (pw.m_gid), m_gecos (pw.m_gecos),
-          m_dir (pw.m_dir), m_shell (pw.m_shell), valid (pw.valid)
+          m_dir (pw.m_dir), m_shell (pw.m_shell), m_valid (pw.m_valid)
       { }
 
       password& operator = (const password& pw)
@@ -64,7 +64,7 @@ namespace octave
             m_gecos = pw.m_gecos;
             m_dir = pw.m_dir;
             m_shell = pw.m_shell;
-            valid = pw.valid;
+            m_valid = pw.m_valid;
           }
 
         return *this;
@@ -86,7 +86,7 @@ namespace octave
 
       std::string shell (void) const;
 
-      bool ok (void) const { return valid; }
+      bool ok (void) const { return m_valid; }
 
       operator bool () const { return ok (); }
 
@@ -129,7 +129,7 @@ namespace octave
       std::string m_shell;
 
       // Flag that says whether we have been properly initialized.
-      bool valid;
+      bool m_valid;
 
       // This is how we will create a password object from a pointer
       // to a struct passwd.

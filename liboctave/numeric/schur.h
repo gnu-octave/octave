@@ -47,17 +47,17 @@ namespace octave
     {
     public:
 
-      schur (void) : m_schur_mat (), m_unitary_mat () { }
+      schur (void) : m_schur_mat (), m_unitary_schur_mat () { }
 
       schur (const T& a, const std::string& ord, bool calc_unitary = true)
-        : m_schur_mat (), m_unitary_mat ()
+        : m_schur_mat (), m_unitary_schur_mat ()
       {
         init (a, ord, calc_unitary);
       }
 
       schur (const T& a, const std::string& ord, octave_f77_int_type& info,
              bool calc_unitary = true)
-        : m_schur_mat (), m_unitary_mat ()
+        : m_schur_mat (), m_unitary_schur_mat ()
       {
         info = init (a, ord, calc_unitary);
       }
@@ -65,10 +65,12 @@ namespace octave
       // This one should really be protected or private but we need it in
       // rsf2csf and I don't see how to make that function a friend of
       // this class.
-      schur (const T& s, const T& u) : m_schur_mat (s), m_unitary_mat (u) { }
+      schur (const T& s, const T& u) : m_schur_mat (s), m_unitary_schur_mat (u)
+      { }
 
       schur (const schur& a)
-        : m_schur_mat (a.m_schur_mat), m_unitary_mat (a.m_unitary_mat)
+        : m_schur_mat (a.m_schur_mat),
+          m_unitary_schur_mat (a.m_unitary_schur_mat)
       { }
 
       schur& operator = (const schur& a)
@@ -76,7 +78,7 @@ namespace octave
         if (this != &a)
           {
             m_schur_mat = a.m_schur_mat;
-            m_unitary_mat = a.m_unitary_mat;
+            m_unitary_schur_mat = a.m_unitary_schur_mat;
           }
 
         return *this;
@@ -86,14 +88,14 @@ namespace octave
 
       T schur_matrix (void) const { return m_schur_mat; }
 
-      T unitary_matrix (void) const { return m_unitary_mat; }
+      T unitary_schur_matrix (void) const { return m_unitary_schur_mat; }
 
     protected:
 
     private:
 
       T m_schur_mat;
-      T m_unitary_mat;
+      T m_unitary_schur_mat;
 
       OCTAVE_API octave_f77_int_type
       init (const T& a, const std::string& ord, bool calc_unitary);

@@ -2696,10 +2696,10 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   // Transform c to new coordinates.
 
-  Matrix ua = as.unitary_matrix ();
+  Matrix ua = as.unitary_schur_matrix ();
   Matrix sch_a = as.schur_matrix ();
 
-  Matrix ub = bs.unitary_matrix ();
+  Matrix ub = bs.unitary_schur_matrix ();
   Matrix sch_b = bs.schur_matrix ();
 
   Matrix cx = ua.transpose () * c * ub;

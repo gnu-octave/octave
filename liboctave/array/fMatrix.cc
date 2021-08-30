@@ -2706,10 +2706,10 @@ Sylvester (const FloatMatrix& a, const FloatMatrix& b, const FloatMatrix& c)
 
   // Transform c to new coordinates.
 
-  FloatMatrix ua = as.unitary_matrix ();
+  FloatMatrix ua = as.unitary_schur_matrix ();
   FloatMatrix sch_a = as.schur_matrix ();
 
-  FloatMatrix ub = bs.unitary_matrix ();
+  FloatMatrix ub = bs.unitary_schur_matrix ();
   FloatMatrix sch_b = bs.schur_matrix ();
 
   FloatMatrix cx = ua.transpose () * c * ub;

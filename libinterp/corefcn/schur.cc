@@ -190,7 +190,7 @@ equations in control (see @code{are} and @code{dare}).
           else
             {
               math::schur<FloatMatrix> result (tmp, ord, true);
-              retval = ovl (result.unitary_matrix (),
+              retval = ovl (result.unitary_schur_matrix (),
                             result.schur_matrix ());
             }
         }
@@ -206,7 +206,7 @@ equations in control (see @code{are} and @code{dare}).
           else
             {
               math::schur<FloatComplexMatrix> result (ctmp, ord, true);
-              retval = ovl (result.unitary_matrix (),
+              retval = ovl (result.unitary_schur_matrix (),
                             mark_upper_triangular (result.schur_matrix ()));
             }
         }
@@ -225,7 +225,7 @@ equations in control (see @code{are} and @code{dare}).
           else
             {
               math::schur<Matrix> result (tmp, ord, true);
-              retval = ovl (result.unitary_matrix (),
+              retval = ovl (result.unitary_schur_matrix (),
                             result.schur_matrix ());
             }
         }
@@ -241,7 +241,7 @@ equations in control (see @code{are} and @code{dare}).
           else
             {
               math::schur<ComplexMatrix> result (ctmp, ord, true);
-              retval = ovl (result.unitary_matrix (),
+              retval = ovl (result.unitary_schur_matrix (),
                             mark_upper_triangular (result.schur_matrix ()));
             }
         }
@@ -309,7 +309,7 @@ Note also that @var{U} and @var{T} are not unique.
       math::schur<FloatComplexMatrix> cs
         = math::rsf2csf<FloatComplexMatrix, FloatMatrix> (t, u);
 
-      return ovl (cs.unitary_matrix (), cs.schur_matrix ());
+      return ovl (cs.unitary_schur_matrix (), cs.schur_matrix ());
     }
   else
     {
@@ -319,7 +319,7 @@ Note also that @var{U} and @var{T} are not unique.
       math::schur<ComplexMatrix> cs
         = math::rsf2csf<ComplexMatrix, Matrix> (t, u);
 
-      return ovl (cs.unitary_matrix (), cs.schur_matrix ());
+      return ovl (cs.unitary_schur_matrix (), cs.schur_matrix ());
     }
 }
 

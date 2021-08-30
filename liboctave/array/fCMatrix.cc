@@ -3263,10 +3263,10 @@ Sylvester (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   // Transform c to new coordinates.
 
-  FloatComplexMatrix ua = as.unitary_matrix ();
+  FloatComplexMatrix ua = as.unitary_schur_matrix ();
   FloatComplexMatrix sch_a = as.schur_matrix ();
 
-  FloatComplexMatrix ub = bs.unitary_matrix ();
+  FloatComplexMatrix ub = bs.unitary_schur_matrix ();
   FloatComplexMatrix sch_b = bs.schur_matrix ();
 
   FloatComplexMatrix cx = ua.hermitian () * c * ub;

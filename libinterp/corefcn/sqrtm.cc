@@ -184,7 +184,7 @@ do_sqrtm (const octave_value& arg)
               {
                 ComplexSCHUR schur_fact (x, "", true);
                 x = schur_fact.schur_matrix ();
-                u = schur_fact.unitary_matrix ();
+                u = schur_fact.unitary_schur_matrix ();
               }
             while (0); // schur no longer needed.
 

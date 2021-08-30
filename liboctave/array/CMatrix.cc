@@ -3233,10 +3233,10 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   // Transform c to new coordinates.
 
-  ComplexMatrix ua = as.unitary_matrix ();
+  ComplexMatrix ua = as.unitary_schur_matrix ();
   ComplexMatrix sch_a = as.schur_matrix ();
 
-  ComplexMatrix ub = bs.unitary_matrix ();
+  ComplexMatrix ub = bs.unitary_schur_matrix ();
   ComplexMatrix sch_b = bs.schur_matrix ();
 
   ComplexMatrix cx = ua.hermitian () * c * ub;

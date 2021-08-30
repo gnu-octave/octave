@@ -53,7 +53,7 @@ namespace octave
       typedef typename lu_type::element_type lu_elt_type;
 
       sparse_lu (void)
-        : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
+        : m_Lfact (), m_Ufact (), m_Rfact (), m_cond (0), m_P (), m_Q () { }
 
       OCTAVE_API
       sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
@@ -66,19 +66,19 @@ namespace octave
                  bool milu = false, bool udiag = false);
 
       sparse_lu (const sparse_lu& a)
-        : Lfact (a.Lfact), Ufact (a.Ufact), Rfact (), cond (a.cond),
-          P (a.P), Q (a.Q)
+        : m_Lfact (a.m_Lfact), m_Ufact (a.m_Ufact), m_Rfact (),
+          m_cond (a.m_cond), m_P (a.m_P), m_Q (a.m_Q)
       { }
 
       sparse_lu& operator = (const sparse_lu& a)
       {
         if (this != &a)
           {
-            Lfact = a.Lfact;
-            Ufact = a.Ufact;
-            cond = a.cond;
-            P = a.P;
-            Q = a.Q;
+            m_Lfact = a.m_Lfact;
+            m_Ufact = a.m_Ufact;
+            m_cond = a.m_cond;
+            m_P = a.m_P;
+            m_Q = a.m_Q;
           }
 
         return *this;
@@ -86,11 +86,11 @@ namespace octave
 
       virtual ~sparse_lu (void) = default;
 
-      lu_type L (void) const { return Lfact; }
+      lu_type L (void) const { return m_Lfact; }
 
-      lu_type U (void) const { return Ufact; }
+      lu_type U (void) const { return m_Ufact; }
 
-      SparseMatrix R (void) const { return Rfact; }
+      SparseMatrix R (void) const { return m_Rfact; }
 
       OCTAVE_API lu_type Y (void) const;
 
@@ -106,22 +106,22 @@ namespace octave
 
       OCTAVE_API PermMatrix Pr_mat (void) const;
 
-      const octave_idx_type * row_perm (void) const { return P.data (); }
+      const octave_idx_type * row_perm (void) const { return m_P.data (); }
 
-      const octave_idx_type * col_perm (void) const { return Q.data (); }
+      const octave_idx_type * col_perm (void) const { return m_Q.data (); }
 
-      double rcond (void) const { return cond; }
+      double rcond (void) const { return m_cond; }
 
     protected:
 
-      lu_type Lfact;
-      lu_type Ufact;
-      SparseMatrix Rfact;
+      lu_type m_Lfact;
+      lu_type m_Ufact;
+      SparseMatrix m_Rfact;
 
-      double cond;
+      double m_cond;
 
-      MArray<octave_idx_type> P;
-      MArray<octave_idx_type> Q;
+      MArray<octave_idx_type> m_P;
+      MArray<octave_idx_type> m_Q;
     };
   }
 }

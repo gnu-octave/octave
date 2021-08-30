@@ -231,10 +231,10 @@ OCTAVE_NAMESPACE_BEGIN
 
     JVMArgs (void)
     {
-      vm_args.version = JNI_VERSION_1_6;
-      vm_args.nOptions = 0;
-      vm_args.options = nullptr;
-      vm_args.ignoreUnrecognized = false;
+      m_vm_args.version = JNI_VERSION_1_6;
+      m_vm_args.nOptions = 0;
+      m_vm_args.options = nullptr;
+      m_vm_args.ignoreUnrecognized = false;
     }
 
     ~JVMArgs (void)
@@ -245,12 +245,12 @@ OCTAVE_NAMESPACE_BEGIN
     JavaVMInitArgs * to_args ()
     {
       update ();
-      return &vm_args;
+      return &m_vm_args;
     }
 
     void add (const std::string& opt)
     {
-      java_opts.push_back (opt);
+      m_java_opts.push_back (opt);
     }
 
     void read_java_opts (const std::string& filename)
@@ -266,7 +266,7 @@ OCTAVE_NAMESPACE_BEGIN
               std::getline (js, line);
 
               if (line.find ('-') == 0)
-                java_opts.push_back (line);
+                m_java_opts.push_back (line);
               else if (line.length () > 0 && Vdebug_java)
                 warning ("invalid JVM option, skipping: %s", line.c_str ());
             }
@@ -277,15 +277,15 @@ OCTAVE_NAMESPACE_BEGIN
 
     void clean (void)
     {
-      if (vm_args.options != nullptr)
+      if (m_vm_args.options != nullptr)
         {
-          for (int i = 0; i < vm_args.nOptions; i++)
-            delete [] vm_args.options[i].optionString;
+          for (int i = 0; i < m_vm_args.nOptions; i++)
+            delete [] m_vm_args.options[i].optionString;
 
-          delete [] vm_args.options;
+          delete [] m_vm_args.options;
 
-          vm_args.options = nullptr;
-          vm_args.nOptions = 0;
+          m_vm_args.options = nullptr;
+          m_vm_args.nOptions = 0;
         }
     }
 
@@ -293,29 +293,29 @@ OCTAVE_NAMESPACE_BEGIN
     {
       clean ();
 
-      if (java_opts.size () > 0)
+      if (m_java_opts.size () > 0)
         {
           int index = 0;
 
-          vm_args.nOptions = java_opts.size ();
-          vm_args.options = new JavaVMOption [vm_args.nOptions];
+          m_vm_args.nOptions = m_java_opts.size ();
+          m_vm_args.options = new JavaVMOption [m_vm_args.nOptions];
 
-          for (const auto& opt : java_opts)
+          for (const auto& opt : m_java_opts)
             {
               if (Vdebug_java)
                 octave_stdout << opt << std::endl;
-              vm_args.options[index++].optionString = strsave (opt.c_str ());
+              m_vm_args.options[index++].optionString = strsave (opt.c_str ());
             }
 
-          java_opts.clear ();
+          m_java_opts.clear ();
         }
     }
 
   private:
 
-    JavaVMInitArgs vm_args;
+    JavaVMInitArgs m_vm_args;
 
-    std::list<std::string> java_opts;
+    std::list<std::string> m_java_opts;
   };
 
 OCTAVE_NAMESPACE_END
@@ -773,12 +773,12 @@ initialize_jvm (void)
         {
         case JNI_EDETACHED:
           // Attach the current thread
-          JavaVMAttachArgs vm_args;
-          vm_args.version = JNI_VERSION_1_6;
-          vm_args.name = const_cast<char *> ("octave");
-          vm_args.group = nullptr;
+          JavaVMAttachArgs m_vm_args;
+          m_vm_args.version = JNI_VERSION_1_6;
+          m_vm_args.name = const_cast<char *> ("octave");
+          m_vm_args.group = nullptr;
           if (jvm->AttachCurrentThread (reinterpret_cast<void **> (&current_env),
-                                        &vm_args) < 0)
+                                        &m_vm_args) < 0)
             error ("JVM internal error, unable to attach octave to existing JVM");
           break;
 
@@ -796,21 +796,21 @@ initialize_jvm (void)
     {
       // No JVM exists, create one
 
-      octave::JVMArgs vm_args;
+      octave::JVMArgs m_vm_args;
 
       // Hard-coded options for the jvm.
-      vm_args.add ("-Djava.class.path=" + initial_class_path ());
+      m_vm_args.add ("-Djava.class.path=" + initial_class_path ());
 #if defined (HAVE_BROKEN_PTHREAD_STACKSIZE)
-      vm_args.add ("-Djdk.lang.processReaperUseDefaultStackSize=true");
+      m_vm_args.add ("-Djdk.lang.processReaperUseDefaultStackSize=true");
 #endif
-      vm_args.add ("-Xrs");
+      m_vm_args.add ("-Xrs");
 
       // Additional options given by file java.opts.
-      vm_args.read_java_opts (initial_java_dir () +
+      m_vm_args.read_java_opts (initial_java_dir () +
                               octave::sys::file_ops::dir_sep_str () +
                               "java.opts");
 
-      if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
+      if (create_vm (&jvm, &current_env, m_vm_args.to_args ()) != JNI_OK)
         error ("unable to start Java VM in %s", jvm_lib_path.c_str ());
     }
 

@@ -332,9 +332,9 @@ namespace octave
         t.tm_year = 0;
 
       if (q)
-        nchars = q - p + 1;
+        m_nchars = q - p + 1;
       else
-        nchars = 0;
+        m_nchars = 0;
 
       base_tm::init (&t);
 

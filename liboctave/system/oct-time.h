@@ -353,28 +353,28 @@ namespace octave
     public:
 
       strptime (const std::string& str, const std::string& fmt)
-        : base_tm (), nchars (0)
+        : base_tm (), m_nchars (0)
       {
         init (str, fmt);
       }
 
       strptime (const strptime& s)
-        : base_tm (s), nchars (s.nchars) { }
+        : base_tm (s), m_nchars (s.m_nchars) { }
 
       strptime& operator = (const strptime& s)
       {
         base_tm::operator = (s);
-        nchars = s.nchars;
+        m_nchars = s.m_nchars;
         return *this;
       }
 
-      int characters_converted (void) const { return nchars; }
+      int characters_converted (void) const { return m_nchars; }
 
       ~strptime (void) = default;
 
     private:
 
-      int nchars;
+      int m_nchars;
 
       OCTAVE_API void init (const std::string& str, const std::string& fmt);
     };

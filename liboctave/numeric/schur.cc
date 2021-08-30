@@ -109,8 +109,8 @@ namespace octave
 
       if (a_nr == 0)
         {
-          schur_mat.clear ();
-          unitary_mat.clear ();
+          m_schur_mat.clear ();
+          m_unitary_mat.clear ();
           return 0;
         }
 
@@ -145,13 +145,13 @@ namespace octave
       double rconde;
       double rcondv;
 
-      schur_mat = a;
+      m_schur_mat = a;
 
       if (calc_unitary)
-        unitary_mat.clear (n, n);
+        m_unitary_mat.clear (n, n);
 
-      double *s = schur_mat.fortran_vec ();
-      double *q = unitary_mat.fortran_vec ();
+      double *s = m_schur_mat.fortran_vec ();
+      double *q = m_unitary_mat.fortran_vec ();
 
       Array<double> wr (dim_vector (n, 1));
       double *pwr = wr.fortran_vec ();
@@ -196,8 +196,8 @@ namespace octave
 
       if (a_nr == 0)
         {
-          schur_mat.clear ();
-          unitary_mat.clear ();
+          m_schur_mat.clear ();
+          m_unitary_mat.clear ();
           return 0;
         }
 
@@ -232,13 +232,13 @@ namespace octave
       float rconde;
       float rcondv;
 
-      schur_mat = a;
+      m_schur_mat = a;
 
       if (calc_unitary)
-        unitary_mat.clear (n, n);
+        m_unitary_mat.clear (n, n);
 
-      float *s = schur_mat.fortran_vec ();
-      float *q = unitary_mat.fortran_vec ();
+      float *s = m_schur_mat.fortran_vec ();
+      float *q = m_unitary_mat.fortran_vec ();
 
       Array<float> wr (dim_vector (n, 1));
       float *pwr = wr.fortran_vec ();
@@ -283,8 +283,8 @@ namespace octave
 
       if (a_nr == 0)
         {
-          schur_mat.clear ();
-          unitary_mat.clear ();
+          m_schur_mat.clear ();
+          m_unitary_mat.clear ();
           return 0;
         }
 
@@ -318,12 +318,12 @@ namespace octave
       double rconde;
       double rcondv;
 
-      schur_mat = a;
+      m_schur_mat = a;
       if (calc_unitary)
-        unitary_mat.clear (n, n);
+        m_unitary_mat.clear (n, n);
 
-      Complex *s = schur_mat.fortran_vec ();
-      Complex *q = unitary_mat.fortran_vec ();
+      Complex *s = m_schur_mat.fortran_vec ();
+      Complex *q = m_unitary_mat.fortran_vec ();
 
       Array<double> rwork (dim_vector (n, 1));
       double *prwork = rwork.fortran_vec ();
@@ -391,8 +391,8 @@ namespace octave
 
       if (a_nr == 0)
         {
-          schur_mat.clear ();
-          unitary_mat.clear ();
+          m_schur_mat.clear ();
+          m_unitary_mat.clear ();
           return 0;
         }
 
@@ -426,12 +426,12 @@ namespace octave
       float rconde;
       float rcondv;
 
-      schur_mat = a;
+      m_schur_mat = a;
       if (calc_unitary)
-        unitary_mat.clear (n, n);
+        m_unitary_mat.clear (n, n);
 
-      FloatComplex *s = schur_mat.fortran_vec ();
-      FloatComplex *q = unitary_mat.fortran_vec ();
+      FloatComplex *s = m_schur_mat.fortran_vec ();
+      FloatComplex *q = m_unitary_mat.fortran_vec ();
 
       Array<float> rwork (dim_vector (n, 1));
       float *prwork = rwork.fortran_vec ();

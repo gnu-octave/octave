@@ -533,7 +533,7 @@
 %!testif HAVE_RAPIDJSON
 %! var =  struct ('x_id', '5ee28980dd7250', 'index', 1, ...
 %!                'guid', '39cee338-01fb', 'latitude', 13.205994, ...
-%!                'longitude', -37.276231,
+%!                'longitude', -37.276231, ...
 %!                'friends', struct ('id', {0; 1; 2}, ...
 %!                                   'name', {'Osborn'; 'Mcdowell'; 'Jewel'}));
 %! data = {NaN; true; Inf; 2531.023; 'hello there'; var};
@@ -623,7 +623,7 @@
 %! obs  = jsonencode (data);
 %! assert (isequal (obs, exp));
 
-%% Just basic tests to ensure option "PrettyPrint" is functional. 
+%% Just basic tests to ensure option "PrettyPrint" is functional.
 %!testif HAVE_RAPIDJSON_PRETTYWRITER
 %! data = {'Hello'; 'World!'};
 %! exp  = do_string_escapes ([ '[\n', ...

@@ -449,7 +449,7 @@
 %!   '}]'];
 %! var =  struct ('x_id', '5ee28980dd7250', 'index', 1, ...
 %!                'guid', '39cee338-01fb', 'latitude', 13.205994, ...
-%!                'longitude', -37.276231,
+%!                'longitude', -37.276231, ...
 %!                'friends', struct ('id', {0; 1; 2}, ...
 %!                                   'name', {'Osborn'; 'Mcdowell'; 'Jewel'}));
 %! exp = {[]; 1; Inf; 2531.023; 'hello there'; var};
@@ -518,6 +518,7 @@
 %! assert (isequaln (obs, exp));
 
 %%% Test 7: Check "ReplacementStyle", "Prefix", and "makeValidName" options
+%%%         Not Matlab compatible!
 
 %!testif HAVE_RAPIDJSON
 %! json = '{"1a": {"1*a": {"1+*/-a": {"1#a": {}}}}}';
@@ -558,53 +559,56 @@
 %%% Test 8: More tests from https://github.com/apjanke/octave-jsonstuff (bug #60688)
 
 %!testif HAVE_RAPIDJSON
-%! assert (jsondecode ('42'), 42);
-%! assert (jsondecode ('"foobar"'), "foobar");
-%! assert (jsondecode ('null'), []);
-%! assert (jsondecode ('[]'), []);
-%! assert (jsondecode ('[[]]'), {[]});
-%! assert (jsondecode ('[[[]]]'), {{[]}});
-%! assert (jsondecode ('[1, 2, 3]'), [1; 2; 3]);
-%! assert (jsondecode ('[1, 2, null]'), [1; 2; NaN]);
-%! assert (jsondecode ('[1, 2, "foo"]'), {1; 2; "foo"});
-%! assert (jsondecode ('{"foo": 42, "bar": "hello"}'), ...
-%!         struct("foo",42, "bar","hello"));
-%! assert (jsondecode ('[{"foo": 42, "bar": "hello"}, {"foo": 1.23, "bar": "world"}]'), ...
-%!         struct("foo", {42; 1.23}, "bar", {"hello"; "world"}));
-%! assert (jsondecode ('[1, 2]'), [1; 2]);
-%! assert (jsondecode ('[[1, 2]]'), [1 2]);
-%! assert (jsondecode ('[[[1, 2]]]'), cat(3, 1, 2));
-%! assert (jsondecode ('[[1, 2], [3, 4]]'), [1 2; 3 4]);
-%! assert (jsondecode ('[[[1, 2], [3, 4]]]'), cat(3, [1 3], [2 4]));
-%! assert (jsondecode ('[[[1, 2], [3, 4]], [[5, 6], [7, 8]]]'), ...
-%!         cat(3, [1 3; 5 7], [2 4; 6 8]));
-%! assert (jsondecode ('{}'), struct);
-%! assert (jsondecode ('[{}]'), struct);
-%! assert (jsondecode ('[[{}]]'), struct);
-%! assert (jsondecode ('[{}, {}]'), [struct; struct]);
-%! assert (jsondecode ('[[{}, {}]]'), [struct struct]);
-%! assert (jsondecode ('[[[{}, {}]]]'), cat(3, struct, struct));
-%! assert (jsonencode (42), "42");
-%! assert (jsonencode ("foo"), '"foo"');
-%! assert (jsonencode ([1 2 3]), '[1,2,3]');
-%! assert (jsonencode (NaN), 'null');
-%! assert (jsonencode ([1 2 NaN]), '[1,2,null]');
-%! assert (jsonencode ({}), "[]");
+%! assert (isequal (jsondecode ('42'), 42));
+%! assert (isequal (jsondecode ('"foobar"'), "foobar"));
+%! assert (isequal (jsondecode ('null'), []));
+%! assert (isequal (jsondecode ('[]'), []));
+%! assert (isequal (jsondecode ('[[]]'), {[]}));
+%! assert (isequal (jsondecode ('[[[]]]'), {{[]}}));
+%! assert (isequal (jsondecode ('[1, 2, 3]'), [1; 2; 3]));
+%! assert (isequaln (jsondecode ('[1, 2, null]'), [1; 2; NaN]));
+%! assert (isequal (jsondecode ('[1, 2, "foo"]'), {1; 2; "foo"}));
+%! assert (isequal (jsondecode ('{"foo": 42, "bar": "hello"}'), ...
+%!         struct("foo",42, "bar","hello")));
+%! assert (isequal (jsondecode ('[{"foo": 42, "bar": "hello"}, {"foo": 1.23, "bar": "world"}]'), ...
+%!         struct("foo", {42; 1.23}, "bar", {"hello"; "world"})));
+%! assert (isequal (jsondecode ('[1, 2]'), [1; 2]));
+%! assert (isequal (jsondecode ('[[1, 2]]'), [1 2]));
+%! assert (isequal (jsondecode ('[[[1, 2]]]'), cat(3, 1, 2)));
+%! assert (isequal (jsondecode ('[[1, 2], [3, 4]]'), [1 2; 3 4]));
+%! assert (isequal (jsondecode ('[[[1, 2], [3, 4]]]'), cat(3, [1 3], [2 4])));
+%! assert (isequal (jsondecode ('[[[1, 2], [3, 4]], [[5, 6], [7, 8]]]'), ...
+%!         cat(3, [1 3; 5 7], [2 4; 6 8])));
+%! assert (isequal (jsondecode ('{}'), struct));
+%! assert (isequal (jsondecode ('[{}]'), struct));
+%! assert (isequal (jsondecode ('[[{}]]'), struct));
+%! assert (isequal (jsondecode ('[{}, {}]'), [struct; struct]));
+%! assert (isequal (jsondecode ('[[{}, {}]]'), [struct struct]));
+%! assert (isequal (jsondecode ('[[[{}, {}]]]'), cat(3, struct, struct)));
+%! assert (isequal (jsonencode (42), "42"));
+%! assert (isequal (jsonencode ("foo"), '"foo"'));
+%! assert (isequal (jsonencode ([1 2 3]), '[1,2,3]'));
+%! assert (isequal (jsonencode (NaN), 'null'));
+%! assert (isequal (jsonencode ([1 2 NaN]), '[1,2,null]'));
+%! assert (isequal (jsonencode ({}), "[]"));
 
-%%% Test 9: And even some more tests for #60688...
+%%% Test 9: And even some more tests for bug #60688.
 
 %!testif HAVE_RAPIDJSON
-%! assert (jsondecode ('[[{"foo": 42}, {"foo": 1.23}], [{"foo": 12}, {"foo": "bar"}]]'), ...
-%!         struct("foo", {42 1.23; 12 "bar"}));
-%! assert (jsondecode ('[[{"foo": 42}, {"foo": 1.23}], [{"bar": 12}, {"foo": "bar"}]]'), ...
-%!         {struct("foo", {42; 1.23}); {struct("bar", 12); struct("foo", "bar")}});
+%! assert (isequal (jsondecode ('[[{"foo": 42}, {"foo": 1.23}], [{"foo": 12}, {"foo": "bar"}]]'), ...
+%!         struct("foo", {42 1.23; 12 "bar"})));
+%! assert (isequal (jsondecode ('[[{"foo": 42}, {"foo": 1.23}], [{"bar": 12}, {"foo": "bar"}]]'), ...
+%!         {struct("foo", {42; 1.23}); {struct("bar", 12); struct("foo", "bar")}}));
 
-%% Check decoding of objects inside an object without using makeValidName
+
+%%% Test 10: Decoding of objects inside an object without using makeValidName.
+%%%          Not Matlab compatible!       
+
 %!testif HAVE_RAPIDJSON
 %! json = ['{"object": {"  hi 1   ": 1, "%string.array": 2,' ...
 %!                     '"img/svg+xml": 3, "": 1}}'];
 %! exp  = struct ('object', ...
-%!                struct ('  hi 1   ', 1, '%string.array', 2,
+%!                struct ('  hi 1   ', 1, '%string.array', 2, ...
 %!                        'img/svg+xml', 3, '', 1));
 %! obs  = jsondecode (json, "makeValidName", false);
 %! assert (isequal (obs, exp));

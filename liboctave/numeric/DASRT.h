@@ -40,36 +40,36 @@ DASRT_result
 public:
 
   DASRT_result (void)
-    : x (), xdot (), t () { }
+    : m_x (), m_xdot (), m_t () { }
 
-  DASRT_result (const Matrix& xx, const Matrix& xxdot, const ColumnVector& tt)
-    : x (xx), xdot (xxdot), t (tt) { }
+  DASRT_result (const Matrix& x, const Matrix& xdot, const ColumnVector& t)
+    : m_x (x), m_xdot (xdot), m_t (t) { }
 
   DASRT_result (const DASRT_result& r)
-    : x (r.x), xdot (r.xdot), t (r.t) { }
+    : m_x (r.m_x), m_xdot (r.m_xdot), m_t (r.m_t) { }
 
   DASRT_result& operator = (const DASRT_result& r)
   {
     if (this != &r)
       {
-        x = r.x;
-        xdot = r.xdot;
-        t = r.t;
+        m_x = r.m_x;
+        m_xdot = r.m_xdot;
+        m_t = r.m_t;
       }
     return *this;
   }
 
   ~DASRT_result (void) = default;
 
-  Matrix state (void) const { return x; }
-  Matrix deriv (void) const { return xdot; }
-  ColumnVector times (void) const { return t; }
+  Matrix state (void) const { return m_x; }
+  Matrix deriv (void) const { return m_xdot; }
+  ColumnVector times (void) const { return m_t; }
 
 private:
 
-  Matrix x;
-  Matrix xdot;
-  ColumnVector t;
+  Matrix m_x;
+  Matrix m_xdot;
+  ColumnVector m_t;
 };
 
 class

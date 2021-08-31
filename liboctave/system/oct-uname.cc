@@ -42,11 +42,11 @@ namespace octave
     {
       char *sysname, *nodename, *release, *version, *machine;
 
-      m_err = octave_uname_wrapper (&sysname, &nodename, &release,
-                                    &version, &machine);
+      m_errno = octave_uname_wrapper (&sysname, &nodename, &release,
+                                      &version, &machine);
 
-      if (m_err < 0)
-        m_msg = std::strerror (errno);
+      if (m_errno < 0)
+        m_errmsg = std::strerror (errno);
       else
         {
           m_sysname = sysname;
@@ -54,7 +54,7 @@ namespace octave
           m_release = release;
           m_version = version;
           m_machine = machine;
-          m_msg = "";
+          m_errmsg = "";
         }
     }
   }

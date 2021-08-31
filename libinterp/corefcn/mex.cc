@@ -3270,7 +3270,7 @@ mxArray_cell::set_cell (mwIndex idx, mxArray *val)
 bool
 mxIsFinite (const double v)
 {
-  return lo_ieee_finite (v) != 0;
+  return lo_ieee_isfinite (v) != 0;
 }
 
 bool

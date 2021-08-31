@@ -47,12 +47,12 @@ namespace octave
       typedef typename T::element_type ELT_T;
 
       lu (void)
-        : m_a_fact (), m_l (), m_ipvt () { }
+        : m_a_fact (), m_L (), m_ipvt () { }
 
       OCTAVE_API lu (const T& a);
 
       lu (const lu& a)
-        : m_a_fact (a.m_a_fact), m_l (a.m_l), m_ipvt (a.m_ipvt) { }
+        : m_a_fact (a.m_a_fact), m_L (a.m_L), m_ipvt (a.m_ipvt) { }
 
       OCTAVE_API lu (const T& l, const T& u, const PermMatrix& p);
 
@@ -61,7 +61,7 @@ namespace octave
         if (this != &a)
           {
             m_a_fact = a.m_a_fact;
-            m_l = a.m_l;
+            m_L = a.m_L;
             m_ipvt = a.m_ipvt;
           }
 
@@ -101,7 +101,7 @@ namespace octave
       OCTAVE_API Array<octave_idx_type> getp (void) const;
 
       T m_a_fact;
-      T m_l;
+      T m_L;
 
       // This is internal storage that is passed to Fortran,
       // so we need a Fortran INTEGER.

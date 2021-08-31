@@ -57,7 +57,7 @@ namespace octave
 
     template <typename T>
     lu<T>::lu (const T& l, const T& u, const PermMatrix& p)
-      : m_a_fact (u), m_l (l), m_ipvt (p.transpose ().col_perm_vec ())
+      : m_a_fact (u), m_L (l), m_ipvt (p.transpose ().col_perm_vec ())
     {
       if (l.columns () != u.rows ())
         (*current_liboctave_error_handler) ("lu: dimension mismatch");
@@ -67,7 +67,7 @@ namespace octave
     bool
     lu<T>::packed (void) const
     {
-      return m_l.dims () == dim_vector ();
+      return m_L.dims () == dim_vector ();
     }
 
     template <typename T>
@@ -76,7 +76,7 @@ namespace octave
     {
       if (packed ())
         {
-          m_l = L ();
+          m_L = L ();
           m_a_fact = U (); // FIXME: sub-optimal
 
           // FIXME: getp returns Array<octave_idx_type> but m_ipvt is
@@ -115,7 +115,7 @@ namespace octave
           return l;
         }
       else
-        return m_l;
+        return m_L;
     }
 
     template <typename T>
@@ -300,7 +300,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      Matrix& l = m_l;
+      Matrix& l = m_L;
       Matrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -326,7 +326,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      Matrix& l = m_l;
+      Matrix& l = m_L;
       Matrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -359,7 +359,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      Matrix& l = m_l;
+      Matrix& l = m_L;
       Matrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -390,7 +390,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      Matrix& l = m_l;
+      Matrix& l = m_L;
       Matrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -454,7 +454,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatMatrix& l = m_l;
+      FloatMatrix& l = m_L;
       FloatMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -481,7 +481,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatMatrix& l = m_l;
+      FloatMatrix& l = m_L;
       FloatMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -515,7 +515,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatMatrix& l = m_l;
+      FloatMatrix& l = m_L;
       FloatMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -546,7 +546,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatMatrix& l = m_l;
+      FloatMatrix& l = m_L;
       FloatMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -611,7 +611,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      ComplexMatrix& l = m_l;
+      ComplexMatrix& l = m_L;
       ComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -639,7 +639,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      ComplexMatrix& l = m_l;
+      ComplexMatrix& l = m_L;
       ComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -676,7 +676,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      ComplexMatrix& l = m_l;
+      ComplexMatrix& l = m_L;
       ComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -710,7 +710,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      ComplexMatrix& l = m_l;
+      ComplexMatrix& l = m_L;
       ComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -779,7 +779,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatComplexMatrix& l = m_l;
+      FloatComplexMatrix& l = m_L;
       FloatComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -808,7 +808,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatComplexMatrix& l = m_l;
+      FloatComplexMatrix& l = m_L;
       FloatComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -843,7 +843,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatComplexMatrix& l = m_l;
+      FloatComplexMatrix& l = m_L;
       FloatComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());
@@ -877,7 +877,7 @@ namespace octave
       if (packed ())
         unpack ();
 
-      FloatComplexMatrix& l = m_l;
+      FloatComplexMatrix& l = m_L;
       FloatComplexMatrix& r = m_a_fact;
 
       F77_INT m = to_f77_int (l.rows ());

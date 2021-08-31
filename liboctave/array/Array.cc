@@ -292,48 +292,48 @@ class rec_permute_helper
   // STRIDE occupies the last half of the space allocated for dim to
   // avoid a double allocation.
 
-  int n;
-  int top;
-  octave_idx_type *dim;
-  octave_idx_type *stride;
-  bool use_blk;
+  int m_n;
+  int m_top;
+  octave_idx_type *m_dim;
+  octave_idx_type *m_stride;
+  bool m_use_blk;
 
 public:
   rec_permute_helper (const dim_vector& dv, const Array<octave_idx_type>& perm)
 
-    : n (dv.ndims ()), top (0), dim (new octave_idx_type [2*n]),
-      stride (dim + n), use_blk (false)
+    : m_n (dv.ndims ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
+      m_stride (m_dim + m_n), m_use_blk (false)
   {
-    assert (n == perm.numel ());
+    assert (m_n == perm.numel ());
 
     // Get cumulative dimensions.
-    OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, n+1);
+    OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, m_n+1);
     cdim[0] = 1;
-    for (int i = 1; i < n+1; i++) cdim[i] = cdim[i-1] * dv(i-1);
+    for (int i = 1; i < m_n+1; i++) cdim[i] = cdim[i-1] * dv(i-1);
 
     // Setup the permuted strides.
-    for (int k = 0; k < n; k++)
+    for (int k = 0; k < m_n; k++)
       {
         int kk = perm(k);
-        dim[k] = dv(kk);
-        stride[k] = cdim[kk];
+        m_dim[k] = dv(kk);
+        m_stride[k] = cdim[kk];
       }
 
     // Reduce contiguous runs.
-    for (int k = 1; k < n; k++)
+    for (int k = 1; k < m_n; k++)
       {
-        if (stride[k] == stride[top]*dim[top])
-          dim[top] *= dim[k];
+        if (m_stride[k] == m_stride[m_top]*m_dim[m_top])
+          m_dim[m_top] *= m_dim[k];
         else
           {
-            top++;
-            dim[top] = dim[k];
-            stride[top] = stride[k];
+            m_top++;
+            m_dim[m_top] = m_dim[k];
+            m_stride[m_top] = m_stride[k];
           }
       }
 
     // Determine whether we can use block transposes.
-    use_blk = top >= 1 && stride[1] == 1 && stride[0] == dim[1];
+    m_use_blk = m_top >= 1 && m_stride[1] == 1 && m_stride[0] == m_dim[1];
 
   }
 
@@ -343,7 +343,7 @@ public:
 
   rec_permute_helper& operator = (const rec_permute_helper&) = delete;
 
-  ~rec_permute_helper (void) { delete [] dim; }
+  ~rec_permute_helper (void) { delete [] m_dim; }
 
   // Helper method for fast blocked transpose.
   template <typename T>
@@ -392,8 +392,8 @@ private:
   {
     if (lev == 0)
       {
-        octave_idx_type step = stride[0];
-        octave_idx_type len = dim[0];
+        octave_idx_type step = m_stride[0];
+        octave_idx_type len = m_dim[0];
         if (step == 1)
           {
             std::copy_n (src, len, dest);
@@ -407,12 +407,12 @@ private:
             dest += len;
           }
       }
-    else if (use_blk && lev == 1)
-      dest = blk_trans (src, dest, dim[1], dim[0]);
+    else if (m_use_blk && lev == 1)
+      dest = blk_trans (src, dest, m_dim[1], m_dim[0]);
     else
       {
-        octave_idx_type step = stride[lev];
-        octave_idx_type len = dim[lev];
+        octave_idx_type step = m_stride[lev];
+        octave_idx_type len = m_dim[lev];
         for (octave_idx_type i = 0, j = 0; i < len; i++, j+= step)
           dest = do_permute (src + i * step, dest, lev-1);
       }
@@ -423,7 +423,7 @@ private:
 public:
 
   template <typename T>
-  void permute (const T *src, T *dest) const { do_permute (src, dest, top); }
+  void permute (const T *src, T *dest) const { do_permute (src, dest, m_top); }
 };
 
 template <typename T>

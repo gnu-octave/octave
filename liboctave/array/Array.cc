@@ -506,38 +506,38 @@ class rec_index_helper
   // CDIM occupies the last half of the space allocated for dim to
   // avoid a double allocation.
 
-  int n;
-  int top;
-  octave_idx_type *dim;
-  octave_idx_type *cdim;
-  octave::idx_vector *idx;
+  int m_n;
+  int m_top;
+  octave_idx_type *m_dim;
+  octave_idx_type *m_cdim;
+  octave::idx_vector *m_idx;
 
 public:
   rec_index_helper (const dim_vector& dv, const Array<octave::idx_vector>& ia)
-    : n (ia.numel ()), top (0), dim (new octave_idx_type [2*n]),
-      cdim (dim + n), idx (new octave::idx_vector [n])
+    : m_n (ia.numel ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
+      m_cdim (m_dim + m_n), m_idx (new octave::idx_vector [m_n])
   {
-    assert (n > 0 && (dv.ndims () == std::max (n, 2)));
+    assert (m_n > 0 && (dv.ndims () == std::max (m_n, 2)));
 
-    dim[0] = dv(0);
-    cdim[0] = 1;
-    idx[0] = ia(0);
+    m_dim[0] = dv(0);
+    m_cdim[0] = 1;
+    m_idx[0] = ia(0);
 
-    for (int i = 1; i < n; i++)
+    for (int i = 1; i < m_n; i++)
       {
         // Try reduction...
-        if (idx[top].maybe_reduce (dim[top], ia(i), dv(i)))
+        if (m_idx[m_top].maybe_reduce (m_dim[m_top], ia(i), dv(i)))
           {
             // Reduction successful, fold dimensions.
-            dim[top] *= dv(i);
+            m_dim[m_top] *= dv(i);
           }
         else
           {
-            // Unsuccessful, store index & cumulative dim.
-            top++;
-            idx[top] = ia(i);
-            dim[top] = dv(i);
-            cdim[top] = cdim[top-1] * dim[top-1];
+            // Unsuccessful, store index & cumulative m_dim.
+            m_top++;
+            m_idx[m_top] = ia(i);
+            m_dim[m_top] = dv(i);
+            m_cdim[m_top] = m_cdim[m_top-1] * m_dim[m_top-1];
           }
       }
   }
@@ -548,7 +548,7 @@ public:
 
   rec_index_helper& operator = (const rec_index_helper&) = delete;
 
-  ~rec_index_helper (void) { delete [] idx; delete [] dim; }
+  ~rec_index_helper (void) { delete [] m_idx; delete [] m_dim; }
 
 private:
 
@@ -557,13 +557,13 @@ private:
   T * do_index (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
-      dest += idx[0].index (src, dim[0], dest);
+      dest += m_idx[0].index (src, m_dim[0], dest);
     else
       {
-        octave_idx_type nn = idx[lev].length (dim[lev]);
-        octave_idx_type d = cdim[lev];
+        octave_idx_type nn = m_idx[lev].length (m_dim[lev]);
+        octave_idx_type d = m_cdim[lev];
         for (octave_idx_type i = 0; i < nn; i++)
-          dest = do_index (src + d*idx[lev].xelem (i), dest, lev-1);
+          dest = do_index (src + d*m_idx[lev].xelem (i), dest, lev-1);
       }
 
     return dest;
@@ -574,13 +574,13 @@ private:
   const T * do_assign (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
-      src += idx[0].assign (src, dim[0], dest);
+      src += m_idx[0].assign (src, m_dim[0], dest);
     else
       {
-        octave_idx_type nn = idx[lev].length (dim[lev]);
-        octave_idx_type d = cdim[lev];
+        octave_idx_type nn = m_idx[lev].length (m_dim[lev]);
+        octave_idx_type d = m_cdim[lev];
         for (octave_idx_type i = 0; i < nn; i++)
-          src = do_assign (src, dest + d*idx[lev].xelem (i), lev-1);
+          src = do_assign (src, dest + d*m_idx[lev].xelem (i), lev-1);
       }
 
     return src;
@@ -591,31 +591,30 @@ private:
   void do_fill (const T& val, T *dest, int lev) const
   {
     if (lev == 0)
-      idx[0].fill (val, dim[0], dest);
+      m_idx[0].fill (val, m_dim[0], dest);
     else
       {
-        octave_idx_type nn = idx[lev].length (dim[lev]);
-        octave_idx_type d = cdim[lev];
+        octave_idx_type nn = m_idx[lev].length (m_dim[lev]);
+        octave_idx_type d = m_cdim[lev];
         for (octave_idx_type i = 0; i < nn; i++)
-          do_fill (val, dest + d*idx[lev].xelem (i), lev-1);
+          do_fill (val, dest + d*m_idx[lev].xelem (i), lev-1);
       }
   }
 
 public:
 
   template <typename T>
-  void index (const T *src, T *dest) const { do_index (src, dest, top); }
+  void index (const T *src, T *dest) const { do_index (src, dest, m_top); }
 
   template <typename T>
-  void assign (const T *src, T *dest) const { do_assign (src, dest, top); }
+  void assign (const T *src, T *dest) const { do_assign (src, dest, m_top); }
 
   template <typename T>
-  void fill (const T& val, T *dest) const { do_fill (val, dest, top); }
+  void fill (const T& val, T *dest) const { do_fill (val, dest, m_top); }
 
-  bool is_cont_range (octave_idx_type& l,
-                      octave_idx_type& u) const
+  bool is_cont_range (octave_idx_type& l, octave_idx_type& u) const
   {
-    return top == 0 && idx[0].is_cont_range (dim[0], l, u);
+    return m_top == 0 && m_idx[0].is_cont_range (m_dim[0], l, u);
   }
 };
 

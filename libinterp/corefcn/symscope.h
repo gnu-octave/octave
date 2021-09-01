@@ -262,10 +262,7 @@ namespace octave
       return m_parent_fcn_names;
     }
 
-    void cache_parent_fcn_names (const std::list<std::string>& names)
-    {
-      m_parent_fcn_names = names;
-    }
+    void cache_parent_fcn_names (const std::list<std::string>& names);
 
     octave_user_code *user_code (void) const { return m_code; }
 

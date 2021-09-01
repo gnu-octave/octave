@@ -197,6 +197,20 @@ namespace octave
   }
 
   void
+  symbol_scope_rep::cache_parent_fcn_names (const std::list<std::string>& names)
+  {
+    m_parent_fcn_names = names;
+
+    if (m_code && m_code->is_user_function ())
+      {
+        octave_user_function *fcn
+          = dynamic_cast<octave_user_function *> (m_code);
+
+        fcn->stash_parent_fcn_name (names.front ());
+      }
+  }
+
+  void
   symbol_scope_rep::set_parent (const std::shared_ptr<symbol_scope_rep>& parent)
   {
     m_parent = std::weak_ptr<symbol_scope_rep> (parent);

@@ -43,10 +43,10 @@ Quad : public Quad_options
 public:
 
   Quad (integrand_fcn fcn)
-    : Quad_options (), f (fcn), ff () { }
+    : Quad_options (), m_f (fcn), m_ff () { }
 
   Quad (float_integrand_fcn fcn)
-    : Quad_options (), f (), ff (fcn) { }
+    : Quad_options (), m_f (), m_ff (fcn) { }
 
   virtual ~Quad (void) = default;
 
@@ -110,8 +110,8 @@ public:
 
 protected:
 
-  integrand_fcn f;
-  float_integrand_fcn ff;
+  integrand_fcn m_f;
+  float_integrand_fcn m_ff;
 };
 
 class

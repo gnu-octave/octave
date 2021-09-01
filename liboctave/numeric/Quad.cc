@@ -108,7 +108,7 @@ DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   Array<double> work (dim_vector (lenw, 1));
   double *pwork = work.fortran_vec ();
 
-  user_fcn = f;
+  user_fcn = m_f;
   F77_INT last;
 
   double abs_tol = absolute_tolerance ();
@@ -153,7 +153,7 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   Array<double> work (dim_vector (lenw, 1));
   double *pwork = work.fortran_vec ();
 
-  user_fcn = f;
+  user_fcn = m_f;
   F77_INT last;
 
   F77_INT inf;
@@ -225,7 +225,7 @@ FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   Array<float> work (dim_vector (lenw, 1));
   float *pwork = work.fortran_vec ();
 
-  float_user_fcn = ff;
+  float_user_fcn = m_ff;
   F77_INT last;
 
   float abs_tol = single_precision_absolute_tolerance ();
@@ -270,7 +270,7 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   Array<float> work (dim_vector (lenw, 1));
   float *pwork = work.fortran_vec ();
 
-  float_user_fcn = ff;
+  float_user_fcn = m_ff;
   F77_INT last;
 
   F77_INT inf;

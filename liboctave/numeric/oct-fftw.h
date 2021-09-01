@@ -74,8 +74,8 @@ namespace octave
                  Complex *out)
     {
       return instance_ok ()
-        ? instance->do_create_plan (dir, rank, dims, howmany, stride,
-                                    dist, in, out)
+        ? s_instance->do_create_plan (dir, rank, dims, howmany, stride,
+                                      dist, in, out)
         : nullptr;
     }
 
@@ -85,8 +85,8 @@ namespace octave
                  octave_idx_type dist, const double *in, Complex *out)
     {
       return instance_ok ()
-        ? instance->do_create_plan (rank, dims, howmany, stride, dist,
-                                    in, out)
+        ? s_instance->do_create_plan (rank, dims, howmany, stride, dist,
+                                      in, out)
         : nullptr;
     }
 
@@ -94,28 +94,29 @@ namespace octave
     {
       static FftwMethod dummy;
 
-      return instance_ok () ? instance->do_method () : dummy;
+      return instance_ok () ? s_instance->do_method () : dummy;
     }
 
-    static FftwMethod method (FftwMethod _meth)
+    static FftwMethod method (FftwMethod meth)
     {
       static FftwMethod dummy;
 
-      return instance_ok () ? instance->do_method (_meth) : dummy;
+      return instance_ok () ? s_instance->do_method (meth) : dummy;
     }
 
     static void threads (int nt);
 
     static int threads (void)
     {
-      return instance_ok () ? instance->nthreads : 0;
+      return instance_ok () ? s_instance->m_nthreads : 0;
     }
 
   private:
 
-    static fftw_planner *instance;
+    static fftw_planner *s_instance;
 
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    static void cleanup_instance (void)
+    { delete s_instance; s_instance = nullptr; }
 
     void *
     do_create_plan (int dir, const int rank, const dim_vector& dims,
@@ -130,56 +131,56 @@ namespace octave
 
     FftwMethod do_method (void);
 
-    FftwMethod do_method (FftwMethod _meth);
+    FftwMethod do_method (FftwMethod meth);
 
-    FftwMethod meth;
+    FftwMethod m_meth;
 
     // FIXME: perhaps this should be split into two classes?
 
     // Plan for fft and ifft of complex values
-    void *plan[2];
+    void *m_plan[2];
 
     // dist
-    octave_idx_type d[2];
+    octave_idx_type m_d[2];
 
     // stride
-    octave_idx_type s[2];
+    octave_idx_type m_s[2];
 
     // rank
-    int r[2];
+    int m_r[2];
 
     // howmany
-    octave_idx_type h[2];
+    octave_idx_type m_h[2];
 
     // dims
-    dim_vector n[2];
+    dim_vector m_n[2];
 
-    bool simd_align[2];
-    bool inplace[2];
+    bool m_simd_align[2];
+    bool m_inplace[2];
 
     // Plan for fft of real values
-    void *rplan;
+    void *m_rplan;
 
     // dist
-    octave_idx_type rd;
+    octave_idx_type m_rd;
 
     // stride
-    octave_idx_type rs;
+    octave_idx_type m_rs;
 
     // rank
-    int rr;
+    int m_rr;
 
     // howmany
-    octave_idx_type rh;
+    octave_idx_type m_rh;
 
     // dims
-    dim_vector rn;
+    dim_vector m_rn;
 
-    bool rsimd_align;
+    bool m_rsimd_align;
 
     // number of threads.  Always 1 unless compiled with multi-threading
     // support.
-    int nthreads;
+    int m_nthreads;
   };
 
   class
@@ -220,8 +221,8 @@ namespace octave
                  FloatComplex *out)
     {
       return instance_ok ()
-        ? instance->do_create_plan (dir, rank, dims, howmany, stride,
-                                    dist, in, out)
+        ? s_instance->do_create_plan (dir, rank, dims, howmany, stride,
+                                      dist, in, out)
         : nullptr;
     }
 
@@ -231,8 +232,8 @@ namespace octave
                  octave_idx_type dist, const float *in, FloatComplex *out)
     {
       return instance_ok ()
-        ? instance->do_create_plan (rank, dims, howmany, stride, dist,
-                                    in, out)
+        ? s_instance->do_create_plan (rank, dims, howmany, stride, dist,
+                                      in, out)
         : nullptr;
     }
 
@@ -240,28 +241,29 @@ namespace octave
     {
       static FftwMethod dummy;
 
-      return instance_ok () ? instance->do_method () : dummy;
+      return instance_ok () ? s_instance->do_method () : dummy;
     }
 
-    static FftwMethod method (FftwMethod _meth)
+    static FftwMethod method (FftwMethod meth)
     {
       static FftwMethod dummy;
 
-      return instance_ok () ? instance->do_method (_meth) : dummy;
+      return instance_ok () ? s_instance->do_method (meth) : dummy;
     }
 
     static void threads (int nt);
 
     static int threads (void)
     {
-      return instance_ok () ? instance->nthreads : 0;
+      return instance_ok () ? s_instance->m_nthreads : 0;
     }
 
   private:
 
-    static float_fftw_planner *instance;
+    static float_fftw_planner *s_instance;
 
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    static void cleanup_instance (void)
+    { delete s_instance; s_instance = nullptr; }
 
     void *
     do_create_plan (int dir, const int rank, const dim_vector& dims,
@@ -276,56 +278,56 @@ namespace octave
 
     FftwMethod do_method (void);
 
-    FftwMethod do_method (FftwMethod _meth);
+    FftwMethod do_method (FftwMethod meth);
 
-    FftwMethod meth;
+    FftwMethod m_meth;
 
     // FIXME: perhaps this should be split into two classes?
 
     // Plan for fft and ifft of complex values
-    void *plan[2];
+    void *m_plan[2];
 
     // dist
-    octave_idx_type d[2];
+    octave_idx_type m_d[2];
 
     // stride
-    octave_idx_type s[2];
+    octave_idx_type m_s[2];
 
     // rank
-    int r[2];
+    int m_r[2];
 
     // howmany
-    octave_idx_type h[2];
+    octave_idx_type m_h[2];
 
     // dims
-    dim_vector n[2];
+    dim_vector m_n[2];
 
-    bool simd_align[2];
-    bool inplace[2];
+    bool m_simd_align[2];
+    bool m_inplace[2];
 
     // Plan for fft of real values
-    void *rplan;
+    void *m_rplan;
 
     // dist
-    octave_idx_type rd;
+    octave_idx_type m_rd;
 
     // stride
-    octave_idx_type rs;
+    octave_idx_type m_rs;
 
     // rank
-    int rr;
+    int m_rr;
 
     // howmany
-    octave_idx_type rh;
+    octave_idx_type m_rh;
 
     // dims
-    dim_vector rn;
+    dim_vector m_rn;
 
-    bool rsimd_align;
+    bool m_rsimd_align;
 
     // number of threads.  Always 1 unless compiled with multi-threading
     // support.
-    int nthreads;
+    int m_nthreads;
   };
 
   class
@@ -368,7 +370,8 @@ namespace octave
                      std::size_t nsamples = 1, octave_idx_type stride = 1,
                      octave_idx_type dist = -1);
 
-    static int fftNd (const float*, FloatComplex*, const int, const dim_vector&);
+    static int fftNd (const float*, FloatComplex*, const int,
+                      const dim_vector&);
     static int fftNd (const FloatComplex*, FloatComplex*, const int,
                       const dim_vector&);
     static int ifftNd (const FloatComplex*, FloatComplex*, const int,

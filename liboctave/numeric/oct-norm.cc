@@ -178,51 +178,51 @@ namespace octave
   template <typename R>
   class norm_accumulator_inf
   {
-    R max;
+    R m_max;
   public:
-    norm_accumulator_inf () : max (0) { }
+    norm_accumulator_inf () : m_max (0) { }
     template <typename U>
     void accum (U val)
     {
       if (math::isnan (val))
-        max = numeric_limits<R>::NaN ();
+        m_max = numeric_limits<R>::NaN ();
       else
-        max = std::max (max, std::abs (val));
+        m_max = std::max (m_max, std::abs (val));
     }
-    operator R () { return max; }
+    operator R () { return m_max; }
   };
 
-  // norm accumulator for the -inf pseudonorm (min abs value)
+  // norm accumulator for the -inf pseudonorm (m_min abs value)
   template <typename R>
   class norm_accumulator_minf
   {
-    R min;
+    R m_min;
   public:
-    norm_accumulator_minf () : min (numeric_limits<R>::Inf ()) { }
+    norm_accumulator_minf () : m_min (numeric_limits<R>::Inf ()) { }
     template <typename U>
     void accum (U val)
     {
       if (math::isnan (val))
-        min = numeric_limits<R>::NaN ();
+        m_min = numeric_limits<R>::NaN ();
       else
-        min = std::min (min, std::abs (val));
+        m_min = std::min (m_min, std::abs (val));
     }
-    operator R () { return min; }
+    operator R () { return m_min; }
   };
 
   // norm accumulator for the 0-pseudonorm (hamming distance)
   template <typename R>
   class norm_accumulator_0
   {
-    unsigned int num;
+    unsigned int m_num;
   public:
-    norm_accumulator_0 () : num (0) { }
+    norm_accumulator_0 () : m_num (0) { }
     template <typename U>
     void accum (U val)
     {
-      if (val != static_cast<U> (0)) ++num;
+      if (val != static_cast<U> (0)) ++m_num;
     }
-    operator R () { return num; }
+    operator R () { return m_num; }
   };
 
   // OK, we're armed :) Now let's go for the fun

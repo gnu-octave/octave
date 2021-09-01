@@ -623,35 +623,35 @@ public:
 // once (apart from reinitialization)
 class rec_resize_helper
 {
-  octave_idx_type *cext;
-  octave_idx_type *sext;
-  octave_idx_type *dext;
-  int n;
+  octave_idx_type *m_cext;
+  octave_idx_type *m_sext;
+  octave_idx_type *m_dext;
+  int m_n;
 
 public:
   rec_resize_helper (const dim_vector& ndv, const dim_vector& odv)
-    : cext (nullptr), sext (nullptr), dext (nullptr), n (0)
+    : m_cext (nullptr), m_sext (nullptr), m_dext (nullptr), m_n (0)
   {
     int l = ndv.ndims ();
     assert (odv.ndims () == l);
     octave_idx_type ld = 1;
     int i = 0;
     for (; i < l-1 && ndv(i) == odv(i); i++) ld *= ndv(i);
-    n = l - i;
-    cext = new octave_idx_type [3*n];
+    m_n = l - i;
+    m_cext = new octave_idx_type [3*m_n];
     // Trick to avoid three allocations
-    sext = cext + n;
-    dext = sext + n;
+    m_sext = m_cext + m_n;
+    m_dext = m_sext + m_n;
 
     octave_idx_type sld = ld;
     octave_idx_type dld = ld;
-    for (int j = 0; j < n; j++)
+    for (int j = 0; j < m_n; j++)
       {
-        cext[j] = std::min (ndv(i+j), odv(i+j));
-        sext[j] = sld *= odv(i+j);
-        dext[j] = dld *= ndv(i+j);
+        m_cext[j] = std::min (ndv(i+j), odv(i+j));
+        m_sext[j] = sld *= odv(i+j);
+        m_dext[j] = dld *= ndv(i+j);
       }
-    cext[0] *= ld;
+    m_cext[0] *= ld;
   }
 
   // No copying!
@@ -660,7 +660,7 @@ public:
 
   rec_resize_helper& operator = (const rec_resize_helper&) = delete;
 
-  ~rec_resize_helper (void) { delete [] cext; }
+  ~rec_resize_helper (void) { delete [] m_cext; }
 
 private:
 
@@ -670,18 +670,18 @@ private:
   {
     if (lev == 0)
       {
-        std::copy_n (src, cext[0], dest);
-        std::fill_n (dest + cext[0], dext[0] - cext[0], rfv);
+        std::copy_n (src, m_cext[0], dest);
+        std::fill_n (dest + m_cext[0], m_dext[0] - m_cext[0], rfv);
       }
     else
       {
         octave_idx_type sd, dd, k;
-        sd = sext[lev-1];
-        dd = dext[lev-1];
-        for (k = 0; k < cext[lev]; k++)
+        sd = m_sext[lev-1];
+        dd = m_dext[lev-1];
+        for (k = 0; k < m_cext[lev]; k++)
           do_resize_fill (src + k * sd, dest + k * dd, rfv, lev - 1);
 
-        std::fill_n (dest + k * dd, dext[lev] - k * dd, rfv);
+        std::fill_n (dest + k * dd, m_dext[lev] - k * dd, rfv);
       }
   }
 
@@ -689,7 +689,7 @@ public:
 
   template <typename T>
   void resize_fill (const T *src, T *dest, const T& rfv) const
-  { do_resize_fill (src, dest, rfv, n-1); }
+  { do_resize_fill (src, dest, rfv, m_n-1); }
 };
 
 template <typename T>

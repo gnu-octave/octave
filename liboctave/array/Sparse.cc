@@ -46,7 +46,6 @@
 #include "oct-locbuf.h"
 
 #include "Sparse.h"
-#include "sparse-sort.h"
 #include "sparse-util.h"
 #include "oct-spparms.h"
 #include "mx-inlines.cc"

@@ -274,17 +274,17 @@ namespace octave
   Menu::menu (void)
   {
     QAction *action = qWidget<QAction> ();
-    QMenu *_menu = action->menu ();
+    QMenu *action_menu = action->menu ();
 
-    if (! _menu)
+    if (! action_menu)
       {
-        _menu = new QMenu (action->parentWidget ());
-        action->setMenu (_menu);
+        action_menu = new QMenu (action->parentWidget ());
+        action->setMenu (action_menu);
         action->setShortcut (QKeySequence ());
-        connect (_menu, &QMenu::aboutToShow, this, &Menu::actionHovered);
+        connect (action_menu, &QMenu::aboutToShow, this, &Menu::actionHovered);
       }
 
-    return _menu;
+    return action_menu;
   }
 
   void

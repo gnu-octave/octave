@@ -1,4 +1,4 @@
-%!test <58572>
+%!test <*58572>
 %! obj = bug58572 ();
 %! assert (use_num (obj), false);
 %! assert (obj.use_num (), false);

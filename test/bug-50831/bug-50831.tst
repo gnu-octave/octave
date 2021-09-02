@@ -1,4 +1,4 @@
-%!test <50831>
+%!test <*50831>
 %! filename = tempname ();
 %! s.("a-b") = "bad fieldname";
 %! unwind_protect

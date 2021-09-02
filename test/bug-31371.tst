@@ -23,7 +23,7 @@
 ##
 ########################################################################
 
-%!test <31371>
+%!test <*31371>
 %! % Work around MATLAB bug where f(x)(y) is invalid syntax
 %! % (This bug does not apply to Octave)
 %!

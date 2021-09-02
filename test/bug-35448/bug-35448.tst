@@ -23,14 +23,14 @@
 ##
 ########################################################################
 
-%!test <35448>
+%!test <*35448>
 %! global gfun
 %! gfun = @fB;
 %! y = fA (e);
 %! assert (y, e);
 %! clear -global gfun;  # cleanup after test
 
-%!test <35448>
+%!test <*35448>
 %! global gfun
 %! gfun = @fC;
 %! y = fA (e);

@@ -1,4 +1,4 @@
-%!test <55758>
+%!test <*55758>
 %! global class_bug_55758_dtor_called
 %! class_bug_55758_dtor_called = false;
 %!

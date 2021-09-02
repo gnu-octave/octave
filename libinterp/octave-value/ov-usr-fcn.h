@@ -252,8 +252,6 @@ public:
 
   void maybe_relocate_end (void);
 
-  void stash_parent_fcn_name (const std::string& p) { m_parent_name = p; }
-
   void stash_parent_fcn_scope (const octave::symbol_scope& ps);
 
   void stash_leading_comment (octave::comment_list *lc) { m_lead_comm = lc; }
@@ -262,7 +260,12 @@ public:
 
   std::string profiler_name (void) const;
 
-  std::string parent_fcn_name (void) const { return m_parent_name; }
+  std::string parent_fcn_name (void) const
+  {
+    octave::symbol_scope pscope = parent_fcn_scope ();
+
+    return pscope.fcn_name ();
+  }
 
   octave::symbol_scope parent_fcn_scope (void) const
   {
@@ -435,9 +438,6 @@ private:
   int m_location_column;
   int m_end_location_line;
   int m_end_location_column;
-
-  // The name of the parent function, if any.
-  std::string m_parent_name;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp

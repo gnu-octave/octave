@@ -4205,7 +4205,6 @@ OCTAVE_NAMESPACE_BEGIN
         if (m_curr_fcn_depth > 0 || m_parsing_subfunctions)
           {
             fcn->stash_fcn_location (l, c);
-            fcn->stash_parent_fcn_name (m_lexer.m_fcn_file_name);
 
             octave_value ov_fcn (fcn);
 
@@ -4231,7 +4230,7 @@ OCTAVE_NAMESPACE_BEGIN
                   fcn_scope.set_primary_parent (m_primary_fcn_scope);
                 m_primary_fcn_scope.install_subfunction (fcn_nm, ov_fcn);
 
-                // Prepend name of primary fucntion to list of parent
+                // Prepend name of primary function to list of parent
                 // functions (if any) for subfunction.
 
                 std::list<std::string> plst

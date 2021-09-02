@@ -169,7 +169,6 @@ namespace octave
             new_scope.set_nesting_depth (parent_scope.nesting_depth () + 1);
           }
 
-        af->stash_parent_fcn_name (curr_fcn->name ());
         af->stash_dir_name (curr_fcn->dir_name ());
 
         new_scope.cache_fcn_file_name (curr_fcn->fcn_file_name ());

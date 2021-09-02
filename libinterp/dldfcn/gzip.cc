@@ -753,7 +753,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!endfunction
 %!test run_test_function (@test_large_file)
 
-## Test that xzipped files are rexzipped (hits bug #48597, #48598)
+## Test that xzipped files are rexzipped (hits bug #43206, #48598)
 %!function test_z_z (test_dir, z)
 %!  ori_file = tempname (test_dir);
 %!  create_file (ori_file, rand (100, 1));
@@ -771,7 +771,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  assert (hash ("md5", fileread (ori_file)), md5_ori)
 %!  assert (exist (z_file), 2) # bug #48597
 %!
-%!  ## xzip should dutifully re-xzip files even if they already are zipped
+%!  ## xzip should preserve original files.
 %!  z_z_file = [z_file z.ext];
 %!  z_z_filelist = z.zip (z_file);
 %!  assert (is_same_file (z_z_filelist, {z_z_file})) # check output
@@ -782,10 +782,10 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  unlink_or_error (z_file);
 %!  uz_z_filelist = z.unzip (z_z_file);
 %!  assert (is_same_file (uz_z_filelist, {z_file})) # bug #48598
-%!  assert (exist (z_z_file), 2) # bug #48597
+%!  assert (exist (z_z_file), 2) # bug #43206
 %!  assert (hash ("md5", fileread (z_file)), md5_z)
 %!endfunction
-%!test <48597> run_test_function (@test_z_z)
+%!test <43206> run_test_function (@test_z_z)
 
 %!function test_xzip_dir (test_dir, z) # bug #43431
 %!  fpaths = fullfile (test_dir, {"test1", "test2", "test3"});
@@ -814,7 +814,9 @@ The optional output @var{filelist} is a list of the compressed files.
 %!      uz_filelist(idx) = z.unzip (z_filelist{idx});
 %!    endfor
 %!  endif
-%!  assert (is_same_file (sort (uz_filelist), fpaths(:))) # bug #48598
+%!  uz_filelist = sort (uz_filelist);
+%!  fpaths = sort (fpaths);
+%!  assert (is_same_file (uz_filelist(:), fpaths(:))) # bug #48598
 %!  for idx = 1:numel (fpaths)
 %!    assert (hash ("md5", fileread (fpaths{idx})), md5s{idx})
 %!  endfor

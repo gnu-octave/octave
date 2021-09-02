@@ -196,10 +196,21 @@ namespace octave
       }
   }
 
-  void
-  symbol_scope_rep::cache_parent_fcn_names (const std::list<std::string>& names)
+  std::list<std::string>
+  symbol_scope_rep::parent_fcn_names (void) const
   {
-    m_parent_fcn_names = names;
+    std::list<std::string> retval;
+
+    auto pscope = parent_scope_rep ();
+
+    while (pscope)
+      {
+        retval.push_back (pscope->fcn_name ());
+
+        pscope = pscope->parent_scope_rep ();
+      }
+
+    return retval;
   }
 
   void
@@ -319,14 +330,8 @@ namespace octave
         m_is_static = true;
       }
 
-    std::list<std::string> plst = parent_fcn_names ();
-    plst.push_front (m_fcn_name);
-
     for (auto& scope_obj : m_children)
-      {
-        scope_obj.cache_parent_fcn_names (plst);
-        scope_obj.update_nest ();
-      }
+      scope_obj.update_nest ();
   }
 
   bool symbol_scope_rep::look_nonlocal (const std::string& name,

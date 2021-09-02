@@ -4216,6 +4216,7 @@ OCTAVE_NAMESPACE_BEGIN
                 symbol_scope pscope = m_function_scopes.parent_scope ();
                 fcn_scope.set_parent (pscope);
                 fcn_scope.set_primary_parent (m_primary_fcn_scope);
+
                 pscope.install_nestfunction (fcn_nm, ov_fcn, fcn_scope);
 
                 // For nested functions, the list of parent functions is
@@ -4225,18 +4226,12 @@ OCTAVE_NAMESPACE_BEGIN
               {
                 fcn->mark_as_subfunction ();
                 m_subfunction_names.push_back (fcn_nm);
+
                 fcn_scope.set_parent (m_primary_fcn_scope);
                 if (m_parsing_subfunctions)
                   fcn_scope.set_primary_parent (m_primary_fcn_scope);
+
                 m_primary_fcn_scope.install_subfunction (fcn_nm, ov_fcn);
-
-                // Prepend name of primary function to list of parent
-                // functions (if any) for subfunction.
-
-                std::list<std::string> plst
-                  = fcn_scope.parent_fcn_names ();
-                plst.push_front (m_primary_fcn_scope.fcn_name ());
-                fcn_scope.cache_parent_fcn_names (plst);
               }
           }
 

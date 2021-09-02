@@ -1,4 +1,4 @@
-%!test
+%!test <56068>
 %! res = textscan (evalc ("bug_56068"), "%s", "delimiter", "\n");
 %! f_cell = textscan (fileread ("bug_56068.m"), "%s", "delimiter", "\n");
 %! f_echo = cellfun (@(x) sprintf ([PS4 "%s"], x), ...

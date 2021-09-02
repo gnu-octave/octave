@@ -207,6 +207,6 @@
 %! assert (properties (x), props);
 
 %!test <60763>
-%! x = bug_69763 ();
+%! x = bug_60763 ();
 %! assert (x.foobar (), {"some_property"});
 %! assert (x.methods (), 42);

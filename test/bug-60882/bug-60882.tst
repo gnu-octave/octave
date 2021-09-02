@@ -25,4 +25,4 @@
 
 ## bug #60882: error parsing command syntax
 
-%!assert (bug_60882 (), 42)
+%!assert <60882> (bug_60882 (), 42)

@@ -29,7 +29,7 @@
 %!  set (hl, "userdata", isequal (color, [1 0 0]));
 %!endfunction
 
-%!test
+%!test <55321>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);

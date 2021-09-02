@@ -459,9 +459,6 @@ private:
   // TRUE means this is a nested function.
   bool m_nested_function;
 
-  // TRUE means this function contains a nested function.
-  bool m_parent_function;
-
   // Enum describing whether this function is the constructor for class object.
   class_method_type m_class_constructor;
 

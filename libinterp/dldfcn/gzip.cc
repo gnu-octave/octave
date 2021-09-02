@@ -595,7 +595,7 @@ OCTAVE_NAMESPACE_BEGIN
       }
   }
 
-DEFUN_DLD (gzip, args, ,
+DEFUN_DLD (gzip, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{filelist} =} gzip (@var{files})
 @deftypefnx {} {@var{filelist} =} gzip (@var{files}, @var{dir})
@@ -623,7 +623,9 @@ The optional output @var{filelist} is a list of the compressed files.
 {
 #if defined (HAVE_Z)
 
-  return xzip<gz> ("gzip", args);
+  octave_value_list retval = xzip<gz> ("gzip", args);
+
+  return (nargout > 0 ? retval : octave_value_list ());
 
 #else
 
@@ -640,7 +642,7 @@ The optional output @var{filelist} is a list of the compressed files.
 %!error <FILES must be a character array or cellstr|was unavailable or disabled> gzip (1)
 */
 
-DEFUN_DLD (bzip2, args, ,
+DEFUN_DLD (bzip2, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{filelist} =} bzip2 (@var{files})
 @deftypefnx {} {@var{filelist} =} bzip2 (@var{files}, @var{dir})
@@ -666,7 +668,9 @@ The optional output @var{filelist} is a list of the compressed files.
 {
 #if defined (HAVE_BZ2)
 
-  return xzip<bz2> ("bzip2", args);
+  octave_value_list retval = xzip<bz2> ("bzip2", args);
+
+  return (nargout > 0 ? retval : octave_value_list ());
 
 #else
 

@@ -74,7 +74,6 @@ namespace octave
   template <typename R>
   class norm_accumulator_p
   {
-    R m_p,m_scl,m_sum;
   public:
     norm_accumulator_p () { } // we need this one for Array
     norm_accumulator_p (R pp) : m_p(pp), m_scl(0), m_sum(1) { }
@@ -95,14 +94,17 @@ namespace octave
       else if (t != 0)
         m_sum += std::pow (t/m_scl, m_p);
     }
+
     operator R () { return m_scl * std::pow (m_sum, 1/m_p); }
+
+  private:
+    R m_p, m_scl, m_sum;
   };
 
   // norm accumulator for the minus p-pseudonorm
   template <typename R>
   class norm_accumulator_mp
   {
-    R m_p,m_scl,m_sum;
   public:
     norm_accumulator_mp () { } // we need this one for Array
     norm_accumulator_mp (R pp) : m_p(pp), m_scl(0), m_sum(1) { }
@@ -123,15 +125,17 @@ namespace octave
       else if (t != 0)
         m_sum += std::pow (t/m_scl, m_p);
     }
+
     operator R () { return m_scl * std::pow (m_sum, -1/m_p); }
+
+  private:
+    R m_p, m_scl, m_sum;
   };
 
   // norm accumulator for the 2-norm (euclidean)
   template <typename R>
   class norm_accumulator_2
   {
-    R m_scl,m_sum;
-    static R pow2 (R x) { return x*x; }
   public:
     norm_accumulator_2 () : m_scl(0), m_sum(1) { }
 
@@ -157,13 +161,19 @@ namespace octave
     }
 
     operator R () { return m_scl * std::sqrt (m_sum); }
+
+  private:
+    static inline R pow2 (R x) { return x*x; }
+
+    //--------
+
+    R m_scl, m_sum;
   };
 
   // norm accumulator for the 1-norm (city metric)
   template <typename R>
   class norm_accumulator_1
   {
-    R m_sum;
   public:
     norm_accumulator_1 () : m_sum (0) { }
     template <typename U>
@@ -171,14 +181,17 @@ namespace octave
     {
       m_sum += std::abs (val);
     }
+
     operator R () { return m_sum; }
+
+  private:
+    R m_sum;
   };
 
   // norm accumulator for the inf-norm (max metric)
   template <typename R>
   class norm_accumulator_inf
   {
-    R m_max;
   public:
     norm_accumulator_inf () : m_max (0) { }
     template <typename U>
@@ -189,14 +202,17 @@ namespace octave
       else
         m_max = std::max (m_max, std::abs (val));
     }
+
     operator R () { return m_max; }
+
+  private:
+    R m_max;
   };
 
-  // norm accumulator for the -inf pseudonorm (m_min abs value)
+  // norm accumulator for the -inf pseudonorm (min abs value)
   template <typename R>
   class norm_accumulator_minf
   {
-    R m_min;
   public:
     norm_accumulator_minf () : m_min (numeric_limits<R>::Inf ()) { }
     template <typename U>
@@ -207,14 +223,17 @@ namespace octave
       else
         m_min = std::min (m_min, std::abs (val));
     }
+
     operator R () { return m_min; }
+
+  private:
+    R m_min;
   };
 
   // norm accumulator for the 0-pseudonorm (hamming distance)
   template <typename R>
   class norm_accumulator_0
   {
-    unsigned int m_num;
   public:
     norm_accumulator_0 () : m_num (0) { }
     template <typename U>
@@ -222,7 +241,11 @@ namespace octave
     {
       if (val != static_cast<U> (0)) ++m_num;
     }
+
     operator R () { return m_num; }
+
+  private:
+    unsigned int m_num;
   };
 
   // OK, we're armed :) Now let's go for the fun

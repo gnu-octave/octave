@@ -458,7 +458,7 @@ simple_list1    : statement
                 ;
 
 opt_list        : // empty
-                  { $$ = new octave::tree_statement_list (); }
+                  { $$ = nullptr; }
                 | list
                   { $$ = $1; }
                 ;
@@ -474,7 +474,7 @@ list1           : statement
                 ;
 
 opt_fcn_list    : // empty
-                  { $$ = new octave::tree_statement_list (); }
+                  { $$ = nullptr; }
                 | fcn_list
                   { $$ = $1; }
                 ;
@@ -1229,7 +1229,7 @@ switch_command  : SWITCH stash_comment expression opt_sep case_list END
                 ;
 
 case_list       : // empty
-                  { $$ = new octave::tree_switch_case_list (); }
+                  { $$ = nullptr; }
                 | default_case
                   { $$ = new octave::tree_switch_case_list ($1); }
                 | case_list1

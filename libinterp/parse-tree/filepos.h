@@ -34,7 +34,9 @@ namespace octave
   {
   public:
 
-    filepos (int l = 1, int c = 1) : m_line (l), m_column (c) { }
+    filepos (void) : m_line (0), m_column (0) { }
+
+    filepos (int l, int c) : m_line (l), m_column (c) { }
 
     filepos (const filepos&) = default;
 
@@ -42,11 +44,7 @@ namespace octave
 
     ~filepos (void) = default;
 
-    void set (int l, int c)
-    {
-      m_line = l;
-      m_column = c;
-    }
+    operator bool () { return m_line > 0 && m_column > 0; }
 
     void line (int l) { m_line = l; }
     void column (int c) { m_column = c; }

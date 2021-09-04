@@ -2260,7 +2260,7 @@ If @var{name} is omitted, return a list of keywords.
     m_block_comment_nesting_level = 0;
     m_command_arg_paren_count = 0;
     m_token_count = 0;
-    m_filepos = filepos ();
+    m_filepos = filepos (1, 1);
     m_tok_beg = filepos ();
     m_tok_end = filepos ();
     m_string_text = "";

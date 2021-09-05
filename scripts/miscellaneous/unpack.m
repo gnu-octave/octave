@@ -328,7 +328,7 @@ function files = __parse_gzip__ (output)
   ## Parse the output from gzip and gunzip returning the files
   ## compressed (or decompressed).
 
-  files = regexprep (output, '^.+ -- created (.*)$', '$1');
+  files = regexprep (output, '^.+ -- (?:created|replaced with) (.*)$', '$1');
 endfunction
 
 function files = __parse_bzip2__ (output)

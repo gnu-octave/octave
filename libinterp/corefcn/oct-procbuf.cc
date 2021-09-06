@@ -83,9 +83,9 @@ procbuf::open (const char *command, int mode)
   if (is_open ())
     return 0;
 
-  f = (octave::popen (command, (mode & std::ios::in) ? "r" : "w"));
+  m_f = (octave::popen (command, (mode & std::ios::in) ? "r" : "w"));
 
-  if (! f)
+  if (! m_f)
     return 0;
 
   // Oops... popen doesn't return the associated pid, so fake it for now
@@ -95,7 +95,7 @@ procbuf::open (const char *command, int mode)
   m_open_p = true;
 
   if (mode & std::ios::out)
-    ::setvbuf (f, nullptr, _IOLBF, BUFSIZ);
+    ::setvbuf (m_f, nullptr, _IOLBF, BUFSIZ);
 
   return this;
 
@@ -138,7 +138,7 @@ procbuf::open (const char *command, int mode)
 
       while (procbuf_list)
         {
-          FILE *fp = procbuf_list->f;
+          FILE *fp = procbuf_list->m_f;
 
           if (fp)
             {
@@ -162,10 +162,10 @@ procbuf::open (const char *command, int mode)
       return nullptr;
     }
 
-  f = (::fdopen (parent_end, (mode & std::ios::in) ? "r" : "w"));
+  m_f = (::fdopen (parent_end, (mode & std::ios::in) ? "r" : "w"));
 
   if (mode & std::ios::out)
-    ::setvbuf (f, nullptr, _IOLBF, BUFSIZ);
+    ::setvbuf (m_f, nullptr, _IOLBF, BUFSIZ);
 
   m_open_p = true;
 
@@ -186,10 +186,10 @@ procbuf::close (void)
 {
 #if defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)
 
-  if (f)
+  if (m_f)
     {
-      m_wstatus = octave::pclose (f);
-      f = 0;
+      m_wstatus = octave::pclose (m_f);
+      m_f = 0;
     }
 
   m_open_p = false;
@@ -198,7 +198,7 @@ procbuf::close (void)
 
 #elif defined (HAVE_UNISTD_H)
 
-  if (f)
+  if (m_f)
     {
       pid_t wait_pid;
 
@@ -216,7 +216,7 @@ procbuf::close (void)
             }
         }
 
-      if (status == 0 && std::fclose (f) == 0)
+      if (status == 0 && std::fclose (m_f) == 0)
         {
           using namespace std;
 
@@ -227,7 +227,7 @@ procbuf::close (void)
           while (wait_pid == -1 && errno == EINTR);
         }
 
-      f = nullptr;
+      m_f = nullptr;
     }
 
   m_open_p = false;

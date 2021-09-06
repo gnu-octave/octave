@@ -321,8 +321,10 @@ namespace octave
 
         if (ok)
           {
-            glfcns.glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glfcns.glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glfcns.glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                                    GL_NEAREST);
+            glfcns.glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                                    GL_NEAREST);
 
             if (glfcns.glGetError () != GL_NO_ERROR)
               warning ("opengl_texture::create: OpenGL error while generating texture data");
@@ -348,7 +350,7 @@ namespace octave
 
   public:
 
-    opengl_tessellator (void) : glu_tess (nullptr), fill () { init (); }
+    opengl_tessellator (void) : m_glu_tess (nullptr), m_fill () { init (); }
 
     // No copying!
 
@@ -357,27 +359,27 @@ namespace octave
     opengl_tessellator operator = (const opengl_tessellator&) = delete;
 
     virtual ~opengl_tessellator (void)
-    { if (glu_tess) gluDeleteTess (glu_tess); }
+    { if (m_glu_tess) gluDeleteTess (m_glu_tess); }
 
     void begin_polygon (bool filled = true)
     {
-      gluTessProperty (glu_tess, GLU_TESS_BOUNDARY_ONLY,
+      gluTessProperty (m_glu_tess, GLU_TESS_BOUNDARY_ONLY,
                        (filled ? GL_FALSE : GL_TRUE));
-      fill = filled;
-      gluTessBeginPolygon (glu_tess, this);
+      m_fill = filled;
+      gluTessBeginPolygon (m_glu_tess, this);
     }
 
     void end_polygon (void) const
-    { gluTessEndPolygon (glu_tess); }
+    { gluTessEndPolygon (m_glu_tess); }
 
     void begin_contour (void) const
-    { gluTessBeginContour (glu_tess); }
+    { gluTessBeginContour (m_glu_tess); }
 
     void end_contour (void) const
-    { gluTessEndContour (glu_tess); }
+    { gluTessEndContour (m_glu_tess); }
 
     void add_vertex (double *loc, void *data) const
-    { gluTessVertex (glu_tess, loc, data); }
+    { gluTessVertex (m_glu_tess, loc, data); }
 
   protected:
     virtual void begin (GLenum /*type*/) { }
@@ -396,23 +398,23 @@ namespace octave
 
     virtual void init (void)
     {
-      glu_tess = gluNewTess ();
+      m_glu_tess = gluNewTess ();
 
-      gluTessCallback (glu_tess, GLU_TESS_BEGIN_DATA,
+      gluTessCallback (m_glu_tess, GLU_TESS_BEGIN_DATA,
                        reinterpret_cast<fcn> (tess_begin));
-      gluTessCallback (glu_tess, GLU_TESS_END_DATA,
+      gluTessCallback (m_glu_tess, GLU_TESS_END_DATA,
                        reinterpret_cast<fcn> (tess_end));
-      gluTessCallback (glu_tess, GLU_TESS_VERTEX_DATA,
+      gluTessCallback (m_glu_tess, GLU_TESS_VERTEX_DATA,
                        reinterpret_cast<fcn> (tess_vertex));
-      gluTessCallback (glu_tess, GLU_TESS_COMBINE_DATA,
+      gluTessCallback (m_glu_tess, GLU_TESS_COMBINE_DATA,
                        reinterpret_cast<fcn> (tess_combine));
-      gluTessCallback (glu_tess, GLU_TESS_EDGE_FLAG_DATA,
+      gluTessCallback (m_glu_tess, GLU_TESS_EDGE_FLAG_DATA,
                        reinterpret_cast<fcn> (tess_edge_flag));
-      gluTessCallback (glu_tess, GLU_TESS_ERROR_DATA,
+      gluTessCallback (m_glu_tess, GLU_TESS_ERROR_DATA,
                        reinterpret_cast<fcn> (tess_error));
     }
 
-    bool is_filled (void) const { return fill; }
+    bool is_filled (void) const { return m_fill; }
 
   private:
     static void CALLBACK tess_begin (GLenum type, void *t)
@@ -434,10 +436,10 @@ namespace octave
     static void CALLBACK tess_error (GLenum err, void *t)
     { reinterpret_cast<opengl_tessellator *> (t)->error (err); }
 
-  private:
+    //--------
 
-    GLUtesselator *glu_tess;
-    bool fill;
+    GLUtesselator *m_glu_tess;
+    bool m_fill;
   };
 
   class vertex_data
@@ -511,42 +513,42 @@ namespace octave
   public:
     patch_tessellator (opengl_renderer *r, int cmode, int lmode, bool fl,
                        float idx = 0.0)
-      : opengl_tessellator (), renderer (r),
-        color_mode (cmode), light_mode (lmode), face_lighting (fl), index (idx),
-        first (true), tmp_vdata ()
+      : opengl_tessellator (), m_renderer (r),
+        m_color_mode (cmode), m_light_mode (lmode), m_face_lighting (fl),
+        m_index (idx), m_first (true), m_tmp_vdata ()
     { }
 
   protected:
     void begin (GLenum type)
     {
-      opengl_functions& glfcns = renderer->get_opengl_functions ();
+      opengl_functions& glfcns = m_renderer->get_opengl_functions ();
 
       //printf ("patch_tessellator::begin (%d)\n", type);
-      first = true;
+      m_first = true;
 
-      if (color_mode == INTERP || light_mode == GOURAUD)
+      if (m_color_mode == INTERP || m_light_mode == GOURAUD)
         glfcns.glShadeModel (GL_SMOOTH);
       else
         glfcns.glShadeModel (GL_FLAT);
 
       if (is_filled ())
-        renderer->set_polygon_offset (true, index);
+        m_renderer->set_polygon_offset (true, m_index);
 
       glfcns.glBegin (type);
     }
 
     void end (void)
     {
-      opengl_functions& glfcns = renderer->get_opengl_functions ();
+      opengl_functions& glfcns = m_renderer->get_opengl_functions ();
 
       //printf ("patch_tessellator::end\n");
       glfcns.glEnd ();
-      renderer->set_polygon_offset (false);
+      m_renderer->set_polygon_offset (false);
     }
 
     void vertex (void *data)
     {
-      opengl_functions& glfcns = renderer->get_opengl_functions ();
+      opengl_functions& glfcns = m_renderer->get_opengl_functions ();
 
       vertex_data::vertex_data_rep *v
         = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
@@ -555,26 +557,26 @@ namespace octave
       // NOTE: OpenGL can re-order vertices.  For "flat" coloring of FaceColor
       // the first vertex must be identified in the draw_patch routine.
 
-      if (color_mode == INTERP || (color_mode == FLAT && ! is_filled ()))
+      if (m_color_mode == INTERP || (m_color_mode == FLAT && ! is_filled ()))
         {
           Matrix col = v->m_color;
 
           if (col.numel () == 3)
             {
               glfcns.glColor4d (col(0), col(1), col(2), v->m_alpha);
-              if (light_mode > 0)
+              if (m_light_mode > 0)
                 {
                   // edge lighting only uses ambient light
                   float buf[4] = { 0.0f, 0.0f, 0.0f, 1.0f };;
 
-                  if (face_lighting)
+                  if (m_face_lighting)
                     for (int k = 0; k < 3; k++)
                       buf[k] = (v->m_specular
                                 * (v->m_specular_color_refl +
                                    (1 - v->m_specular_color_refl) * col(k)));
                   glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
 
-                  if (face_lighting)
+                  if (m_face_lighting)
                     for (int k = 0; k < 3; k++)
                       buf[k] = (v->m_diffuse * col(k));
                   glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, buf);
@@ -586,14 +588,14 @@ namespace octave
             }
         }
 
-      if (light_mode == FLAT && first)
+      if (m_light_mode == FLAT && m_first)
         glfcns.glNormal3dv (v->m_face_normal.data ());
-      else if (light_mode == GOURAUD)
+      else if (m_light_mode == GOURAUD)
         glfcns.glNormal3dv (v->m_vertex_normal.data ());
 
       glfcns.glVertex3dv (v->m_coords.data ());
 
-      first = false;
+      m_first = false;
     }
 
     void combine (GLdouble xyz[3], void *data[4], GLfloat w[4], void **out_data)
@@ -647,7 +649,7 @@ namespace octave
       vertex_data new_v (vv, cc, vnn, fnn, aa, v[0]->m_ambient, v[0]->m_diffuse,
                          v[0]->m_specular, v[0]->m_specular_exp,
                          v[0]->m_specular_color_refl);
-      tmp_vdata.push_back (new_v);
+      m_tmp_vdata.push_back (new_v);
 
       *out_data = new_v.get_rep ();
     }
@@ -660,13 +662,13 @@ namespace octave
 
     patch_tessellator& operator = (const patch_tessellator&) = delete;
 
-    opengl_renderer *renderer;
-    int color_mode;
-    int light_mode;
-    bool face_lighting;
-    int index;
-    bool first;
-    std::list<vertex_data> tmp_vdata;
+    opengl_renderer *m_renderer;
+    int m_color_mode;
+    int m_light_mode;
+    bool m_face_lighting;
+    int m_index;
+    bool m_first;
+    std::list<vertex_data> m_tmp_vdata;
   };
 
 #else
@@ -765,7 +767,8 @@ namespace octave
     GLenum gl_error = m_glfcns.glGetError ();
     if (gl_error)
       warning ("opengl_renderer: Error '%s' (%d) occurred drawing '%s' object",
-               gluErrorString (gl_error), gl_error, props.graphics_object_name ().c_str ());
+               gluErrorString (gl_error), gl_error,
+               props.graphics_object_name ().c_str ());
 
 #endif
   }
@@ -2676,8 +2679,10 @@ namespace octave
                     else if (fc_mode == INTERP)
                       {
                         // "interp" needs valid color at all 4 vertices
-                        if (! (math::isfinite (c(j-1, i-1)) && math::isfinite (c(j, i-1))
-                               && math::isfinite (c(j-1, i)) && math::isfinite (c(j, i))))
+                        if (! (math::isfinite (c(j-1, i-1))
+                               && math::isfinite (c(j, i-1))
+                               && math::isfinite (c(j-1, i))
+                               && math::isfinite (c(j, i))))
                           continue;
                       }
 
@@ -2723,7 +2728,8 @@ namespace octave
 
                     // Vertex 2
                     if (fc_mode == TEXTURE)
-                      tex.tex_coord (double (i) / (zc-1), double (j-1) / (zr-1));
+                      tex.tex_coord (double (i) / (zc-1),
+                                     double (j-1) / (zr-1));
                     else if (fc_mode == INTERP)
                       {
                         for (int k = 0; k < 3; k++)
@@ -2782,7 +2788,8 @@ namespace octave
 
                     // Vertex 4
                     if (fc_mode == TEXTURE)
-                      tex.tex_coord (double (i-1) / (zc-1), double (j) / (zr-1));
+                      tex.tex_coord (double (i-1) / (zc-1),
+                                     double (j) / (zr-1));
                     else if (fc_mode == INTERP)
                       {
                         for (int k = 0; k < 3; k++)
@@ -2887,7 +2894,8 @@ namespace octave
                         else if (ec_mode == INTERP)
                           {
                             // "interp" needs valid color at both vertices
-                            if (! (math::isfinite (c(j-1, i)) && math::isfinite (c(j, i))))
+                            if (! (math::isfinite (c(j-1, i))
+                                   && math::isfinite (c(j, i))))
                               continue;
                           }
 
@@ -2910,15 +2918,18 @@ namespace octave
                               {
                                 for (int k = 0; k < 3; k++)
                                   cb[k] *= as;
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT,
+                                                       cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ds * c(j-1, i, k);
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE,
+                                                       cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ss * (scr + (1-scr) * c(j-1, i, k));
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR,
+                                                       cb);
                               }
                           }
                         if (el_mode > 0)
@@ -2942,15 +2953,18 @@ namespace octave
                               {
                                 for (int k = 0; k < 3; k++)
                                   cb[k] *= as;
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT,
+                                                       cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ds * c(j, i, k);
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE,
+                                                       cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ss * (scr + (1-scr) * c(j, i, k));
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR,
+                                                       cb);
                               }
                           }
                         if (el_mode == GOURAUD)
@@ -2989,7 +3003,8 @@ namespace octave
                         else if (ec_mode == INTERP)
                           {
                             // "interp" needs valid color at both vertices
-                            if (! (math::isfinite (c(j, i-1)) && math::isfinite (c(j, i))))
+                            if (! (math::isfinite (c(j, i-1))
+                                   && math::isfinite (c(j, i))))
                               continue;
                           }
 
@@ -3012,15 +3027,18 @@ namespace octave
                               {
                                 for (int k = 0; k < 3; k++)
                                   cb[k] *= as;
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT,
+                                                       cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ds * c(j, i-1, k);
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE,
+                                                       cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ss * (scr + (1-scr) * c(j, i-1, k));
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR,
+                                                       cb);
                               }
                           }
                         if (el_mode > 0)
@@ -3044,15 +3062,18 @@ namespace octave
                               {
                                 for (int k = 0; k < 3; k++)
                                   cb[k] *= as;
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT,
+                                                       cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ds * c(j, i, k);
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE,
+                                                       cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ss * (scr + (1-scr) * c(j, i, k));
-                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR,
+                                                       cb);
                               }
                           }
                         if (el_mode == GOURAUD)
@@ -3347,7 +3368,8 @@ namespace octave
                 aa = a(idx);
             }
 
-          vdata[i+j*fr] = vertex_data (vv, cc, vnn, fnn, aa, as, ds, ss, se, scr);
+          vdata[i+j*fr]
+            = vertex_data (vv, cc, vnn, fnn, aa, as, ds, ss, se, scr);
         }
 
     if (fl_mode > 0 || el_mode > 0)
@@ -3455,18 +3477,21 @@ namespace octave
 
                                     for (int k = 0; k < 3; k++)
                                       cb[k] = (vv->m_ambient * col(k));
-                                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                    m_glfcns.glMaterialfv (LIGHT_MODE,
+                                                           GL_AMBIENT, cb);
 
                                     for (int k = 0; k < 3; k++)
                                       cb[k] = (vv->m_diffuse * col(k));
-                                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                    m_glfcns.glMaterialfv (LIGHT_MODE,
+                                                           GL_DIFFUSE, cb);
 
                                     for (int k = 0; k < 3; k++)
                                       cb[k] = vv->m_specular *
                                               (vv->m_specular_color_refl
                                                + (1-vv->m_specular_color_refl) *
                                               col(k));
-                                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                    m_glfcns.glMaterialfv (LIGHT_MODE,
+                                                           GL_SPECULAR, cb);
                                   }
                               }
                           }
@@ -3519,8 +3544,8 @@ namespace octave
             set_linecap ("butt");
             set_linejoin ("miter");
 
-            // NOTE: patch contour cannot be offset.  Offset must occur with the
-            // filled portion of the patch above.  The tessellator uses
+            // NOTE: patch contour cannot be offset.  Offset must occur with
+            // the filled portion of the patch above.  The tessellator uses
             // GLU_TESS_BOUNDARY_ONLY to get the outline of the patch and OpenGL
             // automatically sets the glType to GL_LINE_LOOP.  This primitive is
             // not supported by glPolygonOffset which is used to do Z offsets.
@@ -3538,7 +3563,8 @@ namespace octave
                     // Draw it as a line.
                     bool flag = false;
 
-                    m_glfcns.glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
+                    m_glfcns.glShadeModel ((ec_mode == INTERP
+                                            || el_mode == GOURAUD)
                                            ? GL_SMOOTH : GL_FLAT);
 
                     // Add vertices in reverse order for Matlab compatibility
@@ -4615,7 +4641,7 @@ namespace octave
     double dir = 1.0;
 
     if (bfl_mode > 0)
-      dir = ((x * m_view_vector(0) + y * m_view_vector(1) + z * m_view_vector(2) < 0)
+      dir = ((x*m_view_vector(0) + y*m_view_vector(1) + z*m_view_vector(2) < 0)
              ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
 
     m_glfcns.glNormal3d (dir*x/d, dir*y/d, dir*z/d);

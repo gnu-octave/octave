@@ -76,6 +76,7 @@ namespace octave
     virtual void finish (void);
 
   protected:
+
     virtual void draw_figure (const figure::properties& props);
     virtual void draw_axes (const axes::properties& props);
     virtual void draw_line (const line::properties& props);
@@ -159,7 +160,24 @@ namespace octave
 
     virtual void draw_zoom_rect (int x1, int y1, int x2, int y2);
 
+    //--------
+
+    opengl_functions& m_glfcns;
+
+    // axis limits in model scaled coordinate
+    double m_xmin, m_xmax;
+    double m_ymin, m_ymax;
+    double m_zmin, m_zmax;
+
+    // Factor used for translating Octave pixels to actual device pixels
+    double m_devpixratio;
+
+    // axes transformation data
+    graphics_xform m_xform;
+
   private:
+
+    class patch_tessellator;
 
     void init_maxlights (void);
 
@@ -214,22 +232,7 @@ namespace octave
     void draw_texture_image (const octave_value cdata,
                              Matrix x, Matrix y, bool ortho = false);
 
-  protected:
-
-    opengl_functions& m_glfcns;
-
-    // axis limits in model scaled coordinate
-    double m_xmin, m_xmax;
-    double m_ymin, m_ymax;
-    double m_zmin, m_zmax;
-
-    // Factor used for translating Octave pixels to actual device pixels
-    double m_devpixratio;
-
-    // axes transformation data
-    graphics_xform m_xform;
-
-  private:
+    //--------
 
     // The graphics m_toolkit associated with the figure being rendered.
     graphics_toolkit m_toolkit;
@@ -257,9 +260,6 @@ namespace octave
 
     // Indicate we are drawing for printing purpose
     bool m_printing;
-
-  private:
-    class patch_tessellator;
   };
 }
 

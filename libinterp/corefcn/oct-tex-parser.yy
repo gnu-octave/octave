@@ -39,7 +39,7 @@
 extern int octave_tex_lex (YYSTYPE *, void *);
  static void yyerror (octave::text_parser_tex& parser, const char *s);
 
-#define scanner parser.get_scanner ()
+#define m_scanner parser.get_scanner ()
 #define yyalloc octave_tex_yyalloc
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
@@ -57,7 +57,7 @@ extern int octave_tex_lex (YYSTYPE *, void *);
 // No spaces inside the braces for the prefix definition!
 %define api.prefix {octave_tex_}
 %parse-param { octave::text_parser_tex& parser }
-%lex-param { void *scanner }
+%lex-param { void *m_scanner }
 
 %code requires {#include <string>}
 
@@ -221,10 +221,10 @@ namespace octave
 
     if (init_lexer (s))
       {
-        result = nullptr;
+        m_result = nullptr;
 
         if (octave_tex_parse (*this) == 0)
-          return result;
+          return m_result;
       }
 
     return new text_element_string (s);

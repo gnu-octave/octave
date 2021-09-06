@@ -102,10 +102,6 @@ namespace octave
       min2norm_solve (const SPARSE_T& a, const RHS_T& b,
                       octave_idx_type& info, int order);
 
-      class sparse_qr_rep;
-
-      std::shared_ptr<sparse_qr_rep> rep;
-
       template <typename RHS_T, typename RET_T>
       OCTAVE_API RET_T
       tall_solve (const RHS_T& b, octave_idx_type& info) const;
@@ -113,6 +109,11 @@ namespace octave
       template <typename RHS_T, typename RET_T>
       OCTAVE_API RET_T
       wide_solve (const RHS_T& b, octave_idx_type& info) const;
+
+      //--------
+      class sparse_qr_rep;
+
+      std::shared_ptr<sparse_qr_rep> m_rep;
     };
 
 #if defined (__clang__) || defined (_WIN32)

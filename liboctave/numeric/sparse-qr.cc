@@ -2672,47 +2672,47 @@ namespace octave
 
     template <typename SPARSE_T>
     sparse_qr<SPARSE_T>::sparse_qr (void)
-      : rep (new sparse_qr_rep (SPARSE_T (), 0))
+      : m_rep (new sparse_qr_rep (SPARSE_T (), 0))
     { }
 
     template <typename SPARSE_T>
     sparse_qr<SPARSE_T>::sparse_qr (const SPARSE_T& a, int order)
-      : rep (new sparse_qr_rep (a, order))
+      : m_rep (new sparse_qr_rep (a, order))
     { }
 
     template <typename SPARSE_T>
     bool
     sparse_qr<SPARSE_T>::ok (void) const
     {
-      return rep->ok ();
+      return m_rep->ok ();
     }
 
     template <typename SPARSE_T>
     SPARSE_T
     sparse_qr<SPARSE_T>::V (void) const
     {
-      return rep->V ();
+      return m_rep->V ();
     }
 
     template <typename SPARSE_T>
     ColumnVector
     sparse_qr<SPARSE_T>::Pinv (void) const
     {
-      return rep->P ();
+      return m_rep->P ();
     }
 
     template <typename SPARSE_T>
     ColumnVector
     sparse_qr<SPARSE_T>::P (void) const
     {
-      return rep->P ();
+      return m_rep->P ();
     }
 
     template <typename SPARSE_T>
     ColumnVector
     sparse_qr<SPARSE_T>::E (void) const
     {
-      return rep->E();
+      return m_rep->E();
     }
 
 
@@ -2720,7 +2720,7 @@ namespace octave
     SparseMatrix
     sparse_qr<SPARSE_T>::E_MAT (void) const
     {
-      ColumnVector perm = rep->E ();
+      ColumnVector perm = m_rep->E ();
       octave_idx_type nrows = perm.rows ();
       SparseMatrix ret (nrows,nrows,nrows);
       for (octave_idx_type i = 0; i < nrows; i++)
@@ -2733,7 +2733,7 @@ namespace octave
     SPARSE_T
     sparse_qr<SPARSE_T>::R (bool econ) const
     {
-      return rep->R (econ);
+      return m_rep->R (econ);
     }
 
     template <typename SPARSE_T>
@@ -2741,14 +2741,14 @@ namespace octave
     sparse_qr<SPARSE_T>::C (const typename SPARSE_T::dense_matrix_type& b,
                             bool econ) const
     {
-      return rep->C (b, econ);
+      return m_rep->C (b, econ);
     }
 
     template <typename SPARSE_T>
     typename SPARSE_T::dense_matrix_type
     sparse_qr<SPARSE_T>::Q (bool econ) const
     {
-      return rep->Q (econ);
+      return m_rep->Q (econ);
     }
 
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
@@ -3233,7 +3233,7 @@ namespace octave
     RET_T
     sparse_qr<SPARSE_T>::tall_solve (const RHS_T& b, octave_idx_type& info) const
     {
-      return rep->template tall_solve<RHS_T, RET_T> (b, info);
+      return m_rep->template tall_solve<RHS_T, RET_T> (b, info);
     }
 
     template <typename SPARSE_T>
@@ -3241,7 +3241,7 @@ namespace octave
     RET_T
     sparse_qr<SPARSE_T>::wide_solve (const RHS_T& b, octave_idx_type& info) const
     {
-      return rep->template wide_solve<RHS_T, RET_T> (b, info);
+      return m_rep->template wide_solve<RHS_T, RET_T> (b, info);
     }
 
     // Explicitly instantiate all member functions

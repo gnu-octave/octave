@@ -94,7 +94,7 @@ namespace octave
 
     private:
 
-      std::shared_ptr<sparse_chol_rep> rep;
+      std::shared_ptr<sparse_chol_rep> m_rep;
     };
 
     template <typename chol_type>

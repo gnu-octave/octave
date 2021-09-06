@@ -379,13 +379,13 @@ namespace octave
 
     template <typename chol_type>
     sparse_chol<chol_type>::sparse_chol (void)
-      : rep (new typename sparse_chol<chol_type>::sparse_chol_rep ())
+      : m_rep (new typename sparse_chol<chol_type>::sparse_chol_rep ())
     { }
 
     template <typename chol_type>
     sparse_chol<chol_type>::sparse_chol (const chol_type& a, bool natural,
                                          bool force)
-      : rep (new typename
+      : m_rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, natural, force))
     { }
 
@@ -393,7 +393,7 @@ namespace octave
     sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                          octave_idx_type& info,
                                          bool natural, bool force)
-      : rep (new typename
+      : m_rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, force))
     { }
 
@@ -401,14 +401,14 @@ namespace octave
     sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                          octave_idx_type& info,
                                          bool natural)
-      : rep (new typename
+      : m_rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, false))
     { }
 
     template <typename chol_type>
     sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                          octave_idx_type& info)
-      : rep (new typename
+      : m_rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, false, false))
     { }
 
@@ -418,7 +418,7 @@ namespace octave
     {
 #if defined (HAVE_CHOLMOD)
 
-      cholmod_sparse *m = rep->L ();
+      cholmod_sparse *m = m_rep->L ();
 
       octave_idx_type nc = m->ncol;
       octave_idx_type nnz = m->nzmax;
@@ -447,35 +447,35 @@ namespace octave
     octave_idx_type
     sparse_chol<chol_type>::P (void) const
     {
-      return rep->P ();
+      return m_rep->P ();
     }
 
     template <typename chol_type>
     RowVector
     sparse_chol<chol_type>::perm (void) const
     {
-      return rep->perm ();
+      return m_rep->perm ();
     }
 
     template <typename chol_type>
     SparseMatrix
     sparse_chol<chol_type>::Q (void) const
     {
-      return rep->Q ();
+      return m_rep->Q ();
     }
 
     template <typename chol_type>
     bool
     sparse_chol<chol_type>::is_positive_definite (void) const
     {
-      return rep->is_positive_definite ();
+      return m_rep->is_positive_definite ();
     }
 
     template <typename chol_type>
     double
     sparse_chol<chol_type>::rcond (void) const
     {
-      return rep->rcond ();
+      return m_rep->rcond ();
     }
 
     template <typename chol_type>
@@ -486,9 +486,9 @@ namespace octave
 
 #if defined (HAVE_CHOLMOD)
 
-      cholmod_sparse *m = rep->L ();
+      cholmod_sparse *m = m_rep->L ();
       octave_idx_type n = m->ncol;
-      RowVector m_perm = rep->perm ();
+      RowVector m_perm = m_rep->perm ();
       double rcond2;
       octave_idx_type info;
       MatrixType mattype (MatrixType::Upper);
@@ -551,9 +551,9 @@ namespace octave
     OCTAVE_API
     sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
                                                    octave_idx_type& info)
-      : rep (new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info,
-                                                                    true,
-                                                                    false))
+      : m_rep (new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info,
+                                                                      true,
+                                                                      false))
     { }
 
     // Instantiations we need.

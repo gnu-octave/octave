@@ -5410,13 +5410,13 @@ namespace octave
     enum state { ok, conversion_error };
 
     printf_value_cache (const octave_value_list& args, const std::string& who)
-      : values (args), val_idx (0), elt_idx (0),
-        n_vals (values.length ()), n_elts (0), have_data (false),
-        curr_state (ok)
+      : m_values (args), m_val_idx (0), m_elt_idx (0),
+        m_n_vals (m_values.length ()), m_n_elts (0), m_have_data (false),
+        m_curr_state (ok)
     {
-      for (octave_idx_type i = 0; i < values.length (); i++)
+      for (octave_idx_type i = 0; i < m_values.length (); i++)
         {
-          octave_value val = values(i);
+          octave_value val = m_values(i);
 
           if (val.isstruct () || val.iscell () || val.isobject ())
             err_wrong_type_arg (who, val);
@@ -5440,24 +5440,25 @@ namespace octave
 
     int int_value (void);
 
-    operator bool () const { return (curr_state == ok); }
+    operator bool () const { return (m_curr_state == ok); }
 
-    bool exhausted (void) { return (val_idx >= n_vals); }
+    bool exhausted (void) { return (m_val_idx >= m_n_vals); }
 
   private:
 
-    const octave_value_list values;
-    octave_idx_type val_idx;
-    octave_idx_type elt_idx;
-    octave_idx_type n_vals;
-    octave_idx_type n_elts;
-    bool have_data;
-    octave_value curr_val;
-    state curr_state;
-
     // Must create value cache with values!
-
     printf_value_cache (void);
+
+    //--------
+
+    const octave_value_list m_values;
+    octave_idx_type m_val_idx;
+    octave_idx_type m_elt_idx;
+    octave_idx_type m_n_vals;
+    octave_idx_type m_n_elts;
+    bool m_have_data;
+    octave_value m_curr_val;
+    state m_curr_state;
   };
 
   octave_value
@@ -5466,44 +5467,44 @@ namespace octave
     octave_value retval;
 
     if (exhausted ())
-      curr_state = conversion_error;
+      m_curr_state = conversion_error;
 
     while (! exhausted ())
       {
-        if (! have_data)
+        if (! m_have_data)
           {
-            curr_val = values (val_idx);
+            m_curr_val = m_values (m_val_idx);
 
-            elt_idx = 0;
-            n_elts = curr_val.numel ();
-            have_data = true;
+            m_elt_idx = 0;
+            m_n_elts = m_curr_val.numel ();
+            m_have_data = true;
           }
 
-        if (elt_idx < n_elts)
+        if (m_elt_idx < m_n_elts)
           {
             if (type == 's')
               {
-                if (curr_val.is_string ())
+                if (m_curr_val.is_string ())
                   {
-                    dim_vector dv (1, curr_val.numel ());
-                    octave_value tmp = curr_val.reshape (dv);
+                    dim_vector dv (1, m_curr_val.numel ());
+                    octave_value tmp = m_curr_val.reshape (dv);
 
                     std::string sval = tmp.string_value ();
 
-                    retval = sval.substr (elt_idx);
+                    retval = sval.substr (m_elt_idx);
 
                     // We've consumed the rest of the value.
-                    elt_idx = n_elts;
+                    m_elt_idx = m_n_elts;
                   }
                 else
                   {
                     // Convert to character string while values are
                     // integers in the range [0 : char max]
-                    const NDArray val = curr_val.array_value ();
+                    const NDArray val = m_curr_val.array_value ();
 
-                    octave_idx_type idx = elt_idx;
+                    octave_idx_type idx = m_elt_idx;
 
-                    for (; idx < n_elts; idx++)
+                    for (; idx < m_n_elts; idx++)
                       {
                         double dval = val(idx);
 
@@ -5511,24 +5512,24 @@ namespace octave
                           break;
                       }
 
-                    octave_idx_type n = idx - elt_idx;
+                    octave_idx_type n = idx - m_elt_idx;
 
                     if (n > 0)
                       {
                         std::string sval (n, '\0');
 
                         for (octave_idx_type i = 0; i < n; i++)
-                          sval[i] = val(elt_idx++);
+                          sval[i] = val(m_elt_idx++);
 
                         retval = sval;
                       }
                     else
-                      retval = curr_val.fast_elem_extract (elt_idx++);
+                      retval = m_curr_val.fast_elem_extract (m_elt_idx++);
                   }
               }
             else
               {
-                retval = curr_val.fast_elem_extract (elt_idx++);
+                retval = m_curr_val.fast_elem_extract (m_elt_idx++);
 
                 if (type == 'c' && ! retval.is_string ())
                   {
@@ -5539,23 +5540,23 @@ namespace octave
                   }
               }
 
-            if (elt_idx >= n_elts)
+            if (m_elt_idx >= m_n_elts)
               {
-                elt_idx = 0;
-                val_idx++;
-                have_data = false;
+                m_elt_idx = 0;
+                m_val_idx++;
+                m_have_data = false;
               }
 
             break;
           }
         else
           {
-            val_idx++;
-            have_data = false;
+            m_val_idx++;
+            m_have_data = false;
 
-            if (n_elts == 0)
+            if (m_n_elts == 0)
               {
-                if (elt_idx == 0)
+                if (m_elt_idx == 0)
                   {
                     if (type == 's' || type == 'c')
                       retval = "";
@@ -5566,7 +5567,7 @@ namespace octave
                   }
 
                 if (exhausted ())
-                  curr_state = conversion_error;
+                  m_curr_state = conversion_error;
               }
           }
       }
@@ -5584,7 +5585,7 @@ namespace octave
     if (dval < 0 || dval > std::numeric_limits<int>::max ()
         || math::x_nint (dval) != dval)
       {
-        curr_state = conversion_error;
+        m_curr_state = conversion_error;
         return -1;
       }
 

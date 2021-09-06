@@ -40,27 +40,27 @@ namespace octave
   {
     graphics_toolkit retval;
 
-    if (dtk.empty ())
+    if (m_dtk.empty ())
       error ("no graphics toolkits are available!");
 
-    auto pl = loaded_toolkits.find (dtk);
+    auto pl = m_loaded_toolkits.find (m_dtk);
 
-    if (pl == loaded_toolkits.end ())
+    if (pl == m_loaded_toolkits.end ())
       {
-        auto pa = available_toolkits.find (dtk);
+        auto pa = m_available_toolkits.find (m_dtk);
 
-        if (pa == available_toolkits.end ())
+        if (pa == m_available_toolkits.end ())
           error ("default graphics toolkit '%s' is not available!",
-                 dtk.c_str ());
+                 m_dtk.c_str ());
 
         octave_value_list args;
-        args(0) = dtk;
+        args(0) = m_dtk;
         feval ("graphics_toolkit", args);
 
-        pl = loaded_toolkits.find (dtk);
+        pl = m_loaded_toolkits.find (m_dtk);
 
-        if (pl == loaded_toolkits.end ())
-          error ("failed to load %s graphics toolkit", dtk.c_str ());
+        if (pl == m_loaded_toolkits.end ())
+          error ("failed to load %s graphics toolkit", m_dtk.c_str ());
 
         retval = pl->second;
       }
@@ -73,38 +73,38 @@ namespace octave
   void
   gtk_manager::register_toolkit (const std::string& name)
   {
-    if (dtk.empty () || name == "qt"
+    if (m_dtk.empty () || name == "qt"
         || (name == "fltk"
-            && available_toolkits.find ("qt") == available_toolkits.end ()))
-      dtk = name;
+            && m_available_toolkits.find ("qt") == m_available_toolkits.end ()))
+      m_dtk = name;
 
-    available_toolkits.insert (name);
+    m_available_toolkits.insert (name);
   }
 
   void
   gtk_manager::unregister_toolkit (const std::string& name)
   {
-    available_toolkits.erase (name);
+    m_available_toolkits.erase (name);
 
-    if (dtk == name)
+    if (m_dtk == name)
       {
-        if (available_toolkits.empty ())
-          dtk.clear ();
+        if (m_available_toolkits.empty ())
+          m_dtk.clear ();
         else
           {
-            auto pa = available_toolkits.cbegin ();
+            auto pa = m_available_toolkits.cbegin ();
 
-            dtk = *pa++;
+            m_dtk = *pa++;
 
-            while (pa != available_toolkits.cend ())
+            while (pa != m_available_toolkits.cend ())
               {
                 std::string tk_name = *pa++;
 
                 if (tk_name == "qt"
                     || (tk_name == "fltk"
-                        && (available_toolkits.find ("qt")
-                            == available_toolkits.cend ())))
-                  dtk = tk_name;
+                        && (m_available_toolkits.find ("qt")
+                            == m_available_toolkits.cend ())))
+                  m_dtk = tk_name;
               }
           }
       }

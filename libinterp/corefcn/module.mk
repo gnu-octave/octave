@@ -98,7 +98,7 @@ COREFCN_INC = \
   %reldir%/xdiv.h \
   %reldir%/xnorm.h \
   %reldir%/xpow.h \
-  %reldir%/zfstream.h
+  %reldir%/gzfstream.h
 
 NOINSTALL_COREFCN_INC = \
   %reldir%/interpreter-private.h \
@@ -276,7 +276,7 @@ COREFCN_SRC = \
   %reldir%/xdiv.cc \
   %reldir%/xnorm.cc \
   %reldir%/xpow.cc \
-  %reldir%/zfstream.cc \
+  %reldir%/gzfstream.cc \
   $(NOINSTALL_COREFCN_INC)
 
 ## Special rules for sources which must be built before rest of compilation.

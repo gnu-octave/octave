@@ -41,7 +41,7 @@
 #include <istream>
 #include <ostream>
 
-#include "zfstream.h"
+#include "gzfstream.h"
 
 #if defined (HAVE_ZLIB)
 

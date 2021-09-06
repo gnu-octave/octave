@@ -87,7 +87,7 @@
 #endif
 
 #if defined (HAVE_ZLIB)
-#  include "zfstream.h"
+#  include "gzfstream.h"
 #endif
 
 OCTAVE_NAMESPACE_BEGIN

@@ -87,7 +87,7 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open () const { return (file != nullptr); }
+  is_open () const { return (m_file != nullptr); }
 
   /**
    *  @brief  Open gzipped file.
@@ -232,12 +232,12 @@ private:
   /**
    *  Underlying file pointer.
   */
-  gzFile file;
+  gzFile m_file;
 
   /**
    *  Mode in which file was opened.
   */
-  std::ios_base::openmode io_mode;
+  std::ios_base::openmode m_io_mode;
 
   /**
    *  @brief  True if this object owns file descriptor.
@@ -245,7 +245,7 @@ private:
    *  This makes the class responsible for closing the file
    *  upon destruction.
   */
-  bool own_fd;
+  bool m_own_fd;
 
   /**
    *  @brief  Stream buffer.
@@ -253,7 +253,7 @@ private:
    *  For simplicity this remains allocated on the free store for the
    *  entire life span of the gzfilebuf object, unless replaced by setbuf.
   */
-  char_type *buffer;
+  char_type *m_buffer;
 
   /**
    *  @brief  Stream buffer size.
@@ -261,7 +261,7 @@ private:
    *  Defaults to system default buffer size (typically 8192 bytes).
    *  Modified by setbuf.
   */
-  std::streamsize buffer_size;
+  std::streamsize m_buffer_size;
 
   /**
    *  @brief  True if this object owns stream buffer.
@@ -269,7 +269,7 @@ private:
    *  This makes the class responsible for deleting the buffer
    *  upon destruction.
   */
-  bool own_buffer;
+  bool m_own_buffer;
 };
 
 /**

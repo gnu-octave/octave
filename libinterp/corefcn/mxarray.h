@@ -62,23 +62,23 @@ class octave_value;
 class dim_vector;
 
 #define DO_MUTABLE_METHOD(RET_T, METHOD_CALL)   \
-  RET_T retval = rep->METHOD_CALL;              \
+  RET_T retval = m_rep->METHOD_CALL;            \
                                                 \
-  if (rep->mutation_needed ())                  \
+  if (m_rep->mutation_needed ())                \
     {                                           \
       maybe_mutate ();                          \
-      retval = rep->METHOD_CALL;                \
+      retval = m_rep->METHOD_CALL;              \
     }                                           \
                                                 \
   return retval
 
 #define DO_VOID_MUTABLE_METHOD(METHOD_CALL)     \
-  rep->METHOD_CALL;                             \
+  m_rep->METHOD_CALL;                           \
                                                 \
-  if (rep->mutation_needed ())                  \
+  if (m_rep->mutation_needed ())                \
     {                                           \
       maybe_mutate ();                          \
-      rep->METHOD_CALL;                         \
+      m_rep->METHOD_CALL;                       \
     }
 
 class OCTINTERP_API mxArray;
@@ -310,9 +310,6 @@ public:
 
 protected:
 
-  // If TRUE, we are using interleaved storage for complex numeric arrays.
-  bool m_interleaved;
-
   mxArray_base (const mxArray_base&) = default;
 
   std::size_t get_numeric_element_size (std::size_t size) const
@@ -326,6 +323,12 @@ protected:
   {
     error ("%s: invalid type for mxArray::%s", get_class_name (), op);
   }
+
+  //--------
+
+  // If TRUE, we are using interleaved storage for complex numeric arrays.
+  bool m_interleaved;
+
 };
 
 // The main interface class.  The representation can be based on an
@@ -376,15 +379,15 @@ public:
 
   mxArray * dup (void) const
   {
-    mxArray *retval = rep->as_mxArray ();
+    mxArray *retval = m_rep->as_mxArray ();
 
     if (retval)
-      retval->set_name (name);
+      retval->set_name (m_name);
     else
       {
-        mxArray_base *new_rep = rep->dup ();
+        mxArray_base *new_rep = m_rep->dup ();
 
-        retval = new mxArray (new_rep, name);
+        retval = new mxArray (new_rep, m_name);
       }
 
     return retval;
@@ -398,59 +401,59 @@ public:
 
   OCTINTERP_API ~mxArray (void);
 
-  bool is_octave_value (void) const { return rep->is_octave_value (); }
+  bool is_octave_value (void) const { return m_rep->is_octave_value (); }
 
-  int iscell (void) const { return rep->iscell (); }
+  int iscell (void) const { return m_rep->iscell (); }
 
-  int is_char (void) const { return rep->is_char (); }
+  int is_char (void) const { return m_rep->is_char (); }
 
-  int is_class (const char *name_arg) const { return rep->is_class (name_arg); }
+  int is_class (const char *name_arg) const { return m_rep->is_class (name_arg); }
 
-  int is_complex (void) const { return rep->is_complex (); }
+  int is_complex (void) const { return m_rep->is_complex (); }
 
-  int is_double (void) const { return rep->is_double (); }
+  int is_double (void) const { return m_rep->is_double (); }
 
-  int is_function_handle (void) const { return rep->is_function_handle (); }
+  int is_function_handle (void) const { return m_rep->is_function_handle (); }
 
-  int is_int16 (void) const { return rep->is_int16 (); }
+  int is_int16 (void) const { return m_rep->is_int16 (); }
 
-  int is_int32 (void) const { return rep->is_int32 (); }
+  int is_int32 (void) const { return m_rep->is_int32 (); }
 
-  int is_int64 (void) const { return rep->is_int64 (); }
+  int is_int64 (void) const { return m_rep->is_int64 (); }
 
-  int is_int8 (void) const { return rep->is_int8 (); }
+  int is_int8 (void) const { return m_rep->is_int8 (); }
 
-  int is_logical (void) const { return rep->is_logical (); }
+  int is_logical (void) const { return m_rep->is_logical (); }
 
-  int is_numeric (void) const { return rep->is_numeric (); }
+  int is_numeric (void) const { return m_rep->is_numeric (); }
 
-  int is_single (void) const { return rep->is_single (); }
+  int is_single (void) const { return m_rep->is_single (); }
 
-  int is_sparse (void) const { return rep->is_sparse (); }
+  int is_sparse (void) const { return m_rep->is_sparse (); }
 
-  int is_struct (void) const { return rep->is_struct (); }
+  int is_struct (void) const { return m_rep->is_struct (); }
 
-  int is_uint16 (void) const { return rep->is_uint16 (); }
+  int is_uint16 (void) const { return m_rep->is_uint16 (); }
 
-  int is_uint32 (void) const { return rep->is_uint32 (); }
+  int is_uint32 (void) const { return m_rep->is_uint32 (); }
 
-  int is_uint64 (void) const { return rep->is_uint64 (); }
+  int is_uint64 (void) const { return m_rep->is_uint64 (); }
 
-  int is_uint8 (void) const { return rep->is_uint8 (); }
+  int is_uint8 (void) const { return m_rep->is_uint8 (); }
 
-  int is_logical_scalar (void) const { return rep->is_logical_scalar (); }
+  int is_logical_scalar (void) const { return m_rep->is_logical_scalar (); }
 
   int is_logical_scalar_true (void) const
-  { return rep->is_logical_scalar_true (); }
+  { return m_rep->is_logical_scalar_true (); }
 
-  mwSize get_m (void) const { return rep->get_m (); }
+  mwSize get_m (void) const { return m_rep->get_m (); }
 
-  mwSize get_n (void) const { return rep->get_n (); }
+  mwSize get_n (void) const { return m_rep->get_n (); }
 
-  mwSize * get_dimensions (void) const { return rep->get_dimensions (); }
+  mwSize * get_dimensions (void) const { return m_rep->get_dimensions (); }
 
   mwSize get_number_of_dimensions (void) const
-  { return rep->get_number_of_dimensions (); }
+  { return m_rep->get_number_of_dimensions (); }
 
   void set_m (mwSize m) { DO_VOID_MUTABLE_METHOD (set_m (m)); }
 
@@ -460,25 +463,25 @@ public:
   { DO_MUTABLE_METHOD (int, set_dimensions (dims_arg, ndims_arg)); }
 
   mwSize get_number_of_elements (void) const
-  { return rep->get_number_of_elements (); }
+  { return m_rep->get_number_of_elements (); }
 
   int isempty (void) const { return get_number_of_elements () == 0; }
 
-  bool is_scalar (void) const { return rep->is_scalar (); }
+  bool is_scalar (void) const { return m_rep->is_scalar (); }
 
-  const char * get_name (void) const { return name; }
+  const char * get_name (void) const { return m_name; }
 
-  OCTINTERP_API void set_name (const char *name_arg);
+  OCTINTERP_API void set_name (const char *name);
 
-  mxClassID get_class_id (void) const { return rep->get_class_id (); }
+  mxClassID get_class_id (void) const { return m_rep->get_class_id (); }
 
-  const char * get_class_name (void) const { return rep->get_class_name (); }
+  const char * get_class_name (void) const { return m_rep->get_class_name (); }
 
   mxArray * get_property (mwIndex idx, const char *pname) const
-  { return rep->get_property (idx, pname); }
+  { return m_rep->get_property (idx, pname); }
 
   void set_property (mwIndex idx, const char *pname, const mxArray *pval)
-  { rep->set_property (idx, pname, pval); }
+  { m_rep->set_property (idx, pname, pval); }
 
   void set_class_name (const char *name_arg)
   { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }
@@ -489,7 +492,7 @@ public:
   void set_cell (mwIndex idx, mxArray *val)
   { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
 
-  double get_scalar (void) const { return rep->get_scalar (); }
+  double get_scalar (void) const { return m_rep->get_scalar (); }
 
   void * get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
 
@@ -630,7 +633,7 @@ public:
 
   mwIndex * get_jc (void) const { DO_MUTABLE_METHOD (mwIndex *, get_jc ()); }
 
-  mwSize get_nzmax (void) const { return rep->get_nzmax (); }
+  mwSize get_nzmax (void) const { return m_rep->get_nzmax (); }
 
   void set_ir (mwIndex *ir) { DO_VOID_MUTABLE_METHOD (set_ir (ir)); }
 
@@ -649,7 +652,7 @@ public:
   void set_field_by_number (mwIndex index, int key_num, mxArray *val)
   { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
 
-  int get_number_of_fields (void) const { return rep->get_number_of_fields (); }
+  int get_number_of_fields (void) const { return m_rep->get_number_of_fields (); }
 
   const char * get_field_name_by_number (int key_num) const
   { DO_MUTABLE_METHOD (const char*, get_field_name_by_number (key_num)); }
@@ -658,18 +661,18 @@ public:
   { DO_MUTABLE_METHOD (int, get_field_number (key)); }
 
   int get_string (char *buf, mwSize buflen) const
-  { return rep->get_string (buf, buflen); }
+  { return m_rep->get_string (buf, buflen); }
 
-  char * array_to_string (void) const { return rep->array_to_string (); }
+  char * array_to_string (void) const { return m_rep->array_to_string (); }
 
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
-  { return rep->calc_single_subscript (nsubs, subs); }
+  { return m_rep->calc_single_subscript (nsubs, subs); }
 
-  std::size_t get_element_size (void) const { return rep->get_element_size (); }
+  std::size_t get_element_size (void) const { return m_rep->get_element_size (); }
 
-  bool mutation_needed (void) const { return rep->mutation_needed (); }
+  bool mutation_needed (void) const { return m_rep->mutation_needed (); }
 
-  mxArray * mutate (void) const { return rep->mutate (); }
+  mxArray * mutate (void) const { return m_rep->mutate (); }
 
   static OCTINTERP_API void * malloc (std::size_t n);
 
@@ -699,12 +702,8 @@ public:
 
 private:
 
-  mutable mxArray_base *rep;
-
-  char *name;
-
   mxArray (mxArray_base *r, const char *n)
-    : rep (r), name (mxArray::strsave (n)) { }
+    : m_rep (r), m_name (mxArray::strsave (n)) { }
 
   static OCTINTERP_API mxArray_base *
   create_rep (bool interleaved, const octave_value& ov);
@@ -738,6 +737,13 @@ private:
               mwSize nzmax, mxComplexity flag);
 
   OCTINTERP_API void maybe_mutate (void) const;
+
+  //--------
+
+  mutable mxArray_base *m_rep;
+
+  char *m_name;
+
 };
 
 #undef DO_MUTABLE_METHOD

@@ -2700,88 +2700,88 @@ private:
 // ------------------------------------------------------------------
 
 mxArray::mxArray (bool interleaved, const octave_value& ov)
-  : rep (create_rep (interleaved, ov)), name (nullptr)
+  : m_rep (create_rep (interleaved, ov)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mxClassID id, mwSize ndims,
                   const mwSize *dims, mxComplexity flag, bool init)
-  : rep (create_rep (interleaved, id, ndims, dims, flag, init)),
-    name (nullptr)
+  : m_rep (create_rep (interleaved, id, ndims, dims, flag, init)),
+    m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mxClassID id, const dim_vector& dv,
                   mxComplexity flag)
-  : rep (create_rep (interleaved, id, dv, flag)), name (nullptr)
+  : m_rep (create_rep (interleaved, id, dv, flag)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mxClassID id, mwSize m, mwSize n,
                   mxComplexity flag, bool init)
-  : rep (create_rep (interleaved, id, m, n, flag, init)), name (nullptr)
+  : m_rep (create_rep (interleaved, id, m, n, flag, init)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mxClassID id, double val)
-  : rep (create_rep (interleaved, id, val)), name (nullptr)
+  : m_rep (create_rep (interleaved, id, val)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mxClassID id, mxLogical val)
-  : rep (create_rep (interleaved, id, val)), name (nullptr)
+  : m_rep (create_rep (interleaved, id, val)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, const char *str)
-  : rep (create_rep (interleaved, str)), name (nullptr)
+  : m_rep (create_rep (interleaved, str)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mwSize m, const char **str)
-  : rep (create_rep (interleaved, m, str)), name (nullptr)
+  : m_rep (create_rep (interleaved, m, str)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mxClassID id, mwSize m, mwSize n,
                   mwSize nzmax, mxComplexity flag)
-  : rep (create_rep (interleaved, id, m, n, nzmax, flag)), name (nullptr)
+  : m_rep (create_rep (interleaved, id, m, n, nzmax, flag)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mwSize ndims, const mwSize *dims,
                   int num_keys,
                   const char **keys)
-  : rep (new mxArray_struct (interleaved, ndims, dims, num_keys, keys)),
-    name (nullptr)
+  : m_rep (new mxArray_struct (interleaved, ndims, dims, num_keys, keys)),
+    m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, const dim_vector& dv, int num_keys,
                   const char **keys)
-  : rep (new mxArray_struct (interleaved, dv, num_keys, keys)), name (nullptr)
+  : m_rep (new mxArray_struct (interleaved, dv, num_keys, keys)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mwSize m, mwSize n, int num_keys,
                   const char **keys)
-  : rep (new mxArray_struct (interleaved, m, n, num_keys, keys)),
-    name (nullptr)
+  : m_rep (new mxArray_struct (interleaved, m, n, num_keys, keys)),
+    m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mwSize ndims, const mwSize *dims)
-  : rep (new mxArray_cell (interleaved, ndims, dims)), name (nullptr)
+  : m_rep (new mxArray_cell (interleaved, ndims, dims)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, const dim_vector& dv)
-  : rep (new mxArray_cell (interleaved, dv)), name (nullptr)
+  : m_rep (new mxArray_cell (interleaved, dv)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, mwSize m, mwSize n)
-  : rep (new mxArray_cell (interleaved, m, n)), name (nullptr)
+  : m_rep (new mxArray_cell (interleaved, m, n)), m_name (nullptr)
 { }
 
 mxArray::~mxArray (void)
 {
-  mxFree (name);
+  mxFree (m_name);
 
-  delete rep;
+  delete m_rep;
 }
 
 void
-mxArray::set_name (const char *name_arg)
+mxArray::set_name (const char *name)
 {
-  mxFree (name);
-  name = mxArray::strsave (name_arg);
+  mxFree (m_name);
+  m_name = mxArray::strsave (name);
 }
 
 octave_value
@@ -2797,7 +2797,7 @@ mxArray::as_octave_value (const mxArray *ptr, bool null_is_empty)
 octave_value
 mxArray::as_octave_value (void) const
 {
-  return rep->as_octave_value ();
+  return m_rep->as_octave_value ();
 }
 
 mxArray_base *
@@ -2861,19 +2861,19 @@ mxArray::create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
 void
 mxArray::maybe_mutate (void) const
 {
-  if (rep->is_octave_value ())
+  if (m_rep->is_octave_value ())
     {
       // The mutate function returns a pointer to a complete new
       // mxArray object (or 0, if no mutation happened).  We just want
       // to replace the existing rep with the rep from the new object.
 
-      mxArray *new_val = rep->mutate ();
+      mxArray *new_val = m_rep->mutate ();
 
       if (new_val)
         {
-          delete rep;
-          rep = new_val->rep;
-          new_val->rep = nullptr;
+          delete m_rep;
+          m_rep = new_val->m_rep;
+          new_val->m_rep = nullptr;
           delete new_val;
         }
     }

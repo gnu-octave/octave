@@ -43,12 +43,14 @@ procbuf : public c_file_ptr_buf
 public:
 
   procbuf (void)
-    : c_file_ptr_buf (nullptr), wstatus (-1), open_p (false), proc_pid (-1),
-      next (nullptr) { }
+    : c_file_ptr_buf (nullptr), m_wstatus (-1), m_open_p (false),
+      m_proc_pid (-1), m_next (nullptr)
+  { }
 
   procbuf (const char *command, int mode)
-    : c_file_ptr_buf (nullptr), wstatus (-1), open_p (false), proc_pid (-1),
-      next (nullptr) { open (command, mode); }
+    : c_file_ptr_buf (nullptr), m_wstatus (-1), m_open_p (false),
+      m_proc_pid (-1), m_next (nullptr)
+  { open (command, mode); }
 
   // No copying!
 
@@ -62,21 +64,21 @@ public:
 
   procbuf * close (void);
 
-  int wait_status (void) const { return wstatus; }
+  int wait_status (void) const { return m_wstatus; }
 
-  bool is_open (void) const { return open_p; }
+  bool is_open (void) const { return m_open_p; }
 
-  pid_t pid (void) const { return proc_pid; }
+  pid_t pid (void) const { return m_proc_pid; }
 
 protected:
 
-  int wstatus;
+  int m_wstatus;
 
-  bool open_p;
+  bool m_open_p;
 
-  pid_t proc_pid;
+  pid_t m_proc_pid;
 
-  procbuf *next;
+  procbuf *m_next;
 };
 
 OCTAVE_NAMESPACE_END

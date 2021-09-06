@@ -90,9 +90,9 @@ procbuf::open (const char *command, int mode)
 
   // Oops... popen doesn't return the associated pid, so fake it for now
 
-  proc_pid = 1;
+  m_proc_pid = 1;
 
-  open_p = true;
+  m_open_p = true;
 
   if (mode & std::ios::out)
     ::setvbuf (f, nullptr, _IOLBF, BUFSIZ);
@@ -124,9 +124,9 @@ procbuf::open (const char *command, int mode)
       child_end = pipe_fds[0];
     }
 
-  proc_pid = ::fork ();
+  m_proc_pid = ::fork ();
 
-  if (proc_pid == 0)
+  if (m_proc_pid == 0)
     {
       octave_close_wrapper (parent_end);
 
@@ -146,7 +146,7 @@ procbuf::open (const char *command, int mode)
               fp = nullptr;
             }
 
-          procbuf_list = procbuf_list->next;
+          procbuf_list = procbuf_list->m_next;
         }
 
       execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (nullptr));
@@ -156,7 +156,7 @@ procbuf::open (const char *command, int mode)
 
   octave_close_wrapper (child_end);
 
-  if (proc_pid < 0)
+  if (m_proc_pid < 0)
     {
       octave_close_wrapper (parent_end);
       return nullptr;
@@ -167,9 +167,9 @@ procbuf::open (const char *command, int mode)
   if (mode & std::ios::out)
     ::setvbuf (f, nullptr, _IOLBF, BUFSIZ);
 
-  open_p = true;
+  m_open_p = true;
 
-  next = procbuf_list;
+  m_next = procbuf_list;
   procbuf_list = this;
 
   return this;
@@ -188,11 +188,11 @@ procbuf::close (void)
 
   if (f)
     {
-      wstatus = octave::pclose (f);
+      m_wstatus = octave::pclose (f);
       f = 0;
     }
 
-  open_p = false;
+  m_open_p = false;
 
   return this;
 
@@ -206,11 +206,11 @@ procbuf::close (void)
 
       for (procbuf **ptr = &procbuf_list;
            *ptr != nullptr;
-           ptr = &(*ptr)->next)
+           ptr = &(*ptr)->m_next)
         {
           if (*ptr == this)
             {
-              *ptr = (*ptr)->next;
+              *ptr = (*ptr)->m_next;
               status = 0;
               break;
             }
@@ -222,7 +222,7 @@ procbuf::close (void)
 
           do
             {
-              wait_pid = octave::sys::waitpid (proc_pid, &wstatus, 0);
+              wait_pid = octave::sys::waitpid (m_proc_pid, &m_wstatus, 0);
             }
           while (wait_pid == -1 && errno == EINTR);
         }
@@ -230,7 +230,7 @@ procbuf::close (void)
       f = nullptr;
     }
 
-  open_p = false;
+  m_open_p = false;
 
   return this;
 

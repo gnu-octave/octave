@@ -51,20 +51,20 @@ octave_base_diag : public octave_base_value
 public:
 
   octave_base_diag (void)
-    : octave_base_value (), matrix (), dense_cache () { }
+    : octave_base_value (), m_matrix (), m_dense_cache () { }
 
   octave_base_diag (const DMT& m)
-    : octave_base_value (), matrix (m), dense_cache ()
+    : octave_base_value (), m_matrix (m), m_dense_cache ()
   { }
 
   octave_base_diag (const octave_base_diag& m)
-    : octave_base_value (), matrix (m.matrix), dense_cache () { }
+    : octave_base_value (), m_matrix (m.m_matrix), m_dense_cache () { }
 
   ~octave_base_diag (void) = default;
 
-  std::size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size (void) const { return m_matrix.byte_size (); }
 
-  octave_value squeeze (void) const { return matrix; }
+  octave_value squeeze (void) const { return m_matrix; }
 
   octave_value full_value (void) const { return to_dense (); }
 
@@ -87,7 +87,7 @@ public:
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);
 
-  dim_vector dims (void) const { return matrix.dims (); }
+  dim_vector dims (void) const { return m_matrix.dims (); }
 
   octave_idx_type nnz (void) const { return diag ().nnz (); }
 
@@ -99,7 +99,7 @@ public:
     if (vec.numel () == 2
         && ((vec.xelem (0) == 1 && vec.xelem (1) == 0)
             || (vec.xelem (0) == 0 && vec.xelem (1) == 1)))
-      return DMT (matrix);
+      return DMT (m_matrix);
     else
       return to_dense ().permute (vec, inv);
   }
@@ -107,8 +107,8 @@ public:
   OCTINTERP_API octave_value
   resize (const dim_vector& dv, bool fill = false) const;
 
-  octave_value all (int dim = 0) const { return MT (matrix).all (dim); }
-  octave_value any (int dim = 0) const { return MT (matrix).any (dim); }
+  octave_value all (int dim = 0) const { return MT (m_matrix).all (dim); }
+  octave_value any (int dim = 0) const { return MT (m_matrix).any (dim); }
 
   MatrixType matrix_type (void) const { return MatrixType::Diagonal; }
   MatrixType matrix_type (const MatrixType&) const
@@ -249,7 +249,7 @@ public:
 
 protected:
 
-  DMT matrix;
+  DMT m_matrix;
 
   OCTINTERP_API octave_value to_dense (void) const;
 
@@ -258,7 +258,7 @@ protected:
 
 private:
 
-  mutable octave_value dense_cache;
+  mutable octave_value m_dense_cache;
 
 };
 

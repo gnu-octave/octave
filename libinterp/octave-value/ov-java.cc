@@ -2197,7 +2197,7 @@ octave_java::subsref (const std::string& type,
       if (type.length () > 1 && type[1] == '(')
         {
           octave_value_list ovl;
-          count++;
+          m_count++;
           ovl(1) = octave_value (this);
           ovl(0) = (idx.front ())(0);
           auto it = idx.begin ();
@@ -2208,7 +2208,7 @@ octave_java::subsref (const std::string& type,
       else
         {
           octave_value_list ovl;
-          count++;
+          m_count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
           retval = octave::F__java_get__ (ovl, 1);
@@ -2263,13 +2263,13 @@ octave_java::subsasgn (const std::string& type,
         {
           // field assignment
           octave_value_list ovl;
-          count++;
+          m_count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
           ovl(2) = rhs;
           octave::F__java_set__ (ovl);
 
-          count++;
+          m_count++;
           retval = octave_value (this);
         }
       else if (type.length () > 2 && type[1] == '(')
@@ -2285,7 +2285,7 @@ octave_java::subsasgn (const std::string& type,
           next_idx.erase (next_idx.begin ());
           u(0).subsasgn (type.substr (2), next_idx, rhs);
 
-          count++;
+          m_count++;
           retval = octave_value (this);
         }
       else if (type[1] == '.')
@@ -2296,7 +2296,7 @@ octave_java::subsasgn (const std::string& type,
           next_idx.erase (next_idx.begin ());
           u(0).subsasgn (type.substr (1), next_idx, rhs);
 
-          count++;
+          m_count++;
           retval = octave_value (this);
         }
       else
@@ -2309,7 +2309,7 @@ octave_java::subsasgn (const std::string& type,
           set_array_elements (current_env, TO_JOBJECT (to_java ()),
                               idx.front (), rhs);
 
-          count++;
+          m_count++;
           retval = octave_value (this);
         }
       break;

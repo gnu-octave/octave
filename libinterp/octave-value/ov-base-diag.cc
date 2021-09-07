@@ -192,7 +192,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                   {
                     matrix.dgelem (i0(0)) = val;
                     retval = this;
-                    this->count++;
+                    this->m_count++;
                     // invalidate cache
                     dense_cache = octave_value ();
                   }
@@ -220,7 +220,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                   {
                     matrix.dgelem (i0(0)) = val;
                     retval = this;
-                    this->count++;
+                    this->m_count++;
                     // invalidate cache
                     dense_cache = octave_value ();
                   }

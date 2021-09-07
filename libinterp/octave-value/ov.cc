@@ -1232,7 +1232,7 @@ octave_value::octave_value (octave_base_value *new_rep, bool borrow)
   : m_rep (new_rep)
 {
   if (borrow)
-    m_rep->count++;
+    m_rep->m_count++;
 }
 
 octave_base_value *
@@ -1275,7 +1275,7 @@ octave_value::maybe_mutate (void)
 
   if (tmp && tmp != m_rep)
     {
-      if (--m_rep->count == 0)
+      if (--m_rep->m_count == 0)
         delete m_rep;
 
       m_rep = tmp;
@@ -1666,7 +1666,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
       octave::type_info::assign_op_fcn f = nullptr;
 
       // Only attempt to operate in-place if this variable is unshared.
-      if (m_rep->count == 1)
+      if (m_rep->m_count == 1)
         {
           int tthis = this->type_id ();
           int trhs = rhs.type_id ();
@@ -2292,14 +2292,14 @@ octave_value::make_storable_value (void)
   if (isnull ())
     {
       octave_base_value *rc = m_rep->empty_clone ();
-      if (--m_rep->count == 0)
+      if (--m_rep->m_count == 0)
         delete m_rep;
       m_rep = rc;
     }
   else if (is_magic_int ())
     {
       octave_base_value *rc = new octave_scalar (m_rep->double_value ());
-      if (--m_rep->count == 0)
+      if (--m_rep->m_count == 0)
         delete m_rep;
       m_rep = rc;
     }
@@ -2327,7 +2327,7 @@ void
 octave_value::print_info (std::ostream& os, const std::string& prefix) const
 {
   os << prefix << "type_name: " << type_name () << "\n"
-     << prefix << "count:     " << get_count () << "\n"
+     << prefix << "m_count:     " << get_count () << "\n"
      << prefix << "m_rep info:  ";
 
   m_rep->print_info (os, prefix + ' ');
@@ -2470,14 +2470,14 @@ octave_value::non_const_unary_op (unary_op op)
             {
               f (*m_rep);
 
-              if (old_rep && --old_rep->count == 0)
+              if (old_rep && --old_rep->m_count == 0)
                 delete old_rep;
             }
           else
             {
               if (old_rep)
                 {
-                  if (--m_rep->count == 0)
+                  if (--m_rep->m_count == 0)
                     delete m_rep;
 
                   m_rep = old_rep;
@@ -2496,7 +2496,7 @@ octave_value::non_const_unary_op (unary_op op)
       octave::type_info::non_const_unary_op_fcn f = nullptr;
 
       // Only attempt to operate in-place if this variable is unshared.
-      if (m_rep->count == 1)
+      if (m_rep->m_count == 1)
         {
           octave::type_info& ti
             = octave::__get_type_info__ ("non_const_unary_op");

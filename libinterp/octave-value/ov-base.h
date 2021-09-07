@@ -254,9 +254,9 @@ public:
 
   friend class octave_value;
 
-  octave_base_value (void) : count (1) { }
+  octave_base_value (void) : m_count (1) { }
 
-  octave_base_value (const octave_base_value&) : count (1) { }
+  octave_base_value (const octave_base_value&) : m_count (1) { }
 
   virtual ~octave_base_value (void) = default;
 
@@ -274,7 +274,8 @@ public:
   virtual octave_base_value *
   unique_clone (void) { return clone (); }
 
-  virtual void break_closure_cycles (const std::shared_ptr<octave::stack_frame>&) { }
+  virtual void break_closure_cycles (const std::shared_ptr<octave::stack_frame>&)
+  { }
 
   virtual type_conv_info
   numeric_conversion_function (void) const
@@ -301,7 +302,8 @@ public:
   virtual octave_value as_uint32 (void) const;
   virtual octave_value as_uint64 (void) const;
 
-  virtual octave_base_value * try_narrowing_conversion (void) { return nullptr; }
+  virtual octave_base_value * try_narrowing_conversion (void)
+  { return nullptr; }
 
   virtual void maybe_economize (void) { }
 
@@ -890,20 +892,24 @@ protected:
 
   OCTINTERP_API void reset (void) const;
 
-  // A reference count.
-  // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
-  // it is well possible to have more than MAX_INT copies of a single value
-  // (think of an empty cell array with >2G elements).
-  octave::refcount<octave_idx_type> count;
-
   OCTINTERP_API static const char * get_umap_name (unary_mapper_t);
 
   OCTINTERP_API void warn_load (const char *type) const;
   OCTINTERP_API void warn_save (const char *type) const;
 
+  //--------
+
+  // A reference count.
+  // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
+  // it is well possible to have more than MAX_INT copies of a single value
+  // (think of an empty cell array with >2G elements).
+  octave::refcount<octave_idx_type> m_count;
+
 private:
 
   OCTINTERP_API void wrong_type_arg_error (void) const;
+
+  //--------
 
   static int curr_print_indent_level;
   static bool beginning_of_line;

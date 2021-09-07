@@ -40,7 +40,7 @@ namespace octave
   {
   public:
 
-    event_queue (void) : fifo () { }
+    event_queue (void) : m_fifo () { }
 
     // No copying!
 
@@ -48,9 +48,8 @@ namespace octave
 
     event_queue& operator = (const event_queue&) = delete;
 
-    // Destructor should not raise an exception, so all actions
-    // registered should be exception-safe.  If you're not sure, see
-    // event_queue_safe.
+    // Destructor should not raise an exception, so all actions registered
+    // should be exception-safe.  If you're not sure, see event_queue_safe.
 
     ~event_queue (void) { run (); }
 
@@ -59,8 +58,8 @@ namespace octave
       if (! empty ())
         {
           // No leak on exception!
-          std::unique_ptr<elem> ptr (fifo.front ());
-          fifo.pop ();
+          std::unique_ptr<elem> ptr (m_fifo.front ());
+          m_fifo.pop ();
           ptr->run ();
         }
     }
@@ -69,22 +68,24 @@ namespace octave
     {
       if (! empty ())
         {
-          elem *ptr = fifo.front ();
-          fifo.pop ();
+          elem *ptr = m_fifo.front ();
+          m_fifo.pop ();
           delete ptr;
         }
     }
 
-    std::size_t size (void) const { return fifo.size (); }
+    std::size_t size (void) const { return m_fifo.size (); }
 
   protected:
 
     void add_action (elem *new_elem)
     {
-      fifo.push (new_elem);
+      m_fifo.push (new_elem);
     }
 
-    std::queue<elem *> fifo;
+    //--------
+
+    std::queue<elem *> m_fifo;
   };
 
   // Like event_queue, but this one will guard against the
@@ -94,10 +95,6 @@ namespace octave
   class
   event_queue_safe : public event_queue
   {
-  private:
-
-    void warn_unhandled_exception (void) const;
-
   public:
 
     event_queue_safe (void) : event_queue () { }
@@ -122,6 +119,11 @@ namespace octave
             }
         }
     }
+
+  private:
+
+    void warn_unhandled_exception (void) const;
+
   };
 }
 

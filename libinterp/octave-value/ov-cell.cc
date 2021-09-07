@@ -431,14 +431,14 @@ bool
 octave_cell::iscellstr (void) const
 {
   bool retval;
-  if (cellstr_cache.get ())
+  if (m_cellstr_cache.get ())
     retval = true;
   else
     {
       retval = matrix.iscellstr ();
       // Allocate empty cache to mark that this is indeed a cellstr.
       if (retval)
-        cellstr_cache.reset (new Array<std::string> ());
+        m_cellstr_cache.reset (new Array<std::string> ());
     }
 
   return retval;
@@ -638,10 +638,10 @@ octave_cell::cellstr_value (void) const
   if (! iscellstr ())
     error ("invalid conversion from cell array to array of strings");
 
-  if (cellstr_cache->isempty ())
-    *cellstr_cache = matrix.cellstr_value ();
+  if (m_cellstr_cache->isempty ())
+    *m_cellstr_cache = matrix.cellstr_value ();
 
-  return *cellstr_cache;
+  return *m_cellstr_cache;
 }
 
 bool

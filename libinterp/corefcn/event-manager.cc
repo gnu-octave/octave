@@ -65,10 +65,10 @@ OCTAVE_NAMESPACE_BEGIN
   }
 
   event_manager::event_manager (interpreter& interp)
-    : m_interpreter (interp), instance (new interpreter_events ()),
-      m_qt_event_handlers (),
-      event_queue_mutex (new mutex ()), gui_event_queue (),
-      debugging (false), link_enabled (true)
+    : m_event_queue_mutex (new mutex ()), m_gui_event_queue (),
+      m_debugging (false), m_link_enabled (true),
+      m_interpreter (interp), m_instance (new interpreter_events ()),
+      m_qt_event_handlers ()
   {
     push_event_queue ();
     command_editor::add_event_hook (readline_event_hook);
@@ -76,7 +76,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   event_manager::~event_manager (void)
   {
-    delete event_queue_mutex;
+    delete m_event_queue_mutex;
   }
 
   // Programming Note: It is possible to disable the link without deleting
@@ -91,15 +91,15 @@ OCTAVE_NAMESPACE_BEGIN
     if (! obj)
       disable ();
 
-    instance = obj;
+    m_instance = obj;
   }
 
   bool event_manager::enable (void)
   {
-    bool retval = link_enabled;
+    bool retval = m_link_enabled;
 
-    if (instance)
-      link_enabled = true;
+    if (m_instance)
+      m_link_enabled = true;
     else
       warning ("event_manager: must have connected link to enable");
 
@@ -113,9 +113,9 @@ OCTAVE_NAMESPACE_BEGIN
         if (disable_flag)
           disable ();
 
-        event_queue_mutex->lock ();
-        std::shared_ptr<event_queue> evq = gui_event_queue.top ();
-        event_queue_mutex->unlock ();
+        m_event_queue_mutex->lock ();
+        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+        m_event_queue_mutex->unlock ();
 
         evq->run ();
       }
@@ -125,9 +125,9 @@ OCTAVE_NAMESPACE_BEGIN
   {
     if (enabled ())
       {
-        event_queue_mutex->lock ();
-        std::shared_ptr<event_queue> evq = gui_event_queue.top ();
-        event_queue_mutex->unlock ();
+        m_event_queue_mutex->lock ();
+        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+        m_event_queue_mutex->unlock ();
 
         evq->discard ();
       }
@@ -136,7 +136,7 @@ OCTAVE_NAMESPACE_BEGIN
   void event_manager::push_event_queue (void)
   {
     std::shared_ptr<event_queue> evq (new event_queue ());
-    gui_event_queue.push (evq);
+    m_gui_event_queue.push (evq);
   }
 
   void event_manager::pop_event_queue (void)
@@ -150,15 +150,15 @@ OCTAVE_NAMESPACE_BEGIN
     // debug session just after a dbcont command was added but before it
     // executed and brought us here, for example.
 
-    std::shared_ptr<event_queue> evq = gui_event_queue.top ();
-    gui_event_queue.pop ();
+    std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+    m_gui_event_queue.pop ();
   }
 
   void event_manager::post_event (const fcn_callback& fcn)
   {
     if (enabled ())
       {
-        std::shared_ptr<event_queue> evq = gui_event_queue.top ();
+        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
         evq->add (fcn);
       }
   }
@@ -167,7 +167,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     if (enabled ())
       {
-        std::shared_ptr<event_queue> evq = gui_event_queue.top ();
+        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
         evq->add (std::bind (meth, std::ref (m_interpreter)));
       }
   }
@@ -178,7 +178,7 @@ OCTAVE_NAMESPACE_BEGIN
       {
         tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-        instance->set_workspace (tw.at_top_level (), debugging,
+        m_instance->set_workspace (tw.at_top_level (), m_debugging,
                                  tw.get_symbol_info (), true);
       }
   }
@@ -186,7 +186,7 @@ OCTAVE_NAMESPACE_BEGIN
   void event_manager::set_history (void)
   {
     if (enabled ())
-      instance->set_history (command_history::list ());
+      m_instance->set_history (command_history::list ());
   }
 
 // FIXME: Should the following function be __event_manager_desktop__

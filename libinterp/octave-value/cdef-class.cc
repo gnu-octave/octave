@@ -134,7 +134,7 @@ namespace octave
     ctor_analyzer (void) = delete;
 
     ctor_analyzer (const std::string& ctor, const std::string& obj)
-      : tree_walker (), who (ctor), obj_name (obj) { }
+      : tree_walker (), m_who (ctor), m_obj_name (obj) { }
 
     ctor_analyzer (const ctor_analyzer&) = delete;
 
@@ -164,7 +164,7 @@ namespace octave
     }
 
     std::list<cdef_class> get_constructor_list (void) const
-    { return ctor_list; }
+    { return m_ctor_list; }
 
     // NO-OP
 
@@ -205,27 +205,27 @@ namespace octave
 
     void visit_superclass_ref (tree_superclass_ref& t)
     {
-      if (t.method_name () == obj_name)
+      if (t.method_name () == m_obj_name)
         {
           std::string class_name = t.class_name ();
 
           cdef_class cls = lookup_class (class_name, false);
 
           if (cls.ok ())
-            ctor_list.push_back (cls);
+            m_ctor_list.push_back (cls);
         }
     }
 
   private:
 
     // The name of the constructor being analyzed.
-    std::string who;
+    std::string m_who;
 
     // The name of the first output argument of the constructor.
-    std::string obj_name;
+    std::string m_obj_name;
 
     // The list of superclass constructors that are explicitly called.
-    std::list<cdef_class> ctor_list;
+    std::list<cdef_class> m_ctor_list;
   };
 
   void
@@ -255,8 +255,8 @@ namespace octave
                   error ("%s: invalid constructor output arguments",
                          meth.get_name ().c_str ());
 
-                std::string obj_name = ret_list->front ()->name ();
-                ctor_analyzer a (meth.get_name (), obj_name);
+                std::string m_obj_name = ret_list->front ()->name ();
+                ctor_analyzer a (meth.get_name (), m_obj_name);
 
                 body->accept (a);
 

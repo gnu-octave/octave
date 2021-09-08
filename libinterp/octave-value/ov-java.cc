@@ -99,11 +99,11 @@ class java_local_ref
 {
 public:
 
-  java_local_ref (JNIEnv *_env)
-    : jobj (nullptr), detached (false), env (_env) { }
+  java_local_ref (JNIEnv *env)
+    : m_jobj (nullptr), m_detached (false), m_env (env) { }
 
-  java_local_ref (JNIEnv *_env, T obj)
-    : jobj (obj), detached (false), env (_env) { }
+  java_local_ref (JNIEnv *env, T obj)
+    : m_jobj (obj), m_detached (false), m_env (env) { }
 
   ~java_local_ref (void) { release (); }
 
@@ -111,36 +111,37 @@ public:
   {
     release ();
 
-    jobj = obj;
-    detached = false;
+    m_jobj = obj;
+    m_detached = false;
 
-    return jobj;
+    return m_jobj;
   }
 
-  operator bool () const { return (jobj != 0); }
-  operator T () { return jobj; }
+  operator bool () const { return (m_jobj != 0); }
+  operator T () { return m_jobj; }
 
-  void detach (void) { detached = true; }
-
-private:
-
-  void release (void)
-  {
-    if (env && jobj && ! detached)
-      env->DeleteLocalRef (jobj);
-
-    jobj = nullptr;
-  }
-
-  java_local_ref (void)
-    : jobj (0), detached (false), env (0)
-  { }
+  void detach (void) { m_detached = true; }
 
 protected:
 
-  T jobj;
-  bool detached;
-  JNIEnv *env;
+  T m_jobj;
+  bool m_detached;
+  JNIEnv *m_env;
+
+private:
+
+  java_local_ref (void)
+    : m_jobj (0), m_detached (false), m_env (0)
+  { }
+
+  void release (void)
+  {
+    if (m_env && m_jobj && ! m_detached)
+      m_env->DeleteLocalRef (m_jobj);
+
+    m_jobj = nullptr;
+  }
+
 };
 
 typedef java_local_ref<jobject> jobject_ref;

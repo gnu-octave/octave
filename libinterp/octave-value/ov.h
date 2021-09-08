@@ -170,7 +170,7 @@ public:
   octave_value (void)
     : m_rep (nil_rep ())
   {
-    m_rep->m_count++;
+    m_rep->count++;
   }
 
   OCTINTERP_API octave_value (short int i);
@@ -359,7 +359,7 @@ public:
   octave_value (const octave_value& a)
     : m_rep (a.m_rep)
   {
-    m_rep->m_count++;
+    m_rep->count++;
   }
 
   octave_value (octave_value&& a)
@@ -383,17 +383,17 @@ public:
     // operator, rep may be a nullptr here.  We should only need to
     // protect the move assignment operator in a similar way.
 
-    if (m_rep && --m_rep->m_count == 0 && m_rep != nil_rep ())
+    if (m_rep && --m_rep->count == 0 && m_rep != nil_rep ())
       delete m_rep;
   }
 
   void make_unique (void)
   {
-    if (m_rep->m_count > 1)
+    if (m_rep->count > 1)
       {
         octave_base_value *r = m_rep->unique_clone ();
 
-        if (--m_rep->m_count == 0 && m_rep != nil_rep ())
+        if (--m_rep->count == 0 && m_rep != nil_rep ())
           delete m_rep;
 
         m_rep = r;
@@ -405,11 +405,11 @@ public:
   // know a certain copy, typically within a cell array, to be obsolete.
   void make_unique (int obsolete_copies)
   {
-    if (m_rep->m_count > obsolete_copies + 1)
+    if (m_rep->count > obsolete_copies + 1)
       {
         octave_base_value *r = m_rep->unique_clone ();
 
-        if (--m_rep->m_count == 0 && m_rep != nil_rep ())
+        if (--m_rep->count == 0 && m_rep != nil_rep ())
           delete m_rep;
 
         m_rep = r;
@@ -428,11 +428,11 @@ public:
   {
     if (m_rep != a.m_rep)
       {
-        if (--m_rep->m_count == 0 && m_rep != nil_rep ())
+        if (--m_rep->count == 0 && m_rep != nil_rep ())
           delete m_rep;
 
         m_rep = a.m_rep;
-        m_rep->m_count++;
+        m_rep->count++;
       }
 
     return *this;
@@ -446,7 +446,7 @@ public:
 
     if (this != &a)
       {
-        if (m_rep && --m_rep->m_count == 0 && m_rep != nil_rep ())
+        if (m_rep && --m_rep->count == 0 && m_rep != nil_rep ())
           delete m_rep;
 
         m_rep = a.m_rep;
@@ -456,7 +456,7 @@ public:
     return *this;
   }
 
-  octave_idx_type get_count (void) const { return m_rep->m_count; }
+  octave_idx_type get_count (void) const { return m_rep->count; }
 
   octave_base_value::type_conv_info numeric_conversion_function (void) const
   { return m_rep->numeric_conversion_function (); }

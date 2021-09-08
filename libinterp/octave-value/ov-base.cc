@@ -1248,7 +1248,7 @@ octave_base_value::numeric_assign (const std::string& type,
 
   if (done)
     {
-      m_count++;
+      count++;
       retval = octave_value (this);
     }
   else
@@ -1311,7 +1311,7 @@ octave_base_value::numeric_assign (const std::string& type,
           else
             tmp_rhs = rhs;
 
-          m_count++;
+          count++;
           octave_value tmp_lhs = octave_value (this);
 
           if (cf_this)

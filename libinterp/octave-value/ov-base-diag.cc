@@ -309,7 +309,7 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
 
   if (helper_iscomplex (el_type ()) && ! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                              "complex m_matrix", "real scalar");
+                              "complex matrix", "real scalar");
 
   if (isempty ())
     err_invalid_conversion (type_name (), "real scalar");
@@ -328,7 +328,7 @@ octave_base_diag<DMT, MT>::float_value (bool force_conversion) const
 
   if (helper_iscomplex (el_type ()) && ! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                              "complex m_matrix", "real scalar");
+                              "complex matrix", "real scalar");
 
   if (! (numel () > 0))
     err_invalid_conversion (type_name (), "real scalar");
@@ -517,7 +517,7 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
   is >> tmp;
 
   if (! is)
-    error ("load: failed to load diagonal m_matrix constant");
+    error ("load: failed to load diagonal matrix constant");
 
   // This is a little tricky, as we have the Matrix type, but
   // not ColumnVector type.  We need to help the compiler get

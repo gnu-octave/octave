@@ -39,7 +39,7 @@
 template class octave_base_diag<FloatDiagMatrix, FloatMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_diag_matrix,
-                                     "float diagonal m_matrix", "single");
+                                     "float diagonal matrix", "single");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)

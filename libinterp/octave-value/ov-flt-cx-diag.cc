@@ -40,7 +40,7 @@
 template class octave_base_diag<FloatComplexDiagMatrix, FloatComplexMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex_diag_matrix,
-                                     "float complex diagonal m_matrix", "single");
+                                     "float complex diagonal matrix", "single");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
@@ -88,7 +88,7 @@ octave_float_complex_diag_matrix::diag_matrix_value (bool force_conversion) cons
 
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                              type_name (), "real m_matrix");
+                              type_name (), "real matrix");
 
   retval = ::real (m_matrix);
 
@@ -102,7 +102,7 @@ octave_float_complex_diag_matrix::float_diag_matrix_value (bool force_conversion
 
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                              type_name (), "real m_matrix");
+                              type_name (), "real matrix");
 
   retval = ::real (m_matrix);
 

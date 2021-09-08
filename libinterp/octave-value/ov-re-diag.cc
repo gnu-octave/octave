@@ -39,7 +39,7 @@
 
 template class octave_base_diag<DiagMatrix, Matrix>;
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal m_matrix",
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal matrix",
                                      "double");
 
 static octave_base_value *

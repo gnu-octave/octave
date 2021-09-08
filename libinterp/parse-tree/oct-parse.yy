@@ -490,7 +490,7 @@ fcn_list        : fcn_list1 opt_sep
 fcn_list1       : function
                   {
                     octave::tree_statement *stmt = parser.make_statement ($1);
-                    $$ = new octave::tree_statement_list (stmt);
+                    $$ = parser.make_statement_list (stmt);
                   }
                 | fcn_list1 opt_sep function
                   {
@@ -528,7 +528,7 @@ word_list_cmd   : identifier word_list
                 ;
 
 word_list       : string
-                  { $$ = new octave::tree_argument_list ($1); }
+                  { $$ = parser.make_argument_list ($1); }
                 | word_list string
                   {
                     $1->append ($2);
@@ -541,52 +541,26 @@ word_list       : string
 // ===========
 
 identifier      : NAME
-                  {
-                    // Find the token in the symbol table.
-                    octave::symbol_scope scope
-                      = lexer.m_symtab_context.curr_scope ();
-
-                    std::string nm = $1->text ();
-
-                    octave::symbol_record sr
-                      = (scope
-                         ? scope.insert (nm) : octave::symbol_record (nm));
-
-
-                    $$ = new octave::tree_identifier (sr, $1->line (),
-                                                      $1->column ());
-                  }
+                  { $$ = parser.make_identifier ($1); }
                 ;
 
 superclass_identifier
                 : SUPERCLASSREF
-                  {
-                    std::string meth = $1->superclass_method_name ();
-                    std::string cls = $1->superclass_class_name ();
-
-                    $$ = new octave::tree_superclass_ref (meth, cls,
-                                                          $1->line (),
-                                                          $1->column ());
-                  }
+                  { $$ = parser.make_superclass_ref ($1); }
                 ;
 
 meta_identifier : METAQUERY
-                  {
-                    std::string cls = $1->text ();
-
-                    $$ = new octave::tree_metaclass_query (cls, $1->line (),
-                                                           $1->column ());
-                  }
+                  { $$ = parser.make_metaclass_query ($1); }
                 ;
 
 string          : DQ_STRING
-                  { $$ = parser.make_constant (DQ_STRING, $1); }
+                  { $$ = parser.make_constant ($1); }
                 | SQ_STRING
-                  { $$ = parser.make_constant (SQ_STRING, $1); }
+                  { $$ = parser.make_constant ($1); }
                 ;
 
 constant        : NUMBER
-                  { $$ = parser.make_constant (NUMBER, $1); }
+                  { $$ = parser.make_constant ($1); }
                 | string
                   { $$ = $1; }
                 ;
@@ -596,20 +570,12 @@ matrix          : '[' matrix_rows ']'
                 ;
 
 matrix_rows     : cell_or_matrix_row
-                  { $$ = $1 ? new octave::tree_matrix ($1) : nullptr; }
+                  { $$ = parser.make_matrix ($1); }
                 | matrix_rows ';' cell_or_matrix_row
                   {
                     OCTAVE_YYUSE ($2);
 
-                    if ($1)
-                      {
-                        if ($3)
-                          $1->append ($3);
-
-                        $$ = $1;
-                      }
-                    else
-                      $$ = $3 ? new octave::tree_matrix ($3) : nullptr;
+                    $$ = parser.append_matrix_row ($1, $3);
                   }
                 ;
 
@@ -618,20 +584,12 @@ cell            : '{' cell_rows '}'
                 ;
 
 cell_rows       : cell_or_matrix_row
-                  { $$ = $1 ? new octave::tree_cell ($1) : nullptr; }
+                  { $$ = parser.make_cell ($1); }
                 | cell_rows ';' cell_or_matrix_row
                   {
                     OCTAVE_YYUSE ($2);
 
-                    if ($1)
-                      {
-                        if ($3)
-                          $1->append ($3);
-
-                        $$ = $1;
-                      }
-                    else
-                      $$ = $3 ? new octave::tree_cell ($3) : nullptr;
+                    $$ = parser.append_cell_row ($1, $3);
                   }
                 ;
 
@@ -734,28 +692,23 @@ primary_expr    : identifier
                 ;
 
 magic_colon     : ':'
-                  {
-                    OCTAVE_YYUSE ($1);
-
-                    octave_value tmp (octave_value::magic_colon_t);
-                    $$ = new octave::tree_constant (tmp);
-                  }
+                  { $$ = parser.make_constant ($1); }
                 ;
 
 magic_tilde     : EXPR_NOT
                   {
                     OCTAVE_YYUSE ($1);
 
-                    $$ = new octave::tree_black_hole ();
+                    $$ = parser.make_black_hole ();
                   }
                 ;
 
 arg_list        : expression
-                  { $$ = new octave::tree_argument_list ($1); }
+                  { $$ = parser.make_argument_list ($1); }
                 | magic_colon
-                  { $$ = new octave::tree_argument_list ($1); }
+                  { $$ = parser.make_argument_list ($1); }
                 | magic_tilde
-                  { $$ = new octave::tree_argument_list ($1); }
+                  { $$ = parser.make_argument_list ($1); }
                 | arg_list ',' magic_colon
                   {
                     OCTAVE_YYUSE ($2);
@@ -1126,7 +1079,7 @@ declaration     : GLOBAL decl_init_list
                 ;
 
 decl_init_list   : decl_elt
-                  { $$ = new octave::tree_decl_init_list ($1); }
+                  { $$ = parser.make_decl_init_list ($1); }
                 | decl_init_list decl_elt
                   {
                     $1->append ($2);
@@ -1135,13 +1088,9 @@ decl_init_list   : decl_elt
                 ;
 
 decl_elt        : identifier
-                  { $$ = new octave::tree_decl_elt ($1); }
+                  { $$ = parser.make_decl_elt ($1); }
                 | identifier '=' expression
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = new octave::tree_decl_elt ($1, $3);
-                  }
+                  { $$ = parser.make_decl_elt ($1, $2, $3); }
                 ;
 
 // ====================
@@ -1205,10 +1154,9 @@ elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt
 
 else_clause     : ELSE stash_comment opt_sep opt_list
                   {
-                    OCTAVE_YYUSE ($1);
                     OCTAVE_YYUSE ($3);
 
-                    $$ = new octave::tree_if_clause ($4, $2);
+                    $$ = parser.make_else_clause ($1, $2, $4);
                   }
                 ;
 
@@ -1231,7 +1179,7 @@ switch_command  : SWITCH stash_comment expression opt_sep case_list END
 case_list       : // empty
                   { $$ = nullptr; }
                 | default_case
-                  { $$ = new octave::tree_switch_case_list ($1); }
+                  { $$ = parser.make_switch_case_list ($1); }
                 | case_list1
                   { $$ = $1; }
                 | case_list1 default_case
@@ -1242,7 +1190,7 @@ case_list       : // empty
                 ;
 
 case_list1      : switch_case
-                  { $$ = new octave::tree_switch_case_list ($1); }
+                  { $$ = parser.make_switch_case_list ($1); }
                 | case_list1 switch_case
                   {
                     $1->append ($2);
@@ -1261,10 +1209,9 @@ switch_case     : CASE stash_comment opt_sep expression stmt_begin opt_sep opt_l
 
 default_case    : OTHERWISE stash_comment opt_sep opt_list
                   {
-                    OCTAVE_YYUSE ($1);
                     OCTAVE_YYUSE ($3);
 
-                    $$ = new octave::tree_switch_case ($4, $2);
+                    $$ = parser.make_default_switch_case ($1, $2, $4);
                   }
                 ;
 
@@ -1494,7 +1441,7 @@ param_list      : param_list_beg param_list1 param_list_end
                 ;
 
 param_list1     : // empty
-                  { $$ = new octave::tree_parameter_list (octave::tree_parameter_list::in); }
+                  { $$ = parser.make_parameter_list (octave::tree_parameter_list::in); }
                 | param_list2
                   {
                     $1->mark_as_formal_parameters ();
@@ -1513,7 +1460,7 @@ param_list1     : // empty
                 ;
 
 param_list2     : param_list_elt
-                  { $$ = new octave::tree_parameter_list (octave::tree_parameter_list::in, $1); }
+                  { $$ = parser.make_parameter_list (octave::tree_parameter_list::in, $1); }
                 | param_list2 ',' param_list_elt
                   {
                     OCTAVE_YYUSE ($2);
@@ -1526,7 +1473,7 @@ param_list2     : param_list_elt
 param_list_elt  : decl_elt
                   { $$ = $1; }
                 | magic_tilde
-                  { $$ = new octave::tree_decl_elt ($1); }
+                  { $$ = parser.make_decl_elt ($1); }
                 ;
 
 // ===================================
@@ -1540,14 +1487,14 @@ return_list     : '[' ']'
 
                     lexer.m_looking_at_return_list = false;
 
-                    $$ = new octave::tree_parameter_list (octave::tree_parameter_list::out);
+                    $$ = parser.make_parameter_list (octave::tree_parameter_list::out);
                   }
                 | identifier
                   {
                     lexer.m_looking_at_return_list = false;
 
                     octave::tree_parameter_list *tmp
-                      = new octave::tree_parameter_list (octave::tree_parameter_list::out, $1);
+                      = parser.make_parameter_list (octave::tree_parameter_list::out, $1);
 
                     // Even though this parameter list can contain only
                     // a single identifier, we still need to validate it
@@ -1583,14 +1530,13 @@ return_list     : '[' ']'
 
 return_list1    : identifier
                   {
-                    $$ = new octave::tree_parameter_list (octave::tree_parameter_list::out, new octave::tree_decl_elt ($1));
+                    $$ = parser.make_parameter_list (octave::tree_parameter_list::out, $1);
                   }
                 | return_list1 ',' identifier
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append (new octave::tree_decl_elt ($3));
-                    $$ = $1;
+                    $$ = parser.append_parameter_list ($1, $3);
                   }
                 ;
 
@@ -2002,7 +1948,7 @@ attr_list       : // empty
                 ;
 
 attr_list1      : attr
-                  { $$ = new octave::tree_classdef_attribute_list ($1); }
+                  { $$ = parser.make_classdef_attribute_list ($1); }
                 | attr_list1 ',' attr
                   {
                     OCTAVE_YYUSE ($2);
@@ -2013,18 +1959,18 @@ attr_list1      : attr
                 ;
 
 attr            : identifier
-                  { $$ = new octave::tree_classdef_attribute ($1); }
+                  { $$ = parser.make_classdef_attribute ($1); }
                 | identifier '=' expression
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $$ = new octave::tree_classdef_attribute ($1, $3);
+                    $$ = parser.make_classdef_attribute ($1, $3);
                   }
                 | EXPR_NOT identifier
                   {
                     OCTAVE_YYUSE ($1);
 
-                    $$ = new octave::tree_classdef_attribute ($2, false);
+                    $$ = parser.make_not_classdef_attribute ($2);
                   }
                 ;
 
@@ -2051,7 +1997,7 @@ superclass_list1
                   {
                     OCTAVE_YYUSE ($1);
 
-                    $$ = new octave::tree_classdef_superclass_list ($2);
+                    $$ = parser.make_classdef_superclass_list ($2);
                   }
                 | superclass_list1 EXPR_AND superclass
                   {
@@ -2063,7 +2009,7 @@ superclass_list1
                 ;
 
 superclass      : FQ_IDENT
-                  { $$ = new octave::tree_classdef_superclass ($1->text ()); }
+                  { $$ = parser.make_classdef_superclass ($1); }
                 ;
 
 class_body      : // empty
@@ -2081,13 +2027,13 @@ class_body      : // empty
                 ;
 
 class_body1     : properties_block
-                  { $$ = new octave::tree_classdef_body ($1); }
+                  { $$ = parser.make_classdef_body ($1); }
                 | methods_block
-                  { $$ = new octave::tree_classdef_body ($1); }
+                  { $$ = parser.make_classdef_body ($1); }
                 | events_block
-                  { $$ = new octave::tree_classdef_body ($1); }
+                  { $$ = parser.make_classdef_body ($1); }
                 | enum_block
-                  { $$ = new octave::tree_classdef_body ($1); }
+                  { $$ = parser.make_classdef_body ($1); }
                 | class_body1 opt_sep properties_block
                   {
                     OCTAVE_YYUSE ($2);
@@ -2159,7 +2105,7 @@ property_list   : // empty
 
 property_list1
                 : class_property
-                  { $$ = new octave::tree_classdef_property_list ($1); }
+                  { $$ = parser.make_classdef_property_list ($1); }
                 | property_list1 sep class_property
                   {
                     OCTAVE_YYUSE ($2);
@@ -2193,20 +2139,7 @@ property_list1
                 ;
 
 class_property  : stash_comment identifier arg_validation
-                  {
-                    // FIXME: Maybe this should be in a separate
-                    // base_parser::make_classdef_property function?
-
-                    octave::tree_arg_validation *av = $3;
-
-                    av->arg_name ($2);
-
-                    if (av->size_spec () || av->class_name ()
-                        || av->validation_fcns ())
-                      warning ("size, class, and validation function specifications are not yet supported for classdef properties; INCORRECT RESULTS ARE POSSIBLE!");
-
-                    $$ = new octave::tree_classdef_property (av, $1);
-                  }
+                  { $$ = parser.make_classdef_property ($1, $2, $3); }
                 ;
 
 methods_block   : methods_beg stash_comment opt_sep attr_list methods_list END
@@ -2284,13 +2217,7 @@ methods_list    : // empty
                 ;
 
 methods_list1   : method
-                  {
-                    octave_value fcn;
-                    if ($1)
-                      fcn = $1->function ();
-                    delete $1;
-                    $$ = new octave::tree_classdef_methods_list (fcn);
-                  }
+                  { $$ = parser.make_classdef_methods_list ($1); }
                 | methods_list1 opt_sep method
                   {
                     OCTAVE_YYUSE ($2);
@@ -2344,7 +2271,7 @@ events_list     : // empty
                 ;
 
 events_list1    : class_event
-                  { $$ = new octave::tree_classdef_events_list ($1); }
+                  { $$ = parser.make_classdef_events_list ($1); }
                 | events_list1 opt_sep class_event
                   {
                     OCTAVE_YYUSE ($2);
@@ -2355,7 +2282,7 @@ events_list1    : class_event
                 ;
 
 class_event     : stash_comment identifier
-                  { $$ = new octave::tree_classdef_event ($2, $1); }
+                  { $$ = parser.make_classdef_event ($1, $2); }
                 ;
 
 enum_block      : enumeration_beg stash_comment opt_sep attr_list enum_list END
@@ -2397,7 +2324,7 @@ enum_list       : // empty
                 ;
 
 enum_list1      : class_enum
-                  { $$ = new octave::tree_classdef_enum_list ($1); }
+                  { $$ = parser.make_classdef_enum_list ($1); }
                 | enum_list1 opt_sep class_enum
                   {
                     OCTAVE_YYUSE ($2);
@@ -2412,7 +2339,7 @@ class_enum      : stash_comment identifier '(' expression ')'
                     OCTAVE_YYUSE ($3);
                     OCTAVE_YYUSE ($5);
 
-                    $$ = new octave::tree_classdef_enum ($2, $4, $1);
+                    $$ = parser.make_classdef_enum ($2, $4, $1);
                   }
                 ;
 
@@ -2981,15 +2908,24 @@ OCTAVE_NAMESPACE_BEGIN
   // Make a constant.
 
   tree_constant *
-  base_parser::make_constant (int op, token *tok_val)
+  base_parser::make_constant (token *tok_val)
   {
     int l = tok_val->line ();
     int c = tok_val->column ();
+
+    int op = tok_val->token_value ();
 
     tree_constant *retval = nullptr;
 
     switch (op)
       {
+      case ':':
+        {
+          octave_value tmp (octave_value::magic_colon_t);
+          retval = new tree_constant (tmp);
+        }
+        break;
+
       case NUMBER:
         {
           retval = new tree_constant (tok_val->number (), l, c);
@@ -3030,6 +2966,12 @@ OCTAVE_NAMESPACE_BEGIN
       }
 
     return retval;
+  }
+
+  tree_black_hole *
+  base_parser::make_black_hole (void)
+  {
+    return new tree_black_hole ();
   }
 
   // Make a function handle.
@@ -3743,6 +3685,13 @@ OCTAVE_NAMESPACE_BEGIN
     return new tree_if_clause (expr, list, lc, l, c);
   }
 
+  tree_if_clause *
+  base_parser::make_else_clause (token */*else_tok*/, comment_list *lc,
+                                 tree_statement_list *list)
+  {
+    return new tree_if_clause (list, lc);
+  }
+
   // Finish a switch command.
 
   tree_switch_command *
@@ -3785,6 +3734,12 @@ OCTAVE_NAMESPACE_BEGIN
     return retval;
   }
 
+  tree_switch_case_list *
+  base_parser::make_switch_case_list (tree_switch_case *switch_case)
+  {
+    return new tree_switch_case_list (switch_case);
+  }
+
   // Build a switch case.
 
   tree_switch_case *
@@ -3799,6 +3754,16 @@ OCTAVE_NAMESPACE_BEGIN
     int c = case_tok->column ();
 
     return new tree_switch_case (expr, list, lc, l, c);
+  }
+
+  tree_switch_case *
+  base_parser::make_default_switch_case (token *default_tok, comment_list *lc,
+                                         tree_statement_list *list)
+  {
+    int l = default_tok->line ();
+    int c = default_tok->column ();
+
+    return new tree_switch_case (list, lc, l, c);
   }
 
   // Build an assignment to a variable.
@@ -4506,6 +4471,24 @@ OCTAVE_NAMESPACE_BEGIN
     return retval;
   }
 
+  tree_classdef_property_list *
+  base_parser::make_classdef_property_list (tree_classdef_property *prop)
+  {
+    return new tree_classdef_property_list (prop);
+  }
+
+  tree_classdef_property *
+  base_parser::make_classdef_property (comment_list *lc, tree_identifier *id,
+                                       tree_arg_validation *av)
+  {
+    av->arg_name (id);
+
+    if (av->size_spec () || av->class_name () || av->validation_fcns ())
+      warning ("size, class, and validation function specifications are not yet supported for classdef properties; INCORRECT RESULTS ARE POSSIBLE!");
+
+    return new tree_classdef_property (av, lc);
+  }
+
   // LC contains comments appearing before the methods keyword.
   // If this methods block appears first in the list of classdef
   // elements, this comment list will be used for the help text for the
@@ -4585,6 +4568,18 @@ OCTAVE_NAMESPACE_BEGIN
     return retval;
   }
 
+  tree_classdef_events_list *
+  base_parser::make_classdef_events_list (tree_classdef_event *e)
+  {
+    return new tree_classdef_events_list (e);
+  }
+
+  tree_classdef_event *
+  base_parser::make_classdef_event (comment_list *lc, tree_identifier *id)
+  {
+    return new tree_classdef_event (id, lc);
+  }
+
   // LC contains comments appearing before the enumeration keyword.
   // If this enumeration block appears first in the list of classdef
   // elements, this comment list will be used for the help text for the
@@ -4626,6 +4621,76 @@ OCTAVE_NAMESPACE_BEGIN
       }
 
     return retval;
+  }
+
+  tree_classdef_enum_list *
+  base_parser::make_classdef_enum_list (tree_classdef_enum *e)
+  {
+    return new tree_classdef_enum_list (e);
+  }
+
+  tree_classdef_enum *
+  base_parser::make_classdef_enum (tree_identifier *id, tree_expression *expr,
+                                   comment_list *lc)
+  {
+    return new tree_classdef_enum (id, expr, lc);
+  }
+
+  tree_classdef_superclass_list *
+  base_parser::make_classdef_superclass_list (tree_classdef_superclass *sc)
+  {
+    return new tree_classdef_superclass_list (sc);
+  }
+
+  tree_classdef_superclass *
+  base_parser::make_classdef_superclass (token *fqident)
+  {
+    return new tree_classdef_superclass (fqident->text ());
+  }
+
+  tree_classdef_attribute_list *
+  base_parser::make_classdef_attribute_list (tree_classdef_attribute *attr)
+  {
+    return new tree_classdef_attribute_list (attr);
+  }
+
+  tree_classdef_attribute *
+  base_parser::make_classdef_attribute (tree_identifier *id,
+                                        tree_expression *expr)
+  {
+    return (expr
+            ? new tree_classdef_attribute (id, expr)
+            : new tree_classdef_attribute (id));
+  }
+
+  tree_classdef_attribute *
+  base_parser::make_not_classdef_attribute (tree_identifier *id)
+  {
+    return new tree_classdef_attribute (id, false);
+  }
+
+  tree_classdef_body *
+  base_parser::make_classdef_body (tree_classdef_properties_block *pb)
+  {
+    return new tree_classdef_body (pb);
+  }
+
+  tree_classdef_body *
+  base_parser::make_classdef_body (tree_classdef_methods_block *mb)
+  {
+    return new tree_classdef_body (mb);
+  }
+
+  tree_classdef_body *
+  base_parser::make_classdef_body (tree_classdef_events_block *evb)
+  {
+    return new tree_classdef_body (evb);
+  }
+
+  tree_classdef_body *
+  base_parser::make_classdef_body  (tree_classdef_enum_block *enb)
+  {
+    return new tree_classdef_body (enb);
   }
 
   octave_user_function*
@@ -4694,6 +4759,19 @@ OCTAVE_NAMESPACE_BEGIN
     int c = fcn->beginning_column ();
 
     return new tree_function_def (fcn, l, c);
+  }
+
+  tree_classdef_methods_list *
+  base_parser::make_classdef_methods_list (tree_function_def *fcn_def)
+  {
+    octave_value fcn;
+
+    if (fcn_def)
+      fcn = fcn_def->function ();
+
+    delete fcn_def;
+
+    return new tree_classdef_methods_list (fcn);
   }
 
   bool
@@ -4908,6 +4986,19 @@ OCTAVE_NAMESPACE_BEGIN
       }
 
     return retval;
+  }
+
+  tree_decl_init_list *
+  base_parser::make_decl_init_list (tree_decl_elt *elt)
+  {
+    return new tree_decl_init_list (elt);
+  }
+
+  tree_decl_elt *
+  base_parser::make_decl_elt (tree_identifier *id, token */*eq_op*/,
+                              tree_expression *expr)
+  {
+    return expr ? new tree_decl_elt (id, expr) : new tree_decl_elt (id);
   }
 
   bool
@@ -5137,6 +5228,24 @@ OCTAVE_NAMESPACE_BEGIN
                                  close_delim->line (), close_delim->column ()));
   }
 
+  tree_matrix *
+  base_parser::make_matrix (tree_argument_list *row)
+  {
+    return row ? new tree_matrix (row) : nullptr;
+  }
+
+  tree_matrix *
+  base_parser::append_matrix_row (tree_matrix *matrix, tree_argument_list *row)
+  {
+    if (! matrix)
+      return make_matrix (row);
+
+    if (row)
+      matrix->append (row);
+
+    return matrix;
+  }
+
   // Finish building a cell list.
 
   tree_expression *
@@ -5147,6 +5256,64 @@ OCTAVE_NAMESPACE_BEGIN
             ? finish_array_list (c, open_delim, close_delim)
             : new tree_constant (octave_value (Cell ()),
                                  close_delim->line (), close_delim->column ()));
+  }
+
+  tree_cell *
+  base_parser::make_cell (tree_argument_list *row)
+  {
+    return row ? new tree_cell (row) : nullptr;
+  }
+
+  tree_cell *
+  base_parser::append_cell_row (tree_cell *cell, tree_argument_list *row)
+  {
+    if (! cell)
+      return make_cell (row);
+
+    if (row)
+      cell->append (row);
+
+    return cell;
+  }
+
+  tree_identifier *
+  base_parser::make_identifier (token *ident)
+  {
+    // Find the token in the symbol table.
+    symbol_scope scope = m_lexer.m_symtab_context.curr_scope ();
+
+    std::string nm = ident->text ();
+
+    symbol_record sr = (scope ? scope.insert (nm) : symbol_record (nm));
+
+
+    int l = ident->line ();
+    int c = ident->column ();
+
+    return new tree_identifier (sr, l, c);
+  }
+
+  tree_superclass_ref *
+  base_parser::make_superclass_ref (token *superclassref)
+  {
+    std::string meth = superclassref->superclass_method_name ();
+    std::string cls = superclassref->superclass_class_name ();
+
+    int l = superclassref->line ();
+    int c = superclassref->column ();
+
+    return new tree_superclass_ref (meth, cls, l, c);
+  }
+
+  tree_metaclass_query *
+  base_parser::make_metaclass_query (token *metaquery)
+  {
+    std::string cls = metaquery->text ();
+
+    int l = metaquery->line ();
+    int c = metaquery->column ();
+
+    return new tree_metaclass_query (cls, l, c);
   }
 
   tree_statement_list *
@@ -5211,6 +5378,40 @@ OCTAVE_NAMESPACE_BEGIN
 
     list->append (stmt);
 
+    return list;
+  }
+
+  tree_argument_list *
+  base_parser::make_argument_list (tree_expression *expr)
+  {
+    return new tree_argument_list (expr);
+  }
+
+  tree_parameter_list *
+  base_parser::make_parameter_list (tree_parameter_list::in_or_out io)
+  {
+    return new tree_parameter_list (io);
+  }
+
+  tree_parameter_list *
+  base_parser::make_parameter_list (tree_parameter_list::in_or_out io,
+                                    tree_decl_elt *t)
+  {
+    return new tree_parameter_list (io, t);
+  }
+
+  tree_parameter_list *
+  base_parser::make_parameter_list (tree_parameter_list::in_or_out io,
+                                    tree_identifier *id)
+  {
+    return new tree_parameter_list (io, id);
+  }
+
+  tree_parameter_list *
+  base_parser::append_parameter_list (tree_parameter_list *list,
+                                      tree_identifier *id)
+  {
+    list->append (new tree_decl_elt (id));
     return list;
   }
 

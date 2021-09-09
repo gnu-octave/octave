@@ -393,14 +393,14 @@ OCTAVE_NAMESPACE_BEGIN
     public:
 
       package_info (const std::string& package_name = "")
-        : m_package_name (package_name), dir_list (), fcn_map (),
-          private_fcn_map (),
-          method_map ()
+        : m_package_name (package_name), m_dir_list (), m_fcn_map (),
+          m_private_fcn_map (),
+          m_method_map ()
       { }
 
       package_info (const package_info& l)
-        : m_package_name (l.m_package_name), dir_list (l.dir_list),
-          private_fcn_map (l.private_fcn_map), method_map (l.method_map)
+        : m_package_name (l.m_package_name), m_dir_list (l.m_dir_list),
+          m_private_fcn_map (l.m_private_fcn_map), m_method_map (l.m_method_map)
       { }
 
       ~package_info (void) = default;
@@ -410,10 +410,10 @@ OCTAVE_NAMESPACE_BEGIN
         if (&l != this)
           {
             m_package_name = l.m_package_name;
-            dir_list = l.dir_list;
-            fcn_map = l.fcn_map;
-            private_fcn_map = l.private_fcn_map;
-            method_map = l.method_map;
+            m_dir_list = l.m_dir_list;
+            m_fcn_map = l.m_fcn_map;
+            m_private_fcn_map = l.m_private_fcn_map;
+            m_method_map = l.m_method_map;
           }
 
         return *this;
@@ -422,9 +422,9 @@ OCTAVE_NAMESPACE_BEGIN
       void add (const dir_info& di, bool at_end, bool updating)
       {
         if (at_end)
-          dir_list.push_back (di.dir_name);
+          m_dir_list.push_back (di.dir_name);
         else
-          dir_list.push_front (di.dir_name);
+          m_dir_list.push_front (di.dir_name);
 
         add_to_fcn_map (di, at_end, updating);
 
@@ -439,13 +439,13 @@ OCTAVE_NAMESPACE_BEGIN
 
       void clear (void)
       {
-        dir_list.clear ();
+        m_dir_list.clear ();
 
-        fcn_map.clear ();
+        m_fcn_map.clear ();
 
-        private_fcn_map.clear ();
+        m_private_fcn_map.clear ();
 
-        method_map.clear ();
+        m_method_map.clear ();
       }
 
       void display (std::ostream& out) const;
@@ -499,13 +499,13 @@ OCTAVE_NAMESPACE_BEGIN
 
       std::string m_package_name;
 
-      std::list<std::string> dir_list;
+      std::list<std::string> m_dir_list;
 
-      fcn_map_type fcn_map;
+      fcn_map_type m_fcn_map;
 
-      private_fcn_map_type private_fcn_map;
+      private_fcn_map_type m_private_fcn_map;
 
-      method_map_type method_map;
+      method_map_type m_method_map;
     };
 
     // <PACKAGE_NAME, PACKAGE_INFO>

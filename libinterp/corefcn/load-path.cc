@@ -1572,16 +1572,16 @@ OCTAVE_NAMESPACE_BEGIN
   {
     std::string dir_name = di.abs_dir_name;
 
-    auto s = std::find (dir_list.begin (), dir_list.end (), dir_name);
+    auto s = std::find (m_dir_list.begin (), m_dir_list.end (), dir_name);
 
-    if (s != dir_list.end ())
+    if (s != m_dir_list.end ())
       {
-        dir_list.erase (s);
+        m_dir_list.erase (s);
 
         if (at_end)
-          dir_list.push_back (dir_name);
+          m_dir_list.push_back (dir_name);
         else
-          dir_list.push_front (dir_name);
+          m_dir_list.push_front (dir_name);
       }
 
     move_fcn_map (dir_name, di.fcn_files, at_end);
@@ -1598,7 +1598,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     string_vector fcn_files = di.fcn_files;
 
-    dir_list.remove (dir);
+    m_dir_list.remove (dir);
 
     remove_fcn_map (dir, fcn_files);
 
@@ -1614,11 +1614,11 @@ OCTAVE_NAMESPACE_BEGIN
        << (m_package_name.empty () ? "<top-level>" : m_package_name)
        << "\n\n";
 
-    for (const auto& dir : dir_list)
+    for (const auto& dir : m_dir_list)
       os << dir << "\n";
     os << "\n";
 
-    for (const auto& dir_fnlst : private_fcn_map)
+    for (const auto& dir_fnlst : m_private_fcn_map)
       {
         os << "\n*** private functions in "
            << sys::file_ops::concat (dir_fnlst.first, "private")
@@ -1629,7 +1629,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 #if defined (DEBUG_LOAD_PATH)
 
-    for (const auto& nm_filst : fcn_map)
+    for (const auto& nm_filst : m_fcn_map)
       {
         os << nm_filst.first << ":\n";
 
@@ -1645,13 +1645,13 @@ OCTAVE_NAMESPACE_BEGIN
           }
       }
 
-    for (const auto& cls_fnmap : method_map)
+    for (const auto& cls_fnmap : m_method_map)
       {
         os << "CLASS " << cls_fnmap.first << ":\n";
 
         const fcn_map_type& fm = cls_fnmap.second;
 
-        for (const auto& nm_fnlst : fcn_map)
+        for (const auto& nm_fnlst : m_fcn_map)
           {
             os << "  " << nm_fnlst.first << ":\n";
 
@@ -1700,9 +1700,9 @@ OCTAVE_NAMESPACE_BEGIN
       {
         dir_name = "";
 
-        const_fcn_map_iterator p = fcn_map.find (fcn);
+        const_fcn_map_iterator p = m_fcn_map.find (fcn);
 
-        if (p != fcn_map.end ())
+        if (p != m_fcn_map.end ())
           {
             const file_info_list_type& file_info_list = p->second;
 
@@ -1734,9 +1734,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     //  update ();
 
-    const_private_fcn_map_iterator q = private_fcn_map.find (dir);
+    const_private_fcn_map_iterator q = m_private_fcn_map.find (dir);
 
-    if (q != private_fcn_map.end ())
+    if (q != m_private_fcn_map.end ())
       {
         const dir_info::fcn_file_map_type& fcn_file_map = q->second;
 
@@ -1768,9 +1768,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     dir_name = "";
 
-    const_method_map_iterator q = method_map.find (class_name);
+    const_method_map_iterator q = m_method_map.find (class_name);
 
-    if (q != method_map.end ())
+    if (q != m_method_map.end ())
       {
         const fcn_map_type& m = q->second;
 
@@ -1808,9 +1808,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     //  update ();
 
-    const_method_map_iterator mtd_map_it = method_map.find (class_name);
+    const_method_map_iterator mtd_map_it = m_method_map.find (class_name);
 
-    if (mtd_map_it != method_map.end ())
+    if (mtd_map_it != m_method_map.end ())
       {
         for (const auto& nm_filst : mtd_map_it->second)
           retval.push_back (nm_filst.first);
@@ -1826,7 +1826,7 @@ OCTAVE_NAMESPACE_BEGIN
   load_path::package_info::overloads (const std::string& meth,
                                       std::list<std::string>& l) const
   {
-    for (const auto& cls_fnmap : method_map)
+    for (const auto& cls_fnmap : m_method_map)
       {
         const fcn_map_type& m = cls_fnmap.second;
 
@@ -1845,13 +1845,13 @@ OCTAVE_NAMESPACE_BEGIN
   string_vector
   load_path::package_info::fcn_names (void) const
   {
-    std::size_t len = fcn_map.size ();
+    std::size_t len = m_fcn_map.size ();
 
     string_vector retval (len);
 
     octave_idx_type count = 0;
 
-    for (const auto& nm_filst : fcn_map)
+    for (const auto& nm_filst : m_fcn_map)
       retval[count++] = nm_filst.first;
 
     return retval;
@@ -1882,7 +1882,7 @@ OCTAVE_NAMESPACE_BEGIN
             ext = fname.substr (pos);
           }
 
-        file_info_list_type& file_info_list = fcn_map[base];
+        file_info_list_type& file_info_list = m_fcn_map[base];
 
         auto p = file_info_list.begin ();
 
@@ -1969,7 +1969,7 @@ OCTAVE_NAMESPACE_BEGIN
     dir_info::fcn_file_map_type private_file_map = di.private_file_map;
 
     if (! private_file_map.empty ())
-      private_fcn_map[di.abs_dir_name] = private_file_map;
+      m_private_fcn_map[di.abs_dir_name] = private_file_map;
   }
 
   void
@@ -1984,7 +1984,7 @@ OCTAVE_NAMESPACE_BEGIN
       {
         std::string class_name = cls_ci.first;
 
-        fcn_map_type& fm = method_map[class_name];
+        fcn_map_type& fm = m_method_map[class_name];
 
         std::string full_dir_name
           = sys::file_ops::concat (dir_name, '@' + class_name);
@@ -2032,7 +2032,7 @@ OCTAVE_NAMESPACE_BEGIN
         dir_info::fcn_file_map_type private_file_map = ci.private_file_map;
 
         if (! private_file_map.empty ())
-          private_fcn_map[full_dir_name] = private_file_map;
+          m_private_fcn_map[full_dir_name] = private_file_map;
       }
   }
 
@@ -2057,7 +2057,7 @@ OCTAVE_NAMESPACE_BEGIN
             ext = fname.substr (pos);
           }
 
-        file_info_list_type& file_info_list = fcn_map[base];
+        file_info_list_type& file_info_list = m_fcn_map[base];
 
         if (file_info_list.size () == 1)
           continue;
@@ -2089,7 +2089,7 @@ OCTAVE_NAMESPACE_BEGIN
   load_path::package_info::move_method_map (const std::string& dir_name,
                                             bool at_end)
   {
-    for (auto& cls_fnmap : method_map)
+    for (auto& cls_fnmap : m_method_map)
       {
         std::string class_name = cls_fnmap.first;
 
@@ -2149,7 +2149,7 @@ OCTAVE_NAMESPACE_BEGIN
             ext = fname.substr (pos);
           }
 
-        file_info_list_type& file_info_list = fcn_map[base];
+        file_info_list_type& file_info_list = m_fcn_map[base];
 
         for (auto fi_it = file_info_list.begin ();
              fi_it != file_info_list.end ();
@@ -2160,7 +2160,7 @@ OCTAVE_NAMESPACE_BEGIN
                 file_info_list.erase (fi_it);
 
                 if (file_info_list.empty ())
-                  fcn_map.erase (fname);
+                  m_fcn_map.erase (fname);
 
                 break;
               }
@@ -2171,16 +2171,16 @@ OCTAVE_NAMESPACE_BEGIN
   void
   load_path::package_info::remove_private_fcn_map (const std::string& dir)
   {
-    auto p = private_fcn_map.find (dir);
+    auto p = m_private_fcn_map.find (dir);
 
-    if (p != private_fcn_map.end ())
-      private_fcn_map.erase (p);
+    if (p != m_private_fcn_map.end ())
+      m_private_fcn_map.erase (p);
   }
 
   void
   load_path::package_info::remove_method_map (const std::string& dir)
   {
-    for (auto& cls_fnmap : method_map)
+    for (auto& cls_fnmap : m_method_map)
       {
         std::string class_name = cls_fnmap.first;
 

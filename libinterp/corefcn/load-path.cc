@@ -229,10 +229,10 @@ OCTAVE_NAMESPACE_BEGIN
   load_path::abs_dir_cache_type load_path::abs_dir_cache;
 
   load_path::load_path (interpreter& interp)
-    : m_interpreter (interp), package_map (), top_level_package (),
-      dir_info_list (), init_dirs (), m_command_line_path (),
-      add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
-      remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); })
+    : add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
+      remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); }),
+      m_interpreter (interp), m_package_map (), m_top_level_package (),
+      m_dir_info_list (), m_init_dirs (), m_command_line_path ()
   { }
 
   void
@@ -276,11 +276,11 @@ OCTAVE_NAMESPACE_BEGIN
   void
   load_path::clear (void)
   {
-    dir_info_list.clear ();
+    m_dir_info_list.clear ();
 
-    top_level_package.clear ();
+    m_top_level_package.clear ();
 
-    package_map.clear ();
+    m_package_map.clear ();
   }
 
   void
@@ -296,10 +296,10 @@ OCTAVE_NAMESPACE_BEGIN
     std::set<std::string> elts_set (elts.begin (), elts.end ());
 
     if (is_init)
-      init_dirs = elts_set;
+      m_init_dirs = elts_set;
     else
       {
-        for (const auto& init_dir : init_dirs)
+        for (const auto& init_dir : m_init_dirs)
           {
             if (elts_set.find (init_dir) == elts_set.end ())
               {
@@ -327,7 +327,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     // FIXME: Shouldn't the test for add_hook be outside the for loop?
     //        Why not use const here?  Does add_hook change dir_info_list?
-    for (auto& di : dir_info_list)
+    for (auto& di : m_dir_info_list)
       {
         if (add_hook)
           add_hook (di.dir_name);
@@ -373,7 +373,7 @@ OCTAVE_NAMESPACE_BEGIN
 
             auto i = find_dir_info (dir);
 
-            if (i != dir_info_list.end ())
+            if (i != m_dir_info_list.end ())
               {
                 retval = true;
 
@@ -384,7 +384,7 @@ OCTAVE_NAMESPACE_BEGIN
 
                 remove (di);
 
-                dir_info_list.erase (i);
+                m_dir_info_list.erase (i);
               }
           }
       }
@@ -399,11 +399,11 @@ OCTAVE_NAMESPACE_BEGIN
     // preserve the correct directory ordering for new files that
     // have appeared.
 
-    top_level_package.clear ();
+    m_top_level_package.clear ();
 
-    package_map.clear ();
+    m_package_map.clear ();
 
-    for (auto& di : dir_info_list)
+    for (auto& di : m_dir_info_list)
       {
         bool ok = di.update ();
 
@@ -422,7 +422,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     bool retval = false;
 
-    for (const auto& d : dir_info_list)
+    for (const auto& d : m_dir_info_list)
       {
         if (same_file (dir, d.dir_name))
           {
@@ -515,9 +515,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     //  update ();
 
-    top_level_package.overloads (meth, retval);
+    m_top_level_package.overloads (meth, retval);
 
-    for (const auto& nm_ldr : package_map)
+    for (const auto& nm_ldr : m_package_map)
       nm_ldr.second.overloads (meth, retval);
 
     return retval;
@@ -528,7 +528,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     std::list<std::string> retval;
 
-    for (const auto& dir_ldr : package_map)
+    for (const auto& dir_ldr : m_package_map)
       {
         if (! only_top_level || dir_ldr.first.find ('.') == std::string::npos)
           retval.push_back (dir_ldr.first);
@@ -562,7 +562,7 @@ OCTAVE_NAMESPACE_BEGIN
       {
         // Given name has a directory separator, so append it to each
         // element of the load path in turn.
-        for (const auto& di : dir_info_list)
+        for (const auto& di : m_dir_info_list)
           {
             std::string tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
@@ -575,7 +575,7 @@ OCTAVE_NAMESPACE_BEGIN
     else
       {
         // Look in cache.
-        for (const auto & di : dir_info_list)
+        for (const auto & di : m_dir_info_list)
           {
             string_vector all_files = di.all_files;
 
@@ -609,7 +609,7 @@ OCTAVE_NAMESPACE_BEGIN
     else
       {
         std::string canon_dir = maybe_canonicalize (dir);
-        for (const auto& di : dir_info_list)
+        for (const auto& di : m_dir_info_list)
           {
             std::string dname = di.abs_dir_name;
 
@@ -656,7 +656,7 @@ OCTAVE_NAMESPACE_BEGIN
     else
       {
         std::string canon_dir = maybe_canonicalize (dir);
-        for (const auto& di : dir_info_list)
+        for (const auto& di : m_dir_info_list)
           {
             std::string dname = di.abs_dir_name;
 
@@ -716,7 +716,7 @@ OCTAVE_NAMESPACE_BEGIN
               }
             else
               {
-                for (const auto& di : dir_info_list)
+                for (const auto& di : m_dir_info_list)
                   {
                     std::string tfile;
                     tfile = sys::file_ops::concat (di.abs_dir_name, file);
@@ -734,7 +734,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     rel_flist.resize (rel_flen);
 
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       {
         string_vector all_files = di.all_files;
 
@@ -793,7 +793,7 @@ OCTAVE_NAMESPACE_BEGIN
               }
             else
               {
-                for (const auto& di : dir_info_list)
+                for (const auto& di : m_dir_info_list)
                   {
                     std::string tfile;
                     tfile = sys::file_ops::concat (di.abs_dir_name, file);
@@ -811,7 +811,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     rel_flist.resize (rel_flen);
 
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       {
         string_vector all_files = di.all_files;
 
@@ -834,13 +834,13 @@ OCTAVE_NAMESPACE_BEGIN
   string_vector
   load_path::dirs (void) const
   {
-    std::size_t len = dir_info_list.size ();
+    std::size_t len = m_dir_info_list.size ();
 
     string_vector retval (len);
 
     octave_idx_type k = 0;
 
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       retval[k++] = di.dir_name;
 
     return retval;
@@ -851,7 +851,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     std::list<std::string> retval;
 
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       retval.push_back (di.dir_name);
 
     return retval;
@@ -864,7 +864,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     const_dir_info_list_iterator p = find_dir_info (dir);
 
-    if (p != dir_info_list.end ())
+    if (p != m_dir_info_list.end ())
       retval = p->fcn_files;
 
     if (omit_exts)
@@ -888,7 +888,7 @@ OCTAVE_NAMESPACE_BEGIN
   string_vector
   load_path::fcn_names (void) const
   {
-    return top_level_package.fcn_names ();
+    return m_top_level_package.fcn_names ();
   }
 
   std::string
@@ -912,7 +912,7 @@ OCTAVE_NAMESPACE_BEGIN
   void
   load_path::display (std::ostream& os) const
   {
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       {
         string_vector fcn_files = di.fcn_files;
 
@@ -942,9 +942,9 @@ OCTAVE_NAMESPACE_BEGIN
           }
       }
 
-    top_level_package.display (os);
+    m_top_level_package.display (os);
 
-    for (const auto& nm_ldr : package_map)
+    for (const auto& nm_ldr : m_package_map)
       nm_ldr.second.display (os);
   }
 
@@ -983,9 +983,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     dir = maybe_canonicalize (dir);
 
-    auto retval = dir_info_list.cbegin ();
+    auto retval = m_dir_info_list.cbegin ();
 
-    while (retval != dir_info_list.cend ())
+    while (retval != m_dir_info_list.cend ())
       {
         if (retval->dir_name == dir)
           break;
@@ -1003,9 +1003,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     dir = maybe_canonicalize (dir);
 
-    auto retval = dir_info_list.begin ();
+    auto retval = m_dir_info_list.begin ();
 
-    while (retval != dir_info_list.end ())
+    while (retval != m_dir_info_list.end ())
       {
         if (retval->dir_name == dir)
           break;
@@ -1019,22 +1019,22 @@ OCTAVE_NAMESPACE_BEGIN
   bool
   load_path::contains (const std::string& dir) const
   {
-    return find_dir_info (dir) != dir_info_list.end ();
+    return find_dir_info (dir) != m_dir_info_list.end ();
   }
 
   void
   load_path::move (dir_info_list_iterator i, bool at_end)
   {
-    if (dir_info_list.size () > 1)
+    if (m_dir_info_list.size () > 1)
       {
         dir_info di = *i;
 
-        dir_info_list.erase (i);
+        m_dir_info_list.erase (i);
 
         if (at_end)
-          dir_info_list.push_back (di);
+          m_dir_info_list.push_back (di);
         else
-          dir_info_list.push_front (di);
+          m_dir_info_list.push_front (di);
 
         move (di, at_end);
       }
@@ -1077,7 +1077,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     auto i = find_dir_info (dir);
 
-    if (i != dir_info_list.end ())
+    if (i != m_dir_info_list.end ())
       move (i, at_end);
     else
       {
@@ -1092,9 +1092,9 @@ OCTAVE_NAMESPACE_BEGIN
                 dir_info di (dir);
 
                 if (at_end)
-                  dir_info_list.push_back (di);
+                  m_dir_info_list.push_back (di);
                 else
-                  dir_info_list.push_front (di);
+                  m_dir_info_list.push_front (di);
 
                 add (di, at_end);
 
@@ -1115,7 +1115,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     i = find_dir_info (".");
 
-    if (i != dir_info_list.end ())
+    if (i != m_dir_info_list.end ())
       move (i, false);
   }
 
@@ -1214,7 +1214,7 @@ OCTAVE_NAMESPACE_BEGIN
   bool
   load_path::is_package (const std::string& name) const
   {
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       {
         if (di.is_package (name))
           return true;

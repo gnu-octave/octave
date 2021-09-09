@@ -102,7 +102,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool find_package (const std::string& package_name) const
     {
-      return (package_map.find (package_name) != package_map.end ());
+      return (m_package_map.find (package_name) != m_package_map.end ());
     }
 
     std::list<std::string>
@@ -514,22 +514,6 @@ OCTAVE_NAMESPACE_BEGIN
     typedef package_map_type::const_iterator const_package_map_iterator;
     typedef package_map_type::iterator package_map_iterator;
 
-    interpreter& m_interpreter;
-
-    mutable package_map_type package_map;
-
-    mutable package_info top_level_package;
-
-    mutable dir_info_list_type dir_info_list;
-
-    mutable std::set<std::string> init_dirs;
-
-    std::string m_command_line_path;
-
-    static std::string sys_path;
-
-    static abs_dir_cache_type abs_dir_cache;
-
     std::function<void (const std::string&)> add_hook;
 
     std::function<void (const std::string&)> remove_hook;
@@ -559,21 +543,40 @@ OCTAVE_NAMESPACE_BEGIN
     {
       if (! name.empty () && is_package (name))
         {
-          package_map_iterator l = package_map.find (name);
+          package_map_iterator l = m_package_map.find (name);
 
-          if (l == package_map.end ())
-            l = package_map.insert (package_map.end (),
-                                    package_map_type::value_type (name, package_info (name)));
+          if (l == m_package_map.end ())
+            l = m_package_map.insert (m_package_map.end (),
+                                      package_map_type::value_type (name, package_info (name)));
 
           return l->second;
         }
 
-      return top_level_package;
+      return m_top_level_package;
     }
 
     string_vector get_file_list (const dir_info::fcn_file_map_type& lst) const;
 
     friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);
+
+    //--------
+
+    static std::string sys_path;
+
+    static abs_dir_cache_type abs_dir_cache;
+
+    interpreter& m_interpreter;
+
+    mutable package_map_type m_package_map;
+
+    mutable package_info m_top_level_package;
+
+    mutable dir_info_list_type m_dir_info_list;
+
+    mutable std::set<std::string> m_init_dirs;
+
+    std::string m_command_line_path;
+
   };
 
   extern std::string

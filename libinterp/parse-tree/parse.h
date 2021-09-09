@@ -350,6 +350,9 @@ namespace octave
     make_else_clause (token *else_tok, comment_list *lc,
                       tree_statement_list *list);
 
+    OCTINTERP_API tree_if_command_list *
+    append_if_clause (tree_if_command_list *list, tree_if_clause *clause);
+
     // Finish a switch command.
     OCTINTERP_API tree_switch_command *
     finish_switch_command (token *switch_tok, tree_expression *expr,
@@ -367,6 +370,9 @@ namespace octave
     OCTINTERP_API tree_switch_case *
     make_default_switch_case (token *default_tok, comment_list *lc,
                               tree_statement_list *list);
+
+    OCTINTERP_API tree_switch_case_list *
+    append_switch_case (tree_switch_case_list *list, tree_switch_case *elt);
 
     // Build an assignment to a variable.
     OCTINTERP_API tree_expression *
@@ -407,6 +413,9 @@ namespace octave
     finish_function (tree_parameter_list *ret_list,
                      octave_user_function *fcn, comment_list *lc,
                      int l, int c);
+
+    OCTINTERP_API tree_statement_list *
+    append_function_body (tree_statement_list *body, tree_statement_list *list);
 
     // Make an arguments validation block.
     OCTINTERP_API tree_arguments_block *
@@ -466,6 +475,10 @@ namespace octave
     make_classdef_property (comment_list *lc, tree_identifier *id,
                             tree_arg_validation *av);
 
+    OCTINTERP_API tree_classdef_property_list *
+    append_classdef_property (tree_classdef_property_list *list,
+                              tree_classdef_property *elt);
+
     OCTINTERP_API tree_classdef_methods_block *
     make_classdef_methods_block (token *tok_val,
                                  tree_classdef_attribute_list *a,
@@ -486,6 +499,10 @@ namespace octave
     OCTINTERP_API tree_classdef_event *
     make_classdef_event (comment_list *lc, tree_identifier *id);
 
+    OCTINTERP_API tree_classdef_events_list *
+    append_classdef_event (tree_classdef_events_list *list,
+                           tree_classdef_event *elt);
+
     OCTINTERP_API tree_classdef_enum_block *
     make_classdef_enum_block (token *tok_val,
                               tree_classdef_attribute_list *a,
@@ -500,11 +517,19 @@ namespace octave
     make_classdef_enum (tree_identifier *id, tree_expression *expr,
                         comment_list *lc);
 
+    OCTINTERP_API tree_classdef_enum_list *
+    append_classdef_enum (tree_classdef_enum_list *list,
+                          tree_classdef_enum *elt);
+
     OCTINTERP_API tree_classdef_superclass_list *
     make_classdef_superclass_list (tree_classdef_superclass *sc);
 
     OCTINTERP_API tree_classdef_superclass *
     make_classdef_superclass (token *fqident);
+
+    OCTINTERP_API tree_classdef_superclass_list *
+    append_classdef_superclass (tree_classdef_superclass_list *list,
+                                tree_classdef_superclass *elt);
 
     OCTINTERP_API tree_classdef_attribute_list *
     make_classdef_attribute_list (tree_classdef_attribute *attr);
@@ -515,6 +540,10 @@ namespace octave
 
     OCTINTERP_API tree_classdef_attribute *
     make_not_classdef_attribute (tree_identifier *id);
+
+    OCTINTERP_API tree_classdef_attribute_list *
+    append_classdef_attribute (tree_classdef_attribute_list *list,
+                               tree_classdef_attribute *elt);
 
     OCTINTERP_API tree_classdef_body *
     make_classdef_body (tree_classdef_properties_block *pb);
@@ -528,6 +557,22 @@ namespace octave
     OCTINTERP_API tree_classdef_body *
     make_classdef_body  (tree_classdef_enum_block *enb);
 
+    OCTINTERP_API tree_classdef_body *
+    append_classdef_properties_block (tree_classdef_body *body,
+                                      tree_classdef_properties_block *block);
+
+    OCTINTERP_API tree_classdef_body *
+    append_classdef_methods_block (tree_classdef_body *body,
+                                   tree_classdef_methods_block *block);
+
+    OCTINTERP_API tree_classdef_body *
+    append_classdef_events_block (tree_classdef_body *body,
+                                  tree_classdef_events_block *block);
+
+    OCTINTERP_API tree_classdef_body *
+    append_classdef_enum_block (tree_classdef_body *body,
+                                tree_classdef_enum_block *block);
+
     OCTINTERP_API octave_user_function *
     start_classdef_external_method (tree_identifier *id,
                                     tree_parameter_list *pl);
@@ -539,6 +584,10 @@ namespace octave
 
     OCTINTERP_API tree_classdef_methods_list *
     make_classdef_methods_list (tree_function_def *fcn_def);
+
+    OCTINTERP_API tree_classdef_methods_list *
+    append_classdef_method (tree_classdef_methods_list *list,
+                            tree_function_def *fcn_def);
 
     OCTINTERP_API bool
     finish_classdef_file (tree_classdef *cls,
@@ -567,6 +616,9 @@ namespace octave
     OCTINTERP_API tree_decl_elt *
     make_decl_elt (tree_identifier *id, token *eq_op = nullptr,
                    tree_expression *expr = nullptr);
+
+    OCTINTERP_API tree_decl_init_list *
+    append_decl_init_list (tree_decl_init_list *list, tree_decl_elt *elt);
 
     // Validate an function parameter list.
     OCTINTERP_API bool
@@ -622,6 +674,9 @@ namespace octave
     OCTINTERP_API tree_argument_list *
     make_argument_list (tree_expression *expr);
 
+    OCTINTERP_API tree_argument_list *
+    append_argument_list (tree_argument_list *list, tree_expression *expr);
+
     OCTINTERP_API tree_parameter_list *
     make_parameter_list (tree_parameter_list::in_or_out io);
 
@@ -631,6 +686,9 @@ namespace octave
     OCTINTERP_API tree_parameter_list *
     make_parameter_list (tree_parameter_list::in_or_out io,
                          tree_identifier *id);
+
+    OCTINTERP_API tree_parameter_list *
+    append_parameter_list (tree_parameter_list *list, tree_decl_elt *t);
 
     OCTINTERP_API tree_parameter_list *
     append_parameter_list (tree_parameter_list *list, tree_identifier *id);

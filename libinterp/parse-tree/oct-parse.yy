@@ -530,10 +530,7 @@ word_list_cmd   : identifier word_list
 word_list       : string
                   { $$ = parser.make_argument_list ($1); }
                 | word_list string
-                  {
-                    $1->append ($2);
-                    $$ = $1;
-                  }
+                  { $$ = parser.append_argument_list ($1, $2); }
                 ;
 
 // ===========
@@ -713,22 +710,19 @@ arg_list        : expression
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_argument_list ($1, $3);
                   }
                 | arg_list ',' magic_tilde
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_argument_list ($1, $3);
                   }
                 | arg_list ',' expression
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_argument_list ($1, $3);
                   }
                 ;
 
@@ -1081,10 +1075,7 @@ declaration     : GLOBAL decl_init_list
 decl_init_list   : decl_elt
                   { $$ = parser.make_decl_init_list ($1); }
                 | decl_init_list decl_elt
-                  {
-                    $1->append ($2);
-                    $$ = $1;
-                  }
+                  { $$ = parser.append_decl_init_list ($1, $2); }
                 ;
 
 decl_elt        : identifier
@@ -1120,10 +1111,7 @@ if_command      : IF stash_comment if_cmd_list END
 if_cmd_list     : if_cmd_list1
                   { $$ = $1; }
                 | if_cmd_list1 else_clause
-                  {
-                    $1->append ($2);
-                    $$ = $1;
-                  }
+                  { $$ = parser.append_if_clause ($1, $2); }
                 ;
 
 if_cmd_list1    : expression stmt_begin opt_sep opt_list
@@ -1135,10 +1123,7 @@ if_cmd_list1    : expression stmt_begin opt_sep opt_list
                     $$ = parser.start_if_command ($1, $4);
                   }
                 | if_cmd_list1 elseif_clause
-                  {
-                    $1->append ($2);
-                    $$ = $1;
-                  }
+                  { $$ = parser.append_if_clause ($1, $2); }
                 ;
 
 elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt_list
@@ -1183,19 +1168,13 @@ case_list       : // empty
                 | case_list1
                   { $$ = $1; }
                 | case_list1 default_case
-                  {
-                    $1->append ($2);
-                    $$ = $1;
-                  }
+                  { $$ = parser.append_switch_case ($1, $2); }
                 ;
 
 case_list1      : switch_case
                   { $$ = parser.make_switch_case_list ($1); }
                 | case_list1 switch_case
-                  {
-                    $1->append ($2);
-                    $$ = $1;
-                  }
+                  { $$ = parser.append_switch_case ($1, $2); }
                 ;
 
 switch_case     : CASE stash_comment opt_sep expression stmt_begin opt_sep opt_list
@@ -1465,8 +1444,7 @@ param_list2     : param_list_elt
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_parameter_list ($1, $3);
                   }
                 ;
 
@@ -1737,16 +1715,7 @@ function_body   : at_first_executable_stmt opt_list
                   {
                     OCTAVE_YYUSE ($2);
 
-                    if ($4)
-                      {
-                        for (const auto& elt : *($4))
-                          $1->append (elt);
-                      }
-
-                    $4->clear ();
-                    delete ($4);
-
-                    $$ = $1;
+                    $$ = parser.append_function_body ($1, $4);
                   }
                 ;
 
@@ -1953,8 +1922,7 @@ attr_list1      : attr
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_attribute ($1, $3);
                   }
                 ;
 
@@ -2003,8 +1971,7 @@ superclass_list1
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_superclass ($1, $3);
                   }
                 ;
 
@@ -2038,29 +2005,25 @@ class_body1     : properties_block
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_properties_block ($1, $3);
                   }
                 | class_body1 opt_sep methods_block
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_methods_block ($1, $3);
                   }
                 | class_body1 opt_sep events_block
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_events_block ($1, $3);
                   }
                 | class_body1 opt_sep enum_block
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_enum_block ($1, $3);
                   }
                 ;
 
@@ -2133,8 +2096,7 @@ property_list1
                           }
                       }
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_property ($1, $3);
                   }
                 ;
 
@@ -2222,13 +2184,7 @@ methods_list1   : method
                   {
                     OCTAVE_YYUSE ($2);
 
-                    octave_value fcn;
-                    if ($3)
-                      fcn = $3->function ();
-                    delete $3;
-
-                    $1->append (fcn);
-                    $$ = $1;
+                    $$ = parser.append_classdef_method ($1, $3);
                   }
                 ;
 
@@ -2276,8 +2232,7 @@ events_list1    : class_event
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_event ($1, $3);
                   }
                 ;
 
@@ -2329,8 +2284,7 @@ enum_list1      : class_enum
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $1->append ($3);
-                    $$ = $1;
+                    $$ = parser.append_classdef_enum ($1, $3);
                   }
                 ;
 
@@ -2616,6 +2570,14 @@ OCTAVE_NAMESPACE_BEGIN
 
     std::list<parse_exception> m_error_list;
   };
+
+  template <typename LIST_T, typename ELT_T>
+  static LIST_T *
+  list_append (LIST_T *list, ELT_T elt)
+  {
+    list->append (elt);
+    return list;
+  }
 
   std::size_t
   base_parser::parent_scope_info::size (void) const
@@ -3692,6 +3654,13 @@ OCTAVE_NAMESPACE_BEGIN
     return new tree_if_clause (list, lc);
   }
 
+  tree_if_command_list *
+  base_parser::append_if_clause (tree_if_command_list *list,
+                                 tree_if_clause *clause)
+  {
+    return list_append (list, clause);
+  }
+
   // Finish a switch command.
 
   tree_switch_command *
@@ -3764,6 +3733,13 @@ OCTAVE_NAMESPACE_BEGIN
     int c = default_tok->column ();
 
     return new tree_switch_case (list, lc, l, c);
+  }
+
+  tree_switch_case_list *
+  base_parser::append_switch_case (tree_switch_case_list *list,
+                                   tree_switch_case *elt)
+  {
+    return list_append (list, elt);
   }
 
   // Build an assignment to a variable.
@@ -4229,6 +4205,22 @@ OCTAVE_NAMESPACE_BEGIN
     return retval;
   }
 
+  tree_statement_list *
+  base_parser::append_function_body (tree_statement_list *body,
+                                     tree_statement_list *list)
+  {
+    if (list)
+      {
+        for (const auto& elt : *list)
+          list_append (body, elt);
+
+        list->clear ();
+        delete (list);
+      }
+
+    return body;
+  }
+
   tree_arguments_block *
   base_parser::make_arguments_block (token *arguments_tok,
                                      tree_args_block_attribute_list *attr_list,
@@ -4291,9 +4283,7 @@ OCTAVE_NAMESPACE_BEGIN
   base_parser::append_args_validation_list (tree_args_block_validation_list *list,
                                             tree_arg_validation *arg_validation)
   {
-    list->append (arg_validation);
-
-    return list;
+    return list_append (list, arg_validation);
   }
 
   tree_arg_size_spec *
@@ -4636,6 +4626,27 @@ OCTAVE_NAMESPACE_BEGIN
     return new tree_classdef_enum (id, expr, lc);
   }
 
+  tree_classdef_property_list *
+  base_parser::append_classdef_property (tree_classdef_property_list *list,
+                                         tree_classdef_property *elt)
+  {
+    return list_append (list, elt);
+  }
+
+  tree_classdef_events_list *
+  base_parser::append_classdef_event (tree_classdef_events_list *list,
+                                      tree_classdef_event *elt)
+  {
+    return list_append (list, elt);
+  }
+
+  tree_classdef_enum_list *
+  base_parser::append_classdef_enum (tree_classdef_enum_list *list,
+                                     tree_classdef_enum *elt)
+  {
+    return list_append (list, elt);
+  }
+
   tree_classdef_superclass_list *
   base_parser::make_classdef_superclass_list (tree_classdef_superclass *sc)
   {
@@ -4646,6 +4657,13 @@ OCTAVE_NAMESPACE_BEGIN
   base_parser::make_classdef_superclass (token *fqident)
   {
     return new tree_classdef_superclass (fqident->text ());
+  }
+
+  tree_classdef_superclass_list *
+  base_parser::append_classdef_superclass (tree_classdef_superclass_list *list,
+                                           tree_classdef_superclass *elt)
+  {
+    return list_append (list, elt);
   }
 
   tree_classdef_attribute_list *
@@ -4667,6 +4685,13 @@ OCTAVE_NAMESPACE_BEGIN
   base_parser::make_not_classdef_attribute (tree_identifier *id)
   {
     return new tree_classdef_attribute (id, false);
+  }
+
+  tree_classdef_attribute_list *
+  base_parser::append_classdef_attribute (tree_classdef_attribute_list *list,
+                                          tree_classdef_attribute *elt)
+  {
+    return list_append (list, elt);
   }
 
   tree_classdef_body *
@@ -4691,6 +4716,34 @@ OCTAVE_NAMESPACE_BEGIN
   base_parser::make_classdef_body  (tree_classdef_enum_block *enb)
   {
     return new tree_classdef_body (enb);
+  }
+
+  tree_classdef_body *
+  base_parser::append_classdef_properties_block (tree_classdef_body *body,
+                                                 tree_classdef_properties_block *block)
+  {
+    return list_append (body, block);
+  }
+
+  tree_classdef_body *
+  base_parser::append_classdef_methods_block (tree_classdef_body *body,
+                                              tree_classdef_methods_block *block)
+  {
+    return list_append (body, block);
+  }
+
+  tree_classdef_body *
+  base_parser::append_classdef_events_block (tree_classdef_body *body,
+                                             tree_classdef_events_block *block)
+  {
+    return list_append (body, block);
+  }
+
+  tree_classdef_body *
+  base_parser::append_classdef_enum_block (tree_classdef_body *body,
+                                           tree_classdef_enum_block *block)
+  {
+    return list_append (body, block);
   }
 
   octave_user_function*
@@ -4772,6 +4825,22 @@ OCTAVE_NAMESPACE_BEGIN
     delete fcn_def;
 
     return new tree_classdef_methods_list (fcn);
+  }
+
+  tree_classdef_methods_list *
+  base_parser::append_classdef_method (tree_classdef_methods_list *list,
+                                       tree_function_def *fcn_def)
+  {
+    octave_value fcn;
+
+    if (fcn_def)
+      {
+        fcn = fcn_def->function ();
+
+        delete fcn_def;
+      }
+
+    return list_append (list, fcn);
   }
 
   bool
@@ -4868,9 +4937,7 @@ OCTAVE_NAMESPACE_BEGIN
             tree_index_expression *tmp
               = dynamic_cast<tree_index_expression *> (expr);
 
-            tmp->append (args, type);
-
-            retval = tmp;
+            retval = tmp->append (args, type);
           }
         else
           retval = new tree_index_expression (expr, args, l, c, type);
@@ -4898,9 +4965,7 @@ OCTAVE_NAMESPACE_BEGIN
         tree_index_expression *tmp
           = dynamic_cast<tree_index_expression *> (expr);
 
-        tmp->append (elt);
-
-        retval = tmp;
+        retval = tmp->append (elt);
       }
     else
       retval = new tree_index_expression (expr, elt, l, c);
@@ -4929,9 +4994,7 @@ OCTAVE_NAMESPACE_BEGIN
         tree_index_expression *tmp
           = dynamic_cast<tree_index_expression *> (expr);
 
-        tmp->append (elt);
-
-        retval = tmp;
+        retval = list_append (tmp, elt);
       }
     else
       retval = new tree_index_expression (expr, elt, l, c);
@@ -4992,6 +5055,13 @@ OCTAVE_NAMESPACE_BEGIN
   base_parser::make_decl_init_list (tree_decl_elt *elt)
   {
     return new tree_decl_init_list (elt);
+  }
+
+  tree_decl_init_list *
+  base_parser::append_decl_init_list (tree_decl_init_list *list,
+                                      tree_decl_elt *elt)
+  {
+    return list_append (list, elt);
   }
 
   tree_decl_elt *
@@ -5240,10 +5310,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (! matrix)
       return make_matrix (row);
 
-    if (row)
-      matrix->append (row);
-
-    return matrix;
+    return row ? list_append (matrix, row) : matrix;
   }
 
   // Finish building a cell list.
@@ -5270,10 +5337,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (! cell)
       return make_cell (row);
 
-    if (row)
-      cell->append (row);
-
-    return cell;
+    return row ? list_append (cell, row) : cell;
   }
 
   tree_identifier *
@@ -5376,15 +5440,20 @@ OCTAVE_NAMESPACE_BEGIN
   {
     set_stmt_print_flag (list, sep, warn_missing_semi);
 
-    list->append (stmt);
-
-    return list;
+    return list_append (list, stmt);
   }
 
   tree_argument_list *
   base_parser::make_argument_list (tree_expression *expr)
   {
     return new tree_argument_list (expr);
+  }
+
+  tree_argument_list *
+  base_parser::append_argument_list (tree_argument_list *list,
+                                     tree_expression *expr)
+  {
+    return list_append (list, expr);
   }
 
   tree_parameter_list *
@@ -5409,10 +5478,16 @@ OCTAVE_NAMESPACE_BEGIN
 
   tree_parameter_list *
   base_parser::append_parameter_list (tree_parameter_list *list,
+                                      tree_decl_elt *t)
+  {
+    return list_append (list, t);
+  }
+
+  tree_parameter_list *
+  base_parser::append_parameter_list (tree_parameter_list *list,
                                       tree_identifier *id)
   {
-    list->append (new tree_decl_elt (id));
-    return list;
+    return list_append (list, new tree_decl_elt (id));
   }
 
   void

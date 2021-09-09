@@ -70,11 +70,12 @@ namespace octave
 
     ~tree_index_expression (void);
 
-    void append (tree_argument_list *lst = nullptr, char t = '(');
+    tree_index_expression *
+    append (tree_argument_list *lst = nullptr, char t = '(');
 
-    void append (const std::string& n);
+    tree_index_expression * append (const std::string& n);
 
-    void append (tree_expression *df);
+    tree_index_expression * append (tree_expression *df);
 
     bool is_index_expression (void) const { return true; }
 

@@ -77,7 +77,7 @@ namespace octave
     append (df);
   }
 
-  void
+  tree_index_expression *
   tree_index_expression::append (tree_argument_list *lst, char t)
   {
     m_args.push_back (lst);
@@ -87,24 +87,30 @@ namespace octave
 
     if (lst && lst->has_magic_tilde ())
       error ("invalid use of empty argument (~) in index expression");
+
+    return this;
   }
 
-  void
+  tree_index_expression *
   tree_index_expression::append (const std::string& n)
   {
     m_args.push_back (static_cast<tree_argument_list *> (nullptr));
     m_type += '.';
     m_arg_nm.push_back (n);
     m_dyn_field.push_back (static_cast<tree_expression *> (nullptr));
+
+    return this;
   }
 
-  void
+  tree_index_expression *
   tree_index_expression::append (tree_expression *df)
   {
     m_args.push_back (static_cast<tree_argument_list *> (nullptr));
     m_type += '.';
     m_arg_nm.push_back ("");
     m_dyn_field.push_back (df);
+
+    return this;
   }
 
   tree_index_expression::~tree_index_expression (void)

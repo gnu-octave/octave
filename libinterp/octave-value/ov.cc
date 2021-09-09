@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include "data-conv.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -3001,7 +3003,26 @@ OCTAVE_NAMESPACE_BEGIN
     return get_colon_op_type (typ, limit.builtin_type ());
   }
 
-  // Templated version used for various integer types (int8, uint16, ...)
+  // This check depends on the type of VAL either being the expected
+  // integer type or a double value.
+
+  template <typename T>
+  static void
+  check_colon_operand (const octave_value& val, const char *op_str)
+  {
+    if (! val.is_double_type ())
+      return;
+
+    double dval = val.double_value ();
+    double intpart;
+
+    if (dval > std::numeric_limits<typename T::val_type>::max ()
+        || dval < std::numeric_limits<typename T::val_type>::min ()
+        || std::modf (dval, &intpart) != 0.0)
+      error ("colon operator %s invalid (not an integer or out of range for given integer type)", op_str);
+  }
+
+// Templated version used for various integer types (int8, uint16, ...)
   template <typename T>
   octave_value
   make_range (const octave_value& base, const octave_value& increment,
@@ -3010,22 +3031,15 @@ OCTAVE_NAMESPACE_BEGIN
     if (base.isempty () || increment.isempty () || limit.isempty ())
       return octave_value (range<T> (), for_cmd_expr);
 
-    double dval;
+    check_colon_operand<T> (base, "lower bound");
+    check_colon_operand<T> (increment, "increment");
+    check_colon_operand<T> (limit, "upper bound");
 
     T base_val = octave_value_extract<T> (base);
-    dval = base.double_value ();
-    if (base_val != dval)
-      error ("colon operator lower bound invalid (not an integer or out of range for given integer type)");
 
     T increment_val = octave_value_extract<T> (increment);
-    dval = increment.double_value ();
-    if (increment_val != dval)
-      error ("colon operator increment invalid (not an integer or out of range for given integer type)");
 
     T limit_val = octave_value_extract<T> (limit);
-    dval = limit.double_value ();
-    if (limit_val != dval)
-      error ("colon operator upper bound invalid (not an integer or out of range for given integer type)");
 
     range<T> r (base_val, increment_val, limit_val);
 

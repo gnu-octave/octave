@@ -925,7 +925,7 @@ namespace octave
   public:
 
     default_command_editor (void)
-      : command_editor (), input_stream (stdin), output_stream (stdout) { }
+      : command_editor (), m_input_stream (stdin), m_output_stream (stdout) { }
 
     // No copying!
 
@@ -965,42 +965,42 @@ namespace octave
 
   private:
 
-    FILE *input_stream;
+    FILE *m_input_stream;
 
-    FILE *output_stream;
+    FILE *m_output_stream;
   };
 
   std::string
   default_command_editor::do_readline (const std::string& prompt, bool& eof)
   {
-    std::fputs (prompt.c_str (), output_stream);
-    std::fflush (output_stream);
+    std::fputs (prompt.c_str (), m_output_stream);
+    std::fflush (m_output_stream);
 
-    return fgetl (input_stream, eof);
+    return fgetl (m_input_stream, eof);
   }
 
   void
   default_command_editor::do_set_input_stream (FILE *f)
   {
-    input_stream = f;
+    m_input_stream = f;
   }
 
   FILE *
   default_command_editor::do_get_input_stream (void)
   {
-    return input_stream;
+    return m_input_stream;
   }
 
   void
   default_command_editor::do_set_output_stream (FILE *f)
   {
-    output_stream = f;
+    m_output_stream = f;
   }
 
   FILE *
   default_command_editor::do_get_output_stream (void)
   {
-    return output_stream;
+    return m_output_stream;
   }
 
   string_vector

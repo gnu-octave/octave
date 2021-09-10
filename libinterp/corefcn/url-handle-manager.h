@@ -49,8 +49,8 @@ namespace octave
   public:
 
     url_handle_manager (void)
-      : handle_map (), handle_free_list (),
-        next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)) { }
+      : m_handle_map (), m_handle_free_list (),
+        m_next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)) { }
 
     url_handle_manager (const url_handle_manager&) = delete;
 
@@ -64,10 +64,10 @@ namespace octave
 
     url_handle lookup (double val)
     {
-      iterator p = (math::isnan (val) ? handle_map.end ()
-                                      : handle_map.find (val));
+      iterator p = (math::isnan (val) ? m_handle_map.end ()
+                                      : m_handle_map.find (val));
 
-      return (p != handle_map.end ()) ? p->first : url_handle ();
+      return (p != m_handle_map.end ()) ? p->first : url_handle ();
     }
 
     url_handle lookup (const octave_value& val)
@@ -88,9 +88,9 @@ namespace octave
 
     url_transfer get_object (const url_handle& h)
     {
-      iterator p = (h.ok () ? handle_map.find (h) : handle_map.end ());
+      iterator p = (h.ok () ? m_handle_map.find (h) : m_handle_map.end ());
 
-      return (p != handle_map.end ()) ? p->second : url_transfer ();
+      return (p != m_handle_map.end ()) ? p->second : url_transfer ();
     }
 
     url_handle make_url_handle (const std::string& host,
@@ -105,17 +105,17 @@ namespace octave
       if (! obj.is_valid ())
         error ("support for URL transfers was disabled when Octave was built");
 
-      handle_map[h] = obj;
+      m_handle_map[h] = obj;
 
       return h;
     }
 
     Matrix handle_list (void)
     {
-      Matrix retval (1, handle_map.size ());
+      Matrix retval (1, m_handle_map.size ());
 
       octave_idx_type i = 0;
-      for (const auto& h_obj : handle_map)
+      for (const auto& h_obj : m_handle_map)
         {
           url_handle h = h_obj.first;
 
@@ -135,13 +135,13 @@ namespace octave
     typedef std::set<url_handle>::const_iterator const_free_list_iterator;
 
     // A map of handles to curl objects.
-    std::map<url_handle, url_transfer> handle_map;
+    std::map<url_handle, url_transfer> m_handle_map;
 
     // The available curl handles.
-    std::set<url_handle> handle_free_list;
+    std::set<url_handle> m_handle_free_list;
 
     // The next handle available if handle_free_list is empty.
-    double next_handle;
+    double m_next_handle;
   };
 }
 

@@ -209,7 +209,7 @@ OCTAVE_NAMESPACE_BEGIN
       return m_command_line_path;
     }
 
-    std::string system_path (void) const { return sys_path; }
+    std::string system_path (void) const { return s_sys_path; }
 
     static const int M_FILE = 1;
     static const int OCT_FILE = 2;
@@ -561,9 +561,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     //--------
 
-    static std::string sys_path;
+    static std::string s_sys_path;
 
-    static abs_dir_cache_type abs_dir_cache;
+    static abs_dir_cache_type s_abs_dir_cache;
 
     interpreter& m_interpreter;
 

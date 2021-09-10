@@ -225,8 +225,8 @@ OCTAVE_NAMESPACE_BEGIN
     Vlast_prompt_time.stamp ();
   }
 
-  std::string load_path::sys_path;
-  load_path::abs_dir_cache_type load_path::abs_dir_cache;
+  std::string load_path::s_sys_path;
+  load_path::abs_dir_cache_type load_path::s_abs_dir_cache;
 
   load_path::load_path (interpreter& interp)
     : add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
@@ -238,19 +238,19 @@ OCTAVE_NAMESPACE_BEGIN
   void
   load_path::initialize (bool set_initial_path)
   {
-    sys_path = "";
+    s_sys_path = "";
 
     if (set_initial_path)
       {
-        maybe_add_path_elts (sys_path, config::local_ver_oct_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_api_oct_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_oct_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_ver_fcn_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_api_fcn_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_fcn_file_dir ());
-        maybe_add_path_elts (sys_path, config::oct_file_dir ());
-        maybe_add_path_elts (sys_path, config::fcn_file_dir ());
-        maybe_add_path_elts (sys_path, config::oct_data_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_ver_oct_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_api_oct_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_oct_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_ver_fcn_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_api_fcn_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_fcn_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::oct_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::fcn_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::oct_data_dir ());
       }
 
     std::string tpath = load_path::m_command_line_path;
@@ -264,11 +264,11 @@ OCTAVE_NAMESPACE_BEGIN
       {
         xpath = tpath;
 
-        if (! sys_path.empty ())
-          xpath += directory_path::path_sep_str () + sys_path;
+        if (! s_sys_path.empty ())
+          xpath += directory_path::path_sep_str () + s_sys_path;
       }
     else
-      xpath = sys_path;
+      xpath = s_sys_path;
 
     set (xpath, false, true);
   }
@@ -1349,9 +1349,9 @@ OCTAVE_NAMESPACE_BEGIN
           {
             std::string abs_name = sys::canonicalize_file_name (dir_name);
 
-            const_abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
+            const_abs_dir_cache_iterator p = s_abs_dir_cache.find (abs_name);
 
-            if (p != abs_dir_cache.end ())
+            if (p != s_abs_dir_cache.end ())
               {
                 // The directory is in the cache of all directories we have
                 // visited (indexed by absolute name).  If it is out of date,
@@ -1455,7 +1455,7 @@ OCTAVE_NAMESPACE_BEGIN
             // directory information, so there could be some resource
             // problems.  Perhaps it should be pruned from time to time.
 
-            abs_dir_cache[abs_dir_name] = *this;
+            s_abs_dir_cache[abs_dir_name] = *this;
           }
         catch (const execution_exception&)
           {
@@ -1935,8 +1935,8 @@ OCTAVE_NAMESPACE_BEGIN
                     // more than one to exist in the load path.
 
                     if (fname != "Contents.m"
-                        && sys_path.find (old.dir_name) != std::string::npos
-                        && in_path_list (sys_path, old.dir_name))
+                        && s_sys_path.find (old.dir_name) != std::string::npos
+                        && in_path_list (s_sys_path, old.dir_name))
                       {
                         std::string fcn_path = sys::file_ops::concat (dir_name, fname);
 

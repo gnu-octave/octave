@@ -126,7 +126,7 @@ class oprocstream;
 
   private:
 
-    diary_buf *db;
+    diary_buf *m_db;
   };
 
   extern OCTINTERP_API void flush_stdout (void);

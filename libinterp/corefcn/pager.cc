@@ -226,17 +226,17 @@ OCTAVE_NAMESPACE_BEGIN
     setf (unitbuf);
   }
 
-  diary_stream::diary_stream (void) : std::ostream (nullptr), db (nullptr)
+  diary_stream::diary_stream (void) : std::ostream (nullptr), m_db (nullptr)
   {
-    db = new diary_buf ();
-    rdbuf (db);
+    m_db = new diary_buf ();
+    rdbuf (m_db);
     setf (unitbuf);
   }
 
   diary_stream::~diary_stream (void)
   {
     flush ();
-    delete db;
+    delete m_db;
   }
 
   std::ostream& diary_stream::stream (void)
@@ -251,9 +251,9 @@ OCTAVE_NAMESPACE_BEGIN
 
   void diary_stream::reset (void)
   {
-    delete db;
-    db = new diary_buf ();
-    rdbuf (db);
+    delete m_db;
+    m_db = new diary_buf ();
+    rdbuf (m_db);
     setf (unitbuf);
   }
 

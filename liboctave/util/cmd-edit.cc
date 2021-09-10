@@ -208,27 +208,11 @@ namespace octave
 
   private:
 
-    startup_hook_fcn previous_startup_hook;
-
-    pre_input_hook_fcn previous_pre_input_hook;
-
-    event_hook_fcn previous_event_hook;
-
-    completion_fcn completion_function;
-
-    quoting_fcn quoting_function;
-
-    dequoting_fcn dequoting_function;
-
-    char_is_quoted_fcn char_is_quoted_function;
-
-    user_accept_line_fcn user_accept_line_function;
-
-    static std::string completer_quote_characters;
-
     static char * command_generator (const char *text, int state);
 
-    static char * command_quoter (char *text, int match_type, char *quote_pointer);
+    static char * command_quoter (char *text, int match_type,
+                                  char *quote_pointer);
+
     static char * command_dequoter (char *text, int match_type);
 
     static int command_char_is_quoted (char *text, int index);
@@ -238,16 +222,34 @@ namespace octave
     static char ** command_completer (const char *text, int start, int end);
 
     static char * do_completer_word_break_hook ();
+
+    startup_hook_fcn m_previous_startup_hook;
+
+    pre_input_hook_fcn m_previous_pre_input_hook;
+
+    event_hook_fcn m_previous_event_hook;
+
+    completion_fcn m_completion_function;
+
+    quoting_fcn m_quoting_function;
+
+    dequoting_fcn m_dequoting_function;
+
+    char_is_quoted_fcn m_char_is_quoted_function;
+
+    user_accept_line_fcn user_accept_line_function;
+
+    static std::string s_completer_quote_characters;
   };
 
-  std::string gnu_readline::completer_quote_characters = "";
+  std::string gnu_readline::s_completer_quote_characters = "";
 
   gnu_readline::gnu_readline ()
-    : command_editor (), previous_startup_hook (nullptr),
-      previous_pre_input_hook (nullptr),
-      previous_event_hook (nullptr), completion_function (nullptr),
-      quoting_function (nullptr), dequoting_function (nullptr),
-      char_is_quoted_function (nullptr), user_accept_line_function (nullptr)
+    : command_editor (), m_previous_startup_hook (nullptr),
+      m_previous_pre_input_hook (nullptr),
+      m_previous_event_hook (nullptr), m_completion_function (nullptr),
+      m_quoting_function (nullptr), m_dequoting_function (nullptr),
+      m_char_is_quoted_function (nullptr), user_accept_line_function (nullptr)
   {
     // FIXME: need interface to rl_add_defun, rl_initialize, and
     // a function to set rl_terminal_name
@@ -421,7 +423,7 @@ namespace octave
   void
   gnu_readline::do_set_completer_quote_characters (const std::string& s)
   {
-    completer_quote_characters = s;
+    s_completer_quote_characters = s;
   }
 
   void
@@ -433,7 +435,7 @@ namespace octave
   void
   gnu_readline::do_set_completion_function (completion_fcn f)
   {
-    completion_function = f;
+    m_completion_function = f;
 
     rl_attempted_completion_fcn_ptr fp
       = (f ? gnu_readline::command_completer : nullptr);
@@ -444,7 +446,7 @@ namespace octave
   void
   gnu_readline::do_set_quoting_function (quoting_fcn f)
   {
-    quoting_function = f;
+    m_quoting_function = f;
 
     rl_quoting_fcn_ptr fp
       = (f ? gnu_readline::command_quoter : nullptr);
@@ -455,7 +457,7 @@ namespace octave
   void
   gnu_readline::do_set_dequoting_function (dequoting_fcn f)
   {
-    dequoting_function = f;
+    m_dequoting_function = f;
 
     rl_dequoting_fcn_ptr fp
       = (f ? gnu_readline::command_dequoter : nullptr);
@@ -466,7 +468,7 @@ namespace octave
   void
   gnu_readline::do_set_char_is_quoted_function (char_is_quoted_fcn f)
   {
-    char_is_quoted_function = f;
+    m_char_is_quoted_function = f;
 
     rl_char_is_quoted_fcn_ptr fp
       = (f ? gnu_readline::command_char_is_quoted : nullptr);
@@ -490,25 +492,25 @@ namespace octave
   gnu_readline::completion_fcn
   gnu_readline::do_get_completion_function (void) const
   {
-    return completion_function;
+    return m_completion_function;
   }
 
   gnu_readline::quoting_fcn
   gnu_readline::do_get_quoting_function (void) const
   {
-    return quoting_function;
+    return m_quoting_function;
   }
 
   gnu_readline::dequoting_fcn
   gnu_readline::do_get_dequoting_function (void) const
   {
-    return dequoting_function;
+    return m_dequoting_function;
   }
 
   gnu_readline::char_is_quoted_fcn
   gnu_readline::do_get_char_is_quoted_function (void) const
   {
-    return char_is_quoted_function;
+    return m_char_is_quoted_function;
   }
 
   gnu_readline::user_accept_line_fcn
@@ -574,7 +576,7 @@ namespace octave
         || looks_like_filename (l, '"'))
       {
         ::octave_rl_set_completer_quote_characters
-          (completer_quote_characters.c_str ());
+          (s_completer_quote_characters.c_str ());
 
         return dir_sep;
       }
@@ -696,37 +698,37 @@ namespace octave
   void
   gnu_readline::set_startup_hook (startup_hook_fcn f)
   {
-    previous_startup_hook = ::octave_rl_get_startup_hook ();
+    m_previous_startup_hook = ::octave_rl_get_startup_hook ();
 
-    if (f != previous_startup_hook)
+    if (f != m_previous_startup_hook)
       ::octave_rl_set_startup_hook (f);
   }
 
   void
   gnu_readline::restore_startup_hook (void)
   {
-    ::octave_rl_set_startup_hook (previous_startup_hook);
+    ::octave_rl_set_startup_hook (m_previous_startup_hook);
   }
 
   void
   gnu_readline::set_pre_input_hook (pre_input_hook_fcn f)
   {
-    previous_pre_input_hook = ::octave_rl_get_pre_input_hook ();
+    m_previous_pre_input_hook = ::octave_rl_get_pre_input_hook ();
 
-    if (f != previous_pre_input_hook)
+    if (f != m_previous_pre_input_hook)
       ::octave_rl_set_pre_input_hook (f);
   }
 
   void
   gnu_readline::restore_pre_input_hook (void)
   {
-    ::octave_rl_set_pre_input_hook (previous_pre_input_hook);
+    ::octave_rl_set_pre_input_hook (m_previous_pre_input_hook);
   }
 
   void
   gnu_readline::set_event_hook (event_hook_fcn f)
   {
-    previous_event_hook = octave_rl_get_event_hook ();
+    m_previous_event_hook = octave_rl_get_event_hook ();
 
     ::octave_rl_set_event_hook (f);
   }
@@ -734,7 +736,7 @@ namespace octave
   void
   gnu_readline::restore_event_hook (void)
   {
-    ::octave_rl_set_event_hook (previous_event_hook);
+    ::octave_rl_set_event_hook (m_previous_event_hook);
   }
 
   void

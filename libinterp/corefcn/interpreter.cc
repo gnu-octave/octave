@@ -489,11 +489,11 @@ Undocumented internal function.
     //
     //   only one Octave interpreter may be active in any given thread
 
-    if (instance)
+    if (m_instance)
       throw std::runtime_error
         ("only one Octave interpreter may be active");
 
-    instance = this;
+    m_instance = this;
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
     setlocale (LC_ALL, "");
@@ -644,7 +644,7 @@ Undocumented internal function.
     octave_interpreter_ready = true;
   }
 
-  OCTAVE_THREAD_LOCAL interpreter *interpreter::instance = nullptr;
+  OCTAVE_THREAD_LOCAL interpreter *interpreter::m_instance = nullptr;
 
   interpreter::~interpreter (void)
   {

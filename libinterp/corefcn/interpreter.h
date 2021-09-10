@@ -562,19 +562,9 @@ OCTAVE_NAMESPACE_BEGIN
     }
     #endif
 
-    static interpreter * the_interpreter (void) { return instance; }
+    static interpreter * the_interpreter (void) { return m_instance; }
 
   private:
-
-    // The interpreter instance;  Currently it is only possible to
-    // have one, so OCTAVE_THREAD_LOCAL will normally be defined to be
-    // empty.  Eventually we would like to allow multiple interpreters
-    // to be active at once, but they will still be limited to one per
-    // thread.  When that is possible, OCTAVE_THREAD_LOCAL can be
-    // replaced by the C++ thread_local keyword.  For now, use a macro
-    // to allow experimenting with thread_local storage.
-
-    OCTAVE_THREAD_LOCAL static interpreter *instance;
 
     void display_startup_message (void) const;
 
@@ -589,6 +579,22 @@ OCTAVE_NAMESPACE_BEGIN
     int server_loop (void);
 
     void execute_atexit_fcns (void);
+
+    void maximum_braindamage (void);
+
+    void execute_pkg_add (const std::string& dir);
+
+    //--------
+
+    // The interpreter instance;  Currently it is only possible to
+    // have one, so OCTAVE_THREAD_LOCAL will normally be defined to be
+    // empty.  Eventually we would like to allow multiple interpreters
+    // to be active at once, but they will still be limited to one per
+    // thread.  When that is possible, OCTAVE_THREAD_LOCAL can be
+    // replaced by the C++ thread_local keyword.  For now, use a macro
+    // to allow experimenting with thread_local storage.
+
+    OCTAVE_THREAD_LOCAL static interpreter *m_instance;
 
     application *m_app_context;
 
@@ -664,10 +670,6 @@ OCTAVE_NAMESPACE_BEGIN
     bool m_executing_atexit;
 
     bool m_initialized;
-
-    void maximum_braindamage (void);
-
-    void execute_pkg_add (const std::string& dir);
   };
 
 OCTAVE_NAMESPACE_END

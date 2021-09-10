@@ -146,19 +146,19 @@ OCTAVE_NAMESPACE_BEGIN
   void
   pager_buf::flush_current_contents_to_diary (void)
   {
-    char *buf = pbase () + diary_skip;
+    char *buf = pbase () + m_diary_skip;
 
     std::size_t len = pptr () - buf;
 
     octave_diary.write (buf, len);
 
-    diary_skip = 0;
+    m_diary_skip = 0;
   }
 
   void
   pager_buf::set_diary_skip (void)
   {
-    diary_skip = pptr () - pbase ();
+    m_diary_skip = pptr () - pbase ();
   }
 
   int

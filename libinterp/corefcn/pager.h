@@ -47,7 +47,7 @@ class oprocstream;
   {
   public:
 
-    pager_buf (void) : std::stringbuf (), diary_skip (0) { }
+    pager_buf (void) : std::stringbuf (), m_diary_skip (0) { }
 
     void flush_current_contents_to_diary (void);
 
@@ -59,7 +59,7 @@ class oprocstream;
 
   private:
 
-    std::size_t diary_skip;
+    std::size_t m_diary_skip;
   };
 
   class

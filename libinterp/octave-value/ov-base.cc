@@ -1343,10 +1343,10 @@ octave_base_value::numeric_assign (const std::string& type,
 }
 
 // Current indentation.
-int octave_base_value::curr_print_indent_level = 0;
+int octave_base_value::s_curr_print_indent_level = 0;
 
 // TRUE means we are at the beginning of a line.
-bool octave_base_value::beginning_of_line = true;
+bool octave_base_value::s_beginning_of_line = true;
 
 // Each print() function should call this before printing anything.
 //
@@ -1355,17 +1355,17 @@ bool octave_base_value::beginning_of_line = true;
 void
 octave_base_value::indent (std::ostream& os) const
 {
-  assert (curr_print_indent_level >= 0);
+  assert (s_curr_print_indent_level >= 0);
 
-  if (beginning_of_line)
+  if (s_beginning_of_line)
     {
       // FIXME: do we need this?
       // os << prefix;
 
-      for (int i = 0; i < curr_print_indent_level; i++)
+      for (int i = 0; i < s_curr_print_indent_level; i++)
         os << ' ';
 
-      beginning_of_line = false;
+      s_beginning_of_line = false;
     }
 }
 
@@ -1376,7 +1376,7 @@ octave_base_value::newline (std::ostream& os) const
 {
   os << "\n";
 
-  beginning_of_line = true;
+  s_beginning_of_line = true;
 }
 
 // For resetting print state.
@@ -1384,8 +1384,8 @@ octave_base_value::newline (std::ostream& os) const
 void
 octave_base_value::reset (void) const
 {
-  beginning_of_line = true;
-  curr_print_indent_level = 0;
+  s_beginning_of_line = true;
+  s_curr_print_indent_level = 0;
 }
 
 octave_value

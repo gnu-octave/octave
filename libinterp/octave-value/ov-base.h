@@ -873,16 +873,16 @@ protected:
                   const octave_value& rhs);
 
   void reset_indent_level (void) const
-  { curr_print_indent_level = 0; }
+  { s_curr_print_indent_level = 0; }
 
   void increment_indent_level (void) const
-  { curr_print_indent_level += 2; }
+  { s_curr_print_indent_level += 2; }
 
   void decrement_indent_level (void) const
-  { curr_print_indent_level -= 2; }
+  { s_curr_print_indent_level -= 2; }
 
   int current_print_indent_level (void) const
-  { return curr_print_indent_level; }
+  { return s_curr_print_indent_level; }
 
   OCTINTERP_API void indent (std::ostream& os) const;
 
@@ -905,8 +905,10 @@ private:
 
   OCTINTERP_API void wrong_type_arg_error (void) const;
 
-  static int curr_print_indent_level;
-  static bool beginning_of_line;
+  //--------
+
+  static int s_curr_print_indent_level;
+  static bool s_beginning_of_line;
 
   DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA
 };

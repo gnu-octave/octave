@@ -58,11 +58,11 @@ namespace octave
 
   command_editor *command_editor::s_instance = nullptr;
 
-  std::set<command_editor::startup_hook_fcn> command_editor::startup_hook_set;
+  std::set<command_editor::startup_hook_fcn> command_editor::m_startup_hook_set;
 
-  std::set<command_editor::pre_input_hook_fcn> command_editor::pre_input_hook_set;
+  std::set<command_editor::pre_input_hook_fcn> command_editor::m_pre_input_hook_set;
 
-  std::set<command_editor::event_hook_fcn> command_editor::event_hook_set;
+  std::set<command_editor::event_hook_fcn> command_editor::m_event_hook_set;
 
   static mutex event_hook_lock;
 
@@ -1119,7 +1119,7 @@ namespace octave
     // Iterate over a copy of the set to avoid problems if a hook
     // function attempts to remove itself from the startup_hook_set.
 
-    std::set<startup_hook_fcn> hook_set = startup_hook_set;
+    std::set<startup_hook_fcn> hook_set = m_startup_hook_set;
 
     for (startup_hook_fcn f : hook_set)
       {
@@ -1136,7 +1136,7 @@ namespace octave
     // Iterate over copy of the set to avoid problems if a hook function
     // attempts to remove itself from the pre_input_hook_set.
 
-    std::set<pre_input_hook_fcn> hook_set = pre_input_hook_set;
+    std::set<pre_input_hook_fcn> hook_set = m_pre_input_hook_set;
 
     for (pre_input_hook_fcn f : hook_set)
       {
@@ -1155,7 +1155,7 @@ namespace octave
 
     event_hook_lock.lock ();
 
-    std::set<event_hook_fcn> hook_set (event_hook_set);
+    std::set<event_hook_fcn> hook_set (m_event_hook_set);
 
     event_hook_lock.unlock ();
 
@@ -1501,7 +1501,7 @@ namespace octave
   {
     if (instance_ok ())
       {
-        startup_hook_set.insert (f);
+        m_startup_hook_set.insert (f);
 
         s_instance->set_startup_hook (startup_handler);
       }
@@ -1512,12 +1512,12 @@ namespace octave
   {
     if (instance_ok ())
       {
-        auto p = startup_hook_set.find (f);
+        auto p = m_startup_hook_set.find (f);
 
-        if (p != startup_hook_set.end ())
-          startup_hook_set.erase (p);
+        if (p != m_startup_hook_set.end ())
+          m_startup_hook_set.erase (p);
 
-        if (startup_hook_set.empty ())
+        if (m_startup_hook_set.empty ())
           s_instance->restore_startup_hook ();
       }
   }
@@ -1527,7 +1527,7 @@ namespace octave
   {
     if (instance_ok ())
       {
-        pre_input_hook_set.insert (f);
+        m_pre_input_hook_set.insert (f);
 
         s_instance->set_pre_input_hook (pre_input_handler);
       }
@@ -1538,12 +1538,12 @@ namespace octave
   {
     if (instance_ok ())
       {
-        auto p = pre_input_hook_set.find (f);
+        auto p = m_pre_input_hook_set.find (f);
 
-        if (p != pre_input_hook_set.end ())
-          pre_input_hook_set.erase (p);
+        if (p != m_pre_input_hook_set.end ())
+          m_pre_input_hook_set.erase (p);
 
-        if (pre_input_hook_set.empty ())
+        if (m_pre_input_hook_set.empty ())
           s_instance->restore_pre_input_hook ();
       }
   }
@@ -1553,7 +1553,7 @@ namespace octave
   {
     autolock guard (event_hook_lock);
 
-    event_hook_set.insert (f);
+    m_event_hook_set.insert (f);
   }
 
   void
@@ -1561,10 +1561,10 @@ namespace octave
   {
     autolock guard (event_hook_lock);
 
-    auto p = event_hook_set.find (f);
+    auto p = m_event_hook_set.find (f);
 
-    if (p != event_hook_set.end ())
-      event_hook_set.erase (p);
+    if (p != m_event_hook_set.end ())
+      m_event_hook_set.erase (p);
 
   }
 

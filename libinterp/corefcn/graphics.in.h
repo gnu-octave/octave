@@ -2433,6 +2433,7 @@ protected:
 protected:
   struct cmp_caseless_str
   {
+  public:
     bool operator () (const caseless_str& a, const caseless_str& b) const
     {
       std::string a1 = a;

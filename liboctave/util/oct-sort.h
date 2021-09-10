@@ -196,6 +196,8 @@ private:
 
   struct MergeState
   {
+  public:
+
     MergeState (void)
       : m_min_gallop (), m_a (nullptr), m_ia (nullptr), m_alloced (0), m_n (0)
     { reset (); }
@@ -216,10 +218,11 @@ private:
 
     void getmemi (octave_idx_type need);
 
-    // This controls when we get *into* galloping mode.  It's
-    // initialized to MIN_GALLOP.  merge_lo and merge_hi tend to nudge
-    // it higher for random data, and lower for highly structured
-    // data.
+    //--------
+
+    // This controls when we get *into* galloping mode.  It's initialized to
+    // MIN_GALLOP.  merge_lo and merge_hi tend to nudge it higher for random
+    // data, and lower for highly structured data.
     octave_idx_type m_min_gallop;
 
     // 'a' is temp storage to help with merges.  It contains room for
@@ -228,9 +231,9 @@ private:
     octave_idx_type *m_ia;
     octave_idx_type m_alloced;
 
-    // A stack of n pending runs yet to be merged.  Run #i starts at
-    // address base[i] and extends for len[i] elements.  It's always
-    // true (so long as the indices are in bounds) that
+    // A stack of n pending runs yet to be merged.  Run #i starts at address
+    // base[i] and extends for len[i] elements.  It's always true (so long as
+    // the indices are in bounds) that
     //
     //   pending[i].base + pending[i].len == pending[i+1].base
     //

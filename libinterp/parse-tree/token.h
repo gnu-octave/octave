@@ -176,18 +176,20 @@ namespace octave
 
       struct superclass_info
       {
-        superclass_info (void) = delete;
-
-        superclass_info (const std::string& meth,
-                         const std::string& cls)
+      public:
+        superclass_info (const std::string& meth, const std::string& cls)
           : m_method_name (meth), m_class_name (cls)
         { }
+
+        superclass_info (void) = delete;
 
         superclass_info (const superclass_info&) = delete;
 
         superclass_info& operator = (const superclass_info&) = delete;
 
         ~superclass_info (void) = default;
+
+        //--------
 
         // The name of the method to call.  This is the text before the
         // "@" and may be of the form "object.method".

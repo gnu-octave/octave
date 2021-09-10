@@ -99,6 +99,7 @@ public:
 
 struct hdf5_callback_data
 {
+public:
   hdf5_callback_data (void)
     : name (), global (false), tc (), doc () { }
 

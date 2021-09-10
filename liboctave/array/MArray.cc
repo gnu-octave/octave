@@ -34,21 +34,31 @@
 template <typename T>
 struct _idxadds_helper
 {
-  T *array;
-  T val;
+public:
   _idxadds_helper (T *a, T v) : array (a), val (v) { }
+
   void operator () (octave_idx_type i)
   { array[i] += val; }
+
+  //--------
+
+  T *array;
+  T val;
 };
 
 template <typename T>
 struct _idxadda_helper
 {
-  T *array;
-  const T *vals;
+public:
   _idxadda_helper (T *a, const T *v) : array (a), vals (v) { }
+
   void operator () (octave_idx_type i)
   { array[i] += *vals++; }
+
+  //--------
+
+  T *array;
+  const T *vals;
 };
 
 template <typename T>
@@ -91,11 +101,16 @@ template <typename T, T op (typename ref_param<T>::type,
                             typename ref_param<T>::type)>
 struct _idxbinop_helper
 {
-  T *array;
-  const T *vals;
+public:
   _idxbinop_helper (T *a, const T *v) : array (a), vals (v) { }
+
   void operator () (octave_idx_type i)
   { array[i] = op (array[i], *vals++); }
+
+  //--------
+
+  T *array;
+  const T *vals;
 };
 
 template <typename T>

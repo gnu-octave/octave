@@ -229,6 +229,7 @@ OCTAVE_NAMESPACE_BEGIN
 
       struct class_info
       {
+      public:
         class_info (void) : method_file_map (), private_file_map () { }
 
         class_info (const class_info& ci)

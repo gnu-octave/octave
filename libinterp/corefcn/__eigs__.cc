@@ -49,18 +49,23 @@ OCTAVE_NAMESPACE_BEGIN
 
 #if defined (HAVE_ARPACK)
 
-struct eigs_callback {
-  // Pointer for user defined function.
-  octave_value m_eigs_fcn;
-
-  // Have we warned about imaginary values returned from user function?
-  bool m_warned_imaginary = false;
+struct eigs_callback
+{
+public:
 
   ColumnVector
   eigs_func (const ColumnVector& x, int& eigs_error);
 
   ComplexColumnVector
   eigs_complex_func (const ComplexColumnVector& x, int& eigs_error);
+
+  //--------
+
+  // Pointer for user defined function.
+  octave_value m_eigs_fcn;
+
+  // Have we warned about imaginary values returned from user function?
+  bool m_warned_imaginary = false;
 };
 
 // Is this a recursive call?

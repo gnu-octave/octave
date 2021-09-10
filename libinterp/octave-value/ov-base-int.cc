@@ -80,6 +80,7 @@
 template <typename T, bool is_signed = true, bool can_be_too_big = true>
 struct octave_base_int_helper
 {
+public:
   static bool
   char_value_out_of_range (T val)
   {
@@ -90,12 +91,14 @@ struct octave_base_int_helper
 template <typename T>
 struct octave_base_int_helper<T, false, false>
 {
+public:
   static bool char_value_out_of_range (T) { return false; }
 };
 
 template <typename T>
 struct octave_base_int_helper<T, false, true>
 {
+public:
   static bool char_value_out_of_range (T val)
   {
     return val > std::numeric_limits<unsigned char>::max ();
@@ -105,6 +108,7 @@ struct octave_base_int_helper<T, false, true>
 template <typename T>
 struct octave_base_int_helper<T, true, false>
 {
+public:
   static bool char_value_out_of_range (T val) { return val < 0; }
 };
 

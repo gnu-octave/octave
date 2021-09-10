@@ -37,7 +37,7 @@
 #include "oct-map.h"
 #include "error.h"
 
-octave_errno *octave_errno::instance = nullptr;
+octave_errno *octave_errno::s_instance = nullptr;
 
 octave_errno::octave_errno (void)
 {
@@ -287,7 +287,7 @@ octave_errno::octave_errno (void)
 
   while (ptr->name)
     {
-      errno_tbl[ptr->name] = ptr->value;
+      m_errno_tbl[ptr->name] = ptr->value;
       ptr++;
     }
 }
@@ -297,9 +297,9 @@ octave_errno::instance_ok (void)
 {
   bool retval = true;
 
-  if (! instance)
+  if (! s_instance)
     {
-      instance = new octave_errno ();
+      s_instance = new octave_errno ();
       singleton_cleanup_list::add (cleanup_instance);
     }
 
@@ -309,19 +309,19 @@ octave_errno::instance_ok (void)
 int
 octave_errno::lookup (const std::string& name)
 {
-  return (instance_ok ()) ? instance->do_lookup (name) : -1;
+  return (instance_ok ()) ? s_instance->do_lookup (name) : -1;
 }
 
 octave_scalar_map
 octave_errno::list (void)
 {
-  return (instance_ok ()) ? instance->do_list () : octave_scalar_map ();
+  return (instance_ok ()) ? s_instance->do_list () : octave_scalar_map ();
 }
 
 int
 octave_errno::do_lookup (const std::string& name)
 {
-  return (errno_tbl.find (name) != errno_tbl.end ()) ? errno_tbl[name] : -1;
+  return (m_errno_tbl.find (name) != m_errno_tbl.end ()) ? m_errno_tbl[name] : -1;
 }
 
 octave_scalar_map
@@ -329,7 +329,7 @@ octave_errno::do_list (void)
 {
   octave_scalar_map retval;
 
-  for (const auto& p : errno_tbl)
+  for (const auto& p : m_errno_tbl)
     {
       retval.assign (p.first, p.second);
     }

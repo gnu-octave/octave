@@ -47,7 +47,8 @@ public:
 
   static bool instance_ok (void);
 
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
+  static void cleanup_instance (void)
+  { delete s_instance; s_instance = nullptr; }
 
   static int lookup (const std::string& name);
 
@@ -64,13 +65,16 @@ public:
 
 private:
 
-  std::map<std::string, int> errno_tbl;
-
-  static octave_errno *instance;
-
   int do_lookup (const std::string& name);
 
   octave_scalar_map do_list (void);
+
+  //--------
+
+  std::map<std::string, int> m_errno_tbl;
+
+  static octave_errno *s_instance;
+
 };
 
 #endif

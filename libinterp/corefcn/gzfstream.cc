@@ -522,22 +522,22 @@ gzfilebuf::seekpos (pos_type sp, std::ios_base::openmode)
 
 // Default constructor initializes stream buffer
 gzifstream::gzifstream ()
-  : std::istream (nullptr), sb ()
-{ this->init (&sb); }
+  : std::istream (nullptr), m_sb ()
+{ this->init (&m_sb); }
 
 // Initialize stream buffer and open file
 gzifstream::gzifstream (const char *name, std::ios_base::openmode mode)
-  : std::istream (nullptr), sb ()
+  : std::istream (nullptr), m_sb ()
 {
-  this->init (&sb);
+  this->init (&m_sb);
   this->open (name, mode);
 }
 
 // Initialize stream buffer and attach to file
 gzifstream::gzifstream (int fd, std::ios_base::openmode mode)
-  : std::istream (nullptr), sb ()
+  : std::istream (nullptr), m_sb ()
 {
-  this->init (&sb);
+  this->init (&m_sb);
   this->attach (fd, mode);
 }
 
@@ -545,7 +545,7 @@ gzifstream::gzifstream (int fd, std::ios_base::openmode mode)
 void
 gzifstream::open (const char *name, std::ios_base::openmode mode)
 {
-  if (! sb.open (name, mode | std::ios_base::in))
+  if (! m_sb.open (name, mode | std::ios_base::in))
     this->setstate (std::ios_base::failbit);
   else
     this->clear ();
@@ -555,7 +555,7 @@ gzifstream::open (const char *name, std::ios_base::openmode mode)
 void
 gzifstream::attach (int fd, std::ios_base::openmode mode)
 {
-  if (! sb.attach (fd, mode | std::ios_base::in))
+  if (! m_sb.attach (fd, mode | std::ios_base::in))
     this->setstate (std::ios_base::failbit);
   else
     this->clear ();
@@ -565,28 +565,28 @@ gzifstream::attach (int fd, std::ios_base::openmode mode)
 void
 gzifstream::close ()
 {
-  if (! sb.close ())
+  if (! m_sb.close ())
     this->setstate (std::ios_base::failbit);
 }
 
 // Default constructor initializes stream buffer
 gzofstream::gzofstream ()
-  : std::ostream (nullptr), sb ()
-{ this->init (&sb); }
+  : std::ostream (nullptr), m_sb ()
+{ this->init (&m_sb); }
 
 // Initialize stream buffer and open file
 gzofstream::gzofstream (const char *name, std::ios_base::openmode mode)
-  : std::ostream (nullptr), sb ()
+  : std::ostream (nullptr), m_sb ()
 {
-  this->init (&sb);
+  this->init (&m_sb);
   this->open (name, mode);
 }
 
 // Initialize stream buffer and attach to file
 gzofstream::gzofstream (int fd, std::ios_base::openmode mode)
-  : std::ostream (nullptr), sb ()
+  : std::ostream (nullptr), m_sb ()
 {
-  this->init (&sb);
+  this->init (&m_sb);
   this->attach (fd, mode);
 }
 
@@ -594,7 +594,7 @@ gzofstream::gzofstream (int fd, std::ios_base::openmode mode)
 void
 gzofstream::open (const char *name, std::ios_base::openmode mode)
 {
-  if (! sb.open (name, mode | std::ios_base::out))
+  if (! m_sb.open (name, mode | std::ios_base::out))
     this->setstate (std::ios_base::failbit);
   else
     this->clear ();
@@ -604,7 +604,7 @@ gzofstream::open (const char *name, std::ios_base::openmode mode)
 void
 gzofstream::attach (int fd, std::ios_base::openmode mode)
 {
-  if (! sb.attach (fd, mode | std::ios_base::out))
+  if (! m_sb.attach (fd, mode | std::ios_base::out))
     this->setstate (std::ios_base::failbit);
   else
     this->clear ();
@@ -614,7 +614,7 @@ gzofstream::attach (int fd, std::ios_base::openmode mode)
 void
 gzofstream::close ()
 {
-  if (! sb.close ())
+  if (! m_sb.close ())
     this->setstate (std::ios_base::failbit);
 }
 

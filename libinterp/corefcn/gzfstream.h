@@ -307,14 +307,14 @@ public:
   */
   gzfilebuf*
   rdbuf () const
-  { return const_cast<gzfilebuf *>(&sb); }
+  { return const_cast<gzfilebuf *>(&m_sb); }
 
   /**
    *  @brief  Check if file is open.
    *  @return  True if file is open.
   */
   bool
-  is_open () { return sb.is_open (); }
+  is_open () { return m_sb.is_open (); }
 
   /**
    *  @brief  Open gzipped file.
@@ -356,7 +356,7 @@ private:
   /**
    *  Underlying stream buffer.
   */
-  gzfilebuf sb;
+  gzfilebuf m_sb;
 };
 
 /**
@@ -394,14 +394,14 @@ public:
   */
   gzfilebuf*
   rdbuf () const
-  { return const_cast<gzfilebuf *>(&sb); }
+  { return const_cast<gzfilebuf *>(&m_sb); }
 
   /**
    *  @brief  Check if file is open.
    *  @return  True if file is open.
   */
   bool
-  is_open () { return sb.is_open (); }
+  is_open () { return m_sb.is_open (); }
 
   /**
    *  @brief  Open gzipped file.
@@ -443,7 +443,7 @@ private:
   /**
    *  Underlying stream buffer.
   */
-  gzfilebuf sb;
+  gzfilebuf m_sb;
 };
 
 /**

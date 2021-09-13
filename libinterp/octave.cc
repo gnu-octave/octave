@@ -273,7 +273,7 @@ OCTAVE_NAMESPACE_BEGIN
     return m;
   }
 
-  application *application::instance = nullptr;
+  application *application::s_instance = nullptr;
 
   application::application (int argc, char **argv)
     : m_options (argc, argv)
@@ -324,15 +324,15 @@ OCTAVE_NAMESPACE_BEGIN
 
   bool application::forced_interactive (void)
   {
-    return instance ? instance->m_options.forced_interactive () : false;
+    return s_instance ? s_instance->m_options.forced_interactive () : false;
   }
 
   // Provided for convenience.  Will be removed once we eliminate the
   // old terminal widget.
   bool application::experimental_terminal_widget (void) const
   {
-    return (instance
-            ? instance->m_options.experimental_terminal_widget () : false);
+    return (s_instance
+            ? s_instance->m_options.experimental_terminal_widget () : false);
   }
 
   bool application::interpreter_initialized (void)
@@ -366,11 +366,11 @@ OCTAVE_NAMESPACE_BEGIN
 
   void application::init (void)
   {
-    if (instance)
+    if (s_instance)
       throw std::runtime_error
         ("only one Octave application object may be active");
 
-    instance = this;
+    s_instance = this;
 
     string_vector all_args = m_options.all_args ();
 

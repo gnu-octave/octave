@@ -292,26 +292,26 @@ OCTAVE_NAMESPACE_BEGIN
     // old terminal widget.
     bool experimental_terminal_widget (void) const;
 
-    static application * app (void) { return instance; }
+    static application * app (void) { return s_instance; }
 
     static std::string program_invocation_name (void)
     {
-      return instance ? instance->m_program_invocation_name : "";
+      return s_instance ? s_instance->m_program_invocation_name : "";
     }
 
     static std::string program_name (void)
     {
-      return instance ? instance->m_program_name : "";
+      return s_instance ? s_instance->m_program_name : "";
     }
 
     static string_vector argv (void)
     {
-      return instance ? instance->m_argv : string_vector ();
+      return s_instance ? s_instance->m_argv : string_vector ();
     }
 
     static bool is_gui_running (void)
     {
-      return instance ? instance->gui_running () : false;
+      return s_instance ? s_instance->gui_running () : false;
     }
 
     // Convenience functions.
@@ -321,7 +321,7 @@ OCTAVE_NAMESPACE_BEGIN
   private:
 
     // The application instance;  There should be only one.
-    static application *instance;
+    static application *s_instance;
 
     void init (void);
 

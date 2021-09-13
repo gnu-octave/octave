@@ -459,22 +459,22 @@ class __rangeidx_helper
 {
 public:
   __rangeidx_helper (double *a, double b, double i, double l, octave_idx_type n)
-    : array (a), base (b), inc (i), limit (l), nmax (n-1) { }
+    : m_array (a), m_base (b), m_inc (i), m_limit (l), m_nmax (n-1) { }
 
   void operator () (octave_idx_type i)
   {
     if (i == 0)
-      *array++ = base;
-    else if (i < nmax)
-      *array++ = base + i * inc;
+      *m_array++ = m_base;
+    else if (i < m_nmax)
+      *m_array++ = m_base + i * m_inc;
     else
-      *array++ = limit;
+      *m_array++ = m_limit;
   }
 
 private:
 
-  double *array, base, inc, limit;
-  octave_idx_type nmax;
+  double *m_array, m_base, m_inc, m_limit;
+  octave_idx_type m_nmax;
 
 };
 

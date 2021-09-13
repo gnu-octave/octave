@@ -100,15 +100,14 @@ template <typename T, T op (typename ref_param<T>::type,
 struct _idxbinop_helper
 {
 public:
-  _idxbinop_helper (T *a, const T *v) : array (a), vals (v) { }
+  _idxbinop_helper (T *a, const T *v) : m_array (a), m_vals (v) { }
 
   void operator () (octave_idx_type i)
-  { array[i] = op (array[i], *vals++); }
+  { m_array[i] = op (m_array[i], *m_vals++); }
 
-  //--------
-
-  T *array;
-  const T *vals;
+private:
+  T *m_array;
+  const T *m_vals;
 };
 
 template <typename T>

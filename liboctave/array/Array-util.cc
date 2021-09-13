@@ -521,16 +521,16 @@ zero_dims_inquire (const octave::idx_vector& i, const octave::idx_vector& j,
 }
 
 // A helper class.
-struct sub2ind_helper
+class sub2ind_helper
 {
 public:
-  sub2ind_helper (octave_idx_type *_ind, octave_idx_type _n)
-    : ind (_ind), n (_n) { }
+  sub2ind_helper (octave_idx_type *ind, octave_idx_type n)
+    : m_ind (ind), m_n (n) { }
 
-  void operator () (octave_idx_type k) { (*ind++ *= n) += k; }
+  void operator () (octave_idx_type k) { (*m_ind++ *= m_n) += k; }
 
-  //--------
-  octave_idx_type *ind, n;
+private:
+  octave_idx_type *m_ind, m_n;
 };
 
 octave::idx_vector

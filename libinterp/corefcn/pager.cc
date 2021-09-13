@@ -183,17 +183,17 @@ OCTAVE_NAMESPACE_BEGIN
     return 0;
   }
 
-  pager_stream::pager_stream (void) : std::ostream (nullptr), pb (nullptr)
+  pager_stream::pager_stream (void) : std::ostream (nullptr), m_pb (nullptr)
   {
-    pb = new pager_buf ();
-    rdbuf (pb);
+    m_pb = new pager_buf ();
+    rdbuf (m_pb);
     setf (unitbuf);
   }
 
   pager_stream::~pager_stream (void)
   {
     flush ();
-    delete pb;
+    delete m_pb;
   }
 
   std::ostream& pager_stream::stream (void)
@@ -203,14 +203,14 @@ OCTAVE_NAMESPACE_BEGIN
 
   void pager_stream::flush_current_contents_to_diary (void)
   {
-    if (pb)
-      pb->flush_current_contents_to_diary ();
+    if (m_pb)
+      m_pb->flush_current_contents_to_diary ();
   }
 
   void pager_stream::set_diary_skip (void)
   {
-    if (pb)
-      pb->set_diary_skip ();
+    if (m_pb)
+      m_pb->set_diary_skip ();
   }
 
   // Reinitialize the pager buffer to avoid hanging on to large internal
@@ -220,9 +220,9 @@ OCTAVE_NAMESPACE_BEGIN
 
   void pager_stream::reset (void)
   {
-    delete pb;
-    pb = new pager_buf ();
-    rdbuf (pb);
+    delete m_pb;
+    m_pb = new pager_buf ();
+    rdbuf (m_pb);
     setf (unitbuf);
   }
 

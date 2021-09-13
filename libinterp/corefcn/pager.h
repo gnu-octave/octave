@@ -88,7 +88,7 @@ class oprocstream;
 
   private:
 
-    pager_buf *pb;
+    pager_buf *m_pb;
   };
 
   class

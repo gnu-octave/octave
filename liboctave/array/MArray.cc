@@ -32,33 +32,31 @@
 #include "lo-error.h"
 
 template <typename T>
-struct _idxadds_helper
+class _idxadds_helper
 {
 public:
-  _idxadds_helper (T *a, T v) : array (a), val (v) { }
+  _idxadds_helper (T *a, T v) : m_array (a), m_val (v) { }
 
   void operator () (octave_idx_type i)
-  { array[i] += val; }
+  { m_array[i] += m_val; }
 
-  //--------
-
-  T *array;
-  T val;
+private:
+  T *m_array;
+  T m_val;
 };
 
 template <typename T>
-struct _idxadda_helper
+class _idxadda_helper
 {
 public:
-  _idxadda_helper (T *a, const T *v) : array (a), vals (v) { }
+  _idxadda_helper (T *a, const T *v) : m_array (a), m_vals (v) { }
 
   void operator () (octave_idx_type i)
-  { array[i] += *vals++; }
+  { m_array[i] += *m_vals++; }
 
-  //--------
-
-  T *array;
-  const T *vals;
+private:
+  T *m_array;
+  const T *m_vals;
 };
 
 template <typename T>

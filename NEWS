@@ -90,6 +90,12 @@ the variable is a sparse type.
 - As part of GSoC 2020, Abdallah K. Elshamy implemented the
 `jsondecode` and `jsonencode` functions to read and write JSON data.
 
+- As part of GSoC 2021, Abdallah K. Elshamy implemented the
+`JupyterNotebook` classdef class.  This class supports running and
+filling Jupyter Notebooks using the Octave language kernel from Octave
+itself.  Making the evaluation of long-running Jupyter Notebooks on a
+computing server without permanent browser connection possible.
+
 - By default, the history file is now located at $DATA/octave/history,
 where $DATA is a platform dependent location for (roaming) user data
 files (e.g., ${XDG_DATA_HOME} or, if that is not set, ~/.local/share on
@@ -239,6 +245,7 @@ to true.
 * `fill3`
 * `jsondecode`
 * `jsonencode`
+* `JupyterNotebook`
 * `listfonts`
 * `matlab.net.base64decode`
 * `matlab.net.base64encode`

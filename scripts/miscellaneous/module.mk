@@ -40,6 +40,7 @@ FCN_FILE_DIRS += \
   %reldir%/ismethod.m \
   %reldir%/ispc.m \
   %reldir%/isunix.m \
+  %reldir%/JupyterNotebook.m \
   %reldir%/license.m \
   %reldir%/list_primes.m \
   %reldir%/loadobj.m \

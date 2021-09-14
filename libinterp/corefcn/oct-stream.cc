@@ -1238,7 +1238,7 @@ namespace octave
     // there is a remaining delimiter in buf, or loads more data in.
     void field_done (void)
     {
-      if (idx >= last)
+      if (m_idx >= m_last)
         refresh_buf ();
     }
 
@@ -1250,8 +1250,8 @@ namespace octave
     // a delimiter has been reached.
     int get (void)
     {
-      if (delimited)
-        return eof () ? std::istream::traits_type::eof () : *idx++;
+      if (m_delimited)
+        return eof () ? std::istream::traits_type::eof () : *m_idx++;
       else
         return get_undelim ();
     }
@@ -1264,7 +1264,7 @@ namespace octave
     // is attempted.  This does *NOT* behave like C++ input stream.
     // For a compatible peek function, use peek_undelim.  See bug #56917.
     int peek (void)
-    { return eof () ? std::istream::traits_type::eof () : *idx; }
+    { return eof () ? std::istream::traits_type::eof () : *m_idx; }
 
     // Read character that will be got by the next get.
     int peek_undelim (void);
@@ -1273,7 +1273,7 @@ namespace octave
     // to avoid overflow by calling putbacks only for a character got by
     // get() or get_undelim(), with no intervening
     // get, get_delim, field_done, refresh_buf, getline, read or seekg.
-    void putback (char /*ch*/ = 0) { if (! eof ()) --idx; }
+    void putback (char /*ch*/ = 0) { if (! eof ()) --m_idx; }
 
     int getline  (std::string& dest, char delim);
 
@@ -1283,75 +1283,75 @@ namespace octave
 
     // Return a position suitable to "seekg", valid only within this
     // block between calls to field_done.
-    char * tellg (void) { return idx; }
+    char * tellg (void) { return m_idx; }
 
-    void seekg (char *old_idx) { idx = old_idx; }
+    void seekg (char *old_idx) { m_idx = old_idx; }
 
     bool eof (void)
     {
-      return (eob == m_buf && i_stream.eof ())
-              || (flags & std::ios_base::eofbit);
+      return (m_eob == m_buf && m_i_stream.eof ())
+              || (m_flags & std::ios_base::eofbit);
     }
 
     operator const void* (void)
-    { return (! eof () && ! flags) ? this : nullptr; }
+    { return (! eof () && ! m_flags) ? this : nullptr; }
 
-    bool fail (void) { return flags & std::ios_base::failbit; }
+    bool fail (void) { return m_flags & std::ios_base::failbit; }
 
-    std::ios_base::iostate rdstate (void) { return flags; }
+    std::ios_base::iostate rdstate (void) { return m_flags; }
 
-    void setstate (std::ios_base::iostate m) { flags = flags | m; }
+    void setstate (std::ios_base::iostate m) { m_flags = m_flags | m; }
 
     void clear (std::ios_base::iostate m
                 = (std::ios_base::eofbit & ~std::ios_base::eofbit))
     {
-      flags = flags & m;
+      m_flags = m_flags & m;
     }
 
     // Report if any characters have been consumed.
     // (get, read, etc. not cancelled by putback or seekg)
 
-    void progress_benchmark (void) { progress_marker = idx; }
+    void progress_benchmark (void) { m_progress_marker = m_idx; }
 
-    bool no_progress (void) { return progress_marker == idx; }
+    bool no_progress (void) { return m_progress_marker == m_idx; }
 
   private:
 
     // Number of characters to read from the file at once.
-    int bufsize;
+    int m_bufsize;
 
     // Stream to read from.
-    std::istream& i_stream;
+    std::istream& m_i_stream;
 
     // Temporary storage for a "chunk" of data.
     char *m_buf;
 
     // Current read pointer.
-    char *idx;
+    char *m_idx;
 
     // Location of last delimiter in the buffer at buf (undefined if
     // delimited is false).
-    char *last;
+    char *m_last;
 
     // Position after last character in buffer.
-    char *eob;
+    char *m_eob;
 
     // True if there is delimiter in the buffer after idx.
-    bool delimited;
+    bool m_delimited;
 
     // Longest lookahead required.
-    int longest;
+    int m_longest;
 
     // Sequence of single-character delimiters.
-    const std::string delims;
+    const std::string m_delims;
 
     // Position of start of buf in original stream.
-    std::streampos buf_in_file;
+    std::streampos m_buf_in_file;
 
     // Marker to see if a read consumes any characters.
-    char *progress_marker;
+    char *m_progress_marker;
 
-    std::ios_base::iostate flags;
+    std::ios_base::iostate m_flags;
   };
 
   // Create a delimited stream, reading from is, with delimiters delims,
@@ -1362,21 +1362,21 @@ namespace octave
                                       const std::string& delimiters,
                                       int longest_lookahead,
                                       octave_idx_type bsize)
-    : bufsize (bsize), i_stream (is), longest (longest_lookahead),
-      delims (delimiters),
-      flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
+    : m_bufsize (bsize), m_i_stream (is), m_longest (longest_lookahead),
+      m_delims (delimiters),
+      m_flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
   {
-    m_buf = new char[bufsize];
-    eob = m_buf + bufsize;
-    idx = eob;                    // refresh_buf shouldn't try to copy old data
-    progress_marker = idx;
+    m_buf = new char[m_bufsize];
+    m_eob = m_buf + m_bufsize;
+    m_idx = m_eob;                // refresh_buf shouldn't try to copy old data
+    m_progress_marker = m_idx;
     refresh_buf ();               // load the first batch of data
   }
 
   // Used to create a stream from a strstream from data read from a dstr.
   delimited_stream::delimited_stream (std::istream& is,
                                       const delimited_stream& ds)
-    : delimited_stream (is, ds.delims, ds.longest, ds.bufsize)
+    : delimited_stream (is, ds.m_delims, ds.m_longest, ds.m_bufsize)
   { }
 
   delimited_stream::~delimited_stream (void)
@@ -1384,9 +1384,9 @@ namespace octave
     // Seek to the correct position in i_stream.
     if (! eof ())
       {
-        i_stream.clear ();
-        i_stream.seekg (buf_in_file);
-        i_stream.read (m_buf, idx - m_buf);
+        m_i_stream.clear ();
+        m_i_stream.seekg (m_buf_in_file);
+        m_i_stream.read (m_buf, m_idx - m_buf);
       }
 
     delete [] m_buf;
@@ -1405,8 +1405,8 @@ namespace octave
         return std::istream::traits_type::eof ();
       }
 
-    if (idx < eob)
-      retval = *idx++;
+    if (m_idx < m_eob)
+      retval = *m_idx++;
     else
       {
         refresh_buf ();
@@ -1417,11 +1417,11 @@ namespace octave
             retval = std::istream::traits_type::eof ();
           }
         else
-          retval = *idx++;
+          retval = *m_idx++;
       }
 
-    if (idx >= last)
-      delimited = false;
+    if (m_idx >= m_last)
+      m_delimited = false;
 
     return retval;
   }
@@ -1451,40 +1451,40 @@ namespace octave
 
     int retval;
 
-    if (eob < idx)
-      idx = eob;
+    if (m_eob < m_idx)
+      m_idx = m_eob;
 
-    std::size_t old_remaining = eob - idx;
+    std::size_t old_remaining = m_eob - m_idx;
 
     octave_quit ();                       // allow ctrl-C
 
     if (old_remaining > 0)
       {
-        buf_in_file += (idx - m_buf);
-        memmove (m_buf, idx, old_remaining);
+        m_buf_in_file += (m_idx - m_buf);
+        memmove (m_buf, m_idx, old_remaining);
       }
     else
-      buf_in_file = i_stream.tellg ();    // record for destructor
+      m_buf_in_file = m_i_stream.tellg ();  // record for destructor
 
-    progress_marker -= idx - m_buf;       // where original idx would have been
-    idx = m_buf;
+    m_progress_marker -= m_idx - m_buf;  // where original idx would have been
+    m_idx = m_buf;
 
     int gcount;   // chars read
-    if (! i_stream.eof ())
+    if (! m_i_stream.eof ())
       {
-        i_stream.read (m_buf + old_remaining, bufsize - old_remaining);
-        gcount = i_stream.gcount ();
+        m_i_stream.read (m_buf + old_remaining, m_bufsize - old_remaining);
+        gcount = m_i_stream.gcount ();
       }
     else
       gcount = 0;
 
-    eob = m_buf + old_remaining + gcount;
-    last = eob;
+    m_eob = m_buf + old_remaining + gcount;
+    m_last = m_eob;
     if (gcount == 0)
       {
-        delimited = false;
+        m_delimited = false;
 
-        if (eob != m_buf)   // no more data in file, but still some to go
+        if (m_eob != m_buf)   // no more data in file, but still some to go
           retval = 0;
         else
           // file and buffer are both done.
@@ -1492,23 +1492,23 @@ namespace octave
       }
     else
       {
-        delimited = true;
+        m_delimited = true;
 
-        for (last = eob - longest; last - m_buf >= 0; last--)
+        for (m_last = m_eob - m_longest; m_last - m_buf >= 0; m_last--)
           {
-            if (delims.find (*last) != std::string::npos)
+            if (m_delims.find (*m_last) != std::string::npos)
               break;
           }
 
-        if (last < m_buf)
-          delimited = false;
+        if (m_last < m_buf)
+          m_delimited = false;
 
         retval = 0;
       }
 
     // Ensure fast peek doesn't give valid char
     if (retval == std::istream::traits_type::eof ())
-      *idx = '\0';    // FIXME: check that no TreatAsEmpty etc starts w. \0?
+      *m_idx = '\0';    // FIXME: check that no TreatAsEmpty etc starts w. \0?
 
     return retval;
   }
@@ -1524,12 +1524,12 @@ namespace octave
   {
     char *retval;
 
-    if (eob - idx > size)
+    if (m_eob - m_idx > size)
       {
-        retval = idx;
-        idx += size;
-        if (idx > last)
-          delimited = false;
+        retval = m_idx;
+        m_idx += size;
+        if (m_idx > m_last)
+          m_delimited = false;
       }
     else
       {
@@ -1538,12 +1538,12 @@ namespace octave
         // In the current code, prior_tell==idx for each call,
         // so this is not necessary, just a precaution.
 
-        if (eob - prior_tell + size < bufsize)
+        if (m_eob - prior_tell + size < m_bufsize)
           {
-            octave_idx_type gap = idx - prior_tell;
-            idx = prior_tell;
+            octave_idx_type gap = m_idx - prior_tell;
+            m_idx = prior_tell;
             refresh_buf ();
-            idx += gap;
+            m_idx += gap;
           }
         else      // can't keep the tellg in range.  May skip some data.
           {
@@ -1552,20 +1552,20 @@ namespace octave
 
         prior_tell = m_buf;
 
-        if (eob - idx > size)
+        if (m_eob - m_idx > size)
           {
-            retval = idx;
-            idx += size;
-            if (idx > last)
-              delimited = false;
+            retval = m_idx;
+            m_idx += size;
+            if (m_idx > m_last)
+              m_delimited = false;
           }
         else
           {
-            if (size <= bufsize)          // small read, but reached EOF
+            if (size <= m_bufsize)          // small read, but reached EOF
               {
-                retval = idx;
-                memset (eob, 0, size + (idx - m_buf));
-                idx += size;
+                retval = m_idx;
+                memset (m_eob, 0, size + (m_idx - m_buf));
+                m_idx += size;
               }
             else  // Reading more than the whole buf; return it in buffer
               {

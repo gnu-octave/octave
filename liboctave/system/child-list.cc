@@ -32,22 +32,9 @@
 
 namespace octave
 {
-  class pid_equal
-  {
-  public:
-
-    pid_equal (pid_t v) : val (v) { }
-
-    bool operator () (const child& oc) const { return oc.m_pid == val; }
-
-  private:
-
-    pid_t val;
-  };
-
   void child_list::remove (pid_t pid)
   {
-    m_list.remove_if (pid_equal (pid));
+    m_list.remove_if ([pid] (const child& oc) { return oc.m_pid == pid; });
   }
 
   void child_list::child_list::insert (pid_t pid, child::child_event_handler f)

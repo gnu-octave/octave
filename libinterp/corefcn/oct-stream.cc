@@ -1824,67 +1824,6 @@ namespace octave
 
     friend class textscan_format_list;
 
-    // What function name should be shown when reporting errors.
-    std::string who;
-
-    std::string m_encoding;
-
-    std::string m_buf;
-
-    // Three cases for delim_table and delim_list
-    // 1. delim_table empty, delim_list empty:  whitespace delimiters
-    // 2. delim_table = look-up table of delim chars, delim_list empty.
-    // 3. delim_table non-empty, delim_list = Cell array of delim strings
-
-    std::string whitespace_table;
-
-    // delim_table[i] == '\0' if i is not a delimiter.
-    std::string delim_table;
-
-    // String of delimiter characters.
-    std::string delims;
-
-    Cell comment_style;
-
-    // How far ahead to look to detect an open comment.
-    int comment_len;
-
-    // First character of open comment.
-    int comment_char;
-
-    octave_idx_type buffer_size;
-
-    std::string date_locale;
-
-    // 'inf' and 'nan' for formatted_double.
-    Cell inf_nan;
-
-    // Array of strings of delimiters.
-    Cell delim_list;
-
-    // Longest delimiter.
-    int delim_len;
-
-    octave_value empty_value;
-    std::string exp_chars;
-    int header_lines;
-    Cell treat_as_empty;
-
-    // Longest string to treat as "N/A".
-    int treat_as_empty_len;
-
-    std::string whitespace;
-
-    short eol1;
-    short eol2;
-    short return_on_error;
-
-    bool collect_output;
-    bool multiple_delims_as_one;
-    bool default_exp;
-
-    octave_idx_type lines;
-
     octave_value do_scan (std::istream& isp, textscan_format_list& fmt_list,
                           octave_idx_type ntimes);
 
@@ -1936,15 +1875,78 @@ namespace octave
     bool is_delim (unsigned char ch) const
     {
       return ((delim_table.empty ()
-               && (isspace (ch) || ch == eol1 || ch == eol2))
+               && (isspace (ch) || ch == m_eol1 || ch == m_eol2))
               || delim_table[ch] != '\0');
     }
 
     bool isspace (unsigned int ch) const
-    { return whitespace_table[ch & 0xff]; }
+    { return m_whitespace_table[ch & 0xff]; }
 
     // True if the only delimiter is whitespace.
     bool whitespace_delim (void) const { return delim_table.empty (); }
+
+    //--------
+
+    // What function name should be shown when reporting errors.
+    std::string m_who;
+
+    std::string m_encoding;
+
+    std::string m_buf;
+
+    // Three cases for delim_table and delim_list
+    // 1. delim_table empty, delim_list empty:  whitespace delimiters
+    // 2. delim_table = look-up table of delim chars, delim_list empty.
+    // 3. delim_table non-empty, delim_list = Cell array of delim strings
+
+    std::string m_whitespace_table;
+
+    // delim_table[i] == '\0' if i is not a delimiter.
+    std::string delim_table;
+
+    // String of delimiter characters.
+    std::string m_delims;
+
+    Cell m_comment_style;
+
+    // How far ahead to look to detect an open comment.
+    int m_comment_len;
+
+    // First character of open comment.
+    int m_comment_char;
+
+    octave_idx_type m_buffer_size;
+
+    std::string m_date_locale;
+
+    // 'inf' and 'nan' for formatted_double.
+    Cell m_inf_nan;
+
+    // Array of strings of delimiters.
+    Cell m_delim_list;
+
+    // Longest delimiter.
+    int m_delim_len;
+
+    octave_value m_empty_value;
+    std::string m_exp_chars;
+    int m_header_lines;
+    Cell m_treat_as_empty;
+
+    // Longest string to treat as "N/A".
+    int m_treat_as_empty_len;
+
+    std::string m_whitespace;
+
+    short m_eol1;
+    short m_eol2;
+    short m_return_on_error;
+
+    bool m_collect_output;
+    bool multiple_delims_as_one;
+    bool m_default_exp;
+
+    octave_idx_type m_lines;
   };
 
   textscan_format_list::textscan_format_list (const std::string& s,
@@ -2470,9 +2472,9 @@ namespace octave
     // Read first line and strip end-of-line, which may be two characters
     std::string first_line (20, ' ');
 
-    is.getline (first_line, static_cast<char> (ts.eol2));
+    is.getline (first_line, static_cast<char> (ts.m_eol2));
 
-    if (! first_line.empty () && first_line.back () == ts.eol1)
+    if (! first_line.empty () && first_line.back () == ts.m_eol1)
       first_line.pop_back ();
 
     std::istringstream strstr (first_line);
@@ -2509,7 +2511,7 @@ namespace octave
               }
             already_skipped_delim = true;
 
-            val = ts.empty_value.scalar_value ();
+            val = ts.m_empty_value.scalar_value ();
 
             if (! --max_empty)
               break;
@@ -2541,14 +2543,15 @@ namespace octave
   }
 
   textscan::textscan (const std::string& who_arg, const std::string& encoding)
-    : who (who_arg), m_encoding (encoding), m_buf (), whitespace_table (),
-      delim_table (), delims (), comment_style (), comment_len (0),
-      comment_char (-2), buffer_size (0), date_locale (),
-      inf_nan (init_inf_nan ()), empty_value (numeric_limits<double>::NaN ()),
-      exp_chars ("edED"), header_lines (0), treat_as_empty (),
-      treat_as_empty_len (0), whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
-      return_on_error (1), collect_output (false),
-      multiple_delims_as_one (false), default_exp (true), lines (0)
+    : m_who (who_arg), m_encoding (encoding), m_buf (), m_whitespace_table (),
+      delim_table (), m_delims (), m_comment_style (), m_comment_len (0),
+      m_comment_char (-2), m_buffer_size (0), m_date_locale (),
+      m_inf_nan (init_inf_nan ()),
+      m_empty_value (numeric_limits<double>::NaN ()),
+      m_exp_chars ("edED"), m_header_lines (0), m_treat_as_empty (),
+      m_treat_as_empty_len (0), m_whitespace (" \b\t"), m_eol1 ('\r'),
+      m_eol2 ('\n'), m_return_on_error (1), m_collect_output (false),
+      multiple_delims_as_one (false), m_default_exp (true), m_lines (0)
   { }
 
   octave_value
@@ -2581,26 +2584,26 @@ namespace octave
     octave_value retval;
 
     if (fmt_list.num_conversions () == -1)
-      error ("%s: invalid format specified", who.c_str ());
+      error ("%s: invalid format specified", m_who.c_str ());
 
     if (fmt_list.num_conversions () == 0)
-      error ("%s: no valid format conversion specifiers", who.c_str ());
+      error ("%s: no valid format conversion specifiers", m_who.c_str ());
 
     // skip the first header_lines
     std::string dummy;
-    for (int i = 0; i < header_lines && isp; i++)
-      getline (isp, dummy, static_cast<char> (eol2));
+    for (int i = 0; i < m_header_lines && isp; i++)
+      getline (isp, dummy, static_cast<char> (m_eol2));
 
     // Create our own buffered stream, for fast get/putback/tell/seek.
 
     // First, see how far ahead it should let us look.
-    int max_lookahead = std::max (std::max (comment_len, treat_as_empty_len),
-                                  std::max (delim_len, 3)); // 3 for NaN and Inf
+    int max_lookahead = std::max ({m_comment_len, m_treat_as_empty_len, 
+                                   m_delim_len, 3});  // 3 for NaN and Inf
 
     // Next, choose a buffer size to avoid reading too much, or too often.
     octave_idx_type buf_size = 4096;
-    if (buffer_size)
-      buf_size = buffer_size;
+    if (m_buffer_size)
+      buf_size = m_buffer_size;
     else if (ntimes > 0)
       {
         // Avoid overflow of 80*ntimes...
@@ -2609,7 +2612,8 @@ namespace octave
       }
     // Finally, create the stream.
     delimited_stream is (isp,
-                         (delim_table.empty () ? whitespace + "\r\n" : delims),
+                         (delim_table.empty () ? m_whitespace + "\r\n"
+                                               : m_delims),
                          max_lookahead, buf_size);
 
     // Grow retval dynamically.  "size" is half the initial size
@@ -2630,7 +2634,7 @@ namespace octave
     if (fmt_list.set_from_first)
       {
         err = fmt_list.read_first_row (is, *this);
-        lines = 1;
+        m_lines = 1;
 
         done_after = fmt_list.numel () + 1;
         if (! err)
@@ -2649,7 +2653,7 @@ namespace octave
     // so force all to be merged (as all are %f).
     bool merge_with_prev[fmt_list.numel ()];
     int conv = 0;
-    if (collect_output)
+    if (m_collect_output)
       {
         int prev_type = -1;
         for (const auto& col : out)
@@ -2667,12 +2671,14 @@ namespace octave
     // This should be caught by earlier code, but this avoids a possible
     // infinite loop below.
     if (fmt_list.num_conversions () == 0)
-      error ("%s: No conversions specified", who.c_str ());
+      error ("%s: No conversions specified", m_who.c_str ());
 
     // Read the data.  This is the main loop.
     if (! err)
       {
-        for (/* row set ~30 lines above */; row < ntimes || ntimes == -1; row++)
+        for (/* row set ~30 m_lines above */;
+             row < ntimes || ntimes == -1;
+             row++)
           {
             if (row == 0 || row >= size)
               {
@@ -2684,14 +2690,14 @@ namespace octave
             row_idx(0) = row;
             err = read_format_once (is, fmt_list, out, row_idx, done_after);
 
-            if ((err & ~1) > 0 || ! is || (lines >= ntimes && ntimes > -1))
+            if ((err & ~1) > 0 || ! is || (m_lines >= ntimes && ntimes > -1))
               break;
           }
       }
 
-    if ((err & 4) && ! return_on_error)
+    if ((err & 4) && ! m_return_on_error)
       error ("%s: Read error in field %d of row %" OCTAVE_IDX_TYPE_FORMAT,
-             who.c_str (), done_after + 1, row + 1);
+             m_who.c_str (), done_after + 1, row + 1);
 
     // If file does not end in EOL, do not pad columns with NaN.
     bool uneven_columns = false;
@@ -2703,7 +2709,7 @@ namespace octave
         isp.seekg (-1, std::ios_base::end);
         int last_char = isp.get ();
         isp.setstate (isp.eofbit);
-        uneven_columns = (last_char != eol1 && last_char != eol2);
+        uneven_columns = (last_char != m_eol1 && last_char != m_eol2);
       }
 
     // convert return value to Cell array
@@ -2721,7 +2727,7 @@ namespace octave
 
     ra_idx(0) = 0;
     int i = 0;
-    if (! collect_output)
+    if (! m_collect_output)
       {
         retval = Cell (dim_vector (1, out.size ()));
         for (auto& col : out)
@@ -2854,7 +2860,7 @@ namespace octave
 
     // look for exponent part in, e.g.,  6.023E+23
     bool used_exp = false;
-    if (valid && width_left > 1 && exp_chars.find (ch) != std::string::npos)
+    if (valid && width_left > 1 && m_exp_chars.find (ch) != std::string::npos)
       {
         int ch1 = is.peek ();
         if (ch1 == '-' || ch1 == '+' || (ch1 >= '0' && ch1 <= '9'))
@@ -2900,7 +2906,7 @@ namespace octave
     // Check for +/- inf and NaN
     if (! valid && width_left >= 3)
       {
-        int i = lookahead (is, inf_nan, 3, false);  // false -> case insensitive
+        int i = lookahead (is, m_inf_nan, 3, false);  // false -> case insensitive
         if (i == 0)
           {
             retval = numeric_limits<double>::Inf ();
@@ -2979,14 +2985,14 @@ namespace octave
         re = read_double (is, fmt);
 
         // check for "treat as empty" string
-        if (treat_as_empty.numel ()
+        if (m_treat_as_empty.numel ()
             && (is.fail () || math::is_NaN_or_NA (Complex (re))
                 || re == numeric_limits<double>::Inf ()))
           {
 
-            for (int i = 0; i < treat_as_empty.numel (); i++)
+            for (int i = 0; i < m_treat_as_empty.numel (); i++)
               {
-                if (ch == treat_as_empty (i).string_value ()[0])
+                if (ch == m_treat_as_empty (i).string_value ()[0])
                   {
                     as_empty = true;  // first char matches, so read the lot
                     break;
@@ -3002,16 +3008,16 @@ namespace octave
                 // treat_as_empty strings may be different sizes.
                 // Read ahead longest, put it all back, then re-read the string
                 // that matches.
-                std::string look_buf (treat_as_empty_len, '\0');
+                std::string look_buf (m_treat_as_empty_len, '\0');
                 char *look = is.read (&look_buf[0], look_buf.size (), pos);
 
                 is.clear (state);
                 is.seekg (pos);        // reset to position before look-ahead
                                        // FIXME: is.read could invalidate pos
 
-                for (int i = 0; i < treat_as_empty.numel (); i++)
+                for (int i = 0; i < m_treat_as_empty.numel (); i++)
                   {
-                    std::string s = treat_as_empty (i).string_value ();
+                    std::string s = m_treat_as_empty (i).string_value ();
                     if (! strncmp (s.c_str (), look, s.size ()))
                       {
                         as_empty = true;
@@ -3059,7 +3065,7 @@ namespace octave
           }
       }
     if (as_empty)
-      val = empty_value.scalar_value ();
+      val = m_empty_value.scalar_value ();
     else
       val = Complex (re, im);
   }
@@ -3109,7 +3115,7 @@ namespace octave
 
         if (last != std::istream::traits_type::eof ())
           {
-            if (last == eol1 || last == eol2)
+            if (last == m_eol1 || last == m_eol2)
               break;
 
             retval = retval + static_cast<char> (last);
@@ -3144,7 +3150,7 @@ namespace octave
   textscan::scan_string (delimited_stream& is, const textscan_format_elt& fmt,
                          std::string& val) const
   {
-    if (delim_list.isempty ())
+    if (m_delim_list.isempty ())
       {
         unsigned int i = 0;
         unsigned int width = fmt.width;
@@ -3169,16 +3175,16 @@ namespace octave
       }
     else  // Cell array of multi-character delimiters
       {
-        std::string ends (delim_list.numel () + 2, '\0');
+        std::string ends (m_delim_list.numel () + 2, '\0');
         int i;
-        for (i = 0; i < delim_list.numel (); i++)
+        for (i = 0; i < m_delim_list.numel (); i++)
           {
-            std::string tmp = delim_list(i).string_value ();
+            std::string tmp = m_delim_list(i).string_value ();
             ends[i] = tmp.back ();
           }
-        ends[i++] = eol1;
-        ends[i++] = eol2;
-        val = textscan::read_until (is, delim_list, ends);
+        ends[i++] = m_eol1;
+        ends[i++] = m_eol2;
+        val = textscan::read_until (is, m_delim_list, ends);
       }
 
     // convert from codepage
@@ -3389,7 +3395,7 @@ namespace octave
           }
 
         if (is.fail () & ! fmt.discard)
-          ov = cat_op (ov, empty_value, row);
+          ov = cat_op (ov, m_empty_value, row);
       }
     else
       {
@@ -3459,7 +3465,7 @@ namespace octave
           case 'C':
           case 'D':
             warning ("%s: conversion %c not yet implemented",
-                     who.c_str (), elem->type);
+                     m_who.c_str (), elem->type);
             break;
 
           case 'u':
@@ -3493,7 +3499,7 @@ namespace octave
 
             if (! is.eof ())
               {
-                if (delim_list.isempty ())
+                if (m_delim_list.isempty ())
                   {
                     if (! is_delim (is.peek ()))
                       this_conversion_failed = true;
@@ -3501,7 +3507,7 @@ namespace octave
                 else  // Cell array of multi-character delimiters
                   {
                     char *pos = is.tellg ();
-                    if (-1 == lookahead (is, delim_list, delim_len))
+                    if (-1 == lookahead (is, m_delim_list, m_delim_len))
                       this_conversion_failed = true;
                     is.clear ();
                     is.seekg (pos);     // reset to position before look-ahead
@@ -3566,14 +3572,14 @@ namespace octave
 
     if (n & 1)
       error ("%s: %d parameters given, but only %d values",
-             who.c_str (), n-n/2, n/2);
+             m_who.c_str (), n-n/2, n/2);
 
-    delim_len = 1;
+    m_delim_len = 1;
     bool have_delims = false;
     for (int i = 0; i < last; i += 2)
       {
         std::string param = args(i).xstring_value ("%s: Invalid parameter type <%s> for parameter %d",
-                                                   who.c_str (),
+                                                   m_who.c_str (),
                                                    args(i).type_name ().c_str (),
                                                    i/2 + 1);
         std::transform (param.begin (), param.end (), param.begin (), ::tolower);
@@ -3585,63 +3591,64 @@ namespace octave
               {
                 invalid = false;
                 have_delims = true;
-                delims = args(i+1).string_value ();
+                m_delims = args(i+1).string_value ();
                 if (args(i+1).is_sq_string ())
-                  delims = do_string_escapes (delims);
+                  m_delims = do_string_escapes (m_delims);
               }
             else if (args(i+1).iscell ())
               {
                 invalid = false;
-                delim_list = args(i+1).cell_value ();
-                delim_table = " "; // non-empty, to flag non-default delim
+                m_delim_list = args(i+1).cell_value ();
+                delim_table = " ";  // non-empty, to flag non-default delim
 
                 // Check that all elements are strings, and find max length
-                for (int j = 0; j < delim_list.numel (); j++)
+                for (int j = 0; j < m_delim_list.numel (); j++)
                   {
-                    if (! delim_list(j).is_string ())
+                    if (! m_delim_list(j).is_string ())
                       invalid = true;
                     else
                       {
-                        if (delim_list(j).is_sq_string ())
-                          delim_list(j) = do_string_escapes (delim_list(j)
+                        if (m_delim_list(j).is_sq_string ())
+                          m_delim_list(j) = do_string_escapes (m_delim_list(j)
                                                              .string_value ());
-                        octave_idx_type len = delim_list(j).string_value ()
+                        octave_idx_type len = m_delim_list(j).string_value ()
                                               .length ();
-                        delim_len = std::max (static_cast<int> (len), delim_len);
+                        m_delim_len = std::max (static_cast<int> (len),
+                                                m_delim_len);
                       }
                   }
               }
             if (invalid)
               error ("%s: Delimiters must be either a string or cell array of strings",
-                     who.c_str ());
+                     m_who.c_str ());
           }
         else if (param == "commentstyle")
           {
             if (args(i+1).is_string ())
               {
                 // check here for names like "C++", "C", "shell", ...?
-                comment_style = Cell (args(i+1));
+                m_comment_style = Cell (args(i+1));
               }
             else if (args(i+1).iscell ())
               {
-                comment_style = args(i+1).cell_value ();
-                int len = comment_style.numel ();
-                if ((len >= 1 && ! comment_style (0).is_string ())
-                    || (len >= 2 && ! comment_style (1).is_string ())
+                m_comment_style = args(i+1).cell_value ();
+                int len = m_comment_style.numel ();
+                if ((len >= 1 && ! m_comment_style (0).is_string ())
+                    || (len >= 2 && ! m_comment_style (1).is_string ())
                     || (len >= 3))
                   error ("%s: CommentStyle must be either a string or cell array of one or two strings",
-                         who.c_str ());
+                         m_who.c_str ());
               }
             else
               error ("%s: CommentStyle must be either a string or cell array of one or two strings",
-                     who.c_str ());
+                     m_who.c_str ());
 
             // How far ahead do we need to look to detect an open comment
             // and which character do we look for?
-            if (comment_style.numel () >= 1)
+            if (m_comment_style.numel () >= 1)
               {
-                comment_len  = comment_style (0).string_value ().size ();
-                comment_char = comment_style (0).string_value ()[0];
+                m_comment_len  = m_comment_style (0).string_value ().size ();
+                m_comment_char = m_comment_style (0).string_value ()[0];
               }
           }
         else if (param == "treatasempty")
@@ -3649,77 +3656,77 @@ namespace octave
             bool invalid = false;
             if (args(i+1).is_string ())
               {
-                treat_as_empty = Cell (args(i+1));
-                treat_as_empty_len = args(i+1).string_value ().size ();
+                m_treat_as_empty = Cell (args(i+1));
+                m_treat_as_empty_len = args(i+1).string_value ().size ();
               }
             else if (args(i+1).iscell ())
               {
-                treat_as_empty = args(i+1).cell_value ();
-                for (int j = 0; j < treat_as_empty.numel (); j++)
-                  if (! treat_as_empty (j).is_string ())
+                m_treat_as_empty = args(i+1).cell_value ();
+                for (int j = 0; j < m_treat_as_empty.numel (); j++)
+                  if (! m_treat_as_empty (j).is_string ())
                     invalid = true;
                   else
                     {
-                      int k = treat_as_empty (j).string_value ().size ();
-                      if (k > treat_as_empty_len)
-                        treat_as_empty_len = k;
+                      int k = m_treat_as_empty (j).string_value ().size ();
+                      if (k > m_treat_as_empty_len)
+                        m_treat_as_empty_len = k;
                     }
               }
             if (invalid)
               error ("%s: TreatAsEmpty must be either a string or cell array of one or two strings",
-                     who.c_str ());
+                     m_who.c_str ());
 
             // FIXME: Ensure none is a prefix of a later one.  Sort by length?
           }
         else if (param == "collectoutput")
           {
-            collect_output = args(i+1).xbool_value ("%s: CollectOutput must be logical or numeric", who.c_str ());
+            m_collect_output = args(i+1).xbool_value ("%s: CollectOutput must be logical or numeric", m_who.c_str ());
           }
         else if (param == "emptyvalue")
           {
-            empty_value = args(i+1).xscalar_value ("%s: EmptyValue must be numeric", who.c_str ());
+            m_empty_value = args(i+1).xscalar_value ("%s: EmptyValue must be numeric", m_who.c_str ());
           }
         else if (param == "headerlines")
           {
-            header_lines = args(i+1).xscalar_value ("%s: HeaderLines must be numeric", who.c_str ());
+            m_header_lines = args(i+1).xscalar_value ("%s: HeaderLines must be numeric", m_who.c_str ());
           }
         else if (param == "bufsize")
           {
-            buffer_size = args(i+1).xscalar_value ("%s: BufSize must be numeric", who.c_str ());
+            m_buffer_size = args(i+1).xscalar_value ("%s: BufSize must be numeric", m_who.c_str ());
           }
         else if (param == "multipledelimsasone")
           {
-            multiple_delims_as_one = args(i+1).xbool_value ("%s: MultipleDelimsAsOne must be logical or numeric", who.c_str ());
+            multiple_delims_as_one = args(i+1).xbool_value ("%s: MultipleDelimsAsOne must be logical or numeric", m_who.c_str ());
           }
         else if (param == "returnonerror")
           {
-            return_on_error = args(i+1).xbool_value ("%s: ReturnOnError must be logical or numeric", who.c_str ());
+            m_return_on_error = args(i+1).xbool_value ("%s: ReturnOnError must be logical or numeric", m_who.c_str ());
           }
         else if (param == "whitespace")
           {
-            whitespace = args(i+1).xstring_value ("%s: Whitespace must be a character string", who.c_str ());
+            m_whitespace = args(i+1).xstring_value ("%s: Whitespace must be a character string", m_who.c_str ());
           }
         else if (param == "expchars")
           {
-            exp_chars = args(i+1).xstring_value ("%s: ExpChars must be a character string", who.c_str ());
-            default_exp = false;
+            m_exp_chars = args(i+1).xstring_value ("%s: ExpChars must be a character string", m_who.c_str ());
+            m_default_exp = false;
           }
         else if (param == "endofline")
           {
             bool valid = true;
-            std::string s = args(i+1).xstring_value (R"(%s: EndOfLine must be at most one character or '\r\n')", who.c_str ());
+            std::string s = args(i+1).xstring_value (R"(%s: EndOfLine must be at most one character or '\r\n')", m_who.c_str ());
             if (args(i+1).is_sq_string ())
               s = do_string_escapes (s);
             int l = s.length ();
             if (l == 0)
-              eol1 = eol2 = -2;
+              m_eol1 = m_eol2 = -2;
             else if (l == 1)
-              eol1 = eol2 = s.c_str ()[0];
+              m_eol1 = m_eol2 = s.c_str ()[0];
             else if (l == 2)
               {
-                eol1 = s.c_str ()[0];
-                eol2 = s.c_str ()[1];
-                if (eol1 != '\r' || eol2 != '\n')    // Why limit it?
+                m_eol1 = s.c_str ()[0];
+                m_eol2 = s.c_str ()[1];
+                if (m_eol1 != '\r' || m_eol2 != '\n')    // Why limit it?
                   valid = false;
               }
             else
@@ -3727,45 +3734,45 @@ namespace octave
 
             if (! valid)
               error (R"(%s: EndOfLine must be at most one character or '\r\n')",
-                     who.c_str ());
+                     m_who.c_str ());
           }
         else
-          error ("%s: unrecognized option '%s'", who.c_str (), param.c_str ());
+          error ("%s: unrecognized option '%s'", m_who.c_str (), param.c_str ());
       }
 
     // Remove any user-supplied delimiter from whitespace list
-    for (unsigned int j = 0; j < delims.length (); j++)
+    for (unsigned int j = 0; j < m_delims.length (); j++)
       {
-        whitespace.erase (std::remove (whitespace.begin (),
-                                       whitespace.end (),
-                                       delims[j]),
-                          whitespace.end ());
+        m_whitespace.erase (std::remove (m_whitespace.begin (),
+                                         m_whitespace.end (),
+                                         m_delims[j]),
+                            m_whitespace.end ());
       }
-    for (int j = 0; j < delim_list.numel (); j++)
+    for (int j = 0; j < m_delim_list.numel (); j++)
       {
-        std::string delim = delim_list(j).string_value ();
+        std::string delim = m_delim_list(j).string_value ();
         if (delim.length () == 1)
-          whitespace.erase (std::remove (whitespace.begin (),
-                                         whitespace.end (),
-                                         delim[0]),
-                            whitespace.end ());
+          m_whitespace.erase (std::remove (m_whitespace.begin (),
+                                           m_whitespace.end (),
+                                           delim[0]),
+                              m_whitespace.end ());
       }
 
-    whitespace_table = std::string (256, '\0');
-    for (unsigned int i = 0; i < whitespace.length (); i++)
-      whitespace_table[whitespace[i]] = '1';
+    m_whitespace_table = std::string (256, '\0');
+    for (unsigned int i = 0; i < m_whitespace.length (); i++)
+      m_whitespace_table[m_whitespace[i]] = '1';
 
     // For Matlab compatibility, add 0x20 to whitespace, unless
     // whitespace is explicitly ignored.
-    if (! (whitespace.empty () && fmt_list.has_string))
-      whitespace_table[' '] = '1';
+    if (! (m_whitespace.empty () && fmt_list.has_string))
+      m_whitespace_table[' '] = '1';
 
     // Create look-up table of delimiters, based on 'delimiter'
     delim_table = std::string (256, '\0');
-    if (eol1 >= 0 && eol1 < 256)
-      delim_table[eol1] = '1';        // EOL is always a delimiter
-    if (eol2 >= 0 && eol2 < 256)
-      delim_table[eol2] = '1';        // EOL is always a delimiter
+    if (m_eol1 >= 0 && m_eol1 < 256)
+      delim_table[m_eol1] = '1';        // EOL is always a delimiter
+    if (m_eol2 >= 0 && m_eol2 < 256)
+      delim_table[m_eol2] = '1';        // EOL is always a delimiter
     if (! have_delims)
       for (unsigned int i = 0; i < 256; i++)
         {
@@ -3773,8 +3780,8 @@ namespace octave
             delim_table[i] = '1';
         }
     else
-      for (unsigned int i = 0; i < delims.length (); i++)
-        delim_table[delims[i]] = '1';
+      for (unsigned int i = 0; i < m_delims.length (); i++)
+        delim_table[m_delims[i]] = '1';
   }
 
   // Skip comments, and characters specified by the "Whitespace" option.
@@ -3792,45 +3799,45 @@ namespace octave
         int prev = -1;
         while (is
                && (c1 = is.get_undelim ()) != std::istream::traits_type::eof ()
-               && ( ( (c1 == eol1 || c1 == eol2) && ++lines && ! EOLstop)
+               && ( ( (c1 == m_eol1 || c1 == m_eol2) && ++m_lines && ! EOLstop)
                     || isspace (c1)))
           {
-            if (prev == eol1 && eol1 != eol2 && c1 == eol2)
-              lines--;
+            if (prev == m_eol1 && m_eol1 != m_eol2 && c1 == m_eol2)
+              m_lines--;
             prev = c1;
           }
 
-        if (c1 == comment_char)           // see if we match an open comment
+        if (c1 == m_comment_char)           // see if we match an open comment
           {
             // save stream state in case we have to restore it
             char *pos = is.tellg ();
             std::ios::iostate state = is.rdstate ();
 
-            std::string tmp (comment_len, '\0');
-            char *look = is.read (&tmp[0], comment_len-1, pos); // already read first char
-            if (is && comment_style.numel () > 0
-                && ! strncmp (comment_style(0).string_value ().substr (1).c_str (),
-                              look, comment_len-1))
+            std::string tmp (m_comment_len, '\0');
+            char *look = is.read (&tmp[0], m_comment_len-1, pos); // already read first char
+            if (is && m_comment_style.numel () > 0
+                && ! strncmp (m_comment_style(0).string_value ().substr (1).c_str (),
+                              look, m_comment_len-1))
               {
                 found_comment = true;
 
                 std::string dummy;
-                if (comment_style.numel () == 1)  // skip to end of line
+                if (m_comment_style.numel () == 1)  // skip to end of line
                   {
                     std::string eol (3, '\0');
-                    eol[0] = eol1;
-                    eol[1] = eol2;
+                    eol[0] = m_eol1;
+                    eol[1] = m_eol2;
 
                     scan_caret (is, eol, dummy);
                     c1 = is.get_undelim ();
-                    if (c1 == eol1 && eol1 != eol2
-                        && is.peek_undelim () == eol2)
+                    if (c1 == m_eol1 && m_eol1 != m_eol2
+                        && is.peek_undelim () == m_eol2)
                       is.get_undelim ();
-                    lines++;
+                    m_lines++;
                   }
                 else      // matching pair
                   {
-                    std::string end_c = comment_style(1).string_value ();
+                    std::string end_c = m_comment_style(1).string_value ();
                     // last char of end-comment sequence
                     std::string last = end_c.substr (end_c.size () - 1);
                     std::string may_match ("");
@@ -3912,12 +3919,12 @@ namespace octave
   textscan::skip_delim (delimited_stream& is)
   {
     int c1 = skip_whitespace (is);  // Stop once EOL is read
-    if (delim_list.numel () == 0)   // single character delimiter
+    if (m_delim_list.numel () == 0)   // single character delimiter
       {
-        if (is_delim (c1) || c1 == eol1 || c1 == eol2)
+        if (is_delim (c1) || c1 == m_eol1 || c1 == m_eol2)
           {
             is.get ();
-            if (c1 == eol1 && is.peek_undelim () == eol2)
+            if (c1 == m_eol1 && is.peek_undelim () == m_eol2)
               is.get_undelim ();          // if \r\n, skip the \n too.
 
             if (multiple_delims_as_one)
@@ -3928,11 +3935,11 @@ namespace octave
                 // Decrement for \r\n
                 while (is && ((c1 = is.get_undelim ())
                               != std::istream::traits_type::eof ())
-                       && (((c1 == eol1 || c1 == eol2) && ++lines)
+                       && (((c1 == m_eol1 || c1 == m_eol2) && ++m_lines)
                            || isspace (c1) || is_delim (c1)))
                   {
-                    if (prev == eol1 && eol1 != eol2 && c1 == eol2)
-                      lines--;
+                    if (prev == m_eol1 && m_eol1 != m_eol2 && c1 == m_eol2)
+                      m_lines--;
                     prev = c1;
                   }
                 if (c1 != std::istream::traits_type::eof ())
@@ -3944,16 +3951,16 @@ namespace octave
       {
         int first_match;
 
-        if (c1 == eol1 || c1 == eol2
-            || (-1 != (first_match = lookahead (is, delim_list, delim_len))))
+        if (c1 == m_eol1 || c1 == m_eol2
+            || (-1 != (first_match = lookahead (is, m_delim_list, m_delim_len))))
           {
-            if (c1 == eol1)
+            if (c1 == m_eol1)
               {
                 is.get_undelim ();
-                if (is.peek_undelim () == eol2)
+                if (is.peek_undelim () == m_eol2)
                   is.get_undelim ();
               }
-            else if (c1 == eol2)
+            else if (c1 == m_eol2)
               {
                 is.get_undelim ();
               }
@@ -3966,11 +3973,11 @@ namespace octave
                 // decrement for \r\n.
                 while (is && ((c1 = skip_whitespace (is))
                               != std::istream::traits_type::eof ())
-                       && (((c1 == eol1 || c1 == eol2) && ++lines)
-                           || -1 != lookahead (is, delim_list, delim_len)))
+                       && (((c1 == m_eol1 || c1 == m_eol2) && ++m_lines)
+                           || -1 != lookahead (is, m_delim_list, m_delim_len)))
                   {
-                    if (prev == eol1 && eol1 != eol2 && c1 == eol2)
-                      lines--;
+                    if (prev == m_eol1 && m_eol1 != m_eol2 && c1 == m_eol2)
+                      m_lines--;
                     prev = c1;
                   }
               }

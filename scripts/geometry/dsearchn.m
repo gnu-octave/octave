@@ -34,6 +34,10 @@
 ## If @var{outval} is supplied, then the values of @var{xi} that are not
 ## contained within one of the simplices @var{tri} are set to @var{outval}.
 ## Generally, @var{tri} is returned from @code{delaunayn (@var{x})}.
+##
+## The optional output @var{d} contains a column vector of distances between
+## the query points @var{xi} and the nearest simplex points @var{x}.
+##
 ## @seealso{dsearch, tsearch}
 ## @end deftypefn
 

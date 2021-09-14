@@ -1874,16 +1874,16 @@ namespace octave
 
     bool is_delim (unsigned char ch) const
     {
-      return ((delim_table.empty ()
+      return ((m_delim_table.empty ()
                && (isspace (ch) || ch == m_eol1 || ch == m_eol2))
-              || delim_table[ch] != '\0');
+              || m_delim_table[ch] != '\0');
     }
 
     bool isspace (unsigned int ch) const
     { return m_whitespace_table[ch & 0xff]; }
 
     // True if the only delimiter is whitespace.
-    bool whitespace_delim (void) const { return delim_table.empty (); }
+    bool whitespace_delim (void) const { return m_delim_table.empty (); }
 
     //--------
 
@@ -1902,7 +1902,7 @@ namespace octave
     std::string m_whitespace_table;
 
     // delim_table[i] == '\0' if i is not a delimiter.
-    std::string delim_table;
+    std::string m_delim_table;
 
     // String of delimiter characters.
     std::string m_delims;
@@ -2544,7 +2544,7 @@ namespace octave
 
   textscan::textscan (const std::string& who_arg, const std::string& encoding)
     : m_who (who_arg), m_encoding (encoding), m_buf (), m_whitespace_table (),
-      delim_table (), m_delims (), m_comment_style (), m_comment_len (0),
+      m_delim_table (), m_delims (), m_comment_style (), m_comment_len (0),
       m_comment_char (-2), m_buffer_size (0), m_date_locale (),
       m_inf_nan (init_inf_nan ()),
       m_empty_value (numeric_limits<double>::NaN ()),
@@ -2612,7 +2612,7 @@ namespace octave
       }
     // Finally, create the stream.
     delimited_stream is (isp,
-                         (delim_table.empty () ? m_whitespace + "\r\n"
+                         (m_delim_table.empty () ? m_whitespace + "\r\n"
                                                : m_delims),
                          max_lookahead, buf_size);
 
@@ -3599,7 +3599,7 @@ namespace octave
               {
                 invalid = false;
                 m_delim_list = args(i+1).cell_value ();
-                delim_table = " ";  // non-empty, to flag non-default delim
+                m_delim_table = " ";  // non-empty, to flag non-default delim
 
                 // Check that all elements are strings, and find max length
                 for (int j = 0; j < m_delim_list.numel (); j++)
@@ -3768,20 +3768,20 @@ namespace octave
       m_whitespace_table[' '] = '1';
 
     // Create look-up table of delimiters, based on 'delimiter'
-    delim_table = std::string (256, '\0');
+    m_delim_table = std::string (256, '\0');
     if (m_eol1 >= 0 && m_eol1 < 256)
-      delim_table[m_eol1] = '1';        // EOL is always a delimiter
+      m_delim_table[m_eol1] = '1';        // EOL is always a delimiter
     if (m_eol2 >= 0 && m_eol2 < 256)
-      delim_table[m_eol2] = '1';        // EOL is always a delimiter
+      m_delim_table[m_eol2] = '1';        // EOL is always a delimiter
     if (! have_delims)
       for (unsigned int i = 0; i < 256; i++)
         {
           if (isspace (i))
-            delim_table[i] = '1';
+            m_delim_table[i] = '1';
         }
     else
       for (unsigned int i = 0; i < m_delims.length (); i++)
-        delim_table[m_delims[i]] = '1';
+        m_delim_table[m_delims[i]] = '1';
   }
 
   // Skip comments, and characters specified by the "Whitespace" option.

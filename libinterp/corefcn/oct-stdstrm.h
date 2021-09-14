@@ -47,7 +47,7 @@ public:
                 const std::string& encoding = "utf-8",
                 typename BUF_T::close_fcn cf = BUF_T::file_close)
     : base_stream (m, ff, encoding), m_name (n), m_mode (m),
-      m_stream (f ? new STREAM_T (f, cf) : nullptr), fnum (fid)
+      m_stream (f ? new STREAM_T (f, cf) : nullptr), m_fnum (fid)
   { }
 
   // No copying!
@@ -91,7 +91,7 @@ public:
     return m_stream ? (const_cast<STREAM_T *> (m_stream))->rdbuf () : nullptr;
   }
 
-  int file_number (void) const { return fnum; }
+  int file_number (void) const { return m_fnum; }
 
   bool bad (void) const { return m_stream ? m_stream->bad () : true; }
 
@@ -109,6 +109,10 @@ public:
 
 protected:
 
+  ~tstdiostream (void) { delete m_stream; }
+
+  //--------
+
   std::string m_name;
 
   std::ios::openmode m_mode;
@@ -116,9 +120,7 @@ protected:
   STREAM_T *m_stream;
 
   // The file number associated with this file.
-  int fnum;
-
-  ~tstdiostream (void) { delete m_stream; }
+  int m_fnum;
 };
 
 class

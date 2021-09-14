@@ -2959,21 +2959,17 @@ dnl
 dnl Check for bison.
 dnl
 AC_DEFUN([OCTAVE_PROG_BISON], [
-  AC_PROG_YACC
-  WARN_YFLAGS=
+  dnl FIXME: What is our actual required minimum version for Bison?
+  gl_PROG_BISON([BISON], [3.0])
+  WARN_BISONFLAGS=
 
-  case "`$YACC --version`" in
+  case "`$BISON --version`" in
     *bison*) tmp_have_bison=yes ;;
     *) tmp_have_bison=no ;;
   esac
 
   if test $tmp_have_bison = yes; then
-    dnl FIXME: Call GNU bison with the `-Wno-yacc` option, which works with
-    dnl bison 2.5 and all later versions, as recommended by the bison NEWS.
-    dnl This is needed as long as Octave supports Autoconf version 2.69 or
-    dnl older.  In Autoconf 2.70, AC_PROG_YACC no longer adds the `-y`
-    dnl option to emulate POSIX yacc.
-    WARN_YFLAGS="-Wno-yacc"
+    WARN_BISONFLAGS="-Wno-yacc"
 
     AC_CACHE_CHECK([syntax of bison api.prefix (or name-prefix) declaration],
                    [octave_cv_bison_api_prefix_decl_style], [
@@ -3002,7 +2998,7 @@ input:;
 %%
 EOF
           ## Older versions of bison only warn and exit with success.
-          octave_bison_output=`$YACC $WARN_YFLAGS conftest.yy 2>&1`
+          octave_bison_output=`$BISON $WARN_BISONFLAGS conftest.yy 2>&1`
           ac_status=$?
           if test $ac_status -eq 0 && test -z "$octave_bison_output"; then
             octave_cv_bison_api_prefix_decl_style="$s $q"
@@ -3040,13 +3036,13 @@ input:;
 %%
 EOF
       ## Older versions of bison only warn and exit with success.
-      $YACC $WARN_YFLAGS conftest.yy
-      if grep PREFIX_symbol_kind_t y.tab.c > /dev/null; then
+      $BISON $WARN_BISONFLAGS --defines --output conftest.cc conftest.yy
+      if grep PREFIX_symbol_kind_t conftest.cc > /dev/null; then
         octave_cv_bison_api_prefix_applies_to_yysymbol_kind_t=yes
       else
         octave_cv_bison_api_prefix_applies_to_yysymbol_kind_t=no
       fi
-      rm -f conftest.yy y.tab.h y.tab.c
+      rm -f conftest.yy y.tab.h conftest.cc
       ])
   fi
 
@@ -3063,7 +3059,7 @@ understand the '%define api.prefix { PREFIX }' syntax.
   fi
 
   if test $tmp_have_bison = no; then
-    YACC='${top_srcdir}/build-aux/missing bison'
+    BISON='${top_srcdir}/build-aux/missing bison'
     warn_bison="
 
 I didn't find bison, or the version of bison that I found does not
@@ -3080,7 +3076,6 @@ building from VCS sources.
   fi
   AC_SUBST(OCTAVE_PARSER_CPPFLAGS)
   AC_SUBST(OCTAVE_TEX_PARSER_CPPFLAGS)
-  AC_SUBST(WARN_YFLAGS)
 ])
 dnl
 dnl Find find program.

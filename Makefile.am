@@ -42,7 +42,19 @@ api_version := ${OCTAVE_API_VERSION}
 
 AM_LFLAGS = @LFLAGS@
 
-AM_YFLAGS = -dv ${WARN_YFLAGS}
+# Until modern Bison rules are handled by autoconf/automake.
+
+AM_V_BISON = $(am__v_BISON_$(V))
+am__v_BISON_ = $(am__v_BISON_$(AM_DEFAULT_VERBOSITY))
+am__v_BISON_0 = @echo "  BISON   " $@;
+am__v_BISON_1 =
+
+BISON = @BISON@
+BISONCOMPILE = $(BISON) $(AM_BISONFLAGS) $(BISONFLAGS)
+
+# Define YACC to pacify automake
+
+YACC = $(BISON)
 
 if AMCOND_LIB_VISIBILITY_FLAGS
   OCTAVE_VISIBILITY_FLAGS = ${CFLAG_VISIBILITY}

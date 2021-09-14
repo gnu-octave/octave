@@ -289,15 +289,6 @@ Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 // Helper class for multi-d dimension permuting (generalized transpose).
 class rec_permute_helper
 {
-  // STRIDE occupies the last half of the space allocated for dim to
-  // avoid a double allocation.
-
-  int m_n;
-  int m_top;
-  octave_idx_type *m_dim;
-  octave_idx_type *m_stride;
-  bool m_use_blk;
-
 public:
   rec_permute_helper (const dim_vector& dv, const Array<octave_idx_type>& perm)
 
@@ -344,6 +335,9 @@ public:
   rec_permute_helper& operator = (const rec_permute_helper&) = delete;
 
   ~rec_permute_helper (void) { delete [] m_dim; }
+
+  template <typename T>
+  void permute (const T *src, T *dest) const { do_permute (src, dest, m_top); }
 
   // Helper method for fast blocked transpose.
   template <typename T>
@@ -420,10 +414,16 @@ private:
     return dest;
   }
 
-public:
+  //--------
 
-  template <typename T>
-  void permute (const T *src, T *dest) const { do_permute (src, dest, m_top); }
+  // STRIDE occupies the last half of the space allocated for dim to
+  // avoid a double allocation.
+
+  int m_n;
+  int m_top;
+  octave_idx_type *m_dim;
+  octave_idx_type *m_stride;
+  bool m_use_blk;
 };
 
 template <typename T>
@@ -503,15 +503,6 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 
 class rec_index_helper
 {
-  // CDIM occupies the last half of the space allocated for dim to
-  // avoid a double allocation.
-
-  int m_n;
-  int m_top;
-  octave_idx_type *m_dim;
-  octave_idx_type *m_cdim;
-  octave::idx_vector *m_idx;
-
 public:
   rec_index_helper (const dim_vector& dv, const Array<octave::idx_vector>& ia)
     : m_n (ia.numel ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
@@ -549,6 +540,20 @@ public:
   rec_index_helper& operator = (const rec_index_helper&) = delete;
 
   ~rec_index_helper (void) { delete [] m_idx; delete [] m_dim; }
+
+  template <typename T>
+  void index (const T *src, T *dest) const { do_index (src, dest, m_top); }
+
+  template <typename T>
+  void assign (const T *src, T *dest) const { do_assign (src, dest, m_top); }
+
+  template <typename T>
+  void fill (const T& val, T *dest) const { do_fill (val, dest, m_top); }
+
+  bool is_cont_range (octave_idx_type& l, octave_idx_type& u) const
+  {
+    return m_top == 0 && m_idx[0].is_cont_range (m_dim[0], l, u);
+  }
 
 private:
 
@@ -601,21 +606,16 @@ private:
       }
   }
 
-public:
+  //--------
 
-  template <typename T>
-  void index (const T *src, T *dest) const { do_index (src, dest, m_top); }
+  // CDIM occupies the last half of the space allocated for dim to
+  // avoid a double allocation.
 
-  template <typename T>
-  void assign (const T *src, T *dest) const { do_assign (src, dest, m_top); }
-
-  template <typename T>
-  void fill (const T& val, T *dest) const { do_fill (val, dest, m_top); }
-
-  bool is_cont_range (octave_idx_type& l, octave_idx_type& u) const
-  {
-    return m_top == 0 && m_idx[0].is_cont_range (m_dim[0], l, u);
-  }
+  int m_n;
+  int m_top;
+  octave_idx_type *m_dim;
+  octave_idx_type *m_cdim;
+  octave::idx_vector *m_idx;
 };
 
 // Helper class for multi-d recursive resizing
@@ -623,11 +623,6 @@ public:
 // once (apart from reinitialization)
 class rec_resize_helper
 {
-  octave_idx_type *m_cext;
-  octave_idx_type *m_sext;
-  octave_idx_type *m_dext;
-  int m_n;
-
 public:
   rec_resize_helper (const dim_vector& ndv, const dim_vector& odv)
     : m_cext (nullptr), m_sext (nullptr), m_dext (nullptr), m_n (0)
@@ -662,6 +657,10 @@ public:
 
   ~rec_resize_helper (void) { delete [] m_cext; }
 
+  template <typename T>
+  void resize_fill (const T *src, T *dest, const T& rfv) const
+  { do_resize_fill (src, dest, rfv, m_n-1); }
+
 private:
 
   // recursive resizing
@@ -685,11 +684,12 @@ private:
       }
   }
 
-public:
+  //--------
 
-  template <typename T>
-  void resize_fill (const T *src, T *dest, const T& rfv) const
-  { do_resize_fill (src, dest, rfv, m_n-1); }
+  octave_idx_type *m_cext;
+  octave_idx_type *m_sext;
+  octave_idx_type *m_dext;
+  int m_n;
 };
 
 template <typename T>

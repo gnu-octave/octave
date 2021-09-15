@@ -23,39 +23,8 @@
 ##
 ########################################################################
 
-
-
-
-
-%! visibility = get (0, "defaultfigurevisible");
-%! toolkit = graphics_toolkit ();
-%! unwind_protect
-%!   if (! __have_feature__ ("QT_OFFSCREEN")
-%!       || ! strcmp (graphics_toolkit (), "qt"))
-%!     try
-%!       graphics_toolkit ("gnuplot");
-%!     catch
-%!       ## The system doesn't support gnuplot for drawing hidden
-%!       ## figures.  Just return and have test marked as passing.
-%!       return;
-%!     end_try_catch
-%!   endif
-%!   set (0, "defaultfigurevisible", "off");
-%!
-
-
-%! unwind_protect_cleanup
-%!   set (0, "defaultfigurevisible", visibility);
-%!   graphics_toolkit (toolkit);
-%! end_unwind_protect
-
-
-
-
-
-
 ## Test running a single cell
-%!test
+%!testif HAVE_RAPIDJSON
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
@@ -90,7 +59,7 @@
 %! end_unwind_protect
 
 ## Test running all cells
-%!test
+%!testif HAVE_RAPIDJSON
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
@@ -129,7 +98,7 @@
 %! end_unwind_protect
 
 ## Test plot magic
-%!test
+%!testif HAVE_RAPIDJSON
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
@@ -173,7 +142,7 @@
 %! end_unwind_protect
 
 ## Test errors
-%!test
+%!testif HAVE_RAPIDJSON
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect

@@ -48,8 +48,8 @@ namespace octave
   public:
 
     tree_expression (int l = -1, int c = -1)
-      : tree (l, c), num_parens (0), postfix_index_type ('\0'),
-        for_cmd_expr (false), print_flag (false) { }
+      : tree (l, c), m_num_parens (0), m_postfix_index_type ('\0'),
+        m_for_cmd_expr (false), m_print_flag (false) { }
 
     // No copying!
 
@@ -87,16 +87,16 @@ namespace octave
 
     virtual octave_lvalue lvalue (tree_evaluator&);
 
-    int paren_count (void) const { return num_parens; }
+    int paren_count (void) const { return m_num_parens; }
 
-    bool is_postfix_indexed (void) const { return (postfix_index_type != '\0'); }
+    bool is_postfix_indexed (void) const { return (m_postfix_index_type != '\0'); }
 
-    char postfix_index (void) const { return postfix_index_type; }
+    char postfix_index (void) const { return m_postfix_index_type; }
 
     // Check if the result of the expression should be printed.
     // Should normally be used in conjunction with
     // tree_evaluator::statement_printing_enabled.
-    bool print_result (void) const { return print_flag; }
+    bool print_result (void) const { return m_print_flag; }
 
     virtual std::string oper (void) const { return "<unknown>"; }
 
@@ -106,33 +106,33 @@ namespace octave
 
     virtual void mark_braindead_shortcircuit (void) { }
 
-    void mark_as_for_cmd_expr (void) { for_cmd_expr = true; }
+    void mark_as_for_cmd_expr (void) { m_for_cmd_expr = true; }
 
-    bool is_for_cmd_expr (void) const { return for_cmd_expr; }
+    bool is_for_cmd_expr (void) const { return m_for_cmd_expr; }
 
     tree_expression * mark_in_parens (void)
     {
-      num_parens++;
+      m_num_parens++;
       return this;
     }
 
     tree_expression * set_postfix_index (char type)
     {
-      postfix_index_type = type;
+      m_postfix_index_type = type;
       return this;
     }
 
     tree_expression * set_print_flag (bool print)
     {
-      print_flag = print;
+      m_print_flag = print;
       return this;
     }
 
     virtual void copy_base (const tree_expression& e)
     {
-      num_parens = e.num_parens;
-      postfix_index_type = e.postfix_index_type;
-      print_flag = e.print_flag;
+      m_num_parens = e.m_num_parens;
+      m_postfix_index_type = e.m_postfix_index_type;
+      m_print_flag = e.m_print_flag;
     }
 
     virtual octave_value evaluate (tree_evaluator& tw, int nargout = 1) = 0;
@@ -148,19 +148,19 @@ namespace octave
     //   (((e1)) + e2)  ==> 2 for expression e1
     //                  ==> 1 for expression ((e1)) + e2
     //                  ==> 0 for expression e2
-    int num_parens;
+    int m_num_parens;
 
     // The first index type associated with this expression.  This field
     // is 0 (character '\0') if the expression has no associated index.
     // See the code in tree_identifier::rvalue for the rationale.
-    char postfix_index_type;
+    char m_postfix_index_type;
 
     // TRUE if this expression is the EXPR in for loop:
     // FOR i = EXPR ... END
-    bool for_cmd_expr;
+    bool m_for_cmd_expr;
 
     // Print result of rvalue for this expression?
-    bool print_flag;
+    bool m_print_flag;
   };
 }
 

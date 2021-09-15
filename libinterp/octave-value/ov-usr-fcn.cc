@@ -73,28 +73,28 @@ octave_user_code::~octave_user_code (void)
   m_scope.set_user_code (nullptr);
 
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
-  if (cmd_list)
+  if (m_cmd_list)
     {
       octave::event_manager& evmgr
         = octave::__get_event_manager__ ("octave_user_code::~octave_user_code");
 
-      cmd_list->remove_all_breakpoints (evmgr, file_name);
+      m_cmd_list->remove_all_breakpoints (evmgr, m_file_name);
     }
 
-  delete cmd_list;
+  delete m_cmd_list;
   delete m_file_info;
 }
 
 void
 octave_user_code::get_file_info (void)
 {
-  m_file_info = new octave::file_info (file_name);
+  m_file_info = new octave::file_info (m_file_name);
 
-  octave::sys::file_stat fs (file_name);
+  octave::sys::file_stat fs (m_file_name);
 
   if (fs && (fs.mtime () > time_parsed ()))
     warning ("function file '%s' changed since it was parsed",
-             file_name.c_str ());
+             m_file_name.c_str ());
 }
 
 std::string
@@ -139,9 +139,9 @@ octave_user_code::dump (void) const
 {
   std::map<std::string, octave_value> m
     = {{ "scope_info", m_scope ? m_scope.dump () : "0x0" },
-       { "file_name", file_name },
-       { "time_parsed", t_parsed },
-       { "time_checked", t_checked }};
+       { "m_file_name", m_file_name },
+       { "time_parsed", m_t_parsed },
+       { "time_checked", m_t_checked }};
 
   return octave_value (m);
 }
@@ -163,8 +163,8 @@ octave_user_script::octave_user_script
    const std::string& ds)
   : octave_user_code (fnm, nm, scope, cmds, ds)
 {
-  if (cmd_list)
-    cmd_list->mark_as_script_body ();
+  if (m_cmd_list)
+    m_cmd_list->mark_as_script_body ();
 }
 
 octave_user_script::octave_user_script
@@ -224,8 +224,8 @@ octave_user_function::octave_user_function
     m_anonymous_function (false), m_nested_function (false),
     m_class_constructor (none), m_class_method (none)
 {
-  if (cmd_list)
-    cmd_list->mark_as_function_body ();
+  if (m_cmd_list)
+    m_cmd_list->mark_as_function_body ();
 }
 
 octave_user_function::~octave_user_function (void)
@@ -255,22 +255,22 @@ octave_user_function::define_ret_list (octave::tree_parameter_list *t)
 void
 octave_user_function::maybe_relocate_end_internal (void)
 {
-  if (cmd_list && ! cmd_list->empty ())
+  if (m_cmd_list && ! m_cmd_list->empty ())
     {
-      octave::tree_statement *last_stmt = cmd_list->back ();
+      octave::tree_statement *last_stmt = m_cmd_list->back ();
 
       if (last_stmt && last_stmt->is_end_of_fcn_or_script ()
           && last_stmt->is_end_of_file ())
         {
           octave::tree_statement_list::reverse_iterator
-            next_to_last_elt = cmd_list->rbegin ();
+            next_to_last_elt = m_cmd_list->rbegin ();
 
           next_to_last_elt++;
 
           int new_eof_line;
           int new_eof_col;
 
-          if (next_to_last_elt == cmd_list->rend ())
+          if (next_to_last_elt == m_cmd_list->rend ())
             {
               new_eof_line = beginning_line ();
               new_eof_col = beginning_column ();
@@ -339,7 +339,7 @@ octave_user_function::profiler_name (void) const
 void
 octave_user_function::mark_as_system_fcn_file (void)
 {
-  if (! file_name.empty ())
+  if (! m_file_name.empty ())
     {
       // We really should stash the whole path to the file we found,
       // when we looked it up, to avoid possible race conditions...
@@ -350,7 +350,7 @@ octave_user_function::mark_as_system_fcn_file (void)
       // function file is parsed, it probably doesn't matter that
       // much.
 
-      std::string ff_name = octave::fcn_file_in_path (file_name);
+      std::string ff_name = octave::fcn_file_in_path (m_file_name);
 
       static const std::string canonical_fcn_file_dir
         = octave::sys::canonicalize_file_name
@@ -505,9 +505,9 @@ octave::tree_expression *
 octave_user_function::special_expr (void)
 {
   assert (is_special_expr ());
-  assert (cmd_list->length () == 1);
+  assert (m_cmd_list->length () == 1);
 
-  octave::tree_statement *stmt = cmd_list->front ();
+  octave::tree_statement *stmt = m_cmd_list->front ();
   return stmt->expression ();
 }
 

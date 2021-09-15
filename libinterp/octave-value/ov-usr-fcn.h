@@ -63,10 +63,10 @@ protected:
                     const octave::symbol_scope& scope = octave::symbol_scope (),
                     octave::tree_statement_list *cmds = nullptr,
                     const std::string& ds = "")
-    : octave_function (nm, ds), m_scope (scope), file_name (fnm),
-      t_parsed (static_cast<time_t> (0)),
-      t_checked (static_cast<time_t> (0)),
-      m_file_info (nullptr), cmd_list (cmds)
+    : octave_function (nm, ds), m_scope (scope), m_file_name (fnm),
+      m_t_parsed (static_cast<time_t> (0)),
+      m_t_checked (static_cast<time_t> (0)),
+      m_file_info (nullptr), m_cmd_list (cmds)
   {
     if (m_scope)
       m_scope.set_user_code (this);
@@ -86,28 +86,30 @@ public:
 
   std::string get_code_line (std::size_t line);
 
-  std::deque<std::string> get_code_lines (std::size_t line, std::size_t num_lines);
+  std::deque<std::string> get_code_lines (std::size_t line,
+                                          std::size_t num_lines);
 
   void cache_function_text (const std::string& text,
                             const octave::sys::time& timestamp);
 
   octave::symbol_scope scope (void) { return m_scope; }
 
-  void stash_fcn_file_name (const std::string& nm) { file_name = nm; }
+  void stash_fcn_file_name (const std::string& nm) { m_file_name = nm; }
 
-  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t)
+  { m_t_checked = t; }
 
   void stash_fcn_file_time (const octave::sys::time& t)
   {
-    t_parsed = t;
+    m_t_parsed = t;
     mark_fcn_file_up_to_date (t);
   }
 
-  std::string fcn_file_name (void) const { return file_name; }
+  std::string fcn_file_name (void) const { return m_file_name; }
 
-  octave::sys::time time_parsed (void) const { return t_parsed; }
+  octave::sys::time time_parsed (void) const { return m_t_parsed; }
 
-  octave::sys::time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return m_t_checked; }
 
   virtual octave_value find_subfunction (const std::string&) const
   {
@@ -116,7 +118,7 @@ public:
 
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
-  octave::tree_statement_list * body (void) { return cmd_list; }
+  octave::tree_statement_list * body (void) { return m_cmd_list; }
 
   octave_value dump (void) const;
 
@@ -128,21 +130,21 @@ protected:
   octave::symbol_scope m_scope;
 
   // The name of the file we parsed.
-  std::string file_name;
+  std::string m_file_name;
 
   // The time the file was parsed.
-  octave::sys::time t_parsed;
+  octave::sys::time m_t_parsed;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  octave::sys::time t_checked;
+  octave::sys::time m_t_checked;
 
   // Cached text of function or script code with line offsets
   // calculated.
   octave::file_info *m_file_info;
 
   // The list of commands that make up the body of this function.
-  octave::tree_statement_list *cmd_list;
+  octave::tree_statement_list *m_cmd_list;
 };
 
 // Scripts.

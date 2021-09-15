@@ -458,11 +458,11 @@ namespace octave
   }
 
   // Declare rep_token_t used in processing replacement string
-  typedef struct
+  struct rep_token_t
   {
     std::size_t pos;
     int num;
-  } rep_token_t;
+  };
 
   std::string
   regexp::replace (const std::string& buffer,

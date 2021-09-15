@@ -55,17 +55,17 @@ extern "C" {
 /* FIXME: This code assumes that a double has twice the
           number of bits as an int */
 
-union lo_ieee_double
+typedef union
 {
   double value;
   unsigned int word[2];
-};
+} lo_ieee_double;
 
-union lo_ieee_float
+typedef union
 {
   float value;
   unsigned int word;
-};
+} lo_ieee_float;
 
 extern OCTAVE_API void octave_ieee_init (void);
 

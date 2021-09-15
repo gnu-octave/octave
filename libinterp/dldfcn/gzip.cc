@@ -630,6 +630,7 @@ The optional output @var{filelist} is a list of the compressed files.
 #else
 
   octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
 
   err_disabled_feature ("gzip", "gzip");
 
@@ -675,6 +676,7 @@ The optional output @var{filelist} is a list of the compressed files.
 #else
 
   octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
 
   err_disabled_feature ("bzip2", "bzip2");
 

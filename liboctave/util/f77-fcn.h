@@ -150,7 +150,7 @@ not returning a value from a function declared to return something.
 /* FIXME: These should work for SV1 or Y-MP systems but will
           need to be changed for others.  */
 
-union octave_cray_descriptor
+typedef union
 {
   const char *const_ptr;
   char *ptr;
@@ -160,7 +160,7 @@ union octave_cray_descriptor
     unsigned len : 26;
     unsigned add : 32;
   } mask;
-};
+} octave_cray_descriptor;
 
 typedef void *octave_cray_ftn_ch_dsc;
 

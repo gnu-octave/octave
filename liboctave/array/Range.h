@@ -257,8 +257,8 @@ namespace octave
 
           retval.clear (idx_dims);
 
-          // idx_vector loop across all values in i,
-          // executing the lambda expression for each index value.
+          // Loop over all values in IDX, executing the lambda
+          // expression for each index value.
 
           T *array = retval.fortran_vec ();
 

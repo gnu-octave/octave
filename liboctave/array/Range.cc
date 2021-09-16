@@ -479,8 +479,8 @@ Range::index (const octave::idx_vector& idx) const
 
       retval.clear (idx_dims);
 
-      // idx_vector loop across all values in i,
-      // executing __rangeidx_helper (i) for each index value
+      // Loop over all values in IDX, executing the lambda expression
+      // for each index value.
 
       double *array = retval.fortran_vec ();
 

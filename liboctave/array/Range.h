@@ -39,38 +39,6 @@ template <typename T> class Array;
 
 namespace octave
 {
-  // Helper class used solely for idx_vector.loop () function call
-
-  template <typename T>
-  class rangeidx_helper
-  {
-  public:
-
-    rangeidx_helper (T *array, T base, T increment, T final_value,
-                     octave_idx_type numel)
-      : m_array (array), m_base (base), m_increment (increment),
-        m_final (final_value),
-        m_nmax (numel-1)
-    { }
-
-    void operator () (octave_idx_type i)
-    {
-      if (i == 0)
-        // Required for proper NaN handling.
-        *m_array++ = m_nmax == 0 ? m_final : m_base;
-      else if (i < m_nmax)
-        *m_array++ = m_base + T (i) * m_increment;
-      else
-        *m_array++ = m_final;
-    }
-
-  private:
-
-    T *m_array, m_base, m_increment, m_final;
-    octave_idx_type m_nmax;
-
-  };
-
   template <typename T>
   class
   OCTAVE_API
@@ -265,35 +233,44 @@ namespace octave
       return elem (i, j);
     }
 
-    Array<T> index (const idx_vector& i) const
+    Array<T> index (const idx_vector& idx) const
     {
       Array<T> retval;
 
       octave_idx_type n = m_numel;
 
-      if (i.is_colon ())
+      if (idx.is_colon ())
         {
           retval = array_value ().reshape (dim_vector (m_numel, 1));
         }
       else
         {
-          if (i.extent (n) != n)
-            err_index_out_of_range (1, 1, i.extent (n), n, dims ());
+          if (idx.extent (n) != n)
+            err_index_out_of_range (1, 1, idx.extent (n), n, dims ());
 
-          dim_vector rd = i.orig_dimensions ();
-          octave_idx_type il = i.length (n);
+          dim_vector idx_dims = idx.orig_dimensions ();
+          octave_idx_type idx_len = idx.length (n);
 
           // taken from Array.cc.
-          if (n != 1 && rd.isvector ())
-            rd = dim_vector (1, il);
+          if (n != 1 && idx_dims.isvector ())
+            idx_dims = dim_vector (1, idx_len);
 
-          retval.clear (rd);
+          retval.clear (idx_dims);
 
           // idx_vector loop across all values in i,
-          // executing __rangeidx_helper (i) for each i
-          i.loop (n, rangeidx_helper<T> (retval.fortran_vec (),
-                                         m_base, m_increment, final_value (),
-                                         m_numel));
+          // executing the lambda expression for each index value.
+
+          T *array = retval.fortran_vec ();
+
+          idx.loop (n, [=, &array] (octave_idx_type i) {
+            if (i == 0)
+              // Required for proper NaN handling.
+              *array++ = m_numel == 0 ? m_final : m_base;
+            else if (i < m_numel - 1)
+              *array++ = m_base + T (i) * m_increment;
+            else
+              *array++ = m_final;
+          });
         }
 
       return retval;

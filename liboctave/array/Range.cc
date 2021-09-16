@@ -454,59 +454,44 @@ Range::elem (octave_idx_type i) const
     return m_limit;
 }
 
-// Helper class used solely for idx_vector.loop () function call
-class __rangeidx_helper
-{
-public:
-  __rangeidx_helper (double *a, double b, double i, double l, octave_idx_type n)
-    : m_array (a), m_base (b), m_inc (i), m_limit (l), m_nmax (n-1) { }
-
-  void operator () (octave_idx_type i)
-  {
-    if (i == 0)
-      *m_array++ = m_base;
-    else if (i < m_nmax)
-      *m_array++ = m_base + i * m_inc;
-    else
-      *m_array++ = m_limit;
-  }
-
-private:
-
-  double *m_array, m_base, m_inc, m_limit;
-  octave_idx_type m_nmax;
-
-};
-
 Array<double>
-Range::index (const octave::idx_vector& i) const
+Range::index (const octave::idx_vector& idx) const
 {
   Array<double> retval;
 
   octave_idx_type n = m_numel;
 
-  if (i.is_colon ())
+  if (idx.is_colon ())
     {
       retval = matrix_value ().reshape (dim_vector (m_numel, 1));
     }
   else
     {
-      if (i.extent (n) != n)
-        octave::err_index_out_of_range (1, 1, i.extent (n), n, dims ()); // throws
+      if (idx.extent (n) != n)
+        octave::err_index_out_of_range (1, 1, idx.extent (n), n, dims ()); // throws
 
-      dim_vector rd = i.orig_dimensions ();
-      octave_idx_type il = i.length (n);
+      dim_vector idx_dims = idx.orig_dimensions ();
+      octave_idx_type idx_len = idx.length (n);
 
       // taken from Array.cc.
-      if (n != 1 && rd.isvector ())
-        rd = dim_vector (1, il);
+      if (n != 1 && idx_dims.isvector ())
+        idx_dims = dim_vector (1, idx_len);
 
-      retval.clear (rd);
+      retval.clear (idx_dims);
 
       // idx_vector loop across all values in i,
-      // executing __rangeidx_helper (i) for each i
-      i.loop (n, __rangeidx_helper (retval.fortran_vec (),
-                                    m_base, m_inc, m_limit, m_numel));
+      // executing __rangeidx_helper (i) for each index value
+
+      double *array = retval.fortran_vec ();
+
+      idx.loop (n, [=, &array] (idx_vector i) {
+        if (i == 0)
+          *array++ = m_base;
+        else if (i < m_numel - 1)
+          *array++ = m_base + i * m_inc;
+        else
+          *array++ = m_limit;
+      });
     }
 
   return retval;

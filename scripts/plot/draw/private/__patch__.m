@@ -81,8 +81,12 @@ function [h, failed] = __patch__ (p, varargin)
         y = y(:);
         z = z(:);
         if (isnumeric (c))
-          if (isvector (c) && numel (c) == numel (x))
-            c = c(:);
+          if (isvector (c))
+            if (isequal (size (c), [1, 3]))
+              ## Do nothing, this is a single RGB color specification
+            elseif (numel (c) == numel (x))
+              c = c(:);
+            endif
           elseif (rows (c) != numel (x) && columns (c) == numel (x))
             c = c.';
           endif

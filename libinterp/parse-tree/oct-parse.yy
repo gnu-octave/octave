@@ -908,7 +908,7 @@ colon_expr      : oper_expr ':' oper_expr
 
                     if (! $$)
                       {
-                        // finish_colon_expression deleted $1 and $3.
+                        // make_colon_expression deleted $1 and $3.
                         YYABORT;
                       }
                   }
@@ -920,7 +920,7 @@ colon_expr      : oper_expr ':' oper_expr
 
                     if (! $$)
                       {
-                        // finish_colon_expression deleted $1, $3, and $5.
+                        // make_colon_expression deleted $1, $3, and $5.
                         YYABORT;
                       }
                   }

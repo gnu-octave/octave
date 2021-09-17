@@ -550,6 +550,3 @@ endef
 
 %.ll-tst : %.ll
 	$(AM_V_GEN)$(test-file-commands)
-
-$(srcdir)/Makefile.in: $(srcdir)/bootstrap $(srcdir)/bootstrap.conf
-	(cd $(srcdir); ./bootstrap)

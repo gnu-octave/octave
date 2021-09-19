@@ -29,20 +29,20 @@
 
 #if defined (HAVE_FLTK)
 
-#if defined (WIN32)
-#  define WIN32_LEAN_AND_MEAN
-#endif
+#  if defined (WIN32)
+#    define WIN32_LEAN_AND_MEAN
+#  endif
 
-#include <string>
+#  include <string>
 
-#include <FL/Fl.H>
-#include <FL/Fl_File_Chooser.H>
+#  include <FL/Fl.H>
+#  include <FL/Fl_File_Chooser.H>
 
 // FLTK headers may include X11/X.h which defines Complex, and that
 // conflicts with Octave's Complex typedef.  We don't need the X11
 // Complex definition in this file, so remove it before including Octave
 // headers which may require Octave's Complex typedef.
-#undef Complex
+#  undef Complex
 
 #endif
 
@@ -69,20 +69,18 @@ Undocumented internal function.
   //   args(0) ... FileFilter in fltk format
   //   args(1) ... Title
   //   args(2) ... Default Filename
-  //   args(3) ... PositionValue [x,y]
-  //   args(4) ... SelectValue "on"/"off"/"dir"/"create"
+  //   args(3) ... SelectValue "on"/"off"/"dir"/"create"
 
   octave_value_list retval (3, octave_value (0));
 
   std::string file_filter = args(0).string_value ();
   std::string title = args(1).string_value ();
   std::string default_name = args(2).string_value ();
-  Matrix pos = args(3).matrix_value ();
 
   int multi_type = Fl_File_Chooser::SINGLE;
   std::string flabel = "Filename:";
 
-  std::string multi = args(4).string_value ();
+  std::string multi = args(3).string_value ();
   if (multi == "on")
     multi_type = Fl_File_Chooser::MULTI;
   else if (multi == "dir")

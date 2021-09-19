@@ -306,11 +306,11 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_file_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})
+@deftypefn {} {} __event_manager_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{multiselect}, @var{pathname})
 Undocumented internal function.
 @end deftypefn */)
 {
-  if (args.length () != 6)
+  if (args.length () != 5)
     return ovl ();
 
   octave_value_list retval (3);
@@ -318,9 +318,8 @@ Undocumented internal function.
   const Array<std::string> flist = args(0).cellstr_value ();
   std::string title = args(1).string_value ();
   std::string filename = args(2).string_value ();
-  Matrix pos = args(3).matrix_value ();
-  std::string multi_on = args(4).string_value (); // on, off, create
-  std::string pathname = args(5).string_value ();
+  std::string multi_on = args(3).string_value (); // on, off, create
+  std::string pathname = args(4).string_value ();
 
   octave_idx_type nel;
 

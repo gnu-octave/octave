@@ -124,9 +124,9 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
 
   endswitch
 
-  if (__event_manager_enabled__ ())
+  if (__event_manager_have_dialogs__ ())
     btn = __event_manager_question_dialog__ (msg, title, options{1}, options{2},
-                                           options{3}, options{4});
+                                             options{3}, options{4});
   else
     error ("questdlg is not available in this version of Octave");
   endif

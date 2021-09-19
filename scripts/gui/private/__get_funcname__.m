@@ -33,7 +33,7 @@
 
 function funcname = __get_funcname__ (basename)
 
-  if (! __event_manager_enabled__ ())
+  if (! __event_manager_enabled__ () || ! __event_manager_have_dialogs__ ())
     tk = graphics_toolkit ();
     funcname = [ "__" basename "_" tk "__"];
     if (numel (tk) > 0 && ! strcmp (tk, "fltk")

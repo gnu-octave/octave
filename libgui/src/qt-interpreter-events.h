@@ -86,6 +86,8 @@ namespace octave
     void start_gui (bool gui_app = false);
     void close_gui (void);
 
+    bool have_dialogs (void) const { return true; }
+
     std::list<std::string>
     file_dialog (const filter_list& filter, const std::string& title,
                  const std::string& filename, const std::string& pathname,

@@ -154,13 +154,13 @@ function [sel, ok] = listdlg (varargin)
     error ('listdlg: "SelectionMode" must be "single" or "multiple"');
   endif
 
-  if (! __event_manager_enabled__ ())
+  if (! __event_manager_have_dialogs__ ())
     error ("listdlg is not available in this version of Octave");
   endif
 
   [sel, ok] = __event_manager_list_dialog__ (listcell, selmode, listsize,
-                                           initialvalue, name, prompt,
-                                           okstring, cancelstring);
+                                             initialvalue, name, prompt,
+                                             okstring, cancelstring);
 
 endfunction
 

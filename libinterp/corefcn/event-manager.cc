@@ -234,6 +234,17 @@ Undocumented internal function.
   return ovl (evmgr.enabled ());
 }
 
+DEFMETHOD (__event_manager_have_dialogs__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_have_dialogs__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  event_manager& evmgr = interp.get_event_manager ();
+
+  return ovl (evmgr.have_dialogs ());
+}
+
 DEFMETHOD (__event_manager_edit_file__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_edit_file__ (@var{file})

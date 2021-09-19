@@ -100,6 +100,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     // Dialogs.
 
+    virtual bool have_dialogs (void) const { return false; }
+
     typedef std::list<std::pair<std::string, std::string>> filter_list;
 
     virtual std::list<std::string>
@@ -378,6 +380,13 @@ OCTAVE_NAMESPACE_BEGIN
         m_instance->close_gui ();
     }
 
+    // Dialogs
+
+    bool have_dialogs (void) const
+    {
+      return m_qt_event_handlers && m_qt_event_handlers->have_dialogs ();
+    }
+
     typedef std::list<std::pair<std::string, std::string>> filter_list;
 
     std::list<std::string>
@@ -385,7 +394,7 @@ OCTAVE_NAMESPACE_BEGIN
                  const std::string& filename, const std::string& dirname,
                  const std::string& multimode)
     {
-      return (enabled ()
+      return (enabled () && have_dialogs ()
               ? m_instance->file_dialog (filter, title, filename, dirname,
                                          multimode)
               : std::list<std::string> ());
@@ -398,7 +407,7 @@ OCTAVE_NAMESPACE_BEGIN
                   const std::list<float>& nc,
                   const std::list<std::string>& defaults)
     {
-      return (enabled ()
+      return (enabled () && have_dialogs ()
               ? m_instance->input_dialog (prompt, title, nr, nc, defaults)
               : std::list<std::string> ());
     }
@@ -413,7 +422,7 @@ OCTAVE_NAMESPACE_BEGIN
                  const std::string& ok_string,
                  const std::string& cancel_string)
     {
-      return (enabled ()
+      return (enabled () && have_dialogs ()
               ? m_instance->list_dialog (list, mode, width, height,
                                          initial_value, name, prompt,
                                          ok_string, cancel_string)
@@ -425,7 +434,7 @@ OCTAVE_NAMESPACE_BEGIN
                      const std::string& btn1, const std::string& btn2,
                      const std::string& btn3, const std::string& btndef)
     {
-      return (enabled ()
+      return (enabled () && have_dialogs ()
               ? m_instance->question_dialog (msg, title, btn1,
                                              btn2, btn3, btndef)
               : "");

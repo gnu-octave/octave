@@ -183,7 +183,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     endfor
   endif
 
-  if (__event_manager_enabled__ ())
+  if (__event_manager_have_dialogs__ ())
     [retfile, retpath, retindex] = __event_manager_file_dialog__ (outargs{:});
   else
     funcname = __get_funcname__ (mfilename ());

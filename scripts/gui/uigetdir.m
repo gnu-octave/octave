@@ -49,7 +49,7 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
     init_path = fileparts (init_path);
   endif
 
-  if (__event_manager_enabled__ ())
+  if (__event_manager_have_dialogs__ ())
     file_filter = cell (0, 2);
     default_file_name = "";
     dialog_position = [240, 120];
@@ -57,8 +57,8 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
 
     [filename, dirname, filterindex] ...
       = __event_manager_file_dialog__ (file_filter, dialog_name,
-                                     default_file_name, dialog_position,
-                                     dialog_mode, init_path);
+                                       default_file_name, dialog_position,
+                                       dialog_mode, init_path);
   else
     funcname = __get_funcname__ (mfilename ());
     dirname = feval (funcname, init_path, dialog_name);

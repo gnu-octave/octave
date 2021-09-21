@@ -195,18 +195,13 @@ function opts = __opengl_print__ (opts)
       fprintf ("opengl-pipeline: '%s'\n", pipeline{n});
     endif
 
-    if (strcmp (get (opts.figure, "visible"), "on")
-        || (strcmp (get (opts.figure, "__graphics_toolkit__"), "qt")
-            && (strcmp (get (opts.figure, "__gl_window__"), "on")
-                || __have_feature__ ("QT_OFFSCREEN"))))
-      ## Use toolkits "print_figure" method
-      if (ispc () && ! isunix ())
-        drawnow (gl2ps_device{n}, ['| "' pipeline{n} '"']);
-      else
-        drawnow (gl2ps_device{n}, ["| " pipeline{n}]);
-      endif
+    __check_rendering_capability__ ("print", opts.figure);
+
+    ## Use toolkits "print_figure" method
+    if (ispc () && ! isunix ())
+      drawnow (gl2ps_device{n}, ['| "' pipeline{n} '"']);
     else
-      error ("print: figure must be visible or qt toolkit must be used with __gl_window__ property 'on' or QT_OFFSCREEN feature available");
+      drawnow (gl2ps_device{n}, ["| " pipeline{n}]);
     endif
   endfor
 

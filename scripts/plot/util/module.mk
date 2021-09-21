@@ -26,6 +26,7 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/__actual_axis_position__.m \
+  %reldir%/__check_rendering_capability__.m \
   %reldir%/__default_plot_options__.m \
   %reldir%/__gnuplot_drawnow__.m \
   %reldir%/__next_line_color__.m \

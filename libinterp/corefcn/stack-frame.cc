@@ -200,7 +200,7 @@ namespace octave
     void set_script_offsets (void);
 
     void set_script_offsets_internal (const std::map<std::string,
-                                                     symbol_record>& symbols);
+                                      symbol_record>& symbols);
 
     void resize_and_update_script_offsets (const symbol_record& sym);
 
@@ -1866,6 +1866,11 @@ namespace octave
             std::map<std::string, symbol_record> tmp_symbols;
             tmp_symbols[sym.name ()] = sym;
             set_script_offsets_internal (tmp_symbols);
+
+            // set_script_offsets_internal may have modified
+            // m_lexical_frame_offsets and m_value_offsets.
+
+            frame_offset = m_lexical_frame_offsets.at (data_offset);
           }
 
         data_offset = m_value_offsets.at (data_offset);

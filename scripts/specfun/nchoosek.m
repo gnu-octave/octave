@@ -92,20 +92,23 @@
 
 function C = nchoosek (v, k)
 
-  if (nargin != 2
-      || ! (isreal (k) && isscalar (k))
-      || ! ((isnumeric (v) || ischar (v)) && isvector (v)))
+  if (nargin != 2)
     print_usage ();
   endif
-  if (k < 0 || k != fix (k))
+
+  if (! isvector (v))
+    error ("nchoosek: first argument must be a scalar or a vector");
+  endif
+  if (! (isreal (k) && isscalar (k) && k >= 0 && k == fix (k)))
     error ("nchoosek: K must be an integer >= 0");
-  elseif (isscalar (v) && (iscomplex (v) || v < k || v < 0 || v != fix (v)))
+  endif
+  if (isscalar (v) && (iscomplex (v) || v < k || v < 0 || v != fix (v)))
     error ("nchoosek: N must be a non-negative integer >= K");
   endif
 
-  n = length (v);
+  n = numel (v);
 
-  if (n == 1)
+  if (n == 1 && isnumeric (v))
     ## Improve precision at next step.
     k = min (k, v-k);
     C = round (prod ((v-k+1:v)./(1:k)));
@@ -113,25 +116,13 @@ function C = nchoosek (v, k)
       warning ("nchoosek: possible loss of precision");
     endif
   elseif (k == 0)
-    if (is_sq_string (v))
-      C = resize ('', 1, 0);
-    elseif (is_dq_string (v))
-      C = resize ("", 1, 0);
-    else
-      C = zeros (1, 0, class (v));
-    endif
+    C = v(zeros (1, 0));  # Return 1x0 object for Matlab compatibility
   elseif (k == 1)
     C = v(:);
   elseif (k == n)
     C = v(:).';
   elseif (k > n)
-    if (is_sq_string (v))
-      C = resize ('', 0, k);
-    elseif (is_dq_string (v))
-      C = resize ("", 0, k);
-    else
-      C = zeros (0, k, class (v));
-    endif
+    C = v(zeros (0, k));  # return 0xk object for Matlab compatibility
   elseif (k == 2)
     ## Can do it without transpose.
     x = repelems (v(1:n-1), [1:n-1; n-1:-1:1]).';
@@ -156,17 +147,75 @@ function C = nchoosek (v, k)
 endfunction
 
 
-%!assert (nchoosek (80,10), bincoeff (80,10))
-%!assert (nchoosek (1:5,3), [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
-%!assert (size (nchoosek (1:5,0)), [1 0])
+%!assert (nchoosek (80, 10), bincoeff (80, 10))
+%!assert (nchoosek (1:5, 3),
+%!        [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
+
+# Test basic behavior for various input types
+%!assert (nchoosek ('a':'b', 2), 'ab')
+%!assert (nchoosek ("a":"b", 2), "ab")
+%!assert (nchoosek ({1,2}, 2), {1,2})
+%!test
+%! s(1).a = 1;
+%! s(2).a = 2;
+%! assert (nchoosek (s, 1), s(:)); 
+%! assert (nchoosek (s, 2), s); 
+
+# Verify Matlab compatibility of return sizes & types
+%!test
+%! x = nchoosek (1:2, 0);
+%! assert (size (x), [1, 0]);
+%! assert (isa (x, "double"));
+%! x = nchoosek (1:2, 3);
+%! assert (size (x), [0, 3]);
+%! assert (isa (x, "double"));
+
+%!test
+%! x = nchoosek (single (1:2), 0);
+%! assert (size (x), [1, 0]);
+%! assert (isa (x, "single"));
+%! x = nchoosek (single (1:2), 3);
+%! assert (size (x), [0, 3]);
+%! assert (isa (x, "single"));
+
+%!test
+%! x = nchoosek ('a':'b', 0);
+%! assert (size (x), [1, 0]);
+%! assert (is_sq_string (x));
+%! x = nchoosek ('a':'b', 3);
+%! assert (size (x), [0, 3]);
+%! assert (is_sq_string (x));
+
+%!test
+%! x = nchoosek ("a":"b", 0);
+%! assert (size (x), [1, 0]);
+%! assert (is_dq_string (x));
+%! x = nchoosek ("a":"b", 3);
+%! assert (size (x), [0, 3]);
+%! assert (is_dq_string (x));
+
+%!test
+%! x = nchoosek (uint8(1):uint8(2), 0);
+%! assert (size (x), [1, 0]);
+%! assert (isa (x, "uint8"));
+%! x = nchoosek (uint8(1):uint8(2), 3);
+%! assert (size (x), [0, 3]);
+%! assert (isa (x, "uint8"));
+
+%!test
+%! x = nchoosek ({1, 2}, 0);
+%! assert (size (x), [1, 0]);
+%! assert (isa (x, "cell"));
+%! x = nchoosek ({1, 2}, 3);
+%! assert (size (x), [0, 3]);
+%! assert (isa (x, "cell"));
 
 ## Test input validation
 %!error <Invalid call> nchoosek ()
 %!error <Invalid call> nchoosek (1)
-
-%!error nchoosek (100, 2i)
-%!error nchoosek (100, [2 3])
-%!error nchoosek (100*ones (2, 2), 45)
+%!error <first argument must be a scalar or a vector> nchoosek (ones (3, 3), 1)
+%!error <K must be an integer .= 0> nchoosek (100, 2i)
+%!error <K must be an integer .= 0> nchoosek (100, [2 3])
 %!error <K must be an integer .= 0> nchoosek (100, -45)
 %!error <K must be an integer .= 0> nchoosek (100, 45.5)
 %!error <N must be a non-negative integer .= K> nchoosek (100i, 2)
@@ -174,28 +223,3 @@ endfunction
 %!error <N must be a non-negative integer .= K> nchoosek (-100, 45)
 %!error <N must be a non-negative integer .= K> nchoosek (100.5, 45)
 %!warning <possible loss of precision> nchoosek (100, 45);
-
-%!assert (nchoosek ('a':'b', 2), 'ab')
-%!assert (nchoosek ("a":"b", 2), "ab")
-
-%!test
-%! x = nchoosek ('a':'b', 3);
-%! assert (size (x), [0, 3]);
-%! assert (is_sq_string (x));
-%! x = nchoosek ('a':'b', 0);
-%! assert (size (x), [1, 0]);
-%! assert (is_sq_string (x));
-%!
-%! x = nchoosek ("a":"b", 3);
-%! assert (size (x), [0, 3]);
-%! assert (is_dq_string (x));
-%! x = nchoosek ("a":"b", 0);
-%! assert (size (x), [1, 0]);
-%! assert (is_dq_string (x));
-%!
-%! x = nchoosek (uint8(1):uint8(2), 3);
-%! assert (size (x), [0, 3]);
-%! assert (class (x), "uint8");
-%! x = nchoosek (uint8(1):uint8(2), 0);
-%! assert (size (x), [1, 0]);
-%! assert (class (x), "uint8");

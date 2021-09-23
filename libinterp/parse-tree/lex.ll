@@ -2857,6 +2857,10 @@ looks_like_shebang (const std::string& s)
             m_reading_script_file = false;
           }
 
+        // FIXME: should we be asking directly whether input is coming
+        // from an eval string instead of that it is not coming from a
+        // file?
+
         if (! (m_reading_fcn_file || m_reading_script_file
                || m_reading_classdef_file))
           {
@@ -2867,9 +2871,10 @@ looks_like_shebang (const std::string& s)
             // FIXME: do we need to save and restore the file position
             // or just reset the line number here?  The goal is to
             // track line info for command-line functions relative
-            // to the function keyword.
+            // to the function keyword.  Should we really be setting
+            // the line and column info to (1, 1) here?
 
-            m_filepos = filepos ();
+            m_filepos = filepos (1, 1);
             update_token_positions (slen);
           }
         break;

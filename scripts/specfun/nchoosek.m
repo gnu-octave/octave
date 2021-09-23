@@ -94,7 +94,7 @@ function C = nchoosek (v, k)
 
   if (nargin != 2
       || ! (isreal (k) && isscalar (k))
-      || ! (isnumeric (v) && isvector (v)))
+      || ! ((isnumeric (v) || ischar (v)) && isvector (v)))
     print_usage ();
   endif
   if (k < 0 || k != fix (k))
@@ -113,13 +113,25 @@ function C = nchoosek (v, k)
       warning ("nchoosek: possible loss of precision");
     endif
   elseif (k == 0)
-    C = zeros (1,0);
+    if (is_sq_string (v))
+      C = resize ('', 1, 0);
+    elseif (is_dq_string (v))
+      C = resize ("", 1, 0);
+    else
+      C = zeros (1, 0, class (v));
+    endif
   elseif (k == 1)
     C = v(:);
   elseif (k == n)
     C = v(:).';
   elseif (k > n)
-    C = zeros (0, k, class (v));
+    if (is_sq_string (v))
+      C = resize ('', 0, k);
+    elseif (is_dq_string (v))
+      C = resize ("", 0, k);
+    else
+      C = zeros (0, k, class (v));
+    endif
   elseif (k == 2)
     ## Can do it without transpose.
     x = repelems (v(1:n-1), [1:n-1; n-1:-1:1]).';
@@ -154,7 +166,6 @@ endfunction
 
 %!error nchoosek (100, 2i)
 %!error nchoosek (100, [2 3])
-%!error nchoosek ("100", 45)
 %!error nchoosek (100*ones (2, 2), 45)
 %!error <K must be an integer .= 0> nchoosek (100, -45)
 %!error <K must be an integer .= 0> nchoosek (100, 45.5)
@@ -163,3 +174,28 @@ endfunction
 %!error <N must be a non-negative integer .= K> nchoosek (-100, 45)
 %!error <N must be a non-negative integer .= K> nchoosek (100.5, 45)
 %!warning <possible loss of precision> nchoosek (100, 45);
+
+%!assert (nchoosek ('a':'b', 2), 'ab')
+%!assert (nchoosek ("a":"b", 2), "ab")
+
+%!test
+%! x = nchoosek ('a':'b', 3);
+%! assert (size (x), [0, 3]);
+%! assert (is_sq_string (x));
+%! x = nchoosek ('a':'b', 0);
+%! assert (size (x), [1, 0]);
+%! assert (is_sq_string (x));
+%!
+%! x = nchoosek ("a":"b", 3);
+%! assert (size (x), [0, 3]);
+%! assert (is_dq_string (x));
+%! x = nchoosek ("a":"b", 0);
+%! assert (size (x), [1, 0]);
+%! assert (is_dq_string (x));
+%!
+%! x = nchoosek (uint8(1):uint8(2), 3);
+%! assert (size (x), [0, 3]);
+%! assert (class (x), "uint8");
+%! x = nchoosek (uint8(1):uint8(2), 0);
+%! assert (size (x), [1, 0]);
+%! assert (class (x), "uint8");

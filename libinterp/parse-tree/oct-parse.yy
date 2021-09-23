@@ -3542,6 +3542,8 @@ OCTAVE_NAMESPACE_BEGIN
   {
     maybe_warn_assign_as_truth_value (expr);
 
+    // Line and column will be set in finish_if_command.
+
     tree_if_clause *t = new tree_if_clause (expr, list);
 
     return new tree_if_command_list (t);
@@ -3604,10 +3606,13 @@ OCTAVE_NAMESPACE_BEGIN
   }
 
   tree_if_clause *
-  base_parser::make_else_clause (token */*else_tok*/, comment_list *lc,
+  base_parser::make_else_clause (token *else_tok, comment_list *lc,
                                  tree_statement_list *list)
   {
-    return new tree_if_clause (list, lc);
+    int l = else_tok->line ();
+    int c = else_tok->column ();
+
+    return new tree_if_clause (list, lc, l, c);
   }
 
   tree_if_command_list *
@@ -4154,7 +4159,7 @@ OCTAVE_NAMESPACE_BEGIN
                 m_lexer.m_buffer_function_text = false;
               }
 
-            retval = new tree_function_def (fcn);
+            retval = new tree_function_def (fcn, l, c);
           }
       }
 

@@ -4189,8 +4189,6 @@ Example:
     unwind_protect_var<bool> upv (m_in_loop_command, true);
 
     tree_expression *expr = cmd.condition ();
-    int until_line = cmd.line ();
-    int until_column = cmd.column ();
 
     if (! expr)
       panic_impossible ();
@@ -4210,8 +4208,6 @@ Example:
 
         if (m_debug_mode)
           do_breakpoint (cmd.is_active_breakpoint (*this));
-
-        m_call_stack.set_location (until_line, until_column);
 
         if (is_logically_true (expr, "do-until"))
           break;
@@ -4350,6 +4346,8 @@ Example:
                                      const char *warn_for)
   {
     bool expr_value = false;
+
+    m_call_stack.set_location (expr->line (), expr->column ());
 
     octave_value t1 = expr->evaluate (*this);
 

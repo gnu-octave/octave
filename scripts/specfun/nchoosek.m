@@ -102,8 +102,10 @@ function C = nchoosek (v, k)
   if (! (isreal (k) && isscalar (k) && k >= 0 && k == fix (k)))
     error ("nchoosek: K must be an integer >= 0");
   endif
-  if (isscalar (v) && (iscomplex (v) || v < k || v < 0 || v != fix (v)))
-    error ("nchoosek: N must be a non-negative integer >= K");
+  if (isscalar (v))
+    if (isnumeric (v) && (iscomplex (v) || v < k || v < 0 || v != fix (v)))
+      error ("nchoosek: N must be a non-negative integer >= K");
+    endif
   endif
 
   n = numel (v);
@@ -205,10 +207,35 @@ endfunction
 %!test
 %! x = nchoosek ({1, 2}, 0);
 %! assert (size (x), [1, 0]);
-%! assert (isa (x, "cell"));
+%! assert (iscell (x));
 %! x = nchoosek ({1, 2}, 3);
 %! assert (size (x), [0, 3]);
-%! assert (isa (x, "cell"));
+%! assert (iscell (x));
+
+%!test
+%! s.a = [1 2 3];
+%! s.b = [4 5 6];
+%! x = nchoosek (s, 0);
+%! assert (size (x), [1, 0]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
+%! x = nchoosek (s, 3);
+%! assert (size (x), [0, 3]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
+
+%!test
+%! s.a = [1 2 3];
+%! s.b = [4 5 6];
+%! s(2).a = 1;  # make s a struct array rather than scalar struct
+%! x = nchoosek (s, 0);
+%! assert (size (x), [1, 0]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
+%! x = nchoosek (s, 3);
+%! assert (size (x), [0, 3]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
 
 ## Test input validation
 %!error <Invalid call> nchoosek ()

@@ -294,8 +294,8 @@ bool KPty::open()
   {
     for (const char* s4 = "0123456789abcdef"; *s4; s4++)
     {
-      ptyName = QString().sprintf("/dev/pty%c%c", *s3, *s4).toAscii();
-      d->ttyName = QString().sprintf("/dev/tty%c%c", *s3, *s4).toAscii();
+      ptyName = QString().sprintf("/dev/pty%c%c", *s3, *s4).toLatin1();
+      d->ttyName = QString().sprintf("/dev/tty%c%c", *s3, *s4).toLatin1();
 
       d->masterFd = ::open(ptyName.data(), O_RDWR);
       if (d->masterFd >= 0)

@@ -127,7 +127,7 @@ function C = nchoosek (v, k)
     C = v(zeros (0, k));  # return 0xk object for Matlab compatibility
   elseif (k == 2)
     ## Can do it without transpose.
-    x = repelems (v(1:n-1), [1:n-1; n-1:-1:1]).';
+    x = repelem (v(1:n-1), [n-1:-1:1]).';
     y = cat (1, cellslices (v(:), 2:n, n*ones (1, n-1)){:});
     C = [x, y];
   elseif (k < n)
@@ -138,7 +138,7 @@ function C = nchoosek (v, k)
       c = columns (C);
       cA = cellslices (C, l, c*ones (1, n-k+1), 2);
       l = c-l+1;
-      b = repelems (v(k-j+1:n-j+1), [1:n-k+1; l]);
+      b = repelem (v(k-j+1:n-j+1), l);
       C = [b; cA{:}];
       l = cumsum (l);
       l = [1, 1 + l(1:n-k)];
@@ -160,8 +160,8 @@ endfunction
 %!test
 %! s(1).a = 1;
 %! s(2).a = 2;
-%! assert (nchoosek (s, 1), s(:)); 
-%! assert (nchoosek (s, 2), s); 
+%! assert (nchoosek (s, 1), s(:));
+%! assert (nchoosek (s, 2), s);
 
 # Verify Matlab compatibility of return sizes & types
 %!test
@@ -228,12 +228,17 @@ endfunction
 %! s.a = [1 2 3];
 %! s.b = [4 5 6];
 %! s(2).a = 1;  # make s a struct array rather than scalar struct
+%! s(3).b = 2;  # make s at least three elements for k == 2 test below
 %! x = nchoosek (s, 0);
 %! assert (size (x), [1, 0]);
 %! assert (isstruct (x));
 %! assert (fieldnames (x), {"a"; "b"});
-%! x = nchoosek (s, 3);
-%! assert (size (x), [0, 3]);
+%! x = nchoosek (s, 2);
+%! assert (size (x), [3, 2]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
+%! x = nchoosek (s, 4);
+%! assert (size (x), [0, 4]);
 %! assert (isstruct (x));
 %! assert (fieldnames (x), {"a"; "b"});
 

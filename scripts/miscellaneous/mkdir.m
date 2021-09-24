@@ -54,20 +54,18 @@ function [status, msg, msgid] = mkdir (parent, dirname)
     print_usage ();
   endif
 
+  parent = tilde_expand (parent);
+
   if (nargin == 1)
     dirname = parent;
-
-    if (is_absolute_filename (tilde_expand (dirname)))
-      parent = "";
-    else
-      parent = [pwd(), filesep];
-    endif
   else
-    parent = [parent, filesep];
+    dirname = fullfile (parent, dirname);
   endif
 
+  dirname = make_absolute_filename (dirname);
+
   ## Move leading directory names from dirname to parent
-  [parent, dirname, ext] = fileparts ([parent, dirname]);
+  [parent, dirname, ext] = fileparts (dirname);
 
   [sts, msg, msgid] = mkdir_recur (parent, [dirname, ext]);
 

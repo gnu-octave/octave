@@ -101,6 +101,43 @@
 %!error <called with too many inputs> mkdir ("foo", 1, 2)
 %!error <Invalid call to rmdir> rmdir ()
 
+%!test <61166>
+%! crr = confirm_recursive_rmdir ();
+%! unwind_protect
+%!   confirm_recursive_rmdir (0);
+%!   tmp_dir = tempname ();
+%!   e1 = mkdir (tmp_dir);
+%!   ## parent dir that exists
+%!   mkdir (tmp_dir, "d1");
+%!   mkdir (tmp_dir, "d2/foo");
+%!   mkdir (tmp_dir, "d3/foo.bar");
+%!   assert (isfolder (fullfile (tmp_dir, "d1")));
+%!   assert (isfolder (fullfile (tmp_dir, "d2/foo")));
+%!   assert (isfolder (fullfile (tmp_dir, "d3/foo.bar")));
+%!   ## parent dir that does not exist
+%!   d4 = fullfile (tmp_dir, "d4");
+%!   d5 = fullfile (tmp_dir, "d5");
+%!   d6 = fullfile (tmp_dir, "d6");
+%!   mkdir (d4, "foo");
+%!   mkdir (d5, "foo/bar");
+%!   mkdir (d6, "foo/bar.baz");
+%!   assert (isfolder (fullfile (d4, "foo")));
+%!   assert (isfolder (fullfile (d5, "foo/bar")));
+%!   assert (isfolder (fullfile (d6, "foo/bar.baz")));
+%!   d7 = fullfile (tmp_dir, "d7/foo");
+%!   d8 = fullfile (tmp_dir, "d8/foo/bar");
+%!   d9 = fullfile (tmp_dir, "d9/foo/bar.baz");
+%!   mkdir (d7);
+%!   mkdir (d8);
+%!   mkdir (d9);
+%!   assert (isfolder (d7));
+%!   assert (isfolder (d8));
+%!   assert (isfolder (d9));
+%! unwind_protect_cleanup
+%!   rmdir (tmp_dir, "s");
+%!   confirm_recursive_rmdir (crr);
+%! end_unwind_protect
+
 %!test
 %! crr = confirm_recursive_rmdir ();
 %! confirm_recursive_rmdir (0);

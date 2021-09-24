@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include <cstddef>
 #include <functional>
 
 // This class allows registering actions in a list for later

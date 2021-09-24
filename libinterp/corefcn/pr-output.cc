@@ -2918,7 +2918,7 @@ octave_print_internal_template (std::ostream& os,
 }
 
 #define PRINT_INT_SCALAR_INTERNAL(TYPE)                                 \
-  OCTINTERP_API void                                                    \
+  void                                                                  \
   octave_print_internal (std::ostream& os,                              \
                          const float_display_format& fmt,               \
                          const octave_int<TYPE>& val, bool dummy)       \

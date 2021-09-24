@@ -358,7 +358,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (! dir_arg.empty ())
       {
-        if (dir_arg == ".")
+        if (same_file (dir_arg, "."))
           {
             warning (R"(rmpath: can't remove "." from path)");
 

@@ -1101,7 +1101,7 @@ public:
     err_invalid_type ("get_cell");
   }
 
-  void set_cell (mwIndex /*idx*/, mxArray * /*m_val*/)
+  void set_cell (mwIndex /*idx*/, mxArray * /*val*/)
   {
     err_invalid_type ("set_cell");
   }
@@ -1224,7 +1224,7 @@ public:
     err_invalid_type ("get_imag_data");
   }
 
-  void set_data (void * /*m_pr*/)
+  void set_data (void * /*pr*/)
   {
     err_invalid_type ("set_data");
   }
@@ -1332,7 +1332,7 @@ public:
   }
 #endif
 
-  void set_imag_data (void * /*m_pi*/)
+  void set_imag_data (void * /*pi*/)
   {
     err_invalid_type ("set_imag_data");
   }
@@ -1352,17 +1352,17 @@ public:
     err_invalid_type ("get_nzmax");
   }
 
-  void set_ir (mwIndex * /*m_ir*/)
+  void set_ir (mwIndex * /*ir*/)
   {
     err_invalid_type ("set_ir");
   }
 
-  void set_jc (mwIndex * /*m_jc*/)
+  void set_jc (mwIndex * /*jc*/)
   {
     err_invalid_type ("set_jc");
   }
 
-  void set_nzmax (mwSize /*m_nzmax*/)
+  void set_nzmax (mwSize /*nzmax*/)
   {
     err_invalid_type ("set_nzmax");
   }
@@ -1383,7 +1383,7 @@ public:
   }
 
   void set_field_by_number (mwIndex /*index*/, int /*key_num*/,
-                            mxArray * /*m_val*/)
+                            mxArray * /*val*/)
   {
     err_invalid_type ("set_field_by_number");
   }
@@ -1504,13 +1504,13 @@ protected:
     m_dims[1] = n;
   }
 
-  mxArray_matlab (const mxArray_matlab& m_val)
-    : mxArray_base (m_val), m_class_name (mxArray::strsave (m_val.m_class_name)),
-      m_id (m_val.m_id), m_ndims (m_val.m_ndims),
+  mxArray_matlab (const mxArray_matlab& val)
+    : mxArray_base (val), m_class_name (mxArray::strsave (val.m_class_name)),
+      m_id (val.m_id), m_ndims (val.m_ndims),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
     for (mwIndex i = 0; i < m_ndims; i++)
-      m_dims[i] = m_val.m_dims[i];
+      m_dims[i] = val.m_dims[i];
   }
 
   dim_vector
@@ -1587,43 +1587,43 @@ public:
     : mxArray_matlab (interleaved, id_arg, dv), m_complex (flag == mxCOMPLEX),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (m_interleaved
-          ? nullptr
-          : (m_complex
-             ? mxArray::calloc (get_number_of_elements (), get_element_size ())
-             : nullptr))
+            ? nullptr
+            : (m_complex
+               ? mxArray::calloc (get_number_of_elements (), get_element_size ())
+               : nullptr))
   { }
 
   mxArray_number (bool interleaved, mxClassID id_arg, mwSize m, mwSize n,
                   mxComplexity flag = mxREAL, bool init = true)
     : mxArray_matlab (interleaved, id_arg, m, n), m_complex (flag == mxCOMPLEX),
       m_pr (init
-          ? mxArray::calloc (get_number_of_elements (), get_element_size ())
-          : mxArray::malloc (get_number_of_elements () * get_element_size ())),
+            ? mxArray::calloc (get_number_of_elements (), get_element_size ())
+            : mxArray::malloc (get_number_of_elements () * get_element_size ())),
       m_pi (m_interleaved
-          ? nullptr
-          : (m_complex
-             ? (init
-                ? mxArray::calloc (get_number_of_elements (), get_element_size ())
-                : mxArray::malloc (get_number_of_elements () * get_element_size ()))
-             : nullptr))
+            ? nullptr
+            : (m_complex
+               ? (init
+                  ? mxArray::calloc (get_number_of_elements (), get_element_size ())
+                  : mxArray::malloc (get_number_of_elements () * get_element_size ()))
+               : nullptr))
   { }
 
-  mxArray_number (bool interleaved, mxClassID id_arg, double m_val)
+  mxArray_number (bool interleaved, mxClassID id_arg, double val)
     : mxArray_matlab (interleaved, id_arg, 1, 1), m_complex (false),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (nullptr)
   {
     double *dpr = static_cast<double *> (m_pr);
-    dpr[0] = m_val;
+    dpr[0] = val;
   }
 
-  mxArray_number (bool interleaved, mxClassID id_arg, mxLogical m_val)
+  mxArray_number (bool interleaved, mxClassID id_arg, mxLogical val)
     : mxArray_matlab (interleaved, id_arg, 1, 1), m_complex (false),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (nullptr)
   {
     mxLogical *lpr = static_cast<mxLogical *> (m_pr);
-    lpr[0] = m_val;
+    lpr[0] = val;
   }
 
   mxArray_number (bool interleaved, const char *str)
@@ -1886,42 +1886,42 @@ public:
                 {
                   Complex *ppr = static_cast<Complex *> (m_pr);
 
-                  ComplexNDArray m_val (dv);
-                  Complex *ptr = m_val.fortran_vec ();
+                  ComplexNDArray val (dv);
+                  Complex *ptr = val.fortran_vec ();
 
                   for (mwIndex i = 0; i < nel; i++)
                     ptr[i] = ppr[i];
 
-                  retval = m_val;
+                  retval = val;
                 }
               else
                 {
                   double *ppr = static_cast<double *> (m_pr);
 
-                  ComplexNDArray m_val (dv);
+                  ComplexNDArray val (dv);
 
-                  Complex *ptr = m_val.fortran_vec ();
+                  Complex *ptr = val.fortran_vec ();
 
                   double *ppi = static_cast<double *> (m_pi);
 
                   for (mwIndex i = 0; i < nel; i++)
                     ptr[i] = Complex (ppr[i], ppi[i]);
 
-                  retval = m_val;
+                  retval = val;
                 }
             }
           else
             {
               double *ppr = static_cast<double *> (m_pr);
 
-              NDArray m_val (dv);
+              NDArray val (dv);
 
-              double *ptr = m_val.fortran_vec ();
+              double *ptr = val.fortran_vec ();
 
               for (mwIndex i = 0; i < nel; i++)
                 ptr[i] = ppr[i];
 
-              retval = m_val;
+              retval = val;
             }
         }
         break;
@@ -1936,42 +1936,42 @@ public:
                 {
                   FloatComplex *ppr = static_cast<FloatComplex *> (m_pr);
 
-                  FloatComplexNDArray m_val (dv);
-                  FloatComplex *ptr = m_val.fortran_vec ();
+                  FloatComplexNDArray val (dv);
+                  FloatComplex *ptr = val.fortran_vec ();
 
                   for (mwIndex i = 0; i < nel; i++)
                     ptr[i] = ppr[i];
 
-                  retval = m_val;
+                  retval = val;
                 }
               else
                 {
                   float *ppr = static_cast<float *> (m_pr);
 
-                  FloatComplexNDArray m_val (dv);
+                  FloatComplexNDArray val (dv);
 
-                  FloatComplex *ptr = m_val.fortran_vec ();
+                  FloatComplex *ptr = val.fortran_vec ();
 
                   float *ppi = static_cast<float *> (m_pi);
 
                   for (mwIndex i = 0; i < nel; i++)
                     ptr[i] = FloatComplex (ppr[i], ppi[i]);
 
-                  retval = m_val;
+                  retval = val;
                 }
             }
           else
             {
               float *ppr = static_cast<float *> (m_pr);
 
-              FloatNDArray m_val (dv);
+              FloatNDArray val (dv);
 
-              float *ptr = m_val.fortran_vec ();
+              float *ptr = val.fortran_vec ();
 
               for (mwIndex i = 0; i < nel; i++)
                 ptr[i] = ppr[i];
 
-              retval = m_val;
+              retval = val;
             }
         }
         break;
@@ -1982,14 +1982,14 @@ public:
 
           mxChar *ppr = static_cast<mxChar *> (m_pr);
 
-          charNDArray m_val (dv);
+          charNDArray val (dv);
 
-          char *ptr = m_val.fortran_vec ();
+          char *ptr = val.fortran_vec ();
 
           for (mwIndex i = 0; i < nel; i++)
             ptr[i] = static_cast<char> (ppr[i]);
 
-          retval = m_val;
+          retval = val;
         }
         break;
 
@@ -2038,22 +2038,22 @@ public:
 
 protected:
 
-  mxArray_number (const mxArray_number& m_val)
-    : mxArray_matlab (m_val), m_complex (m_val.m_complex),
+  mxArray_number (const mxArray_number& val)
+    : mxArray_matlab (val), m_complex (val.m_complex),
       m_pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
       m_pi (m_interleaved
             ? nullptr
-            : (m_val.m_pi
+            : (val.m_pi
                ? mxArray::malloc (get_number_of_elements () * get_element_size ())
                : nullptr))
   {
     std::size_t nbytes = get_number_of_elements () * get_element_size ();
 
     if (m_pr)
-      memcpy (m_pr, m_val.m_pr, nbytes);
+      memcpy (m_pr, val.m_pr, nbytes);
 
     if (m_pi)
-      memcpy (m_pi, m_val.m_pi, nbytes);
+      memcpy (m_pi, val.m_pi, nbytes);
   }
 
   template <typename ELT_T, typename ARRAY_T, typename ARRAY_ELT_T>
@@ -2067,14 +2067,14 @@ protected:
 
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
-    ARRAY_T m_val (dv);
+    ARRAY_T val (dv);
 
-    ARRAY_ELT_T *ptr = m_val.fortran_vec ();
+    ARRAY_ELT_T *ptr = val.fortran_vec ();
 
     for (mwIndex i = 0; i < nel; i++)
       ptr[i] = ppr[i];
 
-    return octave_value (m_val);
+    return octave_value (val);
   }
 
 private:
@@ -2116,12 +2116,12 @@ public:
 
 private:
 
-  mxArray_sparse (const mxArray_sparse& m_val)
-    : mxArray_matlab (m_val), m_nzmax (m_val.m_nzmax),
+  mxArray_sparse (const mxArray_sparse& val)
+    : mxArray_matlab (val), m_nzmax (val.m_nzmax),
       m_pr (mxArray::malloc (m_nzmax * get_element_size ())),
       m_pi (m_interleaved
             ? nullptr
-            : (m_val.m_pi
+            : (val.m_pi
                ? mxArray::malloc (m_nzmax * get_element_size ())
                : nullptr)),
       m_ir (static_cast<mwIndex *> (mxArray::malloc (m_nzmax * sizeof (mwIndex)))),
@@ -2130,16 +2130,16 @@ private:
     std::size_t nbytes = m_nzmax * get_element_size ();
 
     if (m_pr)
-      memcpy (m_pr, m_val.m_pr, nbytes);
+      memcpy (m_pr, val.m_pr, nbytes);
 
     if (m_pi)
-      memcpy (m_pi, m_val.m_pi, nbytes);
+      memcpy (m_pi, val.m_pi, nbytes);
 
     if (m_ir)
-      memcpy (m_ir, m_val.m_ir, m_nzmax * sizeof (mwIndex));
+      memcpy (m_ir, val.m_ir, m_nzmax * sizeof (mwIndex));
 
     if (m_jc)
-      memcpy (m_jc, m_val.m_jc, (m_val.get_n () + 1) * sizeof (mwIndex));
+      memcpy (m_jc, val.m_jc, (val.get_n () + 1) * sizeof (mwIndex));
   }
 
 public:
@@ -2227,57 +2227,57 @@ public:
                 {
                   Complex *ppr = static_cast<Complex *> (m_pr);
 
-                  SparseComplexMatrix m_val (get_m (), get_n (),
-                                             static_cast<octave_idx_type> (m_nzmax));
+                  SparseComplexMatrix val (get_m (), get_n (),
+                                           static_cast<octave_idx_type> (m_nzmax));
 
                   for (mwIndex i = 0; i < m_nzmax; i++)
                     {
-                      m_val.xdata (i) = ppr[i];
-                      m_val.xridx (i) = m_ir[i];
+                      val.xdata (i) = ppr[i];
+                      val.xridx (i) = m_ir[i];
                     }
 
                   for (mwIndex i = 0; i < get_n () + 1; i++)
-                    m_val.xcidx (i) = m_jc[i];
+                    val.xcidx (i) = m_jc[i];
 
-                  retval = m_val;
+                  retval = val;
                 }
               else
                 {
                   double *ppr = static_cast<double *> (m_pr);
                   double *ppi = static_cast<double *> (m_pi);
 
-                  SparseComplexMatrix m_val (get_m (), get_n (),
-                                             static_cast<octave_idx_type> (m_nzmax));
+                  SparseComplexMatrix val (get_m (), get_n (),
+                                           static_cast<octave_idx_type> (m_nzmax));
 
                   for (mwIndex i = 0; i < m_nzmax; i++)
                     {
-                      m_val.xdata (i) = Complex (ppr[i], ppi[i]);
-                      m_val.xridx (i) = m_ir[i];
+                      val.xdata (i) = Complex (ppr[i], ppi[i]);
+                      val.xridx (i) = m_ir[i];
                     }
 
                   for (mwIndex i = 0; i < get_n () + 1; i++)
-                    m_val.xcidx (i) = m_jc[i];
+                    val.xcidx (i) = m_jc[i];
 
-                  retval = m_val;
+                  retval = val;
                 }
             }
           else
             {
               double *ppr = static_cast<double *> (m_pr);
 
-              SparseMatrix m_val (get_m (), get_n (),
-                                  static_cast<octave_idx_type> (m_nzmax));
+              SparseMatrix val (get_m (), get_n (),
+                                static_cast<octave_idx_type> (m_nzmax));
 
               for (mwIndex i = 0; i < m_nzmax; i++)
                 {
-                  m_val.xdata (i) = ppr[i];
-                  m_val.xridx (i) = m_ir[i];
+                  val.xdata (i) = ppr[i];
+                  val.xridx (i) = m_ir[i];
                 }
 
               for (mwIndex i = 0; i < get_n () + 1; i++)
-                m_val.xcidx (i) = m_jc[i];
+                val.xcidx (i) = m_jc[i];
 
-              retval = m_val;
+              retval = val;
             }
         }
         break;
@@ -2286,19 +2286,19 @@ public:
         {
           bool *ppr = static_cast<bool *> (m_pr);
 
-          SparseBoolMatrix m_val (get_m (), get_n (),
-                                  static_cast<octave_idx_type> (m_nzmax));
+          SparseBoolMatrix val (get_m (), get_n (),
+                                static_cast<octave_idx_type> (m_nzmax));
 
           for (mwIndex i = 0; i < m_nzmax; i++)
             {
-              m_val.xdata (i) = ppr[i];
-              m_val.xridx (i) = m_ir[i];
+              val.xdata (i) = ppr[i];
+              val.xridx (i) = m_ir[i];
             }
 
           for (mwIndex i = 0; i < get_n () + 1; i++)
-            m_val.xcidx (i) = m_jc[i];
+            val.xcidx (i) = m_jc[i];
 
-          retval = m_val;
+          retval = val;
         }
         break;
 
@@ -2382,8 +2382,8 @@ public:
 
 private:
 
-  mxArray_struct (const mxArray_struct& m_val)
-    : mxArray_matlab (m_val), m_nfields (m_val.m_nfields),
+  mxArray_struct (const mxArray_struct& val)
+    : mxArray_matlab (val), m_nfields (val.m_nfields),
       m_fields (static_cast<char **> (mxArray::malloc (m_nfields
                                                        * sizeof (char *)))),
       m_data (static_cast<mxArray **> (mxArray::malloc (m_nfields *
@@ -2391,13 +2391,13 @@ private:
                                                         * sizeof (mxArray *))))
   {
     for (int i = 0; i < m_nfields; i++)
-      m_fields[i] = mxArray::strsave (m_val.m_fields[i]);
+      m_fields[i] = mxArray::strsave (val.m_fields[i]);
 
     mwSize nel = get_number_of_elements ();
 
     for (mwIndex i = 0; i < nel * m_nfields; i++)
       {
-        mxArray *ptr = m_val.m_data[i];
+        mxArray *ptr = val.m_data[i];
         m_data[i] = (ptr ? ptr->dup () : nullptr);
       }
   }
@@ -2407,7 +2407,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_struct& operator = (const mxArray_struct& m_val);
+  mxArray_struct& operator = (const mxArray_struct& val);
 
   void init (const char **keys)
   {
@@ -2631,8 +2631,8 @@ public:
 
 private:
 
-  mxArray_cell (const mxArray_cell& m_val)
-    : mxArray_matlab (m_val),
+  mxArray_cell (const mxArray_cell& val)
+    : mxArray_matlab (val),
       m_data (static_cast<mxArray **> (
               mxArray::malloc (get_number_of_elements () * sizeof (mxArray *))))
   {
@@ -2640,7 +2640,7 @@ private:
 
     for (mwIndex i = 0; i < nel; i++)
       {
-        mxArray *ptr = m_val.m_data[i];
+        mxArray *ptr = val.m_data[i];
         m_data[i] = (ptr ? ptr->dup () : nullptr);
       }
   }
@@ -2669,7 +2669,7 @@ public:
     return idx >= 0 && idx < get_number_of_elements () ? m_data[idx] : nullptr;
   }
 
-  void set_cell (mwIndex idx, mxArray *m_val);
+  void set_cell (mwIndex idx, mxArray *val);
 
   void * get_data (void) const { return m_data; }
 
@@ -2758,8 +2758,8 @@ mxArray::mxArray (bool interleaved, mwSize m, mwSize n, int num_keys,
     m_name (nullptr)
 { }
 
-mxArray::mxArray (bool interleaved, mwSize m_ndims, const mwSize *m_dims)
-  : m_rep (new mxArray_cell (interleaved, m_ndims, m_dims)), m_name (nullptr)
+mxArray::mxArray (bool interleaved, mwSize ndims, const mwSize *dims)
+  : m_rep (new mxArray_cell (interleaved, ndims, dims)), m_name (nullptr)
 { }
 
 mxArray::mxArray (bool interleaved, const dim_vector& dv)
@@ -3403,15 +3403,15 @@ mxCreateDoubleMatrix (mwSize m, mwSize n, mxComplexity flag)
 }
 
 mxArray *
-mxCreateDoubleScalar_interleaved (double m_val)
+mxCreateDoubleScalar_interleaved (double val)
 {
-  return maybe_mark_array (new mxArray (true, mxDOUBLE_CLASS, m_val));
+  return maybe_mark_array (new mxArray (true, mxDOUBLE_CLASS, val));
 }
 
 mxArray *
-mxCreateDoubleScalar (double m_val)
+mxCreateDoubleScalar (double val)
 {
-  return maybe_mark_array (new mxArray (false, mxDOUBLE_CLASS, m_val));
+  return maybe_mark_array (new mxArray (false, mxDOUBLE_CLASS, val));
 }
 
 mxArray *
@@ -3786,11 +3786,11 @@ mxSetN (mxArray *ptr, mwSize n)
 }
 
 int
-mxSetDimensions (mxArray *ptr, const mwSize *m_dims, mwSize m_ndims)
+mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims)
 {
   return (ptr->set_dimensions (static_cast<mwSize *>
-                               (maybe_unmark (const_cast<mwSize *> (m_dims))),
-                               m_ndims));
+                               (maybe_unmark (const_cast<mwSize *> (dims))),
+                               ndims));
 }
 
 // Data extractors.
@@ -4515,7 +4515,7 @@ mexErrMsgTxt (const char *s)
 }
 
 void
-mexErrMsgIdAndTxt (const char *m_id, const char *fmt, ...)
+mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
 {
   if (fmt && strlen (fmt) > 0)
     {
@@ -4525,7 +4525,7 @@ mexErrMsgIdAndTxt (const char *m_id, const char *fmt, ...)
       sprintf (tmpfmt, "%s: %s", fname, fmt);
       va_list args;
       va_start (args, fmt);
-      verror_with_id (m_id, tmpfmt, args);
+      verror_with_id (id, tmpfmt, args);
       va_end (args);
     }
   else
@@ -4560,7 +4560,7 @@ mexWarnMsgTxt (const char *s)
 }
 
 void
-mexWarnMsgIdAndTxt (const char *m_id, const char *fmt, ...)
+mexWarnMsgIdAndTxt (const char *id, const char *fmt, ...)
 {
   // FIXME: is this right?  What does Matlab do if fmt is NULL or
   //        an empty string?
@@ -4573,7 +4573,7 @@ mexWarnMsgIdAndTxt (const char *m_id, const char *fmt, ...)
       sprintf (tmpfmt, "%s: %s", fname, fmt);
       va_list args;
       va_start (args, fmt);
-      vwarning_with_id (m_id, tmpfmt, args);
+      vwarning_with_id (id, tmpfmt, args);
       va_end (args);
     }
 }

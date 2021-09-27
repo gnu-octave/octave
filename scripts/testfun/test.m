@@ -137,6 +137,12 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
   persistent __signal_file  = ">>>>> ";
   persistent __signal_skip  = "----- ";
 
+  __nxfail = 0;
+  __nbug = 0;
+  __nskip = 0;
+  __nrtskip = 0;
+  __nregression = 0;
+
   if (nargin < 1)
     print_usage ();
   elseif (! isempty (__name) && ! ischar (__name))

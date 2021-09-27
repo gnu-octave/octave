@@ -132,8 +132,5 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
-%!test <*55540>
-%! fail ('mkdir ("__%hello%__", "world")', "invalid PARENT");
-
 ## Test input validation
 %!error <Invalid call> mkdir ()

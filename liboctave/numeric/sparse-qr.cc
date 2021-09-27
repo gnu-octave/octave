@@ -205,8 +205,12 @@ namespace octave
 
       ColumnVector ret (ncols);
 
-      for (octave_idx_type i = 0; i < ncols; i++)
-        ret(i) = from_suitesparse_long (m_E[i]) + 1;
+      if (m_E)
+        for (octave_idx_type i = 0; i < ncols; i++)
+          ret(i) = from_suitesparse_long (m_E[i]) + 1;
+      else
+        for (octave_idx_type i = 0; i < ncols; i++)
+          ret(i) = i + 1;
 
       return ret;
 

@@ -714,6 +714,10 @@ namespace octave
             // Do the renaming
             QFile f (old_name);  // Must use QFile, not QDir (bug #56298)
             bool st = f.rename (new_name);
+            if (! st)
+              QMessageBox::warning (this, tr ("Rename error"),
+                                    tr ("Could not rename file \"%1\" to \"%2\".").
+                                    arg (old_name).arg (new_name));
             // editor: load new/old file depending on success
             emit file_renamed_signal (st);
             // Clear cache of file browser
@@ -781,9 +785,14 @@ namespace octave
                 emit file_remove_signal (info.filePath (), QString ());
                 // Remove the file.
                 bool st = m_file_system_model->remove (index);
-                // Reload the old file if removing was not successful
                 if (! st)
-                  emit file_renamed_signal (false);
+                  {
+                    QMessageBox::warning (this, tr ("Deletion error"),
+                                          tr ("Could not delete file \"%1\".").
+                                          arg (info.filePath ()));
+                    // Reload the old file
+                    emit file_renamed_signal (false);
+                  }
               }
 
             m_file_system_model->revert ();

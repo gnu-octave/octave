@@ -103,6 +103,7 @@
 
 %!test <61166>
 %! crr = confirm_recursive_rmdir ();
+%! orig_dir = pwd ();
 %! unwind_protect
 %!   confirm_recursive_rmdir (0);
 %!   tmp_dir = tempname ();
@@ -133,9 +134,17 @@
 %!   assert (isfolder (d7));
 %!   assert (isfolder (d8));
 %!   assert (isfolder (d9));
+%!   chdir (tmp_dir);
+%!   mkdir ("d10", "foo");
+%!   mkdir ("d11", "foo/bar");
+%!   mkdir ("d12", "foo/bar.baz");
+%!   assert (isfolder (fullfile ("d10", "foo")));
+%!   assert (isfolder (fullfile ("d11", "foo/bar")));
+%!   assert (isfolder (fullfile ("d12", "foo/bar.baz")));
 %! unwind_protect_cleanup
 %!   rmdir (tmp_dir, "s");
 %!   confirm_recursive_rmdir (crr);
+%!   chdir (orig_dir);
 %! end_unwind_protect
 
 %!test

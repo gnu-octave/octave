@@ -699,17 +699,19 @@ namespace octave
         = (oct_ascii_dir + file_ops::dir_sep_str ()
            + crypto::hash ("SHA1", orig_file_name));
 
+      // FIXME: This is just to check if the file exists.  Use a more efficient
+      // method.
       std::string abs_filename_hash = canonicalize_file_name (filename_hash);
 
       if (! abs_filename_hash.empty ())
         sys::unlink (filename_hash);
 
-      wchar_t w_filename_hash[filename_hash.length ()+1] = {0};
+      // At this point, we know that we have only ASCII characters.
+      // So instead of converting, just copy the characters to std::wstring.
+      std::wstring w_filename_hash (filename_hash.begin (),
+                                    filename_hash.end ());
 
-      for (std::size_t i=0; i < filename_hash.length (); i++)
-        w_filename_hash[i] = filename_hash.at (i);
-
-      if (CreateHardLinkW (w_filename_hash, w_orig_file_name, nullptr))
+      if (CreateHardLinkW (w_filename_hash.c_str (), w_orig_file_name, nullptr))
         return filename_hash;
 
 #else

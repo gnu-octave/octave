@@ -1019,9 +1019,9 @@ public:
 
   void set_n (mwSize n) { m_dims[1] = n; }
 
-  int set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
+  int set_dimensions (mwSize *dims, mwSize ndims)
   {
-    m_ndims = ndims_arg;
+    m_ndims = ndims;
 
     mxFree (m_dims);
 
@@ -1034,7 +1034,7 @@ public:
           return 1;
 
         for (int i = 0; i < m_ndims; i++)
-          m_dims[i] = dims_arg[i];
+          m_dims[i] = dims[i];
 
         return 0;
       }
@@ -1089,11 +1089,11 @@ public:
       }
   }
 
-  void set_class_name (const char *name_arg)
+  void set_class_name (const char *name)
   {
     mxFree (m_class_name);
-    m_class_name = static_cast<char *> (mxArray::malloc (strlen (name_arg) + 1));
-    strcpy (m_class_name, name_arg);
+    m_class_name = static_cast<char *> (mxArray::malloc (strlen (name) + 1));
+    strcpy (m_class_name, name);
   }
 
   mxArray * get_cell (mwIndex /*idx*/) const
@@ -1445,30 +1445,30 @@ public:
 
 protected:
 
-  mxArray_matlab (bool interleaved, mxClassID id_arg = mxUNKNOWN_CLASS)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id_arg), m_ndims (0),
+  mxArray_matlab (bool interleaved, mxClassID id = mxUNKNOWN_CLASS)
+    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id), m_ndims (0),
       m_dims (nullptr)
   { }
 
-  mxArray_matlab (bool interleaved, mxClassID id_arg, mwSize ndims_arg,
-                  const mwSize *dims_arg)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id_arg),
-      m_ndims (ndims_arg < 2 ? 2 : ndims_arg),
+  mxArray_matlab (bool interleaved, mxClassID id, mwSize ndims,
+                  const mwSize *dims)
+    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
+      m_ndims (ndims < 2 ? 2 : ndims),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
-    if (ndims_arg == 0)
+    if (ndims == 0)
       {
         m_dims[0] = 0;
         m_dims[1] = 0;
       }
-    else if (ndims_arg < 2)
+    else if (ndims < 2)
       {
         m_dims[0] = 1;
         m_dims[1] = 1;
       }
 
-    for (mwIndex i = 0; i < ndims_arg; i++)
-      m_dims[i] = dims_arg[i];
+    for (mwIndex i = 0; i < ndims; i++)
+      m_dims[i] = dims[i];
 
     for (mwIndex i = m_ndims - 1; i > 1; i--)
       {
@@ -1479,8 +1479,8 @@ protected:
       }
   }
 
-  mxArray_matlab (bool interleaved, mxClassID id_arg, const dim_vector& dv)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id_arg),
+  mxArray_matlab (bool interleaved, mxClassID id, const dim_vector& dv)
+    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
       m_ndims (dv.ndims ()),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
@@ -1496,8 +1496,8 @@ protected:
       }
   }
 
-  mxArray_matlab (bool interleaved, mxClassID id_arg, mwSize m, mwSize n)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id_arg), m_ndims (2),
+  mxArray_matlab (bool interleaved, mxClassID id, mwSize m, mwSize n)
+    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id), m_ndims (2),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
     m_dims[0] = m;
@@ -1565,10 +1565,10 @@ class mxArray_number : public mxArray_matlab
 {
 public:
 
-  mxArray_number (bool interleaved, mxClassID id_arg, mwSize ndims_arg,
-                  const mwSize *dims_arg, mxComplexity flag = mxREAL,
+  mxArray_number (bool interleaved, mxClassID id, mwSize ndims,
+                  const mwSize *dims, mxComplexity flag = mxREAL,
                   bool init = true)
-    : mxArray_matlab (interleaved, id_arg, ndims_arg, dims_arg),
+    : mxArray_matlab (interleaved, id, ndims, dims),
       m_complex (flag == mxCOMPLEX),
       m_pr (init
             ? mxArray::calloc (get_number_of_elements (), get_element_size ())
@@ -1582,9 +1582,9 @@ public:
              : nullptr))
   { }
 
-  mxArray_number (bool interleaved, mxClassID id_arg, const dim_vector& dv,
+  mxArray_number (bool interleaved, mxClassID id, const dim_vector& dv,
                   mxComplexity flag = mxREAL)
-    : mxArray_matlab (interleaved, id_arg, dv), m_complex (flag == mxCOMPLEX),
+    : mxArray_matlab (interleaved, id, dv), m_complex (flag == mxCOMPLEX),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (m_interleaved
             ? nullptr
@@ -1593,9 +1593,9 @@ public:
                : nullptr))
   { }
 
-  mxArray_number (bool interleaved, mxClassID id_arg, mwSize m, mwSize n,
+  mxArray_number (bool interleaved, mxClassID id, mwSize m, mwSize n,
                   mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_matlab (interleaved, id_arg, m, n), m_complex (flag == mxCOMPLEX),
+    : mxArray_matlab (interleaved, id, m, n), m_complex (flag == mxCOMPLEX),
       m_pr (init
             ? mxArray::calloc (get_number_of_elements (), get_element_size ())
             : mxArray::malloc (get_number_of_elements () * get_element_size ())),
@@ -1608,8 +1608,8 @@ public:
                : nullptr))
   { }
 
-  mxArray_number (bool interleaved, mxClassID id_arg, double val)
-    : mxArray_matlab (interleaved, id_arg, 1, 1), m_complex (false),
+  mxArray_number (bool interleaved, mxClassID id, double val)
+    : mxArray_matlab (interleaved, id, 1, 1), m_complex (false),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (nullptr)
   {
@@ -1617,8 +1617,8 @@ public:
     dpr[0] = val;
   }
 
-  mxArray_number (bool interleaved, mxClassID id_arg, mxLogical val)
-    : mxArray_matlab (interleaved, id_arg, 1, 1), m_complex (false),
+  mxArray_number (bool interleaved, mxClassID id, mxLogical val)
+    : mxArray_matlab (interleaved, id, 1, 1), m_complex (false),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (nullptr)
   {
@@ -2099,11 +2099,11 @@ class mxArray_sparse : public mxArray_matlab
 {
 public:
 
-  mxArray_sparse (bool interleaved, mxClassID id_arg, mwSize m, mwSize n,
-                  mwSize nzmax_arg, mxComplexity flag = mxREAL)
-    : mxArray_matlab (interleaved, id_arg, m, n), m_complex (flag == mxCOMPLEX),
+  mxArray_sparse (bool interleaved, mxClassID id, mwSize m, mwSize n,
+                  mwSize nzmax, mxComplexity flag = mxREAL)
+    : mxArray_matlab (interleaved, id, m, n), m_complex (flag == mxCOMPLEX),
 
-      m_nzmax (nzmax_arg > 0 ? nzmax_arg : 1),
+      m_nzmax (nzmax > 0 ? nzmax : 1),
       m_pr (mxArray::calloc (m_nzmax, get_element_size ())),
       m_pi (m_interleaved
             ? nullptr
@@ -2205,10 +2205,10 @@ public:
 
   void set_jc (mwIndex *jc) { m_jc = jc; }
 
-  void set_nzmax (mwSize nzmax_arg)
+  void set_nzmax (mwSize nzmax)
   {
     /* Require storage for at least 1 element */
-    m_nzmax = (nzmax_arg > 0 ? nzmax_arg : 1);
+    m_nzmax = (nzmax > 0 ? nzmax : 1);
   }
 
   octave_value as_octave_value (void) const
@@ -2341,10 +2341,10 @@ class mxArray_struct : public mxArray_matlab
 {
 public:
 
-  mxArray_struct (bool interleaved, mwSize ndims_arg, const mwSize *dims_arg,
-                  int num_keys_arg, const char **keys)
-    : mxArray_matlab (interleaved, mxSTRUCT_CLASS, ndims_arg, dims_arg),
-      m_nfields (num_keys_arg),
+  mxArray_struct (bool interleaved, mwSize ndims, const mwSize *dims,
+                  int num_keys, const char **keys)
+    : mxArray_matlab (interleaved, mxSTRUCT_CLASS, ndims, dims),
+      m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
                                                        sizeof (char *)))),
       m_data (static_cast<mxArray **> (mxArray::calloc (m_nfields *
@@ -2354,10 +2354,10 @@ public:
     init (keys);
   }
 
-  mxArray_struct (bool interleaved, const dim_vector& dv, int num_keys_arg,
+  mxArray_struct (bool interleaved, const dim_vector& dv, int num_keys,
                   const char **keys)
     : mxArray_matlab (interleaved, mxSTRUCT_CLASS, dv),
-      m_nfields (num_keys_arg),
+      m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
                                                        sizeof (char *)))),
       m_data (static_cast<mxArray **> (mxArray::calloc (m_nfields *
@@ -2367,10 +2367,10 @@ public:
     init (keys);
   }
 
-  mxArray_struct (bool interleaved, mwSize m, mwSize n, int num_keys_arg,
+  mxArray_struct (bool interleaved, mwSize m, mwSize n, int num_keys,
                   const char **keys)
     : mxArray_matlab (interleaved, mxSTRUCT_CLASS, m, n),
-      m_nfields (num_keys_arg),
+      m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
                                                        sizeof (char *)))),
       m_data (static_cast<mxArray **> (mxArray::calloc (m_nfields *
@@ -2611,8 +2611,8 @@ class mxArray_cell : public mxArray_matlab
 {
 public:
 
-  mxArray_cell (bool interleaved, mwSize ndims_arg, const mwSize *dims_arg)
-    : mxArray_matlab (interleaved, mxCELL_CLASS, ndims_arg, dims_arg),
+  mxArray_cell (bool interleaved, mwSize ndims, const mwSize *dims)
+    : mxArray_matlab (interleaved, mxCELL_CLASS, ndims, dims),
       m_data (static_cast<mxArray **> (
               mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }

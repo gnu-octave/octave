@@ -111,10 +111,37 @@ function C = nchoosek (v, k)
   n = numel (v);
 
   if (n == 1 && isnumeric (v))
-    ## Improve precision at next step.
+    ## Improve precision over direct call to prod().
+    ## Steps: 1) Make a list of integers for numerator and denominator,
+    ## 2) filter out common factors, 3) multiply what remains.
     k = min (k, v-k);
-    C = round (prod ((v-k+1:v)./(1:k)));
-    if (C*2*k*eps >= 0.5)
+
+    ## For a ~25% performance boost, multiply values pairwise so there
+    ## are fewer elements in do/until loop which is the slow part.
+    ## Since Odd*Even is guaranteed to be Even, also take out a factor
+    ## of 2 from numerator and denominator.
+    if (rem (k, 2))  # k is odd
+      numer = [(v-k+1:v-(k+1)/2) .* (v-1:-1:v-(k-1)/2) / 2, v];
+      denom = [(1:k/2) .* (k-1:-1:(k+1)/2) / 2, k];
+    else             # k is even
+      numer = (v-k+1:v-k/2) .* (v-k/2+1:v) / 2;
+      denom = (1:k/2) .* (k/2+1:k) / 2;
+    end
+
+    # Remove common factors from numerator and denominator
+    do
+      for i = numel (denom):-1:1
+        factors = gcd (denom(i), numer);
+        [f, j] = max (factors);
+        denom(i) /= f;
+        numer(j) /= f;
+      endfor
+      denom = denom(denom > 1);
+      numer = numer(numer > 1);
+    until (isempty (denom))
+
+    C = prod (numer);
+    if (C > flintmax)
       warning ("nchoosek: possible loss of precision");
     endif
   elseif (k == 0)

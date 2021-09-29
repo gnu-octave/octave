@@ -678,6 +678,8 @@ public:
 
   static OCTINTERP_API void * calloc (std::size_t n, std::size_t t);
 
+  static OCTINTERP_API void * alloc (bool init, std::size_t n, std::size_t t);
+
   static char * strsave (const char *str)
   {
     char *retval = nullptr;

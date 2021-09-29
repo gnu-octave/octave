@@ -1570,16 +1570,12 @@ public:
                   bool init = true)
     : mxArray_matlab (interleaved, id, ndims, dims),
       m_complex (flag == mxCOMPLEX),
-      m_pr (init
-            ? mxArray::calloc (get_number_of_elements (), get_element_size ())
-            : mxArray::malloc (get_number_of_elements () * get_element_size ())),
+      m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ())),
       m_pi (m_interleaved
-          ? nullptr
-          : (m_complex
-             ? (init
-                ? mxArray::calloc (get_number_of_elements (), get_element_size ())
-                : mxArray::malloc (get_number_of_elements () * get_element_size ()))
-             : nullptr))
+            ? nullptr
+            : (m_complex
+               ? mxArray::alloc (init, get_number_of_elements (), get_element_size ())
+               : nullptr))
   { }
 
   mxArray_number (bool interleaved, mxClassID id, const dim_vector& dv,
@@ -1596,15 +1592,11 @@ public:
   mxArray_number (bool interleaved, mxClassID id, mwSize m, mwSize n,
                   mxComplexity flag = mxREAL, bool init = true)
     : mxArray_matlab (interleaved, id, m, n), m_complex (flag == mxCOMPLEX),
-      m_pr (init
-            ? mxArray::calloc (get_number_of_elements (), get_element_size ())
-            : mxArray::malloc (get_number_of_elements () * get_element_size ())),
+      m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ())),
       m_pi (m_interleaved
             ? nullptr
             : (m_complex
-               ? (init
-                  ? mxArray::calloc (get_number_of_elements (), get_element_size ())
-                  : mxArray::malloc (get_number_of_elements () * get_element_size ()))
+               ? (mxArray::alloc (init, get_number_of_elements (), get_element_size ()))
                : nullptr))
   { }
 
@@ -3220,6 +3212,12 @@ void *
 mxArray::calloc (std::size_t n, std::size_t t)
 {
   return mex_context ? mex_context->calloc_unmarked (n, t) : ::calloc (n, t);
+}
+
+void *
+mxArray::alloc (bool init, std::size_t n, std::size_t t)
+{
+  return init ? mxArray::calloc (n, t) : mxArray::malloc (n * t);
 }
 
 static inline void *

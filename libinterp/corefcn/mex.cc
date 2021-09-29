@@ -1547,53 +1547,33 @@ class mxArray_base_full : public mxArray_matlab
 public:
 
   mxArray_base_full (bool interleaved, mxClassID id, mwSize ndims,
-                     const mwSize *dims, mxComplexity flag = mxREAL,
-                     bool init = true)
+                     const mwSize *dims, bool init = true)
     : mxArray_matlab (interleaved, id, ndims, dims),
-      m_complex (flag == mxCOMPLEX),
-      m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ())),
-      m_pi (m_interleaved
-            ? nullptr
-            : (m_complex
-               ? mxArray::alloc (init, get_number_of_elements (), get_element_size ())
-               : nullptr))
+      m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ()))
   { }
 
-  mxArray_base_full (bool interleaved, mxClassID id, const dim_vector& dv,
-                     mxComplexity flag = mxREAL)
-    : mxArray_matlab (interleaved, id, dv), m_complex (flag == mxCOMPLEX),
-      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      m_pi (m_interleaved
-            ? nullptr
-            : (m_complex
-               ? mxArray::calloc (get_number_of_elements (), get_element_size ())
-               : nullptr))
+  mxArray_base_full (bool interleaved, mxClassID id, const dim_vector& dv)
+    : mxArray_matlab (interleaved, id, dv),
+      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   { }
 
   mxArray_base_full (bool interleaved, mxClassID id, mwSize m, mwSize n,
-                     mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_matlab (interleaved, id, m, n), m_complex (flag == mxCOMPLEX),
-      m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ())),
-      m_pi (m_interleaved
-            ? nullptr
-            : (m_complex
-               ? (mxArray::alloc (init, get_number_of_elements (), get_element_size ()))
-               : nullptr))
+                     bool init = true)
+    : mxArray_matlab (interleaved, id, m, n),
+      m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ()))
   { }
 
   mxArray_base_full (bool interleaved, mxClassID id, double val)
-    : mxArray_matlab (interleaved, id, 1, 1), m_complex (false),
-      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      m_pi (nullptr)
+    : mxArray_matlab (interleaved, id, 1, 1),
+      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   {
     double *dpr = static_cast<double *> (m_pr);
     dpr[0] = val;
   }
 
   mxArray_base_full (bool interleaved, mxClassID id, mxLogical val)
-    : mxArray_matlab (interleaved, id, 1, 1), m_complex (false),
-      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      m_pi (nullptr)
+    : mxArray_matlab (interleaved, id, 1, 1),
+      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   {
     mxLogical *lpr = static_cast<mxLogical *> (m_pr);
     lpr[0] = val;
@@ -1603,9 +1583,7 @@ public:
     : mxArray_matlab (interleaved, mxCHAR_CLASS,
                       str ? (strlen (str) ? 1 : 0) : 0,
                       str ? strlen (str) : 0),
-      m_complex (false),
-      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      m_pi (nullptr)
+      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   {
     mxChar *cpr = static_cast<mxChar *> (m_pr);
     mwSize nel = get_number_of_elements ();
@@ -1616,9 +1594,7 @@ public:
   // FIXME: ???
   mxArray_base_full (bool interleaved, mwSize m, const char **str)
     : mxArray_matlab (interleaved, mxCHAR_CLASS, m, max_str_len (m, str)),
-      m_complex (false),
-      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      m_pi (nullptr)
+      m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   {
     mxChar *cpr = static_cast<mxChar *> (m_pr);
 
@@ -1653,12 +1629,6 @@ public:
   ~mxArray_base_full (void)
   {
     mxFree (m_pr);
-    mxFree (m_pi);
-  }
-
-  int is_complex (void) const
-  {
-    return m_interleaved ? m_complex : (m_pi != nullptr);
   }
 
   double get_scalar (void) const
@@ -1726,23 +1696,7 @@ public:
 
   void * get_data (void) const { return m_pr; }
 
-  void * get_imag_data (void) const
-  {
-    if (m_interleaved)
-      panic_impossible ();
-
-    return m_pi;
-  }
-
   void set_data (void *pr) { m_pr = pr; }
-
-  void set_imag_data (void *pi)
-  {
-    if (m_interleaved)
-      panic_impossible ();
-
-    m_pi = pi;
-  }
 
   // The typed get and set functions only work for interleaved data but
   // they are defined here because this class owns PR.  There are
@@ -2041,157 +1995,40 @@ public:
     switch (get_class_id ())
       {
       case mxDOUBLE_CLASS:
-        {
-          mwSize nel = get_number_of_elements ();
-
-          if (is_complex ())
-            {
-              if (m_interleaved)
-                {
-                  Complex *ppr = static_cast<Complex *> (m_pr);
-
-                  ComplexNDArray val (dv);
-                  Complex *ptr = val.fortran_vec ();
-
-                  for (mwIndex i = 0; i < nel; i++)
-                    ptr[i] = ppr[i];
-
-                  retval = val;
-                }
-              else
-                {
-                  double *ppr = static_cast<double *> (m_pr);
-
-                  ComplexNDArray val (dv);
-
-                  Complex *ptr = val.fortran_vec ();
-
-                  double *ppi = static_cast<double *> (m_pi);
-
-                  for (mwIndex i = 0; i < nel; i++)
-                    ptr[i] = Complex (ppr[i], ppi[i]);
-
-                  retval = val;
-                }
-            }
-          else
-            {
-              double *ppr = static_cast<double *> (m_pr);
-
-              NDArray val (dv);
-
-              double *ptr = val.fortran_vec ();
-
-              for (mwIndex i = 0; i < nel; i++)
-                ptr[i] = ppr[i];
-
-              retval = val;
-            }
-        }
-        break;
+        return fp_to_ov<double> (dv);
 
       case mxSINGLE_CLASS:
-        {
-          mwSize nel = get_number_of_elements ();
-
-          if (is_complex ())
-            {
-              if (m_interleaved)
-                {
-                  FloatComplex *ppr = static_cast<FloatComplex *> (m_pr);
-
-                  FloatComplexNDArray val (dv);
-                  FloatComplex *ptr = val.fortran_vec ();
-
-                  for (mwIndex i = 0; i < nel; i++)
-                    ptr[i] = ppr[i];
-
-                  retval = val;
-                }
-              else
-                {
-                  float *ppr = static_cast<float *> (m_pr);
-
-                  FloatComplexNDArray val (dv);
-
-                  FloatComplex *ptr = val.fortran_vec ();
-
-                  float *ppi = static_cast<float *> (m_pi);
-
-                  for (mwIndex i = 0; i < nel; i++)
-                    ptr[i] = FloatComplex (ppr[i], ppi[i]);
-
-                  retval = val;
-                }
-            }
-          else
-            {
-              float *ppr = static_cast<float *> (m_pr);
-
-              FloatNDArray val (dv);
-
-              float *ptr = val.fortran_vec ();
-
-              for (mwIndex i = 0; i < nel; i++)
-                ptr[i] = ppr[i];
-
-              retval = val;
-            }
-        }
-        break;
+        return fp_to_ov<float> (dv);
 
       case mxCHAR_CLASS:
-        {
-          mwSize nel = get_number_of_elements ();
-
-          mxChar *ppr = static_cast<mxChar *> (m_pr);
-
-          charNDArray val (dv);
-
-          char *ptr = val.fortran_vec ();
-
-          for (mwIndex i = 0; i < nel; i++)
-            ptr[i] = static_cast<char> (ppr[i]);
-
-          retval = val;
-        }
-        break;
+        return int_to_ov<mxChar, charNDArray, char> (dv);
 
       case mxLOGICAL_CLASS:
-        retval = int_to_ov<mxLogical, boolNDArray, bool> (dv);
-        break;
+        return int_to_ov<mxLogical, boolNDArray, bool> (dv);
 
       case mxINT8_CLASS:
-        retval = int_to_ov<int8_t, int8NDArray, octave_int8> (dv);
-        break;
+        return int_to_ov<int8_t, int8NDArray, octave_int8> (dv);
 
       case mxUINT8_CLASS:
-        retval = int_to_ov<uint8_t, uint8NDArray, octave_uint8> (dv);
-        break;
+        return int_to_ov<uint8_t, uint8NDArray, octave_uint8> (dv);
 
       case mxINT16_CLASS:
-        retval = int_to_ov<int16_t, int16NDArray, octave_int16> (dv);
-        break;
+        return int_to_ov<int16_t, int16NDArray, octave_int16> (dv);
 
       case mxUINT16_CLASS:
-        retval = int_to_ov<uint16_t, uint16NDArray, octave_uint16> (dv);
-        break;
+        return int_to_ov<uint16_t, uint16NDArray, octave_uint16> (dv);
 
       case mxINT32_CLASS:
-        retval = int_to_ov<int32_t, int32NDArray, octave_int32> (dv);
-        break;
+        return int_to_ov<int32_t, int32NDArray, octave_int32> (dv);
 
       case mxUINT32_CLASS:
-        retval = int_to_ov<uint32_t, uint32NDArray, octave_uint32> (dv);
-        break;
+        return int_to_ov<uint32_t, uint32NDArray, octave_uint32> (dv);
 
       case mxINT64_CLASS:
-        retval = int_to_ov<int64_t, int64NDArray, octave_int64> (dv);
-        break;
+        return int_to_ov<int64_t, int64NDArray, octave_int64> (dv);
 
       case mxUINT64_CLASS:
-        retval = int_to_ov<uint64_t, uint64NDArray, octave_uint64> (dv);
-        break;
+        return int_to_ov<uint64_t, uint64NDArray, octave_uint64> (dv);
 
       default:
         panic_impossible ();
@@ -2203,21 +2040,47 @@ public:
 protected:
 
   mxArray_base_full (const mxArray_base_full& val)
-    : mxArray_matlab (val), m_complex (val.m_complex),
-      m_pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
-      m_pi (m_interleaved
-            ? nullptr
-            : (val.m_pi
-               ? mxArray::malloc (get_number_of_elements () * get_element_size ())
-               : nullptr))
+    : mxArray_matlab (val),
+      m_pr (mxArray::malloc (get_number_of_elements () * get_element_size ()))
   {
-    std::size_t nbytes = get_number_of_elements () * get_element_size ();
-
     if (m_pr)
-      memcpy (m_pr, val.m_pr, nbytes);
+      memcpy (m_pr, val.m_pr, get_number_of_elements () * get_element_size ());
+  }
 
-    if (m_pi)
-      memcpy (m_pi, val.m_pi, nbytes);
+  template <typename ELT_T>
+  octave_value
+  fp_to_ov (const dim_vector& dv) const
+  {
+    if (is_complex ())
+      {
+        std::complex<ELT_T> *ppr = static_cast<std::complex<ELT_T> *> (m_pr);
+
+        Array<std::complex<ELT_T>> val (dv);
+
+        std::complex<ELT_T> *ptr = val.fortran_vec ();
+
+        mwSize nel = get_number_of_elements ();
+
+        for (mwIndex i = 0; i < nel; i++)
+          ptr[i] = ppr[i];
+
+        return octave_value (val);
+      }
+    else
+      {
+        ELT_T *ppr = static_cast<ELT_T *> (m_pr);
+
+        Array<ELT_T> val (dv);
+
+        ELT_T *ptr = val.fortran_vec ();
+
+        mwSize nel = get_number_of_elements ();
+
+        for (mwIndex i = 0; i < nel; i++)
+          ptr[i] = ppr[i];
+
+        return octave_value (val);
+      }
   }
 
   template <typename ELT_T, typename ARRAY_T, typename ARRAY_ELT_T>
@@ -2227,13 +2090,13 @@ protected:
     if (is_complex ())
       error ("complex integer types are not supported");
 
-    mwSize nel = get_number_of_elements ();
-
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
     ARRAY_T val (dv);
 
     ARRAY_ELT_T *ptr = val.fortran_vec ();
+
+    mwSize nel = get_number_of_elements ();
 
     for (mwIndex i = 0; i < nel; i++)
       ptr[i] = ppr[i];
@@ -2241,20 +2104,12 @@ protected:
     return octave_value (val);
   }
 
-private:
-
-  // Flag to identify complex object if using interleaved data and PI is
-  // always nullptr.
-  bool m_complex;
+protected:
 
   // If using interleaved complex storage, this is the pointer to data
   // (real, complex, or logical).  Otherwise, it is the pointer to the
   // real part of the data.
   void *m_pr;
-
-  // If using non-interleaved complex storage, this is the pointer to
-  // the imaginary part of the data.  Othrwise is is always nullptr.
-  void *m_pi;
 };
 
 class mxArray_interleaved_full : public mxArray_base_full
@@ -2263,34 +2118,37 @@ public:
 
   mxArray_interleaved_full (mxClassID id, mwSize ndims, const mwSize *dims,
                             mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_base_full (true, id, ndims, dims, flag, init)
+    : mxArray_base_full (true, id, ndims, dims, init),
+      m_complex (flag == mxCOMPLEX)
   { }
 
   mxArray_interleaved_full (mxClassID id, const dim_vector& dv,
                             mxComplexity flag = mxREAL)
-    : mxArray_base_full (true, id, dv, flag)
+    : mxArray_base_full (true, id, dv),
+      m_complex (flag == mxCOMPLEX)
   { }
 
   mxArray_interleaved_full (mxClassID id, mwSize m, mwSize n,
                             mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_base_full (true, id, m, n, flag, init)
+    : mxArray_base_full (true, id, m, n, init),
+      m_complex (flag == mxCOMPLEX)
   { }
 
   mxArray_interleaved_full (mxClassID id, double val)
-    : mxArray_base_full (true, id, val)
+    : mxArray_base_full (true, id, val), m_complex (false)
   { }
 
   mxArray_interleaved_full (mxClassID id, mxLogical val)
-    : mxArray_base_full (true, id, val)
+    : mxArray_base_full (true, id, val), m_complex (false)
   { }
 
   mxArray_interleaved_full (const char *str)
-    : mxArray_base_full (true, str)
+    : mxArray_base_full (true, str), m_complex (false)
   { }
 
   // FIXME: ???
   mxArray_interleaved_full (mwSize m, const char **str)
-    : mxArray_base_full (true, m, str)
+    : mxArray_base_full (true, m, str), m_complex (false)
   { }
 
   // No assignment!  FIXME: should this be implemented?  Note that we
@@ -2305,11 +2163,20 @@ public:
 
   ~mxArray_interleaved_full (void) = default;
 
+  int is_complex (void) const { return m_complex; }
+
+  void * get_imag_data (void) const { panic_impossible (); }
+
+  void set_imag_data (void */*pi*/) { panic_impossible (); }
+
 protected:
 
   mxArray_interleaved_full (const mxArray_interleaved_full& val)
-    : mxArray_base_full (val)
+    : mxArray_base_full (val), m_complex (val.m_complex)
   { }
+
+  // Flag to identify complex object.
+  bool m_complex;
 };
 
 class mxArray_separate_full : public mxArray_base_full
@@ -2318,34 +2185,43 @@ public:
 
   mxArray_separate_full (mxClassID id, mwSize ndims, const mwSize *dims,
                          mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_base_full (false, id, ndims, dims, flag, init)
+    : mxArray_base_full (false, id, ndims, dims, init),
+      m_pi (flag == mxCOMPLEX
+            ? mxArray::alloc (init, get_number_of_elements (), get_element_size ())
+            : nullptr)
   { }
 
   mxArray_separate_full (mxClassID id, const dim_vector& dv,
                          mxComplexity flag = mxREAL)
-    : mxArray_base_full (false, id, dv, flag)
+    : mxArray_base_full (false, id, dv),
+      m_pi (flag == mxCOMPLEX
+            ? mxArray::calloc (get_number_of_elements (), get_element_size ())
+            : nullptr)
   { }
 
   mxArray_separate_full (mxClassID id, mwSize m, mwSize n,
                          mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_base_full (false, id, m, n, flag, init)
+    : mxArray_base_full (false, id, m, n, init),
+      m_pi (flag == mxCOMPLEX
+            ? (mxArray::alloc (init, get_number_of_elements (), get_element_size ()))
+            : nullptr)
   { }
 
   mxArray_separate_full (mxClassID id, double val)
-    : mxArray_base_full (false, id, val)
+    : mxArray_base_full (false, id, val), m_pi (nullptr)
   { }
 
   mxArray_separate_full (mxClassID id, mxLogical val)
-    : mxArray_base_full (false, id, val)
+    : mxArray_base_full (false, id, val), m_pi (nullptr)
   { }
 
   mxArray_separate_full (const char *str)
-    : mxArray_base_full (false, str)
+    : mxArray_base_full (false, str), m_pi (nullptr)
   { }
 
   // FIXME: ???
   mxArray_separate_full (mwSize m, const char **str)
-    : mxArray_base_full (false, m, str)
+    : mxArray_base_full (false, m, str), m_pi (nullptr)
   { }
 
   // No assignment!  FIXME: should this be implemented?  Note that we
@@ -2358,7 +2234,16 @@ public:
     return new mxArray_separate_full (*this);
   }
 
-  ~mxArray_separate_full (void) = default;
+  ~mxArray_separate_full (void)
+  {
+    mxFree (m_pi);
+  }
+
+  int is_complex (void) const { return m_pi != nullptr; }
+
+  void * get_imag_data (void) const { return m_pi; }
+
+  void set_imag_data (void *pi) { m_pi = pi; }
 
   mxDouble * get_doubles (void) const { panic_impossible (); }
   mxSingle * get_singles (void) const { panic_impossible (); }
@@ -2410,11 +2295,89 @@ public:
   int set_complex_uint32s (mxComplexUint32 *) { panic_impossible (); }
   int set_complex_uint64s (mxComplexUint64 *) { panic_impossible (); }
 
+  octave_value as_octave_value (void) const
+  {
+    if (! is_complex ())
+      return mxArray_base_full::as_octave_value ();
+
+    octave_value retval;
+
+    dim_vector dv = dims_to_dim_vector ();
+
+    switch (get_class_id ())
+      {
+      case mxDOUBLE_CLASS:
+        {
+          mwSize nel = get_number_of_elements ();
+
+          double *ppr = static_cast<double *> (m_pr);
+
+          ComplexNDArray val (dv);
+
+          Complex *ptr = val.fortran_vec ();
+
+          double *ppi = static_cast<double *> (m_pi);
+
+          for (mwIndex i = 0; i < nel; i++)
+            ptr[i] = Complex (ppr[i], ppi[i]);
+
+          retval = val;
+        }
+        break;
+
+      case mxSINGLE_CLASS:
+        {
+          mwSize nel = get_number_of_elements ();
+
+          float *ppr = static_cast<float *> (m_pr);
+
+          FloatComplexNDArray val (dv);
+
+          FloatComplex *ptr = val.fortran_vec ();
+
+          float *ppi = static_cast<float *> (m_pi);
+
+          for (mwIndex i = 0; i < nel; i++)
+            ptr[i] = FloatComplex (ppr[i], ppi[i]);
+
+          retval = val;
+        }
+        break;
+
+      case mxLOGICAL_CLASS:
+      case mxINT8_CLASS:
+      case mxUINT8_CLASS:
+      case mxINT16_CLASS:
+      case mxUINT16_CLASS:
+      case mxINT32_CLASS:
+      case mxUINT32_CLASS:
+      case mxINT64_CLASS:
+      case mxUINT64_CLASS:
+        error ("complex integer types are not supported");
+
+      default:
+        panic_impossible ();
+      }
+
+    return retval;
+  }
+
 protected:
 
   mxArray_separate_full (const mxArray_separate_full& val)
-    : mxArray_base_full (val)
-  { }
+    : mxArray_base_full (val),
+      m_pi (val.m_pi
+            ? mxArray::malloc (get_number_of_elements () * get_element_size ())
+            : nullptr)
+  {
+    if (m_pi)
+      memcpy (m_pi, val.m_pi, get_number_of_elements () * get_element_size ());
+  }
+
+private:
+
+  // Pointer to the imaginary part of the data.
+  void *m_pi;
 };
 
 // Matlab-style sparse arrays.
@@ -2424,46 +2387,31 @@ class mxArray_base_sparse : public mxArray_matlab
 public:
 
   mxArray_base_sparse (bool interleaved, mxClassID id, mwSize m, mwSize n,
-                       mwSize nzmax, mxComplexity flag = mxREAL)
-    : mxArray_matlab (interleaved, id, m, n), m_complex (flag == mxCOMPLEX),
+                       mwSize nzmax)
+    : mxArray_matlab (interleaved, id, m, n),
 
       m_nzmax (nzmax > 0 ? nzmax : 1),
-      m_pr (mxArray::calloc (m_nzmax, get_element_size ())),
-      m_pi (m_interleaved
-            ? nullptr
-            : (m_complex
-               ? mxArray::calloc (m_nzmax, get_element_size ())
-               : nullptr)),
       m_ir (static_cast<mwIndex *> (mxArray::calloc (m_nzmax, sizeof (mwIndex)))),
-      m_jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))))
+      m_jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex)))),
+      m_pr (mxArray::calloc (m_nzmax, get_element_size ()))
   { }
 
 protected:
 
   mxArray_base_sparse (const mxArray_base_sparse& val)
     : mxArray_matlab (val), m_nzmax (val.m_nzmax),
-      m_pr (mxArray::malloc (m_nzmax * get_element_size ())),
-      m_pi (m_interleaved
-            ? nullptr
-            : (val.m_pi
-               ? mxArray::malloc (m_nzmax * get_element_size ())
-               : nullptr)),
       m_ir (static_cast<mwIndex *> (mxArray::malloc (m_nzmax * sizeof (mwIndex)))),
-      m_jc (static_cast<mwIndex *> (mxArray::malloc (m_nzmax * sizeof (mwIndex))))
+      m_jc (static_cast<mwIndex *> (mxArray::malloc (m_nzmax * sizeof (mwIndex)))),
+      m_pr (mxArray::malloc (m_nzmax * get_element_size ()))
   {
-    std::size_t nbytes = m_nzmax * get_element_size ();
-
-    if (m_pr)
-      memcpy (m_pr, val.m_pr, nbytes);
-
-    if (m_pi)
-      memcpy (m_pi, val.m_pi, nbytes);
-
     if (m_ir)
       memcpy (m_ir, val.m_ir, m_nzmax * sizeof (mwIndex));
 
     if (m_jc)
       memcpy (m_jc, val.m_jc, (val.get_n () + 1) * sizeof (mwIndex));
+
+    if (m_pr)
+      memcpy (m_pr, val.m_pr, m_nzmax * get_element_size ());
   }
 
 public:
@@ -2480,38 +2428,16 @@ public:
 
   ~mxArray_base_sparse (void)
   {
-    mxFree (m_pr);
-    mxFree (m_pi);
     mxFree (m_ir);
     mxFree (m_jc);
-  }
-
-  int is_complex (void) const
-  {
-    return m_interleaved ? m_complex : (m_pi != nullptr);
+    mxFree (m_pr);
   }
 
   int is_sparse (void) const { return 1; }
 
   void * get_data (void) const { return m_pr; }
 
-  void * get_imag_data (void) const
-  {
-    if (m_interleaved)
-      panic_impossible ();
-
-    return m_pi;
-  }
-
   void set_data (void *pr) { m_pr = pr; }
-
-  void set_imag_data (void *pi)
-  {
-    if (m_interleaved)
-      panic_impossible ();
-
-    m_pi = pi;
-  }
 
   mxDouble * get_doubles (void) const
   {
@@ -2529,7 +2455,7 @@ public:
     return 0;
   }
 
-  int set_complex_doubles (mxComplexDouble * d)
+  int set_complex_doubles (mxComplexDouble *d)
   {
     m_pr = d;
     return 0;
@@ -2555,83 +2481,179 @@ public:
   {
     octave_value retval;
 
-    dim_vector dv = dims_to_dim_vector ();
+    switch (get_class_id ())
+      {
+      case mxDOUBLE_CLASS:
+        return is_complex () ? to_ov<Complex> (): to_ov<double> ();
+
+      case mxSINGLE_CLASS:
+        error ("single precision sparse data type not supported");
+
+      case mxLOGICAL_CLASS:
+        return to_ov<bool> ();
+
+      default:
+        panic_impossible ();
+      }
+
+    return retval;
+  }
+
+protected:
+
+  template <typename ELT_T>
+  octave_value
+  to_ov (void) const
+  {
+    ELT_T *ppr = static_cast<ELT_T *> (m_pr);
+
+    Sparse<ELT_T> val (get_m (), get_n (),
+                       static_cast<octave_idx_type> (m_nzmax));
+
+    for (mwIndex i = 0; i < m_nzmax; i++)
+      {
+        val.xdata (i) = ppr[i];
+        val.xridx (i) = m_ir[i];
+      }
+
+    for (mwIndex i = 0; i < get_n () + 1; i++)
+      val.xcidx (i) = m_jc[i];
+
+    return octave_value (val);
+  }
+
+  // Maximun number of nonzero elements.
+  mwSize m_nzmax;
+
+  // Sparse storage indexing arrays.
+  mwIndex *m_ir;
+  mwIndex *m_jc;
+
+  // If using interleaved complex storage, this is the pointer to data
+  // (real, complex, or logical).  Otherwise, it is the pointer to the
+  // real part of the data.
+  void *m_pr;
+};
+
+class mxArray_interleaved_sparse : public mxArray_base_sparse
+{
+public:
+
+  mxArray_interleaved_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
+                              mxComplexity flag = mxREAL)
+    : mxArray_base_sparse (true, id, m, n, nzmax),
+      m_complex (flag == mxCOMPLEX)
+  { }
+
+private:
+
+  mxArray_interleaved_sparse (const mxArray_interleaved_sparse& val)
+    : mxArray_base_sparse (val), m_complex (val.m_complex)
+  { }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_interleaved_sparse& operator = (const mxArray_interleaved_sparse&);
+
+  mxArray_base * dup (void) const
+  {
+    return new mxArray_interleaved_sparse (*this);
+  }
+
+  ~mxArray_interleaved_sparse (void) = default;
+
+  int is_complex (void) const { return m_complex; }
+
+  void * get_imag_data (void) const { panic_impossible (); }
+
+  void set_imag_data (void */*pi*/) { panic_impossible (); }
+
+private:
+
+  // Flag to identify complex object if using interleaved data and PI is
+  // always nullptr.
+  bool m_complex;
+};
+
+class mxArray_separate_sparse : public mxArray_base_sparse
+{
+public:
+
+  mxArray_separate_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
+                           mxComplexity flag = mxREAL)
+    : mxArray_base_sparse (false, id, m, n, nzmax),
+      m_pi (flag == mxCOMPLEX
+            ? mxArray::calloc (m_nzmax, get_element_size ())
+            : nullptr)
+  { }
+
+private:
+
+  mxArray_separate_sparse (const mxArray_separate_sparse& val)
+    : mxArray_base_sparse (val),
+      m_pi (val.m_pi
+            ? mxArray::malloc (m_nzmax * get_element_size ())
+            : nullptr)
+  {
+    if (m_pi)
+      memcpy (m_pi, val.m_pi, m_nzmax * get_element_size ());
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_separate_sparse& operator = (const mxArray_separate_sparse&);
+
+  mxArray_base * dup (void) const
+  {
+    return new mxArray_separate_sparse (*this);
+  }
+
+  ~mxArray_separate_sparse (void)
+  {
+    mxFree (m_pi);
+  }
+
+  int is_complex (void) const
+  {
+    return m_pi != nullptr;
+  }
+
+  void * get_imag_data (void) const { return m_pi; }
+
+  void set_imag_data (void *pi) { m_pi = pi; }
+
+  mxDouble * get_doubles (void) const { panic_impossible (); }
+  mxComplexDouble * get_complex_doubles (void) const { panic_impossible (); }
+
+  int set_doubles (mxDouble *) { panic_impossible (); }
+  int set_complex_doubles (mxComplexDouble *) { panic_impossible (); }
+
+  octave_value as_octave_value (void) const
+  {
+    if (! is_complex ())
+      return mxArray_base_sparse::as_octave_value ();
+
+    octave_value retval;
 
     switch (get_class_id ())
       {
       case mxDOUBLE_CLASS:
         {
-          if (is_complex ())
-            {
-              if (m_interleaved)
-                {
-                  Complex *ppr = static_cast<Complex *> (m_pr);
+          double *ppr = static_cast<double *> (m_pr);
+          double *ppi = static_cast<double *> (m_pi);
 
-                  SparseComplexMatrix val (get_m (), get_n (),
-                                           static_cast<octave_idx_type> (m_nzmax));
-
-                  for (mwIndex i = 0; i < m_nzmax; i++)
-                    {
-                      val.xdata (i) = ppr[i];
-                      val.xridx (i) = m_ir[i];
-                    }
-
-                  for (mwIndex i = 0; i < get_n () + 1; i++)
-                    val.xcidx (i) = m_jc[i];
-
-                  retval = val;
-                }
-              else
-                {
-                  double *ppr = static_cast<double *> (m_pr);
-                  double *ppi = static_cast<double *> (m_pi);
-
-                  SparseComplexMatrix val (get_m (), get_n (),
-                                           static_cast<octave_idx_type> (m_nzmax));
-
-                  for (mwIndex i = 0; i < m_nzmax; i++)
-                    {
-                      val.xdata (i) = Complex (ppr[i], ppi[i]);
-                      val.xridx (i) = m_ir[i];
-                    }
-
-                  for (mwIndex i = 0; i < get_n () + 1; i++)
-                    val.xcidx (i) = m_jc[i];
-
-                  retval = val;
-                }
-            }
-          else
-            {
-              double *ppr = static_cast<double *> (m_pr);
-
-              SparseMatrix val (get_m (), get_n (),
-                                static_cast<octave_idx_type> (m_nzmax));
-
-              for (mwIndex i = 0; i < m_nzmax; i++)
-                {
-                  val.xdata (i) = ppr[i];
-                  val.xridx (i) = m_ir[i];
-                }
-
-              for (mwIndex i = 0; i < get_n () + 1; i++)
-                val.xcidx (i) = m_jc[i];
-
-              retval = val;
-            }
-        }
-        break;
-
-      case mxLOGICAL_CLASS:
-        {
-          bool *ppr = static_cast<bool *> (m_pr);
-
-          SparseBoolMatrix val (get_m (), get_n (),
-                                static_cast<octave_idx_type> (m_nzmax));
+          SparseComplexMatrix val (get_m (), get_n (),
+                                   static_cast<octave_idx_type> (m_nzmax));
 
           for (mwIndex i = 0; i < m_nzmax; i++)
             {
-              val.xdata (i) = ppr[i];
+              val.xdata (i) = Complex (ppr[i], ppi[i]);
               val.xridx (i) = m_ir[i];
             }
 
@@ -2654,91 +2676,8 @@ public:
 
 private:
 
-  // Flag to identify complex object if using interleaved data and PI is
-  // always nullptr.
-  bool m_complex;
-
-  // Maximun number of nonzero elements.
-  mwSize m_nzmax;
-
-  // If using interleaved complex storage, this is the pointer to data
-  // (real, complex, or logical).  Otherwise, it is the pointer to the
-  // real part of the data.
-  void *m_pr;
-
-  // If using non-interleaved complex storage, this is the pointer to
-  // the imaginary part of the data.  Othrwise is is always nullptr.
+  // Pointer to the imaginary part of the data.
   void *m_pi;
-
-  // Sparse storage indexing arrays.
-  mwIndex *m_ir;
-  mwIndex *m_jc;
-};
-
-class mxArray_interleaved_sparse : public mxArray_base_sparse
-{
-public:
-
-  mxArray_interleaved_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
-                              mxComplexity flag = mxREAL)
-    : mxArray_base_sparse (true, id, m, n, nzmax, flag)
-  { }
-
-private:
-
-  mxArray_interleaved_sparse (const mxArray_interleaved_sparse& val)
-    : mxArray_base_sparse (val)
-  { }
-
-public:
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_interleaved_sparse& operator = (const mxArray_interleaved_sparse&);
-
-  mxArray_base * dup (void) const
-  {
-    return new mxArray_interleaved_sparse (*this);
-  }
-
-  ~mxArray_interleaved_sparse (void) = default;
-};
-
-class mxArray_separate_sparse : public mxArray_base_sparse
-{
-public:
-
-  mxArray_separate_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
-                              mxComplexity flag = mxREAL)
-    : mxArray_base_sparse (false, id, m, n, nzmax, flag)
-  { }
-
-private:
-
-  mxArray_separate_sparse (const mxArray_separate_sparse& val)
-    : mxArray_base_sparse (val)
-  { }
-
-public:
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_separate_sparse& operator = (const mxArray_separate_sparse&);
-
-  mxArray_base * dup (void) const
-  {
-    return new mxArray_separate_sparse (*this);
-  }
-
-  ~mxArray_separate_sparse (void) = default;
-
-  mxDouble * get_doubles (void) const { panic_impossible (); }
-  mxComplexDouble * get_complex_doubles (void) const { panic_impossible (); }
-
-  int set_doubles (mxDouble *d) { panic_impossible (); }
-  int set_complex_doubles (mxComplexDouble * d) { panic_impossible (); }
 };
 
 // Matlab-style struct arrays.
@@ -3585,8 +3524,6 @@ public:
   // 1 if error should be returned to MEX file, 0 if abort.
   int trap_feval_error = 0;
 
-private:
-
   // Mark a pointer as one we allocated.
   void global_mark (void *ptr)
   {
@@ -3611,7 +3548,7 @@ private:
 #endif
   }
 
-  //--------
+private:
 
   // Pointer to the mex function that corresponds to this mex context.
   octave_mex_function& m_curr_mex_fcn;

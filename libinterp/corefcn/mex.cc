@@ -1561,13 +1561,13 @@ private:
     return 0;                                   \
   }
 
-class mxArray_number : public mxArray_matlab
+class mxArray_base_full : public mxArray_matlab
 {
 public:
 
-  mxArray_number (bool interleaved, mxClassID id, mwSize ndims,
-                  const mwSize *dims, mxComplexity flag = mxREAL,
-                  bool init = true)
+  mxArray_base_full (bool interleaved, mxClassID id, mwSize ndims,
+                     const mwSize *dims, mxComplexity flag = mxREAL,
+                     bool init = true)
     : mxArray_matlab (interleaved, id, ndims, dims),
       m_complex (flag == mxCOMPLEX),
       m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ())),
@@ -1578,8 +1578,8 @@ public:
                : nullptr))
   { }
 
-  mxArray_number (bool interleaved, mxClassID id, const dim_vector& dv,
-                  mxComplexity flag = mxREAL)
+  mxArray_base_full (bool interleaved, mxClassID id, const dim_vector& dv,
+                     mxComplexity flag = mxREAL)
     : mxArray_matlab (interleaved, id, dv), m_complex (flag == mxCOMPLEX),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (m_interleaved
@@ -1589,8 +1589,8 @@ public:
                : nullptr))
   { }
 
-  mxArray_number (bool interleaved, mxClassID id, mwSize m, mwSize n,
-                  mxComplexity flag = mxREAL, bool init = true)
+  mxArray_base_full (bool interleaved, mxClassID id, mwSize m, mwSize n,
+                     mxComplexity flag = mxREAL, bool init = true)
     : mxArray_matlab (interleaved, id, m, n), m_complex (flag == mxCOMPLEX),
       m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ())),
       m_pi (m_interleaved
@@ -1600,7 +1600,7 @@ public:
                : nullptr))
   { }
 
-  mxArray_number (bool interleaved, mxClassID id, double val)
+  mxArray_base_full (bool interleaved, mxClassID id, double val)
     : mxArray_matlab (interleaved, id, 1, 1), m_complex (false),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (nullptr)
@@ -1609,7 +1609,7 @@ public:
     dpr[0] = val;
   }
 
-  mxArray_number (bool interleaved, mxClassID id, mxLogical val)
+  mxArray_base_full (bool interleaved, mxClassID id, mxLogical val)
     : mxArray_matlab (interleaved, id, 1, 1), m_complex (false),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       m_pi (nullptr)
@@ -1618,7 +1618,7 @@ public:
     lpr[0] = val;
   }
 
-  mxArray_number (bool interleaved, const char *str)
+  mxArray_base_full (bool interleaved, const char *str)
     : mxArray_matlab (interleaved, mxCHAR_CLASS,
                       str ? (strlen (str) ? 1 : 0) : 0,
                       str ? strlen (str) : 0),
@@ -1633,7 +1633,7 @@ public:
   }
 
   // FIXME: ???
-  mxArray_number (bool interleaved, mwSize m, const char **str)
+  mxArray_base_full (bool interleaved, mwSize m, const char **str)
     : mxArray_matlab (interleaved, mxCHAR_CLASS, m, max_str_len (m, str)),
       m_complex (false),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
@@ -1662,14 +1662,14 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_number& operator = (const mxArray_number&);
+  mxArray_base_full& operator = (const mxArray_base_full&);
 
   mxArray_base * dup (void) const
   {
-    return new mxArray_number (*this);
+    return new mxArray_base_full (*this);
   }
 
-  ~mxArray_number (void)
+  ~mxArray_base_full (void)
   {
     mxFree (m_pr);
     mxFree (m_pi);
@@ -2030,7 +2030,7 @@ public:
 
 protected:
 
-  mxArray_number (const mxArray_number& val)
+  mxArray_base_full (const mxArray_base_full& val)
     : mxArray_matlab (val), m_complex (val.m_complex),
       m_pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
       m_pi (m_interleaved
@@ -2085,14 +2085,124 @@ private:
   void *m_pi;
 };
 
-// Matlab-style sparse arrays.
-
-class mxArray_sparse : public mxArray_matlab
+class mxArray_interleaved_full : public mxArray_base_full
 {
 public:
 
-  mxArray_sparse (bool interleaved, mxClassID id, mwSize m, mwSize n,
-                  mwSize nzmax, mxComplexity flag = mxREAL)
+  mxArray_interleaved_full (mxClassID id, mwSize ndims, const mwSize *dims,
+                            mxComplexity flag = mxREAL, bool init = true)
+    : mxArray_base_full (true, id, ndims, dims, flag, init)
+  { }
+
+  mxArray_interleaved_full (mxClassID id, const dim_vector& dv,
+                            mxComplexity flag = mxREAL)
+    : mxArray_base_full (true, id, dv, flag)
+  { }
+
+  mxArray_interleaved_full (mxClassID id, mwSize m, mwSize n,
+                            mxComplexity flag = mxREAL, bool init = true)
+    : mxArray_base_full (true, id, m, n, flag, init)
+  { }
+
+  mxArray_interleaved_full (mxClassID id, double val)
+    : mxArray_base_full (true, id, val)
+  { }
+
+  mxArray_interleaved_full (mxClassID id, mxLogical val)
+    : mxArray_base_full (true, id, val)
+  { }
+
+  mxArray_interleaved_full (const char *str)
+    : mxArray_base_full (true, str)
+  { }
+
+  // FIXME: ???
+  mxArray_interleaved_full (mwSize m, const char **str)
+    : mxArray_base_full (true, m, str)
+  { }
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_interleaved_full& operator = (const mxArray_interleaved_full&);
+
+  mxArray_base * dup (void) const
+  {
+    return new mxArray_interleaved_full (*this);
+  }
+
+  ~mxArray_interleaved_full (void) = default;
+
+protected:
+
+  mxArray_interleaved_full (const mxArray_interleaved_full& val)
+    : mxArray_base_full (val)
+  { }
+};
+
+class mxArray_separate_full : public mxArray_base_full
+{
+public:
+
+  mxArray_separate_full (mxClassID id, mwSize ndims, const mwSize *dims,
+                         mxComplexity flag = mxREAL, bool init = true)
+    : mxArray_base_full (false, id, ndims, dims, flag, init)
+  { }
+
+  mxArray_separate_full (mxClassID id, const dim_vector& dv,
+                         mxComplexity flag = mxREAL)
+    : mxArray_base_full (false, id, dv, flag)
+  { }
+
+  mxArray_separate_full (mxClassID id, mwSize m, mwSize n,
+                         mxComplexity flag = mxREAL, bool init = true)
+    : mxArray_base_full (false, id, m, n, flag, init)
+  { }
+
+  mxArray_separate_full (mxClassID id, double val)
+    : mxArray_base_full (false, id, val)
+  { }
+
+  mxArray_separate_full (mxClassID id, mxLogical val)
+    : mxArray_base_full (false, id, val)
+  { }
+
+  mxArray_separate_full (const char *str)
+    : mxArray_base_full (false, str)
+  { }
+
+  // FIXME: ???
+  mxArray_separate_full (mwSize m, const char **str)
+    : mxArray_base_full (false, m, str)
+  { }
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_separate_full& operator = (const mxArray_separate_full&);
+
+  mxArray_base * dup (void) const
+  {
+    return new mxArray_separate_full (*this);
+  }
+
+  ~mxArray_separate_full (void) = default;
+
+protected:
+
+  mxArray_separate_full (const mxArray_separate_full& val)
+    : mxArray_base_full (val)
+  { }
+};
+
+// Matlab-style sparse arrays.
+
+class mxArray_base_sparse : public mxArray_matlab
+{
+public:
+
+  mxArray_base_sparse (bool interleaved, mxClassID id, mwSize m, mwSize n,
+                       mwSize nzmax, mxComplexity flag = mxREAL)
     : mxArray_matlab (interleaved, id, m, n), m_complex (flag == mxCOMPLEX),
 
       m_nzmax (nzmax > 0 ? nzmax : 1),
@@ -2106,9 +2216,9 @@ public:
       m_jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))))
   { }
 
-private:
+protected:
 
-  mxArray_sparse (const mxArray_sparse& val)
+  mxArray_base_sparse (const mxArray_base_sparse& val)
     : mxArray_matlab (val), m_nzmax (val.m_nzmax),
       m_pr (mxArray::malloc (m_nzmax * get_element_size ())),
       m_pi (m_interleaved
@@ -2139,14 +2249,14 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_sparse& operator = (const mxArray_sparse&);
+  mxArray_base_sparse& operator = (const mxArray_base_sparse&);
 
   mxArray_base * dup (void) const
   {
-    return new mxArray_sparse (*this);
+    return new mxArray_base_sparse (*this);
   }
 
-  ~mxArray_sparse (void)
+  ~mxArray_base_sparse (void)
   {
     mxFree (m_pr);
     mxFree (m_pi);
@@ -2325,6 +2435,66 @@ private:
   // Sparse storage indexing arrays.
   mwIndex *m_ir;
   mwIndex *m_jc;
+};
+
+class mxArray_interleaved_sparse : public mxArray_base_sparse
+{
+public:
+
+  mxArray_interleaved_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
+                              mxComplexity flag = mxREAL)
+    : mxArray_base_sparse (true, id, m, n, nzmax, flag)
+  { }
+
+private:
+
+  mxArray_interleaved_sparse (const mxArray_interleaved_sparse& val)
+    : mxArray_base_sparse (val)
+  { }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_interleaved_sparse& operator = (const mxArray_interleaved_sparse&);
+
+  mxArray_base * dup (void) const
+  {
+    return new mxArray_interleaved_sparse (*this);
+  }
+
+  ~mxArray_interleaved_sparse (void) = default;
+};
+
+class mxArray_separate_sparse : public mxArray_base_sparse
+{
+public:
+
+  mxArray_separate_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
+                              mxComplexity flag = mxREAL)
+    : mxArray_base_sparse (false, id, m, n, nzmax, flag)
+  { }
+
+private:
+
+  mxArray_separate_sparse (const mxArray_separate_sparse& val)
+    : mxArray_base_sparse (val)
+  { }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_separate_sparse& operator = (const mxArray_separate_sparse&);
+
+  mxArray_base * dup (void) const
+  {
+    return new mxArray_separate_sparse (*this);
+  }
+
+  ~mxArray_separate_sparse (void) = default;
 };
 
 // Matlab-style struct arrays.
@@ -2802,52 +2972,76 @@ mxArray_base *
 mxArray::create_rep (bool interleaved, mxClassID id, mwSize ndims,
                      const mwSize *dims, mxComplexity flag, bool init)
 {
-  return new mxArray_number (interleaved, id, ndims, dims, flag, init);
+  if (interleaved)
+    return new mxArray_interleaved_full (id, ndims, dims, flag, init);
+  else
+    return new mxArray_separate_full (id, ndims, dims, flag, init);
 }
 
 mxArray_base *
 mxArray::create_rep (bool interleaved, mxClassID id, const dim_vector& dv,
                      mxComplexity flag)
 {
-  return new mxArray_number (interleaved, id, dv, flag);
+  if (interleaved)
+    return new mxArray_interleaved_full (id, dv, flag);
+  else
+    return new mxArray_separate_full (id, dv, flag);
 }
 
 mxArray_base *
 mxArray::create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
                      mxComplexity flag, bool init)
 {
-  return new mxArray_number (interleaved, id, m, n, flag, init);
+  if (interleaved)
+    return new mxArray_interleaved_full (id, m, n, flag, init);
+  else
+    return new mxArray_separate_full (id, m, n, flag, init);
 }
 
 mxArray_base *
 mxArray::create_rep (bool interleaved, mxClassID id, double val)
 {
-  return new mxArray_number (interleaved, id, val);
+  if (interleaved)
+    return new mxArray_interleaved_full (id, val);
+  else
+    return new mxArray_separate_full (id, val);
 }
 
 mxArray_base *
 mxArray::create_rep (bool interleaved, mxClassID id, mxLogical val)
 {
-  return new mxArray_number (interleaved, id, val);
+  if (interleaved)
+    return new mxArray_interleaved_full (id, val);
+  else
+    return new mxArray_separate_full (id, val);
 }
 
 mxArray_base *
 mxArray::create_rep (bool interleaved, const char *str)
 {
-  return new mxArray_number (interleaved, str);
+  if (interleaved)
+    return new mxArray_interleaved_full (str);
+  else
+    return new mxArray_separate_full (str);
 }
 
 mxArray_base *
 mxArray::create_rep (bool interleaved, mwSize m, const char **str)
 {
-  return new mxArray_number (interleaved, m, str);
+  if (interleaved)
+    return new mxArray_interleaved_full (m, str);
+  else
+    return new mxArray_separate_full (m, str);
 }
 
 mxArray_base *
 mxArray::create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
                      mwSize nzmax, mxComplexity flag)
 {
-  return new mxArray_sparse (interleaved, id, m, n, nzmax, flag);
+  if (interleaved)
+    return new mxArray_interleaved_sparse (id, m, n, nzmax, flag);
+  else
+    return new mxArray_separate_sparse (id, m, n, nzmax, flag);
 }
 
 void

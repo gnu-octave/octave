@@ -124,9 +124,9 @@ function C = nchoosek (v, k)
       numer = [(v-k+1:v-(k+1)/2) .* (v-1:-1:v-(k-1)/2) / 2, v];
       denom = [(1:k/2) .* (k-1:-1:(k+1)/2) / 2, k];
     else             # k is even
-      numer = (v-k+1:v-k/2) .* (v-k/2+1:v) / 2;
-      denom = (1:k/2) .* (k/2+1:k) / 2;
-    end
+      numer = (v-k+1:v-k/2) .* (v:-1:v-k/2+1) / 2;
+      denom = (1:k/2) .* (k:-1:k/2+1) / 2;
+    endif
 
     # Remove common factors from numerator and denominator
     do

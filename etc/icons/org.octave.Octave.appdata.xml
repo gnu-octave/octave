@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
   <summary xml:lang="de">Interaktive Programmierumgebung für numerische Berechnungen</summary>
   <summary xml:lang="es">Entorno de programación interactiva para cálculos numéricos</summary>
   <summary xml:lang="fr">Environnement de programmation interactif pour le calcul numérique</summary>
+  <summary xml:lang="hu">Interaktív programozási környezet számszerű számításokhoz</summary>
   <summary xml:lang="it">Ambiente di programmazione interattivo per il calcolo numerico</summary>
   <summary xml:lang="ja">数値計算のための対話的なプログラミング環境</summary>
   <summary xml:lang="nl">Interactieve programmeeromgeving voor numerieke berekeningen</summary>
@@ -82,6 +83,16 @@ along with Octave; see the file COPYING.  If not, see
       interactifs. Le langage Octave est très similaire à Matlab de telle sorte
       que les programmes Matlab sont très faciles à porter sous Octave.
     </p>
+    <p xml:lang="hu">
+      A GNU Octave egy magas szintű értelmezett nyelv, elsősorban numerikus
+      számításokhoz. Képességeket biztosít a lineáris és nemlineáris problémák
+      numerikus megoldására, valamint egyéb numerikus kísérletek elvégzésére.
+      Ezenkívül kiterjedt grafikus képességeket biztosít az adatok
+      megjelenítéséhez és manipulálásához. Az Octave-t általában az interaktív
+      parancssori felületen keresztül használják, de nem interaktív programok
+      írására is használható. Az Octave nyelv nagyon hasonló a Matlabhoz, így
+      a legtöbb program könnyen hordozható.
+    </p>
     <p xml:lang="nl">
       GNU Octave is een hogere geïnterpreteerde taal, primair bedoeld voor
       numerieke berekeningen. Het biedt mogelijkheden voor het numeriek
@@ -130,6 +141,16 @@ along with Octave; see the file COPYING.  If not, see
       Il peut très facilement être étendu en définissant de nouvelles
       fonctions écrites en langage Octave ou en utilisant des modules
       chargés dynamiquement, écrits en C++, C, Fortran ou autres langages.
+    </p>
+    <p xml:lang="hu">
+      Az Octave kiterjedt eszközökkel rendelkezik a gyakori numerikus lineáris
+      algebrai problémák megoldásához, a nemlineáris egyenletek gyökereinek
+      megkereséséhez, a hétköznapi függvények integrálásához, a polinomok
+      manipulálásához, valamint a közönséges differenciál- és differenciál-
+      algebrai egyenletek integrálásához. Könnyen bővíthető és testreszabható
+      a felhasználó által meghatározott, Octave saját nyelvén írt funkciókkal,
+      vagy dinamikusan betöltött modulokkal, C++, C, Fortran vagy más
+      nyelveken.
     </p>
     <p xml:lang="nl">
       Octave heeft een uitgebreide verzameling gereedschappen for het oplossen

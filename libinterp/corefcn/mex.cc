@@ -1542,25 +1542,6 @@ private:
 
 // Matlab-style numeric, character, and logical data.
 
-#define TYPED_GET_METHOD(TYPE, FCN_NAME)        \
-  TYPE FCN_NAME (void) const                    \
-  {                                             \
-    if (! m_interleaved)                        \
-      panic_impossible ();                      \
-                                                \
-    return static_cast<TYPE> (m_pr);            \
-  }
-
-#define TYPED_SET_METHOD(TYPE, FCN_NAME)        \
-  int FCN_NAME (TYPE d)                         \
-  {                                             \
-    if (! m_interleaved)                        \
-      panic_impossible ();                      \
-                                                \
-    m_pr = d;                                   \
-    return 0;                                   \
-  }
-
 class mxArray_base_full : public mxArray_matlab
 {
 public:
@@ -1763,54 +1744,245 @@ public:
     m_pi = pi;
   }
 
-  TYPED_GET_METHOD (mxDouble *, get_doubles)
-  TYPED_GET_METHOD (mxSingle *, get_singles)
-  TYPED_GET_METHOD (mxInt8 *, get_int8s)
-  TYPED_GET_METHOD (mxInt16 *, get_int16s)
-  TYPED_GET_METHOD (mxInt32 *, get_int32s)
-  TYPED_GET_METHOD (mxInt64 *, get_int64s)
-  TYPED_GET_METHOD (mxUint8 *, get_uint8s)
-  TYPED_GET_METHOD (mxUint16 *, get_uint16s)
-  TYPED_GET_METHOD (mxUint32 *, get_uint32s)
-  TYPED_GET_METHOD (mxUint64 *, get_uint64s)
+  // The typed get and set functions only work for interleaved data but
+  // they are defined here because this class owns PR.  There are
+  // definitions in the mxArray_separate_full class that override these
+  // functions.
 
-  TYPED_GET_METHOD (mxComplexDouble *, get_complex_doubles)
-  TYPED_GET_METHOD (mxComplexSingle *, get_complex_singles)
+  mxDouble * get_doubles (void) const
+  {
+    return static_cast<mxDouble *> (m_pr);
+  }
+
+  mxSingle * get_singles (void) const
+  {
+    return static_cast<mxSingle *> (m_pr);
+  }
+
+  mxInt8 * get_int8s (void) const
+  {
+    return static_cast<mxInt8 *> (m_pr);
+  }
+
+  mxInt16 * get_int16s (void) const
+  {
+    return static_cast<mxInt16 *> (m_pr);
+  }
+
+  mxInt32 * get_int32s (void) const
+  {
+    return static_cast<mxInt32 *> (m_pr);
+  }
+
+  mxInt64 * get_int64s (void) const
+  {
+    return static_cast<mxInt64 *> (m_pr);
+  }
+
+  mxUint8 * get_uint8s (void) const
+  {
+    return static_cast<mxUint8 *> (m_pr);
+  }
+
+  mxUint16 * get_uint16s (void) const
+  {
+    return static_cast<mxUint16 *> (m_pr);
+  }
+
+  mxUint32 * get_uint32s (void) const
+  {
+    return static_cast<mxUint32 *> (m_pr);
+  }
+
+  mxUint64 * get_uint64s (void) const
+  {
+    return static_cast<mxUint64 *> (m_pr);
+  }
+
+  mxComplexDouble * get_complex_doubles (void) const
+  {
+    return static_cast<mxComplexDouble *> (m_pr);
+  }
+
+  mxComplexSingle * get_complex_singles (void) const
+  {
+    return static_cast<mxComplexSingle *> (m_pr);
+  }
+
 #if 0
-  /* We don't have these yet. */
-  TYPED_GET_METHOD (mxComplexInt8 *, get_complex_int8s)
-  TYPED_GET_METHOD (mxComplexInt16 *, get_complex_int16s)
-  TYPED_GET_METHOD (mxComplexInt32 *, get_complex_int32s)
-  TYPED_GET_METHOD (mxComplexInt64 *, get_complex_int64s)
-  TYPED_GET_METHOD (mxComplexUint8 *, get_complex_uint8s)
-  TYPED_GET_METHOD (mxComplexUint16 *, get_complex_uint16s)
-  TYPED_GET_METHOD (mxComplexUint32 *, get_complex_uint32s)
-  TYPED_GET_METHOD (mxComplexUint64 *, get_complex_uint64s)
+  // We don't have these data types.
+
+  int get_complex_int8s (mxComplexInt8 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int get_complex_int16s (mxComplexInt16 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int get_complex_int32s (mxComplexInt32 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int get_complex_int64s (mxComplexInt64 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int get_complex_uint8s (mxComplexUint8 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int get_complex_uint16s (mxComplexUint16 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int get_complex_uint32s (mxComplexUint32 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int get_complex_uint64s (mxComplexUint64 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
 #endif
 
-  TYPED_SET_METHOD (mxDouble *, set_doubles)
-  TYPED_SET_METHOD (mxSingle *, set_singles)
-  TYPED_SET_METHOD (mxInt8 *, set_int8s)
-  TYPED_SET_METHOD (mxInt16 *, set_int16s)
-  TYPED_SET_METHOD (mxInt32 *, set_int32s)
-  TYPED_SET_METHOD (mxInt64 *, set_int64s)
-  TYPED_SET_METHOD (mxUint8 *, set_uint8s)
-  TYPED_SET_METHOD (mxUint16 *, set_uint16s)
-  TYPED_SET_METHOD (mxUint32 *, set_uint32s)
-  TYPED_SET_METHOD (mxUint64 *, set_uint64s)
+  int set_doubles (mxDouble *d)
+  {
+    m_pr = d;
+    return 0;
+  }
 
-  TYPED_SET_METHOD (mxComplexDouble *, set_complex_doubles)
-  TYPED_SET_METHOD (mxComplexSingle *, set_complex_singles)
+  int set_singles (mxSingle *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_int8s (mxInt8 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_int16s (mxInt16 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_int32s (mxInt32 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_int64s (mxInt64 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_uint8s (mxUint8 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_uint16s (mxUint16 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_uint32s (mxUint32 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_uint64s (mxUint64 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_doubles (mxComplexDouble *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_singles (mxComplexSingle *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
 #if 0
-  /* We don't have these yet. */
-  TYPED_SET_METHOD (mxComplexInt8 *, set_complex_int8s)
-  TYPED_SET_METHOD (mxComplexInt16 *, set_complex_int16s)
-  TYPED_SET_METHOD (mxComplexInt32 *, set_complex_int32s)
-  TYPED_SET_METHOD (mxComplexInt64 *, set_complex_int64s)
-  TYPED_SET_METHOD (mxComplexUint8 *, set_complex_uint8s)
-  TYPED_SET_METHOD (mxComplexUint16 *, set_complex_uint16s)
-  TYPED_SET_METHOD (mxComplexUint32 *, set_complex_uint32s)
-  TYPED_SET_METHOD (mxComplexUint64 *, set_complex_uint64s)
+  // We don't have these data types.
+
+  int set_complex_int8s (mxComplexInt8 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_int16s (mxComplexInt16 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_int32s (mxComplexInt32 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_int64s (mxComplexInt64 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_uint8s (mxComplexUint8 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_uint16s (mxComplexUint16 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_uint32s (mxComplexUint32 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_uint64s (mxComplexUint64 *d)
+  {
+    m_pr = d;
+    return 0;
+  }
 #endif
 
   int get_string (char *buf, mwSize buflen) const
@@ -2188,6 +2360,56 @@ public:
 
   ~mxArray_separate_full (void) = default;
 
+  mxDouble * get_doubles (void) const { panic_impossible (); }
+  mxSingle * get_singles (void) const { panic_impossible (); }
+  mxInt8 * get_int8s (void) const { panic_impossible (); }
+  mxInt16 * get_int16s (void) const { panic_impossible (); }
+  mxInt32 * get_int32s (void) const { panic_impossible (); }
+  mxInt64 * get_int64s (void) const { panic_impossible (); }
+  mxUint8 * get_uint8s (void) const { panic_impossible (); }
+  mxUint16 * get_uint16s (void) const { panic_impossible (); }
+  mxUint32 * get_uint32s (void) const { panic_impossible (); }
+  mxUint64 * get_uint64s (void) const { panic_impossible (); }
+
+  mxComplexDouble * get_complex_doubles (void) const { panic_impossible (); }
+  mxComplexSingle * get_complex_singles (void) const { panic_impossible (); }
+
+  // We don't have complex integer types, but for separate storage they
+  // still would not work.
+  mxComplexInt8 * get_complex_int8s (void) const { panic_impossible (); }
+  mxComplexInt16 * get_complex_int16s (void) const { panic_impossible (); }
+  mxComplexInt32 * get_complex_int32s (void) const { panic_impossible (); }
+  mxComplexInt64 * get_complex_int64s (void) const { panic_impossible (); }
+  mxComplexUint8 * get_complex_uint8s (void) const { panic_impossible (); }
+  mxComplexUint16 * get_complex_uint16s (void) const { panic_impossible (); }
+  mxComplexUint32 * get_complex_uint32s (void) const { panic_impossible (); }
+  mxComplexUint64 * get_complex_uint64s (void) const { panic_impossible (); }
+
+  int set_doubles (mxDouble *) { panic_impossible (); }
+  int set_singles (mxSingle *) { panic_impossible (); }
+  int set_int8s (mxInt8 *) { panic_impossible (); }
+  int set_int16s (mxInt16 *) { panic_impossible (); }
+  int set_int32s (mxInt32 *) { panic_impossible (); }
+  int set_int64s (mxInt64 *) { panic_impossible (); }
+  int set_uint8s (mxUint8 *) { panic_impossible (); }
+  int set_uint16s (mxUint16 *) { panic_impossible (); }
+  int set_uint32s (mxUint32 *) { panic_impossible (); }
+  int set_uint64s (mxUint64 *) { panic_impossible (); }
+
+  int set_complex_doubles (mxComplexDouble *) { panic_impossible (); }
+  int set_complex_singles (mxComplexSingle *) { panic_impossible (); }
+
+  // We don't have complex integer types, but for separate storage they
+  // still would not work.
+  int set_complex_int8s (mxComplexInt8 *) { panic_impossible (); }
+  int set_complex_int16s (mxComplexInt16 *) { panic_impossible (); }
+  int set_complex_int32s (mxComplexInt32 *) { panic_impossible (); }
+  int set_complex_int64s (mxComplexInt64 *) { panic_impossible (); }
+  int set_complex_uint8s (mxComplexUint8 *) { panic_impossible (); }
+  int set_complex_uint16s (mxComplexUint16 *) { panic_impossible (); }
+  int set_complex_uint32s (mxComplexUint32 *) { panic_impossible (); }
+  int set_complex_uint64s (mxComplexUint64 *) { panic_impossible (); }
+
 protected:
 
   mxArray_separate_full (const mxArray_separate_full& val)
@@ -2291,11 +2513,27 @@ public:
     m_pi = pi;
   }
 
-  TYPED_GET_METHOD (mxDouble *, get_doubles)
-  TYPED_GET_METHOD (mxComplexDouble *, get_complex_doubles)
+  mxDouble * get_doubles (void) const
+  {
+    return static_cast<mxDouble *> (m_pr);
+  }
 
-  TYPED_SET_METHOD (mxDouble *, set_doubles)
-  TYPED_SET_METHOD (mxComplexDouble *, set_complex_doubles)
+  mxComplexDouble * get_complex_doubles (void) const
+  {
+    return static_cast<mxComplexDouble *> (m_pr);
+  }
+
+  int set_doubles (mxDouble *d)
+  {
+    m_pr = d;
+    return 0;
+  }
+
+  int set_complex_doubles (mxComplexDouble * d)
+  {
+    m_pr = d;
+    return 0;
+  }
 
   mwIndex * get_ir (void) const { return m_ir; }
 
@@ -2495,6 +2733,12 @@ public:
   }
 
   ~mxArray_separate_sparse (void) = default;
+
+  mxDouble * get_doubles (void) const { panic_impossible (); }
+  mxComplexDouble * get_complex_doubles (void) const { panic_impossible (); }
+
+  int set_doubles (mxDouble *d) { panic_impossible (); }
+  int set_complex_doubles (mxComplexDouble * d) { panic_impossible (); }
 };
 
 // Matlab-style struct arrays.

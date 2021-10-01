@@ -113,6 +113,13 @@ protected:
       std::copy_n (c, nc + 1, m_cidx);
     }
 
+    template <typename U>
+    SparseRep (const dim_vector& dv, octave_idx_type nz,
+               U *d, octave_idx_type *r, octave_idx_type *c)
+      : m_data (d), m_ridx (r), m_cidx (c),
+        m_nzmax (nz), m_nrows (dv(0)), m_ncols (dv(1)), m_count (1)
+    { }
+
     SparseRep (const SparseRep& a)
       : m_data (new T [a.m_nzmax]), m_ridx (new octave_idx_type [a.m_nzmax]),
         m_cidx (new octave_idx_type [a.m_ncols + 1]),
@@ -217,6 +224,19 @@ public:
   Sparse (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz)
     : m_rep (new typename Sparse<T>::SparseRep (nr, nc, nz)),
       m_dimensions (dim_vector (nr, nc)) { }
+
+  // Construct a Sparse array from pointers to externally allocated
+  // arrays of values and indices.  PTR, RIDX, and CIDX must be
+  // allocated with operator new.  The Sparse object takes ownership of
+  // these arrays and will delete them when the Sparse object is
+  // deleted.  The dimension vector DV must be consistent with the sizes
+  // of the allocated PTR, CIDX, and RIDX arrays.
+
+  Sparse (const dim_vector& dv, octave_idx_type nz,
+          T *ptr, octave_idx_type *ridx, octave_idx_type *cidx)
+    : m_rep (new typename Sparse<T>::SparseRep (dv, nz, ptr, ridx, cidx)),
+      m_dimensions (dv)
+  { }
 
   // Both SparseMatrix and SparseBoolMatrix need this ctor, and this
   // is their only common ancestor.

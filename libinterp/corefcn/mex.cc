@@ -352,6 +352,8 @@ calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
 
 static inline void * maybe_mark_foreign (void *ptr);
 
+static inline void maybe_disown_ptr (void *ptr);
+
 #define VOID_MUTATION_METHOD(FCN_NAME, ARG_LIST)        \
   void FCN_NAME ARG_LIST { request_mutation (); }
 
@@ -1995,10 +1997,12 @@ public:
     switch (get_class_id ())
       {
       case mxDOUBLE_CLASS:
-        return fp_to_ov<double> (dv);
+        return (is_complex ()
+                ? fp_to_ov<Complex> (dv) : fp_to_ov<double> (dv));
 
       case mxSINGLE_CLASS:
-        return fp_to_ov<float> (dv);
+        return (is_complex ()
+                ? fp_to_ov<FloatComplex> (dv) : fp_to_ov<float> (dv));
 
       case mxCHAR_CLASS:
         return int_to_ov<mxChar, charNDArray, char> (dv);
@@ -2051,36 +2055,13 @@ protected:
   octave_value
   fp_to_ov (const dim_vector& dv) const
   {
-    if (is_complex ())
-      {
-        std::complex<ELT_T> *ppr = static_cast<std::complex<ELT_T> *> (m_pr);
+    ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
-        Array<std::complex<ELT_T>> val (dv);
+    Array<ELT_T> val (ppr, dv);
 
-        std::complex<ELT_T> *ptr = val.fortran_vec ();
+    maybe_disown_ptr (m_pr);
 
-        mwSize nel = get_number_of_elements ();
-
-        for (mwIndex i = 0; i < nel; i++)
-          ptr[i] = ppr[i];
-
-        return octave_value (val);
-      }
-    else
-      {
-        ELT_T *ppr = static_cast<ELT_T *> (m_pr);
-
-        Array<ELT_T> val (dv);
-
-        ELT_T *ptr = val.fortran_vec ();
-
-        mwSize nel = get_number_of_elements ();
-
-        for (mwIndex i = 0; i < nel; i++)
-          ptr[i] = ppr[i];
-
-        return octave_value (val);
-      }
+    return octave_value (val);
   }
 
   template <typename ELT_T, typename ARRAY_T, typename ARRAY_ELT_T>
@@ -2092,6 +2073,11 @@ protected:
 
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
+#if 0
+    ARRAY_T val (ppr, dv);
+
+    maybe_disown_ptr (m_pr);
+#else
     ARRAY_T val (dv);
 
     ARRAY_ELT_T *ptr = val.fortran_vec ();
@@ -2100,6 +2086,7 @@ protected:
 
     for (mwIndex i = 0; i < nel; i++)
       ptr[i] = ppr[i];
+#endif
 
     return octave_value (val);
   }
@@ -2307,42 +2294,10 @@ public:
     switch (get_class_id ())
       {
       case mxDOUBLE_CLASS:
-        {
-          mwSize nel = get_number_of_elements ();
-
-          double *ppr = static_cast<double *> (m_pr);
-
-          ComplexNDArray val (dv);
-
-          Complex *ptr = val.fortran_vec ();
-
-          double *ppi = static_cast<double *> (m_pi);
-
-          for (mwIndex i = 0; i < nel; i++)
-            ptr[i] = Complex (ppr[i], ppi[i]);
-
-          retval = val;
-        }
-        break;
+        return to_ov<double> (dv);
 
       case mxSINGLE_CLASS:
-        {
-          mwSize nel = get_number_of_elements ();
-
-          float *ppr = static_cast<float *> (m_pr);
-
-          FloatComplexNDArray val (dv);
-
-          FloatComplex *ptr = val.fortran_vec ();
-
-          float *ppi = static_cast<float *> (m_pi);
-
-          for (mwIndex i = 0; i < nel; i++)
-            ptr[i] = FloatComplex (ppr[i], ppi[i]);
-
-          retval = val;
-        }
-        break;
+        return to_ov<float> (dv);
 
       case mxLOGICAL_CLASS:
       case mxINT8_CLASS:
@@ -2375,6 +2330,26 @@ protected:
   }
 
 private:
+
+  template <typename T>
+  octave_value
+  to_ov (const dim_vector& dv) const
+  {
+    mwSize nel = get_number_of_elements ();
+
+    T *ppr = static_cast<T *> (m_pr);
+
+    Array<std::complex<T>> val (dv);
+
+    std::complex<T> *ptr = val.fortran_vec ();
+
+    T *ppi = static_cast<T *> (m_pi);
+
+    for (mwIndex i = 0; i < nel; i++)
+      ptr[i] = std::complex<T> (ppr[i], ppi[i]);
+
+    return octave_value (val);
+  }
 
   // Pointer to the imaginary part of the data.
   void *m_pi;
@@ -2481,16 +2456,18 @@ public:
   {
     octave_value retval;
 
+    dim_vector dv = dims_to_dim_vector ();
+
     switch (get_class_id ())
       {
       case mxDOUBLE_CLASS:
-        return is_complex () ? to_ov<Complex> (): to_ov<double> ();
+        return is_complex () ? to_ov<Complex> (dv): to_ov<double> (dv);
 
       case mxSINGLE_CLASS:
         error ("single precision sparse data type not supported");
 
       case mxLOGICAL_CLASS:
-        return to_ov<bool> ();
+        return to_ov<bool> (dv);
 
       default:
         panic_impossible ();
@@ -2503,21 +2480,16 @@ protected:
 
   template <typename ELT_T>
   octave_value
-  to_ov (void) const
+  to_ov (const dim_vector& dv) const
   {
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
-    Sparse<ELT_T> val (get_m (), get_n (),
-                       static_cast<octave_idx_type> (m_nzmax));
+    Sparse<ELT_T> val (dv, static_cast<octave_idx_type> (m_nzmax),
+                       ppr, m_ir, m_jc);
 
-    for (mwIndex i = 0; i < m_nzmax; i++)
-      {
-        val.xdata (i) = ppr[i];
-        val.xridx (i) = m_ir[i];
-      }
-
-    for (mwIndex i = 0; i < get_n () + 1; i++)
-      val.xcidx (i) = m_jc[i];
+    maybe_disown_ptr (m_pr);
+    maybe_disown_ptr (m_ir);
+    maybe_disown_ptr (m_jc);
 
     return octave_value (val);
   }
@@ -2640,6 +2612,8 @@ public:
       return mxArray_base_sparse::as_octave_value ();
 
     octave_value retval;
+
+    dim_vector dv = dims_to_dim_vector ();
 
     switch (get_class_id ())
       {
@@ -3602,6 +3576,17 @@ maybe_mark_foreign (void *ptr)
     mex_context->mark_foreign (ptr);
 
   return ptr;
+}
+
+static inline void
+maybe_disown_ptr (void *ptr)
+{
+  if (mex_context)
+    {
+      mex_context->unmark (ptr);
+      mex_context->global_unmark (ptr);
+      mex_context->mark_foreign (ptr);
+    }
 }
 
 static inline mxArray *

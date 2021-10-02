@@ -146,7 +146,8 @@ function outstr = do_header (title_str, intro_str, toc_cstr)
 'frame=single,',
 'tabsize=2,',
 'showstringspaces=false,',
-'breaklines=true}');
+'breaklines=true,',
+'texcl=true}');
 
   latex_head = sprintf ("%s\n",
 "",

@@ -1,3 +1,35 @@
+Summary of bugs fixed for version 6.4.0 (tbd)
+----------------------------------------------------
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+- Reduce memory usage in BISTs for `copyobj`, `hgsave` (bug #57591).
+- `hgsave.m`, `copyobj.m`: Use `'qt'` graphics toolkit in BISTs.
+- `main.cc`: Use `getopt` to parse command line arguments (bug #60886).
+- `main.cc`: Remove invalid case (bug #60886).
+- Disable `getopt` error reporting in wrapper program (bug #60886).
+- `interp1.m`: Don't interpret later numeric input as `xi` (bug #60967).
+- `pkg`: Improve similar package name suggestion (bug #61067).
+- Store parent name in function object when caching parents in scope (bug #61105).
+- Avoid internal error and segfault with `eval` and scripts (bug #61191).
+- `rmpath`: Prevent removing the current directory from the load path (bug #61216).
+
+### GUI
+
+- Fix missing interpreter event in `octave-scintilla`.
+- Fix opening a file in a custom editor (bug #60990).
+
+### Documentation
+
+- Improve docstring for `disable_diagonal_matrix`, `disable_diagonal_matrix`,
+  and `disable_range` (patch #10089).
+- `cbrt`: Clarify that function errors for non-real input.
+- `dsearchn.m`: Added optional distance output description (bug #61156).
+- Add Hungarian translation for project description files.
+
+
 Summary of bugs fixed for version 6.3.0 (2021-07-11)
 ----------------------------------------------------
 

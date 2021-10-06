@@ -76,6 +76,12 @@ constants in array expressions with leading zeros so that they use the
 same number of digits for each value such as
 `[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
+- The `factor` function has been overhauled for speed.  Especially, for
+large input quantities (> 1e14) with small prime factors, e.g.
+`intmax ("uint64")`, the function can be up to 10,000 times faster.
+However, for large input quantities with large prime factors, the function
+can be up to 4x faster.
+
 - The `mldivide` function (i.e., the `\` operator) now uses an LU
 decomposition to solve nearly singular full square matrices.  This is
 Matlab-compatible and yields results which more nearly minimize `norm

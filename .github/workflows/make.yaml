@@ -116,7 +116,7 @@ jobs:
       - name: check
         timeout-minutes: 60
         run: XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check | tee ./test-suite.log
-        
+
       - name: display test log
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
@@ -287,8 +287,8 @@ jobs:
 
     defaults:
       run:
-        # Use pre-installed MSYS2 as default shell
-        shell: C:/msys64/usr/bin/bash.exe --login -eo pipefail "{0}"
+        # Use MSYS2 as default shell
+        shell: msys2 {0}
 
     strategy:
       # Allow other runners in the matrix to continue if some fail
@@ -320,36 +320,65 @@ jobs:
             f77: i686-w64-mingw32-gfortran
 
     env:
-      MSYSTEM: ${{ matrix.msystem }}
       CHERE_INVOKING: 1
       CC:  ${{ matrix.cc }}
       CXX:  ${{ matrix.cxx }}
       F77:  ${{ matrix.f77 }}
       TARGET_TRIPLET:  ${{ matrix.target-triplet }}
-      TARGET_PREFIX:  ${{ matrix.target-prefix }}
       # perl uses cmd shell by default
       PERL5SHELL: bash -l -c
 
     steps:
-      - name: update MSYS2
-        # This step might update the runtime which requires a console restart
-        # In this case, it will kill the console which shouldn't count as an error.
-        continue-on-error: true
-        run: pacman --noconfirm -Syu
+      - uses: msys2/setup-msys2@v2
+        with:
+          update: true
 
-      - name: install dependencies
-        # The packages are listed in (alphabetically sorted) blocks:
-        # The first block is for mandatory dependencies.
-        # The second block is for optional dependencies needed when building from a release tarball.
-        # The third block is for additional dependencies needed when building from a repository checkout.
-        # The fourth block is for additional run-time dependencies that aren't needed to build (to run test suite)
-        run: |
-          pacman --noconfirm -Syu
-          pacman --noconfirm -S --needed --overwrite * \
-            base-devel ${TARGET_PREFIX}-toolchain ${TARGET_PREFIX}-lapack ${TARGET_PREFIX}-openblas ${TARGET_PREFIX}-pcre \
-            ${TARGET_PREFIX}-arpack ${TARGET_PREFIX}-curl ${TARGET_PREFIX}-fftw ${TARGET_PREFIX}-fltk ${TARGET_PREFIX}-gl2ps ${TARGET_PREFIX}-glpk ${TARGET_PREFIX}-ghostscript ${TARGET_PREFIX}-gnuplot ${TARGET_PREFIX}-graphicsmagick ${TARGET_PREFIX}-hdf5 ${TARGET_PREFIX}-libsndfile ${TARGET_PREFIX}-portaudio ${TARGET_PREFIX}-qhull ${TARGET_PREFIX}-qrupdate ${TARGET_PREFIX}-qscintilla ${TARGET_PREFIX}-qt5 ${TARGET_PREFIX}-rapidjson ${TARGET_PREFIX}-suitesparse ${TARGET_PREFIX}-sundials \
-            git ${TARGET_PREFIX}-ccache ${TARGET_PREFIX}-icoutils ${TARGET_PREFIX}-librsvg texinfo \
-            unzip zip
+          # Use pre-installed version to save disc space on partition with source.
+          # We need that space for building.
+          release: false
+
+          # The packages are listed in (alphabetically sorted) blocks:
+          # The first block is for mandatory dependencies.
+          # The second block is for optional dependencies needed when building from a release tarball.
+          # The third block is for additional dependencies needed when building from a repository checkout.
+          # The fourth block is for additional run-time dependencies that aren't needed to build (to run test suite).
+          install: >-
+            base-devel
+            ${{ matrix.target-prefix }}-toolchain
+            ${{ matrix.target-prefix }}-lapack
+            ${{ matrix.target-prefix }}-openblas
+            ${{ matrix.target-prefix }}-pcre
+
+            ${{ matrix.target-prefix }}-arpack
+            ${{ matrix.target-prefix }}-curl
+            ${{ matrix.target-prefix }}-fftw
+            ${{ matrix.target-prefix }}-fltk
+            ${{ matrix.target-prefix }}-gl2ps
+            ${{ matrix.target-prefix }}-glpk
+            ${{ matrix.target-prefix }}-ghostscript
+            ${{ matrix.target-prefix }}-gnuplot
+            ${{ matrix.target-prefix }}-graphicsmagick
+            ${{ matrix.target-prefix }}-hdf5
+            ${{ matrix.target-prefix }}-libsndfile
+            ${{ matrix.target-prefix }}-portaudio
+            ${{ matrix.target-prefix }}-qhull
+            ${{ matrix.target-prefix }}-qrupdate
+            ${{ matrix.target-prefix }}-qscintilla
+            ${{ matrix.target-prefix }}-qt5
+            ${{ matrix.target-prefix }}-rapidjson
+            ${{ matrix.target-prefix }}-suitesparse
+            ${{ matrix.target-prefix }}-sundials
+
+            git
+            ${{ matrix.target-prefix }}-ccache
+            ${{ matrix.target-prefix }}-icoutils
+            ${{ matrix.target-prefix }}-librsvg
+            texinfo
+
+            unzip
+            zip
+
+          msystem: ${{ matrix.msystem }}
 
       - name: checkout repository
         uses: actions/checkout@v2

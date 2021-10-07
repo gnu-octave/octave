@@ -48,17 +48,18 @@ function Z = null (A, tol)
 
   [~, S, V] = svd (A, 0);  # Use economy-sized svd if possible.
 
-  ## In case of A = [], zeros (0,X), zeros (X,0) Matlab R2020b seems to
-  ## simply return the nullspace "V" of the svd-decomposition (bug #59630).
   if (isempty (A))
+    ## In case of A = [], zeros (0,X), zeros (X,0) Matlab R2020b seems to
+    ## simply return the nullspace "V" of the svd-decomposition (bug #59630).
     Z = V;
   else
     out_cls = class (V);
 
-    if (rows (A) > 1)
+    ## Extract column vector from Diagonal Matrix which depends on size
+    if (rows (S) > 1)
       s = diag (S);
     else
-      s = S.';
+      s = S(1);
     end
     if (nargin == 1)
       tol = max (size (A)) * s(1) * eps (out_cls);
@@ -78,52 +79,48 @@ endfunction
 
 
 ## Exact tests
-
 %!test
-%! A = { ...
-%!   [], []; ...
-%!   zeros(1,0), []; ...
-%!   zeros(4,0), []; ...
-%!   zeros(0,1), 1; ...
-%!   zeros(0,4), eye(4); ...
-%!   0, 1; ...
-%!   1, zeros(1,0); ...
-%!   [1 0; 0 1], zeros(2,0); ...
-%!   [1 0; 1 0], [0 1]'; ...
+%! A = {
+%!   [], [];
+%!   zeros(1,0), [];
+%!   zeros(4,0), [];
+%!   zeros(0,1), 1;
+%!   zeros(0,4), eye(4);
+%!   0, 1;
+%!   1, zeros(1,0);
+%!   [1 0; 0 1], zeros(2,0);
+%!   [1 0; 1 0], [0 1]';
 %! };
-%! for i = 1:size (A, 1)
+%! for i = 1:rows (A)
 %!   assert (null (A{i,1}), A{i,2});
 %!   assert (null (single (A{i,1})), single (A{i,2}));
 %! endfor
 
-
 ## Inexact tests
-
 %!test
-%! A = { ...
-%!   [1 1; 0 0], [-1/sqrt(2) 1/sqrt(2)]'; ...
+%! A = {
+%!   [1 1; 0 0], [-1/sqrt(2) 1/sqrt(2)]';
 %! };
-%! for i = 1:size (A, 1)
+%! for i = 1:rows (A)
 %!   assert (null (A{i,1}), A{i,2}, eps);
 %!   assert (null (single (A{i,1})), single (A{i,2}), eps);
 %! endfor
 
-
 ## Tests with tolerance input
-
 %!test
 %! tol = 1e-4;
-%! A = { ...
-%!   @(e) [1 0; 0 tol-e], [0 1]'; ...
-%!   @(e) [1 0; 0 tol+e], zeros(2,0); ...
+%! A = {
+%!   @(e) [1 0; 0 tol-e], [0 1]';
+%!   @(e) [1 0; 0 tol+e], zeros(2,0);
 %! };
-%! for i = 1:size (A, 1)
+%! for i = 1:rows (A)
 %!   assert (null (A{i,1}(eps ("double")), tol), A{i,2});
 %!   assert (null (single (A{i,1}(eps ("single"))), tol), single (A{i,2}));
 %! endfor
 
-
-## Input tests
-
+## Input corner cases
 %!assert (null (uint8 ([])), [])
 
+## Test input validation
+%!error <Invalid call> null ()
+%!error <rational not yet implemented> null (1, 'r')

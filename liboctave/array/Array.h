@@ -713,11 +713,6 @@ public:
 
   OCTARRAY_API void print_info (std::ostream& os, const std::string& prefix) const;
 
-  //! Give a pointer to the data in mex format.  Unsafe.  This function
-  //! exists to support the MEX interface.  You should not use it
-  //! anywhere else.
-  void * mex_get_data (void) const { return const_cast<T *> (data ()); }
-
   OCTARRAY_API Array<T> sort (int dim = 0, sortmode mode = ASCENDING) const;
   OCTARRAY_API Array<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
                  sortmode mode = ASCENDING) const;

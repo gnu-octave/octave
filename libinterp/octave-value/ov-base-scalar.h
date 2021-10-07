@@ -157,9 +157,9 @@ public:
   edit_display (const float_display_format& fmt,
                 octave_idx_type i, octave_idx_type j) const;
 
-  // Unsafe.  This function exists to support the MEX interface.
+  // This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void * mex_get_data (void) const { return const_cast<ST *> (&scalar); }
+  const void * mex_get_data (void) const { return &scalar; }
 
   const ST& scalar_ref (void) const { return scalar; }
 

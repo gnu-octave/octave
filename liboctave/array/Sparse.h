@@ -578,20 +578,6 @@ public:
   OCTAVE_API void
   print_info (std::ostream& os, const std::string& prefix) const;
 
-  // Unsafe.  These functions exist to support the MEX interface.
-  // You should not use them anywhere else.
-  void * mex_get_data (void) const { return const_cast<T *> (data ()); }
-
-  octave_idx_type * mex_get_ir (void) const
-  {
-    return const_cast<octave_idx_type *> (ridx ());
-  }
-
-  octave_idx_type * mex_get_jc (void) const
-  {
-    return const_cast<octave_idx_type *> (cidx ());
-  }
-
   OCTAVE_API Sparse<T>
   sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
   OCTAVE_API Sparse<T>

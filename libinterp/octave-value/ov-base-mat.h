@@ -198,9 +198,9 @@ public:
   OCTINTERP_API bool
   fast_elem_insert (octave_idx_type n, const octave_value& x);
 
-  // Unsafe.  This function exists to support the MEX interface.
+  // This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void * mex_get_data (void) const { return matrix.mex_get_data (); }
+  const void * mex_get_data (void) const { return matrix.data (); }
 
 protected:
 

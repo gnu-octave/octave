@@ -1478,15 +1478,23 @@ public:
 
   octave_base_value * internal_rep (void) const { return m_rep; }
 
-  // Unsafe.  These functions exist to support the MEX interface.
+  // These functions exist to support the MEX interface.
   // You should not use them anywhere else.
-  OCTINTERP_API void *
+
+  OCTINTERP_API const void *
   mex_get_data (mxClassID class_id = mxUNKNOWN_CLASS,
                 mxComplexity complexity = mxREAL) const;
 
-  octave_idx_type * mex_get_ir (void) const { return m_rep->mex_get_ir (); }
+  const octave_idx_type * mex_get_ir (void) const
+  {
+    return m_rep->mex_get_ir ();
+  }
 
-  octave_idx_type * mex_get_jc (void) const { return m_rep->mex_get_jc (); }
+  const octave_idx_type *
+  mex_get_jc (void) const
+  {
+    return m_rep->mex_get_jc ();
+  }
 
   mxArray * as_mxArray (bool interleaved = false) const
   { return m_rep->as_mxArray (interleaved); }

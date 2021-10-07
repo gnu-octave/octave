@@ -739,11 +739,11 @@ public:
          oct_data_conv::data_type output_type, int skip,
          octave::mach_info::float_format flt_fmt) const;
 
-  virtual void * mex_get_data (void) const { return nullptr; }
+  virtual const void * mex_get_data (void) const { return nullptr; }
 
-  virtual octave_idx_type * mex_get_ir (void) const { return nullptr; }
+  virtual const octave_idx_type * mex_get_ir (void) const { return nullptr; }
 
-  virtual octave_idx_type * mex_get_jc (void) const { return nullptr; }
+  virtual const octave_idx_type * mex_get_jc (void) const { return nullptr; }
 
   virtual mxArray * as_mxArray (bool interleaved) const;
 

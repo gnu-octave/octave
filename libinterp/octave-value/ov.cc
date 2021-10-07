@@ -2335,7 +2335,7 @@ octave_value::print_info (std::ostream& os, const std::string& prefix) const
   m_rep->print_info (os, prefix + ' ');
 }
 
-void *
+const void *
 octave_value::mex_get_data (mxClassID class_id, mxComplexity complexity) const
 {
   // If class_id is set to mxUNKNOWN_CLASS, return data for any type.

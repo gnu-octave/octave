@@ -232,13 +232,13 @@ public:
   edit_display (const float_display_format& fmt,
                 octave_idx_type i, octave_idx_type j) const;
 
-  // Unsafe.  These functions exists to support the MEX interface.
+  // These functions exists to support the MEX interface.
   // You should not use them anywhere else.
-  void * mex_get_data (void) const { return matrix.mex_get_data (); }
+  const void * mex_get_data (void) const { return matrix.data (); }
 
-  octave_idx_type * mex_get_ir (void) const { return matrix.mex_get_ir (); }
+  const octave_idx_type * mex_get_ir (void) const { return matrix.ridx (); }
 
-  octave_idx_type * mex_get_jc (void) const { return matrix.mex_get_jc (); }
+  const octave_idx_type * mex_get_jc (void) const { return matrix.cidx (); }
 
   OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 

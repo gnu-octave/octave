@@ -176,9 +176,9 @@ public:
 
   mxArray * as_mxArray (bool interleaved) const;
 
-  // Unsafe.  This function exists to support the MEX interface.
+  // This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void * mex_get_data (void) const;
+  const void * mex_get_data (void) const;
 
 private:
 

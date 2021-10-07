@@ -235,9 +235,9 @@ public:
     return make_value ().write (os, block_size, output_type, skip, flt_fmt);
   }
 
-  // Unsafe.  This function exists to support the MEX interface.
+  // This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void * mex_get_data (void) const
+  const void * mex_get_data (void) const
   {
     return make_value ().mex_get_data ();
   }

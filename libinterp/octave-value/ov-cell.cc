@@ -994,11 +994,11 @@ octave_cell::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-void *
+const void *
 octave_cell::mex_get_data (void) const
 {
   clear_cellstr_cache ();
-  return matrix.mex_get_data ();
+  return matrix.data ();
 }
 
 bool

@@ -631,16 +631,16 @@ public:
     if (m_val.issparse ())
       {
         // For sparse arrays, return the first non-zero value.
-        void *m_data = m_val.mex_get_data ();
+        const void *m_data = m_val.mex_get_data ();
         if (m_data == nullptr)
           return 0.0;
 
         if (m_val.islogical ())
-          return *static_cast<bool *> (m_data);
+          return *static_cast<const bool *> (m_data);
         else if (m_val.isreal ())
-          return *static_cast<double *> (m_data);
+          return *static_cast<const double *> (m_data);
         else  // Complex type, only return real part
-          return *static_cast<double *> (m_data);
+          return *static_cast<const double *> (m_data);
       }
     else
       return m_val.scalar_value (true);
@@ -648,7 +648,9 @@ public:
 
   void * get_data (void) const
   {
-    void *retval = m_val.mex_get_data ();
+    // Casting away const required for MEX interface.
+
+    void *retval = const_cast<void *> (m_val.mex_get_data ());
 
     if (retval && (m_val.isreal () || m_interleaved))
       {
@@ -663,7 +665,11 @@ public:
   template <typename T>
   T * get_data (mxClassID class_id, mxComplexity complexity) const
   {
-    T *retval = static_cast<T *> (m_val.mex_get_data (class_id, complexity));
+    // Casting away const required for MEX interface.
+
+    void *ptr = const_cast<void *> (m_val.mex_get_data (class_id, complexity));
+
+    T *retval = static_cast<T *> (ptr);
 
     if (retval && (complexity == mxREAL || m_interleaved))
       {
@@ -763,12 +769,18 @@ public:
 
   mwIndex * get_ir (void) const
   {
-    return static_cast<mwIndex *> (maybe_mark_foreign (m_val.mex_get_ir ()));
+    // Casting away const required for MEX interface.
+
+    octave_idx_type *ptr = const_cast<octave_idx_type *> (m_val.mex_get_ir ());
+    return static_cast<mwIndex *> (maybe_mark_foreign (ptr));
   }
 
   mwIndex * get_jc (void) const
   {
-    return static_cast<mwIndex *> (maybe_mark_foreign (m_val.mex_get_jc ()));
+    // Casting away const required for MEX interface.
+
+    octave_idx_type *ptr = const_cast<octave_idx_type *> (m_val.mex_get_jc ());
+    return static_cast<mwIndex *> (maybe_mark_foreign (ptr));
   }
 
   mwSize get_nzmax (void) const { return m_val.nzmax (); }

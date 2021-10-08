@@ -1172,7 +1172,7 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
 
   endswitch
 
-  htxt = __go_text__ (hl, "string", str, txtpval{:});
+  htxt = __go_text__ (hl, txtpval{:}, "string", str);
 
   addproperty ("peer_object", htxt, "double", base_hplt);
   addproperty ("peer_object", hicon, "double", base_hplt);

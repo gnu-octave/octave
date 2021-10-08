@@ -106,6 +106,9 @@
 ## @item -1
 ## Stopped by @code{OutputFcn}.
 ##
+## @item -2
+## The Jacobian became excessively small and the search stalled.
+##
 ## @item -3
 ## The trust region radius became excessively small.
 ## @end table

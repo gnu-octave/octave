@@ -306,18 +306,18 @@ jobs:
             target-prefix: mingw-w64-x86_64
             msystem: MINGW64
             mingw-prefix: mingw64
-            cc: x86_64-w64-mingw32-gcc
-            cxx: x86_64-w64-mingw32-g++
-            f77: x86_64-w64-mingw32-gfortran
+            cc: gcc
+            cxx: g++
+            f77: gfortran
           - compiler: gcc
             target: i686
             target-triplet: i686-w64-mingw32
             target-prefix: mingw-w64-i686
             msystem: MINGW32
             mingw-prefix: mingw32
-            cc: i686-w64-mingw32-gcc
-            cxx: i686-w64-mingw32-g++
-            f77: i686-w64-mingw32-gfortran
+            cc: gcc
+            cxx: g++
+            f77: gfortran
 
     env:
       CHERE_INVOKING: 1

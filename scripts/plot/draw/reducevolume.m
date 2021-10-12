@@ -137,10 +137,10 @@ function [x, y, z, v, r] = __get_check_reducevolume_args__ (naout, varargin)
 
   if (naout == 4)
     if (isempty (x))
-      x = 1:size (v, 2);
+      x = 1:columns (v);
     endif
     if (isempty (y))
-      y = 1:size (v, 1);
+      y = 1:rows (v);
     endif
     if (isempty (z))
       z = 1:size (v, 3);

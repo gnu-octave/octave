@@ -80,8 +80,8 @@ function vn = isonormals (varargin)
     case 2
       val = varargin{1};
       vp = varargin{2};
-      x = 1:size (val, 2);
-      y = 1:size (val, 1);
+      x = 1:columns (val);
+      y = 1:rows (val);
       z = 1:size (val, 3);
 
     case 5

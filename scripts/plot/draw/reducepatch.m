@@ -394,16 +394,16 @@ endfunction
 ## two inputs (structure, reduction_factor > 1), two outputs
 %!test
 %! [faces_reduced, vertices_reduced] = reducepatch (fv, 20);
-%! assert (size (faces_reduced, 1), 20, 3);
-%! assert (size (faces_reduced, 2), 3);
-%! assert (size (vertices_reduced, 2), 3);
+%! assert (rows (faces_reduced), 20, 3);
+%! assert (columns (faces_reduced), 3);
+%! assert (columns (vertices_reduced), 3);
 
 ## three inputs (faces, vertices, reduction_factor < 1), two outputs
 %!test
 %! [faces_reduced, vertices_reduced] = reducepatch (faces, vertices, .5);
-%! assert (size (faces_reduced, 1), num_faces * .5, 3);
-%! assert (size (faces_reduced, 2), 3);
-%! assert (size (vertices_reduced, 2), 3);
+%! assert (rows (faces_reduced), num_faces * .5, 3);
+%! assert (columns (faces_reduced), 3);
+%! assert (columns (vertices_reduced), 3);
 
 ## two inputs (structure, reduction_factor < 1) + one string, no outputs
 ## (update patch object in figure)
@@ -427,16 +427,16 @@ endfunction
 ## two inputs (structure, reduction_factor < 1) + one string, two outputs
 %!test
 %! [faces_reduced, vertices_reduced] = reducepatch (fv, .4, "fast");
-%! assert (size (faces_reduced, 1), num_faces * .4, 3);
-%! assert (size (faces_reduced, 2), 3);
-%! assert (size (vertices_reduced, 2), 3);
+%! assert (rows (faces_reduced), num_faces * .4, 3);
+%! assert (columns (faces_reduced), 3);
+%! assert (columns (vertices_reduced), 3);
 
 ## one input (structure) + two (empty) strings, two outputs
 %!test
 %! [faces_reduced, vertices_reduced] = reducepatch (fv, "f", "");
-%! assert (size (faces_reduced, 1), num_faces * .5, 3);
-%! assert (size (faces_reduced, 2), 3);
-%! assert (size (vertices_reduced, 2), 3);
+%! assert (rows (faces_reduced), num_faces * .5, 3);
+%! assert (columns (faces_reduced), 3);
+%! assert (columns (vertices_reduced), 3);
 
 ## test for each error
 %!error <Invalid call> reducepatch ()
@@ -452,11 +452,11 @@ endfunction
 %!error <REDUCTION_FACTOR must be a positive scalar> reducepatch (fv, -5)
 %!error <VERTICES must be an Mx3 matrix> reducepatch (faces, .7, "v")
 %!error <reducepatch: Currently patches must consist of triangles only>
-%! faces_new = NaN (size (faces, 1), 4);
+%! faces_new = NaN (rows (faces), 4);
 %! faces_new(:,1:3) = faces;
 %! faces_new(1,4) = 5;
 %! reducepatch (faces_new, vertices);
 %!error <reducepatch: not enough VERTICES for given FACES>
 %! faces_new = faces;
-%! faces_new(1,3) = size (vertices, 1) + 1;
+%! faces_new(1,3) = rows (vertices) + 1;
 %! reducepatch (faces_new, vertices);

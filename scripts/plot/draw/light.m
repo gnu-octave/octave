@@ -158,14 +158,14 @@ endfunction
 %! ## Lighting modes on surfaces
 %! clf;
 %! Z = peaks ();
-%! [X, Y] = meshgrid (1:size (Z, 2), 1:size (Z, 1));
+%! [X, Y] = meshgrid (1:columns (Z), 1:rows (Z));
 %!
 %! h_axes1 = axes ();
 %! surf (X, Y, Z, "LineStyle", "none", "FaceLighting", "none");
 %! hold on;
-%! surf (X + round (1.2 * size (Z, 2)), Y, Z, "LineStyle", "none", ...
+%! surf (X + round (1.2 * columns (Z)), Y, Z, "LineStyle", "none", ...
 %!       "FaceLighting", "flat");
-%! surf (X + round (2.4 * size (Z, 2)), Y, Z, "LineStyle", "none", ...
+%! surf (X + round (2.4 * columns (Z)), Y, Z, "LineStyle", "none", ...
 %!       "FaceLighting", "gouraud");
 %! axis tight
 %! axis equal

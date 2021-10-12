@@ -161,7 +161,7 @@
 ##
 ## @example
 ## @group
-## @var{fcn} = @@(x) basefcn (x)(:,size(x,2) * (@var{D}-1) + (1:size(x,2)));
+## @var{fcn} = @@(x) basefcn (x)(:,columns(x) * (@var{D}-1) + (1:columns(x)));
 ## @var{y} = movfun (@@fcn, @dots{});
 ## @end group
 ## @end example

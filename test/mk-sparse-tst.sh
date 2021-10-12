@@ -403,7 +403,7 @@ gen_matrixdiag_tests() {
 %!test
 %! [tb,tc] = spdiags (as);
 %! assert (spdiags (tb,tc,sparse (zeros (size (as)))), as);
-%! assert (spdiags (tb,tc,size (as,1),size (as,2)), as);
+%! assert (spdiags (tb,tc,rows (as),columns (as)), as);
 
 EOF
 }
@@ -857,8 +857,8 @@ gen_select_tests() {
 %!assert (as(ridx,:), sparse (af(ridx,:)))
 %!assert (as(:,cidx), sparse (af(:,cidx)))
 %!assert (as(:,:), sparse (af(:,:)))
-%!assert (as((size (as,1):-1:1),:), sparse (af((size (af,1):-1:1),:)))
-%!assert (as(:,(size (as,2):-1:1)), sparse (af(:, (size (af,2):-1:1))))
+%!assert (as((rows (as):-1:1),:), sparse (af((size (af,1):-1:1),:)))
+%!assert (as(:,(columns (as):-1:1)), sparse (af(:, (size (af,2):-1:1))))
 
 %% Indexing tests
 %!assert (full (as([1,1],:)), af([1,1],:))
@@ -869,20 +869,20 @@ gen_select_tests() {
 
 %% Assignment test
 %!test
-%! ts = as; ts(:,:) = ts(fliplr (1:size (as,1)),:);
-%! tf = af; tf(:,:) = tf(fliplr (1:size (af,1)),:);
+%! ts = as; ts(:,:) = ts(fliplr (1:rows (as)),:);
+%! tf = af; tf(:,:) = tf(fliplr (1:rows (af)),:);
 %! assert (ts, sparse (tf));
 %!test
-%! ts = as; ts(fliplr (1:size (as,1)),:) = ts;
-%! tf = af; tf(fliplr (1:size (af,1)),:) = tf;
+%! ts = as; ts(fliplr (1:rows (as)),:) = ts;
+%! tf = af; tf(fliplr (1:rows (af)),:) = tf;
 %! assert (ts, sparse (tf));
 %!test
-%! ts = as; ts(:,fliplr (1:size (as,2))) = ts;
-%! tf = af; tf(:,fliplr (1:size (af,2))) = tf;
+%! ts = as; ts(:,fliplr (1:columns (as))) = ts;
+%! tf = af; tf(:,fliplr (1:columns (af))) = tf;
 %! assert (ts, sparse (tf));
 %!test
-%! ts(fliplr (1:size (as,1))) = as(:,1);
-%! tf(fliplr (1:size (af,1))) = af(:,1);
+%! ts(fliplr (1:rows (as))) = as(:,1);
+%! tf(fliplr (1:rows (af))) = af(:,1);
 %! assert (ts, sparse (tf));
 
 %% Deletion tests

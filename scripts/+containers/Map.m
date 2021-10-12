@@ -580,8 +580,8 @@ endclassdef
 %! m = containers.Map ();
 %! assert (m.Count, uint64 (0));
 %! assert (length (m), 0);
-%! assert (size (m, 1), 0);
-%! assert (size (m, 2), 1);
+%! assert (rows (m), 0);
+%! assert (columns (m), 1);
 %! assert (isempty (m));
 %! assert (isempty (keys (m)));
 %! assert (isempty (values (m)));

@@ -65,8 +65,8 @@ function cdat = isocolors (varargin)
     case 2
       c = varargin{1};
       vp = varargin{2};
-      x = 1:size (c, 2);
-      y = 1:size (c, 1);
+      x = 1:columns (c);
+      y = 1:rows (c);
       z = 1:size (c, 3);
     case 4
       calc_rgb = true;
@@ -74,8 +74,8 @@ function cdat = isocolors (varargin)
       G = varargin{2};
       B = varargin{3};
       vp = varargin{4};
-      x = 1:size (R, 1);
-      y = 1:size (R, 2);
+      x = 1:rows (R);
+      y = 1:columns (R);
       z = 1:size (R, 3);
     case 5
       x = varargin{1};

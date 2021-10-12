@@ -291,7 +291,7 @@ endfunction
 %!test
 %! mtypes = material ();
 %! assert (iscell (mtypes));
-%! assert (size (mtypes, 2), 1);
+%! assert (columns (mtypes), 1);
 %! assert (all (cellfun (@ischar, mtypes)));
 
 %!test

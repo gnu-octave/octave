@@ -279,7 +279,7 @@ endfunction
 %! opts.milu = "row";
 %! opts.droptol = dtol;
 %! [L, U] = ilu (A, opts);
-%! e = ones (size (A, 2),1);
+%! e = ones (columns (A),1);
 %! assert (norm (A*e - L*U*e), 1e-14, 1e-14);
 %!test
 %! opts.type = "crout";

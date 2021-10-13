@@ -113,7 +113,8 @@ version of that library "libqhull_r" instead.
 
 ### Graphical User Interface
 
-- Turkish translation added.
+- The graphical user interface is now available in Hungarian and in
+Turkish.
 
 - In debug mode, symbol values are now shown in tooltips when hovering
 variables in the editor panel.

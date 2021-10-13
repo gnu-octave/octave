@@ -23,6 +23,7 @@ TRANSLATIONS = \
   %reldir%/languages/es_ES.ts \
   %reldir%/languages/eu_ES.ts \
   %reldir%/languages/fr_FR.ts \
+  %reldir%/languages/hu_HU.ts \
   %reldir%/languages/it_IT.ts \
   %reldir%/languages/ja_JP.ts \
   %reldir%/languages/lt_LT.ts \

@@ -44,11 +44,11 @@
 ## When the force flag @qcode{'f'} is given any existing files will be
 ## overwritten without prompting.
 ##
-## If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty
-## character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
-## system-dependent error message, and @var{msgid} contains a unique message
-## identifier.  Note that the status code is exactly opposite that of the
-## @code{system} command.
+## If successful, @var{status} is logical 1, and @var{msg}, @var{msgid} are
+## empty character strings ("").  Otherwise, @var{status} is logical 0,
+## @var{msg} contains a system-dependent error message, and @var{msgid}
+## contains a unique message identifier.  Note that the status code is exactly
+## opposite that of the @code{system} command.
 ## @seealso{rename, copyfile, unlink, delete, glob}
 ## @end deftypefn
 
@@ -59,7 +59,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   endif
 
   max_cmd_line = 1024;
-  sts = 1;
+  sts = true;
   msg = "";
   msgid = "";
 
@@ -99,7 +99,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     if (nargout == 0)
       error ("movefile: when copying multiple files, F2 must be a directory");
     else
-      status = 0;
+      status = false;
       msg = "when copying multiple files, F2 must be a directory";
       msgid = "movefile";
       return;
@@ -116,7 +116,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     if (nargout == 0)
       error ("movefile: no files to move");
     else
-      status = 0;
+      status = false;
       msg = "no files to move";
       msgid = "movefile";
       return;
@@ -147,7 +147,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       ## Move the file(s).
       [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
       if (err != 0)
-        sts = 0;
+        sts = false;
         msgid = "movefile";
       endif
       ## Load new file(s) in editor
@@ -165,7 +165,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     ## Move the file(s).
     [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
     if (err != 0)
-      sts = 0;
+      sts = false;
       msgid = "movefile";
     endif
     ## Load new file(s) in editor
@@ -173,7 +173,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   endif
 
   if (nargout == 0)
-    if (sts == 0)
+    if (! sts)
       error ("movefile: operation failed: %s", msg);
     endif
   else

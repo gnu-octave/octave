@@ -76,13 +76,13 @@ constants in array expressions with leading zeros so that they use the
 same number of digits for each value such as
 `[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
-- The `factor` function has been overhauled for speed.  For large
-composite numbers > 1e14, it can be up to 10,000 times faster.
-
 - The `mldivide` function (i.e., the `\` operator) now uses an LU
 decomposition to solve nearly singular full square matrices.  This is
 Matlab-compatible and yields results which more nearly minimize `norm
 (A*x - b)`.  Previously, Octave computed a minimum-norm solution.
+
+- The `factor` function has been overhauled for speed.  For large
+composite numbers > 1e14, it can be up to 10,000 times faster.
 
 - The `betainc` function now calculates an exact output for the
 important special cases where a or b are 1.
@@ -208,6 +208,9 @@ dimensions greater than `ndims (x)`.  The function compatibly handles
 
 - The function `importdata` now produces more compatible results when
 the file contains a 2-D text matrix.
+
+- The file functions `copyfile`, `mkdir`, `movefile`, `rmdir` now return
+a logical value (true/false) rather than a numeric value (1/0). 
 
 - `uimenu` now accepts property `"Text"` which is identical to
 `"Label"`.  Matlab recommends using `"Text"` in new code, although there

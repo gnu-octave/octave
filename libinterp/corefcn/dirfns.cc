@@ -236,10 +236,10 @@ Remove the directory named @var{dir}.
 If the optional second parameter is supplied with value @qcode{"s"},
 recursively remove all subdirectories as well.
 
-If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty
-character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
-system-dependent error message, and @var{msgid} contains a unique message
-identifier.
+If successful, @var{status} is logical 1, and @var{msg}, @var{msgid} are empty
+character strings ("").  Otherwise, @var{status} is logical 0, @var{msg}
+contains a system-dependent error message, and @var{msgid} contains a unique
+message identifier.
 
 @seealso{mkdir, confirm_recursive_rmdir, pwd}
 @end deftypefn */)
@@ -298,9 +298,9 @@ identifier.
   else
     {
       if (status < 0)
-        retval = ovl (0.0, msg, "rmdir");
+        retval = ovl (false, msg, "rmdir");
       else
-        retval = ovl (1.0, "", "");
+        retval = ovl (true, "", "");
     }
 
   return retval;

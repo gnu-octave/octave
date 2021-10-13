@@ -33,10 +33,11 @@
 ## If @var{dirname} is a relative path, and no @var{parent} directory is
 ## specified, then the present working directory is used.
 ##
-## If successful, @var{status} is 1, and @var{msg} and @var{msgid} are empty
-## strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
-## system-dependent error message, and @var{msgid} contains a unique message
-## identifier.
+## If successful, @var{status} is logical 1, and @var{msg}, @var{msgid} are
+## empty character strings ("").  Otherwise, @var{status} is logical 0,
+## @var{msg} contains a system-dependent error message, and @var{msgid}
+## contains a unique message identifier.  Note that the status code is exactly
+## opposite that of the @code{system} command.
 ##
 ## When creating a directory permissions will be set to
 ## @w{@code{0777 - UMASK}}.
@@ -84,7 +85,7 @@ endfunction
 ## Recursively make directories until parent/dirname can be created.
 function [status, msg, msgid] = mkdir_recur (parent, dirname)
 
-  status = 1;
+  status = true;
 
   if (isempty (parent))
     error ("mkdir: invalid PARENT");

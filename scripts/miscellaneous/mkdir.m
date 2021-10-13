@@ -72,6 +72,8 @@ function [status, msg, msgid] = mkdir (parent, dirname)
   if (nargout == 0)
     if (! sts)
       error ("mkdir: operation failed: %s", msg);
+    elseif (strcmp (msg, "directory exists"))
+      warning ("mkdir: directory exists\n");
     endif
   else
     status = sts;

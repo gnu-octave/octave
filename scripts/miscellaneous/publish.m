@@ -33,10 +33,12 @@
 ## Generate a report from the Octave script file @var{file} in one of several
 ## output formats.
 ##
-## The generated reports interpret any Publishing Markup in comments, which is
-## explained in detail in the GNU Octave manual.  Assume the following example,
-## using some Publishing Markup, to be the contents of the script file
-## @file{pub_example.m}:
+## The generated reports interpret Publishing Markup in section comments, which
+## is explained in detail in the GNU Octave manual.  Section comments are
+## comment blocks that start with a line with double comment character.
+##
+## Assume the following example, using some Publishing Markup, to be the
+## contents of the script file @file{pub_example.m}:
 ##
 ## @example
 ## @group
@@ -61,12 +63,11 @@
 ##
 ## To publish this script file, type @code{publish ("pub_example.m")}.
 ##
-## With only @var{file} given, a HTML report is generated in a subdirectory
-## @file{html} relative to the current working directory.  The Octave commands
-## are evaluated in a separate context and any figures created while executing
-## the script file are included in the report.  All formatting syntax of
-## @var{file} is treated according to the specified output format and included
-## in the report.
+## When called with one input argument, a HTML report is generated in a
+## subdirectory @file{html} relative to the current working directory.  Any
+## Octave commands in @file{pub_example.m} are evaluated in a separate context
+## and any figures created while executing the script file are included in the
+## report.
 ##
 ## Using @code{publish (@var{file}, @var{output_format})} is equivalent to the
 ## function call using a structure

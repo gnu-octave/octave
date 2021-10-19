@@ -780,6 +780,33 @@ AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
   fi
 ])
 dnl
+dnl Check whether HDF5 library has UTF-8 file API.
+dnl
+AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_UTF8_API], [
+  AC_CACHE_CHECK([whether HDF5 library has UTF-8 file API],
+    [octave_cv_hdf5_has_utf8_api],
+    [case $host_os in
+      msdosmsvc | mingw*)
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+          #include <stddef.h>
+          const wchar_t *H5_get_utf16_str(const char *s);
+          ]], [[
+          H5_get_utf16_str ("");
+          ]])],
+          octave_cv_hdf5_has_utf8_api=yes,
+          octave_cv_hdf5_has_utf8_api=no)
+      ;;
+      *)
+        ## Assume yes on all other platforms
+        octave_cv_hdf5_has_utf8_api=yes
+      ;;
+     esac
+    ])
+  if test $octave_cv_hdf5_has_utf8_api = yes; then
+    AC_DEFINE(HAVE_HDF5_UTF8, 1, [Define to 1 if HDF5 has UTF-8 file API.])
+  fi
+])
+dnl
 dnl Usage:
 dnl OCTAVE_CHECK_LIB(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,
 dnl                  LANG, DOC-STRING, EXTRA-CHECK, PKG-CONFIG-NAME,

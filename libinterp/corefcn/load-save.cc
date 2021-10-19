@@ -330,7 +330,11 @@ OCTAVE_NAMESPACE_BEGIN
   {
     load_save_format retval = UNKNOWN;
 
+#if defined (HAVE_HDF5_UTF8)
+    std::string ascii_fname = fname;
+#else
     std::string ascii_fname = sys::get_ASCII_filename (fname);
+#endif
 
 #if defined (HAVE_HDF5)
     // check this before we open the file
@@ -1481,10 +1485,15 @@ OCTAVE_NAMESPACE_BEGIN
             if (append)
               error ("save: appending to HDF5 files is not implemented");
 
+#  if defined (HAVE_HDF5_UTF8)
+            bool write_header_info
+              = ! (append && H5Fis_hdf5 (fname.c_str ()) > 0);
+#  else
             std::string ascii_fname = sys::get_ASCII_filename (fname);
 
             bool write_header_info
               = ! (append && H5Fis_hdf5 (ascii_fname.c_str ()) > 0);
+#  endif
 
             hdf5_ofstream hdf5_file (fname.c_str (), mode);
 

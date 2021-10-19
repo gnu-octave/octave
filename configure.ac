@@ -1474,6 +1474,7 @@ OCTAVE_CHECK_LIB(hdf5, HDF5,
   [hdf5.h], [H5Gget_num_objs], [], [],
   [warn_hdf5=
    OCTAVE_CHECK_HDF5_HAS_VER_16_API
+   OCTAVE_CHECK_HDF5_HAS_UTF8_API
    AC_DEFINE(HAVE_HDF5, 1,
      [Define to 1 if HDF5 is available and newer than version 1.6.])
    if test $have_msvc = yes; then

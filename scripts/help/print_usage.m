@@ -117,22 +117,23 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
   ## include things such as @deftypefn, @deftypefnx, @defvar, etc. and their
   ## corresponding @end's.
   def_idx = strfind (help_text, "@def");
-  if (! isempty (def_idx))
-    endf_idx = strfind (help_text, "@end def");
-    def_idx = sort ([def_idx, endf_idx]);
-    endl_idx = find (help_text == "\n");
-    buffer = "";
-    for k = 1:length (def_idx)
-      endl = endl_idx(find (endl_idx > def_idx(k), 1));
-      if (isempty (endl))
-        buffer = [buffer, help_text(def_idx(k):end), "\n"];
-      else
-        buffer = [buffer, help_text(def_idx(k):endl)];
-      endif
-    endfor
-  else
+  if (isempty (def_idx))
     [retval, status] = get_usage_plain_text (help_text, max_len);
+    return;
   endif
+
+  endf_idx = strfind (help_text, "@end def");
+  def_idx = sort ([def_idx, endf_idx]);
+  endl_idx = find (help_text == "\n");
+  buffer = "";
+  for k = 1:length (def_idx)
+    endl = endl_idx(find (endl_idx > def_idx(k), 1));
+    if (isempty (endl))
+      buffer = [buffer, help_text(def_idx(k):end), "\n"];
+    else
+      buffer = [buffer, help_text(def_idx(k):endl)];
+    endif
+  endfor
 
   ## Run makeinfo to generate plain text
   [retval, status] = __makeinfo__ (buffer, "plain text");

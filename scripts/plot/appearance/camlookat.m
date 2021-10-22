@@ -198,15 +198,15 @@ endfunction
 %!   camlookat (h1);
 %!   dir2 = camtarget () - campos ();
 %!   dir2 /= norm (dir2);
-%!   assert (dir, dir2, -2*eps);
+%!   assert (dir, dir2, -4*eps);
 %!   camlookat (h2);
 %!   dir2 = camtarget () - campos ();
 %!   dir2 /= norm (dir2);
-%!   assert (dir, dir2, -2*eps);
+%!   assert (dir, dir2, -4*eps);
 %!   camlookat ([h1 h2]);
 %!   dir2 = camtarget () - campos ();
 %!   dir2 /= norm (dir2);
-%!   assert (dir, dir2, -2*eps);
+%!   assert (dir, dir2, -4*eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

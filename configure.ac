@@ -2109,7 +2109,7 @@ if test -n "$CXSPARSE_LIBS"; then
   if test $octave_cv_lib_cxsparse = yes; then
     OCTAVE_CHECK_CXSPARSE_VERSION_OK
     if test $octave_cv_cxsparse_version_ok = no; then
-      AC_MSG_ERROR([CXSparse library is too old (< version 2.2).  Upgrade CXSparse (SuiteSparse) or configure Octave with --disable-cxsparse"])
+      AC_MSG_ERROR([CXSparse library is too old (< version 2.2).  Upgrade CXSparse (SuiteSparse) or configure Octave with --without-cxsparse"])
     fi
   fi
 fi

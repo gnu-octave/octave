@@ -280,7 +280,7 @@ OCTAVE_NAMESPACE_BEGIN
     OCTAVE_DEPRECATED (6, "use 'interpreter::top_level_variable_names' instead")
     std::list<std::string> top_level_variable_names (void)
     {
-      return top_level_variable_names ();
+      return top_level_variable_names_deprecated ();
     }
 
     OCTAVE_DEPRECATED (6, "use 'interpreter::variable_names' instead")

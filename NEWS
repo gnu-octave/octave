@@ -129,6 +129,9 @@ properly when using the `"latex"` value for the text objects'
 `"interpreter"` property and axes objects' `"ticklabelinterpreter"`.
 Type `doc "latex interpreter"` for further info.
 
+- The `"Marker"` property for plot objects now accepts `|` which draws
+a vertical line or `_` which draws a horizontal line.
+
 - The `FMT` format argument for plot commands now accepts long forms for
 color names which may be more understandable than the existing
 one-letter codes.  For example, the RGB value `[0 0 0]` can now be

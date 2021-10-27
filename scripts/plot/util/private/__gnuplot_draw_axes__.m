@@ -2079,6 +2079,15 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
     switch (obj.marker)
       case "+"
         pt = pt2 = "1";
+      ## FIXME: It's not clear how to add support for these markers in gnuplot
+      #{
+      case "|"
+        pt = "1";
+        pt2 = "1";
+      case "_"
+        pt = "1";
+        pt2 = "1";
+      #}
       case "o"
         pt = "6";
         pt2 = "7";

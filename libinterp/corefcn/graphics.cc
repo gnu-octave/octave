@@ -1315,7 +1315,14 @@ radio_values::radio_values (const std::string& opt_string)
 
       std::string t = opt_string.substr (beg, end-beg);
 
-      // Might want more error checking here...
+      // Special case for '|' symbol itself
+      if (t.empty () && opt_string[beg] == '|')
+        {
+          t = '|';
+          end++;
+        }
+
+      // Might want more error checking on parsing default value...
       if (t[0] == '{')
         {
           t = t.substr (1, t.length () - 2);

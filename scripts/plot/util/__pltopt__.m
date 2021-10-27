@@ -84,6 +84,8 @@
 ## @itemx @qcode{"*"}
 ## @itemx @qcode{"."}
 ## @itemx @qcode{"x"}
+## @itemx @qcode{"|"}
+## @itemx @qcode{"_"}
 ## @itemx @qcode{"s"}
 ## @itemx @qcode{"d"}
 ## @itemx @qcode{"^"}
@@ -165,7 +167,7 @@ function [options, valid] = decode_linespec (caller, opt, err_on_invalid)
       have_linestyle = true;
       options.linestyle = topt;
     ## Markers
-    elseif (any (topt == "+o*.xsd^v><ph"))
+    elseif (any (topt == "+o*.x|_sd^v><ph"))
       have_marker = true;
       ## Check for long form marker styles
       if (any (topt == "sdhp"))

@@ -4687,7 +4687,8 @@ namespace octave
 
     char c = marker[0];
 
-    if (filled && (c == '+' || c == 'x' || c == '*' || c == '.'))
+    if (filled && (c == '+' || c == 'x' || c == '*' || c == '.'
+                   || c == '|' || c == '_'))
       return 0;
 
     unsigned int ID = m_glfcns.glGenLists (1);
@@ -4709,6 +4710,18 @@ namespace octave
         m_glfcns.glVertex2d (sz/2, 0);
         m_glfcns.glVertex2d (0, -sz/2);
         m_glfcns.glVertex2d (0, sz/2);
+        m_glfcns.glEnd ();
+        break;
+      case '|':
+        m_glfcns.glBegin (GL_LINES);
+        m_glfcns.glVertex2d (0, -sz/2);
+        m_glfcns.glVertex2d (0, sz/2);
+        m_glfcns.glEnd ();
+        break;
+      case '_':
+        m_glfcns.glBegin (GL_LINES);
+        m_glfcns.glVertex2d (-sz/2, 0);
+        m_glfcns.glVertex2d (sz/2, 0);
         m_glfcns.glEnd ();
         break;
       case 'x':

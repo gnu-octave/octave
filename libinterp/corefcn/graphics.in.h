@@ -4400,7 +4400,7 @@ public:
       radio_property linejoin , "{round}|miter|chamfer"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
+      radio_property marker , "{none}|+|o|*|.|x|||_|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
       color_property markeredgecolor , color_property (radio_values ("{auto}|none"), color_values (0, 0, 0))
       color_property markerfacecolor , color_property (radio_values ("auto|{none}"), color_values (0, 0, 0))
       double_property markersize , 6
@@ -4991,7 +4991,7 @@ public:
       array_property facevertexcdata u , Matrix ()
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
+      radio_property marker , "{none}|+|o|*|.|x|||_|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
       color_property markeredgecolor , color_property (radio_values ("none|{auto}|flat"), color_values (0, 0, 0))
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
@@ -5251,7 +5251,7 @@ public:
       double_property linewidth , 0.5
       array_property longitudedata , Matrix ()
       string_property longitudedatasource , ""
-      radio_property marker , "{o}|+|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram|none"
+      radio_property marker , "{o}|+|*|.|x|||_|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram|none"
       double_property markeredgealpha , 1.0
       color_property markeredgecolor , color_property (radio_values ("{flat}|none"), color_values (0, 0, 0))
       double_property markerfacealpha , 1.0
@@ -5487,7 +5487,7 @@ public:
       radio_property facenormalsmode u , "{auto}|manual"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
+      radio_property marker , "{none}|+|o|*|.|x|||_|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
       color_property markeredgecolor , color_property (radio_values ("none|{auto}|flat"), color_values (0, 0, 0))
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6

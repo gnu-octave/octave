@@ -124,7 +124,8 @@ octave_execv_wrapper (const char *file, char *const *argv)
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 
   char *argv_mem_to_free;
-  char **sanitized_argv = prepare_spawn (argv, &argv_mem_to_free);
+  const char **sanitized_argv = prepare_spawn ((const char * const *) argv,
+                                               &argv_mem_to_free);
 
 #  if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
 
@@ -145,9 +146,23 @@ octave_execv_wrapper (const char *file, char *const *argv)
   free (sanitized_argv);
   free (argv_mem_to_free);
 
-  int status = _wspawnv (P_OVERLAY, wfile, wargv);
+  int status = _wspawnv (P_WAIT, wfile, wargv+1);
 
-  // This only happens if _wspawnv fails.
+#    if 0
+  // Code snippet from gnulib execute.c
+
+  // Executing arbitrary files as shell scripts is unsecure.
+  if (status == -1 && errno == ENOEXEC)
+    {
+      // prog is not a native executable.  Try to execute it as a
+      // shell script.  Note that prepare_spawn() has already prepended
+      // a hidden element "sh.exe" to argv.
+      argv[1] = prog_path;
+      status = _wspawnv (P_WAIT, wargv[0], wargv);
+    }
+#    endif
+
+  // This happens when the spawned child process terminates.
 
   free (wfile);
   const wchar_t **wp = wargv;

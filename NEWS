@@ -28,6 +28,11 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `cbrt`: Clarify that function errors for non-real input.
 - `dsearchn.m`: Added optional distance output description (bug #61156).
 - Add Hungarian translation for project description files.
+- Document fsolve output "info" -2 (bug #61310).
+
+### Build system
+
+- Correct error message for incompatible CXSparse (bug #61385).
 
 
 Summary of bugs fixed for version 6.3.0 (2021-07-11)

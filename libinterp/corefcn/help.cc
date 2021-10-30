@@ -56,6 +56,7 @@
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
+#include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "ovl.h"
@@ -243,21 +244,38 @@ OCTAVE_NAMESPACE_BEGIN
 
     type = "";
 
-    if (name.find_first_of ('.') == std::string::npos)
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    octave_value val = symtab.find_function (name);
+
+    if (val.is_defined ())
       {
-        symbol_table& symtab = m_interpreter.get_symbol_table ();
+        octave_function *fcn = val.function_value ();
 
-        octave_value val = symtab.find_function (name);
-
-        if (val.is_defined ())
+        if (fcn)
           {
-            octave_function *fcn = val.function_value ();
-
-            if (fcn)
+            if (fcn->is_classdef_meta ())
               {
+                octave_classdef_meta *meta_obj
+                  = dynamic_cast<octave_classdef_meta *> (fcn);
+
+                file = meta_obj->file_name ();
+
+                if (meta_obj->is_classdef_constructor ())
+                  type = "class constructor";
+                else if (meta_obj->is_classdef_method ())
+                  type = "class method";
+                else
+                  type = "classdef meta object";
+              }
+            else
+              {
+
                 file = fcn->fcn_file_name ();
 
-                if (file.empty ())
+                if (! file.empty ())
+                  type = val.is_user_script () ? "script" : "function";
+                else
                   {
                     if (fcn->is_user_function ())
                       type = "command-line function";
@@ -267,8 +285,6 @@ OCTAVE_NAMESPACE_BEGIN
                         type = "built-in function";
                       }
                   }
-                else
-                  type = val.is_user_script () ? "script" : "function";
               }
           }
         else
@@ -280,7 +296,8 @@ OCTAVE_NAMESPACE_BEGIN
             file = lp.find_fcn_file (name);
           }
       }
-    else
+
+    if (file.empty ())
       {
         // File query.
 

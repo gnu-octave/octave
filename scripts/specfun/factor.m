@@ -51,12 +51,15 @@ function [pf, n] = factor (q)
     error ("factor: Q must be a real non-negative integer");
   endif
 
-  ## Special case of no primes less than sqrt (q).
-  if (q < 4)
+  ## Special case if q is prime, because isprime() is now much faster than factor().
+  ## This also absorbs the case of q < 4, where there are no primes less than sqrt(q).
+  if (q < 4 || isprime (q))
     pf = q;
     n = 1;
     return;
   endif
+
+  ## If we are here, then q is composite.
 
   cls = class (q);  # store class
   if (isfloat (q) && q > flintmax (q))

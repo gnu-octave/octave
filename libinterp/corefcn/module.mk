@@ -119,6 +119,7 @@ COREFCN_SRC = \
   %reldir%/__gammainc__.cc \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \
+  %reldir%/__isprimelarge__.cc \
   %reldir%/__lin_interpn__.cc \
   %reldir%/__magick_read__.cc \
   %reldir%/__pchip_deriv__.cc \

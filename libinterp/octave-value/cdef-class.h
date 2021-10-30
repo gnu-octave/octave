@@ -161,6 +161,10 @@ namespace octave
 
       std::string doc_string (void) const { return m_doc_string; }
 
+      void file_name (const std::string& nm) { m_file_name = nm; }
+
+      std::string file_name (void) const { return m_file_name; }
+
     private:
 
       OCTINTERP_API void load_all_methods (void);
@@ -187,6 +191,8 @@ namespace octave
       std::string m_directory;
 
       std::string m_doc_string;
+
+      std::string m_file_name;
 
       // The methods defined by this class.
 
@@ -392,6 +398,10 @@ namespace octave
     void doc_string (const std::string& txt) { get_rep ()->doc_string (txt); }
 
     std::string doc_string (void) const { return get_rep ()->doc_string (); }
+
+    void file_name (const std::string& nm) { get_rep ()->file_name (nm); }
+
+    std::string file_name (void) const { return get_rep ()->file_name (); }
 
   public:
 

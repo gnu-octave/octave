@@ -231,6 +231,8 @@ public:
 
   OCTINTERP_API std::string doc_string (const std::string& meth_name) const;
 
+  OCTINTERP_API std::string file_name (void) const;
+
 private:
 
   octave::cdef_meta_object m_object;

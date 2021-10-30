@@ -847,11 +847,11 @@ namespace octave
                                tree_classdef *t, bool is_at_folder)
   {
     cdef_class retval;
-    std::string class_name, full_class_name;
 
     // Class creation
 
-    class_name = full_class_name = t->ident ()->name ();
+    std::string class_name = t->ident ()->name ();
+    std::string full_class_name = class_name;
     if (! t->package_name ().empty ())
       full_class_name = t->package_name () + '.' + full_class_name;
 
@@ -896,6 +896,7 @@ namespace octave
     retval = cdm.make_class (full_class_name, slist);
 
     retval.doc_string (t->doc_string ());
+    retval.file_name (t->file_name ());
 
     // Package owning this class
 

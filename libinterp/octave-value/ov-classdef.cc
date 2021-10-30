@@ -458,6 +458,18 @@ std::string octave_classdef_meta::doc_string (const std::string& meth_name) cons
   return "";
 }
 
+std::string octave_classdef_meta::file_name (void) const
+{
+  if (m_object.is_class ())
+    {
+      octave::cdef_class cls (m_object);
+
+      return cls.file_name ();
+    }
+
+  return "";
+}
+
 octave_value_list
 octave_classdef_superclass_ref::execute (octave::tree_evaluator& tw,
                                          int nargout,

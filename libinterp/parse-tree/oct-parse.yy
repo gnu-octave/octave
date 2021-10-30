@@ -4305,14 +4305,16 @@ OCTAVE_NAMESPACE_BEGIN
 
     std::string cls_name = id->name ();
 
-    std::string nm = m_lexer.m_fcn_file_name;
+    std::string full_name = m_lexer.m_fcn_file_full_name;
+    std::string short_name = m_lexer.m_fcn_file_name;
 
-    std::size_t pos = nm.find_last_of (sys::file_ops::dir_sep_chars ());
+    std::size_t pos
+      = short_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
-      nm = m_lexer.m_fcn_file_name.substr (pos+1);
+      short_name = short_name.substr (pos+1);
 
-    if (nm != cls_name)
+    if (short_name != cls_name)
       {
         int l = id->line ();
         int c = id->column ();
@@ -4339,7 +4341,7 @@ OCTAVE_NAMESPACE_BEGIN
 
             retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (),
                                         a, id, sc, body, lc, tc,
-                                        m_curr_package_name, l, c);
+                                        m_curr_package_name, full_name, l, c);
           }
         else
           {

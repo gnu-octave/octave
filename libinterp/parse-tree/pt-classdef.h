@@ -768,10 +768,10 @@ namespace octave
                    tree_classdef_superclass_list *sc,
                    tree_classdef_body *b, comment_list *lc,
                    comment_list *tc, const std::string& pn = "",
-                   int l = -1, int c = -1)
+                   const std::string& fn = "", int l = -1, int c = -1)
       : tree_command (l, c), m_scope (scope), m_attr_list (a), m_id (i),
         m_supclass_list (sc), m_element_list (b), m_lead_comm (lc),
-        m_trail_comm (tc), m_pack_name (pn)
+        m_trail_comm (tc), m_pack_name (pn), m_file_name (fn)
     { }
 
     // No copying!
@@ -807,6 +807,8 @@ namespace octave
 
     std::string package_name (void) const { return m_pack_name; }
 
+    std::string file_name (void) const { return m_file_name; }
+
     octave_value make_meta_class (interpreter& interp,
                                   bool is_at_folder = false);
 
@@ -840,6 +842,7 @@ namespace octave
     comment_list *m_trail_comm;
 
     std::string m_pack_name;
+    std::string m_file_name;
   };
 }
 

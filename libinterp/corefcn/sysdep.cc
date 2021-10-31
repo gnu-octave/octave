@@ -949,7 +949,13 @@ occurred.
     if (type == REG_DWORD)
       value = octave_int32 (*(reinterpret_cast<DWORD *> (data)));
     else if (type == REG_SZ || type == REG_EXPAND_SZ)
-      value = string_vector (sys::u8_from_wstring (reinterpret_cast<wchar_t *> (data)));
+      {
+        // strings in registry might not be zero terminated
+        std::wstring reg_string
+          = std::wstring (reinterpret_cast<wchar_t *> (data),
+                          length / sizeof (wchar_t));
+        value = string_vector (sys::u8_from_wstring (reg_string));
+      }
 
     return result;
   }

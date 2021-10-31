@@ -1366,7 +1366,8 @@ namespace octave
           {
             const NDArray xcdata = cdata.array_value ();
 
-            OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
+            OCTAVE_LOCAL_BUFFER (GLfloat, a,
+                                 static_cast<size_t> (3)*(j1-j0)*(i1-i0));
 
             for (int i = i0; i < i1; i++)
               {
@@ -1395,7 +1396,8 @@ namespace octave
           {
             const FloatNDArray xcdata = cdata.float_array_value ();
 
-            OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
+            OCTAVE_LOCAL_BUFFER (GLfloat, a,
+                                 static_cast<size_t> (3)*(j1-j0)*(i1-i0));
 
             for (int i = i0; i < i1; i++)
               {
@@ -1424,7 +1426,8 @@ namespace octave
           {
             const uint8NDArray xcdata = cdata.uint8_array_value ();
 
-            OCTAVE_LOCAL_BUFFER (GLubyte, a, 3*(j1-j0)*(i1-i0));
+            OCTAVE_LOCAL_BUFFER (GLubyte, a,
+                                 static_cast<size_t> (3)*(j1-j0)*(i1-i0));
 
             for (int i = i0; i < i1; i++)
               {
@@ -1453,7 +1456,8 @@ namespace octave
           {
             const uint16NDArray xcdata = cdata.uint16_array_value ();
 
-            OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
+            OCTAVE_LOCAL_BUFFER (GLushort, a,
+                                 static_cast<size_t> (3)*(j1-j0)*(i1-i0));
 
             for (int i = i0; i < i1; i++)
               {
@@ -1490,7 +1494,7 @@ namespace octave
   gl2ps_renderer::draw_pixels (int w, int h, const float *data)
   {
     // Clip data between 0 and 1 for float values
-    OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+    OCTAVE_LOCAL_BUFFER (float, tmp_data, static_cast<size_t> (3)*w*h);
 
     for (int i = 0; i < 3*h*w; i++)
       tmp_data[i] = (data[i] < 0.0f ? 0.0f : (data[i] > 1.0f ? 1.0f : data[i]));
@@ -1503,7 +1507,7 @@ namespace octave
   {
     // gl2psDrawPixels only supports the GL_FLOAT type.
 
-    OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+    OCTAVE_LOCAL_BUFFER (float, tmp_data, static_cast<size_t> (3)*w*h);
 
     static const float maxval = std::numeric_limits<uint8_t>::max ();
 
@@ -1518,7 +1522,7 @@ namespace octave
   {
     // gl2psDrawPixels only supports the GL_FLOAT type.
 
-    OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+    OCTAVE_LOCAL_BUFFER (float, tmp_data, static_cast<size_t> (3)*w*h);
 
     static const float maxval = std::numeric_limits<uint16_t>::max ();
 

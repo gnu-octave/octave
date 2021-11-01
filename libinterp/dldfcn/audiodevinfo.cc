@@ -500,11 +500,17 @@ recording using those parameters.
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
-%! for i = 1:nout
-%!   assert (devinfo.output(i).ID, audiodevinfo (0, devinfo.output(i).Name));
+%! ## There might be multiple devices with the same name (e.g. on Windows WDM-KS)
+%! ## Check only the first of each unique device name.
+%! [unq_out_name, idx_unique] = unique ({devinfo.output(:).Name});
+%! unq_out_id = [devinfo.output(idx_unique).ID];
+%! for i = 1:numel (unq_out_name)
+%!   assert (audiodevinfo (0, unq_out_name{i}), unq_out_id(i));
 %! endfor
-%! for i = 1:nin
-%!   assert (devinfo.input (i).ID, audiodevinfo (1, devinfo.input (i).Name));
+%! [unq_in_name, idx_unique] = unique ({devinfo.input(:).Name});
+%! unq_in_id = [devinfo.input(idx_unique).ID];
+%! for i = 1:numel (unq_in_name)
+%!   assert (audiodevinfo (1, unq_in_name{i}), unq_in_id(i));
 %! endfor
 */
 

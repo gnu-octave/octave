@@ -85,11 +85,12 @@ function retval = ls (varargin)
     args = "";
   endif
 
-  if (nargout > 0 && (isunix () || ismac ()))
+  ls_cmd = ls_command ();
+  if (nargout > 0 && strncmp (ls_cmd, "ls", 2))
     args = ["-1 ", args];
   endif
 
-  cmd = [ls_command() " " args];
+  cmd = [ls_cmd, " ", args];
 
   if (page_screen_output () || nargout > 0)
     [status, output] = system (cmd);

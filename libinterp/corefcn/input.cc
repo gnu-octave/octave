@@ -695,12 +695,18 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_value_list retval;
 
-    int read_as_string = 0;
-
-    if (args.length () == 2)
-      read_as_string++;
-
     std::string prompt = args(0).xstring_value ("input: unrecognized argument");
+
+    bool read_as_string = false;
+    if (args.length () == 2)  // `input (..., "s")`?
+      {
+        std::string literal
+          = args(1).xstring_value ("input: second argument must be 's'.");
+        if (literal.length () != 1 || literal[0] != 's')
+          error ("input: second argument must be 's'.");
+
+        read_as_string = true;
+      }
 
     output_system& output_sys = m_interpreter.get_output_system ();
 

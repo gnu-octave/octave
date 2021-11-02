@@ -191,12 +191,12 @@ function retval = repelem (x, varargin)
                ndims (x), ndims (x) + 1, nargin);
       endif
 
-      if (iscolumn (x))
+      if (isrow (x))
+        ## element values repeated R times in a scalar or row vector
+        retval = x(ones (R, 1), :)(:).';
+      else
         ## element values repeated R times in a col vector
         retval = x.'(ones (R, 1), :)(:);
-      else
-        ## element values repeated R times in a row vector
-        retval = x(ones (R, 1), :)(:).';
       endif
 
     elseif (isvector (x) && isvector (R))
@@ -347,6 +347,7 @@ endfunction
 %!assert (repelem ([i; -i], 2), [i; i; -i; -i])
 
 ## nargin == 2 tests
+%!assert (repelem (2, 6), [2 2 2 2 2 2])
 %!assert (repelem ([-1 0 1], 2), [-1 -1 0 0 1 1])
 %!assert (repelem ([-1 0 1]', 2), [-1; -1; 0; 0; 1; 1])
 %!assert (repelem ([-1 0 1], [1 2 1]), [-1 0 0 1])

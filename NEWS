@@ -255,6 +255,9 @@ functionality.  By default, this warning is enabled.
 compatibility the `print_struct_array_contents` internal variable is set
 to true.
 
+- The function `repelem` now produces a row vector output when the input is
+a scalar.
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `cospi`

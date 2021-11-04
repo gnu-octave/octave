@@ -104,7 +104,7 @@ namespace octave
 
     if (idx.isValid ())
       {
-        if ((role == Qt::BackgroundColorRole || role == Qt::ForegroundRole)
+        if ((role == Qt::BackgroundRole || role == Qt::ForegroundRole)
             && m_enable_colors)
           {
             int actual_class

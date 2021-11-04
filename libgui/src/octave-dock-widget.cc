@@ -248,7 +248,9 @@ namespace octave
 
     setFocusPolicy (Qt::StrongFocus);
 
-    setFeatures (QDockWidget::AllDockWidgetFeatures);
+    setFeatures (QDockWidget::DockWidgetClosable
+                 | QDockWidget::DockWidgetMovable
+                 | QDockWidget::DockWidgetFloatable);
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     handle_settings (rmgr.get_settings ());

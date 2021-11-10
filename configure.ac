@@ -2775,7 +2775,9 @@ fi
 AM_CONDITIONAL([AMCOND_ADDRESS_SANITIZER_ENABLED],
   [test $try_address_sanitizer_flags = yes])
 
+ADDRESS_SANITIZER_ENABLED=no
 if test $try_address_sanitizer_flags = yes; then
+  ADDRESS_SANITIZER_ENABLED=yes
   for flag in $GCC_ADDRESS_SANITIZER_FLAGS; do
     OCTAVE_CC_FLAG([$flag], [
       WARN_CFLAGS="$WARN_CFLAGS $flag";
@@ -2793,6 +2795,7 @@ if test $try_address_sanitizer_flags = yes; then
       AC_MSG_RESULT([adding $flag to WARN_LDFLAGS])])
   done
 fi
+AC_SUBST(ADDRESS_SANITIZER_ENABLED)
 
 AC_SUBST(WARN_CFLAGS)
 AC_SUBST(WARN_CXXFLAGS)

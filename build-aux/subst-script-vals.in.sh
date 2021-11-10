@@ -30,6 +30,7 @@
 AWK="@AWK@"
 FIND="@FIND@"
 SED="@SED@"
+ADDRESS_SANITIZER_ENABLED="@ADDRESS_SANITIZER_ENABLED@"
 ADDRESS_SANITIZER_OPTIONS="@ADDRESS_SANITIZER_OPTIONS@"
 abs_top_srcdir="@abs_top_srcdir@"
 abs_top_builddir="@abs_top_builddir@"
@@ -38,6 +39,7 @@ $SED \
   -e "s|%AWK%|${AWK}|g" \
   -e "s|%FIND%|${FIND}|g" \
   -e "s|%SED%|${SED}|g" \
+  -e "s|%ADDRESS_SANITIZER_ENABLED%|${ADDRESS_SANITIZER_ENABLED}|g" \
   -e "s|%ADDRESS_SANITIZER_OPTIONS%|${ADDRESS_SANITIZER_OPTIONS}|g" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
   -e "s|%builddir%|${abs_top_builddir}|"

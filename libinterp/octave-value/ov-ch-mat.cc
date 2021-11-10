@@ -345,6 +345,7 @@ octave_char_matrix::map (unary_mapper_t umap) const
     case umap_fix:
     case umap_floor:
     case umap_imag:
+    case umap_isfinite:
     case umap_isinf:
     case umap_isnan:
     case umap_real:

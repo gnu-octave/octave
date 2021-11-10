@@ -82,6 +82,13 @@ function print_usage (name)
     warning ("print_usage: raw Texinfo source of help text follows...\n");
   endif
 
+  ## We don't want to start the debugger here if debug_on_error is true
+  ## so we set it to false and make the change local.  Then
+  ## debug_on_error will be reset to true after this function returns
+  ## and the debugger will start at the location of the call to
+  ## print_usage.
+  debug_on_error (false, "local");
+
   if (at_toplev)
     error ("Octave:invalid-fun-call",
            "Invalid call to %s.  Correct usage is:\n\n%s\n%s",

@@ -98,7 +98,6 @@ noinst_HEADERS += \
 
 nodist_octinclude_HEADERS += \
   %reldir%/builtin-defun-decls.h \
-  %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
   %reldir%/corefcn/mxtypes.h
 

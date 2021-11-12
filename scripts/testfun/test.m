@@ -851,7 +851,7 @@ function pos = function_name (def)
   ## Find the end of the name.
   right = find (def == "(", 1);
   if (isempty (right))
-    return;
+    right = numel (def);
   endif
   right = find (def(1:right-1) != " ", 1, "last");
 

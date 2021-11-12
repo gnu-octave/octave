@@ -219,6 +219,17 @@
 %!endfunction
 %!function [out1] = __fn_nargin2__ (in1, in2)
 %!endfunction
+%!function [out1] = __fn_nargin0__ ()
+%!endfunction
+%!function [] = __fn_narginout0__ ()
+%!endfunction
+%!function __fn_no_arg_list__
+%!endfunction
 
 %!error <function called with too many outputs> r = __fn_nargout0__ ()
 %!error <function called with too many inputs>  r = __fn_nargin2__ (1,2,3)
+%!error <function called with too many inputs>  r = __fn_nargin0__ (1)
+%!error <function called with too many inputs>  __fn_narginout0__ (1)
+%!error <function called with too many outputs> r = __fn_narginout0__ ()
+%!error <function called with too many inputs>  __fn_no_arg_list__ (1)
+%!error <function called with too many outputs>  r = __fn_no_arg_list__ ()

@@ -140,6 +140,8 @@
 ## @item @samp{*} @tab star
 ## @item @samp{.} @tab point
 ## @item @samp{x} @tab cross
+## @item @samp{|} @tab vertical line
+## @item @samp{_} @tab horizontal line
 ## @item @samp{s} @tab square
 ## @item @samp{d} @tab diamond
 ## @item @samp{^} @tab upward-facing triangle

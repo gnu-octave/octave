@@ -2199,6 +2199,9 @@ OCTAVE_NAMESPACE_BEGIN
   tree_evaluator::define_parameter_list_from_arg_vector
     (tree_parameter_list *param_list, const octave_value_list& args)
   {
+    if (! param_list || param_list->varargs_only ())
+      return;
+
     int i = -1;
 
     for (tree_decl_elt *elt : *param_list)
@@ -3395,20 +3398,23 @@ Example:
 
     tree_parameter_list *param_list = user_function.parameter_list ();
 
+    bool takes_varargs = false;
+    int max_inputs = 0;
+
     if (param_list)
       {
-        int max_inputs = param_list->length ();
-
-        if (! param_list->takes_varargs () && nargin > max_inputs)
-          {
-            std::string name = user_function.name ();
-
-            error ("%s: function called with too many inputs", name.c_str ());
-          }
-
-        if (! param_list->varargs_only ())
-          define_parameter_list_from_arg_vector (param_list, args);
+        takes_varargs = param_list->takes_varargs ();
+        max_inputs = param_list->length ();
       }
+
+    if (! takes_varargs && nargin > max_inputs)
+      {
+        std::string name = user_function.name ();
+
+        error ("%s: function called with too many inputs", name.c_str ());
+      }
+
+    define_parameter_list_from_arg_vector (param_list, args);
 
     tree_parameter_list *ret_list = user_function.return_list ();
 

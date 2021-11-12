@@ -93,6 +93,14 @@ function assert (cond, varargin)
     if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
       if ((! isnumeric (cond) && ! islogical (cond))
           || isempty (cond) || ! all (cond(:)))
+
+        ## We don't want to start the debugger here if debug_on_error is
+        ## true so we set it to false and make the change local.  Then
+        ## debug_on_error will be reset to true after this function
+        ## returns and the debugger will start at the location of the
+        ## call to print_usage.
+        debug_on_error (false, "local");
+
         if (nargin == 1)
           ## Perhaps, say which elements failed?
           argin = ["(" inputname(1, false) ")"];
@@ -466,6 +474,14 @@ function assert (cond, varargin)
   if (call_depth == -1)
     ## Last time through.  If there were any errors on any pass, raise a flag.
     if (! isempty (errmsg))
+
+      ## We don't want to start the debugger here if debug_on_error is
+      ## true so we set it to false and make the change local.  Then
+      ## debug_on_error will be reset to true after this function
+      ## returns and the debugger will start at the location of the call
+      ## to print_usage.
+      debug_on_error (false, "local");
+
       error (errmsg);
     endif
   endif

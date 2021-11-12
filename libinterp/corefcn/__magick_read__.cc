@@ -41,6 +41,11 @@
 #if defined (HAVE_MAGICK)
 #  include <Magick++.h>
 #  include <clocale>
+// FIXME: The following using declaration may be needed to build with
+// ImageMagick.  It doesn't appear to be needed for GraphicsMagick but
+// it also doesn't seem to cause trouble.  A configure test would be
+// helpful.
+using Magick::Quantum;
 #endif
 
 OCTAVE_NAMESPACE_BEGIN

@@ -1625,12 +1625,12 @@ check_magick=yes
 use_magick=no
 AC_ARG_WITH([magick],
   [AS_HELP_STRING([--with-magick=LIB],
-    [select library to use for image I/O (options: GraphicsMagick(default) or ImageMagick)])],
+    [select library to use for image I/O (options: GraphicsMagick++(default) or ImageMagick++)])],
   [if test x"$withval" = xno; then
      check_magick=no
    else
      magick="$withval"
-   fi], [magick="GraphicsMagick"])
+   fi], [magick="GraphicsMagick++"])
 
 if test $check_magick = yes; then
 
@@ -1638,16 +1638,21 @@ if test $check_magick = yes; then
   MAGICK_LDFLAGS=
   MAGICK_LIBS=
 
-  PKG_CHECK_EXISTS([$magick++], [
-    dnl Make sure we only get -I, -L, and -l flags.
-    dnl Some Graphics/ImageMagick++ dnl packages add extra flags that are
-    dnl useful when building Graphics/ImageMagick++ extensions.  These extra
-    dnl flags break the Octave build.
-    MAGICK_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $magick++ | $SED -e 's/^ *$//')"
-    MAGICK_LDFLAGS="$($PKG_CONFIG --libs-only-L $magick++ | $SED -e 's/^ *$//')"
-    MAGICK_LIBS="$($PKG_CONFIG --libs-only-l $magick++ | $SED -e 's/^ *$//')"
+  PKG_CHECK_EXISTS([$magick], [
+    dnl We are using --cflags now instead of --cflags-only-I because some
+    dnl Graphics/ImageMagick++ packages will provide -D options for
+    dnl MAGICKCORE_HDRI_ENABLE and MAGICKCORE_QUANTUM_DEPTH that are needed
+    dnl for building with a particular verison of the library.  If there
+    dnl are other flags in the output from pkg-config --cflags that cause
+    dnl trouble, then we may need to go back to using --cflags-only-I and
+    dnl have a configure test to determine the proper definitions of
+    dnl MAGICKCORE_HDRI_ENABLE and MAGICKCORE_QUANTUM_DEPTH.
+    dnl See also bug #49563.
+    MAGICK_CPPFLAGS="$($PKG_CONFIG --cflags $magick | $SED -e 's/^ *$//')"
+    MAGICK_LDFLAGS="$($PKG_CONFIG --libs-only-L $magick | $SED -e 's/^ *$//')"
+    MAGICK_LIBS="$($PKG_CONFIG --libs-only-l $magick | $SED -e 's/^ *$//')"
 
-    warn_magick="$magick++ library fails tests.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
+    warn_magick="$magick library fails tests.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
 
     save_CPPFLAGS="$CPPFLAGS"
     save_LIBS="$LIBS"
@@ -1675,7 +1680,7 @@ if test $check_magick = yes; then
     LIBS="$save_LIBS"
   ],
   [use_magick=no
-   warn_magick="$magick++ library not found.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."])
+   warn_magick="$magick library not found.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."])
 fi
 
 if test $use_magick = yes; then

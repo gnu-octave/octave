@@ -116,7 +116,13 @@ function opts = __opengl_print__ (opts)
         opts.unlink = [opts.unlink tmp];
         cmd_pstoedit = sprintf (opts.pstoedit_cmd (opts, "fig"), ...
                                 "pdf", tmp, tmp);
-        cmd = sprintf ('%s | %s > "%s"', cmd_pstoedit, cmd_fig2dev, opts.name);
+        tmp = [tempname(), ".fig"];
+        opts.unlink = [opts.unlink tmp];
+        if (ispc () && ! isunix ())
+          cmd = sprintf ('%s "%s" & %s "%s" "%s"', cmd_pstoedit, tmp, cmd_fig2dev, tmp, opts.name);
+        else
+          cmd = sprintf ('%s "%s" ; %s "%s" "%s"', cmd_pstoedit, tmp, cmd_fig2dev, tmp, opts.name);
+        endif
         gl2ps_device = {"svg"};
         pipeline = {cmd};
       endif
@@ -131,7 +137,7 @@ function opts = __opengl_print__ (opts)
       opts.unlink = [opts.unlink tmp];
       cmd = sprintf (opts.pstoedit_cmd (opts), "pdf", tmp, tmp);
       gl2ps_device = {"svg"};
-      pipeline = {sprintf('%s > "%s"', cmd, opts.name)};
+      pipeline = {sprintf('%s "%s"', cmd, opts.name)};
     case opts.ghostscript.device
       svgcmd = "";
       if (opts.svgconvert)

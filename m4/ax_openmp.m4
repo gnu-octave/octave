@@ -1,5 +1,5 @@
 # ===========================================================================
-#         https://www.gnu.org/software/autoconf-archive/ax_openmp.html
+#        https://www.gnu.org/software/autoconf-archive/ax_openmp.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -39,6 +39,7 @@
 #
 #   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
 #   Copyright (c) 2015 John W. Peterson <jwpeterson@gmail.com>
+#   Copyright (c) 2016 Nick R. Papior <nickpapior@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -66,16 +67,19 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 11
+#serial 13
 
 AC_DEFUN([AX_OPENMP], [
 AC_PREREQ([2.59]) dnl for _AC_LANG_PREFIX
 
 AC_CACHE_CHECK([for OpenMP flag of _AC_LANG compiler], ax_cv_[]_AC_LANG_ABBREV[]_openmp, [save[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
 ax_cv_[]_AC_LANG_ABBREV[]_openmp=unknown
-# Flags to try:  -fopenmp (gcc), -openmp (icc), -mp (SGI & PGI),
-#                -xopenmp (Sun), -omp (Tru64), -qsmp=omp (AIX), none
-ax_openmp_flags="-fopenmp -openmp -mp -xopenmp -omp -qsmp=omp none"
+# Flags to try:  -fopenmp (gcc), -mp (SGI & PGI),
+#                -qopenmp (icc>=15), -openmp (icc),
+#                -xopenmp (Sun), -omp (Tru64),
+#                -qsmp=omp (AIX),
+#                none
+ax_openmp_flags="-fopenmp -openmp -qopenmp -mp -xopenmp -omp -qsmp=omp none"
 if test "x$OPENMP_[]_AC_LANG_PREFIX[]FLAGS" != x; then
   ax_openmp_flags="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $ax_openmp_flags"
 fi

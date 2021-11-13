@@ -1,5 +1,5 @@
 # ===========================================================================
-#         https://www.gnu.org/software/autoconf-archive/ax_lapack.html
+#        https://www.gnu.org/software/autoconf-archive/ax_lapack.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -37,6 +37,7 @@
 # LICENSE
 #
 #   Copyright (c) 2009 Steven G. Johnson <stevenj@alum.mit.edu>
+#   Copyright (c) 2019 Geoffrey M. Oxberry <goxberry@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -64,7 +65,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 7
+#serial 10
 
 AU_ALIAS([ACX_LAPACK], [AX_LAPACK])
 AC_DEFUN([AX_LAPACK], [
@@ -76,7 +77,9 @@ AC_ARG_WITH(lapack,
 case $with_lapack in
         yes | "") ;;
         no) ax_lapack_ok=disable ;;
-        -* | */* | *.a | *.so | *.so.* | *.o) LAPACK_LIBS="$with_lapack" ;;
+        -* | */* | *.a | *.so | *.so.* | *.dylib | *.dylib.* | *.o)
+                 LAPACK_LIBS="$with_lapack"
+        ;;
         *) LAPACK_LIBS="-l$with_lapack" ;;
 esac
 
@@ -93,7 +96,7 @@ fi
 if test "x$LAPACK_LIBS" != x; then
         save_LIBS="$LIBS"; LIBS="$LAPACK_LIBS $BLAS_LIBS $LIBS $FLIBS"
         AC_MSG_CHECKING([for $cheev in $LAPACK_LIBS])
-        AC_TRY_LINK_FUNC($cheev, [ax_lapack_ok=yes], [LAPACK_LIBS=""])
+        AC_LINK_IFELSE([AC_LANG_CALL([], [$cheev])], [ax_lapack_ok=yes], [LAPACK_LIBS=""])
         AC_MSG_RESULT($ax_lapack_ok)
         LIBS="$save_LIBS"
         if test $ax_lapack_ok = no; then

@@ -15,12 +15,12 @@
 ## <https://www.gnu.org/licenses/>.
 
 
-classdef JupyterNotebook < handle
+classdef jupyter_notebook < handle
 
   ## -*- texinfo -*-
-  ## @deftypefn  {} {@var{notebook} =} JupyterNotebook (@var{notebookFileName})
+  ## @deftypefn  {} {@var{notebook} =} jupyter_notebook (@var{notebook_file_name})
   ##
-  ## Run and fill the Jupyter Notebook in @var{notebookFileName} within
+  ## Run and fill the Jupyter Notebook in @var{notebook_file_name} within
   ## GNU Octave.
   ##
   ## Supported are textual and graphical Octave outputs.
@@ -71,43 +71,43 @@ classdef JupyterNotebook < handle
   ## ## Run all cells and generate the filled notebook
   ##
   ## ## Instantiate an object from the notebook file
-  ## notebook = JupyterNotebook("myNotebook.ipynb")
+  ## notebook = jupyter_notebook("myNotebook.ipynb")
   ##     @result{} notebook =
   ##
-  ##         <object JupyterNotebook>
+  ##         <object jupyter_notebook>
   ##
   ## ## Run the code and embed the results in the @qcode{notebook} attribute
-  ## notebook.runAll()
+  ## notebook.run_all()
   ## ## Generate the new notebook by overwriting the original notebook
-  ## notebook.generateNotebook("myNotebook.ipynb")
+  ## notebook.generate_notebook("myNotebook.ipynb")
   ## @end group
   ##
   ## @group
   ## ## Run the second cell and generate the filled notebook
   ##
   ## ## Instantiate an object from the notebook file
-  ## notebook = JupyterNotebook("myNotebook.ipynb")
+  ## notebook = jupyter_notebook("myNotebook.ipynb")
   ##     @result{} notebook =
   ##
-  ##         <object JupyterNotebook>
+  ##         <object jupyter_notebook>
   ##
   ## ## Run the code and embed the results in the @qcode{notebook} attribute
   ## notebook.run(2)
   ## ## Generate the new notebook in a new file
-  ## notebook.generateNotebook("myNewNotebook.ipynb")
+  ## notebook.generate_notebook("myNewNotebook.ipynb")
   ## @end group
   ##
   ## @group
   ## ## Generate an Octave script from a notebook
   ##
   ## ## Instantiate an object from the notebook file
-  ## notebook = JupyterNotebook("myNotebook.ipynb")
+  ## notebook = jupyter_notebook("myNotebook.ipynb")
   ##     @result{} notebook =
   ##
-  ##         <object JupyterNotebook>
+  ##         <object jupyter_notebook>
   ##
   ## ## Generate the octave script
-  ## notebook.generateOctaveScript("myScript.m")
+  ## notebook.generate_octave_script("myScript.m")
   ## @end group
   ## @end example
   ##
@@ -128,17 +128,17 @@ classdef JupyterNotebook < handle
 
   methods
 
-    function obj = JupyterNotebook (notebookFileName)
+    function obj = jupyter_notebook (notebook_file_name)
 
       if (nargin != 1)
         print_usage ();
       endif
 
-      if (! (ischar (notebookFileName) && isrow (notebookFileName)))
-        error ("JupyterNotebook: notebookFileName must be a string");
+      if (! (ischar (notebook_file_name) && isrow (notebook_file_name)))
+        error ("jupyter_notebook: notebook_file_name must be a string");
       endif
 
-      obj.notebook = jsondecode (fileread (notebookFileName),
+      obj.notebook = jsondecode (fileread (notebook_file_name),
                                  "makeValidName", false);
 
       ## Validate the notebook's format according to nbformat: 4.0
@@ -146,12 +146,12 @@ classdef JupyterNotebook < handle
              && isfield (obj.notebook, "nbformat")
              && isfield (obj.notebook, "nbformat_minor")
              && isfield (obj.notebook, "cells")))
-        error ("JupyterNotebook: not valid format for Jupyter notebooks");
+        error ("jupyter_notebook: not valid format for Jupyter notebooks");
       endif
 
       ## Issue a warning if the format is lower than 4.0
       if (obj.notebook.nbformat < 4)
-        warning (["JupyterNotebook: nbformat versions lower than 4.0 are ", ...
+        warning (["jupyter_notebook: nbformat versions lower than 4.0 are ", ...
                   "not supported"]);
       endif
 
@@ -170,11 +170,11 @@ classdef JupyterNotebook < handle
 
       for i = 1:numel (obj.notebook.cells)
         if (! isfield (obj.notebook.cells{i}, "source"))
-          error ("JupyterNotebook: cells must contain a \"source\" field");
+          error ("jupyter_notebook: cells must contain a \"source\" field");
         endif
 
         if (! isfield (obj.notebook.cells{i}, "cell_type"))
-          error ("JupyterNotebook: cells must contain a \"cell_type\" field");
+          error ("jupyter_notebook: cells must contain a \"cell_type\" field");
         endif
 
         ## Handle when null JSON values are decoded into empty arrays.
@@ -194,17 +194,17 @@ classdef JupyterNotebook < handle
     endfunction
 
 
-    function generateOctaveScript (obj, scriptFileName)
+    function generate_octave_script (obj, script_file_name)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {} generateOctaveScript (@var{scriptFileName})
+      ## @deftypefn {} {} generate_octave_script (@var{script_file_name})
       ##
       ## Write an Octave script that has the contents of the Jupyter Notebook
-      ## stored in the @qcode{notebook} attribute to @var{scriptFileName}.
+      ## stored in the @qcode{notebook} attribute to @var{script_file_name}.
       ##
       ## Non code cells are generated as block comments.
       ##
-      ## See @code{help JupyterNotebook} for examples.
+      ## See @code{help jupyter_notebook} for examples.
       ##
       ## @end deftypefn
 
@@ -212,11 +212,11 @@ classdef JupyterNotebook < handle
         print_usage ();
       endif
 
-      if (! (ischar (scriptFileName) && isrow (scriptFileName)))
-        error ("JupyterNotebook: scriptFileName must be a string");
+      if (! (ischar (script_file_name) && isrow (script_file_name)))
+        error ("jupyter_notebook: script_file_name must be a string");
       endif
 
-      fhandle = fopen (scriptFileName, "w");
+      fhandle = fopen (script_file_name, "w");
 
       for i = 1:numel (obj.notebook.cells)
         if (strcmp (obj.notebook.cells{i}.cell_type, "markdown"))
@@ -237,17 +237,17 @@ classdef JupyterNotebook < handle
     endfunction
 
 
-    function generateNotebook (obj, notebookFileName)
+    function generate_notebook (obj, notebook_file_name)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {} generateNotebook (@var{notebookFileName})
+      ## @deftypefn {} {} generate_notebook (@var{notebook_file_name})
       ##
       ## Write the Jupyter Notebook stored in the @qcode{notebook}
-      ## attribute to @var{notebookFileName}.
+      ## attribute to @var{notebook_file_name}.
       ##
       ## The @qcode{notebook} attribute is encoded to JSON text.
       ##
-      ## See @code{help JupyterNotebook} for examples.
+      ## See @code{help jupyter_notebook} for examples.
       ##
       ## @end deftypefn
 
@@ -255,11 +255,11 @@ classdef JupyterNotebook < handle
         print_usage ();
       endif
 
-      if (! (ischar (notebookFileName) && isrow (notebookFileName)))
-        error ("JupyterNotebook: notebookFileName must be a string");
+      if (! (ischar (notebook_file_name) && isrow (notebook_file_name)))
+        error ("jupyter_notebook: notebook_file_name must be a string");
       endif
 
-      fhandle = fopen (notebookFileName, "w");
+      fhandle = fopen (notebook_file_name, "w");
 
       fputs (fhandle, jsonencode (obj.notebook, "ConvertInfAndNaN", false,
                                   "PrettyPrint", true));
@@ -285,7 +285,7 @@ classdef JupyterNotebook < handle
       ## this function.  However, current workspace variables cannot be
       ## accessed either.
       ##
-      ## See @code{help JupyterNotebook} for examples.
+      ## See @code{help jupyter_notebook} for examples.
       ##
       ## @end deftypefn
 
@@ -295,11 +295,11 @@ classdef JupyterNotebook < handle
 
       if (! (isscalar (cell_index) && ! islogical (cell_index)
           && (mod (cell_index, 1) == 0) && (cell_index > 0)))
-        error ("JupyterNotebook: cell_index must be a scalar positive integer");
+        error ("jupyter_notebook: cell_index must be a scalar positive integer");
       endif
 
       if (cell_index > length (obj.notebook.cells))
-        error ("JupyterNotebook: cell_index is out of bound");
+        error ("jupyter_notebook: cell_index is out of bound");
       endif
 
       if (! strcmp (obj.notebook.cells{cell_index}.cell_type, "code"))
@@ -384,7 +384,7 @@ classdef JupyterNotebook < handle
           for i = 1:numel (fig_ids_new)
             delete (fig_ids_new(i));
           endfor
-          error (["JupyterNotebook: temporary directory ", ...
+          error (["jupyter_notebook: temporary directory ", ...
                   "__octave_jupyter_temp__ exists.  Please remove it ", ...
                   "manually."]);
         endif
@@ -395,7 +395,7 @@ classdef JupyterNotebook < handle
           for i = 1 : numel (fig_ids_new)
             delete (fig_ids_new(i));
           endfor
-          error (["JupyterNotebook: Cannot create a temporary directory. ", ...
+          error (["jupyter_notebook: Cannot create a temporary directory. ", ...
                   msg]);
         endif
 
@@ -407,7 +407,7 @@ classdef JupyterNotebook < handle
 
         [status, msg, msgid] = rmdir ("__octave_jupyter_temp__");
         if (status == 0)
-          error (["JupyterNotebook: Cannot delete the temporary ", ...
+          error (["jupyter_notebook: Cannot delete the temporary ", ...
                   "directory. ", msg]);
         endif
       endif
@@ -415,10 +415,10 @@ classdef JupyterNotebook < handle
     endfunction
 
 
-    function runAll (obj)
+    function run_all (obj)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {} runAll ()
+      ## @deftypefn {} {} run_all ()
       ##
       ## Run all Jupyter Notebook cells and eventually replace previous
       ## output cells in the object.
@@ -429,7 +429,7 @@ classdef JupyterNotebook < handle
       ## this function.  However, current workspace variables cannot be
       ## accessed either.
       ##
-      ## See @code{help JupyterNotebook} for examples.
+      ## See @code{help jupyter_notebook} for examples.
       ##
       ## @end deftypefn
 
@@ -464,7 +464,7 @@ classdef JupyterNotebook < handle
       endif
 
       if (! (ischar (__code__) && isrow (__code__)))
-        error ("JupyterNotebook: code must be a string");
+        error ("jupyter_notebook: code must be a string");
       endif
 
       __obj__.loadContext ();
@@ -665,4 +665,4 @@ classdef JupyterNotebook < handle
 
 endclassdef
 
-#!error JupyterNotebook ()
+#!error jupyter_notebook ()

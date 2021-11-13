@@ -97,7 +97,7 @@ the variable is a sparse type.
 `jsondecode` and `jsonencode` functions to read and write JSON data.
 
 - As part of GSoC 2021, Abdallah K. Elshamy implemented the
-`JupyterNotebook` classdef class.  This class supports running and
+`jupyter_notebook` classdef class.  This class supports running and
 filling Jupyter Notebooks using the Octave language kernel from Octave
 itself.  Making the evaluation of long-running Jupyter Notebooks on a
 computing server without permanent browser connection possible.
@@ -226,7 +226,7 @@ dimensions greater than `ndims (x)`.  The function compatibly handles
 the file contains a 2-D text matrix.
 
 - The file functions `copyfile`, `mkdir`, `movefile`, `rmdir` now return
-a logical value (true/false) rather than a numeric value (1/0). 
+a logical value (true/false) rather than a numeric value (1/0).
 
 - `uimenu` now accepts property `"Text"` which is identical to
 `"Label"`.  Matlab recommends using `"Text"` in new code, although there
@@ -271,7 +271,7 @@ a scalar.
 * `fill3`
 * `jsondecode`
 * `jsonencode`
-* `JupyterNotebook`
+* `jupyter_notebook`
 * `listfonts`
 * `matlab.net.base64decode`
 * `matlab.net.base64encode`

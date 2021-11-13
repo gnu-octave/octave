@@ -1,5 +1,5 @@
 jupyter_TEST_FILES = \
-  %reldir%/JupyterNotebook.tst \
+  %reldir%/jupyter-notebook.tst \
   %reldir%/octave_kernel.ipynb \
   %reldir%/plot_magic_and_errors.ipynb
 

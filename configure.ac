@@ -1662,7 +1662,7 @@ if test $check_magick = yes; then
     AC_CHECK_HEADER([Magick++.h], [
       AC_CACHE_CHECK([for Magick::ColorRGB in Magick++.h],
         [octave_cv_func_magick_colorrgb],
-        [AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
+        [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <Magick++.h>
           ]], [[
           Magick::ColorRGB c;

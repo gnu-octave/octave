@@ -119,6 +119,11 @@ That means that less symbols are exported from these libraries.
 Configure with `--disable-lib-visibility-flags` to export all symbols
 (like in previous versions).
 
+- Octave's build system no longer appends "++" to the end of the
+"magick++" library name (set with the `--with-magick=` configure flag).
+The real name of the "magick++" library (including any potentially
+trailing "++") needs to be set in that option now.
+
 ### Graphical User Interface
 
 - The graphical user interface is now available in Hungarian and in

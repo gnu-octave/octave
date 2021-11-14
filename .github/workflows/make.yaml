@@ -364,7 +364,10 @@ jobs:
             ${{ matrix.target-prefix }}-qhull
             ${{ matrix.target-prefix }}-qrupdate
             ${{ matrix.target-prefix }}-qscintilla
-            ${{ matrix.target-prefix }}-qt5
+            ${{ matrix.target-prefix }}-qt5-base
+            ${{ matrix.target-prefix }}-qt5-imageformats
+            ${{ matrix.target-prefix }}-qt5-svg
+            ${{ matrix.target-prefix }}-qt5-tools
             ${{ matrix.target-prefix }}-rapidjson
             ${{ matrix.target-prefix }}-suitesparse
             ${{ matrix.target-prefix }}-sundials

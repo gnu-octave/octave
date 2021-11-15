@@ -19,6 +19,7 @@ classdef jupyter_notebook < handle
 
   ## -*- texinfo -*-
   ## @deftypefn  {} {@var{notebook} =} jupyter_notebook (@var{notebook_file_name})
+  ## @deftypefnx {} {@var{notebook} =} jupyter_notebook (@var{notebook_file_name}, @var{options})
   ##
   ## Run and fill the Jupyter Notebook in @var{notebook_file_name} within
   ## GNU Octave.
@@ -31,6 +32,12 @@ classdef jupyter_notebook < handle
   ##
   ## Note: Jupyter Notebook versions (@qcode{nbformat}) lower than 4.0 are
   ## not supported.
+  ##
+  ## The second argument @var{options} is a struct with fields:
+  ## @itemize @bullet
+  ## @item
+  ## @qcode{tmpdir} to set the temporary working directory.
+  ## @end itemize
   ##
   ## @qcode{%plot} magic is supported with the following settings:
   ## @itemize @bullet
@@ -124,14 +131,33 @@ classdef jupyter_notebook < handle
 
     context = struct("ans", "")
 
+    ## Note: This name needs to be stored in a property because it is
+    ## set in the constructor but used in some other methods.  However,
+    ## we want to defer calling tempname() until immediately before
+    ## calling mkdir.  The temporary directory currently created and
+    ## deleted in the constructor and the name is reset to the empty
+    ## string when the directory is deleted.  Another possible
+    ## implementation might be to generate the name and create the
+    ## temporary directory here, then delete it in the class destructor.
+
+    tmpdir = "";
+
   endproperties
 
   methods
 
-    function obj = jupyter_notebook (notebook_file_name)
+    function obj = jupyter_notebook (notebook_file_name, options)
 
-      if (nargin != 1)
+      if ((nargin < 1) || (nargin > 2))
         print_usage ();
+      endif
+
+      ## Validate options if present.
+      if ((nargin == 2) && ! isstruct (options))
+        error ("jupyter_notebook: options must be a struct");
+      endif
+      if ((nargin == 2) && (isfield (options, "tmpdir")))
+        obj.tmpdir = options.tmpdir;
       endif
 
       if (! (ischar (notebook_file_name) && isrow (notebook_file_name)))
@@ -379,17 +405,22 @@ classdef jupyter_notebook < handle
       fig_ids_new = setdiff (findall (0, "type", "figure"), fig_ids);
 
       if (numel (fig_ids_new) > 0)
-        if (exist ("__octave_jupyter_temp__", "dir"))
+        if (! isempty (obj.tmpdir) && exist (obj.tmpdir, "dir"))
           ## Delete open figures before raising the error.
           for i = 1:numel (fig_ids_new)
             delete (fig_ids_new(i));
           endfor
-          error (["jupyter_notebook: temporary directory ", ...
-                  "__octave_jupyter_temp__ exists.  Please remove it ", ...
-                  "manually."]);
+          error (["JupyterNotebook: temporary directory %s exists.  ", ...
+                  "Please remove it manually."], obj.tmpdir);
         endif
 
-        [status, msg, msgid] = mkdir ("__octave_jupyter_temp__");
+        if (isempty (obj.tmpdir))
+          obj.tmpdir = tempname ();
+          clear_tmpdir_property = true;
+        else
+          clear_tmpdir_property = false;
+        endif
+        [status, msg, msgid] = mkdir (obj.tmpdir);
         if (status == 0)
           ## Delete open figures before raising the error.
           for i = 1 : numel (fig_ids_new)
@@ -399,16 +430,23 @@ classdef jupyter_notebook < handle
                   msg]);
         endif
 
+        ## FIXME: Maybe it would be better for these cleanup actions to
+        ## happen in an onCleanup object or unwind_protect block so that
+        ## they will be executed no matter how we exit this function?
+
         for i = 1:numel (fig_ids_new)
           figure (fig_ids_new(i), "visible", "off");
           obj.embedImage (cell_index, fig_ids_new (i), printOptions);
           delete (fig_ids_new(i));
         endfor
 
-        [status, msg, msgid] = rmdir ("__octave_jupyter_temp__");
+        [status, msg, msgid] = rmdir (obj.tmpdir);
         if (status == 0)
           error (["jupyter_notebook: Cannot delete the temporary ", ...
                   "directory. ", msg]);
+        endif
+        if (clear_tmpdir_property)
+          obj.tmpdir = "";
         endif
       endif
 
@@ -605,7 +643,7 @@ classdef jupyter_notebook < handle
         mime = "image/jpeg";
       endif
 
-      image_path = fullfile ("__octave_jupyter_temp__", ["temp.", fmt]);
+      image_path = fullfile (obj.tmpdir, ["temp.", fmt]);
       print (figHandle, image_path, ["-d", fmt],
              ["-r" printOptions.resolution]);
 
@@ -622,7 +660,7 @@ classdef jupyter_notebook < handle
 
     function dstruct = embed_svg_image (obj, figHandle, printOptions)
 
-      image_path = fullfile ("__octave_jupyter_temp__", "temp.svg");
+      image_path = fullfile (obj.tmpdir, "temp.svg");
       print (figHandle, image_path, "-dsvg", ["-r" printOptions.resolution]);
 
       dstruct.output_type = "display_data";

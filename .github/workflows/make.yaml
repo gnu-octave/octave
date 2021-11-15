@@ -488,7 +488,7 @@ jobs:
           echo cd "%%~dp0" >> C:/msys64/usr/bin/makeinfo.bat
           echo perl "%%~n0" %%* >> C:/msys64/usr/bin/makeinfo.bat
           rem Start Octave and run test suite
-          octave-gui --eval "__run_test_suite__"
+          octave --eval "__run_test_suite__"
 
       - name: display test log
         continue-on-error: true

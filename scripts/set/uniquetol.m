@@ -112,16 +112,17 @@ function [c, ia, ic] = uniquetol (A, varargin)
     return;
   endif
 
-  if (! isfloat (A))
+  if (! isfloat (A) || iscomplex (A))
     error ("Octave:uniquetol:unsupported-type",
-           "uniquetol: A must be a double or single precision array");
+           "uniquetol: A must be a double or single precision non-complex array");
   endif
 
   if (nargin == 1 || ischar (varargin{1}))
     tol = ifelse (isa (A, "double"), 1e-12, 1e-6);
-  elseif (! (isfloat (varargin{1}) && isscalar (varargin{1})))
+  elseif (! (isfloat (varargin{1}) && isscalar (varargin{1}))
+          || iscomplex (varargin{1}))
     error ("Octave:uniquetol:unsupported-type",
-           "uniquetol: TOL must be a double or single precision scalar");
+           "uniquetol: TOL must be a double or single precision non-complex scalar");
   else
     tol = varargin{1};
     varargin(1) = [];
@@ -149,8 +150,8 @@ function [c, ia, ic] = uniquetol (A, varargin)
       output_all_indices = logical (varargin{k+1});
     elseif (strcmpi (varargin{k}, "DataScale"))
       data_scale = varargin{k+1}(:).';
-      if (! isfloat (data_scale) || any (data_scale(:) < 0)
-          || any (isnan (data_scale(:))))
+      if (! isfloat (data_scale) || iscomplex (data_scale)
+          || any (data_scale(:) < 0) || any (isnan (data_scale(:))))
         error ("uniquetol: DataScale must be a non-NaN, positive floating point scalar or vector");
       endif
       cols_data_scale = columns (data_scale);
@@ -345,14 +346,17 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> uniquetol ()
-%!error <A must be a double or single precision array> uniquetol (int8 (1))
+%!error <A must be a double or single precision> uniquetol (int8 (1))
+%!error <A must be .* non-complex> uniquetol (1i)
 %!error <TOL must be a double .* precision> uniquetol (1, int8 (1))
 %!error <TOL must be a .* scalar> uniquetol (1, [1, 2])
+%!error <TOL must be .* non-complex> uniquetol (1, 1i)
 %!error <arguments must be passed in pairs> uniquetol (1, 2, "byrows")
 %!error <PROPERTY must be a string> uniquetol (1, 2, 3, "bar")
 %!error <A must be a 2-D array> uniquetol (ones(2,2,2), "byrows", true)
 %!error <DataScale must be a .* floating point> uniquetol (1, "DataScale", '1')
-%!error <DataScale must be a .* positive> uniquetol (1, "DataScale", -1)
+%!error <DataScale must be .* positive> uniquetol (1, "DataScale", -1)
+%!error <DataScale must be .* positive> uniquetol (1, "DataScale", 1i)
 %!error <DataScale must be a non-NaN> uniquetol (1, "DataScale", NaN)
 %!error <invalid DataScale size> uniquetol (1, "DataScale", [1 2])
 %!error <unknown property 'foo'> uniquetol (1, "foo", "bar")

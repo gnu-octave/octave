@@ -36,15 +36,15 @@
 
 #include "base64-wrappers.h"
 
-size_t
-octave_base64_encode_alloc_wrapper (const char *in, size_t inlen, char **out)
+ptrdiff_t
+octave_base64_encode_alloc_wrapper (const char *in, ptrdiff_t inlen, char **out)
 {
   return base64_encode_alloc (in, inlen, out);
 }
 
 bool
-octave_base64_decode_alloc_wrapper (const char *in, size_t inlen,
-                                    char **out, size_t *outlen)
+octave_base64_decode_alloc_wrapper (const char *in, ptrdiff_t inlen,
+                                    char **out, ptrdiff_t *outlen)
 {
   return base64_decode_alloc (in, inlen, out, outlen);
 }

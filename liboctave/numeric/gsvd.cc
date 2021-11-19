@@ -438,33 +438,33 @@ namespace octave
     T
     gsvd<T>::left_singular_matrix_A (void) const
     {
-      if (type == gsvd::Type::sigma_only)
+      if (m_type == gsvd::Type::sigma_only)
         (*current_liboctave_error_handler)
           ("gsvd: U not computed because type == gsvd::sigma_only");
 
-      return left_smA;
+      return m_left_smA;
     }
 
     template <typename T>
     T
     gsvd<T>::left_singular_matrix_B (void) const
     {
-      if (type == gsvd::Type::sigma_only)
+      if (m_type == gsvd::Type::sigma_only)
         (*current_liboctave_error_handler)
           ("gsvd: V not computed because type == gsvd::sigma_only");
 
-      return left_smB;
+      return m_left_smB;
     }
 
     template <typename T>
     T
     gsvd<T>::right_singular_matrix (void) const
     {
-      if (type == gsvd::Type::sigma_only)
+      if (m_type == gsvd::Type::sigma_only)
         (*current_liboctave_error_handler)
           ("gsvd: X not computed because type == gsvd::sigma_only");
 
-      return right_sm;
+      return m_right_sm;
     }
 
     template <typename T>
@@ -517,22 +517,22 @@ namespace octave
           break;
         }
 
-      type = gsvd_type;
+      m_type = gsvd_type;
 
       if (jobu != 'N')
-        left_smA.resize (nrow_u, m);
+        m_left_smA.resize (nrow_u, m);
 
-      P *u = left_smA.fortran_vec ();
+      P *u = m_left_smA.fortran_vec ();
 
       if (jobv != 'N')
-        left_smB.resize (nrow_v, p);
+        m_left_smB.resize (nrow_v, p);
 
-      P *v = left_smB.fortran_vec ();
+      P *v = m_left_smB.fortran_vec ();
 
       if (jobq != 'N')
-        right_sm.resize (nrow_q, n);
+        m_right_sm.resize (nrow_q, n);
 
-      P *q = right_sm.fortran_vec ();
+      P *q = m_right_sm.fortran_vec ();
 
       real_matrix alpha (n, 1);
       real_matrix beta (n, 1);
@@ -607,7 +607,7 @@ namespace octave
           // Output X = Q*R'
           // FIXME: Is there a way to call BLAS multiply directly
           //        with flags so that R is transposed?
-          right_sm = right_sm * R.hermitian ();
+          m_right_sm = m_right_sm * R.hermitian ();
         }
 
       // Fill in C and S
@@ -627,38 +627,38 @@ namespace octave
       if (gsvd_type == gsvd<T>::Type::sigma_only)
         {
           // Return column vector with results
-          sigmaA.resize (k+l, 1);
-          sigmaB.resize (k+l, 1);
+          m_sigmaA.resize (k+l, 1);
+          m_sigmaB.resize (k+l, 1);
 
           if (fill_ptn)
             {
               for (i = 0; i < k; i++)
                 {
-                  sigmaA.xelem (i) = 1.0;
-                  sigmaB.xelem (i) = 0.0;
+                  m_sigmaA.xelem (i) = 1.0;
+                  m_sigmaB.xelem (i) = 0.0;
                 }
               for (i = k, j = k+l-1; i < k+l; i++, j--)
                 {
-                  sigmaA.xelem (i) = alpha.xelem (i);
-                  sigmaB.xelem (i) = beta.xelem (i);
+                  m_sigmaA.xelem (i) = alpha.xelem (i);
+                  m_sigmaB.xelem (i) = beta.xelem (i);
                 }
             }
           else
             {
               for (i = 0; i < k; i++)
                 {
-                  sigmaA.xelem (i) = 1.0;
-                  sigmaB.xelem (i) = 0.0;
+                  m_sigmaA.xelem (i) = 1.0;
+                  m_sigmaB.xelem (i) = 0.0;
                 }
               for (i = k; i < m; i++)
                 {
-                  sigmaA.xelem (i) = alpha.xelem (i);
-                  sigmaB.xelem (i) = beta.xelem (i);
+                  m_sigmaA.xelem (i) = alpha.xelem (i);
+                  m_sigmaB.xelem (i) = beta.xelem (i);
                 }
               for (i = m; i < k+l; i++)
                 {
-                  sigmaA.xelem (i) = 0.0;
-                  sigmaB.xelem (i) = 1.0;
+                  m_sigmaA.xelem (i) = 0.0;
+                  m_sigmaB.xelem (i) = 1.0;
                 }
             }
         }
@@ -666,22 +666,22 @@ namespace octave
         {
           // Number of columns according to LAPACK is k+l, but this needs
           // to be n for Matlab compatibility.
-          sigmaA.resize (m, n);
-          sigmaB.resize (p, n);
+          m_sigmaA.resize (m, n);
+          m_sigmaB.resize (p, n);
 
           for (i = 0; i < k; i++)
-            sigmaA.xelem (i,i) = 1.0;
+            m_sigmaA.xelem (i,i) = 1.0;
 
           for (i = 0; i < rank; i++)
             {
-              sigmaA.xelem (k+i,k+i) = alpha.xelem (k+i);
-              sigmaB.xelem (i,k+i) = beta.xelem (k+i);
+              m_sigmaA.xelem (k+i,k+i) = alpha.xelem (k+i);
+              m_sigmaB.xelem (i,k+i) = beta.xelem (k+i);
             }
 
           if (! fill_ptn)
             {
               for (i = m; i < n; i++)
-                sigmaB.xelem (i-k, i) = 1.0;
+                m_sigmaB.xelem (i-k, i) = 1.0;
             }
 
         }

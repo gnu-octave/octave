@@ -97,8 +97,8 @@ do_gsvd (const T& A, const T& B,
 
         case 3:
           retval(2) = result.right_singular_matrix ();
-          OCTAVE_FALLTHROUGH;
         }
+
       retval(1) = result.left_singular_matrix_B ();
       retval(0) = result.left_singular_matrix_A ();
     }

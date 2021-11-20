@@ -107,8 +107,15 @@ OCTAVE_SET_DEFAULT([octlibdir], '${libdir}/octave/${version}')
 ## Where to put executables to be run by Octave, rather than the user.
 ## This path usually includes the Octave version and configuration name, so
 ## that configurations for multiple versions of Octave may be installed at once.
-OCTAVE_SET_DEFAULT([archlibdir],
-  '${libexecdir}/octave/${version}/exec/${canonical_host_type}')
+## Windows search paths and relocation oddities require all binaries must be
+## installed in the same directory.
+case $host_os in
+  mingw* | msdosmsvc)
+    OCTAVE_SET_DEFAULT([archlibdir], '${bindir}') ;;
+  *)
+    OCTAVE_SET_DEFAULT([archlibdir],
+      '${libexecdir}/octave/${version}/exec/${canonical_host_type}') ;;
+esac
 
 ## Where to put executables to be run by Octave, rather than the user, that
 ## are specific to this site.

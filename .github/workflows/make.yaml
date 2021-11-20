@@ -453,11 +453,9 @@ jobs:
 
       - name: install
         # Install Octave
-        # Create symlinks to the libexec binaries in bin (or they won't find their libraries?)
-        run: |
-          make -C ./.build install V=1
-          ln -sf ${MINGW_PREFIX}/libexec/octave/7.0.0/exec/${TARGET_TRIPLET}/octave-gui.exe ${MINGW_PREFIX}/bin/octave-gui.exe
-          ln -sf ${MINGW_PREFIX}/libexec/octave/7.0.0/exec/${TARGET_TRIPLET}/octave-svgconvert.exe ${MINGW_PREFIX}/bin/octave-svgconvert.exe
+        # Relocation issues with the graphicsmagick++ libraries on mingw require
+        # installing Octave before running the test suite.
+        run: make -C ./.build install V=1
 
       - name: check
         # Continuing on error in this step means that jobs will be "green" even

@@ -631,23 +631,6 @@ function bin = __svgconv_binary__ ()
 
   persistent binary = "";
 
-  if (isempty (binary) && ispc ())
-    ## On Windows, prefer the executable in the bin directory
-    ## (linking issue, see bug #59546)
-    bindir = getenv ("OCTAVE_BINDIR");
-    if (isempty (bindir))
-      bindir = __octave_config_info__ ("bindir");
-    endif
-
-    binary = fullfile (bindir, ...
-                       ["octave-svgconvert", ...
-                        __octave_config_info__("EXEEXT")]);
-
-    if (! exist (binary, "file"))
-      binary = "";
-    endif
-  endif
-
   if (isempty (binary))
     ## default installation location is the archlib directory
     bindir = getenv ("OCTAVE_ARCHLIBDIR");

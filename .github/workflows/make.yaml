@@ -83,7 +83,7 @@ jobs:
           ccache -s
 
       - name: bootstrap
-        run: ./bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
         timeout-minutes: 30
@@ -215,7 +215,7 @@ jobs:
       - name: bootstrap
         run: |
           export PATH="$MY_PATH:$PATH"
-          ./bootstrap
+          GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
         timeout-minutes: 30
@@ -416,8 +416,7 @@ jobs:
           echo 'export PATH="$MINGW_PREFIX/lib/ccache/bin:$PATH"' >> ~/.bash_profile
 
       - name: bootstrap
-        run: |
-          ./bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
         # configure sometimes hangs while compiling 32bit Fortran.

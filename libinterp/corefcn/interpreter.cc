@@ -28,6 +28,7 @@
 #endif
 
 #include <cstdio>
+#include <clocale>
 
 #include <iostream>
 #include <set>

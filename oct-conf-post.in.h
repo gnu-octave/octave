@@ -155,6 +155,12 @@ typedef unsigned long ino_t;
 #  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
 #endif
 
+/* assume that Windows will support UTF-8 locales when using UCRT */
+#if defined (__MSVCRT_VERSION__) && __MSVCRT_VERSION__ == 0x0E00
+#  define OCTAVE_HAVE_WINDOWS_UTF8_LOCALE
+#endif
+
+
 /* sigsetjmp is a macro, not a function. */
 #if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
 #  define OCTAVE_HAVE_SIG_JUMP 1

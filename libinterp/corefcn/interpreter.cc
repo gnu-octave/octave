@@ -495,10 +495,15 @@ Undocumented internal function.
 
     m_instance = this;
 
+#if defined (OCTAVE_HAVE_WINDOWS_UTF8_LOCALE)
+    // Force a UTF-8 locale on Windows if possible
+    std::setlocale (LC_ALL, ".UTF8");
+#else
+    std::setlocale (LC_ALL, "");
+#endif
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
-    setlocale (LC_ALL, "");
-    setlocale (LC_NUMERIC, "C");
-    setlocale (LC_TIME, "C");
+    std::setlocale (LC_NUMERIC, "C");
+    std::setlocale (LC_TIME, "C");
     sys::env::putenv ("LC_NUMERIC", "C");
     sys::env::putenv ("LC_TIME", "C");
 

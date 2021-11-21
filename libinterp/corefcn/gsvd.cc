@@ -272,8 +272,8 @@ should avoid this combination.
 %! assert (size (C), [3, 5]);
 %! assert (C(:, 4:5), zeros (3,2));
 %! assert (size (S), [5, 5]);
-%! assert (U*C*X', A, 100*eps);  # less accurate in this orientation
-%! assert (V*S*X', B, 125*eps);  # for some reason.
+%! assert (U*C*X', A, 120*eps);  # less accurate in this orientation
+%! assert (V*S*X', B, 150*eps);  # for some reason.
 %! S0 = gsvd (A, B);
 %! assert (size (S0), [5, 1]);
 %! S0 = S0(3:end);
@@ -330,16 +330,16 @@ should avoid this combination.
 %! B = B0;
 %! [U, V, X, C, S] = gsvd (A, B);
 %! assert (C'*C + S'*S, eye (5), 5*eps);
-%! assert (U*C*X', A, 10*eps);
-%! assert (V*S*X', B, 40*eps);
+%! assert (U*C*X', A, 15*eps);
+%! assert (V*S*X', B, 85*eps);
 
 ## A: 3x5 full rank, B: 5x5 rank deficient
 %!test <48807>
 %! B(2, 2) = 0;
 %! [U, V, X, C, S] = gsvd (A, B);
 %! assert (C'*C + S'*S, eye (5), 5*eps);
-%! assert (U*C*X', A, 10*eps);
-%! assert (V*S*X', B, 40*eps);
+%! assert (U*C*X', A, 15*eps);
+%! assert (V*S*X', B, 85*eps);
 
 ## A: 3x5 rank deficient, B: 5x5 full rank
 %!test <48807>
@@ -347,8 +347,8 @@ should avoid this combination.
 %! A(3, :) = 2*A(1, :) - A(2, :);
 %! [U, V, X, C, S] = gsvd (A, B);
 %! assert (C'*C + S'*S, eye (5), 5*eps);
-%! assert (U*C*X', A, 10*eps);
-%! assert (V*S*X', B, 40*eps);
+%! assert (U*C*X', A, 15*eps);
+%! assert (V*S*X', B, 85*eps);
 
 ## A and B are both rank deficient
 ## FIXME: LAPACK seems to be completely broken for this case
@@ -386,7 +386,7 @@ should avoid this combination.
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! [U, V, X, C, S] = gsvd (A, B);
 %! assert (C'*C + S'*S, eye (3), 5*eps);
-%! assert (U*C*X', A, 10*eps);
+%! assert (U*C*X', A, 15*eps);
 %! assert (V*S*X', B, 25*eps);
 
 ## A (5x3) and B (3x3) are both complex rank deficient

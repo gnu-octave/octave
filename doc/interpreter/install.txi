@@ -194,7 +194,7 @@ Basic Linear Algebra Subroutine library.  Accelerated @sc{blas} libraries such
 as OpenBLAS (@url{https://www.openblas.net/}) or
 ATLAS (@url{http://math-atlas.sourceforge.net}) are recommended for best
 performance.  The reference implementation (@url{http://www.netlib.org/blas})
-is slow, unmaintained, and suffers from certain bugs in corner case inputs.
+is slow and suffers from certain bugs in corner case inputs.
 
 @item LAPACK
 Linear Algebra Package (@url{http://www.netlib.org/lapack}).

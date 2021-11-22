@@ -155,11 +155,15 @@ typedef unsigned long ino_t;
 #  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
 #endif
 
+#if defined (__MINGW32__)
+  /* We need to include this header or __MSVCRT_VERSION__ might not be defined
+     to the correct value */
+#  include <_mingw.h>
+#endif
 /* assume that Windows will support UTF-8 locales when using UCRT */
 #if defined (__MSVCRT_VERSION__) && __MSVCRT_VERSION__ == 0x0E00
-#  define OCTAVE_HAVE_WINDOWS_UTF8_LOCALE
+#  define OCTAVE_HAVE_WINDOWS_UTF8_LOCALE 1
 #endif
-
 
 /* sigsetjmp is a macro, not a function. */
 #if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)

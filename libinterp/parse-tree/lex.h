@@ -691,6 +691,8 @@ namespace octave
 
     void warn_language_extension_operator (const std::string& op);
 
+    void warn_deprecated_syntax (const std::string& msg);
+
     void push_token (token *);
 
     token * current_token (void);

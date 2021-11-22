@@ -1072,14 +1072,7 @@ ANY_INCLUDING_NL (.|{NL})
     /* FIXME: Remove support for '...' continuation in Octave 9 */
     static const char *msg = "'...' continuations in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave; please use '\\' instead";
 
-    std::string nm = curr_lexer->m_fcn_file_full_name;
-
-    if (nm.empty ())
-      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
-    else
-      warning_with_id ("Octave:deprecated-syntax",
-                       "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_filepos.line (), nm.c_str ());
+    curr_lexer->warn_deprecated_syntax (msg);
 
     HANDLE_STRING_CONTINUATION;
   }
@@ -1090,14 +1083,7 @@ ANY_INCLUDING_NL (.|{NL})
     /* FIXME: Remove support for WS after line continuation in Octave 9 */
     static const char *msg = "whitespace after continuation markers in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave";
 
-    std::string nm = curr_lexer->m_fcn_file_full_name;
-
-    if (nm.empty ())
-      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
-    else
-      warning_with_id ("Octave:deprecated-syntax",
-                       "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_filepos.line (), nm.c_str ());
+    curr_lexer->warn_deprecated_syntax (msg);
 
     HANDLE_STRING_CONTINUATION;
   }
@@ -1301,14 +1287,7 @@ ANY_INCLUDING_NL (.|{NL})
     /* FIXME: Remove support for '\\' line continuation in Octave 9 */
     static const char *msg = "using continuation marker \\ outside of double quoted strings was deprecated in version 7 and will be removed from a future version of Octave, use ... instead";
 
-    std::string nm = curr_lexer->m_fcn_file_full_name;
-
-    if (nm.empty ())
-      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
-    else
-      warning_with_id ("Octave:deprecated-syntax",
-                       "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_filepos.line (), nm.c_str ());
+    curr_lexer->warn_deprecated_syntax (msg);
 
     curr_lexer->handle_continuation ();
   }
@@ -3664,6 +3643,17 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     if (t[n-1] == '\n')
       t.resize (n-1);
     warn_language_extension (t + " used as operator");
+  }
+
+  void
+  base_lexer::warn_deprecated_syntax (const std::string& msg)
+  {
+    if (m_fcn_file_full_name.empty ())
+      warning_with_id ("Octave:deprecated-syntax", "%s", msg.c_str ());
+    else
+      warning_with_id ("Octave:deprecated-syntax",
+                       "%s; near line %d of file '%s'", msg.c_str (),
+                       m_filepos.line (), m_fcn_file_full_name.c_str ());
   }
 
   void

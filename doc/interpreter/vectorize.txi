@@ -389,7 +389,7 @@ is
       times     .*
       rdivide   ./
       ldivide   .\
-      power     .^  .**
+      power     .^
       lt        <
       le        <=
       eq        ==
@@ -406,7 +406,7 @@ is
       rem
       xor
 
-      +=  -=  .+=  .-=  .*=  ./=  .\=  .^=  .**=  &=  |=
+      +=  -=  .+=  .-=  .*=  ./=  .\=  .^=  &=  |=
 @end example
 
 Beware of resorting to broadcasting if a simpler operation will suffice.

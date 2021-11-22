@@ -876,7 +876,7 @@ A @dfn{parse error} occurs if Octave cannot understand something you
 have typed.  For example, if you misspell a keyword,
 
 @example
-octave:13> function y = f (x) y = x***2; endfunction
+octave:13> function z = f (x, y) z = x ||| 2; endfunction
 @end example
 
 @noindent
@@ -888,8 +888,8 @@ parse error:
 
   syntax error
 
->>> function y = f (x) y = x***2; endfunction
-                              ^
+>>> function z = f (x, y) z = x ||| y; endfunction
+                                  ^
 @end group
 @end example
 
@@ -897,9 +897,9 @@ parse error:
 For most parse errors, Octave uses a caret (@samp{^}) to mark the point
 on the line where it was unable to make sense of your input.  In this
 case, Octave generated an error message because the keyword for
-exponentiation (@code{**}) was misspelled.  It marked the error at the
-third @samp{*} because the code leading up to this was correct but the final
-@samp{*} was not understood.
+the logical or operator (@code{||}) was misspelled.  It marked the error
+at the third @samp{|} because the code leading up to this was correct
+but the final @samp{|} was not understood.
 
 Another class of error message occurs at evaluation time.  These
 errors are called @dfn{run-time errors}, or sometimes

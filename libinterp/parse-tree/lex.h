@@ -693,6 +693,10 @@ namespace octave
 
     void warn_deprecated_syntax (const std::string& msg);
 
+    void warn_deprecated_operator (const std::string& deprecated_op,
+                                   const std::string& recommended_op,
+                                   const std::string& version);
+
     void push_token (token *);
 
     token * current_token (void);

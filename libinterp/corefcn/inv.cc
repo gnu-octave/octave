@@ -221,15 +221,26 @@ sparse matrix if possible.
 
 /*
 %!assert (inv ([1, 2; 3, 4]), [-2, 1; 1.5, -0.5], sqrt (eps))
-%!assert (inv (single ([1, 2; 3, 4])), single ([-2, 1; 1.5, -0.5]), sqrt (eps ("single")))
+%!assert (inv (single ([1, 2; 3, 4])), single ([-2, 1; 1.5, -0.5]),
+%!        sqrt (eps ("single")))
 
 ## Test special inputs
 %!assert (inv (zeros (2,0)), [])
+%!warning <matrix singular> assert (inv (0), Inf)
+## NOTE: Matlab returns +Inf for -0 input, but it returns -Inf for 1/-0.
+## These should be the same and in Octave they are.
+%!warning <matrix singular> assert (inv (-0), -Inf)
+%!warning <matrix singular> assert (inv (single (0)), single (Inf))
+%!warning <matrix singular> assert (inv (complex (0, 0)), Inf)
+%!warning <matrix singular> assert (inv (single (complex (0,1)) - i),
+%!                                  single (Inf))
+%!warning <matrix singular> assert (inv (zeros (2,2)), Inf (2,2))
 %!warning <matrix singular> assert (inv (Inf), 0)
 %!warning <matrix singular> assert (inv (-Inf), -0)
 %!warning <matrix singular> assert (inv (single (Inf)), single (0))
 %!warning <matrix singular> assert (inv (complex (1, Inf)), 0)
 %!warning <matrix singular> assert (inv (single (complex (1,Inf))), single (0))
+%!assert (inv (Inf (2,2)), NaN (2,2))
 
 %!test
 %! [xinv, rcond] = inv (single ([1,2;3,4]));

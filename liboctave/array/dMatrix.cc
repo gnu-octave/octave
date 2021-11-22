@@ -640,7 +640,9 @@ Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
   if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+  if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
+    ret = 1 / (*this); 
+  else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
@@ -662,8 +664,7 @@ Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
       if (! mattype.ishermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0
-          && (numel () != 1))
+      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0)
         ret = Matrix (rows (), columns (),
                       octave::numeric_limits<double>::Inf ());
     }

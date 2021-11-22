@@ -935,7 +935,15 @@ ComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
   if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+  if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
+    {
+      if (std::real (this->elem (0)) == 0 && std::imag (this->elem (0)) == 0)
+        ret = ComplexMatrix (1,1,
+                             Complex (octave::numeric_limits<double>::Inf (), 0.0));
+      else
+        ret = Complex (1,0) / (*this); 
+    }
+  else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
@@ -959,11 +967,8 @@ ComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
 
       if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0)
         {
-          if (numel () == 1)
-            ret = ComplexMatrix (1, 1, 0.0);
-          else
-            ret = ComplexMatrix (rows (), columns (),
-                                 Complex (octave::numeric_limits<double>::Inf (), 0.0));
+          ret = ComplexMatrix (rows (), columns (),
+                               Complex (octave::numeric_limits<double>::Inf (), 0.0));
         }
     }
 

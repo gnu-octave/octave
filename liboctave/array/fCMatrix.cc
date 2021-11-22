@@ -938,7 +938,9 @@ FloatComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
   if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+  if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
+    ret = FloatComplex (1,0) / (*this);
+  else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
@@ -962,11 +964,8 @@ FloatComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
 
       if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0)
         {
-          if (numel () == 1)
-            ret = FloatComplexMatrix (1, 1, 0.0);
-          else
-            ret = FloatComplexMatrix (rows (), columns (),
-                                      FloatComplex (octave::numeric_limits<float>::Inf (), 0.0));
+          ret = FloatComplexMatrix (rows (), columns (),
+                                    FloatComplex (octave::numeric_limits<float>::Inf (), 0.0));
         }
     }
 

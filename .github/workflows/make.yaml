@@ -329,6 +329,14 @@ jobs:
       PERL5SHELL: bash -l -c
 
     steps:
+      - name: get CPU name
+        # The runners for the 32-bit target sometimes get stuck in configure
+        # when using the Fortran compiler.
+        # Does that error depend on the processor of the selected runner?
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
       - uses: msys2/setup-msys2@v2
         with:
           update: true

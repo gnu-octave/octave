@@ -134,7 +134,8 @@ endfunction
 %!assert (isstrprop ("Hello World", "wspace"), isspace ("Hello World"))
 %!assert (isstrprop ("Hello World", "graphic"), isgraph ("Hello World"))
 %!assert (isstrprop (char ("AbC", "123"), "upper"), logical ([1 0 1; 0 0 0]))
-%!assert (isstrprop ({"AbC", "123"}, "lower"), {logical([0 1 0]), logical([0 0 0])})
+%!assert (isstrprop ({"AbC", "123"}, "lower"),
+%!        {logical([0 1 0]), logical([0 0 0])})
 
 ## Test input validation
 %!error <Invalid call> isstrprop ()

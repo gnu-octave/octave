@@ -70,9 +70,12 @@ endfunction
 %!assert (discrete_pdf ([x, NaN], v, p), [y, NaN], 5*eps)
 
 ## Test class of input preserved
-%!assert (discrete_pdf (single ([x, NaN]), v, p), single ([y, NaN]), 5*eps ("single"))
-%!assert (discrete_pdf ([x, NaN], single (v), p), single ([y, NaN]), 5*eps ("single"))
-%!assert (discrete_pdf ([x, NaN], v, single (p)), single ([y, NaN]), 5*eps ("single"))
+%!assert (discrete_pdf (single ([x, NaN]), v, p),
+%!        single ([y, NaN]), 5*eps ("single"))
+%!assert (discrete_pdf ([x, NaN], single (v), p),
+%!        single ([y, NaN]), 5*eps ("single"))
+%!assert (discrete_pdf ([x, NaN], v, single (p)),
+%!        single ([y, NaN]), 5*eps ("single"))
 
 ## Test input validation
 %!error <Invalid call> discrete_pdf ()

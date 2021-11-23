@@ -310,7 +310,8 @@ endfunction
 %! f = @(x,y,z) 1 ./ (x + y + z);
 %! ymax = @(x) 1 - x;
 %! zmax = @(x, y) 1 - x - y;
-%! assert (integral3 (f, 0, 1, 0, ymax, 0, zmax, "method", "tiled"), 0.25, 1e-6);
+%! assert (integral3 (f, 0, 1, 0, ymax, 0, zmax, "method", "tiled"),
+%!         0.25, 1e-6);
 
 ## Test input validation
 %!error integral3

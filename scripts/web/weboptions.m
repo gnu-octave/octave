@@ -71,8 +71,8 @@ classdef weboptions < handle
   ## @samp{Password} --- User authentication password for HTTP connection.
   ##
   ## Default is NULL@.  It must be a string or character vector.
-  ## Programming Note: If you display a @code{weboption} object with the Password
-  ## property set, the value is displayed as a string containing
+  ## Programming Note: If you display a @code{weboption} object with the
+  ## Password property set, the value is displayed as a string containing
   ## @qcode{'*'}.  However, the object stores the value of the Password
   ## property as plain text.
   ##
@@ -98,8 +98,8 @@ classdef weboptions < handle
   ## @example
   ## @group
   ## weboptions ("HeaderFields", @{"Content-Length" "78";"Content-Type" "application/json"@})
-  ## Creates a weboptions object that contains two header fields: Content-Length
-  ## with value 78 and Content-Type with value application/json.
+  ## Creates a weboptions object that contains two header fields:
+  ## Content-Length with value 78 and Content-Type with value application/json.
   ## @end group
   ## @end example
   ##
@@ -127,8 +127,8 @@ classdef weboptions < handle
   ## The following methods are available:
   ## @samp{get}, @samp{put}, @samp{post}, @samp{delete}, @samp{patch}
   ##
-  ## @code{webread} uses the HTTP GET method.  @code{webwrite} uses the HTTP POST
-  ## method as default.
+  ## @code{webread} uses the HTTP GET method.  @code{webwrite} uses the HTTP
+  ## POST method as default.
   ##
   ## @item
   ## @samp{ArrayFormat} -- Not yet implemented.  Only for @sc{matlab}

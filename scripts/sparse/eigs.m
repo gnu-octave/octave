@@ -659,7 +659,8 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! assert (abs (eigs (A, k, 4.1)), abs (eigs (A, speye (n), k, 4.1)), 1e-11);
 %!testif HAVE_ARPACK, HAVE_UMFPACK
-%! assert (sort (imag (eigs (A, k, 4.1))), sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
+%! assert (sort (imag (eigs (A, k, 4.1))),
+%!         sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 1;
@@ -790,7 +791,8 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! assert (abs (eigs (A, k, 4.1)), abs (eigs (A, speye (n), k, 4.1)), 1e-11);
 %!testif HAVE_ARPACK, HAVE_UMFPACK
-%! assert (sort (imag (eigs (A, k, 4.1))), sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
+%! assert (sort (imag (eigs (A, k, 4.1))),
+%!         sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 0;
@@ -1151,7 +1153,8 @@ endfunction
 %!testif HAVE_ARPACK
 %! assert (abs (eigs (A, k, 4.1)), abs (eigs (A, eye (n), k, 4.1)), 1e-11);
 %!testif HAVE_ARPACK
-%! assert (sort (imag (eigs (A, k, 4.1))), sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
+%! assert (sort (imag (eigs (A, k, 4.1))),
+%!         sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 1;
@@ -1281,7 +1284,8 @@ endfunction
 %!testif HAVE_ARPACK
 %! assert (abs (eigs (A, k, 4.1)), abs (eigs (A, eye (n), k, 4.1)), 1e-11);
 %!testif HAVE_ARPACK
-%! assert (sort (imag (eigs (A, k, 4.1))), sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
+%! assert (sort (imag (eigs (A, k, 4.1))),
+%!         sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 0;

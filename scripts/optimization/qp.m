@@ -395,8 +395,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
           ctype = repmat ("L", n_in, 1);
           [P, FMIN, status] = glpk (ctmp, Atmp, btmp, lb, ub, ctype);
           ## FIXME: Test based only on rtol occasionally fails (Bug #38353).
-          ## This seems to be a problem in glpk in which return value XOPT(1) is the
-          ## same as FMIN.  Workaround this by explicit test
+          ## This seems to be a problem in glpk in which return value XOPT(1)
+          ## is the same as FMIN.  Workaround this by explicit test
           if (status != 0)
             info = 6;  # The problem is infeasible
           else

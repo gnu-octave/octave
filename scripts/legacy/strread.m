@@ -1129,7 +1129,8 @@ endfunction
 %!error <no valid format conversion specifiers> strread ("1.0", "%z")
 
 ## Test for false positives in check for non-supported format specifiers
-%!assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5)
+%!assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"),
+%!        32.5, 1e-5)
 
 ## Test various forms of string format specifiers
 %!test <*45712>

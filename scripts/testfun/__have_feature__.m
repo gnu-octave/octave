@@ -50,7 +50,7 @@ endfunction
 
 %!assert (islogical (__have_feature__ ("MAGICK")))
 %!assert (isscalar (__have_feature__ ("MAGICK")))
-%!assert (__have_feature__ ("MAGICK") == __have_feature__ ({"MAGICK", "MAGICK"}))
+%!assert (__have_feature__ ("MAGICK"), __have_feature__ ({"MAGICK", "MAGICK"}))
 
 ## Test that an empty feature set returns true
 %!assert (__have_feature__ ({}))

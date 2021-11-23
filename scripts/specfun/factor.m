@@ -51,8 +51,9 @@ function [pf, n] = factor (q)
     error ("factor: Q must be a real non-negative integer");
   endif
 
-  ## Special case if q is prime, because isprime() is now much faster than factor().
-  ## This also absorbs the case of q < 4, where there are no primes less than sqrt(q).
+  ## Special case if q is prime, because isprime() is now much faster than
+  ## factor().  This also absorbs the case of q < 4, where there are no primes
+  ## less than sqrt(q).
   if (q < 4 || isprime (q))
     pf = q;
     n = 1;

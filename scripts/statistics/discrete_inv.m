@@ -81,9 +81,12 @@ endfunction
 %!assert (discrete_inv ([x, NaN], v, p), [y, NaN], eps)
 
 ## Test class of input preserved
-%!assert (discrete_inv (single ([x, NaN]), v, p), single ([y, NaN]), eps ("single"))
-%!assert (discrete_inv ([x, NaN], single (v), p), single ([y, NaN]), eps ("single"))
-%!assert (discrete_inv ([x, NaN], v, single (p)), single ([y, NaN]), eps ("single"))
+%!assert (discrete_inv (single ([x, NaN]), v, p),
+%!        single ([y, NaN]), eps ("single"))
+%!assert (discrete_inv ([x, NaN], single (v), p),
+%!        single ([y, NaN]), eps ("single"))
+%!assert (discrete_inv ([x, NaN], v, single (p)),
+%!        single ([y, NaN]), eps ("single"))
 
 ## Test input validation
 %!error <Invalid call> discrete_inv ()

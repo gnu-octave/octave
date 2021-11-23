@@ -164,10 +164,11 @@ endfunction
 %!assert (cplxpair ([z(randperm (7)).'; z(randperm (7)).'],[],2), [z.';z.'])
 %! y = [ -1-1i; -1+1i;-3; -2; 1; 2; 3];
 %!assert (cplxpair ([z(randperm (7)), y(randperm (7))]), [z,y])
-%!assert (cplxpair ([z(randperm (7)), y(randperm (7)),z(randperm (7))]), [z,y,z])
+%!assert (cplxpair ([z(randperm (7)), y(randperm (7)),z(randperm (7))]),
+%!        [z,y,z])
 
 ## Test tolerance
-%!assert (cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j]), ...
+%!assert (cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j]),
 %!        [(2000 - 4j); (2000 + 4j)], 100*eps(200))
 %!error <could not pair>
 %! cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j], 0);

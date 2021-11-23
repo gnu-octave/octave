@@ -78,8 +78,10 @@ endfunction
 
 
 %!assert (strchr ("Octave is the best software", ""), zeros (1,0))
-%!assert (strchr ("Octave is the best software", "best"), [3, 6, 9, 11, 13, 15, 16, 17, 18, 20, 23, 27])
-%!assert (strchr ("Octave is the best software", "software"), [3, 4, 6, 9, 11, 13, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27])
+%!assert (strchr ("Octave is the best software", "best"),
+%!        [3, 6, 9, 11, 13, 15, 16, 17, 18, 20, 23, 27])
+%!assert (strchr ("Octave is the best software", "software"),
+%!        [3, 4, 6, 9, 11, 13, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27])
 
 ## Test input validation
 %!error <Invalid call> strchr ()

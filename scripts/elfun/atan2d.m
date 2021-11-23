@@ -41,7 +41,8 @@ function retval = atan2d (y, x)
 endfunction
 
 
-%!assert (atan2d (-1:.1:1, 1:-.1:-1), 180/pi * atan2 (-1:.1:1, 1:-.1:-1), -10*eps)
+%!assert (atan2d (-1:.1:1, 1:-.1:-1),
+%!        180/pi * atan2 (-1:.1:1, 1:-.1:-1), -10*eps)
 
 %!error <Invalid call> atan2d ()
 %!error <Invalid call> atan2d (1)

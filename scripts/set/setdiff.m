@@ -130,7 +130,8 @@ endfunction
 %!assert (setdiff ([1, 1; 2, 2; 3, 3; 4, 4], [1, 1; 2, 2; 4, 4], "rows"), [3 3])
 %!assert (setdiff ([1; 2; 3; 4], [1; 2; 4], "rows"), 3)
 %!assert (setdiff ([1, 2; 3, 4], [1, 2; 3, 6], "rows"), [3, 4])
-%!assert (setdiff ({"one","two";"three","four"}, {"one","two";"three","six"}), {"four"})
+%!assert (setdiff ({"one","two";"three","four"}, {"one","two";"three","six"}),
+%!        {"four"})
 
 ## Test multi-dimensional input
 %!test

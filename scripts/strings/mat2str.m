@@ -142,8 +142,10 @@ endfunction
 %!assert (mat2str (pi), "3.14159265358979")
 %!assert (mat2str (pi, 5), "3.1416")
 %!assert (mat2str (single (pi), 5, "class"), "single(3.1416)")
-%!assert (mat2str ([-1/3 + i/7; 1/3 - i/7], [4 2]), "[-0.3333+0.14i;0.3333-0.14i]")
-%!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]), "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]")
+%!assert (mat2str ([-1/3 + i/7; 1/3 - i/7], [4 2]),
+%!        "[-0.3333+0.14i;0.3333-0.14i]")
+%!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]),
+%!        "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]")
 %!assert (mat2str (int16 ([1 -1]), "class"), "int16([1 -1])")
 %!assert (mat2str (true), "true")
 %!assert (mat2str (false), "false")

@@ -143,7 +143,8 @@ endfunction
 %! assert (fftfilt (b.',x  ), [1 1 0 0 0 0 0 0 0 0]  );
 %! assert (fftfilt (b.',x.'), [1 1 0 0 0 0 0 0 0 0].');
 %! assert (fftfilt (b,  [x.' x.']), [1 1 0 0 0 0 0 0 0 0].'*[1 1]);
-%! assert (fftfilt (b,  [x.'+2*eps x.']) == [1 1 0 0 0 0 0 0 0 0].'*[1 1], [false(10, 1) true(10, 1)]);
+%! assert (fftfilt (b,  [x.'+2*eps x.']) == [1 1 0 0 0 0 0 0 0 0].'*[1 1],
+%!         [false(10, 1) true(10, 1)]);
 
 %!testif HAVE_FFTW
 %! r = sqrt (1/2) * (1+i);

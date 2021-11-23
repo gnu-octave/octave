@@ -412,8 +412,10 @@ endfunction
 %!test
 %! t = linspace (-2e5, 2e5, 10993);
 %! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));
-%!assert (double (datevec (int64 (datenum ([2014 6 1])))), datevec (datenum ([2014 6 1])))
-%!assert (double (datevec (int64 (datenum ([2014 6 18])))), datevec (datenum ([2014 6 18])))
+%!assert (double (datevec (int64 (datenum ([2014 6 1])))),
+%!        datevec (datenum ([2014 6 1])))
+%!assert (double (datevec (int64 (datenum ([2014 6 18])))),
+%!        datevec (datenum ([2014 6 18])))
 
 ## Test parsing of date strings that fall within daylight saving transition
 %!testif ; isunix () <*36954>

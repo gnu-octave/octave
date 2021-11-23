@@ -241,16 +241,26 @@ endfunction
 %!   assert (get (hp, "specularcolorreflectance"), 1.0);
 %!   assert (get (hs, "specularcolorreflectance"), 1.0);
 %!   material default
-%!   assert (get (hp, "ambientstrength"), get (0, "defaultpatchambientstrength"));
-%!   assert (get (hs, "ambientstrength"), get (0, "defaultsurfaceambientstrength"));
-%!   assert (get (hp, "diffusestrength"), get (0, "defaultpatchdiffusestrength"));
-%!   assert (get (hs, "diffusestrength"), get (0, "defaultsurfacediffusestrength"));
-%!   assert (get (hp, "specularstrength"), get (0, "defaultpatchspecularstrength"));
-%!   assert (get (hs, "specularstrength"), get (0, "defaultsurfacespecularstrength"));
-%!   assert (get (hp, "specularexponent"), get (0, "defaultpatchspecularexponent"));
-%!   assert (get (hs, "specularexponent"), get (0, "defaultsurfacespecularexponent"));
-%!   assert (get (hp, "specularcolorreflectance"), get (0, "defaultpatchspecularcolorreflectance"));
-%!   assert (get (hs, "specularcolorreflectance"), get (0, "defaultsurfacespecularcolorreflectance"));
+%!   assert (get (hp, "ambientstrength"),
+%!           get (0, "defaultpatchambientstrength"));
+%!   assert (get (hs, "ambientstrength"),
+%!           get (0, "defaultsurfaceambientstrength"));
+%!   assert (get (hp, "diffusestrength"),
+%!           get (0, "defaultpatchdiffusestrength"));
+%!   assert (get (hs, "diffusestrength"),
+%!           get (0, "defaultsurfacediffusestrength"));
+%!   assert (get (hp, "specularstrength"),
+%!           get (0, "defaultpatchspecularstrength"));
+%!   assert (get (hs, "specularstrength"),
+%!           get (0, "defaultsurfacespecularstrength"));
+%!   assert (get (hp, "specularexponent"),
+%!           get (0, "defaultpatchspecularexponent"));
+%!   assert (get (hs, "specularexponent"),
+%!           get (0, "defaultsurfacespecularexponent"));
+%!   assert (get (hp, "specularcolorreflectance"),
+%!           get (0, "defaultpatchspecularcolorreflectance"));
+%!   assert (get (hs, "specularcolorreflectance"),
+%!           get (0, "defaultsurfacespecularcolorreflectance"));
 %!   material ([0.5 0.6 0.7 20 0.8])
 %!   assert (get (hp, "ambientstrength"), 0.5);
 %!   assert (get (hs, "ambientstrength"), 0.5);

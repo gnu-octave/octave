@@ -92,28 +92,39 @@ function retval = logspace (a, b, n = 50)
 
 endfunction
 
-
 %!test
 %! x1 = logspace (1, 2);
 %! x2 = logspace (1, 2, 10.1);
 %! x3 = logspace (1, -2, 10);
 %! x4 = logspace (1, pi, 10);
-%! assert (size (x1) == [1, 50] && abs (x1(1) - 10) < eps && abs (x1(50) - 100) < eps);
-%! assert (size (x2) == [1, 10] && abs (x2(1) - 10) < eps && abs (x2(10) - 100) < eps);
-%! assert (size (x3) == [1, 10] && abs (x3(1) - 10) < eps && abs (x3(10) - 0.01) < eps);
-%! assert (size (x4) == [1, 10] && abs (x4(1) - 10) < eps && abs (x4(10) - pi) < sqrt (eps));
+%! assert (size (x1) == [1, 50]);
+%! assert (abs (x1(1) - 10) < eps);
+%! assert (abs (x1(50) - 100) < eps);
+%! assert (size (x2) == [1, 10]);
+%! assert (abs (x2(1) - 10) < eps);
+%! assert (abs (x2(10) - 100) < eps);
+%! assert (size (x3) == [1, 10]);
+%! assert (abs (x3(1) - 10) < eps);
+%! assert (abs (x3(10) - 0.01) < eps);
+%! assert (size (x4) == [1, 10]);
+%! assert (abs (x4(1) - 10) < eps);
+%! assert (abs (x4(10) - pi) < sqrt (eps));
 
 ## Edge cases
 %!assert (logspace (Inf, Inf, 3), [Inf, Inf, Inf])
 %!assert (logspace (-Inf, Inf, 3), [0, 1, Inf])
 %!testif ; ! ismac ()
-%! assert (logspace (Inf + 1i, Inf + 1i, 3), repmat (complex (-Inf,Inf), [1, 3]))
+%! assert (logspace (Inf + 1i, Inf + 1i, 3),
+%!         repmat (complex (-Inf,Inf), [1, 3]))
 %!testif ; ismac () <55538>
-%! assert (logspace (Inf + 1i, Inf + 1i, 3), repmat (complex (-Inf,Inf), [1, 3]))
+%! assert (logspace (Inf + 1i, Inf + 1i, 3),
+%!         repmat (complex (-Inf,Inf), [1, 3]))
 %!testif ; ! ismac ()
-%! assert (logspace (-Inf + 1i, Inf + 1i, 3), [0, NaN + NaN * 1i, complex(-Inf, Inf)])
+%! assert (logspace (-Inf + 1i, Inf + 1i, 3),
+%!         [0, NaN + NaN * 1i, complex(-Inf, Inf)])
 %!testif ; ismac () <55538>
-%! assert (logspace (-Inf + 1i, Inf + 1i, 3), [0, NaN + NaN * 1i, complex(-Inf, Inf)])
+%! assert (logspace (-Inf + 1i, Inf + 1i, 3),
+%!         [0, NaN + NaN * 1i, complex(-Inf, Inf)])
 %!assert (logspace (0, Inf, 3), [1, Inf, Inf])
 %!assert (logspace (0, -Inf, 3), [1, 0, 0])
 %!assert (logspace (Inf, -Inf, 3), [Inf, 1, 0])

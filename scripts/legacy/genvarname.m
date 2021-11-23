@@ -208,7 +208,8 @@ endfunction
 %!assert (genvarname ({"a";"b"}), {"a";"b"})
 %!assert (genvarname ({"a" "a"}), {"a" "a1"})
 %!assert (genvarname ({"a" "b";"c" "d"}), {"a" "b";"c" "d"})
-%!assert (genvarname ({"a" "a" "a";"a" "a" "a"}), {"a" "a2" "a4";"a1" "a3" "a5"})
+%!assert (genvarname ({"a" "a" "a";"a" "a" "a"}),
+%!        {"a" "a2" "a4";"a1" "a3" "a5"})
 ## more than one repetition
 %!assert (genvarname ({"a" "a" "a"}), {"a" "a1" "a2"})
 %!assert (genvarname ({"a" "a" "a"}, {"a" "a1" "a2"}), {"a3" "a4" "a5"})

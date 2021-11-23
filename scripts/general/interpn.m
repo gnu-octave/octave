@@ -304,7 +304,8 @@ endfunction
 %! [x,y,z] = ndgrid (0:2);
 %! f = x + y + z;
 %! assert (interpn (x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5]), [1.5, 4.5]);
-%! assert (interpn (x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],"nearest"), [3, 6]);
+%! assert (interpn (x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],"nearest"),
+%!         [3, 6]);
 %! assert (interpn (x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5],"spline"), [1.5, 4.5]);
 %! assert (interpn (x,y,z,f,x,y,z), f);
 %! assert (interpn (x,y,z,f,x,y,z,"nearest"), f);

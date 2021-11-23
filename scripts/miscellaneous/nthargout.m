@@ -117,5 +117,6 @@ endfunction
 
 %!shared m
 %! m = magic (5);
-%!assert (nthargout ([1,2], @ind2sub, size (m), nthargout (2, @max, m(:))), {5,3})
+%!assert (nthargout ([1,2], @ind2sub, size (m), nthargout (2, @max, m(:))),
+%!        {5,3})
 %!assert (nthargout (3, @find, m(m>20)), [23, 24, 25, 21, 22]')

@@ -1644,8 +1644,8 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 ":"   { CMD_OR_OP (":", ':', true); }
-".+"  { CMD_OR_OP (".+", EPLUS, false); }
-".-"  { CMD_OR_OP (".-", EMINUS, false); }
+".+"  { CMD_OR_DEPRECATED_OP (".+", "+", 7, '+'); }
+".-"  { CMD_OR_DEPRECATED_OP (".-", "-", 7, '-'); }
 ".*"  { CMD_OR_OP (".*", EMUL, true); }
 "./"  { CMD_OR_OP ("./", EDIV, true); }
 ".\\" { CMD_OR_OP (".\\", ELEFTDIV, true); }
@@ -1817,8 +1817,8 @@ ANY_INCLUDING_NL (.|{NL})
 "*="   { CMD_OR_OP ("*=", MUL_EQ, false); }
 "/="   { CMD_OR_OP ("/=", DIV_EQ, false); }
 "\\="  { CMD_OR_OP ("\\=", LEFTDIV_EQ, false); }
-".+="  { CMD_OR_OP (".+=", ADD_EQ, false); }
-".-="  { CMD_OR_OP (".-=", SUB_EQ, false); }
+".+="  { CMD_OR_DEPRECATED_OP (".+=", "+=", 7, ADD_EQ); }
+".-="  { CMD_OR_DEPRECATED_OP (".-=", "-=", 7, SUB_EQ); }
 ".*="  { CMD_OR_OP (".*=", EMUL_EQ, false); }
 "./="  { CMD_OR_OP ("./=", EDIV_EQ, false); }
 ".\\=" { CMD_OR_OP (".\\=", ELEFTDIV_EQ, false); }
@@ -2323,7 +2323,7 @@ If @var{name} is omitted, return a list of keywords.
             || tok == ':' || tok == '=' || tok == ADD_EQ
             || tok == AND_EQ || tok == DIV_EQ || tok == EDIV
             || tok == EDIV_EQ || tok == ELEFTDIV || tok == ELEFTDIV_EQ
-            || tok == EMINUS || tok == EMUL || tok == EMUL_EQ
+            || tok == EMUL || tok == EMUL_EQ
             || tok == EPOW || tok == EPOW_EQ || tok == EXPR_AND
             || tok == EXPR_AND_AND || tok == EXPR_EQ || tok == EXPR_GE
             || tok == EXPR_GT || tok == EXPR_LE || tok == EXPR_LT
@@ -3747,8 +3747,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       case EMUL: std::cerr << "EMUL\n"; break;
       case EDIV: std::cerr << "EDIV\n"; break;
       case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
-      case EPLUS: std::cerr << "EPLUS\n"; break;
-      case EMINUS: std::cerr << "EMINUS\n"; break;
       case HERMITIAN: std::cerr << "HERMITIAN\n"; break;
       case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
       case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;

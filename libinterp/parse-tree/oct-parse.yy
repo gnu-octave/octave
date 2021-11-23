@@ -210,7 +210,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok_val> EXPR_AND_AND EXPR_OR_OR
 %token <tok_val> EXPR_AND EXPR_OR EXPR_NOT
 %token <tok_val> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
-%token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV EPLUS EMINUS
+%token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV
 %token <tok_val> HERMITIAN TRANSPOSE
 %token <tok_val> PLUS_PLUS MINUS_MINUS POW EPOW
 %token <tok_val> NUMBER
@@ -323,7 +323,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %left EXPR_AND
 %left EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
 %left ':'
-%left '-' '+' EPLUS EMINUS
+%left '-' '+'
 %left '*' '/' LEFTDIV EMUL EDIV ELEFTDIV
 %right UNARY EXPR_NOT
 %left POW EPOW HERMITIAN TRANSPOSE
@@ -816,10 +816,6 @@ oper_expr       : primary_expr
                   { $$ = parser.make_binary_op ('*', $1, $2, $3); }
                 | oper_expr '/' oper_expr
                   { $$ = parser.make_binary_op ('/', $1, $2, $3); }
-                | oper_expr EPLUS oper_expr
-                  { $$ = parser.make_binary_op ('+', $1, $2, $3); }
-                | oper_expr EMINUS oper_expr
-                  { $$ = parser.make_binary_op ('-', $1, $2, $3); }
                 | oper_expr EMUL oper_expr
                   { $$ = parser.make_binary_op (EMUL, $1, $2, $3); }
                 | oper_expr EDIV oper_expr

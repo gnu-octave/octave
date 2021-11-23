@@ -175,9 +175,9 @@
 
 %!shared evalin_value
 %! evalin_value = "this is the caller";
-%!assert <59847> (f_eval_fun (), "this is the caller");
-%!assert <59847> (g_eval_fun (), "this is the caller");
-%!assert <59847> (h_eval_fun (), "this is h_eval_fun");
+%!assert <*59847> (f_eval_fun (), "this is the caller");
+%!assert <*59847> (g_eval_fun (), "this is the caller");
+%!assert <*59847> (h_eval_fun (), "this is h_eval_fun");
 
 %!function r = f_asgn_fun ()
 %!  asgnin_value = "this is f_asgn_fun";
@@ -195,17 +195,17 @@
 %!  r = asgnin_value;
 %!endfunction
 
-%!test <59847>
+%!test <*59847>
 %! asgnin_value = "this is the caller";
 %! assert (f_asgn_fun (), "this is f_asgn_fun");
 %! assert (asgnin_value, "f value");
 
-%!test <59847>
+%!test <*59847>
 %! asgnin_value = "this is the caller";
 %! assert (g_asgn_fun (), "this is g_asgn_fun");
 %! assert (asgnin_value, "f value");
 
-%!test <59847>
+%!test <*59847>
 %! asgnin_value = "this is the caller";
 %! assert (h_asgn_fun (), "f value");
 %! assert (asgnin_value, "this is the caller");

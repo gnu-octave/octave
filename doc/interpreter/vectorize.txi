@@ -384,8 +384,8 @@ also broadcast.  The full list of functions and operators that broadcast
 is
 
 @example
-      plus      +  .+
-      minus     -  .-
+      plus      +
+      minus     -
       times     .*
       rdivide   ./
       ldivide   .\
@@ -406,7 +406,7 @@ is
       rem
       xor
 
-      +=  -=  .+=  .-=  .*=  ./=  .\=  .^=  &=  |=
+      +=  -=  .*=  ./=  .\=  .^=  &=  |=
 @end example
 
 Beware of resorting to broadcasting if a simpler operation will suffice.

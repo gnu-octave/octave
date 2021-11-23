@@ -144,7 +144,8 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
      (2, 2) ->  5
 @end group
 @end example
-@seealso{full, accumarray, spalloc, spdiags, speye, spones, sprand, sprandn, sprandsym, spconvert, spfun}
+@seealso{full, accumarray, spalloc, spdiags, speye, spones, sprand, sprandn,
+sprandsym, spconvert, spfun}
 @end deftypefn */)
 {
   int nargin = args.length ();

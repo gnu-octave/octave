@@ -80,7 +80,8 @@
 ## cast (cast (@var{user_defined_val}, "double"), "uint8")
 ## @end example
 ##
-## @seealso{typecast, int8, uint8, int16, uint16, int32, uint32, int64, uint64, double, single, logical, char, class, typeinfo}
+## @seealso{typecast, int8, uint8, int16, uint16, int32, uint32, int64, uint64,
+## double, single, logical, char, class, typeinfo}
 ## @end deftypefn
 
 function retval = cast (val, type, var)

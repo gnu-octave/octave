@@ -116,7 +116,8 @@ Return the current time as the number of seconds since the epoch.
 The epoch is referenced to 00:00:00 UTC (Coordinated Universal Time) 1 Jan
 1970.  For example, on Monday February 17, 1997 at 07:15:06 UTC, the value
 returned by @code{time} was 856163706.
-@seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock,
+datenum, datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -158,7 +159,8 @@ gmtime (time ())
         @}
 @end group
 @end example
-@seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 1 || args(0).numel () != 1)
@@ -213,7 +215,8 @@ localtime (time ())
         @}
 @end group
 @end example
-@seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 1 || args(0).numel () != 1)
@@ -257,7 +260,8 @@ mktime (localtime (time ()))
      @result{} 856163706
 @end group
 @end example
-@seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -442,7 +446,8 @@ Last two digits of year (00-99).
 @item %Y
 Year (1970-).
 @end table
-@seealso{strptime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strptime, localtime, gmtime, mktime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 2)
@@ -479,7 +484,8 @@ the control of the format string @var{fmt}.
 If @var{fmt} fails to match, @var{nchars} is 0; otherwise, it is set to the
 position of last matched character plus 1.  Always check for this unless
 you're absolutely sure the date string will be parsed correctly.
-@seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 2)

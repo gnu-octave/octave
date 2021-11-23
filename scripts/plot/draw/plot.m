@@ -213,7 +213,8 @@
 ## To save a plot, in one of several image formats such as PostScript
 ## or PNG, use the @code{print} command.
 ##
-## @seealso{axis, box, grid, hold, legend, title, xlabel, ylabel, xlim, ylim, ezplot, errorbar, fplot, line, plot3, polar, loglog, semilogx, semilogy, subplot}
+## @seealso{axis, box, grid, hold, legend, title, xlabel, ylabel, xlim, ylim,
+## ezplot, errorbar, fplot, line, plot3, polar, loglog, semilogx, semilogy, subplot}
 ## @end deftypefn
 
 function h = plot (varargin)

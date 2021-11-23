@@ -29,7 +29,8 @@
 ## graphics object with handle @var{h}.
 ##
 ## @var{h} may also be a vector of graphics handles.
-## @seealso{getappdata, setappdata, rmappdata, guidata, get, set, getpref, setpref}
+## @seealso{getappdata, setappdata, rmappdata, guidata, get, set, getpref,
+## setpref}
 ## @end deftypefn
 
 function valid = isappdata (h, name)

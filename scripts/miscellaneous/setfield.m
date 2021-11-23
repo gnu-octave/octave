@@ -112,7 +112,8 @@
 ## @var{sa}(2).bar(3).baz(1,4) = 5
 ## @end group
 ## @end example
-## @seealso{getfield, rmfield, orderfields, isfield, fieldnames, isstruct, struct}
+## @seealso{getfield, rmfield, orderfields, isfield, fieldnames, isstruct,
+## struct}
 ## @end deftypefn
 
 function sout = setfield (s, varargin)

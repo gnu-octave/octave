@@ -139,7 +139,8 @@
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
 ## For additional options and documentation, @pxref{XREFmovfun,,@code{movfun}}.
 ##
-## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movmin, movprod, movstd, movsum}
+## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movmin,
+## movprod, movstd, movsum}
 ## @end deftypefn
 
 function y = movvar (x, wlen, varargin)

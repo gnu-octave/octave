@@ -3974,7 +3974,8 @@ is used.  In case of an error the format remains unchanged.
 If called with one to three output arguments, and no inputs, return the current
 format, format spacing, and uppercase preference.
 
-@seealso{fixed_point_format, output_precision, split_long_rows, print_empty_dimensions, rats}
+@seealso{fixed_point_format, output_precision, split_long_rows,
+print_empty_dimensions, rats}
 @end deftypefn */)
 {
   octave_value_list retval (std::min (nargout, 2));

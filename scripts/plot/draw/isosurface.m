@@ -141,7 +141,8 @@
 ## light ("Position", [1 1 5]);
 ## @end smallexample
 ##
-## @seealso{isonormals, isocolors, isocaps, smooth3, reducevolume, reducepatch, patch}
+## @seealso{isonormals, isocolors, isocaps, smooth3, reducevolume, reducepatch,
+## patch}
 ## @end deftypefn
 
 ## FIXME: Add support for string input argument "verbose"

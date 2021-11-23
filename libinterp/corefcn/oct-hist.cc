@@ -763,7 +763,8 @@ matching the current line to be removed from the history list before that
 line is saved.  Any value not in the above list is ignored.  If
 @code{history_control} is the empty string, all commands are saved on
 the history list, subject to the value of @code{history_save}.
-@seealso{history_file, history_size, history_timestamp_format_string, history_save}
+@seealso{history_file, history_size, history_timestamp_format_string,
+history_save}
 @end deftypefn */)
 {
   octave_value retval;
@@ -844,7 +845,8 @@ endif
 @end group
 @end example
 
-@seealso{history, history_control, history_save, history_size, history_timestamp_format_string}
+@seealso{history, history_control, history_save, history_size,
+history_timestamp_format_string}
 @end deftypefn */)
 {
   octave_value retval;
@@ -907,7 +909,8 @@ on the command line are saved in the history file.
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{history_control, history_file, history_size, history_timestamp_format_string}
+@seealso{history_control, history_file, history_size,
+history_timestamp_format_string}
 @end deftypefn */)
 {
   octave_value retval;

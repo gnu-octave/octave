@@ -35,7 +35,8 @@
 ## an array or cell array).  For a more complete description of the syntax,
 ## @pxref{XREFsetfield,,@code{setfield}}.
 ##
-## @seealso{setfield, rmfield, orderfields, isfield, fieldnames, isstruct, struct}
+## @seealso{setfield, rmfield, orderfields, isfield, fieldnames, isstruct,
+## struct}
 ## @end deftypefn
 
 function val = getfield (s, varargin)

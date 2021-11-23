@@ -164,7 +164,8 @@ Octave will set the real breakpoint at the next executable line.
 When a file is re-parsed, such as when it is modified outside the GUI,
 all breakpoints within the file are cleared.
 
-@seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}
+@seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning,
+debug_on_interrupt}
 @end deftypefn */)
 {
   octave::bp_table::bp_lines retmap;

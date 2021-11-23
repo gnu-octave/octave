@@ -29,7 +29,8 @@
 ##
 ## If @var{f} is a cell array of strings, @var{tf} is a logical array of the
 ## same size.
-## @seealso{isfolder, exist, stat, is_absolute_filename, is_rooted_relative_filename}
+## @seealso{isfolder, exist, stat, is_absolute_filename,
+## is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isfile (f)

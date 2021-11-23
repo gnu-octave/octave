@@ -58,7 +58,8 @@
 ## The optional return value @var{h} is a graphics handle to the created
 ## surface object.
 ##
-## @seealso{mesh, meshc, contour, surf, surface, waterfall, meshgrid, hidden, shading, colormap, caxis}
+## @seealso{mesh, meshc, contour, surf, surface, waterfall, meshgrid, hidden,
+## shading, colormap, caxis}
 ## @end deftypefn
 
 function h = meshz (varargin)

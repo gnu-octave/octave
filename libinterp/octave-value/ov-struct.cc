@@ -1766,7 +1766,8 @@ to be an empty cell array.
 
 Finally, if the value is a non-scalar cell array, then @code{struct}
 produces a struct @strong{array}.
-@seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield, orderfields, isstruct, structfun}
+@seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield,
+orderfields, isstruct, structfun}
 @end deftypefn */)
 {
   int nargin = args.length ();

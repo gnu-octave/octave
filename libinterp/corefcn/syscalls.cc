@@ -1224,7 +1224,8 @@ of the child process that exited.  If an error occurs, @var{pid} will be
 less than zero and @var{msg} will contain a system-dependent error message.
 The value of @var{status} contains additional system-dependent information
 about the subprocess that exited.
-@seealso{WCONTINUE, WCOREDUMP, WEXITSTATUS, WIFCONTINUED, WIFSIGNALED, WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}
+@seealso{WCONTINUE, WCOREDUMP, WEXITSTATUS, WIFCONTINUED, WIFSIGNALED,
+WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -1252,7 +1253,8 @@ DEFUNX ("WIFEXITED", FWIFEXITED, args, ,
 @deftypefn {} {} WIFEXITED (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 true if the child terminated normally.
-@seealso{waitpid, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@seealso{waitpid, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED,
+WSTOPSIG, WIFCONTINUED}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1270,7 +1272,8 @@ Given @var{status} from a call to @code{waitpid}, return
 the exit status of the child.
 
 This function should only be employed if @code{WIFEXITED} returned true.
-@seealso{waitpid, WIFEXITED, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@seealso{waitpid, WIFEXITED, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED,
+WSTOPSIG, WIFCONTINUED}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1286,7 +1289,8 @@ DEFUNX ("WIFSIGNALED", FWIFSIGNALED, args, ,
 @deftypefn {} {} WIFSIGNALED (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 true if the child process was terminated by a signal.
-@seealso{waitpid, WIFEXITED, WEXITSTATUS, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WTERMSIG, WCOREDUMP, WIFSTOPPED,
+WSTOPSIG, WIFCONTINUED}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1304,7 +1308,8 @@ Given @var{status} from a call to @code{waitpid}, return
 the number of the signal that caused the child process to terminate.
 
 This function should only be employed if @code{WIFSIGNALED} returned true.
-@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WCOREDUMP, WIFSTOPPED,
+WSTOPSIG, WIFCONTINUED}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1324,7 +1329,8 @@ true if the child produced a core dump.
 This function should only be employed if @code{WIFSIGNALED} returned true.
 The macro used to implement this function is not specified in POSIX.1-2001
 and is not available on some Unix implementations (e.g., @nospell{AIX, SunOS}).
-@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED,
+WSTOPSIG, WIFCONTINUED}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1343,7 +1349,8 @@ true if the child process was stopped by delivery of a signal.
 
 This is only possible if the call was done using @code{WUNTRACED} or when
 the child is being traced (see ptrace(2)).
-@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WSTOPSIG, WIFCONTINUED}
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP,
+WSTOPSIG, WIFCONTINUED}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1361,7 +1368,8 @@ Given @var{status} from a call to @code{waitpid}, return
 the number of the signal which caused the child to stop.
 
 This function should only be employed if @code{WIFSTOPPED} returned true.
-@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WIFCONTINUED}
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP,
+WIFSTOPPED, WIFCONTINUED}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1377,7 +1385,8 @@ DEFUNX ("WIFCONTINUED", FWIFCONTINUED, args, ,
 @deftypefn {} {} WIFCONTINUED (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 true if the child process was resumed by delivery of @code{SIGCONT}.
-@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG}
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP,
+WIFSTOPPED, WSTOPSIG}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1395,7 +1404,8 @@ Return the canonical name of file @var{fname}.
 
 If the file does not exist the empty string ("") is returned.  No tilde
 expansion of @var{fname} is performed.
-@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename, is_same_file, tilde_expand}
+@seealso{make_absolute_filename, is_absolute_filename,
+is_rooted_relative_filename, is_same_file, tilde_expand}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1507,7 +1517,8 @@ Return the numerical value of the @code{O_APPEND} macro.
 @code{O_APPEND} is file status flag that may be returned by @code{fcntl}
 to indicate each write operation appends, or that may be passed to
 @code{fcntl} to set the write mode to append.
-@seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC,
+O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_append_wrapper ();
@@ -1525,7 +1536,8 @@ Return the numerical value of the @code{O_ASYNC} macro.
 
 @code{O_ASYNC} is the file status flag that may be returned by
 @code{fcntl} to indicate asynchronous I/O.
-@seealso{fcntl, O_APPEND, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@seealso{fcntl, O_APPEND, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC,
+O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_async_wrapper ();
@@ -1544,7 +1556,8 @@ Return the numerical value of the @code{O_CREAT}.
 @code{O_CREAT} is the file status flag that may be returned by
 @code{fcntl} to indicate that a file should be created if it does not
 exist.
-@seealso{fcntl, O_APPEND, O_ASYNC, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@seealso{fcntl, O_APPEND, O_ASYNC, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC,
+O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_creat_wrapper ();
@@ -1562,7 +1575,8 @@ Return the numerical value of the @code{O_EXCL}.
 
 @code{O_EXCL} is the file status flag that may be returned by
 @code{fcntl} to indicate that file locking is used.
-@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_NONBLOCK, O_RDONLY, O_RDWR,
+O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_excl_wrapper ();
@@ -1581,7 +1595,8 @@ Return the numerical value of the @code{O_NONBLOCK}.
 @code{O_NONBLOCK} is the file status flag that may be returned by
 @code{fcntl} to indicate that non-blocking I/O is in use, or that may be
 passsed to @code{fcntl} to set non-blocking I/O.
-@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC,
+O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_nonblock_wrapper ();
@@ -1599,7 +1614,8 @@ Return the numerical value of the @code{O_RDONLY}.
 
 @code{O_RDONLY} is the file status flag that may be returned by
 @code{fcntl} to indicate that a file is open for reading only.
-@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC,
+O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_rdonly_wrapper ();
@@ -1618,7 +1634,8 @@ Return the numerical value of the @code{O_RDWR}.
 @code{O_RDWR} is the file status flag that may be returned by
 @code{fcntl} to indicate that a file is open for both reading and
 writing.
-@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_SYNC, O_TRUNC, O_WRONLY}
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY,
+O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_rdwr_wrapper ();
@@ -1636,7 +1653,8 @@ Return the numerical value of the @code{O_SYNC}.
 
 @code{O_SYNC} is the file status flag that may be returned by
 @code{fcntl} to indicate that a file is open for synchronous I/O
-@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_TRUNC, O_WRONLY}
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY,
+O_RDWR, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_sync_wrapper ();
@@ -1655,7 +1673,8 @@ Return the numerical value of the @code{O_TRUNC}.
 @code{O_TRUNC} is the file status flag that may be returned by
 @code{fcntl} to indicate that if file exists, it should be truncated
 when writing.
-@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_WRONLY}
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY,
+O_RDWR, O_SYNC, O_WRONLY}
 @end deftypefn */)
 {
   static int val = octave_o_trunc_wrapper ();
@@ -1673,7 +1692,8 @@ Return the numerical value of the @code{O_WRONLY}.
 
 @code{O_WRONLY} is the file status flag that may be returned by
 @code{fcntl} to indicate that a file is open for writing only
-@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC}
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY,
+O_RDWR, O_SYNC, O_TRUNC}
 @end deftypefn */)
 {
   static int val = octave_o_wronly_wrapper ();

@@ -588,7 +588,8 @@ in a single operation.  This is very efficient and improves performance.
 is immediately performed.  If the write operation must be performed immediately
 after data has been written then the write should be followed by a call to
 @code{fflush} to flush the internal buffer.
-@seealso{fclose, fgets, fgetl, fscanf, fread, fputs, fdisp, fprintf, fwrite, fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}
+@seealso{fclose, fgets, fgetl, fscanf, fread, fputs, fdisp, fprintf, fwrite,
+fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}
 @end deftypefn */)
 {
   int nargin = args.length ();

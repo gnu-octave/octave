@@ -58,7 +58,8 @@
 ## The optional return value @var{h} is a 2-element vector with a graphics
 ## handle to the created surface object and to the created contour plot.
 ##
-## @seealso{ezmeshc, mesh, meshz, contour, surfc, surface, meshgrid, hidden, shading, colormap, caxis}
+## @seealso{ezmeshc, mesh, meshz, contour, surfc, surface, meshgrid, hidden,
+## shading, colormap, caxis}
 ## @end deftypefn
 
 function h = meshc (varargin)

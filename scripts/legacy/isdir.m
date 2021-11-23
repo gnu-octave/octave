@@ -39,7 +39,8 @@
 ## @var{tf} = ! isempty (file_in_loadpath (@var{f}))
 ## @end example
 ##
-## @seealso{isfolder, file_in_loadpath, exist, stat, is_absolute_filename, is_rooted_relative_filename}
+## @seealso{isfolder, file_in_loadpath, exist, stat, is_absolute_filename,
+## is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isdir (f)

@@ -148,7 +148,8 @@ $ R^T R = A (Q, Q)$.
 
 In general the lower triangular factorization is significantly faster for
 sparse matrices.
-@seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}
+@seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate,
+cholinsert, choldelete, cholshift}
 @end deftypefn */)
 {
   int nargin = args.length ();

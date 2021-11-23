@@ -32,7 +32,8 @@
 ## The output @var{out_vec} will be a uint8 vector that is decoded
 ## according to RFC 4648.
 ##
-## @seealso{matlab.net.base64encode, base64_decode, base64_encode, native2unicode}
+## @seealso{matlab.net.base64encode, base64_decode, base64_encode,
+## native2unicode}
 ## @end deftypefn
 
 function out_vec = base64decode (b64_str)

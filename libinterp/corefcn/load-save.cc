@@ -1805,7 +1805,8 @@ save -binary data a b*
 @noindent
 saves the variable @samp{a} and all variables beginning with @samp{b} to the
 file @file{data} in Octave's binary format.
-@seealso{load, save_default_options, save_header_format_string, save_precision, dlmread, csvread, fread}
+@seealso{load, save_default_options, save_header_format_string, save_precision,
+dlmread, csvread, fread}
 @end deftypefn */)
 {
   load_save_system& load_save_sys = interp.get_load_save_system ();
@@ -1922,7 +1923,8 @@ crashes or receives a hangup, terminate or similar signal.
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}
+@seealso{octave_core_file_limit, octave_core_file_name,
+octave_core_file_options}
 @end deftypefn */)
 {
   load_save_system& load_save_sys = interp.get_load_save_system ();
@@ -1972,7 +1974,8 @@ the limit.  The default value is -1 (unlimited).
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@seealso{crash_dumps_octave_core, octave_core_file_name,
+octave_core_file_options}
 @end deftypefn */)
 {
   load_save_system& load_save_sys = interp.get_load_save_system ();
@@ -1993,7 +1996,8 @@ The default value is @qcode{"octave-workspace"}
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@seealso{crash_dumps_octave_core, octave_core_file_name,
+octave_core_file_options}
 @end deftypefn */)
 {
   load_save_system& load_save_sys = interp.get_load_save_system ();

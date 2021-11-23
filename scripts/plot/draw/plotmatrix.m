@@ -173,8 +173,8 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
     error ("plotmatrix: dimension mismatch in the arguments");
   endif
 
-  [dummy, m] = size (X);
-  [dummy, n] = size (Y);
+  m = columns (X);
+  n = columns (Y);
 
   h = [];
   ax = [];

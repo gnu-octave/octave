@@ -1092,6 +1092,8 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
                    @(h, ~) set (hmarker, "ydata", get (h, "markerydata")));
       addlistener (hicon, "xdata", ...
                    @(h, ~) set (hmarker, "xdata", get (h, "markerxdata")));
+      addlistener (hicon, "visible", ...
+                   @(h, ~) set (hmarker, "visible", get (h, "visible")));
       addlistener (hmarker, "markersize", @update_marker_cb);
       add_safe_listener (hl, hplt(1), "beingdeleted",
                          @(~, ~) delete ([hicon hmarker]))
@@ -1165,6 +1167,8 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
                    @(h, ~) set (htmp, "ydata", get (h, "innerydata")));
       addlistener (hicon, "xdata", ...
                    @(h, ~) set (htmp, "xdata", get (h, "innerxdata")));
+      addlistener (hicon, "visible", ...
+                   @(h, ~) set (htmp, "visible", get (h, "visible")));
       add_safe_listener (hl, hplt(1), "beingdeleted",
                          @(~, ~) delete ([hicon htmp]))
 

@@ -1478,9 +1478,13 @@ OCTAVE_NAMESPACE_BEGIN
     // the corresponding function name.  At least try to do it without N
     // string compares.
 
+    // FIXME: ** and .** are deprecated but still need to be handled
+    // here until they are removed.
+
     std::size_t len = name.length ();
 
     if (len == 3 && name == ".**")
+      // deprecated
       return "power";
     else if (len == 2)
       {
@@ -1535,6 +1539,7 @@ OCTAVE_NAMESPACE_BEGIN
               }
           }
         else if (name == "**")
+          // deprecated
           return "mpower";
       }
     else if (len == 1)

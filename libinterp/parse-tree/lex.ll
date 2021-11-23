@@ -1823,9 +1823,9 @@ ANY_INCLUDING_NL (.|{NL})
 "./="  { CMD_OR_OP ("./=", EDIV_EQ, false); }
 ".\\=" { CMD_OR_OP (".\\=", ELEFTDIV_EQ, false); }
 "^="   { CMD_OR_OP ("^=", POW_EQ, false); }
-"**="  { CMD_OR_OP ("^=", POW_EQ, false); }
+"**="  { CMD_OR_DEPRECATED_OP ("**=", "^=", 7, POW_EQ); }
 ".^="  { CMD_OR_OP (".^=", EPOW_EQ, false); }
-".**=" { CMD_OR_OP (".^=", EPOW_EQ, false); }
+".**=" { CMD_OR_DEPRECATED_OP (".**=", ".^=", 7, EPOW_EQ); }
 "&="   { CMD_OR_OP ("&=", AND_EQ, false); }
 "|="   { CMD_OR_OP ("|=", OR_EQ, false); }
 

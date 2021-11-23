@@ -374,7 +374,7 @@ function [pos, opos, li] = subplot_position (hf, nrows, ncols, idx)
 
   ## Row/Column inside the axes array
   row = ceil (idx / ncols);
-  col = idx .- (row - 1) * ncols;
+  col = idx - (row - 1) * ncols;
   row = [min(row) max(row)];
   col = [min(col) max(col)];
 

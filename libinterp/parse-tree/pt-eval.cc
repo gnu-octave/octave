@@ -1478,8 +1478,8 @@ OCTAVE_NAMESPACE_BEGIN
     // the corresponding function name.  At least try to do it without N
     // string compares.
 
-    // FIXME: ** and .** are deprecated but still need to be handled
-    // here until they are removed.
+    // FIXME: .+, .-, **, and .** are deprecated but still need to be
+    // handled here until they are removed.
 
     std::size_t len = name.length ();
 
@@ -1496,9 +1496,11 @@ OCTAVE_NAMESPACE_BEGIN
                 return "transpose";
 
               case '+':
+                // deprecated
                 return "plus";
 
               case '-':
+                // deprecated
                 return "minus";
 
               case '*':

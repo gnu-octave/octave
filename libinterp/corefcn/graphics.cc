@@ -4653,7 +4653,7 @@ figure::properties::get_auto_paperposition (void)
 %!   set (hf, "paperunits", "centimeters");
 %!   psz = get (hf, "papersize");
 %!   fsz = in_pos(3:4) * 2.54;
-%!   pos = [(psz/2 .- fsz/2) fsz];
+%!   pos = [(psz/2 - fsz/2) fsz];
 %!   set (hf, "paperpositionmode", "auto");
 %!   assert (get (hf, "paperposition"), pos, tol);
 %! unwind_protect_cleanup
@@ -4671,7 +4671,7 @@ figure::properties::get_auto_paperposition (void)
 %!   psz = get (hf, "papersize");
 %!   set (hf, "paperunits", "normalized");
 %!   fsz = in_pos(3:4) ./ psz;
-%!   pos = [([0.5 0.5] .- fsz/2) fsz];
+%!   pos = [([0.5 0.5] - fsz/2) fsz];
 %!   assert (get (hf, "paperposition"), pos, tol);
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -4688,7 +4688,7 @@ figure::properties::get_auto_paperposition (void)
 %!   set  (hf, "papertype", "a4");
 %!   psz = get (hf, "papersize");
 %!   fsz = in_pos(3:4);
-%!   pos = [(psz/2 .- fsz/2) fsz];
+%!   pos = [(psz/2 - fsz/2) fsz];
 %!   assert (get (hf, "paperposition"), pos, tol);
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -4705,7 +4705,7 @@ figure::properties::get_auto_paperposition (void)
 %!   set (hf, "paperorientation", "landscape");
 %!   psz = get (hf, "papersize");
 %!   fsz = in_pos(3:4);
-%!   pos = [(psz/2 .- fsz/2) fsz];
+%!   pos = [(psz/2 - fsz/2) fsz];
 %!   assert (get (hf, "paperposition"), pos, tol);
 %! unwind_protect_cleanup
 %!   close (hf);

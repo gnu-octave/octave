@@ -562,7 +562,7 @@ function C = cauchy (x, y)
     error ("gallery: X and Y must be vectors of same length for cauchy matrix");
   endif
 
-  C = 1 ./ (x .+ y.');
+  C = 1 ./ (x + y.');
 endfunction
 
 function C = chebspec (n, k = 0)

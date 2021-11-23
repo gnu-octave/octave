@@ -965,7 +965,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
     ln = get (h, "headlength");   # in points
     wd = get (h, "headwidth");
     headstyle = get (h, "headstyle");
-    pos = pos(1:2) .+ pos(3:4);
+    pos = pos(1:2) + pos(3:4);
   elseif (nar == 1)
     ln = get (h, "head1length");  # in points
     wd = get (h, "head1width");
@@ -976,7 +976,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
     ln = get (h, "head2length");  # in points
     wd = get (h, "head2width");
     headstyle = get (h, "head2style");
-    pos = pos(1:2) .+ pos(3:4);
+    pos = pos(1:2) + pos(3:4);
   else
     error ("annotation: %d, no such arrow number");
   endif
@@ -1024,7 +1024,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
        sin(ang),  cos(ang)];
   XY = R * [x; y];
   XY = pts2norm (h, XY);
-  XY = pos(1:2).' .+ XY;
+  XY = pos(1:2).' + XY;
 
   x = XY(1,:).';
   y = XY(2,:).';
@@ -1188,7 +1188,7 @@ function XY = textcoordinates (hte, pos)
        sin(rot),  cos(rot)];
   XY = R * XY;
   XY = pts2norm (get (hte, "parent"), XY);
-  XY = pos(1:2) .- XY(:,pt).';
+  XY = pos(1:2) - XY(:,pt).';
 
 endfunction
 

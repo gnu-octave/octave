@@ -223,7 +223,7 @@ endfunction
 %! v2 = single ([1,1,1,1]);
 %! x = [.2, .4, .6, .8];
 %! v3 = betainc (x, a, b);
-%! v4 = 1-betainc (1.-x, b, a);
+%! v4 = 1 - betainc (1. - x, b, a);
 %! assert (v1, v2, sqrt (eps ("single")));
 %! assert (v3, v4, sqrt (eps ("single")));
 

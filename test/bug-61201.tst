@@ -53,12 +53,12 @@
 %!  end_try_catch
 %!endfunction
 
-%!assert<61201> (test_conditional_lines ("while"), 8)
+%!assert<*61201> (test_conditional_lines ("while"), 8)
 
-%!assert<61201> (test_conditional_lines ("if"), 18)
+%!assert<*61201> (test_conditional_lines ("if"), 18)
 
-%!assert<61201> (test_conditional_lines ("elseif"), 23)
+%!assert<*61201> (test_conditional_lines ("elseif"), 23)
 
 ## Because the DO-UNTIL statement is not part of Matlab it is not
 ## eligible for Matlab-style short-circuit behavior in Octave.
-%!assert<61201> (test_conditional_lines ("until"), -42)
+%!assert<*61201> (test_conditional_lines ("until"), -42)

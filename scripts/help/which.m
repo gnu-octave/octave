@@ -93,7 +93,7 @@ endfunction
 %!test
 %! str = which ("fftw");
 %! assert (str(end-7:end), "fftw.oct");
-%!assert <49434> (which ("inputParser"), file_in_loadpath ("inputParser.m"));
+%!assert <*49434> (which ("inputParser"), file_in_loadpath ("inputParser.m"));
 %!test
 %! x = 3;
 %! str = which ("x");

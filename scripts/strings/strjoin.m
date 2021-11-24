@@ -49,11 +49,9 @@
 ## @seealso{strsplit}
 ## @end deftypefn
 
-function rval = strjoin (cstr, delimiter)
+function rval = strjoin (cstr, delimiter = " ")
 
-  if (nargin == 1)
-    delimiter = " ";
-  elseif (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! (iscellstr (cstr) && (ischar (delimiter) || iscellstr (delimiter))))
     print_usage ();

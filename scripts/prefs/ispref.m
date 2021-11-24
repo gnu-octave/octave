@@ -41,7 +41,7 @@
 
 function retval = ispref (group, pref = "")
 
-  if (nargin == 0 || nargin > 2)
+  if (nargin == 0)
     print_usage ();
   endif
 
@@ -98,7 +98,6 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
-%!error ispref ()
-%!error ispref (1,2,3)
+%!error <Invalid call> ispref ()
 %!error <GROUP must be a string> ispref (1, "pref1")
 %!error <PREF must be a string> ispref ("group1", 1)

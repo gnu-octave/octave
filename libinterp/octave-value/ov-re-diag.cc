@@ -78,8 +78,8 @@ octave_diag_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
-  if (matrix.nelem () == 1)
-    retval = new octave_scalar (matrix (0, 0));
+  if (m_matrix.nelem () == 1)
+    retval = new octave_scalar (m_matrix (0, 0));
 
   return retval;
 }
@@ -93,17 +93,17 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
   // This hack is to allow constructing permutation matrices using
   // eye(n)(p,:), eye(n)(:,q) && eye(n)(p,q) where p & q are permutation
   // vectors.
-  if (! resize_ok && idx.length () == 2 && matrix.is_multiple_of_identity (1))
+  if (! resize_ok && idx.length () == 2 && m_matrix.is_multiple_of_identity (1))
     {
       int k = 0;        // index we're accessing when index_vector throws
       try
         {
-          idx_vector idx0 = idx(0).index_vector ();
+          octave::idx_vector idx0 = idx(0).index_vector ();
           k = 1;
-          idx_vector idx1 = idx(1).index_vector ();
+          octave::idx_vector idx1 = idx(1).index_vector ();
 
-          bool left = idx0.is_permutation (matrix.rows ());
-          bool right = idx1.is_permutation (matrix.cols ());
+          bool left = idx0.is_permutation (m_matrix.rows ());
+          bool right = idx1.is_permutation (m_matrix.cols ());
 
           if (left && right)
             {
@@ -122,10 +122,10 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
                 }
             }
         }
-      catch (octave::index_exception& e)
+      catch (octave::index_exception& ie)
         {
           // Rethrow to allow more info to be reported later.
-          e.set_pos_if_unset (2, k+1);
+          ie.set_pos_if_unset (2, k+1);
           throw;
         }
     }
@@ -139,37 +139,37 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
 DiagMatrix
 octave_diag_matrix::diag_matrix_value (bool) const
 {
-  return matrix;
+  return m_matrix;
 }
 
 FloatDiagMatrix
 octave_diag_matrix::float_diag_matrix_value (bool) const
 {
-  return FloatDiagMatrix (matrix);
+  return FloatDiagMatrix (m_matrix);
 }
 
 ComplexDiagMatrix
 octave_diag_matrix::complex_diag_matrix_value (bool) const
 {
-  return ComplexDiagMatrix (matrix);
+  return ComplexDiagMatrix (m_matrix);
 }
 
 FloatComplexDiagMatrix
 octave_diag_matrix::float_complex_diag_matrix_value (bool) const
 {
-  return FloatComplexDiagMatrix (matrix);
+  return FloatComplexDiagMatrix (m_matrix);
 }
 
 octave_value
 octave_diag_matrix::as_double (void) const
 {
-  return matrix;
+  return m_matrix;
 }
 
 octave_value
 octave_diag_matrix::as_single (void) const
 {
-  return FloatDiagMatrix (matrix);
+  return FloatDiagMatrix (m_matrix);
 }
 
 octave_value
@@ -226,18 +226,18 @@ octave_diag_matrix::map (unary_mapper_t umap) const
   switch (umap)
     {
     case umap_abs:
-      return matrix.abs ();
+      return m_matrix.abs ();
     case umap_real:
     case umap_conj:
-      return matrix;
+      return m_matrix;
     case umap_imag:
-      return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
+      return DiagMatrix (m_matrix.rows (), m_matrix.cols (), 0.0);
     case umap_sqrt:
       {
         ComplexColumnVector tmp;
-        tmp = matrix.extract_diag ().map<Complex> (octave::math::rc_sqrt);
+        tmp = m_matrix.extract_diag ().map<Complex> (octave::math::rc_sqrt);
         ComplexDiagMatrix retval (tmp);
-        retval.resize (matrix.rows (), matrix.columns ());
+        retval.resize (m_matrix.rows (), m_matrix.columns ());
         return retval;
       }
     default:
@@ -249,12 +249,12 @@ bool
 octave_diag_matrix::save_binary (std::ostream& os, bool save_as_floats)
 {
 
-  int32_t r = matrix.rows ();
-  int32_t c = matrix.cols ();
+  int32_t r = m_matrix.rows ();
+  int32_t c = m_matrix.cols ();
   os.write (reinterpret_cast<char *> (&r), 4);
   os.write (reinterpret_cast<char *> (&c), 4);
 
-  Matrix m = Matrix (matrix.extract_diag ());
+  Matrix m = Matrix (m_matrix.extract_diag ());
   save_type st = LS_DOUBLE;
   if (save_as_floats)
     {
@@ -266,11 +266,11 @@ octave_diag_matrix::save_binary (std::ostream& os, bool save_as_floats)
       else
         st = LS_FLOAT;
     }
-  else if (matrix.length () > 8192) // FIXME: make this configurable.
+  else if (m_matrix.length () > 8192) // FIXME: make this configurable.
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const double *mtmp = m.data ();
@@ -303,7 +303,7 @@ octave_diag_matrix::load_binary (std::istream& is, bool swap,
   if (! is)
     return false;
 
-  matrix = m;
+  m_matrix = m;
 
   return true;
 }

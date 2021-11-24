@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <clocale>
 #include <istream>
 #include <ostream>
 #include <vector>
@@ -294,6 +295,7 @@ bool
 octave_float_complex_matrix::save_ascii (std::ostream& os)
 {
   dim_vector dv = dims ();
+
   if (dv.ndims () > 2)
     {
       FloatComplexNDArray tmp = complex_array_value ();
@@ -331,6 +333,15 @@ octave_float_complex_matrix::load_ascii (std::istream& is)
 
   if (! extract_keyword (is, keywords, kw, val, true))
     error ("load: failed to extract number of rows and columns");
+
+  // Set "C" locale for the duration of this function to avoid the performance
+  // panelty of frequently switching the locale when reading floating point
+  // values from the stream.
+  char *prev_locale = std::setlocale (LC_ALL, nullptr);
+  std::string old_locale (prev_locale ? prev_locale : "");
+  std::setlocale (LC_ALL, "C");
+  octave::unwind_action act
+    ([&old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
 
   if (kw == "ndims")
     {
@@ -407,7 +418,7 @@ octave_float_complex_matrix::save_binary (std::ostream& os, bool)
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const FloatComplex *mtmp = m.data ();
@@ -480,7 +491,7 @@ octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
         return false;
       FloatComplexMatrix m (nr, nc);
       FloatComplex *im = m.fortran_vec ();
-      octave_idx_type len = nr * nc;
+      octave_idx_type len = static_cast<octave_idx_type> (nr) * nc;
       read_floats (is, reinterpret_cast<float *> (im),
                    static_cast<save_type> (tmp), 2*len, swap, fmt);
 
@@ -529,7 +540,7 @@ octave_float_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       if (m.all_integers (max_val, min_val))
         save_type_hid
-          = save_type_to_hdf5 (get_save_type (max_val, min_val));
+          = save_type_to_hdf5 (octave::get_save_type (max_val, min_val));
     }
 #endif
 
@@ -676,21 +687,36 @@ octave_float_complex_matrix::print_raw (std::ostream& os,
 }
 
 mxArray *
-octave_float_complex_matrix::as_mxArray (void) const
+octave_float_complex_matrix::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxSINGLE_CLASS, dims (), mxCOMPLEX);
-
-  float *pr = static_cast<float *> (retval->get_data ());
-  float *pi = static_cast<float *> (retval->get_imag_data ());
+  mxArray *retval = new mxArray (interleaved, mxSINGLE_CLASS, dims (),
+                                 mxCOMPLEX);
 
   mwSize nel = numel ();
 
-  const FloatComplex *p = matrix.data ();
+  const FloatComplex *pdata = matrix.data ();
 
-  for (mwIndex i = 0; i < nel; i++)
+  if (interleaved)
     {
-      pr[i] = std::real (p[i]);
-      pi[i] = std::imag (p[i]);
+      mxComplexSingle *pd
+        = static_cast<mxComplexSingle *> (retval->get_data ());
+
+      for (mwIndex i = 0; i < nel; i++)
+        {
+          pd[i].real = pdata[i].real ();
+          pd[i].imag = pdata[i].imag ();
+        }
+    }
+  else
+    {
+      mxSingle *pr = static_cast<mxSingle *> (retval->get_data ());
+      mxSingle *pi = static_cast<mxSingle *> (retval->get_imag_data ());
+
+      for (mwIndex i = 0; i < nel; i++)
+        {
+          pr[i] = pdata[i].real ();
+          pi[i] = pdata[i].imag ();
+        }
     }
 
   return retval;

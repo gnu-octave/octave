@@ -79,7 +79,7 @@ octave_value
 octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
 {
   octave_value retval;
-  if (matrix.rows () == 1 || matrix.cols () == 1)
+  if (m_matrix.rows () == 1 || m_matrix.cols () == 1)
     {
       // Rather odd special case.  This is a row or column vector
       // represented as a diagonal matrix with a single nonzero entry, but
@@ -87,14 +87,14 @@ octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
       // inputs.
       if (k == 0)
         // Returns Diag2Array<T> with nnz <= 1.
-        retval = matrix.build_diag_matrix ();
+        retval = m_matrix.build_diag_matrix ();
       else
         // Returns Array<T> matrix
-        retval = matrix.array_value ().diag (k);
+        retval = m_matrix.array_value ().diag (k);
     }
   else
     // Returns Array<T> vector
-    retval = matrix.extract_diag (k);
+    retval = m_matrix.extract_diag (k);
   return retval;
 }
 
@@ -110,38 +110,38 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
       int k = 0;        // index we're accessing when index_vector throws
       try
         {
-          idx_vector idx0 = idx(0).index_vector ();
+          octave::idx_vector idx0 = idx(0).index_vector ();
           k = 1;
-          idx_vector idx1 = idx(1).index_vector ();
+          octave::idx_vector idx1 = idx(1).index_vector ();
 
           if (idx0.is_scalar () && idx1.is_scalar ())
             {
-              retval = matrix.checkelem (idx0(0), idx1(0));
+              retval = m_matrix.checkelem (idx0(0), idx1(0));
             }
           else
             {
-              octave_idx_type m = idx0.length (matrix.rows ());
-              octave_idx_type n = idx1.length (matrix.columns ());
+              octave_idx_type m = idx0.length (m_matrix.rows ());
+              octave_idx_type n = idx1.length (m_matrix.columns ());
               if (idx0.is_colon_equiv (m) && idx1.is_colon_equiv (n)
-                  && m <= matrix.rows () && n <= matrix.rows ())
+                  && m <= m_matrix.rows () && n <= m_matrix.rows ())
                 {
-                  DMT rm (matrix);
+                  DMT rm (m_matrix);
                   rm.resize (m, n);
                   retval = rm;
                 }
               else
-                retval = to_dense ().do_index_op (idx, resize_ok);
+                retval = to_dense ().index_op (idx, resize_ok);
             }
         }
-      catch (octave::index_exception& e)
+      catch (octave::index_exception& ie)
         {
           // Rethrow to allow more info to be reported later.
-          e.set_pos_if_unset (2, k+1);
+          ie.set_pos_if_unset (2, k+1);
           throw;
         }
     }
   else
-    retval = to_dense ().do_index_op (idx, resize_ok);
+    retval = to_dense ().index_op (idx, resize_ok);
 
   return retval;
 }
@@ -180,27 +180,27 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
             int k = 0;
             try
               {
-                idx_vector ind = jdx(0).index_vector ();
+                octave::idx_vector ind = jdx(0).index_vector ();
                 k = 1;
-                dim_vector dv (matrix.rows (), matrix.cols ());
-                Array<idx_vector> ivec = ind2sub (dv, ind);
-                idx_vector i0 = ivec(0);
-                idx_vector i1 = ivec(1);
+                dim_vector dv (m_matrix.rows (), m_matrix.cols ());
+                Array<octave::idx_vector> ivec = ind2sub (dv, ind);
+                octave::idx_vector i0 = ivec(0);
+                octave::idx_vector i1 = ivec(1);
 
                 if (i0(0) == i1(0)
                     && chk_valid_scalar (rhs, val))
                   {
-                    matrix.dgelem (i0(0)) = val;
+                    m_matrix.dgelem (i0(0)) = val;
                     retval = this;
                     this->count++;
                     // invalidate cache
-                    dense_cache = octave_value ();
+                    m_dense_cache = octave_value ();
                   }
               }
-            catch (octave::index_exception& e)
+            catch (octave::index_exception& ie)
               {
                 // Rethrow to allow more info to be reported later.
-                e.set_pos_if_unset (2, k+1);
+                ie.set_pos_if_unset (2, k+1);
                 throw;
               }
           }
@@ -211,24 +211,24 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
             int k = 0;
             try
               {
-                idx_vector i0 = jdx(0).index_vector ();
+                octave::idx_vector i0 = jdx(0).index_vector ();
                 k = 1;
-                idx_vector i1 = jdx(1).index_vector ();
+                octave::idx_vector i1 = jdx(1).index_vector ();
                 if (i0(0) == i1(0)
-                    && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
+                    && i0(0) < m_matrix.rows () && i1(0) < m_matrix.cols ()
                     && chk_valid_scalar (rhs, val))
                   {
-                    matrix.dgelem (i0(0)) = val;
+                    m_matrix.dgelem (i0(0)) = val;
                     retval = this;
                     this->count++;
                     // invalidate cache
-                    dense_cache = octave_value ();
+                    m_dense_cache = octave_value ();
                   }
               }
-            catch (octave::index_exception& e)
+            catch (octave::index_exception& ie)
               {
                 // Rethrow to allow more info to be reported later.
-                e.set_pos_if_unset (2, k+1);
+                ie.set_pos_if_unset (2, k+1);
                 throw;
               }
           }
@@ -267,7 +267,7 @@ octave_base_diag<DMT, MT>::resize (const dim_vector& dv, bool fill) const
   octave_value retval;
   if (dv.ndims () == 2)
     {
-      DMT rm (matrix);
+      DMT rm (m_matrix);
       rm.resize (dv(0), dv(1));
       retval = rm;
     }
@@ -285,7 +285,7 @@ octave_base_diag<DMT, MT>::is_true (void) const
     {
       warn_array_as_logical (dims ());
       // Throw error if any NaN or NA by calling is_true().
-      octave_value (matrix.extract_diag ()).is_true ();
+      octave_value (m_matrix.extract_diag ()).is_true ();
       return false;                 // > 1x1 diagonal always has zeros
     }
   else
@@ -317,7 +317,7 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             type_name (), "real scalar");
 
-  return helper_getreal (el_type (matrix (0, 0)));
+  return helper_getreal (el_type (m_matrix (0, 0)));
 }
 
 template <typename DMT, typename MT>
@@ -336,7 +336,7 @@ octave_base_diag<DMT, MT>::float_value (bool force_conversion) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             type_name (), "real scalar");
 
-  return helper_getreal (el_type (matrix (0, 0)));
+  return helper_getreal (el_type (m_matrix (0, 0)));
 }
 
 template <typename DMT, typename MT>
@@ -349,7 +349,7 @@ octave_base_diag<DMT, MT>::complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             type_name (), "complex scalar");
 
-  return matrix(0, 0);
+  return m_matrix(0, 0);
 }
 
 template <typename DMT, typename MT>
@@ -366,7 +366,7 @@ octave_base_diag<DMT, MT>::float_complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             type_name (), "complex scalar");
 
-  retval = matrix (0, 0);
+  retval = m_matrix (0, 0);
 
   return retval;
 }
@@ -456,7 +456,7 @@ octave_base_diag<DMT, MT>::sparse_complex_matrix_value (bool) const
 }
 
 template <typename DMT, typename MT>
-idx_vector
+octave::idx_vector
 octave_base_diag<DMT, MT>::index_vector (bool require_integers) const
 {
   return to_dense ().index_vector (require_integers);
@@ -485,7 +485,7 @@ octave_base_diag<DMT, MT>::edit_display (const float_display_format& fmt,
                                          octave_idx_type j) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, fmt, matrix(i,j));
+  octave_print_internal (buf, fmt, m_matrix(i,j));
   return buf.str ();
 }
 
@@ -493,10 +493,10 @@ template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
 {
-  os << "# rows: " << matrix.rows () << "\n"
-     << "# columns: " << matrix.columns () << "\n";
+  os << "# rows: " << m_matrix.rows () << "\n"
+     << "# columns: " << m_matrix.columns () << "\n";
 
-  os << matrix.extract_diag ();
+  os << m_matrix.extract_diag ();
 
   return true;
 }
@@ -523,11 +523,11 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
   // not ColumnVector type.  We need to help the compiler get
   // through the inheritance tree.
   typedef typename DMT::element_type el_type;
-  matrix = DMT (MDiagArray2<el_type> (MArray<el_type> (tmp)));
-  matrix.resize (r, c);
+  m_matrix = DMT (MDiagArray2<el_type> (MArray<el_type> (tmp)));
+  m_matrix.resize (r, c);
 
   // Invalidate cache.  Probably not necessary, but safe.
-  dense_cache = octave_value ();
+  m_dense_cache = octave_value ();
 
   return true;
 }
@@ -537,15 +537,15 @@ void
 octave_base_diag<DMT, MT>::print_raw (std::ostream& os,
                                       bool pr_as_read_syntax) const
 {
-  return octave_print_internal (os, matrix, pr_as_read_syntax,
+  return octave_print_internal (os, m_matrix, pr_as_read_syntax,
                                 current_print_indent_level ());
 }
 
 template <typename DMT, typename MT>
 mxArray *
-octave_base_diag<DMT, MT>::as_mxArray (void) const
+octave_base_diag<DMT, MT>::as_mxArray (bool interleaved) const
 {
-  return to_dense ().as_mxArray ();
+  return to_dense ().as_mxArray (interleaved);
 }
 
 template <typename DMT, typename MT>
@@ -579,7 +579,7 @@ void
 octave_base_diag<DMT, MT>::print_info (std::ostream& os,
                                        const std::string& prefix) const
 {
-  matrix.print_info (os, prefix);
+  m_matrix.print_info (os, prefix);
 }
 
 // FIXME: this function is duplicated in octave_base_matrix<T>.  Could
@@ -589,18 +589,18 @@ template <typename DMT, typename MT>
 void
 octave_base_diag<DMT, MT>::short_disp (std::ostream& os) const
 {
-  if (matrix.isempty ())
+  if (m_matrix.isempty ())
     os << "[]";
-  else if (matrix.ndims () == 2)
+  else if (m_matrix.ndims () == 2)
     {
       // FIXME: should this be configurable?
       octave_idx_type max_elts = 10;
       octave_idx_type elts = 0;
 
-      octave_idx_type nel = matrix.numel ();
+      octave_idx_type nel = m_matrix.numel ();
 
-      octave_idx_type nr = matrix.rows ();
-      octave_idx_type nc = matrix.columns ();
+      octave_idx_type nr = m_matrix.rows ();
+      octave_idx_type nc = m_matrix.columns ();
 
       os << '[';
 
@@ -609,7 +609,7 @@ octave_base_diag<DMT, MT>::short_disp (std::ostream& os) const
           for (octave_idx_type j = 0; j < nc; j++)
             {
               std::ostringstream buf;
-              octave_print_internal (buf, matrix(i,j));
+              octave_print_internal (buf, m_matrix(i,j));
               std::string tmp = buf.str ();
               std::size_t pos = tmp.find_first_not_of (' ');
               if (pos != std::string::npos)
@@ -641,14 +641,14 @@ template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::fast_elem_extract (octave_idx_type n) const
 {
-  if (n < matrix.numel ())
+  if (n < m_matrix.numel ())
     {
-      octave_idx_type nr = matrix.rows ();
+      octave_idx_type nr = m_matrix.rows ();
 
       octave_idx_type r = n % nr;
       octave_idx_type c = n / nr;
 
-      return octave_value (matrix.elem (r, c));
+      return octave_value (m_matrix.elem (r, c));
     }
   else
     return octave_value ();
@@ -658,8 +658,8 @@ template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::to_dense (void) const
 {
-  if (! dense_cache.is_defined ())
-    dense_cache = MT (matrix);
+  if (! m_dense_cache.is_defined ())
+    m_dense_cache = MT (m_matrix);
 
-  return dense_cache;
+  return m_dense_cache;
 }

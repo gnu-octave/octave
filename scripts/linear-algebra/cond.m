@@ -39,8 +39,8 @@
 ##
 ## By default, @code{@var{p} = 2} is used which implies a (relatively slow)
 ## singular value decomposition.  Other possible selections are
-## @code{@var{p} = 1, Inf, "fro"} which are generally faster.  See @code{norm}
-## for a full discussion of possible @var{p} values.
+## @code{@var{p} = 1, Inf, "fro"} which are generally faster.  For a full
+## discussion of possible @var{p} values, @pxref{XREFnorm,,@code{norm}}.
 ##
 ## The condition number of a matrix quantifies the sensitivity of the matrix
 ## inversion operation when small changes are made to matrix elements.  Ideally
@@ -53,7 +53,7 @@
 
 function retval = cond (A, p = 2)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -95,8 +95,7 @@ endfunction
 %!assert (cond ([1, 2; 2, 1]), 3, sqrt (eps))
 %!assert (cond ([1, 2, 3; 4, 5, 6; 7, 8, 9]) > 1.0e+16)
 
-%!error cond ()
-%!error cond (1, 2, 3)
+%!error <Invalid call> cond ()
 %!error <A must be a 2-D matrix> cond (ones (1,3,3))
 %!error <A must not contain Inf or NaN value> cond ([1, 2;Inf 4])
 %!error <A must not contain Inf or NaN value> cond ([1, 2;NaN 4])

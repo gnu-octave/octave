@@ -219,7 +219,7 @@
 %! f()
 
 ## struct
-%!function f (x = struct("a", 3))
+%!function f (x = struct ("a", 3))
 %!  assert (x, struct ("a", 3));
 %!endfunction
 %!test

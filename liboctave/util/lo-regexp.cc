@@ -247,7 +247,7 @@ namespace octave
   }
 
   regexp::match_data
-  regexp::match (const std::string& buffer)
+  regexp::match (const std::string& buffer) const
   {
     // check if input is valid utf-8
     const uint8_t *buf_str = reinterpret_cast<const uint8_t *> (buffer.c_str ());
@@ -437,7 +437,7 @@ namespace octave
   }
 
   bool
-  regexp::is_match (const std::string& buffer)
+  regexp::is_match (const std::string& buffer) const
   {
     regexp::match_data rx_lst = match (buffer);
 
@@ -445,7 +445,7 @@ namespace octave
   }
 
   Array<bool>
-  regexp::is_match (const string_vector& buffer)
+  regexp::is_match (const string_vector& buffer) const
   {
     octave_idx_type len = buffer.numel ();
 
@@ -458,14 +458,15 @@ namespace octave
   }
 
   // Declare rep_token_t used in processing replacement string
-  typedef struct
+  struct rep_token_t
   {
     std::size_t pos;
     int num;
-  } rep_token_t;
+  };
 
   std::string
-  regexp::replace (const std::string& buffer, const std::string& replacement)
+  regexp::replace (const std::string& buffer,
+                   const std::string& replacement) const
   {
     std::string retval;
 

@@ -66,8 +66,8 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
 
   Array<R> retval (dvr);
 
-  const X *xvec = x.fortran_vec ();
-  const Y *yvec = y.fortran_vec ();
+  const X *xvec = x.data ();
+  const Y *yvec = y.data ();
   R *rvec = retval.fortran_vec ();
 
   // Fold the common leading dimensions.
@@ -148,7 +148,7 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
   octave_idx_type nd = r.ndims ();
   dvx.redim (nd);
 
-  const X *xvec = x.fortran_vec ();
+  const X *xvec = x.data ();
   R *rvec = r.fortran_vec ();
 
   // Fold the common leading dimensions.

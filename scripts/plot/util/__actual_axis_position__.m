@@ -50,7 +50,7 @@ function pos = __actual_axis_position__ (h)
   end_unwind_protect
   ## Get axes size in pixels
   if (strcmp (get (axis_obj.parent, "__graphics_toolkit__"), "gnuplot")
-      && strcmp (axis_obj.activepositionproperty, "outerposition"))
+      && strcmp (axis_obj.positionconstraint, "outerposition"))
     pos_in_pixels = axis_obj.outerposition .* fig_position([3, 4, 3, 4]);
   else
     pos_in_pixels = axis_obj.position .* fig_position([3, 4, 3, 4]);
@@ -82,7 +82,7 @@ function pos = __actual_axis_position__ (h)
     endif
     pos = pos_in_pixels ./ fig_position([3, 4, 3, 4]);
   elseif (strcmp (get (axis_obj.parent, "__graphics_toolkit__"), "gnuplot")
-          && strcmp (axis_obj.activepositionproperty, "outerposition"))
+          && strcmp (axis_obj.positionconstraint, "outerposition"))
     pos = axis_obj.outerposition;
   else
     pos = axis_obj.position;

@@ -55,7 +55,7 @@ namespace octave
 
     set_path_dialog (QWidget *parent, base_qobject& oct_qobj);
 
-    virtual ~set_path_dialog (void);
+    virtual ~set_path_dialog (void) = default;
 
     void save_settings (void);
 
@@ -63,8 +63,8 @@ namespace octave
 
     //! Emitted, when the path has to be modified
 
-    void modify_path_signal (const octave_value_list& dir_list,
-                             bool rm, bool subdirs);
+    void modify_path_signal (const QStringList& dir_list, bool rm,
+                             bool subdirs);
 
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);

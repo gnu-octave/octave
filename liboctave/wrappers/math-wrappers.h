@@ -30,11 +30,9 @@
 extern "C" {
 #endif
 
-double
-octave_frexp_wrapper (double x, int *expptr);
+extern OCTAVE_API double octave_frexp_wrapper (double x, int *expptr);
 
-float
-octave_frexpf_wrapper (float x, int *expptr);
+extern OCTAVE_API float octave_frexpf_wrapper (float x, int *expptr);
 
 #if defined __cplusplus
 }

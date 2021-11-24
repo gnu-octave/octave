@@ -236,7 +236,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   endif
   norm_b = norm (b, 2);
 
-  if (norm_b == 0)  # the only (only iff det(A) == 0) solution is x = 0
+  if (norm_b == 0)  # the only (only iff det (A) == 0) solution is x = 0
     if (nargout < 2)
       printf ("The right hand side vector is all zero so bicg\n")
       printf ("returned an all zero solution without iterating.\n")
@@ -258,7 +258,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   resvec(1) = norm (r0, 2);
 
   try
-    warning ("error", "Octave:singular-matrix", "local")
+    warning ("error", "Octave:singular-matrix", "local");
     prec_r0 = M1fun (r0, "notransp", varargin{:});  # r0 preconditioned
     prec_s0 = s0;
     prec_r0 = M2fun (prec_r0, "notransp", varargin{:});
@@ -276,7 +276,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     alpha = (s0' * prec_r0);
     if (abs (prod_qv) <= eps * abs (alpha))
       flag = 4;
-      break
+      break;
     endif
     alpha ./= prod_qv;
     x += alpha * p;

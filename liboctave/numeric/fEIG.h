@@ -44,53 +44,53 @@ FloatEIG
 
 public:
 
-  FloatEIG (void) : lambda (), v (), w () { }
+  FloatEIG (void) : m_lambda (), m_v (), m_w () { }
 
   FloatEIG (const FloatMatrix& a, bool calc_rev = true,
             bool calc_lev = true, bool balance = true)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     init (a, calc_rev, calc_lev, balance);
   }
 
   FloatEIG (const FloatMatrix& a, octave_idx_type& info,
             bool calc_rev = true, bool calc_lev = true, bool balance = true)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     info = init (a, calc_rev, calc_lev, balance);
   }
 
   FloatEIG (const FloatMatrix& a, const FloatMatrix& b,
             bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     init (a, b, calc_rev, calc_lev, force_qz);
   }
 
   FloatEIG (const FloatMatrix& a, const FloatMatrix& b, octave_idx_type& info,
             bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     info = init (a, b, calc_rev, calc_lev, force_qz);
   }
 
   FloatEIG (const FloatComplexMatrix& a, bool calc_rev = true,
             bool calc_lev = true, bool balance = true)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     init (a, calc_rev, calc_lev, balance);
   }
 
   FloatEIG (const FloatComplexMatrix& a, octave_idx_type& info,
             bool calc_rev = true, bool calc_lev = true, bool balance = true)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     info = init (a, calc_rev, calc_lev, balance);
   }
 
   FloatEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
             bool calc_rev = true, bool calc_lev = true, bool force_qz = false)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     init (a, b, calc_rev, calc_lev, force_qz);
   }
@@ -98,37 +98,37 @@ public:
   FloatEIG (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
             octave_idx_type& info, bool calc_rev = true, bool calc_lev = true,
             bool force_qz = false)
-    : lambda (), v (), w ()
+    : m_lambda (), m_v (), m_w ()
   {
     info = init (a, b, calc_rev, calc_lev, force_qz);
   }
 
-  FloatEIG (const FloatEIG& a) : lambda (a.lambda), v (a.v), w (a.w) { }
+  FloatEIG (const FloatEIG& a) : m_lambda (a.m_lambda), m_v (a.m_v), m_w (a.m_w) { }
 
   FloatEIG& operator = (const FloatEIG& a)
   {
     if (this != &a)
       {
-        lambda = a.lambda;
-        v = a.v;
-        w = a.w;
+        m_lambda = a.m_lambda;
+        m_v = a.m_v;
+        m_w = a.m_w;
       }
     return *this;
   }
 
   ~FloatEIG (void) = default;
 
-  FloatComplexColumnVector eigenvalues (void) const { return lambda; }
-  FloatComplexMatrix right_eigenvectors (void) const { return v; }
-  FloatComplexMatrix left_eigenvectors (void) const { return w; }
+  FloatComplexColumnVector eigenvalues (void) const { return m_lambda; }
+  FloatComplexMatrix right_eigenvectors (void) const { return m_v; }
+  FloatComplexMatrix left_eigenvectors (void) const { return m_w; }
 
   friend std::ostream&  operator << (std::ostream& os, const FloatEIG& a);
 
 private:
 
-  FloatComplexColumnVector lambda;
-  FloatComplexMatrix v;
-  FloatComplexMatrix w;
+  FloatComplexColumnVector m_lambda;
+  FloatComplexMatrix m_v;
+  FloatComplexMatrix m_w;
 
   octave_idx_type init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
                         bool balance);

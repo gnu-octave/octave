@@ -41,7 +41,7 @@
 
 function x = factorial (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! isreal (n) || any (n(:) < 0 | n(:) != fix (n(:))))
     error ("factorial: all N must be real non-negative integers");
@@ -53,9 +53,9 @@ function x = factorial (n)
   ## This doesn't seem particularly worth copying--for example uint8 would
   ## saturate for n > 5.  If desired, however, the following code could be
   ## uncommented.
-  # if (! isfloat (x))
-  #   x = cast (x, class (n));
-  # endif
+  ## if (! isfloat (x))
+  ##   x = cast (x, class (n));
+  ## endif
 
 endfunction
 
@@ -65,8 +65,7 @@ endfunction
 %!assert (factorial (70), exp (sum (log (1:70))), -128*eps)
 %!assert (factorial (0), 1)
 
-%!error factorial ()
-%!error factorial (1,2)
+%!error <Invalid call> factorial ()
 %!error <must be real non-negative integers> factorial (2i)
 %!error <must be real non-negative integers> factorial (-3)
 %!error <must be real non-negative integers> factorial (5.5)

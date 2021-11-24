@@ -29,23 +29,57 @@
 
 #include <QDesktopWidget>
 
+// This header is only needed for the new terminal widget.
+#include "command-widget.h"
+
+// This header is only needed for the old terminal widget.
+#include "QTerminal.h"
+
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+
 #include "octave-qobject.h"
 #include "terminal-dock-widget.h"
-
-#include "quit.h"
-#include "signal-wrappers.h"
-
-#include "sighandlers.h"
 
 namespace octave
 {
   terminal_dock_widget::terminal_dock_widget (QWidget *p,
                                               base_qobject& oct_qobj)
     : octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
-      m_terminal (QTerminal::create (oct_qobj, p))
+      m_experimental_terminal_widget (oct_qobj.experimental_terminal_widget ())
   {
+    // FIXME: we could do this in a better way, but improving it doesn't
+    // matter much if we will eventually be removing the old terminal.
+    if (m_experimental_terminal_widget)
+      {
+        command_widget *widget = new command_widget (oct_qobj, this);
+
+        connect (this, &terminal_dock_widget::settings_changed,
+                 widget, &command_widget::notice_settings);
+
+        connect (this, &terminal_dock_widget::update_prompt_signal,
+                 widget, &command_widget::update_prompt);
+
+        connect (this, &terminal_dock_widget::interpreter_output_signal,
+                 widget, &command_widget::insert_interpreter_output);
+
+        m_terminal = widget;
+      }
+    else
+      {
+        QTerminal *widget = QTerminal::create (oct_qobj, this);
+
+        connect (this, &terminal_dock_widget::settings_changed,
+                 widget, &QTerminal::notice_settings);
+
+        // Connect the visibility signal to the terminal for
+        // dis-/enabling timers.
+        connect (this, &terminal_dock_widget::visibilityChanged,
+                 widget, &QTerminal::handle_visibility_changed);
+
+        m_terminal = widget;
+      }
+
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
 
@@ -54,13 +88,6 @@ namespace octave
 
     setWidget (m_terminal);
     setFocusProxy (m_terminal);
-
-    connect (m_terminal, SIGNAL (interrupt_signal (void)),
-             this, SLOT (terminal_interrupt (void)));
-
-    // Connect the visibility signal to the terminal for dis-/enabling timers
-    connect (this, SIGNAL (visibilityChanged (bool)),
-             m_terminal, SLOT (handle_visibility_changed (bool)));
 
     // Chose a reasonable size at startup in order to avoid truncated
     // startup messages
@@ -89,33 +116,44 @@ namespace octave
       win_y = max_y;
 
     setGeometry (0, 0, win_x, win_y);
-  }
 
-  terminal_dock_widget::~terminal_dock_widget (void)
-  {
-    delete m_terminal;
+    if (! p)
+      make_window ();
   }
 
   bool terminal_dock_widget::has_focus (void) const
   {
     QWidget *w = widget ();
-
     return w->hasFocus ();
   }
 
-  void terminal_dock_widget::terminal_interrupt (void)
+  QTerminal * terminal_dock_widget::get_qterminal (void)
   {
-    // FIXME: Protect with mutex?
-
-    octave_signal_caught = 1;
-    octave_interrupt_state++;
-
-    // Send SIGINT to all other processes in our process group.
-    // This is needed to interrupt calls to system (), for example.
-
-    int sigint;
-    octave_get_sig_number ("SIGINT", &sigint);
-
-    octave_kill_wrapper (0, sigint);
+    return (m_experimental_terminal_widget
+            ? nullptr : dynamic_cast<QTerminal *> (m_terminal));
   }
+
+  command_widget * terminal_dock_widget::get_command_widget (void)
+  {
+    return (m_experimental_terminal_widget
+            ? dynamic_cast<command_widget *> (m_terminal) : nullptr);
+  }
+
+  void terminal_dock_widget::notice_settings (const gui_settings *settings)
+  {
+    emit settings_changed (settings);
+  }
+
+  void terminal_dock_widget::interpreter_output (const QString& msg)
+  {
+    if (m_experimental_terminal_widget)
+      emit interpreter_output_signal (msg);
+  }
+
+  void terminal_dock_widget::update_prompt (const QString& prompt)
+  {
+    if (m_experimental_terminal_widget)
+      emit update_prompt_signal (prompt);
+  }
+
 }

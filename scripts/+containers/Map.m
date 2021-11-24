@@ -379,7 +379,13 @@ classdef Map < handle
             case "keys"
               sref = keys (this);
             case "values"
-              sref = values (this);
+              if (numel (s) > 1
+                  && strcmp (s(2).type, "()") && ! isempty (s(2).subs))
+                sref = values (this, s(2).subs{1});
+                s(1) = [];
+              else
+                sref = values (this);
+              end
             case "size"
               sref = size (this);
             case "length"
@@ -397,7 +403,7 @@ classdef Map < handle
                 error ("containers.Map: input argument 'KeySet' is missing");
               endif
               sref = feval (s(1).subs, this, s(2).subs{1});
-              s = s(3:end);
+              s(1) = [];
             otherwise
               error ("containers.Map: unknown property '%s'", s(1).subs);
           endswitch
@@ -574,8 +580,8 @@ endclassdef
 %! m = containers.Map ();
 %! assert (m.Count, uint64 (0));
 %! assert (length (m), 0);
-%! assert (size (m, 1), 0);
-%! assert (size (m, 2), 1);
+%! assert (rows (m), 0);
+%! assert (columns (m), 1);
 %! assert (isempty (m));
 %! assert (isempty (keys (m)));
 %! assert (isempty (values (m)));
@@ -820,6 +826,24 @@ endclassdef
 %! assert (keys (m3), {1, 2, 3});
 %! m3 = [m2, m1];
 %! assert (m3.KeyType, "single");
+
+## Test subsref calls
+%!test <*59607>
+%! months = {'Jan', 'Feb', 'Mar', 'Apr'};
+%! vals = [10, 11, 12, 13];
+%! M = containers.Map (months, vals);
+%! keys = {'Jan', 'Feb'};
+%! assert (M.values, values (M));
+%! assert (M.values (), values (M));
+%! assert (M.values (keys), {10, 11});
+%! assert (M.values (keys)(2), {11});
+%! assert (M.values (keys){2}, 11);
+%!test
+%! months = {'Jan', 'Feb', 'Mar', 'Apr'};
+%! vals = [10, 11, 12, 13];
+%! M = containers.Map (months, vals);
+%! keys = {'Jan', 'FooBar', 'Feb'};
+%! assert (M.isKey (keys)(2:end), logical ([0, 1]));
 
 ## Test input validation
 %!error containers.Map (1,2,3)

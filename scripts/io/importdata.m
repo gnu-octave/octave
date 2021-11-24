@@ -69,7 +69,7 @@
 
 function [output, delimiter, header_rows] = importdata (fname, delimiter = "", header_rows = -1)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -82,7 +82,7 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
   if (nargin > 1)
     if (! ischar (delimiter)
         || (length (delimiter) > 1 && ! strcmp (delimiter, '\t')))
-      error("importdata: DELIMITER must be a single character");
+      error ("importdata: DELIMITER must be a single character");
     endif
     if (strcmp (delimiter, '\t'))
       delimiter = "\t";
@@ -98,7 +98,7 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
 
   ## Check file format
   ## Get the extension from the filename.
-  [~, ~, ext, ~] = fileparts (fname);
+  [~, ~, ext] = fileparts (fname);
   ext = lower (ext);
 
   switch (ext)
@@ -175,8 +175,8 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
 
     ## If no delimiter determined yet, make a guess.
     if (isempty (delimiter))
-      ## This pattern can be fooled, but mostly does the job just fine.
-      delim = regexpi (row, '[-+\d.e*ij ]+([^-+\de.ij])[-+\de*.ij ]',
+      ## Look for number, DELIMITER, DELIMITER*, number
+      delim = regexpi (row, '[-+]?\d*[.]?\d+(?:[ed][-+]?\d+)?[ij]?([^-+\d.deij])\1*[-+]?\d*[.]?\d+(?:[ed][-+]?\d+)?[ij]?',
                        'tokens', 'once');
       if (! isempty (delim))
         delimiter = delim{1};
@@ -200,6 +200,14 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
       row = -1;
       break;
     else
+      ## The number of header rows and header columns is now known.
+      header_cols = find (! isnan (row_data), 1) - 1;
+      has_rowheaders = (header_cols == 1);
+
+      ## Set colheaders output from textdata if appropriate
+      ## NOTE: Octave chooses to be Matlab incompatible and return
+      ## both 'rowheaders' and 'colheaders' when they are present.
+      ## Matlab allows only one to be present at a time.
       if (! isempty (output.textdata))
         if (delimiter == " ")
           output.colheaders = regexp (strtrim (output.textdata{end}),
@@ -207,9 +215,22 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
         else
           output.colheaders = ostrsplit (output.textdata{end}, delimiter);
         endif
+
+        nc_hdr = numel (output.colheaders);
+        nc_dat = numel (row_data);
+        if (! has_rowheaders)
+          if (nc_hdr != nc_dat)
+            output = rmfield (output, {"rowheaders", "colheaders"});
+          else
+            output = rmfield (output, "rowheaders");
+          endif
+        else
+          if (nc_hdr != nc_dat-1)
+            output = rmfield (output, "colheaders");
+          endif
+        endif
       endif
-      header_cols = find (! isnan (row_data), 1) - 1;
-      ## The number of header rows and header columns is now known.
+
       break;
     endif
 
@@ -243,19 +264,31 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
   fclose (fid);
 
   if (num_header_rows >= 0)
-    header_rows = num_header_rows;
+    ## User has defined a number of header rows which disagrees with the
+    ## auto-detected number.  Print a warning.
+    if (num_header_rows < header_rows)
+      warning ("Octave:importdata:headerrows_mismatch",
+               "importdata: detected %d header rows, but HEADER_ROWS input configured %d rows", header_rows, num_header_rows);
+    endif
+  else
+    ## use the automatically detected number of header rows
+    num_header_rows = header_rows;
   endif
 
   ## Now, let the efficient built-in routine do the bulk of the work.
   if (delimiter == " ")
-    output.data = dlmread (fname, "", header_rows, header_cols,
+    output.data = dlmread (fname, "", num_header_rows, header_cols,
                            "emptyvalue", NA);
   else
-    output.data = dlmread (fname, delimiter, header_rows, header_cols,
+    output.data = dlmread (fname, delimiter, num_header_rows, header_cols,
                            "emptyvalue", NA);
   endif
 
   ## Go back and correct any individual values that did not convert.
+  ## FIXME: This is only efficient when the number of bad conversions is small.
+  ##        Any file with 'rowheaders' will cause the for loop to execute over
+  ##        *every* line in the file.
+
   na_idx = isna (output.data);
   if (header_cols > 0)
     na_idx = [(true (rows (na_idx), header_cols)), na_idx];
@@ -265,8 +298,11 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     file_content = ostrsplit (fileread (fname), "\r\n", true);
 
     na_rows = find (any (na_idx, 2));
+    ## Prune text lines in header that were already collected
+    idx = (na_rows(1:min (header_rows, end)) + num_header_rows) <= header_rows;
+    na_rows(idx) = [];
     for ridx = na_rows(:)'
-      row = file_content{ridx+header_rows};
+      row = file_content{ridx+num_header_rows};
       if (delimiter == " ")
         fields = regexp (strtrim (row), ' +', 'split');
       else
@@ -277,28 +313,45 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
       if (! size_equal (missing_idx, fields))
         ## Fields completely missing at end of line.  Replace with NA.
         col = columns (fields);
-        output.data(ridx, (col+1):end) = NA;
+        ## FIXME: This code should be redundant because dlmread was called
+        ##        with "emptyval", NA.  Delete if there are no problems
+        ##        detected after some time.  Commented out: 5/23/2020.
+        ##output.data(ridx, (col+1):end) = NA;
         missing_idx = missing_idx(1:col);
       endif
       text = fields(missing_idx);
 
       text = text(! strcmpi (text, "NA"));  #  Remove valid "NA" entries
+      text = text(! strcmpi (text, ""));    #  Remove empty entries
       if (! isempty (text))
-        output.textdata = [output.textdata; text(:)];
+        output.textdata(end+1, 1:columns (text)) = text;
       endif
 
-      if (header_cols)
-        output.rowheaders(end+1, :) = fields(1:header_cols);
+      if (has_rowheaders)
+        output.rowheaders(end+1, 1) = fields(1);
       endif
     endfor
 
   endif
 
-  ## Final cleanup to satisfy output configuration
+  ## Final cleanup to satisfy Matlab compatibility
   if (all (cellfun ("isempty", output.textdata)))
     output = output.data;
-  elseif (! isempty (output.rowheaders) && ! isempty (output.colheaders))
-    output = struct ("data", {output.data}, "textdata", {output.textdata});
+  else
+    ## Text fields should be cell array of strings, rather than just cell.
+    try
+      output.textdata = cellstr (output.textdata);
+    end_try_catch
+    try
+      output.rowheaders = cellstr (output.rowheaders);
+    end_try_catch
+    try
+      output.colheaders = cellstr (output.colheaders);
+    end_try_catch
+  endif
+
+  if (num_header_rows != header_rows)
+    header_rows = num_header_rows;
   endif
 
 endfunction
@@ -377,7 +430,6 @@ endfunction
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"This is a header row."; ...
 %!               "this row does not contain any data, but the next one does."};
-%! A.colheaders = A.textdata (2);
 %! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{:});
@@ -393,6 +445,7 @@ endfunction
 %! ## Column headers, only last row is returned in colheaders
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"Label1\tLabel2\tLabel3";
+%!               "";
 %!               "col 1\tcol 2\tcol 3"};
 %! A.colheaders = {"col 1", "col 2", "col 3"};
 %! fn  = tempname ();
@@ -404,7 +457,7 @@ endfunction
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
-%! assert (h, 2);
+%! assert (h, 3);
 
 %!test
 %! ## Row headers
@@ -425,9 +478,11 @@ endfunction
 %! ## Row/Column headers and Header Text
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"This is introductory header text"
-%!               "      col1 col2 col3"
+%!               "col1\tcol2\tcol3"
 %!               "row1"
 %!               "row2"};
+%! A.rowheaders = A.textdata(3:4);
+%! A.colheaders = {"col1", "col2", "col3"};
 %! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{1:2});
@@ -480,7 +535,7 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! ## Complex numbers
@@ -511,8 +566,7 @@ endfunction
 %!test
 %! ## Missing values and Text Values
 %! A.data = [3.1 NA 0; 0.012 NA 128];
-%! A.textdata = {char(zeros(1,0))
-%!               "NO DATA"};
+%! A.textdata = {"NO DATA"};
 %! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t\t0\n0.012\tNO DATA\t128");
@@ -585,8 +639,37 @@ endfunction
 %! assert (d, "");
 %! assert (h, 3);
 
-%!error importdata ()
-%!error importdata (1,2,3,4)
+%!test <*58294>
+%! ## Varying values of header lines field
+%! fn  = tempname ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "header1\nheader2\n3.1\n4.2");
+%! fclose (fid);
+%! warning ("off", "Octave:importdata:headerrows_mismatch", "local");
+%! ## Base import
+%! [a, d, h] = importdata (fn, "");
+%! assert (a.data, [3.1; 4.2]);
+%! assert (a.textdata, {"header1"; "header2"});
+%! assert (h, 2);
+%! ## Import with 0 header lines
+%! [a, d, h] = importdata (fn, "", 0);
+%! assert (a.data, [NA; NA; 3.1; 4.2]);
+%! assert (a.textdata, {"header1"; "header2"});
+%! assert (h, 0);
+%! ## Import with 1 header lines
+%! [a, d, h] = importdata (fn, "", 1);
+%! assert (a.data, [NA; 3.1; 4.2]);
+%! assert (a.textdata, {"header1"; "header2"});
+%! assert (h, 1);
+%! ## Import with 3 header lines
+%! [a, d, h] = importdata (fn, "", 3);
+%! assert (a.data, [4.2]);
+%! assert (a.textdata, {"header1"; "header2"; "3.1"});
+%! assert (h, 3);
+%! unlink (fn);
+
+## Test input validation
+%!error <Invalid call> importdata ()
 %!error <FNAME must be a string> importdata (1)
 %!error <option -pastespecial not implemented> importdata ("-pastespecial")
 %!error <DELIMITER must be a single character> importdata ("foo", 1)
@@ -594,3 +677,10 @@ endfunction
 %!error <HEADER_ROWS must be an integer> importdata ("foo", " ", "1")
 %!error <HEADER_ROWS must be an integer> importdata ("foo", " ", 1.5)
 %!error <not implemented for file format .avi> importdata ("foo.avi")
+%!warning <detected 2 header rows, but HEADER_ROWS input configured 1 rows>
+%! fn  = tempname ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "header1\nheader2\n3.1");
+%! fclose (fid);
+%! a = importdata (fn, "", 1);
+%! unlink (fn);

@@ -49,7 +49,7 @@
 
 function I = rgb2gray (rgb)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -161,7 +161,6 @@ endfunction
 %! assert (rgb2gray (single (rgb_double)), single (expected));
 
 ## Test input validation
-%!error rgb2gray ()
-%!error rgb2gray (1,2)
+%!error <Invalid call> rgb2gray ()
 %!error <invalid data type 'cell'> rgb2gray ({1})
 %!error <RGB must be a colormap or RGB image> rgb2gray (ones (2,2))

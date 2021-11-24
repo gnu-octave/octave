@@ -34,7 +34,7 @@ extern "C" {
 
 // Expects a buffer with at least 12 characters.
 
-extern void octave_strmode_wrapper (mode_t mode, char *buffer);
+extern OCTAVE_API void octave_strmode_wrapper (mode_t mode, char *buffer);
 
 #if defined __cplusplus
 }

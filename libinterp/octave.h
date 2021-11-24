@@ -29,12 +29,15 @@
 #include "octave-config.h"
 
 #include <list>
+#include <memory>
 #include <string>
 
 #include "str-vec.h"
 
-namespace octave
-{
+class octave_value;
+
+OCTAVE_NAMESPACE_BEGIN
+
   // Command line arguments.  See also options.h.
 
   class OCTINTERP_API cmdline_options
@@ -52,14 +55,13 @@ namespace octave
     int sys_argc (void) const { return m_all_args.numel (); }
     char **sys_argv (void) const { return m_all_args.c_str_vec (); }
 
-    bool debug_jit (void) const { return m_debug_jit; }
     bool echo_commands (void) const { return m_echo_commands; }
 
+    bool experimental_terminal_widget (void) const { return m_experimental_terminal_widget; }
     bool forced_interactive (void) const { return m_forced_interactive; }
     bool forced_line_editing (void) const { return m_forced_line_editing; }
     bool gui (void) const { return m_gui; }
     bool inhibit_startup_message (void) const { return m_inhibit_startup_message; }
-    bool jit_compiler (void) const { return m_jit_compiler; }
     bool line_editing (void) const { return m_line_editing; }
 
     bool no_window_system (void) const { return m_no_window_system; }
@@ -67,6 +69,7 @@ namespace octave
     bool read_history_file (void) const { return m_read_history_file; }
     bool read_init_files (void) const { return m_read_init_files; }
     bool read_site_files (void) const { return m_read_site_files; }
+    bool server (void) const { return m_server; }
     bool set_initial_path (void) const { return m_set_initial_path; }
     bool traditional (void) const { return m_traditional; }
     bool verbose_flag (void) const { return m_verbose_flag; }
@@ -82,14 +85,13 @@ namespace octave
     string_vector all_args (void) const { return m_all_args; }
     string_vector remaining_args (void) const { return m_remaining_args; }
 
-    void debug_jit (bool arg) { m_debug_jit = arg; }
     void echo_commands (bool arg) { m_echo_commands = arg; }
 
+    void experimental_terminal_widget (bool arg) { m_experimental_terminal_widget = arg; }
     void forced_line_editing (bool arg) { m_forced_line_editing = arg; }
     void forced_interactive (bool arg) { m_forced_interactive = arg; }
     void gui (bool arg) { m_gui = arg; }
     void inhibit_startup_message (bool arg) { m_inhibit_startup_message = arg; }
-    void jit_compiler (bool arg) { m_jit_compiler = arg; }
     void line_editing (bool arg) { m_line_editing = arg; }
 
     void no_window_system (bool arg) { m_no_window_system = arg; }
@@ -97,6 +99,7 @@ namespace octave
     void read_history_file (bool arg) { m_read_history_file = arg; }
     void read_init_files (bool arg) { m_read_init_files = arg; }
     void read_site_files (bool arg) { m_read_site_files = arg; }
+    void server (bool arg) { m_server = arg; }
     void set_initial_path (bool arg) { m_set_initial_path = arg; }
     void traditional (bool arg) { m_traditional = arg; }
     void verbose_flag (bool arg) { m_verbose_flag = arg; }
@@ -112,15 +115,17 @@ namespace octave
     void all_args (const string_vector& arg) { m_all_args = arg; }
     void remaining_args (const string_vector& arg) { m_remaining_args = arg; }
 
-  private:
+    octave_value as_octave_value (void) const;
 
-    // TRUE means enable debug tracing for the JIT compiler.
-    // (--debug-jit)
-    bool m_debug_jit = false;
+  private:
 
     // If TRUE, echo commands as they are read and executed.
     // (--echo-commands, -x)
     bool m_echo_commands = false;
+
+    // If TRUE, use new experimental terminal widget in the GUI.
+    // (--experimental-terminal-widget)
+    bool m_experimental_terminal_widget = false;
 
     // If TRUE, start the GUI.
     // (--gui) and (--force-gui) for backwards compatibility
@@ -137,10 +142,6 @@ namespace octave
     // TRUE means we don't print the usual startup message.
     // (--quiet; --silent; -q)
     bool m_inhibit_startup_message = false;
-
-    // TRUE means enable the JIT compiler.
-    // (--jit-compiler)
-    bool m_jit_compiler = false;
 
     // TRUE means we are using readline.
     // (--no-line-editing)
@@ -165,6 +166,10 @@ namespace octave
     // TRUE means we read the site-wide octaverc files.
     // (--norc; --no-site-file; -f)
     bool m_read_site_files = true;
+
+    // If TRUE, start the command server.
+    // (--server)
+    bool m_server = false;
 
     // TRUE means we set the initial path to configured defaults.
     // (--no-init-path)
@@ -283,26 +288,30 @@ namespace octave
 
     void forced_interactive (bool arg) { m_options.forced_interactive (arg); }
 
-    static application * app (void) { return instance; }
+    // Provided for convenience.  Will be removed once we eliminate the
+    // old terminal widget.
+    bool experimental_terminal_widget (void) const;
+
+    static application * app (void) { return s_instance; }
 
     static std::string program_invocation_name (void)
     {
-      return instance ? instance->m_program_invocation_name : "";
+      return s_instance ? s_instance->m_program_invocation_name : "";
     }
 
     static std::string program_name (void)
     {
-      return instance ? instance->m_program_name : "";
+      return s_instance ? s_instance->m_program_name : "";
     }
 
     static string_vector argv (void)
     {
-      return instance ? instance->m_argv : string_vector ();
+      return s_instance ? s_instance->m_argv : string_vector ();
     }
 
     static bool is_gui_running (void)
     {
-      return instance ? instance->gui_running () : false;
+      return s_instance ? s_instance->gui_running () : false;
     }
 
     // Convenience functions.
@@ -312,7 +321,7 @@ namespace octave
   private:
 
     // The application instance;  There should be only one.
-    static application *instance;
+    static application *s_instance;
 
     void init (void);
 
@@ -344,7 +353,7 @@ namespace octave
     // from eval without persist.
     bool m_is_octave_program = false;
 
-    interpreter *m_interpreter = nullptr;
+    std::unique_ptr<interpreter> m_interpreter;
   };
 
   class OCTINTERP_API cli_application : public application
@@ -369,6 +378,7 @@ namespace octave
 
     int execute (void);
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

@@ -59,7 +59,7 @@
 
 function [y, ns]  = shiftdim (x, n)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -104,7 +104,6 @@ endfunction
 %!assert (size (shiftdim (rand (0, 1, 2))), [0 1 2])
 
 ## Test input validation
-%!error (shiftdim ())
-%!error (shiftdim (1,2,3))
-%!error (shiftdim (1, ones (2)))
-%!error (shiftdim (1, 1.5))
+%!error <Invalid call> shiftdim ()
+%!error shiftdim (1, ones (2))
+%!error shiftdim (1, 1.5)

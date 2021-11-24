@@ -58,6 +58,7 @@
 ## @multitable @columnfractions 0.15 .85
 ## @headitem Map @tab Description
 ## @item viridis @tab default
+## @item turbo @tab colormap traversing blue, cyan, green, yellow, red; modern replacement for jet.
 ## @item jet @tab colormap traversing blue, cyan, green, yellow, red.
 ## @item cubehelix @tab colormap traversing black, blue, green, red, white with increasing intensity.
 ## @item hsv @tab cyclic colormap traversing Hue, Saturation, Value space.
@@ -83,7 +84,8 @@
 ## @item ------------- @tab ---------------------------------------------------------------------------------------------
 ## @item white @tab all white colormap (no colors).
 ## @end multitable
-## @seealso{viridis, jet, cubehelix, hsv, rainbow, hot, cool, spring, summer, autumn, winter, gray, bone, copper, pink, ocean, colorcube, flag, lines, prism, white}
+## @seealso{viridis, turbo, jet, cubehelix, hsv, rainbow, hot, cool, spring,
+## summer, autumn, winter, gray, bone, copper, pink, ocean, colorcube, flag, lines, prism, white}
 ## @end deftypefn
 
 function cmap = colormap (varargin)
@@ -177,7 +179,7 @@ endfunction
 %!error colormap (1,2,3)
 %!error <MAP must be a real-valued N x 3> colormap ({1,2,3})
 %!error <MAP must be a real-valued N x 3> colormap ([1 i 1])
-%!error <MAP must be a real-valued N x 3> colormap (ones(3,3,3))
+%!error <MAP must be a real-valued N x 3> colormap (ones (3,3,3))
 %!error <MAP must be a real-valued N x 3> colormap ([1 0 1 0])
 %!error <all MAP values must be in the range> colormap ([-1 0 0])
 %!error <all MAP values must be in the range> colormap ([2 0 0])

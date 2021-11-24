@@ -87,6 +87,8 @@
 #if ! defined (octave_oct_sort_h)
 #define octave_oct_sort_h 1
 
+#include <functional>
+
 #include "octave-config.h"
 
 #include "lo-traits.h"
@@ -100,12 +102,12 @@ octave_sort
 {
 public:
 
-  typedef bool (*compare_fcn_type) (typename ref_param<T>::type,
-                                    typename ref_param<T>::type);
+  typedef std::function<bool (typename ref_param<T>::type,
+                              typename ref_param<T>::type)> compare_fcn_type;
 
   octave_sort (void);
 
-  octave_sort (compare_fcn_type);
+  octave_sort (const compare_fcn_type&);
 
   // No copying!
 
@@ -115,7 +117,7 @@ public:
 
   ~octave_sort (void);
 
-  void set_compare (compare_fcn_type comp) { m_compare = comp; }
+  void set_compare (const compare_fcn_type& comp) { m_compare = comp; }
 
   void set_compare (sortmode mode);
 
@@ -169,7 +171,7 @@ private:
   // This is enough to sort arrays of size up to about
   //     32 * phi ** MAX_MERGE_PENDING
   // where phi ~= 1.618.  85 is ridiculously large enough, good for an array
-  // with 2**64 elements.
+  // with 2^64 elements.
   static const int MAX_MERGE_PENDING = 85;
 
   // When we get into galloping mode, we stay there until both runs win less
@@ -194,6 +196,8 @@ private:
 
   struct MergeState
   {
+  public:
+
     MergeState (void)
       : m_min_gallop (), m_a (nullptr), m_ia (nullptr), m_alloced (0), m_n (0)
     { reset (); }
@@ -214,10 +218,11 @@ private:
 
     void getmemi (octave_idx_type need);
 
-    // This controls when we get *into* galloping mode.  It's
-    // initialized to MIN_GALLOP.  merge_lo and merge_hi tend to nudge
-    // it higher for random data, and lower for highly structured
-    // data.
+    //--------
+
+    // This controls when we get *into* galloping mode.  It's initialized to
+    // MIN_GALLOP.  merge_lo and merge_hi tend to nudge it higher for random
+    // data, and lower for highly structured data.
     octave_idx_type m_min_gallop;
 
     // 'a' is temp storage to help with merges.  It contains room for
@@ -226,9 +231,9 @@ private:
     octave_idx_type *m_ia;
     octave_idx_type m_alloced;
 
-    // A stack of n pending runs yet to be merged.  Run #i starts at
-    // address base[i] and extends for len[i] elements.  It's always
-    // true (so long as the indices are in bounds) that
+    // A stack of n pending runs yet to be merged.  Run #i starts at address
+    // base[i] and extends for len[i] elements.  It's always true (so long as
+    // the indices are in bounds) that
     //
     //   pending[i].base + pending[i].len == pending[i+1].base
     //

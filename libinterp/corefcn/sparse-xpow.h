@@ -34,6 +34,8 @@ class SparseMatrix;
 class SparseComplexMatrix;
 class octave_value;
 
+OCTAVE_NAMESPACE_BEGIN
+
 extern octave_value xpow (const SparseMatrix& a, double b);
 extern octave_value xpow (const SparseComplexMatrix& a, double b);
 
@@ -57,5 +59,109 @@ extern octave_value elem_xpow (const SparseComplexMatrix& a,
                                const Complex& b);
 extern octave_value elem_xpow (const SparseComplexMatrix& a,
                                const SparseComplexMatrix& b);
+
+OCTAVE_NAMESPACE_END
+
+#if (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::xpow' instead")
+inline octave_value
+xpow (const SparseMatrix& a, double b)
+{
+  return octave::xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xpow' instead")
+inline octave_value
+xpow (const SparseComplexMatrix& a, double b)
+{
+  return octave::xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (double a, const SparseMatrix& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (double a, const SparseComplexMatrix& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const SparseMatrix& a, double b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const SparseMatrix& a, const Complex& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const Complex& a, const SparseMatrix& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const Complex& a, const SparseComplexMatrix& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const SparseComplexMatrix& a, double b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const SparseComplexMatrix& a, const Complex& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::elem_xpow' instead")
+inline octave_value
+elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
+{
+  return octave::elem_xpow (a, b);
+}
+
+#endif
 
 #endif

@@ -42,8 +42,6 @@ To initialize:
 #include "error.h"
 #include "errwarn.h"
 
-#if defined (HAVE_FLTK)
-
 #if defined (HAVE_X_WINDOWS)
 #  include <X11/Xlib.h>
 #endif
@@ -60,20 +58,22 @@ To initialize:
 #  define WIN32_LEAN_AND_MEAN
 #endif
 
-#include <FL/Fl.H>
-#include <FL/Fl_Box.H>
-#include <FL/Fl_Button.H>
-#include <FL/Fl_Choice.H>
-#include <FL/Fl_File_Chooser.H>
-#include <FL/Fl_Gl_Window.H>
-#include <FL/names.h>
-#include <FL/Fl_Menu_Bar.H>
-#include <FL/Fl_Menu_Button.H>
-#include <FL/Fl_Output.H>
-#include <FL/Fl_Window.H>
-#include <FL/fl_ask.H>
-#include <FL/fl_draw.H>
-#include <FL/gl.h>
+#if defined (HAVE_FLTK)
+#  include <FL/Fl.H>
+#  include <FL/Fl_Box.H>
+#  include <FL/Fl_Button.H>
+#  include <FL/Fl_Choice.H>
+#  include <FL/Fl_File_Chooser.H>
+#  include <FL/Fl_Gl_Window.H>
+#  include <FL/names.h>
+#  include <FL/Fl_Menu_Bar.H>
+#  include <FL/Fl_Menu_Button.H>
+#  include <FL/Fl_Output.H>
+#  include <FL/Fl_Window.H>
+#  include <FL/fl_ask.H>
+#  include <FL/fl_draw.H>
+#  include <FL/gl.h>
+#endif
 
 // FLTK headers may include X11/X.h which defines Complex, and that
 // conflicts with Octave's Complex typedef.  We don't need the X11
@@ -104,6 +104,10 @@ To initialize:
 #include "ovl.h"
 #include "parse.h"
 #include "variables.h"
+
+OCTAVE_NAMESPACE_BEGIN
+
+#if defined (HAVE_FLTK)
 
 #define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"
 
@@ -291,7 +295,7 @@ private:
   }
 };
 
-void script_cb (Fl_Widget *, void *data)
+static void script_cb (Fl_Widget *, void *data)
 {
   static_cast<uimenu::properties *> (data)->execute_callback ();
 }
@@ -2549,3 +2553,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

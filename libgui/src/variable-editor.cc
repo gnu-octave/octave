@@ -48,11 +48,15 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
+#include "builtin-defun-decls.h"
 #include "dw-main-window.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-sc.h"
 #include "gui-preferences-ve.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
+#include "ovl.h"
 #include "qt-utils.h"
 #include "shortcut-manager.h"
 #include "variable-editor-model.h"
@@ -91,16 +95,13 @@ namespace octave
     setFocusPolicy (Qt::StrongFocus);
     setAttribute (Qt::WA_DeleteOnClose);
 
-    connect (m_dock_action, SIGNAL (triggered (bool)),
-             this, SLOT (change_floating (bool)));
-    connect (m_close_action, SIGNAL (triggered (bool)),
-             this, SLOT (change_existence (bool)));
-    connect (this, SIGNAL (topLevelChanged(bool)),
-             this, SLOT (toplevel_change (bool)));
-    connect (p, SIGNAL (visibilityChanged (bool)),
-             this, SLOT (setVisible (bool)));
+    connect (m_dock_action, &QAction::triggered,
+             this, &variable_dock_widget::change_floating);
+    connect (m_close_action, &QAction::triggered,
+             this, &variable_dock_widget::change_existence);
+    connect (this, &variable_dock_widget::topLevelChanged,
+             this, &variable_dock_widget::toplevel_change);
 
-#if defined (HAVE_QGUIAPPLICATION)
 #define DOCKED_FULLSCREEN_BUTTON_TOOLTIP "Fullscreen undock"
 #define UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP "Fullscreen"
     // Add a fullscreen button
@@ -122,15 +123,14 @@ namespace octave
     QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
     fullscreen_button->setStyleSheet (css_button);
 
-    connect (m_fullscreen_action, SIGNAL (triggered ()),
-             this, SLOT (change_fullscreen ()));
+    connect (m_fullscreen_action, &QAction::triggered,
+             this, &variable_dock_widget::change_fullscreen);
 
     int index = -1;
     QToolButton *first = m_title_widget->findChild<QToolButton *> ();
     if (first != nullptr)
       index = h_layout->indexOf (first);
     h_layout->insertWidget (index, fullscreen_button);
-#endif
 
     // Custom title bars cause loss of decorations, add a frame
     m_frame = new QFrame (this);
@@ -142,7 +142,6 @@ namespace octave
   void
   variable_dock_widget::change_floating (bool)
   {
-#if defined (HAVE_QGUIAPPLICATION)
     if (isFloating ())
       {
         if (m_full_screen)
@@ -156,7 +155,6 @@ namespace octave
       }
     else
       m_fullscreen_action->setToolTip (tr (UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP));
-#endif
 
     setFloating (! isFloating ());
   }
@@ -206,7 +204,6 @@ namespace octave
   void
   variable_dock_widget::change_fullscreen (void)
   {
-#if defined (HAVE_QGUIAPPLICATION)
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
     if (! m_full_screen)
@@ -246,7 +243,6 @@ namespace octave
       }
 #undef DOCKED_FULLSCREEN_BUTTON_TOOLTIP
 #undef UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP
-#endif
   }
 
   void
@@ -443,11 +439,54 @@ namespace octave
       }
   }
 
+  // Slot for saving a variable into a file
   void
-  variable_editor_stack::save (void)
+  variable_editor_stack::save (const QString& format)
   {
     if (! hasFocus ())
       return;
+
+    // Check whether a format for saving the variable is given
+    QString format_string;
+    if (! format.isEmpty ())
+      {
+        format_string = "-" + format;
+        do_save (format_string, format_string);
+        return;
+      }
+
+    // No format given, test save default options
+    emit interpreter_event
+      ([=] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          octave_value_list argout
+            = Fsave_default_options (interp, octave_value_list (), 1);
+          QString save_opts = QString::fromStdString (argout(0).string_value ());
+
+          connect (this, &variable_editor_stack::do_save_signal,
+                   this, &variable_editor_stack::do_save);
+
+          emit (do_save_signal (format_string, save_opts));
+
+        });
+  }
+
+
+  // Perform saving the variable after desired format is determined
+  void
+  variable_editor_stack::do_save (const QString& format, const QString& save_opts)
+  {
+    QString file_ext = "txt";
+    for (int i = 0; i < ve_save_formats_ext.length ()/2; i++)
+      {
+        if (save_opts.contains (ve_save_formats_ext.at (2*i), Qt::CaseInsensitive))
+          {
+            file_ext = ve_save_formats_ext.at (2*i + 1);
+            break;
+          }
+      }
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
@@ -460,17 +499,27 @@ namespace octave
     QString file
       = QFileDialog::getSaveFileName (this,
                                       tr ("Save Variable %1 As").arg (name),
-    // FIXME: Should determine extension from save_default_options
-                                      QString ("./%1.txt").arg (name),
+                                      QString ("./%1.%2").arg (name).arg (file_ext),
                                       0, 0, QFileDialog::Option (opts));
 
-    // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
-    // FIXME: Call octave_value::save_* directly?
+    if (file.isEmpty ())
+      return; // No file selected: Just return
 
-    if (! file.isEmpty ())
-      emit command_signal (QString ("save (\"%1\", \"%2\");")
-                           .arg (file)
-                           .arg (name));
+    // Let the interpreter thread do the saving
+    emit interpreter_event
+      ([=] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          octave_value_list ovl;
+          std::list<octave_value> str_list
+                              = {octave_value (file.toStdString ()),
+                                 octave_value (name.toStdString ())};
+          if (! format.isEmpty ())
+            str_list.push_front (octave_value (format.toStdString ()));
+
+          Fsave (interp, octave_value_list (str_list));
+        });
   }
 
 
@@ -490,11 +539,7 @@ namespace octave
     setHorizontalScrollMode (QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode (QAbstractItemView::ScrollPerPixel);
 
-#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
     verticalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
-#else
-    verticalHeader ()->setResizeMode (QHeaderView::Interactive);
-#endif
   }
 
   void
@@ -502,11 +547,7 @@ namespace octave
   {
     QTableView::setModel (model);
 
-#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
     horizontalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
-#else
-    horizontalHeader ()->setResizeMode (QHeaderView::Interactive);
-#endif
 
     m_var_model = parent ()->findChild<variable_editor_model *> ();
 
@@ -602,29 +643,29 @@ namespace octave
 
     menu->addAction (rmgr.icon ("edit-cut"),
                      tr ("Cut") + qualifier_string,
-                     this, SLOT (cutClipboard ()));
+                     this, &variable_editor_view::cutClipboard);
 
     menu->addAction (rmgr.icon ("edit-copy"),
                      tr ("Copy") + qualifier_string,
-                     this, SLOT (copyClipboard ()));
+                     this, &variable_editor_view::copyClipboard);
 
     menu->addAction (rmgr.icon ("edit-paste"),
                      tr ("Paste"),
-                     this, SLOT (pasteClipboard ()));
+                     this, &variable_editor_view::pasteClipboard);
 
     menu->addSeparator ();
 
     menu->addAction (rmgr.icon ("edit-delete"),
                      tr ("Clear") + qualifier_string,
-                     this, SLOT (clearContent ()));
+                     this, &variable_editor_view::clearContent);
 
     menu->addAction (rmgr.icon ("edit-delete"),
                      tr ("Delete") + qualifier_string,
-                     this, SLOT (delete_selected ()));
+                     this, &variable_editor_view::delete_selected);
 
     menu->addAction (rmgr.icon ("document-new"),
                      tr ("Variable from Selection"),
-                     this, SLOT (createVariable ()));
+                     this, &variable_editor_view::createVariable);
   }
 
   void
@@ -641,7 +682,8 @@ namespace octave
         // FIXME: addAction for sort?
         // FIXME: Add icon for transpose.
 
-        menu->addAction (tr ("Transpose"), this, SLOT (transposeContent ()));
+        menu->addAction (tr ("Transpose"),
+                         this, &variable_editor_view::transposeContent);
 
         QItemSelectionModel *sel = selectionModel ();
 
@@ -1106,8 +1148,8 @@ namespace octave
 
     setWidget (m_main);
 
-    connect (this, SIGNAL (command_signal (const QString&)),
-             p, SLOT (execute_command_in_terminal (const QString&)));
+    if (! p)
+      make_window ();
   }
 
   void variable_editor::focusInEvent (QFocusEvent *ev)
@@ -1144,27 +1186,16 @@ namespace octave
       }
   }
 
-  // Add an action to a menu or the widget itself.
-
-  QAction*
-  variable_editor::add_action (QMenu *menu, const QIcon& icon,
-                               const QString& text,
-                               const char *member)
+  variable_editor::~variable_editor (void)
   {
-    QAction *a;
+    // FIXME: Maybe toolbar actions could be handled with signals and
+    // slots so that deleting the toolbar here would disconnect all
+    // toolbar actions and any other slots that might try to access the
+    // toolbar would work properly (I'm looking at you,
+    // handle_focus_change).
 
-    if (menu)
-      a = menu->addAction (icon, text, this, member);
-    else
-      {
-        a = new QAction (this);
-        connect (a, SIGNAL (triggered ()), this, member);
-      }
-
-    addAction (a);  // important for shortcut context
-    a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
-
-    return a;
+    delete m_tool_bar;
+    m_tool_bar = nullptr;
   }
 
   void
@@ -1207,13 +1238,21 @@ namespace octave
     page->setObjectName (name);
     m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
 
-    connect (QApplication::instance(), SIGNAL (focusChanged (QWidget *, QWidget *)),
-             page, SLOT (handle_focus_change (QWidget *, QWidget *)));
-    connect (page, SIGNAL (destroyed (QObject *)),
-             this, SLOT (variable_destroyed (QObject *)));
-    connect (page, SIGNAL (variable_focused_signal (const QString&)),
-             this, SLOT (variable_focused (const QString&)));
-// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+    // The old-style signal/slot connection appears to be needed here to
+    // prevent a crash when closing a variable_dock_widget object.
+    connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
+             page, SLOT (handle_focus_change (QWidget*, QWidget*)));
+
+    connect (this, &variable_editor::visibilityChanged,
+             page, &variable_dock_widget::setVisible);
+
+    // Notify the variable editor for page actions.
+    connect (page, &variable_dock_widget::destroyed,
+             this, &variable_editor::variable_destroyed);
+    connect (page, &variable_dock_widget::variable_focused_signal,
+             this, &variable_editor::variable_focused);
+
+    // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
     connect (page, SIGNAL (queue_unfloat_float ()),
              page, SLOT (unfloat_float ()), Qt::QueuedConnection);
@@ -1228,14 +1267,20 @@ namespace octave
     page->setWidget (stack);
     page->setFocusProxy (stack);
 
-    connect (stack, SIGNAL (command_signal (const QString&)),
-             this, SIGNAL (command_signal (const QString&)));
-    connect (stack, SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
-             this, SLOT (edit_variable (const QString&, const octave_value&)));
-    connect (this, SIGNAL (level_up_signal ()),
-             stack, SLOT (levelUp ()));
-    connect (this, SIGNAL (save_signal ()),
-             stack, SLOT (save ()));
+    // Any interpreter_event signal from a variable_editor_stack object is
+    // handled the same as for the parent variable_editor object.
+    connect (stack, QOverload<const fcn_callback&>::of (&variable_editor_stack::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&variable_editor::interpreter_event));
+
+    connect (stack, QOverload<const meth_callback&>::of (&variable_editor_stack::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&variable_editor::interpreter_event));
+
+    connect (stack, &variable_editor_stack::edit_variable_signal,
+             this, &variable_editor::edit_variable);
+    connect (this, &variable_editor::level_up_signal,
+             stack, &variable_editor_stack::levelUp);
+    connect (this, &variable_editor::save_signal,
+             stack, [=] () { stack->save (); });
 
     variable_editor_view *edit_view = stack->edit_view ();
 
@@ -1248,54 +1293,56 @@ namespace octave
 
     connect (m_plot_mapper, SIGNAL (mapped (const QString&)),
              edit_view, SLOT (selected_command_requested (const QString&)));
+    connect (m_save_mapper, SIGNAL (mapped (const QString&)),
+             stack, SLOT (save (const QString&)));
 
-    connect (edit_view, SIGNAL (command_signal (const QString&)),
-             this, SIGNAL (command_signal (const QString&)));
-    connect (this, SIGNAL (delete_selected_signal ()),
-             edit_view, SLOT (delete_selected ()));
-    connect (this, SIGNAL (clear_content_signal ()),
-             edit_view, SLOT (clearContent ()));
-    connect (this, SIGNAL (copy_clipboard_signal ()),
-             edit_view, SLOT (copyClipboard ()));
-    connect (this, SIGNAL (paste_clipboard_signal ()),
-             edit_view, SLOT (pasteClipboard ()));
+    connect (edit_view, &variable_editor_view::command_signal,
+             this, &variable_editor::command_signal);
+    connect (this, &variable_editor::delete_selected_signal,
+             edit_view, &variable_editor_view::delete_selected);
+    connect (this, &variable_editor::clear_content_signal,
+             edit_view, &variable_editor_view::clearContent);
+    connect (this, &variable_editor::copy_clipboard_signal,
+             edit_view, &variable_editor_view::copyClipboard);
+    connect (this, &variable_editor::paste_clipboard_signal,
+             edit_view, &variable_editor_view::pasteClipboard);
     connect (edit_view->horizontalHeader (),
-             SIGNAL (customContextMenuRequested (const QPoint&)),
-             edit_view, SLOT (createColumnMenu (const QPoint&)));
+             &QHeaderView::customContextMenuRequested,
+             edit_view, &variable_editor_view::createColumnMenu);
     connect (edit_view->verticalHeader (),
-             SIGNAL (customContextMenuRequested (const QPoint&)),
-             edit_view, SLOT (createRowMenu (const QPoint&)));
-    connect (edit_view, SIGNAL (customContextMenuRequested (const QPoint&)),
-             edit_view, SLOT (createContextMenu (const QPoint&)));
-    connect (edit_view->horizontalScrollBar (), SIGNAL (actionTriggered (int)),
-             edit_view, SLOT (handle_horizontal_scroll_action (int)));
-    connect (edit_view->verticalScrollBar (), SIGNAL (actionTriggered (int)),
-             edit_view, SLOT (handle_vertical_scroll_action (int)));
+             &QHeaderView::customContextMenuRequested,
+             edit_view, &variable_editor_view::createRowMenu);
+    connect (edit_view, &variable_editor_view::customContextMenuRequested,
+             edit_view, &variable_editor_view::createContextMenu);
+    connect (edit_view->horizontalScrollBar (), &QScrollBar::actionTriggered,
+             edit_view, &variable_editor_view::handle_horizontal_scroll_action);
+    connect (edit_view->verticalScrollBar (), &QScrollBar::actionTriggered,
+             edit_view, &variable_editor_view::handle_vertical_scroll_action);
 
     variable_editor_model *model =
       new variable_editor_model (name, val, stack);
 
-    connect (model, SIGNAL (edit_variable_signal (const QString&, const octave_value&)),
-             this, SLOT (edit_variable (const QString&, const octave_value&)));
-    connect (model, SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
-             this, SLOT (callUpdate (const QModelIndex&, const QModelIndex&)));
-    connect (this, SIGNAL (refresh_signal ()),
-             model, SLOT (update_data_cache ()));
-    connect (model, SIGNAL (set_editable_signal (bool)),
-             stack, SLOT (set_editable (bool)));
+    connect (model, &variable_editor_model::edit_variable_signal,
+             this, &variable_editor::edit_variable);
+    connect (model, &variable_editor_model::dataChanged,
+             this, &variable_editor::callUpdate);
+    connect (this, &variable_editor::refresh_signal,
+             model, &variable_editor_model::update_data_cache);
+    connect (model, &variable_editor_model::set_editable_signal,
+             stack, &variable_editor_stack::set_editable);
 
     edit_view->setModel (model);
-    connect (edit_view, SIGNAL (doubleClicked (const QModelIndex&)),
-             model, SLOT (double_click (const QModelIndex&)));
+    connect (edit_view, &variable_editor_view::doubleClicked,
+             model, &variable_editor_model::double_click);
 
     // Any interpreter_event signal from a variable_editor_model object is
     // handled the same as for the parent variable_editor object.
 
-    connect (model, SIGNAL (interpreter_event (const fcn_callback&)),
-             this, SIGNAL (interpreter_event (const fcn_callback&)));
+    connect (model, QOverload<const fcn_callback&>::of (&variable_editor_model::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&variable_editor::interpreter_event));
 
-    connect (model, SIGNAL (interpreter_event (const meth_callback&)),
-             this, SIGNAL (interpreter_event (const meth_callback&)));
+    connect (model, QOverload<const meth_callback&>::of (&variable_editor_model::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&variable_editor::interpreter_event));
 
     // Must supply a title for a QLabel to be created.  Calling set_title()
     // more than once will add more QLabels.  Could change octave_dock_widget
@@ -1305,18 +1352,24 @@ namespace octave
     if (page->titleBarWidget () != nullptr)
       {
         QLabel *existing_ql = page->titleBarWidget ()->findChild<QLabel *> ();
-        connect (model, SIGNAL (update_label_signal (const QString&)),
+
+        // FIXME: What was the intent here?  update_label_signal does
+        // not seem to exist now.
+        connect (model, SIGNAL (description_changed (const QString&)),
                  existing_ql, SLOT (setText (const QString&)));
         existing_ql->setMargin (2);
       }
 
     model->update_data (val);
 
-    QList<QTableView *> viewlist = findChildren<QTableView *> ();
-    if (viewlist.size () == 1)
-      m_tool_bar->setEnabled (true);
+    if (m_tool_bar)
+      {
+        QList<QTableView *> viewlist = findChildren<QTableView *> ();
+        if (viewlist.size () == 1 && m_tool_bar)
+          m_tool_bar->setEnabled (true);
+      }
 
-    m_main->parentWidget ()->show ();
+    show ();
     page->show ();
     page->raise ();
     page->activateWindow ();
@@ -1327,18 +1380,25 @@ namespace octave
   void
   variable_editor::tab_to_front (void)
   {
-    if (parent () != nullptr)
+    QWidget *parent = parentWidget ();
+
+    if (parent)
       {
-        QList<QTabBar *> barlist = main_win ()->findChildren<QTabBar *> ();
+        QList<QTabBar *> barlist = parent->findChildren<QTabBar *> ();
+
         QVariant this_value (reinterpret_cast<quintptr> (this));
 
         for (auto *tbar : barlist)
-          for (int i = 0; i < tbar->count (); i++)
-            if (tbar->tabData (i) == this_value)
+          {
+            for (int i = 0; i < tbar->count (); i++)
               {
-                tbar->setCurrentIndex (i);
-                return;
+                if (tbar->tabData (i) == this_value)
+                  {
+                    tbar->setCurrentIndex (i);
+                    return;
+                  }
               }
+          }
       }
   }
 
@@ -1388,18 +1448,11 @@ namespace octave
 
     m_add_font_height = fm.height ();
 
+    int mode = settings->value (ve_color_mode).toInt ();
+
     for (int i = 0; i < ve_colors_count; i++)
       {
-        // The default colors are given as color roles for
-        // the application's palette
-        QColor default_color = qApp->palette ().color
-                               (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
-        // FIXME: use value<QPalette::ColorRole> instead of static cast after
-        //        dropping support of Qt 5.4
-
-        QColor setting_color =
-          settings->value (ve_colors[i].key, default_color).value<QColor> ();
-
+        QColor setting_color = settings->color_value (ve_colors[i], mode);
         m_table_colors.replace (i, setting_color);
       }
 
@@ -1407,12 +1460,19 @@ namespace octave
 
     // Icon size in the toolbar.
 
-    int size_idx = settings->value (global_icon_size).toInt ();
-    size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
+    if (m_tool_bar)
+      {
+        int size_idx = settings->value (global_icon_size).toInt ();
+        size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
-    QStyle *st = style ();
-    int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
-    m_tool_bar->setIconSize (QSize (icon_size, icon_size));
+        QStyle *st = style ();
+        int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
+        m_tool_bar->setIconSize (QSize (icon_size, icon_size));
+      }
+
+    // Shortcuts (same as file editor)
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    scmgr.set_shortcut (m_save_action, sc_edit_file_save);
   }
 
   void
@@ -1433,10 +1493,13 @@ namespace octave
         m_focus_widget_vdw = nullptr;
       }
 
-    // If no variable pages remain, deactivate the tool bar.
-    QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
-    if (vdwlist.isEmpty ())
-      m_tool_bar->setEnabled (false);
+    if (m_tool_bar)
+      {
+        // If no variable pages remain, deactivate the tool bar.
+        QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
+        if (vdwlist.isEmpty ())
+          m_tool_bar->setEnabled (false);
+      }
 
     QFocusEvent ev (QEvent::FocusIn);
     focusInEvent (&ev);
@@ -1533,7 +1596,7 @@ namespace octave
     m_stylesheet = "";
 
     if (m_table_colors.length () > 0)
-      m_stylesheet += "QTableView::item{ foreground-color: "
+      m_stylesheet += "QTableView::item{ color: "
                       + m_table_colors[0].name () +" }";
 
     if (m_table_colors.length () > 1)
@@ -1601,13 +1664,35 @@ namespace octave
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
-    QAction *action;
-    action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
+    m_save_action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
                                   this, SLOT (save ()));
-    addAction (action);
-    action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
-    action->setShortcuts (QKeySequence::Save);
-    action->setStatusTip(tr("Save variable to a file"));
+    addAction (m_save_action);
+    m_save_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+    m_save_action->setStatusTip(tr("Save variable to a file"));
+
+    QAction *action = new QAction (rmgr.icon ("document-save-as"), tr ("Save in format ..."), m_tool_bar);
+
+    QToolButton *save_tool_button = new HoverToolButton (m_tool_bar);
+    save_tool_button->setDefaultAction (action);
+
+    save_tool_button->setText (tr ("Save in format ..."));
+    save_tool_button->setToolTip (tr("Save variable to a file in different format"));
+    save_tool_button->setIcon (rmgr.icon ("document-save-as"));
+    save_tool_button->setPopupMode (QToolButton::InstantPopup);
+
+    QMenu *save_menu = new ReturnFocusMenu (save_tool_button);
+    save_menu->setTitle (tr ("Save in format ..."));
+    save_menu->setSeparatorsCollapsible (false);
+
+    m_save_mapper = new QSignalMapper (save_menu);
+    for (int i = 0; i < ve_save_formats.length (); i++)
+      m_save_mapper->setMapping
+        (save_menu->addAction (ve_save_formats.at (i),
+                               m_save_mapper, SLOT (map ())),
+                               ve_save_formats.at (i));
+
+    save_tool_button->setMenu (save_menu);
+    m_tool_bar->addWidget (save_tool_button);
 
     m_tool_bar->addSeparator ();
 
@@ -1661,28 +1746,24 @@ namespace octave
     // that restores active window and focus before acting.
     QList<HoverToolButton *> hbuttonlist
       = m_tool_bar->findChildren<HoverToolButton *> (""
-#if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                      , Qt::FindDirectChildrenOnly
-#endif
                                                     );
     for (int i = 0; i < hbuttonlist.size (); i++)
       {
-        connect (hbuttonlist.at (i), SIGNAL (hovered_signal ()),
-                 this, SLOT (record_hovered_focus_variable ()));
-        connect (hbuttonlist.at (i), SIGNAL (popup_shown_signal ()),
-                 this, SLOT (restore_hovered_focus_variable ()));
+        connect (hbuttonlist.at (i), &HoverToolButton::hovered_signal,
+                 this, &variable_editor::record_hovered_focus_variable);
+        connect (hbuttonlist.at (i), &HoverToolButton::popup_shown_signal,
+                 this, &variable_editor::restore_hovered_focus_variable);
       }
 
     QList<ReturnFocusToolButton *> rfbuttonlist
       = m_tool_bar->findChildren<ReturnFocusToolButton *> (""
-#if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
                                                            , Qt::FindDirectChildrenOnly
-#endif
                                                           );
     for (int i = 0; i < rfbuttonlist.size (); i++)
       {
-        connect (rfbuttonlist.at (i), SIGNAL (about_to_activate ()),
-                 this, SLOT (restore_hovered_focus_variable ()));
+        connect (rfbuttonlist.at (i), &ReturnFocusToolButton::about_to_activate,
+                 this, &variable_editor::restore_hovered_focus_variable);
       }
 
     // Same for QMenu
@@ -1690,8 +1771,8 @@ namespace octave
       = m_tool_bar->findChildren<ReturnFocusMenu *> ();
     for (int i = 0; i < menulist.size (); i++)
       {
-        connect (menulist.at (i), SIGNAL (about_to_activate ()),
-                 this, SLOT (restore_hovered_focus_variable ()));
+        connect (menulist.at (i), &ReturnFocusMenu::about_to_activate,
+                 this, &variable_editor::restore_hovered_focus_variable);
       }
 
     m_tool_bar->setAttribute(Qt::WA_ShowWithoutActivating);
@@ -1701,4 +1782,5 @@ namespace octave
 
     m_tool_bar->setEnabled (false);
   }
+
 }

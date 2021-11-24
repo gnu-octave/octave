@@ -126,8 +126,12 @@ function h = __do_errplot__ (fstr, hax, varargin)
     args = __add_datasource__ ("__do_errplot__", hg,
                                {"x", "y", "l", "u", "xl", "xu"});
 
-    hl = [(__line__ (hg, "color", lc, "linestyle", "-", "marker", "none")),
-          (__line__ (hg, "color", lc, "linestyle", ls, "marker", mk))];
+    ## Use a single data point for line rather than default data of [0, 1].
+    ## The real data will be applied to the line object later.  See bug #60959.
+    hl = [__line__(hg, "xdata", 1, "ydata", 1,
+                       "color", lc, "linestyle", "-", "marker", "none"),
+          __line__(hg, "xdata", 1, "ydata", 1,
+                       "color", lc, "linestyle", ls, "marker", mk)];
 
     switch (numel (varargin))
       case 2

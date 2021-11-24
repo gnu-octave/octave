@@ -121,10 +121,9 @@ endfunction
 %!assert (addtodate ([d d+1], 1, "month"), [d+31 d+1+31])
 
 ## Test input validation
-%!error addtodate ()
-%!error addtodate (1)
-%!error addtodate (1,2)
-%!error addtodate (1,2,3,4)
+%!error <Invalid call> addtodate ()
+%!error <Invalid call> addtodate (1)
+%!error <Invalid call> addtodate (1,2)
 %!error <F must be a single character string> addtodate (1,2,3)
 %!error <F must be a single character string> addtodate (1,2,"month"')
 %!error <Invalid time unit> addtodate (1,2,"abc")

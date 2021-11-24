@@ -28,7 +28,7 @@
 
 #include <string>
 
-namespace QtHandles
+namespace octave
 {
 
   namespace KeyMap

@@ -40,36 +40,36 @@ DASRT_result
 public:
 
   DASRT_result (void)
-    : x (), xdot (), t () { }
+    : m_x (), m_xdot (), m_t () { }
 
-  DASRT_result (const Matrix& xx, const Matrix& xxdot, const ColumnVector& tt)
-    : x (xx), xdot (xxdot), t (tt) { }
+  DASRT_result (const Matrix& x, const Matrix& xdot, const ColumnVector& t)
+    : m_x (x), m_xdot (xdot), m_t (t) { }
 
   DASRT_result (const DASRT_result& r)
-    : x (r.x), xdot (r.xdot), t (r.t) { }
+    : m_x (r.m_x), m_xdot (r.m_xdot), m_t (r.m_t) { }
 
   DASRT_result& operator = (const DASRT_result& r)
   {
     if (this != &r)
       {
-        x = r.x;
-        xdot = r.xdot;
-        t = r.t;
+        m_x = r.m_x;
+        m_xdot = r.m_xdot;
+        m_t = r.m_t;
       }
     return *this;
   }
 
   ~DASRT_result (void) = default;
 
-  Matrix state (void) const { return x; }
-  Matrix deriv (void) const { return xdot; }
-  ColumnVector times (void) const { return t; }
+  Matrix state (void) const { return m_x; }
+  Matrix deriv (void) const { return m_xdot; }
+  ColumnVector times (void) const { return m_t; }
 
 private:
 
-  Matrix x;
-  Matrix xdot;
-  ColumnVector t;
+  Matrix m_x;
+  Matrix m_xdot;
+  ColumnVector m_t;
 };
 
 class
@@ -79,22 +79,22 @@ DASRT : public DAERT, public DASRT_options
 public:
 
   DASRT (void)
-    : DAERT (), DASRT_options (), initialized (false),
-      liw (0), lrw (0), ng (0), info (), iwork (), jroot (), rwork (),
-      abs_tol (), rel_tol ()
+    : DAERT (), DASRT_options (), m_initialized (false),
+      m_liw (0), m_lrw (0), m_ng (0), m_info (), m_iwork (), m_jroot (),
+      m_rwork (), m_abs_tol (), m_rel_tol ()
   { }
 
   DASRT (const ColumnVector& s, double tm, DAERTFunc& f)
-    : DAERT (s, tm, f), DASRT_options (), initialized (false),
-      liw (0), lrw (0), ng (0), info (), iwork (), jroot (), rwork (),
-      abs_tol (), rel_tol ()
+    : DAERT (s, tm, f), DASRT_options (), m_initialized (false),
+      m_liw (0), m_lrw (0), m_ng (0), m_info (), m_iwork (), m_jroot (),
+      m_rwork (), m_abs_tol (), m_rel_tol ()
   { }
 
   DASRT (const ColumnVector& s, const ColumnVector& deriv,
          double tm, DAERTFunc& f)
-    : DAERT (s, deriv, tm, f), DASRT_options (), initialized (false),
-      liw (0), lrw (0), ng (0), info (), iwork (), jroot (), rwork (),
-      abs_tol (), rel_tol ()
+    : DAERT (s, deriv, tm, f), DASRT_options (), m_initialized (false),
+      m_liw (0), m_lrw (0), m_ng (0), m_info (), m_iwork (), m_jroot (),
+      m_rwork (), m_abs_tol (), m_rel_tol ()
   { }
 
   ~DASRT (void) = default;
@@ -108,21 +108,21 @@ public:
 
 private:
 
-  bool initialized;
+  bool m_initialized;
 
-  octave_f77_int_type liw;
-  octave_f77_int_type lrw;
+  octave_f77_int_type m_liw;
+  octave_f77_int_type m_lrw;
 
-  octave_f77_int_type ng;
+  octave_f77_int_type m_ng;
 
-  Array<octave_f77_int_type> info;
-  Array<octave_f77_int_type> iwork;
-  Array<octave_f77_int_type> jroot;
+  Array<octave_f77_int_type> m_info;
+  Array<octave_f77_int_type> m_iwork;
+  Array<octave_f77_int_type> m_jroot;
 
-  Array<double> rwork;
+  Array<double> m_rwork;
 
-  Array<double> abs_tol;
-  Array<double> rel_tol;
+  Array<double> m_abs_tol;
+  Array<double> m_rel_tol;
 
   void integrate (double t);
 };

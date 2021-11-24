@@ -1,6 +1,6 @@
 function v = get (s, propName)
 
-  switch propName
+  switch (propName)
     case 'bleek'
       v = s.bleek;
     otherwise

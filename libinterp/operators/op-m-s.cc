@@ -38,6 +38,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // matrix by scalar ops.
 
 DEFNDBINOP_OP (add, matrix, scalar, array, scalar, +)
@@ -93,7 +95,7 @@ DEFBINOP (el_ldiv, matrix, scalar)
   const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
-  return x_el_div (v2.double_value (), v1.array_value ());
+  return elem_xdiv (v2.double_value (), v1.array_value ());
 }
 
 DEFNDBINOP_FN (el_and, matrix, scalar, array, scalar, mx_el_and)
@@ -147,3 +149,5 @@ install_m_s_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_mul_eq, octave_matrix, octave_scalar, assign_mul);
   INSTALL_ASSIGNOP_TI (ti, op_div_eq, octave_matrix, octave_scalar, assign_div);
 }
+
+OCTAVE_NAMESPACE_END

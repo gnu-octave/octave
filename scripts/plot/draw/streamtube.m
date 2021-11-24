@@ -66,7 +66,7 @@
 ## The optional return value @var{h} is a graphics handle to the plot objects
 ## created for each tube.
 ##
-## @seealso{stream3, streamline, ostreamtube}
+## @seealso{stream3, streamline, streamribbon, ostreamtube}
 ## @end deftypefn
 
 function h = streamtube (varargin)
@@ -78,8 +78,6 @@ function h = streamtube (varargin)
   div = [];
   dia = [];
   switch (nargin)
-    case 0
-      print_usage ();
     case 2
       ## "dia" can be a cell array or a constant
       if (iscell (varargin{2}) || numel (varargin{2}) == 1)
@@ -116,7 +114,7 @@ function h = streamtube (varargin)
     case 10
       [x, y, z, u, v, w, spx, spy, spz, options] = varargin{:};
     otherwise
-      error ("streamtube: invalid number of inputs");
+      print_usage ();
   endswitch
 
   scale = 1;
@@ -129,7 +127,7 @@ function h = streamtube (varargin)
         scale = options(1);
         num_circum = options(2);
       otherwise
-        error ("streamtube: invalid number of OPTIONS elements");
+        error ("streamtube: OPTIONS must be a 1- or 2-element vector");
     endswitch
 
     if (! isreal (scale) || scale <= 0)
@@ -169,7 +167,7 @@ function h = streamtube (varargin)
   for i = 1 : length (xyz)
     sl = xyz{i};
     if (! isempty (sl))
-      slx = sl(:, 1); sly = sl(:, 2); slz = sl(:, 3);
+      slx = sl(:,1); sly = sl(:,2); slz = sl(:,3);
       mxx(j) = max (slx); mnx(j) = min (slx);
       mxy(j) = max (sly); mny(j) = min (sly);
       mxz(j) = max (slz); mnz(j) = min (slz);
@@ -226,10 +224,9 @@ function h = plottube (hax, sl, radius_sl, max_vertices, num_circum)
   cp = cos (phi);
   sp = sin (phi);
 
-  X0 = sl(1, :);
-  X1 = sl(2, :);
-
-  ## 1st rotation axis
+  ## 1st streamline segment
+  X0 = sl(1,:);
+  X1 = sl(2,:);
   R = X1 - X0;
   RE = R / norm (R);
 
@@ -244,35 +241,34 @@ function h = plottube (hax, sl, radius_sl, max_vertices, num_circum)
   py = zeros (num_circum, max_vertices);
   pz = zeros (num_circum, max_vertices);
 
-  px(:, 1) = XS0(1, :).';
-  py(:, 1) = XS0(2, :).';
-  pz(:, 1) = XS0(3, :).';
+  px(:,1) = XS0(1,:).';
+  py(:,1) = XS0(2,:).';
+  pz(:,1) = XS0(3,:).';
 
-  px(:, 2) = XS(1, :).';
-  py(:, 2) = XS(2, :).';
-  pz(:, 2) = XS(3, :).';
+  px(:,2) = XS(1,:).';
+  py(:,2) = XS(2,:).';
+  pz(:,2) = XS(3,:).';
 
   for i = 3 : max_vertices
 
-    KEold = KE;
+    ## Next streamline segment
     X0 = X1;
-
-    X1 = sl(i, :);
+    X1 = sl(i,:);
     R = X1 - X0;
     RE = R / norm (R);
 
-    ## Project KE onto RE and get the difference in order to calculate the next
-    ## guiding point
-    Kp = KEold - RE * dot (KEold, RE);
+    ## Project KE onto RE and get the difference in order to transport
+    ## the normal vector KE along the vertex array
+    Kp = KE - RE * dot (KE, RE);
     KE = Kp / norm (Kp);
     K = radius_sl(i) * KE;
 
     ## Rotate around RE and collect surface patches
     XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
-    px(:, i) = XS(1, :).';
-    py(:, i) = XS(2, :).';
-    pz(:, i) = XS(3, :).';
+    px(:,i) = XS(1,:).';
+    py(:,i) = XS(2,:).';
+    pz(:,i) = XS(3,:).';
 
   endfor
 
@@ -285,7 +281,7 @@ endfunction
 ## the streamline vertex array "sl" ends
 function [div_sl_crop, max_vertices] = interp_sl (x, y, z, div, sl)
 
-  div_sl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
+  div_sl = interp3 (x, y, z, div, sl(:,1), sl(:,2), sl(:,3));
   is_nan = find (isnan (div_sl), 1, "first");
   is_inf = find (isinf (div_sl), 1, "first");
 
@@ -305,9 +301,9 @@ endfunction
 function N = get_normal1 (X)
 
   if ((X(3) == 0) && (X(1) == -X(2)))
-    N = [- X(2) - X(3), X(1), X(1)];
+    N = [(- X(2) - X(3)), X(1), X(1)];
   else
-    N = [X(3), X(3), - X(1) - X(2)];
+    N = [X(3), X(3), (- X(1) - X(2))];
   endif
 
   N /= norm (N);
@@ -322,19 +318,20 @@ function Y = rotation (X, U, cp, sp)
   uy = U(2);
   uz = U(3);
 
-  Y(1, :) = X(1) * (cp + ux * ux * (1 - cp)) + ...
-            X(2) * (ux * uy * (1 - cp) - uz * sp) + ...
-            X(3) * (ux * uz * (1 - cp) + uy * sp);
+  Y(1,:) = X(1) * (cp + ux * ux * (1 - cp)) + ...
+           X(2) * (ux * uy * (1 - cp) - uz * sp) + ...
+           X(3) * (ux * uz * (1 - cp) + uy * sp);
 
-  Y(2, :) = X(1) * (uy * ux * (1 - cp) + uz * sp) + ...
-            X(2) * (cp + uy * uy * (1 - cp)) + ...
-            X(3) * (uy * uz * (1 - cp) - ux * sp);
+  Y(2,:) = X(1) * (uy * ux * (1 - cp) + uz * sp) + ...
+           X(2) * (cp + uy * uy * (1 - cp)) + ...
+           X(3) * (uy * uz * (1 - cp) - ux * sp);
 
-  Y(3, :) = X(1) * (uz * ux * (1 - cp) - uy * sp) + ...
-            X(2) * (uz * uy * (1 - cp) + ux * sp) + ...
-            X(3) * (cp + uz * uz * (1 - cp));
+  Y(3,:) = X(1) * (uz * ux * (1 - cp) - uy * sp) + ...
+           X(2) * (uz * uy * (1 - cp) + ux * sp) + ...
+           X(3) * (cp + uz * uz * (1 - cp));
 
 endfunction
+
 
 %!demo
 %! clf;
@@ -356,7 +353,7 @@ endfunction
 %!demo
 %! clf;
 %! t = 0:.15:15;
-%! xyz{1} = [cos(t)' sin(t)' (t/3)'];
+%! xyz{1} = [cos(t)', sin(t)', (t/3)'];
 %! dia{1} = cos(t)';
 %! streamtube (xyz, dia);
 %! grid on;
@@ -369,12 +366,12 @@ endfunction
 %! title ("Plot Arbitrary Tube");
 
 ## Test input validation
-%!error streamtube ()
-%!error <invalid number of inputs> streamtube (1)
-%!error <invalid number of inputs> streamtube (1,2,3,4)
-%!error <invalid number of inputs> streamtube (1,2,3,4,5,6,7,8)
-%!error <invalid number of inputs> streamtube (1,2,3,4,5,6,7,8,9,10,11)
-%!error <invalid number of OPTIONS elements> streamtube (1,2,[1,2,3])
+%!error <Invalid call> streamtube ()
+%!error <Invalid call> streamtube (1)
+%!error <Invalid call> streamtube (1,2,3,4)
+%!error <Invalid call> streamtube (1,2,3,4,5,6,7,8)
+%!error <Invalid call> streamtube (1,2,3,4,5,6,7,8,9,10,11)
+%!error <OPTIONS must be a 1- or 2-element vector> streamtube (1,2,[1,2,3])
 %!error <SCALE must be a real scalar . 0> streamtube (1,2,[1i])
 %!error <SCALE must be a real scalar . 0> streamtube (1,2,[0])
 %!error <SCALE must be a real scalar . 0> streamtube (1,2,[-1])

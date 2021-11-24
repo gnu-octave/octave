@@ -61,7 +61,7 @@
 
 function hgsave (h, filename, fmt = "-binary")
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -113,10 +113,10 @@ endfunction
 %!   png2 = [tempname() ".png"];
 %!   unwind_protect
 %!     hgsave (h1, ftmp);
-%!     print (h1, "-r100", png1);
+%!     print (h1, png1);
 %!     [img1, map1, alpha1] = imread (png1);
 %!     h2 = hgload (ftmp);
-%!     print (h2, "-r100", png2);
+%!     print (h2, png2);
 %!     [img2, map2, alpha2] = imread (png2);
 %!   unwind_protect_cleanup
 %!     unlink (ftmp);
@@ -133,8 +133,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error hgsave ()
-%!error hgsave (1, 2, 3, 4)
+%!error <Invalid call> hgsave ()
 %!error <no current figure to save>
 %! unwind_protect
 %!  old_fig = get (0, "currentfigure");

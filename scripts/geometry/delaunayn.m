@@ -106,8 +106,8 @@ function T = delaunayn (pts, varargin)
     p12 = p1 - p2;
     p23 = p2 - p3;
     det = cross (p12, p23, 2);
-    idx = abs (det(:,3) ./ sqrt (sumsq (p12, 2))) < tol & ...
-          abs (det(:,3) ./ sqrt (sumsq (p23, 2))) < tol;
+    idx = abs (det (:,3) ./ sqrt (sumsq (p12, 2))) < tol & ...
+          abs (det (:,3) ./ sqrt (sumsq (p23, 2))) < tol;
   else
     ## FIXME: Vectorize this for loop or convert delaunayn to .oct function
     idx = [];
@@ -130,9 +130,10 @@ endfunction
 ## Test 3-D input
 %!testif HAVE_QHULL
 %! x = [-1, -1, 1, 0, -1]; y = [-1, 1, 1, 0, -1]; z = [0, 0, 0, 1, 1];
-%! assert (sortrows (sort (delaunayn ([x(:) y(:) z(:)]), 2)), [1,2,3,4;1,2,4,5]);
+%! assert (sortrows (sort (delaunayn ([x(:) y(:) z(:)]), 2)),
+%!         [1,2,3,4;1,2,4,5]);
 
 ## FIXME: Need tests for delaunayn
 
 ## Input validation tests
-%!error delaunayn ()
+%!error <Invalid call> delaunayn ()

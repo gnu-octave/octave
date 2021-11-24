@@ -1,4 +1,4 @@
-%!test
+%!test <*45972>
 %! ascii_filename = tempname ();
 %! binary_filename = tempname ();
 %! f = @ (x, y, varargin) x + y + varargin{1};
@@ -14,7 +14,7 @@
 %!   unlink (binary_filename);
 %! end_unwind_protect
 
-%!testif HAVE_HDF5
+%!testif HAVE_HDF5 <*45972>
 %! hdf5_filename = tempname ();
 %! f = @ (x, y, varargin) x + y + varargin{1};
 %! unwind_protect

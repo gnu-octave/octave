@@ -50,23 +50,23 @@ namespace octave
     dir_entry::open (const std::string& n)
     {
       if (! n.empty ())
-        name = n;
+        m_name = n;
 
-      if (! name.empty ())
+      if (! m_name.empty ())
         {
           close ();
 
-          std::string fullname = sys::file_ops::tilde_expand (name);
+          std::string fullname = sys::file_ops::tilde_expand (m_name);
 
-          dir = octave_opendir_wrapper (fullname.c_str ());
+          m_dir = octave_opendir_wrapper (fullname.c_str ());
 
-          if (! dir)
-            errmsg = std::strerror (errno);
+          if (! m_dir)
+            m_errmsg = std::strerror (errno);
         }
       else
-        errmsg = "dir_entry::open: empty filename";
+        m_errmsg = "dir_entry::open: empty filename";
 
-      return dir != nullptr;
+      return m_dir != nullptr;
     }
 
     string_vector
@@ -80,7 +80,7 @@ namespace octave
 
           char *fname;
 
-          while ((fname = octave_readdir_wrapper (dir)))
+          while ((fname = octave_readdir_wrapper (m_dir)))
             dirlist.push_back (fname);
 
           retval = string_vector (dirlist);
@@ -94,11 +94,11 @@ namespace octave
     {
       bool retval = true;
 
-      if (dir)
+      if (m_dir)
         {
-          retval = (octave_closedir_wrapper (dir) == 0);
+          retval = (octave_closedir_wrapper (m_dir) == 0);
 
-          dir = nullptr;
+          m_dir = nullptr;
         }
 
       return retval;

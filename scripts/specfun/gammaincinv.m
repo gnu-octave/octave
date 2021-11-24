@@ -9,7 +9,7 @@
 ##
 ## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
@@ -87,7 +87,7 @@
 
 function x = gammaincinv (y, a, tail = "lower")
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -148,7 +148,7 @@ function x = gammaincinv (y, a, tail = "lower")
     q = y;
     p = 1 - q;
   else
-    error ("gammaincinv: invalid value for TAIL")
+    error ("gammaincinv: invalid value for TAIL");
   endif
 
   todo = (a != 1) & (y != 0) & (y != 1);
@@ -256,6 +256,7 @@ endfunction
 
 ## subfunction: Newton's Method
 function x = newton_method (F, JF, y, a, x0, tol, maxit);
+
   l = numel (y);
   res = -F (y, a, x0) ./ JF (a, x0);
   todo = (abs (res) >= tol * abs (x0));
@@ -267,6 +268,7 @@ function x = newton_method (F, JF, y, a, x0, tol, maxit);
     todo = (abs (res) >= tol * abs (x));
   endwhile
   x += res;
+
 endfunction
 
 
@@ -312,9 +314,8 @@ endfunction
 %!assert (class (gammaincinv (single (0.5), int8 (1))), "single")
 
 ## Test input validation
-%!error gammaincinv ()
-%!error gammaincinv (1)
-%!error gammaincinv (1, 2, 3, 4)
+%!error <Invalid call> gammaincinv ()
+%!error <Invalid call> gammaincinv (1)
 %!error <must be of common size or scalars>
 %! gammaincinv (ones (2,2), ones (1,2), 1);
 %!error <all inputs must be real> gammaincinv (0.5i, 1)

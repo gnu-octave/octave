@@ -43,7 +43,7 @@
 
 function z = interpft (x, n, dim)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -111,18 +111,18 @@ endfunction
 %! ti = t(1) + [0 : k-1]*dt*n/k;
 %! y = sin (4*t + 0.3) .* cos (3*t - 0.1);
 %! yp = sin (4*ti + 0.3) .* cos (3*ti - 0.1);
-%! plot (ti, yp, 'g', ti, interp1(t, y, ti, "spline"), 'b', ...
+%! plot (ti, yp, 'g', ti, interp1 (t, y, ti, "spline"), 'b', ...
 %!       ti, interpft (y, k), 'c', t, y, "r+");
-%! legend ("sin(4t+0.3)cos(3t-0.1)", "spline", "interpft", "data");
+%! legend ("sin (4t+0.3)cos (3t-0.1)", "spline", "interpft", "data");
 
 %!shared n,y
 %! x = [0:10]';  y = sin(x);  n = length (x);
 %!testif HAVE_FFTW
-%! assert (interpft (y, n), y, 20*eps)
+%! assert (interpft (y, n), y, 20*eps);
 %!testif HAVE_FFTW
-%! assert (interpft (y', n), y', 20*eps)
+%! assert (interpft (y', n), y', 20*eps);
 %!testif HAVE_FFTW
-%! assert (interpft ([y,y],n), [y,y], 20*eps)
+%! assert (interpft ([y,y],n), [y,y], 20*eps);
 
 ## Test case with complex input
 %!testif HAVE_FFTW <*39566>
@@ -132,18 +132,17 @@ endfunction
 
 ## Test for correct spectral symmetry with even/odd lengths
 %!testif HAVE_FFTW
-%! assert (max (abs (imag (interpft ([1:8], 20)))), 0, 20*eps)
+%! assert (max (abs (imag (interpft ([1:8], 20)))), 0, 20*eps);
 %!testif HAVE_FFTW
-%! assert (max (abs (imag (interpft ([1:8], 21)))), 0, 21*eps)
+%! assert (max (abs (imag (interpft ([1:8], 21)))), 0, 21*eps);
 %!testif HAVE_FFTW
-%! assert (max (abs (imag (interpft ([1:9], 20)))), 0, 20*eps)
+%! assert (max (abs (imag (interpft ([1:9], 20)))), 0, 20*eps);
 %!testif HAVE_FFTW
-%! assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps)
+%! assert (max (abs (imag (interpft ([1:9], 21)))), 0, 21*eps);
 
 ## Test input validation
-%!error interpft ()
-%!error interpft (1)
-%!error interpft (1,2,3)
+%!error <Invalid call> interpft ()
+%!error <Invalid call> interpft (1)
 %!error <N must be a scalar integer> interpft (1,[2,2])
 %!error <N must be a scalar integer> interpft (1,2.1)
 %!error <invalid dimension DIM> interpft (1,2,0)

@@ -46,9 +46,12 @@
 
 template <typename MT>
 class
+OCTINTERP_API
 octave_base_matrix : public octave_base_value
 {
 public:
+
+  typedef MT object_type;
 
   octave_base_matrix (void)
     : octave_base_value (), matrix (), typ (), idx_cache () { }
@@ -64,7 +67,7 @@ public:
   octave_base_matrix (const octave_base_matrix& m)
     : octave_base_value (), matrix (m.matrix),
       typ (m.typ ? new MatrixType (*m.typ) : nullptr),
-      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : nullptr)
+      idx_cache (m.idx_cache ? new octave::idx_vector (*m.idx_cache) : nullptr)
   { }
 
   ~octave_base_matrix (void) { clear_cached_info (); }
@@ -82,19 +85,19 @@ public:
   // functions.
   using octave_base_value::subsref;
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx);
+  OCTINTERP_API octave_value
+  subsref (const std::string& type, const std::list<octave_value_list>& idx);
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
   { return subsref (type, idx); }
 
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs);
+  OCTINTERP_API octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
-  octave_value do_index_op (const octave_value_list& idx,
-                            bool resize_ok = false);
+  OCTINTERP_API octave_value
+  do_index_op (const octave_value_list& idx,  bool resize_ok = false);
 
   // FIXME: should we import the functions from the base class and
   // overload them here, or should we use a different name so we don't
@@ -103,11 +106,12 @@ public:
   // can also cause some confusion.
   using octave_base_value::assign;
 
-  void assign (const octave_value_list& idx, const MT& rhs);
+  OCTINTERP_API void assign (const octave_value_list& idx, const MT& rhs);
 
-  void assign (const octave_value_list& idx, typename MT::element_type rhs);
+  OCTINTERP_API void
+  assign (const octave_value_list& idx, typename MT::element_type rhs);
 
-  void delete_elements (const octave_value_list& idx);
+  OCTINTERP_API void delete_elements (const octave_value_list& idx);
 
   dim_vector dims (void) const { return matrix.dims (); }
 
@@ -160,20 +164,22 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_true (void) const;
+  OCTINTERP_API bool is_true (void) const;
 
-  bool print_as_scalar (void) const;
+  OCTINTERP_API bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_info (std::ostream& os, const std::string& prefix) const;
+  OCTINTERP_API void
+  print_info (std::ostream& os, const std::string& prefix) const;
 
-  void short_disp (std::ostream& os) const;
+  OCTINTERP_API void short_disp (std::ostream& os) const;
 
-  float_display_format get_edit_display_format (void) const;
+  OCTINTERP_API float_display_format get_edit_display_format (void) const;
 
-  std::string edit_display (const float_display_format& fmt,
-                            octave_idx_type i, octave_idx_type j) const;
+  OCTINTERP_API std::string
+  edit_display (const float_display_format& fmt,
+                octave_idx_type i, octave_idx_type j) const;
 
   MT& matrix_ref (void)
   {
@@ -186,20 +192,24 @@ public:
     return matrix;
   }
 
-  octave_value
+  OCTINTERP_API octave_value
   fast_elem_extract (octave_idx_type n) const;
 
-  bool
+  OCTINTERP_API bool
   fast_elem_insert (octave_idx_type n, const octave_value& x);
+
+  // This function exists to support the MEX interface.
+  // You should not use it anywhere else.
+  const void * mex_get_data (void) const { return matrix.data (); }
 
 protected:
 
   MT matrix;
 
-  idx_vector set_idx_cache (const idx_vector& idx) const
+  octave::idx_vector set_idx_cache (const octave::idx_vector& idx) const
   {
     delete idx_cache;
-    idx_cache = (idx ? new idx_vector (idx) : nullptr);
+    idx_cache = (idx ? new octave::idx_vector (idx) : nullptr);
     return idx;
   }
 
@@ -210,13 +220,13 @@ protected:
   }
 
   mutable MatrixType *typ;
-  mutable idx_vector *idx_cache;
+  mutable octave::idx_vector *idx_cache;
 
 private:
 
   // No assignment.
 
-  octave_base_matrix& operator = (const octave_base_matrix&);
+  OCTINTERP_API octave_base_matrix& operator = (const octave_base_matrix&);
 };
 
 #endif

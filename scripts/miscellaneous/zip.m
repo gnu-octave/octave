@@ -44,7 +44,7 @@
 
 function filelist = zip (zipfile, files, rootdir = ".")
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -126,16 +126,15 @@ endfunction
 %!     error ("unzipped file not equal to original file!");
 %!   endif
 %! unwind_protect_cleanup
-%!   unlink (filename);
-%!   unlink ([dirname, filesep, basename, ext]);
-%!   unlink (zipfile);
-%!   unlink ([zipfile ".zip"]);
-%!   rmdir (dirname);
+%!   sts = unlink (filename);
+%!   sts = unlink ([dirname, filesep, basename, ext]);
+%!   sts = unlink (zipfile);
+%!   sts = unlink ([zipfile ".zip"]);
+%!   sts = rmdir (dirname);
 %! end_unwind_protect
 
 ## Test input validation
-%!error zip ()
-%!error zip (1)
-%!error zip (1,2,3,4)
+%!error <Invalid call> zip ()
+%!error <Invalid call> zip (1)
 %!error <ZIPFILE must be a string> zip (1, "foobar")
 %!error <FILES must be a character array or cellstr> zip ("foobar", 1)

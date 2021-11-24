@@ -42,6 +42,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // unary sparse complex matrix ops.
 
 DEFUNOP_OP (not, sparse_complex_matrix, !)
@@ -210,3 +212,5 @@ install_scm_scm_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_complex_matrix,
                        octave_null_sq_str, null_assign);
 }
+
+OCTAVE_NAMESPACE_END

@@ -48,7 +48,7 @@
 
 function a = polyarea (x, y, dim)
 
-  if (nargin != 2 && nargin != 3)
+  if (nargin < 2)
     print_usage ();
   elseif (! size_equal (x, y))
     error ("polyarea: X and Y must have the same shape");

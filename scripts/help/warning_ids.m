@@ -28,6 +28,12 @@
 ##
 ## @table @code
 ## @item Octave:abbreviated-property-match
+## If the @code{Octave:abbreviated-property-match} warning is enabled, a warning
+## is printed if a non-exact or ambiguous match is being used for a operation
+## specifying an object property.  For example, for a graphics object,
+## @var{fig}, with the property @qcode{'displayname'},
+## @code{get (@var{fig}, 'dis')} elicits a warning if the
+## @code{Octave:abbreviated-property-match} warning is enabled.
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
 ##
 ## @item Octave:addpath-pkg
@@ -135,9 +141,12 @@
 ## By default, the @code{Octave:autoload-relative-file-name} warning is
 ## enabled.
 ##
-## @item Octave:built-in-variable-assignment
-## By default, the @code{Octave:built-in-variable-assignment} warning is
-## enabled.
+## @item Octave:charmat-truncated
+## If the @code{Octave:charmat-truncated} warning is enabled, a warning is
+## printed when a character matrix with multiple rows is converted to a string.
+## In this case, the Octave interpreter keeps only the first row and discards
+## the others.
+## By default, the @code{Octave:charmat-truncated} warning is enabled.
 ##
 ## @item Octave:classdef-to-struct
 ## If the @code{Octave:classdef-to-struct} warning is enabled, a warning
@@ -230,6 +239,12 @@
 ## printed for implicit conversions of complex numbers to real numbers.
 ## By default, the @code{Octave:imag-to-real} warning is disabled.
 ##
+## @item Octave:infinite-loop
+## If the @code{Octave:infinite-loop} warning is enabled, a warning is
+## printed when an infinite loop is detected such as @code{for i = 1:Inf} or
+## @code{while (1)}.
+## By default, the @code{Octave:infinite-loop} warning is enabled.
+##
 ## @item Octave:language-extension
 ## Print warnings when using features that are unique to the Octave
 ## language and that may still be missing in @sc{matlab}.
@@ -247,6 +262,9 @@
 ## By default, the @code{Octave:legacy-function} warning is enabled.
 ##
 ## @item Octave:logical-conversion
+## If the @code{Octave:logical-conversion} warning is enabled, a warning is
+## printed if an implicit conversion of an array from numerical to boolean
+## occurs and any of the elements in the array are not equal to zero or one.
 ## By default, the @code{Octave:logical-conversion} warning is enabled.
 ##
 ## @item Octave:lu:sparse_input
@@ -291,10 +309,27 @@
 ## By default, the @code{Octave:neg-dim-as-zero} warning is disabled.
 ##
 ## @item Octave:noninteger-range-as-index
+## If the @code{Octave:noninteger-range-as-index} warning is enabled, a warning
+## is printed if an array is indexed with a range that contains non-integer
+## values.  For example,
+##
+## @example
+## @group
+## a = [1 2 3 4 5];
+## b = 2.2:4.2
+## @result{} 1.2  2.2  3.2
+## a(b)
+## @result{} 2 3 4
+## @end group
+## @end example
+##
+## @noindent
+## elicits a warning if the @code{Octave:noninteger-range-as-index} warning is
+## enabled.
 ## By default, the @code{Octave:noninteger-range-as-index} warning is enabled.
 ##
 ## @item Octave:num-to-str
-## If the @code{Octave:num-to-str} warning is enable, a warning is
+## If the @code{Octave:num-to-str} warning is enabled, a warning is
 ## printed for implicit conversions of numbers to their UTF-8 encoded character
 ## equivalents when strings are constructed using a mixture of strings and
 ## numbers in matrix notation.  For example,
@@ -359,6 +394,9 @@
 ## By default, the @code{Octave:single-quote-string} warning is disabled.
 ##
 ## @item Octave:sqrtm:SingularMatrix
+## If the @code{Octave:sqrtm:SingularMatrix} warning is enabled, a warning is
+## printed if the matrix square root function @code{sqrtm} is called with an
+## input matrix that is singular.
 ## By default, the @code{Octave:sqrtm:SingularMatrix} warning is enabled.
 ##
 ## @item Octave:str-to-num
@@ -383,6 +421,14 @@
 ## is set to the unsupported value of @qcode{"latex"}.  Even when enabled,
 ## the warning message is printed just once per Octave session.
 ## By default, the @code{Octave:glyph-render} warning is enabled.
+##
+## @item Octave:unimplemented-matlab-functionality
+## If the @code{Octave:unimplemented-matlab-functionality} warning is enabled,
+## a warning is printed when a @sc{matlab} code construct is used which the
+## Octave interpreter parses as valid, but for which Octave does not yet
+## implement the functionality.
+## By default, the @code{Octave:unimplemented-matlab-functionality} warning is
+## enabled.
 ##
 ## @item Octave:variable-switch-label
 ## If the @code{Octave:variable-switch-label} warning is enabled, Octave

@@ -8,6 +8,7 @@ EXTERNAL_SOURCES += \
   %reldir%/xermsg.f \
   %reldir%/xerprn.f \
   %reldir%/xerrwd.f \
+  %reldir%/xerrwv.f \
   %reldir%/xersve.f \
   %reldir%/xgetf.f \
   %reldir%/xgetua.f \

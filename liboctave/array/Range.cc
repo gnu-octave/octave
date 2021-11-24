@@ -39,6 +39,317 @@
 #include "lo-mappers.h"
 #include "lo-utils.h"
 
+namespace octave
+{
+  template <typename T>
+  T xtfloor (T x, T ct)
+  {
+    // C---------FLOOR(X) is the largest integer algebraically less than
+    // C         or equal to X; that is, the unfuzzy FLOOR function.
+
+    //  DINT (X) = X - DMOD (X, 1.0);
+    //  FLOOR (X) = DINT (X) - DMOD (2.0 + DSIGN (1.0, X), 3.0);
+
+    // C---------Hagerty's FL5 function follows...
+
+    T q = 1;
+
+    if (x < 0)
+      q = 1 - ct;
+
+    T rmax = q / (2 - ct);
+
+    T t1 = 1 + std::floor (x);
+    t1 = (ct / q) * (t1 < 0 ? -t1 : t1);
+    t1 = (rmax < t1 ? rmax : t1);
+    t1 = (ct > t1 ? ct : t1);
+    t1 = std::floor (x + t1);
+
+    if (x <= 0 || (t1 - x) < rmax)
+      return t1;
+    else
+      return t1 - 1;
+  }
+
+  template <typename T>
+  bool xteq (T u, T v, T ct = 3 * std::numeric_limits<T>::epsilon ())
+  {
+    T tu = std::abs (u);
+    T tv = std::abs (v);
+
+    return std::abs (u - v) < ((tu > tv ? tu : tv) * ct);
+  }
+
+  template <typename T>
+  octave_idx_type xnumel_internal (T base, T limit, T inc)
+  {
+    octave_idx_type retval = -1;
+    if (! math::isfinite (base) || ! math::isfinite (inc)
+        || math::isnan (limit))
+      retval = -2;
+    else if (math::isinf (limit)
+             && ((inc > 0 && limit > 0)
+                 || (inc < 0 && limit < 0)))
+      retval = std::numeric_limits<octave_idx_type>::max () - 1;
+    else if (inc == 0
+             || (limit > base && inc < 0)
+             || (limit < base && inc > 0))
+      {
+        retval = 0;
+      }
+    else
+      {
+        T ct = 3 * std::numeric_limits<T>::epsilon ();
+
+        T tmp = xtfloor ((limit - base + inc) / inc, ct);
+
+        octave_idx_type n_elt
+          = (tmp > 0 ? static_cast<octave_idx_type> (tmp) : 0);
+
+        // If the final element that we would compute for the range is
+        // equal to the limit of the range, or is an adjacent floating
+        // point number, accept it.  Otherwise, try a range with one
+        // fewer element.  If that fails, try again with one more
+        // element.
+        //
+        // I'm not sure this is very good, but it seems to work better
+        // than just using tfloor as above.  For example, without it,
+        // the expression 1.8:0.05:1.9 fails to produce the expected
+        // result of [1.8, 1.85, 1.9].
+
+        if (! xteq (base + (n_elt - 1) * inc, limit))
+          {
+            if (xteq (base + (n_elt - 2) * inc, limit))
+              n_elt--;
+            else if (xteq (base + n_elt * inc, limit))
+              n_elt++;
+          }
+
+        retval = (n_elt < std::numeric_limits<octave_idx_type>::max () - 1
+                  ? n_elt : -1);
+      }
+
+    return retval;
+  }
+
+  template <typename T>
+  bool xall_elements_are_ints (T base, T inc, T final_val, octave_idx_type nel)
+  {
+    // If the range is empty or NaN then there are no elements so there
+    // can be no int elements.
+    if (nel == 0 || math::isnan (final_val))
+      return false;
+
+    // If the base and increment are ints, all elements will be
+    // integers.
+    if (math::nint_big (base) == base && math::nint_big (inc) == inc)
+      return true;
+
+    // If the range has only one element, then the base needs to be an
+    // integer.
+    if (nel == 1 && math::nint_big (base))
+      return true;
+
+    return false;
+  }
+
+  template <typename T>
+  T
+  xfinal_value (T base, T limit, T inc, octave_idx_type nel)
+  {
+    T retval = T (0);
+
+    if (nel <= 1)
+      return base;
+
+    // If increment is 0, then numel should also be zero.
+
+    retval = base + (nel - 1) * inc;
+
+    // On some machines (x86 with extended precision floating point
+    // arithmetic, for example) it is possible that we can overshoot
+    // the limit by approximately the machine precision even though
+    // we were very careful in our calculation of the number of
+    // elements.  Therefore, we clip the result to the limit if it
+    // overshoots.
+
+    // NOTE: The test also includes equality (>= limit) to have
+    // expressions such as -5:1:-0 result in a -0 endpoint.
+
+    if ((inc > T (0) && retval >= limit) || (inc < T (0) && retval <= limit))
+      retval = limit;
+
+    // If all elements are integers, then ensure the final value is.
+    // Note that we pass the preliminary computed final value to
+    // xall_elements_are_ints, but it only checks whether that value is
+    // NaN.
+
+    if (xall_elements_are_ints (base, inc, retval, nel))
+      retval = std::round (retval);
+
+    return retval;
+  }
+
+  template <typename T>
+  void
+  xinit (T base, T limit, T inc, T& final_val, octave_idx_type& nel)
+  {
+    // Catch obvious NaN ranges.
+    if (math::isnan (base) || math::isnan (limit) || math::isnan (inc))
+      {
+        final_val = numeric_limits<T>::NaN ();
+        nel = 1;
+        return;
+      }
+
+    // Catch empty ranges.
+    if (inc == 0
+        || (limit < base && inc > 0)
+        || (limit > base && inc < 0))
+      {
+        nel = 0;
+        return;
+      }
+
+    // The following case also catches Inf values for increment when
+    // there will be only one element.
+
+    if ((limit <= base && base + inc < limit)
+        || (limit >= base && base + inc > limit))
+      {
+        final_val = base;
+        nel = 1;
+        return;
+      }
+
+    // Any other calculations with Inf will give us either a NaN range
+    // or an infinite nember of elements.
+
+    T dnel = (limit - base) / inc;
+    if (math::isnan (dnel))
+      {
+        nel = 1;
+        final_val = numeric_limits<T>::NaN ();
+        return;
+      }
+
+    if (dnel > 0 && math::isinf (dnel))
+      {
+        // FIXME: Should this be an immediate error?
+        nel = std::numeric_limits<octave_idx_type>::max ();
+
+        // FIXME: Will this do the right thing in all cases?
+        final_val = xfinal_value (base, limit, inc, nel);
+
+        return;
+      }
+
+    // Now that we have handled all the special cases, we can compute
+    // the number of elements and the final value in a way that attempts
+    // to avoid rounding errors as much as possible.
+
+    nel = xnumel_internal (base, limit, inc);
+    final_val = xfinal_value (base, limit, inc, nel);
+  }
+
+  template <typename T>
+  bool
+  xis_storable (T base, T limit, octave_idx_type nel)
+  {
+    return ! (nel > 1 && (math::isinf (base) || math::isinf (limit)));
+  }
+
+  template <>
+  bool
+  range<double>::all_elements_are_ints (void) const
+  {
+    return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  bool
+  range<float>::all_elements_are_ints (void) const
+  {
+    return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<double>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<float>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  bool
+  range<double>::is_storable (void) const
+  {
+    return xis_storable (m_base, m_limit, m_numel);
+  }
+
+  template <>
+  bool
+  range<float>::is_storable (void) const
+  {
+    return xis_storable (m_base, m_limit, m_numel);
+  }
+
+  template <typename T>
+  octave_idx_type
+  xnnz (T base, T limit, T inc, T final_val, octave_idx_type nel)
+  {
+    // Note that the order of the following checks matters.
+
+    // If there are no elements, there can be no non-zero elements.
+    if (nel == 0)
+      return 0;
+
+    // All elements have the same sign, hence there are no zeros.
+    if ((base > 0 && limit > 0) || (base < 0 && limit < 0))
+      return nel;
+
+    // All elements are equal (inc = 0) but we know from the previous
+    // condition that they are not positive or negative, therefore all
+    // elements are zero.
+    if (inc == 0)
+      return 0;
+
+    // Exactly one zero at beginning or end of range.
+    if (base == 0 || final_val == 0)
+      return nel - 1;
+
+    // Range crosses negative/positive without hitting zero.
+    // FIXME: Is this test sufficiently tolerant or do we need to be
+    // more careful?
+    if (math::mod (-base, inc) != 0)
+      return nel;
+
+    // Range crosses negative/positive and hits zero.
+    return nel - 1;
+  }
+
+  template <>
+  octave_idx_type
+  range<double>::nnz (void) const
+  {
+    return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  octave_idx_type
+  range<float>::nnz (void) const
+  {
+    return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+}
+
 bool
 Range::all_elements_are_ints (void) const
 {
@@ -46,9 +357,9 @@ Range::all_elements_are_ints (void) const
   // be an integer, even if the limit is not.  If there is one or fewer
   // elements only the base needs to be an integer.
 
-  return (! (octave::math::isnan (rng_base) || octave::math::isnan (rng_inc))
-          && (octave::math::nint_big (rng_base) == rng_base || rng_numel < 1)
-          && (octave::math::nint_big (rng_inc) == rng_inc || rng_numel <= 1));
+  return (! (octave::math::isnan (m_base) || octave::math::isnan (m_inc))
+          && (octave::math::nint_big (m_base) == m_base || m_numel < 1)
+          && (octave::math::nint_big (m_inc) == m_inc || m_numel <= 1));
 }
 
 octave_idx_type
@@ -58,27 +369,26 @@ Range::nnz (void) const
 
   if (! isempty ())
     {
-      if ((rng_base > 0.0 && rng_limit > 0.0)
-          || (rng_base < 0.0 && rng_limit < 0.0))
+      if ((m_base > 0.0 && m_limit > 0.0) || (m_base < 0.0 && m_limit < 0.0))
         {
           // All elements have the same sign, hence there are no zeros.
-          retval = rng_numel;
+          retval = m_numel;
         }
-      else if (rng_inc != 0.0)
+      else if (m_inc != 0.0)
         {
-          if (rng_base == 0.0 || rng_limit == 0.0)
+          if (m_base == 0.0 || m_limit == 0.0)
             // Exactly one zero at beginning or end of range.
-            retval = rng_numel - 1;
-          else if ((rng_base / rng_inc) != std::floor (rng_base / rng_inc))
+            retval = m_numel - 1;
+          else if ((m_base / m_inc) != std::floor (m_base / m_inc))
             // Range crosses negative/positive without hitting zero.
-            retval = rng_numel;
+            retval = m_numel;
           else
             // Range crosses negative/positive and hits zero.
-            retval = rng_numel - 1;
+            retval = m_numel - 1;
         }
       else
         {
-          // All elements are equal (rng_inc = 0) but not positive or negative,
+          // All elements are equal (m_inc = 0) but not positive or negative,
           // therefore all elements are zero.
           retval = 0;
         }
@@ -90,37 +400,37 @@ Range::nnz (void) const
 Matrix
 Range::matrix_value (void) const
 {
-  if (rng_numel > 0 && cache.isempty ())
-    {
-      cache.resize (1, rng_numel);
+  Matrix retval (1, m_numel);
 
+  if (m_numel > 0)
+    {
       // The first element must always be *exactly* the base.
       // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
-      cache(0) = rng_base;
+      retval(0) = m_base;
 
-      double b = rng_base;
-      double increment = rng_inc;
-      for (octave_idx_type i = 1; i < rng_numel - 1; i++)
-        cache.xelem (i) = b + i * increment;
+      double b = m_base;
+      double increment = m_inc;
+      for (octave_idx_type i = 1; i < m_numel - 1; i++)
+        retval.xelem (i) = b + i * increment;
 
-      cache.xelem (rng_numel - 1) = rng_limit;
+      retval.xelem (m_numel - 1) = m_limit;
     }
 
-  return cache;
+  return retval;
 }
 
 double
 Range::checkelem (octave_idx_type i) const
 {
-  if (i < 0 || i >= rng_numel)
-    octave::err_index_out_of_range (2, 2, i+1, rng_numel, dims ());
+  if (i < 0 || i >= m_numel)
+    octave::err_index_out_of_range (2, 2, i+1, m_numel, dims ());
 
   if (i == 0)
-    return rng_base;
-  else if (i < rng_numel - 1)
-    return rng_base + i * rng_inc;
+    return m_base;
+  else if (i < m_numel - 1)
+    return m_base + i * m_inc;
   else
-    return rng_limit;
+    return m_limit;
 }
 
 double
@@ -128,7 +438,7 @@ Range::checkelem (octave_idx_type i, octave_idx_type j) const
 {
   // Ranges are *always* row vectors.
   if (i != 0)
-    octave::err_index_out_of_range (1, 1, i+1, rng_numel, dims ());
+    octave::err_index_out_of_range (1, 1, i+1, m_numel, dims ());
 
   return checkelem (j);
 }
@@ -137,66 +447,51 @@ double
 Range::elem (octave_idx_type i) const
 {
   if (i == 0)
-    return rng_base;
-  else if (i < rng_numel - 1)
-    return rng_base + i * rng_inc;
+    return m_base;
+  else if (i < m_numel - 1)
+    return m_base + i * m_inc;
   else
-    return rng_limit;
+    return m_limit;
 }
 
-// Helper class used solely for idx_vector.loop () function call
-class __rangeidx_helper
-{
-public:
-  __rangeidx_helper (double *a, double b, double i, double l, octave_idx_type n)
-    : array (a), base (b), inc (i), limit (l), nmax (n-1) { }
-
-  void operator () (octave_idx_type i)
-  {
-    if (i == 0)
-      *array++ = base;
-    else if (i < nmax)
-      *array++ = base + i * inc;
-    else
-      *array++ = limit;
-  }
-
-private:
-
-  double *array, base, inc, limit;
-  octave_idx_type nmax;
-
-};
-
 Array<double>
-Range::index (const idx_vector& i) const
+Range::index (const octave::idx_vector& idx) const
 {
   Array<double> retval;
 
-  octave_idx_type n = rng_numel;
+  octave_idx_type n = m_numel;
 
-  if (i.is_colon ())
+  if (idx.is_colon ())
     {
-      retval = matrix_value ().reshape (dim_vector (rng_numel, 1));
+      retval = matrix_value ().reshape (dim_vector (m_numel, 1));
     }
   else
     {
-      if (i.extent (n) != n)
-        octave::err_index_out_of_range (1, 1, i.extent (n), n, dims ()); // throws
+      if (idx.extent (n) != n)
+        octave::err_index_out_of_range (1, 1, idx.extent (n), n, dims ()); // throws
 
-      dim_vector rd = i.orig_dimensions ();
-      octave_idx_type il = i.length (n);
+      dim_vector idx_dims = idx.orig_dimensions ();
+      octave_idx_type idx_len = idx.length (n);
 
       // taken from Array.cc.
-      if (n != 1 && rd.isvector ())
-        rd = dim_vector (1, il);
+      if (n != 1 && idx_dims.isvector ())
+        idx_dims = dim_vector (1, idx_len);
 
-      retval.clear (rd);
+      retval.clear (idx_dims);
 
-      // idx_vector loop across all values in i,
-      // executing __rangeidx_helper (i) for each i
-      i.loop (n, __rangeidx_helper (retval.fortran_vec (),
-                                    rng_base, rng_inc, rng_limit, rng_numel));
+      // Loop over all values in IDX, executing the lambda expression
+      // for each index value.
+
+      double *array = retval.fortran_vec ();
+
+      idx.loop (n, [=, &array] (idx_vector i) {
+        if (i == 0)
+          *array++ = m_base;
+        else if (i < m_numel - 1)
+          *array++ = m_base + i * m_inc;
+        else
+          *array++ = m_limit;
+      });
     }
 
   return retval;
@@ -209,17 +504,17 @@ double
 Range::min (void) const
 {
   double retval = 0.0;
-  if (rng_numel > 0)
+  if (m_numel > 0)
     {
-      if (rng_inc > 0)
-        retval = rng_base;
+      if (m_inc > 0)
+        retval = m_base;
       else
         {
-          retval = rng_base + (rng_numel - 1) * rng_inc;
+          retval = m_base + (m_numel - 1) * m_inc;
 
           // Require '<=' test.  See note in max ().
-          if (retval <= rng_limit)
-            retval = rng_limit;
+          if (retval <= m_limit)
+            retval = m_limit;
         }
 
     }
@@ -230,24 +525,24 @@ double
 Range::max (void) const
 {
   double retval = 0.0;
-  if (rng_numel > 0)
+  if (m_numel > 0)
     {
-      if (rng_inc > 0)
+      if (m_inc > 0)
         {
-          retval = rng_base + (rng_numel - 1) * rng_inc;
+          retval = m_base + (m_numel - 1) * m_inc;
 
           // On some machines (x86 with extended precision floating point
           // arithmetic, for example) it is possible that we can overshoot the
           // limit by approximately the machine precision even though we were
           // very careful in our calculation of the number of elements.
           // Therefore, we clip the result to the limit if it overshoots.
-          // The test also includes equality (>= rng_limit) to have expressions
+          // The test also includes equality (>= m_limit) to have expressions
           // such as -5:1:-0 result in a -0 endpoint.
-          if (retval >= rng_limit)
-            retval = rng_limit;
+          if (retval >= m_limit)
+            retval = m_limit;
         }
       else
-        retval = rng_base;
+        retval = m_base;
     }
   return retval;
 }
@@ -255,12 +550,11 @@ Range::max (void) const
 void
 Range::sort_internal (bool ascending)
 {
-  if ((ascending && rng_base > rng_limit && rng_inc < 0.0)
-      || (! ascending && rng_base < rng_limit && rng_inc > 0.0))
+  if ((ascending && m_base > m_limit && m_inc < 0.0)
+      || (! ascending && m_base < m_limit && m_inc > 0.0))
     {
-      std::swap (rng_base, rng_limit);
-      rng_inc = -rng_inc;
-      clear_cache ();
+      std::swap (m_base, m_limit);
+      m_inc = -m_inc;
     }
 }
 
@@ -275,12 +569,11 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
 
   bool reverse = false;
 
-  if ((ascending && rng_base > rng_limit && rng_inc < 0.0)
-      || (! ascending && rng_base < rng_limit && rng_inc > 0.0))
+  if ((ascending && m_base > m_limit && m_inc < 0.0)
+      || (! ascending && m_base < m_limit && m_inc > 0.0))
     {
-      std::swap (rng_base, rng_limit);
-      rng_inc = -rng_inc;
-      clear_cache ();
+      std::swap (m_base, m_limit);
+      m_inc = -m_inc;
       reverse = true;
     }
 
@@ -337,9 +630,9 @@ Range::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
 sortmode
 Range::issorted (sortmode mode) const
 {
-  if (rng_numel > 1 && rng_inc > 0)
+  if (m_numel > 1 && m_inc > 0)
     mode = (mode == DESCENDING) ? UNSORTED : ASCENDING;
-  else if (rng_numel > 1 && rng_inc < 0)
+  else if (m_numel > 1 && m_inc < 0)
     mode = (mode == ASCENDING) ? UNSORTED : DESCENDING;
   else
     mode = (mode == UNSORTED) ? ASCENDING : mode;
@@ -350,9 +643,9 @@ Range::issorted (sortmode mode) const
 void
 Range::set_base (double b)
 {
-  if (rng_base != b)
+  if (m_base != b)
     {
-      rng_base = b;
+      m_base = b;
 
       init ();
     }
@@ -361,9 +654,9 @@ Range::set_base (double b)
 void
 Range::set_limit (double l)
 {
-  if (rng_limit != l)
+  if (m_limit != l)
     {
-      rng_limit = l;
+      m_limit = l;
 
       init ();
     }
@@ -372,9 +665,9 @@ Range::set_limit (double l)
 void
 Range::set_inc (double i)
 {
-  if (rng_inc != i)
+  if (m_inc != i)
     {
-      rng_inc = i;
+      m_inc = i;
 
       init ();
     }
@@ -384,7 +677,7 @@ std::ostream&
 operator << (std::ostream& os, const Range& a)
 {
   double b = a.base ();
-  double increment = a.inc ();
+  double increment = a.increment ();
   octave_idx_type nel = a.numel ();
 
   if (nel > 1)
@@ -396,7 +689,7 @@ operator << (std::ostream& os, const Range& a)
     }
 
   // Print out the last element exactly, rather than a calculated last element.
-  os << a.rng_limit << "\n";
+  os << a.m_limit << "\n";
 
   return os;
 }
@@ -404,83 +697,62 @@ operator << (std::ostream& os, const Range& a)
 std::istream&
 operator >> (std::istream& is, Range& a)
 {
-  is >> a.rng_base;
+  is >> a.m_base;
   if (is)
     {
-      double tmp_rng_limit;
-      is >> tmp_rng_limit;
+      double tmp_limit;
+      is >> tmp_limit;
 
       if (is)
-        is >> a.rng_inc;
+        is >> a.m_inc;
 
-      // Clip the rng_limit to the true limit, rebuild numel, clear cache
-      a.set_limit (tmp_rng_limit);
+      // Clip the m_limit to the true limit, rebuild numel, clear cache
+      a.set_limit (tmp_limit);
     }
 
   return is;
 }
 
-Range
-operator - (const Range& r)
+// DEPRECATED in Octave 7.
+Range operator - (const Range& r)
 {
-  return Range (-r.base (), -r.limit (), -r.inc (), r.numel ());
+  return Range (-r.base (), -r.limit (), -r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator + (double x, const Range& r)
 {
-  Range result (x + r.base (), x + r.limit (), r.inc (), r.numel ());
-  // Check whether new range was constructed properly.  A non-finite
-  // value (Inf or NaN) requires that the output be of the same size
-  // as the original range with all values set to the non-finite value.
-  if (result.rng_numel < 0)
-    result.cache = x + r.matrix_value ();
-
-  return result;
+  return Range (x + r.base (), x + r.limit (), r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator + (const Range& r, double x)
 {
-  Range result (r.base () + x, r.limit () + x, r.inc (), r.numel ());
-  if (result.rng_numel < 0)
-    result.cache = r.matrix_value () + x;
-
-  return result;
+  return Range (r.base () + x, r.limit () + x, r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator - (double x, const Range& r)
 {
-  Range result (x - r.base (), x - r.limit (), -r.inc (), r.numel ());
-  if (result.rng_numel < 0)
-    result.cache = x - r.matrix_value ();
-
-  return result;
+  return Range (x - r.base (), x - r.limit (), -r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator - (const Range& r, double x)
 {
-  Range result (r.base () - x, r.limit () - x, r.inc (), r.numel ());
-  if (result.rng_numel < 0)
-    result.cache = r.matrix_value () - x;
-
-  return result;
+  return Range (r.base () - x, r.limit () - x, r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator * (double x, const Range& r)
 {
-  Range result (x * r.base (), x * r.limit (), x * r.inc (), r.numel ());
-  if (result.rng_numel < 0)
-    result.cache = x * r.matrix_value ();
-
-  return result;
+  return Range (x * r.base (), x * r.limit (), x * r.increment (), r.numel ());
 }
 
+// DEPRECATED in Octave 7.
 Range operator * (const Range& r, double x)
 {
-  Range result (r.base () * x, r.limit () * x, r.inc () * x, r.numel ());
-  if (result.rng_numel < 0)
-    result.cache = r.matrix_value () * x;
-
-  return result;
+  return Range (r.base () * x, r.limit () * x, r.increment () * x, r.numel ());
 }
 
 // C  See Knuth, Art Of Computer Programming, Vol. 1, Problem 1.2.4-5.
@@ -560,9 +832,16 @@ Range::numel_internal (void) const
 {
   octave_idx_type retval = -1;
 
-  if (rng_inc == 0
-      || (rng_limit > rng_base && rng_inc < 0)
-      || (rng_limit < rng_base && rng_inc > 0))
+  if (! octave::math::isfinite (m_base) || ! octave::math::isfinite (m_inc)
+      || octave::math::isnan (m_limit))
+    retval = -2;
+  else if (octave::math::isinf (m_limit)
+           && ((m_inc > 0 && m_limit > 0)
+               || (m_inc < 0 && m_limit < 0)))
+    retval = std::numeric_limits<octave_idx_type>::max () - 1;
+  else if (m_inc == 0
+           || (m_limit > m_base && m_inc < 0)
+           || (m_limit < m_base && m_inc > 0))
     {
       retval = 0;
     }
@@ -570,10 +849,10 @@ Range::numel_internal (void) const
     {
       double ct = 3.0 * std::numeric_limits<double>::epsilon ();
 
-      double tmp = tfloor ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
+      double tmp = tfloor ((m_limit - m_base + m_inc) / m_inc, ct);
 
-      octave_idx_type n_elt = (tmp > 0.0 ? static_cast<octave_idx_type> (tmp)
-                                         : 0);
+      octave_idx_type n_elt = (tmp > 0.0
+                               ? static_cast<octave_idx_type> (tmp) : 0);
 
       // If the final element that we would compute for the range is equal to
       // the limit of the range, or is an adjacent floating point number,
@@ -584,16 +863,16 @@ Range::numel_internal (void) const
       // using tfloor as above.  For example, without it, the expression
       // 1.8:0.05:1.9 fails to produce the expected result of [1.8, 1.85, 1.9].
 
-      if (! teq (rng_base + (n_elt - 1) * rng_inc, rng_limit))
+      if (! teq (m_base + (n_elt - 1) * m_inc, m_limit))
         {
-          if (teq (rng_base + (n_elt - 2) * rng_inc, rng_limit))
+          if (teq (m_base + (n_elt - 2) * m_inc, m_limit))
             n_elt--;
-          else if (teq (rng_base + n_elt * rng_inc, rng_limit))
+          else if (teq (m_base + n_elt * m_inc, m_limit))
             n_elt++;
         }
 
-      retval = (n_elt < std::numeric_limits<octave_idx_type>::max () - 1)
-               ? n_elt : -1;
+      retval = ((n_elt < std::numeric_limits<octave_idx_type>::max ())
+                ? n_elt : -1);
     }
 
   return retval;
@@ -602,12 +881,7 @@ Range::numel_internal (void) const
 double
 Range::limit_internal (void) const
 {
-  double new_limit;
-
-  if (rng_inc > 0)
-    new_limit = max ();
-  else
-    new_limit = min ();
+  double new_limit = m_inc > 0 ? max () : min ();
 
   // If result must be an integer then force the new_limit to be one.
   if (all_elements_are_ints ())
@@ -619,8 +893,8 @@ Range::limit_internal (void) const
 void
 Range::init (void)
 {
-  rng_numel = numel_internal ();
-  rng_limit = limit_internal ();
+  m_numel = numel_internal ();
 
-  clear_cache ();
+  if (! octave::math::isinf (m_limit))
+    m_limit = limit_internal ();
 }

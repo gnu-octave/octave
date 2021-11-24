@@ -6,6 +6,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__splinefit__.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/compan.m \
   %reldir%/conv.m \
   %reldir%/deconv.m \

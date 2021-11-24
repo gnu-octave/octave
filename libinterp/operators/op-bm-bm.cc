@@ -51,6 +51,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // unary bool matrix ops.
 
 DEFNDUNOP_OP (not, bool_matrix, bool_array, !)
@@ -203,3 +205,5 @@ install_bm_bm_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_el_or_eq, octave_bool_matrix, octave_bool_matrix,
                        assign_or);
 }
+
+OCTAVE_NAMESPACE_END

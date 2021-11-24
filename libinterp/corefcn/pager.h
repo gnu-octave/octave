@@ -35,11 +35,11 @@
 
 class octave_value;
 class octave_value_list;
-class oprocstream;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class interpreter;
+class oprocstream;
 
   class
   OCTINTERP_API
@@ -47,7 +47,7 @@ namespace octave
   {
   public:
 
-    pager_buf (void) : std::stringbuf (), diary_skip (0) { }
+    pager_buf (void) : std::stringbuf (), m_diary_skip (0) { }
 
     void flush_current_contents_to_diary (void);
 
@@ -59,7 +59,7 @@ namespace octave
 
   private:
 
-    std::size_t diary_skip;
+    std::size_t m_diary_skip;
   };
 
   class
@@ -88,7 +88,7 @@ namespace octave
 
   private:
 
-    pager_buf *pb;
+    pager_buf *m_pb;
   };
 
   class
@@ -126,10 +126,10 @@ namespace octave
 
   private:
 
-    diary_buf *db;
+    diary_buf *m_db;
   };
 
-  extern OCTAVE_API void flush_stdout (void);
+  extern OCTINTERP_API void flush_stdout (void);
 
   class output_system
   {
@@ -305,10 +305,11 @@ namespace octave
     void do_sync (const char *msg, int len, bool bypass_pager);
   };
 
-  extern std::ostream& __stdout__ (void);
+  extern OCTINTERP_API std::ostream& __stdout__ (void);
 
-  extern std::ostream& __diary__ (void);
-}
+  extern OCTINTERP_API std::ostream& __diary__ (void);
+
+OCTAVE_NAMESPACE_END
 
 #define octave_stdout (octave::__stdout__ ())
 

@@ -98,8 +98,9 @@ namespace octave
     }
 
     template <>
-    F77_INT
-    schur<Matrix>::init (const Matrix& a, const std::string& ord, bool calc_unitary)
+    OCTAVE_API F77_INT
+    schur<Matrix>::init (const Matrix& a, const std::string& ord,
+                         bool calc_unitary)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
       F77_INT a_nc = to_f77_int (a.cols ());
@@ -109,8 +110,8 @@ namespace octave
 
       if (a_nr == 0)
         {
-          schur_mat.clear ();
-          unitary_mat.clear ();
+          m_schur_mat.clear ();
+          m_unitary_schur_mat.clear ();
           return 0;
         }
 
@@ -128,7 +129,8 @@ namespace octave
 
       char ord_char = (ord.empty () ? 'U' : ord[0]);
 
-      if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
+      if (ord_char == 'A' || ord_char == 'D'
+          || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
 
       volatile double_selector selector = nullptr;
@@ -145,13 +147,13 @@ namespace octave
       double rconde;
       double rcondv;
 
-      schur_mat = a;
+      m_schur_mat = a;
 
       if (calc_unitary)
-        unitary_mat.clear (n, n);
+        m_unitary_schur_mat.clear (n, n);
 
-      double *s = schur_mat.fortran_vec ();
-      double *q = unitary_mat.fortran_vec ();
+      double *s = m_schur_mat.fortran_vec ();
+      double *q = m_unitary_schur_mat.fortran_vec ();
 
       Array<double> wr (dim_vector (n, 1));
       double *pwr = wr.fortran_vec ();
@@ -184,7 +186,7 @@ namespace octave
     }
 
     template <>
-    F77_INT
+    OCTAVE_API F77_INT
     schur<FloatMatrix>::init (const FloatMatrix& a, const std::string& ord,
                               bool calc_unitary)
     {
@@ -196,8 +198,8 @@ namespace octave
 
       if (a_nr == 0)
         {
-          schur_mat.clear ();
-          unitary_mat.clear ();
+          m_schur_mat.clear ();
+          m_unitary_schur_mat.clear ();
           return 0;
         }
 
@@ -215,7 +217,8 @@ namespace octave
 
       char ord_char = (ord.empty () ? 'U' : ord[0]);
 
-      if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
+      if (ord_char == 'A' || ord_char == 'D'
+          || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
 
       volatile float_selector selector = nullptr;
@@ -232,13 +235,13 @@ namespace octave
       float rconde;
       float rcondv;
 
-      schur_mat = a;
+      m_schur_mat = a;
 
       if (calc_unitary)
-        unitary_mat.clear (n, n);
+        m_unitary_schur_mat.clear (n, n);
 
-      float *s = schur_mat.fortran_vec ();
-      float *q = unitary_mat.fortran_vec ();
+      float *s = m_schur_mat.fortran_vec ();
+      float *q = m_unitary_schur_mat.fortran_vec ();
 
       Array<float> wr (dim_vector (n, 1));
       float *pwr = wr.fortran_vec ();
@@ -271,7 +274,7 @@ namespace octave
     }
 
     template <>
-    F77_INT
+    OCTAVE_API F77_INT
     schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
                                 bool calc_unitary)
     {
@@ -283,8 +286,8 @@ namespace octave
 
       if (a_nr == 0)
         {
-          schur_mat.clear ();
-          unitary_mat.clear ();
+          m_schur_mat.clear ();
+          m_unitary_schur_mat.clear ();
           return 0;
         }
 
@@ -302,7 +305,8 @@ namespace octave
 
       char ord_char = (ord.empty () ? 'U' : ord[0]);
 
-      if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
+      if (ord_char == 'A' || ord_char == 'D'
+          || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
 
       volatile complex_selector selector = nullptr;
@@ -318,12 +322,12 @@ namespace octave
       double rconde;
       double rcondv;
 
-      schur_mat = a;
+      m_schur_mat = a;
       if (calc_unitary)
-        unitary_mat.clear (n, n);
+        m_unitary_schur_mat.clear (n, n);
 
-      Complex *s = schur_mat.fortran_vec ();
-      Complex *q = unitary_mat.fortran_vec ();
+      Complex *s = m_schur_mat.fortran_vec ();
+      Complex *q = m_unitary_schur_mat.fortran_vec ();
 
       Array<double> rwork (dim_vector (n, 1));
       double *prwork = rwork.fortran_vec ();
@@ -339,22 +343,23 @@ namespace octave
       Array<F77_INT> bwork (dim_vector (ntmp, 1));
       F77_INT *pbwork = bwork.fortran_vec ();
 
-      F77_XFCN (zgeesx, ZGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
-                                 F77_CONST_CHAR_ARG2 (&sort, 1),
-                                 selector,
-                                 F77_CONST_CHAR_ARG2 (&sense, 1),
-                                 n, F77_DBLE_CMPLX_ARG (s), n, sdim, F77_DBLE_CMPLX_ARG (pw),
-                                 F77_DBLE_CMPLX_ARG (q), n, rconde, rcondv,
-                                 F77_DBLE_CMPLX_ARG (pwork), lwork, prwork, pbwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
+      F77_XFCN (zgeesx, ZGEESX,
+                (F77_CONST_CHAR_ARG2 (&jobvs, 1),
+                 F77_CONST_CHAR_ARG2 (&sort, 1),
+                 selector,
+                 F77_CONST_CHAR_ARG2 (&sense, 1),
+                 n, F77_DBLE_CMPLX_ARG (s), n, sdim, F77_DBLE_CMPLX_ARG (pw),
+                 F77_DBLE_CMPLX_ARG (q), n, rconde, rcondv,
+                 F77_DBLE_CMPLX_ARG (pwork), lwork, prwork, pbwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)));
 
       return info;
     }
 
     template <>
-    schur<ComplexMatrix>
+    OCTAVE_API schur<ComplexMatrix>
     rsf2csf<ComplexMatrix, Matrix> (const Matrix& s_arg, const Matrix& u_arg)
     {
       ComplexMatrix s (s_arg);
@@ -371,15 +376,16 @@ namespace octave
           OCTAVE_LOCAL_BUFFER (double, c, n-1);
           OCTAVE_LOCAL_BUFFER (double, sx, n-1);
 
-          F77_XFCN (zrsf2csf, ZRSF2CSF, (n, F77_DBLE_CMPLX_ARG (s.fortran_vec ()),
-                                         F77_DBLE_CMPLX_ARG (u.fortran_vec ()), c, sx));
+          F77_XFCN (zrsf2csf, ZRSF2CSF,
+                    (n, F77_DBLE_CMPLX_ARG (s.fortran_vec ()),
+                     F77_DBLE_CMPLX_ARG (u.fortran_vec ()), c, sx));
         }
 
       return schur<ComplexMatrix> (s, u);
     }
 
     template <>
-    F77_INT
+    OCTAVE_API F77_INT
     schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
                                      const std::string& ord, bool calc_unitary)
     {
@@ -391,8 +397,8 @@ namespace octave
 
       if (a_nr == 0)
         {
-          schur_mat.clear ();
-          unitary_mat.clear ();
+          m_schur_mat.clear ();
+          m_unitary_schur_mat.clear ();
           return 0;
         }
 
@@ -410,7 +416,8 @@ namespace octave
 
       char ord_char = (ord.empty () ? 'U' : ord[0]);
 
-      if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
+      if (ord_char == 'A' || ord_char == 'D'
+          || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
 
       volatile float_complex_selector selector = nullptr;
@@ -426,12 +433,12 @@ namespace octave
       float rconde;
       float rcondv;
 
-      schur_mat = a;
+      m_schur_mat = a;
       if (calc_unitary)
-        unitary_mat.clear (n, n);
+        m_unitary_schur_mat.clear (n, n);
 
-      FloatComplex *s = schur_mat.fortran_vec ();
-      FloatComplex *q = unitary_mat.fortran_vec ();
+      FloatComplex *s = m_schur_mat.fortran_vec ();
+      FloatComplex *q = m_unitary_schur_mat.fortran_vec ();
 
       Array<float> rwork (dim_vector (n, 1));
       float *prwork = rwork.fortran_vec ();
@@ -447,22 +454,24 @@ namespace octave
       Array<F77_INT> bwork (dim_vector (ntmp, 1));
       F77_INT *pbwork = bwork.fortran_vec ();
 
-      F77_XFCN (cgeesx, CGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
-                                 F77_CONST_CHAR_ARG2 (&sort, 1),
-                                 selector,
-                                 F77_CONST_CHAR_ARG2 (&sense, 1),
-                                 n, F77_CMPLX_ARG (s), n, sdim, F77_CMPLX_ARG (pw), F77_CMPLX_ARG (q), n, rconde,
-                                 rcondv,
-                                 F77_CMPLX_ARG (pwork), lwork, prwork, pbwork, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
+      F77_XFCN (cgeesx, CGEESX,
+                (F77_CONST_CHAR_ARG2 (&jobvs, 1),
+                 F77_CONST_CHAR_ARG2 (&sort, 1),
+                 selector,
+                 F77_CONST_CHAR_ARG2 (&sense, 1),
+                 n, F77_CMPLX_ARG (s), n, sdim, F77_CMPLX_ARG (pw),
+                 F77_CMPLX_ARG (q), n,
+                 rconde, rcondv,
+                 F77_CMPLX_ARG (pwork), lwork, prwork, pbwork, info
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)
+                 F77_CHAR_ARG_LEN (1)));
 
       return info;
     }
 
     template <>
-    schur<FloatComplexMatrix>
+    OCTAVE_API schur<FloatComplexMatrix>
     rsf2csf<FloatComplexMatrix, FloatMatrix> (const FloatMatrix& s_arg,
                                               const FloatMatrix& u_arg)
     {
@@ -480,8 +489,9 @@ namespace octave
           OCTAVE_LOCAL_BUFFER (float, c, n-1);
           OCTAVE_LOCAL_BUFFER (float, sx, n-1);
 
-          F77_XFCN (crsf2csf, CRSF2CSF, (n, F77_CMPLX_ARG (s.fortran_vec ()),
-                                         F77_CMPLX_ARG (u.fortran_vec ()), c, sx));
+          F77_XFCN (crsf2csf, CRSF2CSF,
+                    (n, F77_CMPLX_ARG (s.fortran_vec ()),
+                     F77_CMPLX_ARG (u.fortran_vec ()), c, sx));
         }
 
       return schur<FloatComplexMatrix> (s, u);

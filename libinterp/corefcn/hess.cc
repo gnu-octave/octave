@@ -34,6 +34,8 @@
 #include "errwarn.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (hess, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{H} =} hess (@var{A})
@@ -82,7 +84,7 @@ IEEE Transactions on Automatic Control, 1979).
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
-          octave::math::hess<FloatMatrix> result (tmp);
+          math::hess<FloatMatrix> result (tmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -94,7 +96,7 @@ IEEE Transactions on Automatic Control, 1979).
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-          octave::math::hess<FloatComplexMatrix> result (ctmp);
+          math::hess<FloatComplexMatrix> result (ctmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -109,7 +111,7 @@ IEEE Transactions on Automatic Control, 1979).
         {
           Matrix tmp = arg.matrix_value ();
 
-          octave::math::hess<Matrix> result (tmp);
+          math::hess<Matrix> result (tmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -121,7 +123,7 @@ IEEE Transactions on Automatic Control, 1979).
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-          octave::math::hess<ComplexMatrix> result (ctmp);
+          math::hess<ComplexMatrix> result (ctmp);
 
           if (nargout <= 1)
             retval = ovl (result.hess_matrix ());
@@ -151,3 +153,5 @@ IEEE Transactions on Automatic Control, 1979).
 %!error hess ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> hess ([1, 2; 3, 4; 5, 6])
 */
+
+OCTAVE_NAMESPACE_END

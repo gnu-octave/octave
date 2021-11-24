@@ -36,21 +36,6 @@
 #include "Array.h"
 #include "dim-vector.h"
 
-octave_idx_type *
-dim_vector::nil_rep (void)
-{
-  // Create a statically allocated rep object with an initial reference
-  // count of 1.  The dim_vector constructor that uses this object will
-  // increment the reference count.  The dim_vector destructor and copy
-  // assignment operator will decrement the reference count but those
-  // operations can never cause the count to become zero so they will
-  // never call delete on this object.
-
-  static octave_idx_type nr[4] = { 1, 2, 0, 0 };
-
-  return &nr[2];
-}
-
 // The maximum allowed value for a dimension extent.  This will normally be a
 // tiny bit off the maximum value of octave_idx_type.
 // Currently 1 is subtracted to allow safe conversion of any 2D Array into
@@ -64,21 +49,19 @@ dim_vector::dim_max (void)
 void
 dim_vector::chop_all_singletons (void)
 {
-  make_unique ();
-
   int j = 0;
   int nd = ndims ();
 
   for (int i = 0; i < nd; i++)
     {
-      if (rep[i] != 1)
-        rep[j++] = rep[i];
+      if (xelem(i) != 1)
+        xelem(j++) = xelem(i);
     }
 
   if (j == 1)
-    rep[1] = 1;
+    xelem(1) = 1;
 
-  rep[-1] = (j > 2 ? j : 2);
+  m_num_dims = (j > 2 ? j : 2);
 }
 
 std::string
@@ -120,9 +103,9 @@ dim_vector::safe_numel (void) const
 
   for (int i = 0; i < n_dims; i++)
     {
-      n *= rep[i];
-      if (rep[i] != 0)
-        idx_max /= rep[i];
+      n *= xelem(i);
+      if (xelem(i) != 0)
+        idx_max /= xelem(i);
       if (idx_max <= 0)
         throw std::bad_alloc ();
     }
@@ -164,13 +147,11 @@ dim_vector::concat (const dim_vector& dvb, int dim)
   else
     new_nd = orig_nd;
 
-  make_unique ();
-
   bool match = true;
 
   for (int i = 0; i < ndb; i++)
     {
-      if (i != dim && rep[i] != dvb(i))
+      if (i != dim && xelem(i) != dvb(i))
         {
           match = false;
           break;
@@ -179,7 +160,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 
   for (int i = ndb; i < new_nd; i++)
     {
-      if (i != dim && rep[i] != 1)
+      if (i != dim && xelem(i) != 1)
         {
           match = false;
           break;
@@ -187,13 +168,13 @@ dim_vector::concat (const dim_vector& dvb, int dim)
     }
 
   if (match)
-    rep[dim] += (dim < ndb ? dvb(dim) : 1);
+    xelem(dim) += (dim < ndb ? dvb(dim) : 1);
   else
     {
       // Dimensions don't match.  The only allowed fix is to omit 0x0.
       if (ndb == 2 && dvb(0) == 0 && dvb(1) == 0)
         match = true;
-      else if (orig_nd == 2 && rep[0] == 0 && rep[1] == 0)
+      else if (orig_nd == 2 && xelem(0) == 0 && xelem(1) == 0)
         {
           *this = dvb;
           match = true;
@@ -223,7 +204,7 @@ dim_vector::hvcat (const dim_vector& dvb, int dim)
     return true;
   else if (ndims () == 2 && dvb.ndims () == 2)
     {
-      bool e2dv = rep[0] + rep[1] == 1;
+      bool e2dv = xelem(0) + xelem(1) == 1;
       bool e2dvb = dvb(0) + dvb(1) == 1;
       if (e2dvb)
         {
@@ -252,8 +233,8 @@ dim_vector::redim (int n) const
     {
       dim_vector retval = alloc (n);
 
-      std::copy_n (rep, n_dims, retval.rep);
-      std::fill_n (retval.rep + n_dims, n - n_dims, 1);
+      std::copy_n (m_dims, n_dims, retval.m_dims);
+      std::fill_n (retval.m_dims + n_dims, n - n_dims, 1);
 
       return retval;
     }
@@ -264,18 +245,18 @@ dim_vector::redim (int n) const
 
       dim_vector retval = alloc (n);
 
-      std::copy_n (rep, n-1, retval.rep);
+      std::copy_n (m_dims, n-1, retval.m_dims);
 
       // Accumulate overflow dimensions into last remaining dimension
-      int k = rep[n-1];
+      int k = xelem(n-1);
       for (int i = n; i < n_dims; i++)
-        k *= rep[i];
+        k *= xelem(i);
 
-      retval.rep[n-1] = k;
+      retval.xelem(n-1) = k;
 
       // All dim_vectors are at least 2-D.  Make Nx1 if necessary.
       if (n == 1)
-        retval.rep[1] = 1;
+        retval.xelem(1) = 1;
 
       return retval;
     }

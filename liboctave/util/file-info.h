@@ -62,9 +62,10 @@ namespace octave
 
     ~file_info (void) = default;
 
-    std::string get_line (std::size_t line) const;
+    OCTAVE_API std::string get_line (std::size_t line) const;
 
-    std::deque<std::string> get_lines (std::size_t line, std::size_t num_lines) const;
+    OCTAVE_API std::deque<std::string>
+    get_lines (std::size_t line, std::size_t num_lines) const;
 
     std::size_t num_lines (void) const { return m_offsets.size (); }
 
@@ -87,9 +88,10 @@ namespace octave
     sys::time m_timestamp;
 
     // Read entire file called fname and return the contents as a string
-    static std::string snarf_file (const std::string& fname);
+    static OCTAVE_API std::string snarf_file (const std::string& fname);
 
-    static std::vector<std::size_t> get_line_offsets (const std::string& buf);
+    static OCTAVE_API std::vector<std::size_t>
+    get_line_offsets (const std::string& buf);
   };
 }
 

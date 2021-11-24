@@ -32,10 +32,11 @@
 ## If @var{s} is a structure array then @var{sidx} selects an element of the
 ## structure array, @var{field} specifies the field name of the selected
 ## element, and @var{fidx} selects which element of the field (in the case of
-## an array or cell array).  See @code{setfield} for a more complete
-## description of the syntax.
+## an array or cell array).  For a more complete description of the syntax,
+## @pxref{XREFsetfield,,@code{setfield}}.
 ##
-## @seealso{setfield, rmfield, orderfields, isfield, fieldnames, isstruct, struct}
+## @seealso{setfield, rmfield, orderfields, isfield, fieldnames, isstruct,
+## struct}
 ## @end deftypefn
 
 function val = getfield (s, varargin)
@@ -65,6 +66,6 @@ endfunction
 %! assert (getfield (ss,{1,2},"fd",{3},"b", {1,4}), 5);
 
 ## Test input validation
-%!error getfield ()
-%!error getfield (1)
+%!error <Invalid call> getfield ()
+%!error <Invalid call> getfield (1)
 %!error <invalid index> getfield (1,2)

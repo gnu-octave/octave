@@ -93,7 +93,7 @@ public:
 
   octave_base_value * try_narrowing_conversion (void);
 
-  idx_vector index_vector (bool require_integers = false) const;
+  octave::idx_vector index_vector (bool require_integers = false) const;
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
@@ -152,7 +152,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   octave_value map (unary_mapper_t umap) const;
 

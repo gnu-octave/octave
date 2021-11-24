@@ -1,5 +1,6 @@
 octave_gui_ICONS = \
   %reldir%/icons/applications-system.png \
+  %reldir%/icons/bookmark-new.png \
   %reldir%/icons/bottom_left_corner.png \
   %reldir%/icons/bottom_right_corner.png \
   %reldir%/icons/bottom_side.png \
@@ -49,6 +50,7 @@ octave_gui_ICONS = \
   %reldir%/icons/go-previous.png \
   %reldir%/icons/go-up.png \
   %reldir%/icons/graphic_logo_DocumentationDockWidget.png \
+  %reldir%/icons/graphic_logo_Figure.png \
   %reldir%/icons/graphic_logo_FileEditor.png \
   %reldir%/icons/graphic_logo_FilesDockWidget.png \
   %reldir%/icons/graphic_logo_HistoryDockWidget.png \
@@ -132,17 +134,22 @@ endif
 
 OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-external-editor-interface.cc \
+  %reldir%/moc-command-widget.cc \
+  %reldir%/moc-community-news.cc \
   %reldir%/moc-dialog.cc \
   %reldir%/moc-documentation-dock-widget.cc \
   %reldir%/moc-documentation.cc \
+  %reldir%/moc-documentation-bookmarks.cc \
   %reldir%/moc-dw-main-window.cc \
   %reldir%/moc-files-dock-widget.cc \
   %reldir%/moc-gui-settings.cc \
   %reldir%/moc-history-dock-widget.cc \
   %reldir%/moc-interpreter-qobject.cc \
+  %reldir%/moc-led-indicator.cc \
   %reldir%/moc-main-window.cc \
   %reldir%/moc-news-reader.cc \
   %reldir%/moc-octave-qobject.cc \
+  %reldir%/moc-release-notes.cc \
   %reldir%/moc-settings-dialog.cc \
   %reldir%/moc-terminal-dock-widget.cc \
   %reldir%/moc-color-picker.cc \
@@ -182,13 +189,17 @@ $(octave_gui_UI_H): | %reldir%/$(octave_dirstamp)
 BUILT_SOURCES += $(octave_gui_UI_H)
 
 noinst_HEADERS += \
+  %reldir%/command-widget.h \
+  %reldir%/community-news.h \
   %reldir%/dialog.h \
   %reldir%/octave-dock-widget.h \
   %reldir%/documentation-dock-widget.h \
   %reldir%/documentation.h \
+  %reldir%/documentation-bookmarks.h \
   %reldir%/dw-main-window.h \
   %reldir%/gui-preferences-all.h \
   %reldir%/gui-preferences-cs.h \
+  %reldir%/gui-preferences-dc.h \
   %reldir%/gui-preferences-dw.h \
   %reldir%/gui-preferences-ed.h \
   %reldir%/gui-preferences-fb.h \
@@ -210,6 +221,7 @@ noinst_HEADERS += \
   %reldir%/graphics-init.h \
   %reldir%/history-dock-widget.h \
   %reldir%/interpreter-qobject.h \
+  %reldir%/led-indicator.h \
   %reldir%/m-editor/file-editor-interface.h \
   %reldir%/m-editor/file-editor-tab.h \
   %reldir%/m-editor/file-editor.h \
@@ -220,9 +232,11 @@ noinst_HEADERS += \
   %reldir%/main-window.h \
   %reldir%/news-reader.h \
   %reldir%/octave-qobject.h \
+  %reldir%/octave-qtutils.h \
   %reldir%/qt-application.h \
   %reldir%/qt-interpreter-events.h \
   %reldir%/qt-utils.h \
+  %reldir%/release-notes.h \
   %reldir%/resource-manager.h \
   %reldir%/settings-dialog.h \
   %reldir%/shortcut-manager.h \
@@ -237,13 +251,17 @@ noinst_HEADERS += \
   %reldir%/variable-editor.h \
   %reldir%/variable-editor-model.h \
   %reldir%/set-path-dialog.h \
-  %reldir%/set-path-model.h
+  %reldir%/set-path-model.h \
+  %reldir%/gui-utils.h
 
 
 %canon_reldir%_%canon_reldir%_la_SOURCES = \
+  %reldir%/command-widget.cc \
+  %reldir%/community-news.cc \
   %reldir%/dialog.cc \
   %reldir%/documentation-dock-widget.cc \
   %reldir%/documentation.cc \
+  %reldir%/documentation-bookmarks.cc \
   %reldir%/dw-main-window.cc \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
@@ -251,6 +269,7 @@ noinst_HEADERS += \
   %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \
   %reldir%/interpreter-qobject.cc \
+  %reldir%/led-indicator.cc \
   %reldir%/m-editor/file-editor-tab.cc \
   %reldir%/m-editor/file-editor.cc \
   %reldir%/m-editor/find-dialog.cc \
@@ -263,6 +282,7 @@ noinst_HEADERS += \
   %reldir%/octave-qobject.cc \
   %reldir%/qt-interpreter-events.cc \
   %reldir%/qt-application.cc \
+  %reldir%/release-notes.cc \
   %reldir%/resource-manager.cc \
   %reldir%/settings-dialog.cc \
   %reldir%/shortcut-manager.cc \
@@ -277,7 +297,8 @@ noinst_HEADERS += \
   %reldir%/variable-editor.cc \
   %reldir%/variable-editor-model.cc \
   %reldir%/set-path-dialog.cc \
-  %reldir%/set-path-model.cc
+  %reldir%/set-path-model.cc \
+  %reldir%/gui-utils.cc
 
 nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   $(octave_gui_MOC) \

@@ -153,5 +153,6 @@ endfunction
 %! assert (q * b * z, bb, 2e-8);
 %! assert (bb .* mask, zeros (5), 2e-8);
 
-%!error qzhess ([0])
-%!error qzhess ()
+## Test input validation
+%!error <Invalid call> qzhess ()
+%!error <Invalid call> qzhess (1)

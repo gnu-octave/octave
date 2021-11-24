@@ -1,5 +1,5 @@
 function display (s)
-%  Display the critical info for an amplifier
+%%  Display the critical info for an amplifier
 
    gick = get (s, 'gick');
    disp ([inputname(1),'.gick = ']);

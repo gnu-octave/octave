@@ -76,7 +76,7 @@ octave_classdef::subsref (const std::string& type,
   std::size_t skip = 0;
   octave_value_list retval;
 
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
@@ -99,7 +99,7 @@ octave_classdef::subsref (const std::string& type,
 
   // At this point, the default subsref mechanism must be used.
 
-  retval = object.subsref (type, idx, nargout, skip, octave::cdef_class ());
+  retval = m_object.subsref (type, idx, nargout, skip, octave::cdef_class ());
 
   if (type.length () > skip && idx.size () > skip)
     retval = retval(0).next_subsref (nargout, type, idx, skip);
@@ -119,7 +119,7 @@ octave_classdef::subsref (const std::string& type,
   // assignment with multi-level indexing.  AFAIK this is only used for internal
   // purpose (not sure we should even implement this).
 
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls))
     {
@@ -140,7 +140,7 @@ octave_classdef::subsref (const std::string& type,
         }
     }
 
-  retval = object.subsref (type, idx, 1, skip, octave::cdef_class (), auto_add);
+  retval = m_object.subsref (type, idx, 1, skip, octave::cdef_class (), auto_add);
 
   if (type.length () > skip && idx.size () > skip)
     retval = retval(0).next_subsref (1, type, idx, skip);
@@ -155,7 +155,7 @@ octave_classdef::subsasgn (const std::string& type,
 {
   octave_value retval;
 
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
@@ -183,7 +183,7 @@ octave_classdef::subsasgn (const std::string& type,
     }
 
   if (! retval.is_defined ())
-    retval = object.subsasgn (type, idx, rhs);
+    retval = m_object.subsasgn (type, idx, rhs);
 
   return retval;
 }
@@ -195,7 +195,7 @@ octave_classdef::undef_subsasgn (const std::string& type,
 {
   if (type.length () == 1 && type[0] == '(')
     {
-      object = object.make_array ();
+      m_object = m_object.make_array ();
 
       return subsasgn (type, idx, rhs);
     }
@@ -208,7 +208,7 @@ octave_classdef::undef_subsasgn (const std::string& type,
 Matrix
 octave_classdef::size (void)
 {
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
@@ -236,7 +236,7 @@ octave_classdef::xnumel (const octave_value_list& idx)
 {
   octave_idx_type retval = -1;
 
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
@@ -287,11 +287,11 @@ octave_classdef::print (std::ostream& os, bool)
 void
 octave_classdef::print_raw (std::ostream& os, bool) const
 {
-  octave::cdef_class cls = object.get_class ();
+  octave::cdef_class cls = m_object.get_class ();
 
   if (cls.ok ())
     {
-      bool is_array = object.is_array ();
+      bool is_array = m_object.is_array ();
 
       increment_indent_level ();
 
@@ -357,7 +357,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
             os << "  " << nm;
           else
             {
-              octave_value val = prop.get_value (object, false);
+              octave_value val = prop.get_value (m_object, false);
               dim_vector dims = val.dims ();
 
               os << std::setw (max_len+2) << nm << ": ";
@@ -383,7 +383,7 @@ octave_classdef::is_instance_of (const std::string& cls_name) const
   octave::cdef_class cls = octave::lookup_class (cls_name, false, false);
 
   if (cls.ok ())
-    return is_superclass (cls, object.get_class ());
+    return is_superclass (cls, m_object.get_class ());
 
   return false;
 }
@@ -405,13 +405,13 @@ bool octave_classdef_meta::is_classdef_method (const std::string& cname) const
 {
   bool retval = false;
 
-  if (object.is_method ())
+  if (m_object.is_method ())
     {
       if (cname.empty ())
         retval = true;
       else
         {
-          octave::cdef_method meth (object);
+          octave::cdef_method meth (m_object);
 
           return meth.is_defined_in_class (cname);
         }
@@ -424,13 +424,13 @@ bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) co
 {
   bool retval = false;
 
-  if (object.is_class ())
+  if (m_object.is_class ())
     {
       if (cname.empty ())
         retval = true;
       else
         {
-          octave::cdef_class cls (object);
+          octave::cdef_class cls (m_object);
 
           if (cls.get_name () == cname)
             retval = true;
@@ -442,9 +442,9 @@ bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) co
 
 std::string octave_classdef_meta::doc_string (const std::string& meth_name) const
 {
-  if (object.is_class ())
+  if (m_object.is_class ())
     {
-      octave::cdef_class cls (object);
+      octave::cdef_class cls (m_object);
 
       if (meth_name.empty ())
         return cls.doc_string ();
@@ -453,6 +453,18 @@ std::string octave_classdef_meta::doc_string (const std::string& meth_name) cons
 
       if (cdef_meth.ok ())
         return cdef_meth.get_doc_string ();
+    }
+
+  return "";
+}
+
+std::string octave_classdef_meta::file_name (void) const
+{
+  if (m_object.is_class ())
+    {
+      octave::cdef_class cls (m_object);
+
+      return cls.file_name ();
     }
 
   return "";
@@ -586,6 +598,8 @@ bool octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluat
   return false;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__meta_get_package__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __meta_get_package__ ()
@@ -597,7 +611,7 @@ Undocumented internal function.
 
   std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
 
-  return octave::to_ov (octave::lookup_package (cname));
+  return to_ov (lookup_package (cname));
 }
 
 DEFUN (metaclass, args, ,
@@ -609,9 +623,9 @@ Returns the meta.class object corresponding to the class of @var{obj}.
   if (args.length () != 1)
     print_usage ();
 
-  octave::cdef_object obj = octave::to_cdef (args(0));
+  cdef_object obj = to_cdef (args(0));
 
-  return octave::to_ov (obj.get_class ());
+  return to_ov (obj.get_class ());
 }
 
 // FIXME: What about dynamic properties if obj is a scalar, or the
@@ -649,14 +663,14 @@ attribute is public and if the @code{Hidden} attribute is false.
   else
     err_wrong_type_arg ("properties", arg);
 
-  octave::cdef_class cls;
+  cdef_class cls;
 
-  cls = octave::lookup_class (class_name, false, true);
+  cls = lookup_class (class_name, false, true);
 
   if (! cls.ok ())
     error ("invalid class: %s", class_name.c_str ());
 
-  std::map<std::string, octave::cdef_property> property_map =
+  std::map<std::string, cdef_property> property_map =
     cls.get_property_map ();
 
   std::list<std::string> property_names;
@@ -666,7 +680,7 @@ attribute is public and if the @code{Hidden} attribute is false.
       // FIXME: this loop duplicates a significant portion of the loops
       // in octave_classdef::print_raw.
 
-      const octave::cdef_property& prop = pname_prop.second;
+      const cdef_property& prop = pname_prop.second;
 
       std::string nm = prop.get_name ();
 
@@ -729,11 +743,11 @@ Implements @code{methods} for Octave class objects and classnames.
 
   string_vector sv;
 
-  octave::cdef_class cls = octave::lookup_class (class_name, false, true);
+  cdef_class cls = lookup_class (class_name, false, true);
 
   if (cls.ok ())
     {
-      std::map<std::string, octave::cdef_method> method_map
+      std::map<std::string, cdef_method> method_map
         = cls.get_method_map (false, true);
 
       std::list<std::string> method_names;
@@ -750,12 +764,14 @@ Implements @code{methods} for Octave class objects and classnames.
 
   // The following will also find methods for legacy @CLASS objects.
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   sv.append (lp.methods (class_name));
 
   return ovl (Cell (sv));
 }
+
+OCTAVE_NAMESPACE_END
 
 /*
 ;;; Local Variables: ***

@@ -30,40 +30,272 @@
 
 #include "oct-cmplx.h"
 
-#define DECLARE_XNORM_FUNCS(PREFIX, RTYPE)              \
-  class PREFIX##Matrix;                                 \
-  class PREFIX##ColumnVector;                           \
-  class PREFIX##RowVector;                              \
-                                                        \
-  extern OCTAVE_API RTYPE                               \
-  xnorm (const PREFIX##ColumnVector&, RTYPE p = 2);     \
-  extern OCTAVE_API RTYPE                               \
-  xnorm (const PREFIX##RowVector&, RTYPE p = 2);        \
-  extern OCTAVE_API RTYPE                               \
-  xnorm (const PREFIX##Matrix&, RTYPE p = 2);           \
-  extern OCTAVE_API RTYPE                               \
-  xfrobnorm (const PREFIX##Matrix&);
+class ColumnVector;
+class RowVector;
+class Matrix;
 
-DECLARE_XNORM_FUNCS(, double)
-DECLARE_XNORM_FUNCS(Complex, double)
-DECLARE_XNORM_FUNCS(Float, float)
-DECLARE_XNORM_FUNCS(FloatComplex, float)
+class FloatColumnVector;
+class FloatRowVector;
+class FloatMatrix;
 
-DECLARE_XNORM_FUNCS(Sparse, double)
-DECLARE_XNORM_FUNCS(SparseComplex, double)
+class ComplexColumnVector;
+class ComplexRowVector;
+class ComplexMatrix;
 
-#define DECLARE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE)       \
-  extern OCTAVE_API RPREFIX##RowVector                          \
-  xcolnorms (const PREFIX##Matrix&, RTYPE p = 2);               \
-  extern OCTAVE_API RPREFIX##ColumnVector                       \
-  xrownorms (const PREFIX##Matrix&, RTYPE p = 2);               \
+class FloatComplexColumnVector;
+class FloatComplexRowVector;
+class FloatComplexMatrix;
 
-DECLARE_COLROW_NORM_FUNCS(, , double)
-DECLARE_COLROW_NORM_FUNCS(Complex, , double)
-DECLARE_COLROW_NORM_FUNCS(Float, Float, float)
-DECLARE_COLROW_NORM_FUNCS(FloatComplex, Float, float)
+class SparseMatrix;
+class SparseComplexMatrix;
 
-DECLARE_COLROW_NORM_FUNCS(Sparse, , double)
-DECLARE_COLROW_NORM_FUNCS(SparseComplex, , double)
+// The remaining includes can be removed when the deprecated functions
+// at the end of this file are removed.
+
+#include "dColVector.h"
+#include "dRowVector.h"
+#include "fColVector.h"
+#include "fRowVector.h"
+
+namespace octave
+{
+  extern OCTAVE_API double xnorm (const ColumnVector&, double p = 2);
+  extern OCTAVE_API double xnorm (const RowVector&, double p = 2);
+  extern OCTAVE_API double xnorm (const Matrix&, double p = 2);
+  extern OCTAVE_API double xfrobnorm (const Matrix&);
+
+  extern OCTAVE_API double xnorm (const ComplexColumnVector&, double p = 2);
+  extern OCTAVE_API double xnorm (const ComplexRowVector&, double p = 2);
+  extern OCTAVE_API double xnorm (const ComplexMatrix&, double p = 2);
+  extern OCTAVE_API double xfrobnorm (const ComplexMatrix&);
+
+  extern OCTAVE_API float xnorm (const FloatColumnVector&, float p = 2);
+  extern OCTAVE_API float xnorm (const FloatRowVector&, float p = 2);
+  extern OCTAVE_API float xnorm (const FloatMatrix&, float p = 2);
+  extern OCTAVE_API float xfrobnorm (const FloatMatrix&);
+
+  extern OCTAVE_API float xnorm (const FloatComplexColumnVector&, float p = 2);
+  extern OCTAVE_API float xnorm (const FloatComplexRowVector&, float p = 2);
+  extern OCTAVE_API float xnorm (const FloatComplexMatrix&, float p = 2);
+  extern OCTAVE_API float xfrobnorm (const FloatComplexMatrix&);
+
+  extern OCTAVE_API double xnorm (const SparseMatrix&, double p = 2);
+  extern OCTAVE_API double xfrobnorm (const SparseMatrix&);
+
+  extern OCTAVE_API double xnorm (const SparseComplexMatrix&, double p = 2);
+  extern OCTAVE_API double xfrobnorm (const SparseComplexMatrix&);
+
+  extern OCTAVE_API RowVector xcolnorms (const Matrix&, double p = 2);
+  extern OCTAVE_API ColumnVector xrownorms (const Matrix&, double p = 2);
+
+  extern OCTAVE_API RowVector xcolnorms (const ComplexMatrix&, double p = 2);
+  extern OCTAVE_API ColumnVector xrownorms (const ComplexMatrix&, double p = 2);
+
+  extern OCTAVE_API FloatRowVector xcolnorms (const FloatMatrix&, float p = 2);
+  extern OCTAVE_API FloatColumnVector xrownorms (const FloatMatrix&, float p = 2);
+
+  extern OCTAVE_API FloatRowVector xcolnorms (const FloatComplexMatrix&, float p = 2);
+  extern OCTAVE_API FloatColumnVector xrownorms (const FloatComplexMatrix&, float p = 2);
+
+  extern OCTAVE_API RowVector xcolnorms (const SparseMatrix&, double p = 2);
+  extern OCTAVE_API ColumnVector xrownorms (const SparseMatrix&, double p = 2);
+
+  extern OCTAVE_API RowVector xcolnorms (const SparseComplexMatrix&, double p = 2);
+  extern OCTAVE_API ColumnVector xrownorms (const SparseComplexMatrix&, double p = 2);
+}
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline double xnorm (const ColumnVector& v, double p = 2)
+{
+  return octave::xnorm (v, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline double xnorm (const RowVector& v, double p = 2)
+{
+  return octave::xnorm (v, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline double xnorm (const Matrix& m, double p = 2)
+{
+  return octave::xnorm (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xfrobnorm' instead")
+inline double xfrobnorm (const Matrix& m)
+{
+  return octave::xfrobnorm (m);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline double xnorm (const ComplexColumnVector& v, double p = 2)
+{
+  return octave::xnorm (v, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline double xnorm (const ComplexRowVector& v, double p = 2)
+{
+  return octave::xnorm (v, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline double xnorm (const ComplexMatrix& m, double p = 2)
+{
+  return octave::xnorm (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xfrobnorm' instead")
+inline double xfrobnorm (const ComplexMatrix& m)
+{
+  return octave::xfrobnorm (m);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline float xnorm (const FloatColumnVector& v, float p = 2)
+{
+  return octave::xnorm (v, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline float xnorm (const FloatRowVector& v, float p = 2)
+{
+  return octave::xnorm (v, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline float xnorm (const FloatMatrix& m, float p = 2)
+{
+  return octave::xnorm (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xfrobnorm' instead")
+inline float xfrobnorm (const FloatMatrix& m)
+{
+  return octave::xfrobnorm (m);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline float xnorm (const FloatComplexColumnVector& v, float p = 2)
+{
+  return octave::xnorm (v, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline float xnorm (const FloatComplexRowVector& v, float p = 2)
+{
+  return octave::xnorm (v, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline float xnorm (const FloatComplexMatrix& m, float p = 2)
+{
+  return octave::xnorm (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xfrobnorm' instead")
+inline float xfrobnorm (const FloatComplexMatrix& m)
+{
+  return octave::xfrobnorm (m);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline double xnorm (const SparseMatrix& m, double p = 2)
+{
+  return octave::xnorm (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xfrobnorm' instead")
+inline double xfrobnorm (const SparseMatrix& m)
+{
+  return octave::xfrobnorm (m);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
+inline double xnorm (const SparseComplexMatrix& m, double p = 2)
+{
+  return octave::xnorm (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xfrobnorm' instead")
+inline double xfrobnorm (const SparseComplexMatrix& m)
+{
+  return octave::xfrobnorm (m);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xcolnorms' instead")
+inline RowVector xcolnorms (const Matrix& m, double p = 2)
+{
+  return octave::xcolnorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xrownorms' instead")
+inline ColumnVector xrownorms (const Matrix& m, double p = 2)
+{
+  return octave::xrownorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xcolnorms' instead")
+inline RowVector xcolnorms (const ComplexMatrix& m, double p = 2)
+{
+  return octave::xcolnorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xrownorms' instead")
+inline ColumnVector xrownorms (const ComplexMatrix& m, double p = 2)
+{
+  return octave::xrownorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xcolnorms' instead")
+inline FloatRowVector xcolnorms (const FloatMatrix& m, float p = 2)
+{
+  return octave::xcolnorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xrownorms' instead")
+inline FloatColumnVector xrownorms (const FloatMatrix& m, float p = 2)
+{
+  return octave::xrownorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xcolnorms' instead")
+inline FloatRowVector xcolnorms (const FloatComplexMatrix& m, float p = 2)
+{
+  return octave::xcolnorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xrownorms' instead")
+inline FloatColumnVector xrownorms (const FloatComplexMatrix& m, float p = 2)
+{
+  return octave::xrownorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xcolnorms' instead")
+inline RowVector xcolnorms (const SparseMatrix& m, double p = 2)
+{
+  return octave::xcolnorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xrownorms' instead")
+inline ColumnVector xrownorms (const SparseMatrix& m, double p = 2)
+{
+  return octave::xrownorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xcolnorms' instead")
+inline RowVector xcolnorms (const SparseComplexMatrix& m, double p = 2)
+{
+  return octave::xcolnorms (m, p);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::xrownorms' instead")
+inline ColumnVector xrownorms (const SparseComplexMatrix& m, double p = 2)
+{
+  return octave::xrownorms (m, p);
+}
+#endif
 
 #endif

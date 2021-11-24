@@ -32,6 +32,6 @@
 
 #include <string>
 
-extern OCTAVE_API std::string liboctinterp_hg_id (void);
+extern OCTINTERP_API std::string liboctinterp_hg_id (void);
 
 #endif

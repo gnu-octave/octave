@@ -44,8 +44,8 @@ class octave_value_list;
 #include "stack-frame.h"
 #include "symscope.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class tree_evaluator;
   class symbol_info_list;
   class unwind_protect;
@@ -325,6 +325,7 @@ namespace octave
 
     std::map<std::string, octave_value> m_global_values;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

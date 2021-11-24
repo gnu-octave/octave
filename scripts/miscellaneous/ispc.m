@@ -31,15 +31,9 @@
 
 function retval = ispc ()
 
-  if (nargin == 0)
-    retval = __octave_config_info__ ("windows");
-  else
-    print_usage ();
-  endif
+  retval = __octave_config_info__ ("windows");
 
 endfunction
 
 
 %!assert (islogical (ispc ()))
-
-%!error ispc (1)

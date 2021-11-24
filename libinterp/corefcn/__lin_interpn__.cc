@@ -35,6 +35,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // equivalent to isvector.m
 
 template <typename T>
@@ -321,3 +323,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

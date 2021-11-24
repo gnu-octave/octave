@@ -36,10 +36,12 @@
 #include "ov.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Date and time functions.
 
 static octave_scalar_map
-mk_tm_map (const octave::sys::base_tm& t)
+mk_tm_map (const sys::base_tm& t)
 {
   octave_scalar_map m;
 
@@ -85,10 +87,10 @@ stringfield (const octave_scalar_map& m, const std::string& k, const char *who)
   return retval;
 }
 
-static octave::sys::base_tm
+static sys::base_tm
 extract_tm (const octave_scalar_map& m, const char *who)
 {
-  octave::sys::base_tm tm;
+  sys::base_tm tm;
 
   tm.usec (intfield (m, "usec", who));
   tm.sec (intfield (m, "sec", who));
@@ -114,13 +116,14 @@ Return the current time as the number of seconds since the epoch.
 The epoch is referenced to 00:00:00 UTC (Coordinated Universal Time) 1 Jan
 1970.  For example, on Monday February 17, 1997 at 07:15:06 UTC, the value
 returned by @code{time} was 856163706.
-@seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock,
+datenum, datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave::sys::time ());
+  return ovl (sys::time ());
 }
 
 /*
@@ -156,7 +159,8 @@ gmtime (time ())
         @}
 @end group
 @end example
-@seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 1 || args(0).numel () != 1)
@@ -164,7 +168,7 @@ gmtime (time ())
 
   double tmp = args(0).double_value ();
 
-  return ovl (mk_tm_map (octave::sys::gmtime (tmp)));
+  return ovl (mk_tm_map (sys::gmtime (tmp)));
 }
 
 /*
@@ -211,7 +215,8 @@ localtime (time ())
         @}
 @end group
 @end example
-@seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 1 || args(0).numel () != 1)
@@ -219,7 +224,7 @@ localtime (time ())
 
   double tmp = args(0).double_value ();
 
-  return ovl (mk_tm_map (octave::sys::localtime (tmp)));
+  return ovl (mk_tm_map (sys::localtime (tmp)));
 }
 
 /*
@@ -255,7 +260,8 @@ mktime (localtime (time ()))
      @result{} 856163706
 @end group
 @end example
-@seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -263,9 +269,9 @@ mktime (localtime (time ()))
 
   octave_scalar_map map = args(0).xscalar_map_value ("mktime: TM_STRUCT argument must be a structure");
 
-  octave::sys::base_tm tm = extract_tm (map, "mktime");
+  sys::base_tm tm = extract_tm (map, "mktime");
 
-  return ovl (octave::sys::time (tm));
+  return ovl (sys::time (tm));
 }
 
 /*
@@ -440,7 +446,8 @@ Last two digits of year (00-99).
 @item %Y
 Year (1970-).
 @end table
-@seealso{strptime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strptime, localtime, gmtime, mktime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 2)
@@ -450,7 +457,7 @@ Year (1970-).
 
   octave_scalar_map map = args(1).xscalar_map_value ("strftime: TM_STRUCT must be a structure");
 
-  octave::sys::base_tm tm = extract_tm (map, "strftime");
+  sys::base_tm tm = extract_tm (map, "strftime");
 
   return ovl (tm.strftime (fmt));
 }
@@ -477,7 +484,8 @@ the control of the format string @var{fmt}.
 If @var{fmt} fails to match, @var{nchars} is 0; otherwise, it is set to the
 position of last matched character plus 1.  Always check for this unless
 you're absolutely sure the date string will be parsed correctly.
-@seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum,
+datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
   if (args.length () != 2)
@@ -487,7 +495,7 @@ you're absolutely sure the date string will be parsed correctly.
 
   std::string fmt = args(1).xstring_value ("strptime: FMT must be a string");
 
-  octave::sys::strptime t (str, fmt);
+  sys::strptime t (str, fmt);
 
   return ovl (mk_tm_map (t), t.characters_converted ());
 }
@@ -511,3 +519,5 @@ you're absolutely sure the date string will be parsed correctly.
 
 %!error strptime ()
 */
+
+OCTAVE_NAMESPACE_END

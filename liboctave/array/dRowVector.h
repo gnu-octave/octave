@@ -59,28 +59,28 @@ public:
     return *this;
   }
 
-  bool operator == (const RowVector& a) const;
-  bool operator != (const RowVector& a) const;
+  OCTAVE_API bool operator == (const RowVector& a) const;
+  OCTAVE_API bool operator != (const RowVector& a) const;
 
   // destructive insert/delete/reorder operations
 
-  RowVector& insert (const RowVector& a, octave_idx_type c);
+  OCTAVE_API RowVector& insert (const RowVector& a, octave_idx_type c);
 
-  RowVector& fill (double val);
-  RowVector& fill (double val, octave_idx_type c1, octave_idx_type c2);
+  OCTAVE_API RowVector& fill (double val);
+  OCTAVE_API RowVector& fill (double val, octave_idx_type c1, octave_idx_type c2);
 
-  RowVector append (const RowVector& a) const;
+  OCTAVE_API RowVector append (const RowVector& a) const;
 
-  ColumnVector transpose (void) const;
+  OCTAVE_API ColumnVector transpose (void) const;
 
   friend OCTAVE_API RowVector real (const ComplexRowVector& a);
   friend OCTAVE_API RowVector imag (const ComplexRowVector& a);
 
   // resize is the destructive equivalent for this one
 
-  RowVector extract (octave_idx_type c1, octave_idx_type c2) const;
+  OCTAVE_API RowVector extract (octave_idx_type c1, octave_idx_type c2) const;
 
-  RowVector extract_n (octave_idx_type c1, octave_idx_type n) const;
+  OCTAVE_API RowVector extract_n (octave_idx_type c1, octave_idx_type n) const;
 
   // row vector by matrix -> row vector
 
@@ -88,8 +88,8 @@ public:
 
   // other operations
 
-  double min (void) const;
-  double max (void) const;
+  OCTAVE_API double min (void) const;
+  OCTAVE_API double max (void) const;
 
   // i/o
 
@@ -109,9 +109,9 @@ public:
 
 // row vector by column vector -> scalar
 
-double OCTAVE_API operator * (const RowVector& a, const ColumnVector& b);
+OCTAVE_API double operator * (const RowVector& a, const ColumnVector& b);
 
-Complex OCTAVE_API operator * (const RowVector& a,
+OCTAVE_API Complex operator * (const RowVector& a,
                                const ComplexColumnVector& b);
 
 // other operations

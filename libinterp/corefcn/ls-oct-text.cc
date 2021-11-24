@@ -115,13 +115,13 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
                 ; // Skip whitespace and the colon.
 
               is.putback (c);
-              retval = read_until_newline (is, false);
+              retval = octave::read_until_newline (is, false);
               break;
             }
           else if (next_only)
             break;
           else
-            skip_until_newline (is, false);
+            octave::skip_until_newline (is, false);
         }
     }
 
@@ -254,7 +254,7 @@ load_inline_fcn (std::istream& is, const std::string& filename)
       if (name == "0")
         name = "";
 
-      skip_preceeding_newline (is);
+      octave::skip_preceeding_newline (is);
 
       std::string buf;
 
@@ -263,7 +263,7 @@ load_inline_fcn (std::istream& is, const std::string& filename)
 
           // Get a line of text whitespace characters included,
           // leaving newline in the stream.
-          buf = read_until_newline (is, true);
+          buf = octave::read_until_newline (is, true);
         }
 
       if (is)
@@ -457,6 +457,8 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
   return (static_cast<bool> (os));
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (save_precision, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} save_precision ()
@@ -478,6 +480,9 @@ The original variable value is restored when exiting the function.
 @seealso{save_default_options}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1,
-                                            std::numeric_limits<int>::max ());
+  return set_internal_variable (Vsave_precision, args, nargout,
+                                "save_precision", -1,
+                                std::numeric_limits<int>::max ());
 }
+
+OCTAVE_NAMESPACE_END

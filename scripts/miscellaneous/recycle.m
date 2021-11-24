@@ -42,10 +42,6 @@ function val = recycle (new_val)
 
   persistent current_state = "off";
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0 || nargout > 0)
     val = current_state;
   endif

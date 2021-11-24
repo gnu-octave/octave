@@ -41,7 +41,7 @@
 
 function c = hamming (m, opt)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -87,7 +87,7 @@ endfunction
 %! A = hamming (N, "periodic");
 %! assert (A(N/2 + 1), 1);
 
-%!error hamming ()
+%!error <Invalid call> hamming ()
 %!error hamming (0.5)
 %!error hamming (-1)
 %!error hamming (ones (1,4))

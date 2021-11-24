@@ -28,6 +28,13 @@
 
 #include "octave-config.h"
 
+#include <limits>
+
+#if defined (HAVE_CHOLMOD)
+#  include "dSparse.h"
+#  include "CSparse.h"
+#endif
+
 #if defined (HAVE_SUITESPARSE_AMD_H)
 #  include <suitesparse/amd.h>
 #elif defined (HAVE_UFSPARSE_AMD_H)
@@ -86,6 +93,12 @@
 #  include <umfpack/umfpack.h>
 #elif defined (HAVE_UMFPACK_H)
 #  include <umfpack.h>
+#endif
+
+#if defined (HAVE_SUITESPARSE_SUITESPARSEQR_HPP)
+#  include <suitesparse/SuiteSparseQR.hpp>
+#elif defined (HAVE_SUITESPARSEQR_HPP)
+#  include <SuiteSparseQR.hpp>
 #endif
 
 // Cope with new SuiteSparse versions
@@ -161,7 +174,8 @@
 
 #if (defined (HAVE_AMD) || defined (HAVE_CCOLAMD)               \
      || defined (HAVE_CHOLMOD) || defined (HAVE_COLAMD)         \
-     || defined (HAVE_CXSPARSE) || defined (HAVE_UMFPACK))
+     || defined (HAVE_CXSPARSE) || defined (HAVE_SPQR)          \
+     || defined (HAVE_UMFPACK))
 
 namespace octave
 {
@@ -171,17 +185,39 @@ namespace octave
   typedef int suitesparse_integer;
 #  endif
 
-  extern suitesparse_integer *
+  extern OCTAVE_API suitesparse_integer *
   to_suitesparse_intptr (octave_idx_type *i);
 
-  extern const suitesparse_integer *
+  extern const OCTAVE_API suitesparse_integer *
   to_suitesparse_intptr (const octave_idx_type *i);
 
-  extern octave_idx_type*
+  extern OCTAVE_API octave_idx_type*
   to_octave_idx_type_ptr (suitesparse_integer *i);
 
-  extern const octave_idx_type*
+  extern const OCTAVE_API octave_idx_type*
   to_octave_idx_type_ptr (const suitesparse_integer *i);
+
+  inline octave_idx_type
+  from_suitesparse_long (SuiteSparse_long x)
+  {
+    if (x < std::numeric_limits<octave_idx_type>::min ()
+        || x > std::numeric_limits<octave_idx_type>::max ())
+      (*current_liboctave_error_handler)
+        ("integer dimension or index out of range for Octave's indexing type");
+
+    return static_cast<octave_idx_type> (x);
+  }
+
+  inline octave_idx_type
+  from_size_t (std::size_t x)
+  {
+    // std::size_t is guaranteed to be unsigned
+    if (x > std::numeric_limits<octave_idx_type>::max ())
+      (*current_liboctave_error_handler)
+        ("integer dimension or index out of range for Octave's index type");
+
+    return static_cast<octave_idx_type> (x);
+  }
 }
 
 #endif

@@ -30,7 +30,8 @@
 extern "C" {
 #endif
 
-extern const char * octave_set_program_name_wrapper (const char *pname);
+extern OCTAVE_API const char *
+octave_set_program_name_wrapper (const char *pname);
 
 #if defined __cplusplus
 }

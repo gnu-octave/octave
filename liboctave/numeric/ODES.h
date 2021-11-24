@@ -37,18 +37,20 @@ ODES : public base_diff_eqn, public ODESFunc
 public:
 
   ODES (void)
-    : base_diff_eqn (), ODESFunc (), xdot (), theta () { }
+    : base_diff_eqn (), ODESFunc (), m_xdot (), m_theta () { }
 
   ODES (const ColumnVector& s, double tm, ODESFunc& f)
-    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.numel (), 0.0), theta () { }
+    : base_diff_eqn (s, tm), ODESFunc (f), m_xdot (s.numel (), 0.0), m_theta ()
+  { }
 
   ODES (const ColumnVector& s, const ColumnVector& xtheta, double tm,
         ODESFunc& f)
-    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.numel (), 0.0),
-      theta (xtheta) { }
+    : base_diff_eqn (s, tm), ODESFunc (f), m_xdot (s.numel (), 0.0),
+      m_theta (xtheta) { }
 
   ODES (const ODES& a)
-    : base_diff_eqn (a), ODESFunc (a), xdot (a.xdot), theta (a.theta) { }
+    : base_diff_eqn (a), ODESFunc (a), m_xdot (a.m_xdot), m_theta (a.m_theta)
+  { }
 
   ODES& operator = (const ODES& a)
   {
@@ -57,28 +59,28 @@ public:
         base_diff_eqn::operator = (a);
         ODESFunc::operator = (a);
 
-        xdot = a.xdot;
-        theta = a.theta;
+        m_xdot = a.m_xdot;
+        m_theta = a.m_theta;
       }
     return *this;
   }
 
   ~ODES (void) = default;
 
-  ColumnVector parameter_vector (void) { return theta; }
+  ColumnVector parameter_vector (void) { return m_theta; }
 
-  void initialize (const ColumnVector& x, double t);
+  OCTAVE_API void initialize (const ColumnVector& x, double t);
 
-  void initialize (const ColumnVector& x, double t,
-                   const ColumnVector& theta);
+  OCTAVE_API void
+  initialize (const ColumnVector& x, double t, const ColumnVector& theta);
 
 protected:
 
   // State vector time derivatives.
-  ColumnVector xdot;
+  ColumnVector m_xdot;
 
   // Parameter vector.
-  ColumnVector theta;
+  ColumnVector m_theta;
 };
 
 #endif

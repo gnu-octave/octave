@@ -31,6 +31,7 @@
 
 enum octave_kw_id
 {
+  arguments_kw,
   break_kw,
   case_kw,
   catch_kw,
@@ -42,6 +43,7 @@ enum octave_kw_id
   end_kw,
   end_try_catch_kw,
   end_unwind_protect_kw,
+  endarguments_kw,
   endclassdef_kw,
   endenumeration_kw,
   endevents_kw,
@@ -51,6 +53,7 @@ enum octave_kw_id
   endmethods_kw,
   endparfor_kw,
   endproperties_kw,
+  endspmd_kw,
   endswitch_kw,
   endwhile_kw,
   enumeration_kw,
@@ -69,6 +72,7 @@ enum octave_kw_id
   properties_kw,
   return_kw,
   set_kw,
+  spmd_kw,
   switch_kw,
   try_kw,
   until_kw,
@@ -82,6 +86,7 @@ enum octave_kw_id
 struct octave_kw { const char *name; int tok; octave_kw_id kw_id; };
 
 %%
+arguments, ARGUMENTS, arguments_kw
 break, BREAK, break_kw
 case, CASE, case_kw
 catch, CATCH, catch_kw
@@ -93,6 +98,7 @@ elseif, ELSEIF, elseif_kw
 end, END, end_kw
 end_try_catch, END, end_try_catch_kw
 end_unwind_protect, END, end_unwind_protect_kw
+endarguments, END, endarguments_kw
 endclassdef, END, endclassdef_kw
 endenumeration, END, endenumeration_kw
 endevents, END, endevents_kw
@@ -102,6 +108,7 @@ endif, END, endif_kw
 endmethods, END, endmethods_kw
 endparfor, END, endparfor_kw
 endproperties, END, endproperties_kw
+endspmd, END, endspmd_kw
 endswitch, END, endswitch_kw
 endwhile, END, endwhile_kw
 enumeration, ENUMERATION, enumeration_kw
@@ -118,6 +125,7 @@ persistent, PERSISTENT, persistent_kw
 properties, PROPERTIES, properties_kw
 return, FUNC_RET, return_kw
 set, SET, set_kw
+spmd, SPMD, spmd_kw
 switch, SWITCH, switch_kw
 try, TRY, try_kw
 until, UNTIL, until_kw
@@ -125,4 +133,4 @@ unwind_protect, UNWIND, unwind_protect_kw
 unwind_protect_cleanup, CLEANUP, unwind_protect_cleanup_kw
 while, WHILE, while_kw
 __FILE__, DQ_STRING, magic_file_kw
-__LINE__, NUM, magic_line_kw
+__LINE__, NUMBER, magic_line_kw

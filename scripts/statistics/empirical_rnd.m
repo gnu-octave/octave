@@ -65,6 +65,6 @@ endfunction
 %!assert (class (empirical_rnd (single (1:2), 1)), "single")
 
 ## Test input validation
-%!error empirical_rnd ()
+%!error <Invalid call> empirical_rnd ()
 %!error empirical_rnd (ones (2), 1)
 %!error empirical_rnd (ones (2), 1, 1)

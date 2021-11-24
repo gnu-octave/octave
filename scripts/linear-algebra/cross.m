@@ -50,7 +50,7 @@
 
 function z = cross (x, y, dim)
 
-  if (nargin != 2 && nargin != 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -119,5 +119,8 @@ endfunction
 %! assert (cross (x, y, 2), r, 2e-8);
 %! assert (cross (x, y, 1), -r, 2e-8);
 
-%!error cross (0,0)
-%!error cross ()
+## Test input validation
+%!error <Invalid call> cross ()
+%!error <Invalid call> cross (1)
+## FIXME: Need tests for other error() conditions and warning() calls.
+%!error <must have at least one dimension with 3 elements> cross (0,0)

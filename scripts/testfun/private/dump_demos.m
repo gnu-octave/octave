@@ -57,10 +57,6 @@
 
 function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, mfile="dump_plot_demos.m", fmt="png")
 
-  if (nargin > 3)
-    print_usage ();
-  endif
-
   if (ischar (dirs))
     dirs = {dirs};
   elseif (! iscellstr (dirs))
@@ -343,14 +339,14 @@ function dump_helper_fcns (fid)
 "    style = 'profile';                                                       "
 "  end                                                                        "
 "                                                                             "
-"  idx = 1:size (cmap, 1);                                                    "
+"  idx = 1:rows (cmap);                                                       "
 "  switch (lower (style))                                                     "
 "    case 'profile'                                                           "
 "      htmp = plot (idx, cmap(:,1), 'r', ...                                  "
 "                   idx, cmap(:,2), 'g', ...                                  "
 "                   idx, cmap(:,3), 'b');                                     "
 "      set (gca (), 'ytick', 0:0.1:1);                                        "
-"      set (gca (), 'xlim', [0 size(cmap,1)]);                                "
+"      set (gca (), 'xlim', [0 rows(cmap)]);                                  "
 "    case 'composite'                                                         "
 "      htmp = image (idx);                                                    "
 "      set (gca, 'ytick', []);                                                "

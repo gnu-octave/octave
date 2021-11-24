@@ -52,16 +52,16 @@
 #include "ov-bool-sparse.h"
 
 
-template class OCTINTERP_API octave_base_sparse<SparseMatrix>;
+template class octave_base_sparse<SparseMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix",
                                      "double");
 
-idx_vector
+octave::idx_vector
 octave_sparse_matrix::index_vector (bool /* require_integers */) const
 {
   if (matrix.numel () == matrix.nnz ())
-    return idx_vector (array_value ());
+    return octave::idx_vector (array_value ());
   else
     {
       std::string nm = '<' + type_name () + '>';
@@ -288,7 +288,7 @@ octave_sparse_matrix::save_binary (std::ostream& os, bool save_as_floats)
     {
       double max_val, min_val;
       if (matrix.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   // add one to the printed indices to go from
@@ -588,7 +588,7 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       if (m.all_integers (max_val, min_val))
         save_type_hid
-          = save_type_to_hdf5 (get_save_type (max_val, min_val));
+          = save_type_to_hdf5 (octave::get_save_type (max_val, min_val));
     }
 #endif
 
@@ -861,24 +861,34 @@ octave_sparse_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_sparse_matrix::as_mxArray (void) const
+octave_sparse_matrix::as_mxArray (bool interleaved) const
 {
   mwSize nz = nzmax ();
   mwSize nr = rows ();
   mwSize nc = columns ();
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, nr, nc, nz, mxREAL);
-  double *pr = static_cast<double *> (retval->get_data ());
+
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, nr, nc, nz,
+                                 mxREAL);
+
+  mxDouble *pd = static_cast<mxDouble *> (retval->get_data ());
   mwIndex *ir = retval->get_ir ();
-  mwIndex *jc = retval->get_jc ();
+
+  const double *pdata = matrix.data ();
+  const octave_idx_type *pridx = matrix.ridx ();
 
   for (mwIndex i = 0; i < nz; i++)
     {
-      pr[i] = matrix.data (i);
-      ir[i] = matrix.ridx (i);
+      pd[i] = pdata[i];
+
+      ir[i] = pridx[i];
     }
 
+  mwIndex *jc = retval->get_jc ();
+
+  const octave_idx_type *pcidx = matrix.cidx ();
+
   for (mwIndex i = 0; i < nc + 1; i++)
-    jc[i] = matrix.cidx (i);
+    jc[i] = pcidx[i];
 
   return retval;
 }

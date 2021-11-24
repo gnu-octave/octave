@@ -48,6 +48,8 @@
 
 #include "oct-string.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (char, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} char (@var{x})
@@ -529,12 +531,12 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 template <typename T, typename T_size_type>
 static bool
 strcmp_ignore_n (const T& s1, const T& s2, T_size_type)
-{ return octave::string::strcmp (s1, s2); }
+{ return string::strcmp (s1, s2); }
 
 template <typename T, typename T_size_type>
 static bool
 strcmpi_ignore_n (const T& s1, const T& s2, T_size_type)
-{ return octave::string::strcmpi (s1, s2); }
+{ return string::strcmpi (s1, s2); }
 
 
 DEFUN (strcmp, args, ,
@@ -650,8 +652,8 @@ This is just the opposite of the corresponding C library function.
 
   if (n > 0)
     return ovl (do_strcmp_fun (args(0), args(1), n, "strncmp",
-                               octave::string::strncmp,
-                               octave::string::strncmp));
+                               string::strncmp,
+                               string::strncmp));
   else
     error ("strncmp: N must be greater than 0");
 }
@@ -730,8 +732,8 @@ This is just the opposite of the corresponding C library function.
 
   if (n > 0)
     return ovl (do_strcmp_fun (args(0), args(1), n, "strncmpi",
-                               octave::string::strncmpi,
-                               octave::string::strncmpi));
+                               string::strncmpi,
+                               string::strncmpi));
   else
     error ("strncmpi: N must be greater than 0");
 }
@@ -797,31 +799,31 @@ risk of using @code{eval} on unknown data.
   if (args(0).is_string ())
     {
       if (args(0).rows () == 0 || args(0).columns () == 0)
-        retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
+        retval = Matrix (1, 1, numeric_limits<double>::NaN ());
       else if (args(0).rows () == 1 && args(0).ndims () == 2)
-        retval = octave::string::str2double (args(0).string_value ());
+        retval = string::str2double (args(0).string_value ());
       else
         {
           const string_vector sv = args(0).string_vector_value ();
 
-          retval = sv.map<Complex> (octave::string::str2double);
+          retval = sv.map<Complex> (string::str2double);
         }
     }
   else if (args(0).iscell ())
     {
       const Cell cell = args(0).cell_value ();
 
-      ComplexNDArray output (cell.dims (), octave::numeric_limits<double>::NaN ());
+      ComplexNDArray output (cell.dims (), numeric_limits<double>::NaN ());
 
       for (octave_idx_type i = 0; i < cell.numel (); i++)
         {
           if (cell(i).is_string ())
-            output(i) = octave::string::str2double (cell(i).string_value ());
+            output(i) = string::str2double (cell(i).string_value ());
         }
       retval = output;
     }
   else
-    retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
+    retval = Matrix (1, 1, numeric_limits<double>::NaN ());
 
   return retval;
 }
@@ -831,7 +833,7 @@ risk of using @code{eval} on unknown data.
 %!assert (str2double ("-.1e-5"), -1e-6)
 %!testif ; ! ismac ()
 %! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
@@ -859,18 +861,18 @@ risk of using @code{eval} on unknown data.
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
 %!testif ; ! ismac ()
 %! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
-%!xtest <47413>
+%!test <47413>
 %! if (! ismac ()), return; endif
 %! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
 %!testif ; ! ismac ()
 %! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
-%!xtest <47413>
+%!test <47413>
 %! if (! ismac ()), return; endif
 %! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
 %!assert (str2double (zeros (3,1,2)), NaN)
 %!assert (str2double (''), NaN)
 %!assert (str2double ([]), NaN)
-%!assert (str2double (char(zeros(3,0))), NaN)
+%!assert (str2double (char (zeros (3,0))), NaN)
 */
 
 DEFUN (__native2unicode__, args, ,
@@ -881,11 +883,6 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
 @seealso{native2unicode, __unicode2native__}
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 2)
-    print_usage ();
-
   if (args(0).is_string ())
     return ovl (args(0));
 
@@ -901,28 +898,26 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   std::size_t length;
   uint8_t *utf8_str = nullptr;
 
-  octave::unwind_protect frame;
-
   utf8_str = octave_u8_conv_from_encoding (codepage, src, srclen, &length);
 
   if (! utf8_str)
     {
       if (errno == ENOSYS)
-        error ("native2unicode: iconv() is not supported. Installing GNU "
+        error ("native2unicode: iconv() is not supported.  Installing GNU "
                "libiconv and then re-compiling Octave could fix this.");
       else
         error ("native2unicode: converting from codepage '%s' to UTF-8: %s",
                codepage, std::strerror (errno));
     }
 
-  frame.add_fcn (::free, static_cast<void *> (utf8_str));
+  unwind_action free_utf8_str ([=] () { ::free (utf8_str); });
 
   octave_idx_type len = length;
 
   charNDArray retval (dim_vector (1, len));
 
   for (octave_idx_type i = 0; i < len; i++)
-    retval.xelem(i) = utf8_str[i];
+    retval.xelem (i) = utf8_str[i];
 
   return ovl (retval);
 }
@@ -936,11 +931,6 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 @seealso{unicode2native, __native2unicode__}
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 2)
-    print_usage ();
-
   std::string tmp = args(1).string_value ();
   const char *codepage
     = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
@@ -953,28 +943,26 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   std::size_t length;
   char *native_bytes = nullptr;
 
-  octave::unwind_protect frame;
-
   native_bytes = octave_u8_conv_to_encoding (codepage, src, srclen, &length);
 
   if (! native_bytes)
     {
       if (errno == ENOSYS)
-        error ("unicode2native: iconv() is not supported. Installing GNU "
+        error ("unicode2native: iconv() is not supported.  Installing GNU "
                "libiconv and then re-compiling Octave could fix this.");
       else
         error ("unicode2native: converting from UTF-8 to codepage '%s': %s",
                codepage, std::strerror (errno));
     }
 
-  frame.add_fcn (::free, static_cast<void *> (native_bytes));
+  unwind_action free_native_bytes ([=] () { ::free (native_bytes); });
 
   octave_idx_type len = length;
 
   uint8NDArray retval (dim_vector (1, len));
 
   for (octave_idx_type i = 0; i < len; i++)
-    retval.xelem(i) = native_bytes[i];
+    retval.xelem (i) = native_bytes[i];
 
   return ovl (retval);
 }
@@ -1005,9 +993,7 @@ unicode_idx ("aäbc")
 
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   charNDArray str = args(0).xchar_array_value ("STR must be a string");
@@ -1034,15 +1020,85 @@ unicode_idx ("aäbc")
       if (mblen < 1)
         mblen = 1;
       for (octave_idx_type j = 0; j < mblen; j++)
-        idx (i+j) = u8_char_num;
+        idx(i+j) = u8_char_num;
       i += mblen;
     }
 
-  return ovl(str.ndims () > 1 ? idx.permute (p, true) : idx);
+  return ovl (str.ndims () > 1 ? idx.permute (p, true) : idx);
 }
 
 /*
-%!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6]);
+%!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6])
+*/
+
+DEFUN (__unicode_length__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{len} =} __unicode_length__ (@var{str})
+Return number of Unicode code points in @var{str}.
+
+The input @var{str} must be a UTF-8 encoded character vector or cell string.
+
+@example
+@group
+length ("aäbc")
+     @result{} 5
+__unicode_length__ ("aäbc")
+     @result{} 4
+@end group
+@end example
+
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  bool arg_char = args(0).is_char_matrix ();
+
+  if (! arg_char && ! args(0).iscellstr ())
+    error ("STR must be a character array or cell string.");
+
+  octave_value_list retval;
+
+  if (arg_char)
+    {
+      charNDArray str = args(0).char_array_value ();
+      Array<octave_idx_type> p (dim_vector (str.ndims (), 1));
+      if (str.ndims () > 1)
+        {
+          for (octave_idx_type i=0; i < str.ndims (); i++)
+            p(i) = i;
+          p(0) = 1;
+          p(1) = 0;
+          str = str.permute (p);
+        }
+
+      const uint8_t *src = reinterpret_cast<const uint8_t *> (str.data ());
+      octave_idx_type mbsnlen = octave_u8_mbsnlen_wrapper (src, str.numel ());
+
+      retval = ovl (mbsnlen);
+    }
+  else
+    {
+      const Array<std::string> cellstr = args(0).cellstr_value ();
+      NDArray output (args(0).dims (), false);
+      for (octave_idx_type i = 0; i < cellstr.numel (); i++)
+        {
+          const uint8_t *src 
+            = reinterpret_cast<const uint8_t *> (cellstr(i).c_str ());
+          output(i) = octave_u8_mbsnlen_wrapper (src, cellstr(i).size ());
+        }
+
+      retval = ovl (output);
+    }
+
+  return retval;
+}
+
+/*
+%!assert (__unicode_length__ (""), 0)
+%!assert (__unicode_length__ ("aäbc"), 4)
+%!assert (__unicode_length__ (["aä"; "öo"]), 4)
+%!assert (__unicode_length__ ({"aäbc", "abc"}), [4, 3])
 */
 
 DEFUN (__u8_validate__, args, ,
@@ -1051,33 +1107,34 @@ DEFUN (__u8_validate__, args, ,
 Return string with valid UTF-8.
 
 On encountering invalid UTF-8 in @var{in_str}, the bytes are either replaced by
-the replacement character "�" (if @var{mode} is omitted or the string
-"replace") or interpreted as the Unicode code points U+0080–U+00FF with the
-same value as the byte (if @var{mode} is the string "unicode"), thus
-interpreting the bytes according to ISO-8859-1.
-
+the replacement character @qcode{"�"} (if @var{mode} is omitted or is the
+string @qcode{"replace"}) or interpreted as the Unicode code points
+U+0080–U+00FF with the same value as the byte (if @var{mode} is the string
+@qcode{"unicode"}), thus interpreting the bytes according to ISO-8859-1.
 @end deftypefn */)
 {
-  if (args.length () < 1 || args.length () > 2)
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
   // Input check
   std::string in_str =
-      args(0).xstring_value ("__u8_validate__: IN_STR must be a string.");
+    args(0).xstring_value ("__u8_validate__: IN_STR must be a string");
 
   std::string mode = "replace";
-  if (args.length () > 1)
-    mode = args(1).xstring_value ("__u8_validate__: MODE must be a string.");
+  if (nargin == 2)
+    mode = args(1).xstring_value ("__u8_validate__: MODE must be a string");
 
-  octave::string::u8_fallback_type fb_type;
+  string::u8_fallback_type fb_type;
   if (mode == "replace")
-    fb_type = octave::string::U8_REPLACEMENT_CHAR;
+    fb_type = string::U8_REPLACEMENT_CHAR;
   else if (mode == "unicode")
-    fb_type = octave::string::U8_ISO_8859_1;
+    fb_type = string::U8_ISO_8859_1;
   else
-    error ("__u8_validate__: MODE must either be \"replace\" or \"unicode\".");
+    error (R"(__u8_validate__: MODE must be either "replace" or "unicode")");
 
-  octave::string::u8_validate ("__u8_validate__", in_str, fb_type);
+  string::u8_validate ("__u8_validate__", in_str, fb_type);
 
   return ovl (in_str);
 }
@@ -1087,7 +1144,7 @@ DEFUN (newline, args, ,
 @deftypefn {} {} newline
 Return the character corresponding to a newline.
 
-This is equivalent to @qcode{"@xbackslashchar{}n"}.
+This is equivalent to @qcode{"@backslashchar{}n"}.
 
 Example Code
 
@@ -1115,6 +1172,8 @@ line2
 %!assert (newline (), "\n")
 
 %!error newline (1)
+## FIXME: The next error() test requires a semicolon at EOL until
+##        bug #59265 is resolved.
 %!error [a, b] = newline ();
 */
 
@@ -1197,3 +1256,5 @@ whos ans
 %!error list_in_columns (["abc", "def"], 20, "  ", 3)
 %!error <list_in_columns: WIDTH must be an integer> list_in_columns (["abc", "def"], "a")
 */
+
+OCTAVE_NAMESPACE_END

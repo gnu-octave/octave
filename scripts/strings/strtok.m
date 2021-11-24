@@ -58,12 +58,12 @@
 
 function [tok, rem] = strtok (str, delim)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! (ischar (str) || iscellstr (str)))
-    error ("strtok: STR must be a string or cell array of strings.");
+    error ("strtok: STR must be a string or cell array of strings");
   elseif (ischar (str) && ! isvector (str) &&! isempty (str))
-    error ("strtok: STR cannot be a 2-D character array.");
+    error ("strtok: STR cannot be a 2-D character array");
   endif
 
   if (nargin < 2 || isempty (delim))
@@ -137,7 +137,7 @@ function [tok, rem] = strtok (str, delim)
     if (isargout (2))
       rem = cell (size (str));
       rem(eidx) = {""};
-      rem(midx) = tmp(2:2:end);
+      rem (midx) = tmp(2:2:end);
     endif
   endif
 
@@ -229,7 +229,6 @@ endfunction
 %! endfor
 
 ## Test input validation
-%!error strtok ()
-%!error strtok ("a", "b", "c")
+%!error <Invalid call> strtok ()
 %!error <STR must be a string> strtok (1, "b")
 %!error <STR cannot be a 2-D> strtok (char ("hello", "world"), "l")

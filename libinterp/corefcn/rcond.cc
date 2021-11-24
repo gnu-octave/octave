@@ -33,6 +33,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (rcond, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{c} =} rcond (@var{A})
@@ -106,3 +108,5 @@ instead.
 %!assert (rcond (sx*i) < eps ('single'))
 
 */
+
+OCTAVE_NAMESPACE_END

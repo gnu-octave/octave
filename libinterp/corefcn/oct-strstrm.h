@@ -33,26 +33,28 @@
 
 #include "oct-stream.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 class
-octave_base_strstream : public octave::base_stream
+base_strstream : public base_stream
 {
 public:
 
-  octave_base_strstream (std::ios::openmode m = std::ios::out,
-                         octave::mach_info::float_format ff
-                           = octave::mach_info::native_float_format (),
-                         const std::string& encoding = "utf-8")
-    : octave::base_stream (m, ff, encoding) { }
+  base_strstream (std::ios::openmode m = std::ios::out,
+                  mach_info::float_format ff
+                    = mach_info::native_float_format (),
+                  const std::string& encoding = "utf-8")
+    : base_stream (m, ff, encoding) { }
 
   // No copying!
 
-  octave_base_strstream (const octave_base_strstream&) = delete;
+  base_strstream (const base_strstream&) = delete;
 
-  octave_base_strstream& operator = (const octave_base_strstream&) = delete;
+  base_strstream& operator = (const base_strstream&) = delete;
 
 protected:
 
-  ~octave_base_strstream (void) = default;
+  ~base_strstream (void) = default;
 
 public:
 
@@ -76,47 +78,43 @@ public:
 };
 
 class
-octave_istrstream : public octave_base_strstream
+istrstream : public base_strstream
 {
 public:
 
-  octave_istrstream (const char *data,
-                     std::ios::openmode arg_md = std::ios::out,
-                     octave::mach_info::float_format ff
-                       = octave::mach_info::native_float_format (),
-                     const std::string& encoding = "utf-8")
-    : octave_base_strstream (arg_md, ff, encoding), m_istream (data) { }
+  istrstream (const char *data,
+              std::ios::openmode arg_md = std::ios::out,
+              mach_info::float_format ff = mach_info::native_float_format (),
+              const std::string& encoding = "utf-8")
+    : base_strstream (arg_md, ff, encoding), m_istream (data) { }
 
-  octave_istrstream (const std::string& data,
-                     std::ios::openmode arg_md = std::ios::out,
-                     octave::mach_info::float_format ff
-                       = octave::mach_info::native_float_format (),
-                     const std::string& encoding = "utf-8")
-    : octave_base_strstream (arg_md, ff, encoding), m_istream (data) { }
+  istrstream (const std::string& data,
+              std::ios::openmode arg_md = std::ios::out,
+              mach_info::float_format ff = mach_info::native_float_format (),
+              const std::string& encoding = "utf-8")
+    : base_strstream (arg_md, ff, encoding), m_istream (data) { }
 
   // No copying!
 
-  octave_istrstream (const octave_istrstream&) = delete;
+  istrstream (const istrstream&) = delete;
 
-  octave_istrstream& operator = (const octave_istrstream&) = delete;
+  istrstream& operator = (const istrstream&) = delete;
 
 protected:
 
-  ~octave_istrstream (void) = default;
+  ~istrstream (void) = default;
 
 public:
 
 
-  static octave::stream
+  static stream
   create (const char *data, std::ios::openmode arg_md = std::ios::out,
-          octave::mach_info::float_format ff
-            = octave::mach_info::native_float_format (),
+          mach_info::float_format ff = mach_info::native_float_format (),
           const std::string& encoding = "utf-8");
 
-  static octave::stream
+  static stream
   create (const std::string& data, std::ios::openmode arg_md = std::ios::out,
-          octave::mach_info::float_format ff
-            = octave::mach_info::native_float_format (),
+          mach_info::float_format ff = mach_info::native_float_format (),
           const std::string& encoding = "utf-8");
 
   // Return nonzero if EOF has been reached on this stream.
@@ -144,32 +142,30 @@ private:
 };
 
 class
-octave_ostrstream : public octave_base_strstream
+ostrstream : public base_strstream
 {
 public:
 
-  octave_ostrstream (std::ios::openmode arg_md = std::ios::out,
-                     octave::mach_info::float_format ff
-                       = octave::mach_info::native_float_format (),
-                     const std::string& encoding = "utf-8")
-    : octave_base_strstream (arg_md, ff, encoding), m_ostream () { }
+  ostrstream (std::ios::openmode arg_md = std::ios::out,
+              mach_info::float_format ff = mach_info::native_float_format (),
+              const std::string& encoding = "utf-8")
+    : base_strstream (arg_md, ff, encoding), m_ostream () { }
 
   // No copying!
 
-  octave_ostrstream (const octave_ostrstream&) = delete;
+  ostrstream (const ostrstream&) = delete;
 
-  octave_ostrstream& operator = (const octave_ostrstream&) = delete;
+  ostrstream& operator = (const ostrstream&) = delete;
 
 protected:
 
-  ~octave_ostrstream (void) = default;
+  ~ostrstream (void) = default;
 
 public:
 
-  static octave::stream
+  static stream
   create (std::ios::openmode arg_md = std::ios::out,
-          octave::mach_info::float_format ff
-            = octave::mach_info::native_float_format (),
+          mach_info::float_format ff = mach_info::native_float_format (),
           const std::string& encoding = "utf-8");
 
   // Return nonzero if EOF has been reached on this stream.
@@ -195,5 +191,20 @@ private:
 
   std::ostringstream m_ostream;
 };
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::base_strstream' instead")
+typedef octave::base_strstream octave_base_strstream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::istrstream' instead")
+typedef octave::istrstream octave_istrstream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::ostrstream' instead")
+typedef octave::ostrstream octave_ostrstream;
+
+#endif
 
 #endif

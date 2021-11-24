@@ -388,6 +388,16 @@ INPUT                  = @abs_top_srcdir@/src/ \
                          @abs_top_srcdir@/doc/doxyhtml/pages \
                          @abs_top_builddir@/doc/doxyhtml/pages
 
+# The EXCLUDE tag is used to exclude files and/or directories that would
+# otherwise be included by the INPUT tag.
+#EXCLUDE                =
+
+# This tag is used to exclude files and/or directories that would otherwise be
+# included by the INPUT tag using a pattern rather than an exact name as
+# the EXCLUDE tag does.
+
+EXCLUDE_PATTERNS       = *.in.h
+
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
 # libiconv (or the iconv built into libc) for the transcoding. See the libiconv
@@ -693,7 +703,6 @@ PREDEFINED             = HAVE_ARPACK=1 \
                          HAVE_GLPK=1 \
                          HAVE_HDF5=1 \
                          HAVE_JAVA=1 \
-                         HAVE_LLVM=1 \
                          HAVE_MAGICK=1 \
                          HAVE_OPENGL=1 \
                          HAVE_OPENMP=1 \

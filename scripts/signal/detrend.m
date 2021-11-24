@@ -42,7 +42,7 @@
 
 function y = detrend (x, p = 1)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -101,8 +101,7 @@ endfunction
 %! assert (abs (y(:)) < 20*eps);
 
 ## Test input validation
-%!error detrend ()
-%!error detrend (1, 2, 3)
+%!error <Invalid call> detrend ()
 %!error detrend ("a")
 %!error detrend (true)
 %!error detrend (1, "invalid")

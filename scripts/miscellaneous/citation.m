@@ -47,16 +47,13 @@
 
 function citation (package = "octave")
 
-  if (nargin > 1)
-    print_usage ();
-  else
-    display_info_file ("citation", package, "CITATION");
-  endif
+  ## function takes care of validating PACKAGE input
+  display_info_file ("citation", package, "CITATION");
 
 endfunction
 
 
 ## Test input validation
-%!error citation (1, 2)
 %!error <citation: PACKAGE must be a string> citation (1)
-%!error <citation: package .* is not installed> citation ("__NOT_A_VALID_PKG_NAME__")
+%!error <citation: package .* is not installed>
+%! citation ("__NOT_A_VALID_PKG_NAME__");

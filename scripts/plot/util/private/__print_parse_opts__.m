@@ -248,14 +248,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (strcmp (arg_st.renderer, "auto"))
     if (opengl_ok && strcmp (graphics_toolkit (arg_st.figure), "qt"))
-      ## "opengl" renderer only does text rotations of 0°, 90°, 180°, 270°, ...
-      ht = findall (arg_st.figure, "type", "text");
-      angles = [get(ht, "rotation"){:}];
-      if (any (mod (angles, 90)))
-        arg_st.renderer = "painters";
-      else
-        arg_st.renderer = "opengl";
-      endif
+      arg_st.renderer = "opengl";
     else
       arg_st.renderer = "painters";
     endif
@@ -424,7 +417,7 @@ function arg_st = __print_parse_opts__ (varargin)
     if (! (arg_st.send_to_printer || arg_st.formatted_for_printing
            || strncmp (arg_st.devopt, "pdf", 3)
            || strncmp (arg_st.devopt, "ps", 2)))
-      error ("print: the '%s' option is only valid for page formats and printers.", arg_st.resize_flag);
+      error ("print: the '%s' option is only valid for page formats and printers", arg_st.resize_flag);
     endif
   endif
 
@@ -639,20 +632,18 @@ function bin = __svgconv_binary__ ()
   persistent binary = "";
 
   if (isempty (binary))
+    ## default installation location is the archlib directory
     bindir = getenv ("OCTAVE_ARCHLIBDIR");
     if (isempty (bindir))
       bindir = __octave_config_info__ ("archlibdir");
     endif
 
-    binary = fullfile (bindir, "octave-svgconvert");
+    binary = fullfile (bindir, ...
+                       ["octave-svgconvert", ...
+                        __octave_config_info__("EXEEXT")]);
 
     if (! exist (binary, "file"))
-      if (! isunix () && exist ([binary, ".exe"], "file"))
-        ## Unix - Includes Mac OSX and Cygwin.
-        binary = [binary, ".exe"];
-      else
-        binary = "";
-      endif
+      binary = "";
     endif
   endif
 

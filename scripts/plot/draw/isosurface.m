@@ -59,7 +59,7 @@
 ## vectors with lengths corresponding to the dimensions of @var{v}, then the
 ## volume data is taken at the specified points.  If @var{x}, @var{y}, or
 ## @var{z} are empty, the grid corresponds to the indices (@code{1:n}) in
-## the respective direction (@pxref{XREFmeshgrid,,meshgrid}).
+## the respective direction (@pxref{XREFmeshgrid,,@code{meshgrid}}).
 ##
 ## The optional input argument @var{col}, which is a three-dimensional array
 ## of the same size as @var{v}, specifies coloring of the isosurface.  The
@@ -141,7 +141,8 @@
 ## light ("Position", [1 1 5]);
 ## @end smallexample
 ##
-## @seealso{isonormals, isocolors, isocaps, smooth3, reducevolume, reducepatch, patch}
+## @seealso{isonormals, isocolors, isocaps, smooth3, reducevolume, reducepatch,
+## patch}
 ## @end deftypefn
 
 ## FIXME: Add support for string input argument "verbose"
@@ -168,7 +169,7 @@ function varargout = isosurface (varargin)
     warning ("isosurface: triangulation is empty");
   endif
 
-  # remove faces for which at least one of the vertices is NaN
+  ## remove faces for which at least one of the vertices is NaN
   vert_nan = 1:size (fvc.vertices, 1);
   vert_nan(any (isnan (fvc.vertices), 2)) = NaN;
   fvc.faces = vert_nan(fvc.faces);
@@ -307,7 +308,7 @@ function [x, y, z, v, isoval, colors, noshare, verbose] = __get_check_isosurface
       colors = varargin{6};
 
     otherwise
-      error ("isosurface: incorrect number of input arguments")
+      error ("isosurface: incorrect number of input arguments");
 
   endswitch
 
@@ -318,10 +319,10 @@ function [x, y, z, v, isoval, colors, noshare, verbose] = __get_check_isosurface
   endif
 
   if (isempty (x))
-    x = 1:size (v, 2);
+    x = 1:columns (v);
   endif
   if (isempty (y))
-    y = 1:size (v, 1);
+    y = 1:rows (v);
   endif
   if (isempty (z))
     z = 1:size (v, 3);
@@ -355,19 +356,19 @@ function [x, y, z, v, isoval, colors, noshare, verbose] = __get_check_isosurface
   endif
 
   if (! isscalar (isoval))
-    error ("isosurface: ISOVAL must be a scalar")
+    error ("isosurface: ISOVAL must be a scalar");
   endif
 
   ## check colors
   if (! isempty (colors))
     if (! size_equal (v, colors))
-      error ("isosurface: COL must match the size of V")
+      error ("isosurface: COL must match the size of V");
     endif
     if (nout == 2)
-      warning ("isosurface: colors will be calculated, but no output argument to receive it.");
+      warning ("isosurface: colors will be calculated, but no output argument to receive it");
     endif
   elseif (nout >= 3)
-    error ("isosurface: COL must be passed to return C")
+    error ("isosurface: COL must be passed to return C");
   endif
 
 endfunction
@@ -559,8 +560,8 @@ endfunction
 %! assert (size (fvc.facevertexcdata), [7 1]);
 
 ## test for each error and warning
-%!error isosurface ()
-%!error isosurface (1,2,3,4,5,6,7,8,9)
+%!error <Invalid call> isosurface ()
+%!error <Invalid call> isosurface (1,2,3,4,5,6,7,8,9)
 %!error <parameter 'foobar' not supported>
 %! fvc = isosurface (val, iso, "foobar");
 %!error <incorrect number of input arguments>
@@ -592,9 +593,9 @@ endfunction
 %! [xx, yy, zz] = meshgrid (x, y, z);
 %! fvc = isosurface (xx, yy, zz, val, iso);
 %!error <ISOVAL must be a scalar> fvc = isosurface (val, [iso iso], yy)
-%!error <COL must match the size of V> fvc = isosurface (val, [iso iso]);
+%!error <COL must match the size of V> fvc = isosurface (val, [iso iso])
 %!error <COL must be passed to return C> [f, v, c] = isosurface (val, iso)
-%!warning <colors will be calculated, but no output argument to receive it.>
+%!warning <colors will be calculated, but no output argument to receive it>
 %! [f, v] = isosurface (val, iso, yy);
 
 ## test for __calc_isovalue_from_data__

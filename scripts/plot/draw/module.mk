@@ -9,6 +9,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__contour__.m \
   %reldir%/private/__errplot__.m \
   %reldir%/private/__ezplot__.m \
+  %reldir%/private/__gnuplot_scatter__.m \
   %reldir%/private/__interp_cube__.m \
   %reldir%/private/__line__.m \
   %reldir%/private/__marching_cube__.m \
@@ -21,6 +22,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__unite_shared_vertices__.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/area.m \
   %reldir%/bar.m \
   %reldir%/barh.m \
@@ -47,6 +49,7 @@ FCN_FILE_DIRS += \
   %reldir%/ezsurfc.m \
   %reldir%/feather.m \
   %reldir%/fill.m \
+  %reldir%/fill3.m \
   %reldir%/fplot.m \
   %reldir%/hist.m \
   %reldir%/isocaps.m \
@@ -98,6 +101,7 @@ FCN_FILE_DIRS += \
   %reldir%/stream2.m \
   %reldir%/stream3.m \
   %reldir%/streamline.m \
+  %reldir%/streamribbon.m \
   %reldir%/streamtube.m \
   %reldir%/surf.m \
   %reldir%/surface.m \

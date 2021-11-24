@@ -194,7 +194,7 @@ Basic Linear Algebra Subroutine library.  Accelerated @sc{blas} libraries such
 as OpenBLAS (@url{https://www.openblas.net/}) or
 ATLAS (@url{http://math-atlas.sourceforge.net}) are recommended for best
 performance.  The reference implementation (@url{http://www.netlib.org/blas})
-is slow, unmaintained, and suffers from certain bugs in corner case inputs.
+is slow and suffers from certain bugs in corner case inputs.
 
 @item LAPACK
 Linear Algebra Package (@url{http://www.netlib.org/lapack}).
@@ -274,11 +274,6 @@ Java programming language compiler and libraries.  The OpenJDK free
 software implementation is recommended (@url{http://openjdk.java.net/}),
 although other JDK implementations may work.  Java is required to be able
 to call Java functions from within Octave.
-
-@item LLVM
-Compiler framework, (@url{https://www.llvm.org}).  LLVM is required for
-Octave's experimental just-in-time (JIT) compilation for speeding up the
-interpreter.
 
 @item OpenGL
 API for portable 2-D and 3-D graphics (@url{https://www.opengl.org}).  An

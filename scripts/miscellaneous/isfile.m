@@ -29,12 +29,13 @@
 ##
 ## If @var{f} is a cell array of strings, @var{tf} is a logical array of the
 ## same size.
-## @seealso{isfolder, exist, stat, is_absolute_filename, is_rooted_relative_filename}
+## @seealso{isfolder, exist, stat, is_absolute_filename,
+## is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isfile (f)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -75,6 +76,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error isfile ()
+%!error <Invalid call> isfile ()
 %!error isfile ("a", "b")
 %!error <F must be a string> isfile (1.0)

@@ -36,6 +36,8 @@ cat << \EOF
 
 #include "ov-typeinfo.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 extern void install_base_type_conversions (octave::type_info&);
 
 EOF
@@ -61,6 +63,9 @@ done
 
 cat << \EOF
 }
+
+OCTAVE_NAMESPACE_END
+
 EOF
 
 exit 0

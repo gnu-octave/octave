@@ -58,8 +58,8 @@
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Nonzero means we have already printed a message for this series of
   // SIGPIPES.  We assume that the writer will eventually give up.
   int pipe_handler_error_count = 0;
@@ -92,7 +92,12 @@ namespace octave
               << " -- stopping myself..." << std::endl;
 
     if (save_vars)
-      dump_octave_core ();
+      {
+        load_save_system& load_save_sys
+          = __get_load_save_system__ ("my_friendly_exit");
+
+        load_save_sys.dump_octave_core ();
+      }
 
     sysdep_cleanup ();
 
@@ -486,7 +491,6 @@ namespace octave
 
     return m;
   }
-}
 
 DEFUN (SIG, args, ,
        doc: /* -*- texinfo -*-
@@ -497,7 +501,7 @@ Return a structure containing Unix signal names and their defined values.
   if (args.length () != 0)
     print_usage ();
 
-  static octave_scalar_map m = octave::make_sig_struct ();
+  static octave_scalar_map m = make_sig_struct ();
 
   return ovl (m);
 }
@@ -527,7 +531,7 @@ The original variable value is restored when exiting the function.
 @seealso{debug_on_error, debug_on_warning}
 @end deftypefn */)
 {
-  return set_internal_variable (octave::Vdebug_on_interrupt, args, nargout,
+  return set_internal_variable (Vdebug_on_interrupt, args, nargout,
                                 "debug_on_interrupt");
 }
 
@@ -540,7 +544,7 @@ The original variable value is restored when exiting the function.
 %! debug_on_interrupt (orig_val);
 %! assert (debug_on_interrupt (), orig_val);
 
-%!error (debug_on_interrupt (1, 2))
+%!error debug_on_interrupt (1, 2)
 */
 
 DEFUN (sighup_dumps_octave_core, args, nargout,
@@ -557,7 +561,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return set_internal_variable (octave::Vsighup_dumps_octave_core,
+  return set_internal_variable (Vsighup_dumps_octave_core,
                                 args, nargout,
                                 "sighup_dumps_octave_core");
 }
@@ -571,7 +575,7 @@ The original variable value is restored when exiting the function.
 %! sighup_dumps_octave_core (orig_val);
 %! assert (sighup_dumps_octave_core (), orig_val);
 
-%!error (sighup_dumps_octave_core (1, 2))
+%!error sighup_dumps_octave_core (1, 2)
 */
 
 DEFUN (sigquit_dumps_octave_core, args, nargout,
@@ -588,7 +592,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return set_internal_variable (octave::Vsigquit_dumps_octave_core,
+  return set_internal_variable (Vsigquit_dumps_octave_core,
                                 args, nargout,
                                 "sigquit_dumps_octave_core");
 }
@@ -602,7 +606,7 @@ The original variable value is restored when exiting the function.
 %! sigquit_dumps_octave_core (orig_val);
 %! assert (sigquit_dumps_octave_core (), orig_val);
 
-%!error (sigquit_dumps_octave_core (1, 2))
+%!error sigquit_dumps_octave_core (1, 2)
 */
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,
@@ -619,7 +623,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return set_internal_variable (octave::Vsigterm_dumps_octave_core,
+  return set_internal_variable (Vsigterm_dumps_octave_core,
                                 args, nargout,
                                 "sigterm_dumps_octave_core");
 }
@@ -633,5 +637,7 @@ The original variable value is restored when exiting the function.
 %! sigterm_dumps_octave_core (orig_val);
 %! assert (sigterm_dumps_octave_core (), orig_val);
 
-%!error (sigterm_dumps_octave_core (1, 2))
+%!error sigterm_dumps_octave_core (1, 2)
 */
+
+OCTAVE_NAMESPACE_END

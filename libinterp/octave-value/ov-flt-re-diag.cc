@@ -62,8 +62,8 @@ octave_float_diag_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
-  if (matrix.nelem () == 1)
-    retval = new octave_float_scalar (matrix (0, 0));
+  if (m_matrix.nelem () == 1)
+    retval = new octave_float_scalar (m_matrix (0, 0));
 
   return retval;
 }
@@ -71,37 +71,37 @@ octave_float_diag_matrix::try_narrowing_conversion (void)
 DiagMatrix
 octave_float_diag_matrix::diag_matrix_value (bool) const
 {
-  return DiagMatrix (matrix);
+  return DiagMatrix (m_matrix);
 }
 
 FloatDiagMatrix
 octave_float_diag_matrix::float_diag_matrix_value (bool) const
 {
-  return matrix;
+  return m_matrix;
 }
 
 ComplexDiagMatrix
 octave_float_diag_matrix::complex_diag_matrix_value (bool) const
 {
-  return ComplexDiagMatrix (matrix);
+  return ComplexDiagMatrix (m_matrix);
 }
 
 FloatComplexDiagMatrix
 octave_float_diag_matrix::float_complex_diag_matrix_value (bool) const
 {
-  return FloatComplexDiagMatrix (matrix);
+  return FloatComplexDiagMatrix (m_matrix);
 }
 
 octave_value
 octave_float_diag_matrix::as_double (void) const
 {
-  return DiagMatrix (matrix);
+  return DiagMatrix (m_matrix);
 }
 
 octave_value
 octave_float_diag_matrix::as_single (void) const
 {
-  return matrix;
+  return m_matrix;
 }
 
 octave_value
@@ -158,18 +158,18 @@ octave_float_diag_matrix::map (unary_mapper_t umap) const
   switch (umap)
     {
     case umap_abs:
-      return matrix.abs ();
+      return m_matrix.abs ();
     case umap_real:
     case umap_conj:
-      return matrix;
+      return m_matrix;
     case umap_imag:
-      return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
+      return DiagMatrix (m_matrix.rows (), m_matrix.cols (), 0.0);
     case umap_sqrt:
       {
-        FloatComplexColumnVector tmp = matrix.extract_diag ().map<FloatComplex>
+        FloatComplexColumnVector tmp = m_matrix.extract_diag ().map<FloatComplex>
                                        (octave::math::rc_sqrt);
         FloatComplexDiagMatrix retval (tmp);
-        retval.resize (matrix.rows (), matrix.columns ());
+        retval.resize (m_matrix.rows (), m_matrix.columns ());
         return retval;
       }
     default:
@@ -182,18 +182,18 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
                                        bool /* save_as_floats*/)
 {
 
-  int32_t r = matrix.rows ();
-  int32_t c = matrix.cols ();
+  int32_t r = m_matrix.rows ();
+  int32_t c = m_matrix.cols ();
   os.write (reinterpret_cast<char *> (&r), 4);
   os.write (reinterpret_cast<char *> (&c), 4);
 
-  FloatMatrix m = FloatMatrix (matrix.extract_diag ());
+  FloatMatrix m = FloatMatrix (m_matrix.extract_diag ());
   save_type st = LS_FLOAT;
-  if (matrix.length () > 8192) // FIXME: make this configurable.
+  if (m_matrix.length () > 8192) // FIXME: make this configurable.
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const float *mtmp = m.data ();
@@ -226,7 +226,7 @@ octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
   if (! is)
     return false;
 
-  matrix = m;
+  m_matrix = m;
 
   return true;
 }

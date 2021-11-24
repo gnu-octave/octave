@@ -151,121 +151,121 @@ err_user_returned_invalid (const char *name)
 void
 err_user_supplied_eval (const char *name)
 {
-  octave::execution_exception e;
+  octave::execution_exception ee;
 
-  err_user_supplied_eval (e, name);
+  err_user_supplied_eval (ee, name);
 }
 
 void
-err_user_supplied_eval (octave::execution_exception& e, const char *name)
+err_user_supplied_eval (octave::execution_exception& ee, const char *name)
 {
-  error (e, "%s: evaluation of user-supplied function failed", name);
+  error (ee, "%s: evaluation of user-supplied function failed", name);
 }
 
 void
 err_wrong_type_arg (const char *name, const char *s)
 {
-  octave::execution_exception e;
+  octave::execution_exception ee;
 
-  err_wrong_type_arg (e, name, s);
+  err_wrong_type_arg (ee, name, s);
 }
 
 void
-err_wrong_type_arg (octave::execution_exception& e,
+err_wrong_type_arg (octave::execution_exception& ee,
                     const char *name, const char *s)
 {
-  error (e, "%s: wrong type argument '%s'", name, s);
+  error (ee, "%s: wrong type argument '%s'", name, s);
 }
 
 void
 err_wrong_type_arg (const char *name, const std::string& s)
 {
-  octave::execution_exception e;
+  octave::execution_exception ee;
 
-  err_wrong_type_arg (e, name, s.c_str ());
+  err_wrong_type_arg (ee, name, s.c_str ());
 }
 
 void
-err_wrong_type_arg (octave::execution_exception& e,
+err_wrong_type_arg (octave::execution_exception& ee,
                     const char *name, const std::string& s)
 {
-  err_wrong_type_arg (e, name, s.c_str ());
+  err_wrong_type_arg (ee, name, s.c_str ());
 }
 
 void
 err_wrong_type_arg (const char *name, const octave_value& tc)
 {
-  octave::execution_exception e;
+  octave::execution_exception ee;
 
-  err_wrong_type_arg (e, name, tc);
+  err_wrong_type_arg (ee, name, tc);
 }
 
 void
-err_wrong_type_arg (octave::execution_exception& e,
+err_wrong_type_arg (octave::execution_exception& ee,
                     const char *name, const octave_value& tc)
 {
   std::string type = tc.type_name ();
 
-  err_wrong_type_arg (e, name, type);
+  err_wrong_type_arg (ee, name, type);
 }
 
 void
 err_wrong_type_arg (const std::string& name, const octave_value& tc)
 {
-  octave::execution_exception e;
+  octave::execution_exception ee;
 
-  err_wrong_type_arg (e, name, tc);
+  err_wrong_type_arg (ee, name, tc);
 }
 
 void
-err_wrong_type_arg (octave::execution_exception& e,
+err_wrong_type_arg (octave::execution_exception& ee,
                     const std::string& name, const octave_value& tc)
 {
-  err_wrong_type_arg (e, name.c_str (), tc);
+  err_wrong_type_arg (ee, name.c_str (), tc);
 }
 
 void
 err_wrong_type_arg (const char *s)
 {
-  octave::execution_exception e;
+  octave::execution_exception ee;
 
-  err_wrong_type_arg (e, s);
+  err_wrong_type_arg (ee, s);
 }
 
 void
-err_wrong_type_arg (octave::execution_exception& e, const char *s)
+err_wrong_type_arg (octave::execution_exception& ee, const char *s)
 {
-  error (e, "wrong type argument '%s'", s);
+  error (ee, "wrong type argument '%s'", s);
 }
 
 void
 err_wrong_type_arg (const std::string& s)
 {
-  octave::execution_exception e;
+  octave::execution_exception ee;
 
-  err_wrong_type_arg (e, s);
+  err_wrong_type_arg (ee, s);
 }
 
 void
-err_wrong_type_arg (octave::execution_exception& e, const std::string& s)
+err_wrong_type_arg (octave::execution_exception& ee, const std::string& s)
 {
-  err_wrong_type_arg (e, s.c_str ());
+  err_wrong_type_arg (ee, s.c_str ());
 }
 
 void
 err_wrong_type_arg (const octave_value& tc)
 {
-  octave::execution_exception e;
+  octave::execution_exception ee;
 
-  err_wrong_type_arg (e, tc);
+  err_wrong_type_arg (ee, tc);
 }
 
 void
-err_wrong_type_arg (octave::execution_exception& e, const octave_value& tc)
+err_wrong_type_arg (octave::execution_exception& ee, const octave_value& tc)
 {
   std::string type = tc.type_name ();
 
-  err_wrong_type_arg (e, type);
+  err_wrong_type_arg (ee, type);
 }
 
 void

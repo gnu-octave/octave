@@ -30,7 +30,7 @@
 
 function info = __imfinfo__ (filename)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ("imfinfo");
   elseif (! ischar (filename))
     error ("imfinfo: FILENAME must be a string");

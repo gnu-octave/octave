@@ -59,7 +59,7 @@ namespace octave
     int m_max_height;
     int m_max_width;
 
-  private slots:
+  public slots:
 
     void handle_web_connect_option (int state);
 

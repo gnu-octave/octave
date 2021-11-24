@@ -40,7 +40,7 @@
 ## ("\n"), or it may be a cellstr array with one element for each line.
 ##
 ## The third optional argument @var{opt} controls the behavior of the dialog.
-## See @code{msgbox} for details.
+## For details, @pxref{XREFmsgbox,,@code{msgbox}}.
 ##
 ## The return value @var{h} is a handle to the figure object used for
 ## building the dialog.

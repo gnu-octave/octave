@@ -819,9 +819,10 @@ read_doubles (std::istream& is, double *data, save_type type,
         std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
         is.read (reinterpret_cast<char *> (data), n_bytes);
         do_double_format_conversion (data, len, fmt);
-
-        for (int i = 0; i < len; i++)
-          data[i] = __lo_ieee_replace_old_NA (data[i]);
+        // FIXME: Potentially add conversion code for MIPS NA here, Bug #59830.
+        //
+        // for (int i = 0; i < len; i++)
+        //   data[i] = __lo_ieee_replace_MIPS_NA (data[i]);
       }
       break;
 

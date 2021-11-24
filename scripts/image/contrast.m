@@ -35,9 +35,7 @@
 
 function cmap = contrast (x, n)
 
-  if (nargin > 2)
-    print_usage ();
-  elseif (nargin == 1)
+  if (nargin == 1)
     hf = get (0, "currentfigure");
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));

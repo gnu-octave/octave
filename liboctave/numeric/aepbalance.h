@@ -35,30 +35,31 @@ namespace octave
   namespace math
   {
     template <typename MT>
-    class aepbalance
+    class
+    aepbalance
     {
     public:
 
       typedef typename MT::real_column_vector_type VT;
 
-      aepbalance (void) : balanced_mat (), scale (), ilo (), ihi (), job () { }
+      aepbalance (void) : m_balanced_mat (), m_scale (), m_ilo (), m_ihi (), m_job () { }
 
-      aepbalance (const MT& a, bool noperm = false, bool noscal = false);
+      OCTAVE_API aepbalance (const MT& a, bool noperm = false, bool noscal = false);
 
       aepbalance (const aepbalance& a)
-        : balanced_mat (a.balanced_mat), scale (a.scale),
-          ilo(a.ilo), ihi(a.ihi), job(a.job)
+        : m_balanced_mat (a.m_balanced_mat), m_scale (a.m_scale),
+          m_ilo(a.m_ilo), m_ihi(a.m_ihi), m_job(a.m_job)
       { }
 
       aepbalance& operator = (const aepbalance& a)
       {
         if (this != &a)
           {
-            balanced_mat = a.balanced_mat;
-            scale = a.scale;
-            ilo = a.ilo;
-            ihi = a.ihi;
-            job = a.job;
+            m_balanced_mat = a.m_balanced_mat;
+            m_scale = a.m_scale;
+            m_ilo = a.m_ilo;
+            m_ihi = a.m_ihi;
+            m_job = a.m_job;
           }
 
         return *this;
@@ -66,31 +67,31 @@ namespace octave
 
       virtual ~aepbalance (void) = default;
 
-      MT balancing_matrix (void) const;
+      OCTAVE_API MT balancing_matrix (void) const;
 
       MT balanced_matrix (void) const
       {
-        return balanced_mat;
+        return m_balanced_mat;
       }
 
       VT permuting_vector (void) const
       {
-        octave_idx_type n = balanced_mat.rows ();
+        octave_idx_type n = m_balanced_mat.rows ();
 
         VT pv (n);
 
         for (octave_idx_type i = 0; i < n; i++)
           pv(i) = i+1;
 
-        for (octave_idx_type i = n-1; i >= ihi; i--)
+        for (octave_idx_type i = n-1; i >= m_ihi; i--)
           {
-            octave_idx_type j = scale(i) - 1;
+            octave_idx_type j = m_scale(i) - 1;
             std::swap (pv(i), pv(j));
           }
 
-        for (octave_idx_type i = 0; i < ilo-1; i++)
+        for (octave_idx_type i = 0; i < m_ilo-1; i++)
           {
-            octave_idx_type j = scale(i) - 1;
+            octave_idx_type j = m_scale(i) - 1;
             std::swap (pv(i), pv(j));
           }
 
@@ -99,17 +100,17 @@ namespace octave
 
       VT scaling_vector (void) const
       {
-        octave_idx_type n = balanced_mat.rows ();
+        octave_idx_type n = m_balanced_mat.rows ();
 
         VT scv (n);
 
-        for (octave_idx_type i = 0; i < ilo-1; i++)
+        for (octave_idx_type i = 0; i < m_ilo-1; i++)
           scv(i) = 1;
 
-        for (octave_idx_type i = ilo-1; i < ihi; i++)
-          scv(i) = scale(i);
+        for (octave_idx_type i = m_ilo-1; i < m_ihi; i++)
+          scv(i) = m_scale(i);
 
-        for (octave_idx_type i = ihi; i < n; i++)
+        for (octave_idx_type i = m_ihi; i < n; i++)
           scv(i) = 1;
 
         return scv;
@@ -117,11 +118,11 @@ namespace octave
 
     protected:
 
-      MT balanced_mat;
-      VT scale;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
-      char job;
+      MT m_balanced_mat;
+      VT m_scale;
+      octave_idx_type m_ilo;
+      octave_idx_type m_ihi;
+      char m_job;
     };
   }
 }

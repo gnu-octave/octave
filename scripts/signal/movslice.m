@@ -94,9 +94,8 @@ endfunction
 ## FIXME: Need functional BIST tests
 
 ## Test input validation
-%!error movslice ()
-%!error movslice (1)
-%!error movslice (1,2,3)
+%!error <Invalid call> movslice ()
+%!error <Invalid call> movslice (1)
 %!error <N must be a positive integer> movslice ([1 2], 1)
 %!error <N must be a positive integer> movslice (0, 1)
 %!error <WLEN must be .* array of integers> movslice (1, {1})

@@ -71,8 +71,8 @@ classdef weboptions < handle
   ## @samp{Password} --- User authentication password for HTTP connection.
   ##
   ## Default is NULL@.  It must be a string or character vector.
-  ## Programming Note: If you display a @code{weboption} object with the Password
-  ## property set, the value is displayed as a string containing
+  ## Programming Note: If you display a @code{weboption} object with the
+  ## Password property set, the value is displayed as a string containing
   ## @qcode{'*'}.  However, the object stores the value of the Password
   ## property as plain text.
   ##
@@ -98,8 +98,8 @@ classdef weboptions < handle
   ## @example
   ## @group
   ## weboptions ("HeaderFields", @{"Content-Length" "78";"Content-Type" "application/json"@})
-  ## Creates a weboptions object that contains two header fields: Content-Length
-  ## with value 78 and Content-Type with value application/json.
+  ## Creates a weboptions object that contains two header fields:
+  ## Content-Length with value 78 and Content-Type with value application/json.
   ## @end group
   ## @end example
   ##
@@ -127,8 +127,8 @@ classdef weboptions < handle
   ## The following methods are available:
   ## @samp{get}, @samp{put}, @samp{post}, @samp{delete}, @samp{patch}
   ##
-  ## @code{webread} uses the HTTP GET method.  @code{webwrite} uses the HTTP POST
-  ## method as default.
+  ## @code{webread} uses the HTTP GET method.  @code{webwrite} uses the HTTP
+  ## POST method as default.
   ##
   ## @item
   ## @samp{ArrayFormat} -- Not yet implemented.  Only for @sc{matlab}
@@ -160,6 +160,7 @@ classdef weboptions < handle
   endproperties
 
   methods
+
     function f = weboptions (varargin)
       if (rem (numel (varargin), 2) != 0)
         error ("weboptions: invalid number of arguments");
@@ -244,6 +245,7 @@ classdef weboptions < handle
           error (["weboptions: Undefined field " field]);
         endif
       endif
+
     endfunction
 
     function f = set.CharacterEncoding (f, value)
@@ -264,7 +266,7 @@ classdef weboptions < handle
 
     function f = set.Timeout (f, value)
       if (! isreal (value) || ! isscalar (value)
-          || floor(value) != value || value < 0)
+          || floor (value) != value || value < 0)
         error ("weboptions: invalid Timeout value");
       else
         f.Timeout = value;
@@ -355,6 +357,7 @@ classdef weboptions < handle
     endfunction
 
     function display (f)
+
       Timeout = int2str (f.Timeout);
       Password = repmat ("*", 1, numel (num2str (f.Password)));
 
@@ -393,6 +396,7 @@ classdef weboptions < handle
                 "\n           HeaderFields: " , HeaderFields,...
                 "\n    CertificateFilename: '", f.CertificateFilename, "'\n"];
       disp (output);
+
     endfunction
 
   endmethods

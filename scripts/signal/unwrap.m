@@ -39,7 +39,7 @@
 
 function retval = unwrap (x, tol, dim)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -152,6 +152,5 @@ endfunction
 %! assert (diff (unwrap (B), 1) < 2*pi, true (1, length (B)-1));
 
 ## Test input validation
-%!error unwrap ()
-%!error unwrap (1,2,3,4)
+%!error <Invalid call> unwrap ()
 %!error unwrap ("foo")

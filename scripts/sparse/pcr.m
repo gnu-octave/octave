@@ -334,7 +334,7 @@ endfunction
 %! printf ("The solution relative error is %g\n", norm (x-X) / norm (X));
 %! clf;
 %! title ("Convergence history");
-%! xlabel ("Iteration"); ylabel ("log(||b-Ax||/||b||)");
+%! xlabel ("Iteration"); ylabel ("log (||b-Ax||/||b||)");
 %! semilogy ([0:iter], resvec/resvec(1), "o-g;relative residual;");
 
 %!demo
@@ -354,13 +354,13 @@ endfunction
 %! endif
 %! clf;
 %! title ("Convergence history");
-%! xlabel ("Iteration"); ylabel ("log(||b-Ax||)");
+%! xlabel ("Iteration"); ylabel ("log (||b-Ax||)");
 %! semilogy ([0:iter], resvec, "o-g;absolute residual;");
 
 %!demo
 %! ## Full output from PCR
 %! ## We use an indefinite matrix based on the 1-D Laplacian matrix for A,
-%! ## and here we have cond(A) = O(N^2)
+%! ## and here we have cond (A) = O(N^2)
 %! ## That's the reason we need some preconditioner; here we take
 %! ## a very simple and not powerful Jacobi preconditioner,
 %! ## which is the diagonal of A.
@@ -383,7 +383,7 @@ endfunction
 %! [x, flag, relres, iter, resvec] = pcr (A,b,[],maxit);
 %! clf;
 %! title ("Convergence history");
-%! xlabel ("Iteration"); ylabel ("log(||b-Ax||)");
+%! xlabel ("Iteration"); ylabel ("log (||b-Ax||)");
 %! semilogy ([0:iter], resvec, "o-g;NO preconditioning: absolute residual;");
 %!
 %! pause (1);
@@ -445,7 +445,7 @@ endfunction
 %! b = ones (N,1);
 %! X = A \ b;  # X is the true solution
 %! [x, flag, relres, iter] = pcr (A,b,[],[],A,b);
-%! assert (norm (x-X) / norm(X) < 1e-6);
+%! assert (norm (x-X) / norm (X) < 1e-6);
 %! assert (relres < 1e-6);
 %! assert (flag, 0);
 %! assert (iter, 1); # should converge in one iteration

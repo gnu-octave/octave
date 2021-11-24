@@ -60,7 +60,7 @@
 
 function [Y, newmap] = cmunique (X, map)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -193,8 +193,7 @@ endfunction
 %! assert (Id, newmap(:,3)(Y+1));
 
 ## Test input validation
-%!error cmpermute ()
-%!error cmpermute (1,2,3)
+%!error <Invalid call> cmunique ()
 %!error <X is of invalid data type> cmunique (uint32 (magic (16)))
 %!error <MAP must be a valid colormap> cmunique (1, "a")
 %!error <MAP must be a valid colormap> cmunique (1, i)

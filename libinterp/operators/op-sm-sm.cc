@@ -38,6 +38,8 @@
 #include "sparse-xdiv.h"
 #include "ov-re-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // sparse matrix unary ops.
 
 DEFUNOP_OP (not, sparse_matrix, !)
@@ -189,3 +191,5 @@ install_sm_sm_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_null_sq_str,
                        null_assign);
 }
+
+OCTAVE_NAMESPACE_END

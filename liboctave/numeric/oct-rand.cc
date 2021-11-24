@@ -48,11 +48,11 @@
 
 namespace octave
 {
-  rand *rand::instance = nullptr;
+  rand *rand::m_instance = nullptr;
 
   rand::rand (void)
-    : current_distribution (uniform_dist), use_old_generators (false),
-      rand_states ()
+    : m_current_distribution (uniform_dist), m_use_old_generators (false),
+      m_rand_states ()
   {
     initialize_ranlib_generators ();
 
@@ -63,9 +63,9 @@ namespace octave
   {
     bool retval = true;
 
-    if (! instance)
+    if (! m_instance)
       {
-        instance = new rand ();
+        m_instance = new rand ();
         singleton_cleanup_list::add (cleanup_instance);
       }
 
@@ -110,7 +110,7 @@ namespace octave
 
   void rand::do_seed (double s)
   {
-    use_old_generators = true;
+    m_use_old_generators = true;
 
     int i0, i1;
     union d2i { double d; int32_t i[2]; };
@@ -137,22 +137,22 @@ namespace octave
 
   void rand::do_reset (void)
   {
-    use_old_generators = true;
+    m_use_old_generators = true;
     initialize_ranlib_generators ();
   }
 
   uint32NDArray rand::do_state (const std::string& d)
   {
-    return rand_states[d.empty () ? current_distribution : get_dist_id (d)];
+    return m_rand_states[d.empty () ? m_current_distribution : get_dist_id (d)];
   }
 
   void rand::do_state (const uint32NDArray& s, const std::string& d)
   {
-    use_old_generators = false;
+    m_use_old_generators = false;
 
-    int old_dist = current_distribution;
+    int old_dist = m_current_distribution;
 
-    int new_dist = (d.empty () ? current_distribution : get_dist_id (d));
+    int new_dist = (d.empty () ? m_current_distribution : get_dist_id (d));
 
     uint32NDArray saved_state;
 
@@ -161,19 +161,19 @@ namespace octave
 
     set_internal_state (s);
 
-    rand_states[new_dist] = get_internal_state ();
+    m_rand_states[new_dist] = get_internal_state ();
 
     if (old_dist != new_dist)
-      rand_states[old_dist] = saved_state;
+      m_rand_states[old_dist] = saved_state;
   }
 
   void rand::do_reset (const std::string& d)
   {
-    use_old_generators = false;
+    m_use_old_generators = false;
 
-    int old_dist = current_distribution;
+    int old_dist = m_current_distribution;
 
-    int new_dist = (d.empty () ? current_distribution : get_dist_id (d));
+    int new_dist = (d.empty () ? m_current_distribution : get_dist_id (d));
 
     uint32NDArray saved_state;
 
@@ -181,17 +181,17 @@ namespace octave
       saved_state = get_internal_state ();
 
     init_mersenne_twister ();
-    rand_states[new_dist] = get_internal_state ();
+    m_rand_states[new_dist] = get_internal_state ();
 
     if (old_dist != new_dist)
-      rand_states[old_dist] = saved_state;
+      m_rand_states[old_dist] = saved_state;
   }
 
   std::string rand::do_distribution (void)
   {
     std::string retval;
 
-    switch (current_distribution)
+    switch (m_current_distribution)
       {
       case uniform_dist:
         retval = "uniform";
@@ -215,7 +215,7 @@ namespace octave
 
       default:
         (*current_liboctave_error_handler)
-          ("rand: invalid distribution ID = %d", current_distribution);
+          ("rand: invalid distribution ID = %d", m_current_distribution);
         break;
       }
 
@@ -291,11 +291,11 @@ namespace octave
   }
 
   template <>
-  double rand::uniform<double> (void)
+  OCTAVE_API double rand::uniform<double> (void)
   {
     double retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, retval);
     else
       retval = rand_uniform<double> ();
@@ -304,11 +304,11 @@ namespace octave
   }
 
   template <>
-  double rand::normal<double> (void)
+  OCTAVE_API double rand::normal<double> (void)
   {
     double retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, retval);
     else
       retval = rand_normal<double> ();
@@ -317,11 +317,11 @@ namespace octave
   }
 
   template <>
-  double rand::exponential<double> (void)
+  OCTAVE_API double rand::exponential<double> (void)
   {
     double retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       F77_FUNC (dgenexp, DGENEXP) (1.0, retval);
     else
       retval = rand_exponential<double> ();
@@ -330,11 +330,11 @@ namespace octave
   }
 
   template <>
-  double rand::poisson<double> (double a)
+  OCTAVE_API double rand::poisson<double> (double a)
   {
     double retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       {
         if (a < 0.0 || ! math::isfinite (a))
           retval = numeric_limits<double>::NaN ();
@@ -352,11 +352,11 @@ namespace octave
   }
 
   template <>
-  double rand::gamma<double> (double a)
+  OCTAVE_API double rand::gamma<double> (double a)
   {
     double retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       {
         if (a <= 0.0 || ! math::isfinite (a))
           retval = numeric_limits<double>::NaN ();
@@ -370,11 +370,11 @@ namespace octave
   }
 
   template <>
-  float rand::uniform<float> (void)
+  OCTAVE_API float rand::uniform<float> (void)
   {
     float retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, retval);
     else
       retval = rand_uniform<float> ();
@@ -383,11 +383,11 @@ namespace octave
   }
 
   template <>
-  float rand::normal<float> (void)
+  OCTAVE_API float rand::normal<float> (void)
   {
     float retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, retval);
     else
       retval = rand_normal<float> ();
@@ -396,11 +396,11 @@ namespace octave
   }
 
   template <>
-  float rand::exponential<float> (void)
+  OCTAVE_API float rand::exponential<float> (void)
   {
     float retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       F77_FUNC (fgenexp, FGENEXP) (1.0f, retval);
     else
       retval = rand_exponential<float> ();
@@ -409,11 +409,11 @@ namespace octave
   }
 
   template <>
-  float rand::poisson<float> (float a)
+  OCTAVE_API float rand::poisson<float> (float a)
   {
     float retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       {
         if (a < 0.0f || ! math::isfinite (a))
           retval = numeric_limits<float>::NaN ();
@@ -434,11 +434,11 @@ namespace octave
   }
 
   template <>
-  float rand::gamma<float> (float a)
+  OCTAVE_API float rand::gamma<float> (float a)
   {
     float retval;
 
-    if (use_old_generators)
+    if (m_use_old_generators)
       {
         if (a <= 0.0f || ! math::isfinite (a))
           retval = numeric_limits<float>::NaN ();
@@ -456,7 +456,7 @@ namespace octave
   {
     T retval = 0;
 
-    switch (current_distribution)
+    switch (m_current_distribution)
       {
       case uniform_dist:
         retval = uniform<T> ();
@@ -480,18 +480,18 @@ namespace octave
 
       default:
         (*current_liboctave_error_handler)
-          ("rand: invalid distribution ID = %d", current_distribution);
+          ("rand: invalid distribution ID = %d", m_current_distribution);
         break;
       }
 
-    if (! use_old_generators)
+    if (! m_use_old_generators)
       save_state ();
 
     return retval;
   }
 
-  template double rand::do_scalar<double> (double);
-  template float rand::do_scalar<float> (float);
+  template OCTAVE_API double rand::do_scalar<double> (double);
+  template OCTAVE_API float rand::do_scalar<float> (float);
 
   template <typename T>
   Array<T>
@@ -511,8 +511,10 @@ namespace octave
     return retval;
   }
 
-  template Array<double> rand::do_vector<double> (octave_idx_type, double);
-  template Array<float> rand::do_vector<float> (octave_idx_type, float);
+  template OCTAVE_API Array<double>
+  rand::do_vector<double> (octave_idx_type, double);
+  template OCTAVE_API Array<float>
+  rand::do_vector<float> (octave_idx_type, float);
 
   NDArray rand::do_nd_array (const dim_vector& dims, double a)
   {
@@ -550,7 +552,7 @@ namespace octave
   void rand::initialize_ranlib_generators (void)
   {
     sys::localtime tm;
-    int stored_distribution = current_distribution;
+    int stored_distribution = m_current_distribution;
     F77_FUNC (setcgn, SETCGN) (uniform_dist);
 
     int hour = tm.hour () + 1;
@@ -573,27 +575,27 @@ namespace octave
 
     init_mersenne_twister ();
     s = get_internal_state ();
-    rand_states[uniform_dist] = s;
+    m_rand_states[uniform_dist] = s;
 
     init_mersenne_twister ();
     s = get_internal_state ();
-    rand_states[normal_dist] = s;
+    m_rand_states[normal_dist] = s;
 
     init_mersenne_twister ();
     s = get_internal_state ();
-    rand_states[expon_dist] = s;
+    m_rand_states[expon_dist] = s;
 
     init_mersenne_twister ();
     s = get_internal_state ();
-    rand_states[poisson_dist] = s;
+    m_rand_states[poisson_dist] = s;
 
     init_mersenne_twister ();
     s = get_internal_state ();
-    rand_states[gamma_dist] = s;
+    m_rand_states[gamma_dist] = s;
 
     // All of the initializations above have messed with the internal state.
     // Restore the state of the currently selected distribution.
-    set_internal_state (rand_states[current_distribution]);
+    set_internal_state (m_rand_states[m_current_distribution]);
   }
 
   uint32NDArray rand::get_internal_state (void)
@@ -607,7 +609,7 @@ namespace octave
 
   void rand::save_state (void)
   {
-    rand_states[current_distribution] = get_internal_state ();;
+    m_rand_states[m_current_distribution] = get_internal_state ();;
   }
 
   int rand::get_dist_id (const std::string& d)
@@ -645,11 +647,11 @@ namespace octave
 
   void rand::switch_to_generator (int dist)
   {
-    if (dist != current_distribution)
+    if (dist != m_current_distribution)
       {
-        current_distribution = dist;
+        m_current_distribution = dist;
 
-        set_internal_state (rand_states[dist]);
+        set_internal_state (m_rand_states[dist]);
       }
   }
 
@@ -658,31 +660,31 @@ namespace octave
     if (len < 1)
       return;
 
-    switch (current_distribution)
+    switch (m_current_distribution)
       {
       case uniform_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           std::generate_n (v, len, [](void) { double x; F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x); return x; });
         else
           rand_uniform<double> (len, v);
         break;
 
       case normal_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           std::generate_n (v, len, [](void) { double x; F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x); return x; });
         else
           rand_normal<double> (len, v);
         break;
 
       case expon_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           std::generate_n (v, len, [](void) { double x; F77_FUNC (dgenexp, DGENEXP) (1.0, x); return x; });
         else
           rand_exponential<double> (len, v);
         break;
 
       case poisson_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           {
             if (a < 0.0 || ! math::isfinite (a))
               std::fill_n (v, len, numeric_limits<double>::NaN ());
@@ -699,7 +701,7 @@ namespace octave
         break;
 
       case gamma_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           {
             if (a <= 0.0 || ! math::isfinite (a))
               std::fill_n (v, len, numeric_limits<double>::NaN ());
@@ -712,7 +714,7 @@ namespace octave
 
       default:
         (*current_liboctave_error_handler)
-          ("rand: invalid distribution ID = %d", current_distribution);
+          ("rand: invalid distribution ID = %d", m_current_distribution);
         break;
       }
 
@@ -726,31 +728,31 @@ namespace octave
     if (len < 1)
       return;
 
-    switch (current_distribution)
+    switch (m_current_distribution)
       {
       case uniform_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, x); return x; });
         else
           rand_uniform<float> (len, v);
         break;
 
       case normal_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           std::generate_n (v, len, [](void) { float x; F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, x); return x; });
         else
           rand_normal<float> (len, v);
         break;
 
       case expon_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenexp, FGENEXP) (1.0f, x); return x; });
         else
           rand_exponential<float> (len, v);
         break;
 
       case poisson_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           {
             if (a < 0.0f || ! math::isfinite (a))
               std::fill_n (v, len, numeric_limits<float>::NaN ());
@@ -767,7 +769,7 @@ namespace octave
         break;
 
       case gamma_dist:
-        if (use_old_generators)
+        if (m_use_old_generators)
           {
             if (a <= 0.0f || ! math::isfinite (a))
               std::fill_n (v, len, numeric_limits<float>::NaN ());
@@ -780,7 +782,7 @@ namespace octave
 
       default:
         (*current_liboctave_error_handler)
-          ("rand: invalid distribution ID = %d", current_distribution);
+          ("rand: invalid distribution ID = %d", m_current_distribution);
         break;
       }
 

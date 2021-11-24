@@ -33,27 +33,27 @@
 
 #include "oct-stream.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 class
-octave_fstream : public octave::base_stream
+fstream : public base_stream
 {
 public:
 
-  octave_fstream (const std::string& nm_arg,
-                  std::ios::openmode arg_md = std::ios::in | std::ios::out,
-                  octave::mach_info::float_format flt_fmt
-                    = octave::mach_info::native_float_format ());
+  fstream (const std::string& nm_arg,
+           std::ios::openmode arg_md = std::ios::in | std::ios::out,
+           mach_info::float_format flt_fmt = mach_info::native_float_format ());
 
   // No copying!
 
-  octave_fstream (const octave_fstream&) = delete;
+  fstream (const fstream&) = delete;
 
-  octave_fstream& operator = (const octave_fstream&) = delete;
+  fstream& operator = (const fstream&) = delete;
 
-  static octave::stream
+  static stream
   create (const std::string& nm_arg,
           std::ios::openmode arg_md = std::ios::in | std::ios::out,
-          octave::mach_info::float_format flt_fmt
-            = octave::mach_info::native_float_format ());
+          mach_info::float_format flt_fmt = mach_info::native_float_format ());
 
   // Position a stream at OFFSET relative to ORIGIN.
 
@@ -79,7 +79,7 @@ public:
 
 protected:
 
-  ~octave_fstream (void) = default;
+  ~fstream (void) = default;
 
 private:
 
@@ -87,5 +87,14 @@ private:
 
   std::fstream m_fstream;
 };
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::fstream' instead")
+typedef octave::fstream octave_fstream;
+
+#endif
 
 #endif

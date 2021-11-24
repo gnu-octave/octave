@@ -44,7 +44,7 @@
 #include "gui-preferences-global.h"
 #include "octave-qobject.h"
 
-namespace QtHandles
+namespace octave
 {
   static QIcon makeEmptyIcon (void)
   {
@@ -150,7 +150,7 @@ namespace QtHandles
                   if (xevent->type () == QEvent::ActionAdded)
                     {
                       if (bar->actions ().size () == 2)
-                        QTimer::singleShot (0, this, SLOT (hideEmpty (void)));
+                        QTimer::singleShot (0, this, &ToolBar::hideEmpty);
                     }
                   else
                     {

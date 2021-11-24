@@ -427,7 +427,7 @@ public:
   // Convert a real number (check NaN and non-int).
 
   template <typename S>
-  static T convert_real (const S& value);
+  static OCTAVE_API T convert_real (const S& value);
 };
 
 // Saturated (homogeneous) integer arithmetics.  The signed and
@@ -791,6 +791,7 @@ class octave_int_arith
 
 template <typename T>
 class
+OCTAVE_API
 octave_int : public octave_int_base<T>
 {
 public:
@@ -906,14 +907,10 @@ public:
 
   static int byte_size (void) { return sizeof (T); }
 
-  static const char * type_name ();
+  static const OCTAVE_API char * type_name ();
 
   // The following are provided for convenience.
-  static const octave_int zero, one;
-
-  // Unsafe.  This function exists to support the MEX interface.
-  // You should not use it anywhere else.
-  void * mex_get_data (void) const { return const_cast<T *> (&m_ival); }
+  static const octave_int s_zero, s_one;
 
 private:
 
@@ -1329,5 +1326,30 @@ xmin (const octave_int<T>& x, const octave_int<T>& y)
 
   return octave_int<T> (xv <= yv ? xv : yv);
 }
+
+// Ints are handled by converting to octave_int type.
+
+#define OCTAVE_INT_IDX_TYPE_BIN_OP(OP)                          \
+  template <typename T>                                         \
+  inline octave_int<T>                                          \
+  operator OP (const octave_int<T>& x, octave_idx_type y)       \
+  {                                                             \
+    return x OP octave_int<T> (y);                              \
+  }                                                             \
+                                                                \
+  template <typename T>                                         \
+  inline octave_int<T>                                          \
+  operator OP (octave_idx_type x, const octave_int<T>& y)       \
+  {                                                             \
+    return octave_int<T> (x) OP y;                              \
+  }
+
+OCTAVE_INT_IDX_TYPE_BIN_OP (+)
+OCTAVE_INT_IDX_TYPE_BIN_OP (-)
+OCTAVE_INT_IDX_TYPE_BIN_OP (*)
+OCTAVE_INT_IDX_TYPE_BIN_OP (/)
+
+#undef OCTAVE_INT_IDX_TYPE_BIN_OP
+
 
 #endif

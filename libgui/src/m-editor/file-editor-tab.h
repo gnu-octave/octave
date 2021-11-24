@@ -74,7 +74,8 @@ namespace octave
     void file_name_changed (const QString& fileName,
                             const QString& toolTip,
                             bool modified);
-    void editor_state_changed (bool copy_available, bool is_octave_file);
+    void editor_state_changed (bool copy_available, bool is_octave_file,
+                               bool is_modified);
     void set_focus_editor_signal (QWidget *);
     void edit_area_changed (octave_qscintilla *edit_area);
     void tab_remove_request (void);
@@ -92,7 +93,7 @@ namespace octave
 
     void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
     void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
-    void remove_all_breakpoints (void);
+    void remove_all_breakpoints_signal (void);
     void find_translated_line_number (int original_linenr,
                                       int& translated_linenr, marker*&);
     void find_linenr_just_before (int linenr, int& original_linenr,
@@ -203,6 +204,8 @@ namespace octave
     void handle_request_remove_breakpoint (int line);
 
     void update_breakpoints_handler (const octave_value_list& argout);
+    void update_rowcol_indicator (int line, int col);
+    void update_lexer_settings (bool update_apis_only = false);
 
   private slots:
 
@@ -258,18 +261,7 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
-    struct bp_info
-    {
-      bp_info (const QString& fname, int l = 0, const QString& cond = "");
-
-      int line;
-      std::string file;
-      std::string dir;
-      std::string function_name;
-      std::string condition;
-    };
-
-    void add_breakpoint_event (const bp_info& info);
+    void add_breakpoint_event (int line, const QString& cond);
 
     bool valid_file_name (const QString& file = QString ());
     void save_file (const QString& saveFileName, bool remove_on_success = false,
@@ -281,7 +273,6 @@ namespace octave
     bool unchanged_or_saved (void);
 
     void update_lexer (void);
-    void update_lexer_settings (void);
 
     void show_dialog (QDialog *dlg, bool modal);
   public:
@@ -317,7 +308,6 @@ namespace octave
     QDateTime m_last_modified;
 
     bool m_autoc_active;
-    bool m_long_title;
     bool m_copy_available;
     bool m_is_octave_file;
     bool m_always_reload_changed_files;

@@ -34,7 +34,7 @@
 
 function y = tand (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -51,5 +51,4 @@ endfunction
 %!assert (tand ([0, 180, 360]) == 0)
 %!assert (tand ([90, 270]) == Inf)
 
-%!error tand ()
-%!error tand (1, 2)
+%!error <Invalid call> tand ()

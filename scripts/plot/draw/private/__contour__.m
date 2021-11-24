@@ -197,6 +197,9 @@ function [c, hg] = __contour__ (varargin)
   addproperty ("linestyle", hg, "linelinestyle", linespec.linestyle);
   addproperty ("linewidth", hg, "linelinewidth", 0.5);
 
+  ## Matlab property just for compatibility (bug #60513).
+  addproperty ("facecolor", hg, "patchfacecolor", "none");
+
   ## Matlab property, although Octave does not implement it.
   addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
 

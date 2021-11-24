@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include <functional>
 #include <iosfwd>
 #include <string>
 
@@ -38,13 +39,15 @@ class ComplexColumnVector;
 class Matrix;
 class ComplexMatrix;
 
-typedef ColumnVector (*EigsFunc) (const ColumnVector& x, int& eigs_error);
+typedef
+std::function<ColumnVector (const ColumnVector& x, int& eigs_error)> EigsFunc;
 
-typedef ComplexColumnVector (*EigsComplexFunc) (const ComplexColumnVector& x,
-                                                int& eigs_error);
+typedef
+std::function<ComplexColumnVector
+              (const ComplexColumnVector& x, int& eigs_error)> EigsComplexFunc;
 
 template <typename M>
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricMatrix (const M& m, const std::string typ,
                          octave_idx_type k, octave_idx_type p,
                          octave_idx_type& info, Matrix& eig_vec,
@@ -54,7 +57,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
                          bool cholB, int disp, int maxit);
 
 template <typename M>
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricMatrixShift (const M& m, double sigma,
                               octave_idx_type k, octave_idx_type p,
                               octave_idx_type& info, Matrix& eig_vec,
@@ -64,7 +67,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                               bool cholB, int disp, int maxit);
 
 template <typename M>
-extern OCTAVE_API octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
                        const std::string& _typ, double sigma,
                        octave_idx_type k, octave_idx_type p,
@@ -75,7 +78,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
                        bool cholB, int disp, int maxit);
 
 template <typename M>
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                             octave_idx_type k, octave_idx_type p,
                             octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -85,7 +88,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                             bool cholB, int disp, int maxit);
 
 template <typename M>
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                                  octave_idx_type k, octave_idx_type p,
                                  octave_idx_type& info,
@@ -96,7 +99,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                                  bool cholB, int disp, int maxit);
 
 template <typename M>
-extern OCTAVE_API octave_idx_type
+OCTAVE_API octave_idx_type
 EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
                           const std::string& _typ, double sigmar,
                           octave_idx_type k, octave_idx_type p,
@@ -107,7 +110,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
                           bool cholB, int disp, int maxit);
 
 template <typename M>
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
                                octave_idx_type k, octave_idx_type p,
                                octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -118,7 +121,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
                                bool cholB, int disp, int maxit);
 
 template <typename M>
-octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                                     octave_idx_type k, octave_idx_type p,
                                     octave_idx_type& info,
@@ -130,7 +133,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                                     bool cholB, int disp, int maxit);
 
 template <typename M>
-extern OCTAVE_API octave_idx_type
+OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              const std::string& _typ, Complex sigma,
                              octave_idx_type k, octave_idx_type p,

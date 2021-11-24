@@ -32,7 +32,7 @@ disp ("First recognized Octave code after %%")
 i = 0:2*pi
 
 # some real comment
-y = sin(i)
+y = sin (i)
 
 %%
 %
@@ -43,16 +43,16 @@ y = sin(i)
 x = 0:2*pi
 
 # some real comment and split code block
-y = sin(x)
+y = sin (x)
 
 %%
 %
 
 % reusing old values
-y = cos(i)
+y = cos (i)
 
 # some real comment and split code block
-y = cos(x)
+y = cos (x)
 
 %% Text formatting
 % PLAIN TEXT _ITALIC TEXT_ *BOLD TEXT* |MONOSPACED TEXT|

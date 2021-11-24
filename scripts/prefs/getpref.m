@@ -55,10 +55,6 @@
 
 function retval = getpref (group, pref, default)
 
-  if (nargin > 3)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     retval = loadprefs ();
   elseif (nargin == 1)
@@ -151,9 +147,7 @@ endfunction
 %!
 %! unwind_protect_cleanup
 %!   unlink (fullfile (tmp_home, ".octave_prefs"));
-%!   if (isfolder (tmp_home))
-%!     rmdir (tmp_home);
-%!   endif
+%!   sts = rmdir (tmp_home);
 %!   if (isempty (HOME))
 %!     unsetenv ("HOME");
 %!   else
@@ -161,6 +155,5 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
-%!error getpref (1,2,3,4)
 %!error <GROUP must be a string> getpref (1)
 %!error <PREF must be a string> getpref ("group1", 1, 2)

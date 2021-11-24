@@ -61,7 +61,8 @@
 ## contourf (x, y, z, -7:9)
 ## @end group
 ## @end example
-## @seealso{ezcontourf, contour, contourc, contour3, clabel, meshc, surfc, caxis, colormap, plot}
+## @seealso{ezcontourf, contour, contourc, contour3, clabel, meshc, surfc,
+## caxis, colormap, plot}
 ## @end deftypefn
 
 function [c, h] = contourf (varargin)

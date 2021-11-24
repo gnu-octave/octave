@@ -29,12 +29,13 @@
 ## graphics object with handle @var{h}.
 ##
 ## @var{h} may also be a vector of graphics handles.
-## @seealso{getappdata, setappdata, rmappdata, guidata, get, set, getpref, setpref}
+## @seealso{getappdata, setappdata, rmappdata, guidata, get, set, getpref,
+## setpref}
 ## @end deftypefn
 
 function valid = isappdata (h, name)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -66,7 +67,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error isappdata ()
-%!error isappdata (1,2,3)
+%!error <Invalid call> isappdata ()
 %!error <H must be a scalar .* graphic handle> isappdata (-1, "hello")
 %!error <NAME must be a string> isappdata (0, 1)

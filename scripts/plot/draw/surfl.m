@@ -156,7 +156,7 @@ function h = surfl (varargin)
 
     ## Get view vector (vv).
     [az, el] = view ();
-    vv = sph2cart ((az - 90) * pi/180.0, el * pi/180.0, 1.0);
+    [vv(1), vv(2), vv(3)] = sph2cart ((az - 90) * pi/180.0, el * pi/180.0, 1.0);
 
     if (! have_lv)
       ## Calculate light vector (lv) from view vector.

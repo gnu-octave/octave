@@ -75,7 +75,7 @@
 
 function ret = pchip (x, y, xi)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -177,5 +177,5 @@ endfunction
 %!assert (size (yi2), [3,2,5,4])
 %!assert (squeeze (yi2(1,2,3,:)), [1/sqrt(2); 0; -1/sqrt(2);-1], 1e-14)
 
-%!error (pchip (1,2))
-%!error (pchip (1,2,3))
+%!error pchip (1,2)
+%!error pchip (1,2,3)

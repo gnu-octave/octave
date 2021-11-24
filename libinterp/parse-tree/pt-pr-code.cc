@@ -76,6 +76,45 @@ namespace octave
   }
 
   void
+  tree_print_code::visit_arguments_block (tree_arguments_block&)
+  {
+    indent ();
+
+    // FIXME
+    m_os << "arguments ... endarguments";
+  }
+
+  void
+  tree_print_code::visit_args_block_attribute_list (tree_args_block_attribute_list&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_print_code::visit_args_block_validation_list (tree_args_block_validation_list&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_print_code::visit_arg_validation (tree_arg_validation&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_print_code::visit_arg_size_spec (tree_arg_size_spec&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_print_code::visit_arg_validation_fcns (tree_arg_validation_fcns&)
+  {
+    panic_impossible ();
+  }
+
+  void
   tree_print_code::visit_binary_expression (tree_binary_expression& expr)
   {
     indent ();
@@ -290,6 +329,35 @@ namespace octave
     indent ();
 
     m_os << "endfor";
+  }
+
+  void
+  tree_print_code::visit_spmd_command (tree_spmd_command& cmd)
+  {
+    print_comment_list (cmd.leading_comment ());
+
+    indent ();
+
+    m_os << "spmd";
+
+    newline ();
+
+    tree_statement_list *list = cmd.body ();
+
+    if (list)
+      {
+        increment_indent_level ();
+
+        list->accept (*this);
+
+        decrement_indent_level ();
+      }
+
+    print_indented_comment (cmd.trailing_comment ());
+
+    indent ();
+
+    m_os << "endspmd";
   }
 
   void

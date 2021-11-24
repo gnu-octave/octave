@@ -124,9 +124,9 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
 
   endswitch
 
-  if (__event_manager_enabled__ ())
+  if (__event_manager_have_dialogs__ ())
     btn = __event_manager_question_dialog__ (msg, title, options{1}, options{2},
-                                           options{3}, options{4});
+                                             options{3}, options{4});
   else
     error ("questdlg is not available in this version of Octave");
   endif
@@ -186,8 +186,8 @@ endfunction
 %! endif
 
 ## Test input validation
-%!error questdlg ()
-%!error questdlg (1,2,3,4,5,6,7)
+%!error <Invalid call> questdlg ()
+%!error <Invalid call> questdlg (1,2,3,4,5,6,7)
 %!error <MSG must be a character string or cellstr array> questdlg (1)
 %!error <TITLE must be a character string> questdlg ("msg", 1)
 %!error <DEFAULT must match one of the button> questdlg ("msg", "title", "ABC")

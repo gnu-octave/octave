@@ -39,6 +39,7 @@
 
 #include <gl2ps.h>
 
+#include "file-ops.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
 #include "tmpfile-wrapper.h"
@@ -55,20 +56,6 @@
 
 namespace octave
 {
-  static void
-  safe_pclose (FILE *f)
-  {
-    if (f)
-      octave::pclose (f);
-  }
-
-  static void
-  safe_fclose (FILE *f)
-  {
-    if (f)
-      std::fclose (f);
-  }
-
   class
   OCTINTERP_API
   gl2ps_renderer : public opengl_renderer
@@ -77,8 +64,8 @@ namespace octave
 
     gl2ps_renderer (opengl_functions& glfcns, FILE *_fp,
                     const std::string& _term)
-      : opengl_renderer (glfcns), fp (_fp), term (_term),
-        fontsize (), fontname (), buffer_overflow (false)
+      : opengl_renderer (glfcns), m_fp (_fp), m_term (_term), m_fontsize (),
+        m_fontname (), m_buffer_overflow (false), m_svg_def_index (0)
     { }
 
     ~gl2ps_renderer (void) = default;
@@ -128,6 +115,13 @@ namespace octave
               && fa.double_value () < 1)
             retval = true;
         }
+      else if (go.isa ("scatter"))
+        {
+          octave_value fa = go.get ("markerfacealpha");
+          if (fa.is_scalar_type () && fa.is_double_type ()
+              && fa.double_value () < 1)
+            retval = true;
+        }
 
       return retval;
     }
@@ -171,7 +165,7 @@ namespace octave
       else if (state == GL2PS_ERROR)
         error ("gl2ps_renderer::draw_axes: gl2psEndPage returned GL2PS_ERROR");
 
-      buffer_overflow |= (state == GL2PS_OVERFLOW);
+      m_buffer_overflow |= (state == GL2PS_OVERFLOW);
 
       // Don't draw background for subsequent viewports (legends, subplots,
       // etc.)
@@ -272,7 +266,11 @@ namespace octave
                                Matrix box, double rotation,
                                std::list<text_renderer::string>& lst);
 
-    // Build an svg text element from a list of parsed strings.
+    // Build an svg text element from a list of parsed strings
+    std::string format_svg_element (std::string str, Matrix bbox,
+                                    double rotation, ColumnVector coord_pix,
+                                    Matrix color);
+
     std::string strlist_to_svg (double x, double y, double z, Matrix box,
                                 double rotation,
                                 std::list<text_renderer::string>& lst);
@@ -284,11 +282,12 @@ namespace octave
 
     int alignment_to_mode (int ha, int va) const;
 
-    FILE *fp;
-    caseless_str term;
-    double fontsize;
-    std::string fontname;
-    bool buffer_overflow;
+    FILE *m_fp;
+    caseless_str m_term;
+    double m_fontsize;
+    std::string m_fontname;
+    bool m_buffer_overflow;
+    std::size_t m_svg_def_index;
   };
 
   static bool
@@ -323,6 +322,29 @@ namespace octave
     return retval;
   }
 
+  static std::string
+  get_title (const graphics_handle& h)
+  {
+    std::string retval;
+
+    gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::get_title");
+
+    graphics_object go = gh_mgr.get_object (h);
+
+    if (! go.valid_object ())
+      return retval;
+
+    if (go.isa ("figure"))
+      {
+        figure::properties& fp
+          = reinterpret_cast<figure::properties&> (go.get_properties ());
+
+        retval = fp.get_title ();
+      }
+
+    return retval;
+  }
+
   void
   gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
   {
@@ -339,32 +361,38 @@ namespace octave
         in_draw = true;
 
         GLint gl2ps_term = GL2PS_PS;
-        if (term.find ("eps") != std::string::npos)
+        if (m_term.find ("eps") != std::string::npos)
           gl2ps_term = GL2PS_EPS;
-        else if (term.find ("pdf") != std::string::npos)
+        else if (m_term.find ("pdf") != std::string::npos)
           gl2ps_term = GL2PS_PDF;
-        else if (term.find ("ps") != std::string::npos)
+        else if (m_term.find ("ps") != std::string::npos)
           gl2ps_term = GL2PS_PS;
-        else if (term.find ("svg") != std::string::npos)
+        else if (m_term.find ("svg") != std::string::npos)
           gl2ps_term = GL2PS_SVG;
-        else if (term.find ("pgf") != std::string::npos)
+        else if (m_term.find ("pgf") != std::string::npos)
           gl2ps_term = GL2PS_PGF;
-        else if (term.find ("tex") != std::string::npos)
+        else if (m_term.find ("tex") != std::string::npos)
           gl2ps_term = GL2PS_TEX;
         else
           warning ("gl2ps_renderer::draw: Unknown terminal %s, using 'ps'",
-                   term.c_str ());
+                   m_term.c_str ());
 
         GLint gl2ps_text = 0;
-        if (term.find ("notxt") != std::string::npos)
+        if (m_term.find ("notxt") != std::string::npos)
           gl2ps_text = GL2PS_NO_TEXT;
+
+        // Find Title for plot
+        const graphics_handle& myhandle = go.get ("__myhandle__");
+        std::string plot_title = get_title (myhandle);
+        if (plot_title.empty ())
+          plot_title = "Octave plot";
 
         // Default sort order optimizes for 3D plots
         GLint gl2ps_sort = GL2PS_BSP_SORT;
 
         // FIXME: gl2ps does not provide a way to change the sorting algorithm
         // on a viewport basis, we thus disable sorting only if all axes are 2D
-        if (has_2D_axes (go.get ("__myhandle__")))
+        if (has_2D_axes (myhandle))
           gl2ps_sort = GL2PS_NO_SORT;
 
         // Use a temporary file in case an overflow happens
@@ -373,19 +401,19 @@ namespace octave
         if (! tmpf)
           error ("gl2ps_renderer::draw: couldn't open temporary file for printing");
 
-        frame.add_fcn (safe_fclose, tmpf);
+        frame.add ([=] () { std::fclose (tmpf); });
 
         // Reset buffsize, unless this is 2nd pass of a texstandalone print.
-        if (term.find ("tex") == std::string::npos)
+        if (m_term.find ("tex") == std::string::npos)
           buffsize = 2*1024*1024;
         else
           buffsize /= 2;
 
-        buffer_overflow = true;
+        m_buffer_overflow = true;
 
-        while (buffer_overflow)
+        while (m_buffer_overflow)
           {
-            buffer_overflow = false;
+            m_buffer_overflow = false;
             buffsize *= 2;
 
             std::fseek (tmpf, 0, SEEK_SET);
@@ -406,13 +434,17 @@ namespace octave
             else
               include_graph = old_print_cmd;
 
-            std::size_t n_begin = include_graph.find_first_not_of (" \"'");
+            std::size_t n_begin = include_graph.find_first_not_of (R"( "')");
 
             if (n_begin != std::string::npos)
               {
-                std::size_t n_end = include_graph.find_last_not_of (" \"'");
+                // Strip any quote characters characters around filename
+                std::size_t n_end = include_graph.find_last_not_of (R"( "')");
                 include_graph = include_graph.substr (n_begin,
                                                       n_end - n_begin + 1);
+                // Strip path from filename
+                n_begin = include_graph.find_last_of (sys::file_ops::dir_sep_chars ());
+                include_graph = include_graph.substr (n_begin + 1);
               }
             else
               include_graph = "foobar-inc";
@@ -428,7 +460,7 @@ namespace octave
             set_device_pixel_ratio (fprop.get___device_pixel_ratio__ ());
 
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
-            GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave",
+            GLint ret = gl2psBeginPage (plot_title.c_str (), "Octave",
                                         nullptr, gl2ps_term, gl2ps_sort,
                                         (GL2PS_BEST_ROOT
                                          | gl2ps_text
@@ -445,10 +477,10 @@ namespace octave
 
             opengl_renderer::draw (go);
 
-            if (buffer_overflow)
+            if (m_buffer_overflow)
               warning ("gl2ps_renderer::draw: retrying with buffer size: %.1E B\n", double (2*buffsize));
 
-            if (! buffer_overflow)
+            if (! m_buffer_overflow)
               old_print_cmd = print_cmd;
 
             // Don't check return value of gl2psEndPage, it is not meaningful.
@@ -466,8 +498,8 @@ namespace octave
         // In EPS terminal read the header line by line and insert a
         // new procedure
         const char* fcn = "/SRX  { gsave FCT moveto rotate xshow grestore } BD\n";
-        bool header_found = ! (term.find ("eps") != std::string::npos
-                               || term.find ("svg") != std::string::npos);
+        bool header_found = ! (m_term.find ("eps") != std::string::npos
+                               || m_term.find ("svg") != std::string::npos);
 
         while (! feof (tmpf) && nread)
           {
@@ -481,7 +513,7 @@ namespace octave
                 if (! header_found && std::strncmp (str, "/SBCR", 5) == 0)
                   {
                     header_found = true;
-                    nwrite = std::fwrite (fcn, 1, strlen (fcn), fp);
+                    nwrite = std::fwrite (fcn, 1, strlen (fcn), m_fp);
                     if (nwrite != strlen (fcn))
                       {
                         // FIXME: is this the best thing to do here?
@@ -489,8 +521,7 @@ namespace octave
                         error ("gl2ps_renderer::draw: internal pipe error");
                       }
                   }
-                else if (! header_found
-                         && term.find ("svg") != std::string::npos)
+                else if (m_term.find ("svg") != std::string::npos)
                   {
                     // FIXME: gl2ps uses pixel units for SVG format.
                     //        Modify resulting svg to use points instead.
@@ -498,7 +529,7 @@ namespace octave
                     //        make header_found true for SVG if gl2ps is fixed.
                     std::string srchstr (str);
                     std::size_t pos = srchstr.find ("<svg ");
-                    if (pos != std::string::npos)
+                    if (! header_found && pos != std::string::npos)
                       {
                         header_found = true;
                         pos = srchstr.find ("px");
@@ -513,7 +544,7 @@ namespace octave
                       }
                   }
 
-                nwrite = std::fwrite (str, 1, nread, fp);
+                nwrite = std::fwrite (str, 1, nread, m_fp);
                 if (nwrite != nread)
                   {
                     // FIXME: is this the best thing to do here?
@@ -800,20 +831,134 @@ namespace octave
   }
 
   std::string
+  gl2ps_renderer::format_svg_element (std::string str, Matrix box,
+                                      double rotation, ColumnVector coord_pix,
+                                      Matrix color)
+  {
+    // Extract <defs> elements and change their id to avoid conflict with
+    // defs coming from another svg string
+    std::string::size_type n1 = str.find ("<defs>");
+    if (n1 == std::string::npos)
+      return std::string ();
+
+    std::string id, new_id;
+    n1 = str.find ("<path", ++n1);
+    std::string::size_type n2;
+
+    while (n1 != std::string::npos)
+      {
+        // Extract the identifier id='identifier'
+        n1 = str.find ("id='", n1) + 4;
+        n2 = str.find ("'", n1);
+        id = str.substr (n1, n2-n1);
+
+        new_id = std::to_string (m_svg_def_index) + "-" + id ;
+
+        str.replace (n1, n2-n1, new_id);
+
+        std::string::size_type n_ref = str.find ("#" + id);
+
+        while (n_ref != std::string::npos)
+          {
+            str.replace (n_ref + 1, id.length (), new_id);
+            n_ref = str.find ("#" + id);
+          }
+
+        n1 = str.find ("<path", n1);
+      }
+
+    m_svg_def_index++;
+
+    n1 = str.find ("<defs>");
+    n2 = str.find ("</defs>") + 7;
+
+    std::string defs = str.substr (n1, n2-n1);
+
+    // Extract the group containing the <use> elements and transform its
+    // coordinates using the bbox and coordinates info.
+
+    // Extract the original viewBox anchor
+    n1 = str.find ("viewBox='") + 9;
+    if (n1 == std::string::npos)
+      return std::string ();
+
+    n2 = str.find (" ", n1);
+    double original_x0 = std::stod (str.substr (n1, n2-n1));
+
+    n1 = n2+1;
+    n2 = str.find (" ", n1);
+    double original_y0 = std::stod (str.substr (n1, n2-n1));
+
+    // First look for local transform in the original svg
+    std::string orig_trans;
+    n1 = str.find ("<g id='page1' transform='");
+    if (n1 != std::string::npos)
+      {
+        n1 += 25;
+        n2 = str.find ("'", n1);
+        orig_trans = str.substr (n1, n2-n1);
+        n1 = n2 + 1;
+      }
+    else
+      {
+        n1 = str.find ("<g id='page1'");
+        n1 += 13;
+      }
+
+    n2 = str.find ("</g>", n1) + 4;
+
+    // The first applied transformation is the right-most
+    // 1* Apply original transform
+    std::string tform = orig_trans;
+
+    // 2* Move the anchor to the final position
+    tform = std::string ("translate")
+      + "(" + std::to_string (box(0) - original_x0 + coord_pix(0))
+      + "," + std::to_string (-(box(3) + box(1)) - original_y0 + coord_pix(1))
+      + ") " + tform;
+
+    // 3* Rotate around the final position
+    if (rotation != 0)
+      tform = std::string ("rotate")
+        + "(" + std::to_string (-rotation)
+        + "," + std::to_string (coord_pix(0))
+        + "," + std::to_string (coord_pix(1))
+        + ") " + tform;
+
+    // Fill color
+    std::string fill = "fill='rgb("
+      + std::to_string (static_cast<uint8_t> (color(0) * 255.0)) + ","
+      + std::to_string (static_cast<uint8_t> (color(1) * 255.0)) + ","
+      + std::to_string (static_cast<uint8_t> (color(2) * 255.0)) + ")' ";
+
+    std::string use_group = "<g "
+      + fill
+      + "transform='" + tform + "'"
+      + str.substr (n1, n2-n1);
+
+    return defs + "\n" + use_group;
+  }
+
+  std::string
   gl2ps_renderer::strlist_to_svg (double x, double y, double z,
                                   Matrix box, double rotation,
                                   std::list<text_renderer::string>& lst)
   {
-    if (lst.empty ())
-      return "";
-
     //Use pixel coordinates to conform to gl2ps
     ColumnVector coord_pix = get_transform ().transform (x, y, z, false);
 
-    std::ostringstream os;
-    os << "<text xml:space=\"preserve\" ";
+    if (lst.empty ())
+      return "";
 
-    // Rotation and translation are applied to the whole text element
+    // This may already be an svg image.
+    std::string svg = lst.front ().get_svg_element ();
+    if (! svg.empty ())
+      return format_svg_element (svg, box, rotation, coord_pix,
+                                 lst.front ().get_color ());
+
+    // Rotation and translation are applied to the whole group
+    std::ostringstream os;
+    os << R"(<g xml:space="preserve" )";
     os << "transform=\""
        << "translate(" << coord_pix(0) + box(0) << "," << coord_pix(1) - box(1)
        << ") rotate(" << -rotation << "," << -box(0) << "," << box(1)
@@ -832,13 +977,13 @@ namespace octave
        << "font-size=\"" << size << "\">";
 
 
-    // build a tspan for each element in the strlist
+    // Build a text element for each element in the strlist
     for (p = lst.begin (); p != lst.end (); p++)
       {
-        os << "<tspan ";
+        os << "<text ";
 
         if (name.compare (p->get_family ()))
-          os << "font-family=\""  << p->get_family () << "\" ";
+          os << "font-family=\"" << p->get_family () << "\" ";
 
         if (weight.compare (p->get_weight ()))
           os << "font-weight=\"" << p->get_weight () << "\" ";
@@ -857,12 +1002,12 @@ namespace octave
 
         // provide an x coordinate for each character in the string
         os << "x=\"";
-        std::vector<double> xdata =  p->get_xdata ();
+        std::vector<double> xdata = p->get_xdata ();
         for (auto q = xdata.begin (); q != xdata.end (); q++)
           os << (*q) << " ";
-        os << "\"";
+        os << '"';
 
-        os << ">";
+        os << '>';
 
         // translate unicode and special xml characters
         if (p->get_code ())
@@ -888,9 +1033,9 @@ namespace octave
                   os << chr.str ();
               }
           }
-        os << "</tspan>";
+        os << "</text>";
       }
-    os << "</text>";
+    os << "</g>";
 
     return os.str ();
   }
@@ -900,6 +1045,26 @@ namespace octave
                                  Matrix box, double rotation,
                                  std::list<text_renderer::string>& lst)
   {
+    if (lst.empty ())
+      return "";
+    else if (lst.size () == 1)
+      {
+        static bool warned = false;
+        // This may be an svg image, not handled in native eps format.
+        if (! lst.front ().get_svg_element ().empty ())
+          {
+            if (! warned)
+              {
+                warned = true;
+                warning_with_id ("Octave:print:unhandled-svg-content",
+                                 "print: unhandled LaTeX strings. "
+                                 "Use -svgconvert option or -d*latex* output "
+                                 "device.");
+              }
+            return "";
+          }
+      }
+
     // Translate and rotate coordinates in order to use bottom-left alignment
     fix_strlist_position (x, y, z, box, rotation, lst);
     Matrix prev_color (1, 3, -1);
@@ -925,14 +1090,14 @@ namespace octave
         std::string str;
         if (txtobj.get_code ())
           {
-            fontname = "Symbol";
+            m_fontname = "Symbol";
             str = code_to_symbol (txtobj.get_code ());
           }
         else
           {
-            fontname = select_font (txtobj.get_name (),
-                                    txtobj.get_weight () == "bold",
-                                    txtobj.get_angle () == "italic");
+            m_fontname = select_font (txtobj.get_name (),
+                                      txtobj.get_weight () == "bold",
+                                      txtobj.get_angle () == "italic");
 
             // Check that the string is composed of single byte characters
             const std::string tmpstr = txtobj.get_string ();
@@ -952,7 +1117,8 @@ namespace octave
                         warning_with_id ("Octave:print:unsupported-multibyte",
                                          "print: only ASCII characters are "
                                          "supported for EPS and derived "
-                                         "formats.");
+                                         "formats. Use the '-svgconvert' "
+                                         "option for better font support.");
                         warned = true;
                       }
                   }
@@ -965,7 +1131,8 @@ namespace octave
                         warning_with_id ("Octave:print:unhandled-character",
                                          "print: only ASCII characters are "
                                          "supported for EPS and derived "
-                                         "formats.");
+                                         "formats. Use the '-svgconvert' "
+                                         "option for better font support.");
                         warned = true;
                       }
                   }
@@ -988,7 +1155,7 @@ namespace octave
 
         ss << "10] " << rotation << " " << txtobj.get_x ()
            << " " << txtobj.get_y () << " " << txtobj.get_size ()
-           << " /" << fontname << " SRX\n";
+           << " /" << m_fontname << " SRX\n";
       }
 
     ss << "grestore\n";
@@ -1001,7 +1168,7 @@ namespace octave
                                double x, double y, double z,
                                int ha, int va, double rotation)
   {
-    std::string saved_font = fontname;
+    std::string saved_font = m_fontname;
 
     if (txt.empty ())
       return Matrix (1, 4, 0.0);
@@ -1014,13 +1181,13 @@ namespace octave
     m_glfcns.glRasterPos3d (x, y, z);
 
     // For svg/eps directly dump a preformated text element into gl2ps output
-    if (term.find ("svg") != std::string::npos)
+    if (m_term.find ("svg") != std::string::npos)
       {
         std::string elt = strlist_to_svg (x, y, z, bbox, rotation, lst);
         if (! elt.empty ())
           gl2psSpecial (GL2PS_SVG, elt.c_str ());
       }
-    else if (term.find ("eps") != std::string::npos)
+    else if (m_term.find ("eps") != std::string::npos)
       {
         std::string elt = strlist_to_ps (x, y, z, bbox, rotation, lst);
         if (! elt.empty ())
@@ -1028,10 +1195,10 @@ namespace octave
 
       }
     else
-      gl2psTextOpt (str.c_str (), fontname.c_str (), fontsize,
+      gl2psTextOpt (str.c_str (), m_fontname.c_str (), m_fontsize,
                     alignment_to_mode (ha, va), rotation);
 
-    fontname = saved_font;
+    m_fontname = saved_font;
 
     return bbox;
   }
@@ -1045,7 +1212,7 @@ namespace octave
     if (props.has_property ("interpreter"))
       set_interpreter (props.get ("interpreter").string_value ());
 
-    fontsize = props.get ("__fontsize_points__").double_value ();
+    m_fontsize = props.get ("__fontsize_points__").double_value ();
 
     caseless_str fn = props.get ("fontname").xtolower ().string_value ();
     bool isbold
@@ -1053,7 +1220,7 @@ namespace octave
     bool isitalic
       = (props.get ("fontangle").xtolower ().string_value () == "italic");
 
-    fontname = select_font (fn, isbold, isitalic);
+    m_fontname = select_font (fn, isbold, isitalic);
   }
 
   void
@@ -1091,8 +1258,8 @@ namespace octave
       y(1) = y(1) + (h-1);
 
 
-    const ColumnVector p0 = xform.transform (x(0), y(0), 0);
-    const ColumnVector p1 = xform.transform (x(1), y(1), 0);
+    const ColumnVector p0 = m_xform.transform (x(0), y(0), 0);
+    const ColumnVector p1 = m_xform.transform (x(1), y(1), 0);
 
     if (math::isnan (p0(0)) || math::isnan (p0(1))
         || math::isnan (p1(0)) || math::isnan (p1(1)))
@@ -1113,7 +1280,7 @@ namespace octave
       }
     else
       {
-        const ColumnVector p1w = xform.transform (x(1) + 1, y(1), 0);
+        const ColumnVector p1w = m_xform.transform (x(1) + 1, y(1), 0);
         pix_dx = p1w(0) - p0(0);
         nor_dx = 1;
       }
@@ -1125,7 +1292,7 @@ namespace octave
       }
     else
       {
-        const ColumnVector p1h = xform.transform (x(1), y(1) + 1, 0);
+        const ColumnVector p1h = m_xform.transform (x(1), y(1) + 1, 0);
         pix_dy = p1h(1) - p0(1);
         nor_dy = 1;
       }
@@ -1147,9 +1314,9 @@ namespace octave
     Matrix vp = get_viewport_scaled ();
 
     ColumnVector vp_lim_min
-      = xform.untransform (std::numeric_limits <float>::epsilon (),
+      = m_xform.untransform (std::numeric_limits <float>::epsilon (),
                            std::numeric_limits <float>::epsilon ());
-    ColumnVector vp_lim_max = xform.untransform (vp(2), vp(3));
+    ColumnVector vp_lim_max = m_xform.untransform (vp(2), vp(3));
 
     if (vp_lim_min(0) > vp_lim_max(0))
       std::swap (vp_lim_min(0), vp_lim_max(0));
@@ -1158,16 +1325,16 @@ namespace octave
       std::swap (vp_lim_min(1), vp_lim_max(1));
 
     float clip_xmin
-      = do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0);
+      = do_clip ? (vp_lim_min(0) > m_xmin ? vp_lim_min(0) : m_xmin) : vp_lim_min(0);
 
     float clip_ymin
-      = do_clip ? (vp_lim_min(1) > ymin ? vp_lim_min(1) : ymin) : vp_lim_min(1);
+      = do_clip ? (vp_lim_min(1) > m_ymin ? vp_lim_min(1) : m_ymin) : vp_lim_min(1);
 
     float clip_xmax
-      = do_clip ? (vp_lim_max(0) < xmax ? vp_lim_max(0) : xmax) : vp_lim_max(0);
+      = do_clip ? (vp_lim_max(0) < m_xmax ? vp_lim_max(0) : m_xmax) : vp_lim_max(0);
 
     float clip_ymax
-      = do_clip ? (vp_lim_max(1) < ymax ? vp_lim_max(1) : ymax) : vp_lim_max(1);
+      = do_clip ? (vp_lim_max(1) < m_ymax ? vp_lim_max(1) : m_ymax) : vp_lim_max(1);
 
     if (im_xmin < clip_xmin)
       j0 += (clip_xmin - im_xmin)/nor_dx + 1;
@@ -1199,7 +1366,8 @@ namespace octave
           {
             const NDArray xcdata = cdata.array_value ();
 
-            OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
+            OCTAVE_LOCAL_BUFFER (GLfloat, a,
+                                 static_cast<size_t> (3)*(j1-j0)*(i1-i0));
 
             for (int i = i0; i < i1; i++)
               {
@@ -1228,7 +1396,8 @@ namespace octave
           {
             const FloatNDArray xcdata = cdata.float_array_value ();
 
-            OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
+            OCTAVE_LOCAL_BUFFER (GLfloat, a,
+                                 static_cast<size_t> (3)*(j1-j0)*(i1-i0));
 
             for (int i = i0; i < i1; i++)
               {
@@ -1257,7 +1426,8 @@ namespace octave
           {
             const uint8NDArray xcdata = cdata.uint8_array_value ();
 
-            OCTAVE_LOCAL_BUFFER (GLubyte, a, 3*(j1-j0)*(i1-i0));
+            OCTAVE_LOCAL_BUFFER (GLubyte, a,
+                                 static_cast<size_t> (3)*(j1-j0)*(i1-i0));
 
             for (int i = i0; i < i1; i++)
               {
@@ -1286,7 +1456,8 @@ namespace octave
           {
             const uint16NDArray xcdata = cdata.uint16_array_value ();
 
-            OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
+            OCTAVE_LOCAL_BUFFER (GLushort, a,
+                                 static_cast<size_t> (3)*(j1-j0)*(i1-i0));
 
             for (int i = i0; i < i1; i++)
               {
@@ -1323,7 +1494,7 @@ namespace octave
   gl2ps_renderer::draw_pixels (int w, int h, const float *data)
   {
     // Clip data between 0 and 1 for float values
-    OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+    OCTAVE_LOCAL_BUFFER (float, tmp_data, static_cast<size_t> (3)*w*h);
 
     for (int i = 0; i < 3*h*w; i++)
       tmp_data[i] = (data[i] < 0.0f ? 0.0f : (data[i] > 1.0f ? 1.0f : data[i]));
@@ -1336,7 +1507,7 @@ namespace octave
   {
     // gl2psDrawPixels only supports the GL_FLOAT type.
 
-    OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+    OCTAVE_LOCAL_BUFFER (float, tmp_data, static_cast<size_t> (3)*w*h);
 
     static const float maxval = std::numeric_limits<uint8_t>::max ();
 
@@ -1351,7 +1522,7 @@ namespace octave
   {
     // gl2psDrawPixels only supports the GL_FLOAT type.
 
-    OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
+    OCTAVE_LOCAL_BUFFER (float, tmp_data, static_cast<size_t> (3)*w*h);
 
     static const float maxval = std::numeric_limits<uint16_t>::max ();
 
@@ -1375,7 +1546,7 @@ namespace octave
     set_font (props);
     set_color (props.get_color_rgb ());
 
-    std::string saved_font = fontname;
+    std::string saved_font = m_fontname;
 
     // Alignment
     int halign = 0;
@@ -1422,7 +1593,7 @@ namespace octave
 
     bool have_cmd = stream.length () > 1 && stream[0] == '|';
 
-    FILE *fp = nullptr;
+    FILE *m_fp = nullptr;
 
     unwind_protect frame;
 
@@ -1432,26 +1603,27 @@ namespace octave
 
         std::string cmd = stream.substr (1);
 
-        fp = popen (cmd.c_str (), "w");
+        m_fp = popen (cmd.c_str (), "w");
 
-        if (! fp)
+        if (! m_fp)
           error (R"(print: failed to open pipe "%s")", stream.c_str ());
 
-        frame.add_fcn (safe_pclose, fp);
+        // Need octave:: qualifier here to avoid ambiguity.
+        frame.add ([=] () { octave::pclose (m_fp); });
       }
     else
       {
         // Write gl2ps output directly to file.
 
-        fp = sys::fopen (stream.c_str (), "w");
+        m_fp = sys::fopen (stream.c_str (), "w");
 
-        if (! fp)
+        if (! m_fp)
           error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());
 
-        frame.add_fcn (safe_fclose, fp);
+        frame.add ([=] () { std::fclose (m_fp); });
       }
 
-    gl2ps_renderer rend (glfcns, fp, term);
+    gl2ps_renderer rend (glfcns, m_fp, term);
 
     Matrix pos = fig.get ("position").matrix_value ();
     rend.set_viewport (pos(2), pos(3));

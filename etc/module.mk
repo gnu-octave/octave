@@ -99,7 +99,7 @@ all-icons: %reldir%/icons/org.octave.Octave.desktop $(BUILT_ICONS)
 
 $(BUILT_PNG_ICONS): %reldir%/icons/octave-logo.svg | %reldir%/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(RSVG_CONVERT) -w $(lastword $(subst -, ,$(patsubst %.png,%,$@))) $< > $@-t && \
+	$(RSVG_CONVERT) -w $(lastword $(subst -, ,$(patsubst %.png,%,$@))) -o $@-t $< && \
 	mv $@-t $@
 
 %reldir%/icons/octave-logo.ico: $(WINDOWS_PNG_ICONS) | %reldir%/icons/$(octave_dirstamp)

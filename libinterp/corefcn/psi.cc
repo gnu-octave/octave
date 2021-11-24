@@ -35,6 +35,8 @@
 
 #include "lo-specfun.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (psi, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} psi (@var{z})
@@ -94,7 +96,7 @@ can have any value real or complex value.  However, for polygamma functions
           E *psi_zv = psi_z.fortran_vec ();                     \
           const octave_idx_type n = z.numel ();                 \
           for (octave_idx_type i = 0; i < n; i++)               \
-            *psi_zv++ = octave::math::psi (*zv++);              \
+            *psi_zv++ = math::psi (*zv++);              \
                                                                 \
           retval = psi_z;                                       \
         }
@@ -135,7 +137,7 @@ can have any value real or complex value.  However, for polygamma functions
               if (*zv < 0)                                              \
                 error ("psi: Z must be non-negative for polygamma (K > 0)"); \
                                                                         \
-              *psi_zv++ = octave::math::psi (k, *zv++);                 \
+              *psi_zv++ = math::psi (k, *zv++);                         \
             }                                                           \
           retval = psi_z;                                               \
         }
@@ -175,7 +177,7 @@ can have any value real or complex value.  However, for polygamma functions
 ## "Introduction to the Gamma Function"
 
 ## Interesting identities of the digamma function, in section of 5.1.3
-%!assert (psi (1/3), - em - (3/2) * log(3) - ((sqrt (3) / 6) * pi), eps*10)
+%!assert (psi (1/3), - em - (3/2) * log (3) - ((sqrt (3) / 6) * pi), eps*10)
 %!assert (psi (1/4), - em -3 * log (2) - pi/2, eps*10)
 %!assert (psi (1/6), - em -2 * log (2) - (3/2) * log (3) - ((sqrt (3) / 2) * pi), eps*10)
 
@@ -232,3 +234,5 @@ can have any value real or complex value.  However, for polygamma functions
 %!error <Z must be real value for polygamma> psi (5, 5i)
 
 */
+
+OCTAVE_NAMESPACE_END

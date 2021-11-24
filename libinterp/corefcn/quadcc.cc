@@ -45,18 +45,20 @@
 // Extended debugging.
 #define DEBUG_QUADCC 0
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Define the minimum size of the interval heap.
 static const int MIN_CQUAD_HEAPSIZE = 200;
 
 // Data of a single interval.
-typedef struct
+struct cquad_ival
 {
   double a, b;
   double c[64];
   double fx[33];
   double igral, err;
   int depth, rdepth, ndiv;
-} cquad_ival;
+};
 
 // Define relative tolerance used when deciding to drop an interval.
 static const double DROP_RELTOL = std::numeric_limits<double>::epsilon () * 10;
@@ -1594,7 +1596,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
   if (nargin < 3)
     print_usage ();
 
-  fcn = octave::get_function_handle (interp, args(0), "x");
+  fcn = get_function_handle (interp, args(0), "x");
 
   if (! args(1).is_real_scalar ())
     error ("quadcc: lower limit of integration (A) must be a real scalar");
@@ -1673,11 +1675,11 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
     }
 
   // If a or b are +/-Inf, transform the integral.
-  if (octave::math::isinf (a) || octave::math::isinf (b))
+  if (math::isinf (a) || math::isinf (b))
     {
       wrap = true;
       for (i = 0; i < nivals + 1; i++)
-        if (octave::math::isinf (iivals[i]))
+        if (math::isinf (iivals[i]))
           iivals[i] = std::copysign (1.0, iivals[i]);
         else
           iivals[i] = 2.0 * atan (iivals[i]) / M_PI;
@@ -1709,7 +1711,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
             ex(i) = m + xi[i]*h;
         }
       fargs(0) = ex;
-      fvals = octave::feval (fcn, fargs, 1);
+      fvals = feval (fcn, fargs, 1);
       if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
         error ("quadcc: integrand F must return a single, real-valued vector");
 
@@ -1726,7 +1728,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
               iv->fx[i] *= (1.0 + xw*xw) * M_PI/2;
             }
           neval++;
-          if (! octave::math::isfinite (iv->fx[i]))
+          if (! math::isfinite (iv->fx[i]))
             {
               nans[nnans++] = i;
               iv->fx[i] = 0.0;
@@ -1736,7 +1738,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
       Vinvfx (iv->fx, &(iv->c[idx[2]]), 2);
       Vinvfx (iv->fx, &(iv->c[0]), 0);
       for (i = 0; i < nnans; i++)
-        iv->fx[nans[i]] = octave::numeric_limits<double>::NaN ();
+        iv->fx[nans[i]] = numeric_limits<double>::NaN ();
       iv->a = iivals[j];
       iv->b = iivals[j + 1];
       iv->depth = 3;
@@ -1819,7 +1821,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
                   ex(i) = m + xi[(2*i + 1) * skip[d]] * h;
               }
             fargs(0) = ex;
-            fvals = octave::feval (fcn, fargs, 1);
+            fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               error ("quadcc: integrand F must return a single, real-valued vector");
 
@@ -1842,7 +1844,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
           nnans = 0;
           for (i = 0; i <= 32; i += skip[d])
             {
-              if (! octave::math::isfinite (iv->fx[i]))
+              if (! math::isfinite (iv->fx[i]))
                 {
                   nans[nnans++] = i;
                   iv->fx[i] = 0.0;
@@ -1856,7 +1858,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
             {
               downdate (&(iv->c[idx[d]]), n[d], d, nans, nnans);
               for (i = 0; i < nnans; i++)
-                iv->fx[nans[i]] = octave::numeric_limits<double>::NaN ();
+                iv->fx[nans[i]] = numeric_limits<double>::NaN ();
             }
 
           // Compute the error estimate.
@@ -1952,7 +1954,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
                   ex(i) = ml + xi[(i + 1) * skip[0]] * hl;
               }
             fargs(0) = ex;
-            fvals = octave::feval (fcn, fargs, 1);
+            fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               error ("quadcc: integrand F must return a single, real-valued vector");
 
@@ -1975,7 +1977,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (! octave::math::isfinite (ivl->fx[i]))
+              if (! math::isfinite (ivl->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivl->fx[i] = 0.0;
@@ -1986,7 +1988,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
             {
               downdate (ivl->c, n[0], 0, nans, nnans);
               for (i = 0; i < nnans; i++)
-                ivl->fx[nans[i]] = octave::numeric_limits<double>::NaN ();
+                ivl->fx[nans[i]] = numeric_limits<double>::NaN ();
             }
           for (i = 0; i <= n[d]; i++)
             {
@@ -2012,7 +2014,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
                                   && ivl->c[0] / iv->c[0] > 2);
           if (ivl->ndiv > ndiv_max && 2*ivl->ndiv > ivl->rdepth)
             {
-              igral = std::copysign (octave::numeric_limits<double>::Inf (), igral);
+              igral = std::copysign (numeric_limits<double>::Inf (), igral);
               warning ("quadcc: divergent integral detected");
               break;
             }
@@ -2043,7 +2045,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
                   ex(i) = mr + xi[(i + 1) * skip[0]] * hr;
               }
             fargs(0) = ex;
-            fvals = octave::feval (fcn, fargs, 1);
+            fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               error ("quadcc: integrand F must return a single, real-valued vector");
 
@@ -2066,7 +2068,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (! octave::math::isfinite (ivr->fx[i]))
+              if (! math::isfinite (ivr->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivr->fx[i] = 0.0;
@@ -2077,7 +2079,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
             {
               downdate (ivr->c, n[0], 0, nans, nnans);
               for (i = 0; i < nnans; i++)
-                ivr->fx[nans[i]] = octave::numeric_limits<double>::NaN ();
+                ivr->fx[nans[i]] = numeric_limits<double>::NaN ();
             }
           for (i = 0; i <= n[d]; i++)
             {
@@ -2103,7 +2105,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
                                   && ivr->c[0] / iv->c[0] > 2);
           if (ivr->ndiv > ndiv_max && 2*ivr->ndiv > ivr->rdepth)
             {
-              igral = std::copysign (octave::numeric_limits<double>::Inf (), igral);
+              igral = std::copysign (numeric_limits<double>::Inf (), igral);
               warning ("quadcc: divergent integral detected");
               break;
             }
@@ -2242,9 +2244,9 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 %! assert (class (quadcc (@sin, single (0), single (1))), "single");
 
 ## Test input validation
-%!error (quadcc ())
-%!error (quadcc (@sin))
-%!error (quadcc (@sin, 0))
+%!error quadcc ()
+%!error quadcc (@sin)
+%!error quadcc (@sin, 0)
 %!error <lower limit .* must be a .* scalar> (quadcc (@sin, ones (2), pi))
 %!error <lower limit .* must be a real scalar> (quadcc (@sin, -i, pi))
 %!error <upper limit .* must be a .* scalar> (quadcc (@sin, 0, ones (2)))
@@ -2255,3 +2257,5 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 %!error <relative tolerance must be .=0> (quadcc (@sin, 0, pi, [1, -1]))
 %!error <SING.* must be .* real values> (quadcc (@sin, 0, pi, 1e-6, [ i ]))
 */
+
+OCTAVE_NAMESPACE_END

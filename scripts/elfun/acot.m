@@ -31,7 +31,7 @@
 
 function y = acot (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -47,5 +47,4 @@ endfunction
 %! v = [pi/6, pi/4, pi/3, pi/2, -pi/3, -pi/4, -pi/6];
 %! assert (acot (x), v, sqrt (eps));
 
-%!error acot ()
-%!error acot (1, 2)
+%!error <Invalid call> acot ()

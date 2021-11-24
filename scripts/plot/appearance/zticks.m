@@ -122,7 +122,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   set (gca, "ztickmode", "auto");
-%!   hax = gca;
+%!   hax = gca ();
 %!   vals1 = zticks;
 %!   assert (zticks (hax), vals1);
 %!   mode1 = zticks ("mode");
@@ -143,7 +143,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hax = gca;
+%!   hax = gca ();
 %!   fail ("zticks (-1, [0 1])", "HAX must be a handle to an axes");
 %!   fail ("tmp = zticks (hax, [0 1])", "too many output arguments");
 %!   fail ("tmp = zticks (hax, 'auto')", "too many .* for arg: auto");

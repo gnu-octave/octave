@@ -57,13 +57,9 @@
 
 function h = gca ()
 
-  if (nargin == 0)
-    h = get (gcf (), "currentaxes");
-    if (isempty (h))
-      h = axes ();
-    endif
-  else
-    print_usage ();
+  h = get (gcf (), "currentaxes");
+  if (isempty (h))
+    h = axes ();
   endif
 
 endfunction
@@ -71,7 +67,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! ax = axes;
+%! ax = axes ();
 %! unwind_protect
 %!   assert (gca, ax);
 %! unwind_protect_cleanup

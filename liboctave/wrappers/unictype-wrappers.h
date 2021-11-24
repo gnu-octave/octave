@@ -32,41 +32,29 @@ typedef uint32_t ucs4_t;
 extern "C" {
 #endif
 
-extern bool
-octave_uc_is_alnum_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_alnum_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_alpha_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_alpha_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_blank_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_blank_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_cntrl_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_cntrl_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_digit_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_digit_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_graph_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_graph_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_lower_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_lower_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_print_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_print_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_punct_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_punct_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_space_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_space_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_upper_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_upper_wrapper (ucs4_t uc);
 
-extern bool
-octave_uc_is_xdigit_wrapper (ucs4_t uc);
+extern OCTAVE_API bool octave_uc_is_xdigit_wrapper (ucs4_t uc);
 
 #if defined __cplusplus
 }

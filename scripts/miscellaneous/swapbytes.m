@@ -42,7 +42,7 @@
 
 function y = swapbytes (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -74,6 +74,5 @@ endfunction
 %! assert (swapbytes (swapbytes (single (pi))), single (pi));
 
 ## Test input validation
-%!error swapbytes ()
-%!error swapbytes (1, 2)
+%!error <Invalid call> swapbytes ()
 %!error <invalid object of class 'cell'> swapbytes ({1})

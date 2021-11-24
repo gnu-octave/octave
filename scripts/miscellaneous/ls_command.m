@@ -37,7 +37,7 @@ function old_val = ls_command (new_val)
   if (isempty (__ls_command__))
     ## MinGW uses different ls_command
     if (ispc () && ! isunix ()
-        && isempty (file_in_path (getenv ("PATH"), "ls")))
+        && system ("where ls", true))
       __ls_command__ = "dir /D";
     else
       __ls_command__ = "ls -C";
@@ -64,7 +64,7 @@ endfunction
 %!test
 %! cmd = ls_command ();
 %! assert (ischar (cmd));
-%! if (ispc () && ! isunix ())
+%! if (ispc () && ! isunix () && system ("where ls", true))
 %!   assert (cmd(1:3), "dir");
 %! else
 %!   assert (cmd(1:2), "ls");

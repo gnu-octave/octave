@@ -58,7 +58,7 @@
 
 function retval = mad (x, opt = 0, dim)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -105,8 +105,7 @@ endfunction
 %!assert (mad (magic (4), 1, 2), [5.5; 1.5; 1.5; 5.5])
 
 ## Test input validation
-%!error mad ()
-%!error mad (1, 2, 3, 4)
+%!error <Invalid call> mad ()
 %!error <X must be a numeric> mad (['A'; 'B'])
 %!error <OPT must be 0 or 1> mad (1, 2)
 %!error <DIM must be an integer> mad (1, [], ones (2,2))

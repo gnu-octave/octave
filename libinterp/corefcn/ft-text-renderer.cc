@@ -62,6 +62,7 @@
 #include "file-ops.h"
 #include "oct-env.h"
 #include "pr-output.h"
+#include "sysdep.h"
 #include "text-renderer.h"
 
 namespace octave
@@ -102,18 +103,19 @@ namespace octave
   private:
 
     ft_manager (void)
-      : library (), freetype_initialized (false), fontconfig_initialized (false)
+      : m_library (), m_freetype_initialized (false),
+        m_fontconfig_initialized (false)
     {
-      if (FT_Init_FreeType (&library))
+      if (FT_Init_FreeType (&m_library))
         error ("unable to initialize FreeType library");
       else
-        freetype_initialized = true;
+        m_freetype_initialized = true;
 
 #if defined (HAVE_FONTCONFIG)
       if (! FcInit ())
         error ("unable to initialize fontconfig library");
       else
-        fontconfig_initialized = true;
+        m_fontconfig_initialized = true;
 #endif
     }
 
@@ -129,15 +131,15 @@ namespace octave
 
     ~ft_manager (void)
     {
-      if (freetype_initialized)
-        FT_Done_FreeType (library);
+      if (m_freetype_initialized)
+        FT_Done_FreeType (m_library);
 
 #if defined (HAVE_FONTCONFIG)
       // FIXME: Skip the call to FcFini because it can trigger the assertion
       //
       //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
       //
-      // if (fontconfig_initialized)
+      // if (m_fontconfig_initialized)
       //   FcFini ();
 #endif
     }
@@ -148,49 +150,44 @@ namespace octave
     {
       bool retval = true;
 
-      if (! instance)
+      if (! m_instance)
         {
-          instance = new ft_manager ();
+          m_instance = new ft_manager ();
           singleton_cleanup_list::add (cleanup_instance);
         }
 
       return retval;
     }
 
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    static void cleanup_instance (void)
+    { delete m_instance; m_instance = nullptr; }
 
     static FT_Face get_font (const std::string& name, const std::string& weight,
-                             const std::string& angle, double size)
+                             const std::string& angle, double size,
+                             FT_ULong c = 0)
     {
       return (instance_ok ()
-              ? instance->do_get_font (name, weight, angle, size)
+              ? m_instance->do_get_font (name, weight, angle, size, c)
               : nullptr);
     }
 
     static octave_map get_system_fonts (void)
     {
       return (instance_ok ()
-              ? instance->do_get_system_fonts ()
+              ? m_instance->do_get_system_fonts ()
               : octave_map ());
     }
 
     static void font_destroyed (FT_Face face)
     {
       if (instance_ok ())
-        instance->do_font_destroyed (face);
+        m_instance->do_font_destroyed (face);
     }
 
   private:
 
-    static ft_manager *instance;
-
     typedef std::pair<std::string, double> ft_key;
     typedef std::map<ft_key, FT_Face> ft_cache;
-
-    // Cache the fonts loaded by FreeType.  This cache only contains
-    // weak references to the fonts, strong references are only present
-    // in class text_renderer.
-    ft_cache cache;
 
     static octave_map do_get_system_fonts (void)
     {
@@ -277,7 +274,8 @@ namespace octave
     }
 
     FT_Face do_get_font (const std::string& name, const std::string& weight,
-                         const std::string& angle, double size)
+                         const std::string& angle, double size,
+                         FT_ULong search_code_point)
     {
       FT_Face retval = nullptr;
 
@@ -285,10 +283,11 @@ namespace octave
       // Look first into the font cache, then use fontconfig.  If the font
       // is present in the cache, simply add a reference and return it.
 
-      ft_key key (name + ':' + weight + ':' + angle, size);
-      ft_cache::const_iterator it = cache.find (key);
+      ft_key key (name + ':' + weight + ':' + angle + ':'
+                  + std::to_string (search_code_point), size);
+      ft_cache::const_iterator it = m_cache.find (key);
 
-      if (it != cache.end ())
+      if (it != m_cache.end ())
         {
           FT_Reference_Face (it->second);
           return it->second;
@@ -327,7 +326,7 @@ namespace octave
         }
 
 #if defined (HAVE_FONTCONFIG)
-      if (name != "*" && fontconfig_initialized)
+      if ((search_code_point != 0 || name != "*") && m_fontconfig_initialized)
         {
           int fc_weight, fc_angle;
 
@@ -353,12 +352,21 @@ namespace octave
           FcPatternAddInteger (pat, FC_SLANT, fc_angle);
           FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
 
+          if (search_code_point > 0)
+            {
+              FcCharSet *minimal_charset =  FcCharSetCreate ();
+              FcCharSetAddChar (minimal_charset,
+                                static_cast<FcChar32> (search_code_point));
+              FcPatternAddCharSet (pat, FC_CHARSET, minimal_charset);
+            }
+
           if (FcConfigSubstitute (nullptr, pat, FcMatchPattern))
             {
               FcResult res;
               FcPattern *match;
 
               FcDefaultSubstitute (pat);
+
               match = FcFontMatch (nullptr, pat, &res);
 
               // FIXME: originally, this test also required that
@@ -387,7 +395,9 @@ namespace octave
         ::warning ("unable to find default font files");
       else
         {
-          if (FT_New_Face (library, file.c_str (), 0, &retval))
+          std::string ascii_file = sys::get_ASCII_filename (file);
+
+          if (FT_New_Face (m_library, ascii_file.c_str (), 0, &retval))
             ::warning ("ft_manager: unable to load font: %s", file.c_str ());
 #if defined (HAVE_FT_REFERENCE_FACE)
           else
@@ -401,7 +411,7 @@ namespace octave
 
               // Insert loaded font into the cache.
               if (FT_Reference_Face (retval) == 0)
-                cache[key] = retval;
+                m_cache[key] = retval;
             }
 #endif
         }
@@ -415,20 +425,28 @@ namespace octave
         {
           ft_key *pkey = reinterpret_cast<ft_key *> (face->generic.data);
 
-          cache.erase (*pkey);
+          m_cache.erase (*pkey);
           delete pkey;
           face->generic.data = nullptr;
           FT_Done_Face (face);
         }
     }
 
-  private:
-    FT_Library library;
-    bool freetype_initialized;
-    bool fontconfig_initialized;
+    //--------
+
+    static ft_manager *m_instance;
+
+    // Cache the fonts loaded by FreeType.  This cache only contains
+    // weak references to the fonts, strong references are only present
+    // in class text_renderer.
+    ft_cache m_cache;
+
+    FT_Library m_library;
+    bool m_freetype_initialized;
+    bool m_fontconfig_initialized;
   };
 
-  ft_manager *ft_manager::instance = nullptr;
+  ft_manager *ft_manager::m_instance = nullptr;
 
   static void
   ft_face_destroyed (void *object)
@@ -448,21 +466,13 @@ namespace octave
       MODE_RENDER = 1
     };
 
-    enum
-    {
-      ROTATION_0   = 0,
-      ROTATION_90  = 1,
-      ROTATION_180 = 2,
-      ROTATION_270 = 3
-    };
-
   public:
 
     ft_text_renderer (void)
-      : base_text_renderer (), font (), bbox (1, 4, 0.0), halign (0),
-        xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
-        color (dim_vector (1, 3), 0), m_do_strlist (false), m_strlist (),
-        line_xoffset (0), m_ymin (0), m_ymax (0), m_deltax (0),
+      : base_text_renderer (), m_font (), m_bbox (1, 4, 0.0), m_halign (0),
+        m_xoffset (0), m_line_yoffset (0), m_yoffset (0), m_mode (MODE_BBOX),
+        m_color (dim_vector (1, 3), 0), m_do_strlist (false), m_strlist (),
+        m_line_xoffset (0), m_ymin (0), m_ymax (0), m_deltax (0),
         m_max_fontsize (0), m_antialias (true)
     { }
 
@@ -496,9 +506,9 @@ namespace octave
 
     void reset (void);
 
-    uint8NDArray get_pixels (void) const { return pixels; }
+    uint8NDArray get_pixels (void) const { return m_pixels; }
 
-    Matrix get_boundingbox (void) const { return bbox; }
+    Matrix get_boundingbox (void) const { return m_bbox; }
 
     uint8NDArray render (text_element *elt, Matrix& box,
                          int rotation = ROTATION_0);
@@ -526,8 +536,6 @@ namespace octave
 
   private:
 
-    int rotation_to_mode (double rotation) const;
-
     // Class to hold information about fonts and a strong
     // reference to the font objects loaded by FreeType.
 
@@ -536,19 +544,19 @@ namespace octave
     public:
 
       ft_font (void)
-        : text_renderer::font (), face (nullptr) { }
+        : text_renderer::font (), m_face (nullptr) { }
 
       ft_font (const std::string& nm, const std::string& wt,
                const std::string& ang, double sz, FT_Face f = nullptr)
-        : text_renderer::font (nm, wt, ang, sz), face (f)
+        : text_renderer::font (nm, wt, ang, sz), m_face (f)
       { }
 
       ft_font (const ft_font& ft);
 
       ~ft_font (void)
       {
-        if (face)
-          FT_Done_Face (face);
+        if (m_face)
+          FT_Done_Face (m_face);
       }
 
       ft_font& operator = (const ft_font& ft);
@@ -559,7 +567,7 @@ namespace octave
 
     private:
 
-      mutable FT_Face face;
+      mutable FT_Face m_face;
     };
 
     void push_new_line (void);
@@ -570,7 +578,8 @@ namespace octave
 
     int compute_line_xoffset (const Matrix& lb) const;
 
-    FT_UInt process_character (FT_ULong code, FT_UInt previous = 0);
+    FT_UInt process_character (FT_ULong code, FT_UInt previous,
+                               std::string& sub_font);
 
   public:
 
@@ -582,49 +591,49 @@ namespace octave
   private:
 
     // The current font used by the renderer.
-    ft_font font;
+    ft_font m_font;
 
     // Used to stored the bounding box corresponding to the rendered text.
     // The bounding box has the form [x, y, w, h] where x and y represent the
     // coordinates of the bottom left corner relative to the anchor point of
     // the text (== start of text on the baseline).  Due to font descent or
     // multiple lines, the value y is usually negative.
-    Matrix bbox;
+    Matrix m_bbox;
 
     // Used to stored the rendered text.  It's a 3D matrix with size MxNx4
     // where M and N are the width and height of the bounding box.
-    uint8NDArray pixels;
+    uint8NDArray m_pixels;
 
     // Used to store the bounding box of each line.  This is used to layout
     // multiline text properly.
-    std::list<Matrix> line_bbox;
+    std::list<Matrix> m_line_bbox;
 
     // The current horizontal alignment.  This is used to align multi-line text.
-    int halign;
+    int m_halign;
 
     // The X offset for the next glyph.
-    int xoffset;
+    int m_xoffset;
 
     // The Y offset of the baseline for the current line.
-    int line_yoffset;
+    int m_line_yoffset;
 
     // The Y offset of the baseline for the next glyph.  The offset is relative
     // to line_yoffset.  The total Y offset is computed with:
     // line_yoffset + yoffset.
-    int yoffset;
+    int m_yoffset;
 
     // The current mode of the rendering process (box computing or rendering).
-    int mode;
+    int m_mode;
 
     // The base color of the rendered text.
-    uint8NDArray color;
+    uint8NDArray m_color;
 
     // A list of parsed strings to be used for printing.
     bool m_do_strlist;
     std::list<text_renderer::string> m_strlist;
 
     // The X offset of the baseline for the current line.
-    int line_xoffset;
+    int m_line_xoffset;
 
     // Min and max y coordinates of all glyphs in a line.
     FT_Pos m_ymin;
@@ -647,7 +656,7 @@ namespace octave
                               const std::string& angle, double size)
   {
     // FIXME: take "fontunits" into account
-    font = ft_font (name, weight, angle, size, nullptr);
+    m_font = ft_font (name, weight, angle, size, nullptr);
   }
 
   octave_map
@@ -659,21 +668,21 @@ namespace octave
   void
   ft_text_renderer::push_new_line (void)
   {
-    switch (mode)
+    switch (m_mode)
       {
       case MODE_BBOX:
         {
           // Create a new bbox entry based on the current font.
 
-          FT_Face face = font.get_face ();
+          FT_Face face = m_font.get_face ();
 
           if (face)
             {
               Matrix bb (1, 5, 0.0);
 
-              line_bbox.push_back (bb);
+              m_line_bbox.push_back (bb);
 
-              xoffset = yoffset = 0;
+              m_xoffset = m_yoffset = 0;
               m_ymin = m_ymax = m_deltax = 0;
             }
         }
@@ -684,14 +693,14 @@ namespace octave
           // Move to the next line bbox, adjust xoffset based on alignment
           // and yoffset based on the old and new line bbox.
 
-          Matrix old_bbox = line_bbox.front ();
-          line_bbox.pop_front ();
-          Matrix new_bbox = line_bbox.front ();
+          Matrix old_bbox = m_line_bbox.front ();
+          m_line_bbox.pop_front ();
+          Matrix new_bbox = m_line_bbox.front ();
 
-          xoffset = line_xoffset = compute_line_xoffset (new_bbox);
-          line_yoffset -= (-old_bbox(1) + math::round (0.4 * m_max_fontsize)
-                           + (new_bbox(3) + new_bbox(1)));
-          yoffset = 0;
+          m_xoffset = m_line_xoffset = compute_line_xoffset (new_bbox);
+          m_line_yoffset -= (-old_bbox(1) + math::round (0.4 * m_max_fontsize)
+                             + (new_bbox(3) + new_bbox(1)));
+          m_yoffset = 0;
           m_ymin = m_ymax = m_deltax = 0;
         }
         break;
@@ -701,16 +710,16 @@ namespace octave
   int
   ft_text_renderer::compute_line_xoffset (const Matrix& lb) const
   {
-    if (! bbox.isempty ())
+    if (! m_bbox.isempty ())
       {
-        switch (halign)
+        switch (m_halign)
           {
           case 0:
             return 0;
           case 1:
-            return (bbox(2) - lb(2)) / 2;
+            return (m_bbox(2) - lb(2)) / 2;
           case 2:
-            return (bbox(2) - lb(2));
+            return (m_bbox(2) - lb(2));
           }
       }
 
@@ -723,28 +732,28 @@ namespace octave
     // Stack the various line bbox together and compute the final
     // bounding box for the entire text string.
 
-    bbox = Matrix ();
+    m_bbox = Matrix ();
 
-    switch (line_bbox.size ())
+    switch (m_line_bbox.size ())
       {
       case 0:
         break;
 
       case 1:
-        bbox = line_bbox.front ().extract (0, 0, 0, 3);
+        m_bbox = m_line_bbox.front ().extract (0, 0, 0, 3);
         break;
 
       default:
-        for (const auto& lbox : line_bbox)
+        for (const auto& lbox : m_line_bbox)
           {
-            if (bbox.isempty ())
-              bbox = lbox.extract (0, 0, 0, 3);
+            if (m_bbox.isempty ())
+              m_bbox = lbox.extract (0, 0, 0, 3);
             else
               {
                 double delta = math::round (0.4 * m_max_fontsize) + lbox(3);
-                bbox(1) -= delta;
-                bbox(3) += delta;
-                bbox(2) = math::max (bbox(2), lbox(2));
+                m_bbox(1) -= delta;
+                m_bbox(3) += delta;
+                m_bbox(2) = math::max (m_bbox(2), lbox(2));
               }
           }
         break;
@@ -759,9 +768,9 @@ namespace octave
     // current yoffset, that is the offset of the current glyph's baseline
     // the line's baseline.
 
-    if (mode == MODE_BBOX)
+    if (m_mode == MODE_BBOX)
       {
-        Matrix& bb = line_bbox.back ();
+        Matrix& bb = m_line_bbox.back ();
         bb(1) = m_ymin;
         // Add one pixel to the bbox height to avoid occasional text clipping.
         // See bug #55328.
@@ -774,42 +783,43 @@ namespace octave
   void
   ft_text_renderer::set_mode (int m)
   {
-    mode = m;
+    m_mode = m;
 
-    switch (mode)
+    switch (m_mode)
       {
       case MODE_BBOX:
-        xoffset = line_yoffset = yoffset = 0;
+        m_xoffset = m_line_yoffset = m_yoffset = 0;
         m_max_fontsize = 0.0;
-        bbox = Matrix (1, 4, 0.0);
-        line_bbox.clear ();
+        m_bbox = Matrix (1, 4, 0.0);
+        m_line_bbox.clear ();
         push_new_line ();
         break;
 
       case MODE_RENDER:
-        if (bbox.numel () != 4)
+        if (m_bbox.numel () != 4)
           {
             ::error ("ft_text_renderer: invalid bounding box, cannot render");
 
-            xoffset = line_yoffset = yoffset = 0;
-            pixels = uint8NDArray ();
+            m_xoffset = m_line_yoffset = m_yoffset = 0;
+            m_pixels = uint8NDArray ();
           }
         else
           {
-            dim_vector d (4, octave_idx_type (bbox(2)),
-                          octave_idx_type (bbox(3)));
-            pixels = uint8NDArray (d, static_cast<uint8_t> (0));
-            xoffset = compute_line_xoffset (line_bbox.front ());
-            line_yoffset = -bbox(1);
-            yoffset = 0;
+            dim_vector d (4, octave_idx_type (m_bbox(2)),
+                          octave_idx_type (m_bbox(3)));
+            m_pixels = uint8NDArray (d, static_cast<uint8_t> (0));
+            m_xoffset = compute_line_xoffset (m_line_bbox.front ());
+            m_line_yoffset = -m_bbox(1);
+            m_yoffset = 0;
           }
         break;
 
       default:
-        error ("ft_text_renderer: invalid mode '%d'", mode);
+        error ("ft_text_renderer: invalid mode '%d'", m_mode);
         break;
       }
   }
+
   bool is_opaque (const FT_GlyphSlot &glyph, const int x, const int y)
   {
     // Borrowed from https://stackoverflow.com/questions/14800827/
@@ -822,9 +832,13 @@ namespace octave
   }
 
   FT_UInt
-  ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
+  ft_text_renderer::process_character (FT_ULong code, FT_UInt previous,
+                                       std::string& sub_name)
   {
-    FT_Face face = font.get_face ();
+    FT_Face face = m_font.get_face ();
+
+    sub_name = face->family_name;
+
     FT_UInt glyph_index = 0;
 
     if (face)
@@ -835,8 +849,60 @@ namespace octave
             && (! glyph_index
                 || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
           {
+#if defined (HAVE_FONTCONFIG)
+            // Try to substitue font
+            FT_Face sub_face = ft_manager::get_font (m_font.get_name (),
+                                                     m_font.get_weight (),
+                                                     m_font.get_angle (),
+                                                     m_font.get_size (),
+                                                     code);
+
+            if (sub_face)
+              {
+                FT_Set_Char_Size (sub_face, 0, m_font.get_size ()*64, 0, 0);
+
+                glyph_index = FT_Get_Char_Index (sub_face, code);
+
+                if (glyph_index
+                    && (FT_Load_Glyph (sub_face, glyph_index, FT_LOAD_DEFAULT)
+                        == 0))
+                  {
+                    static std::string prev_sub_name;
+
+                    if (prev_sub_name.empty ()
+                        || prev_sub_name != std::string (sub_face->family_name))
+                      {
+                        prev_sub_name = sub_face->family_name;
+                        warning_with_id ("Octave:substituted-glyph",
+                                         "text_renderer: substituting font to '%s' for some characters",
+                                         sub_face->family_name);
+                      }
+
+                    ft_font saved_font = m_font;
+
+                    m_font = ft_font (m_font.get_name (), m_font.get_weight (),
+                                      m_font.get_angle (), m_font.get_size (),
+                                      sub_face);
+
+                    process_character (code, previous, sub_name);
+
+                    m_font = saved_font;
+                  }
+                else
+                  {
+                    glyph_index = 0;
+                    warn_missing_glyph (code);
+                  }
+              }
+            else
+              {
+                glyph_index = 0;
+                warn_missing_glyph (code);
+              }
+#else
             glyph_index = 0;
             warn_missing_glyph (code);
+#endif
           }
         else if ((code == '\n') || (code == '\t'))
           {
@@ -854,12 +920,12 @@ namespace octave
                 // Advance to next multiple of 4 times the width of the "space"
                 // character.
                 int x_tab = 4 * (face->glyph->advance.x >> 6);
-                xoffset = (1 + std::floor (1. * xoffset / x_tab)) * x_tab;
+                m_xoffset = (1 + std::floor (1. * m_xoffset / x_tab)) * x_tab;
               }
           }
         else
           {
-            switch (mode)
+            switch (m_mode)
               {
               case MODE_RENDER:
                 if (FT_Render_Glyph (face->glyph, (m_antialias
@@ -880,11 +946,13 @@ namespace octave
 
                         FT_Get_Kerning (face, previous, glyph_index,
                                         FT_KERNING_DEFAULT, &delta);
-                        xoffset += (delta.x >> 6);
+
+                        m_xoffset += (delta.x >> 6);
                       }
 
-                    x0 = xoffset + face->glyph->bitmap_left;
-                    y0 = line_yoffset + yoffset + (face->glyph->bitmap_top - 1);
+                    x0 = m_xoffset + face->glyph->bitmap_left;
+                    y0 = m_line_yoffset + m_yoffset
+                      + (face->glyph->bitmap_top - 1);
 
                     // 'w' seems to have a negative -1
                     // face->glyph->bitmap_left, this is so we don't index out
@@ -901,27 +969,27 @@ namespace octave
                                ? bitmap.buffer[r*bitmap.width+c]
                                : (is_opaque (face->glyph, c, r) ? 255 : 0));
 
-                          if (x0+c < 0 || x0+c >= pixels.dim2 ()
-                              || y0-r < 0 || y0-r >= pixels.dim3 ())
+                          if (x0+c < 0 || x0+c >= m_pixels.dim2 ()
+                              || y0-r < 0 || y0-r >= m_pixels.dim3 ())
                             {
                               // ::warning ("ft_text_renderer: x %d,  y %d",
                               //            x0+c, y0-r);
                             }
-                          else if (pixels(3, x0+c, y0-r).value () == 0)
+                          else if (m_pixels(3, x0+c, y0-r).value () == 0)
                             {
-                              pixels(0, x0+c, y0-r) = color(0);
-                              pixels(1, x0+c, y0-r) = color(1);
-                              pixels(2, x0+c, y0-r) = color(2);
-                              pixels(3, x0+c, y0-r) = pix;
+                              m_pixels(0, x0+c, y0-r) = m_color(0);
+                              m_pixels(1, x0+c, y0-r) = m_color(1);
+                              m_pixels(2, x0+c, y0-r) = m_color(2);
+                              m_pixels(3, x0+c, y0-r) = pix;
                             }
                         }
 
-                    xoffset += (face->glyph->advance.x >> 6);
+                    m_xoffset += (face->glyph->advance.x >> 6);
                   }
                 break;
 
               case MODE_BBOX:
-                Matrix& bb = line_bbox.back ();
+                Matrix& bb = m_line_bbox.back ();
 
                 // If we have a previous glyph, use kerning information.  This
                 // usually means moving a bit backward before adding the next
@@ -933,14 +1001,14 @@ namespace octave
                     FT_Get_Kerning (face, previous, glyph_index,
                                     FT_KERNING_DEFAULT, &delta);
 
-                    xoffset += (delta.x >> 6);
+                    m_xoffset += (delta.x >> 6);
                   }
 
                 // Extend current X offset box by the width of the current
                 // glyph.  Then extend the line bounding box if necessary.
 
-                xoffset += (face->glyph->advance.x >> 6);
-                bb(2) = math::max (bb(2), xoffset);
+                m_xoffset += (face->glyph->advance.x >> 6);
+                bb(2) = math::max (bb(2), m_xoffset);
 
                 // Store the actual bbox vertical coordinates of this character
                 FT_Glyph glyph;
@@ -952,9 +1020,9 @@ namespace octave
                     FT_Glyph_Get_CBox (glyph, FT_GLYPH_BBOX_UNSCALED,
                                        &glyph_bbox);
                     m_deltax = (glyph_bbox.xMax - face->glyph->advance.x) >> 6;
-                    m_ymin = math::min ((glyph_bbox.yMin >> 6) + yoffset,
+                    m_ymin = math::min ((glyph_bbox.yMin >> 6) + m_yoffset,
                                         m_ymin);
-                    m_ymax = math::max ((glyph_bbox.yMax >> 6) + yoffset,
+                    m_ymax = math::max ((glyph_bbox.yMax >> 6) + m_yoffset,
                                         m_ymax);
                     FT_Done_Glyph (glyph);
                     update_line_bbox ();
@@ -980,9 +1048,10 @@ namespace octave
 
     m_strlist = std::list<text_renderer::string> ();
 
-    unwind_protect frame;
-    frame.protect_var (m_do_strlist);
-    frame.protect_var (m_strlist);
+    unwind_protect_var<bool> restore_var1 (m_do_strlist);
+    unwind_protect_var<std::list<text_renderer::string>>
+      restore_var2 (m_strlist);
+
     m_do_strlist = true;
 
     text_to_pixels (txt, pxls, box, ha, va, rot, interp, false);
@@ -993,9 +1062,9 @@ namespace octave
   void
   ft_text_renderer::visit (text_element_string& e)
   {
-    if (font.is_valid ())
+    if (m_font.is_valid ())
       {
-        m_max_fontsize = std::max (m_max_fontsize, font.get_size ());
+        m_max_fontsize = std::max (m_max_fontsize, m_font.get_size ());
         FT_UInt glyph_index, previous = 0;
 
         std::string str = e.string_value ();
@@ -1007,9 +1076,17 @@ namespace octave
         std::size_t ibegin = 0;
 
         // Initialize a new string
-        std::string fname = font.get_face ()->family_name;
-        text_renderer::string fs (str, font, xoffset, yoffset);
+        text_renderer::string fs (str, m_font, m_xoffset, m_yoffset);
+
+        std::string fname = m_font.get_face ()->family_name;
+
+        if (fname.find (" ") != std::string::npos)
+          fname = "'" + fname + "'";
+
+        fs.set_family (fname);
+
         std::vector<double> xdata;
+        std::string sub_name;
 
         while (n > 0)
           {
@@ -1025,42 +1102,56 @@ namespace octave
 
             n -= mblen;
 
-            if (m_do_strlist && mode == MODE_RENDER)
+            if (m_do_strlist && m_mode == MODE_RENDER)
               {
                 if (u32_c == 10)
                   {
                     // Finish previous string in m_strlist before processing
                     // the newline character
-                    fs.set_y (line_yoffset + yoffset);
-                    fs.set_color (color);
+                    fs.set_y (m_line_yoffset + m_yoffset);
+                    fs.set_color (m_color);
 
                     std::string s = str.substr (ibegin, icurr - ibegin);
                     if (! s.empty ())
                       {
                         fs.set_string (s);
-                        fs.set_y (line_yoffset + yoffset);
+                        fs.set_y (m_line_yoffset + m_yoffset);
                         fs.set_xdata (xdata);
                         fs.set_family (fname);
                         m_strlist.push_back (fs);
                       }
                   }
                 else
-                  xdata.push_back (xoffset);
+                  xdata.push_back (m_xoffset);
               }
 
-            glyph_index = process_character (u32_c, previous);
+            glyph_index = process_character (u32_c, previous, sub_name);
+
+            if (m_do_strlist && m_mode == MODE_RENDER && ! sub_name.empty ())
+              {
+                // Add substitution font to the family name stack
+                std::string tmp_family = fs.get_family ();
+
+                if (tmp_family.find (sub_name) == std::string::npos)
+                  {
+                    if (sub_name.find (" ") != std::string::npos)
+                      sub_name = "'" + sub_name + "'";
+
+                    fs.set_family (tmp_family + ", " + sub_name);
+                  }
+              }
 
             if (u32_c == 10)
               {
                 previous = 0;
 
-                if (m_do_strlist && mode == MODE_RENDER)
+                if (m_do_strlist && m_mode == MODE_RENDER)
                   {
                     // Start a new string in m_strlist
                     ibegin = icurr+1;
                     xdata.clear ();
-                    fs = text_renderer::string (str.substr (ibegin), font,
-                                                line_xoffset, yoffset);
+                    fs = text_renderer::string (str.substr (ibegin), m_font,
+                                                m_line_xoffset, m_yoffset);
                   }
               }
             else
@@ -1069,12 +1160,12 @@ namespace octave
             icurr += mblen;
           }
 
-        if (m_do_strlist && mode == MODE_RENDER && ! fs.get_string ().empty ())
+        if (m_do_strlist && m_mode == MODE_RENDER
+            && ! fs.get_string ().empty ())
           {
-            fs.set_y (line_yoffset + yoffset);
-            fs.set_color (color);
+            fs.set_y (m_line_yoffset + m_yoffset);
+            fs.set_color (m_color);
             fs.set_xdata (xdata);
-            fs.set_family (fname);
             m_strlist.push_back (fs);
           }
       }
@@ -1085,81 +1176,81 @@ namespace octave
   {
     // Save and restore (after processing the list) the current font and color.
 
-    ft_font saved_font (font);
-    uint8NDArray saved_color (color);
+    ft_font saved_font (m_font);
+    uint8NDArray saved_color (m_color);
 
     text_processor::visit (e);
 
-    font = saved_font;
-    color = saved_color;
+    m_font = saved_font;
+    m_color = saved_color;
   }
 
   void
   ft_text_renderer::visit (text_element_subscript& e)
   {
-    ft_font saved_font (font);
-    int saved_line_yoffset = line_yoffset;
-    int saved_yoffset = yoffset;
+    ft_font saved_font (m_font);
+    int saved_line_yoffset = m_line_yoffset;
+    int saved_yoffset = m_yoffset;
 
-    double sz = font.get_size ();
+    double sz = m_font.get_size ();
 
     // Reducing font size by 70% produces decent results.
-    set_font (font.get_name (), font.get_weight (), font.get_angle (),
+    set_font (m_font.get_name (), m_font.get_weight (), m_font.get_angle (),
               std::max (5.0, sz * 0.7));
 
-    if (font.is_valid ())
+    if (m_font.is_valid ())
       {
         // Shifting the baseline by 15% of the font size gives decent results.
-        yoffset -= std::ceil (sz * 0.15);
+        m_yoffset -= std::ceil (sz * 0.15);
 
-        if (mode == MODE_BBOX)
+        if (m_mode == MODE_BBOX)
           update_line_bbox ();
       }
 
     text_processor::visit (e);
 
-    font = saved_font;
+    m_font = saved_font;
     // If line_yoffset changed, this means we moved to a new line; hence yoffset
     // cannot be restored, because the saved value is not relevant anymore.
-    if (line_yoffset == saved_line_yoffset)
-      yoffset = saved_yoffset;
+    if (m_line_yoffset == saved_line_yoffset)
+      m_yoffset = saved_yoffset;
   }
 
   void
   ft_text_renderer::visit (text_element_superscript& e)
   {
-    ft_font saved_font (font);
-    int saved_line_yoffset = line_yoffset;
-    int saved_yoffset = yoffset;
+    ft_font saved_font (m_font);
+    int saved_line_yoffset = m_line_yoffset;
+    int saved_yoffset = m_yoffset;
 
-    double sz = font.get_size ();
+    double sz = m_font.get_size ();
 
     // Reducing font size by 70% produces decent results.
-    set_font (font.get_name (), font.get_weight (), font.get_angle (),
+    set_font (m_font.get_name (), m_font.get_weight (), m_font.get_angle (),
               std::max (5.0, sz * 0.7));
 
     if (saved_font.is_valid ())
       {
         // Shifting the baseline by 40% of the font size gives decent results.
-        yoffset += std::ceil (sz * 0.4);
+        m_yoffset += std::ceil (sz * 0.4);
 
-        if (mode == MODE_BBOX)
+        if (m_mode == MODE_BBOX)
           update_line_bbox ();
       }
 
     text_processor::visit (e);
 
-    font = saved_font;
+    m_font = saved_font;
     // If line_yoffset changed, this means we moved to a new line; hence yoffset
     // cannot be restored, because the saved value is not relevant anymore.
-    if (line_yoffset == saved_line_yoffset)
-      yoffset = saved_yoffset;
+    if (m_line_yoffset == saved_line_yoffset)
+      m_yoffset = saved_yoffset;
   }
 
   void
   ft_text_renderer::visit (text_element_color& e)
   {
-    if (mode == MODE_RENDER)
+    if (m_mode == MODE_RENDER)
       set_color (e.get_color ());
   }
 
@@ -1171,19 +1262,20 @@ namespace octave
     // FIXME: Matlab documentation says that the font size is expressed
     //        in the text object FontUnit.
 
-    set_font (font.get_name (), font.get_weight (), font.get_angle (), sz);
+    set_font (m_font.get_name (), m_font.get_weight (),
+              m_font.get_angle (), sz);
 
-    if (mode == MODE_BBOX)
+    if (m_mode == MODE_BBOX)
       update_line_bbox ();
   }
 
   void
   ft_text_renderer::visit (text_element_fontname& e)
   {
-    set_font (e.get_fontname (), font.get_weight (), font.get_angle (),
-              font.get_size ());
+    set_font (e.get_fontname (), m_font.get_weight (), m_font.get_angle (),
+              m_font.get_size ());
 
-    if (mode == MODE_BBOX)
+    if (m_mode == MODE_BBOX)
       update_line_bbox ();
   }
 
@@ -1193,23 +1285,23 @@ namespace octave
     switch (e.get_fontstyle ())
       {
       case text_element_fontstyle::normal:
-        set_font (font.get_name (), "normal", "normal", font.get_size ());
+        set_font (m_font.get_name (), "normal", "normal", m_font.get_size ());
         break;
 
       case text_element_fontstyle::bold:
-        set_font (font.get_name (), "bold", "normal", font.get_size ());
+        set_font (m_font.get_name (), "bold", "normal", m_font.get_size ());
         break;
 
       case text_element_fontstyle::italic:
-        set_font (font.get_name (), "normal", "italic", font.get_size ());
+        set_font (m_font.get_name (), "normal", "italic", m_font.get_size ());
         break;
 
       case text_element_fontstyle::oblique:
-        set_font (font.get_name (), "normal", "oblique", font.get_size ());
+        set_font (m_font.get_name (), "normal", "oblique", m_font.get_size ());
         break;
       }
 
-    if (mode == MODE_BBOX)
+    if (m_mode == MODE_BBOX)
       update_line_bbox ();
   }
 
@@ -1218,26 +1310,43 @@ namespace octave
   {
     uint32_t code = e.get_symbol_code ();
 
-    std::vector<double> xdata (1, xoffset);
-    text_renderer::string fs ("-", font, xoffset, yoffset);
+    std::vector<double> xdata (1, m_xoffset);
+    text_renderer::string fs ("-", m_font, m_xoffset, m_yoffset);
 
-    if (code != text_element_symbol::invalid_code && font.is_valid ())
+    if (code != text_element_symbol::invalid_code && m_font.is_valid ())
       {
-        process_character (code);
-        if (m_do_strlist && mode == MODE_RENDER)
+        std::string sub_name;
+
+        process_character (code, 0, sub_name);
+
+        if (m_do_strlist && m_mode == MODE_RENDER)
           {
+            if (! sub_name.empty ())
+              {
+                // Add substitution font to the family name
+                std::string tmp_family = fs.get_family ();
+
+                if (tmp_family.find (sub_name) == std::string::npos)
+                  {
+                    if (sub_name.find (" ") != std::string::npos)
+                      sub_name = "'" + sub_name + "'";
+
+                    fs.set_family (tmp_family + ", " + sub_name);
+                  }
+              }
+
             fs.set_code (code);
             fs.set_xdata (xdata);
           }
       }
-    else if (font.is_valid ())
+    else if (m_font.is_valid ())
       ::warning ("ignoring unknown symbol: %d", e.get_symbol ());
 
-    if (m_do_strlist && mode == MODE_RENDER && fs.get_code ())
+    if (m_do_strlist && m_mode == MODE_RENDER && fs.get_code ())
       {
-        fs.set_y (line_yoffset + yoffset);
-        fs.set_color (color);
-        fs.set_family (font.get_face ()->family_name);
+        fs.set_y (m_line_yoffset + m_yoffset);
+        fs.set_color (m_color);
+        fs.set_family (m_font.get_face ()->family_name);
         m_strlist.push_back (fs);
       }
   }
@@ -1245,17 +1354,17 @@ namespace octave
   void
   ft_text_renderer::visit (text_element_combined& e)
   {
-    int saved_xoffset = xoffset;
-    int max_xoffset = xoffset;
+    int saved_xoffset = m_xoffset;
+    int max_xoffset = m_xoffset;
 
     for (auto *txt_elt : e)
       {
-        xoffset = saved_xoffset;
+        m_xoffset = saved_xoffset;
         txt_elt->accept (*this);
-        max_xoffset = math::max (xoffset, max_xoffset);
+        max_xoffset = math::max (m_xoffset, max_xoffset);
       }
 
-    xoffset = max_xoffset;
+    m_xoffset = max_xoffset;
   }
 
   void
@@ -1271,9 +1380,9 @@ namespace octave
   {
     if (c.numel () == 3)
       {
-        color(0) = static_cast<uint8_t> (c(0)*255);
-        color(1) = static_cast<uint8_t> (c(1)*255);
-        color(2) = static_cast<uint8_t> (c(2)*255);
+        m_color(0) = static_cast<uint8_t> (c(0)*255);
+        m_color(1) = static_cast<uint8_t> (c(1)*255);
+        m_color(2) = static_cast<uint8_t> (c(2)*255);
       }
     else
       ::warning ("ft_text_renderer::set_color: invalid color");
@@ -1285,64 +1394,18 @@ namespace octave
     set_mode (MODE_BBOX);
     elt->accept (*this);
     compute_bbox ();
-    box = bbox;
+    box = m_bbox;
 
     set_mode (MODE_RENDER);
 
-    if (pixels.numel () > 0)
+    if (m_pixels.numel () > 0)
       {
         elt->accept (*this);
 
-        switch (rotation)
-          {
-          case ROTATION_0:
-            break;
-
-          case ROTATION_90:
-            {
-              Array<octave_idx_type> perm (dim_vector (3, 1));
-              perm(0) = 0;
-              perm(1) = 2;
-              perm(2) = 1;
-              pixels = pixels.permute (perm);
-
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
-              idx(2) = idx_vector (':');
-              pixels = uint8NDArray (pixels.index (idx));
-            }
-            break;
-
-          case ROTATION_180:
-            {
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
-              idx(2) = idx_vector (pixels.dim3 ()-1, -1, -1);
-              pixels = uint8NDArray (pixels.index (idx));
-            }
-            break;
-
-          case ROTATION_270:
-            {
-              Array<octave_idx_type> perm (dim_vector (3, 1));
-              perm(0) = 0;
-              perm(1) = 2;
-              perm(2) = 1;
-              pixels = pixels.permute (perm);
-
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (':');
-              idx(2) = idx_vector (pixels.dim3 ()-1, -1, -1);
-              pixels = uint8NDArray (pixels.index (idx));
-            }
-            break;
-          }
+        rotate_pixels (m_pixels, rotation);
       }
 
-    return pixels;
+    return m_pixels;
   }
 
   // Note:
@@ -1363,14 +1426,14 @@ namespace octave
       {
       case ROTATION_0:
       case ROTATION_180:
-        extent(0) = bbox(2);
-        extent(1) = bbox(3);
+        extent(0) = m_bbox(2);
+        extent(1) = m_bbox(3);
         break;
 
       case ROTATION_90:
       case ROTATION_270:
-        extent(0) = bbox(3);
-        extent(1) = bbox(2);
+        extent(0) = m_bbox(3);
+        extent(1) = m_bbox(2);
       }
 
     return extent;
@@ -1387,27 +1450,6 @@ namespace octave
     return extent;
   }
 
-  int
-  ft_text_renderer::rotation_to_mode (double rotation) const
-  {
-    // Clip rotation to range [0, 360]
-    while (rotation < 0)
-      rotation += 360.0;
-    while (rotation > 360.0)
-      rotation -= 360.0;
-
-    if (rotation == 0.0)
-      return ROTATION_0;
-    else if (rotation == 90.0)
-      return ROTATION_90;
-    else if (rotation == 180.0)
-      return ROTATION_180;
-    else if (rotation == 270.0)
-      return ROTATION_270;
-    else
-      return ROTATION_0;
-  }
-
   void
   ft_text_renderer::text_to_pixels (const std::string& txt,
                                     uint8NDArray& pxls, Matrix& box,
@@ -1417,7 +1459,7 @@ namespace octave
   {
     int rot_mode = rotation_to_mode (rotation);
 
-    halign = _halign;
+    m_halign = _halign;
 
     text_element *elt = text_parser::parse (txt, interpreter);
     pxls = render (elt, box, rot_mode);
@@ -1426,75 +1468,19 @@ namespace octave
     if (pxls.isempty ())
       return;  // nothing to render
 
-    switch (halign)
-      {
-      case 1:
-        box(0) = -box(2)/2;
-        break;
-
-      case 2:
-        box(0) = -box(2);
-        break;
-
-      default:
-        box(0) = 0;
-        break;
-      }
-
-    switch (valign)
-      {
-      case 1:
-        box(1) = -box(3)/2;
-        break;
-
-      case 2:
-        box(1) = -box(3);
-        break;
-
-      case 3:
-        break;
-
-      case 4:
-        box(1) = -box(3)-box(1);
-        break;
-
-      default:
-        box(1) = 0;
-        break;
-      }
-
-    if (handle_rotation)
-      {
-        switch (rot_mode)
-          {
-          case ROTATION_90:
-            std::swap (box(0), box(1));
-            std::swap (box(2), box(3));
-            box(0) = -box(0)-box(2);
-            break;
-
-          case ROTATION_180:
-            box(0) = -box(0)-box(2);
-            box(1) = -box(1)-box(3);
-            break;
-
-          case ROTATION_270:
-            std::swap (box(0), box(1));
-            std::swap (box(2), box(3));
-            box(1) = -box(1)-box(3);
-            break;
-          }
-      }
+    // Move X0 and Y0 depending on alignments and eventually swap all values
+    // for text rotated 90° 180° or 270°
+    fix_bbox_anchor (box, m_halign, valign, rot_mode, handle_rotation);
   }
 
   ft_text_renderer::ft_font::ft_font (const ft_font& ft)
-    : text_renderer::font (ft), face (nullptr)
+    : text_renderer::font (ft), m_face (nullptr)
   {
 #if defined (HAVE_FT_REFERENCE_FACE)
     FT_Face ft_face = ft.get_face ();
 
     if (ft_face && FT_Reference_Face (ft_face) == 0)
-      face = ft_face;
+      m_face = ft_face;
 #endif
   }
 
@@ -1505,17 +1491,17 @@ namespace octave
       {
         text_renderer::font::operator = (ft);
 
-        if (face)
+        if (m_face)
           {
-            FT_Done_Face (face);
-            face = nullptr;
+            FT_Done_Face (m_face);
+            m_face = nullptr;
           }
 
 #if defined (HAVE_FT_REFERENCE_FACE)
         FT_Face ft_face = ft.get_face ();
 
         if (ft_face && FT_Reference_Face (ft_face) == 0)
-          face = ft_face;
+          m_face = ft_face;
 #endif
       }
 
@@ -1525,20 +1511,20 @@ namespace octave
   FT_Face
   ft_text_renderer::ft_font::get_face (void) const
   {
-    if (! face && ! name.empty ())
+    if (! m_face && ! m_name.empty ())
       {
-        face = ft_manager::get_font (name, weight, angle, size);
+        m_face = ft_manager::get_font (m_name, m_weight, m_angle, m_size);
 
-        if (face)
+        if (m_face)
           {
-            if (FT_Set_Char_Size (face, 0, size*64, 0, 0))
-              ::warning ("ft_text_renderer: unable to set font size to %g", size);
+            if (FT_Set_Char_Size (m_face, 0, m_size*64, 0, 0))
+              ::warning ("ft_text_renderer: unable to set font size to %g", m_size);
           }
         else
           ::warning ("ft_text_renderer: unable to load appropriate font");
       }
 
-    return face;
+    return m_face;
   }
 }
 

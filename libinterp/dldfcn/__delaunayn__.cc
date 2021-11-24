@@ -62,26 +62,23 @@
 #include "ovl.h"
 
 #if defined (HAVE_QHULL)
-
 #  include "oct-qhull.h"
-
-#  if defined (NEED_QHULL_VERSION)
+#  if defined (NEED_QHULL_R_VERSION)
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
 #  endif
+#endif
+
+OCTAVE_NAMESPACE_BEGIN
+
+#if defined (HAVE_QHULL)
 
 static void
-close_fcn (FILE *f)
+free_qhull_memory (qhT *qh)
 {
-  std::fclose (f);
-}
-
-static void
-free_qhull_memory ()
-{
-  qh_freeqhull (! qh_ALL);
+  qh_freeqhull (qh, ! qh_ALL);
 
   int curlong, totlong;
-  qh_memfreeshort (&curlong, &totlong);
+  qh_memfreeshort (qh, &curlong, &totlong);
 
   if (curlong || totlong)
     warning ("__delaunayn__: did not free %d bytes of long memory (%d pieces)",
@@ -161,36 +158,37 @@ Undocumented internal function.
       double *pt_array = p.fortran_vec ();
       boolT ismalloc = false;
 
-      // Qhull flags argument is not const char*
-      OCTAVE_LOCAL_BUFFER (char, flags, 9 + options.length ());
+      std::string cmd = "qhull d " + options;
 
-      sprintf (flags, "qhull d %s", options.c_str ());
+      // Set the outfile pointer to stdout for status information.
+      FILE *outfile = nullptr;
 
-      octave::unwind_protect frame;
-
-      // Replace the outfile pointer with stdout for debugging information.
+      // Set the errfile pointer to stderr for errors and summary information.
+      // Note: pointer cannot be NULL to disable reporting, unlike outfile.
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-      FILE *outfile = std::fopen ("NUL", "w");
+      FILE *errfile = std::fopen ("NUL", "w");
 #else
-      FILE *outfile = std::fopen ("/dev/null", "w");
+      FILE *errfile = std::fopen ("/dev/null", "w");
 #endif
-      FILE *errfile = stderr;
 
-      if (! outfile)
-        error ("__delaunayn__: unable to create temporary file for output");
+      if (! errfile)
+        error ("__delaunayn__: unable to redirect Qhull errors to /dev/null");
 
-      frame.add_fcn (close_fcn, outfile);
+      unwind_action close_errfile ([=] () { std::fclose (errfile); });
 
-      int exitcode = qh_new_qhull (dim, n, pt_array,
-                                   ismalloc, flags, outfile, errfile);
+      qhT context = { };
+      qhT *qh = &context;
 
-      frame.add_fcn (free_qhull_memory);
+      int exitcode = qh_new_qhull (qh, dim, n, pt_array, ismalloc, &cmd[0],
+                                   outfile, errfile);
+
+      unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
 
       if (exitcode)
         error ("__delaunayn__: qhull failed");
 
       // triangulate non-simplicial facets
-      qh_triangulate ();
+      qh_triangulate (qh);
 
       facetT *facet;
       vertexT *vertex, **vertexp;
@@ -217,7 +215,7 @@ Undocumented internal function.
 
               FOREACHvertex_ (facet->vertices)
                 {
-                  simpl(i, j++) = 1 + qh_pointid(vertex->point);
+                  simpl(i, j++) = 1 + qh_pointid(qh, vertex->point);
                 }
               i++;
             }
@@ -251,3 +249,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

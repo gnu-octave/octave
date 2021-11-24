@@ -34,7 +34,7 @@
 namespace octave
 {
   template <typename T>
-  void
+  OCTAVE_API void
   rand_gamma (T a, octave_idx_type n, T *p);
 
   template <typename T>

@@ -49,7 +49,7 @@
 
 function [z, mu, sigma] = zscore (x, opt = 0, dim)
 
-  if (nargin < 1 || nargin > 3 )
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -102,7 +102,7 @@ endfunction
 %!assert <*54531> (zscore ([1,2,3], [], 2), [-1,0,1])
 
 ## Test input validation
-%!error zscore ()
+%!error <Invalid call> zscore ()
 %!error zscore (1, 2, 3)
 %!error <X must be a numeric> zscore (['A'; 'B'])
 %!error <OPT must be empty, 0, or 1> zscore (1, ones (2,2))

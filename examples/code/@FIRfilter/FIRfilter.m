@@ -6,10 +6,6 @@
 
 function f = FIRfilter (p)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     p = @polynomial ([1]);
   elseif (! isa (p, "polynomial"))

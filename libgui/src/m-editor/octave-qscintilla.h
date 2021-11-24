@@ -58,6 +58,7 @@ namespace octave
     };
 
     virtual void contextMenuEvent (QContextMenuEvent *e);
+    virtual void setCursorPosition (int line, int col);
 
     void context_help_doc (bool);
     void context_edit (void);
@@ -65,6 +66,7 @@ namespace octave
     void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
     bool get_actual_word (void);
     void clear_selection_markers (void);
+    QString eol_string (void);
     void get_current_position (int *pos, int *line, int *col);
     QStringList comment_string (bool comment = true);
     int get_style (int pos = -1);
@@ -80,8 +82,12 @@ namespace octave
 
     void set_selection_marker_color (const QColor& c);
 
+    void replace_all (const QString& o_str, const QString& n_str,
+                      bool re, bool cs, bool wo);
+
   signals:
 
+    void update_rowcol_indicator_signal (int line, int col);
     void execute_command_in_terminal_signal (const QString&);
     void create_context_menu_signal (QMenu*);
     void context_menu_edit_signal (const QString&);
@@ -96,6 +102,11 @@ namespace octave
 
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
+
+  public slots:
+
+    void handle_enter_debug_mode (void);
+    void handle_exit_debug_mode (void);
 
   private slots:
 
@@ -121,6 +132,8 @@ namespace octave
 
     void show_replace_action_tooltip (void);
 
+    bool event (QEvent *e);
+
     void keyPressEvent (QKeyEvent *e);
 
     void dragEnterEvent (QDragEnterEvent *e);
@@ -132,6 +145,8 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
+    bool m_debug_mode;
+
     QString m_word_at_cursor;
 
     QString m_selection;
@@ -139,6 +154,8 @@ namespace octave
     int m_selection_line;
     int m_selection_col;
     int m_indicator_id;
+
+    QFont m_tooltip_font;
   };
 }
 

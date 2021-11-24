@@ -27,7 +27,7 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [6.4.1], [https://octave.org/bugs.html], [octave],
+AC_INIT([GNU Octave], [7.0.0], [https://octave.org/bugs.html], [octave],
         [https://www.gnu.org/software/octave/])
 
 ### Declare version numbers
@@ -39,16 +39,16 @@ dnl AC_INIT requires it to be static, not computed from shell variables.
 ## explains how to update these numbers for release and development
 ## versions.
 
-OCTAVE_MAJOR_VERSION=6
-OCTAVE_MINOR_VERSION=4
-OCTAVE_PATCH_VERSION=1
+OCTAVE_MAJOR_VERSION=7
+OCTAVE_MINOR_VERSION=0
+OCTAVE_PATCH_VERSION=0
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_COPYRIGHT="Copyright (C) 2021 The Octave Project Developers."
+OCTAVE_COPYRIGHT="Copyright (C) 2020 The Octave Project Developers."
 
-OCTAVE_RELEASE_DATE="2021-10-30"
+OCTAVE_RELEASE_DATE="2020-08-26"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly
@@ -63,7 +63,7 @@ dnl
 dnl FIXME: Since we also set libtool versions for liboctave and libinterp,
 dnl perhaps we should be computing the "api version" from those versions numbers
 dnl in some way instead of setting it independently here.
-OCTAVE_API_VERSION="api-v56"
+OCTAVE_API_VERSION="api-v56+"
 
 AC_SUBST(OCTAVE_MAJOR_VERSION)
 AC_SUBST(OCTAVE_MINOR_VERSION)
@@ -107,8 +107,15 @@ OCTAVE_SET_DEFAULT([octlibdir], '${libdir}/octave/${version}')
 ## Where to put executables to be run by Octave, rather than the user.
 ## This path usually includes the Octave version and configuration name, so
 ## that configurations for multiple versions of Octave may be installed at once.
-OCTAVE_SET_DEFAULT([archlibdir],
-  '${libexecdir}/octave/${version}/exec/${canonical_host_type}')
+## Windows search paths and relocation oddities require all binaries must be
+## installed in the same directory.
+case $host_os in
+  mingw* | msdosmsvc)
+    OCTAVE_SET_DEFAULT([archlibdir], '${bindir}') ;;
+  *)
+    OCTAVE_SET_DEFAULT([archlibdir],
+      '${libexecdir}/octave/${version}/exec/${canonical_host_type}') ;;
+esac
 
 ## Where to put executables to be run by Octave, rather than the user, that
 ## are specific to this site.
@@ -491,6 +498,10 @@ OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS
 
 ### Use a 64-bit integer type for array dimensions and indexing, if possible.
 
+AC_CHECK_SIZEOF([int])
+AC_DEFINE_UNQUOTED(OCTAVE_SIZEOF_INT, [$ac_cv_sizeof_int],
+  [Define to the size of int.])
+
 AC_CHECK_SIZEOF([void *])
 if test $ac_cv_sizeof_void_p -ge 8; then
   ENABLE_64=yes
@@ -535,20 +546,6 @@ AC_DEFINE_UNQUOTED(OCTAVE_SIZEOF_IDX_TYPE, [$octave_sizeof_octave_idx_type],
 AC_SUBST(OCTAVE_IDX_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
-
-### Enable bounds checking on element references within Octave's array and
-### matrix classes.
-dnl This slows down some operations a bit, so it is turned off by default.
-
-ENABLE_BOUNDS_CHECK=no
-AC_ARG_ENABLE([bounds-check],
-  [AS_HELP_STRING([--enable-bounds-check],
-    [OBSOLETE: use --enable-address-sanitizer-flags instead])],
-  [if test "$enableval" = yes; then ENABLE_BOUNDS_CHECK=yes; fi], [])
-if test $ENABLE_BOUNDS_CHECK = yes; then
-  warn_bounds_check="--enable-bounds-check is obsolete; use --enable-address-sanitizer-flags instead"
-  OCTAVE_CONFIGURE_WARNING([warn_bounds_check])
-fi
 
 ### Check for pthread library
 
@@ -640,10 +637,12 @@ fi
 AC_SUBST(STATIC_LIBS)
 
 XTRA_EXTERNAL_SH_LDFLAGS=
-if test $have_msvc = yes; then
-  FLIBS="$FLIBS -lkernel32"
-  XTRA_EXTERNAL_SH_LDFLAGS="-Wl,external/external.def"
-fi
+case $host_os in
+  msdosmsvc | mingw*)
+    FLIBS="$FLIBS -lkernel32"
+    XTRA_EXTERNAL_SH_LDFLAGS="-Wl,liboctave/external/external.def"
+  ;;
+esac
 AC_SUBST(XTRA_EXTERNAL_SH_LDFLAGS)
 
 if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
@@ -653,15 +652,23 @@ fi
 
 ### More configure argument checking related to linking
 
+case $host_os in
+  msdosmsvc | mingw* | AIX | BeOS | OS/2 )
+    DEFAULT_NO_UNDEFINED_LDFLAG="-no-undefined"
+  ;;
+  *)
+    DEFAULT_NO_UNDEFINED_LDFLAG=""
+  ;;
+esac
 AC_ARG_ENABLE([no-undefined],
-  [AS_HELP_STRING([--disable-no-undefined],
-    [don't pass -no-undefined to libtool when linking Octave and its shared libraries])],
+  [AS_HELP_STRING([--enable-no-undefined],
+    [pass -no-undefined to libtool when linking Octave and its shared libraries. This is done by default for msdosmsvc, mingw*, AIX, BeOS, or OS/2 hosts.])],
   [case $enableval in
      yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
      no)  NO_UNDEFINED_LDFLAG="" ;;
-     *) AC_MSG_ERROR([bad value $enableval for --disable-no-undefined]) ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-no-undefined]) ;;
    esac],
-  [NO_UNDEFINED_LDFLAG="-no-undefined"])
+  [NO_UNDEFINED_LDFLAG="$DEFAULT_NO_UNDEFINED_LDFLAG"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
 
 AC_ARG_ENABLE([link-all-dependencies],
@@ -670,17 +677,10 @@ AC_ARG_ENABLE([link-all-dependencies],
   [case $enableval in
      yes) link_all_deps=yes ;;
      no)  link_all_deps=no ;;
-     *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-depenencies])
+     *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-dependencies])
      ;;
    esac],
-  [case $host_os in
-    darwin*)
-      link_all_deps=yes
-    ;;
-    *)
-      link_all_deps=no
-    ;;
-  esac])
+  [link_all_deps=no])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
 ### Check for BLAS and LAPACK libraries:
@@ -1072,6 +1072,24 @@ AC_FUNC_ALLOCA
 ## Does the C compiler support Automake subdir-objects option?
 AM_PROG_CC_C_O
 
+## Set the target Windows version early so that gnulib can use all functions
+## that are available in that version.
+case $host_os in
+  msdosmsvc | mingw*)
+    AC_MSG_CHECKING([for required _WIN32_WINNT])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <windows.h>
+        #if _WIN32_WINNT < 0x0601
+        #error "Wrong version"
+        #endif
+        ]], [])],
+      [AC_MSG_RESULT([none])],
+      [AC_DEFINE(_WIN32_WINNT, 0x0601,
+        [Define to 0x0601 to access SetCurrentProcessExplicitAppUserModelID.])
+       AC_MSG_RESULT([0x0601])])
+  ;;
+esac
+
 ### gnulib initialization: part 2
 dnl Must take place after part 1, and after standard compiler options and
 dnl search paths have been established, and at the same priority level as
@@ -1245,22 +1263,22 @@ else
   AC_MSG_ERROR([MATH DEFINES in math.h such as M_PI are required to build Octave])
 fi
 
-## Windows-specific tests for extra #defines
+## Use Unicode aware functions on Windows
 case $host_os in
   msdosmsvc | mingw*)
-    AC_MSG_CHECKING([for required _WIN32_WINNT])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <windows.h>
-        #if _WIN32_WINNT < 0x0403
-        #error "Wrong version"
-        #endif
-        ]], [])],
-      [AC_MSG_RESULT([none])],
-      [AC_DEFINE(_WIN32_WINNT, 0x0403,
-        [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount.])
-       AC_MSG_RESULT([0x0403])])
+    AC_DEFINE(_UNICODE, 1, [Use Unicode CRT functions on Windows by default.])
+    AC_DEFINE(UNICODE, 1, [Use Windows Unicode API by default.])
   ;;
 esac
+
+OCTAVE_UNICODE_EXE_LDFLAGS=""
+case $host_os in
+  mingw*)
+    OCTAVE_UNICODE_EXE_LDFLAGS="-municode"
+  ;;
+esac
+
+AC_SUBST(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 ## Windows-specific use of functions
 case $host_os in
@@ -1278,7 +1296,7 @@ esac
 case $host_os in
   msdosmsvc | mingw*)
     AC_CHECK_HEADERS([psapi.h],
-      [LIBS="-lpsapi $LIBS" CPPFLAGS="-DPSAPI_VERSION=1 $CPPFLAGS"],
+      [CPPFLAGS="-DPSAPI_VERSION=2 $CPPFLAGS"],
       [AC_MSG_ERROR([Missing PSAPI required to build for Windows target.])],
       [#include <windows.h>])
   ;;
@@ -1337,15 +1355,24 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 
 ### Check for the Qhull library.
 
-OCTAVE_CHECK_LIB(qhull, QHull,
+QHULL_CPPFLAGS=
+QHULL_LDFLAGS=
+QHULL_LIBS=
+OCTAVE_CHECK_LIB(qhull_r, QHull,
   [Qhull library not found.  This will result in loss of functionality for some geometry functions.],
-  [libqhull/libqhull.h qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h],
+  [libqhull_r/libqhull_r.h libqhull_r.h],
   [qh_qhull], [], [],
-  [warn_qhull=
+  [warn_qhull_r=
   OCTAVE_CHECK_QHULL_VERSION
   OCTAVE_CHECK_LIB_QHULL_OK(
-    [AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])],
-    [warn_qhull="Qhull library found, but does not seem to work properly.  This will result in loss of functionality for some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
+    [AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])
+     QHULL_CPPFLAGS="$QHULL_R_CPPFLAGS"
+     QHULL_LDFLAGS="$QHULL_R_LDFLAGS"
+     QHULL_LIBS="$QHULL_R_LIBS"],
+    [warn_qhull_r="Qhull library found, but does not seem to work properly.  This will result in loss of functionality for some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
+AC_SUBST(QHULL_CPPFLAGS)
+AC_SUBST(QHULL_LDFLAGS)
+AC_SUBST(QHULL_LIBS)
 
 ### Check for PCRE regex library.
 
@@ -1355,6 +1382,57 @@ OCTAVE_CHECK_LIB(pcre, PCRE,
     [AC_MSG_ERROR([PCRE library must be built with UTF support (--enable-utf)])])
   ],
   [libpcre], [REQUIRED])
+
+### Check for RapidJSON header only library.
+
+check_for_rapidjson=yes
+AC_ARG_ENABLE([rapidjson],
+  [AS_HELP_STRING([--disable-rapidjson],
+    [disable rapidjson])],
+  [if test "$enableval" = no; then check_for_rapidjson=no; fi], [])
+warn_rapidjson=
+if test $check_for_rapidjson = yes; then
+  AC_LANG_PUSH(C++)
+  AC_CHECK_HEADER([rapidjson/rapidjson.h],
+                  [have_rapidjson=yes],
+                  [have_rapidjson=no
+                   warn_rapidjson="RapidJSON library not found.  Octave will not be able to read or write JSON files."])
+
+  if test $have_rapidjson = yes; then
+    AC_DEFINE(HAVE_RAPIDJSON, 1, [Define to 1 if RapidJSON is available.])
+
+    ## Additional check on RapidJSON library that was found
+    ## Some features of the version of RapidJSON that is packaged in many
+    ## distributions do not build correctly with newer compilers.
+    ## See also:
+    ## https://github.com/Tencent/rapidjson/issues/909
+    ## https://github.com/Tencent/rapidjson/issues/1718
+    AC_CACHE_CHECK([for working PrettyWriter in RapidJSON],
+      [octave_cv_rapidjson_has_prettywriter],
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <rapidjson/prettywriter.h>
+        ]], [[
+        rapidjson::StringBuffer json;
+        rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
+                                rapidjson::UTF8<>, rapidjson::CrtAllocator,
+                                rapidjson::kWriteNanAndInfFlag> writer (json);
+        ]])],
+        [octave_cv_rapidjson_has_prettywriter=yes],
+        [octave_cv_rapidjson_has_prettywriter=no])
+      ])
+    if test $octave_cv_rapidjson_has_prettywriter = yes; then
+      AC_DEFINE(HAVE_RAPIDJSON_PRETTYWRITER, 1,
+        [Define to 1 if the RapidJSON PrettyWriter function is available.])
+    else
+      warn_rapidjson='RapidJSON library found, but some features do not seem to work properly.  The "PrettyWriter" option in jsonencode will be disabled.'
+    fi
+  fi
+  AC_LANG_POP([C++])
+fi
+
+if test -n "$warn_rapidjson"; then
+  OCTAVE_CONFIGURE_WARNING([warn_rapidjson])
+fi
 
 ### Check for readline library.
 
@@ -1382,7 +1460,7 @@ OCTAVE_CHECK_LIB(z, ZLIB,
   [zlib.h], [gzclearerr])
 
 ## Also define HAVE_ZLIB if libz is found.
-if test -z "$warn_z"; then
+if test -n "$Z_LIBS"; then
   AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
 fi
 
@@ -1391,119 +1469,6 @@ fi
 OCTAVE_CHECK_LIB(bz2, BZIP2,
   [BZIP2 library not found.  Octave will not be able to compress or decompress bzip2 files.],
   [bzlib.h], [BZ2_bzCompressInit])
-
-### Check for the LLVM library (JIT compiler).
-
-ENABLE_JIT=no
-AC_ARG_ENABLE([jit],
-  [AS_HELP_STRING([--enable-jit],
-    [(EXPERIMENTAL) enable JIT compiler])],
-  [if test "$enableval" = yes; then ENABLE_JIT=yes; fi], [])
-
-LLVM_CPPFLAGS=
-LLVM_LDFLAGS=
-LLVM_LIBS=
-
-if test $ENABLE_JIT = yes; then
-
-  ## Find llvm-config program from environment variable or by searching
-  AC_ARG_VAR([LLVM_CONFIG], [path to llvm-config utility])
-  AC_CHECK_PROG([LLVM_CONFIG], llvm-config, llvm-config, [])
-
-  if test -z "$LLVM_CONFIG"; then
-    warn_llvm="llvm-config utility not found.  JIT compiler is disabled."
-  else
-    dnl Preset warning message in case compile fails
-    warn_llvm="LLVM was not found or is to old.  JIT compiler is disabled."
-
-    save_CPPFLAGS="$CPPFLAGS"
-    save_LDFLAGS="$LDFLAGS"
-
-    dnl Use -isystem if available because we don't want to see warnings in LLVM
-    LLVM_INCLUDE_FLAG=-I
-    OCTAVE_CC_FLAG([-isystem .], [
-      LLVM_INCLUDE_FLAG=-isystem
-      AC_MSG_NOTICE([using -isystem for LLVM headers])])
-
-    dnl Use -isystem so we don't get warnings from llvm headers
-    LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
-    LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
-
-    LDFLAGS="$LDFLAGS $LLVM_LDFLAGS"
-    LLVM_SO=LLVM-`$LLVM_CONFIG --version`
-    AC_CHECK_LIB([$LLVM_SO], [LLVMBuildAdd], [LLVM_LIBS="-l$LLVM_SO"],
-                 [LLVM_LIBS="`$LLVM_CONFIG --libs` `$LLVM_CONFIG --system-libs`"])
-
-    dnl Define some extra flags that LLVM requires in order to include headers.
-    dnl Ideally we should get these from llvm-config, but llvm-config isn't
-    dnl very helpful.
-    CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
-    AC_LANG_PUSH(C++)
-    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [warn_llvm=""])
-
-    have_function_h=no
-    AC_CHECK_HEADERS([llvm/IR/Function.h llvm/Function.h],
-                     [have_function_h=yes; break])
-    if test $have_function_h = no; then
-      warn_llvm="Missing LLVM file Function.h.  JIT compiler is disabled."
-    fi
-
-    have_irbuilder_h=no
-    AC_CHECK_HEADERS([llvm/Support/IRBuilder.h llvm/IR/IRBuilder.h \
-                      llvm/IRBuilder.h], [have_irbuilder_h=yes; break])
-    if test $have_irbuilder_h = no; then
-      warn_llvm="Missing LLVM file IRBuilder.h.  JIT compiler is disabled."
-    fi
-
-    have_llvm_data_h=no
-    AC_CHECK_HEADERS([llvm/Target/TargetData.h llvm/IR/DataLayout.h \
-                      llvm/DataLayout.h], [have_llvm_data_h=yes; break])
-    if test $have_llvm_data_h = no; then
-      warn_llvm="Missing LLVM file TargetData.h.  JIT compiler is disabled."
-    fi
-
-    AC_CHECK_HEADERS([llvm/IR/Verifier.h])
-    AC_CHECK_HEADERS([llvm/Analysis/BasicAliasAnalysis.h])
-    AC_CHECK_HEADERS([llvm/Transforms/Scalar/GVN.h])
-    AC_CHECK_HEADERS([llvm/Bitcode/ReaderWriter.h])
-
-    OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API
-    OCTAVE_LLVM_FUNCTION_ADDFNATTR_API
-    OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API
-    OCTAVE_LLVM_RAW_FD_OSTREAM_API
-    OCTAVE_LLVM_LEGACY_PASSMANAGER_API
-    OCTAVE_LLVM_IRBUILDER_API
-    OCTAVE_LLVM_HAS_CREATEALWAYSINLINERPASS
-    OCTAVE_LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_API
-
-    AC_LANG_POP(C++)
-    CPPFLAGS="$save_CPPFLAGS"
-    LDFLAGS="$save_LDFLAGS"
-  fi
-
-  if test -z "$warn_llvm"; then
-    AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
-  else
-    ENABLE_JIT=no
-    LLVM_CPPFLAGS=
-    LLVM_LDFLAGS=
-    LLVM_LIBS=
-    OCTAVE_CONFIGURE_WARNING([warn_llvm])
-  fi
-dnl FIXME: Re-instate when JIT is enabled by default
-dnl else
-dnl   ## JIT build disabled
-dnl   warn_llvm="JIT compiler disabled, some performance loss for loops"
-dnl   OCTAVE_CONFIGURE_WARNING([warn_llvm])
-fi
-if test $ENABLE_JIT = yes; then
-  AC_DEFINE(ENABLE_JIT, 1, [Define to 1 to enable JIT compiler.])
-fi
-
-AC_SUBST(LLVM_CPPFLAGS)
-AC_SUBST(LLVM_LDFLAGS)
-AC_SUBST(LLVM_LIBS)
-AM_CONDITIONAL([AMCOND_HAVE_LLVM], [test -z "$warn_llvm"])
 
 ### Check for HDF5 library.
 
@@ -1516,6 +1481,7 @@ OCTAVE_CHECK_LIB(hdf5, HDF5,
   [hdf5.h], [H5Gget_num_objs], [], [],
   [warn_hdf5=
    OCTAVE_CHECK_HDF5_HAS_VER_16_API
+   OCTAVE_CHECK_HDF5_HAS_UTF8_API
    AC_DEFINE(HAVE_HDF5, 1,
      [Define to 1 if HDF5 is available and newer than version 1.6.])
    if test $have_msvc = yes; then
@@ -1604,7 +1570,7 @@ CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(glpk, GLPK,
   [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
-  [glpk/glpk.h glpk.h], [glp_simplex], [], [],
+  [glpk.h glpk/glpk.h], [glp_simplex], [], [],
   [warn_glpk=
    OCTAVE_CHECK_LIB_GLPK_OK(
     [AC_DEFINE(HAVE_GLPK, 1, [Define to 1 if GLPK is available.])],
@@ -1621,7 +1587,7 @@ LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(curl, cURL,
   [cURL library not found.  The ftp objects, urlread, and urlwrite functions will be disabled.],
   [curl/curl.h], [curl_easy_escape])
-if test -z "$warn_curl"; then
+if test -n "$CURL_LIBS"; then
   ## Additional check on cURL library that was found
   AC_CACHE_CHECK([for CURLOPT_DIRLISTONLY in curl/curl.h],
     [octave_cv_curl_has_curlopt_dirlistonly],
@@ -1666,14 +1632,12 @@ check_magick=yes
 use_magick=no
 AC_ARG_WITH([magick],
   [AS_HELP_STRING([--with-magick=LIB],
-    [select library to use for image I/O (options: GraphicsMagick(default) or ImageMagick)])],
+    [select library to use for image I/O (options: GraphicsMagick++(default) or ImageMagick++)])],
   [if test x"$withval" = xno; then
      check_magick=no
-     warn_magick_disabled="--without-magick specified.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
-     OCTAVE_CONFIGURE_WARNING([warn_magick_disabled])
    else
      magick="$withval"
-   fi], [magick="GraphicsMagick"])
+   fi], [magick="GraphicsMagick++"])
 
 if test $check_magick = yes; then
 
@@ -1681,16 +1645,21 @@ if test $check_magick = yes; then
   MAGICK_LDFLAGS=
   MAGICK_LIBS=
 
-  PKG_CHECK_EXISTS([$magick++], [
-    dnl Make sure we only get -I, -L, and -l flags.
-    dnl Some Graphics/ImageMagick++ dnl packages add extra flags that are
-    dnl useful when building Graphics/ImageMagick++ extensions.  These extra
-    dnl flags break the Octave build.
-    MAGICK_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $magick++ | $SED -e 's/^ *$//')"
-    MAGICK_LDFLAGS="$($PKG_CONFIG --libs-only-L $magick++ | $SED -e 's/^ *$//')"
-    MAGICK_LIBS="$($PKG_CONFIG --libs-only-l $magick++ | $SED -e 's/^ *$//')"
+  PKG_CHECK_EXISTS([$magick], [
+    dnl We are using --cflags now instead of --cflags-only-I because some
+    dnl Graphics/ImageMagick++ packages will provide -D options for
+    dnl MAGICKCORE_HDRI_ENABLE and MAGICKCORE_QUANTUM_DEPTH that are needed
+    dnl for building with a particular verison of the library.  If there
+    dnl are other flags in the output from pkg-config --cflags that cause
+    dnl trouble, then we may need to go back to using --cflags-only-I and
+    dnl have a configure test to determine the proper definitions of
+    dnl MAGICKCORE_HDRI_ENABLE and MAGICKCORE_QUANTUM_DEPTH.
+    dnl See also bug #49563.
+    MAGICK_CPPFLAGS="$($PKG_CONFIG --cflags $magick | $SED -e 's/^ *$//')"
+    MAGICK_LDFLAGS="$($PKG_CONFIG --libs-only-L $magick | $SED -e 's/^ *$//')"
+    MAGICK_LIBS="$($PKG_CONFIG --libs-only-l $magick | $SED -e 's/^ *$//')"
 
-    warn_magick="$magick++ library fails tests.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
+    warn_magick="$magick library fails tests.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
 
     save_CPPFLAGS="$CPPFLAGS"
     save_LIBS="$LIBS"
@@ -1700,7 +1669,7 @@ if test $check_magick = yes; then
     AC_CHECK_HEADER([Magick++.h], [
       AC_CACHE_CHECK([for Magick::ColorRGB in Magick++.h],
         [octave_cv_func_magick_colorrgb],
-        [AC_PREPROC_IFELSE([AC_LANG_SOURCE([[
+        [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <Magick++.h>
           ]], [[
           Magick::ColorRGB c;
@@ -1718,7 +1687,7 @@ if test $check_magick = yes; then
     LIBS="$save_LIBS"
   ],
   [use_magick=no
-   warn_magick="$magick++ library not found.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."])
+   warn_magick="$magick library not found.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."])
 fi
 
 if test $use_magick = yes; then
@@ -1782,8 +1751,6 @@ AC_ARG_WITH([opengl],
     [don't use OpenGL libraries, disable OpenGL graphics])],
   [if test x"$withval" = xno; then
      check_opengl=no
-     warn_opengl_disabled="--without-opengl specified.  OpenGL graphics will be disabled."
-     OCTAVE_CONFIGURE_WARNING([warn_opengl_disabled])
    fi])
 
 ## Check for OpenGL library
@@ -1804,7 +1771,6 @@ AC_ARG_WITH([freetype],
     [don't use FreeType library, OpenGL graphics will not be fully functional])],
   [if test x"$withval" = xno; then
      check_freetype=no
-     warn_freetype="--without-freetype specified.  OpenGL graphics will not be fully functional."
    fi])
 
 if test $check_freetype = yes; then
@@ -1845,26 +1811,9 @@ OCTAVE_CHECK_LIB(fontconfig, fontconfig,
   [fontconfig.h fontconfig/fontconfig.h], [FcInit],
   [], [don't use fontconfig library, OpenGL graphics will not be fully functional])
 
-## Check for gl2ps which is required for printing with OpenGL graphics.
-
-AC_CHECK_HEADERS([gl2ps.h],
-  [GL2PS_LIBS="-lgl2ps"],
-  [warn_gl2ps="gl2ps library not found.  Printing of OpenGL graphics will be disabled."])
-
-if test -n "$warn_gl2ps"; then
-  OCTAVE_CONFIGURE_WARNING([warn_gl2ps])
-else
-  save_LIBS="$LIBS"
-  LIBS="$GL2PS_LIBS $LIBS"
-  AC_CHECK_FUNCS([gl2psLineJoin])
-  LIBS="$save_LIBS"
-fi
-
-AC_SUBST(GL2PS_LIBS)
-
 ### GUI/Qt related tests.
 
-QT_VERSIONS="5 4"
+QT_VERSIONS="5"
 
 AC_ARG_WITH([qt],
   [AS_HELP_STRING([--with-qt=VER], [use the Qt major version VER])
@@ -1875,8 +1824,6 @@ AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
      ;;
      no)
        QT_VERSIONS=
-       warn_qt_disabled="--without-qt specified.  The Qt GUI will be disabled."
-       OCTAVE_CONFIGURE_WARNING([warn_qt_disabled])
      ;;
      *)
        QT_VERSIONS="$withval"
@@ -1888,8 +1835,6 @@ AC_ARG_WITH([qscintilla],
   [AS_HELP_STRING([--without-qscintilla], [disable QScintilla editor])],
   [if test x"$withval" = xno; then
      check_qscintilla=no
-     warn_qscintilla_disabled="--without-qscintilla specified.  The GUI editor will be disabled."
-     OCTAVE_CONFIGURE_WARNING([warn_qscintilla_disabled])
    fi])
 
 OCTAVE_CHECK_QT([$QT_VERSIONS])
@@ -2030,6 +1975,25 @@ else
   opengl_graphics=yes
 fi
 
+## Check for gl2ps which is required for printing with OpenGL graphics.
+
+if test $opengl_graphics = yes; then
+  AC_CHECK_HEADERS([gl2ps.h],
+    [GL2PS_LIBS="-lgl2ps"],
+    [warn_gl2ps="gl2ps library not found.  Printing of OpenGL graphics will be disabled."])
+
+  if test -n "$warn_gl2ps"; then
+    OCTAVE_CONFIGURE_WARNING([warn_gl2ps])
+  else
+    save_LIBS="$LIBS"
+    LIBS="$GL2PS_LIBS $LIBS"
+    AC_CHECK_FUNCS([gl2psLineJoin])
+    LIBS="$save_LIBS"
+  fi
+
+  AC_SUBST(GL2PS_LIBS)
+fi
+
 ### Check for the qrupdate library
 
 dnl No need to adjust FFLAGS because only link is attempted.
@@ -2043,7 +2007,7 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
 ## Additional check to see if qrupdate lib found supports LU updates
-if test -z "$warn_qrupdate"; then
+if test -n "$QRUPDATE_LIBS"; then
   AC_CACHE_CHECK([for slup1up in $QRUPDATE_LIBS],
     [octave_cv_func_slup1up],
     [LIBS="$LIBS $QRUPDATE_LIBS"
@@ -2092,7 +2056,7 @@ LIBS="$SUITESPARSECONFIG_LIBS $LIBS"
 
 OCTAVE_CHECK_LIB(amd, AMD,
   [AMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/amd.h ufsparse/amd.h amd/amd.h amd.h],
+  [amd.h suitesparse/amd.h amd/amd.h],
   [amd_postorder],
   [], [don't use AMD library, disable some sparse matrix functionality])
 
@@ -2100,7 +2064,7 @@ OCTAVE_CHECK_LIB(amd, AMD,
 
 OCTAVE_CHECK_LIB(camd, CAMD,
   [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/camd.h ufsparse/camd.h camd/camd.h camd.h],
+  [camd.h suitesparse/camd.h camd/camd.h],
   [camd_postorder],
   [], [don't use CAMD library, disable some sparse matrix functionality])
 
@@ -2108,7 +2072,7 @@ OCTAVE_CHECK_LIB(camd, CAMD,
 
 OCTAVE_CHECK_LIB(colamd, COLAMD,
   [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/colamd.h ufsparse/colamd.h colamd/colamd.h colamd.h],
+  [colamd.h suitesparse/colamd.h colamd/colamd.h],
   [colamd],
   [], [don't use COLAMD library, disable some sparse matrix functionality])
 
@@ -2116,7 +2080,7 @@ OCTAVE_CHECK_LIB(colamd, COLAMD,
 
 OCTAVE_CHECK_LIB(ccolamd, CCOLAMD,
   [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/ccolamd.h ufsparse/ccolamd.h ccolamd/ccolamd.h ccolamd.h],
+  [ccolamd.h suitesparse/ccolamd.h ccolamd/ccolamd.h],
   [ccolamd],
   [], [don't use CCOLAMD library, disable some sparse matrix functionality])
 
@@ -2128,20 +2092,31 @@ save_LIBS="$LIBS"
 LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
+  [cholmod.h suitesparse/cholmod.h cholmod/cholmod.h],
   [cholmod${CHOLMOD_TAG}start],
   [], [don't use CHOLMOD library, disable some sparse matrix functionality])
+LIBS="$save_LIBS"
+
+### Check for SPQR library
+
+save_LIBS="$LIBS"
+LIBS="$CHOLMOD_LIBS $LIBS"
+OCTAVE_CHECK_LIB(spqr, SPQR,
+  [SPQR library not found.  This will result in some lack of functionality for sparse matrices.],
+  [SuiteSparseQR.hpp suitesparse/SuiteSparseQR.hpp],
+  [SuiteSparseQR_C],
+  [C++], [don't use SPQR library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
 
 ### Check for CXSparse library
 
 OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h cs.h],
+  [cs.h suitesparse/cs.h cxsparse/cs.h],
   [cs${CXSPARSE_TAG}sqr],
   [C++], [don't use CXSparse library, disable some sparse matrix functionality])
 
-if test -z "$warn_cxsparse"; then
+if test -n "$CXSPARSE_LIBS"; then
   ## Additional check for CXSparse version >= 2.2
   if test $octave_cv_lib_cxsparse = yes; then
     OCTAVE_CHECK_CXSPARSE_VERSION_OK
@@ -2159,7 +2134,7 @@ LIBS="$AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
 CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
 OCTAVE_CHECK_LIB([umfpack], UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
+  [umfpack.h suitesparse/umfpack.h umfpack/umfpack.h],
   [umfpack${UMFPACK_TAG}get_determinant],
   [], [don't use UMFPACK, disable some sparse matrix functionality])
 CPPFLAGS="$save_CPPFLAGS"
@@ -2173,7 +2148,7 @@ if test -z "$UMFPACK_LIBS"; then
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   OCTAVE_CHECK_LIB([umfpack], UMFPACK,
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
-    [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
+    [umfpack.h suitesparse/umfpack.h umfpack/umfpack.h],
     [umfpack${UMFPACK_TAG}get_determinant],
     [], [don't use UMFPACK, disable some sparse matrix functionality])
   if test -n "$UMFPACK_LIBS"; then
@@ -2186,7 +2161,7 @@ fi
 
 OCTAVE_CHECK_LIB(klu, KLU,
   [KLU library not found.  This will result in some lack of functionality for sparse matrices.],
-  [suitesparse/klu.h ufsparse/klu.h klu/klu.h klu.h], [klu_solve],
+  [klu.h suitesparse/klu.h klu/klu.h], [klu_solve],
   [], [don't use KLU library, disable some sparse matrix functionality])
 
 ### SUITESPARSECONFIG_LIBS added to LIBS above.
@@ -2198,11 +2173,11 @@ dnl substitute some of them into other source files like mkoctfile.
 
 ## Order matters, at least on some systems (Cygwin, for example).
 
-SPARSE_XCPPFLAGS="$CHOLMOD_CPPFLAGS $UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CAMD_CPPFLAGS $COLAMD_CPPFLAGS $CCOLAMD_CPPFLAGS $CXSPARSE_CPPFLAGS"
+SPARSE_XCPPFLAGS="$CHOLMOD_CPPFLAGS $UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CAMD_CPPFLAGS $COLAMD_CPPFLAGS $CCOLAMD_CPPFLAGS $CXSPARSE_CPPFLAGS $SPQR_CPPFLAGS"
 
-SPARSE_XLDFLAGS="$CHOLMOD_LDFLAGS $UMFPACK_LDFLAGS $AMD_LDFLAGS $CAMD_LDFLAGS $COLAMD_LDFLAGS  $CCOLAMD_LDFLAGS $CXSPARSE_LDFLAGS"
+SPARSE_XLDFLAGS="$CHOLMOD_LDFLAGS $UMFPACK_LDFLAGS $AMD_LDFLAGS $CAMD_LDFLAGS $COLAMD_LDFLAGS  $CCOLAMD_LDFLAGS $CXSPARSE_LDFLAGS $SPQR_LDFLAGS"
 
-SPARSE_XLIBS="$CHOLMOD_LIBS $UMFPACK_LIBS $AMD_LIBS $CAMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $CXSPARSE_LIBS $SUITESPARSECONFIG_LIBS"
+SPARSE_XLIBS="$CHOLMOD_LIBS $UMFPACK_LIBS $AMD_LIBS $CAMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $CXSPARSE_LIBS $SUITESPARSECONFIG_LIBS $SPQR_LIBS"
 
 AC_SUBST(SPARSE_XCPPFLAGS)
 AC_SUBST(SPARSE_XLDFLAGS)
@@ -2229,55 +2204,61 @@ fi
 
 OCTAVE_CHECK_LIB(sundials_nvecserial, [SUNDIALS NVECTOR],
   [SUNDIALS NVECTOR serial library not found.  The solvers ode15i and ode15s will be disabled.],
-  [nvector/nvector_serial.h nvector_serial.h ], [N_VNew_Serial],
+  [nvector_serial.h nvector/nvector_serial.h], [N_VNew_Serial],
   [], [don't use SUNDIALS NVECTOR library, disable solvers ode15i and ode15s])
 
 ### Check for SUNDIALS IDA library and header.
 
-save_CPPFLAGS="$CPPFLAGS"
-save_LDFLAGS="$LDFLAGS"
-save_LIBS="$LIBS"
-LIBS="$SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
-LDFLAGS="$SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
-CPPFLAGS="$SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
-OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
-  [SUNDIALS IDA library not found.  The solvers ode15i and ode15s will be disabled.],
-  [ida/ida.h ida.h], [IDAInit],
-  [], [don't use SUNDIALS IDA library, disable solvers ode15i and ode15s])
-CPPFLAGS="$save_CPPFLAGS"
-LDFLAGS="$save_LDFLAGS"
-LIBS="$save_LIBS"
+if test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+
+  save_CPPFLAGS="$CPPFLAGS"
+  save_LDFLAGS="$LDFLAGS"
+  save_LIBS="$LIBS"
+  LIBS="$SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
+  LDFLAGS="$SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
+  CPPFLAGS="$SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
+  OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
+    [SUNDIALS IDA library not found.  The solvers ode15i and ode15s will be disabled.],
+    [ida.h ida/ida.h], [IDAInit],
+    [], [don't use SUNDIALS IDA library, disable solvers ode15i and ode15s])
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
+fi
 
 ### Check for SUNDIALS library features, some required, some optional.
 
-CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
-LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
-LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
-if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
-  dnl Any of the following tests could determine that SUNDIALS is incompatible
-  dnl and should be disabled. In that event, they all populate the same
-  dnl variable with appropriate warning messages, and further tests should be
-  dnl skipped if a warning message has already been generated that SUNDIALS is
-  dnl disabled.
-  warn_sundials_disabled=
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API
+if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+
+  CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
+  LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
+  if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
+    dnl Any of the following tests could determine that SUNDIALS is incompatible
+    dnl and should be disabled. In that event, they all populate the same
+    dnl variable with appropriate warning messages, and further tests should be
+    dnl skipped if a warning message has already been generated that SUNDIALS is
+    dnl disabled.
+    warn_sundials_disabled=
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API
+    fi
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
+    fi
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
+    fi
+    dnl The following tests determine whether certain optional features are
+    dnl present in the SUNDIALS libraries, but will not disable using SUNDIALS.
+    if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU
+    fi
   fi
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
-  fi
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
-  fi
-  dnl The following tests determine whether certain optional features are
-  dnl present in the SUNDIALS libraries, but will not disable using SUNDIALS.
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU
-  fi
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
 fi
-CPPFLAGS="$save_CPPFLAGS"
-LDFLAGS="$save_LDFLAGS"
-LIBS="$save_LIBS"
 
 dnl Define this way instead of with an #if in oct-conf-post.h so that
 dnl the build features script will get the correct value.
@@ -2286,36 +2267,36 @@ dnl The test on the sunlinsol_klu.h header is a bit of a kluge.
 dnl How can we do a better job here?  Do we need to disable sundials
 dnl any tests fail, or can we fix __ode15__.cc so that it still partially
 dnl works when some things are missing (for example, KLU)?
-if test -n "$SUNDIALS_IDA_LIBS" \
-    && test -n "$SUNDIALS_NVECSERIAL_LIBS" \
-    && test "x$octave_cv_sundials_sunlinsol_dense" = xyes \
-    && test "x$octave_cv_sundials_realtype_is_double" = xyes \
-    && test "x$octave_have_sundials_compatible_api" = xyes; then
-  AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
+if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+  if test "x$octave_cv_sundials_sunlinsol_dense" = xyes \
+      && test "x$octave_cv_sundials_realtype_is_double" = xyes \
+      && test "x$octave_have_sundials_compatible_api" = xyes; then
+    AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 
-  ## Collections of options needed to build with SUNDIALS and its dependencies.
-  SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_SUNLINSOLKLU_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS"
-  SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_SUNLINSOLKLU_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS"
-  SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
-else
-  SUNDIALS_IDA_CPPFLAGS=
-  SUNDIALS_IDA_LDFLAGS=
-  SUNDIALS_IDA_LIBS=
-  SUNDIALS_SUNLINSOLKLU_CPPFLAGS=
-  SUNDIALS_SUNLINSOLKLU_LDFLAGS=
-  SUNDIALS_SUNLINSOLKLU_LIBS=
-  SUNDIALS_NVECSERIAL_CPPFLAGS=
-  SUNDIALS_NVECSERIAL_LDFLAGS=
-  SUNDIALS_NVECSERIAL_LIBS=
-  SUNDIALS_XCPPFLAGS=
-  SUNDIALS_XLDFLAGS=
-  SUNDIALS_XLIBS=
-  dnl Emit a fallback warning message in case SUNDIALS has been disabled for
-  dnl some reason that hasn't already generated one of these known warnings.
-  if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida" \
-      && test -z "$warn_sundials_disabled"; then
-    warn_sundials_disabled="SUNDIALS libraries are missing some feature.  The solvers ode15i and ode15s will be disabled."
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
+    ## Options needed to build with SUNDIALS and its dependencies.
+    SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_SUNLINSOLKLU_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS"
+    SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_SUNLINSOLKLU_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS"
+    SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
+  else
+    SUNDIALS_IDA_CPPFLAGS=
+    SUNDIALS_IDA_LDFLAGS=
+    SUNDIALS_IDA_LIBS=
+    SUNDIALS_SUNLINSOLKLU_CPPFLAGS=
+    SUNDIALS_SUNLINSOLKLU_LDFLAGS=
+    SUNDIALS_SUNLINSOLKLU_LIBS=
+    SUNDIALS_NVECSERIAL_CPPFLAGS=
+    SUNDIALS_NVECSERIAL_LDFLAGS=
+    SUNDIALS_NVECSERIAL_LIBS=
+    SUNDIALS_XCPPFLAGS=
+    SUNDIALS_XLDFLAGS=
+    SUNDIALS_XLIBS=
+    dnl Emit a fallback warning message in case SUNDIALS has been disabled for
+    dnl some reason that hasn't already generated one of these known warnings.
+    if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida" \
+        && test -z "$warn_sundials_disabled"; then
+      warn_sundials_disabled="SUNDIALS libraries are missing some feature.  The solvers ode15i and ode15s will be disabled."
+      OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
+    fi
   fi
 fi
 
@@ -2336,7 +2317,7 @@ OCTAVE_CHECK_LIB([arpack], ARPACK,
    OCTAVE_CHECK_LIB_ARPACK_OK_1(
      [AC_DEFINE(HAVE_ARPACK, 1, [Define to 1 if ARPACK is available.])],
      [warn_arpack="ARPACK library found, but does not seem to work properly; disabling eigs function"])
-   if test -z "$warn_arpack"; then
+   if test -n "$ARPACK_LIBS"; then
      OCTAVE_CHECK_LIB_ARPACK_OK_2([],
        [AC_MSG_WARN([ARPACK library found, but is buggy; upgrade library (>= v3.3.0) for better results])])
    fi
@@ -2473,7 +2454,6 @@ do
         else
           JAVA_CPPFLAGS="-I\"${JAVA_HOME}/include\" -I\"${JAVA_HOME}/include/win32\""
         fi
-        LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
       fi
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])
@@ -2613,6 +2593,7 @@ AC_ARG_ENABLE([docs],
      warn_docs="building documentation disabled; make dist will fail."
      OCTAVE_CONFIGURE_WARNING([warn_docs])
    fi], [])
+
 if test $ENABLE_DOCS = yes; then
   if test $opengl_graphics = no || test "$have_qt_opengl_offscreen" = no; then
     if test -n "$warn_gnuplot"; then
@@ -2631,6 +2612,7 @@ if test $ENABLE_DOCS = yes; then
   AC_DEFINE(ENABLE_DOCS, 1,
     [Define to 1 to build Octave documentation files.])
 fi
+
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test $ENABLE_DOCS = yes])
 
 AM_CONDITIONAL([AMCOND_BUILD_QT_DOCS],
@@ -2663,6 +2645,64 @@ AC_ARG_ENABLE([install-build-logs],
     [install build logs (i.e. config.log) with Octave])],
   [if test "$enableval" = yes; then install_build_logs=yes; fi])
 AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
+
+### Determine whether libraries should be linked with visibility attributes
+
+ENABLE_LIB_VISIBILITY_FLAGS=yes
+AC_ARG_ENABLE(lib-visibility-flags,
+  [AS_HELP_STRING([--disable-lib-visibility-flags],
+    [don't build libraries with visibility flags (export all symbols)])],
+  [case $enableval in
+     yes) ENABLE_LIB_VISIBILITY_FLAGS=yes ;;
+     no) ENABLE_LIB_VISIBILITY_FLAGS=no ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-lib-visibility-flags]) ;;
+   esac])
+
+if test $ENABLE_LIB_VISIBILITY_FLAGS = yes && test $HAVE_VISIBILITY = 0; then
+  AC_MSG_NOTICE([cannot build with visibility flags on this platform])
+  ENABLE_LIB_VISIBILITY_FLAGS=no
+fi
+
+if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS, 1,
+    [Define to 1 if building libraries with visibility flags])
+else
+  case $host_os in
+    msdosmsvc | mingw* | cygwin*)
+      LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
+    ;;
+  esac
+fi
+
+AM_CONDITIONAL([AMCOND_LIB_VISIBILITY_FLAGS],
+  [test $ENABLE_LIB_VISIBILITY_FLAGS = yes])
+
+### Set flags for symbol visibility
+
+if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
+  EXTERNAL_DLL_DEFS="-DEXTERNAL_DLL"
+  OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+  OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+  OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
+  OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
+else
+  EXTERNAL_DLL_DEFS=
+  OCTAVE_DLL_DEFS=
+  OCTINTERP_DLL_DEFS=
+  OCTGUI_DLL_DEFS=
+  OCTGRAPHICS_DLL_DEFS=
+fi
+AC_MSG_NOTICE([defining EXTERNAL_DLL_DEFS to be $EXTERNAL_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
+
+AC_SUBST(EXTERNAL_DLL_DEFS)
+AC_SUBST(OCTAVE_DLL_DEFS)
+AC_SUBST(OCTINTERP_DLL_DEFS)
+AC_SUBST(OCTGUI_DLL_DEFS)
+AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 
 ### Add extra compiler flags now that feature testing is complete.
 
@@ -2747,7 +2787,9 @@ fi
 AM_CONDITIONAL([AMCOND_ADDRESS_SANITIZER_ENABLED],
   [test $try_address_sanitizer_flags = yes])
 
+ADDRESS_SANITIZER_ENABLED=no
 if test $try_address_sanitizer_flags = yes; then
+  ADDRESS_SANITIZER_ENABLED=yes
   for flag in $GCC_ADDRESS_SANITIZER_FLAGS; do
     OCTAVE_CC_FLAG([$flag], [
       WARN_CFLAGS="$WARN_CFLAGS $flag";
@@ -2765,6 +2807,7 @@ if test $try_address_sanitizer_flags = yes; then
       AC_MSG_RESULT([adding $flag to WARN_LDFLAGS])])
   done
 fi
+AC_SUBST(ADDRESS_SANITIZER_ENABLED)
 
 AC_SUBST(WARN_CFLAGS)
 AC_SUBST(WARN_CXXFLAGS)
@@ -2772,19 +2815,19 @@ AC_SUBST(WARN_LDFLAGS)
 
 ### Check for GCC-specific pragmas to control warnings.
 
+AC_LANG_PUSH(C++)
 AC_CACHE_CHECK([for @%:@pragma GCC diagnostic push/pop/ignore],
   [octave_cv_gcc_has_pragma_GCC_diagnostic],
-  [AC_LANG_PUSH(C++)
-   AC_TRY_COMPILE([], [
+  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignore "-Wold-style-cast"
   int three = (int) 3.1415926;
 #pragma GCC diagnostic pop
-    ],
+    ]])],
     [octave_cv_gcc_has_pragma_GCC_diagnostic=yes],
-    [octave_cv_gcc_has_pragma_GCC_diagnostic=no])
-   AC_LANG_POP(C++)],
+    [octave_cv_gcc_has_pragma_GCC_diagnostic=no])],
   ])
+AC_LANG_POP(C++)
 
 if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
   AC_DEFINE(HAVE_PRAGMA_GCC_DIAGNOSTIC, 1,
@@ -2833,9 +2876,9 @@ LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $SPARSE_XLDFLAGS $ARPACK_LDFLAGS $QRUPDATE_LD
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
 
-LIBOCTINTERP_LINK_DEPS="$FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $SPARSE_XLIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $LLVM_LIBS $JAVA_LIBS $LAPACK_LIBS"
+LIBOCTINTERP_LINK_DEPS="$FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $SPARSE_XLIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $JAVA_LIBS $LAPACK_LIBS"
 
-LIBOCTINTERP_LINK_OPTS="$FT2_LDFLAGS $HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $SPARSE_XLDFLAGS $FFTW_XLDFLAGS $LLVM_LDFLAGS"
+LIBOCTINTERP_LINK_OPTS="$FT2_LDFLAGS $HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $SPARSE_XLDFLAGS $FFTW_XLDFLAGS"
 
 OCTAVE_LINK_DEPS=""
 OCTAVE_LINK_OPTS=""
@@ -2847,6 +2890,8 @@ OCT_LINK_OPTS="$LDFLAGS"
 OCT_GUI_LINK_OPTS="$LDFLAGS"
 
 if test $link_all_deps = yes; then
+  AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
+
   OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
   OCT_GUI_LINK_DEPS="libgui/liboctgui.la libinterp/liboctinterp.la liboctave/liboctave.la"
 
@@ -3021,10 +3066,9 @@ AC_CONFIG_COMMANDS([oct-conf-post.h],
   [$SHELL $srcdir/build-aux/move-if-change oct-conf-post.h-tmp oct-conf-post.h])
 
 OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
-  libgui/mk-default-qt-settings.sh
   liboctave/external/mk-f77-def.sh
   liboctave/mk-version-h.sh
-  libinterp/corefcn/mk-mxarray-h.sh
+  libinterp/corefcn/mk-mxtypes-h.sh
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
   build-aux/subst-script-vals.sh])
@@ -3042,6 +3086,7 @@ Octave is now configured for $canonical_host_type
   C compiler:                    $CC $XTRA_CFLAGS $WARN_CFLAGS $CFLAGS
   C++ compiler:                  $CXX $XTRA_CXXFLAGS $WARN_CXXFLAGS $CXXFLAGS
   Fortran compiler:              $F77 $FFLAGS
+  CPPFLAGS:                      $CPPFLAGS
   Fortran libraries:             $FLIBS
   Lex libraries:                 $LEXLIB
   LIBS:                          $LIBS
@@ -3105,9 +3150,6 @@ Octave is now configured for $canonical_host_type
   KLU LDFLAGS:                   $KLU_LDFLAGS
   KLU libraries:                 $KLU_LIBS
   LAPACK libraries:              $LAPACK_LIBS
-  LLVM CPPFLAGS:                 $LLVM_CPPFLAGS
-  LLVM LDFLAGS:                  $LLVM_LDFLAGS
-  LLVM libraries:                $LLVM_LIBS
   Magick++ CPPFLAGS:             $MAGICK_CPPFLAGS
   Magick++ LDFLAGS:              $MAGICK_LDFLAGS
   Magick++ libraries:            $MAGICK_LIBS
@@ -3140,6 +3182,9 @@ Octave is now configured for $canonical_host_type
   Sndfile CPPFLAGS:              $SNDFILE_CPPFLAGS
   Sndfile LDFLAGS:               $SNDFILE_LDFLAGS
   Sndfile libraries:             $SNDFILE_LIBS
+  SPQR CPPFLAGS:                 $SPQR_CPPFLAGS
+  SPQR LDFLAGS:                  $SPQR_LDFLAGS
+  SPQR libraries:                $SPQR_LIBS
   SuiteSparse config libraries:  $SUITESPARSECONFIG_LIBS
   SUNDIALS IDA CPPFLAGS:         $SUNDIALS_IDA_CPPFLAGS
   SUNDIALS IDA LDFLAGS:          $SUNDIALS_IDA_LDFLAGS
@@ -3164,7 +3209,6 @@ Octave is now configured for $canonical_host_type
   gnuplot:                       $GNUPLOT_BINARY
 
   Build Octave Qt GUI:                  $BUILD_QT_SUMMARY_MSG
-  JIT compiler for loops:               $ENABLE_JIT
   Build Java interface:                 $build_java
   Build static libraries:               $STATIC_LIBS
   Build shared libraries:               $SHARED_LIBS

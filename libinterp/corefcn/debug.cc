@@ -59,23 +59,17 @@
 #include "utils.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static octave_value
-intmap_to_ov (const octave::bp_table::intmap& line)
+bp_lines_to_ov (const octave::bp_table::bp_lines& lines)
 {
   int idx = 0;
 
-  NDArray retval (dim_vector (1, line.size ()));
+  NDArray retval (dim_vector (1, lines.size ()));
 
-  for (std::size_t i = 0; i < line.size (); i++)
-    {
-      octave::bp_table::const_intmap_iterator p = line.find (i);
-
-      if (p != line.end ())
-        {
-          int lineno = p->second;
-          retval(idx++) = lineno;
-        }
-    }
+  for (const auto& lineno : lines)
+    retval(idx++) = lineno;
 
   retval.resize (dim_vector (1, idx));
 
@@ -170,13 +164,14 @@ Octave will set the real breakpoint at the next executable line.
 When a file is re-parsed, such as when it is modified outside the GUI,
 all breakpoints within the file are cleared.
 
-@seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}
+@seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning,
+debug_on_interrupt}
 @end deftypefn */)
 {
-  octave::bp_table::intmap retmap;
+  octave::bp_table::bp_lines retmap;
   std::string symbol_name = "";  // stays empty for "dbstop if error" etc
   std::string class_name = "";
-  octave::bp_table::intmap lines;
+  octave::bp_table::bp_lines lines;
   std::string condition = "";
   octave_value retval;
 
@@ -191,13 +186,13 @@ all breakpoints within the file are cleared.
                                      class_name, lines, condition);
 
       if (lines.size () == 0)
-        lines[0] = 1;
+        lines.insert (1);
 
       if (symbol_name != "")
         {
-          retmap = bptab.add_breakpoint (symbol_name, class_name,
-                                         lines, condition);
-          retval = intmap_to_ov (retmap);
+          retmap = bptab.add_breakpoints_in_function (symbol_name, class_name,
+                                                      lines, condition);
+          retval = bp_lines_to_ov (retmap);
         }
     }
   else if (args.length () != 1)
@@ -222,10 +217,7 @@ all breakpoints within the file are cleared.
                   && bkpt.cell_value () (0).isstruct ())
                 mv = bkpt.cell_value () (0).map_value ();
               else
-                {
-                  error ("dbstop: invalid 'bkpt' field");
-                  mv = octave_map ();
-                }
+                error ("dbstop: invalid 'bkpt' field");
             }
         }
       if (mv.isempty ())
@@ -235,7 +227,6 @@ all breakpoints within the file are cleared.
       else if (! mv.isfield ("name") || ! mv.isfield ("line"))
         {
           error ("dbstop: Cell array must contain fields 'name' and 'line'");
-          retval = octave_value (0);
         }
       else
         {
@@ -246,11 +237,12 @@ all breakpoints within the file are cleared.
           std::string unconditional = "";
           for (octave_idx_type i = 0; i < line.numel (); i++)
             {
-              lines [0] = line(i).double_value ();
-              bptab.add_breakpoint (name(i).string_value (), "", lines,
-                                    (use_cond
-                                     ? cond(i).string_value ()
-                                     : unconditional));
+              lines.insert (line(i).int_value ());
+              bptab.add_breakpoints_in_function (name(i).string_value (),
+                                                 "", lines,
+                                                 (use_cond
+                                                  ? cond(i).string_value ()
+                                                  : unconditional));
             }
           retval = octave_value (line.numel ());
         }
@@ -293,7 +285,7 @@ as separate arguments or as a vector.
 
 @item event
 An event such as @code{error}, @code{interrupt}, or @code{warning}
-(@pxref{XREFdbstop,,dbstop} for details).
+(@pxref{XREFdbstop,,@code{dbstop}} for details).
 @end table
 
 When called without a line number specification all breakpoints in the named
@@ -308,7 +300,7 @@ files.
 {
   std::string symbol_name = "";  // stays empty for "dbclear if error" etc
   std::string class_name = "";
-  octave::bp_table::intmap lines;
+  octave::bp_table::bp_lines lines;
   std::string dummy;             // "if" condition -- only used for dbstop
 
   int nargin = args.length ();
@@ -317,7 +309,8 @@ files.
 
   octave::bp_table& bptab = tw.get_bp_table ();
 
-  bptab.parse_dbfunction_params ("dbclear", args, symbol_name, class_name, lines, dummy);
+  bptab.parse_dbfunction_params ("dbclear", args, symbol_name, class_name,
+                                 lines, dummy);
 
   if (nargin == 1 && symbol_name == "all")
     {
@@ -327,7 +320,7 @@ files.
   else
     {
       if (symbol_name != "")
-        bptab.remove_breakpoint (symbol_name, lines);
+        bptab.remove_breakpoints_from_function (symbol_name, lines);
     }
 
   // If we remove a breakpoint, we also need to reset debug_mode.
@@ -838,8 +831,6 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
   octave_value_list retval;
 
-  octave::unwind_protect frame;
-
   octave_idx_type curr_frame = -1;
 
   octave_idx_type nskip = 0;
@@ -865,7 +856,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
           else
             n = arg.int_value ();
 
-          if (n <= 0)
+          if (n < 0)
             error ("dbstack: N must be a non-negative integer");
         }
 
@@ -927,7 +918,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
       octave_idx_type num_skip = std::min (nskip, stk.numel ());
 
-      idx_vector first = idx_vector (static_cast<octave_idx_type> (0));
+      idx_vector first = idx_vector (0);
 
       for (octave_idx_type i = 0; i < num_skip; i++)
         stk.delete_elements (first);
@@ -966,8 +957,8 @@ With optional argument @var{n}, omit the @var{n} innermost stack frames.
 Although accepted, the argument @var{-completenames} is silently ignored.
 Octave always returns absolute filenames.
 
-The arguments @var{n} and @var{-completenames} can be both specified in any
-order.
+The arguments @var{n} and @var{-completenames} can both be specified and may
+appear in any order.
 
 The optional return argument @var{stack} is a struct array with the
 following fields:
@@ -985,11 +976,6 @@ The line number of an active breakpoint.
 @item column
 The column number of the line where the breakpoint begins.
 
-@item scope
-Undocumented.
-
-@item context
-Undocumented.
 @end table
 
 The return argument @var{idx} specifies which element of the @var{stack}
@@ -1223,3 +1209,5 @@ With a logical argument @var{flag}, set the state on or off.
 
   return ovl ();
 }
+
+OCTAVE_NAMESPACE_END

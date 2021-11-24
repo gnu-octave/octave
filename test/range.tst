@@ -79,6 +79,9 @@
 %!assert ([ r ; uint32(z)          ], uint32 (expect))
 %!assert ([ r ; uint64(z)          ], uint64 (expect))
 
+
+
+
 ## Test corner cases of ranges (base and limit)
 
 %!shared r, rrev, rneg
@@ -163,3 +166,348 @@
 %!test <*46859>
 %! rng = 1 : (1001/250)/(1/250);
 %! assert (numel (1000));
+
+## Combinations of exceptional values and a few normal ones.
+
+%!shared mt_row, inf, nan, zero, pt3, pt6, pt9, one, epsilon
+%! mt_row = zeros (1, 0, 'double');
+%! inf = Inf ('double');
+%! nan = NaN ('double');
+%! zero = double (0.0);
+%! pt3 = double (0.3);
+%! pt6 = double (0.6);
+%! pt9 = double (0.9);
+%! one = double (1.0);
+%! epsilon = eps ('double');
+%!assert <*59229> (nan:-pt3:-one, nan)
+%!assert <*59229> (nan:-pt3:-inf, nan)
+%!assert <*59229> (nan:-pt3:zero, nan)
+%!assert <*59229> (nan:-pt3:one, nan)
+%!assert <*59229> (nan:-pt3:inf, nan)
+%!assert <*59229> (nan:-pt3:nan, nan)
+%!assert <*59229> (nan:-inf:-one, nan)
+%!assert <*59229> (nan:-inf:-inf, nan)
+%!assert <*59229> (nan:-inf:zero, nan)
+%!assert <*59229> (nan:-inf:one, nan)
+%!assert <*59229> (nan:-inf:inf, nan)
+%!assert <*59229> (nan:-inf:nan, nan)
+%!assert <*59229> (nan:zero:-one, nan)
+%!assert <*59229> (nan:zero:-inf, nan)
+%!assert <*59229> (nan:zero:zero, nan)
+%!assert <*59229> (nan:zero:one, nan)
+%!assert <*59229> (nan:zero:inf, nan)
+%!assert <*59229> (nan:zero:nan, nan)
+%!assert <*59229> (nan:pt3:-one, nan)
+%!assert <*59229> (nan:pt3:-inf, nan)
+%!assert <*59229> (nan:pt3:zero, nan)
+%!assert <*59229> (nan:pt3:one, nan)
+%!assert <*59229> (nan:pt3:inf, nan)
+%!assert <*59229> (nan:pt3:nan, nan)
+%!assert <*59229> (nan:inf:-one, nan)
+%!assert <*59229> (nan:inf:-inf, nan)
+%!assert <*59229> (nan:inf:zero, nan)
+%!assert <*59229> (nan:inf:one, nan)
+%!assert <*59229> (nan:inf:inf, nan)
+%!assert <*59229> (nan:inf:nan, nan)
+%!assert <*59229> (nan:nan:-one, nan)
+%!assert <*59229> (nan:nan:-inf, nan)
+%!assert <*59229> (nan:nan:zero, nan)
+%!assert <*59229> (nan:nan:one, nan)
+%!assert <*59229> (nan:nan:inf, nan)
+%!assert <*59229> (nan:nan:nan, nan)
+%!assert <*59229> (-inf:-pt3:nan, nan)
+%!assert <*59229> (-inf:-inf:nan, nan)
+%!assert <*59229> (-inf:zero:nan, nan)
+%!assert <*59229> (-inf:pt3:nan, nan)
+%!assert <*59229> (-inf:inf:nan, nan)
+%!assert <*59229> (zero:-pt3:nan, nan)
+%!assert <*59229> (zero:-inf:nan, nan)
+%!assert <*59229> (zero:zero:nan, nan)
+%!assert <*59229> (zero:pt3:nan, nan)
+%!assert <*59229> (zero:inf:nan, nan)
+%!assert <*59229> (inf:-pt3:nan, nan)
+%!assert <*59229> (inf:-inf:nan, nan)
+%!assert <*59229> (inf:zero:nan, nan)
+%!assert <*59229> (inf:pt3:nan, nan)
+%!assert <*59229> (inf:inf:nan, nan)
+%!assert <*59229> (-inf:nan:-one, nan)
+%!assert <*59229> (-inf:nan:-inf, nan)
+%!assert <*59229> (-inf:nan:zero, nan)
+%!assert <*59229> (-inf:nan:one, nan)
+%!assert <*59229> (-inf:nan:inf, nan)
+%!assert <*59229> (-inf:nan:nan, nan)
+%!assert <*59229> (zero:nan:-one, nan)
+%!assert <*59229> (zero:nan:-inf, nan)
+%!assert <*59229> (zero:nan:zero, nan)
+%!assert <*59229> (zero:nan:one, nan)
+%!assert <*59229> (zero:nan:inf, nan)
+%!assert <*59229> (zero:nan:nan, nan)
+%!assert <*59229> (inf:nan:-one, nan)
+%!assert <*59229> (inf:nan:-inf, nan)
+%!assert <*59229> (inf:nan:zero, nan)
+%!assert <*59229> (inf:nan:one, nan)
+%!assert <*59229> (inf:nan:inf, nan)
+%!assert <*59229> (inf:nan:nan, nan)
+%!assert <*59229> (inf:-pt3:inf, nan)
+%!assert <*59229> (-inf:-pt3:-inf, nan)
+%!assert <*59229> (inf:pt3:inf, nan)
+%!assert <*59229> (-inf:pt3:-inf, nan)
+%!assert <*59229> (-inf:-inf:-inf, nan)
+%!assert <*59229> (zero:-inf:-inf, nan)
+%!assert <*59229> (inf:-inf:-one, nan)
+%!assert <*59229> (inf:-inf:-inf, nan)
+%!assert <*59229> (inf:-inf:zero, nan)
+%!assert <*59229> (inf:-inf:one, nan)
+%!assert <*59229> (inf:-inf:inf, nan)
+%!assert <*59229> (-inf:inf:-one, nan)
+%!assert <*59229> (-inf:inf:-inf, nan)
+%!assert <*59229> (-inf:inf:zero, nan)
+%!assert <*59229> (-inf:inf:one, nan)
+%!assert <*59229> (-inf:inf:inf, nan)
+%!assert <*59229> (zero:inf:inf, nan)
+%!assert <*59229> (inf:inf:inf, nan)
+%!assert <*59229> (zero:zero:-one, mt_row)
+%!assert <*59229> (zero:zero:zero, mt_row)
+%!assert <*59229> (zero:zero:one, mt_row)
+%!assert <*59229> (zero:zero:-inf, mt_row)
+%!assert <*59229> (zero:zero:inf, mt_row)
+%!assert <*59229> (-inf:zero:-one, mt_row)
+%!assert <*59229> (-inf:zero:zero, mt_row)
+%!assert <*59229> (-inf:zero:one, mt_row)
+%!assert <*59229> (-inf:zero:-inf, mt_row)
+%!assert <*59229> (-inf:zero:inf, mt_row)
+%!assert <*59229> (inf:zero:-one, mt_row)
+%!assert <*59229> (inf:zero:zero, mt_row)
+%!assert <*59229> (inf:zero:one, mt_row)
+%!assert <*59229> (inf:zero:-inf, mt_row)
+%!assert <*59229> (inf:zero:inf, mt_row)
+%!assert <*59229> (zero:pt3:-one, mt_row)
+%!assert <*59229> (zero:pt3:-inf, mt_row)
+%!assert <*59229> (inf:pt3:-one, mt_row)
+%!assert <*59229> (inf:pt3:zero, mt_row)
+%!assert <*59229> (inf:pt3:one, mt_row)
+%!assert <*59229> (inf:pt3:-inf, mt_row)
+%!assert <*59229> (zero:inf:-one, mt_row)
+%!assert <*59229> (zero:inf:-inf, mt_row)
+%!assert <*59229> (inf:inf:-one, mt_row)
+%!assert <*59229> (inf:inf:zero, mt_row)
+%!assert <*59229> (inf:inf:one, mt_row)
+%!assert <*59229> (inf:inf:-inf, mt_row)
+%!assert <*59229> (zero:-pt3:one, mt_row)
+%!assert <*59229> (zero:-pt3:inf, mt_row)
+%!assert <*59229> (-inf:-pt3:-one, mt_row)
+%!assert <*59229> (-inf:-pt3:zero, mt_row)
+%!assert <*59229> (-inf:-pt3:one, mt_row)
+%!assert <*59229> (-inf:-pt3:inf, mt_row)
+%!assert <*59229> (zero:-inf:one, mt_row)
+%!assert <*59229> (zero:-inf:inf, mt_row)
+%!assert <*59229> (-inf:-inf:-one, mt_row)
+%!assert <*59229> (-inf:-inf:zero, mt_row)
+%!assert <*59229> (-inf:-inf:one, mt_row)
+%!assert <*59229> (-inf:-inf:inf, mt_row)
+%!assert <*59229> (zero:-inf:-one, zero)
+%!assert <*59229> (zero:-inf:zero, zero)
+%!assert <*59229> (zero:inf:zero, zero)
+%!assert <*59229> (zero:inf:one, zero)
+%!assert <*59229> (zero:-pt3:zero, zero)
+%!assert <*59229> (zero:pt3:zero, zero)
+%!assert <*59229> (zero:-pt3:-one, [zero, -pt3, -pt6, -pt9], epsilon)
+%!assert <*59229> (zero:pt3:one, [zero, pt3, pt6, pt9], epsilon)
+%!error <range with infinite number of elements cannot be stored> zero:-pt3:-inf
+%!error <range with infinite number of elements cannot be stored> inf:-pt3:-one
+%!error <range with infinite number of elements cannot be stored> inf:-pt3:zero
+%!error <range with infinite number of elements cannot be stored> inf:-pt3:one
+%!error <range with infinite number of elements cannot be stored> inf:-pt3:-inf
+%!error <range with infinite number of elements cannot be stored> zero:pt3:inf
+%!error <range with infinite number of elements cannot be stored> -inf:pt3:-one
+%!error <range with infinite number of elements cannot be stored> -inf:pt3:zero
+%!error <range with infinite number of elements cannot be stored> -inf:pt3:one
+%!error <range with infinite number of elements cannot be stored> -inf:pt3:inf
+
+## Again, this time with singles.
+%!shared mt_row, inf, nan, zero, pt3, pt6, pt9, one, epsilon
+%! mt_row = zeros (1, 0, 'single');
+%! inf = Inf ('single');
+%! nan = NaN ('single');
+%! zero = single (0.0);
+%! pt3 = single (0.3);
+%! pt6 = single (0.6);
+%! pt9 = single (0.9);
+%! one = single (1.0);
+%! epsilon = eps ('single');
+%!assert <*59229> (nan:-pt3:-one, nan)
+%!assert <*59229> (nan:-pt3:-inf, nan)
+%!assert <*59229> (nan:-pt3:zero, nan)
+%!assert <*59229> (nan:-pt3:one, nan)
+%!assert <*59229> (nan:-pt3:inf, nan)
+%!assert <*59229> (nan:-pt3:nan, nan)
+%!assert <*59229> (nan:-inf:-one, nan)
+%!assert <*59229> (nan:-inf:-inf, nan)
+%!assert <*59229> (nan:-inf:zero, nan)
+%!assert <*59229> (nan:-inf:one, nan)
+%!assert <*59229> (nan:-inf:inf, nan)
+%!assert <*59229> (nan:-inf:nan, nan)
+%!assert <*59229> (nan:zero:-one, nan)
+%!assert <*59229> (nan:zero:-inf, nan)
+%!assert <*59229> (nan:zero:zero, nan)
+%!assert <*59229> (nan:zero:one, nan)
+%!assert <*59229> (nan:zero:inf, nan)
+%!assert <*59229> (nan:zero:nan, nan)
+%!assert <*59229> (nan:pt3:-one, nan)
+%!assert <*59229> (nan:pt3:-inf, nan)
+%!assert <*59229> (nan:pt3:zero, nan)
+%!assert <*59229> (nan:pt3:one, nan)
+%!assert <*59229> (nan:pt3:inf, nan)
+%!assert <*59229> (nan:pt3:nan, nan)
+%!assert <*59229> (nan:inf:-one, nan)
+%!assert <*59229> (nan:inf:-inf, nan)
+%!assert <*59229> (nan:inf:zero, nan)
+%!assert <*59229> (nan:inf:one, nan)
+%!assert <*59229> (nan:inf:inf, nan)
+%!assert <*59229> (nan:inf:nan, nan)
+%!assert <*59229> (nan:nan:-one, nan)
+%!assert <*59229> (nan:nan:-inf, nan)
+%!assert <*59229> (nan:nan:zero, nan)
+%!assert <*59229> (nan:nan:one, nan)
+%!assert <*59229> (nan:nan:inf, nan)
+%!assert <*59229> (nan:nan:nan, nan)
+%!assert <*59229> (-inf:-pt3:nan, nan)
+%!assert <*59229> (-inf:-inf:nan, nan)
+%!assert <*59229> (-inf:zero:nan, nan)
+%!assert <*59229> (-inf:pt3:nan, nan)
+%!assert <*59229> (-inf:inf:nan, nan)
+%!assert <*59229> (zero:-pt3:nan, nan)
+%!assert <*59229> (zero:-inf:nan, nan)
+%!assert <*59229> (zero:zero:nan, nan)
+%!assert <*59229> (zero:pt3:nan, nan)
+%!assert <*59229> (zero:inf:nan, nan)
+%!assert <*59229> (inf:-pt3:nan, nan)
+%!assert <*59229> (inf:-inf:nan, nan)
+%!assert <*59229> (inf:zero:nan, nan)
+%!assert <*59229> (inf:pt3:nan, nan)
+%!assert <*59229> (inf:inf:nan, nan)
+%!assert <*59229> (-inf:nan:-one, nan)
+%!assert <*59229> (-inf:nan:-inf, nan)
+%!assert <*59229> (-inf:nan:zero, nan)
+%!assert <*59229> (-inf:nan:one, nan)
+%!assert <*59229> (-inf:nan:inf, nan)
+%!assert <*59229> (-inf:nan:nan, nan)
+%!assert <*59229> (zero:nan:-one, nan)
+%!assert <*59229> (zero:nan:-inf, nan)
+%!assert <*59229> (zero:nan:zero, nan)
+%!assert <*59229> (zero:nan:one, nan)
+%!assert <*59229> (zero:nan:inf, nan)
+%!assert <*59229> (zero:nan:nan, nan)
+%!assert <*59229> (inf:nan:-one, nan)
+%!assert <*59229> (inf:nan:-inf, nan)
+%!assert <*59229> (inf:nan:zero, nan)
+%!assert <*59229> (inf:nan:one, nan)
+%!assert <*59229> (inf:nan:inf, nan)
+%!assert <*59229> (inf:nan:nan, nan)
+%!assert <*59229> (inf:-pt3:inf, nan)
+%!assert <*59229> (-inf:-pt3:-inf, nan)
+%!assert <*59229> (inf:pt3:inf, nan)
+%!assert <*59229> (-inf:pt3:-inf, nan)
+%!assert <*59229> (-inf:-inf:-inf, nan)
+%!assert <*59229> (zero:-inf:-inf, nan)
+%!assert <*59229> (inf:-inf:-one, nan)
+%!assert <*59229> (inf:-inf:-inf, nan)
+%!assert <*59229> (inf:-inf:zero, nan)
+%!assert <*59229> (inf:-inf:one, nan)
+%!assert <*59229> (inf:-inf:inf, nan)
+%!assert <*59229> (-inf:inf:-one, nan)
+%!assert <*59229> (-inf:inf:-inf, nan)
+%!assert <*59229> (-inf:inf:zero, nan)
+%!assert <*59229> (-inf:inf:one, nan)
+%!assert <*59229> (-inf:inf:inf, nan)
+%!assert <*59229> (zero:inf:inf, nan)
+%!assert <*59229> (inf:inf:inf, nan)
+%!assert <*59229> (zero:zero:-one, mt_row)
+%!assert <*59229> (zero:zero:zero, mt_row)
+%!assert <*59229> (zero:zero:one, mt_row)
+%!assert <*59229> (zero:zero:-inf, mt_row)
+%!assert <*59229> (zero:zero:inf, mt_row)
+%!assert <*59229> (-inf:zero:-one, mt_row)
+%!assert <*59229> (-inf:zero:zero, mt_row)
+%!assert <*59229> (-inf:zero:one, mt_row)
+%!assert <*59229> (-inf:zero:-inf, mt_row)
+%!assert <*59229> (-inf:zero:inf, mt_row)
+%!assert <*59229> (inf:zero:-one, mt_row)
+%!assert <*59229> (inf:zero:zero, mt_row)
+%!assert <*59229> (inf:zero:one, mt_row)
+%!assert <*59229> (inf:zero:-inf, mt_row)
+%!assert <*59229> (inf:zero:inf, mt_row)
+%!assert <*59229> (zero:pt3:-one, mt_row)
+%!assert <*59229> (zero:pt3:-inf, mt_row)
+%!assert <*59229> (inf:pt3:-one, mt_row)
+%!assert <*59229> (inf:pt3:zero, mt_row)
+%!assert <*59229> (inf:pt3:one, mt_row)
+%!assert <*59229> (inf:pt3:-inf, mt_row)
+%!assert <*59229> (zero:inf:-one, mt_row)
+%!assert <*59229> (zero:inf:-inf, mt_row)
+%!assert <*59229> (inf:inf:-one, mt_row)
+%!assert <*59229> (inf:inf:zero, mt_row)
+%!assert <*59229> (inf:inf:one, mt_row)
+%!assert <*59229> (inf:inf:-inf, mt_row)
+%!assert <*59229> (zero:-pt3:one, mt_row)
+%!assert <*59229> (zero:-pt3:inf, mt_row)
+%!assert <*59229> (-inf:-pt3:-one, mt_row)
+%!assert <*59229> (-inf:-pt3:zero, mt_row)
+%!assert <*59229> (-inf:-pt3:one, mt_row)
+%!assert <*59229> (-inf:-pt3:inf, mt_row)
+%!assert <*59229> (zero:-inf:one, mt_row)
+%!assert <*59229> (zero:-inf:inf, mt_row)
+%!assert <*59229> (-inf:-inf:-one, mt_row)
+%!assert <*59229> (-inf:-inf:zero, mt_row)
+%!assert <*59229> (-inf:-inf:one, mt_row)
+%!assert <*59229> (-inf:-inf:inf, mt_row)
+%!assert <*59229> (zero:-inf:-one, zero)
+%!assert <*59229> (zero:-inf:zero, zero)
+%!assert <*59229> (zero:inf:zero, zero)
+%!assert <*59229> (zero:inf:one, zero)
+%!assert <*59229> (zero:-pt3:zero, zero)
+%!assert <*59229> (zero:pt3:zero, zero)
+%!assert <*59229> (zero:-pt3:-one, [zero, -pt3, -pt6, -pt9], epsilon)
+%!assert <*59229> (zero:pt3:one, [zero, pt3, pt6, pt9], epsilon)
+%!error <range with infinite number of elements cannot be stored> zero:-pt3:-inf
+%!error <range with infinite number of elements cannot be stored> inf:-pt3:-one
+%!error <range with infinite number of elements cannot be stored> inf:-pt3:zero
+%!error <range with infinite number of elements cannot be stored> inf:-pt3:one
+%!error <range with infinite number of elements cannot be stored> inf:-pt3:-inf
+%!error <range with infinite number of elements cannot be stored> zero:pt3:inf
+%!error <range with infinite number of elements cannot be stored> -inf:pt3:-one
+%!error <range with infinite number of elements cannot be stored> -inf:pt3:zero
+%!error <range with infinite number of elements cannot be stored> -inf:pt3:one
+%!error <range with infinite number of elements cannot be stored> -inf:pt3:inf
+
+## Tests with different input classes
+%!error <invalid types found in range> ({1}:1:5)
+%!error <invalid types found in range> (1:{1}:5)
+%!error <invalid types found in range> (1:1:{5})
+%!error <incompatible types found in range> (int8(1):int16(1):5)
+%!error <incompatible types found in range> (int8(1):1:int16(5))
+
+## Tests with mixed integer/floating point values
+%!error <colon operator lower bound invalid> (1.5:uint8(1):5)
+%!error <colon operator lower bound invalid> (-1:uint8(1):5)
+%!error <colon operator increment invalid> (uint8(1):1.5:5)
+%!error <colon operator increment invalid> (uint8(1):-1:5)
+%!error <colon operator upper bound invalid> (uint8(1):1:5.5)
+%!error <colon operator upper bound invalid> (uint8(1):1:256)
+
+## Extreme integer values.
+%!test <61132>
+%! types = {"int8", "int16", "int32", "int64", ...
+%!          "uint8", "uint16", "uint32", "uint64"};
+%! for i = 1:numel (types)
+%!   cls = types{i};
+%!   lo = intmin (cls);
+%!   hi = intmax (cls);
+%!   n = 99;
+%!   rlo = lo:(lo+n);
+%!   rhi = (hi-n):hi;
+%!   assert (class (rlo), cls);
+%!   assert (class (rhi), cls);
+%!   assert (numel (rlo), n+1);
+%!   assert (numel (rhi), n+1);
+%! endfor

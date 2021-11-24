@@ -30,12 +30,13 @@
 ##
 ## If @var{f} is a cell array of strings, @var{tf} is a logical array of the
 ## same size.
-## @seealso{isfile, exist, stat, is_absolute_filename, is_rooted_relative_filename}
+## @seealso{isfile, exist, stat, is_absolute_filename,
+## is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isfolder (f)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -70,11 +71,11 @@ endfunction
 %!   addpath (d);
 %!   assert (! isfolder (n));
 %! unwind_protect_cleanup
-%!   try, rmdir (tmp); end_try_catch
-%!   try, rmpath (d); end_try_catch
+%!   sts = rmdir (tmp);
+%!   rmpath (d);
 %! end_unwind_protect
 
 ## Test input validation
-%!error isfolder ()
+%!error <Invalid call> isfolder ()
 %!error isfolder ("a", "b")
 %!error <F must be a string> isfolder (1.0)

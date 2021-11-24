@@ -54,14 +54,20 @@
 ## The following options control the aspect ratio of the axes.
 ##
 ## @table @asis
-## @item @qcode{"square"}
-## Force a square axis aspect ratio.
-##
 ## @item @qcode{"equal"}
 ## Force x-axis unit distance to equal y-axis (and z-axis) unit distance.
 ##
-## @item @qcode{"normal"}
-## Restore default aspect ratio.
+## @item @qcode{"square"}
+## Force a square axis aspect ratio.
+##
+## @item @nospell{@qcode{"vis3d"}}
+## Set aspect ratio modes (@qcode{"DataAspectRatio"},
+## @qcode{"PlotBoxAspectRatio"}) to @qcode{"manual"} for rotation without
+## stretching.
+##
+## @item  @qcode{"normal"}
+## @itemx @qcode{"fill"}
+## Restore default automatically computed aspect ratios.
 ## @end table
 ##
 ## @noindent
@@ -83,8 +89,6 @@
 ## @item @qcode{"image"}
 ## Equivalent to @qcode{"tight"} and @qcode{"equal"}.
 ##
-## @item @nospell{@qcode{"vis3d"}}
-## Set aspect ratio modes to @qcode{"manual"} for rotation without stretching.
 ## @end table
 ##
 ## @noindent
@@ -250,7 +254,7 @@ function limits = __axis__ (ca, varargin)
         ## Fix aspect ratio modes for rotation without stretching.
         set (ca, "dataaspectratiomode", "manual",
                  "plotboxaspectratiomode", "manual");
-      elseif (strcmpi (opt, "normal"))
+      elseif (strcmpi (opt, "normal") || strcmpi (opt, "fill"))
         ## Set plotboxaspectratio to something obtuse so that switching
         ## back to "auto" will force a re-calculation.
         set (ca, "plotboxaspectratio", [3 2 1]);
@@ -369,6 +373,7 @@ function limits = __axis__ (ca, varargin)
     endif
 
   endfor
+
 endfunction
 
 ## Find the limits for axis ("tight").
@@ -583,14 +588,14 @@ endfunction
 %!  axis ("autoy");
 %!
 %! subplot (326);
-%!  plot (t, sin(t), t, -2*sin(t/2));
+%!  plot (t, sin (t), t, -2*sin (t/2));
 %!  axis ("tight");
 %!  title ("tight");
 
 %!demo
 %! clf;
 %! x = 0:0.1:10;
-%! plot (x, sin(x));
+%! plot (x, sin (x));
 %! axis image;
 %! title ({"image", 'equivalent to "tight" & "equal"'});
 

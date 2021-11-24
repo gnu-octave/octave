@@ -73,7 +73,7 @@
 # define OCTAVE_PTR_SCALAR uint64_scalar_value
 //#endif
 
-namespace QtHandles
+namespace octave
 {
 
   static std::string
@@ -92,7 +92,7 @@ namespace QtHandles
              || go.isa ("uitoggletool"))
       return "__object__";
     else
-      qCritical ("QtHandles::qt_graphics_toolkit: no __object__ property known for object "
+      qCritical ("octave::qt_graphics_toolkit: no __object__ property known for object "
                  "of type %s", go.type ().c_str ());
 
     return "";
@@ -112,8 +112,8 @@ namespace QtHandles
     // BlockingQueuedConnection. After the signal is emitted, the interpreter
     // thread is locked until the slot has returned.
 
-    connect (this, SIGNAL (create_object_signal (double)),
-             this, SLOT (create_object (double)),
+    connect (this, &qt_graphics_toolkit::create_object_signal,
+             this, &qt_graphics_toolkit::create_object,
              Qt::BlockingQueuedConnection);
   }
 
@@ -139,7 +139,7 @@ namespace QtHandles
 
         gh_mgr.unlock ();
 
-        Logger::debug ("qt_graphics_toolkit::initialize %s from thread %08x",
+        Logger::debug ("qt_graphics_toolkit::initialize %s from thread %p",
                        go.type ().c_str (), QThread::currentThreadId ());
 
         ObjectProxy *proxy = new ObjectProxy ();
@@ -173,7 +173,7 @@ namespace QtHandles
         || pId == base_properties::ID___MODIFIED__)
       return;
 
-    Logger::debug ("qt_graphics_toolkit::update %s(%d) from thread %08x",
+    Logger::debug ("qt_graphics_toolkit::update %s(%d) from thread %p",
                    go.type ().c_str (), pId, QThread::currentThreadId ());
 
     ObjectProxy *proxy = toolkitObjectProxy (go);
@@ -205,7 +205,7 @@ namespace QtHandles
 
     gh_mgr.unlock ();
 
-    Logger::debug ("qt_graphics_toolkit::finalize %s from thread %08x",
+    Logger::debug ("qt_graphics_toolkit::finalize %s from thread %p",
                    go.type ().c_str (), QThread::currentThreadId ());
 
     ObjectProxy *proxy = toolkitObjectProxy (go);
@@ -401,7 +401,7 @@ namespace QtHandles
       }
 
     Logger::debug ("qt_graphics_toolkit::create_object: "
-                   "create %s from thread %08x",
+                   "create %s from thread %p",
                    go.type ().c_str (), QThread::currentThreadId ());
 
     Object *obj = nullptr;

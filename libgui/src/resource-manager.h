@@ -29,6 +29,7 @@
 #include <QComboBox>
 #include <QIcon>
 #include <QPointer>
+#include <Qsci/qscilexer.h>
 #include <QTranslator>
 #include <QTemporaryFile>
 
@@ -69,6 +70,8 @@ namespace octave
 
     QString get_default_font_family (void);
 
+    QStringList get_default_font (void);
+
     QPointer<QTemporaryFile>
     create_tmp_file (const QString& extension = QString (),
                      const QString& contents = QString ());
@@ -76,6 +79,12 @@ namespace octave
     void remove_tmp_file (QPointer<QTemporaryFile> tmp_file);
 
     void reload_settings (void);
+
+#if defined (HAVE_QSCINTILLA)
+    int get_valid_lexer_styles (QsciLexer *lexer, int *styles);
+    void read_lexer_settings (QsciLexer *lexer, gui_settings *settings,
+                              int mode = 0, int def = 0);
+#endif
 
     void set_settings (const QString& file);
 
@@ -92,6 +101,15 @@ namespace octave
     void combo_encoding (QComboBox *combo, const QString& current = QString ());
 
   private:
+
+    /*!
+     * Copys the attributes bold, italic and underline from QFont
+     * @p attr to the font @p base and returns the result without
+     * changing @p base,
+     * @param attr QFont with the desired attributes
+     * @param base QFont with desired family and size
+    */
+    QFont copy_font_attributes (const QFont& attr, const QFont& base) const;
 
     QString m_settings_directory;
 

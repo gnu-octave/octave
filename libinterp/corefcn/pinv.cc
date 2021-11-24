@@ -38,6 +38,8 @@
 #include "ov-flt-cx-diag.h"
 #include "ov-perm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (pinv, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} pinv (@var{x})
@@ -205,3 +207,5 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 %!assert (pinv (complex (single (0),0)), single (0))
 %!assert (pinv (complex (single ([0,0,0]), [0,0,0])), single ([0; 0; 0]))
 */
+
+OCTAVE_NAMESPACE_END

@@ -45,7 +45,7 @@ function print_usage (name)
       error ("Octave:invalid-context", "print_usage: invalid function\n");
     endif
     fullname = evalin ("caller", 'mfilename ("fullpath")');
-    if (strcmp (fullname(end-length(name)+1:end), name))
+    if (strcmp (fullname(end-length (name)+1:end), name))
       fullname = [fullname ".m"];
     endif
   elseif (! ischar (name))
@@ -82,6 +82,13 @@ function print_usage (name)
     warning ("print_usage: raw Texinfo source of help text follows...\n");
   endif
 
+  ## We don't want to start the debugger here if debug_on_error is true
+  ## so we set it to false and make the change local.  Then
+  ## debug_on_error will be reset to true after this function returns
+  ## and the debugger will start at the location of the call to
+  ## print_usage.
+  debug_on_error (false, "local");
+
   if (at_toplev)
     error ("Octave:invalid-fun-call",
            "Invalid call to %s.  Correct usage is:\n\n%s\n%s",
@@ -117,22 +124,23 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
   ## include things such as @deftypefn, @deftypefnx, @defvar, etc. and their
   ## corresponding @end's.
   def_idx = strfind (help_text, "@def");
-  if (! isempty (def_idx))
-    endf_idx = strfind (help_text, "@end def");
-    def_idx = sort ([def_idx, endf_idx]);
-    endl_idx = find (help_text == "\n");
-    buffer = "";
-    for k = 1:length (def_idx)
-      endl = endl_idx(find (endl_idx > def_idx(k), 1));
-      if (isempty (endl))
-        buffer = [buffer, help_text(def_idx(k):end), "\n"];
-      else
-        buffer = [buffer, help_text(def_idx(k):endl)];
-      endif
-    endfor
-  else
+  if (isempty (def_idx))
     [retval, status] = get_usage_plain_text (help_text, max_len);
+    return;
   endif
+
+  endf_idx = strfind (help_text, "@end def");
+  def_idx = sort ([def_idx, endf_idx]);
+  endl_idx = find (help_text == "\n");
+  buffer = "";
+  for k = 1:length (def_idx)
+    endl = endl_idx(find (endl_idx > def_idx(k), 1));
+    if (isempty (endl))
+      buffer = [buffer, help_text(def_idx(k):end), "\n"];
+    else
+      buffer = [buffer, help_text(def_idx(k):endl)];
+    endif
+  endfor
 
   ## Run makeinfo to generate plain text
   [retval, status] = __makeinfo__ (buffer, "plain text");

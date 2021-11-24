@@ -160,7 +160,7 @@
 
 function L = ichol (A, opts = struct ())
 
-  if (nargin < 1 || nargin > 2 || nargout > 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -169,7 +169,7 @@ function L = ichol (A, opts = struct ())
   endif
 
   if (! isstruct (opts))
-    error ("ichol: OPTS must be a structure.");
+    error ("ichol: OPTS must be a structure");
   endif
 
   ## If A is empty then return empty L for Matlab compatibility

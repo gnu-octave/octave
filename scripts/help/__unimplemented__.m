@@ -39,7 +39,7 @@
 
 function txt = __unimplemented__ (fcn)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -561,7 +561,7 @@ function txt = check_package (fcn, name, classes)
           txt = sprintf (["'%s' is a method of class '%s'; it must be ", ...
                           "called with a '%s' argument (see 'help @@%s/%s')."],
                          fcn, cls, cls, cls, fcn);
-          return
+          return;
         endif
       endfor
       txt = sprintf ("%s but has not yet been implemented.", txt);
@@ -736,7 +736,6 @@ function rlist = missing_functions ()
   "edges",
   "empty",
   "enableservice",
-  "endsWith",
   "enumeration",
   "eraseBetween",
   "eventlisteners",
@@ -759,7 +758,6 @@ function rlist = missing_functions ()
   "filemarker",
   "fileMode",
   "fileName",
-  "fill3",
   "fillmissing",
   "filloutliers",
   "fimplicit",
@@ -813,7 +811,6 @@ function rlist = missing_functions ()
   "getNumOutputs",
   "getNumRows",
   "getOpenFiles",
-  "getpixelposition",
   "getpoints",
   "getProfiles",
   "getqualitydesc",
@@ -959,8 +956,6 @@ function rlist = missing_functions ()
   "javaMethodEDT",
   "javaObjectEDT",
   "join",
-  "jsondecode",
-  "jsonencode",
   "juliandate",
   "labeledge",
   "labelnode",
@@ -975,7 +970,6 @@ function rlist = missing_functions ()
   "libpointer",
   "libstruct",
   "linkdata",
-  "listfonts",
   "loadlibrary",
   "lsqminnorm",
   "lsqr",
@@ -986,19 +980,14 @@ function rlist = missing_functions ()
   "maxflow",
   "MaximizeCommandWindow",
   "maxk",
-  "maxNumCompThreads",
   "memmapfile",
   "memoize",
   "MemoizedFunction",
-  "memory",
   "mergecats",
   "meta.abstractDetails",
-  "meta.class.fromName",
   "meta.DynamicProperty",
   "meta.EnumeratedValue",
   "meta.MetaData",
-  "meta.package.fromName",
-  "meta.package.getAllPackages",
   "methodsview",
   "MException",
   "milliseconds",
@@ -1053,7 +1042,6 @@ function rlist = missing_functions ()
   "odextend",
   "openFile",
   "opengl",
-  "ordqz",
   "outdegree",
   "outerjoin",
   "pad",
@@ -1086,7 +1074,6 @@ function rlist = missing_functions ()
   "printpreview",
   "profsave",
   "propedit",
-  "properties",
   "propertyeditor",
   "PutCharArray",
   "PutFullMatrix",
@@ -1129,10 +1116,8 @@ function rlist = missing_functions ()
   "replace",
   "replaceBetween",
   "resample",
-  "rescale",
   "retime",
   "reverse",
-  "rgb2gray",
   "rlim",
   "rmboundary",
   "rmedge",
@@ -1140,7 +1125,6 @@ function rlist = missing_functions ()
   "rmmissing",
   "rmnode",
   "rmslivers",
-  "rng",
   "rowfun",
   "rtickangle",
   "rtickformat",
@@ -1165,7 +1149,6 @@ function rlist = missing_functions ()
   "setHCompSmooth",
   "setinterpmethod",
   "setpixelposition",
-  "setstr",
   "setTileDim",
   "settimeseriesnames",
   "setTscale",
@@ -1193,13 +1176,11 @@ function rlist = missing_functions ()
   "ss2tf",
   "stack",
   "standardizeMissing",
-  "startsWith",
   "stats",
   "step",
   "stopasync",
   "str2mat",
   "streamparticles",
-  "streamribbon",
   "streamslice",
   "string",
   "strings",
@@ -1333,23 +1314,23 @@ function rlist = missing_functions ()
   "writeKeyUnit",
   "writetable",
   "writeVideo",
+  "xline",
   "xmlread",
   "xmlwrite",
   "xslt",
-  "xtickangle",
   "xtickformat",
   "year",
   "years",
+  "yline",
   "ymd",
-  "ytickangle",
   "ytickformat",
   "yyaxis",
   "yyyymmdd",
-  "ztickangle",
   "ztickformat",
   };
 
   rlist = list;
+
 endfunction
 
 

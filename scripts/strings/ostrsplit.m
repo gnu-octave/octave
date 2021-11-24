@@ -62,7 +62,7 @@
 
 function cstr = ostrsplit (s, sep, strip_empty = false)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   elseif (! ischar (s) || ! ischar (sep))
     error ("ostrsplit: S and SEP must be string values");
@@ -119,7 +119,7 @@ endfunction
 %!assert (ostrsplit (char ("a,bc", ",de"), ", ", true), {"a", "bc", "de"})
 
 ## Test input validation
-%!error ostrsplit ()
+%!error <Invalid call> ostrsplit ()
 %!error ostrsplit ("abc")
 %!error ostrsplit ("abc", "b", true, 4)
 %!error <S and SEP must be string values> ostrsplit (123, "b")

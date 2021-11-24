@@ -71,12 +71,6 @@ namespace octave
   { }
 
   void
-  base_url_transfer::delete_file (const std::string& file)
-  {
-    sys::unlink (file);
-  }
-
-  void
   base_url_transfer::mget_directory (const std::string& directory,
                                      const std::string& target)
   {
@@ -101,9 +95,7 @@ namespace octave
 
     if (good ())
       {
-        unwind_protect_safe frame;
-
-        frame.add_fcn (reset_path, this);
+        unwind_action_safe reset_path (&base_url_transfer::cwd, this, "..");
 
         string_vector sv = list ();
 
@@ -131,17 +123,15 @@ namespace octave
                     m_errmsg = "__ftp_mget__: unable to open file";
                     break;
                   }
-
-                unwind_protect_safe frame2;
-
-                frame2.add_fcn (delete_file, realfile);
+                int(*unlink_fptr)(const std::string&) = sys::unlink;
+                unwind_action_safe delete_file (unlink_fptr, realfile);
 
                 get (sv(i), ofile);
 
                 ofile.close ();
 
                 if (good ())
-                  frame2.discard ();
+                  delete_file.discard ();
               }
 
             if (! good ())
@@ -169,9 +159,7 @@ namespace octave
 
     if (good ())
       {
-        unwind_protect_safe frame;
-
-        frame.add_fcn (reset_path, this);
+        unwind_action_safe reset_path (&base_url_transfer::cwd, this, "..");
 
         string_vector files;
         std::string msg;
@@ -378,8 +366,6 @@ namespace octave
 
     void perform (void)
     {
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
       m_errnum = curl_easy_perform (m_curl);
 
       if (m_errnum != CURLE_OK)
@@ -387,8 +373,6 @@ namespace octave
           m_ok = false;
           m_errmsg = curl_easy_strerror (m_errnum);
         }
-
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
     }
 
     std::string lasterror (void) const
@@ -448,8 +432,7 @@ namespace octave
     {
       struct curl_slist *slist = nullptr;
 
-      unwind_protect frame;
-      frame.add_fcn (curl_slist_free_all, slist);
+      unwind_action cleanup_slist ([=] () { curl_slist_free_all (slist); });
 
       std::string cmd = "rnfr " + oldname;
       slist = curl_slist_append (slist, cmd.c_str ());
@@ -616,8 +599,7 @@ namespace octave
 
       struct curl_slist *slist = nullptr;
 
-      unwind_protect frame;
-      frame.add_fcn (curl_slist_free_all, slist);
+      unwind_action cleanup_slist ([=] () { curl_slist_free_all (slist); });
 
       slist = curl_slist_append (slist, "pwd");
       SETOPTR (CURLOPT_POSTQUOTE, slist);
@@ -708,9 +690,7 @@ namespace octave
     {
       struct curl_slist *slist = nullptr;
 
-      unwind_protect frame;
-
-      frame.add_fcn (curl_slist_free_all, slist);
+      unwind_action cleanup_slist ([=] () { curl_slist_free_all (slist); });
 
       if (param.numel () >= 2)
         {
@@ -732,13 +712,12 @@ namespace octave
     // path of the file as its value.
     void form_data_post (const Array<std::string>& param)
     {
-      struct curl_httppost *post = nullptr, *last = nullptr;
+      struct curl_httppost *post = nullptr;
+      struct curl_httppost *last = nullptr;
 
       SETOPT (CURLOPT_URL, m_host_or_url.c_str ());
 
-      unwind_protect frame;
-
-      frame.add_fcn (curl_formfree, post);
+      unwind_action cleanup_httppost ([=] () { curl_formfree (post); });
 
       if (param.numel () >= 2)
         {
@@ -912,9 +891,7 @@ namespace octave
     {
       struct curl_slist *slist = nullptr;
 
-      unwind_protect frame;
-
-      frame.add_fcn (curl_slist_free_all, slist);
+      unwind_action cleanup_slist ([=] () { curl_slist_free_all (slist); });
 
       std::string cmd = action + ' ' + file_or_dir;
 

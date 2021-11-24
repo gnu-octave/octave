@@ -44,6 +44,8 @@
 #include "utils.h"
 #include "ov-re-mat.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 /*
 %% Restore all rand* "seed" and "state" values in order, so that the
 %% new "state" algorithm remains active after these tests complete.
@@ -117,12 +119,14 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
   octave_value retval;
   dim_vector dims;
 
-  octave::unwind_protect frame;
   // Restore current distribution on any exit.
-  frame.add_fcn (octave::rand::distribution,
-                 octave::rand::distribution ());
+  unwind_action restore_distribution
+    ([] (const std::string& old_distribution)
+     {
+       rand::distribution (old_distribution);
+     }, rand::distribution ());
 
-  octave::rand::distribution (distribution);
+  rand::distribution (distribution);
 
   switch (nargin)
     {
@@ -151,21 +155,21 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             std::string s_arg = tmp.string_value ();
 
             if (s_arg == "dist")
-              retval = octave::rand::distribution ();
+              retval = rand::distribution ();
             else if (s_arg == "seed")
-              retval = octave::rand::seed ();
+              retval = rand::seed ();
             else if (s_arg == "state" || s_arg == "twister")
-              retval = octave::rand::state (fcn);
+              retval = rand::state (fcn);
             else if (s_arg == "uniform")
-              octave::rand::uniform_distribution ();
+              rand::uniform_distribution ();
             else if (s_arg == "normal")
-              octave::rand::normal_distribution ();
+              rand::normal_distribution ();
             else if (s_arg == "exponential")
-              octave::rand::exponential_distribution ();
+              rand::exponential_distribution ();
             else if (s_arg == "poisson")
-              octave::rand::poisson_distribution ();
+              rand::poisson_distribution ();
             else if (s_arg == "gamma")
-              octave::rand::gamma_distribution ();
+              rand::gamma_distribution ();
             else
               error ("%s: unrecognized string argument", fcn);
           }
@@ -181,7 +185,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           }
         else if (tmp.is_range ())
           {
-            Range r = tmp.range_value ();
+            range<double> r = tmp.range_value ();
 
             if (! r.all_elements_are_ints ())
               error ("%s: all elements of range must be integers", fcn);
@@ -190,8 +194,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             dims.resize (n);
 
-            octave_idx_type base = octave::math::nint_big (r.base ());
-            octave_idx_type incr = octave::math::nint_big (r.inc ());
+            octave_idx_type base = math::nint_big (r.base ());
+            octave_idx_type incr = math::nint_big (r.increment ());
 
             for (octave_idx_type i = 0; i < n; i++)
               {
@@ -210,9 +214,9 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
               {
                 iv = tmp.octave_idx_type_vector_value (true);
               }
-            catch (octave::execution_exception& e)
+            catch (execution_exception& ee)
               {
-                error (e, "%s: dimensions must be a scalar or array of integers", fcn);
+                error (ee, "%s: dimensions must be a scalar or array of integers", fcn);
               }
 
             octave_idx_type len = iv.numel ();
@@ -247,11 +251,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                   {
                     double d = args(idx+1).double_value ();
 
-                    octave::rand::seed (d);
+                    rand::seed (d);
                   }
                 else if (args(idx+1).is_string ()
                          && args(idx+1).string_value () == "reset")
-                  octave::rand::reset ();
+                  rand::reset ();
                 else
                   error ("%s: seed must be a real scalar", fcn);
               }
@@ -259,7 +263,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
               {
                 if (args(idx+1).is_string ()
                     && args(idx+1).string_value () == "reset")
-                  octave::rand::reset (fcn);
+                  rand::reset (fcn);
                 else
                   {
                     ColumnVector s
@@ -268,10 +272,10 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                     // Backwards compatibility with previous versions of
                     // Octave which mapped Inf to 0.
                     for (octave_idx_type i = 0; i < s.numel (); i++)
-                      if (octave::math::isinf (s.xelem (i)))
+                      if (math::isinf (s.xelem (i)))
                         s.xelem (i) = 0.0;
 
-                    octave::rand::state (s, fcn);
+                    rand::state (s, fcn);
                   }
               }
             else
@@ -307,7 +311,7 @@ gen_matrix:
       if (additional_arg)
         {
           if (a.numel () == 1)
-            return octave::rand::float_nd_array (dims, a(0));
+            return rand::float_nd_array (dims, a(0));
           else
             {
               if (a.dims () != dims)
@@ -318,20 +322,20 @@ gen_matrix:
               float *v = m.fortran_vec ();
 
               for (octave_idx_type i = 0; i < len; i++)
-                v[i] = octave::rand::float_scalar (a(i));
+                v[i] = rand::float_scalar (a(i));
 
               return m;
             }
         }
       else
-        return octave::rand::float_nd_array (dims);
+        return rand::float_nd_array (dims);
     }
   else
     {
       if (additional_arg)
         {
           if (a.numel () == 1)
-            return octave::rand::nd_array (dims, a(0));
+            return rand::nd_array (dims, a(0));
           else
             {
               if (a.dims () != dims)
@@ -342,13 +346,13 @@ gen_matrix:
               double *v = m.fortran_vec ();
 
               for (octave_idx_type i = 0; i < len; i++)
-                v[i] = octave::rand::scalar (a(i));
+                v[i] = rand::scalar (a(i));
 
               return m;
             }
         }
       else
-        return octave::rand::nd_array (dims);
+        return rand::nd_array (dims);
     }
 }
 
@@ -388,12 +392,14 @@ You may also initialize the state vector from an arbitrary vector of length
 @leq{} 625 for @var{v}.  This new state will be a hash based on the value of
 @var{v}, not @var{v} itself.
 
-By default, the generator is initialized from @code{/dev/urandom} if it is
-available, otherwise from CPU time, wall clock time, and the current
-fraction of a second.  Note that this differs from @sc{matlab}, which
-always initializes the state to the same state at startup.  To obtain
-behavior comparable to @sc{matlab}, initialize with a deterministic state
-vector in Octave's startup files (@pxref{Startup Files}).
+By default, the generator is initialized by contributing entropy from the
+wall clock time, the CPU time, the current fraction of a second, the process
+ID and---if available---up to 1024 bits from the C++ random numbers source
+@code{random_device}, which might be non-deterministic (implementation
+specific).  Note that this differs from @sc{matlab}, which always initializes
+the state to the same state at startup.  To obtain behavior comparable to
+@sc{matlab}, initialize with a deterministic state vector in Octave's startup
+files (@pxref{Startup Files}).
 
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne
 Twister with a period of @math{2^{19937}-1}
@@ -541,7 +547,7 @@ classes.
 %!error <dimensions must be .* array of integers> rand ([1, 1.1])
 */
 
-static std::string current_distribution = octave::rand::distribution ();
+static std::string current_distribution = rand::distribution ();
 
 DEFUN (randn, args, ,
        doc: /* -*- texinfo -*-
@@ -1134,7 +1140,7 @@ likely.
   bool short_shuffle = m < n/5;
 
   // Generate random numbers.
-  NDArray r = octave::rand::nd_array (dim_vector (1, m));
+  NDArray r = rand::nd_array (dim_vector (1, m));
   double *rvec = r.fortran_vec ();
 
   octave_idx_type idx_len = (short_shuffle ? m : n);
@@ -1216,3 +1222,5 @@ likely.
 %!   assert (length (unique (p)), 30);
 %! endfor
 */
+
+OCTAVE_NAMESPACE_END

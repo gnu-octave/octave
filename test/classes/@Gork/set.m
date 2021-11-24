@@ -5,7 +5,7 @@ function s = set (s, varargin)
     propName  = propArgs{1};
     propValue = propArgs{2};
     propArgs  = propArgs(3:end);
-    switch propName
+    switch (propName)
       case 'cork'
         if (isa (propValue, 'Cork'))
           s.Cork = propValue;
@@ -15,8 +15,8 @@ function s = set (s, varargin)
       case 'gark'
         s.gark = propValue;
       otherwise
-        % Note that get/set for multiple parents is hard.  We only do one
-        % branch of the parent tree just to test this stuff out.
+        %% Note that get/set for multiple parents is hard.  We only do one
+        %% branch of the parent tree just to test this stuff out.
         s.Dork = set (s.Dork, propName, propValue);
     end
   end

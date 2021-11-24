@@ -47,8 +47,8 @@
 #include "symscope.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Use static fields for the best efficiency.
   // NOTE: C++0x will allow these two to be merged into one.
   static const char *bt_fieldnames[] =
@@ -829,7 +829,7 @@ namespace octave
 
   void call_stack::clear_global_variable_regexp (const std::string& pattern)
   {
-    octave::regexp pat (pattern);
+    regexp pat (pattern);
 
     for (auto& nm_ov : m_global_values)
       {
@@ -974,14 +974,13 @@ namespace octave
         // implement this option there so that the variables are never
         // stored at all.
 
-        unwind_protect frame;
-
         // Set up temporary scope.
 
         symbol_scope tmp_scope ("$dummy_scope$");
 
         push (tmp_scope);
-        frame.add_method (*this, &call_stack::pop);
+
+        unwind_action restore_scope ([=] (void) { pop (); });
 
         feval ("load", octave_value (file_name), 0);
 
@@ -1031,7 +1030,7 @@ namespace octave
 
         if (have_regexp)
           {
-            octave::regexp pat (pattern);
+            regexp pat (pattern);
 
             for (auto& nm_ov : m_global_values)
               {
@@ -1134,7 +1133,6 @@ namespace octave
   {
     return m_cs[m_curr_frame]->get_auto_fcn_var (avt);
   }
-}
 
 DEFMETHOD (max_stack_depth, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -1154,7 +1152,7 @@ The original variable value is restored when exiting the function.
 @seealso{max_recursion_depth}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.max_stack_depth (args, nargout);
 }
@@ -1168,7 +1166,7 @@ The original variable value is restored when exiting the function.
 %! max_stack_depth (orig_val);
 %! assert (max_stack_depth (), orig_val);
 
-%!error (max_stack_depth (1, 2))
+%!error max_stack_depth (1, 2)
 */
 
 DEFMETHOD (who, interp, args, nargout,
@@ -1210,7 +1208,7 @@ matching the given patterns.
 
   string_vector argv = args.make_argv ("who");
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.do_who (argc, argv, nargout == 1);
 }
@@ -1298,7 +1296,9 @@ complex, nesting, persistent.
 
   string_vector argv = args.make_argv ("whos");
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.do_who (argc, argv, nargout == 1, true);
 }
+
+OCTAVE_NAMESPACE_END

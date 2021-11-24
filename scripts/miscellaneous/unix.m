@@ -41,7 +41,7 @@
 
 function [status, text] = unix (command, echo_arg)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -71,5 +71,5 @@ endfunction
 %!   assert (output, "");
 %! endif
 
-%!error unix ()
-%!error unix (1, 2, 3)
+## Test input validation
+%!error <Invalid call> unix ()

@@ -301,9 +301,9 @@ public:
     matrix_ref ().changesign ();
   }
 
-  idx_vector index_vector (bool /* require_integers */ = false) const
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
-    return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix));
+    return idx_cache ? *idx_cache : set_idx_cache (octave::idx_vector (matrix));
   }
 
   int write (octave::stream& os, int block_size,
@@ -311,23 +311,20 @@ public:
              octave::mach_info::float_format flt_fmt) const
   { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
-  // Unsafe.  This function exists to support the MEX interface.
-  // You should not use it anywhere else.
-  void * mex_get_data (void) const { return matrix.mex_get_data (); }
-
-  mxArray * as_mxArray (void) const
+  mxArray * as_mxArray (bool interleaved) const
   {
-    mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, dims (), mxREAL);
+    mxArray *retval = new mxArray (interleaved, OCTAVE_INT_MX_CLASS, dims (),
+                                   mxREAL);
 
-    OCTAVE_INT_T::val_type *pr = static_cast<OCTAVE_INT_T::val_type *>
-                                 (retval->get_data ());
+    OCTAVE_INT_T::val_type *pd
+      = static_cast<OCTAVE_INT_T::val_type *> (retval->get_data ());
 
     mwSize nel = numel ();
 
-    const OCTAVE_INT_T *p = matrix.data ();
+    const OCTAVE_INT_T *pdata = matrix.data ();
 
     for (mwIndex i = 0; i < nel; i++)
-      pr[i] = p[i].value ();
+      pd[i] = pdata[i].value ();
 
     return retval;
   }
@@ -426,7 +423,7 @@ public:
     (new OCTAVE_VALUE_INT_MATRIX_T
      (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ()));
 
-    return tmp.do_index_op (idx, resize_ok);
+    return tmp.index_op (idx, resize_ok);
   }
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
@@ -623,7 +620,8 @@ public:
     scalar -= OCTAVE_INT_T (1);
   }
 
-  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return octave::idx_vector (scalar); }
 
   int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -633,18 +631,15 @@ public:
                      block_size, output_type, skip, flt_fmt);
   }
 
-  // Unsafe.  This function exists to support the MEX interface.
-  // You should not use it anywhere else.
-  void * mex_get_data (void) const { return scalar.mex_get_data (); }
-
-  mxArray * as_mxArray (void) const
+  mxArray * as_mxArray (bool interleaved) const
   {
-    mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, 1, 1, mxREAL);
+    mxArray *retval = new mxArray (interleaved, OCTAVE_INT_MX_CLASS, 1, 1,
+                                   mxREAL);
 
-    OCTAVE_INT_T::val_type *pr = static_cast<OCTAVE_INT_T::val_type *>
-                                 (retval->get_data ());
+    OCTAVE_INT_T::val_type *pd
+      = static_cast<OCTAVE_INT_T::val_type *> (retval->get_data ());
 
-    pr[0] = scalar.value ();
+    pd[0] = scalar.value ();
 
     return retval;
   }

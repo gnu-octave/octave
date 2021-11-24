@@ -32,7 +32,7 @@
 
 function p = polyreduce (c)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! isvector (c) || isempty (c))
     error ("polyreduce: C must be a non-empty vector");
@@ -54,7 +54,6 @@ endfunction
 %!assert (polyreduce ([1, 0, 3]), [1, 0, 3])
 %!assert (polyreduce ([0, 0, 0]), 0)
 
-%!error polyreduce ()
-%!error polyreduce (1, 2)
+%!error <Invalid call> polyreduce ()
 %!error <C must be a non-empty vector> polyreduce ([1, 2; 3, 4])
 %!error <C must be a non-empty vector> polyreduce ([])

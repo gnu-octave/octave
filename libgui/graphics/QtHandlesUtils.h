@@ -40,7 +40,7 @@ class QKeyEvent;
 class QMouseEvent;
 class QWheelEvent;
 
-namespace QtHandles
+namespace octave
 {
 
   namespace Utils

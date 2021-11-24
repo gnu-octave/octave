@@ -34,7 +34,7 @@ EGREP=${EGREP:-egrep}
 # so we have to repeat ourselves because some stupid egreps don't like
 # empty elements in alternation patterns.
 
-DEFUN_PATTERN="^[ \t]*DEF(CONSTFUN|CONSTMETHOD|METHOD|METHOD_DLD|METHODX|METHODX_DLD|UN|UN_DLD|UNX|UNX_DLD)[ \t]*\\("
+DEFUN_PATTERN="^[ \t]*DEF(CONSTFUN|CONSTMETHOD|METHOD|METHOD(_|_STATIC_)DLD|METHODX|METHODX(_|_STATIC_)DLD|UN|UN(_|_STATIC_)DLD|UNX|UNX(_|_STATIC_)DLD)[ \t]*\\("
 
 srcdir="$1"
 if [ "$1" ]; then

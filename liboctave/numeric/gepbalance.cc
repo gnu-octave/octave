@@ -43,7 +43,7 @@ namespace octave
   namespace math
   {
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
                               const std::string& balance_job)
     {
@@ -64,10 +64,10 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (double, prscale, n);
       OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
 
-      balanced_mat = a;
-      double *p_balanced_mat = balanced_mat.fortran_vec ();
-      balanced_mat2 = b;
-      double *p_balanced_mat2 = balanced_mat2.fortran_vec ();
+      m_balanced_mat = a;
+      double *p_balanced_mat = m_balanced_mat.fortran_vec ();
+      m_balanced_mat2 = b;
+      double *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
 
       char job = balance_job[0];
 
@@ -76,17 +76,17 @@ namespace octave
                                  n, ilo, ihi, plscale, prscale, pwork, info
                                  F77_CHAR_ARG_LEN  (1)));
 
-      balancing_mat = Matrix (n, n, 0.0);
-      balancing_mat2 = Matrix (n, n, 0.0);
+      m_balancing_mat = Matrix (n, n, 0.0);
+      m_balancing_mat2 = Matrix (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
-          balancing_mat.elem (i,i) = 1.0;
-          balancing_mat2.elem (i,i) = 1.0;
+          m_balancing_mat.elem (i,i) = 1.0;
+          m_balancing_mat2.elem (i,i) = 1.0;
         }
 
-      double *p_balancing_mat = balancing_mat.fortran_vec ();
-      double *p_balancing_mat2 = balancing_mat2.fortran_vec ();
+      double *p_balancing_mat = m_balancing_mat.fortran_vec ();
+      double *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
 
       // first left
       F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -108,7 +108,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
                                    const std::string& balance_job)
     {
@@ -130,10 +130,10 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (float, prscale, n);
       OCTAVE_LOCAL_BUFFER (float, pwork, 6 * n);
 
-      balanced_mat = a;
-      float *p_balanced_mat = balanced_mat.fortran_vec ();
-      balanced_mat2 = b;
-      float *p_balanced_mat2 = balanced_mat2.fortran_vec ();
+      m_balanced_mat = a;
+      float *p_balanced_mat = m_balanced_mat.fortran_vec ();
+      m_balanced_mat2 = b;
+      float *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
 
       char job = balance_job[0];
 
@@ -142,17 +142,17 @@ namespace octave
                                  n, ilo, ihi, plscale, prscale, pwork, info
                                  F77_CHAR_ARG_LEN  (1)));
 
-      balancing_mat = FloatMatrix (n, n, 0.0);
-      balancing_mat2 = FloatMatrix (n, n, 0.0);
+      m_balancing_mat = FloatMatrix (n, n, 0.0);
+      m_balancing_mat2 = FloatMatrix (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
-          balancing_mat.elem (i,i) = 1.0;
-          balancing_mat2.elem (i,i) = 1.0;
+          m_balancing_mat.elem (i,i) = 1.0;
+          m_balancing_mat2.elem (i,i) = 1.0;
         }
 
-      float *p_balancing_mat = balancing_mat.fortran_vec ();
-      float *p_balancing_mat2 = balancing_mat2.fortran_vec ();
+      float *p_balancing_mat = m_balancing_mat.fortran_vec ();
+      float *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
 
       // first left
       F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -174,7 +174,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
                                      const ComplexMatrix& b,
                                      const std::string& balance_job)
@@ -197,10 +197,10 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (double, prscale,  n);
       OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
 
-      balanced_mat = a;
-      Complex *p_balanced_mat = balanced_mat.fortran_vec ();
-      balanced_mat2 = b;
-      Complex *p_balanced_mat2 = balanced_mat2.fortran_vec ();
+      m_balanced_mat = a;
+      Complex *p_balanced_mat = m_balanced_mat.fortran_vec ();
+      m_balanced_mat2 = b;
+      Complex *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
 
       char job = balance_job[0];
 
@@ -210,17 +210,17 @@ namespace octave
                                  n, ilo, ihi, plscale, prscale, pwork, info
                                  F77_CHAR_ARG_LEN (1)));
 
-      balancing_mat = Matrix (n, n, 0.0);
-      balancing_mat2 = Matrix (n, n, 0.0);
+      m_balancing_mat = Matrix (n, n, 0.0);
+      m_balancing_mat2 = Matrix (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
-          balancing_mat.elem (i,i) = 1.0;
-          balancing_mat2.elem (i,i) = 1.0;
+          m_balancing_mat.elem (i,i) = 1.0;
+          m_balancing_mat2.elem (i,i) = 1.0;
         }
 
-      double *p_balancing_mat = balancing_mat.fortran_vec ();
-      double *p_balancing_mat2 = balancing_mat2.fortran_vec ();
+      double *p_balancing_mat = m_balancing_mat.fortran_vec ();
+      double *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
 
       // first left
       F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -242,7 +242,7 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     gepbalance<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
                                           const FloatComplexMatrix& b,
                                           const std::string& balance_job)
@@ -268,10 +268,10 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (float, prscale, n);
       OCTAVE_LOCAL_BUFFER (float, pwork, 6 * n);
 
-      balanced_mat = a;
-      FloatComplex *p_balanced_mat = balanced_mat.fortran_vec ();
-      balanced_mat2 = b;
-      FloatComplex *p_balanced_mat2 = balanced_mat2.fortran_vec ();
+      m_balanced_mat = a;
+      FloatComplex *p_balanced_mat = m_balanced_mat.fortran_vec ();
+      m_balanced_mat2 = b;
+      FloatComplex *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
 
       char job = balance_job[0];
 
@@ -281,17 +281,17 @@ namespace octave
                                  n, ilo, ihi, plscale, prscale, pwork, info
                                  F77_CHAR_ARG_LEN (1)));
 
-      balancing_mat = FloatMatrix (n, n, 0.0);
-      balancing_mat2 = FloatMatrix (n, n, 0.0);
+      m_balancing_mat = FloatMatrix (n, n, 0.0);
+      m_balancing_mat2 = FloatMatrix (n, n, 0.0);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
-          balancing_mat.elem (i,i) = 1.0;
-          balancing_mat2.elem (i,i) = 1.0;
+          m_balancing_mat.elem (i,i) = 1.0;
+          m_balancing_mat2.elem (i,i) = 1.0;
         }
 
-      float *p_balancing_mat = balancing_mat.fortran_vec ();
-      float *p_balancing_mat2 = balancing_mat2.fortran_vec ();
+      float *p_balancing_mat = m_balancing_mat.fortran_vec ();
+      float *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
 
       // first left
       F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),

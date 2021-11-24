@@ -31,7 +31,7 @@
 
 function y = sec (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -47,5 +47,4 @@ endfunction
 %! v = [1, 2*rt3/3, rt2, 2, -2, -rt2, -2*rt3/3, -1];
 %! assert (sec (x), v, sqrt (eps));
 
-%!error sec ()
-%!error sec (1, 2)
+%!error <Invalid call> sec ()

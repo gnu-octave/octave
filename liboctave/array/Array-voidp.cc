@@ -37,9 +37,9 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTAVE_API Array<idx_vector>;
-extern template class OCTAVE_API Array<octave_idx_type>;
+extern template class Array<octave::idx_vector>;
+extern template class Array<octave_idx_type>;
 
-NO_INSTANTIATE_ARRAY_SORT (void *);
+NO_INSTANTIATE_ARRAY_SORT_API (void *, OCTAVE_API);
 
 INSTANTIATE_ARRAY (void *, OCTAVE_API);

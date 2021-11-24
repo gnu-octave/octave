@@ -47,7 +47,7 @@
 ##
 ## @item @qcode{"endofline"}:
 ## Specify a single character or
-## @qcode{"@xbackslashchar{}r@xbackslashchar{}n"}.  If no value is given, it
+## @qcode{"@backslashchar{}r@backslashchar{}n"}.  If no value is given, it
 ## will be inferred from the file.  If set to @qcode{""} (empty string) EOLs
 ## are ignored as delimiters.
 ## @end itemize
@@ -346,7 +346,7 @@ endfunction
 ## Read multiple lines using empty format string
 %!test
 %! f = tempname ();
-%! unlink (f);
+%! sts = unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);
 %! fprintf (fid, "  %f %f   %f  %f ", d);
@@ -358,7 +358,7 @@ endfunction
 ## Empty format, corner case = one line w/o EOL
 %!test
 %! f = tempname ();
-%! unlink (f);
+%! sts = unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);
 %! fprintf (fid, "  %f %f   %f  %f ", d);

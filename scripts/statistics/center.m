@@ -44,7 +44,7 @@
 
 function retval = center (x, dim)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -92,8 +92,7 @@ endfunction
 %!assert (center (1, 3), 0)
 
 ## Test input validation
-%!error center ()
-%!error center (1, 2, 3)
+%!error <Invalid call> center ()
 %!error <DIM must be an integer> center (1, ones (2,2))
 %!error <DIM must be an integer> center (1, 1.5)
 %!error <DIM must be .* a valid dimension> center (1, 0)

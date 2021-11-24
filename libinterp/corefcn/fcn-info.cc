@@ -47,8 +47,8 @@
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   octave_value
   fcn_info::fcn_info_rep::load_private_function (const std::string& dir_name)
   {
@@ -86,7 +86,7 @@ namespace octave
 
     tmpfcn->mark_as_private_function (class_name);
 
-    private_functions[octave::sys::canonicalize_file_name (dir_name)] = ov_fcn;
+    private_functions[sys::canonicalize_file_name (dir_name)] = ov_fcn;
 
     return ov_fcn;
   }
@@ -409,20 +409,58 @@ namespace octave
   // would not check for it when finding symbol definitions.
 
   static inline bool
-  load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
+  load_out_of_date_fcn (const std::string& file_name,
+                        const std::string& dir_name_arg,
                         octave_value& function,
                         const std::string& dispatch_type = "",
                         const std::string& package_name = "")
   {
     bool retval = false;
 
+    std::string dir_name = dir_name_arg;
+
+    if (dir_name.empty ())
+      {
+        std::size_t pos = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
+
+        dir_name = file_name.substr (0, pos);
+      }
+
+    // FIXME: do the following job of determining private status and
+    // class membership in a separate function?
+
+    std::size_t pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
+
+    bool is_private_fcn
+      = pos != std::string::npos && dir_name.substr (pos+1) == "private";
+
+    if (is_private_fcn)
+      dir_name = dir_name.substr (0, pos);
+
+    std::string class_name;
+
+    pos = dir_name.find_last_of (sys::file_ops::dir_sep_chars ());
+
+    if (pos != std::string::npos)
+      {
+        std::string tmp = dir_name.substr (pos+1);
+
+        if (tmp[0] == '@')
+          class_name = tmp.substr (1);
+      }
+
     octave_value ov_fcn
-      = load_fcn_from_file (ff, dir_name, dispatch_type,
+      = load_fcn_from_file (file_name, dir_name, dispatch_type,
                             package_name);
 
     if (ov_fcn.is_defined ())
       {
         retval = true;
+
+        octave_function *fcn = ov_fcn.function_value ();
+
+        if (is_private_fcn)
+          fcn->mark_as_private_function (class_name);
 
         function = ov_fcn;
       }
@@ -613,8 +651,8 @@ namespace octave
                         bp_table& bptab
                           = __get_bp_table__ ("out_of_date_check");
 
-                        bptab.remove_all_breakpoints_in_file (canonical_nm,
-                                                              true);
+                        bptab.remove_all_breakpoints_from_function (canonical_nm,
+                                                                    true);
                       }
                   }
               }
@@ -1106,7 +1144,6 @@ namespace octave
 
     return octave_value (info_map);
   }
-}
 
 DEFUN (ignore_function_time_stamp, args, nargout,
        doc: /* -*- texinfo -*-
@@ -1185,7 +1222,9 @@ recompiled.
 %! ignore_function_time_stamp (old_state);
 
 ## Test input validation
-%!error (ignore_function_time_stamp ("all", "all"))
-%!error (ignore_function_time_stamp ("UNKNOWN_VALUE"))
-%!error (ignore_function_time_stamp (42))
+%!error ignore_function_time_stamp ("all", "all")
+%!error ignore_function_time_stamp ("UNKNOWN_VALUE")
+%!error ignore_function_time_stamp (42)
 */
+
+OCTAVE_NAMESPACE_END

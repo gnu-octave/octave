@@ -102,23 +102,16 @@ function frame = getframe (h = [], rect = [])
     pos = rect;
   endif
 
-  if (strcmp (get (hf, "visible"), "on")
-      || (strcmp (get (hf, "__graphics_toolkit__"), "qt")
-          && (strcmp (get (hf, "__gl_window__"), "on")
-              || __have_feature__ ("QT_OFFSCREEN"))))
+  __check_rendering_capability__ ("getframe", hf);
 
-    ## __get_frame__ requires that the figure "units" is "pixels"
-    unwind_protect
-      units = get (hf, "units");
-      set (hf, "units", "pixels");
-      cdata = __get_frame__ (hf);
-    unwind_protect_cleanup
-      set (hf, "units", units)
-    end_unwind_protect
-
-  else
-    error ("getframe: figure must be visible or qt toolkit must be used with __gl_window__ property 'on' or QT_OFFSCREEN feature available");
-  endif
+  ## __get_frame__ requires that the figure "units" is "pixels"
+  unwind_protect
+    units = get (hf, "units");
+    set (hf, "units", "pixels");
+    cdata = __get_frame__ (hf);
+  unwind_protect_cleanup
+    set (hf, "units", units)
+  end_unwind_protect
 
   i1 = max (floor (pos(1)), 1);
   i2 = min (ceil (pos(1)+pos(3)-1), columns (cdata));

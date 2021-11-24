@@ -131,6 +131,6 @@ namespace octave
       }
   }
 
-  template void rand_gamma (double, octave_idx_type, double *);
-  template void rand_gamma (float, octave_idx_type, float *);
+  template OCTAVE_API void rand_gamma (double, octave_idx_type, double *);
+  template OCTAVE_API void rand_gamma (float, octave_idx_type, float *);
 }

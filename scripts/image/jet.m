@@ -31,14 +31,17 @@
 ##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
-## @seealso{colormap}
+##
+## Programming Note: The @code{jet} colormap is not perceptually uniform.
+## Try the @code{viridis} colormap if that is important.  For a drop-in
+## replacement for @code{jet} with better perceptual characteristics try
+## the @code{turbo} colormap.
+## @seealso{colormap, turbo}
 ## @end deftypefn
 
 function map = jet (n)
 
-  if (nargin > 1)
-    print_usage ();
-  elseif (nargin == 1)
+  if (nargin == 1)
     if (! isscalar (n))
       error ("jet: N must be a scalar");
     endif

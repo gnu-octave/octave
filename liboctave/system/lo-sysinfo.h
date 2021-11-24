@@ -34,9 +34,9 @@ namespace octave
 {
   namespace sys
   {
-    extern std::string blas_version (void);
+    extern OCTAVE_API std::string blas_version (void);
 
-    extern std::string lapack_version (void);
+    extern OCTAVE_API std::string lapack_version (void);
   }
 }
 

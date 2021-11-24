@@ -224,7 +224,7 @@ endfunction
 
 
 ## Input validation tests
-%!error voronoi ()
+%!error <Invalid call> voronoi ()
 %!error voronoi (ones (3,1))
 %!error voronoi (ones (3,1), ones (3,1), "invalid1", "invalid2", "invalid3")
 %!error <HAX argument must be an axes object> voronoi (0, ones (3,1), ones (3,1))

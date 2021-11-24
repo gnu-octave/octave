@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include <memory>
 #include <string>
 
 #include "ovl.h"
@@ -35,216 +36,198 @@
 #include "ov-fcn-handle.h"
 #include "variables.h"
 
-class
-base_hook_function
+namespace octave
 {
-public:
-
-  friend class hook_function;
-
-  base_hook_function (void) : count (1) { }
-
-  base_hook_function (const base_hook_function&) : count (1) { }
-
-  virtual ~base_hook_function (void) = default;
-
-  virtual std::string id (void) const { return ""; }
-
-  virtual bool is_valid (void) const { return false; }
-
-  virtual void eval (const octave_value_list&) { }
-
-protected:
-
-  std::size_t count;
-};
-
-class
-hook_function
-{
-public:
-
-  hook_function (void)
+  class base_hook_function
   {
-    static base_hook_function nil_rep;
-    rep = &nil_rep;
-    rep->count++;
-  }
+  public:
 
-  hook_function (const octave_value& f,
-                 const octave_value& d = octave_value ());
+    base_hook_function (void) = default;
 
-  ~hook_function (void)
+    base_hook_function (const base_hook_function&) = default;
+
+    virtual ~base_hook_function (void) = default;
+
+    virtual std::string id (void) const { return ""; }
+
+    virtual bool is_valid (void) const { return false; }
+
+    virtual void eval (const octave_value_list&) { }
+  };
+
+  class hook_function
   {
-    if (--rep->count == 0)
-      delete rep;
-  }
+  public:
 
-  hook_function (const hook_function& hf)
-    : rep (hf.rep)
+    hook_function (void)
+    {
+      static std::shared_ptr<base_hook_function>
+        nil_rep (new base_hook_function ());
+
+      m_rep = nil_rep;
+    }
+
+    hook_function (const octave_value& f,
+                   const octave_value& d = octave_value ());
+
+    ~hook_function (void) = default;
+
+    hook_function (const hook_function& hf) = default;
+
+    hook_function& operator = (const hook_function& hf) = default;
+
+    std::string id (void) const { return m_rep->id (); }
+
+    bool is_valid (void) const { return m_rep->is_valid (); }
+
+    void eval (const octave_value_list& initial_args)
+    {
+      m_rep->eval (initial_args);
+    }
+
+  private:
+
+    std::shared_ptr<base_hook_function> m_rep;
+  };
+
+  class named_hook_function : public base_hook_function
   {
-    rep->count++;
-  }
+  public:
 
-  hook_function& operator = (const hook_function& hf)
+    named_hook_function (const std::string& n, const octave_value& d)
+      : m_name (n), m_data (d)
+    { }
+
+    void eval (const octave_value_list& initial_args);
+
+    std::string id (void) const { return m_name; }
+
+    bool is_valid (void) const { return is_valid_function (m_name); }
+
+  private:
+
+    std::string m_name;
+
+    octave_value m_data;
+  };
+
+  class fcn_handle_hook_function : public base_hook_function
   {
-    if (rep != hf.rep)
-      {
-        if (--rep->count == 0)
-          delete rep;
+  public:
 
-        rep = hf.rep;
-        rep->count++;
-      }
+    fcn_handle_hook_function (const octave_value& fh_arg, const octave_value& d)
+      : m_ident (), m_valid (false), m_fcn_handle (fh_arg), m_data (d)
+    {
+      octave_fcn_handle *fh = m_fcn_handle.fcn_handle_value (true);
 
-    return *this;
-  }
+      if (fh)
+        {
+          m_valid = true;
 
-  std::string id (void) const { return rep->id (); }
+          std::ostringstream buf;
+          buf << fh;
+          m_ident = fh->fcn_name () + ':' + buf.str ();
+        }
+    }
 
-  bool is_valid (void) const { return rep->is_valid (); }
+    void eval (const octave_value_list& initial_args);
 
-  void eval (const octave_value_list& initial_args)
+    std::string id (void) const { return m_ident; }
+
+    bool is_valid (void) const { return m_valid; }
+
+  private:
+
+    std::string m_ident;
+
+    bool m_valid;
+
+    octave_value m_fcn_handle;
+
+    octave_value m_data;
+  };
+
+  class hook_function_list
   {
-    rep->eval (initial_args);
-  }
+  public:
 
-private:
+    typedef std::map<std::string, hook_function> map_type;
 
-  base_hook_function *rep;
-};
+    typedef map_type::iterator iterator;
+    typedef map_type::const_iterator const_iterator;
 
-class
-named_hook_function : public base_hook_function
-{
-public:
+    hook_function_list (void) = default;
 
-  named_hook_function (const std::string& n, const octave_value& d)
-    : name (n), data (d)
-  { }
+    ~hook_function_list (void) = default;
 
-  void eval (const octave_value_list& initial_args);
+    hook_function_list (const hook_function_list& lst) = default;
 
-  std::string id (void) const { return name; }
+    hook_function_list& operator = (const hook_function_list& lst) = default;
 
-  bool is_valid (void) const { return is_valid_function (name); }
+    bool empty (void) const { return m_fcn_map.empty (); }
 
-private:
+    void clear (void) { m_fcn_map.clear (); }
 
-  std::string name;
+    void insert (const std::string& id, const hook_function& f)
+    {
+      m_fcn_map[id] = f;
+    }
 
-  octave_value data;
-};
+    iterator find (const std::string& id)
+    {
+      return m_fcn_map.find (id);
+    }
 
-class
-fcn_handle_hook_function : public base_hook_function
-{
-public:
+    const_iterator find (const std::string& id) const
+    {
+      return m_fcn_map.find (id);
+    }
 
-  fcn_handle_hook_function (const octave_value& fh_arg, const octave_value& d)
-    : ident (), valid (false), fcn_handle (fh_arg), data (d)
-  {
-    octave_fcn_handle *fh = fcn_handle.fcn_handle_value (true);
+    iterator end (void) { return m_fcn_map.end (); }
 
-    if (fh)
-      {
-        valid = true;
+    const_iterator end (void) const { return m_fcn_map.end (); }
 
-        std::ostringstream buf;
-        buf << fh;
-        ident = fh->fcn_name () + ':' + buf.str ();
-      }
-  }
+    void erase (iterator p) { m_fcn_map.erase (p); }
 
-  void eval (const octave_value_list& initial_args);
+    void run (const octave_value_list& initial_args = octave_value_list ())
+    {
+      auto p = m_fcn_map.begin ();
 
-  std::string id (void) const { return ident; }
+      while (p != m_fcn_map.end ())
+        {
+          std::string hook_fcn_id = p->first;
+          hook_function hook_fcn = p->second;
 
-  bool is_valid (void) const { return valid; }
+          auto q = p++;
 
-private:
+          if (hook_fcn.is_valid ())
+            hook_fcn.eval (initial_args);
+          else
+            m_fcn_map.erase (q);
+        }
+    }
 
-  std::string ident;
+  private:
 
-  bool valid;
+    map_type m_fcn_map;
+  };
+}
 
-  octave_value fcn_handle;
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+OCTAVE_DEPRECATED (7, "use 'octave::base_hook_function' instead")
+typedef octave::base_hook_function base_hook_function;
 
-  octave_value data;
-};
+OCTAVE_DEPRECATED (7, "use 'octave::hook_function' instead")
+typedef octave::hook_function hook_function;
 
-class
-hook_function_list
-{
-public:
+OCTAVE_DEPRECATED (7, "use 'octave::named_hook_function' instead")
+typedef octave::named_hook_function named_hook_function;
 
-  typedef std::map<std::string, hook_function> map_type;
+OCTAVE_DEPRECATED (7, "use 'octave::fcn_handle_hook_function' instead")
+typedef octave::fcn_handle_hook_function fcn_handle_hook_function;
 
-  typedef map_type::iterator iterator;
-  typedef map_type::const_iterator const_iterator;
-
-  hook_function_list (void) : fcn_map () { }
-
-  ~hook_function_list (void) = default;
-
-  hook_function_list (const hook_function_list& lst)
-    : fcn_map (lst.fcn_map)
-  { }
-
-  hook_function_list& operator = (const hook_function_list& lst)
-  {
-    if (&lst != this)
-      fcn_map = lst.fcn_map;
-
-    return *this;
-  }
-
-  bool empty (void) const { return fcn_map.empty (); }
-
-  void clear (void) { fcn_map.clear (); }
-
-  void insert (const std::string& id, const hook_function& f)
-  {
-    fcn_map[id] = f;
-  }
-
-  iterator find (const std::string& id)
-  {
-    return fcn_map.find (id);
-  }
-
-  const_iterator find (const std::string& id) const
-  {
-    return fcn_map.find (id);
-  }
-
-  iterator end (void) { return fcn_map.end (); }
-
-  const_iterator end (void) const { return fcn_map.end (); }
-
-  void erase (iterator p) { fcn_map.erase (p); }
-
-  void run (const octave_value_list& initial_args = octave_value_list ())
-  {
-    auto p = fcn_map.begin ();
-
-    while (p != fcn_map.end ())
-      {
-        std::string hook_fcn_id = p->first;
-        hook_function hook_fcn = p->second;
-
-        auto q = p++;
-
-        if (hook_fcn.is_valid ())
-          hook_fcn.eval (initial_args);
-        else
-          fcn_map.erase (q);
-      }
-  }
-
-private:
-
-  map_type fcn_map;
-};
+OCTAVE_DEPRECATED (7, "use 'octave::hook_function_list' instead")
+typedef octave::hook_function_list hook_function_list;
+#endif
 
 #endif

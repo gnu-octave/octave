@@ -40,53 +40,53 @@ base_det
 public:
 
   base_det (T c = 1, int e = 0)
-    : c2 (), e2 ()
+    : m_c2 (), m_e2 ()
   {
-    c2 = octave::math::log2 (c, e2);
-    e2 += e;
+    m_c2 = octave::math::log2 (c, m_e2);
+    m_e2 += e;
   }
 
   base_det (T c, double e, double b)
-    : c2 (), e2 ()
+    : m_c2 (), m_e2 ()
   {
     e *= octave::math::log2 (b);
-    e2 = e;
-    c *= octave::math::exp2 (e - e2);
+    m_e2 = e;
+    c *= octave::math::exp2 (e - m_e2);
     int f;
-    c2 = octave::math::log2 (c, f);
-    e2 += f;
+    m_c2 = octave::math::log2 (c, f);
+    m_e2 += f;
   }
 
-  base_det (const base_det& a) : c2 (a.c2), e2 (a.e2) { }
+  base_det (const base_det& a) : m_c2 (a.m_c2), m_e2 (a.m_e2) { }
 
   base_det& operator = (const base_det& a)
   {
-    c2 = a.c2;
-    e2 = a.e2;
+    m_c2 = a.m_c2;
+    m_e2 = a.m_e2;
     return *this;
   }
 
-  T coef (void) const { return c2; }
-  int exp (void) const { return e2; }
+  T coef (void) const { return m_c2; }
+  int exp (void) const { return m_e2; }
 
-  T value () const { return c2 * static_cast<T> (std::ldexp (1.0, e2)); }
+  T value () const { return m_c2 * static_cast<T> (std::ldexp (1.0, m_e2)); }
   operator T () const { return value (); }
 
-  base_det square () const { return base_det (c2*c2, e2+e2); }
+  base_det square () const { return base_det (m_c2*m_c2, m_e2+m_e2); }
 
   void operator *= (T t)
   {
     int e;
-    c2 *= t;
-    // Renormalize c2 to [0.5, 1), and find required change in exponent.
-    c2 = octave::math::log2 (c2, e);
-    e2 += e;
+    m_c2 *= t;
+    // Renormalize m_c2 to [0.5, 1), and find required change in exponent.
+    m_c2 = octave::math::log2 (m_c2, e);
+    m_e2 += e;
   }
 
 private:
 
-  T c2;
-  int e2;
+  T m_c2;
+  int m_e2;
 };
 
 // Provide the old types by typedefs.

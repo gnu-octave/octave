@@ -97,13 +97,13 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
     args = evalin ("caller", "nargout;");
 
     if (args < minargs)
-      error ("nargoutchk: Not enough output arguments.");
+      error ("nargoutchk: Not enough output arguments");
     elseif (args > maxargs)
-      error ("nargoutchk: Too many output arguments.");
+      error ("nargoutchk: Too many output arguments");
     endif
 
   else
-    print_usage;
+    print_usage ();
   endif
 
 endfunction

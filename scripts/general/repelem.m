@@ -176,7 +176,7 @@
 
 function retval = repelem (x, varargin)
 
-  if (nargin <= 1)
+  if (nargin < 2)
     print_usage ();
 
   elseif (nargin == 2)
@@ -191,12 +191,12 @@ function retval = repelem (x, varargin)
                ndims (x), ndims (x) + 1, nargin);
       endif
 
-      if (iscolumn (x))
+      if (isrow (x))
+        ## element values repeated R times in a scalar or row vector
+        retval = x(ones (R, 1), :)(:).';
+      else
         ## element values repeated R times in a col vector
         retval = x.'(ones (R, 1), :)(:);
-      else
-        ## element values repeated R times in a row vector
-        retval = x(ones (R, 1), :)(:).';
       endif
 
     elseif (isvector (x) && isvector (R))
@@ -347,8 +347,9 @@ endfunction
 %!assert (repelem ([i; -i], 2), [i; i; -i; -i])
 
 ## nargin == 2 tests
+%!assert (repelem (2, 6), [2 2 2 2 2 2])
 %!assert (repelem ([-1 0 1], 2), [-1 -1 0 0 1 1])
-%!assert (repelem ([-1 0 1]', 2), [-1; -1; 0; 0; 1; 1;])
+%!assert (repelem ([-1 0 1]', 2), [-1; -1; 0; 0; 1; 1])
 %!assert (repelem ([-1 0 1], [1 2 1]), [-1 0 0 1])
 %!assert (repelem ([-1 0 1]', [1 2 1]), [-1; 0; 0; 1])
 %!assert (repelem ([1 2 3 4 5]', [2 1 0 1 2]), [1 1 2 4 5 5]')
@@ -368,32 +369,32 @@ endfunction
 %!        [1 1 1 0 0;1 1 1 0 0;0 0 0 -1 -1;0 0 0 -1 -1;0 0 0 -1 -1])
 %!assert (repelem (cat(3,[1 1 1 0;0 1 0 0],[1 1 1 1;0 0 0 1],[1 0 0 1;1 1 0 1]),
 %!                2, 3),
-%!        cat(3,[1 1 1 1 1 1 1 1 1 0 0 0
-%!               1 1 1 1 1 1 1 1 1 0 0 0
-%!               0 0 0 1 1 1 0 0 0 0 0 0
-%!               0 0 0 1 1 1 0 0 0 0 0 0],
-%!              [1 1 1 1 1 1 1 1 1 1 1 1
-%!               1 1 1 1 1 1 1 1 1 1 1 1
-%!               0 0 0 0 0 0 0 0 0 1 1 1
-%!               0 0 0 0 0 0 0 0 0 1 1 1],
-%!              [1 1 1 0 0 0 0 0 0 1 1 1
-%!               1 1 1 0 0 0 0 0 0 1 1 1
-%!               1 1 1 1 1 1 0 0 0 1 1 1
-%!               1 1 1 1 1 1 0 0 0 1 1 1]))
+%!        cat (3,[1 1 1 1 1 1 1 1 1 0 0 0
+%!                1 1 1 1 1 1 1 1 1 0 0 0
+%!                0 0 0 1 1 1 0 0 0 0 0 0
+%!                0 0 0 1 1 1 0 0 0 0 0 0],
+%!               [1 1 1 1 1 1 1 1 1 1 1 1
+%!                1 1 1 1 1 1 1 1 1 1 1 1
+%!                0 0 0 0 0 0 0 0 0 1 1 1
+%!                0 0 0 0 0 0 0 0 0 1 1 1],
+%!               [1 1 1 0 0 0 0 0 0 1 1 1
+%!                1 1 1 0 0 0 0 0 0 1 1 1
+%!                1 1 1 1 1 1 0 0 0 1 1 1
+%!                1 1 1 1 1 1 0 0 0 1 1 1]))
 %!assert (repelem (cat(3,[1 1 1 0;0 1 0 0],[1 1 1 1;0 0 0 1],[1 0 0 1;1 1 0 1]),
 %!                2, [3 3 3 3]), ...
-%!        cat(3,[1 1 1 1 1 1 1 1 1 0 0 0
-%!               1 1 1 1 1 1 1 1 1 0 0 0
-%!               0 0 0 1 1 1 0 0 0 0 0 0
-%!               0 0 0 1 1 1 0 0 0 0 0 0], ...
-%!              [1 1 1 1 1 1 1 1 1 1 1 1
-%!               1 1 1 1 1 1 1 1 1 1 1 1
-%!               0 0 0 0 0 0 0 0 0 1 1 1
-%!               0 0 0 0 0 0 0 0 0 1 1 1], ...
-%!              [1 1 1 0 0 0 0 0 0 1 1 1
-%!               1 1 1 0 0 0 0 0 0 1 1 1
-%!               1 1 1 1 1 1 0 0 0 1 1 1
-%!               1 1 1 1 1 1 0 0 0 1 1 1]));
+%!        cat (3,[1 1 1 1 1 1 1 1 1 0 0 0
+%!                1 1 1 1 1 1 1 1 1 0 0 0
+%!                0 0 0 1 1 1 0 0 0 0 0 0
+%!                0 0 0 1 1 1 0 0 0 0 0 0], ...
+%!               [1 1 1 1 1 1 1 1 1 1 1 1
+%!                1 1 1 1 1 1 1 1 1 1 1 1
+%!                0 0 0 0 0 0 0 0 0 1 1 1
+%!                0 0 0 0 0 0 0 0 0 1 1 1], ...
+%!               [1 1 1 0 0 0 0 0 0 1 1 1
+%!                1 1 1 0 0 0 0 0 0 1 1 1
+%!                1 1 1 1 1 1 0 0 0 1 1 1
+%!                1 1 1 1 1 1 0 0 0 1 1 1]));
 %!assert (repelem ([1 2 3 4 5], 2,[2 1 2 0 2]), [1 1 2 3 3 5 5;1 1 2 3 3 5 5])
 %
 ## nargin > 3 tests
@@ -409,16 +410,16 @@ endfunction
 %!assert (repelem (repmat([-1 0;0 1],1,1,2,3),2,2,2,2,2), ...
 %!        repmat([-1 -1 0 0;-1 -1 0 0;0 0 1 1; 0 0 1 1],1,1,4,6,2))
 %!assert (repelem ([1,0,-1;-1,0,1],[2 3],[2 3 4],2), ...
-%!        cat(3,[ 1  1 0 0 0 -1 -1 -1 -1
-%!                1  1 0 0 0 -1 -1 -1 -1
-%!               -1 -1 0 0 0  1  1  1  1
-%!               -1 -1 0 0 0  1  1  1  1
-%!               -1 -1 0 0 0  1  1  1  1], ...
-%!              [ 1  1 0 0 0 -1 -1 -1 -1
-%!                1  1 0 0 0 -1 -1 -1 -1
-%!               -1 -1 0 0 0  1  1  1  1
-%!               -1 -1 0 0 0  1  1  1  1
-%!               -1 -1 0 0 0  1  1  1  1]));
+%!        cat (3,[ 1  1 0 0 0 -1 -1 -1 -1
+%!                 1  1 0 0 0 -1 -1 -1 -1
+%!                -1 -1 0 0 0  1  1  1  1
+%!                -1 -1 0 0 0  1  1  1  1
+%!                -1 -1 0 0 0  1  1  1  1], ...
+%!               [ 1  1 0 0 0 -1 -1 -1 -1
+%!                 1  1 0 0 0 -1 -1 -1 -1
+%!                -1 -1 0 0 0  1  1  1  1
+%!                -1 -1 0 0 0  1  1  1  1
+%!                -1 -1 0 0 0  1  1  1  1]));
 %!assert (repelem ([1 2 3;4 5 6],[0 2],2,2), repmat([4 4 5 5 6 6],2,1,2))
 
 ## test with structures
@@ -447,34 +448,33 @@ endfunction
 %!         sparse ([8,8,1,1,6,6; 3,3,5,5,7,7; 4,4,9,9,2,2]));
 
 ## nargin <= 1 error tests
-%!error (repelem ());
-%!error (repelem ([]));
-%!error (repelem (5));
-%!error (repelem (5,[]));
-%!error (repelem ([1 2 3 3 2 1]));
-%!error (repelem ([1 2 3; 3 2 1]));
+%!error <Invalid call> repelem ()
+%!error <Invalid call> repelem (1)
+%!error repelem (5,[])
+%!error repelem ([1 2 3 3 2 1])
+%!error repelem ([1 2 3; 3 2 1])
 
 ## nargin == 2 error tests
-%!error (repelem ([1 2 3; 3 2 1],[]));
-%!error (repelem ([1 2 3; 3 2 1],2));
-%!error (repelem ([1 2 3; 3 2 1],2));
-%!error (repelem ([1 2 3; 3 2 1],[1 2 3]));
-%!error (repelem ([1 2 3; 3 2 1],[1 2 3]'));
-%!error (repelem ([1 2 3; 3 2 1],[1 2 2 1]));
-%!error (repelem ([1 2 3; 3 2 1],[1 2 3;4 5 6]));
-%!error (repelem ([1 2 3 4 5],[1 2 3 4 5;1 2 3 4 5]));
+%!error repelem ([1 2 3; 3 2 1],[])
+%!error repelem ([1 2 3; 3 2 1],2)
+%!error repelem ([1 2 3; 3 2 1],2)
+%!error repelem ([1 2 3; 3 2 1],[1 2 3])
+%!error repelem ([1 2 3; 3 2 1],[1 2 3]')
+%!error repelem ([1 2 3; 3 2 1],[1 2 2 1])
+%!error repelem ([1 2 3; 3 2 1],[1 2 3;4 5 6])
+%!error repelem ([1 2 3 4 5],[1 2 3 4 5;1 2 3 4 5])
 
 ## nargin == 3 error tests
-%!error (repelem ([1 2 3; 3 2 1], 1, [1 2;1 2]));
-%!error (repelem ([1 2 3; 3 2 1], 1, [1 2]));
-%!error (repelem ([1 2 3; 3 2 1], 2, []));
-%!error (repelem ([1 2 3; 3 2 1], [1 2 3], [1 2 3]));
-%!error (repelem ([1 2 3; 3 2 1], [1 2 3], [1 2 3 4]));
-%!error (repelem ([1 2 3; 3 2 1], [1 2], [1 2 3 4]));
+%!error repelem ([1 2 3; 3 2 1], 1, [1 2;1 2])
+%!error repelem ([1 2 3; 3 2 1], 1, [1 2])
+%!error repelem ([1 2 3; 3 2 1], 2, [])
+%!error repelem ([1 2 3; 3 2 1], [1 2 3], [1 2 3])
+%!error repelem ([1 2 3; 3 2 1], [1 2 3], [1 2 3 4])
+%!error repelem ([1 2 3; 3 2 1], [1 2], [1 2 3 4])
 
 ## nargin > 3 error tests
-%!error (repelem ([1 2 3; 3 2 1], 1, [1 2;1 2],1,2,3));
-%!error (repelem ([1 2 3; 3 2 1], [],1,2,3));
-%!error (repelem ([1 2 3; 3 2 1], [1 2], [1 2 3],1,2,[1 2;1 2]));
-%!error (repelem ([1 2 3; 3 2 1], [1 2 3], [1 2 3],1,2));
-%!error (repelem ([1 2 3; 3 2 1], [1 2], [1 2 3 4],1,2));
+%!error repelem ([1 2 3; 3 2 1], 1, [1 2;1 2],1,2,3)
+%!error repelem ([1 2 3; 3 2 1], [],1,2,3)
+%!error repelem ([1 2 3; 3 2 1], [1 2], [1 2 3],1,2,[1 2;1 2])
+%!error repelem ([1 2 3; 3 2 1], [1 2 3], [1 2 3],1,2)
+%!error repelem ([1 2 3; 3 2 1], [1 2], [1 2 3 4],1,2)

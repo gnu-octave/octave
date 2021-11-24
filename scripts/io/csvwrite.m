@@ -36,7 +36,7 @@
 ## @end example
 ##
 ## Any optional arguments are passed directly to @code{dlmwrite}
-## (@pxref{XREFdlmwrite,,dlmwrite}).
+## (@pxref{XREFdlmwrite,,@code{dlmwrite}}).
 ## @seealso{csvread, dlmwrite, dlmread}
 ## @end deftypefn
 

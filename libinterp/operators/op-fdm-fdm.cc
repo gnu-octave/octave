@@ -38,6 +38,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // matrix unary ops.
 
 DEFUNOP_OP (uplus, float_diag_matrix, /* no-op */)
@@ -115,3 +117,5 @@ install_fdm_fdm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_float_diag_matrix, octave_float_matrix,
                       float_diag_matrix_to_float_matrix);
 }
+
+OCTAVE_NAMESPACE_END

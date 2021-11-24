@@ -32,11 +32,9 @@ class octave_value;
 
 #include "pt-cmd.h"
 #include "pt-walk.h"
-#include "pt-jit.h"
 
 namespace octave
 {
-  class jit_info;
   class tree_argument_list;
   class tree_expression;
   class tree_statement_list;
@@ -50,9 +48,6 @@ namespace octave
     tree_while_command (int l = -1, int c = -1)
       : tree_command (l, c), m_expr (nullptr), m_list (nullptr),
         m_lead_comm (nullptr), m_trail_comm (nullptr)
-#if defined (HAVE_LLVM)
-      , m_compiled (nullptr)
-#endif
     { }
 
     tree_while_command (tree_expression *e,
@@ -61,9 +56,6 @@ namespace octave
                         int l = -1, int c = -1)
       : tree_command (l, c), m_expr (e), m_list (nullptr),
         m_lead_comm (lc), m_trail_comm (tc)
-#if defined (HAVE_LLVM)
-      , m_compiled (nullptr)
-#endif
     { }
 
     tree_while_command (tree_expression *e, tree_statement_list *lst,
@@ -72,9 +64,6 @@ namespace octave
                         int l = -1, int c = -1)
       : tree_command (l, c), m_expr (e), m_list (lst), m_lead_comm (lc),
         m_trail_comm (tc)
-#if defined (HAVE_LLVM)
-      , m_compiled (nullptr)
-#endif
     { }
 
     // No copying!
@@ -98,13 +87,6 @@ namespace octave
       tw.visit_while_command (*this);
     }
 
-#if defined (HAVE_LLVM)
-    // some functions use by tree_jit
-    jit_info * get_info (void) const { return m_compiled; }
-
-    void stash_info (jit_info *jinfo) { m_compiled = jinfo; }
-#endif
-
   protected:
 
     // Expression to test.
@@ -118,13 +100,6 @@ namespace octave
 
     // Comment preceding ENDWHILE token.
     comment_list *m_trail_comm;
-
-  private:
-
-#if defined (HAVE_LLVM)
-    // compiled version of the loop
-    jit_info *m_compiled;
-#endif
   };
 
   // Do-Until.
@@ -175,9 +150,6 @@ namespace octave
       : tree_command (l, c), m_parallel (false), m_lhs (nullptr),
         m_expr (nullptr), m_maxproc (nullptr), m_list (nullptr),
         m_lead_comm (nullptr), m_trail_comm (nullptr)
-#if defined (HAVE_LLVM)
-      , m_compiled (nullptr)
-#endif
     { }
 
     tree_simple_for_command (bool parallel_arg, tree_expression *le,
@@ -190,9 +162,6 @@ namespace octave
       : tree_command (l, c), m_parallel (parallel_arg), m_lhs (le),
         m_expr (re), m_maxproc (maxproc_arg), m_list (lst),
         m_lead_comm (lc), m_trail_comm (tc)
-#if defined (HAVE_LLVM)
-      , m_compiled (0)
-#endif
     { }
 
     // No copying!
@@ -222,19 +191,6 @@ namespace octave
       tw.visit_simple_for_command (*this);
     }
 
-#if defined (HAVE_LLVM)
-    // some functions use by tree_jit
-    jit_info * get_info (void) const
-    {
-      return m_compiled;
-    }
-
-    void stash_info (jit_info *jinfo)
-    {
-      m_compiled = jinfo;
-    }
-#endif
-
   private:
     // TRUE means operate in parallel (subject to the value of the
     // maxproc expression).
@@ -258,11 +214,6 @@ namespace octave
 
     // Comment preceding ENDFOR token.
     comment_list *m_trail_comm;
-
-#if defined (HAVE_LLVM)
-    // compiled version of the loop
-    jit_info *m_compiled;
-#endif
   };
 
   class tree_complex_for_command : public tree_command

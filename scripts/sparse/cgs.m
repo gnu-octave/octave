@@ -199,12 +199,12 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, "cgs");
 
   [tol, maxit, x0] = __default__input__ ({1e-06, min( rows(b), 20), ...
-                                          zeros(size(b))}, tol, maxit, x0);
+                                          zeros(size (b))}, tol, maxit, x0);
 
   norm_b = norm (b, 2);
   if (norm_b == 0)
     if (nargout < 2)
-      printf("The right hand side vector is all zero so cgs \n")
+      printf ("The right hand side vector is all zero so cgs \n")
       printf ("returned an all zero solution without iterating.\n")
     endif
     x_min = zeros (numel (b), 1);
@@ -212,7 +212,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     flag = 0;
     resvec = 0;
     relres = 0;
-    return
+    return;
   endif
 
   resvec = zeros (maxit, 1); # Preallocation of resvec
@@ -229,7 +229,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   rho_1 = rr' * r0;
 
   try
-    warning ("error","Octave:singular-matrix","local")
+    warning ("error","Octave:singular-matrix","local");
     p_hat = feval (M1fun, p, varargin{:});
     p_hat = feval (M2fun, p_hat, varargin {:});
   catch
@@ -252,7 +252,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     r0 -= alpha* feval (Afun, u_hat, varargin{:});
     iter += 1;
     resvec (iter + 1) = norm (r0, 2);
-    if (norm (x - x_pr, 2) <= norm(x, 2) * eps) # Stagnation
+    if (norm (x - x_pr, 2) <= norm (x, 2) * eps) # Stagnation
       flag = 3;
       break;
     endif
@@ -379,7 +379,7 @@ endfunction
 %! M1_fun = @(z) M1 \ z;
 %! M2_fun = @(z) M2 \ z;
 %! [x, flag] = cgs (A,b);
-%! assert(flag, 0);
+%! assert (flag, 0);
 %! [x, flag] = cgs (A, b, [], maxit, M1, M2);
 %! assert (flag, 0);
 %! [x, flag] = cgs (A, b, [], maxit, M1_fun, M2_fun);

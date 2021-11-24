@@ -31,6 +31,7 @@
 
 #include "ov.h"
 #include "ov-classdef.h"
+#include "pt-args-block.h"
 #include "pt-classdef.h"
 #include "pt-eval.h"
 
@@ -137,18 +138,28 @@ namespace octave
     return "";
   }
 
-  tree_classdef_property::tree_classdef_property (tree_identifier *i,
+  tree_classdef_property::tree_classdef_property (tree_arg_validation *av,
                                                   comment_list *comments)
-    : m_id (i), m_expr (nullptr), m_comments (comments),
+    : m_av (av), m_comments (comments),
       m_doc_string (check_for_doc_string (m_comments))
   { }
 
-  tree_classdef_property::tree_classdef_property (tree_identifier *i,
-                                                  tree_expression *e,
-                                                  comment_list *comments)
-    : m_id (i), m_expr (e), m_comments (comments),
-      m_doc_string (check_for_doc_string (m_comments))
-  { }
+  tree_classdef_property::~tree_classdef_property (void)
+  {
+    delete m_av;
+  }
+
+  tree_identifier * tree_classdef_property::ident (void)
+  {
+    tree_expression *id_expr = m_av->identifier_expression ();
+
+    return dynamic_cast<tree_identifier *> (id_expr);
+  }
+
+  tree_expression * tree_classdef_property::expression (void)
+  {
+    return m_av->initializer_expression ();
+  }
 
   // Classdef property_list
 

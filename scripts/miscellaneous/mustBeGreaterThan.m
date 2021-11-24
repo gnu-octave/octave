@@ -67,7 +67,7 @@ endfunction
 
 %!error <Invalid call> mustBeGreaterThan ()
 %!error <Invalid call> mustBeGreaterThan (1)
-%!error <Invalid call> mustBeGreaterThan (1,2,3)
+%!error <called with too many inputs> mustBeGreaterThan (1, 2, 3)
 %!error <input must be greater than 42> mustBeGreaterThan (42, 42)
 %!error <found 1 elements that were not> mustBeGreaterThan (Inf, Inf)
 %!error <must be greater than 0> mustBeGreaterThan (NaN, 0)

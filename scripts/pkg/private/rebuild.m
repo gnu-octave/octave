@@ -46,7 +46,11 @@ function descriptions = rebuild (prefix, archprefix, list, files, verbose)
     wd = pwd ();
     unwind_protect
       cd (prefix);
-      dirlist = glob (strcat (files, '-*'));
+      if (ispc ())
+        dirlist = __wglob__ (strcat (files, '-*'));
+      else
+        dirlist = glob (strcat (files, '-*'));
+      endif
     unwind_protect_cleanup
       cd (wd);
     end_unwind_protect

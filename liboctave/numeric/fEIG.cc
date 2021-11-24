@@ -128,42 +128,42 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   if (info > 0)
     (*current_liboctave_error_handler) ("sgeevx failed to converge");
 
-  lambda.resize (n);
-  v.resize (nvr, nvr);
-  w.resize (nvl, nvl);
+  m_lambda.resize (n);
+  m_v.resize (nvr, nvr);
+  m_w.resize (nvl, nvl);
 
   for (F77_INT j = 0; j < n; j++)
     {
       if (wi.elem (j) == 0.0)
         {
-          lambda.elem (j) = FloatComplex (wr.elem (j));
+          m_lambda.elem (j) = FloatComplex (wr.elem (j));
           for (octave_idx_type i = 0; i < nvr; i++)
-            v.elem (i, j) = vr.elem (i, j);
+            m_v.elem (i, j) = vr.elem (i, j);
 
           for (F77_INT i = 0; i < nvl; i++)
-            w.elem (i, j) = vl.elem (i, j);
+            m_w.elem (i, j) = vl.elem (i, j);
         }
       else
         {
           if (j+1 >= n)
             (*current_liboctave_error_handler) ("EIG: internal error");
 
-          lambda.elem (j) = FloatComplex (wr.elem (j), wi.elem (j));
-          lambda.elem (j+1) = FloatComplex (wr.elem (j+1), wi.elem (j+1));
+          m_lambda.elem (j) = FloatComplex (wr.elem (j), wi.elem (j));
+          m_lambda.elem (j+1) = FloatComplex (wr.elem (j+1), wi.elem (j+1));
 
           for (F77_INT i = 0; i < nvr; i++)
             {
               float real_part = vr.elem (i, j);
               float imag_part = vr.elem (i, j+1);
-              v.elem (i, j) = FloatComplex (real_part, imag_part);
-              v.elem (i, j+1) = FloatComplex (real_part, -imag_part);
+              m_v.elem (i, j) = FloatComplex (real_part, imag_part);
+              m_v.elem (i, j+1) = FloatComplex (real_part, -imag_part);
             }
           for (F77_INT i = 0; i < nvl; i++)
             {
               float real_part = vl.elem (i, j);
               float imag_part = vl.elem (i, j+1);
-              w.elem (i, j) = FloatComplex (real_part, imag_part);
-              w.elem (i, j+1) = FloatComplex (real_part, -imag_part);
+              m_w.elem (i, j) = FloatComplex (real_part, imag_part);
+              m_w.elem (i, j+1) = FloatComplex (real_part, -imag_part);
             }
           j++;
         }
@@ -217,9 +217,9 @@ FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
   if (info > 0)
     (*current_liboctave_error_handler) ("ssyev failed to converge");
 
-  lambda = FloatComplexColumnVector (wr);
-  v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
-  w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  m_lambda = FloatComplexColumnVector (wr);
+  m_v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  m_w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
 
   return info;
 }
@@ -317,9 +317,9 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
   if (info > 0)
     (*current_liboctave_error_handler) ("cgeevx failed to converge");
 
-  lambda = wr;
-  v = vrtmp;
-  w = vltmp;
+  m_lambda = wr;
+  m_v = vrtmp;
+  m_w = vltmp;
 
   return info;
 }
@@ -377,9 +377,9 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
   if (info > 0)
     (*current_liboctave_error_handler) ("cheev failed to converge");
 
-  lambda = FloatComplexColumnVector (wr);
-  v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
-  w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  m_lambda = FloatComplexColumnVector (wr);
+  m_v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  m_w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
 
   return info;
 }
@@ -476,45 +476,45 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
   if (info > 0)
     (*current_liboctave_error_handler) ("sggev failed to converge");
 
-  lambda.resize (n);
-  v.resize (nvr, nvr);
-  w.resize (nvl, nvl);
+  m_lambda.resize (n);
+  m_v.resize (nvr, nvr);
+  m_w.resize (nvl, nvl);
 
 
   for (F77_INT j = 0; j < n; j++)
     {
       if (ai.elem (j) == 0.0)
         {
-          lambda.elem (j) = FloatComplex (ar.elem (j) / beta.elem (j));
+          m_lambda.elem (j) = FloatComplex (ar.elem (j) / beta.elem (j));
           for (F77_INT i = 0; i < nvr; i++)
-            v.elem (i, j) = vr.elem (i, j);
+            m_v.elem (i, j) = vr.elem (i, j);
 
           for (F77_INT i = 0; i < nvl; i++)
-            w.elem (i, j) = vl.elem (i, j);
+            m_w.elem (i, j) = vl.elem (i, j);
         }
       else
         {
           if (j+1 >= n)
             (*current_liboctave_error_handler) ("EIG: internal error");
 
-          lambda.elem (j) = FloatComplex (ar.elem (j) / beta.elem (j),
-                                          ai.elem (j) / beta.elem (j));
-          lambda.elem (j+1) = FloatComplex (ar.elem (j+1) / beta.elem (j+1),
-                                            ai.elem (j+1) / beta.elem (j+1));
+          m_lambda.elem (j) = FloatComplex (ar.elem (j) / beta.elem (j),
+                                            ai.elem (j) / beta.elem (j));
+          m_lambda.elem (j+1) = FloatComplex (ar.elem (j+1) / beta.elem (j+1),
+                                              ai.elem (j+1) / beta.elem (j+1));
 
           for (F77_INT i = 0; i < nvr; i++)
             {
               float real_part = vr.elem (i, j);
               float imag_part = vr.elem (i, j+1);
-              v.elem (i, j) = FloatComplex (real_part, imag_part);
-              v.elem (i, j+1) = FloatComplex (real_part, -imag_part);
+              m_v.elem (i, j) = FloatComplex (real_part, imag_part);
+              m_v.elem (i, j+1) = FloatComplex (real_part, -imag_part);
             }
           for (F77_INT i = 0; i < nvl; i++)
             {
               float real_part = vl.elem (i, j);
               float imag_part = vl.elem (i, j+1);
-              w.elem (i, j) = FloatComplex (real_part, imag_part);
-              w.elem (i, j+1) = FloatComplex (real_part, -imag_part);
+              m_w.elem (i, j) = FloatComplex (real_part, imag_part);
+              m_w.elem (i, j+1) = FloatComplex (real_part, -imag_part);
             }
           j++;
         }
@@ -582,9 +582,9 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
   if (info > 0)
     (*current_liboctave_error_handler) ("ssygv failed to converge");
 
-  lambda = FloatComplexColumnVector (wr);
-  v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
-  w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  m_lambda = FloatComplexColumnVector (wr);
+  m_v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  m_w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
 
   return info;
 }
@@ -685,13 +685,13 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
   if (info > 0)
     (*current_liboctave_error_handler) ("cggev failed to converge");
 
-  lambda.resize (n);
+  m_lambda.resize (n);
 
   for (F77_INT j = 0; j < n; j++)
-    lambda.elem (j) = alpha.elem (j) / beta.elem (j);
+    m_lambda.elem (j) = alpha.elem (j) / beta.elem (j);
 
-  v = vrtmp;
-  w = vltmp;
+  m_v = vrtmp;
+  m_w = vltmp;
 
   return info;
 }
@@ -761,9 +761,9 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
   if (info > 0)
     (*current_liboctave_error_handler) ("zhegv failed to converge");
 
-  lambda = FloatComplexColumnVector (wr);
-  v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
-  w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  m_lambda = FloatComplexColumnVector (wr);
+  m_v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  m_w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
 
   return info;
 }

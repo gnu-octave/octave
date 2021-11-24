@@ -42,7 +42,7 @@
 
 function c = blackman (m, opt)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -90,7 +90,7 @@ endfunction
 %! A = blackman (N, "periodic");
 %! assert (A(N/2 + 1), 1, 1e-6);
 
-%!error blackman ()
+%!error <Invalid call> blackman ()
 %!error blackman (0.5)
 %!error blackman (-1)
 %!error blackman (ones (1,4))

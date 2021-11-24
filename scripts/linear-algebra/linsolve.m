@@ -77,7 +77,7 @@
 
 function [x, R] = linsolve (A, b, opts)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -141,8 +141,8 @@ endfunction
 %! opts.TRANSA = true;
 %! assert (linsolve (A, b, opts), A' \ b);
 
-%!error linsolve ()
-%!error linsolve (1)
+%!error <Invalid call> linsolve ()
+%!error <Invalid call> linsolve (1)
 %!error linsolve (1,2,3)
 %!error <A and B must be numeric> linsolve ({1},2)
 %!error <A and B must be numeric> linsolve (1,{2})

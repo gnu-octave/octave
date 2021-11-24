@@ -147,7 +147,7 @@ namespace octave
   //     int val = 42;
   //
   //     // template parameters, std::bind and std::function provide
-  //     // flexibility in calling forms:
+  //     // flexibility in calling forms (function pointer or lambda):
   //
   //     unwind_action act1 (fcn, val);
   //     unwind_action act2 ([val] (void) { fcn (val); });
@@ -162,9 +162,14 @@ namespace octave
   // called immediately after the object is constructed instead of at
   // the end of the current scope.
 
-  class unwind_action
+  class OCTAVE_API unwind_action
   {
   public:
+
+    unwind_action (void) : m_fcn () { }
+
+    // FIXME: Do we need to apply std::forward to the arguments to
+    // std::bind here?
 
     template <typename F, typename... Args>
     unwind_action (F&& fcn, Args&&... args)
@@ -177,7 +182,95 @@ namespace octave
 
     unwind_action& operator = (const unwind_action&) = delete;
 
-    ~unwind_action (void) { m_fcn (); }
+    ~unwind_action (void) { run (); }
+
+    // FIXME: Do we need to apply std::forward to the arguments to
+    // std::bind here?
+
+    template <typename F, typename... Args>
+    void set (F&& fcn, Args&&... args)
+    {
+      m_fcn = std::bind (fcn, args...);
+    }
+
+    void set (void) { m_fcn = nullptr; }
+
+    // Alias for set() which is clearer about programmer intention.
+    void discard (void) { set (); }
+
+    void run (void)
+    {
+      if (m_fcn)
+        m_fcn ();
+
+      // Invalidate so action won't run again when object is deleted.
+      discard ();
+    }
+
+  private:
+
+    std::function<void (void)> m_fcn;
+  };
+
+  // Like unwind_action, but this one will guard against the possibility
+  // of seeing an exception (or interrupt) in the cleanup actions.
+  // Not that we can do much about it, but at least we won't crash.
+
+  class OCTAVE_API unwind_action_safe
+  {
+  private:
+
+    void warn_unhandled_exception (void) const;
+
+  public:
+
+    unwind_action_safe (void) : m_fcn () { }
+
+    // FIXME: Do we need to apply std::forward to the arguments to
+    // std::bind here?
+
+    template <typename F, typename... Args>
+    unwind_action_safe (F&& fcn, Args&&... args)
+      : m_fcn (std::bind (fcn, args...))
+    { }
+
+    // No copying!
+
+    unwind_action_safe (const unwind_action_safe&) = delete;
+
+    unwind_action_safe& operator = (const unwind_action_safe&) = delete;
+
+    ~unwind_action_safe (void) { run (); }
+
+    // FIXME: Do we need to apply std::forward to the arguments to
+    // std::bind here?
+
+    template <typename F, typename... Args>
+    void set (F&& fcn, Args&&... args)
+    {
+      m_fcn = std::bind (fcn, args...);
+    }
+
+    void set (void) { m_fcn = nullptr; }
+
+    // Alias for set() which is clearer about programmer intention.
+    void discard (void) { set (); }
+
+    void run (void)
+    {
+      try
+        {
+          if (m_fcn)
+            m_fcn ();
+        }
+      catch (...) // Yes, the black hole.  Remember we're in a destructor.
+        {
+          warn_unhandled_exception ();
+        }
+
+      // Invalidate so action won't run again when object is deleted.
+      discard ();
+    }
 
   private:
 

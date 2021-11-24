@@ -682,21 +682,15 @@ and matrices.  The element-by-element operators and functions broadcast
 @table @asis
 @item @var{x} + @var{y}
 @opindex +
-Addition.  If both operands are matrices, the number of rows and columns
-must both agree, or they must be broadcastable to the same shape.
-
-@item @var{x} .+ @var{y}
-@opindex .+
-Element-by-element addition.  This operator is equivalent to @code{+}.
+Addition (always works element by element).  If both operands are
+matrices, the number of rows and columns must both agree, or they must
+be broadcastable to the same shape.
 
 @item @var{x} - @var{y}
 @opindex -
-Subtraction.  If both operands are matrices, the number of rows and
-columns of both must agree, or they must be broadcastable to the same
-shape.
-
-@item @var{x} .- @var{y}
-Element-by-element subtraction.  This operator is equivalent to @code{-}.
+Subtraction (always works element by element).  If both operands are
+matrices, the number of rows and columns of both must agree, or they
+must be broadcastable to the same shape.
 
 @item @var{x} * @var{y}
 @opindex *
@@ -747,8 +741,6 @@ Element-by-element left division.  Each element of @var{y} is divided
 by each corresponding element of @var{x}.
 
 @item  @var{x} ^ @var{y}
-@itemx @var{x} ** @var{y}
-@opindex **
 @opindex ^
 Power operator.  If @var{x} and @var{y} are both scalars, this operator
 returns @var{x} raised to the power @var{y}.  If @var{x} is a scalar and
@@ -761,8 +753,6 @@ expansion if @var{y} is not an integer.  An error results if both
 The implementation of this operator needs to be improved.
 
 @item  @var{x} .^ @var{y}
-@itemx @var{x} .** @var{y}
-@opindex .**
 @opindex .^
 Element-by-element power operator.  If both operands are matrices, the
 number of rows and columns must both agree, or they must be
@@ -836,7 +826,6 @@ useful in this case.
 @opindex \
 @DOCSTRING(mldivide)
 
-@opindex **
 @opindex ^
 @DOCSTRING(mpower)
 
@@ -849,7 +838,6 @@ useful in this case.
 @opindex +
 @DOCSTRING(plus)
 
-@opindex .**
 @opindex .^
 @DOCSTRING(power)
 
@@ -1535,7 +1523,7 @@ precedence.  Unless noted, all operators group left to right.
 These operators group right to left.
 
 @item transpose and exponentiation
-@samp{'} @samp{.'} @samp{^} @samp{**} @samp{.^} @samp{.**}
+@samp{'} @samp{.'} @samp{^} @samp{.^}
 
 @item unary plus, unary minus, prefix increment, prefix decrement, and logical "not"
 @samp{+} @samp{-} @samp{++}  @samp{--} @samp{~} @samp{!}

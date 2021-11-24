@@ -35,48 +35,59 @@
 
 #include "c-file-ptr-stream.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 class
-octave_procbuf : public c_file_ptr_buf
+procbuf : public c_file_ptr_buf
 {
 public:
 
-  octave_procbuf (void)
-    : c_file_ptr_buf (nullptr), wstatus (-1), open_p (false), proc_pid (-1),
-      next (nullptr) { }
+  procbuf (void)
+    : c_file_ptr_buf (nullptr), m_wstatus (-1), m_open_p (false),
+      m_proc_pid (-1), m_next (nullptr)
+  { }
 
-  octave_procbuf (const char *command, int mode)
-    : c_file_ptr_buf (nullptr), wstatus (-1), open_p (false), proc_pid (-1),
-      next (nullptr) { open (command, mode); }
+  procbuf (const char *command, int mode)
+    : c_file_ptr_buf (nullptr), m_wstatus (-1), m_open_p (false),
+      m_proc_pid (-1), m_next (nullptr)
+  { open (command, mode); }
 
   // No copying!
 
-  octave_procbuf (const octave_procbuf&) = delete;
+  procbuf (const procbuf&) = delete;
 
-  octave_procbuf& operator = (const octave_procbuf&) = delete;
+  procbuf& operator = (const procbuf&) = delete;
 
-  ~octave_procbuf (void) { close (); }
+  ~procbuf (void) { close (); }
 
-  octave_procbuf * open (const char *command, int mode);
+  procbuf * open (const char *command, int mode);
 
-  octave_procbuf * close (void);
+  procbuf * close (void);
 
-  int wait_status (void) const { return wstatus; }
+  int wait_status (void) const { return m_wstatus; }
 
-  bool is_open (void) const { return open_p; }
+  bool is_open (void) const { return m_open_p; }
 
-  pid_t pid (void) const { return proc_pid; }
+  pid_t pid (void) const { return m_proc_pid; }
 
 protected:
 
-  int wstatus;
+  int m_wstatus;
 
-  bool open_p;
+  bool m_open_p;
 
-  pid_t proc_pid;
+  pid_t m_proc_pid;
 
-  octave_procbuf *next;
+  procbuf *m_next;
 };
 
-extern void symbols_of_oct_procbuf (void);
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use octave::procbuf' instead")
+typedef octave::procbuf procbuf;
+
+#endif
 
 #endif

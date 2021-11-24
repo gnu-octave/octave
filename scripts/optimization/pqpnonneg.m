@@ -41,8 +41,8 @@
 ## @var{x0} is an optional initial guess for the solution @var{x}.
 ##
 ## @var{options} is an options structure to change the behavior of the
-## algorithm (@pxref{XREFoptimset,,optimset}).  @code{pqpnonneg} recognizes
-## one option: @qcode{"MaxIter"}.
+## algorithm (@pxref{XREFoptimset,,@code{optimset}}).  @code{pqpnonneg}
+## recognizes one option: @qcode{"MaxIter"}.
 ##
 ## Outputs:
 ##
@@ -93,7 +93,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [],
     return;
   endif
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -239,10 +239,9 @@ endfunction
 %! d = rand (20, 1);
 %! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps);
 
-# Test input validation
-%!error pqpnonneg ()
-%!error pqpnonneg (1)
-%!error pqpnonneg (1,2,3,4,5)
+## Test input validation
+%!error <Invalid call> pqpnonneg ()
+%!error <Invalid call> pqpnonneg (1)
 %!error <C .* must be numeric matrices> pqpnonneg ({1},2)
 %!error <C .* must be numeric matrices> pqpnonneg (ones (2,2,2),2)
 %!error <D must be numeric matrices> pqpnonneg (1,{2})

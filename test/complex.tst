@@ -43,9 +43,9 @@
 
 ## bug #43313, -1 is both '>' and '==' to (-1 - 0i)
 %!test
-%! assert (complex(-1,0) == complex(-1,-0), true);
-%! assert (complex(-1,0) > complex(-1,-0), false);
-%! assert (complex(-1,0) < complex(-1,-0), false);
+%! assert (complex (-1,0) == complex (-1,-0), true);
+%! assert (complex (-1,0) > complex (-1,-0), false);
+%! assert (complex (-1,0) < complex (-1,-0), false);
 
 ## Test that sort and issorted both agree on boundary case
 %!test

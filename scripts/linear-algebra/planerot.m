@@ -65,7 +65,7 @@
 
 function [G, y] = planerot (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! (isvector (x) && numel (x) == 2))
     error ("planerot: X must be a 2-element vector");
@@ -83,7 +83,7 @@ endfunction
 %! assert (g, [x(1) x(2); -x(2) x(1)] / sqrt (x(1)^2 + x(2)^2), 2e-8);
 %! assert (y(2), 0, 2e-8);
 
-%!error planerot ()
-%!error planerot (1,2)
+## Test input validation
+%!error <Invalid call> planerot ()
 %!error <X must be a 2-element vector> planerot (ones (2,2))
 %!error <X must be a 2-element vector> planerot ([0 0 0])

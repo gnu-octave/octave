@@ -213,14 +213,14 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   ## Check consistency and  type of A, M1, M2
   [Afun, M1fun, M2fun] =  __alltohandles__ (A, b, M1, M2, "bicgstab");
 
-  # Check if input tol are empty (set them to default if necessary)
+  ## Check if input tol are empty (set them to default if necessary)
   [tol, maxit, x0] = __default__input__ ({1e-06, min(rows(b), 20), ...
-                    zeros(rows(b), 1)}, tol, maxit, x0);
+                    zeros(rows (b), 1)}, tol, maxit, x0);
 
   norm_b = norm (b, 2);
   if (norm_b == 0)
     if (nargout < 2)
-      printf("The right hand side vector is all zero so bicgstab \n")
+      printf ("The right hand side vector is all zero so bicgstab \n")
       printf ("returned an all zero solution without iterating.\n")
     endif
     x_min = zeros (numel (b), 1);
@@ -228,7 +228,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     flag = 0;
     resvec = 0;
     relres = 0;
-    return
+    return;
   endif
 
   ## Double maxit to mind also the "half iterations"
@@ -248,7 +248,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
 
   ## To check if the preconditioners are singular or they have some NaN
   try
-    warning("error", "Octave:singular-matrix", "local");
+    warning ("error", "Octave:singular-matrix", "local");
     p_hat = feval (M1fun, p, varargin{:});
     p_hat = feval (M2fun, p_hat, varargin{:});
   catch
@@ -270,7 +270,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     if (resvec (iter + 1) <= real_tol) # reached the tol
       x_min = x;
       iter_min = iter;
-      break
+      break;
     elseif (resvec (iter + 1) <= resvec (iter_min + 1)) # Found min residual
       x_min = x;
       iter_min = iter;
@@ -293,7 +293,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     endif
     if (norm (x - x_pr) <= norm (x) * eps)
       flag = 3;
-      break
+      break;
     endif
     x_pr = x;
     rho_2 = rho_1;
@@ -309,7 +309,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   endwhile
   resvec = resvec (1:iter+1,1);
 
-  relres = resvec (iter_min + 1) / norm_b; ## I set the relative residual
+  relres = resvec (iter_min + 1) / norm_b;  # I set the relative residual
   iter /=  2;
   iter_min /= 2;
 

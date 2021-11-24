@@ -35,7 +35,7 @@
 
 function s = hdl2struct (h)
 
-  if (nargin != 1 || ! ishghandle (h))
+  if (nargin < 1 || ! ishghandle (h))
     print_usage ();
   endif
 
@@ -139,12 +139,13 @@ function propstruct = getprops (h)
   persistent excluded;
 
   if (isempty (excluded))
-    excluded = cell2struct (repmat ({[]}, 1, 15),
+    excluded = cell2struct (repmat ({[]}, 1, 16),
                             {"beingdeleted", "busyaction", "buttondownfcn", ...
-                             "children", "clipping", "createfcn", ...
-                             "deletefcn", "handlevisibility", "hittest", ...
-                             "interruptible", "parent", "selected" , ...
-                             "selectionhighlight", "type", "uicontextmenu"}, 2);
+                             "children", "clipping", "contextmenu", ...
+                             "createfcn", "deletefcn", "handlevisibility", ...
+                             "hittest", "interruptible", "parent", ...
+                             "selected" , "selectionhighlight", "type", ...
+                             "uicontextmenu"}, 2);
   endif
 
   obj = get (h);
@@ -154,7 +155,7 @@ function propstruct = getprops (h)
   propstruct = rmfield (obj, fields(tf));
 
   ## hidden properties
-  hidden_props = {"__autopos_tag__", "looseinset", ...
+  hidden_props = {"__appdata__", "__autopos_tag__", "looseinset", ...
                   "positionmode", "rotationmode", ...
                   "horizontalalignmentmode", "verticalalignmentmode"};
   for prop = hidden_props

@@ -95,85 +95,9 @@ dim_vector
 {
 private:
 
-  octave_idx_type *rep;
+  octave_idx_type m_num_dims;
 
-  octave_idx_type& count (void) const { return rep[-2]; }
-
-  octave_idx_type increment_count (void)
-  {
-    return octave_atomic_increment (&(count ()));
-  }
-
-  octave_idx_type decrement_count (void)
-  {
-    return octave_atomic_decrement (&(count ()));
-  }
-
-  //! Construct a new rep with count = 1 and ndims given.
-
-  static octave_idx_type * newrep (int ndims)
-  {
-    octave_idx_type *r = new octave_idx_type [ndims + 2];
-
-    *r++ = 1;
-    *r++ = ndims;
-
-    return r;
-  }
-
-  //! Clone this->rep.
-
-  octave_idx_type * clonerep (void)
-  {
-    int nd = ndims ();
-
-    octave_idx_type *r = newrep (nd);
-
-    std::copy_n (rep, nd, r);
-
-    return r;
-  }
-
-  //! Clone and resize this->rep to length n, filling by given value.
-
-  octave_idx_type * resizerep (int n, octave_idx_type fill_value)
-  {
-    int nd = ndims ();
-
-    if (n < 2)
-      n = 2;
-
-    octave_idx_type *r = newrep (n);
-
-    if (nd > n)
-      nd = n;
-
-    std::copy_n (rep, nd, r);
-    std::fill_n (r + nd, n - nd, fill_value);
-
-    return r;
-  }
-
-  //! Free the rep.
-
-  void freerep (void)
-  {
-    assert (count () == 0);
-    delete [] (rep - 2);
-  }
-
-  void make_unique (void)
-  {
-    if (count () > 1)
-      {
-        octave_idx_type *new_rep = clonerep ();
-
-        if (decrement_count () == 0)
-          freerep ();
-
-        rep = new_rep;
-      }
-  }
+  octave_idx_type *m_dims;
 
 public:
 
@@ -214,25 +138,25 @@ public:
 
   template <typename... Ints>
   dim_vector (const octave_idx_type r, const octave_idx_type c,
-              Ints... lengths) : rep (newrep (2 + sizeof... (Ints)))
+              Ints... lengths)
+    : m_num_dims (2 + sizeof... (Ints)), m_dims (new octave_idx_type [m_num_dims])
   {
     std::initializer_list<octave_idx_type> all_lengths = {r, c, lengths...};
+    octave_idx_type *ptr = m_dims;
     for (const octave_idx_type l: all_lengths)
-      *rep++ = l;
-    rep -= all_lengths.size ();
+      *ptr++ = l;
   }
 
   // Fast access with absolutely no checking
 
-  octave_idx_type& xelem (int i) { return rep[i]; }
+  octave_idx_type& xelem (int i) { return m_dims[i]; }
 
-  octave_idx_type xelem (int i) const { return rep[i]; }
+  octave_idx_type xelem (int i) const { return m_dims[i]; }
 
   // Safe access to to elements
 
   octave_idx_type& elem (int i)
   {
-    make_unique ();
     return xelem (i);
   }
 
@@ -240,58 +164,57 @@ public:
 
   void chop_trailing_singletons (void)
   {
-    int nd = ndims ();
-    if (nd > 2 && rep[nd-1] == 1)
-      {
-        make_unique ();
-        do
-          nd--;
-        while (nd > 2 && rep[nd-1] == 1);
-        rep[-1] = nd;
-      }
+    while (m_num_dims > 2 && xelem(m_num_dims-1) == 1)
+      m_num_dims--;
   }
 
-  void chop_all_singletons (void);
-
-  // WARNING: Only call by jit
-  octave_idx_type * to_jit (void) const
-  {
-    return rep;
-  }
+  OCTAVE_API void chop_all_singletons (void);
 
 private:
 
-  static octave_idx_type *nil_rep (void);
+  explicit dim_vector (octave_idx_type ndims)
+    : m_num_dims (ndims < 2 ? 2 : ndims), m_dims (new octave_idx_type [m_num_dims])
+  {
+    std::fill_n (m_dims, m_num_dims, 0);
+  }
 
 public:
 
-  static octave_idx_type dim_max (void);
+  static OCTAVE_API octave_idx_type dim_max (void);
 
-  explicit dim_vector (void) : rep (nil_rep ())
-  { increment_count (); }
+  explicit dim_vector (void)
+    : m_num_dims (2), m_dims (new octave_idx_type [m_num_dims])
+  {
+    std::fill_n (m_dims, m_num_dims, 0);
+  }
 
-  dim_vector (const dim_vector& dv) : rep (dv.rep)
-  { increment_count (); }
+  dim_vector (const dim_vector& dv)
+    : m_num_dims (dv.m_num_dims), m_dims (new octave_idx_type [m_num_dims])
+  {
+    std::copy_n (dv.m_dims, m_num_dims, m_dims);
+  }
 
-  dim_vector (dim_vector&& dv) : rep (dv.rep) { dv.rep = nullptr; }
-
-// FIXME: Should be private, but required by array constructor for jit
-  explicit dim_vector (octave_idx_type *r) : rep (r) { }
+  dim_vector (dim_vector&& dv)
+    : m_num_dims (0), m_dims (nullptr)
+  {
+    *this = std::move (dv);
+  }
 
   static dim_vector alloc (int n)
   {
-    return dim_vector (newrep (n < 2 ? 2 : n));
+    return dim_vector (n);
   }
 
   dim_vector& operator = (const dim_vector& dv)
   {
     if (&dv != this)
       {
-        if (decrement_count () == 0)
-          freerep ();
+        delete [] m_dims;
 
-        rep = dv.rep;
-        increment_count ();
+        m_num_dims = dv.m_num_dims;
+        m_dims = new octave_idx_type [m_num_dims];
+
+        std::copy_n (dv.m_dims, m_num_dims, m_dims);
       }
 
     return *this;
@@ -302,14 +225,16 @@ public:
     if (&dv != this)
       {
         // Because we define a move constructor and a move assignment
-        // operator, rep may be a nullptr here.  We should only need to
+        // operator, m_dims may be a nullptr here.  We should only need to
         // protect the destructor in a similar way.
 
-        if (rep && decrement_count () == 0)
-          freerep ();
+        delete [] m_dims;
 
-        rep = dv.rep;
-        dv.rep = nullptr;
+        m_num_dims = dv.m_num_dims;
+        m_dims = dv.m_dims;
+
+        dv.m_num_dims = 0;
+        dv.m_dims = nullptr;
       }
 
     return *this;
@@ -318,11 +243,10 @@ public:
   ~dim_vector (void)
   {
     // Because we define a move constructor and a move assignment
-    // operator, rep may be a nullptr here.  We should only need to
+    // operator, m_dims may be a nullptr here.  We should only need to
     // protect the move assignment operator in a similar way.
 
-    if (rep && decrement_count () == 0)
-      freerep ();
+    delete [] m_dims;
   }
 
   //! Number of dimensions.
@@ -331,7 +255,7 @@ public:
   //! elements in the dim_vector including trailing singletons.  It is also
   //! the number of dimensions an Array with this dim_vector would have.
 
-  octave_idx_type ndims (void) const { return rep[-1]; }
+  octave_idx_type ndims (void) const { return m_num_dims; }
 
   //! Number of dimensions.
   //! Synonymous with ndims().
@@ -348,24 +272,35 @@ public:
 
   void resize (int n, int fill_value = 0)
   {
-    int len = ndims ();
+    if (n < 2)
+      n = 2;
 
-    if (n != len)
+    if (n == m_num_dims)
+      return;
+
+    if (n < m_num_dims)
       {
-        octave_idx_type *r = resizerep (n, fill_value);
-
-        if (decrement_count () == 0)
-          freerep ();
-
-        rep = r;
+        m_num_dims = n;
+        return;
       }
+
+    octave_idx_type *new_rep = new octave_idx_type [n];
+
+    std::copy_n (m_dims, m_num_dims, new_rep);
+    std::fill_n (new_rep + m_num_dims, n - m_num_dims, fill_value);
+
+    delete [] m_dims;
+
+    m_dims = new_rep;
+
+    m_num_dims = n;
   }
 
-  std::string str (char sep = 'x') const;
+  OCTAVE_API std::string str (char sep = 'x') const;
 
   bool all_zero (void) const
   {
-    return std::all_of (rep, rep + ndims (),
+    return std::all_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
@@ -381,11 +316,11 @@ public:
 
   bool any_zero (void) const
   {
-    return std::any_of (rep, rep + ndims (),
+    return std::any_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
-  int num_ones (void) const;
+  OCTAVE_API int num_ones (void) const;
 
   bool all_ones (void) const
   {
@@ -418,29 +353,29 @@ public:
   //! function that is iterating over an array using octave_idx_type
   //! indices.
 
-  octave_idx_type safe_numel (void) const;
+  OCTAVE_API octave_idx_type safe_numel (void) const;
 
   bool any_neg (void) const
   {
-    return std::any_of (rep, rep + ndims (),
+    return std::any_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim < 0; });
   }
 
-  dim_vector squeeze (void) const;
+  OCTAVE_API dim_vector squeeze (void) const;
 
   //! This corresponds to cat().
-  bool concat (const dim_vector& dvb, int dim);
+  OCTAVE_API bool concat (const dim_vector& dvb, int dim);
 
   //! This corresponds to [,] (horzcat, dim = 0) and [;] (vertcat, dim = 1).
   // The rules are more relaxed here.
-  bool hvcat (const dim_vector& dvb, int dim);
+  OCTAVE_API bool hvcat (const dim_vector& dvb, int dim);
 
   //! Force certain dimensionality, preserving numel ().  Missing
   //! dimensions are set to 1, redundant are folded into the trailing
   //! one.  If n = 1, the result is 2d and the second dim is 1
   //! (dim_vectors are always at least 2D).
 
-  dim_vector redim (int n) const;
+  OCTAVE_API dim_vector redim (int n) const;
 
   dim_vector as_column (void) const
   {
@@ -527,7 +462,7 @@ public:
   {
     octave_idx_type k = 0;
     for (int i = nidx - 1; i >= 0; i--)
-      k = rep[i] * k + idx[i];
+      k = xelem(i) * k + idx[i];
 
     return k;
   }
@@ -541,7 +476,7 @@ public:
     int i;
     for (i = start; i < ndims (); i++)
       {
-        if (++(*idx) == rep[i])
+        if (++(*idx) == xelem(i))
           *idx++ = 0;
         else
           break;
@@ -558,7 +493,7 @@ public:
 
     octave_idx_type k = 1;
     for (int i = 0; i < nd; i++)
-      retval.rep[i] = (k *= rep[i]);
+      retval.xelem(i) = (k *= xelem(i));
 
     return retval;
   }
@@ -571,21 +506,22 @@ public:
     octave_idx_type k = idx[0];
 
     for (int i = 1; i < ndims (); i++)
-      k += rep[i-1] * idx[i];
+      k += xelem(i-1) * idx[i];
 
     return k;
   }
 
-  friend bool operator == (const dim_vector& a, const dim_vector& b);
+  friend OCTAVE_API bool
+  operator == (const dim_vector& a, const dim_vector& b);
 
-  Array<octave_idx_type> as_array (void) const;
+  OCTAVE_API Array<octave_idx_type> as_array (void) const;
 };
 
 inline bool
 operator == (const dim_vector& a, const dim_vector& b)
 {
   // Fast case.
-  if (a.rep == b.rep)
+  if (a.m_dims == b.m_dims)
     return true;
 
   int a_len = a.ndims ();
@@ -594,7 +530,7 @@ operator == (const dim_vector& a, const dim_vector& b)
   if (a_len != b_len)
     return false;
 
-  return std::equal (a.rep, a.rep + a_len, b.rep);
+  return std::equal (a.m_dims, a.m_dims + a_len, b.m_dims);
 }
 
 inline bool

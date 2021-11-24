@@ -384,8 +384,10 @@ function [local_packages, global_packages] = pkg (varargin)
   persistent user_prefix = false;
   persistent prefix = false;
   persistent archprefix = -1;
-  persistent local_list = tilde_expand (fullfile ("~", ".octave_packages"));
-  persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave",
+  persistent local_list = fullfile (user_config_dir (), "octave", ...
+                                    __octave_config_info__ ("api_version"), ...
+                                    "octave_packages");
+  persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave", ...
                                      "octave_packages");
 
   ## If user is superuser (posix) or the process has elevated rights (Windows),
@@ -406,7 +408,7 @@ function [local_packages, global_packages] = pkg (varargin)
 
   confirm_recursive_rmdir (false, "local");
 
-  # valid actions in alphabetical order
+  ## valid actions in alphabetical order
   available_actions = {"build", "describe", "global_list",  "install", ...
                        "list", "load", "local_list", "prefix", "rebuild", ...
                        "test", "uninstall", "unload", "update"};
@@ -569,9 +571,9 @@ function [local_packages, global_packages] = pkg (varargin)
                  global_list, global_install);
 
       unwind_protect_cleanup
-        cellfun ("unlink", local_files);
+        [~] = cellfun ("unlink", local_files);
         if (exist (tmp_dir, "file"))
-          rmdir (tmp_dir, "s");
+          [~] = rmdir (tmp_dir, "s");
         endif
       end_unwind_protect
 

@@ -40,7 +40,7 @@
 function [x_coordinate, y_coordinate, height, s] = ...
                                                  treelayout (tree, permutation)
 
-  if (nargin < 1 || nargin > 2 || nargout > 4)
+  if (nargin < 1)
     print_usage ();
   elseif (! isvector (tree) || rows (tree) != 1 || ! isnumeric (tree)
           || any (tree > length (tree)) || any (tree < 0))
@@ -72,7 +72,7 @@ function [x_coordinate, y_coordinate, height, s] = ...
 
       if (hare < i)
         ## This part of graph was checked before.
-        break
+        break;
       endif
 
       tortoise = tree(tortoise);

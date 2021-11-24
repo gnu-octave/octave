@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-extern int octave_putenv_wrapper (char *str);
+extern OCTAVE_API int octave_putenv_wrapper (char *str);
 
 #if defined __cplusplus
 }

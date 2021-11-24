@@ -37,7 +37,7 @@ enum octave_nproc_query
   OCTAVE_NPROC_CURRENT_OVERRIDABLE
 };
 
-extern unsigned long int
+extern OCTAVE_API unsigned long int
 octave_num_processors_wrapper (enum octave_nproc_query);
 
 #if defined __cplusplus

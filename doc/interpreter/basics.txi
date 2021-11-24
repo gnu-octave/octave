@@ -82,10 +82,6 @@ Enter parser debugging mode.  Using this option will cause Octave's
 parser to print a lot of information about the commands it reads, and is
 probably only useful if you are actually trying to debug the parser.
 
-@item --debug-jit
-@cindex @sortas{options, Octave command --debug-jit} @ @ @code{--debug-jit}
-Enable JIT compiler debugging and tracing.
-
 @item --doc-cache-file @var{filename}
 @cindex @sortas{options, Octave command --doc-cache-file} @ @ @code{--doc-cache-file @var{filename}}
 Specify the name of the doc cache file to use.  The value of @var{filename}
@@ -153,10 +149,6 @@ commands in the system or user startup files that use the
 @cindex @sortas{options, Octave command -i} @ @ @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.
-
-@item --jit-compiler
-@cindex @sortas{options, Octave command --jit-compiler} @ @ @code{--jit-compiler}
-Enable the JIT compiler used for accelerating loops.
 
 @item --line-editing
 @cindex @sortas{options, Octave command --line-editing} @ @ @code{--line-editing}
@@ -250,12 +242,13 @@ PS2                             = ""
 beep_on_error                   = true
 confirm_recursive_rmdir         = false
 crash_dumps_octave_core         = false
-disable_diagonal_matrix         = true
-disable_permutation_matrix      = true
-disable_range                   = true
+optimize_diagonal_matrix        = false
+optimize_permutation_matrix     = false
+optimize_range                  = false
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
 print_empty_dimensions          = false
+print_struct_array_contents     = true
 save_default_options            = "-mat-binary"
 struct_levels_to_print          = 0
 @end group
@@ -269,6 +262,7 @@ and disable the following warnings
 Octave:abbreviated-property-match
 Octave:colon-nonscalar-argument
 Octave:data-file-in-path
+Octave:empty-index
 Octave:function-name-clash
 Octave:possible-matlab-short-circuit-operator
 @end group
@@ -882,7 +876,7 @@ A @dfn{parse error} occurs if Octave cannot understand something you
 have typed.  For example, if you misspell a keyword,
 
 @example
-octave:13> function y = f (x) y = x***2; endfunction
+octave:13> function z = f (x, y) z = x ||| 2; endfunction
 @end example
 
 @noindent
@@ -894,8 +888,8 @@ parse error:
 
   syntax error
 
->>> function y = f (x) y = x***2; endfunction
-                              ^
+>>> function z = f (x, y) z = x ||| y; endfunction
+                                  ^
 @end group
 @end example
 
@@ -903,9 +897,9 @@ parse error:
 For most parse errors, Octave uses a caret (@samp{^}) to mark the point
 on the line where it was unable to make sense of your input.  In this
 case, Octave generated an error message because the keyword for
-exponentiation (@code{**}) was misspelled.  It marked the error at the
-third @samp{*} because the code leading up to this was correct but the final
-@samp{*} was not understood.
+the logical or operator (@code{||}) was misspelled.  It marked the error
+at the third @samp{|} because the code leading up to this was correct
+but the final @samp{|} was not understood.
 
 Another class of error message occurs at evaluation time.  These
 errors are called @dfn{run-time errors}, or sometimes

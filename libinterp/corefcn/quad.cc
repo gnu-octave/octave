@@ -46,6 +46,8 @@
 
 #include "Quad-opts.cc"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Global pointer for user defined function required by quadrature functions.
 static octave_value quad_fcn;
 
@@ -55,7 +57,7 @@ static bool warned_imaginary = false;
 // Is this a recursive call?
 static int call_depth = 0;
 
-double
+static double
 quad_user_function (double x)
 {
   double retval = 0.0;
@@ -69,11 +71,11 @@ quad_user_function (double x)
 
       try
         {
-          tmp = octave::feval (quad_fcn, args, 1);
+          tmp = feval (quad_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          err_user_supplied_eval (e, "quad");
+          err_user_supplied_eval (ee, "quad");
         }
 
       if (! tmp.length () || ! tmp(0).is_defined ())
@@ -91,7 +93,7 @@ quad_user_function (double x)
   return retval;
 }
 
-float
+static float
 quad_float_user_function (float x)
 {
   float retval = 0.0;
@@ -105,11 +107,11 @@ quad_float_user_function (float x)
 
       try
         {
-          tmp = octave::feval (quad_fcn, args, 1);
+          tmp = feval (quad_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          err_user_supplied_eval (e, "quad");
+          err_user_supplied_eval (ee, "quad");
         }
 
       if (! tmp.length () || ! tmp(0).is_defined ())
@@ -180,15 +182,13 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
   warned_imaginary = false;
 
-  octave::unwind_protect frame;
-
-  frame.protect_var (call_depth);
+  unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
     error ("quad: invalid recursive call");
 
-  quad_fcn = octave::get_function_handle (interp, args(0), "x");
+  quad_fcn = get_function_handle (interp, args(0), "x");
 
   octave_value_list retval;
 
@@ -201,18 +201,18 @@ variable by routines @code{dblquad} and @code{triplequad}.
       FloatIndefQuad::IntegralType indef_type
         = FloatIndefQuad::doubly_infinite;
       float bound = 0.0;
-      if (octave::math::isinf (a) && octave::math::isinf (b))
+      if (math::isinf (a) && math::isinf (b))
         {
           indefinite = 1;
           indef_type = FloatIndefQuad::doubly_infinite;
         }
-      else if (octave::math::isinf (a))
+      else if (math::isinf (a))
         {
           indefinite = 1;
           bound = b;
           indef_type = FloatIndefQuad::neg_inf_to_bound;
         }
-      else if (octave::math::isinf (b))
+      else if (math::isinf (b))
         {
           indefinite = 1;
           bound = a;
@@ -297,18 +297,18 @@ variable by routines @code{dblquad} and @code{triplequad}.
       int indefinite = 0;
       IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
       double bound = 0.0;
-      if (octave::math::isinf (a) && octave::math::isinf (b))
+      if (math::isinf (a) && math::isinf (b))
         {
           indefinite = 1;
           indef_type = IndefQuad::doubly_infinite;
         }
-      else if (octave::math::isinf (a))
+      else if (math::isinf (a))
         {
           indefinite = 1;
           bound = b;
           indef_type = IndefQuad::neg_inf_to_bound;
         }
-      else if (octave::math::isinf (b))
+      else if (math::isinf (b))
         {
           indefinite = 1;
           bound = a;
@@ -458,3 +458,5 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
 %!error quad_options (1, 2, 3)
 */
+
+OCTAVE_NAMESPACE_END

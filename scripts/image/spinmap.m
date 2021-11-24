@@ -42,9 +42,7 @@
 
 function spinmap (t = 5, inc = 2)
 
-  if (nargin > 2)
-    print_usage ();
-  elseif (ischar (t))
+  if (ischar (t))
     if (strcmpi (t, "inf"))
       t = Inf;
     else
@@ -56,8 +54,8 @@ function spinmap (t = 5, inc = 2)
 
   cmap = cmap_orig = get (gcf (), "colormap");
 
-  t0 = clock;
-  while (etime (clock, t0) < t)
+  t0 = clock ();
+  while (etime (clock (), t0) < t)
     cmap = shift (cmap, inc, 1);
     set (gcf (), "colormap", cmap);
     drawnow ();

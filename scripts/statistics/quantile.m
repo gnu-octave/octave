@@ -156,7 +156,7 @@
 
 function q = quantile (x, p = [], dim, method = 5)
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -176,14 +176,13 @@ function q = quantile (x, p = [], dim, method = 5)
     ## Find the first non-singleton dimension.
     (dim = find (size (x) > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= ndims (x)))
-      error ("quantile: DIM must be an integer and a valid dimension");
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
+      error ("quantile: DIM must be a positive integer");
     endif
   endif
 
   ## Set the permutation vector.
-  perm = 1:ndims (x);
+  perm = 1:(max (ndims (x), dim));
   perm(1) = dim;
   perm(dim) = 1;
 
@@ -362,11 +361,14 @@ endfunction
 %!      0.933100, 0.931200, 0.963500, 0.779600, 0.846100];
 %! tol = 0.00001;
 %! x(5,5) = NaN;
-%! assert (quantile (x, p, 1), [0.27950, 0.79780, 0.32960, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1),
+%!         [0.27950, 0.79780, 0.32960, 0.55670, 0.44460], tol);
 %! x(1,1) = NaN;
-%! assert (quantile (x, p, 1), [0.35415, 0.79780, 0.32960, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1),
+%!         [0.35415, 0.79780, 0.32960, 0.55670, 0.44460], tol);
 %! x(3,3) = NaN;
-%! assert (quantile (x, p, 1), [0.35415, 0.79780, 0.42590, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1),
+%!         [0.35415, 0.79780, 0.42590, 0.55670, 0.44460], tol);
 
 %!test
 %! sx = [2, 3, 4];
@@ -382,16 +384,15 @@ endfunction
 %!assert <*54421> (quantile ([1:10]', 0.5, 2), [1:10]')
 %!assert <*54421> (quantile ([1:10], [0.25, 0.75]), [3, 8])
 %!assert <*54421> (quantile ([1:10], [0.25, 0.75]'), [3; 8])
+%!assert (quantile ([1:10], 1, 3), [1:10])
 
 ## Test input validation
-%!error quantile ()
-%!error quantile (1, 2, 3, 4, 5)
+%!error <Invalid call> quantile ()
 %!error quantile (['A'; 'B'], 10)
 %!error quantile (1:10, [true, false])
 %!error quantile (1:10, ones (2,2))
 %!error quantile (1, 1, 1.5)
 %!error quantile (1, 1, 0)
-%!error quantile (1, 1, 3)
 %!error quantile ((1:5)', 0.5, 1, 0)
 %!error quantile ((1:5)', 0.5, 1, 10)
 
@@ -405,7 +406,7 @@ endfunction
 ## Description: Quantile function of empirical samples
 function inv = __quantile__ (x, p, method = 5)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ("quantile");
   endif
 

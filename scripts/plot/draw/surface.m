@@ -206,7 +206,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   h = surface;
+%!   h = surface ();
 %!   assert (findobj (hf, "type", "surface"), h);
 %!   assert (get (h, "xdata"), 1:3, eps);
 %!   assert (get (h, "ydata"), (1:3)', eps);

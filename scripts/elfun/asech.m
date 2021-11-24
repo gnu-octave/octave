@@ -31,7 +31,7 @@
 
 function y = asech (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -45,7 +45,7 @@ endfunction
 %! x = [1, -1];
 %! assert (asech (x), v, sqrt (eps));
 
-%!xtest <*52627>
+%!test <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
 %! if (! ismac ()), return; endif
@@ -53,5 +53,4 @@ endfunction
 %! x = [1, -1];
 %! assert (asech (x), v, sqrt (eps));
 
-%!error asech ()
-%!error asech (1, 2)
+%!error <Invalid call> asech ()

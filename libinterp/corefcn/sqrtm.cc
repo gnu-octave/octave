@@ -38,6 +38,8 @@
 #include "utils.h"
 #include "xnorm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename Matrix>
 static void
 sqrtm_utri_inplace (Matrix& T)
@@ -54,7 +56,9 @@ sqrtm_utri_inplace (Matrix& T)
   //   for j = 1:n
   //     T(j,j) = sqrt (T(j,j));
   //     for i = j-1:-1:1
-  //       T(i,j) /= (T(i,i) + T(j,j));
+  //       if T(i,j) != 0
+  //         T(i,j) /= (T(i,i) + T(j,j));
+  //       endif
   //       k = 1:i-1;
   //       T(k,j) -= T(k,i) * T(i,j);
   //     endfor
@@ -76,7 +80,9 @@ sqrtm_utri_inplace (Matrix& T)
       for (octave_idx_type i = j-1; i >= 0; i--)
         {
           const element_type *coli = Tp + n*i;
-          const element_type colji = colj[i] /= (coli[i] + colj[j]);
+          if (colj[i] != zero)
+            colj[i] /= (coli[i] + colj[j]);
+          const element_type colji = colj[i];
           for (octave_idx_type k = 0; k < i; k++)
             colj[k] -= coli[k] * colji;
         }
@@ -178,7 +184,7 @@ do_sqrtm (const octave_value& arg)
               {
                 ComplexSCHUR schur_fact (x, "", true);
                 x = schur_fact.schur_matrix ();
-                u = schur_fact.unitary_matrix ();
+                u = schur_fact.unitary_schur_matrix ();
               }
             while (0); // schur no longer needed.
 
@@ -236,10 +242,10 @@ Mathematics, Manchester, England, January 1999.
     retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
     retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix,
-                         octave::math::schur<FloatComplexMatrix>> (arg);
+                         math::schur<FloatComplexMatrix>> (arg);
   else if (arg.isnumeric ())
     retval(0) = do_sqrtm<Matrix, ComplexMatrix,
-                         octave::math::schur<ComplexMatrix>> (arg);
+                         math::schur<ComplexMatrix>> (arg);
 
   if (nargout > 1)
     {
@@ -256,6 +262,7 @@ Mathematics, Manchester, England, January 1999.
 
 /*
 %!assert (sqrtm (2*ones (2)), ones (2), 3*eps)
+%!assert (real (sqrtm (ones (4))), 0.5*ones (4), 4*eps)
 
 ## The following two tests are from the reference in the docstring above.
 %!test
@@ -270,3 +277,5 @@ Mathematics, Manchester, England, January 1999.
 %! assert (y, z);
 %! assert (err, 0);   # Yes, this one has to hold exactly
 */
+
+OCTAVE_NAMESPACE_END

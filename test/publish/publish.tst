@@ -49,7 +49,7 @@
 %!     publish (fname{1}, opts);
 %!   endfor
 %!   confirm_recursive_rmdir (false, "local");
-%!   rmdir (tmpDir, "s");
+%!   sts = rmdir (tmpDir, "s");
 %! unwind_protect_cleanup
 %!   set (0, "defaultfigurevisible", visibility);
 %!   graphics_toolkit (toolkit);
@@ -81,7 +81,7 @@
 %!   str1 = fileread ("test_script.m");
 %!   str2 = grabcode (fullfile (tmpDir, "test_script.html"));
 %!   confirm_recursive_rmdir (false, "local");
-%!   rmdir (tmpDir, "s");
+%!   sts = rmdir (tmpDir, "s");
 %!   ## Canonicalize strings
 %!   str1 = strjoin (deblank (strsplit (str1, "\n")), "\n");
 %!   str2 = strjoin (deblank (strsplit (str2, "\n")), "\n");

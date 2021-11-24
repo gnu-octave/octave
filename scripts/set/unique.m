@@ -354,7 +354,7 @@ endfunction
 %! assert (j, [4; 1; 4; 3; 2]);
 
 ## Test input validation
-%!error unique ()
+%!error <Invalid call> unique ()
 %!error <X must be an array or cell array of strings> unique ({1})
 %!error <options must be strings> unique (1, 2)
 %!error <cannot specify both "first" and "last"> unique (1, "first", "last")

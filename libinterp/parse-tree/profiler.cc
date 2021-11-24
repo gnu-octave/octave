@@ -28,14 +28,15 @@
 #endif
 
 #include "defun.h"
+#include "event-manager.h"
 #include "interpreter.h"
 #include "oct-time.h"
 #include "ov-struct.h"
 #include "pager.h"
 #include "profiler.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   profiler::stats::stats (void)
     : m_time (0.0), m_calls (0), m_recursive (false),
       m_parents (), m_children ()
@@ -255,7 +256,7 @@ namespace octave
   profiler::reset (void)
   {
     if (enabled ())
-      error ("Can't reset active profiler.");
+      error ("profile: can't reset active profiler");
 
     m_known_functions.clear ();
     m_fcn_index.clear ();
@@ -380,7 +381,6 @@ namespace octave
         m_active_fcn->add_time (t - m_last_time);
       }
   }
-}
 
 // Enable or disable the profiler data collection.
 DEFMETHOD (__profiler_enable__, interp, args, ,
@@ -394,10 +394,19 @@ Undocumented internal function.
   if (nargin > 1)
     print_usage ();
 
-  octave::profiler& profiler = interp.get_profiler ();
+  profiler& profiler = interp.get_profiler ();
 
   if (nargin == 1)
-    profiler.set_active (args(0).bool_value ());
+    {
+      profiler.set_active (args(0).bool_value ());
+
+      std::string status = "off";
+      if (args(0).bool_value ())
+        status = "on";
+
+      event_manager& evmgr = interp.get_event_manager ();
+      evmgr.gui_status_update ("profiler", status);  // tell GUI
+    }
 
   return ovl (profiler.enabled ());
 }
@@ -412,7 +421,7 @@ Undocumented internal function.
   if (args.length () != 0)
     print_usage ();
 
-  octave::profiler& profiler = interp.get_profiler ();
+  profiler& profiler = interp.get_profiler ();
 
   profiler.reset ();
 
@@ -429,10 +438,12 @@ Undocumented internal function.
   if (args.length () != 0)
     print_usage ();
 
-  octave::profiler& profiler = interp.get_profiler ();
+  profiler& profiler = interp.get_profiler ();
 
   if (nargout > 1)
     return ovl (profiler.get_flat (), profiler.get_hierarchical ());
   else
     return ovl (profiler.get_flat ());
 }
+
+OCTAVE_NAMESPACE_END

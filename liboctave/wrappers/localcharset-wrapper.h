@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-extern const char * octave_locale_charset_wrapper (void);
+extern OCTAVE_API const char * octave_locale_charset_wrapper (void);
 
 #if defined __cplusplus
 }

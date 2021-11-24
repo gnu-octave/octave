@@ -31,8 +31,11 @@
        <height>0</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string/>
+     </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +55,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1021</width>
-            <height>607</height>
+            <width>1023</width>
+            <height>615</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -112,16 +115,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="8" column="0">
-                 <widget class="QCheckBox" name="cb_use_native_file_dialogs">
-                  <property name="text">
-                   <string>Use native file dialogs</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item row="3" column="1">
                  <layout class="QVBoxLayout" name="verticalLayout_5">
                   <item>
@@ -173,26 +166,6 @@
                    </widget>
                   </item>
                  </layout>
-                </item>
-                <item row="9" column="0">
-                 <widget class="QCheckBox" name="cb_cursor_blinking">
-                  <property name="text">
-                   <string>Cursor blinking</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="10" column="0">
-                 <widget class="QCheckBox" name="cb_status_bar">
-                  <property name="text">
-                   <string>Show status bar</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
                 </item>
                 <item row="5" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -414,13 +387,6 @@
                   </item>
                  </layout>
                 </item>
-                <item row="11" column="0">
-                 <widget class="QCheckBox" name="cb_prompt_to_exit">
-                  <property name="text">
-                   <string>Confirm before exiting</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="label_2">
                   <property name="text">
@@ -459,6 +425,63 @@
                  <widget class="QLabel" name="label_29">
                   <property name="text">
                    <string>Style</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_35">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="cb_use_native_file_dialogs">
+                  <property name="text">
+                   <string>Use native file dialogs</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_cursor_blinking">
+                  <property name="text">
+                   <string>Cursor blinking</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_status_bar">
+                  <property name="text">
+                   <string>Show status bar</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_focus_follows_mouse">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                  <property name="text">
+                   <string>Focus follows mouse for widgets docked to the main window</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_prompt_to_exit">
+                  <property name="text">
+                   <string>Confirm before exiting</string>
                   </property>
                  </widget>
                 </item>
@@ -561,8 +584,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>1037</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -841,9 +864,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>1021</width>
-            <height>1467</height>
+            <y>-913</y>
+            <width>1023</width>
+            <height>1492</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1007,69 +1030,6 @@
                   </item>
                  </layout>
                 </item>
-                <item row="3" column="2">
-                 <layout class="QGridLayout" name="gridLayout_16">
-                  <item row="0" column="1">
-                   <spacer name="horizontalSpacer_11">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="0">
-                   <layout class="QGridLayout" name="editor_grid_current_line">
-                    <item row="0" column="2">
-                     <widget class="QLabel" name="editor_label_cl_color">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                      <property name="text">
-                       <string>Color</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QCheckBox" name="editor_highlightCurrentLine">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Highlight current line</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <spacer name="horizontalSpacer_14">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Fixed</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </item>
                 <item row="3" column="0">
                  <widget class="QCheckBox" name="cb_show_eol">
                   <property name="sizePolicy">
@@ -1098,6 +1058,22 @@
                    </size>
                   </property>
                  </spacer>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QCheckBox" name="editor_highlightCurrentLine">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Highlight current line</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1179,29 +1155,83 @@
              <layout class="QVBoxLayout" name="verticalLayout_32">
               <item>
                <layout class="QGridLayout" name="gridLayout_23">
-                <item row="1" column="1">
-                 <spacer name="horizontalSpacer_24">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>10</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="2">
+                <item row="0" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_21">
                   <item>
                    <widget class="QComboBox" name="editor_combox_tab_pos"/>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_25">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="editor_cb_tabs_rotated">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Roate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Rotated tabs</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_33">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_30">
+                  <property name="text">
+                   <string>Position</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <layout class="QHBoxLayout" name="horizontalLayout_15">
+                  <item>
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>Max. tab width in chars (0: no limit)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="editor_sb_tabs_max_width">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. width of a tab in characters (average char. width). Especially useful for rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="maximum">
+                     <number>64</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_38">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -1214,113 +1244,6 @@
                    </spacer>
                   </item>
                  </layout>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_30">
-                  <property name="text">
-                   <string>Tab position</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <layout class="QHBoxLayout" name="horizontalLayout_20">
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QLabel" name="editor_lbl_min_tab_width">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="text">
-                     <string>Tab width min.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QSpinBox" name="editor_notebook_tab_width_min">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimum">
-                     <number>80</number>
-                    </property>
-                    <property name="maximum">
-                     <number>600</number>
-                    </property>
-                    <property name="singleStep">
-                     <number>20</number>
-                    </property>
-                    <property name="value">
-                     <number>160</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="editor_lbl_max_tab_width">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="text">
-                     <string>max.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QSpinBox" name="editor_notebook_tab_width_max">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimum">
-                     <number>180</number>
-                    </property>
-                    <property name="maximum">
-                     <number>600</number>
-                    </property>
-                    <property name="singleStep">
-                     <number>20</number>
-                    </property>
-                    <property name="value">
-                     <number>300</number>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QCheckBox" name="editor_longWindowTitle">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Show complete path in title</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <spacer name="horizontalSpacer_5">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                </layout>
               </item>
@@ -2053,7 +1976,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="0">
+                  <item row="10" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <property name="topMargin">
                      <number>0</number>
@@ -2111,7 +2034,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="10" column="0">
+                  <item row="12" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <item>
                      <widget class="QLabel" name="label_16">
@@ -2138,10 +2061,30 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="7" column="0">
+                  <item row="9" column="0">
                    <widget class="QCheckBox" name="editor_hiding_closes_files">
                     <property name="text">
                      <string>Close all files when the editor widget is closed/hidden</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QCheckBox" name="editor_force_newline">
+                    <property name="text">
+                     <string>Force newline at end when saving file</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QCheckBox" name="editor_remove_trailing_spaces">
+                    <property name="text">
+                     <string>Remove trailing spaces when saving file</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -2179,6 +2122,9 @@
                  <bool>true</bool>
                 </property>
                </widget>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="editor_style_grid"/>
               </item>
               <item>
                <widget class="QTabWidget" name="tabs_editor_lexers">
@@ -2227,8 +2173,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>1037</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2377,8 +2323,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>1037</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2439,8 +2385,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>1037</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2604,8 +2550,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>1037</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2618,17 +2564,31 @@
               <number>0</number>
              </property>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_15">
-               <item>
+              <layout class="QVBoxLayout" name="verticalLayout_36">
+               <property name="topMargin">
+                <number>6</number>
+               </property>
+              </layout>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_6">
+               <item row="0" column="0">
                 <widget class="QCheckBox" name="cb_prevent_readline_conflicts">
                  <property name="toolTip">
-                  <string>Select this option to prevent conflicts with readline shortcuts</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p&amp;gt;Disable global shortcuts in order to prevent interference with readline key strokes. Exceptions: Ctrl-C for interrupting the interpreter and the shortcuts for switching to other widgets.&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
                   <string>Disable global shortcuts when Command Window has focus</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="cb_prevent_readline_conflicts_menu">
+                 <property name="text">
+                  <string>Disable menu accelerators of main window menus when Commmand Window has focus</string>
                  </property>
                 </widget>
                </item>
@@ -2803,130 +2763,157 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>569</height>
+            <width>1037</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
-              <widget class="QCheckBox" name="checkbox_allow_web_connect">
-               <property name="text">
-                <string>Allow Octave to connect to the Octave web site to display current news and information</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <layout class="QGridLayout" name="gridLayout_5">
-               <item row="1" column="1">
-                <widget class="QLabel" name="label_4">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Hostname:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QComboBox" name="proxyType">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>HttpProxy</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Socks5Proxy</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="label_6">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Username:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QCheckBox" name="useProxyServer">
-                 <property name="text">
-                  <string>Use proxy server</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="label_3">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Proxy type:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="label_5">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Port:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLabel" name="label_7">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Password:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QLineEdit" name="proxyHostName">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="2">
-                <widget class="QLineEdit" name="proxyPort">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="2">
-                <widget class="QLineEdit" name="proxyUserName">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="2">
-                <widget class="QLineEdit" name="proxyPassword">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="echoMode">
-                  <enum>QLineEdit::Password</enum>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
+            <widget class="QGroupBox" name="groupBox_12">
+             <property name="title">
+              <string>General</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_33">
+              <item>
+               <widget class="QCheckBox" name="checkbox_allow_web_connect">
+                <property name="text">
+                 <string>Allow Octave to connect to the Octave web site to display current news and information</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_13">
+             <property name="title">
+              <string>Proxy Server</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_34">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                 <layout class="QGridLayout" name="gridLayout_5">
+                  <item row="1" column="2">
+                   <widget class="QLabel" name="proxy_host_name_label">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Hostname:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QComboBox" name="proxy_type">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QLabel" name="proxy_username_label">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Username:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QLabel" name="proxy_type_label">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="text">
+                     <string>Proxy type:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QLabel" name="proxy_port_label">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Port:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="2">
+                   <widget class="QLabel" name="proxy_password_label">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Password:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QLineEdit" name="proxy_host_name">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="3">
+                   <widget class="QLineEdit" name="proxy_port">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="3">
+                   <widget class="QLineEdit" name="proxy_username">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="3">
+                   <widget class="QLineEdit" name="proxy_password">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="echoMode">
+                     <enum>QLineEdit::Password</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="use_proxy_server">
+                    <property name="text">
+                     <string>Use proxy server</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_30">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer_5">
@@ -2961,102 +2948,6 @@
  <resources/>
  <connections>
   <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_4</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>69</x>
-     <y>122</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_3</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>59</x>
-     <y>91</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>proxyHostName</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>291</x>
-     <y>124</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_5</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>44</x>
-     <y>152</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>proxyType</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>291</x>
-     <y>91</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>proxyPort</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>364</x>
-     <y>154</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>useCustomFileEditor</sender>
    <signal>toggled(bool)</signal>
    <receiver>customFileEditor</receiver>
@@ -3069,70 +2960,6 @@
     <hint type="destinationlabel">
      <x>343</x>
      <y>63</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_7</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>67</x>
-     <y>212</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_6</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>68</x>
-     <y>182</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>proxyPassword</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>364</x>
-     <y>214</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>proxyUserName</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>364</x>
-     <y>184</y>
     </hint>
    </hints>
   </connection>
@@ -3181,22 +3008,6 @@
     <hint type="destinationlabel">
      <x>380</x>
      <y>156</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_highlightCurrentLine</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_label_cl_color</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>184</x>
-     <y>86</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>515</x>
-     <y>86</y>
     </hint>
    </hints>
   </connection>
@@ -3309,70 +3120,6 @@
     <hint type="destinationlabel">
      <x>426</x>
      <y>324</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_longWindowTitle</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_lbl_min_tab_width</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>145</x>
-     <y>72</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>343</x>
-     <y>72</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_longWindowTitle</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_notebook_tab_width_max</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>145</x>
-     <y>72</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>437</x>
-     <y>72</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_longWindowTitle</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_lbl_max_tab_width</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>145</x>
-     <y>72</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>439</x>
-     <y>72</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_longWindowTitle</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_notebook_tab_width_min</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>145</x>
-     <y>72</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>393</x>
-     <y>72</y>
     </hint>
    </hints>
   </connection>

@@ -94,18 +94,11 @@
 ## @end example
 ##
 ## @noindent
-## The color of the bars is taken from the figure's colormap, such that
-##
-## @example
-## @group
-## bar (rand (10, 3));
-## colormap (summer (64));
-## @end group
-## @end example
-##
-## @noindent
-## will change the colors used for the bars.  The color of bars can also be set
-## manually using the @qcode{"facecolor"} property as shown below.
+## The default color for bars is taken from the axes' @qcode{"ColorOrder"}
+## property.  The default color for bars when a histogram option
+## (@qcode{"hist"}, @qcode{"histc"} is used is the @qcode{"Colormap"} property
+## of either the axes or figure.  The color of bars can also be set manually
+## using the @qcode{"facecolor"} property as shown below.
 ##
 ## @example
 ## @group
@@ -121,9 +114,8 @@
 
 function varargout = bar (varargin)
   varargout = cell (nargout, 1);
-  [varargout{:}] = __bar__ (true, "bar", varargin{:});
+  [varargout{:}] = __bar__ ("bar", true, varargin{:});
 endfunction
-
 
 %!demo
 %! clf;
@@ -144,3 +136,17 @@ endfunction
 %! clf;
 %! h = bar (rand (5, 3), "stacked");
 %! title ("bar() graph with stacked style");
+
+%!demo
+%! clf;
+%! y = -rand (3) .* eye (3) + rand (3) .* (! eye (3));
+%! h = bar (y, "stacked");
+%! title ("stacked bar() graph including intermingled negative values");
+
+%% Test input validation
+%!error bar ()
+%!error <Y must be numeric> bar ("foo")
+%!error <X must be a vector> bar ([1 2; 3 4], [1 2 3 4])
+%!error <X vector values must be unique> bar ([1 2 3 3], [1 2 3 4])
+%!error <length of X and Y must be equal> bar ([1 2 3], [1 2 3 4])
+%!error <length of X and Y must be equal> bar ([1 2 3 4], [1 2 3])

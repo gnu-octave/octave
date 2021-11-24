@@ -64,20 +64,22 @@ endfunction
 %!shared x,v,p,y
 %! x = [-1 0.1 1.1 1.9 3];
 %! v = 0.1:0.2:1.9;
-%! p = 1/length(v) * ones (1, length(v));
+%! p = 1/length (v) * ones (1, length (v));
 %! y = [0 0.1 0.6 1 1];
 %!assert (discrete_cdf ([x, NaN], v, p), [y, NaN], eps)
 
 ## Test class of input preserved
-%!assert (discrete_cdf (single ([x, NaN]), v, p), single ([y, NaN]), 2*eps ("single"))
-%!assert (discrete_cdf ([x, NaN], single (v), p), single ([y, NaN]), 2*eps ("single"))
-%!assert (discrete_cdf ([x, NaN], v, single (p)), single ([y, NaN]), 2*eps ("single"))
+%!assert (discrete_cdf (single ([x, NaN]), v, p),
+%!        single ([y, NaN]), 2*eps ("single"))
+%!assert (discrete_cdf ([x, NaN], single (v), p),
+%!        single ([y, NaN]), 2*eps ("single"))
+%!assert (discrete_cdf ([x, NaN], v, single (p)),
+%!        single ([y, NaN]), 2*eps ("single"))
 
 ## Test input validation
-%!error discrete_cdf ()
-%!error discrete_cdf (1)
-%!error discrete_cdf (1,2)
-%!error discrete_cdf (1,2,3,4)
+%!error <Invalid call> discrete_cdf ()
+%!error <Invalid call> discrete_cdf (1)
+%!error <Invalid call> discrete_cdf (1,2)
 %!error discrete_cdf (1, ones (2), ones (2,1))
 %!error discrete_cdf (1, [1 ; NaN], ones (2,1))
 %!error discrete_cdf (1, ones (2,1), ones (1,1))

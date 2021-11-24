@@ -44,10 +44,6 @@
 
 function val = pathdef ()
 
-  if (nargin > 0)
-    print_usage ();
-  endif
-
   ## Locate any project-specific .octaverc file.
   proj_octaverc = fullfile (pwd, ".octaverc");
   if (exist (proj_octaverc, "file"))
@@ -112,10 +108,10 @@ endfunction
 %!   addpath (tmp_dir);
 %!   p1 = path ();
 %!   p2 = pathdef ();
-%!   assert (! isempty (strfind (p1, tmp_dir)))
-%!   assert (isempty (strfind (p2, tmp_dir)))
+%!   assert (! isempty (strfind (p1, tmp_dir)));
+%!   assert (isempty (strfind (p2, tmp_dir)));
 %! unwind_protect_cleanup
-%!   rmdir (tmp_dir);
+%!   sts = rmdir (tmp_dir);
 %!   path (path_orig);
 %! end_unwind_protect
 
@@ -130,9 +126,9 @@ endfunction
 %!   path_1 = path ();
 %!   p = pathdef ();
 %!   path_2 = path ();
-%!   assert (path_1, path_2)
+%!   assert (path_1, path_2);
 %! unwind_protect_cleanup
-%!   rmdir (tmp_dir);
+%!   sts = rmdir (tmp_dir);
 %!   path (path_orig);
 %! end_unwind_protect
 

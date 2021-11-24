@@ -334,7 +334,7 @@ end
 
 % Return
 if isempty(constr)
-    return
+    return;
 end
 
 % Unpack constraints

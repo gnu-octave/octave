@@ -67,7 +67,7 @@
 
 function [v, lambda, c] = condeig (a)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -134,12 +134,11 @@ endfunction
 %! assert (lambda, expected_lambda, 0.001);
 %! assert (c, expected_c, 0.001);
 
-# Test empty input
+## Test empty input
 %!assert (condeig ([]), [])
 
 ## Test input validation
-%!error condeig ()
-%!error condeig (1,2)
+%!error <Invalid call> condeig ()
 %!error <A must be a square numeric matrix> condeig ({1})
 %!error <A must be a square numeric matrix> condeig (ones (3,2))
 %!error <A must be a square numeric matrix> condeig (ones (2,2,2))

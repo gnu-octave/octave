@@ -207,19 +207,24 @@ namespace octave
         args(0) = to_ov (obj);
         args(1) = val;
 
-        args = feval (set_fcn, args, 1);
-
-        if (args.length () > 0 && args(0).is_defined ())
+        if (obj.is_handle_object ())
+          feval (set_fcn, args, 0);
+        else
           {
-            if (args (0).is_classdef_object ())
-              {
-                cdef_object new_obj = to_cdef (args(0));
+            args = feval (set_fcn, args, 1);
 
-                obj = new_obj;
+            if (args.length () > 0 && args(0).is_defined ())
+              {
+                if (args(0).is_classdef_object ())
+                  {
+                    cdef_object new_obj = to_cdef (args(0));
+
+                    obj = new_obj;
+                  }
+                else
+                  ::warning ("set-method of property '%s' returned a non-classdef object",
+                             get_name ().c_str ());
               }
-            else
-              ::warning ("set-method of property '%s' returned a non-classdef object",
-                         get_name ().c_str ());
           }
       }
   }

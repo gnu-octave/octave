@@ -61,7 +61,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{stream2, stream3, streamtube, ostreamtube}
+## @seealso{stream2, stream3, streamribbon, streamtube, ostreamtube}
 ## @end deftypefn
 
 function h = streamline (varargin)
@@ -154,7 +154,7 @@ endfunction
 %! sy = 0.0;
 %! sz = 0.0;
 %! plot3 (sx, sy, sz, ".r", "markersize", 15);
-%! t = linspace (0, 12 * 2 * pi(), 500);
+%! t = linspace (0, 12 * 2 * pi (), 500);
 %! tx = exp (-a * t).*cos (t);
 %! ty = exp (-a * t).*sin (t);
 %! tz = - b * t;
@@ -167,7 +167,7 @@ endfunction
 %! axis equal tight;
 
 ## Test input validation
-%!error streamline ()
+%!error <Invalid call> streamline ()
 %!error <Invalid call to streamline>
 %! hf = figure ("visible", "off");
 %! unwind_protect

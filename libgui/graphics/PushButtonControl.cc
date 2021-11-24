@@ -36,7 +36,7 @@
 
 #include "octave-qobject.h"
 
-namespace QtHandles
+namespace octave
 {
 
   PushButtonControl*
@@ -71,6 +71,7 @@ namespace QtHandles
     QImage img = Utils::makeImageFromCData (cdat,
                                             cdat.columns (), cdat.rows ());
     btn->setIcon (QIcon (QPixmap::fromImage (img)));
+    btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
   }
 
   PushButtonControl::~PushButtonControl (void)
@@ -91,6 +92,7 @@ namespace QtHandles
                                                   cdat.rows (),
                                                   cdat.columns ());
           btn->setIcon (QIcon (QPixmap::fromImage (img)));
+          btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
         }
         break;
 

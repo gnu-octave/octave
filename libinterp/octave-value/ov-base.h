@@ -52,7 +52,7 @@ namespace octave
   // interpreter-private.h here and bringing in a lot of unnecessary
   // symbols that require even more header files.
 
-  extern type_info& __get_type_info__ (const std::string&);
+  extern OCTINTERP_API type_info& __get_type_info__ (const std::string&);
 }
 
 class Cell;
@@ -93,8 +93,7 @@ enum builtin_type_t
   btyp_num_types = btyp_unknown
 };
 
-extern OCTINTERP_API std::string
-btyp_class_name [btyp_num_types];
+extern OCTINTERP_API std::string btyp_class_name [];
 
 inline bool btyp_isnumeric (builtin_type_t btyp)
 { return btyp <= btyp_uint64; }
@@ -130,27 +129,40 @@ struct class_to_btyp
   static const builtin_type_t btyp = btyp_unknown;
 };
 
-#define DEF_CLASS_TO_BTYP(CLASS,BTYP)           \
+template <builtin_type_t BTYP>
+struct btyp_to_class
+{
+  typedef void type;
+};
+
+#define DEF_BTYP_TRAITS(BTYP, CLASS)            \
   template <>                                   \
   struct class_to_btyp<CLASS>                   \
   {                                             \
     static const builtin_type_t btyp = BTYP;    \
+  };                                            \
+                                                \
+  template <>                                   \
+  struct btyp_to_class<BTYP>                    \
+  {                                             \
+    typedef CLASS type;                         \
   }
 
-DEF_CLASS_TO_BTYP (double, btyp_double);
-DEF_CLASS_TO_BTYP (float, btyp_float);
-DEF_CLASS_TO_BTYP (Complex, btyp_complex);
-DEF_CLASS_TO_BTYP (FloatComplex, btyp_float_complex);
-DEF_CLASS_TO_BTYP (octave_int8, btyp_int8);
-DEF_CLASS_TO_BTYP (octave_int16, btyp_int16);
-DEF_CLASS_TO_BTYP (octave_int32, btyp_int32);
-DEF_CLASS_TO_BTYP (octave_int64, btyp_int64);
-DEF_CLASS_TO_BTYP (octave_uint8, btyp_uint8);
-DEF_CLASS_TO_BTYP (octave_uint16, btyp_uint16);
-DEF_CLASS_TO_BTYP (octave_uint32, btyp_uint32);
-DEF_CLASS_TO_BTYP (octave_uint64, btyp_uint64);
-DEF_CLASS_TO_BTYP (bool, btyp_bool);
-DEF_CLASS_TO_BTYP (char, btyp_char);
+DEF_BTYP_TRAITS (btyp_double, double);
+DEF_BTYP_TRAITS (btyp_float, float);
+DEF_BTYP_TRAITS (btyp_complex, Complex);
+DEF_BTYP_TRAITS (btyp_float_complex, FloatComplex);
+DEF_BTYP_TRAITS (btyp_int8, octave_int8);
+DEF_BTYP_TRAITS (btyp_int16, octave_int16);
+DEF_BTYP_TRAITS (btyp_int32, octave_int32);
+DEF_BTYP_TRAITS (btyp_int64, octave_int64);
+DEF_BTYP_TRAITS (btyp_uint8, octave_uint8);
+DEF_BTYP_TRAITS (btyp_uint16, octave_uint16);
+DEF_BTYP_TRAITS (btyp_uint32, octave_uint32);
+DEF_BTYP_TRAITS (btyp_uint64, octave_uint64);
+DEF_BTYP_TRAITS (btyp_bool, bool);
+DEF_BTYP_TRAITS (btyp_char, char);
+
 
 // T_ID is the type id of struct objects, set by register_type().
 // T_NAME is the type name of struct objects.
@@ -179,22 +191,35 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
     static const std::string t_name;                                    \
     static const std::string c_name;
 
-#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)            \
-  int t::t_id (-1);                                             \
-  const std::string t::t_name (n);                              \
-  const std::string t::c_name (c);                              \
-  void t::register_type (void)                                  \
-  {                                                             \
-    octave::type_info& type_info                                \
-      = octave::__get_type_info__ (#t "::register_type");       \
-                                                                \
-    register_type (type_info);                                  \
-  }                                                             \
-  void t::register_type (octave::type_info& ti)                 \
-  {                                                             \
-    octave_value v (new t ());                                  \
-    t_id = ti.register_type (t::t_name, t::c_name, v);          \
+#define DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS(cls, type)           \
+  template <> void cls<type>::register_type (void);                     \
+  template <> void cls<type>::register_type (octave::type_info&);       \
+  template <> int cls<type>::t_id;                                      \
+  template <> const std::string cls<type>::t_name;                      \
+  template <> const std::string cls<type>::c_name;
+
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL(tspec, t, n, c)    \
+  tspec int t::t_id (-1);                                               \
+  tspec const std::string t::t_name (n);                                \
+  tspec const std::string t::c_name (c);                                \
+  tspec void t::register_type (void)                                    \
+  {                                                                     \
+    octave::type_info& type_info                                        \
+      = octave::__get_type_info__ (#t "::register_type");               \
+                                                                        \
+    register_type (type_info);                                          \
+  }                                                                     \
+  tspec void t::register_type (octave::type_info& ti)                   \
+  {                                                                     \
+    octave_value v (new t ());                                          \
+    t_id = ti.register_type (t::t_name, t::c_name, v);                  \
   }
+
+#define DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)           \
+  DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL (template <>, t, n, c)
+
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)            \
+  DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL ( , t, n, c)
 
 // A base value type, so that derived types only have to redefine what
 // they need (if they are derived from octave_base_value instead of
@@ -213,18 +238,18 @@ public:
   {
   public:
     type_conv_info (type_conv_fcn f = nullptr, int t = -1)
-      : _fcn (f), _type_id (t) { }
+      : m_fcn (f), m_type_id (t) { }
 
-    operator type_conv_fcn (void) const { return _fcn; }
+    operator type_conv_fcn (void) const { return m_fcn; }
 
     octave_base_value * operator () (const octave_base_value& v) const
-    { return (*_fcn) (v); }
+    { return (*m_fcn) (v); }
 
-    int type_id (void) const { return _type_id; }
+    int type_id (void) const { return m_type_id; }
 
   private:
-    type_conv_fcn _fcn;
-    int _type_id;
+    type_conv_fcn m_fcn;
+    int m_type_id;
   };
 
   friend class octave_value;
@@ -315,7 +340,7 @@ public:
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
-  virtual idx_vector index_vector (bool require_integers = false) const;
+  virtual octave::idx_vector index_vector (bool require_integers = false) const;
 
   virtual dim_vector dims (void) const { return dim_vector (); }
 
@@ -357,6 +382,8 @@ public:
   virtual MatrixType matrix_type (const MatrixType& typ) const;
 
   virtual bool is_defined (void) const { return false; }
+
+  virtual bool is_storable (void) const { return true; }
 
   bool isempty (void) const { return (dims ().any_zero ()); }
 
@@ -457,6 +484,8 @@ public:
   virtual bool issparse (void) const { return false; }
 
   virtual bool is_true (void) const { return false; }
+
+  virtual bool is_magic_int (void) const { return false; }
 
   virtual bool isnull (void) const { return false; }
 
@@ -599,7 +628,25 @@ public:
 
   virtual Array<std::string> cellstr_value (void) const;
 
-  virtual Range range_value (void) const;
+  virtual octave::range<float> float_range_value (void) const;
+
+  virtual octave::range<double> range_value (void) const;
+
+  virtual octave::range<octave_int8> int8_range_value (void) const;
+
+  virtual octave::range<octave_int16> int16_range_value (void) const;
+
+  virtual octave::range<octave_int32> int32_range_value (void) const;
+
+  virtual octave::range<octave_int64> int64_range_value (void) const;
+
+  virtual octave::range<octave_uint8> uint8_range_value (void) const;
+
+  virtual octave::range<octave_uint16> uint16_range_value (void) const;
+
+  virtual octave::range<octave_uint32> uint32_range_value (void) const;
+
+  virtual octave::range<octave_uint64> uint64_range_value (void) const;
 
   virtual octave_map map_value (void) const;
 
@@ -692,13 +739,13 @@ public:
          oct_data_conv::data_type output_type, int skip,
          octave::mach_info::float_format flt_fmt) const;
 
-  virtual void * mex_get_data (void) const { return nullptr; }
+  virtual const void * mex_get_data (void) const { return nullptr; }
 
-  virtual octave_idx_type * mex_get_ir (void) const { return nullptr; }
+  virtual const octave_idx_type * mex_get_ir (void) const { return nullptr; }
 
-  virtual octave_idx_type * mex_get_jc (void) const { return nullptr; }
+  virtual const octave_idx_type * mex_get_jc (void) const { return nullptr; }
 
-  virtual mxArray * as_mxArray (void) const;
+  virtual mxArray * as_mxArray (bool interleaved) const;
 
   virtual octave_value diag (octave_idx_type k = 0) const;
 
@@ -816,46 +863,32 @@ public:
   virtual bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
-  // Grab the reference count.  For use by jit.
-  void
-  grab (void)
-  {
-    ++count;
-  }
-
-  // Release the reference count.  For use by jit.
-  void
-  release (void)
-  {
-    if (--count == 0)
-      delete this;
-  }
-
 protected:
 
   // This should only be called for derived types.
 
-  octave_value numeric_assign (const std::string& type,
-                               const std::list<octave_value_list>& idx,
-                               const octave_value& rhs);
+  OCTINTERP_API octave_value
+  numeric_assign (const std::string& type,
+                  const std::list<octave_value_list>& idx,
+                  const octave_value& rhs);
 
   void reset_indent_level (void) const
-  { curr_print_indent_level = 0; }
+  { s_curr_print_indent_level = 0; }
 
   void increment_indent_level (void) const
-  { curr_print_indent_level += 2; }
+  { s_curr_print_indent_level += 2; }
 
   void decrement_indent_level (void) const
-  { curr_print_indent_level -= 2; }
+  { s_curr_print_indent_level -= 2; }
 
   int current_print_indent_level (void) const
-  { return curr_print_indent_level; }
+  { return s_curr_print_indent_level; }
 
-  void indent (std::ostream& os) const;
+  OCTINTERP_API void indent (std::ostream& os) const;
 
-  void newline (std::ostream& os) const;
+  OCTINTERP_API void newline (std::ostream& os) const;
 
-  void reset (void) const;
+  OCTINTERP_API void reset (void) const;
 
   // A reference count.
   // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
@@ -863,17 +896,19 @@ protected:
   // (think of an empty cell array with >2G elements).
   octave::refcount<octave_idx_type> count;
 
-  static const char * get_umap_name (unary_mapper_t);
+  OCTINTERP_API static const char * get_umap_name (unary_mapper_t);
 
-  void warn_load (const char *type) const;
-  void warn_save (const char *type) const;
+  OCTINTERP_API void warn_load (const char *type) const;
+  OCTINTERP_API void warn_save (const char *type) const;
 
 private:
 
-  void wrong_type_arg_error (void) const;
+  OCTINTERP_API void wrong_type_arg_error (void) const;
 
-  static int curr_print_indent_level;
-  static bool beginning_of_line;
+  //--------
+
+  static int s_curr_print_indent_level;
+  static bool s_beginning_of_line;
 
   DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA
 };

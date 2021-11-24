@@ -30,13 +30,13 @@
 extern "C" {
 #endif
 
-extern void octave_set_default_fpucw (void);
+extern OCTAVE_API void octave_set_default_fpucw (void);
 
 // unsigned int must match the actual type of fpucw_t.
 
-extern unsigned int octave_begin_long_double_rounding (void);
+extern OCTAVE_API unsigned int octave_begin_long_double_rounding (void);
 
-extern void octave_end_long_double_rounding (unsigned int);
+extern OCTAVE_API void octave_end_long_double_rounding (unsigned int);
 
 #if defined __cplusplus
 }

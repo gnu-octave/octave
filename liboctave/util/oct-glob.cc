@@ -33,8 +33,17 @@
 #include "glob-wrappers.h"
 
 #include "oct-glob.h"
+#include "file-ops.h"
 #include "file-stat.h"
 #include "unwind-prot.h"
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
+#  include <shlwapi.h>
+#  include <wchar.h>
+
+#  include "lo-sysdep.h"
+#endif
 
 // These functions are defined here and not in glob_match.cc so that we
 // can include the glob.h file from gnulib, which defines glob to
@@ -78,11 +87,10 @@ namespace octave
 
       int k = 0;
 
-      unwind_protect frame;
-
       void *glob_info = octave_create_glob_info_struct ();
 
-      frame.add_fcn (octave_destroy_glob_info_struct, glob_info);
+      unwind_action cleanup_glob_info_struct
+        ([=] () { octave_destroy_glob_info_struct (glob_info); });
 
       for (int i = 0; i < npat; i++)
         {
@@ -143,6 +151,56 @@ namespace octave
       return retval.sort ();
     }
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+    static void
+    find_files (std::list<std::string>& dirlist, const std::string& dir,
+                const std::string& pat, std::string& file)
+    {
+      // remove leading file separators
+      while (file.length () > 1 && sys::file_ops::is_dir_sep (file[0]))
+        file = file.substr (1, std::string::npos);
+
+      // find first file in directory that matches pattern in PAT
+      std::wstring wpat = u8_to_wstring (sys::file_ops::concat (dir, pat));
+      _WIN32_FIND_DATAW ffd;
+      HANDLE h_find = FindFirstFileW (wpat.c_str (), &ffd);
+      // ignore any error
+      if (h_find == INVALID_HANDLE_VALUE)
+        return;
+
+      unwind_action close_h_find ([=] () { FindClose (h_find); });
+
+      // find all files that match pattern
+      do
+        {
+          std::string found_dir = u8_from_wstring (ffd.cFileName);
+
+          if (file.empty ())
+            {
+              if (found_dir.compare (".") && found_dir.compare (".."))
+                dirlist.push_back (sys::file_ops::concat (dir, found_dir));
+            }
+          else
+            {
+              // get next component of path (or file name)
+              std::size_t sep_pos
+                = file.find_first_of (sys::file_ops::dir_sep_chars ());
+              std::string pat_str = file.substr (0, sep_pos);
+              std::string file_str = (sep_pos != std::string::npos
+                                      && file.length () > sep_pos+1)
+                                     ? file.substr (sep_pos+1) : "";
+
+              // call this function recursively with next path component in PAT
+              find_files (dirlist, sys::file_ops::concat (dir, found_dir),
+                          pat_str, file_str);
+            }
+        }
+      while (FindNextFileW (h_find, &ffd) != 0);
+    }
+
+#endif
+
     // Glob like Windows "dir".  Treat only * and ? as wildcards,
     // and "*.*" matches filenames even if they do not contain ".".
     string_vector
@@ -152,13 +210,69 @@ namespace octave
 
       int npat = pat.numel ();
 
-      int k = 0;
+#if defined (OCTAVE_USE_WINDOWS_API)
 
-      unwind_protect frame;
+      std::list<std::string> dirlist;
+
+      for (int i = 0; i < npat; i++)
+        {
+          std::string xpat = pat(i);
+          if (xpat.empty ())
+            continue;
+
+          // separate component until first dir separator
+          std::size_t sep_pos
+            = xpat.find_first_of (sys::file_ops::dir_sep_chars ());
+          std::string file = (sep_pos != std::string::npos
+                              && xpat.length () > sep_pos+1)
+                             ? xpat.substr (sep_pos+1) : "";
+          xpat = xpat.substr (0, sep_pos);
+
+          std::string dir = "";
+
+          if ((sep_pos == 2 || xpat.length () == 2) && xpat[1] == ':')
+            {
+              // include disc root with first file or folder
+
+              // remove leading file separators in path without disc root
+              while (file.length () > 1 && sys::file_ops::is_dir_sep (file[0]))
+                file = file.substr (1, std::string::npos);
+
+              sep_pos = file.find_first_of (sys::file_ops::dir_sep_chars ());
+              dir = xpat;
+              xpat = file.substr (0, sep_pos);
+              file = (sep_pos != std::string::npos
+                      && file.length () > sep_pos+1)
+                     ? file.substr (sep_pos+1) : "";
+              if (xpat.empty ())
+                {
+                  // don't glob if input is only disc root
+                  std::wstring wpat = u8_to_wstring (pat(i));
+                  if (PathFileExistsW (wpat.c_str ()))
+                    {
+                      if (sys::file_ops::is_dir_sep (pat(i).back ()))
+                        dirlist.push_back (dir +
+                                           sys::file_ops::dir_sep_char ());
+                      else
+                        dirlist.push_back (dir);
+                    }
+                  continue;
+                }
+            }
+
+          find_files (dirlist, dir, xpat, file);
+        }
+
+      retval = string_vector (dirlist);
+
+#else
+
+      int k = 0;
 
       void *glob_info = octave_create_glob_info_struct ();
 
-      frame.add_fcn (octave_destroy_glob_info_struct, glob_info);
+      unwind_action cleanup_glob_info_struct
+        ([=] () { octave_destroy_glob_info_struct (glob_info); });
 
       for (int i = 0; i < npat; i++)
         {
@@ -171,12 +285,12 @@ namespace octave
 
               for (std::size_t j = 0; j < xpat.length (); j++)
                 {
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
-     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+#  if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
+       && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
                   if (xpat[j] == '\\')
                     escaped += '/';
                   else
-#endif
+#  endif
                     {
                       if (xpat[j] == ']' || xpat[j] == '[')
                         escaped += '\\';
@@ -221,12 +335,12 @@ namespace octave
 
                           for (std::size_t m = 0; m < tmp.length (); m++)
                             {
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
+#  if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
                               if (tmp[m] == '/')
                                 unescaped += '\\';
                               else
-#endif
+#  endif
                                 {
                                   if (tmp[m] == '\\'
                                       && ++m == tmp.length ())
@@ -244,6 +358,7 @@ namespace octave
                 }
             }
         }
+#endif
 
       return retval.sort ();
     }

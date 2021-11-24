@@ -686,14 +686,14 @@ ComplexMatrix::extract (octave_idx_type r1, octave_idx_type c1,
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }
 
-  return index (idx_vector (r1, r2+1), idx_vector (c1, c2+1));
+  return index (octave::idx_vector (r1, r2+1), octave::idx_vector (c1, c2+1));
 }
 
 ComplexMatrix
 ComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1,
                           octave_idx_type nr, octave_idx_type nc) const
 {
-  return index (idx_vector (r1, r1 + nr), idx_vector (c1, c1 + nc));
+  return index (octave::idx_vector (r1, r1 + nr), octave::idx_vector (c1, c1 + nc));
 }
 
 // extract row or column i.
@@ -701,13 +701,13 @@ ComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1,
 ComplexRowVector
 ComplexMatrix::row (octave_idx_type i) const
 {
-  return index (idx_vector (i), idx_vector::colon);
+  return index (octave::idx_vector (i), octave::idx_vector::colon);
 }
 
 ComplexColumnVector
 ComplexMatrix::column (octave_idx_type i) const
 {
-  return index (idx_vector::colon, idx_vector (i));
+  return index (octave::idx_vector::colon, octave::idx_vector (i));
 }
 
 // Local function to calculate the 1-norm.
@@ -935,7 +935,15 @@ ComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
   if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+  if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
+    {
+      if (std::real (this->elem (0)) == 0 && std::imag (this->elem (0)) == 0)
+        ret = ComplexMatrix (1,1,
+                             Complex (octave::numeric_limits<double>::Inf (), 0.0));
+      else
+        ret = Complex (1,0) / (*this); 
+    }
+  else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
@@ -959,11 +967,8 @@ ComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
 
       if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0)
         {
-          if (numel () == 1)
-            ret = ComplexMatrix (1, 1, 0.0);
-          else
-            ret = ComplexMatrix (rows (), columns (),
-                                 Complex (octave::numeric_limits<double>::Inf (), 0.0));
+          ret = ComplexMatrix (rows (), columns (),
+                               Complex (octave::numeric_limits<double>::Inf (), 0.0));
         }
     }
 
@@ -1349,7 +1354,7 @@ ComplexMatrix::rcond (MatrixType& mattype) const
       // Only calculate the condition number for LU/Cholesky
       if (typ == MatrixType::Upper)
         {
-          const Complex *tmp_data = fortran_vec ();
+          const Complex *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'U';
@@ -1377,7 +1382,7 @@ ComplexMatrix::rcond (MatrixType& mattype) const
           ("permuted triangular matrix not implemented");
       else if (typ == MatrixType::Lower)
         {
-          const Complex *tmp_data = fortran_vec ();
+          const Complex *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'L';
@@ -1530,7 +1535,7 @@ ComplexMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
 
-      const Complex *tmp_data = fortran_vec ();
+      const Complex *tmp_data = data ();
 
       retval = b;
       Complex *result = retval.fortran_vec ();
@@ -1628,7 +1633,7 @@ ComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
 
-      const Complex *tmp_data = fortran_vec ();
+      const Complex *tmp_data = data ();
 
       retval = b;
       Complex *result = retval.fortran_vec ();
@@ -1866,8 +1871,6 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
-                      info = -2;
-
                       if (sing_handler)
                         sing_handler (rcon);
                       else
@@ -3168,7 +3171,7 @@ operator << (std::ostream& os, const ComplexMatrix& a)
       for (octave_idx_type j = 0; j < a.cols (); j++)
         {
           os << ' ';
-          octave_write_complex (os, a.elem (i, j));
+          octave::write_value<Complex> (os, a.elem (i, j));
         }
       os << "\n";
     }
@@ -3187,7 +3190,7 @@ operator >> (std::istream& is, ComplexMatrix& a)
       for (octave_idx_type i = 0; i < nr; i++)
         for (octave_idx_type j = 0; j < nc; j++)
           {
-            tmp = octave_read_value<Complex> (is);
+            tmp = octave::read_value<Complex> (is);
             if (is)
               a.elem (i, j) = tmp;
             else
@@ -3235,10 +3238,10 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   // Transform c to new coordinates.
 
-  ComplexMatrix ua = as.unitary_matrix ();
+  ComplexMatrix ua = as.unitary_schur_matrix ();
   ComplexMatrix sch_a = as.schur_matrix ();
 
-  ComplexMatrix ub = bs.unitary_matrix ();
+  ComplexMatrix ub = bs.unitary_schur_matrix ();
   ComplexMatrix sch_b = bs.schur_matrix ();
 
   ComplexMatrix cx = ua.hermitian () * c * ub;

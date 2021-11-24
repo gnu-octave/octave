@@ -115,7 +115,7 @@ function out = base2dec (s, base)
 
   ## Multiply the resulting digits by the appropriate power
   ## and sum the rows.
-  out = s * (base .^ (columns(s)-1 : -1 : 0)');
+  out = s * (base .^ (columns (s)-1 : -1 : 0)');
 
 endfunction
 
@@ -128,7 +128,7 @@ endfunction
 %!assert <*35621> (base2dec (["0"; "1"], 2), [0; 1])
 
 ## Test input validation
-%!error base2dec ()
+%!error <Invalid call> base2dec ()
 %!error base2dec ("11120")
 %!error base2dec ("11120", 3, 4)
 %!error <symbols .* must be unique> base2dec ("11120", "1231")

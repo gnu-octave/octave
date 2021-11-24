@@ -73,7 +73,7 @@ FloatNDArray::fourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
-  const float *in (fortran_vec ());
+  const float *in (data ());
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
@@ -123,7 +123,7 @@ FloatNDArray::fourier2d (void) const
     return FloatComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
-  const float *in = fortran_vec ();
+  const float *in = data ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
@@ -160,7 +160,7 @@ FloatNDArray::fourierNd (void) const
   dim_vector dv = dims ();
   int rank = dv.ndims ();
 
-  const float *in (fortran_vec ());
+  const float *in (data ());
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
@@ -286,19 +286,19 @@ FloatNDArray::any_element_is_inf_or_nan (void) const
 bool
 FloatNDArray::any_element_not_one_or_zero (void) const
 {
-  return ! test_all (xis_one_or_zero);
+  return ! test_all (octave::is_one_or_zero);
 }
 
 bool
 FloatNDArray::all_elements_are_zero (void) const
 {
-  return test_all (xis_zero);
+  return test_all (octave::is_zero);
 }
 
 bool
 FloatNDArray::all_elements_are_int_or_inf_or_nan (void) const
 {
-  return test_all (xis_int_or_inf_or_nan);
+  return test_all (octave::is_int_or_inf_or_nan);
 }
 
 // Return nonzero if any element of M is not an integer.  Also extract
@@ -594,7 +594,7 @@ operator << (std::ostream& os, const FloatNDArray& a)
   for (octave_idx_type i = 0; i < nel; i++)
     {
       os << ' ';
-      octave_write_float (os, a.elem (i));
+      octave::write_value<float> (os, a.elem (i));
       os << "\n";
     }
   return os;
@@ -610,7 +610,7 @@ operator >> (std::istream& is, FloatNDArray& a)
       float tmp;
       for (octave_idx_type i = 0; i < nel; i++)
         {
-          tmp = octave_read_value<float> (is);
+          tmp = octave::read_value<float> (is);
           if (is)
             a.elem (i) = tmp;
           else

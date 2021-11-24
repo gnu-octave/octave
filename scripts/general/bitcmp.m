@@ -47,7 +47,7 @@
 
 function C = bitcmp (A, k)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -93,35 +93,40 @@ endfunction
 %! Amax = 24;
 %! Bmax = flintmax ("single") - 1;
 %! A = bitshift (Bmax,-2);
-%! assert (bitcmp (A,Amax),bitor (bitshift (single (1),Amax-1), bitshift (single (1),Amax-2)));
+%! assert (bitcmp (A,Amax),
+%!         bitor (bitshift (single (1),Amax-1), bitshift (single (1),Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (single (1),Amax-2));
 %! assert (bitcmp (A,Amax-2), single (0));
 %!test
 %! Amax = 8;
 %! Bmax = intmax ("uint8");
 %! A = bitshift (Bmax,-2);
-%! assert (bitcmp (A,Amax),bitor (bitshift (uint8 (1),Amax-1), bitshift (uint8 (1),Amax-2)));
+%! assert (bitcmp (A,Amax),
+%!         bitor (bitshift (uint8 (1),Amax-1), bitshift (uint8 (1),Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (uint8 (1),Amax-2));
 %! assert (bitcmp (A,Amax-2), uint8 (0));
 %!test
 %! Amax = 16;
 %! Bmax = intmax ("uint16");
 %! A = bitshift (Bmax,-2);
-%! assert (bitcmp (A,Amax),bitor (bitshift (uint16 (1),Amax-1), bitshift (uint16 (1),Amax-2)));
+%! assert (bitcmp (A,Amax),
+%!         bitor (bitshift (uint16 (1),Amax-1), bitshift (uint16 (1),Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (uint16 (1),Amax-2));
 %! assert (bitcmp (A,Amax-2), uint16 (0));
 %!test
 %! Amax = 32;
 %! Bmax = intmax ("uint32");
 %! A = bitshift (Bmax,-2);
-%! assert (bitcmp (A,Amax),bitor (bitshift (uint32 (1),Amax-1), bitshift (uint32 (1),Amax-2)));
+%! assert (bitcmp (A,Amax),
+%!         bitor (bitshift (uint32 (1),Amax-1), bitshift (uint32 (1),Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (uint32 (1),Amax-2));
 %! assert (bitcmp (A,Amax-2), uint32 (0));
 %!test
 %! Amax = 64;
 %! Bmax = intmax ("uint64");
 %! A = bitshift (Bmax,-2);
-%! assert (bitcmp (A,Amax),bitor (bitshift (uint64 (1),Amax-1), bitshift (uint64 (1),Amax-2)));
+%! assert (bitcmp (A,Amax),
+%!         bitor (bitshift (uint64 (1),Amax-1), bitshift (uint64 (1),Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (uint64 (1),Amax-2));
 %! assert (bitcmp (A,Amax-2), uint64 (0));
 

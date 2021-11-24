@@ -70,6 +70,8 @@ namespace octave
 
       static std::string get_user_config_directory (void);
 
+      static std::string get_user_data_directory (void);
+
       static std::string get_program_name (void);
 
       static std::string get_program_invocation_name (void);
@@ -111,6 +113,8 @@ namespace octave
 
       std::string do_get_user_config_directory (void) const;
 
+      std::string do_get_user_data_directory (void) const;
+
       std::string do_get_user_name (void) const;
 
       std::string do_get_host_name (void) const;
@@ -130,29 +134,30 @@ namespace octave
       void error (const std::string&) const;
 
       // The real thing.
-      static env *instance;
+      static env *m_instance;
 
-      static void cleanup_instance (void) { delete instance; instance = nullptr; }
+      static void cleanup_instance (void)
+      { delete m_instance; m_instance = nullptr; }
 
       // TRUE means follow symbolic links that point to directories just
       // as if they are real directories.
-      bool follow_symbolic_links;
+      bool m_follow_symbolic_links;
 
       // TRUE means that pwd always give verbatim directory, regardless
       // of symbolic link following.
-      bool verbatim_pwd;
+      bool m_verbatim_pwd;
 
       // Where are we?
-      mutable std::string current_directory;
+      mutable std::string m_current_directory;
 
       // Etc.
-      mutable std::string prog_name;
+      mutable std::string m_prog_name;
 
-      mutable std::string prog_invocation_name;
+      mutable std::string m_prog_invocation_name;
 
-      mutable std::string user_name;
+      mutable std::string m_user_name;
 
-      mutable std::string host_name;
+      mutable std::string m_host_name;
     };
   }
 }

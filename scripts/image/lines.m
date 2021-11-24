@@ -38,9 +38,7 @@
 function map = lines (n)
 
   hf = get (groot, "currentfigure");
-  if (nargin > 1)
-    print_usage ();
-  elseif (nargin == 1)
+  if (nargin == 1)
     if (! isscalar (n))
       error ("lines: N must be a scalar");
     endif

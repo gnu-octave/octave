@@ -25,16 +25,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{options} =} __default_plot_options__ ()
-## Undocumented internal function.
+## Return a plot options structure @var{options} with default values
+## for all fields.
 ## @end deftypefn
 
 function options = __default_plot_options__ ()
 
-  options.key = "";
-  options.color = [];
-  options.linestyle = [];
-  options.marker = [];
-  options.errorstyle = [];
+  options = struct ("key", "",
+                    "color", [],
+                    "linestyle", [],
+                    "marker", [],
+                    "errorstyle", []);
 
 endfunction
 

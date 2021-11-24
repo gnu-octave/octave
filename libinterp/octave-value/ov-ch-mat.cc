@@ -57,14 +57,14 @@
 
 template class octave_base_matrix<charNDArray>;
 
-idx_vector
+octave::idx_vector
 octave_char_matrix::index_vector (bool /* require_integers */) const
 {
   const char *p = matrix.data ();
   if (numel () == 1 && *p == ':')
-    return idx_vector (':');
+    return octave::idx_vector (':');
   else
-    return idx_vector (array_value (true));
+    return octave::idx_vector (array_value (true));
 }
 
 double
@@ -222,18 +222,18 @@ octave_char_matrix::print_raw (std::ostream& os,
 }
 
 mxArray *
-octave_char_matrix::as_mxArray (void) const
+octave_char_matrix::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxCHAR_CLASS, dims (), mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxCHAR_CLASS, dims (), mxREAL);
 
-  mxChar *pr = static_cast<mxChar *> (retval->get_data ());
+  mxChar *pd = static_cast<mxChar *> (retval->get_data ());
 
   mwSize nel = numel ();
 
-  const char *p = matrix.data ();
+  const char *pdata = matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
-    pr[i] = p[i];
+    pd[i] = pdata[i];
 
   return retval;
 }
@@ -345,6 +345,7 @@ octave_char_matrix::map (unary_mapper_t umap) const
     case umap_fix:
     case umap_floor:
     case umap_imag:
+    case umap_isfinite:
     case umap_isinf:
     case umap_isnan:
     case umap_real:

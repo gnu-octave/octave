@@ -82,16 +82,16 @@ namespace octave
                       bool do_check_access = true,
                       const std::string& who = "");
 
-      bool check_get_access (void) const;
+      OCTINTERP_API bool check_get_access (void) const;
 
-      bool check_set_access (void) const;
+      OCTINTERP_API bool check_set_access (void) const;
 
     private:
       cdef_property_rep (const cdef_property_rep& p)
         : cdef_meta_object_rep (p)
       { }
 
-      bool is_recursive_set (const cdef_object& obj) const;
+      OCTINTERP_API bool is_recursive_set (const cdef_object& obj) const;
 
       cdef_property wrap (void)
       {
@@ -99,7 +99,7 @@ namespace octave
         return cdef_property (this);
       }
 
-      OCTAVE_NORETURN
+      OCTINTERP_API OCTAVE_NORETURN
       void err_property_access (const std::string& from,
                                 bool is_set = false) const;
     };

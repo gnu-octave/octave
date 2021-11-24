@@ -38,14 +38,18 @@
 ## @code{FontWeight}, @code{FontAngle}, @code{FontUnits}, and @code{FontSize},
 ## indicating the initially selected font.
 ##
-## The title of the dialog window can be changed using the last argument
+## The title of the dialog window can be specified by using the last argument
 ## @var{title}.
 ##
 ## If an output argument @var{fontstruct} is requested, the selected font
 ## structure is returned.  Otherwise, the font information is displayed
 ## onscreen.
 ##
-## @seealso{text, axes, uicontrol}
+## Programming Note: On systems that don't use FontConfig natively (all but
+## Linux), the font cache is built when Octave is installed.  You will need to
+## run @code{system ("fc-cache -fv")} manually after installing new fonts.
+##
+## @seealso{listfonts, text, axes, uicontrol}
 ## @end deftypefn
 
 function varargout = uisetfont (varargin)
@@ -71,7 +75,7 @@ function varargout = uisetfont (varargin)
     typ = get (h, "type");
     if (! any (strcmp (typ, {"axes", "text", "uicontrol"})))
       error ("Octave:uisetfont:bad-object",
-             'uisetfont: unhandled object type "%s"', typ);
+             "uisetfont: H must be a handle to an axes, text, or uicontrol object");
     endif
     nargin--;
     varargin(1) = [];
@@ -137,6 +141,7 @@ function varargout = uisetfont (varargin)
 
   ## Run the dialog
   warning ("off", "Octave:missing-glyph", "local");
+  warning ("off", "Octave:substituted-glyph", "local");
   hf = run_fontdialog (sysfonts, h, fontstruct, ttl, str);
 
   ## Now wait for a button to be pressed or the figure to be closed
@@ -333,7 +338,7 @@ function struct_to_lists (fontstruct, sysfonts, hlists)
 
 endfunction
 
-function cb_button (h, evt, hlists, role)
+function cb_button (h, ~, hlists, role)
 
   fontstruct = [];
   if (strcmp (role, "ok"))
@@ -345,7 +350,7 @@ function cb_button (h, evt, hlists, role)
 
 endfunction
 
-function cb_list_value_changed (h, evt, hlists, htext, sysfonts)
+function cb_list_value_changed (h, ~, hlists, htext, sysfonts)
 
   if (h == hlists(1))
     set (hlists(2), "string", getstylestring (sysfonts(get (h, "value"))),
@@ -363,7 +368,7 @@ endfunction
 %!testif HAVE_FONTCONFIG
 %! fail ("uisetfont (110, struct ())", "Invalid call");
 %!testif HAVE_FONTCONFIG
-%! fail ("uisetfont (groot ())", "unhandled object type");
+%! fail ("uisetfont (groot ())", "H must be a handle to an axes");
 %!testif HAVE_FONTCONFIG
 %! fail ("uisetfont (struct ())", "FONTSTRUCT .* must have fields FontName,.*");
 %!testif HAVE_FONTCONFIG

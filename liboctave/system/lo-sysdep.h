@@ -41,37 +41,45 @@ namespace octave
 {
   namespace sys
   {
-    extern std::string getcwd (void);
+    extern OCTAVE_API int system (const std::string& cmd_str);
 
-    extern int chdir (const std::string&);
+    extern OCTAVE_API std::string getcwd (void);
 
-    extern bool get_dirlist (const std::string& dirname, string_vector& dirlist,
-                             std::string& msg);
+    extern OCTAVE_API int chdir (const std::string&);
 
-    extern std::FILE * fopen (const std::string& name, const std::string& mode);
+    extern OCTAVE_API bool
+    get_dirlist (const std::string& dirname, string_vector& dirlist,
+                 std::string& msg);
 
-    extern std::fstream fstream (const std::string& name,
-                                 const std::ios::openmode mode =
-                                   std::ios::in | std::ios::out);
+    extern OCTAVE_API std::FILE *
+    fopen (const std::string& name, const std::string& mode);
 
-    extern std::ifstream ifstream (const std::string& name,
-                                   const std::ios::openmode mode = std::ios::in);
+    extern OCTAVE_API std::fstream
+    fstream (const std::string& name,
+             const std::ios::openmode mode = std::ios::in | std::ios::out);
 
-    extern std::ofstream ofstream (const std::string& name,
-                                   const std::ios::openmode mode = std::ios::out);
+    extern OCTAVE_API std::ifstream
+    ifstream (const std::string& name,
+              const std::ios::openmode mode = std::ios::in);
 
-    extern void putenv_wrapper (const std::string& name,
-                                const std::string& value);
+    extern OCTAVE_API std::ofstream
+    ofstream (const std::string& name,
+              const std::ios::openmode mode = std::ios::out);
 
-    extern std::string getenv_wrapper (const std::string&);
+    extern OCTAVE_API void
+    putenv_wrapper (const std::string& name, const std::string& value);
 
-    extern int unsetenv_wrapper (const std::string&);
+    extern OCTAVE_API std::string getenv_wrapper (const std::string&);
 
-    extern std::wstring u8_to_wstring (const std::string&);
+    extern OCTAVE_API int unsetenv_wrapper (const std::string&);
 
-    extern std::string u8_from_wstring (const std::wstring&);
+    extern OCTAVE_API std::wstring u8_to_wstring (const std::string&);
 
-    extern std::string get_ASCII_filename (const std::string& long_file_name);
+    extern OCTAVE_API std::string u8_from_wstring (const std::wstring&);
+
+    extern OCTAVE_API std::string
+    get_ASCII_filename (const std::string& long_file_name,
+                        const bool allow_locale = false);
   }
 }
 

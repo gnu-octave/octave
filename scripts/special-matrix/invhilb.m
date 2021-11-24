@@ -81,7 +81,7 @@
 
 function retval = invhilb (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! isscalar (n))
     error ("invhilb: N must be a scalar integer");
@@ -128,6 +128,5 @@ endfunction
 %! assert (invhilb (4), result4);
 %!assert (invhilb (7) * hilb (7), eye (7), sqrt (eps))
 
-%!error invhilb ()
-%!error invhilb (1, 2)
+%!error <Invalid call> invhilb ()
 %!error <N must be a scalar integer> invhilb ([1, 2])

@@ -6,13 +6,15 @@ FCN_FILE_DIRS += \
   %reldir%/private/validsetargs.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/intersect.m \
   %reldir%/ismember.m \
   %reldir%/powerset.m \
   %reldir%/setdiff.m \
   %reldir%/setxor.m \
   %reldir%/union.m \
-  %reldir%/unique.m
+  %reldir%/unique.m \
+  %reldir%/uniquetol.m
 
 %canon_reldir%dir = $(fcnfiledir)/set
 

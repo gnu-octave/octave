@@ -79,7 +79,7 @@
 
 function c = cov (x, y = [], opt = 0)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -171,10 +171,9 @@ endfunction
 %! assert (c, 2);
 
 ## Test input validation
-%!error cov ()
-%!error cov (1, 2, 3, 4)
+%!error <Invalid call> cov ()
 %!error cov ([1; 2], ["A", "B"])
 %!error cov (ones (2,2,2))
 %!error cov (ones (2,2), ones (2,2,2))
-%!error cov (1, 3)
+%!error <normalization OPT must be 0 or 1> cov (1, 3)
 %!error cov (ones (2,2), ones (3,2))

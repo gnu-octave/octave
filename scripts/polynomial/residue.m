@@ -297,13 +297,13 @@ function [pnum, pden, e] = rresidue (r, p, k = [], tol = [], e = [])
     pn = 1;
     for j = 1:n - 1
       pn = conv (pn, [1, -p(j)]);
-    end
+    endfor
     for j = n + 1:numel (p)
       pn = conv (pn, [1, -p(j)]);
-    end
+    endfor
     for j = 1:e(n) - 1
       pn = deconv (pn, p1);
-    end
+    endfor
     pn = r(n) * pn;
     pnum += prepad (pn, N+1, 0, 2);
   endfor

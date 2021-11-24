@@ -78,7 +78,8 @@ public:
 
   type_conv_info numeric_demotion_function (void) const;
 
-  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return octave::idx_vector (scalar); }
 
   octave_value any (int = 0) const
   { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }
@@ -269,7 +270,7 @@ public:
                      skip, flt_fmt);
   }
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   octave_value map (unary_mapper_t umap) const;
 

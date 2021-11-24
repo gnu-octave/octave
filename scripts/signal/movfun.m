@@ -161,7 +161,7 @@
 ##
 ## @example
 ## @group
-## @var{fcn} = @@(x) basefcn (x)(:,size(x,2) * (@var{D}-1) + (1:size(x,2)));
+## @var{fcn} = @@(x) basefcn (x)(:,columns(x) * (@var{D}-1) + (1:columns(x)));
 ## @var{y} = movfun (@@fcn, @dots{});
 ## @end group
 ## @end example
@@ -311,6 +311,7 @@ endfunction
 ## Apply "shrink" boundary conditions
 ## Function is not applied to any window elements outside the original data.
 function y = shrink_bc (fcn, x, idxp, win, wlen, odim)
+
   N   = length (x);
   idx = idxp + win;
   tf  = (idx > 0) & (idx <= N);  # idx inside boundaries
@@ -324,11 +325,12 @@ function y = shrink_bc (fcn, x, idxp, win, wlen, odim)
     k      = idx(tf(:,i),i);
     y(i,:) = fcn (x(k));
   endfor
+
 endfunction
 
 ## Apply replacement value boundary conditions
 ## Window is padded at beginning and end with user-specified value.
-function y = replaceval_bc (fcn, x, idxp, win, wlen)
+function y = replaceval_bc (fcn, x, idxp, win, wlen, ~)
 
   persistent substitute;
 
@@ -359,7 +361,7 @@ endfunction
 ## Apply "same" boundary conditions
 ## 'y' values outside window are replaced by value of 'x' at the window
 ## boundary.
-function y = same_bc (fcn, x, idxp, win)
+function y = same_bc (fcn, x, idxp, win, ~, ~)
   idx          = idxp + win;
   idx(idx < 1) = 1;
   N            = length (x);
@@ -370,7 +372,7 @@ endfunction
 ## Apply "periodic" boundary conditions
 ## Window wraps around.  Window values outside data array are replaced with
 ## data from the other end of the array.
-function y = periodic_bc (fcn, x, idxp, win)
+function y = periodic_bc (fcn, x, idxp, win, ~, ~)
   N       = length (x);
   idx     = idxp + win;
   tf      = idx < 1;
@@ -600,12 +602,12 @@ endfunction
 %!assert (size( movfun (@(x) [min(x), max(x)], cumsum (ones (10,5),2), 3)),
 %!        [10 5 2])
 ## outdim > dim
-%!error (movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3))
+%!error movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3)
 
 ## Test input validation
-%!error movfun ()
-%!error movfun (@min)
-%!error movfun (@min, 1)
+%!error <Invalid call> movfun ()
+%!error <Invalid call> movfun (@min)
+%!error <Invalid call> movfun (@min, 1)
 %!error <WLEN must be .* array of integers> movfun (@min, 1, {1})
 %!error <WLEN must be .* array of integers .= 0> movfun (@min, 1, -1)
 %!error <WLEN must be .* array of integers> movfun (@min, 1, 1.5)

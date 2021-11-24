@@ -241,11 +241,11 @@ function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
     if (! (isreal (za) && isscalar (za)))
       error ("integral3: ZA must be a real scalar or a function");
     endif
-    za = @(x, y) za * ones (size(y));
+    za = @(x, y) za * ones (size (y));
   endif
   if (! is_function_handle (zb))
     if (! (isreal (zb) && isscalar (zb)))
-      error ("integral3: ZB must be a real scalar or a function")
+      error ("integral3: ZB must be a real scalar or a function");
     endif
     zb = @(x, y) zb * ones (size (y));
   endif
@@ -286,10 +286,10 @@ endfunction
 %!shared f
 %! f = @(x, y, z) x .* y .* z;
 
-%!assert (integral3 (f, 0, 1, 0, 1, 0, 1), 0.125, 1e-10);
-%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "tiled"), 0.125, 1e-10);
-%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "iterated"), 0.125, 1e-10);
-%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "auto"), 0.125, 1e-10);
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1), 0.125, 1e-10)
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "tiled"), 0.125, 1e-10)
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "iterated"), 0.125, 1e-10)
+%!assert (integral3 (f, 0, 1, 0, 1, 0, 1, "method", "auto"), 0.125, 1e-10)
 
 ## vectorized = false test
 %!test
@@ -310,7 +310,8 @@ endfunction
 %! f = @(x,y,z) 1 ./ (x + y + z);
 %! ymax = @(x) 1 - x;
 %! zmax = @(x, y) 1 - x - y;
-%! assert (integral3 (f, 0, 1, 0, ymax, 0, zmax, "method", "tiled"), 0.25, 1e-6);
+%! assert (integral3 (f, 0, 1, 0, ymax, 0, zmax, "method", "tiled"),
+%!         0.25, 1e-6);
 
 ## Test input validation
 %!error integral3

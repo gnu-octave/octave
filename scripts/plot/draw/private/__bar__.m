@@ -28,7 +28,7 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function varargout = __bar__ (vertical, func, varargin)
+function varargout = __bar__ (func, vertical, varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ (func, varargin{:});
 
@@ -38,6 +38,7 @@ function varargout = __bar__ (vertical, func, varargin)
 
   width = 0.8;
   group = true;
+  stacked = false;
   histc = NA;
   ## BaseValue
   if (strcmp (get (hax, "yscale"), "log"))
@@ -84,6 +85,7 @@ function varargout = __bar__ (vertical, func, varargin)
       group = true;
       idx += 1;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "stacked"))
+      stacked = true;
       group = false;
       idx += 1;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "histc"))
@@ -123,6 +125,8 @@ function varargout = __bar__ (vertical, func, varargin)
     endif
   endwhile
 
+  ishist = islogical (histc);
+
   ngrp = rows (x);
 
   if (isvector (y) && ngrp != rows (y))
@@ -135,7 +139,7 @@ function varargout = __bar__ (vertical, func, varargin)
   nbars = columns (y);
 
   ## Column width is 1 for 'hist*' styles (bars touch).
-  if (islogical (histc))
+  if (ishist)
     cwidth = 1;
     if (nbars == 1)
       gwidth = 1;
@@ -171,7 +175,7 @@ function varargout = __bar__ (vertical, func, varargin)
   xb = repmat ([x1; x1; x2; x2](:), 1, nbars);
 
   if (group)
-    if (islogical (histc) && histc)
+    if (ishist && histc)
       offset = 2*cdelta * [0:(nbars-1)] + cdelta(1);  # not centered
     else
       offset = 2*cdelta * [-(nbars - 1) / 2 : (nbars - 1) / 2];
@@ -185,8 +189,22 @@ function varargout = __bar__ (vertical, func, varargin)
     y0 = zeros (size (y)) + bv;
     y1 = y;
   else
-    y1 = cumsum (y,2);
-    y0 = [zeros(ngrp,1)+bv, y1(:,1:end-1)];
+    if (stacked && any (y(:) < 0))
+      ypos = (y >= 0);
+      yneg = (y <  0);
+
+      y1p =  cumsum (y .* ypos, 2);
+      y1n =  cumsum (y .* yneg, 2);
+      y1 = y1p .* ypos + y1n .* yneg;
+
+      y0p = [zeros(ngrp,1)+bv, y1p(:,1:end-1)];
+      y0n = [zeros(ngrp,1)+bv, y1n(:,1:end-1)];
+      y0 = y0p .* ypos + y0n .* yneg;
+
+    else
+      y1 = cumsum (y,2);
+      y0 = [zeros(ngrp,1)+bv, y1(:,1:end-1)];
+    endif
   endif
 
   yb = zeros (4*ngrp, nbars);
@@ -206,7 +224,7 @@ function varargout = __bar__ (vertical, func, varargin)
     unwind_protect
       hax = newplot (hax);
 
-      htmp = bars (hax, vertical, x, y, xb, yb, gwidth, group,
+      htmp = bars (hax, ishist, vertical, x, y, xb, yb, gwidth, group,
                    have_line_spec, bv, newargs{:});
 
       if (! ishold ())
@@ -219,11 +237,15 @@ function varargout = __bar__ (vertical, func, varargin)
             set (hax, "ytick", x(:,1));
           endif
         endif
-        ## Hack prevents color and xlim setting changes when basevalue changes.
-        if (vertical)
-          set (hax, "clim", [0 1], "xlimmode", "manual");
+        if (ishist)
+          set (hax, "climmode", "auto");
         else
-          set (hax, "clim", [0 1], "ylimmode", "manual");
+          ## Hack prevents xlim setting changes when basevalue changes.
+          if (vertical)
+            set (hax, "xlimmode", "manual");
+          else
+            set (hax, "ylimmode", "manual");
+          endif
         endif
         set (hax, "box", "on", "layer", "top");
       endif
@@ -247,12 +269,35 @@ function varargout = __bar__ (vertical, func, varargin)
 
 endfunction
 
-function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_spec, base_value, varargin)
+function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group, have_color_spec, base_value, varargin)
 
-  nbars = columns (y);
-  clim = get (hax, "clim");
   hglist = [];
+  nbars = columns (y);
 
+  if (ishist)
+    ## Special case for Matlab compatibility.  For 'hist', 'histc' arguments,
+    ## return Patch objects rather than hggroup Bar object.
+    for i = 1:nbars
+
+      if (vertical)
+        h = patch (hax, xb(:,:,i), yb(:,:,i),
+                   "cdata", i*ones (columns (xb),1), "FaceColor", "flat");
+      else
+        h = patch (hax, yb(:,:,i), xb(:,:,i),
+                   "cdata", i*ones (columns (yb),1), "FaceColor", "flat");
+      endif
+
+      if (! isempty (varargin))
+        set (h, varargin{:});
+      endif
+
+      hglist = [hglist; h];
+    endfor
+
+    return;  # return immediately, rest of function is for creating Bar object.
+  endif
+
+  ## Code to create hggroup Bar object
   for i = 1:nbars
     hg = hggroup ();
     hglist = [hglist; hg];
@@ -260,27 +305,17 @@ function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_sp
 
     if (vertical)
       if (! have_color_spec)
-        if (nbars == 1)
-          lev = clim(1);
-        else
-          lev = (i - 1) * (clim(2) - clim(1)) / (nbars - 1) - clim(1);
-        endif
-        h = patch (hax, xb(:,:,i), yb(:,:,i),
-                        "FaceColor", "flat", "cdata", lev, "parent", hg);
+        color = __next_line_color__ ();
+        h = patch (hax, xb(:,:,i), yb(:,:,i), "FaceColor", color, "parent", hg);
       else
-        h = patch (hax, xb(:,:,i), yb(:,:,i), "parent", hg);
+        h = patch (hax, xb(:,:,i), yb(:,:,i), "cdata", i, "parent", hg);
       endif
     else
       if (! have_color_spec)
-        if (nbars == 1)
-          lev = clim(1);
-        else
-          lev = (i - 1) * (clim(2) - clim(1)) / (nbars - 1) - clim(1);
-        endif
-        h = patch (hax, yb(:,:,i), xb(:,:,i),
-                        "FaceColor", "flat", "cdata", lev, "parent", hg);
+        color = __next_line_color__ ();
+        h = patch (hax, yb(:,:,i), xb(:,:,i), "FaceColor", color, "parent", hg);
       else
-        h = patch (hax, yb(:,:,i), xb(:,:,i), "parent", hg);
+        h = patch (hax, yb(:,:,i), xb(:,:,i), "cdata", i, "parent", hg);
       endif
     endif
 

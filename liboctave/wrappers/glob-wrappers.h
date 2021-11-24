@@ -30,34 +30,34 @@
 extern "C" {
 #endif
 
-extern void * octave_create_glob_info_struct (void);
+extern OCTAVE_API void * octave_create_glob_info_struct (void);
 
 // Does not call globfree.
-extern void octave_destroy_glob_info_struct (void *glob_info);
+extern OCTAVE_API void octave_destroy_glob_info_struct (void *glob_info);
 
 // We don't need the error function pointer that the system glob
 // function allows.
-extern int
+extern OCTAVE_API int
 octave_glob_wrapper (const char *pattern, int flags, void *glob_info);
 
-extern int octave_glob_num_matches (void *glob_info);
+extern OCTAVE_API int octave_glob_num_matches (void *glob_info);
 
-extern char ** octave_glob_match_list (void *glob_info);
+extern OCTAVE_API char ** octave_glob_match_list (void *glob_info);
 
-extern void octave_globfree_wrapper (void *glob_info);
+extern OCTAVE_API void octave_globfree_wrapper (void *glob_info);
 
-extern int octave_glob_nosort_wrapper (void);
+extern OCTAVE_API int octave_glob_nosort_wrapper (void);
 
-extern int
+extern OCTAVE_API int
 octave_fnmatch_wrapper (const char *pattern, const char *name, int flags);
 
-extern int octave_fnm_nomatch_wrapper (void);
+extern OCTAVE_API int octave_fnm_nomatch_wrapper (void);
 
-extern int octave_fnm_pathname_wrapper (void);
+extern OCTAVE_API int octave_fnm_pathname_wrapper (void);
 
-extern int octave_fnm_noescape_wrapper (void);
+extern OCTAVE_API int octave_fnm_noescape_wrapper (void);
 
-extern int octave_fnm_period_wrapper (void);
+extern OCTAVE_API int octave_fnm_period_wrapper (void);
 
 #if defined __cplusplus
 }

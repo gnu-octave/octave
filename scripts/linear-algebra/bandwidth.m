@@ -40,7 +40,7 @@
 
 function [lower, upper] = bandwidth (A, type)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -108,8 +108,7 @@ endfunction
 %! assert ([a,b], [4,4]);
 
 ## Test input validation
-%!error bandwidth ()
-%!error bandwidth (1,2,3)
+%!error <Invalid call> bandwidth ()
 %!error <A must be a 2-D numeric or logical> bandwidth ("string", "lower")
 %!error <A must be a 2-D numeric or logical> bandwidth (ones (3,3,3), "lower")
 %!error <TYPE must be "lower" or "upper"> bandwidth (ones (2), "uper")

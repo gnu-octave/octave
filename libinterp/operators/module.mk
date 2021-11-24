@@ -86,6 +86,7 @@ LIBINTERP_OPERATORS_SRC = \
   %reldir%/op-m-s.cc \
   %reldir%/op-m-scm.cc \
   %reldir%/op-m-sm.cc \
+  %reldir%/op-mi.cc \
   %reldir%/op-pm-cm.cc \
   %reldir%/op-pm-fcm.cc \
   %reldir%/op-pm-fm.cc \

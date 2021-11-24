@@ -64,7 +64,7 @@ function rgb = hsv2rgb (hsv)
   ## where f_x(hue) is a piecewise defined function for
   ## each color with f_r(hue-2/3) = f_g(hue) = f_b(hue-1/3).
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -136,8 +136,7 @@ endfunction
 %!assert (hsv2rgb (sparse ([1 1 1])), sparse ([1 0 0]))
 
 ## Test input validation
-%!error hsv2rgb ()
-%!error hsv2rgb (1,2)
+%!error <Invalid call> hsv2rgb ()
 %!error <invalid data type> hsv2rgb ({1})
 %!error <HSV must be a colormap or HSV image> hsv2rgb (ones (2,2))
 

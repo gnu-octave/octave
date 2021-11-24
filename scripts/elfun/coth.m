@@ -31,7 +31,7 @@
 
 function y = coth (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -45,5 +45,4 @@ endfunction
 %! v = [0, 0];
 %! assert (coth (x), v, sqrt (eps));
 
-%!error coth ()
-%!error coth (1, 2)
+%!error <Invalid call> coth ()

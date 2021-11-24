@@ -87,11 +87,11 @@
 #endif
 
 #if defined (HAVE_ZLIB)
-#  include "zfstream.h"
+#  include "gzfstream.h"
 #endif
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   OCTAVE_NORETURN static
   void
   err_file_open (const std::string& fcn, const std::string& file)
@@ -164,8 +164,6 @@ namespace octave
   check_gzip_magic (const std::string& fname)
   {
     bool retval = false;
-
-    std::string ascii_fname = sys::get_ASCII_filename (fname);
 
     std::ifstream file = sys::ifstream (fname.c_str (),
                                         std::ios::in | std::ios::binary);
@@ -332,7 +330,11 @@ namespace octave
   {
     load_save_format retval = UNKNOWN;
 
+#if defined (HAVE_HDF5_UTF8)
+    std::string ascii_fname = fname;
+#else
     std::string ascii_fname = sys::get_ASCII_filename (fname);
+#endif
 
 #if defined (HAVE_HDF5)
     // check this before we open the file
@@ -644,6 +646,10 @@ namespace octave
         else
           warning (R"(save: "-tabs" option only has an effect with "-ascii")");
       }
+
+    if (append && use_zlib
+        && (fmt.type () != TEXT && fmt.type () != MAT_ASCII))
+      error ("save: -append and -zip options can only be used together with a text format (-text or -ascii)");
 
     return retval;
   }
@@ -1479,10 +1485,15 @@ namespace octave
             if (append)
               error ("save: appending to HDF5 files is not implemented");
 
+#  if defined (HAVE_HDF5_UTF8)
+            bool write_header_info
+              = ! (append && H5Fis_hdf5 (fname.c_str ()) > 0);
+#  else
             std::string ascii_fname = sys::get_ASCII_filename (fname);
 
             bool write_header_info
               = ! (append && H5Fis_hdf5 (ascii_fname.c_str ()) > 0);
+#  endif
 
             hdf5_ofstream hdf5_file (fname.c_str (), mode);
 
@@ -1534,16 +1545,6 @@ namespace octave
 
     return retval;
   }
-}
-
-void
-dump_octave_core (void)
-{
-  octave::load_save_system& load_save_sys
-    = octave::__get_load_save_system__ ("dump_octave_core");
-
-  load_save_sys.dump_octave_core ();
-}
 
 DEFMETHOD (load, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -1653,7 +1654,7 @@ Force Octave to assume the file is in @sc{matlab}'s version 4 binary format.
 @seealso{save, dlmwrite, csvwrite, fwrite}
 @end deftypefn */)
 {
-  octave::load_save_system& load_save_sys = interp.get_load_save_system ();
+  load_save_system& load_save_sys = interp.get_load_save_system ();
 
   return load_save_sys.load (args, nargout);
 }
@@ -1804,13 +1805,111 @@ save -binary data a b*
 @noindent
 saves the variable @samp{a} and all variables beginning with @samp{b} to the
 file @file{data} in Octave's binary format.
-@seealso{load, save_default_options, save_header_format_string, save_precision, dlmread, csvread, fread}
+@seealso{load, save_default_options, save_header_format_string, save_precision,
+dlmread, csvread, fread}
 @end deftypefn */)
 {
-  octave::load_save_system& load_save_sys = interp.get_load_save_system ();
+  load_save_system& load_save_sys = interp.get_load_save_system ();
 
   return load_save_sys.save (args, nargout);
 }
+
+/*
+## Save and load strings with "-v6"
+%!test
+%! A = A2 = "foobar";  # normal string
+%! B = B2 = "a";  # short string
+%! C = C2 = ["foo"; "bar"];  # character matrix
+%! D = D2 = "ab".';  # short character matrix
+%! E = E2 = {"foo", "bar"};  # cell string
+%! F = F2 = {"Saint Barthélemy", "Saint Kitts and Nevis"};  % non-ASCII
+%! mat_file = [tempname(), ".mat"];
+%! unwind_protect
+%!   save (mat_file, "A", "B", "C", "D", "E", "F", "-v6");
+%!   clear ("A", "B", "C", "D", "E", "F");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (A, A2);
+%! assert (B, B2);
+%! assert (C, C2);
+%! assert (D, D2);
+%! assert (E, E2);
+%! assert (F, F2);
+
+## Save and load strings with "-v7"
+%!testif HAVE_ZLIB
+%! A = A2 = "foobar";  # normal string
+%! B = B2 = "a";  # short string
+%! C = C2 = ["foo"; "bar"];  # character matrix
+%! D = D2 = "ab".';  # short character matrix
+%! E = E2 = {"foo", "bar"};  # cell string
+%! F = F2 = {"Saint Barthélemy", "Saint Kitts and Nevis"};  # non-ASCII
+%! mat_file = [tempname(), ".mat"];
+%! unwind_protect
+%!   save (mat_file, "A", "B", "C", "D", "E", "F", "-v7");
+%!   clear ("A", "B", "C", "D", "E", "F");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (A, A2);
+%! assert (B, B2);
+%! assert (C, C2);
+%! assert (D, D2);
+%! assert (E, E2);
+%! assert (F, F2);
+
+## Save and load struct with "-v6"
+%!test
+%! struc.a = "foobar";  # normal string
+%! struc.b = "a";  # short string
+%! struc.c = ["foo"; "bar"];  # character matrix
+%! struc.d = "ab".';  # short character matrix
+%! struc.e = {"foo", "bar"};  # cell string
+%! struc.f = {"Saint Barthélemy", "Saint Kitts and Nevis"};  # non-ASCII
+%! struc.g = [1 2 3];  # double vector
+%! struc.h = 1:5;  # range
+%! struc2 = struc;
+%! mat_file = [tempname(), ".mat"];
+%! unwind_protect
+%!   save (mat_file, "struc", "-v6");
+%!   clear ("struc");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (struc, struc2);
+
+## Save and load struct with "-v7"
+%!testif HAVE_ZLIB
+%! struc.a = "foobar";  # normal string
+%! struc.b = "a";  # short string
+%! struc.c = ["foo"; "bar"];  # character matrix
+%! struc.d = "ab".';  # short character matrix
+%! struc.e = {"foo", "bar"};  # cell string
+%! struc.f = {"Saint Barthélemy", "Saint Kitts and Nevis"};  # non-ASCII
+%! struc.g = [1 2 3];  # double vector
+%! struc.h = 1:5;  # range
+%! struc2 = struc;
+%! mat_file = [tempname(), ".mat"];
+%! unwind_protect
+%!   save (mat_file, "struc", "-v7");
+%!   clear ("struc");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (struc, struc2);
+
+## Test input validation
+%!testif HAVE_ZLIB <*59225>
+%! fname = tempname ();
+%! x = 1;
+%! fail ('save ("-append", "-zip", "-binary", fname, "x")',
+%!       "-append and -zip options .* with a text format");
+*/
 
 DEFMETHOD (crash_dumps_octave_core, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -1824,10 +1923,11 @@ crashes or receives a hangup, terminate or similar signal.
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}
+@seealso{octave_core_file_limit, octave_core_file_name,
+octave_core_file_options}
 @end deftypefn */)
 {
-  octave::load_save_system& load_save_sys = interp.get_load_save_system ();
+  load_save_system& load_save_sys = interp.get_load_save_system ();
 
   return load_save_sys.crash_dumps_octave_core (args, nargout);
 }
@@ -1849,7 +1949,7 @@ The original variable value is restored when exiting the function.
 @seealso{save, save_header_format_string, save_precision}
 @end deftypefn */)
 {
-  octave::load_save_system& load_save_sys = interp.get_load_save_system ();
+  load_save_system& load_save_sys = interp.get_load_save_system ();
 
   return load_save_sys.save_default_options (args, nargout);
 }
@@ -1874,10 +1974,11 @@ the limit.  The default value is -1 (unlimited).
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@seealso{crash_dumps_octave_core, octave_core_file_name,
+octave_core_file_options}
 @end deftypefn */)
 {
-  octave::load_save_system& load_save_sys = interp.get_load_save_system ();
+  load_save_system& load_save_sys = interp.get_load_save_system ();
 
   return load_save_sys.octave_core_file_limit (args, nargout);
 }
@@ -1895,10 +1996,11 @@ The default value is @qcode{"octave-workspace"}
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@seealso{crash_dumps_octave_core, octave_core_file_name,
+octave_core_file_options}
 @end deftypefn */)
 {
-  octave::load_save_system& load_save_sys = interp.get_load_save_system ();
+  load_save_system& load_save_sys = interp.get_load_save_system ();
 
   return load_save_sys.octave_core_file_name (args, nargout);
 }
@@ -1921,7 +2023,7 @@ The original variable value is restored when exiting the function.
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}
 @end deftypefn */)
 {
-  octave::load_save_system& load_save_sys = interp.get_load_save_system ();
+  load_save_system& load_save_sys = interp.get_load_save_system ();
 
   return load_save_sys.octave_core_file_options (args, nargout);
 }
@@ -1951,7 +2053,20 @@ The original variable value is restored when exiting the function.
 @seealso{strftime, save_default_options}
 @end deftypefn */)
 {
-  octave::load_save_system& load_save_sys = interp.get_load_save_system ();
+  load_save_system& load_save_sys = interp.get_load_save_system ();
 
   return load_save_sys.save_header_format_string (args, nargout);
+}
+
+OCTAVE_NAMESPACE_END
+
+// DEPRECATED in Octave 7
+
+void
+dump_octave_core (void)
+{
+  octave::load_save_system& load_save_sys
+    = octave::__get_load_save_system__ ("dump_octave_core");
+
+  load_save_sys.dump_octave_core ();
 }

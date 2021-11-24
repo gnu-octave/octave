@@ -78,7 +78,7 @@
 
 function filelist = unpack (file, dir = [], filetype = "")
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -93,7 +93,11 @@ function filelist = unpack (file, dir = [], filetype = "")
   if (numel (file) == 1)
     ## FIXME: The code below is not a perfect test for a URL
     if (isempty (strfind (file{1}, "://")))
-      gfile = glob (file);
+      if (ispc ())
+        gfile = __wglob__ (file);
+      else
+        gfile = glob (file);
+      endif
       if (isempty (gfile))
         error ('unpack: FILE "%s" not found', file{1});
       else
@@ -188,12 +192,12 @@ function filelist = unpack (file, dir = [], filetype = "")
   ##    bzip2 and gzip decompress the file at its location).
   persistent commandlist;
   if (isempty (commandlist))
-    commandlist.gz = {'gzip -d -v -f -r "%s"', ...
-                      'gzip -d -f -r "%s"', ...
+    commandlist.gz = {'gzip -d -k -v -f -r "%s"', ...
+                      'gzip -d -k -f -r "%s"', ...
                       @__parse_gzip__, true};
     commandlist.z = commandlist.gz;
-    commandlist.bz2 = {'bzip2 -d -v -f "%s"', ...
-                       'bzip2 -d -f "%s"', ...
+    commandlist.bz2 = {'bzip2 -d -k -v -f "%s"', ...
+                       'bzip2 -d -k -f "%s"', ...
                        @__parse_bzip2__, true};
     commandlist.bz = commandlist.bz2;
     commandlist.tar = {'tar xvf "%s"', ...
@@ -324,7 +328,7 @@ function files = __parse_gzip__ (output)
   ## Parse the output from gzip and gunzip returning the files
   ## compressed (or decompressed).
 
-  files = regexprep (output, '^.+ -- replaced with (.*)$', '$1');
+  files = regexprep (output, '^.+ -- (?:created|replaced with) (.*)$', '$1');
 endfunction
 
 function files = __parse_bzip2__ (output)
@@ -372,7 +376,7 @@ endfunction
 %!     unlink (filename);
 %!     unlink ([filename ".orig"]);
 %!     confirm_recursive_rmdir (false, "local");
-%!     rmdir (dirname, "s");
+%!     sts = rmdir (dirname, "s");
 %!   end_unwind_protect
 %! unwind_protect_cleanup
 %!   ## Restore environment variables TMPDIR, TMP
@@ -386,8 +390,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error unpack ()
-%!error unpack (1,2,3,4)
+%!error <Invalid call> unpack ()
 %!error <FILE must be a string or cell array of strings> unpack (1)
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})

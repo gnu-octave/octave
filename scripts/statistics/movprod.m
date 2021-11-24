@@ -123,9 +123,10 @@
 ## @end table
 ##
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
-## For additional options and documentation, @pxref{XREFmovfun,,movfun}.
+## For additional options and documentation, @pxref{XREFmovfun,,@code{movfun}}.
 ##
-## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movmin, movstd, movsum, movvar}
+## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movmin,
+## movstd, movsum, movvar}
 ## @end deftypefn
 
 function y = movprod (x, wlen, varargin)
@@ -141,9 +142,9 @@ endfunction
 
 
 ## FIXME: Need functional BIST tests
-# test for bug #55241
+## test for bug #55241
 %!assert ([2; 6; 24; 60; 120; 210; 336; 504; 720; 90], movprod ((1:10).', 3))
 
 ## Test input validation
-%!error movprod ()
-%!error movprod (1)
+%!error <Invalid call> movprod ()
+%!error <Invalid call> movprod (1)

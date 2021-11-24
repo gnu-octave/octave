@@ -35,6 +35,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 enum bessel_type
 {
   BESSEL_J,
@@ -51,27 +53,27 @@ enum bessel_type
       switch (type)                                                     \
         {                                                               \
         case BESSEL_J:                                                  \
-          result = octave::math::besselj (alpha, x, scaled, ierr);      \
+          result = math::besselj (alpha, x, scaled, ierr);      \
           break;                                                        \
                                                                         \
         case BESSEL_Y:                                                  \
-          result = octave::math::bessely (alpha, x, scaled, ierr);      \
+          result = math::bessely (alpha, x, scaled, ierr);      \
           break;                                                        \
                                                                         \
         case BESSEL_I:                                                  \
-          result = octave::math::besseli (alpha, x, scaled, ierr);      \
+          result = math::besseli (alpha, x, scaled, ierr);      \
           break;                                                        \
                                                                         \
         case BESSEL_K:                                                  \
-          result = octave::math::besselk (alpha, x, scaled, ierr);      \
+          result = math::besselk (alpha, x, scaled, ierr);      \
           break;                                                        \
                                                                         \
         case BESSEL_H1:                                                 \
-          result = octave::math::besselh1 (alpha, x, scaled, ierr);     \
+          result = math::besselh1 (alpha, x, scaled, ierr);     \
           break;                                                        \
                                                                         \
         case BESSEL_H2:                                                 \
-          result = octave::math::besselh2 (alpha, x, scaled, ierr);     \
+          result = math::besselh2 (alpha, x, scaled, ierr);     \
           break;                                                        \
                                                                         \
         default:                                                        \
@@ -687,9 +689,9 @@ return @code{NaN}.
       octave_value result;
 
       if (kind > 1)
-        result = octave::math::biry (z, kind == 3, scale, ierr);
+        result = math::biry (z, kind == 3, scale, ierr);
       else
-        result = octave::math::airy (z, kind == 1, scale, ierr);
+        result = math::airy (z, kind == 1, scale, ierr);
 
       retval(0) = result;
       if (nargout > 1)
@@ -703,9 +705,9 @@ return @code{NaN}.
       octave_value result;
 
       if (kind > 1)
-        result = octave::math::biry (z, kind == 3, scale, ierr);
+        result = math::biry (z, kind == 3, scale, ierr);
       else
-        result = octave::math::airy (z, kind == 1, scale, ierr);
+        result = math::airy (z, kind == 1, scale, ierr);
 
       retval(0) = result;
       if (nargout > 1)
@@ -737,12 +739,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %!assert (besselj (-alpha,x), jx, 100*eps)
 %!assert (bessely (-alpha,x), yx, 100*eps)
@@ -751,12 +753,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (-alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (-alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (-alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (-alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! x *= -1;
 %! yx = -1.193199310178553861283790424 + 0.3421822624810469647226182835*I;
@@ -769,12 +771,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, odd order, positive and negative x
 %! alpha = 3;  x = 2.5;
@@ -790,12 +792,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %!assert (besselj (-alpha,x), -jx, 100*eps)
 %!assert (bessely (-alpha,x), -yx, 100*eps)
@@ -804,12 +806,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (-alpha,1,x), -(jx + I*yx), 100*eps)
 %!assert (besselh (-alpha,2,x), -(jx - I*yx), 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), -jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (-alpha,x,1), -yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (-alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), -(jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), -(jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), -jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), -yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), -(jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), -(jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! x *= -1;
 %! jx = -jx;
@@ -824,12 +826,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, fractional order, positive and negative x
 %!
@@ -846,12 +848,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! nix = 0.2119931212254662995364461998;
 %!
@@ -862,12 +864,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (-alpha,1,x), -I*(jx + I*yx), 100*eps)
 %!assert (besselh (-alpha,2,x), I*(jx - I*yx), 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (-alpha,x,1), -jx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (-alpha,x,1), nix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), -jx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), nix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! x *= -1;
 %! jx *= -I;
@@ -882,12 +884,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, even order, complex x
 %!
@@ -904,12 +906,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %!assert (besselj (-alpha,x), jx, 100*eps)
 %!assert (bessely (-alpha,x), yx, 100*eps)
@@ -918,12 +920,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (-alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (-alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (-alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (-alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, odd order, complex x
 %!
@@ -940,12 +942,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %!assert (besselj (-alpha,x), -jx, 100*eps)
 %!assert (bessely (-alpha,x), -yx, 100*eps)
@@ -954,12 +956,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (-alpha,1,x), -(jx + I*yx), 100*eps)
 %!assert (besselh (-alpha,2,x), -(jx - I*yx), 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), -jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (-alpha,x,1), -yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (-alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), -(jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), -(jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), -jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), -yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), -(jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), -(jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, fractional order, complex x
 %!
@@ -976,12 +978,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
 %!
 %! nix = 0.09822388691172060573913739253 - 0.7110230642207380127317227407*I;
 %!
@@ -992,12 +994,12 @@ FIXME: Function airy does not yet have BIST tests
 %!assert (besselh (-alpha,1,x), -I*(jx + I*yx), 100*eps)
 %!assert (besselh (-alpha,2,x), I*(jx - I*yx), 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), yx*exp(-abs(imag(x))), 100*eps)
-%!assert (bessely (-alpha,x,1), -jx*exp(-abs(imag(x))), 100*eps)
-%!assert (besseli (-alpha,x,1), nix*exp(-abs(real(x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp(x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)*exp(-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)*exp(I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), -jx*exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), nix*exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)*exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)*exp (I*x), 100*eps)
 
 Tests contributed by Robert T. Short.
 Tests are based on the properties and tables in A&S:
@@ -1313,3 +1315,5 @@ Table 10.4 - j and y for various integer orders and arguments.
 %! assert (j, jt, -1e-9);
 %! assert (y, yt, -1e-9);
 */
+
+OCTAVE_NAMESPACE_END

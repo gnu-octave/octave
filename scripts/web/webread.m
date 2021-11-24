@@ -48,7 +48,7 @@
 function response = webread (url, varargin)
 
   if (nargin == 0)
-    print_usage();
+    print_usage ();
   endif
 
   if (! (ischar (url) && isrow (url)))
@@ -105,7 +105,7 @@ endfunction
 
 
 ## Test input validation
-%!error webread ()
+%!error <Invalid call> webread ()
 %!error <URL must be a string> webread (1)
 %!error <URL must be a string> webread (["a";"b"])
 %!error <KEYS and VALUES must be strings> webread ("URL", "NAME1", 5)

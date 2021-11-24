@@ -34,6 +34,7 @@ namespace octave
   {
     template <typename T>
     class
+    OCTAVE_API
     gsvd
     {
     public:
@@ -45,29 +46,28 @@ namespace octave
         sigma_only
       };
 
-      gsvd (void) : sigmaA (), sigmaB (), left_smA (), left_smB (), right_sm ()
+      gsvd (void) : m_sigmaA (), m_sigmaB (), m_left_smA (), m_left_smB (), m_right_sm ()
       { }
 
       gsvd (const T& a, const T& b,
-            gsvd::Type gsvd_type = gsvd<T>::Type::economy);
+            gsvd::Type gsvd_type = gsvd<T>::Type::std);
 
       gsvd (const gsvd& a)
-        : type (a.type),
-          sigmaA (a.sigmaA), sigmaB (a.sigmaB),
-          left_smA (a.left_smA), left_smB (a.left_smB), right_sm (a.right_sm),
-          R(a.R) { }
+        : m_type (a.m_type),
+          m_sigmaA (a.m_sigmaA), m_sigmaB (a.m_sigmaB),
+          m_left_smA (a.m_left_smA), m_left_smB (a.m_left_smB), m_right_sm (a.m_right_sm)
+      { }
 
       gsvd& operator = (const gsvd& a)
       {
         if (this != &a)
           {
-            type = a.type;
-            sigmaA = a.sigmaA;
-            sigmaB = a.sigmaB;
-            left_smA = a.left_smA;
-            left_smB = a.left_smB;
-            right_sm = a.right_sm;
-            R = a.R;
+            m_type = a.m_type;
+            m_sigmaA = a.m_sigmaA;
+            m_sigmaB = a.m_sigmaB;
+            m_left_smA = a.m_left_smA;
+            m_left_smB = a.m_left_smB;
+            m_right_sm = a.m_right_sm;
           }
 
         return *this;
@@ -75,26 +75,20 @@ namespace octave
 
       ~gsvd (void) = default;
 
-      typename T::real_diag_matrix_type
-      singular_values_A (void) const { return sigmaA; }
+      typename T::real_matrix_type
+      singular_values_A (void) const { return m_sigmaA; }
 
-      typename T::real_diag_matrix_type
-      singular_values_B (void) const { return sigmaB; }
+      typename T::real_matrix_type
+      singular_values_B (void) const { return m_sigmaB; }
 
       T left_singular_matrix_A (void) const;
       T left_singular_matrix_B (void) const;
 
       T right_singular_matrix (void) const;
-      T R_matrix (void) const;
 
     private:
       typedef typename T::value_type P;
       typedef typename T::real_matrix_type real_matrix;
-
-      gsvd::Type type;
-      typename T::real_diag_matrix_type sigmaA, sigmaB;
-      T left_smA, left_smB;
-      T right_sm, R;
 
       void ggsvd (char& jobu, char& jobv, char& jobq, octave_f77_int_type m,
                   octave_f77_int_type n, octave_f77_int_type p,
@@ -105,9 +99,16 @@ namespace octave
                   P *u, octave_f77_int_type nrow_u,
                   P *v, octave_f77_int_type nrow_v,
                   P *q, octave_f77_int_type nrow_q,
-                  T& work, octave_f77_int_type lwork,
+                  P *work, octave_f77_int_type lwork,
                   octave_f77_int_type *iwork,
                   octave_f77_int_type& info);
+
+      //--------
+
+      gsvd::Type m_type;
+      real_matrix m_sigmaA, m_sigmaB;
+      T m_left_smA, m_left_smB;
+      T m_right_sm;
     };
   }
 }

@@ -41,8 +41,8 @@
 
 namespace octave
 {
-  workspace_model::workspace_model (base_qobject& oct_qobj, QObject *p)
-    : QAbstractTableModel (p), m_octave_qobj (oct_qobj)
+  workspace_model::workspace_model (QObject *p)
+    : QAbstractTableModel (p)
   {
     m_columnNames.append (tr ("Name"));
     m_columnNames.append (tr ("Class"));
@@ -104,7 +104,7 @@ namespace octave
 
     if (idx.isValid ())
       {
-        if ((role == Qt::BackgroundColorRole || role == Qt::ForegroundRole)
+        if ((role == Qt::BackgroundRole || role == Qt::ForegroundRole)
             && m_enable_colors)
           {
             int actual_class
@@ -200,10 +200,11 @@ namespace octave
   {
     m_enable_colors = settings->value (ws_enable_colors).toBool ();
 
+    int mode = settings->value (ws_color_mode).toInt ();
+
     for (int i = 0; i < ws_colors_count; i++)
       {
-        QColor setting_color = settings->value (ws_colors[i].key,
-                                                ws_colors[i].def).value<QColor> ();
+        QColor setting_color = settings->color_value (ws_colors[i], mode);
 
         QPalette p (setting_color);
         m_storage_class_colors.replace (i,setting_color);

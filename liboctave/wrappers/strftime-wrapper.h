@@ -38,7 +38,7 @@
 extern "C" {
 #endif
 
-extern size_t
+extern OCTAVE_API size_t
 octave_strftime_wrapper (char *buf, size_t len, const char *fmt,
                          const struct tm *t);
 

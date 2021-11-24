@@ -41,7 +41,7 @@
 ##        worked.  The output of "script_nest" is unassigned. This got
 ##        revealed by fixing bug #58686.
 
-%!xtest <*58691> assert (script_nest (), 5)
+%!test <*58691> assert (script_nest (), 5)
 
 %!assert (arg_ret (), 10)
 
@@ -156,7 +156,7 @@
 %! assert (observed, [1, 2, 1, 3, 2]);
 
 ## Test visibility of nested function from script called from parent.
-%!assert (script_nest_2 (42), 84);
+%!assert (script_nest_2 (42), 84)
 %!error script_nest_2 (0)
 
 %!assert (bug_59989 (), 6)

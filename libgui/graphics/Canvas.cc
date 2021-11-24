@@ -51,7 +51,7 @@
 #include "interpreter.h"
 #include "oct-opengl.h"
 
-namespace QtHandles
+namespace octave
 {
 
   void
@@ -371,11 +371,7 @@ namespace QtHandles
 
             r.adjust (-5, -5, 5, 5);
 
-#if defined (HAVE_QMOUSEEVENT_LOCALPOS)
             bool rect_contains_pos = r.contains (event->localPos ());
-#else
-            bool rect_contains_pos = r.contains (event->posF ());
-#endif
             if (rect_contains_pos)
               {
                 currentObj = childObj;
@@ -429,11 +425,7 @@ namespace QtHandles
                 // the axes and still select it.
                 r.adjust (-20, -20, 20, 20);
 
-#if defined (HAVE_QMOUSEEVENT_LOCALPOS)
                 bool rect_contains_pos = r.contains (event->localPos ());
-#else
-                bool rect_contains_pos = r.contains (event->posF ());
-#endif
                 if (rect_contains_pos)
                   axesObj = *it;
               }
@@ -564,7 +556,7 @@ namespace QtHandles
         retval = 1;
         break;
 
-      case Qt::MidButton:
+      case Qt::MiddleButton:
         retval = 2;
         break;
 
@@ -746,7 +738,7 @@ namespace QtHandles
 
                         break;
 
-                      case Qt::MidButton:
+                      case Qt::MiddleButton:
                         {
                           axes::properties& ap =
                             Utils::properties<axes> (axesObj);
@@ -885,7 +877,7 @@ namespace QtHandles
                     props.prepend (figObj.get_handle ().as_octave_value ());
 
                     emit interpreter_event
-                      ([this, props] (octave::interpreter& interp)
+                      ([=] (octave::interpreter& interp)
                        {
                          // INTERPRETER THREAD
 

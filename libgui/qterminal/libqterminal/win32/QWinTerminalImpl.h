@@ -49,8 +49,7 @@ class QWinTerminalImpl : public QTerminal
   friend class QConsoleView;
 
 public:
-  QWinTerminalImpl (QWidget* parent = 0);
-  QWinTerminalImpl (const QString& cmd, QWidget* parent = 0);
+  QWinTerminalImpl (octave::base_qobject&, QWidget* parent);
   ~QWinTerminalImpl (void);
 
   void setTerminalFont (const QFont& font);
@@ -78,8 +77,6 @@ public slots:
 signals:
   void terminated (void);
   void titleChanged (const QString&);
-  void set_global_shortcuts_signal (bool);
-  void set_screen_size_signal (int, int);
 
 protected:
   void viewPaintEvent (QConsoleView*, QPaintEvent*);

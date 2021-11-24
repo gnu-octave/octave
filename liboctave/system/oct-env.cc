@@ -54,15 +54,13 @@ Free Software Foundation, Inc.
 #include "lo-sysdep.h"
 #include "lo-utils.h"
 #include "oct-env.h"
-#include "oct-passwd.h"
+#include "oct-password.h"
 #include "oct-syscalls.h"
 #include "set-program-name-wrapper.h"
 #include "singleton-cleanup.h"
 #include "unistd-wrappers.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-#  include "uniconv-wrappers.h"
-
 #  include <windows.h>
 #  include <shlobj.h>
 #endif
@@ -72,9 +70,9 @@ namespace octave
   namespace sys
   {
     env::env (void)
-      : follow_symbolic_links (true), verbatim_pwd (true),
-        current_directory (), prog_name (), prog_invocation_name (),
-        user_name (), host_name ()
+      : m_follow_symbolic_links (true), m_verbatim_pwd (true),
+        m_current_directory (), m_prog_name (), m_prog_invocation_name (),
+        m_user_name (), m_host_name ()
     {
       // Get a real value for the current directory.
       do_getcwd ();
@@ -85,16 +83,16 @@ namespace octave
       do_get_host_name ();
     }
 
-    env *env::instance = nullptr;
+    env *env::m_instance = nullptr;
 
     bool
     env::instance_ok (void)
     {
       bool retval = true;
 
-      if (! instance)
+      if (! m_instance)
         {
-          instance = new env ();
+          m_instance = new env ();
           singleton_cleanup_list::add (cleanup_instance);
         }
 
@@ -105,98 +103,105 @@ namespace octave
     env::polite_directory_format (const std::string& name)
     {
       return (instance_ok ())
-        ? instance->do_polite_directory_format (name) : "";
+        ? m_instance->do_polite_directory_format (name) : "";
     }
 
     bool
     env::absolute_pathname (const std::string& s)
     {
       return (instance_ok ())
-        ? instance->do_absolute_pathname (s) : false;
+        ? m_instance->do_absolute_pathname (s) : false;
     }
 
     bool
     env::rooted_relative_pathname (const std::string& s)
     {
       return (instance_ok ())
-        ? instance->do_rooted_relative_pathname (s) : false;
+        ? m_instance->do_rooted_relative_pathname (s) : false;
     }
 
     std::string
     env::base_pathname (const std::string& s)
     {
       return (instance_ok ())
-        ? instance->do_base_pathname (s) : "";
+        ? m_instance->do_base_pathname (s) : "";
     }
 
     std::string
     env::make_absolute (const std::string& s, const std::string& dot_path)
     {
       return (instance_ok ())
-        ? instance->do_make_absolute (s, dot_path) : "";
+        ? m_instance->do_make_absolute (s, dot_path) : "";
     }
 
     std::string
     env::get_current_directory ()
     {
       return (instance_ok ())
-        ? instance->do_getcwd () : "";
+        ? m_instance->do_getcwd () : "";
     }
 
     std::string
     env::get_home_directory ()
     {
       return (instance_ok ())
-        ? instance->do_get_home_directory () : "";
+        ? m_instance->do_get_home_directory () : "";
     }
 
     std::string
     env::get_temp_directory ()
     {
       return (instance_ok ())
-        ? instance->do_get_temp_directory () : "";
+        ? m_instance->do_get_temp_directory () : "";
     }
 
     std::string
     env::get_user_config_directory ()
     {
       return (instance_ok ())
-        ? instance->do_get_user_config_directory () : "";
+        ? m_instance->do_get_user_config_directory () : "";
+    }
+
+    std::string
+    env::get_user_data_directory ()
+    {
+      return (instance_ok ())
+        ? m_instance->do_get_user_data_directory () : "";
     }
 
     std::string
     env::get_program_name (void)
     {
       return (instance_ok ())
-        ? instance->prog_name : "";
+        ? m_instance->m_prog_name : "";
     }
 
     std::string
     env::get_program_invocation_name (void)
     {
       return (instance_ok ())
-        ? instance->prog_invocation_name : "";
+        ? m_instance->m_prog_invocation_name : "";
     }
 
     void
     env::set_program_name (const std::string& s)
     {
       if (instance_ok ())
-        instance->do_set_program_name (s);
+        m_instance->do_set_program_name (s);
     }
 
     std::string
     env::get_user_name (void)
     {
       return (instance_ok ())
-        ? instance->do_get_user_name () : "";
+        ? m_instance->do_get_user_name () : "";
     }
 
     std::string
     env::get_host_name (void)
     {
       return (instance_ok ())
-        ? instance->do_get_host_name () : "";
+        ? m_instance->do_get_host_name () : "";
     }
 
     std::string
@@ -247,21 +252,39 @@ namespace octave
       wchar_t path[MAX_PATH+1];
       if (SHGetFolderPathW (nullptr, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY,
                             nullptr, SHGFP_TYPE_CURRENT, path) == S_OK)
-        {
-          char *local_app_data = u8_from_wchar (path);
-          cfg_dir = local_app_data;
-          free (local_app_data);
-        }
+        cfg_dir = u8_from_wstring (path);
 #else
       cfg_dir = do_getenv ("XDG_CONFIG_HOME");
+#endif
 
       if (cfg_dir.empty ())
         cfg_dir = do_get_home_directory () + sys::file_ops::dir_sep_str ()
              + ".config";
-#endif
 
       return cfg_dir;
     }
+
+  std::string
+  env::do_get_user_data_directory (void) const
+  {
+      std::string data_dir;
+
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && defined (OCTAVE_USE_WINDOWS_API)
+      wchar_t path[MAX_PATH+1];
+      if (SHGetFolderPathW (nullptr, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY,
+                            nullptr, SHGFP_TYPE_CURRENT, path) == S_OK)
+        data_dir = u8_from_wstring (path);
+#else
+      data_dir = do_getenv ("XDG_DATA_HOME");
+#endif
+
+      if (data_dir.empty ())
+        data_dir = do_get_home_directory () + sys::file_ops::dir_sep_str ()
+             + ".local" + sys::file_ops::dir_sep_str () + "share";
+
+      return data_dir;
+  }
+
 
     // FIXME: this leaves no way to distinguish between a
     // variable that is not set and one that is set to the empty string.
@@ -271,7 +294,7 @@ namespace octave
     env::getenv (const std::string& name)
     {
       return (instance_ok ())
-        ? instance->do_getenv (name) : "";
+        ? m_instance->do_getenv (name) : "";
     }
 
     void
@@ -292,7 +315,7 @@ namespace octave
     env::chdir (const std::string& newdir)
     {
       return (instance_ok ())
-        ? instance->do_chdir (newdir) : false;
+        ? m_instance->do_chdir (newdir) : false;
     }
 
     void
@@ -311,16 +334,16 @@ namespace octave
           // instead of passing S.c_str () which only exists as long as the
           // string object S.
 
-          prog_invocation_name
+          m_prog_invocation_name
             = octave_set_program_name_wrapper (strsave (s.c_str ()));
 
           std::size_t pos
-            = prog_invocation_name.find_last_of (sys::file_ops::dir_sep_chars ());
+            = m_prog_invocation_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
           // Also keep a shortened version of the program name.
-          prog_name = (pos == std::string::npos
-                       ? prog_invocation_name
-                       : prog_invocation_name.substr (pos+1));
+          m_prog_name = (pos == std::string::npos
+                         ? m_prog_invocation_name
+                         : m_prog_invocation_name.substr (pos+1));
 
           initialized = true;
         }
@@ -495,13 +518,13 @@ namespace octave
     std::string
     env::do_getcwd () const
     {
-      if (! follow_symbolic_links)
-        current_directory = "";
+      if (! m_follow_symbolic_links)
+        m_current_directory = "";
 
-      if (verbatim_pwd || current_directory.empty ())
-        current_directory = sys::getcwd ();
+      if (m_verbatim_pwd || m_current_directory.empty ())
+        m_current_directory = sys::getcwd ();
 
-      return current_directory;
+      return m_current_directory;
     }
 
     // This value is not cached because it can change while Octave is
@@ -537,29 +560,29 @@ namespace octave
     std::string
     env::do_get_user_name (void) const
     {
-      if (user_name.empty ())
+      if (m_user_name.empty ())
         {
           sys::password pw = sys::password::getpwuid (sys::getuid ());
 
-          user_name = (pw ? pw.name () : "unknown");
+          m_user_name = (pw ? pw.name () : "unknown");
         }
 
-      return user_name;
+      return m_user_name;
     }
 
     std::string
     env::do_get_host_name (void) const
     {
-      if (host_name.empty ())
+      if (m_host_name.empty ())
         {
           char hostname[1024];
 
           int status = octave_gethostname_wrapper (hostname, 1023);
 
-          host_name = (status < 0) ? "unknown" : hostname;
+          m_host_name = (status < 0) ? "unknown" : hostname;
         }
 
-      return host_name;
+      return m_host_name;
     }
 
     std::string
@@ -578,15 +601,15 @@ namespace octave
 
       std::string tmp;
 
-      if (follow_symbolic_links)
+      if (m_follow_symbolic_links)
         {
-          if (current_directory.empty ())
+          if (m_current_directory.empty ())
             do_getcwd ();
 
-          if (current_directory.empty ())
+          if (m_current_directory.empty ())
             tmp = newdir;
           else
-            tmp = do_make_absolute (newdir, current_directory);
+            tmp = do_make_absolute (newdir, m_current_directory);
 
           // Get rid of trailing directory separator.
           if (tmp.length () > 1 && sys::file_ops::is_dir_sep (tmp.back ()))
@@ -594,7 +617,7 @@ namespace octave
 
           if (! sys::chdir (tmp))
             {
-              current_directory = tmp;
+              m_current_directory = tmp;
               retval = true;
             }
         }

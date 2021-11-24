@@ -61,7 +61,7 @@
 %!
 %!assert (f (), 1)
 
-# String continuation using '\'
+## String continuation using '\'
 %!assert (["abc\
 %! def"], "abc def")
 

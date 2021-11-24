@@ -48,7 +48,7 @@
 
 function [s, l] = bounds (x, dim, nanflag = false)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -119,8 +119,7 @@ endfunction
 %! assert (l, x(:,:,3));
 
 ## Test input validation
-%!error bounds ()
-%!error bounds (1, 2, 3, 4)
+%!error <Invalid call> bounds ()
 %!error <X must be a numeric> bounds (['A'; 'B'])
 %!error <DIM must be an integer> bounds (1, ones (2,2))
 %!error <DIM must be an integer> bounds (1, 1.5)

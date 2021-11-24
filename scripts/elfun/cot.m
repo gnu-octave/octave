@@ -31,7 +31,7 @@
 
 function y = cot (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -47,5 +47,4 @@ endfunction
 %! v = [rt3, 1, rt3/3, 0, -rt3/3, -1, -rt3];
 %! assert (cot (x), v, sqrt (eps));
 
-%!error cot ()
-%!error cot (1, 2)
+%!error <Invalid call> cot ()

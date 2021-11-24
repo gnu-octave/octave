@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <clocale>
 #include <istream>
 #include <limits>
 #include <ostream>
@@ -341,8 +342,8 @@ octave_matrix::reshape (const dim_vector& new_dims) const
   if (idx_cache)
     {
       return new octave_matrix (matrix.reshape (new_dims),
-                                idx_vector (idx_cache->as_array ().reshape (new_dims),
-                                            idx_cache->extent (0)));
+                                octave::idx_vector (idx_cache->as_array ().reshape (new_dims),
+                                                    idx_cache->extent (0)));
     }
   else
     return octave_base_matrix<NDArray>::reshape (new_dims);
@@ -354,8 +355,8 @@ octave_matrix::squeeze (void) const
   if (idx_cache)
     {
       return new octave_matrix (matrix.squeeze (),
-                                idx_vector (idx_cache->as_array ().squeeze (),
-                                            idx_cache->extent (0)));
+                                octave::idx_vector (idx_cache->as_array ().squeeze (),
+                                                    idx_cache->extent (0)));
     }
   else
     return octave_base_matrix<NDArray>::squeeze ();
@@ -512,6 +513,15 @@ octave_matrix::load_ascii (std::istream& is)
   if (! extract_keyword (is, keywords, kw, val, true))
     error ("load: failed to extract number of rows and columns");
 
+  // Set "C" locale for the duration of this function to avoid the performance
+  // panelty of frequently switching the locale when reading floating point
+  // values from the stream.
+  char *prev_locale = std::setlocale (LC_ALL, nullptr);
+  std::string old_locale (prev_locale ? prev_locale : "");
+  std::setlocale (LC_ALL, "C");
+  octave::unwind_action act
+    ([&old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
+
   if (kw == "ndims")
     {
       int mdims = static_cast<int> (val);
@@ -598,7 +608,7 @@ octave_matrix::save_binary (std::ostream& os, bool save_as_floats)
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const double *mtmp = m.data ();
@@ -670,7 +680,7 @@ octave_matrix::load_binary (std::istream& is, bool swap,
         return false;
       Matrix m (nr, nc);
       double *re = m.fortran_vec ();
-      octave_idx_type len = nr * nc;
+      octave_idx_type len = static_cast<octave_idx_type> (nr) * nc;
       read_doubles (is, re, static_cast<save_type> (tmp), len, swap, fmt);
 
       if (! is)
@@ -729,7 +739,7 @@ octave_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       if (m.all_integers (max_val, min_val))
         save_type_hid
-          = save_type_to_hdf5 (get_save_type (max_val, min_val));
+          = save_type_to_hdf5 (octave::get_save_type (max_val, min_val));
     }
 #endif
 
@@ -844,18 +854,18 @@ octave_matrix::print_raw (std::ostream& os,
 }
 
 mxArray *
-octave_matrix::as_mxArray (void) const
+octave_matrix::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, dims (), mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, dims (), mxREAL);
 
-  double *pr = static_cast<double *> (retval->get_data ());
+  mxDouble *pd = static_cast<mxDouble *> (retval->get_data ());
 
   mwSize nel = numel ();
 
-  const double *p = matrix.data ();
+  const double *pdata = matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
-    pr[i] = p[i];
+    pd[i] = pdata[i];
 
   return retval;
 }

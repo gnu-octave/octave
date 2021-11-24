@@ -43,10 +43,10 @@ Quad : public Quad_options
 public:
 
   Quad (integrand_fcn fcn)
-    : Quad_options (), f (fcn), ff () { }
+    : Quad_options (), m_f (fcn), m_ff () { }
 
   Quad (float_integrand_fcn fcn)
-    : Quad_options (), f (), ff (fcn) { }
+    : Quad_options (), m_f (), m_ff (fcn) { }
 
   virtual ~Quad (void) = default;
 
@@ -110,8 +110,8 @@ public:
 
 protected:
 
-  integrand_fcn f;
-  float_integrand_fcn ff;
+  integrand_fcn m_f;
+  float_integrand_fcn m_ff;
 };
 
 class
@@ -121,19 +121,21 @@ DefQuad : public Quad
 public:
 
   DefQuad (integrand_fcn fcn)
-    : Quad (fcn), lower_limit (0.0), upper_limit (1.0), singularities () { }
+    : Quad (fcn), m_lower_limit (0.0), m_upper_limit (1.0), m_singularities ()
+  { }
 
   DefQuad (integrand_fcn fcn, double ll, double ul)
-    : Quad (fcn), lower_limit (ll), upper_limit (ul), singularities () { }
+    : Quad (fcn), m_lower_limit (ll), m_upper_limit (ul), m_singularities ()
+  { }
 
   DefQuad (integrand_fcn fcn, double ll, double ul,
            const ColumnVector& sing)
-    : Quad (fcn), lower_limit (ll), upper_limit (ul),
-      singularities (sing) { }
+    : Quad (fcn), m_lower_limit (ll), m_upper_limit (ul),
+      m_singularities (sing) { }
 
   DefQuad (integrand_fcn fcn, const ColumnVector& sing)
-    : Quad (fcn), lower_limit (0.0), upper_limit (1.0),
-      singularities (sing) { }
+    : Quad (fcn), m_lower_limit (0.0), m_upper_limit (1.0),
+      m_singularities (sing) { }
 
   ~DefQuad (void) = default;
 
@@ -145,10 +147,10 @@ public:
 
 private:
 
-  double lower_limit;
-  double upper_limit;
+  double m_lower_limit;
+  double m_upper_limit;
 
-  ColumnVector singularities;
+  ColumnVector m_singularities;
 };
 
 class
@@ -160,10 +162,10 @@ public:
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
   IndefQuad (integrand_fcn fcn)
-    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
+    : Quad (fcn), m_bound (0.0), m_type (bound_to_inf) { }
 
   IndefQuad (integrand_fcn fcn, double b, IntegralType t)
-    : Quad (fcn), bound (b), type (t) { }
+    : Quad (fcn), m_bound (b), m_type (t) { }
 
   ~IndefQuad (void) = default;
 
@@ -175,8 +177,8 @@ public:
 
 private:
 
-  double bound;
-  IntegralType type;
+  double m_bound;
+  IntegralType m_type;
 };
 
 class
@@ -186,19 +188,21 @@ FloatDefQuad : public Quad
 public:
 
   FloatDefQuad (float_integrand_fcn fcn)
-    : Quad (fcn), lower_limit (0.0), upper_limit (1.0), singularities () { }
+    : Quad (fcn), m_lower_limit (0.0), m_upper_limit (1.0), m_singularities ()
+  { }
 
   FloatDefQuad (float_integrand_fcn fcn, float ll, float ul)
-    : Quad (fcn), lower_limit (ll), upper_limit (ul), singularities () { }
+    : Quad (fcn), m_lower_limit (ll), m_upper_limit (ul), m_singularities ()
+  { }
 
   FloatDefQuad (float_integrand_fcn fcn, float ll, float ul,
                 const FloatColumnVector& sing)
-    : Quad (fcn), lower_limit (ll), upper_limit (ul),
-      singularities (sing) { }
+    : Quad (fcn), m_lower_limit (ll), m_upper_limit (ul),
+      m_singularities (sing) { }
 
   FloatDefQuad (float_integrand_fcn fcn, const FloatColumnVector& sing)
-    : Quad (fcn), lower_limit (0.0), upper_limit (1.0),
-      singularities (sing) { }
+    : Quad (fcn), m_lower_limit (0.0), m_upper_limit (1.0),
+      m_singularities (sing) { }
 
   ~FloatDefQuad (void) = default;
 
@@ -210,10 +214,10 @@ public:
 
 private:
 
-  float lower_limit;
-  float upper_limit;
+  float m_lower_limit;
+  float m_upper_limit;
 
-  FloatColumnVector singularities;
+  FloatColumnVector m_singularities;
 };
 
 class
@@ -225,10 +229,10 @@ public:
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
   FloatIndefQuad (float_integrand_fcn fcn)
-    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
+    : Quad (fcn), m_bound (0.0), m_type (bound_to_inf) { }
 
   FloatIndefQuad (float_integrand_fcn fcn, double b, IntegralType t)
-    : Quad (fcn), bound (b), type (t) { }
+    : Quad (fcn), m_bound (b), m_type (t) { }
 
   ~FloatIndefQuad (void) = default;
 
@@ -240,8 +244,8 @@ public:
 
 private:
 
-  float bound;
-  IntegralType type;
+  float m_bound;
+  IntegralType m_type;
 };
 
 #endif

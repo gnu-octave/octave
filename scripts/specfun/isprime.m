@@ -58,9 +58,14 @@
 ## @end group
 ## @end example
 ##
-## Programming Note: @code{isprime} is appropriate if the maximum value in
-## @var{x} is not too large (< 1e15).  For larger values special purpose
-## factorization code should be used.
+## Programming Note: @code{isprime} is suitable for all @var{x}
+## in the range abs(@var{x})
+## @tex
+## $ < 2^{64}$.
+## @end tex
+## @ifnottex
+##  < 2^64.
+## @end ifnottex
 ##
 ## Compatibility Note: @sc{matlab} does not extend the definition of prime
 ## numbers and will produce an error if given negative or complex inputs.
@@ -69,7 +74,7 @@
 
 function t = isprime (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (any (fix (x) != x))
     error ("isprime: X contains non-integer entries");
@@ -85,54 +90,83 @@ function t = isprime (x)
     return;
   endif
 
-  ## Code strategy is to build a table with the list of possible primes
-  ## and then quickly compare entries in x with the table of primes using
-  ## lookup().  The table size is limited to save memory and computation
-  ## time during its creation.  All entries larger than the maximum in the
-  ## table are checked by straightforward division.
+  ## Code strategy is to quickly compare entries in x with small primes
+  ## using lookup(), then do direct division on larger numbers up to
+  ## a threshold, then call Miller-Rabin for numbers over the threshold.
 
-  x = abs (x);              # handle negative entries
-  maxn = max (x(:));
-  ## generate prime table of suitable length.
-  ## 1e7 threshold requires ~0.15 seconds of computation, 1e8 requires 1.8.
-  maxp = min (maxn, max (sqrt (maxn), 1e7));
-  pr = primes (maxp);
+  x = abs (x);  # handle negative entries
+
+  ## Generate prime table of suitable length up to maxp.
+  ## The value of maxp needs to be at least 37,
+  ## because of the method used by __isprimelarge__ below.
+  maxp = 37;  
+  pr = [2 3 5 7 11 13 17 19 23 29 31 37];
   t = lookup (pr, x, "b");  # quick search for table matches.
 
-  ## process any remaining large entries
-  m = x(x > maxp);
-  if (! isempty (m))
-    if (maxn <= intmax ("uint32"))
-      m = uint32 (m);
-    elseif (maxn <= intmax ("uint64"))
-      m = uint64 (m);
-    else
-      warning ("isprime: X contains integers too large to be tested");
-    endif
+  THRESHOLD = 29e9;
+  ## FIXME: THRESHOLD is the input value at which Miller-Rabin
+  ## becomes more efficient than direct division. For smaller numbers,
+  ## use direct division. For larger numbers, use Miller-Rabin.
+  ##
+  ## From numerical experiments in Oct 2021, this was observed:
+  ##    THRESHOLD       Division       Miller-Rabin
+  ##        380e9       75.0466s       30.868s
+  ##        100e9       45.0874s       29.1794s
+  ##         10e9       18.5075s       25.4392s
+  ##         50e9       31.6317s       27.7251s
+  ##         25e9       25.1215s       27.004s
+  ##         38e9       31.4674s       28.1336s
+  ##         30e9       28.3848s       27.9982s
+  ## which is close enough to interpolate, so final threshold = 29 billion.
+  ##
+  ## The test code was this: 
+  ##   n = THRESHOLD - (1:1e7); tic; isprime(n); toc 
+  ##   n = THRESHOLD + (1:1e7); tic; isprime(n); toc 
+  ##
+  ## Two notes for future programmers:
+  ##
+  ## 1. Test and tune THRESHOLD periodically. Miller-Rabin is only CPU-limited,
+  ##    while factorization by division is very memory-intensive. This is
+  ##    plainly noticeable from the loudness of the computer fans when running
+  ##    the division technique! CPU speed and RAM speed scale differently over
+  ##    time, so test and tune THRESHOLD periodically.
+  ##
+  ## 2. If you make improvements elsewhere in the code that favor one over
+  ##    the other (not symmetric), you should also retune THRESHOLD afterwards.
+  ##    If the Miller-Rabin part is sped up, the optimum THRESHOLD will
+  ##    decrease, and if factorization is sped up, it will increase.
+  ##
 
-    ## Start by dividing through by the small primes until the remaining
-    ## list of entries is small (and most likely prime themselves).
-    pr = cast (pr(pr <= sqrt (maxn)), class (m));
-    for p = pr
+  ## Process large entries that are still suitable for direct division
+  m = x (x > maxp & x <= THRESHOLD);
+  if ( ! isempty (m))
+    ## Start by dividing through by the small primes until the remaining list
+    ## of entries is small (and most likely prime themselves).
+    pr2 = primes (sqrt (max (m)));
+    t |= lookup (pr2, x, "b");
+    for p = pr2
       m = m(rem (m, p) != 0);
       if (numel (m) < numel (pr) / 10)
         break;
       endif
     endfor
 
-    ## Check the remaining list of possible primes against the
-    ## remaining prime factors which were not tested in the for loop.
-    ## This is just an optimization to use arrayfun over for loo
-    pr = pr(pr > p);
-    mm = arrayfun (@(x) all (rem (x, pr)), m);
+    ## Check the remaining list of possible primes against the remaining
+    ## prime factors which were not tested in the for loop.
+    ## This is just an optimization to use arrayfun over for loop.
+    pr2 = pr2 (pr2 > p);
+    mm = arrayfun (@(x) all (rem (x, pr2)), m);
     m = m(mm);
 
     ## Add any remaining entries, which are truly prime, to the results.
-    if (! isempty (m))
-      m = cast (sort (m), class (x));
-      t |= lookup (m, x, "b");
+    if ( ! isempty (m))
+      t |= lookup (sort (m), x, "b");
     endif
   endif
+
+  ## Process remaining entries (everything above THRESHOLD) with Miller-Rabin
+  ii = (x(:)' > THRESHOLD);
+  t(ii) = __isprimelarge__ (x(ii));
 
 endfunction
 
@@ -162,6 +196,7 @@ endfunction
 
 %!assert (isprime (3), true)
 %!assert (isprime (4), false)
+%!assert (isprime (uint64 (18446744073709551557)), true)
 %!assert (isprime (5i), false)
 %!assert (isprime (7i), true)
 %!assert (isprime ([1+2i, (2+3i)*(-1+2i)]), [true, false])
@@ -173,7 +208,6 @@ endfunction
 %!assert (isprime (magic (3)), logical ([0, 0, 0; 1, 1, 1; 0, 0, 1]))
 
 ## Test input validation
-%!error isprime ()
-%!error isprime (1, 2)
+%!error <Invalid call> isprime ()
 %!error <X contains non-integer entries> isprime (0.5i)
 %!error <X contains non-integer entries> isprime (0.5)

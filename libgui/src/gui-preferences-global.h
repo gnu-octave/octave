@@ -28,6 +28,10 @@
 
 #include "gui-preferences.h"
 
+// Constants
+
+const QString gui_obj_name_main_window = "MainWindow";
+
 // Global preferences
 
 // Get the default monospaced font
@@ -49,8 +53,6 @@ global_style ("style", QVariant ("default"));
 
 const QString
 global_toolbar_style ("QToolBar {"
-                      "spacing-top: 0px;"
-                      "spacing-bottom: 0px;"
                       "margin-top: 0px;"
                       "margin-bottom: 0px;"
                       "padding-top: 0px;"
@@ -61,8 +63,6 @@ global_toolbar_style ("QToolBar {"
 
 const QString
 global_menubar_style ("QMenuBar {"
-                      "spacing-top: 0px;"
-                      "spacing-bottom: 0px;"
                       "margin-top: 0px;"
                       "margin-bottom: 0px;"
                       "padding-top: 0px;"
@@ -115,8 +115,14 @@ global_restore_ov_dir ("restore_octave_dir", QVariant (false));
 
 const gui_pref
 global_use_custom_editor ("useCustomFileEditor", QVariant (false));
+
+#if defined (Q_OS_WIN32)
+const gui_pref
+global_custom_editor ("customFileEditor", QVariant ("notepad++ -n%l %f"));
+#else
 const gui_pref
 global_custom_editor ("customFileEditor", QVariant ("emacs +%l %f"));
+#endif
 
 const gui_pref
 global_prompt_to_exit ("prompt_to_exit", QVariant (false));
@@ -135,5 +141,14 @@ const gui_pref
 global_proxy_user ("proxyUserName", QVariant (QString ()));
 const gui_pref
 global_proxy_pass ("proxyPassword", QVariant (QString ()));
+
+const QStringList
+global_proxy_all_types (QStringList ()
+             << "HttpProxy"
+             << "Socks5Proxy"
+             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Environment Variables")
+);
+const QList<int>
+global_proxy_manual_types (QList<int> () << 0 << 1);
 
 #endif

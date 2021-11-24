@@ -69,7 +69,7 @@
 
 function msg = javachk (feature, caller = "")
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! ischar (feature))
     error ("javachk: FEATURE must be a string");
@@ -133,7 +133,7 @@ function msg = javachk (feature, caller = "")
 endfunction
 
 
-%!testif ; ! __octave_config_info__().build_features.JAVA
+%!testif ; ! __octave_config_info__ ().build_features.JAVA
 %! msg = javachk ("desktop");
 %! assert (msg.message, "javachk: this function is not supported, Octave was not compiled with Java support");
 %! assert (msg.identifier, "Octave:javachk:java-not-supported");
@@ -158,7 +158,7 @@ endfunction
 %! assert (javachk ("jvm"), stnul);
 
 ## Test input validation
-%!error javachk ()
-%!error javachk (1)
+%!error <Invalid call> javachk ()
+%!error <FEATURE must be a string> javachk (1)
 %!error javachk ("jvm", 2)
 %!error javachk ("jvm", "feature", "ok")

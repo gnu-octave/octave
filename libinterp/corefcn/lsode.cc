@@ -49,6 +49,8 @@
 
 #include "LSODE-opts.cc"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Global pointer for user defined function required by lsode.
 static octave_value lsode_fcn;
 
@@ -62,7 +64,7 @@ static bool warned_jac_imaginary = false;
 // Is this a recursive call?
 static int call_depth = 0;
 
-ColumnVector
+static ColumnVector
 lsode_user_function (const ColumnVector& x, double t)
 {
   ColumnVector retval;
@@ -79,9 +81,9 @@ lsode_user_function (const ColumnVector& x, double t)
         {
           tmp = octave::feval (lsode_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "lsode");
+          err_user_supplied_eval (ee, "lsode");
         }
 
       if (tmp.empty () || ! tmp(0).is_defined ())
@@ -102,7 +104,7 @@ lsode_user_function (const ColumnVector& x, double t)
   return retval;
 }
 
-Matrix
+static Matrix
 lsode_user_jacobian (const ColumnVector& x, double t)
 {
   Matrix retval;
@@ -119,9 +121,9 @@ lsode_user_jacobian (const ColumnVector& x, double t)
         {
           tmp = octave::feval (lsode_jac, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "lsode");
+          err_user_supplied_eval (ee, "lsode");
         }
 
       if (tmp.empty () || ! tmp(0).is_defined ())
@@ -285,15 +287,13 @@ fvdp = @@(@var{y},@var{t}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
 
-  octave::unwind_protect frame;
-
-  frame.protect_var (call_depth);
+  unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
     error ("lsode: invalid recursive call");
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   std::string fcn_name, fname, jac_name, jname;
 
@@ -311,13 +311,11 @@ fvdp = @@(@var{y},@var{t}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y
         f_arg = c(0);
       else if (c.numel () == 2)
         {
-          lsode_fcn = octave::get_function_handle (interp, c(0),
-                                                   parameter_names);
+          lsode_fcn = get_function_handle (interp, c(0), parameter_names);
 
           if (lsode_fcn.is_defined ())
             {
-              lsode_jac = octave::get_function_handle (interp, c(1),
-                                                       parameter_names);
+              lsode_jac = get_function_handle (interp, c(1), parameter_names);
 
               if (lsode_jac.is_undefined ())
                 lsode_fcn = octave_value ();
@@ -336,21 +334,20 @@ fvdp = @@(@var{y},@var{t}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y
           switch (f_arg.rows ())
             {
             case 1:
-              lsode_fcn = octave::get_function_handle (interp, f_arg,
-                                                       parameter_names);
+              lsode_fcn = get_function_handle (interp, f_arg, parameter_names);
               break;
 
             case 2:
               {
                 string_vector tmp = f_arg.string_vector_value ();
 
-                lsode_fcn = octave::get_function_handle (interp, tmp(0),
-                                                         parameter_names);
+                lsode_fcn = get_function_handle (interp, tmp(0),
+                                                 parameter_names);
 
                 if (lsode_fcn.is_defined ())
                   {
-                    lsode_jac = octave::get_function_handle (interp, tmp(1),
-                                                             parameter_names);
+                    lsode_jac = get_function_handle (interp, tmp(1),
+                                                     parameter_names);
 
                     if (lsode_jac.is_undefined ())
                       lsode_fcn = octave_value ();
@@ -492,3 +489,5 @@ fvdp = @@(@var{y},@var{t}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y
 
 %!error lsode_options ("foo", 1, 2)
 */
+
+OCTAVE_NAMESPACE_END

@@ -32,8 +32,8 @@
 
 #include "pathsearch.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   namespace config
   {
     extern OCTINTERP_API std::string
@@ -102,6 +102,7 @@ namespace octave
     extern OCTINTERP_API std::string local_site_defaults_file (void);
     extern OCTINTERP_API std::string site_defaults_file (void);
   }
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

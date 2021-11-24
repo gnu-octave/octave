@@ -189,7 +189,7 @@ namespace octave
     }
 
     group::group (void *p, std::string& msg)
-      : m_name (), m_passwd (), m_gid (0), m_mem (), valid (false)
+      : m_name (), m_passwd (), m_gid (0), m_mem (), m_valid (false)
     {
 #if defined (HAVE_GRP_H)
       msg = "";
@@ -225,7 +225,7 @@ namespace octave
                 m_mem[i] = tmp[i];
             }
 
-          valid = true;
+          m_valid = true;
         }
 #else
       octave_unused_parameter (p);

@@ -27,6 +27,7 @@
 #define octave_file_editor_interface_h 1
 
 #include <QMenu>
+#include <QMenuBar>
 #include <QToolBar>
 
 #include "gui-settings.h"
@@ -51,6 +52,7 @@ namespace octave
     virtual QMenu * get_mru_menu (void) = 0;
     virtual QMenu * debug_menu (void) = 0;
     virtual QToolBar * toolbar (void) = 0;
+    virtual QMenuBar * menubar (void) = 0;
 
     virtual void insert_global_actions (QList<QAction*>) = 0;
     virtual void handle_enter_debug_mode (void) = 0;
@@ -75,6 +77,11 @@ namespace octave
     virtual void restore_session (gui_settings *) = 0;
 
     virtual void enable_menu_shortcuts (bool enable) = 0;
+
+  signals:
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   public slots:
 

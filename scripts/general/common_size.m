@@ -99,5 +99,6 @@ endfunction
 %! assert (b, []);
 %! assert (c, 5);
 
-%!error common_size ()
-%!error common_size (1)
+## Test input validation
+%!error <only makes sense if nargin .= 2> common_size ()
+%!error <only makes sense if nargin .= 2> common_size (1)

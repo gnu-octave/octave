@@ -115,7 +115,7 @@ endfunction
 @end example
 
 The @code{printf} statement (@pxref{Input and Output}) simply tells
-Octave to print the string @qcode{"@xbackslashchar{}a"}.  The special character
+Octave to print the string @qcode{"@backslashchar{}a"}.  The special character
 @samp{\a} stands for the alert character (ASCII 7).  @xref{Strings}.
 
 Once this function is defined, you can ask Octave to evaluate it by
@@ -923,6 +923,8 @@ After this the directory @samp{~/Octave} will be searched for functions.
 @DOCSTRING(command_line_path)
 
 @DOCSTRING(dir_in_loadpath)
+
+@DOCSTRING(dir_encoding)
 
 @node Subfunctions
 @subsection Subfunctions
@@ -1803,6 +1805,8 @@ f (pi/4)
 @DOCSTRING(func2str)
 
 @DOCSTRING(str2func)
+
+@DOCSTRING(symvar)
 
 @node Anonymous Functions
 @subsection Anonymous Functions

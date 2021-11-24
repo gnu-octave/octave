@@ -39,13 +39,13 @@
 ## a string @var{s}, with @var{idx} indicating the ending position of the
 ## various examples.
 ##
-## See @code{demo} for a complete explanation.
+## For a complete explanation @pxref{XREFdemo,,@code{demo}}.
 ## @seealso{demo, test}
 ## @end deftypefn
 
 function [ex_code, ex_idx] = example (name, n = 0)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -119,8 +119,7 @@ endfunction
 %! assert (idx, [1, 23, 73]);
 
 ## Test input validation
-%!error example ()
-%!error example ("example", 3, 5)
+%!error <Invalid call> example ()
 %!error <N must be a scalar integer> example ("example", {1})
 %!error <N must be a scalar integer> example ("example", ones (2,2))
 %!error <N must be a scalar integer> example ("example", 1.5)

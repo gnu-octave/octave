@@ -48,15 +48,18 @@ namespace octave
 
     typedef std::size_t context_id;
 
-    // generic variable
-    static const unsigned int local = 1;
-
-    // formal parameter
-    static const unsigned int formal = 2;
-
-    // this symbol may NOT become a variable.
-    // (symbol added to a static workspace)
-    static const unsigned int added_static = 4;
+    enum symrec_t : unsigned char
+    {
+      // generic variable
+      LOCAL = 1,
+      // formal parameter
+      FORMAL = 2,
+      // this symbol may NOT become a variable.
+      // (symbol added to a static workspace)
+      ADDED_STATIC = 4,
+      // this symbol was recognized as a variable from syntax
+      VARIABLE = 8
+    };
 
   private:
 
@@ -64,7 +67,7 @@ namespace octave
     {
     public:
 
-      symbol_record_rep (const std::string& nm, unsigned int sc)
+      symbol_record_rep (const std::string& nm, symrec_t sc)
         : m_frame_offset (0), m_data_offset (0), m_storage_class (sc),
           m_name (nm)
       { }
@@ -88,47 +91,66 @@ namespace octave
 
       bool is_local (void) const
       {
-        return m_storage_class & local;
+        return m_storage_class & LOCAL;
       }
 
       bool is_formal (void) const
       {
-        return m_storage_class & formal;
+        return m_storage_class & FORMAL;
       }
 
       bool is_added_static (void) const
       {
-        return m_storage_class & added_static;
+        return m_storage_class & ADDED_STATIC;
+      }
+
+      bool is_variable (void) const
+      {
+        return m_storage_class & VARIABLE;
       }
 
       void mark_local (void)
       {
-        m_storage_class |= local;
+        m_storage_class = static_cast<symrec_t> (m_storage_class | LOCAL);
       }
 
       void mark_formal (void)
       {
-        m_storage_class |= formal;
+        // Formal parameters are also variables.
+        m_storage_class = static_cast<symrec_t> (m_storage_class
+                                                 | FORMAL | VARIABLE);
       }
 
       void mark_added_static (void)
       {
-        m_storage_class |= added_static;
+        m_storage_class = static_cast<symrec_t> (m_storage_class
+                                                 | ADDED_STATIC);
+      }
+
+      void mark_as_variable (void)
+      {
+        m_storage_class = static_cast<symrec_t> (m_storage_class | VARIABLE);
       }
 
       void unmark_local (void)
       {
-        m_storage_class &= ~local;
+        m_storage_class = static_cast<symrec_t> (m_storage_class & ~LOCAL);
       }
 
       void unmark_formal (void)
       {
-        m_storage_class &= ~formal;
+        m_storage_class = static_cast<symrec_t> (m_storage_class & ~FORMAL);
       }
 
       void unmark_added_static (void)
       {
-        m_storage_class &= ~added_static;
+        m_storage_class = static_cast<symrec_t> (m_storage_class
+                                                 & ~ADDED_STATIC);
+      }
+
+      void unmark_as_variable (void)
+      {
+        m_storage_class = static_cast<symrec_t> (m_storage_class & ~VARIABLE);
       }
 
       unsigned int storage_class (void) const { return m_storage_class; }
@@ -146,19 +168,19 @@ namespace octave
       std::size_t m_frame_offset;
       std::size_t m_data_offset;
 
-      unsigned int m_storage_class;
+      symrec_t m_storage_class;
 
       std::string m_name;
     };
 
   public:
 
-    symbol_record (const std::string& nm = "", unsigned int sc = local)
+    symbol_record (const std::string& nm = "", symrec_t sc = LOCAL)
       : m_rep (new symbol_record_rep (nm, sc))
     { }
 
     symbol_record (const std::string& nm, const octave_value&,
-                   unsigned int sc = local)
+                   symrec_t sc = LOCAL)
       : m_rep (new symbol_record_rep (nm, sc))
     { }
 
@@ -189,14 +211,17 @@ namespace octave
     bool is_local (void) const { return m_rep->is_local (); }
     bool is_formal (void) const { return m_rep->is_formal (); }
     bool is_added_static (void) const { return m_rep->is_added_static (); }
+    bool is_variable (void) const { return m_rep->is_variable (); }
 
     void mark_local (void) { m_rep->mark_local (); }
     void mark_formal (void) { m_rep->mark_formal (); }
     void mark_added_static (void) { m_rep->mark_added_static (); }
+    void mark_as_variable (void) { m_rep->mark_as_variable (); }
 
     void unmark_local (void) { m_rep->unmark_local (); }
     void unmark_formal (void) { m_rep->unmark_formal (); }
     void unmark_added_static (void) { m_rep->unmark_added_static (); }
+    void unmark_as_variable (void) { m_rep->unmark_as_variable (); }
 
     unsigned int storage_class (void) const { return m_rep->storage_class (); }
 

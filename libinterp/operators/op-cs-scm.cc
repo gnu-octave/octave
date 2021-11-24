@@ -39,6 +39,8 @@
 #include "sparse-xdiv.h"
 #include "ov-cx-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // complex scalar by sparse complex matrix ops.
 
 DEFBINOP_OP (add, complex, sparse_complex_matrix, +)
@@ -90,7 +92,7 @@ DEFBINOP_FN (gt, complex, sparse_complex_matrix, mx_el_gt)
 DEFBINOP_FN (ne, complex, sparse_complex_matrix, mx_el_ne)
 
 DEFBINOP_OP (el_mul, complex, sparse_complex_matrix, *)
-DEFBINOP_FN (el_div, complex, sparse_complex_matrix, x_el_div)
+DEFBINOP_FN (el_div, complex, sparse_complex_matrix, elem_xdiv)
 
 DEFBINOP_FN (el_pow, complex, sparse_complex_matrix, elem_xpow)
 
@@ -108,7 +110,7 @@ DEFBINOP_FN (el_or,  complex, sparse_complex_matrix, mx_el_or)
 
 DEFCATOP (cs_scm, complex, sparse_complex_matrix)
 {
-  octave_complex& v1 = dynamic_cast<octave_complex&> (a1);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
   const octave_sparse_complex_matrix& v2
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
   SparseComplexMatrix tmp (1, 1, v1.complex_value ());
@@ -166,3 +168,5 @@ install_cs_scm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_complex, octave_sparse_complex_matrix,
                       sparse_complex_matrix_conv);
 }
+
+OCTAVE_NAMESPACE_END

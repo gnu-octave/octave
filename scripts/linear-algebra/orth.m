@@ -40,45 +40,41 @@
 
 function retval = orth (A, tol)
 
-  if (nargin == 1 || nargin == 2)
-
-    if (isempty (A))
-      retval = [];
-      return;
-    endif
-
-    [U, S, V] = svd (A);
-
-    [rows, cols] = size (A);
-
-    [S_nr, S_nc] = size (S);
-
-    if (S_nr == 1 || S_nc == 1)
-      s = S(1);
-    else
-      s = diag (S);
-    endif
-
-    if (nargin == 1)
-      if (isa (A, "single"))
-        tol = max (size (A)) * s (1) * eps ("single");
-      else
-        tol = max (size (A)) * s (1) * eps;
-      endif
-    endif
-
-    rank = sum (s > tol);
-
-    if (rank > 0)
-      retval = -U(:, 1:rank);
-    else
-      retval = zeros (rows, 0);
-    endif
-
-  else
-
+  if (nargin < 1)
     print_usage ();
+  endif
 
+  if (isempty (A))
+    retval = [];
+    return;
+  endif
+
+  [U, S, V] = svd (A);
+
+  [rows, cols] = size (A);
+
+  [S_nr, S_nc] = size (S);
+
+  if (S_nr == 1 || S_nc == 1)
+    s = S(1);
+  else
+    s = diag (S);
+  endif
+
+  if (nargin == 1)
+    if (isa (A, "single"))
+      tol = max (size (A)) * s (1) * eps ("single");
+    else
+      tol = max (size (A)) * s (1) * eps;
+    endif
+  endif
+
+  rank = sum (s > tol);
+
+  if (rank > 0)
+    retval = -U(:, 1:rank);
+  else
+    retval = zeros (rows, 0);
   endif
 
 endfunction

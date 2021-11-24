@@ -39,8 +39,8 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTAVE_API Array<idx_vector>;
-extern template class OCTAVE_API Array<octave_idx_type>;
+extern template class Array<octave::idx_vector>;
+extern template class Array<octave_idx_type>;
 
 template <>
 inline bool
@@ -92,7 +92,7 @@ safe_comparator (sortmode mode, const Array<FloatComplex>& a, bool allow_chk)
   return result;
 }
 
-template class OCTAVE_API octave_sort<FloatComplex>;
+template class octave_sort<FloatComplex>;
 
 INSTANTIATE_ARRAY (FloatComplex, OCTAVE_API);
 
@@ -102,4 +102,4 @@ template OCTAVE_API std::ostream& operator << (std::ostream&,
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 
-template class OCTAVE_API DiagArray2<FloatComplex>;
+template class DiagArray2<FloatComplex>;

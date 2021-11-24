@@ -41,6 +41,8 @@
 #include "ovl.h"
 #include "ov.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static
 bool
 contains_char (const std::string& str, char c)
@@ -347,3 +349,5 @@ will be unpredictable.
 %!assert (lookup ({"apple","lemon","orange"}, "potato"), 3)
 %!assert (lookup ({"orange","lemon","apple"}, "potato"), 0)
 */
+
+OCTAVE_NAMESPACE_END

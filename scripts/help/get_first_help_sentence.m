@@ -52,7 +52,7 @@
 
 function [text, status] = get_first_help_sentence (name, max_len = 80)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -109,7 +109,9 @@ function [text, status] = first_sentence_plain_text (help_text, max_len)
       text = help_text(1:max_len);
     endif
   endif
+
   status = 0;
+
 endfunction
 
 ## This function extracts the first sentence from a Texinfo help text.
@@ -182,8 +184,7 @@ endfunction
 %!        "Return the first sentence...")
 
 ## Test input validation
-%!error get_first_help_sentence ()
-%!error get_first_help_sentence (1, 2, 3)
+%!error <Invalid call> get_first_help_sentence ()
 %!error <NAME must be a string> get_first_help_sentence (1)
 %!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", "a")
 %!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", 0)

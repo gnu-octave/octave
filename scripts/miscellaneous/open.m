@@ -73,7 +73,7 @@
 
 function output = open (file)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -131,6 +131,6 @@ endfunction
 
 
 ## Test input validation
-%!error open ()
+%!error <Invalid call> open ()
 %!error open ("abc", "def")
 %!error <FILE must be a string> open (1)

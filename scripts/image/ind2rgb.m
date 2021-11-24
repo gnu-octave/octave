@@ -66,7 +66,7 @@ function [R, G, B] = ind2rgb (x, map)
                    [1 2 4 3]);
     else
       ## we should never reach here since ind2x() should filter them out
-      error ("ind2rgb: an indexed image must have 2 or 4 dimensions.");
+      error ("ind2rgb: an indexed image must have 2 or 4 dimensions");
     endif
   endif
 
@@ -102,8 +102,8 @@ endfunction
 %! assert (rgb(:,3,:), 1/63 * ones (1,1,3));
 
 ## Test input validation
-%!error ind2rgb ()
-%!error ind2rgb (1,2,3)
+%!error <Invalid call> ind2rgb ()
+%!error <Invalid call> ind2rgb (1)
 %!error <X must be an indexed image> ind2rgb (ones (3,3,3), jet (64))
 %!error <X must be an indexed image> ind2rgb (1+i, jet (64))
 %!error <X must be an indexed image> ind2rgb (sparse (1), jet (64))
@@ -127,10 +127,10 @@ endfunction
 %! cmap = repmat (linspace (0, 1, 9)(:), [1 3]);
 %! ind = [0 3 6; 1 4 7; 2 5 8];
 %! rgb = repmat (reshape (linspace (0, 1, 9), [3 3]), [1 1 3]);
-%! assert (ind2rgb (uint8  (ind), cmap), rgb)
-%! assert (ind2rgb (uint16 (ind), cmap), rgb)
-%! assert (ind2rgb (uint32 (ind), cmap), rgb)
-%! assert (ind2rgb (uint64 (ind), cmap), rgb)
+%! assert (ind2rgb (uint8  (ind), cmap), rgb);
+%! assert (ind2rgb (uint16 (ind), cmap), rgb);
+%! assert (ind2rgb (uint32 (ind), cmap), rgb);
+%! assert (ind2rgb (uint64 (ind), cmap), rgb);
 %! fail ("ind2rgb (int8  (ind), cmap)", "X must be an indexed image")
 %! fail ("ind2rgb (int16 (ind), cmap)", "X must be an indexed image")
 %! fail ("ind2rgb (int32 (ind), cmap)", "X must be an indexed image")
@@ -139,5 +139,10 @@ endfunction
 %! cmap(65541,:) = cmap(9,:); # index outside the uint16 range
 %! cmap(9,:) = 0;
 %! ind(3,3) = 65540;
-%! assert (ind2rgb (uint32 (ind), cmap), rgb)
-%! assert (ind2rgb (uint64 (ind), cmap), rgb)
+%! assert (ind2rgb (uint32 (ind), cmap), rgb);
+%! assert (ind2rgb (uint64 (ind), cmap), rgb);
+
+%!test <*59242>
+%! warning ("off", "Octave:ind2rgb:invalid-idx-img", "local");
+%! assert (ind2rgb (uint64 (intmax ("uint64")), jet (64)), ...
+%!         reshape ([0.5,0,0], [1,1,3]));

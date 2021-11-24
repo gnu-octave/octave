@@ -42,7 +42,7 @@ namespace octave
     setFlat (true);
     setFocusPolicy (Qt::NoFocus);  // no focus, would change the color
     update_button ();
-    connect (this, SIGNAL (clicked (void)), SLOT (select_color (void)));
+    connect (this, &color_picker::clicked, this, &color_picker::select_color);
   }
 
   // Slot for button clicked: select a new color using QColorDialog
@@ -55,6 +55,13 @@ namespace octave
         m_color = new_color;
         update_button ();
       }
+  }
+
+  // Set the color of the button
+  void color_picker::set_color (QColor new_color)
+  {
+    m_color = new_color;
+    update_button ();
   }
 
   // Draw the button with the actual color (using a stylesheet)

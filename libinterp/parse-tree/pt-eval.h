@@ -46,8 +46,8 @@
 
 class octave_user_code;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class symbol_info_list;
   class symbol_scope;
   class tree_decl_elt;
@@ -55,6 +55,7 @@ namespace octave
 
   class debugger;
   class interpreter;
+  class push_parser;
   class unwind_protect;
 
   // How to evaluate the code that the parse trees represent.
@@ -127,19 +128,20 @@ namespace octave
     typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
     tree_evaluator (interpreter& interp)
-      : m_interpreter (interp), m_statement_context (SC_OTHER),
+      : m_interpreter (interp), m_parser (), m_statement_context (SC_OTHER),
         m_lvalue_list (nullptr), m_autoload_map (), m_bp_table (*this),
         m_call_stack (*this), m_profiler (), m_debug_frame (0),
         m_debug_mode (false), m_quiet_breakpoint_flag (false),
-        m_debugger_stack (), m_max_recursion_depth (256),
-        m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
-        m_silent_functions (false), m_string_fill_char (' '),
-        m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
+        m_debugger_stack (), m_exit_status (0), m_max_recursion_depth (256),
+        m_whos_line_format ("  %la:5; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
+        m_silent_functions (false), m_string_fill_char (' '), m_PS4 ("+ "),
+        m_dbstep_flag (0), m_break_on_next_stmt (false), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
         m_echo_files (), m_in_top_level_repl (false),
-        m_in_loop_command (false), m_breaking (0), m_continuing (0),
-        m_returning (0), m_indexed_object (), m_index_list (),
-        m_index_type (), m_index_position (0), m_num_indices (0)
+        m_server_mode (false), m_in_loop_command (false),
+        m_breaking (0), m_continuing (0), m_returning (0),
+        m_indexed_object (), m_index_list (), m_index_type (),
+        m_index_position (0), m_num_indices (0)
     { }
 
     // No copying!
@@ -150,16 +152,40 @@ namespace octave
 
     ~tree_evaluator (void) = default;
 
+    std::shared_ptr<push_parser> get_parser (void)
+    {
+      return m_parser;
+    }
+
+    void set_parser (const std::shared_ptr<push_parser>& parser)
+    {
+      m_parser = parser;
+    }
+
     bool at_top_level (void) const;
+
+    std::string mfilename (const std::string& opt = "") const;
+
+    // Parse a line of input.  If input ends at a complete statement
+    // boundary, execute the resulting parse tree.  Useful to handle
+    // parsing user input when running in server mode.
+
+    void parse_and_execute (const std::string& input, bool& incomplete_parse);
+
+    void get_line_and_eval (void);
 
     int repl (void);
 
     bool in_top_level_repl (void) const { return m_in_top_level_repl; }
 
+    int server_loop (void);
+
+    bool server_mode (void) const { return m_server_mode; }
+
+    void server_mode (bool arg) { m_server_mode = arg; }
+
     void eval (std::shared_ptr<tree_statement_list>& stmt_list,
                bool interactive);
-
-    std::string mfilename (const std::string& opt = "") const;
 
     octave_value_list eval_string (const std::string& eval_str, bool silent,
                                    int& parse_status, int nargout);
@@ -186,6 +212,18 @@ namespace octave
 
     void visit_argument_list (tree_argument_list&);
 
+    void visit_arguments_block (tree_arguments_block&);
+
+    void visit_args_block_attribute_list (tree_args_block_attribute_list&);
+
+    void visit_args_block_validation_list (tree_args_block_validation_list&);
+
+    void visit_arg_validation (tree_arg_validation&);
+
+    void visit_arg_size_spec (tree_arg_size_spec&);
+
+    void visit_arg_validation_fcns (tree_arg_validation_fcns&);
+
     void visit_binary_expression (tree_binary_expression&);
 
     void visit_boolean_expression (tree_boolean_expression&);
@@ -205,6 +243,8 @@ namespace octave
     void visit_simple_for_command (tree_simple_for_command&);
 
     void visit_complex_for_command (tree_complex_for_command&);
+
+    void visit_spmd_command (tree_spmd_command&);
 
     void visit_octave_user_script (octave_user_script&);
 
@@ -617,7 +657,38 @@ namespace octave
 
     void dbcont (void);
 
+    // Return true if we are in the debug repl and m_execution_mode is
+    // set to exit the debugger.  Otherwise, do nothing.
+
     void dbquit (bool all = false);
+
+    // Add EXPR to the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    void add_debug_watch_expression (const std::string& expr)
+    {
+      m_debug_watch_expressions.insert (expr);
+    }
+
+    // Remove EXPR from the set of expressions that may be evaluated
+    // when the debugger stops at a breakpoint.
+    void remove_debug_watch_expression (const std::string& expr)
+    {
+      m_debug_watch_expressions.erase (expr);
+    }
+
+    // Clear the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    void clear_debug_watch_expressions (void)
+    {
+      m_debug_watch_expressions.clear ();
+    }
+
+    // Return the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    std::set<std::string> debug_watch_expressions (void) const
+    {
+      return m_debug_watch_expressions;
+    }
 
     octave_value PS4 (const octave_value_list& args, int nargout);
 
@@ -723,6 +794,23 @@ namespace octave
 
     void set_dbstep_flag (int step) { m_dbstep_flag = step; }
 
+    bool break_on_next_statement (void) const
+    {
+      return m_break_on_next_stmt;
+    }
+
+    bool break_on_next_statement (bool val)
+    {
+      bool old_val = m_break_on_next_stmt;
+      m_break_on_next_stmt = val;
+      return old_val;
+    }
+
+    void set_break_on_next_statement (bool val)
+    {
+      m_break_on_next_stmt = val;
+    }
+
     octave_value echo (const octave_value_list& args, int nargout);
 
     int echo (void) const { return m_echo; }
@@ -737,7 +825,7 @@ namespace octave
     octave_value
     string_fill_char (const octave_value_list& args, int nargout);
 
-    void final_index_error (index_exception& e, const tree_expression *expr);
+    void final_index_error (index_exception& ie, const tree_expression *expr);
 
     octave_value do_who (int argc, const string_vector& argv,
                          bool return_list, bool verbose = false);
@@ -747,12 +835,16 @@ namespace octave
 
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
-    void push_echo_state (int type, const std::string& file_name,
-                          std::size_t pos = 1);
+    void push_echo_state (int type, const std::string& file_name, int pos = 1);
 
   private:
 
-    void set_echo_state (int type, const std::string& file_name, std::size_t pos);
+    template <typename T>
+    void execute_range_loop (const range<T>& rng, int line,
+                             octave_lvalue& ult,
+                             tree_statement_list *loop_body);
+
+    void set_echo_state (int type, const std::string& file_name, int pos);
 
     void maybe_set_echo_state (void);
 
@@ -768,12 +860,11 @@ namespace octave
     bool is_logically_true (tree_expression *expr, const char *warn_for);
 
     // For unwind-protect.
-    void uwp_set_echo_state (bool state, const std::string& file_name,
-                             std::size_t pos);
+    void uwp_set_echo_state (bool state, const std::string& file_name, int pos);
 
     bool echo_this_file (const std::string& file, int type) const;
 
-    void echo_code (std::size_t line);
+    void echo_code (int line);
 
     bool quit_loop_now (void);
 
@@ -785,6 +876,8 @@ namespace octave
     std::string check_autoload_file (const std::string& nm) const;
 
     interpreter& m_interpreter;
+
+    std::shared_ptr<push_parser> m_parser;
 
     // The context for the current evaluation.
     stmt_list_type m_statement_context;
@@ -814,6 +907,10 @@ namespace octave
     // previous debugger (if any) that is now at the top of the stack.
     std::stack<debugger *> m_debugger_stack;
 
+    std::set<std::string> m_debug_watch_expressions;
+
+    int m_exit_status;
+
     // Maximum nesting level for functions, scripts, or sourced files
     // called recursively.
     int m_max_recursion_depth;
@@ -837,6 +934,10 @@ namespace octave
     // If < 0, stop executing at the next possible stopping point.
     int m_dbstep_flag;
 
+    // If TRUE, and we are not stopping for another reason (dbstep or a
+    // breakpoint) then stop at next statement and enter the debugger.
+    bool m_break_on_next_stmt;
+
     // Echo commands as they are executed?
     //
     //   1  ==>  echo commands read from script files
@@ -851,13 +952,23 @@ namespace octave
 
     std::string m_echo_file_name;
 
-    // Next line to echo, counting from 1.
-    std::size_t m_echo_file_pos;
+    // Next line to echo, counting from 1.  We use int here because the
+    // parser does.  It also initializes line and column numbers to the
+    // invalid value -1 and that can cause trouble if cast to an
+    // unsigned value.  When updating this value and echoing ranges of
+    // code, we also check to ensure that the line numbers stored in the
+    // parse tree are valid.  It would be better to ensure that the
+    // parser always stores valid position info, but that's more
+    // difficult to always do correctly.
+    int m_echo_file_pos;
 
     std::map<std::string, bool> m_echo_files;
 
     // TRUE if we are in the top level interactive read eval print loop.
     bool m_in_top_level_repl;
+
+    // TRUE means we are executing in the server_loop function.
+    bool m_server_mode;
 
     // TRUE means we are evaluating some kind of looping construct.
     bool m_in_loop_command;
@@ -879,6 +990,7 @@ namespace octave
     int m_index_position;
     int m_num_indices;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

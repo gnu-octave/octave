@@ -23,6 +23,7 @@ TRANSLATIONS = \
   %reldir%/languages/es_ES.ts \
   %reldir%/languages/eu_ES.ts \
   %reldir%/languages/fr_FR.ts \
+  %reldir%/languages/hu_HU.ts \
   %reldir%/languages/it_IT.ts \
   %reldir%/languages/ja_JP.ts \
   %reldir%/languages/lt_LT.ts \
@@ -30,6 +31,7 @@ TRANSLATIONS = \
   %reldir%/languages/pt_BR.ts \
   %reldir%/languages/pt_PT.ts \
   %reldir%/languages/ru_RU.ts \
+  %reldir%/languages/tr_TR.ts \
   %reldir%/languages/uk_UA.ts \
   %reldir%/languages/zh_CN.ts
 
@@ -75,12 +77,7 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
   $(LIBOCTGUI_LINK_OPTS) \
   $(WARN_LDFLAGS)
 
-octetc_DATA += %reldir%/default-qt-settings
-
 octlocale_DATA += $(LOCALES)
-
-%reldir%/default-qt-settings: %reldir%/default-qt-settings.in %reldir%/mk-default-qt-settings.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-default-qt-settings.sh)
 
 DIRSTAMP_FILES += \
   %reldir%/$(octave_dirstamp)
@@ -129,15 +126,12 @@ DIRSTAMP_FILES += \
 
 %canon_reldir%_EXTRA_DIST += \
   $(TRANSLATIONS) \
-  %reldir%/default-qt-settings.in \
-  %reldir%/liboctgui-build-info.in.cc \
-  %reldir%/mk-default-qt-settings.in.sh
+  %reldir%/liboctgui-build-info.in.cc
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \
   $(LOCALES) \
-  %reldir%/default-qt-settings \
   %reldir%/liboctgui-build-info.cc
 
 CLEANFILES += $(%canon_reldir%_CLEANFILES)
@@ -155,8 +149,5 @@ libgui-maintainer-clean: libgui-distclean
 
 %reldir%/liboctgui-build-info.cc: %reldir%/liboctgui-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)
-
-GEN_CONFIG_SHELL += \
-  %reldir%/mk-default-qt-settings.sh
 
 endif

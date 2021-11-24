@@ -213,6 +213,8 @@ requested by name using the @code{colormap} function.
 
 @DOCSTRING(summer)
 
+@DOCSTRING(turbo)
+
 @DOCSTRING(viridis)
 
 @DOCSTRING(white)

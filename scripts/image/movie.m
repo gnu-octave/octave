@@ -244,7 +244,8 @@ endfunction
 %! movie (mov, 3, 25);
 
 ## Test input validation
-%!error movie ()
+%!error <Invalid call> movie ()
+%!error <Invalid call> movie (1,2,3,4,5)
 %!error <MOV must be a frame struct array> movie ({2})
 %!error <MOV must contain at least two frames>
 %! movie (struct ("cdata", [], "colormap", []));

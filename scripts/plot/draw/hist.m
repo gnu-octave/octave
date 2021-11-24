@@ -73,16 +73,9 @@
 ## @end example
 ##
 ## @noindent
-## The histogram's colors also depend upon the current colormap.
-##
-## @example
-## @group
-## hist (rand (10, 3));
-## colormap (summer ());
-## @end group
-## @end example
-##
 ## The full list of patch properties is documented at @ref{Patch Properties}.
+## property.  If not specified, the default colors for the histogram are taken
+## from the @qcode{"Colormap"} property of the axes or figure.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
@@ -130,14 +123,15 @@ function [nn, xx] = hist (varargin)
   ## Process possible second argument
   if (nargin == 1 || ischar (varargin{iarg}))
     n = 10;
-    ## Use range type to preserve accuracy
+    ## Use integer range values and perform division last to preserve
+    ## accuracy.
     if (min_val != max_val)
-      x = (0.5:n) * (1/n);
-      x = (max_val - min_val) * x + min_val;
+      x = 1:2:2*n;
+      x = ((max_val - min_val) * x + 2*n*min_val) / (2*n);
     else
       x = (-floor ((n-1)/2):ceil ((n-1)/2)) + min_val;
     endif
-    x = x.';  # Convert to matrix;
+    x = x.';  # Convert to matrix
   else
     ## Parse bin specification argument
     x = varargin{iarg++};
@@ -155,14 +149,15 @@ function [nn, xx] = hist (varargin)
       if (n <= 0)
         error ("hist: number of bins NBINS must be positive");
       endif
-      ## Use range type to preserve accuracy
+      ## Use integer range values and perform division last to preserve
+      ## accuracy.
       if (min_val != max_val)
-        x = (0.5:n) * (1/n);
-        x = (max_val - min_val) * x + min_val;
+        x = 1:2:2*n;
+        x = ((max_val - min_val) * x + 2*n*min_val) / (2*n);
       else
         x = (-floor ((n-1)/2):ceil ((n-1)/2)) + min_val;
       endif
-      x = x.';  # Convert to matrix;
+      x = x.';  # Convert to matrix
     elseif (isvector (x))
       equal_bin_spacing = strcmp (typeinfo (x), "range");
       if (! equal_bin_spacing)
@@ -190,7 +185,7 @@ function [nn, xx] = hist (varargin)
     endif
     if (! isvector (norm) ...
         || ! (length (norm) == 1 || length (norm) == columns (y)))
-      error ("hist: NORM must be scalar or vector of length 'columns (y)'");
+      error ("hist: NORM must be scalar or vector of length 'columns (Y)'");
     endif
     norm = norm (:).';  # Ensure vector orientation.
   endif
@@ -215,7 +210,7 @@ function [nn, xx] = hist (varargin)
     ## Lookup is more efficient if y is sorted, but sorting costs.
     if (! equal_bin_spacing && n > sqrt (rows (y) * 1e4))
       y = sort (y);
-    end
+    endif
 
     nanidx = isnan (y);
     y(nanidx) = 0;
@@ -225,21 +220,21 @@ function [nn, xx] = hist (varargin)
         d = 1;
       else
         d = (x(end) - x(1)) / (length (x) - 1);
-      end
+      endif
       cutlen = length (cutoff);
       for j = 1:y_nc
         freq(:,j) = accumarray (1 + max (0, min (cutlen, ceil ((double (y(:,j))
                                                          - cutoff(1)) / d))),
                                 double (! nanidx(:,j)),
                                 [n, 1]);
-      end
+      endfor
     else
       for j = 1:y_nc
         i = lookup (cutoff, y(:,j));
         i = 1 + i - (cutoff(max (i, 1)) == y(:,j));
         freq(:,j) = accumarray (i, double (! nanidx(:,j)), [n, 1]);
-      end
-    end
+      endfor
+    endif
   endif
 
   if (norm)
@@ -412,13 +407,13 @@ endfunction
 %! assert (isa (xx, "single"));
 
 ## Test input validation
-%!error hist ()
+%!error <Invalid call> hist ()
 %!error <Y must be real-valued> hist (2+i)
 %!error <bin specification must be a numeric> hist (1, {0,1,2})
 %!error <number of bins NBINS must be positive> hist (1, 0)
 %!test
 %! hf = figure ("visible", "off");
-%! hax = gca;
+%! hax = gca ();
 %! unwind_protect
 %!   fail ("hist (hax, 1, [2 1 0])", "warning", "bin values X not sorted");
 %! unwind_protect_cleanup

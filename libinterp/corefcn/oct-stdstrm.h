@@ -33,27 +33,28 @@
 #include "oct-stream.h"
 #include "c-file-ptr-stream.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename BUF_T, typename STREAM_T, typename FILE_T>
 class
-octave_tstdiostream : public octave::base_stream
+tstdiostream : public base_stream
 {
 public:
 
-  octave_tstdiostream (const std::string& n, FILE_T f = 0, int fid = 0,
-                       std::ios::openmode m = std::ios::in | std::ios::out,
-                       octave::mach_info::float_format ff
-                         = octave::mach_info::native_float_format (),
-                       const std::string& encoding = "utf-8",
-                       typename BUF_T::close_fcn cf = BUF_T::file_close)
-    : octave::base_stream (m, ff, encoding), m_name (n), m_mode (m),
-      m_stream (f ? new STREAM_T (f, cf) : nullptr), fnum (fid)
+  tstdiostream (const std::string& n, FILE_T f = 0, int fid = 0,
+                std::ios::openmode m = std::ios::in | std::ios::out,
+                mach_info::float_format ff = mach_info::native_float_format (),
+                const std::string& encoding = "utf-8",
+                typename BUF_T::close_fcn cf = BUF_T::file_close)
+    : base_stream (m, ff, encoding), m_name (n), m_mode (m),
+      m_stream (f ? new STREAM_T (f, cf) : nullptr), m_fnum (fid)
   { }
 
   // No copying!
 
-  octave_tstdiostream (const octave_tstdiostream&) = delete;
+  tstdiostream (const tstdiostream&) = delete;
 
-  octave_tstdiostream& operator = (const octave_tstdiostream&) = delete;
+  tstdiostream& operator = (const tstdiostream&) = delete;
 
   // Position a stream at OFFSET relative to ORIGIN.
 
@@ -90,7 +91,7 @@ public:
     return m_stream ? (const_cast<STREAM_T *> (m_stream))->rdbuf () : nullptr;
   }
 
-  int file_number (void) const { return fnum; }
+  int file_number (void) const { return m_fnum; }
 
   bool bad (void) const { return m_stream ? m_stream->bad () : true; }
 
@@ -108,6 +109,10 @@ public:
 
 protected:
 
+  ~tstdiostream (void) { delete m_stream; }
+
+  //--------
+
   std::string m_name;
 
   std::ios::openmode m_mode;
@@ -115,88 +120,92 @@ protected:
   STREAM_T *m_stream;
 
   // The file number associated with this file.
-  int fnum;
-
-  ~octave_tstdiostream (void) { delete m_stream; }
+  int m_fnum;
 };
 
 class
-octave_stdiostream
-  : public octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
+stdiostream
+  : public tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
 {
 public:
 
-  octave_stdiostream (const std::string& n, FILE *f = nullptr,
-                      std::ios::openmode m = std::ios::in | std::ios::out,
-                      octave::mach_info::float_format ff
-                        = octave::mach_info::native_float_format (),
-                      const std::string& encoding = "utf-8",
-                      c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
-    : octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
+  stdiostream (const std::string& n, FILE *f = nullptr,
+               std::ios::openmode m = std::ios::in | std::ios::out,
+               mach_info::float_format ff = mach_info::native_float_format (),
+               const std::string& encoding = "utf-8",
+               c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
+    : tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
        (n, f, f ? fileno (f) : -1, m, ff, encoding, cf) { }
 
-  static octave::stream
+  static stream
   create (const std::string& n, FILE *f = nullptr,
           std::ios::openmode m = std::ios::in | std::ios::out,
-          octave::mach_info::float_format ff
-            = octave::mach_info::native_float_format (),
+          mach_info::float_format ff = mach_info::native_float_format (),
           const std::string& encoding = "utf-8",
           c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
   {
-    return octave::stream (new octave_stdiostream (n, f, m, ff, encoding, cf));
+    return stream (new stdiostream (n, f, m, ff, encoding, cf));
   }
 
   // No copying!
 
-  octave_stdiostream (const octave_stdiostream&) = delete;
+  stdiostream (const stdiostream&) = delete;
 
-  octave_stdiostream& operator = (const octave_stdiostream&) = delete;
+  stdiostream& operator = (const stdiostream&) = delete;
 
 protected:
 
-  ~octave_stdiostream (void) = default;
+  ~stdiostream (void) = default;
 };
 
 #if defined (HAVE_ZLIB)
 
 class
-octave_zstdiostream
-  : public octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
+zstdiostream
+  : public tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
 {
 public:
 
-  octave_zstdiostream (const std::string& n, gzFile f = nullptr, int fid = 0,
-                       std::ios::openmode m = std::ios::in | std::ios::out,
-                       octave::mach_info::float_format ff
-                         = octave::mach_info::native_float_format (),
-                       const std::string& encoding = "utf-8",
-                       c_zfile_ptr_buf::close_fcn cf
-                         = c_zfile_ptr_buf::file_close)
-    : octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
+  zstdiostream (const std::string& n, gzFile f = nullptr, int fid = 0,
+                std::ios::openmode m = std::ios::in | std::ios::out,
+                mach_info::float_format ff = mach_info::native_float_format (),
+                const std::string& encoding = "utf-8",
+                c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)
+    : tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
        (n, f, fid, m, ff, encoding, cf) { }
 
-  static octave::stream
+  static stream
   create (const std::string& n, gzFile f = nullptr, int fid = 0,
           std::ios::openmode m = std::ios::in | std::ios::out,
-          octave::mach_info::float_format ff
-            = octave::mach_info::native_float_format (),
+          mach_info::float_format ff = mach_info::native_float_format (),
           const std::string& encoding = "utf-8",
           c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)
   {
-    return octave::stream (new octave_zstdiostream (n, f, fid, m, ff, encoding,
-                                                    cf));
+    return stream (new zstdiostream (n, f, fid, m, ff, encoding, cf));
   }
 
   // No copying!
 
-  octave_zstdiostream (const octave_zstdiostream&) = delete;
+  zstdiostream (const zstdiostream&) = delete;
 
-  octave_zstdiostream& operator = (const octave_zstdiostream&) = delete;
+  zstdiostream& operator = (const zstdiostream&) = delete;
 
 protected:
 
-  ~octave_zstdiostream (void) = default;
+  ~zstdiostream (void) = default;
 };
+
+#endif
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::stdiostream' instead")
+typedef octave::stdiostream octave_stdiostream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::zstdiostream' instead")
+typedef octave::zstdiostream octave_zstdiostream;
 
 #endif
 

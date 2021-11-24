@@ -45,11 +45,11 @@ do
     ## Compute and print the autoloads.
 
     base=`basename "$src_file" | $SED 's/\.cc$//'`
-    fcns=`$SED -n -e 's/^ *DEFMETHOD_DLD *( *\([^, ]*\) *,.*$/\1/p' \
-                  -e 's/^ *DEFMETHODX_DLD *( *"\([^"]*\)".*$/\1/p' \
-                  -e 's/^ *DEFUN_DLD *( *\([^, ]*\) *,.*$/\1/p' \
-                  -e 's/^ *DEFUNX_DLD *( *"\([^"]*\)".*$/\1/p' "$src_file" | \
-          sort -u`
+    fcns=`$SED -n \
+      -e 's/^ *DEF\(METHOD\|UN\)_\(\|STATIC_\)DLD *( *\([^, ]*\) *,.*$/\3/p' \
+      -e 's/^ *DEF\(METHOD\|UN\)X_\(\|STATIC_\)DLD *( *"\([^"]*\)".*$/\3/p' \
+      "$src_file" | \
+      sort -u`
     if [ -n "$fcns" ]; then
       for n in $fcns; do
         if [ "$n" = "$base" ]; then

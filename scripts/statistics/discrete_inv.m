@@ -76,20 +76,22 @@ endfunction
 %!shared x,v,p,y
 %! x = [-1 0 0.1 0.5 1 2];
 %! v = 0.1:0.2:1.9;
-%! p = 1/length(v) * ones (1, length(v));
+%! p = 1/length (v) * ones (1, length (v));
 %! y = [NaN v(1) v(1) v(end/2) v(end) NaN];
 %!assert (discrete_inv ([x, NaN], v, p), [y, NaN], eps)
 
 ## Test class of input preserved
-%!assert (discrete_inv (single ([x, NaN]), v, p), single ([y, NaN]), eps ("single"))
-%!assert (discrete_inv ([x, NaN], single (v), p), single ([y, NaN]), eps ("single"))
-%!assert (discrete_inv ([x, NaN], v, single (p)), single ([y, NaN]), eps ("single"))
+%!assert (discrete_inv (single ([x, NaN]), v, p),
+%!        single ([y, NaN]), eps ("single"))
+%!assert (discrete_inv ([x, NaN], single (v), p),
+%!        single ([y, NaN]), eps ("single"))
+%!assert (discrete_inv ([x, NaN], v, single (p)),
+%!        single ([y, NaN]), eps ("single"))
 
 ## Test input validation
-%!error discrete_inv ()
-%!error discrete_inv (1)
-%!error discrete_inv (1,2)
-%!error discrete_inv (1,2,3,4)
+%!error <Invalid call> discrete_inv ()
+%!error <Invalid call> discrete_inv (1)
+%!error <Invalid call> discrete_inv (1,2)
 %!error discrete_inv (1, ones (2), ones (2,1))
 %!error discrete_inv (1, ones (2,1), ones (1,1))
 %!error discrete_inv (1, ones (2,1), [1 NaN])

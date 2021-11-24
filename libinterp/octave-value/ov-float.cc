@@ -79,7 +79,7 @@ octave_float_scalar::do_index_op (const octave_value_list& idx, bool resize_ok)
 
   octave_value tmp (new octave_float_matrix (float_matrix_value ()));
 
-  return tmp.do_index_op (idx, resize_ok);
+  return tmp.index_op (idx, resize_ok);
 }
 
 octave_value
@@ -200,7 +200,7 @@ octave_float_scalar::save_ascii (std::ostream& os)
 {
   float d = float_value ();
 
-  octave_write_float (os, d);
+  octave::write_value<float> (os, d);
 
   os << "\n";
 
@@ -210,7 +210,7 @@ octave_float_scalar::save_ascii (std::ostream& os)
 bool
 octave_float_scalar::load_ascii (std::istream& is)
 {
-  scalar = octave_read_value<float> (is);
+  scalar = octave::read_value<float> (is);
   if (! is)
     error ("load: failed to load scalar constant");
 
@@ -254,7 +254,7 @@ octave_float_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5)
 
-  hsize_t dimens[3];
+  hsize_t dimens[3] = {0};
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
 
@@ -335,13 +335,13 @@ octave_float_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_float_scalar::as_mxArray (void) const
+octave_float_scalar::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxSINGLE_CLASS, 1, 1, mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxSINGLE_CLASS, 1, 1, mxREAL);
 
-  float *pr = static_cast<float *> (retval->get_data ());
+  mxSingle *pd = static_cast<mxSingle *> (retval->get_data ());
 
-  pr[0] = scalar;
+  pd[0] = scalar;
 
   return retval;
 }

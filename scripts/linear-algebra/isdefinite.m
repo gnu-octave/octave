@@ -49,7 +49,7 @@
 
 function retval = isdefinite (A, tol)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -103,8 +103,7 @@ endfunction
 
 %!assert (! isdefinite (magic (3)))
 
-%!error isdefinite ()
-%!error isdefinite (1,2,3)
+%!error <Invalid call> isdefinite ()
 %!error <TOL must be a scalar .= 0> isdefinite (1, {1})
 %!error <TOL must be a scalar .= 0> isdefinite (1, [1 1])
 %!error <TOL must be a scalar .= 0> isdefinite (1, -1)

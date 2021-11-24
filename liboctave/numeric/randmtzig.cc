@@ -162,7 +162,9 @@
 #include <cstdio>
 
 #include <algorithm>
+#include <random>
 
+#include "oct-syscalls.h"
 #include "oct-time.h"
 #include "randmtzig.h"
 
@@ -259,36 +261,50 @@ namespace octave
     uint32_t entropy[MT_N];
     int n = 0;
 
-    /* Look for entropy in /dev/urandom */
-    FILE *urandom = std::fopen ("/dev/urandom", "rb");
-    if (urandom)
-      {
-        while (n < MT_N)
-          {
-            unsigned char word[4];
-            if (std::fread (word, 4, 1, urandom) != 1)
-              break;
-            entropy[n++] = word[0] + (word[1]<<8) + (word[2]<<16)
-                           + (static_cast<uint32_t> (word[3])<<24);
-          }
-        std::fclose (urandom);
-      }
-
-    /* If there isn't enough entropy, gather some from various sources */
+    // Gather some entropy from various sources
 
     sys::time now;
 
+    // Current time in seconds
     if (n < MT_N)
-      entropy[n++] = now.unix_time (); /* Current time in seconds */
+      entropy[n++] = now.unix_time ();
+
+    // CPU time used (usec)
+    if (n < MT_N)
+      entropy[n++] = clock ();
+
+    // Fractional part of current time
+    if (n < MT_N)
+      entropy[n++] = now.usec ();
+
+    // Include the PID to make sure that several processes reaching here at the
+    // same time use different random numbers.
+    if (n < MT_N)
+      entropy[n++] = sys::getpid ();
 
     if (n < MT_N)
-      entropy[n++] = clock ();    /* CPU time used (usec) */
+      {
+        try
+          {
+            // The standard doesn't *guarantee* that random_device provides
+            // non-deterministic random numbers. So add entropy from this
+            // source last to make sure we gathered at least some entropy from
+            // the earlier sources.
+            std::random_device rd;
+            std::uniform_int_distribution<uint32_t> dist;
+            // Add 1024 bit of "true" entropy
+            int n_max = std::min (n + 32, MT_N);
+            while (n < n_max)
+              entropy[n++] = dist (rd);
+          }
+        catch (const std::exception&)
+          {
+            // Just ignore any exception and skip that source of entropy.
+          }
+      }
 
-    if (n < MT_N)
-      entropy[n++] = now.usec ();   /* Fractional part of current time */
-
-    /* Send all the entropy into the initial state vector */
-    init_mersenne_twister (entropy,n);
+    // Send all the entropy into the initial state vector
+    init_mersenne_twister (entropy, n);
   }
 
   void set_mersenne_twister_state (const uint32_t *save)
@@ -410,7 +426,7 @@ namespace octave
 
   /* Determine mantissa for uniform doubles */
   template <>
-  double
+  OCTAVE_API double
   rand_uniform<double> (void)
   {
     return randu53 ();
@@ -418,7 +434,7 @@ namespace octave
 
   /* Determine mantissa for uniform floats */
   template <>
-  float
+  OCTAVE_API float
   rand_uniform<float> (void)
   {
     return randu24 ();
@@ -565,7 +581,7 @@ namespace octave
    */
 
 
-  template <> double rand_normal<double> (void)
+  template <> OCTAVE_API double rand_normal<double> (void)
   {
     if (initt)
       create_ziggurat_tables ();
@@ -629,7 +645,7 @@ namespace octave
       }
   }
 
-  template <> double rand_exponential<double> (void)
+  template <> OCTAVE_API double rand_exponential<double> (void)
   {
     if (initt)
       create_ziggurat_tables ();
@@ -655,17 +671,17 @@ namespace octave
       }
   }
 
-  template <> void rand_uniform<double> (octave_idx_type n, double *p)
+  template <> OCTAVE_API void rand_uniform<double> (octave_idx_type n, double *p)
   {
     std::generate_n (p, n, [](void) { return rand_uniform<double> (); });
   }
 
-  template <> void rand_normal (octave_idx_type n, double *p)
+  template <> OCTAVE_API void rand_normal (octave_idx_type n, double *p)
   {
     std::generate_n (p, n, [](void) { return rand_normal<double> (); });
   }
 
-  template <> void rand_exponential (octave_idx_type n, double *p)
+  template <> OCTAVE_API void rand_exponential (octave_idx_type n, double *p)
   {
     std::generate_n (p, n, [](void) { return rand_exponential<double> (); });
   }
@@ -767,7 +783,7 @@ namespace octave
    * distribution is exp(-0.5*x*x)
    */
 
-  template <> float rand_normal<float> (void)
+  template <> OCTAVE_API float rand_normal<float> (void)
   {
     if (inittf)
       create_ziggurat_float_tables ();
@@ -807,7 +823,7 @@ namespace octave
       }
   }
 
-  template <> float rand_exponential<float> (void)
+  template <> OCTAVE_API float rand_exponential<float> (void)
   {
     if (inittf)
       create_ziggurat_float_tables ();
@@ -833,17 +849,17 @@ namespace octave
       }
   }
 
-  template <> void rand_uniform (octave_idx_type n, float *p)
+  template <> OCTAVE_API void rand_uniform (octave_idx_type n, float *p)
   {
     std::generate_n (p, n, [](void) { return rand_uniform<float> (); });
   }
 
-  template <> void rand_normal (octave_idx_type n, float *p)
+  template <> OCTAVE_API void rand_normal (octave_idx_type n, float *p)
   {
     std::generate_n (p, n, [](void) { return rand_normal<float> (); });
   }
 
-  template <> void rand_exponential (octave_idx_type n, float *p)
+  template <> OCTAVE_API void rand_exponential (octave_idx_type n, float *p)
   {
     std::generate_n (p, n, [](void) { return rand_exponential<float> (); });
   }

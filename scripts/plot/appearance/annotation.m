@@ -217,9 +217,8 @@ function varargout = annotation (varargin)
 
   ## options
   opts = varargin;
-  nopts = numel (opts);
   if (! isempty (opts))
-    if (fix (nopts/2) != nopts/2 || ! all (cellfun (@ischar, opts(1:2:end))))
+    if (mod (numel (opts), 2) != 0 || ! all (cellfun (@ischar, opts(1:2:end))))
       warning ("annotation: couldn't parse PROP/VAL pairs, skipping");
       opts = {};
     endif
@@ -277,7 +276,7 @@ function hax = buildoverlay (hf)
   listener = {@update_figsize_points, hax};
   addlistener (hf, "position", listener);
 
-  delfcn = @() dellistener (hf, "position", listener);
+  delfcn = @(~, ~) dellistener (hf, "position", listener);
   set (hax, "deletefcn", delfcn);
 
 endfunction
@@ -329,7 +328,7 @@ function h = buildannot (hax, objtype, pos)
 
   addlistener (hax, "figsize_points", listener);
 
-  delfcn = @() dellistener (hax, "figsize_points", listener);
+  delfcn = @(~, ~) dellistener (hax, "figsize_points", listener);
   set (h, "deletefcn", delfcn);
 
   addlistener (h, "units", {@update_position, h});
@@ -676,7 +675,7 @@ function textmenu (hui, hpar)
 
   ## String;
   prop = "String";
-  fcn = @() stringdlg (hpar, prop);
+  fcn = @(~, ~) stringdlg (hpar, prop);
   uimenu (hm, "label", prop, "callback", fcn);
 
   ## Font properties
@@ -744,7 +743,7 @@ function textboxmenu (hui, hpar)
   hm1 = uimenu ("parent", hui, "label", "Text");
 
   prop = "String";
-  fcn = @() stringdlg (hpar, prop);
+  fcn = @(~, ~) stringdlg (hpar, prop);
   uimenu (hm1, "label", prop, "callback", fcn);
 
   prop = "Color";
@@ -832,7 +831,10 @@ function addbaseprops (h, proptable)
            proptable(1:3:end), proptable(2:3:end), proptable(3:3:end));
 endfunction
 
-function addbasemenu (hm, hpar, pname, vals, mainlabel = "")
+## FIXME: there are some calls to addbasemenu with option-like arguments
+## but we don't do anything with varargin here.  What is the right thing
+## to do?
+function addbasemenu (hm, hpar, pname, vals, mainlabel = "", varargin)
 
   if (isempty (mainlabel))
     mainlabel = pname;
@@ -851,7 +853,7 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "")
       label = disp (val);
     endif
 
-    fcn = @() set (hpar, pname, val);
+    fcn = @(~, ~) set (hpar, pname, val);
     htmp(i) = uimenu (h, "label", label, "callback", fcn);
   endfor
 
@@ -963,7 +965,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
     ln = get (h, "headlength");   # in points
     wd = get (h, "headwidth");
     headstyle = get (h, "headstyle");
-    pos = pos(1:2) .+ pos(3:4);
+    pos = pos(1:2) + pos(3:4);
   elseif (nar == 1)
     ln = get (h, "head1length");  # in points
     wd = get (h, "head1width");
@@ -974,7 +976,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
     ln = get (h, "head2length");  # in points
     wd = get (h, "head2width");
     headstyle = get (h, "head2style");
-    pos = pos(1:2) .+ pos(3:4);
+    pos = pos(1:2) + pos(3:4);
   else
     error ("annotation: %d, no such arrow number");
   endif
@@ -1022,7 +1024,7 @@ function [x, y] = arrowcoordinates (h, nar = [])
        sin(ang),  cos(ang)];
   XY = R * [x; y];
   XY = pts2norm (h, XY);
-  XY = pos(1:2).' .+ XY;
+  XY = pos(1:2).' + XY;
 
   x = XY(1,:).';
   y = XY(2,:).';
@@ -1131,7 +1133,7 @@ endfunction
 
 function XY = textcoordinates (hte, pos)
   ## Get the "tight" extent of the text object in points units
-  textpos = get(hte, "position");
+  textpos = get (hte, "position");
   rot = get (hte, "rotation");
   units = get (hte, "units");
 
@@ -1186,7 +1188,7 @@ function XY = textcoordinates (hte, pos)
        sin(rot),  cos(rot)];
   XY = R * XY;
   XY = pts2norm (get (hte, "parent"), XY);
-  XY = pos(1:2) .- XY(:,pt).';
+  XY = pos(1:2) - XY(:,pt).';
 
 endfunction
 
@@ -1451,8 +1453,8 @@ endfunction
 %! xl = xlim ();
 %! yl = [-1.2 1.5];
 %! ylim (yl);
-%! x0 = (x0 - xl(1)) / diff(xl);
-%! y0 = (y0 - yl(1)) / diff(yl);
+%! x0 = (x0 - xl(1)) / diff (xl);
+%! y0 = (y0 - yl(1)) / diff (yl);
 %!
 %! pos = get (gca (), "position");
 %! x0 = x0*pos(3) + pos(1);
@@ -1575,7 +1577,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error annotation ()
+%!error <Invalid call> annotation ()
 %!error <Invalid call to annotation> annotation ({"line"}, 1:2, 1:2)
 %!error <X and Y must be 2-element vectors> annotation ("line", {1:2}, 1:2)
 %!error <X and Y must be 2-element vectors> annotation ("line", 1:2, {1:2})

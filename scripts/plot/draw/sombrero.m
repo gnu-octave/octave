@@ -56,9 +56,7 @@
 
 function [x, y, z] = sombrero (n = 41)
 
-  if (nargin > 2)
-    print_usage ();
-  elseif (n <= 1)
+  if (n <= 1)
     error ("sombrero: number of grid lines N must be greater than 1");
   endif
 

@@ -49,22 +49,22 @@ octave_cs_list : public octave_base_value
 public:
 
   octave_cs_list (void)
-    : octave_base_value (), lst () { }
+    : octave_base_value (), m_list () { }
 
   octave_cs_list (const octave_value_list& l)
-    : octave_base_value (), lst (l) { }
+    : octave_base_value (), m_list (l) { }
 
   octave_cs_list (const Cell& c);
 
   octave_cs_list (const octave_cs_list& l)
-    : octave_base_value (), lst (l.lst) { }
+    : octave_base_value (), m_list (l.m_list) { }
 
   ~octave_cs_list (void) = default;
 
   octave_base_value * clone (void) const { return new octave_cs_list (*this); }
   octave_base_value * empty_clone (void) const { return new octave_cs_list (); }
 
-  dim_vector dims (void) const { return dim_vector (1, lst.length ()); }
+  dim_vector dims (void) const { return dim_vector (1, m_list.length ()); }
 
   bool is_defined (void) const { return true; }
 
@@ -72,23 +72,24 @@ public:
 
   bool is_cs_list (void) const { return true; }
 
-  octave_value_list list_value (void) const { return lst; }
+  octave_value_list list_value (void) const { return m_list; }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
   // functions.
   using octave_base_value::subsref;
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx);
+  OCTINTERP_API octave_value
+  subsref (const std::string& type, const std::list<octave_value_list>& idx);
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx, int);
+  OCTINTERP_API octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int);
 
 private:
 
   // The list of Octave values.
-  octave_value_list lst;
+  octave_value_list m_list;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

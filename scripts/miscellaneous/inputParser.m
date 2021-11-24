@@ -190,10 +190,11 @@ classdef inputParser < handle
 
   properties (Access = protected, Constant = true)
     ## Default validator, always returns scalar true.
-    def_val = @() true;
+    def_val = @(~) true;
   endproperties
 
   methods
+
     function set.PartialMatching (this, val)
       if (val)
         error ("inputParser: PartialMatching is not yet implemented");
@@ -225,7 +226,7 @@ classdef inputParser < handle
       ##
       ## @end deftypefn
 
-      if (nargin < 2 || nargin > 3)
+      if (nargin < 2)
         print_usage ();
       elseif (numel (this.Optional) || numfields (this.Parameter)
               || numfields (this.Switch))
@@ -264,7 +265,7 @@ classdef inputParser < handle
       ##
       ## @end deftypefn
 
-      if (nargin < 3 || nargin > 4)
+      if (nargin < 3)
         print_usage ();
       elseif (numfields (this.Parameter) || numfields (this.Switch))
         error (["inputParser.Optional: can't have Optional arguments " ...
@@ -287,7 +288,7 @@ classdef inputParser < handle
       ##
       ## @end deftypefn
 
-      if (nargin < 3 || nargin > 4)
+      if (nargin < 3)
         print_usage ();
       endif
       this.addParameter (name, def, val);
@@ -420,7 +421,7 @@ classdef inputParser < handle
           ## keys.  See bug #50752.
           idx -= 1;
           vidx -= 1;
-          break
+          break;
         endif
         try
           valid_option = opt.val (in);
@@ -437,11 +438,11 @@ classdef inputParser < handle
                               && isscalar (in)))
             idx -= 1;
             vidx -= 1;
-            break
+            break;
           else
             this.error (sprintf (["failed validation of %s\n", ...
                                   "Validation function: %s"],
-                                 toupper (opt.name), disp(opt.val)));
+                                 toupper (opt.name), disp (opt.val)));
           endif
         endif
         this.Results.(opt.name) = in;
@@ -514,9 +515,11 @@ classdef inputParser < handle
       printf ("Defined parameters:\n\n   {%s}\n",
               strjoin (this.Parameters, ", "));
     endfunction
+
   endmethods
 
   methods (Access = private)
+
     function validate_name (this, type, name)
       if (! isvarname (name))
         error ("inputParser.add%s: NAME is an invalid identifier", method);
@@ -572,9 +575,11 @@ classdef inputParser < handle
       endif
       error ("%s%s", where, msg);
     endfunction
+
   endmethods
 
 endclassdef
+
 
 %!function p = create_p ()
 %!  p = inputParser ();
@@ -650,7 +655,7 @@ endclassdef
 
 ## check alternative method (obj, ...) API
 %!function p2 = create_p2 ();
-%!  p2 = inputParser;
+%!  p2 = inputParser ();
 %!  addRequired (p2, "req1", @(x) ischar (x));
 %!  addOptional (p2, "op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
 %!  addOptional (p2, "op2", 78, @(x) x > 50);
@@ -677,13 +682,13 @@ endclassdef
 
 ## We must not perform validation of default values
 %!test <*45837>
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("Dir", [], @ischar);
 %! p.parse ();
 %! assert (p.Results.Dir, []);
 
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("positive", -1, @(x) x > 5);
 %! p.parse ();
 %! assert (p.Results.positive, -1);
@@ -695,13 +700,12 @@ endclassdef
 %! p.addOptional ("err", "foo", @error);
 %! p.addParameter ("not_err", "bar", @ischar);
 %! p.parse ("not_err", "qux");
-%! assert (p.Results.err, "foo")
-%! assert (p.Results.not_err, "qux")
-
+%! assert (p.Results.err, "foo");
+%! assert (p.Results.not_err, "qux");
 
 ## With more Parameters to test StructExpand
 %!function p3 = create_p3 ();
-%!  p3 = inputParser;
+%!  p3 = inputParser ();
 %!  addOptional (p3, "op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
 %!  addOptional (p3, "op2", 78, @(x) x > 50);
 %!  addSwitch (p3, "verbose");
@@ -721,43 +725,43 @@ endclassdef
 %!test
 %! p3 = create_p3 ();
 %! p3.parse (struct ("line", "circle", "color", "green"), "line", "tree");
-%! assert (p3.Results.line, "tree")
+%! assert (p3.Results.line, "tree");
 %! p3.parse ("line", "tree", struct ("line", "circle", "color", "green"));
-%! assert (p3.Results.line, "circle")
+%! assert (p3.Results.line, "circle");
 
 %!test # unmatched parameters with StructExpand
 %! p3 = create_p3 ();
 %! p3.KeepUnmatched = true;
 %! p3.parse (struct ("line", "circle", "color", "green", "bar", "baz"));
-%! assert (p3.Unmatched.bar, "baz")
+%! assert (p3.Unmatched.bar, "baz");
 
 ## The validation for the second optional argument throws an error with
 ## a struct so check that we can handle it.
 %!test
 %! p3 = create_p3 ();
 %! p3.parse ("foo", struct ("color", "green"), "line", "tree");
-%! assert (p3.Results.op1, "foo")
-%! assert (p3.Results.line, "tree")
-%! assert (p3.Results.color, "green")
-%! assert (p3.Results.verbose, false)
+%! assert (p3.Results.op1, "foo");
+%! assert (p3.Results.line, "tree");
+%! assert (p3.Results.color, "green");
+%! assert (p3.Results.verbose, false);
 
 
 ## Some simple tests for addParamValue since all the other ones use add
 ## addParameter but they use the same codepath.
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! addParameter (p, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
 %! addParameter (p, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
 %! p.parse ("line", "circle");
-%! assert ({p.Results.line, p.Results.color}, {"circle", "red"})
+%! assert ({p.Results.line, p.Results.color}, {"circle", "red"});
 
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("foo", "bar", @ischar);
 %! p.parse ();
-%! assert (p.Results, struct ("foo", "bar"))
+%! assert (p.Results, struct ("foo", "bar"));
 %! p.parse ("foo", "qux");
-%! assert (p.Results, struct ("foo", "qux"))
+%! assert (p.Results, struct ("foo", "qux"));
 
 ## This behaviour means that a positional option can never be a string
 ## that is the name of a parameter key.  This is required for Matlab
@@ -767,16 +771,16 @@ endclassdef
 %! p.addOptional ("op1", "val");
 %! p.addParameter ("line", "tree");
 %! p.parse ("line", "circle");
-%! assert (p.Results, struct ("op1", "val", "line", "circle"))
+%! assert (p.Results, struct ("op1", "val", "line", "circle"));
 %!
 %! p = inputParser ();
 %! p.addOptional ("op1", "val1");
 %! p.addOptional ("op2", "val2");
 %! p.addParameter ("line", "tree");
 %! p.parse ("line", "circle");
-%! assert (p.Results.op1, "val1")
-%! assert (p.Results.op2, "val2")
-%! assert (p.Results.line, "circle")
+%! assert (p.Results.op1, "val1");
+%! assert (p.Results.op2, "val2");
+%! assert (p.Results.line, "circle");
 %!
 %! ## If there's enough arguments to fill the positional options and
 %! ## param/key, it still skips positional options.
@@ -809,18 +813,18 @@ endclassdef
 %! p.addOptional ("op1", "val1");
 %! p.addParameter ("line", "circle");
 %! p.parse ("line");
-%! assert (p.Results, struct ("op1", "line", "line", "circle"))
+%! assert (p.Results, struct ("op1", "line", "line", "circle"));
 
 %!test <*50752>
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addOptional ("op1", "val1");
 %! p.addSwitch ("line");
 %! p.parse ("line");
-%! assert (p.Results.op1, "val1")
-%! assert (p.Results.line, true)
+%! assert (p.Results.op1, "val1");
+%! assert (p.Results.line, true);
 
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("a", []);
 %! p.addParameter ("b", []);
 %! p.parse ("a", 1);
@@ -829,7 +833,7 @@ endclassdef
 %! assert (p.UsingDefaults, {"a"});
 
 %!test
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addParameter ("b", []);
 %! p.KeepUnmatched = true;
 %! p.parse ("a", 1);
@@ -838,8 +842,8 @@ endclassdef
 %! assert (p.Unmatched, struct ());
 
 ## Test for patch #9241
-%!error<failed validation of A with ischar>
-%! p = inputParser;
+%!error <failed validation of A with ischar>
+%! p = inputParser ();
 %! p.addParameter ("a", [], @ischar);
 %! p.parse ("a", 1);
 

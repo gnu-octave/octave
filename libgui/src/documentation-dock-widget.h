@@ -40,13 +40,13 @@ namespace octave
   public:
 
     documentation_dock_widget (QWidget *parent, base_qobject& oct_qobj);
-    ~documentation_dock_widget (void);
+
+    ~documentation_dock_widget (void) = default;
 
   public slots:
 
     void notice_settings (const gui_settings *settings);
-
-  protected slots:
+    void save_settings (void);
 
     void copyClipboard (void);
     void pasteClipboard (void);

@@ -26,6 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{map} =} cubehelix ()
 ## @deftypefnx {} {@var{map} =} cubehelix (@var{n})
+## @deftypefnx {} {@var{map} =} cubehelix (@var{n}, @var{start}, @var{rots}, @var{hue}, @var{gamma})
 ## Create cubehelix colormap.
 ##
 ## This colormap varies from black to white going though blue, green, and red
@@ -50,9 +51,7 @@
 
 function map = cubehelix (n, start = 0.5, rots = -1.5, hue = 1, gamma = 1)
 
-  if (nargin > 5)
-    print_usage ();
-  elseif (nargin > 0)
+  if (nargin > 0)
     if (! isscalar (n))
       error ("cubehelix: N must be a scalar");
     endif

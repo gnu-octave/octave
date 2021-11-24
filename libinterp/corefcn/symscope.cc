@@ -116,7 +116,7 @@ namespace octave
             if (! fcn)
               continue;
 
-            octave::symbol_scope scope = fcn->scope ();
+            symbol_scope scope = fcn->scope ();
 
             std::list<std::string> plst = scope.parent_fcn_names ();
 
@@ -196,18 +196,21 @@ namespace octave
       }
   }
 
-  void
-  symbol_scope_rep::cache_parent_fcn_names (const std::list<std::string>& names)
+  std::list<std::string>
+  symbol_scope_rep::parent_fcn_names (void) const
   {
-    m_parent_fcn_names = names;
+    std::list<std::string> retval;
 
-    if (m_code && m_code->is_user_function ())
+    auto pscope = parent_scope_rep ();
+
+    while (pscope)
       {
-        octave_user_function *fcn
-          = dynamic_cast<octave_user_function *> (m_code);
+        retval.push_back (pscope->fcn_name ());
 
-        fcn->stash_parent_fcn_name (names.front ());
+        pscope = pscope->parent_scope_rep ();
       }
+
+    return retval;
   }
 
   void
@@ -225,7 +228,7 @@ namespace octave
   void
   symbol_scope_rep::cache_dir_name (const std::string& name)
   {
-    m_dir_name = octave::sys::canonicalize_file_name (name);
+    m_dir_name = sys::canonicalize_file_name (name);
   }
 
   bool
@@ -267,6 +270,39 @@ namespace octave
     return false;
   }
 
+  void symbol_scope_rep::mark_as_variable (const std::string& nm)
+  {
+    table_iterator p = m_symbols.find (nm);
+
+    if (p != m_symbols.end ())
+      p->second.mark_as_variable ();
+  }
+
+  void symbol_scope_rep::mark_as_variables (const std::list<std::string>& lst)
+  {
+    for (const auto& nm : lst)
+      mark_as_variable (nm);
+  }
+
+  bool symbol_scope_rep::is_variable (const std::string& nm) const
+  {
+    table_const_iterator p = m_symbols.find (nm);
+
+    // FIXME: maybe we should also mark formal parameters as variables?
+
+    if (p != m_symbols.end () && p->second.is_variable ())
+      return true;
+
+    if (is_nested ())
+      {
+        auto t_parent = m_parent.lock ();
+
+        return t_parent ? t_parent->is_variable (nm) : false;
+      }
+
+    return false;
+  }
+
   void symbol_scope_rep::update_nest (void)
   {
     auto t_parent = m_parent.lock ();
@@ -294,14 +330,8 @@ namespace octave
         m_is_static = true;
       }
 
-    std::list<std::string> plst = parent_fcn_names ();
-    plst.push_front (m_fcn_name);
-
     for (auto& scope_obj : m_children)
-      {
-        scope_obj.cache_parent_fcn_names (plst);
-        scope_obj.update_nest ();
-      }
+      scope_obj.update_nest ();
   }
 
   bool symbol_scope_rep::look_nonlocal (const std::string& name,

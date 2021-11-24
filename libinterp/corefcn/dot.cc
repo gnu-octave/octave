@@ -35,6 +35,8 @@
 #include "error.h"
 #include "parse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static void
 get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
               dim_vector& z, F77_INT& m, F77_INT& n, F77_INT& k)
@@ -64,9 +66,9 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
         }
     }
 
-  m = octave::to_f77_int (tmp_m);
-  n = octave::to_f77_int (tmp_n);
-  k = octave::to_f77_int (tmp_k);
+  m = to_f77_int (tmp_m);
+  n = to_f77_int (tmp_n);
+  k = to_f77_int (tmp_k);
 }
 
 DEFUN (dot, args, ,
@@ -190,7 +192,7 @@ due to the limited range of integer objects.
       // exceed intmax.
       octave_value_list tmp;
       tmp(1) = dim + 1;
-      tmp(0) = do_binary_op (octave_value::op_el_mul, argx, argy);
+      tmp(0) = binary_op (octave_value::op_el_mul, argx, argy);
 
       tmp = Fsum (tmp, 1);
       if (! tmp.empty ())
@@ -245,7 +247,7 @@ due to the limited range of integer objects.
 */
 
 template <typename T>
-void
+static void
 blkmm_internal (const T& x, const T& y, T& z,
                 F77_INT m, F77_INT n, F77_INT k, F77_INT np);
 
@@ -300,9 +302,9 @@ get_blkmm_dims (const dim_vector& dimx, const dim_vector& dimy,
 {
   int nd = dimx.ndims ();
 
-  m = octave::to_f77_int (dimx(0));
-  k = octave::to_f77_int (dimx(1));
-  n = octave::to_f77_int (dimy(1));
+  m = to_f77_int (dimx(0));
+  k = to_f77_int (dimx(1));
+  n = to_f77_int (dimy(1));
 
   octave_idx_type tmp_np = 1;
 
@@ -319,7 +321,7 @@ get_blkmm_dims (const dim_vector& dimx, const dim_vector& dimy,
       tmp_np *= dimz(i);
     }
 
-  np = octave::to_f77_int (tmp_np);
+  np = to_f77_int (tmp_np);
 
   if (! match)
     error ("blkmm: A and B dimensions don't match: (%s) and (%s)",
@@ -430,3 +432,5 @@ endfor
 %!error <A and B must be numeric> blkmm ([3,4], {1,2})
 %!error <A and B dimensions don't match> blkmm (ones (2,2), ones (3,3))
 */
+
+OCTAVE_NAMESPACE_END

@@ -39,7 +39,6 @@
 namespace octave
 {
   class
-  OCTAVE_API
   dynamic_library
   {
   public: // FIXME: make this class private?
@@ -57,6 +56,7 @@ namespace octave
 
     protected:
 
+      OCTAVE_API
       dynlib_rep (const std::string& f);
 
     public:
@@ -73,12 +73,12 @@ namespace octave
                              const name_mangler& = name_mangler ())
       { return nullptr; }
 
-      bool is_out_of_date (void) const;
+      OCTAVE_API bool is_out_of_date (void) const;
 
       // This method will be overridden conditionally.
-      static dynlib_rep * new_instance (const std::string& f);
+      static OCTAVE_API dynlib_rep * new_instance (const std::string& f);
 
-      static dynlib_rep * get_instance (const std::string& f, bool fake);
+      static OCTAVE_API dynlib_rep * get_instance (const std::string& f, bool fake);
 
       sys::time time_loaded (void) const
       { return m_time_loaded; }
@@ -88,11 +88,11 @@ namespace octave
 
       std::size_t num_fcn_names (void) const { return m_fcn_names.size (); }
 
-      std::list<std::string> function_names (void) const;
+      OCTAVE_API std::list<std::string> function_names (void) const;
 
-      void add_fcn_name (const std::string&);
+      OCTAVE_API void add_fcn_name (const std::string&);
 
-      bool remove_fcn_name (const std::string&);
+      OCTAVE_API bool remove_fcn_name (const std::string&);
 
       void clear_fcn_names (void) { m_fcn_names.clear (); }
 
@@ -102,9 +102,9 @@ namespace octave
 
     protected:
 
-      void fake_reload (void);
+      OCTAVE_API void fake_reload (void);
 
-      static std::map<std::string, dynlib_rep *> s_instances;
+      static OCTAVE_API std::map<std::string, dynlib_rep *> s_instances;
 
       // Set of hooked function names.
       typedef std::map<std::string, std::size_t>::iterator fcn_names_iterator;
@@ -118,7 +118,7 @@ namespace octave
 
   private:
 
-    static dynlib_rep s_nil_rep;
+    static OCTAVE_API dynlib_rep s_nil_rep;
 
   public:
 

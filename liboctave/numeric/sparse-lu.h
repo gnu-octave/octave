@@ -53,30 +53,32 @@ namespace octave
       typedef typename lu_type::element_type lu_elt_type;
 
       sparse_lu (void)
-        : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
+        : m_L (), m_U (), m_R (), m_cond (0), m_P (), m_Q () { }
 
+      OCTAVE_API
       sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
                  bool scale = false);
 
+      OCTAVE_API
       sparse_lu (const lu_type& a, const ColumnVector& Qinit,
                  const Matrix& piv_thres, bool scale = false,
                  bool FixedQ = false, double droptol = -1.0,
                  bool milu = false, bool udiag = false);
 
       sparse_lu (const sparse_lu& a)
-        : Lfact (a.Lfact), Ufact (a.Ufact), Rfact (), cond (a.cond),
-          P (a.P), Q (a.Q)
+        : m_L (a.m_L), m_U (a.m_U), m_R (),
+          m_cond (a.m_cond), m_P (a.m_P), m_Q (a.m_Q)
       { }
 
       sparse_lu& operator = (const sparse_lu& a)
       {
         if (this != &a)
           {
-            Lfact = a.Lfact;
-            Ufact = a.Ufact;
-            cond = a.cond;
-            P = a.P;
-            Q = a.Q;
+            m_L = a.m_L;
+            m_U = a.m_U;
+            m_cond = a.m_cond;
+            m_P = a.m_P;
+            m_Q = a.m_Q;
           }
 
         return *this;
@@ -84,42 +86,42 @@ namespace octave
 
       virtual ~sparse_lu (void) = default;
 
-      lu_type L (void) const { return Lfact; }
+      lu_type L (void) const { return m_L; }
 
-      lu_type U (void) const { return Ufact; }
+      lu_type U (void) const { return m_U; }
 
-      SparseMatrix R (void) const { return Rfact; }
+      SparseMatrix R (void) const { return m_R; }
 
-      lu_type Y (void) const;
+      OCTAVE_API lu_type Y (void) const;
 
-      SparseMatrix Pc (void) const;
+      OCTAVE_API SparseMatrix Pc (void) const;
 
-      SparseMatrix Pr (void) const;
+      OCTAVE_API SparseMatrix Pr (void) const;
 
-      ColumnVector Pc_vec (void) const;
+      OCTAVE_API ColumnVector Pc_vec (void) const;
 
-      ColumnVector Pr_vec (void) const;
+      OCTAVE_API ColumnVector Pr_vec (void) const;
 
-      PermMatrix Pc_mat (void) const;
+      OCTAVE_API PermMatrix Pc_mat (void) const;
 
-      PermMatrix Pr_mat (void) const;
+      OCTAVE_API PermMatrix Pr_mat (void) const;
 
-      const octave_idx_type * row_perm (void) const { return P.fortran_vec (); }
+      const octave_idx_type * row_perm (void) const { return m_P.data (); }
 
-      const octave_idx_type * col_perm (void) const { return Q.fortran_vec (); }
+      const octave_idx_type * col_perm (void) const { return m_Q.data (); }
 
-      double rcond (void) const { return cond; }
+      double rcond (void) const { return m_cond; }
 
     protected:
 
-      lu_type Lfact;
-      lu_type Ufact;
-      SparseMatrix Rfact;
+      lu_type m_L;
+      lu_type m_U;
+      SparseMatrix m_R;
 
-      double cond;
+      double m_cond;
 
-      MArray<octave_idx_type> P;
-      MArray<octave_idx_type> Q;
+      MArray<octave_idx_type> m_P;
+      MArray<octave_idx_type> m_Q;
     };
   }
 }

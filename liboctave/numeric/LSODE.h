@@ -40,14 +40,14 @@ LSODE : public ODE, public LSODE_options
 public:
 
   LSODE (void)
-    : ODE (), LSODE_options (), initialized (false), method_flag (0),
-      itask (0), iopt (0), itol (0), liw (0), lrw (0),
-      iwork (), rwork (), rel_tol (0.0), abs_tol () { }
+    : ODE (), LSODE_options (), m_initialized (false), m_method_flag (0),
+      m_itask (0), m_iopt (0), m_itol (0), m_liw (0), m_lrw (0),
+      m_iwork (), m_rwork (), m_rel_tol (0.0), m_abs_tol () { }
 
   LSODE (const ColumnVector& s, double tm, const ODEFunc& f)
-    : ODE (s, tm, f), LSODE_options (), initialized (false), method_flag (0),
-      itask (0), iopt (0), itol (0), liw (0), lrw (0),
-      iwork (), rwork (), rel_tol (0.0), abs_tol () { }
+    : ODE (s, tm, f), LSODE_options (), m_initialized (false),
+      m_method_flag (0), m_itask (0), m_iopt (0), m_itol (0), m_liw (0),
+      m_lrw (0), m_iwork (), m_rwork (), m_rel_tol (0.0), m_abs_tol () { }
 
   ~LSODE (void) = default;
 
@@ -61,22 +61,22 @@ public:
 
 private:
 
-  bool initialized;
+  bool m_initialized;
 
-  octave_f77_int_type method_flag;
-  octave_f77_int_type itask;
-  octave_f77_int_type iopt;
-  octave_f77_int_type itol;
+  octave_f77_int_type m_method_flag;
+  octave_f77_int_type m_itask;
+  octave_f77_int_type m_iopt;
+  octave_f77_int_type m_itol;
 
-  octave_f77_int_type liw;
-  octave_f77_int_type lrw;
+  octave_f77_int_type m_liw;
+  octave_f77_int_type m_lrw;
 
-  Array<octave_f77_int_type> iwork;
-  Array<double> rwork;
+  Array<octave_f77_int_type> m_iwork;
+  Array<double> m_rwork;
 
-  double rel_tol;
+  double m_rel_tol;
 
-  Array<double> abs_tol;
+  Array<double> m_abs_tol;
 };
 
 #endif

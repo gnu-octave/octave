@@ -326,19 +326,19 @@ endfunction
 
 ## We are using the Van der Pol equation for all tests.
 ## Further tests also define a reference solution (computed at high accuracy)
-%!function ydot = fpol (t, y)  # The Van der Pol ODE
+%!function ydot = fpol (t, y, varargin)  # The Van der Pol ODE
 %!  ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
 %!function ref = fref ()       # The computed reference sol
 %!  ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = zeros (2,1);            # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
 %!function [val, trm, dir] = fevn (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = ones (2,1);             # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
@@ -378,7 +378,7 @@ endfunction
 %! [t, y] = ode23 (@fpol, [0 2], [2 0], 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # empty OdePkg structure *but* extra input arguments
-%! opt = odeset;
+%! opt = odeset ();
 %! [t, y] = ode23 (@fpol, [0 2], [2 0], opt, 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 %!test  # Solve another anonymous function below zero
@@ -426,7 +426,7 @@ endfunction
 %!test # hermite_cubic_interpolation
 %! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
 %! [t,sol] = ode23(@(t,x)[x(2);x(1)],linspace(0,1),[1;0],opt);
-%! assert(max(abs(sol(:,1)-cosh(t))),0,1e-6)
+%! assert (max (abs (sol(:,1)-cosh (t))),0,1e-6);
 %!test  # RelTol and NormControl option -- higher accuracy
 %! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
@@ -497,14 +497,14 @@ endfunction
 
 %!test # Check that imaginary part of solution does not get inverted
 %! sol = ode23 (@(x,y) 1, [0 1], 1i);
-%! assert (imag (sol.y), ones (size (sol.y)))
+%! assert (imag (sol.y), ones (size (sol.y)));
 %! [x, y] = ode23 (@(x,y) 1, [0 1], 1i);
-%! assert (imag (y), ones (size (y)))
+%! assert (imag (y), ones (size (y)));
 
 ## Test input validation
-%!error ode23 ()
-%!error ode23 (1)
-%!error ode23 (1,2)
+%!error <Invalid call> ode23 ()
+%!error <Invalid call> ode23 (1)
+%!error <Invalid call> ode23 (1,2)
 %!error <TRANGE must be a numeric> ode23 (@fpol, {[0 25]}, [3 15 1])
 %!error <TRANGE must be a .* vector> ode23 (@fpol, [0 25; 25 0], [3 15 1])
 %!error <TRANGE must contain at least 2 elements> ode23 (@fpol, [1], [3 15 1])

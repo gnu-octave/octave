@@ -31,7 +31,7 @@
 
 function y = asecd (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -42,5 +42,4 @@ endfunction
 
 %!assert (asecd (0:10:90), 180/pi * asec (0:10:90), -10*eps)
 
-%!error asecd ()
-%!error asecd (1, 2)
+%!error <Invalid call> asecd ()

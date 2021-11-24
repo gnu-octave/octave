@@ -41,8 +41,8 @@
 ## largest value.
 ##
 ## If @var{base} is a string then the characters of @var{base} are used as
-## the symbols for the digits of @var{d}.  Space (' ') may not be used as a
-## symbol.
+## the symbols for the digits of @var{d}.  Whitespace (spaces, tabs, newlines,
+##, etc.@:) may not be used as a symbol.
 ##
 ## @example
 ## @group
@@ -58,7 +58,7 @@
 
 function retval = dec2base (d, base, len)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -78,18 +78,16 @@ function retval = dec2base (d, base, len)
 
   symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   if (ischar (base))
-    symbols = base;
-    base = length (symbols);
-    if (length (unique (symbols)) != base)
+    symbols = base(:).';  # force a row vector
+    base = numel (symbols);
+    if (numel (unique (symbols)) != base)
       error ("dec2base: symbols representing digits must be unique");
-    endif
-    if (any (isspace (symbols)))
+    elseif (any (isspace (symbols)))
       error ("dec2base: whitespace characters are not valid symbols");
     endif
-  elseif (! isscalar (base))
-    error ("dec2base: cannot convert from several bases at once");
-  elseif (base < 2 || base > length (symbols))
-    error ("dec2base: BASE must be between 2 and 36, or a string of symbols");
+  elseif (! isscalar (base) || ! isreal (base) || fix (base) != base
+          || base < 2 || base > 36)
+    error ("dec2base: BASE must be an integer between 2 and 36, or a string of symbols");
   endif
 
   ## determine number of digits required to handle all numbers, can overflow
@@ -97,6 +95,9 @@ function retval = dec2base (d, base, len)
   max_len = round (log (max (max (d), 1)) / log (base)) + 1;
 
   if (nargin == 3)
+    if (! (isscalar (len) && isreal (len) && len >= 0 && len == fix (len)))
+      error ("dec2base: LEN must be a non-negative integer");
+    endif
     max_len = max (max_len, len);
   endif
 
@@ -163,15 +164,20 @@ endfunction
 %!assert <*56005> (dec2base ([0, 0], 16), ["0"; "0"])
 
 ## Test input validation
-%!error dec2base ()
-%!error dec2base (1)
-%!error dec2base (1, 2, 3, 4)
-%!error dec2base ("A")
-%!error dec2base (2i)
-%!error dec2base (-1)
-%!error dec2base (1.1)
-%!error dec2base (1, "ABA")
-%!error dec2base (1, "A B")
-%!error dec2base (1, ones (2))
-%!error dec2base (1, 1)
-%!error dec2base (1, 37)
+%!error <Invalid call> dec2base ()
+%!error <Invalid call> dec2base (1)
+%!error <input must be real non-negative integers> dec2base ("A", 10)
+%!error <input must be real non-negative integers> dec2base (2i, 10)
+%!error <input must be real non-negative integers> dec2base (-1, 10)
+%!error <input must be real non-negative integers> dec2base (1.1, 10)
+%!error <symbols representing digits must be unique> dec2base (1, "ABA")
+%!error <whitespace characters are not valid symbols> dec2base (1, "A B")
+%!error <BASE must be an integer> dec2base (1, ones (2))
+%!error <BASE must be an integer> dec2base (1, 2i)
+%!error <BASE must be an integer> dec2base (1, 2.5)
+%!error <BASE must be .* between 2 and 36> dec2base (1, 1)
+%!error <BASE must be .* between 2 and 36> dec2base (1, 37)
+%!error <LEN must be a non-negative integer> dec2base (1, 2, ones(2))
+%!error <LEN must be a non-negative integer> dec2base (1, 2, 2i)
+%!error <LEN must be a non-negative integer> dec2base (1, 2, -1)
+%!error <LEN must be a non-negative integer> dec2base (1, 2, 2.5)

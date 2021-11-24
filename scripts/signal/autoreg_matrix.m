@@ -63,6 +63,6 @@ endfunction
 %! B(:,1) = 1;
 %! assert (autoreg_matrix (A,K), B);
 
-%!error autoreg_matrix ()
-%!error autoreg_matrix (1)
+%!error <Invalid call> autoreg_matrix ()
+%!error <Invalid call> autoreg_matrix (1)
 %!error autoreg_matrix (ones (4,1), 5)

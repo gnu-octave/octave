@@ -56,7 +56,7 @@
 
 function retval = hankel (c, r)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -99,7 +99,6 @@ endfunction
 %!warning <column wins anti-diagonal conflict>
 %!  assert (hankel (1:3,4:6), [1,2,3;2,3,5;3,5,6]);
 
-%!error hankel ()
-%!error hankel (1, 2, 3)
+%!error <Invalid call> hankel ()
 %!error <C must be a vector> hankel ([1, 2; 3, 4])
 %!error <C and R must be vectors> hankel (1:4, [1, 2; 3, 4])

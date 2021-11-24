@@ -155,5 +155,5 @@ endfunction
 %!assert (type ("+"){1}, "+ is an operator")
 %!assert (type ("end"){1}, "end is a keyword")
 
-%!error type ()
+%!error <Invalid call> type ()
 %!error <'__NO_NAME__' undefined> type ('__NO_NAME__')

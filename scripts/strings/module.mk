@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/base2dec.m \
   %reldir%/bin2dec.m \
   %reldir%/blanks.m \
@@ -9,6 +10,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/dec2base.m \
   %reldir%/dec2bin.m \
   %reldir%/dec2hex.m \
+  %reldir%/endsWith.m \
   %reldir%/erase.m \
   %reldir%/hex2dec.m \
   %reldir%/index.m \
@@ -20,6 +22,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/ostrsplit.m \
   %reldir%/regexptranslate.m \
   %reldir%/rindex.m \
+  %reldir%/startsWith.m \
   %reldir%/str2num.m \
   %reldir%/strcat.m \
   %reldir%/strchr.m \

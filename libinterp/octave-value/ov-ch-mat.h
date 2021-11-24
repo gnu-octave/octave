@@ -89,7 +89,7 @@ public:
   octave_base_value * empty_clone (void) const
   { return new octave_char_matrix (); }
 
-  idx_vector index_vector (bool require_integers = false) const;
+  octave::idx_vector index_vector (bool require_integers = false) const;
 
   builtin_type_t builtin_type (void) const { return btyp_char; }
 
@@ -163,11 +163,7 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  // Unsafe.  This function exists to support the MEX interface.
-  // You should not use it anywhere else.
-  void * mex_get_data (void) const { return matrix.mex_get_data (); }
-
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   octave_value map (unary_mapper_t umap) const;
 };

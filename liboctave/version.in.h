@@ -56,22 +56,22 @@
 
 #include <string>
 
-extern OCTINTERP_API std::string octave_www_statement (bool html = false);
+extern OCTAVE_API std::string octave_www_statement (bool html = false);
 
-extern OCTINTERP_API std::string octave_contrib_statement (bool html = false);
+extern OCTAVE_API std::string octave_contrib_statement (bool html = false);
 
-extern OCTINTERP_API std::string octave_bugs_statement (bool html = false);
+extern OCTAVE_API std::string octave_bugs_statement (bool html = false);
 
-extern OCTINTERP_API std::string octave_name_version_and_copyright (void);
+extern OCTAVE_API std::string octave_name_version_and_copyright (void);
 
-extern OCTINTERP_API std::string
+extern OCTAVE_API std::string
 octave_name_version_copyright_copying_and_warranty
   (bool html = false, const std::string& extra_info = "");
 
-extern OCTINTERP_API std::string
+extern OCTAVE_API std::string
 octave_name_version_copyright_copying_warranty_and_bugs
   (bool html = false, const std::string& extra_info = "");
 
-extern OCTINTERP_API std::string octave_startup_message (bool html = false);
+extern OCTAVE_API std::string octave_startup_message (bool html = false);
 
 #endif

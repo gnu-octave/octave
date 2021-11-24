@@ -35,6 +35,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__dsearchn__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})
@@ -48,7 +50,7 @@ Undocumented internal function.
   Matrix xi = args(1).matrix_value ().transpose ();
 
   if (x.rows () != xi.rows () || x.columns () < 1)
-    error ("__dsearch__: number of rows of X and XI must match");
+    error ("__dsearchn__: number of rows of X and XI must match");
 
   octave_idx_type n = x.rows ();
   octave_idx_type nx = x.columns ();
@@ -68,11 +70,11 @@ Undocumented internal function.
     }                                           \
   dd = sqrt (dd)
 
-  const double *pxi = xi.fortran_vec ();
+  const double *pxi = xi.data ();
   for (octave_idx_type i = 0; i < nxi; i++)
     {
       double d0;
-      const double *px = x.fortran_vec ();
+      const double *px = x.data ();
       DIST(d0, px, pxi, n);
       *pidx = 1.;
       for (octave_idx_type j = 1; j < nx; j++)
@@ -100,3 +102,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

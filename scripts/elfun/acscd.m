@@ -31,7 +31,7 @@
 
 function y = acscd (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -42,5 +42,4 @@ endfunction
 
 %!assert (acscd (0:10:90), 180/pi * acsc (0:10:90), -10*eps)
 
-%!error acscd ()
-%!error acscd (1, 2)
+%!error <Invalid call> acscd ()

@@ -29,6 +29,6 @@
 
 #include "MSparse.h"
 
-template class OCTAVE_API MSparse<double>;
+template class MSparse<double>;
 
 INSTANTIATE_SPARSE_FRIENDS (double, OCTAVE_API);

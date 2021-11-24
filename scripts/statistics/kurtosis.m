@@ -88,7 +88,7 @@
 
 function y = kurtosis (x, flag, dim)
 
-  if (nargin < 1) || (nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -147,9 +147,12 @@ endfunction
 %!assert (kurtosis (ones (3, 5)), NaN (1, 5))
 %!assert (kurtosis (1, [], 3), NaN)
 
-%!assert (kurtosis ([1:5 10; 1:5 10],  0, 2), 5.4377317925288901 * [1; 1], 8 * eps)
-%!assert (kurtosis ([1:5 10; 1:5 10],  1, 2), 2.9786509002956195 * [1; 1], 8 * eps)
-%!assert (kurtosis ([1:5 10; 1:5 10], [], 2), 2.9786509002956195 * [1; 1], 8 * eps)
+%!assert (kurtosis ([1:5 10; 1:5 10],  0, 2),
+%!        5.4377317925288901 * [1; 1], 8 * eps)
+%!assert (kurtosis ([1:5 10; 1:5 10],  1, 2),
+%!        2.9786509002956195 * [1; 1], 8 * eps)
+%!assert (kurtosis ([1:5 10; 1:5 10], [], 2),
+%!        2.9786509002956195 * [1; 1], 8 * eps)
 
 ## Test behavior on single input
 %!assert (kurtosis (single ([1:5 10])), single (2.9786513), eps ("single"))
@@ -162,8 +165,7 @@ endfunction
 %! assert (lastwarn (), "");
 
 ## Test input validation
-%!error kurtosis ()
-%!error kurtosis (1, 2, 3)
+%!error <Invalid call> kurtosis ()
 %!error <X must be a numeric vector or matrix> kurtosis (['A'; 'B'])
 %!error <FLAG must be 0 or 1> kurtosis (1, 2)
 %!error <FLAG must be 0 or 1> kurtosis (1, [1 0])

@@ -96,6 +96,8 @@
 
 #include "op-int.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 OCTAVE_INT_OPS (int32)
 
 OCTAVE_MS_INT_ASSIGN_OPS (mi8, int32_, int8_, int8_)
@@ -159,3 +161,5 @@ install_i32_i32_ops (octave::type_info& ti)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, int64);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, uint64);
 }
+
+OCTAVE_NAMESPACE_END

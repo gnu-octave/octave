@@ -24,10 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} __add_default_menu__ (@var{hfig})
-## @deftypefnx {} {} __add_default_menu__ (@var{hfig}, @var{hmenu})
+## @deftypefn  {} {} __add_default_menu__ (@var{hf})
+## @deftypefnx {} {} __add_default_menu__ (@var{hf}, @var{hmenu})
+## @deftypefnx {} {} __add_default_menu__ (@var{hf}, @var{hmenu}, @var{htb})
 ## Add default menu and listeners to figure.
 ##
+## @var{hf} is a figure handle.
+## @var{hmenu} is a uimenu handle.
+## @var{htb} is a uitoolbar handle.
 ##
 ## All uimenu handles have their @qcode{"HandleVisibility"} property set to
 ## @qcode{"off"}.
@@ -37,7 +41,7 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
 
   ## Gnuplot doesn't handle uimenu and uitoolbar objects
   if (strcmp (graphics_toolkit (), "gnuplot"))
-    return
+    return;
   endif
 
   ## Create
@@ -45,11 +49,11 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
     ## File menu
     hui = uimenu (hf, "label", "&File", "tag", "__default_menu__File", ...
                       "handlevisibility", "off");
-    uimenu (hui, "label", "&Open", "callback", @open_cb, ...
+    uimenu (hui, "label", "&Open...", "callback", @open_cb, ...
             "accelerator", "o");
     uimenu (hui, "label", "&Save", "callback", {@save_cb, "save"}, ...
             "accelerator", "s");
-    uimenu (hui, "label", "Save &As", "callback", {@save_cb, "saveas"}, ...
+    uimenu (hui, "label", "Save &As...", "callback", {@save_cb, "saveas"}, ...
             "accelerator", "S");
     uimenu (hui, "label", "&Close", "callback", @close_cb, ...
             "accelerator", "w", "separator", "on");
@@ -173,17 +177,16 @@ function toggle_visibility_cb (hf, ~, hmenu, htb)
   set (htb, "visible", toolbar_state);
 endfunction
 
-function open_cb (h, e)
-  [filename, filedir] = uigetfile ({"*.ofig", "Octave Figure File"}, ...
+function open_cb (~, ~)
+  [filename, filedir] = uigetfile ({"*.ofig;*.fig", "Figure Files"}, ...
                                    "Open Figure");
   if (filename != 0)
     fname = fullfile (filedir, filename);
-    tmphf = hgload (fname);
-    set (tmphf, "filename", fname);
+    openfig (fname);
   endif
 endfunction
 
-function save_cb (h, e, action)
+function save_cb (h, ~, action)
   hfig = gcbf ();
   fname = get (hfig, "filename");
 
@@ -198,33 +201,53 @@ function save_cb (h, e, action)
   endif
 endfunction
 
-
 function __save_as__ (hf, fname = "")
-  filter = ifelse (! isempty (fname), fname, ...
-                   {"*.ofig", "Octave Figure File";
-                    "*.eps;*.pdf;*.svg;*.ps", "Vector Image Formats";
-                    "*.gif;*.jpg;*.png;*.tiff", "Bitmap Image Formats"});
-  def = ifelse (! isempty (fname), fname, fullfile (pwd, "untitled.ofig"));
+  if (! isempty (fname))
+    def = fname;
+  else
+    def = fullfile (pwd (), "untitled.ofig");
+  endif
+  filter = {"*.ofig", "Octave Figure";
+            "*.eps",  "Encapsulated PostScript";
+            "*.pdf",  "Portable Document Format";
+            "*.ps",   "PostScript";
+            "*.svg",  "Scalable Vector Graphics";
+            "*.gif",  "GIF Image";
+            "*.jpg",  "JPEG Image";
+            "*.png",  "Portable Network Graphics Image";
+            "*.tiff", "TIFF Image"};
+  ## Reorder filters to have current first
+  [~, ~, ext] = fileparts (def);
+  idx = strcmp (filter(:,1), ["*" tolower(ext)]);
+  filter = [filter(idx,:); filter(! idx,:)];
 
-  [filename, filedir] = uiputfile (filter, "Save Figure", def);
+  [filename, filedir, filteridx] = uiputfile (filter, "Save Figure", def);
 
   if (filename != 0)
     fname = fullfile (filedir, filename);
-    set (gcbf, "filename", fname);
-    flen = numel (fname);
-    if (flen > 5 && strcmp (fname(flen-4:end), ".ofig"))
-      hgsave (hf, fname);
+    [~, ~, ext] = fileparts (fname);
+    if (filteridx > rows (filter))
+      ## "All Files" option
+      if (isempty (ext))
+        fmt = "";
+      else
+        fmt = ext(2:end);
+      endif
     else
-      saveas (hf, fname);
+      fmt = filter{filteridx,1}(3:end);
+      if (isempty (ext))
+        fname = [fname "." fmt];
+      endif
     endif
+    set (hf, "filename", fname);
+    saveas (hf, fname, fmt);
   endif
+
 endfunction
 
-
-function close_cb (h, e)
-  close (gcbf);
+function close_cb (~, ~)
+  close (gcbf ());
 endfunction
-
 
 function [hax, fig] = __get_axes__ (h)
   ## Get parent figure
@@ -234,7 +257,7 @@ function [hax, fig] = __get_axes__ (h)
   hax = findobj (fig, "type", "axes", "-not", "tag", "legend");
 endfunction
 
-function autoscale_cb (h, e)
+function autoscale_cb (h, ~)
   hax = __get_axes__ (h);
   arrayfun (@(h) axis (h, "auto"), hax);
   drawnow ();
@@ -253,7 +276,8 @@ function init_mouse_tools (hf)
                                     "FigureHandle", hf));
 endfunction
 
-function guimode_cb (h, e)
+function guimode_cb (h, ~)
+
   [hax, fig] = __get_axes__ (h);
   id = get (h, "tag");
   switch (id)
@@ -273,9 +297,10 @@ function guimode_cb (h, e)
     case "zoom_off"
       arrayfun (@(h) set (h, "mousewheelzoom", 0.0), hax);
   endswitch
+
 endfunction
 
-function mouse_tools_cb (h, ev, htools, typ = "")
+function mouse_tools_cb (h, ~, htools, typ = "")
 
   persistent recursion = false;
 
@@ -290,7 +315,7 @@ function mouse_tools_cb (h, ev, htools, typ = "")
       mode = get (hf, "__mouse_mode__");
       state = "on";
 
-      switch mode
+      switch (mode)
         case "zoom"
           zm = get (hf, "__zoom_mode__");
           if (strcmp (zm.Direction, "in"))
@@ -318,7 +343,7 @@ function mouse_tools_cb (h, ev, htools, typ = "")
       ## Update the mouse mode according to the button state
       state = get (h, "state");
 
-      switch typ
+      switch (typ)
         case {"zoomin", "zoomout"}
           prop = "__zoom_mode__";
           val = get (hf, prop);
@@ -329,7 +354,7 @@ function mouse_tools_cb (h, ev, htools, typ = "")
             else
               val.Direction = "out";
             endif
-            set (hf, "__mouse_mode__" , "zoom");
+            set (hf, "__mouse_mode__", "zoom");
           endif
           val.Enable = state;
           set (hf, prop, val);
@@ -338,21 +363,21 @@ function mouse_tools_cb (h, ev, htools, typ = "")
           prop = ["__", typ, "_mode__"];
           val = get (hf, prop);
           if (strcmp (state, "on"))
-            set (hf, "__mouse_mode__" , typ);
+            set (hf, "__mouse_mode__", typ);
           endif
           val.Enable = state;
           set (hf, prop, val);
 
         case {"text", "select"}
           if (strcmp (state, "on"))
-            set (hf, "__mouse_mode__" , typ);
+            set (hf, "__mouse_mode__", typ);
           endif
       endswitch
 
       if (strcmp (state, "on"))
         set (htools(htools != h), "state", "off");
       elseif (! any (strcmp (get (htools, "state"), "on")))
-        set (hf, "__mouse_mode__" , "none");
+        set (hf, "__mouse_mode__", "none");
       endif
     endif
 
@@ -361,7 +386,7 @@ function mouse_tools_cb (h, ev, htools, typ = "")
 
 endfunction
 
-function axes_cb (h)
+function axes_cb (h, ~)
   hax = get (gcbf (), "currentaxes");
   if (! isempty (hax))
     if (strcmp (get (hax, "visible"), "on"))
@@ -372,7 +397,7 @@ function axes_cb (h)
   endif
 endfunction
 
-function grid_cb (h)
+function grid_cb (h, ~)
   hax = get (gcbf (), "currentaxes");
   if (! isempty (hax))
     if (strcmp (get (hax, "xgrid"), "on") && strcmp (get (hax, "ygrid"), "on"))
@@ -383,14 +408,15 @@ function grid_cb (h)
   endif
 endfunction
 
-function auto_cb (h)
+function auto_cb (h, ~)
   hax = get (gcbf (), "currentaxes");
   if (! isempty (hax))
     axis (hax, "auto");
   endif
 endfunction
 
-function clipboard_cb (h)
+function clipboard_cb (h, ~)
+
   hf = gcbf ();
   fname = tempname ();
   props = {"inverthardcopy", "paperposition", "paperpositionmode"};
@@ -402,4 +428,5 @@ function clipboard_cb (h)
   unwind_protect_cleanup
     set (hf, props, values);
   end_unwind_protect
+
 endfunction

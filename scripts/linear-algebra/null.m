@@ -24,91 +24,103 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} null (@var{A})
-## @deftypefnx {} {} null (@var{A}, @var{tol})
-## Return an orthonormal basis of the null space of @var{A}.
+## @deftypefn  {} {@var{Z} =} null (@var{A})
+## @deftypefnx {} {@var{Z} =} null (@var{A}, @var{tol})
+## Return an orthonormal basis @var{Z} of the null space of @var{A}.
 ##
-## The dimension of the null space is taken as the number of singular values of
-## @var{A} not greater than @var{tol}.  If the argument @var{tol} is missing,
-## it is computed as
+## The dimension of the null space @var{Z} is taken as the number of singular
+## values of @var{A} not greater than @var{tol}.  If the argument @var{tol}
+## is missing, it is computed as
 ##
 ## @example
-## max (size (@var{A})) * max (svd (@var{A})) * eps
+## max (size (@var{A})) * max (svd (@var{A}, 0)) * eps
 ## @end example
-## @seealso{orth}
+## @seealso{orth, svd}
 ## @end deftypefn
 
-function retval = null (A, tol)
+function Z = null (A, tol)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (nargin == 2 && strcmp (tol, "r"))
     error ("null: option for rational not yet implemented");
   endif
 
+  [~, S, V] = svd (A, 0);  # Use economy-sized svd if possible.
+
   if (isempty (A))
-    if (isa (A, "single"))
-      retval = single ([]);
-    else
-      retval = [];
-    endif
+    ## In case of A = [], zeros (0,X), zeros (X,0) Matlab R2020b seems to
+    ## simply return the nullspace "V" of the svd-decomposition (bug #59630).
+    Z = V;
   else
-    [U, S, V] = svd (A);
     out_cls = class (V);
 
-    s = diag (S);
+    ## Extract column vector from Diagonal Matrix which depends on size
+    if (rows (S) > 1)
+      s = diag (S);
+    else
+      s = S(1);
+    end
     if (nargin == 1)
-      tol = max (size (A)) * s (1) * eps (out_cls);
+      tol = max (size (A)) * s(1) * eps (out_cls);
     endif
     rank = sum (s > tol);
 
     cols = columns (A);
     if (rank < cols)
-      retval = V(:, rank+1:cols);
-      retval(abs (retval) < eps (out_cls)) = 0;
+      Z = V(:, rank+1:cols);
+      Z(abs (Z) < eps (out_cls)) = 0;
     else
-      retval = zeros (cols, 0, out_cls);
+      Z = zeros (cols, 0, out_cls);
     endif
   endif
 
 endfunction
 
 
-## FIXME: Need some tests for 'single' variables as well
-
+## Exact tests
 %!test
-%! A = 0;
-%! assert (null (A), 1);
-%! assert (null (single (A)), single (1));
+%! A = {
+%!   [], [];
+%!   zeros(1,0), [];
+%!   zeros(4,0), [];
+%!   zeros(0,1), 1;
+%!   zeros(0,4), eye(4);
+%!   0, 1;
+%!   1, zeros(1,0);
+%!   [1 0; 0 1], zeros(2,0);
+%!   [1 0; 1 0], [0 1]';
+%! };
+%! for i = 1:rows (A)
+%!   assert (null (A{i,1}), A{i,2});
+%!   assert (null (single (A{i,1})), single (A{i,2}));
+%! endfor
 
+## Inexact tests
 %!test
-%! A = 1;
-%! assert (null (A), zeros (1,0));
+%! A = {
+%!   [1 1; 0 0], [-1/sqrt(2) 1/sqrt(2)]';
+%! };
+%! for i = 1:rows (A)
+%!   assert (null (A{i,1}), A{i,2}, eps);
+%!   assert (null (single (A{i,1})), single (A{i,2}), eps);
+%! endfor
 
-%!test
-%! A = [1 0; 0 1];
-%! assert (null (A), zeros (2,0));
-%! assert (null (single (A)), zeros (2, 0, "single"))
-
-%!test
-%! A = [1 0; 1 0];
-%! assert (null (A), [0 1]');
-
-%!test
-%! A = [1 1; 0 0];
-%! assert (null (A), [-1/sqrt(2) 1/sqrt(2)]', eps)
-%! assert (null (single (A)), single ([-1/sqrt(2) 1/sqrt(2)]'), eps)
-
+## Tests with tolerance input
 %!test
 %! tol = 1e-4;
-%! A = [1 0; 0 tol-eps];
-%! assert (null (A,tol), [0; 1]);
+%! A = {
+%!   @(e) [1 0; 0 tol-e], [0 1]';
+%!   @(e) [1 0; 0 tol+e], zeros(2,0);
+%! };
+%! for i = 1:rows (A)
+%!   assert (null (A{i,1}(eps ("double")), tol), A{i,2});
+%!   assert (null (single (A{i,1}(eps ("single"))), tol), single (A{i,2}));
+%! endfor
 
-%!test
-%! tol = 1e-4;
-%! A = [1 0; 0 tol+eps];
-%! assert (null (A,tol), zeros (2,0));
-
-%!assert (null ([]), [])
-%!assert (null (single ([])), single ([]))
+## Input corner cases
 %!assert (null (uint8 ([])), [])
+
+## Test input validation
+%!error <Invalid call> null ()
+%!error <rational not yet implemented> null (1, 'r')

@@ -76,7 +76,6 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
   outargs = {cell(0, 2),     # File Filter
              "Save File",    # Dialog Title
              "",             # Default filename
-             [240, 120],     # Dialog Position (pixel x/y)
              "create",
              pwd};           # Default directory
 
@@ -84,7 +83,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     [outargs{1}, outargs{3}, defdir] = __file_filter__ ("uiputfile",
                                                         varargin{1});
     if (! isempty (defdir))
-      outargs{6} = defdir;
+      outargs{5} = defdir;
     endif
   else
     outargs{1} = __file_filter__ ("uiputfile", outargs{1});
@@ -107,7 +106,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
         [fdir, fname, fext] = fileparts (varargin{3});
       endif
       if (! isempty (fdir))
-        outargs{6} = fdir;
+        outargs{5} = fdir;
       endif
       if (! isempty (fname) || ! isempty (fext))
         outargs{3} = [fname fext];
@@ -117,7 +116,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     endif
   endif
 
-  if (__event_manager_enabled__ ())
+  if (__event_manager_have_dialogs__ ())
     [retfile, retpath, retindex] = __event_manager_file_dialog__ (outargs{:});
   else
     funcname = __get_funcname__ (mfilename ());

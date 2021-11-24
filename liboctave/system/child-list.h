@@ -48,8 +48,8 @@ namespace octave
 
     typedef bool (*child_event_handler) (pid_t, int);
 
-    child (pid_t id = -1, child_event_handler f = nullptr)
-      : pid (id), handler (f), have_status (0), status (0)
+    child (pid_t pid = -1, child_event_handler f = nullptr)
+      : m_pid (pid), m_handler (f), m_have_status (0), m_status (0)
     { }
 
     child (const child&) = default;
@@ -58,18 +58,18 @@ namespace octave
 
     ~child (void) = default;
 
-    // The process id of this child.
-    pid_t pid;
+    // The process ID of this child.
+    pid_t m_pid;
 
     // The function we call if an event happens for this child.
-    child_event_handler handler;
+    child_event_handler m_handler;
 
     // Nonzero if this child has stopped or terminated.
-    sig_atomic_t have_status;
+    sig_atomic_t m_have_status;
 
-    // The status of this child; 0 if running, otherwise a status value
+    // The m_status of this child; 0 if running, otherwise a m_status value
     // from waitpid.
-    int status;
+    int m_status;
   };
 
   class OCTAVE_API child_list

@@ -109,7 +109,7 @@
 ## (editor is started in the background and Octave continues) or sync mode
 ## (Octave waits until the editor exits).  Set it to @qcode{"sync"} to start
 ## the editor in sync mode.  The default is @qcode{"async"}
-## (@pxref{XREFsystem,,system}).
+## (@pxref{XREFsystem,,@code{system}}).
 ##
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to
@@ -143,7 +143,7 @@ function retval = edit (varargin)
                                 "MODE", "async",
                                 "EDITINPLACE", true);
   ## Make sure the stateval variables survive "clear functions".
-  mlock;
+  mlock ();
 
   ## Get default editor every time in case the user has changed it
   FUNCTION.EDITOR = [EDITOR() " %s"];
@@ -219,7 +219,7 @@ function retval = edit (varargin)
     if (iscellstr (varargin))
       editfilelist = varargin;
     else
-      error ("edit: if supplying more than one input all inputs must be strings containing field names to open.");
+      error ("edit: if supplying more than one input all inputs must be strings containing field names to open");
     endif
   endif
 
@@ -310,7 +310,7 @@ function retval = edit (varargin)
     ## Search the entire path for the 1st instance of a file in the list.
     fileandpath = "";
     for n = 1:numel (filelist)
-      filetoedit = file_in_path (path, filelist{n});
+      filetoedit = file_in_loadpath (filelist{n});
       if (! isempty (filetoedit))
         ## The path is explicitly included.
         fileandpath = filetoedit;

@@ -58,7 +58,7 @@
 
 function A = perms (v)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -123,8 +123,7 @@ endfunction
 %!assert (unique (perms (1:5)(:))', 1:5)
 %!assert (perms (int8 (1:4)), int8 (perms (1:4)))
 
-%!error perms ()
-%!error perms (1, 2)
+%!error <Invalid call> perms ()
 
 ## Should work for any array type, such as cells and structs, and not
 ## only for numeric data.
@@ -161,5 +160,5 @@ endfunction
 %!test <*52432>
 %! s = struct ();
 %! s(1) = [];
-%! assert (perms (reshape (s, 0, 0)), reshape (s, 1, 0))
-%! assert (perms (reshape (s, 0, 1)), reshape (s, 1, 0))
+%! assert (perms (reshape (s, 0, 0)), reshape (s, 1, 0));
+%! assert (perms (reshape (s, 0, 1)), reshape (s, 1, 0));

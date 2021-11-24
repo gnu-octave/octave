@@ -123,109 +123,116 @@ function x = betaincinv (y, a, b, tail = "lower")
     b = single (b);
   endif
 
-  ## Initialize output array
-  x = zeros (size (y), class (y));
+  if (strcmpi (tail, "lower"))
+    ys = y;
+  elseif (strcmpi (tail, "upper"))
+    ys = 1 - y;  # only for computation of initial points, no loss of accuracy
+  else
+    error ("betaincinv: invalid value for TAIL");
+  endif
 
-  ## Parameters for the Newton's method search
-  maxit = 20;
-  tol = eps (class (y));
+  ## Choose starting point for Newton's Method to guarantee convergence.
+  ## If (a-1)*(b-1) > 0, F has a point of inflection at x = (a-1)/(a+b-2).
+  ## In this case, it is convex on (0,x) and concave on (x,1) if a>1; otherwise
+  ## it is the other way round.  If (a-1)*(b-1) <= 0, there is no point of
+  ## inflection, and it is everywhere convex for a>1 and concave otherwise.
+  ## We thus choose our starting x for the Newton iterations so that we stay
+  ## within a region of constant sign of curvature and on the correct side of
+  ## the eventual solution, guaranteeing convergence.  Curvatures above are to
+  ## be understood under the condition tail=="lower".
+
+  ## Initialize output array
+  x = x_i = y_i = zeros (size (y), class (y));
+
+  ## Have point of inflection
+  idx = find ((a - 1) .* (b - 1) > 0);
+  if (! isempty (idx))
+    x_i(idx) = (a(idx) - 1) ./ (a(idx) + b(idx) - 2);
+    y_i(idx) = betainc (x_i(idx), a(idx), b(idx));
+  end
+
+  ## Converge outwards
+  tmpidx = find (a(idx) > 1);
+  if (! isempty (tmpidx))
+    x(idx(tmpidx)) = x_i(idx(tmpidx));
+  endif
+  ## Converge inwards
+  ## To the left of inflection point
+  tmpidx = idx(find ((a(idx) <= 1) & (y_i(idx) >= ys(idx))));
+  if (! isempty (tmpidx))
+    x(tmpidx) = (ys(tmpidx) ./ y_i(tmpidx)).^(1 ./ a(tmpidx)) .* x_i(tmpidx);
+  endif
+  ## To the right of inflection point
+  tmpidx = idx(find ((a(idx) <= 1) & (y_i(idx) < ys(idx))));
+  if (! isempty (tmpidx))
+    x(tmpidx) = 1 - ...
+                ((1 - ys(tmpidx)) ./ (1 - y_i(tmpidx))).^(1 ./ b(tmpidx)) ...
+                .* (1 - x_i(tmpidx));
+  endif
+
+  ## Have no point of inflection
+  idx = find ((a - 1) .* (b - 1) <= 0);
+
+  ## Negative curvature
+  tmpidx = idx(find (a(idx) < 1));
+  if (! isempty (tmpidx))
+    x(tmpidx) = (ys(tmpidx) .* beta (a(tmpidx), b(tmpidx)) .* a(tmpidx)) ...
+                .^ (1 ./ a(tmpidx));
+  endif
+  ## Positive curvature
+  tmpidx = idx(find (a(idx) >= 1));
+  if (! isempty (tmpidx))
+    x(tmpidx) = 1 - ...
+                ((1 - ys(tmpidx)) .* beta (a(tmpidx), b(tmpidx)) .* b(tmpidx)) ...
+                .^ (1 ./ b(tmpidx));
+  endif
+
+  ## Cleanup memory before continuing
+  clear ys x_i y_i idx tmpidx
 
   if (strcmpi (tail, "lower"))
-    p = y;
-    q = 1 - y;
     x(y == 0) = 0;
     x(y == 1) = 1;
-  elseif (strcmpi (tail, "upper"))
-    p = 1 - y;
-    q = y;
+    F = @(x, a, b, y) y - betainc (x, a, b);
+    JF = @(x, a, b, Bln) -exp ((a-1) .* log (x) + (b-1) .* log1p (-x) - Bln);
+  else
     x(y == 0) = 1;
     x(y == 1) = 0;
-  else
-    error ("betaincinv: invalid value for TAIL")
-  endif
-
-  ## Special values have been already computed.
-  todo = (y != 0) & (y != 1);
-
-  ## We will invert the lower version for p < 0.5 and the upper otherwise.
-  i_low = (p < 0.5);
-  i_upp = (! i_low);
-
-  idx = todo & i_low;
-  if (any (idx))
-    n = nnz (idx);
-    ## Function and derivative of the lower version.
-    F = @(x, a, b, y) y - betainc (x, a, b);
-    JF = @(x, a, b) -real (exp ((a-1) .* log (x) + (b-1) .* log1p (-x) + ...
-                           gammaln (a+b) - gammaln (a) - gammaln (b)));
-
-    ## Compute the initial guess with a bisection method of 10 steps.
-    x0 = bisection_method (F, zeros (n,1), ones (n,1), ...
-                           a(i_low), b(i_low), p(i_low), 10);
-
-    ## Use Newton's method to iteratively find solution.
-    x(i_low) = newton_method (F, JF, x0, a(i_low), b(i_low), p(i_low), ...
-                              tol, maxit);
-  endif
-
-  idx = todo & i_upp;
-  if (any (idx))
-    n = nnz (idx);
-    ## Function and derivative of the upper version.
     F = @(x, a, b, y) y - betainc (x, a, b, "upper");
-    JF = @(x, a, b) real (exp ((a-1) .* log (x) + (b-1) .* log1p (-x) + ...
-                          gammaln (a+b) - gammaln (a) - gammaln (b)));
-
-    ## Compute the initial guess with a bisection method of 10 steps.
-    x0 = bisection_method (F, zeros (n,1), ones (n,1), ...
-                           a(i_upp), b(i_upp), q(i_upp), 10);
-
-    ## Use Newton's method to iteratively find solution.
-    x(i_upp) = newton_method (F, JF, x0, a(i_upp), b(i_upp), q(i_upp), ...
-                              tol, maxit);
+    JF = @(x, a, b, Bln) exp ((a-1) .* log (x) + (b-1) .* log1p (-x) - Bln);
   endif
+
+  x = newton_method (F, JF, x, a, b, y);
 
   ## Restore original shape
   x = reshape (x, orig_sz);
 
 endfunction
 
+function x = newton_method (F, JF, x, a, b, y);
 
-## subfunctions: Bisection and Newton Methods
-function xc = bisection_method (F, xl, xr, a, b, y, maxit)
-  F_l = F (xl, a, b, y);
-  F_r = F (xr, a, b, y);
-  for it = 1:maxit
-    xc = (xl + xr) / 2;
-    F_c = F (xc, a, b, y);
-    flag_l = ((F_c .* F_r) < 0);
-    flag_r = ((F_c .* F_l) < 0);
-    flag_c = (F_c == 0);
-    xl(flag_l) = xc(flag_l);
-    xr(flag_r) = xc(flag_r);
-    xl(flag_c) = xr(flag_c) = xc(flag_c);
-    F_l(flag_l) = F_c(flag_l);
-    F_r(flag_r) = F_c(flag_r);
-    F_l(flag_c) = F_r(flag_c) = 0;
-  endfor
-endfunction
-
-function x = newton_method (F, JF, x0, a, b, y, tol, maxit);
-  res = -F (x0, a, b, y) ./ JF (x0, a, b);
-  todo = (abs (res) >= tol * abs (x0));
-  x = x0;
-  it = 0;
-  while (any (todo) && (it < maxit))
-    it++;
-    x(todo) += res(todo);
-    ## Avoid intermediate values outside betainc() range of [0, 1], bug #60528
-    x(x(todo) < 0) = eps;
-    x(x(todo) > 1) = 1-eps;
-    res(todo) = -F(x(todo), a(todo), b(todo), y(todo)) ...
-                ./ JF (x(todo), a(todo), b(todo));
-    todo = (abs (res) >= tol * abs (x));
+  Bln = betaln (a, b);
+  ## Exclude special values that have been already computed.
+  todo = find ((y != 0) & (y != 1));
+  step = -F (x(todo), a(todo), b(todo), y(todo)) ./ ...
+         JF (x(todo), a(todo), b(todo), Bln(todo));
+  x_old = x(todo);
+  x(todo) += step;
+  dx = x(todo) - x_old;
+  idx = (dx != 0);
+  todo = todo(idx);
+  dx_old = dx(idx);
+  while (! isempty (todo))
+    step = -F (x(todo), a(todo), b(todo), y(todo)) ./ ...
+           JF (x(todo), a(todo), b(todo), Bln(todo));
+    x_old = x(todo);
+    x(todo) += step;
+    dx = x(todo) - x_old;
+    idx = (abs (dx) < abs (dx_old));  # Converging if dx is getting smaller
+    todo = todo(idx);
+    dx_old = dx(idx);
   endwhile
-  x += res;
+
 endfunction
 
 
@@ -263,23 +270,38 @@ endfunction
 %!assert (class (betaincinv (0.5, single (1), 1)), "single")
 %!assert (class (betaincinv (0.5, 1, single (1))), "single")
 
-%!assert <*60528> (betaincinv (1e-6, 1, 3), 3.3333344444450657e-07, 5*eps)
-%!assert <*60528> (betaincinv (1-1e-6, 3, 1), 0.999999666666556, 5*eps)
+## Extreme values for y, a, b that really test the algorithm
+%!assert (betaincinv ([0, 1], 1, 3), [0, 1])
+%!assert <*60528> (betaincinv (1e-6, 1, 3), 3.3333344444450617e-7, 2*eps)
+%!assert <*60528> (betaincinv (1-1e-6, 3, 1), 0.9999996666665555, 2*eps)
+%!assert (betainc (betaincinv (0.9, 1e-3, 1), 1e-3, 1), 0.9, 2*eps)
+%!assert (betainc (betaincinv (.01, 1, 1e-3), 1, 1e-3), .01, 6*eps)
+%!assert (betainc (betaincinv (0.5, 100, 1), 100, 1), 0.5, 8*eps)
+%!assert (betainc (betaincinv (0.5, 1, 100), 1, 100), 0.5, 22*eps)
+%!assert (betaincinv ([0, 1], 1, 3, "upper"), [1, 0])
+%!assert <*60528> (betaincinv (1e-6, 1, 3, "upper"), 0.99, 2*eps)
+%!assert <*60528> (betaincinv (1-1e-6, 3, 1,"upper"), .01, 250*eps)
+%!assert (betainc (betaincinv (0.1, 1e-3, 1, "upper"), 1e-3, 1, "upper"),
+%!        0.1, 2*eps)
+%!assert (betainc (betaincinv (.99, 1, 1e-3, "upper"), 1, 1e-3, "upper"),
+%!        .99, 6*eps)
+%!assert (betainc (betaincinv (0.5, 100, 1, "upper"), 100, 1, "upper"),
+%!        0.5, 8*eps)
+%!assert (betainc (betaincinv (0.5, 1, 100, "upper"), 1, 100, "upper"),
+%!        0.5, 22*eps)
 
 ## Test input validation
-%!error betaincinv ()
-%!error betaincinv (1)
-%!error betaincinv (1,2)
+%!error <Invalid call> betaincinv ()
+%!error <Invalid call> betaincinv (1)
+%!error <Invalid call> betaincinv (1,2)
 %!error <must be of common size or scalars>
 %! betaincinv (ones (2,2), ones (1,2), 1);
-
 %!error <must be .* floating point> betaincinv ('a', 1, 2)
 %!error <must be .* floating point> betaincinv (0, int8 (1), 1)
 %!error <must be .* floating point> betaincinv (0, 1, true)
 %!error <must be real> betaincinv (0.5i, 1, 2)
 %!error <must be real> betaincinv (0, 1i, 1)
 %!error <must be real> betaincinv (0, 1, 1i)
-
 %!error <Y must be in the range \[0, 1\]> betaincinv (-0.1,1,1)
 %!error <Y must be in the range \[0, 1\]> betaincinv (1.1,1,1)
 %!error <Y must be in the range \[0, 1\]>

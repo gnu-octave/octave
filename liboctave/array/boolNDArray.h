@@ -60,33 +60,34 @@ public:
 
   // unary operations
 
-  boolNDArray operator ! (void) const;
+  OCTAVE_API boolNDArray operator ! (void) const;
 
-  boolNDArray& invert (void);
+  OCTAVE_API boolNDArray& invert (void);
 
   bool any_element_is_nan (void) const { return false; }
 
   // FIXME: this is not quite the right thing.
 
-  boolNDArray all (int dim = -1) const;
-  boolNDArray any (int dim = -1) const;
+  OCTAVE_API boolNDArray all (int dim = -1) const;
+  OCTAVE_API boolNDArray any (int dim = -1) const;
 
-  boolNDArray concat (const boolNDArray& rb,
-                      const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API boolNDArray
+  concat (const boolNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
-  boolNDArray& insert (const boolNDArray& a, octave_idx_type r,
-                       octave_idx_type c);
-  boolNDArray& insert (const boolNDArray& a,
-                       const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API boolNDArray&
+  insert (const boolNDArray& a, octave_idx_type r, octave_idx_type c);
+  OCTAVE_API boolNDArray&
+  insert (const boolNDArray& a, const Array<octave_idx_type>& ra_idx);
 
   boolNDArray squeeze (void) const { return Array<bool>::squeeze (); }
 
-  static void increment_index (Array<octave_idx_type>& ra_idx,
-                               const dim_vector& dimensions,
-                               int start_dimension = 0);
+  static OCTAVE_API void
+  increment_index (Array<octave_idx_type>& ra_idx,
+                   const dim_vector& dimensions, int start_dimension = 0);
 
-  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                                        const dim_vector& dimensions);
+  static OCTAVE_API octave_idx_type
+  compute_index (Array<octave_idx_type>& ra_idx,
+                 const dim_vector& dimensions);
 
   // i/o
 
@@ -96,9 +97,9 @@ public:
   //  bool all_elements_are_real (void) const;
   //  bool all_integers (double& max_val, double& min_val) const;
 
-  boolNDArray diag (octave_idx_type k = 0) const;
+  OCTAVE_API boolNDArray diag (octave_idx_type k = 0) const;
 
-  boolNDArray diag (octave_idx_type m, octave_idx_type n) const;
+  OCTAVE_API boolNDArray diag (octave_idx_type m, octave_idx_type n) const;
 };
 
 NDND_BOOL_OP_DECLS (boolNDArray, boolNDArray, OCTAVE_API)

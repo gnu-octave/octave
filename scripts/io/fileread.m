@@ -31,7 +31,7 @@
 
 function str = fileread (filename)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -64,6 +64,5 @@ endfunction
 %! assert (str, [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);
 
 ## Test input validation
-%!error fileread ()
-%!error fileread (1, 2)
+%!error <Invalid call> fileread ()
 %!error <FILENAME argument must be a string> fileread (1)

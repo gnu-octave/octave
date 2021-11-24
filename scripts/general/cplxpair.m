@@ -59,7 +59,7 @@
 
 function y = cplxpair (z, tol, dim)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -153,9 +153,9 @@ endfunction
 
 %!shared z,y
 %! z = exp (2i*pi*[4; 3; 5; 2; 6; 1; 0]/7);
-%! z(2) = conj(z(1));
-%! z(4) = conj(z(3));
-%! z(6) = conj(z(5));
+%! z(2) = conj (z(1));
+%! z(4) = conj (z(3));
+%! z(6) = conj (z(5));
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair (z(randperm (7))), z)
 %!assert (cplxpair (z(randperm (7))), z)
@@ -164,10 +164,11 @@ endfunction
 %!assert (cplxpair ([z(randperm (7)).'; z(randperm (7)).'],[],2), [z.';z.'])
 %! y = [ -1-1i; -1+1i;-3; -2; 1; 2; 3];
 %!assert (cplxpair ([z(randperm (7)), y(randperm (7))]), [z,y])
-%!assert (cplxpair ([z(randperm (7)), y(randperm (7)),z(randperm (7))]), [z,y,z])
+%!assert (cplxpair ([z(randperm (7)), y(randperm (7)),z(randperm (7))]),
+%!        [z,y,z])
 
 ## Test tolerance
-%!assert (cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j]), ...
+%!assert (cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j]),
 %!        [(2000 - 4j); (2000 + 4j)], 100*eps(200))
 %!error <could not pair>
 %! cplxpair ([2000 * (1+eps) + 4j; 2000 * (1-eps) - 4j], 0);
@@ -175,8 +176,7 @@ endfunction
 %! cplxpair ([2e6 + j; 2e6 - j; 1e-9 * (1 + j); 1e-9 * (1 - 2j)]);
 
 ## Test input validation
-%!error cplxpair ()
-%!error cplxpair (1,2,3,4)
+%!error <Invalid call> cplxpair ()
 %!error <cplxpair: TOL must be .* scalar number> cplxpair (1, ones (2,2))
 %!error <cplxpair: TOL must be .* in the range 0 <= TOL < 1> cplxpair (1, -1)
 %!error <cplxpair: TOL must be .* in the range 0 <= TOL < 1> cplxpair (1, -1)

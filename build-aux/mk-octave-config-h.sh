@@ -66,39 +66,35 @@ cat << EOF
 //
 ////////////////////////////////////////////////////////////////////////
 
-/*
+// All Octave source files should begin with
+//
+//   #if defined (HAVE_CONFIG_H)
+//   #  include "config.h"
+//   #endif
+//
+// All public Octave header files should have the form
+//
+//   #if ! defined (INCLUSION_GUARD_SYMBOL)
+//   #define INCLUSION_GUARD_SYMBOL 1
+//
+//   #include "octave-config.h"
+//
+//   ... Contents of header file ...
+//
+//   #endif
 
-All Octave source files should begin with
-
-  #if defined (HAVE_CONFIG_H)
-  #  include "config.h"
-  #endif
-
-All public Octave header files should have the form
-
-  #if ! defined (INCLUSION_GUARD_SYMBOL)
-  #define INCLUSION_GUARD_SYMBOL 1
-
-  #include "octave-config.h"
-
-  // Contents of header file.
-
-  #endif
-
-In Octave source files, INCLUSION_GUARD_SYMBOL should have the form
-
-  octave_NAME_h
-
-with NAME formed from the header file name with '-' replaced by '_'.
-
-It is safe to include octave-config.h unconditionally since it will
-expand to an empty file if it is included after Octave's
-autoconf-generated config.h file.
-
-Users of Octave's libraries should not need to include octave-config.h
-since all of Octave's header files already include it.
-
-*/
+// In Octave source files, INCLUSION_GUARD_SYMBOL should have the form
+//
+//   octave_NAME_h
+//
+// with NAME formed from the header file name with '-' replaced by '_'.
+//
+// It is safe to include octave-config.h unconditionally since it will
+// expand to an empty file if it is included after Octave's
+// autoconf-generated config.h file.
+//
+// Users of Octave's libraries should not need to include octave-config.h
+// since all of Octave's header files already include it.
 
 #if ! defined (octave_octave_config_h)
 #define octave_octave_config_h 1
@@ -110,6 +106,9 @@ since all of Octave's header files already include it.
 #  else
 #    include <inttypes.h>
 #  endif
+
+#  define OCTAVE_NAMESPACE_BEGIN namespace octave {
+#  define OCTAVE_NAMESPACE_END }
 
 #  if defined (__GNUC__)
 #    if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
@@ -171,7 +170,7 @@ since all of Octave's header files already include it.
 #    endif
 #  endif
 
-#  define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
+#  define OCTAVE_PROVIDE_DEPRECATED_SYMBOLS 1
 
 #  if defined (__cplusplus)
 template <typename T>
@@ -182,17 +181,61 @@ octave_unused_parameter (const T&)
 #    define octave_unused_parameter(param) (void) param;
 #  endif
 
-#  if defined (_MSC_VER)
-#    define OCTAVE_EXPORT __declspec(dllexport)
-#    define OCTAVE_IMPORT __declspec(dllimport)
+#  if defined (OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS)
+#    if defined (_WIN32) || defined (__CYGWIN__)
+#      if defined (__GNUC__)
+         /* GCC */
+#        define OCTAVE_EXPORT __attribute__ ((dllexport))
+#        define OCTAVE_IMPORT __attribute__ ((dllimport))
+#      else
+         /* MSVC */
+#        define OCTAVE_EXPORT __declspec(dllexport)
+#        define OCTAVE_IMPORT __declspec(dllimport)
+#      endif
+#    else
+       /* All other platforms. */
+#      define OCTAVE_EXPORT __attribute__ ((visibility ("default")))
+#      define OCTAVE_IMPORT
+#    endif
 #  else
-     /* All other compilers, at least for now. */
-#    define OCTAVE_EXPORT
-#    define OCTAVE_IMPORT
+#      define OCTAVE_EXPORT
+#      define OCTAVE_IMPORT
 #  endif
 
+/* API macro for liboctave */
+#if defined (OCTAVE_DLL)
+#  define OCTAVE_API OCTAVE_EXPORT
+#else
 #  define OCTAVE_API OCTAVE_IMPORT
+#endif
+
+/* API macro for libinterp */
+#if defined (OCTINTERP_DLL)
+#  define OCTINTERP_API OCTAVE_EXPORT
+#else
 #  define OCTINTERP_API OCTAVE_IMPORT
+#endif
+
+/* API macro for the Array class in liboctave and liboctinterp */
+#if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
+#  define OCTARRAY_API OCTAVE_EXPORT
+#else
+#  define OCTARRAY_API OCTAVE_IMPORT
+#endif
+
+/* API macro for libinterp/graphics */
+#if defined (OCTGRAPHICS_DLL)
+#  define OCTGRAPHICS_API OCTAVE_EXPORT
+#else
+#  define OCTGRAPHICS_API OCTAVE_IMPORT
+#endif
+
+/* API macro for libgui */
+#if defined (OCTGUI_DLL)
+#  define OCTGUI_API OCTAVE_EXPORT
+#else
+#  define OCTGUI_API OCTAVE_IMPORT
+#endif
 EOF
 
 octave_idx_type="`$SED -n 's/#define OCTAVE_IDX_TYPE \([_a-zA-Z][_a-zA-Z0-9]*\)/\1/p' $config_h_file`"
@@ -239,6 +282,7 @@ $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p'
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_F77_INT_TYPE.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_IDX_TYPE.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_INT.*$\)/#  \1/p' $config_h_file
 
 cat << EOF
 

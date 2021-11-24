@@ -48,9 +48,7 @@
 
 function state = hidden (mode = "toggle")
 
-  if (nargin > 2)
-    print_usage ();
-  elseif (nargin == 1)
+  if (nargin == 1)
     if (! ischar (mode))
       error ("hidden: MODE must be a string");
     elseif (! any (strcmpi (mode, {"on", "off"})))

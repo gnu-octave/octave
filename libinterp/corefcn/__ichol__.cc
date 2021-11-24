@@ -35,6 +35,8 @@
 
 #include "builtin-defun-decls.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Secondary functions for complex and real case used in ichol algorithms.
 Complex ichol_mult_complex (Complex a, Complex b)
 {
@@ -435,7 +437,7 @@ Undocumented internal function.
       SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
-               (sm_l, L, xcolnorms (sm_l, 1).fortran_vec (), droptol, michol);
+        (sm_l, L, xcolnorms (sm_l, 1).fortran_vec (), droptol, michol);
 
       return ovl (L);
     }
@@ -466,3 +468,5 @@ Undocumented internal function.
 %! L = ichol (A, opts);
 %! assert (norm (A - L*L.'), 0, 2*eps);
 */
+
+OCTAVE_NAMESPACE_END

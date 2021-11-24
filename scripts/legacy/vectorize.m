@@ -48,7 +48,7 @@ function retval = vectorize (fun)
              "vectorize is unreliable; its use is strongly discouraged\n");
   endif
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -68,7 +68,9 @@ function retval = vectorize (fun)
   else
     error ("vectorize: FUN must be a string or anonymous function handle");
   endif
+
 endfunction
+
 
 %!assert (vectorize ("x.^2 + 1"), "x.^2 + 1")
 %!test
@@ -82,16 +84,12 @@ endfunction
 %! finfo = functions (vectorize (fh));
 %! assert (finfo.function, "@(x, y, z) 1e-3 .* y + 2e4 .* z");
 
-%!assert (vectorize ("2**x^5"), "2.**x.^5")
-## Note that ** is transformed to ^ by the code that prints the parse
-## tree.  I don't care too much about that...
+%!assert (vectorize ("2^x^5"), "2.^x.^5")
 %!test
-%! fh = @(x) 2**x^5;
+%! fh = @(x) 2^x^5;
 %! finfo = functions (vectorize (fh));
 %! assert (finfo.function, "@(x) 2 .^ x .^ 5");
 
 ## Test input validation
-%!error vectorize ()
-%!error vectorize (1, 2)
+%!error <Invalid call> vectorize ()
 %!error <FUN must be a string or anonymous function handle> vectorize (1)
-

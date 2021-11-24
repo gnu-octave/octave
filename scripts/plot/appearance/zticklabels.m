@@ -80,7 +80,7 @@ function retval = zticklabels (varargin)
       arg = varargin{2};
 
     otherwise
-      print_usage;
+      print_usage ();
 
   endswitch
 
@@ -132,7 +132,7 @@ function retval = zticklabels (varargin)
     endswitch
 
   else
-    print_usage;
+    print_usage ();
   endif
 
 endfunction
@@ -142,7 +142,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   set (gca, "zticklabelmode", "auto");
-%!   hax = gca;
+%!   hax = gca ();
 %!   vals1 = zticklabels;
 %!   assert (zticklabels (hax), vals1);
 %!   mode1 = zticklabels ("mode");
@@ -164,7 +164,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hax = gca;
+%!   hax = gca ();
 %!   fail ("zticklabels (-1, {})", "HAX must be a handle to an axes");
 %!   fail ("tmp = zticklabels (hax, {'A','B'})", "too many output arguments");
 %!   fail ("tmp = zticklabels (hax, [0, 1])", "too many output arguments");

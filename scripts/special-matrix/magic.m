@@ -38,7 +38,7 @@
 
 function A = magic (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -105,6 +105,5 @@ endfunction
 %!assert (magic (1.5), 1)
 
 ## Test input validation
-%!error magic ()
-%!error magic (1, 2)
+%!error <Invalid call> magic ()
 %!error <N must be non-negative> magic (-5)

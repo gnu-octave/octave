@@ -1441,28 +1441,14 @@ QConsolePrivate::cursorRect (void)
 
 //////////////////////////////////////////////////////////////////////////////
 
-QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
-    : QTerminal (parent), d (new QConsolePrivate (this)),
+QWinTerminalImpl::QWinTerminalImpl (octave::base_qobject& oct_qobj,
+                                    QWidget* parent)
+    : QTerminal (oct_qobj, parent), d (new QConsolePrivate (this)),
       allowTripleClick (false)
 {
     installEventFilter (this);
 
-    connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
-           parent, SLOT (set_global_shortcuts (bool)));
-    connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
-             this, SLOT (set_global_shortcuts (bool)));
-
-    connect (this, SIGNAL (set_screen_size_signal (int, int)),
-             parent, SLOT (set_screen_size (int, int)));
-
     setAcceptDrops (true);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-QWinTerminalImpl::QWinTerminalImpl (const QString& cmd, QWidget* parent)
-    : QTerminal (parent), d (new QConsolePrivate (this, cmd))
-{
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1652,8 +1638,6 @@ void QWinTerminalImpl::updateSelection (void)
 
 void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 {
-  emit set_global_shortcuts_signal (false);   // disable some shortcuts
-
   setBlinkingCursorState (true);
 
   QWidget::focusInEvent (event);
@@ -1661,8 +1645,6 @@ void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 
 void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
 {
-  emit set_global_shortcuts_signal (true);    // re-enable shortcuts
-
   // Force the cursor to be redrawn.
   d->m_cursorBlinking = true;
 
@@ -1814,7 +1796,15 @@ void QWinTerminalImpl::pasteClipboard (void)
   QString text = QApplication::clipboard()->text (QClipboard::Clipboard);
 
   if (! text.isEmpty ())
+    {
+      if (text.contains ("\t"))
+        {
+          qWarning ("Tabs replaced with spaces in pasted text before processing");
+          text.replace ("\t", "    ");
+        }
+
     sendText (text);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

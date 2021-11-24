@@ -23,6 +23,9 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+#  define OCTAVE_NAMESPACE_BEGIN namespace octave {
+#  define OCTAVE_NAMESPACE_END }
+
 /* The C++ standard is evolving to allow attribute hints in a
    compiler-independent manner.  In C++ 2011 support for noreturn was
    added.  In C++ 2014 support for deprecated was added.  The Octave
@@ -91,15 +94,15 @@
 #  endif
 #endif
 
-/* This macro could have a better name...  It is intended to be used
-   only to enable inline functions or typedefs that provide access to
-   symbols that have been moved to the octave namespace.  It may be
-   temporarily useful to define this macro when moving a symbol to the
-   octave namespace but it should not be defined when building
-   released versions of Octave, as building those should not require
-   deprecated symbols.  It is defined in octave-config.h, so users of
-   Octave may continue to access symbols using the deprecated names.  */
-/* #undef OCTAVE_USE_DEPRECATED_FUNCTIONS */
+/* This macro is intended to be used only to enable inline functions or
+   typedefs that provide access to symbols that have been moved to the
+   octave namespace.  It may be temporarily useful to define this macro
+   when moving a symbol to the octave namespace but it should not be
+   defined when building released versions of Octave, as building those
+   should not require deprecated symbols.  It is defined in
+   octave-config.h, so users of Octave may continue to access symbols
+   using the deprecated names.  */
+/* #undef OCTAVE_PROVIDE_DEPRECATED_SYMBOLS */
 
 #if defined (__cplusplus)
 template <typename T>
@@ -152,6 +155,16 @@ typedef unsigned long ino_t;
 #  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
 #endif
 
+#if defined (__MINGW32__)
+  /* We need to include this header or __MSVCRT_VERSION__ might not be defined
+     to the correct value */
+#  include <_mingw.h>
+#endif
+/* assume that Windows will support UTF-8 locales when using UCRT */
+#if defined (__MSVCRT_VERSION__) && __MSVCRT_VERSION__ == 0x0E00
+#  define OCTAVE_HAVE_WINDOWS_UTF8_LOCALE 1
+#endif
+
 /* sigsetjmp is a macro, not a function. */
 #if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
 #  define OCTAVE_HAVE_SIG_JUMP 1
@@ -170,14 +183,23 @@ typedef unsigned long ino_t;
 
 /* oct-dlldefs.h */
 
-/* FIXME: GCC supports visibility attributes as well, even using the
-   same __declspec declaration if desired.  The build system should be
-   extended to support GCC and visibility attributes.  */
-#if defined (_MSC_VER)
-#  define OCTAVE_EXPORT __declspec(dllexport)
-#  define OCTAVE_IMPORT __declspec(dllimport)
+#if defined (OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS)
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    if defined (__GNUC__)
+       /* GCC */
+#      define OCTAVE_EXPORT __attribute__ ((dllexport))
+#      define OCTAVE_IMPORT __attribute__ ((dllimport))
+#    else
+       /* MSVC */
+#      define OCTAVE_EXPORT __declspec(dllexport)
+#      define OCTAVE_IMPORT __declspec(dllimport)
+#    endif
+#  else
+     /* All other platforms. */
+#    define OCTAVE_EXPORT __attribute__ ((visibility ("default")))
+#    define OCTAVE_IMPORT
+#  endif
 #else
-   /* All other compilers, at least for now. */
 #  define OCTAVE_EXPORT
 #  define OCTAVE_IMPORT
 #endif
@@ -189,11 +211,18 @@ typedef unsigned long ino_t;
 #  define OCTAVE_API OCTAVE_IMPORT
 #endif
 
-/* API macro for libinterp */
+/* API macro for liboctinterp */
 #if defined (OCTINTERP_DLL)
 #  define OCTINTERP_API OCTAVE_EXPORT
 #else
 #  define OCTINTERP_API OCTAVE_IMPORT
+#endif
+
+/* API macro for the Array class in liboctave and liboctinterp */
+#if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
+#  define OCTARRAY_API OCTAVE_EXPORT
+#else
+#  define OCTARRAY_API OCTAVE_IMPORT
 #endif
 
 /* API macro for libinterp/graphics */
@@ -242,11 +271,20 @@ typedef OCTAVE_IDX_TYPE octave_idx_type;
 
 typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 
+#if OCTAVE_SIZEOF_F77_INT_TYPE == 8
+#  define OCTAVE_F77_INT_TYPE_FORMAT PRId64
+#else
+#  define OCTAVE_F77_INT_TYPE_FORMAT PRId32
+#endif
+
 #define OCTAVE_HAVE_F77_INT_TYPE 1
 
 #if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
 #  define OCTAVE_THREAD_LOCAL
 #endif
+
+/* Make all .oct file interpreter functions and methods static.  */
+#define OCTAVE_USE_STATIC_DEFUN
 
 /* Tag indicating Octave's autoconf-generated config.h has been
    included.  This symbol is provided because autoconf-generated

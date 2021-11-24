@@ -31,7 +31,7 @@
 
 function y = acsch (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -45,5 +45,4 @@ endfunction
 %! x = [-i, i];
 %! assert (acsch (x), v, sqrt (eps));
 
-%!error acsch ()
-%!error acsch (1, 2)
+%!error <Invalid call> acsch ()

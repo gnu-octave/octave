@@ -39,8 +39,8 @@
 #include "pathsearch.h"
 #include "str-vec.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class
   OCTINTERP_API
   load_path
@@ -102,7 +102,7 @@ namespace octave
 
     bool find_package (const std::string& package_name) const
     {
-      return (package_map.find (package_name) != package_map.end ());
+      return (m_package_map.find (package_name) != m_package_map.end ());
     }
 
     std::list<std::string>
@@ -191,6 +191,8 @@ namespace octave
       remove_hook = f;
     }
 
+    void read_dir_config (const std::string& dir) const;
+
     void execute_pkg_add (const std::string& dir);
     void execute_pkg_del (const std::string& dir);
 
@@ -207,7 +209,7 @@ namespace octave
       return m_command_line_path;
     }
 
-    std::string system_path (void) const { return sys_path; }
+    std::string system_path (void) const { return s_sys_path; }
 
     static const int M_FILE = 1;
     static const int OCT_FILE = 2;
@@ -227,6 +229,7 @@ namespace octave
 
       struct class_info
       {
+      public:
         class_info (void) : method_file_map (), private_file_map () { }
 
         class_info (const class_info& ci)
@@ -391,14 +394,14 @@ namespace octave
     public:
 
       package_info (const std::string& package_name = "")
-        : m_package_name (package_name), dir_list (), fcn_map (),
-          private_fcn_map (),
-          method_map ()
+        : m_package_name (package_name), m_dir_list (), m_fcn_map (),
+          m_private_fcn_map (),
+          m_method_map ()
       { }
 
       package_info (const package_info& l)
-        : m_package_name (l.m_package_name), dir_list (l.dir_list),
-          private_fcn_map (l.private_fcn_map), method_map (l.method_map)
+        : m_package_name (l.m_package_name), m_dir_list (l.m_dir_list),
+          m_private_fcn_map (l.m_private_fcn_map), m_method_map (l.m_method_map)
       { }
 
       ~package_info (void) = default;
@@ -408,10 +411,10 @@ namespace octave
         if (&l != this)
           {
             m_package_name = l.m_package_name;
-            dir_list = l.dir_list;
-            fcn_map = l.fcn_map;
-            private_fcn_map = l.private_fcn_map;
-            method_map = l.method_map;
+            m_dir_list = l.m_dir_list;
+            m_fcn_map = l.m_fcn_map;
+            m_private_fcn_map = l.m_private_fcn_map;
+            m_method_map = l.m_method_map;
           }
 
         return *this;
@@ -420,9 +423,9 @@ namespace octave
       void add (const dir_info& di, bool at_end, bool updating)
       {
         if (at_end)
-          dir_list.push_back (di.dir_name);
+          m_dir_list.push_back (di.dir_name);
         else
-          dir_list.push_front (di.dir_name);
+          m_dir_list.push_front (di.dir_name);
 
         add_to_fcn_map (di, at_end, updating);
 
@@ -437,13 +440,13 @@ namespace octave
 
       void clear (void)
       {
-        dir_list.clear ();
+        m_dir_list.clear ();
 
-        fcn_map.clear ();
+        m_fcn_map.clear ();
 
-        private_fcn_map.clear ();
+        m_private_fcn_map.clear ();
 
-        method_map.clear ();
+        m_method_map.clear ();
       }
 
       void display (std::ostream& out) const;
@@ -497,13 +500,13 @@ namespace octave
 
       std::string m_package_name;
 
-      std::list<std::string> dir_list;
+      std::list<std::string> m_dir_list;
 
-      fcn_map_type fcn_map;
+      fcn_map_type m_fcn_map;
 
-      private_fcn_map_type private_fcn_map;
+      private_fcn_map_type m_private_fcn_map;
 
-      method_map_type method_map;
+      method_map_type m_method_map;
     };
 
     // <PACKAGE_NAME, PACKAGE_INFO>
@@ -511,22 +514,6 @@ namespace octave
 
     typedef package_map_type::const_iterator const_package_map_iterator;
     typedef package_map_type::iterator package_map_iterator;
-
-    interpreter& m_interpreter;
-
-    mutable package_map_type package_map;
-
-    mutable package_info top_level_package;
-
-    mutable dir_info_list_type dir_info_list;
-
-    mutable std::set<std::string> init_dirs;
-
-    std::string m_command_line_path;
-
-    static std::string sys_path;
-
-    static abs_dir_cache_type abs_dir_cache;
 
     std::function<void (const std::string&)> add_hook;
 
@@ -557,25 +544,45 @@ namespace octave
     {
       if (! name.empty () && is_package (name))
         {
-          package_map_iterator l = package_map.find (name);
+          package_map_iterator l = m_package_map.find (name);
 
-          if (l == package_map.end ())
-            l = package_map.insert (package_map.end (),
-                                    package_map_type::value_type (name, package_info (name)));
+          if (l == m_package_map.end ())
+            l = m_package_map.insert (m_package_map.end (),
+                                      package_map_type::value_type (name, package_info (name)));
 
           return l->second;
         }
 
-      return top_level_package;
+      return m_top_level_package;
     }
 
     string_vector get_file_list (const dir_info::fcn_file_map_type& lst) const;
 
     friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);
+
+    //--------
+
+    static std::string s_sys_path;
+
+    static abs_dir_cache_type s_abs_dir_cache;
+
+    interpreter& m_interpreter;
+
+    mutable package_map_type m_package_map;
+
+    mutable package_info m_top_level_package;
+
+    mutable dir_info_list_type m_dir_info_list;
+
+    mutable std::set<std::string> m_init_dirs;
+
+    std::string m_command_line_path;
+
   };
 
   extern std::string
   genpath (const std::string& dir, const string_vector& skip = "private");
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

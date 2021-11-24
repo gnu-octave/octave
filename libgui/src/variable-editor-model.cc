@@ -954,14 +954,14 @@ namespace octave
   {
     update_description ();
 
-    connect (this, SIGNAL (user_error_signal (const QString&, const QString&)),
-             this, SLOT (user_error (const QString&, const QString&)));
+    connect (this, &variable_editor_model::user_error_signal,
+             this, &variable_editor_model::user_error);
 
-    connect (this, SIGNAL (update_data_signal (const octave_value&)),
-             this, SLOT (update_data (const octave_value&)));
+    connect (this, &variable_editor_model::update_data_signal,
+             this, &variable_editor_model::update_data);
 
-    connect (this, SIGNAL (data_error_signal (const QString&)),
-             this, SLOT (data_error (const QString&)));
+    connect (this, &variable_editor_model::data_error_signal,
+             this, &variable_editor_model::data_error);
 
     if (is_editable ())
       {
@@ -987,12 +987,7 @@ namespace octave
   variable_editor_model::setData (const QModelIndex& idx,
                                   const QVariant& v_user_input, int role)
   {
-#if defined (QVARIANT_CANCONVERT_ACCEPTS_QMETATYPE_TYPE)
-    QMetaType::Type string_type = QMetaType::QString;
-#else
-    QVariant::Type string_type = QVariant::String;
-#endif
-    if (role != Qt::EditRole || ! v_user_input.canConvert (string_type)
+    if (role != Qt::EditRole || ! v_user_input.canConvert (QMetaType::QString)
         || ! idx.isValid ())
       return false;
 
@@ -1029,7 +1024,7 @@ namespace octave
     std::string expr = os.str ();
 
     emit interpreter_event
-      ([this, nm, expr, idx] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1178,7 +1173,7 @@ namespace octave
     std::string expr = expr_arg.toStdString ();
 
     emit interpreter_event
-      ([this, expr] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1250,7 +1245,7 @@ namespace octave
   variable_editor_model::update_data_cache (void)
   {
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER_THREAD
 

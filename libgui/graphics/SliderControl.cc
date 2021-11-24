@@ -40,7 +40,7 @@
 
 #define RANGE_INT_MAX 1000000
 
-namespace QtHandles
+namespace octave
 {
 
   SliderControl*
@@ -90,7 +90,8 @@ namespace QtHandles
                                                * RANGE_INT_MAX));
       }
 
-    connect (slider, SIGNAL (valueChanged (int)), SLOT (valueChanged (int)));
+    connect (slider, &QAbstractSlider::valueChanged,
+             this, &SliderControl::valueChanged);
   }
 
   SliderControl::~SliderControl (void)

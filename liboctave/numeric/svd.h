@@ -36,6 +36,7 @@ namespace octave
   {
     template <typename T>
     class
+    OCTAVE_API
     svd
     {
     public:
@@ -52,19 +53,20 @@ namespace octave
       enum class Driver
       {
         GESVD,
-        GESDD
+        GESDD,
+        GEJSV
       };
 
       svd (void)
-        : m_type (), m_driver (), left_sm (), sigma (), right_sm ()
+        : m_type (), m_driver (), m_left_sm (), m_sigma (), m_right_sm ()
       { }
 
       svd (const T& a, svd::Type type = svd::Type::std,
            svd::Driver driver = svd::Driver::GESVD);
 
       svd (const svd& a)
-        : m_type (a.m_type), m_driver (a.m_driver), left_sm (a.left_sm),
-          sigma (a.sigma), right_sm (a.right_sm)
+        : m_type (a.m_type), m_driver (a.m_driver), m_left_sm (a.m_left_sm),
+          m_sigma (a.m_sigma), m_right_sm (a.m_right_sm)
       { }
 
       svd& operator = (const svd& a)
@@ -72,9 +74,9 @@ namespace octave
         if (this != &a)
           {
             m_type = a.m_type;
-            left_sm = a.left_sm;
-            sigma = a.sigma;
-            right_sm = a.right_sm;
+            m_left_sm = a.m_left_sm;
+            m_sigma = a.m_sigma;
+            m_right_sm = a.m_right_sm;
             m_driver = a.m_driver;
           }
 
@@ -85,7 +87,7 @@ namespace octave
 
       T left_singular_matrix (void) const;
 
-      DM_T singular_values (void) const { return sigma; }
+      DM_T singular_values (void) const { return m_sigma; }
 
       T right_singular_matrix (void) const;
 
@@ -97,9 +99,9 @@ namespace octave
       svd::Type m_type;
       svd::Driver m_driver;
 
-      T left_sm;
-      DM_T sigma;
-      T right_sm;
+      T m_left_sm;
+      DM_T m_sigma;
+      T m_right_sm;
 
       void gesvd (char& jobu, char& jobv, octave_f77_int_type m,
                   octave_f77_int_type n, P *tmp_data, octave_f77_int_type m1,
@@ -111,6 +113,14 @@ namespace octave
                   P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
                   P *vt, octave_f77_int_type nrow_vt1, std::vector<P>& work,
                   octave_f77_int_type& lwork, octave_f77_int_type *iwork,
+                  octave_f77_int_type& info);
+
+      void gejsv (char& joba, char& jobu, char& jobv, char& jobr, char& jobt,
+                  char& jobp, octave_f77_int_type m, octave_f77_int_type n,
+                  P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
+                  P *v, octave_f77_int_type nrow_v1, std::vector<P>& work,
+                  octave_f77_int_type& lwork,
+                  std::vector<octave_f77_int_type>& iwork,
                   octave_f77_int_type& info);
     };
   }

@@ -31,7 +31,7 @@
 
 function y = cscd (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -44,5 +44,4 @@ endfunction
 %!assert (cscd ([0, 180, 360]) == Inf)
 %!assert (cscd ([90, 270]) != Inf)
 
-%!error cscd ()
-%!error cscd (1, 2)
+%!error <Invalid call> cscd ()

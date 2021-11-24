@@ -41,7 +41,7 @@ namespace octave
   namespace math
   {
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     hess<Matrix>::init (const Matrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -59,8 +59,8 @@ namespace octave
       F77_INT ilo;
       F77_INT ihi;
 
-      hess_mat = a;
-      double *h = hess_mat.fortran_vec ();
+      m_hess_mat = a;
+      double *h = m_hess_mat.fortran_vec ();
 
       Array<double> scale (dim_vector (n, 1));
       double *pscale = scale.fortran_vec ();
@@ -78,8 +78,8 @@ namespace octave
       F77_XFCN (dgehrd, DGEHRD, (n, ilo, ihi, h, n, ptau, pwork,
                                  lwork, info));
 
-      unitary_hess_mat = hess_mat;
-      double *z = unitary_hess_mat.fortran_vec ();
+      m_unitary_hess_mat = m_hess_mat;
+      double *z = m_unitary_hess_mat.fortran_vec ();
 
       F77_XFCN (dorghr, DORGHR, (n, ilo, ihi, z, n, ptau, pwork,
                                  lwork, info));
@@ -98,13 +98,13 @@ namespace octave
       if (n > 2)
         for (F77_INT j = 0; j < a_nc; j++)
           for (F77_INT i = j+2; i < a_nr; i++)
-            hess_mat.elem (i, j) = 0;
+            m_hess_mat.elem (i, j) = 0;
 
       return info;
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     hess<FloatMatrix>::init (const FloatMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -122,8 +122,8 @@ namespace octave
       F77_INT ilo;
       F77_INT ihi;
 
-      hess_mat = a;
-      float *h = hess_mat.fortran_vec ();
+      m_hess_mat = a;
+      float *h = m_hess_mat.fortran_vec ();
 
       Array<float> scale (dim_vector (n, 1));
       float *pscale = scale.fortran_vec ();
@@ -141,8 +141,8 @@ namespace octave
       F77_XFCN (sgehrd, SGEHRD, (n, ilo, ihi, h, n, ptau, pwork,
                                  lwork, info));
 
-      unitary_hess_mat = hess_mat;
-      float *z = unitary_hess_mat.fortran_vec ();
+      m_unitary_hess_mat = m_hess_mat;
+      float *z = m_unitary_hess_mat.fortran_vec ();
 
       F77_XFCN (sorghr, SORGHR, (n, ilo, ihi, z, n, ptau, pwork,
                                  lwork, info));
@@ -161,13 +161,13 @@ namespace octave
       if (n > 2)
         for (F77_INT j = 0; j < a_nc; j++)
           for (F77_INT i = j+2; i < a_nr; i++)
-            hess_mat.elem (i, j) = 0;
+            m_hess_mat.elem (i, j) = 0;
 
       return info;
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     hess<ComplexMatrix>::init (const ComplexMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -185,8 +185,8 @@ namespace octave
       F77_INT ilo;
       F77_INT ihi;
 
-      hess_mat = a;
-      Complex *h = hess_mat.fortran_vec ();
+      m_hess_mat = a;
+      Complex *h = m_hess_mat.fortran_vec ();
 
       Array<double> scale (dim_vector (n, 1));
       double *pscale = scale.fortran_vec ();
@@ -204,8 +204,8 @@ namespace octave
       F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (h), n,
                                  F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork), lwork, info));
 
-      unitary_hess_mat = hess_mat;
-      Complex *z = unitary_hess_mat.fortran_vec ();
+      m_unitary_hess_mat = m_hess_mat;
+      Complex *z = m_unitary_hess_mat.fortran_vec ();
 
       F77_XFCN (zunghr, ZUNGHR, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (z), n,
                                  F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork),
@@ -224,13 +224,13 @@ namespace octave
       if (n > 2)
         for (F77_INT j = 0; j < a_nc; j++)
           for (F77_INT i = j+2; i < a_nr; i++)
-            hess_mat.elem (i, j) = 0;
+            m_hess_mat.elem (i, j) = 0;
 
       return info;
     }
 
     template <>
-    octave_idx_type
+    OCTAVE_API octave_idx_type
     hess<FloatComplexMatrix>::init (const FloatComplexMatrix& a)
     {
       F77_INT a_nr = to_f77_int (a.rows ());
@@ -251,8 +251,8 @@ namespace octave
       F77_INT ilo;
       F77_INT ihi;
 
-      hess_mat = a;
-      FloatComplex *h = hess_mat.fortran_vec ();
+      m_hess_mat = a;
+      FloatComplex *h = m_hess_mat.fortran_vec ();
 
       Array<float> scale (dim_vector (n, 1));
       float *pscale = scale.fortran_vec ();
@@ -270,8 +270,8 @@ namespace octave
       F77_XFCN (cgehrd, CGEHRD, (n, ilo, ihi, F77_CMPLX_ARG (h), n,
                                  F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork), lwork, info));
 
-      unitary_hess_mat = hess_mat;
-      FloatComplex *z = unitary_hess_mat.fortran_vec ();
+      m_unitary_hess_mat = m_hess_mat;
+      FloatComplex *z = m_unitary_hess_mat.fortran_vec ();
 
       F77_XFCN (cunghr, CUNGHR, (n, ilo, ihi, F77_CMPLX_ARG (z), n,
                                  F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork),
@@ -290,7 +290,7 @@ namespace octave
       if (n > 2)
         for (F77_INT j = 0; j < a_nc; j++)
           for (F77_INT i = j+2; i < a_nr; i++)
-            hess_mat.elem (i, j) = 0;
+            m_hess_mat.elem (i, j) = 0;
 
       return info;
     }

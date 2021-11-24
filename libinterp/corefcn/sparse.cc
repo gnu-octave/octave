@@ -42,6 +42,8 @@
 #include "ov-cx-sparse.h"
 #include "ov-bool-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (issparse, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} issparse (@var{x})
@@ -101,8 +103,9 @@ maximum index in the vectors @var{i} and @var{j} as given by
 
 @strong{Note}: if multiple values are specified with the same @var{i},
 @var{j} indices, the corresponding value in @var{s} will be the sum of the
-values at the repeated location.  See @code{accumarray} for an example of
-how to produce different behavior, such as taking the minimum instead.
+values at the repeated location.  @xref{XREFaccumarray,,@code{accumarray}}, for
+an example of how to produce different behavior such as taking the minimum
+instead.
 
 If the option @qcode{"unique"} is given, and more than one value is
 specified at the same @var{i}, @var{j} indices, then the last specified
@@ -141,7 +144,8 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
      (2, 2) ->  5
 @end group
 @end example
-@seealso{full, accumarray, spalloc, spdiags, speye, spones, sprand, sprandn, sprandsym, spconvert, spfun}
+@seealso{full, accumarray, spalloc, spdiags, speye, spones, sprand, sprandn,
+sprandsym, spconvert, spfun}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -152,9 +156,7 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
   octave_value retval;
 
   // Temporarily disable sparse_auto_mutate if set (it's obsolete anyway).
-  octave::unwind_protect frame;
-  frame.protect_var (Vsparse_auto_mutate);
-  Vsparse_auto_mutate = false;
+  unwind_protect_var<bool> restore_var (Vsparse_auto_mutate, false);
 
   if (nargin == 1)
     {
@@ -173,7 +175,7 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
       octave_idx_type m = 0;
       octave_idx_type n = 0;
 
-      octave::get_dimensions (args(0), args(1), "sparse", m, n);
+      get_dimensions (args(0), args(1), "sparse", m, n);
 
       if (m < 0 || n < 0)
         error ("sparse: dimensions must be non-negative");
@@ -206,7 +208,7 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
 
       if (nargin == 5)
         {
-          octave::get_dimensions (args(3), args(4), "sparse", m, n);
+          get_dimensions (args(3), args(4), "sparse", m, n);
 
           if (m < 0 || n < 0)
             error ("sparse: dimensions must be non-negative");
@@ -231,10 +233,10 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
           else
             err_wrong_type_arg ("sparse", args(2));
         }
-      catch (octave::index_exception& e)
+      catch (index_exception& ie)
         {
           // Rethrow to allow more info to be reported later.
-          e.set_pos_if_unset (2, k+1);
+          ie.set_pos_if_unset (2, k+1);
           throw;
         }
     }
@@ -244,7 +246,7 @@ sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
 
 /*
 ## Tests for sparse constructor are in test/sparse.tst
-%!assert (1);
+%!assert (1)
 */
 
 DEFUN (spalloc, args, ,
@@ -325,3 +327,5 @@ even if @var{nz} is 0.
 %!error <M, N, and NZ must be non-negative> spalloc (1, -1, 1)
 %!error <M, N, and NZ must be non-negative> spalloc (1, 1, -1)
 */
+
+OCTAVE_NAMESPACE_END

@@ -70,12 +70,12 @@ function html_compare_plot_demos (toolkits, varargin)
   in.plots_per_page = 50;
 
   ## Parse inputs
-  for n = 1:2:numel(varargin)
+  for n = 1:2:numel (varargin)
     in.(lower(varargin{n})) = varargin{n+1};
   endfor
 
   ## Compile a list of all files for all toolkits
-  for t = 1:numel(toolkits)
+  for t = 1:numel (toolkits)
     filter = sprintf ("%s/*.%s", toolkits{t}, in.fmt);
     in.figfiles = union (in.figfiles, {dir(filter).name});
   endfor
@@ -87,7 +87,7 @@ function html_compare_plot_demos (toolkits, varargin)
   anchor = "<!-- ##ADD TABLE HERE## -->";
   n = strfind (template, anchor);
   header = strtrim (template(1:n-1));
-  trailer = strtrim (template(n+numel(anchor):end));
+  trailer = strtrim (template(n+numel (anchor):end));
 
   page = 1;
   do
@@ -123,7 +123,7 @@ function html_compare_plot_demos (toolkits, varargin)
 
       ## Create table header
       fprintf (fid, "<table>\n<tr>\n");
-      for t = 1:numel(toolkits)
+      for t = 1:numel (toolkits)
         ## set default
         column_header = upper (toolkits{t});
         if (isfield (in, toolkits{t}))
@@ -147,7 +147,7 @@ function html_compare_plot_demos (toolkits, varargin)
           else
             err_fn = strrep (ffn, ".png", ".err");
             if (! exist (err_fn, "file"))
-              warning("File %s doesn't exist...", err_fn);
+              warning ("File %s doesn't exist...", err_fn);
             else
               err_fid = fopen (err_fn);
               msg = char (fread (err_fid))';

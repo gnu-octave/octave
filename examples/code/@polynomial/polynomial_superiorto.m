@@ -13,10 +13,6 @@
 
 function p = polynomial (a)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     p.poly = [0];
     p = class (p, "polynomial");

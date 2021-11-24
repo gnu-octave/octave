@@ -35,34 +35,28 @@ namespace octave
 {
   documentation_dock_widget::documentation_dock_widget (QWidget *p,
                                                         base_qobject& oct_qobj)
-    : octave_dock_widget ("DocumentationDockWidget", p, oct_qobj)
+    : octave_dock_widget ("DocumentationDockWidget", p, oct_qobj),
+      m_docs (new documentation (this, oct_qobj))
   {
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("Documentation"));
     setStatusTip (tr ("See the documentation for help."));
 
-    m_docs = new documentation (this, oct_qobj);
     setWidget (m_docs);
 
-    connect (p, SIGNAL (show_doc_signal (const QString&)),
-             this, SLOT (showDoc (const QString&)));
-
-    connect (p, SIGNAL (register_doc_signal (const QString&)),
-             this, SLOT (registerDoc (const QString&)));
-
-    connect (p, SIGNAL (unregister_doc_signal (const QString&)),
-             this, SLOT (unregisterDoc (const QString&)));
-  }
-
-  documentation_dock_widget::~documentation_dock_widget (void)
-  {
-    if (m_docs)
-      delete m_docs;
+    if (! p)
+      make_window ();
   }
 
   void documentation_dock_widget::notice_settings (const gui_settings *settings)
   {
     m_docs->notice_settings (settings);
+  }
+
+  void documentation_dock_widget::save_settings (void)
+  {
+    m_docs->save_settings ();
+    octave_dock_widget::save_settings ();
   }
 
   void documentation_dock_widget::copyClipboard (void)

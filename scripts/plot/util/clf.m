@@ -52,14 +52,14 @@ function h = clf (varargin)
   if (nargin > 2)
     print_usage ();
   elseif (nargin == 0)
-    hfig = gcf;
+    hfig = gcf ();
     do_reset = false;
   elseif (nargin == 1)
     if (isscalar (varargin{1}) && isfigure (varargin{1}))
       hfig = varargin{1};
       do_reset = false;
     elseif (ischar (varargin{1}) && strcmpi (varargin{1}, "reset"))
-      hfig = gcf;
+      hfig = gcf ();
       do_reset = true;
     else
       print_usage ();
@@ -119,7 +119,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   l = line;
+%!   l = line ();
 %!   assert (! isempty (get (gcf, "children")));
 %!   clf;
 %!   assert (isempty (get (gcf, "children")));

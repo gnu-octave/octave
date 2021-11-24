@@ -61,7 +61,7 @@
 
 function y = flip (x, dim)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -107,6 +107,5 @@ endfunction
 %! assert (flip (a, 4), b);
 %! assert (flip (a, 5), a);
 
-%!error flip ()
-%!error flip (1, 2, 3)
+%!error <Invalid call> flip ()
 %!error <DIM must be a positive integer> flip (magic (3), -1)

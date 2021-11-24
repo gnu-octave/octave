@@ -46,7 +46,7 @@
 
 function q = prctile (x, p = [], dim)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -68,9 +68,8 @@ function q = prctile (x, p = [], dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
-      error ("prctile: DIM must be an integer and a valid dimension");
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
+      error ("quantile: DIM must be a positive integer");
     endif
   endif
 
@@ -179,12 +178,12 @@ endfunction
 %! qa = [0.1270; 0.2041; 0.6437; 0.6477; 0.9322];
 %! assert (q, qa, tol);
 
+%!assert (prctile ([1:10], 1, 3), [1:10])
+
 ## Test input validation
-%!error prctile ()
-%!error prctile (1, 2, 3, 4)
+%!error <Invalid call> prctile ()
 %!error prctile (['A'; 'B'], 10)
 %!error prctile (1:10, [true, false])
 %!error prctile (1:10, ones (2,2))
 %!error prctile (1, 1, 1.5)
 %!error prctile (1, 1, 0)
-%!error prctile (1, 1, 3)

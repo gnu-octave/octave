@@ -42,18 +42,19 @@ DASPK : public DAE, public DASPK_options
 public:
 
   DASPK (void)
-    : DAE (), DASPK_options (), initialized (false), liw (0), lrw (0),
-      info (), iwork (), rwork (), abs_tol (), rel_tol () { }
+    : DAE (), DASPK_options (), m_initialized (false), m_liw (0), m_lrw (0),
+      m_info (), m_iwork (), m_rwork (), m_abs_tol (), m_rel_tol () { }
 
   DASPK (const ColumnVector& s, double tm, DAEFunc& f)
-    : DAE (s, tm, f), DASPK_options (), initialized (false), liw (0),
-      lrw (0), info (), iwork (), rwork (), abs_tol (), rel_tol () { }
+    : DAE (s, tm, f), DASPK_options (), m_initialized (false), m_liw (0),
+      m_lrw (0), m_info (), m_iwork (), m_rwork (), m_abs_tol (), m_rel_tol ()
+  { }
 
   DASPK (const ColumnVector& s, const ColumnVector& deriv,
          double tm, DAEFunc& f)
-    : DAE (s, deriv, tm, f), DASPK_options (), initialized (false),
-      liw (0), lrw (0), info (), iwork (), rwork (), abs_tol (),
-      rel_tol () { }
+    : DAE (s, deriv, tm, f), DASPK_options (), m_initialized (false),
+      m_liw (0), m_lrw (0), m_info (), m_iwork (), m_rwork (), m_abs_tol (),
+      m_rel_tol () { }
 
   ~DASPK (void) = default;
 
@@ -72,18 +73,18 @@ public:
 
 private:
 
-  bool initialized;
+  bool m_initialized;
 
-  octave_f77_int_type liw;
-  octave_f77_int_type lrw;
+  octave_f77_int_type m_liw;
+  octave_f77_int_type m_lrw;
 
-  Array<octave_f77_int_type> info;
-  Array<octave_f77_int_type> iwork;
+  Array<octave_f77_int_type> m_info;
+  Array<octave_f77_int_type> m_iwork;
 
-  Array<double> rwork;
+  Array<double> m_rwork;
 
-  Array<double> abs_tol;
-  Array<double> rel_tol;
+  Array<double> m_abs_tol;
+  Array<double> m_rel_tol;
 };
 
 #endif

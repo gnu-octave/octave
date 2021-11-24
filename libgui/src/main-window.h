@@ -43,9 +43,6 @@
 #include "external-editor-interface.h"
 #include "file-editor-interface.h"
 
-// QTerminal includes
-#include "QTerminal.h"
-
 // Own includes
 #include "dialog.h"
 #include "documentation-dock-widget.h"
@@ -53,13 +50,13 @@
 #include "find-files-dialog.h"
 #include "history-dock-widget.h"
 #include "interpreter-qobject.h"
+#include "led-indicator.h"
 #include "octave-dock-widget.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "set-path-dialog.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
-#include "workspace-model.h"
 #include "workspace-view.h"
 
 class octave_value;
@@ -85,6 +82,8 @@ namespace octave
 
     ~main_window (void);
 
+    void make_dock_widget_connections (octave_dock_widget *dw);
+
     bool command_window_has_focus (void) const;
 
     void focus_command_window (void);
@@ -93,19 +92,25 @@ namespace octave
 
   signals:
 
+    // Note: CLOSE_GUI_SIGNAL is currently only used by the new
+    // experimental terminal widget.
+    void close_gui_signal (void);
+
     void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
     void editor_focus_changed (bool);
 
     void settings_changed (const gui_settings *);
     void init_terminal_size_signal (void);
+    void init_window_menu (void);
     void new_file_signal (const QString&);
     void open_file_signal (const QString&);
     void open_file_signal (const QString& file, const QString& enc, int line);
     void step_into_file_signal (void);
 
-    void show_doc_signal (const QString&);
-    void register_doc_signal (const QString&);
-    void unregister_doc_signal (const QString&);
+    void show_community_news_signal (int serial);
+    void show_release_notes_signal (void);
+
+    void update_gui_lexer_signal (bool);
 
     void insert_debugger_pointer_signal (const QString& file, int line);
     void delete_debugger_pointer_signal (const QString& file, int line);
@@ -138,17 +143,10 @@ namespace octave
     void handle_clear_command_window_request (void);
     void handle_clear_history_request (void);
     void handle_undo_request (void);
-    void handle_rename_variable_request (const QString& old_name,
-                                         const QString& new_name);
-    void modify_path (const octave_value_list& dir_list, bool rm, bool subdirs);
-    void new_file (const QString& commands = QString ());
-    void open_file (const QString& file_name = QString (), int line = -1);
+    void modify_path (const QStringList& dir_list, bool rm, bool subdirs);
     void edit_mfile (const QString&, int);
     void file_remove_proxy (const QString& o, const QString& n);
     void open_online_documentation_page (void);
-    void display_release_notes (void);
-    void load_and_display_community_news (int serial = -1);
-    void display_community_news (const QString& news);
     void open_bug_tracker_page (void);
     void open_octave_packages_page (void);
     void open_contribute_page (void);
@@ -162,7 +160,8 @@ namespace octave
     void prepare_to_exit (void);
     void go_to_previous_widget (void);
     void reset_windows (void);
-    void do_reset_windows (bool show = true, bool save = true);
+    void do_reset_windows (bool show = true, bool save = true,
+                           bool force_all = false);
 
     void update_octave_directory (const QString& dir);
     void browse_for_directory (void);
@@ -182,7 +181,7 @@ namespace octave
     void debug_step_over (void);
     void debug_step_out (void);
     void debug_quit (void);
-    void editor_tabs_changed (bool);
+    void editor_tabs_changed (bool, bool);
 
     void request_open_file (void);
     void request_new_script (const QString& commands = QString ());
@@ -200,16 +199,20 @@ namespace octave
     void init_terminal_size (void);
     void set_window_layout (gui_settings *settings);
     void write_settings (void);
-    void connect_visibility_changed (void);
 
     void copyClipboard (void);
     void pasteClipboard (void);
     void selectAll (void);
 
+    void handle_gui_status_update (const QString& feature, const QString& status);
+
     void focus_console_after_command (void);
-    void handle_show_doc (const QString& file);
-    void handle_register_doc (const QString& file);
-    void handle_unregister_doc (const QString& file);
+
+    void profiler_session (void);
+    void profiler_session_resume (void);
+    void profiler_stop (void);
+    void handle_profiler_status_update (bool);
+    void profiler_show (void);
 
     void handle_octave_ready ();
 
@@ -220,10 +223,6 @@ namespace octave
     void find_files (const QString& startdir = QDir::currentPath ());
     void find_files_finished (int) { }
     //!@}
-
-    //! Setting global shortcuts.
-
-    void set_global_shortcuts (bool enable);
 
     void set_screen_size (int ht, int wd);
 
@@ -249,19 +248,21 @@ namespace octave
 
     void warning_function_not_found (const QString& message);
 
-    //! Opens the variable editor for @p name.
-
-    void edit_variable (const QString &name, const octave_value&);
-
-    void refresh_variable_editor (void);
-
-    void handle_variable_editor_update (void);
-
   protected:
 
     void closeEvent (QCloseEvent *closeEvent);
 
   private:
+
+    void adopt_dock_widgets (void);
+
+    void adopt_terminal_widget (void);
+    void adopt_documentation_widget (void);
+    void adopt_file_browser_widget (void);
+    void adopt_history_widget (void);
+    void adopt_workspace_widget (void);
+    void adopt_editor_widget (void);
+    void adopt_variable_editor_widget (void);
 
     void construct_central_widget (void);
 
@@ -283,6 +284,7 @@ namespace octave
     void construct_debug_menu (QMenuBar *p);
     QAction * construct_window_menu_item (QMenu *p, const QString& item,
                                           bool checkable, QWidget*);
+    void construct_tools_menu (QMenuBar *p);
     void construct_window_menu (QMenuBar *p);
     void construct_help_menu (QMenuBar *p);
     void construct_documentation_menu (QMenu *p);
@@ -297,13 +299,11 @@ namespace octave
 
     void update_default_encoding (const QString& default_encoding);
 
-    void get_screen_geometry (int *width, int *height);
+    void get_screen_geometry (int& width, int& height);
     void set_default_geometry (void);
     void resize_dock (QDockWidget *dw, int width, int height);
 
     base_qobject& m_octave_qobj;
-
-    workspace_model *m_workspace_model;
 
     QHash<QMenu*, QStringList> m_hash_menu_text;
 
@@ -314,16 +314,17 @@ namespace octave
     //! Toolbar.
 
     QStatusBar *m_status_bar;
+    led_indicator *m_profiler_status_indicator;
 
     //! Dock widgets.
     //!@{
-    terminal_dock_widget *m_command_window;
-    history_dock_widget *m_history_window;
-    files_dock_widget *m_file_browser_window;
-    documentation_dock_widget *m_doc_browser_window;
-    file_editor_interface *m_editor_window;
-    workspace_view *m_workspace_window;
-    variable_editor *m_variable_editor_window;
+    QPointer<terminal_dock_widget> m_command_window;
+    QPointer<history_dock_widget> m_history_window;
+    QPointer<files_dock_widget> m_file_browser_window;
+    QPointer<documentation_dock_widget> m_doc_browser_window;
+    QPointer<file_editor_interface> m_editor_window;
+    QPointer<workspace_view> m_workspace_window;
+    QPointer<variable_editor> m_variable_editor_window;
     //!@}
 
     external_editor_interface *m_external_editor;
@@ -332,11 +333,11 @@ namespace octave
     octave_dock_widget *m_previous_dock;
     octave_dock_widget *m_active_dock;
 
-    QString m_release_notes_icon;
-
     QToolBar *m_main_tool_bar;
 
     QMenu *m_debug_menu;
+
+    QMenuBar *m_editor_menubar;
 
     QAction *m_debug_continue;
     QAction *m_debug_step_into;
@@ -363,6 +364,11 @@ namespace octave
     QAction *m_clear_workspace_action;
     QAction *m_find_files_action;
     QAction *m_select_all_action;
+
+    QAction *m_profiler_start;
+    QAction *m_profiler_resume;
+    QAction *m_profiler_stop;
+    QAction *m_profiler_show;
 
     QAction *m_show_command_window_action;
     QAction *m_show_history_action;
@@ -415,15 +421,15 @@ namespace octave
 
     QWidget *m_release_notes_window;
 
-    QWidget *m_community_news_window;
-
     QClipboard *m_clipboard;
 
     //! Some class global flags.
     //!@{
     bool m_prevent_readline_conflicts;
+    bool m_prevent_readline_conflicts_menu;
     bool m_suppress_dbg_location;
     bool m_editor_has_tabs;
+    bool m_editor_is_octave_file;
 
     //! Flag for closing the whole application.
 

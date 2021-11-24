@@ -30,34 +30,43 @@
 ## @var{obj} may also be an array of objects in which case @var{res} will be a
 ## logical array indicating whether each handle has the property @var{prop}.
 ##
-## For plotting, @var{obj} is a handle to a graphics object.
-##
-## Programming Note: There is no support in Octave versions 6.X.X for @var{obj}
-## to be an instance of a class (i.e., a classdef object).  This functionality
-## has already been added on the development branch which will become Octave
-## 7.1.0.
-## @seealso{get, set, ismethod, isobject}
+## For plotting, @var{obj} is a handle to a graphics object.  Otherwise,
+## @var{obj} should be an instance of a class.  @code{isprop} reports whether
+## the class defines a property, but @code{Access} permissions or visibility
+## restrictions (@code{Hidden = true}) may prevent use by the programmer.
+## @seealso{get, set, properties, ismethod, isobject}
 ## @end deftypefn
 
 function res = isprop (obj, prop)
 
   if (nargin != 2)
     print_usage ();
-  elseif (! ischar (prop))
+  endif
+
+  if (! ischar (prop))
     error ("isprop: PROP name must be a string");
   endif
 
-  warning ("error", "Octave:abbreviated-property-match", "local");
+  if (isobject (obj))
+    ## Separate code for classdef objects because Octave doesn't handle arrays
+    ## of objects and so can't use the generic code.
+    warning ("off", "Octave:classdef-to-struct", "local");
 
-  res = false (size (obj));
-  for i = 1:numel (res)
-    if (ishghandle (obj(i)))
-      try
-        v = get (obj(i), prop);
-        res(i) = true;
-      end_try_catch
-    endif
-  endfor
+    all_props = __fieldnames__ (obj);
+    res = any (strcmp (prop, all_props));
+  else
+    warning ("error", "Octave:abbreviated-property-match", "local");
+
+    res = false (size (obj));
+    for i = 1:numel (res)
+      if (ishghandle (obj(i)))
+        try
+          get (obj(i), prop);
+          res(i) = true;
+        end_try_catch
+      endif
+    endfor
+  endif
 
 endfunction
 
@@ -67,7 +76,11 @@ endfunction
 %!assert (isprop (zeros (2, 3), "visible"), true (2, 3))
 %!assert (isprop ([-2, -1, 0], "visible"), [false, false, true])
 
-%!error isprop ()
-%!error isprop (1)
-%!error isprop (1,2,3)
+%!test
+%! m = containers.Map ();
+%! assert (isprop (m, "KeyType"));
+%! assert (! isprop (m, "FooBar"));
+
+%!error <Invalid call> isprop ()
+%!error <Invalid call> isprop (1)
 %!error <PROP name must be a string> isprop (0, {"visible"})

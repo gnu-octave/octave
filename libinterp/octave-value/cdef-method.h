@@ -52,7 +52,7 @@ namespace octave
     public:
 
       cdef_method_rep (void)
-        : cdef_meta_object_rep (), function (), dispatch_type ()
+        : cdef_meta_object_rep (), m_function (), m_dispatch_type ()
       { }
 
       cdef_method_rep& operator = (const cdef_method_rep& m) = delete;
@@ -69,33 +69,33 @@ namespace octave
 
       bool is_static (void) const { return get("Static").bool_value (); }
 
-      octave_value get_function (void) const { return function; }
+      octave_value get_function (void) const { return m_function; }
 
-      void set_function (const octave_value& fcn) { function = fcn; }
+      void set_function (const octave_value& fcn) { m_function = fcn; }
 
-      std::string get_doc_string (void);
+      OCTINTERP_API std::string get_doc_string (void);
 
-      bool check_access (void) const;
+      OCTINTERP_API bool check_access (void) const;
 
-      bool is_external (void) const { return ! dispatch_type.empty (); }
+      bool is_external (void) const { return ! m_dispatch_type.empty (); }
 
       void mark_as_external (const std::string& dtype)
       {
-        dispatch_type = dtype;
+        m_dispatch_type = dtype;
       }
 
-      octave_value_list execute (const octave_value_list& args, int nargout,
-                                 bool do_check_access = true,
-                                 const std::string& who = "");
+      OCTINTERP_API octave_value_list
+      execute (const octave_value_list& args, int nargout,
+               bool do_check_access = true, const std::string& who = "");
 
-      octave_value_list execute (const cdef_object& obj,
-                                 const octave_value_list& args, int nargout,
-                                 bool do_check_access = true,
-                                 const std::string& who = "");
+      OCTINTERP_API octave_value_list
+      execute (const cdef_object& obj,
+               const octave_value_list& args, int nargout,
+               bool do_check_access = true, const std::string& who = "");
 
-      bool is_constructor (void) const;
+      OCTINTERP_API bool is_constructor (void) const;
 
-      bool is_defined_in_class (const std::string& cname) const;
+      OCTINTERP_API bool is_defined_in_class (const std::string& cname) const;
 
       octave_value_list
       meta_subsref (const std::string& type,
@@ -109,11 +109,11 @@ namespace octave
     private:
 
       cdef_method_rep (const cdef_method_rep& m)
-        : cdef_meta_object_rep (m), function (m.function),
-          dispatch_type (m.dispatch_type)
+        : cdef_meta_object_rep (m), m_function (m.m_function),
+          m_dispatch_type (m.m_dispatch_type)
       { }
 
-      void check_method (void);
+      OCTINTERP_API void check_method (void);
 
       cdef_method wrap (void)
       {
@@ -121,12 +121,12 @@ namespace octave
         return cdef_method (this);
       }
 
-      octave_value function;
+      octave_value m_function;
 
       // When non-empty, the method is externally defined and this member
       // is used to cache the dispatch type to look for the method.
 
-      std::string dispatch_type;
+      std::string m_dispatch_type;
     };
 
   public:

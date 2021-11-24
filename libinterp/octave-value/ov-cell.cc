@@ -166,7 +166,7 @@ octave_cell::subsref (const std::string& type,
     case '{':
       {
         if (idx.front ().empty ())
-          error ("invalid empty index expression");
+          error ("invalid empty index expression {}, use {:} instead");
 
         octave_value tmp = do_index_op (idx.front ());
 
@@ -431,14 +431,14 @@ bool
 octave_cell::iscellstr (void) const
 {
   bool retval;
-  if (cellstr_cache.get ())
+  if (m_cellstr_cache.get ())
     retval = true;
   else
     {
       retval = matrix.iscellstr ();
       // Allocate empty cache to mark that this is indeed a cellstr.
       if (retval)
-        cellstr_cache.reset (new Array<std::string> ());
+        m_cellstr_cache.reset (new Array<std::string> ());
     }
 
   return retval;
@@ -638,10 +638,10 @@ octave_cell::cellstr_value (void) const
   if (! iscellstr ())
     error ("invalid conversion from cell array to array of strings");
 
-  if (cellstr_cache->isempty ())
-    *cellstr_cache = matrix.cellstr_value ();
+  if (m_cellstr_cache->isempty ())
+    *m_cellstr_cache = matrix.cellstr_value ();
 
-  return *cellstr_cache;
+  return *m_cellstr_cache;
 }
 
 bool
@@ -994,11 +994,11 @@ octave_cell::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-void *
+const void *
 octave_cell::mex_get_data (void) const
 {
   clear_cellstr_cache ();
-  return matrix.mex_get_data ();
+  return matrix.data ();
 }
 
 bool
@@ -1219,6 +1219,8 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return retval;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (iscell, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} iscell (@var{x})
@@ -1258,7 +1260,7 @@ dimensions.
       break;
 
     case 1:
-      octave::get_dimensions (args(0), "cell", dims);
+      get_dimensions (args(0), "cell", dims);
       break;
 
     default:
@@ -1274,7 +1276,7 @@ dimensions.
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, "cell");
+  check_dimensions (dims, "cell");
 
   return ovl (Cell (dims));
 }
@@ -1282,7 +1284,7 @@ dimensions.
 /*
 ## This might work on some system someday, but for now, who has a system
 ## where a 16 yottabyte array can be allocated?  See bug #50934.
-%!error <out of memory> cell (1e24, 1);
+%!error <out of memory> cell (1e24, 1)
 */
 
 DEFUN (iscellstr, args, ,
@@ -1412,10 +1414,12 @@ c(2,1,:)(:)
 %! assert (fieldnames (s), keys');
 */
 
+OCTAVE_NAMESPACE_END
+
 mxArray *
-octave_cell::as_mxArray (void) const
+octave_cell::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (dims ());
+  mxArray *retval = new mxArray (interleaved, dims ());
 
   mxArray **elts = static_cast<mxArray **> (retval->get_data ());
 
@@ -1424,7 +1428,7 @@ octave_cell::as_mxArray (void) const
   const octave_value *p = matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
-    elts[i] = new mxArray (p[i]);
+    elts[i] = new mxArray (interleaved, p[i]);
 
   return retval;
 }

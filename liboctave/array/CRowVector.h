@@ -66,57 +66,63 @@ public:
     return *this;
   }
 
-  bool operator == (const ComplexRowVector& a) const;
-  bool operator != (const ComplexRowVector& a) const;
+  OCTAVE_API bool operator == (const ComplexRowVector& a) const;
+  OCTAVE_API bool operator != (const ComplexRowVector& a) const;
 
   // destructive insert/delete/reorder operations
 
-  ComplexRowVector& insert (const RowVector& a, octave_idx_type c);
-  ComplexRowVector& insert (const ComplexRowVector& a, octave_idx_type c);
+  OCTAVE_API ComplexRowVector&
+  insert (const RowVector& a, octave_idx_type c);
+  OCTAVE_API ComplexRowVector&
+  insert (const ComplexRowVector& a, octave_idx_type c);
 
-  ComplexRowVector& fill (double val);
-  ComplexRowVector& fill (const Complex& val);
-  ComplexRowVector& fill (double val, octave_idx_type c1, octave_idx_type c2);
-  ComplexRowVector& fill (const Complex& val,
-                          octave_idx_type c1, octave_idx_type c2);
+  OCTAVE_API ComplexRowVector& fill (double val);
+  OCTAVE_API ComplexRowVector& fill (const Complex& val);
+  OCTAVE_API ComplexRowVector&
+  fill (double val, octave_idx_type c1, octave_idx_type c2);
+  OCTAVE_API ComplexRowVector&
+  fill (const Complex& val, octave_idx_type c1, octave_idx_type c2);
 
-  ComplexRowVector append (const RowVector& a) const;
-  ComplexRowVector append (const ComplexRowVector& a) const;
+  OCTAVE_API ComplexRowVector append (const RowVector& a) const;
+  OCTAVE_API ComplexRowVector append (const ComplexRowVector& a) const;
 
-  ComplexColumnVector hermitian (void) const;
-  ComplexColumnVector transpose (void) const;
+  OCTAVE_API ComplexColumnVector hermitian (void) const;
+  OCTAVE_API ComplexColumnVector transpose (void) const;
 
-  friend ComplexRowVector conj (const ComplexRowVector& a);
+  friend OCTAVE_API ComplexRowVector conj (const ComplexRowVector& a);
 
   // resize is the destructive equivalent for this one
 
-  ComplexRowVector extract (octave_idx_type c1, octave_idx_type c2) const;
+  OCTAVE_API ComplexRowVector
+  extract (octave_idx_type c1, octave_idx_type c2) const;
 
-  ComplexRowVector extract_n (octave_idx_type c1, octave_idx_type n) const;
+  OCTAVE_API ComplexRowVector
+  extract_n (octave_idx_type c1, octave_idx_type n) const;
 
   // row vector by row vector -> row vector operations
 
-  ComplexRowVector& operator += (const RowVector& a);
-  ComplexRowVector& operator -= (const RowVector& a);
+  OCTAVE_API ComplexRowVector& operator += (const RowVector& a);
+  OCTAVE_API ComplexRowVector& operator -= (const RowVector& a);
 
   // row vector by matrix -> row vector
 
-  friend ComplexRowVector operator * (const ComplexRowVector& a,
-                                      const ComplexMatrix& b);
+  friend OCTAVE_API ComplexRowVector
+  operator * (const ComplexRowVector& a, const ComplexMatrix& b);
 
-  friend ComplexRowVector operator * (const RowVector& a,
-                                      const ComplexMatrix& b);
+  friend OCTAVE_API ComplexRowVector
+  operator * (const RowVector& a, const ComplexMatrix& b);
 
   // other operations
 
-  Complex min (void) const;
-  Complex max (void) const;
+  OCTAVE_API Complex min (void) const;
+  OCTAVE_API Complex max (void) const;
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os,
-                                    const ComplexRowVector& a);
-  friend std::istream& operator >> (std::istream& is, ComplexRowVector& a);
+  friend OCTAVE_API std::ostream&
+  operator << (std::ostream& os, const ComplexRowVector& a);
+  friend OCTAVE_API std::istream&
+  operator >> (std::istream& is, ComplexRowVector& a);
 
   void resize (octave_idx_type n, const Complex& rfv = Complex (0))
   {
@@ -130,10 +136,10 @@ public:
 
 // row vector by column vector -> scalar
 
-Complex OCTAVE_API operator * (const ComplexRowVector& a,
+OCTAVE_API Complex operator * (const ComplexRowVector& a,
                                const ColumnVector& b);
 
-Complex OCTAVE_API operator * (const ComplexRowVector& a,
+OCTAVE_API Complex operator * (const ComplexRowVector& a,
                                const ComplexColumnVector& b);
 
 // other operations

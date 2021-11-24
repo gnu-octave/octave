@@ -163,14 +163,14 @@
 ## @item @qcode{"whitespace"}
 ## Any character in @var{value} will be interpreted as whitespace and trimmed;
 ## the string defining whitespace must be enclosed in double quotes for proper
-## processing of special characters like @qcode{"@xbackslashchar{}t"}.  In
+## processing of special characters like @qcode{"@backslashchar{}t"}.  In
 ## each data field, multiple consecutive whitespace characters are collapsed
 ## into one space and leading and trailing whitespace is removed.  The default
 ## value for whitespace is
 ## @c Note: the next line specifically has a newline which generates a space
 ## @c       in the output of qcode, but keeps the next line < 80 characters.
 ## @qcode{"
-## @xbackslashchar{}b@xbackslashchar{}r@xbackslashchar{}n@xbackslashchar{}t"}
+## @backslashchar{}b@backslashchar{}r@backslashchar{}n@backslashchar{}t"}
 ## (note the space).  Whitespace is always added to the set of delimiter
 ## characters unless at least one @qcode{"%s"} format conversion specifier is
 ## supplied; in that case only whitespace explicitly specified in
@@ -186,11 +186,11 @@
 ## the last character of @var{str}:
 ##
 ## @table @asis
-## @item last character = @qcode{"@xbackslashchar{}n"}
+## @item last character = @qcode{"@backslashchar{}n"}
 ## Data columns are padded with empty fields or NaN so that all columns have
 ## equal length
 ##
-## @item last character is not @qcode{"@xbackslashchar{}n"}
+## @item last character is not @qcode{"@backslashchar{}n"}
 ## Data columns are not padded; strread returns columns of unequal length
 ##
 ## @end table
@@ -354,7 +354,7 @@ function varargout = strread (str, format = "%f", varargin)
     ## Check for unsupported format specifiers
     errpat = '(\[.*\]|[cq]|[nfdu]8|[nfdu]16|[nfdu]32|[nfdu]64)';
     if (! all (cellfun ("isempty", regexp (fmt_words(idy2), errpat))))
-      error ("strread: %q, %c, %[] or bit width format specifiers are not supported yet.");
+      error ("strread: %q, %c, %[] or bit width format specifiers are not supported yet");
     endif
 
     ## Format conversion specifiers following literals w/o space/delim
@@ -1129,7 +1129,8 @@ endfunction
 %!error <no valid format conversion specifiers> strread ("1.0", "%z")
 
 ## Test for false positives in check for non-supported format specifiers
-%!assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5)
+%!assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"),
+%!        32.5, 1e-5)
 
 ## Test various forms of string format specifiers
 %!test <*45712>

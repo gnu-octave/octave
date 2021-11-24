@@ -31,10 +31,11 @@
 #include "ov.h"
 #include "ovl.h"
 
-namespace octave
-{
-  class type_info;
-}
+OCTAVE_NAMESPACE_BEGIN
+
+class type_info;
+
+OCTAVE_NAMESPACE_END
 
 typedef void *voidptr;
 
@@ -47,17 +48,17 @@ public:
   octave_java (const voidptr& obj, void *cls = nullptr);
 
   octave_java (const octave_java& jobj)
-    : octave_base_value (jobj), java_object (nullptr), java_class (nullptr)
+    : octave_base_value (jobj), m_java_object (nullptr), m_java_class (nullptr)
   {
-    init (jobj.java_object, jobj.java_class);
+    init (jobj.m_java_object, jobj.m_java_class);
   }
 
   ~octave_java (void) { release (); }
 
-  void * to_java (void) const { return java_object; }
-  void * to_class (void) const { return java_class; }
+  void * to_java (void) const { return m_java_object; }
+  void * to_class (void) const { return m_java_class; }
 
-  std::string java_class_name (void) const { return java_classname; }
+  std::string java_class_name (void) const { return m_java_classname; }
 
   octave_base_value * clone (void) const { return new octave_java (*this); }
   octave_base_value * empty_clone (void) const { return new octave_java (); }
@@ -171,17 +172,17 @@ private:
 
 private:
 
-  void *java_object;
+  void *m_java_object;
 
-  void *java_class;
+  void *m_java_class;
 
-  std::string java_classname;
+  std::string m_java_classname;
 
 public:
 
   int type_id (void) const { return t_id; }
   std::string type_name (void) const { return t_name; }
-  std::string class_name (void) const { return java_classname; }
+  std::string class_name (void) const { return m_java_classname; }
 
   static int static_type_id (void) { return t_id; }
   static std::string static_type_name (void) { return t_name; }

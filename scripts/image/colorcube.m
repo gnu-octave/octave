@@ -42,12 +42,8 @@ function map = colorcube (n)
 
   if (nargin == 0)
     n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("colorcube: N must be a scalar");
-    endif
-  else
-    print_usage ();
+  elseif (! isscalar (n))
+    error ("colorcube: N must be a scalar");
   endif
 
   if (n < 9)

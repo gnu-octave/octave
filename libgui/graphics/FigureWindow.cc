@@ -31,14 +31,14 @@
 
 #include "FigureWindow.h"
 
-namespace QtHandles
+namespace octave
 {
 
   FigureWindow::FigureWindow (QWidget *xparent)
     : FigureWindowBase (xparent)
   {
     // set icon from application resources
-    setWindowIcon (QIcon (":/actions/icons/logo.png"));
+    setWindowIcon (QIcon (":/actions/icons/graphic_logo_Figure.png"));
   }
 
   FigureWindow::~FigureWindow (void)

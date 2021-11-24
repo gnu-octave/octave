@@ -36,7 +36,7 @@
 
 function retval = isgraphics (h, type = "")
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -61,8 +61,8 @@ endfunction
 %!   assert (isgraphics (hf, "figure"));
 %!   assert (! isgraphics (-hf));
 %!   assert (! isgraphics (hf, "foo"));
-%!   l = line;
-%!   ax = gca;
+%!   l = line ();
+%!   ax = gca ();
 %!   assert (isgraphics (ax));
 %!   assert (isgraphics (ax, "axes"));
 %!   assert (! isgraphics (-ax));
@@ -71,17 +71,17 @@ endfunction
 %!   assert (isgraphics (l, "line"));
 %!   assert (! isgraphics (-l));
 %!   assert (! isgraphics (l, "foo"));
-%!   p = patch;
+%!   p = patch ();
 %!   assert (isgraphics (p));
 %!   assert (isgraphics (p, "patch"));
 %!   assert (! isgraphics (-p));
 %!   assert (! isgraphics (p, "foo"));
-%!   s = surface;
+%!   s = surface ();
 %!   assert (isgraphics (s));
 %!   assert (isgraphics (s, "surface"));
 %!   assert (! isgraphics (-s));
 %!   assert (! isgraphics (s, "foo"));
-%!   t = text;
+%!   t = text ();
 %!   assert (isgraphics (t));
 %!   assert (isgraphics (t, "text"));
 %!   assert (! isgraphics (-t));
@@ -91,7 +91,7 @@ endfunction
 %!   assert (isgraphics (i, "image"));
 %!   assert (! isgraphics (-i));
 %!   assert (! isgraphics (i, "foo"));
-%!   hg = hggroup;
+%!   hg = hggroup ();
 %!   assert (isgraphics (hg));
 %!   assert (isgraphics (hg, "hggroup"));
 %!   assert (! isgraphics (-hg));
@@ -106,7 +106,6 @@ endfunction
 %! assert (isgraphics ([-1 0], "foobar"), [false false]);
 
 ## Test input validation
-%!error isgraphics ()
-%!error isgraphics (1, 2, 3)
+%!error <Invalid call> isgraphics ()
 %!error <TYPE must be a string> isgraphics (0, 1)
 %!error <TYPE must be a string> isgraphics (0, {1})

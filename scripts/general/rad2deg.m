@@ -48,7 +48,7 @@
 
 function deg = rad2deg (rad)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -67,7 +67,6 @@ endfunction
 %!assert (rad2deg (pi*[0, 1/2, 1, 3/2, 2]), [0, 90, 180, 270, 360])
 
 ## Test input validation
-%!error rad2deg ()
-%!error rad2deg (1, 2)
+%!error <Invalid call> rad2deg ()
 %!error <RAD must be a floating point class> rad2deg (uint8 (1))
 %!error <RAD must be a floating point class> rad2deg ("A")

@@ -89,6 +89,6 @@ endfunction
 ## Test input validation
 %!error <Invalid call to regexptranslate> regexptranslate ()
 %!error <Invalid call to regexptranslate> regexptranslate ("wildcard")
-%!error <Invalid call to regexptranslate> regexptranslate ("a", "b", "c")
+%!error <called with too many inputs> regexptranslate ("a", "b", "c")
 %!error <invalid operation> regexptranslate ("foo", "abc")
 %!error <operation OP must be a string> regexptranslate (10, "abc")

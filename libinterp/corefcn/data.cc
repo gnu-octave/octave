@@ -66,6 +66,8 @@
 #include "variables.h"
 #include "xnorm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (all, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} all (@var{x})
@@ -451,7 +453,7 @@ map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
   for (octave_idx_type i = 0; i < x.numel (); i++)
     {
       int exp;
-      f.xelem (i) = octave::math::log2 (x(i), exp);
+      f.xelem (i) = math::log2 (x(i), exp);
       e.xelem (i) = exp;
     }
 }
@@ -662,29 +664,29 @@ periodic, @code{mod} is a better choice.
   else if (args(0).is_single_type () || args(1).is_single_type ())
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = octave::math::rem (args(0).float_value (), args(1).float_value ());
+        retval = math::rem (args(0).float_value (), args(1).float_value ());
       else
         {
           FloatNDArray a0 = args(0).float_array_value ();
           FloatNDArray a1 = args(1).float_array_value ();
-          retval = binmap<float> (a0, a1, octave::math::rem<float>, "rem");
+          retval = binmap<float> (a0, a1, math::rem<float>, "rem");
         }
     }
   else
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = octave::math::rem (args(0).scalar_value (), args(1).scalar_value ());
+        retval = math::rem (args(0).scalar_value (), args(1).scalar_value ());
       else if (args(0).issparse () || args(1).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, octave::math::rem<double>, "rem");
+          retval = binmap<double> (m0, m1, math::rem<double>, "rem");
         }
       else
         {
           NDArray a0 = args(0).array_value ();
           NDArray a1 = args(1).array_value ();
-          retval = binmap<double> (a0, a1, octave::math::rem<double>, "rem");
+          retval = binmap<double> (a0, a1, math::rem<double>, "rem");
         }
     }
 
@@ -844,29 +846,29 @@ negative numbers or when the values are periodic.
   else if (args(0).is_single_type () || args(1).is_single_type ())
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = octave::math::mod (args(0).float_value (), args(1).float_value ());
+        retval = math::mod (args(0).float_value (), args(1).float_value ());
       else
         {
           FloatNDArray a0 = args(0).float_array_value ();
           FloatNDArray a1 = args(1).float_array_value ();
-          retval = binmap<float> (a0, a1, octave::math::mod<float>, "mod");
+          retval = binmap<float> (a0, a1, math::mod<float>, "mod");
         }
     }
   else
     {
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        retval = octave::math::mod (args(0).scalar_value (), args(1).scalar_value ());
+        retval = math::mod (args(0).scalar_value (), args(1).scalar_value ());
       else if (args(0).issparse () || args(1).issparse ())
         {
           SparseMatrix m0 = args(0).sparse_matrix_value ();
           SparseMatrix m1 = args(1).sparse_matrix_value ();
-          retval = binmap<double> (m0, m1, octave::math::mod<double>, "mod");
+          retval = binmap<double> (m0, m1, math::mod<double>, "mod");
         }
       else
         {
           NDArray a0 = args(0).array_value ();
           NDArray a1 = args(1).array_value ();
-          retval = binmap<double> (a0, a1, octave::math::mod<double>, "mod");
+          retval = binmap<double> (a0, a1, math::mod<double>, "mod");
         }
     }
 
@@ -904,7 +906,7 @@ negative numbers or when the values are periodic.
 %!assert (mod (uint8 (5), uint8 (4)), uint8 (1))
 %!assert (mod (uint8 ([1:5]), uint8 (4)), uint8 ([1,2,3,0,1]))
 %!assert (mod (uint8 ([1:5]), uint8 (0)), uint8 ([1:5]))
-%!error (mod (uint8 (5), int8 (4)))
+%!error mod (uint8 (5), int8 (4))
 
 ## mixed integer/real types
 %!assert (mod (uint8 (5), 4), uint8 (1))
@@ -926,7 +928,6 @@ negative numbers or when the values are periodic.
 %!assert <*54602> (mod (int8 (0), int8 (-25)), int8 (0))
 
 */
-
 
 #define DATA_REDUCTION(FCN)                                             \
                                                                         \
@@ -1055,8 +1056,8 @@ cumsum ([1, 2; 3, 4; 5, 6])
 @end group
 @end example
 
-See @code{sum} for an explanation of the optional parameters @qcode{"native"}
-and @qcode{"double"}.
+For an explanation of the optional parameters @qcode{"native"} and
+@qcode{"double"}, @pxref{XREFsum,,@code{sum}}.
 @seealso{sum, cumprod}
 @end deftypefn */)
 {
@@ -1650,8 +1651,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("attempt_type_conversion");
+  symbol_table& symtab = __get_symbol_table__ ("attempt_type_conversion");
 
   octave_value fcn = symtab.find_method (dtype, cname);
 
@@ -1661,11 +1661,11 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = octave::feval (fcn, ovl (ov), 1);
+          result = feval (fcn, ovl (ov), 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          error (e, "conversion from %s to %s failed", dtype.c_str (),
+          error (ee, "conversion from %s to %s failed", dtype.c_str (),
                  cname.c_str ());
         }
 
@@ -1689,11 +1689,11 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = octave::feval (fcn, ovl (ov), 1);
+          result = feval (fcn, ovl (ov), 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          error (e, "%s constructor failed for %s argument", dtype.c_str (),
+          error (ee, "%s constructor failed for %s argument", dtype.c_str (),
                  cname.c_str ());
         }
 
@@ -1708,15 +1708,16 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 }
 
 octave_value
-do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
+do_class_concat (const octave_value_list& ovl,
+                 const std::string& cattype, int dim)
 {
   octave_value retval;
 
   // Get dominant type for list
 
-  std::string dtype = octave::get_dispatch_type (ovl);
+  std::string dtype = get_dispatch_type (ovl);
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("do_class_concat");
+  symbol_table& symtab = __get_symbol_table__ ("do_class_concat");
 
   octave_value fcn = symtab.find_method (cattype, dtype);
 
@@ -1728,11 +1729,11 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
       try
         {
-          tmp2 = octave::feval (fcn, ovl, 1);
+          tmp2 = feval (fcn, ovl, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          error (e, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
+          error (ee, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
         }
 
       if (tmp2.empty ())
@@ -1815,7 +1816,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               first_elem_is_struct = args(i).isstruct ();
             }
           else
-            result_type = octave::get_concat_class (result_type, args(i).class_name ());
+            result_type = get_concat_class (result_type, args(i).class_name ());
 
           if (all_strings_p && ! args(i).is_string ())
             all_strings_p = false;
@@ -1891,7 +1892,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             warn_implicit_conversion ("Octave:num-to-str",
                                       "numeric", result_type);
           else
-            octave::maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
+            maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
           charNDArray result = do_single_type_concat<charNDArray> (args, dim);
 
@@ -1954,7 +1955,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           //
           // We might also start with a empty octave_value using
           //
-          //   tmp = octave::type_info::lookup_type (args(1).type_name());
+          //   tmp = type_info::lookup_type (args(1).type_name());
           //
           // and then directly resize.  However, for some types there might
           // be some additional setup needed, and so this should be avoided.
@@ -1970,7 +1971,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               // Can't fast return here to skip empty matrices as something
               // like cat (1,[],single ([])) must return an empty matrix of
               // the right type.
-              tmp = do_cat_op (tmp, args(j), ra_idx);
+              tmp = cat_op (tmp, args(j), ra_idx);
 
               dim_vector dv_tmp = args(j).dims ();
 
@@ -2228,8 +2229,8 @@ new matrices.  For example:
 
 %!error horzcat (struct ("foo", "bar"), cell (1))
 
-%!test <*39041> assert (class (horzcat (cell(0), struct())), "cell")
-%!test <51086> assert (class (horzcat (struct(), cell(0))), "struct")
+%!test <*39041> assert (class (horzcat (cell (0), struct ())), "cell")
+%!test <51086> assert (class (horzcat (struct (), cell (0))), "struct")
 */
 
 DEFUN (vertcat, args, ,
@@ -2645,8 +2646,7 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.
     {
       // Don't use numel (const octave_value_list&) here as that corresponds to
       // an overloaded call, not to builtin!
-      retval = octave::dims_to_numel (args(0).dims (),
-                                      args.slice (1, nargin-1));
+      retval = dims_to_numel (args(0).dims (), args.slice (1, nargin-1));
     }
 
   return retval;
@@ -2656,12 +2656,14 @@ DEFUN (size, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{sz} =} size (@var{a})
 @deftypefnx {} {@var{dim_sz} =} size (@var{a}, @var{dim})
+@deftypefnx {} {@var{dim_sz} =} size (@var{a}, @var{d1}, @var{d2}, @dots{})
 @deftypefnx {} {[@var{rows}, @var{cols}, @dots{}, @var{dim_N_sz}] =} size (@dots{})
 Return a row vector with the size (number of elements) of each dimension for
 the object @var{a}.
 
 When given a second argument, @var{dim}, return the size of the corresponding
-dimension.
+dimension.  If @var{dim} is a vector, return each of the corresponding
+dimensions.  Multiple dimensions may also be specified as separate arguments.
 
 With a single output argument, @code{size} returns a row vector.  When called
 with multiple output arguments, @code{size} returns the size of dimension N
@@ -2712,56 +2714,152 @@ Example 4: number of output arguments < number of dimensions
 @seealso{numel, ndims, length, rows, columns, size_equal, common_size}
 @end deftypefn */)
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
+
+  if (nargin == 0)
+    print_usage ();
+
+  // For compatibility with Matlab, size returns dimensions as doubles.
+
+  Matrix m;
+
+  dim_vector dimensions = args(0).dims ();
+  int ndims = dimensions.ndims ();
 
   if (nargin == 1)
     {
-      const dim_vector dimensions = args(0).dims ();
-
       if (nargout > 1)
         {
-          const dim_vector rdims = dimensions.redim (nargout);
-          retval.resize (nargout);
-          for (int i = 0; i < nargout; i++)
-            retval(i) = rdims(i);
+          dimensions = dimensions.redim (nargout);
+          ndims = dimensions.ndims ();
         }
-      else
-        {
-          int ndims = dimensions.ndims ();
 
-          Matrix m (1, ndims);
+      m.resize (1, ndims);
 
-          for (int i = 0; i < ndims; i++)
-            m.xelem (i) = dimensions(i);
-
-          retval(0) = m;
-        }
-    }
-  else if (nargin == 2 && nargout < 2)
-    {
-      if (! args(1).is_real_scalar ())
-        error ("size: DIM must be a positive integer");
-
-      octave_idx_type nd = args(1).idx_type_value ();
-
-      const dim_vector dv = args(0).dims ();
-
-      if (nd < 1)
-        error ("size: requested dimension DIM (= %" OCTAVE_IDX_TYPE_FORMAT ") "
-               "out of range", nd);
-
-      if (nd <= dv.ndims ())
-        retval(0) = dv(nd-1);
-      else
-        retval(0) = 1;
+      for (octave_idx_type i = 0; i < ndims; i++)
+        m(i) = dimensions(i);
     }
   else
-    print_usage ();
+    {
+      Array<octave_idx_type> query_dims;
 
-  return retval;
+      if (nargin > 2)
+        {
+          query_dims.resize (dim_vector (1, nargin-1));
+
+          for (octave_idx_type i = 0; i < nargin-1; i++)
+            query_dims(i) = args(i+1).idx_type_value (true);
+        }
+      else
+        query_dims = args(1).octave_idx_type_vector_value (true);
+
+      if (nargout > 1 && nargout != query_dims.numel ())
+        error ("size: nargout > 1 but does not match number of requested dimensions");
+
+      octave_idx_type nidx = query_dims.numel ();
+
+      m.resize (1, nidx);
+
+      for (octave_idx_type i = 0; i < nidx; i++)
+        {
+          octave_idx_type nd = query_dims.xelem (i);
+
+          if (nd < 1)
+            error ("size: requested dimension DIM (= %"
+                   OCTAVE_IDX_TYPE_FORMAT ") out of range", nd);
+
+          m(i) = nd <= ndims ? dimensions (nd-1) : 1;
+        }
+    }
+
+  if (nargout > 1)
+    {
+      octave_value_list retval (nargout);
+
+      for (octave_idx_type i = 0; i < nargout; i++)
+        retval(i) = m(i);
+
+      return retval;
+    }
+
+  return ovl (m);
 }
+
+/*
+## Plain call
+
+%!assert (size ([1, 2; 3, 4; 5, 6]), [3, 2])
+
+%!test
+%! [nr, nc] = size ([1, 2; 3, 4; 5, 6]);
+%! assert (nr, 3)
+%! assert (nc, 2)
+
+%!test
+%! [nr, remainder] = size (ones (2, 3, 4, 5));
+%! assert (nr, 2)
+%! assert (remainder, 60)
+
+## Call for single existing dimension
+
+%!assert (size ([1, 2; 3, 4; 5, 6], 1), 3)
+%!assert (size ([1, 2; 3, 4; 5, 6], 2), 2)
+
+## Call for single non-existing dimension
+
+%!assert (size ([1, 2; 3, 4; 5, 6], 3), 1)
+%!assert (size ([1, 2; 3, 4; 5, 6], 4), 1)
+
+## Call for more than existing dimensions
+
+%!test
+%! [nr, nc, e1, e2] = size ([1, 2; 3, 4; 5, 6]);
+%! assert (nr, 3)
+%! assert (nc, 2)
+%! assert (e1, 1)
+%! assert (e2, 1)
+
+## Call for two arbitrary dimensions
+
+%!test
+%! dim = [3, 2, 1, 1, 1];
+%! for i = 1:5
+%!   for j = 1:5
+%!     assert (size ([1, 2; 3, 4; 5, 6], i, j), [dim(i), dim(j)])
+%!     assert (size ([1, 2; 3, 4; 5, 6], [i, j]), [dim(i), dim(j)])
+%!     [a, b] = size ([1, 2; 3, 4; 5, 6], i, j);
+%!     assert (a, dim(i));
+%!     assert (b, dim(j));
+%!     [a, b] = size ([1, 2; 3, 4; 5, 6], [i, j]);
+%!     assert (a, dim(i));
+%!     assert (b, dim(j));
+%!   end
+%! end
+
+## Call for three arbitrary dimensions
+
+%!test
+%! dim = [3, 2, 1, 1, 1];
+%! for i = 1:5
+%!   for j = 1:5
+%!     for k = 1:5
+%!       assert (size ([1, 2; 3, 4; 5, 6], i, j, k), [dim(i), dim(j), dim(k)])
+%!       assert (size ([1, 2; 3, 4; 5, 6], [i, j, k]), [dim(i), dim(j), dim(k)])
+%!       [a, b, c] = size ([1, 2; 3, 4; 5, 6], i, j, k);
+%!       assert (a, dim(i));
+%!       assert (b, dim(j));
+%!       assert (c, dim(k));
+%!       [a, b, c] = size ([1, 2; 3, 4; 5, 6], [i, j, k]);
+%!       assert (a, dim(i));
+%!       assert (b, dim(j));
+%!       assert (c, dim(k));
+%!     end
+%!   end
+%! end
+
+%!error <does not match number of requested dimensions>
+%! [a, b, c] = size ([1, 2; 3, 4; 5, 6], 1:4)
+*/
 
 DEFUN (size_equal, args, ,
        doc: /* -*- texinfo -*-
@@ -2811,10 +2909,10 @@ Return the number of nonzero elements in @var{a}.
 %!assert (nnz (-5:0), 5)
 %!assert (nnz (-5:5), 10)
 %!assert (nnz (-2:1:2), 4)
-%!assert (nnz (-2+eps(2):1:2), 5)
-%!assert (nnz (-2-eps(2):1:2), 5)
-%!assert (nnz (-2:1+eps(1):2), 5)
-%!assert (nnz (-2:1-eps(1):2), 5)
+%!assert (nnz (-2+eps (2):1:2), 5)
+%!assert (nnz (-2-eps (2):1:2), 5)
+%!assert (nnz (-2:1+eps (1):2), 5)
+%!assert (nnz (-2:1-eps (1):2), 5)
 %!assert (nnz ([1:5] * 0), 0)
 %!assert (nnz ([-5:-1] * 0), 0)
 %!assert (nnz ([-1:1] * 0), 0)
@@ -3646,7 +3744,7 @@ zero).
 
 /*
 ## Debian bug #706376
-%!assert (isempty (speye(2^16)), false)
+%!assert (isempty (speye (2^16)), false)
 */
 
 DEFUN (isnumeric, args, ,
@@ -3656,7 +3754,8 @@ Return true if @var{x} is a numeric object, i.e., an integer, real, or
 complex array.
 
 Logical and character arrays are not considered to be numeric.
-@seealso{isinteger, isfloat, isreal, iscomplex, ischar, islogical, isstring, iscell, isstruct, isa}
+@seealso{isinteger, isfloat, isreal, iscomplex, ischar, islogical, isstring,
+iscell, isstruct, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -3959,6 +4058,8 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
   oct_data_conv::data_type dt = oct_data_conv::dt_double;
 
   dim_vector dims (1, 1);
+  bool issparse = false;
+  bool iscomplex = false;
 
   if (nargin > 0 && args(nargin-1).is_string ())
     {
@@ -3968,13 +4069,23 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
       dt = oct_data_conv::string_to_data_type (nm);
     }
 
+  if (nargin > 1 && args(nargin-2).is_string ()
+      && args(nargin-2).string_value () == "like")
+    {
+      std::string nm = args(nargin-1).class_name ();
+      issparse = args(nargin-1).issparse ();
+      iscomplex = args(nargin-1).iscomplex ();
+      nargin -= 2;
+      dt = oct_data_conv::string_to_data_type (nm);
+    }
+
   switch (nargin)
     {
     case 0:
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -3989,13 +4100,40 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // FIXME: Perhaps this should be made extensible by using the class name
   //        to lookup a function to call to create the new value.
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
+
+  if (issparse)
+    {
+      if (dims.ndims () > 2)
+        error ("%s: sparse ND arrays not supported.", fcn);
+
+      switch (dt)
+        {
+        case oct_data_conv::dt_double:
+          if (iscomplex)
+            retval = SparseComplexMatrix (dims(0), dims(1), Complex (val, 0));
+          else
+            retval = SparseMatrix (dims(0), dims(1), static_cast<double> (val));
+          break;
+
+        case oct_data_conv::dt_logical:
+          retval = SparseBoolMatrix (dims(0), dims(1), static_cast<bool> (val));
+          break;
+
+        default:
+          // FIXME: It shouldn't be possible to ever reach this.
+          error ("%s: invalid class name for sparse", fcn);
+          break;
+        }
+
+      return retval;
+    }
 
   switch (dt)
     {
@@ -4032,16 +4170,25 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
       break;
 
     case oct_data_conv::dt_single:
-      retval = FloatNDArray (dims, val);
+      if (iscomplex)
+        retval = FloatComplexNDArray (dims, val);
+      else
+        retval = FloatNDArray (dims, val);
       break;
 
     case oct_data_conv::dt_double:
-      {
-        if (dims.ndims () == 2 && dims(0) == 1)
-          retval = Range (static_cast<double> (val), 0.0, dims(1));
-        else
-          retval = NDArray (dims, val);
-      }
+      if (iscomplex)
+        retval = ComplexNDArray (dims, Complex (val, 0));
+      else if (dims.ndims () == 2 && dims(0) == 1)
+        {
+          // FIXME: If this optimization provides a significant
+          // benefit, then maybe there should be a special storage
+          // type for constant value arrays.
+          double dval = static_cast<double> (val);
+          retval = range<double>::make_constant (dval, dims(1));
+        }
+      else
+        retval = NDArray (dims, val);
       break;
 
     case oct_data_conv::dt_logical:
@@ -4067,6 +4214,8 @@ fill_matrix (const octave_value_list& args, double val, float fval,
   oct_data_conv::data_type dt = oct_data_conv::dt_double;
 
   dim_vector dims (1, 1);
+  bool issparse = false;
+  bool iscomplex = false;
 
   if (nargin > 0 && args(nargin-1).is_string ())
     {
@@ -4076,13 +4225,27 @@ fill_matrix (const octave_value_list& args, double val, float fval,
       dt = oct_data_conv::string_to_data_type (nm);
     }
 
+  if (nargin > 1 && args(nargin-2).is_string ()
+      && args(nargin-2).string_value () == "like"
+      && (std::string(fcn) ==  "Inf"
+          || std::string(fcn) == "NaN" || std::string(fcn) == "NA"))
+    {
+      if (! args(nargin-1).isfloat ())
+        error ("%s: input followed by 'like' must be floating point", fcn);
+      std::string nm = args(nargin-1).class_name ();
+      issparse = args(nargin-1).issparse ();
+      iscomplex = args(nargin-1).iscomplex ();
+      nargin -= 2;
+      dt = oct_data_conv::string_to_data_type (nm);
+    }
+
   switch (nargin)
     {
     case 0:
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4097,20 +4260,41 @@ fill_matrix (const octave_value_list& args, double val, float fval,
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
 
+  if (issparse)
+    {
+      if (dims.ndims () > 2)
+        error ("%s: sparse ND arrays not supported", fcn);
+
+      if (iscomplex)
+        retval = SparseComplexMatrix (dims(0), dims(1), Complex (val, 0));
+      else
+        retval = SparseMatrix (dims(0), dims(1), static_cast<double> (val));
+
+      return retval;
+    }
+
   switch (dt)
     {
     case oct_data_conv::dt_single:
-      retval = FloatNDArray (dims, fval);
+      if (iscomplex)
+        retval = FloatComplexNDArray (dims, fval);
+      else
+        retval = FloatNDArray (dims, fval);
       break;
 
     case oct_data_conv::dt_double:
-      if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
-        retval = Range (val, 0.0, dims(1));  // Packed form
+      if (iscomplex)
+        retval = ComplexNDArray (dims, Complex (val, 0));
+      else if (dims.ndims () == 2 && dims(0) == 1 && math::isfinite (val))
+        // FIXME: If this optimization provides a significant benefit,
+        // then maybe there should be a special storage type for
+        // constant value arrays.
+        retval = range<double>::make_constant (val, dims(1));
       else
         retval = NDArray (dims, val);
       break;
@@ -4148,7 +4332,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4163,7 +4347,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4175,8 +4359,11 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       break;
 
     case oct_data_conv::dt_double:
-      if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
-        retval = Range (val, 0.0, dims(1));  // Packed form
+      if (dims.ndims () == 2 && dims(0) == 1 && math::isfinite (val))
+        // FIXME: If this optimization provides a significant benefit,
+        // then maybe there should be a special storage type for
+        // constant value arrays.
+        retval = range<double>::make_constant (val, dims(1));
       else
         retval = NDArray (dims, val);
       break;
@@ -4215,7 +4402,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4230,7 +4417,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4263,13 +4450,37 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
   dim_vector dims (1, 1);
 
+  // The TYPE argument is required to be "logical" if present.  This
+  // feature appears to be undocumented in Matlab.
+
+  if (nargin > 0 && args(nargin-1).is_string ())
+    {
+      std::string nm = args(nargin-1).string_value ();
+      nargin--;
+
+      if (oct_data_conv::string_to_data_type (nm) != oct_data_conv::dt_logical)
+        error ("%s: invalid data type '%s'", fcn, nm.c_str ());
+    }
+
+  bool issparse = false;
+
+  if (nargin > 1 && args(nargin-2).is_string ()
+      && args(nargin-2).string_value () == "like")
+  {
+    if (! args(nargin-1).islogical ())
+      error (R"(%s: input followed by "like" must be logical)", fcn);
+
+    issparse = args(nargin-1).issparse ();
+    nargin -= 2;
+  }
+
   switch (nargin)
     {
     case 0:
       break;
 
     case 1:
-      octave::get_dimensions (args(0), fcn, dims);
+      get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4284,23 +4495,32 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  octave::check_dimensions (dims, fcn);
+  check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
 
-  retval = boolNDArray (dims, val);
+  if (issparse)
+    {
+      if (dims.ndims () > 2)
+        error ("%s: sparse ND arrays not supported", fcn);
+
+      retval = SparseBoolMatrix (dims(0), dims(1), val);
+    }
+  else
+    retval = boolNDArray (dims, val);
 
   return retval;
 }
 
 DEFUN (ones, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} ones (@var{n})
-@deftypefnx {} {} ones (@var{m}, @var{n})
-@deftypefnx {} {} ones (@var{m}, @var{n}, @var{k}, @dots{})
-@deftypefnx {} {} ones ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {} ones (@dots{}, @var{class})
+@deftypefn  {} {@var{val} =} ones (@var{n})
+@deftypefnx {} {@var{val} =} ones (@var{m}, @var{n})
+@deftypefnx {} {@var{val} =} ones (@var{m}, @var{n}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} ones ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{val} =} ones (@dots{}, "@var{like}", @var{var}))
+@deftypefnx {} {@var{val} =} ones (@dots{}, @var{class})
 Return a matrix or N-dimensional array whose elements are all 1.
 
 If invoked with a single scalar integer argument @var{n}, return a square
@@ -4315,6 +4535,9 @@ such as
 @example
 val_matrix = val * ones (m, n)
 @end example
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+will have the same data type, complexity, and sparsity as @var{var}.
 
 The optional argument @var{class} specifies the class of the return array
 and defaults to double.  For example:
@@ -4344,12 +4567,21 @@ val = ones (m,n, "uint8")
 %!assert (ones (3, 2, "int8"), int8 ([1, 1; 1, 1; 1, 1]))
 %!assert (size (ones (3, 4, 5, "int8")), [3, 4, 5])
 
+%!assert (ones (2, 2, "like", double (1)), double ([1, 1; 1, 1]))
+%!assert (ones (2, 2, "like", complex (ones (2, 2))), [1, 1; 1, 1])
+%!assert (ones (1, 2, "like", single (1)), single ([1, 1]))
+%!assert (ones (1, "like", single (1i)), single (1))
+%!assert (ones (2, 2, "like", uint8 (8)), uint8 ([1, 1; 1, 1]))
+%!assert (ones (2, "like", speye (2)), sparse ([1, 1; 1, 1]))
+%!assert (ones (2, "like", sparse (1i)), sparse (complex ([1, 1; 1, 1])))
+
 %!assert (size (ones (1, -2, 2)), [1, 0, 2])
 
 ## Test input validation
 %!error <conversion of 1.1 .*failed> ones (1.1)
 %!error <conversion of 1.1 .*failed> ones (1, 1.1)
 %!error <conversion of 1.1 .*failed> ones ([1, 1.1])
+%!error <sparse ND .* not supported> ones (3, 3, 3, "like", speye (1))
 */
 
 /*
@@ -4371,11 +4603,12 @@ val = ones (m,n, "uint8")
 
 DEFUN (zeros, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} zeros (@var{n})
-@deftypefnx {} {} zeros (@var{m}, @var{n})
-@deftypefnx {} {} zeros (@var{m}, @var{n}, @var{k}, @dots{})
-@deftypefnx {} {} zeros ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {} zeros (@dots{}, @var{class})
+@deftypefn  {} {@var{val} =} zeros (@var{n})
+@deftypefnx {} {@var{val} =} zeros (@var{m}, @var{n})
+@deftypefnx {} {@var{val} =} zeros (@var{m}, @var{n}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} zeros ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{val} =} zeros (@dots{}, "@var{like}", @var{var}))
+@deftypefnx {} {@var{val} =} zeros (@dots{}, @var{class})
 Return a matrix or N-dimensional array whose elements are all 0.
 
 If invoked with a single scalar integer argument, return a square
@@ -4383,6 +4616,9 @@ If invoked with a single scalar integer argument, return a square
 
 If invoked with two or more scalar integer arguments, or a vector of integer
 values, return an array with the given dimensions.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+will have the same data type, complexity, and sparsity as @var{var}.
 
 The optional argument @var{class} specifies the class of the return array
 and defaults to double.  For example:
@@ -4402,6 +4638,13 @@ val = zeros (m,n, "uint8")
 %!assert (zeros (3, 2), [0, 0; 0, 0; 0, 0])
 %!assert (size (zeros (3, 4, 5)), [3, 4, 5])
 
+%!assert (zeros (2, 2, "like", double (1)), double ([0, 0; 0, 0]))
+%!assert (zeros (2, 2, "like", complex (ones (2, 2))), [0, 0; 0, 0])
+%!assert (zeros (1, 2, "like", single (1)), single ([0, 0]))
+%!assert (zeros (1, 2, "like", single (1i)), single ([0, 0]))
+%!assert (zeros (2, 2, "like", uint8 (8)), uint8 ([0, 0; 0, 0]))
+%!assert (zeros (2, "like", speye (2)), sparse ([0, 0; 0, 0]))
+
 %!assert (zeros (3, "single"), single ([0, 0, 0; 0, 0, 0; 0, 0, 0]))
 %!assert (zeros (2, 3, "single"), single ([0, 0, 0; 0, 0, 0]))
 %!assert (zeros (3, 2, "single"), single ([0, 0; 0, 0; 0, 0]))
@@ -4419,6 +4662,7 @@ val = zeros (m,n, "uint8")
 %!error <conversion of 1.1 .*failed> zeros ([1, 1.1])
 %!error <conversion of 1.1 .*failed> zeros (1, 1.1, 2)
 %!error <conversion of 1.1 .*failed> zeros ([1, 1.1, 2])
+%!error <sparse ND .* not supported> zeros (3, 3, 3, "like", speye (1))
 */
 
 DEFUN (Inf, args, ,
@@ -4466,20 +4710,30 @@ either @qcode{"double"} or @qcode{"single"}.
 DEFALIAS (inf, Inf);
 
 /*
-%!assert (inf (3), [Inf, Inf, Inf; Inf, Inf, Inf; Inf, Inf, Inf])
-%!assert (inf (2, 3), [Inf, Inf, Inf; Inf, Inf, Inf])
-%!assert (inf (3, 2), [Inf, Inf; Inf, Inf; Inf, Inf])
-%!assert (size (inf (3, 4, 5)), [3, 4, 5])
+%!assert (Inf (3), [Inf, Inf, Inf; Inf, Inf, Inf; Inf, Inf, Inf])
+%!assert (Inf (2, 3), [Inf, Inf, Inf; Inf, Inf, Inf])
+%!assert (Inf (3, 2), [Inf, Inf; Inf, Inf; Inf, Inf])
+%!assert (size (Inf (3, 4, 5)), [3, 4, 5])
 
-%!assert (inf (3, "single"), single ([Inf, Inf, Inf; Inf, Inf, Inf; Inf, Inf, Inf]))
-%!assert (inf (2, 3, "single"), single ([Inf, Inf, Inf; Inf, Inf, Inf]))
-%!assert (inf (3, 2, "single"), single ([Inf, Inf; Inf, Inf; Inf, Inf]))
+%!assert (Inf (3, "single"), single ([Inf, Inf, Inf; Inf, Inf, Inf; Inf, Inf, Inf]))
+%!assert (Inf (2, 3, "single"), single ([Inf, Inf, Inf; Inf, Inf, Inf]))
+%!assert (Inf (3, 2, "single"), single ([Inf, Inf; Inf, Inf; Inf, Inf]))
 %!assert (size (inf (3, 4, 5, "single")), [3, 4, 5])
 
-%!error (inf (3, "int8"))
-%!error (inf (2, 3, "int8"))
-%!error (inf (3, 2, "int8"))
-%!error (inf (3, 4, 5, "int8"))
+%!assert (Inf (2, 2, "like", speye (2)), sparse ([Inf, Inf; Inf, Inf]))
+%!assert (Inf (2, 2, "like", complex (ones (2, 2))), [Inf, Inf; Inf, Inf])
+%!assert (Inf (2, 2, "like", double (1)), double ([Inf, Inf; Inf, Inf]))
+%!assert (Inf (3, 3, "like", single (1)), single ([Inf, Inf, Inf; Inf, Inf, Inf; Inf, Inf, Inf]))
+%!assert (Inf (2, "like", single (1i)), single ([Inf, Inf; Inf, Inf]))
+
+%!error Inf (3, "like", int8 (1))
+
+%!error Inf (3, "int8")
+%!error Inf (2, 3, "int8")
+%!error Inf (3, 2, "int8")
+%!error Inf (3, 4, 5, "int8")
+%!error <input .* floating> Inf (3, 3, "like", true)
+%!error <input .* floating> Inf (2, "like", uint8 (1))
 */
 
 DEFUN (NaN, args, ,
@@ -4487,11 +4741,12 @@ DEFUN (NaN, args, ,
 @c List other form of function in documentation index
 @findex nan
 
-@deftypefn  {} {} NaN
-@deftypefnx {} {} NaN (@var{n})
-@deftypefnx {} {} NaN (@var{n}, @var{m})
-@deftypefnx {} {} NaN (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {} NaN (@dots{}, @var{class})
+@deftypefn  {} {@var{val} =} NaN
+@deftypefnx {} {@var{val} =} NaN (@var{n})
+@deftypefnx {} {@var{val} =} NaN (@var{n}, @var{m})
+@deftypefnx {} {@var{val} =} NaN (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} NaN (@dots{}, "@var{like}", @var{var}))
+@deftypefnx {} {@var{val} =} NaN (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the IEEE symbol NaN (Not a Number).
 
@@ -4519,6 +4774,9 @@ When called with more than one scalar argument the first two arguments are
 taken as the number of rows and columns and any further arguments specify
 additional matrix dimensions.
 
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+will have the same data type, complexity, and sparsity as @var{var}.
+
 The optional argument @var{class} specifies the return type and may be
 either @qcode{"double"} or @qcode{"single"}.
 @seealso{isnan, Inf}
@@ -4541,10 +4799,20 @@ DEFALIAS (nan, NaN);
 %!assert (NaN (3, 2, "single"), single ([NaN, NaN; NaN, NaN; NaN, NaN]))
 %!assert (size (NaN (3, 4, 5, "single")), [3, 4, 5])
 
-%!error (NaN (3, "int8"))
-%!error (NaN (2, 3, "int8"))
-%!error (NaN (3, 2, "int8"))
-%!error (NaN (3, 4, 5, "int8"))
+%!assert (NaN (2, 2, "like", double (1)), double ([NaN, NaN; NaN, NaN]))
+%!assert (NaN (2, 2, "like", complex (ones(2, 2))), [NaN, NaN; NaN, NaN])
+%!assert (NaN (3, 3, "like", single (1)), single ([NaN, NaN, NaN; NaN, NaN, NaN; NaN, NaN, NaN]))
+%!assert (NaN (2, "like", single (1i)), single ([NaN, NaN; NaN, NaN]))
+%!assert (NaN (2, 2, "like", speye (2)), sparse ([NaN, NaN; NaN, NaN]))
+
+%!error NaN (3, 'like', int8 (1))
+
+%!error NaN (3, "int8")
+%!error NaN (2, 3, "int8")
+%!error NaN (3, 2, "int8")
+%!error NaN (3, 4, 5, "int8")
+%!error <input .* floating> NaN (3, 3, "like", true)
+%!error <input .* floating> NaN (2, "like", uint8 (1))
 */
 
 DEFUN (e, args, ,
@@ -4597,14 +4865,14 @@ eps (const T& x)
   for (octave_idx_type i = 0; i < x.numel (); i++)
     {
       P val = epsval.xelem (i);
-      if (octave::math::isnan (val) || octave::math::isinf (val))
-        epsval(i) = octave::numeric_limits<P>::NaN ();
+      if (math::isnan (val) || math::isinf (val))
+        epsval(i) = numeric_limits<P>::NaN ();
       else if (val < std::numeric_limits<P>::min ())
         epsval(i) = std::numeric_limits<P>::denorm_min ();
       else
         {
           int exponent;
-          octave::math::frexp (val, &exponent);
+          math::frexp (val, &exponent);
           const P digits = std::numeric_limits<P>::digits;
           epsval(i) = std::pow (static_cast<P> (2.0),
                                 static_cast<P> (exponent - digits));
@@ -4871,11 +5139,12 @@ DEFALIAS (j, I);
 
 DEFUN (NA, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} NA
-@deftypefnx {} {} NA (@var{n})
-@deftypefnx {} {} NA (@var{n}, @var{m})
-@deftypefnx {} {} NA (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {} NA (@dots{}, @var{class})
+@deftypefn  {} {@var{val} =} NA
+@deftypefnx {} {@var{val} =} NA (@var{n})
+@deftypefnx {} {@var{val} =} NA (@var{n}, @var{m})
+@deftypefnx {} {@var{val} =} NA (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} NA (@dots{}, "@var{like}", @var{var}))
+@deftypefnx {} {@var{val} =} NA (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the special constant used to designate missing values.
 
@@ -4890,6 +5159,9 @@ dimension specified.
 When called with more than one scalar argument the first two arguments are
 taken as the number of rows and columns and any further arguments specify
 additional matrix dimensions.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+will have the same data type, complexity, and sparsity as @var{var}.
 
 The optional argument @var{class} specifies the return type and may be
 either @qcode{"double"} or @qcode{"single"}.
@@ -4907,9 +5179,10 @@ either @qcode{"double"} or @qcode{"single"}.
 
 DEFUN (false, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} false (@var{x})
-@deftypefnx {} {} false (@var{n}, @var{m})
-@deftypefnx {} {} false (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefn  {} {@var{val} =} false (@var{x})
+@deftypefnx {} {@var{val} =} false (@var{n}, @var{m})
+@deftypefnx {} {@var{val} =} false (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} false (@dots{}, "@var{like}", @var{var}))
 Return a matrix or N-dimensional array whose elements are all logical 0.
 
 If invoked with a single scalar integer argument, return a square
@@ -4917,17 +5190,31 @@ matrix of the specified size.
 
 If invoked with two or more scalar integer arguments, or a vector of integer
 values, return an array with given dimensions.
+
+If a logical variable @var{var} is specified after @qcode{"like"}, the output
+@var{val} will have the same sparsity as @var{var}.
 @seealso{true}
 @end deftypefn */)
 {
   return fill_matrix (args, false, "false");
 }
 
+/*
+%!assert (false (2, 3), logical (zeros (2, 3)))
+%!assert (false (2, 3, "logical"), logical (zeros (2, 3)))
+%!assert (false (2, 1, "like", true), [false; false])
+%!assert (false (2, 1, "like", sparse (true)), sparse ([false; false]))
+
+%!error false (2, 3, "double")
+%!error <input .* logical> false (2, 1, "like", sparse (1))
+*/
+
 DEFUN (true, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} true (@var{x})
-@deftypefnx {} {} true (@var{n}, @var{m})
-@deftypefnx {} {} true (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefn  {} {@var{val} =} true (@var{x})
+@deftypefnx {} {@var{val} =} true (@var{n}, @var{m})
+@deftypefnx {} {@var{val} =} true (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{val} =} true (@dots{}, "@var{like}", @var{var}))
 Return a matrix or N-dimensional array whose elements are all logical 1.
 
 If invoked with a single scalar integer argument, return a square
@@ -4935,11 +5222,24 @@ matrix of the specified size.
 
 If invoked with two or more scalar integer arguments, or a vector of integer
 values, return an array with given dimensions.
+
+If a logical variable @var{var} is specified after @qcode{"like"}, the output
+@var{val} will have the same sparsity as @var{var}.
 @seealso{false}
 @end deftypefn */)
 {
   return fill_matrix (args, true, "true");
 }
+
+/*
+%!assert (true (2, 3), logical (ones (2, 3)))
+%!assert (true (2, 3, "logical"), logical (ones (2, 3)))
+%!assert (true (2, 1, "like", false), [true; true])
+%!assert (true (2, 1, "like", sparse (true)), sparse ([true; true]))
+
+%!error true (2, 3, "double")
+%!error <input .* logical> true (2, 1, "like", double (1))
+*/
 
 template <typename MT>
 octave_value
@@ -5126,14 +5426,14 @@ definitions are for compatibility with @sc{matlab}.
   else if (nargin == 1)
     {
       octave_idx_type nr, nc;
-      octave::get_dimensions (args(0), "eye", nr, nc);
+      get_dimensions (args(0), "eye", nr, nc);
 
       retval = identity_matrix (nr, nc, dt);
     }
   else
     {
       octave_idx_type nr, nc;
-      octave::get_dimensions (args(0), args(1), "eye", nr, nc);
+      get_dimensions (args(0), args(1), "eye", nr, nc);
 
       retval = identity_matrix (nr, nc, dt);
     }
@@ -5809,9 +6109,9 @@ compute the norms of each column and return a row vector.
       if (str == "fro")
         p_arg = octave_value (2);
       else if (str == "inf")
-        p_arg = octave::numeric_limits<double>::Inf ();
+        p_arg = numeric_limits<double>::Inf ();
       else if (str == "-inf")
-        p_arg = -octave::numeric_limits<double>::Inf ();
+        p_arg = -numeric_limits<double>::Inf ();
       else
         error ("norm: unrecognized option: %s", str.c_str ());
     }
@@ -5839,11 +6139,11 @@ compute the norms of each column and return a row vector.
       break;
 
     case sfinf:
-      retval = xnorm (x_arg, octave::numeric_limits<double>::Inf ());
+      retval = xnorm (x_arg, numeric_limits<double>::Inf ());
       break;
 
     case sfneginf:
-      retval = xnorm (x_arg, -octave::numeric_limits<double>::Inf ());
+      retval = xnorm (x_arg, -numeric_limits<double>::Inf ());
       break;
     }
 
@@ -5946,7 +6246,7 @@ unary_op_defun_body (octave_value::unary_op op,
   if (args.length () != 1)
     print_usage ();
 
-  return do_unary_op (op, args(0));
+  return unary_op (op, args(0));
 }
 
 DEFUN (not, args, ,
@@ -6052,7 +6352,7 @@ binary_op_defun_body (octave_value::binary_op op,
   if (args.length () != 2)
     print_usage ();
 
-  return do_binary_op (op, args(0), args(1));
+  return binary_op (op, args(0), args(1));
 }
 
 static octave_value
@@ -6068,10 +6368,10 @@ binary_assoc_op_defun_body (octave_value::binary_op op,
   octave_value retval;
 
   if (nargin == 2)
-    retval = do_binary_op (op, args(0), args(1));
+    retval = binary_op (op, args(0), args(1));
   else
     {
-      retval = do_binary_op (op, args(0), args(1));
+      retval = binary_op (op, args(0), args(1));
 
       for (int i = 2; i < nargin; i++)
         retval.assign (aop, args(i));
@@ -6174,7 +6474,7 @@ DEFUN (mldivide, args, ,
 @deftypefn {} {} mldivide (@var{x}, @var{y})
 Return the matrix left division of @var{x} and @var{y}.
 
-This function and @w{@tcode{@var{x} @xbackslashchar{} @var{y}}} are equivalent.
+This function and @w{@tcode{@var{x} @backslashchar{} @var{y}}} are equivalent.
 
 If the system is not square, or if the coefficient matrix is singular, a
 minimum norm solution is computed.
@@ -6304,7 +6604,7 @@ DEFUN (ldivide, args, ,
 @deftypefn {} {} ldivide (@var{x}, @var{y})
 Return the element-by-element left division of @var{x} and @var{y}.
 
-This function and @w{@tcode{@var{x} .@xbackslashchar{} @var{y}}} are
+This function and @w{@tcode{@var{x} .@backslashchar{} @var{y}}} are
 equivalent.
 @seealso{rdivide, mldivide, times, plus}
 @end deftypefn */)
@@ -6372,8 +6672,9 @@ This function is equivalent to the operator syntax
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  return (nargin == 2 ? do_colon_op (args(0), args(1))
-                      : do_colon_op (args(0), args(1), args(2)));
+  return (nargin == 2
+          ? colon_op (args(0), args(1))
+          : colon_op (args(0), args(1), args(2)));
 }
 
 static double tic_toc_timestamp = -1.0;
@@ -6434,7 +6735,7 @@ This may include time spent processing other jobs or doing nothing at all.
     warning ("tic: ignoring extra arguments");
 
   octave_value retval;
-  octave::sys::time now;
+  sys::time now;
   double tmp = now.double_value ();
 
   if (nargout > 0)
@@ -6492,9 +6793,9 @@ seconds elapsed since the timer @var{id} was initialized.
     }
 
   if (start_time < 0)
-    error ("toc called before timer set");
+    error ("toc: function called before timer initialization with tic()");
 
-  octave::sys::time now;
+  sys::time now;
 
   double etime = now.double_value () - start_time;
 
@@ -6536,7 +6837,7 @@ CPU time used is nonzero.
   if (args.length () != 0)
     print_usage ();
 
-  octave::sys::cpu_time cpu_tm;
+  sys::cpu_time cpu_tm;
 
   double usr = cpu_tm.user ();
   double sys = cpu_tm.system ();
@@ -7143,9 +7444,9 @@ the ratio K/M is small; otherwise, it may be better to use @code{sort}.
             err_wrong_type_arg ("nth_element", argx);
         }
     }
-  catch (const octave::index_exception& e)
+  catch (const index_exception& ie)
     {
-      error ("nth_element: invalid index %s", e.what ());
+      error ("nth_element: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -7216,8 +7517,8 @@ Undocumented internal function.
 
       if (vals.is_range ())
         {
-          Range r = vals.range_value ();
-          if (r.inc () == 0)
+          range<double> r = vals.range_value ();
+          if (r.increment () == 0)
             vals = r.base ();
         }
 
@@ -7242,9 +7543,9 @@ Undocumented internal function.
       else
         err_wrong_type_arg ("accumarray", vals);
     }
-  catch (const octave::index_exception& e)
+  catch (const index_exception& ie)
     {
-      error ("__accumarray_sum__: invalid index %s", e.what ());
+      error ("__accumarray_sum__: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -7353,9 +7654,9 @@ do_accumarray_minmax_fun (const octave_value_list& args,
           err_wrong_type_arg ("accumarray", vals);
         }
     }
-  catch (const octave::index_exception& e)
+  catch (const index_exception& ie)
     {
-      error ("do_accumarray_minmax_fun: invalid index %s", e.what ());
+      error ("do_accumarray_minmax_fun: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -7460,9 +7761,9 @@ Undocumented internal function.
       else
         err_wrong_type_arg ("accumdim", vals);
     }
-  catch (const octave::index_exception& e)
+  catch (const index_exception& ie)
     {
-      error ("__accumdim_sum__: invalid index %s", e.what ());
+      error ("__accumdim_sum__: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -7962,7 +8263,7 @@ DEFUN (base64_encode, args, ,
 Encode a double matrix or array @var{x} into the base64 format string
 @var{s}.
 
-@seealso{base64_decode}
+@seealso{base64_decode, matlab.net.base64decode, matlab.net.base64encode}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -7978,18 +8279,18 @@ Encode a double matrix or array @var{x} into the base64 format string
 
   if (args(0).isinteger ())
     {
-#define MAKE_INT_BRANCH(X)                                               \
-      if (args(0).is_ ## X ## _type ())                                  \
-        {                                                                \
-          const X##NDArray in = args(0).  X## _array_value ();           \
-          std::size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char);  \
+#define MAKE_INT_BRANCH(X)                                              \
+      if (args(0).is_ ## X ## _type ())                                 \
+        {                                                               \
+          const X##NDArray in = args(0).  X## _array_value ();          \
+          std::size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char); \
           const char *inc = reinterpret_cast<const char *> (in.data ()); \
-          char *out;                                                     \
-          if (octave::base64_encode (inc, inlen, &out))                  \
-            {                                                            \
-              retval(0) = octave_value (out);                            \
-              ::free (out);                                              \
-            }                                                            \
+          char *out;                                                    \
+          if (base64_encode (inc, inlen, &out))                         \
+            {                                                           \
+              retval(0) = octave_value (out);                           \
+              ::free (out);                                             \
+            }                                                           \
         }
 
       MAKE_INT_BRANCH(int8)
@@ -8014,7 +8315,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       const char*  inc;
       inc = reinterpret_cast<const char *> (in.data ());
       char *out;
-      if (octave::base64_encode (inc, inlen, &out))
+      if (base64_encode (inc, inlen, &out))
         {
           retval(0) = octave_value (out);
           ::free (out);
@@ -8028,7 +8329,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       const char*  inc;
       inc = reinterpret_cast<const char *> (in.data ());
       char *out;
-      if (octave::base64_encode (inc, inlen, &out))
+      if (base64_encode (inc, inlen, &out))
         {
           retval(0) = octave_value (out);
           ::free (out);
@@ -8070,7 +8371,7 @@ Decode the double matrix or array @var{x} from the base64 encoded string
 
 The optional input parameter @var{dims} should be a vector containing the
 dimensions of the decoded array.
-@seealso{base64_encode}
+@seealso{base64_encode, matlab.net.base64decode, matlab.net.base64encode}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -8080,7 +8381,7 @@ dimensions of the decoded array.
 
   std::string str = args(0).string_value ();
 
-  Array<double> retval = octave::base64_decode (str);
+  Array<double> retval = base64_decode (str);
 
   if (nargin == 2)
     {
@@ -8116,3 +8417,59 @@ dimensions of the decoded array.
 %!error <input was not valid base64> base64_decode ("AQ=")
 %!error <incorrect input size> base64_decode ("AQ==")
 */
+
+DEFUN (__base64_decode_bytes__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{x} =} base64_decode_bytes (@var{s})
+@deftypefnx {} {@var{x} =} base64_decode_bytes (@var{s}, @var{dims})
+Decode the uint8 matrix or array @var{x} from the base64 encoded string
+@var{s}.
+
+The optional input parameter @var{dims} should be a vector containing the
+dimensions of the decoded array.
+@seealso{base64_decode}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string str = args(0).string_value ();
+
+  intNDArray<octave_uint8> retval = base64_decode_bytes (str);
+
+  if (nargin == 2)
+    {
+      dim_vector dims;
+
+      const Array<octave_idx_type> size
+        = args(1).octave_idx_type_vector_value ();
+
+      dims = dim_vector::alloc (size.numel ());
+      for (octave_idx_type i = 0; i < size.numel (); i++)
+        dims(i) = size(i);
+
+      retval = retval.reshape (dims);
+    }
+
+  return ovl (retval);
+}
+
+/*
+%!assert (__base64_decode_bytes__ (base64_encode (uint8 (1))), uint8 (1))
+
+%!test
+%! in   = uint8 (rand (10)*255);
+%! outv = __base64_decode_bytes__ (base64_encode (in));
+%! outm = __base64_decode_bytes__ (base64_encode (in), size (in));
+%! assert (outv, in(:).');
+%! assert (outm, in);
+
+%!error __base64_decode_bytes__ ()
+%!error __base64_decode_bytes__ (1,2,3)
+%!error __base64_decode_bytes__ (1, "this is not a valid set of dimensions")
+%!error <input was not valid base64> __base64_decode_bytes__ (1)
+*/
+
+OCTAVE_NAMESPACE_END

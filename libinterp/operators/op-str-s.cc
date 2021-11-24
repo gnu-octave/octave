@@ -35,6 +35,8 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFASSIGNOP (assign, char_matrix_str, octave_scalar)
 {
   octave_char_matrix_str& v1 = dynamic_cast<octave_char_matrix_str&> (a1);
@@ -67,3 +69,5 @@ install_str_s_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_scalar, octave_char_matrix_str, s_str);
   INSTALL_CATOP_TI (ti, octave_scalar, octave_char_matrix_sq_str, s_str);
 }
+
+OCTAVE_NAMESPACE_END

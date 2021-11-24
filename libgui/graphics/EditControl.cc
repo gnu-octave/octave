@@ -36,7 +36,7 @@
 
 #include "octave-qobject.h"
 
-namespace QtHandles
+namespace octave
 {
 
   EditControl*
@@ -85,16 +85,20 @@ namespace QtHandles
 
     uicontrol::properties& up = properties<uicontrol> ();
 
+    if (up.enable_is ("inactive"))
+      edit->setReadOnly (true);
+    else
+      edit->setEnabled (up.enable_is ("on"));
     edit->setText (Utils::fromStdString (up.get_string_string ()));
     edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                                             up.get_verticalalignment ()));
 
-    connect (edit, SIGNAL (textEdited (const QString&)),
-             SLOT (textChanged (void)));
-    connect (edit, SIGNAL (editingFinished (void)),
-             SLOT (editingFinished (void)));
-    connect (edit, SIGNAL (returnPressed (void)),
-             SLOT (returnPressed (void)));
+    connect (edit, &QLineEdit::textEdited,
+             this, &EditControl::textChanged);
+    connect (edit, &QLineEdit::editingFinished,
+             this, &EditControl::editingFinished);
+    connect (edit, &QLineEdit::returnPressed,
+             this, &EditControl::returnPressed);
   }
 
   EditControl::EditControl (octave::base_qobject& oct_qobj,
@@ -117,16 +121,22 @@ namespace QtHandles
 
     uicontrol::properties& up = properties<uicontrol> ();
 
+    if (up.enable_is ("inactive"))
+      edit->setReadOnly (true);
+    else
+      edit->setEnabled (up.enable_is ("on"));
     edit->setAcceptRichText (false);
     edit->setPlainText (Utils::fromStringVector
                         (up.get_string_vector ()).join ("\n"));
+    edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
+                                            up.get_verticalalignment ()));
 
-    connect (edit, SIGNAL (textChanged (void)),
-             SLOT (textChanged (void)));
-    connect (edit, SIGNAL (editingFinished (void)),
-             SLOT (editingFinished (void)));
-    connect (edit, SIGNAL (returnPressed (void)),
-             SLOT (returnPressed (void)));
+    connect (edit, &TextEdit::textChanged,
+             this, &EditControl::textChanged);
+    connect (edit, &TextEdit::editingFinished,
+             this, &EditControl::editingFinished);
+    connect (edit, &TextEdit::returnPressed,
+             this, &EditControl::returnPressed);
   }
 
   EditControl::~EditControl (void)
@@ -177,6 +187,16 @@ namespace QtHandles
                                                 up.get_verticalalignment ()));
         return true;
 
+      case uicontrol::properties::ID_ENABLE:
+        if (up.enable_is ("inactive"))
+          edit->setReadOnly (true);
+        else
+          {
+            edit->setReadOnly (false);
+            edit->setEnabled (up.enable_is ("on"));
+          }
+        return true;
+
       case uicontrol::properties::ID_MIN:
       case uicontrol::properties::ID_MAX:
         if ((up.get_max () - up.get_min ()) > 1)
@@ -206,6 +226,22 @@ namespace QtHandles
       case uicontrol::properties::ID_STRING:
         edit->setPlainText (Utils::fromStringVector
                             (up.get_string_vector ()).join ("\n"));
+        return true;
+
+      case uicontrol::properties::ID_HORIZONTALALIGNMENT:
+      case uicontrol::properties::ID_VERTICALALIGNMENT:
+        edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
+                                                up.get_verticalalignment ()));
+        return true;
+
+      case uicontrol::properties::ID_ENABLE:
+        if (up.enable_is ("inactive"))
+          edit->setReadOnly (true);
+        else
+          {
+            edit->setReadOnly (false);
+            edit->setEnabled (up.enable_is ("on"));
+          }
         return true;
 
       case uicontrol::properties::ID_MIN:

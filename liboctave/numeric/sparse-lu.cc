@@ -127,28 +127,28 @@ namespace octave
     // SparseMatrix Specialization.
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_defaults<double> (double *Control)
     {
       UMFPACK_DNAME (defaults) (Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_free_numeric<double> (void **Numeric)
     {
       UMFPACK_DNAME (free_numeric) (Numeric);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_free_symbolic<double> (void **Symbolic)
     {
       UMFPACK_DNAME (free_symbolic) (Symbolic);
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_get_lunz<double>
     (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric)
     {
@@ -160,7 +160,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_get_numeric<double>
     (octave_idx_type *Lp, octave_idx_type *Lj, double *Lx,
      octave_idx_type *Up, octave_idx_type *Ui, double *Ux,
@@ -178,7 +178,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_numeric<double>
     (const octave_idx_type *Ap, const octave_idx_type *Ai,
      const double *Ax, void *Symbolic, void **Numeric,
@@ -190,7 +190,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_qsymbolic<double>
     (octave_idx_type n_row, octave_idx_type n_col, const octave_idx_type *Ap,
      const octave_idx_type *Ai, const double *Ax,
@@ -205,21 +205,21 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_control<double> (const double *Control)
     {
       UMFPACK_DNAME (report_control) (Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_info<double> (const double *Control, const double *Info)
     {
       UMFPACK_DNAME (report_info) (Control, Info);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_matrix<double>
     (octave_idx_type n_row, octave_idx_type n_col, const octave_idx_type *Ap,
      const octave_idx_type *Ai, const double *Ax, octave_idx_type col_form,
@@ -232,14 +232,14 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_numeric<double> (void *Numeric, const double *Control)
     {
       UMFPACK_DNAME (report_numeric) (Numeric, Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_perm<double>
     (octave_idx_type np, const octave_idx_type *Perm, const double *Control)
     {
@@ -247,14 +247,14 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_status<double> (double *Control, octave_idx_type status)
     {
       UMFPACK_DNAME (report_status) (Control, status);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_symbolic<double> (void *Symbolic, const double *Control)
     {
       UMFPACK_DNAME (report_symbolic) (Symbolic, Control);
@@ -263,28 +263,28 @@ namespace octave
     // SparseComplexMatrix specialization.
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_defaults<Complex> (double *Control)
     {
       UMFPACK_ZNAME (defaults) (Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_free_numeric<Complex> (void **Numeric)
     {
       UMFPACK_ZNAME (free_numeric) (Numeric);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_free_symbolic<Complex> (void **Symbolic)
     {
       UMFPACK_ZNAME (free_symbolic) (Symbolic);
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_get_lunz<Complex>
     (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric)
     {
@@ -296,7 +296,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_get_numeric<Complex>
     (octave_idx_type *Lp, octave_idx_type *Lj, Complex *Lz,
      octave_idx_type *Up, octave_idx_type *Ui, Complex *Uz,
@@ -317,7 +317,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_numeric<Complex>
     (const octave_idx_type *Ap, const octave_idx_type *Ai,
      const Complex *Az, void *Symbolic, void **Numeric,
@@ -330,7 +330,7 @@ namespace octave
     }
 
     template <>
-    inline octave_idx_type
+    inline OCTAVE_API octave_idx_type
     umfpack_qsymbolic<Complex>
     (octave_idx_type n_row, octave_idx_type n_col,
      const octave_idx_type *Ap, const octave_idx_type *Ai,
@@ -346,21 +346,21 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_control<Complex> (const double *Control)
     {
       UMFPACK_ZNAME (report_control) (Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_info<Complex> (const double *Control, const double *Info)
     {
       UMFPACK_ZNAME (report_info) (Control, Info);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_matrix<Complex>
     (octave_idx_type n_row, octave_idx_type n_col,
      const octave_idx_type *Ap, const octave_idx_type *Ai,
@@ -374,14 +374,14 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_numeric<Complex> (void *Numeric, const double *Control)
     {
       UMFPACK_ZNAME (report_numeric) (Numeric, Control);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_perm<Complex>
     (octave_idx_type np, const octave_idx_type *Perm, const double *Control)
     {
@@ -389,14 +389,14 @@ namespace octave
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_status<Complex> (double *Control, octave_idx_type status)
     {
       UMFPACK_ZNAME (report_status) (Control, status);
     }
 
     template <>
-    inline void
+    inline OCTAVE_API void
     umfpack_report_symbolic <Complex> (void *Symbolic, const double *Control)
     {
       UMFPACK_ZNAME (report_symbolic) (Symbolic, Control);
@@ -407,7 +407,7 @@ namespace octave
     template <typename lu_type>
     sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
                                    bool scale)
-      : Lfact (), Ufact (), Rfact (), cond (0), P (), Q ()
+      : m_L (), m_U (), m_R (), m_cond (0), m_P (), m_Q ()
     {
 #if defined (HAVE_UMFPACK)
       octave_idx_type nr = a.rows ();
@@ -418,7 +418,7 @@ namespace octave
       double *control = Control.fortran_vec ();
       umfpack_defaults<lu_elt_type> (control);
 
-      double tmp = octave_sparse_params::get_key ("spumoni");
+      double tmp = sparse_params::get_key ("spumoni");
       if (! math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
@@ -434,17 +434,17 @@ namespace octave
         }
       else
         {
-          tmp = octave_sparse_params::get_key ("piv_tol");
+          tmp = sparse_params::get_key ("piv_tol");
           if (! math::isnan (tmp))
             Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
-          tmp = octave_sparse_params::get_key ("sym_tol");
+          tmp = sparse_params::get_key ("sym_tol");
           if (! math::isnan (tmp))
             Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
         }
 
       // Set whether we are allowed to modify Q or not
-      tmp = octave_sparse_params::get_key ("autoamd");
+      tmp = sparse_params::get_key ("autoamd");
       if (! math::isnan (tmp))
         Control (UMFPACK_FIXQ) = tmp;
 
@@ -489,7 +489,7 @@ namespace octave
                                                  &Numeric, control, info);
           umfpack_free_symbolic<lu_elt_type> (&Symbolic);
 
-          cond = Info (UMFPACK_RCOND);
+          m_cond = Info (UMFPACK_RCOND);
 
           if (status < 0)
             {
@@ -523,39 +523,39 @@ namespace octave
                   octave_idx_type n_inner = (nr < nc ? nr : nc);
 
                   if (lnz < 1)
-                    Lfact = lu_type (n_inner, nr,
-                                     static_cast<octave_idx_type> (1));
+                    m_L = lu_type (n_inner, nr,
+                                       static_cast<octave_idx_type> (1));
                   else
-                    Lfact = lu_type (n_inner, nr, lnz);
+                    m_L = lu_type (n_inner, nr, lnz);
 
-                  octave_idx_type *Ltp = Lfact.cidx ();
-                  octave_idx_type *Ltj = Lfact.ridx ();
-                  lu_elt_type *Ltx = Lfact.data ();
+                  octave_idx_type *Ltp = m_L.cidx ();
+                  octave_idx_type *Ltj = m_L.ridx ();
+                  lu_elt_type *Ltx = m_L.data ();
 
                   if (unz < 1)
-                    Ufact = lu_type (n_inner, nc,
-                                     static_cast<octave_idx_type> (1));
+                    m_U = lu_type (n_inner, nc,
+                                       static_cast<octave_idx_type> (1));
                   else
-                    Ufact = lu_type (n_inner, nc, unz);
+                    m_U = lu_type (n_inner, nc, unz);
 
-                  octave_idx_type *Up = Ufact.cidx ();
-                  octave_idx_type *Uj = Ufact.ridx ();
-                  lu_elt_type *Ux = Ufact.data ();
+                  octave_idx_type *Up = m_U.cidx ();
+                  octave_idx_type *Uj = m_U.ridx ();
+                  lu_elt_type *Ux = m_U.data ();
 
-                  Rfact = SparseMatrix (nr, nr, nr);
+                  m_R = SparseMatrix (nr, nr, nr);
                   for (octave_idx_type i = 0; i < nr; i++)
                     {
-                      Rfact.xridx (i) = i;
-                      Rfact.xcidx (i) = i;
+                      m_R.xridx (i) = i;
+                      m_R.xcidx (i) = i;
                     }
-                  Rfact.xcidx (nr) = nr;
-                  double *Rx = Rfact.data ();
+                  m_R.xcidx (nr) = nr;
+                  double *Rx = m_R.data ();
 
-                  P.resize (dim_vector (nr, 1));
-                  octave_idx_type *p = P.fortran_vec ();
+                  m_P.resize (dim_vector (nr, 1));
+                  octave_idx_type *p = m_P.fortran_vec ();
 
-                  Q.resize (dim_vector (nc, 1));
-                  octave_idx_type *q = Q.fortran_vec ();
+                  m_Q.resize (dim_vector (nc, 1));
+                  octave_idx_type *q = m_Q.fortran_vec ();
 
                   octave_idx_type do_recip;
                   status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
@@ -575,22 +575,22 @@ namespace octave
                     }
                   else
                     {
-                      Lfact = Lfact.transpose ();
+                      m_L = m_L.transpose ();
 
                       if (do_recip)
                         for (octave_idx_type i = 0; i < nr; i++)
                           Rx[i] = 1.0 / Rx[i];
 
                       umfpack_report_matrix<lu_elt_type> (nr, n_inner,
-                                                          Lfact.cidx (),
-                                                          Lfact.ridx (),
-                                                          Lfact.data (),
+                                                          m_L.cidx (),
+                                                          m_L.ridx (),
+                                                          m_L.data (),
                                                           static_cast<octave_idx_type> (1),
                                                           control);
                       umfpack_report_matrix<lu_elt_type> (n_inner, nc,
-                                                          Ufact.cidx (),
-                                                          Ufact.ridx (),
-                                                          Ufact.data (),
+                                                          m_U.cidx (),
+                                                          m_U.ridx (),
+                                                          m_U.data (),
                                                           static_cast<octave_idx_type> (1),
                                                           control);
                       umfpack_report_perm<lu_elt_type> (nr, p, control);
@@ -620,7 +620,7 @@ namespace octave
                                    const Matrix& piv_thres, bool scale,
                                    bool FixedQ, double droptol,
                                    bool milu, bool udiag)
-      : Lfact (), Ufact (), Rfact (), cond (0), P (), Q ()
+      : m_L (), m_U (), m_R (), m_cond (0), m_P (), m_Q ()
     {
 #if defined (HAVE_UMFPACK)
 
@@ -636,7 +636,7 @@ namespace octave
       double *control = Control.fortran_vec ();
       umfpack_defaults<lu_elt_type> (control);
 
-      double tmp = octave_sparse_params::get_key ("spumoni");
+      double tmp = sparse_params::get_key ("spumoni");
       if (! math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
@@ -651,11 +651,11 @@ namespace octave
         }
       else
         {
-          tmp = octave_sparse_params::get_key ("piv_tol");
+          tmp = sparse_params::get_key ("piv_tol");
           if (! math::isnan (tmp))
             Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
 
-          tmp = octave_sparse_params::get_key ("sym_tol");
+          tmp = sparse_params::get_key ("sym_tol");
           if (! math::isnan (tmp))
             Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
         }
@@ -668,7 +668,7 @@ namespace octave
         Control (UMFPACK_FIXQ) = 1.0;
       else
         {
-          tmp = octave_sparse_params::get_key ("autoamd");
+          tmp = sparse_params::get_key ("autoamd");
           if (! math::isnan (tmp))
             Control (UMFPACK_FIXQ) = tmp;
         }
@@ -727,7 +727,7 @@ namespace octave
                                                  &Numeric, control, info);
           umfpack_free_symbolic<lu_elt_type> (&Symbolic);
 
-          cond = Info (UMFPACK_RCOND);
+          m_cond = Info (UMFPACK_RCOND);
 
           if (status < 0)
             {
@@ -761,39 +761,39 @@ namespace octave
                   octave_idx_type n_inner = (nr < nc ? nr : nc);
 
                   if (lnz < 1)
-                    Lfact = lu_type (n_inner, nr,
-                                     static_cast<octave_idx_type> (1));
+                    m_L = lu_type (n_inner, nr,
+                                       static_cast<octave_idx_type> (1));
                   else
-                    Lfact = lu_type (n_inner, nr, lnz);
+                    m_L = lu_type (n_inner, nr, lnz);
 
-                  octave_idx_type *Ltp = Lfact.cidx ();
-                  octave_idx_type *Ltj = Lfact.ridx ();
-                  lu_elt_type *Ltx = Lfact.data ();
+                  octave_idx_type *Ltp = m_L.cidx ();
+                  octave_idx_type *Ltj = m_L.ridx ();
+                  lu_elt_type *Ltx = m_L.data ();
 
                   if (unz < 1)
-                    Ufact = lu_type (n_inner, nc,
-                                     static_cast<octave_idx_type> (1));
+                    m_U = lu_type (n_inner, nc,
+                                       static_cast<octave_idx_type> (1));
                   else
-                    Ufact = lu_type (n_inner, nc, unz);
+                    m_U = lu_type (n_inner, nc, unz);
 
-                  octave_idx_type *Up = Ufact.cidx ();
-                  octave_idx_type *Uj = Ufact.ridx ();
-                  lu_elt_type *Ux = Ufact.data ();
+                  octave_idx_type *Up = m_U.cidx ();
+                  octave_idx_type *Uj = m_U.ridx ();
+                  lu_elt_type *Ux = m_U.data ();
 
-                  Rfact = SparseMatrix (nr, nr, nr);
+                  m_R = SparseMatrix (nr, nr, nr);
                   for (octave_idx_type i = 0; i < nr; i++)
                     {
-                      Rfact.xridx (i) = i;
-                      Rfact.xcidx (i) = i;
+                      m_R.xridx (i) = i;
+                      m_R.xcidx (i) = i;
                     }
-                  Rfact.xcidx (nr) = nr;
-                  double *Rx = Rfact.data ();
+                  m_R.xcidx (nr) = nr;
+                  double *Rx = m_R.data ();
 
-                  P.resize (dim_vector (nr, 1));
-                  octave_idx_type *p = P.fortran_vec ();
+                  m_P.resize (dim_vector (nr, 1));
+                  octave_idx_type *p = m_P.fortran_vec ();
 
-                  Q.resize (dim_vector (nc, 1));
-                  octave_idx_type *q = Q.fortran_vec ();
+                  m_Q.resize (dim_vector (nc, 1));
+                  octave_idx_type *q = m_Q.fortran_vec ();
 
                   octave_idx_type do_recip;
                   status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
@@ -813,22 +813,22 @@ namespace octave
                     }
                   else
                     {
-                      Lfact = Lfact.transpose ();
+                      m_L = m_L.transpose ();
 
                       if (do_recip)
                         for (octave_idx_type i = 0; i < nr; i++)
                           Rx[i] = 1.0 / Rx[i];
 
                       umfpack_report_matrix<lu_elt_type> (nr, n_inner,
-                                                          Lfact.cidx (),
-                                                          Lfact.ridx (),
-                                                          Lfact.data (),
+                                                          m_L.cidx (),
+                                                          m_L.ridx (),
+                                                          m_L.data (),
                                                           static_cast<octave_idx_type> (1),
                                                           control);
                       umfpack_report_matrix<lu_elt_type> (n_inner, nc,
-                                                          Ufact.cidx (),
-                                                          Ufact.ridx (),
-                                                          Ufact.data (),
+                                                          m_U.cidx (),
+                                                          m_U.ridx (),
+                                                          m_U.data (),
                                                           static_cast<octave_idx_type> (1),
                                                           control);
                       umfpack_report_perm<lu_elt_type> (nr, p, control);
@@ -865,30 +865,30 @@ namespace octave
     lu_type
     sparse_lu<lu_type>::Y (void) const
     {
-      octave_idx_type nr = Lfact.rows ();
-      octave_idx_type nz = Lfact.cols ();
-      octave_idx_type nc = Ufact.cols ();
+      octave_idx_type nr = m_L.rows ();
+      octave_idx_type nz = m_L.cols ();
+      octave_idx_type nc = m_U.cols ();
 
-      lu_type Yout (nr, nc, Lfact.nnz () + Ufact.nnz () - (nr<nz?nr:nz));
+      lu_type Yout (nr, nc, m_L.nnz () + m_U.nnz () - (nr<nz?nr:nz));
       octave_idx_type ii = 0;
       Yout.xcidx (0) = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          for (octave_idx_type i = Ufact.cidx (j); i < Ufact.cidx (j + 1); i++)
+          for (octave_idx_type i = m_U.cidx (j); i < m_U.cidx (j + 1); i++)
             {
-              Yout.xridx (ii) = Ufact.ridx (i);
-              Yout.xdata (ii++) = Ufact.data (i);
+              Yout.xridx (ii) = m_U.ridx (i);
+              Yout.xdata (ii++) = m_U.data (i);
             }
 
           if (j < nz)
             {
               // Note the +1 skips the 1.0 on the diagonal
-              for (octave_idx_type i = Lfact.cidx (j) + 1;
-                   i < Lfact.cidx (j +1); i++)
+              for (octave_idx_type i = m_L.cidx (j) + 1;
+                   i < m_L.cidx (j +1); i++)
                 {
-                  Yout.xridx (ii) = Lfact.ridx (i);
-                  Yout.xdata (ii++) = Lfact.data (i);
+                  Yout.xridx (ii) = m_L.ridx (i);
+                  Yout.xdata (ii++) = m_L.data (i);
                 }
             }
 
@@ -902,14 +902,14 @@ namespace octave
     SparseMatrix
     sparse_lu<lu_type>::Pr (void) const
     {
-      octave_idx_type nr = Lfact.rows ();
+      octave_idx_type nr = m_L.rows ();
 
       SparseMatrix Pout (nr, nr, nr);
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
           Pout.cidx (i) = i;
-          Pout.ridx (P (i)) = i;
+          Pout.ridx (m_P(i)) = i;
           Pout.data (i) = 1;
         }
 
@@ -922,12 +922,12 @@ namespace octave
     ColumnVector
     sparse_lu<lu_type>::Pr_vec (void) const
     {
-      octave_idx_type nr = Lfact.rows ();
+      octave_idx_type nr = m_L.rows ();
 
       ColumnVector Pout (nr);
 
       for (octave_idx_type i = 0; i < nr; i++)
-        Pout.xelem (i) = static_cast<double> (P(i) + 1);
+        Pout.xelem (i) = static_cast<double> (m_P(i) + 1);
 
       return Pout;
     }
@@ -936,21 +936,21 @@ namespace octave
     PermMatrix
     sparse_lu<lu_type>::Pr_mat (void) const
     {
-      return PermMatrix (P, false);
+      return PermMatrix (m_P, false);
     }
 
     template <typename lu_type>
     SparseMatrix
     sparse_lu<lu_type>::Pc (void) const
     {
-      octave_idx_type nc = Ufact.cols ();
+      octave_idx_type nc = m_U.cols ();
 
       SparseMatrix Pout (nc, nc, nc);
 
       for (octave_idx_type i = 0; i < nc; i++)
         {
           Pout.cidx (i) = i;
-          Pout.ridx (i) = Q (i);
+          Pout.ridx (i) = m_Q(i);
           Pout.data (i) = 1;
         }
 
@@ -963,12 +963,12 @@ namespace octave
     ColumnVector
     sparse_lu<lu_type>::Pc_vec (void) const
     {
-      octave_idx_type nc = Ufact.cols ();
+      octave_idx_type nc = m_U.cols ();
 
       ColumnVector Pout (nc);
 
       for (octave_idx_type i = 0; i < nc; i++)
-        Pout.xelem (i) = static_cast<double> (Q(i) + 1);
+        Pout.xelem (i) = static_cast<double> (m_Q(i) + 1);
 
       return Pout;
     }
@@ -977,13 +977,12 @@ namespace octave
     PermMatrix
     sparse_lu<lu_type>::Pc_mat (void) const
     {
-      return PermMatrix (Q, true);
+      return PermMatrix (m_Q, true);
     }
 
     // Instantiations we need.
+    template class OCTAVE_API sparse_lu<SparseMatrix>;
 
-    template class sparse_lu<SparseMatrix>;
-
-    template class sparse_lu<SparseComplexMatrix>;
+    template class OCTAVE_API sparse_lu<SparseComplexMatrix>;
   }
 }

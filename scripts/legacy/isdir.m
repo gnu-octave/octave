@@ -39,7 +39,8 @@
 ## @var{tf} = ! isempty (file_in_loadpath (@var{f}))
 ## @end example
 ##
-## @seealso{isfolder, file_in_loadpath, exist, stat, is_absolute_filename, is_rooted_relative_filename}
+## @seealso{isfolder, file_in_loadpath, exist, stat, is_absolute_filename,
+## is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isdir (f)
@@ -51,7 +52,7 @@ function retval = isdir (f)
              "isdir is obsolete; use isfolder or dir_in_loadpath instead\n");
   endif
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -69,5 +70,4 @@ endfunction
 %!assert (isdir (pwd ()))
 %!assert (! isdir (tempname ()))
 
-%!error isdir ()
-%!error isdir (1, 2)
+%!error <Invalid call> isdir ()

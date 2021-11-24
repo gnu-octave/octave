@@ -57,8 +57,8 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTINTERP_API octave_base_scalar<double>;
-extern template class OCTINTERP_API octave_base_scalar<FloatComplex>;
+extern template class octave_base_scalar<double>;
+extern template class octave_base_scalar<FloatComplex>;
 
 template class octave_base_scalar<Complex>;
 
@@ -140,18 +140,18 @@ octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 
   octave_value tmp (new octave_complex_matrix (complex_matrix_value ()));
 
-  return tmp.do_index_op (idx, resize_ok);
+  return tmp.index_op (idx, resize_ok);
 }
 
 // Can't make an index_vector from a complex number.  Throw an error.
-idx_vector
+octave::idx_vector
 octave_complex::index_vector (bool) const
 {
   std::ostringstream buf;
   buf << scalar.real () << std::showpos << scalar.imag () << 'i';
-  octave::complex_index_exception e (buf.str ());
+  octave::complex_index_exception cie (buf.str ());
 
-  throw e;
+  throw cie;
 }
 
 double
@@ -313,7 +313,7 @@ octave_complex::save_ascii (std::ostream& os)
 {
   Complex c = complex_value ();
 
-  octave_write_complex (os, c);
+  octave::write_value<Complex> (os, c);
 
   os << "\n";
 
@@ -323,7 +323,7 @@ octave_complex::save_ascii (std::ostream& os)
 bool
 octave_complex::load_ascii (std::istream& is)
 {
-  scalar = octave_read_value<Complex> (is);
+  scalar = octave::read_value<Complex> (is);
 
   if (! is)
     error ("load: failed to load complex scalar constant");
@@ -369,7 +369,7 @@ octave_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5)
 
-  hsize_t dimens[3];
+  hsize_t dimens[3] = {0};
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
 
@@ -472,15 +472,26 @@ octave_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_complex::as_mxArray (void) const
+octave_complex::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, 1, 1, mxCOMPLEX);
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, 1, 1, mxCOMPLEX);
 
-  double *pr = static_cast<double *> (retval->get_data ());
-  double *pi = static_cast<double *> (retval->get_imag_data ());
+  if (interleaved)
+    {
+      mxComplexDouble *pd
+        = reinterpret_cast<mxComplexDouble *> (retval->get_complex_doubles ());
 
-  pr[0] = scalar.real ();
-  pi[0] = scalar.imag ();
+      pd[0].real = scalar.real ();
+      pd[0].imag = scalar.imag ();
+    }
+  else
+    {
+      mxDouble *pr = static_cast<mxDouble *> (retval->get_data ());
+      mxDouble *pi = static_cast<mxDouble *> (retval->get_imag_data ());
+
+      pr[0] = scalar.real ();
+      pi[0] = scalar.imag ();
+    }
 
   return retval;
 }

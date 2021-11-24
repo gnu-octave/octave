@@ -71,16 +71,16 @@ namespace octave
       compile_internal ();
     }
 
-    match_data match (const std::string& buffer);
+    match_data match (const std::string& buffer) const;
 
-    bool is_match (const std::string& buffer);
+    bool is_match (const std::string& buffer) const;
 
-    Array<bool> is_match (const string_vector& buffer);
+    Array<bool> is_match (const string_vector& buffer) const;
 
     std::string replace (const std::string& buffer,
-                         const std::string& replacement);
+                         const std::string& replacement) const;
 
-    static regexp::match_data
+    static match_data
     match (const std::string& pat, const std::string& buffer,
            const regexp::opts& opt = regexp::opts (),
            const std::string& who = "regexp")

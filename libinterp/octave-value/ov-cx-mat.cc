@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <clocale>
 #include <istream>
 #include <ostream>
 #include <vector>
@@ -358,6 +359,15 @@ octave_complex_matrix::load_ascii (std::istream& is)
   if (! extract_keyword (is, keywords, kw, val, true))
     error ("load: failed to extract number of rows and columns");
 
+  // Set "C" locale for the duration of this function to avoid the performance
+  // panelty of frequently switching the locale when reading floating point
+  // values from the stream.
+  char *prev_locale = std::setlocale (LC_ALL, nullptr);
+  std::string old_locale (prev_locale ? prev_locale : "");
+  std::setlocale (LC_ALL, "C");
+  octave::unwind_action act
+    ([&old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
+
   if (kw == "ndims")
     {
       int mdims = static_cast<int> (val);
@@ -443,7 +453,7 @@ octave_complex_matrix::save_binary (std::ostream& os, bool save_as_floats)
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const Complex *mtmp = m.data ();
@@ -516,7 +526,7 @@ octave_complex_matrix::load_binary (std::istream& is, bool swap,
         return false;
       ComplexMatrix m (nr, nc);
       Complex *im = m.fortran_vec ();
-      octave_idx_type len = nr * nc;
+      octave_idx_type len = static_cast<octave_idx_type> (nr) * nc;
       read_doubles (is, reinterpret_cast<double *> (im),
                     static_cast<save_type> (tmp), 2*len, swap, fmt);
 
@@ -574,7 +584,7 @@ octave_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       if (m.all_integers (max_val, min_val))
         save_type_hid
-          = save_type_to_hdf5 (get_save_type (max_val, min_val));
+          = save_type_to_hdf5 (octave::get_save_type (max_val, min_val));
     }
 #endif
 
@@ -724,21 +734,36 @@ octave_complex_matrix::print_raw (std::ostream& os,
 }
 
 mxArray *
-octave_complex_matrix::as_mxArray (void) const
+octave_complex_matrix::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, dims (), mxCOMPLEX);
-
-  double *pr = static_cast<double *> (retval->get_data ());
-  double *pi = static_cast<double *> (retval->get_imag_data ());
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, dims (),
+                                 mxCOMPLEX);
 
   mwSize nel = numel ();
 
-  const Complex *p = matrix.data ();
+  const Complex *pdata = matrix.data ();
 
-  for (mwIndex i = 0; i < nel; i++)
+  if (interleaved)
     {
-      pr[i] = std::real (p[i]);
-      pi[i] = std::imag (p[i]);
+      mxComplexDouble *pd
+        = static_cast<mxComplexDouble *> (retval->get_data ());
+
+      for (mwIndex i = 0; i < nel; i++)
+        {
+          pd[i].real = pdata[i].real ();
+          pd[i].imag = pdata[i].imag ();
+        }
+    }
+  else
+    {
+      mxDouble *pr = static_cast<mxDouble *> (retval->get_data ());
+      mxDouble *pi = static_cast<mxDouble *> (retval->get_imag_data ());
+
+      for (mwIndex i = 0; i < nel; i++)
+        {
+          pr[i] = pdata[i].real ();
+          pi[i] = pdata[i].imag ();
+        }
     }
 
   return retval;

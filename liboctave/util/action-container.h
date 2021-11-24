@@ -70,6 +70,9 @@ namespace octave
     {
     public:
 
+      // FIXME: Do we need to apply std::forward to the arguments to
+      // std::bind here?
+
       template <typename F, typename... Args>
       fcn_elem (F&& fcn, Args&&... args)
         : m_fcn (std::bind (fcn, args...))
@@ -193,7 +196,7 @@ namespace octave
 
     virtual void run_first (void) = 0;
 
-    void run (std::size_t num);
+    OCTAVE_API void run (std::size_t num);
 
     void run (void) { run (size ()); }
 

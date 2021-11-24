@@ -36,7 +36,7 @@
 
 function retval = sinetone (freq, rate = 8000, sec = 1, ampl = 64)
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1)
     print_usage ();
   endif
 

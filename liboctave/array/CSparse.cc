@@ -1106,11 +1106,11 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
       double *control = Control.fortran_vec ();
       UMFPACK_ZNAME (defaults) (control);
 
-      double tmp = octave_sparse_params::get_key ("spumoni");
+      double tmp = octave::sparse_params::get_key ("spumoni");
       if (! octave::math::isnan (tmp))
         Control (UMFPACK_PRL) = tmp;
 
-      tmp = octave_sparse_params::get_key ("piv_tol");
+      tmp = octave::sparse_params::get_key ("piv_tol");
       if (! octave::math::isnan (tmp))
         {
           Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -1118,7 +1118,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
         }
 
       // Set whether we are allowed to modify Q or not
-      tmp = octave_sparse_params::get_key ("autoamd");
+      tmp = octave::sparse_params::get_key ("autoamd");
       if (! octave::math::isnan (tmp))
         Control (UMFPACK_FIXQ) = tmp;
 
@@ -5557,10 +5557,10 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double& rcond,
   double *control = Control.fortran_vec ();
   UMFPACK_ZNAME (defaults) (control);
 
-  double tmp = octave_sparse_params::get_key ("spumoni");
+  double tmp = octave::sparse_params::get_key ("spumoni");
   if (! octave::math::isnan (tmp))
     Control (UMFPACK_PRL) = tmp;
-  tmp = octave_sparse_params::get_key ("piv_tol");
+  tmp = octave::sparse_params::get_key ("piv_tol");
   if (! octave::math::isnan (tmp))
     {
       Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -5568,7 +5568,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double& rcond,
     }
 
   // Set whether we are allowed to modify Q or not
-  tmp = octave_sparse_params::get_key ("autoamd");
+  tmp = octave::sparse_params::get_key ("autoamd");
   if (! octave::math::isnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
@@ -5705,7 +5705,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           CHOLMOD_NAME(start) (cm);
           cm->prefer_zomplex = false;
 
-          double spu = octave_sparse_params::get_key ("spumoni");
+          double spu = octave::sparse_params::get_key ("spumoni");
           if (spu == 0.)
             {
               cm->print = -1;
@@ -5754,17 +5754,14 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_REAL;
 
-          B->x = const_cast<double *>(b.fortran_vec ());
+          B->x = const_cast<double *> (b.data ());
 
-          cholmod_factor *L;
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          L = CHOLMOD_NAME(analyze) (A, cm);
+          cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
           if (calc_cond)
             rcond = CHOLMOD_NAME(rcond)(L, cm);
           else
             rcond = 1.;
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (rcond == 0.0)
             {
@@ -5791,10 +5788,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
                   return retval;
                 }
 
-              cholmod_dense *X;
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_dense *X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
 
               retval.resize (b.rows (), b.cols ());
               for (octave_idx_type j = 0; j < b.cols (); j++)
@@ -5804,13 +5798,11 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
                     retval.xelem (i,j) = static_cast<Complex *>(X->x)[jr + i];
                 }
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(free_dense) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
               static char blank_name[] = " ";
               CHOLMOD_NAME(print_common) (blank_name, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
           (*current_liboctave_warning_with_id_handler)
@@ -5843,7 +5835,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
               const octave_idx_type *Ai = ridx ();
               const Complex *Ax = data ();
 #if defined (UMFPACK_SEPARATE_SPLIT)
-              const double *Bx = b.fortran_vec ();
+              const double *Bx = b.data ();
               OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
               for (octave_idx_type i = 0; i < b_nr; i++)
                 Bz[i] = 0.;
@@ -5952,7 +5944,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           CHOLMOD_NAME(start) (cm);
           cm->prefer_zomplex = false;
 
-          double spu = octave_sparse_params::get_key ("spumoni");
+          double spu = octave::sparse_params::get_key ("spumoni");
           if (spu == 0.)
             {
               cm->print = -1;
@@ -6013,15 +6005,12 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
 
           B->x = b.data ();
 
-          cholmod_factor *L;
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          L = CHOLMOD_NAME(analyze) (A, cm);
+          cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
           if (calc_cond)
             rcond = CHOLMOD_NAME(rcond)(L, cm);
           else
             rcond = 1.;
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (rcond == 0.0)
             {
@@ -6048,10 +6037,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
                   return retval;
                 }
 
-              cholmod_sparse *X;
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_sparse *X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
 
               retval = SparseComplexMatrix
                        (static_cast<octave_idx_type> (X->nrow),
@@ -6067,13 +6053,11 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
                   retval.xdata (j) = static_cast<Complex *>(X->x)[j];
                 }
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(free_sparse) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
               static char blank_name[] = " ";
               CHOLMOD_NAME(print_common) (blank_name, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
           (*current_liboctave_warning_with_id_handler)
@@ -6250,7 +6234,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           CHOLMOD_NAME(start) (cm);
           cm->prefer_zomplex = false;
 
-          double spu = octave_sparse_params::get_key ("spumoni");
+          double spu = octave::sparse_params::get_key ("spumoni");
           if (spu == 0.)
             {
               cm->print = -1;
@@ -6299,17 +6283,14 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_COMPLEX;
 
-          B->x = const_cast<Complex *>(b.fortran_vec ());
+          B->x = const_cast<Complex *> (b.data ());
 
-          cholmod_factor *L;
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          L = CHOLMOD_NAME(analyze) (A, cm);
+          cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
           if (calc_cond)
             rcond = CHOLMOD_NAME(rcond)(L, cm);
           else
             rcond = 1.;
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (rcond == 0.0)
             {
@@ -6336,10 +6317,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                   return retval;
                 }
 
-              cholmod_dense *X;
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_dense *X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
 
               retval.resize (b.rows (), b.cols ());
               for (octave_idx_type j = 0; j < b.cols (); j++)
@@ -6349,13 +6327,11 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                     retval.xelem (i,j) = static_cast<Complex *>(X->x)[jr + i];
                 }
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(free_dense) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
               static char blank_name[] = " ";
               CHOLMOD_NAME(print_common) (blank_name, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
           (*current_liboctave_warning_with_id_handler)
@@ -6387,7 +6363,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
               const octave_idx_type *Ap = cidx ();
               const octave_idx_type *Ai = ridx ();
               const Complex *Ax = data ();
-              const Complex *Bx = b.fortran_vec ();
+              const Complex *Bx = b.data ();
 
               retval.resize (b_nr, b_nc);
               Complex *Xx = retval.fortran_vec ();
@@ -6476,7 +6452,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           CHOLMOD_NAME(start) (cm);
           cm->prefer_zomplex = false;
 
-          double spu = octave_sparse_params::get_key ("spumoni");
+          double spu = octave::sparse_params::get_key ("spumoni");
           if (spu == 0.)
             {
               cm->print = -1;
@@ -6537,15 +6513,12 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
           B->x = b.data ();
 
-          cholmod_factor *L;
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          L = CHOLMOD_NAME(analyze) (A, cm);
+          cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
           if (calc_cond)
             rcond = CHOLMOD_NAME(rcond)(L, cm);
           else
             rcond = 1.;
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
           if (rcond == 0.0)
             {
@@ -6572,10 +6545,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                   return retval;
                 }
 
-              cholmod_sparse *X;
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_sparse *X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
 
               retval = SparseComplexMatrix
                        (static_cast<octave_idx_type> (X->nrow),
@@ -6591,13 +6561,11 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                   retval.xdata (j) = static_cast<Complex *>(X->x)[j];
                 }
 
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(free_sparse) (&X, cm);
               CHOLMOD_NAME(free_factor) (&L, cm);
               CHOLMOD_NAME(finish) (cm);
               static char blank_name[] = " ";
               CHOLMOD_NAME(print_common) (blank_name, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
           (*current_liboctave_warning_with_id_handler)
@@ -7384,7 +7352,7 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
 bool
 SparseComplexMatrix::too_large_for_float (void) const
 {
-  return test_any (xtoo_large_for_float);
+  return test_any (octave::too_large_for_float);
 }
 
 // FIXME: Do these really belong here?  Maybe they should be in a base class?
@@ -7487,7 +7455,7 @@ operator << (std::ostream& os, const SparseComplexMatrix& a)
       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
         {
           os << a.ridx (i) + 1 << ' '  << j + 1 << ' ';
-          octave_write_complex (os, a.data (i));
+          octave::write_value<Complex> (os, a.data (i));
           os << "\n";
         }
     }
@@ -7500,7 +7468,7 @@ operator >> (std::istream& is, SparseComplexMatrix& a)
 {
   typedef SparseComplexMatrix::element_type elt_type;
 
-  return read_sparse_matrix<elt_type> (is, a, octave_read_value<Complex>);
+  return read_sparse_matrix<elt_type> (is, a, octave::read_value<Complex>);
 }
 
 SparseComplexMatrix

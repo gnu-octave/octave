@@ -257,7 +257,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
   endif
 
   ## Use sparse methods only if all matrices are sparse
-  if (! options.havemasssparse)
+  if (! isempty (options.Mass)) && (! options.havemasssparse)
     options.havejacsparse = false;
   endif
 
@@ -270,8 +270,16 @@ function varargout = ode15s (fun, trange, y0, varargin)
                                                   options.havetimedep,
                                                   options.havejacfun);
       options.havejacfun = true;
-    else   ## All matrices are constant
-      options.Jacobian = {[- options.Jacobian], [options.Mass]};
+    else   # All matrices are constant
+      if (! isempty (options.Mass))
+        options.Jacobian = {[- options.Jacobian], [options.Mass]};
+      else
+        if (options.havejacsparse)
+          options.Jacobian = {[- options.Jacobian], speye(n)};
+        else
+          options.Jacobian = {[- options.Jacobian], eye(n)};
+        endif
+      endif
 
     endif
   endif
@@ -312,23 +320,24 @@ function varargout = ode15s (fun, trange, y0, varargin)
 
   yp0 = options.InitialSlope;
 
+  ## 2 arguments in the event callback of ode15s
   [t, y, te, ye, ie] = __ode15__ (@ (t, y, yp) wrap (t, y, yp, options.Mass,
                                                      options.havetimedep,
                                                      options.havestatedep,
                                                      fun),
-                                  trange, y0, yp0, options);
+                                  trange, y0, yp0, options, 2);
 
   if (nargout == 2)
     varargout{1} = t;
     varargout{2} = y;
   elseif (nargout == 1)
-    varargout{1}.x = t;  # Time stamps are saved in field x
-    varargout{1}.y = y;  # Results are saved in field y
+    varargout{1}.x = t.';  # Time stamps saved in field x (row vector)
+    varargout{1}.y = y.';  # Results are saved in field y (row vector)
     varargout{1}.solver = solver;
     if (options.haveeventfunction)
-      varargout{1}.xe = te;  # Time info when an event occurred
-      varargout{1}.ye = ye;  # Results when an event occurred
-      varargout{1}.ie = ie;  # Index info which event occurred
+      varargout{1}.xe = te.';  # Time info when an event occurred
+      varargout{1}.ye = ye.';  # Results when an event occurred
+      varargout{1}.ie = ie.';  # Index info which event occurred
     endif
   elseif (nargout > 2)
     varargout = cell (1,5);
@@ -467,9 +476,9 @@ endfunction
 %!endfunction
 %!
 %!function jac = jacfunsparse (t, y)
-%!  jac = sparse([-0.04,           1e4*y(3),  1e4*y(2);
-%!                 0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
-%!                    1,                  1,         1]);
+%!  jac = sparse ([-0.04,           1e4*y(3),  1e4*y(2);
+%!                  0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
+%!                     1,                  1,         1]);
 %!endfunction
 
 %!testif HAVE_SUNDIALS
@@ -588,6 +597,16 @@ endfunction
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
+## Jacobian as const matrix
+%!testif HAVE_SUNDIALS
+%! opt = odeset ("RelTol", 1e-4, "AbsTol", 1e-5,
+%!               "Jacobian", [98, 198; -99, -199]);
+%! [t, y] = ode15s (@(t, y)[98, 198; -99, -199] * (y - [1; 0]),
+%!                 [0, 5], [2; 0], opt);
+%! y1xct = @(t) 2 * exp (-t) - exp (-100 * t) + 1;
+%! y2xct = @(t) - exp (-t) + exp (-100 * t);
+%! assert ([y1xct(t), y2xct(t)], y, 1e-3);
+
 ## two output arguments
 %!testif HAVE_SUNDIALS
 %! [t, y] = ode15s (@fpol, [0, 2], [2, 0]);
@@ -619,77 +638,77 @@ endfunction
 
 ## Solve in backward direction starting at t=0
 %!testif HAVE_SUNDIALS
-%! ref = [-1.205364552835178, 0.951542399860817];
+%! ref = [-1.205364552835178; 0.951542399860817];
 %! sol = ode15s (@fpol, [0 -2], [2, 0]);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 5e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref], 5e-3);
 
 ## Solve in backward direction starting at t=2
 %!testif HAVE_SUNDIALS
-%! ref = [-1.205364552835178, 0.951542399860817];
+%! ref = [-1.205364552835178; 0.951542399860817];
 %! sol = ode15s (@fpol, [2, 0 -2], fref);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 3e-2);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref], 3e-2);
 
 ## Solve another anonymous function in backward direction
 %!testif HAVE_SUNDIALS
-%! ref = [-1, 0.367879437558975];
+%! ref = [-1; 0.367879437558975];
 %! sol = ode15s (@(t,y) y, [0 -1], 1);
-%! assert ([sol.x(end), sol.y(end,:)], ref, 1e-2);
+%! assert ([sol.x(end); sol.y(:,end)], ref, 1e-2);
 
 ## Solve another anonymous function below zero
 %!testif HAVE_SUNDIALS
-%! ref = [0, 14.77810590694212];
+%! ref = [0; 14.77810590694212];
 %! sol = ode15s (@(t,y) y, [-2, 0], 2);
-%! assert ([sol.x(end), sol.y(end,:)], ref, 5e-2);
+%! assert ([sol.x(end); sol.y(:,end)], ref, 5e-2);
 
 ## Solve in backward direction starting at t=0 with MaxStep option
 %!testif HAVE_SUNDIALS
-%! ref = [-1.205364552835178, 0.951542399860817];
+%! ref = [-1.205364552835178; 0.951542399860817];
 %! opt = odeset ("MaxStep", 1e-3);
 %! sol = ode15s (@fpol, [0 -2], [2, 0], opt);
 %! assert (abs (sol.x(8)-sol.x(7)), 1e-3, 1e-3);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref], 1e-3);
 
 ## AbsTol option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", 1e-5);
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 4e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 4e-3);
 
 ## AbsTol and RelTol option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 1e-3);
 
 ## RelTol option -- higher accuracy
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("RelTol", 1e-8);
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-4);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 1e-4);
 
 ## Mass option as function
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", @fmas, "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 3e-3);
 
 ## Mass option as matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", eye (2,2), "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 3e-3);
 
 ## Mass option as sparse matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", speye (2), "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 3e-3);
 
 ## Mass option as function and sparse matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", "fmsa", "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2, fref].', 3e-3);
 
 ## Refine
 %!testif HAVE_SUNDIALS
@@ -715,7 +734,7 @@ endfunction
 %!               "MStateDependence", "none");
 %! sol = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert (isfield (sol, "ie"));
-%! assert (sol.ie, [0;1]);
+%! assert (sol.ie, [1, 2]);
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
 %! assert (sol.x(end), 10, 1);
@@ -725,13 +744,15 @@ endfunction
 %! opt = odeset ("Events", @feve, "Mass", @massdensefunstate,
 %!               "MStateDependence", "none");
 %! [t, y, te, ye, ie] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
-%! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.5, 0.5, 0, 0]);
+%! assert (t(end), 10, 1);
+%! assert (te, [10; 10], 0.5);
+%! assert (ie, [1; 2]);
 
 ## Initial solution as row vector
 %!testif HAVE_SUNDIALS
 %! A = zeros (2);
 %! [tout, yout] = ode15s (@(t, y) A * y, [0, 1], [1, 1]);
-%! assert (yout, ones (18, 2))
+%! assert (yout, ones (18, 2));
 
 %!testif HAVE_SUNDIALS
 %! A = zeros (2);

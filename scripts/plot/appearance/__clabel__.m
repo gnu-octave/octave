@@ -112,19 +112,19 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
         if (abs (trot) > 90)
           trot += 180;
         endif
+
         if (ischar (z))
-          ht = text (tpos(1), tpos(2), clev, tlabel, "rotation", trot,
-                     "horizontalalignment", "center", "userdata", clev,
-                     "parent", hparent, varargin{:});
+          tpos = [tpos.' clev];
         elseif (! isempty (z))
-          ht = text (tpos(1), tpos(2), z, tlabel, "rotation", trot,
-                     "horizontalalignment", "center", "userdata", clev,
-                     "parent", hparent, varargin{:});
+          tpos = [tpos.' z];
         else
-          ht = text (tpos(1), tpos(2), tlabel, "rotation", trot,
-                     "horizontalalignment", "center", "userdata", clev,
-                     "parent", hparent, varargin{:});
+          tpos = [tpos.' 0];
         endif
+
+        ht = __go_text__ (hparent, "position", tpos, "string", tlabel, ...
+                                   "rotation", trot, "clipping", "on", ...
+                                   "horizontalalignment", "center", ...
+                                   "userdata", clev, varargin{:});
         h = [h; ht];
       endif
     endfor

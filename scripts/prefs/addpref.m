@@ -109,9 +109,9 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
-%!error addpref ()
-%!error addpref (1)
-%!error addpref (1,2)
-%!error addpref (1,2,3,4)
+## Test input validation
+%!error <Invalid call> addpref ()
+%!error <Invalid call> addpref (1)
+%!error <Invalid call> addpref (1,2)
 %!error <GROUP must be a string> addpref (1, "pref1", 2)
 %!error <PREF must be a string> addpref ("group1", 1, 2)

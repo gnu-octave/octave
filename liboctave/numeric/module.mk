@@ -28,7 +28,6 @@ NUMERIC_INC = \
   %reldir%/aepbalance.h \
   %reldir%/base-dae.h \
   %reldir%/base-de.h \
-  %reldir%/base-min.h \
   %reldir%/bsxfun-decl.h \
   %reldir%/bsxfun.h \
   %reldir%/chol.h \

@@ -53,13 +53,13 @@ public:
 
   ~hdf5_fstreambase () { close (); }
 
-  hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0);
+  OCTINTERP_API hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0);
 
-  void close (void);
+  OCTINTERP_API void close (void);
 
-  void open (const char *name, int mode, int);
+  OCTINTERP_API void open (const char *name, int mode, int);
 
-  void open_create (const char *name, int mode);
+  OCTINTERP_API void open_create (const char *name, int mode);
 };
 
 // input and output streams, subclassing istream and ostream
@@ -99,6 +99,7 @@ public:
 
 struct hdf5_callback_data
 {
+public:
   hdf5_callback_data (void)
     : name (), global (false), tc (), doc () { }
 

@@ -203,8 +203,8 @@ endfunction
 %!         "sombrero() function with 10 faces"});
 
 ## Test input validation
-%!error surfnorm ()
-%!error surfnorm (1,2)
+%!error <Invalid call> surfnorm ()
+%!error <Invalid call> surfnorm (1,2)
 %!error <X, Y, and Z must be 2-D real matrices> surfnorm (i)
 %!error <X, Y, and Z must be 2-D real matrices> surfnorm (i, 1, 1)
 %!error <X, Y, and Z must be 2-D real matrices> surfnorm (1, i, 1)

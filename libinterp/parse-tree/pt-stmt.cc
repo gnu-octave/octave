@@ -249,49 +249,45 @@ namespace octave
   // Updates GUI via  event_manager::update_breakpoint.
   // FIXME: COME BACK TO ME.
 
-  bp_table::intmap
+  bp_table::bp_lines
   tree_statement_list::add_breakpoint (event_manager& evmgr,
                                        const std::string& file,
-                                       const bp_table::intmap& line,
+                                       const bp_table::bp_lines& lines,
                                        const std::string& condition)
   {
-    bp_table::intmap retval;
+    bp_table::bp_lines retval;
 
-    octave_idx_type len = line.size ();
-
-    for (int i = 0; i < len; i++)
+    for (const auto& lineno : lines)
       {
-        bp_table::const_intmap_iterator p = line.find (i);
+        int line = set_breakpoint (lineno, condition);
 
-        if (p != line.end ())
+        if (line)
           {
-            int lineno = p->second;
+            if (! file.empty ())
+              evmgr.update_breakpoint (true, file, line, condition);
 
-            retval[i] = set_breakpoint (lineno, condition);
-
-            if (retval[i] != 0 && ! file.empty ())
-              evmgr.update_breakpoint (true, file, retval[i], condition);
+            retval.insert (line);
           }
       }
 
     return retval;
   }
 
-  bp_table::intmap
+  bp_table::bp_lines
   tree_statement_list::remove_all_breakpoints (event_manager& evmgr,
                                                const std::string& file)
   {
-    bp_table::intmap retval;
+    bp_table::bp_lines retval;
 
     octave_value_list bkpts = list_breakpoints ();
 
     for (int i = 0; i < bkpts.length (); i++)
       {
-        int lineno = static_cast<int> (bkpts(i).int_value ());
+        int lineno = bkpts(i).int_value ();
 
         delete_breakpoint (lineno);
 
-        retval[i] = lineno;
+        retval.insert (lineno);
 
         if (! file.empty ())
           evmgr.update_breakpoint (false, file, lineno);

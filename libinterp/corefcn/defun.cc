@@ -48,11 +48,13 @@
 #include "variables.h"
 #include "parse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Print the usage part of the doc string of FCN (user-defined or DEFUN).
 void
 print_usage (void)
 {
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("print_usage");
+  tree_evaluator& tw = __get_evaluator__ ("print_usage");
 
   const octave_function *cur = tw.current_function ();
 
@@ -65,7 +67,7 @@ print_usage (void)
 void
 print_usage (const std::string& name)
 {
-  octave::feval ("print_usage", octave_value (name), 0);
+  feval ("print_usage", octave_value (name), 0);
 }
 
 void
@@ -85,7 +87,7 @@ check_version (const std::string& version, const std::string& fcn)
 
 void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-                      const octave::dynamic_library& shl, const std::string& doc,
+                      const dynamic_library& shl, const std::string& doc,
                       bool relative)
 {
   octave_dld_function *fcn = new octave_dld_function (f, shl, name, doc);
@@ -95,15 +97,14 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 
   octave_value fval (fcn);
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_dld_function");
+  symbol_table& symtab = __get_symbol_table__ ("install_dld_function");
 
   symtab.install_built_in_function (name, fval);
 }
 
 void
 install_dld_function (octave_dld_function::meth m, const std::string& name,
-                      const octave::dynamic_library& shl, const std::string& doc,
+                      const dynamic_library& shl, const std::string& doc,
                       bool relative)
 {
   octave_dld_function *fcn = new octave_dld_function (m, shl, name, doc);
@@ -113,15 +114,14 @@ install_dld_function (octave_dld_function::meth m, const std::string& name,
 
   octave_value fval (fcn);
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_dld_function");
+  symbol_table& symtab = __get_symbol_table__ ("install_dld_function");
 
   symtab.install_built_in_function (name, fval);
 }
 
 void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-                      const octave::dynamic_library& shl, bool relative)
+                      const dynamic_library& shl, bool relative)
 {
   octave_mex_function *fcn = new octave_mex_function (fptr, fmex, shl, name);
 
@@ -130,18 +130,17 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 
   octave_value fval (fcn);
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_mex_function");
+  symbol_table& symtab = __get_symbol_table__ ("install_mex_function");
 
   symtab.install_built_in_function (name, fval);
 }
 
-octave::dynamic_library
+dynamic_library
 get_current_shlib (void)
 {
-  octave::dynamic_library retval;
+  dynamic_library retval;
 
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("get_current_shlib");
+  tree_evaluator& tw = __get_evaluator__ ("get_current_shlib");
 
   octave_function *curr_fcn = tw.current_function ();
 
@@ -163,3 +162,5 @@ get_current_shlib (void)
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

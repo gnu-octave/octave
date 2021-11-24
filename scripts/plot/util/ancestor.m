@@ -42,7 +42,7 @@
 
 function p = ancestor (h, type, toplevel)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -91,7 +91,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hl = line;
+%!   hl = line ();
 %!   assert (ancestor (hl, "axes"), gca);
 %!   assert (ancestor (hl, "figure"), hf);
 %! unwind_protect_cleanup
@@ -117,7 +117,6 @@ endfunction
 
 %!assert (ancestor ([], "axes"), [])
 
-%!error ancestor ()
-%!error ancestor (1,2,3)
+%!error <Invalid call> ancestor ()
 %!error <TYPE must be a string> ancestor (1,2)
 %!error <third argument must be "toplevel"> ancestor (1, "axes", "foo")

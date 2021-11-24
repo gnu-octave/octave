@@ -44,6 +44,8 @@
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename ArrayType>
 static octave_value_list
 do_minmax_red_op (const octave_value& arg,
@@ -269,7 +271,7 @@ do_minmax_body (const octave_value_list& args,
           {
             if (arg.is_range () && (dim == -1 || dim == 1))
               {
-                Range range = arg.range_value ();
+                range<double> range = arg.range_value ();
                 if (range.numel () < 1)
                   {
                     retval(0) = arg;
@@ -281,14 +283,14 @@ do_minmax_body (const octave_value_list& args,
                     retval(0) = range.min ();
                     if (nargout > 1)
                       retval(1) = static_cast<double>
-                                  (range.inc () < 0 ? range.numel () : 1);
+                                  (range.increment () < 0 ? range.numel () : 1);
                   }
                 else
                   {
                     retval(0) = range.max ();
                     if (nargout > 1)
                       retval(1) = static_cast<double>
-                                  (range.inc () >= 0 ? range.numel () : 1);
+                                  (range.increment () >= 0 ? range.numel () : 1);
                   }
               }
             else if (arg.issparse ())
@@ -1097,3 +1099,5 @@ iw = 1  2  2  4  4  4
 %!error cummax ()
 %!error cummax (1, 2, 3)
 */
+
+OCTAVE_NAMESPACE_END

@@ -42,6 +42,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // complex scalar by matrix ops.
 
 DEFNDBINOP_OP (add, complex, matrix, complex, array, +)
@@ -81,7 +83,7 @@ DEFNDCMPLXCMPOP_FN (gt, complex, matrix, complex, array, mx_el_gt)
 DEFNDCMPLXCMPOP_FN (ne, complex, matrix, complex, array, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, complex, matrix, complex, array, *)
-DEFNDBINOP_FN (el_div, complex, matrix, complex, array, x_el_div)
+DEFNDBINOP_FN (el_div, complex, matrix, complex, array, elem_xdiv)
 DEFNDBINOP_FN (el_pow, complex, matrix, complex, array, elem_xpow)
 
 DEFBINOP (el_ldiv, complex, matrix)
@@ -124,3 +126,5 @@ install_cs_m_ops (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, octave_complex, octave_matrix,
                          octave_complex_matrix);
 }
+
+OCTAVE_NAMESPACE_END

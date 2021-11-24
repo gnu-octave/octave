@@ -80,7 +80,7 @@
 
 function retval = num2str (x, arg)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! (isnumeric (x) || islogical (x) || ischar (x)))
     error ("num2str: X must be a numeric, logical, or character array");
@@ -95,7 +95,11 @@ function retval = num2str (x, arg)
       if (ischar (arg))
         fmt = arg;
       elseif (isnumeric (arg) && isscalar (arg) && arg >= 0 && arg == fix (arg))
-        fmt = sprintf ("%%%d.%dg", arg+7, arg);
+        if (isfloat (x))
+          fmt = sprintf ("%%%d.%dg", arg+7, arg);
+        else
+          fmt = sprintf ("%%%dd", arg);
+        endif
       else
         error ("num2str: PRECISION must be a scalar integer >= 0");
       endif
@@ -119,7 +123,11 @@ function retval = num2str (x, arg)
           if (any (! valid))
             ndgt = max (ndgt, 5);     # Allow space for Inf/NaN
           endif
-          fmt = sprintf ("%%%d.0f", ndgt);
+          if (isfloat (x))
+            fmt = sprintf ("%%%d.0f", ndgt);
+          else
+            fmt = sprintf ("%%%dd", ndgt);
+          endif
         endif
       else
         ## Logical input
@@ -130,7 +138,8 @@ function retval = num2str (x, arg)
     nd = ndims (x);
     nc = columns (x) * (nd - 1);    # ND-arrays are expanded in columns
     x  = permute (x, [2, 3:nd, 1]);
-    if (! (sum (fmt == "%") > 1 || any (strcmp (fmt, {"%s", "%c"}))))
+    if (! (sum (strrep (fmt, "%%", "") == "%") > 1
+           || any (strcmp (fmt, {"%s", "%c"}))))
       fmt = [deblank(repmat (fmt, 1, nc)), "\n"];
     endif
     strtmp = sprintf (fmt, x);
@@ -211,14 +220,16 @@ endfunction
 %!assert (num2str ([inf -inf]), "Inf -Inf")
 %!assert (num2str ([inf NaN -inf]), "Inf  NaN -Inf")
 %!assert (num2str ([complex(Inf,0), complex(0,-Inf)]), "Inf+0i   0-Infi")
-%!assert (num2str (complex(Inf,1)), "Inf+1i")
-%!assert (num2str (complex(1,Inf)), "1+Infi")
+%!assert (num2str (complex (Inf,1)), "Inf+1i")
+%!assert (num2str (complex (1,Inf)), "1+Infi")
 %!assert (num2str (nan), "NaN")
 %!assert (num2str (complex (NaN, 1)), "NaN+1i")
 %!assert (num2str (complex (1, NaN)), "1+NaNi")
 %!assert (num2str (NA), "NA")
 %!assert (num2str (complex (NA, 1)), "NA+1i")
 %!assert (num2str (complex (1, NA)), "1+NAi")
+%!assert (num2str (int64 (-flintmax ()) - 1), "-9007199254740993")
+%!assert (num2str (int64 (-flintmax ()) - 1, 18), "-9007199254740993")
 
 ## ND-arrays are concatenated in columns
 %!shared m, x
@@ -249,7 +260,7 @@ endfunction
 %!assert <*36133> (num2str (1e15), "1000000000000000")
 %!assert <*36133> (num2str (1e16), "1e+16")
 ## Even exact integers in IEEE notation should use exponential notation
-%!assert <*36133> (num2str(2^512), "1.34078079299426e+154")
+%!assert <*36133> (num2str (2^512), "1.34078079299426e+154")
 ## Mixed integer/floating point arrays
 %!assert <*36133> (num2str ([2.1, 1e23, pi]),
 %!                 "2.1  9.999999999999999e+22      3.141592653589793")
@@ -265,8 +276,7 @@ endfunction
 %!assert <*45174> (num2str ([65 66 67], "%s"), "ABC")
 
 ## Test input validation
-%!error num2str ()
-%!error num2str (1, 2, 3)
+%!error <Invalid call> num2str ()
 %!error <X must be a numeric> num2str ({1})
 %!error <PRECISION must be a scalar integer .= 0> num2str (1, {1})
 %!error <PRECISION must be a scalar integer .= 0> num2str (1, ones (2))

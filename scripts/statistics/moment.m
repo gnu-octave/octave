@@ -130,7 +130,7 @@
 
 function m = moment (x, p, opt1, opt2)
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -206,9 +206,8 @@ endfunction
 %!assert (moment (1, 2, 4), 0)
 
 ## Test input validation
-%!error moment ()
-%!error moment (1)
-%!error moment (1, 2, 3, 4, 5)
+%!error <Invalid call> moment ()
+%!error <Invalid call> moment (1)
 %!error <X must be a non-empty numeric matrix> moment (['A'; 'B'], 2)
 %!error <X must be a non-empty numeric matrix> moment (ones (2,0,3), 2)
 %!error <P must be a numeric scalar> moment (1, true)

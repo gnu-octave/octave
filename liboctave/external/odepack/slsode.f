@@ -1,4 +1,3 @@
-*DECK SLSODE
       SUBROUTINE SLSODE (F, NEQ, Y, T, TOUT, ITOL, RTOL, ATOL, ITASK,
      1                  ISTATE, IOPT, RWORK, LRW, IWORK, LIW, JAC, MF)
       EXTERNAL F, JAC
@@ -1115,7 +1114,7 @@ C     - Substitute a max-norm of (v(i)*w(i)) for the rms-norm, or
 C     - Ignore some components of v in the norm, with the effect of
 C       suppressing the error control on those components of Y.
 C  ---------------------------------------------------------------------
-C***ROUTINES CALLED  SEWSET, SINTDY, R1MACH, SSTODE, SVNORM, XERRWD
+C***ROUTINES CALLED  SEWSET, SINTDY, R1MACH, SSTODE, SVNORM, XERRWV
 C***COMMON BLOCKS    SLS001
 C***REVISION HISTORY  (YYYYMMDD)
 C 19791129  DATE WRITTEN
@@ -1195,8 +1194,8 @@ C           SYSTEMS OF LINEAR ALGEBRAIC EQUATIONS.
 C  DGBTRF AND DGBTRS   ARE ROUTINES FROM LAPACK FOR SOLVING BANDED
 C           LINEAR SYSTEMS.
 C  R1MACH   computes the unit roundoff in a machine-independent manner.
-C  XERRWD, XSETUN, XSETF, IXSAV, IUMACH   handle the printing of all
-C           error messages and warnings.  XERRWD is machine-dependent.
+C  XERRWV, XSETUN, XSETF, IXSAV, IUMACH   handle the printing of all
+C           error messages and warnings.  XERRWV is machine-dependent.
 C Note: SVNORM, R1MACH, IXSAV, and IUMACH are function routines.
 C All the others are subroutines.
 C
@@ -1507,18 +1506,17 @@ C-----------------------------------------------------------------------
  280  IF ((TN + H) .NE. TN) GO TO 290
       NHNIL = NHNIL + 1
       IF (NHNIL .GT. MXHNIL) GO TO 290
-      CALL XERRWD('SLSODE-  Warning..internal T (=R1) and H (=R2) are',
-     1     50, 101, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD(
-     1  '      such that in the machine, T + H = T on the next step  ',
-     1     60, 101, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD('      (H = step size). Solver will continue anyway',
-     1     50, 101, 0, 0, 0, 0, 2, DBLE (TN), DBLE (H))
+      MSG = 'SLSODE-  Warning..internal T (=R1) and H (=R2) are'
+      CALL XERRWV (MSG, 50, 101, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG='      such that in the machine, T + H = T on the next step  '
+      CALL XERRWV (MSG, 60, 101, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG = '      (H = step size). Solver will continue anyway'
+      CALL XERRWV (MSG, 50, 101, 0, 0, 0, 0, 2, TN, H)
       IF (NHNIL .LT. MXHNIL) GO TO 290
-      CALL XERRWD('SLSODE-  Above warning has been issued I1 times.  ',
-     1     50, 102, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD('      It will not be issued again for this problem',
-     1     50, 102, 0, 1, MXHNIL, 0, 0, 0.0D0, 0.0D0)
+      MSG = 'SLSODE-  Above warning has been issued I1 times.  '
+      CALL XERRWV (MSG, 50, 102, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG = '      It will not be issued again for this problem'
+      CALL XERRWV (MSG, 50, 102, 0, 1, MXHNIL, 0, 0, 0.0E0, 0.0E0)
  290  CONTINUE
 C-----------------------------------------------------------------------
 C  CALL SSTODE(NEQ,Y,YH,NYH,YH,EWT,SAVF,ACOR,WM,IWM,F,JAC,SPREPJ,SSOLSY)
@@ -1590,40 +1588,40 @@ C Then Y is loaded from YH and T is set to TN.  The optional outputs
 C are loaded into the work arrays before returning.
 C-----------------------------------------------------------------------
 C The maximum number of steps was taken before reaching TOUT. ----------
- 500  CALL XERRWD('SLSODE-  At current T (=R1), MXSTEP (=I1) steps   ',
-     1 50, 201, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD('      taken on this call before reaching TOUT     ',
-     1     50, 201, 0, 1, MXSTEP, 0, 1, DBLE (TN), 0.0D0)
+ 500  MSG = 'SLSODE-  At current T (=R1), MXSTEP (=I1) steps   '
+      CALL XERRWV (MSG, 50, 201, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG = '      taken on this call before reaching TOUT     '
+      CALL XERRWV (MSG, 50, 201, 0, 1, MXSTEP, 0, 1, TN, 0.0E0)
       ISTATE = -1
       GO TO 580
 C EWT(I) .LE. 0.0 for some I (not at start of problem). ----------------
  510  EWTI = RWORK(LEWT+I-1)
-      CALL XERRWD('SLSODE-  At T (=R1), EWT(I1) has become R2 .LE. 0.',
-     1 50, 202, 0, 1, I, 0, 2, DBLE (TN), DBLE (EWTI))
+      MSG = 'SLSODE-  At T (=R1), EWT(I1) has become R2 .LE. 0.'
+      CALL XERRWV (MSG, 50, 202, 0, 1, I, 0, 2, TN, EWTI)
       ISTATE = -6
       GO TO 580
 C Too much accuracy requested for machine precision. -------------------
- 520  CALL XERRWD('SLSODE-  At T (=R1), too much accuracy requested  ',
-     1     50, 203, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD('      for precision of machine..  see TOLSF (=R2) ',
-     1     50, 203, 0, 0, 0, 0, 2, DBLE (TN), DBLE (TOLSF))
+ 520  MSG = 'SLSODE-  At T (=R1), too much accuracy requested  '
+      CALL XERRWV (MSG, 50, 203, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG = '      for precision of machine..  see TOLSF (=R2) '
+      CALL XERRWV (MSG, 50, 203, 0, 0, 0, 0, 2, TN, TOLSF)
       RWORK(14) = TOLSF
       ISTATE = -2
       GO TO 580
 C KFLAG = -1.  Error test failed repeatedly or with ABS(H) = HMIN. -----
- 530  CALL XERRWD('SLSODE-  At T(=R1) and step size H(=R2), the error',
-     1     50, 204, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD('      test failed repeatedly or with ABS(H) = HMIN',
-     1     50, 204, 0, 0, 0, 0, 2, DBLE (TN), DBLE (H))
+ 530  MSG = 'SLSODE-  At T(=R1) and step size H(=R2), the error'
+      CALL XERRWV (MSG, 50, 204, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG = '      test failed repeatedly or with ABS(H) = HMIN'
+      CALL XERRWV (MSG, 50, 204, 0, 0, 0, 0, 2, TN, H)
       ISTATE = -4
       GO TO 560
 C KFLAG = -2.  Convergence failed repeatedly or with ABS(H) = HMIN. ----
- 540  CALL XERRWD('SLSODE-  At T (=R1) and step size H (=R2), the    ',
-     1     50, 205, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD('      corrector convergence failed repeatedly     ',
-     1     50, 205, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD('      or with ABS(H) = HMIN   ',
-     1     30, 205, 0, 0, 0, 0, 2, DBLE (TN), DBLE (H))
+ 540  MSG = 'SLSODE-  At T (=R1) and step size H (=R2), the    '
+      CALL XERRWV (MSG, 50, 205, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG = '      corrector convergence failed repeatedly     '
+      CALL XERRWV (MSG, 50, 205, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG = '      or with ABS(H) = HMIN   '
+      CALL XERRWV (MSG, 30, 205, 0, 0, 0, 0, 2, TN, H)
       ISTATE = -5
 C Compute IMXER if relevant. -------------------------------------------
  560  BIG = 0.0E0
@@ -1655,106 +1653,105 @@ C (ISTATE = -3), as detected before calling the core integrator.
 C First the error message routine is called.  If the illegal input
 C is a negative ISTATE, the run is aborted (apparent infinite loop).
 C-----------------------------------------------------------------------
- 601  CALL XERRWD('SLSODE-  ISTATE (=I1) illegal ',
-     1     30, 1, 0, 1, ISTATE, 0, 0, 0.0D0, 0.0D0)
+ 601  MSG = 'SLSODE-  ISTATE (=I1) illegal '
+      CALL XERRWV (MSG, 30, 1, 0, 1, ISTATE, 0, 0, 0.0E0, 0.0E0)
       IF (ISTATE .LT. 0) GO TO 800
       GO TO 700
- 602  CALL XERRWD('SLSODE-  ITASK (=I1) illegal  ',
-     1     30, 2, 0, 1, ITASK, 0, 0, 0.0D0, 0.0D0)
+ 602  MSG = 'SLSODE-  ITASK (=I1) illegal  '
+      CALL XERRWV (MSG, 30, 2, 0, 1, ITASK, 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 603  CALL XERRWD('SLSODE-  ISTATE .GT. 1 but SLSODE not initialized ',
-     1     50, 3, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
+ 603  MSG = 'SLSODE-  ISTATE .GT. 1 but SLSODE not initialized '
+      CALL XERRWV (MSG, 50, 3, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 604  CALL XERRWD('SLSODE-  NEQ (=I1) .LT. 1     ',
-     1     30, 4, 0, 1, NEQ(1), 0, 0, 0.0D0, 0.0D0)
+ 604  MSG = 'SLSODE-  NEQ (=I1) .LT. 1     '
+      CALL XERRWV (MSG, 30, 4, 0, 1, NEQ(1), 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 605  CALL XERRWD('SLSODE-  ISTATE = 3 and NEQ increased (I1 to I2)  ',
-     1     50, 5, 0, 2, N, NEQ(1), 0, 0.0D0, 0.0D0)
+ 605  MSG = 'SLSODE-  ISTATE = 3 and NEQ increased (I1 to I2)  '
+      CALL XERRWV (MSG, 50, 5, 0, 2, N, NEQ(1), 0, 0.0E0, 0.0E0)
       GO TO 700
- 606  CALL XERRWD('SLSODE-  ITOL (=I1) illegal   ',
-     1     30, 6, 0, 1, ITOL, 0, 0, 0.0D0, 0.0D0)
+ 606  MSG = 'SLSODE-  ITOL (=I1) illegal   '
+      CALL XERRWV (MSG, 30, 6, 0, 1, ITOL, 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 607  CALL XERRWD('SLSODE-  IOPT (=I1) illegal   ',
-     1     30, 7, 0, 1, IOPT, 0, 0, 0.0D0, 0.0D0)
+ 607  MSG = 'SLSODE-  IOPT (=I1) illegal   '
+      CALL XERRWV (MSG, 30, 7, 0, 1, IOPT, 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 608  CALL XERRWD('SLSODE-  MF (=I1) illegal     ',
-     1     30, 8, 0, 1, MF, 0, 0, 0.0D0, 0.0D0)
+ 608  MSG = 'SLSODE-  MF (=I1) illegal     '
+      CALL XERRWV (MSG, 30, 8, 0, 1, MF, 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 609  CALL XERRWD('SLSODE-  ML (=I1) illegal.. .LT.0 or .GE.NEQ (=I2)',
-     1     50, 9, 0, 2, ML, NEQ(1), 0, 0.0D0, 0.0D0)
+ 609  MSG = 'SLSODE-  ML (=I1) illegal.. .LT.0 or .GE.NEQ (=I2)'
+      CALL XERRWV (MSG, 50, 9, 0, 2, ML, NEQ(1), 0, 0.0E0, 0.0E0)
       GO TO 700
- 610  CALL XERRWD('SLSODE-  MU (=I1) illegal.. .LT.0 or .GE.NEQ (=I2)',
-     1     50, 10, 0, 2, MU, NEQ(1), 0, 0.0D0, 0.0D0)
+ 610  MSG = 'SLSODE-  MU (=I1) illegal.. .LT.0 or .GE.NEQ (=I2)'
+      CALL XERRWV (MSG, 50, 10, 0, 2, MU, NEQ(1), 0, 0.0E0, 0.0E0)
       GO TO 700
- 611  CALL XERRWD('SLSODE-  MAXORD (=I1) .LT. 0  ',
-     1     30, 11, 0, 1, MAXORD, 0, 0, 0.0D0, 0.0D0)
+ 611  MSG = 'SLSODE-  MAXORD (=I1) .LT. 0  '
+      CALL XERRWV (MSG, 30, 11, 0, 1, MAXORD, 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 612  CALL XERRWD('SLSODE-  MXSTEP (=I1) .LT. 0  ',
-     1 30, 12, 0, 1, MXSTEP, 0, 0, 0.0D0, 0.0D0)
+ 612  MSG = 'SLSODE-  MXSTEP (=I1) .LT. 0  '
+      CALL XERRWV (MSG, 30, 12, 0, 1, MXSTEP, 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 613  CALL XERRWD('SLSODE-  MXHNIL (=I1) .LT. 0  ',
-     1     30, 13, 0, 1, MXHNIL, 0, 0, 0.0D0, 0.0D0)
+ 613  MSG = 'SLSODE-  MXHNIL (=I1) .LT. 0  '
+      CALL XERRWV (MSG, 30, 13, 0, 1, MXHNIL, 0, 0, 0.0E0, 0.0E0)
       GO TO 700
- 614  CALL XERRWD('SLSODE-  TOUT (=R1) behind T (=R2)      ',
-     1     40, 14, 0, 0, 0, 0, 2, DBLE (TOUT), DBLE (T))
-      CALL XERRWD('      Integration direction is given by H0 (=R1)  ',
-     1     50, 14, 0, 0, 0, 0, 1, DBLE (H0), 0.0D0)
+ 614  MSG = 'SLSODE-  TOUT (=R1) behind T (=R2)      '
+      CALL XERRWV (MSG, 40, 14, 0, 0, 0, 0, 2, TOUT, T)
+      MSG = '      Integration direction is given by H0 (=R1)  '
+      CALL XERRWV (MSG, 50, 14, 0, 0, 0, 0, 1, H0, 0.0E0)
       GO TO 700
- 615  CALL XERRWD('SLSODE-  HMAX (=R1) .LT. 0.0  ',
-     1     30, 15, 0, 0, 0, 0, 1, DBLE (HMAX), 0.0D0)
+ 615  MSG = 'SLSODE-  HMAX (=R1) .LT. 0.0  '
+      CALL XERRWV (MSG, 30, 15, 0, 0, 0, 0, 1, HMAX, 0.0E0)
       GO TO 700
- 616  CALL XERRWD('SLSODE-  HMIN (=R1) .LT. 0.0  ',
-     1     30, 16, 0, 0, 0, 0, 1, DBLE (HMIN), 0.0D0)
+ 616  MSG = 'SLSODE-  HMIN (=R1) .LT. 0.0  '
+      CALL XERRWV (MSG, 30, 16, 0, 0, 0, 0, 1, HMIN, 0.0E0)
       GO TO 700
- 617  CALL XERRWD(
-     1  'SLSODE-  RWORK length needed, LENRW (=I1), exceeds LRW (=I2)',
-     1   60, 17, 0, 2, LENRW, LRW, 0, 0.0D0, 0.0D0)
+ 617  CONTINUE
+      MSG='SLSODE-  RWORK length needed, LENRW (=I1), exceeds LRW (=I2)'
+      CALL XERRWV (MSG, 60, 17, 0, 2, LENRW, LRW, 0, 0.0E0, 0.0E0)
       GO TO 700
- 618  CALL XERRWD(
-     1   'SLSODE-  IWORK length needed, LENIW (=I1), exceeds LIW (=I2)',
-     1    60, 18, 0, 2, LENIW, LIW, 0, 0.0D0, 0.0D0)
+ 618  CONTINUE
+      MSG='SLSODE-  IWORK length needed, LENIW (=I1), exceeds LIW (=I2)'
+      CALL XERRWV (MSG, 60, 18, 0, 2, LENIW, LIW, 0, 0.0E0, 0.0E0)
       GO TO 700
- 619  CALL XERRWD('SLSODE-  RTOL(I1) is R1 .LT. 0.0        ',
-     1     40, 19, 0, 1, I, 0, 1, DBLE (RTOLI), 0.0D0)
+ 619  MSG = 'SLSODE-  RTOL(I1) is R1 .LT. 0.0        '
+      CALL XERRWV (MSG, 40, 19, 0, 1, I, 0, 1, RTOLI, 0.0E0)
       GO TO 700
- 620  CALL XERRWD('SLSODE-  ATOL(I1) is R1 .LT. 0.0        ',
-     1     40, 20, 0, 1, I, 0, 1, DBLE (ATOLI), 0.0D0)
+ 620  MSG = 'SLSODE-  ATOL(I1) is R1 .LT. 0.0        '
+      CALL XERRWV (MSG, 40, 20, 0, 1, I, 0, 1, ATOLI, 0.0E0)
       GO TO 700
  621  EWTI = RWORK(LEWT+I-1)
-      CALL XERRWD('SLSODE-  EWT(I1) is R1 .LE. 0.0         ',
-     1     40, 21, 0, 1, I, 0, 1, DBLE (EWTI), 0.0D0)
+      MSG = 'SLSODE-  EWT(I1) is R1 .LE. 0.0         '
+      CALL XERRWV (MSG, 40, 21, 0, 1, I, 0, 1, EWTI, 0.0E0)
       GO TO 700
- 622  CALL XERRWD(
-     1   'SLSODE-  TOUT (=R1) too close to T(=R2) to start integration',
-     1     60, 22, 0, 0, 0, 0, 2, DBLE (TOUT), DBLE (T))
+ 622  CONTINUE
+      MSG='SLSODE-  TOUT (=R1) too close to T(=R2) to start integration'
+      CALL XERRWV (MSG, 60, 22, 0, 0, 0, 0, 2, TOUT, T)
       GO TO 700
- 623  CALL XERRWD(
-     1 'SLSODE-  ITASK = I1 and TOUT (=R1) behind TCUR - HU (= R2)  ',
-     1     60, 23, 0, 1, ITASK, 0, 2, DBLE (TOUT), DBLE (TP))
+ 623  CONTINUE
+      MSG='SLSODE-  ITASK = I1 and TOUT (=R1) behind TCUR - HU (= R2)  '
+      CALL XERRWV (MSG, 60, 23, 0, 1, ITASK, 0, 2, TOUT, TP)
       GO TO 700
- 624  CALL XERRWD(
-     1   'SLSODE-  ITASK = 4 OR 5 and TCRIT (=R1) behind TCUR (=R2)   ',
-     1    60, 24, 0, 0, 0, 0, 2, DBLE (TCRIT), DBLE (TN))
+ 624  CONTINUE
+      MSG='SLSODE-  ITASK = 4 OR 5 and TCRIT (=R1) behind TCUR (=R2)   '
+      CALL XERRWV (MSG, 60, 24, 0, 0, 0, 0, 2, TCRIT, TN)
       GO TO 700
- 625  CALL XERRWD(
-     1  'SLSODE-  ITASK = 4 or 5 and TCRIT (=R1) behind TOUT (=R2)   ',
-     1   60, 25, 0, 0, 0, 0, 2, DBLE (TCRIT), DBLE (TOUT))
+ 625  CONTINUE
+      MSG='SLSODE-  ITASK = 4 or 5 and TCRIT (=R1) behind TOUT (=R2)   '
+      CALL XERRWV (MSG, 60, 25, 0, 0, 0, 0, 2, TCRIT, TOUT)
       GO TO 700
- 626  CALL XERRWD('SLSODE-  At start of problem, too much accuracy   ',
-     1     50, 26, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      CALL XERRWD(
-     1   '      requested for precision of machine..  See TOLSF (=R1) ',
-     1    60, 26, 0, 0, 0, 0, 1, DBLE (TOLSF), 0.0D0)
+ 626  MSG = 'SLSODE-  At start of problem, too much accuracy   '
+      CALL XERRWV (MSG, 50, 26, 0, 0, 0, 0, 0, 0.0E0, 0.0E0)
+      MSG='      requested for precision of machine..  See TOLSF (=R1) '
+      CALL XERRWV (MSG, 60, 26, 0, 0, 0, 0, 1, TOLSF, 0.0E0)
       RWORK(14) = TOLSF
       GO TO 700
- 627  CALL XERRWD('SLSODE-  Trouble in SINTDY.  ITASK = I1, TOUT = R1',
-     1     50, 27, 0, 1, ITASK, 0, 1, DBLE (TOUT), 0.0D0)
+ 627  MSG = 'SLSODE-  Trouble in SINTDY.  ITASK = I1, TOUT = R1'
+      CALL XERRWV (MSG, 50, 27, 0, 1, ITASK, 0, 1, TOUT, 0.0E0)
 C
  700  ISTATE = -3
       RETURN
 C
- 800  CALL XERRWD('SLSODE-  Run aborted.. apparent infinite loop     ',
-     1     50, 303, 2, 0, 0, 0, 0, 0.0D0, 0.0D0)
+ 800  MSG = 'SLSODE-  Run aborted.. apparent infinite loop     '
+      CALL XERRWV (MSG, 50, 303, 2, 0, 0, 0, 0, 0.0E0, 0.0E0)
       RETURN
 C----------------------- END OF SUBROUTINE SLSODE ----------------------
       END

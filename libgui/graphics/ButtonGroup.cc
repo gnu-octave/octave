@@ -46,11 +46,12 @@
 #include "qt-graphics-toolkit.h"
 
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 
 #include "interpreter.h"
-#include "ov-struct.h"
+#include "oct-map.h"
 
-namespace QtHandles
+namespace octave
 {
 
   static int
@@ -175,14 +176,17 @@ namespace QtHandles
 
     if (pp.is_visible ())
       {
-        QTimer::singleShot (0, frame, SLOT (show (void)));
+        QTimer::singleShot (0, frame, &QFrame::show);
+        // FIXME: What is the intent here?  QButtonGroup::show is not a
+        // member of QButtonGroup.
         QTimer::singleShot (0, buttongroup, SLOT (show (void)));
       }
     else
       frame->hide ();
 
-    connect (m_buttongroup, SIGNAL (buttonClicked (QAbstractButton*)),
-             SLOT (buttonClicked (QAbstractButton*)));
+    connect (m_buttongroup,
+             QOverload<QAbstractButton *>::of (&QButtonGroup::buttonClicked),
+             this, &ButtonGroup::buttonClicked);
   }
 
   ButtonGroup::~ButtonGroup (void)
@@ -464,7 +468,7 @@ namespace QtHandles
   ButtonGroup::addButton (QAbstractButton *btn)
   {
     m_buttongroup->addButton (btn);
-    connect (btn, SIGNAL (toggled (bool)), SLOT (buttonToggled (bool)));
+    connect (btn, &QAbstractButton::toggled, this, &ButtonGroup::buttonToggled);
   }
 
   void
@@ -520,7 +524,7 @@ namespace QtHandles
         eventData.setfield ("NewValue", newValue.as_octave_value ());
         eventData.setfield ("Source", bp.get___myhandle__ ().as_octave_value ());
         eventData.setfield ("EventName", "SelectionChanged");
-        octave_value selectionChangedEventObject (new octave_struct (eventData));
+        octave_value selectionChangedEventObject (eventData);
         emit gh_callback_event (m_handle, "selectionchangedfcn",
                                 selectionChangedEventObject);
       }

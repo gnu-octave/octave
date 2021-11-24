@@ -50,6 +50,7 @@
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
+#include "unistr-wrappers.h"
 
 #include "Cell.h"
 #include "defaults.h"
@@ -528,9 +529,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       // We uncompress the first 8 bytes of the header to get the buffer length
       // This will fail with an error Z_MEM_ERROR
       uLongf destLen = 8;
+      uLongf elt_len = element_length;
       OCTAVE_LOCAL_BUFFER (unsigned int, tmp, 2);
-      if (uncompress (reinterpret_cast<Bytef *> (tmp), &destLen,
-                      reinterpret_cast<Bytef *> (inbuf), element_length)
+      if (uncompress2 (reinterpret_cast<Bytef *> (tmp), &destLen,
+                       reinterpret_cast<Bytef *> (inbuf), &elt_len)
           == Z_MEM_ERROR)
         error ("load: error probing size of compressed data element");
 
@@ -543,10 +545,19 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
       // FIXME: find a way to avoid casting away const here!
 
-      int err = uncompress (reinterpret_cast<Bytef *>
-                            (const_cast<char *> (outbuf.c_str ())),
-                            &destLen, reinterpret_cast<Bytef *> (inbuf),
-                            element_length);
+      elt_len = element_length;
+      int err = uncompress2 (reinterpret_cast<Bytef *>
+                             (const_cast<char *> (outbuf.c_str ())),
+                             &destLen, reinterpret_cast<Bytef *> (inbuf),
+                             &elt_len);
+
+      // Ignore buffer error if we have consumed all the input buffer
+      // and uncompressing the data generated as many bytes of output as
+      // we were expecting given the data element size that was stored
+      // in the Matlab data element header.
+      if (err == Z_BUF_ERROR && destLen == tmp[1] + 8
+          && elt_len == static_cast<uLongf> (element_length))
+        err = Z_OK;
 
       if (err != Z_OK)
         {
@@ -1417,58 +1428,84 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             tc = ctmp;
           }
-        else
+        else if (arrayclass == MAT_FILE_CHAR_CLASS)
           {
-            if (arrayclass == MAT_FILE_CHAR_CLASS)
+            bool converted = false;
+            if (re.isvector () && (type == miUTF16 || type == miUINT16))
               {
-                if (type == miUTF16 || type == miUTF32)
+                uint16NDArray u16 = re;
+                const uint16_t *u16_str
+                  = reinterpret_cast<const uint16_t *> (u16.data ());
+
+                // Convert to UTF-8.
+                std::size_t n8;
+                uint8_t *u8_str = octave_u16_to_u8_wrapper (u16_str,
+                                                            u16.numel (),
+                                                            nullptr, &n8);
+                if (u8_str)
                   {
-                    bool found_big_char = false;
-                    for (octave_idx_type i = 0; i < n; i++)
-                      {
-                        if (re(i) > 127)
-                          {
-                            re(i) = '?';
-                            found_big_char = true;
-                          }
-                      }
-
-                    if (found_big_char)
-                      warning_with_id ("Octave:load:unsupported-utf-char",
-                               "load: can not read non-ASCII portions of UTF characters; replacing unreadable characters with '?'");
+                    // FIXME: Is there a better way to construct a charMatrix
+                    // from a non zero terminated buffer?
+                    tc = charMatrix (std::string (reinterpret_cast<char *> (u8_str), n8));
+                    free (u8_str);
+                    converted = true;
                   }
-                else if (type == miUTF8)
+              }
+            else if (re.isvector () && (type == miUTF32 || type == miUINT32))
+              {
+                uint32NDArray u32 = re;
+                const uint32_t *u32_str
+                  = reinterpret_cast<const uint32_t *> (u32.data ());
+
+                // Convert to UTF-8.
+                std::size_t n8;
+                uint8_t *u8_str = octave_u32_to_u8_wrapper (u32_str,
+                                                            u32.numel (),
+                                                            nullptr, &n8);
+                if (u8_str)
                   {
-                    // Search for multi-byte encoded UTF8 characters and
-                    // replace with 0x3F for '?'...  Give the user a warning
+                    // FIXME: Is there a better way to construct a charMatrix
+                    // from a non zero terminated buffer?
+                    tc = charMatrix (std::string (reinterpret_cast<char *> (u8_str), n8));
+                    free (u8_str);
+                    converted = true;
+                  }
+              }
+            else if (type == miUTF8 || type == miUINT8)
+              {
+                // Octave's internal encoding is UTF-8.  So we should be
+                // able to use this natively.
+                tc = re;
+                tc = tc.convert_to_str (false, true, '\'');
+                converted = true;
+              }
 
-                    bool utf8_multi_byte = false;
-                    for (octave_idx_type i = 0; i < n; i++)
+            if (! converted)
+              {
+                // Fall back to manually replacing non-ASCII
+                // characters by "?".
+                bool found_big_char = false;
+                for (octave_idx_type i = 0; i < n; i++)
+                  {
+                    if (re(i) > 127)
                       {
-                        unsigned char a = static_cast<unsigned char> (re(i));
-                        if (a > 0x7f)
-                          utf8_multi_byte = true;
-                      }
-
-                    if (utf8_multi_byte)
-                      {
-                        warning_with_id ("Octave:load:unsupported-utf-char",
-                                         "load: can not read multi-byte encoded UTF8 characters; replacing unreadable characters with '?'");
-                        for (octave_idx_type i = 0; i < n; i++)
-                          {
-                            unsigned char a
-                              = static_cast<unsigned char> (re(i));
-                            if (a > 0x7f)
-                              re(i) = '?';
-                          }
+                        re(i) = '?';
+                        found_big_char = true;
                       }
                   }
+
+                if (found_big_char)
+                  warning_with_id ("Octave:load:unsupported-utf-char",
+                    "load: failed to convert from input to UTF-8; "
+                    "replacing non-ASCII characters with '?'");
+
                 tc = re;
                 tc = tc.convert_to_str (false, true, '\'');
               }
-            else
-              tc = re;
+
           }
+        else
+          tc = re;
       }
     }
 
@@ -1626,7 +1663,7 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 
   double max_val, min_val;
   if (m.all_integers (max_val, min_val))
-    st = get_save_type (max_val, min_val);
+    st = octave::get_save_type (max_val, min_val);
 
   mat5_data_type mst;
   int size;
@@ -1711,7 +1748,7 @@ write_mat5_array (std::ostream& os, const FloatNDArray& m, bool)
 
   float max_val, min_val;
   if (m.all_integers (max_val, min_val))
-    st = get_save_type (max_val, min_val);
+    st = octave::get_save_type (max_val, min_val);
 
   mat5_data_type mst;
   int size;
@@ -1925,9 +1962,9 @@ save_mat5_array_length (const double *val, octave_idx_type nel,
             size = 4;
         }
 
-      // The code below is disabled since get_save_type currently doesn't
-      // deal with integer types.  This will need to be activated if
-      // get_save_type is changed.
+      // The code below is disabled since get_save_type currently
+      // doesn't deal with integer types.  This will need to be
+      // activated if get_save_type is changed.
 
       // double max_val = val[0];
       // double min_val = val[0];
@@ -1979,9 +2016,9 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
     {
       int size = 4;
 
-      // The code below is disabled since get_save_type currently doesn't
-      // deal with integer types.  This will need to be activated if
-      // get_save_type is changed.
+      // The code below is disabled since get_save_type currently
+      // doesn't deal with integer types.  This will need to be
+      // activated if get_save_type is changed.
 
       // float max_val = val[0];
       // float min_val = val[0];
@@ -2070,6 +2107,24 @@ save_mat5_array_length (const FloatComplex *val, octave_idx_type nel,
   return ret;
 }
 
+static uint16_t *
+maybe_convert_to_u16 (const charNDArray& chm, std::size_t& n16_str)
+{
+  uint16_t *u16_str;
+  dim_vector dv = chm.dims ();
+
+  if (chm.ndims () == 2 && dv(0) == 1)
+    {
+      const uint8_t *u8_str = reinterpret_cast<const uint8_t *> (chm.data ());
+      u16_str = octave_u8_to_u16_wrapper (u8_str, chm.numel (),
+                                          nullptr, &n16_str);
+    }
+  else
+    u16_str = nullptr;
+
+  return u16_str;
+}
+
 int
 save_mat5_element_length (const octave_value& tc, const std::string& name,
                           bool save_as_floats, bool mat7_format)
@@ -2087,9 +2142,25 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
   if (tc.is_string ())
     {
       charNDArray chm = tc.char_array_value ();
+      // convert to UTF-16
+      std::size_t n16_str;
+      uint16_t *u16_str = maybe_convert_to_u16 (chm, n16_str);
       ret += 8;
-      if (chm.numel () > 2)
-        ret += PAD (2 * chm.numel ());
+
+      octave_idx_type str_len;
+      std::size_t sz_of = 1;
+      if (u16_str)
+        {
+          free (u16_str);
+          // Count number of elements in converted string
+          str_len = n16_str;
+          sz_of = 2;
+        }
+      else
+        str_len = chm.numel ();
+
+      if (str_len > 2)
+        ret += PAD (sz_of * str_len);
     }
   else if (tc.issparse ())
     {
@@ -2150,14 +2221,12 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (tc.is_single_type ())
         {
           const FloatNDArray m = tc.float_array_value ();
-          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                         save_as_floats);
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
         }
       else
         {
           const NDArray m = tc.array_value ();
-          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                         save_as_floats);
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
         }
     }
   else if (tc.iscell ())
@@ -2174,14 +2243,12 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       if (tc.is_single_type ())
         {
           const FloatComplexNDArray m = tc.float_complex_array_value ();
-          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                         save_as_floats);
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
         }
       else
         {
           const ComplexNDArray m = tc.complex_array_value ();
-          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                         save_as_floats);
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
         }
     }
   else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
@@ -2206,7 +2273,6 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
 
       for (octave_idx_type j = 0; j < nel; j++)
         {
-
           for (auto i = m.begin (); i != m.end (); i++)
             {
               const Cell elts = m.contents (i);
@@ -2414,15 +2480,36 @@ save_mat5_binary_element (std::ostream& os,
 
   write_mat5_tag (os, miINT32, dim_len);
 
-  for (int i = 0; i < nd; i++)
+  // Strings need to be converted here (or dim-vector will be off).
+  charNDArray chm;
+  uint16_t *u16_str;
+  std::size_t n16_str;
+  bool conv_u16 = false;
+  if (tc.is_string ())
     {
-      int32_t n = dv(i);
-      os.write (reinterpret_cast<char *> (&n), 4);
+      chm = tc.char_array_value ();
+      u16_str = maybe_convert_to_u16 (chm, n16_str);
+
+      if (u16_str)
+        conv_u16 = true;
     }
+
+  if (conv_u16)
+    {
+      int32_t n = 1;
+      os.write (reinterpret_cast<char *> (&n), 4);
+      os.write (reinterpret_cast<char *> (&n16_str), 4);
+    }
+  else
+    for (int i = 0; i < nd; i++)
+      {
+        int32_t n = dv(i);
+        os.write (reinterpret_cast<char *> (&n), 4);
+      }
 
   if (PAD (dim_len) > dim_len)
     {
-      static char buf[9]="\x00\x00\x00\x00\x00\x00\x00\x00";
+      static char buf[9] = "\x00\x00\x00\x00\x00\x00\x00\x00";
       os.write (buf, PAD (dim_len) - dim_len);
     }
 
@@ -2445,24 +2532,35 @@ save_mat5_binary_element (std::ostream& os,
   // data element
   if (tc.is_string ())
     {
-      charNDArray chm = tc.char_array_value ();
-      octave_idx_type nel = chm.numel ();
-      octave_idx_type len = nel*2;
-      octave_idx_type paddedlength = PAD (len);
+      octave_idx_type len;
+      octave_idx_type paddedlength;
 
-      OCTAVE_LOCAL_BUFFER (int16_t, buf, nel+3);
-      write_mat5_tag (os, miUINT16, len);
+      if (conv_u16)
+        {
+          // converted UTF-16
+          len = n16_str*2;
+          paddedlength = PAD (len);
 
-      const char *s = chm.data ();
+          write_mat5_tag (os, miUTF16, len);
 
-      for (octave_idx_type i = 0; i < nel; i++)
-        buf[i] = *s++ & 0x00FF;
+          os.write (reinterpret_cast<char *> (u16_str), len);
 
-      os.write (reinterpret_cast<char *> (buf), len);
+          free (u16_str);
+        }
+      else
+        {
+          // write as UTF-8
+          len = chm.numel ();
+          paddedlength = PAD (len);
+
+          write_mat5_tag (os, miUTF8, len);
+
+          os.write (chm.data (), len);
+        }
 
       if (paddedlength > len)
         {
-          static char padbuf[9]="\x00\x00\x00\x00\x00\x00\x00\x00";
+          static char padbuf[9] = "\x00\x00\x00\x00\x00\x00\x00\x00";
           os.write (padbuf, paddedlength - len);
         }
     }
@@ -2512,55 +2610,55 @@ save_mat5_binary_element (std::ostream& os,
     {
       int8NDArray m = tc.int8_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), -1, m.numel ());
+      write_mat5_integer_data (os, m.data (), -1, m.numel ());
     }
   else if (cname == "int16")
     {
       int16NDArray m = tc.int16_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), -2, m.numel ());
+      write_mat5_integer_data (os, m.data (), -2, m.numel ());
     }
   else if (cname == "int32")
     {
       int32NDArray m = tc.int32_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), -4, m.numel ());
+      write_mat5_integer_data (os, m.data (), -4, m.numel ());
     }
   else if (cname == "int64")
     {
       int64NDArray m = tc.int64_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), -8, m.numel ());
+      write_mat5_integer_data (os, m.data (), -8, m.numel ());
     }
   else if (cname == "uint8")
     {
       uint8NDArray m = tc.uint8_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), 1, m.numel ());
+      write_mat5_integer_data (os, m.data (), 1, m.numel ());
     }
   else if (cname == "uint16")
     {
       uint16NDArray m = tc.uint16_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), 2, m.numel ());
+      write_mat5_integer_data (os, m.data (), 2, m.numel ());
     }
   else if (cname == "uint32")
     {
       uint32NDArray m = tc.uint32_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), 4, m.numel ());
+      write_mat5_integer_data (os, m.data (), 4, m.numel ());
     }
   else if (cname == "uint64")
     {
       uint64NDArray m = tc.uint64_array_value ();
 
-      write_mat5_integer_data (os, m.fortran_vec (), 8, m.numel ());
+      write_mat5_integer_data (os, m.data (), 8, m.numel ());
     }
   else if (tc.islogical ())
     {
       uint8NDArray m (tc.bool_array_value ());
 
-      write_mat5_integer_data (os, m.fortran_vec (), 1, m.numel ());
+      write_mat5_integer_data (os, m.data (), 1, m.numel ());
     }
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {

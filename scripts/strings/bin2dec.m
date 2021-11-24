@@ -57,7 +57,7 @@
 
 function d = bin2dec (s)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -68,12 +68,12 @@ endfunction
 
 %!assert (bin2dec ("0000"), 0)
 %!assert (bin2dec ("1110"), 14)
-%!assert (bin2dec ("11111111111111111111111111111111111111111111111111111"), 2^53-1)
+%!assert (bin2dec ("11111111111111111111111111111111111111111111111111111"),
+%!        2^53-1)
 %!assert (bin2dec ({"1110", "1111"}), [14; 15])
 %!assert (bin2dec ("1 0 1"), 5)
 %!assert (bin2dec (char ("1 0 1", "   1111")), [5; 15])
 
 ## Test input validation
-%!error bin2dec ()
-%!error bin2dec (1)
-%!error bin2dec ("1", 2)
+%!error <Invalid call> bin2dec ()
+%!error <S must be a string> bin2dec (1)

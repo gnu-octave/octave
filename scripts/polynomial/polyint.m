@@ -36,7 +36,7 @@
 
 function retval = polyint (p, k)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -79,5 +79,5 @@ endfunction
 %! B = [length(A):-1:1];
 %! assert (polyint (A), [1./B, 0]);
 
-%!error polyint ()
+%!error <Invalid call> polyint ()
 %!error polyint (ones (2,2))

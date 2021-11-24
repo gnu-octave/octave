@@ -175,7 +175,7 @@ dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
 {
   T *ax = a.fortran_vec ();
 
-  const T *bx = b.fortran_vec ();
+  const T *bx = b.data ();
 
   octave_idx_type anr = a.rows ();
 
@@ -295,7 +295,7 @@ dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
 
-  const T *Bx = b.fortran_vec ();
+  const T *Bx = b.data ();
 
   a.resize (dim_vector (b_nr, b_nc));
 
@@ -505,34 +505,34 @@ dmsolve (const ST& a, const T& b, octave_idx_type& info)
 
 // Instantiations we need.
 
-template ComplexMatrix
+template OCTAVE_API ComplexMatrix
 dmsolve<ComplexMatrix, SparseComplexMatrix, Matrix>
   (const SparseComplexMatrix&, const Matrix&, octave_idx_type&);
 
-template SparseComplexMatrix
+template OCTAVE_API SparseComplexMatrix
 dmsolve<SparseComplexMatrix, SparseComplexMatrix, SparseMatrix>
   (const SparseComplexMatrix&, const SparseMatrix&, octave_idx_type&);
 
-template ComplexMatrix
+template OCTAVE_API ComplexMatrix
 dmsolve<ComplexMatrix, SparseComplexMatrix, ComplexMatrix>
   (const SparseComplexMatrix&, const ComplexMatrix&, octave_idx_type&);
 
-template SparseComplexMatrix
+template OCTAVE_API SparseComplexMatrix
 dmsolve<SparseComplexMatrix, SparseComplexMatrix, SparseComplexMatrix>
   (const SparseComplexMatrix&, const SparseComplexMatrix&, octave_idx_type&);
 
-template Matrix
+template OCTAVE_API Matrix
 dmsolve<Matrix, SparseMatrix, Matrix>
   (const SparseMatrix&, const Matrix&, octave_idx_type&);
 
-template SparseMatrix
+template OCTAVE_API SparseMatrix
 dmsolve<SparseMatrix, SparseMatrix, SparseMatrix>
   (const SparseMatrix&, const SparseMatrix&, octave_idx_type&);
 
-template ComplexMatrix
+template OCTAVE_API ComplexMatrix
 dmsolve<ComplexMatrix, SparseMatrix, ComplexMatrix>
   (const SparseMatrix&, const ComplexMatrix&, octave_idx_type&);
 
-template SparseComplexMatrix
+template OCTAVE_API SparseComplexMatrix
 dmsolve<SparseComplexMatrix, SparseMatrix, SparseComplexMatrix>
   (const SparseMatrix&, const SparseComplexMatrix&, octave_idx_type&);

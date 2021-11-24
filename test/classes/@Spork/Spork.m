@@ -1,5 +1,5 @@
 function s = Spork (geek)
-% Test class.
+%% Test class.
 
     if (nargin == 1 && isa (geek, 'Spork'))
       s = geek;

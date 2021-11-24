@@ -24,10 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{prefix}, @var{archprefix} =} default_prefix (@var{global_install})
+## @deftypefn {} {[@var{prefix}, @var{archprefix} =} default_prefix (@var{global_install}, @var{desc})
 ## Undocumented internal function.
 ## @end deftypefn
 
+## FIXME: second input "desc" does not appear to be used.
 function [prefix, archprefix] = default_prefix (global_install, desc)
 
   if (global_install)
@@ -40,7 +41,8 @@ function [prefix, archprefix] = default_prefix (global_install, desc)
                              "packages");
     endif
   else
-    prefix = tilde_expand (fullfile ("~", "octave"));
+    prefix = fullfile (user_data_dir (), "octave", ...
+                       __octave_config_info__ ("api_version"), "packages");
     archprefix = prefix;
   endif
 

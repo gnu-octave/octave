@@ -42,7 +42,7 @@
 
 function y = range (x, dim)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -62,5 +62,4 @@ endfunction
 %!assert (range (2), 0)
 
 ## Test input validation
-%!error range ()
-%!error range (1, 2, 3)
+%!error <Invalid call> range ()

@@ -41,7 +41,7 @@
 
 function c = hanning (m, opt)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -87,7 +87,7 @@ endfunction
 %! A = hanning (N, "periodic");
 %! assert (A(N/2 + 1), 1);
 
-%!error hanning ()
+%!error <Invalid call> hanning ()
 %!error hanning (0.5)
 %!error hanning (-1)
 %!error hanning (ones (1,4))

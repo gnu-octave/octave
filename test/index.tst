@@ -513,8 +513,8 @@
 %!error <index \(2\): out of bound 1>                1(2)
 %!error <index \(1\): out of bound 0>                [](1)
 %!error <index \(-1\): subscripts>                   1(1)(-1)(1)
-%!error <index \(_,1\): out of bound 0 \(dimensions are 5x0\)> zeros(5,0)(3,1)
-%!error <index \(3,_\): out of bound 0 \(dimensions are 0x5\)> zeros(0,5)(3,1)
+%!error <index \(_,1\): out of bound 0 \(dimensions are 5x0\)> zeros (5,0)(3,1)
+%!error <index \(3,_\): out of bound 0 \(dimensions are 0x5\)> zeros (0,5)(3,1)
 %!
 %!shared abc
 %! abc = [1, 2];
@@ -539,8 +539,8 @@
 %!error <=: nonconformant arguments \(op1 is 1x1, op2 is 1x5\)> abc(3,5) = 1:5
 
 ##  Test diagonal matrices, and access of function results
-%!error <index \(_,_,5\): out of bound 1 \(dimensions are 3x3\)> eye(3)(2,3,5)
-%!error <index \(-2,_\): subscripts>               eye(4)(-2,3)
+%!error <index \(_,_,5\): out of bound 1 \(dimensions are 3x3\)> eye (3)(2,3,5)
+%!error <index \(-2,_\): subscripts>               eye (4)(-2,3)
 
 ##  Test cells
 %!shared abc
@@ -558,7 +558,7 @@
 
 ##  Test sparse matrices
 %!shared abc
-%! abc = sparse(3,3);
+%! abc = sparse (3,3);
 %!error <abc\(-1\): subscripts>                abc(-1)
 %!error <abc\(-1\): subscripts>                abc(-1) = 1
 %!error <abc\(-1,_\): subscripts>              abc(-1,1)
@@ -578,7 +578,7 @@
 %! abc = [1 2];
 %!error <abc\(0\+1i\): subscripts must be real>     abc(i)
 %! abc = [1 2; 3 4];
-%!error <abc\(1\+0i\): subscripts must be real>     abc(complex(1))
+%!error <abc\(1\+0i\): subscripts must be real>     abc(complex (1))
 %!error <abc\(1\+0.5i,_\): subscripts must be real> abc(1+0.5*i,3)
 %!error <abc\(_,0-2i\): subscripts must be real>    abc(2,0-2*i)
 
@@ -587,6 +587,6 @@
 %! a(1,1,1).b(1) = 3;
 
 %!test <*39789>
-%! c = cell(1,1,1);
+%! c = cell (1,1,1);
 %! c{1,1,1} = zeros(5, 2);
 %! c{1,1,1}(:, 1) = 1;

@@ -34,8 +34,13 @@
 #include <limits>
 #include <ostream>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
+#endif
+
 #include "lo-error.h"
 #include "lo-utils.h"
+#include "lo-sysdep.h"
 #include "oct-locbuf.h"
 #include "oct-time.h"
 #include "octave-preserve-stream-state.h"
@@ -48,14 +53,14 @@ namespace octave
   namespace sys
   {
     time::time (double d)
-      : ot_unix_time (static_cast<time_t> (d)), ot_usec (0)
+      : m_ot_unix_time (static_cast<time_t> (d)), m_ot_usec (0)
     {
       double ip;
-      ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
+      m_ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
     }
 
     time::time (const base_tm& tm)
-      : ot_unix_time (), ot_usec ()
+      : m_ot_unix_time (), m_ot_usec ()
     {
       struct ::tm t;
 
@@ -79,13 +84,13 @@ namespace octave
       t.tm_zone = ps;
 #endif
 
-      ot_unix_time = octave_mktime_wrapper (&t);
+      m_ot_unix_time = octave_mktime_wrapper (&t);
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
       delete [] ps;
 #endif
 
-      ot_usec = tm.usec ();
+      m_ot_usec = tm.usec ();
     }
 
     std::string
@@ -99,8 +104,8 @@ namespace octave
     {
       preserve_stream_state stream_state (os);
 
-      os << ot.ot_unix_time << '.'
-         << std::setw (6) << std::setfill ('0') << ot.ot_usec;
+      os << ot.m_ot_unix_time << '.'
+         << std::setw (6) << std::setfill ('0') << ot.m_ot_usec;
 
       return os;
     }
@@ -108,7 +113,7 @@ namespace octave
     void
     time::stamp (void)
     {
-      octave_gettimeofday_wrapper (&ot_unix_time, &ot_usec);
+      octave_gettimeofday_wrapper (&m_ot_unix_time, &m_ot_usec);
     }
 
     // From the mktime() manual page:
@@ -238,11 +243,25 @@ namespace octave
 
 #if defined (HAVE_TM_GMTOFF)
       m_gmtoff = t->tm_gmtoff;
+#elif defined (OCTAVE_USE_WINDOWS_API)
+      TIME_ZONE_INFORMATION tzi;
+
+      GetTimeZoneInformationForYear (m_year, nullptr, &tzi);
+
+      if (m_isdst)
+        m_gmtoff = -60 * (tzi.Bias + tzi.DaylightBias);
+      else
+        m_gmtoff = -60 * (tzi.Bias + tzi.StandardBias);
 #endif
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
       if (t->tm_zone)
         m_zone = t->tm_zone;
+#elif defined (OCTAVE_USE_WINDOWS_API)
+      if (m_isdst)
+        m_zone = sys::u8_from_wstring (tzi.DaylightName);
+      else
+        m_zone = sys::u8_from_wstring (tzi.StandardName);
 #elif defined (HAVE_TZNAME)
       if (t->tm_isdst == 0 || t->tm_isdst == 1)
         m_zone = tzname[t->tm_isdst];
@@ -313,9 +332,9 @@ namespace octave
         t.tm_year = 0;
 
       if (q)
-        nchars = q - p + 1;
+        m_nchars = q - p + 1;
       else
-        nchars = 0;
+        m_nchars = 0;
 
       base_tm::init (&t);
 

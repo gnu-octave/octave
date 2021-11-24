@@ -127,45 +127,45 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
   if (info > 0)
     (*current_liboctave_error_handler) ("dgeevx failed to converge");
 
-  lambda.resize (n);
+  m_lambda.resize (n);
   F77_INT nvr = (calc_rev ? n : 0);
-  v.resize (nvr, nvr);
+  m_v.resize (nvr, nvr);
   F77_INT nvl = (calc_lev ? n : 0);
-  w.resize (nvl, nvl);
+  m_w.resize (nvl, nvl);
 
   for (F77_INT j = 0; j < n; j++)
     {
       if (wi.elem (j) == 0.0)
         {
-          lambda.elem (j) = Complex (wr.elem (j));
+          m_lambda.elem (j) = Complex (wr.elem (j));
           for (F77_INT i = 0; i < nvr; i++)
-            v.elem (i, j) = vr.elem (i, j);
+            m_v.elem (i, j) = vr.elem (i, j);
 
           for (F77_INT i = 0; i < nvl; i++)
-            w.elem (i, j) = vl.elem (i, j);
+            m_w.elem (i, j) = vl.elem (i, j);
         }
       else
         {
           if (j+1 >= n)
             (*current_liboctave_error_handler) ("EIG: internal error");
 
-          lambda.elem (j) = Complex (wr.elem (j), wi.elem (j));
-          lambda.elem (j+1) = Complex (wr.elem (j+1), wi.elem (j+1));
+          m_lambda.elem (j) = Complex (wr.elem (j), wi.elem (j));
+          m_lambda.elem (j+1) = Complex (wr.elem (j+1), wi.elem (j+1));
 
           for (F77_INT i = 0; i < nvr; i++)
             {
               double real_part = vr.elem (i, j);
               double imag_part = vr.elem (i, j+1);
-              v.elem (i, j) = Complex (real_part, imag_part);
-              v.elem (i, j+1) = Complex (real_part, -imag_part);
+              m_v.elem (i, j) = Complex (real_part, imag_part);
+              m_v.elem (i, j+1) = Complex (real_part, -imag_part);
             }
 
           for (F77_INT i = 0; i < nvl; i++)
             {
               double real_part = vl.elem (i, j);
               double imag_part = vl.elem (i, j+1);
-              w.elem (i, j) = Complex (real_part, imag_part);
-              w.elem (i, j+1) = Complex (real_part, -imag_part);
+              m_w.elem (i, j) = Complex (real_part, imag_part);
+              m_w.elem (i, j+1) = Complex (real_part, -imag_part);
             }
           j++;
         }
@@ -219,9 +219,9 @@ EIG::symmetric_init (const Matrix& a, bool calc_rev, bool calc_lev)
   if (info > 0)
     (*current_liboctave_error_handler) ("dsyev failed to converge");
 
-  lambda = ComplexColumnVector (wr);
-  v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
-  w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  m_lambda = ComplexColumnVector (wr);
+  m_v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  m_w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
 
   return info;
 }
@@ -321,9 +321,9 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
   if (info > 0)
     (*current_liboctave_error_handler) ("zgeevx failed to converge");
 
-  lambda = wr;
-  v = vrtmp;
-  w = vltmp;
+  m_lambda = wr;
+  m_v = vrtmp;
+  m_w = vltmp;
 
   return info;
 }
@@ -380,9 +380,9 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_rev, bool calc_lev)
   if (info > 0)
     (*current_liboctave_error_handler) ("zheev failed to converge");
 
-  lambda = ComplexColumnVector (wr);
-  v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
-  w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  m_lambda = ComplexColumnVector (wr);
+  m_v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  m_w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
 
   return info;
 }
@@ -480,46 +480,46 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
   if (info > 0)
     (*current_liboctave_error_handler) ("dggev failed to converge");
 
-  lambda.resize (n);
+  m_lambda.resize (n);
   F77_INT nvr = (calc_rev ? n : 0);
-  v.resize (nvr, nvr);
+  m_v.resize (nvr, nvr);
 
   F77_INT nvl = (calc_lev ? n : 0);
-  w.resize (nvl, nvl);
+  m_w.resize (nvl, nvl);
 
   for (F77_INT j = 0; j < n; j++)
     {
       if (ai.elem (j) == 0.0)
         {
-          lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j));
+          m_lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j));
           for (F77_INT i = 0; i < nvr; i++)
-            v.elem (i, j) = vr.elem (i, j);
+            m_v.elem (i, j) = vr.elem (i, j);
           for (F77_INT i = 0; i < nvl; i++)
-            w.elem (i, j) = vl.elem (i, j);
+            m_w.elem (i, j) = vl.elem (i, j);
         }
       else
         {
           if (j+1 >= n)
             (*current_liboctave_error_handler) ("EIG: internal error");
 
-          lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j),
-                                     ai.elem (j) / beta.elem (j));
-          lambda.elem (j+1) = Complex (ar.elem (j+1) / beta.elem (j+1),
-                                       ai.elem (j+1) / beta.elem (j+1));
+          m_lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j),
+                                       ai.elem (j) / beta.elem (j));
+          m_lambda.elem (j+1) = Complex (ar.elem (j+1) / beta.elem (j+1),
+                                         ai.elem (j+1) / beta.elem (j+1));
 
           for (F77_INT i = 0; i < nvr; i++)
             {
               double real_part = vr.elem (i, j);
               double imag_part = vr.elem (i, j+1);
-              v.elem (i, j) = Complex (real_part, imag_part);
-              v.elem (i, j+1) = Complex (real_part, -imag_part);
+              m_v.elem (i, j) = Complex (real_part, imag_part);
+              m_v.elem (i, j+1) = Complex (real_part, -imag_part);
             }
           for (F77_INT i = 0; i < nvl; i++)
             {
               double real_part = vl.elem (i, j);
               double imag_part = vl.elem (i, j+1);
-              w.elem (i, j) = Complex (real_part, imag_part);
-              w.elem (i, j+1) = Complex (real_part, -imag_part);
+              m_w.elem (i, j) = Complex (real_part, imag_part);
+              m_w.elem (i, j+1) = Complex (real_part, -imag_part);
             }
           j++;
         }
@@ -587,9 +587,9 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_rev,
   if (info > 0)
     (*current_liboctave_error_handler) ("dsygv failed to converge");
 
-  lambda = ComplexColumnVector (wr);
-  v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
-  w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  m_lambda = ComplexColumnVector (wr);
+  m_v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  m_w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
 
   return info;
 }
@@ -695,13 +695,13 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
   if (info > 0)
     (*current_liboctave_error_handler) ("zggev failed to converge");
 
-  lambda.resize (n);
+  m_lambda.resize (n);
 
   for (F77_INT j = 0; j < n; j++)
-    lambda.elem (j) = alpha.elem (j) / beta.elem (j);
+    m_lambda.elem (j) = alpha.elem (j) / beta.elem (j);
 
-  v = vrtmp;
-  w = vltmp;
+  m_v = vrtmp;
+  m_w = vltmp;
 
   return info;
 }
@@ -770,9 +770,9 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
   if (info > 0)
     (*current_liboctave_error_handler) ("zhegv failed to converge");
 
-  lambda = ComplexColumnVector (wr);
-  v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
-  w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  m_lambda = ComplexColumnVector (wr);
+  m_v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  m_w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
 
   return info;
 }

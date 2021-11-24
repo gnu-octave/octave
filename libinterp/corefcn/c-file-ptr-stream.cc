@@ -33,6 +33,8 @@
 
 #include "c-file-ptr-stream.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 #if ! defined (SEEK_SET)
 #  define SEEK_SET 0
 #endif
@@ -55,8 +57,8 @@ c_file_ptr_buf::~c_file_ptr_buf (void)
 c_file_ptr_buf::int_type
 c_file_ptr_buf::overflow (int_type c)
 {
-  if (f)
-    return (c != traits_type::eof ()) ? std::fputc (c, f) : flush ();
+  if (m_f)
+    return (c != traits_type::eof ()) ? std::fputc (c, m_f) : flush ();
   else
     return traits_type::not_eof (c);
 }
@@ -64,12 +66,12 @@ c_file_ptr_buf::overflow (int_type c)
 c_file_ptr_buf::int_type
 c_file_ptr_buf::underflow_common (bool bump)
 {
-  if (f)
+  if (m_f)
     {
-      int_type c = std::fgetc (f);
+      int_type c = std::fgetc (m_f);
 
       if (! bump && c != traits_type::eof ())
-        ungetc (c, f);
+        ungetc (c, m_f);
 
       return c;
     }
@@ -80,15 +82,15 @@ c_file_ptr_buf::underflow_common (bool bump)
 c_file_ptr_buf::int_type
 c_file_ptr_buf::pbackfail (int_type c)
 {
-  return ((c != traits_type::eof () && f)
-          ? ungetc (c, f) : traits_type::not_eof (c));
+  return ((c != traits_type::eof () && m_f)
+          ? ungetc (c, m_f) : traits_type::not_eof (c));
 }
 
 std::streamsize
 c_file_ptr_buf::xsputn (const char *s, std::streamsize n)
 {
-  if (f)
-    return std::fwrite (s, 1, n, f);
+  if (m_f)
+    return std::fwrite (s, 1, n, m_f);
   else
     return 0;
 }
@@ -96,8 +98,8 @@ c_file_ptr_buf::xsputn (const char *s, std::streamsize n)
 std::streamsize
 c_file_ptr_buf::xsgetn (char *s, std::streamsize n)
 {
-  if (f)
-    return std::fread (s, 1, n, f);
+  if (m_f)
+    return std::fread (s, 1, n, m_f);
   else
     return 0;
 }
@@ -116,11 +118,11 @@ c_file_ptr_buf::seekoff (std::streamoff offset,
                          std::ios::seekdir dir,
                          std::ios::openmode)
 {
-  if (f)
+  if (m_f)
     {
-      octave_fseeko_wrapper (f, offset, seekdir_to_whence (dir));
+      octave_fseeko_wrapper (m_f, offset, seekdir_to_whence (dir));
 
-      return octave_ftello_wrapper (f);
+      return octave_ftello_wrapper (m_f);
     }
   else
     return 0;
@@ -129,11 +131,11 @@ c_file_ptr_buf::seekoff (std::streamoff offset,
 std::streampos
 c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 {
-  if (f)
+  if (m_f)
     {
-      octave_fseeko_wrapper (f, offset, SEEK_SET);
+      octave_fseeko_wrapper (m_f, offset, SEEK_SET);
 
-      return octave_ftello_wrapper (f);
+      return octave_ftello_wrapper (m_f);
     }
   else
     return 0;
@@ -150,7 +152,7 @@ c_file_ptr_buf::sync (void)
 int
 c_file_ptr_buf::flush (void)
 {
-  return f ? std::fflush (f) : traits_type::eof ();
+  return m_f ? std::fflush (m_f) : traits_type::eof ();
 }
 
 int
@@ -160,10 +162,10 @@ c_file_ptr_buf::buf_close (void)
 
   flush ();
 
-  if (f)
+  if (m_f)
     {
-      retval = cf (f);
-      f = nullptr;
+      retval = m_cf (m_f);
+      m_f = nullptr;
     }
 
   return retval;
@@ -172,19 +174,19 @@ c_file_ptr_buf::buf_close (void)
 int
 c_file_ptr_buf::seek (off_t offset, int origin)
 {
-  return f ? octave_fseeko_wrapper (f, offset, origin) : -1;
+  return m_f ? octave_fseeko_wrapper (m_f, offset, origin) : -1;
 }
 
 off_t
 c_file_ptr_buf::tell (void)
 {
-  return f ? octave_ftello_wrapper (f) : -1;
+  return m_f ? octave_ftello_wrapper (m_f) : -1;
 }
 
 int
-c_file_ptr_buf::file_close (FILE *f)
+c_file_ptr_buf::file_close (FILE *m_f)
 {
-  return std::fclose (f);
+  return std::fclose (m_f);
 }
 
 #if defined (HAVE_ZLIB)
@@ -199,8 +201,8 @@ c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::overflow (int_type c)
 {
-  if (f)
-    return (c != traits_type::eof ()) ? gzputc (f, c) : flush ();
+  if (m_f)
+    return (c != traits_type::eof ()) ? gzputc (m_f, c) : flush ();
   else
     return traits_type::not_eof (c);
 }
@@ -208,12 +210,12 @@ c_zfile_ptr_buf::overflow (int_type c)
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::underflow_common (bool bump)
 {
-  if (f)
+  if (m_f)
     {
-      int_type c = gzgetc (f);
+      int_type c = gzgetc (m_f);
 
       if (! bump && c != traits_type::eof ())
-        gzungetc (c, f);
+        gzungetc (c, m_f);
 
       return c;
     }
@@ -224,15 +226,15 @@ c_zfile_ptr_buf::underflow_common (bool bump)
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::pbackfail (int_type c)
 {
-  return ((c != traits_type::eof () && f)
-          ? gzungetc (c, f) : traits_type::not_eof (c));
+  return ((c != traits_type::eof () && m_f)
+          ? gzungetc (c, m_f) : traits_type::not_eof (c));
 }
 
 std::streamsize
 c_zfile_ptr_buf::xsputn (const char *s, std::streamsize n)
 {
-  if (f)
-    return gzwrite (f, s, n);
+  if (m_f)
+    return gzwrite (m_f, s, n);
   else
     return 0;
 }
@@ -240,8 +242,8 @@ c_zfile_ptr_buf::xsputn (const char *s, std::streamsize n)
 std::streamsize
 c_zfile_ptr_buf::xsgetn (char *s, std::streamsize n)
 {
-  if (f)
-    return gzread (f, s, n);
+  if (m_f)
+    return gzread (m_f, s, n);
   else
     return 0;
 }
@@ -253,11 +255,11 @@ c_zfile_ptr_buf::seekoff (std::streamoff /* offset */,
 {
   // FIXME
 #if 0
-  if (f)
+  if (m_f)
     {
-      gzseek (f, offset, seekdir_to_whence (dir));
+      gzseek (m_f, offset, seekdir_to_whence (dir));
 
-      return gztell (f);
+      return gztell (m_f);
     }
   else
     return 0;
@@ -270,11 +272,11 @@ c_zfile_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
 {
   // FIXME
 #if 0
-  if (f)
+  if (m_f)
     {
-      gzseek (f, offset, SEEK_SET);
+      gzseek (m_f, offset, SEEK_SET);
 
-      return gztell (f);
+      return gztell (m_f);
     }
   else
     return 0;
@@ -297,7 +299,7 @@ c_zfile_ptr_buf::flush (void)
   // something other than 0 for the second argument to gzflush and
   // checking the return value, etc.?
 
-  return f ? gzflush (f, 0) : traits_type::eof ();
+  return m_f ? gzflush (m_f, 0) : traits_type::eof ();
 }
 
 int
@@ -307,13 +309,15 @@ c_zfile_ptr_buf::buf_close (void)
 
   flush ();
 
-  if (f)
+  if (m_f)
     {
-      retval = cf (f);
-      f = nullptr;
+      retval = m_cf (m_f);
+      m_f = nullptr;
     }
 
   return retval;
 }
 
 #endif
+
+OCTAVE_NAMESPACE_END

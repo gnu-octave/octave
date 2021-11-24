@@ -39,9 +39,10 @@
 
 function genpropdoc (objname, fname = "", props = {})
   objnames = {"root", "figure", "axes", "legend", ...
-              "image", "light", "line", "patch", "surface", "text", ...
-              "uibuttongroup", "uicontextmenu", "uicontrol", "uipanel", ...
-              "uimenu", "uipushtool", "uitable", "uitoggletool", "uitoolbar"
+              "image", "light", "line", "patch", "scatter", "surface", ...
+              "text", "uibuttongroup", "uicontextmenu", "uicontrol", ...
+              "uipanel", "uimenu", "uipushtool", "uitable", ...
+              "uitoggletool", "uitoolbar"
              };
 
   ## Base properties
@@ -169,6 +170,11 @@ indicates whether the interrupting callback is queued (@qcode{\"queue\"} \
         s.doc = "If __prop__ is @qcode{\"on\"}, the __objname__ is \
 clipped in its parent axes limits.";
 
+      case "contextmenu"
+        s.doc = "Graphics handle of the uicontextmenu object that is \
+currently associated to this __objname__ object.";
+        s.valid = valid_handle;
+
       case "createfcn"
         s.doc = "Callback function executed immediately after __objname__ \
 has been created.  Function is set by using default property on root object, \
@@ -227,11 +233,6 @@ will determine how they are processed.  \
 always @qcode{\"__objname__\"}";
         s.valid = valid_string;
         s.printdefault = false;
-
-      case "uicontextmenu"
-        s.doc = "Graphics handle of the uicontextmenu object that is \
-currently associated to this __objname__ object.";
-        s.valid = valid_handle;
 
       case "userdata"
         s.doc = "User-defined data to associate with the graphics object.";
@@ -656,12 +657,6 @@ Changing modes of a visible figure may cause the figure to close and reopen.";
         s.doc = doc_unused;
 
       ## Specific properties
-      case "activepositionproperty"
-        s.doc = "Specify which of @qcode{\"position\"} or \
-@qcode{\"outerposition\"} properties takes precedence when axes \
-annotations extent changes.  @xref{XREFaxesposition, , @w{position property}}, \
-and @ref{XREFaxesposition, , @w{outerposition property}}.";
-
       case "alim"
         s.doc = sprintf (doc_notimpl, "Transparency");
 
@@ -769,6 +764,11 @@ to be the same as the length of 2 units on the y-axis.  \
 
       case "gridlinestyle"
 
+      case "innerposition"
+        s.doc = "The @qcode{\"innerposition\"} property is the same as the \
+@ref{XREFaxesposition, , @w{@qcode{\"position\"} property}}.";
+        s.valid = valid_4elvec;
+
       case "labelfontsizemultiplier"
         s.doc = "Ratio between the x/y/zlabel fontsize and the tick \
 label fontsize";
@@ -843,6 +843,13 @@ height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesouterposition, , @w{outerposition property}}.";
         endif
         s.valid = valid_4elvec;
+
+      case "positionconstraint"
+        s.doc = "Specify which of @qcode{\"innerposition\"} or \
+@qcode{\"outerposition\"} properties takes precedence when axes \
+annotations extent changes.  \
+@xref{XREFaxesinnerposition, , @w{@qcode{\"innerposition\"} property}}, \
+and @ref{XREFaxesouterposition, , @w{@qcode{\"outerposition\"} property}}.";
 
       case "projection"
         s.doc = doc_unused;
@@ -1621,6 +1628,117 @@ one @code{light} object is present and visible in the same axes.";
 
     endswitch
 
+  ## Scatter properties
+  elseif (strcmp (objname, "scatter"))
+    switch (field)
+      ## Overridden shared properties
+      case "children"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "cdatamode"
+        s.doc = "If @code{cdatamode} is @qcode{\"auto\"}, @code{cdata} is set \
+to the color from the @code{colororder} of the ancestor axes corresponding to \
+the @code{seriesindex}.";
+
+      case "cdatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "cdata"
+        s.doc = "Data defining the scatter object color.\n\
+\n\
+If @code{cdata} is a scalar index into the current colormap or a RGB triplet, \
+it defines the color of all scatter markers.\n\
+\n\
+If @code{cdata} is an N-by-1 vector of indices or an N-by-3 (RGB) matrix, \
+it defines the color of each one of the N scatter markers.";
+        s.valid = valid_scalmat;
+
+
+      case "displayname"
+        s.doc = "Text of the legend entry corresponding to this scatter object.";
+
+      case "linewidth"
+        s.doc = "Line width of the edge of the markers.";
+
+      case "marker"
+        s.doc = "@xref{XREFlinemarker, , @w{line marker property}}.";
+
+      case "markeredgealpha"
+        s.doc = "Transparency level of the faces of the markers where a \
+value of 0 means complete transparency and a value of 1 means solid faces \
+without transparency.  Note that the markers are not sorted from back to \
+front which might lead to unexpected results when rendering layered \
+transparent markers or in combination with other transparent objects.";
+        s.valid = "scalar";
+
+      case "markeredgecolor"
+        s.doc = "Color of the edge of the markers.  @qcode{\"none\"} means \
+that the edges are transparent and @qcode{\"flat\"} means that the value \
+from @code{cdata} is used.  @xref{XREFlinemarkeredgecolor, , \
+@w{line markeredgecolor property}}.";
+        s.valid = packopt ({markdef("@qcode{\"none\"}"), ...
+                            "@qcode{\"flat\"}", ...
+                            valid_color});
+
+      case "markerfacealpha"
+        s.doc = "Transparency level of the faces of the markers where a \
+value of 0 means complete transparency and a value of 1 means solid faces \
+without transparency.  Note that the markers are not sorted from back to \
+front which might lead to unexpected results when rendering layered \
+transparent markers or in combination with other transparent objects.";
+        s.valid = "scalar";
+
+      case "markerfacecolor"
+        s.doc = "Color of the face of the markers.  @qcode{\"none\"} means \
+that the faces are transparent, @qcode{\"flat\"} means that the value from \
+@code{cdata} is used, and @qcode{\"auto\"} uses the @code{color} property of \
+the ancestor axes. @xref{XREFlinemarkerfacecolor, , \
+@w{line markerfacecolor property}}.";
+        s.valid = packopt ({markdef("@qcode{\"none\"}"), ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"auto\"}", ...
+                            valid_color});
+
+      case "seriesindex"
+        s.doc = "Each scatter object in the same axes is asigned an \
+incrementing integer.  This corresponds to the index into the \
+@code{colororder} of the ancestor axes that is used if @code{cdatamode} is \
+set to @qcode{\"auto\"}.";
+
+      case "sizedatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "sizedata"
+        s.doc = "Size of the area of the marker. A scalar value applies to \
+all markers.  If @code{cdata} is an N-by-1 vector, it defines the color of \
+each one of the N scatter markers.";
+        s.valid =  packopt ({"[]", "scalar", "vector"});
+
+      case "xdatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "xdata"
+        s.doc = "Vector with the x coordinates of the scatter object.";
+        s.valid = "vector";
+
+      case "ydatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "ydata"
+        s.doc = "Vector with the y coordinates of the scatter object.";
+        s.valid = "vector";
+
+      case "zdatasource"
+        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
+
+      case "zdata"
+        s.doc = "For 3D data, vector with the y coordinates of the scatter \
+object.";
+        s.valid = packopt ({"[]", "vector"});
+
+    endswitch
+
   ## Light properties
   elseif (strcmp (objname, "light"))
     switch (field)
@@ -1962,6 +2080,10 @@ function s = getstructure (objname, base = [], props = {})
                  "location", "numcolumns", "orientation", "position", ...
                  "string", "textcolor", "title", "units"};
     endif
+  elseif (strcmp (objname, "scatter"))
+    ## Make sure to get a scatter object independent of graphics toolkit
+    hax = axes (hf);
+    h = __go_scatter__ (hax);
   else
     eval (["h = " objname " ();"]);
   endif

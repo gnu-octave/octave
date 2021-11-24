@@ -84,8 +84,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 
 const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class invalid_fcn_handle : public base_fcn_handle
   {
   public:
@@ -575,6 +575,32 @@ namespace octave
     std::string m_dispatch_class;
   };
 
+  // Handles to anonymous functions are similar to handles to nested
+  // functions.  If they are created in a context that contains nested
+  // functions, then they store a link to the parent call stack frames
+  // that are active when they are created.  These call stack frames
+  // (closure frames) provide access to variables needed by any nested
+  // functions that are called from the anonymous function.  Anonymous
+  // functions also store a list of values from their parent scope
+  // corresponding to the symbols in the anonymous function.  This list
+  // of values captures the variable values that are visible in the
+  // scope where they are created.
+  //
+  // Note that because handles to anonymous and nested functions capture
+  // call stack frames when they are created, they will cause deletion
+  // of the values in those frames to be deferred until the handles to
+  // the anonymous or nested functions are deleted.
+  //
+  // Would it be possible to avoid storing the closure frames for
+  // handles to anonymous functions if we can determine that the
+  // anonymous function has no unbound variables (or parameters, which
+  // could be handles to nested functions?) or if it is not created in a
+  // context that contains nested functions?
+  //
+  // Would it be possible to define anonymous functions as a special
+  // type of nested function object that also has an variable
+  // initialization list associated with it?
+
   class base_anonymous_fcn_handle : public base_fcn_handle
   {
   public:
@@ -777,7 +803,6 @@ namespace octave
       case '{':
       case '.':
         error ("function handle cannot be indexed with %c", type[0]);
-        break;
 
       default:
         panic_impossible ();
@@ -1017,7 +1042,7 @@ namespace octave
 
                     arg_list.clear ();
                   }
-                catch (index_exception&)
+                catch (const index_exception&)
                   {
                     err_invalid_fcn_handle (m_name);
                   }
@@ -1210,7 +1235,7 @@ namespace octave
   }
 
   bool simple_fcn_handle::load_binary (std::istream& is, bool,
-                                       octave::mach_info::float_format)
+                                       mach_info::float_format)
   {
     return is.good ();
   }
@@ -1516,7 +1541,7 @@ namespace octave
   }
 
   bool scoped_fcn_handle::load_binary (std::istream& is, bool swap,
-                                       octave::mach_info::float_format fmt)
+                                       mach_info::float_format fmt)
   {
     octave_cell ov_cell;
     ov_cell.load_binary (is, swap, fmt);
@@ -2073,7 +2098,7 @@ namespace octave
 
   bool base_anonymous_fcn_handle::load_ascii (std::istream& is)
   {
-    skip_preceeding_newline (is);
+    octave::skip_preceeding_newline (is);
 
     std::string buf;
 
@@ -2082,12 +2107,10 @@ namespace octave
         // Get a line of text whitespace characters included, leaving
         // newline in the stream.
 
-        buf = read_until_newline (is, true);
+        buf = octave::read_until_newline (is, true);
       }
 
     std::streampos pos = is.tellg ();
-
-    unwind_protect_safe frame;
 
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
@@ -2098,7 +2121,7 @@ namespace octave
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (buf);
-    frame.add_method (tw, &tree_evaluator::pop_scope);
+    unwind_action_safe restore_scope (&tree_evaluator::pop_scope, &tw);
 
     octave_idx_type len = 0;
 
@@ -2206,8 +2229,6 @@ namespace octave
     is.read (ctmp2, tmp);
     ctmp2[tmp] = 0;
 
-    unwind_protect_safe frame;
-
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
@@ -2217,7 +2238,7 @@ namespace octave
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (ctmp2);
-    frame.add_method (tw, &tree_evaluator::pop_scope);
+    unwind_action_safe restore_scope (&tree_evaluator::pop_scope, &tw);
 
     if (len > 0)
       {
@@ -2523,8 +2544,6 @@ namespace octave
     H5Eset_auto (err_func, err_func_data);
 #endif
 
-    unwind_protect_safe frame;
-
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
@@ -2534,7 +2553,7 @@ namespace octave
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (fcn_tmp);
-    frame.add_method (tw, &tree_evaluator::pop_scope);
+    unwind_action_safe restore_scope (&tree_evaluator::pop_scope, &tw);
 
     if (len > 0 && success)
       {
@@ -2789,7 +2808,8 @@ namespace octave
     else
       return false;
   }
-}
+
+OCTAVE_NAMESPACE_END
 
 octave_fcn_handle::octave_fcn_handle (void)
   : octave_base_value (), m_rep (new octave::invalid_fcn_handle ())
@@ -3375,8 +3395,8 @@ is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2)
     return false;
 }
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // DEPRECATED in Octave 6.
 
   octave_value
@@ -3386,7 +3406,6 @@ namespace octave
 
     return tw.make_fcn_handle (nm);
   }
-}
 
 DEFUN (functions, args, ,
        doc: /* -*- texinfo -*-
@@ -3529,7 +3548,7 @@ functions.  This option is no longer supported.
         warning_with_id ("Octave:str2func-global-argument",
                          "str2func: second argument ignored");
 
-      octave::tree_evaluator& tw = interp.get_evaluator ();
+      tree_evaluator& tw = interp.get_evaluator ();
 
       return tw.make_fcn_handle (nm);
     }
@@ -3618,3 +3637,5 @@ Return true if @var{x} is a function handle.
 %! x = [1,2;3,4];
 %! assert (__f (@(i) x(:,i), 1), [1;3]);
 */
+
+OCTAVE_NAMESPACE_END

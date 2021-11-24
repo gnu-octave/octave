@@ -35,7 +35,7 @@
 
 function idx = dsearch (x, y, tri, xi, yi, s)
 
-  if (nargin < 5 || nargin > 6)
+  if (nargin < 5)
     print_usage ();
   endif
 

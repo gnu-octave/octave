@@ -38,22 +38,22 @@
 ## When the force flag @qcode{'f'} is given any existing files will be
 ## overwritten without prompting.
 ##
-## If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty
-## character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
-## system-dependent error message, and @var{msgid} contains a unique message
-## identifier.  Note that the status code is exactly opposite that of the
-## @code{system} command.
+## If successful, @var{status} is logical 1, and @var{msg}, @var{msgid} are
+## empty character strings ("").  Otherwise, @var{status} is logical 0,
+## @var{msg} contains a system-dependent error message, and @var{msgid}
+## contains a unique message identifier.  Note that the status code is exactly
+## opposite that of the @code{system} command.
 ## @seealso{movefile, rename, unlink, delete, glob}
 ## @end deftypefn
 
 function [status, msg, msgid] = copyfile (f1, f2, force)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
   max_cmd_line = 1024;
-  status = true;
+  sts = true;
   msg = "";
   msgid = "";
 
@@ -87,13 +87,31 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   ## If f1 has more than 1 element then f2 must be a directory
   isdir = isfolder (f2);
   if (numel (f1) > 1 && ! isdir)
-    error ("copyfile: when copying multiple files, F2 must be a directory");
+    if (nargout == 0)
+      error ("copyfile: when copying multiple files, F2 must be a directory");
+    else
+      status = false;
+      msg = "when copying multiple files, F2 must be a directory";
+      msgid = "copyfile";
+      return;
+    endif
   endif
 
   ## Protect the filename(s).
-  f1 = glob (f1);
+  if (ispc ())
+    f1 = __wglob__ (f1);
+  else
+    f1 = glob (f1);
+  endif
   if (isempty (f1))
-    error ("copyfile: no files to move");
+    if (nargout == 0)
+      error ("copyfile: no files to move");
+    else
+      status = false;
+      msg = "no files to move";
+      msgid = "copyfile";
+      return;
+    endif
   endif
   p1 = sprintf ('"%s" ', f1{:});
   p2 = tilde_expand (f2);
@@ -118,7 +136,7 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
       ## Copy the files.
       [err, msg] = system (sprintf ('%s %s"%s"', cmd, p1, p2));
       if (err != 0)
-        status = false;
+        sts = false;
         msgid = "copyfile";
         break;
       endif
@@ -133,9 +151,17 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
     ## Copy the files.
     [err, msg] = system (sprintf ('%s %s"%s"', cmd, p1, p2));
     if (err != 0)
-      status = false;
+      sts = false;
       msgid = "copyfile";
     endif
+  endif
+
+  if (nargout == 0)
+    if (! sts)
+      error ("copyfile: operation failed: %s", msg);
+    endif
+  else
+    status = sts;
   endif
 
 endfunction
@@ -143,10 +169,10 @@ endfunction
 
 %!test
 %! unwind_protect
-%!   f1 = tempname;
+%!   f1 = tempname ();
 %!   tmp_var = pi;
 %!   save (f1, "tmp_var");
-%!   f2 = tempname;
+%!   f2 = tempname ();
 %!   assert (copyfile (f1, f2));
 %!   assert (exist (f2, "file"));
 %!   fid = fopen (f1, "rb");
@@ -166,9 +192,9 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error copyfile ()
-%!error copyfile (1)
-%!error copyfile (1,2,3,4)
+%!error <Invalid call> copyfile ()
+%!error <Invalid call> copyfile (1)
 %!error <F1 must be a string> copyfile (1, "foobar")
 %!error <F2 must be a string> copyfile ("foobar", 1)
 %!error <F2 must be a directory> copyfile ({"a", "b"}, "%_NOT_A_DIR_%")
+%!error <no files to move> copyfile ("%_NOT_A_FILENAME1_%", "%_NOT_A_FILENAME2_%")

@@ -37,7 +37,7 @@
 
 function mustBeInteger (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -54,7 +54,7 @@ function mustBeInteger (x)
     but = "there were non-finite values";
   elseif (any (x != fix (x)))
     but = "it had fractional values in some elements";
-  end
+  endif
 
   if (! isempty (but))
     label = inputname (1);

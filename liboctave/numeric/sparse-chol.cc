@@ -35,7 +35,6 @@
 #include "dSparse.h"
 #include "lo-error.h"
 #include "oct-cmplx.h"
-#include "oct-refcount.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"
 #include "quit.h"
@@ -52,16 +51,16 @@ namespace octave
     public:
 
       sparse_chol_rep (void)
-        : count (1), is_pd (false), minor_p (0), perms (), cond (0)
+        : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (nullptr), Common ()
+        , m_L (nullptr), m_common ()
 #endif
       { }
 
       sparse_chol_rep (const chol_type& a, bool natural, bool force)
-        : count (1), is_pd (false), minor_p (0), perms (), cond (0)
+        : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (nullptr), Common ()
+        , m_L (nullptr), m_common ()
 #endif
       {
         init (a, natural, force);
@@ -69,9 +68,9 @@ namespace octave
 
       sparse_chol_rep (const chol_type& a, octave_idx_type& info,
                        bool natural, bool force)
-        : count (1), is_pd (false), minor_p (0), perms (), cond (0)
+        : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
-        , Lsparse (nullptr), Common ()
+        , m_L (nullptr), m_common ()
 #endif
       {
         info = init (a, natural, force);
@@ -86,54 +85,52 @@ namespace octave
       ~sparse_chol_rep (void)
       {
 #if defined (HAVE_CHOLMOD)
-        if (Lsparse)
-          CHOLMOD_NAME (free_sparse) (&Lsparse, &Common);
+        if (m_L)
+          CHOLMOD_NAME (free_sparse) (&m_L, &m_common);
 
-        CHOLMOD_NAME(finish) (&Common);
+        CHOLMOD_NAME(finish) (&m_common);
 #endif
       }
 
 #if defined (HAVE_CHOLMOD)
       cholmod_sparse * L (void) const
       {
-        return Lsparse;
+        return m_L;
       }
 #endif
 
       octave_idx_type P (void) const
       {
 #if defined (HAVE_CHOLMOD)
-        return (minor_p == static_cast<octave_idx_type> (Lsparse->ncol) ?
-                0 : minor_p + 1);
+        return (m_minor_p == static_cast<octave_idx_type> (m_L->ncol) ?
+                0 : m_minor_p + 1);
 #else
         return 0;
 #endif
       }
 
-      RowVector perm (void) const { return perms + 1; }
+      RowVector perm (void) const { return m_perm + 1; }
 
       SparseMatrix Q (void) const;
 
-      bool is_positive_definite (void) const { return is_pd; }
+      bool is_positive_definite (void) const { return m_is_pd; }
 
-      double rcond (void) const { return cond; }
-
-      refcount<octave_idx_type> count;
+      double rcond (void) const { return m_rcond; }
 
     private:
 
-      bool is_pd;
+      bool m_is_pd;
 
-      octave_idx_type minor_p;
+      octave_idx_type m_minor_p;
 
-      RowVector perms;
+      RowVector m_perm;
 
-      double cond;
+      double m_rcond;
 
 #if defined (HAVE_CHOLMOD)
-      cholmod_sparse *Lsparse;
+      cholmod_sparse *m_L;
 
-      cholmod_common Common;
+      cholmod_common m_common;
 
       void drop_zeros (const cholmod_sparse *S);
 #endif
@@ -223,14 +220,14 @@ namespace octave
         (*current_liboctave_error_handler)
           ("sparse_chol requires square matrix");
 
-      cholmod_common *cm = &Common;
+      cholmod_common *cm = &m_common;
 
       // Setup initial parameters
 
       CHOLMOD_NAME(start) (cm);
       cm->prefer_zomplex = false;
 
-      double spu = octave_sparse_params::get_key ("spumoni");
+      double spu = sparse_params::get_key ("spumoni");
 
       if (spu == 0.)
         {
@@ -293,59 +290,49 @@ namespace octave
           cm->postorder = false;
         }
 
-      cholmod_factor *Lfactor;
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      Lfactor = CHOLMOD_NAME(analyze) (ac, cm);
+      cholmod_factor *Lfactor = CHOLMOD_NAME(analyze) (ac, cm);
       CHOLMOD_NAME(factorize) (ac, Lfactor, cm);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      is_pd = cm->status == CHOLMOD_OK;
-      info = (is_pd ? 0 : cm->status);
+      m_is_pd = cm->status == CHOLMOD_OK;
+      info = (m_is_pd ? 0 : cm->status);
 
-      if (is_pd || force)
+      if (m_is_pd || force)
         {
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          cond = CHOLMOD_NAME(rcond) (Lfactor, cm);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          m_rcond = CHOLMOD_NAME(rcond) (Lfactor, cm);
 
-          minor_p = Lfactor->minor;
+          m_minor_p = Lfactor->minor;
 
-          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-          Lsparse = CHOLMOD_NAME(factor_to_sparse) (Lfactor, cm);
-          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          m_L = CHOLMOD_NAME(factor_to_sparse) (Lfactor, cm);
 
-          if (minor_p > 0 && minor_p < a_nr)
+          if (m_minor_p > 0 && m_minor_p < a_nr)
             {
               std::size_t n1 = a_nr + 1;
-              Lsparse->p = CHOLMOD_NAME(realloc) (minor_p+1,
-                                                  sizeof(octave_idx_type),
-                                                  Lsparse->p, &n1, cm);
-              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-              CHOLMOD_NAME(reallocate_sparse)
-                (static_cast<octave_idx_type *>(Lsparse->p)[minor_p],
-                 Lsparse, cm);
-              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              m_L->p = CHOLMOD_NAME(realloc) (m_minor_p+1,
+                                              sizeof(octave_idx_type),
+                                              m_L->p, &n1, cm);
 
-              Lsparse->ncol = minor_p;
+              CHOLMOD_NAME(reallocate_sparse)
+                (static_cast<octave_idx_type *>(m_L->p)[m_minor_p],
+                 m_L, cm);
+
+              m_L->ncol = m_minor_p;
             }
 
-          drop_zeros (Lsparse);
+          drop_zeros (m_L);
 
           if (! natural)
             {
-              perms.resize (a_nr);
+              m_perm.resize (a_nr);
               for (octave_idx_type i = 0; i < a_nr; i++)
-                perms(i) = static_cast<octave_idx_type *>(Lfactor->Perm)[i];
+                m_perm(i) = static_cast<octave_idx_type *>(Lfactor->Perm)[i];
             }
         }
 
       // NAME used to prefix statistics report from print_common
       static char blank_name[] = " ";
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       CHOLMOD_NAME(print_common) (blank_name, cm);
       CHOLMOD_NAME(free_factor) (&Lfactor, cm);
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       return info;
 
@@ -369,13 +356,13 @@ namespace octave
     {
 #if defined (HAVE_CHOLMOD)
 
-      octave_idx_type n = Lsparse->nrow;
+      octave_idx_type n = m_L->nrow;
       SparseMatrix p (n, n, n);
 
       for (octave_idx_type i = 0; i < n; i++)
         {
           p.xcidx (i) = i;
-          p.xridx (i) = static_cast<octave_idx_type> (perms (i));
+          p.xridx (i) = static_cast<octave_idx_type> (m_perm (i));
           p.xdata (i) = 1;
         }
 
@@ -392,13 +379,13 @@ namespace octave
 
     template <typename chol_type>
     sparse_chol<chol_type>::sparse_chol (void)
-      : rep (new typename sparse_chol<chol_type>::sparse_chol_rep ())
+      : m_rep (new typename sparse_chol<chol_type>::sparse_chol_rep ())
     { }
 
     template <typename chol_type>
     sparse_chol<chol_type>::sparse_chol (const chol_type& a, bool natural,
                                          bool force)
-      : rep (new typename
+      : m_rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, natural, force))
     { }
 
@@ -406,7 +393,7 @@ namespace octave
     sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                          octave_idx_type& info,
                                          bool natural, bool force)
-      : rep (new typename
+      : m_rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, force))
     { }
 
@@ -414,46 +401,16 @@ namespace octave
     sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                          octave_idx_type& info,
                                          bool natural)
-      : rep (new typename
+      : m_rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, false))
     { }
 
     template <typename chol_type>
     sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                          octave_idx_type& info)
-      : rep (new typename
+      : m_rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, false, false))
     { }
-
-    template <typename chol_type>
-    sparse_chol<chol_type>::sparse_chol (const sparse_chol<chol_type>& a)
-      : rep (a.rep)
-    {
-      rep->count++;
-    }
-
-    template <typename chol_type>
-    sparse_chol<chol_type>::~sparse_chol (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
-
-    template <typename chol_type>
-    sparse_chol<chol_type>&
-    sparse_chol<chol_type>::operator = (const sparse_chol& a)
-    {
-      if (this != &a)
-        {
-          if (--rep->count == 0)
-            delete rep;
-
-          rep = a.rep;
-          rep->count++;
-        }
-
-      return *this;
-    }
 
     template <typename chol_type>
     chol_type
@@ -461,7 +418,7 @@ namespace octave
     {
 #if defined (HAVE_CHOLMOD)
 
-      cholmod_sparse *m = rep->L ();
+      cholmod_sparse *m = m_rep->L ();
 
       octave_idx_type nc = m->ncol;
       octave_idx_type nnz = m->nzmax;
@@ -490,35 +447,35 @@ namespace octave
     octave_idx_type
     sparse_chol<chol_type>::P (void) const
     {
-      return rep->P ();
+      return m_rep->P ();
     }
 
     template <typename chol_type>
     RowVector
     sparse_chol<chol_type>::perm (void) const
     {
-      return rep->perm ();
+      return m_rep->perm ();
     }
 
     template <typename chol_type>
     SparseMatrix
     sparse_chol<chol_type>::Q (void) const
     {
-      return rep->Q ();
+      return m_rep->Q ();
     }
 
     template <typename chol_type>
     bool
     sparse_chol<chol_type>::is_positive_definite (void) const
     {
-      return rep->is_positive_definite ();
+      return m_rep->is_positive_definite ();
     }
 
     template <typename chol_type>
     double
     sparse_chol<chol_type>::rcond (void) const
     {
-      return rep->rcond ();
+      return m_rep->rcond ();
     }
 
     template <typename chol_type>
@@ -529,15 +486,15 @@ namespace octave
 
 #if defined (HAVE_CHOLMOD)
 
-      cholmod_sparse *m = rep->L ();
+      cholmod_sparse *m = m_rep->L ();
       octave_idx_type n = m->ncol;
-      RowVector perms = rep->perm ();
+      RowVector m_perm = m_rep->perm ();
       double rcond2;
       octave_idx_type info;
       MatrixType mattype (MatrixType::Upper);
       chol_type linv = L ().hermitian ().inverse (mattype, info, rcond2, 1, 0);
 
-      if (perms.numel () == n)
+      if (m_perm.numel () == n)
         {
           SparseMatrix Qc = Q ();
 
@@ -591,23 +548,25 @@ namespace octave
     // different from the default).
 
     template <>
+    OCTAVE_API
     sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
                                                    octave_idx_type& info)
-      : rep (new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info,
-                                                                    true,
-                                                                    false))
+      : m_rep (new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info,
+                                                                      true,
+                                                                      false))
     { }
 
     // Instantiations we need.
 
-    template class sparse_chol<SparseMatrix>;
+    template class OCTAVE_API sparse_chol<SparseMatrix>;
 
     template class sparse_chol<SparseComplexMatrix>;
 
-    template SparseMatrix
+    template OCTAVE_API SparseMatrix
     chol2inv<SparseMatrix> (const SparseMatrix& r);
 
-    template SparseComplexMatrix
+    template OCTAVE_API SparseComplexMatrix
     chol2inv<SparseComplexMatrix> (const SparseComplexMatrix& r);
+
   }
 }

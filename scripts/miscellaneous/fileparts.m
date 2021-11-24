@@ -34,7 +34,7 @@
 
 function [dir, name, ext] = fileparts (filename)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -111,7 +111,6 @@ endfunction
 %! assert (strcmp (d, "") && strcmp (n, "") && strcmp (e, ".ext"));
 
 ## Test input validation
-%!error fileparts ()
-%!error fileparts (1,2)
+%!error <Invalid call> fileparts ()
 %!error <FILENAME must be a single string> fileparts (1)
 %!error <FILENAME must be a single string> fileparts (["a"; "b"])

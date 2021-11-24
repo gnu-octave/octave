@@ -34,7 +34,7 @@
 
 function y = realsqrt (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (iscomplex (x) || any (x(:) < 0))
     error ("realsqrt: produced complex result");
@@ -50,6 +50,5 @@ endfunction
 %! x = rand (10, 10);
 %! assert (realsqrt (x), sqrt (x));
 
-%!error realsqrt ()
-%!error realsqrt (1,2)
+%!error <Invalid call> realsqrt ()
 %!error <produced complex result> realsqrt (-1)

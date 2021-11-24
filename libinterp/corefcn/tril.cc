@@ -39,6 +39,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // The bulk of the work.
 template <typename T>
 static Array<T>
@@ -46,7 +48,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
-  const T *avec = a.fortran_vec ();
+  const T *avec = a.data ();
   octave_idx_type zero = 0;
 
   if (pack)
@@ -88,7 +90,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
-  const T *avec = a.fortran_vec ();
+  const T *avec = a.data ();
   octave_idx_type zero = 0;
 
   if (pack)
@@ -209,8 +211,10 @@ do_trilu (const std::string& name,
   dim_vector dims = arg.dims ();
   if (dims.ndims () != 2)
     error ("%s: need a 2-D matrix", name.c_str ());
-  else if (k < -dims(0) || k > dims(1))
-    error ("%s: requested diagonal out of range", name.c_str ());
+  else if (k < -dims(0))
+    k = -dims(0);
+  else if (k > dims(1))
+    k = dims(1);
 
   octave_value retval;
 
@@ -284,41 +288,43 @@ do_trilu (const std::string& name,
         octave_value_list ov_idx;
         std::list<octave_value_list> idx_tmp;
         ov_idx(1) = static_cast<double> (nc+1);
-        ov_idx(0) = Range (1, nr);
+        ov_idx(0) = range<double> (1, nr);
         idx_tmp.push_back (ov_idx);
         ov_idx(1) = static_cast<double> (nc);
         tmp = tmp.resize (dim_vector (0,0));
-        tmp = tmp.subsasgn ("(", idx_tmp, arg.do_index_op (ov_idx));
+        tmp = tmp.subsasgn ("(", idx_tmp, arg.index_op (ov_idx));
         tmp = tmp.resize (dims);
+
+        octave_idx_type one = 1;
 
         if (lower)
           {
-            octave_idx_type st = (nc < nr + k ? nc : nr + k);
+            octave_idx_type st = std::min (nc, nr + k);
 
             for (octave_idx_type j = 1; j <= st; j++)
               {
-                octave_idx_type nr_limit = (1 > j - k ? 1 : j - k);
+                octave_idx_type nr_limit = std::max (one, j - k);
                 ov_idx(1) = static_cast<double> (j);
-                ov_idx(0) = Range (nr_limit, nr);
+                ov_idx(0) = range<double> (nr_limit, nr);
                 std::list<octave_value_list> idx;
                 idx.push_back (ov_idx);
 
-                tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
+                tmp = tmp.subsasgn ("(", idx, arg.index_op (ov_idx));
               }
           }
         else
           {
-            octave_idx_type st = (k + 1 > 1 ? k + 1 : 1);
+            octave_idx_type st = std::max (k + 1, one);
 
             for (octave_idx_type j = st; j <= nc; j++)
               {
-                octave_idx_type nr_limit = (nr < j - k ? nr : j - k);
+                octave_idx_type nr_limit = std::min (nr, j - k);
                 ov_idx(1) = static_cast<double> (j);
-                ov_idx(0) = Range (1, nr_limit);
+                ov_idx(0) = range<double> (1, nr_limit);
                 std::list<octave_value_list> idx;
                 idx.push_back (ov_idx);
 
-                tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
+                tmp = tmp.subsasgn ("(", idx, arg.index_op (ov_idx));
               }
           }
 
@@ -428,24 +434,53 @@ above another, and returned as a column vector.
 }
 
 /*
-%!test
+%!shared a, l2, l1, l0, lm1, lm2, lm3, lm4
 %! a = [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12];
 %!
-%! l0 = [1, 0, 0; 4, 5, 0; 7, 8, 9; 10, 11, 12];
-%! l1 = [1, 2, 0; 4, 5, 6; 7, 8, 9; 10, 11, 12];
 %! l2 = [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12];
+%! l1 = [1, 2, 0; 4, 5, 6; 7, 8, 9; 10, 11, 12];
+%! l0 = [1, 0, 0; 4, 5, 0; 7, 8, 9; 10, 11, 12];
 %! lm1 = [0, 0, 0; 4, 0, 0; 7, 8, 0; 10, 11, 12];
 %! lm2 = [0, 0, 0; 0, 0, 0; 7, 0, 0; 10, 11, 0];
 %! lm3 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 10, 0, 0];
 %! lm4 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 0, 0, 0];
 %!
-%! assert (tril (a, -4), lm4);
-%! assert (tril (a, -3), lm3);
-%! assert (tril (a, -2), lm2);
-%! assert (tril (a, -1), lm1);
-%! assert (tril (a), l0);
-%! assert (tril (a, 1), l1);
-%! assert (tril (a, 2), l2);
+%!assert (tril (a, 3), l2)
+%!assert (tril (a, 2), l2)
+%!assert (tril (a, 1), l1)
+%!assert (tril (a, 0), l0)
+%!assert (tril (a), l0)
+%!assert (tril (a, -1), lm1)
+%!assert (tril (a, -2), lm2)
+%!assert (tril (a, -3), lm3)
+%!assert (tril (a, -4), lm4)
+%!assert (tril (a, -5), lm4)
+
+%!shared a, u3, u2, u1, u0, um1, um2, um3
+%!
+%! a = [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12];
+%!
+%! u3 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 0, 0, 0];
+%! u2 = [0, 0, 3; 0, 0, 0; 0, 0, 0; 0, 0, 0];
+%! u1 = [0, 2, 3; 0, 0, 6; 0, 0, 0; 0, 0, 0];
+%! u0 = [1, 2, 3; 0, 5, 6; 0, 0, 9; 0, 0, 0];
+%! um1 = [1, 2, 3; 4, 5, 6; 0, 8, 9; 0, 0, 12];
+%! um2 = [1, 2, 3; 4, 5, 6; 7, 8, 9; 0, 11, 12];
+%! um3 = [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12];
+%!
+%!assert (triu (a, 4), u3)
+%!assert (triu (a, 3), u3)
+%!assert (triu (a, 2), u2)
+%!assert (triu (a, 1), u1)
+%!assert (triu (a, 0), u0)
+%!assert (triu (a), u0)
+%!assert (triu (a, -1), um1)
+%!assert (triu (a, -2), um2)
+%!assert (triu (a, -3), um3)
+%!assert (triu (a, -4), um3)
 
 %!error tril ()
+%!error triu ()
 */
+
+OCTAVE_NAMESPACE_END

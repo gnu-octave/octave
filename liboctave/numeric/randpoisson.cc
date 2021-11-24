@@ -455,6 +455,6 @@ namespace octave
     return ret;
   }
 
-  template double rand_poisson<double> (double);
-  template float rand_poisson<float> (float);
+  template OCTAVE_API double rand_poisson<double> (double);
+  template OCTAVE_API float rand_poisson<float> (float);
 }

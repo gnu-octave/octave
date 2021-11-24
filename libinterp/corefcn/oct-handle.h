@@ -39,10 +39,10 @@
 class octave_handle
 {
 public:
-  octave_handle (void) : val (octave::numeric_limits<double>::NaN ()) { }
+  octave_handle (void) : m_dval (octave::numeric_limits<double>::NaN ()) { }
 
   octave_handle (const octave_value& a)
-    : val (octave::numeric_limits<double>::NaN ())
+    : m_dval (octave::numeric_limits<double>::NaN ())
   {
     if (a.isempty ())
       ; // do nothing
@@ -50,48 +50,48 @@ public:
       {
         try
           {
-            val = a.double_value ();
+            m_dval = a.double_value ();
           }
-        catch (octave::execution_exception& e)
+        catch (octave::execution_exception& ee)
           {
-            error (e, "invalid handle");
+            error (ee, "invalid handle");
           }
       }
   }
 
-  octave_handle (int a) : val (a) { }
+  octave_handle (int a) : m_dval (a) { }
 
-  octave_handle (double a) : val (a) { }
+  octave_handle (double a) : m_dval (a) { }
 
-  octave_handle (const octave_handle& a) : val (a.val) { }
+  octave_handle (const octave_handle& a) : m_dval (a.m_dval) { }
 
   octave_handle& operator = (const octave_handle& a)
   {
     if (&a != this)
-      val = a.val;
+      m_dval = a.m_dval;
 
     return *this;
   }
 
   ~octave_handle (void) = default;
 
-  double value (void) const { return val; }
+  double value (void) const { return m_dval; }
 
   octave_value as_octave_value (void) const
   {
-    return ok () ? octave_value (val) : octave_value (Matrix ());
+    return ok () ? octave_value (m_dval) : octave_value (Matrix ());
   }
 
   // Prefix increment/decrement operators.
   octave_handle& operator ++ (void)
   {
-    ++val;
+    ++m_dval;
     return *this;
   }
 
   octave_handle& operator -- (void)
   {
-    --val;
+    --m_dval;
     return *this;
   }
 
@@ -110,10 +110,10 @@ public:
     return old_value;
   }
 
-  bool ok (void) const { return ! octave::math::isnan (val); }
+  bool ok (void) const { return ! octave::math::isnan (m_dval); }
 
 private:
-  double val;
+  double m_dval;
 };
 
 inline bool

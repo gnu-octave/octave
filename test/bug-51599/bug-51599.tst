@@ -25,7 +25,7 @@
 
 ## Check if a function handle to a local function of a classdef class
 ## can be called from an instance of that class.
-%!test
+%!test <*51599>
 %! a = class_bug51599 ();
 %! a.foo ();
 %! assert (a.bar (0), 2);

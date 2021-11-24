@@ -38,7 +38,7 @@
 
 function result = sinc (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -58,4 +58,5 @@ endfunction
 %!assert (sinc (1), 0,1e-6)
 %!assert (sinc (1/2), 2/pi, 1e-6)
 
-%!error sinc()
+## Test input validation
+%!error <Invalid call> sinc ()

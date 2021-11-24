@@ -51,8 +51,11 @@ octave_kill_wrapper (pid_t pid, int signum)
 {
 #if defined (HAVE_KILL)
   return kill (pid, signum);
-#else
+#elif defined (HAVE_RAISE)
+  octave_unused_parameter (pid);
 
+  return raise (signum);
+#else
   octave_unused_parameter (pid);
   octave_unused_parameter (signum);
 

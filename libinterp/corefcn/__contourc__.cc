@@ -46,6 +46,8 @@
 #include "defun.h"
 #include "ov.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // FIXME: this looks like trouble...
 static Matrix this_contour;
 static Matrix contourc;
@@ -55,27 +57,25 @@ static int elem;
 #define CONTOUR_QUANT 50
 
 // Add a coordinate point (x,y) to this_contour.
-
 static void
 add_point (double x, double y)
 {
   if (elem % CONTOUR_QUANT == 0)
     this_contour = this_contour.append (Matrix (2, CONTOUR_QUANT, 0));
 
-  this_contour (0, elem) = x;
-  this_contour (1, elem) = y;
+  this_contour(0, elem) = x;
+  this_contour(1, elem) = y;
   elem++;
 }
 
 // Add contents of current contour to contourc.
 // this_contour.cols () - 1;
-
 static void
 end_contour (void)
 {
   if (elem > 2)
     {
-      this_contour (1, 0) = elem - 1;
+      this_contour(1, 0) = elem - 1;
       contourc = contourc.append (this_contour.extract_n (0, 0, 2, elem));
     }
 
@@ -154,7 +154,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
         {
           tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
 
-          if (octave::math::isnan (tmp))
+          if (math::isnan (tmp))
             ct_x = ct_y = 0.5;
           else
             {
@@ -183,7 +183,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
       pt[1] = (pt[0] + 1) % 4;
       tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
 
-      if (octave::math::isnan (tmp))
+      if (math::isnan (tmp))
         ct_x = ct_y = 0.5;
       else
         {
@@ -300,15 +300,13 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
         drawcn (X, Y, Z, lvl, r, c, 0.0, 0.0, 255, true, mark);
 }
 
+
 DEFUN (__contourc__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})
-Undocumented internal function.
+@deftypefn {} {@var{c} =} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})
+Calculate Z-level contours (isolines).
 @end deftypefn */)
 {
-  if (args.length () != 4)
-    print_usage ();
-
   RowVector X = args(0).row_vector_value ();
   RowVector Y = args(1).row_vector_value ();
   Matrix Z = args(2).matrix_value ();
@@ -317,7 +315,7 @@ Undocumented internal function.
   contourc.resize (2, 0);
 
   for (int i = 0; i < L.numel (); i++)
-    cntr (X, Y, Z, L (i));
+    cntr (X, Y, Z, L(i));
 
   end_contour ();
 
@@ -328,3 +326,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

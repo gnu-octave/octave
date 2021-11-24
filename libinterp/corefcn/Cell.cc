@@ -191,7 +191,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 
         case 1:
           {
-            idx_vector i = idx_arg(0).index_vector ();
+            octave::idx_vector i = idx_arg(0).index_vector ();
 
             retval = Array<octave_value>::index (i, resize_ok, Matrix ());
           }
@@ -199,10 +199,10 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 
         case 2:
           {
-            idx_vector i = idx_arg(0).index_vector ();
+            octave::idx_vector i = idx_arg(0).index_vector ();
 
             k = 1;
-            idx_vector j = idx_arg(1).index_vector ();
+            octave::idx_vector j = idx_arg(1).index_vector ();
 
             retval = Array<octave_value>::index (i, j, resize_ok, Matrix ());
           }
@@ -210,7 +210,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 
         default:
           {
-            Array<idx_vector> iv (dim_vector (n, 1));
+            Array<octave::idx_vector> iv (dim_vector (n, 1));
 
             for (k = 0; k < n; k++)
               iv(k) = idx_arg(k).index_vector ();
@@ -220,10 +220,10 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
           break;
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (n, k+1);
+      ie.set_pos_if_unset (n, k+1);
       throw;
     }
 
@@ -234,7 +234,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 %% This behavior is required for Matlab compatibility.
 %!shared a
 %! a = {"foo", "bar"};
-%!assert (a(), a);
+%!assert (a(), a)
 %!error <invalid empty index expression> a{}
 */
 
@@ -245,7 +245,7 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 {
   octave_idx_type len = idx_arg.length ();
 
-  Array<idx_vector> ra_idx (dim_vector (len, 1));
+  Array<octave::idx_vector> ra_idx (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
     {
@@ -253,10 +253,10 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
         {
           ra_idx(i) = idx_arg(i).index_vector ();
         }
-      catch (octave::index_exception& e)
+      catch (octave::index_exception& ie)
         {
           // Rethrow to allow more info to be reported later.
-          e.set_pos (len, i+1);
+          ie.set_pos (len, i+1);
           throw;
         }
     }
@@ -270,17 +270,17 @@ Cell::delete_elements (const octave_value_list& idx_arg)
 {
   octave_idx_type len = idx_arg.length ();
 
-  Array<idx_vector> ra_idx (dim_vector (len, 1));
+  Array<octave::idx_vector> ra_idx (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
     try
       {
         ra_idx.xelem (i) = idx_arg(i).index_vector ();
       }
-    catch (octave::index_exception& e)
+    catch (octave::index_exception& ie)
       {
         // Rethrow to allow more info to be reported later.
-        e.set_pos (len, i+1);
+        ie.set_pos (len, i+1);
         throw;
       }
 

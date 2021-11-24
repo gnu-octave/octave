@@ -96,6 +96,13 @@ const sc_pref sc_main_debug_step_out (sc_main_debug + ":step_out", PRE + Qt::Shi
 const sc_pref sc_main_debug_continue (sc_main_debug + ":continue", PRE + Qt::Key_F5);
 const sc_pref sc_main_debug_quit (sc_main_debug + ":quit", PRE + Qt::ShiftModifier + Qt::Key_F5);
 
+// tools
+const QString sc_main_tools ("main_tools");
+const sc_pref sc_main_tools_start_profiler (sc_main_tools + ":start_profiler", CTRL_SHIFT + Qt::Key_P);
+const sc_pref sc_main_tools_resume_profiler (sc_main_tools + ":resume_profiler", QKeySequence::UnknownKey);
+const sc_pref sc_main_tools_show_profiler (sc_main_tools + ":show_profiler", Qt::AltModifier + Qt::ShiftModifier + Qt::Key_P);
+
+
 // window
 const QString sc_main_window ("main_window");
 const sc_pref sc_main_window_show_command (sc_main_window + ":show_command", PRE + CTRL_SHIFT + Qt::Key_0);
@@ -248,6 +255,7 @@ const QString sc_doc ("doc_browser");
 const sc_pref sc_doc_go_home (sc_doc + ":go_home", Qt::AltModifier + Qt::Key_Home);
 const sc_pref sc_doc_go_back (sc_doc + ":go_back", QKeySequence::Back);
 const sc_pref sc_doc_go_next (sc_doc + ":go_next", QKeySequence::Forward);
+const sc_pref sc_doc_bookmark (sc_doc + ":bookmark", CTRL + Qt::Key_D);
 
 
 // Other normal, shortcut related options
@@ -257,5 +265,7 @@ sc_main_ctrld ("shortcuts/main_ctrld", QVariant (false));
 
 const gui_pref
 sc_prevent_rl_conflicts ("shortcuts/prevent_readline_conflicts", QVariant (true));
+const gui_pref
+sc_prevent_rl_conflicts_menu ("shortcuts/prevent_readline_conflicts_menu", QVariant (false));
 
 #endif

@@ -73,6 +73,42 @@ namespace octave
   }
 
   void
+  tree_breakpoint::visit_arguments_block (tree_arguments_block&)
+  {
+    // FIXME
+  }
+
+  void
+  tree_breakpoint::visit_args_block_attribute_list (tree_args_block_attribute_list&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_breakpoint::visit_args_block_validation_list (tree_args_block_validation_list&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_breakpoint::visit_arg_validation (tree_arg_validation&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_breakpoint::visit_arg_size_spec (tree_arg_size_spec&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_breakpoint::visit_arg_validation_fcns (tree_arg_validation_fcns&)
+  {
+    panic_impossible ();
+  }
+
+  void
   tree_breakpoint::visit_binary_expression (tree_binary_expression&)
   {
     panic_impossible ();

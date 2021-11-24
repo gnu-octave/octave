@@ -140,6 +140,8 @@
 ## @item @samp{*} @tab star
 ## @item @samp{.} @tab point
 ## @item @samp{x} @tab cross
+## @item @samp{|} @tab vertical line
+## @item @samp{_} @tab horizontal line
 ## @item @samp{s} @tab square
 ## @item @samp{d} @tab diamond
 ## @item @samp{^} @tab upward-facing triangle
@@ -152,24 +154,26 @@
 ##
 ## @item color
 ##
-## @multitable @columnfractions 0.06 0.94
-## @item @samp{k} @tab blacK
-## @item @samp{r} @tab Red
-## @item @samp{g} @tab Green
-## @item @samp{b} @tab Blue
-## @item @samp{y} @tab Yellow
-## @item @samp{m} @tab Magenta
-## @item @samp{c} @tab Cyan
-## @item @samp{w} @tab White
+## @multitable @columnfractions 0.21 0.79
+## @item @samp{k}, @qcode{"black"}   @tab blacK
+## @item @samp{r}, @qcode{"red"}     @tab Red
+## @item @samp{g}, @qcode{"green"}   @tab Green
+## @item @samp{b}, @qcode{"blue"}    @tab Blue
+## @item @samp{y}, @qcode{"yellow"}  @tab Yellow
+## @item @samp{m}, @qcode{"magenta"} @tab Magenta
+## @item @samp{c}, @qcode{"cyan"}    @tab Cyan
+## @item @samp{w}, @qcode{"white"}   @tab White
 ## @end multitable
 ##
 ## @item @qcode{";displayname;"}
-## Here @qcode{"displayname"} is the label to use for the plot legend.
+## The text between semicolons is used to set the @qcode{"displayname"}
+## property which determines the label used for the plot legend.
+##
 ## @end table
 ##
 ## The @var{fmt} argument may also be used to assign legend labels.
 ## To do so, include the desired label between semicolons after the
-## formatting sequence described above, e.g., @qcode{"+b;Key Title;"}.
+## formatting sequence described above, e.g., @qcode{"+b;Data Series 3;"}.
 ## Note that the last semicolon is required and Octave will generate
 ## an error if it is left out.
 ##
@@ -209,7 +213,9 @@
 ## To save a plot, in one of several image formats such as PostScript
 ## or PNG, use the @code{print} command.
 ##
-## @seealso{axis, box, grid, hold, legend, title, xlabel, ylabel, xlim, ylim, ezplot, errorbar, fplot, line, plot3, polar, loglog, semilogx, semilogy, subplot}
+## @seealso{axis, box, grid, hold, legend, title, xlabel, ylabel, xlim, ylim,
+## ezplot, errorbar, fplot, line, plot3, polar, loglog, semilogx, semilogy,
+## subplot}
 ## @end deftypefn
 
 function h = plot (varargin)

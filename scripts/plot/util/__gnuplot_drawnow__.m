@@ -30,7 +30,7 @@
 
 function __gnuplot_drawnow__ (h, term, file, debug_file)
 
-  if (nargin < 1 || nargin > 4 || nargin == 2)
+  if (nargin < 1 || nargin == 2)
     print_usage ();
   endif
 
@@ -151,7 +151,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       if (output_to_screen (term) && ! strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = strrep (get (h, "name"), '"', '\"');
-        if (! isempty (get (h, "number")) && strcmp (get (h, "numbertitle"), "on"))
+        if (! isempty (get (h, "number"))
+            && strcmp (get (h, "numbertitle"), "on"))
           title_str = sprintf ("Figure %d", h);
           if (! isempty (fig.name))
             title_str = sprintf ("%s: %s", title_str, fig.name);
@@ -269,7 +270,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     endif
 
     ## Set the gnuplot terminal (type, enhanced, title, options & size).
-    term_str = ["set terminal " term];
+    term_str = ["set encoding utf8;\nset terminal " term];
     if (__gnuplot_has_feature__ ("needs_color_with_postscript") ...
         && strcmp (term, "postscript"))
       term_str = [term_str, " color"];

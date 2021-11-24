@@ -41,7 +41,7 @@
 
 function retval = ishandle (h)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -55,8 +55,8 @@ endfunction
 %! unwind_protect
 %!   assert (ishandle (hf));
 %!   assert (! ishandle (-hf));
-%!   ax = gca;
-%!   l = line;
+%!   ax = gca ();
+%!   l = line ();
 %!   assert (ishandle (ax));
 %!   assert (! ishandle (-ax));
 %!   assert (ishandle ([l, -1, ax, hf]), logical ([1, 0, 1, 1]));
@@ -72,5 +72,4 @@ endfunction
 %! assert (ishandle (jobj));
 
 ## Test input validation
-%!error ishandle ()
-%!error ishandle (1, 2)
+%!error <Invalid call> ishandle ()

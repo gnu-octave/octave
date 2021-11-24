@@ -86,13 +86,13 @@ builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
   return retval;
 }
 
-std::string btyp_class_name[btyp_num_types] =
+std::string btyp_class_name[btyp_num_types+1] =
 {
   "double", "single", "double", "single",
   "int8", "int16", "int32", "int64",
   "uint8", "uint16", "uint32", "uint64",
   "logical", "char",
-  "struct", "cell", "function_handle"
+  "struct", "cell", "function_handle", "unknown"
 };
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
@@ -229,7 +229,7 @@ octave_base_value::do_index_op (const octave_value_list&, bool)
   error ("can't perform indexing operations for %s type", nm.c_str ());
 }
 
-idx_vector
+octave::idx_vector
 octave_base_value::index_vector (bool /* require_integers */) const
 {
   std::string nm = '<' + type_name () + '>';
@@ -470,9 +470,9 @@ octave_base_value::print_info (std::ostream& os,
       {                                                                 \
         d = double_value (frc_str_conv);                                \
       }                                                                 \
-    catch (octave::execution_exception& e)                               \
+    catch (octave::execution_exception& ee)                               \
       {                                                                 \
-        err_wrong_type_arg (e, "octave_base_value::" #F "_value ()", type_name ()); \
+        err_wrong_type_arg (ee, "octave_base_value::" #F "_value ()", type_name ()); \
       }                                                                 \
                                                                         \
     if (require_int && octave::math::x_nint (d) != d)                   \
@@ -508,9 +508,9 @@ octave_base_value::nint_value (bool frc_str_conv) const
     {
       d = double_value (frc_str_conv);
     }
-  catch (octave::execution_exception& e)
+  catch (octave::execution_exception& ee)
     {
-      err_wrong_type_arg (e, "octave_base_value::nint_value ()", type_name ());
+      err_wrong_type_arg (ee, "octave_base_value::nint_value ()", type_name ());
     }
 
   if (octave::math::isnan (d))
@@ -811,10 +811,64 @@ octave_base_value::cellstr_value (void) const
   err_wrong_type_arg ("octave_base_value::cellstr_value()", type_name ());
 }
 
-Range
+octave::range<float>
+octave_base_value::float_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::float_range_value()", type_name ());
+}
+
+octave::range<double>
 octave_base_value::range_value (void) const
 {
   err_wrong_type_arg ("octave_base_value::range_value()", type_name ());
+}
+
+octave::range<octave_int8>
+octave_base_value::int8_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::int8_range_value()", type_name ());
+}
+
+octave::range<octave_int16>
+octave_base_value::int16_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::int16_range_value()", type_name ());
+}
+
+octave::range<octave_int32>
+octave_base_value::int32_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::int32_range_value()", type_name ());
+}
+
+octave::range<octave_int64>
+octave_base_value::int64_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::int64_range_value()", type_name ());
+}
+
+octave::range<octave_uint8>
+octave_base_value::uint8_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::uint8_range_value()", type_name ());
+}
+
+octave::range<octave_uint16>
+octave_base_value::uint16_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::uint16_range_value()", type_name ());
+}
+
+octave::range<octave_uint32>
+octave_base_value::uint32_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::uint32_range_value()", type_name ());
+}
+
+octave::range<octave_uint64>
+octave_base_value::uint64_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::uint64_range_value()", type_name ());
 }
 
 octave_map
@@ -965,7 +1019,7 @@ octave_base_value::write (octave::stream&, int, oct_data_conv::data_type,
 }
 
 mxArray *
-octave_base_value::as_mxArray (void) const
+octave_base_value::as_mxArray (bool) const
 {
   return nullptr;
 }
@@ -1289,10 +1343,10 @@ octave_base_value::numeric_assign (const std::string& type,
 }
 
 // Current indentation.
-int octave_base_value::curr_print_indent_level = 0;
+int octave_base_value::s_curr_print_indent_level = 0;
 
 // TRUE means we are at the beginning of a line.
-bool octave_base_value::beginning_of_line = true;
+bool octave_base_value::s_beginning_of_line = true;
 
 // Each print() function should call this before printing anything.
 //
@@ -1301,17 +1355,17 @@ bool octave_base_value::beginning_of_line = true;
 void
 octave_base_value::indent (std::ostream& os) const
 {
-  assert (curr_print_indent_level >= 0);
+  assert (s_curr_print_indent_level >= 0);
 
-  if (beginning_of_line)
+  if (s_beginning_of_line)
     {
       // FIXME: do we need this?
       // os << prefix;
 
-      for (int i = 0; i < curr_print_indent_level; i++)
+      for (int i = 0; i < s_curr_print_indent_level; i++)
         os << ' ';
 
-      beginning_of_line = false;
+      s_beginning_of_line = false;
     }
 }
 
@@ -1322,7 +1376,7 @@ octave_base_value::newline (std::ostream& os) const
 {
   os << "\n";
 
-  beginning_of_line = true;
+  s_beginning_of_line = true;
 }
 
 // For resetting print state.
@@ -1330,8 +1384,8 @@ octave_base_value::newline (std::ostream& os) const
 void
 octave_base_value::reset (void) const
 {
-  beginning_of_line = true;
-  curr_print_indent_level = 0;
+  s_beginning_of_line = true;
+  s_curr_print_indent_level = 0;
 }
 
 octave_value
@@ -1470,6 +1524,8 @@ called_from_builtin (void)
   return (fcn && fcn->name () == "builtin");
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 void
 install_base_type_conversions (octave::type_info& ti)
 {
@@ -1520,7 +1576,8 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (sparse_auto_mutate);
+  return set_internal_variable (Vsparse_auto_mutate, args, nargout,
+                                "sparse_auto_mutate");
 }
 
 /*
@@ -1534,3 +1591,5 @@ The original variable value is restored when exiting the function.
 %! assert (typeinfo (s), "matrix");
 %! sparse_auto_mutate (false);
 */
+
+OCTAVE_NAMESPACE_END

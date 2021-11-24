@@ -34,6 +34,7 @@ see <https://www.gnu.org/licenses/>.
 // for the signal/slot macros.  Could maybe change later when using
 // Qt5-style signal/slot connections.
 #include "gui-settings.h"
+
 using octave::gui_settings;
 
 namespace octave
@@ -51,7 +52,7 @@ class QTerminal : public QWidget
 public:
 
   static QTerminal *
-  create (octave::base_qobject& oct_qobj, QWidget *xparent = nullptr);
+  create (octave::base_qobject& oct_qobj, QWidget *xparent);
 
   virtual ~QTerminal (void) = default;
 
@@ -107,6 +108,14 @@ signals:
 
   void execute_command_in_terminal_signal (const QString&);
 
+  void request_edit_mfile_signal (const QString&, int);
+
+  void request_open_file_signal (const QString&, const QString&, int);
+
+  void set_screen_size_signal (int, int);
+
+  void clear_command_window_request (void);
+
 public slots:
 
   virtual void copyClipboard (void) = 0;
@@ -123,8 +132,6 @@ public slots:
 
   void terminal_interrupt (void) { emit interrupt_signal (); }
 
-  void set_global_shortcuts (bool focus_out);
-
   void run_selection (void);
 
   void edit_file (void);
@@ -139,11 +146,14 @@ public slots:
 
 protected:
 
-  QTerminal (QWidget *xparent = nullptr) : QWidget (xparent) { }
+  QTerminal (octave::base_qobject& oct_qobj, QWidget *xparent = nullptr)
+            : QWidget (xparent), m_octave_qobj (oct_qobj) { }
 
-  void construct (octave::base_qobject& oct_qobj, QWidget *xparent);
+  void construct (octave::base_qobject& oct_qobj);
 
 private:
+
+  octave::base_qobject& m_octave_qobj;
 
   QMenu *_contextMenu;
   QAction * _copy_action;

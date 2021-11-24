@@ -32,23 +32,18 @@
 ## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k})
 ## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma})
 ## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n})
-## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{B})
-## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{k})
-## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k})
-## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma})
-## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma})
-## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {} {[@var{V}, @var{d}] =} eigs (@var{A}, @dots{})
-## @deftypefnx {} {[@var{V}, @var{d}] =} eigs (@var{af}, @var{n}, @dots{})
-## @deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{A}, @dots{})
-## @deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{af}, @var{n}, @dots{})
-## Calculate a limited number of eigenvalues and eigenvectors of @var{A},
-## based on a selection criteria.
-##
-## The number of eigenvalues and eigenvectors to calculate is given by
-## @var{k} and defaults to 6.
+## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n})
+## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{k})
+## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{B})
+## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{B}, @var{k})
+## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{B}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {[@var{V}, @var{D}] =} eigs (@dots{})
+## @deftypefnx {} {[@var{V}, @var{D}, @var{flag}] =} eigs (@dots{})
+## Calculate a limited number of eigenvalues and eigenvectors based on a
+## selection criteria.
 ##
 ## By default, @code{eigs} solve the equation
 ## @tex
@@ -73,10 +68,20 @@
 ## @code{A * v = lambda * B * v}.
 ## @end ifinfo
 ##
+## The input @var{A} is a square matrix of dimension @var{n}-by-@var{n}.
+## Typically, @var{A} is also large and sparse.
+##
+## The input @var{B} for the generalized eigenvalue problem is a square matrix
+## with the same size as @var{A} (@var{n}-by-@var{n}).  Typically, @var{B} is
+## also large and sparse.
+##
+## The number of eigenvalues and eigenvectors to calculate is given by @var{k}
+## and defaults to 6.
+##
 ## The argument @var{sigma} determines which eigenvalues are returned.
 ## @var{sigma} can be either a scalar or a string.  When @var{sigma} is a
 ## scalar, the @var{k} eigenvalues closest to @var{sigma} are returned.  If
-## @var{sigma} is a string, it must have one of the following values.
+## @var{sigma} is a string, it must be one of the following values.
 ##
 ## @table @asis
 ## @item @nospell{@qcode{"lm"}}
@@ -85,13 +90,13 @@
 ## @item @nospell{@qcode{"sm"}}
 ## Smallest Magnitude.
 ##
-## @item @qcode{"la"}
+## @item @nospell{@qcode{"la"}}
 ## Largest Algebraic (valid only for real symmetric problems).
 ##
 ## @item @nospell{@qcode{"sa"}}
 ## Smallest Algebraic (valid only for real symmetric problems).
 ##
-## @item @qcode{"be"}
+## @item @nospell{@qcode{"be"}}
 ## Both Ends, with one more from the high-end if @var{k} is odd (valid only for
 ## real symmetric problems).
 ##
@@ -113,13 +118,14 @@
 ##
 ## @table @code
 ## @item issym
-## If @var{af} is given, then flags whether the function @var{af} defines a
-## symmetric problem.  It is ignored if @var{A} is given.  The default is
-## false.
+## If @var{Af} is given then this flag (true/false) determines whether the
+## function @var{Af} defines a symmetric problem.  It is ignored if a matrix
+## @var{A} is given.  The default is false.
 ##
 ## @item isreal
-## If @var{af} is given, then flags whether the function @var{af} defines a
-## real problem.  It is ignored if @var{A} is given.  The default is true.
+## If @var{Af} is given then this flag (true/false) determines whether the
+## function @var{Af} defines a real problem.  It is ignored if a matrix @var{A}
+## is given.  The default is true.
 ##
 ## @item tol
 ## Defines the required convergence tolerance, calculated as
@@ -135,35 +141,37 @@
 ## to @var{n}.  The default value is @code{2 * @var{k}}.
 ##
 ## @item v0
-## The starting vector for the algorithm.  An initial vector close to the
-## final vector will speed up convergence.  The default is for @sc{arpack}
-## to randomly generate a starting vector.  If specified, @code{v0} must be
-## an @var{n}-by-1 vector where @code{@var{n} = rows (@var{A})}
+## The starting vector for the algorithm.  An initial vector close to the final
+## vector will speed up convergence.  The default is for @sc{arpack} to
+## randomly generate a starting vector.  If specified, @code{v0} must be
+## an @var{n}-by-1 vector where @code{@var{n} = rows (@var{A})}.
 ##
 ## @item disp
 ## The level of diagnostic printout (0|1|2).  If @code{disp} is 0 then
 ## diagnostics are disabled.  The default value is 0.
 ##
 ## @item cholB
-## Flag if @code{chol (@var{B})} is passed rather than @var{B}.  The default is
-## false.
+## If the generalized eigenvalue problem is being calculated, this flag
+## (true/false) specifies whether the @var{B} input represents
+## @code{chol (@var{B})} or simply the matrix @var{B}.  The default is false.
 ##
 ## @item permB
-## The permutation vector of the Cholesky@tie{}factorization of @var{B} if
-## @code{cholB} is true.  It is obtained by @code{[R, ~, permB] =
-## chol (@var{B}, @qcode{"vector"})}.  The default is @code{1:@var{n}}.
+## The permutation vector of the Cholesky@tie{}factorization for @var{B} if
+## @code{cholB} is true.  It is obtained by
+## @code{[R, ~, permB] = chol (@var{B}, @qcode{"vector"})}.  The default is
+## @code{1:@var{n}}.
 ##
 ## @end table
 ##
-## It is also possible to represent @var{A} by a function denoted @var{af}.
-## @var{af} must be followed by a scalar argument @var{n} defining the length
-## of the vector argument accepted by @var{af}.  @var{af} can be a function
-## handle, an inline function, or a string.  When @var{af} is a string it
+## It is also possible to represent @var{A} by a function denoted @var{Af}.
+## @var{Af} must be followed by a scalar argument @var{n} defining the length
+## of the vector argument accepted by @var{Af}.  @var{Af} can be a function
+## handle, an inline function, or a string.  When @var{Af} is a string it
 ## holds the name of the function to use.
 ##
-## @var{af} is a function of the form @code{y = af (x)} where the required
-## return value of @var{af} is determined by the value of @var{sigma}.  The
-## four possible forms are
+## @var{Af} is a function of the form @code{y = Af (x)} where the required
+## return value of @var{Af} is determined by the value of @var{sigma}.
+## The four possible forms are
 ##
 ## @table @code
 ## @item A * x
@@ -173,26 +181,34 @@
 ## if @var{sigma} is 0 or "sm".
 ##
 ## @item (A - sigma * I) \ x
-## for the standard eigenvalue problem, where @code{I} is the identity matrix
+## if @var{sigma} is a scalar not equal to 0; @code{I} is the identity matrix
 ## of the same size as @var{A}.
 ##
 ## @item (A - sigma * B) \ x
 ## for the general eigenvalue problem.
 ## @end table
 ##
-## The return arguments of @code{eigs} depend on the number of return arguments
-## requested.  With a single return argument, a vector @var{d} of length
+## The return arguments and their form depend on the number of return arguments
+## requested.  For a single return argument, a column vector @var{d} of length
 ## @var{k} is returned containing the @var{k} eigenvalues that have been
-## found.  With two return arguments, @var{V} is a @var{n}-by-@var{k} matrix
+## found.  For two return arguments, @var{V} is an @var{n}-by-@var{k} matrix
 ## whose columns are the @var{k} eigenvectors corresponding to the returned
-## eigenvalues.  The eigenvalues themselves are returned in @var{d} in the
-## form of a @var{n}-by-@var{k} matrix, where the elements on the diagonal
+## eigenvalues.  The eigenvalues themselves are returned in @var{D} in the
+## form of a @var{k}-by-@var{k} matrix, where the elements on the diagonal
 ## are the eigenvalues.
 ##
-## Given a third return argument @var{flag}, @code{eigs} returns the status
-## of the convergence.  If @var{flag} is 0 then all eigenvalues have converged.
-## Any other value indicates a failure to converge.
+## The third return argument @var{flag} returns the status of the convergence.
+## If @var{flag} is 0 then all eigenvalues have converged.  Any other value
+## indicates a failure to converge.
 ##
+## Programming Notes: For small problems, @var{n} < 500, consider using
+## @code{eig (full (@var{A}))}.
+##
+## If ARPACK fails to converge consider increasing the number of Lanczos
+## vectors (@var{opt}.p), increasing the number of iterations
+## (@var{opt}.maxiter), or decreasing the tolerance (@var{opt}.tol).
+##
+## Reference:
 ## This function is based on the @sc{arpack} package, written by
 ## @nospell{R. Lehoucq, K. Maschhoff, D. Sorensen, and C. Yang}.  For more
 ## information see @url{http://www.caam.rice.edu/software/ARPACK/}.
@@ -200,26 +216,37 @@
 ## @seealso{eig, svds}
 ## @end deftypefn
 
-function varargout = eigs (varargin)
+## Programming Note: For compatibility with Matlab, handle small matrix cases
+## and all-zero matrices in this m-file which ARPACK can not.
 
-  ## For compatibility with Matlab, handle small matrix cases here
-  ## that ARPACK does not.
+function varargout = eigs (varargin)
 
   if (nargin == 0)
     print_usage ();
   endif
 
-  call_eig = false;
+  call_eig = false;  # flag whether to take shortcut path with eig()
+  have_A = false;
+  have_B = false;
   offset = 0;
-  b = [];
   k = 6;
   sigma = "lm";
 
+  ## FIXME: Input validation is split between eigs.m and __eigs__.cc.
+  ##        It would be simpler if all input validation was done in the m-file
+  ##        and then the internal function __eigs__ could be simplified to
+  ##        rely on having "good" inputs.
   if (isnumeric (varargin{1}) && issquare (varargin{1}))
-    a = varargin{1};
-    if (nargin > 1 && isnumeric (varargin{2}))
-      if (size_equal (a, varargin{2}))
-        b = varargin{2};
+    A = varargin{1};
+    have_A = true;
+    k = min (k, rows (A));  # reduce default k if necessary
+    if (nargin > 1)
+      if (! isnumeric (varargin{2}))
+        error ("eigs: second argument must be numeric");
+      endif
+      if (size_equal (A, varargin{2}))
+        B = varargin{2};
+        have_B = true;
         offset = 1;
       elseif (isempty (varargin{2}))
         ## Special syntax to do regular eigenvalue decomposition rather
@@ -228,11 +255,14 @@ function varargout = eigs (varargin)
       endif
     endif
 
-    if (rows (a) < 13)
+    if (rows (A) <= 12)  # p = 2*k criteria
       call_eig = true;
     endif
 
     if (nargin > 1 + offset)
+      ## FIXME: Input validation should recognize improper inputs.
+      ##        Code below only checks for what it expects to find.
+      ##        Sample bad input: eigs (magic (5), [], {1})
       arg = varargin{2+offset};
       if (isnumeric (arg) && isscalar (arg) && isreal (arg)
           && fix (arg) == arg)
@@ -240,11 +270,6 @@ function varargout = eigs (varargin)
         p = 2 * k;
       elseif (isfield (arg, "p"))
         p = arg.p;
-      endif
-      if (p >= rows (a))
-        call_eig = true;
-      else
-        call_eig = false;
       endif
 
       if (nargin > 2 + offset)
@@ -256,56 +281,80 @@ function varargout = eigs (varargin)
         elseif (isfield (arg, "p"))
           p = arg.p;
         endif
-        if (p >= rows (a))
-          call_eig = true;
-        else
-          call_eig = false;
+
+        if (nargin > 3 + offset)
+          arg = varargin{4+offset};
+          if (isfield (arg, "p"))
+            p = arg.p;
+          else
+            p = 2 * k;
+          endif
         endif
       endif
-      if (nargin > 3 + offset)
-        arg = varargin{4+offset};
-        if (isfield (arg, "p"))
-          p = arg.p;
-        else
-          p = 2 * k;
-        endif
-        if (p >= rows (a))
-          call_eig = true;
-        else
-          call_eig = false;
-        endif
+
+      if (p >= rows (A))
+        call_eig = true;
+      else
+        call_eig = false;
       endif
     endif
   endif
 
   if (call_eig)
+    ## Special code path for small matrices which ARPACK does not handle.
     varargout = cell (1, min (2, max (1, nargout)));
-    if (isempty (b))
-      real_valued = isreal (a);
-      symmetric = issymmetric (a);
-      [varargout{:}] = eig (a);
+    if (have_B)
+      real_valued = isreal (A) && isreal (B);
+      symmetric = issymmetric (A) && issymmetric (B);
+      [varargout{:}] = eig (A, B);
     else
-      real_valued = isreal (a) && isreal (b);
-      symmetric = issymmetric (a) && issymmetric (b);
-      [varargout{:}] = eig (a, b);
+      real_valued = isreal (A);
+      symmetric = issymmetric (A);
+      [varargout{:}] = eig (A);
     endif
-    varargout = select (varargout, k, sigma, real_valued, symmetric);
+    varargout = select_eig (varargout, k, sigma, real_valued, symmetric);
     if (nargout == 3)
-      varargout{3} = 0;
+      varargout{3} = 0;  # Flag value is always 0 (success) for eig() code path
     endif
+
   else
     varargout = cell (1, max (1, nargout));
-    [varargout{:}] = __eigs__ (varargin{:});
+    if (have_A && nnz (A) == 0)
+      ## Special case of zeros matrix which ARPACK handles badly.
+      switch (nargout)
+        case 3
+          V = diag (ones ([k,1]), rows (A), k);
+          varargout = { V, diag(zeros (k,1)), 0.0 };
+
+        case 2
+          V = diag (ones ([k,1]), rows (A), k);
+          varargout = { V, diag(zeros (k,1)) };
+
+        case {0, 1}
+          varargout = { zeros(k,1) };
+      endswitch
+    else
+      ## Call ARPACK
+      [varargout{:}] = __eigs__ (varargin{:});
+    endif
   endif
 
 endfunction
 
-function out = select (args, k, sigma, real_valued, symmetric)
+## For cases which do not go through ARPACK, but rather through eig() shortcut
+## code path, select which values to return based on input parameters and
+## number of outputs.
+function out = select_eig (args, k, sigma, real_valued, symmetric)
 
   if (numel (args) == 1)
     d = args{1};
   else
     d = diag (args{2});
+  endif
+
+  n = numel (d);
+  if (k > n)
+    error ("eigs: requested number of eigenvalues K (%d) exceeds available eigenvalues (%d)", k, n);
   endif
 
   if (ischar (sigma))
@@ -375,15 +424,10 @@ function out = select (args, k, sigma, real_valued, symmetric)
 
   d = d(idx);
 
-  n = numel (d);
-
-  k = min (k, n);
-
   if (strcmp (sigma, "be"))
-    tmp = k / 2;
-    n1 = floor (tmp);
-    n2 = n - ceil (tmp) + 1;
-    selection = [1:floor(k/2), n2:n];
+    n1 = floor (k/2);
+    n2 = n - (k - n1) + 1;
+    selection = [1:n1, n2:n];
   else
     selection = 1:k;
   endif
@@ -395,15 +439,31 @@ function out = select (args, k, sigma, real_valued, symmetric)
   else
     out{2} = diag (d);
 
-    v = args{1};
-    v = v(:,idx);
-    out{1} = v(:,selection);
+    V = args{1};
+    V = V(:,idx);
+    out{1} = V(:,selection);
   endif
 
 endfunction
 
 
-#### SPARSE MATRIX VERSIONS ####
+### TRIVIAL TESTS ###
+
+%!test
+%! for i = 1:20
+%!   assert (eigs (i, 1), i, 1e-11);
+%!   assert (eigs (zeros (i), 1), 0, 1e-11);
+%!   assert (eigs (sparse (i), 1), i, 1e-11);
+%!   assert (eigs (sparse (i, i), 1), 0, 1e-11);
+%! endfor
+
+%!testif HAVE_ARPACK
+%! for i = 1:20
+%!   assert (eigs (ones (i), 1), i, 1e-11);
+%!   assert (eigs (sparse (ones (i)), 1), i, 1e-11);
+%! endfor
+
+### SPARSE MATRIX TESTS ###
 
 ## Real positive definite tests, n must be even
 %!shared n, k, A, d0, d2, old_state, restore_state
@@ -599,7 +659,8 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! assert (abs (eigs (A, k, 4.1)), abs (eigs (A, speye (n), k, 4.1)), 1e-11);
 %!testif HAVE_ARPACK, HAVE_UMFPACK
-%! assert (sort (imag (eigs (A, k, 4.1))), sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
+%! assert (sort (imag (eigs (A, k, 4.1))),
+%!         sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 1;
@@ -730,7 +791,8 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! assert (abs (eigs (A, k, 4.1)), abs (eigs (A, speye (n), k, 4.1)), 1e-11);
 %!testif HAVE_ARPACK, HAVE_UMFPACK
-%! assert (sort (imag (eigs (A, k, 4.1))), sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
+%! assert (sort (imag (eigs (A, k, 4.1))),
+%!         sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 0;
@@ -787,7 +849,7 @@ endfunction
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! [v, d] = eigs (A, B, 4, "lm");
 %! for i = 1:4
-%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %! ddiag = diag (d);
 %! [ddiag, idx] = sort (ddiag);
@@ -887,7 +949,7 @@ endfunction
 %! opts.cholB = true;
 %! [v, d] = eigs (A, R, 4, "lm", opts);
 %! for i = 1:4
-%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! A = toeplitz (sparse (1:10));
@@ -897,11 +959,10 @@ endfunction
 %! opts.permB = permB;
 %! [v, d] = eigs (A, R, 4, "lm", opts);
 %! for i = 1:4
-%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 
-
-#### FULL MATRIX VERSIONS ####
+### FULL MATRIX TESTS ###
 
 ## Real positive definite tests, n must be even
 %!shared n, k, A, d0, d2, old_state, restore_state
@@ -1092,7 +1153,8 @@ endfunction
 %!testif HAVE_ARPACK
 %! assert (abs (eigs (A, k, 4.1)), abs (eigs (A, eye (n), k, 4.1)), 1e-11);
 %!testif HAVE_ARPACK
-%! assert (sort (imag (eigs (A, k, 4.1))), sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
+%! assert (sort (imag (eigs (A, k, 4.1))),
+%!         sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 1;
@@ -1222,7 +1284,8 @@ endfunction
 %!testif HAVE_ARPACK
 %! assert (abs (eigs (A, k, 4.1)), abs (eigs (A, eye (n), k, 4.1)), 1e-11);
 %!testif HAVE_ARPACK
-%! assert (sort (imag (eigs (A, k, 4.1))), sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
+%! assert (sort (imag (eigs (A, k, 4.1))),
+%!         sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
 %! fn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 0;
@@ -1292,7 +1355,7 @@ endfunction
 %! A(1, 1) = 0;
 %! A(1, 9) = 1;
 %! [V, L] = eigs (A, 4, -1);
-%! assert (!any (isnan (diag (L))));
+%! assert (! any (isnan (diag (L))));
 %! assert (any (abs (diag (L)) <= 2 * eps));
 %!testif HAVE_ARPACK
 %! A = diag (ones (9, 1), 1);
@@ -1370,10 +1433,6 @@ endfunction
 %!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5]) # call_eig is true
 %!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1]) # call_eig is true
 %!assert (eigs (diag (1:5), 3, "be"), [1;4;5]) # call_eig is true
-%!error
-%! A = rand (10);
-%! opts.v0 = ones (8, 1);
-%! eigs (A, 4, "sm", opts);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([-2, 1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
@@ -1488,11 +1547,11 @@ endfunction
 %! i_A = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 %! j_A = [1, 2, 3, 4, 5, 6, 7,  8, 9, 10];
 %! v_A = [1, 2i, 3, 4i, 5, 6i, 7, 8, 9, 10i];
-%! A = sparse(i_A, j_A, v_A);
+%! A = sparse (i_A, j_A, v_A);
 %! i_B = [1,2, 3, 4, 5, 6, 7, 8, 9, 10];
 %! j_B = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 %! v_B = [3, 10i, 1, 8i, 7, 6i, 5, 4i, 9, 7i];
-%! B = sparse(i_B, j_B, v_B); # not SPD
+%! B = sparse (i_B, j_B, v_B); # not SPD
 %! [Evectors, Evalues] = eigs(A, B, 5, "SM"); # call_eig is true
 %! ResidualVectors = A * Evectors - B * Evectors * Evalues;
 %! RelativeErrors = norm (ResidualVectors, "columns") ./ ...
@@ -1590,3 +1649,35 @@ endfunction
 %! A = magic (5);
 %! d = eigs (A, [], 1);
 %! assert (d, 65, 5 * eps (65));
+
+%!testif HAVE_ARPACK <*59488>
+%! A = zeros (20);
+%! d = eigs (A, 4);
+%! assert (d, zeros (4, 1));
+%! [V, d, flag] = eigs (A, 4);
+%! Vexp = zeros (20, 4);
+%! Vexp(sub2ind (size (Vexp), 1:4, 1:4)) = 1;
+%! assert (V, Vexp);
+%! assert (d, diag (zeros (4,1)));
+%! assert (flag, 0.0);
+
+## Test input validation
+%!error <Invalid call> eigs ()
+%!error <second argument must be numeric> eigs (1, "foobar")
+%!error <requested number of eigenvalues K \(2\) exceeds available eigenvalues \(1\)>
+%! eigs (1, [], 2);
+%!error <"la" requires real symmetric problem> eigs ([i,0;0,1], 1, "la")
+%!error <"la" requires real symmetric problem> eigs ([1,1;0,1], 1, "la")
+%!error <"sa" requires real symmetric problem> eigs ([i,0;0,1], 1, "sa")
+%!error <"sa" requires real symmetric problem> eigs ([1,1;0,1], 1, "sa")
+%!error <"be" requires real symmetric problem> eigs ([i,0;0,1], 1, "be")
+%!error <"be" requires real symmetric problem> eigs ([1,1;0,1], 1, "be")
+%!error <"lr" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "lr")
+%!error <"sr" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "sr")
+%!error <"li" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "li")
+%!error <"si" requires complex or unsymmetric> eigs ([1,0;0,1], 1, "si")
+%!error <unrecognized value for SIGMA: foobar> eigs (eye (2), 1, "foobar")
+%!testif HAVE_ARPACK
+%! A = rand (10);
+%! opts.v0 = ones (8, 1);
+%! fail ("eigs (A, 4, 'sm', opts)", "opts.v0 must be n-by-1");

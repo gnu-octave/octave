@@ -35,6 +35,8 @@
 
 #include "oct-spparms.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (spparms, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} { } spparms ()
@@ -113,12 +115,12 @@ longer running time.
   if (nargin == 0)
     {
       if (nargout == 0)
-        octave_sparse_params::print_info (octave_stdout, "");
+        sparse_params::print_info (octave_stdout, "");
       else if (nargout == 1)
-        retval = ovl (octave_sparse_params::get_vals ());
+        retval = ovl (sparse_params::get_vals ());
       else if (nargout == 2)
-        retval = ovl (octave_sparse_params::get_keys (),
-                      octave_sparse_params::get_vals ());
+        retval = ovl (sparse_params::get_keys (),
+                      sparse_params::get_vals ());
       else
         error ("spparms: too many output arguments");
     }
@@ -132,13 +134,13 @@ longer running time.
             str[i] = tolower (str[i]);
 
           if (str == "default")
-            octave_sparse_params::defaults ();
+            sparse_params::defaults ();
           else if (str == "tight")
-            octave_sparse_params::tight ();
+            sparse_params::tight ();
           else
             {
-              double val = octave_sparse_params::get_key (str);
-              if (octave::math::isnan (val))
+              double val = sparse_params::get_key (str);
+              if (math::isnan (val))
                 error ("spparms: KEY not recognized");
 
               retval = ovl (val);
@@ -150,7 +152,7 @@ longer running time.
           if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
             error ("spparms: too many elements in vector VALS");
 
-          octave_sparse_params::set_vals (vals);
+          sparse_params::set_vals (vals);
         }
     }
   else if (nargin == 2)
@@ -161,7 +163,7 @@ longer running time.
 
       if (str == "umfpack")
         warning ("spparms: request to disable umfpack solvers ignored");
-      else if (! octave_sparse_params::set_key (str, val))
+      else if (! sparse_params::set_key (str, val))
         error ("spparms: KEY not found");
     }
   else
@@ -199,3 +201,5 @@ longer running time.
 %!error spparms ("ths_rel", "hello")
 %!error <KEY not found> spparms ("UNKNOWN_KEY", 1)
 */
+
+OCTAVE_NAMESPACE_END

@@ -67,7 +67,7 @@
 
 function h = hadamard (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -176,6 +176,6 @@ endfunction
 %!   assert (norm (h*h' - n*eye (n)), 0);
 %! endfor
 
-%!error hadamard ()
+%!error <Invalid call> hadamard ()
 %!error hadamard (1,2)
 %!error <N must be 2\^k\*p> hadamard (5)

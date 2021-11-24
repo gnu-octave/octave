@@ -46,10 +46,6 @@
 ## Built-in profiler.
 function profshow (data, n = 20)
 
-  if (nargin > 2)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     data = profile ("info");
   elseif (nargin == 1 && ! isstruct (data))
@@ -113,7 +109,7 @@ endfunction
 %! profile off;
 %! profshow (profile ("info"), 5);
 
-%!error profshow (1, 2, 3)
+## Test input validation
 %!error <N must be a positive integer> profshow (struct (), ones (2))
 %!error <N must be a positive integer> profshow (struct (), 1+i)
 %!error <N must be a positive integer> profshow (struct (), -1)

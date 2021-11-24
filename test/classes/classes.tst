@@ -65,9 +65,9 @@
 %! assert (isobject (snk));
 %! assert (isequal (class (snk), 'Snork'));
 %! assert (isa (snk, 'Snork'));
-%! assert (!isa (snk, 'Sneetch'));
+%! assert (! isa (snk, 'Sneetch'));
 %! assert (ismethod (snk, 'gick'));
-%! assert (!ismethod (snk, 'bletch'));
+%! assert (! ismethod (snk, 'bletch'));
 %! assert (exist ('snk') == 1);
 %! assert (exist ('blink') == 0);
 %!test snk1 = Snork (snk);

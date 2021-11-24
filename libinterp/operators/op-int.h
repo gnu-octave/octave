@@ -260,31 +260,31 @@
   DEFBINOP_OP (PFX ## _ne, T1 ## scalar, T2 ## scalar, !=)
 
 #define OCTAVE_SS_POW_OPS(T1, T2)                       \
-  octave_value                                          \
+  static octave_value                                   \
   xpow (const octave_ ## T1& a, const octave_ ## T2& b) \
   {                                                     \
     return pow (a, b);                                  \
   }                                                     \
                                                         \
-  octave_value                                          \
+  static octave_value                                   \
   xpow (const octave_ ## T1& a, double b)               \
   {                                                     \
     return pow (a, b);                                  \
   }                                                     \
                                                         \
-  octave_value                                          \
+  static octave_value                                   \
   xpow (double a, const octave_ ## T1& b)               \
   {                                                     \
     return pow (a, b);                                  \
   }                                                     \
                                                         \
-  octave_value                                          \
+  static octave_value                                   \
   xpow (const octave_ ## T1& a, float b)                \
   {                                                     \
     return powf (a, b);                                 \
   }                                                     \
                                                         \
-  octave_value                                          \
+  static octave_value                                   \
   xpow (float a, const octave_ ## T1& b)                \
   {                                                     \
     return powf (a, b);                                 \
@@ -372,7 +372,7 @@
   DEFNDBINOP_FN (PFX ## _el_or_not,  TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, mx_el_or_not)
 
 #define OCTAVE_SM_POW_OPS(T1, T2)                               \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (const octave_ ## T1& a, const T2 ## NDArray& b)    \
   {                                                             \
     T2 ## NDArray result (b.dims ());                           \
@@ -384,7 +384,7 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (const octave_ ## T1& a, const NDArray& b)          \
   {                                                             \
     T1 ## NDArray result (b.dims ());                           \
@@ -396,7 +396,7 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (double a, const T2 ## NDArray& b)                  \
   {                                                             \
     T2 ## NDArray result (b.dims ());                           \
@@ -408,7 +408,7 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (const octave_ ## T1& a, const FloatNDArray& b)     \
   {                                                             \
     T1 ## NDArray result (b.dims ());                           \
@@ -420,7 +420,7 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (float a, const T2 ## NDArray& b)                   \
   {                                                             \
     T2 ## NDArray result (b.dims ());                           \
@@ -534,7 +534,8 @@
   DEFNDASSIGNOP_OP (PFX ## _assign_div, TM ## matrix, TM ## scalar, TM ## scalar, /=)
 
 #define OCTAVE_MS_POW_OPS(T1, T2)                               \
-  octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2 b)     \
+  static octave_value                                           \
+  elem_xpow (T1 ## NDArray a, octave_ ## T2 b)                  \
   {                                                             \
    T1 ## NDArray result (a.dims ());                            \
    for (int i = 0; i < a.numel (); i++)                         \
@@ -545,7 +546,8 @@
    return octave_value (result);                                \
   }                                                             \
                                                                 \
-  octave_value elem_xpow (T1 ## NDArray a, double b)            \
+  static octave_value                                           \
+  elem_xpow (T1 ## NDArray a, double b)                         \
   {                                                             \
     T1 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
@@ -556,7 +558,8 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value elem_xpow (NDArray a, octave_ ## T2 b)           \
+  static octave_value                                           \
+  elem_xpow (NDArray a, octave_ ## T2 b)                        \
   {                                                             \
     T2 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
@@ -567,7 +570,8 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value elem_xpow (T1 ## NDArray a, float b)             \
+  static octave_value                                           \
+  elem_xpow (T1 ## NDArray a, float b)                          \
   {                                                             \
     T1 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
@@ -578,7 +582,8 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value elem_xpow (FloatNDArray a, octave_ ## T2 b)      \
+  static octave_value                                           \
+  elem_xpow (FloatNDArray a, octave_ ## T2 b)                   \
   {                                                             \
     T2 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
@@ -694,7 +699,7 @@
   DEFNDASSIGNOP_FNOP (PFX ## _assign_el_div, TM ## matrix, TM ## matrix, TM ## array, quotient_eq)
 
 #define OCTAVE_MM_POW_OPS(T1, T2)                               \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (const T1 ## NDArray& a, const T2 ## NDArray& b)    \
   {                                                             \
     dim_vector a_dims = a.dims ();                              \
@@ -715,7 +720,7 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (const T1 ## NDArray& a, const NDArray& b)          \
   {                                                             \
     dim_vector a_dims = a.dims ();                              \
@@ -736,7 +741,7 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (const NDArray& a, const T2 ## NDArray& b)          \
   {                                                             \
     dim_vector a_dims = a.dims ();                              \
@@ -757,7 +762,7 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (const T1 ## NDArray& a, const FloatNDArray& b)     \
   {                                                             \
     dim_vector a_dims = a.dims ();                              \
@@ -778,7 +783,7 @@
     return octave_value (result);                               \
   }                                                             \
                                                                 \
-  octave_value                                                  \
+  static octave_value                                           \
   elem_xpow (const FloatNDArray& a, const T2 ## NDArray& b)     \
   {                                                             \
     dim_vector a_dims = a.dims ();                              \

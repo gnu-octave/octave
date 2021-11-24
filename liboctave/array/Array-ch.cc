@@ -39,10 +39,10 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTAVE_API Array<idx_vector>;
-extern template class OCTAVE_API Array<octave_idx_type>;
+extern template class Array<octave::idx_vector>;
+extern template class Array<octave_idx_type>;
 
-template class OCTAVE_API octave_sort<char>;
+template class octave_sort<char>;
 
 INSTANTIATE_ARRAY (char, OCTAVE_API);
 
@@ -52,4 +52,4 @@ template OCTAVE_API std::ostream& operator << (std::ostream&,
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 
-template class OCTAVE_API DiagArray2<char>;
+template class DiagArray2<char>;

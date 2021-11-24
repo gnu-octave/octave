@@ -40,6 +40,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // scalar unary ops.
 
 DEFUNOP (not, float_scalar)
@@ -171,3 +173,5 @@ install_fs_fs_ops (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, octave_float_scalar, octave_null_sq_str,
                          octave_float_matrix);
 }
+
+OCTAVE_NAMESPACE_END

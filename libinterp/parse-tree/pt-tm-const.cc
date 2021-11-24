@@ -442,14 +442,14 @@ namespace octave
             for (const auto& elt : tmrc)
               row(i++) = elt;
 
-            rows(j++) = ::do_class_concat (row, "horzcat", 1);
+            rows(j++) = do_class_concat (row, "horzcat", 1);
           }
       }
 
     if (rows.length () == 1)
       retval = rows(0);
     else
-      retval = ::do_class_concat (rows, "vertcat", 0);
+      retval = do_class_concat (rows, "vertcat", 0);
 
     return retval;
   }
@@ -461,7 +461,7 @@ namespace octave
     // full.  This is done since it means that there is no recopying of
     // data, as would happen if we used a single resize.  It should be
     // noted that resize operation is also significantly slower than the
-    // do_cat_op function, so it makes sense to have an empty matrix and
+    // cat_op function, so it makes sense to have an empty matrix and
     // copy all data.
     //
     // We might also start with a empty octave_value using
@@ -532,7 +532,7 @@ namespace octave
             if (elt.isempty ())
               continue;
 
-            ctmp = do_cat_op (ti, ctmp, elt, ra_idx);
+            ctmp = cat_op (ti, ctmp, elt, ra_idx);
 
             ra_idx (1) += elt.columns ();
           }

@@ -33,31 +33,32 @@
 #include "error.h"
 #include "oct-fstrm.h"
 
-octave::stream
-octave_fstream::create (const std::string& nm_arg, std::ios::openmode arg_md,
-                        octave::mach_info::float_format ff)
+OCTAVE_NAMESPACE_BEGIN
+
+stream
+fstream::create (const std::string& nm_arg, std::ios::openmode arg_md,
+                 mach_info::float_format ff)
 {
-  return octave::stream (new octave_fstream (nm_arg, arg_md, ff));
+  return stream (new fstream (nm_arg, arg_md, ff));
 }
 
-octave_fstream::octave_fstream (const std::string& nm_arg,
-                                std::ios::openmode arg_md,
-                                octave::mach_info::float_format ff)
-  : octave::base_stream (arg_md, ff), m_name (nm_arg)
+fstream::fstream (const std::string& nm_arg, std::ios::openmode arg_md,
+                  mach_info::float_format ff)
+  : base_stream (arg_md, ff), m_name (nm_arg)
 {
   m_fstream.open (m_name.c_str (), arg_md);
 
   if (! m_fstream)
-    // Note: error is inherited from octave::base_stream, not ::error.
+    // Note: error is inherited from base_stream, not ::error.
     error (std::strerror (errno));
 }
 
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_fstream::seek (off_t, int)
+fstream::seek (off_t, int)
 {
-  // Note: error is inherited from octave::base_stream, not ::error.
+  // Note: error is inherited from base_stream, not ::error.
   // This error function does not halt execution so "return ..." must exist.
   error ("fseek: invalid_operation");
   return -1;
@@ -66,9 +67,9 @@ octave_fstream::seek (off_t, int)
 // Return current stream position.
 
 off_t
-octave_fstream::tell (void)
+fstream::tell (void)
 {
-  // Note: error is inherited from octave::base_stream, not ::error.
+  // Note: error is inherited from base_stream, not ::error.
   // This error function does not halt execution so "return ..." must exist.
   error ("ftell: invalid_operation");
   return -1;
@@ -77,19 +78,19 @@ octave_fstream::tell (void)
 // Return nonzero if EOF has been reached on this stream.
 
 bool
-octave_fstream::eof (void) const
+fstream::eof (void) const
 {
   return m_fstream.eof ();
 }
 
 void
-octave_fstream::do_close (void)
+fstream::do_close (void)
 {
   m_fstream.close ();
 }
 
 std::istream *
-octave_fstream::input_stream (void)
+fstream::input_stream (void)
 {
   std::istream *retval = nullptr;
 
@@ -100,7 +101,7 @@ octave_fstream::input_stream (void)
 }
 
 std::ostream *
-octave_fstream::output_stream (void)
+fstream::output_stream (void)
 {
   std::ostream *retval = nullptr;
 
@@ -109,3 +110,5 @@ octave_fstream::output_stream (void)
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

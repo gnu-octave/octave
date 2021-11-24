@@ -38,7 +38,7 @@
 template <typename T>
 DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r,
                            octave_idx_type c)
-  : Array<T> (a.as_column ()), d1 (r), d2 (c)
+  : Array<T> (a.as_column ()), m_d1 (r), m_d2 (c)
 {
   octave_idx_type rcmin = std::min (r, c);
   if (rcmin != a.numel ())
@@ -68,14 +68,14 @@ template <typename T>
 DiagArray2<T>
 DiagArray2<T>::transpose (void) const
 {
-  return DiagArray2<T> (*this, d2, d1);
+  return DiagArray2<T> (*this, m_d2, m_d1);
 }
 
 template <typename T>
 DiagArray2<T>
 DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
 {
-  return DiagArray2<T> (Array<T>::template map<T> (fcn), d2, d1);
+  return DiagArray2<T> (Array<T>::template map<T> (fcn), m_d2, m_d1);
 }
 
 // A two-dimensional array with diagonal elements only.
@@ -107,7 +107,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
   if (r != dim1 () || c != dim2 ())
     {
       Array<T>::resize (dim_vector (std::min (r, c), 1), rfv);
-      d1 = r; d2 = c;
+      m_d1 = r; m_d2 = c;
     }
 }
 

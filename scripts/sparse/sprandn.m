@@ -49,9 +49,9 @@
 
 function s = sprandn (m, n, d, rc)
 
-  if (nargin == 1 )
+  if (nargin == 1)
     s = __sprand__ (m, @randn);
-  elseif ( nargin == 3)
+  elseif (nargin == 3)
     s = __sprand__ (m, n, d, "sprandn", @randn);
   elseif (nargin == 4)
     s = __sprand__ (m, n, d, rc, "sprandn", @randn);
@@ -98,9 +98,8 @@ endfunction
 %!assert (size (sprandn (3, 0, 0.5)), [3, 0])
 
 ## Test input validation
-%!error sprandn ()
-%!error sprandn (1, 2)
-%!error sprandn (1, 2, 3, 4)
+%!error <Invalid call> sprandn ()
+%!error <Invalid call> sprandn (1, 2)
 %!error <M must be a non-negative integer> sprand (-1, -1, 0.5)
 %!error <M must be a non-negative integer> sprandn (ones (3), 3, 0.5)
 %!error <M must be a non-negative integer> sprandn (3.5, 3, 0.5)

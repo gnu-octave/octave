@@ -32,6 +32,7 @@
 #include "oct-cmplx.h"
 #include "lo-mappers.h"
 #include "lo-ieee.h"
+#include "Array.h"
 #include "Sparse.h"
 #include "Sparse.cc"
 
@@ -44,6 +45,7 @@ xabs (const Complex& x)
 }
 
 template <>
+OCTAVE_API
 bool
 sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
 {
@@ -52,6 +54,7 @@ sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
 }
 
 template <>
+OCTAVE_API
 bool
 sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
 {
@@ -59,7 +62,7 @@ sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
           || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
 }
 
-INSTANTIATE_SPARSE (Complex, OCTAVE_API);
+INSTANTIATE_SPARSE (Complex);
 
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<Complex>&);

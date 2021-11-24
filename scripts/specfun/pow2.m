@@ -47,12 +47,14 @@
 
 function y = pow2 (f, e)
 
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   if (nargin == 1)
     y = 2 .^ f;
-  elseif (nargin == 2)
-    y = f .* (2 .^ e);
   else
-    print_usage ();
+    y = f .* (2 .^ e);
   endif
 
 endfunction
@@ -69,5 +71,4 @@ endfunction
 %! z = x .* (2 .^ y);
 %! assert (pow2 (x,y), z, sqrt (eps));
 
-%!error pow2 ()
-%!error pow2 (1,2,3)
+%!error <Invalid call> pow2 ()

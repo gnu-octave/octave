@@ -151,7 +151,7 @@ sub parse_option_block
           die "duplicate NAME" if defined $NAME[$OPT_NUM];
           $NAME[$OPT_NUM] = $1;
           ($OPT[$OPT_NUM] = $NAME[$OPT_NUM]) =~ s/\s+/_/g;
-          $OPTVAR[$OPT_NUM] = 'x_' . $OPT[$OPT_NUM];
+          $OPTVAR[$OPT_NUM] = 'm_' . $OPT[$OPT_NUM];
           $KW_TOK[$OPT_NUM] = [ split (' ', $NAME[$OPT_NUM]) ];
           $N_TOKS[$OPT_NUM] = @{$KW_TOK[$OPT_NUM]};
         }
@@ -336,7 +336,7 @@ sub emit_copy_body
       print "${pfx}$OPTVAR[$i] = ${var}.$OPTVAR[$i];\n";
     }
 
-  print "${pfx}reset = ${var}.reset;\n";
+  print "${pfx}m_reset = ${var}.m_reset;\n";
 }
 
 ## To silence GCC warnings, we create an initialization list even
@@ -353,7 +353,7 @@ sub emit_default_init_list
       print "${prefix}$OPTVAR[$i] (),\n";
     }
 
-  print "${prefix}reset ()\n";
+  print "${prefix}m_reset ()\n";
 }
 
 sub emit_copy_ctor_init_list
@@ -367,7 +367,7 @@ sub emit_copy_ctor_init_list
       print "${prefix}$OPTVAR[$i] ($var.$OPTVAR[$i]),\n";
     }
 
-  print "${prefix}reset ($var.reset)\n";
+  print "${prefix}m_reset ($var.m_reset)\n";
 }
 
 sub emit_opt_class_header
@@ -441,7 +441,7 @@ _END_EMIT_OPT_CLASS_HEADER_
         }
     }
 
-  print "      reset = true;\n",
+  print "      m_reset = true;\n",
         "    }\n";
 
   ## For backward compatibility and because set_options is probably
@@ -460,7 +460,7 @@ _END_EMIT_OPT_CLASS_HEADER_
         {
           emit_set_decl ($i);
 
-          print "\n    { $OPTVAR[$i] = $SET_EXPR[$i]; reset = true; }\n";
+          print "\n    { $OPTVAR[$i] = $SET_EXPR[$i]; m_reset = true; }\n";
         }
       elsif ($SET_BODY[$i])
         {
@@ -470,7 +470,7 @@ _END_EMIT_OPT_CLASS_HEADER_
           chomp ($s);
           $s = '  ' . $s;
           $s =~ s/\n/\n  /g;
-          print "\n    {\n$s\n      reset = true;\n    }\n";
+          print "\n    {\n$s\n      m_reset = true;\n    }\n";
         }
       elsif ($SET_CODE[$i])
         {
@@ -494,7 +494,7 @@ _END_EMIT_OPT_CLASS_HEADER_
       print "  $TYPE[$i] $OPTVAR[$i];\n";
     }
 
-  print "\nprotected:\n\n  bool reset;\n};\n\n#endif\n";
+  print "\nprotected:\n\n  bool m_reset;\n};\n\n#endif\n";
 }
 
 sub emit_set_decl
@@ -913,6 +913,8 @@ show_$CLASS_NAME (const std::string& keyword)
 sub emit_options_function
 {
   print <<"_END_EMIT_OPTIONS_FUNCTION_HDR_";
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN ($OPT_FCN_NAME, args, ,
        doc: /* -*- texinfo -*-
 \@deftypefn  {} {} $OPT_FCN_NAME ()
@@ -959,6 +961,9 @@ _END_EMIT_OPTIONS_FUNCTION_HDR_
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END
+
 _END_EMIT_OPTIONS_FUNCTION_BODY_
 
 }

@@ -48,7 +48,7 @@ namespace octave
       // returns a malloc()'ed string which is the expansion, or a NULL
       // pointer if the expansion fails.
 
-      extern tilde_expansion_hook tilde_expansion_preexpansion_hook;
+      extern OCTAVE_API tilde_expansion_hook tilde_expansion_preexpansion_hook;
 
       // If non-null, this contains the address of a function to call if the
       // standard meaning for expanding a tilde fails.  The function is
@@ -56,61 +56,63 @@ namespace octave
       // malloc()'ed string which is the expansion, or a NULL pointer if
       // there is no expansion.
 
-      extern tilde_expansion_hook tilde_expansion_failure_hook;
+      extern OCTAVE_API tilde_expansion_hook tilde_expansion_failure_hook;
 
       // When non-null, this is a NULL terminated array of strings which are
       // duplicates for a tilde prefix.  Bash uses this to expand '=~' and
       // ':~'.
 
-      extern string_vector tilde_additional_prefixes;
+      extern OCTAVE_API string_vector tilde_additional_prefixes;
 
       // When non-null, this is a NULL terminated array of strings which
       // match the end of a username, instead of just "/".  Bash sets this
       // to ':' and '=~'.
 
-      extern string_vector tilde_additional_suffixes;
+      extern OCTAVE_API string_vector tilde_additional_suffixes;
 
       // Find the start of a tilde expansion in S, and return the index
       // of the tilde which starts the expansion.  Place the length of the
       // text which identified this tilde starter in LEN, excluding the
       // tilde itself.
 
-      char dev_sep_char (void);
+      extern OCTAVE_API char dev_sep_char (void);
 
-      bool is_dev_sep (char c);
+      extern OCTAVE_API bool is_dev_sep (char c);
 
-      char dir_sep_char (void);
+      extern OCTAVE_API char dir_sep_char (void);
 
-      std::string dir_sep_str (void);
+      extern OCTAVE_API std::string dir_sep_str (void);
 
-      std::string dir_sep_chars (void);
+      extern OCTAVE_API std::string dir_sep_chars (void);
 
-      bool is_dir_sep (char c);
+      extern OCTAVE_API bool is_dir_sep (char c);
 
       // If NAME has a leading ~ or ~user, Unix-style, expand it to the
       // user's home directory.  If no ~, or no <pwd.h>, just return NAME.
 
-      std::string tilde_expand (const std::string&);
+      extern OCTAVE_API std::string tilde_expand (const std::string&);
 
       // A vector version of the above.
 
-      string_vector tilde_expand (const string_vector&);
+      extern OCTAVE_API string_vector tilde_expand (const string_vector&);
 
-      std::string concat (const std::string&, const std::string&);
+      extern OCTAVE_API std::string concat (const std::string&, const std::string&);
 
       // Return the directory part of a filename or an empty string if
       // there is no directory component.  Does not check to see
       // whether the file exists or is a directory.
 
-      std::string dirname (const std::string& path);
+      extern OCTAVE_API std::string dirname (const std::string& path);
 
       // Return the tail member of a filename.
 
-      std::string tail (const std::string& path);
+      extern OCTAVE_API std::string tail (const std::string& path);
 
-      // convert path from UNIX type separators to whatever is the system separators
+      // Convert path from UNIX type separators to whatever is the
+      // system separators.
 
-      std::string native_separator_path (const std::string& path);
+      extern OCTAVE_API std::string
+      native_separator_path (const std::string& path);
     }
 
     extern OCTAVE_API int

@@ -37,7 +37,7 @@
 
 %!test
 %! s.a = 1;
-%! fail ("fieldnames (s, 1)", "Invalid call to fieldnames");
+%! fail ("fieldnames (s, 1)", "called with too many inputs");
 
 %!error fieldnames (1)
 

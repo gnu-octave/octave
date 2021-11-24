@@ -31,7 +31,7 @@
 
 function y = secd (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -44,5 +44,4 @@ endfunction
 %!assert (secd ([0, 180, 360]) != Inf)
 %!assert (secd ([90, 270]) == Inf)
 
-%!error secd ()
-%!error secd (1, 2)
+%!error <Invalid call> secd ()

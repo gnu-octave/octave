@@ -1,8 +1,8 @@
 function x = subsref (g, s)
 
-  switch s.type
+  switch (s.type)
   case '.'
-    switch s.subs
+    switch (s.subs)
     case 'gyrk'
       x = g.gyrk;
     end

@@ -98,6 +98,6 @@ endfunction
 %!assert (xor ([1 0], [1 1], [0 0]), logical ([0 1]))
 
 ## Test input validation
-%!error xor ()
-%!error xor (1)
+%!error <Invalid call> xor ()
+%!error <Invalid call> xor (1)
 %!error <X and Y must be of compatible size> xor (ones (3,2), ones (2,3))

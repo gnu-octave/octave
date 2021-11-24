@@ -56,6 +56,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   nd = __calc_dimensions__ (h);
+  if (nd == 2 && (any (get (h, "view") != [0, 90])))
+    ## view() only works correctly on 3-D axes in gnuplot (bug #58526).
+    nd = 3;
+  endif
 
   if (strcmp (axis_obj.dataaspectratiomode, "manual")
       && strcmp (axis_obj.xlimmode, "manual")
@@ -87,7 +91,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     dr = 1;
   endif
 
-  if (strcmp (axis_obj.activepositionproperty, "position"))
+  if (strcmp (axis_obj.positionconstraint, "innerposition"))
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
       x = [1, 1];
     else
@@ -103,7 +107,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fprintf (plot_stream, "set rmargin screen %.15g;\n",
              pos(1)+pos(3)/2+x(1)*pos(3)/2);
     sz_str = "";
-  else ## activepositionproperty == outerposition
+  else  # positionconstraint == outerposition
     fprintf (plot_stream, "unset tmargin;\n");
     fprintf (plot_stream, "unset bmargin;\n");
     fprintf (plot_stream, "unset lmargin;\n");
@@ -148,13 +152,13 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "unset title;\n");
   else
     if (nd == 2)
-      t = get(axis_obj.title);
+      t = get (axis_obj.title);
       colorspec = get_text_colorspec (t.color);
-      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
+      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", ...
+                                         t.interpreter, gnuplot_term);
       fontspec = create_fontspec (f, s, gnuplot_term);
       fprintf (plot_stream, ['set title "%s" %s %s %s;' "\n"],
-               undo_string_escapes (tt), fontspec, colorspec,
-               __do_enhanced_option__ (enhanced, t));
+               tt, fontspec, colorspec, __do_enhanced_option__ (enhanced, t));
     else
       ## Change meaning of "normalized", but it at least gives user some control
       if (! strcmp (get (axis_obj.title, "units"), "normalized"))
@@ -164,7 +168,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         unwind_protect_cleanup
         end_unwind_protect
       endif
-      t = get(axis_obj.title);
+      t = get (axis_obj.title);
       axispos = axis_obj.position;
       screenpos = t.position;
       screenpos(1) = axispos(1)+screenpos(1)*axispos(3);
@@ -182,16 +186,15 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       fprintf (plot_stream, "unset xlabel;\n");
       fprintf (plot_stream, "unset x2label;\n");
     else
-      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
+      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", ...
+                                         t.interpreter, gnuplot_term);
       fontspec = create_fontspec (f, s, gnuplot_term);
       if (strcmp (axis_obj.xaxislocation, "top"))
         fprintf (plot_stream, 'set x2label "%s" %s %s %s',
-                 undo_string_escapes (tt), colorspec, fontspec,
-                 __do_enhanced_option__ (enhanced, t));
+                 tt, colorspec, fontspec, __do_enhanced_option__ (enhanced, t));
       else
         fprintf (plot_stream, 'set xlabel "%s" %s %s %s',
-                 undo_string_escapes (tt), colorspec, fontspec,
-                 __do_enhanced_option__ (enhanced, t));
+                 tt, colorspec, fontspec, __do_enhanced_option__ (enhanced, t));
       endif
       fprintf (plot_stream, " rotate by %f;\n", angle);
       if (strcmp (axis_obj.xaxislocation, "top"))
@@ -210,16 +213,15 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       fprintf (plot_stream, "unset ylabel;\n");
       fprintf (plot_stream, "unset y2label;\n");
     else
-      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
+      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", ...
+                                         t.interpreter, gnuplot_term);
       fontspec = create_fontspec (f, s, gnuplot_term);
       if (strcmp (axis_obj.yaxislocation, "right"))
         fprintf (plot_stream, 'set y2label "%s" %s %s %s',
-                 undo_string_escapes (tt), colorspec, fontspec,
-                 __do_enhanced_option__ (enhanced, t));
+                 tt, colorspec, fontspec, __do_enhanced_option__ (enhanced, t));
       else
         fprintf (plot_stream, 'set ylabel "%s" %s %s %s',
-                 undo_string_escapes (tt), colorspec, fontspec,
-                 __do_enhanced_option__ (enhanced, t));
+                 tt, colorspec, fontspec, __do_enhanced_option__ (enhanced, t));
       endif
       fprintf (plot_stream, " rotate by %f;\n", angle);
       if (strcmp (axis_obj.yaxislocation, "right"))
@@ -237,11 +239,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     if (isempty (t.string))
       fputs (plot_stream, "unset zlabel;\n");
     else
-      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
+      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", ...
+                                         t.interpreter, gnuplot_term);
       fontspec = create_fontspec (f, s, gnuplot_term);
       fprintf (plot_stream, 'set zlabel "%s" %s %s %s',
-               undo_string_escapes (tt), colorspec, fontspec,
-               __do_enhanced_option__ (enhanced, t));
+               tt, colorspec, fontspec, __do_enhanced_option__ (enhanced, t));
       fprintf (plot_stream, " rotate by %f;\n", angle);
     endif
   endif
@@ -625,13 +627,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             have_3d_patch(data_idx) = false;
             tmpdispname = obj.displayname;
             obj.displayname = get (obj.parent, "displayname");
-            tmp = undo_string_escapes (
-                    __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
-                  );
+            tmp = __maybe_munge_text__ (enhanced, obj, "displayname", ...
+                                        hlgndntrp, gnuplot_term);
             titlespec{data_idx} = ['title "' tmp '"'];
             obj.displayname = tmpdispname;
             if (! isempty (findobj (obj.parent, "-property", "format", "-depth", 0)))
-              # Place phantom errorbar data for legend
+              ## Place phantom errorbar data for legend
               data{data_idx} = NaN (4,1);
               usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3):($4)");
               switch (get (obj.parent, "format"))
@@ -646,15 +647,15 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                 otherwise
                   errbars = "xerrorbars";
               endswitch
-              withclause{data_idx} = sprintf ("with %s linestyle %d",
+              withclause{data_idx} = sprintf ("with %s linestyle %d", ...
                                               errbars, sidx(1));
             else
               ## Place phantom stemseries data for legend
               data{data_idx} = NaN (2,1);
               usingclause{data_idx} = sprintf ("record=1 using ($1):($2)");
               hgobj = get (obj.parent);
-              [hgstyle, hgsidx] = do_linestyle_command (hgobj, hgobj.color, data_idx,
-                                                        plot_stream);
+              [hgstyle, hgsidx] = do_linestyle_command (hgobj, hgobj.color, ...
+                                                        data_idx, plot_stream);
               withclause{data_idx} = sprintf ("with %s linestyle %d",
                                               hgstyle{1}, hgsidx(1));
             endif
@@ -675,9 +676,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         if (isempty (obj.displayname))
           titlespec{data_idx} = 'title ""';
         else
-          tmp = undo_string_escapes (
-                  __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
-                );
+          tmp = __maybe_munge_text__ (enhanced, obj, "displayname", ...
+                                      hlgndntrp, gnuplot_term);
           titlespec{data_idx} = ['title "' tmp '"'];
         endif
         usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
@@ -798,9 +798,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               if (i > 1 || isempty (obj.displayname))
                 titlespec{local_idx} = 'title ""';
               else
-                tmp = undo_string_escapes (
-                        __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
-                      );
+                tmp = __maybe_munge_text__ (enhanced, obj, "displayname", ...
+                                            hlgndntrp, gnuplot_term);
                 titlespec{local_idx} = ['title "' tmp '"'];
               endif
               if (isfield (obj, "facecolor"))
@@ -865,7 +864,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
               if (nd == 3 && numel (xcol) == 3)
                 if (isnan (ccdat))
-                  ccdat = (cmap_sz + rows (addedcmap) + 1) * ones(3, 1);
+                  ccdat = (cmap_sz + rows (addedcmap) + 1) * ones (3, 1);
                   addedcmap = [addedcmap; reshape(color, 1, 3)];
                 elseif (numel (ccdat) == 1)
                   ccdat = ccdat * ones (size (zcol));
@@ -1001,7 +1000,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                 colorspec = "palette";
               elseif (columns (ccol) == 3)
                 colorspec = "lc rgb variable";
-                ccol = 255*ccol*[0x1; 0x100; 0x10000];
+                ccol = 255*ccol*double ([0x00_00_01; 0x00_01_00; 0x01_00_00]);
               endif
             else
               colorspec = sprintf ('lc rgb "#%02x%02x%02x"',
@@ -1211,9 +1210,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           parametric(data_idx) = false;
           have_cdata(data_idx) = false;
           have_3d_patch(data_idx) = false;
-          tmp = undo_string_escapes (
-                  __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
-                );
+          tmp = __maybe_munge_text__ (enhanced, obj, "displayname", ...
+                                      hlgndntrp, gnuplot_term);
           titlespec{data_idx} = ['title "' tmp '"'];
           data{data_idx} = NaN (3,1);
           usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3)");
@@ -1976,7 +1974,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
       endif
     endif
   endif
-  if (! isempty(pt) && isfield (obj, "markeredgecolor")
+  if (! isempty (pt) && isfield (obj, "markeredgecolor")
       && ! strcmp (obj.markeredgecolor, "none"))
     if (facesame && (strcmp (obj.markeredgecolor, "auto")
         || (isnumeric (obj.markeredgecolor)
@@ -2007,7 +2005,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
           edgecolor = obj.markeredgecolor;
         else
           edgecolor = obj.color;
-        end
+        endif
         fprintf (plot_stream, ' linecolor rgb "#%02x%02x%02x"',
                  round (255*edgecolor));
       else
@@ -2081,6 +2079,15 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
     switch (obj.marker)
       case "+"
         pt = pt2 = "1";
+      ## FIXME: It's not clear how to add support for these markers in gnuplot
+      #{
+      case "|"
+        pt = "1";
+        pt2 = "1";
+      case "_"
+        pt = "1";
+        pt2 = "1";
+      #}
       case "o"
         pt = "6";
         pt2 = "7";
@@ -2264,7 +2271,8 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   endif
   if (strcmp (interpreter, "tex"))
     for n = 1 : numel (labels)
-      labels{n} = __tex2enhanced__ (labels{n}, fontname, false, false);
+      labels{n} = __tex2enhanced__ (labels{n}, fontname, false, false, ...
+                                    gnuplot_term);
     endfor
   elseif (strcmp (interpreter, "latex"))
     if (! warned_latex)
@@ -2295,7 +2303,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   fprintf (plot_stream, ['set format %s "%s";' "\n"], ax, fmt);
   if (strcmp (ticmode, "manual") && isempty (tics))
     fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
-    return
+    return;
   else
     k = 1;
     ntics = numel (tics);
@@ -2305,7 +2313,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
              tickdir, ticklength, axispos, mirror);
     labels = strrep (labels, "%", "%%");
     for i = 1:ntics
-      fprintf (plot_stream, ' "%s" %.15g', labels{k++}, tics(i));
+      fprintf (plot_stream, ' "%s" %.15f', labels{k++}, tics(i));
       if (i < ntics)
         fputs (plot_stream, ", ");
       endif
@@ -2395,7 +2403,8 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
 
 endfunction
 
-function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, ntrp)
+function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, ntrp, ...
+                                             gnuplot_term)
   persistent warned_latex = false;
 
   if (strcmp (fld, "string"))
@@ -2432,10 +2441,10 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, ntrp)
     if (strcmp (ntrp, "tex"))
       if (iscellstr (str))
         for n = 1:numel (str)
-          str{n} = __tex2enhanced__ (str{n}, fnt, it, bld);
+          str{n} = __tex2enhanced__ (str{n}, fnt, it, bld, gnuplot_term);
         endfor
       else
-        str = __tex2enhanced__ (str, fnt, it, bld);
+        str = __tex2enhanced__ (str, fnt, it, bld, gnuplot_term);
       endif
     elseif (strcmp (ntrp, "latex"))
       if (! warned_latex)
@@ -2451,20 +2460,26 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, ntrp)
 
 endfunction
 
-function str = __tex2enhanced__ (str, fnt, it, bld)
+function str = __tex2enhanced__ (str, fnt, it, bld, gnuplot_term)
   persistent sym = __setup_sym_table__ ();
   persistent flds = fieldnames (sym);
+
+  if (any (strcmp (gnuplot_term, {"postscript", "epscairo"})))
+    symtype = 1;
+  else
+    symtype = 2;
+  endif
 
   [s, e, m] = regexp (str, "\\\\([a-zA-Z]+|0)", "start", "end", "matches");
 
   for i = length (s) : -1 : 1
-    ## special case for "\0"  and replace with empty set "{/Symbol \306}'
+    ## special case for "\0"  and replace with empty set equivalent
     if (strncmp (m{i}, '\0', 2))
-      str = [str(1:s(i) - 1) '{/Symbol \306}' str(s(i) + 2:end)];
+      str = [str(1:s(i) - 1) sym.emptyset{symtype} str(s(i) + 2:end)];
     else
       f = m{i}(2:end);
       if (isfield (sym, f))
-        g = getfield (sym, f);
+        g = sym.(f){symtype};
         ## FIXME: The symbol font doesn't seem to support bold or italic
         ##if (bld)
         ##  if (it)
@@ -2528,8 +2543,8 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
                  '{}', str(e(i) + b2(1) + 1:end)];
         endif
       elseif (strcmp (f, "fontsize"))
-        b1 = strfind (str(e(i) + 1:end),'{');
-        b2 = strfind (str(e(i) + 1:end),'}');
+        b1 = strfind (str(e (i) + 1:end),'{');
+        b2 = strfind (str(e (i) + 1:end),'}');
         if (isempty (b1) || isempty (b2))
           warning ('syntax error in \fontname argument');
         else
@@ -2541,7 +2556,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         ## like \pix, that should be translated to the symbol Pi and x
         for j = 1 : length (flds)
           if (strncmp (flds{j}, f, length (flds{j})))
-            g = getfield (sym, flds{j});
+            g = sym.(flds{j}){symtype};
             ## FIXME: The symbol font doesn't seem to support bold or italic
             ##if (bld)
             ##  if (it)
@@ -2564,7 +2579,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   ## But need to put the shorter of the two arguments first.
   ## Careful of nested {} and unprinted characters when defining
   ## shortest..  Don't have to worry about things like ^\theta as they
-  ## are already converted to ^{/Symbol q}.
+  ## are already converted.
 
   ## FIXME: This is a mess.  Is it worth it just for a "@" character?
 
@@ -2653,118 +2668,122 @@ function l = length_string (s)
 endfunction
 
 function sym = __setup_sym_table__ ()
+
   ## Setup the translation table for TeX to gnuplot enhanced mode.
-  sym.forall = '{/Symbol \042}';
-  sym.exists = '{/Symbol \044}';
-  sym.ni = '{/Symbol \047}';
-  sym.cong = '{/Symbol \100}';
-  sym.Delta = '{/Symbol D}';
-  sym.Phi = '{/Symbol F}';
-  sym.Gamma = '{/Symbol G}';
-  sym.vartheta = '{/Symbol J}';
-  sym.Lambda = '{/Symbol L}';
-  sym.Pi = '{/Symbol P}';
-  sym.Theta = '{/Symbol Q}';
-  sym.Sigma = '{/Symbol S}';
-  sym.varsigma = '{/Symbol V}';
-  sym.Omega = '{/Symbol W}';
-  sym.Xi = '{/Symbol X}';
-  sym.Psi = '{/Symbol Y}';
-  sym.perp = '{/Symbol \136}';
-  sym.alpha = '{/Symbol a}';
-  sym.beta = '{/Symbol b}';
-  sym.chi = '{/Symbol c}';
-  sym.delta = '{/Symbol d}';
-  sym.epsilon = '{/Symbol e}';
-  sym.phi = '{/Symbol f}';
-  sym.gamma = '{/Symbol g}';
-  sym.eta = '{/Symbol h}';
-  sym.iota = '{/Symbol i}';
-  sym.varphi = '{/Symbol j}';              # Not in OpenGL
-  sym.kappa = '{/Symbol k}';
-  sym.lambda = '{/Symbol l}';
-  sym.mu = '{/Symbol m}';
-  sym.nu = '{/Symbol n}';
-  sym.o = '{/Symbol o}';
-  sym.pi = '{/Symbol p}';
-  sym.theta = '{/Symbol q}';
-  sym.rho = '{/Symbol r}';
-  sym.sigma = '{/Symbol s}';
-  sym.tau = '{/Symbol t}';
-  sym.upsilon = '{/Symbol u}';
-  sym.varpi = '{/Symbol v}';
-  sym.omega = '{/Symbol w}';
-  sym.xi = '{/Symbol x}';
-  sym.psi = '{/Symbol y}';
-  sym.zeta = '{/Symbol z}';
-  sym.sim = '{/Symbol \176}';
-  sym.Upsilon = '{/Symbol \241}';
-  sym.prime = '{/Symbol \242}';
-  sym.leq = '{/Symbol \243}';
-  sym.infty = '{/Symbol \245}';
-  sym.clubsuit = '{/Symbol \247}';
-  sym.diamondsuit = '{/Symbol \250}';
-  sym.heartsuit = '{/Symbol \251}';
-  sym.spadesuit = '{/Symbol \252}';
-  sym.leftrightarrow = '{/Symbol \253}';
-  sym.leftarrow = '{/Symbol \254}';
-  sym.uparrow = '{/Symbol \255}';
-  sym.rightarrow = '{/Symbol \256}';
-  sym.downarrow = '{/Symbol \257}';
-  sym.circ = '{/Symbol \260}';         # degree symbol, not circ as in FLTK
-  sym.deg = '{/Symbol \260}';
-  sym.ast = '{/Symbol *}';
-  sym.pm = '{/Symbol \261}';
-  sym.geq = '{/Symbol \263}';
-  sym.times = '{/Symbol \264}';
-  sym.propto = '{/Symbol \265}';
-  sym.partial = '{/Symbol \266}';
-  sym.bullet = '{/Symbol \267}';
-  sym.div = '{/Symbol \270}';
-  sym.neq = '{/Symbol \271}';
-  sym.equiv = '{/Symbol \272}';
-  sym.approx = '{/Symbol \273}';
-  sym.ldots = '{/Symbol \274}';
-  sym.mid = '{/Symbol \275}';
-  sym.aleph = '{/Symbol \300}';
-  sym.Im = '{/Symbol \301}';
-  sym.Re = '{/Symbol \302}';
-  sym.wp = '{/Symbol \303}';
-  sym.otimes = '{/Symbol \304}';
-  sym.oplus = '{/Symbol \305}';
+  sym.forall = {'{/Symbol \042}', '∀'};
+  sym.exists = {'{/Symbol \044}', '∃'};
+  sym.ni = {'{/Symbol \047}', '∋'};
+  sym.cong = {'{/Symbol \100}', '≅'};
+  sym.Delta = {'{/Symbol D}', 'Δ'};
+  sym.Phi = {'{/Symbol F}', 'Φ'};
+  sym.Gamma = {'{/Symbol G}', 'Γ'};
+  sym.vartheta = {'{/Symbol J}', 'ϑ'};
+  sym.Lambda = {'{/Symbol L}', 'Λ'};
+  sym.Pi = {'{/Symbol P}', 'Π'};
+  sym.Theta = {'{/Symbol Q}', 'Θ'};
+  sym.Sigma = {'{/Symbol S}', 'Σ'};
+  sym.varsigma = {'{/Symbol V}', 'ς'};
+  sym.Omega = {'{/Symbol W}', 'Ω'};
+  sym.Xi = {'{/Symbol X}', 'Ξ'};
+  sym.Psi = {'{/Symbol Y}', 'Ψ'};
+  sym.perp = {'{/Symbol \136}', '⊥'};
+  sym.alpha = {'{/Symbol a}', 'α'};
+  sym.beta = {'{/Symbol b}', 'β'};
+  sym.chi = {'{/Symbol c}', 'χ'};
+  sym.delta = {'{/Symbol d}', 'δ'};
+  sym.epsilon = {'{/Symbol e}', 'ε'};
+  sym.phi = {'{/Symbol f}', 'ϕ'};
+  sym.gamma = {'{/Symbol g}', 'γ'};
+  sym.eta = {'{/Symbol h}', 'η'};
+  sym.iota = {'{/Symbol i}', 'ι'};
+  sym.varphi = {'{/Symbol j}', 'φ'};              # Not in OpenGL
+  sym.kappa = {'{/Symbol k}', 'κ'};
+  sym.lambda = {'{/Symbol l}', 'λ'};
+  sym.mu = {'{/Symbol m}', 'μ'};
+  sym.nu = {'{/Symbol n}', 'ν'};
+  sym.o = {'{/Symbol o}', 'ο'};
+  sym.pi = {'{/Symbol p}', 'π'};
+  sym.theta = {'{/Symbol q}', 'θ'};
+  sym.rho = {'{/Symbol r}', 'ρ'};
+  sym.sigma = {'{/Symbol s}', 'σ'};
+  sym.tau = {'{/Symbol t}', 'τ'};
+  sym.upsilon = {'{/Symbol u}', 'υ'};
+  sym.varpi = {'{/Symbol v}', 'ϖ'};
+  sym.omega = {'{/Symbol w}', 'ω'};
+  sym.xi = {'{/Symbol x}', 'ξ'};
+  sym.psi = {'{/Symbol y}', 'ψ'};
+  sym.zeta = {'{/Symbol z}', 'ζ'};
+  sym.sim = {'{/Symbol \176}', '∼'};
+  sym.Upsilon = {'{/Symbol \241}', 'Υ'};
+  sym.prime = {'{/Symbol \242}', '′'};
+  sym.leq = {'{/Symbol \243}', '≤'};
+  sym.infty = {'{/Symbol \245}', '∞'};
+  sym.clubsuit = {'{/Symbol \247}', '♣'};
+  sym.diamondsuit = {'{/Symbol \250}', '♢'};
+  sym.heartsuit = {'{/Symbol \251}', '♡'};
+  sym.spadesuit = {'{/Symbol \252}', '♠'};
+  sym.leftrightarrow = {'{/Symbol \253}', '↔'};
+  sym.leftarrow = {'{/Symbol \254}', '←'};
+  sym.uparrow = {'{/Symbol \255}', '↑'};
+  sym.rightarrow = {'{/Symbol \256}', '→'};
+  sym.downarrow = {'{/Symbol \257}', '↓'};
+  sym.circ = {'{/Symbol \260}', '∘'};
+  ## degree symbol, not circ as in FLTK
+  sym.deg = {'{/Symbol \260}', '°'};
+  sym.ast = {'{/Symbol *}', '∗'};
+  sym.pm = {'{/Symbol \261}', '±'};
+  sym.geq = {'{/Symbol \263}', '≥'};
+  sym.times = {'{/Symbol \264}', '×'};
+  sym.propto = {'{/Symbol \265}', '∝'};
+  sym.partial = {'{/Symbol \266}', '∂'};
+  sym.bullet = {'{/Symbol \267}', '∙'};
+  sym.div = {'{/Symbol \270}', '÷'};
+  sym.neq = {'{/Symbol \271}', '≠'};
+  sym.equiv = {'{/Symbol \272}', '≡'};
+  sym.approx = {'{/Symbol \273}', '≈'};
+  sym.ldots = {'{/Symbol \274}', '…'};
+  sym.mid = {'{/Symbol \275}', '∣'};
+  sym.aleph = {'{/Symbol \300}', 'ℵ'};
+  sym.Im = {'{/Symbol \301}', 'ℑ'};
+  sym.Re = {'{/Symbol \302}', 'ℜ'};
+  sym.wp = {'{/Symbol \303}', '℘'};
+  sym.otimes = {'{/Symbol \304}', '⊗'};
+  sym.oplus = {'{/Symbol \305}', '⊕'};
   ## empty set, not circled slash division operator as in FLTK.
-  sym.oslash = '{/Symbol \306}';
-  sym.cap = '{/Symbol \307}';
-  sym.cup = '{/Symbol \310}';
-  sym.supset = '{/Symbol \311}';
-  sym.supseteq = '{/Symbol \312}';
-  sym.subset = '{/Symbol \314}';
-  sym.subseteq = '{/Symbol \315}';
-  sym.in = '{/Symbol \316}';
-  sym.notin = '{/Symbol \317}';            # Not in OpenGL
-  sym.angle = '{/Symbol \320}';
-  sym.bigtriangledown = '{/Symbol \321}';  # Not in OpenGL
-  sym.langle = '{/Symbol \341}';
-  sym.rangle = '{/Symbol \361}';
-  sym.nabla = '{/Symbol \321}';
-  sym.prod = '{/Symbol \325}';             # Not in OpenGL
-  sym.surd = '{/Symbol \326}';
-  sym.cdot = '{/Symbol \327}';
-  sym.neg = '{/Symbol \330}';
-  sym.wedge = '{/Symbol \331}';
-  sym.vee = '{/Symbol \332}';
-  sym.Leftrightarrow = '{/Symbol \333}';   # Not in OpenGL
-  sym.Leftarrow = '{/Symbol \334}';
-  sym.Uparrow = '{/Symbol \335}';          # Not in OpenGL
-  sym.Rightarrow = '{/Symbol \336}';
-  sym.Downarrow = '{/Symbol \337}';        # Not in OpenGL
-  sym.diamond = '{/Symbol \340}';          # Not in OpenGL
-  sym.copyright = '{/Symbol \343}';
-  sym.lfloor = '{/Symbol \353}';
-  sym.lceil = '{/Symbol \351}';
-  sym.rfloor = '{/Symbol \373}';
-  sym.rceil = '{/Symbol \371}';
-  sym.int = '{/Symbol \362}';
+  sym.oslash = {'{/Symbol \306}', '⊘'};
+  sym.emptyset = {'{/Symbol \306}', '∅'};
+  sym.cap = {'{/Symbol \307}', '∩'};
+  sym.cup = {'{/Symbol \310}', '∪'};
+  sym.supset = {'{/Symbol \311}', '⊃'};
+  sym.supseteq = {'{/Symbol \312}', '⊇'};
+  sym.subset = {'{/Symbol \314}', '⊂'};
+  sym.subseteq = {'{/Symbol \315}', '⊑'};
+  sym.in = {'{/Symbol \316}', '∈'};
+  sym.notin = {'{/Symbol \317}', '∋'};            # Not in OpenGL
+  sym.angle = {'{/Symbol \320}', '∠'};
+  sym.bigtriangledown = {'{/Symbol \321}', '▽'};  # Not in OpenGL
+  sym.langle = {'{/Symbol \341}', '〈'};
+  sym.rangle = {'{/Symbol \361}', '〉'};
+  sym.nabla = {'{/Symbol \321}', '∇'};
+  sym.prod = {'{/Symbol \325}', '∏'};             # Not in OpenGL
+  sym.surd = {'{/Symbol \326}', '√'};
+  sym.cdot = {'{/Symbol \327}', '⋅'};
+  sym.neg = {'{/Symbol \330}', '¬'};
+  sym.wedge = {'{/Symbol \331}', '∧'};
+  sym.vee = {'{/Symbol \332}', '∨'};
+  sym.Leftrightarrow = {'{/Symbol \333}', '⇔'};   # Not in OpenGL
+  sym.Leftarrow = {'{/Symbol \334}', '⇐'};
+  sym.Uparrow = {'{/Symbol \335}', '⇑'};          # Not in OpenGL
+  sym.Rightarrow = {'{/Symbol \336}', '⇒'};
+  sym.Downarrow = {'{/Symbol \337}', '⇓'};        # Not in OpenGL
+  sym.diamond = {'{/Symbol \340}', '⋄'};          # Not in OpenGL
+  sym.copyright = {'{/Symbol \343}', '©'};
+  sym.lfloor = {'{/Symbol \353}', '⌊'};
+  sym.lceil = {'{/Symbol \351}', '⌈'};
+  sym.rfloor = {'{/Symbol \373}', '⌋'};
+  sym.rceil = {'{/Symbol \371}', '⌉'};
+  sym.int = {'{/Symbol \362}', '∫'};
+
 endfunction
 
 function retval = __do_enhanced_option__ (enhanced, obj)
@@ -2782,7 +2801,8 @@ endfunction
 
 function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
 
-  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string", obj.interpreter);
+  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string", ...
+                                        obj.interpreter, gpterm);
   fontspec = create_fontspec (f, s, gpterm);
   lpos = obj.position;
   halign = obj.horizontalalignment;
@@ -2840,13 +2860,13 @@ function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
   endif
   fprintf (stream,
            ['set label "%s" at %s %.15e,%.15e%s %s rotate by %f offset character %f,%f %s %s front %s;' "\n"],
-           undo_string_escapes (label), units, lpos(1),
-           lpos(2), zstr, halign, angle, dx_and_dy, fontspec,
-           __do_enhanced_option__ (enhanced, obj), colorspec);
+           label, units, lpos(1), lpos(2), zstr, halign, angle, dx_and_dy,
+           fontspec, __do_enhanced_option__ (enhanced, obj), colorspec);
 
 endfunction
 
 function cdata = mapcdata (cdata, mode, clim, cmap_sz)
+
   if (ndims (cdata) == 3)
     ## True Color, clamp data to 8-bit
     clim = double (clim);
@@ -2877,4 +2897,5 @@ function cdata = mapcdata (cdata, mode, clim, cmap_sz)
     endif
     cdata = max (1, min (cdata, cmap_sz));
   endif
+
 endfunction

@@ -14,14 +14,17 @@ FCN_FILE_DIRS += \
   %reldir%/private/__uiputfile_fltk__.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/dialog.m \
   %reldir%/errordlg.m \
   %reldir%/getappdata.m \
+  %reldir%/getpixelposition.m \
   %reldir%/guidata.m \
   %reldir%/guihandles.m \
   %reldir%/helpdlg.m \
   %reldir%/inputdlg.m \
   %reldir%/isappdata.m \
+  %reldir%/listfonts.m \
   %reldir%/listdlg.m \
   %reldir%/movegui.m \
   %reldir%/msgbox.m \

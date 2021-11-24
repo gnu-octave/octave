@@ -46,6 +46,7 @@ COREFCN_INC = \
   %reldir%/hook-fcn.h \
   %reldir%/input.h \
   %reldir%/interpreter.h \
+  %reldir%/latex-text-renderer.h \
   %reldir%/load-path.h \
   %reldir%/load-save.h \
   %reldir%/ls-ascii-helper.h \
@@ -58,6 +59,8 @@ COREFCN_INC = \
   %reldir%/ls-utils.h \
   %reldir%/mex.h \
   %reldir%/mexproto.h \
+  %reldir%/mx-type-traits.h \
+  %reldir%/mxarray.h \
   %reldir%/oct-errno.h \
   %reldir%/oct-fstrm.h \
   %reldir%/oct-handle.h \
@@ -89,14 +92,13 @@ COREFCN_INC = \
   %reldir%/sysdep.h \
   %reldir%/text-engine.h \
   %reldir%/text-renderer.h \
-  %reldir%/txt-eng.h \
   %reldir%/url-handle-manager.h \
   %reldir%/utils.h \
   %reldir%/variables.h \
   %reldir%/xdiv.h \
   %reldir%/xnorm.h \
   %reldir%/xpow.h \
-  %reldir%/zfstream.h
+  %reldir%/gzfstream.h
 
 NOINSTALL_COREFCN_INC = \
   %reldir%/interpreter-private.h \
@@ -117,12 +119,14 @@ COREFCN_SRC = \
   %reldir%/__gammainc__.cc \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \
+  %reldir%/__isprimelarge__.cc \
   %reldir%/__lin_interpn__.cc \
   %reldir%/__magick_read__.cc \
   %reldir%/__pchip_deriv__.cc \
   %reldir%/__qp__.cc \
   %reldir%/amd.cc \
   %reldir%/balance.cc \
+  %reldir%/base-text-renderer.cc \
   %reldir%/besselj.cc \
   %reldir%/bitfcns.cc \
   %reldir%/bsxfun.cc \
@@ -185,7 +189,10 @@ COREFCN_SRC = \
   %reldir%/interpreter-private.cc \
   %reldir%/interpreter.cc \
   %reldir%/inv.cc \
+  %reldir%/jsondecode.cc \
+  %reldir%/jsonencode.cc \
   %reldir%/kron.cc \
+  %reldir%/latex-text-renderer.cc \
   %reldir%/load-path.cc \
   %reldir%/load-save.cc \
   %reldir%/lookup.cc \
@@ -218,6 +225,7 @@ COREFCN_SRC = \
   %reldir%/oct-tex-lexer.ll \
   %reldir%/oct-tex-parser.h \
   %reldir%/oct-tex-parser.yy \
+  %reldir%/ordqz.cc \
   %reldir%/ordschur.cc \
   %reldir%/pager.cc \
   %reldir%/pinv.cc \
@@ -269,7 +277,7 @@ COREFCN_SRC = \
   %reldir%/xdiv.cc \
   %reldir%/xnorm.cc \
   %reldir%/xpow.cc \
-  %reldir%/zfstream.cc \
+  %reldir%/gzfstream.cc \
   $(NOINSTALL_COREFCN_INC)
 
 ## Special rules for sources which must be built before rest of compilation.
@@ -298,8 +306,8 @@ COREFCN_SRC = \
 	fi && \
 	mv $@-t $@
 
-%reldir%/mxarray.h: %reldir%/mxarray.in.h %reldir%/mk-mxarray-h.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-mxarray-h.sh)
+%reldir%/mxtypes.h: %reldir%/mxtypes.in.h %reldir%/mk-mxtypes-h.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-mxtypes-h.sh)
 
 %reldir%/oct-tex-lexer.ll: %reldir%/oct-tex-lexer.in.ll %reldir%/oct-tex-symbols.in | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
@@ -324,20 +332,20 @@ noinst_LTLIBRARIES += \
   $(FONTCONFIG_CPPFLAGS) \
   $(FT2_CPPFLAGS) \
   $(HDF5_CPPFLAGS) \
-  $(LLVM_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS) \
-  $(Z_CPPFLAGS)
+  $(Z_CPPFLAGS) \
+  $(OCTAVE_TEX_PARSER_CPPFLAGS)
 
 libinterp_EXTRA_DIST += \
   %reldir%/default-defs.in.h \
   %reldir%/genprops.awk \
   %reldir%/graphics.in.h \
   %reldir%/mk-errno-list.sh \
-  %reldir%/mk-mxarray-h.in.sh \
-  %reldir%/mxarray.in.h \
+  %reldir%/mk-mxtypes-h.in.sh \
+  %reldir%/mxtypes.in.h \
   %reldir%/oct-errno.in.cc \
   %reldir%/oct-tex-lexer.in.ll \
   %reldir%/oct-tex-symbols.in
 
 GEN_CONFIG_SHELL += \
-  %reldir%/mk-mxarray-h.sh
+  %reldir%/mk-mxtypes-h.sh

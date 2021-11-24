@@ -72,19 +72,20 @@ namespace octave
   {
   public:
     text_element_string (const std::string& s = "")
-      : text_element (), str (s) { }
+      : text_element (), m_str (s) { }
 
     ~text_element_string (void) = default;
 
-    std::string string_value (void) const { return str; }
+    std::string string_value (void) const { return m_str; }
 
     void accept (text_processor& p);
 
   private:
-    std::string str;
-
-  private:
     text_element_string (const text_element_string &);
+
+    //--------
+
+    std::string m_str;
   };
 
   class
@@ -94,20 +95,19 @@ namespace octave
   public:
     enum { invalid_code = 0xFFFFFFFFU };
 
-  public:
     text_element_symbol (int sym)
-      : text_element (), symbol (sym) { }
+      : text_element (), m_symbol (sym) { }
 
     ~text_element_symbol (void) = default;
 
-    int get_symbol (void) const { return symbol; }
+    int get_symbol (void) const { return m_symbol; }
 
     uint32_t get_symbol_code (void) const;
 
     void accept (text_processor& p);
 
   private:
-    int symbol;
+    int m_symbol;
   };
 
   class
@@ -144,24 +144,26 @@ namespace octave
   {
   public:
     text_element_subscript (text_element *e)
-      : text_element (), elem (e) { }
+      : text_element (), m_elem (e) { }
 
     text_element_subscript (char c)
       : text_element ()
-    { elem = new text_element_string (std::string (1, c)); }
+    { m_elem = new text_element_string (std::string (1, c)); }
 
     ~text_element_subscript (void)
-    { delete elem; }
+    { delete m_elem; }
 
     void accept (text_processor& p);
 
-    text_element * get_element (void) { return elem; }
-
-  private:
-    text_element *elem;
+    text_element * get_element (void) { return m_elem; }
 
   private:
     text_element_subscript (void);
+    
+    //--------
+
+    text_element *m_elem;
+
   };
 
   class
@@ -170,24 +172,26 @@ namespace octave
   {
   public:
     text_element_superscript (text_element *e)
-      : text_element (), elem (e) { }
+      : text_element (), m_elem (e) { }
 
     text_element_superscript (char c)
       : text_element ()
-    { elem = new text_element_string (std::string (1, c)); }
+    { m_elem = new text_element_string (std::string (1, c)); }
 
     ~text_element_superscript (void)
-    { delete elem; }
+    { delete m_elem; }
 
     void accept (text_processor& p);
 
-    text_element * get_element (void) { return elem; }
-
-  private:
-    text_element *elem;
+    text_element * get_element (void) { return m_elem; }
 
   private:
     text_element_superscript (void);
+
+    //--------
+
+    text_element *m_elem;
+
   };
 
   class
@@ -219,19 +223,21 @@ namespace octave
     };
 
     text_element_fontstyle (fontstyle st)
-      : text_element (), style (st) { }
+      : text_element (), m_style (st) { }
 
     ~text_element_fontstyle (void) = default;
 
-    fontstyle get_fontstyle (void) const { return style; }
+    fontstyle get_fontstyle (void) const { return m_style; }
 
     void accept (text_processor& p);
 
   private:
-    fontstyle style;
-
-  private:
     text_element_fontstyle (void);
+
+    //--------
+
+    fontstyle m_style;
+
   };
 
   class
@@ -240,19 +246,21 @@ namespace octave
   {
   public:
     text_element_fontname (const std::string& fname)
-      : text_element (), name (fname) { }
+      : text_element (), m_name (fname) { }
 
     ~text_element_fontname (void) = default;
 
-    const std::string& get_fontname (void) const { return name; }
+    const std::string& get_fontname (void) const { return m_name; }
 
     void accept (text_processor& p);
 
   private:
-    std::string name;
-
-  private:
     text_element_fontname (void);
+
+    //--------
+
+    std::string m_name;
+
   };
 
   class
@@ -261,19 +269,21 @@ namespace octave
   {
   public:
     text_element_fontsize (double fsize)
-      : text_element (), size (fsize) { }
+      : text_element (), m_size (fsize) { }
 
     ~text_element_fontsize (void) = default;
 
-    double get_fontsize (void) const { return size; }
+    double get_fontsize (void) const { return m_size; }
 
     void accept (text_processor& p);
 
   private:
-    double size;
-
-  private:
     text_element_fontsize (void);
+
+    //--------
+
+    double m_size;
+
   };
 
   class
@@ -282,17 +292,17 @@ namespace octave
   {
   public:
     text_element_color (double r, double g, double b)
-      : text_element (), rgb (1, 3, 0.0)
+      : text_element (), m_rgb (1, 3, 0.0)
     {
-      rgb(0) = r;
-      rgb(1) = g;
-      rgb(2) = b;
+      m_rgb(0) = r;
+      m_rgb(1) = g;
+      m_rgb(2) = b;
     }
 
     text_element_color (const std::string& cname)
-      : text_element (), rgb (1, 3, 0.0)
+      : text_element (), m_rgb (1, 3, 0.0)
     {
-#define ASSIGN_COLOR(r,g,b) { rgb(0) = r; rgb(1) = g; rgb(2) = b; }
+#define ASSIGN_COLOR(r,g,b) { m_rgb(0) = r; m_rgb(1) = g; m_rgb(2) = b; }
       if (cname == "red") ASSIGN_COLOR(1, 0, 0)
       else if (cname == "green") ASSIGN_COLOR(0, 1, 0)
       else if (cname == "yellow") ASSIGN_COLOR(1, 1, 0)
@@ -309,12 +319,12 @@ namespace octave
 
     ~text_element_color (void) = default;
 
-    Matrix get_color (void) { return rgb; }
+    Matrix get_color (void) { return m_rgb; }
 
     void accept (text_processor& p);
 
   private:
-    Matrix rgb;
+    Matrix m_rgb;
   };
 
   class
@@ -322,7 +332,7 @@ namespace octave
   text_processor
   {
   public:
-    virtual void visit (text_element_string& e) = 0;
+    virtual void visit (text_element_string&) { }
 
     virtual void visit (text_element_symbol&) { }
 
@@ -418,7 +428,8 @@ namespace octave
   {
   public:
     text_parser_tex (void)
-      : text_parser (), scanner (nullptr), buffer_state (nullptr), result (nullptr)
+      : text_parser (), m_scanner (nullptr), m_buffer_state (nullptr),
+        m_result (nullptr)
     { }
 
     ~text_parser_tex (void)
@@ -426,23 +437,24 @@ namespace octave
 
     text_element * parse (const std::string& s);
 
-    void * get_scanner (void) { return scanner; }
+    void * get_scanner (void) { return m_scanner; }
 
-    void set_parse_result (text_element *e) { result = e; }
+    void set_parse_result (text_element *e) { m_result = e; }
 
-    text_element * get_parse_result (void) { return result; }
+    text_element * get_parse_result (void) { return m_result; }
 
   private:
     bool init_lexer (const std::string& s);
 
     void destroy_lexer (void);
 
-  private:
-    void *scanner;
+    //--------
 
-    void *buffer_state;
+    void *m_scanner;
 
-    text_element *result;
+    void *m_buffer_state;
+
+    text_element *m_result;
   };
 
   inline text_element*
@@ -458,54 +470,5 @@ namespace octave
     return parser->parse (s);
   }
 }
-
-#if defined (OCAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element' instead")
-typedef octave::text_element text_element;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_string' instead")
-typedef octave::text_element_string text_element_string;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_symbol' instead")
-typedef octave::text_element_symbol text_element_symbol;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_list' instead")
-typedef octave::text_element_list text_element_list;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_subscript' instead")
-typedef octave::text_element_subscript text_element_subscript;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_superscript' instead")
-typedef octave::text_element_superscript text_element_superscript;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_combined' instead")
-typedef octave::text_element_combined text_element_combined;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_fontstyle' instead")
-typedef octave::text_element_fontstyle text_element_fontstyle;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_fontname' instead")
-typedef octave::text_element_fontname text_element_fontname;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_fontsize' instead")
-typedef octave::text_element_fontsize text_element_fontsize;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_element_color' instead")
-typedef octave::text_element_color text_element_color;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_processor' instead")
-typedef octave::text_processor text_processor;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_parser' instead")
-typedef octave::text_parser text_parser;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_parser_none' instead")
-typedef octave::text_parser_none text_parser_none;
-
-OCTAVE_DEPRECATED (5, "use 'octave::text_parser_tex' instead")
-typedef octave::text_parser_tex text_parser_tex;
-
-#endif
 
 #endif

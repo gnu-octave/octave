@@ -160,16 +160,16 @@ namespace octave
 
     // Set current error state and set fail to TRUE.
 
-    void error (const std::string& msg);
-    void error (const std::string& who, const std::string& msg);
+    OCTINTERP_API void error (const std::string& msg);
+    OCTINTERP_API void error (const std::string& who, const std::string& msg);
 
     // Clear any error message and set fail to FALSE.
 
-    void clear (void);
+    OCTINTERP_API void clear (void);
 
     // Clear stream state.
 
-    void clearerr (void);
+    OCTINTERP_API void clearerr (void);
 
   private:
 
@@ -195,57 +195,69 @@ namespace octave
     // Functions that are defined for all input streams (input streams
     // are those that define is).
 
-    std::string do_gets (octave_idx_type max_len, bool& err, bool strip_newline,
-                         const std::string& who /* = "gets" */);
+    OCTINTERP_API std::string
+    do_gets (octave_idx_type max_len, bool& err, bool strip_newline,
+             const std::string& who /* = "gets" */);
 
-    std::string getl (octave_idx_type max_len, bool& err,
-                      const std::string& who /* = "getl" */);
-    std::string gets (octave_idx_type max_len, bool& err,
-                      const std::string& who /* = "gets" */);
-    off_t skipl (off_t count, bool& err, const std::string& who /* = "skipl" */);
+    OCTINTERP_API std::string
+    getl (octave_idx_type max_len, bool& err,
+          const std::string& who /* = "getl" */);
+    OCTINTERP_API std::string
+    gets (octave_idx_type max_len, bool& err,
+          const std::string& who /* = "gets" */);
+    OCTINTERP_API off_t
+    skipl (off_t count, bool& err, const std::string& who /* = "skipl" */);
 
-    octave_value do_scanf (scanf_format_list& fmt_list, octave_idx_type nr,
-                           octave_idx_type nc,
-                           bool one_elt_size_spec, octave_idx_type& count,
-                           const std::string& who /* = "scanf" */);
+    OCTINTERP_API octave_value
+    do_scanf (scanf_format_list& fmt_list, octave_idx_type nr,
+              octave_idx_type nc, bool one_elt_size_spec,
+              octave_idx_type& count, const std::string& who /* = "scanf" */);
 
-    octave_value scanf (const std::string& fmt, const Array<double>& size,
-                        octave_idx_type& count, const std::string& who /* = "scanf" */);
+    OCTINTERP_API octave_value
+    scanf (const std::string& fmt, const Array<double>& size,
+           octave_idx_type& count, const std::string& who /* = "scanf" */);
 
-    bool do_oscanf (const scanf_format_elt *elt, octave_value&,
-                    const std::string& who /* = "scanf" */);
+    OCTINTERP_API bool
+    do_oscanf (const scanf_format_elt *elt, octave_value&,
+               const std::string& who /* = "scanf" */);
 
-    octave_value_list oscanf (const std::string& fmt,
-                              const std::string& who /* = "scanf" */);
+    OCTINTERP_API octave_value_list
+    oscanf (const std::string& fmt, const std::string& who /* = "scanf" */);
 
-    octave_value do_textscan (const std::string& fmt, octave_idx_type ntimes,
-                              const octave_value_list& options,
-                              const std::string& who, octave_idx_type& count);
+    OCTINTERP_API octave_value
+    do_textscan (const std::string& fmt, octave_idx_type ntimes,
+                 const octave_value_list& options,
+                 const std::string& who, octave_idx_type& count);
 
     // Functions that are defined for all output streams (output streams
     // are those that define os).
 
-    int flush (void);
+    OCTINTERP_API int flush (void);
 
-    int do_numeric_printf_conv (std::ostream& os, const printf_format_elt *elt,
-                                int nsa, int sa_1, int sa_2,
-                                const octave_value& val,
-                                const std::string& who);
+    OCTINTERP_API int
+    do_numeric_printf_conv (std::ostream& os, const printf_format_elt *elt,
+                            int nsa, int sa_1, int sa_2,
+                            const octave_value& val,
+                            const std::string& who);
 
-    void field_width_error (const std::string& who) const;
+    OCTINTERP_API void field_width_error (const std::string& who) const;
 
-    int do_printf (printf_format_list& fmt_list, const octave_value_list& args,
-                   const std::string& who /* = "printf" */);
+    OCTINTERP_API int
+    do_printf (printf_format_list& fmt_list, const octave_value_list& args,
+               const std::string& who /* = "printf" */);
 
-    int printf (const std::string& fmt, const octave_value_list& args,
-                const std::string& who /* = "printf" */);
+    OCTINTERP_API int
+    printf (const std::string& fmt, const octave_value_list& args,
+            const std::string& who /* = "printf" */);
 
-    int puts (const std::string& s, const std::string& who /* = "puts" */);
+    OCTINTERP_API int
+    puts (const std::string& s, const std::string& who /* = "puts" */);
 
     // We can always do this in terms of seek(), so the derived class
     // only has to provide that.
 
-    void invalid_operation (const std::string& who, const char *rw);
+    OCTINTERP_API void
+    invalid_operation (const std::string& who, const char *rw);
   };
 
   class
@@ -263,82 +275,101 @@ namespace octave
 
     ~stream (void) = default;
 
-    int flush (void);
+    OCTINTERP_API int flush (void);
 
-    std::string getl (octave_idx_type max_len, bool& err,
-                      const std::string& who /* = "getl" */);
-    std::string getl (const octave_value& max_len, bool& err,
-                      const std::string& who /* = "getl" */);
+    OCTINTERP_API std::string
+    getl (octave_idx_type max_len, bool& err,
+          const std::string& who /* = "getl" */);
 
-    std::string gets (octave_idx_type max_len, bool& err,
-                      const std::string& who /* = "gets" */);
-    std::string gets (const octave_value& max_len, bool& err,
-                      const std::string& who /* = "gets" */);
+    OCTINTERP_API std::string
+    getl (const octave_value& max_len, bool& err,
+          const std::string& who /* = "getl" */);
 
-    off_t skipl (off_t count, bool& err, const std::string& who /* = "skipl" */);
-    off_t skipl (const octave_value& count, bool& err,
-                 const std::string& who /* = "skipl" */);
+    OCTINTERP_API std::string
+    gets (octave_idx_type max_len, bool& err,
+          const std::string& who /* = "gets" */);
 
-    int seek (off_t offset, int origin);
-    int seek (const octave_value& offset, const octave_value& origin);
+    OCTINTERP_API std::string
+    gets (const octave_value& max_len, bool& err,
+          const std::string& who /* = "gets" */);
 
-    off_t tell (void);
+    OCTINTERP_API off_t
+    skipl (off_t count, bool& err, const std::string& who /* = "skipl" */);
 
-    int rewind (void);
+    OCTINTERP_API off_t
+    skipl (const octave_value& count, bool& err,
+           const std::string& who /* = "skipl" */);
 
-    bool is_open (void) const;
+    OCTINTERP_API int seek (off_t offset, int origin);
 
-    void close (void);
+    OCTINTERP_API int
+    seek (const octave_value& offset, const octave_value& origin);
 
-    octave_value read (const Array<double>& size, octave_idx_type block_size,
-                       oct_data_conv::data_type input_type,
-                       oct_data_conv::data_type output_type,
-                       octave_idx_type skip, mach_info::float_format flt_fmt,
-                       octave_idx_type& count);
+    OCTINTERP_API off_t tell (void);
 
-    octave_idx_type write (const octave_value& data, octave_idx_type block_size,
-                           oct_data_conv::data_type output_type,
-                           octave_idx_type skip,
-                           mach_info::float_format flt_fmt);
+    OCTINTERP_API int rewind (void);
 
-    bool write_bytes (const void *data, std::size_t n_elts);
+    OCTINTERP_API bool is_open (void) const;
 
-    bool skip_bytes (std::size_t n_elts);
+    OCTINTERP_API void close (void);
+
+    OCTINTERP_API octave_value
+    read (const Array<double>& size, octave_idx_type block_size,
+          oct_data_conv::data_type input_type,
+          oct_data_conv::data_type output_type,
+          octave_idx_type skip, mach_info::float_format flt_fmt,
+          octave_idx_type& count);
+
+    OCTINTERP_API octave_idx_type
+    write (const octave_value& data, octave_idx_type block_size,
+           oct_data_conv::data_type output_type,
+           octave_idx_type skip, mach_info::float_format flt_fmt);
+
+    OCTINTERP_API bool write_bytes (const void *data, std::size_t n_elts);
+
+    OCTINTERP_API bool skip_bytes (std::size_t n_elts);
 
     template <typename T>
-      octave_idx_type write (const Array<T>& data, octave_idx_type block_size,
-                             oct_data_conv::data_type output_type,
-                             octave_idx_type skip,
-                             mach_info::float_format flt_fmt);
+    OCTINTERP_API octave_idx_type
+    write (const Array<T>& data, octave_idx_type block_size,
+           oct_data_conv::data_type output_type,
+           octave_idx_type skip, mach_info::float_format flt_fmt);
 
-    octave_value scanf (const std::string& fmt, const Array<double>& size,
-                        octave_idx_type& count, const std::string& who /* = "scanf" */);
+    OCTINTERP_API octave_value
+    scanf (const std::string& fmt, const Array<double>& size,
+           octave_idx_type& count, const std::string& who /* = "scanf" */);
 
-    octave_value scanf (const octave_value& fmt, const Array<double>& size,
-                        octave_idx_type& count, const std::string& who /* = "scanf" */);
+    OCTINTERP_API octave_value
+    scanf (const octave_value& fmt, const Array<double>& size,
+           octave_idx_type& count, const std::string& who /* = "scanf" */);
 
-    octave_value_list oscanf (const std::string& fmt,
-                              const std::string& who /* = "scanf" */);
+    OCTINTERP_API octave_value_list
+    oscanf (const std::string& fmt, const std::string& who /* = "scanf" */);
 
-    octave_value_list oscanf (const octave_value& fmt,
-                              const std::string& who /* = "scanf" */);
+    OCTINTERP_API octave_value_list
+    oscanf (const octave_value& fmt, const std::string& who /* = "scanf" */);
 
-    octave_value textscan (const std::string& fmt, octave_idx_type ntimes,
-                           const octave_value_list& options,
-                           const std::string& who, octave_idx_type& count);
+    OCTINTERP_API octave_value
+    textscan (const std::string& fmt, octave_idx_type ntimes,
+              const octave_value_list& options,
+              const std::string& who, octave_idx_type& count);
 
-    int printf (const std::string& fmt, const octave_value_list& args,
-                const std::string& who /* = "printf" */);
+    OCTINTERP_API int
+    printf (const std::string& fmt, const octave_value_list& args,
+            const std::string& who /* = "printf" */);
 
-    int printf (const octave_value& fmt, const octave_value_list& args,
-                const std::string& who /* = "printf" */);
+    OCTINTERP_API int
+    printf (const octave_value& fmt, const octave_value_list& args,
+            const std::string& who /* = "printf" */);
 
-    int puts (const std::string& s, const std::string& who /* = "puts" */);
-    int puts (const octave_value& s, const std::string& who /* = "puts" */);
+    OCTINTERP_API int
+    puts (const std::string& s, const std::string& who /* = "puts" */);
+    OCTINTERP_API int
+    puts (const octave_value& s, const std::string& who /* = "puts" */);
 
-    bool eof (void) const;
+    OCTINTERP_API bool eof (void) const;
 
-    std::string error (bool clear, int& err_num);
+    OCTINTERP_API std::string error (bool clear, int& err_num);
 
     std::string error (bool clear = false)
     {
@@ -364,13 +395,13 @@ namespace octave
 
     operator bool () const { return ok (); }
 
-    std::string name (void) const;
+    OCTINTERP_API std::string name (void) const;
 
-    int mode (void) const;
+    OCTINTERP_API int mode (void) const;
 
-    mach_info::float_format float_format (void) const;
+    OCTINTERP_API mach_info::float_format float_format (void) const;
 
-    static std::string mode_as_string (int mode);
+    OCTINTERP_API static std::string mode_as_string (int mode);
 
     std::string encoding (void)
     {
@@ -415,7 +446,7 @@ namespace octave
         m_rep->invalid_operation (who, rw);
     }
 
-    octave_value
+    OCTINTERP_API octave_value
     finalize_read (std::list<void *>& input_buf_list,
                    octave_idx_type input_buf_elts,
                    octave_idx_type elts_read,
@@ -431,35 +462,36 @@ namespace octave
   {
   public:
 
-    stream_list (interpreter& interp);
+    OCTINTERP_API stream_list (interpreter& interp);
 
     stream_list (const stream_list&) = delete;
     stream_list& operator = (const stream_list&) = delete;
 
-    ~stream_list (void);
+    OCTINTERP_API ~stream_list (void);
 
-    int insert (stream& os);
+    OCTINTERP_API int insert (stream& os);
 
-    stream lookup (int fid, const std::string& who = "") const;
-    stream lookup (const octave_value& fid, const std::string& who = "") const;
+    OCTINTERP_API stream lookup (int fid, const std::string& who = "") const;
+    OCTINTERP_API stream
+    lookup (const octave_value& fid, const std::string& who = "") const;
 
-    int remove (int fid, const std::string& who = "");
-    int remove (const octave_value& fid, const std::string& who = "");
+    OCTINTERP_API int remove (int fid, const std::string& who = "");
+    OCTINTERP_API int remove (const octave_value& fid, const std::string& who = "");
 
-    void clear (bool flush = true);
+    OCTINTERP_API void clear (bool flush = true);
 
-    string_vector get_info (int fid) const;
-    string_vector get_info (const octave_value& fid) const;
+    OCTINTERP_API string_vector get_info (int fid) const;
+    OCTINTERP_API string_vector get_info (const octave_value& fid) const;
 
-    std::string list_open_files (void) const;
+    OCTINTERP_API std::string list_open_files (void) const;
 
-    octave_value open_file_numbers (void) const;
+    OCTINTERP_API octave_value open_file_numbers (void) const;
 
-    int get_file_number (const octave_value& fid) const;
+    OCTINTERP_API int get_file_number (const octave_value& fid) const;
 
-    octave_value stdin_file (void) const;
-    octave_value stdout_file (void) const;
-    octave_value stderr_file (void) const;
+    OCTINTERP_API octave_value stdin_file (void) const;
+    OCTINTERP_API octave_value stdout_file (void) const;
+    OCTINTERP_API octave_value stderr_file (void) const;
 
   private:
 

@@ -689,14 +689,14 @@ FloatComplexMatrix::extract (octave_idx_type r1, octave_idx_type c1,
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }
 
-  return index (idx_vector (r1, r2+1), idx_vector (c1, c2+1));
+  return index (octave::idx_vector (r1, r2+1), octave::idx_vector (c1, c2+1));
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1,
                                octave_idx_type nr, octave_idx_type nc) const
 {
-  return index (idx_vector (r1, r1 + nr), idx_vector (c1, c1 + nc));
+  return index (octave::idx_vector (r1, r1 + nr), octave::idx_vector (c1, c1 + nc));
 }
 
 // extract row or column i.
@@ -704,13 +704,13 @@ FloatComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1,
 FloatComplexRowVector
 FloatComplexMatrix::row (octave_idx_type i) const
 {
-  return index (idx_vector (i), idx_vector::colon);
+  return index (octave::idx_vector (i), octave::idx_vector::colon);
 }
 
 FloatComplexColumnVector
 FloatComplexMatrix::column (octave_idx_type i) const
 {
-  return index (idx_vector::colon, idx_vector (i));
+  return index (octave::idx_vector::colon, octave::idx_vector (i));
 }
 
 // Local function to calculate the 1-norm.
@@ -938,7 +938,9 @@ FloatComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
   if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+  if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
+    ret = FloatComplex (1,0) / (*this);
+  else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
@@ -962,11 +964,8 @@ FloatComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
 
       if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0)
         {
-          if (numel () == 1)
-            ret = FloatComplexMatrix (1, 1, 0.0);
-          else
-            ret = FloatComplexMatrix (rows (), columns (),
-                                      FloatComplex (octave::numeric_limits<float>::Inf (), 0.0));
+          ret = FloatComplexMatrix (rows (), columns (),
+                                    FloatComplex (octave::numeric_limits<float>::Inf (), 0.0));
         }
     }
 
@@ -1352,7 +1351,7 @@ FloatComplexMatrix::rcond (MatrixType& mattype) const
       // Only calculate the condition number for LU/Cholesky
       if (typ == MatrixType::Upper)
         {
-          const FloatComplex *tmp_data = fortran_vec ();
+          const FloatComplex *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'U';
@@ -1380,7 +1379,7 @@ FloatComplexMatrix::rcond (MatrixType& mattype) const
           ("permuted triangular matrix not implemented");
       else if (typ == MatrixType::Lower)
         {
-          const FloatComplex *tmp_data = fortran_vec ();
+          const FloatComplex *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'L';
@@ -1532,7 +1531,7 @@ FloatComplexMatrix::utsolve (MatrixType& mattype, const FloatComplexMatrix& b,
               ("permuted triangular matrix not implemented");
           else
             {
-              const FloatComplex *tmp_data = fortran_vec ();
+              const FloatComplex *tmp_data = data ();
 
               retval = b;
               FloatComplex *result = retval.fortran_vec ();
@@ -1634,7 +1633,7 @@ FloatComplexMatrix::ltsolve (MatrixType& mattype, const FloatComplexMatrix& b,
               ("permuted triangular matrix not implemented");
           else
             {
-              const FloatComplex *tmp_data = fortran_vec ();
+              const FloatComplex *tmp_data = data ();
 
               retval = b;
               FloatComplex *result = retval.fortran_vec ();
@@ -1876,8 +1875,6 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
-                      info = -2;
-
                       if (sing_handler)
                         sing_handler (rcon);
                       else
@@ -3200,7 +3197,7 @@ operator << (std::ostream& os, const FloatComplexMatrix& a)
       for (octave_idx_type j = 0; j < a.cols (); j++)
         {
           os << ' ';
-          octave_write_complex (os, a.elem (i, j));
+          octave::write_value<Complex> (os, a.elem (i, j));
         }
       os << "\n";
     }
@@ -3219,7 +3216,7 @@ operator >> (std::istream& is, FloatComplexMatrix& a)
       for (octave_idx_type i = 0; i < nr; i++)
         for (octave_idx_type j = 0; j < nc; j++)
           {
-            tmp = octave_read_value<FloatComplex> (is);
+            tmp = octave::read_value<FloatComplex> (is);
             if (is)
               a.elem (i, j) = tmp;
             else
@@ -3265,10 +3262,10 @@ Sylvester (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   // Transform c to new coordinates.
 
-  FloatComplexMatrix ua = as.unitary_matrix ();
+  FloatComplexMatrix ua = as.unitary_schur_matrix ();
   FloatComplexMatrix sch_a = as.schur_matrix ();
 
-  FloatComplexMatrix ub = bs.unitary_matrix ();
+  FloatComplexMatrix ub = bs.unitary_schur_matrix ();
   FloatComplexMatrix sch_b = bs.schur_matrix ();
 
   FloatComplexMatrix cx = ua.hermitian () * c * ub;

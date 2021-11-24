@@ -24,10 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{c}, @var{lev}] =} contourc (@var{z})
-## @deftypefnx {} {[@var{c}, @var{lev}] =} contourc (@var{z}, @var{vn})
-## @deftypefnx {} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z})
-## @deftypefnx {} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefn  {} {@var{c} =} contourc (@var{z})
+## @deftypefnx {} {@var{c} =} contourc (@var{z}, @var{vn})
+## @deftypefnx {} {@var{c} =} contourc (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {@var{c} =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {} {[@var{c}, @var{lev}] =} contourc (@dots{})
 ## Compute contour lines (isolines of constant Z value).
 ##
 ## The matrix @var{z} contains height values above the rectangular grid
@@ -42,8 +43,8 @@
 ## at a given value use @code{@var{vn} = [val, val]}.  If @var{vn} is omitted
 ## it defaults to 10.
 ##
-## The return value @var{c} is a 2x@var{n} matrix containing the
-## contour lines in the following format
+## The return value @var{c} is a 2x@var{n} matrix containing the contour lines
+## in the following format
 ##
 ## @example
 ## @group
@@ -53,11 +54,11 @@
 ## @end example
 ##
 ## @noindent
-## in which contour line @var{n} has a level (height) of @var{levn} and
-## length of @var{lenn}.
+## in which contour line @var{n} has a level (height) of @var{levn} and length
+## of @var{lenn}.
 ##
-## The optional return value @var{lev} is a vector with the Z values of
-## the contour levels.
+## The optional return value @var{lev} is a vector with the Z values of the
+## contour levels.
 ##
 ## Example:
 ##
@@ -104,8 +105,9 @@ function [c, lev] = contourc (varargin)
   endif
 
   if (! (isnumeric (z) && isnumeric (x) && isnumeric (y))
-      || ! (ismatrix (z) && ismatrix (x) && ismatrix (y)))
-    error ("contourc: X, Y, and Z must be numeric matrices");
+      || ! (ismatrix (z) && ismatrix (x) && ismatrix (y))
+      || ! (isreal (z) && isreal (x) && isreal (y)))
+    error ("contourc: X, Y, and Z must be real numeric matrices");
   endif
 
   if (rows (z) < 2 || columns (z) < 2)
@@ -113,17 +115,17 @@ function [c, lev] = contourc (varargin)
   endif
 
   if (isscalar (vn))
-    vv = linspace (min (z(:)), max (z(:)), vn+2)(2:end-1);
+    lev = linspace (min (z(:)), max (z(:)), vn+2)(2:end-1);
   else
-    vv = unique (sort (vn));
+    lev = unique (sort (vn));
   endif
 
   if (isvector (x) && isvector (y))
-    cdat = __contourc__ (x(:)', y(:)', z, vv);
+    c = __contourc__ (x(:)', y(:)', z, lev);
   elseif (! any (bsxfun (@minus, x, x(1,:))(:))
           && ! any (bsxfun (@minus, y, y(:,1))(:)))
     ## x,y are uniform grid (such as from meshgrid)
-    cdat = __contourc__ (x(1,:), y(:,1)', z, vv);
+    c = __contourc__ (x(1,:), y(:,1)', z, lev);
   else
     ## Data is sampled over non-uniform mesh.
     ## Algorithm calculates contours for uniform grid
@@ -134,37 +136,31 @@ function [c, lev] = contourc (varargin)
     ii = 1:nc;
     jj = 1:nr;
 
-    cdat = __contourc__ (ii, jj, z, vv);
+    c = __contourc__ (ii, jj, z, lev);
 
     ## Map the contour lines from index space (i,j)
     ## back to the original grid (x,y)
     i = 1;
 
-    while (i < columns (cdat))
-      clen = cdat(2, i);
+    while (i < columns (c))
+      clen = c(2, i);
       idx = i + (1:clen);
 
-      ci = cdat(1, idx);
-      cj = cdat(2, idx);
+      ci = c(1, idx);
+      cj = c(2, idx);
 
-      ## Due to rounding errors, some elements of ci and cj
-      ## can fall out of the range of ii and jj and
-      ## interp2 would return NA for those values.
+      ## Due to rounding errors, some elements of ci and cj can fall out of the
+      ## range of ii and jj and interp2 would return NA for those values.
       ## The permitted range is enforced here:
 
       ci = max (ci, 1); ci = min (ci, nc);
       cj = max (cj, 1); cj = min (cj, nr);
 
-      cdat(1, idx) = interp2 (ii, jj, x, ci, cj);
-      cdat(2, idx) = interp2 (ii, jj, y, ci, cj);
+      c(1, idx) = interp2 (ii, jj, x, ci, cj);
+      c(2, idx) = interp2 (ii, jj, y, ci, cj);
 
-      i += clen + 1;
+      i += (clen + 1);
     endwhile
-  endif
-
-  if (nargout > 0)
-    c = cdat;
-    lev = vv;
   endif
 
 endfunction
@@ -181,13 +177,16 @@ endfunction
 %! assert (lev_obs, lev_exp, eps);
 
 ## Test input validation
-%!error contourc ()
-%!error contourc (1,2,3,4,5)
-%!error <X, Y, and Z must be numeric> contourc ({1})
-%!error <X, Y, and Z must be numeric> contourc ({1}, 2, 3)
-%!error <X, Y, and Z must be numeric> contourc (1, {2}, 3)
+%!error <Invalid call> contourc ()
+%!error <Invalid call> contourc (1,2,3,4,5)
+%!error <X, Y, and Z must be .* numeric> contourc ({3})
+%!error <X, Y, and Z must be .* numeric> contourc ({1}, 2, 3)
+%!error <X, Y, and Z must be .* numeric> contourc (1, {2}, 3)
 %!error <X, Y, and Z must be .* matrices> contourc (ones (3,3,3))
 %!error <X, Y, and Z must be .* matrices> contourc (ones (3,3,3), 2, 3)
 %!error <X, Y, and Z must be .* matrices> contourc (1, ones (3,3,3), 3)
+%!error <X, Y, and Z must be real> contourc (3i)
+%!error <X, Y, and Z must be real> contourc (1i, 2, 3)
+%!error <X, Y, and Z must be real> contourc (1, 2i, 3)
 %!error <Z data must have at least 2 rows> contourc ([1, 2])
 %!error <Z data must have at least .* 2 columns> contourc ([1; 2])

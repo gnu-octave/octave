@@ -47,20 +47,43 @@
 
 function p = primes (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
-  if (! (isnumeric (n) && isscalar (n)))
-    error ("primes: N must be a numeric scalar");
+  if (! (isscalar (n) && isreal (n)))
+    error ("primes: N must be a real scalar");
+  endif
+  if (ischar (n))
+    n = double (n);
+  endif
+  if (! isfinite (n) && n != -Inf)
+    error ("primes: N must be finite (not +Inf or NaN)");
   endif
 
-  if (n > 100e3)
-    ## Optimization: 1/6 less memory, and much faster (asymptotically)
-    ## 100K happens to be the cross-over point for Paul's machine;
-    ## below this the more direct code below is faster.  At the limit
-    ## of memory in Paul's machine, this saves .7 seconds out of 7 for
-    ## n = 3e6.  Hardly worthwhile, but Dirk reports better numbers.
+  if (n < 353)
+    ## Lookup table of first 70 primes
+    a = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, ...
+         53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, ...
+         109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, ...
+         173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, ...
+         233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, ...
+         293, 307, 311, 313, 317, 331, 337, 347, 349];
+    p = a(a <= n);
+  elseif (n < 100e3)
+    ## Classical Sieve algorithm
+    ## Fast, but memory scales as n/2.
+    len = floor ((n-1)/2);        # length of the sieve
+    sieve = true (1, len);        # assume every odd number is prime
+    for i = 1:(sqrt (n)-1)/2      # check up to sqrt (n)
+      if (sieve(i))               # if i is prime, eliminate multiples of i
+        sieve(3*i+1:2*i+1:len) = false; # do it
+      endif
+    endfor
+    p = [2, 1+2*find(sieve)];     # primes remaining after sieve
+  else
+    ## Sieve algorithm optimized for large n
+    ## Memory scales as n/3 or 1/6th less than classical Sieve
     lenm = floor ((n+1)/6);       # length of the 6n-1 sieve
     lenp = floor ((n-1)/6);       # length of the 6n+1 sieve
     sievem = true (1, lenm);      # assume every number of form 6n-1 is prime
@@ -77,23 +100,6 @@ function p = primes (n)
       endif
     endfor
     p = sort ([2, 3, 6*find(sievem)-1, 6*find(sievep)+1]);
-  elseif (n > 352)                # nothing magical about 352; must be > 2
-    len = floor ((n-1)/2);        # length of the sieve
-    sieve = true (1, len);        # assume every odd number is prime
-    for i = 1:(sqrt (n)-1)/2      # check up to sqrt (n)
-      if (sieve(i))               # if i is prime, eliminate multiples of i
-        sieve(3*i+1:2*i+1:len) = false; # do it
-      endif
-    endfor
-    p = [2, 1+2*find(sieve)];     # primes remaining after sieve
-  else
-    a = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, ...
-         53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, ...
-         109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, ...
-         173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, ...
-         233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, ...
-         293, 307, 311, 313, 317, 331, 337, 347, 349];
-    p = a(a <= n);
   endif
 
   if (! isa (n, "double"))
@@ -107,8 +113,10 @@ endfunction
 %!assert (primes (357)(end), 353)
 %!assert (class (primes (single (10))), "single")
 %!assert (class (primes (uint8 (10))), "uint8")
+%!assert (primes (-Inf), zeros (1,0))
 
-%!error primes ()
-%!error primes (1, 2)
-%!error <N must be a numeric scalar> primes ("1")
-%!error <N must be a numeric scalar> primes (ones (2,2))
+%!error <Invalid call> primes ()
+%!error <N must be a real scalar> primes (ones (2,2))
+%!error <N must be a real scalar> primes (5i)
+%!error <N must be finite> primes (Inf)
+%!error <N must be finite> primes (NaN)

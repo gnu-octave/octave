@@ -23,10 +23,10 @@
 ##
 ########################################################################
 
-%!assert (nested_test_1 (2), 24)
+%!assert <*61105> (nested_test_1 (2), 24)
 
-%!assert (nested_test_2 (), 24)
+%!assert <*61105> (nested_test_2 (), 24)
 
-%!test
+%!test <*61105>
 %!  fh = nested_test_3 ();
 %!  assert (fh (2), 24);

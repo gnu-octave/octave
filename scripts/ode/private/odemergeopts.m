@@ -23,8 +23,12 @@
 ##
 ########################################################################
 
+## FIXME: there are some calls to odemergeopts with a "solver" argument
+## but we don't use that here.  Should the calls be fixed or should we
+## do something with the solver argument here?
+
 function options = odemergeopts (caller, useroptions, options, classes,
-                                 attributes);
+                                 attributes, solver);
 
   for [value, key] = options
 

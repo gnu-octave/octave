@@ -44,7 +44,7 @@
 
 function s = blanks (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! (isscalar (n) && n == fix (n) && n >= 0))
     error ("blanks: N must be a non-negative integer");
@@ -63,8 +63,7 @@ endfunction
 %!assert (blanks (10), "          ")
 
 ## Test input validation
-%!error blanks ()
-%!error blanks (1, 2)
+%!error <Invalid call> blanks ()
 %!error blanks (ones (2))
 %!error blanks (2.1)
 %!error blanks (-2)

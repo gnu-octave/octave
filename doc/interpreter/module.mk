@@ -9,6 +9,7 @@ GRAPH_PROP_TEXI_SRC = \
   %reldir%/plot-lineproperties.texi \
   %reldir%/plot-patchproperties.texi \
   %reldir%/plot-rootproperties.texi \
+  %reldir%/plot-scatterproperties.texi \
   %reldir%/plot-surfaceproperties.texi \
   %reldir%/plot-textproperties.texi \
   %reldir%/plot-uimenuproperties.texi \
@@ -25,7 +26,7 @@ $(GRAPH_PROP_TEXI_SRC): | $(OCTAVE_INTERPRETER_TARGETS)
 
 define gen-propdoc-texi
   rm -f $@-t $@ && \
-  $(SHELL) run-octave --norc --silent --no-history --path $(srcdir)/doc/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
+  $(SHELL) run-octave -disable-asan --norc --silent --no-history --path $(srcdir)/doc/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
   mv $@-t $@
 endef
 
@@ -54,6 +55,9 @@ GRAPHICS_PROPS_SRC = libinterp/corefcn/graphics.in.h libinterp/corefcn/genprops.
 
 %reldir%/plot-rootproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,root)
+
+%reldir%/plot-scatterproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
+	$(AM_V_GEN)$(call gen-propdoc-texi,scatter)
 
 %reldir%/plot-surfaceproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,surface)

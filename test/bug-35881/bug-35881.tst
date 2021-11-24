@@ -23,7 +23,7 @@
 ##
 ########################################################################
 
-%!test
+%!test <*35881>
 %! global _tstvar_;  # Final test does "clear all" which removes this var.
 %!
 %! _tstvar_ = struct ("init1",-1, "a1",-1, "init2",-1, "a2",-1);

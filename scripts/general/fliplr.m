@@ -43,9 +43,10 @@
 
 function y = fliplr (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
+
   y = flip (x, 2);
 
 endfunction
@@ -78,5 +79,5 @@ endfunction
 %! a(:,1,:,2) = [ 5  6  7  8];
 %! assert (fliplr (a), a);
 
-%!error fliplr()
-%!error fliplr (1, 2)
+## Test input validation
+%!error <Invalid call> fliplr ()

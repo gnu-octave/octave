@@ -3,9 +3,6 @@ PARSE_TREE_INC = \
   %reldir%/bp-table.h \
   %reldir%/comment-list.h \
   %reldir%/filepos.h \
-  %reldir%/jit-ir.h \
-  %reldir%/jit-typeinfo.h \
-  %reldir%/jit-util.h \
   %reldir%/lex.h \
   %reldir%/oct-lvalue.h \
   %reldir%/parse.h \
@@ -13,6 +10,7 @@ PARSE_TREE_INC = \
   %reldir%/pt-all.h \
   %reldir%/pt-anon-scopes.h \
   %reldir%/pt-arg-list.h \
+  %reldir%/pt-args-block.h \
   %reldir%/pt-array-list.h \
   %reldir%/pt-assign.h \
   %reldir%/pt-binop.h \
@@ -31,13 +29,13 @@ PARSE_TREE_INC = \
   %reldir%/pt-fcn-handle.h \
   %reldir%/pt-id.h \
   %reldir%/pt-idx.h \
-  %reldir%/pt-jit.h \
   %reldir%/pt-jump.h \
   %reldir%/pt-loop.h \
   %reldir%/pt-mat.h \
   %reldir%/pt-misc.h \
   %reldir%/pt-pr-code.h \
   %reldir%/pt-select.h \
+  %reldir%/pt-spmd.h \
   %reldir%/pt-stmt.h \
   %reldir%/pt-tm-const.h \
   %reldir%/pt-unop.h \
@@ -53,9 +51,6 @@ PARSE_TREE_SRC = \
   %reldir%/anon-fcn-validator.cc \
   %reldir%/bp-table.cc \
   %reldir%/comment-list.cc \
-  %reldir%/jit-ir.cc \
-  %reldir%/jit-typeinfo.cc \
-  %reldir%/jit-util.cc \
   %reldir%/lex.ll \
   %reldir%/oct-gperf.h \
   %reldir%/oct-lvalue.cc \
@@ -64,6 +59,7 @@ PARSE_TREE_SRC = \
   %reldir%/profiler.cc \
   %reldir%/pt-anon-scopes.cc \
   %reldir%/pt-arg-list.cc \
+  %reldir%/pt-args-block.cc \
   %reldir%/pt-array-list.cc \
   %reldir%/pt-assign.cc \
   %reldir%/pt-binop.cc \
@@ -81,12 +77,12 @@ PARSE_TREE_SRC = \
   %reldir%/pt-fcn-handle.cc \
   %reldir%/pt-id.cc \
   %reldir%/pt-idx.cc \
-  %reldir%/pt-jit.cc \
   %reldir%/pt-loop.cc \
   %reldir%/pt-mat.cc \
   %reldir%/pt-misc.cc \
   %reldir%/pt-pr-code.cc \
   %reldir%/pt-select.cc \
+  %reldir%/pt-spmd.cc \
   %reldir%/pt-stmt.cc \
   %reldir%/pt-tm-const.cc \
   %reldir%/pt-unop.cc \
@@ -114,7 +110,7 @@ noinst_LTLIBRARIES += \
 
 %canon_reldir%_libparse_tree_la_CPPFLAGS = \
   $(libinterp_liboctinterp_la_CPPFLAGS) \
-  $(LLVM_CPPFLAGS)
+  $(OCTAVE_PARSER_CPPFLAGS)
 
 libinterp_EXTRA_DIST += \
   %reldir%/octave.gperf

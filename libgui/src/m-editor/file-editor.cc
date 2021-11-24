@@ -32,6 +32,7 @@
 #include <algorithm>
 
 #include <QApplication>
+#include <QClipboard>
 #include <QFile>
 #include <QFileDialog>
 #include <QFont>
@@ -51,6 +52,7 @@
 #include "gui-preferences-global.h"
 #include "main-window.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 #include "shortcut-manager.h"
 
 #include "oct-env.h"
@@ -65,21 +67,19 @@ namespace octave
 {
   // Functions of the the reimplemented tab widget
 
-  file_editor_tab_widget::file_editor_tab_widget (QWidget *p)
+  file_editor_tab_widget::file_editor_tab_widget (QWidget *p, file_editor *fe)
     : QTabWidget (p)
   {
     tab_bar *bar = new tab_bar (this);
 
-    connect (bar, SIGNAL (close_current_tab_signal (bool)),
-             p->parent (), SLOT (request_close_file (bool)));
+    connect (bar, &tab_bar::close_current_tab_signal,
+             fe, &file_editor::request_close_file);
 
     this->setTabBar (bar);
 
     setTabsClosable (true);
     setUsesScrollButtons (true);
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
     setMovable (true);
-#endif
   }
 
   tab_bar * file_editor_tab_widget::get_tab_bar (void) const
@@ -117,20 +117,17 @@ namespace octave
 
     m_closed = false;
     m_no_focus = false;
+    m_editor_ready = false;
 
     m_copy_action_enabled = false;
     m_undo_action_enabled = false;
+    m_current_tab_modified = false;
 
     construct ();
 
     setVisible (false);
     setAcceptDrops (true);
     setFocusPolicy (Qt::StrongFocus);
-  }
-
-  file_editor::~file_editor (void)
-  {
-    delete m_mru_file_menu;
   }
 
   void file_editor::focusInEvent (QFocusEvent *e)
@@ -193,6 +190,8 @@ namespace octave
       m_run_action->setShortcut (QKeySequence ());  // prevent ambiguous shortcuts
 
     m_run_action->setToolTip (tr ("Continue"));   // update tool tip
+
+    emit enter_debug_mode_signal ();
   }
 
   void file_editor::handle_exit_debug_mode (void)
@@ -200,10 +199,13 @@ namespace octave
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
     scmgr.set_shortcut (m_run_action, sc_edit_run_run_file);
     m_run_action->setToolTip (tr ("Save File and Run"));  // update tool tip
+
+    emit exit_debug_mode_signal ();
   }
 
   void file_editor::check_actions (void)
   {
+    // Do not include shared actions not only related to the editor
     bool have_tabs = m_tab_widget->count () > 0;
 
     m_edit_cmd_menu->setEnabled (have_tabs);
@@ -229,17 +231,23 @@ namespace octave
     m_find_next_action->setEnabled (have_tabs);
     m_find_previous_action->setEnabled (have_tabs);
     m_print_action->setEnabled (have_tabs);
-    m_run_action->setEnabled (have_tabs);
+
+    m_run_action->setEnabled (have_tabs && m_is_octave_file);
+
+    m_toggle_breakpoint_action->setEnabled (have_tabs && m_is_octave_file);
+    m_next_breakpoint_action->setEnabled (have_tabs && m_is_octave_file);
+    m_previous_breakpoint_action->setEnabled (have_tabs && m_is_octave_file);
+    m_remove_all_breakpoints_action->setEnabled (have_tabs && m_is_octave_file);
 
     m_edit_function_action->setEnabled (have_tabs);
-    m_save_action->setEnabled (have_tabs);
+    m_save_action->setEnabled (have_tabs && m_current_tab_modified);
     m_save_as_action->setEnabled (have_tabs);
     m_close_action->setEnabled (have_tabs);
     m_close_all_action->setEnabled (have_tabs);
     m_close_others_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
     m_sort_tabs_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
 
-    emit editor_tabs_changed_signal (have_tabs);
+    emit editor_tabs_changed_signal (have_tabs, m_is_octave_file);
   }
 
   // empty_script determines whether we have to create an empty script
@@ -248,6 +256,15 @@ namespace octave
   // 2. When the editor becomes visible when octave is running
   void file_editor::empty_script (bool startup, bool visible)
   {
+
+    if (startup)
+      m_editor_ready = true;
+    else
+      {
+        if (! m_editor_ready)
+          return;  // not yet ready but got visibility changed signals
+      }
+
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     if (settings->value (global_use_custom_editor.key,
@@ -267,28 +284,33 @@ namespace octave
     if (startup && ! isFloating ())
       {
         // check if editor is really visible or hidden between tabbed widgets
-        QList<QTabBar *> tab_list = main_win ()->findChildren<QTabBar *>();
+        QWidget *parent = parentWidget ();
 
-        bool in_tab = false;
-        int i = 0;
-        while ((i < tab_list.count ()) && (! in_tab))
+        if (parent)
           {
-            QTabBar *tab = tab_list.at (i);
-            i++;
+            QList<QTabBar *> tab_list = parent->findChildren<QTabBar *>();
 
-            int j = 0;
-            while ((j < tab->count ()) && (! in_tab))
+            bool in_tab = false;
+            int i = 0;
+            while ((i < tab_list.count ()) && (! in_tab))
               {
-                // check all tabs for the editor
-                if (tab->tabText (j) == windowTitle ())
+                QTabBar *tab = tab_list.at (i);
+                i++;
+
+                int j = 0;
+                while ((j < tab->count ()) && (! in_tab))
                   {
-                    // editor is in this tab widget
-                    in_tab = true;
-                    int top = tab->currentIndex ();
-                    if (! (top > -1 && tab->tabText (top) == windowTitle ()))
-                      return; // not current tab -> not visible
+                    // check all tabs for the editor
+                    if (tab->tabText (j) == windowTitle ())
+                      {
+                        // editor is in this tab widget
+                        in_tab = true;
+                        int top = tab->currentIndex ();
+                        if (! (top > -1 && tab->tabText (top) == windowTitle ()))
+                          return; // not current tab -> not visible
+                      }
+                    j++;
                   }
-                j++;
               }
           }
       }
@@ -468,8 +490,8 @@ namespace octave
       {
         // Wait for all editor tabs to have saved their files if required
 
-        connect (fe_tab, SIGNAL (tab_ready_to_close (void)),
-                 this, SLOT (handle_tab_ready_to_close (void)),
+        connect (fe_tab, &file_editor_tab::tab_ready_to_close,
+                 this, &file_editor::handle_tab_ready_to_close,
                  Qt::UniqueConnection);
       }
 
@@ -489,7 +511,7 @@ namespace octave
             m_closing_canceled = true;
 
             for (auto fet : fe_tab_lst)
-              disconnect (fet, SIGNAL (tab_ready_to_close (void)), 0, 0 );
+              disconnect (fet, &file_editor_tab::tab_ready_to_close, 0, 0);
 
             return false;
           }
@@ -586,6 +608,15 @@ namespace octave
       }
   }
 
+  void file_editor::copy_full_file_path (bool)
+  {
+    file_editor_tab *editor_tab
+      = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
+
+    if (editor_tab)
+      QGuiApplication::clipboard ()->setText (editor_tab->file_name ());
+  }
+
   // open a file from the mru list
   void file_editor::request_mru_open_file (QAction *action)
   {
@@ -641,7 +672,7 @@ namespace octave
   void file_editor::request_run_file (bool)
   {
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -856,7 +887,7 @@ namespace octave
     if (isFloating ())
       m_find_dialog = new find_dialog (m_octave_qobj, this, this);
     else
-      m_find_dialog = new find_dialog (m_octave_qobj, this, main_win ());
+      m_find_dialog = new find_dialog (m_octave_qobj, this, parentWidget ());
 
     // Add required actions
     m_find_dialog->addAction (m_find_next_action);
@@ -877,8 +908,14 @@ namespace octave
     if (! isFloating ())
       {
         // Fix position if editor is docked
-        xp = xp + main_win ()->x();
-        yp = yp + main_win ()->y();
+
+        QWidget *parent = parentWidget ();
+
+        if  (parent)
+          {
+            xp = xp + parent->x ();
+            yp = yp + parent->y ();
+          }
       }
 
     if (yp < 0)
@@ -929,6 +966,10 @@ namespace octave
               {
                 m_tab_widget->setTabText (i, fname);
                 m_tab_widget->setTabToolTip (i, tip);
+
+                m_save_action->setEnabled (modified);
+                m_current_tab_modified = modified;
+
                 if (modified)
                   m_tab_widget->setTabIcon (i, rmgr.icon ("document-save"));
                 else
@@ -978,17 +1019,26 @@ namespace octave
   }
 
   void file_editor::handle_editor_state_changed (bool copy_available,
-                                                 bool is_octave_file)
+                                                 bool is_octave_file,
+                                                 bool is_modified)
   {
     // In case there is some scenario where traffic could be coming from
     // all the file editor tabs, just process info from the current active tab.
     if (sender () == m_tab_widget->currentWidget ())
       {
+        m_save_action->setEnabled (is_modified);
+        m_current_tab_modified = is_modified;
+
         if (m_copy_action)
           m_copy_action->setEnabled (copy_available);
+
         m_cut_action->setEnabled (copy_available);
+
         m_run_selection_action->setEnabled (copy_available);
         m_run_action->setEnabled (is_octave_file);
+        m_is_octave_file = is_octave_file;
+
+        emit editor_tabs_changed_signal (true, m_is_octave_file);
       }
 
     m_copy_action_enabled = m_copy_action->isEnabled ();
@@ -1229,26 +1279,24 @@ namespace octave
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-    // Tab position
+    // Tab position and rotation
     QTabWidget::TabPosition pos
       = static_cast<QTabWidget::TabPosition> (settings->value (ed_tab_position).toInt ());
+    bool rotated = settings->value (ed_tabs_rotated).toBool ();
 
     m_tab_widget->setTabPosition (pos);
 
-    // Update style sheet properties depending on position
-    QString width_str ("width");
-    QString height_str ("height");
-    if (pos == QTabWidget::West || pos == QTabWidget::East)
-      {
-        width_str = QString ("height");
-        height_str = QString ("width");
-      }
+    if (rotated)
+      m_tab_widget->setTabsClosable (false);  // No close buttons
+      // FIXME: close buttons can not be correctly placed in rotated tabs
 
-    // Min and max width for full path titles
-    int tab_width_min = settings->value (ed_notebook_tab_width_min)
-                        .toInt ();
-    int tab_width_max = settings->value (ed_notebook_tab_width_max)
-                        .toInt ();
+    // Get the tab bar and set the rotation
+    int rotation = rotated;
+    if (pos == QTabWidget::West)
+      rotation = -rotation;
+
+    tab_bar *bar = m_tab_widget->get_tab_bar ();
+    bar->set_rotated (rotation);
 
     // Get suitable height of a tab related to font and icon size
     int height = 1.5*QFontMetrics (m_tab_widget->font ()).height ();
@@ -1256,35 +1304,40 @@ namespace octave
     if (is > height)
       height = is;
 
-    // Style sheet for tab height
-    QString style_sheet = QString ("QTabBar::tab {max-" + height_str + ": %1px;}")
-                          .arg (height);
+    // Calculate possibly limited width and set the elide mode
+    int chars = settings->value (ed_tabs_max_width).toInt ();
+    int width = 9999;
+    if (chars > 0)
+      width = chars * QFontMetrics (m_tab_widget->font ()).averageCharWidth ();
 
-    // Style sheet for tab height together with width
-    if (settings->value (ed_long_window_title).toBool ())
+    // Get tab bar size properties for style sheet depending on rotation
+    QString width_str ("width");
+    QString height_str ("height");
+    if ((pos == QTabWidget::West) || (pos == QTabWidget::East))
       {
-        style_sheet = QString ("QTabBar::tab "
-                               " {max-" + height_str + ": %1px;"
-                               "  min-" + width_str + ": %2px;"
-                               "  max-" + width_str + ": %3px;}")
-                      .arg (height).arg (tab_width_min).arg (tab_width_max);
-        m_tab_widget->setElideMode (Qt::ElideLeft);
+        width_str = QString ("height");
+        height_str = QString ("width");
       }
-    else
-      {
-        m_tab_widget->setElideMode (Qt::ElideNone);
-      }
+
+    QString style_sheet
+        = QString ("QTabBar::tab {max-" + height_str + ": %1px;\n"
+                                 "max-" + width_str + ": %2px; }")
+                          .arg (height).arg (width);
 
 #if defined (Q_OS_MAC)
     // FIXME: This is a workaround for missing tab close buttons on MacOS
     // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
-    QString close_button_css
-      ("QTabBar::close-button"
-       "  { width: 6px; image: url(:/actions/icons/widget-close.png);}\n"
-       "QTabBar::close-button:hover"
-       "  { background-color: #cccccc; }");
+    if (! rotated)
+      {
+        QString close_button_css_mac (
+            "QTabBar::close-button"
+            "  { width: 6px; image: url(:/actions/icons/widget-close.png);"
+            "    subcontrol-position: button; }\n"
+            "QTabBar::close-button:hover"
+            "  { background-color: #cccccc; }");
 
-    style_sheet = style_sheet + close_button_css;
+        style_sheet = style_sheet + close_button_css_mac;
+      }
 #endif
 
     m_tab_widget->setStyleSheet (style_sheet);
@@ -1416,6 +1469,11 @@ namespace octave
   // files and is made visible.
   void file_editor::handle_visibility (bool visible)
   {
+    octave_dock_widget::handle_visibility (visible);
+
+    if (! m_editor_ready)
+      return;
+
     if (m_closed && visible)
       {
         m_closed = false;
@@ -1425,9 +1483,6 @@ namespace octave
       }
 
     empty_script (false, visible);
-
-    if (visible && ! isFloating ())
-      setFocus ();
   }
 
   // This slot is a reimplementation of the virtual slot in octave_dock_widget.
@@ -1819,15 +1874,22 @@ namespace octave
 
   bool file_editor::is_editor_console_tabbed (void)
   {
-    main_window *w = static_cast<main_window *>(main_win ());
-    QList<QDockWidget *> w_list = w->tabifiedDockWidgets (this);
-    QDockWidget *console =
-      static_cast<QDockWidget *> (w->get_dock_widget_list ().at (0));
+    // FIXME: is there a way to do this job that doesn't require casting
+    // the parent to a main_window object?
 
-    for (int i = 0; i < w_list.count (); i++)
+    main_window *w = dynamic_cast<main_window *> (parentWidget ());
+
+    if (w)
       {
-        if (w_list.at (i) == console)
-          return true;
+        QList<QDockWidget *> w_list = w->tabifiedDockWidgets (this);
+        QDockWidget *console =
+          static_cast<QDockWidget *> (w->get_dock_widget_list ().at (0));
+
+        for (int i = 0; i < w_list.count (); i++)
+          {
+            if (w_list.at (i) == console)
+              return true;
+          }
       }
 
     return false;
@@ -1849,7 +1911,7 @@ namespace octave
     m_tool_bar = new QToolBar (editor_widget);
     m_tool_bar->setMovable (true);
 
-    m_tab_widget = new file_editor_tab_widget (editor_widget);
+    m_tab_widget = new file_editor_tab_widget (editor_widget, this);
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
@@ -2291,33 +2353,30 @@ namespace octave
     editor_widget->setLayout (vbox_layout);
     setWidget (editor_widget);
 
-    // create the context menu of the tab bar
+    // Create the basic context menu of the tab bar with editor actions.
+    // Actions for selecting an tab are added when the menu is activated.
     tab_bar *bar = m_tab_widget->get_tab_bar ();
     QMenu *ctx_men = bar->get_context_menu ();
+    ctx_men->addSeparator ();
     ctx_men->addAction (m_close_action);
     ctx_men->addAction (m_close_all_action);
     ctx_men->addAction (m_close_others_action);
     ctx_men->addSeparator ();
     ctx_men->addAction (m_sort_tabs_action);
+    add_action (ctx_men, tr ("Copy Full File &Path"),
+                SLOT (copy_full_file_path (bool)), this);
 
     // signals
-    connect (this, SIGNAL (request_settings_dialog (const QString&)),
-             main_win (),
-             SLOT (process_settings_dialog_request (const QString&)));
-
-    connect (this, SIGNAL (request_dbcont_signal (void)),
-             main_win (), SLOT (debug_continue (void)));
-
-    connect (m_mru_file_menu, SIGNAL (triggered (QAction *)),
-             this, SLOT (request_mru_open_file (QAction *)));
+    connect (m_mru_file_menu, &QMenu::triggered,
+             this, &file_editor::request_mru_open_file);
 
     mru_menu_update ();
 
-    connect (m_tab_widget, SIGNAL (tabCloseRequested (int)),
-             this, SLOT (handle_tab_close_request (int)));
+    connect (m_tab_widget, &file_editor_tab_widget::tabCloseRequested,
+             this, &file_editor::handle_tab_close_request);
 
-    connect (m_tab_widget, SIGNAL (currentChanged (int)),
-             this, SLOT (active_tab_changed (int)));
+    connect (m_tab_widget, &file_editor_tab_widget::currentChanged,
+             this, &file_editor::active_tab_changed);
 
     resize (500, 400);
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
@@ -2366,22 +2425,11 @@ namespace octave
     file_editor_tab *f = new file_editor_tab (m_octave_qobj, directory);
 
     // signals from the qscintilla edit area
-    connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
-             this, SLOT (edit_status_update (bool, bool)));
+    connect (f->qsci_edit_area (), &octave_qscintilla::status_update,
+             this, &file_editor::edit_status_update);
 
-    connect (f->qsci_edit_area (), SIGNAL (show_doc_signal (const QString&)),
-             main_win (), SLOT (handle_show_doc (const QString&)));
-
-    connect (f->qsci_edit_area (), SIGNAL (create_context_menu_signal (QMenu *)),
-             this, SLOT (create_context_menu (QMenu *)));
-
-    connect (f->qsci_edit_area (),
-             SIGNAL (execute_command_in_terminal_signal (const QString&)),
-             main_win (), SLOT (execute_command_in_terminal (const QString&)));
-
-    connect (f->qsci_edit_area (),
-             SIGNAL (focus_console_after_command_signal (void)),
-             main_win (), SLOT (focus_console_after_command (void)));
+    connect (f->qsci_edit_area (), &octave_qscintilla::create_context_menu_signal,
+             this, &file_editor::create_context_menu);
 
     connect (f->qsci_edit_area (),
              SIGNAL (SCN_AUTOCCOMPLETED (const char*, int, int, int)),
@@ -2390,171 +2438,180 @@ namespace octave
     connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED (void)),
              this, SLOT (handle_autoc_cancelled (void)));
 
+    // signals from the qscintilla edit area
+    connect (this, &file_editor::enter_debug_mode_signal,
+             f->qsci_edit_area (), &octave_qscintilla::handle_enter_debug_mode);
+
+    connect (this, &file_editor::exit_debug_mode_signal,
+             f->qsci_edit_area (), &octave_qscintilla::handle_exit_debug_mode);
+
     // Signals from the file editor_tab
-    connect (f, SIGNAL (autoc_closed (void)),
-             this, SLOT (reset_focus (void)));
+    connect (f, &file_editor_tab::autoc_closed,
+             this, &file_editor::reset_focus);
 
-    connect (f, SIGNAL (file_name_changed (const QString&, const QString&, bool)),
-             this, SLOT (handle_file_name_changed (const QString&,
-                                                   const QString&, bool)));
+    connect (f, &file_editor_tab::file_name_changed,
+             this, &file_editor::handle_file_name_changed);
 
-    connect (f, SIGNAL (editor_state_changed (bool, bool)),
-             this, SLOT (handle_editor_state_changed (bool, bool)));
+    connect (f, &file_editor_tab::editor_state_changed,
+             this, &file_editor::handle_editor_state_changed);
 
-    connect (f, SIGNAL (tab_remove_request ()),
-             this, SLOT (handle_tab_remove_request ()));
+    connect (f, &file_editor_tab::tab_remove_request,
+             this, &file_editor::handle_tab_remove_request);
 
-    connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
-             this, SLOT (check_conflict_save (const QString&, bool)));
+    connect (f, &file_editor_tab::editor_check_conflict_save,
+             this, &file_editor::check_conflict_save);
 
-    connect (f, SIGNAL (mru_add_file (const QString&, const QString&)),
-             this, SLOT (handle_mru_add_file (const QString&, const QString&)));
+    connect (f, &file_editor_tab::mru_add_file,
+             this, &file_editor::handle_mru_add_file);
 
-    connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
-             main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
+    connect (f, &file_editor_tab::request_open_file,
+             this, [=] (const QString& fname, const QString& encoding) { request_open_file (fname, encoding); });
 
-    connect (f, SIGNAL (request_open_file (const QString&, const QString&)),
-             this, SLOT (request_open_file (const QString&, const QString&)));
+    connect (f, &file_editor_tab::edit_area_changed,
+             this, &file_editor::edit_area_changed);
 
-    connect (f, SIGNAL (edit_mfile_request (const QString&, const QString&,
-                                            const QString&, int)),
-             main_win (), SLOT (handle_edit_mfile_request (const QString&,
-                                                           const QString&,
-                                                           const QString&, int)));
+    connect (f, &file_editor_tab::set_focus_editor_signal,
+             this, &file_editor::set_focus);
 
-    connect (f, SIGNAL (edit_area_changed (octave_qscintilla*)),
-             this, SIGNAL (edit_area_changed (octave_qscintilla*)));
+    // Signals from the file_editor or main-win non-trivial operations
+    connect (this, &file_editor::fetab_settings_changed,
+             f, [=] (const gui_settings *settings) { f->notice_settings (settings); });
 
-    connect (f, SIGNAL (set_focus_editor_signal (QWidget*)),
-             this, SLOT (set_focus (QWidget*)));
+    connect (this, &file_editor::fetab_change_request,
+             f, &file_editor_tab::change_editor_state);
 
-    // Signals from the file_editor non-trivial operations
-    connect (this, SIGNAL (fetab_settings_changed (const gui_settings *)),
-             f, SLOT (notice_settings (const gui_settings *)));
-
-    connect (this, SIGNAL (fetab_change_request (const QWidget*)),
-             f, SLOT (change_editor_state (const QWidget*)));
-
-    connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&,
-                                            bool)),
-             f, SLOT (save_file (const QWidget*, const QString&, bool)));
+    connect (this, QOverload<const QWidget*, const QString&, bool>::of (&file_editor::fetab_save_file),
+             f, QOverload<const QWidget*, const QString&, bool>::of (&file_editor_tab::save_file));
 
     // Signals from the file_editor trivial operations
-    connect (this, SIGNAL (fetab_recover_from_exit (void)),
-             f, SLOT (recover_from_exit (void)));
+    connect (this, &file_editor::fetab_recover_from_exit,
+             f, &file_editor_tab::recover_from_exit);
 
-    connect (this, SIGNAL (fetab_set_directory (const QString&)),
-             f, SLOT (set_current_directory (const QString&)));
+    connect (this, &file_editor::fetab_set_directory,
+             f, &file_editor_tab::set_current_directory);
 
-    connect (this, SIGNAL (fetab_zoom_in (const QWidget*)),
-             f, SLOT (zoom_in (const QWidget*)));
-    connect (this, SIGNAL (fetab_zoom_out (const QWidget*)),
-             f, SLOT (zoom_out (const QWidget*)));
-    connect (this, SIGNAL (fetab_zoom_normal (const QWidget*)),
-             f, SLOT (zoom_normal (const QWidget*)));
+    connect (this, &file_editor::fetab_zoom_in,
+             f, &file_editor_tab::zoom_in);
+    connect (this, &file_editor::fetab_zoom_out,
+             f, &file_editor_tab::zoom_out);
+    connect (this, &file_editor::fetab_zoom_normal,
+             f, &file_editor_tab::zoom_normal);
 
-    connect (this, SIGNAL (fetab_context_help (const QWidget*, bool)),
-             f, SLOT (context_help (const QWidget*, bool)));
+    connect (this, &file_editor::fetab_context_help,
+             f, &file_editor_tab::context_help);
 
-    connect (this, SIGNAL (fetab_context_edit (const QWidget*)),
-             f, SLOT (context_edit (const QWidget*)));
+    connect (this, &file_editor::fetab_context_edit,
+             f, &file_editor_tab::context_edit);
 
-    connect (this, SIGNAL (fetab_save_file (const QWidget*)),
-             f, SLOT (save_file (const QWidget*)));
+    connect (this, QOverload<const QWidget*>::of (&file_editor::fetab_save_file),
+             f, QOverload<const QWidget*>::of (&file_editor_tab::save_file));
 
-    connect (this, SIGNAL (fetab_save_file_as (const QWidget*)),
-             f, SLOT (save_file_as (const QWidget*)));
+    connect (this, &file_editor::fetab_save_file_as,
+             f, QOverload<const QWidget *>::of (&file_editor_tab::save_file_as));
 
-    connect (this, SIGNAL (fetab_print_file (const QWidget*)),
-             f, SLOT (print_file (const QWidget*)));
+    connect (this, &file_editor::fetab_print_file,
+             f, &file_editor_tab::print_file);
 
-    connect (this, SIGNAL (fetab_run_file (const QWidget*, bool)),
-             f, SLOT (run_file (const QWidget*, bool)));
+    connect (this, &file_editor::fetab_run_file,
+             f, &file_editor_tab::run_file);
 
-    connect (this, SIGNAL (fetab_context_run (const QWidget*)),
-             f, SLOT (context_run (const QWidget*)));
+    connect (this, &file_editor::fetab_context_run,
+             f, &file_editor_tab::context_run);
 
-    connect (this, SIGNAL (fetab_toggle_bookmark (const QWidget*)),
-             f, SLOT (toggle_bookmark (const QWidget*)));
+    connect (this, &file_editor::fetab_toggle_bookmark,
+             f, &file_editor_tab::toggle_bookmark);
 
-    connect (this, SIGNAL (fetab_next_bookmark (const QWidget*)),
-             f, SLOT (next_bookmark (const QWidget*)));
+    connect (this, &file_editor::fetab_next_bookmark,
+             f, &file_editor_tab::next_bookmark);
 
-    connect (this, SIGNAL (fetab_previous_bookmark (const QWidget*)),
-             f, SLOT (previous_bookmark (const QWidget*)));
+    connect (this, &file_editor::fetab_previous_bookmark,
+             f, &file_editor_tab::previous_bookmark);
 
-    connect (this, SIGNAL (fetab_remove_bookmark (const QWidget*)),
-             f, SLOT (remove_bookmark (const QWidget*)));
+    connect (this, &file_editor::fetab_remove_bookmark,
+             f, &file_editor_tab::remove_bookmark);
 
-    connect (this, SIGNAL (fetab_toggle_breakpoint (const QWidget*)),
-             f, SLOT (toggle_breakpoint (const QWidget*)));
+    connect (this, &file_editor::fetab_toggle_breakpoint,
+             f, &file_editor_tab::toggle_breakpoint);
 
-    connect (this, SIGNAL (fetab_next_breakpoint (const QWidget*)),
-             f, SLOT (next_breakpoint (const QWidget*)));
+    connect (this, &file_editor::fetab_next_breakpoint,
+             f, &file_editor_tab::next_breakpoint);
 
-    connect (this, SIGNAL (fetab_previous_breakpoint (const QWidget*)),
-             f, SLOT (previous_breakpoint (const QWidget*)));
+    connect (this, &file_editor::fetab_previous_breakpoint,
+             f, &file_editor_tab::previous_breakpoint);
 
-    connect (this, SIGNAL (fetab_remove_all_breakpoints (const QWidget*)),
-             f, SLOT (remove_all_breakpoints (const QWidget*)));
+    connect (this, &file_editor::fetab_remove_all_breakpoints,
+             f, &file_editor_tab::remove_all_breakpoints);
 
-    connect (this, SIGNAL (fetab_scintilla_command (const QWidget *,
-                                                    unsigned int)),
-             f, SLOT (scintilla_command (const QWidget *, unsigned int)));
+    connect (this, &file_editor::fetab_scintilla_command,
+             f, &file_editor_tab::scintilla_command);
 
-    connect (this, SIGNAL (fetab_comment_selected_text (const QWidget*, bool)),
-             f, SLOT (comment_selected_text (const QWidget*, bool)));
+    connect (this, &file_editor::fetab_comment_selected_text,
+             f, &file_editor_tab::comment_selected_text);
 
-    connect (this, SIGNAL (fetab_uncomment_selected_text (const QWidget*)),
-             f, SLOT (uncomment_selected_text (const QWidget*)));
+    connect (this, &file_editor::fetab_uncomment_selected_text,
+             f, &file_editor_tab::uncomment_selected_text);
 
-    connect (this, SIGNAL (fetab_indent_selected_text (const QWidget*)),
-             f, SLOT (indent_selected_text (const QWidget*)));
+    connect (this, &file_editor::fetab_indent_selected_text,
+             f, &file_editor_tab::indent_selected_text);
 
-    connect (this, SIGNAL (fetab_unindent_selected_text (const QWidget*)),
-             f, SLOT (unindent_selected_text (const QWidget*)));
+    connect (this, &file_editor::fetab_unindent_selected_text,
+             f, &file_editor_tab::unindent_selected_text);
 
-    connect (this, SIGNAL (fetab_smart_indent_line_or_selected_text (const QWidget*)),
-             f, SLOT (smart_indent_line_or_selected_text (const QWidget*)));
+    connect (this, &file_editor::fetab_smart_indent_line_or_selected_text,
+             f, &file_editor_tab::smart_indent_line_or_selected_text);
 
-    connect (this,
-             SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),
-             f, SLOT (convert_eol (const QWidget*, QsciScintilla::EolMode)));
+    connect (this, &file_editor::fetab_convert_eol,
+             f, &file_editor_tab::convert_eol);
 
-    connect (this, SIGNAL (fetab_goto_line (const QWidget*, int)),
-             f, SLOT (goto_line (const QWidget*, int)));
+    connect (this, &file_editor::fetab_goto_line,
+             f, &file_editor_tab::goto_line);
 
-    connect (this, SIGNAL (fetab_move_match_brace (const QWidget*, bool)),
-             f, SLOT (move_match_brace (const QWidget*, bool)));
+    connect (this, &file_editor::fetab_move_match_brace,
+             f, &file_editor_tab::move_match_brace);
 
-    connect (this, SIGNAL (fetab_completion (const QWidget*)),
-             f, SLOT (show_auto_completion (const QWidget*)));
+    connect (this, &file_editor::fetab_completion,
+             f, &file_editor_tab::show_auto_completion);
 
-    connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
-             f, SLOT (set_focus (const QWidget*)));
+    connect (this, &file_editor::fetab_set_focus,
+             f, &file_editor_tab::set_focus);
 
-    connect (this, SIGNAL (fetab_insert_debugger_pointer (const QWidget*, int)),
-             f, SLOT (insert_debugger_pointer (const QWidget*, int)));
+    connect (this, &file_editor::fetab_insert_debugger_pointer,
+             f, &file_editor_tab::insert_debugger_pointer);
 
-    connect (this, SIGNAL (fetab_delete_debugger_pointer (const QWidget*, int)),
-             f, SLOT (delete_debugger_pointer (const QWidget*, int)));
+    connect (this, &file_editor::fetab_delete_debugger_pointer,
+             f, &file_editor_tab::delete_debugger_pointer);
 
-    connect (f, SIGNAL (debug_quit_signal (void)),
-             main_win (), SLOT (debug_quit (void)));
+    connect (this, &file_editor::fetab_do_breakpoint_marker,
+             f, &file_editor_tab::do_breakpoint_marker);
 
-    connect (this, SIGNAL (fetab_do_breakpoint_marker (bool, const QWidget*,
-                                                       int, const QString&)),
-             f, SLOT (do_breakpoint_marker (bool, const QWidget*, int,
-                                            const QString&)));
+    connect (this, &file_editor::update_gui_lexer_signal,
+             f, &file_editor_tab::update_lexer_settings);
+
+    // Convert other signals from the edit area and tab to editor signals.
+
+    connect (f->qsci_edit_area (), &octave_qscintilla::execute_command_in_terminal_signal,
+             this, &file_editor::execute_command_in_terminal_signal);
+
+    connect (f->qsci_edit_area (), &octave_qscintilla::focus_console_after_command_signal,
+             this, &file_editor::focus_console_after_command_signal);
+
+    connect (f, &file_editor_tab::run_file_signal,
+             this, &file_editor::run_file_signal);
+
+    connect (f, &file_editor_tab::edit_mfile_request,
+             this, &file_editor::edit_mfile_request);
+
+    connect (f, &file_editor_tab::debug_quit_signal,
+             this, &file_editor::debug_quit_signal);
 
     // Any interpreter_event signal from a file_editor_tab_widget is
     // handled the same as for the parent main_window object.
 
-    connect (f, SIGNAL (interpreter_event (const fcn_callback&)),
-             this, SIGNAL (interpreter_event (const fcn_callback&)));
+    connect (f, QOverload<const fcn_callback&>::of (&file_editor_tab::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&file_editor::interpreter_event));
 
-    connect (f, SIGNAL (interpreter_event (const meth_callback&)),
-             this, SIGNAL (interpreter_event (const meth_callback&)));
+    connect (f, QOverload<const meth_callback&>::of (&file_editor_tab::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&file_editor::interpreter_event));
 
     return f;
   }

@@ -29,9 +29,12 @@
 
 #include <cctype>
 
+#include <condition_variable>
 #include <iostream>
 #include <list>
+#include <mutex>
 #include <string>
+#include <thread>
 
 #include "cmd-edit.h"
 #include "file-ops.h"
@@ -68,11 +71,8 @@
 #include "utils.h"
 #include "variables.h"
 
-//FIXME: This should be part of tree_evaluator
-#include "pt-jit.h"
+OCTAVE_NAMESPACE_BEGIN
 
-namespace octave
-{
   // Normal evaluator.
 
   class quit_debug_exception
@@ -111,14 +111,13 @@ namespace octave
         m_execution_mode (EX_NORMAL), m_in_debug_repl (false)
     { }
 
+    int server_loop (void);
+
     void repl (const std::string& prompt = "debug> ");
 
     bool in_debug_repl (void) const { return m_in_debug_repl; }
 
-    void dbcont (void)
-    {
-      m_execution_mode = EX_CONTINUE;
-    }
+    void dbcont (void) { m_execution_mode = EX_CONTINUE; }
 
     void dbquit (bool all = false)
     {
@@ -140,6 +139,121 @@ namespace octave
     bool m_in_debug_repl;
   };
 
+  // FIXME: Could the debugger server_loop and repl functions be merged
+  // with the corresponding tree_evaluator functions or do they need to
+  // remain separate?  They perform nearly the same functions.
+
+  int debugger::server_loop (void)
+  {
+    // Process events from the event queue.
+
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+    void (tree_evaluator::*server_mode_fptr) (bool)
+      = &tree_evaluator::server_mode;
+    unwind_action act (server_mode_fptr, &tw, true);
+
+    int exit_status = 0;
+
+    do
+      {
+        if (m_execution_mode == EX_CONTINUE || tw.dbstep_flag ())
+          break;
+
+        if (quitting_debugger ())
+          break;
+
+        try
+          {
+            // FIXME: Should we call octave_quit in the octave::sleep
+            // and/or command_editor::run_event_hooks functions?
+
+            octave_quit ();
+
+            // FIXME: Running the event queue should be decoupled from
+            // the command_editor.
+
+            // FIXME: Is it OK to use command_editor::run_event_hooks
+            // here?  It may run more than one queued function per call,
+            // and it seems that the checks at the top of the loop
+            // probably need to be done after each individual event
+            // function is executed.  For now, maybe the simplest thing
+            // would be to pass a predicate function (lambda expression)
+            // to the command_editor::run_event_hooks and have it check
+            // that and break out of the eval loop(s) if the condition
+            // is met?
+
+            // FIXME: We should also use a condition variable to manage
+            // the execution of entries in the queue and eliminate the
+            // need for the busy-wait loop.
+
+            command_editor::run_event_hooks ();
+
+            sleep (0.1);
+          }
+        catch (const interrupt_exception&)
+          {
+            octave_interrupt_state = 1;
+            m_interpreter.recover_from_exception ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interpreter.interactive ())
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            error_system& es = m_interpreter.get_error_system ();
+
+            es.save_exception (ee);
+            es.display_exception (ee);
+
+            if (m_interpreter.interactive ())
+              {
+                m_interpreter.recover_from_exception ();
+              }
+            else
+              {
+                // We should exit with a nonzero status.
+                exit_status = 1;
+                break;
+              }
+          }
+        catch (const quit_debug_exception& qde)
+          {
+            if (qde.all ())
+              throw;
+
+            // Continue in this debug level.
+          }
+        catch (const std::bad_alloc&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (exit_status == 0);
+
+    if (exit_status == EOF)
+      {
+        if (m_interpreter.interactive ())
+          octave_stdout << "\n";
+
+        exit_status = 0;
+      }
+
+    return exit_status;
+  }
+
   void debugger::repl (const std::string& prompt_arg)
   {
     unwind_protect frame;
@@ -153,8 +267,8 @@ namespace octave
 
     bool silent = tw.quiet_breakpoint_flag (false);
 
-    frame.add_method (tw, &tree_evaluator::restore_frame,
-                      tw.current_call_stack_frame_number ());
+    frame.add (&tree_evaluator::restore_frame, &tw,
+               tw.current_call_stack_frame_number ());
 
     tw.goto_frame (tw.debug_frame ());
 
@@ -172,6 +286,8 @@ namespace octave
     std::ostringstream buf;
 
     input_system& input_sys = m_interpreter.get_input_system ();
+
+    event_manager& evmgr = m_interpreter.get_event_manager ();
 
     if (! fcn_nm.empty ())
       {
@@ -194,16 +310,12 @@ namespace octave
                 frm->display_stopped_in_message (buf);
               }
 
-            event_manager& evmgr = m_interpreter.get_event_manager ();
-
             evmgr.enter_debugger_event (fcn_nm, fcn_file_nm, curr_debug_line);
 
             evmgr.set_workspace ();
 
-            frame.add ([&evmgr, fcn_nm, curr_debug_line] (void) {
-                         evmgr.execute_in_debugger_event (fcn_nm,
-                                                          curr_debug_line);
-                       });
+            frame.add (&event_manager::execute_in_debugger_event, &evmgr,
+                       fcn_nm, curr_debug_line);
 
             if (! silent)
               {
@@ -223,143 +335,167 @@ namespace octave
 
     std::string stopped_in_msg = buf.str ();
 
-    if (! stopped_in_msg.empty ())
-      std::cerr << stopped_in_msg << std::endl;
-
-    std::string tmp_prompt = prompt_arg;
-    if (m_level > 0)
-      tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt_arg;
-
-    frame.add_method (input_sys, &input_system::set_PS1, input_sys.PS1 ());
-    input_sys.PS1 (tmp_prompt);
-
-    if (! m_interpreter.interactive ())
+    if (m_interpreter.server_mode ())
       {
+        if (! stopped_in_msg.empty ())
+          octave_stdout << stopped_in_msg << std::endl;
 
-        frame.add_method (m_interpreter, &interpreter::interactive,
-                          m_interpreter.interactive ());
+        evmgr.push_event_queue ();
 
-        m_interpreter.interactive (true);
+        frame.add (&event_manager::pop_event_queue, &evmgr);
 
-        // FIXME: should debugging be possible in an embedded
-        // interpreter?
+        frame.add (&tree_evaluator::set_parser, &tw, tw.get_parser ());
 
-        application *app = application::app ();
+        std::shared_ptr<push_parser>
+          debug_parser (new push_parser (m_interpreter));
 
-        if (app)
-          {
-            frame.add_method (app, &application::forced_interactive,
-                              app->forced_interactive ());
+        tw.set_parser (debug_parser);
 
-            app->forced_interactive (true);
-          }
+        server_loop ();
       }
+    else
+      {
+        if (! stopped_in_msg.empty ())
+          std::cerr << stopped_in_msg << std::endl;
+
+        std::string tmp_prompt = prompt_arg;
+        if (m_level > 0)
+          tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt_arg;
+
+        frame.add (&input_system::set_PS1, &input_sys, input_sys.PS1 ());
+        input_sys.PS1 (tmp_prompt);
+
+        if (! m_interpreter.interactive ())
+          {
+            void (interpreter::*interactive_fptr) (bool)
+              = &interpreter::interactive;
+            frame.add (interactive_fptr, &m_interpreter,
+                       m_interpreter.interactive ());
+
+            m_interpreter.interactive (true);
+
+            // FIXME: should debugging be possible in an embedded
+            // interpreter?
+
+            application *app = application::app ();
+
+            if (app)
+              {
+                void (application::*forced_interactive_fptr) (bool)
+                  = &application::forced_interactive;
+                frame.add (forced_interactive_fptr, app,
+                           app->forced_interactive ());
+
+                app->forced_interactive (true);
+              }
+          }
 
 #if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
 
-    input_reader reader (m_interpreter);
+        input_reader reader (m_interpreter);
 
-    push_parser debug_parser (m_interpreter);
+        push_parser debug_parser (m_interpreter);
 
 #else
 
-    parser debug_parser (m_interpreter);
+        parser debug_parser (m_interpreter);
 
 #endif
 
-    error_system& es = m_interpreter.get_error_system ();
+        error_system& es = m_interpreter.get_error_system ();
 
-    while (m_in_debug_repl)
-      {
-        if (m_execution_mode == EX_CONTINUE || tw.dbstep_flag ())
-          break;
-
-        if (quitting_debugger ())
-          break;
-
-        try
+        while (m_in_debug_repl)
           {
-            debug_parser.reset ();
+            if (m_execution_mode == EX_CONTINUE || tw.dbstep_flag ())
+              break;
+
+            if (quitting_debugger ())
+              break;
+
+            try
+              {
+                debug_parser.reset ();
 
 #if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
 
-            int retval = 0;
+                int retval = 0;
 
-            std::string prompt
-              = command_editor::decode_prompt_string (tmp_prompt);
+                std::string prompt
+                  = command_editor::decode_prompt_string (tmp_prompt);
 
-            do
-              {
-                bool eof = false;
-                std::string input_line = reader.get_input (prompt, eof);
-
-                if (eof)
+                do
                   {
-                    retval = EOF;
+                    bool eof = false;
+                    std::string input_line = reader.get_input (prompt, eof);
+
+                    if (eof)
+                      {
+                        retval = EOF;
+                        break;
+                      }
+
+                    retval = debug_parser.run (input_line, false);
+
+                    prompt = command_editor::decode_prompt_string (input_sys.PS2 ());
+                  }
+                while (retval < 0);
+
+#else
+
+                int retval = debug_parser.run ();
+
+#endif
+                if (command_editor::interrupt (false))
+                  {
+                    // Break regardless of m_execution_mode value.
+
+                    quitting_debugger ();
+
                     break;
                   }
-
-                retval = debug_parser.run (input_line, false);
-
-                prompt = command_editor::decode_prompt_string (input_sys.PS2 ());
-              }
-            while (retval < 0);
-
-#else
-
-            int retval = debug_parser.run ();
-
-#endif
-            if (command_editor::interrupt (false))
-              {
-                // Break regardless of m_execution_mode value.
-
-                quitting_debugger ();
-
-                break;
-              }
-            else
-              {
-                if (retval == 0)
+                else
                   {
-                    std::shared_ptr<tree_statement_list> stmt_list
-                      = debug_parser.statement_list ();
+                    if (retval == 0)
+                      {
+                        std::shared_ptr<tree_statement_list> stmt_list
+                          = debug_parser.statement_list ();
 
-                    if (stmt_list)
-                      stmt_list->accept (tw);
+                        if (stmt_list)
+                          stmt_list->accept (tw);
 
-                    if (octave_completion_matches_called)
-                      octave_completion_matches_called = false;
+                        if (octave_completion_matches_called)
+                          octave_completion_matches_called = false;
 
-                    // FIXME: the following statement is here because
-                    // the last command may have been a dbup, dbdown, or
-                    // dbstep command that changed the current debug
-                    // frame.  If so, we need to reset the current frame
-                    // for the call stack.  But is this right way to do
-                    // this job?  What if the statement list was
-                    // something like "dbup; dbstack"?  Will the call to
-                    // dbstack use the right frame?  If not, how can we
-                    // fix this problem?
-                    tw.goto_frame (tw.debug_frame ());
+                        // FIXME: the following statement is here because
+                        // the last command may have been a dbup, dbdown, or
+                        // dbstep command that changed the current debug
+                        // frame.  If so, we need to reset the current frame
+                        // for the call stack.  But is this right way to do
+                        // this job?  What if the statement list was
+                        // something like "dbup; dbstack"?  Will the call to
+                        // dbstack use the right frame?  If not, how can we
+                        // fix this problem?
+                        tw.goto_frame (tw.debug_frame ());
+                      }
+
+                    octave_quit ();
                   }
-
-                octave_quit ();
               }
-          }
-        catch (const execution_exception& ee)
-          {
-            es.save_exception (ee);
-            es.display_exception (ee, std::cerr);
+            catch (const execution_exception& ee)
+              {
+                es.save_exception (ee);
+                es.display_exception (ee);
 
-            // Ignore errors when in debugging mode;
-            m_interpreter.recover_from_exception ();
-          }
-        catch (const quit_debug_exception& qde)
-          {
-            if (qde.all ())
-              throw;
+                // Ignore errors when in debugging mode;
+                m_interpreter.recover_from_exception ();
+              }
+            catch (const quit_debug_exception& qde)
+              {
+                if (qde.all ())
+                  throw;
 
-            // Continue in this debug level.
+                // Continue in this debug level.
+              }
           }
       }
   }
@@ -371,7 +507,8 @@ namespace octave
         // If there is no enclosing debug level or the top-level
         // repl is not active, handle dbquit the same as dbcont.
 
-        if (m_level > 0 || m_interpreter.in_top_level_repl ())
+        if (m_level > 0 || m_interpreter.server_mode ()
+            || m_interpreter.in_top_level_repl ())
           throw quit_debug_exception ();
         else
           return true;
@@ -382,7 +519,7 @@ namespace octave
         // If the top-level repl is not active, handle "dbquit all"
         // the same as dbcont.
 
-        if (m_interpreter.in_top_level_repl ())
+        if (m_interpreter.server_mode () || m_interpreter.in_top_level_repl ())
           throw quit_debug_exception (true);
         else
           return true;
@@ -394,38 +531,6 @@ namespace octave
   bool tree_evaluator::at_top_level (void) const
   {
     return m_call_stack.at_top_level ();
-  }
-
-  void tree_evaluator::eval (std::shared_ptr<tree_statement_list>& stmt_list,
-                             bool interactive)
-  {
-    try
-      {
-        stmt_list->accept (*this);
-
-        octave_quit ();
-
-        if (! interactive)
-          {
-            bool quit = (m_returning || m_breaking);
-
-            if (m_returning)
-              m_returning = 0;
-
-            if (m_breaking)
-              m_breaking--;
-
-            if (quit)
-              return;
-          }
-
-        if (octave_completion_matches_called)
-          octave_completion_matches_called = false;
-      }
-    catch (const quit_debug_exception&)
-      {
-        m_interpreter.recover_from_exception ();
-      }
   }
 
   std::string
@@ -464,6 +569,162 @@ namespace octave
     return fname;
   }
 
+  void tree_evaluator::parse_and_execute (const std::string& input,
+                                          bool& incomplete_parse)
+  {
+    incomplete_parse = false;
+
+    unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+
+    if (at_top_level ())
+      {
+        dbstep_flag (0);
+        reset_debug_state ();
+      }
+
+    // FIXME: OK to do this job here, or should it be in the functions
+    // that do the actual prompting?
+
+    // Update the time stamp for the "prompt" so that automatically
+    // finding modified files based on file modification times will
+    // work.  In the future, we may do something completely different to
+    // check for changes to files but for now, we rely on the prompt
+    // time stamp to limit the checks for file modification times.
+
+    Vlast_prompt_time.stamp ();
+
+    bool eof = false;
+
+    event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    if (command_history::add (input))
+      evmgr.append_history (input);
+
+    m_exit_status = m_parser->run (input, eof);
+
+    if (m_exit_status == 0)
+      {
+        std::shared_ptr<tree_statement_list>
+          stmt_list = m_parser->statement_list ();
+
+        if (stmt_list)
+          {
+            command_editor::increment_current_command_number ();
+
+            eval (stmt_list, m_interpreter.interactive ());
+
+            evmgr.set_workspace ();
+          }
+        else if (m_parser->at_end_of_input ())
+          m_exit_status = EOF;
+      }
+    else
+      incomplete_parse = true;
+
+    // FIXME: Should we be checking m_exit_status or incomplete_parse or
+    // both here?  Could EOF have a value other than -1, and is there
+    // possible confusion between that state and the parser returning -1?
+
+    if (m_exit_status == -1)
+      m_exit_status = 0;
+    else
+      m_parser->reset ();
+
+    evmgr.pre_input_event ();
+  }
+
+  void tree_evaluator::get_line_and_eval (void)
+  {
+    std::mutex mtx;
+    std::unique_lock<std::mutex> lock (mtx);
+    std::condition_variable cv;
+    bool incomplete_parse = false;
+    bool evaluation_pending = false;
+    bool exiting = false;
+
+    input_system& input_sys = m_interpreter.get_input_system ();
+    event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    while (true)
+      {
+        // FIXME: Detect EOF?  Use readline?  If
+        // so, then we need to disable idle event loop hook function
+        // execution.
+
+        std::string ps = incomplete_parse ? input_sys.PS2 () : input_sys.PS1 ();
+
+        std::cout << command_editor::decode_prompt_string (ps);
+
+        std::string input;
+        std::getline (std::cin, input);
+
+        if (input.empty ())
+          continue;
+
+        incomplete_parse = false;
+        evaluation_pending = true;
+        exiting = false;
+
+        evmgr.post_event
+          ([&] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
+
+             std::lock_guard<std::mutex> local_lock (mtx);
+
+             try
+               {
+                 interp.parse_and_execute (input, incomplete_parse);
+               }
+             catch (const exit_exception&)
+               {
+                 evaluation_pending = false;
+                 exiting = true;
+                 cv.notify_all ();
+                 throw;
+               }
+             catch (const execution_exception& ee)
+               {
+                 error_system& es = m_interpreter.get_error_system ();
+
+                 es.save_exception (ee);
+                 es.display_exception (ee);
+
+                 if (m_interpreter.interactive ())
+                   {
+                     m_interpreter.recover_from_exception ();
+                     m_parser->reset ();
+                     evaluation_pending = false;
+                     cv.notify_all ();
+                   }
+                 else
+                   {
+                     evaluation_pending = false;
+                     cv.notify_all ();
+                     throw exit_exception (1);
+                   }
+               }
+             catch (...)
+               {
+                 evaluation_pending = false;
+                 cv.notify_all ();
+                 throw;
+               }
+
+             evaluation_pending = false;
+             cv.notify_all ();
+           });
+
+        // Wait until evaluation is finished before prompting for input
+        // again.
+
+        cv.wait (lock, [&] { return ! evaluation_pending; });
+
+        if (exiting)
+          break;
+      }
+  }
+
   int tree_evaluator::repl (void)
   {
     // The big loop.  Read, Eval, Print, Loop.  Normally user
@@ -494,8 +755,10 @@ namespace octave
       {
         if (use_command_line_push_parser)
           {
-            push_parser *pp = new push_parser (m_interpreter,
-                                               new input_reader (m_interpreter));
+            push_parser *pp
+              = new push_parser (m_interpreter,
+                                 new input_reader (m_interpreter));
+
             repl_parser = std::shared_ptr<base_parser> (pp);
           }
         else
@@ -552,12 +815,12 @@ namespace octave
             if (m_interpreter.interactive ())
               octave_stdout << "\n";
           }
-        catch (const index_exception& e)
+        catch (const index_exception& ie)
           {
             m_interpreter.recover_from_exception ();
 
             std::cerr << "error: unhandled index exception: "
-                      << e.message () << " -- trying to return to prompt"
+                      << ie.message () << " -- trying to return to prompt"
                       << std::endl;
           }
         catch (const execution_exception& ee)
@@ -565,7 +828,7 @@ namespace octave
             error_system& es = m_interpreter.get_error_system ();
 
             es.save_exception (ee);
-            es.display_exception (ee, std::cerr);
+            es.display_exception (ee);
 
             if (m_interpreter.interactive ())
               m_interpreter.recover_from_exception ();
@@ -601,6 +864,144 @@ namespace octave
       }
 
     return exit_status;
+  }
+
+  int tree_evaluator::server_loop (void)
+  {
+    // Process events from the event queue.
+
+    unwind_protect_var<bool> upv1 (m_server_mode, true);
+
+    m_exit_status = 0;
+
+    std::shared_ptr<push_parser> parser (new push_parser (m_interpreter));
+    unwind_protect_var<std::shared_ptr<push_parser>> upv2 (m_parser, parser);
+
+    // FIXME: We are currently resetting the parser after every call to
+    // recover_from_exception.  This action should probably be handled
+    // in a more consistent way, but resetting the parser in every call
+    // to interpreter::recover_from_exception appears to cause
+    // segfaults in the test suite.
+
+    do
+      {
+        try
+          {
+            // FIXME: Should we call octave_quit in the octave::sleep
+            // and/or command_editor::run_event_hooks functions?
+
+            octave_quit ();
+
+            // FIXME: Running the event queue should be decoupled from
+            // the command_editor.  We should also use a condition
+            // variable to manage the execution of entries in the queue
+            // and eliminate the need for the busy-wait loop.
+
+            command_editor::run_event_hooks ();
+
+            sleep (0.1);
+          }
+        catch (const interrupt_exception&)
+          {
+            octave_interrupt_state = 1;
+            m_interpreter.recover_from_exception ();
+            m_parser->reset ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interpreter.interactive ())
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            m_interpreter.recover_from_exception ();
+            m_parser->reset ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            error_system& es = m_interpreter.get_error_system ();
+
+            es.save_exception (ee);
+            es.display_exception (ee);
+
+            if (m_interpreter.interactive ())
+              {
+                m_interpreter.recover_from_exception ();
+                m_parser->reset ();
+              }
+            else
+              {
+                // We should exit with a nonzero status.
+                m_exit_status = 1;
+                break;
+              }
+          }
+        catch (const quit_debug_exception&)
+          {
+            octave_interrupt_state = 1;
+            m_interpreter.recover_from_exception ();
+            m_parser->reset ();
+          }
+        catch (const exit_exception& xe)
+          {
+            m_exit_status = xe.exit_status ();
+            break;
+          }
+        catch (const std::bad_alloc&)
+          {
+            m_interpreter.recover_from_exception ();
+            m_parser->reset ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (m_exit_status == 0);
+
+    if (m_exit_status == EOF)
+      {
+        if (m_interpreter.interactive ())
+          octave_stdout << "\n";
+
+        m_exit_status = 0;
+      }
+
+    return m_exit_status;
+  }
+
+  void tree_evaluator::eval (std::shared_ptr<tree_statement_list>& stmt_list,
+                             bool interactive)
+  {
+    try
+      {
+        stmt_list->accept (*this);
+
+        octave_quit ();
+
+        if (! interactive)
+          {
+            bool quit = (m_returning || m_breaking);
+
+            if (m_returning)
+              m_returning = 0;
+
+            if (m_breaking)
+              m_breaking--;
+
+            if (quit)
+              return;
+          }
+
+        if (octave_completion_matches_called)
+          octave_completion_matches_called = false;
+      }
+    catch (const quit_debug_exception&)
+      {
+        m_interpreter.recover_from_exception ();
+      }
   }
 
   octave_value_list
@@ -757,7 +1158,7 @@ namespace octave
                                             const std::string& try_code,
                                             int nargout)
   {
-    unwind_action act ([this] (std::size_t frm)
+    unwind_action act ([=] (std::size_t frm)
                        {
                          m_call_stack.restore_frame (frm);
                        }, m_call_stack.current_frame ());
@@ -767,7 +1168,7 @@ namespace octave
     else if (context == "base")
       m_call_stack.goto_base_frame ();
     else
-      error ("evalin: CONTEXT must be \"caller\" or \"base\"");
+      error (R"(evalin: CONTEXT must be "caller" or "base")");
 
     int parse_status = 0;
 
@@ -781,7 +1182,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    unwind_action act1 ([this] (std::size_t frm)
+    unwind_action act1 ([=] (std::size_t frm)
                         {
                           m_call_stack.restore_frame (frm);
                         }, m_call_stack.current_frame ());
@@ -791,7 +1192,7 @@ namespace octave
     else if (context == "base")
       m_call_stack.goto_base_frame ();
     else
-      error ("evalin: CONTEXT must be \"caller\" or \"base\"");
+      error (R"(evalin: CONTEXT must be "caller" or "base")");
 
     error_system& es = m_interpreter.get_error_system ();
 
@@ -847,6 +1248,42 @@ namespace octave
   }
 
   void
+  tree_evaluator::visit_arguments_block (tree_arguments_block&)
+  {
+    warning ("function arguments validation blocks are not supported; INCORRECT RESULTS ARE POSSIBLE");
+  }
+
+  void
+  tree_evaluator::visit_args_block_attribute_list (tree_args_block_attribute_list&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_evaluator::visit_args_block_validation_list (tree_args_block_validation_list&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_evaluator::visit_arg_validation (tree_arg_validation&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_evaluator::visit_arg_size_spec (tree_arg_size_spec&)
+  {
+    panic_impossible ();
+  }
+
+  void
+  tree_evaluator::visit_arg_validation_fcns (tree_arg_validation_fcns&)
+  {
+    panic_impossible ();
+  }
+
+  void
   tree_evaluator::visit_binary_expression (tree_binary_expression&)
   {
     panic_impossible ();
@@ -869,7 +1306,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -894,7 +1333,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -916,7 +1357,9 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (void)
   {
-    m_debug_mode = (m_bp_table.have_breakpoints () || m_dbstep_flag != 0
+    m_debug_mode = (m_bp_table.have_breakpoints ()
+                    || m_dbstep_flag != 0
+                    || m_break_on_next_stmt
                     || in_debug_repl ());
   }
 
@@ -931,24 +1374,23 @@ namespace octave
   {
     unwind_protect frame;
 
-    frame.add_fcn (command_history::ignore_entries,
-                   command_history::ignoring_entries ());
+    frame.add (command_history::ignore_entries,
+               command_history::ignoring_entries ());
 
     command_history::ignore_entries (false);
 
-    frame.add_method (m_call_stack, &call_stack::restore_frame,
-                      m_call_stack.current_frame ());
+    frame.add (&call_stack::restore_frame, &m_call_stack,
+               m_call_stack.current_frame ());
 
     // Don't allow errors or warnings at the debug prompt to push us
     // into deeper levels of debugging.
 
     error_system& es = m_interpreter.get_error_system ();
 
-    frame.add_method (es, &error_system::set_debug_on_error,
-                      es.debug_on_error ());
+    frame.add (&error_system::set_debug_on_error, &es, es.debug_on_error ());
 
-    frame.add_method (es, &error_system::set_debug_on_warning,
-                      es.debug_on_warning ());
+    frame.add (&error_system::set_debug_on_warning, &es,
+               es.debug_on_warning ());
 
     es.debug_on_error (false);
     es.debug_on_warning (false);
@@ -967,10 +1409,11 @@ namespace octave
 
     m_debugger_stack.push (dbgr);
 
-    frame.add ([this] (void)
+    frame.add ([=] (void)
                {
                  delete m_debugger_stack.top ();
                  m_debugger_stack.pop ();
+                 reset_debug_state ();
                });
 
     dbgr->repl (prompt);
@@ -1035,9 +1478,13 @@ namespace octave
     // the corresponding function name.  At least try to do it without N
     // string compares.
 
+    // FIXME: .+, .-, **, and .** are deprecated but still need to be
+    // handled here until they are removed.
+
     std::size_t len = name.length ();
 
     if (len == 3 && name == ".**")
+      // deprecated
       return "power";
     else if (len == 2)
       {
@@ -1049,9 +1496,11 @@ namespace octave
                 return "transpose";
 
               case '+':
+                // deprecated
                 return "plus";
 
               case '-':
+                // deprecated
                 return "minus";
 
               case '*':
@@ -1092,6 +1541,7 @@ namespace octave
               }
           }
         else if (name == "**")
+          // deprecated
           return "mpower";
       }
     else if (len == 1)
@@ -1559,7 +2009,7 @@ namespace octave
     // by getting a reference to the caller or base stack frame and
     // calling assign on that?
 
-    unwind_action act ([this] (std::size_t frm)
+    unwind_action act ([=] (std::size_t frm)
                        {
                          m_call_stack.restore_frame (frm);
                        }, m_call_stack.current_frame ());
@@ -1569,7 +2019,7 @@ namespace octave
     else if (context == "base")
       m_call_stack.goto_base_frame ();
     else
-      error ("assignin: CONTEXT must be \"caller\" or \"base\"");
+      error (R"(assignin: CONTEXT must be "caller" or "base")");
 
     if (valid_identifier (name))
       {
@@ -1651,15 +2101,15 @@ namespace octave
 
     if (! context.empty ())
       {
-        frame.add_method (m_call_stack, &call_stack::restore_frame,
-                          m_call_stack.current_frame ());
+        frame.add (&call_stack::restore_frame, &m_call_stack,
+                   m_call_stack.current_frame ());
 
         if (context == "caller")
           m_call_stack.goto_caller_frame ();
         else if (context == "base")
           m_call_stack.goto_base_frame ();
         else
-          error ("source: context must be \"caller\" or \"base\"");
+          error (R"(source: CONTEXT must be "caller" or "base")");
       }
 
     // Find symbol name that would be in symbol_table, if it were loaded.
@@ -1710,9 +2160,9 @@ namespace octave
                                       file_name, dir_name, "", "",
                                       require_file, true, false, false);
           }
-        catch (execution_exception& e)
+        catch (execution_exception& ee)
           {
-            error (e, "source: error sourcing file '%s'",
+            error (ee, "source: error sourcing file '%s'",
                    file_full_name.c_str ());
           }
       }
@@ -1756,6 +2206,9 @@ namespace octave
   tree_evaluator::define_parameter_list_from_arg_vector
     (tree_parameter_list *param_list, const octave_value_list& args)
   {
+    if (! param_list || param_list->varargs_only ())
+      return;
+
     int i = -1;
 
     for (tree_decl_elt *elt : *param_list)
@@ -1789,11 +2242,10 @@ namespace octave
         ref.assign (octave_value::op_asn_eq, octave_value ());
       }
   }
-}
 
 // END is documented in op-kw-docs.
-DEFCONSTMETHOD (end, interp, args, ,
-                doc: /* -*- texinfo -*-
+DEFMETHOD (end, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} end
 Last element of an array or the end of any @code{for}, @code{parfor},
 @code{if}, @code{do}, @code{while}, @code{function}, @code{switch},
@@ -1818,7 +2270,7 @@ Example:
 @seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.evaluate_end_expression (args);
 }
@@ -1835,8 +2287,6 @@ Example:
 %! assert (x(minus (minus (end, 1), 1)), 8);
 */
 
-namespace octave
-{
   octave_value_list
   tree_evaluator::convert_to_const_vector (tree_argument_list *args)
   {
@@ -2517,7 +2967,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -2566,10 +3018,42 @@ namespace octave
       }
   }
 
+  template <typename T>
+  void
+  tree_evaluator::execute_range_loop (const range<T>& rng, int line,
+                                      octave_lvalue& ult,
+                                      tree_statement_list *loop_body)
+  {
+    octave_idx_type steps = rng.numel ();
+
+    if (math::isinf (rng.limit ()))
+      warning_with_id ("Octave:infinite-loop",
+                       "FOR loop limit is infinite, will stop after %"
+                       OCTAVE_IDX_TYPE_FORMAT " steps", steps);
+
+    for (octave_idx_type i = 0; i < steps; i++)
+      {
+        if (m_echo_state)
+          m_echo_file_pos = line;
+
+        octave_value val (rng.elem (i));
+
+        ult.assign (octave_value::op_asn_eq, val);
+
+        if (loop_body)
+          loop_body->accept (*this);
+
+        if (quit_loop_now ())
+          break;
+      }
+  }
+
   void
   tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   {
-    std::size_t line = cmd.line ();
+    int line = cmd.line ();
+    if (line < 0)
+      line = 1;
 
     if (m_echo_state)
       {
@@ -2589,11 +3073,6 @@ namespace octave
 
     octave_value rhs = expr->evaluate (*this);
 
-#if defined (HAVE_LLVM)
-    if (tree_jit::execute (cmd, rhs))
-      return;
-#endif
-
     if (rhs.is_undefined ())
       return;
 
@@ -2605,27 +3084,70 @@ namespace octave
 
     if (rhs.is_range ())
       {
-        Range rng = rhs.range_value ();
+        // FIXME: is there a better way to dispatch here?
 
-        octave_idx_type steps = rng.numel ();
-
-        for (octave_idx_type i = 0; i < steps; i++)
+        if (rhs.is_double_type ())
           {
-            if (m_echo_state)
-              m_echo_file_pos = line;
+            execute_range_loop (rhs.range_value (), line, ult, loop_body);
+            return;
+          }
 
-            octave_value val (rng.elem (i));
+        if (rhs.is_int64_type ())
+          {
+            execute_range_loop (rhs.int64_range_value (), line, ult, loop_body);
+            return;
+          }
 
-            ult.assign (octave_value::op_asn_eq, val);
+        if (rhs.is_uint64_type ())
+          {
+            execute_range_loop (rhs.uint64_range_value (), line, ult, loop_body);
+            return;
+          }
 
-            if (loop_body)
-              loop_body->accept (*this);
+        if (rhs.is_int32_type ())
+          {
+            execute_range_loop (rhs.int32_range_value (), line, ult, loop_body);
+            return;
+          }
 
-            if (quit_loop_now ())
-              break;
+        if (rhs.is_uint32_type ())
+          {
+            execute_range_loop (rhs.uint32_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_int16_type ())
+          {
+            execute_range_loop (rhs.int16_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_uint16_type ())
+          {
+            execute_range_loop (rhs.uint16_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_int8_type ())
+          {
+            execute_range_loop (rhs.int8_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_uint8_type ())
+          {
+            execute_range_loop (rhs.uint8_range_value (), line, ult, loop_body);
+            return;
+          }
+
+        if (rhs.is_single_type ())
+          {
+            execute_range_loop (rhs.float_range_value (), line, ult, loop_body);
+            return;
           }
       }
-    else if (rhs.is_scalar_type ())
+
+    if (rhs.is_scalar_type ())
       {
         if (m_echo_state)
           m_echo_file_pos = line;
@@ -2637,9 +3159,15 @@ namespace octave
 
         // Maybe decrement break and continue states.
         quit_loop_now ();
+
+        return;
       }
-    else if (rhs.is_matrix_type () || rhs.iscell () || rhs.is_string ()
-             || rhs.isstruct ())
+
+    // Also handle any range types not explicitly handled above, though
+    // not as efficiently as the specialized code above.
+
+    if (rhs.is_range () || rhs.is_matrix_type () || rhs.iscell ()
+        || rhs.is_string () || rhs.isstruct ())
       {
         // A matrix or cell is reshaped to 2 dimensions and iterated by
         // columns.
@@ -2676,9 +3204,9 @@ namespace octave
                 if (m_echo_state)
                   m_echo_file_pos = line;
 
-                // do_index_op expects one-based indices.
+                // index_op expects one-based indices.
                 idx(iidx) = i;
-                octave_value val = arg.do_index_op (idx);
+                octave_value val = arg.index_op (idx);
 
                 ult.assign (octave_value::op_asn_eq, val);
 
@@ -2694,16 +3222,20 @@ namespace octave
             // Handle empty cases, while still assigning to loop var.
             ult.assign (octave_value::op_asn_eq, arg);
           }
+
+        return;
       }
-    else
-      error ("invalid type in for loop expression near line %d, column %d",
-             cmd.line (), cmd.column ());
+
+    error ("invalid type in for loop expression near line %d, column %d",
+           cmd.line (), cmd.column ());
   }
 
   void
   tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   {
-    std::size_t line = cmd.line ();
+    int line = cmd.line ();
+    if (line < 0)
+      line = 1;
 
     if (m_echo_state)
       {
@@ -2774,6 +3306,16 @@ namespace octave
       }
   }
 
+  void tree_evaluator::visit_spmd_command (tree_spmd_command& cmd)
+  {
+    // For now, we just execute the commands serially.
+
+    tree_statement_list *body = cmd.body ();
+
+    if (body)
+      body->accept (*this);
+  }
+
   void
   tree_evaluator::visit_octave_user_script (octave_user_script&)
   {
@@ -2798,6 +3340,9 @@ namespace octave
     if (! cmd_list)
       return retval;
 
+    // FIXME: Maybe this check belongs in the places where we push a new
+    // stack frame?  Or in the call_stack push method itself?
+
     if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
 
@@ -2807,6 +3352,8 @@ namespace octave
 
     if (echo ())
       push_echo_state (tree_evaluator::ECHO_SCRIPTS, file_name);
+
+    // FIXME: Should we be using tree_evaluator::eval here?
 
     cmd_list->accept (*this);
 
@@ -2833,52 +3380,69 @@ namespace octave
   {
     octave_value_list retval;
 
-    tree_statement_list *cmd_list = user_function.body ();
-
-    if (! cmd_list)
-      return retval;
-
     // If this function is a classdef constructor, extract the first input
     // argument, which must be the partially constructed object instance.
 
     octave_value_list args (xargs);
     octave_value_list ret_args;
 
+    int nargin = args.length ();
+
     if (user_function.is_classdef_constructor ())
       {
-        if (args.length () > 0)
+        if (nargin > 0)
           {
             ret_args = args.slice (0, 1, true);
-            args = args.slice (1, args.length () - 1, true);
+            --nargin;
+            args = args.slice (1, nargin, true);
           }
         else
           panic_impossible ();
       }
 
-#if defined (HAVE_LLVM)
-    if (user_function.is_special_expr ()
-        && tree_jit::execute (user_function, args, retval))
-      return retval;
-#endif
-
-    if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
-      error ("max_recursion_depth exceeded");
-
+    // FIXME: this probably shouldn't be a double-precision matrix.
     Matrix ignored_outputs = ignored_fcn_outputs ();
-
-    bind_auto_fcn_vars (xargs.name_tags (), ignored_outputs, args.length (),
-                        nargout, user_function.takes_varargs (),
-                        user_function.all_va_args (args));
 
     tree_parameter_list *param_list = user_function.parameter_list ();
 
-    if (param_list && ! param_list->varargs_only ())
-      define_parameter_list_from_arg_vector (param_list, args);
+    bool takes_varargs = false;
+    int max_inputs = 0;
+
+    if (param_list)
+      {
+        takes_varargs = param_list->takes_varargs ();
+        max_inputs = param_list->length ();
+      }
+
+    if (! takes_varargs && nargin > max_inputs)
+      {
+        std::string name = user_function.name ();
+
+        error ("%s: function called with too many inputs", name.c_str ());
+      }
+
+    define_parameter_list_from_arg_vector (param_list, args);
+
+    tree_parameter_list *ret_list = user_function.return_list ();
+
+    if (ret_list && ! ret_list->takes_varargs ())
+      {
+        int max_outputs = ret_list->length ();
+
+        if (nargout > max_outputs)
+          {
+            std::string name = user_function.name ();
+
+            error ("%s: function called with too many outputs", name.c_str ());
+          }
+      }
+
+    bind_auto_fcn_vars (xargs.name_tags (), ignored_outputs, nargin,
+                        nargout, user_function.takes_varargs (),
+                        user_function.all_va_args (args));
 
     // For classdef constructor, pre-populate the output arguments
     // with the pre-initialized object instance, extracted above.
-
-    tree_parameter_list *ret_list = user_function.return_list ();
 
     if (user_function.is_classdef_constructor ())
       {
@@ -2889,6 +3453,12 @@ namespace octave
         define_parameter_list_from_arg_vector (ret_list, ret_args);
       }
 
+    // FIXME: Maybe this check belongs in the places where we push a
+    // new stack frame?  Or in the call_stack push method itself?
+
+    if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
+      error ("max_recursion_depth exceeded");
+
     unwind_action act2 ([&user_function] () {
                           user_function.restore_warning_states ();
                         });
@@ -2897,37 +3467,41 @@ namespace octave
 
     unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_FUNCTION);
 
-    {
-      profiler::enter<octave_user_function> block (m_profiler, user_function);
+    tree_statement_list *cmd_list = user_function.body ();
 
-      if (echo ())
-        push_echo_state (tree_evaluator::ECHO_FUNCTIONS,
-                         user_function.fcn_file_name ());
+    if (cmd_list)
+      {
+        profiler::enter<octave_user_function>
+          block (m_profiler, user_function);
 
-      if (user_function.is_special_expr ())
-        {
-          assert (cmd_list->length () == 1);
+        if (echo ())
+          push_echo_state (tree_evaluator::ECHO_FUNCTIONS,
+                           user_function.fcn_file_name ());
 
-          tree_statement *stmt = cmd_list->front ();
+        if (user_function.is_special_expr ())
+          {
+            assert (cmd_list->length () == 1);
 
-          tree_expression *expr = stmt->expression ();
+            tree_statement *stmt = cmd_list->front ();
 
-          if (expr)
-            {
-              m_call_stack.set_location (stmt->line (), stmt->column ());
+            tree_expression *expr = stmt->expression ();
 
-              retval = expr->evaluate_n (*this, nargout);
-            }
-        }
-      else
-        cmd_list->accept (*this);
-    }
+            if (expr)
+              {
+                m_call_stack.set_location (stmt->line (), stmt->column ());
 
-    if (m_returning)
-      m_returning = 0;
+                retval = expr->evaluate_n (*this, nargout);
+              }
+          }
+        else
+          cmd_list->accept (*this);
 
-    if (m_breaking)
-      m_breaking--;
+        if (m_returning)
+          m_returning = 0;
+
+        if (m_breaking)
+          m_breaking--;
+      }
 
     // Copy return values out.
 
@@ -3002,7 +3576,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3071,7 +3647,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3115,7 +3693,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3164,7 +3744,9 @@ namespace octave
               {
                 if (m_echo_state)
                   {
-                    std::size_t line = stmt.line ();
+                    int line = stmt.line ();
+                    if (line < 0)
+                      line = 1;
                     echo_code (line);
                     m_echo_file_pos = line + 1;
                   }
@@ -3231,7 +3813,7 @@ namespace octave
                 && in_user_code ())
               {
                 es.save_exception (ee);
-                es.display_exception (ee, std::cerr);
+                es.display_exception (ee);
 
                 enter_debugger ();
 
@@ -3314,7 +3896,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3354,7 +3938,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3430,10 +4016,11 @@ namespace octave
     // We want to preserve the last location info for possible
     // backtracking.
 
-    frame.add_method (m_call_stack, &call_stack::set_line,
-                      m_call_stack.current_line ());
-    frame.add_method (m_call_stack, &call_stack::set_column,
-                      m_call_stack.current_column ());
+    frame.add (&call_stack::set_line, &m_call_stack,
+               m_call_stack.current_line ());
+
+    frame.add (&call_stack::set_column, &m_call_stack,
+               m_call_stack.current_column ());
 
     // Similarly, if we have seen a return or break statement, allow all
     // the cleanup code to run before returning or handling the break.
@@ -3506,7 +4093,9 @@ namespace octave
   {
     if (m_echo_state)
       {
-        std::size_t line = cmd.line ();
+        int line = cmd.line ();
+        if (line < 0)
+          line = 1;
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
@@ -3557,18 +4146,15 @@ namespace octave
   void
   tree_evaluator::visit_while_command (tree_while_command& cmd)
   {
-    std::size_t line = cmd.line ();
+    int line = cmd.line ();
+    if (line < 0)
+      line = 1;
 
     if (m_echo_state)
       {
         echo_code (line);
         line++;
       }
-
-#if defined (HAVE_LLVM)
-    if (tree_jit::execute (cmd))
-      return;
-#endif
 
     unwind_protect_var<bool> upv (m_in_loop_command, true);
 
@@ -3603,7 +4189,9 @@ namespace octave
   void
   tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   {
-    std::size_t line = cmd.line ();
+    int line = cmd.line ();
+    if (line < 0)
+      line = 1;
 
     if (m_echo_state)
       {
@@ -3611,16 +4199,9 @@ namespace octave
         line++;
       }
 
-#if defined (HAVE_LLVM)
-    if (tree_jit::execute (cmd))
-      return;
-#endif
-
     unwind_protect_var<bool> upv (m_in_loop_command, true);
 
     tree_expression *expr = cmd.condition ();
-    int until_line = cmd.line ();
-    int until_column = cmd.column ();
 
     if (! expr)
       panic_impossible ();
@@ -3640,8 +4221,6 @@ namespace octave
 
         if (m_debug_mode)
           do_breakpoint (cmd.is_active_breakpoint (*this));
-
-        m_call_stack.set_location (until_line, until_column);
 
         if (is_logically_true (expr, "do-until"))
           break;
@@ -3675,11 +4254,18 @@ namespace octave
           }
         else
           {
+            // FIXME: Maybe assign could also return the assigned value,
+            // just for convenience?
+
             assign (ans, val);
 
             if (print)
               {
-                octave_value_list args = ovl (val);
+                // Use varval instead of displaying VAL directly so that
+                // we get the right type and value for things like
+                // magic_int values that may mutate when stored.
+
+                octave_value_list args = ovl (varval (ans));
                 args.stash_name_tags (string_vector (ans));
                 feval ("display", args);
               }
@@ -3755,6 +4341,11 @@ namespace octave
           m_dbstep_flag = -1;
       }
 
+    if (! break_on_this_statement)
+      break_on_this_statement = m_break_on_next_stmt;
+
+    m_break_on_next_stmt = false;
+
     if (break_on_this_statement)
       {
         m_dbstep_flag = 0;
@@ -3768,6 +4359,8 @@ namespace octave
                                      const char *warn_for)
   {
     bool expr_value = false;
+
+    m_call_stack.set_location (expr->line (), expr->column ());
 
     octave_value t1 = expr->evaluate (*this);
 
@@ -3917,7 +4510,7 @@ namespace octave
   // variable being indexed, if any, then issue an error.  (Will this also
   // be needed by pt-lvalue, which calls subsref?)
 
-  void tree_evaluator::final_index_error (index_exception& e,
+  void tree_evaluator::final_index_error (index_exception& ie,
                                           const tree_expression *expr)
   {
     std::string extra_message;
@@ -3926,7 +4519,7 @@ namespace octave
       {
         std::string var = expr->name ();
 
-        e.set_var (var);
+        ie.set_var (var);
 
         symbol_table& symtab = m_interpreter.get_symbol_table ();
 
@@ -3942,9 +4535,9 @@ namespace octave
           }
       }
 
-    std::string msg = e.message () + extra_message;
+    std::string msg = ie.message () + extra_message;
 
-    error_with_id (e.err_id (), "%s", msg.c_str ());
+    error_with_id (ie.err_id (), "%s", msg.c_str ());
   }
 
   octave_value
@@ -4022,7 +4615,7 @@ namespace octave
 
   void
   tree_evaluator::push_echo_state (int type, const std::string& file_name,
-                                   std::size_t pos)
+                                   int pos)
   {
     unwind_protect *frame = m_call_stack.curr_fcn_unwind_protect_frame ();
 
@@ -4036,7 +4629,7 @@ namespace octave
 
   void
   tree_evaluator::set_echo_state (int type, const std::string& file_name,
-                                  std::size_t pos)
+                                  int pos)
   {
     m_echo_state = echo_this_file (file_name, type);
     m_echo_file_name = file_name;
@@ -4045,7 +4638,7 @@ namespace octave
 
   void
   tree_evaluator::uwp_set_echo_state (bool state, const std::string& file_name,
-                                      std::size_t pos)
+                                      int pos)
   {
     m_echo_state = state;
     m_echo_file_name = file_name;
@@ -4065,7 +4658,14 @@ namespace octave
 
         std::string file_name = fcn->fcn_file_name ();
 
-        std::size_t pos = m_call_stack.current_line ();
+        // We want the line where "echo" was called, not the line number
+        // stored in the stack frame that was created for the echo
+        // function (that will always be -1).
+
+        int pos = m_call_stack.current_user_code_line ();
+
+        if (pos < 0)
+          pos = 1;
 
         set_echo_state (type, file_name, pos);
       }
@@ -4074,8 +4674,8 @@ namespace octave
   void
   tree_evaluator::push_echo_state_cleanup (unwind_protect& frame)
   {
-    frame.add_method (this, &tree_evaluator::uwp_set_echo_state,
-                      m_echo_state, m_echo_file_name, m_echo_file_pos);
+    frame.add (&tree_evaluator::uwp_set_echo_state, this,
+               m_echo_state, m_echo_file_name, m_echo_file_pos);
   }
 
   bool tree_evaluator::maybe_push_echo_state_cleanup (void)
@@ -4321,7 +4921,7 @@ namespace octave
             // evaluate the partial expression that the special "end"
             // token applies to in the calling stack frame.
 
-            unwind_action act ([this] (std::size_t frm)
+            unwind_action act ([=] (std::size_t frm)
                                {
                                  m_call_stack.restore_frame (frm);
                                }, m_call_stack.current_frame ());
@@ -4343,7 +4943,7 @@ namespace octave
             if (expr_result.is_cs_list ())
               err_indexed_cs_list ();
           }
-        catch (index_exception&)
+        catch (const index_exception&)
           {
             error ("error evaluating partial expression for END");
           }
@@ -4408,7 +5008,7 @@ namespace octave
     return false;
   }
 
-  void tree_evaluator::echo_code (std::size_t line)
+  void tree_evaluator::echo_code (int line)
   {
     std::string prefix = command_editor::decode_prompt_string (m_PS4);
 
@@ -4418,7 +5018,7 @@ namespace octave
       {
         octave_user_code *code = dynamic_cast<octave_user_code *> (curr_fcn);
 
-        std::size_t num_lines = line - m_echo_file_pos + 1;
+        int num_lines = line - m_echo_file_pos + 1;
 
         std::deque<std::string> lines
           = code->get_code_lines (m_echo_file_pos, num_lines);
@@ -4500,7 +5100,6 @@ namespace octave
 
     return full_name;
   }
-}
 
 DEFMETHOD (max_recursion_depth, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -4520,7 +5119,7 @@ The original variable value is restored when exiting the function.
 @seealso{max_stack_depth}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.max_recursion_depth (args, nargout);
 }
@@ -4534,7 +5133,7 @@ The original variable value is restored when exiting the function.
 %! max_recursion_depth (orig_val);
 %! assert (max_recursion_depth (), orig_val);
 
-%!error (max_recursion_depth (1, 2))
+%!error max_recursion_depth (1, 2)
 */
 
 DEFMETHOD (whos_line_format, interp, args, nargout,
@@ -4555,7 +5154,8 @@ The following command sequences are available:
 
 @table @code
 @item %a
-Prints attributes of variables (g=global, p=persistent, f=formal parameter).
+Prints attributes of variables (c=complex, s=sparse, f=formal parameter,
+g=global, p=persistent).
 
 @item %b
 Prints number of bytes occupied by variables.
@@ -4602,7 +5202,9 @@ the left of the specified balance column.
 
 The default format is:
 
-@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n"}
+@example
+"  %la:5; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@backslashchar{}n"
+@end example
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
@@ -4610,7 +5212,7 @@ The original variable value is restored when exiting the function.
 @seealso{whos}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.whos_line_format (args, nargout);
 }
@@ -4632,7 +5234,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.silent_functions (args, nargout);
 }
@@ -4646,7 +5248,7 @@ The original variable value is restored when exiting the function.
 %! silent_functions (orig_val);
 %! assert (silent_functions (), orig_val);
 
-%!error (silent_functions (1, 2))
+%!error silent_functions (1, 2)
 */
 
 DEFMETHOD (string_fill_char, interp, args, nargout,
@@ -4675,7 +5277,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.string_fill_char (args, nargout);
 }
@@ -4695,7 +5297,7 @@ The original variable value is restored when exiting the function.
 
 %!assert ( [ [], {1} ], {1} )
 
-%!error (string_fill_char (1, 2))
+%!error string_fill_char (1, 2)
 */
 
 DEFMETHOD (PS4, interp, args, nargout,
@@ -4715,7 +5317,7 @@ The original variable value is restored when exiting the function.
 @seealso{echo, PS1, PS2}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.PS4 (args, nargout);
 }
@@ -4761,7 +5363,7 @@ With no arguments, @code{echo} toggles the current echo state.
 @seealso{PS4}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.echo (args, nargout);
 }
@@ -4775,3 +5377,5 @@ With no arguments, @code{echo} toggles the current echo state.
 %!error echo ("on", "invalid")
 %!error echo ("on", "all", "all")
 */
+
+OCTAVE_NAMESPACE_END

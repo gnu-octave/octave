@@ -31,7 +31,7 @@
 
 function y = cotd (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -44,5 +44,4 @@ endfunction
 %!assert (cotd ([0, 180, 360]) == Inf)
 %!assert (cotd ([90, 270]) == 0)
 
-%!error cotd ()
-%!error cotd (1, 2)
+%!error <Invalid call> cotd ()

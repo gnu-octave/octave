@@ -38,7 +38,7 @@
 
 function h = allchild (handles)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -57,7 +57,7 @@ endfunction
 %! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   l = line;
+%!   l = line ();
 %!   kids = allchild (hf);
 %!   assert (get (kids, "type"), ...
 %!           {"axes"; "uitoolbar"; "uimenu"; "uimenu"; "uimenu"});
@@ -66,5 +66,4 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%!error allchild ()
-%!error allchild (1, 2)
+%!error <Invalid call> allchild ()

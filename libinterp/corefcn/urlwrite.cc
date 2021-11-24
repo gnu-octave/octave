@@ -52,11 +52,7 @@
 #include "unwind-prot.h"
 #include "url-handle-manager.h"
 
-static void
-delete_file (const std::string& file)
-{
-  octave::sys::unlink (file);
-}
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (urlwrite, args, nargout,
        doc: /* -*- texinfo -*-
@@ -140,19 +136,18 @@ urlwrite ("http://www.google.com/search", "search.html",
   // create it, and the download fails.  We use unwind_protect to do
   // it so that the deletion happens no matter how we exit the function.
 
-  octave::sys::file_stat fs (filename);
+  sys::file_stat fs (filename);
 
   std::ofstream ofile =
-    octave::sys::ofstream (filename.c_str (), std::ios::out | std::ios::binary);
+    sys::ofstream (filename.c_str (), std::ios::out | std::ios::binary);
 
   if (! ofile.is_open ())
     error ("urlwrite: unable to open file");
 
-  octave::unwind_protect_safe frame;
+  int(*unlink_fptr)(const std::string&) = sys::unlink;
+  unwind_action_safe unlink_action (unlink_fptr, filename);
 
-  frame.add_fcn (delete_file, filename);
-
-  octave::url_transfer url_xfer (url, ofile);
+  url_transfer url_xfer (url, ofile);
 
   octave_value_list retval;
 
@@ -164,12 +159,12 @@ urlwrite ("http://www.google.com/search", "search.html",
   ofile.close ();
 
   if (url_xfer.good ())
-    frame.discard ();
+    unlink_action.discard ();
 
   if (nargout > 0)
     {
       if (url_xfer.good ())
-        retval = ovl (octave::sys::env::make_absolute (filename), true, "");
+        retval = ovl (sys::env::make_absolute (filename), true, "");
       else
         retval = ovl ("", false, url_xfer.lasterror ());
     }
@@ -250,7 +245,7 @@ s = urlread ("http://www.google.com/search", "get",
 
   std::ostringstream buf;
 
-  octave::url_transfer url_xfer = octave::url_transfer (url, buf);
+  url_transfer url_xfer = url_transfer (url, buf);
 
   if (! url_xfer.is_valid ())
     error ("support for URL transfers was disabled when Octave was built");
@@ -287,7 +282,7 @@ Undocumented internal function.
 
   std::ostringstream content;
 
-  octave::url_transfer url_xfer (url, content);
+  url_transfer url_xfer (url, content);
 
   if (! url_xfer.is_valid ())
     error ("support for URL transfers was disabled when Octave was built");
@@ -296,10 +291,10 @@ Undocumented internal function.
 
   std::string data, method;
 
-  struct octave::weboptions options;
+  struct weboptions options;
 
-  octave::cdef_object object = args (nargin - 1).classdef_object_value ()
-                                                         -> get_object ();
+  cdef_object object
+    = args (nargin - 1).classdef_object_value () -> get_object ();
 
   // We could've used object.map_value () instead to return a map but that
   // shows a warning about about overriding access restrictions.
@@ -361,3 +356,5 @@ Undocumented internal function.
 
   return ovl (content.str ());
 }
+
+OCTAVE_NAMESPACE_END

@@ -120,7 +120,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   polar (linspace (0, pi, 20), rand (20,1));
-%!   hax = gca;
+%!   hax = gca ();
 %!   ticks = rticks;
 %!   assert (rticks (hax), ticks);
 %!   rticks (hax, [0 0.25 0.75 1 2]);
@@ -135,7 +135,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   polar (linspace (0, pi, 20), 1:20);
-%!   hax = gca;
+%!   hax = gca ();
 %!   fail ("rticks (-1, [0 1])", "HAX must be a handle to an axes");
 %!   fail ("tmp = rticks (hax, [0 1])", "too many output arguments");
 %!   fail ("tmp = rticks (hax, 'mode')", "MODE is not yet implemented");

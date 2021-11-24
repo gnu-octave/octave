@@ -96,7 +96,7 @@ namespace octave
   protected:
 
     // Show what's wrong, e.g.,  A(-1,_), A(0+1i).
-    std::string expression (void) const;
+    OCTAVE_API std::string expression (void) const;
 
     // Number of dimensions of indexed object.
     octave_idx_type m_nd;
@@ -108,57 +108,59 @@ namespace octave
     std::string m_var;
   };
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_nan_to_logical_conversion (void);
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_nan_to_character_conversion (void);
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_nonconformant (const char *op, octave_idx_type op1_len,
                      octave_idx_type op2_len);
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_nonconformant (const char *op,
                      octave_idx_type op1_nr, octave_idx_type op1_nc,
                      octave_idx_type op2_nr, octave_idx_type op2_nc);
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_nonconformant (const char *op,
                      const dim_vector& op1_dims, const dim_vector& op2_dims);
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_index_out_of_range (int ndims, int dim, octave_idx_type idx,
                           octave_idx_type ext, const dim_vector& dv);
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (6, "use err_index_out_of_range (int, int, octave_idx_type, octave_idx_type, const dim_vector&) instead")
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_index_out_of_range (int ndims, int dim, octave_idx_type idx,
                           octave_idx_type ext);
+#endif
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_del_index_out_of_range (bool is1d, octave_idx_type iext,
                               octave_idx_type ext);
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_invalid_index (double n, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
                      const std::string& var = "");
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_invalid_index (octave_idx_type n, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
                      const std::string& var = "");
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_invalid_index (const std::string& idx, octave_idx_type nd = 0,
                      octave_idx_type dim = 0,
                      const std::string& var = "");
 
-  OCTAVE_NORETURN OCTAVE_API extern void
+  OCTAVE_NORETURN extern OCTAVE_API void
   err_invalid_resize (void);
 
-  OCTAVE_API extern void
+  extern OCTAVE_API void
   warn_singular_matrix (double rcond = 0.0);
 }
 

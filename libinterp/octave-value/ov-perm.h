@@ -40,9 +40,9 @@ OCTINTERP_API
 octave_perm_matrix : public octave_base_value
 {
 public:
-  octave_perm_matrix (void) : matrix (), dense_cache () { }
+  octave_perm_matrix (void) : m_matrix (), m_dense_cache () { }
 
-  octave_perm_matrix (const PermMatrix& p) : matrix (p), dense_cache () { }
+  octave_perm_matrix (const PermMatrix& p) : m_matrix (p), m_dense_cache () { }
 
   octave_base_value * clone (void) const
   { return new octave_perm_matrix (*this); }
@@ -53,9 +53,9 @@ public:
 
   octave_base_value * try_narrowing_conversion (void);
 
-  std::size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size (void) const { return m_matrix.byte_size (); }
 
-  octave_value squeeze (void) const { return matrix; }
+  octave_value squeeze (void) const { return m_matrix; }
 
   octave_value full_value (void) const { return to_dense (); }
 
@@ -74,9 +74,9 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  dim_vector dims (void) const { return matrix.dims (); }
+  dim_vector dims (void) const { return m_matrix.dims (); }
 
-  octave_idx_type nnz (void) const { return matrix.rows (); }
+  octave_idx_type nnz (void) const { return m_matrix.rows (); }
 
   octave_value reshape (const dim_vector& new_dims) const
   { return to_dense ().reshape (new_dims); }
@@ -146,10 +146,10 @@ public:
   double scalar_value (bool frc_str_conv = false) const
   { return double_value (frc_str_conv); }
 
-  idx_vector index_vector (bool require_integers = false) const;
+  octave::idx_vector index_vector (bool require_integers = false) const;
 
   PermMatrix perm_matrix_value (void) const
-  { return matrix; }
+  { return m_matrix; }
 
   Matrix matrix_value (bool = false) const;
 
@@ -240,7 +240,7 @@ public:
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const;
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   bool print_as_scalar (void) const;
 
@@ -257,11 +257,11 @@ public:
 
 protected:
 
-  PermMatrix matrix;
+  PermMatrix m_matrix;
 
   virtual octave_value to_dense (void) const;
 
-  mutable octave_value dense_cache;
+  mutable octave_value m_dense_cache;
 
 private:
 

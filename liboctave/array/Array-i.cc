@@ -41,34 +41,53 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTAVE_API Array<idx_vector>;
+extern template class Array<octave::idx_vector>;
 
-template class OCTAVE_API octave_sort<int>;
-template class OCTAVE_API octave_sort<long>;
+template class octave_sort<signed char>;
+//template class octave_sort<short>;
+template class octave_sort<int>;
+template class octave_sort<long>;
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-template class OCTAVE_API octave_sort<long long>;
+template class octave_sort<long long>;
 #endif
 
+INSTANTIATE_ARRAY (signed char, OCTAVE_API);
+//INSTANTIATE_ARRAY (short, OCTAVE_API);
 INSTANTIATE_ARRAY (int, OCTAVE_API);
 INSTANTIATE_ARRAY (long, OCTAVE_API);
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
 INSTANTIATE_ARRAY (long long, OCTAVE_API);
 #endif
 
-template class OCTAVE_API octave_sort<octave_int8>;
-template class OCTAVE_API octave_sort<octave_int16>;
-template class OCTAVE_API octave_sort<octave_int32>;
-template class OCTAVE_API octave_sort<octave_int64>;
+template class octave_sort<unsigned char>;
+template class octave_sort<unsigned short>;
+template class octave_sort<unsigned int>;
+template class octave_sort<unsigned long>;
+#if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
+template class octave_sort<unsigned long long>;
+#endif
+
+INSTANTIATE_ARRAY (unsigned char, OCTAVE_API);
+INSTANTIATE_ARRAY (unsigned short, OCTAVE_API);
+INSTANTIATE_ARRAY (unsigned int, OCTAVE_API);
+#if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
+INSTANTIATE_ARRAY (unsigned long long, OCTAVE_API);
+#endif
+
+template class octave_sort<octave_int8>;
+template class octave_sort<octave_int16>;
+template class octave_sort<octave_int32>;
+template class octave_sort<octave_int64>;
 
 INSTANTIATE_ARRAY (octave_int8, OCTAVE_API);
 INSTANTIATE_ARRAY (octave_int16, OCTAVE_API);
 INSTANTIATE_ARRAY (octave_int32, OCTAVE_API);
 INSTANTIATE_ARRAY (octave_int64, OCTAVE_API);
 
-template class OCTAVE_API octave_sort<octave_uint8>;
-template class OCTAVE_API octave_sort<octave_uint16>;
-template class OCTAVE_API octave_sort<octave_uint32>;
-template class OCTAVE_API octave_sort<octave_uint64>;
+template class octave_sort<octave_uint8>;
+template class octave_sort<octave_uint16>;
+template class octave_sort<octave_uint32>;
+template class octave_sort<octave_uint64>;
 
 INSTANTIATE_ARRAY (octave_uint8, OCTAVE_API);
 INSTANTIATE_ARRAY (octave_uint16, OCTAVE_API);
@@ -78,4 +97,4 @@ INSTANTIATE_ARRAY (octave_uint64, OCTAVE_API);
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 
-template class OCTAVE_API DiagArray2<int>;
+template class DiagArray2<int>;

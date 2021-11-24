@@ -33,12 +33,13 @@
 ## @var{name} is given then @code{getappdata} returns a structure,
 ## @var{appdata}, whose fields correspond to the appdata properties.
 ##
-## @seealso{setappdata, isappdata, rmappdata, guidata, get, set, getpref, setpref}
+## @seealso{setappdata, isappdata, rmappdata, guidata, get, set, getpref,
+## setpref}
 ## @end deftypefn
 
 function value = getappdata (h, name)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -90,8 +91,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error getappdata ()
-%!error getappdata (1,2,3)
+%!error <Invalid call> getappdata ()
 %!error <H must be a scalar .* graphic handle> getappdata (-1, "hello")
 %!error <NAME must be a string> getappdata (0, 1)
 %!error <Only one handle H may be used when fetching appdata> getappdata ([0 0])

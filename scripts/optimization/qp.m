@@ -273,8 +273,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   endif
 
   ## Validate inequality constraints.
-  if (nargs > 7 && isempty (A_in) && ! (isempty(A_lb) || isempty(A_ub)))
-    warning("qp: empty inequality constraint matrix but non-empty bound vectors");
+  if (nargs > 7 && isempty (A_in) && ! (isempty (A_lb) || isempty (A_ub)))
+    warning ("qp: empty inequality constraint matrix but non-empty bound vectors");
   endif
 
   if (nargs > 7 && ! isempty (A_in))
@@ -393,18 +393,25 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
           lb = [-Inf(n-n_eq,1); zeros(n_in,1)];
           ub = [];
           ctype = repmat ("L", n_in, 1);
-          [P, dummy, status] = glpk (ctmp, Atmp, btmp, lb, ub, ctype);
-          if ((status == 0)
-              && all (abs (P(n-n_eq+1:end)) < rtol * (1 + norm (btmp))))
-            ## We found a feasible starting point
-            if (n_eq > 0)
-              x0 = xbar + Z*P(1:n-n_eq);
-            else
-              x0 = P(1:n);
-            endif
+          [P, FMIN, status] = glpk (ctmp, Atmp, btmp, lb, ub, ctype);
+          ## FIXME: Test based only on rtol occasionally fails (Bug #38353).
+          ## This seems to be a problem in glpk in which return value XOPT(1)
+          ## is the same as FMIN.  Workaround this by explicit test
+          if (status != 0)
+            info = 6;  # The problem is infeasible
           else
-            ## The problem is infeasible
-            info = 6;
+            if (all (abs (P(n-n_eq+2:end)) < rtol * (1 + norm (btmp)))
+                && (P(n-n_eq+1) < rtol * (1 + norm (btmp))
+                    || P(n-n_eq+1) == FMIN))
+              ## We found a feasible starting point
+              if (n_eq > 0)
+                x0 = xbar + Z*P(1:n-n_eq);
+              else
+                x0 = P(1:n);
+              endif
+            else
+              info = 6;  # The problem is infeasible
+            endif
           endif
         endif
       else

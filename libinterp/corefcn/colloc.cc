@@ -38,6 +38,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (colloc, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, "left", "right")
@@ -56,10 +58,10 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
     error ("colloc: N must be a scalar");
 
   double tmp = args(0).double_value ();
-  if (octave::math::isnan (tmp))
+  if (math::isnan (tmp))
     error ("colloc: N cannot be NaN");
 
-  octave_idx_type ncol = octave::math::nint_big (tmp);
+  octave_idx_type ncol = math::nint_big (tmp);
   if (ncol < 0)
     error ("colloc: N must be positive");
 
@@ -113,3 +115,5 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
 %!error <total number of roots .* must be .= 1> colloc (0)
 
 */
+
+OCTAVE_NAMESPACE_END

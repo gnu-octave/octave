@@ -27,26 +27,52 @@
 ## @deftypefn {} {} sind (@var{x})
 ## Compute the sine for each element of @var{x} in degrees.
 ##
-## Returns zero for elements where @code{@var{x}/180} is an integer.
+## The function is more accurate than @code{sin} for large values of @var{x}
+## and for multiples of 180 degrees (@code{@var{x}/180} is an integer) where
+## @code{sind} returns 0 rather than a small value on the order of eps.
 ## @seealso{asind, sin}
 ## @end deftypefn
 
 function y = sind (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
-  I = x / 180;
-  y = sin (I .* pi);
-  y(I == fix (I) & isfinite (I)) = 0;
+  if (! isnumeric (x))
+    error ("sind: X must be numeric");
+  endif
+
+  x_iscomplex = iscomplex (x);
+  if (x_iscomplex)
+    xi = imag (x);
+  endif
+  x = real (x);
+
+  ## Wrap multiples so that new domain is [-180, 180)
+  x = mod (x-180, 360) - 180;
+
+  if (x_iscomplex)
+    y = sin (complex (x, xi) / 180 * pi);
+    ## Integer multiples of pi must be exactly zero
+    y(x == -180) = complex (0, imag (y(x == -180)));
+  else
+    y = sin (x / 180 * pi);
+    ## Integer multiples of pi must be exactly zero
+    y(x == -180) = 0;
+  endif
 
 endfunction
 
 
-%!assert (sind (10:10:90), sin (pi*[10:10:90]/180), -10*eps)
-%!assert (sind ([0, 180, 360]) == 0)
-%!assert (sind ([90, 270]) != 0)
+%!assert (sind (10:20:360), sin ([10:20:360] * pi/180), 5*eps)
+%!assert (sind ([-360, -180, 0, 180, 360]) == 0)
+%!assert (sind ([-270, -90, 90, 270]), [1, -1, 1, -1])
+%!assert (sind ([-Inf, NaN, +Inf, 0]), [NaN, NaN, NaN, 0])
+%!assert (sind (+23) == -sind (-23))
+%!assert (sind (1e6), -0.984807753012208, 5*eps)
+%!assert (sind (180 + 180i), -i*sinh (pi))
+%!assert (sind (1e6 + 180i), -11.415845458288851 + 2.0054175437381652i, 5*eps)
 
-%!error sind ()
-%!error sind (1, 2)
+%!error <Invalid call> sind ()
+%!error <X must be numeric> sind ("abc")

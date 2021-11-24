@@ -10,6 +10,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/tar_is_bsd.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/bug_report.m \
   %reldir%/bunzip2.m \
   %reldir%/cast.m \
@@ -39,11 +40,13 @@ FCN_FILE_DIRS += \
   %reldir%/ismethod.m \
   %reldir%/ispc.m \
   %reldir%/isunix.m \
+  %reldir%/jupyter_notebook.m \
   %reldir%/license.m \
   %reldir%/list_primes.m \
   %reldir%/loadobj.m \
   %reldir%/ls.m \
   %reldir%/ls_command.m \
+  %reldir%/memory.m \
   %reldir%/menu.m \
   %reldir%/methods.m \
   %reldir%/mex.m \

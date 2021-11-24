@@ -112,7 +112,7 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
                 is >> value;
               if (is)
                 status = true;
-              skip_until_newline (is, false);
+              octave::skip_until_newline (is, false);
               break;
             }
           else if (next_only)
@@ -181,7 +181,7 @@ extract_keyword (std::istream& is, const string_vector& keywords,
                     is >> value;
                   if (is)
                     status = true;
-                  skip_until_newline (is, false);
+                  octave::skip_until_newline (is, false);
                   return status;
                 }
             }

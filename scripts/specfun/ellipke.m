@@ -90,7 +90,7 @@
 
 function [k, e] = ellipke (m, tol = [])
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -219,8 +219,7 @@ endfunction
 %! assert (e, e_exp, 8*eps (e_exp));
 
 ## Test input validation
-%!error ellipke ()
-%!error ellipke (1,2,3)
+%!error <Invalid call> ellipke ()
 %!error <M must be real> ellipke (1i)
 %!error <M must be .= 1> ellipke (2)
 %!error <TOL must be a real scalar . 0> ellipke (1, i)

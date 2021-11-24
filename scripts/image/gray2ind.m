@@ -42,9 +42,9 @@
 
 function [I, map] = gray2ind (I, n = 64)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
-  elseif (! isreal (I) || issparse (I) || ! ismatrix(I))
+  elseif (! isreal (I) || issparse (I) || ! ismatrix (I))
     error ("gray2ind: I must be a grayscale or binary image");
   elseif (! isscalar (n) || n < 1 || n > 65536)
     error ("gray2ind: N must be a positive integer in the range [1, 65536]");
@@ -106,8 +106,7 @@ endfunction
 %! assert (class (gray2ind ([0.0 0.5 1.0], 257)), "uint16");
 
 ## Test input validation
-%!error gray2ind ()
-%!error gray2ind (1,2,3)
+%!error <Invalid call> gray2ind ()
 %!error <I must be a grayscale or binary image> gray2ind ({1})
 %!error <I must be a grayscale or binary image> gray2ind ([1+i])
 %!error <I must be a grayscale or binary image> gray2ind (sparse ([1]))

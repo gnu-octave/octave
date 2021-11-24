@@ -32,7 +32,7 @@
 
 #include "KeyMap.h"
 
-namespace QtHandles
+namespace octave
 {
   namespace KeyMap
   {

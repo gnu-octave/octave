@@ -67,7 +67,7 @@
 
 function retval = fail (code, pattern, warning_pattern)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -157,6 +157,5 @@ endfunction
 %!error <warning failure> fail ("warning ('warning failure')", "warning", "success")
 
 ## Test input validation
-%!error fail ()
-%!error fail (1,2,3,4)
+%!error <Invalid call> fail ()
 %!error fail (1, "nowarning", "foo")

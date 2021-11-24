@@ -176,9 +176,9 @@ namespace octave
     // Private stuff:
 
     file_stat::file_stat (const std::string& n, bool fl)
-      : base_file_stat (), file_name (n), follow_links (fl)
+      : base_file_stat (), m_file_name (n), m_follow_links (fl)
     {
-      if (! file_name.empty ())
+      if (! m_file_name.empty ())
         update_internal ();
     }
 
@@ -187,12 +187,12 @@ namespace octave
     void
     file_stat::update_internal (bool force)
     {
-      if (! initialized || force)
+      if (! m_initialized || force)
         {
-          initialized = false;
-          fail = false;
+          m_initialized = false;
+          m_fail = false;
 
-          std::string full_file_name = sys::file_ops::tilde_expand (file_name);
+          std::string full_file_name = sys::file_ops::tilde_expand (m_file_name);
 
 #if defined (OCTAVE_USE_WINDOWS_API)
           full_file_name = sys::env::make_absolute (full_file_name);
@@ -206,7 +206,7 @@ namespace octave
           // trailing backslash.
           // FIXME: This pattern does not match all possible UNC roots:
           //        https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-dtyp/62e862f4-2a51-452e-8eeb-dc4ff5ee33cc
-          static regexp pat (R"(^\\\\[\w.-]+\\[\w\$-]+$)");
+          static const regexp pat (R"(^\\\\[\w.-]+\\[\w\$-]+$)");
           if ((full_file_name.length () == 2 && full_file_name[1] == ':')
               || (full_file_name.length () > 4  && full_file_name[0] == '\\'
                   && full_file_name[1] == '\\' && pat.is_match (full_file_name)))
@@ -218,7 +218,7 @@ namespace octave
           time_t sys_atime, sys_mtime, sys_ctime;
 
           int status
-            = (follow_links
+            = (m_follow_links
                ? octave_stat_wrapper (cname, &m_mode, &m_ino, &m_dev,
                                       &m_nlink, &m_uid, &m_gid, &m_size,
                                       &sys_atime, &sys_mtime, &sys_ctime,
@@ -230,8 +230,8 @@ namespace octave
 
           if (status < 0)
             {
-              fail = true;
-              errmsg = std::strerror (errno);
+              m_fail = true;
+              m_errmsg = std::strerror (errno);
             }
           else
             {
@@ -240,30 +240,30 @@ namespace octave
               m_ctime = sys::time (sys_ctime);
             }
 
-          initialized = true;
+          m_initialized = true;
         }
     }
 
     void
     file_fstat::update_internal (bool force)
     {
-      if (! initialized || force)
+      if (! m_initialized || force)
         {
-          initialized = false;
-          fail = false;
+          m_initialized = false;
+          m_fail = false;
 
           time_t sys_atime, sys_mtime, sys_ctime;
 
           int status
-            = octave_fstat_wrapper (fid, &m_mode, &m_ino, &m_dev,
+            = octave_fstat_wrapper (m_fid, &m_mode, &m_ino, &m_dev,
                                     &m_nlink, &m_uid, &m_gid, &m_size,
                                     &sys_atime, &sys_mtime, &sys_ctime,
                                     &m_rdev, &m_blksize, &m_blocks);
 
           if (status < 0)
             {
-              fail = true;
-              errmsg = std::strerror (errno);
+              m_fail = true;
+              m_errmsg = std::strerror (errno);
             }
           else
             {
@@ -272,7 +272,7 @@ namespace octave
               m_ctime = sys::time (sys_ctime);
             }
 
-          initialized = true;
+          m_initialized = true;
         }
     }
   }

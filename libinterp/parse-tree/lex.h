@@ -272,10 +272,11 @@ namespace octave
         m_looking_at_return_list (false),
         m_looking_at_parameter_list (false),
         m_looking_at_decl_list (false),
-        m_looking_at_initializer_expression (false),
         m_looking_at_matrix_or_assign_lhs (false),
         m_looking_for_object_index (false),
         m_looking_at_indirect_ref (false),
+        m_arguments_is_keyword (false),
+        m_classdef_element_names_are_keywords (false),
         m_parsing_anon_fcn_body (false),
         m_parsing_class_method (false),
         m_parsing_classdef (false),
@@ -298,7 +299,7 @@ namespace octave
         m_block_comment_nesting_level (0),
         m_command_arg_paren_count (0),
         m_token_count (0),
-        m_filepos (),
+        m_filepos (1, 1),
         m_tok_beg (),
         m_tok_end (),
         m_string_text (),
@@ -312,7 +313,6 @@ namespace octave
         m_package_name (),
         m_looking_at_object_index (),
         m_parsed_function_name (),
-        m_pending_local_variables (),
         m_symtab_context (interp),
         m_nesting_level (),
         m_tokens ()
@@ -346,8 +346,6 @@ namespace octave
 
     bool previous_token_may_be_command (void) const;
 
-    void maybe_mark_previous_token_as_variable (void);
-
     void mark_as_variable (const std::string& nm);
     void mark_as_variables (const std::list<std::string>& lst);
 
@@ -376,10 +374,6 @@ namespace octave
     // persistent).
     bool m_looking_at_decl_list;
 
-    // true means we are looking at the initializer expression for a
-    // parameter list element.
-    bool m_looking_at_initializer_expression;
-
     // true means we're parsing a matrix or the left hand side of
     // multi-value assignment statement.
     bool m_looking_at_matrix_or_assign_lhs;
@@ -390,6 +384,13 @@ namespace octave
     // true means we're looking at an indirect reference to a
     // structure element.
     bool m_looking_at_indirect_ref;
+
+    // true means arguments is handled as keyword.
+    bool m_arguments_is_keyword;
+
+    // true means "properties", "methods", "events", and "enumeration"
+    // are treated like keywords.
+    bool m_classdef_element_names_are_keywords;
 
     // true means we are parsing the body of an anonymous function.
     bool m_parsing_anon_fcn_body;
@@ -510,9 +511,6 @@ namespace octave
     // of the current function.  should only matter if
     // current_function_level > 0
     std::stack<bool> m_parsed_function_name;
-
-    // set of identifiers that might be local variable names.
-    std::set<std::string> m_pending_local_variables;
 
     // Track current symbol table scope and context.
     symbol_table_context m_symtab_context;
@@ -653,15 +651,15 @@ namespace octave
 
     bool inside_any_object_index (void);
 
-    bool is_variable (const std::string& name, const symbol_scope& scope);
-
     int make_keyword_token (const std::string& s);
 
     bool fq_identifier_contains_keyword (const std::string& s);
 
     bool whitespace_is_significant (void);
 
-    void handle_number (void);
+    // We only provide specializations with base equal to 2, 10, or 16.
+    template <int base>
+    int handle_number (void);
 
     void handle_continuation (void);
 
@@ -692,6 +690,12 @@ namespace octave
     void warn_language_extension_continuation (void);
 
     void warn_language_extension_operator (const std::string& op);
+
+    void warn_deprecated_syntax (const std::string& msg);
+
+    void warn_deprecated_operator (const std::string& deprecated_op,
+                                   const std::string& recommended_op,
+                                   const std::string& version);
 
     void push_token (token *);
 
@@ -772,6 +776,10 @@ namespace octave
       : base_lexer (interp), m_reader (interp, file), m_initial_input (true)
     { }
 
+    lexer (FILE *file, interpreter& interp, const std::string& encoding)
+      : base_lexer (interp), m_reader (interp, file, encoding), m_initial_input (true)
+    { }
+
     lexer (const std::string& eval_string, interpreter& interp)
       : base_lexer (interp), m_reader (interp, eval_string),
         m_initial_input (true)
@@ -821,6 +829,10 @@ namespace octave
 
     bool m_initial_input;
   };
+
+  template <> int base_lexer::handle_number<2> ();
+  template <> int base_lexer::handle_number<10> ();
+  template <> int base_lexer::handle_number<16> ();
 
   class
   push_lexer : public base_lexer

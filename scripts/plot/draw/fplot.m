@@ -128,6 +128,7 @@ function [X, Y] = fplot (varargin)
   n = 5;
   tol = 2e-3;
   fmt = {};
+  prop_vals = {};
   while (i <= numel (varargin))
     arg = varargin{i};
     if (ischar (arg))
@@ -138,7 +139,7 @@ function [X, Y] = fplot (varargin)
         if (i == numel (varargin))
           error ("fplot: bad input in position %d", i);
         endif
-        fmt(end+(1:2)) = varargin([i, i+1]);
+        prop_vals(end+(1:2)) = varargin([i, i+1]);
         i++;  # Skip PROPERTY.
       endif
     elseif (isnumeric (arg) && isscalar (arg) && arg > 0)
@@ -225,18 +226,24 @@ function [X, Y] = fplot (varargin)
     if (isempty (hax))
       hax = gca ();
     endif
-    plot (hax, x, y, fmt{:});
-    axis (hax, limits);
-    ## FIXME: If hold is on, then this erases the existing legend rather than
-    ##        adding to it.
-    if (isvector (y))
-      legend (hax, nam);
-    else
-      for i = 1:columns (y)
-        nams{i} = sprintf ("%s(:,%i)", nam, i);
-      endfor
-      legend (hax, nams{:});
+    hl = plot (hax, x, y, fmt{:});
+    if (isempty (get (hl(1), "displayname")))
+      ## Set displayname for legend if FMT did not contain a name.
+      if (isvector (y))
+        set (hl, "displayname", nam);
+      else
+        for i = 1:columns (y)
+          nams{i} = sprintf ("%s(:,%i)", nam, i);
+        endfor
+        set (hl, {"displayname"}, nams(:));
+      endif
     endif
+    ## Properties passed as input arguments override other properties.
+    if (! isempty (prop_vals))
+      set (hl, prop_vals{:});
+    endif
+    axis (hax, limits);
+    legend (hax, "show");
   endif
 
 endfunction
@@ -281,9 +288,31 @@ endfunction
 %! assert (rows (x) == rows (y));
 %! assert (y, repmat ([0], size (x)));
 
+%!test <*59274>
+%! ## Manual displayname overrides automatic legend entry
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   fplot (@sin, [0, 3], "displayname", "mysin");
+%!   hl = legend ();
+%!   assert (get (hl, "string"), {"mysin"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <*59274>
+%! ## displayname in format string overrides automatic legend entry
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   fplot (@sin, [0, 3], "+;mysin;");
+%!   hl = legend ();
+%!   assert (get (hl, "string"), {"mysin"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## Test input validation
-%!error fplot ()
-%!error fplot (1,2,3,4,5,6)
+%!error <Invalid call> fplot ()
+%!error <Invalid call> fplot (1,2,3,4,5,6)
 %!error <FN must be a function handle> fplot (1, [0 1])
 %!error <LIMITS must be a real vector> fplot (@cos, [i, 2*i])
 %!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1])

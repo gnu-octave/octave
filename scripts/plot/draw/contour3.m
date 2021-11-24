@@ -66,7 +66,8 @@
 ## @end group
 ## @end example
 ##
-## @seealso{contour, contourc, contourf, clabel, meshc, surfc, caxis, colormap, plot}
+## @seealso{contour, contourc, contourf, clabel, meshc, surfc, caxis, colormap,
+## plot}
 ## @end deftypefn
 
 function [c, h] = contour3 (varargin)

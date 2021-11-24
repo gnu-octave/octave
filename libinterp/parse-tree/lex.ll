@@ -92,6 +92,7 @@ and after the nested call.
 #include <cctype>
 #include <cstring>
 
+#include <algorithm>
 #include <iostream>
 #include <set>
 #include <sstream>
@@ -117,6 +118,7 @@ and after the nested call.
 #include "interpreter.h"
 #include "lex.h"
 #include "octave.h"
+#include "ov-magic-int.h"
 #include "ov.h"
 #include "parse.h"
 #include "pt-all.h"
@@ -181,19 +183,25 @@ and after the nested call.
      }                                                                  \
    while (0)
 
-#define CMD_OR_COMPUTED_ASSIGN_OP(PATTERN, TOK)                         \
+#define CMD_OR_DEPRECATED_OP(PATTERN, REPLACEMENT, VERSION, TOK)        \
    do                                                                   \
      {                                                                  \
        curr_lexer->lexer_debug (PATTERN);                               \
                                                                         \
-       if (curr_lexer->previous_token_may_be_command ()                 \
-           && curr_lexer->space_follows_previous_token ())              \
+       if (curr_lexer->looks_like_command_arg ())                       \
          {                                                              \
            yyless (0);                                                  \
            curr_lexer->push_start_state (COMMAND_START);                \
          }                                                              \
        else                                                             \
-         return curr_lexer->handle_op (TOK, false, false);              \
+         {                                                              \
+           curr_lexer->warn_deprecated_operator (PATTERN, REPLACEMENT,  \
+                                                 #VERSION);             \
+           /* set COMPAT to true here to avoid warning about            \
+              compatibility since we've already warned about the        \
+              operator being deprecated.  */                            \
+           return curr_lexer->handle_op (TOK, false, true);             \
+         }                                                              \
      }                                                                  \
    while (0)
 
@@ -251,6 +259,35 @@ and after the nested call.
      }                                                  \
    while (0)
 
+#define HANDLE_NUMBER(PATTERN, BASE)                            \
+  do                                                            \
+    {                                                           \
+     curr_lexer->lexer_debug (PATTERN);                         \
+                                                                \
+     if (curr_lexer->previous_token_may_be_command ()           \
+         &&  curr_lexer->space_follows_previous_token ())       \
+       {                                                        \
+         yyless (0);                                            \
+         curr_lexer->push_start_state (COMMAND_START);          \
+       }                                                        \
+     else                                                       \
+       {                                                        \
+         int tok = curr_lexer->previous_token_value ();         \
+                                                                \
+         if (curr_lexer->whitespace_is_significant ()           \
+             && curr_lexer->space_follows_previous_token ()     \
+             && ! (tok == '[' || tok == '{'                     \
+                   || curr_lexer->previous_token_is_binop ()))  \
+           {                                                    \
+             yyless (0);                                        \
+             curr_lexer->xunput (',');                          \
+           }                                                    \
+         else                                                   \
+           return curr_lexer->handle_number<BASE> ();           \
+       }                                                        \
+    }                                                           \
+  while (0)
+
 #define HANDLE_IDENTIFIER(pattern, get_set)                             \
    do                                                                   \
      {                                                                  \
@@ -301,8 +338,8 @@ is_space_or_tab_or_eol (char c)
   return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   bool iskeyword (const std::string& s)
   {
     // Parsing function names like "set.property_name" inside
@@ -310,15 +347,17 @@ namespace octave
     // "set" and "get" portions of the names using the same mechanism
     // as is used for keywords.  However, they are not really keywords
     // in the language, so omit them from the list of possible
-    // keywords.  Likewise for "enumeration", "events", "methods", and
-    // "properties".
+    // keywords.  Likewise for "arguments", "enumeration", "events",
+    // "methods", and "properties".
 
+    // FIXME: The following check is duplicated in Fiskeyword.
     return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != nullptr
-            && ! (s == "set" || s == "get"
+            && ! (s == "set" || s == "get" || s == "arguments"
                   || s == "enumeration" || s == "events"
                   || s == "methods" || s == "properties"));
   }
-}
+
+OCTAVE_NAMESPACE_END
 
 %}
 
@@ -326,15 +365,40 @@ D       [0-9]
 D_      [0-9_]
 S       [ \t]
 NL      ((\n)|(\r)|(\r\n))
-Im      [iIjJ]
 CCHAR   [#%]
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
 FQIDENT ({IDENT}({S}*\.{S}*{IDENT})*)
-EXPON   ([DdEe][+-]?{D}{D_}*)
-NUMBIN  (0[bB][01_]+)
-NUMHEX  (0[xX][0-9a-fA-F][0-9a-fA-F_]*)
-NUMREAL (({D}{D_}*\.?{D_}*{EXPON}?)|(\.{D}{D_}*{EXPON}?))
-NUMBER  ({NUMREAL}|{NUMHEX}|{NUMBIN})
+
+%{
+// Decimal numbers may be real or imaginary but always create
+// double precision constants initially.  Any conversion to single
+// precision happens as part of an expression evaluation in the
+// interpreter, not the lexer and parser.
+%}
+
+DECIMAL_DIGITS ({D}{D_}*)
+EXPONENT       ([DdEe][+-]?{DECIMAL_DIGITS})
+REAL_DECIMAL   ((({DECIMAL_DIGITS}\.?)|({DECIMAL_DIGITS}?\.{DECIMAL_DIGITS})){EXPONENT}?)
+IMAG_DECIMAL   ({REAL_DECIMAL}[IiJj])
+DECIMAL_NUMBER ({REAL_DECIMAL}|{IMAG_DECIMAL})
+
+%{
+// It is possible to specify signedness and size for binary and
+// hexadecimal numbers but there is no special syntax for imaginary
+// constants.  Binary and hexadecimal constants always create integer
+// valued constants ({u,}int{8,16,32,64}).  If a size is not specified,
+// the smallest integer type that will hold the value is used.  Negative
+// values may be created with a signed size specification by applying
+// twos-complement conversion (for example, 0xffs8 produces an 8-bit
+// signed integer equal to -1 and 0b10000000s8 produces an 8-bit signed
+// integer equal to -128).
+%}
+
+SIZE_SUFFIX        ([su](8|16|32|64))
+BINARY_BITS        (0[bB][01][01_]*)
+BINARY_NUMBER      ({BINARY_BITS}|{BINARY_BITS}{SIZE_SUFFIX})
+HEXADECIMAL_BITS   (0[xX][0-9a-fA-F][0-9a-fA-F_]*)
+HEXADECIMAL_NUMBER ({HEXADECIMAL_BITS}|{HEXADECIMAL_BITS}{SIZE_SUFFIX})
 
 ANY_EXCEPT_NL [^\r\n]
 ANY_INCLUDING_NL (.|{NL})
@@ -1027,16 +1091,10 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>(\.\.\.){S}*{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>(\\.\\.\\.){S}*{NL}");
 
-    static const char *msg = "'...' continuations in double-quoted character strings are obsolete and will not be allowed in a future version of Octave; please use '\\' instead";
+    /* FIXME: Remove support for '...' continuation in Octave 9 */
+    static const char *msg = "'...' continuations in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave; please use '\\' instead";
 
-    std::string nm = curr_lexer->m_fcn_file_full_name;
-
-    if (nm.empty ())
-      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
-    else
-      warning_with_id ("Octave:deprecated-syntax",
-                       "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_filepos.line (), nm.c_str ());
+    curr_lexer->warn_deprecated_syntax (msg);
 
     HANDLE_STRING_CONTINUATION;
   }
@@ -1044,16 +1102,10 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>\\{S}+{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}");
 
-    static const char *msg = "white space and comments after continuation markers in double-quoted character strings are obsolete and will not be allowed in a future version of Octave";
+    /* FIXME: Remove support for WS after line continuation in Octave 9 */
+    static const char *msg = "whitespace after continuation markers in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave";
 
-    std::string nm = curr_lexer->m_fcn_file_full_name;
-
-    if (nm.empty ())
-      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
-    else
-      warning_with_id ("Octave:deprecated-syntax",
-                       "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_filepos.line (), nm.c_str ());
+    curr_lexer->warn_deprecated_syntax (msg);
 
     HANDLE_STRING_CONTINUATION;
   }
@@ -1205,72 +1257,24 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->pop_start_state ();
   }
 
-%{
-// Imaginary numbers.
-%}
-
-{NUMBER}{Im} {
-    curr_lexer->lexer_debug ("{NUMBER}{Im}");
-
-    if (curr_lexer->previous_token_may_be_command ()
-        &&  curr_lexer->space_follows_previous_token ())
-      {
-        yyless (0);
-        curr_lexer->push_start_state (COMMAND_START);
-      }
-    else
-      {
-        int tok = curr_lexer->previous_token_value ();
-
-        if (curr_lexer->whitespace_is_significant ()
-            && curr_lexer->space_follows_previous_token ()
-            && ! (tok == '[' || tok == '{'
-                  || curr_lexer->previous_token_is_binop ()))
-          {
-            yyless (0);
-            curr_lexer->xunput (',');
-          }
-        else
-          {
-            curr_lexer->handle_number ();
-            return curr_lexer->count_token_internal (IMAG_NUM);
-          }
-      }
+{BINARY_NUMBER} {
+    HANDLE_NUMBER ("{BINARY_NUMBER}", 2);
   }
 
 %{
-// Real numbers.  Don't grab the '.' part of a dot operator as part of
-// the constant.
+// Decimal numbers.  For expressions that are just digits followed
+// directly by an element-by-element operator, don't grab the '.'
+// part of the operator as part of the constant (for example, in an
+// expression like "13./x").
 %}
 
-{D}{D_}*/\.[\*/\\^\'] |
-{NUMBER} {
-    curr_lexer->lexer_debug ("{D}{D_}*/\\.[\\*/\\\\^\\']|{NUMBER}");
+{DECIMAL_DIGITS}/\.[\*/\\^\'] |
+{DECIMAL_NUMBER} {
+    HANDLE_NUMBER ("{DECIMAL_DIGITS}/\\.[\\*/\\\\^\\']|{DECIMAL_NUMBER}", 10);
+  }
 
-    if (curr_lexer->previous_token_may_be_command ()
-        &&  curr_lexer->space_follows_previous_token ())
-      {
-        yyless (0);
-        curr_lexer->push_start_state (COMMAND_START);
-      }
-    else
-      {
-        int tok = curr_lexer->previous_token_value ();
-
-        if (curr_lexer->whitespace_is_significant ()
-            && curr_lexer->space_follows_previous_token ()
-            && ! (tok == '[' || tok == '{'
-                  || curr_lexer->previous_token_is_binop ()))
-          {
-            yyless (0);
-            curr_lexer->xunput (',');
-          }
-        else
-          {
-            curr_lexer->handle_number ();
-            return curr_lexer->count_token_internal (NUM);
-          }
-      }
+{HEXADECIMAL_NUMBER} {
+    HANDLE_NUMBER ("{HEXADECIMAL_NUMBER}", 16);
   }
 
 %{
@@ -1302,16 +1306,10 @@ ANY_INCLUDING_NL (.|{NL})
 \\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL} {
     curr_lexer->lexer_debug ("\\\\{S}*{NL}|\\\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL}");
 
-    static const char *msg = "using continuation marker \\ outside of double quoted strings is deprecated and will be removed from a future version of Octave, use ... instead";
+    /* FIXME: Remove support for '\\' line continuation in Octave 9 */
+    static const char *msg = "using continuation marker \\ outside of double quoted strings was deprecated in version 7 and will be removed from a future version of Octave, use ... instead";
 
-    std::string nm = curr_lexer->m_fcn_file_full_name;
-
-    if (nm.empty ())
-      warning_with_id ("Octave:deprecated-syntax", "%s", msg);
-    else
-      warning_with_id ("Octave:deprecated-syntax",
-                       "%s; near line %d of file '%s'", msg,
-                       curr_lexer->m_filepos.line (), nm.c_str ());
+    curr_lexer->warn_deprecated_syntax (msg);
 
     curr_lexer->handle_continuation ();
   }
@@ -1646,13 +1644,13 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 ":"   { CMD_OR_OP (":", ':', true); }
-".+"  { CMD_OR_OP (".+", EPLUS, false); }
-".-"  { CMD_OR_OP (".-", EMINUS, false); }
+".+"  { CMD_OR_DEPRECATED_OP (".+", "+", 7, '+'); }
+".-"  { CMD_OR_DEPRECATED_OP (".-", "-", 7, '-'); }
 ".*"  { CMD_OR_OP (".*", EMUL, true); }
 "./"  { CMD_OR_OP ("./", EDIV, true); }
 ".\\" { CMD_OR_OP (".\\", ELEFTDIV, true); }
 ".^"  { CMD_OR_OP (".^", EPOW, true); }
-".**" { CMD_OR_OP (".**", EPOW, false); }
+".**" { CMD_OR_DEPRECATED_OP (".**", ".^", 7, EPOW); }
 "<="  { CMD_OR_OP ("<=", EXPR_LE, true); }
 "=="  { CMD_OR_OP ("==", EXPR_EQ, true); }
 "!="  { CMD_OR_OP ("!=", EXPR_NE, false); }
@@ -1670,13 +1668,19 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 "\\" {
+    // FIXME: After backslash is no longer handled as a line
+    // continuation marker outside of character strings, this
+    // action may be replaced with
+    //
+    //   CMD_OR_OP ("\\", LEFTDIV, true);
+
     curr_lexer->lexer_debug ("\\");
 
     return curr_lexer->handle_op (LEFTDIV);
   }
 
 "^"   { CMD_OR_OP ("^", POW, true); }
-"**"  { CMD_OR_OP ("**", POW, false); }
+"**"  { CMD_OR_DEPRECATED_OP ("**", "^", 7, POW); }
 "&&"  { CMD_OR_OP ("&&", EXPR_AND_AND, true); }
 "||"  { CMD_OR_OP ("||", EXPR_OR_OR, true); }
 
@@ -1805,27 +1809,25 @@ ANY_INCLUDING_NL (.|{NL})
 "=" {
     curr_lexer->lexer_debug ("=");
 
-    curr_lexer->maybe_mark_previous_token_as_variable ();
-
     return curr_lexer->handle_op ('=');
   }
 
-"+="   { CMD_OR_COMPUTED_ASSIGN_OP ("+=", ADD_EQ); }
-"-="   { CMD_OR_COMPUTED_ASSIGN_OP ("-=", SUB_EQ); }
-"*="   { CMD_OR_COMPUTED_ASSIGN_OP ("*=", MUL_EQ); }
-"/="   { CMD_OR_COMPUTED_ASSIGN_OP ("/=", DIV_EQ); }
-"\\="  { CMD_OR_COMPUTED_ASSIGN_OP ("\\=", LEFTDIV_EQ); }
-".+="  { CMD_OR_COMPUTED_ASSIGN_OP (".+=", ADD_EQ); }
-".-="  { CMD_OR_COMPUTED_ASSIGN_OP (".-=", SUB_EQ); }
-".*="  { CMD_OR_COMPUTED_ASSIGN_OP (".*=", EMUL_EQ); }
-"./="  { CMD_OR_COMPUTED_ASSIGN_OP ("./=", EDIV_EQ); }
-".\\=" { CMD_OR_COMPUTED_ASSIGN_OP (".\\=", ELEFTDIV_EQ); }
-"^="   { CMD_OR_COMPUTED_ASSIGN_OP ("^=", POW_EQ); }
-"**="  { CMD_OR_COMPUTED_ASSIGN_OP ("^=", POW_EQ); }
-".^="  { CMD_OR_COMPUTED_ASSIGN_OP (".^=", EPOW_EQ); }
-".**=" { CMD_OR_COMPUTED_ASSIGN_OP (".^=", EPOW_EQ); }
-"&="   { CMD_OR_COMPUTED_ASSIGN_OP ("&=", AND_EQ); }
-"|="   { CMD_OR_COMPUTED_ASSIGN_OP ("|=", OR_EQ); }
+"+="   { CMD_OR_OP ("+=", ADD_EQ, false); }
+"-="   { CMD_OR_OP ("-=", SUB_EQ, false); }
+"*="   { CMD_OR_OP ("*=", MUL_EQ, false); }
+"/="   { CMD_OR_OP ("/=", DIV_EQ, false); }
+"\\="  { CMD_OR_OP ("\\=", LEFTDIV_EQ, false); }
+".+="  { CMD_OR_DEPRECATED_OP (".+=", "+=", 7, ADD_EQ); }
+".-="  { CMD_OR_DEPRECATED_OP (".-=", "-=", 7, SUB_EQ); }
+".*="  { CMD_OR_OP (".*=", EMUL_EQ, false); }
+"./="  { CMD_OR_OP ("./=", EDIV_EQ, false); }
+".\\=" { CMD_OR_OP (".\\=", ELEFTDIV_EQ, false); }
+"^="   { CMD_OR_OP ("^=", POW_EQ, false); }
+"**="  { CMD_OR_DEPRECATED_OP ("**=", "^=", 7, POW_EQ); }
+".^="  { CMD_OR_OP (".^=", EPOW_EQ, false); }
+".**=" { CMD_OR_DEPRECATED_OP (".**=", ".^=", 7, EPOW_EQ); }
+"&="   { CMD_OR_OP ("&=", AND_EQ, false); }
+"|="   { CMD_OR_OP ("|=", OR_EQ, false); }
 
 %{
 // In Matlab, '{' may also trigger command syntax.
@@ -1886,7 +1888,10 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
-// Unrecognized input is a lexical error.
+// Unrecognized input.  If the previous token may be a command and is
+// followed by a space, parse the remainder of this statement as a
+// command-style function call.  Otherwise, unrecognized input is a
+// lexical error.
 %}
 
 . {
@@ -1900,6 +1905,12 @@ ANY_INCLUDING_NL (.|{NL})
       return -1;
     else if (c == EOF)
       return curr_lexer->handle_end_of_input ();
+    else if (curr_lexer->previous_token_may_be_command ()
+             && curr_lexer->space_follows_previous_token ())
+      {
+        yyless (0);
+        curr_lexer->push_start_state (COMMAND_START);
+      }
     else
       {
         std::ostringstream buf;
@@ -2100,6 +2111,8 @@ display_character (char c)
       }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (iskeyword, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} iskeyword ()
@@ -2130,7 +2143,8 @@ If @var{name} is omitted, return a list of keywords.
         {
           std::string kword = wordlist[i].name;
 
-          if (! (kword == "set" || kword == "get"
+          // FIXME: The following check is duplicated in iskeyword.
+          if (! (kword == "set" || kword == "get" || kword == "arguments"
                  || kword == "enumeration" || kword == "events"
                  || kword == "methods" || kword == "properties"))
             lst[j++] = kword;
@@ -2143,7 +2157,7 @@ If @var{name} is omitted, return a list of keywords.
   else
     {
       std::string name = args(0).xstring_value ("iskeyword: NAME must be a string");
-      retval = octave::iskeyword (name);
+      retval = iskeyword (name);
     }
 
   return retval;
@@ -2162,8 +2176,6 @@ If @var{name} is omitted, return a list of keywords.
 
 */
 
-namespace octave
-{
   void
   lexical_feedback::symbol_table_context::clear (void)
   {
@@ -2222,10 +2234,11 @@ namespace octave
     m_looking_at_return_list = false;
     m_looking_at_parameter_list = false;
     m_looking_at_decl_list = false;
-    m_looking_at_initializer_expression = false;
     m_looking_at_matrix_or_assign_lhs = false;
     m_looking_for_object_index = false;
     m_looking_at_indirect_ref = false;
+    m_arguments_is_keyword = false;
+    m_classdef_element_names_are_keywords = false;
     m_parsing_anon_fcn_body = false;
     m_parsing_class_method = false;
     m_parsing_classdef = false;
@@ -2248,7 +2261,7 @@ namespace octave
     m_block_comment_nesting_level = 0;
     m_command_arg_paren_count = 0;
     m_token_count = 0;
-    m_filepos = filepos ();
+    m_filepos = filepos (1, 1);
     m_tok_beg = filepos ();
     m_tok_end = filepos ();
     m_string_text = "";
@@ -2266,7 +2279,6 @@ namespace octave
     while (! m_parsed_function_name.empty ())
       m_parsed_function_name.pop ();
 
-    m_pending_local_variables.clear ();
     m_symtab_context.clear ();
     m_nesting_level.reset ();
     m_tokens.clear ();
@@ -2311,7 +2323,7 @@ namespace octave
             || tok == ':' || tok == '=' || tok == ADD_EQ
             || tok == AND_EQ || tok == DIV_EQ || tok == EDIV
             || tok == EDIV_EQ || tok == ELEFTDIV || tok == ELEFTDIV_EQ
-            || tok == EMINUS || tok == EMUL || tok == EMUL_EQ
+            || tok == EMUL || tok == EMUL_EQ
             || tok == EPOW || tok == EPOW_EQ || tok == EXPR_AND
             || tok == EXPR_AND_AND || tok == EXPR_EQ || tok == EXPR_GE
             || tok == EXPR_GT || tok == EXPR_LE || tok == EXPR_LT
@@ -2328,6 +2340,24 @@ namespace octave
     return tok ? tok->iskeyword () : false;
   }
 
+  void
+  lexical_feedback::mark_as_variable (const std::string& nm)
+  {
+    symbol_scope scope = m_symtab_context.curr_scope ();
+
+    if (scope)
+      scope.mark_as_variable (nm);
+  }
+
+  void
+  lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
+  {
+    symbol_scope scope = m_symtab_context.curr_scope ();
+
+    if (scope)
+      scope.mark_as_variables (lst);
+  }
+
   bool
   lexical_feedback::previous_token_may_be_command (void) const
   {
@@ -2337,23 +2367,6 @@ namespace octave
     const token *tok = m_tokens.front ();
     return tok ? tok->may_be_command () : false;
   }
-
-  void
-  lexical_feedback::maybe_mark_previous_token_as_variable (void)
-  {
-    token *tok = m_tokens.front ();
-
-    if (tok && tok->is_symbol ())
-      m_pending_local_variables.insert (tok->symbol_name ());
-  }
-
-  void
-  lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
-  {
-    for (const auto& var : lst)
-      m_pending_local_variables.insert (var);
-  }
-}
 
 static bool
 looks_like_copyright (const std::string& s)
@@ -2378,8 +2391,6 @@ looks_like_shebang (const std::string& s)
   return ((! s.empty ()) && (s[0] == '!'));
 }
 
-namespace octave
-{
   void
   base_lexer::input_buffer::fill (const std::string& input, bool eof_arg)
   {
@@ -2519,7 +2530,7 @@ namespace octave
 
     if (m_block_comment_nesting_level != 0)
       {
-        warning ("block comment open at end of input");
+        warning ("block comment unterminated at end of input");
 
         if ((m_reading_fcn_file || m_reading_script_file || m_reading_classdef_file)
             && ! m_fcn_file_name.empty ())
@@ -2617,7 +2628,7 @@ namespace octave
     m_filepos.increment_column (tok_len);
   }
 
-bool
+  bool
   base_lexer::looking_at_space (void)
   {
     int c = text_yyinput ();
@@ -2640,16 +2651,6 @@ bool
       }
 
     return retval;
-  }
-
-  bool
-  base_lexer::is_variable (const std::string& name,
-                           const symbol_scope& /*scope*/)
-  {
-    return ((m_interpreter.at_top_level ()
-             && m_interpreter.is_variable (name))
-            || (m_pending_local_variables.find (name)
-                != m_pending_local_variables.end ()));
   }
 
   int
@@ -2754,6 +2755,16 @@ bool
         m_at_beginning_of_statement = true;
         break;
 
+      case endarguments_kw:
+#if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
+        return 0;
+#else
+        tok_val = new token (endarguments_kw, token::arguments_end, m_tok_beg,
+                             m_tok_end);
+        m_at_beginning_of_statement = true;
+        break;
+#endif
+
       case endclassdef_kw:
         tok_val = new token (endclassdef_kw, token::classdef_end, m_tok_beg,
                              m_tok_end);
@@ -2783,7 +2794,6 @@ bool
                              m_tok_end);
         m_at_beginning_of_statement = true;
         break;
-
 
       case for_kw:
       case parfor_kw:
@@ -2822,7 +2832,7 @@ bool
       case properties_kw:
         // 'properties', 'methods' and 'events' are keywords for
         // classdef blocks.
-        if (! m_parsing_classdef)
+        if (! m_classdef_element_names_are_keywords)
           {
             m_at_beginning_of_statement = previous_at_bos;
             return 0;
@@ -2848,6 +2858,10 @@ bool
             m_reading_script_file = false;
           }
 
+        // FIXME: should we be asking directly whether input is coming
+        // from an eval string instead of that it is not coming from a
+        // file?
+
         if (! (m_reading_fcn_file || m_reading_script_file
                || m_reading_classdef_file))
           {
@@ -2858,11 +2872,30 @@ bool
             // FIXME: do we need to save and restore the file position
             // or just reset the line number here?  The goal is to
             // track line info for command-line functions relative
-            // to the function keyword.
+            // to the function keyword.  Should we really be setting
+            // the line and column info to (1, 1) here?
 
-            m_filepos = filepos ();
+            m_filepos = filepos (1, 1);
             update_token_positions (slen);
           }
+        break;
+
+      case arguments_kw:
+#if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
+        return 0;
+#else
+        if (! m_arguments_is_keyword)
+          return 0;
+        break;
+#endif
+
+      case spmd_kw:
+        m_at_beginning_of_statement = true;
+        break;
+
+      case endspmd_kw:
+        tok_val = new token (endspmd_kw, token::spmd_end, m_tok_beg, m_tok_end);
+        m_at_beginning_of_statement = true;
         break;
 
       case magic_file_kw:
@@ -2880,8 +2913,9 @@ bool
       case magic_line_kw:
         {
           int l = m_tok_beg.line ();
-          tok_val = new token (magic_line_kw, static_cast<double> (l),
-                               "", m_tok_beg, m_tok_end);
+          octave_value ov_value (static_cast<double> (l));
+          tok_val = new token (magic_line_kw, ov_value, "",
+                               m_tok_beg, m_tok_end);
         }
         break;
 
@@ -2932,7 +2966,6 @@ bool
             || (m_nesting_level.is_brace ()
                 && ! m_looking_at_object_index.front ()));
   }
-}
 
 static inline bool
 looks_like_bin (const char *s, int len)
@@ -2946,76 +2979,338 @@ looks_like_hex (const char *s, int len)
   return (len > 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X'));
 }
 
-namespace octave
+static inline octave_value
+make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 {
-  void
-  base_lexer::handle_number (void)
+  if (unsigned_val)
+    {
+     switch (bytes)
+       {
+       case 1:
+         return octave_value (octave_uint8 (long_int_val));
+
+       case 2:
+         return octave_value (octave_uint16 (long_int_val));
+
+       case 4:
+         return octave_value (octave_uint32 (long_int_val));
+
+       case 8:
+         return octave_value (octave_uint64 (long_int_val));
+
+       default:
+         panic_impossible ();
+       };
+    }
+  else
+    {
+      // FIXME: Conversion to signed values is supposed to follow
+      // twos-complement rules.  Do we need to be more carefule here?
+
+      switch (bytes)
+        {
+        case 1:
+          return octave_value (octave_int8 (int8_t (long_int_val)));
+
+        case 2:
+          return octave_value (octave_int16 (int16_t (long_int_val)));
+
+        case 4:
+          return octave_value (octave_int32 (int32_t (long_int_val)));
+
+        case 8:
+        return octave_value (octave_int64 (int64_t (long_int_val)));
+
+        default:
+          panic_impossible ();
+        };
+    }
+
+  return octave_value ();
+}
+
+  template <>
+  int
+  base_lexer::handle_number<2> (void)
   {
-    double value = 0.0;
-    int nread = 0;
+    // Skip 0[bB] prefix.
+    std::string yytxt (flex_yytext () + 2);
 
-    char *yytxt = flex_yytext ();
+    yytxt.erase (std::remove (yytxt.begin (), yytxt.end (), '_'),
+                 yytxt.end ());
 
-    // Strip any underscores
-    char *tmptxt = strsave (yytxt);
-    char *rptr = tmptxt;
-    char *wptr = tmptxt;
-    while (*rptr)
+    std::size_t pos = yytxt.find_first_of ("su");
+
+    bool unsigned_val = true;
+    int bytes = -1;
+
+    if (pos == std::string::npos)
       {
-        *wptr = *rptr++;
-        wptr += (*wptr != '_');
-      }
-    *wptr = '\0';
+        std::size_t num_digits = yytxt.length ();
 
-    if (looks_like_hex (tmptxt, strlen (tmptxt)))
-      {
-        uintmax_t long_int_value;
-
-        nread = sscanf (tmptxt, "%jx", &long_int_value);
-
-        value = static_cast<double> (long_int_value);
-      }
-    else if (looks_like_bin (tmptxt, strlen (tmptxt)))
-      {
-        uintmax_t long_int_value = 0;
-
-        for (std::size_t i = 0; i < strlen (tmptxt); i++)
-          {
-            if (tmptxt[i] == '0')
-              long_int_value <<= 1;
-            else if (tmptxt[i] == '1')
-            {
-              long_int_value <<= 1;
-              long_int_value += 1;
-            }
-          }
-
-        value = static_cast<double> (long_int_value);
-
-        nread = 1;  // Just to pass the assert stmt below
+        if (num_digits <= 8)
+          bytes = 1;
+        else if (num_digits <= 16)
+          bytes = 2;
+        else if (num_digits <= 32)
+          bytes = 4;
+        else if (num_digits <= 64)
+          bytes = 8;
       }
     else
       {
-        char *idx = strpbrk (tmptxt, "Dd");
+        unsigned_val = (yytxt[pos] == 'u');
+        std::string size_str = yytxt.substr (pos+1);
+        yytxt = yytxt.substr (0, pos);
+        std::size_t num_digits = yytxt.length ();
 
-        if (idx)
-          *idx = 'e';
-
-        nread = sscanf (tmptxt, "%lf", &value);
+        if (size_str == "8" && num_digits <= 8)
+          bytes = 1;
+        else if (size_str == "16" && num_digits <= 16)
+          bytes = 2;
+        else if (size_str == "32" && num_digits <= 32)
+          bytes = 4;
+        else if (size_str == "64" && num_digits <= 64)
+          bytes = 8;
       }
 
-    delete [] tmptxt;
+    if (bytes < 0)
+      {
+        token *tok
+          = new token (LEXICAL_ERROR,
+                       "too many digits for binary constant",
+                       m_tok_beg, m_tok_end);
 
-    // If yytext doesn't contain a valid number, we are in deep doo doo.
+        push_token (tok);
 
-    assert (nread == 1);
+        return count_token_internal (LEXICAL_ERROR);
+      }
+
+    // FIXME: is there a better way?  Can uintmax_t be anything other
+    // than long or long long?  Should we just be using uint64_t instead
+    // of uintmax_t?
+
+    errno = 0;
+    char *end;
+    uintmax_t long_int_val;
+    if (sizeof (uintmax_t) == sizeof (unsigned long long))
+      long_int_val = strtoull (yytxt.c_str (), &end, 2);
+    else if (sizeof (uintmax_t) == sizeof (unsigned long))
+      long_int_val = strtoul (yytxt.c_str (), &end, 2);
+    else
+      panic_impossible ();
+
+    if (errno == ERANGE)
+      panic_impossible ();
+
+    octave_value ov_value
+      = make_integer_value (long_int_val, unsigned_val, bytes);
 
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = false;
 
     update_token_positions (flex_yyleng ());
 
-    push_token (new token (NUM, value, yytxt, m_tok_beg, m_tok_end));
+    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+
+    return count_token_internal (NUMBER);
+  }
+
+  static uint64_t
+  flintmax (void)
+  {
+    return (static_cast<uint64_t> (1) << std::numeric_limits<double>::digits);
+  }
+
+  template <>
+  int
+  base_lexer::handle_number<10> (void)
+  {
+    bool imag = false;
+    bool digits_only = true;
+
+    char *yytxt = flex_yytext ();
+    std::size_t yylng = flex_yyleng ();
+
+    OCTAVE_LOCAL_BUFFER (char, tmptxt, yylng + 1);
+    char *rp = yytxt;
+    char *p = &tmptxt[0];
+
+    char ch;
+    while ((ch = *rp++))
+      {
+        switch (ch)
+          {
+          case '_':
+            break;
+
+          case 'D':
+          case 'd':
+            *p++ = 'e';
+            digits_only = false;
+            break;
+
+          case 'I':
+          case 'J':
+          case 'i':
+          case 'j':
+            // Octave does not provide imaginary integers.
+            digits_only = false;
+            imag = true;
+            break;
+
+          case '+':
+          case '-':
+          case '.':
+          case 'E':
+          case 'e':
+            digits_only = false;
+            *p++ = ch;
+            break;
+
+          default:
+            *p++ = ch;
+            break;
+          }
+      }
+
+    *p = '\0';
+
+    double value = 0.0;
+    int nread = 0;
+
+    nread = sscanf (tmptxt, "%lf", &value);
+
+    // If yytext doesn't contain a valid number, we are in deep doo doo.
+
+    assert (nread == 1);
+
+    octave_value ov_value;
+
+    // Use >= because > will not return true until value is greater than
+    // flintmax + 2!
+
+    if (digits_only && value >= flintmax ())
+      {
+        // Try reading as an unsigned 64-bit integer.  If there is a
+        // range error, then create a double value.  Otherwise, create a
+        // special uint64 object that will be automatically converted to
+        // double unless it appears as the argument to one of the int64
+        // or uint64 functions.
+
+        errno = 0;
+        char *end;
+        uintmax_t long_int_val;
+        if (sizeof (uintmax_t) == sizeof (unsigned long long))
+          long_int_val = strtoull (tmptxt, &end, 10);
+        else if (sizeof (uintmax_t) == sizeof (unsigned long))
+          long_int_val = strtoul (tmptxt, &end, 10);
+        else
+          panic_impossible ();
+
+        if (errno != ERANGE)
+          {
+            // If possible, store the value as a signed integer.
+
+            octave_base_value *magic_int;
+            if (long_int_val > std::numeric_limits<int64_t>::max ())
+              magic_int = new octave_magic_uint (octave_uint64 (long_int_val));
+            else
+              magic_int = new octave_magic_int (octave_int64 (long_int_val));
+
+            ov_value = octave_value (magic_int);
+          }
+      }
+
+    m_looking_for_object_index = false;
+    m_at_beginning_of_statement = false;
+
+    update_token_positions (yylng);
+
+    if (ov_value.is_undefined ())
+      ov_value = (imag
+                  ? octave_value (Complex (0.0, value))
+                  : octave_value (value));
+
+    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+
+    return count_token_internal (NUMBER);
+  }
+
+  template <>
+  int
+  base_lexer::handle_number<16> (void)
+  {
+    // Skip 0[xX] prefix.
+    std::string yytxt (flex_yytext () + 2);
+
+    yytxt.erase (std::remove (yytxt.begin (), yytxt.end (), '_'),
+                 yytxt.end ());
+
+    std::size_t pos = yytxt.find_first_of ("su");
+
+    bool unsigned_val = true;
+    int bytes = -1;
+
+    if (pos == std::string::npos)
+      {
+        std::size_t num_digits = yytxt.length ();
+
+        if (num_digits <= 2)
+          bytes = 1;
+        else if (num_digits <= 4)
+          bytes = 2;
+        else if (num_digits <= 8)
+          bytes = 4;
+        else if (num_digits <= 16)
+          bytes = 8;
+      }
+    else
+      {
+        unsigned_val = (yytxt[pos] == 'u');
+        std::string size_str = yytxt.substr (pos+1);
+        yytxt = yytxt.substr (0, pos);
+        std::size_t num_digits = yytxt.length ();
+
+        if (size_str == "8" && num_digits <= 2)
+          bytes = 1;
+        else if (size_str == "16" && num_digits <= 4)
+          bytes = 2;
+        else if (size_str == "32" && num_digits <= 8)
+          bytes = 4;
+        else if (size_str == "64" && num_digits <= 16)
+          bytes = 8;
+      }
+
+    if (bytes < 0)
+      {
+        token *tok
+          = new token (LEXICAL_ERROR,
+                       "too many digits for hexadecimal constant",
+                       m_tok_beg, m_tok_end);
+
+        push_token (tok);
+
+        return count_token_internal (LEXICAL_ERROR);
+      }
+
+    // Assert here because if yytext doesn't contain a valid number, we
+    // are in deep doo doo.
+
+    uintmax_t long_int_val;
+    assert (sscanf (yytxt.c_str (), "%jx", &long_int_val));
+
+    octave_value ov_value
+      = make_integer_value (long_int_val, unsigned_val, bytes);
+
+    m_looking_for_object_index = false;
+    m_at_beginning_of_statement = false;
+
+    update_token_positions (flex_yyleng ());
+
+    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+
+    return count_token_internal (NUMBER);
   }
 
   void
@@ -3271,24 +3566,20 @@ namespace octave
         return count_token_internal (kw_token);
       }
 
-    // Find the token in the symbol table.
+    token *tok = new token (NAME, ident, m_tok_beg, m_tok_end);
 
-    symbol_scope scope = m_symtab_context.curr_scope ();
-
-    symbol_record sr = (scope ? scope.insert (ident) : symbol_record (ident));
-
-    token *tok = new token (NAME, sr, m_tok_beg, m_tok_end);
-
-    // The following symbols are handled specially so that things like
+    // For compatibility with Matlab, the following symbols are
+    // handled specially so that things like
     //
     //   pi +1
     //
     // are parsed as an addition expression instead of as a command-style
-    // function call with the argument "+1".
+    // function call with the argument "+1".  Also for compatibility with
+    // Matlab, if we are at the top level workspace, do not consider IDENT
+    // as a possible command if it is already known to be a variable.
 
     if (m_at_beginning_of_statement
         && ! (m_parsing_anon_fcn_body
-              || is_variable (ident, scope)
               || ident == "e" || ident == "pi"
               || ident == "I" || ident == "i"
               || ident == "J" || ident == "j"
@@ -3377,6 +3668,27 @@ namespace octave
   }
 
   void
+  base_lexer::warn_deprecated_syntax (const std::string& msg)
+  {
+    if (m_fcn_file_full_name.empty ())
+      warning_with_id ("Octave:deprecated-syntax", "%s", msg.c_str ());
+    else
+      warning_with_id ("Octave:deprecated-syntax",
+                       "%s; near line %d of file '%s'", msg.c_str (),
+                       m_filepos.line (), m_fcn_file_full_name.c_str ());
+  }
+
+  void
+  base_lexer::warn_deprecated_operator (const std::string& deprecated_op,
+                                        const std::string& recommended_op,
+                                        const std::string& version)
+  {
+    std::string msg = "the '" + deprecated_op + "' operator was deprecated in version " + version + " and will not be allowed in a future version of Octave; please use '" + recommended_op + "' instead";
+
+    warn_deprecated_syntax (msg);
+  }
+
+  void
   base_lexer::push_token (token *tok)
   {
     YYSTYPE *lval = yyget_lval (m_scanner);
@@ -3435,8 +3747,6 @@ namespace octave
       case EMUL: std::cerr << "EMUL\n"; break;
       case EDIV: std::cerr << "EDIV\n"; break;
       case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
-      case EPLUS: std::cerr << "EPLUS\n"; break;
-      case EMINUS: std::cerr << "EMINUS\n"; break;
       case HERMITIAN: std::cerr << "HERMITIAN\n"; break;
       case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
       case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
@@ -3444,12 +3754,13 @@ namespace octave
       case POW: std::cerr << "POW\n"; break;
       case EPOW: std::cerr << "EPOW\n"; break;
 
-      case NUM:
-      case IMAG_NUM:
+      case NUMBER:
         {
           token *tok_val = current_token ();
-          std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
-                    << " [" << tok_val->number () << "]\n";
+          std::cerr << "NUMBER [";
+          octave_value num = tok_val->number ();
+          num.print_raw (std::cerr);
+          std::cerr << "]\n";
         }
         break;
 
@@ -3463,8 +3774,7 @@ namespace octave
       case NAME:
         {
           token *tok_val = current_token ();
-          symbol_record sr = tok_val->sym_rec ();
-          std::cerr << "NAME [" << sr.name () << "]\n";
+          std::cerr << "NAME [" << tok_val->text () << "]\n";
         }
         break;
 
@@ -3879,4 +4189,5 @@ namespace octave
 
     return status;
   }
-}
+
+OCTAVE_NAMESPACE_END

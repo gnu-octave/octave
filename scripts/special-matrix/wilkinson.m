@@ -36,7 +36,7 @@
 
 function retval = wilkinson (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -58,8 +58,7 @@ endfunction
 %!assert (wilkinson (4), [1.5,1,0,0;1,0.5,1,0;0,1,0.5,1;0,0,1,1.5])
 
 ## Test input validation
-%!error wilkinson ()
-%!error wilkinson (1,2)
+%!error <Invalid call> wilkinson ()
 %!error <N must be a non-negative integer> wilkinson (ones (2))
 %!error <N must be a non-negative integer> wilkinson (-1)
 %!error <N must be a non-negative integer> wilkinson (1.5)

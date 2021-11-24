@@ -68,21 +68,15 @@ The macros #DEFUN or #DEFMETHOD fulfill two tasks:
 In addition to #DEFUN and #DEFMETHOD, there are two specialized versions of
 both macros, that should only be used with reason:
 
-1. If the name `foo` cannot be used directly (for example if it is already
-   defined as a macro), one can use instead one of
-   ```{.cc}
-   DEFUNX     ("foo", Ffoo,              args_name, nargout_name, doc)
-   DEFMETHODX ("foo", Ffoo, interp_name, args_name, nargout_name, doc)
-   ```
-   where `"foo"` is the name for the interpreter, protected by macro expansion
-   inside a string, and `Ffoo` is the actual builtin function or builtin method
-   name.
-2. In case `foo` may not be hidden by a variable, defined in an Octave
-   interpreter session, one can use instead one of
-   ```{.cc}
-   DEFCONSTFUN    (foo,              args_name, nargout_name, doc)
-   DEFCONSTMETHOD (foo, interp_name, args_name, nargout_name, doc)
-   ```
+If the name `foo` cannot be used directly (for example if it is already
+defined as a macro), one can use instead one of
+```{.cc}
+DEFUNX     ("foo", Ffoo,              args_name, nargout_name, doc)
+DEFMETHODX ("foo", Ffoo, interp_name, args_name, nargout_name, doc)
+```
+where `"foo"` is the name for the interpreter, protected by macro expansion
+inside a string, and `Ffoo` is the actual builtin function or builtin method
+name.
 
 Last but not least, there is #DEFALIAS.  As the name suggests, this macro can
 be used to define an alias for an existing builtin function.

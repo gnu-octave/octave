@@ -44,13 +44,14 @@ namespace octave
         : m_sysname ("unknown"), m_nodename ("unknown"),
           m_release ("unknown"), m_version ("unknown"),
           m_machine ("unknown"),
-          msg ("uname not supported on this system"), err (-1)
+          m_errmsg ("uname not supported on this system"), m_errno (-1)
       { init (); }
 
       uname (const uname& unm)
         : m_sysname (unm.m_sysname), m_nodename (unm.m_nodename),
           m_release (unm.m_release), m_version (unm.m_version),
-          m_machine (unm.m_machine), msg (unm.msg), err (unm.err)
+          m_machine (unm.m_machine),
+          m_errmsg (unm.m_errmsg), m_errno (unm.m_errno)
       { }
 
       uname& operator = (const uname& unm)
@@ -63,8 +64,8 @@ namespace octave
             m_version = unm.m_version;
             m_machine = unm.m_machine;
 
-            msg = unm.msg;
-            err = unm.err;
+            m_errmsg = unm.m_errmsg;
+            m_errno = unm.m_errno;
           }
 
         return *this;
@@ -78,8 +79,8 @@ namespace octave
       std::string version (void) const { return m_version; }
       std::string machine (void) const { return m_machine; }
 
-      std::string message (void) const { return msg; }
-      int error (void) const { return err; }
+      std::string message (void) const { return m_errmsg; }
+      int error (void) const { return m_errno; }
 
     private:
 
@@ -89,8 +90,8 @@ namespace octave
       std::string m_version;
       std::string m_machine;
 
-      std::string msg;
-      int err;
+      std::string m_errmsg;
+      int m_errno;
 
       void init (void);
     };

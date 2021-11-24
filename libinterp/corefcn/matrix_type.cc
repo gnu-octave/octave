@@ -39,6 +39,8 @@
 #include "MatrixType.h"
 #include "oct-locbuf.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (matrix_type, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{type} =} matrix_type (@var{A})
@@ -540,10 +542,10 @@ LU@tie{}factorization.  Once the matrix has been factorized,
 %! a = matrix_type (spdiags (randn (10,3),[-1,0,1],10,10), "Singular");
 %! assert (matrix_type (a), "Singular");
 
-%!assert (matrix_type (triu (ones(10,10))), "Upper")
-%!assert (matrix_type (triu (ones(10,10),-1)), "Full")
-%!assert (matrix_type (tril (ones(10,10))), "Lower")
-%!assert (matrix_type (tril (ones(10,10),1)), "Full")
+%!assert (matrix_type (triu (ones (10,10))), "Upper")
+%!assert (matrix_type (triu (ones (10,10),-1)), "Full")
+%!assert (matrix_type (tril (ones (10,10))), "Lower")
+%!assert (matrix_type (tril (ones (10,10),1)), "Full")
 %!assert (matrix_type (10*eye (10,10) + ones (10,10)), "Positive Definite")
 %!assert (matrix_type (ones (11,10)), "Rectangular")
 %!test
@@ -560,3 +562,5 @@ LU@tie{}factorization.  Once the matrix has been factorized,
 %! a = matrix_type (ones (10,10), "Singular");
 %! assert (matrix_type (a), "Singular");
 */
+
+OCTAVE_NAMESPACE_END

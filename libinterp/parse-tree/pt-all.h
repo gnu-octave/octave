@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include "pt.h"
+#include "pt-args-block.h"
 #include "pt-arg-list.h"
 #include "pt-assign.h"
 #include "pt-bp.h"
@@ -52,6 +53,7 @@
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-select.h"
+#include "pt-spmd.h"
 #include "pt-stmt.h"
 #include "pt-unop.h"
 #include "pt-pr-code.h"

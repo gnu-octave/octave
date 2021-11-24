@@ -144,18 +144,25 @@ hdf5_fstreambase::open_create (const char *name, int mode)
 #if defined (HAVE_HDF5)
   // Open the HDF5 file NAME.  If it does not exist, create the file.
 
+#  if defined (HAVE_HDF5_UTF8)
+  const char *fname = name;
+#  else
   std::string fname_str (name);
   std::string ascii_fname_str = octave::sys::get_ASCII_filename (fname_str);
-  const char *ascii_fname = ascii_fname_str.c_str ();
+  const char *fname = ascii_fname_str.c_str ();
+#  endif
 
   if (mode & std::ios::in)
-    file_id = H5Fopen (ascii_fname, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
+    file_id = H5Fopen (fname, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
   else if (mode & std::ios::out)
     {
-      if (mode & std::ios::app && H5Fis_hdf5 (ascii_fname) > 0)
-        file_id = H5Fopen (ascii_fname, H5F_ACC_RDWR, octave_H5P_DEFAULT);
+      if (mode & std::ios::app && H5Fis_hdf5 (fname) > 0)
+        file_id = H5Fopen (fname, H5F_ACC_RDWR, octave_H5P_DEFAULT);
       else
-#  if defined (OCTAVE_USE_WINDOWS_API)
+#  if defined (HAVE_HDF5_UTF8)
+        file_id = H5Fcreate (fname, H5F_ACC_TRUNC, octave_H5P_DEFAULT,
+                             octave_H5P_DEFAULT);
+#  else
         {
           // Check whether file already exists
           std::string abs_ascii_fname
@@ -163,7 +170,7 @@ hdf5_fstreambase::open_create (const char *name, int mode)
           if (! abs_ascii_fname.empty ())
             {
               // Use the existing file
-              file_id = H5Fcreate (ascii_fname, H5F_ACC_TRUNC,
+              file_id = H5Fcreate (fname, H5F_ACC_TRUNC,
                                    octave_H5P_DEFAULT, octave_H5P_DEFAULT);
               if (file_id < 0)
                 std::ios::setstate (std::ios::badbit);
@@ -216,9 +223,6 @@ hdf5_fstreambase::open_create (const char *name, int mode)
           ascii_fname = ascii_fname_str.c_str ();
           file_id = H5Fopen (ascii_fname, H5F_ACC_RDWR, octave_H5P_DEFAULT);
         }
-#  else
-        file_id = H5Fcreate (name, H5F_ACC_TRUNC, octave_H5P_DEFAULT,
-                             octave_H5P_DEFAULT);
 #  endif
     }
   if (file_id < 0)
@@ -1080,7 +1084,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 {
 #if defined (HAVE_HDF5)
 
-  check_hdf5_types ();
+  octave::check_hdf5_types ();
 
   std::string retval;
 
@@ -1501,7 +1505,7 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
 {
 #if defined (HAVE_HDF5)
 
-  check_hdf5_types ();
+  octave::check_hdf5_types ();
 
   hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 

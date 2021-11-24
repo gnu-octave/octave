@@ -35,6 +35,8 @@
 #include "ov-null-mat.h"
 #include "ops.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // string unary ops.
 
 DEFUNOP (transpose, char_matrix_str)
@@ -217,3 +219,5 @@ install_str_str_ops (octave::type_info& ti)
                        null_assign);
 
 }
+
+OCTAVE_NAMESPACE_END

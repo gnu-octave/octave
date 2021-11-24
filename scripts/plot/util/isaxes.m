@@ -34,7 +34,7 @@
 
 function retval = isaxes (h)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -66,5 +66,4 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!error isaxes ()
-%!error isaxes (1, 2)
+%!error <Invalid call> isaxes ()

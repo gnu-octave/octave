@@ -38,7 +38,7 @@
 ##
 ## @code{findall} performs the same search as @code{findobj}, but it
 ## includes hidden objects (HandleVisibility = @qcode{"off"}).  For full
-## documentation, @pxref{XREFfindobj,,findobj}.
+## documentation, @pxref{XREFfindobj,,@code{findobj}}.
 ## @seealso{findobj, allchild, get, set}
 ## @end deftypefn
 

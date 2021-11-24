@@ -34,7 +34,7 @@
 
 function retval = istril (A)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -61,5 +61,4 @@ endfunction
 %!assert (! istril (randn (10)))
 
 ## Test input validation
-%!error istril ()
-%!error istril (1,2)
+%!error <Invalid call> istril ()

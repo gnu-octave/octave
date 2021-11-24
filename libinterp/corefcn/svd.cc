@@ -37,34 +37,39 @@
 #include "utils.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static std::string Vsvd_driver = "gesvd";
 
 template <typename T>
-static typename octave::math::svd<T>::Type
+static typename math::svd<T>::Type
 svd_type (int nargin, int nargout, const octave_value_list & args, const T & A)
 {
   if (nargout == 0 || nargout == 1)
-    return octave::math::svd<T>::Type::sigma_only;
+    return math::svd<T>::Type::sigma_only;
   else if (nargin == 1)
-    return octave::math::svd<T>::Type::std;
+    return math::svd<T>::Type::std;
   else if (! args(1).is_real_scalar ())
-    return octave::math::svd<T>::Type::economy;
+    return math::svd<T>::Type::economy;
   else
     {
       if (A.rows () > A.columns ())
-        return octave::math::svd<T>::Type::economy;
+        return math::svd<T>::Type::economy;
       else
-        return octave::math::svd<T>::Type::std;
+        return math::svd<T>::Type::std;
     }
 }
 
 template <typename T>
-static typename octave::math::svd<T>::Driver
+static typename math::svd<T>::Driver
 svd_driver (void)
 {
-  return (Vsvd_driver == "gesvd"
-          ? octave::math::svd<T>::Driver::GESVD
-          : octave::math::svd<T>::Driver::GESDD);
+  if (Vsvd_driver == "gejsv")
+      return math::svd<T>::Driver::GEJSV;
+  else if (Vsvd_driver == "gesdd")
+      return math::svd<T>::Driver::GESDD;
+  else
+      return math::svd<T>::Driver::GESVD;  // default
 }
 
 DEFUN (svd, args, nargout,
@@ -164,8 +169,9 @@ Algorithm Notes: When calculating the full decomposition (left and right
 singular matrices in addition to singular values) there is a choice of two
 routines in @sc{lapack}.  The default routine used by Octave is @code{gesvd}.
 The alternative is @code{gesdd} which is 5X faster, but may use more memory
-and may be inaccurate for some input matrices.  See the documentation for
-@code{svd_driver} for more information on choosing a driver.
+and may be inaccurate for some input matrices.  There is a third routine
+@code{gejsv}, suitable for better accuracy at extreme scale.  See the
+documentation for @code{svd_driver} for more information on choosing a driver.
 @seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}
 @end deftypefn */)
 {
@@ -192,7 +198,7 @@ and may be inaccurate for some input matrices.  See the documentation for
           if (tmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          octave::math::svd<FloatMatrix> result
+          math::svd<FloatMatrix> result
             (tmp,
              svd_type<FloatMatrix> (nargin, nargout, args, tmp),
              svd_driver<FloatMatrix> ());
@@ -216,7 +222,7 @@ and may be inaccurate for some input matrices.  See the documentation for
           if (ctmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          octave::math::svd<FloatComplexMatrix> result
+          math::svd<FloatComplexMatrix> result
             (ctmp,
              svd_type<FloatComplexMatrix> (nargin, nargout, args, ctmp),
              svd_driver<FloatComplexMatrix> ());
@@ -243,7 +249,7 @@ and may be inaccurate for some input matrices.  See the documentation for
           if (tmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          octave::math::svd<Matrix> result
+          math::svd<Matrix> result
             (tmp,
              svd_type<Matrix> (nargin, nargout, args, tmp),
              svd_driver<Matrix> ());
@@ -267,7 +273,7 @@ and may be inaccurate for some input matrices.  See the documentation for
           if (ctmp.any_element_is_inf_or_nan ())
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
-          octave::math::svd<ComplexMatrix> result
+          math::svd<ComplexMatrix> result
             (ctmp,
              svd_type<ComplexMatrix> (nargin, nargout, args, ctmp),
              svd_driver<ComplexMatrix> ());
@@ -377,6 +383,15 @@ and may be inaccurate for some input matrices.  See the documentation for
 
 %!assert <*55710> (1 / svd (-0), Inf)
 
+%!test
+%! old_driver = svd_driver ("gejsv");
+%! s0 = [1e-20; 1e-10; 1];  # only gejsv can pass
+%! q = sqrt (0.5);
+%! a = s0 .* [q, 0, -q; -0.5, q, -0.5; 0.5, q, 0.5];
+%! s1 = svd (a);
+%! svd_driver (old_driver);
+%! assert (sort (s1), s0, -10 * eps);
+
 %!error svd ()
 %!error svd ([1, 2; 4, 5], 2, 3)
 */
@@ -388,23 +403,29 @@ DEFUN (svd_driver, args, nargout,
 @deftypefnx {} {} svd_driver (@var{new_val}, "local")
 Query or set the underlying @sc{lapack} driver used by @code{svd}.
 
-Currently recognized values are @qcode{"gesdd"} and @qcode{"gesvd"}.
-The default is @qcode{"gesvd"}.
+Currently recognized values are @qcode{"gesdd"}, @qcode{"gesvd"}, and
+@qcode{"gejsv"}.  The default is @qcode{"gesvd"}.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 
-Algorithm Notes: The @sc{lapack} library provides two routines for calculating
-the full singular value decomposition (left and right singular matrices as
-well as singular values).  When calculating just the singular values the
-following discussion is not relevant.
+Algorithm Notes: The @sc{lapack} library routines @code{gesvd} and @code{gesdd}
+are different only when calculating the full singular value decomposition (left
+and right singular matrices as well as singular values).  When calculating just
+the singular values the following discussion is not relevant.
 
 The newer @code{gesdd} routine is based on a Divide-and-Conquer algorithm that
 is 5X faster than the alternative @code{gesvd}, which is based on QR
 factorization.  However, the new algorithm can use significantly more memory.
 For an @nospell{MxN} input matrix the memory usage is of order O(min(M,N) ^ 2),
 whereas the alternative is of order O(max(M,N)).
+
+The routine @code{gejsv} uses a preconditioned Jacobi SVD algorithm.  Unlike
+@code{gesvd} and @code{gesdd}, in @code{gejsv}, there is no bidiagonalization
+step that could contaminate accuracy in some extreme cases.  Also, @code{gejsv}
+is known to be optimally accurate in some sense.  However, the speed is slower
+(single threaded at its core) and uses more memory (O(min(M,N) ^ 2 + M + N)).
 
 Beyond speed and memory issues, there have been instances where some input
 matrices were not accurately decomposed by @code{gesdd}.  See currently active
@@ -415,9 +436,10 @@ in Octave has been set to @qcode{"gesvd"}.
 @seealso{svd}
 @end deftypefn */)
 {
-  static const char *driver_names[] = { "gesvd", "gesdd", nullptr };
+  static const char *driver_names[] = { "gesvd", "gesdd", "gejsv", nullptr };
 
-  return SET_INTERNAL_VARIABLE_CHOICES (svd_driver, driver_names);
+  return set_internal_variable (Vsvd_driver, args, nargout,
+                                "svd_driver", driver_names);
 }
 
 /*
@@ -427,8 +449,17 @@ in Octave has been set to @qcode{"gesvd"}.
 %! [U1, S1, V1] = svd (A);
 %! svd_driver ("gesdd");
 %! [U2, S2, V2] = svd (A);
+%! svd_driver ("gejsv");
+%! [U3, S3, V3] = svd (A);
+%! assert (svd_driver (), "gejsv");
 %! svd_driver (old_driver);
-%! assert (U1, U2, 5*eps);
-%! assert (S1, S2, 5*eps);
-%! assert (V1, V2, 5*eps);
+%! assert (U1, U2, 6*eps);
+%! assert (S1, S2, 6*eps);
+%! assert (V1, V2, 6*eps);
+%! z = U1(1,:) ./ U3(1,:);
+%! assert (U1, U3 .* z, 100*eps);
+%! assert (S1, S3, 6*eps);
+%! assert (V1, V3 .* z, 100*eps);
 */
+
+OCTAVE_NAMESPACE_END

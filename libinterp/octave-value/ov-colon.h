@@ -62,7 +62,8 @@ public:
   octave_base_value * empty_clone (void) const
   { return new octave_magic_colon (); }
 
-  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (':'); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return octave::idx_vector (':'); }
 
   bool is_defined (void) const { return true; }
 
@@ -70,9 +71,9 @@ public:
 
   bool is_magic_colon (void) const { return true; }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
 

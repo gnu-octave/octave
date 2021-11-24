@@ -41,8 +41,8 @@
 ## @var{x0} is an optional initial guess for the solution @var{x}.
 ##
 ## @var{options} is an options structure to change the behavior of the
-## algorithm (@pxref{XREFoptimset,,optimset}).  @code{lsqnonneg} recognizes
-## these options: @qcode{"MaxIter"}, @qcode{"TolX"}.
+## algorithm (@pxref{XREFoptimset,,@code{optimset}}).  @code{lsqnonneg}
+## recognizes these options: @qcode{"MaxIter"}, @qcode{"TolX"}.
 ##
 ## Outputs:
 ##
@@ -81,9 +81,7 @@
 ## This is implemented from Lawson and Hanson's 1973 algorithm on page 161 of
 ## Solving Least Squares Problems.
 
-function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d,
-                                                                       x0 = [],
-                                                                       options = struct ())
+function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x0 = [], options = struct ())
 
   ## Special case: called to find default optimization options
   if (nargin == 1 && ischar (c) && strcmp (c, "defaults"))
@@ -91,7 +89,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d,
     return;
   endif
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -237,10 +235,9 @@ endfunction
 %! xnew = [0;0.6929];
 %! assert (lsqnonneg (C, d), xnew, 0.0001);
 
-# Test input validation
-%!error lsqnonneg ()
-%!error lsqnonneg (1)
-%!error lsqnonneg (1,2,3,4,5)
+## Test input validation
+%!error <Invalid call> lsqnonneg ()
+%!error <Invalid call> lsqnonneg (1)
 %!error <C .* must be numeric matrices> lsqnonneg ({1},2)
 %!error <C .* must be numeric matrices> lsqnonneg (ones (2,2,2),2)
 %!error <D must be numeric matrices> lsqnonneg (1,{2})

@@ -44,7 +44,7 @@ PermMatrix::setup (const Array<octave_idx_type>& p, bool colp, bool check)
 {
   if (check)
     {
-      if (! idx_vector (p).is_permutation (p.numel ()))
+      if (! octave::idx_vector (p).is_permutation (p.numel ()))
         err_invalid_permutation ();
     }
 
@@ -59,7 +59,7 @@ PermMatrix::PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check)
 }
 
 void
-PermMatrix::setup (const idx_vector& idx, bool colp, octave_idx_type n)
+PermMatrix::setup (const octave::idx_vector& idx, bool colp, octave_idx_type n)
 {
   octave_idx_type len = idx.length (n);
 
@@ -74,7 +74,7 @@ PermMatrix::setup (const idx_vector& idx, bool colp, octave_idx_type n)
     *this = this->transpose ();
 }
 
-PermMatrix::PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n)
+PermMatrix::PermMatrix (const octave::idx_vector& idx, bool colp, octave_idx_type n)
   : Array<octave_idx_type> ()
 {
   setup (idx, colp, n);
@@ -220,7 +220,7 @@ operator *(const PermMatrix& a, const PermMatrix& b)
   if (n != b.rows ())
     octave::err_nonconformant ("operator *", n, n, b.rows (), b.rows ());
 
-  r = PermMatrix (ia.index (idx_vector (ib)), true, false);
+  r = PermMatrix (ia.index (octave::idx_vector (ib)), true, false);
 
   return r;
 }

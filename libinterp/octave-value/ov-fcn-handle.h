@@ -40,8 +40,8 @@
 #include "stack-frame.h"
 #include "symscope.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class interpreter;
   class tree_evaluator;
 
@@ -168,7 +168,8 @@ namespace octave
     // The name of the file where the named function was defined.
     std::string m_file;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 class
 OCTINTERP_API
@@ -372,11 +373,14 @@ private:
 extern bool
 is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2);
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (6, "use 'tree_evaluator::make_fcn_handle' instead")
   extern octave_value
   make_fcn_handle (interpreter& interp, const std::string& name);
-}
+#endif
+
+OCTAVE_NAMESPACE_END
 
 #endif

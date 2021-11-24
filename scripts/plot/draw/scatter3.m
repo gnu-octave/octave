@@ -53,14 +53,10 @@
 ## If no marker is specified it defaults to @qcode{"o"} or circles.
 ## If the argument @qcode{"filled"} is given then the markers are filled.
 ##
-## Additional property/value pairs are passed directly to the underlying
-## patch object.  The full list of properties is documented at
-## @ref{Patch Properties}.
-##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a graphics handle to the hggroup
+## The optional return value @var{h} is a graphics handle to the scatter
 ## object representing the points.
 ##
 ## @example
@@ -70,6 +66,8 @@
 ## @end group
 ## @end example
 ##
+## Programming Note: The full list of properties is documented at
+## @ref{Scatter Properties}.
 ## @seealso{scatter, patch, plot}
 ## @end deftypefn
 

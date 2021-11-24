@@ -35,9 +35,13 @@
 #include "quit.h"
 
 
+// forward declare template with visibility attributes
+template <typename T> class OCTAVE_API MSparse;
+
 // Two dimensional sparse array with math ops.
 template <typename T>
 class
+OCTAVE_API
 MSparse : public Sparse<T>
 {
 public:
@@ -58,7 +62,7 @@ public:
   template <typename U>
   MSparse (const Sparse<U>& a) : Sparse<T> (a) { }
 
-  MSparse (const Array<T>& a, const idx_vector& r, const idx_vector& c,
+  MSparse (const Array<T>& a, const octave::idx_vector& r, const octave::idx_vector& c,
            octave_idx_type nr = -1, octave_idx_type nc = -1,
            bool sum_terms = true, octave_idx_type nzm = -1)
     : Sparse<T> (a, r, c, nr, nc, sum_terms, nzm) { }
@@ -111,12 +115,12 @@ public:
 
   // FIXME: should go away.
   template <typename U>
-  MSparse<U>
+  Sparse<U>
   map (U (&fcn) (T)) const
   { return Sparse<T>::template map<U> (fcn); }
 
   template <typename U>
-  MSparse<U>
+  Sparse<U>
   map (U (&fcn) (const T&)) const
   { return Sparse<T>::template map<U> (fcn); }
 };

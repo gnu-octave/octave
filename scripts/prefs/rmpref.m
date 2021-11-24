@@ -42,7 +42,7 @@
 
 function rmpref (group, pref)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   elseif (! ischar (group))
     error ("rmpref: GROUP must be a string");
@@ -113,7 +113,6 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error rmpref ()
-%!error rmpref (1,2,3)
+%!error <Invalid call> rmpref ()
 %!error <GROUP must be a string> rmpref (1)
 %!error <PREF must be a string> rmpref ("group1", 1)

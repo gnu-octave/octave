@@ -140,7 +140,7 @@ NUM (({D}+\.?{D}*)|(\.{D}+))
     return FONTSIZE;
   }
 
-"\\color[rgb]" {
+"\\color[m_rgb]" {
     BEGIN (MAYBE_NUM_MODE);
     return COLOR_RGB;
   }
@@ -218,37 +218,38 @@ namespace octave
 {
   bool text_parser_tex::init_lexer (const std::string& s)
   {
-    if (! scanner)
-      octave_tex_lex_init (&scanner);
+    if (! m_scanner)
+      octave_tex_lex_init (&m_scanner);
 
-    if (scanner)
+    if (m_scanner)
       {
-        if (buffer_state)
+        if (m_buffer_state)
           {
-            octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (buffer_state),
-                                       scanner);
-            buffer_state = nullptr;
+            octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (m_buffer_state),
+                                       m_scanner);
+            m_buffer_state = nullptr;
           }
 
-        buffer_state = octave_tex__scan_bytes (s.data (), s.length (), scanner);
+        m_buffer_state = octave_tex__scan_bytes (s.data (), s.length (),
+                                                 m_scanner);
       }
 
-    return (scanner && buffer_state);
+    return (m_scanner && m_buffer_state);
   }
 
   void text_parser_tex::destroy_lexer (void)
   {
-    if (buffer_state)
+    if (m_buffer_state)
       {
-        octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (buffer_state),
-                                   scanner);
-        buffer_state = nullptr;
+        octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (m_buffer_state),
+                                   m_scanner);
+        m_buffer_state = nullptr;
       }
 
-    if (scanner)
+    if (m_scanner)
       {
-        octave_tex_lex_destroy (scanner);
-        scanner = nullptr;
+        octave_tex_lex_destroy (m_scanner);
+        m_scanner = nullptr;
       }
   }
 }

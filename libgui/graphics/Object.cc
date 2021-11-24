@@ -38,7 +38,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace QtHandles
+namespace octave
 {
 
   Object::Object (octave::base_qobject& oct_qobj, octave::interpreter& interp,
@@ -51,7 +51,7 @@ namespace QtHandles
     octave::autolock guard (gh_mgr.graphics_lock ());
 
     if (! guard)
-      qCritical ("QtHandles::Object::Object: "
+      qCritical ("octave::Object::Object: "
                  "creating Object (h=%g) without a valid lock!!!",
                  m_handle.value ());
 
@@ -62,17 +62,17 @@ namespace QtHandles
   Object::init (QObject *obj, bool)
   {
     if (m_qobject)
-      qCritical ("QtHandles::Object::init: "
+      qCritical ("octave::Object::init: "
                  "resetting QObject while in invalid state");
 
     m_qobject = obj;
 
     if (m_qobject)
       {
-        m_qobject->setProperty ("QtHandles::Object",
+        m_qobject->setProperty ("octave::Object",
                                 QVariant::fromValue<void*> (this));
-        connect (m_qobject, SIGNAL (destroyed (QObject*)),
-                 SLOT (objectDestroyed (QObject*)));
+        connect (m_qobject, &QObject::destroyed,
+                 this, &Object::objectDestroyed);
       }
   }
 
@@ -87,7 +87,7 @@ namespace QtHandles
     octave::autolock guard (gh_mgr.graphics_lock (), false);
 
     if (! guard)
-      qCritical ("QtHandles::Object::object: "
+      qCritical ("octave::Object::object: "
                  "accessing graphics object (h=%g) without a valid lock!!!",
                  m_handle.value ());
 
@@ -213,7 +213,7 @@ namespace QtHandles
   Object*
   Object::fromQObject (QObject *obj)
   {
-    QVariant v = obj->property ("QtHandles::Object");
+    QVariant v = obj->property ("octave::Object");
 
     if (v.isValid ())
       return reinterpret_cast<Object *> (qvariant_cast<void*> (v));

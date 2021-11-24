@@ -72,5 +72,5 @@ endfunction
 
 %!error <Invalid call> mustBeLessThanOrEqual ()
 %!error <Invalid call> mustBeLessThanOrEqual (1)
-%!error <Invalid call> mustBeLessThanOrEqual (1,2,3)
+%!error <called with too many inputs> mustBeLessThanOrEqual (1, 2, 3)
 %!error <must be less than or equal to 0> mustBeLessThanOrEqual (1, 0)

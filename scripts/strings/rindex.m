@@ -67,6 +67,6 @@ endfunction
 %! assert (rindex (str, "o"), [5; 2; 3; 2]);
 
 ## Test input validation
-%!error rindex ()
+%!error <Invalid call> rindex ()
 %!error rindex ("foo")
 %!error rindex ("foo", "bar", "last")

@@ -159,7 +159,7 @@
 ## FIXME: consider two dimensional speedup surfaces for functions like kron.
 function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 100, __f2 = "", __tol = eps)
 
-  if (nargin < 1 || nargin > 6)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -243,7 +243,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
         __t = min ([__t, __t2, __t3]);
       endif
       __torig(k) = __t;
-      if (! isinf(__tol))
+      if (! isinf (__tol))
         assert (__v1, __v2, __tol);
       endif
     endif
@@ -276,7 +276,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
   endif
 
   if (do_display)
-    figure;
+    figure ();
     ## Strip semicolon added to code fragments before displaying
     __init(end) = "";
     __f1(end) = "";
@@ -403,7 +403,7 @@ endfunction
 %! fstr_build = cstrcat (
 %!   "function x = build (n)\n",
 %!   "  idx = [1:100]';\n",
-%!   "  x = idx(:,ones(1,n));\n",
+%!   "  x = idx(:,ones (1,n));\n",
 %!   "  x = reshape (x, 1, n*100);\n",
 %!   "endfunction");
 %!
@@ -453,5 +453,4 @@ endfunction
 %! assert (length (T_f2) > 10);
 
 ## Test input validation
-%!error speed ()
-%!error speed (1, 2, 3, 4, 5, 6, 7)
+%!error <Invalid call> speed ()

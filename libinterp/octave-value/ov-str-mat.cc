@@ -110,7 +110,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
         case 1:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
 
             retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
                                    type);
@@ -119,9 +119,9 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
         case 2:
           {
-            idx_vector i = idx (0).index_vector ();
+            octave::idx_vector i = idx (0).index_vector ();
             k = 1;
-            idx_vector j = idx (1).index_vector ();
+            octave::idx_vector j = idx (1).index_vector ();
 
             retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
                                    type);
@@ -130,7 +130,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
         default:
           {
-            Array<idx_vector> idx_vec (dim_vector (len, 1));
+            Array<octave::idx_vector> idx_vec (dim_vector (len, 1));
 
             for (k = 0; k < len; k++)
               idx_vec(k) = idx(k).index_vector ();
@@ -140,10 +140,10 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
           break;
         }
     }
-  catch (octave::index_exception& e)
+  catch (octave::index_exception& ie)
     {
       // Rethrow to allow more info to be reported later.
-      e.set_pos_if_unset (len, k+1);
+      ie.set_pos_if_unset (len, k+1);
       throw;
     }
 
@@ -234,9 +234,22 @@ octave_char_matrix_str::string_value (bool) const
 
   charMatrix chm (matrix);
 
+  if (chm.rows () > 1)
+    warning_with_id ("Octave:charmat-truncated",
+                     "multi-row character matrix converted to a string, only the first row is used");
+
   // FIXME: Is this correct?
   return chm.row_as_string (0);
 }
+
+/*
+%!test <*49536>
+%! warning ("on", "Octave:charmat-truncated", "local");
+%! s = char ("this", "is", "a", "char", "matrix");
+%! fail ("sprintf (s)", ...
+%!       "warning",     ...
+%!       "multi-row character matrix converted to a string");
+*/
 
 Array<std::string>
 octave_char_matrix_str::cellstr_value (void) const
@@ -268,7 +281,8 @@ octave_char_matrix_str::short_disp (std::ostream& os) const
 {
   if (matrix.ndims () == 2 && numel () > 0)
     {
-      std::string tmp = string_value ();
+      charMatrix chm (matrix);
+      std::string tmp = chm.row_as_string (0);
 
       // FIXME: should this be configurable?
       std::size_t max_len = 100;
@@ -379,7 +393,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
         {
           char *ftmp = tmp.fortran_vec ();
 
-          skip_preceeding_newline (is);
+          octave::skip_preceeding_newline (is);
 
           if (! is.read (ftmp, dv.numel ()) || ! is)
             error ("load: failed to load string constant");

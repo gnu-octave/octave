@@ -28,12 +28,14 @@
 
 #include "octave-config.h"
 
+#include <memory>
+
 #include "oct-cmplx.h"
 
 class Matrix;
 class ComplexMatrix;
-class SparseComplexMatrix;
 class SparseMatrix;
+class SparseComplexMatrix;
 class ColumnVector;
 template <typename T> class MArray;
 
@@ -52,83 +54,107 @@ namespace octave
     {
     public:
 
-      sparse_qr (void);
+      OCTAVE_API sparse_qr (void);
 
-      sparse_qr (const SPARSE_T& a, int order = 0);
+#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
+      // order = 7 selects SPQR default ordering
+      OCTAVE_API sparse_qr (const SPARSE_T& a, int order = 7);
+#else
+      OCTAVE_API sparse_qr (const SPARSE_T& a, int order = 0);
+#endif
 
-      sparse_qr (const sparse_qr& a);
+      sparse_qr (const sparse_qr& a) = default;
 
-      ~sparse_qr (void);
+      ~sparse_qr (void) = default;
 
-      sparse_qr& operator = (const sparse_qr& a);
+      sparse_qr& operator = (const sparse_qr& a) = default;
 
-      bool ok (void) const;
+      OCTAVE_API bool ok (void) const;
 
-      SPARSE_T V (void) const;
+      OCTAVE_API ColumnVector E (void) const;
 
-      ColumnVector Pinv (void) const;
+      // constructs permutation matrix from permutation vector rep -> E()
+      OCTAVE_API SparseMatrix E_MAT () const;
 
-      ColumnVector P (void) const;
+      OCTAVE_API SPARSE_T V (void) const;
 
-      SPARSE_T R (bool econ = false) const;
+      OCTAVE_API ColumnVector Pinv (void) const;
 
-      typename SPARSE_T::dense_matrix_type
-      C (const typename SPARSE_T::dense_matrix_type& b) const;
+      OCTAVE_API ColumnVector P (void) const;
 
-      typename SPARSE_T::dense_matrix_type
-      Q (void) const;
+      OCTAVE_API SPARSE_T R (bool econ = false) const;
+
+      OCTAVE_API typename SPARSE_T::dense_matrix_type
+      C (const typename SPARSE_T::dense_matrix_type& b, bool econ = false) const;
+
+      OCTAVE_API typename SPARSE_T::dense_matrix_type
+      Q (bool econ = false) const;
 
       template <typename RHS_T, typename RET_T>
-      static RET_T
+      static OCTAVE_API RET_T
       solve (const SPARSE_T& a, const RHS_T& b,
              octave_idx_type& info);
 
     private:
 
-      class sparse_qr_rep;
-
-      sparse_qr_rep *rep;
+      template <typename RHS_T,typename RET_T>
+      static OCTAVE_API RET_T
+      min2norm_solve (const SPARSE_T& a, const RHS_T& b,
+                      octave_idx_type& info, int order);
 
       template <typename RHS_T, typename RET_T>
-      RET_T
+      OCTAVE_API RET_T
       tall_solve (const RHS_T& b, octave_idx_type& info) const;
 
       template <typename RHS_T, typename RET_T>
-      RET_T
+      OCTAVE_API RET_T
       wide_solve (const RHS_T& b, octave_idx_type& info) const;
+
+      //--------
+      class sparse_qr_rep;
+
+      std::shared_ptr<sparse_qr_rep> m_rep;
     };
+
+#if defined (__clang__) || defined (_WIN32)
+    // extern instantiations with set visibility/export/import attribute
+
+    extern template class OCTAVE_API sparse_qr<SparseMatrix>;
+
+    extern template class OCTAVE_API sparse_qr<SparseComplexMatrix>;
+#endif
 
     // Provide qrsolve for backward compatibility.
 
-    extern Matrix
+    extern OCTAVE_API Matrix
     qrsolve (const SparseMatrix& a, const MArray<double>& b,
              octave_idx_type& info);
 
-    extern SparseMatrix
+    extern OCTAVE_API SparseMatrix
     qrsolve (const SparseMatrix& a, const SparseMatrix& b,
              octave_idx_type& info);
 
-    extern ComplexMatrix
+    extern OCTAVE_API ComplexMatrix
     qrsolve (const SparseMatrix& a, const MArray<Complex>& b,
              octave_idx_type& info);
 
-    extern SparseComplexMatrix
+    extern OCTAVE_API SparseComplexMatrix
     qrsolve (const SparseMatrix& a, const SparseComplexMatrix& b,
              octave_idx_type& info);
 
-    extern ComplexMatrix
+    extern OCTAVE_API ComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const MArray<double>& b,
              octave_idx_type& info);
 
-    extern SparseComplexMatrix
+    extern OCTAVE_API SparseComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const SparseMatrix& b,
              octave_idx_type& info);
 
-    extern ComplexMatrix
+    extern OCTAVE_API ComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const MArray<Complex>& b,
              octave_idx_type& info);
 
-    extern SparseComplexMatrix
+    extern OCTAVE_API SparseComplexMatrix
     qrsolve (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
              octave_idx_type& info);
 

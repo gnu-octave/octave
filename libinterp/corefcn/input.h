@@ -34,6 +34,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 #include "hook-fcn.h"
 #include "oct-time.h"
@@ -47,15 +48,17 @@ extern bool octave_completion_matches_called;
 // the next user prompt.
 extern OCTINTERP_API bool Vdrawnow_requested;
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "'Vtrack_line_num' is an obsolete internal variable; any uses should be removed")
 extern OCTINTERP_API bool Vtrack_line_num;
+#endif
 
-extern octave::sys::time Vlast_prompt_time;
+extern OCTINTERP_API octave::sys::time Vlast_prompt_time;
 
 class octave_value;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class interpreter;
 
   class input_system
@@ -147,6 +150,10 @@ namespace octave
 
     void set_mfile_encoding (const std::string& s) { m_mfile_encoding = s; }
 
+    std::string dir_encoding (const std::string& dir);
+
+    void set_dir_encoding (const std::string& dir, std::string& enc);
+
     octave_value
     auto_repeat_debug_command (const octave_value_list& args, int nargout);
 
@@ -198,6 +205,9 @@ namespace octave
 
     // Codepage which is used to read .m files
     std::string m_mfile_encoding;
+
+    // map of directories -> used mfile encoding
+    std::unordered_map<std::string, std::string> m_dir_encoding;
 
     // TRUE means repeat last debug command if the user just types RET.
     bool m_auto_repeat_debug_command;
@@ -259,6 +269,8 @@ namespace octave
 
     input_reader (interpreter& interp, FILE *file);
 
+    input_reader (interpreter& interp, FILE *file, const std::string& enc);
+
     input_reader (interpreter& interp, const std::string& str);
 
     input_reader (const input_reader& ir) = default;
@@ -296,19 +308,7 @@ namespace octave
 
     std::shared_ptr<base_reader> m_rep;
   };
-}
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (5, "use 'octave::input_system::yes_or_no' instead")
-extern bool octave_yes_or_no (const std::string& prompt);
-
-OCTAVE_DEPRECATED (5, "use 'octave::input_system::clear_input_event_hooks' instead")
-extern void remove_input_event_hook_functions (void);
-
-OCTAVE_DEPRECATED (5, "this function will be removed in a future version of Octave")
-extern OCTINTERP_API FILE * get_input_from_stdin (void);
-
-#endif
+OCTAVE_NAMESPACE_END
 
 #endif

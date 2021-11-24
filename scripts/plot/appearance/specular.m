@@ -42,7 +42,7 @@
 
 function retval = specular (sx, sy, sz, lv, vv, se)
 
-  if (nargin < 5 || nargin > 6)
+  if (nargin < 5)
     print_usage ();
   endif
 

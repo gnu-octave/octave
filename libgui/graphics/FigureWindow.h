@@ -30,7 +30,7 @@
 
 #include "GenericEventNotify.h"
 
-namespace QtHandles
+namespace octave
 {
 
   DECLARE_GENERICEVENTNOTIFY_SENDER(FigureWindowBase, QMainWindow);

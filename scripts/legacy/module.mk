@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/__vectorize__.m \
   %reldir%/findstr.m \
   %reldir%/flipdim.m \
@@ -8,6 +9,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/isdir.m \
   %reldir%/isequalwithequalnans.m \
   %reldir%/isstr.m \
+  %reldir%/maxNumCompThreads.m \
   %reldir%/setstr.m \
   %reldir%/strmatch.m \
   %reldir%/strread.m \

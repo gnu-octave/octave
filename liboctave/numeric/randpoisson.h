@@ -33,9 +33,9 @@
 
 namespace octave
 {
-  template <typename T> void rand_poisson (T L, octave_idx_type n, T *p);
+  template <typename T> OCTAVE_API void rand_poisson (T L, octave_idx_type n, T *p);
 
-  template <typename T> T rand_poisson (T L);
+  template <typename T> OCTAVE_API T rand_poisson (T L);
 }
 
 #endif

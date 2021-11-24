@@ -34,6 +34,7 @@
 #include "dw-main-window.h"
 #include "gui-settings.h"
 #include "octave-dock-widget.h"
+#include "qt-interpreter-events.h"
 #include "tab-bar.h"
 
 class octave_value;
@@ -58,6 +59,8 @@ namespace octave
   public:
 
     variable_dock_widget (QWidget *p, base_qobject& oct_qobj);
+
+    ~variable_dock_widget (void) = default;
 
   signals:
 
@@ -87,8 +90,6 @@ namespace octave
 
     QFrame *m_frame;
 
-#if defined (HAVE_QGUIAPPLICATION)
-
     QAction *m_fullscreen_action;
 
     bool m_full_screen;
@@ -96,8 +97,6 @@ namespace octave
     bool m_prev_floating;
 
     QRect m_prev_geom;
-
-#endif
 
 // See Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #define QTBUG_44813_FIX_VERSION 0x999999
@@ -134,15 +133,20 @@ namespace octave
 
     variable_editor_stack (QWidget *p, base_qobject& oct_qobj);
 
+    ~variable_editor_stack (void) = default;
+
     variable_editor_view *edit_view (void) {return m_edit_view;};
 
     QTextEdit *disp_view (void) {return m_disp_view;};
 
   signals:
 
-    void command_signal (const QString& cmd);
-
     void edit_variable_signal (const QString& name, const octave_value& val);
+
+    void do_save_signal (const QString& format, const QString& save_opts);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   public slots:
 
@@ -150,7 +154,9 @@ namespace octave
 
     void levelUp (void);
 
-    void save (void);
+    void save (const QString& format = QString ());
+
+    void do_save (const QString& format, const QString& save_opts);
 
   private:
 
@@ -171,6 +177,8 @@ namespace octave
   public:
 
     variable_editor_view (QWidget *p, base_qobject& oct_qobj);
+
+    ~variable_editor_view (void) = default;
 
     void setModel (QAbstractItemModel *model);
 
@@ -230,6 +238,8 @@ namespace octave
 
     HoverToolButton (QWidget *parent = nullptr);
 
+    ~HoverToolButton (void) = default;
+
   signals:
 
     void hovered_signal (void);
@@ -249,6 +259,8 @@ namespace octave
 
     ReturnFocusToolButton (QWidget *parent = nullptr);
 
+    ~ReturnFocusToolButton (void) = default;
+
   signals:
 
     void about_to_activate (void);
@@ -265,6 +277,8 @@ namespace octave
   public:
 
     ReturnFocusMenu (QWidget *parent = nullptr);
+
+    ~ReturnFocusMenu (void) = default;
 
   signals:
 
@@ -285,7 +299,7 @@ namespace octave
 
     variable_editor (QWidget *parent, base_qobject& oct_qobj);
 
-    ~variable_editor (void) = default;
+    ~variable_editor (void);
 
     // No copying!
 
@@ -318,6 +332,9 @@ namespace octave
     void save_signal (void);
 
     void delete_selected_signal (void);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   public slots:
 
@@ -355,12 +372,10 @@ namespace octave
 
   private:
 
-    QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                          const char *member);
-
     dw_main_window *m_main;
 
     QToolBar *m_tool_bar;
+    QAction *m_save_action;
 
     int m_default_width;
 
@@ -394,6 +409,7 @@ namespace octave
     QString m_hovered_focus_vname;
 
     QSignalMapper *m_plot_mapper;
+    QSignalMapper *m_save_mapper;
 
     QWidget *m_focus_widget;
 

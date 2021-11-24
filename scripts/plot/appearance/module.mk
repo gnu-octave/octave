@@ -5,9 +5,11 @@ FCN_FILE_DIRS += \
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__axis_label__.m \
   %reldir%/private/__axis_limits__.m \
-  %reldir%/private/__gnuplot_legend__.m
+  %reldir%/private/__gnuplot_legend__.m \
+  %reldir%/private/__tickangle__.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/__clabel__.m \
   %reldir%/__getlegenddata__.m \
   %reldir%/__rotate_around_axis__.m \
@@ -45,15 +47,18 @@ FCN_FILE_DIRS += \
   %reldir%/whitebg.m \
   %reldir%/xlabel.m \
   %reldir%/xlim.m \
+  %reldir%/xtickangle.m \
   %reldir%/xticks.m \
   %reldir%/xticklabels.m \
   %reldir%/ylabel.m \
   %reldir%/ylim.m \
   %reldir%/yticks.m \
+  %reldir%/ytickangle.m \
   %reldir%/yticklabels.m \
   %reldir%/zlabel.m \
   %reldir%/zlim.m \
   %reldir%/zticks.m \
+  %reldir%/ztickangle.m \
   %reldir%/zticklabels.m
 
 %canon_reldir%dir = $(fcnfiledir)/plot/appearance

@@ -30,93 +30,107 @@
 ##
 ## @var{opt} can currently be some combination of the following:
 ##
-## @table @code
-## @item "-"
+## @table @asis
+## @item @qcode{"-"}
 ## For solid linestyle (default).
 ##
-## @item "--"
+## @item @qcode{"--"}
 ## For dashed line style.
 ##
-## @item "-."
+## @item @qcode{"-."}
 ## For linespoints plot style.
 ##
-## @item ":"
+## @item @qcode{":"}
 ## For dots plot style.
 ##
-## @item "r"
+## @item  @qcode{"r"}
+## @itemx @qcode{"red"}
 ## Red line color.
 ##
-## @item "g"
+## @item  @qcode{"g"}
+## @itemx @qcode{"green"}
 ## Green line color.
 ##
-## @item "b"
+## @item  @qcode{"b"}
+## @itemx @qcode{"blue"}
 ## Blue line color.
 ##
-## @item "c"
+## @item  @qcode{"c"}
+## @itemx @qcode{"cyan"}
 ## Cyan line color.
 ##
-## @item "m"
+## @item  @qcode{"m"}
+## @itemx @qcode{"magenta"}
 ## Magenta line color.
 ##
-## @item "y"
+## @item  @qcode{"y"}
+## @itemx @qcode{"yellow"}
 ## Yellow line color.
 ##
-## @item "k"
+## @item  @qcode{"k"}
+## @itemx @qcode{"black"}
 ## Black line color.
 ##
-## @item "w"
+## @item  @qcode{"w"}
+## @itemx @qcode{"white"}
 ## White line color.
 ##
-## @item ";title;"
-## Here @code{"title"} is the label for the key.
+## @item @qcode{";displayname;"}
+## The text between semicolons is used to set the @qcode{"displayname"}
+## property which determines the label used for the plot legend.
 ##
-## @item  "+"
-## @itemx "o"
-## @itemx "*"
-## @itemx "."
-## @itemx "x"
-## @itemx "s"
-## @itemx "d"
-## @itemx "^"
-## @itemx "v"
-## @itemx ">"
-## @itemx "<"
-## @itemx "p"
-## @itemx "h"
+## @item  @qcode{"+"}
+## @itemx @qcode{"o"}
+## @itemx @qcode{"*"}
+## @itemx @qcode{"."}
+## @itemx @qcode{"x"}
+## @itemx @qcode{"|"}
+## @itemx @qcode{"_"}
+## @itemx @qcode{"s"}
+## @itemx @qcode{"d"}
+## @itemx @qcode{"^"}
+## @itemx @qcode{"v"}
+## @itemx @qcode{">"}
+## @itemx @qcode{"<"}
+## @itemx @qcode{"p"}
+## @itemx @qcode{"h"}
 ## Used in combination with the points or linespoints styles, set the point
 ## style.
 ## @end table
 ##
-## The legend may be fixed to include the name of the variable
-## plotted in some future version of Octave.
 ## @end deftypefn
 
 function [options, valid] = __pltopt__ (caller, opt, err_on_invalid = true)
 
-  options = __default_plot_options__ ();
-  valid = true;
-
   if (ischar (opt))
     opt = cellstr (opt);
   elseif (! iscellstr (opt))
+    ## FIXME: This is an internal function.  Can't we rely on valid input?
     error ("__pltopt__: argument must be a character string or cell array of character strings");
   endif
 
   nel = numel (opt);
 
-  for i = nel:-1:1
-    [options(i), valid] = __pltopt1__ (caller, opt{i}, err_on_invalid);
-    if (! err_on_invalid && ! valid)
-      return;
-    endif
-  endfor
+  if (nel)
+    for i = nel:-1:1
+      [options(i), valid] = decode_linespec (caller, opt{i}, err_on_invalid);
+      if (! err_on_invalid && ! valid)
+        return;
+      endif
+    endfor
+  else
+    options = __default_plot_options__ ();
+    valid = true;
+  endif
 
 endfunction
 
 ## Really decode plot option strings.
-function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
+function [options, valid] = decode_linespec (caller, opt, err_on_invalid)
 
-  options = __default_plot_options__ ();
+  persistent default_options = __default_plot_options__ ();
+
+  options = default_options;
   valid = true;
 
   have_linestyle = false;
@@ -141,83 +155,103 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   endif
 
   while (! isempty (opt))
+    topt = opt(1);
+    n = 1;
+
+    ## LineStyles
     if (strncmp (opt, "--", 2) || strncmp (opt, "-.", 2))
       options.linestyle = opt(1:2);
       have_linestyle = true;
       n = 2;
-    else
-      topt = opt(1);
-      n = 1;
-      if (topt == "-" || topt == ":")
-        have_linestyle = true;
-        options.linestyle = topt;
-      elseif (topt == "+" || topt == "o" || topt == "*"
-              || topt == "." || topt == "x" || topt == "s"
-              || topt == "d" || topt == "^" || topt == "v"
-              || topt == ">" || topt == "<" || topt == "p"
-              || topt == "h" || topt == "@")
-        have_marker = true;
-        ## Check for long form marker styles
-        if (any (topt == "sdhp"))
-          if (strncmp (opt, "square", 6))
-            n = 6;
-          elseif (strncmp (opt, "diamond", 7))
-            n = 7;
-          elseif (strncmp (opt, "hexagram", 8))
-            n = 8;
-          elseif (strncmp (opt, "pentagram", 9))
-            n = 9;
-          endif
+    elseif (topt == "-" || topt == ":")
+      have_linestyle = true;
+      options.linestyle = topt;
+    ## Markers
+    elseif (any (topt == "+o*.x|_sd^v><ph"))
+      have_marker = true;
+      ## Check for long form marker styles
+      if (any (topt == "sdhp"))
+        if (strncmp (opt, "square", 6))
+          n = 6;
+        elseif (strncmp (opt, "diamond", 7))
+          n = 7;
+        elseif (strncmp (opt, "hexagram", 8))
+          n = 8;
+        elseif (strncmp (opt, "pentagram", 9))
+          n = 9;
         endif
-        ## Backward compatibility.  Leave undocumented.
-        if (topt == "@")
-          topt = "+";
-        endif
-        options.marker = topt;
-      ## Numeric color specs are for backward compatibility.  Don't document.
-      elseif (topt == "k" || topt == "0")
+      endif
+      options.marker = topt;
+    ## Color specs
+    elseif (topt == "k")
+      options.color = [0, 0, 0];
+    elseif (topt == "r")
+      if (strncmp (opt, "red", 3))
+        n = 3;
+      endif
+      options.color = [1, 0, 0];
+    elseif (topt == "g")
+      if (strncmp (opt, "green", 5))
+        n = 5;
+      endif
+      options.color = [0, 1, 0];
+    elseif (topt == "b")
+      if (strncmp (opt, "black", 5))
         options.color = [0, 0, 0];
-      elseif (topt == "r" || topt == "1")
-        options.color = [1, 0, 0];
-      elseif (topt == "g" || topt == "2")
-        options.color = [0, 1, 0];
-      elseif (topt == "b" || topt == "3")
+        n = 5;
+      elseif (strncmp (opt, "blue", 4))
         options.color = [0, 0, 1];
-      elseif (topt == "y")
-        options.color = [1, 1, 0];
-      elseif (topt == "m" || topt == "4")
-        options.color = [1, 0, 1];
-      elseif (topt == "c" || topt == "5")
-        options.color = [0, 1, 1];
-      elseif (topt == "w" || topt == "6")
-        options.color = [1, 1, 1];
-      elseif (isspace (topt))
-        ## Do nothing.
-      elseif (topt == ";")
-        t = index (opt(2:end), ";");
-        if (t)
-          options.key = opt(2:t);
-          n = t+1;
-        else
-          if (err_on_invalid)
-            error ("%s: unfinished key label", caller);
-          else
-            valid = false;
-            options = __default_plot_options__ ();
-            return;
-          endif
-        endif
+        n = 4;
+      else
+        options.color = [0, 0, 1];
+      endif
+    elseif (topt == "y")
+      if (strncmp (opt, "yellow", 6))
+        n = 6;
+      endif
+      options.color = [1, 1, 0];
+    elseif (topt == "m")
+      if (strncmp (opt, "magenta", 7))
+        n = 7;
+      endif
+      options.color = [1, 0, 1];
+    elseif (topt == "c")
+      if (strncmp (opt, "cyan", 4))
+        n = 4;
+      endif
+      options.color = [0, 1, 1];
+    elseif (topt == "w")
+      if (strncmp (opt, "white", 5))
+        n = 5;
+      endif
+      options.color = [1, 1, 1];
+    elseif (isspace (topt))
+      ## Do nothing.
+    elseif (topt == ";")
+      t = index (opt(2:end), ";");
+      if (t)
+        options.key = opt(2:t);
+        n = t+1;
       else
         if (err_on_invalid)
-          error ("%s: unrecognized format character: '%s'", caller, topt);
+          error ("%s: unfinished key label", caller);
         else
           valid = false;
-          options = __default_plot_options__ ();
+          options = default_options;
           return;
         endif
       endif
+    else
+      if (err_on_invalid)
+        error ("%s: unrecognized format character: '%s'", caller, topt);
+      else
+        valid = false;
+        options = default_options;
+        return;
+      endif
     endif
-    opt(1:n) = [];
+
+    opt(1:n) = [];  # Delete decoded portion
   endwhile
 
   if (! have_linestyle && have_marker)
@@ -244,7 +278,12 @@ endfunction
 %! assert (opts.linestyle, ":");
 %! assert (opts.marker, "x");
 %!test
-%! opts = __pltopt__ ("abc", "2square");
+%! opts = __pltopt__ ("abc", "-.blackx");
+%! assert (opts.color, [0 0 0]);
+%! assert (opts.linestyle, "-.");
+%! assert (opts.marker, "x");
+%!test
+%! opts = __pltopt__ ("abc", "gsquare");
 %! assert (opts.color, [0 1 0]);
 %! assert (opts.linestyle, "none");
 %! assert (opts.marker, "s");

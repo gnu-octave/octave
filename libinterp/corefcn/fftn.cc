@@ -35,6 +35,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // This function should be merged with Fifft.
 
 static octave_value
@@ -65,12 +67,12 @@ do_fftn (const octave_value_list& args, const char *fcn, int type)
 
       for (int i = 0; i < dims.ndims (); i++)
         {
-          if (octave::math::isnan (val(i,0)))
+          if (math::isnan (val(i,0)))
             error ("%s: SIZE has invalid NaN entries", fcn);
-          else if (octave::math::nint_big (val(i,0)) < 0)
+          else if (math::nint_big (val(i,0)) < 0)
             error ("%s: all dimensions in SIZE must be greater than zero", fcn);
           else
-            dims(i) = octave::math::nint_big(val(i,0));
+            dims(i) = math::nint_big(val(i,0));
         }
     }
 
@@ -159,3 +161,5 @@ resized and padded with zeros.
 {
   return do_fftn (args, "ifftn", 1);
 }
+
+OCTAVE_NAMESPACE_END

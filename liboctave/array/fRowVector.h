@@ -60,45 +60,49 @@ public:
     return *this;
   }
 
-  bool operator == (const FloatRowVector& a) const;
-  bool operator != (const FloatRowVector& a) const;
+  OCTAVE_API bool operator == (const FloatRowVector& a) const;
+  OCTAVE_API bool operator != (const FloatRowVector& a) const;
 
   // destructive insert/delete/reorder operations
 
-  FloatRowVector& insert (const FloatRowVector& a, octave_idx_type c);
+  OCTAVE_API FloatRowVector&
+  insert (const FloatRowVector& a, octave_idx_type c);
 
-  FloatRowVector& fill (float val);
-  FloatRowVector& fill (float val, octave_idx_type c1, octave_idx_type c2);
+  OCTAVE_API FloatRowVector& fill (float val);
+  OCTAVE_API FloatRowVector&
+  fill (float val, octave_idx_type c1, octave_idx_type c2);
 
-  FloatRowVector append (const FloatRowVector& a) const;
+  OCTAVE_API FloatRowVector append (const FloatRowVector& a) const;
 
-  FloatColumnVector transpose (void) const;
+  OCTAVE_API FloatColumnVector transpose (void) const;
 
   friend OCTAVE_API FloatRowVector real (const FloatComplexRowVector& a);
   friend OCTAVE_API FloatRowVector imag (const FloatComplexRowVector& a);
 
   // resize is the destructive equivalent for this one
 
-  FloatRowVector extract (octave_idx_type c1, octave_idx_type c2) const;
+  OCTAVE_API FloatRowVector
+  extract (octave_idx_type c1, octave_idx_type c2) const;
 
-  FloatRowVector extract_n (octave_idx_type c1, octave_idx_type n) const;
+  OCTAVE_API FloatRowVector
+  extract_n (octave_idx_type c1, octave_idx_type n) const;
 
   // row vector by matrix -> row vector
 
-  friend OCTAVE_API FloatRowVector operator * (const FloatRowVector& a,
-                                               const FloatMatrix& b);
+  friend OCTAVE_API FloatRowVector
+  operator * (const FloatRowVector& a, const FloatMatrix& b);
 
   // other operations
 
-  float min (void) const;
-  float max (void) const;
+  OCTAVE_API float min (void) const;
+  OCTAVE_API float max (void) const;
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                               const FloatRowVector& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is,
-                                               FloatRowVector& a);
+  friend OCTAVE_API std::ostream&
+  operator << (std::ostream& os, const FloatRowVector& a);
+  friend OCTAVE_API std::istream&
+  operator >> (std::istream& is, FloatRowVector& a);
 
   void resize (octave_idx_type n, const float& rfv = 0)
   {

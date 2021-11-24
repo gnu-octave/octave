@@ -33,10 +33,12 @@
 #include "error.h"
 #include "oct-iostrm.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_iostream::seek (off_t, int)
+base_iostream::seek (off_t, int)
 {
   invalid_operation ();
   return -1;
@@ -45,7 +47,7 @@ octave_base_iostream::seek (off_t, int)
 // Return current stream position.
 
 off_t
-octave_base_iostream::tell (void)
+base_iostream::tell (void)
 {
   invalid_operation ();
   return -1;
@@ -54,14 +56,14 @@ octave_base_iostream::tell (void)
 // Return nonzero if EOF has been reached on this stream.
 
 bool
-octave_base_iostream::eof (void) const
+base_iostream::eof (void) const
 {
   invalid_operation ();
   return false;
 }
 
 void
-octave_base_iostream::invalid_operation (void) const
+base_iostream::invalid_operation (void) const
 {
   // Note: use ::error to get error from error.h which halts operation.
   ::error ("%s: invalid operation", stream_type ());
@@ -70,27 +72,29 @@ octave_base_iostream::invalid_operation (void) const
 // Return nonzero if EOF has been reached on this stream.
 
 bool
-octave_istream::eof (void) const
+istream::eof (void) const
 {
   return m_istream && m_istream->eof ();
 }
 
 octave::stream
-octave_istream::create (std::istream *arg, const std::string& n)
+istream::create (std::istream *arg, const std::string& n)
 {
-  return octave::stream (new octave_istream (arg, n));
+  return octave::stream (new istream (arg, n));
 }
 
 // Return nonzero if EOF has been reached on this stream.
 
 bool
-octave_ostream::eof (void) const
+ostream::eof (void) const
 {
   return m_ostream && m_ostream->eof ();
 }
 
 octave::stream
-octave_ostream::create (std::ostream *arg, const std::string& n)
+ostream::create (std::ostream *arg, const std::string& n)
 {
-  return octave::stream (new octave_ostream (arg, n));
+  return octave::stream (new ostream (arg, n));
 }
+
+OCTAVE_NAMESPACE_END

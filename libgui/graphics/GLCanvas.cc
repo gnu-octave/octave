@@ -35,7 +35,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace QtHandles
+namespace octave
 {
 #if defined (HAVE_QOPENGLWIDGET)
 #  define OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS
@@ -188,10 +188,9 @@ namespace QtHandles
         catch (octave::execution_exception& ee)
           {
             emit interpreter_event
-              ([ee] (void)
+              ([=] (void)
                {
                  // INTERPRETER THREAD
-
                  throw ee;
                });
           }

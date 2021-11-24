@@ -42,16 +42,17 @@
 ## The fractional part, @code{rem (@var{days}, 1)} corresponds to the time
 ## on the given day.
 ##
-## The input may be a date vector (see @code{datevec}),
-## datestr (see @code{datestr}), or directly specified as input.
+## The input may be a date vector (@pxref{XREFdatevec,,@code{datevec}}),
+## date string (@pxref{XREFdatestr,,@code{datestr}}), or directly specified
+## as input.
 ##
 ## When processing input datestrings, @var{f} is the format string used to
-## interpret date strings (see @code{datestr}).  If no format @var{f} is
-## specified, then a relatively slow search is performed through various
-## formats.  It is always preferable to specify the format string @var{f} if
-## it is known.  Formats which do not specify a particular time component
-## will have the value set to zero.  Formats which do not specify a date
-## will default to January 1st of the current year.
+## interpret date strings (@pxref{XREFdatestr,,@code{datestr}}).  If no
+## format @var{f} is specified, then a relatively slow search is performed
+## through various formats.  It is always preferable to specify the format
+## string @var{f} if it is known.  Formats which do not specify a particular
+## time component will have the value set to zero.  Formats which do not
+## specify a date will default to January 1st of the current year.
 ##
 ## @var{p} is the year at the start of the century to which two-digit years
 ## will be referenced.  If not specified, it defaults to the current year
@@ -83,7 +84,7 @@
 ## @end itemize
 ##
 ## @strong{Caution:} datenums represent a specific time for the Earth as a
-## a whole.  They do not take in to account time zones (shifts in time based
+## whole.  They do not take in to account time zones (shifts in time based
 ## on location), nor seasonal changes due to Daylight Savings Time (shifts in
 ## time based on local regulation).  Be aware that it is possible to create
 ## datenums that, when interpreted by a function which accounts for time zone
@@ -109,8 +110,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   persistent monthstart = [306; 337; 0; 31; 61; 92; 122; 153; 184; 214; 245; 275];
   persistent monthlength = [31; 28; 31; 30; 31; 30; 31; 31; 30; 31; 30; 31];
 
-  if (nargin == 0 || nargin > 6
-      || (nargin > 2 && (ischar (year) || iscellstr (year))))
+  if (nargin == 0 || (nargin > 2 && (ischar (year) || iscellstr (year))))
     print_usage ();
   endif
 
@@ -230,15 +230,19 @@ endfunction
 %!assert (datenum ([2008;2009],1,1), [datenum(2008,1,1);datenum(2009,1,1)])
 %!assert (datenum (2008, [1;2], 1), [datenum(2008,1,1);datenum(2008,2,1)])
 %!assert (datenum (2008, 1, [1;2]), [datenum(2008,1,1);datenum(2008,1,2)])
-%!assert (datenum ([2008;2009], [1;2], 1), [datenum(2008,1,1);datenum(2009,2,1)])
-%!assert (datenum ([2008;2009], 1, [1;2]), [datenum(2008,1,1);datenum(2009,1,2)])
+%!assert (datenum ([2008;2009], [1;2], 1),
+%!        [datenum(2008,1,1);datenum(2009,2,1)])
+%!assert (datenum ([2008;2009], 1, [1;2]),
+%!        [datenum(2008,1,1);datenum(2009,1,2)])
 %!assert (datenum (2008, [1;2], [1;2]), [datenum(2008,1,1);datenum(2008,2,2)])
 ## And the other orientation
 %!assert (datenum ([2008 2009], 1, 1), [datenum(2008,1,1) datenum(2009,1,1)])
 %!assert (datenum (2008, [1 2], 1), [datenum(2008,1,1) datenum(2008,2,1)])
 %!assert (datenum (2008, 1, [1 2]), [datenum(2008,1,1) datenum(2008,1,2)])
-%!assert (datenum ([2008 2009], [1 2], 1), [datenum(2008,1,1) datenum(2009,2,1)])
-%!assert (datenum ([2008 2009], 1, [1 2]), [datenum(2008,1,1) datenum(2009,1,2)])
+%!assert (datenum ([2008 2009], [1 2], 1),
+%!        [datenum(2008,1,1) datenum(2009,2,1)])
+%!assert (datenum ([2008 2009], 1, [1 2]),
+%!        [datenum(2008,1,1) datenum(2009,1,2)])
 %!assert (datenum (2008, [1 2], [1 2]), [datenum(2008,1,1) datenum(2008,2,2)])
 
 ## Test string and cellstr inputs
@@ -251,8 +255,7 @@ endfunction
 %!assert (datenum ("5-19, 2001", "mm-dd, yyyy"), 730990)
 
 ## Test input validation
-%!error datenum ()
-%!error datenum (1,2,3,4,5,6,7)
+%!error <Invalid call> datenum ()
 %!error <expected date vector containing> datenum ([1, 2])
 %!error <expected date vector containing> datenum ([1,2,3,4,5,6,7])
 %!error <all inputs must be of class double> datenum (int32 (2000), int32 (1), int32 (1))

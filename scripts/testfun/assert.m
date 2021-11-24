@@ -93,6 +93,14 @@ function assert (cond, varargin)
     if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
       if ((! isnumeric (cond) && ! islogical (cond))
           || isempty (cond) || ! all (cond(:)))
+
+        ## We don't want to start the debugger here if debug_on_error is
+        ## true so we set it to false and make the change local.  Then
+        ## debug_on_error will be reset to true after this function
+        ## returns and the debugger will start at the location of the
+        ## call to print_usage.
+        debug_on_error (false, "local");
+
         if (nargin == 1)
           ## Perhaps, say which elements failed?
           argin = ["(" inputname(1, false) ")"];
@@ -263,70 +271,105 @@ function assert (cond, varargin)
           A = cond;
           B = expected;
 
-          ## Check exceptional values.
-          errvec = (  isna (real (A)) != isna (real (B))
-                    | isna (imag (A)) != isna (imag (B)));
-          erridx = find (errvec);
-          if (! isempty (erridx))
-            err.index(end+1:end+length (erridx)) = ...
-              ind2tuple (size (A), erridx);
-            err.observed(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (A(erridx) (:))));
-            err.expected(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (B(erridx) (:))));
-            err.reason(end+1:end+length (erridx)) = ...
-              repmat ({"'NA' mismatch"}, length (erridx), 1);
-          endif
-          errseen = errvec;
+          if (isinteger (A) && isinteger (B))
+            ## Non-floating point numbers can't have exceptional or complex
+            ## values so skip tests.
+            A_null = A;
+            B_null = B;
+          else
+            ## Check exceptional values.
+            is_real = (isreal (A) && isreal (B));
+            if (is_real)
+              errvec = (isna (A) != isna (B));
+            else
+              errvec = (  isna (real (A)) != isna (real (B))
+                        | isna (imag (A)) != isna (imag (B)));
+            endif
+            erridx = find (errvec);
+            if (! isempty (erridx))
+              err.index(end+1:end+length (erridx)) = ...
+                ind2tuple (size (A), erridx);
+              err.observed(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (A(erridx) (:))));
+              err.expected(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (B(erridx) (:))));
+              err.reason(end+1:end+length (erridx)) = ...
+                repmat ({"'NA' mismatch"}, length (erridx), 1);
+            endif
+            errseen = errvec;
 
-          errvec = (  isnan (real (A)) != isnan (real (B))
-                    | isnan (imag (A)) != isnan (imag (B)));
-          erridx = find (errvec & ! errseen);
-          if (! isempty (erridx))
-            err.index(end+1:end+length (erridx)) = ...
-              ind2tuple (size (A), erridx);
-            err.observed(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (A(erridx) (:))));
-            err.expected(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (B(erridx) (:))));
-            err.reason(end+1:end+length (erridx)) = ...
-              repmat ({"'NaN' mismatch"}, length (erridx), 1);
-          endif
-          errseen |= errvec;
+            if (is_real)
+              errvec = (isnan (A) != isnan (B));
+            else
+              errvec = (  isnan (real (A)) != isnan (real (B))
+                        | isnan (imag (A)) != isnan (imag (B)));
+            endif
+            erridx = find (errvec & ! errseen);
+            if (! isempty (erridx))
+              err.index(end+1:end+length (erridx)) = ...
+                ind2tuple (size (A), erridx);
+              err.observed(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (A(erridx) (:))));
+              err.expected(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (B(erridx) (:))));
+              err.reason(end+1:end+length (erridx)) = ...
+                repmat ({"'NaN' mismatch"}, length (erridx), 1);
+            endif
+            errseen |= errvec;
 
-          errvec =   ((isinf (real (A)) | isinf (real (B))) ...
-                      & (real (A) != real (B)))             ...
-                   | ((isinf (imag (A)) | isinf (imag (B))) ...
-                      & (imag (A) != imag (B)));
-          erridx = find (errvec & ! errseen);
-          if (! isempty (erridx))
-            err.index(end+1:end+length (erridx)) = ...
-              ind2tuple (size (A), erridx);
-            err.observed(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (A(erridx) (:))));
-            err.expected(end+1:end+length (erridx)) = ...
-              strtrim (cellstr (num2str (B(erridx) (:))));
-            err.reason(end+1:end+length (erridx)) = ...
-              repmat ({"'Inf' mismatch"}, length (erridx), 1);
-          endif
-          errseen |= errvec;
+            if (is_real)
+              errvec = ((isinf (A) | isinf (B)) & (real (A) != real (B)));
+            else
+              errvec =   ((isinf (real (A)) | isinf (real (B))) ...
+                          & (real (A) != real (B)))             ...
+                       | ((isinf (imag (A)) | isinf (imag (B))) ...
+                          & (imag (A) != imag (B)));
+            endif
+            erridx = find (errvec & ! errseen);
+            if (! isempty (erridx))
+              err.index(end+1:end+length (erridx)) = ...
+                ind2tuple (size (A), erridx);
+              err.observed(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (A(erridx) (:))));
+              err.expected(end+1:end+length (erridx)) = ...
+                strtrim (cellstr (num2str (B(erridx) (:))));
+              err.reason(end+1:end+length (erridx)) = ...
+                repmat ({"'Inf' mismatch"}, length (erridx), 1);
+            endif
+            errseen |= errvec;
 
-          ## Check normal values.
-          ## Replace exceptional values already checked above by zero.
-          A_null_real = real (A);
-          B_null_real = real (B);
-          exclude = errseen ...
-                    | ! isfinite (A_null_real) & ! isfinite (B_null_real);
-          A_null_real(exclude) = 0;
-          B_null_real(exclude) = 0;
-          A_null_imag = imag (A);
-          B_null_imag = imag (B);
-          exclude = errseen ...
-                    | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
-          A_null_imag(exclude) = 0;
-          B_null_imag(exclude) = 0;
-          A_null = complex (A_null_real, A_null_imag);
-          B_null = complex (B_null_real, B_null_imag);
+            ## Check normal values.
+            ## Replace exceptional values already checked above by zero.
+            if (is_real)
+              A_null_real = A;
+              B_null_real = B;
+            else
+              A_null_real = real (A);
+              B_null_real = real (B);
+            endif
+            exclude = errseen ...
+                      | ! isfinite (A_null_real) & ! isfinite (B_null_real);
+            A_null_real(exclude) = 0;
+            B_null_real(exclude) = 0;
+
+            if (is_real)
+              A_null = A_null_real;
+              B_null = B_null_real;
+            else
+              A_null_imag = imag (A);
+              B_null_imag = imag (B);
+              exclude = errseen ...
+                        | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
+              A_null_imag(exclude) = 0;
+              B_null_imag(exclude) = 0;
+              A_null = complex (A_null_real, A_null_imag);
+              B_null = complex (B_null_real, B_null_imag);
+            endif
+
+            clear A_null_real B_null_real;
+            clear A_null_imag B_null_imag;
+          endif
+
           if (isscalar (tol))
             mtol = tol * ones (size (A));
           else
@@ -431,6 +474,14 @@ function assert (cond, varargin)
   if (call_depth == -1)
     ## Last time through.  If there were any errors on any pass, raise a flag.
     if (! isempty (errmsg))
+
+      ## We don't want to start the debugger here if debug_on_error is
+      ## true so we set it to false and make the change local.  Then
+      ## debug_on_error will be reset to true after this function
+      ## returns and the debugger will start at the location of the call
+      ## to print_usage.
+      debug_on_error (false, "local");
+
       error (errmsg);
     endif
   endif
@@ -682,8 +733,8 @@ endfunction
 %! end_try_catch
 
 ## test input validation
-%!error assert ()
-%!error assert (1,2,3,4)
+%!error <Invalid call> assert ()
+%!error <Invalid call> assert (1,2,3,4)
 
 
 ## Convert all error indices into tuple format

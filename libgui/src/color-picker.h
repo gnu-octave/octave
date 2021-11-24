@@ -44,6 +44,8 @@ namespace octave
 
     QColor color (void) const { return m_color; }
 
+    void set_color (QColor new_color);
+
   private slots:
 
     void select_color (void);

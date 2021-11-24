@@ -28,10 +28,12 @@
 #endif
 
 #include <cstdio>
+#include <clocale>
 
+#include <iostream>
 #include <set>
 #include <string>
-#include <iostream>
+#include <thread>
 
 #include "cmd-edit.h"
 #include "cmd-hist.h"
@@ -42,6 +44,7 @@
 #include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "oct-env.h"
+#include "quit.h"
 #include "str-vec.h"
 #include "signal-wrappers.h"
 #include "unistd-wrappers.h"
@@ -90,6 +93,8 @@ bool octave_interpreter_ready = false;
 
 // TRUE means we've processed all the init code and we are good to go.
 bool octave_initialized = false;
+
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__version_info__, args, ,
        doc: /* -*- texinfo -*-
@@ -295,8 +300,15 @@ from the list, so if a function was placed in the list multiple times with
   return retval;
 }
 
-namespace octave
+DEFMETHOD (__traditional__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __traditional__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
+  return ovl (interp.traditional ());
+}
+
   temporary_file_list::~temporary_file_list (void)
   {
     cleanup ();
@@ -344,9 +356,9 @@ namespace octave
 
         return 1;
       }
-    catch (const execution_exception& e)
+    catch (const execution_exception& ee)
       {
-        interp.handle_exception (e);
+        interp.handle_exception (ee);
 
         return 1;
       }
@@ -463,9 +475,11 @@ namespace octave
       m_read_site_files (true),
       m_read_init_files (m_app_context != nullptr),
       m_verbose (false),
+      m_traditional (false),
       m_inhibit_startup_message (false),
       m_load_path_initialized (false),
       m_history_initialized (false),
+      m_interrupt_all_in_process_group (true),
       m_cancel_quit (false),
       m_executing_finish_script (false),
       m_executing_atexit (false),
@@ -476,16 +490,21 @@ namespace octave
     //
     //   only one Octave interpreter may be active in any given thread
 
-    if (instance)
+    if (m_instance)
       throw std::runtime_error
         ("only one Octave interpreter may be active");
 
-    instance = this;
+    m_instance = this;
 
+#if defined (OCTAVE_HAVE_WINDOWS_UTF8_LOCALE)
+    // Force a UTF-8 locale on Windows if possible
+    std::setlocale (LC_ALL, ".UTF8");
+#else
+    std::setlocale (LC_ALL, "");
+#endif
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
-    setlocale (LC_ALL, "");
-    setlocale (LC_NUMERIC, "C");
-    setlocale (LC_TIME, "C");
+    std::setlocale (LC_NUMERIC, "C");
+    std::setlocale (LC_TIME, "C");
     sys::env::putenv ("LC_NUMERIC", "C");
     sys::env::putenv ("LC_TIME", "C");
 
@@ -512,7 +531,6 @@ namespace octave
       m_display_info.initialize ();
 
     bool line_editing = false;
-    bool traditional = false;
 
     if (m_app_context)
       {
@@ -555,16 +573,24 @@ namespace octave
         m_interactive = (! is_octave_program && stdin_is_tty
                          && octave_isatty_wrapper (fileno (stdout)));
 
+        // Don't force interactive if we're already interactive (bug #60696).
+        bool forced_interactive = options.forced_interactive ();
+        if (m_interactive)
+          {
+            m_app_context->forced_interactive (false);
+            forced_interactive = false;
+          }
+
         // Check if the user forced an interactive session.
-        if (options.forced_interactive ())
+        if (forced_interactive)
           m_interactive = true;
 
         line_editing = options.line_editing ();
-        if ((! m_interactive || options.forced_interactive ())
+        if ((! m_interactive || forced_interactive)
             && ! options.forced_line_editing ())
           line_editing = false;
 
-        traditional = options.traditional ();
+        m_traditional = options.traditional ();
 
         // FIXME: if possible, perform the following actions directly
         // instead of using the interpreter-level functions.
@@ -589,12 +615,6 @@ namespace octave
         std::string info_program = options.info_program ();
         if (! info_program.empty ())
           Finfo_program (*this, octave_value (info_program));
-
-        if (options.debug_jit ())
-          Fdebug_jit (octave_value (true));
-
-        if (options.jit_compiler ())
-          Fjit_enable (octave_value (true));
 
         std::string texi_macros_file = options.texi_macros_file ();
         if (! texi_macros_file.empty ())
@@ -624,13 +644,13 @@ namespace octave
     // This should be done before initializing the load path because
     // some PKG_ADD files might need --traditional behavior.
 
-    if (traditional)
+    if (m_traditional)
       maximum_braindamage ();
 
     octave_interpreter_ready = true;
   }
 
-  OCTAVE_THREAD_LOCAL interpreter *interpreter::instance = nullptr;
+  OCTAVE_THREAD_LOCAL interpreter *interpreter::m_instance = nullptr;
 
   interpreter::~interpreter (void)
   {
@@ -696,12 +716,10 @@ namespace octave
         // be evaluated from the normal interpreter loop where exceptions
         // are already handled.
 
-        unwind_protect frame;
+        unwind_action restore_add_hook (&load_path::set_add_hook, &m_load_path,
+                                        m_load_path.get_add_hook ());
 
-        frame.add_method (m_load_path, &load_path::set_add_hook,
-                          m_load_path.get_add_hook ());
-
-        m_load_path.set_add_hook ([this] (const std::string& dir)
+        m_load_path.set_add_hook ([=] (const std::string& dir)
                                   { this->execute_pkg_add (dir); });
 
         m_load_path.initialize (set_initial_path);
@@ -717,7 +735,20 @@ namespace octave
     if (m_initialized)
       return;
 
-    display_startup_message ();
+    if (m_app_context)
+      {
+        const cmdline_options& options = m_app_context->options ();
+
+        if (options.experimental_terminal_widget ())
+          {
+            if (! options.gui ())
+              display_startup_message ();
+          }
+        else
+          display_startup_message ();
+      }
+    else
+      display_startup_message ();
 
     // Wait to read the history file until the interpreter reads input
     // files and begins evaluating commands.
@@ -747,6 +778,55 @@ namespace octave
     octave_initialized = true;
 
     m_initialized = true;
+  }
+
+  // Note: this function is currently only used with the new
+  // experimental terminal widget.
+
+  void interpreter::get_line_and_eval (void)
+  {
+    m_evaluator.get_line_and_eval ();
+  }
+
+  // Note: the following class is currently only used with the new
+  // experimental terminal widget.
+
+  class cli_input_reader
+  {
+  public:
+
+    cli_input_reader (interpreter& interp)
+      : m_interpreter (interp), m_thread () { }
+
+    cli_input_reader (const cli_input_reader&) = delete;
+
+    cli_input_reader& operator = (const cli_input_reader&) = delete;
+
+    ~cli_input_reader (void)
+    {
+      // FIXME: Would it be better to ensure that
+      // interpreter::get_line_and_eval exits and then call
+      // m_thread.join () here?
+
+      m_thread.detach ();
+    }
+
+    void start (void)
+    {
+      m_thread = std::thread (&interpreter::get_line_and_eval, &m_interpreter);
+    }
+
+  private:
+
+    interpreter& m_interpreter;
+
+    std::thread m_thread;
+  };
+
+  void interpreter::parse_and_execute (const std::string& input,
+                                       bool& incomplete_parse)
+  {
+    m_evaluator.parse_and_execute (input, incomplete_parse);
   }
 
   // FIXME: this function is intended to be executed only once.  Should
@@ -795,12 +875,36 @@ namespace octave
             if (options.forced_interactive ())
               command_editor::blink_matching_paren (false);
 
-            exit_status = main_loop ();
+            if (options.server ())
+              exit_status = server_loop ();
+            else if (options.experimental_terminal_widget ())
+              {
+                if (options.gui ())
+                  {
+                    m_event_manager.start_gui (true);
+
+                    exit_status = server_loop ();
+                  }
+                else
+                  {
+                    // Use an object so that the thread started for the
+                    // reader will be cleaned up no matter how we exit
+                    // this function.
+
+                    cli_input_reader reader (*this);
+
+                    reader.start ();
+
+                    exit_status = server_loop ();
+                  }
+              }
+            else
+              exit_status = main_loop ();
           }
       }
-    catch (const exit_exception& ex)
+    catch (const exit_exception& xe)
       {
-        return ex.exit_status ();
+        exit_status = xe.exit_status ();
       }
 
     return exit_status;
@@ -823,14 +927,13 @@ namespace octave
     {                                                                   \
       try                                                               \
         {                                                               \
-          unwind_protect frame;                                         \
+          unwind_action restore_debug_on_error                          \
+            (&error_system::set_debug_on_error, &m_error_system,        \
+             m_error_system.debug_on_error ());                        \
                                                                         \
-          frame.add_method (m_error_system,                             \
-                            &error_system::set_debug_on_error,          \
-                            m_error_system.debug_on_error ());          \
-          frame.add_method (m_error_system,                             \
-                            &error_system::set_debug_on_warning,        \
-                            m_error_system.debug_on_warning ());        \
+          unwind_action restore_debug_on_warning                        \
+            (&error_system::set_debug_on_warning, &m_error_system,      \
+             m_error_system.debug_on_warning ());                       \
                                                                         \
           m_error_system.debug_on_error (false);                        \
           m_error_system.debug_on_warning (false);                      \
@@ -1038,9 +1141,9 @@ namespace octave
               {
                 recover_from_exception ();
               }
-            catch (const execution_exception& e)
+            catch (const execution_exception& ee)
               {
-                handle_exception (e);
+                handle_exception (ee);
               }
           }
 
@@ -1148,9 +1251,9 @@ namespace octave
 
         return 1;
       }
-    catch (const execution_exception& e)
+    catch (const execution_exception& ee)
       {
-        handle_exception (e);
+        handle_exception (ee);
 
         return 1;
       }
@@ -1165,23 +1268,26 @@ namespace octave
 
     const cmdline_options& options = m_app_context->options ();
 
-    unwind_protect frame;
-
-    frame.add_method (this, &interpreter::interactive, m_interactive);
-
     string_vector args = options.all_args ();
 
-    frame.add_method (m_app_context, &application::intern_argv, args);
+    void (interpreter::*interactive_fptr) (bool) = &interpreter::interactive;
+    unwind_action restore_interactive (interactive_fptr, this, m_interactive);
 
-    frame.add_method (this, &interpreter::intern_nargin, args.numel () - 1);
+    unwind_action restore_argv (&application::intern_argv, m_app_context, args);
 
-    frame.add_method (m_app_context,
-                      &application::program_invocation_name,
-                      application::program_invocation_name ());
+    unwind_action restore_nargin (&interpreter::intern_nargin, this,
+                                  args.numel () - 1);
 
-    frame.add_method (m_app_context,
-                      &application::program_name,
-                      application::program_name ());
+    void (application::*program_invocation_name_fptr) (const std::string&)
+      = &application::program_invocation_name;
+    unwind_action restore_program_invocation_name
+      (program_invocation_name_fptr, m_app_context,
+       application::program_invocation_name ());
+
+    void (application::*program_name_fptr) (const std::string&)
+      = &application::program_name;
+    unwind_action restore_program_name
+      (program_name_fptr, m_app_context, application::program_name ());
 
     m_interactive = false;
 
@@ -1207,6 +1313,11 @@ namespace octave
   int interpreter::main_loop (void)
   {
     return m_evaluator.repl ();
+  }
+
+  int interpreter::server_loop (void)
+  {
+    return m_evaluator.server_loop ();
   }
 
   tree_evaluator& interpreter::get_evaluator (void)
@@ -1266,6 +1377,7 @@ namespace octave
     // FIXME: should these actions be handled as a list of functions
     // to call so users can add their own chdir handlers?
 
+    m_load_path.read_dir_config (".");
     m_load_path.update ();
 
     m_event_manager.directory_changed (sys::env::get_current_directory ());
@@ -1688,20 +1800,119 @@ namespace octave
     return m_evaluator.autoloaded_functions ();
   }
 
-  void interpreter::handle_exception (const execution_exception& e)
+  // May be used to send an interrupt signal to the the interpreter from
+  // another thread (for example, the GUI).
+
+  void interpreter::interrupt (void)
   {
-    m_error_system.save_exception (e);
+    static int sigint = 0;
+    static bool first = true;
+
+    if (first)
+      {
+        octave_get_sig_number ("SIGINT", &sigint);
+        first = false;
+      }
+
+    // Send SIGINT to Octave and (optionally) all other processes in its
+    // process group.  The signal handler for SIGINT will set a global
+    // variable indicating an interrupt has happened.  That variable is
+    // checked in many places in the Octave interpreter and eventually
+    // results in an interrupt_exception being thrown.  Finally, that
+    // exception is caught and returns control to one of the
+    // read-eval-print loops or to the server loop.  We use a signal
+    // instead of just setting the global variables here so that we will
+    // probably send interrupt signals to any subprocesses as well as
+    // interrupt execution of the interpreter.
+
+    pid_t pid
+      = m_interrupt_all_in_process_group ? 0 : octave_getpid_wrapper ();
+
+    octave_kill_wrapper (pid, sigint);
+  }
+
+  void interpreter::pause (void)
+  {
+    // FIXME: To be reliable, these tree_evaluator functions must be
+    // made thread safe.
+
+    m_evaluator.break_on_next_statement (true);
+    m_evaluator.reset_debug_state ();
+  }
+
+  void interpreter::stop (void)
+  {
+    // FIXME: To be reliable, these tree_evaluator functions must be
+    // made thread safe.
+
+    if (m_evaluator.in_debug_repl ())
+      m_evaluator.dbquit (true);
+    else
+      interrupt ();
+  }
+
+  void interpreter::resume (void)
+  {
+    // FIXME: To be reliable, these tree_evaluator functions must be
+    // made thread safe.
+
+    // FIXME: Should there be any feeback about not doing anything if
+    // not in debug mode?
+
+    if (m_evaluator.in_debug_repl ())
+      m_evaluator.dbcont ();
+  }
+
+  // Provided for convenience.  Will be removed once we eliminate the
+  // old terminal widget.
+  bool interpreter::experimental_terminal_widget (void) const
+  {
+    if (! m_app_context)
+      return false;
+
+    // Embedded interpreters don't execute command line options.
+    const cmdline_options& options = m_app_context->options ();
+
+    return options.experimental_terminal_widget ();
+  }
+
+  void interpreter::add_debug_watch_expression (const std::string& expr)
+  {
+    m_evaluator.add_debug_watch_expression (expr);
+  }
+
+  void interpreter::remove_debug_watch_expression (const std::string& expr)
+  {
+    m_evaluator.remove_debug_watch_expression (expr);
+  }
+
+  void interpreter::clear_debug_watch_expressions (void)
+  {
+    m_evaluator.clear_debug_watch_expressions ();
+  }
+
+  std::set<std::string> interpreter::debug_watch_expressions (void) const
+  {
+    return m_evaluator.debug_watch_expressions ();
+  }
+
+  void interpreter::handle_exception (const execution_exception& ee)
+  {
+    m_error_system.save_exception (ee);
 
     // FIXME: use a separate stream instead of std::cerr directly so that
     // error messages can be redirected more easily?  Pass the message
     // to an event manager function?
-    m_error_system.display_exception (e, std::cerr);
+    m_error_system.display_exception (ee);
 
     recover_from_exception ();
   }
 
   void interpreter::recover_from_exception (void)
   {
+    if (octave_interrupt_state)
+      m_event_manager.interpreter_interrupted ();
+
     can_interrupt = true;
     octave_interrupt_state = 0;
     octave_signal_caught = 0;
@@ -1787,7 +1998,8 @@ namespace octave
     return found;
   }
 
-  void interpreter::add_atexit_function (const std::string& fname)
+  // Remove when corresponding public deprecated function is removed.
+  void interpreter::add_atexit_function_deprecated (const std::string& fname)
   {
     interpreter& interp
       = __get_interpreter__ ("interpreter::add_atexit_function");
@@ -1795,7 +2007,8 @@ namespace octave
     interp.add_atexit_fcn (fname);
   }
 
-  bool interpreter::remove_atexit_function (const std::string& fname)
+  // Remove when corresponding public deprecated function is removed.
+  bool interpreter::remove_atexit_function_deprecated (const std::string& fname)
   {
     interpreter& interp
       = __get_interpreter__ ("interpreter::remove_atexit_function");
@@ -1818,20 +2031,22 @@ namespace octave
     m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
 
     m_error_system.beep_on_error (true);
-    Fconfirm_recursive_rmdir (octave_value (false));
 
-    Fdisable_diagonal_matrix (octave_value (true));
-    Fdisable_permutation_matrix (octave_value (true));
-    Fdisable_range (octave_value (true));
+    Fconfirm_recursive_rmdir (octave_value (false));
+    Foptimize_diagonal_matrix (octave_value (false));
+    Foptimize_permutation_matrix (octave_value (false));
+    Foptimize_range (octave_value (false));
     Ffixed_point_format (octave_value (true));
     Fprint_empty_dimensions (octave_value (false));
+    Fprint_struct_array_contents (octave_value (true));
     Fstruct_levels_to_print (octave_value (0));
 
-    disable_warning ("Octave:abbreviated-property-match");
-    disable_warning ("Octave:colon-nonscalar-argument");
-    disable_warning ("Octave:data-file-in-path");
-    disable_warning ("Octave:function-name-clash");
-    disable_warning ("Octave:possible-matlab-short-circuit-operator");
+    m_error_system.disable_warning ("Octave:abbreviated-property-match");
+    m_error_system.disable_warning ("Octave:colon-nonscalar-argument");
+    m_error_system.disable_warning ("Octave:data-file-in-path");
+    m_error_system.disable_warning ("Octave:empty-index");
+    m_error_system.disable_warning ("Octave:function-name-clash");
+    m_error_system.disable_warning ("Octave:possible-matlab-short-circuit-operator");
   }
 
   void interpreter::execute_pkg_add (const std::string& dir)
@@ -1844,9 +2059,10 @@ namespace octave
       {
         recover_from_exception ();
       }
-    catch (const execution_exception& e)
+    catch (const execution_exception& ee)
       {
-        handle_exception (e);
+        handle_exception (ee);
       }
   }
-}
+
+OCTAVE_NAMESPACE_END

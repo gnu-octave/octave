@@ -73,7 +73,7 @@ FloatComplexNDArray::fourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
-  const FloatComplex *in (fortran_vec ());
+  const FloatComplex *in (data ());
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
@@ -104,7 +104,7 @@ FloatComplexNDArray::ifourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
-  const FloatComplex *in (fortran_vec ());
+  const FloatComplex *in (data ());
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
@@ -124,7 +124,7 @@ FloatComplexNDArray::fourier2d (void) const
     return FloatComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
-  const FloatComplex *in = fortran_vec ();
+  const FloatComplex *in = data ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
@@ -144,7 +144,7 @@ FloatComplexNDArray::ifourier2d (void) const
     return FloatComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
-  const FloatComplex *in = fortran_vec ();
+  const FloatComplex *in = data ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
@@ -162,7 +162,7 @@ FloatComplexNDArray::fourierNd (void) const
   dim_vector dv = dims ();
   int rank = dv.ndims ();
 
-  const FloatComplex *in (fortran_vec ());
+  const FloatComplex *in (data ());
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
@@ -177,7 +177,7 @@ FloatComplexNDArray::ifourierNd (void) const
   dim_vector dv = dims ();
   int rank = dv.ndims ();
 
-  const FloatComplex *in (fortran_vec ());
+  const FloatComplex *in (data ());
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
@@ -521,10 +521,11 @@ FloatComplexNDArray::insert (const NDArray& a,
                              octave_idx_type r, octave_idx_type c)
 {
   dim_vector a_dv = a.dims ();
+  dim_vector dv = dims ();
 
   int n = a_dv.ndims ();
 
-  if (n == dimensions.ndims ())
+  if (n == dv.ndims ())
     {
       Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.ndims (), 1), 0);
 
@@ -533,7 +534,7 @@ FloatComplexNDArray::insert (const NDArray& a,
 
       for (int i = 0; i < n; i++)
         {
-          if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dimensions(i))
+          if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dv(i))
             (*current_liboctave_error_handler)
               ("Array<T>::insert: range error for insert");
         }
@@ -616,7 +617,7 @@ operator << (std::ostream& os, const FloatComplexNDArray& a)
   for (octave_idx_type i = 0; i < nel; i++)
     {
       os << ' ';
-      octave_write_complex (os, a.elem (i));
+      octave::write_value<Complex> (os, a.elem (i));
       os << "\n";
     }
   return os;
@@ -632,7 +633,7 @@ operator >> (std::istream& is, FloatComplexNDArray& a)
       FloatComplex tmp;
       for (octave_idx_type i = 0; i < nel; i++)
         {
-          tmp = octave_read_value<FloatComplex> (is);
+          tmp = octave::read_value<FloatComplex> (is);
           if (is)
             a.elem (i) = tmp;
           else

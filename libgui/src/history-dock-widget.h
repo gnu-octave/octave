@@ -51,8 +51,6 @@ namespace octave
 
   signals:
 
-    void information (const QString& message);
-
     //! Signal emitted whenever the user double-clicks a command in the
     //! history.
 
@@ -92,6 +90,7 @@ namespace octave
   private:
 
     void construct (void);
+    void set_filter_focus (bool focus);
 
     QListView *m_history_list_view;
     QSortFilterProxyModel m_sort_filter_proxy_model;

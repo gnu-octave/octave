@@ -43,7 +43,7 @@
 
 function y = flipud (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
   y = flip (x, 1);
@@ -78,5 +78,4 @@ endfunction
 %! a(1,:,:,2) = [ 5  6  7  8];
 %! assert (flipud (a), a);
 
-%!error flipud ()
-%!error flipud (1, 2)
+%!error <Invalid call> flipud ()

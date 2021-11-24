@@ -52,7 +52,7 @@
 #include "ov-bool-sparse.h"
 
 
-template class OCTINTERP_API octave_base_sparse<SparseComplexMatrix>;
+template class octave_base_sparse<SparseComplexMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
                                      "sparse complex matrix", "double");
@@ -263,7 +263,7 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
     {
       double max_val, min_val;
       if (matrix.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   // add one to the printed indices to go from
@@ -569,7 +569,7 @@ octave_sparse_complex_matrix::save_hdf5 (octave_hdf5_id loc_id,
 
       if (m.all_integers (max_val, min_val))
         save_type_hid
-          = save_type_to_hdf5 (get_save_type (max_val, min_val));
+          = save_type_to_hdf5 (octave::get_save_type (max_val, min_val));
     }
 #endif
 
@@ -874,26 +874,53 @@ octave_sparse_complex_matrix::load_hdf5 (octave_hdf5_id loc_id,
 }
 
 mxArray *
-octave_sparse_complex_matrix::as_mxArray (void) const
+octave_sparse_complex_matrix::as_mxArray (bool interleaved) const
 {
   mwSize nz = nzmax ();
-  mxArray *retval = new mxArray (mxDOUBLE_CLASS, rows (), columns (),
-                                 nz, mxCOMPLEX);
-  double *pr = static_cast<double *> (retval->get_data ());
-  double *pi = static_cast<double *> (retval->get_imag_data ());
-  mwIndex *ir = retval->get_ir ();
-  mwIndex *jc = retval->get_jc ();
+  mwSize nr = rows ();
+  mwSize nc = columns ();
 
-  for (mwIndex i = 0; i < nz; i++)
+  mxArray *retval = new mxArray (interleaved, mxDOUBLE_CLASS, nr, nc, nz,
+                                 mxCOMPLEX);
+
+  mwIndex *ir = retval->get_ir ();
+
+  const Complex *pdata = matrix.data ();
+  const octave_idx_type *pridx = matrix.ridx ();
+
+  if (interleaved)
     {
-      Complex val = matrix.data (i);
-      pr[i] = val.real ();
-      pi[i] = val.imag ();
-      ir[i] = matrix.ridx (i);
+      mxComplexDouble *pd
+        = static_cast<mxComplexDouble *> (retval->get_data ());
+
+      for (mwIndex i = 0; i < nz; i++)
+        {
+          pd[i].real = pdata[i].real ();
+          pd[i].imag = pdata[i].imag ();
+
+          ir[i] = pridx[i];
+        }
+    }
+  else
+    {
+      mxDouble *pr = static_cast<mxDouble *> (retval->get_data ());
+      mxDouble *pi = static_cast<mxDouble *> (retval->get_imag_data ());
+
+      for (mwIndex i = 0; i < nz; i++)
+        {
+          pr[i] = pdata[i].real ();
+          pi[i] = pdata[i].imag ();
+
+          ir[i] = pridx[i];
+        }
     }
 
-  for (mwIndex i = 0; i < columns () + 1; i++)
-    jc[i] = matrix.cidx (i);
+  mwIndex *jc = retval->get_jc ();
+
+  const octave_idx_type *pcidx = matrix.cidx ();
+
+  for (mwIndex i = 0; i < nc + 1; i++)
+    jc[i] = pcidx[i];
 
   return retval;
 }

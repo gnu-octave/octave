@@ -40,6 +40,11 @@
 #include <vector>
 #include <cstdlib>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <locale>
+#  include <codecvt>
+#endif
+
 // Programming note:  The CROSS macro here refers to building a
 // cross-compiler aware version of mkoctfile that can be used to cross
 // compile .oct file for Windows builds of Octave, not that mkoctfile
@@ -60,13 +65,15 @@
 #    define OCTAVE_UNUSED
 #  endif
 #else
+// We are linking against static libs so do not decorate with dllimport.
+// FIXME: This should be done by the build system.
+#  undef OCTAVE_API
+#  define OCTAVE_API
 #  include "mkostemps-wrapper.h"
 #  include "uniconv-wrappers.h"
 #  include "unistd-wrappers.h"
 #  include "wait-wrappers.h"
 #endif
-
-static std::map<std::string, std::string> vars;
 
 #if ! defined (OCTAVE_VERSION)
 #  define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
@@ -88,14 +95,6 @@ static int
 octave_mkostemps_wrapper (char *tmpl, int suffixlen)
 {
   return mkostemps (tmpl, suffixlen, 0);
-}
-
-static char *
-octave_u8_conv_to_encoding (const char *tocode, const uint8_t *src,
-                            std::size_t srclen, std::size_t *lengthp)
-{
-  // FIXME: Do we need to provide the conversion here?
-  return nullptr;
 }
 
 static int
@@ -161,10 +160,11 @@ replace_prefix (std::string s)
 {
 #if defined (OCTAVE_REPLACE_PREFIX)
   const std::string match = "${prefix}";
+  const std::string repl = prepend_octave_exec_home ("");
   std::size_t pos = s.find (match);
   while (pos != std::string::npos )
     {
-      s.replace(pos, match.length (), prepend_octave_exec_home (""));
+      s.replace(pos, match.length (), repl);
       pos = s.find (match);
     }
 #endif
@@ -172,10 +172,12 @@ replace_prefix (std::string s)
   return s;
 }
 
-static void
-initialize (void)
+static std::map<std::string, std::string>
+make_vars_map (bool link_stand_alone, bool verbose, bool debug)
 {
   set_octave_home ();
+
+  std::map<std::string, std::string> vars;
 
   vars["OCTAVE_HOME"] = Voctave_home;
   vars["OCTAVE_EXEC_HOME"] = Voctave_exec_home;
@@ -229,14 +231,14 @@ initialize (void)
     = get_variable ("OCTLIBDIR",
                     prepend_octave_exec_home (%OCTAVE_CONF_OCTLIBDIR%));
 
+  std::string DEFAULT_INCFLAGS;
+
 #if defined (OCTAVE_USE_WINDOWS_API)
-  std::string DEFAULT_INCFLAGS
-    = "-I" + quote_path (vars["OCTINCLUDEDIR"] + R"(\..)")
-      + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
+  DEFAULT_INCFLAGS = "-I" + quote_path (vars["OCTINCLUDEDIR"] + R"(\..)")
+                     + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #else
-  std::string DEFAULT_INCFLAGS
-    = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
-      + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
+  DEFAULT_INCFLAGS = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
+                     + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #endif
 
   if (vars["INCLUDEDIR"] != "/usr/include")
@@ -244,8 +246,7 @@ initialize (void)
 
   std::string DEFAULT_LDFLAGS;
 
-#if (defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)) || (defined __APPLE__ && defined __MACH__)
-
+#if (defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS) || defined (OCTAVE_LINK_ALL_DEPS))
   // We'll be linking the files we compile with -loctinterp and -loctave,
   // so we need to know where to find them.
   DEFAULT_LDFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
@@ -266,16 +267,22 @@ initialize (void)
   vars["FPICFLAG"] = get_variable ("FPICFLAG", %OCTAVE_CONF_FPICFLAG%);
 
   vars["CC"] = get_variable ("CC", %OCTAVE_CONF_MKOCTFILE_CC%);
+  if (verbose && vars["CC"] == "cc-msvc")
+    vars["CC"] += " -d";
 
   vars["CFLAGS"] = get_variable ("CFLAGS", %OCTAVE_CONF_CFLAGS%);
 
   vars["CPICFLAG"] = get_variable ("CPICFLAG", %OCTAVE_CONF_CPICFLAG%);
 
   vars["CXX"] = get_variable ("CXX", %OCTAVE_CONF_MKOCTFILE_CXX%);
+  if (verbose && vars["CXX"] == "cc-msvc")
+    vars["CXX"] += " -d";
 
   vars["CXXFLAGS"] = get_variable ("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
 
   vars["CXXLD"] = get_variable ("CXXLD", vars["CXX"]);
+  if (verbose && vars["CXXLD"] == "cc-msvc")
+    vars["CXXLD"] += " -d";
 
   vars["CXXPICFLAG"] = get_variable ("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
 
@@ -297,6 +304,9 @@ initialize (void)
 
   vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
                                      %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
+
+  if (! link_stand_alone)
+    DEFAULT_LDFLAGS += ' ' + vars["DL_LDFLAGS"];
 
   vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG",
                                         %OCTAVE_CONF_RDYNAMIC_FLAG%);
@@ -341,8 +351,7 @@ initialize (void)
     = get_variable ("OCT_LINK_OPTS",
                     replace_prefix (%OCTAVE_CONF_OCT_LINK_OPTS%));
 
-  vars["LDFLAGS"] = get_variable ("LDFLAGS",
-                                  replace_prefix (%OCTAVE_CONF_LDFLAGS%));
+  vars["LDFLAGS"] = get_variable ("LDFLAGS", DEFAULT_LDFLAGS);
 
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);
@@ -350,17 +359,23 @@ initialize (void)
   // FIXME: Remove LFLAGS in Octave 8.0
   vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LDFLAGS);
   if (vars["LFLAGS"] != DEFAULT_LDFLAGS)
-    std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
+    std::cerr << "mkoctfile: warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
 
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
   vars["ALL_FFLAGS"] = vars["FFLAGS"] + ' ' + vars["F77_INTEGER8_FLAG"];
+  if (debug)
+    vars["ALL_FFLAGS"] += " -g";
 
   vars["ALL_CFLAGS"]
     = vars["INCFLAGS"] + ' ' + vars["XTRA_CFLAGS"] + ' ' + vars["CFLAGS"];
+  if (debug)
+    vars["ALL_CFLAGS"] += " -g";
 
   vars["ALL_CXXFLAGS"]
     = vars["INCFLAGS"] + ' ' + vars["XTRA_CXXFLAGS"] + ' ' + vars["CXXFLAGS"];
+  if (debug)
+    vars["ALL_CXXFLAGS"] += " -g";
 
   vars["ALL_LDFLAGS"]
     = vars["LD_STATIC_FLAG"] + ' ' + vars["CPICFLAG"] + ' ' + vars["LDFLAGS"];
@@ -371,13 +386,13 @@ initialize (void)
 
   vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + ' ' + vars["FFTW3_LIBS"] + ' '
                       + vars["FFTW3F_LDFLAGS"] + ' ' + vars["FFTW3F_LIBS"];
+
+  return vars;
 }
 
 static std::string usage_msg = "usage: mkoctfile [options] file ...";
 
 static std::string version_msg = "mkoctfile, version " OCTAVE_VERSION;
-
-static bool debug = false;
 
 static std::string help_msg =
   "\n"
@@ -566,7 +581,7 @@ ends_with (const std::string& s, const std::string& suffix)
 }
 
 static int
-run_command (const std::string& cmd, bool printonly = false)
+run_command (const std::string& cmd, bool verbose, bool printonly = false)
 {
   if (printonly)
     {
@@ -574,9 +589,10 @@ run_command (const std::string& cmd, bool printonly = false)
       return 0;
     }
 
-  if (debug)
+  if (verbose)
     std::cout << cmd << std::endl;
 
+  // FIXME: Call _wsystem on Windows or octave::sys::system.
   int result = system (cmd.c_str ());
 
   if (octave_wifexited_wrapper (result))
@@ -632,6 +648,32 @@ get_temp_directory (void)
 }
 
 static std::string
+create_interleaved_complex_file (void)
+{
+  std::string tmpl = get_temp_directory () + "/oct-XXXXXX.c";
+
+  char *ctmpl = new char [tmpl.length () + 1];
+
+  ctmpl = strcpy (ctmpl, tmpl.c_str ());
+
+  // mkostemps will open the file and return a file descriptor.  We
+  // won't worry about closing it because we will need the file until we
+  // are done and then the file will be closed when mkoctfile exits.
+  int fd = octave_mkostemps_wrapper (ctmpl, 2);
+
+  // Make C++ string from filled-in template.
+  std::string retval (ctmpl);
+  delete [] ctmpl;
+
+  // Write symbol definition to file.
+  FILE *fid = fdopen (fd, "w");
+  fputs ("const int __mx_has_interleaved_complex__ = 1;\n", fid);
+  fclose (fid);
+
+  return retval;
+}
+
+static std::string
 tmp_objfile_name (void)
 {
   std::string tmpl = get_temp_directory () + "/oct-XXXXXX.o";
@@ -658,20 +700,38 @@ clean_up_tmp_files (const std::list<std::string>& tmp_files)
     octave_unlink_wrapper (file.c_str ());
 }
 
+#if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+extern "C"
 int
-main (int argc, char **argv)
+wmain (int argc, wchar_t **sys_argv)
 {
-  initialize ();
+  std::vector<std::string> argv;
 
-  if (argc == 1)
+  // Convert wide character strings to multibyte UTF-8 strings and save
+  // them in a vector of std::string objects for later processing.
+
+  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
+  for (int i_arg = 0; i_arg < argc; i_arg++)
+    argv.push_back (wchar_conv.to_bytes (sys_argv[i_arg]));
+#else
+int
+main (int argc, char **sys_argv)
+{
+  std::vector<std::string> argv;
+
+  // Save args as vector of std::string objects for later processing.
+  for (int i_arg = 0; i_arg < argc; i_arg++)
+    argv.push_back (sys_argv[i_arg]);
+#endif
+
+ if (argc == 1)
     {
       std::cout << usage_msg << std::endl;
       return 1;
     }
 
-  if (argc == 2 && (! strcmp (argv[1], "-v")
-                    || ! strcmp (argv[1], "-version")
-                    || ! strcmp (argv[1], "--version")))
+  if (argc == 2 && (argv[1] == "-v" || argv[1] == "-version"
+                    || argv[1] == "--version"))
     {
       std::cout << version_msg << std::endl;
       return 0;
@@ -681,6 +741,9 @@ main (int argc, char **argv)
   std::string output_ext = ".oct";
   std::string objfiles, libfiles, octfile, outputfile;
   std::string incflags, defs, ldflags, pass_on_options;
+  std::string var_to_print;
+  bool debug = false;
+  bool verbose = false;
   bool strip = false;
   bool no_oct_file_strip_on_this_platform = is_true ("%NO_OCT_FILE_STRIP%");
   bool compile_only = false;
@@ -688,6 +751,11 @@ main (int argc, char **argv)
   bool depend = false;
   bool printonly = false;
   bool output_file_option = false;
+  bool creating_mex_file = false;
+  bool r2017b_option = false;
+  bool r2018a_option = false;
+  // The default for this may change in the future.
+  bool mx_has_interleaved_complex = false;
 
   for (int i = 1; i < argc; i++)
     {
@@ -727,13 +795,7 @@ main (int argc, char **argv)
       else if (arg == "-d" || arg == "-debug" || arg == "--debug"
                || arg == "-v" || arg == "-verbose" ||  arg == "--verbose")
         {
-          debug = true;
-          if (vars["CC"] == "cc-msvc")
-            vars["CC"] += " -d";
-          if (vars["CXX"] == "cc-msvc")
-            vars["CXX"] += " -d";
-          if (vars["CXXLD"] == "cc-msvc")
-            vars["CXXLD"] += " -d";
+          verbose = true;
         }
       else if (arg == "-silent" ||  arg == "--silent")
         {
@@ -766,7 +828,28 @@ main (int argc, char **argv)
         }
       else if (arg == "-largeArrayDims" || arg == "-compatibleArrayDims")
         {
-          std::cerr << "warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
+          std::cerr << "mkoctfile: warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
+        }
+      else if (arg == "-R2017b")
+        {
+          if (r2018a_option)
+            {
+              std::cerr << "mkoctfile: only one of -R2017b and -R2018a may be used" << std::endl;
+              return 1;
+            }
+
+          r2017b_option = true;
+        }
+      else if (arg == "-R2018a")
+        {
+          if (r2017b_option)
+            {
+              std::cerr << "mkoctfile: only one of -R2017b and -R2018a may be used" << std::endl;
+              return 1;
+            }
+
+          r2018a_option = true;
+          mx_has_interleaved_complex = true;
         }
       else if (starts_with (arg, "-Wl,") || starts_with (arg, "-l")
                || starts_with (arg, "-L") || starts_with (arg, "-R"))
@@ -803,13 +886,17 @@ main (int argc, char **argv)
         {
           if (i < argc-1)
             {
-              arg = argv[++i];
-              // FIXME: Remove LFLAGS checking in Octave 7.0
-              if (arg == "LFLAGS")
-                std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
+              ++i;
 
-              std::cout << vars[arg] << std::endl;
-              return 0;
+              // FIXME: Remove LFLAGS checking in Octave 7.0
+              if (argv[i] == "LFLAGS")
+                std::cerr << "mkoctfile: warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
+
+              if (! var_to_print.empty ())
+                std::cerr << "mkoctfile: warning: only one '" << arg
+                          << "' option will be processed" << std::endl;
+              else
+                var_to_print = argv[i];
             }
           else
             std::cerr << "mkoctfile: --print requires argument" << std::endl;
@@ -828,9 +915,7 @@ main (int argc, char **argv)
         }
       else if (arg == "-g")
         {
-          vars["ALL_CFLAGS"] += " -g";
-          vars["ALL_CXXFLAGS"] += " -g";
-          vars["ALL_FFLAGS"] += " -g";
+          debug = true;
         }
       else if (arg == "-link-stand-alone" || arg == "--link-stand-alone")
         {
@@ -838,6 +923,8 @@ main (int argc, char **argv)
         }
       else if (arg == "-mex" || arg == "--mex")
         {
+          creating_mex_file = true;
+
           incflags += " -I.";
 #if defined (_MSC_VER)
           ldflags += " -Wl,-export:mexFunction";
@@ -878,10 +965,54 @@ main (int argc, char **argv)
         octfile = file;
     }
 
-  if (output_ext ==  ".mex"
-      && vars["ALL_CFLAGS"].find ("-g") != std::string::npos)
+  std::map<std::string, std::string> vars
+    = make_vars_map (link_stand_alone, verbose, debug);
+
+  if (! var_to_print.empty ())
     {
-      defs += " -DMEX_DEBUG";
+      if (vars.find (var_to_print) == vars.end ())
+        {
+          std::cerr << "mkoctfile: unknown variable '" << var_to_print << "'"
+                    << std::endl;
+          return 1;
+        }
+
+      std::cout << vars[var_to_print] << std::endl;
+
+      return 0;
+    }
+
+  if (creating_mex_file)
+    {
+      if (vars["ALL_CFLAGS"].find ("-g") != std::string::npos)
+        defs += " -DMEX_DEBUG";
+
+      if (mx_has_interleaved_complex)
+        {
+          defs += " -DMX_HAS_INTERLEAVED_COMPLEX=1";
+
+          if (! compile_only)
+            {
+              // Create tmp C source file that defines an extern symbol
+              // that can be checked when loading the mex file to
+              // determine that the file was compiled expecting
+              // interleaved complex values.
+
+              std::string tmp_file = create_interleaved_complex_file ();
+
+              cfiles.push_back (tmp_file);
+            }
+        }
+    }
+  else
+    {
+      if (r2017b_option)
+        std::cerr << "mkoctfile: warning: -R2017b option ignored unless creating mex file"
+                  << std::endl;
+
+      if (r2018a_option)
+        std::cerr << "mkoctfile: warning: -R2018a option ignored unless creating mex file"
+                  << std::endl;
     }
 
   if (compile_only && output_file_option
@@ -919,6 +1050,10 @@ main (int argc, char **argv)
 
   if (depend)
     {
+#if defined (OCTAVE_USE_WINDOWS_API) && ! defined (_UNICODE)
+      std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
+#endif
+
       for (const auto& f : cfiles)
         {
           std::string dfile = basename (f, true) + ".d", line;
@@ -930,33 +1065,34 @@ main (int argc, char **argv)
                + vars["CPPFLAGS"] + ' ' + vars["ALL_CFLAGS"] + ' '
                + incflags  + ' ' + defs + ' ' + quote_path (f));
 
-          // FIXME: Use wide character API for popen on Windows.
-          FILE *fd = popen (cmd.c_str (), "r");
-
 #if defined (OCTAVE_USE_WINDOWS_API)
-          // FIXME: liboctinterp isn't linked in to mkoctfile.
-          // So we cannot use octave::sys::ofstream. Instead we fall back
-          // on using the functions available from libwrappers.
-          std::size_t srclen = dfile.length ();
-          const uint8_t *src = reinterpret_cast<const uint8_t *>
-                               (dfile.c_str ());
-
-          std::size_t length = 0;
-          wchar_t *wchar = reinterpret_cast<wchar_t *>
-                           (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
-                                                        &length));
+          FILE *fd;
+          try
+            {
+              std::wstring wcmd = wchar_conv.from_bytes (cmd);
+              fd = ::_wpopen (wcmd.c_str (), L"r");
+            }
+          catch (const std::range_error& e)
+            {
+              fd = ::popen (cmd.c_str (), "r");
+            }
 
           std::ofstream fo;
-          if (wchar != nullptr)
+          try
             {
-              fo.open (wchar);
-              free (static_cast<void *> (wchar));
+              std::wstring wfile = wchar_conv.from_bytes (dfile);
+              fo.open (wfile.c_str ());
             }
-          else
-            fo.open (dfile.c_str ());
+          catch (const std::range_error& e)
+            {
+              fo.open (dfile.c_str ());
+            }
 #else
+          FILE *fd = popen (cmd.c_str (), "r");
+
           std::ofstream fo (dfile.c_str ());
 #endif
+
           std::size_t pos;
           while (! feof (fd))
             {
@@ -989,33 +1125,34 @@ main (int argc, char **argv)
                + vars["CPPFLAGS"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
                + incflags  + ' ' + defs + ' ' + quote_path (f));
 
-          // FIXME: Use wide character API for popen on Windows.
-          FILE *fd = popen (cmd.c_str (), "r");
-
 #if defined (OCTAVE_USE_WINDOWS_API)
-          // FIXME: liboctinterp isn't linked in to mkoctfile.
-          // So we cannot use octave::sys::ofstream. Instead we fall back
-          // on using the functions available from libwrappers.
-          std::size_t srclen = dfile.length ();
-          const uint8_t *src = reinterpret_cast<const uint8_t *>
-                               (dfile.c_str ());
-
-          std::size_t length = 0;
-          wchar_t *wchar = reinterpret_cast<wchar_t *>
-                           (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
-                                                        &length));
+          FILE *fd;
+          try
+            {
+              std::wstring wcmd = wchar_conv.from_bytes (cmd);
+              fd = ::_wpopen (wcmd.c_str (), L"r");
+            }
+          catch (const std::range_error& e)
+            {
+              fd = ::popen (cmd.c_str (), "r");
+            }
 
           std::ofstream fo;
-          if (wchar != nullptr)
+          try
             {
-              fo.open (wchar);
-              free (static_cast<void *> (wchar));
+              std::wstring wfile = wchar_conv.from_bytes (dfile);
+              fo.open (wfile.c_str ());
             }
-          else
-            fo.open (dfile.c_str ());
+          catch (const std::range_error& e)
+            {
+              fo.open (dfile.c_str ());
+            }
 #else
+          FILE *fd = popen (cmd.c_str (), "r");
+
           std::ofstream fo (dfile.c_str ());
 #endif
+
           std::size_t pos;
           while (! feof (fd))
             {
@@ -1066,7 +1203,7 @@ main (int argc, char **argv)
                + vars["ALL_FFLAGS"] + ' ' + incflags + ' ' + defs + ' '
                + pass_on_options + ' ' + f + " -o " + o);
 
-          int status = run_command (cmd, printonly);
+          int status = run_command (cmd, verbose, printonly);
 
           if (status)
             return status;
@@ -1106,7 +1243,7 @@ main (int argc, char **argv)
                + pass_on_options + ' ' + incflags + ' ' + defs + ' '
                + quote_path (f) + " -o " + quote_path (o));
 
-          int status = run_command (cmd, printonly);
+          int status = run_command (cmd, verbose, printonly);
 
           if (status)
             return status;
@@ -1146,7 +1283,7 @@ main (int argc, char **argv)
                + pass_on_options + ' ' + incflags + ' ' + defs + ' '
                + quote_path (f) + " -o " + quote_path (o));
 
-          int status = run_command (cmd, printonly);
+          int status = run_command (cmd, verbose, printonly);
 
           if (status)
             return status;
@@ -1187,7 +1324,7 @@ main (int argc, char **argv)
                + vars["LFLAGS"] + ' ' + octave_libs + ' '
                + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
-          int status = run_command (cmd, printonly);
+          int status = run_command (cmd, verbose, printonly);
 
           clean_up_tmp_files (tmp_objfiles);
 
@@ -1221,7 +1358,7 @@ main (int argc, char **argv)
         cmd += ' ' + vars["FLIBS"];
 #endif
 
-      int status = run_command (cmd, printonly);
+      int status = run_command (cmd, verbose, printonly);
 
       clean_up_tmp_files (tmp_objfiles);
 
@@ -1233,7 +1370,7 @@ main (int argc, char **argv)
     {
       std::string cmd = "strip " + octfile;
 
-      int status = run_command (cmd, printonly);
+      int status = run_command (cmd, verbose, printonly);
 
       if (status)
         return status;

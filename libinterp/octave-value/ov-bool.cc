@@ -54,7 +54,7 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTINTERP_API octave_base_scalar<double>;
+extern template class octave_base_scalar<double>;
 
 template class octave_base_scalar<bool>;
 
@@ -91,7 +91,7 @@ octave_bool::do_index_op (const octave_value_list& idx, bool resize_ok)
 
   octave_value tmp (new octave_bool_matrix (bool_matrix_value ()));
 
-  return tmp.do_index_op (idx, resize_ok);
+  return tmp.index_op (idx, resize_ok);
 }
 
 octave_value
@@ -188,7 +188,7 @@ octave_bool::save_ascii (std::ostream& os)
 {
   double d = double_value ();
 
-  octave_write_double (os, d);
+  octave::write_value<double> (os, d);
   os << "\n";
 
   return true;
@@ -197,7 +197,7 @@ octave_bool::save_ascii (std::ostream& os)
 bool
 octave_bool::load_ascii (std::istream& is)
 {
-  scalar = (octave_read_value<double> (is) != 0.0);
+  scalar = (octave::read_value<double> (is) != 0.0);
 
   if (! is)
     error ("load: failed to load scalar constant");
@@ -233,7 +233,7 @@ octave_bool::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5)
 
-  hsize_t dimens[3];
+  hsize_t dimens[3] = {0};
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
 
@@ -312,13 +312,13 @@ octave_bool::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_bool::as_mxArray (void) const
+octave_bool::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxLOGICAL_CLASS, 1, 1, mxREAL);
+  mxArray *retval = new mxArray (interleaved, mxLOGICAL_CLASS, 1, 1, mxREAL);
 
-  bool *pr = static_cast<bool *> (retval->get_data ());
+  mxLogical *pd = static_cast<mxLogical *> (retval->get_data ());
 
-  pr[0] = scalar;
+  pd[0] = scalar;
 
   return retval;
 }

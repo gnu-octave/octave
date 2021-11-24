@@ -36,6 +36,8 @@
 #include "fEIG.h"
 #include "oct-string.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (eig, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{lambda} =} eig (@var{A})
@@ -149,17 +151,17 @@ The eigenvalues returned by @code{eig} are not ordered.
         err_wrong_type_arg ("eig", args(i));
 
       std::string arg_i = args(i).string_value ();
-      if (octave::string::strcmpi (arg_i, "qz"))
+      if (string::strcmpi (arg_i, "qz"))
         qz_flag = true;
-      else if (octave::string::strcmpi (arg_i, "chol"))
+      else if (string::strcmpi (arg_i, "chol"))
         chol_flag = true;
-      else if (octave::string::strcmpi (arg_i, "balance"))
+      else if (string::strcmpi (arg_i, "balance"))
         balance_flag = true;
-      else if (octave::string::strcmpi (arg_i, "nobalance"))
+      else if (string::strcmpi (arg_i, "nobalance"))
         no_balance_flag = true;
-      else if (octave::string::strcmpi (arg_i, "matrix"))
+      else if (string::strcmpi (arg_i, "matrix"))
         matrix_flag = true;
-      else if (octave::string::strcmpi (arg_i, "vector"))
+      else if (string::strcmpi (arg_i, "vector"))
         vector_flag = true;
       else
         error (R"(eig: invalid option "%s")", arg_i.c_str ());
@@ -532,22 +534,22 @@ The eigenvalues returned by @code{eig} are not ordered.
 ## column vector if 1 output is specified
 %!function test_shapes (args)
 %!  d = eig (args{:});
-%!  assert (isvector(d))
+%!  assert (isvector (d))
 %!  d2 = eig (args{:}, "vector");
-%!  assert (isvector(d2))
+%!  assert (isvector (d2))
 %!  [v, d3] = eig (args{:});
-%!  assert (isdiag(d3))
+%!  assert (isdiag (d3))
 %!  d4 = eig (args{:}, "matrix");
-%!  assert (isdiag(d4))
+%!  assert (isdiag (d4))
 %!  [v, d5, w] = eig (args{:});
-%!  assert (isdiag(d5))
+%!  assert (isdiag (d5))
 %!  d6 = eig (args{:}, "matrix");
-%!  assert (isdiag(d6))
+%!  assert (isdiag (d6))
 %!  assert (d, d2)
 %!  assert (d3, d4)
 %!  assert (d5, d6)
-%!  assert (d, diag(d3))
-%!  assert (d, diag(d5))
+%!  assert (d, diag (d3))
+%!  assert (d, diag (d5))
 %!endfunction
 
 %!function shapes_AEP (A)
@@ -638,3 +640,5 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!error <wrong type argument>
 %!  eig ([1 2 ; 2 3], [1 2 ; 2 3], [1 2 ; 2 3])
 */
+
+OCTAVE_NAMESPACE_END

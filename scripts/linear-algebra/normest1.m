@@ -379,7 +379,7 @@ endfunction
 %! assert (iscolumn (it));
 
 ## Test input validation
-%!error normest1 ()
+%!error <Invalid call> normest1 ()
 %!error <A must be a square matrix or a function handle> normest1 ({1})
 %!error <A must be a square matrix> normest1 ([1 2])
 %!error <X0 must have 2 columns> normest1 (magic (5), :, [1])

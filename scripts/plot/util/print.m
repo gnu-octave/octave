@@ -132,8 +132,13 @@
 ##
 ## @table @asis
 ## @item Font handling:
-## The actual font is embedded in the output file which allows for printing
-## arbitrary characters and fonts in all vector formats.
+## For interpreters "none" and "tex", the actual font is embedded in the output
+## file which allows for printing arbitrary characters and fonts in all vector
+## formats.
+##
+## Strings using the @qcode{"latex"} interpreter, are rendered using path
+## objects. This looks good but note that textual info (font, characters@dots{})
+## are lost.
 ##
 ## @item Output Simplification:
 ## By default, the option @option{-painters} renders patch and surface objects
@@ -472,12 +477,21 @@ function rgbout = print (varargin)
     set (opts.figure, "__printing__", "on");
     nfig += 1;
 
-    ## print() requires children of axes to have units = "normalized", or "data"
-    hobj = findall (opts.figure, "-not", "type", "figure", ...
-                    "-not", "type", "axes", "-property", "units", ...
+    ## print() requires children of axes to have units = "normalized" or "data"
+    ## FIXME: Bug #59015.  The only graphics object type to which this
+    ## requirement applies seems to be 'text' objects.  It is simpler, and
+    ## clearer, to just select those objects.  The old code is left commented
+    ## out until sufficient testing has been done.
+    ## Change made: 2020/09/02.
+    ##hobj = findall (opts.figure, "-not", "type", "figure", ...
+    ##                "-not", "type", "axes", "-not", "type", "hggroup", ...
+    ##                "-property", "units", ...
+    ##                "-not", "units", "normalized", "-not", "units", "data");
+    ##hobj(strncmp (get (hobj, "type"), "ui", 2)) = [];
+
+    hobj = findall (opts.figure, "type", "text",
                     "-not", "units", "normalized", "-not", "units", "data");
-    hobj(strncmp (get (hobj, "type"), "ui", 2)) = [];
-    for n = 1:numel(hobj)
+    for n = 1:numel (hobj)
       props(end+1).h = hobj(n);
       props(end).name = "units";
       props(end).value = {get(hobj(n), "units")};
@@ -791,6 +805,7 @@ function rgbout = print (varargin)
   if (isfigure (orig_figure))
     set (0, "currentfigure", orig_figure);
   endif
+
 endfunction
 
 function cmd = epstool (opts, filein, fileout)
@@ -801,7 +816,7 @@ function cmd = epstool (opts, filein, fileout)
 
   ## DOS Shell:
   ##   gs.exe [...] -sOutputFile=<filein> - & epstool -bbox -preview-tiff <filein> <fileout> & del <filein>
-  ## Unix Shell;
+  ## Unix Shell:
   ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
 
   dos_shell = (ispc () && ! isunix ());
@@ -1004,13 +1019,10 @@ function latex_standalone (opts)
   switch (opts.devopt)
     case {"pdflatexstandalone"}
       packages = "\\usepackage{graphicx,color}";
-      graphicsfile = [opts.name "-inc.pdf"];
     case {"pslatexstandalone"}
       packages = "\\usepackage{epsfig,color}";
-      graphicsfile = [opts.name "-inc.ps"];
     otherwise
       packages = "\\usepackage{epsfig,color}";
-      graphicsfile = [opts.name "-inc.eps"];
   endswitch
 
   packages = {packages "\\usepackage[utf8]{inputenc}"};
@@ -1033,9 +1045,6 @@ function latex_standalone (opts)
     error ("Octave:print:errorclosingfile",
            "print: error closing file '%s'", latexfile);
   endif
-  ## FIXME: should this be fixed in GL2PS?
-  latex = strrep (latex, "\\includegraphics{}",
-                  sprintf ("\\includegraphics{%s}", graphicsfile));
 
   fid = fopen (latexfile, "w");
   if (fid >= 0)

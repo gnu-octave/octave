@@ -72,13 +72,13 @@ namespace octave
   {
     if (is_external ())
       {
-        if (is_dummy_method (function))
+        if (is_dummy_method (m_function))
           {
             load_path& lp
               = __get_load_path__ ("cdef_method::cdef_method_rep::check_method");
 
             std::string name = get_name ();
-            std::string cls_name = dispatch_type;
+            std::string cls_name = m_dispatch_type;
             std::string pack_name;
 
             std::size_t pos = cls_name.rfind ('.');
@@ -97,13 +97,13 @@ namespace octave
               {
                 octave_value ov_fcn
                   = load_fcn_from_file (file_name, dir_name,
-                                        dispatch_type, pack_name);
+                                        m_dispatch_type, pack_name);
 
                 if (ov_fcn.is_defined ())
                   {
-                    function = ov_fcn;
+                    m_function = ov_fcn;
 
-                    make_function_of_class (dispatch_type, function);
+                    make_function_of_class (m_dispatch_type, m_function);
                   }
               }
           }
@@ -112,9 +112,9 @@ namespace octave
             // FIXME: check out-of-date status
           }
 
-        if (is_dummy_method (function))
+        if (is_dummy_method (m_function))
           error ("no definition found for method '%s' of class '%s'",
-                 get_name ().c_str (), dispatch_type.c_str ());
+                 get_name ().c_str (), m_dispatch_type.c_str ());
       }
   }
 
@@ -134,8 +134,8 @@ namespace octave
 
     check_method ();
 
-    if (function.is_defined ())
-      retval = feval (function, args, nargout);
+    if (m_function.is_defined ())
+      retval = feval (m_function, args, nargout);
 
     return retval;
   }
@@ -157,7 +157,7 @@ namespace octave
 
     check_method ();
 
-    if (function.is_defined ())
+    if (m_function.is_defined ())
       {
         octave_value_list new_args;
 
@@ -167,7 +167,7 @@ namespace octave
         for (int i = 0; i < args.length (); i++)
           new_args(i+1) = args(i);
 
-        retval = feval (function, new_args, nargout);
+        retval = feval (m_function, new_args, nargout);
       }
 
     return retval;
@@ -176,8 +176,8 @@ namespace octave
   bool
   cdef_method::cdef_method_rep::is_constructor (void) const
   {
-    if (function.is_function())
-      return function.function_value ()->is_classdef_constructor ();
+    if (m_function.is_function())
+      return m_function.function_value ()->is_classdef_constructor ();
 
     return false;
   }
@@ -185,8 +185,8 @@ namespace octave
   bool
   cdef_method::cdef_method_rep::is_defined_in_class (const std::string &cname) const
   {
-    return (function.is_function ()
-            ? function.function_value ()->dispatch_class () == cname
+    return (m_function.is_function ()
+            ? m_function.function_value ()->dispatch_class () == cname
             : false);
   }
 
@@ -195,7 +195,7 @@ namespace octave
   {
     check_method ();
 
-    octave_function *fcn = function.function_value ();
+    octave_function *fcn = m_function.function_value ();
 
     return fcn ? fcn->doc_string () : "";
   }

@@ -9,7 +9,7 @@
 ##
 ## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
@@ -74,7 +74,7 @@
 
 function y = betainc (x, a, b, tail = "lower")
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3)
     print_usage ();
   endif
 
@@ -127,13 +127,38 @@ function y = betainc (x, a, b, tail = "lower")
   ## Initialize output array
   y = zeros (size (x), class (x));
 
+  ## Trivial cases (long code here trades memory for speed)
+  a_one = (a == 1);
+  b_one = (b == 1);
+  a_b_one = a_one & b_one;
+  a_not_one = ! a_one;
+  b_not_one = ! b_one;
+  non_trivial = a_not_one & b_not_one;
+  a_one &= b_not_one;
+  b_one &= a_not_one;
+  
+  if (strcmpi (tail, "lower"))
+    y(a_b_one) = x(a_b_one);
+    y(a_one) = 1 - (1 - x(a_one)) .^ b(a_one);
+    y(b_one) = x(b_one) .^ a(b_one);
+  elseif (strcmpi (tail, "upper"))
+    y(a_b_one) = 1 - x(a_b_one);
+    y(a_one) = (1 - x(a_one)) .^ b(a_one);
+    y(b_one) = 1 - x(b_one) .^ a(b_one);
+  endif
+  
+  ## Non-Trivial cases
   ## In the following, we use the fact that the continued fraction Octave uses
   ## is more efficient when x <= a / (a + b).  Moreover, to compute the upper
   ## version, which is defined as I_x(a,b,"upper") = 1 - I_x(a,b) we use the
   ## property I_x(a,b) + I_(1-x) (b,a) = 1.
+  
+  x = x(non_trivial);
+  a = a(non_trivial);
+  b = b(non_trivial);
 
   if (strcmpi (tail, "lower"))
-    fflag = (x > a./(a+b));
+    fflag = (x > a./(a + b));
     x(fflag) = 1 - x(fflag);
     [a(fflag), b(fflag)] = deal (b(fflag), a(fflag));
   elseif (strcmpi (tail, "upper"))
@@ -153,10 +178,12 @@ function y = betainc (x, a, b, tail = "lower")
   f = __betainc__ (x, a, b);
 
   ## Divide continued fraction by B(a,b) / (x^a * (1-x)^b) to obtain I_x(a,b).
-  y = a .* log (x) + b .* log1p (-x) ...
-      + (gammaln (a + b) - gammaln (a) - gammaln (b)) + log (f);
-  y = real (exp (y));
-  y(fflag) = 1 - y(fflag);
+  y_nt = a .* log (x) + b .* log1p (-x) ...
+         + (gammaln (a + b) - gammaln (a) - gammaln (b)) + log (f);
+  y_nt = real (exp (y_nt));
+  y_nt(fflag) = 1 - y_nt(fflag);
+  
+  y(non_trivial) = y_nt;
 
   ## Restore original shape
   y = reshape (y, orig_sz);
@@ -196,7 +223,7 @@ endfunction
 %! v2 = single ([1,1,1,1]);
 %! x = [.2, .4, .6, .8];
 %! v3 = betainc (x, a, b);
-%! v4 = 1-betainc (1.-x, b, a);
+%! v4 = 1 - betainc (1. - x, b, a);
 %! assert (v1, v2, sqrt (eps ("single")));
 %! assert (v3, v4, sqrt (eps ("single")));
 
@@ -205,12 +232,13 @@ endfunction
 %! y_ex = [0.999999999999989; 0.999999999999992; 0.999999999999995];
 %! assert (y, y_ex, -1e-14);
 
-%!assert (betainc (0.001, 20, 30), 2.750687665855991e-47, -3e-14);
-%!assert (betainc (0.0001, 20, 30), 2.819953178893307e-67, -7e-14);
-%!assert <*54383> (betainc (0.99, 20, 30, "upper"), 1.5671643161872703e-47, -7e-14);
-%!assert (betainc (0.999, 20, 30, "upper"), 1.850806276141535e-77, -7e-14);
-%!assert (betainc (0.5, 200, 300), 0.9999964565197356, -1e-15);
-%!assert (betainc (0.5, 200, 300, "upper"), 3.54348026439253e-06, -3e-13);
+%!assert (betainc (0.001, 20, 30), 2.750687665855991e-47, -3e-14)
+%!assert (betainc (0.0001, 20, 30), 2.819953178893307e-67, -7e-14)
+%!assert <*54383> (betainc (0.99, 20, 30, "upper"),
+%!                 1.5671643161872703e-47, -7e-14)
+%!assert (betainc (0.999, 20, 30, "upper"), 1.850806276141535e-77, -7e-14)
+%!assert (betainc (0.5, 200, 300), 0.9999964565197356, -1e-15)
+%!assert (betainc (0.5, 200, 300, "upper"), 3.54348026439253e-06, -3e-13)
 
 ## Test trivial values
 %!test
@@ -220,13 +248,12 @@ endfunction
 
 %!test <*34405>
 %! assert (betainc (NaN, 1, 2), NaN);
-%! assert (betainc (0.5, 1, Inf), NaN);
+%! assert (betainc (0.5, 1, Inf), 1);
 
 ## Test input validation
-%!error betainc ()
-%!error betainc (1)
-%!error betainc (1,2)
-%!error betainc (1,2,3,4,5)
+%!error <Invalid call> betainc ()
+%!error <Invalid call> betainc (1)
+%!error <Invalid call> betainc (1,2)
 %!error <must be of common size or scalars> betainc (ones (2,2), ones (1,2), 1)
 %!error <all inputs must be real> betainc (0.5i, 1, 2)
 %!error <all inputs must be real> betainc (0, 1i, 1)

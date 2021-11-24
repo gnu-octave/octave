@@ -184,10 +184,10 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   ha = axes;
+%!   ha = axes ();
 %!   hm = mesh (sombrero ());
-%!   hp = patch;
-%!   hs = surface;
+%!   hp = patch ();
+%!   hs = surface ();
 %!   lighting flat
 %!   assert (get (hp, "facelighting"), "flat");
 %!   assert (get (hs, "facelighting"), "flat");
@@ -225,7 +225,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!error lighting ()
+%!error <Invalid call> lighting ()
 %!error lighting (1, 2, "flat")
 %!error <MODE must be a string> lighting (-1)
 %!error <MODE must be a string> lighting ({})

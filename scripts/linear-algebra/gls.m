@@ -155,10 +155,9 @@ endfunction
 %! assert (gls (y,x,o), [3; 2], 50*eps);
 
 ## Test input validation
-%!error gls ()
-%!error gls (1)
-%!error gls (1, 2)
-%!error gls (1, 2, 3, 4)
+%!error <Invalid call> gls ()
+%!error <Invalid call> gls (1)
+%!error <Invalid call> gls (1, 2)
 %!error gls ([true, true], [1, 2], ones (2))
 %!error gls ([1, 2], [true, true], ones (2))
 %!error gls ([1, 2], [1, 2], true (2))

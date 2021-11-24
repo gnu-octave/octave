@@ -210,8 +210,8 @@ endfunction
 
 
 ## Test input validation
-%!error periodogram ()
-%!error periodogram (1,2,3,4,5,6)
+%!error <Invalid call> periodogram ()
+%!error <Invalid call> periodogram (1,2,3,4,5,6)
 %!error <X must be a real or complex vector> periodogram (ones (2,2))
 %!error <WIN must be a vector.*same length> periodogram (1:5, ones (2,2))
 %!error <WIN must be a vector.*same length> periodogram (1:5, 1:6)

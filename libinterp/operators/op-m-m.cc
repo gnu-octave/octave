@@ -38,6 +38,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // matrix unary ops.
 
 DEFNDUNOP_OP (not, matrix, array, !)
@@ -223,3 +225,5 @@ install_m_m_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_el_div_eq, octave_matrix, octave_matrix,
                        assign_el_div);
 }
+
+OCTAVE_NAMESPACE_END

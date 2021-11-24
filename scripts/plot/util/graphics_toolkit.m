@@ -45,10 +45,6 @@
 
 function retval = graphics_toolkit (name, hlist = [])
 
-  if (nargin > 2)
-    print_usage ();
-  endif
-
   if (nargout > 0 || nargin == 0)
     retval = get (0, "defaultfigure__graphics_toolkit__");
     ## Handle case where graphics_toolkit has been called before any plotting
@@ -92,7 +88,7 @@ function retval = graphics_toolkit (name, hlist = [])
     if (strcmp (name, "gnuplot"))
       valid_version = __gnuplot_has_feature__ ("minimum_version");
       if (valid_version != 1)
-        error ("graphics_toolkit: gnuplot version too old.");
+        error ("graphics_toolkit: gnuplot version too old");
       endif
     endif
     feval (["__init_", name, "__"]);
@@ -108,6 +104,7 @@ function retval = graphics_toolkit (name, hlist = [])
   endif
 
 endfunction
+
 
 %!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! unwind_protect

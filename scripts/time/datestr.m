@@ -30,9 +30,10 @@
 ## Format the given date/time according to the format @var{f} and return
 ## the result in @var{str}.
 ##
-## @var{date} is a serial date number (see @code{datenum}), a date vector (see
-## @code{datevec}), or a string or cell array of strings.  In the latter case,
-## it is passed to @code{datevec} to guess the input date format.
+## @var{date} is a serial date number (@pxref{XREFdatenum,,@code{datenum}}), a
+## date vector (@pxref{XREFdatevec,,@code{datevec}}), or a string or cell array
+## of strings.  In the latter case, it is passed to @code{datevec} to guess the
+## input date format.
 ##
 ## @var{f} can be an integer which corresponds to one of the codes in the table
 ## below, or a date format string.
@@ -175,7 +176,7 @@ function retval = datestr (date, f = [], p = [])
     names_d = {"S", "M", "T", "W", "T", "F", "S"};
   endif
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -368,5 +369,4 @@ endfunction
 %!                 "00:05:00.000")
 
 ## Test input validation
-%!error datestr ()
-%!error datestr (1, 2, 3, 4)
+%!error <Invalid call> datestr ()

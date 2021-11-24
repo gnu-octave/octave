@@ -31,15 +31,15 @@
 #include "dNDArray.h"
 #include "fNDArray.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__betainc__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{y} =} __betainc__ (@var{x}, @var{a}, @var{b})
 Continued fraction for incomplete beta function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     print_usage ();
 
   bool is_single = (args(0).is_single_type () || args(1).is_single_type ()
@@ -79,7 +79,7 @@ Continued fraction for incomplete beta function.
         b = args(2).float_array_value ();
 
       // Initialize variables used in algorithm
-      static const float tiny = octave::math::exp2 (-50.0f);
+      static const float tiny = math::exp2 (-50.0f);
       static const float eps = std::numeric_limits<float>::epsilon ();
       float xj, x2, y, Cj, Dj, aj, bj, Deltaj, alpha_j, beta_j;
       int j, maxit;
@@ -150,7 +150,7 @@ Continued fraction for incomplete beta function.
         b = args(2).array_value ();
 
       // Initialize variables used in algorithm
-      static const double tiny = octave::math::exp2 (-100.0);
+      static const double tiny = math::exp2 (-100.0);
       static const double eps = std::numeric_limits<double>::epsilon ();
       double xj, x2, y, Cj, Dj, aj, bj, Deltaj, alpha_j, beta_j;
       int j, maxit;
@@ -202,3 +202,5 @@ Continued fraction for incomplete beta function.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

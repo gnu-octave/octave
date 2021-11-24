@@ -39,8 +39,8 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTAVE_API Array<idx_vector>;
-extern template class OCTAVE_API Array<octave_idx_type>;
+extern template class Array<octave::idx_vector>;
+extern template class Array<octave_idx_type>;
 
 // Specialize bool sorting (aka stable partitioning).
 
@@ -118,7 +118,7 @@ octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
   do_bool_partition<true> (data, idx, nel);
 }
 
-template class OCTAVE_API octave_sort<bool>;
+template class octave_sort<bool>;
 
 INSTANTIATE_ARRAY (bool, OCTAVE_API);
 
@@ -128,4 +128,4 @@ template OCTAVE_API std::ostream& operator << (std::ostream&,
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 
-template class OCTAVE_API DiagArray2<bool>;
+template class DiagArray2<bool>;

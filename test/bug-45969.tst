@@ -1,4 +1,4 @@
-%!test
+%!test <*45969>
 %! text_filename = tempname ();
 %! binary_filename = tempname ();
 %! a = 2;
@@ -20,7 +20,7 @@
 %!   unlink (binary_filename);
 %! end_unwind_protect
 
-%!testif HAVE_HDF5
+%!testif HAVE_HDF5 <*45969>
 %! hdf5_filename = tempname ();
 %! a = 2;
 %! b = 10;

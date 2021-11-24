@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "oct-refcount.h"
+#include <memory>
 
 namespace octave
 {
@@ -40,7 +40,7 @@ namespace octave
   public:
     friend class mutex;
 
-    base_mutex (void) : m_count (1) { }
+    base_mutex (void) = default;
 
     virtual ~base_mutex (void) = default;
 
@@ -49,9 +49,6 @@ namespace octave
     virtual void unlock (void);
 
     virtual bool try_lock (void);
-
-  private:
-    refcount<octave_idx_type> m_count;
   };
 
   class
@@ -61,31 +58,11 @@ namespace octave
   public:
     mutex (void);
 
-    mutex (const mutex& m)
-      : m_rep (m.m_rep)
-    {
-      m_rep->m_count++;
-    }
+    mutex (const mutex& m) = default;
 
-    ~mutex (void)
-    {
-      if (--m_rep->m_count == 0)
-        delete m_rep;
-    }
+    ~mutex (void) = default;
 
-    mutex& operator = (const mutex& m)
-    {
-      if (m_rep != m.m_rep)
-        {
-          if (--m_rep->m_count == 0)
-            delete m_rep;
-
-          m_rep = m.m_rep;
-          m_rep->m_count++;
-        }
-
-      return *this;
-    }
+    mutex& operator = (const mutex& m) = default;
 
     void lock (void)
     {
@@ -103,7 +80,7 @@ namespace octave
     }
 
   protected:
-    base_mutex *m_rep;
+    std::shared_ptr<base_mutex> m_rep;
   };
 
   class

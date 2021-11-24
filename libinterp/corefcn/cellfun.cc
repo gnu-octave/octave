@@ -65,8 +65,10 @@
 
 #include "ov-fcn-handle.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 static octave_value_list
-get_output_list (octave::error_system& es,
+get_output_list (error_system& es,
                  octave_idx_type count, octave_idx_type nargout,
                  const octave_value_list& inputlist,
                  octave_value& func,
@@ -78,14 +80,14 @@ get_output_list (octave::error_system& es,
 
   try
     {
-      tmp = octave::feval (func, inputlist, nargout);
+      tmp = feval (func, inputlist, nargout);
     }
-  catch (const octave::execution_exception& ee)
+  catch (const execution_exception& ee)
     {
       if (error_handler.is_defined ())
         {
-          octave::interpreter& interp
-            = octave::__get_interpreter__ ("get_output_list");
+          interpreter& interp
+            = __get_interpreter__ ("get_output_list");
 
           es.save_exception (ee);
           interp.recover_from_exception ();
@@ -110,7 +112,7 @@ get_output_list (octave::error_system& es,
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
 
-          tmp = octave::feval (error_handler, errlist, nargout);
+          tmp = feval (error_handler, errlist, nargout);
         }
       else
         tmp.clear ();
@@ -223,7 +225,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 }
 
 static void
-get_mapper_fun_options (octave::symbol_table& symtab,
+get_mapper_fun_options (symbol_table& symtab,
                         const octave_value_list& args,
                         int& nargin, bool& uniform_output,
                         octave_value& error_handler)
@@ -235,9 +237,9 @@ get_mapper_fun_options (octave::symbol_table& symtab,
       std::size_t compare_len
         = std::max (arg.length (), static_cast<std::size_t> (2));
 
-      if (octave::string::strncmpi (arg, "uniformoutput", compare_len))
+      if (string::strncmpi (arg, "uniformoutput", compare_len))
         uniform_output = args(nargin-1).bool_value ();
-      else if (octave::string::strncmpi (arg, "errorhandler", compare_len))
+      else if (string::strncmpi (arg, "errorhandler", compare_len))
         {
           if (args(nargin-1).is_function_handle ()
               || args(nargin-1).is_inline_function ())
@@ -417,7 +419,7 @@ v = cellfun (@@det, a); # faster
 
   octave_value func = args(0);
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   if (func.is_string ())
     {
@@ -430,8 +432,8 @@ v = cellfun (@@det, a); # faster
 
       std::string name = args(0).string_value ();
 
-      if (! octave::valid_identifier (name))
-        func = octave::get_function_handle (interp, args(0), "x");
+      if (! valid_identifier (name))
+        func = get_function_handle (interp, args(0), "x");
       else
         {
           func = symtab.find_function (name);
@@ -535,7 +537,7 @@ nevermind:
         }
     }
 
-  octave::error_system& es = interp.get_error_system ();
+  error_system& es = interp.get_error_system ();
 
   // Apply functions.
 
@@ -1147,15 +1149,15 @@ arrayfun (@@str2num, [1234],
   bool symbol_table_lookup = false;
   octave_value func = args(0);
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   if (func.is_string ())
     {
       // See if we can convert the string into a function.
       std::string name = args(0).string_value ();
 
-      if (! octave::valid_identifier (name))
-        func = octave::get_function_handle (interp, args(0), "x");
+      if (! valid_identifier (name))
+        func = get_function_handle (interp, args(0), "x");
       else
         {
           func = symtab.find_function (name);
@@ -1241,7 +1243,7 @@ arrayfun (@@str2num, [1234],
             }
         }
 
-      octave::error_system& es = interp.get_error_system ();
+      error_system& es = interp.get_error_system ();
 
       // Apply functions.
 
@@ -1260,7 +1262,7 @@ arrayfun (@@str2num, [1234],
               for (int j = 0; j < nargin; j++)
                 {
                   if (mask[j])
-                    inputlist.xelem (j) = inputs[j].do_index_op (idx_list);
+                    inputlist.xelem (j) = inputs[j].index_op (idx_list);
                 }
 
               const octave_value_list tmp
@@ -1352,7 +1354,7 @@ arrayfun (@@str2num, [1234],
               for (int j = 0; j < nargin; j++)
                 {
                   if (mask[j])
-                    inputlist.xelem (j) = inputs[j].do_index_op (idx_list);
+                    inputlist.xelem (j) = inputs[j].index_op (idx_list);
                 }
 
               const octave_value_list tmp
@@ -1580,14 +1582,14 @@ arrayfun (@@str2num, [1234],
 %! A = arrayfun (@(x,y) x.a:y.a, a, b, "UniformOutput", false);
 %! assert (isequal (A, {[1.1, 2.1, 3.1]}));
 %!test
-%! A = arrayfun (@(x) mat2str(x), "a", "ErrorHandler", @__arrayfunerror);
+%! A = arrayfun (@(x) mat2str (x), "a", "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
 %! assert (isfield (A, "index"), true);
 %! assert (isempty (A.message), false);
 %! assert (A.index, 1);
 %!test  # Overwriting setting of "UniformOutput" true
-%! A = arrayfun (@(x) mat2str(x), "a", "UniformOutput", true, ...
+%! A = arrayfun (@(x) mat2str (x), "a", "UniformOutput", true, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! assert (isfield (A, "identifier"), true);
 %! assert (isfield (A, "message"), true);
@@ -2101,7 +2103,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
       for (int i = 0; i < nd; i++)
         ra_idx(i) = idx[i][ridx[i]];
 
-      retval.xelem (j) = a.do_index_op (ra_idx);
+      retval.xelem (j) = a.index_op (ra_idx);
 
       rdv.increment_index (ridx);
     }
@@ -2435,8 +2437,8 @@ slicing is done along the first non-singleton dimension.
       octave_value_list idx (ndims, octave_value::magic_colon_t);
       for (octave_idx_type i = 0; i < n; i++)
         {
-          idx(dim) = Range (lb(i), ub(i));
-          retcell.xelem (i) = x.do_index_op (idx);
+          idx(dim) = range<double> (lb(i), ub(i));
+          retcell.xelem (i) = x.index_op (idx);
         }
     }
 
@@ -2487,8 +2489,10 @@ indexing keyword @code{end} is not available.
 
       octave_value tmp = x(i);
 
-      y.xelem (i) = tmp.do_index_op (idx);
+      y.xelem (i) = tmp.index_op (idx);
     }
 
   return octave_value (y);
 }
+
+OCTAVE_NAMESPACE_END

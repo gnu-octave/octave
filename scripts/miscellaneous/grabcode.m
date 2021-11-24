@@ -59,7 +59,7 @@
 
 function code_str = grabcode (url)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -100,5 +100,4 @@ endfunction
 
 
 ## Test input validation
-%!error grabcode ()
-%!error grabcode (1,2)
+%!error <Invalid call> grabcode ()

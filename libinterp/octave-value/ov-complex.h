@@ -82,7 +82,7 @@ public:
                             bool resize_ok = false);
 
   // Use this to give a more specific error message.
-  idx_vector index_vector (bool /* require_integers */ = false) const;
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const;
 
   octave_value any (int = 0) const
   {
@@ -101,9 +101,9 @@ public:
 
   bool isfloat (void) const { return true; }
 
-  double double_value (bool = false) const;
+  OCTINTERP_API double double_value (bool = false) const;
 
-  float float_value (bool = false) const;
+  OCTINTERP_API float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
   { return double_value (frc_str_conv); }
@@ -111,13 +111,13 @@ public:
   float float_scalar_value (bool frc_str_conv = false) const
   { return float_value (frc_str_conv); }
 
-  Matrix matrix_value (bool = false) const;
+  OCTINTERP_API Matrix matrix_value (bool = false) const;
 
-  FloatMatrix float_matrix_value (bool = false) const;
+  OCTINTERP_API FloatMatrix float_matrix_value (bool = false) const;
 
-  NDArray array_value (bool = false) const;
+  OCTINTERP_API NDArray array_value (bool = false) const;
 
-  FloatNDArray float_array_value (bool = false) const;
+  OCTINTERP_API FloatNDArray float_array_value (bool = false) const;
 
   SparseMatrix sparse_matrix_value (bool = false) const
   { return SparseMatrix (matrix_value ()); }
@@ -125,19 +125,22 @@ public:
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
   { return SparseComplexMatrix (complex_matrix_value ()); }
 
-  octave_value resize (const dim_vector& dv, bool fill = false) const;
+  OCTINTERP_API octave_value
+  resize (const dim_vector& dv, bool fill = false) const;
 
-  Complex complex_value (bool = false) const;
+  OCTINTERP_API Complex complex_value (bool = false) const;
 
-  FloatComplex float_complex_value (bool = false) const;
+  OCTINTERP_API FloatComplex float_complex_value (bool = false) const;
 
-  ComplexMatrix complex_matrix_value (bool = false) const;
+  OCTINTERP_API ComplexMatrix complex_matrix_value (bool = false) const;
 
-  FloatComplexMatrix float_complex_matrix_value (bool = false) const;
+  OCTINTERP_API FloatComplexMatrix
+  float_complex_matrix_value (bool = false) const;
 
-  ComplexNDArray complex_array_value (bool = false) const;
+  OCTINTERP_API ComplexNDArray complex_array_value (bool = false) const;
 
-  FloatComplexNDArray float_complex_array_value (bool = false) const;
+  OCTINTERP_API FloatComplexNDArray
+  float_complex_array_value (bool = false) const;
 
   bool bool_value (bool warn = false) const
   {
@@ -159,32 +162,34 @@ public:
     return boolNDArray (dim_vector (1, 1), scalar != 0.0);
   }
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double (void) const;
+  OCTINTERP_API octave_value as_single (void) const;
 
   // We don't need to override both forms of the diag method.  The using
   // declaration will avoid warnings about partially-overloaded virtual
   // functions.
   using octave_base_scalar<Complex>::diag;
 
-  octave_value diag (octave_idx_type m, octave_idx_type n) const;
+  OCTINTERP_API octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   void increment (void) { scalar += 1.0; }
 
   void decrement (void) { scalar -= 1.0; }
 
-  bool save_ascii (std::ostream& os);
+  OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  bool load_ascii (std::istream& is);
+  OCTINTERP_API bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool save_as_floats);
+  OCTINTERP_API bool save_binary (std::ostream& os, bool save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap,
-                    octave::mach_info::float_format fmt);
+  OCTINTERP_API bool
+  load_binary (std::istream& is, bool swap,
+               octave::mach_info::float_format fmt);
 
-  bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
+  OCTINTERP_API bool
+  save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
+  OCTINTERP_API bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -195,9 +200,9 @@ public:
                      skip, flt_fmt);
   }
 
-  mxArray * as_mxArray (void) const;
+  OCTINTERP_API mxArray * as_mxArray (bool interleaved) const;
 
-  octave_value map (unary_mapper_t umap) const;
+  OCTINTERP_API octave_value map (unary_mapper_t umap) const;
 
 private:
 

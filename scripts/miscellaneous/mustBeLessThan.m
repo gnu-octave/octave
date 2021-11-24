@@ -69,7 +69,7 @@ endfunction
 
 %!error <Invalid call> mustBeLessThan ()
 %!error <Invalid call> mustBeLessThan (1)
-%!error <Invalid call> mustBeLessThan (1,2,3)
+%!error <called with too many inputs> mustBeLessThan (1, 2, 3)
 %!error <must be less than 0> mustBeLessThan (1, 0)
 %!error <must be less than 1> mustBeLessThan (1, 1)
 %!error <must be less than Inf> mustBeLessThan (Inf, Inf)

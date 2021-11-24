@@ -61,21 +61,8 @@ die "mk-builtins.pl: one of --header or --source must be specified" if (! $make_
 
 if ($make_header)
 {
-  print "// DO NOT EDIT!  Generated automatically by mk-builtins.pl.
-
-#if ! defined (octave_builtin_defun_decls_h)
-#define octave_builtin_defun_decls_h 1
-
-#include \"octave-config.h\"
-
-#include \"ovl.h\"
-
-namespace octave
-{
-  class interpreter;
-}
-
-";
+  @method_names = ();
+  @fcn_names = ();
 
   while ($file = shift (@ARGV))
   {
@@ -92,10 +79,10 @@ namespace octave
 
     while (<$fh>)
     {
-      if (/^[ \t]*DEF(CONSTFUN|CONSTMETHOD|METHOD|UN)[ \t]*\( *([^ ,]*).*$/)
+      if (/^[ \t]*DEF(METHOD|UN)[ \t]*\( *([^ ,]*).*$/)
       {
         $name = "F$2";
-        $is_method = ($1 eq "METHOD" || $1 eq "CONSTMETHOD");
+        $is_method = ($1 eq "METHOD");
       }
       elsif (/^[ \t]*DEF(METHOD|UN)X[ \t]*\( *"[^"]*" *, *([^ ,]*).*$/)
       {
@@ -107,15 +94,11 @@ namespace octave
       {
         if ($is_method)
         {
-          print "extern OCTINTERP_API octave_value_list
-$name (octave::interpreter&, const octave_value_list& = octave_value_list (), int = 0);
-";
+          push (@method_names, $name);
         }
         else
         {
-          print "extern OCTINTERP_API octave_value_list
-$name (const octave_value_list& = octave_value_list (), int = 0);
-";
+          push (@fcn_names, $name);
         }
 
         $name = "";
@@ -124,7 +107,79 @@ $name (const octave_value_list& = octave_value_list (), int = 0);
     }
   }
 
-  print "#endif\n";
+  print "// DO NOT EDIT!  Generated automatically by mk-builtins.pl.
+
+#if ! defined (octave_builtin_defun_decls_h)
+#define octave_builtin_defun_decls_h 1
+
+#include \"octave-config.h\"
+
+#include \"ovl.h\"
+
+OCTAVE_NAMESPACE_BEGIN
+
+class interpreter;
+
+";
+
+  if ($#method_names)
+  {
+    print "// Methods\n\n";
+  }
+
+  foreach $name (sort (@method_names))
+  {
+    print "extern OCTINTERP_API octave_value_list
+$name (octave::interpreter&, const octave_value_list& = octave_value_list (), int = 0);
+
+";
+  }
+
+  if ($#fcn_names)
+  {
+    print "// Functions\n\n";
+  }
+
+  foreach $name (sort (@fcn_names))
+  {
+    print "extern OCTINTERP_API octave_value_list
+$name (const octave_value_list& = octave_value_list (), int = 0);
+
+";
+  }
+
+  print "\nOCTAVE_NAMESPACE_END\n";
+
+  print "\n#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)\n\n";
+
+  foreach $name (sort (@method_names))
+  {
+    print "OCTAVE_DEPRECATED (7, \"use 'octave::$name' instead\")
+inline octave_value_list
+$name (octave::interpreter& interp, const octave_value_list& args = octave_value_list (), int nargout = 0)
+{
+  return octave::$name (interp, args, nargout);
+}
+
+";
+  }
+
+  foreach $name (sort (@fcn_names))
+  {
+    print "OCTAVE_DEPRECATED (7, \"use 'octave::$name' instead\")
+inline octave_value_list
+$name (const octave_value_list& args = octave_value_list (), int nargout = 0)
+{
+  return octave::$name (args, nargout);
+}
+
+";
+  }
+
+  ## end OCTAVE_PROVIDE_DEPRECATED_SYMBOLS block
+  print "\n\n#endif\n";
+
+  print "\n#endif\n";
 }
 elsif ($make_source)
 {
@@ -191,13 +246,6 @@ namespace octave
         $type = "fun";
         $fname = "$3";
         $name = "$2";
-      }
-      elsif ($line =~ /^ *DEFCONST(FUN|METHOD) *\( *([^ ,]*) *,.*$/)
-      {
-        $type = "fun";
-        $fname = "F$2";
-        $name = "$2";
-        $const_param = ", true";
       }
       elsif ($line =~ /^ *DEFALIAS *\( *([^ ,]*) *, *([^ )]*) *\).*$/)
       {

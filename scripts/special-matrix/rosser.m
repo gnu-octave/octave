@@ -33,10 +33,6 @@
 
 function retval = rosser ()
 
-  if (nargin != 0)
-    print_usage ();
-  endif
-
   retval = [611,   196,  -192,   407,    -8,   -52,   -49,    29;
             196,   899,   113,  -192,   -71,   -43,    -8,   -44;
            -192,   113,   899,   196,    61,    49,     8,    52;
@@ -52,4 +48,4 @@ endfunction
 %!assert (size (rosser ()), [8,8])
 %!assert (rosser ()([1, end]), [611, 99])
 
-%!error (rosser (1))
+%!error rosser (1)

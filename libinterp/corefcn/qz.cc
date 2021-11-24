@@ -57,6 +57,8 @@
 #  include "pr-output.h"
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 // FIXME: Matlab does not produce lambda as the first output argument.
 // Compatibility problem?
 
@@ -162,9 +164,9 @@ half-plane
 @end enumerate
 
 Note: @code{qz} performs permutation balancing, but not scaling
-(@pxref{XREFbalance,,balance}), which may be lead to less accurate results than
-@code{eig}.  The order of output arguments was selected for compatibility with
-@sc{matlab}.
+(@pxref{XREFbalance,,@code{balance}}), which may be lead to less accurate
+results than @code{eig}.  The order of output arguments was selected for
+compatibility with @sc{matlab}.
 @seealso{eig, gsvd, balance, chol, hess, lu, qr, qzhess, schur}
 @end deftypefn */)
 {
@@ -241,8 +243,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
 
   // Matrix A: check dimensions.
-  F77_INT nn = octave::to_f77_int (args(0).rows ());
-  F77_INT nc = octave::to_f77_int (args(0).columns ());
+  F77_INT nn = to_f77_int (args(0).rows ());
+  F77_INT nc = to_f77_int (args(0).columns ());
 
 #if defined (DEBUG)
   octave_stdout << "Matrix A dimensions: (" << nn << ',' << nc << ')'
@@ -271,11 +273,11 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
 
   // Extract argument 2 (bb, or cbb if complex).
-  F77_INT b_nr = octave::to_f77_int (args(1).rows ());
-  F77_INT b_nc = octave::to_f77_int (args(1).columns ());
+  F77_INT b_nr = to_f77_int (args(1).rows ());
+  F77_INT b_nc = to_f77_int (args(1).columns ());
 
   if (nn != b_nc || nn != b_nr)
-    err_nonconformant ();
+    ::err_nonconformant ();
 
   Matrix bb;
   ComplexMatrix cbb;
@@ -409,7 +411,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       // Complex case.
 
       // The QR decomposition of cbb.
-      octave::math::qr<ComplexMatrix> cbqr (cbb);
+      math::qr<ComplexMatrix> cbqr (cbb);
       // The R matrix of QR decomposition for cbb.
       cbb = cbqr.R ();
       // (Q*)caa for following work.
@@ -477,7 +479,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
 
       // Compute the QR factorization of bb.
-      octave::math::qr<Matrix> bqr (bb);
+      math::qr<Matrix> bqr (bb);
 
 #if defined (DEBUG)
       octave_stdout << "qz: qr (bb) done; now performing qz decomposition"
@@ -687,7 +689,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
               if (betar(i) != 0)
                 tmp(i) = Complex (alphar(i), alphai(i)) / betar(i);
               else
-                tmp(i) = octave::numeric_limits<double>::Inf ();
+                tmp(i) = numeric_limits<double>::Inf ();
             }
 
           gev = tmp;
@@ -950,3 +952,5 @@ Note: @code{qz} performs permutation balancing, but not scaling
 %! assert (abs (lambda(1) < 1));
 %! assert (all (abs (lambda(2:4)) >= 1));
 */
+
+OCTAVE_NAMESPACE_END

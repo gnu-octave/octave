@@ -78,16 +78,19 @@ struct control_params
   double tolobj;
 };
 
-int
+static int
 glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       double *a, double *b, char *ctype, int *freeLB, double *lb,
       int *freeUB, double *ub, int *vartype, int isMIP, int lpsolver,
-      int save_pb, int scale, const control_params *par,
-      double *xmin, double *fmin, int *status,
-      double *lambda, double *redcosts, double *time)
+      int save_pb, int scale, const control_params& par,
+      double *xmin, double& fmin, int& status,
+      double *lambda, double *redcosts, double& time)
 {
   int typx = 0;
   int errnum = 0;
+
+  time = 0.0;
+  status = -1;    // Initialize status to "bad" value
 
   clock_t t_start = clock ();
 
@@ -178,34 +181,34 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     }
 
   // scale the problem data
-  if (! par->presol || lpsolver != 1)
+  if (! par.presol || lpsolver != 1)
     glp_scale_prob (lp, scale);
 
   // build advanced initial basis (if required)
-  if (lpsolver == 1 && ! par->presol)
+  if (lpsolver == 1 && ! par.presol)
     glp_adv_basis (lp, 0);
 
   // For MIP problems without a presolver, a first pass with glp_simplex
   // is required
   if ((! isMIP && lpsolver == 1)
-      || (isMIP && ! par->presol))
+      || (isMIP && ! par.presol))
     {
       glp_smcp smcp;
       glp_init_smcp (&smcp);
-      smcp.msg_lev = par->msglev;
-      smcp.meth = par->dual;
-      smcp.pricing = par->price;
-      smcp.r_test = par->rtest;
-      smcp.tol_bnd = par->tolbnd;
-      smcp.tol_dj = par->toldj;
-      smcp.tol_piv = par->tolpiv;
-      smcp.obj_ll = par->objll;
-      smcp.obj_ul = par->objul;
-      smcp.it_lim = par->itlim;
-      smcp.tm_lim = par->tmlim;
-      smcp.out_frq = par->outfrq;
-      smcp.out_dly = par->outdly;
-      smcp.presolve = par->presol;
+      smcp.msg_lev = par.msglev;
+      smcp.meth = par.dual;
+      smcp.pricing = par.price;
+      smcp.r_test = par.rtest;
+      smcp.tol_bnd = par.tolbnd;
+      smcp.tol_dj = par.toldj;
+      smcp.tol_piv = par.tolpiv;
+      smcp.obj_ll = par.objll;
+      smcp.obj_ul = par.objul;
+      smcp.it_lim = par.itlim;
+      smcp.tm_lim = par.tmlim;
+      smcp.out_frq = par.outfrq;
+      smcp.out_dly = par.outdly;
+      smcp.presolve = par.presol;
       errnum = glp_simplex (lp, &smcp);
     }
 
@@ -213,15 +216,15 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     {
       glp_iocp iocp;
       glp_init_iocp (&iocp);
-      iocp.msg_lev = par->msglev;
-      iocp.br_tech = par->branch;
-      iocp.bt_tech = par->btrack;
-      iocp.tol_int = par->tolint;
-      iocp.tol_obj = par->tolobj;
-      iocp.tm_lim = par->tmlim;
-      iocp.out_frq = par->outfrq;
-      iocp.out_dly = par->outdly;
-      iocp.presolve = par->presol;
+      iocp.msg_lev = par.msglev;
+      iocp.br_tech = par.branch;
+      iocp.bt_tech = par.btrack;
+      iocp.tol_int = par.tolint;
+      iocp.tol_obj = par.tolobj;
+      iocp.tm_lim = par.tmlim;
+      iocp.out_frq = par.outfrq;
+      iocp.out_dly = par.outdly;
+      iocp.presolve = par.presol;
       errnum = glp_intopt (lp, &iocp);
     }
 
@@ -229,7 +232,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     {
       glp_iptcp iptcp;
       glp_init_iptcp (&iptcp);
-      iptcp.msg_lev = par->msglev;
+      iptcp.msg_lev = par.msglev;
       errnum = glp_interior (lp, &iptcp);
     }
 
@@ -237,20 +240,20 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     {
       if (isMIP)
         {
-          *status = glp_mip_status (lp);
-          *fmin = glp_mip_obj_val (lp);
+          status = glp_mip_status (lp);
+          fmin = glp_mip_obj_val (lp);
         }
       else
         {
           if (lpsolver == 1)
             {
-              *status = glp_get_status (lp);
-              *fmin = glp_get_obj_val (lp);
+              status = glp_get_status (lp);
+              fmin = glp_get_obj_val (lp);
             }
           else
             {
-              *status = glp_ipt_status (lp);
-              *fmin = glp_ipt_obj_val (lp);
+              status = glp_ipt_status (lp);
+              fmin = glp_ipt_obj_val (lp);
             }
         }
 
@@ -290,7 +293,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
         }
     }
 
-  *time = (clock () - t_start) / CLOCKS_PER_SEC;
+  time = (clock () - t_start) / CLOCKS_PER_SEC;
 
   glp_delete_prob (lp);
   // Request that GLPK free all memory resources.
@@ -303,6 +306,8 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 }
 
 #endif
+
+OCTAVE_NAMESPACE_BEGIN
 
 #define OCTAVE_GLPK_GET_REAL_PARAM(NAME, VAL)                           \
   do                                                                    \
@@ -427,10 +432,10 @@ Undocumented internal function.
   Array<int> freeLB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
-      if (octave::math::isinf (lb[i]))
+      if (math::isinf (lb[i]))
         {
           freeLB(i) = 1;
-          lb[i] = -octave::numeric_limits<double>::Inf ();
+          lb[i] = -numeric_limits<double>::Inf ();
         }
       else
         freeLB(i) = 0;
@@ -448,10 +453,10 @@ Undocumented internal function.
   Array<int> freeUB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
-      if (octave::math::isinf (ub[i]))
+      if (math::isinf (ub[i]))
         {
           freeUB(i) = 1;
-          ub[i] = octave::numeric_limits<double>::Inf ();
+          ub[i] = numeric_limits<double>::Inf ();
         }
       else
         freeUB(i) = 0;
@@ -602,16 +607,17 @@ Undocumented internal function.
   double fmin = octave_NA;
   ColumnVector lambda (mrowsA, octave_NA);
   ColumnVector redcosts (mrowsc, octave_NA);
-  double time;
-  int status;
+
+  double time = 0.0;
+  int status = -1;
 
   int errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
                      cn.fortran_vec (), a.fortran_vec (), b, ctype,
                      freeLB.fortran_vec (), lb, freeUB.fortran_vec (),
                      ub, vartype.fortran_vec (), isMIP, lpsolver,
-                     save_pb, scale, &par, xmin.fortran_vec (), &fmin,
-                     &status, lambda.fortran_vec (),
-                     redcosts.fortran_vec (), &time);
+                     save_pb, scale, par, xmin.fortran_vec (), fmin,
+                     status, lambda.fortran_vec (),
+                     redcosts.fortran_vec (), time);
 
   octave_scalar_map extra;
 
@@ -639,3 +645,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

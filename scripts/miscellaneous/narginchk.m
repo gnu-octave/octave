@@ -43,7 +43,7 @@
 function narginchk (minargs, maxargs)
 
   if (nargin != 2)
-    print_usage;
+    print_usage ();
   elseif (! isnumeric (minargs) || ! isscalar (minargs))
     error ("narginchk: MINARGS must be a numeric scalar");
   elseif (! isnumeric (maxargs) || ! isscalar (maxargs))

@@ -184,14 +184,14 @@ endfunction
 
 ## extra parameters
 %!assert (quadl (@(x,a,b) sin (a + b*x), 0, 1, [], [], 2, 3),
-%!        cos(2)/3 - cos(5)/3, 1e-6)
+%!        cos (2)/3 - cos (5)/3, 1e-6)
 
 ## test different tolerances.
 %!test
 %! [q, nfun1] = quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.5, []);
-%! assert (q, (60 + sin(4) - sin(64))/12, 0.5);
+%! assert (q, (60 + sin (4) - sin (64))/12, 0.5);
 %! [q, nfun2] = quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.1, []);
-%! assert (q, (60 + sin(4) - sin(64))/12, 0.1);
+%! assert (q, (60 + sin (4) - sin (64))/12, 0.1);
 %! assert (nfun2 > nfun1);
 
 %!test  # test single input/output
@@ -200,8 +200,8 @@ endfunction
 %! assert (class (quadl (@sin, 0, single (1))), "single");
 
 ## Test input validation
-%!error quadl ()
-%!error quadl (@sin)
-%!error quadl (@sin,1)
+%!error <Invalid call> quadl ()
+%!error <Invalid call> quadl (@sin)
+%!error <Invalid call> quadl (@sin,1)
 %!error <TOL must be a scalar> quadl (@sin,0,1, ones (2,2))
 %!error <TOL must be .* .=0> quadl (@sin,0,1, -1)

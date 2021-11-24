@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include <map>
+#include <set>
 #include <stack>
 #include <string>
 
@@ -69,10 +70,11 @@ extern OCTINTERP_API bool octave_initialized;
 
 #include "oct-time.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class profiler;
   class child_list;
+  class push_parser;
 
   // The time we last time we changed directories.
   extern sys::time Vlast_chdir_time;
@@ -147,6 +149,17 @@ namespace octave
 
     void initialize (void);
 
+    // Note: GET_LINE_AND_EVAL is only used by new experimental terminal
+    // widget.
+
+    void get_line_and_eval (void);
+
+    // Parse a line of input.  If input ends at a complete statement
+    // boundary, execute the resulting parse tree.  Useful to handle
+    // parsing user input when running in server mode.
+
+    void parse_and_execute (const std::string& input, bool& incomplete_parse);
+
     // Initialize the interpreter (if not already done by an explicit
     // call to initialize), execute startup files, --eval option code,
     // script files, and/or interactive commands.
@@ -154,6 +167,8 @@ namespace octave
     int execute (void);
 
     void shutdown (void);
+
+    bool server_mode (void) const { return m_evaluator.server_mode (); }
 
     bool interactive (void) const
     {
@@ -180,6 +195,16 @@ namespace octave
       m_verbose = flag;
     }
 
+    void traditional (bool flag)
+    {
+      m_traditional = flag;
+    }
+
+    bool traditional (void) const
+    {
+      return m_traditional;
+    }
+
     void inhibit_startup_message (bool flag)
     {
       m_inhibit_startup_message = flag;
@@ -193,6 +218,21 @@ namespace octave
     bool initialized (void) const
     {
       return m_initialized;
+    }
+
+    void interrupt_all_in_process_group (bool b)
+    {
+      m_interrupt_all_in_process_group = b;
+    }
+
+    bool interrupt_all_in_process_group (void) const
+    {
+      return m_interrupt_all_in_process_group;
+    }
+
+    application *get_app_context (void)
+    {
+      return m_app_context;
     }
 
     display_info& get_display_info (void)
@@ -444,7 +484,40 @@ namespace octave
 
     std::list<std::string> autoloaded_functions (void) const;
 
-    void handle_exception (const execution_exception& e);
+    void interrupt (void);
+
+    // Pause interpreter execution at the next available statement and
+    // enter the debugger.
+    void pause (void);
+
+    // Exit debugger or stop execution and return to the top-level REPL
+    // or server loop.
+    void stop (void);
+
+    // Add EXPR to the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    void add_debug_watch_expression (const std::string& expr);
+
+    // Remove EXPR from the set of expressions that may be evaluated
+    // when the debugger stops at a breakpoint.
+    void remove_debug_watch_expression (const std::string& expr);
+
+    // Clear the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    void clear_debug_watch_expressions (void);
+
+    // Return the set of expressions that may be evaluated when the
+    // debugger stops at a breakpoint.
+    std::set<std::string> debug_watch_expressions (void) const;
+
+    // Resume interpreter execution if paused.
+    void resume (void);
+
+    // Provided for convenience.  Will be removed once we eliminate the
+    // old terminal widget.
+    bool experimental_terminal_widget (void) const;
+
+    void handle_exception (const execution_exception& ee);
 
     void recover_from_exception (void);
 
@@ -465,25 +538,33 @@ namespace octave
 
     bool remove_atexit_fcn (const std::string& fname);
 
-    OCTAVE_DEPRECATED (6, "use interpreter::add_atexit_fcn member function instead")
-    static void add_atexit_function (const std::string& fname);
-
-    OCTAVE_DEPRECATED (6, "use interpreter::remove_atexit_fcn member function instead")
-    static bool remove_atexit_function (const std::string& fname);
-
-    static interpreter * the_interpreter (void) { return instance; }
-
   private:
 
-    // The interpreter instance;  Currently it is only possible to
-    // have one, so OCTAVE_THREAD_LOCAL will normally be defined to be
-    // empty.  Eventually we would like to allow multiple interpreters
-    // to be active at once, but they will still be limited to one per
-    // thread.  When that is possible, OCTAVE_THREAD_LOCAL can be
-    // replaced by the C++ thread_local keyword.  For now, use a macro
-    // to allow experimenting with thread_local storage.
+    // Remove when corresponding public deprecated function is removed.
+    static void add_atexit_function_deprecated (const std::string& fname);
 
-    OCTAVE_THREAD_LOCAL static interpreter *instance;
+    // Remove when corresponding public deprecated function is removed.
+    static bool remove_atexit_function_deprecated (const std::string& fname);
+
+  public:
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+    OCTAVE_DEPRECATED (6, "use interpreter::add_atexit_fcn member function instead")
+    static void add_atexit_function (const std::string& fname)
+    {
+      add_atexit_function_deprecated (fname);
+    }
+
+    OCTAVE_DEPRECATED (6, "use interpreter::remove_atexit_fcn member function instead")
+    static bool remove_atexit_function (const std::string& fname)
+    {
+      return remove_atexit_function_deprecated (fname);
+    }
+    #endif
+
+    static interpreter * the_interpreter (void) { return m_instance; }
+
+  private:
 
     void display_startup_message (void) const;
 
@@ -495,7 +576,25 @@ namespace octave
 
     int main_loop (void);
 
+    int server_loop (void);
+
     void execute_atexit_fcns (void);
+
+    void maximum_braindamage (void);
+
+    void execute_pkg_add (const std::string& dir);
+
+    //--------
+
+    // The interpreter instance;  Currently it is only possible to
+    // have one, so OCTAVE_THREAD_LOCAL will normally be defined to be
+    // empty.  Eventually we would like to allow multiple interpreters
+    // to be active at once, but they will still be limited to one per
+    // thread.  When that is possible, OCTAVE_THREAD_LOCAL can be
+    // replaced by the C++ thread_local keyword.  For now, use a macro
+    // to allow experimenting with thread_local storage.
+
+    OCTAVE_THREAD_LOCAL static interpreter *m_instance;
 
     application *m_app_context;
 
@@ -554,11 +653,15 @@ namespace octave
 
     bool m_verbose;
 
+    bool m_traditional;
+
     bool m_inhibit_startup_message;
 
     bool m_load_path_initialized;
 
     bool m_history_initialized;
+
+    bool m_interrupt_all_in_process_group;
 
     bool m_cancel_quit;
 
@@ -567,11 +670,8 @@ namespace octave
     bool m_executing_atexit;
 
     bool m_initialized;
-
-    void maximum_braindamage (void);
-
-    void execute_pkg_add (const std::string& dir);
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

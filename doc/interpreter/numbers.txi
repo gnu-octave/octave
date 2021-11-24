@@ -426,9 +426,9 @@ defines @var{y} to be of type @code{matrix} and occupies 88 bytes of
 memory.
 
 This space saving optimization may be disabled using the function
-@dfn{disable_range}.
+@dfn{optimize_range}.
 
-@DOCSTRING(disable_range)
+@DOCSTRING(optimize_range)
 
 Note that the upper (or lower, if the increment is negative) bound on
 the range is not always included in the set of values, and that ranges

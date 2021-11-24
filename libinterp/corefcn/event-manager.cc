@@ -27,8 +27,11 @@
 #  include "config.h"
 #endif
 
+#include <iostream>
+
 #include "builtin-defun-decls.h"
 #include "cmd-edit.h"
+#include "cmd-hist.h"
 #include "defun.h"
 #include "event-manager.h"
 #include "interpreter.h"
@@ -39,8 +42,10 @@
 #include "pager.h"
 #include "syminfo.h"
 
-namespace octave
-{
+#include "quit.h"
+
+OCTAVE_NAMESPACE_BEGIN
+
   static int readline_event_hook (void)
   {
     event_manager& evmgr = __get_event_manager__ ("octave_readline_hook");
@@ -50,17 +55,28 @@ namespace octave
     return 0;
   }
 
-  event_manager::event_manager (interpreter& interp)
-    : m_interpreter (interp), instance (nullptr),
-      event_queue_mutex (new mutex ()), gui_event_queue (),
-      debugging (false), link_enabled (false)
+  void interpreter_events::display_exception (const execution_exception& ee,
+                                              bool beep)
   {
+    if (beep)
+      std::cerr << "\a";
+
+    ee.display (std::cerr);
+  }
+
+  event_manager::event_manager (interpreter& interp)
+    : m_event_queue_mutex (new mutex ()), m_gui_event_queue (),
+      m_debugging (false), m_link_enabled (true),
+      m_interpreter (interp), m_instance (new interpreter_events ()),
+      m_qt_event_handlers ()
+  {
+    push_event_queue ();
     command_editor::add_event_hook (readline_event_hook);
   }
 
   event_manager::~event_manager (void)
   {
-    delete event_queue_mutex;
+    delete m_event_queue_mutex;
   }
 
   // Programming Note: It is possible to disable the link without deleting
@@ -75,15 +91,15 @@ namespace octave
     if (! obj)
       disable ();
 
-    instance = obj;
+    m_instance = obj;
   }
 
   bool event_manager::enable (void)
   {
-    bool retval = link_enabled;
+    bool retval = m_link_enabled;
 
-    if (instance)
-      link_enabled = true;
+    if (m_instance)
+      m_link_enabled = true;
     else
       warning ("event_manager: must have connected link to enable");
 
@@ -97,11 +113,11 @@ namespace octave
         if (disable_flag)
           disable ();
 
-        event_queue_mutex->lock ();
+        m_event_queue_mutex->lock ();
+        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+        m_event_queue_mutex->unlock ();
 
-        gui_event_queue.run ();
-
-        event_queue_mutex->unlock ();
+        evq->run ();
       }
   }
 
@@ -109,11 +125,50 @@ namespace octave
   {
     if (enabled ())
       {
-        event_queue_mutex->lock ();
+        m_event_queue_mutex->lock ();
+        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+        m_event_queue_mutex->unlock ();
 
-        gui_event_queue.discard ();
+        evq->discard ();
+      }
+  }
 
-        event_queue_mutex->unlock ();
+  void event_manager::push_event_queue (void)
+  {
+    std::shared_ptr<event_queue> evq (new event_queue ());
+    m_gui_event_queue.push (evq);
+  }
+
+  void event_manager::pop_event_queue (void)
+  {
+    // FIXME: Should we worry about the possibility of events remaining
+    // in the queue when we pop back to the previous queue?  If so, then
+    // we will probably want to push them on to the front of the
+    // previous queue so they will be executed before any other events
+    // that were in the previous queue.  This case could happen if
+    // graphics callback functions were added to the event queue during a
+    // debug session just after a dbcont command was added but before it
+    // executed and brought us here, for example.
+
+    std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+    m_gui_event_queue.pop ();
+  }
+
+  void event_manager::post_event (const fcn_callback& fcn)
+  {
+    if (enabled ())
+      {
+        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+        evq->add (fcn);
+      }
+  }
+
+  void event_manager::post_event (const meth_callback& meth)
+  {
+    if (enabled ())
+      {
+        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+        evq->add (std::bind (meth, std::ref (m_interpreter)));
       }
   }
 
@@ -123,10 +178,49 @@ namespace octave
       {
         tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-        instance->set_workspace (tw.at_top_level (), debugging,
+        m_instance->set_workspace (tw.at_top_level (), m_debugging,
                                  tw.get_symbol_info (), true);
       }
   }
+
+  void event_manager::set_history (void)
+  {
+    if (enabled ())
+      m_instance->set_history (command_history::list ());
+  }
+
+// FIXME: Should the following function be __event_manager_desktop__
+// with the desktop function implemented in a .m file, similar to the
+// way the UI* functions work?
+
+DEFMETHOD (desktop, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} desktop ()
+If running in command-line mode, start the GUI desktop.
+@end deftypefn */)
+{
+  if (interp.experimental_terminal_widget ())
+    {
+      if (! application::is_gui_running ())
+        {
+          // FIXME: Currently, the following action is queued and
+          // executed in a Qt event loop and we return immediately to
+          // the command prompt where additional commands may be
+          // executed.  Is that what should happen?  Or should we be
+          // waiting until the GUI exits to return to the command
+          // prompt, similar to the way the UI* functions work?
+
+          event_manager& evmgr = interp.get_event_manager ();
+
+          evmgr.start_gui ();
+        }
+      else
+        warning ("GUI desktop is already running");
+    }
+  else
+    error ("desktop function requires new experimental terminal widget");
+
+  return ovl ();
 }
 
 DEFMETHOD (__event_manager_enabled__, interp, , ,
@@ -135,9 +229,20 @@ DEFMETHOD (__event_manager_enabled__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.enabled ());
+}
+
+DEFMETHOD (__event_manager_have_dialogs__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_have_dialogs__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  event_manager& evmgr = interp.get_event_manager ();
+
+  return ovl (evmgr.have_dialogs ());
 }
 
 DEFMETHOD (__event_manager_edit_file__, interp, args, ,
@@ -148,14 +253,14 @@ Undocumented internal function.
 {
   octave_value retval;
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   if (args.length () == 1)
     {
       std::string file
         = args(0).xstring_value ("first argument must be filename");
 
-      octave::flush_stdout ();
+      flush_stdout ();
 
       retval = evmgr.edit_file (file);
     }
@@ -164,7 +269,7 @@ Undocumented internal function.
       std::string file
         = args(0).xstring_value ("first argument must be filename");
 
-      octave::flush_stdout ();
+      flush_stdout ();
 
       retval = evmgr.prompt_new_edit_file (file);
     }
@@ -189,9 +294,9 @@ Undocumented internal function.
       std::string btn3 = args(4).xstring_value ("invalid arguments");
       std::string btndef = args(5).xstring_value ("invalid arguments");
 
-      octave::flush_stdout ();
+      flush_stdout ();
 
-      octave::event_manager& evmgr = interp.get_event_manager ();
+      event_manager& evmgr = interp.get_event_manager ();
 
       retval = evmgr.question_dialog (msg, title, btn1, btn2, btn3, btndef);
     }
@@ -201,11 +306,11 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_file_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})
+@deftypefn {} {} __event_manager_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{multiselect}, @var{pathname})
 Undocumented internal function.
 @end deftypefn */)
 {
-  if (args.length () != 6)
+  if (args.length () != 5)
     return ovl ();
 
   octave_value_list retval (3);
@@ -213,22 +318,21 @@ Undocumented internal function.
   const Array<std::string> flist = args(0).cellstr_value ();
   std::string title = args(1).string_value ();
   std::string filename = args(2).string_value ();
-  Matrix pos = args(3).matrix_value ();
-  std::string multi_on = args(4).string_value (); // on, off, create
-  std::string pathname = args(5).string_value ();
+  std::string multi_on = args(3).string_value (); // on, off, create
+  std::string pathname = args(4).string_value ();
 
   octave_idx_type nel;
 
-  octave::event_manager::filter_list filter_lst;
+  event_manager::filter_list filter_lst;
 
   for (octave_idx_type i = 0; i < flist.rows (); i++)
     filter_lst.push_back (std::make_pair (flist(i,0),
                                           (flist.columns () > 1
                                            ? flist(i,1) : "")));
 
-  octave::flush_stdout ();
+  flush_stdout ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   std::list<std::string> items_lst
     = evmgr.file_dialog (filter_lst, title, filename, pathname, multi_on);
@@ -307,9 +411,9 @@ Undocumented internal function.
   std::string ok_string = args(6).string_value ();
   std::string cancel_string = args(7).string_value ();
 
-  octave::flush_stdout ();
+  flush_stdout ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   std::pair<std::list<int>, int> result
     = evmgr.list_dialog (list_lst, mode, width, height, initial_lst,
@@ -360,9 +464,9 @@ Undocumented internal function.
   for (octave_idx_type i = 0; i < nel; i++)
     defaults_lst.push_back (tmp(i));
 
-  octave::flush_stdout ();
+  flush_stdout ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   std::list<std::string> items_lst
     = evmgr.input_dialog (prompt_lst, title, nr, nc, defaults_lst);
@@ -389,7 +493,7 @@ Undocumented internal function.
     {
       std::string icon_name = args(0).xstring_value ("invalid arguments");
 
-      octave::event_manager& evmgr = interp.get_event_manager ();
+      event_manager& evmgr = interp.get_event_manager ();
 
       retval = evmgr.get_named_icon (icon_name);
     }
@@ -403,7 +507,7 @@ DEFMETHOD (__event_manager_show_preferences__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.show_preferences ());
 }
@@ -414,7 +518,7 @@ DEFMETHOD (__event_manager_apply_preferences__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   return ovl (evmgr.apply_preferences ());
 }
@@ -437,9 +541,9 @@ Undocumented internal function.
   if (args.length () >= 2)
     value = args(1).string_value();
 
-  if (octave::application::is_gui_running ())
+  if (application::is_gui_running ())
     {
-      octave::event_manager& evmgr = interp.get_event_manager ();
+      event_manager& evmgr = interp.get_event_manager ();
 
       return ovl (evmgr.gui_preference (key, value));
     }
@@ -464,7 +568,7 @@ Undocumented internal function.
     error ("__event_manager_file_remove__: "
            "old and new name expected as arguments");
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.file_remove (old_name, new_name);
 
@@ -485,7 +589,7 @@ Undocumented internal function.
     error ("__event_manager_file_renamed__: "
            "first argument must be boolean for reload new named file");
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
   evmgr.file_renamed (load_new);
 
@@ -506,19 +610,14 @@ Open the variable @var{name} in the graphical Variable Editor.
 
   std::string name = args(0).string_value ();
 
-  if (! (Fisguirunning ())(0).is_true ())
-    warning ("openvar: GUI is not running, can't start Variable Editor");
-  else
-    {
-      octave_value val = interp.varval (name);
+  octave_value val = interp.varval (name);
 
-      if (val.is_undefined ())
-        error ("openvar: '%s' is not a variable", name.c_str ());
+  if (val.is_undefined ())
+    error ("openvar: '%s' is not a variable", name.c_str ());
 
-      octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
-      evmgr.edit_variable (name, val);
-    }
+  evmgr.edit_variable (name, val);
 
   return ovl ();
 }
@@ -529,25 +628,24 @@ Open the variable @var{name} in the graphical Variable Editor.
 %!error <NAME must be a string> openvar (1:10)
 */
 
-DEFMETHOD (__event_manager_show_doc__, interp, args, ,
+DEFMETHOD (__event_manager_show_terminal_window__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_show_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_show_terminal_window__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
   std::string file;
 
-  if (args.length () >= 1)
-    file = args(0).string_value();
+  event_manager& evmgr = interp.get_event_manager ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  evmgr.show_terminal_window ();
 
-  return ovl (evmgr.show_doc (file));
+  return ovl ();
 }
 
-DEFMETHOD (__event_manager_register_doc__, interp, args, ,
+DEFMETHOD (__event_manager_show_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_register_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_show_documentation__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -556,14 +654,14 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (evmgr.register_doc (file));
+  return ovl (evmgr.show_documentation (file));
 }
 
-DEFMETHOD (__event_manager_unregister_doc__, interp, args, ,
+DEFMETHOD (__event_manager_register_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_unregister_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_register_documentation__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -572,9 +670,135 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (evmgr.unregister_doc (file));
+  return ovl (evmgr.register_documentation (file));
+}
+
+DEFMETHOD (__event_manager_unregister_documentation__, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_unregister_documentation__ (@var{filename})
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string file;
+
+  if (args.length () >= 1)
+    file = args(0).string_value();
+
+  event_manager& evmgr = interp.get_event_manager ();
+
+  return ovl (evmgr.unregister_documentation (file));
+}
+
+DEFMETHOD (__event_manager_show_file_browser__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_file_browser__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_file_browser ();
+
+  return ovl ();
+}
+
+DEFMETHOD (__event_manager_show_command_history__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_command_history__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_command_history ();
+
+  return ovl ();
+}
+
+DEFMETHOD (__event_manager_show_workspace__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_workspace__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_workspace ();
+
+  return ovl ();
+}
+
+DEFMETHOD (__event_manager_show_community_news__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_community_news__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_community_news ();
+
+  return ovl ();
+}
+
+DEFMETHOD (__event_manager_show_release_notes__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_show_release_notes__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.show_release_notes ();
+
+  return ovl ();
+}
+
+DEFMETHOD (__event_manager_gui_status_update__, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_gui_status_update__ (@var{feature}, @var{status})
+Internal function for updating the status of some features in the GUI.
+@end deftypefn */)
+{
+  // This is currently a stub and should only be activated some
+  // interpreter action only implemented in m-files requires to update
+  // a status indicator in the gui. BUT: This internal function can
+  // be activated by the user leading to gui indicators not reflecting
+  // the real state of the related feature.
+  return ovl ();
+
+  std::string feature;
+  std::string status;
+
+  if (! (Fisguirunning ())(0).is_true ())
+    return ovl ();
+
+  if (args.length () < 2)
+    error ("__event_manager_gui_status_update__: two parameters required");
+  if (! (args(0).is_string ()))
+    error ("__event_manager_gui_status_update__: FEATURE must be a string");
+  if (! (args(1).is_string ()))
+    error ("__event_manager_gui_status_update__: STATUS must be a string");
+
+  feature = args(0).string_value ();
+  status = args(1).string_value ();
+
+  event_manager& evmgr = interp.get_event_manager ();
+
+  return ovl (evmgr.gui_status_update (feature, status));
+}
+
+DEFMETHOD (__event_manager_update_gui_lexer__, interp, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_update_gui_lexer__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  event_manager& evmgr = interp.get_event_manager ();
+
+  return ovl (evmgr.update_gui_lexer ());
 }
 
 DEFMETHOD (__event_manager_copy_image_to_clipboard__, interp, args, ,
@@ -588,7 +812,7 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.copy_image_to_clipboard (file);
   return ovl ();
 }
@@ -603,7 +827,7 @@ Show the GUI command history window and give it the keyboard focus.
   if (args.length () != 0)
     print_usage ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("history");
   return ovl ();
 }
@@ -618,7 +842,7 @@ Show the GUI command window and give it the keyboard focus.
   if (args.length () != 0)
     print_usage ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("command");
   return ovl ();
 }
@@ -633,7 +857,7 @@ Show the GUI file browser window and give it the keyboard focus.
   if (args.length () != 0)
     print_usage ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("filebrowser");
   return ovl ();
 }
@@ -648,7 +872,9 @@ Show the GUI workspace window and give it the keyboard focus.
   if (args.length () != 0)
     print_usage ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
   evmgr.focus_window ("workspace");
   return ovl ();
 }
+
+OCTAVE_NAMESPACE_END

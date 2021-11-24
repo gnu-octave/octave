@@ -38,6 +38,8 @@
 #include "sparse-xdiv.h"
 #include "ov-re-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // scalar by sparse matrix ops.
 
 DEFBINOP_OP (add, scalar, sparse_matrix, +)
@@ -85,7 +87,7 @@ DEFBINOP_FN (gt, scalar, sparse_matrix, mx_el_gt)
 DEFBINOP_FN (ne, scalar, sparse_matrix, mx_el_ne)
 
 DEFBINOP_OP (el_mul, scalar, sparse_matrix, *)
-DEFBINOP_FN (el_div, scalar, sparse_matrix, x_el_div)
+DEFBINOP_FN (el_div, scalar, sparse_matrix, elem_xdiv)
 DEFBINOP_FN (el_pow, scalar, sparse_matrix, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, sparse_matrix)
@@ -101,7 +103,7 @@ DEFBINOP_FN (el_or,  scalar, sparse_matrix, mx_el_or)
 
 DEFCATOP (s_sm, scalar, sparse_matrix)
 {
-  octave_scalar& v1 = dynamic_cast<octave_scalar&> (a1);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
   const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
   SparseMatrix tmp (1, 1, v1.scalar_value ());
   return octave_value (tmp.concat (v2.sparse_matrix_value (), ra_idx));
@@ -143,3 +145,5 @@ install_s_sm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_scalar, octave_sparse_matrix,
                       sparse_matrix_conv);
 }
+
+OCTAVE_NAMESPACE_END

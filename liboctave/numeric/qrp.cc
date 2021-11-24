@@ -50,6 +50,7 @@ namespace octave
     // Specialization.
 
     template <>
+    OCTAVE_API
     void
     qrp<Matrix>::init (const Matrix& a, type qr_type)
     {
@@ -96,28 +97,31 @@ namespace octave
       // indices only!)
 
       jpvt -= static_cast<F77_INT> (1);
-      p = PermMatrix (jpvt, true);
+      m_p = PermMatrix (jpvt, true);
 
       form (n, afact, tau, qr_type);
     }
 
     template <>
+    OCTAVE_API
     qrp<Matrix>::qrp (const Matrix& a, type qr_type)
-      : qr<Matrix> (), p ()
+      : qr<Matrix> (), m_p ()
     {
       init (a, qr_type);
     }
 
     template <>
+    OCTAVE_API
     RowVector
     qrp<Matrix>::Pvec (void) const
     {
-      Array<double> pa (p.col_perm_vec ());
+      Array<double> pa (m_p.col_perm_vec ());
       RowVector pv (MArray<double> (pa) + 1.0);
       return pv;
     }
 
     template <>
+    OCTAVE_API
     void
     qrp<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
     {
@@ -164,28 +168,31 @@ namespace octave
       // indices only!)
 
       jpvt -= static_cast<F77_INT> (1);
-      p = PermMatrix (jpvt, true);
+      m_p = PermMatrix (jpvt, true);
 
       form (n, afact, tau, qr_type);
     }
 
     template <>
+    OCTAVE_API
     qrp<FloatMatrix>::qrp (const FloatMatrix& a, type qr_type)
-      : qr<FloatMatrix> (), p ()
+      : qr<FloatMatrix> (), m_p ()
     {
       init (a, qr_type);
     }
 
     template <>
+    OCTAVE_API
     FloatRowVector
     qrp<FloatMatrix>::Pvec (void) const
     {
-      Array<float> pa (p.col_perm_vec ());
+      Array<float> pa (m_p.col_perm_vec ());
       FloatRowVector pv (MArray<float> (pa) + 1.0f);
       return pv;
     }
 
     template <>
+    OCTAVE_API
     void
     qrp<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
     {
@@ -240,28 +247,31 @@ namespace octave
       // indices only!)
 
       jpvt -= static_cast<F77_INT> (1);
-      p = PermMatrix (jpvt, true);
+      m_p = PermMatrix (jpvt, true);
 
       form (n, afact, tau, qr_type);
     }
 
     template <>
+    OCTAVE_API
     qrp<ComplexMatrix>::qrp (const ComplexMatrix& a, type qr_type)
-      : qr<ComplexMatrix> (), p ()
+      : qr<ComplexMatrix> (), m_p ()
     {
       init (a, qr_type);
     }
 
     template <>
+    OCTAVE_API
     RowVector
     qrp<ComplexMatrix>::Pvec (void) const
     {
-      Array<double> pa (p.col_perm_vec ());
+      Array<double> pa (m_p.col_perm_vec ());
       RowVector pv (MArray<double> (pa) + 1.0);
       return pv;
     }
 
     template <>
+    OCTAVE_API
     void
     qrp<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
     {
@@ -316,23 +326,25 @@ namespace octave
       // indices only!)
 
       jpvt -= static_cast<F77_INT> (1);
-      p = PermMatrix (jpvt, true);
+      m_p = PermMatrix (jpvt, true);
 
       form (n, afact, tau, qr_type);
     }
 
     template <>
+    OCTAVE_API
     qrp<FloatComplexMatrix>::qrp (const FloatComplexMatrix& a, type qr_type)
-      : qr<FloatComplexMatrix> (), p ()
+      : qr<FloatComplexMatrix> (), m_p ()
     {
       init (a, qr_type);
     }
 
     template <>
+    OCTAVE_API
     FloatRowVector
     qrp<FloatComplexMatrix>::Pvec (void) const
     {
-      Array<float> pa (p.col_perm_vec ());
+      Array<float> pa (m_p.col_perm_vec ());
       FloatRowVector pv (MArray<float> (pa) + 1.0f);
       return pv;
     }

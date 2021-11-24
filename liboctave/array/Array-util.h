@@ -66,45 +66,47 @@ extern OCTAVE_API octave_idx_type
 compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims);
 
 extern OCTAVE_API Array<octave_idx_type>
-conv_to_int_array (const Array<idx_vector>& a);
+conv_to_int_array (const Array<octave::idx_vector>& a);
 
-extern OCTAVE_API Array<idx_vector> conv_to_array (const idx_vector *tmp,
-                                                   const octave_idx_type len);
+extern OCTAVE_API Array<octave::idx_vector>
+conv_to_array (const octave::idx_vector *tmp, const octave_idx_type len);
 
-extern OCTAVE_API dim_vector freeze (Array<idx_vector>& ra_idx,
-                                     const dim_vector& dimensions,
-                                     int resize_ok);
+extern OCTAVE_API dim_vector
+freeze (Array<octave::idx_vector>& ra_idx, const dim_vector& dimensions,
+        int resize_ok);
 
 extern OCTAVE_API bool vector_equivalent (const dim_vector& dv);
 
-extern OCTAVE_API bool all_ok (const Array<idx_vector>& ra_idx);
+extern OCTAVE_API bool all_ok (const Array<octave::idx_vector>& ra_idx);
 
-extern OCTAVE_API bool any_orig_empty (const Array<idx_vector>& ra_idx);
+extern OCTAVE_API bool
+any_orig_empty (const Array<octave::idx_vector>& ra_idx);
 
-extern OCTAVE_API bool all_colon_equiv (const Array<idx_vector>& ra_idx,
-                                        const dim_vector& frozen_lengths);
+extern OCTAVE_API bool
+all_colon_equiv (const Array<octave::idx_vector>& ra_idx,
+                 const dim_vector& frozen_lengths);
 
 extern OCTAVE_API bool all_ones (const Array<octave_idx_type>& arr);
 
 extern OCTAVE_API Array<octave_idx_type>
-get_elt_idx (const Array<idx_vector>& ra_idx,
+get_elt_idx (const Array<octave::idx_vector>& ra_idx,
              const Array<octave_idx_type>& result_idx);
 
 extern OCTAVE_API Array<octave_idx_type> get_ra_idx (octave_idx_type idx,
                                                      const dim_vector& dims);
 
-extern OCTAVE_API dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
-                                                const dim_vector& rhdv);
+extern OCTAVE_API dim_vector
+zero_dims_inquire (const Array<octave::idx_vector>& ia, const dim_vector& rhdv);
 
-extern OCTAVE_API dim_vector zero_dims_inquire (const idx_vector& i,
-                                                const idx_vector& j,
-                                                const dim_vector& rhdv);
+extern OCTAVE_API dim_vector
+zero_dims_inquire (const octave::idx_vector& i, const octave::idx_vector& j,
+                   const dim_vector& rhdv);
 
-extern OCTAVE_API idx_vector sub2ind (const dim_vector& dv,
-                                      const Array<idx_vector>& idxa);
+extern OCTAVE_API octave::idx_vector
+sub2ind (const dim_vector& dv, const Array<octave::idx_vector>& idxa);
 
-extern OCTAVE_API Array<idx_vector> ind2sub (const dim_vector& dv,
-                                             const idx_vector& idx);
+extern OCTAVE_API Array<octave::idx_vector>
+ind2sub (const dim_vector& dv, const octave::idx_vector& idx);
 
 struct
 permute_vector

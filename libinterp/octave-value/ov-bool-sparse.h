@@ -87,9 +87,9 @@ public:
   octave_base_value * try_narrowing_conversion (void);
 
   // FIXME: Adapt idx_vector to allow sparse logical indexing without overflow!
-  idx_vector index_vector (bool /* require_integers */ = false) const
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
-    return idx_vector (matrix);
+    return octave::idx_vector (matrix);
   }
 
   builtin_type_t builtin_type (void) const { return btyp_bool; }
@@ -143,7 +143,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   // Mapper functions are converted to double for treatment
   octave_value map (unary_mapper_t umap) const

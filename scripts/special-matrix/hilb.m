@@ -60,7 +60,7 @@
 
 function retval = hilb (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! isscalar (n))
     error ("hilb: N must be a scalar integer");
@@ -77,6 +77,5 @@ endfunction
 %!assert (hilb (2), [1, 1/2; 1/2, 1/3])
 %!assert (hilb (3), [1, 1/2, 1/3; 1/2, 1/3, 1/4; 1/3, 1/4, 1/5])
 
-%!error hilb ()
-%!error hilb (1, 2)
+%!error <Invalid call> hilb ()
 %!error <N must be a scalar integer> hilb (ones (2))

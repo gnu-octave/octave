@@ -46,10 +46,9 @@
 
 function c = namedargs2cell (s)
 
-  if (nargin != 1 || nargout > 1)
+  if (nargin < 1)
     print_usage ();
-  endif
-  if (! isstruct (s) || ! isscalar (s))
+  elseif (! isstruct (s) || ! isscalar (s))
     error ("namedargs2cell: S must be a scalar structure");
   endif
 
@@ -66,6 +65,6 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> namedargs2cell ()
-%!error <Invalid call> namedargs2cell (1, 2)
+%!error <called with too many inputs> namedargs2cell (1, 2)
 %!error <S must be a scalar structure> namedargs2cell (true)
 %!error <S must be a scalar structure> namedargs2cell (struct ("name", {1, 2}))

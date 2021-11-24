@@ -1,5 +1,5 @@
 function s = Blork (bleek)
-% Test class.
+%% Test class.
 
   if (nargin == 1 && isa (bleek, 'Blork'))
     s = bleek;

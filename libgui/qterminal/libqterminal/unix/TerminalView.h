@@ -497,12 +497,6 @@ signals:
 
    void tripleClicked( const QString& text );
 
-   /**
-    * Emitted when focus changes
-    */
-   void set_global_shortcuts_signal (bool);
-
-
 protected:
     virtual void paintEvent( QPaintEvent * );
 

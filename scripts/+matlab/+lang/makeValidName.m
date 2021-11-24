@@ -65,102 +65,9 @@
 ## @seealso{iskeyword, isvarname, matlab.lang.makeUniqueStrings}
 ## @end deftypefn
 
-function [varname, ismodified] = makeValidName (str, varargin)
+function [varname, ismodified] = makeValidName (varargin)
 
-  if (nargin == 0 || nargout > 2)
-    print_usage ();
-  endif
-
-  if (! ischar (str) && ! iscellstr (str))
-    error ("makeValidName: STR must be a string or cellstr");
-  endif
-
-  if (mod (nargin - 1, 2) != 0)
-    error ("makeValidName: property/value options must occur in pairs");
-  endif
-
-  varname = cellstr (str);
-  ismodified = false (size (varname));
-  convert2char = ischar (str);
-  opts = struct ("replacementstyle", "underscore", "prefix", "x");
-
-  for i = 1:2:numel (varargin)
-    if (! ischar (varargin{i}))
-      error ("makeValidName: option argument must be a string");
-    endif
-    parameter = tolower (varargin{i});
-    value = varargin{i+1};
-    switch (parameter)
-      case "replacementstyle"
-        if (! ischar (value))
-          error ('makeValidName: "ReplacementStyle" value must be a string');
-        endif
-        value = tolower (value);
-        if (! any (strcmp (value, {"underscore", "delete", "hex"})))
-          error ('makeValidName: invalid "ReplacementStyle" value "%s"', value);
-        endif
-        opts.replacementstyle = value;
-
-      case "prefix"
-        if (! isvarname (value))
-          error ('makeValidName: invalid "Prefix" value "%s"', value);
-        endif
-        opts.prefix = value;
-
-      otherwise
-        error ('makeValidName: unknown property "%s"', parameter);
-    endswitch
-  endfor
-
-  for i = 1:numel (varname)
-    if (! isvarname (varname{i}))
-      ismodified(i) = true;
-
-      ## Remove leading and trailing whitespace
-      varname{i} = strtrim (varname{i});
-      if (isempty (varname{i}))
-        varname{i} = opts.prefix;
-      endif
-
-      ## Add prefix if input is a reserved keyword
-      if (iskeyword (varname{i}))
-        varname{i} = [opts.prefix, toupper(varname{i}(1)), varname{i}(2:end)];
-      endif
-
-      ## Change whitespace followed by lowercase letter to uppercase
-      idx = regexp (varname{i}, '\s[a-z]');
-      varname{i}(idx+1) = toupper (varname{i}(idx+1));
-
-      ## Remove any whitespace character
-      varname{i}(isspace (varname{i})) = "";
-
-      ## Add prefix if first character is not a letter or underscore
-      char1 = varname{i}(1);
-      if (! isalpha (char1) && char1 != "_")
-        varname{i} = [opts.prefix varname{i}];
-      endif
-
-      ## Replace non alphanumerics or underscores
-      idx = regexp (varname{i}, '[^0-9a-zA-Z_]');
-      switch (opts.replacementstyle)
-        case "underscore"
-          varname{i}(idx) = "_";
-
-        case "delete"
-          varname{i}(idx) = "";
-
-        case "hex"
-          for j = numel (idx):-1:1
-            varname{i} = strrep (varname{i}, varname{i}(idx(j)),
-                                 sprintf ("0x%02X",varname{i}(idx(j))));
-          endfor
-      endswitch
-    endif
-  endfor
-
-  if (convert2char)
-    varname = char (varname);
-  endif
+  [varname, ismodified] = __make_valid_name__ (varargin{:});
 
 endfunction
 
@@ -218,16 +125,16 @@ endfunction
 %!error matlab.lang.makeValidName ("for", "Prefix", "for")
 
 ## Test input validation
-%!error matlab.lang.makeValidName ()
+%!error <Invalid call> matlab.lang.makeValidName ()
 %!error <STR must be a string or cellstr> matlab.lang.makeValidName (42)
 %!error <options must occur in pairs> matlab.lang.makeValidName ("a", "opt1")
 %!error <option argument must be a string>
 %! matlab.lang.makeValidName ("a", 1, 2)
-%!error <"ReplacementStyle" value must be a string>
+%!error <'ReplacementStyle' value must be a string>
 %! matlab.lang.makeValidName ("a", "ReplacementStyle", 1);
-%!error <invalid "ReplacementStyle" value "foobar">
+%!error <invalid 'ReplacementStyle' value 'foobar'>
 %! matlab.lang.makeValidName ("a", "ReplacementStyle", "foobar");
-%!error <invalid "Prefix" value "1_">
+%!error <invalid 'Prefix' value '1_'>
 %! matlab.lang.makeValidName ("a", "Prefix", "1_");
-%!error <unknown property "foobar">
+%!error <unknown property 'foobar'>
 %! matlab.lang.makeValidName ("a", "foobar", 1);

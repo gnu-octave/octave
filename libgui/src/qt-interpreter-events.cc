@@ -27,6 +27,9 @@
 #  include "config.h"
 #endif
 
+#include <iostream>
+#include <sstream>
+
 #include <QDialog>
 #include <QDir>
 #include <QIcon>
@@ -118,16 +121,26 @@ namespace octave
     qRegisterMetaType<fcn_callback> ("fcn_callback");
     qRegisterMetaType<meth_callback> ("meth_callback");
 
-    connect (this, SIGNAL (confirm_shutdown_signal (void)),
-             this, SLOT (confirm_shutdown_octave (void)));
+    connect (this, &qt_interpreter_events::confirm_shutdown_signal,
+             this, &qt_interpreter_events::confirm_shutdown_octave);
 
-    connect (this, SIGNAL (get_named_icon_signal (const QString&)),
-             this, SLOT (get_named_icon_slot (const QString&)));
+    connect (this, &qt_interpreter_events::get_named_icon_signal,
+             this, &qt_interpreter_events::get_named_icon_slot);
 
-    connect (this,
-             SIGNAL (gui_preference_signal (const QString&, const QString&)),
-             this,
-             SLOT (gui_preference_slot (const QString&, const QString&)));
+    connect (this, &qt_interpreter_events::gui_preference_signal,
+             this, &qt_interpreter_events::gui_preference_slot);
+  }
+
+  void qt_interpreter_events::start_gui (bool gui_app)
+  {
+    if (m_octave_qobj.experimental_terminal_widget ())
+      emit start_gui_signal (gui_app);
+  }
+
+  void qt_interpreter_events::close_gui (void)
+  {
+    if (m_octave_qobj.experimental_terminal_widget ())
+      emit close_gui_signal ();
   }
 
   std::list<std::string>
@@ -246,9 +259,41 @@ namespace octave
     emit apply_new_settings ();
   }
 
-  void qt_interpreter_events::show_doc (const std::string& file)
+  void qt_interpreter_events::show_terminal_window (void)
   {
-    emit show_doc_signal (QString::fromStdString (file));
+    emit show_terminal_window_signal ();
+  }
+
+  bool qt_interpreter_events::show_documentation (const std::string& file)
+  {
+    emit show_documentation_signal (QString::fromStdString (file));
+
+    return true;
+  }
+
+  void qt_interpreter_events::show_file_browser (void)
+  {
+    emit show_file_browser_signal ();
+  }
+
+  void qt_interpreter_events::show_command_history (void)
+  {
+    emit show_command_history_signal ();
+  }
+
+  void qt_interpreter_events::show_workspace (void)
+  {
+    emit show_workspace_signal ();
+  }
+
+  void qt_interpreter_events::show_community_news (int serial)
+  {
+    emit show_community_news_signal (serial);
+  }
+
+  void qt_interpreter_events::show_release_notes (void)
+  {
+    emit show_release_notes_signal ();
   }
 
   bool qt_interpreter_events::edit_file (const std::string& file)
@@ -437,14 +482,57 @@ namespace octave
     emit execute_command_in_terminal_signal (QString::fromStdString (command));
   }
 
-  void qt_interpreter_events::register_doc (const std::string& file)
+  void qt_interpreter_events::register_documentation (const std::string& file)
   {
-    emit register_doc_signal (QString::fromStdString (file));
+    emit register_documentation_signal (QString::fromStdString (file));
   }
 
-  void qt_interpreter_events::unregister_doc (const std::string& file)
+  void qt_interpreter_events::unregister_documentation (const std::string& file)
   {
-    emit unregister_doc_signal (QString::fromStdString (file));
+    emit unregister_documentation_signal (QString::fromStdString (file));
+  }
+
+  void qt_interpreter_events::interpreter_output (const std::string& msg)
+  {
+    if (m_octave_qobj.experimental_terminal_widget ()
+        && m_octave_qobj.have_terminal_window ())
+      emit interpreter_output_signal (QString::fromStdString (msg));
+    else
+      {
+        // FIXME: is this the correct thing to do?
+        std::cout << msg;
+      }
+  }
+
+  void qt_interpreter_events::display_exception (const execution_exception& ee,
+                                                 bool beep)
+  {
+    if (m_octave_qobj.experimental_terminal_widget ()
+        && m_octave_qobj.have_terminal_window ())
+      {
+        std::ostringstream buf;
+        ee.display (buf);
+        emit interpreter_output_signal (QString::fromStdString (buf.str ()));
+      }
+    else
+      {
+        if (beep)
+          std::cerr << "\a";
+
+        ee.display (std::cerr);
+      }
+  }
+
+  void qt_interpreter_events::gui_status_update (const std::string& feature,
+                                                 const std::string& status)
+  {
+    emit gui_status_update_signal (QString::fromStdString (feature),
+                                   QString::fromStdString (status));
+  }
+
+  void qt_interpreter_events::update_gui_lexer (void)
+  {
+    emit update_gui_lexer_signal (true);
   }
 
   void qt_interpreter_events::directory_changed (const std::string& dir)
@@ -486,6 +574,11 @@ namespace octave
   void qt_interpreter_events::clear_workspace (void)
   {
     emit clear_workspace_signal ();
+  }
+
+  void qt_interpreter_events::update_prompt (const std::string& prompt)
+  {
+    emit update_prompt_signal (QString::fromStdString (prompt));
   }
 
   void qt_interpreter_events::set_history (const string_vector& hist)

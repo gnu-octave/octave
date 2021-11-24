@@ -31,7 +31,7 @@
 
 function y = atand (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -42,5 +42,4 @@ endfunction
 
 %!assert (atand (0:10:90), 180/pi * atan (0:10:90), -10*eps)
 
-%!error atand ()
-%!error atand (1, 2)
+%!error <Invalid call> atand ()

@@ -167,7 +167,7 @@ function retval = legendre (n, x, normalization)
 
   persistent warned_overflow = false;
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -311,9 +311,8 @@ endfunction
 %! assert (result, expected);
 
 ## Test input validation
-%!error legendre ()
-%!error legendre (1)
-%!error legendre (1,2,3,4)
+%!error <Invalid call> legendre ()
+%!error <Invalid call> legendre (1)
 %!error <must be a real non-negative integer> legendre (i, [-1, 0, 1])
 %!error <must be a real non-negative integer> legendre ([1, 2], [-1, 0, 1])
 %!error <must be a real non-negative integer> legendre (-1, [-1, 0, 1])

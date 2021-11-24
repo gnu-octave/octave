@@ -185,8 +185,8 @@ function movegui (varargin)
         if (fpos(2) > y(3))
           fpos(2) = y(3) - 30;
         endif
-        fpos(1) = max(fpos(1), 30);
-        fpos(2) = max(fpos(2), 30);
+        fpos(1) = max (fpos(1), 30);
+        fpos(2) = max (fpos(2), 30);
       otherwise
         error ("movegui: invalid position");
     endswitch

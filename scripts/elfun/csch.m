@@ -31,7 +31,7 @@
 
 function y = csch (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -45,5 +45,4 @@ endfunction
 %! v = [-i, i];
 %! assert (csch (x), v, sqrt (eps));
 
-%!error csch ()
-%!error csch (1, 2)
+%!error <Invalid call> csch ()

@@ -41,31 +41,31 @@ namespace octave
     public:
 
       hess (void)
-        : hess_mat (), unitary_hess_mat ()
+        : m_hess_mat (), m_unitary_hess_mat ()
       { }
 
       hess (const T& a)
-        : hess_mat (), unitary_hess_mat ()
+        : m_hess_mat (), m_unitary_hess_mat ()
       {
         init (a);
       }
 
       hess (const T& a, octave_idx_type& info)
-        : hess_mat (), unitary_hess_mat ()
+        : m_hess_mat (), m_unitary_hess_mat ()
       {
         info = init (a);
       }
 
       hess (const hess& a)
-        : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat)
+        : m_hess_mat (a.m_hess_mat), m_unitary_hess_mat (a.m_unitary_hess_mat)
       { }
 
       hess& operator = (const hess& a)
       {
         if (this != &a)
           {
-            hess_mat = a.hess_mat;
-            unitary_hess_mat = a.unitary_hess_mat;
+            m_hess_mat = a.m_hess_mat;
+            m_unitary_hess_mat = a.m_unitary_hess_mat;
           }
 
         return *this;
@@ -73,20 +73,20 @@ namespace octave
 
       ~hess (void) = default;
 
-      T hess_matrix (void) const { return hess_mat; }
+      T hess_matrix (void) const { return m_hess_mat; }
 
-      T unitary_hess_matrix (void) const { return unitary_hess_mat; }
+      T unitary_hess_matrix (void) const { return m_unitary_hess_mat; }
 
     private:
 
-      T hess_mat;
-      T unitary_hess_mat;
+      T m_hess_mat;
+      T m_unitary_hess_mat;
 
-      octave_idx_type init (const T& a);
+      OCTAVE_API octave_idx_type init (const T& a);
     };
 
     template <typename T>
-    extern std::ostream&
+    extern OCTAVE_API std::ostream&
     operator << (std::ostream& os, const hess<T>& a);
   }
 }

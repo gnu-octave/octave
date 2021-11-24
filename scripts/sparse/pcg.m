@@ -284,7 +284,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   b_norm = norm (b);
   if (b_norm == 0)
      if (n_arg_out < 2)
-       printf("The right hand side vector is all zero so pcg \n");
+       printf ("The right hand side vector is all zero so pcg \n");
        printf ("returned an all zero solution without iterating.\n");
      endif
      x_min = b;
@@ -293,7 +293,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
      resvec = 0;
      iter_min = 0;
      eigest = [NaN, NaN];
-     return
+     return;
   endif
 
   x = x_pr = x_min = x0;
@@ -319,7 +319,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   while (resvec(iter-1,1) > tol * b_norm && iter < maxit)
     if (iter == 2) # Check whether M1 or M2 are singular
       try
-        warning ("error","Octave:singular-matrix","local")
+        warning ("error","Octave:singular-matrix","local");
         z = feval (M1fun, r, varargin{:});
         z = feval (M2fun, z, varargin{:});
       catch
@@ -395,7 +395,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
       endif
     else
       eigest = [NaN, NaN];
-      warning ('pcg: eigenvalue estimate failed: matrix not positive definite?')
+      warning ('pcg: eigenvalue estimate failed: matrix not positive definite?');
     endif
     resvec(iter - 1, 2) = sqrt (r' * z);
     resvec  = resvec (1:(iter-1), :);
@@ -454,6 +454,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
         printf ("has relative residual %d \n", relres);
     endswitch
   endif
+
 endfunction
 
 

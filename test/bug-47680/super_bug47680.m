@@ -1,7 +1,7 @@
 classdef super_bug47680
   properties
     tag;
-  end
+  endproperties
   methods
     function obj = super_bug47680 (x)
       obj.tag = x;

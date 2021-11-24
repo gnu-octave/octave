@@ -44,6 +44,8 @@
 #include "ov.h"
 #include "pager.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (ccolamd, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} ccolamd (@var{S})
@@ -185,7 +187,7 @@ csymamd, amd, colamd, symamd, and other related orderings.
             octave_stdout << "knobs(2): " << User_knobs(1)
                           << ", rows with > max (16,"
                           << knobs[CCOLAMD_DENSE_ROW]
-                          << "*sqrt (size(A,2)))"
+                          << "*sqrt (columns(A)))"
                           << " entries removed\n";
           else
             octave_stdout << "knobs(2): " << User_knobs(1)
@@ -254,28 +256,28 @@ csymamd, amd, colamd, symamd, and other related orderings.
     }
 
   // Allocate workspace for ccolamd
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, p, n_col+1);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, p, n_col+1);
   for (octave_idx_type i = 0; i < n_col+1; i++)
     p[i] = cidx[i];
 
   octave_idx_type Alen = CCOLAMD_NAME (_recommended) (nnz, n_row, n_col);
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, A, Alen);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, A, Alen);
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
   static_assert (CCOLAMD_STATS <= 40,
                  "ccolamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
-  octave::suitesparse_integer stats_storage[CCOLAMD_STATS];
-  octave::suitesparse_integer *stats = &stats_storage[0];
+  suitesparse_integer stats_storage[CCOLAMD_STATS];
+  suitesparse_integer *stats = &stats_storage[0];
 
   if (nargin > 2)
     {
       NDArray in_cmember = args(2).array_value ();
       octave_idx_type cslen = in_cmember.numel ();
-      OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, cmember, cslen);
+      OCTAVE_LOCAL_BUFFER (suitesparse_integer, cmember, cslen);
       for (octave_idx_type i = 0; i < cslen; i++)
         // convert cmember from 1-based to 0-based
-        cmember[i] = static_cast<octave::suitesparse_integer>(in_cmember(i) - 1);
+        cmember[i] = static_cast<suitesparse_integer>(in_cmember(i) - 1);
 
       if (cslen != n_col)
         error ("ccolamd: CMEMBER must be of length equal to #cols of A");
@@ -444,7 +446,7 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
             octave_stdout << "knobs(1): " << User_knobs(0)
                           << ", rows/cols with > max (16,"
                           << knobs[CCOLAMD_DENSE_ROW]
-                          << "*sqrt (size(A,2)))"
+                          << "*sqrt (columns(A)))"
                           << " entries removed\n";
           else
             octave_stdout << "knobs(1): " << User_knobs(0)
@@ -503,17 +505,17 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
     err_square_matrix_required ("csymamd", "S");
 
   // Allocate workspace for symamd
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, perm, n_col+1);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, perm, n_col+1);
   static_assert (CCOLAMD_STATS <= 40,
                  "csymamd: # of CCOLAMD_STATS exceeded.  Please report this to bugs.octave.org");
-  octave::suitesparse_integer stats_storage[CCOLAMD_STATS];
-  octave::suitesparse_integer *stats = &stats_storage[0];
+  suitesparse_integer stats_storage[CCOLAMD_STATS];
+  suitesparse_integer *stats = &stats_storage[0];
 
   if (nargin > 2)
     {
       NDArray in_cmember = args(2).array_value ();
       octave_idx_type cslen = in_cmember.numel ();
-      OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, cmember, cslen);
+      OCTAVE_LOCAL_BUFFER (suitesparse_integer, cmember, cslen);
       for (octave_idx_type i = 0; i < cslen; i++)
         // convert cmember from 1-based to 0-based
         cmember[i] = static_cast<octave_idx_type> (in_cmember(i) - 1);
@@ -522,8 +524,8 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
         error ("csymamd: CMEMBER must be of length equal to #cols of A");
 
       if (! CSYMAMD_NAME () (n_col,
-                             octave::to_suitesparse_intptr (ridx),
-                             octave::to_suitesparse_intptr (cidx),
+                             to_suitesparse_intptr (ridx),
+                             to_suitesparse_intptr (cidx),
                              perm, knobs, stats, &calloc, &free, cmember, -1))
         {
           CSYMAMD_NAME (_report)(stats);
@@ -534,8 +536,8 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
   else
     {
       if (! CSYMAMD_NAME () (n_col,
-                             octave::to_suitesparse_intptr (ridx),
-                             octave::to_suitesparse_intptr (cidx),
+                             to_suitesparse_intptr (ridx),
+                             to_suitesparse_intptr (cidx),
                              perm, knobs, stats, &calloc, &free, nullptr, -1))
         {
           CSYMAMD_NAME (_report)(stats);
@@ -581,3 +583,5 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
 
 #endif
 }
+
+OCTAVE_NAMESPACE_END

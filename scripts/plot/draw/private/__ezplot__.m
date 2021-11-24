@@ -364,7 +364,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
         Y = __eliminate_sing__ (Y);
         Z = __eliminate_sing__ (Z);
       endif
-    else  ## non-parametric plots
+    else  # non-parametric plots
       if (isplot && nargs == 2)
         Z = feval (fun, X, Y);
 

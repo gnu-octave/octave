@@ -57,7 +57,7 @@
 ## vectors with lengths corresponding to the dimensions of @var{v}, then the
 ## volume data is taken at the specified points.  If @var{x}, @var{y}, or
 ## @var{z} are empty, the grid corresponds to the indices (@code{1:n}) in
-## the respective direction (@pxref{XREFmeshgrid,,meshgrid}).
+## the respective direction (@pxref{XREFmeshgrid,,@code{meshgrid}}).
 ##
 ## The optional parameter @var{which_caps} can have one of the following
 ## string values which defines how the data will be enclosed:
@@ -376,7 +376,7 @@ endfunction
 %! [x, y, z] = meshgrid (lin, lin, lin);
 %! v = abs ((x-0.45).^2 + (y-0.55).^2 + (z-0.8).^2);
 %! hf = clf;
-%! ha = axes;
+%! ha = axes ();
 %! view (3);  box off;
 %! fvc_iso = isosurface (x, y, z, v, isoval);
 %! cmap = get (hf, "Colormap");
@@ -544,8 +544,8 @@ endfunction
 %! assert (rows (vertices), rows (fvcdata));
 
 ## test for each error
-%!error isocaps ()
-%!error isocaps (1,2,3,4,5,6,7,8,9)
+%!error <Invalid call> isocaps ()
+%!error <Invalid call> isocaps (1,2,3,4,5,6,7,8,9)
 %!error <parameter 'foo' not supported> isocaps (val, iso, "foo")
 %!error <incorrect number of input arguments> isocaps (x, val, iso)
 %!error <incorrect number of input arguments> isocaps (xx, yy, zz, val, iso, 5)

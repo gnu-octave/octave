@@ -55,7 +55,7 @@ FILE: foreach $fname (@ARGV)
 
   LINE: while (my $line = <SRC_FH>)
   {
-    if ($line =~ /^\s*DEF(?:CONSTFUN|CONSTMETHOD|METHOD|METHOD_DLD|METHODX|METHODX_DLD|UN|UN_DLD|UNX|UNX_DLD)\s*\(/)
+    if ($line =~ /^\s*DEF(?:METHOD|METHOD_(|STATIC_)DLD|METHODX|METHODX_(|STATIC_)DLD|UN|UN_(|STATIC_)DLD|UNX|UNX_(|STATIC_)DLD)\s*\(/)
     {
       ($func) = $line =~ /\("?(\w+)"?,/;
       unless ($func) { die "Unable to parse $src_fname at line $.\n" }

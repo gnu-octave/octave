@@ -45,12 +45,16 @@
 
 function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   fields = {"handle", "type", "children", "properties", "special"};
   partypes = {"root", "figure", "axes", "hggroup"};
-  othertypes = {"line", "patch", "surface", "image", "text"};
+  othertypes = {"line", "patch", "scatter", "surface", "image", "text"};
   alltypes = [partypes othertypes];
 
-  if (nargin > 3 || ! isstruct (s))
+  if (! isstruct (s))
     print_usage ();
   elseif (! all (isfield (s, fields)))
     print_usage ();
@@ -108,16 +112,22 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   ## change the mode to "manual" when the value is "auto".
   names = fieldnames (s.properties);
   n = strncmp (cellfun (@fliplr, names, "uniformoutput", false), "edom", 4);
-  n = (n | strcmp (names, "activepositionproperty"));
+  n = (n | strcmp (names, "positionconstraint"));
   names = [names(! n); names(n)];
   n_pos = find (strcmp (names, "position") | strcmp (names, "outerposition"));
   if (strcmp (s.type, "axes") && numel (n_pos) == 2)
-    if (strcmp (s.properties.activepositionproperty, "position"))
-      names{n_pos(1)} = "outerposition";
-      names{n_pos(2)} = "position";
+    if (isfield (s.properties, "positionconstraint"))
+      positionconstraint = s.properties.positionconstraint;
     else
+      ## loading old figure file before "positionconstraint" property was added
+      positionconstraint = s.properties.activepositionproperty;
+    endif
+    if (strcmp (positionconstraint, "outerposition"))
       names{n_pos(1)} = "position";
       names{n_pos(2)} = "outerposition";
+    else
+      names{n_pos(1)} = "outerposition";
+      names{n_pos(2)} = "position";
     endif
   endif
   ## Set "units" property early
@@ -131,7 +141,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
   ## Translate field names for Matlab .fig files
   ## FIXME: Is it ok to do this unconditionally?
-  if isfield (s.properties, "applicationdata")
+  if (isfield (s.properties, "applicationdata"))
     s.properties.__appdata__ = s.properties.applicationdata;
     s.properties = rmfield (s.properties, "applicationdata");
   endif
@@ -153,21 +163,29 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
       if (strcmp (s.properties.tag, "legend"))
         s.properties.tag = "";
         s.properties.userdata = [];
-        par = gcf;
+        par = gcf ();
       elseif (strcmp (s.properties.tag, "colorbar"))
         s.properties.tag = "";
         s.properties.userdata = [];
-        par = gcf;
+        par = gcf ();
       endif
     endif
-    if (isfield (s.properties, "tightinset"))
-      s.properties = rmfield (s.properties, {"tightinset"});
+    ## remove read only properties
+    ## FIXME: Remove "interactions", "layout", "legend", "toolbar", "xaxis",
+    ## "yaxis", and "zaxis" from this list once they are implemented.
+    ro_props = {"interactions", "layout", "legend", "nextseriesindex", ...
+                "tightinset", "toolbar", "xaxis", "yaxis", "zaxis"};
+    has_ro_props = cellfun (@(x) isfield (s.properties, x), ro_props);
+    if (any (has_ro_props))
+      s.properties = rmfield (s.properties, ro_props(has_ro_props));
     endif
     [h, s] = createaxes (s, p, par);
   elseif (strcmp (s.type, "line"))
     h = createline (s, par);
   elseif (strcmp (s.type, "patch"))
     [h, s] = createpatch (s, par);
+  elseif (strcmp (s.type, "scatter"))
+    [h, s] = createscatter (s, par);
   elseif (strcmp (s.type, "text"))
     if (isfield (s.properties, "extent"))
       s.properties = rmfield (s.properties, "extent");
@@ -183,7 +201,8 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     [h, s, p] = createhg (s, p, par, hilev);
   elseif (any (strcmp (s.type, {"uimenu", "uicontextmenu",...
                                 "uicontrol", "uipanel", "uibuttongroup",...
-                                "uitoolbar", "uipushtool", "uitable"})))
+                                "uitoolbar", "uipushtool", "uitoggletool"...
+                                "uitable"})))
     if (isfield (s.properties, "extent"))
       s.properties = rmfield (s.properties, "extent");
     endif
@@ -216,6 +235,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 endfunction
 
 function [h, sout] = createfigure (s)
+
   ## Create figure initially invisible to speed up loading.
   opts = {"visible", "off"};
   if (isfield (s.properties, "integerhandle"))  # see also bug #53342.
@@ -232,6 +252,7 @@ function [h, sout] = createfigure (s)
   endif
   addmissingprops (h, s.properties);
   sout = s;
+
 endfunction
 
 function [h, sout] = createaxes (s, p, par)
@@ -254,10 +275,10 @@ function [h, sout] = createaxes (s, p, par)
       plty = s.properties.__plotyy_axes__;
       addproperty ("__plotyy_axes__", h, "data");
       tmp = [p [s.handle; h]];
-      tst = ismember (tmp(1:2:end), plty);
+      tst = ismember (tmp(1,:), plty);
       if (sum (tst) == numel (plty))
         for ii = 1:numel (plty)
-          plty(ii) = tmp(find (tmp == plty(ii)) + 1);
+          plty(ii) = tmp(2, find (tmp(1,:) == plty(ii)));
         endfor
         for ii = 1:numel (plty)
           set (plty(ii), "__plotyy_axes__", plty);
@@ -366,6 +387,24 @@ function [h, sout] = createpatch (s, par)
   ## a segfault when 'set (h, properties)' is used to restore properties
   ## which do not match in size the ones created with from the call to patch().
   s.properties = rmfield (s.properties, {"xdata", "ydata", "zdata", "cdata"});
+  addmissingprops (h, s.properties);
+  sout = s;
+
+endfunction
+
+function [h, sout] = createscatter (s, par)
+
+  if (isempty (s.properties.zdata))
+    ## 2D scatter
+    h = scatter (s.properties.xdata, s.properties.ydata);
+  else
+    ## 3D scatter
+    h = scatter3 (s.properties.xdata, s.properties.ydata, s.properties.zdata);
+  endif
+
+  set (h, "parent", par);
+  s.properties = rmfield (s.properties,
+                          {"xdata", "ydata", "zdata"});
   addmissingprops (h, s.properties);
   sout = s;
 

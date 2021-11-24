@@ -46,6 +46,7 @@
 
 template <typename T>
 class
+OCTINTERP_API
 octave_base_int_matrix : public octave_base_matrix<T>
 {
 public:
@@ -62,7 +63,7 @@ public:
   octave_base_value * empty_clone (void) const
   { return new octave_base_int_matrix (); }
 
-  octave_base_value * try_narrowing_conversion (void);
+  OCTINTERP_API octave_base_value * try_narrowing_conversion (void);
 
   bool isreal (void) const { return true; }
 
@@ -70,48 +71,54 @@ public:
 
   //  void decrement (void) { matrix -= 1; }
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void
+  print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  octave_value convert_to_str_internal (bool, bool, char type) const;
+  OCTINTERP_API octave_value
+  convert_to_str_internal (bool, bool, char type) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double (void) const;
+  OCTINTERP_API octave_value as_single (void) const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  OCTINTERP_API octave_value as_int8 (void) const;
+  OCTINTERP_API octave_value as_int16 (void) const;
+  OCTINTERP_API octave_value as_int32 (void) const;
+  OCTINTERP_API octave_value as_int64 (void) const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  OCTINTERP_API octave_value as_uint8 (void) const;
+  OCTINTERP_API octave_value as_uint16 (void) const;
+  OCTINTERP_API octave_value as_uint32 (void) const;
+  OCTINTERP_API octave_value as_uint64 (void) const;
 
-  std::string edit_display (const float_display_format& fmt,
-                            octave_idx_type i, octave_idx_type j) const;
+  OCTINTERP_API std::string
+  edit_display (const float_display_format& fmt,
+                octave_idx_type i, octave_idx_type j) const;
 
-  bool save_ascii (std::ostream& os);
+  OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  bool load_ascii (std::istream& is);
+  OCTINTERP_API bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool);
+  OCTINTERP_API bool save_binary (std::ostream& os, bool);
 
-  bool load_binary (std::istream& is, bool swap,
-                    octave::mach_info::float_format);
+  OCTINTERP_API bool
+  load_binary (std::istream& is, bool swap, octave::mach_info::float_format);
 
 protected:
 
-  bool save_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
-                           const char *name, bool);
+  OCTINTERP_API bool
+  save_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                      const char *name, bool);
 
-  bool load_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
-                           const char *name);
+  OCTINTERP_API bool
+  load_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                      const char *name);
 };
 
 // base int scalar values.
 
 template <typename T>
 class
+OCTINTERP_API
 octave_base_int_scalar : public octave_base_scalar<T>
 {
 public:
@@ -137,39 +144,43 @@ public:
 
   //  void decrement (void) { scalar -= 1; }
 
-  octave_value convert_to_str_internal (bool, bool, char type) const;
+  OCTINTERP_API octave_value
+  convert_to_str_internal (bool, bool, char type) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double (void) const;
+  OCTINTERP_API octave_value as_single (void) const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  OCTINTERP_API octave_value as_int8 (void) const;
+  OCTINTERP_API octave_value as_int16 (void) const;
+  OCTINTERP_API octave_value as_int32 (void) const;
+  OCTINTERP_API octave_value as_int64 (void) const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  OCTINTERP_API octave_value as_uint8 (void) const;
+  OCTINTERP_API octave_value as_uint16 (void) const;
+  OCTINTERP_API octave_value as_uint32 (void) const;
+  OCTINTERP_API octave_value as_uint64 (void) const;
 
-  std::string edit_display (const float_display_format& fmt,
-                            octave_idx_type i, octave_idx_type j) const;
+  OCTINTERP_API std::string
+  edit_display (const float_display_format& fmt,
+                octave_idx_type i, octave_idx_type j) const;
 
-  bool save_ascii (std::ostream& os);
+  OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  bool load_ascii (std::istream& is);
+  OCTINTERP_API bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool);
+  OCTINTERP_API bool save_binary (std::ostream& os, bool);
 
-  bool load_binary (std::istream& is, bool swap,
+  OCTINTERP_API bool load_binary (std::istream& is, bool swap,
                     octave::mach_info::float_format);
 protected:
 
-  bool save_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
-                           const char *name, bool);
+  OCTINTERP_API bool
+  save_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                      const char *name, bool);
 
-  bool load_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
-                           const char *name);
+  OCTINTERP_API bool
+  load_hdf5_internal (octave_hdf5_id loc_id, octave_hdf5_id save_type,
+                      const char *name);
 };
 
 #endif

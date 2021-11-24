@@ -31,7 +31,7 @@
 
 function v = nonzeros (A)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -52,5 +52,4 @@ endfunction
 %!assert (nonzeros (sparse ([1,2,3,0])), [1;2;3])
 
 ## Test input validation
-%!error nonzeros ()
-%!error nonzeros (1, 2)
+%!error <Invalid call> nonzeros ()

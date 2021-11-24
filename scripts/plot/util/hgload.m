@@ -45,7 +45,7 @@
 function [h, old_prop] = hgload (filename, prop_struct = struct ())
 
   ## Check number of input arguments
-  if (nargin == 0 || nargin > 2)
+  if (nargin == 0)
     print_usage ();
   endif
 
@@ -133,8 +133,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error hgload ()
-%!error hgload (1, 2, 3)
+%!error <Invalid call> hgload ()
 %!error <PROP_STRUCT must be a struct> hgload (1, {})
 %!error <unable to locate file> hgload ("%%_A_REALLY_UNLIKELY_FILENAME_%%")
 %!error <unable to locate file> hgload ("%%_A_REALLY_UNLIKELY_FILENAME_%%.fig")

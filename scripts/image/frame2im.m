@@ -40,7 +40,7 @@
 
 function [x, map] = frame2im (frame)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! all (isfield (frame, {"cdata", "colormap"})))
     error ("frame2im: F must be a struct with the fields colormap and cdata");

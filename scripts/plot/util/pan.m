@@ -46,35 +46,31 @@
 ## @seealso{rotate3d, zoom}
 ## @end deftypefn
 
-function pan (varargin)
+function h = pan (hfig, option)
 
-  hfig = NaN;
-
-  nargs = nargin;
-
-  if (nargs > 2)
-    print_usage ();
-  endif
-
-  if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
+  ## FIXME: Presumably should implement this for Matlab compatibility.
+  if (nargin == 1 && nargout > 0 && isfigure (hfig))
     error ("pan: syntax 'handle = pan (hfig)' not implemented");
   endif
 
-  if (nargs == 2)
-    hfig = varargin{1};
-    if (isfigure (hfig))
-      varargin(1) = [];
-      nargs -= 1;
+  if (nargin == 0)
+    hfig = gcf ();
+  else
+    if (nargin == 1)
+      option = hfig;
+      hfig = gcf ();
     else
-      error ("pan: invalid figure handle HFIG");
+      if (! isfigure (hfig))
+        error ("pan: invalid figure handle HFIG");
+      endif
+    endif
+
+    if (! ischar (option))
+      error ("pan: OPTION must be a string");
     endif
   endif
 
-  if (isnan (hfig))
-    hfig = gcf ();
-  endif
-
-  if (nargs == 0)
+  if (nargin == 0)
     pm = get (hfig, "__pan_mode__");
     if (strcmp (pm.Enable, "on"))
       pm.Enable = "off";
@@ -83,31 +79,26 @@ function pan (varargin)
     endif
     set (hfig, "__pan_mode__", pm);
     update_mouse_mode (hfig, pm.Enable);
-  elseif (nargs == 1)
-    arg = varargin{1};
-    if (ischar (arg))
-      switch (arg)
-        case {"on", "off", "xon", "yon"}
-          pm = get (hfig, "__pan_mode__");
-          switch (arg)
-            case {"on", "off"}
-              pm.Enable = arg;
-              pm.Motion = "both";
-            case "xon"
-              pm.Enable = "on";
-              pm.Motion = "horizontal";
-            case "yon"
-              pm.Enable = "on";
-              pm.Motion = "vertical";
-          endswitch
-          set (hfig, "__pan_mode__", pm);
-          update_mouse_mode (hfig, arg);
-        otherwise
-          error ("pan: unrecognized OPTION '%s'", arg);
-      endswitch
-    else
-      error ("pan: wrong type argument '%s'", class (arg));
-    endif
+  else
+    switch (option)
+      case {"on", "off", "xon", "yon"}
+        pm = get (hfig, "__pan_mode__");
+        switch (option)
+          case {"on", "off"}
+            pm.Enable = option;
+            pm.Motion = "both";
+          case "xon"
+            pm.Enable = "on";
+            pm.Motion = "horizontal";
+          case "yon"
+            pm.Enable = "on";
+            pm.Motion = "vertical";
+        endswitch
+        set (hfig, "__pan_mode__", pm);
+        update_mouse_mode (hfig, option);
+      otherwise
+        error ("pan: unrecognized OPTION '%s'", option);
+    endswitch
   endif
 
 endfunction
@@ -119,8 +110,8 @@ function update_mouse_mode (hfig, arg)
   else
     ## FIXME: Is there a better way other than calling these functions
     ##        to set the other mouse mode Enable fields to "off"?
-    rotate3d ("off");
-    zoom ("off");
+    rotate3d (hfig, "off");
+    zoom (hfig, "off");
     set (hfig, "__mouse_mode__", "pan");
   endif
 

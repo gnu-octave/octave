@@ -76,7 +76,7 @@ function h = trimesh (tri, x, y, z, varargin)
       varargin(1) = [];
       if (isvector (c))
         c = c(:);
-      end
+      endif
       if (rows (c) != numel (z) && rows (c) != rows (tri))
         error ("trimesh: the numbers of colors specified in C must equal the number of vertices in Z or the number of triangles in TRI");
       elseif (columns (c) != 1 && columns (c) != 3)
@@ -122,9 +122,9 @@ endfunction
 %! title ("trimesh() plot of sparsely-sampled peaks() function");
 
 ## Test input validation
-%!error trimesh ()
-%!error trimesh (1)
-%!error trimesh (1,2)
+%!error <Invalid call> trimesh ()
+%!error <Invalid call> trimesh (1)
+%!error <Invalid call> trimesh (1,2)
 %!error <the numbers of colors> trimesh (1,2,3,4,[5 6])
 %!error <the numbers of colors> trimesh (1,2,3,4,[5 6]')
 %!error <the numbers of colors> trimesh ([1;1],[2;2],[3;3],[4;4], zeros (3,3))

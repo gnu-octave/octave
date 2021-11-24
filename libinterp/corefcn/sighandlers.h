@@ -40,8 +40,8 @@ Free Software Foundation, Inc.
 
 #include "child-list.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // This type must match the typedef in signal-wrappers.h.
   typedef void sig_handler (int);
 
@@ -80,6 +80,7 @@ namespace octave
 
   // TRUE means we should try to enter the debugger on SIGINT.
   extern OCTINTERP_API bool Vdebug_on_interrupt;
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

@@ -43,6 +43,10 @@
 
 function val = odeget (ode_opt, field, default = [])
 
+  if (nargin < 2)
+    print_usage ();
+  endif
+
   validateattributes (ode_opt, {"struct"}, {"nonempty"});
   validateattributes (field, {"char"}, {"nonempty"});
 
@@ -79,9 +83,9 @@ endfunction
 %! warning ("off", "Octave:invalid-input-arg", "local");
 %! assert (odeget (odeset ("foo", 42), "foo"), 42);
 
-%!error odeget ()
-%!error odeget (1)
-%!error odeget (1,2,3,4,5)
+## Test input validation
+%!error <Invalid call> odeget ()
+%!error <Invalid call> odeget (1)
 %!error odeget (1, "opt1")
 %!error odeget (struct ("opt1", 1), 1)
 %!error odeget (struct ("opt1", 1), "foo")

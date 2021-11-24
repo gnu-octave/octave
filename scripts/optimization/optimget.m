@@ -36,7 +36,7 @@
 
 function retval = optimget (options, parname, default)
 
-  if (nargin < 2 || nargin > 4 || ! isstruct (options) || ! ischar (parname))
+  if (nargin < 2 || ! isstruct (options) || ! ischar (parname))
     print_usage ();
   endif
 
@@ -75,9 +75,8 @@ endfunction
 %!assert (optimget (opts, "TolFun", 1e-3), 1e-3)
 
 ## Test input validation
-%!error optimget ()
-%!error optimget (1)
-%!error optimget (1,2,3,4,5)
+%!error <Invalid call> optimget ()
+%!error <Invalid call> optimget (1)
 %!error optimget (1, "name")
 %!error optimget (struct (), 2)
 %!warning <unrecognized option: foobar> (optimget (opts, "foobar"));

@@ -65,7 +65,7 @@
 
 function retval = toeplitz (c, r)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -130,11 +130,11 @@ endfunction
 
 %!assert (toeplitz (1), [1])
 %!assert (toeplitz ([1, 2, 3], [1; -3; -5]), [1, -3, -5; 2, 1, -3; 3, 2, 1])
-%!assert (toeplitz ([1, 2, 3], [1; -3i; -5i]), [1, -3i, -5i; 2, 1, -3i; 3, 2, 1])
+%!assert (toeplitz ([1, 2, 3], [1; -3i; -5i]),
+%!        [1, -3i, -5i; 2, 1, -3i; 3, 2, 1])
 
 ## Test input validation
-%!error toeplitz ()
-%!error toeplitz (1, 2, 3)
+%!error <Invalid call> toeplitz ()
 %!error <C must be a vector> toeplitz ([1, 2; 3, 4])
 %!error <C and R must be vectors> toeplitz ([1, 2; 3, 4], 1)
 %!error <C and R must be vectors> toeplitz (1, [1, 2; 3, 4])

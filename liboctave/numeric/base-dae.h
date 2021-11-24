@@ -36,17 +36,17 @@ base_diff_alg_eqn : public base_diff_eqn
 public:
 
   base_diff_alg_eqn (void)
-    : base_diff_eqn (), xdot () { }
+    : base_diff_eqn (), m_xdot () { }
 
   base_diff_alg_eqn (const ColumnVector& xx, double tt)
-    : base_diff_eqn (xx, tt), xdot (xx.numel (), 0.0) { }
+    : base_diff_eqn (xx, tt), m_xdot (xx.numel (), 0.0) { }
 
   base_diff_alg_eqn (const ColumnVector& xx, const ColumnVector& xxdot,
                      double tt)
-    : base_diff_eqn (xx, tt), xdot (xxdot) { }
+    : base_diff_eqn (xx, tt), m_xdot (xxdot) { }
 
   base_diff_alg_eqn (const base_diff_alg_eqn& a)
-    : base_diff_eqn (a), xdot (a.xdot) { }
+    : base_diff_eqn (a), m_xdot (a.m_xdot) { }
 
   virtual ~base_diff_alg_eqn (void) = default;
 
@@ -55,7 +55,7 @@ public:
     if (this != &a)
       {
         base_diff_eqn::operator = (a);
-        xdot = a.xdot;
+        m_xdot = a.m_xdot;
       }
     return *this;
   }
@@ -63,21 +63,21 @@ public:
   void initialize (const ColumnVector& x0, double t0)
   {
     base_diff_eqn::initialize (x0, t0);
-    xdot = ColumnVector (x0.numel (), 0.0);
+    m_xdot = ColumnVector (x0.numel (), 0.0);
   }
 
   void initialize (const ColumnVector& x0, const ColumnVector& xdot0,
                    double t0)
   {
     base_diff_eqn::initialize (x0, t0);
-    xdot = xdot0;
+    m_xdot = xdot0;
   }
 
-  ColumnVector state_derivative (void) { return xdot; }
+  ColumnVector state_derivative (void) { return m_xdot; }
 
 protected:
 
-  ColumnVector xdot;
+  ColumnVector m_xdot;
 };
 
 #endif

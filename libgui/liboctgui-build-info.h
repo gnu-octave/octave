@@ -32,6 +32,6 @@
 
 #include <string>
 
-extern std::string liboctgui_hg_id (void);
+extern OCTGUI_API std::string liboctgui_hg_id (void);
 
 #endif

@@ -52,11 +52,17 @@ namespace octave
 
     void interpreter_event (const meth_callback& meth);
 
+    void interrupt (void);
+
+    // Note: PAUSE, STOP, and RESUME are currently only used by the new
+    // experimental terminal widget.
+    void pause (void);
+    void stop (void);
+    void resume (void);
+
   signals:
 
     void ready (void);
-
-    void execution_finished (int);
 
     void shutdown_finished (int);
 
@@ -83,8 +89,6 @@ namespace octave
     //! Initialize and execute the octave interpreter.
 
     void execute (void);
-
-    void shutdown (int);
 
   private:
 

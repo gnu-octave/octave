@@ -38,6 +38,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // unary complex matrix ops.
 
 DEFNDUNOP_OP (not, complex_matrix, complex_array, !)
@@ -326,3 +328,5 @@ install_cm_cm_ops (octave::type_info& ti)
                        octave_complex_matrix,
                        assign_el_div);
 }
+
+OCTAVE_NAMESPACE_END

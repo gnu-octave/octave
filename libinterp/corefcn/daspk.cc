@@ -47,6 +47,8 @@
 
 #include "DASPK-opts.cc"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Global pointer for user defined function required by daspk.
 static octave_value daspk_fcn;
 
@@ -60,7 +62,7 @@ static bool warned_jac_imaginary = false;
 // Is this a recursive call?
 static int call_depth = 0;
 
-ColumnVector
+static ColumnVector
 daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
                      double t, octave_idx_type& ires)
 {
@@ -80,11 +82,11 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = octave::feval (daspk_fcn, args, 1);
+          tmp = feval (daspk_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          err_user_supplied_eval (e, "daspk");
+          err_user_supplied_eval (ee, "daspk");
         }
 
       int tlen = tmp.length ();
@@ -109,7 +111,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
   return retval;
 }
 
-Matrix
+static Matrix
 daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
                      double t, double cj)
 {
@@ -130,11 +132,11 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = octave::feval (daspk_jac, args, 1);
+          tmp = feval (daspk_jac, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          err_user_supplied_eval (e, "daspk");
+          err_user_supplied_eval (ee, "daspk");
         }
 
       int tlen = tmp.length ();
@@ -269,9 +271,7 @@ parameters for @code{daspk}.
 
   octave_value_list retval (4);
 
-  octave::unwind_protect frame;
-
-  frame.protect_var (call_depth);
+  unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -294,13 +294,11 @@ parameters for @code{daspk}.
         f_arg = c(0);
       else if (c.numel () == 2)
         {
-          daspk_fcn = octave::get_function_handle (interp, c(0),
-                                                   fcn_param_names);
+          daspk_fcn = get_function_handle (interp, c(0), fcn_param_names);
 
           if (daspk_fcn.is_defined ())
             {
-              daspk_jac = octave::get_function_handle (interp, c(1),
-                                                       jac_param_names);
+              daspk_jac = get_function_handle (interp, c(1), jac_param_names);
 
               if (daspk_jac.is_undefined ())
                 daspk_fcn = octave_value ();
@@ -319,21 +317,20 @@ parameters for @code{daspk}.
           switch (f_arg.rows ())
             {
             case 1:
-              daspk_fcn = octave::get_function_handle (interp, f_arg,
-                                                       fcn_param_names);
+              daspk_fcn = get_function_handle (interp, f_arg, fcn_param_names);
               break;
 
             case 2:
               {
                 string_vector tmp = f_arg.string_vector_value ();
 
-                daspk_fcn = octave::get_function_handle (interp, tmp(0),
-                                                         fcn_param_names);
+                daspk_fcn = get_function_handle (interp, tmp(0),
+                                                 fcn_param_names);
 
                 if (daspk_fcn.is_defined ())
                   {
-                    daspk_jac = octave::get_function_handle (interp, tmp(1),
-                                                             jac_param_names);
+                    daspk_jac = get_function_handle (interp, tmp(1),
+                                                     jac_param_names);
 
                     if (daspk_jac.is_undefined ())
                       daspk_fcn = octave_value ();
@@ -406,3 +403,5 @@ parameters for @code{daspk}.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

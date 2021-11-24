@@ -72,6 +72,8 @@ Written by Michael Weitzel <michael.weitzel@@uni-siegen.de>
 #include "ov.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // A node struct for the Cuthill-McKee algorithm
 struct CMK_Node
 {
@@ -703,3 +705,5 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   // increment all indices, since Octave is not C
   return ovl (P+1);
 }
+
+OCTAVE_NAMESPACE_END

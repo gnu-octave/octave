@@ -107,4 +107,45 @@
   DEFINE_FUNX_INSTALLER_FUN (name, fname, gname, doc)                   \
   DECLARE_METHODX (fname, interp_name, args_name, nargout_name)
 
+// The same as the above, but declare the functions as static.
+// NOTE: These macros should not be used directly.
+
+#define DEFUN_STATIC_DLD(name, args_name, nargout_name, doc)    \
+  FORWARD_DECLARE_STATIC_FUN (name);                            \
+  DEFINE_FUN_INSTALLER_FUN (name, doc)                          \
+  DECLARE_STATIC_FUN (name, args_name, nargout_name)
+
+#define DEFUNX_STATIC_DLD(name, fname, gname, args_name,        \
+                          nargout_name, doc)                    \
+  FORWARD_DECLARE_STATIC_FUNX (fname);                          \
+  DEFINE_FUNX_INSTALLER_FUN (name, fname, gname, doc)           \
+  DECLARE_STATIC_FUNX (fname, args_name, nargout_name)
+
+#define DEFMETHOD_STATIC_DLD(name, interp_name, args_name,              \
+                             nargout_name, doc)                         \
+  FORWARD_DECLARE_STATIC_METHOD (name);                                 \
+  DEFINE_FUN_INSTALLER_FUN (name, doc)                                  \
+  DECLARE_STATIC_METHOD (name, interp_name, args_name, nargout_name)
+
+#define DEFMETHODX_STATIC_DLD(name, fname, gname, interp_name,          \
+                              args_name, nargout_name, doc)             \
+  FORWARD_DECLARE_STATIC_METHODX (fname);                               \
+  DEFINE_FUNX_INSTALLER_FUN (name, fname, gname, doc)                   \
+  DECLARE_STATIC_METHODX (fname, interp_name, args_name, nargout_name)
+
+// The oct-conf-post.h file defines OCTAVE_USE_STATIC_DEFUN to force all
+// dynamically loaded interpreter functions and methods to be static.
+
+#if defined (OCTAVE_USE_STATIC_DEFUN)
+#  undef DEFUN_DLD
+#  undef DEFUNX_DLD
+#  undef DEFMETHOD_DLD
+#  undef DEFMETHODX_DLD
+
+#  define DEFUN_DLD DEFUN_STATIC_DLD
+#  define DEFUNX_DLD DEFUNX_STATIC_DLD
+#  define DEFMETHOD_DLD DEFMETHOD_STATIC_DLD
+#  define DEFMETHODX_DLD DEFMETHODX_STATIC_DLD
+#endif
+
 #endif

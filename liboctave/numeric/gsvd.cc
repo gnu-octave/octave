@@ -27,7 +27,8 @@
 #  include <config.h>
 #endif
 
-#include <vector>
+#include <algorithm>
+#include <unordered_map>
 
 #include "CMatrix.h"
 #include "dDiagMatrix.h"
@@ -38,18 +39,19 @@
 #include "gsvd.h"
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
+#include "oct-locbuf.h"
 #include "oct-shlib.h"
 
 namespace octave
 {
-  static std::map<std::string, void *> gsvd_fcn;
+  static std::unordered_map<std::string, void *> gsvd_fcn;
 
   static bool have_DGGSVD3 = false;
   static bool gsvd_initialized = false;
 
-  /* Hack to stringize macro results. */
-#define xSTRINGIZE(x) #x
-#define STRINGIZE(x) xSTRINGIZE(x)
+  /* Hack to stringize results of F77_FUNC macro. */
+  #define xSTRINGIZE(x) #x
+  #define STRINGIZE(x) xSTRINGIZE(x)
 
   static void initialize_gsvd (void)
   {
@@ -58,11 +60,8 @@ namespace octave
 
     dynamic_library libs ("");
     if (! libs)
-      {
-        // FIXME: Should we throw an error if we cannot check the libraries?
-        have_DGGSVD3 = false;
-        return;
-      }
+      (*current_liboctave_error_handler)
+        ("gsvd: unable to query LAPACK library");
 
     have_DGGSVD3 = (libs.search (STRINGIZE (F77_FUNC (dggsvd3, DGGSVD3)))
                     != nullptr);
@@ -81,8 +80,13 @@ namespace octave
         gsvd_fcn["zg"] = libs.search (STRINGIZE (F77_FUNC (zggsvd, ZGGSVD)));
         gsvd_fcn["cg"] = libs.search (STRINGIZE (F77_FUNC (cggsvd, CGGSVD)));
       }
+
     gsvd_initialized = true;
   }
+
+  /* Clean up macro namespace as soon as we are done using them */
+  #undef xSTRINGIZE
+  #undef STRINGIZE
 
   template<class T1>
   struct real_ggsvd_ptr
@@ -217,14 +221,14 @@ namespace octave
   };
 
   // template specializations
-  typedef real_ggsvd3_ptr<F77_DBLE>::type dggsvd3_type;
   typedef real_ggsvd_ptr<F77_DBLE>::type dggsvd_type;
-  typedef real_ggsvd3_ptr<F77_REAL>::type sggsvd3_type;
+  typedef real_ggsvd3_ptr<F77_DBLE>::type dggsvd3_type;
   typedef real_ggsvd_ptr<F77_REAL>::type sggsvd_type;
-  typedef comp_ggsvd3_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd3_type;
+  typedef real_ggsvd3_ptr<F77_REAL>::type sggsvd3_type;
   typedef comp_ggsvd_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd_type;
-  typedef comp_ggsvd3_ptr<F77_CMPLX, F77_REAL>::type cggsvd3_type;
+  typedef comp_ggsvd3_ptr<F77_DBLE_CMPLX, F77_DBLE>::type zggsvd3_type;
   typedef comp_ggsvd_ptr<F77_CMPLX, F77_REAL>::type cggsvd_type;
+  typedef comp_ggsvd3_ptr<F77_CMPLX, F77_REAL>::type cggsvd3_type;
 
   namespace math
   {
@@ -235,7 +239,7 @@ namespace octave
                          double *tmp_dataA, F77_INT m1, double *tmp_dataB,
                          F77_INT p1, Matrix& alpha, Matrix& beta, double *u,
                          F77_INT nrow_u, double *v, F77_INT nrow_v, double *q,
-                         F77_INT nrow_q, Matrix& work, F77_INT lwork,
+                         F77_INT nrow_q, double *work, F77_INT lwork,
                          F77_INT *iwork, F77_INT& info)
     {
       if (! gsvd_initialized)
@@ -250,7 +254,7 @@ namespace octave
                  m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
                  alpha.fortran_vec (), beta.fortran_vec (),
                  u, nrow_u, v, nrow_v, q, nrow_q,
-                 work.fortran_vec (), lwork, iwork, info
+                 work, lwork, iwork, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1));
@@ -264,7 +268,7 @@ namespace octave
                  m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
                  alpha.fortran_vec (), beta.fortran_vec (),
                  u, nrow_u, v, nrow_v, q, nrow_q,
-                 work.fortran_vec (), iwork, info
+                 work, iwork, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1));
@@ -279,7 +283,7 @@ namespace octave
                               F77_INT p1, FloatMatrix& alpha,
                               FloatMatrix& beta, float *u, F77_INT nrow_u,
                               float *v, F77_INT nrow_v, float *q,
-                              F77_INT nrow_q, FloatMatrix& work,
+                              F77_INT nrow_q, float *work,
                               F77_INT lwork, F77_INT *iwork, F77_INT& info)
     {
       if (! gsvd_initialized)
@@ -294,7 +298,7 @@ namespace octave
                  m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
                  alpha.fortran_vec (), beta.fortran_vec (),
                  u, nrow_u, v, nrow_v, q, nrow_q,
-                 work.fortran_vec (), lwork, iwork, info
+                 work, lwork, iwork, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1));
@@ -308,7 +312,7 @@ namespace octave
                  m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
                  alpha.fortran_vec (), beta.fortran_vec (),
                  u, nrow_u, v, nrow_v, q, nrow_q,
-                 work.fortran_vec (), iwork, info
+                 work, iwork, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1));
@@ -323,13 +327,14 @@ namespace octave
                                 Complex *tmp_dataB, F77_INT p1, Matrix& alpha,
                                 Matrix& beta, Complex *u, F77_INT nrow_u,
                                 Complex *v, F77_INT nrow_v, Complex *q,
-                                F77_INT nrow_q, ComplexMatrix& work,
+                                F77_INT nrow_q, Complex *work,
                                 F77_INT lwork, F77_INT *iwork, F77_INT& info)
     {
       if (! gsvd_initialized)
         initialize_gsvd ();
 
-      Matrix rwork(2*n, 1);
+      OCTAVE_LOCAL_BUFFER(double, rwork, 2*n);
+
       if (have_DGGSVD3)
         {
           zggsvd3_type f_ptr = reinterpret_cast<zggsvd3_type> (gsvd_fcn["zg"]);
@@ -343,8 +348,8 @@ namespace octave
                  F77_DBLE_CMPLX_ARG (u), nrow_u,
                  F77_DBLE_CMPLX_ARG (v), nrow_v,
                  F77_DBLE_CMPLX_ARG (q), nrow_q,
-                 F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
-                 lwork, rwork.fortran_vec (), iwork, info
+                 F77_DBLE_CMPLX_ARG (work),
+                 lwork, rwork, iwork, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1));
@@ -362,8 +367,8 @@ namespace octave
                  F77_DBLE_CMPLX_ARG (u), nrow_u,
                  F77_DBLE_CMPLX_ARG (v), nrow_v,
                  F77_DBLE_CMPLX_ARG (q), nrow_q,
-                 F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
-                 rwork.fortran_vec (), iwork, info
+                 F77_DBLE_CMPLX_ARG (work),
+                 rwork, iwork, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1));
@@ -381,13 +386,14 @@ namespace octave
                                      FloatComplex *u, F77_INT nrow_u,
                                      FloatComplex *v, F77_INT nrow_v,
                                      FloatComplex *q, F77_INT nrow_q,
-                                     FloatComplexMatrix& work, F77_INT lwork,
+                                     FloatComplex *work, F77_INT lwork,
                                      F77_INT *iwork, F77_INT& info)
     {
       if (! gsvd_initialized)
         initialize_gsvd ();
 
-      FloatMatrix rwork(2*n, 1);
+      OCTAVE_LOCAL_BUFFER(float, rwork, 2*n);
+
       if (have_DGGSVD3)
         {
           cggsvd3_type f_ptr = reinterpret_cast<cggsvd3_type> (gsvd_fcn["cg"]);
@@ -401,8 +407,8 @@ namespace octave
                  F77_CMPLX_ARG (u), nrow_u,
                  F77_CMPLX_ARG (v), nrow_v,
                  F77_CMPLX_ARG (q), nrow_q,
-                 F77_CMPLX_ARG (work.fortran_vec ()), lwork,
-                 rwork.fortran_vec (), iwork, info
+                 F77_CMPLX_ARG (work), lwork,
+                 rwork, iwork, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1));
@@ -420,8 +426,8 @@ namespace octave
                  F77_CMPLX_ARG (u), nrow_u,
                  F77_CMPLX_ARG (v), nrow_v,
                  F77_CMPLX_ARG (q), nrow_q,
-                 F77_CMPLX_ARG (work.fortran_vec ()),
-                 rwork.fortran_vec (), iwork, info
+                 F77_CMPLX_ARG (work),
+                 rwork, iwork, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1));
@@ -432,61 +438,42 @@ namespace octave
     T
     gsvd<T>::left_singular_matrix_A (void) const
     {
-      if (type == gsvd::Type::sigma_only)
-        {
-          (*current_liboctave_error_handler)
-            ("gsvd: U not computed because type == gsvd::sigma_only");
-          return T ();
-        }
-      else
-        return left_smA;
+      if (m_type == gsvd::Type::sigma_only)
+        (*current_liboctave_error_handler)
+          ("gsvd: U not computed because type == gsvd::sigma_only");
+
+      return m_left_smA;
     }
 
     template <typename T>
     T
     gsvd<T>::left_singular_matrix_B (void) const
     {
-      if (type == gsvd::Type::sigma_only)
-        {
-          (*current_liboctave_error_handler)
-            ("gsvd: V not computed because type == gsvd::sigma_only");
-          return T ();
-        }
-      else
-        return left_smB;
+      if (m_type == gsvd::Type::sigma_only)
+        (*current_liboctave_error_handler)
+          ("gsvd: V not computed because type == gsvd::sigma_only");
+
+      return m_left_smB;
     }
 
     template <typename T>
     T
     gsvd<T>::right_singular_matrix (void) const
     {
-      if (type == gsvd::Type::sigma_only)
-        {
-          (*current_liboctave_error_handler)
-            ("gsvd: X not computed because type == gsvd::sigma_only");
-          return T ();
-        }
-      else
-        return right_sm;
-    }
+      if (m_type == gsvd::Type::sigma_only)
+        (*current_liboctave_error_handler)
+          ("gsvd: X not computed because type == gsvd::sigma_only");
 
-    template <typename T>
-    T
-    gsvd<T>::R_matrix (void) const
-    {
-      if (type != gsvd::Type::std)
-        {
-          (*current_liboctave_error_handler)
-            ("gsvd: R not computed because type != gsvd::std");
-          return T ();
-        }
-      else
-        return R;
+      return m_right_sm;
     }
 
     template <typename T>
     gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
     {
+      if (a.isempty () || b.isempty ())
+        (*current_liboctave_error_handler)
+          ("gsvd: A and B cannot be empty matrices");
+
       F77_INT info;
 
       F77_INT m = to_f77_int (a.rows ());
@@ -513,17 +500,16 @@ namespace octave
         {
         case gsvd<T>::Type::sigma_only:
 
-          // Note:  for this case, both jobu and jobv should be 'N', but
-          // there seems to be a bug in dgesvd from Lapack V2.0.  To
-          // demonstrate the bug, set both jobu and jobv to 'N' and find
-          // the singular values of [eye(3), eye(3)].  The result is
-          // [-sqrt(2), -sqrt(2), -sqrt(2)].
+          // FIXME: In LAPACK 3.0, problem below seems to be fixed,
+          //        so we now set jobX = 'N'.
           //
-          // For Lapack 3.0, this problem seems to be fixed.
+          // For calculating sigma_only, both jobu and jobv should be 'N', but
+          // there seems to be a bug in dgesvd from LAPACK V2.0.  To
+          // demonstrate the bug, set both jobu and jobv to 'N' and find the
+          // singular values of [eye(3), eye(3)].  The result is
+          // [-sqrt(2), -sqrt(2), -sqrt(2)].
 
-          jobu = 'N';
-          jobv = 'N';
-          jobq = 'N';
+          jobu = jobv = jobq = 'N';
           nrow_u = nrow_v = nrow_q = 1;
           break;
 
@@ -531,27 +517,27 @@ namespace octave
           break;
         }
 
-      type = gsvd_type;
+      m_type = gsvd_type;
 
-      if (! (jobu == 'N' || jobu == 'O'))
-        left_smA.resize (nrow_u, m);
+      if (jobu != 'N')
+        m_left_smA.resize (nrow_u, m);
 
-      P *u = left_smA.fortran_vec ();
+      P *u = m_left_smA.fortran_vec ();
 
-      if (! (jobv == 'N' || jobv == 'O'))
-        left_smB.resize (nrow_v, p);
+      if (jobv != 'N')
+        m_left_smB.resize (nrow_v, p);
 
-      P *v = left_smB.fortran_vec ();
+      P *v = m_left_smB.fortran_vec ();
 
-      if (! (jobq == 'N' || jobq == 'O'))
-        right_sm.resize (nrow_q, n);
+      if (jobq != 'N')
+        m_right_sm.resize (nrow_q, n);
 
-      P *q = right_sm.fortran_vec ();
+      P *q = m_right_sm.fortran_vec ();
 
       real_matrix alpha (n, 1);
       real_matrix beta (n, 1);
 
-      std::vector<F77_INT> iwork (n);
+      OCTAVE_LOCAL_BUFFER(F77_INT, iwork, n);
 
       if (! gsvd_initialized)
         initialize_gsvd ();
@@ -560,100 +546,148 @@ namespace octave
       if (have_DGGSVD3)
         {
           lwork = -1;
-          T work_tmp (1, 1);
+          P work_tmp;
 
           gsvd<T>::ggsvd (jobu, jobv, jobq, m, n, p, k, l,
-                          tmp_dataA, m, tmp_dataB, p, alpha, beta, u,
-                          nrow_u, v, nrow_v, q, nrow_q, work_tmp, lwork,
-                          iwork.data (), info);
+                          tmp_dataA, m, tmp_dataB, p,
+                          alpha, beta, u, nrow_u, v, nrow_v, q, nrow_q,
+                          &work_tmp, lwork, iwork, info);
 
-          lwork = static_cast<F77_INT> (std::abs (work_tmp(0, 0)));
+          lwork = static_cast<F77_INT> (std::abs (work_tmp));
         }
       else
         {
-          lwork = 3*n;
-          lwork = (lwork > m ? lwork : m);
-          lwork = (lwork > p ? lwork : p) + n;
+          lwork = std::max ({3*n, m, p}) + n;
         }
       info = 0;
 
-      T work (lwork, 1);
+      OCTAVE_LOCAL_BUFFER(P, work, lwork);
 
       gsvd<T>::ggsvd (jobu, jobv, jobq, m, n, p, k, l,
-                      tmp_dataA, m, tmp_dataB, p, alpha, beta, u,
-                      nrow_u, v, nrow_v, q, nrow_q, work, lwork, iwork.data (),
-                      info);
+                      tmp_dataA, m, tmp_dataB, p,
+                      alpha, beta, u, nrow_u, v, nrow_v, q, nrow_q,
+                      work, lwork, iwork, info);
 
       if (info < 0)
-        (*current_liboctave_error_handler) ("*ggsvd.f: argument %d illegal",
-                                            -info);
-      else
+        (*current_liboctave_error_handler)
+          ("*ggsvd.f: argument %d illegal", -info);
+
+      if (info > 0)
+        (*current_liboctave_error_handler)
+          ("*ggsvd.f: Jacobi-type procedure failed to converge");
+
+      F77_INT i, j;
+
+      if (gsvd_type != gsvd<T>::Type::sigma_only)
         {
-          if (info > 0)
-            (*current_liboctave_error_handler)
-              ("*ggsvd.f: Jacobi-type procedure failed to converge.");
+          // Size according to LAPACK is k+l,k+l, but this needs
+          // to be nxn for Matlab compatibility.
+          T R (n, n, 0.0);
+          int astart = n-k-l;
+          if (m - k - l >= 0)
+            {
+              // R is stored in A(1:K+L,N-K-L+1:N)
+              for (i = 0; i < k+l; i++)
+                for (j = 0; j < k+l; j++)
+                  R.xelem (i, j) = atmp.xelem (i, astart + j);
+            }
           else
             {
-              F77_INT i, j;
+              // (R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N)
+              // ( 0  R22 R23 )
+              for (i = 0; i < m; i++)
+                for (j = 0; j < k+l; j++)
+                  R.xelem (i, j) = atmp.xelem (i, astart + j);
+              // and R33 is stored in B(M-K+1:L,N+M-K-L+1:N)
+              for (i = m; i < k + l; i++)
+                for (j = n - l - k + m; j < n; j++)
+                   R.xelem (i, j) = btmp.xelem (i - k, j);
+            }
 
-              if (gsvd<T>::Type::std == gsvd_type)
+          // Output X = Q*R'
+          // FIXME: Is there a way to call BLAS multiply directly
+          //        with flags so that R is transposed?
+          m_right_sm = m_right_sm * R.hermitian ();
+        }
+
+      // Fill in C and S
+      F77_INT rank;
+      bool fill_ptn;
+      if (m-k-l >= 0)
+        {
+          rank = l;
+          fill_ptn = true;
+        }
+      else
+        {
+          rank = m-k;
+          fill_ptn = false;
+        }
+
+      if (gsvd_type == gsvd<T>::Type::sigma_only)
+        {
+          // Return column vector with results
+          m_sigmaA.resize (k+l, 1);
+          m_sigmaB.resize (k+l, 1);
+
+          if (fill_ptn)
+            {
+              for (i = 0; i < k; i++)
                 {
-                  R.resize(k+l, k+l);
-                  int astart = n-k-l;
-                  if (m - k - l >=  0)
-                    {
-                      astart = n-k-l;
-                      // R is stored in A(1:K+L,N-K-L+1:N)
-                      for (i = 0; i < k+l; i++)
-                        for (j = 0; j < k+l; j++)
-                          R.xelem (i, j) = atmp.xelem (i, astart + j);
-                    }
-                  else
-                    {
-                      // (R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N),
-                      // ( 0  R22 R23 )
-
-                      for (i = 0; i < m; i++)
-                        for (j = 0; j < k+l; j++)
-                          R.xelem (i, j) = atmp.xelem (i, astart + j);
-                      // and R33 is stored in B(M-K+1:L,N+M-K-L+1:N)
-                      for (i = k+l-1; i >=m; i--)
-                        {
-                          for (j = 0; j < m; j++)
-                            R.xelem(i, j) = 0.0;
-                          for (j = m; j < k+l; j++)
-                            R.xelem (i, j) = btmp.xelem (i - k, astart + j);
-                        }
-                    }
+                  m_sigmaA.xelem (i) = 1.0;
+                  m_sigmaB.xelem (i) = 0.0;
                 }
-
-              if (m-k-l >= 0)
+              for (i = k, j = k+l-1; i < k+l; i++, j--)
                 {
-                  // Fills in C and S
-                  sigmaA.resize (l, l);
-                  sigmaB.resize (l, l);
-                  for (i = 0; i < l; i++)
-                    {
-                      sigmaA.dgxelem(i) = alpha.elem(k+i);
-                      sigmaB.dgxelem(i) = beta.elem(k+i);
-                    }
+                  m_sigmaA.xelem (i) = alpha.xelem (i);
+                  m_sigmaB.xelem (i) = beta.xelem (i);
                 }
-              else
+            }
+          else
+            {
+              for (i = 0; i < k; i++)
                 {
-                  // Fills in C and S
-                  sigmaA.resize (m-k, m-k);
-                  sigmaB.resize (m-k, m-k);
-                  for (i = 0; i < m-k; i++)
-                    {
-                      sigmaA.dgxelem(i) = alpha.elem(k+i);
-                      sigmaB.dgxelem(i) = beta.elem(k+i);
-                    }
+                  m_sigmaA.xelem (i) = 1.0;
+                  m_sigmaB.xelem (i) = 0.0;
+                }
+              for (i = k; i < m; i++)
+                {
+                  m_sigmaA.xelem (i) = alpha.xelem (i);
+                  m_sigmaB.xelem (i) = beta.xelem (i);
+                }
+              for (i = m; i < k+l; i++)
+                {
+                  m_sigmaA.xelem (i) = 0.0;
+                  m_sigmaB.xelem (i) = 1.0;
                 }
             }
         }
+      else  // returning all matrices
+        {
+          // Number of columns according to LAPACK is k+l, but this needs
+          // to be n for Matlab compatibility.
+          m_sigmaA.resize (m, n);
+          m_sigmaB.resize (p, n);
+
+          for (i = 0; i < k; i++)
+            m_sigmaA.xelem (i,i) = 1.0;
+
+          for (i = 0; i < rank; i++)
+            {
+              m_sigmaA.xelem (k+i,k+i) = alpha.xelem (k+i);
+              m_sigmaB.xelem (i,k+i) = beta.xelem (k+i);
+            }
+
+          if (! fill_ptn)
+            {
+              for (i = m; i < n; i++)
+                m_sigmaB.xelem (i-k, i) = 1.0;
+            }
+
+        }
     }
 
-    // Instantiations we need.
+    // Instantiations needed in octave::math namespace.
     template class gsvd<Matrix>;
     template class gsvd<FloatMatrix>;
     template class gsvd<ComplexMatrix>;

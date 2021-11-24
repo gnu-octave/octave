@@ -51,18 +51,18 @@ namespace octave
     // part.  To avoid running out of integers, we recycle the integer
     // part but tack on a new random part each time.
 
-    auto p = handle_free_list.begin ();
+    auto p = m_handle_free_list.begin ();
 
-    if (p != handle_free_list.end ())
+    if (p != m_handle_free_list.end ())
       {
         retval = *p;
-        handle_free_list.erase (p);
+        m_handle_free_list.erase (p);
       }
     else
       {
-        retval = url_handle (next_handle);
+        retval = url_handle (m_next_handle);
 
-        next_handle = std::ceil (next_handle) - 1.0 - make_handle_fraction ();
+        m_next_handle = std::ceil (m_next_handle) - 1.0 - make_handle_fraction ();
       }
 
     return retval;
@@ -72,9 +72,9 @@ namespace octave
   {
     if (h.ok ())
       {
-        auto p = handle_map.find (h);
+        auto p = m_handle_map.find (h);
 
-        if (p == handle_map.end ())
+        if (p == m_handle_map.end ())
           error ("url_handle_manager::free: invalid object %g", h.value ());
 
         // Curl handles are negative integers plus some random
@@ -82,10 +82,10 @@ namespace octave
         // recycle the integer part but tack on a new random part
         // each time.
 
-        handle_map.erase (p);
+        m_handle_map.erase (p);
 
         if (h.value () < 0)
-          handle_free_list.insert
+          m_handle_free_list.insert
             (std::ceil (h.value ()) - make_handle_fraction ());
       }
   }

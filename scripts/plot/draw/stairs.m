@@ -329,9 +329,9 @@ endfunction
 ## Invisible figure used for tests
 %!shared hf, hax
 %! hf = figure ("visible", "off");
-%! hax = axes;
+%! hax = axes ();
 
-%!error stairs ()
+%!error <Invalid call> stairs ()
 %!error <Y must be a numeric 2-D vector> stairs (hax, {1})
 %!error <Y must be a numeric 2-D vector> stairs (ones (2,2,2))
 %!error <X and Y must be numeric 2-D vector> stairs ({1}, 1)

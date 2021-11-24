@@ -26,7 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {t =} now ()
 ## Return the current local date/time as a serial day number
-## (see @code{datenum}).
+## (@pxref{XREFdatenum,,@code{datenum}}).
 ##
 ## The integral part, @code{floor (now)} corresponds to the number of days
 ## between today and Jan 1, 0000.
@@ -36,10 +36,6 @@
 ## @end deftypefn
 
 function t = now ()
-
-  if (nargin != 0)
-    print_usage ();
-  endif
 
   t = datenum (clock ());
 
@@ -59,5 +55,3 @@ endfunction
 %!assert (isnumeric (now ()))
 %!assert (now () > 0)
 %!assert (now () <= now ())
-
-%!error now (1)

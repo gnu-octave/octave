@@ -206,13 +206,13 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       vt = pt - beta1 * v;
 
       y = M1m1x (vt);
-      rho1 = norm(y);
+      rho1 = norm (y);
       wt = Atx (q) - beta1 * w;
       z = M2tm1x (wt);
 
-      xi1 = norm(z);
-      theta1 = rho1 / (gamma0 * abs(beta1));
-      gamma1 = 1 / sqrt(1 + theta1^2);   # If gamma1 == 0, method fails.
+      xi1 = norm (z);
+      theta1 = rho1 / (gamma0 * abs (beta1));
+      gamma1 = 1 / sqrt (1 + theta1^2);   # If gamma1 == 0, method fails.
       eta1 = -eta0 * rho0 * gamma1^2 / (beta1 * gamma0^2);
 
       if (iter == 1)
@@ -267,7 +267,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       printf ("to a solution with relative residual %e\n", res1);
     endif
   else
-    print_usage();
+    print_usage ();
   endif
 
 endfunction

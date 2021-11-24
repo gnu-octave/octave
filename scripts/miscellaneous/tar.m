@@ -44,7 +44,7 @@
 
 function filelist = tar (tarfile, files, rootdir = ".")
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -72,7 +72,7 @@ function filelist = tar (tarfile, files, rootdir = ".")
   else
     cmd = sprintf ("tar cvf %s -C %s %s",
                             tarfile, rootdir, sprintf (" %s", files{:}));
-  end
+  endif
 
   ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.
   tar_options_env = getenv ("TAR_OPTIONS");
@@ -133,7 +133,7 @@ endfunction
 %!   if (! exist (tarname, "file"))
 %!     error ("tar archive file cannot be found!");
 %!   endif
-%!   outdir = tempname;
+%!   outdir = tempname ();
 %!   untar (tarname, outdir);
 %!   fid = fopen (fullfile (outdir, fname1), "rt");
 %!   assert (fid >= 0);
@@ -149,17 +149,12 @@ endfunction
 %!   chdir (orig_dir);
 %!   unlink (tarname);
 %!   confirm_recursive_rmdir (false, "local");
-%!   if (exist (dirname))
-%!     rmdir (dirname, "s");
-%!   endif
-%!   if (exist (outdir))
-%!     rmdir (outdir, "s");
-%!   endif
+%!   sts = rmdir (dirname, "s");
+%!   sts = rmdir (outdir, "s");
 %! end_unwind_protect
 
 ## Test input validation
-%!error tar ()
-%!error tar (1)
-%!error tar (1,2,3,4)
+%!error <Invalid call> tar ()
+%!error <Invalid call> tar (1)
 %!error <TARFILE must be a string> tar (1, "foobar")
 %!error <FILES must be a character array or cellstr> tar ("foobar", 1)

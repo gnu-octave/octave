@@ -32,13 +32,13 @@
 #include "MArray.h"
 #include "MArray.cc"
 
-template class OCTAVE_API MArray<float>;
+INSTANTIATE_MARRAY (float);
 
 INSTANTIATE_MARRAY_FRIENDS (float, OCTAVE_API)
 
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 
-template class OCTAVE_API MDiagArray2<float>;
+template class MDiagArray2<float>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (float, OCTAVE_API)

@@ -6,6 +6,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__splinen__.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
   %reldir%/accumarray.m \
   %reldir%/accumdim.m \
   %reldir%/bincoeff.m \
@@ -60,6 +61,7 @@ FCN_FILE_DIRS += \
   %reldir%/repelem.m \
   %reldir%/repmat.m \
   %reldir%/rescale.m \
+  %reldir%/rng.m \
   %reldir%/rot90.m \
   %reldir%/rotdim.m \
   %reldir%/shift.m \

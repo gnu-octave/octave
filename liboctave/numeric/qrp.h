@@ -45,18 +45,18 @@ namespace octave
 
       typedef typename qr<T>::type type;
 
-      qrp (void) : qr<T> (), p () { }
+      qrp (void) : qr<T> (), m_p () { }
 
-      qrp (const T&, type = qr<T>::std);
+      OCTAVE_API qrp (const T&, type = qr<T>::std);
 
-      qrp (const qrp& a) : qr<T> (a), p (a.p) { }
+      qrp (const qrp& a) : qr<T> (a), m_p (a.m_p) { }
 
       qrp& operator = (const qrp& a)
       {
         if (this != &a)
           {
             qr<T>::operator = (a);
-            p = a.p;
+            m_p = a.m_p;
           }
 
         return *this;
@@ -64,15 +64,15 @@ namespace octave
 
       ~qrp (void) = default;
 
-      void init (const T&, type = qr<T>::std);
+      OCTAVE_API void init (const T&, type = qr<T>::std);
 
-      PermMatrix P (void) const { return p; }
+      PermMatrix P (void) const { return m_p; }
 
-      RV_T Pvec (void) const;
+      OCTAVE_API RV_T Pvec (void) const;
 
     private:
 
-      PermMatrix p;
+      PermMatrix m_p;
     };
   }
 }

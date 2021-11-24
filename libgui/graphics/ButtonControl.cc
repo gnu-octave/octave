@@ -37,7 +37,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace QtHandles
+namespace octave
 {
 
   ButtonControl::ButtonControl (octave::base_qobject& oct_qobj,
@@ -61,8 +61,8 @@ namespace QtHandles
           btn->setChecked (true);
       }
 
-    connect (btn, SIGNAL (clicked (void)), SLOT (clicked (void)));
-    connect (btn, SIGNAL (toggled (bool)), SLOT (toggled (bool)));
+    connect (btn, &QAbstractButton::clicked, this, &ButtonControl::clicked);
+    connect (btn, &QAbstractButton::toggled, this, &ButtonControl::toggled);
   }
 
   ButtonControl::~ButtonControl (void)

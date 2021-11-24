@@ -73,10 +73,6 @@
 
 function retval = what (dir)
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   if (nargin == 0)
     dir = { pwd() };
   else
@@ -109,7 +105,7 @@ function retval = what (dir)
    if (numel (dir) == 0)
      w = __what__ ("");
      w = resize (w, [0, 1]);  # Matlab compatibility, return 0x1 empty array
-   end
+   endif
 
   if (nargout == 0)
     for i = 1 : numel (w)

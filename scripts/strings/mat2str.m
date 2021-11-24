@@ -65,7 +65,7 @@
 
 function s = mat2str (x, n = 15, cls = "")
 
-  if (nargin < 1 || nargin > 3 || ! (isnumeric (x) || islogical (x)))
+  if (nargin < 1 || ! (isnumeric (x) || islogical (x)))
     print_usage ();
   elseif (ndims (x) > 2)
     error ("mat2str: X must be two dimensional");
@@ -142,8 +142,10 @@ endfunction
 %!assert (mat2str (pi), "3.14159265358979")
 %!assert (mat2str (pi, 5), "3.1416")
 %!assert (mat2str (single (pi), 5, "class"), "single(3.1416)")
-%!assert (mat2str ([-1/3 + i/7; 1/3 - i/7], [4 2]), "[-0.3333+0.14i;0.3333-0.14i]")
-%!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]), "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]")
+%!assert (mat2str ([-1/3 + i/7; 1/3 - i/7], [4 2]),
+%!        "[-0.3333+0.14i;0.3333-0.14i]")
+%!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]),
+%!        "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]")
 %!assert (mat2str (int16 ([1 -1]), "class"), "int16([1 -1])")
 %!assert (mat2str (true), "true")
 %!assert (mat2str (false), "false")
@@ -151,8 +153,7 @@ endfunction
 %!assert (mat2str (logical ([0 1; 0 0])), "[false true;false false]")
 
 ## Test input validation
-%!error mat2str ()
-%!error mat2str (1,2,3,4)
+%!error <Invalid call> mat2str ()
 %!error mat2str (["Hello"])
 %!error <X must be two dimensional> mat2str (ones (3,3,2))
 %!error <N must have only 1 or 2 elements> mat2str (ones (3,3), [1 2 3])

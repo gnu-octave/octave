@@ -58,9 +58,9 @@
 ##
 ## @item @qcode{"newline"}
 ## The character(s) to separate each row.  Three special cases exist for this
-## option.  @qcode{"unix"} is changed into @qcode{"@xbackslashchar{}n"},
-## @qcode{"pc"} is changed into @qcode{"@xbackslashchar{}r@xbackslashchar{}n"},
-## and @qcode{"mac"} is changed into @qcode{"@xbackslashchar{}r"}.  Any other
+## option.  @qcode{"unix"} is changed into @qcode{"@backslashchar{}n"},
+## @qcode{"pc"} is changed into @qcode{"@backslashchar{}r@backslashchar{}n"},
+## and @qcode{"mac"} is changed into @qcode{"@backslashchar{}r"}.  Any other
 ## value is used directly as the newline separator.
 ##
 ## @item @qcode{"roffset"}

@@ -32,22 +32,9 @@
 
 namespace octave
 {
-  class pid_equal
-  {
-  public:
-
-    pid_equal (pid_t v) : val (v) { }
-
-    bool operator () (const child& oc) const { return oc.pid == val; }
-
-  private:
-
-    pid_t val;
-  };
-
   void child_list::remove (pid_t pid)
   {
-    m_list.remove_if (pid_equal (pid));
+    m_list.remove_if ([pid] (const child& oc) { return oc.m_pid == pid; });
   }
 
   void child_list::child_list::insert (pid_t pid, child::child_event_handler f)
@@ -66,18 +53,18 @@ namespace octave
         // child_list::remove), so we increment the iterator
         // here.
 
-        if (oc.have_status)
+        if (oc.m_have_status)
           {
-            oc.have_status = 0;
+            oc.m_have_status = 0;
 
-            child::child_event_handler f = oc.handler;
+            child::child_event_handler f = oc.m_handler;
 
-            if (f && f (oc.pid, oc.status))
-              oc.pid = -1;
+            if (f && f (oc.m_pid, oc.m_status))
+              oc.m_pid = -1;
           }
       }
 
-    // ??
+    // Remove PIDs that have completed above.
     remove (-1);
   }
 
@@ -89,7 +76,7 @@ namespace octave
 
     for (auto& oc : m_list)
       {
-        pid_t pid = oc.pid;
+        pid_t pid = oc.m_pid;
 
         if (pid > 0)
           {
@@ -97,9 +84,9 @@ namespace octave
 
             if (sys::waitpid (pid, &status, sys::wnohang ()) > 0)
               {
-                oc.have_status = 1;
+                oc.m_have_status = 1;
 
-                oc.status = status;
+                oc.m_status = status;
 
                 retval = true;
 

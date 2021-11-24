@@ -24,14 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{hf}, @var{hok}, @var{hcancel}] =} __ok_cancel_dlg__ (@var{title})
+## @deftypefn {} {[@var{hf}, @var{hok}, @var{hcancel}] =} __ok_cancel_dlg__ (@var{dlg_title})
 ## Undocumented internal function.
 ## @seealso{}
 ## @end deftypefn
 
-function [hf, hok, hcancel, hpanel] = __ok_cancel_dlg__ (ttl, varargin)
+function [hf, hok, hcancel, hpanel] = __ok_cancel_dlg__ (dlg_title, varargin)
 
-  hf = dialog ("name", ttl, varargin{:});
+  hf = dialog ("name", dlg_title, varargin{:});
   setappdata (hf, "__ok_cancel_btn__", "cancel");
 
   hpanel = uipanel (hf, "units", "pixels", "bordertype", "none");
@@ -46,6 +46,7 @@ function [hf, hok, hcancel, hpanel] = __ok_cancel_dlg__ (ttl, varargin)
 endfunction
 
 function  cb_fix_button_position (hf, evt, hcancel, hok, hpanel)
+
   persistent margin = 20;
   persistent hgt = 30;
   persistent wd = 70;
@@ -62,4 +63,5 @@ function  cb_fix_button_position (hf, evt, hcancel, hok, hpanel)
   unwind_protect_cleanup
     set (hf, "units", units);
   end_unwind_protect
+
 endfunction

@@ -59,7 +59,7 @@ function h = tetramesh (varargin)
 
   [reg, prop] = parseparams (varargin);
 
-  if (length (reg) < 2 || length (reg) > 3)
+  if (numel (reg) < 2 || numel (reg) > 3)
     print_usage ();
   endif
 

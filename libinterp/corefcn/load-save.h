@@ -35,8 +35,8 @@
 
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class interpreter;
   class load_save_format;
   class symbol_info;
@@ -73,16 +73,16 @@ namespace octave
         NO_OPTION = 0
       };
 
-    load_save_system (interpreter& interp);
+    OCTINTERP_API load_save_system (interpreter& interp);
 
-    ~load_save_system (void);
+    OCTINTERP_API ~load_save_system (void);
 
     load_save_system (const load_save_system&) = delete;
 
     load_save_system& operator = (const load_save_system&) = delete;
 
-    octave_value crash_dumps_octave_core (const octave_value_list& args,
-                                          int nargout);
+    OCTINTERP_API octave_value
+    crash_dumps_octave_core (const octave_value_list& args, int nargout);
 
     bool crash_dumps_octave_core (void) const
     {
@@ -107,8 +107,8 @@ namespace octave
       return set (m_octave_core_file_limit, limit);
     }
 
-    octave_value octave_core_file_name (const octave_value_list& args,
-                                        int nargout);
+    OCTINTERP_API octave_value
+    octave_core_file_name (const octave_value_list& args, int nargout);
 
     std::string octave_core_file_name (void) const
     {
@@ -120,8 +120,8 @@ namespace octave
       return set (m_octave_core_file_name, file);
     }
 
-    octave_value save_default_options (const octave_value_list& args,
-                                       int nargout);
+    OCTINTERP_API octave_value
+    save_default_options (const octave_value_list& args, int nargout);
 
     std::string save_default_options (void) const
     {
@@ -133,8 +133,8 @@ namespace octave
       return set (m_save_default_options, options);
     }
 
-    octave_value octave_core_file_options (const octave_value_list& args,
-                                           int nargout);
+    OCTINTERP_API octave_value
+    octave_core_file_options (const octave_value_list& args, int nargout);
 
     std::string octave_core_file_options (void) const
     {
@@ -146,8 +146,8 @@ namespace octave
       return set (m_octave_core_file_options, options);
     }
 
-    octave_value save_header_format_string (const octave_value_list& args,
-                                            int nargout);
+    OCTINTERP_API octave_value
+    save_header_format_string (const octave_value_list& args, int nargout);
 
     std::string save_header_format_string (void) const
     {
@@ -159,42 +159,40 @@ namespace octave
       return set (m_save_header_format_string, format);
     }
 
-    static load_save_format get_file_format (const std::string& fname,
-                                             const std::string& orig_fname,
-                                             bool& use_zlib,
-                                             bool quiet = false);
+    static OCTINTERP_API load_save_format
+    get_file_format (const std::string& fname, const std::string& orig_fname,
+                     bool& use_zlib, bool quiet = false);
 
     // FIXME: this is probably not the best public interface for
     // loading and saving variables, but it is what is currently
     // needed for the Fload and Fsave functions.
 
-    octave_value load_vars (std::istream& stream,
-                            const std::string& orig_fname,
-                            const load_save_format& fmt,
-                            mach_info::float_format flt_fmt,
-                            bool list_only, bool swap, bool verbose,
-                            const string_vector& argv, int argv_idx,
-                            int argc, int nargout);
+    OCTINTERP_API octave_value
+    load_vars (std::istream& stream, const std::string& orig_fname,
+               const load_save_format& fmt, mach_info::float_format flt_fmt,
+               bool list_only, bool swap, bool verbose,
+               const string_vector& argv, int argv_idx, int argc, int nargout);
 
-    static string_vector
+    static OCTINTERP_API string_vector
     parse_save_options (const string_vector& argv, load_save_format& fmt,
                         bool& append, bool& save_as_floats, bool& use_zlib);
 
-    static string_vector
+    static OCTINTERP_API string_vector
     parse_save_options (const std::string& arg, load_save_format& fmt,
                         bool& append, bool& save_as_floats, bool& use_zlib);
 
-    void save_vars (const string_vector& argv, int argv_idx, int argc,
-                    std::ostream& os, const load_save_format& fmt,
-                    bool save_as_floats, bool write_header_info);
+    OCTINTERP_API void
+    save_vars (const string_vector& argv, int argv_idx, int argc,
+               std::ostream& os, const load_save_format& fmt,
+               bool save_as_floats, bool write_header_info);
 
-    void dump_octave_core (void);
+    OCTINTERP_API void dump_octave_core (void);
 
-    octave_value_list
+    OCTINTERP_API octave_value_list
     load (const octave_value_list& args = octave_value_list (),
           int nargout = 0);
 
-    octave_value_list
+    OCTINTERP_API octave_value_list
     save (const octave_value_list& args = octave_value_list (),
           int nargout = 0);
 
@@ -225,34 +223,39 @@ namespace octave
     // '#' and contain no newline characters.
     std::string m_save_header_format_string;
 
-    void write_header (std::ostream& os, const load_save_format& fmt);
+    OCTINTERP_API void
+    write_header (std::ostream& os, const load_save_format& fmt);
 
-    std::size_t save_vars (std::ostream& os, const std::string& pattern,
-                           const load_save_format& fmt, bool save_as_floats);
+    OCTINTERP_API std::size_t
+    save_vars (std::ostream& os, const std::string& pattern,
+               const load_save_format& fmt, bool save_as_floats);
 
-    void do_save (std::ostream& os, const octave_value& tc,
-                  const std::string& name, const std::string& help,
-                  bool global, const load_save_format& fmt,
-                  bool save_as_floats);
+    OCTINTERP_API void
+    do_save (std::ostream& os, const octave_value& tc, const std::string& name,
+             const std::string& help, bool global, const load_save_format& fmt,
+             bool save_as_floats);
 
-    void do_save (std::ostream& os, const symbol_info& syminfo,
-                  const load_save_format& fmt, bool save_as_floats);
+    OCTINTERP_API void
+    do_save (std::ostream& os, const symbol_info& syminfo,
+             const load_save_format& fmt, bool save_as_floats);
 
-    std::size_t save_fields (std::ostream& os, const octave_scalar_map& m,
-                             const std::string& pattern,
-                             const load_save_format& fmt, bool save_as_floats);
+    OCTINTERP_API std::size_t
+    save_fields (std::ostream& os, const octave_scalar_map& m,
+                 const std::string& pattern, const load_save_format& fmt,
+                 bool save_as_floats);
 
-    void dump_octave_core (std::ostream& os, const char *fname,
-                           const load_save_format& fmt, bool save_as_floats);
+    OCTINTERP_API void
+    dump_octave_core (std::ostream& os, const char *fname,
+                      const load_save_format& fmt, bool save_as_floats);
 
-    void install_loaded_variable (const std::string& name,
-                                  const octave_value& val,
-                                  bool global, const std::string& /*doc*/);
+    OCTINTERP_API void
+    install_loaded_variable (const std::string& name, const octave_value& val,
+                             bool global, const std::string& /*doc*/);
 
-    static std::string init_save_header_format (void);
+    static OCTINTERP_API std::string init_save_header_format (void);
 
-    static load_save_format get_file_format (std::istream& file,
-                                             const std::string& filename);
+    static OCTINTERP_API load_save_format
+    get_file_format (std::istream& file, const std::string& filename);
 
     template <typename T>
     T set (T& var, const T& new_val)
@@ -288,8 +291,10 @@ namespace octave
     load_save_system::format_type m_type;
     int m_options;
   };
-}
 
-extern void dump_octave_core (void);
+OCTAVE_NAMESPACE_END
+
+OCTAVE_DEPRECATED (7, "use 'load_save_system::dump_octave_core' instead")
+extern OCTINTERP_API void dump_octave_core (void);
 
 #endif

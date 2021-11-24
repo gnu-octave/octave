@@ -68,7 +68,7 @@
 ## that in the first column counts how many occurrences each number in
 ## the second column has, taken from the vector @var{x}.  Note the usage
 ## of @code{unique}  for assigning to all repeated elements of @var{x}
-## the same index (@pxref{XREFunique,,unique}).
+## the same index (@pxref{XREFunique,,@code{unique}}).
 ##
 ## @example
 ## @group
@@ -99,7 +99,7 @@
 ## @end example
 ##
 ## The sparse option can be used as an alternative to the @code{sparse}
-## constructor (@pxref{XREFsparse,,sparse}).  Thus
+## constructor (@pxref{XREFsparse,,@code{sparse}}).  Thus
 ##
 ## @example
 ## sparse (@var{i}, @var{j}, @var{sv})
@@ -134,7 +134,7 @@
 
 function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])
 
-  if (nargin < 2 || nargin > 6)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -442,8 +442,8 @@ endfunction
 %! assert (accumarray (subsc, vals, [], @max),
 %!         accumarray (subs, vals, [], @max));
 
-%!error (accumarray (1:5))
-%!error (accumarray ([1,2,3],1:2))
+%!error accumarray (1:5)
+%!error accumarray ([1,2,3],1:2)
 
 ## Handle empty arrays
 %!test <*47287>

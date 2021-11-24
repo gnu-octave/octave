@@ -135,8 +135,8 @@ endfunction
 %! title ("feather plot");
 
 ## Test input validation
-%!error feather ()
-%!error feather (1,2,3,4)
+%!error <Invalid call> feather ()
+%!error <Invalid call> feather (1,2,3,4)
 %!error feather (1, "-r", 2)
 %!error <invalid linestyle STYLE> feather (1, "abc")
 %!error <invalid linestyle STYLE> feather (1, {1})

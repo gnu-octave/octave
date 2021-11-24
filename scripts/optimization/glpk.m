@@ -485,7 +485,7 @@
 function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, sense, param)
 
   ## If there is no input output the version and syntax
-  if (nargin < 3 || nargin > 9)
+  if (nargin < 3)
     print_usage ();
   endif
 
@@ -667,9 +667,9 @@ endfunction
 %! assert (fmin, c' * xmin);
 %! assert (A * xmin, b);
 
-%!error<C .* finite values> glpk(NaN, 2, 3)
-%!error<A must be finite> glpk(1, NaN, 3)
-%!error<B must be finite> glpk(1, 2, NaN)
-%!error<LB must be a real-valued> glpk(1, 2, 3, NaN)
-%!error<UB must be a real-valued> glpk(1, 2, 3, 4, NaN)
-%!error<SENSE must be .* integer> glpk(1, 2, 3, 4, 5, "F", "C", NaN)
+%!error <C .* finite values> glpk (NaN, 2, 3)
+%!error <A must be finite> glpk (1, NaN, 3)
+%!error <B must be finite> glpk (1, 2, NaN)
+%!error <LB must be a real-valued> glpk (1, 2, 3, NaN)
+%!error <UB must be a real-valued> glpk (1, 2, 3, 4, NaN)
+%!error <SENSE must be .* integer> glpk (1, 2, 3, 4, 5, "F", "C", NaN)

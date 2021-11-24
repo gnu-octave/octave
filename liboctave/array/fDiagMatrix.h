@@ -66,53 +66,57 @@ public:
   FloatDiagMatrix (const Array<float>& a, octave_idx_type r, octave_idx_type c)
     : MDiagArray2<float> (a, r, c) { }
 
-  bool operator == (const FloatDiagMatrix& a) const;
-  bool operator != (const FloatDiagMatrix& a) const;
+  OCTAVE_API bool operator == (const FloatDiagMatrix& a) const;
+  OCTAVE_API bool operator != (const FloatDiagMatrix& a) const;
 
-  FloatDiagMatrix& fill (float val);
-  FloatDiagMatrix& fill (float val, octave_idx_type beg, octave_idx_type end);
-  FloatDiagMatrix& fill (const FloatColumnVector& a);
-  FloatDiagMatrix& fill (const FloatRowVector& a);
-  FloatDiagMatrix& fill (const FloatColumnVector& a, octave_idx_type beg);
-  FloatDiagMatrix& fill (const FloatRowVector& a, octave_idx_type beg);
+  OCTAVE_API FloatDiagMatrix& fill (float val);
+  OCTAVE_API FloatDiagMatrix&
+  fill (float val, octave_idx_type beg, octave_idx_type end);
+  OCTAVE_API FloatDiagMatrix& fill (const FloatColumnVector& a);
+  OCTAVE_API FloatDiagMatrix& fill (const FloatRowVector& a);
+  OCTAVE_API FloatDiagMatrix&
+  fill (const FloatColumnVector& a, octave_idx_type beg);
+  OCTAVE_API FloatDiagMatrix&
+  fill (const FloatRowVector& a, octave_idx_type beg);
 
   FloatDiagMatrix transpose (void) const
   { return MDiagArray2<float>::transpose (); }
 
-  FloatDiagMatrix abs (void) const;
+  OCTAVE_API FloatDiagMatrix abs (void) const;
 
   friend OCTAVE_API FloatDiagMatrix real (const FloatComplexDiagMatrix& a);
   friend OCTAVE_API FloatDiagMatrix imag (const FloatComplexDiagMatrix& a);
 
   // resize is the destructive analog for this one
 
-  FloatMatrix extract (octave_idx_type r1, octave_idx_type c1,
-                       octave_idx_type r2, octave_idx_type c2) const;
+  OCTAVE_API FloatMatrix
+  extract (octave_idx_type r1, octave_idx_type c1,
+           octave_idx_type r2, octave_idx_type c2) const;
 
   // extract row or column i.
 
-  FloatRowVector row (octave_idx_type i) const;
-  FloatRowVector row (char *s) const;
+  OCTAVE_API FloatRowVector row (octave_idx_type i) const;
+  OCTAVE_API FloatRowVector row (char *s) const;
 
-  FloatColumnVector column (octave_idx_type i) const;
-  FloatColumnVector column (char *s) const;
+  OCTAVE_API FloatColumnVector column (octave_idx_type i) const;
+  OCTAVE_API FloatColumnVector column (char *s) const;
 
-  FloatDiagMatrix inverse (void) const;
-  FloatDiagMatrix inverse (octave_idx_type& info) const;
-  FloatDiagMatrix pseudo_inverse (float tol = 0.0f) const;
+  OCTAVE_API FloatDiagMatrix inverse (void) const;
+  OCTAVE_API FloatDiagMatrix inverse (octave_idx_type& info) const;
+  OCTAVE_API FloatDiagMatrix pseudo_inverse (float tol = 0.0f) const;
 
   // other operations
 
   FloatColumnVector extract_diag (octave_idx_type k = 0) const
   { return MDiagArray2<float>::extract_diag (k); }
 
-  FloatDET determinant (void) const;
-  float rcond (void) const;
+  OCTAVE_API FloatDET determinant (void) const;
+  OCTAVE_API float rcond (void) const;
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                               const FloatDiagMatrix& a);
+  friend OCTAVE_API std::ostream&
+  operator << (std::ostream& os, const FloatDiagMatrix& a);
 
 };
 
@@ -121,8 +125,8 @@ OCTAVE_API FloatDiagMatrix imag (const FloatComplexDiagMatrix& a);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
-OCTAVE_API FloatDiagMatrix operator * (const FloatDiagMatrix& a,
-                                       const FloatDiagMatrix& b);
+OCTAVE_API FloatDiagMatrix
+operator * (const FloatDiagMatrix& a, const FloatDiagMatrix& b);
 
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, FloatDiagMatrix, float)
 

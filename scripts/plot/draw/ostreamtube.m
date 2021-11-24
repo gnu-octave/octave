@@ -71,7 +71,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{stream3, streamline, streamtube}
+## @seealso{stream3, streamline, streamribbon, streamtube}
 ## @end deftypefn
 
 ## References:
@@ -97,8 +97,6 @@ function h = ostreamtube (varargin)
   options = [];
   xyz = [];
   switch (nargin)
-    case 0
-      print_usage ();
     case 6
       [u, v, w, spx, spy, spz] = varargin{:};
       [m, n, p] = size (u);
@@ -118,7 +116,7 @@ function h = ostreamtube (varargin)
     case 10
       [x, y, z, u, v, w, spx, spy, spz, options] = varargin{:};
     otherwise
-      error ("ostreamtube: invalid number of inputs");
+      print_usage ();
   endswitch
 
   scale = 1;
@@ -131,7 +129,7 @@ function h = ostreamtube (varargin)
         scale = options(1);
         num_circum = options(2);
       otherwise
-        error ("ostreamtube: invalid number of OPTIONS elements");
+        error ("ostreamtube: OPTIONS must be a 1- or 2-element vector");
     endswitch
 
     if (! isreal (scale) || scale <= 0)
@@ -161,7 +159,7 @@ function h = ostreamtube (varargin)
   for i = 1 : length (xyz)
     sl = xyz{i};
     if (! isempty (sl))
-      slx = sl(:, 1); sly = sl(:, 2); slz = sl(:, 3);
+      slx = sl(:,1); sly = sl(:,2); slz = sl(:,3);
       mxx(j) = max (slx); mnx(j) = min (slx);
       mxy(j) = max (sly); mny(j) = min (sly);
       mxz(j) = max (slz); mnz(j) = min (slz);
@@ -179,12 +177,12 @@ function h = ostreamtube (varargin)
     num_vertices = rows (sl);
     if (! isempty (sl) && num_vertices > 2)
 
-      usl = interp3 (x, y, z, u, sl(:, 1), sl(:, 2), sl(:, 3));
-      vsl = interp3 (x, y, z, v, sl(:, 1), sl(:, 2), sl(:, 3));
-      wsl = interp3 (x, y, z, w, sl(:, 1), sl(:, 2), sl(:, 3));
+      usl = interp3 (x, y, z, u, sl(:,1), sl(:,2), sl(:,3));
+      vsl = interp3 (x, y, z, v, sl(:,1), sl(:,2), sl(:,3));
+      wsl = interp3 (x, y, z, w, sl(:,1), sl(:,2), sl(:,3));
       vv = sqrt (usl.*usl + vsl.*vsl + wsl.*wsl);
 
-      div_sl = interp3 (x, y, z, div, sl(:, 1), sl(:, 2), sl(:, 3));
+      div_sl = interp3 (x, y, z, div, sl(:,1), sl(:,2), sl(:,3));
       is_singular_div = find (isnan (div_sl), 1, "first");
 
       if (! isempty (is_singular_div))
@@ -211,61 +209,65 @@ function h = plottube (hax, sl, div_sl, vv, max_vertices, rstart, num_circum)
   cp = cos (phi);
   sp = sin (phi);
 
-  X0 = sl(1, :);
-  X1 = sl(2, :);
-
-  ## 1st rotation axis
+  ## 1st streamline segment
+  X0 = sl(1,:);
+  X1 = sl(2,:);
   R = X1 - X0;
   RE = R / norm (R);
 
-  ## Initial radius
-  vold = vv(1);
-  vact = vv(2);
-  ract = rstart * exp (0.5 * div_sl(2) * norm (R) / vact) * sqrt (vold / vact);
-  vold = vact;
-  rold = ract;
-
   ## Guide point and its rotation to create a segment
-  N = get_normal1 (R);
-  K = ract * N;
+  KE = get_normal1 (RE);
+  K = rstart * KE;
+  XS0 = rotation (K, RE, cp, sp) + repmat (X0.', 1, num_circum);
+
+  ## End of first segment
+  ract = rstart * exp (0.5 * div_sl(2) * norm (R) / vv(2)) * ...
+                  sqrt (vv(1) / vv(2));
+  rold = ract;
+  K = ract * KE;
   XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
-  px = zeros (num_circum, max_vertices - 1);
-  py = zeros (num_circum, max_vertices - 1);
-  pz = zeros (num_circum, max_vertices - 1);
-  pc = zeros (num_circum, max_vertices - 1);
+  px = zeros (num_circum, max_vertices);
+  py = zeros (num_circum, max_vertices);
+  pz = zeros (num_circum, max_vertices);
+  pc = zeros (num_circum, max_vertices);
 
-  px(:, 1) = XS(1, :).';
-  py(:, 1) = XS(2, :).';
-  pz(:, 1) = XS(3, :).';
-  pc(:, 1) = vact * ones (num_circum, 1);
+  px(:,1) = XS0(1,:).';
+  py(:,1) = XS0(2,:).';
+  pz(:,1) = XS0(3,:).';
+  pc(:,1) = vv(1) * ones (num_circum, 1);
+
+  px(:,2) = XS(1,:).';
+  py(:,2) = XS(2,:).';
+  pz(:,2) = XS(3,:).';
+  pc(:,2) = vv(2) * ones (num_circum, 1);
 
   for i = 3 : max_vertices
 
-    KK = K;
+    ## Next streamline segment
     X0 = X1;
-    X1 = sl(i, :);
+    X1 = sl(i,:);
     R = X1 - X0;
     RE = R / norm (R);
 
     ## Tube radius
-    vact = vv(i);
-    ract = rold * exp (0.5 * div_sl(i) * norm (R) / vact) * sqrt (vold / vact);
-    vold = vact;
+    ract = rold * exp (0.5 * div_sl(i) * norm (R) / vv(i)) * ...
+                  sqrt (vv(i-1) / vv(i));
     rold = ract;
 
-    ## Project KK onto RE and get the difference in order to calculate the next
-    ## guiding point
-    Kp = KK - RE * dot (KK, RE);
-    K = ract * Kp / norm (Kp);
+    ## Project KE onto RE and get the difference in order to transport
+    ## the normal vector KE along the vertex array
+    Kp = KE - RE * dot (KE, RE);
+    KE = Kp / norm (Kp);
+    K = ract * KE;
 
     ## Rotate around RE and collect surface patches
     XS = rotation (K, RE, cp, sp) + repmat (X1.', 1, num_circum);
 
-    px(:, i - 1) = XS(1, :).';
-    py(:, i - 1) = XS(2, :).';
-    pz(:, i - 1) = XS(3, :).';
-    pc(:, i - 1) = vact * ones (num_circum, 1);
+    px(:,i) = XS(1,:).';
+    py(:,i) = XS(2,:).';
+    pz(:,i) = XS(3,:).';
+    pc(:,i) = vv(i) * ones (num_circum, 1);
 
   endfor
 
@@ -277,9 +279,9 @@ endfunction
 function N = get_normal1 (X)
 
   if ((X(3) == 0) && (X(1) == -X(2)))
-    N = [- X(2) - X(3), X(1), X(1)];
+    N = [(- X(2) - X(3)), X(1), X(1)];
   else
-    N = [X(3), X(3), - X(1) - X(2)];
+    N = [X(3), X(3), (- X(1) - X(2))];
   endif
 
   N /= norm (N);
@@ -294,19 +296,20 @@ function Y = rotation (X, U, cp, sp)
   uy = U(2);
   uz = U(3);
 
-  Y(1, :) = X(1) * (cp + ux * ux * (1 - cp)) + ...
-            X(2) * (ux * uy * (1 - cp) - uz * sp) + ...
-            X(3) * (ux * uz * (1 - cp) + uy * sp);
+  Y(1,:) = X(1) * (cp + ux * ux * (1 - cp)) + ...
+           X(2) * (ux * uy * (1 - cp) - uz * sp) + ...
+           X(3) * (ux * uz * (1 - cp) + uy * sp);
 
-  Y(2, :) = X(1) * (uy * ux * (1 - cp) + uz * sp) + ...
-            X(2) * (cp + uy * uy * (1 - cp)) + ...
-            X(3) * (uy * uz * (1 - cp) - ux * sp);
+  Y(2,:) = X(1) * (uy * ux * (1 - cp) + uz * sp) + ...
+           X(2) * (cp + uy * uy * (1 - cp)) + ...
+           X(3) * (uy * uz * (1 - cp) - ux * sp);
 
-  Y(3, :) = X(1) * (uz * ux * (1 - cp) - uy * sp) + ...
-            X(2) * (uz * uy * (1 - cp) + ux * sp) + ...
-            X(3) * (cp + uz * uz * (1 - cp));
+  Y(3,:) = X(1) * (uz * ux * (1 - cp) - uy * sp) + ...
+           X(2) * (uz * uy * (1 - cp) + ux * sp) + ...
+           X(3) * (cp + uz * uz * (1 - cp));
 
 endfunction
+
 
 %!demo
 %! clf;
@@ -353,14 +356,14 @@ endfunction
 %! title ("Integration Towards Sink");
 
 ## Test input validation
-%!error ostreamtube ()
-%!error <invalid number of inputs> ostreamtube (1)
-%!error <invalid number of inputs> ostreamtube (1,2)
-%!error <invalid number of inputs> ostreamtube (1,2,3)
-%!error <invalid number of inputs> ostreamtube (1,2,3,4)
-%!error <invalid number of inputs> ostreamtube (1,2,3,4,5)
-%!error <invalid number of OPTIONS> ostreamtube (1,2,3,4,5,6, [1,2,3])
-%!error <SCALE must be a real scalar . 0> ostreamtube (1,2,3,4,5,6, [1i])
-%!error <SCALE must be a real scalar . 0> ostreamtube (1,2,3,4,5,6, [0])
-%!error <N must be greater than 2> ostreamtube (1,2,3,4,5,6, [1, 1i])
-%!error <N must be greater than 2> ostreamtube (1,2,3,4,5,6, [1, 2])
+%!error <Invalid call> ostreamtube ()
+%!error <Invalid call> ostreamtube (1)
+%!error <Invalid call> ostreamtube (1,2)
+%!error <Invalid call> ostreamtube (1,2,3)
+%!error <Invalid call> ostreamtube (1,2,3,4)
+%!error <Invalid call> ostreamtube (1,2,3,4,5)
+%!error <OPTIONS must be a 1- or 2-element> ostreamtube (1,2,3,4,5,6,[1,2,3])
+%!error <SCALE must be a real scalar . 0> ostreamtube (1,2,3,4,5,6,[1i])
+%!error <SCALE must be a real scalar . 0> ostreamtube (1,2,3,4,5,6,[0])
+%!error <N must be greater than 2> ostreamtube (1,2,3,4,5,6,[1,1i])
+%!error <N must be greater than 2> ostreamtube (1,2,3,4,5,6,[1,2])

@@ -35,28 +35,24 @@
 ## the bounding box approximately fills the field of view.
 ##
 ## This command fixes the camera's viewing direction
-## (@code{camtarget() - campos()}), camera up vector (@pxref{XREFcamup,,camup})
-## and viewing angle (@pxref{XREFcamva,,camva}).  The camera target
-## (@pxref{XREFcamtarget,,camtarget}) and camera position
-## (@pxref{XREFcampos,,campos}) are changed.
-##
+## (@code{camtarget() - campos()}), camera up vector
+## (@pxref{XREFcamup,,@code{camup}}) and viewing angle
+## (@pxref{XREFcamva,,@code{camva}}).  The camera target
+## (@pxref{XREFcamtarget,,@code{camtarget}}) and camera position
+## (@pxref{XREFcampos,,@code{campos}}) are changed.
 ##
 ## If the argument is a list @var{handle_list}, then a single bounding box for
 ## all the objects is computed and the camera is then adjusted as above.
 ##
 ## If the argument is an axis object @var{hax}, then the children of the axis
 ## are used as @var{handle_list}.  When called with no inputs, it uses the
-## current axis (@pxref{XREFgca,,gca}).
+## current axis (@pxref{XREFgca,,@code{gca}}).
 ##
 ## @seealso{camorbit, camzoom, camroll}
 ## @end deftypefn
 
 
 function camlookat (hh)
-
-  if (nargin > 1)
-    print_usage ();
-  endif
 
   if (nargin == 0)
     hax = gca ();
@@ -67,26 +63,26 @@ function camlookat (hh)
       hh = get (hax, "children");
     elseif (all (ishghandle (hh)))
       hax = ancestor (hh, "axes");
-      if numel (hax) > 1
+      if (numel (hax) > 1)
         hax = unique ([hax{:}]);
       endif
       if (numel (hax) > 1)
-        error ("camlookat: HANDLE_LIST must be children of the same axes.");
+        error ("camlookat: HANDLE_LIST must be children of the same axes");
       endif
     endif
   endif
 
   if (isempty (hh))
-    return
-  end
+    return;
+  endif
 
   x0 = x1 = y0 = y1 = z0 = z1 = [];
   for i = 1:numel (hh)
     h = hh(i);
 
     if (! ishghandle (h))
-      error ("camlookat: Inputs must be handles.");
-    end
+      error ("camlookat: Inputs must be handles");
+    endif
 
     x0_ = min (get (h, "xdata")(:));
     x1_ = max (get (h, "xdata")(:));
@@ -202,15 +198,15 @@ endfunction
 %!   camlookat (h1);
 %!   dir2 = camtarget () - campos ();
 %!   dir2 /= norm (dir2);
-%!   assert (dir, dir2, -2*eps);
+%!   assert (dir, dir2, -4*eps);
 %!   camlookat (h2);
 %!   dir2 = camtarget () - campos ();
 %!   dir2 /= norm (dir2);
-%!   assert (dir, dir2, -2*eps)
+%!   assert (dir, dir2, -4*eps);
 %!   camlookat ([h1 h2]);
 %!   dir2 = camtarget () - campos ();
 %!   dir2 /= norm (dir2);
-%!   assert (dir, dir2, -2*eps);
+%!   assert (dir, dir2, -4*eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -313,7 +309,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error <Invalid call> camlookat (1, 2)
+%!error <called with too many inputs> camlookat (1, 2)
 %!error <must be handle> camlookat ("a")
 %!error <children of the same axes>
 %! hf = figure ("visible", "off");

@@ -7,7 +7,7 @@
 %!  endif
 %!endfunction
 
-%!test
+%!test <*53599>
 %! global gval
 %! assert (isempty (gval))
 %! sggval (13);

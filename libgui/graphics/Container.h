@@ -38,7 +38,7 @@ namespace octave
   class base_qobject;
 }
 
-namespace QtHandles
+namespace octave
 {
 
   DECLARE_GENERICEVENTNOTIFY_SENDER(ContainerBase, QWidget);

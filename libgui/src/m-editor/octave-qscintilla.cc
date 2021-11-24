@@ -59,6 +59,7 @@
 #include "octave-qobject.h"
 #include "octave-qscintilla.h"
 #include "shortcut-manager.h"
+#include "workspace-model.h"
 
 #include "builtin-defun-decls.h"
 #include "cmd-edit.h"
@@ -110,9 +111,10 @@ namespace octave
   }
 
   octave_qscintilla::octave_qscintilla (QWidget *p, base_qobject& oct_qobj)
-    : QsciScintilla (p), m_octave_qobj (oct_qobj), m_word_at_cursor (),
-      m_selection (), m_selection_replacement (), m_selection_line (-1),
-      m_selection_col (-1), m_indicator_id (1)
+    : QsciScintilla (p), m_octave_qobj (oct_qobj), m_debug_mode (false),
+      m_word_at_cursor (), m_selection (), m_selection_replacement (),
+      m_selection_line (-1), m_selection_col (-1), m_indicator_id (1),
+      m_tooltip_font (QToolTip::font ())
   {
     connect (this, SIGNAL (textChanged (void)),
              this, SLOT (text_changed (void)));
@@ -120,10 +122,8 @@ namespace octave
     connect (this, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (cursor_position_changed (int, int)));
 
-    connect (this, SIGNAL (ctx_menu_run_finished_signal (bool, int, QTemporaryFile*,
-                                                         QTemporaryFile*, bool, bool)),
-             this, SLOT (ctx_menu_run_finished (bool, int, QTemporaryFile*,
-                                                QTemporaryFile*, bool, bool)),
+    connect (this, &octave_qscintilla::ctx_menu_run_finished_signal,
+             this, &octave_qscintilla::ctx_menu_run_finished,
              Qt::QueuedConnection);
 
     // clear scintilla edit shortcuts that are handled by the editor
@@ -231,10 +231,16 @@ namespace octave
     emit status_update (isUndoAvailable (), isRedoAvailable ());
   }
 
+  void octave_qscintilla::setCursorPosition (int line, int col)
+  {
+    QsciScintilla::setCursorPosition (line, col);
+    emit update_rowcol_indicator_signal (line, col);
+  }
+
   void octave_qscintilla::set_selection_marker_color (const QColor& c)
   {
     QColor ic = c;
-    ic.setAlphaF (0.25);
+    ic.setAlphaF (0.45);
     setIndicatorForegroundColor (ic, m_indicator_id);
     setIndicatorOutlineColor (ic, m_indicator_id);
 
@@ -290,12 +296,12 @@ namespace octave
             if (! m_word_at_cursor.isEmpty ())
               {
                 context_menu->addAction (tr ("Help on") + ' ' + m_word_at_cursor,
-                                         this, SLOT (contextmenu_help (bool)));
+                                         this, &octave_qscintilla::contextmenu_help);
                 context_menu->addAction (tr ("Documentation on")
                                          + ' ' + m_word_at_cursor,
-                                         this, SLOT (contextmenu_doc (bool)));
+                                         this, &octave_qscintilla::contextmenu_doc);
                 context_menu->addAction (tr ("Edit") + ' ' + m_word_at_cursor,
-                                         this, SLOT (contextmenu_edit (bool)));
+                                         this, &octave_qscintilla::contextmenu_edit);
               }
           }
       }
@@ -310,7 +316,7 @@ namespace octave
 
         QAction *act
           = context_menu->addAction (tr ("dbstop if ..."), this,
-                                     SLOT (contextmenu_break_condition (bool)));
+                                     &octave_qscintilla::contextmenu_break_condition);
         act->setData (local_pos);
       }
 #endif
@@ -324,7 +330,7 @@ namespace octave
   void octave_qscintilla::contextmenu_help_doc (bool documentation)
   {
     if (documentation)
-      emit show_doc_signal (m_word_at_cursor);
+      m_octave_qobj.show_documentation_window (m_word_at_cursor);
     else
       emit execute_command_in_terminal_signal ("help " + m_word_at_cursor);
   }
@@ -379,6 +385,22 @@ namespace octave
     clearIndicatorRange (0, 0, end_line, end_col, m_indicator_id);
 
     markerDeleteAll (marker::selection);
+  }
+
+  QString octave_qscintilla::eol_string (void)
+  {
+    switch (eolMode ())
+      {
+      case QsciScintilla::EolWindows:
+        return ("\r\n");
+      case QsciScintilla::EolMac:
+        return ("\r");
+      case QsciScintilla::EolUnix:
+        return ("\n");
+      }
+
+    // Last resort, if the above goes wrong (should never happen)
+    return ("\r\n");
   }
 
   // Function returning the true cursor position where the tab length
@@ -871,7 +893,7 @@ namespace octave
 
     // Add commands to the history
     emit interpreter_event
-      ([tmp_hist] (interpreter& interp)
+      ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
 
@@ -888,7 +910,7 @@ namespace octave
 
     // Let the interpreter execute the tmp file
     emit interpreter_event
-      ([this, tmp_file, tmp_hist, show_dbg_file] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -911,14 +933,14 @@ namespace octave
              // Do the job
              interp.source_file (file);
            }
-         catch (const execution_exception& e)
+         catch (const execution_exception& ee)
            {
              // Catch errors otherwise the rest of the interpreter
              // will not be executed (cleaning up).
 
              // New error message and error stack
-             QString new_msg = QString::fromStdString (e.message ());
-             std::list<frame_info> stack = e.stack_info ();
+             QString new_msg = QString::fromStdString (ee.message ());
+             std::list<frame_info> stack = ee.stack_info ();
 
              // Remove line and column from first line of error message only
              // if it is related to the tmp itself, i.e. only if the
@@ -968,11 +990,11 @@ namespace octave
                                                 dbg, auto_repeat);
 
              // New exception with updated message and stack
-             octave::execution_exception ee (e.err_type (),e.identifier (),
-                                             new_msg.toStdString (), stack);
+             execution_exception nee (ee.err_type (), ee.identifier (),
+                                      new_msg.toStdString (), stack);
 
              // Throw
-             throw (ee);
+             throw (nee);
            }
 
          // Clean up
@@ -1096,6 +1118,75 @@ namespace octave
     QToolTip::showText (global_pos, msg);
   }
 
+  void octave_qscintilla::replace_all (const QString& o_str, const QString& n_str,
+                                       bool re, bool cs, bool wo)
+  {
+    // get the resulting cursor position
+    int pos, line, col, nline, ncol;
+    get_current_position (&pos, &line, &col);
+
+    // remember first visible line for restoring the view afterwards
+    int first_line = firstVisibleLine ();
+
+    // search for first occurrence of the detected word
+    bool find_result_available = findFirst (o_str, re, cs, wo,
+                                            false, true, 0, 0);
+    // replace and find more occurrences in a loop
+    beginUndoAction ();
+    while (find_result_available)
+      {
+        // findNext doesn't work properly if the length of the replacement
+        // text is different from the original
+        replace (n_str);
+        get_current_position (&pos, &nline, &ncol);
+
+        find_result_available = findFirst (o_str, re, cs, wo,
+                                           false, true, nline, ncol);
+      }
+    endUndoAction ();
+
+      // restore the visible area
+      setFirstVisibleLine (first_line);
+
+      // fix cursor column if outside of new line length
+      int eol_len = eol_string ().length ();
+      if (line == lines () - 1)
+        eol_len = 0;
+      const int col_max = text (line).length () - eol_len;
+      if (col_max < col)
+        col = col_max;
+
+      setCursorPosition (line, col);
+  }
+
+  bool octave_qscintilla::event (QEvent *e)
+  {
+    if (m_debug_mode && e->type() == QEvent::ToolTip)
+      {
+        QHelpEvent *help_e = static_cast<QHelpEvent *>(e);
+        QString variable = wordAtPoint (help_e->pos());
+        QStringList symbol_names
+            = m_octave_qobj.get_workspace_model ()->get_symbol_names ();
+        int symbol_idx = symbol_names.indexOf (variable);
+        if (symbol_idx > -1)
+          {
+            QStringList symbol_values
+                = m_octave_qobj.get_workspace_model ()->get_symbol_values ();
+            QToolTip::showText (help_e->globalPos(), variable
+                                + " = " + symbol_values.at (symbol_idx));
+          }
+        else
+          {
+            QToolTip::hideText();
+            e->ignore();
+          }
+
+        return true;
+      }
+
+    return QsciScintilla::event(e);
+  }
+
   void octave_qscintilla::keyPressEvent (QKeyEvent *key_event)
   {
     if (m_selection.isEmpty ())
@@ -1107,59 +1198,8 @@ namespace octave
 
         if (key == Qt::Key_Return && modifiers == Qt::ShiftModifier)
           {
-            // get the resulting cursor position
-            // (required if click was beyond a line ending)
-            int pos, line, col;
-            get_current_position (&pos, &line, &col);
-
-            // remember first visible line for restoring the view afterwards
-            int first_line = firstVisibleLine ();
-
-            // search for first occurrence of the detected word
-            bool find_result_available
-              = findFirst (m_selection,
-                           false,   // no regexp
-                           true,    // case sensitive
-                           true,    // whole words only
-                           false,   // do not wrap
-                           true,    // forward
-                           0, 0,    // from the beginning
-                           false
-#if defined (HAVE_QSCI_VERSION_2_6_0)
-                           , true
-#endif
-                          );
-
-            while (find_result_available)
-              {
-                replace (m_selection_replacement);
-
-                // FIXME: is this the right thing to do?  findNext doesn't
-                // work properly if the length of the replacement text is
-                // different from the original.
-
-                int new_line, new_col;
-                get_current_position (&pos, &new_line, &new_col);
-
-                find_result_available
-                  = findFirst (m_selection,
-                               false,   // no regexp
-                               true,    // case sensitive
-                               true,    // whole words only
-                               false,   // do not wrap
-                               true,    // forward
-                               new_line, new_col,    // from new pos
-                               false
-#if defined (HAVE_QSCI_VERSION_2_6_0)
-                               , true
-#endif
-                              );
-              }
-
-            // restore the visible area of the file, the cursor position,
-            // and the selection
-            setFirstVisibleLine (first_line);
-            setCursorPosition (line, col);
+            replace_all (m_selection, m_selection_replacement,
+                         false, true, true);
 
             // Clear the selection.
             set_word_selection ();
@@ -1302,6 +1342,24 @@ namespace octave
         e->ignore();
       }
   }
+
+  void octave_qscintilla::handle_enter_debug_mode (void)
+  {
+    // Set tool tip font to the lexers default font
+    m_tooltip_font = QToolTip::font ();   // Save current font
+    QToolTip::setFont (lexer ()->defaultFont ());
+
+    m_debug_mode = true;
+  }
+
+  void octave_qscintilla::handle_exit_debug_mode (void)
+  {
+    m_debug_mode = false;
+
+    // Reset tool tip font
+    QToolTip::setFont (m_tooltip_font);
+  }
+
 }
 
 #endif

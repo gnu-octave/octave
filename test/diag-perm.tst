@@ -178,6 +178,8 @@
 %! assert (diag (D1D2), d1 .* d2);
 
 ## slicing
+## preserving diagonal matrix type is not possible if indices are
+## general matrix objects.
 %!test
 %! m = 13;
 %! n = 6;
@@ -185,7 +187,11 @@
 %! d = rand (mn, 1);
 %! D = diag (d, m, n);
 %! Dslice = D (1:(m-3), 1:(n-2));
-%! assert (typeinfo (Dslice), "diagonal matrix");
+%! if (optimize_range ())
+%!   assert (typeinfo (Dslice), "diagonal matrix");
+%! else
+%!   assert (typeinfo (Dslice), "matrix");
+%! endif
 
 ## preserve dense matrix structure when scaling
 %!assert (typeinfo (rand (8) * (3 * eye (8))), "matrix")
@@ -226,7 +232,7 @@
 %! A = sprand (n, n, .5);
 %! scalefact = rand (n-2, 1);
 %! Dr = diag (scalefact, n, n-2);
-%! assert (full (Dr \ A), Dr \ full(A));
+%! assert (full (Dr \ A), Dr \ full (A));
 
 ## sparse inverse column scaling with a zero factor
 %!test
@@ -236,15 +242,15 @@
 %! Dc = diag (scalefact);
 %! scalefact(n-1) = Inf;
 %! Dc(n-1, n-1) = 0;
-%! assert (full (A / Dc), full(A) / Dc);
+%! assert (full (A / Dc), full (A) / Dc);
 
 ## short sparse inverse column scaling
 %!test
 %! n = 7;
 %! A = sprand (n, n, .5);
-%! scalefact = rand (1, n-2) + I () * rand(1, n-2);
+%! scalefact = rand (1, n-2) + I () * rand (1, n-2);
 %! Dc = diag (scalefact, n-2, n);
-%! assert (full (A / Dc), full(A) / Dc);
+%! assert (full (A / Dc), full (A) / Dc);
 
 ## adding sparse and diagonal stays sparse
 %!test

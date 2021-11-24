@@ -78,8 +78,8 @@ endfunction
 %! assert (isappdata (0, "%data2%"), false);
 
 ## Test input validation
-%!error rmappdata ()
-%!error rmappdata (1)
+%!error <Invalid call> rmappdata ()
+%!error <Invalid call> rmappdata (1)
 %!error <H must be a scalar .* graphic handle> rmappdata (-1, "hello")
 %!error <NAME must be a string> rmappdata (0, 1)
 %!error <appdata 'foobar' is not present> rmappdata (0, "foobar")

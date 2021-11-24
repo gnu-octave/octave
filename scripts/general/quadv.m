@@ -210,7 +210,7 @@ endfunction
 %!assert (quadv (@sin, 0, pi), 2, 1e-6)
 
 ## Test weak singularities at the edge
-%!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 15*1e-6);
+%!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 15*1e-6)
 
 ## Test vector-valued functions
 %!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-6)
@@ -223,8 +223,8 @@ endfunction
 %!assert <*57603> (quadv (@(t) sin (t) .^ 2, 0, 8*pi), 4*pi, 1e-6)
 
 ## Test input validation
-%!error quadv ()
-%!error quadv (@sin)
-%!error quadv (@sin,1)
+%!error <Invalid call> quadv ()
+%!error <Invalid call> quadv (@sin)
+%!error <Invalid call> quadv (@sin,1)
 %!error <TOL must be a scalar> quadv (@sin,0,1, ones (2,2))
 %!error <TOL must be .* .=0> quadv (@sin,0,1, -1)

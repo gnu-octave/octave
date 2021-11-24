@@ -61,7 +61,7 @@ function yi = ppval (pp, xi)
   P = reshape (P, [d, n * k]);
   P = shiftdim (P, nd);
   P = reshape (P, [n, k, d]);
-  Pidx = P(idx(:), :);  # 2D matrix size: x = coefs*prod(d), y = prod(sxi)
+  Pidx = P(idx(:), :);  # 2D matrix size: x = coefs*prod (d), y = prod (sxi)
 
   if (isvector (xi))
     Pidx = reshape (Pidx, [xn, k, d]);
@@ -139,9 +139,8 @@ endfunction
 %! assert (ppval (pp, [breaks',breaks']), ret);
 
 ## Test input validation
-%!error ppval ()
-%!error ppval (1)
-%!error ppval (1,2,3)
+%!error <Invalid call> ppval ()
+%!error <Invalid call> ppval (1)
 %!error <argument must be a pp-form structure> ppval (1,2)
 %!error <argument must be a pp-form structure> ppval (struct ("a", 1), 2)
 %!error <argument must be a pp-form structure> ppval (struct ("form", "ab"), 2)

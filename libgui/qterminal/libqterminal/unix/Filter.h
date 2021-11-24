@@ -245,7 +245,7 @@ public:
 signals:
 
     void request_edit_mfile_signal (const QString&, int);
-    void request_open_file_signal (const QString&, int);
+    void request_open_file_signal (const QString&, const QString&, int);
 
 protected:
     /**

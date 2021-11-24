@@ -188,7 +188,7 @@ endfunction
 %! assert (error_thrown, true);
 
 ## Test input validation
-%!error imfinfo ()
-%!error imfinfo (1,2,3)
+%!error <Invalid call> imfinfo ()
+%!error <Invalid call> imfinfo (1,2,3)
 %!error <FILENAME must be a string> imfinfo (1)
 %!error <EXT must be a string> imfinfo ("foo", 1)

@@ -217,7 +217,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   norm_b = norm (b, 2);
   if (norm_b == 0)
     if (nargout < 2)
-      printf("The right hand side vector is all zero so tfqmr \n")
+      printf ("The right hand side vector is all zero so tfqmr \n")
       printf ("returned an all zero solution without iterating.\n")
     endif
     x_min = zeros (numel (b), 1);
@@ -225,7 +225,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     flag = 0;
     resvec = 0;
     relres = 0;
-    return
+    return;
   endif
 
   x = x_pr = x_min = x0;
@@ -242,7 +242,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   it = 1;
 
   try
-    warning("error", "Octave:singular-matrix", "local");
+    warning ("error", "Octave:singular-matrix", "local");
     u_hat = feval (M1fun, u, varargin{:});
     u_hat = feval (M2fun, u_hat, varargin{:});
     v = feval (Afun, u_hat, varargin{:});
@@ -257,7 +257,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
         ## Essentially the next iteration doesn't change x,
         ## and the iter after this will have a division by zero
         flag = 4;
-        break
+        break;
       endif
       alpha = rho_1 / v_r;
       u_1 = u - alpha * v;  # u at the after iteration
@@ -279,7 +279,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
         ## Essentially the next iteration doesn't change x,
         ## and the iter after this will have a division by zero
         flag = 4;
-        break
+        break;
       endif
       beta = rho_1 / rho_2;
       u_1 = w + beta * u; # u at the after iteration
@@ -298,7 +298,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     endif
     if (norm (x_pr - x) <= norm (x) * eps)
       flag = 3; # Stagnation
-      break
+      break;
     endif
     x_pr = x;
     it = -it;
@@ -306,8 +306,8 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   resvec = resvec (1: (iter + 1));
 
   relres = resvec (iter_min + 1) / norm (b);
-  iter_min = floor(iter_min / 2); # compatibility, since it
-                                  # makes two times the effective iterations
+  iter_min = floor (iter_min / 2); # compatibility, since it
+                                   # makes two times the effective iterations
 
   if (relres <= tol)
     flag = 0;
@@ -344,7 +344,10 @@ function [x_min, flag, relres, iter_min, resvec] = ...
         printf ("has relative residual %e\n", relres);
     endswitch
   endif
+
 endfunction
+
+
 %!test
 %! ## Check that all type of inputs work
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
@@ -428,46 +431,46 @@ endfunction
 %! A (1,50) = 10000;
 %! b = ones (50,1);
 %! [x, flag, relres, iter, resvec] = tfqmr (A, b, [], 100);
-%! assert (flag, 0)
-%! assert (x, A \ b, 1e-05)
+%! assert (flag, 0);
+%! assert (x, A \ b, 1e-05);
 %! ## Detects a singular preconditioner
 %! M = ones (50);
 %! M(1, 1) = 0;
 %! [x, flag] = tfqmr (A, b, [], 100, M);
-%! assert (flag, 2)
+%! assert (flag, 2);
 
 %!test
 %! A = single (1);
 %! b = 1;
 %! [x, flag] = tfqmr (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = 1;
 %! b = single (1);
 %! [x, flag] = tfqmr (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = single (1);
 %! b = single (1);
 %! [x, flag] = tfqmr (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %!function y = Afun (x)
-%!   A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
-%!   y = A * x;
+%!  A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
+%!  y = A * x;
 %!endfunction
 %! [x, flag] = tfqmr ("Afun", [1; 2; 2; 3]);
-%! assert (x, ones(4, 1), 1e-6)
+%! assert (x, ones (4, 1), 1e-6);
 
 %!test # unpreconditioned residual
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! M = magic (5);
 %! [x, flag, relres] = tfqmr (A, b, [], 3, M);
-%! assert (relres, norm (b - A * x) / norm (b), 8 * eps)
+%! assert (relres, norm (b - A * x) / norm (b), 8 * eps);
 
 %!demo # simplest use
 %! n = 20;

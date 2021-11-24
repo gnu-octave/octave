@@ -46,6 +46,7 @@
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "oct-locbuf.h"
+#include "octave-preserve-stream-state.h"
 #include "quit.h"
 #include "str-vec.h"
 
@@ -97,8 +98,7 @@ namespace octave
       }
     catch (const execution_exception&)
       {
-        octave::interpreter& interp
-          = __get_interpreter__ ("convert_to_valid_int");
+        interpreter& interp = __get_interpreter__ ("convert_to_valid_int");
 
         interp.recover_from_exception ();
 
@@ -294,24 +294,24 @@ namespace octave
 
     ~scanf_format_list (void);
 
-    octave_idx_type num_conversions (void) { return nconv; }
+    octave_idx_type num_conversions (void) { return m_nconv; }
 
     // The length can be different than the number of conversions.
     // For example, "x %d y %d z" has 2 conversions but the length of
     // the list is 3 because of the characters that appear after the
     // last conversion.
 
-    std::size_t length (void) const { return fmt_elts.size (); }
+    std::size_t length (void) const { return m_fmt_elts.size (); }
 
     const scanf_format_elt * first (void)
     {
-      curr_idx = 0;
+      m_curr_idx = 0;
       return current ();
     }
 
     const scanf_format_elt * current (void) const
     {
-      return length () > 0 ? fmt_elts[curr_idx] : nullptr;
+      return length () > 0 ? m_fmt_elts[m_curr_idx] : nullptr;
     }
 
     const scanf_format_elt * next (bool cycle = true)
@@ -319,12 +319,12 @@ namespace octave
       static scanf_format_elt dummy
         ("", 0, false, scanf_format_elt::null, '\0', "");
 
-      curr_idx++;
+      m_curr_idx++;
 
-      if (curr_idx >= length ())
+      if (m_curr_idx >= length ())
         {
           if (cycle)
-            curr_idx = 0;
+            m_curr_idx = 0;
           else
             return &dummy;
         }
@@ -334,7 +334,7 @@ namespace octave
 
     void printme (void) const;
 
-    bool ok (void) const { return (nconv >= 0); }
+    bool ok (void) const { return (m_nconv >= 0); }
 
     operator bool () const { return ok (); }
 
@@ -343,19 +343,6 @@ namespace octave
     bool all_numeric_conversions (void);
 
   private:
-
-    // Number of conversions specified by this format string, or -1 if
-    // invalid conversions have been found.
-    octave_idx_type nconv;
-
-    // Index to current element;
-    std::size_t curr_idx;
-
-    // List of format elements.
-    std::deque<scanf_format_elt*> fmt_elts;
-
-    // Temporary buffer.
-    std::ostringstream buf;
 
     void add_elt_to_list (int width, bool discard, char type, char modifier,
                           const std::string& char_class = "");
@@ -367,10 +354,26 @@ namespace octave
     int finish_conversion (const std::string& s, std::size_t& i, std::size_t n,
                            int width, bool discard, char& type,
                            char modifier);
+
+    //--------
+
+    // Number of conversions specified by this format string, or -1 if
+    // invalid conversions have been found.
+    octave_idx_type m_nconv;
+
+    // Index to current element;
+    std::size_t m_curr_idx;
+
+    // List of format elements.
+    std::deque<scanf_format_elt*> m_fmt_elts;
+
+    // Temporary buffer.
+    std::ostringstream m_buf;
+
   };
 
   scanf_format_list::scanf_format_list (const std::string& s)
-    : nconv (0), curr_idx (0), fmt_elts (), buf ()
+    : m_nconv (0), m_curr_idx (0), m_fmt_elts (), m_buf ()
   {
     std::size_t n = s.length ();
 
@@ -393,7 +396,7 @@ namespace octave
 
             process_conversion (s, i, n, width, discard, type, modifier);
 
-            have_more = (buf.tellp () != 0);
+            have_more = (m_buf.tellp () != 0);
           }
         else if (isspace (s[i]))
           {
@@ -402,7 +405,7 @@ namespace octave
             width = 0;
             discard = false;
             modifier = '\0';
-            buf << ' ';
+            m_buf << ' ';
 
             while (++i < n && isspace (s[i]))
               ; // skip whitespace
@@ -420,14 +423,14 @@ namespace octave
             modifier = '\0';
 
             while (i < n && ! isspace (s[i]) && s[i] != '%')
-              buf << s[i++];
+              m_buf << s[i++];
 
             add_elt_to_list (width, discard, type, modifier);
 
             have_more = false;
           }
 
-        if (nconv < 0)
+        if (m_nconv < 0)
           {
             have_more = false;
             break;
@@ -437,17 +440,17 @@ namespace octave
     if (have_more)
       add_elt_to_list (width, discard, type, modifier);
 
-    buf.clear ();
-    buf.str ("");
+    m_buf.clear ();
+    m_buf.str ("");
   }
 
   scanf_format_list::~scanf_format_list (void)
   {
-    std::size_t n = fmt_elts.size ();
+    std::size_t n = m_fmt_elts.size ();
 
     for (std::size_t i = 0; i < n; i++)
       {
-        scanf_format_elt *elt = fmt_elts[i];
+        scanf_format_elt *elt = m_fmt_elts[i];
         delete elt;
       }
   }
@@ -457,7 +460,7 @@ namespace octave
                                       char modifier,
                                       const std::string& char_class)
   {
-    std::string text = buf.str ();
+    std::string text = m_buf.str ();
 
     if (! text.empty ())
       {
@@ -465,24 +468,25 @@ namespace octave
           = new scanf_format_elt (text, width, discard, type,
                                   modifier, char_class);
 
-        fmt_elts.push_back (elt);
+        m_fmt_elts.push_back (elt);
       }
 
-    buf.clear ();
-    buf.str ("");
+    m_buf.clear ();
+    m_buf.str ("");
   }
 
   void
   scanf_format_list::process_conversion (const std::string& s, std::size_t& i,
-                                         std::size_t n, int& width, bool& discard,
-                                         char& type, char& modifier)
+                                         std::size_t n, int& width,
+                                         bool& discard, char& type,
+                                         char& modifier)
   {
     width = 0;
     discard = false;
     modifier = '\0';
     type = '\0';
 
-    buf << s[i++];
+    m_buf << s[i++];
 
     bool have_width = false;
 
@@ -492,36 +496,36 @@ namespace octave
           {
           case '*':
             if (discard)
-              nconv = -1;
+              m_nconv = -1;
             else
               {
                 discard = true;
-                buf << s[i++];
+                m_buf << s[i++];
               }
             break;
 
           case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             if (have_width)
-              nconv = -1;
+              m_nconv = -1;
             else
               {
                 char c = s[i++];
                 width = 10 * width + c - '0';
                 have_width = true;
-                buf << c;
+                m_buf << c;
                 while (i < n && isdigit (s[i]))
                   {
                     c = s[i++];
                     width = 10 * width + c - '0';
-                    buf << c;
+                    m_buf << c;
                   }
               }
             break;
 
           case 'h': case 'l': case 'L':
             if (modifier != '\0')
-              nconv = -1;
+              m_nconv = -1;
             else
               modifier = s[i++];
             break;
@@ -531,7 +535,7 @@ namespace octave
           case 'X':
             if (modifier == 'L')
               {
-                nconv = -1;
+                m_nconv = -1;
                 break;
               }
             goto fini;
@@ -542,19 +546,19 @@ namespace octave
           case 'E': case 'G':
             if (modifier == 'h')
               {
-                nconv = -1;
+                m_nconv = -1;
                 break;
               }
 
             // No float or long double conversions, thanks.
-            buf << 'l';
+            m_buf << 'l';
 
             goto fini;
 
           case 'c': case 's': case 'p': case '%': case '[':
             if (modifier != '\0')
               {
-                nconv = -1;
+                m_nconv = -1;
                 break;
               }
             goto fini;
@@ -568,15 +572,15 @@ namespace octave
             break;
 
           default:
-            nconv = -1;
+            m_nconv = -1;
             break;
           }
 
-        if (nconv < 0)
+        if (m_nconv < 0)
           break;
       }
 
-    nconv = -1;
+    m_nconv = -1;
   }
 
   int
@@ -594,7 +598,7 @@ namespace octave
     if (s[i] == '%')
       {
         type = '%';
-        buf << s[i++];
+        m_buf << s[i++];
       }
     else
       {
@@ -602,7 +606,7 @@ namespace octave
 
         if (s[i] == '[')
           {
-            buf << s[i++];
+            m_buf << s[i++];
 
             if (i < n)
               {
@@ -611,39 +615,39 @@ namespace octave
                 if (s[i] == '^')
                   {
                     type = '^';
-                    buf << s[i++];
+                    m_buf << s[i++];
 
                     if (i < n)
                       {
                         beg_idx = i;
 
                         if (s[i] == ']')
-                          buf << s[i++];
+                          m_buf << s[i++];
                       }
                   }
                 else if (s[i] == ']')
-                  buf << s[i++];
+                  m_buf << s[i++];
               }
 
             while (i < n && s[i] != ']')
-              buf << s[i++];
+              m_buf << s[i++];
 
             if (i < n && s[i] == ']')
               {
                 end_idx = i-1;
-                buf << s[i++];
+                m_buf << s[i++];
               }
 
             if (s[i-1] != ']')
-              retval = nconv = -1;
+              retval = m_nconv = -1;
           }
         else
-          buf << s[i++];
+          m_buf << s[i++];
 
-        nconv++;
+        m_nconv++;
       }
 
-    if (nconv >= 0)
+    if (m_nconv >= 0)
       {
         if (beg_idx != std::string::npos && end_idx != std::string::npos)
           char_class = expand_char_class (s.substr (beg_idx,
@@ -658,11 +662,11 @@ namespace octave
   void
   scanf_format_list::printme (void) const
   {
-    std::size_t n = fmt_elts.size ();
+    std::size_t n = m_fmt_elts.size ();
 
     for (std::size_t i = 0; i < n; i++)
       {
-        scanf_format_elt *elt = fmt_elts[i];
+        scanf_format_elt *elt = m_fmt_elts[i];
 
         std::cerr
           << "width:      " << elt->width << "\n"
@@ -686,13 +690,13 @@ namespace octave
   bool
   scanf_format_list::all_character_conversions (void)
   {
-    std::size_t n = fmt_elts.size ();
+    std::size_t n = m_fmt_elts.size ();
 
     if (n > 0)
       {
         for (std::size_t i = 0; i < n; i++)
           {
-            scanf_format_elt *elt = fmt_elts[i];
+            scanf_format_elt *elt = m_fmt_elts[i];
 
             switch (elt->type)
               {
@@ -716,13 +720,13 @@ namespace octave
   bool
   scanf_format_list::all_numeric_conversions (void)
   {
-    std::size_t n = fmt_elts.size ();
+    std::size_t n = m_fmt_elts.size ();
 
     if (n > 0)
       {
         for (std::size_t i = 0; i < n; i++)
           {
-            scanf_format_elt *elt = fmt_elts[i];
+            scanf_format_elt *elt = m_fmt_elts[i];
 
             switch (elt->type)
               {
@@ -798,29 +802,29 @@ namespace octave
 
     ~printf_format_list (void);
 
-    octave_idx_type num_conversions (void) { return nconv; }
+    octave_idx_type num_conversions (void) { return m_nconv; }
 
     const printf_format_elt * first (void)
     {
-      curr_idx = 0;
+      m_curr_idx = 0;
       return current ();
     }
 
     const printf_format_elt * current (void) const
     {
-      return length () > 0 ? fmt_elts[curr_idx] : nullptr;
+      return length () > 0 ? m_fmt_elts[m_curr_idx] : nullptr;
     }
 
-    std::size_t length (void) const { return fmt_elts.size (); }
+    std::size_t length (void) const { return m_fmt_elts.size (); }
 
     const printf_format_elt * next (bool cycle = true)
     {
-      curr_idx++;
+      m_curr_idx++;
 
-      if (curr_idx >= length ())
+      if (m_curr_idx >= length ())
         {
           if (cycle)
-            curr_idx = 0;
+            m_curr_idx = 0;
           else
             return nullptr;
         }
@@ -828,43 +832,47 @@ namespace octave
       return current ();
     }
 
-    bool last_elt_p (void) { return (curr_idx + 1 == length ()); }
+    bool last_elt_p (void) { return (m_curr_idx + 1 == length ()); }
 
     void printme (void) const;
 
-    bool ok (void) const { return (nconv >= 0); }
+    bool ok (void) const { return (m_nconv >= 0); }
 
     operator bool () const { return ok (); }
 
   private:
 
-    // Number of conversions specified by this format string, or -1 if
-    // invalid conversions have been found.
-    octave_idx_type nconv;
-
-    // Index to current element;
-    std::size_t curr_idx;
-
-    // List of format elements.
-    std::deque<printf_format_elt*> fmt_elts;
-
-    // Temporary buffer.
-    std::ostringstream buf;
-
     void add_elt_to_list (int args, const std::string& flags, int fw,
                           int prec, char type, char modifier);
 
-    void process_conversion (const std::string& s, std::size_t& i, std::size_t n,
+    void process_conversion (const std::string& s, std::size_t& i,
+                             std::size_t n,
                              int& args, std::string& flags, int& fw,
                              int& prec, char& modifier, char& type);
 
     void finish_conversion (const std::string& s, std::size_t& i, int args,
                             const std::string& flags, int fw, int prec,
                             char modifier, char& type);
+
+    //--------
+
+    // Number of conversions specified by this format string, or -1 if
+    // invalid conversions have been found.
+    octave_idx_type m_nconv;
+
+    // Index to current element;
+    std::size_t m_curr_idx;
+
+    // List of format elements.
+    std::deque<printf_format_elt*> m_fmt_elts;
+
+    // Temporary buffer.
+    std::ostringstream m_buf;
+
   };
 
   printf_format_list::printf_format_list (const std::string& s)
-    : nconv (0), curr_idx (0), fmt_elts (), buf ()
+    : m_nconv (0), m_curr_idx (0), m_fmt_elts (), m_buf ()
   {
     std::size_t n = s.length ();
 
@@ -885,7 +893,7 @@ namespace octave
         printf_format_elt *elt
           = new printf_format_elt ("", args, fw, prec, flags, type, modifier);
 
-        fmt_elts.push_back (elt);
+        m_fmt_elts.push_back (elt);
       }
     else
       {
@@ -893,7 +901,7 @@ namespace octave
           {
             have_more = true;
 
-            empty_buf = (buf.tellp () == 0);
+            empty_buf = (m_buf.tellp () == 0);
 
             switch (s[i])
               {
@@ -910,7 +918,7 @@ namespace octave
                       // don't need to call add_elt_to_list if this is our
                       // last trip through the loop.
 
-                      have_more = (buf.tellp () != 0);
+                      have_more = (m_buf.tellp () != 0);
                     }
                   else
                     add_elt_to_list (args, flags, fw, prec, type, modifier);
@@ -925,12 +933,12 @@ namespace octave
                   prec = -1;
                   modifier = '\0';
                   type = '\0';
-                  buf << s[i++];
+                  m_buf << s[i++];
                 }
                 break;
               }
 
-            if (nconv < 0)
+            if (m_nconv < 0)
               {
                 have_more = false;
                 break;
@@ -940,18 +948,18 @@ namespace octave
         if (have_more)
           add_elt_to_list (args, flags, fw, prec, type, modifier);
 
-        buf.clear ();
-        buf.str ("");
+        m_buf.clear ();
+        m_buf.str ("");
       }
   }
 
   printf_format_list::~printf_format_list (void)
   {
-    std::size_t n = fmt_elts.size ();
+    std::size_t n = m_fmt_elts.size ();
 
     for (std::size_t i = 0; i < n; i++)
       {
-        printf_format_elt *elt = fmt_elts[i];
+        printf_format_elt *elt = m_fmt_elts[i];
         delete elt;
       }
   }
@@ -961,7 +969,7 @@ namespace octave
                                        int fw, int prec, char type,
                                        char modifier)
   {
-    std::string text = buf.str ();
+    std::string text = m_buf.str ();
 
     if (! text.empty ())
       {
@@ -969,11 +977,11 @@ namespace octave
           = new printf_format_elt (text, args, fw, prec, flags,
                                    type, modifier);
 
-        fmt_elts.push_back (elt);
+        m_fmt_elts.push_back (elt);
       }
 
-    buf.clear ();
-    buf.str ("");
+    m_buf.clear ();
+    m_buf.str ("");
   }
 
   void
@@ -990,7 +998,7 @@ namespace octave
     modifier = '\0';
     type = '\0';
 
-    buf << s[i++];
+    m_buf << s[i++];
 
     bool nxt = false;
 
@@ -1000,7 +1008,7 @@ namespace octave
           {
           case '-': case '+': case ' ': case '0': case '#':
             flags += s[i];
-            buf << s[i++];
+            m_buf << s[i++];
             break;
 
           default:
@@ -1018,7 +1026,7 @@ namespace octave
           {
             fw = -2;
             args++;
-            buf << s[i++];
+            m_buf << s[i++];
           }
         else
           {
@@ -1030,7 +1038,7 @@ namespace octave
               }
 
             while (i < n && isdigit (s[i]))
-              buf << s[i++];
+              m_buf << s[i++];
           }
       }
 
@@ -1043,7 +1051,7 @@ namespace octave
         // . followed by nothing is 0.
         prec = 0;
 
-        buf << s[i++];
+        m_buf << s[i++];
 
         if (i < n)
           {
@@ -1051,7 +1059,7 @@ namespace octave
               {
                 prec = -2;
                 args++;
-                buf << s[i++];
+                m_buf << s[i++];
               }
             else
               {
@@ -1063,7 +1071,7 @@ namespace octave
                   }
 
                 while (i < n && isdigit (s[i]))
-                  buf << s[i++];
+                  m_buf << s[i++];
               }
           }
       }
@@ -1088,7 +1096,7 @@ namespace octave
     if (i < n)
       finish_conversion (s, i, args, flags, fw, prec, modifier, type);
     else
-      nconv = -1;
+      m_nconv = -1;
   }
 
   void
@@ -1103,7 +1111,7 @@ namespace octave
       case 'u': case 'c':
         if (modifier == 'L')
           {
-            nconv = -1;
+            m_nconv = -1;
             break;
           }
         goto fini;
@@ -1111,7 +1119,7 @@ namespace octave
       case 'f': case 'e': case 'E': case 'g': case 'G':
         if (modifier == 'h' || modifier == 'l')
           {
-            nconv = -1;
+            m_nconv = -1;
             break;
           }
         goto fini;
@@ -1119,7 +1127,7 @@ namespace octave
       case 's': case 'p': case '%':
         if (modifier != '\0')
           {
-            nconv = -1;
+            m_nconv = -1;
             break;
           }
         goto fini;
@@ -1128,10 +1136,10 @@ namespace octave
 
         type = s[i];
 
-        buf << s[i++];
+        m_buf << s[i++];
 
         if (type != '%' || args != 0)
-          nconv++;
+          m_nconv++;
 
         if (type != '%')
           args++;
@@ -1141,7 +1149,7 @@ namespace octave
         break;
 
       default:
-        nconv = -1;
+        m_nconv = -1;
         break;
       }
   }
@@ -1149,11 +1157,11 @@ namespace octave
   void
   printf_format_list::printme (void) const
   {
-    std::size_t n = fmt_elts.size ();
+    std::size_t n = m_fmt_elts.size ();
 
     for (std::size_t i = 0; i < n; i++)
       {
-        printf_format_elt *elt = fmt_elts[i];
+        printf_format_elt *elt = m_fmt_elts[i];
 
         std::cerr
           << "args:     " << elt->args << "\n"
@@ -1230,7 +1238,7 @@ namespace octave
     // there is a remaining delimiter in buf, or loads more data in.
     void field_done (void)
     {
-      if (idx >= last)
+      if (m_idx >= m_last)
         refresh_buf ();
     }
 
@@ -1242,8 +1250,8 @@ namespace octave
     // a delimiter has been reached.
     int get (void)
     {
-      if (delimited)
-        return eof () ? std::istream::traits_type::eof () : *idx++;
+      if (m_delimited)
+        return eof () ? std::istream::traits_type::eof () : *m_idx++;
       else
         return get_undelim ();
     }
@@ -1255,7 +1263,8 @@ namespace octave
     // FIXME: This will not set EOF if delimited stream is at EOF and a peek
     // is attempted.  This does *NOT* behave like C++ input stream.
     // For a compatible peek function, use peek_undelim.  See bug #56917.
-    int peek (void) { return eof () ? std::istream::traits_type::eof () : *idx; }
+    int peek (void)
+    { return eof () ? std::istream::traits_type::eof () : *m_idx; }
 
     // Read character that will be got by the next get.
     int peek_undelim (void);
@@ -1264,7 +1273,7 @@ namespace octave
     // to avoid overflow by calling putbacks only for a character got by
     // get() or get_undelim(), with no intervening
     // get, get_delim, field_done, refresh_buf, getline, read or seekg.
-    void putback (char /*ch*/ = 0) { if (! eof ()) --idx; }
+    void putback (char /*ch*/ = 0) { if (! eof ()) --m_idx; }
 
     int getline  (std::string& dest, char delim);
 
@@ -1274,73 +1283,75 @@ namespace octave
 
     // Return a position suitable to "seekg", valid only within this
     // block between calls to field_done.
-    char * tellg (void) { return idx; }
+    char * tellg (void) { return m_idx; }
 
-    void seekg (char *old_idx) { idx = old_idx; }
+    void seekg (char *old_idx) { m_idx = old_idx; }
 
     bool eof (void)
     {
-      return (eob == buf && i_stream.eof ()) || (flags & std::ios_base::eofbit);
+      return (m_eob == m_buf && m_i_stream.eof ())
+              || (m_flags & std::ios_base::eofbit);
     }
 
-    operator const void* (void) { return (! eof () && ! flags) ? this : nullptr; }
+    operator const void* (void)
+    { return (! eof () && ! m_flags) ? this : nullptr; }
 
-    bool fail (void) { return flags & std::ios_base::failbit; }
+    bool fail (void) { return m_flags & std::ios_base::failbit; }
 
-    std::ios_base::iostate rdstate (void) { return flags; }
+    std::ios_base::iostate rdstate (void) { return m_flags; }
 
-    void setstate (std::ios_base::iostate m) { flags = flags | m; }
+    void setstate (std::ios_base::iostate m) { m_flags = m_flags | m; }
 
     void clear (std::ios_base::iostate m
                 = (std::ios_base::eofbit & ~std::ios_base::eofbit))
     {
-      flags = flags & m;
+      m_flags = m_flags & m;
     }
 
     // Report if any characters have been consumed.
     // (get, read, etc. not cancelled by putback or seekg)
 
-    void progress_benchmark (void) { progress_marker = idx; }
+    void progress_benchmark (void) { m_progress_marker = m_idx; }
 
-    bool no_progress (void) { return progress_marker == idx; }
+    bool no_progress (void) { return m_progress_marker == m_idx; }
 
   private:
 
     // Number of characters to read from the file at once.
-    int bufsize;
+    int m_bufsize;
 
     // Stream to read from.
-    std::istream& i_stream;
+    std::istream& m_i_stream;
 
     // Temporary storage for a "chunk" of data.
-    char *buf;
+    char *m_buf;
 
     // Current read pointer.
-    char *idx;
+    char *m_idx;
 
     // Location of last delimiter in the buffer at buf (undefined if
     // delimited is false).
-    char *last;
+    char *m_last;
 
     // Position after last character in buffer.
-    char *eob;
+    char *m_eob;
 
     // True if there is delimiter in the buffer after idx.
-    bool delimited;
+    bool m_delimited;
 
     // Longest lookahead required.
-    int longest;
+    int m_longest;
 
     // Sequence of single-character delimiters.
-    const std::string delims;
+    const std::string m_delims;
 
     // Position of start of buf in original stream.
-    std::streampos buf_in_file;
+    std::streampos m_buf_in_file;
 
     // Marker to see if a read consumes any characters.
-    char *progress_marker;
+    char *m_progress_marker;
 
-    std::ios_base::iostate flags;
+    std::ios_base::iostate m_flags;
   };
 
   // Create a delimited stream, reading from is, with delimiters delims,
@@ -1351,21 +1362,21 @@ namespace octave
                                       const std::string& delimiters,
                                       int longest_lookahead,
                                       octave_idx_type bsize)
-    : bufsize (bsize), i_stream (is), longest (longest_lookahead),
-      delims (delimiters),
-      flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
+    : m_bufsize (bsize), m_i_stream (is), m_longest (longest_lookahead),
+      m_delims (delimiters),
+      m_flags (std::ios::failbit & ~std::ios::failbit) // can't cast 0
   {
-    buf = new char[bufsize];
-    eob = buf + bufsize;
-    idx = eob;                    // refresh_buf shouldn't try to copy old data
-    progress_marker = idx;
+    m_buf = new char[m_bufsize];
+    m_eob = m_buf + m_bufsize;
+    m_idx = m_eob;                // refresh_buf shouldn't try to copy old data
+    m_progress_marker = m_idx;
     refresh_buf ();               // load the first batch of data
   }
 
   // Used to create a stream from a strstream from data read from a dstr.
   delimited_stream::delimited_stream (std::istream& is,
                                       const delimited_stream& ds)
-    : delimited_stream (is, ds.delims, ds.longest, ds.bufsize)
+    : delimited_stream (is, ds.m_delims, ds.m_longest, ds.m_bufsize)
   { }
 
   delimited_stream::~delimited_stream (void)
@@ -1373,12 +1384,12 @@ namespace octave
     // Seek to the correct position in i_stream.
     if (! eof ())
       {
-        i_stream.clear ();
-        i_stream.seekg (buf_in_file);
-        i_stream.read (buf, idx - buf);
+        m_i_stream.clear ();
+        m_i_stream.seekg (m_buf_in_file);
+        m_i_stream.read (m_buf, m_idx - m_buf);
       }
 
-    delete [] buf;
+    delete [] m_buf;
   }
 
   // Read a character from the buffer, refilling the buffer from the file
@@ -1394,8 +1405,8 @@ namespace octave
         return std::istream::traits_type::eof ();
       }
 
-    if (idx < eob)
-      retval = *idx++;
+    if (m_idx < m_eob)
+      retval = *m_idx++;
     else
       {
         refresh_buf ();
@@ -1406,11 +1417,11 @@ namespace octave
             retval = std::istream::traits_type::eof ();
           }
         else
-          retval = *idx++;
+          retval = *m_idx++;
       }
 
-    if (idx >= last)
-      delimited = false;
+    if (m_idx >= m_last)
+      m_delimited = false;
 
     return retval;
   }
@@ -1440,40 +1451,40 @@ namespace octave
 
     int retval;
 
-    if (eob < idx)
-      idx = eob;
+    if (m_eob < m_idx)
+      m_idx = m_eob;
 
-    std::size_t old_remaining = eob - idx;
+    std::size_t old_remaining = m_eob - m_idx;
 
     octave_quit ();                       // allow ctrl-C
 
     if (old_remaining > 0)
       {
-        buf_in_file += (idx - buf);
-        memmove (buf, idx, old_remaining);
+        m_buf_in_file += (m_idx - m_buf);
+        memmove (m_buf, m_idx, old_remaining);
       }
     else
-      buf_in_file = i_stream.tellg ();    // record for destructor
+      m_buf_in_file = m_i_stream.tellg ();  // record for destructor
 
-    progress_marker -= idx - buf;         // where original idx would have been
-    idx = buf;
+    m_progress_marker -= m_idx - m_buf;  // where original idx would have been
+    m_idx = m_buf;
 
     int gcount;   // chars read
-    if (! i_stream.eof ())
+    if (! m_i_stream.eof ())
       {
-        i_stream.read (buf + old_remaining, bufsize - old_remaining);
-        gcount = i_stream.gcount ();
+        m_i_stream.read (m_buf + old_remaining, m_bufsize - old_remaining);
+        gcount = m_i_stream.gcount ();
       }
     else
       gcount = 0;
 
-    eob = buf + old_remaining + gcount;
-    last = eob;
+    m_eob = m_buf + old_remaining + gcount;
+    m_last = m_eob;
     if (gcount == 0)
       {
-        delimited = false;
+        m_delimited = false;
 
-        if (eob != buf)              // no more data in file, but still some to go
+        if (m_eob != m_buf)   // no more data in file, but still some to go
           retval = 0;
         else
           // file and buffer are both done.
@@ -1481,23 +1492,23 @@ namespace octave
       }
     else
       {
-        delimited = true;
+        m_delimited = true;
 
-        for (last = eob - longest; last - buf >= 0; last--)
+        for (m_last = m_eob - m_longest; m_last - m_buf >= 0; m_last--)
           {
-            if (delims.find (*last) != std::string::npos)
+            if (m_delims.find (*m_last) != std::string::npos)
               break;
           }
 
-        if (last < buf)
-          delimited = false;
+        if (m_last < m_buf)
+          m_delimited = false;
 
         retval = 0;
       }
 
     // Ensure fast peek doesn't give valid char
     if (retval == std::istream::traits_type::eof ())
-      *idx = '\0';    // FIXME: check that no TreatAsEmpty etc starts w. \0?
+      *m_idx = '\0';    // FIXME: check that no TreatAsEmpty etc starts w. \0?
 
     return retval;
   }
@@ -1513,12 +1524,12 @@ namespace octave
   {
     char *retval;
 
-    if (eob  - idx > size)
+    if (m_eob - m_idx > size)
       {
-        retval = idx;
-        idx += size;
-        if (idx > last)
-          delimited = false;
+        retval = m_idx;
+        m_idx += size;
+        if (m_idx > m_last)
+          m_delimited = false;
       }
     else
       {
@@ -1527,34 +1538,34 @@ namespace octave
         // In the current code, prior_tell==idx for each call,
         // so this is not necessary, just a precaution.
 
-        if (eob - prior_tell + size < bufsize)
+        if (m_eob - prior_tell + size < m_bufsize)
           {
-            octave_idx_type gap = idx - prior_tell;
-            idx = prior_tell;
+            octave_idx_type gap = m_idx - prior_tell;
+            m_idx = prior_tell;
             refresh_buf ();
-            idx += gap;
+            m_idx += gap;
           }
         else      // can't keep the tellg in range.  May skip some data.
           {
             refresh_buf ();
           }
 
-        prior_tell = buf;
+        prior_tell = m_buf;
 
-        if (eob - idx > size)
+        if (m_eob - m_idx > size)
           {
-            retval = idx;
-            idx += size;
-            if (idx > last)
-              delimited = false;
+            retval = m_idx;
+            m_idx += size;
+            if (m_idx > m_last)
+              m_delimited = false;
           }
         else
           {
-            if (size <= bufsize)          // small read, but reached EOF
+            if (size <= m_bufsize)          // small read, but reached EOF
               {
-                retval = idx;
-                memset (eob, 0, size + (idx - buf));
-                idx += size;
+                retval = m_idx;
+                memset (m_eob, 0, size + (m_idx - m_buf));
+                m_idx += size;
               }
             else  // Reading more than the whole buf; return it in buffer
               {
@@ -1688,34 +1699,34 @@ namespace octave
 
     ~textscan_format_list (void);
 
-    octave_idx_type num_conversions (void) const { return nconv; }
+    octave_idx_type num_conversions (void) const { return m_nconv; }
 
     // The length can be different than the number of conversions.
     // For example, "x %d y %d z" has 2 conversions but the length of
     // the list is 3 because of the characters that appear after the
     // last conversion.
 
-    std::size_t numel (void) const { return fmt_elts.size (); }
+    std::size_t numel (void) const { return m_fmt_elts.size (); }
 
     const textscan_format_elt * first (void)
     {
-      curr_idx = 0;
+      m_curr_idx = 0;
       return current ();
     }
 
     const textscan_format_elt * current (void) const
     {
-      return numel () > 0 ? fmt_elts[curr_idx] : nullptr;
+      return numel () > 0 ? m_fmt_elts[m_curr_idx] : nullptr;
     }
 
     const textscan_format_elt * next (bool cycle = true)
     {
-      curr_idx++;
+      m_curr_idx++;
 
-      if (curr_idx >= numel ())
+      if (m_curr_idx >= numel ())
         {
           if (cycle)
-            curr_idx = 0;
+            m_curr_idx = 0;
           else
             return nullptr;
         }
@@ -1725,7 +1736,7 @@ namespace octave
 
     void printme (void) const;
 
-    bool ok (void) const { return (nconv >= 0); }
+    bool ok (void) const { return (m_nconv >= 0); }
 
     operator const void* (void) const { return ok () ? this : nullptr; }
 
@@ -1740,32 +1751,17 @@ namespace octave
 
     int read_first_row (delimited_stream& is, textscan& ts);
 
-    std::list<octave_value> out_buf (void) const { return (output_container); }
+    std::list<octave_value> out_buf (void) const { return (m_output_container); }
 
   private:
-
-    // Number of conversions specified by this format string, or -1 if
-    // invalid conversions have been found.
-    octave_idx_type nconv;
-
-    // Index to current element;
-    std::size_t curr_idx;
-
-    // List of format elements.
-    std::deque<textscan_format_elt*> fmt_elts;
-
-    // list holding column arrays of types specified by conversions
-    std::list<octave_value> output_container;
-
-    // Temporary buffer.
-    std::ostringstream buf;
 
     void add_elt_to_list (unsigned int width, int prec, int bitwidth,
                           octave_value val_type, bool discard,
                           char type,
                           const std::string& char_class = std::string ());
 
-    void process_conversion (const std::string& s, std::size_t& i, std::size_t n);
+    void process_conversion (const std::string& s, std::size_t& i,
+                             std::size_t n);
 
     std::string parse_char_class (const std::string& pattern) const;
 
@@ -1773,6 +1769,25 @@ namespace octave
                            unsigned int width, int prec, int bitwidth,
                            octave_value& val_type,
                            bool discard, char& type);
+
+    //--------
+
+    // Number of conversions specified by this format string, or -1 if
+    // invalid conversions have been found.
+    octave_idx_type m_nconv;
+
+    // Index to current element;
+    std::size_t m_curr_idx;
+
+    // List of format elements.
+    std::deque<textscan_format_elt*> m_fmt_elts;
+
+    // list holding column arrays of types specified by conversions
+    std::list<octave_value> m_output_container;
+
+    // Temporary buffer.
+    std::ostringstream m_buf;
+
   };
 
   // Main class to implement textscan.  Read data and parse it
@@ -1808,67 +1823,6 @@ namespace octave
   private:
 
     friend class textscan_format_list;
-
-    // What function name should be shown when reporting errors.
-    std::string who;
-
-    std::string m_encoding;
-
-    std::string buf;
-
-    // Three cases for delim_table and delim_list
-    // 1. delim_table empty, delim_list empty:  whitespace delimiters
-    // 2. delim_table = look-up table of delim chars, delim_list empty.
-    // 3. delim_table non-empty, delim_list = Cell array of delim strings
-
-    std::string whitespace_table;
-
-    // delim_table[i] == '\0' if i is not a delimiter.
-    std::string delim_table;
-
-    // String of delimiter characters.
-    std::string delims;
-
-    Cell comment_style;
-
-    // How far ahead to look to detect an open comment.
-    int comment_len;
-
-    // First character of open comment.
-    int comment_char;
-
-    octave_idx_type buffer_size;
-
-    std::string date_locale;
-
-    // 'inf' and 'nan' for formatted_double.
-    Cell inf_nan;
-
-    // Array of strings of delimiters.
-    Cell delim_list;
-
-    // Longest delimiter.
-    int delim_len;
-
-    octave_value empty_value;
-    std::string exp_chars;
-    int header_lines;
-    Cell treat_as_empty;
-
-    // Longest string to treat as "N/A".
-    int treat_as_empty_len;
-
-    std::string whitespace;
-
-    short eol1;
-    short eol2;
-    short return_on_error;
-
-    bool collect_output;
-    bool multiple_delims_as_one;
-    bool default_exp;
-
-    octave_idx_type lines;
 
     octave_value do_scan (std::istream& isp, textscan_format_list& fmt_list,
                           octave_idx_type ntimes);
@@ -1914,32 +1868,97 @@ namespace octave
 
     bool match_literal (delimited_stream& isp, const textscan_format_elt& elem);
 
-    int skip_whitespace (delimited_stream& is, bool EOLstop = false);
+    int skip_whitespace (delimited_stream& is, bool EOLstop = true);
 
     int skip_delim (delimited_stream& is);
 
     bool is_delim (unsigned char ch) const
     {
-      return ((delim_table.empty () && (isspace (ch) || ch == eol1 || ch == eol2))
-              || delim_table[ch] != '\0');
+      return ((m_delim_table.empty ()
+               && (isspace (ch) || ch == m_eol1 || ch == m_eol2))
+              || m_delim_table[ch] != '\0');
     }
 
-    bool isspace (unsigned int ch) const { return whitespace_table[ch & 0xff]; }
+    bool isspace (unsigned int ch) const
+    { return m_whitespace_table[ch & 0xff]; }
 
     // True if the only delimiter is whitespace.
-    bool whitespace_delim (void) const { return delim_table.empty (); }
+    bool whitespace_delim (void) const { return m_delim_table.empty (); }
+
+    //--------
+
+    // What function name should be shown when reporting errors.
+    std::string m_who;
+
+    std::string m_encoding;
+
+    std::string m_buf;
+
+    // Three cases for delim_table and delim_list
+    // 1. delim_table empty, delim_list empty:  whitespace delimiters
+    // 2. delim_table = look-up table of delim chars, delim_list empty.
+    // 3. delim_table non-empty, delim_list = Cell array of delim strings
+
+    std::string m_whitespace_table;
+
+    // delim_table[i] == '\0' if i is not a delimiter.
+    std::string m_delim_table;
+
+    // String of delimiter characters.
+    std::string m_delims;
+
+    Cell m_comment_style;
+
+    // How far ahead to look to detect an open comment.
+    int m_comment_len;
+
+    // First character of open comment.
+    int m_comment_char;
+
+    octave_idx_type m_buffer_size;
+
+    std::string m_date_locale;
+
+    // 'inf' and 'nan' for formatted_double.
+    Cell m_inf_nan;
+
+    // Array of strings of delimiters.
+    Cell m_delim_list;
+
+    // Longest delimiter.
+    int m_delim_len;
+
+    octave_value m_empty_value;
+    std::string m_exp_chars;
+    int m_header_lines;
+    Cell m_treat_as_empty;
+
+    // Longest string to treat as "N/A".
+    int m_treat_as_empty_len;
+
+    std::string m_whitespace;
+
+    short m_eol1;
+    short m_eol2;
+    short m_return_on_error;
+
+    bool m_collect_output;
+    bool multiple_delims_as_one;
+    bool m_default_exp;
+
+    octave_idx_type m_lines;
   };
 
   textscan_format_list::textscan_format_list (const std::string& s,
                                               const std::string& who_arg)
     : who (who_arg), set_from_first (false), has_string (false),
-      nconv (0), curr_idx (0), fmt_elts (), buf ()
+      m_nconv (0), m_curr_idx (0), m_fmt_elts (), m_buf ()
   {
     std::size_t n = s.length ();
 
     std::size_t i = 0;
 
-    unsigned int width = -1;              // Unspecified width = max (except %c)
+    unsigned int width = -1;    // Unspecified width = max (except %c)
     int prec = -1;
     int bitwidth = 0;
     bool discard = false;
@@ -1949,10 +1968,10 @@ namespace octave
 
     if (s.empty ())
       {
-        buf.clear ();
-        buf.str ("");
+        m_buf.clear ();
+        m_buf.str ("");
 
-        buf << "%f";
+        m_buf << "%f";
 
         bitwidth = 64;
         type = 'f';
@@ -1960,7 +1979,7 @@ namespace octave
                          discard, type);
         have_more = false;
         set_from_first = true;
-        nconv = 1;
+        m_nconv = 1;
       }
     else
       {
@@ -1982,7 +2001,7 @@ namespace octave
                 // add_elt_to_list if this is our last trip through the
                 // loop.
 
-                have_more = (buf.tellp () != 0);
+                have_more = (m_buf.tellp () != 0);
               }
             else if (isspace (s[i]))
               {
@@ -2005,7 +2024,7 @@ namespace octave
                   {
                     if (s[i] == '%')      // if double %, skip one
                       i++;
-                    buf << s[i++];
+                    m_buf << s[i++];
                     width++;
                   }
 
@@ -2015,7 +2034,7 @@ namespace octave
                 have_more = false;
               }
 
-            if (nconv < 0)
+            if (m_nconv < 0)
               {
                 have_more = false;
                 break;
@@ -2026,8 +2045,8 @@ namespace octave
     if (have_more)
       add_elt_to_list (width, prec, bitwidth, octave_value (), discard, type);
 
-    buf.clear ();
-    buf.str ("");
+    m_buf.clear ();
+    m_buf.str ("");
   }
 
   textscan_format_list::~textscan_format_list (void)
@@ -2036,7 +2055,7 @@ namespace octave
 
     for (std::size_t i = 0; i < n; i++)
       {
-        textscan_format_elt *elt = fmt_elts[i];
+        textscan_format_elt *elt = m_fmt_elts[i];
         delete elt;
       }
   }
@@ -2047,27 +2066,27 @@ namespace octave
                                          bool discard, char type,
                                          const std::string& char_class)
   {
-    std::string text = buf.str ();
+    std::string text = m_buf.str ();
 
     if (! text.empty ())
       {
         textscan_format_elt *elt
-          = new textscan_format_elt (text, width, prec, bitwidth, discard, type,
-                                     char_class);
+          = new textscan_format_elt (text, width, prec, bitwidth, discard,
+                                     type, char_class);
 
         if (! discard)
-          output_container.push_back (val_type);
+          m_output_container.push_back (val_type);
 
-        fmt_elts.push_back (elt);
+        m_fmt_elts.push_back (elt);
       }
 
-    buf.clear ();
-    buf.str ("");
+    m_buf.clear ();
+    m_buf.str ("");
   }
 
   void
-  textscan_format_list::process_conversion (const std::string& s, std::size_t& i,
-                                            std::size_t n)
+  textscan_format_list::process_conversion (const std::string& s,
+                                            std::size_t& i, std::size_t n)
   {
     unsigned width = 0;
     int prec = -1;
@@ -2076,7 +2095,7 @@ namespace octave
     octave_value val_type;
     char type = '\0';
 
-    buf << s[i++];
+    m_buf << s[i++];
 
     bool have_width = false;
 
@@ -2086,40 +2105,40 @@ namespace octave
           {
           case '*':
             if (discard)
-              nconv = -1;
+              m_nconv = -1;
             else
               {
                 discard = true;
-                buf << s[i++];
+                m_buf << s[i++];
               }
             break;
 
           case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             if (have_width)
-              nconv = -1;
+              m_nconv = -1;
             else
               {
                 char c = s[i++];
                 width = width * 10 + c - '0';
                 have_width = true;
-                buf << c;
+                m_buf << c;
                 while (i < n && isdigit (s[i]))
                   {
                     c = s[i++];
                     width = width * 10 + c - '0';
-                    buf << c;
+                    m_buf << c;
                   }
 
                 if (i < n && s[i] == '.')
                   {
-                    buf << s[i++];
+                    m_buf << s[i++];
                     prec = 0;
                     while (i < n && isdigit (s[i]))
                       {
                         c = s[i++];
                         prec = prec * 10 + c - '0';
-                        buf << c;
+                        m_buf << c;
                       }
                   }
               }
@@ -2128,7 +2147,7 @@ namespace octave
           case 'd': case 'u':
             {
               bool done = true;
-              buf << (type = s[i++]);
+              m_buf << (type = s[i++]);
               if (i < n)
                 {
                   if (s[i] == '8')
@@ -2138,7 +2157,7 @@ namespace octave
                         val_type = octave_value (int8NDArray ());
                       else
                         val_type = octave_value (uint8NDArray ());
-                      buf << s[i++];
+                      m_buf << s[i++];
                     }
                   else if (s[i] == '1' && i+1 < n && s[i+1] == '6')
                     {
@@ -2147,14 +2166,14 @@ namespace octave
                         val_type = octave_value (int16NDArray ());
                       else
                         val_type = octave_value (uint16NDArray ());
-                      buf << s[i++];
-                      buf << s[i++];
+                      m_buf << s[i++];
+                      m_buf << s[i++];
                     }
                   else if (s[i] == '3' && i+1 < n && s[i+1] == '2')
                     {
                       done = false;       // use default size below
-                      buf << s[i++];
-                      buf << s[i++];
+                      m_buf << s[i++];
+                      m_buf << s[i++];
                     }
                   else if (s[i] == '6' && i+1 < n && s[i+1] == '4')
                     {
@@ -2163,8 +2182,8 @@ namespace octave
                         val_type = octave_value (int64NDArray ());
                       else
                         val_type = octave_value (uint64NDArray ());
-                      buf << s[i++];
-                      buf << s[i++];
+                      m_buf << s[i++];
+                      m_buf << s[i++];
                     }
                   else
                     done = false;
@@ -2184,7 +2203,7 @@ namespace octave
             }
 
           case 'f':
-            buf << (type = s[i++]);
+            m_buf << (type = s[i++]);
             bitwidth = 64;
             if (i < n)
               {
@@ -2192,14 +2211,14 @@ namespace octave
                   {
                     bitwidth = 32;
                     val_type = octave_value (FloatNDArray ());
-                    buf << s[i++];
-                    buf << s[i++];
+                    m_buf << s[i++];
+                    m_buf << s[i++];
                   }
                 else if (s[i] == '6' && i+1 < n && s[i+1] == '4')
                   {
                     val_type = octave_value (NDArray ());
-                    buf << s[i++];
-                    buf << s[i++];
+                    m_buf << s[i++];
+                    m_buf << s[i++];
                   }
                 else
                   val_type = octave_value (NDArray ());
@@ -2209,7 +2228,7 @@ namespace octave
             goto fini;
 
           case 'n':
-            buf << (type = s[i++]);
+            m_buf << (type = s[i++]);
             bitwidth = 64;
             val_type = octave_value (NDArray ());
             goto fini;
@@ -2217,7 +2236,7 @@ namespace octave
           case 's': case 'q': case '[': case 'c':
             if (! discard)
               val_type = octave_value (Cell ());
-            buf << (type = s[i++]);
+            m_buf << (type = s[i++]);
             has_string = true;
             goto fini;
 
@@ -2242,11 +2261,11 @@ namespace octave
                    who.c_str (), s[i]);
           }
 
-        if (nconv < 0)
+        if (m_nconv < 0)
           break;
       }
 
-    nconv = -1;
+    m_nconv = -1;
   }
 
   // Parse [...] and [^...]
@@ -2364,7 +2383,7 @@ namespace octave
 
     if (type != '%')
       {
-        nconv++;
+        m_nconv++;
         if (type == '[')
           {
             if (i < n)
@@ -2374,35 +2393,35 @@ namespace octave
                 if (s[i] == '^')
                   {
                     type = '^';
-                    buf << s[i++];
+                    m_buf << s[i++];
 
                     if (i < n)
                       {
                         beg_idx = i;
 
                         if (s[i] == ']')
-                          buf << s[i++];
+                          m_buf << s[i++];
                       }
                   }
                 else if (s[i] == ']')
-                  buf << s[i++];
+                  m_buf << s[i++];
               }
 
             while (i < n && s[i] != ']')
-              buf << s[i++];
+              m_buf << s[i++];
 
             if (i < n && s[i] == ']')
               {
                 end_idx = i-1;
-                buf << s[i++];
+                m_buf << s[i++];
               }
 
             if (s[i-1] != ']')
-              retval = nconv = -1;
+              retval = m_nconv = -1;
           }
       }
 
-    if (nconv >= 0)
+    if (m_nconv >= 0)
       {
         if (beg_idx != std::string::npos && end_idx != std::string::npos)
           char_class = parse_char_class (s.substr (beg_idx,
@@ -2422,7 +2441,7 @@ namespace octave
 
     for (std::size_t i = 0; i < n; i++)
       {
-        textscan_format_elt *elt = fmt_elts[i];
+        textscan_format_elt *elt = m_fmt_elts[i];
 
         std::cerr
           << "width:      " << elt->width << "\n"
@@ -2453,9 +2472,9 @@ namespace octave
     // Read first line and strip end-of-line, which may be two characters
     std::string first_line (20, ' ');
 
-    is.getline (first_line, static_cast<char> (ts.eol2));
+    is.getline (first_line, static_cast<char> (ts.m_eol2));
 
-    if (! first_line.empty () && first_line.back () == ts.eol1)
+    if (! first_line.empty () && first_line.back () == ts.m_eol1)
       first_line.pop_back ();
 
     std::istringstream strstr (first_line);
@@ -2464,7 +2483,7 @@ namespace octave
     dim_vector dv (1,1);      // initial size of each output_container
     Complex val;
     octave_value val_type;
-    nconv = 0;
+    m_nconv = 0;
     int max_empty = 1000;     // failsafe, if ds fails but not with eof
     int retval = 0;
 
@@ -2472,9 +2491,9 @@ namespace octave
     while (! ds.eof ())
       {
         bool already_skipped_delim = false;
-        ts.skip_whitespace (ds);
+        ts.skip_whitespace (ds, false);
         ds.progress_benchmark ();
-        ts.scan_complex (ds, *fmt_elts[0], val);
+        ts.scan_complex (ds, *m_fmt_elts[0], val);
         if (ds.fail ())
           {
             ds.clear (ds.rdstate () & ~std::ios::failbit);
@@ -2492,7 +2511,7 @@ namespace octave
               }
             already_skipped_delim = true;
 
-            val = ts.empty_value.scalar_value ();
+            val = ts.m_empty_value.scalar_value ();
 
             if (! --max_empty)
               break;
@@ -2503,7 +2522,7 @@ namespace octave
         else
           val_type = octave_value (ComplexNDArray (dv, val));
 
-        output_container.push_back (val_type);
+        m_output_container.push_back (val_type);
 
         if (! already_skipped_delim)
           ts.skip_delim (ds);
@@ -2511,27 +2530,28 @@ namespace octave
         if (ds.no_progress ())
           break;
 
-        nconv++;
+        m_nconv++;
       }
 
-    output_container.pop_front (); // discard empty element from constructor
+    m_output_container.pop_front (); // discard empty element from constructor
 
     // Create fmt_list now that the size is known
-    for (octave_idx_type i = 1; i < nconv; i++)
-      fmt_elts.push_back (new textscan_format_elt (*fmt_elts[0]));
+    for (octave_idx_type i = 1; i < m_nconv; i++)
+      m_fmt_elts.push_back (new textscan_format_elt (*m_fmt_elts[0]));
 
     return retval;             // May have returned 4 above.
   }
 
   textscan::textscan (const std::string& who_arg, const std::string& encoding)
-    : who (who_arg), m_encoding (encoding), buf (), whitespace_table (),
-      delim_table (), delims (), comment_style (), comment_len (0),
-      comment_char (-2), buffer_size (0), date_locale (),
-      inf_nan (init_inf_nan ()), empty_value (numeric_limits<double>::NaN ()),
-      exp_chars ("edED"), header_lines (0), treat_as_empty (),
-      treat_as_empty_len (0), whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
-      return_on_error (1), collect_output (false),
-      multiple_delims_as_one (false), default_exp (true), lines (0)
+    : m_who (who_arg), m_encoding (encoding), m_buf (), m_whitespace_table (),
+      m_delim_table (), m_delims (), m_comment_style (), m_comment_len (0),
+      m_comment_char (-2), m_buffer_size (0), m_date_locale (),
+      m_inf_nan (init_inf_nan ()),
+      m_empty_value (numeric_limits<double>::NaN ()),
+      m_exp_chars ("edED"), m_header_lines (0), m_treat_as_empty (),
+      m_treat_as_empty_len (0), m_whitespace (" \b\t"), m_eol1 ('\r'),
+      m_eol2 ('\n'), m_return_on_error (1), m_collect_output (false),
+      multiple_delims_as_one (false), m_default_exp (true), m_lines (0)
   { }
 
   octave_value
@@ -2564,26 +2584,26 @@ namespace octave
     octave_value retval;
 
     if (fmt_list.num_conversions () == -1)
-      error ("%s: invalid format specified", who.c_str ());
+      error ("%s: invalid format specified", m_who.c_str ());
 
     if (fmt_list.num_conversions () == 0)
-      error ("%s: no valid format conversion specifiers", who.c_str ());
+      error ("%s: no valid format conversion specifiers", m_who.c_str ());
 
     // skip the first header_lines
     std::string dummy;
-    for (int i = 0; i < header_lines && isp; i++)
-      getline (isp, dummy, static_cast<char> (eol2));
+    for (int i = 0; i < m_header_lines && isp; i++)
+      getline (isp, dummy, static_cast<char> (m_eol2));
 
     // Create our own buffered stream, for fast get/putback/tell/seek.
 
     // First, see how far ahead it should let us look.
-    int max_lookahead = std::max (std::max (comment_len, treat_as_empty_len),
-                                  std::max (delim_len, 3)); // 3 for NaN and Inf
+    int max_lookahead = std::max ({m_comment_len, m_treat_as_empty_len, 
+                                   m_delim_len, 3});  // 3 for NaN and Inf
 
     // Next, choose a buffer size to avoid reading too much, or too often.
     octave_idx_type buf_size = 4096;
-    if (buffer_size)
-      buf_size = buffer_size;
+    if (m_buffer_size)
+      buf_size = m_buffer_size;
     else if (ntimes > 0)
       {
         // Avoid overflow of 80*ntimes...
@@ -2592,7 +2612,8 @@ namespace octave
       }
     // Finally, create the stream.
     delimited_stream is (isp,
-                         (delim_table.empty () ? whitespace + "\r\n" : delims),
+                         (m_delim_table.empty () ? m_whitespace + "\r\n"
+                                               : m_delims),
                          max_lookahead, buf_size);
 
     // Grow retval dynamically.  "size" is half the initial size
@@ -2613,7 +2634,7 @@ namespace octave
     if (fmt_list.set_from_first)
       {
         err = fmt_list.read_first_row (is, *this);
-        lines = 1;
+        m_lines = 1;
 
         done_after = fmt_list.numel () + 1;
         if (! err)
@@ -2632,7 +2653,7 @@ namespace octave
     // so force all to be merged (as all are %f).
     bool merge_with_prev[fmt_list.numel ()];
     int conv = 0;
-    if (collect_output)
+    if (m_collect_output)
       {
         int prev_type = -1;
         for (const auto& col : out)
@@ -2650,12 +2671,14 @@ namespace octave
     // This should be caught by earlier code, but this avoids a possible
     // infinite loop below.
     if (fmt_list.num_conversions () == 0)
-      error ("%s: No conversions specified", who.c_str ());
+      error ("%s: No conversions specified", m_who.c_str ());
 
     // Read the data.  This is the main loop.
     if (! err)
       {
-        for (/* row set ~30 lines above */; row < ntimes || ntimes == -1; row++)
+        for (/* row set ~30 m_lines above */;
+             row < ntimes || ntimes == -1;
+             row++)
           {
             if (row == 0 || row >= size)
               {
@@ -2667,14 +2690,14 @@ namespace octave
             row_idx(0) = row;
             err = read_format_once (is, fmt_list, out, row_idx, done_after);
 
-            if ((err & ~1) > 0 || ! is || (lines >= ntimes && ntimes > -1))
+            if ((err & ~1) > 0 || ! is || (m_lines >= ntimes && ntimes > -1))
               break;
           }
       }
 
-    if ((err & 4) && ! return_on_error)
+    if ((err & 4) && ! m_return_on_error)
       error ("%s: Read error in field %d of row %" OCTAVE_IDX_TYPE_FORMAT,
-             who.c_str (), done_after + 1, row + 1);
+             m_who.c_str (), done_after + 1, row + 1);
 
     // If file does not end in EOL, do not pad columns with NaN.
     bool uneven_columns = false;
@@ -2686,7 +2709,7 @@ namespace octave
         isp.seekg (-1, std::ios_base::end);
         int last_char = isp.get ();
         isp.setstate (isp.eofbit);
-        uneven_columns = (last_char != eol1 && last_char != eol2);
+        uneven_columns = (last_char != m_eol1 && last_char != m_eol2);
       }
 
     // convert return value to Cell array
@@ -2704,7 +2727,7 @@ namespace octave
 
     ra_idx(0) = 0;
     int i = 0;
-    if (! collect_output)
+    if (! m_collect_output)
       {
         retval = Cell (dim_vector (1, out.size ()));
         for (auto& col : out)
@@ -2714,8 +2737,8 @@ namespace octave
               dv = dim_vector (std::max (valid_rows - 1, 0), 1);
 
             ra_idx(1) = i;
-            retval = do_cat_op (retval, octave_value (Cell (col.resize (dv,0))),
-                                ra_idx);
+            retval = cat_op (retval, octave_value (Cell (col.resize (dv,0))),
+                             ra_idx);
             i++;
           }
       }
@@ -2734,8 +2757,7 @@ namespace octave
                 if (prev_type != -1)
                   {
                     ra_idx(1) = i++;
-                    retval = do_cat_op (retval, octave_value (Cell (cur)),
-                                        ra_idx);
+                    retval = cat_op (retval, octave_value (Cell (cur)), ra_idx);
                   }
                 cur = octave_value (col.resize (dv,0));
                 group_size = 1;
@@ -2744,12 +2766,11 @@ namespace octave
             else
               {
                 ra_idx(1) = group_size++;
-                cur = do_cat_op (cur, octave_value (col.resize (dv,0)),
-                                 ra_idx);
+                cur = cat_op (cur, octave_value (col.resize (dv,0)), ra_idx);
               }
           }
         ra_idx(1) = i;
-        retval = do_cat_op (retval, octave_value (Cell (cur)), ra_idx);
+        retval = cat_op (retval, octave_value (Cell (cur)), ra_idx);
       }
 
     return retval;
@@ -2839,7 +2860,7 @@ namespace octave
 
     // look for exponent part in, e.g.,  6.023E+23
     bool used_exp = false;
-    if (valid && width_left > 1 && exp_chars.find (ch) != std::string::npos)
+    if (valid && width_left > 1 && m_exp_chars.find (ch) != std::string::npos)
       {
         int ch1 = is.peek ();
         if (ch1 == '-' || ch1 == '+' || (ch1 >= '0' && ch1 <= '9'))
@@ -2885,7 +2906,7 @@ namespace octave
     // Check for +/- inf and NaN
     if (! valid && width_left >= 3)
       {
-        int i = lookahead (is, inf_nan, 3, false);   // false -> case insensitive
+        int i = lookahead (is, m_inf_nan, 3, false);  // false -> case insensitive
         if (i == 0)
           {
             retval = numeric_limits<double>::Inf ();
@@ -2916,7 +2937,7 @@ namespace octave
   {
     double im = 0;
     double re = 0;
-    bool as_empty = false;   // did we fail but match a "treat_as_empty" string?
+    bool as_empty = false;  // did we fail but match a "treat_as_empty" string?
     bool inf = false;
 
     int ch = is.peek ();
@@ -2960,43 +2981,43 @@ namespace octave
       {
         char *pos = is.tellg ();
         std::ios::iostate state = is.rdstate ();
-        //re = octave_read_value<double> (is);
+        //re = read_value<double> (is);
         re = read_double (is, fmt);
 
         // check for "treat as empty" string
-        if (treat_as_empty.numel ()
+        if (m_treat_as_empty.numel ()
             && (is.fail () || math::is_NaN_or_NA (Complex (re))
                 || re == numeric_limits<double>::Inf ()))
           {
 
-            for (int i = 0; i < treat_as_empty.numel (); i++)
+            for (int i = 0; i < m_treat_as_empty.numel (); i++)
               {
-                if (ch == treat_as_empty (i).string_value ()[0])
+                if (ch == m_treat_as_empty (i).string_value ()[0])
                   {
-                    as_empty = true;   // first char matches, so read the lot
+                    as_empty = true;  // first char matches, so read the lot
                     break;
                   }
               }
-            if (as_empty)              // if first char matched...
+            if (as_empty)             // if first char matched...
               {
-                as_empty = false;      // ...look for the whole string
+                as_empty = false;     // ...look for the whole string
 
-                is.clear (state);      // treat_as_empty "-" causes partial read
-                is.seekg (pos);        // reset to position before failed read
+                is.clear (state);     // treat_as_empty "-" causes partial read
+                is.seekg (pos);       // reset to position before failed read
 
                 // treat_as_empty strings may be different sizes.
                 // Read ahead longest, put it all back, then re-read the string
                 // that matches.
-                std::string look_buf (treat_as_empty_len, '\0');
+                std::string look_buf (m_treat_as_empty_len, '\0');
                 char *look = is.read (&look_buf[0], look_buf.size (), pos);
 
                 is.clear (state);
                 is.seekg (pos);        // reset to position before look-ahead
                                        // FIXME: is.read could invalidate pos
 
-                for (int i = 0; i < treat_as_empty.numel (); i++)
+                for (int i = 0; i < m_treat_as_empty.numel (); i++)
                   {
-                    std::string s = treat_as_empty (i).string_value ();
+                    std::string s = m_treat_as_empty (i).string_value ();
                     if (! strncmp (s.c_str (), look, s.size ()))
                       {
                         as_empty = true;
@@ -3025,7 +3046,7 @@ namespace octave
                 pos   = is.tellg ();
                 state = is.rdstate ();
 
-                //im = octave_read_value<double> (is);
+                //im = read_value<double> (is);
                 im = read_double (is, fmt);
                 if (is.fail ())
                   im = 1;
@@ -3044,7 +3065,7 @@ namespace octave
           }
       }
     if (as_empty)
-      val = empty_value.scalar_value ();
+      val = m_empty_value.scalar_value ();
     else
       val = Complex (re, im);
   }
@@ -3094,7 +3115,7 @@ namespace octave
 
         if (last != std::istream::traits_type::eof ())
           {
-            if (last == eol1 || last == eol2)
+            if (last == m_eol1 || last == m_eol2)
               break;
 
             retval = retval + static_cast<char> (last);
@@ -3129,7 +3150,7 @@ namespace octave
   textscan::scan_string (delimited_stream& is, const textscan_format_elt& fmt,
                          std::string& val) const
   {
-    if (delim_list.isempty ())
+    if (m_delim_list.isempty ())
       {
         unsigned int i = 0;
         unsigned int width = fmt.width;
@@ -3154,16 +3175,16 @@ namespace octave
       }
     else  // Cell array of multi-character delimiters
       {
-        std::string ends (delim_list.numel () + 2, '\0');
+        std::string ends (m_delim_list.numel () + 2, '\0');
         int i;
-        for (i = 0; i < delim_list.numel (); i++)
+        for (i = 0; i < m_delim_list.numel (); i++)
           {
-            std::string tmp = delim_list(i).string_value ();
+            std::string tmp = m_delim_list(i).string_value ();
             ends[i] = tmp.back ();
           }
-        ends[i++] = eol1;
-        ends[i++] = eol2;
-        val = textscan::read_until (is, delim_list, ends);
+        ends[i++] = m_eol1;
+        ends[i++] = m_eol2;
+        val = textscan::read_until (is, m_delim_list, ends);
       }
 
     // convert from codepage
@@ -3276,7 +3297,7 @@ namespace octave
                     else
                       {
                         if (ov.isreal ())  // cat does type conversion
-                          ov = do_cat_op (ov, octave_value (v), row);
+                          ov = cat_op (ov, octave_value (v), row);
                         else
                           ov.internal_rep ()->fast_elem_insert (row(0), v);
                       }
@@ -3289,7 +3310,7 @@ namespace octave
                     else
                       {
                         if (ov.isreal ())  // cat does type conversion
-                          ov = do_cat_op (ov, octave_value (v), row);
+                          ov = cat_op (ov, octave_value (v), row);
                         else
                           ov.internal_rep ()->fast_elem_insert (row(0),
                                                                 FloatComplex (v));
@@ -3374,7 +3395,7 @@ namespace octave
           }
 
         if (is.fail () & ! fmt.discard)
-          ov = do_cat_op (ov, empty_value, row);
+          ov = cat_op (ov, m_empty_value, row);
       }
     else
       {
@@ -3444,7 +3465,7 @@ namespace octave
           case 'C':
           case 'D':
             warning ("%s: conversion %c not yet implemented",
-                     who.c_str (), elem->type);
+                     m_who.c_str (), elem->type);
             break;
 
           case 'u':
@@ -3478,7 +3499,7 @@ namespace octave
 
             if (! is.eof ())
               {
-                if (delim_list.isempty ())
+                if (m_delim_list.isempty ())
                   {
                     if (! is_delim (is.peek ()))
                       this_conversion_failed = true;
@@ -3486,7 +3507,7 @@ namespace octave
                 else  // Cell array of multi-character delimiters
                   {
                     char *pos = is.tellg ();
-                    if (-1 == lookahead (is, delim_list, delim_len))
+                    if (-1 == lookahead (is, m_delim_list, m_delim_len))
                       this_conversion_failed = true;
                     is.clear ();
                     is.seekg (pos);     // reset to position before look-ahead
@@ -3500,11 +3521,12 @@ namespace octave
         elem = fmt_list.next ();
         char *pos = is.tellg ();
 
-        // FIXME: these conversions "ignore delimiters".  Should they include
-        // delimiters at the start of the conversion, or can those be skipped?
-        if (elem->type != textscan_format_elt::literal_conversion
-            // && elem->type != '[' && elem->type != '^' && elem->type != 'c'
-           )
+        // Skip delimiter before reading the next fmt conversion,
+        // unless the fmt is a string literal which begins with a delimiter,
+        // in which case the literal must match everything.  Bug #58008
+        if (elem->type != textscan_format_elt::literal_conversion)
+          skip_delim (is);
+        else if (! is_delim (elem->text[0]))
           skip_delim (is);
 
         if (is.eof ())
@@ -3550,14 +3572,14 @@ namespace octave
 
     if (n & 1)
       error ("%s: %d parameters given, but only %d values",
-             who.c_str (), n-n/2, n/2);
+             m_who.c_str (), n-n/2, n/2);
 
-    delim_len = 1;
+    m_delim_len = 1;
     bool have_delims = false;
     for (int i = 0; i < last; i += 2)
       {
         std::string param = args(i).xstring_value ("%s: Invalid parameter type <%s> for parameter %d",
-                                                   who.c_str (),
+                                                   m_who.c_str (),
                                                    args(i).type_name ().c_str (),
                                                    i/2 + 1);
         std::transform (param.begin (), param.end (), param.begin (), ::tolower);
@@ -3569,63 +3591,64 @@ namespace octave
               {
                 invalid = false;
                 have_delims = true;
-                delims = args(i+1).string_value ();
+                m_delims = args(i+1).string_value ();
                 if (args(i+1).is_sq_string ())
-                  delims = do_string_escapes (delims);
+                  m_delims = do_string_escapes (m_delims);
               }
             else if (args(i+1).iscell ())
               {
                 invalid = false;
-                delim_list = args(i+1).cell_value ();
-                delim_table = " "; // non-empty, to flag non-default delim
+                m_delim_list = args(i+1).cell_value ();
+                m_delim_table = " ";  // non-empty, to flag non-default delim
 
                 // Check that all elements are strings, and find max length
-                for (int j = 0; j < delim_list.numel (); j++)
+                for (int j = 0; j < m_delim_list.numel (); j++)
                   {
-                    if (! delim_list(j).is_string ())
+                    if (! m_delim_list(j).is_string ())
                       invalid = true;
                     else
                       {
-                        if (delim_list(j).is_sq_string ())
-                          delim_list(j) = do_string_escapes (delim_list(j)
+                        if (m_delim_list(j).is_sq_string ())
+                          m_delim_list(j) = do_string_escapes (m_delim_list(j)
                                                              .string_value ());
-                        octave_idx_type len = delim_list(j).string_value ()
+                        octave_idx_type len = m_delim_list(j).string_value ()
                                               .length ();
-                        delim_len = std::max (static_cast<int> (len), delim_len);
+                        m_delim_len = std::max (static_cast<int> (len),
+                                                m_delim_len);
                       }
                   }
               }
             if (invalid)
               error ("%s: Delimiters must be either a string or cell array of strings",
-                     who.c_str ());
+                     m_who.c_str ());
           }
         else if (param == "commentstyle")
           {
             if (args(i+1).is_string ())
               {
                 // check here for names like "C++", "C", "shell", ...?
-                comment_style = Cell (args(i+1));
+                m_comment_style = Cell (args(i+1));
               }
             else if (args(i+1).iscell ())
               {
-                comment_style = args(i+1).cell_value ();
-                int len = comment_style.numel ();
-                if ((len >= 1 && ! comment_style (0).is_string ())
-                    || (len >= 2 && ! comment_style (1).is_string ())
+                m_comment_style = args(i+1).cell_value ();
+                int len = m_comment_style.numel ();
+                if ((len >= 1 && ! m_comment_style (0).is_string ())
+                    || (len >= 2 && ! m_comment_style (1).is_string ())
                     || (len >= 3))
                   error ("%s: CommentStyle must be either a string or cell array of one or two strings",
-                         who.c_str ());
+                         m_who.c_str ());
               }
             else
               error ("%s: CommentStyle must be either a string or cell array of one or two strings",
-                     who.c_str ());
+                     m_who.c_str ());
 
             // How far ahead do we need to look to detect an open comment
             // and which character do we look for?
-            if (comment_style.numel () >= 1)
+            if (m_comment_style.numel () >= 1)
               {
-                comment_len  = comment_style (0).string_value ().size ();
-                comment_char = comment_style (0).string_value ()[0];
+                m_comment_len  = m_comment_style (0).string_value ().size ();
+                m_comment_char = m_comment_style (0).string_value ()[0];
               }
           }
         else if (param == "treatasempty")
@@ -3633,77 +3656,77 @@ namespace octave
             bool invalid = false;
             if (args(i+1).is_string ())
               {
-                treat_as_empty = Cell (args(i+1));
-                treat_as_empty_len = args(i+1).string_value ().size ();
+                m_treat_as_empty = Cell (args(i+1));
+                m_treat_as_empty_len = args(i+1).string_value ().size ();
               }
             else if (args(i+1).iscell ())
               {
-                treat_as_empty = args(i+1).cell_value ();
-                for (int j = 0; j < treat_as_empty.numel (); j++)
-                  if (! treat_as_empty (j).is_string ())
+                m_treat_as_empty = args(i+1).cell_value ();
+                for (int j = 0; j < m_treat_as_empty.numel (); j++)
+                  if (! m_treat_as_empty (j).is_string ())
                     invalid = true;
                   else
                     {
-                      int k = treat_as_empty (j).string_value ().size ();
-                      if (k > treat_as_empty_len)
-                        treat_as_empty_len = k;
+                      int k = m_treat_as_empty (j).string_value ().size ();
+                      if (k > m_treat_as_empty_len)
+                        m_treat_as_empty_len = k;
                     }
               }
             if (invalid)
               error ("%s: TreatAsEmpty must be either a string or cell array of one or two strings",
-                     who.c_str ());
+                     m_who.c_str ());
 
             // FIXME: Ensure none is a prefix of a later one.  Sort by length?
           }
         else if (param == "collectoutput")
           {
-            collect_output = args(i+1).xbool_value ("%s: CollectOutput must be logical or numeric", who.c_str ());
+            m_collect_output = args(i+1).xbool_value ("%s: CollectOutput must be logical or numeric", m_who.c_str ());
           }
         else if (param == "emptyvalue")
           {
-            empty_value = args(i+1).xscalar_value ("%s: EmptyValue must be numeric", who.c_str ());
+            m_empty_value = args(i+1).xscalar_value ("%s: EmptyValue must be numeric", m_who.c_str ());
           }
         else if (param == "headerlines")
           {
-            header_lines = args(i+1).xscalar_value ("%s: HeaderLines must be numeric", who.c_str ());
+            m_header_lines = args(i+1).xscalar_value ("%s: HeaderLines must be numeric", m_who.c_str ());
           }
         else if (param == "bufsize")
           {
-            buffer_size = args(i+1).xscalar_value ("%s: BufSize must be numeric", who.c_str ());
+            m_buffer_size = args(i+1).xscalar_value ("%s: BufSize must be numeric", m_who.c_str ());
           }
         else if (param == "multipledelimsasone")
           {
-            multiple_delims_as_one = args(i+1).xbool_value ("%s: MultipleDelimsAsOne must be logical or numeric", who.c_str ());
+            multiple_delims_as_one = args(i+1).xbool_value ("%s: MultipleDelimsAsOne must be logical or numeric", m_who.c_str ());
           }
         else if (param == "returnonerror")
           {
-            return_on_error = args(i+1).xbool_value ("%s: ReturnOnError must be logical or numeric", who.c_str ());
+            m_return_on_error = args(i+1).xbool_value ("%s: ReturnOnError must be logical or numeric", m_who.c_str ());
           }
         else if (param == "whitespace")
           {
-            whitespace = args(i+1).xstring_value ("%s: Whitespace must be a character string", who.c_str ());
+            m_whitespace = args(i+1).xstring_value ("%s: Whitespace must be a character string", m_who.c_str ());
           }
         else if (param == "expchars")
           {
-            exp_chars = args(i+1).xstring_value ("%s: ExpChars must be a character string", who.c_str ());
-            default_exp = false;
+            m_exp_chars = args(i+1).xstring_value ("%s: ExpChars must be a character string", m_who.c_str ());
+            m_default_exp = false;
           }
         else if (param == "endofline")
           {
             bool valid = true;
-            std::string s = args(i+1).xstring_value (R"(%s: EndOfLine must be at most one character or '\r\n')", who.c_str ());
+            std::string s = args(i+1).xstring_value (R"(%s: EndOfLine must be at most one character or '\r\n')", m_who.c_str ());
             if (args(i+1).is_sq_string ())
               s = do_string_escapes (s);
             int l = s.length ();
             if (l == 0)
-              eol1 = eol2 = -2;
+              m_eol1 = m_eol2 = -2;
             else if (l == 1)
-              eol1 = eol2 = s.c_str ()[0];
+              m_eol1 = m_eol2 = s.c_str ()[0];
             else if (l == 2)
               {
-                eol1 = s.c_str ()[0];
-                eol2 = s.c_str ()[1];
-                if (eol1 != '\r' || eol2 != '\n')    // Why limit it?
+                m_eol1 = s.c_str ()[0];
+                m_eol2 = s.c_str ()[1];
+                if (m_eol1 != '\r' || m_eol2 != '\n')    // Why limit it?
                   valid = false;
               }
             else
@@ -3711,54 +3734,54 @@ namespace octave
 
             if (! valid)
               error (R"(%s: EndOfLine must be at most one character or '\r\n')",
-                     who.c_str ());
+                     m_who.c_str ());
           }
         else
-          error ("%s: unrecognized option '%s'", who.c_str (), param.c_str ());
+          error ("%s: unrecognized option '%s'", m_who.c_str (), param.c_str ());
       }
 
     // Remove any user-supplied delimiter from whitespace list
-    for (unsigned int j = 0; j < delims.length (); j++)
+    for (unsigned int j = 0; j < m_delims.length (); j++)
       {
-        whitespace.erase (std::remove (whitespace.begin (),
-                                       whitespace.end (),
-                                       delims[j]),
-                          whitespace.end ());
+        m_whitespace.erase (std::remove (m_whitespace.begin (),
+                                         m_whitespace.end (),
+                                         m_delims[j]),
+                            m_whitespace.end ());
       }
-    for (int j = 0; j < delim_list.numel (); j++)
+    for (int j = 0; j < m_delim_list.numel (); j++)
       {
-        std::string delim = delim_list(j).string_value ();
+        std::string delim = m_delim_list(j).string_value ();
         if (delim.length () == 1)
-          whitespace.erase (std::remove (whitespace.begin (),
-                                         whitespace.end (),
-                                         delim[0]),
-                            whitespace.end ());
+          m_whitespace.erase (std::remove (m_whitespace.begin (),
+                                           m_whitespace.end (),
+                                           delim[0]),
+                              m_whitespace.end ());
       }
 
-    whitespace_table = std::string (256, '\0');
-    for (unsigned int i = 0; i < whitespace.length (); i++)
-      whitespace_table[whitespace[i]] = '1';
+    m_whitespace_table = std::string (256, '\0');
+    for (unsigned int i = 0; i < m_whitespace.length (); i++)
+      m_whitespace_table[m_whitespace[i]] = '1';
 
     // For Matlab compatibility, add 0x20 to whitespace, unless
     // whitespace is explicitly ignored.
-    if (! (whitespace.empty () && fmt_list.has_string))
-      whitespace_table[' '] = '1';
+    if (! (m_whitespace.empty () && fmt_list.has_string))
+      m_whitespace_table[' '] = '1';
 
     // Create look-up table of delimiters, based on 'delimiter'
-    delim_table = std::string (256, '\0');
-    if (eol1 >= 0 && eol1 < 256)
-      delim_table[eol1] = '1';        // EOL is always a delimiter
-    if (eol2 >= 0 && eol2 < 256)
-      delim_table[eol2] = '1';        // EOL is always a delimiter
+    m_delim_table = std::string (256, '\0');
+    if (m_eol1 >= 0 && m_eol1 < 256)
+      m_delim_table[m_eol1] = '1';        // EOL is always a delimiter
+    if (m_eol2 >= 0 && m_eol2 < 256)
+      m_delim_table[m_eol2] = '1';        // EOL is always a delimiter
     if (! have_delims)
       for (unsigned int i = 0; i < 256; i++)
         {
           if (isspace (i))
-            delim_table[i] = '1';
+            m_delim_table[i] = '1';
         }
     else
-      for (unsigned int i = 0; i < delims.length (); i++)
-        delim_table[delims[i]] = '1';
+      for (unsigned int i = 0; i < m_delims.length (); i++)
+        m_delim_table[m_delims[i]] = '1';
   }
 
   // Skip comments, and characters specified by the "Whitespace" option.
@@ -3774,45 +3797,47 @@ namespace octave
       {
         found_comment = false;
         int prev = -1;
-        while (is && (c1 = is.get_undelim ()) != std::istream::traits_type::eof ()
-               && ( ( (c1 == eol1 || c1 == eol2) && ++lines && ! EOLstop)
+        while (is
+               && (c1 = is.get_undelim ()) != std::istream::traits_type::eof ()
+               && ( ( (c1 == m_eol1 || c1 == m_eol2) && ++m_lines && ! EOLstop)
                     || isspace (c1)))
           {
-            if (prev == eol1 && eol1 != eol2 && c1 == eol2)
-              lines--;
+            if (prev == m_eol1 && m_eol1 != m_eol2 && c1 == m_eol2)
+              m_lines--;
             prev = c1;
           }
 
-        if (c1 == comment_char)           // see if we match an open comment
+        if (c1 == m_comment_char)           // see if we match an open comment
           {
             // save stream state in case we have to restore it
             char *pos = is.tellg ();
             std::ios::iostate state = is.rdstate ();
 
-            std::string tmp (comment_len, '\0');
-            char *look = is.read (&tmp[0], comment_len-1, pos); // already read first char
-            if (is && comment_style.numel () > 0
-                && ! strncmp (comment_style(0).string_value ().substr (1).c_str (),
-                              look, comment_len-1))
+            std::string tmp (m_comment_len, '\0');
+            char *look = is.read (&tmp[0], m_comment_len-1, pos); // already read first char
+            if (is && m_comment_style.numel () > 0
+                && ! strncmp (m_comment_style(0).string_value ().substr (1).c_str (),
+                              look, m_comment_len-1))
               {
                 found_comment = true;
 
                 std::string dummy;
-                if (comment_style.numel () == 1)  // skip to end of line
+                if (m_comment_style.numel () == 1)  // skip to end of line
                   {
                     std::string eol (3, '\0');
-                    eol[0] = eol1;
-                    eol[1] = eol2;
+                    eol[0] = m_eol1;
+                    eol[1] = m_eol2;
 
                     scan_caret (is, eol, dummy);
                     c1 = is.get_undelim ();
-                    if (c1 == eol1 && eol1 != eol2 && is.peek_undelim () == eol2)
+                    if (c1 == m_eol1 && m_eol1 != m_eol2
+                        && is.peek_undelim () == m_eol2)
                       is.get_undelim ();
-                    lines++;
+                    m_lines++;
                   }
                 else      // matching pair
                   {
-                    std::string end_c = comment_style(1).string_value ();
+                    std::string end_c = m_comment_style(1).string_value ();
                     // last char of end-comment sequence
                     std::string last = end_c.substr (end_c.size () - 1);
                     std::string may_match ("");
@@ -3825,7 +3850,8 @@ namespace octave
                         may_match = may_match + dummy + last;
                         if (may_match.length () > end_c.length ())
                           {
-                            std::size_t start = may_match.length () - end_c.length ();
+                            std::size_t start = may_match.length ()
+                                                - end_c.length ();
                             may_match = may_match.substr (start);
                           }
                       }
@@ -3892,27 +3918,28 @@ namespace octave
   int
   textscan::skip_delim (delimited_stream& is)
   {
-    int c1 = skip_whitespace (is, true);  // 'true': stop once EOL is read
-    if (delim_list.numel () == 0)         // single character delimiter
+    int c1 = skip_whitespace (is);  // Stop once EOL is read
+    if (m_delim_list.numel () == 0)   // single character delimiter
       {
-        if (is_delim (c1) || c1 == eol1 || c1 == eol2)
+        if (is_delim (c1) || c1 == m_eol1 || c1 == m_eol2)
           {
             is.get ();
-            if (c1 == eol1 && is.peek_undelim () == eol2)
+            if (c1 == m_eol1 && is.peek_undelim () == m_eol2)
               is.get_undelim ();          // if \r\n, skip the \n too.
 
             if (multiple_delims_as_one)
               {
                 int prev = -1;
                 // skip multiple delims.
-                // Increment lines for each end-of-line seen; for \r\n, decrement
+                // Increment lines for each end-of-line seen;
+                // Decrement for \r\n
                 while (is && ((c1 = is.get_undelim ())
                               != std::istream::traits_type::eof ())
-                       && (((c1 == eol1 || c1 == eol2) && ++lines)
+                       && (((c1 == m_eol1 || c1 == m_eol2) && ++m_lines)
                            || isspace (c1) || is_delim (c1)))
                   {
-                    if (prev == eol1 && eol1 != eol2 && c1 == eol2)
-                      lines--;
+                    if (prev == m_eol1 && m_eol1 != m_eol2 && c1 == m_eol2)
+                      m_lines--;
                     prev = c1;
                   }
                 if (c1 != std::istream::traits_type::eof ())
@@ -3924,16 +3951,16 @@ namespace octave
       {
         int first_match;
 
-        if (c1 == eol1 || c1 == eol2
-            || (-1 != (first_match = lookahead (is, delim_list, delim_len))))
+        if (c1 == m_eol1 || c1 == m_eol2
+            || (-1 != (first_match = lookahead (is, m_delim_list, m_delim_len))))
           {
-            if (c1 == eol1)
+            if (c1 == m_eol1)
               {
                 is.get_undelim ();
-                if (is.peek_undelim () == eol2)
+                if (is.peek_undelim () == m_eol2)
                   is.get_undelim ();
               }
-            else if (c1 == eol2)
+            else if (c1 == m_eol2)
               {
                 is.get_undelim ();
               }
@@ -3942,14 +3969,15 @@ namespace octave
               {
                 int prev = -1;
                 // skip multiple delims.
-                // Increment lines for each end-of-line seen; for \r\n, decrement
-                while (is && ((c1 = skip_whitespace (is, true))
+                // Increment lines for each end-of-line seen;
+                // decrement for \r\n.
+                while (is && ((c1 = skip_whitespace (is))
                               != std::istream::traits_type::eof ())
-                       && (((c1 == eol1 || c1 == eol2) && ++lines)
-                           || -1 != lookahead (is, delim_list, delim_len)))
+                       && (((c1 == m_eol1 || c1 == m_eol2) && ++m_lines)
+                           || -1 != lookahead (is, m_delim_list, m_delim_len)))
                   {
-                    if (prev == eol1 && eol1 != eol2 && c1 == eol2)
-                      lines--;
+                    if (prev == m_eol1 && m_eol1 != m_eol2 && c1 == m_eol2)
+                      m_lines--;
                     prev = c1;
                   }
               }
@@ -3964,7 +3992,8 @@ namespace octave
   // false (and set failbit).
 
   bool
-  textscan::match_literal (delimited_stream& is, const textscan_format_elt& fmt)
+  textscan::match_literal (delimited_stream& is,
+                           const textscan_format_elt& fmt)
   {
     // "false" -> treat EOL as normal space
     // since a delimiter at the start of a line is a mismatch, not empty field
@@ -4197,7 +4226,7 @@ namespace octave
   }
 
   template <typename T>
-  std::istream&
+  static std::istream&
   octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
                  T *valptr)
   {
@@ -4286,7 +4315,7 @@ namespace octave
   }
 
   template <typename T>
-  std::istream&
+  static std::istream&
   octave_scan (std::istream& is, const scanf_format_elt& fmt, T *valptr)
   {
     if (fmt.width)
@@ -4334,17 +4363,6 @@ namespace octave
     return is;
   }
 
-  // Note that this specialization is only used for reading characters, not
-  // character strings.  See BEGIN_S_CONVERSION for details.
-
-  template <>
-  std::istream&
-  octave_scan<> (std::istream& is, const scanf_format_elt& /* fmt */,
-                 char *valptr)
-  {
-    return is >> valptr;
-  }
-
   template <>
   std::istream&
   octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double *valptr)
@@ -4369,7 +4387,7 @@ namespace octave
             {
               is.putback (c1);
 
-              ref = octave_read_value<double> (is);
+              ref = read_value<double> (is);
             }
         }
         break;
@@ -4383,7 +4401,7 @@ namespace octave
   }
 
   template <typename T>
-  void
+  static void
   do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
                  T valptr, Matrix& mval, double *data, octave_idx_type& idx,
                  octave_idx_type& conversion_count, octave_idx_type nr,
@@ -4440,7 +4458,8 @@ namespace octave
       int n = fmt.length ();                                            \
       int i = 0;                                                        \
                                                                         \
-      while (i < n && is && (c = is.get ()) != std::istream::traits_type::eof ()) \
+      while (i < n && is                                                \
+             && (c = is.get ()) != std::istream::traits_type::eof ())   \
         {                                                               \
           if (c == static_cast<unsigned char> (fmt[i]))                 \
             {                                                           \
@@ -4657,7 +4676,7 @@ namespace octave
 
     conversion_count = 0;
 
-    octave_idx_type nconv = fmt_list.num_conversions ();
+    octave_idx_type m_nconv = fmt_list.num_conversions ();
 
     octave_idx_type data_index = 0;
 
@@ -4757,11 +4776,11 @@ namespace octave
                            || elt->type == '%')
                         && max_conv > 0 && conversion_count == max_conv))
                   {
-                    // We are done, either because we have reached the end of the
-                    // format string and are not cycling through the format again
-                    // or because we've converted all the values that have been
-                    // requested and the next format element is a conversion.
-                    // Determine final array size and exit.
+                    // We are done, either because we have reached the end of
+                    // the format string and are not cycling through the format
+                    // again or because we've converted all the values that
+                    // have been requested and the next format element is a
+                    // conversion.  Determine final array size and exit.
                     if (all_char_conv && one_elt_size_spec)
                       {
                         final_nr = 1;
@@ -5000,7 +5019,7 @@ namespace octave
                 break;
               }
 
-            if (nconv == 0 && ++trips == num_fmt_elts)
+            if (m_nconv == 0 && ++trips == num_fmt_elts)
               {
                 if (all_char_conv && one_elt_size_spec)
                   {
@@ -5021,7 +5040,7 @@ namespace octave
                 // conversions to make and we haven't reached the limit on the
                 // number of values to convert (possibly because there is no
                 // specified limit).
-                elt = fmt_list.next (nconv > 0
+                elt = fmt_list.next (m_nconv > 0
                                      && (max_conv == 0
                                          || conversion_count < max_conv));
               }
@@ -5303,16 +5322,16 @@ namespace octave
 
         scanf_format_list fmt_list (fmt);
 
-        octave_idx_type nconv = fmt_list.num_conversions ();
+        octave_idx_type m_nconv = fmt_list.num_conversions ();
 
-        if (nconv == -1)
+        if (m_nconv == -1)
           ::error ("%s: invalid format specified", who.c_str ());
 
         is.clear ();
 
         octave_idx_type len = fmt_list.length ();
 
-        retval.resize (nconv+2, Matrix ());
+        retval.resize (m_nconv+2, Matrix ());
 
         const scanf_format_elt *elt = fmt_list.first ();
 
@@ -5336,19 +5355,19 @@ namespace octave
                 if (! ok ())
                   break;
 
-                elt = fmt_list.next (nconv > 0);
+                elt = fmt_list.next (m_nconv > 0);
               }
           }
 
-        retval(nconv) = num_values;
+        retval(m_nconv) = num_values;
 
         int err_num;
-        retval(nconv+1) = error (false, err_num);
+        retval(m_nconv+1) = error (false, err_num);
 
         if (! quit)
           {
             // Pick up any trailing stuff.
-            if (ok () && len > nconv)
+            if (ok () && len > m_nconv)
               {
                 octave_value tmp;
 
@@ -5422,13 +5441,13 @@ namespace octave
     enum state { ok, conversion_error };
 
     printf_value_cache (const octave_value_list& args, const std::string& who)
-      : values (args), val_idx (0), elt_idx (0),
-        n_vals (values.length ()), n_elts (0), have_data (false),
-        curr_state (ok)
+      : m_values (args), m_val_idx (0), m_elt_idx (0),
+        m_n_vals (m_values.length ()), m_n_elts (0), m_have_data (false),
+        m_curr_state (ok)
     {
-      for (octave_idx_type i = 0; i < values.length (); i++)
+      for (octave_idx_type i = 0; i < m_values.length (); i++)
         {
-          octave_value val = values(i);
+          octave_value val = m_values(i);
 
           if (val.isstruct () || val.iscell () || val.isobject ())
             err_wrong_type_arg (who, val);
@@ -5452,24 +5471,25 @@ namespace octave
 
     int int_value (void);
 
-    operator bool () const { return (curr_state == ok); }
+    operator bool () const { return (m_curr_state == ok); }
 
-    bool exhausted (void) { return (val_idx >= n_vals); }
+    bool exhausted (void) { return (m_val_idx >= m_n_vals); }
 
   private:
 
-    const octave_value_list values;
-    int val_idx;
-    int elt_idx;
-    int n_vals;
-    int n_elts;
-    bool have_data;
-    octave_value curr_val;
-    state curr_state;
-
     // Must create value cache with values!
-
     printf_value_cache (void);
+
+    //--------
+
+    const octave_value_list m_values;
+    octave_idx_type m_val_idx;
+    octave_idx_type m_elt_idx;
+    octave_idx_type m_n_vals;
+    octave_idx_type m_n_elts;
+    bool m_have_data;
+    octave_value m_curr_val;
+    state m_curr_state;
   };
 
   octave_value
@@ -5478,69 +5498,70 @@ namespace octave
     octave_value retval;
 
     if (exhausted ())
-      curr_state = conversion_error;
+      m_curr_state = conversion_error;
 
     while (! exhausted ())
       {
-        if (! have_data)
+        if (! m_have_data)
           {
-            curr_val = values (val_idx);
+            m_curr_val = m_values (m_val_idx);
 
-            elt_idx = 0;
-            n_elts = curr_val.numel ();
-            have_data = true;
+            m_elt_idx = 0;
+            m_n_elts = m_curr_val.numel ();
+            m_have_data = true;
           }
 
-        if (elt_idx < n_elts)
+        if (m_elt_idx < m_n_elts)
           {
             if (type == 's')
               {
-                if (curr_val.is_string ())
+                if (m_curr_val.is_string ())
                   {
-                    dim_vector dv (1, curr_val.numel ());
-                    octave_value tmp = curr_val.reshape (dv);
+                    dim_vector dv (1, m_curr_val.numel ());
+                    octave_value tmp = m_curr_val.reshape (dv);
 
                     std::string sval = tmp.string_value ();
 
-                    retval = sval.substr (elt_idx);
+                    retval = sval.substr (m_elt_idx);
 
                     // We've consumed the rest of the value.
-                    elt_idx = n_elts;
+                    m_elt_idx = m_n_elts;
                   }
                 else
                   {
                     // Convert to character string while values are
                     // integers in the range [0 : char max]
-                    const NDArray val = curr_val.array_value ();
+                    const NDArray val = m_curr_val.array_value ();
 
-                    octave_idx_type idx = elt_idx;
+                    octave_idx_type idx = m_elt_idx;
 
-                    for (; idx < n_elts; idx++)
+                    for (; idx < m_n_elts; idx++)
                       {
                         double dval = val(idx);
 
-                        if (math::x_nint (dval) != dval || dval < 0 || dval > 255)
+                        if (math::x_nint (dval) != dval
+                            || dval < 0 || dval > 255)
                           break;
                       }
 
-                    octave_idx_type n = idx - elt_idx;
+                    octave_idx_type n = idx - m_elt_idx;
 
                     if (n > 0)
                       {
                         std::string sval (n, '\0');
 
                         for (octave_idx_type i = 0; i < n; i++)
-                          sval[i] = val(elt_idx++);
+                          sval[i] = val(m_elt_idx++);
 
                         retval = sval;
                       }
                     else
-                      retval = curr_val.fast_elem_extract (elt_idx++);
+                      retval = m_curr_val.fast_elem_extract (m_elt_idx++);
                   }
               }
             else
               {
-                retval = curr_val.fast_elem_extract (elt_idx++);
+                retval = m_curr_val.fast_elem_extract (m_elt_idx++);
 
                 if (type == 'c' && ! retval.is_string ())
                   {
@@ -5551,23 +5572,23 @@ namespace octave
                   }
               }
 
-            if (elt_idx >= n_elts)
+            if (m_elt_idx >= m_n_elts)
               {
-                elt_idx = 0;
-                val_idx++;
-                have_data = false;
+                m_elt_idx = 0;
+                m_val_idx++;
+                m_have_data = false;
               }
 
             break;
           }
         else
           {
-            val_idx++;
-            have_data = false;
+            m_val_idx++;
+            m_have_data = false;
 
-            if (n_elts == 0)
+            if (m_n_elts == 0)
               {
-                if (elt_idx == 0)
+                if (m_elt_idx == 0)
                   {
                     if (type == 's' || type == 'c')
                       retval = "";
@@ -5578,7 +5599,7 @@ namespace octave
                   }
 
                 if (exhausted ())
-                  curr_state = conversion_error;
+                  m_curr_state = conversion_error;
               }
           }
       }
@@ -5596,7 +5617,7 @@ namespace octave
     if (dval < 0 || dval > std::numeric_limits<int>::max ()
         || math::x_nint (dval) != dval)
       {
-        curr_state = conversion_error;
+        m_curr_state = conversion_error;
         return -1;
       }
 
@@ -5606,7 +5627,7 @@ namespace octave
   // Ugh again and again.
 
   template <typename T>
-  int
+  static int
   do_printf_conv (std::ostream& os, const std::string& encoding,
                   const char *fmt, int nsa, int sa_1, int sa_2, T arg,
                   const std::string& who)
@@ -5715,7 +5736,7 @@ namespace octave
         // Easier than dispatching here...
 
         octave_value ov_is_ge_zero
-          = do_binary_op (octave_value::op_ge, val, octave_value (0.0));
+          = binary_op (octave_value::op_ge, val, octave_value (0.0));
 
         return ov_is_ge_zero.is_true ();
       }
@@ -5876,7 +5897,7 @@ namespace octave
   {
     int retval = 0;
 
-    octave_idx_type nconv = fmt_list.num_conversions ();
+    octave_idx_type m_nconv = fmt_list.num_conversions ();
 
     std::ostream *osp = output_stream ();
 
@@ -5885,6 +5906,8 @@ namespace octave
     else
       {
         std::ostream& os = *osp;
+
+        preserve_stream_state stream_state (os);
 
         const printf_format_elt *elt = fmt_list.first ();
 
@@ -5984,7 +6007,7 @@ namespace octave
                 break;
               }
 
-            elt = fmt_list.next (nconv > 0 && ! val_cache.exhausted ());
+            elt = fmt_list.next (m_nconv > 0 && ! val_cache.exhausted ());
 
             if (! elt || (val_cache.exhausted () && elt->args > 0))
               break;
@@ -6180,7 +6203,8 @@ namespace octave
             if (conv_err || count < 0)
               {
                 err = true;
-                ::error ("%s: invalid number of lines specified", who.c_str ());
+                ::error ("%s: invalid number of lines specified",
+                         who.c_str ());
               }
           }
       }
@@ -6340,36 +6364,6 @@ namespace octave
       m_rep->close ();
   }
 
-  // FIXME: maybe these should be defined in lo-ieee.h?
-
-  template <typename T>
-  static inline bool
-  is_old_NA (T)
-  {
-    return false;
-  }
-
-  template <>
-  inline bool
-  is_old_NA<double> (double val)
-  {
-    return __lo_ieee_is_old_NA (val);
-  }
-
-  template <typename T>
-  static inline T
-  replace_old_NA (T val)
-  {
-    return val;
-  }
-
-  template <>
-  inline double
-  replace_old_NA<double> (double val)
-  {
-    return __lo_ieee_replace_old_NA (val);
-  }
-
   template <typename SRC_T, typename DST_T>
   static octave_value
   convert_and_copy (std::list<void *>& input_buf_list,
@@ -6405,12 +6399,14 @@ namespace octave
                                                   1, from_flt_fmt,
                                                   mach_info::native_float_format ());
 
-                    dst_elt_type tmp (data[i]);
+                    // FIXME: Potentially add conversion code for MIPS NA here
+                    //        Bug #59830.
+                    // dst_elt_type tmp (data[i]);
+                    // if (is_MIPS_NA (tmp))
+                    //  tmp = replace_MIPS_NA (tmp);
+                    // conv_data[j] = tmp;
 
-                    if (is_old_NA (tmp))
-                      tmp = replace_old_NA (tmp);
-
-                    conv_data[j] = tmp;
+                    conv_data[j] = data[i];
                   }
               }
             else
@@ -6436,12 +6432,8 @@ namespace octave
                 for (octave_idx_type i = 0; i < input_buf_elts && j < elts_read;
                      i++, j++)
                   {
-                    dst_elt_type tmp (data[i]);
-
-                    if (is_old_NA (tmp))
-                      tmp = replace_old_NA (tmp);
-
-                    conv_data[j] = tmp;
+                    // FIXME: Potentially add conversion code for MIPS NA here
+                    conv_data[j] = data[i];
                   }
               }
             else
@@ -7086,7 +7078,7 @@ namespace octave
 
 #define INSTANTIATE_WRITE(T)                                            \
   template                                                              \
-  octave_idx_type                                                       \
+  OCTINTERP_API octave_idx_type                                         \
   stream::write (const Array<T>& data, octave_idx_type block_size,      \
                  oct_data_conv::data_type output_type,                  \
                  octave_idx_type skip,                                  \
@@ -7360,7 +7352,7 @@ namespace octave
     : m_list (), m_lookup_cache (m_list.end ()), m_stdin_file (-1),
       m_stdout_file (-1), m_stderr_file (-1)
   {
-    stream stdin_stream = octave_istream::create (&std::cin, "stdin");
+    stream stdin_stream = istream::create (&std::cin, "stdin");
 
     // This uses octave_stdout (see pager.h), not std::cout so that
     // Octave's standard output stream will pass through the pager.
@@ -7370,9 +7362,9 @@ namespace octave
     output_system& output_sys = interp.get_output_system ();
 
     stream stdout_stream
-      = octave_ostream::create (&(output_sys.__stdout__ ()), "stdout");
+      = ostream::create (&(output_sys.__stdout__ ()), "stdout");
 
-    stream stderr_stream = octave_ostream::create (&std::cerr, "stderr");
+    stream stderr_stream = ostream::create (&std::cerr, "stderr");
 
     m_stdin_file = insert (stdin_stream);
     m_stdout_file = insert (stdout_stream);

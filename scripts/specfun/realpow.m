@@ -54,7 +54,6 @@ endfunction
 %! assert (x.^y, realpow (x,y));
 %!assert <47775> (realpow (1i,2), -1)
 
-%!error realpow ()
-%!error realpow (1)
-%!error realpow (1,2,3)
+%!error <Invalid call> realpow ()
+%!error <Invalid call> realpow (1)
 %!error <produced complex result> realpow (-1, 1/2)

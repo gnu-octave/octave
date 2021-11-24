@@ -173,7 +173,7 @@ function retval = msgbox (msg, varargin)
   endif
 
   ## Make a GUI element or print to console
-  if (__event_manager_enabled__ ())
+  if (__event_manager_have_dialogs__ ())
     retval = __msgbox__ (msg, tit, icon, windowstyle, interpreter);
   else
     if (iscellstr (msg))
@@ -359,7 +359,7 @@ endfunction
 %!         "Dialog Title", "custom", cdata, copper (64));
 
 ## Test input validation
-%!error msgbox ()
+%!error <Invalid call> msgbox ()
 %!error <MSG must be a string or cell array of strings> msgbox (1)
 %!error <invalid value "foobar" for WindowStyle>
 %! msgbox ("msg", struct ("WindowStyle", "foobar"))

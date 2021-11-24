@@ -72,7 +72,7 @@ namespace octave
 
         unwind_protect frame;
 
-        interpreter_try (frame);
+        octave::interpreter_try (frame);
 
         retval = true;                // default to stopping if any error
         try
@@ -91,13 +91,13 @@ namespace octave
             else
               warning ("Error parsing breakpoint condition");
           }
-        catch (const execution_exception& e)
+        catch (const execution_exception& ee)
           {
             interpreter& interp = tw.get_interpreter ();
 
             interp.recover_from_exception ();
 
-            std::string tmp = e.message ();
+            std::string tmp = ee.message ();
 
             warning ("Error evaluating breakpoint condition:\n    %s",
                      tmp.c_str ());

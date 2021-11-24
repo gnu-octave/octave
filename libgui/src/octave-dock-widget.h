@@ -28,7 +28,6 @@
 
 #include <QDockWidget>
 #include <QIcon>
-#include <QMainWindow>
 #include <QMouseEvent>
 #include <QToolButton>
 
@@ -38,6 +37,7 @@
 namespace octave
 {
   class base_qobject;
+  class main_window;
 
   // The few decoration items common to both main window and variable editor.
 
@@ -48,6 +48,8 @@ namespace octave
   public:
 
     label_dock_widget (QWidget *p, base_qobject& oct_qobj);
+
+    ~label_dock_widget (void) = default;
 
     // set_title() uses the custom title bar while setWindowTitle() uses
     // the default title bar (with style sheets)
@@ -90,11 +92,14 @@ namespace octave
     octave_dock_widget (const QString& obj_name, QWidget *p,
                         base_qobject& oct_qobj);
 
-    virtual ~octave_dock_widget (void) = default;
-
-    virtual void connect_visibility_changed (void);
+    ~octave_dock_widget (void) = default;
 
     void set_predecessor_widget (octave_dock_widget *prev_widget);
+
+    void set_main_window (main_window *mw);
+
+    void set_adopted (bool adopted = true) { m_adopted = adopted; }
+    bool adopted (void) const { return m_adopted; }
 
   signals:
 
@@ -106,9 +111,6 @@ namespace octave
     void queue_make_window (bool widget_was_dragged);
 
     void queue_make_widget (void);
-
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
 
   protected:
 
@@ -126,11 +128,11 @@ namespace octave
 
     virtual void notice_settings (const gui_settings *) { }
 
+    void init_window_menu_entry (void);
+
     void handle_settings (const gui_settings *);
 
     void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
-
-    QMainWindow * main_win (void) { return m_parent; }
 
     void save_settings (void);
 
@@ -148,14 +150,6 @@ namespace octave
 
     virtual void toplevel_change (bool);
 
-    //! Slot to steer changing visibility from outside.
-
-    virtual void handle_visibility_changed (bool visible)
-    {
-      if (visible)
-        emit active_changed (true);
-    }
-
     //! Event filter for double clicks into the window decoration elements.
 
     bool eventFilter (QObject *obj, QEvent *e);
@@ -172,9 +166,11 @@ namespace octave
 
     //! Stores the parent, since we are reparenting to 0.
 
-    QMainWindow *m_parent;
+    main_window *m_main_window;
 
+    bool m_adopted;
     bool m_custom_style;
+    bool m_focus_follows_mouse;
     int m_title_3d;
     QColor m_bg_color;
     QColor m_bg_color_active;
@@ -186,7 +182,6 @@ namespace octave
     QRect m_recent_float_geom;
     QRect m_recent_dock_geom;
     bool m_waiting_for_mouse_button_release;
-
   };
 }
 

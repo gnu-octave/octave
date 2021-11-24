@@ -41,6 +41,8 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
@@ -118,14 +120,9 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
         x_offset = num * x_len;
       else
         {
-          octave_idx_type x_offset2 = 0;
           x_offset = num;
-          while (x_offset >= x_stride)
-            {
-              x_offset -= x_stride;
-              x_offset2++;
-            }
-          x_offset += x_offset2 * x_stride * x_len;
+          octave_idx_type n_strides = num / x_stride;
+          x_offset += n_strides * x_stride * (x_len - 1);
         }
       octave_idx_type si_offset = num * si_len;
 
@@ -605,7 +602,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]), [2 2])
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]'), [2 2])
 %!assert (filter ([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]), [5 7; 6 10; 14 18])
-%!error (filter ([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]'))
+%!error filter ([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]')
 %!assert (filter ([1, 3, 2], [1], [1 2; 3 4; 5 6], [1 0 0; 1 0 0], 2), [2 6; 3 13; 5 21])
 
 ## Test of DIM parameter
@@ -617,3 +614,5 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %! y = filter ([1 1 1], 1, x, [], 3);
 %! assert (y, y0);
 */
+
+OCTAVE_NAMESPACE_END

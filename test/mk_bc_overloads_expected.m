@@ -1,9 +1,9 @@
-% this script is intended to be Matlab compatible
-% first, run the script
+%% this script is intended to be Matlab compatible
+%% first, run the script
 %
-%   ./build_bc_overloads_tests.sh overloads_only
+%%   ./build_bc_overloads_tests.sh overloads_only
 %
-% to generate the overloaded functions.
+%% to generate the overloaded functions.
 %
 ex.double = 1;
 ex.single = single (1);

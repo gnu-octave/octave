@@ -94,8 +94,8 @@ bool Vdrawnow_requested = false;
 // the terminal.
 bool Vtrack_line_num = true;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   static std::string
   quoting_filename (const std::string& text, int, char quote)
   {
@@ -194,8 +194,8 @@ namespace octave
 
             unwind_protect frame;
 
-            frame.add_method (es, &error_system::set_discard_warning_messages,
-                              es.discard_warning_messages ());
+            frame.add (&error_system::set_discard_warning_messages, &es,
+                       es.discard_warning_messages ());
 
             es.discard_warning_messages (true);
 
@@ -411,7 +411,7 @@ namespace octave
   input_system::input_system (interpreter& interp)
     : m_interpreter (interp), m_PS1 (R"(octave:\#> )"), m_PS2 ("> "),
       m_completion_append_char (' '), m_gud_mode (false),
-      m_mfile_encoding ("system"), m_auto_repeat_debug_command (true),
+      m_mfile_encoding ("utf-8"), m_auto_repeat_debug_command (true),
       m_last_debugging_command ("\n"), m_input_event_hook_functions (),
       m_initialized (false)
   { }
@@ -526,7 +526,7 @@ namespace octave
                   error ("__mfile_encoding__: conversion from encoding '%s' "
                          "not supported", encoding.c_str ());
                 else
-                  error ("__mfile_encoding__: error %d opening encoding '%s'.",
+                  error ("__mfile_encoding__: error %d opening encoding '%s'",
                          errno, encoding.c_str ());
               }
             else
@@ -541,6 +541,92 @@ namespace octave
 
     return retval;
   }
+
+  // Get part of the directory that would be added to the load path
+  static std::string load_path_dir (const std::string& dir)
+  {
+    std::string lp_dir = dir;
+
+    // strip trailing filesep
+    std::size_t ipos = lp_dir.find_last_not_of (sys::file_ops::dir_sep_chars ());
+    if (ipos != std::string::npos)
+      lp_dir = lp_dir.erase (ipos+1);
+
+    // strip trailing private folder
+    ipos = lp_dir.find_last_of (sys::file_ops::dir_sep_chars ());
+    if (ipos != std::string::npos
+        && lp_dir.substr (ipos+1).compare ("private") == 0)
+      {
+        lp_dir = lp_dir.erase (ipos);
+        ipos = lp_dir.find_last_of (sys::file_ops::dir_sep_chars ());
+      }
+
+    // strip trailing @class folder
+    if (ipos != std::string::npos && lp_dir[ipos+1] == '@')
+      {
+        lp_dir = lp_dir.erase (ipos);
+        ipos = lp_dir.find_last_of (sys::file_ops::dir_sep_chars ());
+      }
+
+    // strip (nested) +namespace folders
+    while (ipos != std::string::npos && lp_dir[ipos+1] == '+')
+      {
+        lp_dir = lp_dir.erase (ipos);
+        ipos = lp_dir.find_last_of (sys::file_ops::dir_sep_chars ());
+      }
+
+    return lp_dir;
+  }
+
+  std::string input_system::dir_encoding (const std::string& dir)
+  {
+    std::string enc = m_mfile_encoding;
+
+    auto enc_it = m_dir_encoding.find (load_path_dir (dir));
+    if (enc_it != m_dir_encoding.end ())
+      enc = enc_it->second;
+
+    return enc;
+  }
+
+  void input_system::set_dir_encoding (const std::string& dir,
+                                       std::string& enc)
+  {
+    // use lower case
+    std::transform (enc.begin (), enc.end (), enc.begin (), ::tolower);
+
+    if (enc.compare ("delete") == 0)
+      {
+        // Remove path from map
+        m_dir_encoding.erase (load_path_dir (dir));
+        return;
+      }
+    else if (enc.compare ("utf-8"))
+      {
+        // Check for valid encoding name.
+        // FIXME: This will probably not happen very often and opening the
+        //        encoder doesn't take long.
+        //        Should we cache working encoding identifiers anyway?
+        void *codec
+          = octave_iconv_open_wrapper (enc.c_str (), "utf-8");
+
+        if (codec == reinterpret_cast<void *> (-1))
+          {
+            if (errno == EINVAL)
+              error ("dir_encoding: conversion from encoding '%s' "
+                     "not supported", enc.c_str ());
+            else
+              error ("dir_encoding: error %d opening encoding '%s'.",
+                     errno, enc.c_str ());
+          }
+        else
+          octave_iconv_close_wrapper (codec);
+      }
+
+    m_dir_encoding[load_path_dir (dir)] = enc;
+
+    return;
+   }
 
   octave_value
   input_system::auto_repeat_debug_command (const octave_value_list& args,
@@ -581,11 +667,11 @@ namespace octave
           {
             Fdrawnow (m_interpreter);
           }
-        catch (const execution_exception& e)
+        catch (const execution_exception& ee)
           {
             eval_error = true;
 
-            m_interpreter.handle_exception (e);
+            m_interpreter.handle_exception (ee);
           }
 
         flush_stdout ();
@@ -609,12 +695,18 @@ namespace octave
   {
     octave_value_list retval;
 
-    int read_as_string = 0;
-
-    if (args.length () == 2)
-      read_as_string++;
-
     std::string prompt = args(0).xstring_value ("input: unrecognized argument");
+
+    bool read_as_string = false;
+    if (args.length () == 2)  // `input (..., "s")`?
+      {
+        std::string literal
+          = args(1).xstring_value ("input: second argument must be 's'.");
+        if (literal.length () != 1 || literal[0] != 's')
+          error ("input: second argument must be 's'.");
+
+        read_as_string = true;
+      }
 
     output_system& output_sys = m_interpreter.get_output_system ();
 
@@ -820,7 +912,14 @@ namespace octave
   public:
 
     file_reader (interpreter& interp, FILE *f_arg)
-      : base_reader (interp), m_file (f_arg) { }
+      : base_reader (interp), m_file (f_arg)
+    {
+      input_system& input_sys = interp.get_input_system ();
+      m_encoding = input_sys.mfile_encoding ();
+    }
+
+    file_reader (interpreter& interp, FILE *f_arg, const std::string& enc)
+      : base_reader (interp), m_file (f_arg), m_encoding (enc) { }
 
     std::string get_input (const std::string& prompt, bool& eof);
 
@@ -831,6 +930,8 @@ namespace octave
   private:
 
     FILE *m_file;
+
+    std::string m_encoding;
 
     static const std::string s_in_src;
   };
@@ -863,6 +964,10 @@ namespace octave
 
   input_reader::input_reader (interpreter& interp, FILE *file)
     : m_rep (new file_reader (interp, file))
+  { }
+
+  input_reader::input_reader (interpreter& interp, FILE *file, const std::string& enc)
+    : m_rep (new file_reader (interp, file, enc))
   { }
 
   input_reader::input_reader (interpreter& interp, const std::string& str)
@@ -946,11 +1051,17 @@ namespace octave
 
     eof = false;
 
-    std::string src_str = octave_fgets (m_file, eof);
+    std::string src_str = fgets (m_file, eof);
 
-    input_system& input_sys = m_interpreter.get_input_system ();
+    std::string mfile_encoding;
 
-    std::string mfile_encoding = input_sys.mfile_encoding ();
+    if (m_encoding.empty ())
+      {
+        input_system& input_sys = m_interpreter.get_input_system ();
+        mfile_encoding = input_sys.mfile_encoding ();
+      }
+    else
+      mfile_encoding = m_encoding;
 
     std::string encoding;
     if (mfile_encoding.compare ("system") == 0)
@@ -992,8 +1103,7 @@ namespace octave
                  "converting from codepage '%s' to UTF-8: %s",
                  encoding.c_str (), std::strerror (errno));
 
-        unwind_protect frame;
-        frame.add_fcn (::free, static_cast<void *> (utf8_str));
+        unwind_action free_utf8_str ([=] () { ::free (utf8_str); });
 
         src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
       }
@@ -1023,7 +1133,6 @@ namespace octave
 
     return retval;
   }
-}
 
 DEFMETHOD (input, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -1069,7 +1178,7 @@ your prompt.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   return input_sys.get_user_input (args, std::max (nargout, 1));
 }
@@ -1093,7 +1202,7 @@ string @samp{(yes or no) } to it.  The user must confirm the answer with
   if (nargin > 1)
     print_usage ();
 
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   std::string prompt;
 
@@ -1126,7 +1235,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of
   if (nargin > 1)
     print_usage ();
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
   if (nargin == 1)
     {
@@ -1167,7 +1276,7 @@ a feature, not a bug.
 
   for (;;)
     {
-      std::string cmd = octave::generate_completion (hint, k);
+      std::string cmd = generate_completion (hint, k);
 
       if (! cmd.empty ())
         {
@@ -1244,12 +1353,12 @@ for details.
     print_usage ();
 
   if (nargin == 0)
-    octave::command_editor::read_init_file ();
+    command_editor::read_init_file ();
   else
     {
       std::string file = args(0).string_value ();
 
-      octave::command_editor::read_init_file (file);
+      command_editor::read_init_file (file);
     }
 
   return ovl ();
@@ -1268,7 +1377,7 @@ for details.
   if (args.length () != 0)
     print_usage ();
 
-  octave::command_editor::re_read_init_file ();
+  command_editor::re_read_init_file ();
 
   return ovl ();
 }
@@ -1303,7 +1412,7 @@ list of input hook functions.
   if (nargin == 2)
     user_data = args(1);
 
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   hook_function hook_fcn (args(0), user_data);
 
@@ -1331,7 +1440,7 @@ for input.
 
   bool warn = (nargin < 2);
 
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   if (! input_sys.remove_input_event_hook (hook_fcn_id) && warn)
     warning ("remove_input_event_hook: %s not found in list",
@@ -1350,11 +1459,11 @@ Query or set the primary prompt string.
 When executing interactively, Octave displays the primary prompt when it is
 ready to read a command.
 
-The default value of the primary prompt string is @qcode{'octave:\#> '}.
-To change it, use a command like
+The default value of the primary prompt string is
+@qcode{'octave:@backslashchar{}#> '}.  To change it, use a command like
 
 @example
-PS1 ("\\u@@\\H> ")
+PS1 ('\u@@\H> ')
 @end example
 
 @noindent
@@ -1379,7 +1488,7 @@ The original variable value is restored when exiting the function.
 @seealso{PS2, PS4}
 @end deftypefn */)
 {
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   return input_sys.PS1 (args, nargout);
 }
@@ -1403,7 +1512,7 @@ The original variable value is restored when exiting the function.
 @seealso{PS1, PS4}
 @end deftypefn */)
 {
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   return input_sys.PS2 (args, nargout);
 }
@@ -1423,7 +1532,7 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   return input_sys.completion_append_char (args, nargout);
 }
@@ -1454,7 +1563,7 @@ DEFMETHOD (__gud_mode__, interp, args, nargout,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   return input_sys.gud_mode (args, nargout);
 }
@@ -1465,9 +1574,76 @@ DEFMETHOD (__mfile_encoding__, interp, args, nargout,
 Set and query the codepage that is used for reading .m files.
 @end deftypefn */)
 {
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   return input_sys.mfile_encoding (args, nargout);
+}
+
+DEFMETHOD (dir_encoding, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn {}  {@var{current_encoding} =} dir_encoding (@var{dir})
+@deftypefnx {} {@var{prev_encoding} =} dir_encoding (@var{dir}, @var{encoding})
+@deftypefnx {} {} dir_encoding (@dots{})
+Set and query the @var{encoding} that is used for reading m-files in @var{dir}.
+
+That encoding overrides the (globally set) m-file encoding.
+
+The string @var{DIR} must match the form how the directory would appear in the
+load path.
+
+The @var{encoding} must be a valid encoding identifier or @code{"delete"}.  In
+the latter case, the (globally set) m-file encoding will be used for the given
+@var{dir}.
+
+The currently or previously used encoding is returned in @var{current_encoding}
+or @var{prev_encoding}, respectively.  The output argument must be explicitly
+requested.
+
+The directory encoding is automatically read from the file @file{.oct-config}
+when a new path is added to the load path (for example with @code{addpath}).
+To set the encoding for all files in the same folder, that file must contain
+a line starting with @code{"encoding="} followed by the encoding identifier.
+
+For example to set the file encoding for all files in the same folder to
+ISO 8859-1 (Latin-1), create a file @file{.oct-config} with the following
+content:
+
+@example
+encoding=iso8859-1
+@end example
+
+If the file encoding is changed after the files have already been parsed, the
+files have to be parsed again for that change to take effect.  That can be done
+with the command @code{clear all}.
+
+@seealso{addpath, path}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string dir
+    = args(0).xstring_value ("dir_encoding: DIR must be a string");
+
+  octave_value retval;
+
+  input_system& input_sys = interp.get_input_system ();
+
+  if (nargout > 0)
+    retval = input_sys.dir_encoding (dir);
+
+  if (nargin > 1)
+    {
+      std::string encoding
+        = args(1).xstring_value ("dir_encoding: ENCODING must be a string");
+
+      input_sys.set_dir_encoding (dir, encoding);
+    }
+
+  return ovl (retval);
+
 }
 
 DEFMETHOD (auto_repeat_debug_command, interp, args, nargout,
@@ -1484,44 +1660,9 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  octave::input_system& input_sys = interp.get_input_system ();
+  input_system& input_sys = interp.get_input_system ();
 
   return input_sys.auto_repeat_debug_command (args, nargout);
 }
 
-// Always define these functions.  The macro is intended to allow the
-// declarations to be hidden, not so that Octave will not provide the
-// functions if they are requested.
-
-// #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-bool
-octave_yes_or_no (const std::string& prompt)
-{
-  octave::input_system& input_sys
-    = octave::__get_input_system__ ("set_default_prompts");
-
-  return input_sys.yes_or_no (prompt);
-}
-
-void
-remove_input_event_hook_functions (void)
-{
-  octave::input_system& input_sys
-    = octave::__get_input_system__ ("remove_input_event_hook_functions");
-
-  input_sys.clear_input_event_hooks ();
-}
-
-// Fix things up so that input can come from the standard input.  This
-// may need to become much more complicated, which is why it's in a
-// separate function.
-
-FILE *
-get_input_from_stdin (void)
-{
-  octave::command_editor::set_input_stream (stdin);
-  return octave::command_editor::get_input_stream ();
-}
-
-// #endif
+OCTAVE_NAMESPACE_END

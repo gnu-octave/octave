@@ -40,7 +40,7 @@
 
 function dataout = guidata (h, data)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -65,7 +65,6 @@ endfunction
 
 
 ## Test input validation
-%!error guidata ()
-%!error guidata (1,2,3)
+%!error <Invalid call> guidata ()
 %!error <H must be a valid object handle> guidata ({1})
 %!error <no ancestor figure of H found> guidata (0)

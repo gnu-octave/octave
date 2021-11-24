@@ -49,12 +49,12 @@ see <https://www.gnu.org/licenses/>.
 #endif
 
 QTerminal *
-QTerminal::create (octave::base_qobject& oct_qobj, QWidget *xparent)
+QTerminal::create (octave::base_qobject& oct_qobj, QWidget *p)
 {
 #if defined (Q_OS_WIN32)
-  QTerminal *terminal = new QWinTerminalImpl (xparent);
+  QTerminal *terminal = new QWinTerminalImpl (oct_qobj, p);
 #else
-  QTerminal *terminal = new QUnixTerminalImpl (xparent);
+  QTerminal *terminal = new QUnixTerminalImpl (oct_qobj, p);
 #endif
 
   // FIXME: this function should probably be called from or part of the
@@ -63,29 +63,10 @@ QTerminal::create (octave::base_qobject& oct_qobj, QWidget *xparent)
   // Unix- and Windows-specific versions would need access to the
   // base_qobject object, or the design would have to change significantly.
 
-  terminal->construct (oct_qobj, xparent);
+  terminal->construct (oct_qobj);
 
   return terminal;
 }
-
-// slot for disabling the interrupt action when terminal loses focus
-void
-QTerminal::set_global_shortcuts (bool focus_out)
-  {
-    if (focus_out)
-      {
-        _interrupt_action->setShortcut (QKeySequence ());
-        _nop_action->setShortcut (QKeySequence ());
-      }
-    else
-      {
-        _interrupt_action->setShortcut
-          (QKeySequence (Qt::ControlModifier | Qt::Key_C));
-
-        _nop_action->setShortcut
-          (QKeySequence (Qt::ControlModifier | Qt::Key_D));
-      }
-  }
 
 // slot for the terminal's context menu
 void
@@ -214,8 +195,7 @@ void QTerminal::help_on_expression ()
 void QTerminal::doc_on_expression ()
 {
   QString expr = m_doc_selected_action->data ().toString ();
-
-  emit show_doc_signal (expr);
+  m_octave_qobj.show_documentation_window (expr);
 }
 
 void
@@ -258,17 +238,16 @@ QTerminal::notice_settings (const gui_settings *settings)
   bool cursorUseForegroundColor
     = settings->value (cs_cursor_use_fgcol).toBool ();
 
-  setForegroundColor
-    (settings->value (cs_colors[0].key, cs_colors[0].def).value<QColor> ());
+  int mode = settings->value (cs_color_mode).toInt ();
 
-  setBackgroundColor
-    (settings->value (cs_colors[1].key, cs_colors[1].def).value<QColor> ());
+  setForegroundColor (settings->color_value (cs_colors[0], mode));
 
-  setSelectionColor
-    (settings->value (cs_colors[2].key, cs_colors[2].def).value<QColor> ());
+  setBackgroundColor (settings->color_value (cs_colors[1], mode));
+
+  setSelectionColor (settings->color_value (cs_colors[2], mode));
 
   setCursorColor (cursorUseForegroundColor,
-     settings->value (cs_colors[3].key, cs_colors[3].def).value<QColor> ());
+                  settings->color_value (cs_colors[3], mode));
 
   setScrollBufferSize (settings->value (cs_hist_buffer).toInt ());
 
@@ -279,9 +258,12 @@ QTerminal::notice_settings (const gui_settings *settings)
 
   QString sc = settings->sc_value (sc_main_edit_copy);
 
-  //  Dis- or enable extra interrupt action depending on the Copy shortcut
+  //  Dis- or enable extra interrupt action: We need an extra option when
+  //  copy shortcut is not Ctrl-C or when global shortcuts (like copy) are
+  //  disabled.
   bool extra_ir_action
-      = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C).toString ());
+      = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C).toString ())
+        || settings->value (sc_prevent_rl_conflicts).toBool ();
 
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
@@ -292,7 +274,7 @@ QTerminal::notice_settings (const gui_settings *settings)
 }
 
 void
-QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
+QTerminal::construct (octave::base_qobject& oct_qobj)
 {
   octave::resource_manager& rmgr = oct_qobj.get_resource_manager ();
 
@@ -332,38 +314,11 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
 
   _contextMenu->addSeparator ();
 
-  _contextMenu->addAction (tr ("Clear Window"), parent (),
-                           SLOT (handle_clear_command_window_request ()));
+  _contextMenu->addAction (tr ("Clear Window"), this,
+                           SIGNAL (clear_command_window_request ()));
 
   connect (this, SIGNAL (customContextMenuRequested (QPoint)),
            this, SLOT (handleCustomContextMenuRequested (QPoint)));
-
-  connect (this, SIGNAL (report_status_message (const QString&)),
-           xparent, SLOT (report_status_message (const QString&)));
-
-  connect (this, SIGNAL (show_doc_signal (const QString&)),
-           xparent, SLOT (handle_show_doc (const QString&)));
-
-  connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
-           xparent, SLOT (edit_mfile (const QString&, int)));
-
-  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
-           xparent, SLOT (execute_command_in_terminal (const QString&)));
-
-  connect (xparent, SIGNAL (settings_changed (const gui_settings *)),
-           this, SLOT (notice_settings (const gui_settings *)));
-
-  connect (xparent, SIGNAL (init_terminal_size_signal ()),
-           this, SLOT (init_terminal_size ()));
-
-  connect (xparent, SIGNAL (copyClipboard_signal ()),
-           this, SLOT (copyClipboard ()));
-
-  connect (xparent, SIGNAL (pasteClipboard_signal ()),
-           this, SLOT (pasteClipboard ()));
-
-  connect (xparent, SIGNAL (selectAll_signal ()),
-           this, SLOT (selectAll ()));
 
   // extra interrupt action
   _interrupt_action = new QAction (this);
@@ -371,8 +326,9 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
 
   _interrupt_action->setShortcut
     (QKeySequence (Qt::ControlModifier + Qt::Key_C));
+  _interrupt_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
 
-  connect (_interrupt_action, SIGNAL (triggered ()),
+  bool ok = connect (_interrupt_action, SIGNAL (triggered ()),
            this, SLOT (terminal_interrupt ()));
 
   // dummy (nop) action catching Ctrl-D in terminal, no connection
@@ -380,4 +336,5 @@ QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
   addAction (_nop_action);
 
   _nop_action->setShortcut (QKeySequence (Qt::ControlModifier + Qt::Key_D));
+  _nop_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
 }

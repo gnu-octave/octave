@@ -30,10 +30,12 @@
 // Instantiate Sparse matrix of double values.
 
 #include "lo-mappers.h"
+#include "Array.h"
 #include "Sparse.h"
 #include "Sparse.cc"
 
 template <>
+OCTAVE_API
 bool
 sparse_ascending_compare<double> (double a, double b)
 {
@@ -41,13 +43,14 @@ sparse_ascending_compare<double> (double a, double b)
 }
 
 template <>
+OCTAVE_API
 bool
 sparse_descending_compare<double> (double a, double b)
 {
   return (octave::math::isnan (a) || (a > b));
 }
 
-INSTANTIATE_SPARSE (double, OCTAVE_API);
+INSTANTIATE_SPARSE (double);
 
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<double>&);

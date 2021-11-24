@@ -35,6 +35,14 @@
 
 // Editor preferences
 
+// Lexer
+
+const gui_pref
+ed_color_mode ("editor/color_mode", QVariant (0));
+
+const int ed_max_lexer_styles = 64;
+const int ed_max_style_number = 128;
+
 // Code completion
 
 const gui_pref
@@ -61,7 +69,7 @@ const gui_pref
 ed_code_completion ("editor/codeCompletion", QVariant (true));
 
 const gui_pref
-ed_code_completion_threshold ("editor/codeCompletion_threshold", QVariant (2));
+ed_code_completion_threshold ("editor/codeCompletion_threshold", QVariant (3));
 
 // Code formatting
 
@@ -117,6 +125,8 @@ ed_break_lines ("editor/break_lines", QVariant (false));
 const gui_pref
 ed_break_lines_comments ("editor/break_lines_comments", QVariant (false));
 
+// Other
+
 const gui_pref
 ed_highlight_all_occurrences ("editor/highlight_all_occurrences",
                               QVariant (true));
@@ -132,10 +142,6 @@ ed_show_edit_status_bar ("editor/show_edit_status_bar", QVariant (true));
 
 const gui_pref
 ed_highlight_current_line ("editor/highlightCurrentLine", QVariant (true));
-
-const gui_pref
-ed_highlight_current_line_color ("editor/highlight_current_line_color",
-                                 QVariant (QColor (240, 240, 240)));
 
 const gui_pref
 ed_show_white_space ("editor/show_white_space", QVariant (false));
@@ -204,16 +210,19 @@ ed_tab_position_names (QStringList ()
 const gui_pref
 ed_tab_position ("editor/tab_position", QVariant (QTabWidget::North));
 
+const gui_pref
+ed_tabs_rotated ("editor/tabs_rotated", QVariant (false));
+
+const gui_pref
+ed_tabs_max_width ("editor/tabs_max_width", QVariant (0));
+
 // File handling
 
 const gui_pref
-ed_long_window_title ("editor/longWindowTitle", QVariant (false));
+ed_force_newline ("editor/force_newline", QVariant (true));
 
 const gui_pref
-ed_notebook_tab_width_min ("editor/notebook_tab_width_min", QVariant (160));
-
-const gui_pref
-ed_notebook_tab_width_max ("editor/notebook_tab_width_max", QVariant (300));
+ed_rm_trailing_spaces ("editor/rm_trailing_spaces", QVariant (true));
 
 #if defined (HAVE_QSCINTILLA)
 #if defined (Q_OS_WIN32)
@@ -232,10 +241,7 @@ const gui_pref
 ed_show_dbg_file ("editor/show_dbg_file", QVariant (true));
 
 const gui_pref
-ed_default_enc ("editor/default_encoding",
-                QVariant (QString ("SYSTEM (") +
-                          QString (octave_locale_charset_wrapper ()).toUpper () +
-                          QString (")")));
+ed_default_enc ("editor/default_encoding", QVariant ("UTF-8"));
 
 const gui_pref
 ed_create_new_file ("editor/create_new_file", QVariant (false));

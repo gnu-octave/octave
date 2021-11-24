@@ -57,7 +57,7 @@
 
 function [C, F] = voronoin (pts, options)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -80,6 +80,5 @@ endfunction
 
 ## FIXME: Need functional tests
 
-%!error voronoin ()
-%!error voronoin (1,2,3)
+%!error <Invalid call> voronoin ()
 %!error <number of points must be greater than their dimension> voronoin ([1 2])

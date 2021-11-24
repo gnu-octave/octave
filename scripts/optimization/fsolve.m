@@ -78,8 +78,9 @@
 ## while @qcode{"TolFun"} is a tolerance for equations.  Default is @code{1e-6}
 ## for both @qcode{"TolX"} and @qcode{"TolFun"}.
 ##
-## For a description of the other options, see @code{optimset}.  To initialize
-## an options structure with default values for @code{fsolve} use
+## For a description of the other options,
+## @pxref{XREFoptimset,,@code{optimset}}.  To initialize an options structure
+## with default values for @code{fsolve} use
 ## @code{options = optimset ("fsolve")}.
 ##
 ## The first output @var{x} is the solution while the second output @var{fval}
@@ -189,7 +190,7 @@ function [x, fval, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     return;
   endif
 
-  if (nargin < 2 || nargin > 3 || ! isnumeric (x0))
+  if (nargin < 2 || ! isnumeric (x0))
     print_usage ();
   endif
 

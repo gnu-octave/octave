@@ -24,11 +24,19 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} cast (@var{val}, "@var{type}")
+## @deftypefn  {} {} cast (@var{val}, "@var{type}")
+## @deftypefnx {} {} cast (@var{val}, "@var{like}", @var{var})
 ## Convert @var{val} to data type @var{type}.
 ##
-## Both @var{val} and @var{type} are typically one of the following built-in
-## classes:
+## The input @var{val} may be a scalar, vector, or matrix of a class that is
+## convertible to the target class (see below).
+##
+## If a variable @var{var} is specified after @qcode{"like"}, @var{val} is
+## converted to the same data type and sparsity attribute.  If @var{var} is
+## complex, @var{val} will be complex, too.
+##
+## @var{var} may be and @var{type} may name any of the following built-in
+## numeric classes:
 ##
 ## @example
 ## @group
@@ -66,30 +74,60 @@
 ## necessary to call cast twice in order to reach the desired type.
 ## For example, the conversion to double is nearly always implemented, but
 ## the conversion to uint8 might not be.  In that case, the following code will
-## work
+## work:
 ##
 ## @example
 ## cast (cast (@var{user_defined_val}, "double"), "uint8")
 ## @end example
 ##
-## @seealso{typecast, int8, uint8, int16, uint16, int32, uint32, int64, uint64, double, single, logical, char, class, typeinfo}
+## @seealso{typecast, int8, uint8, int16, uint16, int32, uint32, int64, uint64,
+## double, single, logical, char, class, typeinfo}
 ## @end deftypefn
 
-function retval = cast (val, type)
+function retval = cast (val, type, var)
 
-  if (nargin != 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
   if (! ischar (type))
     error ("cast: TYPE must be a string");
-  elseif (! any (strcmp (type, {"int8"; "uint8"; "int16"; "uint16";
-                                "int32"; "uint32"; "int64"; "uint64";
-                                "double"; "single"; "logical"; "char"})))
-    error ("cast: TYPE '%s' is not a built-in type", type);
+  endif
+
+  if (strcmp (type, "like"))
+    is_like = true;
+    type = class (var);
+  else
+    is_like = false;
+  endif
+
+  if ((! is_like && nargin != 2) || (is_like && nargin != 3))
+    print_usage ();
+  endif
+
+  if (! isnumeric (val) && ! islogical (val) && ! ischar (val))
+    error("cast: type conversion from '%s' is not supported", class (val));
+  endif
+
+  if (! any (strcmp (type, {"int8"; "uint8"; "int16"; "uint16"; "int32";
+                            "uint32"; "int64"; "uint64"; "double"; "single";
+                            "logical"; "char"})))
+    error ("cast: type conversion to '%s' is not supported", type);
   endif
 
   retval = feval (type, val);
+
+  if (is_like)
+    if (issparse (var) && ! issparse (retval))
+      ## retval is of the same type as var, so it must be convertible to sparse
+      retval = sparse (retval);
+    elseif (! issparse (var) && issparse (retval))
+      retval = full (retval);
+    endif
+    if (iscomplex (var) || iscomplex (val))
+      retval = complex (retval);
+    endif
+  endif
 
 endfunction
 
@@ -106,10 +144,26 @@ endfunction
 %!assert (cast ([-2.5 1.1 2.5], "uint32"), uint32 ([0 1 3]))
 %!assert (cast ([-2.5 1.1 2.5], "int64"), int64 ([-3 1 3]))
 %!assert (cast ([-2.5 1.1 2.5], "uint64"), uint64 ([0 1 3]))
+%!assert (cast (1, "like", 2), 1)
+%!assert (cast (1, "like", 2i), complex (1))
+%!assert (cast (1, "like", speye(2)), sparse (1))
+%!assert (cast (1, "like", sparse (2i)), complex (sparse (1)))
+%!assert (cast (single (1), "like", speye (2)), sparse (1))
+%!assert (cast (sparse (1), "like", 2), 1)
+%!assert (cast (sparse (1), "like", 2i), complex (1))
+%!assert (cast (complex (1), "like", 2), complex (1))
+%!assert (cast (complex (1), "like", single (2)), complex (single (1)))
+%!assert (cast ("a", "like", "octave"), "a")
+%!assert (cast ("a", "like", 1i), complex (97))
 
 ## Test input validation
-%!error cast ()
-%!error cast (1)
-%!error cast (1,2,3)
-%!error <TYPE 'foobar' is not a built-in type> cast (1, "foobar")
+%!error <Invalid call> cast ()
+%!error <Invalid call> cast (1)
+%!error <Invalid call> cast (1, "double", 2)
 %!error <TYPE must be a string> cast (1, {"foobar"})
+%!error <type conversion from .* not supported> cast ({}, "double");
+%!error <type conversion from .* not supported> cast (struct (), "double")
+%!error <type conversion to .* not supported> cast (1, "foobar")
+%!error <type conversion to .* not supported> cast (1, "cell")
+%!error <type conversion to .* not supported> cast (1, "like", {})
+%!error <type conversion to .* not supported> cast (1, "like", struct ())

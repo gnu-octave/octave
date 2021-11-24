@@ -424,7 +424,7 @@ function cls = replace_cl_group (cls, name, group)
   num_pos = strcmpi (cls, name);
   if (any (num_pos))
     cls(num_pos) = [];
-    cls(end+1:end+numel(group)) = group;
+    cls(end+1:end+numel (group)) = group;
   endif
 endfunction
 

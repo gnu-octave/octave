@@ -31,7 +31,7 @@
 
 function y = csc (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -47,5 +47,4 @@ endfunction
 %! v = [2, rt2, 2*rt3/3, 1, 2*rt3/3, rt2, 2];
 %! assert (csc (x), v, sqrt (eps));
 
-%!error csc ()
-%!error csc (1, 2)
+%!error <Invalid call> csc ()

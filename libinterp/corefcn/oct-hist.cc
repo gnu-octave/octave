@@ -70,8 +70,8 @@ Software Foundation, Inc.
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Read the edited history lines from STREAM and return them
   // one at a time.  This can read unlimited length lines.  The
   // caller should free the storage.
@@ -261,12 +261,6 @@ namespace octave
     return name;
   }
 
-  static void
-  unlink_cleanup (const char *file)
-  {
-    octave_unlink_wrapper (file);
-  }
-
   history_system::history_system (interpreter& interp)
     : m_interpreter (interp), m_input_from_tmp_file (false),
       m_timestamp_format_string (default_timestamp_format ())
@@ -327,11 +321,13 @@ namespace octave
   {
     bool numbered_output = nargout == 0;
 
-    unwind_protect frame;
+    unwind_action restore_history_filename
+      ([] (const std::string& old_filename)
+       {
+         command_history::set_file (old_filename);
+       }, command_history::file ());
 
     string_vector hlist;
-
-    frame.add_fcn (command_history::set_file, command_history::file ());
 
     int nargin = args.length ();
 
@@ -467,7 +463,7 @@ namespace octave
     volatile interrupt_handler old_interrupt_handler
       = ignore_interrupts ();
 
-    int status = system (cmd.c_str ());
+    int status = sys::system (cmd);
 
     set_interrupt_handler (old_interrupt_handler);
 
@@ -500,12 +496,9 @@ namespace octave
 
     file.close ();
 
-    unwind_protect frame;
-
-    frame.add_fcn (unlink_cleanup, name.c_str ());
-    frame.protect_var (m_input_from_tmp_file);
-
-    m_input_from_tmp_file = true;
+    int(*unlink_fptr)(const std::string&) = sys::unlink;
+    unwind_action unlink_action (unlink_fptr, name);
+    unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
 
     // FIXME: instead of sourcing a file, we should just iterate through
     // the list of commands, parsing and executing them one at a time as
@@ -521,12 +514,9 @@ namespace octave
     if (name.empty ())
       return;
 
-    unwind_protect frame;
-
-    frame.add_fcn (unlink_cleanup, name.c_str ());
-    frame.protect_var (m_input_from_tmp_file);
-
-    m_input_from_tmp_file = true;
+    int(*unlink_fptr)(const std::string&) = sys::unlink;
+    unwind_action unlink_action (unlink_fptr, name);
+    unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
 
     // FIXME: instead of sourcing a file, we should just iterate through
     // the list of commands, parsing and executing them one at a time as
@@ -545,8 +535,18 @@ namespace octave
       file = env_file;
 
     if (file.empty ())
-      file = sys::file_ops::concat (sys::env::get_home_directory (),
-                                    ".octave_hist");
+      {
+        // Default to $DATA/octave/history, where $DATA is the platform-
+        // dependent location for (roaming) user data files.
+
+        std::string user_data_dir = sys::env::get_user_data_directory ();
+
+        std::string hist_dir = user_data_dir + sys::file_ops::dir_sep_str ()
+                               + "octave";
+
+        file = sys::env::make_absolute ("history", hist_dir);
+      }
+
 
     return file;
   }
@@ -577,7 +577,6 @@ namespace octave
       + sys::env::get_host_name ()
       + '>';
   }
-}
 
 DEFMETHOD (edit_history, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -619,7 +618,7 @@ buffer to be edited.
   if (args.length () > 2)
     print_usage ();
 
-  octave::history_system& history_sys = interp.get_history_system ();
+  history_system& history_sys = interp.get_history_system ();
 
   history_sys.do_edit_history (args);
 
@@ -670,7 +669,7 @@ argument as a cell string and will not be output to screen.
 {
   // FIXME: should this be limited to the top-level context?
 
-  octave::history_system& history_sys = interp.get_history_system ();
+  history_system& history_sys = interp.get_history_system ();
 
   // Call do_history even if nargout is zero to display history list.
 
@@ -733,7 +732,7 @@ run_history -1 -2
 {
   // FIXME: should this be limited to the top-level context?
 
-  octave::history_system& history_sys = interp.get_history_system ();
+  history_system& history_sys = interp.get_history_system ();
 
   if (args.length () > 2)
     print_usage ();
@@ -764,19 +763,20 @@ matching the current line to be removed from the history list before that
 line is saved.  Any value not in the above list is ignored.  If
 @code{history_control} is the empty string, all commands are saved on
 the history list, subject to the value of @code{history_save}.
-@seealso{history_file, history_size, history_timestamp_format_string, history_save}
+@seealso{history_file, history_size, history_timestamp_format_string,
+history_save}
 @end deftypefn */)
 {
   octave_value retval;
 
-  std::string old_history_control = octave::command_history::histcontrol ();
+  std::string old_history_control = command_history::histcontrol ();
 
   std::string tmp = old_history_control;
 
   retval = set_internal_variable (tmp, args, nargout, "history_control");
 
   if (tmp != old_history_control)
-    octave::command_history::process_histcontrol (tmp);
+    command_history::process_histcontrol (tmp);
 
   return retval;
 }
@@ -795,7 +795,7 @@ variable @w{@env{OCTAVE_HISTSIZE}}.
 {
   octave_value retval;
 
-  int old_history_size = octave::command_history::size ();
+  int old_history_size = command_history::size ();
 
   int tmp = old_history_size;
 
@@ -804,7 +804,7 @@ variable @w{@env{OCTAVE_HISTSIZE}}.
                                   std::numeric_limits<int>::max ());
 
   if (tmp != old_history_size)
-    octave::command_history::set_size (tmp);
+    command_history::set_size (tmp);
 
   return retval;
 }
@@ -819,8 +819,11 @@ store command history.
 All future commands issued during the current Octave session will be written to
 this new file (if the current setting of @code{history_save} allows for this).
 
-The default value is @file{~/.octave_hist}, but may be overridden by the
-environment variable @w{@env{OCTAVE_HISTFILE}}.
+The default value is @file{@w{@env{$DATA}}/octave/history}, where
+@w{@env{$DATA}} is the platform-specific location for (roaming) user data files
+(e.g. @w{@env{$XDG_DATA_HOME}} or, if that is not set, @file{~/.local/share} on
+Unix-like operating systems or @w{@env{%APPDATA%}} on Windows).  The default
+value may be overridden by the environment variable @w{@env{OCTAVE_HISTFILE}}.
 
 Programming Notes:
 
@@ -842,19 +845,20 @@ endif
 @end group
 @end example
 
-@seealso{history, history_control, history_save, history_size, history_timestamp_format_string}
+@seealso{history, history_control, history_save, history_size,
+history_timestamp_format_string}
 @end deftypefn */)
 {
   octave_value retval;
 
-  std::string old_history_file = octave::command_history::file ();
+  std::string old_history_file = command_history::file ();
 
   std::string tmp = old_history_file;
 
   retval = set_internal_variable (tmp, args, nargout, "history_file");
 
   if (tmp != old_history_file)
-    octave::command_history::set_file (tmp);
+    command_history::set_file (tmp);
 
   return retval;
 }
@@ -880,7 +884,7 @@ The original variable value is restored when exiting the function.
 @seealso{strftime, history_file, history_size, history_save}
 @end deftypefn */)
 {
-  octave::history_system& history_sys = interp.get_history_system ();
+  history_system& history_sys = interp.get_history_system ();
 
   return history_sys.timestamp_format_string (args, nargout);
 }
@@ -905,19 +909,22 @@ on the command line are saved in the history file.
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{history_control, history_file, history_size, history_timestamp_format_string}
+@seealso{history_control, history_file, history_size,
+history_timestamp_format_string}
 @end deftypefn */)
 {
   octave_value retval;
 
-  bool old_history_save = ! octave::command_history::ignoring_entries ();
+  bool old_history_save = ! command_history::ignoring_entries ();
 
   bool tmp = old_history_save;
 
   retval = set_internal_variable (tmp, args, nargout, "history_save");
 
   if (tmp != old_history_save)
-    octave::command_history::ignore_entries (! tmp);
+    command_history::ignore_entries (! tmp);
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

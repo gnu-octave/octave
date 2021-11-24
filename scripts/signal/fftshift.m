@@ -51,7 +51,7 @@
 
 function retval = fftshift (x, dim)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -151,7 +151,6 @@ endfunction
 %! assert (fftshift (y), x);
 
 ## Test input validation
-%!error fftshift ()
-%!error fftshift (1, 2, 3)
+%!error <Invalid call> fftshift ()
 %!error fftshift (0:3, -1)
 %!error fftshift (0:3, 0:3)

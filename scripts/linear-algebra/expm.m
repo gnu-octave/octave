@@ -81,7 +81,7 @@
 
 function r = expm (A)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -103,7 +103,7 @@ function r = expm (A)
   n = rows (A);
   id = eye (n);
   ## Trace reduction.
-  A(A == -Inf) = -realmax;
+  A(A == -Inf) = -realmax ();
   trshift = trace (A) / n;
   if (trshift > 0)
     A -= trshift * id;
@@ -158,7 +158,6 @@ endfunction
 %!assert (expm (zeros (3)), eye (3))
 
 ## Test input validation
-%!error expm ()
-%!error expm (1, 2)
+%!error <Invalid call> expm ()
 %!error <expm: A must be a square matrix> expm ({1})
 %!error <expm: A must be a square matrix> expm ([1 0;0 1; 2 2])

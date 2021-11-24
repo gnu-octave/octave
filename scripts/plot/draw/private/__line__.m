@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} =} __line__ (@var{parent}, @dots{})
-## Create line object with parent @var{parent}.
+## @deftypefn {} {@var{h} =} __line__ (@var{hp}, @dots{})
+## Create line object with parent handle @var{hp}.
 ##
 ## Return handle @var{h} to created line objects.
 ## @end deftypefn

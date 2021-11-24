@@ -84,7 +84,7 @@
 ## @seealso{cell2struct, struct2cell, repmat}
 ## @end deftypefn
 
-function [varargout] = deal (varargin)
+function varargout = deal (varargin)
 
   if (nargin == 0)
     print_usage ();
@@ -106,5 +106,6 @@ endfunction
 %! assert (a, 1);
 %! assert (b, 1);
 
-%!error deal ()
+## Test input validation
+%!error <Invalid call> deal ()
 %!error <nargin . 1 and nargin != nargout> y = deal (1, 2)

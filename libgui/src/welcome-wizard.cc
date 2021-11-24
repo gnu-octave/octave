@@ -213,8 +213,8 @@ namespace octave
     m_next->setDefault (true);
     m_next->setFocus ();
 
-    connect (m_next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
-    connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
+    connect (m_next, &QPushButton::clicked, wizard, &welcome_wizard::next_page);
+    connect (m_cancel, &QPushButton::clicked, wizard, &welcome_wizard::reject);
   }
 
   setup_community_news::setup_community_news (base_qobject&,
@@ -265,9 +265,6 @@ namespace octave
 
     m_checkbox_message->setText
       (tr ("<html><head>\n"
-           "<style>\n"
-           "a:link { text-decoration: underline; color: #0000ff; }\n"
-           "</style>\n"
            "</head><body>\n"
            "<p>Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.</p>\n"
            "</body></html>"));
@@ -306,12 +303,12 @@ namespace octave
     m_next->setDefault (true);
     m_next->setFocus ();
 
-    connect (m_checkbox, SIGNAL (stateChanged (int)),
-             wizard, SLOT (handle_web_connect_option (int)));
+    connect (m_checkbox, &QCheckBox::stateChanged,
+             wizard, &welcome_wizard::handle_web_connect_option);
 
-    connect (m_previous, SIGNAL (clicked ()), wizard, SLOT (previous_page ()));
-    connect (m_next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
-    connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
+    connect (m_previous, &QPushButton::clicked, wizard, &welcome_wizard::previous_page);
+    connect (m_next, &QPushButton::clicked, wizard, &welcome_wizard::next_page);
+    connect (m_cancel, &QPushButton::clicked, wizard, &welcome_wizard::reject);
   }
 
   final_page::final_page (base_qobject&, welcome_wizard *wizard)
@@ -351,9 +348,6 @@ namespace octave
 
     m_links->setText
       (tr ("<html><head>\n"
-           "<style>\n"
-           "a:link { text-decoration: underline; color: #0000ff; }\n"
-           "</style>\n"
            "</head><body>\n"
            "<p>For more information about Octave:</p>\n"
            "<ul>\n"
@@ -387,8 +381,9 @@ namespace octave
     m_finish->setDefault (true);
     m_finish->setFocus ();
 
-    connect (m_previous, SIGNAL (clicked ()), wizard, SLOT (previous_page ()));
-    connect (m_finish, SIGNAL (clicked ()), wizard, SLOT (accept ()));
-    connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
+    connect (m_previous, &QPushButton::clicked,
+             wizard, &welcome_wizard::previous_page);
+    connect (m_finish, &QPushButton::clicked, wizard, &welcome_wizard::accept);
+    connect (m_cancel, &QPushButton::clicked, wizard, &welcome_wizard::reject);
   }
 }

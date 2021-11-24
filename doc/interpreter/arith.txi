@@ -198,6 +198,12 @@ cos (pi/2)
 @DOCSTRING(acscd)
 @DOCSTRING(acotd)
 
+Finally, there are two trigonometric functions that calculate special
+arguments with increased accuracy.
+
+@DOCSTRING(sinpi)
+@DOCSTRING(cospi)
+
 @node Sums and Products
 @section Sums and Products
 

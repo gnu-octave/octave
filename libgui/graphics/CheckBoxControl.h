@@ -36,7 +36,7 @@ namespace octave
   class interpreter;
 }
 
-namespace QtHandles
+namespace octave
 {
 
   class CheckBoxControl : public ButtonControl
@@ -50,6 +50,9 @@ namespace QtHandles
     static CheckBoxControl *
     create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
             const graphics_object& go);
+
+  protected:
+    void update (int pId);
   };
 
 }

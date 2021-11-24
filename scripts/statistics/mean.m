@@ -152,7 +152,7 @@ function y = mean (x, varargin)
     case "a"
       y = sum (x, dim) / n;
     case "g"
-      if (all (x(:) >= 0))
+      if (! any (x(:) < 0))
         y = exp (sum (log (x), dim) ./ n);
       else
         error ("mean: X must not contain any negative values");
@@ -179,6 +179,7 @@ function y = mean (x, varargin)
       ## this should have been filtered out during input check, but...
       error ("mean: OUTTYPE '%s' not recognized", out_type);
   endswitch
+
 endfunction
 
 
@@ -217,25 +218,25 @@ endfunction
 %!test
 %! in = [1 2 3];
 %! out = 2;
-%! assert (mean (in, "default"), mean (in))
-%! assert (mean (in, "default"), out)
+%! assert (mean (in, "default"), mean (in));
+%! assert (mean (in, "default"), out);
 %!
 %! in = single ([1 2 3]);
 %! out = 2;
-%! assert (mean (in, "default"), mean (in))
-%! assert (mean (in, "default"), single (out))
-%! assert (mean (in, "double"), out)
-%! assert (mean (in, "native"), single (out))
+%! assert (mean (in, "default"), mean (in));
+%! assert (mean (in, "default"), single (out));
+%! assert (mean (in, "double"), out);
+%! assert (mean (in, "native"), single (out));
 %!
 %! in = uint8 ([1 2 3]);
 %! out = 2;
-%! assert (mean (in, "default"), mean (in))
-%! assert (mean (in, "default"), out)
-%! assert (mean (in, "double"), out)
-%! assert (mean (in, "native"), uint8 (out))
+%! assert (mean (in, "default"), mean (in));
+%! assert (mean (in, "default"), out);
+%! assert (mean (in, "double"), out);
+%! assert (mean (in, "native"), uint8 (out));
 %!
 %! in = logical ([1 0 1]);
 %! out = 2/3;
-%! assert (mean (in, "default"), mean (in))
-%! assert (mean (in, "default"), out)
-%! assert (mean (in, "native"), out) # logical ignores native option
+%! assert (mean (in, "default"), mean (in));
+%! assert (mean (in, "default"), out);
+%! assert (mean (in, "native"), out);  # logical ignores native option

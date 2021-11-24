@@ -91,7 +91,7 @@
 
 function [num, den] = padecoef (T, N = 1)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -163,7 +163,7 @@ endfunction
 %! x = A \ b';
 %! k = N : -1 : 0;
 %! d_exp = [flipud(x(N + 2 : 2 * N + 1)); 1]';
-%! n_exp = flipud(x(1 : N + 1))';
+%! n_exp = flipud (x(1 : N + 1))';
 %! n_exp ./= d_exp(1);
 %! d_exp ./= d_exp(1);
 %! [n_obs, d_obs] = padecoef (T, N);
@@ -173,8 +173,7 @@ endfunction
 ## PadeApproximant[Exp[-x * T], {x, 0, {n, n}}]
 
 ## Test input validation
-%!error padecoef ()
-%!error padecoef (1,2,3)
+%!error <Invalid call> padecoef ()
 %!error <T must be a non-negative scalar> padecoef ([1,2])
 %!error <T must be a non-negative scalar> padecoef ({1})
 %!error <T must be a non-negative scalar> padecoef (-1)

@@ -43,7 +43,8 @@
 ## Optionally, @var{x}, @var{y}, and @var{z} can be supplied to represent the
 ## set of coordinates of @var{v}.  They can either be matrices of the same size
 ## as @var{v} or vectors with sizes according to the dimensions of @var{v}, in
-## which case they are expanded to matrices (@pxref{XREFmeshgrid,,meshgrid}).
+## which case they are expanded to matrices
+## (@pxref{XREFmeshgrid,,@code{meshgrid}}).
 ##
 ## If @code{reducevolume} is called with two arguments then @var{x}, @var{y},
 ## and @var{z} are assumed to match the respective indices of @var{v}.
@@ -136,10 +137,10 @@ function [x, y, z, v, r] = __get_check_reducevolume_args__ (naout, varargin)
 
   if (naout == 4)
     if (isempty (x))
-      x = 1:size (v, 2);
+      x = 1:columns (v);
     endif
     if (isempty (y))
-      y = 1:size (v, 1);
+      y = 1:rows (v);
     endif
     if (isempty (z))
       z = 1:size (v, 3);
@@ -263,9 +264,9 @@ endfunction
 
 ## Test for each error
 %!test
-%!error reducevolume ()
-%!error reducevolume (1)
-%!error reducevolume (1,2,3,4,5,6)
+%!error <Invalid call> reducevolume ()
+%!error <Invalid call> reducevolume (1)
+%!error <Invalid call> reducevolume (1,2,3,4,5,6)
 %!error <incorrect number of arguments> reducevolume (1, 2, 3)
 %!error <R must be a scalar or a vector of length 3> reducevolume (v, [])
 %!error <R must be a scalar or a vector of length 3> reducevolume (v, [1 2])

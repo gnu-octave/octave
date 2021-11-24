@@ -45,12 +45,12 @@ namespace octave
     public:
 
       group (void)
-        : m_name (), m_passwd (), m_gid (0), m_mem (), valid (false)
+        : m_name (), m_passwd (), m_gid (0), m_mem (), m_valid (false)
       { }
 
       group (const group& gr)
         : m_name (gr.m_name), m_passwd (gr.m_passwd),
-          m_gid (gr.m_gid), m_mem (gr.m_mem), valid (gr.valid)
+          m_gid (gr.m_gid), m_mem (gr.m_mem), m_valid (gr.m_valid)
       { }
 
       group& operator = (const group& gr)
@@ -61,7 +61,7 @@ namespace octave
             m_passwd = gr.m_passwd;
             m_gid = gr.m_gid;
             m_mem = gr.m_mem;
-            valid = gr.valid;
+            m_valid = gr.m_valid;
           }
 
         return *this;
@@ -75,7 +75,7 @@ namespace octave
 
       string_vector mem (void) const;
 
-      bool ok (void) const { return valid; }
+      bool ok (void) const { return m_valid; }
 
       operator bool () const { return ok (); }
 
@@ -109,7 +109,7 @@ namespace octave
       string_vector m_mem;
 
       // Flag that says whether we have been properly initialized.
-      bool valid;
+      bool m_valid;
 
       // This is how we will create an group object from a pointer
       // to a struct group.

@@ -36,6 +36,7 @@
 #include "errwarn.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
 
 static dim_vector
 get_dim_vector (const octave_value& val, const char *name)
@@ -68,8 +69,8 @@ DEFUN (sub2ind, args, ,
 Convert subscripts to linear indices.
 
 The input @var{dims} is a dimension vector where each element is the size of
-the array in the respective dimension (@pxref{XREFsize,,size}).  The remaining
-inputs are scalars or vectors of subscripts to be converted.
+the array in the respective dimension (@pxref{XREFsize,,@code{size}}).  The
+remaining inputs are scalars or vectors of subscripts to be converted.
 
 The output vector @var{ind} contains the converted linear indices.
 
@@ -130,12 +131,12 @@ ind = sub2ind ([3, 3], s1, s2)
           if (j > 0 && args(j+1).dims () != args(1).dims ())
             error ("sub2ind: all subscripts must be of the same size");
         }
-      catch (octave::index_exception& e)
+      catch (index_exception& ie)
         {
-          e.set_pos_if_unset (nargin-1, j+1);
-          e.set_var ();
-          std::string msg = e.message ();
-          error_with_id (e.err_id (), "%s", msg.c_str ());
+          ie.set_pos_if_unset (nargin-1, j+1);
+          ie.set_var ();
+          std::string msg = ie.message ();
+          error_with_id (ie.err_id (), "%s", msg.c_str ());
         }
     }
 
@@ -193,8 +194,8 @@ DEFUN (ind2sub, args, nargout,
 Convert linear indices to subscripts.
 
 The input @var{dims} is a dimension vector where each element is the size of
-the array in the respective dimension (@pxref{XREFsize,,size}).  The second
-input @var{ind} contains linear indies to be converted.
+the array in the respective dimension (@pxref{XREFsize,,@code{size}}).  The
+second input @var{ind} contains linear indies to be converted.
 
 The outputs @var{s1}, @dots{}, @var{sN} contain the converted subscripts.
 
@@ -270,9 +271,9 @@ r = ind2sub (dims, ind)
     {
       retval = Array<octave_value> (ind2sub (dv, args(1).index_vector ()));
     }
-  catch (const octave::index_exception& e)
+  catch (const index_exception& ie)
     {
-      error ("ind2sub: invalid index %s", e.what ());
+      error ("ind2sub: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -313,7 +314,9 @@ r = ind2sub (dims, ind)
 %! r = ind2sub ([2, 2, 2], 1:8);
 %! assert (r, 1:8);
 
-%!error <DIMS must contain integers> ind2sub ([2, -2], 3);
-%!error <index out of range> ind2sub ([2, 2, 2], 1:9);
-%!error <invalid index> ind2sub ([2, 2, 2], -1:8);
+%!error <DIMS must contain integers> ind2sub ([2, -2], 3)
+%!error <index out of range> ind2sub ([2, 2, 2], 1:9)
+%!error <invalid index> ind2sub ([2, 2, 2], -1:8)
 */
+
+OCTAVE_NAMESPACE_END

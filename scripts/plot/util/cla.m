@@ -49,17 +49,13 @@
 
 function cla (hax, do_reset = false)
 
-  if (nargin > 2)
-    print_usage ();
-  endif
-
   if (nargin == 0)
-    hax = gca;
+    hax = gca ();
   elseif (nargin == 1)
     if (isscalar (hax) && isaxes (hax))
       ## Normal case : cla (hax) without reset
     elseif (ischar (hax) && strcmpi (hax, "reset"))
-      hax = gca;
+      hax = gca ();
       do_reset = true;
     else
       print_usage ();
@@ -98,7 +94,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hax = gca;
+%!   hax = gca ();
 %!   plot (hax, 1:10);
 %!   assert (get (hax, "colororderindex"), 2);
 %!   set (hax, "ticklabelinterpreter", "none");

@@ -47,7 +47,7 @@
 NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
                   bool negative_to_nan)
 {
-  const octave_idx_type *pa = a.fortran_vec ();
+  const octave_idx_type *pa = a.data ();
   resize (a.dims ());
   double *ptmp = fortran_vec ();
   if (negative_to_nan)
@@ -115,7 +115,7 @@ NDArray::fourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
-  const double *in (fortran_vec ());
+  const double *in (data ());
   ComplexNDArray retval (dv);
   Complex *out (retval.fortran_vec ());
 
@@ -165,7 +165,7 @@ NDArray::fourier2d (void) const
     return ComplexNDArray ();
 
   dim_vector dv2 (dv(0), dv(1));
-  const double *in = fortran_vec ();
+  const double *in = data ();
   ComplexNDArray retval (dv);
   Complex *out = retval.fortran_vec ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
@@ -202,7 +202,7 @@ NDArray::fourierNd (void) const
   dim_vector dv = dims ();
   int rank = dv.ndims ();
 
-  const double *in (fortran_vec ());
+  const double *in (data ());
   ComplexNDArray retval (dv);
   Complex *out (retval.fortran_vec ());
 
@@ -329,19 +329,19 @@ NDArray::any_element_is_inf_or_nan (void) const
 bool
 NDArray::any_element_not_one_or_zero (void) const
 {
-  return ! test_all (xis_one_or_zero);
+  return ! test_all (octave::is_one_or_zero);
 }
 
 bool
 NDArray::all_elements_are_zero (void) const
 {
-  return test_all (xis_zero);
+  return test_all (octave::is_zero);
 }
 
 bool
 NDArray::all_elements_are_int_or_inf_or_nan (void) const
 {
-  return test_all (xis_int_or_inf_or_nan);
+  return test_all (octave::is_int_or_inf_or_nan);
 }
 
 // Return nonzero if any element of M is not an integer.  Also extract
@@ -386,7 +386,7 @@ NDArray::all_integers (void) const
 bool
 NDArray::too_large_for_float (void) const
 {
-  return test_any (xtoo_large_for_float);
+  return test_any (octave::too_large_for_float);
 }
 
 // FIXME: this is not quite the right thing.
@@ -626,7 +626,7 @@ operator << (std::ostream& os, const NDArray& a)
   for (octave_idx_type i = 0; i < nel; i++)
     {
       os << ' ';
-      octave_write_double (os, a.elem (i));
+      octave::write_value<double> (os, a.elem (i));
       os << "\n";
     }
   return os;
@@ -642,7 +642,7 @@ operator >> (std::istream& is, NDArray& a)
       double tmp;
       for (octave_idx_type i = 0; i < nel; i++)
         {
-          tmp = octave_read_value<double> (is);
+          tmp = octave::read_value<double> (is);
           if (is)
             a.elem (i) = tmp;
           else

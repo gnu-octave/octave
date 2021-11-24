@@ -40,6 +40,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // complex scalar by scalar ops.
 
 DEFBINOP_OP (add, float_complex, float_scalar, +)
@@ -156,3 +158,5 @@ install_fcs_fs_ops (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, octave_float_complex, octave_scalar,
                          octave_float_complex_matrix);
 }
+
+OCTAVE_NAMESPACE_END

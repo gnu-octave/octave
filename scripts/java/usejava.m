@@ -54,7 +54,7 @@
 
 function retval = usejava (feature)
 
-  if (nargin != 1 || ! ischar (feature))
+  if (nargin < 1 || ! ischar (feature))
     print_usage ();
   endif
 
@@ -92,7 +92,6 @@ endfunction
 %! assert (usejava ("jvm"), true);
 
 ## Test input validation
-%!error usejava ()
-%!error usejava (1, 2)
-%!error usejava (1)
+%!error <Invalid call> usejava ()
+%!error <Invalid call> usejava (1)
 %!error <unrecognized FEATURE> usejava ("abc")

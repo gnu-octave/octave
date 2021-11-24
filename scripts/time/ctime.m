@@ -35,7 +35,7 @@
 ## @example
 ## @group
 ## ctime (time ())
-##    @result{} "Mon Feb 17 01:15:06 1997@xbackslashchar{}n"
+##    @result{} "Mon Feb 17 01:15:06 1997@backslashchar{}n"
 ## @end group
 ## @end example
 ## @seealso{asctime, time, localtime}
@@ -43,7 +43,7 @@
 
 function retval = ctime (t)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -58,5 +58,4 @@ endfunction
 
 %!assert (ctime (time ())(end), "\n")
 
-%!error ctime ()
-%!error ctime (1, 2)
+%!error <Invalid call> ctime ()

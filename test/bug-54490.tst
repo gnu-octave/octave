@@ -4,7 +4,7 @@
 %!  out = 3;
 %!endfunction
 
-%!test
+%!test <*54490>
 %! global k;
 %! k = 2;
 %! a = [5, 6];

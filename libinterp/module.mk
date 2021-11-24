@@ -33,7 +33,7 @@ BUILT_SOURCES += \
   %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h \
+  %reldir%/corefcn/mxtypes.h \
   %reldir%/corefcn/oct-tex-parser.h \
   %reldir%/corefcn/oct-tex-symbols.cc \
   %reldir%/parse-tree/oct-gperf.h \
@@ -66,7 +66,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h \
+  %reldir%/corefcn/mxtypes.h \
   %reldir%/corefcn/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc
@@ -98,9 +98,8 @@ noinst_HEADERS += \
 
 nodist_octinclude_HEADERS += \
   %reldir%/builtin-defun-decls.h \
-  %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h
+  %reldir%/corefcn/mxtypes.h
 
 DIST_SRC += \
   %reldir%/octave.cc \
@@ -130,7 +129,7 @@ nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/builtins.cc \
   %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h \
+  %reldir%/corefcn/mxtypes.h \
   %reldir%/corefcn/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc
@@ -194,15 +193,8 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 ## Cancel the suffix rule and use a pattern rule instead.
 .yy.cc:
 
-## The ylwrap script always updates the parser source file so we use a temporary file
-## name and our own move-if-change rule for that file.  Additionally fix up the file
-## name comments that bison writes into the source file.
 %.cc %.h : %.yy
-	$(AM_V_YACC)$(am__skipyacc) rm -f $*.cc-t $*.cc-tt && \
-	$(SHELL) $(YLWRAP) $< y.tab.c $*.cc-t y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE) && \
-	$(SED) 's|"$*\.cc-t"|"$*.cc"|g' $*.cc-t > $*.cc-tt && \
-	mv $*.cc-tt $*.cc-t && \
-	$(call move_if_change_rule,$*.cc-t,$*.cc)
+	$(AM_V_BISON)$(am__skipbison) $(BISONCOMPILE) --defines="$*.h" --output="$*.cc" $<
 
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.

@@ -35,6 +35,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#  include <windows.h>
+#endif
+
 #include "wait-wrappers.h"
 
 #if ! defined (WCONTINUE)
@@ -57,14 +61,42 @@ pid_t
 octave_waitpid_wrapper (pid_t pid, int *statusp, int options)
 {
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-
-  octave_unused_parameter (pid);
-  octave_unused_parameter (options);
-
   // gnulib's waitpid replacement currently uses _cwait, which
   // apparently only works with console applications.
-  *statusp = 0;
-  return -1;
+  // Implement our own wrapper using win32 API functions.
+
+  octave_unused_parameter (options);
+
+  pid_t retval = -1;
+  DWORD status = 0;
+
+  HANDLE hProcess = OpenProcess (PROCESS_QUERY_INFORMATION | SYNCHRONIZE,
+                                 false, pid);
+
+  if (! hProcess)
+    return retval;
+
+  if (WaitForSingleObject (hProcess, INFINITE) != WAIT_OBJECT_0)
+    {
+      CloseHandle (hProcess);
+      return retval;
+    }
+
+  if (! GetExitCodeProcess (hProcess, &status))
+    {
+      CloseHandle (hProcess);
+      return retval;
+    }
+
+  CloseHandle (hProcess);
+
+  if (statusp)
+    *statusp = status;
+
+  retval = pid;
+
+  return retval;
+
 #else
   return waitpid (pid, statusp, options);
 #endif

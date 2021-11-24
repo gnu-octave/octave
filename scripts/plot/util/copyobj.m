@@ -48,7 +48,7 @@ function hnew = copyobj (horig, hparent = 0)
   othertypes = {"line", "patch", "surface", "image", "text", "uicontrol"};
   alltypes = [partypes othertypes];
 
-  if (! ishghandle (horig) || nargin > 2)
+  if (! ishghandle (horig))
     print_usage ();
   elseif (! ishghandle (hparent))
     hparent = figure (fix (hparent));
@@ -79,7 +79,7 @@ function hnew = copyobj (horig, hparent = 0)
   endfor
 
   if (kididx <= paridx)
-    error ("copyobj: %s object can't be a child of %s.",
+    error ("copyobj: %s object can't be a child of %s",
            alltypes{kididx}, alltypes{paridx});
   endif
 
@@ -223,13 +223,12 @@ endfunction
 %!         "color", [0 0.5 0], "horizontalalignment", "center");
 %!   s1 = hdl2struct (h1);
 %!   h2 = struct2hdl (s1);
-%!   s2 = hdl2struct (h2);
 %!   png1 = [tempname() ".png"];
 %!   png2 = [tempname() ".png"];
 %!   unwind_protect
-%!     print (h1, "-r100", png1);
+%!     print (h1, png1);
 %!     [img1, map1, alpha1] = imread (png1);
-%!     print (h2, "-r100", png2);
+%!     print (h2, png2);
 %!     [img2, map2, alpha2] = imread (png2);
 %!   unwind_protect_cleanup
 %!     unlink (png1);

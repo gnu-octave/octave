@@ -52,13 +52,13 @@ public:
 
   charNDArray (const Array<char>& a) : Array<char> (a) { }
 
-  charNDArray (char c);
+  OCTAVE_API charNDArray (char c);
 
-  charNDArray (const char *s);
+  OCTAVE_API charNDArray (const char *s);
 
-  charNDArray (const std::string& s);
+  OCTAVE_API charNDArray (const std::string& s);
 
-  charNDArray (const string_vector& s, char fill_value = '\0');
+  OCTAVE_API charNDArray (const string_vector& s, char fill_value = '\0');
 
   charNDArray& operator = (const charNDArray& a)
   {
@@ -70,39 +70,44 @@ public:
 
   // FIXME: this is not quite the right thing.
 
-  boolNDArray all (int dim = -1) const;
-  boolNDArray any (int dim = -1) const;
-  charNDArray concat (const charNDArray& rb,
-                      const Array<octave_idx_type>& ra_idx);
-  charNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API boolNDArray all (int dim = -1) const;
+  OCTAVE_API boolNDArray any (int dim = -1) const;
+  OCTAVE_API charNDArray
+  concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API charNDArray
+  concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
 
-  charNDArray max (int dim = -1) const;
-  charNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
-  charNDArray min (int dim = -1) const;
-  charNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API charNDArray max (int dim = -1) const;
+  OCTAVE_API charNDArray
+  max (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API charNDArray min (int dim = -1) const;
+  OCTAVE_API charNDArray
+  min (Array<octave_idx_type>& index, int dim = -1) const;
 
-  charNDArray& insert (const charNDArray& a,
-                       octave_idx_type r, octave_idx_type c);
-  charNDArray& insert (const charNDArray& a,
-                       const Array<octave_idx_type>& ra_idx);
+  OCTAVE_API charNDArray&
+  insert (const charNDArray& a, octave_idx_type r, octave_idx_type c);
+  OCTAVE_API charNDArray&
+  insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx);
 
   charNDArray squeeze (void) const { return Array<char>::squeeze (); }
 
-  static void increment_index (Array<octave_idx_type>& ra_idx,
-                               const dim_vector& dimensions,
-                               int start_dimension = 0);
+  static OCTAVE_API void
+  increment_index (Array<octave_idx_type>& ra_idx,
+                   const dim_vector& dimensions, int start_dimension = 0);
 
-  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                                        const dim_vector& dimensions);
+  static OCTAVE_API octave_idx_type
+  compute_index (Array<octave_idx_type>& ra_idx, const dim_vector& dimensions);
 
   // i/o
 
-  // friend std::ostream& operator << (std::ostream& os, const charNDArray& a);
-  // friend std::istream& operator >> (std::istream& is, charNDArray& a);
+  // friend OCTAVE_API std::ostream&
+  // operator << (std::ostream& os, const charNDArray& a);
+  // friend OCTAVE_API std::istream&
+  // operator >> (std::istream& is, charNDArray& a);
 
-  charNDArray diag (octave_idx_type k = 0) const;
+  OCTAVE_API charNDArray diag (octave_idx_type k = 0) const;
 
-  charNDArray diag (octave_idx_type m, octave_idx_type n) const;
+  OCTAVE_API charNDArray diag (octave_idx_type m, octave_idx_type n) const;
 };
 
 extern OCTAVE_API charNDArray min (char d, const charNDArray& m);

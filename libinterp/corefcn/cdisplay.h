@@ -32,7 +32,7 @@
 extern "C" {
 #endif
 
-OCTINTERP_API extern const char *
+extern OCTINTERP_API const char *
 octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
                          double *rx, double *ry, int *dpy_avail);
 

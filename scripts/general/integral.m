@@ -30,11 +30,12 @@
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
 ## adaptive quadrature.
 ##
-## @code{integral} is a wrapper for @code{quadcc} (general scalar integrands),
-## @code{quadgk} (integrals with specified integration paths), and @code{quadv}
-## (array-valued integrands) that is intended to provide @sc{matlab}
-## compatibility.  More control of the numerical integration may be achievable
-## by calling the various quadrature functions directly.
+## @code{integral} is a wrapper for @code{quadcc} (general real-valued, scalar
+## integrands and limits), @code{quadgk} (integrals with specified integration
+## paths), and @code{quadv} (array-valued integrands) that is intended to
+## provide @sc{matlab} compatibility.  More control of the numerical
+## integration may be achievable by calling the various quadrature functions
+## directly.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
 ## of the function to evaluate.  The function @var{f} must be vectorized and
@@ -54,14 +55,14 @@
 ## Specifies points to be used in defining subintervals of the quadrature
 ## algorithm, or if @var{a}, @var{b}, or @var{waypoints} are complex then
 ## the quadrature is calculated as a contour integral along a piecewise
-## continuous path.  For more detail see @code{quadgk}.
+## continuous path.  For more detail, @pxref{XREFquadgk,,@code{quadgk}}.
 ##
 ## @item ArrayValued
 ## @code{integral} expects @var{f} to return a scalar value unless
 ## @var{arrayvalued} is specified as true.  This option will cause
 ## @code{integral} to perform the integration over the entire array and return
 ## @var{q} with the same dimensions as returned by @var{f}.  For more detail
-## see @code{quadv}.
+## @pxref{XREFquadv,,@code{quadv}}.
 ##
 ## @item AbsTol
 ## Define the absolute error tolerance for the quadrature.  The default
@@ -115,10 +116,35 @@ function q = integral (f, a, b, varargin)
     print_usage ();
   endif
 
+  ## quadcc can't handle complex limits or integrands, but quadgk & quadv can.
+  ## Check for simple cases of complex limits and integrand.
+  f_is_complex = false;
+  if (iscomplex (a) || iscomplex (b))
+    f_is_complex = true;
+  elseif (iscomplex (feval (f, a)) || iscomplex (feval (f, b)))
+    f_is_complex = true;
+  endif
+
   if (nargin == 3)
     ## Pass the simplest case directly to general integrator.
     ## Let quadcc function handle input checks on function and limits.
-    q = quadcc (f, a, b);
+    if (! f_is_complex)
+      try
+        q = quadcc (f, a, b);
+      catch quaderror
+        if (strcmp (quaderror.message,
+                    "quadcc: integrand F must return a single, real-valued vector"))
+          q = quadgk (f, a, b);
+        else
+          error (quaderror.message);
+        endif
+      end_try_catch
+
+    else
+      ## Complex-valued integral
+      q = quadgk (f, a, b);
+    endif
+
   else
     ## Parse options to determine how to call integrator.
     abstol = [];
@@ -155,13 +181,13 @@ function q = integral (f, a, b, varargin)
 
       ## FIXME: Replace warning when have array compatible call with waypoints
       if (! isempty (waypoints))
-        warning(["integral: array-valued quadrature routine currently ", ...
+        warning (["integral: array-valued quadrature routine currently ", ...
                  "unable to handle WayPoints.  WayPoints are ignored."]);
       endif
 
       ## FIXME: Remove warning once we have reltol compatible arrayval'd quadfn
       if (! isempty (reltol))
-        warning(["integral: array-valued quadrature only accepts AbsTol.", ...
+        warning (["integral: array-valued quadrature only accepts AbsTol.", ...
                  "  RelTol ignored."]);
       endif
       if (isempty (abstol))
@@ -182,7 +208,21 @@ function q = integral (f, a, b, varargin)
         q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol,
                              "WayPoints", waypoints);
       else
-        q = quadcc (f, a, b, [abstol, reltol]);
+        if (! f_is_complex)
+          try
+            q = quadcc (f, a, b, [abstol, reltol]);
+          catch quaderror
+            if (strcmp (quaderror.message,
+                        "quadcc: integrand F must return a single, real-valued vector"))
+              q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+            else
+              error (quaderror.message);
+            endif
+          end_try_catch
+        else
+          ## Complex-valued integral
+          q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+        endif
       endif
     endif
   endif
@@ -203,7 +243,7 @@ endfunction
 %! assert (integral (@(x) f(x,5), 0, 2), -0.4605015338467329, 1e-10);
 
 %!test  # with tolerances
-%! f = @(x) log(x);
+%! f = @(x) log (x);
 %! assert (integral (@(x) f(x), 0, 1, "AbsTol", 1e-6), -1, 1e-6);
 
 %!test  # waypoints
@@ -216,14 +256,21 @@ endfunction
 %!         1e-10);
 
 %!test  # test single input/output
-%! assert (integral (@sin, 0, 1), cos(0)-cos(1), 1e-10);
+%! assert (integral (@sin, 0, 1), cos (0)-cos (1), 1e-10);
 %! assert (class (integral (@sin, single (0), 1)), "single");
 %! assert (class (integral (@sin, 0, single (1))), "single");
 %! assert (class (integral (@sin, single (0), single (1))), "single");
-%! assert (integral (@sin, 0, 1, "Waypoints", 0.5), cos(0)-cos(1), 1e-10);
+%! assert (integral (@sin, 0, 1, "Waypoints", 0.5), cos (0)-cos (1), 1e-10);
 %! assert (class (integral (@sin, 0, 1, "Waypoints", single (0.5))), "single");
 %! assert (class (integral (@sin, single (0), 1, "Waypoints", 0.5)), "single");
 %! assert (class (integral (@sin, 0, single (1), "Waypoints", 0.5)), "single");
+
+%!test  # test complex argument handling
+%! f = @(x) round (exp (i*x));
+%! assert (integral (f, 0, pi), quadgk (f, 0, pi), eps);
+%! assert (integral (f, -1, 1), 2, 5*eps);
+%! assert (integral (@sin, -i, i), 0, eps);
+%! assert (1.5 * integral (@sqrt, -1, 0), i, eps);
 
 %!test
 %! f = @(x) x.^5 .* exp (-x) .* sin (x);

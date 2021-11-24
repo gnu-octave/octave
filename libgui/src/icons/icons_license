@@ -17,6 +17,7 @@ Icons used for Octave
 ===========================================
 
 applications-system.svg
+bookmark-new.svg
 dialog-error.svg
 dialog-information.svg
 dialog-warning.svg
@@ -54,7 +55,6 @@ view-refresh.svg
 
 ===========================================
 Icons created by the Octave developers
-with elements from the Tango theme
 ===========================================
 
 figure-axes.svg
@@ -69,6 +69,7 @@ Icons with elements from the Tango theme
 
 figure-pan.svg
 graphic_logo_DocumentationDockWidget.svg
+graphic_logo_Figure.svg
 graphic_logo_FileEditor.svg
 graphic_logo_FilesDockWidget.svg
 graphic_logo_HistoryDockWidget.svg

@@ -29,7 +29,7 @@
 ## Extract the components of a piecewise polynomial structure @var{pp}.
 ##
 ## This function is the inverse of @code{mkpp}: it extracts the inputs to
-## @code{mkpp} needed to create the piecewise polynomial structure @var{PP}.
+## @code{mkpp} needed to create the piecewise polynomial structure @var{pp}.
 ## The code below makes this relation explicit:
 ##
 ## @example
@@ -74,7 +74,7 @@
 
 function [x, P, n, k, d] = unmkpp (pp)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
   if (! (isstruct (pp) && isfield (pp, "form") && strcmp (pp.form, "pp")))
@@ -101,8 +101,7 @@ endfunction
 %! assert (d, 1);
 
 ## Test input validation
-%!error unmkpp ()
-%!error unmkpp (1,2)
+%!error <Invalid call> unmkpp ()
 %!error <piecewise polynomial structure> unmkpp (1)
 %!error <piecewise polynomial structure> unmkpp (struct ("field1", "pp"))
 %!error <piecewise polynomial structure> unmkpp (struct ("form", "not_a_pp"))

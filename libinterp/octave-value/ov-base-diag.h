@@ -44,26 +44,27 @@
 
 template <typename DMT, typename MT>
 class
+OCTINTERP_API
 octave_base_diag : public octave_base_value
 {
 
 public:
 
   octave_base_diag (void)
-    : octave_base_value (), matrix (), dense_cache () { }
+    : octave_base_value (), m_matrix (), m_dense_cache () { }
 
   octave_base_diag (const DMT& m)
-    : octave_base_value (), matrix (m), dense_cache ()
+    : octave_base_value (), m_matrix (m), m_dense_cache ()
   { }
 
   octave_base_diag (const octave_base_diag& m)
-    : octave_base_value (), matrix (m.matrix), dense_cache () { }
+    : octave_base_value (), m_matrix (m.m_matrix), m_dense_cache () { }
 
   ~octave_base_diag (void) = default;
 
-  std::size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size (void) const { return m_matrix.byte_size (); }
 
-  octave_value squeeze (void) const { return matrix; }
+  octave_value squeeze (void) const { return m_matrix; }
 
   octave_value full_value (void) const { return to_dense (); }
 
@@ -72,21 +73,21 @@ public:
   // functions.
   using octave_base_value::subsref;
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx);
+  OCTINTERP_API octave_value
+  subsref (const std::string& type, const std::list<octave_value_list>& idx);
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
   { return subsref (type, idx); }
 
-  octave_value do_index_op (const octave_value_list& idx,
-                            bool resize_ok = false);
+  OCTINTERP_API octave_value
+  do_index_op (const octave_value_list& idx, bool resize_ok = false);
 
-  octave_value subsasgn (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         const octave_value& rhs);
+  OCTINTERP_API octave_value
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
-  dim_vector dims (void) const { return matrix.dims (); }
+  dim_vector dims (void) const { return m_matrix.dims (); }
 
   octave_idx_type nnz (void) const { return diag ().nnz (); }
 
@@ -98,15 +99,16 @@ public:
     if (vec.numel () == 2
         && ((vec.xelem (0) == 1 && vec.xelem (1) == 0)
             || (vec.xelem (0) == 0 && vec.xelem (1) == 1)))
-      return DMT (matrix);
+      return DMT (m_matrix);
     else
       return to_dense ().permute (vec, inv);
   }
 
-  octave_value resize (const dim_vector& dv, bool fill = false) const;
+  OCTINTERP_API octave_value
+  resize (const dim_vector& dv, bool fill = false) const;
 
-  octave_value all (int dim = 0) const { return MT (matrix).all (dim); }
-  octave_value any (int dim = 0) const { return MT (matrix).any (dim); }
+  octave_value all (int dim = 0) const { return MT (m_matrix).all (dim); }
+  octave_value any (int dim = 0) const { return MT (m_matrix).any (dim); }
 
   MatrixType matrix_type (void) const { return MatrixType::Diagonal; }
   MatrixType matrix_type (const MatrixType&) const
@@ -117,7 +119,7 @@ public:
   // functions.
   using octave_base_value::diag;
 
-  octave_value diag (octave_idx_type k = 0) const;
+  OCTINTERP_API octave_value diag (octave_idx_type k = 0) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
   { return to_dense ().sort (dim, mode); }
@@ -142,46 +144,50 @@ public:
 
   bool is_constant (void) const { return true; }
 
-  bool is_true (void) const;
+  OCTINTERP_API bool is_true (void) const;
 
   bool is_diag_matrix (void) const { return true; }
 
-  double double_value (bool = false) const;
+  OCTINTERP_API double double_value (bool = false) const;
 
-  float float_value (bool = false) const;
+  OCTINTERP_API float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
   { return double_value (frc_str_conv); }
 
-  idx_vector index_vector (bool /* require_integers */ = false) const;
+  OCTINTERP_API octave::idx_vector
+  index_vector (bool /* require_integers */ = false) const;
 
-  Matrix matrix_value (bool = false) const;
+  OCTINTERP_API Matrix matrix_value (bool = false) const;
 
-  FloatMatrix float_matrix_value (bool = false) const;
+  OCTINTERP_API FloatMatrix float_matrix_value (bool = false) const;
 
-  Complex complex_value (bool = false) const;
+  OCTINTERP_API Complex complex_value (bool = false) const;
 
-  FloatComplex float_complex_value (bool = false) const;
+  OCTINTERP_API FloatComplex float_complex_value (bool = false) const;
 
-  ComplexMatrix complex_matrix_value (bool = false) const;
+  OCTINTERP_API ComplexMatrix complex_matrix_value (bool = false) const;
 
-  FloatComplexMatrix float_complex_matrix_value (bool = false) const;
+  OCTINTERP_API FloatComplexMatrix
+  float_complex_matrix_value (bool = false) const;
 
-  ComplexNDArray complex_array_value (bool = false) const;
+  OCTINTERP_API ComplexNDArray complex_array_value (bool = false) const;
 
-  FloatComplexNDArray float_complex_array_value (bool = false) const;
+  OCTINTERP_API FloatComplexNDArray
+  float_complex_array_value (bool = false) const;
 
-  boolNDArray bool_array_value (bool warn = false) const;
+  OCTINTERP_API boolNDArray bool_array_value (bool warn = false) const;
 
-  charNDArray char_array_value (bool = false) const;
+  OCTINTERP_API charNDArray char_array_value (bool = false) const;
 
-  NDArray array_value (bool = false) const;
+  OCTINTERP_API NDArray array_value (bool = false) const;
 
-  FloatNDArray float_array_value (bool = false) const;
+  OCTINTERP_API FloatNDArray float_array_value (bool = false) const;
 
-  SparseMatrix sparse_matrix_value (bool = false) const;
+  OCTINTERP_API SparseMatrix sparse_matrix_value (bool = false) const;
 
-  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
+  OCTINTERP_API SparseComplexMatrix
+  sparse_complex_matrix_value (bool = false) const;
 
   int8NDArray
   int8_array_value (void) const { return to_dense ().int8_array_value (); }
@@ -207,47 +213,52 @@ public:
   uint64NDArray
   uint64_array_value (void) const { return to_dense ().uint64_array_value (); }
 
-  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
+  OCTINTERP_API octave_value
+  convert_to_str_internal (bool pad, bool force, char type) const;
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+  OCTINTERP_API void
+  print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  float_display_format get_edit_display_format (void) const;
+  OCTINTERP_API float_display_format get_edit_display_format (void) const;
 
-  std::string edit_display (const float_display_format& fmt,
-                            octave_idx_type i, octave_idx_type j) const;
+  OCTINTERP_API std::string
+  edit_display (const float_display_format& fmt,
+                octave_idx_type i, octave_idx_type j) const;
 
-  bool save_ascii (std::ostream& os);
+  OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  bool load_ascii (std::istream& is);
+  OCTINTERP_API bool load_ascii (std::istream& is);
 
-  int write (octave::stream& os, int block_size,
-             oct_data_conv::data_type output_type, int skip,
-             octave::mach_info::float_format flt_fmt) const;
+  OCTINTERP_API int
+  write (octave::stream& os, int block_size,
+         oct_data_conv::data_type output_type, int skip,
+         octave::mach_info::float_format flt_fmt) const;
 
-  mxArray * as_mxArray (void) const;
+  OCTINTERP_API mxArray * as_mxArray (bool interleaved) const;
 
-  bool print_as_scalar (void) const;
+  OCTINTERP_API bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false);
+  OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print_info (std::ostream& os, const std::string& prefix) const;
+  OCTINTERP_API void
+  print_info (std::ostream& os, const std::string& prefix) const;
 
-  void short_disp (std::ostream& os) const;
+  OCTINTERP_API void short_disp (std::ostream& os) const;
 
-  octave_value fast_elem_extract (octave_idx_type n) const;
+  OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 
 protected:
 
-  DMT matrix;
+  DMT m_matrix;
 
-  octave_value to_dense (void) const;
+  OCTINTERP_API octave_value to_dense (void) const;
 
   virtual bool chk_valid_scalar (const octave_value&,
                                  typename DMT::element_type&) const = 0;
 
 private:
 
-  mutable octave_value dense_cache;
+  mutable octave_value m_dense_cache;
 
 };
 

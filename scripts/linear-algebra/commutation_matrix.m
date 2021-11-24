@@ -76,7 +76,7 @@
 
 function k = commutation_matrix (m, n)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   else
     if (! (isscalar (m) && m == fix (m) && m > 0))

@@ -68,7 +68,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   h = hggroup;
+%!   h = hggroup ();
 %!   assert (findobj (hf, "type", "hggroup"), h);
 %!   assert (get (h, "type"), "hggroup");
 %! unwind_protect_cleanup

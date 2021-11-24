@@ -37,7 +37,7 @@
 
 #include "octave-qobject.h"
 
-namespace QtHandles
+namespace octave
 {
 
   static void
@@ -124,12 +124,12 @@ namespace QtHandles
 
     list->viewport ()->installEventFilter (this);
 
-    connect (list, SIGNAL (itemSelectionChanged (void)),
-             SLOT (itemSelectionChanged (void)));
-    connect (list, SIGNAL (activated (const QModelIndex &)),
-             SLOT (itemActivated (const QModelIndex &)));
-    connect (list, SIGNAL (itemPressed (QListWidgetItem*)),
-             SLOT (itemPressed (QListWidgetItem*)));
+    connect (list, &QListWidget::itemSelectionChanged,
+             this, &ListBoxControl::itemSelectionChanged);
+    connect (list, &QListWidget::activated,
+             this, &ListBoxControl::itemActivated);
+    connect (list, &QListWidget::itemPressed,
+             this, &ListBoxControl::itemPressed);
   }
 
   ListBoxControl::~ListBoxControl (void)
@@ -152,13 +152,21 @@ namespace QtHandles
         break;
 
       case uicontrol::properties::ID_MIN:
-
       case uicontrol::properties::ID_MAX:
         if ((up.get_max () - up.get_min ()) > 1)
           list->setSelectionMode (QAbstractItemView::ExtendedSelection);
         else
           list->setSelectionMode (QAbstractItemView::SingleSelection);
         break;
+
+      case uicontrol::properties::ID_LISTBOXTOP:
+        {
+          int idx = octave::math::fix (up.get_listboxtop ());
+          if (idx > 0)
+            list->scrollToItem (list->item (idx-1),
+                                QAbstractItemView::PositionAtTop);
+          break;
+        }
 
       case uicontrol::properties::ID_VALUE:
         m_blockCallback = true;

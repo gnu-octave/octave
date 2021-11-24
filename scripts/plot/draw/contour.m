@@ -61,7 +61,8 @@
 ## @end group
 ## @end example
 ##
-## @seealso{ezcontour, contourc, contourf, contour3, clabel, meshc, surfc, caxis, colormap, plot}
+## @seealso{ezcontour, contourc, contourf, contour3, clabel, meshc, surfc,
+## caxis, colormap, plot}
 ##
 ## @end deftypefn
 

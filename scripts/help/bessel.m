@@ -101,4 +101,4 @@ function bessel ()
 endfunction
 
 
-%!error bessel ()
+%!error <you must use besselj, ...> bessel ()

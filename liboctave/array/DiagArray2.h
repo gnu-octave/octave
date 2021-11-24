@@ -38,35 +38,36 @@
 
 template <typename T>
 class
+OCTAVE_API
 DiagArray2 : protected Array<T>
 {
 protected:
-  octave_idx_type d1, d2;
+  octave_idx_type m_d1, m_d2;
 
 public:
 
   using typename Array<T>::element_type;
 
   DiagArray2 (void)
-    : Array<T> (), d1 (0), d2 (0) { }
+    : Array<T> (), m_d1 (0), m_d2 (0) { }
 
   DiagArray2 (octave_idx_type r, octave_idx_type c)
-    : Array<T> (dim_vector (std::min (r, c), 1)), d1 (r), d2 (c) { }
+    : Array<T> (dim_vector (std::min (r, c), 1)), m_d1 (r), m_d2 (c) { }
 
   DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val)
-    : Array<T> (dim_vector (std::min (r, c), 1), val), d1 (r), d2 (c) { }
+    : Array<T> (dim_vector (std::min (r, c), 1), val), m_d1 (r), m_d2 (c) { }
 
   explicit DiagArray2 (const Array<T>& a)
-    : Array<T> (a.as_column ()), d1 (a.numel ()), d2 (a.numel ()) { }
+    : Array<T> (a.as_column ()), m_d1 (a.numel ()), m_d2 (a.numel ()) { }
 
   DiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c);
 
   DiagArray2 (const DiagArray2<T>& a)
-    : Array<T> (a), d1 (a.d1), d2 (a.d2) { }
+    : Array<T> (a), m_d1 (a.m_d1), m_d2 (a.m_d2) { }
 
   template <typename U>
   DiagArray2 (const DiagArray2<U>& a)
-    : Array<T> (a.extract_diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
+    : Array<T> (a.extract_diag ()), m_d1 (a.dim1 ()), m_d2 (a.dim2 ()) { }
 
   ~DiagArray2 (void) = default;
 
@@ -75,15 +76,15 @@ public:
     if (this != &a)
       {
         Array<T>::operator = (a);
-        d1 = a.d1;
-        d2 = a.d2;
+        m_d1 = a.m_d1;
+        m_d2 = a.m_d2;
       }
 
     return *this;
   }
 
-  octave_idx_type dim1 (void) const { return d1; }
-  octave_idx_type dim2 (void) const { return d2; }
+  octave_idx_type dim1 (void) const { return m_d1; }
+  octave_idx_type dim2 (void) const { return m_d2; }
 
   octave_idx_type rows (void) const { return dim1 (); }
   octave_idx_type cols (void) const { return dim2 (); }
@@ -97,13 +98,13 @@ public:
 
   std::size_t byte_size (void) const { return Array<T>::byte_size (); }
 
-  dim_vector dims (void) const { return dim_vector (d1, d2); }
+  dim_vector dims (void) const { return dim_vector (m_d1, m_d2); }
 
   bool isempty (void) const { return numel () == 0; }
 
   int ndims (void) const { return 2; }
 
-  Array<T> extract_diag (octave_idx_type k = 0) const;
+  OCTAVE_API Array<T> extract_diag (octave_idx_type k = 0) const;
 
   DiagArray2<T> build_diag_matrix () const
   {
@@ -118,7 +119,7 @@ public:
     return (r == c) ? Array<T>::elem (r) : T (0);
   }
 
-  T& elem (octave_idx_type r, octave_idx_type c);
+  OCTAVE_API T& elem (octave_idx_type r, octave_idx_type c);
 
   T dgelem (octave_idx_type i) const
   { return Array<T>::elem (i); }
@@ -154,20 +155,23 @@ public:
   T dgxelem (octave_idx_type i) const
   { return Array<T>::xelem (i); }
 
-  void resize (octave_idx_type n, octave_idx_type m, const T& rfv);
+  OCTAVE_API void resize (octave_idx_type n, octave_idx_type m, const T& rfv);
   void resize (octave_idx_type n, octave_idx_type m)
   {
     resize (n, m, Array<T>::resize_fill_value ());
   }
 
-  DiagArray2<T> transpose (void) const;
-  DiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const;
+  OCTAVE_API DiagArray2<T> transpose (void) const;
+  OCTAVE_API DiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const;
 
-  Array<T> array_value (void) const;
+  OCTAVE_API Array<T> array_value (void) const;
 
   const T * data (void) const { return Array<T>::data (); }
 
-  const T * fortran_vec (void) const { return Array<T>::fortran_vec (); }
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+  OCTAVE_DEPRECATED (7, "for read-only access, use 'data' method instead")
+  const T * fortran_vec (void) const { return Array<T>::data (); }
+#endif
 
   T * fortran_vec (void) { return Array<T>::fortran_vec (); }
 

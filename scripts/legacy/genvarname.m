@@ -114,7 +114,7 @@ function varname = genvarname (str, exclusions = {})
              "genvarname is obsolete; use matlab.lang.makeValidName or matlab.lang.makeUniqueStrings instead\n");
   endif
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -208,7 +208,8 @@ endfunction
 %!assert (genvarname ({"a";"b"}), {"a";"b"})
 %!assert (genvarname ({"a" "a"}), {"a" "a1"})
 %!assert (genvarname ({"a" "b";"c" "d"}), {"a" "b";"c" "d"})
-%!assert (genvarname ({"a" "a" "a";"a" "a" "a"}), {"a" "a2" "a4";"a1" "a3" "a5"})
+%!assert (genvarname ({"a" "a" "a";"a" "a" "a"}),
+%!        {"a" "a2" "a4";"a1" "a3" "a5"})
 ## more than one repetition
 %!assert (genvarname ({"a" "a" "a"}), {"a" "a1" "a2"})
 %!assert (genvarname ({"a" "a" "a"}, {"a" "a1" "a2"}), {"a3" "a4" "a5"})
@@ -227,8 +228,7 @@ endfunction
 %!assert (genvarname ("x", {"a", "b"; "x", "d"}), "x1")
 
 ## Test input validation
-%!error genvarname ()
-%!error genvarname (1,2,3)
+%!error <Invalid call> genvarname ()
 %!error <more than one STR is given, it must be a cellstr> genvarname (char ("a", "b", "c"))
 %!error <STR must be a string or cellstr> genvarname (1)
 %!error <more than one exclusion is given, it must be a cellstr> genvarname ("x", char ("a", "b", "c"))

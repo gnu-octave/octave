@@ -34,13 +34,17 @@
 
 namespace octave
 {
+  //
+  // Reimplemented QTabbar
+  //
+
   tab_bar::tab_bar (QWidget *p)
     : QTabBar (p), m_context_menu (new QMenu (this))
   { }
 
-  tab_bar::~tab_bar (void)
+  void tab_bar::set_rotated (int rotated)
   {
-    delete m_context_menu;
+    m_rotated = rotated;
   }
 
   // slots for tab navigation
@@ -56,16 +60,12 @@ namespace octave
 
   void tab_bar::move_tab_left (void)
   {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
     switch_tab (-1, true);
-#endif
   }
 
   void tab_bar::move_tab_right (void)
   {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
     switch_tab (1, true);
-#endif
   }
 
   void tab_bar::switch_tab (int direction, bool movetab)
@@ -83,11 +83,9 @@ namespace octave
 
     if (movetab)
       {
-#if defined (HAVE_QTABWIDGET_SETMOVABLE)
         moveTab (old_pos, new_pos);
         setCurrentIndex (old_pos);
         setCurrentIndex (new_pos);
-#endif
       }
     else
       setCurrentIndex (new_pos);
@@ -130,6 +128,52 @@ namespace octave
     setCurrentIndex (tab_with_focus);
   }
 
+  // The following two functions are reimplemented for allowing rotated
+  // tabs and are based on this answer on stack overflow:
+  // https://stackoverflow.com/a/50579369
+
+  // Reimplemented size hint allowing rotated tabs
+  QSize tab_bar::tabSizeHint (int idx) const
+  {
+    QSize s = QTabBar::tabSizeHint (idx);
+    if (m_rotated)
+      s.transpose();
+
+    return s;
+  }
+
+  // Reimplemented paint event allowing rotated tabs
+  void tab_bar::paintEvent(QPaintEvent *e)
+  {
+    // Just process the original event if not rotated
+    if (! m_rotated)
+      return QTabBar::paintEvent (e);
+
+    // Process the event for rotated tabs
+    QStylePainter painter (this);
+    QStyleOptionTab opt;
+
+    for (int idx = 0; idx < count(); idx++)
+      {
+        initStyleOption (&opt, idx);
+        painter.drawControl (QStyle::CE_TabBarTabShape, opt);
+        painter.save ();
+
+        QSize s = opt.rect.size();
+        s.transpose();
+        QRect rect (QPoint (), s);
+        rect.moveCenter (opt.rect.center ());
+        opt.rect = rect;
+
+        QPoint p = tabRect (idx).center ();
+        painter.translate (p);
+        painter.rotate (-m_rotated*90);
+        painter.translate (-p);
+        painter.drawControl (QStyle::CE_TabBarTabLabel, opt);
+        painter.restore ();
+      }
+  }
+
   // Reimplement mouse event for filtering out the desired mouse clicks
   void tab_bar::mousePressEvent (QMouseEvent *me)
   {
@@ -157,7 +201,7 @@ namespace octave
         if ((me->type () == QEvent::MouseButtonDblClick
              && me->button() == Qt::LeftButton)
             || (me->type () != QEvent::MouseButtonDblClick
-                && me->button() == Qt::MidButton))
+                && me->button() == Qt::MiddleButton))
           {
             // Middle click or double click -> close the tab
             // Make the clicked tab the current one and close it
@@ -175,7 +219,23 @@ namespace octave
           {
             // Right click, show context menu
             setCurrentIndex (clicked_idx);
-            if (! m_context_menu->exec (click_pos))
+
+            // Fill context menu with actions for selecting current tabs
+            m_ctx_actions = m_context_menu->actions (); // Copy of basic actions
+            QMenu ctx_menu;                             // The menu actually used
+            connect (&ctx_menu, &QMenu::triggered,
+                     this, &tab_bar::ctx_menu_activated);
+
+            for (int i = count () - 1; i >= 0; i--)
+              {
+                // Prepend an action for each tab
+                QAction* a = new QAction (tabIcon (i), tabText (i), &ctx_menu);
+                m_ctx_actions.prepend (a);
+              }
+            // Add all actions to our menu
+            ctx_menu.insertActions (nullptr, m_ctx_actions);
+
+            if (! ctx_menu.exec (click_pos))
               {
                 // No action selected, back to previous tab
                 setCurrentIndex (current_idx);
@@ -211,4 +271,16 @@ namespace octave
         QTabBar::mousePressEvent (me);
       }
   }
+
+  // Slot if a menu entry in the context menu is activated
+  void tab_bar::ctx_menu_activated (QAction *a)
+  {
+    // If the index of the activated action is in the range of
+    // the current tabs, set the related current tab. The basic actions
+    // are handled by the editor
+    int i = m_ctx_actions.indexOf (a);
+    if ((i > -1) && (i < count ()))
+      setCurrentIndex (i);
+  }
+
 }

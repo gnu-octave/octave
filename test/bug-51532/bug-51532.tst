@@ -24,7 +24,7 @@
 ########################################################################
 
 ## Test for value returned from a +package function
-%!test
+%!test <*51532>
 %! r = package_bug51532.foo ("asdf");
 %! assert (ischar (r));
 %! assert (r, "asdf");

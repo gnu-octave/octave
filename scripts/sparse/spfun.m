@@ -25,11 +25,53 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{y} =} spfun (@var{f}, @var{S})
-## Compute @code{f(@var{S})} for the nonzero values of @var{S}.
+## Compute @code{f (@var{S})} for the nonzero elements of @var{S}.
 ##
-## This results in a sparse matrix with the same structure as @var{S}.  The
-## function @var{f} can be passed as a string, a function handle, or an
-## inline function.
+## The input function @var{f} is applied only to the nonzero elements of
+## the input matrix @var{S} which is typically sparse.  The function @var{f}
+## can be passed as a string, function handle, or inline function.
+##
+## The output @var{y} is a sparse matrix with the same sparsity structure as
+## the input @var{S}.  @code{spfun} preserves sparsity structure which is
+## different than simply applying the function @var{f} to the sparse matrix
+## @var{S} when @code{@var{f} (0) != 0}.
+##
+## Example
+##
+## Sparsity preserving @code{spfun} versus normal function application
+##
+## @example
+## @group
+## S = pi * speye (2,2)
+## S =
+##
+## Compressed Column Sparse (rows = 2, cols = 2, nnz = 2 [50%])
+##
+##   (1, 1) -> 3.1416
+##   (2, 2) -> 3.1416
+##
+## y = spfun (@@cos, S)
+## y =
+##
+## Compressed Column Sparse (rows = 2, cols = 2, nnz = 2 [50%])
+##
+##   (1, 1) -> -1
+##   (2, 2) -> -1
+## @end group
+##
+## @group
+## y = cos (S)
+## y =
+##
+## Compressed Column Sparse (rows = 2, cols = 2, nnz = 4 [100%])
+##
+##   (1, 1) -> -1
+##   (2, 1) -> 1
+##   (1, 2) -> 1
+##   (2, 2) -> -1
+##
+## @end group
+## @end example
 ## @seealso{arrayfun, cellfun, structfun}
 ## @end deftypefn
 
@@ -39,14 +81,14 @@ function y = spfun (f, S)
     print_usage ();
   endif
 
+  if (! isnumeric (S))
+    error ("spfun: S must be numeric");
+  endif
+
   [i, j, v] = find (S);
   [m, n] = size (S);
 
-  if (is_function_handle (f))
-    y = sparse (i, j, f(v), m, n);
-  else
-    y = sparse (i, j, feval (f, v), m, n);
-  endif
+  y = sparse (i, j, feval (f, v), m, n);
 
 endfunction
 
@@ -55,3 +97,9 @@ endfunction
 %!assert (spfun ("exp", sparse ([1,2;3,0])), sparse ([exp(1),exp(2);exp(3),0]))
 %!assert (spfun (@exp, [1,2;3,0]), sparse ([exp(1),exp(2);exp(3),0]))
 %!assert (spfun (@exp, sparse ([1,2;3,0])), sparse ([exp(1),exp(2);exp(3),0]))
+
+## Test input validation
+%!error <Invalid call> spfun ()
+%!error <Invalid call> spfun (@cos)
+%!error <S must be numeric> spfun (@cos, {1})
+%!error <S must be numeric> spfun (@cos, "FooBar")

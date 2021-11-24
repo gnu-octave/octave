@@ -32,6 +32,8 @@
 #include "lo-lapack-proto.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (ordschur, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})
@@ -74,7 +76,7 @@ is in the upper left corner, by doing:
 [@var{U}, @var{S}] = ordschur (@var{U}, @var{S}, [0,1])
 @end example
 
-@seealso{schur, ordeig}
+@seealso{schur, ordeig, ordqz}
 @end deftypefn */)
 {
   if (args.length () != 3)
@@ -117,10 +119,10 @@ is in the upper left corner, by doing:
                                                 \
   retval = ovl (U, S);
 
-  F77_INT n = octave::to_f77_int (sel_n);
+  F77_INT n = to_f77_int (sel_n);
   Array<F77_INT> sel (dim_vector (n, 1));
   for (F77_INT i = 0; i < n; i++)
-    sel.xelem (i) = octave::to_f77_int (sel_arg.xelem (i));
+    sel.xelem (i) = to_f77_int (sel_arg.xelem (i));
 
   if (double_type)
     {
@@ -222,3 +224,5 @@ is in the upper left corner, by doing:
 %! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")));
 
 */
+
+OCTAVE_NAMESPACE_END

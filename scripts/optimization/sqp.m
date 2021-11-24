@@ -29,7 +29,7 @@
 ## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h})
 ## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub})
 ## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter})
-## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tol})
+## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tolerance})
 ## Minimize an objective function using sequential quadratic programming (SQP).
 ##
 ## Solve the nonlinear program
@@ -127,7 +127,7 @@
 ## The seventh argument @var{maxiter} specifies the maximum number of
 ## iterations.  The default value is 100.
 ##
-## The eighth argument @var{tol} specifies the tolerance for the stopping
+## The eighth argument @var{tolerance} specifies the tolerance for the stopping
 ## criteria.  The default value is @code{sqrt (eps)}.
 ##
 ## The value returned in @var{info} may be one of the following:
@@ -197,7 +197,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
   globals = struct (); # data and handles, needed and changed by subfunctions
 
-  if (nargin < 2 || nargin > 8 || nargin == 5)
+  if (nargin < 2 || nargin == 5)
     print_usage ();
   endif
 
@@ -297,7 +297,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
         if (isa (x0, "single"))
           globals.lb = tmp_lb = -realmax ("single");
         else
-          globals.lb = tmp_lb = -realmax;
+          globals.lb = tmp_lb = -realmax ();
         endif
       else
         error ("sqp: invalid lower bound");
@@ -312,7 +312,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
         if (isa (x0, "single"))
           globals.ub = tmp_ub = realmax ("single");
         else
-          globals.ub = tmp_ub = realmax;
+          globals.ub = tmp_ub = realmax ();
         endif
       else
         error ("sqp: invalid upper bound");
@@ -390,8 +390,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
   info = 0;
   iter = 0;
-  # report ();  # Called with no arguments to initialize reporting
-  # report (iter, qp_iter, alpha, __sqp_nfun__, obj);
+  ## report ();  # Called with no arguments to initialize reporting
+  ## report (iter, qp_iter, alpha, __sqp_nfun__, obj);
 
   while (++iter < iter_max)
 
@@ -533,7 +533,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     A = A_new;
 
-    # report (iter, qp_iter, alpha, __sqp_nfun__, obj);
+    ## report (iter, qp_iter, alpha, __sqp_nfun__, obj);
 
   endwhile
 
@@ -573,7 +573,7 @@ endfunction
 
 
 function [x_new, alpha, obj, globals] = ...
-   linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, obj, c, globals)
+  linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, obj, c, globals)
 
   ## Choose parameters
   ##
@@ -776,10 +776,9 @@ endfunction
 %! assert (obj, obj_opt, sqrt (eps));
 
 ## Test input validation
-%!error sqp ()
-%!error sqp (1)
-%!error sqp (1,2,3,4,5,6,7,8,9)
-%!error sqp (1,2,3,4,5)
+%!error <Invalid call> sqp ()
+%!error <Invalid call> sqp (1)
+%!error <Invalid call> sqp (1,2,3,4,5)
 %!error sqp (ones (2,2))
 %!error sqp (1, cell (4,1))
 %!error sqp (1, cell (3,1), cell (3,1))

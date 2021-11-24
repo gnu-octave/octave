@@ -119,7 +119,7 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
 
 static F77_INT
 ddasrt_g (const F77_INT& neq, const double& t, const double *state,
-          const F77_INT& ng, double *gout, double *, F77_INT *)
+          const F77_INT& m_ng, double *gout, double *, F77_INT *)
 {
   F77_INT n = neq;
 
@@ -129,7 +129,7 @@ ddasrt_g (const F77_INT& neq, const double& t, const double *state,
 
   ColumnVector tmp_fval = (*user_csub) (tmp_state, t);
 
-  for (F77_INT i = 0; i < ng; i++)
+  for (F77_INT i = 0; i < m_ng; i++)
     gout[i] = tmp_fval(i);
 
   return 0;
@@ -142,17 +142,17 @@ DASRT::integrate (double tout)
   // call, or if anything about the problem has changed, we should
   // start completely fresh.
 
-  if (! initialized || restart
-      || DAEFunc::reset || DAERTFunc::reset || DASRT_options::reset)
+  if (! m_initialized || m_restart
+      || DAEFunc::m_reset || DAERTFunc::m_reset || DASRT_options::m_reset)
     {
-      integration_error = false;
+      m_integration_error = false;
 
-      initialized = true;
+      m_initialized = true;
 
-      info.resize (dim_vector (15, 1));
+      m_info.resize (dim_vector (15, 1));
 
       for (F77_INT i = 0; i < 15; i++)
-        info(i) = 0;
+        m_info(i) = 0;
 
       F77_INT n = octave::to_f77_int (size ());
 
@@ -164,46 +164,46 @@ DASRT::integrate (double tout)
 
       if (user_csub)
         {
-          ColumnVector tmp = (*user_csub) (x, t);
-          ng = octave::to_f77_int (tmp.numel ());
+          ColumnVector tmp = (*user_csub) (m_x, m_t);
+          m_ng = octave::to_f77_int (tmp.numel ());
         }
       else
-        ng = 0;
+        m_ng = 0;
 
       F77_INT maxord = octave::to_f77_int (maximum_order ());
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord < 6)
             {
-              info(8) = 1;
-              iwork(2) = maxord;
+              m_info(8) = 1;
+              m_iwork(2) = maxord;
             }
           else
             {
               (*current_liboctave_error_handler)
                 ("dassl: invalid value for maximum order");
-              integration_error = true;
+              m_integration_error = true;
               return;
             }
         }
 
-      liw = 21 + n;
-      lrw = 50 + 9*n + n*n + 3*ng;
+      m_liw = 21 + n;
+      m_lrw = 50 + 9*n + n*n + 3*m_ng;
 
-      iwork.resize (dim_vector (liw, 1));
-      rwork.resize (dim_vector (lrw, 1));
+      m_iwork.resize (dim_vector (m_liw, 1));
+      m_rwork.resize (dim_vector (m_lrw, 1));
 
-      info(0) = 0;
+      m_info(0) = 0;
 
-      if (stop_time_set)
+      if (m_stop_time_set)
         {
-          info(3) = 1;
-          rwork(0) = stop_time;
+          m_info(3) = 1;
+          m_rwork(0) = m_stop_time;
         }
       else
-        info(3) = 0;
+        m_info(3) = 0;
 
-      restart = false;
+      m_restart = false;
 
       // DAEFunc
 
@@ -214,14 +214,14 @@ DASRT::integrate (double tout)
         {
           octave_idx_type ires = 0;
 
-          ColumnVector fval = (*user_fsub) (x, xdot, t, ires);
+          ColumnVector fval = (*user_fsub) (m_x, m_xdot, m_t, ires);
 
-          if (fval.numel () != x.numel ())
+          if (fval.numel () != m_x.numel ())
             {
               (*current_liboctave_error_handler)
                 ("dasrt: inconsistent sizes for state and residual vectors");
 
-              integration_error = true;
+              m_integration_error = true;
               return;
             }
         }
@@ -230,99 +230,99 @@ DASRT::integrate (double tout)
           (*current_liboctave_error_handler)
             ("dasrt: no user supplied RHS subroutine!");
 
-          integration_error = true;
+          m_integration_error = true;
           return;
         }
 
-      info(4) = (user_jsub ? 1 : 0);
+      m_info(4) = (user_jsub ? 1 : 0);
 
-      DAEFunc::reset = false;
+      DAEFunc::m_reset = false;
 
-      jroot.resize (dim_vector (ng, 1), 1);
+      m_jroot.resize (dim_vector (m_ng, 1), 1);
 
-      DAERTFunc::reset = false;
+      DAERTFunc::m_reset = false;
 
       // DASRT_options
 
       double mss = maximum_step_size ();
       if (mss >= 0.0)
         {
-          rwork(1) = mss;
-          info(6) = 1;
+          m_rwork(1) = mss;
+          m_info(6) = 1;
         }
       else
-        info(6) = 0;
+        m_info(6) = 0;
 
       double iss = initial_step_size ();
       if (iss >= 0.0)
         {
-          rwork(2) = iss;
-          info(7) = 1;
+          m_rwork(2) = iss;
+          m_info(7) = 1;
         }
       else
-        info(7) = 0;
+        m_info(7) = 0;
 
       F77_INT sl = octave::to_f77_int (step_limit ());
       if (sl >= 0)
         {
-          info(11) = 1;
-          iwork(20) = sl;
+          m_info(11) = 1;
+          m_iwork(20) = sl;
         }
       else
-        info(11) = 0;
+        m_info(11) = 0;
 
-      abs_tol = absolute_tolerance ();
-      rel_tol = relative_tolerance ();
+      m_abs_tol = absolute_tolerance ();
+      m_rel_tol = relative_tolerance ();
 
-      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
-      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (m_rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
-          info.elem (1) = 0;
+          m_info.elem (1) = 0;
         }
       else if (abs_tol_len == n && rel_tol_len == n)
         {
-          info.elem (1) = 1;
+          m_info.elem (1) = 1;
         }
       else
         {
           (*current_liboctave_error_handler)
             ("dasrt: inconsistent sizes for tolerance arrays");
 
-          integration_error = true;
+          m_integration_error = true;
           return;
         }
 
-      DASRT_options::reset = false;
+      DASRT_options::m_reset = false;
     }
 
-  double *px = x.fortran_vec ();
-  double *pxdot = xdot.fortran_vec ();
+  double *px = m_x.fortran_vec ();
+  double *pxdot = m_xdot.fortran_vec ();
 
-  F77_INT *pinfo = info.fortran_vec ();
+  F77_INT *pinfo = m_info.fortran_vec ();
 
-  double *prel_tol = rel_tol.fortran_vec ();
-  double *pabs_tol = abs_tol.fortran_vec ();
+  double *prel_tol = m_rel_tol.fortran_vec ();
+  double *pabs_tol = m_abs_tol.fortran_vec ();
 
-  double *prwork = rwork.fortran_vec ();
-  F77_INT *piwork = iwork.fortran_vec ();
+  double *prwork = m_rwork.fortran_vec ();
+  F77_INT *piwork = m_iwork.fortran_vec ();
 
-  F77_INT *pjroot = jroot.fortran_vec ();
+  F77_INT *pjroot = m_jroot.fortran_vec ();
 
   double *dummy = nullptr;
   F77_INT *idummy = nullptr;
 
-  F77_INT tmp_istate = octave::to_f77_int (istate);
+  F77_INT tmp_istate = octave::to_f77_int (m_istate);
 
-  F77_XFCN (ddasrt, DDASRT, (ddasrt_f, nn, t, px, pxdot, tout, pinfo,
-                             prel_tol, pabs_tol, tmp_istate, prwork, lrw,
-                             piwork, liw, dummy, idummy, ddasrt_j,
-                             ddasrt_g, ng, pjroot));
+  F77_XFCN (ddasrt, DDASRT, (ddasrt_f, nn, m_t, px, pxdot, tout, pinfo,
+                             prel_tol, pabs_tol, tmp_istate, prwork, m_lrw,
+                             piwork, m_liw, dummy, idummy, ddasrt_j,
+                             ddasrt_g, m_ng, pjroot));
 
-  istate = tmp_istate;
+  m_istate = tmp_istate;
 
-  switch (istate)
+  switch (m_istate)
     {
     case 1: // A step was successfully taken in intermediate-output
             // mode.  The code has not yet reached TOUT.
@@ -331,7 +331,7 @@ DASRT::integrate (double tout)
     case 3: // The integration to TOUT was successfully completed
             // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
             // interpolation.  YPRIME(*) is obtained by interpolation.
-      t = tout;
+      m_t = tout;
       break;
 
     case 4: //  The integration was successfully completed
@@ -360,14 +360,14 @@ DASRT::integrate (double tout)
               // recover.  A message is printed explaining the trouble
               // and control is returned to the calling program.  For
               // example, this occurs when invalid input is detected.
-      integration_error = true;
+      m_integration_error = true;
       break;
 
     default:
-      integration_error = true;
+      m_integration_error = true;
       (*current_liboctave_error_handler)
         ("unrecognized value of istate (= %" OCTAVE_IDX_TYPE_FORMAT ") "
-         "returned from ddasrt", istate);
+         "returned from ddasrt", m_istate);
       break;
     }
 }
@@ -391,32 +391,32 @@ DASRT::integrate (const ColumnVector& tout)
 
       for (F77_INT i = 0; i < n; i++)
         {
-          x_out(0,i) = x(i);
-          xdot_out(0,i) = xdot(i);
+          x_out(0,i) = m_x(i);
+          xdot_out(0,i) = m_xdot(i);
         }
 
       for (octave_idx_type j = 1; j < n_out; j++)
         {
           integrate (tout(j));
 
-          if (integration_error)
+          if (m_integration_error)
             {
               retval = DASRT_result (x_out, xdot_out, t_out);
               return retval;
             }
 
-          if (istate == 4)
-            t_out(j) = t;
+          if (m_istate == 4)
+            t_out(j) = m_t;
           else
             t_out(j) = tout(j);
 
           for (F77_INT i = 0; i < n; i++)
             {
-              x_out(j,i) = x(i);
-              xdot_out(j,i) = xdot(i);
+              x_out(j,i) = m_x(i);
+              xdot_out(j,i) = m_xdot(i);
             }
 
-          if (istate == 4)
+          if (m_istate == 4)
             {
               x_out.resize (j+1, n);
               xdot_out.resize (j+1, n);
@@ -504,26 +504,26 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
               integrate (t_out);
 
-              if (integration_error)
+              if (m_integration_error)
                 {
                   retval = DASRT_result (x_out, xdot_out, t_outs);
                   return retval;
                 }
 
-              if (istate == 4)
-                t_out = t;
+              if (m_istate == 4)
+                t_out = m_t;
 
               if (save_output)
                 {
                   for (F77_INT i = 0; i < n; i++)
                     {
-                      x_out(i_out-1,i) = x(i);
-                      xdot_out(i_out-1,i) = xdot(i);
+                      x_out(i_out-1,i) = m_x(i);
+                      xdot_out(i_out-1,i) = m_xdot(i);
                     }
 
                   t_outs(i_out-1) = t_out;
 
-                  if (istate == 4)
+                  if (m_istate == 4)
                     {
                       x_out.resize (i_out, n);
                       xdot_out.resize (i_out, n);
@@ -542,7 +542,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
         {
           retval = integrate (tout);
 
-          if (integration_error)
+          if (m_integration_error)
             return retval;
         }
     }
@@ -556,10 +556,10 @@ DASRT::error_message (void) const
   std::string retval;
 
   std::ostringstream buf;
-  buf << t;
+  buf << m_t;
   std::string t_curr = buf.str ();
 
-  switch (istate)
+  switch (m_istate)
     {
     case 1:
       retval = "a step was successfully taken in intermediate-output mode.";

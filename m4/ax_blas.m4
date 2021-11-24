@@ -1,5 +1,5 @@
 # ===========================================================================
-#          https://www.gnu.org/software/autoconf-archive/ax_blas.html
+#         https://www.gnu.org/software/autoconf-archive/ax_blas.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -36,6 +36,7 @@
 # LICENSE
 #
 #   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
+#   Copyright (c) 2019 Geoffrey M. Oxberry <goxberry@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -63,11 +64,11 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 14
+#serial 17
 
 AU_ALIAS([ACX_BLAS], [AX_BLAS])
 AC_DEFUN([AX_BLAS], [
-AC_PREREQ(2.50)
+AC_PREREQ([2.55])
 AC_REQUIRE([AC_F77_LIBRARY_LDFLAGS])
 AC_REQUIRE([AC_CANONICAL_HOST])
 ax_blas_ok=no
@@ -77,7 +78,9 @@ AC_ARG_WITH(blas,
 case $with_blas in
 	yes | "") ;;
 	no) ax_blas_ok=disable ;;
-	-* | */* | *.a | *.so | *.so.* | *.o) BLAS_LIBS="$with_blas" ;;
+	-* | */* | *.a | *.so | *.so.* | *.dylib | *.dylib.* | *.o)
+		BLAS_LIBS="$with_blas"
+	;;
 	*) BLAS_LIBS="-l$with_blas" ;;
 esac
 
@@ -93,7 +96,7 @@ if test $ax_blas_ok = no; then
 if test "x$BLAS_LIBS" != x; then
 	save_LIBS="$LIBS"; LIBS="$BLAS_LIBS $LIBS"
 	AC_MSG_CHECKING([for $sgemm in $BLAS_LIBS])
-	AC_TRY_LINK_FUNC($sgemm, [ax_blas_ok=yes], [BLAS_LIBS=""])
+	AC_LINK_IFELSE([AC_LANG_CALL([], [$sgemm])], [ax_blas_ok=yes], [BLAS_LIBS=""])
 	AC_MSG_RESULT($ax_blas_ok)
 	LIBS="$save_LIBS"
 fi
@@ -103,7 +106,7 @@ fi
 if test $ax_blas_ok = no; then
 	save_LIBS="$LIBS"; LIBS="$LIBS"
 	AC_MSG_CHECKING([if $sgemm is being linked in already])
-	AC_TRY_LINK_FUNC($sgemm, [ax_blas_ok=yes])
+	AC_LINK_IFELSE([AC_LANG_CALL([], [$sgemm])], [ax_blas_ok=yes])
 	AC_MSG_RESULT($ax_blas_ok)
 	LIBS="$save_LIBS"
 fi
@@ -174,7 +177,7 @@ fi
 if test $ax_blas_ok = no; then
 	save_LIBS="$LIBS"; LIBS="-framework vecLib $LIBS"
 	AC_MSG_CHECKING([for $sgemm in -framework vecLib])
-	AC_TRY_LINK_FUNC($sgemm, [ax_blas_ok=yes;BLAS_LIBS="-framework vecLib"])
+	AC_LINK_IFELSE([AC_LANG_CALL([], [$sgemm])], [ax_blas_ok=yes;BLAS_LIBS="-framework vecLib"])
 	AC_MSG_RESULT($ax_blas_ok)
 	LIBS="$save_LIBS"
 fi

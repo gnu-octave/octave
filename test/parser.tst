@@ -91,7 +91,7 @@
 %! assert (1 && a ++, false);
 %! assert (0 || a --, true);
 %! a = 5; b = 2;
-%! b +=a ++;
+%! b += a ++;
 %! assert (b, 7);
 
 ## Level 11 (transpose and exponentiation)
@@ -104,7 +104,7 @@
 %! assert (2 ^++a, 8);
 %! assert (a, 3);
 %! assert (a' ^2, 9);
-%! assert (2 ^sin(0), 1);
+%! assert (2 ^sin (0), 1);
 %! assert (-2 ^2, -4);;
 %! assert (2 ^+1 ^3, 8);
 %! assert (2 ^-1 ^3, 0.125);
@@ -214,7 +214,7 @@
 ## Level 13 (parentheses and indexing)
 %!test
 %! a.b1 = 2;
-%! assert (a.(strcat('b','1'))++, 2);
+%! assert (a.(strcat ('b','1'))++, 2);
 %! assert (a.b1, 3);
 %! b = {1 2 3 4 5};
 %! assert (b{(a. b1 + 1)}, 4);
@@ -225,7 +225,7 @@
 ## No tests possible since a++-- is not valid
 ## Level 11 (transpose and exponentiation)
 %!test
-%! assert (2^3**2, 64);
+%! assert (2^3^2, 64);
 %! assert ([2 3].^2.', [4;9]);
 %! assert ([2 3].'.^2, [4;9]);
 %! assert (3*4i'.', 0 - 12i);
@@ -286,19 +286,19 @@
 %!assert (123_456, 123456)
 %!assert (.123_456, .123456)
 %!assert (123_456.123_456, 123456.123456)
-%!assert (0xAB_CD, 43981)
+%!assert (0xAB_CD, uint16 (43981))
 %!assert (2e0_1, 20)
 
 ## Test binary constants
-%!assert (0b101, 5)
+%!assert (0b101, uint8 (5))
 %!assert (0B1100_0001, 0xC1)
-%!assert (class (0b1), "double")
+%!assert (class (0b1), "uint8")
 
 ## Test range of large binary and hexadecimal literals
-%!assert (0x8000_0000_0000_0000, 2^63)
-%!assert (0xFFFF_FFFF_FFFF_FFFF, 2^64)
-%!assert (0b10000000_0000000_000000000_00000000_00000000_00000000_00000000_00000000, 2^63)
-%!assert (0b11111111_1111111_111111111_11111111_11111111_11111111_11111111_11111111, 2^64)
+%!assert (0x8000_0000_0000_0000, uint64 (2^63))
+%!assert (0xFFFF_FFFF_FFFF_FFFF, uint64 (2^64))
+%!assert (0b10000000_0000000_000000000_00000000_00000000_00000000_00000000_00000000, uint64 (2^63))
+%!assert (0b11111111_1111111_111111111_11111111_11111111_11111111_11111111_11111111, uint64 (2^64))
 
 ## Test creation of anonymous functions
 
@@ -335,7 +335,7 @@
 #!error <vertical dimensions mismatch \(1x2 vs 1x1\)> z = [1, 2; 3]
 
 %!test
-%! f = @(s,t=toeplitz(s),u=t(x=2:end-1,x)=32)t;
+%! f = @(s,t=toeplitz (s),u=t(x=2:end-1,x)=32)t;
 %! assert (f (1), 1);
 %! assert (f (1, 2), 2);
 

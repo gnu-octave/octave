@@ -56,13 +56,13 @@ namespace octave
   {
     template <typename T>
     qr<T>::qr (const T& q_arg, const T& r_arg)
-      : q (q_arg), r (r_arg)
+      : m_q (q_arg), m_r (r_arg)
     {
-      octave_idx_type q_nr = q.rows ();
-      octave_idx_type q_nc = q.cols ();
+      octave_idx_type q_nr = m_q.rows ();
+      octave_idx_type q_nc = m_q.cols ();
 
-      octave_idx_type r_nr = r.rows ();
-      octave_idx_type r_nc = r.cols ();
+      octave_idx_type r_nr = m_r.rows ();
+      octave_idx_type r_nc = m_r.cols ();
 
       if (! (q_nc == r_nr && (q_nr == q_nc || (q_nr > q_nc && r_nr == r_nc))))
         (*current_liboctave_error_handler) ("QR dimensions mismatch");
@@ -74,9 +74,9 @@ namespace octave
     {
       type retval;
 
-      if (! q.isempty () && q.issquare ())
+      if (! m_q.isempty () && m_q.issquare ())
         retval = qr<T>::std;
-      else if (q.rows () > q.cols () && r.issquare ())
+      else if (m_q.rows () > m_q.cols () && m_r.issquare ())
         retval = qr<T>::economy;
       else
         retval = qr<T>::raw;
@@ -90,11 +90,11 @@ namespace octave
     {
       bool retval = true;
 
-      octave_idx_type k = std::min (r.rows (), r.cols ());
+      octave_idx_type k = std::min (m_r.rows (), m_r.cols ());
 
       for (octave_idx_type i = 0; i < k; i++)
         {
-          if (r(i, i) == ELT_T ())
+          if (m_r(i, i) == ELT_T ())
             {
               retval = false;
               break;
@@ -132,13 +132,13 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type m = q.rows ();
-      octave_idx_type n = r.cols ();
+      octave_idx_type m = m_q.rows ();
+      octave_idx_type n = m_r.cols ();
 
       if (u.numel () != m || v.numel () != n)
         (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
-      init (q*r + T (u) * T (v).hermitian (), get_type ());
+      init (m_q*m_r + T (u) * T (v).hermitian (), get_type ());
     }
 
     template <typename T>
@@ -147,13 +147,13 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type m = q.rows ();
-      octave_idx_type n = r.cols ();
+      octave_idx_type m = m_q.rows ();
+      octave_idx_type n = m_r.cols ();
 
       if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
         (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
-      init (q*r + u * v.hermitian (), get_type ());
+      init (m_q*m_r + u * v.hermitian (), get_type ());
     }
 
     template <typename T, typename CV_T>
@@ -232,8 +232,8 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type m = q.rows ();
-      octave_idx_type n = r.cols ();
+      octave_idx_type m = m_q.rows ();
+      octave_idx_type n = m_r.cols ();
 
       if (u.numel () != m)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
@@ -241,7 +241,7 @@ namespace octave
       if (j < 0 || j > n)
         (*current_liboctave_error_handler) ("qrinsert: index out of range");
 
-      init (math::insert_col (q*r, j, u), get_type ());
+      init (math::insert_col (m_q*m_r, j, u), get_type ());
     }
 
     template <typename T>
@@ -250,8 +250,8 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type m = q.rows ();
-      octave_idx_type n = r.cols ();
+      octave_idx_type m = m_q.rows ();
+      octave_idx_type n = m_r.cols ();
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, ASCENDING);
@@ -271,7 +271,7 @@ namespace octave
 
       if (nj > 0)
         {
-          T a = q*r;
+          T a = m_q*m_r;
           for (octave_idx_type i = 0; i < nj; i++)
             a = math::insert_col (a, js(i), u.column (i));
 
@@ -285,12 +285,12 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type n = r.cols ();
+      octave_idx_type n = m_r.cols ();
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      init (math::delete_col (q*r, j), get_type ());
+      init (math::delete_col (m_q*m_r, j), get_type ());
     }
 
     template <typename T>
@@ -299,7 +299,7 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type n = r.cols ();
+      octave_idx_type n = m_r.cols ();
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, DESCENDING);
@@ -316,7 +316,7 @@ namespace octave
 
       if (nj > 0)
         {
-          T a = q*r;
+          T a = m_q*m_r;
           for (octave_idx_type i = 0; i < nj; i++)
             a = math::delete_col (a, js(i));
 
@@ -330,16 +330,16 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type m = r.rows ();
-      octave_idx_type n = r.cols ();
+      octave_idx_type m = m_r.rows ();
+      octave_idx_type n = m_r.cols ();
 
-      if (! q.issquare () || u.numel () != n)
+      if (! m_q.issquare () || u.numel () != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
         (*current_liboctave_error_handler) ("qrinsert: index out of range");
 
-      init (math::insert_row (q*r, j, u), get_type ());
+      init (math::insert_row (m_q*m_r, j, u), get_type ());
     }
 
     template <typename T>
@@ -348,15 +348,15 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type m = r.rows ();
+      octave_idx_type m = m_r.rows ();
 
-      if (! q.issquare ())
+      if (! m_q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      init (math::delete_row (q*r, j), get_type ());
+      init (math::delete_row (m_q*m_r, j), get_type ());
     }
 
     template <typename T>
@@ -365,12 +365,12 @@ namespace octave
     {
       warn_qrupdate_once ();
 
-      octave_idx_type n = r.cols ();
+      octave_idx_type n = m_r.cols ();
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrshift: index out of range");
 
-      init (math::shift_cols (q*r, i, j), get_type ());
+      init (math::shift_cols (m_q*m_r, i, j), get_type ());
     }
 
 #endif
@@ -378,7 +378,7 @@ namespace octave
     // Specializations.
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::form (octave_idx_type n_arg, Matrix& afact, double *tau,
                       type qr_type)
     {
@@ -396,60 +396,60 @@ namespace octave
                 afact.elem (i, j) *= tau[j];
             }
 
-          r = afact;
+          m_r = afact;
         }
       else
         {
           // Attempt to minimize copying.
           if (m >= n)
             {
-              // afact will become q.
-              q = afact;
+              // afact will become m_q.
+              m_q = afact;
               F77_INT k = (qr_type == qr<Matrix>::economy ? n : m);
-              r = Matrix (k, n);
+              m_r = Matrix (k, n);
               for (F77_INT j = 0; j < n; j++)
                 {
                   F77_INT i = 0;
                   for (; i <= j; i++)
-                    r.xelem (i, j) = afact.xelem (i, j);
+                    m_r.xelem (i, j) = afact.xelem (i, j);
                   for (; i < k; i++)
-                    r.xelem (i, j) = 0;
+                    m_r.xelem (i, j) = 0;
                 }
               afact = Matrix (); // optimize memory
             }
           else
             {
-              // afact will become r.
-              q = Matrix (m, m);
+              // afact will become m_r.
+              m_q = Matrix (m, m);
               for (F77_INT j = 0; j < m; j++)
                 for (F77_INT i = j + 1; i < m; i++)
                   {
-                    q.xelem (i, j) = afact.xelem (i, j);
+                    m_q.xelem (i, j) = afact.xelem (i, j);
                     afact.xelem (i, j) = 0;
                   }
-              r = afact;
+              m_r = afact;
             }
 
           if (m > 0)
             {
-              F77_INT k = to_f77_int (q.cols ());
+              F77_INT k = to_f77_int (m_q.cols ());
               // workspace query.
               double rlwork;
-              F77_XFCN (dorgqr, DORGQR, (m, k, min_mn, q.fortran_vec (), m,
+              F77_XFCN (dorgqr, DORGQR, (m, k, min_mn, m_q.fortran_vec (), m,
                                          tau, &rlwork, -1, info));
 
               // allocate buffer and do the job.
               F77_INT lwork = static_cast<F77_INT> (rlwork);
               lwork = std::max (lwork, static_cast<F77_INT> (1));
               OCTAVE_LOCAL_BUFFER (double, work, lwork);
-              F77_XFCN (dorgqr, DORGQR, (m, k, min_mn, q.fortran_vec (), m,
+              F77_XFCN (dorgqr, DORGQR, (m, k, min_mn, m_q.fortran_vec (), m,
                                          tau, work, lwork, info));
             }
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::init (const Matrix& a, type qr_type)
     {
       F77_INT m = to_f77_int (a.rows ());
@@ -485,12 +485,12 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::update (const ColumnVector& u, const ColumnVector& v)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_nel = to_f77_int (u.numel ());
       F77_INT v_nel = to_f77_int (v.numel ());
@@ -501,18 +501,18 @@ namespace octave
       ColumnVector utmp = u;
       ColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (double, w, 2*k);
-      F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (), m,
-                                 r.fortran_vec (), k, utmp.fortran_vec (),
+      F77_XFCN (dqr1up, DQR1UP, (m, n, k, m_q.fortran_vec (), m,
+                                 m_r.fortran_vec (), k, utmp.fortran_vec (),
                                  vtmp.fortran_vec (), w));
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::update (const Matrix& u, const Matrix& v)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_rows = to_f77_int (u.rows ());
       F77_INT u_cols = to_f77_int (u.cols ());
@@ -528,21 +528,21 @@ namespace octave
         {
           ColumnVector utmp = u.column (i);
           ColumnVector vtmp = v.column (i);
-          F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (), m,
-                                     r.fortran_vec (), k, utmp.fortran_vec (),
+          F77_XFCN (dqr1up, DQR1UP, (m, n, k, m_q.fortran_vec (), m,
+                                     m_r.fortran_vec (), k, utmp.fortran_vec (),
                                      vtmp.fortran_vec (), w));
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::insert_col (const ColumnVector& u, octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_nel = to_f77_int (u.numel ());
 
@@ -554,29 +554,29 @@ namespace octave
 
       if (k < m)
         {
-          q.resize (m, k+1);
-          r.resize (k+1, n+1);
+          m_q.resize (m, k+1);
+          m_r.resize (k+1, n+1);
         }
       else
-        r.resize (k, n+1);
+        m_r.resize (k, n+1);
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       ColumnVector utmp = u;
       OCTAVE_LOCAL_BUFFER (double, w, k);
-      F77_XFCN (dqrinc, DQRINC, (m, n, k, q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr, j + 1,
+      F77_XFCN (dqrinc, DQRINC, (m, n, k, m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr, j + 1,
                                  utmp.data (), w));
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, ASCENDING);
@@ -605,14 +605,14 @@ namespace octave
           F77_INT kmax = std::min (k + nj, m);
           if (k < m)
             {
-              q.resize (m, kmax);
-              r.resize (kmax, n + nj);
+              m_q.resize (m, kmax);
+              m_r.resize (kmax, n + nj);
             }
           else
-            r.resize (k, n + nj);
+            m_r.resize (k, n + nj);
 
-          F77_INT ldq = to_f77_int (q.rows ());
-          F77_INT ldr = to_f77_int (r.rows ());
+          F77_INT ldq = to_f77_int (m_q.rows ());
+          F77_INT ldr = to_f77_int (m_r.rows ());
 
           OCTAVE_LOCAL_BUFFER (double, w, kmax);
           for (volatile F77_INT i = 0; i < nj; i++)
@@ -621,49 +621,49 @@ namespace octave
               ColumnVector utmp = u.column (jsi(i));
               F77_INT js_elt = to_f77_int (js(ii));
               F77_XFCN (dqrinc, DQRINC, (m, n + ii, std::min (kmax, k + ii),
-                                         q.fortran_vec (), ldq,
-                                         r.fortran_vec (), ldr, js_elt + 1,
+                                         m_q.fortran_vec (), ldq,
+                                         m_r.fortran_vec (), ldr, js_elt + 1,
                                          utmp.data (), w));
             }
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::delete_col (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT k = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT k = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (double, w, k);
-      F77_XFCN (dqrdec, DQRDEC, (m, n, k, q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr, j + 1, w));
+      F77_XFCN (dqrdec, DQRDEC, (m, n, k, m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr, j + 1, w));
 
       if (k < m)
         {
-          q.resize (m, k-1);
-          r.resize (k-1, n-1);
+          m_q.resize (m, k-1);
+          m_r.resize (k-1, n-1);
         }
       else
-        r.resize (k, n-1);
+        m_r.resize (k, n-1);
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::delete_col (const Array<octave_idx_type>& j)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, DESCENDING);
@@ -683,8 +683,8 @@ namespace octave
 
       if (nj > 0)
         {
-          F77_INT ldq = to_f77_int (q.rows ());
-          F77_INT ldr = to_f77_int (r.rows ());
+          F77_INT ldq = to_f77_int (m_q.rows ());
+          F77_INT ldr = to_f77_int (m_r.rows ());
 
           OCTAVE_LOCAL_BUFFER (double, w, k);
           for (volatile F77_INT i = 0; i < nj; i++)
@@ -692,107 +692,107 @@ namespace octave
               F77_INT ii = i;
               F77_INT js_elt = to_f77_int (js(ii));
               F77_XFCN (dqrdec, DQRDEC, (m, n - ii, (k == m ? k : k - ii),
-                                         q.fortran_vec (), ldq,
-                                         r.fortran_vec (), ldr,
+                                         m_q.fortran_vec (), ldq,
+                                         m_r.fortran_vec (), ldr,
                                          js_elt + 1, w));
             }
 
           if (k < m)
             {
-              q.resize (m, k - nj);
-              r.resize (k - nj, n - nj);
+              m_q.resize (m, k - nj);
+              m_r.resize (k - nj, n - nj);
             }
           else
-            r.resize (k, n - nj);
+            m_r.resize (k, n - nj);
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::insert_row (const RowVector& u, octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
       F77_INT k = std::min (m, n);
 
       F77_INT u_nel = to_f77_int (u.numel ());
 
-      if (! q.issquare () || u_nel != n)
+      if (! m_q.issquare () || u_nel != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
         (*current_liboctave_error_handler) ("qrinsert: index out of range");
 
-      q.resize (m + 1, m + 1);
-      r.resize (m + 1, n);
+      m_q.resize (m + 1, m + 1);
+      m_r.resize (m + 1, n);
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       RowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (double, w, k);
-      F77_XFCN (dqrinr, DQRINR, (m, n, q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr,
+      F77_XFCN (dqrinr, DQRINR, (m, n, m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr,
                                  j + 1, utmp.fortran_vec (), w));
 
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::delete_row (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
-      if (! q.issquare ())
+      if (! m_q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (double, w, 2*m);
-      F77_XFCN (dqrder, DQRDER, (m, n, q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr, j + 1, w));
+      F77_XFCN (dqrder, DQRDER, (m, n, m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr, j + 1, w));
 
-      q.resize (m - 1, m - 1);
-      r.resize (m - 1, n);
+      m_q.resize (m - 1, m - 1);
+      m_r.resize (m - 1, n);
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<Matrix>::shift_cols (octave_idx_type i_arg, octave_idx_type j_arg)
     {
       F77_INT i = to_f77_int (i_arg);
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT k = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT k = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrshift: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (double, w, 2*k);
       F77_XFCN (dqrshc, DQRSHC, (m, n, k,
-                                 q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr,
+                                 m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr,
                                  i + 1, j + 1, w));
     }
 
 #endif
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::form (octave_idx_type n_arg, FloatMatrix& afact,
                            float *tau, type qr_type)
     {
@@ -810,60 +810,60 @@ namespace octave
                 afact.elem (i, j) *= tau[j];
             }
 
-          r = afact;
+          m_r = afact;
         }
       else
         {
           // Attempt to minimize copying.
           if (m >= n)
             {
-              // afact will become q.
-              q = afact;
+              // afact will become m_q.
+              m_q = afact;
               F77_INT k = (qr_type == qr<FloatMatrix>::economy ? n : m);
-              r = FloatMatrix (k, n);
+              m_r = FloatMatrix (k, n);
               for (F77_INT j = 0; j < n; j++)
                 {
                   F77_INT i = 0;
                   for (; i <= j; i++)
-                    r.xelem (i, j) = afact.xelem (i, j);
+                    m_r.xelem (i, j) = afact.xelem (i, j);
                   for (; i < k; i++)
-                    r.xelem (i, j) = 0;
+                    m_r.xelem (i, j) = 0;
                 }
               afact = FloatMatrix (); // optimize memory
             }
           else
             {
-              // afact will become r.
-              q = FloatMatrix (m, m);
+              // afact will become m_r.
+              m_q = FloatMatrix (m, m);
               for (F77_INT j = 0; j < m; j++)
                 for (F77_INT i = j + 1; i < m; i++)
                   {
-                    q.xelem (i, j) = afact.xelem (i, j);
+                    m_q.xelem (i, j) = afact.xelem (i, j);
                     afact.xelem (i, j) = 0;
                   }
-              r = afact;
+              m_r = afact;
             }
 
           if (m > 0)
             {
-              F77_INT k = to_f77_int (q.cols ());
+              F77_INT k = to_f77_int (m_q.cols ());
               // workspace query.
               float rlwork;
-              F77_XFCN (sorgqr, SORGQR, (m, k, min_mn, q.fortran_vec (), m,
+              F77_XFCN (sorgqr, SORGQR, (m, k, min_mn, m_q.fortran_vec (), m,
                                          tau, &rlwork, -1, info));
 
               // allocate buffer and do the job.
               F77_INT lwork = static_cast<F77_INT> (rlwork);
               lwork = std::max (lwork, static_cast<F77_INT> (1));
               OCTAVE_LOCAL_BUFFER (float, work, lwork);
-              F77_XFCN (sorgqr, SORGQR, (m, k, min_mn, q.fortran_vec (), m,
+              F77_XFCN (sorgqr, SORGQR, (m, k, min_mn, m_q.fortran_vec (), m,
                                          tau, work, lwork, info));
             }
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
     {
       F77_INT m = to_f77_int (a.rows ());
@@ -899,12 +899,12 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::update (const FloatColumnVector& u, const FloatColumnVector& v)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_nel = to_f77_int (u.numel ());
       F77_INT v_nel = to_f77_int (v.numel ());
@@ -915,18 +915,18 @@ namespace octave
       FloatColumnVector utmp = u;
       FloatColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
-      F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (), m,
-                                 r.fortran_vec (), k, utmp.fortran_vec (),
+      F77_XFCN (sqr1up, SQR1UP, (m, n, k, m_q.fortran_vec (), m,
+                                 m_r.fortran_vec (), k, utmp.fortran_vec (),
                                  vtmp.fortran_vec (), w));
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::update (const FloatMatrix& u, const FloatMatrix& v)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_rows = to_f77_int (u.rows ());
       F77_INT u_cols = to_f77_int (u.cols ());
@@ -942,22 +942,22 @@ namespace octave
         {
           FloatColumnVector utmp = u.column (i);
           FloatColumnVector vtmp = v.column (i);
-          F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (), m,
-                                     r.fortran_vec (), k, utmp.fortran_vec (),
+          F77_XFCN (sqr1up, SQR1UP, (m, n, k, m_q.fortran_vec (), m,
+                                     m_r.fortran_vec (), k, utmp.fortran_vec (),
                                      vtmp.fortran_vec (), w));
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::insert_col (const FloatColumnVector& u,
                                  octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_nel = to_f77_int (u.numel ());
 
@@ -969,30 +969,30 @@ namespace octave
 
       if (k < m)
         {
-          q.resize (m, k+1);
-          r.resize (k+1, n+1);
+          m_q.resize (m, k+1);
+          m_r.resize (k+1, n+1);
         }
       else
-        r.resize (k, n+1);
+        m_r.resize (k, n+1);
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       FloatColumnVector utmp = u;
       OCTAVE_LOCAL_BUFFER (float, w, k);
-      F77_XFCN (sqrinc, SQRINC, (m, n, k, q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr, j + 1,
+      F77_XFCN (sqrinc, SQRINC, (m, n, k, m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr, j + 1,
                                  utmp.data (), w));
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::insert_col (const FloatMatrix& u,
                                  const Array<octave_idx_type>& j)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, ASCENDING);
@@ -1021,14 +1021,14 @@ namespace octave
           F77_INT kmax = std::min (k + nj, m);
           if (k < m)
             {
-              q.resize (m, kmax);
-              r.resize (kmax, n + nj);
+              m_q.resize (m, kmax);
+              m_r.resize (kmax, n + nj);
             }
           else
-            r.resize (k, n + nj);
+            m_r.resize (k, n + nj);
 
-          F77_INT ldq = to_f77_int (q.rows ());
-          F77_INT ldr = to_f77_int (r.rows ());
+          F77_INT ldq = to_f77_int (m_q.rows ());
+          F77_INT ldr = to_f77_int (m_r.rows ());
 
           OCTAVE_LOCAL_BUFFER (float, w, kmax);
           for (volatile F77_INT i = 0; i < nj; i++)
@@ -1037,49 +1037,49 @@ namespace octave
               FloatColumnVector utmp = u.column (jsi(i));
               F77_INT js_elt = to_f77_int (js(ii));
               F77_XFCN (sqrinc, SQRINC, (m, n + ii, std::min (kmax, k + ii),
-                                         q.fortran_vec (), ldq,
-                                         r.fortran_vec (), ldr, js_elt + 1,
+                                         m_q.fortran_vec (), ldq,
+                                         m_r.fortran_vec (), ldr, js_elt + 1,
                                          utmp.data (), w));
             }
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::delete_col (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT k = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT k = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (float, w, k);
-      F77_XFCN (sqrdec, SQRDEC, (m, n, k, q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr, j + 1, w));
+      F77_XFCN (sqrdec, SQRDEC, (m, n, k, m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr, j + 1, w));
 
       if (k < m)
         {
-          q.resize (m, k-1);
-          r.resize (k-1, n-1);
+          m_q.resize (m, k-1);
+          m_r.resize (k-1, n-1);
         }
       else
-        r.resize (k, n-1);
+        m_r.resize (k, n-1);
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::delete_col (const Array<octave_idx_type>& j)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, DESCENDING);
@@ -1099,8 +1099,8 @@ namespace octave
 
       if (nj > 0)
         {
-          F77_INT ldq = to_f77_int (q.rows ());
-          F77_INT ldr = to_f77_int (r.rows ());
+          F77_INT ldq = to_f77_int (m_q.rows ());
+          F77_INT ldr = to_f77_int (m_r.rows ());
 
           OCTAVE_LOCAL_BUFFER (float, w, k);
           for (volatile F77_INT i = 0; i < nj; i++)
@@ -1108,109 +1108,109 @@ namespace octave
               F77_INT ii = i;
               F77_INT js_elt = to_f77_int (js(ii));
               F77_XFCN (sqrdec, SQRDEC, (m, n - ii, (k == m ? k : k - ii),
-                                         q.fortran_vec (), ldq,
-                                         r.fortran_vec (), ldr,
+                                         m_q.fortran_vec (), ldq,
+                                         m_r.fortran_vec (), ldr,
                                          js_elt + 1, w));
             }
 
           if (k < m)
             {
-              q.resize (m, k - nj);
-              r.resize (k - nj, n - nj);
+              m_q.resize (m, k - nj);
+              m_r.resize (k - nj, n - nj);
             }
           else
-            r.resize (k, n - nj);
+            m_r.resize (k, n - nj);
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::insert_row (const FloatRowVector& u,
                                  octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
       F77_INT k = std::min (m, n);
 
       F77_INT u_nel = to_f77_int (u.numel ());
 
-      if (! q.issquare () || u_nel != n)
+      if (! m_q.issquare () || u_nel != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
         (*current_liboctave_error_handler) ("qrinsert: index out of range");
 
-      q.resize (m + 1, m + 1);
-      r.resize (m + 1, n);
+      m_q.resize (m + 1, m + 1);
+      m_r.resize (m + 1, n);
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       FloatRowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (float, w, k);
-      F77_XFCN (sqrinr, SQRINR, (m, n, q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr,
+      F77_XFCN (sqrinr, SQRINR, (m, n, m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr,
                                  j + 1, utmp.fortran_vec (), w));
 
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::delete_row (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
-      if (! q.issquare ())
+      if (! m_q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (float, w, 2*m);
-      F77_XFCN (sqrder, SQRDER, (m, n, q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr, j + 1,
+      F77_XFCN (sqrder, SQRDER, (m, n, m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr, j + 1,
                                  w));
 
-      q.resize (m - 1, m - 1);
-      r.resize (m - 1, n);
+      m_q.resize (m - 1, m - 1);
+      m_r.resize (m - 1, n);
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatMatrix>::shift_cols (octave_idx_type i_arg, octave_idx_type j_arg)
     {
       F77_INT i = to_f77_int (i_arg);
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT k = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT k = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrshift: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
       F77_XFCN (sqrshc, SQRSHC, (m, n, k,
-                                 q.fortran_vec (), ldq,
-                                 r.fortran_vec (), ldr,
+                                 m_q.fortran_vec (), ldq,
+                                 m_r.fortran_vec (), ldr,
                                  i + 1, j + 1, w));
     }
 
 #endif
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::form (octave_idx_type n_arg, ComplexMatrix& afact,
                              Complex *tau, type qr_type)
     {
@@ -1228,47 +1228,47 @@ namespace octave
                 afact.elem (i, j) *= tau[j];
             }
 
-          r = afact;
+          m_r = afact;
         }
       else
         {
           // Attempt to minimize copying.
           if (m >= n)
             {
-              // afact will become q.
-              q = afact;
+              // afact will become m_q.
+              m_q = afact;
               F77_INT k = (qr_type == qr<ComplexMatrix>::economy ? n : m);
-              r = ComplexMatrix (k, n);
+              m_r = ComplexMatrix (k, n);
               for (F77_INT j = 0; j < n; j++)
                 {
                   F77_INT i = 0;
                   for (; i <= j; i++)
-                    r.xelem (i, j) = afact.xelem (i, j);
+                    m_r.xelem (i, j) = afact.xelem (i, j);
                   for (; i < k; i++)
-                    r.xelem (i, j) = 0;
+                    m_r.xelem (i, j) = 0;
                 }
               afact = ComplexMatrix (); // optimize memory
             }
           else
             {
-              // afact will become r.
-              q = ComplexMatrix (m, m);
+              // afact will become m_r.
+              m_q = ComplexMatrix (m, m);
               for (F77_INT j = 0; j < m; j++)
                 for (F77_INT i = j + 1; i < m; i++)
                   {
-                    q.xelem (i, j) = afact.xelem (i, j);
+                    m_q.xelem (i, j) = afact.xelem (i, j);
                     afact.xelem (i, j) = 0;
                   }
-              r = afact;
+              m_r = afact;
             }
 
           if (m > 0)
             {
-              F77_INT k = to_f77_int (q.cols ());
+              F77_INT k = to_f77_int (m_q.cols ());
               // workspace query.
               Complex clwork;
               F77_XFCN (zungqr, ZUNGQR, (m, k, min_mn,
-                                         F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
+                                         F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
                                          m, F77_DBLE_CMPLX_ARG (tau),
                                          F77_DBLE_CMPLX_ARG (&clwork), -1,
                                          info));
@@ -1278,7 +1278,7 @@ namespace octave
               lwork = std::max (lwork, static_cast<F77_INT> (1));
               OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
               F77_XFCN (zungqr, ZUNGQR, (m, k, min_mn,
-                                         F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
+                                         F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
                                          m, F77_DBLE_CMPLX_ARG (tau),
                                          F77_DBLE_CMPLX_ARG (work), lwork,
                                          info));
@@ -1287,7 +1287,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
     {
       F77_INT m = to_f77_int (a.rows ());
@@ -1327,13 +1327,13 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::update (const ComplexColumnVector& u,
                                const ComplexColumnVector& v)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_nel = to_f77_int (u.numel ());
       F77_INT v_nel = to_f77_int (v.numel ());
@@ -1345,20 +1345,20 @@ namespace octave
       ComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (Complex, w, k);
       OCTAVE_LOCAL_BUFFER (double, rw, k);
-      F77_XFCN (zqr1up, ZQR1UP, (m, n, k, F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
-                                 m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
+      F77_XFCN (zqr1up, ZQR1UP, (m, n, k, F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
+                                 m, F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()), k,
                                  F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
                                  F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ()),
                                  F77_DBLE_CMPLX_ARG (w), rw));
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_rows = to_f77_int (u.rows ());
       F77_INT u_cols = to_f77_int (u.cols ());
@@ -1376,8 +1376,8 @@ namespace octave
           ComplexColumnVector utmp = u.column (i);
           ComplexColumnVector vtmp = v.column (i);
           F77_XFCN (zqr1up, ZQR1UP, (m, n, k,
-                                     F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
-                                     m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
+                                     F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
+                                     m, F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()), k,
                                      F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
                                      F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ()),
                                      F77_DBLE_CMPLX_ARG (w), rw));
@@ -1385,15 +1385,15 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::insert_col (const ComplexColumnVector& u,
                                    octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_nel = to_f77_int (u.numel ());
 
@@ -1405,31 +1405,31 @@ namespace octave
 
       if (k < m)
         {
-          q.resize (m, k+1);
-          r.resize (k+1, n+1);
+          m_q.resize (m, k+1);
+          m_r.resize (k+1, n+1);
         }
       else
-        r.resize (k, n+1);
+        m_r.resize (k, n+1);
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       ComplexColumnVector utmp = u;
       OCTAVE_LOCAL_BUFFER (double, rw, k);
-      F77_XFCN (zqrinc, ZQRINC, (m, n, k, F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
-                                 ldq, F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
+      F77_XFCN (zqrinc, ZQRINC, (m, n, k, F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
+                                 ldq, F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()),
                                  ldr, j + 1,
                                  F77_CONST_DBLE_CMPLX_ARG (utmp.data ()), rw));
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::insert_col (const ComplexMatrix& u,
                                    const Array<octave_idx_type>& j)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, ASCENDING);
@@ -1458,14 +1458,14 @@ namespace octave
           F77_INT kmax = std::min (k + nj, m);
           if (k < m)
             {
-              q.resize (m, kmax);
-              r.resize (kmax, n + nj);
+              m_q.resize (m, kmax);
+              m_r.resize (kmax, n + nj);
             }
           else
-            r.resize (k, n + nj);
+            m_r.resize (k, n + nj);
 
-          F77_INT ldq = to_f77_int (q.rows ());
-          F77_INT ldr = to_f77_int (r.rows ());
+          F77_INT ldq = to_f77_int (m_q.rows ());
+          F77_INT ldr = to_f77_int (m_r.rows ());
 
           OCTAVE_LOCAL_BUFFER (double, rw, kmax);
           for (volatile F77_INT i = 0; i < nj; i++)
@@ -1474,9 +1474,9 @@ namespace octave
               ComplexColumnVector utmp = u.column (jsi(i));
               F77_INT js_elt = to_f77_int (js(ii));
               F77_XFCN (zqrinc, ZQRINC, (m, n + ii, std::min (kmax, k + ii),
-                                         F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
+                                         F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
                                          ldq,
-                                         F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
+                                         F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()),
                                          ldr, js_elt + 1,
                                          F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
                                          rw));
@@ -1485,42 +1485,42 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::delete_col (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT k = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT k = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (double, rw, k);
-      F77_XFCN (zqrdec, ZQRDEC, (m, n, k, F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
-                                 ldq, F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
+      F77_XFCN (zqrdec, ZQRDEC, (m, n, k, F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
+                                 ldq, F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()),
                                  ldr, j + 1, rw));
 
       if (k < m)
         {
-          q.resize (m, k-1);
-          r.resize (k-1, n-1);
+          m_q.resize (m, k-1);
+          m_r.resize (k-1, n-1);
         }
       else
-        r.resize (k, n-1);
+        m_r.resize (k, n-1);
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::delete_col (const Array<octave_idx_type>& j)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, DESCENDING);
@@ -1540,8 +1540,8 @@ namespace octave
 
       if (nj > 0)
         {
-          F77_INT ldq = to_f77_int (q.rows ());
-          F77_INT ldr = to_f77_int (r.rows ());
+          F77_INT ldq = to_f77_int (m_q.rows ());
+          F77_INT ldr = to_f77_int (m_r.rows ());
 
           OCTAVE_LOCAL_BUFFER (double, rw, k);
           for (volatile F77_INT i = 0; i < nj; i++)
@@ -1549,114 +1549,114 @@ namespace octave
               F77_INT ii = i;
               F77_INT js_elt = to_f77_int (js(ii));
               F77_XFCN (zqrdec, ZQRDEC, (m, n - ii, (k == m ? k : k - ii),
-                                         F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
+                                         F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
                                          ldq,
-                                         F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
+                                         F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()),
                                          ldr, js_elt + 1, rw));
             }
 
           if (k < m)
             {
-              q.resize (m, k - nj);
-              r.resize (k - nj, n - nj);
+              m_q.resize (m, k - nj);
+              m_r.resize (k - nj, n - nj);
             }
           else
-            r.resize (k, n - nj);
+            m_r.resize (k, n - nj);
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::insert_row (const ComplexRowVector& u,
                                    octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
       F77_INT k = std::min (m, n);
 
       F77_INT u_nel = to_f77_int (u.numel ());
 
-      if (! q.issquare () || u_nel != n)
+      if (! m_q.issquare () || u_nel != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
         (*current_liboctave_error_handler) ("qrinsert: index out of range");
 
-      q.resize (m + 1, m + 1);
-      r.resize (m + 1, n);
+      m_q.resize (m + 1, m + 1);
+      m_r.resize (m + 1, n);
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       ComplexRowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (double, rw, k);
-      F77_XFCN (zqrinr, ZQRINR, (m, n, F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
-                                 ldq, F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
+      F77_XFCN (zqrinr, ZQRINR, (m, n, F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
+                                 ldq, F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()),
                                  ldr, j + 1,
                                  F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), rw));
 
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::delete_row (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
-      if (! q.issquare ())
+      if (! m_q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (Complex, w, m);
       OCTAVE_LOCAL_BUFFER (double, rw, m);
-      F77_XFCN (zqrder, ZQRDER, (m, n, F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
-                                 ldq, F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
+      F77_XFCN (zqrder, ZQRDER, (m, n, F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()),
+                                 ldq, F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()),
                                  ldr, j + 1, F77_DBLE_CMPLX_ARG (w), rw));
 
-      q.resize (m - 1, m - 1);
-      r.resize (m - 1, n);
+      m_q.resize (m - 1, m - 1);
+      m_r.resize (m - 1, n);
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<ComplexMatrix>::shift_cols (octave_idx_type i_arg,
                                    octave_idx_type j_arg)
     {
       F77_INT i = to_f77_int (i_arg);
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT k = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT k = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrshift: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (Complex, w, k);
       OCTAVE_LOCAL_BUFFER (double, rw, k);
       F77_XFCN (zqrshc, ZQRSHC, (m, n, k,
-                                 F77_DBLE_CMPLX_ARG (q.fortran_vec ()), ldq,
-                                 F77_DBLE_CMPLX_ARG (r.fortran_vec ()), ldr,
+                                 F77_DBLE_CMPLX_ARG (m_q.fortran_vec ()), ldq,
+                                 F77_DBLE_CMPLX_ARG (m_r.fortran_vec ()), ldr,
                                  i + 1, j + 1, F77_DBLE_CMPLX_ARG (w), rw));
     }
 
 #endif
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::form (octave_idx_type n_arg, FloatComplexMatrix& afact,
                                   FloatComplex *tau, type qr_type)
     {
@@ -1674,47 +1674,47 @@ namespace octave
                 afact.elem (i, j) *= tau[j];
             }
 
-          r = afact;
+          m_r = afact;
         }
       else
         {
           // Attempt to minimize copying.
           if (m >= n)
             {
-              // afact will become q.
-              q = afact;
+              // afact will become m_q.
+              m_q = afact;
               F77_INT k = (qr_type == qr<FloatComplexMatrix>::economy ? n : m);
-              r = FloatComplexMatrix (k, n);
+              m_r = FloatComplexMatrix (k, n);
               for (F77_INT j = 0; j < n; j++)
                 {
                   F77_INT i = 0;
                   for (; i <= j; i++)
-                    r.xelem (i, j) = afact.xelem (i, j);
+                    m_r.xelem (i, j) = afact.xelem (i, j);
                   for (; i < k; i++)
-                    r.xelem (i, j) = 0;
+                    m_r.xelem (i, j) = 0;
                 }
               afact = FloatComplexMatrix (); // optimize memory
             }
           else
             {
-              // afact will become r.
-              q = FloatComplexMatrix (m, m);
+              // afact will become m_r.
+              m_q = FloatComplexMatrix (m, m);
               for (F77_INT j = 0; j < m; j++)
                 for (F77_INT i = j + 1; i < m; i++)
                   {
-                    q.xelem (i, j) = afact.xelem (i, j);
+                    m_q.xelem (i, j) = afact.xelem (i, j);
                     afact.xelem (i, j) = 0;
                   }
-              r = afact;
+              m_r = afact;
             }
 
           if (m > 0)
             {
-              F77_INT k = to_f77_int (q.cols ());
+              F77_INT k = to_f77_int (m_q.cols ());
               // workspace query.
               FloatComplex clwork;
               F77_XFCN (cungqr, CUNGQR, (m, k, min_mn,
-                                         F77_CMPLX_ARG (q.fortran_vec ()), m,
+                                         F77_CMPLX_ARG (m_q.fortran_vec ()), m,
                                          F77_CMPLX_ARG (tau),
                                          F77_CMPLX_ARG (&clwork), -1, info));
 
@@ -1723,7 +1723,7 @@ namespace octave
               lwork = std::max (lwork, static_cast<F77_INT> (1));
               OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
               F77_XFCN (cungqr, CUNGQR, (m, k, min_mn,
-                                         F77_CMPLX_ARG (q.fortran_vec ()), m,
+                                         F77_CMPLX_ARG (m_q.fortran_vec ()), m,
                                          F77_CMPLX_ARG (tau),
                                          F77_CMPLX_ARG (work), lwork, info));
             }
@@ -1731,7 +1731,7 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
     {
       F77_INT m = to_f77_int (a.rows ());
@@ -1769,13 +1769,13 @@ namespace octave
 #if defined (HAVE_QRUPDATE)
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::update (const FloatComplexColumnVector& u,
                                     const FloatComplexColumnVector& v)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_nel = to_f77_int (u.numel ());
       F77_INT v_nel = to_f77_int (v.numel ());
@@ -1787,21 +1787,21 @@ namespace octave
       FloatComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
       OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqr1up, CQR1UP, (m, n, k, F77_CMPLX_ARG (q.fortran_vec ()),
-                                 m, F77_CMPLX_ARG (r.fortran_vec ()), k,
+      F77_XFCN (cqr1up, CQR1UP, (m, n, k, F77_CMPLX_ARG (m_q.fortran_vec ()),
+                                 m, F77_CMPLX_ARG (m_r.fortran_vec ()), k,
                                  F77_CMPLX_ARG (utmp.fortran_vec ()),
                                  F77_CMPLX_ARG (vtmp.fortran_vec ()),
                                  F77_CMPLX_ARG (w), rw));
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::update (const FloatComplexMatrix& u,
                                     const FloatComplexMatrix& v)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_rows = to_f77_int (u.rows ());
       F77_INT u_cols = to_f77_int (u.cols ());
@@ -1818,8 +1818,8 @@ namespace octave
         {
           FloatComplexColumnVector utmp = u.column (i);
           FloatComplexColumnVector vtmp = v.column (i);
-          F77_XFCN (cqr1up, CQR1UP, (m, n, k, F77_CMPLX_ARG (q.fortran_vec ()),
-                                     m, F77_CMPLX_ARG (r.fortran_vec ()), k,
+          F77_XFCN (cqr1up, CQR1UP, (m, n, k, F77_CMPLX_ARG (m_q.fortran_vec ()),
+                                     m, F77_CMPLX_ARG (m_r.fortran_vec ()), k,
                                      F77_CMPLX_ARG (utmp.fortran_vec ()),
                                      F77_CMPLX_ARG (vtmp.fortran_vec ()),
                                      F77_CMPLX_ARG (w), rw));
@@ -1827,15 +1827,15 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::insert_col (const FloatComplexColumnVector& u,
                                         octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       F77_INT u_nel = to_f77_int (u.numel ());
 
@@ -1847,30 +1847,30 @@ namespace octave
 
       if (k < m)
         {
-          q.resize (m, k+1);
-          r.resize (k+1, n+1);
+          m_q.resize (m, k+1);
+          m_r.resize (k+1, n+1);
         }
       else
-        r.resize (k, n+1);
+        m_r.resize (k, n+1);
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       FloatComplexColumnVector utmp = u;
       OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqrinc, CQRINC, (m, n, k, F77_CMPLX_ARG (q.fortran_vec ()), ldq,
-                                 F77_CMPLX_ARG (r.fortran_vec ()), ldr, j + 1,
+      F77_XFCN (cqrinc, CQRINC, (m, n, k, F77_CMPLX_ARG (m_q.fortran_vec ()), ldq,
+                                 F77_CMPLX_ARG (m_r.fortran_vec ()), ldr, j + 1,
                                  F77_CONST_CMPLX_ARG (utmp.data ()), rw));
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::insert_col (const FloatComplexMatrix& u,
                                         const Array<octave_idx_type>& j)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, ASCENDING);
@@ -1899,14 +1899,14 @@ namespace octave
           F77_INT kmax = std::min (k + nj, m);
           if (k < m)
             {
-              q.resize (m, kmax);
-              r.resize (kmax, n + nj);
+              m_q.resize (m, kmax);
+              m_r.resize (kmax, n + nj);
             }
           else
-            r.resize (k, n + nj);
+            m_r.resize (k, n + nj);
 
-          F77_INT ldq = to_f77_int (q.rows ());
-          F77_INT ldr = to_f77_int (r.rows ());
+          F77_INT ldq = to_f77_int (m_q.rows ());
+          F77_INT ldr = to_f77_int (m_r.rows ());
 
           OCTAVE_LOCAL_BUFFER (float, rw, kmax);
           for (volatile F77_INT i = 0; i < nj; i++)
@@ -1914,8 +1914,8 @@ namespace octave
               F77_INT ii = i;
               F77_INT js_elt = to_f77_int (js(ii));
               F77_XFCN (cqrinc, CQRINC, (m, n + ii, std::min (kmax, k + ii),
-                                         F77_CMPLX_ARG (q.fortran_vec ()), ldq,
-                                         F77_CMPLX_ARG (r.fortran_vec ()), ldr,
+                                         F77_CMPLX_ARG (m_q.fortran_vec ()), ldq,
+                                         F77_CMPLX_ARG (m_r.fortran_vec ()), ldr,
                                          js_elt + 1,
                                          F77_CONST_CMPLX_ARG (u.column (jsi(i)).data ()),
                                          rw));
@@ -1924,42 +1924,42 @@ namespace octave
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::delete_col (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT k = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT k = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqrdec, CQRDEC, (m, n, k, F77_CMPLX_ARG (q.fortran_vec ()), ldq,
-                                 F77_CMPLX_ARG (r.fortran_vec ()), ldr, j + 1,
+      F77_XFCN (cqrdec, CQRDEC, (m, n, k, F77_CMPLX_ARG (m_q.fortran_vec ()), ldq,
+                                 F77_CMPLX_ARG (m_r.fortran_vec ()), ldr, j + 1,
                                  rw));
 
       if (k < m)
         {
-          q.resize (m, k-1);
-          r.resize (k-1, n-1);
+          m_q.resize (m, k-1);
+          m_r.resize (k-1, n-1);
         }
       else
-        r.resize (k, n-1);
+        m_r.resize (k, n-1);
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::delete_col (const Array<octave_idx_type>& j)
     {
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT n = to_f77_int (r.cols ());
-      F77_INT k = to_f77_int (q.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
+      F77_INT k = to_f77_int (m_q.cols ());
 
       Array<octave_idx_type> jsi;
       Array<octave_idx_type> js = j.sort (jsi, 0, DESCENDING);
@@ -1979,8 +1979,8 @@ namespace octave
 
       if (nj > 0)
         {
-          F77_INT ldq = to_f77_int (q.rows ());
-          F77_INT ldr = to_f77_int (r.rows ());
+          F77_INT ldq = to_f77_int (m_q.rows ());
+          F77_INT ldr = to_f77_int (m_r.rows ());
 
           OCTAVE_LOCAL_BUFFER (float, rw, k);
           for (volatile F77_INT i = 0; i < nj; i++)
@@ -1988,106 +1988,106 @@ namespace octave
               F77_INT ii = i;
               F77_INT js_elt = to_f77_int (js(ii));
               F77_XFCN (cqrdec, CQRDEC, (m, n - ii, (k == m ? k : k - ii),
-                                         F77_CMPLX_ARG (q.fortran_vec ()), ldq,
-                                         F77_CMPLX_ARG (r.fortran_vec ()), ldr,
+                                         F77_CMPLX_ARG (m_q.fortran_vec ()), ldq,
+                                         F77_CMPLX_ARG (m_r.fortran_vec ()), ldr,
                                          js_elt + 1, rw));
             }
 
           if (k < m)
             {
-              q.resize (m, k - nj);
-              r.resize (k - nj, n - nj);
+              m_q.resize (m, k - nj);
+              m_r.resize (k - nj, n - nj);
             }
           else
-            r.resize (k, n - nj);
+            m_r.resize (k, n - nj);
         }
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::insert_row (const FloatComplexRowVector& u,
                                         octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
       F77_INT k = std::min (m, n);
 
       F77_INT u_nel = to_f77_int (u.numel ());
 
-      if (! q.issquare () || u_nel != n)
+      if (! m_q.issquare () || u_nel != n)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (j < 0 || j > m)
         (*current_liboctave_error_handler) ("qrinsert: index out of range");
 
-      q.resize (m + 1, m + 1);
-      r.resize (m + 1, n);
+      m_q.resize (m + 1, m + 1);
+      m_r.resize (m + 1, n);
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       FloatComplexRowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (float, rw, k);
-      F77_XFCN (cqrinr, CQRINR, (m, n, F77_CMPLX_ARG (q.fortran_vec ()), ldq,
-                                 F77_CMPLX_ARG (r.fortran_vec ()), ldr,
+      F77_XFCN (cqrinr, CQRINR, (m, n, F77_CMPLX_ARG (m_q.fortran_vec ()), ldq,
+                                 F77_CMPLX_ARG (m_r.fortran_vec ()), ldr,
                                  j + 1, F77_CMPLX_ARG (utmp.fortran_vec ()),
                                  rw));
 
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::delete_row (octave_idx_type j_arg)
     {
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
-      if (! q.issquare ())
+      if (! m_q.issquare ())
         (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
 
       if (j < 0 || j > m-1)
         (*current_liboctave_error_handler) ("qrdelete: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
       OCTAVE_LOCAL_BUFFER (float, rw, m);
-      F77_XFCN (cqrder, CQRDER, (m, n, F77_CMPLX_ARG (q.fortran_vec ()), ldq,
-                                 F77_CMPLX_ARG (r.fortran_vec ()), ldr, j + 1,
+      F77_XFCN (cqrder, CQRDER, (m, n, F77_CMPLX_ARG (m_q.fortran_vec ()), ldq,
+                                 F77_CMPLX_ARG (m_r.fortran_vec ()), ldr, j + 1,
                                  F77_CMPLX_ARG (w), rw));
 
-      q.resize (m - 1, m - 1);
-      r.resize (m - 1, n);
+      m_q.resize (m - 1, m - 1);
+      m_r.resize (m - 1, n);
     }
 
     template <>
-    void
+    OCTAVE_API void
     qr<FloatComplexMatrix>::shift_cols (octave_idx_type i_arg,
                                         octave_idx_type j_arg)
     {
       F77_INT i = to_f77_int (i_arg);
       F77_INT j = to_f77_int (j_arg);
 
-      F77_INT m = to_f77_int (q.rows ());
-      F77_INT k = to_f77_int (r.rows ());
-      F77_INT n = to_f77_int (r.cols ());
+      F77_INT m = to_f77_int (m_q.rows ());
+      F77_INT k = to_f77_int (m_r.rows ());
+      F77_INT n = to_f77_int (m_r.cols ());
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("qrshift: index out of range");
 
-      F77_INT ldq = to_f77_int (q.rows ());
-      F77_INT ldr = to_f77_int (r.rows ());
+      F77_INT ldq = to_f77_int (m_q.rows ());
+      F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
       OCTAVE_LOCAL_BUFFER (float, rw, k);
       F77_XFCN (cqrshc, CQRSHC, (m, n, k,
-                                 F77_CMPLX_ARG (q.fortran_vec ()), ldq,
-                                 F77_CMPLX_ARG (r.fortran_vec ()), ldr,
+                                 F77_CMPLX_ARG (m_q.fortran_vec ()), ldq,
+                                 F77_CMPLX_ARG (m_r.fortran_vec ()), ldr,
                                  i + 1, j + 1, F77_CMPLX_ARG (w), rw));
     }
 

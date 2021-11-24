@@ -32,8 +32,8 @@
 
 class Matrix;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class display_info
   {
   public:
@@ -86,6 +86,7 @@ namespace octave
     // m_dpy_avail is false.
     std::string m_msg;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

@@ -51,7 +51,7 @@
 //!                     omitted, the function cannot access this number.
 //! @param doc Texinfo help text (docstring) for the function.
 //!
-//! @see DEFUNX, DEFCONSTFUN
+//! @see DEFUNX
 
 #define DEFUN(name, args_name, nargout_name, doc)       \
   DECLARE_FUN (name, args_name, nargout_name)
@@ -80,37 +80,10 @@
 //!                     omitted, the function cannot access this number.
 //! @param doc Texinfo help text (docstring) for the function.
 //!
-//! @see DEFUN, DEFCONSTFUN
+//! @see DEFUN
 
 #define DEFUNX(name, fname, args_name, nargout_name, doc)       \
   DECLARE_FUNX (fname, args_name, nargout_name)
-
-//! Macro to define a builtin function that cannot be hidden by a variable.
-//!
-//! @warning Consider to use #DEFUN, unless you have good reason.
-//!
-//! For detailed information, see \ref Macros.
-//!
-//! The function gets installed to the 'octave::symbol_table' in a way, such
-//! that no variable is allowed to hide this function name.
-//!
-//! @param name The **unquoted** name of the function that should be installed
-//!             on the 'octave::symbol_table' and can be called by the
-//!             interpreter.  Internally, the function name is prepended by an
-//!             'F'.
-//! @param args_name The name of the octave_value_list variable used to pass
-//!                  the argument list to this function.  If this value is
-//!                  omitted, the function cannot access the argument list.
-//! @param nargout_name The name of the 'int' variable used to pass the number
-//!                     of output arguments this function is expected to
-//!                     produce from the caller.  If this value is
-//!                     omitted, the function cannot access this number.
-//! @param doc Texinfo help text (docstring) for the function.
-//!
-//! @see DEFUN, DEFUNX
-
-#define DEFCONSTFUN(name, args_name, nargout_name, doc) \
-  DECLARE_FUN (name, args_name, nargout_name)
 
 //! Macro to define a builtin method.
 //!
@@ -133,7 +106,7 @@
 //!                     omitted, the method cannot access this number.
 //! @param doc Texinfo help text (docstring) for the method.
 //!
-//! @see DEFMETHODX, DEFCONSTMETHOD
+//! @see DEFMETHODX
 
 #define DEFMETHOD(name, interp_name, args_name, nargout_name, doc)      \
   DECLARE_METHOD (name, interp_name, args_name, nargout_name)
@@ -166,41 +139,14 @@
 //!                     omitted, the method cannot access this number.
 //! @param doc Texinfo help text (docstring) for the method.
 //!
-//! @see DEFMETHOD, DEFCONSTMETHOD
+//! @see DEFMETHOD
 
 #define DEFMETHODX(name, fname, interp_name, args_name, nargout_name, doc) \
   DECLARE_METHODX (fname, interp_name, args_name, nargout_name)
 
-//! Macro to define a builtin method that cannot be hidden by a variable.
-//!
-//! @warning Consider to use #DEFMETHOD, unless you have good reason.
-//!
-//! For detailed information, see \ref Macros.
-//!
-//! The method gets installed to the 'octave::symbol_table' in a way, such
-//! that no variable is allowed to hide this method name.
-//!
-//! @param name The **unquoted** name of the method that should be installed
-//!             on the 'octave::symbol_table' and can be called by the
-//!             interpreter.  Internally, the method name is prepended by an
-//!             'F'.
-//! @param interp_name The name of the 'octave::interpreter' reference that can
-//!                    be used by this method.  If this value is omitted,
-//!                    there is no access to the interpreter and one should
-//!                    use #DEFCONSTFUN to define a function instead.
-//! @param args_name The name of the octave_value_list variable used to pass
-//!                  the argument list to this method.  If this value is
-//!                  omitted, the method cannot access the argument list.
-//! @param nargout_name The name of the 'int' variable used to pass the number
-//!                     of output arguments this method is expected to
-//!                     produce from the caller.  If this value is
-//!                     omitted, the method cannot access this number.
-//! @param doc Texinfo help text (docstring) for the method.
-//!
-//! @see DEFMETHOD, DEFMETHODX
-
-#define DEFCONSTMETHOD(name, interp_name, args_name, nargout_name, doc) \
-  DECLARE_METHOD (name, interp_name, args_name, nargout_name)
+// These macros are obsolete but provided for backward compatibility.
+#define DEFCONSTFUN DEFUN
+#define DEFCONSTMETHOD DEFMETHOD
 
 //! Macro to define an alias for another existing function name.
 //!

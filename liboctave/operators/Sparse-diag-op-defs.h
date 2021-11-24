@@ -106,6 +106,7 @@ template <typename T>
 struct identity_val
   : public std::unary_function <T, T>
 {
+public:
   T operator () (const T x) { return x; }
 };
 

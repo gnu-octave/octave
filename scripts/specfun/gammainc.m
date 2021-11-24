@@ -9,7 +9,7 @@
 ##
 ## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
@@ -95,7 +95,7 @@
 
 function y = gammainc (x, a, tail = "lower")
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -299,6 +299,7 @@ endfunction
 
 ## a == 1.
 function y = gammainc_a1 (x, tail)
+
   if (strcmp (tail, "lower"))
     if (abs (x) < 1/2)
       y = - expm1 (-x);
@@ -316,12 +317,14 @@ function y = gammainc_a1 (x, tail)
   else
     y = 1 ./ x;
   endif
+
 endfunction
 
 ## positive integer a; exp (x) and a! both under 1/eps
 ## uses closed-form expressions for nonnegative integer a
 ## -- http://mathworld.wolfram.com/IncompleteGammaFunction.html.
 function y = gammainc_an (x, a, tail)
+
   y = t = ones (size (x), class (x));
   i = 1;
   while (any (a(:) > i))
@@ -339,12 +342,14 @@ function y = gammainc_an (x, a, tail)
   elseif (strcmp (tail, "scaledupper"))
     y .*= exp (-x) ./ D(x, a);
   endif
+
 endfunction
 
 ## x + 0.25 < a | x < 0 | abs(x) < 1.
 ## Numerical Recipes in Fortran 77 (6.2.5)
 ## series
 function y = gammainc_s (x, a, tail)
+
   if (strcmp (tail, "scaledlower") || strcmp (tail, "scaledupper"))
     y = ones (size (x), class (x));
     term = x ./ (a + 1);
@@ -367,6 +372,7 @@ function y = gammainc_s (x, a, tail)
   elseif (strcmp (tail, "scaledupper"))
     y = 1 ./ D (x,a) - y;
   endif
+
 endfunction
 
 ## x positive and large relative to a
@@ -375,6 +381,7 @@ endfunction
 ## Lentz's algorithm
 ## __gammainc__ in libinterp/corefcn/__gammainc__.cc
 function y = gammainc_l (x, a, tail)
+
   y = __gammainc__ (x, a);
   if (strcmp (tail,  "lower"))
     y = 1 - y .* D (x, a);
@@ -383,6 +390,7 @@ function y = gammainc_l (x, a, tail)
   elseif (strcmp (tail, "scaledlower"))
     y = 1 ./ D (x, a) - y;
   endif
+
 endfunction
 
 ## Compute exp(-x)*x^a/Gamma(a+1) in a stable way for x and a large.
@@ -391,6 +399,7 @@ endfunction
 ## SIAM J. Sci. Stat. Comput., 7(3), 1986
 ## which quotes Section 5, Abramowitz&Stegun 6.1.40, 6.1.41.
 function y = D (x, a)
+
   athresh = 10;  # FIXME: can this be better tuned?
   y = zeros (size (x), class (x));
 
@@ -430,7 +439,7 @@ function y = D (x, a)
   endif
 
   ii = (x < 0) & (a == fix (a));
-  if (any(ii))  # remove spurious imaginary part.
+  if (any (ii))  # remove spurious imaginary part.
     y(ii) = real (y(ii));
   endif
 
@@ -478,9 +487,9 @@ endfunction
 %!        -2.9582761911890713293e7-1i * 9.612022339061679758e6, -30*eps)
 %!assert (gammainc (-10, 10, "upper"), -3.112658165341493126871616e7, ...
 %!        -2*eps)
-%!assert (gammainc (-10, 10, "scaledlower"), 0.5128019364747265, -1e-14);
-%!assert (gammainc (-10, 10, "scaledupper"), -0.5128019200000000, -1e-14);
-%!assert (gammainc (200, 201, "upper"), 0.518794309678684497, -2 * eps);
+%!assert (gammainc (-10, 10, "scaledlower"), 0.5128019364747265, -1e-14)
+%!assert (gammainc (-10, 10, "scaledupper"), -0.5128019200000000, -1e-14)
+%!assert (gammainc (200, 201, "upper"), 0.518794309678684497, -2 * eps)
 %!assert (gammainc (200, 201, "scaledupper"),
 %!        18.4904360746560462660798514, -eps)
 ## Here we are very good (no D (x,a)) involved
@@ -529,7 +538,7 @@ endfunction
 %! y_exp = 9.995001666250085e-04;
 %! assert (gammainc (1/1000, 1), y_exp, -eps);
 
-%!xtest <53612>
+%!test <53612>
 %! assert (gammainc (-20, 1.1, "upper"), ...
 %!         6.50986687074979e8 + 2.11518396291149e8*i, -1e-13);
 
@@ -566,9 +575,8 @@ endfunction
 %!assert (class (gammainc (1, int8 (0.5))) == "double")
 
 ## Test input validation
-%!error gammainc ()
-%!error gammainc (1)
-%!error gammainc (1,2,3,4)
+%!error <Invalid call> gammainc ()
+%!error <Invalid call> gammainc (1)
 %!error <must be of common size or scalars> gammainc ([0, 0],[0; 0])
 %!error <must be of common size or scalars> gammainc ([1 2 3], [1 2])
 %!error <all inputs must be real> gammainc (2+i, 1)

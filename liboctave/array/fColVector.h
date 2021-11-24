@@ -62,52 +62,56 @@ public:
     return *this;
   }
 
-  bool operator == (const FloatColumnVector& a) const;
-  bool operator != (const FloatColumnVector& a) const;
+  OCTAVE_API bool operator == (const FloatColumnVector& a) const;
+  OCTAVE_API bool operator != (const FloatColumnVector& a) const;
 
   // destructive insert/delete/reorder operations
 
-  FloatColumnVector& insert (const FloatColumnVector& a, octave_idx_type r);
+  OCTAVE_API FloatColumnVector&
+  insert (const FloatColumnVector& a, octave_idx_type r);
 
-  FloatColumnVector& fill (float val);
-  FloatColumnVector& fill (float val, octave_idx_type r1, octave_idx_type r2);
+  OCTAVE_API FloatColumnVector& fill (float val);
+  OCTAVE_API FloatColumnVector&
+  fill (float val, octave_idx_type r1, octave_idx_type r2);
 
-  FloatColumnVector stack (const FloatColumnVector& a) const;
+  OCTAVE_API FloatColumnVector stack (const FloatColumnVector& a) const;
 
-  FloatRowVector transpose (void) const;
+  OCTAVE_API FloatRowVector transpose (void) const;
 
   friend OCTAVE_API FloatColumnVector real (const FloatComplexColumnVector& a);
   friend OCTAVE_API FloatColumnVector imag (const FloatComplexColumnVector& a);
 
   // resize is the destructive equivalent for this one
 
-  FloatColumnVector extract (octave_idx_type r1, octave_idx_type r2) const;
+  OCTAVE_API FloatColumnVector
+  extract (octave_idx_type r1, octave_idx_type r2) const;
 
-  FloatColumnVector extract_n (octave_idx_type r1, octave_idx_type n) const;
+  OCTAVE_API FloatColumnVector
+  extract_n (octave_idx_type r1, octave_idx_type n) const;
 
   // matrix by column vector -> column vector operations
 
-  friend OCTAVE_API FloatColumnVector operator * (const FloatMatrix& a,
-                                                  const FloatColumnVector& b);
+  friend OCTAVE_API FloatColumnVector
+  operator * (const FloatMatrix& a, const FloatColumnVector& b);
 
   // diagonal matrix by column vector -> column vector operations
 
-  friend OCTAVE_API FloatColumnVector operator * (const FloatDiagMatrix& a,
-                                                  const FloatColumnVector& b);
+  friend OCTAVE_API FloatColumnVector
+  operator * (const FloatDiagMatrix& a, const FloatColumnVector& b);
 
   // other operations
 
-  float min (void) const;
-  float max (void) const;
+  OCTAVE_API float min (void) const;
+  OCTAVE_API float max (void) const;
 
-  FloatColumnVector abs (void) const;
+  OCTAVE_API FloatColumnVector abs (void) const;
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                               const FloatColumnVector& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is,
-                                               FloatColumnVector& a);
+  friend OCTAVE_API std::ostream&
+  operator << (std::ostream& os, const FloatColumnVector& a);
+  friend OCTAVE_API std::istream&
+  operator >> (std::istream& is, FloatColumnVector& a);
 
   void resize (octave_idx_type n, const float& rfv = 0)
   {

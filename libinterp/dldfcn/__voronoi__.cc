@@ -57,26 +57,23 @@ qhull command
 #include "ovl.h"
 
 #if defined (HAVE_QHULL)
-
 #  include "oct-qhull.h"
-
-#  if defined (NEED_QHULL_VERSION)
+#  if defined (NEED_QHULL_R_VERSION)
 char qh_version[] = "__voronoi__.oct 2007-07-24";
 #  endif
+#endif
+
+OCTAVE_NAMESPACE_BEGIN
+
+#if defined (HAVE_QHULL)
 
 static void
-close_fcn (FILE *f)
+free_qhull_memory (qhT *qh)
 {
-  std::fclose (f);
-}
-
-static void
-free_qhull_memory ()
-{
-  qh_freeqhull (! qh_ALL);
+  qh_freeqhull (qh, ! qh_ALL);
 
   int curlong, totlong;
-  qh_memfreeshort (&curlong, &totlong);
+  qh_memfreeshort (qh, &curlong, &totlong);
 
   if (curlong || totlong)
     warning ("__voronoi__: did not free %d bytes of long memory (%d pieces)",
@@ -158,50 +155,36 @@ Undocumented internal function.
 
   boolT ismalloc = false;
 
-  octave::unwind_protect frame;
-
-  // Replace the outfile pointer with stdout for debugging information.
-#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-  FILE *outfile = std::fopen ("NUL", "w");
-#else
-  FILE *outfile = std::fopen ("/dev/null", "w");
-#endif
+  // Set the outfile pointer to stdout for status information.
+  FILE *outfile = nullptr;
   FILE *errfile = stderr;
 
-  if (! outfile)
-    error ("__voronoi__: unable to create temporary file for output");
-
-  frame.add_fcn (close_fcn, outfile);
-
-  // qh_new_qhull command and points arguments are not const...
+  qhT context = { };
+  qhT *qh = &context;
 
   std::string cmd = "qhull v" + options;
 
-  OCTAVE_LOCAL_BUFFER (char, cmd_str, cmd.length () + 1);
+  int exitcode = qh_new_qhull (qh, dim, num_points, points.fortran_vec (),
+                               ismalloc, &cmd[0], outfile, errfile);
 
-  strcpy (cmd_str, cmd.c_str ());
-
-  int exitcode = qh_new_qhull (dim, num_points, points.fortran_vec (),
-                               ismalloc, cmd_str, outfile, errfile);
-
-  frame.add_fcn (free_qhull_memory);
+  unwind_action free_memory ([qh] () { free_qhull_memory (qh); });
 
   if (exitcode)
     error ("%s: qhull failed", caller.c_str ());
 
   // Calling findgood_all provides the number of Voronoi vertices
-  // (sets qh num_good).
+  // (sets qh->num_good).
 
-  qh_findgood_all (qh facet_list);
+  qh_findgood_all (qh, qh->facet_list);
 
   octave_idx_type num_voronoi_regions
-    = qh num_vertices - qh_setsize (qh del_vertices);
+    = qh->num_vertices - qh_setsize (qh, qh->del_vertices);
 
-  octave_idx_type num_voronoi_vertices = qh num_good;
+  octave_idx_type num_voronoi_vertices = qh->num_good;
 
   // Find the voronoi centers for all facets.
 
-  qh_setvoronoi_all ();
+  qh_setvoronoi_all (qh);
 
   facetT *facet;
   vertexT *vertex;
@@ -224,8 +207,8 @@ Undocumented internal function.
 
   FORALLvertices
     {
-      if (qh hull_dim == 3)
-        qh_order_vertexneighbors (vertex);
+      if (qh->hull_dim == 3)
+        qh_order_vertexneighbors (qh, vertex);
 
       bool infinity_seen = false;
 
@@ -268,7 +251,7 @@ Undocumented internal function.
   Matrix F (num_voronoi_vertices+1, dim);
 
   for (octave_idx_type d = 0; d < dim; d++)
-    F(0,d) = octave::numeric_limits<double>::Inf ();
+    F(0,d) = numeric_limits<double>::Inf ();
 
   // The cell array of vectors of indices into F that represent the
   // vertices of the Voronoi regions (cells).
@@ -289,12 +272,12 @@ Undocumented internal function.
 
   FORALLvertices
     {
-      if (qh hull_dim == 3)
-        qh_order_vertexneighbors (vertex);
+      if (qh->hull_dim == 3)
+        qh_order_vertexneighbors (qh, vertex);
 
       bool infinity_seen = false;
 
-      octave_idx_type idx = qh_pointid (vertex->point);
+      octave_idx_type idx = qh_pointid (qh, vertex->point);
 
       octave_idx_type num_vertices = ni[k++];
 
@@ -363,3 +346,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

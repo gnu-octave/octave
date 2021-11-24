@@ -400,14 +400,14 @@ Matrix::extract (octave_idx_type r1, octave_idx_type c1,
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }
 
-  return index (idx_vector (r1, r2+1), idx_vector (c1, c2+1));
+  return index (octave::idx_vector (r1, r2+1), octave::idx_vector (c1, c2+1));
 }
 
 Matrix
 Matrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr,
                    octave_idx_type nc) const
 {
-  return index (idx_vector (r1, r1 + nr), idx_vector (c1, c1 + nc));
+  return index (octave::idx_vector (r1, r1 + nr), octave::idx_vector (c1, c1 + nc));
 }
 
 // extract row or column i.
@@ -415,13 +415,13 @@ Matrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr,
 RowVector
 Matrix::row (octave_idx_type i) const
 {
-  return index (idx_vector (i), idx_vector::colon);
+  return index (octave::idx_vector (i), octave::idx_vector::colon);
 }
 
 ColumnVector
 Matrix::column (octave_idx_type i) const
 {
-  return index (idx_vector::colon, idx_vector (i));
+  return index (octave::idx_vector::colon, octave::idx_vector (i));
 }
 
 // Local function to calculate the 1-norm.
@@ -640,7 +640,9 @@ Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
   if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+  if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
+    ret = 1 / (*this); 
+  else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
@@ -662,8 +664,7 @@ Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
       if (! mattype.ishermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0
-          && (numel () != 1))
+      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0)
         ret = Matrix (rows (), columns (),
                       octave::numeric_limits<double>::Inf ());
     }
@@ -733,7 +734,7 @@ Matrix::fourier (void) const
       nsamples = nc;
     }
 
-  const double *in (fortran_vec ());
+  const double *in (data ());
   Complex *out (retval.fortran_vec ());
 
   octave::fftw::fft (in, out, npts, nsamples);
@@ -763,7 +764,7 @@ Matrix::ifourier (void) const
     }
 
   ComplexMatrix tmp (*this);
-  Complex *in (tmp.fortran_vec ());
+  const Complex *in (tmp.data ());
   Complex *out (retval.fortran_vec ());
 
   octave::fftw::ifft (in, out, npts, nsamples);
@@ -776,7 +777,7 @@ Matrix::fourier2d (void) const
 {
   dim_vector dv (rows (), cols ());
 
-  const double *in = fortran_vec ();
+  const double *in = data ();
   ComplexMatrix retval (rows (), cols ());
   octave::fftw::fftNd (in, retval.fortran_vec (), 2, dv);
 
@@ -1036,7 +1037,7 @@ Matrix::rcond (MatrixType& mattype) const
       // Only calculate the condition number for LU/Cholesky
       if (typ == MatrixType::Upper)
         {
-          const double *tmp_data = fortran_vec ();
+          const double *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'U';
@@ -1064,7 +1065,7 @@ Matrix::rcond (MatrixType& mattype) const
           ("permuted triangular matrix not implemented");
       else if (typ == MatrixType::Lower)
         {
-          const double *tmp_data = fortran_vec ();
+          const double *tmp_data = data ();
           F77_INT info = 0;
           char norm = '1';
           char uplo = 'L';
@@ -1209,7 +1210,7 @@ Matrix::utsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
 
-      const double *tmp_data = fortran_vec ();
+      const double *tmp_data = data ();
 
       retval = b;
       double *result = retval.fortran_vec ();
@@ -1307,7 +1308,7 @@ Matrix::ltsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
 
-      const double *tmp_data = fortran_vec ();
+      const double *tmp_data = data ();
 
       retval = b;
       double *result = retval.fortran_vec ();
@@ -1535,8 +1536,6 @@ Matrix::fsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
-                      info = -2;
-
                       if (sing_handler)
                         sing_handler (rcon);
                       else
@@ -2637,7 +2636,7 @@ operator << (std::ostream& os, const Matrix& a)
       for (octave_idx_type j = 0; j < a.cols (); j++)
         {
           os << ' ';
-          octave_write_double (os, a.elem (i, j));
+          octave::write_value<double> (os, a.elem (i, j));
         }
       os << "\n";
     }
@@ -2656,7 +2655,7 @@ operator >> (std::istream& is, Matrix& a)
       for (octave_idx_type i = 0; i < nr; i++)
         for (octave_idx_type j = 0; j < nc; j++)
           {
-            tmp = octave_read_value<double> (is);
+            tmp = octave::read_value<double> (is);
             if (is)
               a.elem (i, j) = tmp;
             else
@@ -2698,10 +2697,10 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   // Transform c to new coordinates.
 
-  Matrix ua = as.unitary_matrix ();
+  Matrix ua = as.unitary_schur_matrix ();
   Matrix sch_a = as.schur_matrix ();
 
-  Matrix ub = bs.unitary_matrix ();
+  Matrix ub = bs.unitary_schur_matrix ();
   Matrix sch_b = bs.schur_matrix ();
 
   Matrix cx = ua.transpose () * c * ub;

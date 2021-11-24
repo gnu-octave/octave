@@ -80,20 +80,21 @@
 ## must be specified as well.  If @var{extrapval} is omitted and the
 ## @var{method} is @qcode{"spline"}, then the extrapolated values of the
 ## @qcode{"spline"} are used.  Otherwise the default @var{extrapval} value for
-## any other @var{method} is @qcode{"NA"}.
+## any other @var{method} is @code{NA}.
 ## @seealso{interp1, interp2, interp3, spline, ndgrid}
 ## @end deftypefn
 
 function vi = interpn (varargin)
 
-  method = "linear";
-  extrapval = [];
-  nargs = nargin;
-
   if (nargin < 1 || ! isnumeric (varargin{1}))
     print_usage ();
   endif
 
+  method = "linear";
+  extrapval = [];
+  nargs = nargin;
+
+  ## Find and validate EXTRAPVAL and/or METHOD inputs
   if (nargs > 1 && ischar (varargin{end-1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
       error ("interpn: EXTRAPVAL must be a numeric scalar");
@@ -110,18 +111,17 @@ function vi = interpn (varargin)
     warning ("interpn: ignoring unsupported '*' flag to METHOD");
     method(1) = [];
   endif
-  method = validatestring (method, ...
-    {"nearest", "linear", "pchip", "cubic", "spline"});
+  method = validatestring (method,
+                           {"nearest", "linear", "pchip", "cubic", "spline"},
+                           "interpn");
 
-  if (nargs < 3)
+  if (nargs <= 2)
+    ## Calling form interpn (V, ...)
     v = varargin{1};
     m = 1;
     if (nargs == 2)
-      if (ischar (varargin{2}))
-        method = varargin{2};
-      elseif (isnumeric (m) && isscalar (m) && fix (m) == m)
-        m = varargin{2};
-      else
+      m = varargin{2};
+      if (! (isnumeric (m) && isscalar (m) && m == fix (m)))
         print_usage ();
       endif
     endif
@@ -136,6 +136,7 @@ function vi = interpn (varargin)
     y{1} = y{1}.';
     [y{:}] = ndgrid (y{:});
   elseif (! isvector (varargin{1}) && nargs == (ndims (varargin{1}) + 1))
+    ## Calling form interpn (V, Y1, Y2, ...)
     v = varargin{1};
     sz = size (v);
     nd = ndims (v);
@@ -146,6 +147,7 @@ function vi = interpn (varargin)
     endfor
   elseif (rem (nargs, 2) == 1
           && nargs == (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
+    ## Calling form interpn (X1, X2, ..., V, Y1, Y2, ...)
     nv = ceil (nargs / 2);
     v = varargin{nv};
     sz = size (v);
@@ -157,26 +159,20 @@ function vi = interpn (varargin)
   endif
 
   if (any (! cellfun ("isvector", x)))
-    for i = 2 : nd
-      if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
-        error ("interpn: dimensional mismatch");
+    for i = 1 : nd
+      if (! size_equal (x{i}, v))
+        error ("interpn: incorrect dimensions for input X%d", i);
       endif
       idx(1 : nd) = {1};
       idx(i) = ":";
       x{i} = x{i}(idx{:})(:);
     endfor
-    idx(1 : nd) = {1};
-    idx(1) = ":";
-    x{1} = x{1}(idx{:})(:);
   endif
-
-  method = tolower (method);
 
   all_vectors = all (cellfun ("isvector", y));
   same_size = size_equal (y{:});
   if (all_vectors && ! same_size)
-    [foobar(1:numel(y)).y] = ndgrid (y{:});
-    y = {foobar.y};
+    [y{:}] = ndgrid (y{:});
   endif
 
   if (strcmp (method, "linear"))
@@ -186,19 +182,25 @@ function vi = interpn (varargin)
     endif
     vi(isna (vi)) = extrapval;
   elseif (strcmp (method, "nearest"))
+    ## FIXME: This seems overly complicated.  Is there a way to simplify
+    ## all the code after the call to lookup (which should be fast)?
+    ## Could Qhull be used for quick nearest neighbor calculation?
     yshape = size (y{1});
     yidx = cell (1, nd);
+    ## Find rough nearest index using lookup function [O(log2 (N)].
     for i = 1 : nd
       y{i} = y{i}(:);
       yidx{i} = lookup (x{i}, y{i}, "lr");
     endfor
+    ## Single comparison to next largest index to see which is closer.
     idx = cell (1,nd);
     for i = 1 : nd
       idx{i} = yidx{i} ...
                + (y{i} - x{i}(yidx{i})(:) >= x{i}(yidx{i} + 1)(:) - y{i});
     endfor
     vi = v(sub2ind (sz, idx{:}));
-    idx = zeros (prod (yshape), 1);
+    ## Apply EXTRAPVAL to points outside original volume.
+    idx = false (prod (yshape), 1);
     for i = 1 : nd
       idx |= y{i} < min (x{i}(:)) | y{i} > max (x{i}(:));
     endfor
@@ -209,17 +211,15 @@ function vi = interpn (varargin)
     vi = reshape (vi, yshape);
   elseif (strcmp (method, "spline"))
     if (any (! cellfun ("isvector", y)))
-      for i = 2 : nd
-        if (! size_equal (y{1}, y{i}))
-          error ("interpn: dimensional mismatch");
+      ysz = size (y{1});
+      for i = 1 : nd
+        if (any (size (y{i}) != ysz))
+          error ("interpn: incorrect dimensions for input Y%d", i);
         endif
         idx(1 : nd) = {1};
         idx(i) = ":";
         y{i} = y{i}(idx{:});
       endfor
-      idx(1 : nd) = {1};
-      idx(1) = ":";
-      y{1} = y{1}(idx{:});
     endif
 
     vi = __splinen__ (x, v, y, extrapval, "interpn");
@@ -235,10 +235,10 @@ function vi = interpn (varargin)
       vi = vi(cellfun (@(x) sub2ind (size (vi), x{:}), idx));
       vi = reshape (vi, size (y{1}));
     endif
+  elseif (strcmp (method, "pchip"))
+    error ("interpn: pchip interpolation not yet implemented");
   elseif (strcmp (method, "cubic"))
     error ("interpn: cubic interpolation not yet implemented");
-  else
-    error ("interpn: unrecognized interpolation METHOD");
   endif
 
 endfunction
@@ -304,7 +304,8 @@ endfunction
 %! [x,y,z] = ndgrid (0:2);
 %! f = x + y + z;
 %! assert (interpn (x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5]), [1.5, 4.5]);
-%! assert (interpn (x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],"nearest"), [3, 6]);
+%! assert (interpn (x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],"nearest"),
+%!         [3, 6]);
 %! assert (interpn (x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5],"spline"), [1.5, 4.5]);
 %! assert (interpn (x,y,z,f,x,y,z), f);
 %! assert (interpn (x,y,z,f,x,y,z,"nearest"), f);
@@ -353,4 +354,20 @@ endfunction
 %! assert (interpn (z, "spline"), zout, tol);
 
 ## Test input validation
+%!error <Invalid call> interpn ()
+%!error <Invalid call> interpn ("foobar")
+%!error <EXTRAPVAL must be a numeric scalar> interpn (1, "linear", {1})
+%!error <EXTRAPVAL must be a numeric scalar> interpn (1, "linear", [1, 2])
 %!warning <ignoring unsupported '\*' flag> interpn (rand (3,3), 1, "*linear");
+%!error <'foobar' does not match any of> interpn (1, "foobar")
+%!error <wrong number or incorrectly formatted input arguments>
+%! interpn (1, 2, 3, 4);
+%!error <incorrect dimensions for input X1>
+%! interpn ([1,2], ones (2,2), magic (3), [1,2], [1,2])
+%!error <incorrect dimensions for input X2>
+%! interpn (ones (3,3), ones (2,2), magic (3), [1,2], [1,2])
+%!error <incorrect dimensions for input Y2>
+%! interpn ([1,2], [1,2], magic (3), [1,2], ones (2,2), "spline")
+%!error <pchip interpolation not yet implemented> interpn ([1,2], "pchip")
+%!error <cubic interpolation not yet implemented> interpn ([1,2], "cubic")
+

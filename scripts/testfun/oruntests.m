@@ -41,7 +41,7 @@ function oruntests (directory)
   if (nargin == 0)
     dirs = ostrsplit (path (), pathsep ());
     do_class_dirs = true;
-  elseif (nargin == 1)
+  else
     dirs = {canonicalize_file_name(directory)};
     if (isempty (dirs{1}) || ! isfolder (dirs{1}))
       ## Search for directory name in path
@@ -55,8 +55,6 @@ function oruntests (directory)
       dirs = {fullname};
     endif
     do_class_dirs = false;
-  else
-    print_usage ();
   endif
 
   for i = 1:numel (dirs)

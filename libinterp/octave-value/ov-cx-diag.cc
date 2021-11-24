@@ -83,9 +83,9 @@ octave_complex_diag_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
-  if (matrix.nelem () == 1)
+  if (m_matrix.nelem () == 1)
     {
-      retval = new octave_complex (matrix (0, 0));
+      retval = new octave_complex (m_matrix (0, 0));
       octave_base_value *rv2 = retval->try_narrowing_conversion ();
       if (rv2)
         {
@@ -93,9 +93,9 @@ octave_complex_diag_matrix::try_narrowing_conversion (void)
           retval = rv2;
         }
     }
-  else if (matrix.all_elements_are_real ())
+  else if (m_matrix.all_elements_are_real ())
     {
-      return new octave_diag_matrix (::real (matrix));
+      return new octave_diag_matrix (::real (m_matrix));
     }
 
   return retval;
@@ -110,7 +110,7 @@ octave_complex_diag_matrix::diag_matrix_value (bool force_conversion) const
     warn_implicit_conversion ("Octave:imag-to-real",
                               type_name (), "real matrix");
 
-  retval = ::real (matrix);
+  retval = ::real (m_matrix);
 
   return retval;
 }
@@ -124,7 +124,7 @@ octave_complex_diag_matrix::float_diag_matrix_value (bool force_conversion) cons
     warn_implicit_conversion ("Octave:imag-to-real",
                               type_name (), "real matrix");
 
-  retval = ::real (matrix);
+  retval = ::real (m_matrix);
 
   return retval;
 }
@@ -132,25 +132,25 @@ octave_complex_diag_matrix::float_diag_matrix_value (bool force_conversion) cons
 ComplexDiagMatrix
 octave_complex_diag_matrix::complex_diag_matrix_value (bool) const
 {
-  return matrix;
+  return m_matrix;
 }
 
 FloatComplexDiagMatrix
 octave_complex_diag_matrix::float_complex_diag_matrix_value (bool) const
 {
-  return FloatComplexDiagMatrix (matrix);
+  return FloatComplexDiagMatrix (m_matrix);
 }
 
 octave_value
 octave_complex_diag_matrix::as_double (void) const
 {
-  return matrix;
+  return m_matrix;
 }
 
 octave_value
 octave_complex_diag_matrix::as_single (void) const
 {
-  return FloatComplexDiagMatrix (matrix);
+  return FloatComplexDiagMatrix (m_matrix);
 }
 
 octave_value
@@ -159,19 +159,19 @@ octave_complex_diag_matrix::map (unary_mapper_t umap) const
   switch (umap)
     {
     case umap_abs:
-      return matrix.abs ();
+      return m_matrix.abs ();
     case umap_real:
-      return ::real (matrix);
+      return ::real (m_matrix);
     case umap_conj:
-      return ::conj (matrix);
+      return ::conj (m_matrix);
     case umap_imag:
-      return ::imag (matrix);
+      return ::imag (m_matrix);
     case umap_sqrt:
       {
         ComplexColumnVector tmp
-          = matrix.extract_diag ().map<Complex> (std::sqrt);
+          = m_matrix.extract_diag ().map<Complex> (std::sqrt);
         ComplexDiagMatrix retval (tmp);
-        retval.resize (matrix.rows (), matrix.columns ());
+        retval.resize (m_matrix.rows (), m_matrix.columns ());
         return retval;
       }
     default:
@@ -183,12 +183,12 @@ bool
 octave_complex_diag_matrix::save_binary (std::ostream& os, bool save_as_floats)
 {
 
-  int32_t r = matrix.rows ();
-  int32_t c = matrix.cols ();
+  int32_t r = m_matrix.rows ();
+  int32_t c = m_matrix.cols ();
   os.write (reinterpret_cast<char *> (&r), 4);
   os.write (reinterpret_cast<char *> (&c), 4);
 
-  ComplexMatrix m = ComplexMatrix (matrix.extract_diag ());
+  ComplexMatrix m = ComplexMatrix (m_matrix.extract_diag ());
   save_type st = LS_DOUBLE;
   if (save_as_floats)
     {
@@ -200,11 +200,11 @@ octave_complex_diag_matrix::save_binary (std::ostream& os, bool save_as_floats)
       else
         st = LS_FLOAT;
     }
-  else if (matrix.length () > 4096) // FIXME: make this configurable.
+  else if (m_matrix.length () > 4096) // FIXME: make this configurable.
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
-        st = get_save_type (max_val, min_val);
+        st = octave::get_save_type (max_val, min_val);
     }
 
   const Complex *mtmp = m.data ();
@@ -239,7 +239,7 @@ octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
   if (! is)
     return false;
 
-  matrix = m;
+  m_matrix = m;
 
   return true;
 }

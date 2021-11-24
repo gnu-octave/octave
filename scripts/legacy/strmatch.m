@@ -71,7 +71,7 @@ function idx = strmatch (s, A, exact)
              "strmatch is obsolete; use strncmp or strcmp instead\n");
   endif
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -162,7 +162,7 @@ endfunction
 ## Test input validation
 %!error <Invalid call to strmatch> strmatch ()
 %!error <Invalid call to strmatch> strmatch ("a")
-%!error <Invalid call to strmatch> strmatch ("a", "aaa", "exact", 1)
+%!error <called with too many inputs> strmatch ("a", "aaa", "exact", 1)
 %!error <S must contain only one string> strmatch ({"a", "b"}, "aaa")
 %!error <S must be a string> strmatch (1, "aaa")
 %!error <S must be a string> strmatch (char ("a", "bb"), "aaa")

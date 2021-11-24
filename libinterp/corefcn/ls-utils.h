@@ -30,10 +30,32 @@
 
 #include "data-conv.h"
 
-extern save_type
+OCTAVE_NAMESPACE_BEGIN
+
+extern OCTINTERP_API save_type
 get_save_type (double max_val, double min_val);
 
-extern save_type
+extern OCTINTERP_API save_type
 get_save_type (float max_val, float min_val);
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::get_save_type' instead")
+inline save_type
+get_save_type (double max_val, double min_val)
+{
+  return octave::get_save_type (max_val, min_val);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::get_save_type' instead")
+inline save_type
+get_save_type (float max_val, float min_val)
+{
+  return octave::get_save_type (max_val, min_val);
+}
+
+#endif
 
 #endif

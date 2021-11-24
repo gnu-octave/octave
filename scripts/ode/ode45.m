@@ -326,19 +326,19 @@ endfunction
 
 ## We are using the Van der Pol equation for all tests.
 ## Further tests also define a reference solution (computed at high accuracy)
-%!function ydot = fpol (t, y)  # The Van der Pol ODE
+%!function ydot = fpol (t, y, varargin)  # The Van der Pol ODE
 %!  ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
 %!function ref = fref ()       # The computed reference solution
 %!  ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = zeros (2,1);            # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
 %!function [val, trm, dir] = fevn (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = ones (2,1);             # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
@@ -401,7 +401,7 @@ endfunction
 %! assert ([sol.x(5)-sol.x(4)], [1e-3], 1e-3);
 %!test  # Solve with intermediate step
 %! [t, y] = ode45 (@fpol, [0 1 2], [2 0]);
-%! assert (any((t-1) == 0));
+%! assert (any ((t-1) == 0));
 %! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # Solve in backward direction starting at t=0
 %! vref = [-1.205364552835178, 0.951542399860817];
@@ -414,7 +414,7 @@ endfunction
 %!test  # Solve in backward direction starting at t=2, with intermediate step
 %! vref = [-1.205364552835178, 0.951542399860817];
 %! [t, y] = ode45 (@fpol, [2 0 -2], fref);
-%! idx = find(y < 0, 1, "first") - 1;
+%! idx = find (y < 0, 1, "first") - 1;
 %! assert ([t(idx), y(idx,:)], [0,2,0], 1e-2);
 %! assert ([t(end), y(end,:)], [-2, vref], 1e-2);
 %!test  # Solve another anonymous function in backward direction
@@ -510,13 +510,13 @@ endfunction
 
 %!test # Check that imaginary part of solution does not get inverted
 %! sol = ode45 (@(x,y) 1, [0 1], 1i);
-%! assert (imag (sol.y), ones (size (sol.y)))
+%! assert (imag (sol.y), ones (size (sol.y)));
 %! [x, y] = ode45 (@(x,y) 1, [0 1], 1i);
-%! assert (imag (y), ones (size (y)))
+%! assert (imag (y), ones (size (y)));
 
-%!error ode45 ()
-%!error ode45 (1)
-%!error ode45 (1,2)
+%!error <Invalid call> ode45 ()
+%!error <Invalid call> ode45 (1)
+%!error <Invalid call> ode45 (1,2)
 %!error <TRANGE must be a numeric> ode45 (@fpol, {[0 25]}, [3 15 1])
 %!error <TRANGE must be a .* vector> ode45 (@fpol, [0 25; 25 0], [3 15 1])
 %!error <TRANGE must contain at least 2 elements> ode45 (@fpol, [1], [3 15 1])

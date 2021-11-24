@@ -72,7 +72,7 @@
 
 function [v, d] = version (feature)
 
-  if (nargin > 1 || ((nargin != 0) && ((nargout > 1) || ! ischar (feature))))
+  if (nargin == 1 && (nargout > 1 || ! ischar (feature)))
     print_usage ();
   endif
 
@@ -81,7 +81,7 @@ function [v, d] = version (feature)
 
     if (nargout > 1)
       d = __octave_config_info__ ("release_date");
-    end
+    endif
   else
     switch (lower (feature))
       case "-date"

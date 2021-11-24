@@ -45,26 +45,26 @@ namespace octave
     public:
 
       base_file_stat (void)
-        : initialized (false), fail (false), errmsg (), m_mode (),
+        : m_initialized (false), m_fail (false), m_errmsg (), m_mode (),
           m_ino (), m_dev (), m_nlink (), m_uid (), m_gid (),
           m_size (), m_atime (), m_mtime (), m_ctime (), m_rdev (),
           m_blksize (), m_blocks () { }
 
       base_file_stat (const base_file_stat& fs)
-        : initialized (fs.initialized), fail (fs.fail), errmsg (fs.errmsg),
-          m_mode (fs.m_mode), m_ino (fs.m_ino), m_dev (fs.m_dev),
-          m_nlink (fs.m_nlink), m_uid (fs.m_uid), m_gid (fs.m_gid),
-          m_size (fs.m_size), m_atime (fs.m_atime), m_mtime (fs.m_mtime),
-          m_ctime (fs.m_ctime), m_rdev (fs.m_rdev),
+        : m_initialized (fs.m_initialized), m_fail (fs.m_fail),
+          m_errmsg (fs.m_errmsg), m_mode (fs.m_mode), m_ino (fs.m_ino),
+          m_dev (fs.m_dev), m_nlink (fs.m_nlink), m_uid (fs.m_uid),
+          m_gid (fs.m_gid), m_size (fs.m_size), m_atime (fs.m_atime),
+          m_mtime (fs.m_mtime), m_ctime (fs.m_ctime), m_rdev (fs.m_rdev),
           m_blksize (fs.m_blksize), m_blocks (fs.m_blocks) { }
 
       base_file_stat& operator = (const base_file_stat& fs)
       {
         if (this != &fs)
           {
-            initialized = fs.initialized;
-            fail = fs.fail;
-            errmsg = fs.errmsg;
+            m_initialized = fs.m_initialized;
+            m_fail = fs.m_fail;
+            m_errmsg = fs.m_errmsg;
             m_mode = fs.m_mode;
             m_ino = fs.m_ino;
             m_dev = fs.m_dev;
@@ -140,13 +140,13 @@ namespace octave
 
       std::string mode_as_string (void) const;
 
-      bool ok (void) const { return initialized && ! fail; }
+      bool ok (void) const { return m_initialized && ! m_fail; }
 
       operator bool () const { return ok (); }
 
       bool exists (void) const { return ok (); }
 
-      std::string error (void) const { return ok () ? "" : errmsg; }
+      std::string error (void) const { return ok () ? "" : m_errmsg; }
 
       // Has the file referenced by this object been modified since TIME?
       bool is_newer (const sys::time& time) const { return m_mtime > time; }
@@ -160,13 +160,13 @@ namespace octave
       virtual ~base_file_stat (void) = default;
 
       // TRUE means we have already called stat.
-      bool initialized;
+      bool m_initialized;
 
       // TRUE means the stat for this file failed.
-      bool fail;
+      bool m_fail;
 
       // If a failure occurs, this contains the system error text.
-      std::string errmsg;
+      std::string m_errmsg;
 
       // file type and permissions
       mode_t m_mode;
@@ -219,8 +219,8 @@ namespace octave
       file_stat (const std::string& n = "", bool fl = true);
 
       file_stat (const file_stat& fs)
-        : base_file_stat (fs), file_name (fs.file_name),
-          follow_links (fs.follow_links) { }
+        : base_file_stat (fs), m_file_name (fs.m_file_name),
+          m_follow_links (fs.m_follow_links) { }
 
       file_stat& operator = (const file_stat& fs)
       {
@@ -228,8 +228,8 @@ namespace octave
           {
             base_file_stat::operator = (fs);
 
-            file_name = fs.file_name;
-            follow_links = fs.follow_links;
+            m_file_name = fs.m_file_name;
+            m_follow_links = fs.m_follow_links;
           }
 
         return *this;
@@ -241,17 +241,17 @@ namespace octave
 
       void get_stats (bool force = false)
       {
-        if (! initialized || force)
+        if (! m_initialized || force)
           update_internal (force);
       }
 
       void get_stats (const std::string& n, bool force = false)
       {
-        if (n != file_name || ! initialized || force)
+        if (n != m_file_name || ! m_initialized || force)
           {
-            initialized = false;
+            m_initialized = false;
 
-            file_name = n;
+            m_file_name = n;
 
             update_internal (force);
           }
@@ -260,11 +260,11 @@ namespace octave
     private:
 
       // Name of the file.
-      std::string file_name;
+      std::string m_file_name;
 
       // TRUE means follow symbolic links to the ultimate file (stat).
       // FALSE means get information about the link itself (lstat).
-      bool follow_links;
+      bool m_follow_links;
 
       void update_internal (bool force = false);
     };
@@ -275,13 +275,13 @@ namespace octave
     {
     public:
 
-      file_fstat (int n) : base_file_stat (), fid (n)
+      file_fstat (int n) : base_file_stat (), m_fid (n)
       {
         update_internal ();
       }
 
       file_fstat (const file_fstat& fs)
-        : base_file_stat (fs), fid (fs.fid) { }
+        : base_file_stat (fs), m_fid (fs.m_fid) { }
 
       file_fstat& operator = (const file_fstat& fs)
       {
@@ -289,7 +289,7 @@ namespace octave
           {
             base_file_stat::operator = (fs);
 
-            fid = fs.fid;
+            m_fid = fs.m_fid;
           }
 
         return *this;
@@ -299,17 +299,17 @@ namespace octave
 
       void get_stats (bool force = false)
       {
-        if (! initialized || force)
+        if (! m_initialized || force)
           update_internal (force);
       }
 
       void get_stats (int n, bool force = false)
       {
-        if (n != fid || ! initialized || force)
+        if (n != m_fid || ! m_initialized || force)
           {
-            initialized = false;
+            m_initialized = false;
 
-            fid = n;
+            m_fid = n;
 
             update_internal (force);
           }
@@ -318,7 +318,7 @@ namespace octave
     private:
 
       // Open file descriptor.
-      int fid;
+      int m_fid;
 
       void update_internal (bool force = false);
     };

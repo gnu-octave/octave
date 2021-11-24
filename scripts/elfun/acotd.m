@@ -31,7 +31,7 @@
 
 function y = acotd (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -42,5 +42,4 @@ endfunction
 
 %!assert (acotd (0:10:90), 180/pi * acot (0:10:90), -10*eps)
 
-%!error acotd ()
-%!error acotd (1, 2)
+%!error <Invalid call> acotd ()

@@ -71,7 +71,7 @@ function h = trisurf (tri, x, y, z, varargin)
     varargin(1) = [];
     if (isvector (c))
       c = c(:);
-    end
+    endif
     if (rows (c) != numel (z) && rows (c) != rows (tri))
       error ("trisurf: the numbers of colors specified in C must equal the number of vertices in Z or the number of triangles in TRI");
     elseif (columns (c) != 1 && columns (c) != 3)
@@ -138,7 +138,7 @@ endfunction
 %! z = peaks (x, y);
 %! tri = delaunay (x(:), y(:));
 %! trisurf (tri, x(:), y(:), z(:));
-%! title ("trisurf() of sparsely-sampled triangulation of peaks()");
+%! title ("trisurf () of sparsely-sampled triangulation of peaks ()");
 
 %!demo
 %! clf;
@@ -171,10 +171,10 @@ endfunction
 %! title ({"trisurf() of random data", '"facecolor" = "interp", "edgecolor" = "white"'});
 
 ## Test input validation
-%!error trisurf ()
-%!error trisurf (1)
-%!error trisurf (1,2)
-%!error trisurf (1,2,3)
+%!error <Invalid call> trisurf ()
+%!error <Invalid call> trisurf (1)
+%!error <Invalid call> trisurf (1,2)
+%!error <Invalid call> trisurf (1,2,3)
 %!error <the numbers of colors> trisurf (1,2,3,4,[5 6])
 %!error <the numbers of colors> trisurf (1,2,3,4,[5 6]')
 %!error <the numbers of colors> trisurf ([1;1],[2;2],[3;3],[4;4], zeros (3,3))

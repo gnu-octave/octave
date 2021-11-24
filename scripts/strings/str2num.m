@@ -55,7 +55,7 @@
 
 function [m, state] = str2num (s)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! ischar (s))
     error ("str2num: S must be a string or string array");
@@ -90,6 +90,5 @@ endfunction
 %! assert (! state);
 
 ## Test input validation
-%!error str2num ()
-%!error str2num ("string", 1)
+%!error <Invalid call> str2num ()
 %!error <S must be a string> str2num ({"string"})

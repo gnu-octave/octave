@@ -92,37 +92,69 @@
 
 function C = nchoosek (v, k)
 
-  if (nargin != 2
-      || ! (isreal (k) && isscalar (k))
-      || ! (isnumeric (v) && isvector (v)))
+  if (nargin != 2)
     print_usage ();
   endif
-  if (k < 0 || k != fix (k))
+
+  if (! isvector (v))
+    error ("nchoosek: first argument must be a scalar or a vector");
+  endif
+  if (! (isreal (k) && isscalar (k) && k >= 0 && k == fix (k)))
     error ("nchoosek: K must be an integer >= 0");
-  elseif (isscalar (v) && (iscomplex (v) || v < k || v < 0 || v != fix (v)))
-    error ("nchoosek: N must be a non-negative integer >= K");
+  endif
+  if (isscalar (v))
+    if (isnumeric (v) && (iscomplex (v) || v < k || v < 0 || v != fix (v)))
+      error ("nchoosek: N must be a non-negative integer >= K");
+    endif
   endif
 
-  n = length (v);
+  n = numel (v);
 
-  if (n == 1)
-    ## Improve precision at next step.
+  if (n == 1 && isnumeric (v))
+    ## Improve precision over direct call to prod().
+    ## Steps: 1) Make a list of integers for numerator and denominator,
+    ## 2) filter out common factors, 3) multiply what remains.
     k = min (k, v-k);
-    C = round (prod ((v-k+1:v)./(1:k)));
-    if (C*2*k*eps >= 0.5)
+
+    ## For a ~25% performance boost, multiply values pairwise so there
+    ## are fewer elements in do/until loop which is the slow part.
+    ## Since Odd*Even is guaranteed to be Even, also take out a factor
+    ## of 2 from numerator and denominator.
+    if (rem (k, 2))  # k is odd
+      numer = [(v-k+1:v-(k+1)/2) .* (v-1:-1:v-(k-1)/2) / 2, v];
+      denom = [(1:k/2) .* (k-1:-1:(k+1)/2) / 2, k];
+    else             # k is even
+      numer = (v-k+1:v-k/2) .* (v:-1:v-k/2+1) / 2;
+      denom = (1:k/2) .* (k:-1:k/2+1) / 2;
+    endif
+
+    # Remove common factors from numerator and denominator
+    do
+      for i = numel (denom):-1:1
+        factors = gcd (denom(i), numer);
+        [f, j] = max (factors);
+        denom(i) /= f;
+        numer(j) /= f;
+      endfor
+      denom = denom(denom > 1);
+      numer = numer(numer > 1);
+    until (isempty (denom))
+
+    C = prod (numer);
+    if (C > flintmax)
       warning ("nchoosek: possible loss of precision");
     endif
   elseif (k == 0)
-    C = zeros (1,0);
+    C = v(zeros (1, 0));  # Return 1x0 object for Matlab compatibility
   elseif (k == 1)
     C = v(:);
   elseif (k == n)
     C = v(:).';
   elseif (k > n)
-    C = zeros (0, k, class (v));
+    C = v(zeros (0, k));  # return 0xk object for Matlab compatibility
   elseif (k == 2)
     ## Can do it without transpose.
-    x = repelems (v(1:n-1), [1:n-1; n-1:-1:1]).';
+    x = repelem (v(1:n-1), [n-1:-1:1]).';
     y = cat (1, cellslices (v(:), 2:n, n*ones (1, n-1)){:});
     C = [x, y];
   elseif (k < n)
@@ -133,7 +165,7 @@ function C = nchoosek (v, k)
       c = columns (C);
       cA = cellslices (C, l, c*ones (1, n-k+1), 2);
       l = c-l+1;
-      b = repelems (v(k-j+1:n-j+1), [1:n-k+1; l]);
+      b = repelem (v(k-j+1:n-j+1), l);
       C = [b; cA{:}];
       l = cumsum (l);
       l = [1, 1 + l(1:n-k)];
@@ -144,19 +176,105 @@ function C = nchoosek (v, k)
 endfunction
 
 
-%!assert (nchoosek (80,10), bincoeff (80,10))
-%!assert (nchoosek (1:5,3), [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
-%!assert (size (nchoosek (1:5,0)), [1 0])
+%!assert (nchoosek (80, 10), bincoeff (80, 10))
+%!assert (nchoosek (1:5, 3),
+%!        [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
+
+# Test basic behavior for various input types
+%!assert (nchoosek ('a':'b', 2), 'ab')
+%!assert (nchoosek ("a":"b", 2), "ab")
+%!assert (nchoosek ({1,2}, 2), {1,2})
+%!test
+%! s(1).a = 1;
+%! s(2).a = 2;
+%! assert (nchoosek (s, 1), s(:));
+%! assert (nchoosek (s, 2), s);
+
+# Verify Matlab compatibility of return sizes & types
+%!test
+%! x = nchoosek (1:2, 0);
+%! assert (size (x), [1, 0]);
+%! assert (isa (x, "double"));
+%! x = nchoosek (1:2, 3);
+%! assert (size (x), [0, 3]);
+%! assert (isa (x, "double"));
+
+%!test
+%! x = nchoosek (single (1:2), 0);
+%! assert (size (x), [1, 0]);
+%! assert (isa (x, "single"));
+%! x = nchoosek (single (1:2), 3);
+%! assert (size (x), [0, 3]);
+%! assert (isa (x, "single"));
+
+%!test
+%! x = nchoosek ('a':'b', 0);
+%! assert (size (x), [1, 0]);
+%! assert (is_sq_string (x));
+%! x = nchoosek ('a':'b', 3);
+%! assert (size (x), [0, 3]);
+%! assert (is_sq_string (x));
+
+%!test
+%! x = nchoosek ("a":"b", 0);
+%! assert (size (x), [1, 0]);
+%! assert (is_dq_string (x));
+%! x = nchoosek ("a":"b", 3);
+%! assert (size (x), [0, 3]);
+%! assert (is_dq_string (x));
+
+%!test
+%! x = nchoosek (uint8(1):uint8(2), 0);
+%! assert (size (x), [1, 0]);
+%! assert (isa (x, "uint8"));
+%! x = nchoosek (uint8(1):uint8(2), 3);
+%! assert (size (x), [0, 3]);
+%! assert (isa (x, "uint8"));
+
+%!test
+%! x = nchoosek ({1, 2}, 0);
+%! assert (size (x), [1, 0]);
+%! assert (iscell (x));
+%! x = nchoosek ({1, 2}, 3);
+%! assert (size (x), [0, 3]);
+%! assert (iscell (x));
+
+%!test
+%! s.a = [1 2 3];
+%! s.b = [4 5 6];
+%! x = nchoosek (s, 0);
+%! assert (size (x), [1, 0]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
+%! x = nchoosek (s, 3);
+%! assert (size (x), [0, 3]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
+
+%!test
+%! s.a = [1 2 3];
+%! s.b = [4 5 6];
+%! s(2).a = 1;  # make s a struct array rather than scalar struct
+%! s(3).b = 2;  # make s at least three elements for k == 2 test below
+%! x = nchoosek (s, 0);
+%! assert (size (x), [1, 0]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
+%! x = nchoosek (s, 2);
+%! assert (size (x), [3, 2]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
+%! x = nchoosek (s, 4);
+%! assert (size (x), [0, 4]);
+%! assert (isstruct (x));
+%! assert (fieldnames (x), {"a"; "b"});
 
 ## Test input validation
-%!error nchoosek ()
-%!error nchoosek (1)
-%!error nchoosek (1,2,3)
-
-%!error nchoosek (100, 2i)
-%!error nchoosek (100, [2 3])
-%!error nchoosek ("100", 45)
-%!error nchoosek (100*ones (2, 2), 45)
+%!error <Invalid call> nchoosek ()
+%!error <Invalid call> nchoosek (1)
+%!error <first argument must be a scalar or a vector> nchoosek (ones (3, 3), 1)
+%!error <K must be an integer .= 0> nchoosek (100, 2i)
+%!error <K must be an integer .= 0> nchoosek (100, [2 3])
 %!error <K must be an integer .= 0> nchoosek (100, -45)
 %!error <K must be an integer .= 0> nchoosek (100, 45.5)
 %!error <N must be a non-negative integer .= K> nchoosek (100i, 2)

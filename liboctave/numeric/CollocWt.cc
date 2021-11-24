@@ -45,463 +45,460 @@
 //
 // Translated to C++ by jwe.
 
-// Compute the first three derivatives of the node polynomial.
-//
-//                 n0     (alpha,beta)           n1
-//   p  (x)  =  (x)   *  p (x)         *  (1 - x)
-//    nt                   n
-//
-// at the interpolation points.  Each of the parameters n0 and n1
-// may be given the value 0 or 1.  The total number of points
-// nt = n + n0 + n1
-//
-// The values of root must be known before a call to dif is possible.
-// They may be computed using jcobi.
-
-static void
-dif (octave_idx_type nt, double *root, double *dif1, double *dif2,
-     double *dif3)
+namespace octave
 {
-  // Evaluate derivatives of node polynomial using recursion formulas.
+  // Compute the first three derivatives of the node polynomial.
+  //
+  //                 n0     (alpha,beta)           n1
+  //   p  (x)  =  (x)   *  p (x)         *  (1 - x)
+  //    nt                   n
+  //
+  // at the interpolation points.  Each of the parameters n0 and n1
+  // may be given the value 0 or 1.  The total number of points
+  // nt = n + n0 + n1
+  //
+  // The values of root must be known before a call to dif is possible.
+  // They may be computed using jcobi.
 
-  for (octave_idx_type i = 0; i < nt; i++)
-    {
-      double x = root[i];
+  static void dif (octave_idx_type nt, double *root, double *dif1,
+                   double *dif2, double *dif3)
+  {
+    // Evaluate derivatives of node polynomial using recursion formulas.
 
-      dif1[i] = 1.0;
-      dif2[i] = 0.0;
-      dif3[i] = 0.0;
+    for (octave_idx_type i = 0; i < nt; i++)
+      {
+        double x = root[i];
 
-      for (octave_idx_type j = 0; j < nt; j++)
-        {
-          if (j != i)
-            {
-              double y = x - root[j];
+        dif1[i] = 1.0;
+        dif2[i] = 0.0;
+        dif3[i] = 0.0;
 
-              dif3[i] = y * dif3[i] + 3.0 * dif2[i];
-              dif2[i] = y * dif2[i] + 2.0 * dif1[i];
-              dif1[i] = y * dif1[i];
-            }
-        }
-    }
-}
+        for (octave_idx_type j = 0; j < nt; j++)
+          {
+            if (j != i)
+              {
+                double y = x - root[j];
 
-// Compute the zeros of the Jacobi polynomial.
-//
-//    (alpha,beta)
-//   p  (x)
-//    n
-//
-// Use dif to compute the derivatives of the node
-// polynomial
-//
-//                 n0     (alpha,beta)           n1
-//   p  (x)  =  (x)   *  p (x)         *  (1 - x)
-//    nt                   n
-//
-// at the interpolation points.
-//
-// See Villadsen and Michelsen, pages 131-132 and 418.
-//
-// Input parameters:
-//
-//   nd     : the dimension of the vectors dif1, dif2, dif3, and root
-//
-//   n      : the degree of the jacobi polynomial, (i.e., the number
-//            of interior interpolation points)
-//
-//   n0     : determines whether x = 0 is included as an
-//            interpolation point
-//
-//              n0 = 0  ==>  x = 0 is not included
-//              n0 = 1  ==>  x = 0 is included
-//
-//   n1     : determines whether x = 1 is included as an
-//            interpolation point
-//
-//              n1 = 0  ==>  x = 1 is not included
-//              n1 = 1  ==>  x = 1 is included
-//
-//   alpha  : the value of alpha in the description of the jacobi
-//            polynomial
-//
-//   beta   : the value of beta in the description of the jacobi
-//            polynomial
-//
-//   For a more complete explanation of alpha an beta, see Villadsen
-//   and Michelsen, pages 57 to 59.
-//
-// Output parameters:
-//
-//   root   : one dimensional vector containing on exit the
-//            n + n0 + n1 zeros of the node polynomial used in the
-//            interpolation routine
-//
-//   dif1   : one dimensional vector containing the first derivative
-//            of the node polynomial at the zeros
-//
-//   dif2   : one dimensional vector containing the second derivative
-//            of the node polynomial at the zeros
-//
-//   dif3   : one dimensional vector containing the third derivative
-//            of the node polynomial at the zeros
+                dif3[i] = y * dif3[i] + 3.0 * dif2[i];
+                dif2[i] = y * dif2[i] + 2.0 * dif1[i];
+                dif1[i] = y * dif1[i];
+              }
+          }
+      }
+  }
 
-static bool
-jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
-       double alpha, double beta, double *dif1, double *dif2,
-       double *dif3, double *root)
-{
-  assert (n0 == 0 || n0 == 1);
-  assert (n1 == 0 || n1 == 1);
+  // Compute the zeros of the Jacobi polynomial.
+  //
+  //    (alpha,beta)
+  //   p  (x)
+  //    n
+  //
+  // Use dif to compute the derivatives of the node
+  // polynomial
+  //
+  //                 n0     (alpha,beta)           n1
+  //   p  (x)  =  (x)   *  p (x)         *  (1 - x)
+  //    nt                   n
+  //
+  // at the interpolation points.
+  //
+  // See Villadsen and Michelsen, pages 131-132 and 418.
+  //
+  // Input parameters:
+  //
+  //   nd     : the dimension of the vectors dif1, dif2, dif3, and root
+  //
+  //   n      : the degree of the jacobi polynomial, (i.e., the number
+  //            of interior interpolation points)
+  //
+  //   n0     : determines whether x = 0 is included as an
+  //            interpolation point
+  //
+  //              n0 = 0  ==>  x = 0 is not included
+  //              n0 = 1  ==>  x = 0 is included
+  //
+  //   n1     : determines whether x = 1 is included as an
+  //            interpolation point
+  //
+  //              n1 = 0  ==>  x = 1 is not included
+  //              n1 = 1  ==>  x = 1 is included
+  //
+  //   alpha  : the value of alpha in the description of the jacobi
+  //            polynomial
+  //
+  //   beta   : the value of beta in the description of the jacobi
+  //            polynomial
+  //
+  //   For a more complete explanation of alpha an beta, see Villadsen
+  //   and Michelsen, pages 57 to 59.
+  //
+  // Output parameters:
+  //
+  //   root   : one dimensional vector containing on exit the
+  //            n + n0 + n1 zeros of the node polynomial used in the
+  //            interpolation routine
+  //
+  //   dif1   : one dimensional vector containing the first derivative
+  //            of the node polynomial at the zeros
+  //
+  //   dif2   : one dimensional vector containing the second derivative
+  //            of the node polynomial at the zeros
+  //
+  //   dif3   : one dimensional vector containing the third derivative
+  //            of the node polynomial at the zeros
 
-  octave_idx_type nt = n + n0 + n1;
+  static bool jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
+                     double alpha, double beta, double *dif1, double *dif2,
+                     double *dif3, double *root)
+  {
+    assert (n0 == 0 || n0 == 1);
+    assert (n1 == 0 || n1 == 1);
 
-  assert (nt >= 1);
+    octave_idx_type nt = n + n0 + n1;
 
-// -- first evaluation of coefficients in recursion formulas.
-// -- recursion coefficients are stored in dif1 and dif2.
+    assert (nt >= 1);
 
-  double ab = alpha + beta;
-  double ad = beta - alpha;
-  double ap = beta * alpha;
+    // -- first evaluation of coefficients in recursion formulas.
+    // -- recursion coefficients are stored in dif1 and dif2.
 
-  dif1[0] = (ad / (ab + 2.0) + 1.0) / 2.0;
-  dif2[0] = 0.0;
+    double ab = alpha + beta;
+    double ad = beta - alpha;
+    double ap = beta * alpha;
 
-  if (n >= 2)
-    {
-      for (octave_idx_type i = 1; i < n; i++)
-        {
-          double z1 = i;
-          double z = ab + 2 * z1;
+    dif1[0] = (ad / (ab + 2.0) + 1.0) / 2.0;
+    dif2[0] = 0.0;
 
-          dif1[i] = (ab * ad / z / (z + 2.0) + 1.0) / 2.0;
+    if (n >= 2)
+      {
+        for (octave_idx_type i = 1; i < n; i++)
+          {
+            double z1 = i;
+            double z = ab + 2 * z1;
 
-          if (i == 1)
-            dif2[i] = (ab + ap + z1) / z / z / (z + 1.0);
-          else
-            {
-              z *= z;
-              double y = z1 * (ab + z1);
-              y *= (ap + y);
-              dif2[i] = y / z / (z - 1.0);
-            }
-        }
-    }
+            dif1[i] = (ab * ad / z / (z + 2.0) + 1.0) / 2.0;
 
-  // Root determination by Newton method with suppression of previously
-  // determined roots.
+            if (i == 1)
+              dif2[i] = (ab + ap + z1) / z / z / (z + 1.0);
+            else
+              {
+                z *= z;
+                double y = z1 * (ab + z1);
+                y *= (ap + y);
+                dif2[i] = y / z / (z - 1.0);
+              }
+          }
+      }
 
-  double x = 0.0;
+    // Root determination by Newton method with suppression of previously
+    // determined roots.
 
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      bool done = false;
+    double x = 0.0;
 
-      int k = 0;
+    for (octave_idx_type i = 0; i < n; i++)
+      {
+        bool done = false;
 
-      while (! done)
-        {
-          double xd = 0.0;
-          double xn = 1.0;
-          double xd1 = 0.0;
-          double xn1 = 0.0;
+        int k = 0;
 
-          for (octave_idx_type j = 0; j < n; j++)
-            {
-              double xp  = (dif1[j] - x) * xn  - dif2[j] * xd;
-              double xp1 = (dif1[j] - x) * xn1 - dif2[j] * xd1 - xn;
+        while (! done)
+          {
+            double xd = 0.0;
+            double xn = 1.0;
+            double xd1 = 0.0;
+            double xn1 = 0.0;
 
-              xd  = xn;
-              xd1 = xn1;
-              xn  = xp;
-              xn1 = xp1;
-            }
+            for (octave_idx_type j = 0; j < n; j++)
+              {
+                double xp  = (dif1[j] - x) * xn  - dif2[j] * xd;
+                double xp1 = (dif1[j] - x) * xn1 - dif2[j] * xd1 - xn;
 
-          double zc = 1.0;
-          double z = xn / xn1;
+                xd  = xn;
+                xd1 = xn1;
+                xn  = xp;
+                xn1 = xp1;
+              }
 
-          if (i != 0)
-            {
-              for (octave_idx_type j = 1; j <= i; j++)
-                zc -= z / (x - root[j-1]);
-            }
+            double zc = 1.0;
+            double z = xn / xn1;
 
-          z /= zc;
-          x -= z;
+            if (i != 0)
+              {
+                for (octave_idx_type j = 1; j <= i; j++)
+                  zc -= z / (x - root[j-1]);
+              }
 
-          // Famous last words:  100 iterations should be more than
-          // enough in all cases.
+            z /= zc;
+            x -= z;
 
-          if (++k > 100 || octave::math::isnan (z))
-            return false;
+            // Famous last words:  100 iterations should be more than
+            // enough in all cases.
 
-          if (std::abs (z) <= 100 * std::numeric_limits<double>::epsilon ())
-            done = true;
-        }
+            if (++k > 100 || math::isnan (z))
+              return false;
 
-      root[i] = x;
-      x += std::sqrt (std::numeric_limits<double>::epsilon ());
-    }
+            if (std::abs (z) <= 100 * std::numeric_limits<double>::epsilon ())
+              done = true;
+          }
 
-  // Add interpolation points at x = 0 and/or x = 1.
+        root[i] = x;
+        x += std::sqrt (std::numeric_limits<double>::epsilon ());
+      }
 
-  if (n0 != 0)
-    {
-      for (octave_idx_type i = n; i > 0; i--)
-        root[i] = root[i-1];
+    // Add interpolation points at x = 0 and/or x = 1.
 
-      root[0] = 0.0;
-    }
+    if (n0 != 0)
+      {
+        for (octave_idx_type i = n; i > 0; i--)
+          root[i] = root[i-1];
 
-  if (n1 != 0)
-    root[nt-1] = 1.0;
+        root[0] = 0.0;
+      }
 
-  dif (nt, root, dif1, dif2, dif3);
+    if (n1 != 0)
+      root[nt-1] = 1.0;
 
-  return true;
-}
+    dif (nt, root, dif1, dif2, dif3);
 
-// Compute derivative weights for orthogonal collocation.
-//
-// See Villadsen and Michelsen, pages 133-134, 419.
-//
-// Input parameters:
-//
-//   nd     : the dimension of the vectors dif1, dif2, dif3, and root
-//
-//   n      : the degree of the jacobi polynomial, (i.e., the number
-//            of interior interpolation points)
-//
-//   n0     : determines whether x = 0 is included as an
-//            interpolation point
-//
-//              n0 = 0  ==>  x = 0 is not included
-//              n0 = 1  ==>  x = 0 is included
-//
-//   n1     : determines whether x = 1 is included as an
-//            interpolation point
-//
-//              n1 = 0  ==>  x = 1 is not included
-//              n1 = 1  ==>  x = 1 is included
-//
-//   i      : the index of the node for which the weights are to be
-//            calculated
-//
-//   id     : indicator
-//
-//              id = 1  ==>  first derivative weights are computed
-//              id = 2  ==>  second derivative weights are computed
-//              id = 3  ==>  gaussian weights are computed (in this
-//                           case, the value of i is irrelevant)
-//
-// Output parameters:
-//
-//   dif1   : one dimensional vector containing the first derivative
-//            of the node polynomial at the zeros
-//
-//   dif2   : one dimensional vector containing the second derivative
-//            of the node polynomial at the zeros
-//
-//   dif3   : one dimensional vector containing the third derivative
-//            of the node polynomial at the zeros
-//
-//   vect   : one dimensional vector of computed weights
+    return true;
+  }
 
-static void
-dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
-       octave_idx_type i, octave_idx_type id, double *dif1,
-       double *dif2, double *dif3, double *root, double *vect)
-{
-  assert (n0 == 0 || n0 == 1);
-  assert (n1 == 0 || n1 == 1);
+  // Compute derivative weights for orthogonal collocation.
+  //
+  // See Villadsen and Michelsen, pages 133-134, 419.
+  //
+  // Input parameters:
+  //
+  //   nd     : the dimension of the vectors dif1, dif2, dif3, and root
+  //
+  //   n      : the degree of the jacobi polynomial, (i.e., the number
+  //            of interior interpolation points)
+  //
+  //   n0     : determines whether x = 0 is included as an
+  //            interpolation point
+  //
+  //              n0 = 0  ==>  x = 0 is not included
+  //              n0 = 1  ==>  x = 0 is included
+  //
+  //   n1     : determines whether x = 1 is included as an
+  //            interpolation point
+  //
+  //              n1 = 0  ==>  x = 1 is not included
+  //              n1 = 1  ==>  x = 1 is included
+  //
+  //   i      : the index of the node for which the weights are to be
+  //            calculated
+  //
+  //   id     : indicator
+  //
+  //              id = 1  ==>  first derivative weights are computed
+  //              id = 2  ==>  second derivative weights are computed
+  //              id = 3  ==>  gaussian weights are computed (in this
+  //                           case, the value of i is irrelevant)
+  //
+  // Output parameters:
+  //
+  //   dif1   : one dimensional vector containing the first derivative
+  //            of the node polynomial at the zeros
+  //
+  //   dif2   : one dimensional vector containing the second derivative
+  //            of the node polynomial at the zeros
+  //
+  //   dif3   : one dimensional vector containing the third derivative
+  //            of the node polynomial at the zeros
+  //
+  //   vect   : one dimensional vector of computed weights
 
-  octave_idx_type nt = n + n0 + n1;
+  static void dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
+                     octave_idx_type i, octave_idx_type id, double *dif1,
+                     double *dif2, double *dif3, double *root, double *vect)
+  {
+    assert (n0 == 0 || n0 == 1);
+    assert (n1 == 0 || n1 == 1);
 
-  assert (nt >= 1);
+    octave_idx_type nt = n + n0 + n1;
 
-  assert (id == 1 || id == 2 || id == 3);
+    assert (nt >= 1);
 
-  if (id != 3)
-    assert (i >= 0 && i < nt);
+    assert (id == 1 || id == 2 || id == 3);
 
-  // Evaluate discretization matrices and Gaussian quadrature weights.
-  // Quadrature weights are normalized to sum to one.
+    if (id != 3)
+      assert (i >= 0 && i < nt);
 
-  if (id != 3)
-    {
-      for (octave_idx_type j = 0; j < nt; j++)
-        {
-          if (j == i)
-            {
-              if (id == 1)
-                vect[i] = dif2[i] / dif1[i] / 2.0;
-              else
-                vect[i] = dif3[i] / dif1[i] / 3.0;
-            }
-          else
-            {
-              double y = root[i] - root[j];
+    // Evaluate discretization matrices and Gaussian quadrature weights.
+    // Quadrature weights are normalized to sum to one.
 
-              vect[j] = dif1[i] / dif1[j] / y;
+    if (id != 3)
+      {
+        for (octave_idx_type j = 0; j < nt; j++)
+          {
+            if (j == i)
+              {
+                if (id == 1)
+                  vect[i] = dif2[i] / dif1[i] / 2.0;
+                else
+                  vect[i] = dif3[i] / dif1[i] / 3.0;
+              }
+            else
+              {
+                double y = root[i] - root[j];
 
-              if (id == 2)
-                vect[j] = vect[j] * (dif2[i] / dif1[i] - 2.0 / y);
-            }
-        }
-    }
-  else
-    {
-      double y = 0.0;
+                vect[j] = dif1[i] / dif1[j] / y;
 
-      for (octave_idx_type j = 0; j < nt; j++)
-        {
-          double x = root[j];
+                if (id == 2)
+                  vect[j] = vect[j] * (dif2[i] / dif1[i] - 2.0 / y);
+              }
+          }
+      }
+    else
+      {
+        double y = 0.0;
 
-          double ax = x * (1.0 - x);
+        for (octave_idx_type j = 0; j < nt; j++)
+          {
+            double x = root[j];
 
-          if (n0 == 0)
-            ax = ax / x / x;
+            double ax = x * (1.0 - x);
 
-          if (n1 == 0)
-            ax = ax / (1.0 - x) / (1.0 - x);
+            if (n0 == 0)
+              ax = ax / x / x;
 
-          vect[j] = ax / (dif1[j] * dif1[j]);
+            if (n1 == 0)
+              ax = ax / (1.0 - x) / (1.0 - x);
 
-          y += vect[j];
-        }
+            vect[j] = ax / (dif1[j] * dif1[j]);
 
-      for (octave_idx_type j = 0; j < nt; j++)
-        vect[j] = vect[j] / y;
-    }
-}
+            y += vect[j];
+          }
 
-// Error handling.
+        for (octave_idx_type j = 0; j < nt; j++)
+          vect[j] = vect[j] / y;
+      }
+  }
 
-void
-CollocWt::error (const char *msg)
-{
-  (*current_liboctave_error_handler) ("CollocWt: fatal error '%s'", msg);
-}
+  // Error handling.
 
-CollocWt&
-CollocWt::set_left (double val)
-{
-  if (val >= rb)
-    error ("CollocWt: left bound greater than right bound");
+  void CollocWt::error (const char *msg)
+  {
+    (*current_liboctave_error_handler) ("CollocWt: fatal error '%s'", msg);
+  }
 
-  lb = val;
-  initialized = 0;
-  return *this;
-}
+  CollocWt& CollocWt::set_left (double val)
+  {
+    if (val >= m_rb)
+      error ("CollocWt: left bound greater than right bound");
 
-CollocWt&
-CollocWt::set_right (double val)
-{
-  if (val <= lb)
-    error ("CollocWt: right bound less than left bound");
+    m_lb = val;
+    m_initialized = 0;
+    return *this;
+  }
 
-  rb = val;
-  initialized = 0;
-  return *this;
-}
+  CollocWt& CollocWt::set_right (double val)
+  {
+    if (val <= m_lb)
+      error ("CollocWt: right bound less than left bound");
 
-void
-CollocWt::init (void)
-{
-  // Check for possible errors.
+    m_rb = val;
+    m_initialized = 0;
+    return *this;
+  }
 
-  double wid = rb - lb;
-  if (wid <= 0.0)
-    {
-      error ("CollocWt: width less than or equal to zero");
+  void CollocWt::init (void)
+  {
+    // Check for possible errors.
+
+    double wid = m_rb - m_lb;
+    if (wid <= 0.0)
+      {
+        error ("CollocWt: width less than or equal to zero");
+      }
+
+    octave_idx_type nt = m_n + m_inc_left + m_inc_right;
+
+    if (nt < 0)
+      error ("CollocWt: total number of collocation points less than zero");
+    else if (nt == 0)
       return;
-    }
 
-  octave_idx_type nt = n + inc_left + inc_right;
+    Array<double> dif1 (dim_vector (nt, 1));
+    double *pdif1 = dif1.fortran_vec ();
 
-  if (nt < 0)
-    error ("CollocWt: total number of collocation points less than zero");
-  else if (nt == 0)
-    return;
+    Array<double> dif2 (dim_vector (nt, 1));
+    double *pdif2 = dif2.fortran_vec ();
 
-  Array<double> dif1 (dim_vector (nt, 1));
-  double *pdif1 = dif1.fortran_vec ();
+    Array<double> dif3 (dim_vector (nt, 1));
+    double *pdif3 = dif3.fortran_vec ();
 
-  Array<double> dif2 (dim_vector (nt, 1));
-  double *pdif2 = dif2.fortran_vec ();
+    Array<double> vect (dim_vector (nt, 1));
+    double *pvect = vect.fortran_vec ();
 
-  Array<double> dif3 (dim_vector (nt, 1));
-  double *pdif3 = dif3.fortran_vec ();
+    m_r.resize (nt, 1);
+    m_q.resize (nt, 1);
+    m_A.resize (nt, nt);
+    m_B.resize (nt, nt);
 
-  Array<double> vect (dim_vector (nt, 1));
-  double *pvect = vect.fortran_vec ();
+    double *pr = m_r.fortran_vec ();
 
-  r.resize (nt, 1);
-  q.resize (nt, 1);
-  A.resize (nt, nt);
-  B.resize (nt, nt);
+    // Compute roots.
 
-  double *pr = r.fortran_vec ();
+    if (! jcobi (m_n, m_inc_left, m_inc_right, m_alpha, m_beta, pdif1,
+                 pdif2, pdif3, pr))
+      error ("jcobi: newton iteration failed");
 
-  // Compute roots.
+    octave_idx_type id;
 
-  if (! jcobi (n, inc_left, inc_right, Alpha, Beta, pdif1, pdif2, pdif3, pr))
-    error ("jcobi: newton iteration failed");
+    // First derivative weights.
 
-  octave_idx_type id;
+    id = 1;
+    for (octave_idx_type i = 0; i < nt; i++)
+      {
+        dfopr (m_n, m_inc_left, m_inc_right, i, id, pdif1, pdif2, pdif3,
+               pr, pvect);
 
-  // First derivative weights.
+        for (octave_idx_type j = 0; j < nt; j++)
+          m_A(i,j) = vect(j);
+      }
 
-  id = 1;
-  for (octave_idx_type i = 0; i < nt; i++)
-    {
-      dfopr (n, inc_left, inc_right, i, id, pdif1, pdif2, pdif3, pr, pvect);
+    // Second derivative weights.
 
-      for (octave_idx_type j = 0; j < nt; j++)
-        A(i,j) = vect(j);
-    }
+    id = 2;
+    for (octave_idx_type i = 0; i < nt; i++)
+      {
+        dfopr (m_n, m_inc_left, m_inc_right, i, id, pdif1, pdif2, pdif3,
+               pr, pvect);
 
-  // Second derivative weights.
+        for (octave_idx_type j = 0; j < nt; j++)
+          m_B(i,j) = vect(j);
+      }
 
-  id = 2;
-  for (octave_idx_type i = 0; i < nt; i++)
-    {
-      dfopr (n, inc_left, inc_right, i, id, pdif1, pdif2, pdif3, pr, pvect);
+    // Gaussian quadrature weights.
 
-      for (octave_idx_type j = 0; j < nt; j++)
-        B(i,j) = vect(j);
-    }
+    id = 3;
+    double *pq = m_q.fortran_vec ();
+    dfopr (m_n, m_inc_left, m_inc_right, id, id, pdif1, pdif2, pdif3, pr, pq);
 
-  // Gaussian quadrature weights.
+    m_initialized = 1;
+  }
 
-  id = 3;
-  double *pq = q.fortran_vec ();
-  dfopr (n, inc_left, inc_right, id, id, pdif1, pdif2, pdif3, pr, pq);
+  std::ostream& operator << (std::ostream& os, const CollocWt& a)
+  {
+    if (a.left_included ())
+      os << "left  boundary is included\n";
+    else
+      os << "left  boundary is not included\n";
 
-  initialized = 1;
-}
+    if (a.right_included ())
+      os << "right boundary is included\n";
+    else
+      os << "right boundary is not included\n";
 
-std::ostream&
-operator << (std::ostream& os, const CollocWt& a)
-{
-  if (a.left_included ())
-    os << "left  boundary is included\n";
-  else
-    os << "left  boundary is not included\n";
+    os << "\n";
 
-  if (a.right_included ())
-    os << "right boundary is included\n";
-  else
-    os << "right boundary is not included\n";
+    os << a.m_alpha << ' ' << a.m_beta << "\n\n"
+       << a.m_r << "\n\n"
+       << a.m_q << "\n\n"
+       << a.m_A << "\n"
+       << a.m_B << "\n";
 
-  os << "\n";
-
-  os << a.Alpha << ' ' << a.Beta << "\n\n"
-     << a.r << "\n\n"
-     << a.q << "\n\n"
-     << a.A << "\n"
-     << a.B << "\n";
-
-  return os;
+    return os;
+  }
 }

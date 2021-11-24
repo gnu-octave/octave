@@ -46,7 +46,7 @@
 #include "file-stat.h"
 #include "kpse.h"
 #include "oct-env.h"
-#include "oct-passwd.h"
+#include "oct-password.h"
 #include "oct-time.h"
 #include "pathsearch.h"
 #include "unistd-wrappers.h"
@@ -346,6 +346,8 @@ path_search (const std::string& path, const std::string& name, bool all)
               elt = elt.substr (1);
             }
         }
+#if (! defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+     && ! defined (DOUBLE_SLASH_IS_DISTINCT_ROOT))
       else
         {
           /* We never want to search the whole disk.  */
@@ -353,6 +355,7 @@ path_search (const std::string& path, const std::string& name, bool all)
                  && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
             elt = elt.substr (1);
         }
+#endif
 
       /* Our caller (search), also tests first_search, and does
          the resetting.  */
@@ -423,9 +426,12 @@ kpse_tilde_expand (const std::string& name)
 
       std::size_t home_len = home.length ();
 
+#if (! defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+     && ! defined (DOUBLE_SLASH_IS_DISTINCT_ROOT))
       /* handle leading // */
       if (home_len > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
         home = home.substr (1);
+#endif
 
       /* omit / after ~ */
       if (IS_DIR_SEP (home[home_len - 1]))
@@ -457,9 +463,12 @@ kpse_tilde_expand (const std::string& name)
       if (home.empty ())
         home = ".";
 
+#  if (! defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+       && ! defined (DOUBLE_SLASH_IS_DISTINCT_ROOT))
       /* handle leading // */
       if (home.length () > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
         home = home.substr (1);
+#  endif
 
       /* If HOME ends in /, omit the / after ~user. */
       if (name.length () > c && IS_DIR_SEP (home.back ()))
@@ -590,6 +599,8 @@ path_find_first_of (const std::string& path,
               elt = elt.substr (1);
             }
         }
+#if (! defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+     && ! defined (DOUBLE_SLASH_IS_DISTINCT_ROOT))
       else
         {
           /* We never want to search the whole disk.  */
@@ -597,6 +608,7 @@ path_find_first_of (const std::string& path,
                  && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
             elt = elt.substr (1);
         }
+#endif
 
       /* We have to search one directory at a time.  */
       dir = kpse_element_dir (elt);
@@ -766,6 +778,8 @@ kpse_path_expand (const std::string& path)
               elt = elt.substr (1);
             }
         }
+#if (! defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+     && ! defined (DOUBLE_SLASH_IS_DISTINCT_ROOT))
       else
         {
           /* We never want to search the whole disk.  */
@@ -773,6 +787,7 @@ kpse_path_expand (const std::string& path)
                  && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
             elt = elt.substr (1);
         }
+#endif
 
       /* Search the disk for all dirs in the component specified.
          Be faster to check the database, but this is more reliable.  */

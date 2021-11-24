@@ -37,18 +37,16 @@
 #include "oct-map.h"
 
 class octave_value_list;
-namespace octave
-{
-  class execution_exception;
-}
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
+class execution_exception;
+
   class error_system
   {
   public:
 
-    error_system (interpreter& interp);
+    OCTINTERP_API error_system (interpreter& interp);
 
     error_system (const error_system&) = delete;
 
@@ -56,7 +54,8 @@ namespace octave
 
     ~error_system (void) = default;
 
-    octave_value debug_on_error (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    debug_on_error (const octave_value_list& args, int nargout);
 
     void set_debug_on_error (bool flag) { m_debug_on_error = flag; }
 
@@ -69,7 +68,8 @@ namespace octave
       return val;
     }
 
-    octave_value debug_on_caught (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    debug_on_caught (const octave_value_list& args, int nargout);
 
     void set_debug_on_caught (bool flag) { m_debug_on_caught = flag; }
 
@@ -82,7 +82,8 @@ namespace octave
       return val;
     }
 
-    octave_value debug_on_warning (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    debug_on_warning (const octave_value_list& args, int nargout);
 
     void set_debug_on_warning (bool flag) { m_debug_on_warning = flag; }
 
@@ -95,12 +96,18 @@ namespace octave
       return val;
     }
 
-    octave_value discard_warning_messages (const octave_value_list& args,
-                                           int nargout);
+    OCTINTERP_API octave_value
+    discard_warning_messages (const octave_value_list& args, int nargout);
 
-    void set_discard_warning_messages (bool flag) { m_discard_warning_messages = flag; }
+    void set_discard_warning_messages (bool flag)
+    {
+      m_discard_warning_messages = flag;
+    }
 
-    bool discard_warning_messages (void) const { return m_discard_warning_messages; }
+    bool discard_warning_messages (void) const
+    {
+      return m_discard_warning_messages;
+    }
 
     bool discard_warning_messages (bool flag)
     {
@@ -109,7 +116,8 @@ namespace octave
       return val;
     }
 
-    octave_value beep_on_error (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    beep_on_error (const octave_value_list& args, int nargout);
 
     void set_beep_on_error (bool flag) { m_beep_on_error = flag; }
 
@@ -122,7 +130,8 @@ namespace octave
       return val;
     }
 
-    octave_value backtrace_on_warning (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    backtrace_on_warning (const octave_value_list& args, int nargout);
 
     void set_backtrace_on_warning (bool flag) { m_backtrace_on_warning = flag; }
 
@@ -135,7 +144,8 @@ namespace octave
       return val;
     }
 
-    octave_value verbose_warning (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    verbose_warning (const octave_value_list& args, int nargout);
 
     void set_verbose_warning (bool flag) { m_verbose_warning = flag; }
 
@@ -148,7 +158,8 @@ namespace octave
       return val;
     }
 
-    octave_value quiet_warning (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    quiet_warning (const octave_value_list& args, int nargout);
 
     void set_quiet_warning (bool flag) { m_quiet_warning = flag; }
 
@@ -172,9 +183,13 @@ namespace octave
       return val;
     }
 
-    octave_value last_error_message (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    last_error_message (const octave_value_list& args, int nargout);
 
-    void set_last_error_message (const std::string& val) { m_last_error_message = val; }
+    void set_last_error_message (const std::string& val)
+    {
+      m_last_error_message = val;
+    }
 
     std::string last_error_message (void) const { return m_last_error_message; }
 
@@ -185,7 +200,8 @@ namespace octave
       return val;
     }
 
-    octave_value last_warning_message (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    last_warning_message (const octave_value_list& args, int nargout);
 
     void set_last_warning_message (const std::string& val) { m_last_warning_message = val; }
 
@@ -198,7 +214,8 @@ namespace octave
       return val;
     }
 
-    octave_value last_warning_id (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    last_warning_id (const octave_value_list& args, int nargout);
 
     void set_last_warning_id (const std::string& val) { m_last_warning_id = val; }
 
@@ -211,7 +228,8 @@ namespace octave
       return val;
     }
 
-    octave_value last_error_id (const octave_value_list& args, int nargout);
+    OCTINTERP_API octave_value
+    last_error_id (const octave_value_list& args, int nargout);
 
     void set_last_error_id (const std::string& val) { m_last_error_id = val; }
 
@@ -238,78 +256,90 @@ namespace octave
       return val;
     }
 
-    static octave_map
-    make_stack_map (const std::list<octave::frame_info>& frames);
+    static OCTINTERP_API octave_map
+    make_stack_map (const std::list<frame_info>& frames);
 
-    static std::list<octave::frame_info>
+    static OCTINTERP_API std::list<frame_info>
     make_stack_frame_list (const octave_map& stack);
 
     //! For given warning ID, return 0 if warnings are disabled, 1 if
     //! enabled, and 2 if the given ID should be an error instead of a
     //! warning.
 
-    int warning_enabled (const std::string& id);
+    OCTINTERP_API int warning_enabled (const std::string& id);
 
-    void verror (bool save_last_error, std::ostream& os, const char *name,
-                 const char *id, const char *fmt, va_list args,
-                 bool with_cfn = false);
+    OCTINTERP_API void
+    verror (bool save_last_error, std::ostream& os, const char *name,
+            const char *id, const char *fmt, va_list args,
+            bool with_cfn = false);
 
-    void vwarning (const char *name, const char *id, const char *fmt,
-                   va_list args);
-
-    OCTAVE_NORETURN
-    void error_1 (execution_exception& e, const char *id, const char *fmt,
-                  va_list args);
+    OCTINTERP_API void
+    vwarning (const char *name, const char *id, const char *fmt,
+              va_list args);
 
     OCTAVE_NORETURN
-    void error_1 (const char *id, const char *fmt, va_list args);
+    OCTINTERP_API void
+    error_1 (execution_exception& ee, const char *id, const char *fmt,
+             va_list args);
 
     OCTAVE_NORETURN
-    void vusage (const char *id, const char *fmt, va_list args);
-
-    void vwarning (const char *id, const char *fmt, va_list args);
+    OCTINTERP_API void error_1 (const char *id, const char *fmt, va_list args);
 
     OCTAVE_NORETURN
-    void rethrow_error (const std::string& id, const std::string& msg,
-                        const octave_map& stack);
+    OCTINTERP_API void vusage (const char *id, const char *fmt, va_list args);
+
+    OCTINTERP_API void vwarning (const char *id, const char *fmt, va_list args);
 
     OCTAVE_NORETURN
-    void vpanic (const char *fmt, va_list args);
+    OCTINTERP_API void
+    rethrow_error (const std::string& id, const std::string& msg,
+                   const octave_map& stack);
 
     OCTAVE_NORETURN
-    void panic (const char *fmt, ...);
+    OCTINTERP_API void vpanic (const char *fmt, va_list args);
 
-    octave_scalar_map warning_query (const std::string& id_arg);
+    OCTAVE_NORETURN
+    OCTINTERP_API void panic (const char *fmt, ...);
 
-    std::string default_warning_state (void);
+    OCTINTERP_API octave_scalar_map warning_query (const std::string& id_arg);
 
-    void display_warning_options (std::ostream& os);
+    OCTINTERP_API std::string default_warning_state (void);
 
-    void set_warning_option (const std::string& state, const std::string& id);
+    OCTINTERP_API void display_warning_options (std::ostream& os);
 
-    void disable_warning (const std::string& id);
+    OCTINTERP_API void
+    set_warning_option (const std::string& state, const std::string& id);
 
-    void initialize_default_warning_state (void);
+    OCTINTERP_API void disable_warning (const std::string& id);
 
-    void interpreter_try (octave::unwind_protect& frame);
+    OCTINTERP_API void initialize_default_warning_state (void);
+
+    OCTINTERP_API void interpreter_try (unwind_protect& frame);
 
     // Throw execution_exception or, if debug_on_error is TRUE, enter
     // debugger.  If stack_info is empty, use current call stack.
 
     OCTAVE_NORETURN
-    void throw_error (const std::string& err_type,
-                      const std::string& id,
-                      const std::string& message,
-                      const std::list<frame_info>& stack_info
-                        = std::list<frame_info> ());
+    OCTINTERP_API void
+    throw_error (const std::string& err_type,
+                 const std::string& id,
+                 const std::string& message,
+                 const std::list<frame_info>& stack_info
+                 = std::list<frame_info> ());
 
     OCTAVE_NORETURN
-    void throw_error (execution_exception& e);
+    OCTINTERP_API void throw_error (execution_exception& ee);
 
-    void save_exception (const execution_exception& e);
+    OCTINTERP_API void save_exception (const execution_exception& ee);
 
-    void display_exception (const execution_exception& e,
-                            std::ostream& os) const;
+    // FIXME
+    //#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+    OCTAVE_DEPRECATED (7, "second argument is no longer accepted")
+    OCTINTERP_API void display_exception (const execution_exception& ee,
+                                          std::ostream& os) const;
+    //#endif
+
+    OCTINTERP_API void display_exception (const execution_exception& ee) const;
 
   private:
 
@@ -369,7 +399,8 @@ namespace octave
     //! The last file in which an error occurred.
     octave_map m_last_error_stack;
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 // FIXME: should we move the following functions inside the octave
 // namespace?  If so, should the functions outside of the namespace be
@@ -379,8 +410,6 @@ namespace octave
 
 #define panic_impossible()                                              \
   panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
-
-extern OCTINTERP_API int warning_enabled (const std::string& id);
 
 extern OCTINTERP_API void
 vmessage (const char *name, const char *fmt, va_list args);
@@ -477,9 +506,13 @@ OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN
 extern OCTINTERP_API void panic (const char *fmt, ...);
 
+OCTAVE_NAMESPACE_BEGIN
+
 //! Helper function for print_usage defined in defun.cc.
 
 extern OCTINTERP_API void defun_usage_message (const std::string& msg);
+
+// Convenience functions.
 
 extern OCTINTERP_API octave_value_list
 set_warning_state (const std::string& id, const std::string& state);
@@ -487,14 +520,60 @@ set_warning_state (const std::string& id, const std::string& state);
 extern OCTINTERP_API octave_value_list
 set_warning_state (const octave_value_list& args);
 
+extern OCTINTERP_API int warning_enabled (const std::string& id);
+
 extern OCTINTERP_API void disable_warning (const std::string& id);
 
 extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
-OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
-extern OCTINTERP_API int error_state;
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+OCTAVE_DEPRECATED (7, "use 'octave::defun_usage_message' instead")
+inline void defun_usage_message (const std::string& msg)
+{
+  octave::defun_usage_message (msg);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_warning_state' instead")
+inline octave_value_list
+set_warning_state (const std::string& id, const std::string& state)
+{
+  return octave::set_warning_state (id, state);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_warning_state' instead")
+inline octave_value_list set_warning_state (const octave_value_list& args)
+{
+  return octave::set_warning_state (args);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::warning_enabled' instead")
+inline int warning_enabled (const std::string& id)
+{
+  return octave::warning_enabled (id);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::disable_warning' instead")
+inline void disable_warning (const std::string& id)
+{
+  octave::disable_warning (id);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::interpreter_try' instead")
+inline void interpreter_try (octave::unwind_protect& uwp)
+{
+  octave::interpreter_try (uwp);
+}
 
 OCTAVE_DEPRECATED (6, "this function is obsolete and should not be needed")
 inline void reset_error_handler (void) { }
+#endif
+
+// This symbol must have be declared with the correct visibility
+// attributes when Octave is built, so it must appear unconditionally in
+// this header file.
+OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
+extern OCTINTERP_API int error_state;
 
 #endif

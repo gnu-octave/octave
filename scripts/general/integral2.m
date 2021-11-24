@@ -271,7 +271,8 @@ endfunction
 %! f = @(x, y) 9 * x.^2 + 15 * y.^2;
 %!assert (integral2 (f, 0, 5, -5, 0, "AbsTol", 1e-9), 5000, 1e-9)
 %!assert (integral2 (f, 0, 5, -5, 0, "RelTol", 1e-5), 5000, -1e-5)
-%!assert (integral2 (f, 0, 5, -5, 0, "RelTol", 1e-6, "AbsTol", 1e-9), 5000, 1e-9)
+%!assert (integral2 (f, 0, 5, -5, 0, "RelTol", 1e-6, "AbsTol", 1e-9),
+%!        5000, 1e-9)
 
 ## tests from dblquad
 %!test
@@ -303,12 +304,12 @@ endfunction
 %!assert (integral2 (@plus, 1, 2, 3, 4, "method", "iterated"), 5, 1e-10)
 
 ## Test input validation
-%!error integral2 ()
-%!error integral2 (@plus)
-%!error integral2 (@plus, 1)
-%!error integral2 (@plus, 1, 2)
-%!error integral2 (@plus, 1, 2, 3)
-%!error integral2 (@plus, 1, 2, 3, 4, "foo")
+%!error <Invalid call> integral2 ()
+%!error <Invalid call> integral2 (@plus)
+%!error <Invalid call> integral2 (@plus, 1)
+%!error <Invalid call> integral2 (@plus, 1, 2)
+%!error <Invalid call> integral2 (@plus, 1, 2, 3)
+%!error <Invalid call> integral2 (@plus, 1, 2, 3, 4, "foo")
 %!error integral2 (0, 1, 2, 3, 4)          # f must be function handle
 %!error integral2 (@plus, 1i, 2, 3, 4)     # real limits
 %!error integral2 (@plus, 1, 2i, 3, 4)     # real limits

@@ -283,7 +283,7 @@ endfunction
 %! [vt, vy] = ode23s (fun, [0 20], [2 0]);
 %! toc ()
 %! ## Plotting the result
-%! plot(vt,vy(:,1),'-o');
+%! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
@@ -295,7 +295,7 @@ endfunction
 %! [vt, vy] = ode23s (fun, [0 20], [2 0], odeopts);
 %! toc ()
 %! ## Plotting the result
-%! plot(vt,vy(:,1),'-o');
+%! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
@@ -306,7 +306,7 @@ endfunction
 %! [vt, vy] = ode23s (fun, [0 200], [2 0]);
 %! toc ()
 %! ## Plotting the result
-%! plot(vt,vy(:,1),'-o');
+%! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
@@ -318,7 +318,7 @@ endfunction
 %! [vt, vy] = ode23s (fun, [0 200], [2 0], odeopts);
 %! toc ()
 %! ## Plotting the result
-%! plot(vt,vy(:,1),'-o');
+%! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demonstrate convergence order for ode23s
@@ -357,7 +357,7 @@ endfunction
 ## We are using the "Van der Pol" implementation for all tests that are done
 ## for this function.  For further tests we also define a reference solution
 ## (computed at high accuracy).
-%!function ydot = fpol (t, y)  # The Van der Pol ODE
+%!function ydot = fpol (t, y, varargin)  # The Van der Pol ODE
 %!  ydot = [y(2); 10 * (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
 %!function ydot = jac (t, y)   # The Van der Pol ODE
@@ -367,12 +367,12 @@ endfunction
 %!  ref = [1.8610687248524305  -0.0753216319179125];
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = zeros (2,1);            # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
 %!function [val, trm, dir] = fevn (t, y, varargin)
-%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  val = fpol (t, y, varargin{:});  # We use the derivatives
 %!  trm = ones (2,1);             # that's why component 2
 %!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
@@ -412,7 +412,7 @@ endfunction
 %! [t, y] = ode23s (@fpol, [0 2], [2 0], 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # empty OdePkg structure *but* extra input arguments
-%! opt = odeset;
+%! opt = odeset ();
 %! [t, y] = ode23s (@fpol, [0 2], [2 0], opt, 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 %!test  # InitialStep option
@@ -495,14 +495,14 @@ endfunction
 
 %!test # Check that imaginary part of solution does not get inverted
 %! sol = ode23s (@(x,y) 1, [0 1], 1i);
-%! assert (imag (sol.y), ones (size (sol.y)))
+%! assert (imag (sol.y), ones (size (sol.y)));
 %! [x, y] = ode23s (@(x,y) 1, [0 1], 1i);
-%! assert (imag (y), ones (size (y)))
+%! assert (imag (y), ones (size (y)));
 
 ## Test input validation
-%!error ode23s ()
-%!error ode23s (1)
-%!error ode23s (1,2)
+%!error <Invalid call> ode23s ()
+%!error <Invalid call> ode23s (1)
+%!error <Invalid call> ode23s (1,2)
 %!error <TRANGE must be a numeric> ode23s (@fpol, {[0 25]}, [3 15 1])
 %!error <TRANGE must be a .* vector> ode23s (@fpol, [0 25; 25 0], [3 15 1])
 %!error <TRANGE must contain at least 2 elements> ode23s (@fpol, [1], [3 15 1])

@@ -55,14 +55,14 @@ octave_builtin::execute (octave::tree_evaluator& tw, int nargout,
 
   octave::profiler::enter<octave_builtin> block (profiler, *this);
 
-  if (f)
-    retval = (*f) (args, nargout);
+  if (m_fcn)
+    retval = (*m_fcn) (args, nargout);
   else
     {
       octave::interpreter& interp
         = octave::__get_interpreter__ ("octave_builtin::call");
 
-      retval = (*m) (interp, args, nargout);
+      retval = (*m_meth) (interp, args, nargout);
     }
 
   // Do not allow null values to be returned from functions.
@@ -87,38 +87,26 @@ octave_builtin::execute (octave::tree_evaluator& tw, int nargout,
   return retval;
 }
 
-octave::jit_type *
-octave_builtin::to_jit (void) const
-{
-  return jtype;
-}
-
-void
-octave_builtin::stash_jit (octave::jit_type& type)
-{
-  jtype = &type;
-}
-
 octave_builtin::fcn
 octave_builtin::function (void) const
 {
-  return f;
+  return m_fcn;
 }
 
 octave_builtin::meth
 octave_builtin::method (void) const
 {
-  return m;
+  return m_meth;
 }
 
 void
 octave_builtin::push_dispatch_class (const std::string& dispatch_type)
 {
-  dispatch_classes.insert (dispatch_type);
+  m_dispatch_classes.insert (dispatch_type);
 }
 
 bool
 octave_builtin::handles_dispatch_class (const std::string& dispatch_type) const
 {
-  return dispatch_classes.find (dispatch_type) != dispatch_classes.end ();
+  return m_dispatch_classes.find (dispatch_type) != m_dispatch_classes.end ();
 }

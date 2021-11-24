@@ -33,163 +33,184 @@
 #include "dMatrix.h"
 #include "dColVector.h"
 
-class
-OCTAVE_API
-CollocWt
+namespace octave
 {
-public:
-
-  CollocWt (void)
-    : n (0), inc_left (0), inc_right (0), lb (0.0), rb (1.0),
-      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (false) { }
-
-  CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir)
-    : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
-      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (false) { }
-
-  CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir,
-            double l, double rr)
-    : n (nc), inc_left (il), inc_right (ir), lb (l), rb (rr),
-      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (false) { }
-
-  CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
-            octave_idx_type ir)
-    : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
-      Alpha (a), Beta (b), r (), q (), A (), B (), initialized (false) { }
-
-  CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
-            octave_idx_type ir,
-            double ll, double rr)
-    : n (nc), inc_left (il), inc_right (ir), lb (ll), rb (rr),
-      Alpha (a), Beta (b), r (), q (), A (), B (), initialized (false) { }
-
-  CollocWt (const CollocWt& a)
-    : n (a.n), inc_left (a.inc_left), inc_right (a.inc_right),
-      lb (a.lb), rb (a.rb), Alpha (a.Alpha), Beta (a.Beta),
-      r (a.r), q (a.q), A (a.A), B (a.B),
-      initialized (a.initialized) { }
-
-  CollocWt& operator = (const CollocWt& a)
+  class OCTAVE_API CollocWt
   {
-    if (this != &a)
+  public:
+
+    CollocWt (void)
+      : m_n (0), m_inc_left (0), m_inc_right (0), m_lb (0.0), m_rb (1.0),
+        m_alpha (0.0), m_beta (0.0), m_r (), m_q (), m_A (), m_B (),
+        m_initialized (false)
+    { }
+
+    CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir)
+      : m_n (nc), m_inc_left (il), m_inc_right (ir), m_lb (0.0), m_rb (1.0),
+        m_alpha (0.0), m_beta (0.0), m_r (), m_q (), m_A (), m_B (),
+        m_initialized (false)
+    { }
+
+    CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir,
+              double l, double rr)
+      : m_n (nc), m_inc_left (il), m_inc_right (ir), m_lb (l), m_rb (rr),
+        m_alpha (0.0), m_beta (0.0), m_r (), m_q (), m_A (), m_B (),
+        m_initialized (false)
+    { }
+
+    CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
+              octave_idx_type ir)
+      : m_n (nc), m_inc_left (il), m_inc_right (ir), m_lb (0.0), m_rb (1.0),
+        m_alpha (a), m_beta (b), m_r (), m_q (), m_A (), m_B (),
+        m_initialized (false)
+    { }
+
+    CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
+              octave_idx_type ir,
+              double ll, double rr)
+      : m_n (nc), m_inc_left (il), m_inc_right (ir), m_lb (ll), m_rb (rr),
+        m_alpha (a), m_beta (b), m_r (), m_q (), m_A (), m_B (),
+        m_initialized (false)
+    { }
+
+    CollocWt (const CollocWt& a) = default;
+
+    CollocWt& operator = (const CollocWt& a) = default;
+
+    ~CollocWt (void) = default;
+
+    CollocWt& resize (octave_idx_type nc)
       {
-        n = a.n;
-        inc_left = a.inc_left;
-        inc_right = a.inc_right;
-        lb = a.lb;
-        rb = a.rb;
-        r = a.r;
-        q = a.q;
-        A = a.A;
-        B = a.B;
-        initialized = a.initialized;
+        m_n = nc;
+        m_initialized = false;
+        return *this;
       }
-    return *this;
-  }
 
-  ~CollocWt (void) = default;
+    CollocWt& add_left (void)
+      {
+        m_inc_left = 1;
+        m_initialized = false;
+        return *this;
+      }
 
-  CollocWt& resize (octave_idx_type nc)
-  {
-    n = nc;
-    initialized = false;
-    return *this;
-  }
+    CollocWt& delete_left (void)
+      {
+        m_inc_left = 0;
+        m_initialized = false;
+        return *this;
+      }
 
-  CollocWt& add_left (void)
-  {
-    inc_left = 1;
-    initialized = false;
-    return *this;
-  }
+    CollocWt& set_left (double val);
 
-  CollocWt& delete_left (void)
-  {
-    inc_left = 0;
-    initialized = false;
-    return *this;
-  }
+    CollocWt& add_right (void)
+      {
+        m_inc_right = 1;
+        m_initialized = false;
+        return *this;
+      }
 
-  CollocWt& set_left (double val);
+    CollocWt& delete_right (void)
+      {
+        m_inc_right = 0;
+        m_initialized = false;
+        return *this;
+      }
 
-  CollocWt& add_right (void)
-  {
-    inc_right = 1;
-    initialized = false;
-    return *this;
-  }
+    CollocWt& set_right (double val);
 
-  CollocWt& delete_right (void)
-  {
-    inc_right = 0;
-    initialized = false;
-    return *this;
-  }
+    CollocWt& set_alpha (double val)
+      {
+        m_alpha = val;
+        m_initialized = false;
+        return *this;
+      }
 
-  CollocWt& set_right (double val);
+    CollocWt& set_beta (double val)
+      {
+        m_beta = val;
+        m_initialized = false;
+        return *this;
+      }
 
-  CollocWt& set_alpha (double val)
-  {
-    Alpha = val;
-    initialized = false;
-    return *this;
-  }
+    octave_idx_type ncol (void) const { return m_n; }
 
-  CollocWt& set_beta (double val)
-  {
-    Beta = val;
-    initialized = false;
-    return *this;
-  }
+    octave_idx_type left_included (void) const { return m_inc_left; }
+    octave_idx_type right_included (void) const { return m_inc_right; }
 
-  octave_idx_type ncol (void) const { return n; }
+    double left (void) const { return m_lb; }
+    double right (void) const { return m_rb; }
 
-  octave_idx_type left_included (void) const { return inc_left; }
-  octave_idx_type right_included (void) const { return inc_right; }
+    double width (void) const { return m_rb - m_lb; }
 
-  double left (void) const { return lb; }
-  double right (void) const { return rb; }
+    double alpha (void) const { return m_alpha; }
+    double beta (void) const { return m_beta; }
 
-  double width (void) const { return rb - lb; }
+    ColumnVector roots (void)
+    {
+      if (! m_initialized)
+        init ();
 
-  double alpha (void) const { return Alpha; }
-  double beta (void) const { return Beta; }
+      return m_r;
+    }
 
-  ColumnVector roots (void) { if (! initialized) init (); return r; }
-  ColumnVector quad (void) { if (! initialized) init (); return q; }
+    ColumnVector quad (void)
+    {
+      if (! m_initialized)
+        init ();
 
-  ColumnVector quad_weights (void) { return quad (); }
+      return m_q;
+    }
 
-  Matrix first (void) { if (! initialized) init (); return A; }
+    ColumnVector quad_weights (void) { return quad (); }
 
-  Matrix second (void) { if (! initialized) init (); return B; }
+    Matrix first (void)
+    {
+      if (! m_initialized)
+        init ();
 
-  friend std::ostream& operator << (std::ostream&, const CollocWt&);
+      return m_A;
+    }
 
-protected:
+    Matrix second (void)
+    {
+      if (! m_initialized)
+        init ();
 
-  octave_idx_type n;
+      return m_B;
+    }
 
-  octave_idx_type inc_left;
-  octave_idx_type inc_right;
+    friend std::ostream& operator << (std::ostream&, const CollocWt&);
 
-  double lb;
-  double rb;
+  protected:
 
-  double Alpha;
-  double Beta;
+    octave_idx_type m_n;
 
-  ColumnVector r;
-  ColumnVector q;
+    octave_idx_type m_inc_left;
+    octave_idx_type m_inc_right;
 
-  Matrix A;
-  Matrix B;
+    double m_lb;
+    double m_rb;
 
-  bool initialized;
+    double m_alpha;
+    double m_beta;
 
-  void init (void);
+    ColumnVector m_r;
+    ColumnVector m_q;
 
-  void error (const char *msg);
-};
+    Matrix m_A;
+    Matrix m_B;
+
+    bool m_initialized;
+
+    void init (void);
+
+    void error (const char *msg);
+  };
+}
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+OCTAVE_DEPRECATED (7, "use 'octave::CollocWt' instead")
+typedef octave::CollocWt CollocWt;
+#endif
 
 #endif

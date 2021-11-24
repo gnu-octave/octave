@@ -47,15 +47,21 @@ function delete (varargin)
 
   if (iscellstr (varargin))
     for arg = varargin
-      files = glob (arg{1});
+      if (ispc ())
+        files = __wglob__ (arg{1});
+      else
+        files = glob (arg{1});
+      endif
       if (isempty (files))
-        warning ("delete: no such file: %s", arg{1});
+        warning ("Octave:delete:no-such-file", ...
+                 "delete: no such file: %s", arg{1});
       endif
       for i = 1:length (files)
         file = files{i};
         [err, msg] = unlink (file);
         if (err)
-          warning ("delete: %s: %s", file, msg);
+          warning ("Octave:delete:unlink-error", ...
+                   "delete: %s: %s", file, msg);
         endif
       endfor
     endfor
@@ -65,7 +71,8 @@ function delete (varargin)
     __go_delete__ (varargin{1});
 
   else
-    error ("delete: first argument must be a filename or graphics handle");
+    error ("Octave:delete:unsupported-object", ...
+           "delete: first argument must be a filename or graphics handle");
   endif
 
 endfunction
@@ -73,14 +80,14 @@ endfunction
 
 %!test
 %! unwind_protect
-%!   file = tempname;
+%!   file = tempname ();
 %!   tmp_var = pi;
 %!   save (file, "tmp_var");
 %!   assert (exist (file, "file"));
 %!   delete (file);
 %!   assert (! exist (file, "file"));
 %! unwind_protect_cleanup
-%!   unlink (file);
+%!   sts = unlink (file);
 %! end_unwind_protect
 
 %!test
@@ -95,5 +102,5 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error delete ()
+%!error <Invalid call> delete ()
 %!error <first argument must be a filename> delete (struct ())

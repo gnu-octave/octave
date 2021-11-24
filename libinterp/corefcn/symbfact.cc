@@ -48,6 +48,8 @@
 #include "parse.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (symbfact, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{R}] =} symbfact (@var{S})
@@ -205,17 +207,17 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   if (A->stype && A->nrow != A->ncol)
     err_square_matrix_required ("symbfact", "S");
 
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, Parent, n);
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, Post, n);
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, ColCount, n);
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, First, n);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, Parent, n);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, Post, n);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, ColCount, n);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, First, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Level, n);
 
   cholmod_common Common;
   cholmod_common *cm = &Common;
   CHOLMOD_NAME(start) (cm);
 
-  double spu = octave_sparse_params::get_key ("spumoni");
+  double spu = sparse_params::get_key ("spumoni");
   if (spu == 0.0)
     {
       cm->print = -1;
@@ -263,7 +265,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
     }
 
   CHOLMOD_NAME(rowcolcounts) (Alo, nullptr, 0, Parent, Post, nullptr, ColCount,
-                              First, octave::to_suitesparse_intptr (Level), cm);
+                              First, to_suitesparse_intptr (Level), cm);
 
   if (cm->status < CHOLMOD_OK)
     {
@@ -314,7 +316,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       L.xcidx(n) = lnz;
 
       // create a copy of the column pointers
-      octave::suitesparse_integer *W = First;
+      suitesparse_integer *W = First;
       for (octave_idx_type j = 0 ; j < n ; j++)
         W[j] = L.xcidx (j);
 
@@ -429,3 +431,5 @@ cleanup:
 %! fail ("symbfact (sparse ([1, 2; 3, 4; 5, 6]))", "S must be a square matrix");
 
 */
+
+OCTAVE_NAMESPACE_END

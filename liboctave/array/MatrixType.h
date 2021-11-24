@@ -38,7 +38,6 @@ class SparseMatrix;
 class SparseComplexMatrix;
 
 class
-OCTAVE_API
 MatrixType
 {
 public:
@@ -60,131 +59,132 @@ public:
     Rectangular
   };
 
-  MatrixType (void);
+  OCTAVE_API MatrixType (void);
 
-  MatrixType (const MatrixType& a);
+  OCTAVE_API MatrixType (const MatrixType& a);
 
-  MatrixType (const Matrix& a);
+  OCTAVE_API MatrixType (const Matrix& a);
 
-  MatrixType (const ComplexMatrix& a);
+  OCTAVE_API MatrixType (const ComplexMatrix& a);
 
-  MatrixType (const FloatMatrix& a);
+  OCTAVE_API MatrixType (const FloatMatrix& a);
 
-  MatrixType (const FloatComplexMatrix& a);
+  OCTAVE_API MatrixType (const FloatComplexMatrix& a);
 
   template <typename T>
+  OCTAVE_API
   MatrixType (const MSparse<T> &a);
 
-  MatrixType (const matrix_type t, bool _full = false);
+  OCTAVE_API MatrixType (const matrix_type t, bool _full = false);
 
-  MatrixType (const matrix_type t, const octave_idx_type np,
+  OCTAVE_API MatrixType (const matrix_type t, const octave_idx_type np,
               const octave_idx_type *p, bool _full = false);
 
-  MatrixType (const matrix_type t, const octave_idx_type ku,
+  OCTAVE_API MatrixType (const matrix_type t, const octave_idx_type ku,
               const octave_idx_type kl, bool _full = false);
 
-  ~MatrixType (void);
+  OCTAVE_API ~MatrixType (void);
 
-  MatrixType& operator = (const MatrixType& a);
+  OCTAVE_API MatrixType& operator = (const MatrixType& a);
 
-  int type (bool quiet = true);
+  OCTAVE_API int type (bool quiet = true);
 
-  int type (const Matrix& a);
+  OCTAVE_API int type (const Matrix& a);
 
-  int type (const ComplexMatrix& a);
+  OCTAVE_API int type (const ComplexMatrix& a);
 
-  int type (const FloatMatrix& a);
+  OCTAVE_API int type (const FloatMatrix& a);
 
-  int type (const FloatComplexMatrix& a);
+  OCTAVE_API int type (const FloatComplexMatrix& a);
 
-  int type (const SparseMatrix& a);
+  OCTAVE_API int type (const SparseMatrix& a);
 
-  int type (const SparseComplexMatrix& a);
+  OCTAVE_API int type (const SparseComplexMatrix& a);
 
-  double band_density (void) const { return bandden; }
+  double band_density (void) const { return m_bandden; }
 
-  int nupper (void) const { return upper_band; }
+  int nupper (void) const { return m_upper_band; }
 
-  int nlower (void) const { return lower_band; }
+  int nlower (void) const { return m_lower_band; }
 
-  bool is_dense (void) const { return dense; }
+  bool is_dense (void) const { return m_dense; }
 
   bool isdiag (void) const
-  { return (typ == Diagonal || typ == Permuted_Diagonal); }
+  { return (m_type == Diagonal || m_type == Permuted_Diagonal); }
 
   bool istriu (void) const
-  { return (typ == Upper || typ == Permuted_Upper); }
+  { return (m_type == Upper || m_type == Permuted_Upper); }
 
   bool istril (void) const
-  { return (typ == Lower || typ == Permuted_Lower); }
+  { return (m_type == Lower || m_type == Permuted_Lower); }
 
   bool isbanded (void) const
-  { return (typ == Banded || typ == Banded_Hermitian); }
+  { return (m_type == Banded || m_type == Banded_Hermitian); }
 
   bool is_tridiagonal (void) const
-  { return (typ == Tridiagonal || typ == Tridiagonal_Hermitian); }
+  { return (m_type == Tridiagonal || m_type == Tridiagonal_Hermitian); }
 
   bool ishermitian (void) const
   {
-    return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian
-            || typ == Hermitian);
+    return (m_type == Banded_Hermitian || m_type == Tridiagonal_Hermitian
+            || m_type == Hermitian);
   }
 
-  bool is_rectangular (void) const { return (typ == Rectangular); }
+  bool is_rectangular (void) const { return (m_type == Rectangular); }
 
-  bool is_known (void) const { return (typ != Unknown); }
+  bool is_known (void) const { return (m_type != Unknown); }
 
-  bool is_unknown (void) const { return (typ == Unknown); }
+  bool is_unknown (void) const { return (m_type == Unknown); }
 
-  void info (void) const;
+  OCTAVE_API void info (void) const;
 
-  octave_idx_type * triangular_perm (void) const { return perm; }
+  octave_idx_type * triangular_perm (void) const { return m_perm; }
 
-  void invalidate_type (void) { typ = Unknown; }
+  void invalidate_type (void) { m_type = Unknown; }
 
-  void mark_as_diagonal (void) { typ = Diagonal; }
+  void mark_as_diagonal (void) { m_type = Diagonal; }
 
-  void mark_as_permuted_diagonal (void) { typ = Permuted_Diagonal; }
+  void mark_as_permuted_diagonal (void) { m_type = Permuted_Diagonal; }
 
-  void mark_as_upper_triangular (void) { typ = Upper; }
+  void mark_as_upper_triangular (void) { m_type = Upper; }
 
-  void mark_as_lower_triangular (void) { typ = Lower; }
+  void mark_as_lower_triangular (void) { m_type = Lower; }
 
-  void mark_as_tridiagonal (void) {typ = Tridiagonal; }
+  void mark_as_tridiagonal (void) {m_type = Tridiagonal; }
 
   void mark_as_banded (const octave_idx_type ku, const octave_idx_type kl)
-  { typ = Banded; upper_band = ku; lower_band = kl; }
+  { m_type = Banded; m_upper_band = ku; m_lower_band = kl; }
 
-  void mark_as_full (void) { typ = Full; }
+  void mark_as_full (void) { m_type = Full; }
 
-  void mark_as_rectangular (void) { typ = Rectangular; }
+  void mark_as_rectangular (void) { m_type = Rectangular; }
 
-  void mark_as_dense (void) { dense = true; }
+  void mark_as_dense (void) { m_dense = true; }
 
-  void mark_as_not_dense (void) { dense = false; }
+  void mark_as_not_dense (void) { m_dense = false; }
 
-  void mark_as_symmetric (void);
+  OCTAVE_API void mark_as_symmetric (void);
 
-  void mark_as_unsymmetric (void);
+  OCTAVE_API void mark_as_unsymmetric (void);
 
-  void mark_as_permuted (const octave_idx_type np, const octave_idx_type *p);
+  OCTAVE_API void mark_as_permuted (const octave_idx_type np, const octave_idx_type *p);
 
-  void mark_as_unpermuted (void);
+  OCTAVE_API void mark_as_unpermuted (void);
 
-  MatrixType transpose (void) const;
+  OCTAVE_API MatrixType transpose (void) const;
 
 private:
-  void type (int new_typ) { typ = static_cast<matrix_type> (new_typ); }
+  void type (int new_typ) { m_type = static_cast<matrix_type> (new_typ); }
 
-  matrix_type typ;
-  double sp_bandden;
-  double bandden;
-  octave_idx_type upper_band;
-  octave_idx_type lower_band;
-  bool dense;
-  bool full;
-  octave_idx_type nperm;
-  octave_idx_type *perm;
+  matrix_type m_type;
+  double m_sp_bandden;
+  double m_bandden;
+  octave_idx_type m_upper_band;
+  octave_idx_type m_lower_band;
+  bool m_dense;
+  bool m_full;
+  octave_idx_type m_nperm;
+  octave_idx_type *m_perm;
 };
 
 #endif

@@ -30,16 +30,30 @@
 extern "C" {
 #endif
 
-const uint8_t *
+extern OCTAVE_API const uint8_t *
 octave_u8_check_wrapper (const uint8_t *src, size_t n);
 
-extern int
-octave_u8_strmblen_wrapper (const uint8_t *src);
+extern OCTAVE_API int octave_u8_strmblen_wrapper (const uint8_t *src);
 
-extern int
+extern OCTAVE_API size_t
+octave_u8_mbsnlen_wrapper (const uint8_t *src, size_t n);
+
+extern OCTAVE_API int
 octave_u8_strmbtouc_wrapper (uint32_t *puc, const uint8_t *src);
 
-extern uint32_t *
+extern OCTAVE_API uint8_t *
+octave_u16_to_u8_wrapper (const uint16_t *src, size_t src_len,
+                          uint8_t *result_buf, size_t *lengthp);
+
+extern OCTAVE_API uint8_t *
+octave_u32_to_u8_wrapper (const uint32_t *src, size_t src_len,
+                          uint8_t *result_buf, size_t *lengthp);
+
+extern OCTAVE_API uint16_t *
+octave_u8_to_u16_wrapper (const uint8_t *src, size_t src_len,
+                          uint16_t *result_buf, size_t *lengthp);
+
+extern OCTAVE_API uint32_t *
 octave_u8_to_u32_wrapper (const uint8_t *src, size_t src_len,
                           uint32_t *result_buf, size_t *lengthp);
 

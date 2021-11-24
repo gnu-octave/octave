@@ -183,6 +183,8 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(ordschur)
 
+@DOCSTRING(ordqz)
+
 @DOCSTRING(ordeig)
 
 @DOCSTRING(subspace)

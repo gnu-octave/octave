@@ -43,6 +43,10 @@
 
 #include "async-system-wrapper.h"
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include "uniconv-wrappers.h"
+#endif
+
 pid_t
 octave_async_system_wrapper (const char *cmd)
 {
@@ -53,17 +57,15 @@ octave_async_system_wrapper (const char *cmd)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-  STARTUPINFO si;
+  STARTUPINFOW si;
   PROCESS_INFORMATION pi;
 
   ZeroMemory (&si, sizeof (si));
   ZeroMemory (&pi, sizeof (pi));
 
-  char *xcmd = (char *) malloc (strlen (cmd) + 1);
+  wchar_t *xcmd = u8_to_wchar (cmd);
 
-  strcpy (xcmd, cmd);
-
-  if (! CreateProcess (0, xcmd, 0, 0, FALSE, 0, 0, 0, &si, &pi))
+  if (! CreateProcessW (NULL, xcmd, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
     retval = -1;
   else
     {

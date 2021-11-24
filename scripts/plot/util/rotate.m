@@ -45,7 +45,7 @@ function rotate (h, direction, alpha, origin)
   ## default origin due to possible differences in the auto-scaling
   ## algorithm between Octave and Matlab.
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3)
     print_usage ();
   endif
 
@@ -65,7 +65,7 @@ function rotate (h, direction, alpha, origin)
   endif
 
   if (! (isnumeric (direction) && numel (direction) == 3))
-    error ("rotate: invalid direction");
+    error ("rotate: invalid DIRECTION");
   endif
 
   if (! (isnumeric (alpha) && isscalar (alpha)))
@@ -156,11 +156,11 @@ function rotate (h, direction, alpha, origin)
       one_m_ca = 1 - ca;
       tmp = u*x + v*y + w*z;
 
-      xr = ((a*(v**2 + w**2) - u*(b*v + c*w - tmp))*one_m_ca
+      xr = ((a*(v^2 + w^2) - u*(b*v + c*w - tmp))*one_m_ca
             + x*ca + (-c*v + b*w - w*y + v*z)*sa);
-      yr = ((b*(u**2 + w**2) - v*(a*u + c*w - tmp))*one_m_ca
+      yr = ((b*(u^2 + w^2) - v*(a*u + c*w - tmp))*one_m_ca
             + y*ca + (c*u - a*w + w*x - u*z)*sa);
-      zr = ((c*(u**2 + v**2) - w*(a*u + b*v - tmp))*one_m_ca
+      zr = ((c*(u^2 + v^2) - w*(a*u + b*v - tmp))*one_m_ca
             + z*ca + (-b*u + a*v - v*x + u*y)*sa);
     endif
 
@@ -181,11 +181,12 @@ endfunction
 %! h2 = figure ("visible", "off");
 %! o2 = line ();
 %! o3 = text (0, 0, "foobar");
-%!error rotate ()
-%!error rotate (o1)
-%!error rotate (o1, [0,0,0])
+
+%!error <Invalid call> rotate ()
+%!error <Invalid call> rotate (o1)
+%!error <Invalid call> rotate (o1, [0,0,0])
 %!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90)
-%!error <invalid direction> rotate (o1, "foo", 90)
+%!error <invalid DIRECTION> rotate (o1, "foo", 90)
 %!error <invalid rotation angle> rotate (o1, [0,0,0], "foo")
 %!error <invalid ORIGIN> rotate (o1, [0,0,0], 90, "foo")
 %!error rotate (o1, [0,0,0], 90, [0,0,0], 1)

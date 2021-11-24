@@ -31,6 +31,8 @@
 #include "errwarn.h"
 #include "oct-hdf5.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 bool
 check_hdf5_types (bool warn)
 {
@@ -67,3 +69,5 @@ check_hdf5_types (bool warn)
 
   return ok;
 }
+
+OCTAVE_NAMESPACE_END

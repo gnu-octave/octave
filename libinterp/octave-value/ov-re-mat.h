@@ -87,10 +87,10 @@ public:
   {
     // Auto-create cache to speed up subsequent indexing.
     if (zero_based && cache_index)
-      set_idx_cache (idx_vector (idx));
+      set_idx_cache (octave::idx_vector (idx));
   }
 
-  octave_matrix (const NDArray& nda, const idx_vector& cache)
+  octave_matrix (const NDArray& nda, const octave::idx_vector& cache)
     : octave_base_matrix<NDArray> (nda)
   {
     set_idx_cache (cache);
@@ -105,8 +105,8 @@ public:
 
   octave_base_value * try_narrowing_conversion (void);
 
-  idx_vector index_vector (bool /* require_integers */ = false) const
-  { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
+  octave::idx_vector index_vector (bool /* require_integers */ = false) const
+  { return idx_cache ? *idx_cache : set_idx_cache (octave::idx_vector (matrix)); }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
@@ -237,11 +237,7 @@ public:
              octave::mach_info::float_format flt_fmt) const
   { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
-  // Unsafe.  This function exists to support the MEX interface.
-  // You should not use it anywhere else.
-  void * mex_get_data (void) const { return matrix.mex_get_data (); }
-
-  mxArray * as_mxArray (void) const;
+  mxArray * as_mxArray (bool interleaved) const;
 
   octave_value map (unary_mapper_t umap) const;
 

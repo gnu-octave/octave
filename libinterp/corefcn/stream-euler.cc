@@ -53,33 +53,35 @@
 #include "error.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Coordinates of a point in C-Space (unit square mesh)
 
-typedef struct
+struct Vector2
 {
   double x, y;
-} Vector2;
+};
 
 // The integer value and the fractional value from a point in C-Space.
 // Equivalent to the cell index the point is located in and the local
 // coordinates of the point in the cell.
 
-typedef struct
+struct Cell2
 {
   double fcx, fcy;
   signed long idx, idy;
-} Cell2;
+};
 
-typedef struct
+struct Vector3
 {
   double x, y, z;
-} Vector3;
+};
 
-typedef struct
+struct Cell3
 {
   double fcx, fcy, fcz;
   signed long idx, idy, idz;
-} Cell3;
+};
 
 static inline void
 number_to_fractional (signed long *id, double *fc, const double u)
@@ -195,7 +197,7 @@ calculate_step_vector2d (const Cell2 X, const Vector2 V,
 static inline bool
 is_singular2d (const Vector2 V)
 {
-  return ((octave::math::isnan (V.x) || octave::math::isnan (V.y)) ||
+  return ((math::isnan (V.x) || math::isnan (V.y)) ||
           ((V.x == 0) && (V.y == 0)));
 }
 
@@ -367,8 +369,7 @@ calculate_step_vector3d (const Cell3 X, const Vector3 V,
 static inline bool
 is_singular3d (const Vector3 V)
 {
-  return ((octave::math::isnan (V.x) || octave::math::isnan (V.y) ||
-           octave::math::isnan (V.z)) ||
+  return ((math::isnan (V.x) || math::isnan (V.y) || math::isnan (V.z)) ||
           ((V.x == 0) && (V.y == 0) && (V.z == 0)));
 }
 
@@ -533,3 +534,4 @@ be defined for each grid cell by @code{[@var{TX}, @var{TY}, @var{TZ}]}.
   return streameuler3d_internal (args, "__streameuler3d__");
 }
 
+OCTAVE_NAMESPACE_END

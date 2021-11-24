@@ -94,7 +94,7 @@ endfunction
 %! xlabel ("year");
 %! ylabel ("average price");
 %! title ("datetick() with MM/DD/YY format");
-%! ax = gca;
+%! ax = gca ();
 %! set (ax, "xtick", datenum (1990:5:2005,1,1));
 %! datetick ("x", 2, "keepticks");
 %! set (ax, "ytick", 12:16);

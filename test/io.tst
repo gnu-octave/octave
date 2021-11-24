@@ -196,7 +196,7 @@
 %! [load_status, load_files] = testls (1);
 %!
 %! for f = [save_files, load_files]
-%!   unlink (f{1});
+%!   sts = unlink (f{1});
 %! endfor
 %!
 %! assert (save_status && load_status);
@@ -228,7 +228,7 @@
 %!   assert (s64, s64t);
 %!   assert (u64, u64t);
 %! unwind_protect_cleanup
-%!   unlink (h5file);
+%!   sts = unlink (h5file);
 %! end_unwind_protect
 
 %!test
@@ -256,7 +256,7 @@
 %!       "-struct", "STR", "matrix_fld", "str*_fld");
 %! STR = load (struct_dat);
 %!
-%! assert (!isfield (STR,"scalar_fld") && ...
+%! assert (! isfield (STR,"scalar_fld") && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
 %!         STR.string_fld == "Octave" && ...
 %!         STR.struct_fld.x == 0 && ...
@@ -346,7 +346,7 @@
 %! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
@@ -362,7 +362,7 @@
 %! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! [val, count, msg, pos] = sscanf ("3In2", "%f");
@@ -378,7 +378,7 @@
 %! assert (msg, "");
 %! assert (pos, 6);
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
@@ -407,11 +407,11 @@
 %% Note use fprintf so output not sent to stdout
 %!test
 %! nm = tempname ();
-%! fid1 = fopen (nm,"w");
+%! fid1 = fopen (nm, "w");
 %! x = fprintf (fid1, "%s: %d\n", "test", 1);
 %! fclose (fid1);
-%! fid2 = fopen (nm,"r");
-%! str = fscanf (fid2,"%s");
+%! fid2 = fopen (nm, "r");
+%! str = fscanf (fid2, "%s");
 %! fclose (fid2);
 %! unlink (nm);
 %! assert (x, 8);

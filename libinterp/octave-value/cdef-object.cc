@@ -182,23 +182,23 @@ namespace octave
   cdef_class
   cdef_object::get_class (void) const
   {
-    return rep->get_class ();
+    return m_rep->get_class ();
   }
 
   cdef_class
   cdef_object_base::get_class (void) const
   {
-    return cdef_class (klass);
+    return cdef_class (m_klass);
   }
 
   void
   cdef_object_base::set_class (const cdef_class& cls)
   {
-    if ((klass.ok () && cls.ok () && cls != get_class ())
-        || (klass.ok () && ! cls.ok ())
-        || (! klass.ok () && cls.ok ()))
+    if ((m_klass.ok () && cls.ok () && cls != get_class ())
+        || (m_klass.ok () && ! cls.ok ())
+        || (! m_klass.ok () && cls.ok ()))
       {
-        klass = cls;
+        m_klass = cls;
       }
   }
 
@@ -244,17 +244,17 @@ namespace octave
                 {
                   iv(i) = ival(i).index_vector ();
                 }
-              catch (index_exception& e)
+              catch (index_exception& ie)
                 {
                   // Rethrow to allow more info to be reported later.
-                  e.set_pos_if_unset (ival.length (), i+1);
+                  ie.set_pos_if_unset (ival.length (), i+1);
                   throw;
                 }
 
               is_scalar = is_scalar && iv(i).is_scalar ();
             }
 
-          Array<cdef_object> ires = array.index (iv, auto_add);
+          Array<cdef_object> ires = m_array.index (iv, auto_add);
 
           // If resizing is enabled (auto_add = true), it's possible
           // indexing was out-of-bound and the result array contains
@@ -281,7 +281,7 @@ namespace octave
           {
             Cell c (dims ());
 
-            octave_idx_type n = array.numel ();
+            octave_idx_type n = m_array.numel ();
 
             // dummy variables
             std::size_t dummy_skip;
@@ -289,7 +289,7 @@ namespace octave
 
             for (octave_idx_type i = 0; i < n; i++)
               {
-                octave_value_list r = array(i).subsref (type, idx, 1, dummy_skip,
+                octave_value_list r = m_array(i).subsref (type, idx, 1, dummy_skip,
                                                         dummy_cls);
 
                 if (r.length () > 0)
@@ -326,7 +326,7 @@ namespace octave
             cdef_object rhs_obj = to_cdef (rhs);
 
             if (rhs_obj.get_class () != get_class ())
-              error ("can't assign %s object into array of %s objects.",
+              error ("can't assign %s object into array of %s objects",
                      rhs_obj.class_name ().c_str (),
                      class_name ().c_str ());
 
@@ -340,9 +340,9 @@ namespace octave
                   {
                     iv(i) = ival(i).index_vector ();
                   }
-                catch (index_exception& e)
+                catch (index_exception& ie)
                   {
-                    e.set_pos_if_unset (ival.length (), i+1);
+                    ie.set_pos_if_unset (ival.length (), i+1);
                     throw;   // var name set in pt-idx.cc / pt-assign.cc
                   }
 
@@ -359,11 +359,11 @@ namespace octave
             else
               rhs_mat = rhs_obj.array_value ();
 
-            octave_idx_type n = array.numel ();
+            octave_idx_type n = m_array.numel ();
 
-            array.assign (iv, rhs_mat, cdef_object ());
+            m_array.assign (iv, rhs_mat, cdef_object ());
 
-            if (array.numel () > n)
+            if (m_array.numel () > n)
               fill_empty_values ();
 
             m_count++;
@@ -377,7 +377,7 @@ namespace octave
             // array.index doesn't create a new blank entry (bug #46660).
             const octave_idx_type one = static_cast<octave_idx_type> (1);
             const octave_value_list& ival = ivl.length () >= 2
-                                            ? ivl : ((array.dims ()(0) == 1)
+                                            ? ivl : ((m_array.dims ()(0) == 1)
                                                      ? ovl (one, ivl(0))
                                                      : ovl (ivl(0), one));
 
@@ -391,10 +391,10 @@ namespace octave
                   {
                     iv(i) = ival(i).index_vector ();
                   }
-                catch (index_exception& e)
+                catch (index_exception& ie)
                   {
                     // Rethrow to allow more info to be reported later.
-                    e.set_pos_if_unset (ival.length (), i+1);
+                    ie.set_pos_if_unset (ival.length (), i+1);
                     throw;
                   }
 
@@ -406,7 +406,7 @@ namespace octave
                          "array.");
               }
 
-            Array<cdef_object> a = array.index (iv, true);
+            Array<cdef_object> a = m_array.index (iv, true);
 
             if (a.numel () != 1)
               error ("subsasgn: invalid indexing for object array assignment");
@@ -451,11 +451,11 @@ namespace octave
                 Array<cdef_object> rhs_a (dim_vector (1, 1),
                                           robj);
 
-                octave_idx_type n = array.numel ();
+                octave_idx_type n = m_array.numel ();
 
-                array.assign (iv, rhs_a);
+                m_array.assign (iv, rhs_a);
 
-                if (array.numel () > n)
+                if (m_array.numel () > n)
                   fill_empty_values ();
               }
 
@@ -500,10 +500,10 @@ namespace octave
   }
 
   void
-  cdef_object_scalar::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+  cdef_object_scalar::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
   {
-    for (octave_idx_type i = 0; i < map.nfields (); i++)
-      map.contents(i).break_closure_cycles (frame);
+    for (octave_idx_type i = 0; i < m_map.nfields (); i++)
+      m_map.contents(i).break_closure_cycles (frame);
   }
 
   octave_value_list
@@ -699,14 +699,14 @@ namespace octave
 
     std::list<cdef_class> supcls_list = lookup_classes (supcls);
 
-    ctor_list[cls] = supcls_list;
+    m_ctor_list[cls] = supcls_list;
   }
 
   bool
   cdef_object_scalar::is_constructed_for (const cdef_class& cls) const
   {
     return (is_constructed ()
-            || ctor_list.find (cls) == ctor_list.end ());
+            || m_ctor_list.find (cls) == m_ctor_list.end ());
   }
 
   bool
@@ -716,9 +716,9 @@ namespace octave
       return true;
 
     std::map<cdef_class, std::list<cdef_class>>::const_iterator it
-      = ctor_list.find (cls);
+      = m_ctor_list.find (cls);
 
-    if (it == ctor_list.end () || it->second.empty ())
+    if (it == m_ctor_list.end () || it->second.empty ())
       return true;
 
     for (const auto& cdef_cls : it->second)
@@ -731,7 +731,7 @@ namespace octave
   void
   cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
   {
-    ctor_list.erase (cls);
+    m_ctor_list.erase (cls);
   }
 
   handle_cdef_object::~handle_cdef_object (void)

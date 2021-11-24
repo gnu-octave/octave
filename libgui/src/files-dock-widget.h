@@ -44,8 +44,6 @@
 
 #include "octave-dock-widget.h"
 
-class octave_value_list;
-
 namespace octave
 {
   class base_qobject;
@@ -98,8 +96,8 @@ namespace octave
 
     //! Emitted, when the path has to be modified
 
-    void modify_path_signal (const octave_value_list& dir_list,
-                             bool rm, bool subdirs);
+    void modify_path_signal (const QStringList& dir_list, bool rm,
+                             bool subdirs);
 
   public slots:
 

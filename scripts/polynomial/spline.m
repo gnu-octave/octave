@@ -182,7 +182,7 @@ function ret = spline (x, y, xi)
         g(2:n - 3,:) = 3 * diff (a(3:n-1,:)) ./ h(3:n-2,idx) ...
             - 3 * diff (a(2:n-2,:)) ./ h(2:n - 3,idx);
 
-        dg = 2 * (h(1:n-2) .+ h(2:n-1));
+        dg = 2 * (h(1:n-2) + h(2:n-1));
         dg(1) = dg(1) - h(1);
         dg(n-2) = dg(n-2) - h(n-1);
 
@@ -228,7 +228,7 @@ endfunction
 %! x = 0:10; y = sin (x);
 %! xspline = 0:0.1:10;  yspline = spline (x,y,xspline);
 %! title ("spline fit to points from sin (x)");
-%! plot (xspline,sin(xspline),"r", xspline,yspline,"g-", x,y,"b+");
+%! plot (xspline,sin (xspline),"r", xspline,yspline,"g-", x,y,"b+");
 %! legend ("original", "interpolation", "interpolation points");
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original

@@ -23,13 +23,13 @@
 ##
 ########################################################################
 
-%!function cb_children (hg)
+%!function cb_children (hg, ~)
 %!  hl = get (hg, "children");
 %!  color = get (hl, "color");
 %!  set (hl, "userdata", isequal (color, [1 0 0]));
 %!endfunction
 
-%!test
+%!test <*55321>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);

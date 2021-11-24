@@ -76,7 +76,7 @@
 
 function y = cosint (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -96,7 +96,7 @@ function y = cosint (x)
     x = complex (real (x)(:), imag (x)(:));
   else
     x = x(:);
-  end
+  endif
 
   ## Initialize the result
   y = zeros (size (x), class (x));
@@ -106,7 +106,7 @@ function y = cosint (x)
 
   ## Special values
   y(x == Inf) = 0;
-  y((x == -Inf) & !signbit (imag (x))) = 1i * pi;
+  y((x == -Inf) & ! signbit (imag (x))) = 1i * pi;
   y((x == -Inf) &  signbit (imag (x))) = -1i * pi;
 
   todo(isinf (x)) = false;
@@ -136,11 +136,11 @@ function y = cosint (x)
     xx = complex (real (x)(todo), imag (x)(todo));
   else
     xx = x(todo);
-  end
+  endif
   ssum = - xx .^ 2 / 4; # First term of the series expansion
   ## FIXME: This is way more precision than a double value can hold.
   gma = 0.57721566490153286060651209008; # Euler gamma constant
-  yy = gma + log (complex (xx)) + ssum;  # log(complex(...) handles signed zero
+  yy = gma + log (complex (xx)) + ssum;  # log (complex (Z)) handles signed zero
   flag_sum = true (nnz (todo), 1);
   it = 0;
   maxit = 300;
@@ -161,7 +161,7 @@ function y = cosint (x)
 endfunction
 
 
-%!assert (cosint (1.1), 0.38487337742465081550, 2 * eps);
+%!assert (cosint (1.1), 0.38487337742465081550, 2 * eps)
 
 %!test
 %! x = [2, 3, pi; exp(1), 5, 6];
@@ -184,7 +184,7 @@ endfunction
 ## tests against maple
 %!assert (cosint (1), 0.337403922900968135, -2*eps)
 %!assert (cosint (-1), 0.337403922900968135 + 3.14159265358979324*I, -2*eps)
-%!assert (cosint (pi), 0.0736679120464254860, -2e-15)
+%!assert (cosint (pi), 0.0736679120464254860, -4e-15)
 %!assert (cosint (-pi), 0.0736679120464254860 + 3.14159265358979324*I, -2*eps)
 %!assert (cosint (300), -0.00333219991859211178, -2*eps)
 %!assert (cosint (1e4), -0.0000305519167244852127, -2*eps)
@@ -267,6 +267,5 @@ endfunction
 %#!test <*52953>
 
 ## Test input validation
-%!error cosint ()
-%!error cosint (1,2)
+%!error <Invalid call> cosint ()
 %!error <X must be numeric> cosint ("1")

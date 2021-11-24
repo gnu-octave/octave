@@ -42,7 +42,7 @@
 
 function retval = isstring (s)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -59,5 +59,5 @@ endfunction
 %!assert (isstring ({'a'}), false)
 %!assert (isstring ({"b"}), false)
 
-%!error isstring ()
+%!error <Invalid call> isstring ()
 %!error isstring ("a", "b")

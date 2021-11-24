@@ -23,7 +23,7 @@
 ##
 ########################################################################
 
-%!test
+%!test <*52075>
 %! a = class_bug52075 ();
 %! assert (a.duplicate, 'method');
 %! assert (a.call_local_dup, 'local_foo');

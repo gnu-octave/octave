@@ -44,28 +44,30 @@ namespace octave
       // NOTE: This class cannot be used safely cross-platform (Windows) with
       // non-ASCII characters in paths.
       // Consider replacing the implementation using std::filesystem (C++ 17).
-      // In the meantime, consider using octave::sys::get_dirlist instead.
+      // In the meantime, consider using sys::get_dirlist instead.
 
     public:
 
       dir_entry (const std::string& n = "")
-        : name (n), dir (nullptr), fail (false), errmsg ()
+        : m_name (n), m_dir (nullptr), m_fail (false), m_errmsg ()
       {
-        if (! name.empty ())
+        if (! m_name.empty ())
           open ();
       }
 
       dir_entry (const dir_entry& d)
-        : name (d.name), dir (d.dir), fail (d.fail), errmsg (d.errmsg) { }
+        : m_name (d.m_name), m_dir (d.m_dir), m_fail (d.m_fail),
+          m_errmsg (d.m_errmsg)
+      { }
 
       dir_entry& operator = (const dir_entry& d)
       {
         if (this != &d)
           {
-            name = d.name;
-            dir = d.dir;
-            fail = d.fail;
-            errmsg = d.errmsg;
+            m_name = d.m_name;
+            m_dir = d.m_dir;
+            m_fail = d.m_fail;
+            m_errmsg = d.m_errmsg;
           }
 
         return *this;
@@ -79,29 +81,29 @@ namespace octave
 
       bool close (void);
 
-      bool ok (void) const { return dir && ! fail; }
+      bool ok (void) const { return m_dir && ! m_fail; }
 
       operator bool () const { return ok (); }
 
-      std::string error (void) const { return ok () ? "" : errmsg; }
+      std::string error (void) const { return ok () ? "" : m_errmsg; }
 
       static unsigned int max_name_length (void);
 
     private:
 
       // Name of the directory.
-      std::string name;
+      std::string m_name;
 
       // A pointer to the contents of the directory.  We use void here to
       // avoid possible conflicts with the way some systems declare the
       // type DIR.
-      void *dir;
+      void *m_dir;
 
       // TRUE means the open for this directory failed.
-      bool fail;
+      bool m_fail;
 
       // If a failure occurs, this contains the system error text.
-      std::string errmsg;
+      std::string m_errmsg;
     };
   }
 }

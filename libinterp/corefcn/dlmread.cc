@@ -30,6 +30,7 @@
 #  include "config.h"
 #endif
 
+#include <clocale>
 #include <cmath>
 #include <cctype>
 #include <fstream>
@@ -166,6 +167,8 @@ parse_range_spec (const octave_value& range_spec,
   return stat;
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFMETHOD (dlmread, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{data} =} dlmread (@var{file})
@@ -224,12 +227,12 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
       // Filename.
       std::string fname (args(0).string_value ());
 
-      std::string tname = octave::sys::file_ops::tilde_expand (fname);
+      std::string tname = sys::file_ops::tilde_expand (fname);
 
-      tname = octave::find_data_file_in_load_path ("dlmread", tname);
+      tname = find_data_file_in_load_path ("dlmread", tname);
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-      std::wstring wname = octave::sys::u8_to_wstring (tname);
+      std::wstring wname = sys::u8_to_wstring (tname);
       input_file.open (wname.c_str (), std::ios::in);
 #else
       input_file.open (tname.c_str (), std::ios::in);
@@ -242,9 +245,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
     }
   else if (args(0).is_scalar_type ())
     {
-      octave::stream_list& streams = interp.get_stream_list ();
+      stream_list& streams = interp.get_stream_list ();
 
-      octave::stream is = streams.lookup (args(0), "dlmread");
+      stream is = streams.lookup (args(0), "dlmread");
 
       input = is.input_stream ();
 
@@ -259,7 +262,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   if (nargin > 1)
     {
       if (args(1).is_sq_string ())
-        sep = octave::do_string_escapes (args(1).string_value ());
+        sep = do_string_escapes (args(1).string_value ());
       else
         sep = args(1).string_value ();
     }
@@ -304,6 +307,41 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   bool iscmplx = false;
   bool sep_is_wspace = (sep.find_first_of (" \t") != std::string::npos);
   bool auto_sep_is_wspace = false;
+
+  if (r0 == 0)
+    {
+      // Peek into stream and potentially strip Byte Order Mark (BOM)
+      const char BOM[3] = {'\xEF', '\xBB', '\xBF'};
+      char buf[3];
+      int i_bom;
+      bool found_bom = true;
+      for (i_bom = 0; i_bom < 3; i_bom++)
+        {
+          char ch_p = input->peek ();
+          if (ch_p == BOM[i_bom])
+            buf[i_bom] = input->get ();
+          else
+            {
+              found_bom = false;
+              break;
+            }
+        }
+      // Put back read characters if it wasn't a BOM
+      if (! found_bom)
+        {
+          for (int i_ret = i_bom-1; i_ret >= 0; i_ret--)
+            input->putback (buf[i_ret]);
+        }
+    }
+
+  // Set "C" locale for the remainder of this function to avoid the performance
+  // panelty of frequently switching the locale when reading floating point
+  // values from the stream.
+  char *prev_locale = std::setlocale (LC_ALL, nullptr);
+  std::string old_locale (prev_locale ? prev_locale : "");
+  std::setlocale (LC_ALL, "C");
+  unwind_action act
+    ([old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
 
   std::string line;
 
@@ -443,7 +481,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
           tmp_stream.str (str);
           tmp_stream.clear ();
 
-          double x = octave_read_double (tmp_stream);
+          double x = read_value<double> (tmp_stream);
           if (tmp_stream)
             {
               if (tmp_stream.eof ())
@@ -485,7 +523,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                     }
                   else
                     {
-                      double y = octave_read_double (tmp_stream);
+                      double y = read_value<double> (tmp_stream);
 
                       if (! iscmplx && y != 0.0)
                         {
@@ -502,7 +540,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
             }
           else
             {
-              // octave_read_double() parsing failed
+              // read_value<double>() parsing failed
               j++;  // Leave data initialized to empty_value
             }
 
@@ -584,7 +622,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! file = tempname ();
@@ -641,7 +679,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!xtest <47413>
+%!test <47413>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! if (! ismac ()), return; endif
 %! file = tempname ();
@@ -713,4 +751,20 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
+## Verify UTF-8 Byte Order Mark does not cause problems with reading
+%!test <*58813>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, char ([0xEF, 0xBB, 0xBF]));  # UTF-8 BOM
+%!   fwrite (fid, "1,2\n3,4");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2; 3, 4]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
 */
+
+OCTAVE_NAMESPACE_END

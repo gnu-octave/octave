@@ -119,7 +119,7 @@
 ##
 ## @item @code{OutputFcn}: function_handle
 ## Function to monitor the state during the simulation.  For the form of
-## the function to use see @code{odeplot}.
+## the function to use @pxref{XREFodeplot,,@code{odeplot}}.
 ##
 ## @item @code{OutputSel}: scalar | vector
 ## Indices of elements of the state vector to be passed to the output

@@ -57,6 +57,8 @@ To initialize:
 
 // PKG_ADD: if (__have_gnuplot__ ()) register_graphics_toolkit ("gnuplot"); endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 class gnuplot_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
@@ -72,13 +74,13 @@ public:
            "using the gnuplot graphics toolkit is discouraged\n\
 \n\
 The gnuplot graphics toolkit is not actively maintained and has a number\n\
-of limitations that are ulikely to be fixed.  Communication with gnuplot\n\
+of limitations that are unlikely to be fixed.  Communication with gnuplot\n\
 uses a one-directional pipe and limited information is passed back to the\n\
 Octave interpreter so most changes made interactively in the plot window\n\
 will not be reflected in the graphics properties managed by Octave.  For\n\
 example, if the plot window is closed with a mouse click, Octave will not\n\
-be notified and will not update it's internal list of open figure windows.\n\
-We recommend using the qt toolkit instead.\n");
+be notified and will not update its internal list of open figure windows.\n\
+The qt toolkit is recommended instead.\n");
 
           warned = true;
       }
@@ -134,10 +136,8 @@ We recommend using the qt toolkit instead.\n");
     // Prevent recursion
     if (! drawnow_executing)
       {
-        octave::unwind_protect frame;
-        frame.protect_var (drawnow_executing);
+        octave::unwind_protect_var<bool> restore_var (drawnow_executing, true);
 
-        drawnow_executing = true;
         octave_value_list args;
         args(0) = go.get_handle ().as_octave_value ();
         octave::feval ("__gnuplot_drawnow__", args);
@@ -184,17 +184,17 @@ private:
         octave_value_list args;
         Matrix fids = pstream.matrix_value ();
 
-        Ffputs (m_interpreter, ovl (fids(0), "\nquit;\n"));
+        octave::Ffputs (m_interpreter, ovl (fids(0), "\nquit;\n"));
 
-        Ffflush (m_interpreter, ovl (fids(0)));
-        Fpclose (m_interpreter, ovl (fids(0)));
+        octave::Ffflush (m_interpreter, ovl (fids(0)));
+        octave::Fpclose (m_interpreter, ovl (fids(0)));
 
         if (fids.numel () > 1)
           {
-            Fpclose (m_interpreter, ovl (fids(1)));
+            octave::Fpclose (m_interpreter, ovl (fids(1)));
 
             if (fids.numel () > 2)
-              Fwaitpid (ovl (fids(2)));
+              octave::Fwaitpid (ovl (fids(2)));
           }
       }
   }
@@ -235,7 +235,7 @@ have_gnuplot_binary (void)
           retval = fs.exists ();
         }
     }
-  catch (octave::execution_exception&)
+  catch (const octave::execution_exception&)
     {
       octave::interpreter& interp
         = octave::__get_interpreter__ ("have_gnuplot_binary");
@@ -258,9 +258,9 @@ Undocumented internal function.
     error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
   else if (! interp.mislocked ("__init_gnuplot__"))
     {
-      octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+      gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-      octave::graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
+      graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
       gtk_mgr.load_toolkit (tk);
 
       interp.mlock ();
@@ -282,3 +282,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

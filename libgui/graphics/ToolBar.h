@@ -37,7 +37,7 @@ namespace octave
   class interpreter;
 }
 
-namespace QtHandles
+namespace octave
 {
 
   class Figure;

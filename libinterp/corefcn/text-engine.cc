@@ -37,8 +37,8 @@ namespace octave
   {
     uint32_t code = invalid_code;
 
-    if (0 <= symbol && symbol < num_symbol_codes)
-      code = symbol_codes[symbol][0];
+    if (0 <= m_symbol && m_symbol < num_symbol_codes)
+      code = symbol_codes[m_symbol][0];
 
     return code;
   }

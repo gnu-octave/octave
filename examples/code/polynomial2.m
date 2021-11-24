@@ -5,10 +5,6 @@ classdef polynomial2
 
   methods
     function p = polynomial2 (a)
-      if (nargin > 1)
-        print_usage ();
-      endif
-
       if (nargin == 1)
         if (isa (a, "polynomial2"))
           p.poly = a.poly;

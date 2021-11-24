@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/actions">
         <file>icons/applications-system.png</file>
+        <file>icons/bookmark-new.png</file>
         <file>icons/bp-toggle.png</file>
         <file>icons/bp-rm-all.png</file>
         <file>icons/bp-prev.png</file>
@@ -49,6 +50,7 @@
         <file>icons/go-previous.png</file>
         <file>icons/go-up.png</file>
         <file>icons/graphic_logo_FilesDockWidget.png</file>
+        <file>icons/graphic_logo_Figure.png</file>
         <file>icons/graphic_logo_FileEditor.png</file>
         <file>icons/graphic_logo_NewsDockWidget.png</file>
         <file>icons/graphic_logo_TerminalDockWidget.png</file>

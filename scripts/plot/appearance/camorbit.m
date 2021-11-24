@@ -49,11 +49,11 @@
 ## @end example
 ##
 ## These rotations are centered around the camera target
-## (@pxref{XREFcamtarget,,camtarget}).
+## (@pxref{XREFcamtarget,,@code{camtarget}}).
 ## First the camera position is pitched up or down by rotating it @var{phi}
 ## degrees around an axis orthogonal to both the viewing direction
 ## (specifically @code{camtarget() - campos()}) and the camera ``up vector''
-## (@pxref{XREFcamup,,camup}).
+## (@pxref{XREFcamup,,@code{camup}}).
 ## Example:
 ##
 ## @example
@@ -81,7 +81,7 @@
 ##
 ## When @var{coorsys} is set to @qcode{"camera"}, the camera is moved left or
 ## right by rotating it around an axis parallel to the camera up vector
-## (@pxref{XREFcamup,,camup}).
+## (@pxref{XREFcamup,,@code{camup}}).
 ## The input @var{dir} should not be specified in this case.
 ## Example:
 ##
@@ -116,7 +116,7 @@ function camorbit (varargin)
   phi = varargin{2};
   if (! (isnumeric (theta) && isscalar (theta)
          && isnumeric (phi) && isscalar (phi)))
-    error ("camorbit: THETA and PHI must be numeric scalars")
+    error ("camorbit: THETA and PHI must be numeric scalars");
   endif
 
   if (nargin < 3)
@@ -124,7 +124,7 @@ function camorbit (varargin)
   else
     coorsys = varargin{3};
     if (! any (strcmpi (coorsys, {"data" "camera"})))
-      error ("camorbit: COORSYS must be 'data' or 'camera'")
+      error ("camorbit: COORSYS must be 'data' or 'camera'");
     endif
   endif
 
@@ -132,13 +132,13 @@ function camorbit (varargin)
     dir = "z";
   else
     if (strcmpi (coorsys, "camera"))
-      error ("camorbit: DIR must not be used with 'camera' COORSYS.");
+      error ("camorbit: DIR must not be used with 'camera' COORSYS");
     endif
     dir = varargin{4};
   endif
 
   if (ischar (dir))
-    switch tolower (dir)
+    switch (tolower (dir))
       case "x"
         dir = [1 0 0];
       case "y"
@@ -172,7 +172,7 @@ function camorbit (varargin)
     yaw_ax = up;
   else
     yaw_ax = dir;
-  end
+  endif
 
   ## First pitch up then yaw right (order matters)
   pos = num2cell (campos (hax));
@@ -219,7 +219,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   sphere ();
-%!   camorbit(20, 30, "camera")
+%!   camorbit (20, 30, "camera")
 %!   p = campos ();
 %!   u = camup ();
 %!   ## Matlab 2008a
@@ -278,7 +278,7 @@ endfunction
 %!   sphere ();
 %!   camorbit (hax, -20, -30)
 %!   y = campos (hax);
-%!   assert (x, y, -eps);
+%!   assert (x, y, -2*eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

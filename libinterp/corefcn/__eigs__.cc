@@ -45,43 +45,58 @@
 #include "parse.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 #if defined (HAVE_ARPACK)
 
-// Global pointer for user defined function.
-static octave_value eigs_fcn;
+struct eigs_callback
+{
+public:
 
-// Have we warned about imaginary values returned from user function?
-static bool warned_imaginary = false;
+  ColumnVector
+  eigs_func (const ColumnVector& x, int& eigs_error);
+
+  ComplexColumnVector
+  eigs_complex_func (const ComplexColumnVector& x, int& eigs_error);
+
+  //--------
+
+  // Pointer for user defined function.
+  octave_value m_eigs_fcn;
+
+  // Have we warned about imaginary values returned from user function?
+  bool m_warned_imaginary = false;
+};
 
 // Is this a recursive call?
 static int call_depth = 0;
 
 ColumnVector
-eigs_func (const ColumnVector& x, int& eigs_error)
+eigs_callback::eigs_func (const ColumnVector& x, int& eigs_error)
 {
   ColumnVector retval;
   octave_value_list args;
   args(0) = x;
 
-  if (eigs_fcn.is_defined ())
+  if (m_eigs_fcn.is_defined ())
     {
       octave_value_list tmp;
 
       try
         {
-          tmp = octave::feval (eigs_fcn, args, 1);
+          tmp = octave::feval (m_eigs_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "eigs");
+          err_user_supplied_eval (ee, "eigs");
         }
 
       if (tmp.length () && tmp(0).is_defined ())
         {
-          if (! warned_imaginary && tmp(0).iscomplex ())
+          if (! m_warned_imaginary && tmp(0).iscomplex ())
             {
               warning ("eigs: ignoring imaginary part returned from user-supplied function");
-              warned_imaginary = true;
+              m_warned_imaginary = true;
             }
 
           retval = tmp(0).xvector_value ("eigs: evaluation of user-supplied function failed");
@@ -97,23 +112,24 @@ eigs_func (const ColumnVector& x, int& eigs_error)
 }
 
 ComplexColumnVector
-eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
+eigs_callback::eigs_complex_func (const ComplexColumnVector& x,
+                                  int& eigs_error)
 {
   ComplexColumnVector retval;
   octave_value_list args;
   args(0) = x;
 
-  if (eigs_fcn.is_defined ())
+  if (m_eigs_fcn.is_defined ())
     {
       octave_value_list tmp;
 
       try
         {
-          tmp = octave::feval (eigs_fcn, args, 1);
+          tmp = octave::feval (m_eigs_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (octave::execution_exception& ee)
         {
-          err_user_supplied_eval (e, "eigs");
+          err_user_supplied_eval (ee, "eigs");
         }
 
       if (tmp.length () && tmp(0).is_defined ())
@@ -197,12 +213,9 @@ Undocumented internal function.
   ComplexColumnVector cresid;
   octave_idx_type info = 1;
 
-  warned_imaginary = false;
+  eigs_callback callback;
 
-  octave::unwind_protect frame;
-
-  frame.protect_var (eigs_fcn);
-  frame.protect_var (call_depth);
+  unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -211,9 +224,9 @@ Undocumented internal function.
   if (args(0).is_function_handle () || args(0).is_inline_function ()
       || args(0).is_string ())
     {
-      eigs_fcn = octave::get_function_handle (interp, args(0), "x");
+      callback.m_eigs_fcn = get_function_handle (interp, args(0), "x");
 
-      if (eigs_fcn.is_undefined ())
+      if (callback.m_eigs_fcn.is_undefined ())
         error ("eigs: unknown function");
 
       if (nargin < 2)
@@ -429,6 +442,13 @@ Undocumented internal function.
   octave_idx_type nconv;
   if (a_is_complex || b_is_complex)
     {
+      EigsComplexFunc
+      eigs_complex_fcn = [&callback] (const ComplexColumnVector& x,
+                                      int& eigs_error)
+                           {
+                             return callback.eigs_complex_func (x, eigs_error);
+                           };
+
       ComplexMatrix eig_vec;
       ComplexColumnVector eig_val;
 
@@ -436,12 +456,12 @@ Undocumented internal function.
         {
           if (b_is_sparse)
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
                eig_val, bscm, permB, cresid, octave_stdout, tol,
                (nargout > 1), cholB, disp, maxit);
           else
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
                eig_val, bcm, permB, cresid, octave_stdout, tol,
                (nargout > 1), cholB, disp, maxit);
         }
@@ -489,6 +509,13 @@ Undocumented internal function.
     }
   else if (sigmai != 0.0)
     {
+      EigsComplexFunc
+      eigs_complex_fcn = [&callback] (const ComplexColumnVector& x,
+                                      int& eigs_error)
+                           {
+                             return callback.eigs_complex_func (x, eigs_error);
+                           };
+
       // Promote real problem to a complex one.
       ComplexMatrix eig_vec;
       ComplexColumnVector eig_val;
@@ -497,12 +524,12 @@ Undocumented internal function.
         {
           if (b_is_sparse)
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
                eig_val, bscm, permB, cresid, octave_stdout, tol,
                (nargout > 1), cholB, disp, maxit);
           else
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
                eig_val, bcm, permB, cresid, octave_stdout, tol,
                (nargout > 1), cholB, disp, maxit);
         }
@@ -537,6 +564,11 @@ Undocumented internal function.
     }
   else
     {
+      EigsFunc eigs_fcn = [&callback] (const ColumnVector& x, int& eigs_error)
+                            {
+                              return callback.eigs_func (x, eigs_error);
+                            };
+
       if (symmetric)
         {
           Matrix eig_vec;
@@ -546,12 +578,12 @@ Undocumented internal function.
             {
               if (b_is_sparse)
                 nconv = EigsRealSymmetricFunc
-                       (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                       (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
                         eig_val, bsmm, permB, resid, octave_stdout, tol,
                         (nargout > 1), cholB, disp, maxit);
               else
                 nconv = EigsRealSymmetricFunc
-                       (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                       (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
                         eig_val, bmm, permB, resid, octave_stdout, tol,
                         (nargout > 1), cholB, disp, maxit);
             }
@@ -596,12 +628,12 @@ Undocumented internal function.
             {
               if (b_is_sparse)
                 nconv = EigsRealNonSymmetricFunc
-                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                        (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
                          eig_val, bsmm, permB, resid, octave_stdout, tol,
                          (nargout > 1), cholB, disp, maxit);
               else
                 nconv = EigsRealNonSymmetricFunc
-                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                        (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
                          eig_val, bmm, permB, resid, octave_stdout, tol,
                          (nargout > 1), cholB, disp, maxit);
             }
@@ -652,7 +684,7 @@ Undocumented internal function.
 
   if (! fcn_name.empty ())
     {
-      octave::symbol_table& symtab = interp.get_symbol_table ();
+      symbol_table& symtab = interp.get_symbol_table ();
 
       symtab.clear_function (fcn_name);
     }
@@ -674,3 +706,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

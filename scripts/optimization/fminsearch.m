@@ -55,8 +55,9 @@
 ## @code{200 * number_of_variables}, i.e., @code{200 * length (@var{x0})}.
 ## The value must be a positive integer.
 ##
-## For a description of the other options, see @code{optimset}.  To initialize
-## an options structure with default values for @code{fminsearch} use
+## For a description of the other options,
+## @pxref{XREFoptimset,,@code{optimset}}.  To initialize an options structure
+## with default values for @code{fminsearch} use
 ## @code{options = optimset ("fminsearch")}.
 ##
 ## @code{fminsearch} may also be called with a single structure argument
@@ -311,7 +312,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     endfor
   else
     ## Right-angled simplex based on co-ordinate axes.
-    alpha = scale * ones(n+1,1);
+    alpha = scale * ones (n+1,1);
     for j = 2:n+1
       V(:,j) = x0 + alpha(j)*V(:,j);
       x(:) = V(:,j);
@@ -362,7 +363,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
       printf ("Iter. %2.0f,", k);
       printf ("  how = %-11s", [how ","]);
       printf ("nf = %3.0f,  f = %9.4e  (%2.1f%%)\n", nf, dirn * fmax, ...
-              100*(fmax-fmax_old)/(abs(fmax_old)+eps));
+              100*(fmax-fmax_old)/(abs (fmax_old)+eps));
     endif
     fmax_old = fmax;
 
@@ -578,5 +579,5 @@ endfunction
 %! fminsearch (@(x) (Inf), 0, optimset ("FunValCheck", "on"));
 
 ## Test input validation
-%!error fminsearch ()
+%!error <Invalid call> fminsearch ()
 %!error fminsearch (1)

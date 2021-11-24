@@ -39,6 +39,8 @@
 #  include "ov-null-mat.h"
 #endif
 
+OCTAVE_NAMESPACE_BEGIN
+
 // matrix by diag matrix ops.
 
 DEFBINOP_OP (add, LMATRIX, RMATRIX, +)
@@ -102,3 +104,5 @@ INST_NAME (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, OCTAVE_LMATRIX, octave_null_sq_str, OCTAVE_LDMATRIX);
 #endif
 }
+
+OCTAVE_NAMESPACE_END

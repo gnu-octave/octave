@@ -34,9 +34,9 @@
 #include "MArray.h"
 #include "MArray.cc"
 
-template class OCTAVE_API MArray<int>;
+INSTANTIATE_MARRAY (int);
 #if defined (OCTAVE_ENABLE_64)
-template class OCTAVE_API MArray<int64_t>;
+INSTANTIATE_MARRAY (int64_t);
 #endif
 
 INSTANTIATE_MARRAY_FRIENDS (int, OCTAVE_API)
@@ -44,20 +44,20 @@ INSTANTIATE_MARRAY_FRIENDS (int, OCTAVE_API)
 INSTANTIATE_MARRAY_FRIENDS (int64_t, OCTAVE_API)
 #endif
 
-template class OCTAVE_API MArray<octave_int8>;
-template class OCTAVE_API MArray<octave_int16>;
-template class OCTAVE_API MArray<octave_int32>;
-template class OCTAVE_API MArray<octave_int64>;
+INSTANTIATE_MARRAY (octave_int8);
+INSTANTIATE_MARRAY (octave_int16);
+INSTANTIATE_MARRAY (octave_int32);
+INSTANTIATE_MARRAY (octave_int64);
 
 INSTANTIATE_MARRAY_FRIENDS (octave_int8, OCTAVE_API)
 INSTANTIATE_MARRAY_FRIENDS (octave_int16, OCTAVE_API)
 INSTANTIATE_MARRAY_FRIENDS (octave_int32, OCTAVE_API)
 INSTANTIATE_MARRAY_FRIENDS (octave_int64, OCTAVE_API)
 
-template class OCTAVE_API MArray<octave_uint8>;
-template class OCTAVE_API MArray<octave_uint16>;
-template class OCTAVE_API MArray<octave_uint32>;
-template class OCTAVE_API MArray<octave_uint64>;
+INSTANTIATE_MARRAY (octave_uint8);
+INSTANTIATE_MARRAY (octave_uint16);
+INSTANTIATE_MARRAY (octave_uint32);
+INSTANTIATE_MARRAY (octave_uint64);
 
 INSTANTIATE_MARRAY_FRIENDS (octave_uint8, OCTAVE_API)
 INSTANTIATE_MARRAY_FRIENDS (octave_uint16, OCTAVE_API)
@@ -67,6 +67,6 @@ INSTANTIATE_MARRAY_FRIENDS (octave_uint64, OCTAVE_API)
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 
-template class OCTAVE_API MDiagArray2<int>;
+template class MDiagArray2<int>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (int, OCTAVE_API)

@@ -52,7 +52,7 @@
 ## the space character.  Using arbitrary strings for field names is
 ## incompatible with @sc{matlab}, and this usage will emit a warning if the
 ## warning ID @code{Octave:language-extension} is enabled.
-## @xref{XREFwarning_ids,,warning_ids}.
+## @xref{XREFwarning_ids,,@code{warning_ids}}.
 ##
 ## With the second calling form, set a field of a structure array.  The
 ## input @var{sidx} selects an element of the structure array, @var{field}
@@ -112,7 +112,8 @@
 ## @var{sa}(2).bar(3).baz(1,4) = 5
 ## @end group
 ## @end example
-## @seealso{getfield, rmfield, orderfields, isfield, fieldnames, isstruct, struct}
+## @seealso{getfield, rmfield, orderfields, isfield, fieldnames, isstruct,
+## struct}
 ## @end deftypefn
 
 function sout = setfield (s, varargin)
@@ -146,7 +147,7 @@ endfunction
 %! assert (oo(1,2).fd(3).b(1,4), 6);
 
 ## Test input validation
-%!error setfield ()
-%!error setfield (1)
-%!error setfield (1,2)
+%!error <Invalid call> setfield ()
+%!error <Invalid call> setfield (1)
+%!error <Invalid call> setfield (1,2)
 %!error <invalid index> setfield (1,2,3)

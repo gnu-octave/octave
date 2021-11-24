@@ -188,13 +188,13 @@ namespace octave
 
     std::list<bp_type> breakpoints_and_conds (void);
 
-    bp_table::intmap add_breakpoint (event_manager& evmgr,
-                                     const std::string& file,
-                                     const bp_table::intmap& line,
-                                     const std::string& condition);
+    bp_table::bp_lines add_breakpoint (event_manager& evmgr,
+                                       const std::string& file,
+                                       const bp_table::bp_lines& lines,
+                                       const std::string& condition);
 
-    bp_table::intmap remove_all_breakpoints (event_manager& evmgr,
-                                             const std::string& file);
+    bp_table::bp_lines remove_all_breakpoints (event_manager& evmgr,
+                                               const std::string& file);
 
     void accept (tree_walker& tw)
     {

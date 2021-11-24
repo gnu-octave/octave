@@ -168,7 +168,7 @@
 
 function [L, U, P] = ilu (A, opts = struct ())
 
-  if (nargin < 1 || nargin > 2 || (nargout > 3))
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -177,7 +177,7 @@ function [L, U, P] = ilu (A, opts = struct ())
   endif
 
   if (! isstruct (opts))
-    error ("ilu: OPTS must be a structure.");
+    error ("ilu: OPTS must be a structure");
   endif
 
   ## If A is empty then return empty L, U and P for Matlab compatibility
@@ -279,7 +279,7 @@ endfunction
 %! opts.milu = "row";
 %! opts.droptol = dtol;
 %! [L, U] = ilu (A, opts);
-%! e = ones (size (A, 2),1);
+%! e = ones (columns (A),1);
 %! assert (norm (A*e - L*U*e), 1e-14, 1e-14);
 %!test
 %! opts.type = "crout";
@@ -507,7 +507,7 @@ endfunction
 %! A = sparse (magic (4));
 %! opts.type = "ilutp";
 %! [L, U] = ilu (A, opts);
-%! assert (L * U, A, eps)
+%! assert (L * U, A, eps);
 
 ## Tests for input validation
 %!shared A_tiny, opts

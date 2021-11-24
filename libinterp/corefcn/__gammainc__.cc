@@ -30,15 +30,15 @@
 #include "defun.h"
 #include "fNDArray.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (__gammainc__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{y} =} __gammainc__ (@var{x}, @var{a})
 Continued fraction for incomplete gamma function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     print_usage ();
 
   bool is_single = args(0).is_single_type () || args(1).is_single_type ();
@@ -70,7 +70,7 @@ Continued fraction for incomplete gamma function.
         a = args(1).float_array_value ();
 
       // Initialize variables used in algorithm
-      static const float tiny = octave::math::exp2 (-50.0f);
+      static const float tiny = math::exp2 (-50.0f);
       static const float eps = std::numeric_limits<float>::epsilon();
       float y, Cj, Dj, bj, aj, Deltaj;
       int j, maxit;
@@ -125,7 +125,7 @@ Continued fraction for incomplete gamma function.
         a = args(1).array_value ();
 
       // Initialize variables used in algorithm
-      static const double tiny = octave::math::exp2 (-100.0);
+      static const double tiny = math::exp2 (-100.0);
       static const double eps = std::numeric_limits<double>::epsilon();
       double y, Cj, Dj, bj, aj, Deltaj;
       int j, maxit;
@@ -166,3 +166,5 @@ Continued fraction for incomplete gamma function.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

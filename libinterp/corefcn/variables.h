@@ -48,6 +48,11 @@ namespace octave
 
 #include "ov-builtin.h"
 
+// The following two functions should be removed or the return type
+// should be changed when we remove octave_function from the interpreter
+// interface.  See the discussion about this topic here:
+// https://octave.discourse.group/t/refactoring-octave-value-function-objects-backward-incompatible-change/971
+
 extern OCTINTERP_API octave_function *
 is_valid_function (const octave_value&, const std::string& = "",
                    bool warn = false);
@@ -56,11 +61,7 @@ extern OCTINTERP_API octave_function *
 is_valid_function (const std::string&, const std::string& = "",
                    bool warn = false);
 
-OCTAVE_DEPRECATED (6, "use 'octave::get_function_handle' instead")
-extern OCTINTERP_API octave_function *
-extract_function (const octave_value& arg, const std::string& warn_for,
-                  const std::string& fname, const std::string& header,
-                  const std::string& trailer);
+OCTAVE_NAMESPACE_BEGIN
 
 extern OCTINTERP_API int
 symbol_exist (const std::string& name, const std::string& type = "any");
@@ -100,6 +101,93 @@ extern OCTINTERP_API octave_value
 set_internal_variable (int& var, const octave_value_list& args,
                        int nargout, const char *nm, const char **choices);
 
+extern OCTINTERP_API std::string
+maybe_missing_function_hook (const std::string& name);
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::symbol_exist' instead")
+inline int
+symbol_exist (const std::string& name, const std::string& type = "any")
+{
+  return octave::symbol_exist (name, type);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::unique_symbol_name' instead")
+inline std::string
+unique_symbol_name (const std::string& basename)
+{
+  return octave::unique_symbol_name (basename);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_internal_variable' instead")
+inline octave_value
+set_internal_variable (bool& var, const octave_value_list& args, int nargout, const char *nm)
+{
+  return octave::set_internal_variable (var, args, nargout, nm);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_internal_variable' instead")
+inline octave_value
+set_internal_variable (char& var, const octave_value_list& args, int nargout, const char *nm)
+{
+  return octave::set_internal_variable (var, args, nargout, nm);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_internal_variable' instead")
+inline octave_value
+set_internal_variable (int& var, const octave_value_list& args, int nargout, const char *nm, int minval = std::numeric_limits<int>::min (), int maxval = std::numeric_limits<int>::max ())
+{
+  return octave::set_internal_variable (var, args, nargout, nm, minval, maxval);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_internal_variable' instead")
+inline octave_value
+set_internal_variable (double& var, const octave_value_list& args, int nargout, const char *nm, double minval = -octave::numeric_limits<double>::Inf (), double maxval = octave::numeric_limits<double>::Inf ())
+{
+  return octave::set_internal_variable (var, args, nargout, nm, minval, maxval);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_internal_variable' instead")
+inline octave_value
+set_internal_variable (std::string& var, const octave_value_list& args, int nargout, const char *nm, bool empty_ok = true)
+{
+  return octave::set_internal_variable (var, args, nargout, nm, empty_ok);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_internal_variable' instead")
+inline octave_value
+set_internal_variable (std::string& var, const octave_value_list& args, int nargout, const char *nm, const char **choices)
+{
+  return octave::set_internal_variable (var, args, nargout, nm, choices);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::set_internal_variable' instead")
+inline octave_value
+set_internal_variable (int& var, const octave_value_list& args, int nargout, const char *nm, const char **choices)
+{
+  return octave::set_internal_variable (var, args, nargout, nm, choices);
+}
+
+OCTAVE_DEPRECATED (7, "use 'octave::maybe_missing_function_hook' instead")
+inline std::string
+maybe_missing_function_hook (const std::string& name)
+{
+  return octave::maybe_missing_function_hook (name);
+}
+
+OCTAVE_DEPRECATED (6, "use 'octave::get_function_handle' instead")
+extern OCTINTERP_API octave_function *
+extract_function (const octave_value& arg, const std::string& warn_for,
+                  const std::string& fname, const std::string& header,
+                  const std::string& trailer);
+
+#endif
+
+// The following macros should also be considered obsolete.
+
 #define SET_INTERNAL_VARIABLE(NM)                       \
   set_internal_variable (V ## NM, args, nargout, #NM)
 
@@ -112,12 +200,5 @@ set_internal_variable (int& var, const octave_value_list& args,
 // in the following, CHOICES must be a C string array terminated by null.
 #define SET_INTERNAL_VARIABLE_CHOICES(NM, CHOICES)              \
   set_internal_variable (V ## NM, args, nargout, #NM, CHOICES)
-
-extern OCTINTERP_API std::string
-maybe_missing_function_hook (const std::string& name);
-
-OCTAVE_DEPRECATED (5, "this function will be removed in a future version of Octave")
-extern OCTINTERP_API string_vector
-get_struct_elts (const std::string& text);
 
 #endif

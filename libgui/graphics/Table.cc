@@ -52,12 +52,12 @@
 
 #include "graphics.h"
 #include "interpreter.h"
+#include "oct-map.h"
 #include "oct-stream.h"
 #include "oct-string.h"
 #include "oct-strstrm.h"
-#include "ov-struct.h"
 
-namespace QtHandles
+namespace octave
 {
 
   static const int AUTO_WIDTH = 75;
@@ -198,7 +198,7 @@ namespace QtHandles
     QString text;
     if (val.is_string ())
       {
-        text = QtHandles::Utils::fromStdString (val.string_value ());
+        text = octave::Utils::fromStdString (val.string_value ());
         flag = Qt::AlignLeft ;
       }
     else if (val.iscomplex ())
@@ -479,12 +479,12 @@ namespace QtHandles
     m_tableWidget->installEventFilter (this);
 
 
-    connect (m_tableWidget, SIGNAL (itemChanged (QTableWidgetItem*)),
-             SLOT (itemChanged (QTableWidgetItem*)));
-    connect (m_tableWidget, SIGNAL (cellClicked (int, int)),
-             SLOT (cellClicked (int, int)));
-    connect (m_tableWidget, SIGNAL (itemSelectionChanged (void)),
-             SLOT (itemSelectionChanged (void)));
+    connect (m_tableWidget, &QTableWidget::itemChanged,
+             this, &Table::itemChanged);
+    connect (m_tableWidget, &QTableWidget::cellClicked,
+             this, &Table::cellClicked);
+    connect (m_tableWidget, &QTableWidget::itemSelectionChanged,
+             this, &Table::itemSelectionChanged);
   }
 
   Table::~Table (void) { }
@@ -505,8 +505,7 @@ namespace QtHandles
           }
         octave_scalar_map eventData;
         eventData.setfield ("Indices", indices);
-        octave_value cellSelectionCallbackEventObject =
-          octave_value (new octave_struct (eventData));
+        octave_value cellSelectionCallbackEventObject (eventData);
         emit gh_callback_event (m_handle, "cellselectioncallback",
                                 cellSelectionCallbackEventObject);
       }
@@ -553,8 +552,7 @@ namespace QtHandles
         eventData.setfield ("EditData", edit_data);
         eventData.setfield ("Error", error);
 
-        octave_value cellEditCallbackEventObject =
-          octave_value (new octave_struct (eventData));
+        octave_value cellEditCallbackEventObject (eventData);
 
         emit gh_callback_event (m_handle, "celleditcallback",
                                 cellEditCallbackEventObject);
@@ -1323,11 +1321,7 @@ namespace QtHandles
                                      : QAbstractItemView::NoSelection);
 
     // Set rearrangeablecolumns
-    #if defined (HAVE_QT4)
-      m_tableWidget->horizontalHeader ()->setMovable (enabled && rearrangeableColumns);
-    #elif defined (HAVE_QT5)
-      m_tableWidget->horizontalHeader ()->setSectionsMovable (enabled && rearrangeableColumns);
-    #endif
+    m_tableWidget->horizontalHeader ()->setSectionsMovable (enabled && rearrangeableColumns);
     m_tableWidget->horizontalHeader ()->setDragEnabled (enabled && rearrangeableColumns);
     m_tableWidget->horizontalHeader ()->setDragDropMode (QAbstractItemView::InternalMove);
 
@@ -1506,11 +1500,7 @@ namespace QtHandles
     bool rearrangeableColumns = tp.is_rearrangeablecolumns ();
     bool enabled = tp.is_enable ();
 
-  #if defined (HAVE_QT4)
-    m_tableWidget->horizontalHeader ()->setMovable (enabled && rearrangeableColumns);
-  #elif defined (HAVE_QT5)
     m_tableWidget->horizontalHeader ()->setSectionsMovable (enabled && rearrangeableColumns);
-  #endif
     m_tableWidget->horizontalHeader ()->setDragEnabled (enabled && rearrangeableColumns);
     m_tableWidget->horizontalHeader ()->setDragDropMode (QAbstractItemView::InternalMove);
   }

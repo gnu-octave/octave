@@ -106,9 +106,8 @@ endfunction
 %! assert (lastwarn (), warnmsg);
 
 ## Test input validation
-%!error nthroot ()
-%!error nthroot (1)
-%!error nthroot (1,2,3)
+%!error <Invalid call> nthroot ()
+%!error <Invalid call> nthroot (1)
 %!error <X must not contain complex values> nthroot (1+j, 2)
 %!error <N must be a real nonzero scalar> nthroot (1, i)
 %!error <N must be a real nonzero scalar> nthroot (1, [1 2])

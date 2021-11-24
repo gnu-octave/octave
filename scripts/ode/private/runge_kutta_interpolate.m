@@ -60,12 +60,12 @@ endfunction
 ## at the time t_out using 2nd order Hermite interpolation.
 function x_out = quadratic_interpolation (t, x, der, t_out)
 
-  # coefficients of the parabola
+  ## coefficients of the parabola
   a = -(x(:,1) - x(:,2) - der(:).*(t(1)-t(2))) / (t(1) - t(2))^2;
   b = der(:) - 2*t(1).*a;
   c = x(:,1) - a*t(1)^2 - b*t(1);
 
-  # evaluate in t_out
+  ## evaluate in t_out
   x_out = a*t_out.^2 + b*t_out + c;
 
 endfunction

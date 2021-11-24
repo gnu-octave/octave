@@ -30,6 +30,8 @@
 
 #include <string>
 
+#include "intNDArray.h"
+
 template <typename T> class Array;
 
 namespace octave
@@ -39,6 +41,9 @@ namespace octave
 
   extern OCTAVE_API Array<double>
   base64_decode (const std::string& str);
+
+  extern OCTAVE_API intNDArray<octave_uint8>
+  base64_decode_bytes (const std::string& str);
 }
 
 #endif

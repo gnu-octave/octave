@@ -36,7 +36,7 @@
 
 #include "octave-qobject.h"
 
-namespace QtHandles
+namespace octave
 {
 
   ToggleButtonControl*
@@ -77,6 +77,7 @@ namespace QtHandles
     QImage img = Utils::makeImageFromCData (cdat,
                                             cdat.columns (), cdat.rows ());
     btn->setIcon (QIcon (QPixmap::fromImage (img)));
+    btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
   }
 
   ToggleButtonControl::~ToggleButtonControl (void)
@@ -97,6 +98,7 @@ namespace QtHandles
                                                   cdat.rows (),
                                                   cdat.columns ());
           btn->setIcon (QIcon (QPixmap::fromImage (img)));
+          btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
         }
         break;
 

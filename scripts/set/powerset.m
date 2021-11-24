@@ -40,7 +40,7 @@
 
 function p = powerset (a, byrows_arg)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -113,8 +113,7 @@ endfunction
 %!assert (powerset([]), {});  # always return a cell array
 
 ## Test input validation
-%!error powerset ()
-%!error powerset (1,2,3)
+%!error <Invalid call> powerset ()
 %!error <second argument must be "rows"> powerset (1, "cols")
 %!error <"rows" not valid for cell arrays> powerset ({1}, "rows")
 %!error <cell arrays can only be used for character> powerset ({1})

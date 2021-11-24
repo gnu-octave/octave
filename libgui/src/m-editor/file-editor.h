@@ -47,6 +47,7 @@
 namespace octave
 {
   class base_qobject;
+  class file_editor;
 
   // subclassed QTabWidget for using custom tabbar
 
@@ -56,7 +57,7 @@ namespace octave
 
   public:
 
-    file_editor_tab_widget (QWidget *p);
+    file_editor_tab_widget (QWidget *p, file_editor *fe);
 
     ~file_editor_tab_widget (void) = default;
 
@@ -90,13 +91,15 @@ namespace octave
 
     file_editor (QWidget *p, base_qobject& oct_qobj);
 
-    ~file_editor (void);
+    ~file_editor (void) = default;
 
     QMenu * get_mru_menu (void) { return m_mru_file_menu; }
 
     QMenu * debug_menu (void) { return m_debug_menu; }
 
     QToolBar * toolbar (void) { return m_tool_bar; }
+
+    QMenuBar * menubar (void) { return m_menu_bar; }
 
     void insert_global_actions (QList<QAction*>);
 
@@ -111,9 +114,6 @@ namespace octave
       PASTE_ACTION,
       SELECTALL_ACTION
     };
-
-    void handle_enter_debug_mode (void);
-    void handle_exit_debug_mode (void);
 
     void check_actions (void);
     void empty_script (bool startup, bool visible);
@@ -172,8 +172,18 @@ namespace octave
     void request_open_file_external (const QString& file_name, int line);
     void file_loaded_signal (void);
 
-    void editor_tabs_changed_signal (bool);
+    void editor_tabs_changed_signal (bool, bool);
     void request_dbcont_signal (void);
+
+    void enter_debug_mode_signal (void);
+    void exit_debug_mode_signal (void);
+
+    void update_gui_lexer_signal (bool);
+    void execute_command_in_terminal_signal (const QString&);
+    void focus_console_after_command_signal (void);
+    void run_file_signal (const QFileInfo&);
+    void edit_mfile_request (const QString&, const QString&, const QString&, int);
+    void debug_quit_signal (void);
 
   public slots:
 
@@ -184,10 +194,14 @@ namespace octave
     bool check_closing (void);
     void handle_tab_ready_to_close (void);
 
+    void handle_enter_debug_mode (void);
+    void handle_exit_debug_mode (void);
+
     void request_new_file (const QString& commands);
     void request_close_file (bool);
     void request_close_all_files (bool);
     void request_close_other_files (bool);
+    void copy_full_file_path (bool);
     void request_mru_open_file (QAction *action);
     void request_print_file (bool);
 
@@ -249,7 +263,8 @@ namespace octave
     void handle_tab_close_request (int index);
     void handle_tab_remove_request (void);
     void active_tab_changed (int index);
-    void handle_editor_state_changed (bool enableCopy, bool is_octave_file);
+    void handle_editor_state_changed (bool enableCopy, bool is_octave_file,
+                                      bool is_modified);
     void handle_mru_add_file (const QString& file_name, const QString& encoding);
     void check_conflict_save (const QString& fileName, bool remove_on_success);
 
@@ -444,6 +459,8 @@ namespace octave
 
     bool m_copy_action_enabled;
     bool m_undo_action_enabled;
+    bool m_is_octave_file;
+    bool m_current_tab_modified;
 
     QMenu *m_edit_menu;
     QMenu *m_edit_cmd_menu;
@@ -459,6 +476,7 @@ namespace octave
     bool m_closing_canceled;
     bool m_closed;
     bool m_no_focus;
+    bool m_editor_ready;
 
     enum { MaxMRUFiles = 10 };
     QMenu *m_mru_file_menu;

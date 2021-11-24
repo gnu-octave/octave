@@ -181,6 +181,8 @@ namespace octave
                    const QStringList& button, const QString& defbutton,
                    const QStringList& role);
 
+    ~MessageDialog (void) = default;
+
   private:
 
     void closeEvent (QCloseEvent *)
@@ -205,7 +207,7 @@ namespace octave
                 const QStringList& prompt, const QString& ok_string,
                 const QString& cancel_string);
 
-    ~ListDialog (void);
+    ~ListDialog (void) = default;
 
   signals:
 
@@ -238,6 +240,8 @@ namespace octave
                  const QString& title, const QFloatList& nr,
                  const QFloatList& nc, const QStringList& defaults);
 
+    ~InputDialog (void) = default;
+
   signals:
 
     void finish_input (const QStringList&, int);
@@ -260,6 +264,8 @@ namespace octave
     FileDialog (base_qobject& oct_qobj, const QStringList& filters,
                 const QString& title, const QString& filename,
                 const QString& dirname, const QString& multimode);
+
+    ~FileDialog (void) = default;
 
   signals:
 

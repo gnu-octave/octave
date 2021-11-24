@@ -227,8 +227,8 @@ endfunction
 %!test
 %! hf = figure ("Visible", "off");
 %! unwind_protect
-%!   hp = patch;
-%!   hs = surface;
+%!   hp = patch ();
+%!   hs = surface ();
 %!   material dull
 %!   assert (get (hp, "ambientstrength"), 0.3);
 %!   assert (get (hs, "ambientstrength"), 0.3);
@@ -241,16 +241,26 @@ endfunction
 %!   assert (get (hp, "specularcolorreflectance"), 1.0);
 %!   assert (get (hs, "specularcolorreflectance"), 1.0);
 %!   material default
-%!   assert (get (hp, "ambientstrength"), get (0, "defaultpatchambientstrength"));
-%!   assert (get (hs, "ambientstrength"), get (0, "defaultsurfaceambientstrength"));
-%!   assert (get (hp, "diffusestrength"), get (0, "defaultpatchdiffusestrength"));
-%!   assert (get (hs, "diffusestrength"), get (0, "defaultsurfacediffusestrength"));
-%!   assert (get (hp, "specularstrength"), get (0, "defaultpatchspecularstrength"));
-%!   assert (get (hs, "specularstrength"), get (0, "defaultsurfacespecularstrength"));
-%!   assert (get (hp, "specularexponent"), get (0, "defaultpatchspecularexponent"));
-%!   assert (get (hs, "specularexponent"), get (0, "defaultsurfacespecularexponent"));
-%!   assert (get (hp, "specularcolorreflectance"), get (0, "defaultpatchspecularcolorreflectance"));
-%!   assert (get (hs, "specularcolorreflectance"), get (0, "defaultsurfacespecularcolorreflectance"));
+%!   assert (get (hp, "ambientstrength"),
+%!           get (0, "defaultpatchambientstrength"));
+%!   assert (get (hs, "ambientstrength"),
+%!           get (0, "defaultsurfaceambientstrength"));
+%!   assert (get (hp, "diffusestrength"),
+%!           get (0, "defaultpatchdiffusestrength"));
+%!   assert (get (hs, "diffusestrength"),
+%!           get (0, "defaultsurfacediffusestrength"));
+%!   assert (get (hp, "specularstrength"),
+%!           get (0, "defaultpatchspecularstrength"));
+%!   assert (get (hs, "specularstrength"),
+%!           get (0, "defaultsurfacespecularstrength"));
+%!   assert (get (hp, "specularexponent"),
+%!           get (0, "defaultpatchspecularexponent"));
+%!   assert (get (hs, "specularexponent"),
+%!           get (0, "defaultsurfacespecularexponent"));
+%!   assert (get (hp, "specularcolorreflectance"),
+%!           get (0, "defaultpatchspecularcolorreflectance"));
+%!   assert (get (hs, "specularcolorreflectance"),
+%!           get (0, "defaultsurfacespecularcolorreflectance"));
 %!   material ([0.5 0.6 0.7 20 0.8])
 %!   assert (get (hp, "ambientstrength"), 0.5);
 %!   assert (get (hs, "ambientstrength"), 0.5);
@@ -291,12 +301,12 @@ endfunction
 %!test
 %! mtypes = material ();
 %! assert (iscell (mtypes));
-%! assert (size (mtypes, 2), 1);
+%! assert (columns (mtypes), 1);
 %! assert (all (cellfun (@ischar, mtypes)));
 
 %!test
 %! refl_props = material ("metal");
-%! assert (refl_props, {0.3, 0.3, 1, 25, 0.5})
+%! assert (refl_props, {0.3, 0.3, 1, 25, 0.5});
 
 ## Test input validation
 %!error <Invalid call to material> material ()
@@ -305,7 +315,7 @@ endfunction
 %!error <Invalid call to material> a = material (-1, 2)
 %!error <Invalid call to material> a = material ({})
 %!error <Invalid call to material> a = material ([.3 .4 .5])
-%!error <Invalid call to material> [a, b] = material ()
+%!error <called with too many outputs> [a, b] = material ()
 %!error <first argument must be a list of handles> material (-1, "metal")
 %!error <unknown material type 'foo'> material foo
 %!error <incorrect number of elements in material vector> material (-1)

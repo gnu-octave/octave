@@ -56,7 +56,7 @@
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTINTERP_API octave_base_scalar<float>;
+extern template class octave_base_scalar<float>;
 
 template class octave_base_scalar<FloatComplex>;
 
@@ -91,7 +91,7 @@ octave_float_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 
   octave_value tmp (new octave_float_complex_matrix (float_complex_matrix_value ()));
 
-  return tmp.do_index_op (idx, resize_ok);
+  return tmp.index_op (idx, resize_ok);
 }
 
 double
@@ -254,7 +254,7 @@ octave_float_complex::save_ascii (std::ostream& os)
 {
   FloatComplex c = float_complex_value ();
 
-  octave_write_float_complex (os, c);
+  octave::write_value<FloatComplex> (os, c);
 
   os << "\n";
 
@@ -264,7 +264,7 @@ octave_float_complex::save_ascii (std::ostream& os)
 bool
 octave_float_complex::load_ascii (std::istream& is)
 {
-  scalar = octave_read_value<FloatComplex> (is);
+  scalar = octave::read_value<FloatComplex> (is);
 
   if (! is)
     error ("load: failed to load complex scalar constant");
@@ -310,7 +310,7 @@ octave_float_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5)
 
-  hsize_t dimens[3];
+  hsize_t dimens[3] = {0};
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
 
@@ -414,15 +414,26 @@ octave_float_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 mxArray *
-octave_float_complex::as_mxArray (void) const
+octave_float_complex::as_mxArray (bool interleaved) const
 {
-  mxArray *retval = new mxArray (mxSINGLE_CLASS, 1, 1, mxCOMPLEX);
+  mxArray *retval = new mxArray (interleaved, mxSINGLE_CLASS, 1, 1, mxCOMPLEX);
 
-  float *pr = static_cast<float *> (retval->get_data ());
-  float *pi = static_cast<float *> (retval->get_imag_data ());
+  if (interleaved)
+    {
+      mxComplexSingle *pd
+        = static_cast<mxComplexSingle *> (retval->get_data ());
 
-  pr[0] = scalar.real ();
-  pi[0] = scalar.imag ();
+      pd[0].real = scalar.real ();
+      pd[0].imag = scalar.imag ();
+    }
+  else
+    {
+      mxSingle *pr = static_cast<mxSingle *> (retval->get_data ());
+      mxSingle *pi = static_cast<mxSingle *> (retval->get_imag_data ());
+
+      pr[0] = scalar.real ();
+      pi[0] = scalar.imag ();
+    }
 
   return retval;
 }

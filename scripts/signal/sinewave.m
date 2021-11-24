@@ -33,19 +33,21 @@
 ## @seealso{sinetone}
 ## @end deftypefn
 
-function x = sinewave (m, n, d)
+function x = sinewave (m, n, d = 0)
 
-  if (nargin > 0 && nargin < 4)
-    if (nargin < 3)
-      d = 0;
-    endif
-    if (nargin < 2)
-      n = m;
-    endif
-    x = sin (((1 : m) + d - 1) * 2 * pi / n);
-  else
+  if (nargin < 1)
     print_usage ();
   endif
+
+  ## FIXME: No input validation of M, N, or D
+  if (nargin < 2)
+    n = m;
+  endif
+  if (nargin < 3)
+    d = 0;
+  endif
+
+  x = sin (((1 : m) + d - 1) * 2 * pi / n);
 
 endfunction
 
@@ -58,4 +60,4 @@ endfunction
 %!assert (sinewave (1), sinewave (1, 1,0))
 %!assert (sinewave (3, 4), sinewave (3, 4, 0))
 
-%!error sinewave ()
+%!error <Invalid call> sinewave ()

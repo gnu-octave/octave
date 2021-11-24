@@ -43,7 +43,7 @@ namespace octave
   class interpreter;
 }
 
-namespace QtHandles
+namespace octave
 {
 
   enum MouseMode
@@ -130,6 +130,8 @@ namespace QtHandles
 
   signals:
     void asyncUpdate (void);
+    void interpreter_event (const octave::fcn_callback& fcn);
+    void interpreter_event (const octave::meth_callback& meth);
 
   private:
     Container *m_container;

@@ -62,7 +62,7 @@ octave_hdf5_id octave_int64_scalar::hdf5_save_type = HDF5_SAVE_TYPE;
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class OCTINTERP_API octave_base_scalar<double>;
+extern template class octave_base_scalar<double>;
 
 template class octave_base_matrix<int64NDArray>;
 

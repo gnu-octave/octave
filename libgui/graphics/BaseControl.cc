@@ -39,7 +39,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace QtHandles
+namespace octave
 {
 
   static void
@@ -50,18 +50,30 @@ namespace QtHandles
     if (props.style_is ("edit")
         || props.style_is ("listbox"))
       {
-        p.setColor (QPalette::Base,
-                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
-        p.setColor (QPalette::Text,
+        Matrix bg_color = props.get_backgroundcolor_rgb ();
+        // Matlab compatibility: Default color is ignored, and rendered as
+        // white ([1.0, 1.0, 1.0]).  See bug #58261.
+        if (bg_color(0) == bg_color(1) && bg_color(0) == bg_color(2)
+            && (std::abs (bg_color(1) - 0.94) < .005))
+          bg_color.fill (1.0);
+
+        p.setColor (QPalette::Active, QPalette::Base,
+                    Utils::fromRgb (bg_color));
+        p.setColor (QPalette::Inactive, QPalette::Base,
+                    Utils::fromRgb (bg_color));
+        p.setColor (QPalette::Active, QPalette::Text,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+        p.setColor (QPalette::Inactive, QPalette::Text,
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
       }
     else if (props.style_is ("popupmenu"))
       {
-        // popumenu (QComboBox) is a listbox with a button, so needs set colors for both
+        // popupmenu (QComboBox) is a listbox with a button.
+        // This requires setting colors for both.
         QColor bcol = Utils::fromRgb (props.get_backgroundcolor_rgb ());
         QColor fcol = Utils::fromRgb (props.get_foregroundcolor_rgb ());
-        QString qss = QString ("background: %1 none;\n"
-                               "color: %2;")
+        QString qss = QString (":enabled { background: %1 none;\n"
+                                          "color: %2; }")
                       .arg(bcol.name ()).arg (fcol.name ());
         w->setStyleSheet(qss);
         return;
@@ -69,9 +81,13 @@ namespace QtHandles
     else if (props.style_is ("radiobutton")
              || props.style_is ("checkbox"))
       {
-        p.setColor (QPalette::Button,
+        p.setColor (QPalette::Active, QPalette::Button,
                     Utils::fromRgb (props.get_backgroundcolor_rgb ()));
-        p.setColor (QPalette::WindowText,
+        p.setColor (QPalette::Inactive, QPalette::Button,
+                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+        p.setColor (QPalette::Active, QPalette::WindowText,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+        p.setColor (QPalette::Inactive, QPalette::WindowText,
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
       }
     else if (props.style_is ("pushbutton")
@@ -79,17 +95,21 @@ namespace QtHandles
       {
         QColor bcol = Utils::fromRgb (props.get_backgroundcolor_rgb ());
         QColor fcol = Utils::fromRgb (props.get_foregroundcolor_rgb ());
-        QString qss = QString ("background: %1 none;\n"
-                               "color: %2;")
+        QString qss = QString (":enabled { background: %1 none;\n"
+                                          "color: %2; }")
                       .arg(bcol.name ()).arg (fcol.name ());
         w->setStyleSheet(qss);
         return;
       }
     else
       {
-        p.setColor (QPalette::Window,
+        p.setColor (QPalette::Active, QPalette::Window,
                     Utils::fromRgb (props.get_backgroundcolor_rgb ()));
-        p.setColor (QPalette::WindowText,
+        p.setColor (QPalette::Inactive, QPalette::Window,
+                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+        p.setColor (QPalette::Active, QPalette::WindowText,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+        p.setColor (QPalette::Inactive, QPalette::WindowText,
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
       }
 
@@ -119,7 +139,10 @@ namespace QtHandles
                     octave::math::round (bb(2)), octave::math::round (bb(3)));
     w->setFont (Utils::computeFont<uicontrol> (up, bb(3)));
     updatePalette (up, w);
-    w->setEnabled (up.enable_is ("on"));
+    if (up.enable_is ("inactive"))
+      w->blockSignals (true);
+    else
+      w->setEnabled (up.enable_is ("on"));
     w->setToolTip (Utils::fromStdString (up.get_tooltipstring ()));
     w->setVisible (up.is_visible ());
     m_keyPressHandlerDefined = ! up.get_keypressfcn ().isempty ();
@@ -174,7 +197,16 @@ namespace QtHandles
         break;
 
       case uicontrol::properties::ID_ENABLE:
-        w->setEnabled (up.enable_is ("on"));
+        if (up.enable_is ("inactive"))
+          {
+            w->blockSignals (true);
+            w->setEnabled (true);
+          }
+        else
+          {
+            w->blockSignals (false);
+            w->setEnabled (up.enable_is ("on"));
+          }
         break;
 
       case uicontrol::properties::ID_TOOLTIPSTRING:

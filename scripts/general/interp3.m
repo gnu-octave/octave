@@ -255,7 +255,7 @@ endfunction
 %! assert (vi, vi2);
 
 %!test  # extrapolation
-%! X=[0,0.5,1]; Y=X; Z=X;
+%! X = [0,0.5,1];  Y=X;  Z=X;
 %! V = zeros (3,3,3);
 %! V(:,:,1) = [1 3 5; 3 5 7; 5 7 9];
 %! V(:,:,2) = V(:,:,1) + 2;

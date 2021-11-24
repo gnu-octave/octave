@@ -31,7 +31,7 @@
 
 function retval = isdiag (A)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -61,5 +61,4 @@ endfunction
 %!assert (isdiag (diag (1:10)))
 
 ## Test input validation
-%!error isdiag ()
-%!error isdiag (1,2)
+%!error <Invalid call> isdiag ()

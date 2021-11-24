@@ -46,6 +46,8 @@
 #include "ovl.h"
 #include "utils.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Replace backslash escapes in a string with the real values.  We need
 // two special functions instead of the one in utils.cc because the set
 // of escape sequences used for regexp patterns and replacement strings
@@ -60,7 +62,7 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
   std::size_t j = 0;
   std::size_t len = s.length ();
 
-  retval.resize (len+i);
+  retval.resize (len);
 
   while (j < len)
     {
@@ -79,11 +81,15 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
                 }
               break;
 
-            // Translate \< and \> to PCRE word boundary
+            // Translate \< and \> to PCRE patterns for pseudo-word boundary
             case '<': // begin word boundary
+              retval.insert (i, "(?<=\\W|^)");
+              i += 8;
+              break;
+
             case '>': // end word boundary
-              retval[i] = '\\';
-              retval[++i] = 'b';
+              retval.insert (i, "(?=\\W|$)");
+              i += 7;
               break;
 
             case 'o': // octal input
@@ -306,7 +312,7 @@ do_regexp_rep_string_escapes (const std::string& s)
 }
 
 static void
-parse_options (octave::regexp::opts& options, const octave_value_list& args,
+parse_options (regexp::opts& options, const octave_value_list& args,
                const std::string& who, int skip, bool& extra_args)
 {
   extra_args = false;
@@ -370,13 +376,13 @@ octregexp (const octave_value_list& args, int nargout,
   // Rewrite pattern for PCRE
   pattern = do_regexp_ptn_string_escapes (pattern, args(1).is_sq_string ());
 
-  octave::regexp::opts options;
+  regexp::opts options;
   options.case_insensitive (case_insensitive);
   bool extra_options = false;
   parse_options (options, args, who, 2, extra_options);
 
-  const octave::regexp::match_data rx_lst
-    = octave::regexp::match (pattern, buffer, options, who);
+  const regexp::match_data rx_lst
+    = regexp::match (pattern, buffer, options, who);
 
   string_vector named_pats = rx_lst.named_patterns ();
 
@@ -752,10 +758,10 @@ Match within a word
 @end table
 
 Implementation Note: For compatibility with @sc{matlab}, escape sequences
-in @var{pat} (e.g., @qcode{"@xbackslashchar{}n"} => newline) are expanded
+in @var{pat} (e.g., @qcode{"@backslashchar{}n"} => newline) are expanded
 even when @var{pat} has been defined with single quotes.  To disable
 expansion use a second backslash before the escape sequence (e.g.,
-"@xbackslashchar{}@xbackslashchar{}n") or use the @code{regexptranslate}
+"@backslashchar{}@backslashchar{}n") or use the @code{regexptranslate}
 function.
 
 The outputs of @code{regexp} default to the order given below
@@ -1178,11 +1184,18 @@ size) with successive @code{regexp} searches.
 %!assert (regexp ("\n", '\n'), 1)
 %!assert (regexp ("\n", "\n"), 1)
 
-# Test escape sequences are silently converted
+## Test escape sequences are silently converted
 %!test <*45407>
 %! assert (regexprep ('s', 's', 'x\.y'), 'x.y');
 %! assert (regexprep ('s', '(s)', 'x\$1y'), 'x$1y');
 %! assert (regexprep ('s', '(s)', 'x\\$1y'), 'x\sy');
+
+## Test start-of-word / end-of-word patterns for Matlab compatibility
+%!test <*59992>
+%! assert (regexp ('foo!+bar', '\<\w'), [1, 6]);
+%! assert (regexp ('foo!+bar', '.\>'), [3, 4, 8]);
+%! assert (regexp ('foo!+bar\nbar!+foo', '.\>'), [3, 4, 8, 13, 14, 18]);
+%! assert (regexp ('foo!+bar\nbar!+foo', '\<\w'), [1, 6, 10, 16]);
 
 ## Test input validation
 %!error regexp ('string', 'tri', 'BadArg')
@@ -1199,7 +1212,8 @@ Case insensitive regular expression string matching.
 
 Search for @var{pat} in UTF-8 encoded @var{str} and return the positions and
 substrings of any matches, or empty values if there are none.
-@xref{XREFregexp,,regexp}, for details on the syntax of the search pattern.
+@xref{XREFregexp,,@code{regexp}}, for details on the syntax of the search
+pattern.
 @seealso{regexp}
 @end deftypefn */)
 {
@@ -1382,11 +1396,11 @@ octregexprep (const octave_value_list& args, const std::string& who)
     }
   regexpargs.resize (len);
 
-  octave::regexp::opts options;
+  regexp::opts options;
   bool extra_args = false;
   parse_options (options, regexpargs, who, 0, extra_args);
 
-  return octave::regexp::replace (pattern, buffer, replacement, options, who);
+  return regexp::replace (pattern, buffer, replacement, options, who);
 }
 
 DEFUN (regexprep, args, ,
@@ -1396,7 +1410,7 @@ DEFUN (regexprep, args, ,
 Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.
 
 The pattern is a regular expression as documented for @code{regexp}.
-@xref{XREFregexp,,regexp}.
+@xref{XREFregexp,,@code{regexp}}.
 
 All strings must be UTF-8 encoded.
 
@@ -1423,10 +1437,10 @@ This option is present for compatibility but is ignored.
 @end table
 
 Implementation Note: For compatibility with @sc{matlab}, escape sequences
-in @var{pat} (e.g., @qcode{"@xbackslashchar{}n"} => newline) are expanded
+in @var{pat} (e.g., @qcode{"@backslashchar{}n"} => newline) are expanded
 even when @var{pat} has been defined with single quotes.  To disable
 expansion use a second backslash before the escape sequence (e.g.,
-"@xbackslashchar{}@xbackslashchar{}n") or use the @code{regexptranslate}
+"@backslashchar{}@backslashchar{}n") or use the @code{regexptranslate}
 function.
 @seealso{regexp, regexpi, strrep}
 @end deftypefn */)
@@ -1576,3 +1590,5 @@ function.
 %!test <*52810>
 %! assert (strcmp (regexprep ("\nabc", "^(\t*)(abc)$", "$1$2", "lineanchors"), "\nabc"))
 */
+
+OCTAVE_NAMESPACE_END

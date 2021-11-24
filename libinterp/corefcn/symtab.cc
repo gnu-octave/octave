@@ -48,8 +48,8 @@
 #include "symscope.h"
 #include "symtab.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   symbol_table::symbol_table (interpreter& interp)
     : m_interpreter (interp), m_fcn_table (), m_class_precedence_table (),
       m_parent_map ()
@@ -722,98 +722,97 @@ namespace octave
     return octave_value (info_map);
   }
 
-  // DEPRECATED
-  bool symbol_table::at_top_level (void)
+  // Remove when corresponding public deprecated function is removed.
+  bool symbol_table::at_top_level_deprecated (void)
   {
     return m_interpreter.at_top_level ();
   }
 
-  // DEPRECATED
-  octave_value symbol_table::varval (const std::string& name) const
+  // Remove when corresponding public deprecated function is removed.
+  octave_value symbol_table::varval_deprecated (const std::string& name) const
   {
     return m_interpreter.varval (name);
   }
 
-  // DEPRECATED
-  octave_value symbol_table::global_varval (const std::string& name) const
+  // Remove when corresponding public deprecated function is removed.
+  octave_value symbol_table::global_varval_deprecated (const std::string& name) const
   {
     return m_interpreter.global_varval (name);
   }
 
-  // DEPRECATED
-  octave_value symbol_table::top_level_varval (const std::string& name) const
+  // Remove when corresponding public deprecated function is removed.
+  octave_value symbol_table::top_level_varval_deprecated (const std::string& name) const
   {
     return m_interpreter.top_level_varval (name);
   }
 
-  // DEPRECATED
-  std::list<std::string> symbol_table::global_variable_names (void)
+  // Remove when corresponding public deprecated function is removed.
+  std::list<std::string> symbol_table::global_variable_names_deprecated (void)
   {
     return m_interpreter.global_variable_names ();
   }
 
-  // DEPRECATED
-  std::list<std::string> symbol_table::top_level_variable_names (void)
+  // Remove when corresponding public deprecated function is removed.
+  std::list<std::string> symbol_table::top_level_variable_names_deprecated (void)
   {
     return m_interpreter.top_level_variable_names ();
   }
 
-  // DEPRECATED
-  std::list<std::string> symbol_table::variable_names (void)
+  // Remove when corresponding public deprecated function is removed.
+  std::list<std::string> symbol_table::variable_names_deprecated (void)
   {
     return m_interpreter.variable_names ();
   }
 
-  // DEPRECATED
-  void symbol_table::assign (const std::string& name, const octave_value& value)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::assign_deprecated (const std::string& name, const octave_value& value)
   {
     return m_interpreter.assign (name, value);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_all (bool force)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_all_deprecated (bool force)
   {
     return m_interpreter.clear_all (force);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_global (const std::string& name)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_global_deprecated (const std::string& name)
   {
     return m_interpreter.clear_global_variable (name);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_global_pattern (const std::string& pattern)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_global_pattern_deprecated (const std::string& pattern)
   {
     return m_interpreter.clear_global_variable_pattern (pattern);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_symbol (const std::string& name)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_symbol_deprecated (const std::string& name)
   {
     return m_interpreter.clear_symbol (name);
   }
 
-  // DEPRECATED
-  void symbol_table::clear_symbol_pattern (const std::string& pattern)
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::clear_symbol_pattern_deprecated (const std::string& pattern)
   {
     return m_interpreter.clear_symbol_pattern (pattern);
   }
 
-  // DEPRECATED
-  void symbol_table::global_assign (const std::string& name,
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::global_assign_deprecated (const std::string& name,
                                     const octave_value& value)
   {
     return m_interpreter.global_assign (name, value);
   }
 
-  // DEPRECATED
-  void symbol_table::top_level_assign (const std::string& name,
+  // Remove when corresponding public deprecated function is removed.
+  void symbol_table::top_level_assign_deprecated (const std::string& name,
                                        const octave_value& value)
   {
     return m_interpreter.top_level_assign (name, value);
   }
-}
 
 DEFMETHOD (__dump_symtab_info__, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -827,7 +826,7 @@ Undocumented internal function.
   if (nargin > 1)
     print_usage ();
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   if (nargin == 0)
     return symtab.dump ();
@@ -835,7 +834,7 @@ Undocumented internal function.
     {
       std::string fname = args(0).xstring_value ("__dump_symtab_info__: argument must be a function name");
 
-      octave::fcn_info *finfo = symtab.get_fcn_info (fname);
+      fcn_info *finfo = symtab.get_fcn_info (fname);
 
       if (finfo)
         return finfo->dump ();
@@ -855,7 +854,7 @@ Undocumented internal function.
 
   std::string name = args(0).xstring_value ("__get_cmdline_fcn_txt__: first argument must be function name");
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value ov = symtab.find_cmdline_function (name);
 
@@ -867,7 +866,7 @@ Undocumented internal function.
     {
       std::ostringstream buf;
 
-      octave::tree_print_code tpc (buf);
+      tree_print_code tpc (buf);
 
       f->accept (tpc);
 
@@ -886,7 +885,7 @@ Undocumented internal function.
 //
 //   std::string name = args(0).xstring_value ("set_variable: variable NAME must be a string");
 //
-//   octave::symbol_table& symtab = interp.get_symbol_table ();
+//   symbol_table& symtab = interp.get_symbol_table ();
 //
 //   symtab.assign (name, args(1));
 //
@@ -902,7 +901,7 @@ Undocumented internal function.
 //
 //   std::string name = args(0).xstring_value ("variable_value: variable NAME must be a string");
 //
-//   octave::symbol_table& symtab = interp.get_symbol_table ();
+//   symbol_table& symtab = interp.get_symbol_table ();
 //
 //   retval = symtab.varval (name);
 //
@@ -940,3 +939,6 @@ updated to use some other function.
 %! clear bar;
 %! assert (! strcmp (which ("bar"), ""));
 */
+
+OCTAVE_NAMESPACE_END
+

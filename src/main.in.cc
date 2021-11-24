@@ -43,6 +43,16 @@
 #include <iostream>
 #include <string>
 
+#if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+#  include <vector>
+#  include <locale>
+#  include <codecvt>
+#endif
+
+// We are linking against static libs so do not decorate with dllimport.
+// FIXME: This should be done by the build system.
+#undef OCTAVE_API
+#define OCTAVE_API
 #include "fcntl-wrappers.h"
 #include "getopt-wrapper.h"
 #include "signal-wrappers.h"
@@ -74,8 +84,13 @@
 #include "shared-fcns.h"
 
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
+static bool fork_and_exec = true;
+#else
+static bool fork_and_exec = false;
+#endif
 
-// Forward signals to the GUI process.
+// If we fork and exec, we'll need the following signal handling code to
+// forward signals to the GUI process.
 
 static pid_t gui_pid = 0;
 
@@ -153,8 +168,6 @@ install_signal_handlers (void)
   gui_driver_set_signal_handler ("SIGXFSZ", gui_driver_sig_handler);
 }
 
-#endif
-
 static std::string
 get_octave_bindir (void)
 {
@@ -188,6 +201,10 @@ octave_exec (const std::string& file, char **argv)
 {
   int status = octave_execv_wrapper (file.c_str (), argv);
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+  // The above wrapper uses spawn(P_WAIT,...) instead of exec on Windows.
+  if (status == -1)
+#endif
   std::cerr << argv[0] << ": failed to exec '" << file << "'" << std::endl;
 
   return status;
@@ -205,12 +222,33 @@ strsave (const char *s)
   return tmp;
 }
 
+#if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+extern "C"
+int
+wmain (int argc, wchar_t **wargv)
+{
+  static char **argv = new char * [argc + 1];
+  std::vector<std::string> argv_str;
+
+  // convert wide character strings to multibyte UTF-8 strings
+  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
+  for (int i_arg = 0; i_arg < argc; i_arg++)
+    argv_str.push_back (wchar_conv.to_bytes (wargv[i_arg]));
+
+  // Get pointers to C strings not before vector is stable.
+  for (int i_arg = 0; i_arg < argc; i_arg++)
+    argv[i_arg] = &argv_str[i_arg][0];
+  argv[argc] = nullptr;
+
+#else
 int
 main (int argc, char **argv)
 {
+#endif
   int retval = 0;
 
   int idx_gui = -1;
+  bool server = false;
   bool start_gui = false;
   bool gui_libs = true;
 
@@ -296,6 +334,11 @@ main (int argc, char **argv)
             idx_gui = old_optind;
             break;
 
+          case EXPERIMENTAL_TERMINAL_WIDGET_OPTION:
+            // If we see this option, then we don't fork and exec.
+            fork_and_exec = false;
+            new_argv[k++] = argv[old_optind];
+            break;
 
           case PERSIST_OPTION:
             // FIXME: How can we reliably detect if this option appears after
@@ -303,6 +346,11 @@ main (int argc, char **argv)
             //        but the GUI might still be launched if --gui is also
             //        given.
             persist_octave = true;
+            new_argv[k++] = argv[old_optind];
+            break;
+
+          case SERVER_OPTION:
+            server = true;
             new_argv[k++] = argv[old_optind];
             break;
 
@@ -352,6 +400,13 @@ main (int argc, char **argv)
       if (! gui_libs)
         {
           std::cerr << "octave: conflicting options: --no-gui-libs and --gui"
+                    << std::endl;
+          return 1;
+        }
+
+      if (server)
+        {
+          std::cerr << "octave: conflicting options: --server and --gui"
                     << std::endl;
           return 1;
         }
@@ -421,9 +476,7 @@ main (int argc, char **argv)
   octave_block_async_signals ();
   octave_block_signal_by_name ("SIGTSTP");
 
-#if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
-
-  if (gui_libs && start_gui)
+  if (fork_and_exec && gui_libs && start_gui)
     {
       // Fork and exec when starting the GUI so that we will call
       // setsid to give up the controlling terminal (if any) and so that
@@ -501,14 +554,6 @@ main (int argc, char **argv)
         std::cerr << argv[0] << ": " << std::strerror (errno) << std::endl;
     }
 
-#else
-
-  retval = octave_exec (file, new_argv);
-
-  if (retval < 0)
-    std::cerr << argv[0] << ": " << std::strerror (errno) << std::endl;
-
-#endif
 
   return retval;
 }

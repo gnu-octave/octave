@@ -55,14 +55,14 @@ octave_lazy_index::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
-  switch (index.length (0))
+  switch (m_index.length (0))
     {
     case 1:
-      retval = new octave_scalar (static_cast<double> (index(0) + 1));
+      retval = new octave_scalar (static_cast<double> (m_index(0) + 1));
       break;
 
     case 0:
-      retval = new octave_matrix (NDArray (index.orig_dimensions ()));
+      retval = new octave_matrix (NDArray (m_index.orig_dimensions ()));
       break;
 
     default:
@@ -75,68 +75,67 @@ octave_lazy_index::try_narrowing_conversion (void)
 octave_value
 octave_lazy_index::fast_elem_extract (octave_idx_type n) const
 {
-  return double (index.checkelem (n) + 1);
+  return double (m_index.checkelem (n) + 1);
 }
 
 octave_value
 octave_lazy_index::reshape (const dim_vector& new_dims) const
 {
-  return idx_vector (index.as_array ().reshape (new_dims),
-                     index.extent (0));
+  return octave::idx_vector (m_index.as_array ().reshape (new_dims),
+                             m_index.extent (0));
 }
 
 octave_value
 octave_lazy_index::permute (const Array<int>& vec, bool inv) const
 {
   // If the conversion has already been made, forward the operation.
-  if (value.is_defined ())
-    return value.permute (vec, inv);
+  if (m_value.is_defined ())
+    return m_value.permute (vec, inv);
   else
-    return idx_vector (index.as_array ().permute (vec, inv),
-                       index.extent (0));
+    return octave::idx_vector (m_index.as_array ().permute (vec, inv),
+                               m_index.extent (0));
 }
 
 octave_value
 octave_lazy_index::squeeze (void) const
 {
-  return idx_vector (index.as_array ().squeeze (),
-                     index.extent (0));
+  return octave::idx_vector (m_index.as_array ().squeeze (), m_index.extent (0));
 }
 
 octave_value
 octave_lazy_index::sort (octave_idx_type dim, sortmode mode) const
 {
-  const dim_vector odims = index.orig_dimensions ();
+  const dim_vector odims = m_index.orig_dimensions ();
   // index_vector can employ a more efficient sorting algorithm.
   if (mode == ASCENDING && odims.ndims () == 2
       && (dim >= 0 && dim <= 1) && odims(1-dim) == 1)
     return index_vector ().sorted ();
   else
-    return idx_vector (index.as_array ().sort (dim, mode),
-                       index.extent (0));
+    return octave::idx_vector (m_index.as_array ().sort (dim, mode),
+                               m_index.extent (0));
 }
 
 octave_value
 octave_lazy_index::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
                          sortmode mode) const
 {
-  const dim_vector odims = index.orig_dimensions ();
+  const dim_vector odims = m_index.orig_dimensions ();
   // index_vector can employ a more efficient sorting algorithm.
   if (mode == ASCENDING && odims.ndims () == 2
       && (dim >= 0 && dim <= 1) && odims(1-dim) == 1)
     return index_vector ().sorted (sidx);
   else
-    return idx_vector (index.as_array ().sort (sidx, dim, mode),
-                       index.extent (0));
+    return octave::idx_vector (m_index.as_array ().sort (sidx, dim, mode),
+                               m_index.extent (0));
 }
 
 sortmode
 octave_lazy_index::issorted (sortmode mode) const
 {
-  if (index.is_range ())
+  if (m_index.is_range ())
     {
       // Avoid the array conversion.
-      octave_idx_type inc = index.increment ();
+      octave_idx_type inc = m_index.increment ();
       if (inc == 0)
         return (mode == UNSORTED ? ASCENDING : mode);
       else if (inc > 0)
@@ -145,19 +144,19 @@ octave_lazy_index::issorted (sortmode mode) const
         return (mode == ASCENDING ? UNSORTED : DESCENDING);
     }
   else
-    return index.as_array ().issorted (mode);
+    return m_index.as_array ().issorted (mode);
 }
 
 Array<octave_idx_type>
 octave_lazy_index::sort_rows_idx (sortmode mode) const
 {
-  return index.as_array ().sort_rows_idx (mode);
+  return m_index.as_array ().sort_rows_idx (mode);
 }
 
 sortmode
 octave_lazy_index::is_sorted_rows (sortmode mode) const
 {
-  return index.as_array ().is_sorted_rows (mode);
+  return m_index.as_array ().is_sorted_rows (mode);
 }
 
 octave_value
@@ -231,11 +230,11 @@ bool octave_lazy_index::load_ascii (std::istream& is)
 {
   bool dummy;
 
-  std::string nm = read_text_data (is, "", dummy, value, 0);
+  std::string nm = read_text_data (is, "", dummy, m_value, 0);
   if (nm != value_save_tag)
     error ("lazy_index: corrupted data on load");
 
-  index = value.index_vector ();
+  m_index = m_value.index_vector ();
 
   return true;
 }
@@ -252,11 +251,11 @@ bool octave_lazy_index::load_binary (std::istream& is, bool swap,
   bool dummy;
   std::string doc;
 
-  std::string nm = read_binary_data (is, swap, fmt, "", dummy, value, doc);
+  std::string nm = read_binary_data (is, swap, fmt, "", dummy, m_value, doc);
   if (nm != value_save_tag)
     error ("lazy_index: corrupted data on load");
 
-  index = value.index_vector ();
+  m_index = m_value.index_vector ();
 
   return true;
 }

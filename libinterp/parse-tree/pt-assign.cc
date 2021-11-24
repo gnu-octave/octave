@@ -137,11 +137,11 @@ namespace octave
                 feval ("display", args);
               }
           }
-        catch (index_exception& e)
+        catch (index_exception& ie)
           {
-            e.set_var (m_lhs->name ());
-            std::string msg = e.message ();
-            error_with_id (e.err_id (), "%s", msg.c_str ());
+            ie.set_var (m_lhs->name ());
+            std::string msg = ie.message ();
+            error_with_id (ie.err_id (), "%s", msg.c_str ());
           }
       }
 

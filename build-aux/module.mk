@@ -35,6 +35,7 @@ $(GEN_CONFIG_INC) : %.h : %.in.h config.status
 ### utility rules to aid development
 
 ALL_TEST_FILES = \
+  $(addprefix $(srcdir)/, $(LIBOCTAVE_TST_FILES_SRC)) \
   $(addprefix $(srcdir)/, $(LIBINTERP_TST_FILES_SRC)) \
   $(addprefix $(srcdir)/, $(FCN_FILES_WITH_TESTS)) \
   $(addprefix $(srcdir)/, $(TEST_FILES))

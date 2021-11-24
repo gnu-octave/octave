@@ -60,12 +60,12 @@ Octave provides special treatment of real and complex rectangular diagonal
 matrices, as well as permutation matrices.  They are stored as special objects,
 using efficient storage and algorithms, facilitating writing both readable and
 efficient matrix algebra expressions in the Octave language.  The special
-treatment may be disabled by using the functions @dfn{disable_diagonal_matrix}
-and @dfn{disable_permutation_matrix}.
+treatment may be disabled by using the functions @dfn{optimize_diagonal_matrix}
+and @dfn{optimize_permutation_matrix}.
 
-@DOCSTRING(disable_diagonal_matrix)
+@DOCSTRING(optimize_diagonal_matrix)
 
-@DOCSTRING(disable_permutation_matrix)
+@DOCSTRING(optimize_permutation_matrix)
 
 The space savings are significant as demonstrated by the following code.
 

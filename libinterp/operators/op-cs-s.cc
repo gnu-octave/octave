@@ -37,6 +37,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // complex scalar by scalar ops.
 
 DEFBINOP_OP (add, complex, scalar, +)
@@ -133,3 +135,5 @@ install_cs_s_ops (octave::type_info& ti)
   INSTALL_ASSIGNCONV_TI (ti, octave_complex, octave_scalar,
                          octave_complex_matrix);
 }
+
+OCTAVE_NAMESPACE_END

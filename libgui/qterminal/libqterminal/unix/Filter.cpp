@@ -683,7 +683,7 @@ UrlFilter::request_open_file (const QString& file, int line)
   // the function name. depending on this we have to invoke different
   // slots in main_window
   if (file_info.isAbsolute () && file_info.exists ())
-    emit request_open_file_signal (file, line);
+    emit request_open_file_signal (file, QString (), line);
   else
     emit request_edit_mfile_signal (file, line);
 }

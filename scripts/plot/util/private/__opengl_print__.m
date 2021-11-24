@@ -100,7 +100,7 @@ function opts = __opengl_print__ (opts)
         cmd_pstoedit = opts.pstoedit_cmd (opts, "fig", false);
         [~, ~, ext] = fileparts (opts.name);
         if (any (strcmpi (ext, {".ps", ".tex", "."})))
-          opts.name = opts.name(1:end-numel(ext));
+          opts.name = opts.name(1:end-numel (ext));
         endif
         opts.name = [opts.name ".ps"];
         cmd = sprintf ('%s | %s > "%s"', cmd_pstoedit, cmd_fig2dev, opts.name);
@@ -109,14 +109,20 @@ function opts = __opengl_print__ (opts)
         cmd_fig2dev = opts.fig2dev_cmd (opts, "pstex_t");
         gl2ps_device{2} = "eps";
         pipeline{2} = sprintf ('%s | %s > "%s"', cmd_pstoedit,
-                               cmd_fig2dev, strrep(opts.name, ".ps", ".tex"));
+                               cmd_fig2dev, strrep (opts.name, ".ps", ".tex"));
       else
         ## Using svgconvert
         tmp = tempname ();
         opts.unlink = [opts.unlink tmp];
         cmd_pstoedit = sprintf (opts.pstoedit_cmd (opts, "fig"), ...
                                 "pdf", tmp, tmp);
-        cmd = sprintf ('%s | %s > "%s"', cmd_pstoedit, cmd_fig2dev, opts.name);
+        tmp = [tempname(), ".fig"];
+        opts.unlink = [opts.unlink tmp];
+        if (ispc () && ! isunix ())
+          cmd = sprintf ('%s "%s" & %s "%s" "%s"', cmd_pstoedit, tmp, cmd_fig2dev, tmp, opts.name);
+        else
+          cmd = sprintf ('%s "%s" ; %s "%s" "%s"', cmd_pstoedit, tmp, cmd_fig2dev, tmp, opts.name);
+        endif
         gl2ps_device = {"svg"};
         pipeline = {cmd};
       endif
@@ -131,7 +137,7 @@ function opts = __opengl_print__ (opts)
       opts.unlink = [opts.unlink tmp];
       cmd = sprintf (opts.pstoedit_cmd (opts), "pdf", tmp, tmp);
       gl2ps_device = {"svg"};
-      pipeline = {sprintf('%s > "%s"', cmd, opts.name)};
+      pipeline = {sprintf('%s "%s"', cmd, opts.name)};
     case opts.ghostscript.device
       svgcmd = "";
       if (opts.svgconvert)
@@ -195,18 +201,13 @@ function opts = __opengl_print__ (opts)
       fprintf ("opengl-pipeline: '%s'\n", pipeline{n});
     endif
 
-    if (strcmp (get (opts.figure, "visible"), "on")
-        || (strcmp (get (opts.figure, "__graphics_toolkit__"), "qt")
-            && (strcmp (get (opts.figure, "__gl_window__"), "on")
-                || __have_feature__ ("QT_OFFSCREEN"))))
-      ## Use toolkits "print_figure" method
-      if (ispc () && ! isunix ())
-        drawnow (gl2ps_device{n}, ['| "' pipeline{n} '"']);
-      else
-        drawnow (gl2ps_device{n}, ["| " pipeline{n}]);
-      endif
+    __check_rendering_capability__ ("print", opts.figure);
+
+    ## Use toolkits "print_figure" method
+    if (ispc () && ! isunix ())
+      drawnow (gl2ps_device{n}, ['| "' pipeline{n} '"']);
     else
-      error ("print: figure must be visible or qt toolkit must be used with __gl_window__ property 'on' or QT_OFFSCREEN feature available");
+      drawnow (gl2ps_device{n}, ["| " pipeline{n}]);
     endif
   endfor
 

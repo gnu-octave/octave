@@ -40,7 +40,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_oncleanup, "onCleanup",
                                      "onCleanup");
 
 octave_oncleanup::octave_oncleanup (const octave_value& f)
-  : fcn (f)
+  : m_fcn (f)
 {
   if (f.is_function_handle ())
     {
@@ -61,7 +61,7 @@ octave_oncleanup::octave_oncleanup (const octave_value& f)
     }
   else
     {
-      fcn = octave_value ();
+      m_fcn = octave_value ();
       error ("onCleanup: argument must be a function handle");
     }
 }
@@ -75,7 +75,7 @@ octave_scalar_map
 octave_oncleanup::scalar_map_value (void) const
 {
   octave_scalar_map retval;
-  retval.setfield ("task", fcn);
+  retval.setfield ("task", m_fcn);
   return retval;
 }
 
@@ -140,19 +140,19 @@ void
 octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   os << "onCleanup (";
-  if (fcn.is_defined ())
-    fcn.print_raw (os, pr_as_read_syntax);
+  if (m_fcn.is_defined ())
+    m_fcn.print_raw (os, pr_as_read_syntax);
   os << ')';
 }
 
 void
 octave_oncleanup::call_object_destructor (void)
 {
-  if (fcn.is_undefined ())
+  if (m_fcn.is_undefined ())
     return;
 
-  octave_value the_fcn = fcn;
-  fcn = octave_value ();
+  octave_value the_fcn = m_fcn;
+  m_fcn = octave_value ();
 
   octave::unwind_protect frame;
 
@@ -167,7 +167,7 @@ octave_oncleanup::call_object_destructor (void)
   octave::interpreter& interp
     = octave::__get_interpreter__ ("octave_oncleanup::call_object_destructor");
 
-  interpreter_try (frame);
+  octave::interpreter_try (frame);
 
   try
     {
@@ -202,6 +202,8 @@ octave_oncleanup::call_object_destructor (void)
     }
 }
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (onCleanup, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{obj} =} onCleanup (@var{function})
@@ -233,3 +235,5 @@ For similar functionality @xref{The unwind_protect Statement}.
 %!   warning (old_wstate);
 %! end_unwind_protect
 */
+
+OCTAVE_NAMESPACE_END

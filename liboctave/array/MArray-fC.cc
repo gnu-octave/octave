@@ -34,13 +34,13 @@
 #include "MArray.h"
 #include "MArray.cc"
 
-template class OCTAVE_API MArray<FloatComplex>;
+INSTANTIATE_MARRAY (FloatComplex);
 
 INSTANTIATE_MARRAY_FRIENDS (FloatComplex, OCTAVE_API)
 
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 
-template class OCTAVE_API MDiagArray2<FloatComplex>;
+template class MDiagArray2<FloatComplex>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (FloatComplex, OCTAVE_API)

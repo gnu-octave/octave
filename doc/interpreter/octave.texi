@@ -307,16 +307,23 @@ Strings
 
 * Escape Sequences in String Constants::
 * Character Arrays::
-* Creating Strings::
-* Comparing Strings::
-* Manipulating Strings::
-* String Conversions::
+* String Operations::
+* Converting Strings::
 * Character Class Functions::
 
-Creating Strings
+String Operations
 
+* Common String Operations::
 * Concatenating Strings::
-* Converting Numerical Data to Strings::
+* Splitting and Joining Strings::
+* Searching in Strings::
+* Searching and Replacing in Strings::
+
+Converting Strings
+
+* String encoding::
+* Numerical Data and Strings::
+* JSON data encoding/decoding::
 
 Data Containers
 
@@ -581,6 +588,7 @@ Graphics Object Properties
 * Text Properties::
 * Image Properties::
 * Patch Properties::
+* Scatter Properties::
 * Surface Properties::
 * Light Properties::
 * Uimenu Properties::
@@ -613,7 +621,6 @@ Object Groups
 * Error Bar Series::
 * Line Series::
 * Quiver Group::
-* Scatter Group::
 * Stair Group::
 * Stem Series::
 * Surface Group::
@@ -657,7 +664,6 @@ Vectorization and Faster Code Execution
 * Broadcasting::               Broadcasting operations
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
-* JIT Compiler::               Just-In-Time Compiler for loops
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 

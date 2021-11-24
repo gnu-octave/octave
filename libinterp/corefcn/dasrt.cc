@@ -48,6 +48,8 @@
 
 #include "DASRT-opts.cc"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // Global pointers for user defined function required by dasrt.
 static octave_value dasrt_fcn;
 static octave_value dasrt_jac;
@@ -81,11 +83,11 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = octave::feval (dasrt_fcn, args, 1);
+          tmp = feval (dasrt_fcn, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          err_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (ee, "dasrt");
         }
 
       if (tmp.empty () || ! tmp(0).is_defined ())
@@ -122,11 +124,11 @@ dasrt_user_cf (const ColumnVector& x, double t)
 
       try
         {
-          tmp = octave::feval (dasrt_cf, args, 1);
+          tmp = feval (dasrt_cf, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          err_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (ee, "dasrt");
         }
 
       if (tmp.empty () || ! tmp(0).is_defined ())
@@ -168,11 +170,11 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = octave::feval (dasrt_jac, args, 1);
+          tmp = feval (dasrt_jac, args, 1);
         }
-      catch (octave::execution_exception& e)
+      catch (execution_exception& ee)
         {
-          err_user_supplied_eval (e, "dasrt");
+          err_user_supplied_eval (ee, "dasrt");
         }
 
       int tlen = tmp.length ();
@@ -348,9 +350,7 @@ parameters for @code{dasrt}.
 
   octave_value_list retval (5);
 
-  octave::unwind_protect frame;
-
-  frame.protect_var (call_depth);
+  unwind_protect_var<int> restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)
@@ -379,13 +379,11 @@ parameters for @code{dasrt}.
         f_arg = c(0);
       else if (c.numel () == 2)
         {
-          dasrt_fcn = octave::get_function_handle (interp, c(0),
-                                                   fcn_param_names);
+          dasrt_fcn = get_function_handle (interp, c(0), fcn_param_names);
 
           if (dasrt_fcn.is_defined ())
             {
-              dasrt_jac = octave::get_function_handle (interp, c(1),
-                                                       jac_param_names);
+              dasrt_jac = get_function_handle (interp, c(1), jac_param_names);
 
               if (dasrt_jac.is_undefined ())
                 dasrt_fcn = octave_value ();
@@ -404,21 +402,20 @@ parameters for @code{dasrt}.
           switch (f_arg.rows ())
             {
             case 1:
-              dasrt_fcn = octave::get_function_handle (interp, f_arg,
-                                                       fcn_param_names);
+              dasrt_fcn = get_function_handle (interp, f_arg, fcn_param_names);
               break;
 
             case 2:
               {
                 string_vector tmp = f_arg.string_vector_value ();
 
-                dasrt_fcn = octave::get_function_handle (interp, tmp(0),
-                                                         fcn_param_names);
+                dasrt_fcn = get_function_handle (interp, tmp(0),
+                                                 fcn_param_names);
 
                 if (dasrt_fcn.is_defined ())
                   {
-                    dasrt_jac = octave::get_function_handle (interp, tmp(1),
-                                                             jac_param_names);
+                    dasrt_jac = get_function_handle (interp, tmp(1),
+                                                     jac_param_names);
 
                     if (dasrt_jac.is_undefined ())
                       dasrt_fcn = octave_value ();
@@ -453,7 +450,7 @@ parameters for @code{dasrt}.
         {
           std::list<std::string> cf_param_names ({"x", "t"});
 
-          dasrt_cf = octave::get_function_handle (interp, args(1), cf_param_names);
+          dasrt_cf = get_function_handle (interp, args(1), cf_param_names);
         }
 
       if (dasrt_cf.is_defined ())
@@ -524,3 +521,5 @@ parameters for @code{dasrt}.
 
   return retval;
 }
+
+OCTAVE_NAMESPACE_END

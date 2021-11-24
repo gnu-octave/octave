@@ -37,8 +37,6 @@
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
 
-class octave_value;
-
 namespace octave
 {
   class base_qobject;
@@ -59,13 +57,18 @@ namespace octave
 
     void command_requested (const QString& cmd);
 
+    //! Signal that user wnats to copy a variable value to the
+    //! clipboard.
+
+    void copy_variable_value_to_clipboard (const QString&);
+
     //! Signal that user wants to rename a variable.
 
     void rename_variable_signal (const QString&, const QString&);
 
     //! Signal that user wants to edit a variable.
 
-    void edit_variable_signal (const QString&, const octave_value&);
+    void edit_variable_signal (const QString&);
 
   public slots:
 
@@ -97,6 +100,8 @@ namespace octave
     void handle_contextmenu_stem (void);
     void handle_contextmenu_filter (void);
 
+  public slots:
+
     void handle_model_changed (void);
 
     void copyClipboard (void);
@@ -105,6 +110,7 @@ namespace octave
   private:
 
     void relay_contextmenu_command (const QString& cmdname, bool str = false);
+    void set_filter_focus (bool focus);
 
     QString get_var_name (const QModelIndex& index);
 

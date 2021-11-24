@@ -47,7 +47,7 @@
 ## Built-in profiler.
 function profexport (dir, name = "", data)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -77,7 +77,7 @@ function profexport (dir, name = "", data)
   endif
 
   if (! copyfile (__dataFilename ("style.css"), dir))
-    error ("profexport: failed to copy data file to directory '%s'", dir)
+    error ("profexport: failed to copy data file to directory '%s'", dir);
   endif
 
   if (isempty (name))
@@ -207,18 +207,18 @@ function [mine, cnt] = __writeHierarchical (dir, name, funcs, ...
   template = __readTemplate ("hierarchical.html");
   entryTemplate = __readTemplate ("hierarchical_entry.html");
 
-  % Fill in basic data and parent breadcrumbs.
+  ## Fill in basic data and parent breadcrumbs.
   res = template;
   res = strrep (res, "%title", name);
   parentsStr = __hierarchicalParents (parents);
   res = strrep (res, "%parents", parentsStr);
 
-  % Set this page's counter and update parents struct with it.
+  ## Set this page's counter and update parents struct with it.
   mine = cnt++;
   parents{end}.cnt = mine;
   file = sprintf ("%s/hierarchy-%d.html", dir, mine);
 
-  % Sort children by time.
+  ## Sort children by time.
   times = -[ children.TotalTime ];
   [~, p] = sort (times);
   children = children(p);
@@ -314,7 +314,7 @@ endfunction
 %! open (fullfile (dir, "index.html"));
 
 ## Test input validation
-%!error profexport ()
+%!error <Invalid call> profexport ()
 %!error profexport (1)
 %!error profexport (1, 2, 3, 4)
 %!error <DIR must be a string> profexport (5)

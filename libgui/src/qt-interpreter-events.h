@@ -81,6 +81,13 @@ namespace octave
 
     ~qt_interpreter_events (void) = default;
 
+    // Note: these functions currently do nothing with the old terminal
+    // widget.
+    void start_gui (bool gui_app = false);
+    void close_gui (void);
+
+    bool have_dialogs (void) const { return true; }
+
     std::list<std::string>
     file_dialog (const filter_list& filter, const std::string& title,
                  const std::string& filename, const std::string& pathname,
@@ -112,7 +119,18 @@ namespace octave
 
     void apply_preferences (void);
 
-    void show_doc (const std::string& file);
+    void show_terminal_window (void);
+
+    bool show_documentation (const std::string& file);
+
+    void show_file_browser (void);
+
+    void show_command_history (void);
+
+    void show_workspace (void);
+
+    void show_community_news (int serial);
+    void show_release_notes (void);
 
     bool edit_file (const std::string& file);
 
@@ -137,9 +155,19 @@ namespace octave
 
     void execute_command_in_terminal (const std::string& command);
 
-    void register_doc (const std::string& file);
+    void register_documentation (const std::string& file);
 
-    void unregister_doc (const std::string& file);
+    void unregister_documentation (const std::string& file);
+
+    // Note: this function currently does nothing with the old terminal
+    // widget.
+    void interpreter_output (const std::string& msg);
+
+    void display_exception (const execution_exception& ee, bool beep);
+
+    void gui_status_update (const std::string& feature, const std::string& status);
+
+    void update_gui_lexer (void);
 
     void directory_changed (const std::string& dir);
 
@@ -153,6 +181,8 @@ namespace octave
                         bool update_variable_editor);
 
     void clear_workspace (void);
+
+    void update_prompt (const std::string& prompt);
 
     void set_history (const string_vector& hist);
 
@@ -192,6 +222,10 @@ namespace octave
 
   signals:
 
+    // Note: these signals are not currently used by the old terminal widget.
+    void start_gui_signal (bool gui_app);
+    void close_gui_signal (void);
+
     void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
 
     void focus_window_signal (const QString& win_name);
@@ -212,6 +246,8 @@ namespace octave
                                const symbol_info_list& syminfo);
 
     void clear_workspace_signal (void);
+
+    void update_prompt_signal (const QString& prompt);
 
     void set_history_signal (const QStringList& hist);
 
@@ -234,11 +270,29 @@ namespace octave
 
     void gui_preference_signal (const QString& key, const QString& value);
 
-    void show_doc_signal (const QString& file);
+    void show_terminal_window_signal (void);
 
-    void register_doc_signal (const QString& file);
+    void show_documentation_signal (const QString& file);
 
-    void unregister_doc_signal (const QString& file);
+    void register_documentation_signal (const QString& file);
+
+    void unregister_documentation_signal (const QString& file);
+
+    void show_file_browser_signal (void);
+
+    void show_command_history_signal (void);
+
+    void show_workspace_signal (void);
+
+    void show_community_news_signal (int serial);
+    void show_release_notes_signal (void);
+
+    // Note: this signal currently not used by the old terminal widget.
+    void interpreter_output_signal (const QString& msg);
+
+    void gui_status_update_signal (const QString& feature, const QString& status);
+
+    void update_gui_lexer_signal (bool update_apis_only);
 
     void edit_variable_signal (const QString& name, const octave_value& val);
 

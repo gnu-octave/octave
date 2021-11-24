@@ -37,8 +37,8 @@
 #include "ov.h"
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   void display_info::initialize (void)
   {
     int avail = 0;
@@ -52,7 +52,6 @@ namespace octave
     if (msg)
       m_msg = msg;
   }
-}
 
 DEFMETHOD (have_window_system, interp, , ,
            doc: /* -*- texinfo -*-
@@ -62,7 +61,9 @@ and false otherwise.
 @seealso{isguirunning}
 @end deftypefn */)
 {
-  octave::display_info& dpy_info = interp.get_display_info ();
+  display_info& dpy_info = interp.get_display_info ();
 
   return ovl (dpy_info.display_available ());
 }
+
+OCTAVE_NAMESPACE_END

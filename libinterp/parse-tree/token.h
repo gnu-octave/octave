@@ -31,7 +31,7 @@
 #include <string>
 
 #include "filepos.h"
-#include "symrec.h"
+#include "ov.h"
 
 namespace octave
 {
@@ -44,15 +44,15 @@ namespace octave
       generic_token,
       keyword_token,
       string_token,
-      double_token,
+      numeric_token,
       ettype_token,
-      sym_rec_token,
       scls_name_token,
     };
 
     enum end_tok_type
     {
       simple_end,
+      arguments_end,
       classdef_end,
       enumeration_end,
       events_end,
@@ -65,6 +65,7 @@ namespace octave
       switch_end,
       try_catch_end,
       unwind_protect_end,
+      spmd_end,
       while_end,
     };
 
@@ -79,13 +80,10 @@ namespace octave
     token (int tv, const std::string& s, const filepos& beg_pos,
            const filepos& end_pos);
 
-    token (int tv, double d, const std::string& s, const filepos& beg_pos,
-           const filepos& end_pos);
+    token (int tv, const octave_value& val, const std::string& s,
+           const filepos& beg_pos, const filepos& end_pos);
 
     token (int tv, end_tok_type t, const filepos& beg_pos,
-           const filepos& end_pos);
-
-    token (int tv, const symbol_record& s, const filepos& beg_pos,
            const filepos& end_pos);
 
     token (int tv, const std::string& mth, const std::string& cls,
@@ -123,23 +121,12 @@ namespace octave
       return m_type_tag == keyword_token || m_type_tag == ettype_token;
     }
 
-    OCTAVE_DEPRECATED (5, "use 'octave::iskeyword' instead")
-    bool is_keyword (void) const
-    {
-      return iskeyword ();
-    }
-
-    bool is_symbol (void) const
-    {
-      return m_type_tag == sym_rec_token;
-    }
+    bool isstring (void) const { return m_type_tag == string_token; }
 
     std::string text (void) const;
-    std::string symbol_name (void) const;
-    double number (void) const;
+    octave_value number (void) const;
     token_type ttype (void) const;
     end_tok_type ettype (void) const;
-    symbol_record sym_rec (void) const;
 
     std::string superclass_method_name (void) const;
     std::string superclass_class_name (void) const;
@@ -167,13 +154,9 @@ namespace octave
 
       tok_info (const std::string& str) : m_str (new std::string (str)) { }
 
-      tok_info (double num) : m_num (num) { }
+      tok_info (const octave_value& num) : m_num (new octave_value (num)) { }
 
       tok_info (end_tok_type et) : m_et (et) { }
-
-      tok_info (const symbol_record& sr)
-        : m_sr (new symbol_record (sr))
-      { }
 
       tok_info (const std::string& meth, const std::string& cls)
         : m_superclass_info (new superclass_info (meth, cls))
@@ -187,26 +170,26 @@ namespace octave
 
       std::string *m_str;
 
-      double m_num;
+      octave_value *m_num;
 
       end_tok_type m_et;
 
-      symbol_record *m_sr;
-
       struct superclass_info
       {
-        superclass_info (void) = delete;
-
-        superclass_info (const std::string& meth,
-                         const std::string& cls)
+      public:
+        superclass_info (const std::string& meth, const std::string& cls)
           : m_method_name (meth), m_class_name (cls)
         { }
+
+        superclass_info (void) = delete;
 
         superclass_info (const superclass_info&) = delete;
 
         superclass_info& operator = (const superclass_info&) = delete;
 
         ~superclass_info (void) = default;
+
+        //--------
 
         // The name of the method to call.  This is the text before the
         // "@" and may be of the form "object.method".

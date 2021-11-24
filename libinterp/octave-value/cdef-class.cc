@@ -81,19 +81,19 @@ namespace octave
   }
 
   cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
-    : cdef_meta_object_rep (), member_count (0), handle_class (false),
-      meta (false)
+    : cdef_meta_object_rep (), m_member_count (0), m_handle_class (false),
+      m_meta (false)
   {
     put ("SuperClasses", to_ov (superclasses));
-    implicit_ctor_list = superclasses;
+    m_implicit_ctor_list = superclasses;
   }
 
   cdef_method
   cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
   {
-    auto it = method_map.find (nm);
+    auto it = m_method_map.find (nm);
 
-    if (it == method_map.end ())
+    if (it == m_method_map.end ())
       {
         // FIXME: look into class directory
       }
@@ -134,7 +134,7 @@ namespace octave
     ctor_analyzer (void) = delete;
 
     ctor_analyzer (const std::string& ctor, const std::string& obj)
-      : tree_walker (), who (ctor), obj_name (obj) { }
+      : tree_walker (), m_who (ctor), m_obj_name (obj) { }
 
     ctor_analyzer (const ctor_analyzer&) = delete;
 
@@ -164,7 +164,7 @@ namespace octave
     }
 
     std::list<cdef_class> get_constructor_list (void) const
-    { return ctor_list; }
+    { return m_ctor_list; }
 
     // NO-OP
 
@@ -205,35 +205,35 @@ namespace octave
 
     void visit_superclass_ref (tree_superclass_ref& t)
     {
-      if (t.method_name () == obj_name)
+      if (t.method_name () == m_obj_name)
         {
           std::string class_name = t.class_name ();
 
           cdef_class cls = lookup_class (class_name, false);
 
           if (cls.ok ())
-            ctor_list.push_back (cls);
+            m_ctor_list.push_back (cls);
         }
     }
 
   private:
 
     // The name of the constructor being analyzed.
-    std::string who;
+    std::string m_who;
 
     // The name of the first output argument of the constructor.
-    std::string obj_name;
+    std::string m_obj_name;
 
     // The list of superclass constructors that are explicitly called.
-    std::list<cdef_class> ctor_list;
+    std::list<cdef_class> m_ctor_list;
   };
 
   void
   cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
   {
-    method_map[meth.get_name ()] = meth;
+    m_method_map[meth.get_name ()] = meth;
 
-    member_count++;
+    m_member_count++;
 
     if (meth.is_constructor ())
       {
@@ -255,8 +255,8 @@ namespace octave
                   error ("%s: invalid constructor output arguments",
                          meth.get_name ().c_str ());
 
-                std::string obj_name = ret_list->front ()->name ();
-                ctor_analyzer a (meth.get_name (), obj_name);
+                std::string m_obj_name = ret_list->front ()->name ();
+                ctor_analyzer a (meth.get_name (), m_obj_name);
 
                 body->accept (a);
 
@@ -270,7 +270,7 @@ namespace octave
                               << cdef_cls.get_name () << std::endl;
 #endif
 
-                    implicit_ctor_list.remove (cdef_cls);
+                    m_implicit_ctor_list.remove (cdef_cls);
                   }
               }
           }
@@ -320,7 +320,7 @@ namespace octave
 
     method_const_iterator it;
 
-    for (it = method_map.begin (); it != method_map.end (); ++it)
+    for (it = m_method_map.begin (); it != m_method_map.end (); ++it)
       {
         if (include_ctor || ! it->second.is_constructor ())
           {
@@ -357,9 +357,9 @@ namespace octave
   cdef_property
   cdef_class::cdef_class_rep::find_property (const std::string& nm)
   {
-    auto it = property_map.find (nm);
+    auto it = m_property_map.find (nm);
 
-    if (it != property_map.end ())
+    if (it != m_property_map.end ())
       {
         cdef_property& prop = it->second;
 
@@ -387,9 +387,9 @@ namespace octave
   void
   cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
   {
-    property_map[prop.get_name ()] = prop;
+    m_property_map[prop.get_name ()] = prop;
 
-    member_count++;
+    m_member_count++;
   }
 
   Cell
@@ -426,7 +426,7 @@ namespace octave
   {
     property_const_iterator it;
 
-    for (it = property_map.begin (); it != property_map.end (); ++it)
+    for (it = m_property_map.begin (); it != m_property_map.end (); ++it)
       {
         std::string nm = it->second.get_name ();
 
@@ -466,7 +466,7 @@ namespace octave
   {
     load_all_methods ();
 
-    for (const auto& cls_fnmap : method_map)
+    for (const auto& cls_fnmap : m_method_map)
       {
         if (! cls_fnmap.second.is_constructor ())
           {
@@ -485,7 +485,7 @@ namespace octave
           }
       }
 
-    for (const auto& pname_prop : property_map)
+    for (const auto& pname_prop : m_property_map)
       {
         std::string nm = pname_prop.second.get_name ();
 
@@ -650,7 +650,7 @@ namespace octave
     for (auto& cls : super_classes)
       cls.initialize_object (obj);
 
-    for (const auto& pname_prop : property_map)
+    for (const auto& pname_prop : m_property_map)
       {
         if (! pname_prop.second.get ("Dependent").bool_value ())
           {
@@ -673,7 +673,7 @@ namespace octave
   {
     octave_value_list empty_args;
 
-    for (const auto& cls : implicit_ctor_list)
+    for (const auto& cls : m_implicit_ctor_list)
       {
         cdef_class supcls = lookup_class (cls);
 
@@ -706,9 +706,9 @@ namespace octave
   octave_value
   cdef_class::cdef_class_rep::get_method (const std::string& name) const
   {
-    auto p = method_map.find (name);
+    auto p = m_method_map.find (name);
 
-    if (p == method_map.end ())
+    if (p == m_method_map.end ())
       return octave_value ();
 
     return p->second.get_function ();
@@ -847,11 +847,11 @@ namespace octave
                                tree_classdef *t, bool is_at_folder)
   {
     cdef_class retval;
-    std::string class_name, full_class_name;
 
     // Class creation
 
-    class_name = full_class_name = t->ident ()->name ();
+    std::string class_name = t->ident ()->name ();
+    std::string full_class_name = class_name;
     if (! t->package_name ().empty ())
       full_class_name = t->package_name () + '.' + full_class_name;
 
@@ -864,12 +864,10 @@ namespace octave
     // this, we may pick up stray values from the current scope when
     // evaluating expressions found in things like attribute lists.
 
-    unwind_protect frame;
-
     tree_evaluator& tw = interp.get_evaluator ();
 
     tw.push_dummy_scope (full_class_name);
-    frame.add_method (tw, &octave::tree_evaluator::pop_scope);
+    unwind_action pop_scope (&tree_evaluator::pop_scope, &tw);
 
     std::list<cdef_class> slist;
 
@@ -898,6 +896,7 @@ namespace octave
     retval = cdm.make_class (full_class_name, slist);
 
     retval.doc_string (t->doc_string ());
+    retval.file_name (t->file_name ());
 
     // Package owning this class
 
@@ -908,6 +907,11 @@ namespace octave
         if (pack.ok ())
           retval.put ("ContainingPackage", to_ov (pack));
       }
+
+    // FIXME: instead of attaching attributes here, pass them to
+    // cdef_manager::make_method.  The classdef manager contains a meta
+    // object with a list of all valid properties that can be used to
+    // validate the attribute list (see bug #60593).
 
     // Class attributes
 
@@ -994,6 +998,13 @@ namespace octave
                                       : "method")
                                   << ": " << mname << std::endl;
 #endif
+
+                        // FIXME: instead of attaching attributes here,
+                        // pass them to cdef_manager::make_method.  The
+                        // classdef manager contains a meta object with
+                        // a list of all valid properties that can be
+                        // used to validate the attribute list (see bug
+                        // #60593).
 
                         for (auto& attrnm_val : amap)
                           meth.put (attrnm_val.first, attrnm_val.second);
@@ -1109,6 +1120,12 @@ namespace octave
 
                         prop.put ("DefaultValue", pvalue);
                       }
+
+                    // FIXME: instead of attaching attributes here, pass
+                    // them to cdef_manager::make_property.  The
+                    // classdef manager contains a meta object with a
+                    // list of all valid properties that can be used to
+                    // validate the attribute list (see bug #60593).
 
                     // Install property attributes.  This is done before assigning
                     // the property accessors so we can do validation by using

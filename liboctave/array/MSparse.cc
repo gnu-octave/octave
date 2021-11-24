@@ -366,14 +366,14 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
 
 template <typename T>
 MSparse<T>
-operator+ (const MSparse<T>& a, const MSparse<T>& b)
+operator + (const MSparse<T>& a, const MSparse<T>& b)
 {
   return plus_or_minus (a, b, std::plus<T> (), "operator +", false);
 }
 
 template <typename T>
 MSparse<T>
-operator- (const MSparse<T>& a, const MSparse<T>& b)
+operator - (const MSparse<T>& a, const MSparse<T>& b)
 {
   return plus_or_minus (a, b, std::minus<T> (), "operator -", true);
 }

@@ -33,10 +33,12 @@
 ## Generate a report from the Octave script file @var{file} in one of several
 ## output formats.
 ##
-## The generated reports interpret any Publishing Markup in comments, which is
-## explained in detail in the GNU Octave manual.  Assume the following example,
-## using some Publishing Markup, to be the contents of the script file
-## @file{pub_example.m}:
+## The generated reports interpret Publishing Markup in section comments, which
+## is explained in detail in the GNU Octave manual.  Section comments are
+## comment blocks that start with a line with double comment character.
+##
+## Assume the following example, using some Publishing Markup, to be the
+## contents of the script file @file{pub_example.m}:
 ##
 ## @example
 ## @group
@@ -61,12 +63,11 @@
 ##
 ## To publish this script file, type @code{publish ("pub_example.m")}.
 ##
-## With only @var{file} given, a HTML report is generated in a subdirectory
-## @file{html} relative to the current working directory.  The Octave commands
-## are evaluated in a separate context and any figures created while executing
-## the script file are included in the report.  All formatting syntax of
-## @var{file} is treated according to the specified output format and included
-## in the report.
+## When called with one input argument, a HTML report is generated in a
+## subdirectory @file{html} relative to the current working directory.  Any
+## Octave commands in @file{pub_example.m} are evaluated in a separate context
+## and any figures created while executing the script file are included in the
+## report.
 ##
 ## Using @code{publish (@var{file}, @var{output_format})} is equivalent to the
 ## function call using a structure
@@ -209,7 +210,7 @@ function output_file = publish (file, varargin)
   ## Check file to be in Octave's load path
   [file_path, file_name, file_ext] = fileparts (file);
   if (isempty (file_path))
-    file_path = pwd;
+    file_path = pwd ();
   endif
   if (exist ([file_name, file_ext]) != 2)
     error (["publish: " file " is not in the load path"]);
@@ -611,7 +612,7 @@ function p_content = parse_paragraph_content (content)
   ## Extract <html> and <latex> blocks recursively.
   content_str = strjoin (content, "\n");
   tags = {"html", "latex"};
-  for i = 1:length(tags)
+  for i = 1:length (tags)
     tok = regexp (content_str, ...
       ['(.*?)(^|\n\n)(<', tags{i}, '>)\n(.*?)\n(<\/', ...
         tags{i}, '>)($|\n\n)(.*)'], "tokens", "once");
@@ -709,6 +710,7 @@ function p_content = parse_paragraph_content (content)
     p_content{end+1}.type = "text";
     p_content{end}.content = strjoin (block, "\n");
   endfor
+
 endfunction
 
 
@@ -722,6 +724,7 @@ function m_source = read_file_to_cellstr (file)
   until (! ischar (m_source{i}))
   fclose (fid);
   m_source = m_source(1:end-1);  # No EOL
+
 endfunction
 
 
@@ -770,6 +773,7 @@ function ofile = create_output (doc, options)
       endfor
     endif
   endif
+
 endfunction
 
 
@@ -783,6 +787,7 @@ function toc_cstr = get_toc (cstr, formatter)
       toc_cstr{end+1} = format_text (cstr{i}.content, formatter);
     endif
   endfor
+
 endfunction
 
 
@@ -1067,6 +1072,7 @@ function cstr = eval_code_helper (__code__)
   ## Split string by lines and preserve blank lines.
   cstr = strsplit (strrep (cstr, "\n\n", "\n \n"), "\n");
   eval_context ("save");
+
 endfunction
 
 
@@ -1088,7 +1094,7 @@ function cstr = eval_context (op)
       for i = 1:length (var_names)
         if (! any (strcmp (var_names{i}, forbidden_var_names)))
           ctext(var_names{i}) = evalin ("caller", var_names{i});
-        end
+        endif
       endfor
 
     case "load"
@@ -1107,13 +1113,14 @@ function cstr = eval_context (op)
       ## Do nothing
 
   endswitch
+
 endfunction
 
 
 ## Note: Functional BIST tests are located in the 'test/publish' directory.
 
 ## Test input validation
-%!error publish ()
+%!error <Invalid call> publish ()
 %!error publish (1)
 %!error <FILE does not exist> publish ("%%_non_existent_file_%%.m")
 %!error <only script files can be published> publish ("publish.m")

@@ -31,7 +31,7 @@
 
 function y = sech (x)
 
-if (nargin != 1)
+if (nargin < 1)
     print_usage ();
   endif
 
@@ -45,5 +45,4 @@ endfunction
 %! v = [1, -1];
 %! assert (sech (x), v, sqrt (eps));
 
-%!error sech ()
-%!error sech (1, 2)
+%!error <Invalid call> sech ()

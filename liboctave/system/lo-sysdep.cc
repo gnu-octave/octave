@@ -27,12 +27,16 @@
 #  include "config.h"
 #endif
 
+#include <cstdlib>
+#include <locale>
+#include <codecvt>
+
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
+#include "localcharset-wrapper.h"
 #include "putenv-wrapper.h"
-#include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
 
@@ -40,8 +44,10 @@
 #  include <windows.h>
 #  include <wchar.h>
 
-#  include "lo-hash.h"
 #  include "filepos-wrappers.h"
+#  include "lo-hash.h"
+#  include "oct-locbuf.h"
+#  include "uniconv-wrappers.h"
 #  include "unwind-prot.h"
 #endif
 
@@ -49,6 +55,18 @@ namespace octave
 {
   namespace sys
   {
+    int
+    system (const std::string& cmd_str)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+      const std::wstring wcmd_str =  u8_to_wstring (cmd_str);
+
+      return _wsystem (wcmd_str.c_str ());
+#else
+      return ::system (cmd_str.c_str ());
+#endif
+    }
+
     std::string
     getcwd (void)
     {
@@ -219,7 +237,8 @@ namespace octave
           return false;
         }
 
-      unwind_action act ([fptr, tmpname] () {
+      unwind_action act ([=] ()
+                         {
                            std::fclose (fptr);
                            sys::unlink (tmpname);
                          });
@@ -408,31 +427,34 @@ namespace octave
     void
     putenv_wrapper (const std::string& name, const std::string& value)
     {
-      // This function was adapted from xputenv from Karl Berry's kpathsearch
-      // library.
-      // FIXME: make this do the right thing if we don't have a SMART_PUTENV.
+      std::string new_env = name + "=" + value;
 
-      int new_len = name.length () + value.length () + 2;
-
-      // FIXME: This leaks memory, but so would a call to setenv.
+      // FIXME: The malloc leaks memory, but so would a call to setenv.
       // Short of extreme measures to track memory, altering the environment
       // always leaks memory, but the saving grace is that the leaks are small.
-
-      char *new_item = static_cast<char *> (std::malloc (new_len));
-
-      if (new_item)
-        sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
 
       // As far as I can see there's no way to distinguish between the
       // various errors; putenv doesn't have errno values.
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-      wchar_t *wnew_item = u8_to_wchar (new_item);
-      unwind_protect frame;
-      frame.add_fcn (std::free, static_cast<void *> (new_item));
-      if (_wputenv (wnew_item) < 0)
-        (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
+      std::wstring new_wenv = u8_to_wstring (new_env);
+
+      int len = (new_wenv.length () + 1) * sizeof (wchar_t);
+
+      wchar_t *new_item = static_cast<wchar_t *> (std::malloc (len));
+
+      wcscpy (new_item, new_wenv.c_str());
+
+      if (_wputenv (new_item) < 0)
+        (*current_liboctave_error_handler)
+          ("putenv (%s) failed", new_env.c_str());
 #else
+      int len = new_env.length () + 1;
+
+      char *new_item = static_cast<char *> (std::malloc (len));
+
+      std::strcpy (new_item, new_env.c_str());
+
       if (octave_putenv_wrapper (new_item) < 0)
         (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 #endif
@@ -467,20 +489,21 @@ namespace octave
     std::wstring
     u8_to_wstring (const std::string& utf8_string)
     {
-      std::size_t srclen = utf8_string.length ();
-      const uint8_t *src = reinterpret_cast<const uint8_t *>
-                           (utf8_string.c_str ());
-
-      std::size_t length = 0;
-      wchar_t *wchar = reinterpret_cast<wchar_t *>
-                       (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
-                                                    &length));
+      // convert multibyte UTF-8 string to wide character string
+      static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>
+        wchar_conv;
 
       std::wstring retval = L"";
-      if (wchar != nullptr)
+
+      try
         {
-          retval = std::wstring (wchar, length / sizeof (wchar_t));
-          free (static_cast<void *> (wchar));
+          retval = wchar_conv.from_bytes (utf8_string);
+        }
+      catch (const std::range_error& e)
+        {
+          // What to do in case of error?
+          // error ("u8_to_wstring: converting from UTF-8 to wchar_t: %s",
+          //        e.what ());
         }
 
       return retval;
@@ -489,19 +512,21 @@ namespace octave
     std::string
     u8_from_wstring (const std::wstring& wchar_string)
     {
-      std::size_t srclen = wchar_string.length () * sizeof (wchar_t);
-      const char *src = reinterpret_cast<const char *> (wchar_string.c_str ());
-
-      std::size_t length = 0;
-      char *mbchar = reinterpret_cast<char *>
-                     (octave_u8_conv_from_encoding ("wchar_t", src, srclen,
-                                                    &length));
+      // convert wide character string to multibyte UTF-8 string
+      static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>
+        wchar_conv;
 
       std::string retval = "";
-      if (mbchar != nullptr)
+
+      try
         {
-          retval = std::string (mbchar, length);
-          free (static_cast<void *> (mbchar));
+          retval = wchar_conv.to_bytes (wchar_string);
+        }
+      catch (const std::range_error& e)
+        {
+          // What to do in case of error?
+          // error ("u8_from_wstring: converting from wchar_t to UTF-8: %s",
+          //        e.what ());
         }
 
       return retval;
@@ -523,11 +548,16 @@ namespace octave
     // checks whether there are any non-ASCII characters in the passed
     // file name.  If there are not, it returns the original name.
 
-    // Otherwise, it tries to obtain the short file name (8.3 naming
-    // scheme) which only consists of ASCII characters and are safe to
-    // pass.  However, short file names can be disabled for performance
-    // reasons on the file system level with NTFS.  So there is no
-    // guarantee that these exist.
+    // Otherwise, it optionally tries to convert the file name to the locale
+    // charset.
+
+    // If the file name contains characters that cannot be converted to the
+    // locale charset (or that step is skipped), it tries to obtain the short
+    // file name (8.3 naming scheme) which only consists of ASCII characters
+    // and are safe to pass.  However, short file names can be disabled for
+    // performance reasons on the file system level with NTFS and they are not
+    // stored on other file systems (e.g. ExFAT).  So there is no guarantee
+    // that these exist.
 
     // If short file names are not stored, a hard link to the file is
     // created.  For this the path to the file is split at the deepest
@@ -548,7 +578,8 @@ namespace octave
     // For Unixy systems, this function does nothing.
 
     std::string
-    get_ASCII_filename (const std::string& orig_file_name)
+    get_ASCII_filename (const std::string& orig_file_name,
+                        const bool allow_locale)
     {
 #if defined (OCTAVE_USE_WINDOWS_API)
 
@@ -558,7 +589,7 @@ namespace octave
       // This is useful for passing file names to functions that are not
       // aware of the character encoding we are using.
 
-      // 1. Check whether filename contains non-ASCII (UTF-8) characters.
+      // 0. Check whether filename contains non-ASCII (UTF-8) characters.
 
       std::string::const_iterator first_non_ASCII
         = std::find_if (orig_file_name.begin (), orig_file_name.end (),
@@ -567,8 +598,29 @@ namespace octave
       if (first_non_ASCII == orig_file_name.end ())
         return orig_file_name;
 
-      // 2. Check if file system stores short filenames (always
-      // ASCII-only).
+      // 1. Optionally, check if all characters in the path can be successfully
+      // converted to the locale charset
+      if (allow_locale)
+        {
+          const char *locale = octave_locale_charset_wrapper ();
+          if (locale)
+            {
+              const uint8_t *name_u8 = reinterpret_cast<const uint8_t *>
+                                         (orig_file_name.c_str ());
+              std::size_t length = 0;
+              char *name_locale = octave_u8_conv_to_encoding_strict
+                                    (locale, name_u8,
+                                     orig_file_name.length () + 1, &length);
+              if (name_locale)
+                {
+                  std::string file_name_locale (name_locale, length);
+                  free (name_locale);
+                  return file_name_locale;
+                }
+            }
+        }
+
+      // 2. Check if file system stores short filenames (might be ASCII-only).
 
       std::wstring w_orig_file_name_str = u8_to_wstring (orig_file_name);
       const wchar_t *w_orig_file_name = w_orig_file_name_str.c_str ();
@@ -589,15 +641,24 @@ namespace octave
           // Dynamically allocate the correct size (terminating null char
           // was included in length).
 
-          wchar_t *w_short_file_name = new wchar_t[length];
+          OCTAVE_LOCAL_BUFFER (wchar_t, w_short_file_name, length);
           GetShortPathNameW (w_full_file_name, w_short_file_name, length);
 
           std::wstring w_short_file_name_str
             = std::wstring (w_short_file_name, length);
-          std::string short_file_name = u8_from_wstring (w_short_file_name_str);
 
           if (w_short_file_name_str.compare (0, length-1, w_full_file_name_str) != 0)
-            return short_file_name;
+            {
+              // Check whether short file name contains non-ASCII characters
+              std::string short_file_name
+                = u8_from_wstring (w_short_file_name_str);
+              first_non_ASCII
+                = std::find_if (short_file_name.begin (),
+                                short_file_name.end (),
+                                [](char c) { return (c < 0 || c >= 128); });
+              if (first_non_ASCII == short_file_name.end ())
+                return short_file_name;
+            }
         }
 
       // 3. Create hard link with only-ASCII characters.
@@ -650,6 +711,10 @@ namespace octave
 
       if (CreateHardLinkW (w_filename_hash, w_orig_file_name, nullptr))
         return filename_hash;
+
+#else
+
+      octave_unused_parameter (allow_locale);
 
 #endif
 

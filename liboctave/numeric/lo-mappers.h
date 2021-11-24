@@ -203,6 +203,13 @@ namespace octave
     inline bool isinf (double x) { return std::isinf (x); }
     inline bool isinf (float x) { return std::isinf (x); }
 
+    template <typename T>
+    bool
+    isinf (const octave_int<T>&)
+    {
+      return false;
+    }
+
     // FIXME: Do we need isinf overload for complex?
     template <typename T>
     bool

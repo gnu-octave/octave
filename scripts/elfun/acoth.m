@@ -31,7 +31,7 @@
 
 function y = acoth (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -47,5 +47,4 @@ endfunction
 %! x = i*[rt3, 1, rt3/3, -rt3/3, -1, -rt3];
 %! assert (acoth (x), v, sqrt (eps));
 
-%!error acoth ()
-%!error acoth (1, 2)
+%!error <Invalid call> acoth ()

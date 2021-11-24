@@ -47,7 +47,7 @@
 function response = webwrite (url, varargin)
 
   if (nargin < 2)
-    print_usage();
+    print_usage ();
   endif
 
   if (! (ischar (url) && isrow (url)))
@@ -94,7 +94,7 @@ function response = webwrite (url, varargin)
     if (ischar (varargin{1}) && isrow (varargin{1}))
       param = strsplit (varargin{1}, {"=", "&"});
       response = __restful_service__ (url, param, options);
-    elseif  (! iscellstr (varargin))
+    elseif (! iscellstr (varargin))
       error ("webwrite: DATA must be a string");
     else
       response = __restful_service__ (url, varargin, options);
@@ -113,8 +113,8 @@ endfunction
 
 
 ## Test input validation
-%!error webwrite ()
-%!error webwrite ("abc")
+%!error <Invalid call> webwrite ()
+%!error <Invalid call> webwrite ("abc")
 %!error <URL must be a string> webwrite (1, "NAME1", "VALUE1")
 %!error <URL must be a string> webwrite (["a";"b"], "NAME1", "VALUE1")
 %!error <DATA must be a string> webwrite ("URL", 1, weboptions ())

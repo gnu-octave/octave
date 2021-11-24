@@ -44,6 +44,7 @@
 #include <QMessageBox>
 #include <QPrintDialog>
 #include <QPushButton>
+#include <QScrollBar>
 #include <QStyle>
 #include <QTextBlock>
 #include <QTextCodec>
@@ -59,6 +60,7 @@
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerbatch.h>
 #include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerjava.h>
 #include <Qsci/qscilexerdiff.h>
 #include <Qsci/qscilexerperl.h>
 #include <Qsci/qsciprinter.h>
@@ -68,8 +70,10 @@
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
+#include "gui-utils.h"
 #include "marker.h"
 #include "octave-qobject.h"
+#include "octave-qtutils.h"
 #include "octave-txt-lexer.h"
 
 #include "cmd-edit.h"
@@ -139,8 +143,11 @@ namespace octave
     connect (m_edit_area, SIGNAL (linesChanged ()),
              this, SLOT (handle_lines_changed ()));
 
-    connect (m_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
-             this, SLOT (handle_context_menu_edit (const QString&)));
+    connect (m_edit_area, &octave_qscintilla::context_menu_edit_signal,
+             this, &file_editor_tab::handle_context_menu_edit);
+
+    connect (m_edit_area, &octave_qscintilla::update_rowcol_indicator_signal,
+             this, &file_editor_tab::update_rowcol_indicator);
 
     // create statusbar for row/col indicator and eol mode
     m_status_bar = new QStatusBar (this);
@@ -195,8 +202,8 @@ namespace octave
              this, SLOT (handle_margin_clicked (int, int,
                                                 Qt::KeyboardModifiers)));
 
-    connect (m_edit_area, SIGNAL (context_menu_break_condition_signal (int)),
-             this, SLOT (handle_context_menu_break_condition (int)));
+    connect (m_edit_area, &octave_qscintilla::context_menu_break_condition_signal,
+             this, &file_editor_tab::handle_context_menu_break_condition);
 
     // line numbers
     m_edit_area->setMarginsForegroundColor (QColor (96, 96, 96));
@@ -224,11 +231,11 @@ namespace octave
     // Any interpreter_event signal from a file_editor_tab_widget is
     // handled the same as for the parent main_window object.
 
-    connect (m_edit_area, SIGNAL (interpreter_event (const fcn_callback&)),
-             this, SIGNAL (interpreter_event (const fcn_callback&)));
+    connect (m_edit_area, QOverload<const fcn_callback&>::of (&octave_qscintilla::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&file_editor_tab::interpreter_event));
 
-    connect (m_edit_area, SIGNAL (interpreter_event (const meth_callback&)),
-             this, SIGNAL (interpreter_event (const meth_callback&)));
+    connect (m_edit_area, QOverload<const meth_callback&>::of (&octave_qscintilla::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&file_editor_tab::interpreter_event));
 
     // connect modified signal
     connect (m_edit_area, SIGNAL (modificationChanged (bool)),
@@ -237,27 +244,26 @@ namespace octave
     connect (m_edit_area, SIGNAL (copyAvailable (bool)),
              this, SLOT (handle_copy_available (bool)));
 
-    connect (&m_file_system_watcher, SIGNAL (fileChanged (const QString&)),
-             this, SLOT (file_has_changed (const QString&)));
+    connect (&m_file_system_watcher, &QFileSystemWatcher::fileChanged,
+             this, [=] (const QString& path) { file_has_changed (path); });
 
-    connect (this, SIGNAL (maybe_remove_next (int)),
-             this, SLOT (handle_remove_next (int)));
+    connect (this, &file_editor_tab::maybe_remove_next,
+             this, &file_editor_tab::handle_remove_next);
 
-    connect (this, SIGNAL (dbstop_if (const QString&, int, const QString&)),
-             this,
-             SLOT (handle_dbstop_if (const QString&, int, const QString&)));
+    connect (this, &file_editor_tab::dbstop_if,
+             this, &file_editor_tab::handle_dbstop_if);
 
-    connect (this, SIGNAL (request_add_breakpoint (int, const QString&)),
-             this, SLOT (handle_request_add_breakpoint (int, const QString&)));
+    connect (this, &file_editor_tab::request_add_breakpoint,
+             this, &file_editor_tab::handle_request_add_breakpoint);
 
-    connect (this, SIGNAL (api_entries_added (void)),
-             this, SLOT (handle_api_entries_added (void)));
+    connect (this, &file_editor_tab::api_entries_added,
+             this, &file_editor_tab::handle_api_entries_added);
 
-    connect (this, SIGNAL (confirm_dbquit_and_save_signal (const QString&, const QString&, bool, bool)),
-             this, SLOT (confirm_dbquit_and_save (const QString&, const QString&, bool, bool)));
+    connect (this, &file_editor_tab::confirm_dbquit_and_save_signal,
+             this, &file_editor_tab::confirm_dbquit_and_save);
 
-    connect (this, SIGNAL (do_save_file_signal (const QString&, bool, bool)),
-             this, SLOT (do_save_file (const QString&, bool, bool)));
+    connect (this, &file_editor_tab::do_save_file_signal,
+             this, &file_editor_tab::do_save_file);
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
@@ -265,10 +271,7 @@ namespace octave
       notice_settings (settings, true);
 
     // encoding, not updated with the settings
-    QString locale_enc_name =
-      QString ("SYSTEM (") +
-      QString (octave_locale_charset_wrapper ()).toUpper () + QString (")");
-    m_encoding = settings->value (ed_default_enc.key, locale_enc_name).toString ();
+    m_encoding = settings->value (ed_default_enc.key, "UTF-8").toString ();
     m_enc_indicator->setText (m_encoding);
     // no changes in encoding yet
     m_new_encoding = m_encoding;
@@ -277,7 +280,7 @@ namespace octave
   file_editor_tab::~file_editor_tab (void)
   {
     // Tell all connected markers to self-destruct.
-    emit remove_all_breakpoints ();
+    emit remove_all_breakpoints_signal ();
     emit remove_all_positions ();
 
     // Destroy lexer attached to m_edit_area, which is not the parent
@@ -428,7 +431,7 @@ namespace octave
     if (ok && ! new_cond.isEmpty ())
       {
         emit interpreter_event
-          ([this, line, new_cond] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -456,11 +459,11 @@ namespace octave
 
                  emit request_add_breakpoint (line, new_cond);
                }
-             catch (const execution_exception& e)
+             catch (const execution_exception& ee)
                {
                  interp.recover_from_exception ();
 
-                 msg = e.message ();
+                 msg = ee.message ();
                  eval_error = true;
                }
              catch (const interrupt_exception&)
@@ -506,7 +509,8 @@ namespace octave
       }
 
     // update the file editor with current editing directory
-    emit editor_state_changed (m_copy_available, m_is_octave_file);
+    emit editor_state_changed (m_copy_available, m_is_octave_file,
+                               m_edit_area->isModified ());
 
     // add the new file to the most-recently-used list
     emit mru_add_file (m_file_name, m_encoding);
@@ -617,6 +621,10 @@ namespace octave
           {
             lexer = new QsciLexerCPP ();
           }
+        else if (m_file_name.endsWith (".java"))
+          {
+            lexer = new QsciLexerJava ();
+          }
         else if (m_file_name.endsWith (".pl"))
           {
             lexer = new QsciLexerPerl ();
@@ -669,8 +677,8 @@ namespace octave
         // Build information for auto completion (APIs)
         m_lexer_apis = new QsciAPIs (lexer);
 
-        connect (this, SIGNAL (request_add_octave_apis (const QStringList&)),
-                 this, SLOT (handle_add_octave_apis (const QStringList&)));
+        connect (this, &file_editor_tab::request_add_octave_apis,
+                 this, &file_editor_tab::handle_add_octave_apis);
 
         // Get the settings for this new lexer
         update_lexer_settings ();
@@ -685,8 +693,11 @@ namespace octave
 
 
   // Update settings, which are lexer related and have to be updated
-  // when a) the lexer changes or b) the settings have changed.
-  void file_editor_tab::update_lexer_settings (void)
+  // when
+  //    a) the lexer changes,
+  //    b) the settings have changed, or
+  //    c) a package was loaded/unloaded
+  void file_editor_tab::update_lexer_settings (bool update_apis_only)
   {
     QsciLexer *lexer = m_edit_area->lexer ();
 
@@ -757,7 +768,8 @@ namespace octave
                 // if the file is older than a few minutes preventing from
                 // re-preparing data when the user opens several files.
                 QDateTime apis_time = apis_file.lastModified ();
-                if (QDateTime::currentDateTime () > apis_time.addSecs (180))
+                if (update_apis_only
+                    || QDateTime::currentDateTime () > apis_time.addSecs (180))
                   update_apis = true;
               }
 
@@ -789,10 +801,12 @@ namespace octave
 
             // create raw apis info
 
+            m_lexer_apis->clear (); // Clear current contents
+
             if (m_is_octave_file)
               {
                 emit interpreter_event
-                  ([this, octave_functions, octave_builtins] (interpreter& interp)
+                  ([=] (interpreter& interp)
                    {
                      // INTERPRETER THREAD
 
@@ -854,7 +868,11 @@ namespace octave
           }
       }
 
-    lexer->readSettings (*settings);
+    if (update_apis_only)
+      return;   // We are done here
+
+    int mode = settings->value (ed_color_mode).toInt ();
+    rmgr.read_lexer_settings (lexer, settings, mode);
 
     m_edit_area->setCaretForegroundColor (lexer->color (0));
     m_edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
@@ -863,27 +881,22 @@ namespace octave
     QColor bg = lexer->paper (0);
     QColor fg = lexer->color (0);
 
-    int bh, bs, bv, fh, fs, fv, h, s, v;
-    bg.getHsv (&bh,&bs,&bv);
-    fg.getHsv (&fh,&fs,&fv);
+    // margin and current line marker colors
+    QColor bgm, fgm;
 
-    // margin colors
-    h = bh;
-    s = bs/2;
-    v = bv + (fv - bv)/5;
-
-    bg.setHsv (h,s,v);
-    m_edit_area->setEdgeColor (bg);
-
-    v = bv + (fv - bv)/8;
-    bg.setHsv (h,s,v);
-    v = bv + (fv - bv)/4;
-    fg.setHsv (h,s,v);
+    bgm = interpolate_color (bg, fg, 0.5, 0.2);
+    m_edit_area->setEdgeColor (bgm);
 
     m_edit_area->setMarkerForegroundColor (lexer->color (0));
     m_edit_area->setMarginsForegroundColor (lexer->color (0));
-    m_edit_area->setMarginsBackgroundColor (bg);
-    m_edit_area->setFoldMarginColors (bg,fg);
+
+    bgm = interpolate_color (bg, fg, 0.5, 0.125);
+    fgm = interpolate_color (bg, fg, 0.5, 0.25);
+    m_edit_area->setMarginsBackgroundColor (bgm);
+    m_edit_area->setFoldMarginColors (bgm, fgm);
+
+    bgm = interpolate_color (bg, fg, 0.5, 0.1);
+    m_edit_area->setCaretLineBackgroundColor (bgm);
 
     // color indicator for highlighting all occurrences:
     // applications highlight color with more transparency
@@ -924,15 +937,15 @@ namespace octave
   void file_editor_tab::handle_api_entries_added (void)
   {
     // disconnect slot for saving prepared info if already connected
-    disconnect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
+    disconnect (m_lexer_apis, &QsciAPIs::apiPreparationFinished,
                 nullptr, nullptr);
 
     // check whether path for prepared info exists or can be created
     if (QDir ("/").mkpath (m_prep_apis_path))
       {
         // path exists, apis info can be saved there
-        connect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
-                 this, SLOT (save_apis_info ()));
+        connect (m_lexer_apis, &QsciAPIs::apiPreparationFinished,
+                 this, &file_editor_tab::save_apis_info);
       }
 
     m_lexer_apis->prepare ();  // prepare apis info
@@ -1117,67 +1130,27 @@ namespace octave
     m_edit_area->markerDeleteAll (marker::bookmark);
   }
 
-  file_editor_tab::bp_info::bp_info (const QString& fname, int l,
-                                     const QString& cond)
-    : line (l), file (fname.toStdString ()), condition (cond.toStdString ())
+  void
+  file_editor_tab::handle_request_add_breakpoint (int line,
+                                                  const QString& condition)
   {
-    QFileInfo file_info (fname);
+    if (! m_is_octave_file)
+      return;
 
-    QString q_dir = file_info.absolutePath ();
-    QString q_function_name = file_info.fileName ();
-
-    // We have to cut off the suffix, because octave appends it.
-    q_function_name.chop (file_info.suffix ().length () + 1);
-
-    dir = q_dir.toStdString ();
-    function_name = q_function_name.toStdString ();
-
-    // Is the last component of DIR @foo?  If so, strip it and prepend it
-    // to the name of the function.
-
-    std::size_t pos = dir.rfind (sys::file_ops::dir_sep_chars ());
-
-    if (pos != std::string::npos && pos < dir.length () - 1)
-      {
-        if (dir[pos+1] == '@')
-          {
-            function_name = sys::file_ops::concat (dir.substr (pos+1), function_name);
-
-            dir = dir.substr (0, pos);
-          }
-      }
-  }
-
-  void file_editor_tab::handle_request_add_breakpoint (int line,
-                                                       const QString& condition)
-  {
-    bp_info info (m_file_name, line, condition);
-
-    add_breakpoint_event (info);
+    add_breakpoint_event (line, condition);
   }
 
   void file_editor_tab::handle_request_remove_breakpoint (int line)
   {
-    bp_info info (m_file_name, line);
-
     emit interpreter_event
-      ([info] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
-         load_path& lp = interp.get_load_path ();
+         tree_evaluator& tw = interp.get_evaluator ();
+         bp_table& bptab = tw.get_bp_table ();
 
-         bp_table::intmap line_info;
-         line_info[0] = info.line;
-
-         if (lp.contains_file_in_dir (info.file, info.dir))
-           {
-             tree_evaluator& tw = interp.get_evaluator ();
-
-             bp_table& bptab = tw.get_bp_table ();
-
-             bptab.remove_breakpoint (info.function_name, line_info);
-           }
+         bptab.remove_breakpoint_from_file (m_file_name.toStdString (), line);
        });
   }
 
@@ -1247,23 +1220,16 @@ namespace octave
     if (ID != this)
       return;
 
-    bp_info info (m_file_name);
-
     emit interpreter_event
-      ([info] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
-         load_path& lp = interp.get_load_path ();
+         tree_evaluator& tw = interp.get_evaluator ();
+         bp_table& bptab = tw.get_bp_table ();
 
-         if (lp.contains_file_in_dir (info.file, info.dir))
-           {
-             tree_evaluator& tw = interp.get_evaluator ();
-
-             bp_table& bptab = tw.get_bp_table ();
-
-             bptab.remove_all_breakpoints_in_file (info.function_name, true);
-           }
+         bptab.remove_all_breakpoints_from_file (m_file_name.toStdString (),
+                                                 true);
        });
   }
 
@@ -1355,40 +1321,24 @@ namespace octave
     auto_margin_width ();
   }
 
-  void file_editor_tab::add_breakpoint_event (const bp_info& info)
+  void file_editor_tab::add_breakpoint_event (int line, const QString& cond)
   {
     emit interpreter_event
-      ([this, info] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
          // FIXME: note duplication with the code in
          // handle_context_menu_break_condition.
 
-         load_path& lp = interp.get_load_path ();
+         tree_evaluator& tw = interp.get_evaluator ();
+         bp_table& bptab = tw.get_bp_table ();
 
-         bp_table::intmap line_info;
-         line_info[0] = info.line;
+         int lineno = bptab.add_breakpoint_in_file (m_file_name.toStdString (),
+                                                    line, cond.toStdString ());
 
-         if (lp.contains_file_in_dir (info.file, info.dir))
-           {
-             tree_evaluator& tw = interp.get_evaluator ();
-
-             bp_table& bptab = tw.get_bp_table ();
-
-             bp_table::intmap bpmap
-               = bptab.add_breakpoint (info.function_name, "", line_info,
-                                       info.condition);
-
-             if (! bpmap.empty ())
-               {
-                 bp_table::intmap::iterator bp_it = bpmap.begin ();
-
-                 int remove_line = bp_it->second;
-
-                 emit maybe_remove_next (remove_line);
-               }
-           }
+         if (lineno)
+           emit maybe_remove_next (lineno);
        });
   }
 
@@ -1690,14 +1640,9 @@ namespace octave
       title = tr ("<unnamed>");
     else
       {
-        if (m_long_title)
-          title = m_file_name;
-        else
-          {
-            QFileInfo file (m_file_name);
-            title = file.fileName ();
-            tooltip = m_file_name;
-          }
+        QFileInfo file (m_file_name);
+        title = file.fileName ();
+        tooltip = m_file_name;
       }
 
     emit file_name_changed (title, tooltip, modified);
@@ -1706,7 +1651,8 @@ namespace octave
   void file_editor_tab::handle_copy_available (bool enableCopy)
   {
     m_copy_available = enableCopy;
-    emit editor_state_changed (m_copy_available, m_is_octave_file);
+    emit editor_state_changed (m_copy_available, m_is_octave_file,
+                               m_edit_area->isModified ());
   }
 
   // show_dialog: shows a modal or non modal dialog depending on input arg
@@ -1836,7 +1782,23 @@ namespace octave
     QApplication::setOverrideCursor (Qt::WaitCursor);
 
     // read the file binary, decoding later
-    const QByteArray text_data = file.readAll ();
+    QByteArray text_data = file.readAll ();
+
+    // remove newline at end of file if we add one again when saving
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    if (settings->value (ed_force_newline).toBool ())
+      {
+        const QByteArray eol_lf = QByteArray (1,0x0a);
+        const QByteArray eol_cr = QByteArray (1,0x0d);
+
+        if (text_data.endsWith (eol_lf))
+          text_data.chop (1);   // remove LF
+
+        if (text_data.endsWith (eol_cr)) // remove CR (altogether CRLF, too)
+          text_data.chop (1);
+      }
 
     // decode
     QTextCodec::ConverterState st;
@@ -1868,8 +1830,8 @@ namespace octave
         msg_box->addButton (tr ("Chan&ge encoding"), QMessageBox::AcceptRole);
         msg_box->addButton (tr ("&Close"), QMessageBox::RejectRole);
 
-        connect (msg_box, SIGNAL (buttonClicked (QAbstractButton *)),
-                 this, SLOT (handle_decode_warning_answer (QAbstractButton *)));
+        connect (msg_box, &QMessageBox::buttonClicked,
+                 this, &file_editor_tab::handle_decode_warning_answer);
 
         msg_box->setWindowModality (Qt::WindowModal);
         msg_box->setAttribute (Qt::WA_DeleteOnClose);
@@ -1919,14 +1881,14 @@ namespace octave
         resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
         rmgr.combo_encoding (enc_combo);
         m_new_encoding = enc_combo->currentText ();
-        connect (enc_combo, SIGNAL (currentTextChanged (const QString&)),
-                 this, SLOT (handle_current_enc_changed (const QString&)));
+        connect (enc_combo, &QComboBox::currentTextChanged,
+                 this, &file_editor_tab::handle_current_enc_changed);
 
         QDialogButtonBox *buttons
           = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                   Qt::Horizontal);
-        connect (buttons, SIGNAL (accepted ()), &dlg, SLOT (accept ()));
-        connect (buttons, SIGNAL (rejected ()), &dlg, SLOT (reject ()));
+        connect (buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+        connect (buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
 
         QGridLayout *main_layout = new QGridLayout;
         main_layout->setSizeConstraint (QLayout::SetFixedSize);
@@ -2017,14 +1979,14 @@ namespace octave
     // Create and queue the command object.
 
     emit interpreter_event
-      ([this] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
          octave_value_list argout = Fdbstatus (interp, ovl (), 1);
 
-         connect (this, SIGNAL (update_breakpoints_signal (const octave_value_list&)),
-                  this, SLOT (update_breakpoints_handler (const octave_value_list&)),
+         connect (this, &file_editor_tab::update_breakpoints_signal,
+                  this, &file_editor_tab::update_breakpoints_handler,
                   Qt::QueuedConnection);
 
          emit update_breakpoints_signal (argout);
@@ -2080,7 +2042,7 @@ namespace octave
     if (ans == QMessageBox::Save)
       {
         emit interpreter_event
-          ([this, file_to_save, base_name, remove_on_success, restore_breakpoints] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -2135,7 +2097,7 @@ namespace octave
         QString base_name = file_info.baseName ();
 
         emit interpreter_event
-          ([this, file_to_save, base_name, remove_on_success, restore_breakpoints] (interpreter& interp)
+          ([=] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
@@ -2156,7 +2118,7 @@ namespace octave
                    {
                      sym = symtab.find_user_function (std_base_name);
                    }
-                 catch (const execution_exception& e)
+                 catch (const execution_exception&)
                    {
                      interp.recover_from_exception ();
 
@@ -2258,10 +2220,23 @@ namespace octave
     if (! codec)
       return;   // No valid codec
 
+    // Remove trailing white spaces if desired
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    if (settings->value (ed_rm_trailing_spaces).toBool ())
+      m_edit_area->replace_all ("[ \\t]+$", "", true, false, false);
+
+    // Save the file
     out.setCodec (codec);
 
     QApplication::setOverrideCursor (Qt::WaitCursor);
+
     out << m_edit_area->text ();
+    if (settings->value (ed_force_newline).toBool ()
+        && m_edit_area->text ().length ())
+      out << m_edit_area->eol_string ();   // Add newline if desired
+
     out.flush ();
     QApplication::restoreOverrideCursor ();
     file.flush ();
@@ -2367,21 +2342,21 @@ namespace octave
         fileDialog->setOption(QFileDialog::DontConfirmOverwrite);
       }
 
-    connect (fileDialog, SIGNAL (filterSelected (const QString&)),
-             this, SLOT (handle_save_as_filter_selected (const QString&)));
+    connect (fileDialog, &QFileDialog::filterSelected,
+             this, &file_editor_tab::handle_save_as_filter_selected);
 
     if (remove_on_success)
       {
-        connect (fileDialog, SIGNAL (fileSelected (const QString&)),
-                 this, SLOT (handle_save_file_as_answer_close (const QString&)));
+        connect (fileDialog, &QFileDialog::fileSelected,
+                 this, &file_editor_tab::handle_save_file_as_answer_close);
 
-        connect (fileDialog, SIGNAL (rejected ()),
-                 this, SLOT (handle_save_file_as_answer_cancel ()));
+        connect (fileDialog, &QFileDialog::rejected,
+                 this, &file_editor_tab::handle_save_file_as_answer_cancel);
       }
     else
       {
-        connect (fileDialog, SIGNAL (fileSelected (const QString&)),
-                 this, SLOT (handle_save_file_as_answer (const QString&)));
+        connect (fileDialog, &QFileDialog::fileSelected,
+                 this, &file_editor_tab::handle_save_file_as_answer);
       }
 
     show_dialog (fileDialog, ! valid_file_name ());
@@ -2461,9 +2436,10 @@ namespace octave
                               (u32_str.data ());
 
         std::size_t length;
+        const std::string encoding = m_encoding.toStdString ();
         char *res_str =
-          octave_u32_conv_to_encoding_strict (m_encoding.toStdString ().c_str (),
-                                              src, u32_str.size (), &length);
+          octave_u32_conv_to_encoding_strict (encoding.c_str (), src,
+                                              u32_str.size (), &length);
         if (! res_str)
           {
             if (errno == EILSEQ)
@@ -2527,9 +2503,6 @@ namespace octave
           }
       }
 
-    if (m_save_as_desired_eol != m_edit_area->eolMode ())
-      convert_eol (this,m_save_as_desired_eol);
-
     if (saveFileName == m_file_name)
       {
         save_file (saveFileName);
@@ -2546,13 +2519,6 @@ namespace octave
 
   void file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
   {
-    if (m_save_as_desired_eol != m_edit_area->eolMode ())
-      {
-        m_edit_area->setReadOnly (false);  // was set to read-only in save_file_as
-        convert_eol (this,m_save_as_desired_eol);
-        m_edit_area->setReadOnly (true);   // restore read-only mode
-      }
-
     // saveFileName == m_file_name can not happen, because we only can get here
     // when we close a tab and m_file_name is not a valid filename yet
 
@@ -2615,8 +2581,8 @@ namespace octave
                                  arg (m_file_name),
                                  QMessageBox::Yes | QMessageBox::No, this);
 
-            connect (msgBox, SIGNAL (finished (int)),
-                     this, SLOT (handle_file_reload_answer (int)));
+            connect (msgBox, &QMessageBox::finished,
+                     this, &file_editor_tab::handle_file_reload_answer);
 
             msgBox->setWindowModality (Qt::WindowModal);
             msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -2655,8 +2621,8 @@ namespace octave
 
         m_edit_area->setReadOnly (true);
 
-        connect (msgBox, SIGNAL (finished (int)),
-                 this, SLOT (handle_file_resave_answer (int)));
+        connect (msgBox, &QMessageBox::finished,
+                 this, &file_editor_tab::handle_file_resave_answer);
 
         msgBox->setWindowModality (Qt::WindowModal);
         msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -2690,11 +2656,10 @@ namespace octave
       m_status_bar->hide ();
 
     //highlight current line color
-    QColor setting_color = settings->value (ed_highlight_current_line_color).value<QColor> ();
-    m_edit_area->setCaretLineBackgroundColor (setting_color);
     m_edit_area->setCaretLineVisible
       (settings->value (ed_highlight_current_line).toBool ());
 
+    // auto completion
     bool match_keywords = settings->value
                           (ed_code_completion_keywords).toBool ();
     bool match_document = settings->value
@@ -2772,7 +2737,6 @@ namespace octave
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
 
-    m_long_title = settings->value (ed_long_window_title).toBool ();
     update_window_title (m_edit_area->isModified ());
 
     m_auto_endif = settings->value (ed_auto_endif).toInt ();
@@ -2860,7 +2824,8 @@ namespace octave
     if (ID != this)
       return;
 
-    emit editor_state_changed (m_copy_available, m_is_octave_file);
+    emit editor_state_changed (m_copy_available, m_is_octave_file,
+                               m_edit_area->isModified ());
   }
 
   void file_editor_tab::handle_file_reload_answer (int decision)
@@ -2960,10 +2925,11 @@ namespace octave
               }
           }
 
-        connect (this, SIGNAL (remove_position_via_debugger_linenr (int)),
-                 dp,   SLOT (handle_remove_via_original_linenr (int)));
-        connect (this, SIGNAL (remove_all_positions (void)),
-                 dp,   SLOT (handle_remove (void)));
+        connect (this, &file_editor_tab::remove_position_via_debugger_linenr,
+                 dp, &marker::handle_remove_via_original_linenr);
+
+        connect (this, &file_editor_tab::remove_all_positions,
+                 dp, &marker::handle_remove);
 
         center_current_line (false);
       }
@@ -3013,27 +2979,20 @@ namespace octave
                                  cond == "" ? marker::breakpoint
                                  : marker::cond_break, cond);
 
-                connect (this, SIGNAL (remove_breakpoint_via_debugger_linenr
-                                       (int)),
-                         bp,   SLOT (handle_remove_via_original_linenr (int)));
-                connect (this, SIGNAL (request_remove_breakpoint_via_editor_linenr
-                                       (int)),
-                         bp,   SLOT (handle_request_remove_via_editor_linenr
-                                     (int)));
-                connect (this, SIGNAL (remove_all_breakpoints (void)),
-                         bp,   SLOT (handle_remove (void)));
-                connect (this, SIGNAL (find_translated_line_number (int, int&,
-                                                                    marker*&)),
-                         bp,   SLOT (handle_find_translation (int, int&,
-                                                              marker*&)));
-                connect (this, SIGNAL (find_linenr_just_before (int, int&, int&)),
-                         bp,   SLOT (handle_find_just_before (int, int&, int&)));
-                connect (this, SIGNAL (report_marker_linenr (QIntList&,
-                                                             QStringList&)),
-                         bp,   SLOT (handle_report_editor_linenr (QIntList&,
-                                                                  QStringList&)));
-                connect (bp,   SIGNAL (request_remove (int)),
-                         this, SLOT (handle_request_remove_breakpoint (int)));
+                connect (this, &file_editor_tab::remove_breakpoint_via_debugger_linenr,
+                         bp, &marker::handle_remove_via_original_linenr);
+                connect (this, &file_editor_tab::request_remove_breakpoint_via_editor_linenr,
+                         bp, &marker::handle_request_remove_via_editor_linenr);
+                connect (this, &file_editor_tab::remove_all_breakpoints_signal,
+                         bp, &marker::handle_remove);
+                connect (this, &file_editor_tab::find_translated_line_number,
+                         bp, &marker::handle_find_translation);
+                connect (this, &file_editor_tab::find_linenr_just_before,
+                         bp, &marker::handle_find_just_before);
+                connect (this, &file_editor_tab::report_marker_linenr,
+                         bp, &marker::handle_report_editor_linenr);
+                connect (bp, &marker::request_remove,
+                         this, &file_editor_tab::handle_request_remove_breakpoint);
               }
           }
         else
@@ -3088,20 +3047,25 @@ namespace octave
         emit autoc_closed (); // Tell editor about closed list
       }
 
-    // Lines changed? Take care of indentation
-    if (m_lines_changed)  // cursor moved and lines have changed
-      {
-        m_lines_changed = false;
-        if (m_is_octave_file && line == m_line+1 && col < m_col)
-          {
-            // Obviously, we have a newline here
-            if (m_smart_indent || m_auto_endif)
-              m_edit_area->smart_indent (m_smart_indent, m_auto_endif,
-                                         m_line, m_ind_char_width);
-          }
-      }
+    // Lines changed? Take care of indentation!
+    bool do_smart_indent = m_lines_changed && m_is_octave_file
+                           && (line == m_line+1) && (col < m_col)
+                           && (m_smart_indent || m_auto_endif);
+    m_lines_changed = false;
 
     // Update line and column indicator in the status bar
+    int o_line = m_line;
+    update_rowcol_indicator (line, col);
+
+    // Do smart indent after update of line indicator for having
+    // consistent indicator data
+    if (do_smart_indent)
+      m_edit_area->smart_indent (m_smart_indent, m_auto_endif,
+                                 o_line, m_ind_char_width);
+  }
+
+  void file_editor_tab::update_rowcol_indicator (int line, int col)
+  {
     m_line = line;
     m_col  = col;
     m_row_indicator->setNum (line+1);
@@ -3206,7 +3170,7 @@ namespace octave
 
                 // remember first visible line and x-offset for restoring the view afterwards
                 int first_line = m_edit_area->firstVisibleLine ();
-                int x_offset = m_edit_area->SendScintilla(QsciScintillaBase::SCI_GETXOFFSET);
+                int x_offset = m_edit_area->SendScintilla (QsciScintillaBase::SCI_GETXOFFSET);
 
                 // search for first occurrence of the detected word
                 bool find_result_available
@@ -3241,7 +3205,7 @@ namespace octave
                 // restore the visible area of the file, the cursor position,
                 // and the selection
                 m_edit_area->setFirstVisibleLine (first_line);
-                m_edit_area->SendScintilla(QsciScintillaBase::SCI_SETXOFFSET, x_offset);
+                m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETXOFFSET, x_offset);
                 m_edit_area->setCursorPosition (line, col);
                 m_edit_area->setSelection (line, col - wlen, line, col);
                 m_edit_area->set_word_selection (word);

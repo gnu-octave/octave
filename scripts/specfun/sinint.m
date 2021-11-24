@@ -54,7 +54,7 @@
 
 function y = sinint (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -75,7 +75,7 @@ function y = sinint (x)
     x = complex (real (x)(:), imag (x)(:));
   else
     x = x(:);
-  end
+  endif
 
   ## Initialize the result
   y = zeros (size (x), class (x));
@@ -202,14 +202,13 @@ endfunction
 %!      -0.000099999999944461111128 + 0.99999999833338888972e-6*1i
 %!      -1.5386156269726011209 - 0.053969388020443786229*1i ];
 %! B = sinint (x);
-%! assert (A, B, -3*eps)
+%! assert (A, B, -3*eps);
 %! B = sinint (single (x));
-%! assert (A, B, -3*eps ("single"))
+%! assert (A, B, -3*eps ("single"));
 
 ## FIXME: Need a test for bug #52953
 %#!test <*52953>
 
 ## Test input validation
-%!error sinint ()
-%!error sinint (1,2)
+%!error <Invalid call> sinint ()
 %!error <X must be numeric> sinint ("1")

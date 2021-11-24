@@ -28,7 +28,6 @@
 ## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt})
 ## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name})
 ## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name}, @var{default_file})
-## @deftypefnx {} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px} @var{py}])
 ## @deftypefnx {} {[@dots{}] =} uigetfile (@dots{}, "MultiSelect", @var{mode})
 ##
 ## Open a GUI dialog for selecting a file and return the filename @var{fname},
@@ -74,11 +73,9 @@
 ## If @var{default_file} is given then it will be selected in the GUI dialog.
 ## If, in addition, a path is given it is also used as current path.
 ##
-## The screen position of the GUI dialog can be set using the
-## @qcode{"Position"} key and a 2-element vector containing the pixel
-## coordinates.  Two or more files can be selected when setting the
-## @qcode{"MultiSelect"} key to @qcode{"on"}.  In that case @var{fname} is a
-## cell array containing the files.
+## Two or more files can be selected when setting the @qcode{"MultiSelect"} key
+## to @qcode{"on"}.  In that case, @var{fname} is a cell array containing the
+## files.
 ##
 ## The outputs @var{fname} and @var{fpath} are strings returning the chosen
 ## name and path, respectively.  However, if the @samp{Cancel} button is
@@ -99,7 +96,6 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   outargs = {cell(0, 2),         # File Filter
              "Open File",        # Dialog Title
              "",                 # Default filename
-             [240, 120],         # Dialog Position (pixel x/y)
              "off",              # MultiSelect on/off
              pwd};               # Default directory
 
@@ -113,7 +109,13 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     endif
   endif
 
-  optidx = min ([idx1, idx2, nargin+1]);
+  if (! isempty (idx2))
+    ## FIXME: Remove handling the "position" property completely in Octave 9
+    warning (['uigetfile: The "position" argument is deprecated and will ', ...
+              "be ignored. Consider removing it from the function call."]);
+  endif
+
+  optidx = min ([idx1, nargin+1]);
 
   args = varargin(1:optidx-1);
 
@@ -121,7 +123,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   if (len > 0)
     [outargs{1}, outargs{3}, defdir] = __file_filter__ ("uigetfile", args{1});
     if (! isempty (defdir))
-      outargs{6} = defdir;
+      outargs{5} = defdir;
     endif
   else
     outargs{1} = __file_filter__ ("uigetfile", outargs{1});
@@ -146,7 +148,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
         [fdir, fname, fext] = fileparts (varargin{3});
       endif
       if (! isempty (fdir))
-        outargs{6} = fdir;
+        outargs{5} = fdir;
       endif
       if (! isempty (fname) || ! isempty (fext))
         outargs{3} = [fname fext];
@@ -168,22 +170,19 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
       prop = varargin{i};
       val = varargin{i + 1};
       if (strcmpi (prop, "position"))
-        if (! isnumeric (val) || length (val) != 2)
-          error ('uigetfile: "Position" must be a 2-element vector');
-        endif
-        outargs{4} = val;
+        ## FIXME: Remove handling this option in Octave 9.
       elseif (strcmpi (prop, "multiselect"))
         if (! ischar (val))
           error ('uigetfile: MultiSelect value must be a string ("on"/"off")');
         endif
-        outargs{5} = tolower (val);
+        outargs{4} = tolower (val);
       else
         error ("uigetfile: unknown argument '%s'", prop);
       endif
     endfor
   endif
 
-  if (__event_manager_enabled__ ())
+  if (__event_manager_have_dialogs__ ())
     [retfile, retpath, retindex] = __event_manager_file_dialog__ (outargs{:});
   else
     funcname = __get_funcname__ (mfilename ());

@@ -34,7 +34,7 @@
 
 function y = reallog (x)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (iscomplex (x) || any (x(:) < 0))
     error ("reallog: produced complex result");
@@ -50,7 +50,6 @@ endfunction
 %! x = rand (10, 10);
 %! assert (reallog (x), log (x));
 
-%!error reallog ()
-%!error reallog (1,2)
+%!error <Invalid call> reallog ()
 %!error <produced complex result> reallog (2i)
 %!error <produced complex result> reallog (-1)

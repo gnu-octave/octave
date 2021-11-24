@@ -107,15 +107,15 @@
 %! assert (x, 13);
 
 ## test "is_true" of different data types
-%!error diag (NaN) || 0;
+%!error diag (NaN) || 0
 %!test
 %! d1 = diag ([])    || 0;
 %! d2 = diag (1)     || 0;
 %! d3 = diag ([1 2]) || 0;
 %! assert ([d1 d2 d3], [false true false]);
 
-%!error sparse (NaN) || 0;
-%!error sparse ([1 1 ; 1 NaN]) || 0;
+%!error sparse (NaN) || 0
+%!error sparse ([1 1 ; 1 NaN]) || 0
 %!test
 %! s1 = sparse ([])  || 0;
 %! s2 = sparse (1)   || 0;
@@ -133,5 +133,5 @@
 %! c1 = [2i 4i] || 0;
 %! c2 = [22 4i] || 0;
 %! c3 = i || 0;
-%! c4 = complex(0) || 0;
+%! c4 = complex (0) || 0;
 %! assert ([c1 c2 c3 c4], [true true true false]);

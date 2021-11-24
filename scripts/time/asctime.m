@@ -26,14 +26,14 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} asctime (@var{tm_struct})
 ## Convert a time structure to a string using the following
-## format: @qcode{"ddd mmm mm HH:MM:SS yyyy@xbackslashchar{}n"}.
+## format: @qcode{"ddd mmm mm HH:MM:SS yyyy@backslashchar{}n"}.
 ##
 ## For example:
 ##
 ## @example
 ## @group
 ## asctime (localtime (time ()))
-##      @result{} "Mon Feb 17 01:15:06 1997@xbackslashchar{}n"
+##      @result{} "Mon Feb 17 01:15:06 1997@backslashchar{}n"
 ## @end group
 ## @end example
 ##
@@ -43,7 +43,7 @@
 
 function retval = asctime (tm_struct)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -58,5 +58,4 @@ endfunction
 
 %!assert (asctime (localtime (time ()))(end), "\n")
 
-%!error asctime ()
-%!error asctime (1, 2)
+%!error <Invalid call> asctime ()

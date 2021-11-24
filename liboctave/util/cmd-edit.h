@@ -142,7 +142,8 @@ namespace octave
 
     static user_accept_line_fcn get_user_accept_line_function (void);
 
-    static string_vector generate_filename_completions (const std::string& text);
+    static string_vector
+    generate_filename_completions (const std::string& text);
 
     static std::string get_line_buffer (void);
 
@@ -218,15 +219,6 @@ namespace octave
 
     static int event_handler (void);
 
-    static std::set<startup_hook_fcn> startup_hook_set;
-
-    static std::set<pre_input_hook_fcn> pre_input_hook_set;
-
-    static std::set<event_hook_fcn> event_hook_set;
-
-    // The real thing.
-    static command_editor *s_instance;
-
     static void cleanup_instance (void)
     {
       delete s_instance;
@@ -234,6 +226,14 @@ namespace octave
     }
 
     static void handle_interrupt_signal (void);
+
+    //--------
+
+    static command_editor *s_instance;  // the real thing.
+
+    static std::set<startup_hook_fcn> m_startup_hook_set;
+    static std::set<pre_input_hook_fcn> m_pre_input_hook_set;
+    static std::set<event_hook_fcn> m_event_hook_set;
 
   protected:
 
@@ -310,11 +310,14 @@ namespace octave
 
     virtual void do_set_user_accept_line_function (user_accept_line_fcn) { }
 
-    virtual completion_fcn do_get_completion_function (void) const { return nullptr; }
+    virtual completion_fcn do_get_completion_function (void) const
+    { return nullptr; }
 
-    virtual quoting_fcn do_get_quoting_function (void) const { return nullptr; }
+    virtual quoting_fcn do_get_quoting_function (void) const
+    { return nullptr; }
 
-    virtual dequoting_fcn do_get_dequoting_function (void) const { return nullptr; }
+    virtual dequoting_fcn do_get_dequoting_function (void) const
+    { return nullptr; }
 
     virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const
     { return nullptr; }
@@ -331,7 +334,8 @@ namespace octave
 
     virtual char do_get_prev_char (int) const = 0;
 
-    virtual void do_replace_line (const std::string& text, bool clear_undo) = 0;
+    virtual void
+    do_replace_line (const std::string& text, bool clear_undo) = 0;
 
     virtual void do_kill_full_line (void) = 0;
 
@@ -374,9 +378,7 @@ namespace octave
     void do_interrupt_event_loop (bool arg) { m_interrupt_event_loop = arg; }
 
     bool do_event_loop_interrupted (void) const
-    {
-      return m_interrupt_event_loop;
-    }
+    { return m_interrupt_event_loop; }
 
     int do_insert_initial_input (void);
 

@@ -223,10 +223,9 @@ endfunction
 %!assert (compare_versions ("0.1", "0.1", "~="), false)
 
 ## Test input validation
-%!error compare_versions ()
-%!error compare_versions (1)
-%!error compare_versions (1,2)
-%!error compare_versions (1,2,3,4)
+%!error <Invalid call> compare_versions ()
+%!error <Invalid call> compare_versions (1)
+%!error <Invalid call> compare_versions (1,2)
 %!error <V1 and V2 must be strings> compare_versions (0.1, "0.1", "==")
 %!error <V1 and V2 must be strings> compare_versions ("0.1", 0.1, "==")
 %!error <V1 and V2 must be a single row> compare_versions (["0";".";"1"], "0.1", "==")

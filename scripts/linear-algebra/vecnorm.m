@@ -27,7 +27,8 @@
 ## @deftypefn  {} {@var{n} =} vecnorm (@var{A})
 ## @deftypefnx {} {@var{n} =} vecnorm (@var{A}, @var{p})
 ## @deftypefnx {} {@var{n} =} vecnorm (@var{A}, @var{p}, @var{dim})
-## Return the p-norm of the elements of @var{A} along dimension @var{dim}.
+## Return the vector p-norm of the elements of array @var{A} along dimension
+## @var{dim}.
 ##
 ## The p-norm of a vector is defined as
 ##
@@ -41,30 +42,37 @@
 ## @end example
 ##
 ## @end ifnottex
-## If @var{p} is omitted it defaults to 2 (Euclidean norm).  @var{p} can be
-## @code{Inf} (absolute value of largest element).
+## The input @var{p} must be a positive scalar.  If omitted it defaults to 2
+## (Euclidean norm or distance).  Other special values of @var{p} are 1
+## (Manhattan norm, sum of absolute values) and @code{Inf} (absolute value of
+## largest element).
 ##
-## If @var{dim} is omitted the first non-singleton dimension is used.
+## The input @var{dim} specifies the dimension of the array on which the
+## function operates and must be a positive integer.  If omitted the first
+## non-singleton dimension is used.
 ##
 ## @seealso{norm}
 ## @end deftypefn
 
 function n = vecnorm (A, p = 2, dim)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
-  if (! isscalar (p) || ! isreal (p) || (p <= 0))
+  if (! isnumeric (A))
+    error ("vecnorm: A must be numeric");
+  endif
+
+  if (! (isscalar (p) && isreal (p) && p > 0))
     error ("vecnorm: P must be positive real scalar or Inf");
   endif
 
-  sz = size (A);
-  if (nargin <= 2)
+  if (nargin < 3)
     ## Find the first non-singleton dimension.
-    (dim = find (sz > 1, 1)) || (dim = 1);
-  elseif (! (isscalar (dim) && dim == fix (dim) && dim > 0))
-    error ("vecnorm: DIM must be an integer and a valid dimension");
+    (dim = find (size (A) > 1, 1)) || (dim = 1);
+  elseif (! (isscalar (dim) && isindex (dim)))
+    error ("vecnorm: DIM must be a positive integer");
   endif
 
   ## Calculate norm using the value of p to accelerate special cases
@@ -80,7 +88,13 @@ function n = vecnorm (A, p = 2, dim)
 
     otherwise
       if (rem (p,2) == 0)
-        n = (sum ((real (A).^2 + imag (A).^2) .^ (p/2), dim)) .^ (1 / p);
+        ## Even index such as 2,4,6 are specifically accelerated in math
+        ## libraries.  Beyond 6, it doesn't matter which method is used.
+        if (iscomplex (A))
+          n = (sum ((real (A).^2 + imag (A).^2) .^ (p/2), dim)) .^ (1 / p);
+        else
+          n = (sum (A.^2 .^ (p/2), dim)) .^ (1 / p);
+        endif
       else
         n = (sum (abs (A) .^ p, dim)) .^ (1 / p);
       endif
@@ -111,13 +125,13 @@ endfunction
 %! assert (vecnorm (A), ret, 1e-4);
 
 ## Test input validation
-%!error vecnorm ()
-%!error vecnorm (1,2,3,4)
+%!error <Invalid call> vecnorm ()
+%!error <A must be numeric> vecnorm ({1})
 %!error <P must be positive real scalar> vecnorm (1, [1 2])
 %!error <P must be positive real scalar> vecnorm (1, i)
 %!error <P must be positive real scalar> vecnorm (1, -1)
 %!error <P must be positive real scalar> vecnorm (1, 0)
-%!error <DIM must be an integer and a valid dimension> vecnorm (1, 2, [1 2])
-%!error <DIM must be an integer and a valid dimension> vecnorm (1, 2, [1 2])
-%!error <DIM must be an integer and a valid dimension> vecnorm (1, 2, 0)
-%!error <DIM must be an integer and a valid dimension> vecnorm (1, 2, -1)
+%!error <DIM must be a positive integer> vecnorm (1, 2, [1 2])
+%!error <DIM must be a positive integer> vecnorm (1, 2, -1)
+%!error <DIM must be a positive integer> vecnorm (1, 2, 0)
+%!error <DIM must be a positive integer> vecnorm (1, 2, 1.5)

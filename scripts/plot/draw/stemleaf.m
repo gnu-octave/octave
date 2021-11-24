@@ -130,7 +130,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   ## other options for the kinds of plots described by Tukey could be
   ## provided.  This may best be left to users.
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -585,8 +585,7 @@ endfunction
 %! assert (r, rexp);
 
 ## Test input validation
-%!error stemleaf ()
-%!error stemleaf (1, 2, 3, 4)
+%!error <Invalid call> stemleaf ()
 %!error <X must be a vector> stemleaf (ones (2,2), "")
 %!warning <X truncated to integer values> tmp = stemleaf ([0 0.5 1],"");
 %!error <X must be a numeric vector> stemleaf ("Hello World", "data")

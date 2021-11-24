@@ -463,7 +463,7 @@ endfunction
 function t = __quadgk_finite_waypoint__ (x, a, b)
   c = (-4 .* x + 2.* (b + a)) ./ (b - a);
   k = ((sqrt (c .^ 2 - 4) + c) ./ 2) .^ (1/3);
-  t = real ((sqrt(3) .* 1i * (1 - k .^ 2) - (1 + k .^ 2)) ./ 2 ./ k);
+  t = real ((sqrt (3) .* 1i * (1 - k .^ 2) - (1 + k .^ 2)) ./ 2 ./ k);
 endfunction
 
 
@@ -480,10 +480,10 @@ endfunction
 %!assert (quadgk (@(x) 1./sqrt (x),0,1), 2, 1e-10)
 %!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-10)
 %!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-10)
-%!assert <*57614> (quadgk (@(z) exp(z)./z, 1, 1,
+%!assert <*57614> (quadgk (@(z) exp (z)./z, 1, 1,
 %!                        "Waypoints", [1+i, -1+i, -1-i, 1-i]),
 %!                 complex (0, 2*pi), 1e-10)
-%!assert <*57614> (quadgk (@(z) exp(z)./z, 1, 1,
+%!assert <*57614> (quadgk (@(z) exp (z)./z, 1, 1,
 %!                        "Waypoints", [1-i, -1-i, -1+i, 1+i]),
 %!                 complex (0, -2*pi), 1e-10)
 %!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]),

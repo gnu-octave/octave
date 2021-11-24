@@ -75,11 +75,7 @@ namespace octave
         if (key == Qt::Key_unknown || key == 0)
           return;
 
-#if defined (HAVE_QGUIAPPLICATION)
         Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers (); //e->modifiers ();
-#else
-        Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers (); //e->modifiers ();
-#endif
 
         if (m_shift_modifier || (modifiers & Qt::ShiftModifier))
           key += Qt::SHIFT;
@@ -167,6 +163,11 @@ namespace octave
     init (tr ("Step Out"), sc_main_debug_step_out);
     init (tr ("Continue"), sc_main_debug_continue);
     init (tr ("Quit Debug Mode"), sc_main_debug_quit);
+
+    // tools
+    init (tr ("Start/Stop Profiler Session"), sc_main_tools_start_profiler);
+    init (tr ("Resume Profiler Session"), sc_main_tools_resume_profiler);
+    init (tr ("Show Profile Data"), sc_main_tools_show_profiler);
 
     // window
     init (tr ("Show Command Window"), sc_main_window_show_command);
@@ -304,6 +305,7 @@ namespace octave
     init (tr ("Go to Homepage"), sc_doc_go_home);
     init (tr ("Go Back one Page"), sc_doc_go_back);
     init (tr ("Go Forward one Page"), sc_doc_go_next);
+    init (tr ("Bookmark this Page"), sc_doc_bookmark);
   }
 
   // write one or all actual shortcut set(s) into a settings file
@@ -335,8 +337,18 @@ namespace octave
     settings->sync ();      // sync the settings file
   }
 
-  void shortcut_manager::set_shortcut (QAction *action, const sc_pref& scpref)
+  void shortcut_manager::set_shortcut (QAction *action, const sc_pref& scpref,
+                                       bool enable)
   {
+    if (! enable)
+      {
+        // Disable => remove existing shortcut from the action
+        action->setShortcut (QKeySequence ());
+        return;
+      }
+
+    // Enable: Is the given key known? If yes, get the value from the
+    //         settings file and set it to the action
     int index;
 
     index = m_action_hash[scpref.key] - 1;
@@ -372,11 +384,7 @@ namespace octave
     m_dialog = nullptr;
     m_level_hash.clear ();
 
-#if defined (HAVE_QHEADERVIEW_SETSECTIONRESIZEMODE)
     tree_view->header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
-#else
-    tree_view->header ()->setResizeMode (QHeaderView::ResizeToContents);
-#endif
 
     QTreeWidgetItem *main = new QTreeWidgetItem (tree_view);
     main->setText (0, tr ("Global"));
@@ -387,6 +395,8 @@ namespace octave
     main_edit->setText (0, tr ("Edit Menu"));
     QTreeWidgetItem *main_debug = new QTreeWidgetItem (main);
     main_debug->setText (0, tr ("Debug Menu"));
+    QTreeWidgetItem *main_tools = new QTreeWidgetItem (main);
+    main_tools->setText (0, tr ("Tools Menu"));
     QTreeWidgetItem *main_window = new QTreeWidgetItem (main);
     main_window->setText (0, tr ("Window Menu"));
     QTreeWidgetItem *main_help = new QTreeWidgetItem (main);
@@ -405,6 +415,7 @@ namespace octave
     m_level_hash[sc_main_file]   = main_file;
     m_level_hash[sc_main_edit]   = main_edit;
     m_level_hash[sc_main_debug]   = main_debug;
+    m_level_hash[sc_main_tools]   = main_tools;
     m_level_hash[sc_main_window]   = main_window;
     m_level_hash[sc_main_help]   = main_help;
     m_level_hash[sc_main_news]   = main_news;
@@ -445,8 +456,8 @@ namespace octave
 
     m_level_hash[sc_doc] = doc_browser;
 
-    connect (tree_view, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)),
-             this, SLOT (handle_double_clicked (QTreeWidgetItem*, int)));
+    connect (tree_view, &QTreeWidget::itemDoubleClicked,
+             this, &shortcut_manager::handle_double_clicked);
 
     for (int i = 0; i < m_sc.count (); i++)
       {
@@ -671,8 +682,7 @@ namespace octave
         shift->setStyleSheet
           ("QCheckBox::indicator { subcontrol-position: left top; }");
 
-        connect (direct, SIGNAL (clicked (bool)),
-                 shift, SLOT (setEnabled (bool)));
+        connect (direct, &QCheckBox::clicked, shift, &QCheckBox::setEnabled);
 
         direct->setCheckState (Qt::Checked);
 
@@ -697,8 +707,8 @@ namespace octave
 
         QPushButton *set_default = new QPushButton (tr ("Set to default"));
         grid->addWidget (set_default, 0, 2);
-        connect (set_default, SIGNAL (clicked ()),
-                 this, SLOT (shortcut_dialog_set_default ()));
+        connect (set_default, &QPushButton::clicked,
+                 this, &shortcut_manager::shortcut_dialog_set_default);
 
         box->addLayout (grid);
 
@@ -709,18 +719,20 @@ namespace octave
         QList<QAbstractButton *> buttons = button_box->buttons ();
         for (int i = 0; i < buttons.count (); i++)
           buttons.at (i)->setShortcut (QKeySequence ());
-        connect (button_box, SIGNAL (accepted ()), m_dialog, SLOT (accept ()));
-        connect (button_box, SIGNAL (rejected ()), m_dialog, SLOT (reject ()));
+        connect (button_box, &QDialogButtonBox::accepted,
+                 m_dialog, &QDialog::accept);
+        connect (button_box, &QDialogButtonBox::rejected,
+                 m_dialog, &QDialog::reject);
         box->addWidget (button_box);
 
         m_dialog->setLayout (box);
 
-        connect (direct, SIGNAL (stateChanged (int)),
-                 m_edit_actual, SLOT (handle_direct_shortcut (int)));
-        connect (shift, SIGNAL (stateChanged (int)),
-                 m_edit_actual, SLOT (handle_shift_modifier (int)));
-        connect (m_dialog, SIGNAL (finished (int)),
-                 this, SLOT (shortcut_dialog_finished (int)));
+        connect (direct, &QCheckBox::stateChanged,
+                 m_edit_actual, &enter_shortcut::handle_direct_shortcut);
+        connect (shift, &QCheckBox::stateChanged,
+                 m_edit_actual, &enter_shortcut::handle_shift_modifier);
+        connect (m_dialog, &QDialog::finished,
+                 this, &shortcut_manager::shortcut_dialog_finished);
 
       }
 

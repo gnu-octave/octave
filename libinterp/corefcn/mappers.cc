@@ -37,6 +37,8 @@
 #include "error.h"
 #include "variables.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (abs, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} abs (@var{z})
@@ -133,10 +135,9 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
 
-%!xtest <*52627>
+%!testif ; ismac () || ispc ()   <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
-%! if (! ismac () && ! ispc ()), return; endif
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
@@ -164,10 +165,9 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-%!xtest <*52627>
+%!testif ; ismac ()   <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
-%! if (! ismac ()), return; endif
 %! x = [1, 0, -1, 0];
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
@@ -187,10 +187,9 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
 
-%!xtest <*52627>
+%!testif ; ismac ()   <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
-%! if (! ismac ()), return; endif
 %! x = single ([1, 0, -1, 0]);
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
@@ -208,10 +207,9 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
 
-%!xtest <*52627>
+%!testif ; ismac () || ispc ()   <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
-%! if (! ismac () && ! ispc ()), return; endif
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
@@ -223,7 +221,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 DEFUN (angle, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} angle (@var{z})
-See @code{arg}.
+@xref{XREFarg,,@code{arg}}.
 @seealso{arg}
 @end deftypefn */)
 {
@@ -342,10 +340,9 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
 
-%!xtest <*52627>
+%!testif ; ismac () || ispc ()   <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows. Their trig/hyperbolic functions have huge tolerances.
-%! if (! ismac () && ! ispc ()), return; endif
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
@@ -385,10 +382,9 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
 
-%!xtest <*52627>
+%!testif ; ismac () || ispc ()   <*52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
-%! if (! ismac () && ! ispc ()), return; endif
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
@@ -849,7 +845,7 @@ exp (z^2) * erfc (z)
 
 %!test
 %! x = [1+2i,-1+2i,1e-6+2e-6i,0+2i];
-%! assert (erfcx (x), exp (x.^2) .* erfc(x), -1.e-10);
+%! assert (erfcx (x), exp (x.^2) .* erfc (x), -1.e-10);
 
 %!test
 %! x = [100, 100+20i];
@@ -891,7 +887,7 @@ $$
 
 %!test
 %! x = [-0.1, 0.1, 1, 1+2i,-1+2i,1e-6+2e-6i,0+2i];
-%! assert (erfi (x), -i * erf(i*x), -1.e-10);
+%! assert (erfi (x), -i * erf (i*x), -1.e-10);
 
 %!error erfi ()
 %!error erfi (1, 2)
@@ -1032,6 +1028,7 @@ isfinite ([13, Inf, NA, NaN])
 %!assert (! isfinite (single (Inf)))
 %!assert (! isfinite (single (NaN)))
 %!assert (isfinite (single (rand (1,10))))
+%!assert (isfinite ('a'))
 
 %!error isfinite ()
 %!error isfinite (1, 2)
@@ -1224,7 +1221,7 @@ This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).
 %! result(double ("0":"9") + 1) = true;
 %! result(double ("a":"z") + 1) = true;
 %! assert (isalnum (charset), result);
-%!assert (isalnum(["Ä8Aa?"; "(Uß ;"]), logical ([1 1 1 1 1 0; 0 1 1 1 0 0]));
+%!assert (isalnum(["Ä8Aa?"; "(Uß ;"]), logical ([1 1 1 1 1 0; 0 1 1 1 0 0]))
 
 %!error isalnum ()
 %!error isalnum (1, 2)
@@ -1253,7 +1250,7 @@ This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).
 %! result(double ("A":"Z") + 1) = true;
 %! result(double ("a":"z") + 1) = true;
 %! assert (isalpha (charset), result);
-%!assert (isalpha("Ä8Aa(Uß ;"), logical ([1 1 0 1 1 0 1 1 1 0 0]));
+%!assert (isalpha("Ä8Aa(Uß ;"), logical ([1 1 0 1 1 0 1 1 1 0 0]))
 
 %!error isalpha ()
 %!error isalpha (1, 2)
@@ -1329,7 +1326,7 @@ decimal digits (0-9) and false where they are not.
 %! result = false (1, 128);
 %! result(double ("0":"9") + 1) = true;
 %! assert (isdigit (charset), result);
-%!assert (isdigit("Ä8Aa(Uß ;"), logical ([0 0 1 0 0 0 0 0 0 0 0]));
+%!assert (isdigit("Ä8Aa(Uß ;"), logical ([0 0 1 0 0 0 0 0 0 0 0]))
 
 %!error isdigit ()
 %!error isdigit (1, 2)
@@ -1370,6 +1367,7 @@ isinf ([13, Inf, NA, NaN])
 %!assert (! isinf (single (NA)))
 %!assert (isinf (single (rand (1,10))), false (1,10))
 %!assert (isinf (single ([NaN -Inf -1 0 1 Inf NA])), [false, true, false, false, false, true, false])
+%!assert (! isinf ('a'))
 
 %!error isinf ()
 %!error isinf (1, 2)
@@ -1396,7 +1394,7 @@ not.
 %! result = false (1, 128);
 %! result(34:127) = true;
 %! assert (isgraph (charset), result);
-%!assert (isgraph("Ä8Aa(Uß ;"), logical ([1 1 1 1 1 1 1 1 1 0 1]));
+%!assert (isgraph("Ä8Aa(Uß ;"), logical ([1 1 1 1 1 1 1 1 1 0 1]))
 
 %!error isgraph ()
 %!error isgraph (1, 2)
@@ -1422,7 +1420,7 @@ lowercase letters and false where they are not.
 %! result = false (1, 128);
 %! result(double ("a":"z") + 1) = true;
 %! assert (islower (charset), result);
-%!assert (islower("Ä8Aa(Uß ;"), logical ([0 0 0 0 1 0 0 1 1 0 0]));
+%!assert (islower("Ä8Aa(Uß ;"), logical ([0 0 0 0 1 0 0 1 1 0 0]))
 
 %!error islower ()
 %!error islower (1, 2)
@@ -1503,6 +1501,7 @@ isnan ([13, Inf, NA, NaN])
 %!assert (isnan (single (NA)))
 %!assert (isnan (single (rand (1,10))), false (1,10))
 %!assert (isnan (single ([NaN -Inf -1 0 1 Inf NA])), [true, false, false, false, false, false, true])
+%!assert (! isnan ('a'))
 
 %!error isnan ()
 %!error isnan (1, 2)
@@ -1529,7 +1528,7 @@ are not.
 %! result = false (1, 128);
 %! result(33:127) = true;
 %! assert (isprint (charset), result);
-%!assert (isprint("Ä8Aa(Uß ;"), logical ([1 1 1 1 1 1 1 1 1 1 1]));
+%!assert (isprint("Ä8Aa(Uß ;"), logical ([1 1 1 1 1 1 1 1 1 1 1]))
 
 %!error isprint ()
 %!error isprint (1, 2)
@@ -1558,7 +1557,7 @@ punctuation characters and false where they are not.
 %! result(92:97) = true;
 %! result(124:127) = true;
 %! assert (ispunct (charset), result);
-%!assert (ispunct("Ä8Aa(Uß ;"), logical ([0 0 0 0 0 1 0 0 0 0 1]));
+%!assert (ispunct("Ä8Aa(Uß ;"), logical ([0 0 0 0 0 1 0 0 0 0 1]))
 
 %!error ispunct ()
 %!error ispunct (1, 2)
@@ -1585,7 +1584,7 @@ vertical tab) and false where they are not.
 %! result = false (1, 128);
 %! result(double (" \f\n\r\t\v") + 1) = true;
 %! assert (isspace (charset), result);
-%!assert (isspace("Ä8Aa(Uß ;"), logical ([0 0 0 0 0 0 0 0 0 1 0]));
+%!assert (isspace("Ä8Aa(Uß ;"), logical ([0 0 0 0 0 0 0 0 0 1 0]))
 
 %!error isspace ()
 %!error isspace (1, 2)
@@ -1611,7 +1610,7 @@ uppercase letters and false where they are not.
 %! result = false (1, 128);
 %! result(double ("A":"Z") + 1) = true;
 %! assert (isupper (charset), result);
-%!assert (isupper("Ä8Aa(Uß ;"), logical ([1 1 0 1 0 0 1 0 0 0 0]));
+%!assert (isupper("Ä8Aa(Uß ;"), logical ([1 1 0 1 0 0 1 0 0 0 0]))
 
 %!error isupper ()
 %!error isupper (1, 2)
@@ -1639,7 +1638,7 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).
 %! result(double ("0":"9") + 1) = true;
 %! result(double ("a":"f") + 1) = true;
 %! assert (isxdigit (charset), result);
-%!assert (isxdigit("Ä8Aa(Uß ;"), logical ([0 0 1 1 1 0 0 0 0 0 0]));
+%!assert (isxdigit("Ä8Aa(Uß ;"), logical ([0 0 1 1 1 0 0 0 0 0 0]))
 
 %!error isxdigit ()
 %!error isxdigit (1, 2)
@@ -2259,3 +2258,5 @@ DEFALIAS (upper, toupper);
 */
 
 DEFALIAS (gammaln, lgamma);
+
+OCTAVE_NAMESPACE_END

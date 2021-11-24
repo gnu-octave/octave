@@ -23,7 +23,7 @@
 ##
 ########################################################################
 
-%!test
+%!test <*36025>
 %! warning ("off", "Octave:function-name-clash", "local");
 %! f = testclass (1, 2);
 %! assert (one (f), 1);

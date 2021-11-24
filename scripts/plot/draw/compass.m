@@ -137,8 +137,8 @@ endfunction
 %! title ("compass() example");
 
 ## Test input validation
-%!error compass ()
-%!error compass (1,2,3,4)
+%!error <Invalid call> compass ()
+%!error <Invalid call> compass (1,2,3,4)
 %!error compass (1, "-r", 2)
 %!error <invalid linestyle STYLE> compass (1, "abc")
 %!error <invalid linestyle STYLE> compass (1, {1})

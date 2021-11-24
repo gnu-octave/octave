@@ -284,7 +284,7 @@ endfunction
 %! r = corrcoef (x, y);
 %! assert (r, [1, NaN; NaN, 1]);
 
-%!error corrcoef ()
+%!error <Invalid call> corrcoef ()
 %!error <parameter 1 must be a string> corrcoef (1, 2, 3)
 %!error <parameter "alpha" missing value> corrcoef (1, 2, "alpha")
 %!error <"alpha" must be a scalar> corrcoef (1,2, "alpha", "1")

@@ -51,7 +51,10 @@ namespace octave
 
   bool qt_application::start_gui_p (void) const
   {
-    return m_options.gui ();
+    // Note: this function is not needed if using the experimental
+    // terminal widget, so return a dummy value of false in that case.
+
+    return experimental_terminal_widget () ? false : m_options.gui ();
   }
 
   int qt_application::execute (void)
@@ -62,15 +65,11 @@ namespace octave
 
     // Create and show main window.
 
-    if (start_gui_p ())
-      {
-        gui_qobject gui_interface (*this);
-        return gui_interface.exec ();
-      }
-    else
-      {
-        cli_qobject cli_interface (*this);
-        return cli_interface.exec ();
-      }
+    // Note: the second argument is ignored if using the new terminal
+    // widget.
+
+    base_qobject qt_interface (*this, start_gui_p ());
+
+    return qt_interface.exec ();
   }
 }

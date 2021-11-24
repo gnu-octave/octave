@@ -41,6 +41,8 @@
 #include "smx-m-scm.h"
 #include "ov-cx-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // matrix by sparse complex matrix ops.
 
 DEFBINOP_OP (add, matrix, sparse_complex_matrix, +)
@@ -122,7 +124,7 @@ DEFBINOP_FN (el_or,  matrix, sparse_complex_matrix, mx_el_or)
 
 DEFCATOP (m_scm, matrix, sparse_complex_matrix)
 {
-  octave_matrix& v1 = dynamic_cast<octave_matrix&> (a1);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
   const octave_sparse_complex_matrix& v2
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
   SparseMatrix tmp (v1.matrix_value ());
@@ -174,3 +176,5 @@ install_m_scm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_matrix, octave_sparse_complex_matrix,
                       sparse_complex_matrix_conv);
 }
+
+OCTAVE_NAMESPACE_END

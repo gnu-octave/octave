@@ -77,11 +77,7 @@
 
 function varargout = imformats (arg1, arg2, arg3)
 
-  if (nargin > 3)
-    print_usage ();
-  endif
-
-  mlock (); # prevent formats to be removed by "clear all"
+  mlock ();  # prevent formats being removed by "clear all"
   persistent formats = default_formats ();
 
   if (nargin == 0 && nargout == 0)
@@ -96,7 +92,7 @@ function varargout = imformats (arg1, arg2, arg3)
       switch (tolower (arg1))
         case "add",
           if (! isstruct (arg2))
-            error ("imformats: FORMAT to %s must be a structure.", arg1);
+            error ("imformats: FORMAT to %s must be a structure", arg1);
           endif
           arrayfun (@is_valid_format, arg2);
           formats(end + 1: end + numel (arg2)) = arg2;
@@ -104,21 +100,21 @@ function varargout = imformats (arg1, arg2, arg3)
 
         case {"remove", "update"},
           if (! ischar (arg2))
-            error ("imformats: EXT to %s must be a string.", arg1);
+            error ("imformats: EXT to %s must be a string", arg1);
           endif
-          ## FIXME: suppose a format with multiple extensions.  If one of
+          ## FIXME: Suppose a format with multiple extensions; if one of
           ##        them is requested to be removed, should we remove the
           ##        whole format, or just that extension from the format?
           match = find_ext_idx (formats, arg2);
           if (! any (match))
-            error ("imformats: no EXT '%s' found.", arg2);
+            error ("imformats: no EXT '%s' found", arg2);
           endif
           if (strcmpi (arg1, "remove"))
             formats(match) = [];
           else
             ## then it's update
             if (! isstruct (arg3))
-              error ("imformats: FORMAT to update must be a structure.");
+              error ("imformats: FORMAT to update must be a structure");
             endif
             is_valid_format (arg3);
             formats(match) = arg3;
@@ -130,7 +126,7 @@ function varargout = imformats (arg1, arg2, arg3)
         otherwise
           ## then we look for a format with that extension.
           match = find_ext_idx (formats, arg1);
-          ## For matlab compatibility, if we don't find any format we must
+          ## For Matlab compatibility, if we don't find any format we must
           ## return an empty struct with NO fields.  We can't use match as mask
           if (any (match))
             varargout{1} = formats(match);
@@ -139,7 +135,7 @@ function varargout = imformats (arg1, arg2, arg3)
           endif
       endswitch
     else
-      error ("imformats: first argument must be either a structure or string.");
+      error ("imformats: first argument must be either a structure or string");
     endif
   else
     varargout{1} = formats;
@@ -247,7 +243,7 @@ function rformats = default_formats ()
             "XWD",  {"xwd"},          false;
             };
 
-  for fidx = 1: rows(coders)
+  for fidx = 1:rows (coders)
     formats(fidx).coder = coders{fidx, 1};
     formats(fidx).ext   = coders{fidx, 2};
     formats(fidx).alpha = coders{fidx, 3};
@@ -268,21 +264,24 @@ function rformats = default_formats ()
 endfunction
 
 function is_valid_format (format)
+
   ## the minimal list of fields required in the structure.  We don't
   ## require multipage because it doesn't exist in matlab
   min_fields  = {"ext", "read", "isa", "write", "info", "alpha", "description"};
   fields_mask = isfield (format, min_fields);
   if (! all (fields_mask))
-    error ("imformats: structure has missing field '%s'.", min_fields(! fields_mask){1});
+    error ("imformats: structure has missing field '%s'", min_fields(! fields_mask){1});
   endif
 
 endfunction
 
 function match = find_ext_idx (formats, ext)
+
   ## FIXME: what should we do if there's more than one hit?
   ##        Should this function prevent the addition of
   ##        duplicated extensions?
   match = cellfun (@(x) any (strcmpi (x, ext)), {formats.ext});
+
 endfunction
 
 function bool = isa_magick (coder, filename)
@@ -372,7 +371,7 @@ endfunction
 %! unwind_protect
 %!   fmt = imformats ("jpg"); # take jpg as template
 %!   fmt.ext = "new_fmt";
-%!   fmt.read = @() true ();
+%!   fmt.read = @(~) true ();
 %!   imformats ("add", fmt);
 %!   assert (imread (fname), true);
 %! unwind_protect_cleanup
@@ -391,7 +390,7 @@ endfunction
 %! unwind_protect
 %!   fmt = imformats ("jpg"); # take jpg as template
 %!   fmt.ext = "new_fmt1";
-%!   fmt.read = @() true();
+%!   fmt.read = @(~) true ();
 %!   fmt(2) = fmt(1);
 %!   fmt(2).ext = "new_fmt2";
 %!   imformats ("add", fmt);

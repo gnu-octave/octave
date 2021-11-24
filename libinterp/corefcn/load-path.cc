@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <cctype>
 
 #include "dir-ops.h"
 #include "file-ops.h"
@@ -48,8 +49,8 @@
 #include "unwind-prot.h"
 #include "utils.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   // Canonicalize file name (keeping the path relative) if it exists.
   // Return it unmodified otherwise.
 
@@ -224,32 +225,32 @@ namespace octave
     Vlast_prompt_time.stamp ();
   }
 
-  std::string load_path::sys_path;
-  load_path::abs_dir_cache_type load_path::abs_dir_cache;
+  std::string load_path::s_sys_path;
+  load_path::abs_dir_cache_type load_path::s_abs_dir_cache;
 
   load_path::load_path (interpreter& interp)
-    : m_interpreter (interp), package_map (), top_level_package (),
-      dir_info_list (), init_dirs (), m_command_line_path (),
-      add_hook ([this] (const std::string& dir) { this->execute_pkg_add (dir); }),
-      remove_hook ([this] (const std::string& dir) { this->execute_pkg_del (dir); })
+    : add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
+      remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); }),
+      m_interpreter (interp), m_package_map (), m_top_level_package (),
+      m_dir_info_list (), m_init_dirs (), m_command_line_path ()
   { }
 
   void
   load_path::initialize (bool set_initial_path)
   {
-    sys_path = "";
+    s_sys_path = "";
 
     if (set_initial_path)
       {
-        maybe_add_path_elts (sys_path, config::local_ver_oct_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_api_oct_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_oct_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_ver_fcn_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_api_fcn_file_dir ());
-        maybe_add_path_elts (sys_path, config::local_fcn_file_dir ());
-        maybe_add_path_elts (sys_path, config::oct_file_dir ());
-        maybe_add_path_elts (sys_path, config::fcn_file_dir ());
-        maybe_add_path_elts (sys_path, config::oct_data_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_ver_oct_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_api_oct_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_oct_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_ver_fcn_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_api_fcn_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::local_fcn_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::oct_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::fcn_file_dir ());
+        maybe_add_path_elts (s_sys_path, config::oct_data_dir ());
       }
 
     std::string tpath = load_path::m_command_line_path;
@@ -263,11 +264,11 @@ namespace octave
       {
         xpath = tpath;
 
-        if (! sys_path.empty ())
-          xpath += directory_path::path_sep_str () + sys_path;
+        if (! s_sys_path.empty ())
+          xpath += directory_path::path_sep_str () + s_sys_path;
       }
     else
-      xpath = sys_path;
+      xpath = s_sys_path;
 
     set (xpath, false, true);
   }
@@ -275,11 +276,11 @@ namespace octave
   void
   load_path::clear (void)
   {
-    dir_info_list.clear ();
+    m_dir_info_list.clear ();
 
-    top_level_package.clear ();
+    m_top_level_package.clear ();
 
-    package_map.clear ();
+    m_package_map.clear ();
   }
 
   void
@@ -295,10 +296,10 @@ namespace octave
     std::set<std::string> elts_set (elts.begin (), elts.end ());
 
     if (is_init)
-      init_dirs = elts_set;
+      m_init_dirs = elts_set;
     else
       {
-        for (const auto& init_dir : init_dirs)
+        for (const auto& init_dir : m_init_dirs)
           {
             if (elts_set.find (init_dir) == elts_set.end ())
               {
@@ -326,7 +327,7 @@ namespace octave
 
     // FIXME: Shouldn't the test for add_hook be outside the for loop?
     //        Why not use const here?  Does add_hook change dir_info_list?
-    for (auto& di : dir_info_list)
+    for (auto& di : m_dir_info_list)
       {
         if (add_hook)
           add_hook (di.dir_name);
@@ -372,7 +373,7 @@ namespace octave
 
             auto i = find_dir_info (dir);
 
-            if (i != dir_info_list.end ())
+            if (i != m_dir_info_list.end ())
               {
                 retval = true;
 
@@ -383,7 +384,7 @@ namespace octave
 
                 remove (di);
 
-                dir_info_list.erase (i);
+                m_dir_info_list.erase (i);
               }
           }
       }
@@ -398,17 +399,19 @@ namespace octave
     // preserve the correct directory ordering for new files that
     // have appeared.
 
-    top_level_package.clear ();
+    m_top_level_package.clear ();
 
-    package_map.clear ();
+    m_package_map.clear ();
 
-    for (auto& di : dir_info_list)
+    for (auto& di : m_dir_info_list)
       {
         bool ok = di.update ();
 
         if (! ok)
-          warning ("load-path: update failed for '%s', removing from path",
-                   di.dir_name.c_str ());
+          warning_with_id
+            ("Octave:load-path:update-failed",
+             "load-path: update failed for '%s', removing from path",
+             di.dir_name.c_str ());
         else
           add (di, true, "", true);
       }
@@ -419,7 +422,7 @@ namespace octave
   {
     bool retval = false;
 
-    for (const auto& d : dir_info_list)
+    for (const auto& d : m_dir_info_list)
       {
         if (same_file (dir, d.dir_name))
           {
@@ -512,9 +515,9 @@ namespace octave
 
     //  update ();
 
-    top_level_package.overloads (meth, retval);
+    m_top_level_package.overloads (meth, retval);
 
-    for (const auto& nm_ldr : package_map)
+    for (const auto& nm_ldr : m_package_map)
       nm_ldr.second.overloads (meth, retval);
 
     return retval;
@@ -525,7 +528,7 @@ namespace octave
   {
     std::list<std::string> retval;
 
-    for (const auto& dir_ldr : package_map)
+    for (const auto& dir_ldr : m_package_map)
       {
         if (! only_top_level || dir_ldr.first.find ('.') == std::string::npos)
           retval.push_back (dir_ldr.first);
@@ -559,7 +562,7 @@ namespace octave
       {
         // Given name has a directory separator, so append it to each
         // element of the load path in turn.
-        for (const auto& di : dir_info_list)
+        for (const auto& di : m_dir_info_list)
           {
             std::string tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
@@ -572,7 +575,7 @@ namespace octave
     else
       {
         // Look in cache.
-        for (const auto & di : dir_info_list)
+        for (const auto & di : m_dir_info_list)
           {
             string_vector all_files = di.all_files;
 
@@ -606,7 +609,7 @@ namespace octave
     else
       {
         std::string canon_dir = maybe_canonicalize (dir);
-        for (const auto& di : dir_info_list)
+        for (const auto& di : m_dir_info_list)
           {
             std::string dname = di.abs_dir_name;
 
@@ -653,7 +656,7 @@ namespace octave
     else
       {
         std::string canon_dir = maybe_canonicalize (dir);
-        for (const auto& di : dir_info_list)
+        for (const auto& di : m_dir_info_list)
           {
             std::string dname = di.abs_dir_name;
 
@@ -713,7 +716,7 @@ namespace octave
               }
             else
               {
-                for (const auto& di : dir_info_list)
+                for (const auto& di : m_dir_info_list)
                   {
                     std::string tfile;
                     tfile = sys::file_ops::concat (di.abs_dir_name, file);
@@ -731,7 +734,7 @@ namespace octave
 
     rel_flist.resize (rel_flen);
 
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       {
         string_vector all_files = di.all_files;
 
@@ -790,7 +793,7 @@ namespace octave
               }
             else
               {
-                for (const auto& di : dir_info_list)
+                for (const auto& di : m_dir_info_list)
                   {
                     std::string tfile;
                     tfile = sys::file_ops::concat (di.abs_dir_name, file);
@@ -808,7 +811,7 @@ namespace octave
 
     rel_flist.resize (rel_flen);
 
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       {
         string_vector all_files = di.all_files;
 
@@ -831,13 +834,13 @@ namespace octave
   string_vector
   load_path::dirs (void) const
   {
-    std::size_t len = dir_info_list.size ();
+    std::size_t len = m_dir_info_list.size ();
 
     string_vector retval (len);
 
     octave_idx_type k = 0;
 
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       retval[k++] = di.dir_name;
 
     return retval;
@@ -848,7 +851,7 @@ namespace octave
   {
     std::list<std::string> retval;
 
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       retval.push_back (di.dir_name);
 
     return retval;
@@ -861,7 +864,7 @@ namespace octave
 
     const_dir_info_list_iterator p = find_dir_info (dir);
 
-    if (p != dir_info_list.end ())
+    if (p != m_dir_info_list.end ())
       retval = p->fcn_files;
 
     if (omit_exts)
@@ -885,7 +888,7 @@ namespace octave
   string_vector
   load_path::fcn_names (void) const
   {
-    return top_level_package.fcn_names ();
+    return m_top_level_package.fcn_names ();
   }
 
   std::string
@@ -909,7 +912,7 @@ namespace octave
   void
   load_path::display (std::ostream& os) const
   {
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       {
         string_vector fcn_files = di.fcn_files;
 
@@ -939,9 +942,9 @@ namespace octave
           }
       }
 
-    top_level_package.display (os);
+    m_top_level_package.display (os);
 
-    for (const auto& nm_ldr : package_map)
+    for (const auto& nm_ldr : m_package_map)
       nm_ldr.second.display (os);
   }
 
@@ -963,8 +966,6 @@ namespace octave
     if (! octave_interpreter_ready)
       return;
 
-    unwind_protect frame;
-
     std::string file = sys::file_ops::concat (dir, script_file);
 
     sys::file_stat fs (file);
@@ -982,9 +983,9 @@ namespace octave
 
     dir = maybe_canonicalize (dir);
 
-    auto retval = dir_info_list.cbegin ();
+    auto retval = m_dir_info_list.cbegin ();
 
-    while (retval != dir_info_list.cend ())
+    while (retval != m_dir_info_list.cend ())
       {
         if (retval->dir_name == dir)
           break;
@@ -1002,9 +1003,9 @@ namespace octave
 
     dir = maybe_canonicalize (dir);
 
-    auto retval = dir_info_list.begin ();
+    auto retval = m_dir_info_list.begin ();
 
-    while (retval != dir_info_list.end ())
+    while (retval != m_dir_info_list.end ())
       {
         if (retval->dir_name == dir)
           break;
@@ -1018,22 +1019,22 @@ namespace octave
   bool
   load_path::contains (const std::string& dir) const
   {
-    return find_dir_info (dir) != dir_info_list.end ();
+    return find_dir_info (dir) != m_dir_info_list.end ();
   }
 
   void
   load_path::move (dir_info_list_iterator i, bool at_end)
   {
-    if (dir_info_list.size () > 1)
+    if (m_dir_info_list.size () > 1)
       {
         dir_info di = *i;
 
-        dir_info_list.erase (i);
+        m_dir_info_list.erase (i);
 
         if (at_end)
-          dir_info_list.push_back (di);
+          m_dir_info_list.push_back (di);
         else
-          dir_info_list.push_front (di);
+          m_dir_info_list.push_front (di);
 
         move (di, at_end);
       }
@@ -1076,7 +1077,7 @@ namespace octave
 
     auto i = find_dir_info (dir);
 
-    if (i != dir_info_list.end ())
+    if (i != m_dir_info_list.end ())
       move (i, at_end);
     else
       {
@@ -1086,12 +1087,14 @@ namespace octave
           {
             if (fs.is_dir ())
               {
+                read_dir_config (dir);
+
                 dir_info di (dir);
 
                 if (at_end)
-                  dir_info_list.push_back (di);
+                  m_dir_info_list.push_back (di);
                 else
-                  dir_info_list.push_front (di);
+                  m_dir_info_list.push_front (di);
 
                 add (di, at_end);
 
@@ -1112,7 +1115,7 @@ namespace octave
 
     i = find_dir_info (".");
 
-    if (i != dir_info_list.end ())
+    if (i != m_dir_info_list.end ())
       move (i, false);
   }
 
@@ -1136,10 +1139,82 @@ namespace octave
       }
   }
 
+  void
+  load_path::read_dir_config (const std::string& dir) const
+  {
+    // read file with directory configuration
+    std::string conf_file = dir + sys::file_ops::dir_sep_str ()
+                            + ".oct-config";
+
+    FILE* cfile = sys::fopen (conf_file, "rb");
+
+    if (! cfile)
+      {
+        // reset directory encoding
+        input_system& input_sys
+          = __get_input_system__ ("load_path::read_dir_config");
+
+        std::string enc_val = "delete";
+        input_sys.set_dir_encoding (dir, enc_val);
+        return;
+      }
+
+    unwind_action close_file ([cfile] (void) { fclose (cfile); });
+
+    // find line with character encoding and read it
+    bool eof = false;
+    const std::string enc_prop = "encoding";
+    while (! eof)
+      {
+        std::string conf_str = fgets (cfile, eof);
+
+        // delete any preceeding whitespace
+        auto it = std::find_if_not (conf_str.begin (), conf_str.end (),
+                                    [] (unsigned char c)
+                                    { return std::isblank (c); });
+        conf_str.erase (conf_str.begin (), it);
+
+        // match identifier
+        if (conf_str.compare (0, enc_prop.size (), enc_prop) == 0)
+          {
+            // skip delimiter characters
+            std::size_t pos = conf_str.find_first_not_of (" \t=:",
+                                                     enc_prop.size ());
+            if (pos == std::string::npos)
+              continue;
+
+            std::string enc_val = conf_str.substr (pos);
+
+            // take alphanumeric and '-' characters
+            it = std::find_if_not (enc_val.begin (), enc_val.end (),
+                                   [] (unsigned char c)
+                                   { return std::isalnum (c) || c == '-'; });
+            enc_val.erase(it, enc_val.end ());
+
+            if (enc_val.empty ())
+              continue;
+
+            // set encoding for this directory in input system
+            input_system& input_sys
+              = __get_input_system__ ("load_path::read_dir_config");
+            input_sys.set_dir_encoding (dir, enc_val);
+            return;
+          }
+      }
+
+    // reset directory encoding
+    input_system& input_sys
+      = __get_input_system__ ("load_path::read_dir_config");
+
+    std::string enc_val = "delete";
+    input_sys.set_dir_encoding (dir, enc_val);
+
+  }
+
   bool
   load_path::is_package (const std::string& name) const
   {
-    for (const auto& di : dir_info_list)
+    for (const auto& di : m_dir_info_list)
       {
         if (di.is_package (name))
           return true;
@@ -1259,7 +1334,9 @@ namespace octave
     if (! fs)
       {
         std::string msg = fs.error ();
-        warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
+        warning_with_id ("Octave:load-path:dir-info:update-failed",
+                         "load_path: %s: %s", dir_name.c_str (), msg.c_str ());
+
         return false;
       }
 
@@ -1272,9 +1349,9 @@ namespace octave
           {
             std::string abs_name = sys::canonicalize_file_name (dir_name);
 
-            const_abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
+            const_abs_dir_cache_iterator p = s_abs_dir_cache.find (abs_name);
 
-            if (p != abs_dir_cache.end ())
+            if (p != s_abs_dir_cache.end ())
               {
                 // The directory is in the cache of all directories we have
                 // visited (indexed by absolute name).  If it is out of date,
@@ -1378,7 +1455,7 @@ namespace octave
             // directory information, so there could be some resource
             // problems.  Perhaps it should be pruned from time to time.
 
-            abs_dir_cache[abs_dir_name] = *this;
+            s_abs_dir_cache[abs_dir_name] = *this;
           }
         catch (const execution_exception&)
           {
@@ -1495,16 +1572,16 @@ namespace octave
   {
     std::string dir_name = di.abs_dir_name;
 
-    auto s = std::find (dir_list.begin (), dir_list.end (), dir_name);
+    auto s = std::find (m_dir_list.begin (), m_dir_list.end (), dir_name);
 
-    if (s != dir_list.end ())
+    if (s != m_dir_list.end ())
       {
-        dir_list.erase (s);
+        m_dir_list.erase (s);
 
         if (at_end)
-          dir_list.push_back (dir_name);
+          m_dir_list.push_back (dir_name);
         else
-          dir_list.push_front (dir_name);
+          m_dir_list.push_front (dir_name);
       }
 
     move_fcn_map (dir_name, di.fcn_files, at_end);
@@ -1521,7 +1598,7 @@ namespace octave
 
     string_vector fcn_files = di.fcn_files;
 
-    dir_list.remove (dir);
+    m_dir_list.remove (dir);
 
     remove_fcn_map (dir, fcn_files);
 
@@ -1537,11 +1614,11 @@ namespace octave
        << (m_package_name.empty () ? "<top-level>" : m_package_name)
        << "\n\n";
 
-    for (const auto& dir : dir_list)
+    for (const auto& dir : m_dir_list)
       os << dir << "\n";
     os << "\n";
 
-    for (const auto& dir_fnlst : private_fcn_map)
+    for (const auto& dir_fnlst : m_private_fcn_map)
       {
         os << "\n*** private functions in "
            << sys::file_ops::concat (dir_fnlst.first, "private")
@@ -1552,7 +1629,7 @@ namespace octave
 
 #if defined (DEBUG_LOAD_PATH)
 
-    for (const auto& nm_filst : fcn_map)
+    for (const auto& nm_filst : m_fcn_map)
       {
         os << nm_filst.first << ":\n";
 
@@ -1568,13 +1645,13 @@ namespace octave
           }
       }
 
-    for (const auto& cls_fnmap : method_map)
+    for (const auto& cls_fnmap : m_method_map)
       {
         os << "CLASS " << cls_fnmap.first << ":\n";
 
         const fcn_map_type& fm = cls_fnmap.second;
 
-        for (const auto& nm_fnlst : fcn_map)
+        for (const auto& nm_fnlst : m_fcn_map)
           {
             os << "  " << nm_fnlst.first << ":\n";
 
@@ -1623,9 +1700,9 @@ namespace octave
       {
         dir_name = "";
 
-        const_fcn_map_iterator p = fcn_map.find (fcn);
+        const_fcn_map_iterator p = m_fcn_map.find (fcn);
 
-        if (p != fcn_map.end ())
+        if (p != m_fcn_map.end ())
           {
             const file_info_list_type& file_info_list = p->second;
 
@@ -1657,9 +1734,9 @@ namespace octave
 
     //  update ();
 
-    const_private_fcn_map_iterator q = private_fcn_map.find (dir);
+    const_private_fcn_map_iterator q = m_private_fcn_map.find (dir);
 
-    if (q != private_fcn_map.end ())
+    if (q != m_private_fcn_map.end ())
       {
         const dir_info::fcn_file_map_type& fcn_file_map = q->second;
 
@@ -1691,9 +1768,9 @@ namespace octave
 
     dir_name = "";
 
-    const_method_map_iterator q = method_map.find (class_name);
+    const_method_map_iterator q = m_method_map.find (class_name);
 
-    if (q != method_map.end ())
+    if (q != m_method_map.end ())
       {
         const fcn_map_type& m = q->second;
 
@@ -1731,9 +1808,9 @@ namespace octave
 
     //  update ();
 
-    const_method_map_iterator mtd_map_it = method_map.find (class_name);
+    const_method_map_iterator mtd_map_it = m_method_map.find (class_name);
 
-    if (mtd_map_it != method_map.end ())
+    if (mtd_map_it != m_method_map.end ())
       {
         for (const auto& nm_filst : mtd_map_it->second)
           retval.push_back (nm_filst.first);
@@ -1749,7 +1826,7 @@ namespace octave
   load_path::package_info::overloads (const std::string& meth,
                                       std::list<std::string>& l) const
   {
-    for (const auto& cls_fnmap : method_map)
+    for (const auto& cls_fnmap : m_method_map)
       {
         const fcn_map_type& m = cls_fnmap.second;
 
@@ -1768,13 +1845,13 @@ namespace octave
   string_vector
   load_path::package_info::fcn_names (void) const
   {
-    std::size_t len = fcn_map.size ();
+    std::size_t len = m_fcn_map.size ();
 
     string_vector retval (len);
 
     octave_idx_type count = 0;
 
-    for (const auto& nm_filst : fcn_map)
+    for (const auto& nm_filst : m_fcn_map)
       retval[count++] = nm_filst.first;
 
     return retval;
@@ -1805,7 +1882,7 @@ namespace octave
             ext = fname.substr (pos);
           }
 
-        file_info_list_type& file_info_list = fcn_map[base];
+        file_info_list_type& file_info_list = m_fcn_map[base];
 
         auto p = file_info_list.begin ();
 
@@ -1858,8 +1935,8 @@ namespace octave
                     // more than one to exist in the load path.
 
                     if (fname != "Contents.m"
-                        && sys_path.find (old.dir_name) != std::string::npos
-                        && in_path_list (sys_path, old.dir_name))
+                        && s_sys_path.find (old.dir_name) != std::string::npos
+                        && in_path_list (s_sys_path, old.dir_name))
                       {
                         std::string fcn_path = sys::file_ops::concat (dir_name, fname);
 
@@ -1892,7 +1969,7 @@ namespace octave
     dir_info::fcn_file_map_type private_file_map = di.private_file_map;
 
     if (! private_file_map.empty ())
-      private_fcn_map[di.abs_dir_name] = private_file_map;
+      m_private_fcn_map[di.abs_dir_name] = private_file_map;
   }
 
   void
@@ -1907,7 +1984,7 @@ namespace octave
       {
         std::string class_name = cls_ci.first;
 
-        fcn_map_type& fm = method_map[class_name];
+        fcn_map_type& fm = m_method_map[class_name];
 
         std::string full_dir_name
           = sys::file_ops::concat (dir_name, '@' + class_name);
@@ -1955,7 +2032,7 @@ namespace octave
         dir_info::fcn_file_map_type private_file_map = ci.private_file_map;
 
         if (! private_file_map.empty ())
-          private_fcn_map[full_dir_name] = private_file_map;
+          m_private_fcn_map[full_dir_name] = private_file_map;
       }
   }
 
@@ -1980,7 +2057,7 @@ namespace octave
             ext = fname.substr (pos);
           }
 
-        file_info_list_type& file_info_list = fcn_map[base];
+        file_info_list_type& file_info_list = m_fcn_map[base];
 
         if (file_info_list.size () == 1)
           continue;
@@ -2012,7 +2089,7 @@ namespace octave
   load_path::package_info::move_method_map (const std::string& dir_name,
                                             bool at_end)
   {
-    for (auto& cls_fnmap : method_map)
+    for (auto& cls_fnmap : m_method_map)
       {
         std::string class_name = cls_fnmap.first;
 
@@ -2072,7 +2149,7 @@ namespace octave
             ext = fname.substr (pos);
           }
 
-        file_info_list_type& file_info_list = fcn_map[base];
+        file_info_list_type& file_info_list = m_fcn_map[base];
 
         for (auto fi_it = file_info_list.begin ();
              fi_it != file_info_list.end ();
@@ -2083,7 +2160,7 @@ namespace octave
                 file_info_list.erase (fi_it);
 
                 if (file_info_list.empty ())
-                  fcn_map.erase (fname);
+                  m_fcn_map.erase (fname);
 
                 break;
               }
@@ -2094,16 +2171,16 @@ namespace octave
   void
   load_path::package_info::remove_private_fcn_map (const std::string& dir)
   {
-    auto p = private_fcn_map.find (dir);
+    auto p = m_private_fcn_map.find (dir);
 
-    if (p != private_fcn_map.end ())
-      private_fcn_map.erase (p);
+    if (p != m_private_fcn_map.end ())
+      m_private_fcn_map.erase (p);
   }
 
   void
   load_path::package_info::remove_method_map (const std::string& dir)
   {
-    for (auto& cls_fnmap : method_map)
+    for (auto& cls_fnmap : m_method_map)
       {
         std::string class_name = cls_fnmap.first;
 
@@ -2322,7 +2399,6 @@ namespace octave
 
     return retval;
   }
-}
 
 DEFUN (genpath, args, ,
        doc: /* -*- texinfo -*-
@@ -2350,7 +2426,7 @@ directories with those names.
     {
       std::string dirname = args(0).xstring_value ("genpath: DIR must be a string");
 
-      retval = octave::genpath (dirname);
+      retval = genpath (dirname);
     }
   else
     {
@@ -2361,7 +2437,7 @@ directories with those names.
       for (octave_idx_type i = 1; i < nargin; i++)
         skip[i-1] = args(i).xstring_value ("genpath: all arguments must be strings");
 
-      retval = octave::genpath (dirname, skip);
+      retval = genpath (dirname, skip);
     }
 
   return retval;
@@ -2373,7 +2449,7 @@ DEFUN (rehash, , ,
 Reinitialize Octave's load path directory cache.
 @end deftypefn */)
 {
-  octave::rehash_internal ();
+  rehash_internal ();
 
   return ovl ();
 }
@@ -2389,7 +2465,7 @@ Return the command line path variable.
   if (! args.empty ())
     print_usage ();
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   return ovl (lp.get_command_line_path ());
 }
@@ -2405,7 +2481,7 @@ Restore Octave's path to its initial state at startup.
   if (! args.empty ())
     print_usage ();
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   lp.initialize (true);
 
@@ -2423,7 +2499,7 @@ DEFMETHOD (__pathorig__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   return ovl (lp.system_path ());
 }
@@ -2453,18 +2529,18 @@ No checks are made for duplicate elements.
 
   string_vector argv = args.make_argv ("path");
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   if (nargin > 0)
     {
       std::string path = argv[1];
 
       for (int i = 2; i <= nargin; i++)
-        path += octave::directory_path::path_sep_str () + argv[i];
+        path += directory_path::path_sep_str () + argv[i];
 
       lp.set (path, true);
 
-      octave::rehash_internal ();
+      rehash_internal ();
     }
 
   if (nargout > 0)
@@ -2523,7 +2599,7 @@ For each directory that is added, and that was not already in the path,
   if (nargin == 0)
     print_usage ();
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   octave_value retval;
 
@@ -2571,7 +2647,7 @@ For each directory that is added, and that was not already in the path,
     {
       std::string arg = arglist(i).xstring_value ("addpath: all arguments must be strings");
 
-      std::list<std::string> dir_elts = octave::split_path (arg);
+      std::list<std::string> dir_elts = split_path (arg);
 
       if (! append)
         std::reverse (dir_elts.begin (), dir_elts.end ());
@@ -2588,11 +2664,11 @@ For each directory that is added, and that was not already in the path,
                      (it_start, dir.end (),
                       [] (char l, char r)
                       {
-                        return l == r && octave::sys::file_ops::is_dir_sep (l);
+                        return l == r && sys::file_ops::is_dir_sep (l);
                       }),
                      dir.end ());
 
-          auto pos = dir.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+          auto pos = dir.find_last_of (sys::file_ops::dir_sep_chars ());
           if (pos == std::string::npos)
             {
               if (! dir.empty () && dir[0] == '+')
@@ -2618,7 +2694,7 @@ For each directory that is added, and that was not already in the path,
     }
 
   if (need_to_update)
-    octave::rehash_internal ();
+    rehash_internal ();
 
   return retval;
 }
@@ -2652,7 +2728,7 @@ and runs it if it exists.
 
   octave_value retval;
 
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   if (nargout > 0)
     retval = lp.path ();
@@ -2662,7 +2738,7 @@ and runs it if it exists.
   for (int i = 0; i < nargin; i++)
     {
       std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
-      std::list<std::string> dir_elts = octave::split_path (arg);
+      std::list<std::string> dir_elts = split_path (arg);
 
       for (const auto& dir : dir_elts)
         {
@@ -2677,7 +2753,7 @@ and runs it if it exists.
     }
 
   if (need_to_update)
-    octave::rehash_internal ();
+    rehash_internal ();
 
   return retval;
 }
@@ -2688,9 +2764,11 @@ DEFMETHOD (__dump_load_path__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::load_path& lp = interp.get_load_path ();
+  load_path& lp = interp.get_load_path ();
 
   lp.display (octave_stdout);
 
   return ovl ();
 }
+
+OCTAVE_NAMESPACE_END

@@ -42,10 +42,6 @@
 
 function hdata = guihandles (h)
 
-  if (nargin > 2)
-    print_usage ();
-  endif
-
   if (nargin == 1)
     if (! ishghandle (h))
       error ("guidata: H must be a valid object handle");

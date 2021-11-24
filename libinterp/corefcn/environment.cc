@@ -41,8 +41,8 @@
 #include "interpreter.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   static void append_to_shell_path (const std::string& exec_path)
   {
     // FIXME: should there be a way to remove a previous setting from
@@ -152,7 +152,6 @@ namespace octave
 
     return image_path;
   }
-}
 
 DEFMETHOD (EDITOR, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -172,7 +171,7 @@ The original variable value is restored when exiting the function.
 @seealso{edit, edit_history}
 @end deftypefn */)
 {
-  octave::environment& env = interp.get_environment ();
+  environment& env = interp.get_environment ();
 
   return env.editor (args, nargout);
 }
@@ -186,7 +185,7 @@ The original variable value is restored when exiting the function.
 %! EDITOR (orig_val);
 %! assert (EDITOR (), orig_val);
 
-%!error (EDITOR (1, 2))
+%!error EDITOR (1, 2)
 */
 
 DEFMETHOD (EXEC_PATH, interp, args, nargout,
@@ -209,7 +208,7 @@ The original variable value is restored when exiting the function.
 @seealso{IMAGE_PATH, OCTAVE_HOME, OCTAVE_EXEC_HOME}
 @end deftypefn */)
 {
-  octave::environment& env = interp.get_environment ();
+  environment& env = interp.get_environment ();
 
   return env.exec_path (args, nargout);
 }
@@ -223,7 +222,7 @@ The original variable value is restored when exiting the function.
 %! EXEC_PATH (orig_val);
 %! assert (EXEC_PATH (), orig_val);
 
-%!error (EXEC_PATH (1, 2))
+%!error EXEC_PATH (1, 2)
 */
 
 DEFMETHOD (IMAGE_PATH, interp, args, nargout,
@@ -241,7 +240,7 @@ The original variable value is restored when exiting the function.
 @seealso{EXEC_PATH, OCTAVE_HOME, OCTAVE_EXEC_HOME}
 @end deftypefn */)
 {
-  octave::environment& env = interp.get_environment ();
+  environment& env = interp.get_environment ();
 
   return env.image_path (args, nargout);
 }
@@ -255,5 +254,7 @@ The original variable value is restored when exiting the function.
 %! IMAGE_PATH (orig_val);
 %! assert (IMAGE_PATH (), orig_val);
 
-%!error (IMAGE_PATH (1, 2))
+%!error IMAGE_PATH (1, 2)
 */
+
+OCTAVE_NAMESPACE_END

@@ -36,8 +36,8 @@
 
 class octave_value;
 
-namespace octave
-{
+OCTAVE_NAMESPACE_BEGIN
+
   class
   OCTINTERP_API
   profiler
@@ -114,19 +114,23 @@ namespace octave
     // hierarchical call tree.
     struct stats
     {
+    public:
       stats (void);
+
+      typedef std::set<octave_idx_type> function_set;
+
+      // Convert a function_set list to an Octave array of indices.
+      static octave_value function_set_value (const function_set&);
+
+      //--------
 
       double m_time;
       std::size_t m_calls;
 
       bool m_recursive;
 
-      typedef std::set<octave_idx_type> function_set;
       function_set m_parents;
       function_set m_children;
-
-      // Convert a function_set list to an Octave array of indices.
-      static octave_value function_set_value (const function_set&);
     };
 
     typedef std::vector<stats> flat_profile;
@@ -213,6 +217,7 @@ namespace octave
     // it as a separate function.
     void add_current_time (void);
   };
-}
+
+OCTAVE_NAMESPACE_END
 
 #endif

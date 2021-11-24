@@ -31,6 +31,12 @@
 #include <cstdio>
 #include <istream>
 
+#if defined (HAVE_ZLIB_H)
+#  include <zlib.h>
+#endif
+
+OCTAVE_NAMESPACE_BEGIN
+
 class
 c_file_ptr_buf : public std::streambuf
 {
@@ -40,10 +46,10 @@ public:
 
   typedef int (*close_fcn) (FILE *);
 
-  FILE *stdiofile (void) { return f; }
+  FILE *stdiofile (void) { return m_f; }
 
-  c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = file_close)
-    : std::streambuf (), f (f_arg), cf (cf_arg)
+  c_file_ptr_buf (FILE *f, close_fcn cf = file_close)
+    : std::streambuf (), m_f (f), m_cf (cf)
   { }
 
   // No copying!
@@ -78,21 +84,21 @@ public:
 
   int buf_close (void);
 
-  int file_number () const { return f ? fileno (f) : -1; }
+  int file_number () const { return m_f ? fileno (m_f) : -1; }
 
   int seek (off_t offset, int origin);
 
   off_t tell (void);
 
-  void clear (void) { if (f) clearerr (f); }
+  void clear (void) { if (m_f) clearerr (m_f); }
 
-  static int file_close (FILE *f);
+  static int file_close (FILE *m_f);
 
 protected:
 
-  FILE *f;
+  FILE *m_f;
 
-  close_fcn cf;
+  close_fcn m_cf;
 
 private:
 
@@ -107,8 +113,10 @@ c_file_ptr_stream : public STREAM_T
 {
 public:
 
-  c_file_ptr_stream (FILE_T f, typename BUF_T::close_fcn cf = BUF_T::file_close)
-    : STREAM_T (nullptr), buf (new BUF_T (f, cf)) { STREAM_T::init (buf); }
+  c_file_ptr_stream (FILE_T m_f,
+                     typename BUF_T::close_fcn m_cf = BUF_T::file_close)
+    : STREAM_T (nullptr), m_buf (new BUF_T (m_f, m_cf))
+  { STREAM_T::init (m_buf); }
 
   // No copying!
 
@@ -116,22 +124,22 @@ public:
 
   c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
 
-  ~c_file_ptr_stream (void) { delete buf; buf = nullptr; }
+  ~c_file_ptr_stream (void) { delete m_buf; m_buf = nullptr; }
 
-  BUF_T * rdbuf (void) { return buf; }
+  BUF_T * rdbuf (void) { return m_buf; }
 
-  void stream_close (void) { if (buf) buf->buf_close (); }
+  void stream_close (void) { if (m_buf) m_buf->buf_close (); }
 
   int seek (off_t offset, int origin)
-  { return buf ? buf->seek (offset, origin) : -1; }
+  { return m_buf ? m_buf->seek (offset, origin) : -1; }
 
-  off_t tell (void) { return buf ? buf->tell () : -1; }
+  off_t tell (void) { return m_buf ? m_buf->tell () : -1; }
 
-  void clear (void) { if (buf) buf->clear (); STREAM_T::clear (); }
+  void clear (void) { if (m_buf) m_buf->clear (); STREAM_T::clear (); }
 
 private:
 
-  BUF_T *buf;
+  BUF_T *m_buf;
 };
 
 typedef c_file_ptr_stream<std::istream, FILE *, c_file_ptr_buf>
@@ -141,11 +149,8 @@ typedef c_file_ptr_stream<std::ostream, FILE *, c_file_ptr_buf>
 typedef c_file_ptr_stream<std::iostream, FILE *, c_file_ptr_buf>
   io_c_file_ptr_stream;
 
-#if defined (HAVE_ZLIB)
 
-#if defined (HAVE_ZLIB_H)
-#  include <zlib.h>
-#endif
+#if defined (HAVE_ZLIB)
 
 class
 c_zfile_ptr_buf : public std::streambuf
@@ -156,10 +161,10 @@ public:
 
   typedef int (*close_fcn) (gzFile);
 
-  gzFile stdiofile (void) { return f; }
+  gzFile stdiofile (void) { return m_f; }
 
-  c_zfile_ptr_buf (gzFile f_arg, close_fcn cf_arg = file_close)
-    : std::streambuf (), f (f_arg), cf (cf_arg)
+  c_zfile_ptr_buf (gzFile f, close_fcn cf = file_close)
+    : std::streambuf (), m_f (f), m_cf (cf)
   { }
 
   // No copying!
@@ -197,19 +202,19 @@ public:
   int file_number () const { return -1; }
 
   int seek (off_t offset, int origin)
-  { return f ? gzseek (f, offset, origin) >= 0 : -1; }
+  { return m_f ? gzseek (m_f, offset, origin) >= 0 : -1; }
 
-  off_t tell (void) { return f ? gztell (f) : -1; }
+  off_t tell (void) { return m_f ? gztell (m_f) : -1; }
 
-  void clear (void) { if (f) gzclearerr (f); }
+  void clear (void) { if (m_f) gzclearerr (m_f); }
 
-  static int file_close (gzFile f) { return ::gzclose (f); }
+  static int file_close (gzFile m_f) { return ::gzclose (m_f); }
 
 protected:
 
-  gzFile f;
+  gzFile m_f;
 
-  close_fcn cf;
+  close_fcn m_cf;
 
 private:
 
@@ -222,6 +227,43 @@ typedef c_file_ptr_stream<std::ostream, gzFile, c_zfile_ptr_buf>
   o_c_zfile_ptr_stream;
 typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf>
   io_c_zfile_ptr_stream;
+
+#endif
+
+OCTAVE_NAMESPACE_END
+
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
+
+OCTAVE_DEPRECATED (7, "use 'octave::i_c_file_ptr_stream' instead")
+typedef octave::i_c_file_ptr_stream i_c_file_ptr_stream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::o_c_file_ptr_stream' instead")
+typedef octave::o_c_file_ptr_stream o_c_file_ptr_stream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::io_c_file_ptr_stream' instead")
+typedef octave::io_c_file_ptr_stream io_c_file_ptr_stream;
+
+// FIXME: HAVE_ZLIB is not defined here because we do not (and should
+// not) include config.h in this header file.  We need to find a way to
+// define this interface without exposing gzFile.  Should this be a
+// private header that can only be used if included after config.h in an
+// Octave source file and not inside another header file?
+
+#  if defined (HAVE_ZLIB)
+
+OCTAVE_DEPRECATED (7, "use 'octave::i_c_zfile_ptr_stream' instead")
+typedef octave::c_file_ptr_stream<std::istream, gzFile, octave::c_zfile_ptr_buf>
+  i_c_zfile_ptr_stream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::o_c_zfile_ptr_stream' instead")
+typedef octave::c_file_ptr_stream<std::ostream, gzFile, octave::c_zfile_ptr_buf>
+  o_c_zfile_ptr_stream;
+
+OCTAVE_DEPRECATED (7, "use 'octave::io_c_zfile_ptr_stream' instead")
+typedef octave::c_file_ptr_stream<std::iostream, gzFile, octave::c_zfile_ptr_buf>
+  io_c_zfile_ptr_stream;
+
+#  endif
 
 #endif
 

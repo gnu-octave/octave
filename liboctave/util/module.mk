@@ -36,7 +36,6 @@ UTIL_INC = \
   %reldir%/oct-string.h \
   %reldir%/pathsearch.h \
   %reldir%/singleton-cleanup.h \
-  %reldir%/sparse-sort.h \
   %reldir%/sparse-util.h \
   %reldir%/str-vec.h \
   %reldir%/unwind-prot.h \
@@ -84,7 +83,6 @@ UTIL_SRC = \
   %reldir%/oct-string.cc \
   %reldir%/pathsearch.cc \
   %reldir%/singleton-cleanup.cc \
-  %reldir%/sparse-sort.cc \
   %reldir%/sparse-util.cc \
   %reldir%/str-vec.cc \
   %reldir%/unwind-prot.cc \

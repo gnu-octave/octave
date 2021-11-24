@@ -29,192 +29,177 @@
 
 #include <ostream>
 
-#include "dNDArray.h"
+#include "Array.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "oct-spparms.h"
 #include "singleton-cleanup.h"
 
-octave_sparse_params *octave_sparse_params::instance = nullptr;
-
-bool
-octave_sparse_params::instance_ok (void)
+namespace octave
 {
-  bool retval = true;
+  sparse_params *sparse_params::s_instance = nullptr;
 
-  if (! instance)
-    {
-      instance = new octave_sparse_params ();
-      singleton_cleanup_list::add (cleanup_instance);
-    }
+  bool sparse_params::instance_ok (void)
+  {
+    bool retval = true;
 
-  return retval;
-}
+    if (! s_instance)
+      {
+        s_instance = new sparse_params ();
+        singleton_cleanup_list::add (cleanup_instance);
+      }
 
-void
-octave_sparse_params::defaults (void)
-{
-  if (instance_ok ())
-    instance->do_defaults ();
-}
+    return retval;
+  }
 
-void
-octave_sparse_params::tight (void)
-{
-  if (instance_ok ())
-    instance->do_tight ();
-}
+  void sparse_params::defaults (void)
+  {
+    if (instance_ok ())
+      s_instance->do_defaults ();
+  }
 
-string_vector
-octave_sparse_params::get_keys (void)
-{
-  return instance_ok () ? instance->do_get_keys () : string_vector ();
-}
+  void sparse_params::tight (void)
+  {
+    if (instance_ok ())
+      s_instance->do_tight ();
+  }
 
-ColumnVector
-octave_sparse_params::get_vals (void)
-{
-  return instance_ok () ? instance->do_get_vals () : ColumnVector ();
-}
+  string_vector sparse_params::get_keys (void)
+  {
+    return instance_ok () ? s_instance->do_get_keys () : string_vector ();
+  }
 
-bool
-octave_sparse_params::set_vals (const NDArray& vals)
-{
-  return instance_ok () ? instance->do_set_vals (vals) : false;
-}
+  ColumnVector sparse_params::get_vals (void)
+  {
+    return instance_ok () ? s_instance->do_get_vals () : ColumnVector ();
+  }
 
-bool
-octave_sparse_params::set_key (const std::string& key, const double& val)
-{
-  return instance_ok () ? instance->do_set_key (key, val) : false;
-}
+  bool sparse_params::set_vals (const Array<double>& vals)
+  {
+    return instance_ok () ? s_instance->do_set_vals (vals) : false;
+  }
 
-double
-octave_sparse_params::get_key (const std::string& key)
-{
-  return instance_ok () ? instance->do_get_key (key)
-                        : octave::numeric_limits<double>::NaN ();
-}
+  bool sparse_params::set_key (const std::string& key, const double& val)
+  {
+    return instance_ok () ? s_instance->do_set_key (key, val) : false;
+  }
 
-double
-octave_sparse_params::get_bandden (void)
-{
-  return instance_ok () ? instance->do_get_bandden () : 0.0;
-}
+  double sparse_params::get_key (const std::string& key)
+  {
+    return (instance_ok ()
+            ? s_instance->do_get_key (key) : numeric_limits<double>::NaN ());
+  }
 
-void
-octave_sparse_params::print_info (std::ostream& os, const std::string& prefix)
-{
-  if (instance_ok ())
-    instance->do_print_info (os, prefix);
-}
+  double sparse_params::get_bandden (void)
+  {
+    return instance_ok () ? s_instance->do_get_bandden () : 0.0;
+  }
 
-void
-octave_sparse_params::do_defaults (void)
-{
-  params(0) = 0;      // spumoni
-  params(1) = 1;      // ths_rel
-  params(2) = 1;      // ths_abs
-  params(3) = 0;      // exact_d
-  params(4) = 3;      // supernd
-  params(5) = 3;      // rreduce
-  params(6) = 0.5;    // wh_frac
-  params(7) = 1;      // autommd
-  params(8) = 1;      // autoamd
-  params(9) = 0.1;    // piv_tol
-  params(10) = 0.5;   // bandden
-  params(11) = 1;     // umfpack
-  params(12) = 0.001; // sym_tol
-}
+  void sparse_params::print_info (std::ostream& os, const std::string& prefix)
+  {
+    if (instance_ok ())
+      s_instance->do_print_info (os, prefix);
+  }
 
-void
-octave_sparse_params::do_tight (void)
-{
-  params(0) = 0;      // spumoni
-  params(1) = 1;      // ths_rel
-  params(2) = 0;      // ths_abs
-  params(3) = 1;      // exact_d
-  params(4) = 1;      // supernd
-  params(5) = 1;      // rreduce
-  params(6) = 0.5;    // wh_frac
-  params(7) = 1;      // autommd
-  params(8) = 1;      // autoamd
-  params(9) = 0.1;    // piv_tol
-  params(10) = 0.5;   // bandden
-  params(11) = 1;     // umfpack
-  params(12) = 0.001; // sym_tol
-}
+  void sparse_params::do_defaults (void)
+  {
+    m_params(0) = 0;      // spumoni
+    m_params(1) = 1;      // ths_rel
+    m_params(2) = 1;      // ths_abs
+    m_params(3) = 0;      // exact_d
+    m_params(4) = 3;      // supernd
+    m_params(5) = 3;      // rreduce
+    m_params(6) = 0.5;    // wh_frac
+    m_params(7) = 1;      // autommd
+    m_params(8) = 1;      // autoamd
+    m_params(9) = 0.1;    // piv_tol
+    m_params(10) = 0.5;   // bandden
+    m_params(11) = 1;     // umfpack
+    m_params(12) = 0.001; // sym_tol
+  }
 
-void
-octave_sparse_params::init_keys (void)
-{
-  keys(0) = "spumoni";
-  keys(1) = "ths_rel";
-  keys(2) = "ths_abs";
-  keys(3) = "exact_d";
-  keys(4) = "supernd";
-  keys(5) = "rreduce";
-  keys(6) = "wh_frac";
-  keys(7) = "autommd";
-  keys(8) = "autoamd";
-  keys(9) = "piv_tol";
-  keys(10) = "bandden";
-  keys(11) = "umfpack";
-  keys(12) = "sym_tol";
-}
+  void sparse_params::do_tight (void)
+  {
+    m_params(0) = 0;      // spumoni
+    m_params(1) = 1;      // ths_rel
+    m_params(2) = 0;      // ths_abs
+    m_params(3) = 1;      // exact_d
+    m_params(4) = 1;      // supernd
+    m_params(5) = 1;      // rreduce
+    m_params(6) = 0.5;    // wh_frac
+    m_params(7) = 1;      // autommd
+    m_params(8) = 1;      // autoamd
+    m_params(9) = 0.1;    // piv_tol
+    m_params(10) = 0.5;   // bandden
+    m_params(11) = 1;     // umfpack
+    m_params(12) = 0.001; // sym_tol
+  }
 
-double
-octave_sparse_params::do_get_bandden (void)
-{
-  return params(10);
-}
+  void sparse_params::init_keys (void)
+  {
+    m_keys(0) = "spumoni";
+    m_keys(1) = "ths_rel";
+    m_keys(2) = "ths_abs";
+    m_keys(3) = "exact_d";
+    m_keys(4) = "supernd";
+    m_keys(5) = "rreduce";
+    m_keys(6) = "wh_frac";
+    m_keys(7) = "autommd";
+    m_keys(8) = "autoamd";
+    m_keys(9) = "piv_tol";
+    m_keys(10) = "bandden";
+    m_keys(11) = "umfpack";
+    m_keys(12) = "sym_tol";
+  }
 
-bool
-octave_sparse_params::do_set_vals (const NDArray& vals)
-{
-  octave_idx_type len = vals.numel ();
+  double sparse_params::do_get_bandden (void)
+  {
+    return m_params(10);
+  }
 
-  if (len > OCTAVE_SPARSE_CONTROLS_SIZE)
-    (*current_liboctave_error_handler)
-      ("octave_sparse_params::do_set_vals: too many values");
+  bool sparse_params::do_set_vals (const Array<double>& vals)
+  {
+    octave_idx_type len = vals.numel ();
 
-  for (int i = 0; i < len; i++)
-    params(i) = vals(i);
+    if (len > OCTAVE_SPARSE_CONTROLS_SIZE)
+      (*current_liboctave_error_handler)
+        ("sparse_params::do_set_vals: too many values");
 
-  return true;
-}
+    for (int i = 0; i < len; i++)
+      m_params(i) = vals(i);
 
-bool
-octave_sparse_params::do_set_key (const std::string& key, const double& val)
-{
-  for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
-    {
-      if (keys (i) == key)
-        {
-          params(i) = val;
-          return true;
-        }
-    }
+    return true;
+  }
 
-  return false;
-}
+  bool sparse_params::do_set_key (const std::string& key, const double& val)
+  {
+    for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
+      {
+        if (m_keys (i) == key)
+          {
+            m_params(i) = val;
+            return true;
+          }
+      }
 
-double
-octave_sparse_params::do_get_key (const std::string& key)
-{
-  for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
-    {
-      if (keys (i) == key)
-        return params(i);
-    }
+    return false;
+  }
 
-  return octave::numeric_limits<double>::NaN ();
-}
+  double sparse_params::do_get_key (const std::string& key)
+  {
+    for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
+      {
+        if (m_keys (i) == key)
+          return m_params(i);
+      }
 
-void
-octave_sparse_params::do_print_info (std::ostream& os,
-                                     const std::string& prefix) const
-{
-  for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
-    os << prefix << keys(i) << ": " << params(i) << "\n";
+    return numeric_limits<double>::NaN ();
+  }
+
+  void sparse_params::do_print_info (std::ostream& os,
+                                const std::string& prefix) const
+  {
+    for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
+      os << prefix << m_keys(i) << ": " << m_params(i) << "\n";
+  }
 }

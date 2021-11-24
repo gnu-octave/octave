@@ -48,7 +48,7 @@
 
 function [y, dy] = polyval (p, x, s = [], mu)
 
-  if (nargin < 2 || nargin > 4 || (nargout == 2 && nargin < 3))
+  if (nargin < 2 || (nargout == 2 && nargin < 3))
     print_usage ();
   endif
 
@@ -175,10 +175,9 @@ endfunction
 %!assert (class (polyval ([], single ([]))), "single")
 
 ## Test input validation
-%!error polyval ()
-%!error polyval (1)
-%!error polyval (1,2,3,4,5)
-%!error [y, dy] = polyval (1, 2)
+%!error <Invalid call> polyval ()
+%!error <Invalid call> polyval (1)
+%!error <Invalid call> [y, dy] = polyval (1, 2)
 %!error <P must be a numeric floating point vector> polyval ({1, 0}, 0:10)
 %!error <P must be a numeric floating point vector> polyval (int8 ([1]), 0:10)
 %!error <P must be a numeric floating point vector> polyval ([1,0;0,1], 0:10)

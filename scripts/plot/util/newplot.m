@@ -89,10 +89,6 @@
 
 function hax = newplot (hsave = [])
 
-  if (nargin > 1)
-    print_usage ();
-  endif
-
   cf = [];
   ca = [];
 
@@ -199,7 +195,8 @@ function hax = newplot (hsave = [])
         kids(kids == hkid) = [];
         delete (kids);
       else
-        if (isprop (ca, "__plotyy_axes__"))
+        if (isprop (ca, "__plotyy_axes__") ...
+            && ! any (strcmp({dbstack().name}, "plotyy")))
           ## Hack for bug #44246.  There is no way to reset or remove a
           ## property created with addproperty short of deleting the object.
           delete (ca);

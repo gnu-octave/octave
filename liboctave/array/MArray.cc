@@ -32,28 +32,36 @@
 #include "lo-error.h"
 
 template <typename T>
-struct _idxadds_helper
+class _idxadds_helper
 {
-  T *array;
-  T val;
-  _idxadds_helper (T *a, T v) : array (a), val (v) { }
+public:
+  _idxadds_helper (T *a, T v) : m_array (a), m_val (v) { }
+
   void operator () (octave_idx_type i)
-  { array[i] += val; }
+  { m_array[i] += m_val; }
+
+private:
+  T *m_array;
+  T m_val;
 };
 
 template <typename T>
-struct _idxadda_helper
+class _idxadda_helper
 {
-  T *array;
-  const T *vals;
-  _idxadda_helper (T *a, const T *v) : array (a), vals (v) { }
+public:
+  _idxadda_helper (T *a, const T *v) : m_array (a), m_vals (v) { }
+
   void operator () (octave_idx_type i)
-  { array[i] += *vals++; }
+  { m_array[i] += *m_vals++; }
+
+private:
+  T *m_array;
+  const T *m_vals;
 };
 
 template <typename T>
 void
-MArray<T>::idx_add (const idx_vector& idx, T val)
+MArray<T>::idx_add (const octave::idx_vector& idx, T val)
 {
   octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
@@ -71,7 +79,7 @@ MArray<T>::idx_add (const idx_vector& idx, T val)
 
 template <typename T>
 void
-MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
+MArray<T>::idx_add (const octave::idx_vector& idx, const MArray<T>& vals)
 {
   octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
@@ -91,16 +99,20 @@ template <typename T, T op (typename ref_param<T>::type,
                             typename ref_param<T>::type)>
 struct _idxbinop_helper
 {
-  T *array;
-  const T *vals;
-  _idxbinop_helper (T *a, const T *v) : array (a), vals (v) { }
+public:
+  _idxbinop_helper (T *a, const T *v) : m_array (a), m_vals (v) { }
+
   void operator () (octave_idx_type i)
-  { array[i] = op (array[i], *vals++); }
+  { m_array[i] = op (m_array[i], *m_vals++); }
+
+private:
+  T *m_array;
+  const T *m_vals;
 };
 
 template <typename T>
 void
-MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
+MArray<T>::idx_min (const octave::idx_vector& idx, const MArray<T>& vals)
 {
   octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
@@ -119,7 +131,7 @@ MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
 
 template <typename T>
 void
-MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
+MArray<T>::idx_max (const octave::idx_vector& idx, const MArray<T>& vals)
 {
   octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
@@ -137,8 +149,8 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
 }
 
 template <typename T>
-void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
-                            int dim)
+void MArray<T>::idx_add_nd (const octave::idx_vector& idx,
+                            const MArray<T>& vals, int dim)
 {
   int nd = std::max (this->ndims (), vals.ndims ());
   if (dim < 0)
@@ -359,3 +371,9 @@ operator - (const MArray<T>& a)
 {
   return do_mx_unary_op<T, T> (a, mx_inline_uminus);
 }
+
+#if defined (__clang__)
+#  define INSTANTIATE_MARRAY(T) template class OCTAVE_API MArray<T>
+#else
+#  define INSTANTIATE_MARRAY(T) template class MArray<T>
+#endif

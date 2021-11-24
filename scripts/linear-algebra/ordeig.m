@@ -35,17 +35,17 @@
 ## appearance of the matrix @code{@var{A}-@var{lambda}*@var{B}}.  The pair
 ## @var{A}, @var{B} is usually the result of a QZ decomposition.
 ##
-## @seealso{ordschur, eig, schur, qz}
+## @seealso{ordschur, ordqz, eig, schur, qz}
 ## @end deftypefn
 
 function lambda = ordeig (A, B)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
   if (! isnumeric (A) || ! issquare (A))
-    error ("ordeig: A must be a square matrix")
+    error ("ordeig: A must be a square matrix");
   endif
 
   n = length (A);
@@ -53,7 +53,7 @@ function lambda = ordeig (A, B)
   if (nargin == 1)
     B = eye (n);
     if (isreal (A))
-      if (! isquasitri (A))
+      if (! is_quasitri (A))
         error ("ordeig: A must be quasi-triangular (i.e., upper block triangular with 1x1 or 2x2 blocks on the diagonal)");
       endif
     else
@@ -68,7 +68,7 @@ function lambda = ordeig (A, B)
       error ("ordeig: A and B must be the same size");
     endif
     if (isreal (A) && isreal (B))
-      if (! isquasitri (A) || ! isquasitri (B))
+      if (! is_quasitri (A) || ! is_quasitri (B))
         error ("ordeig: A and B must be quasi-triangular (i.e., upper block triangular with 1x1 or 2x2 blocks on the diagonal)");
       endif
     else
@@ -106,7 +106,7 @@ function lambda = ordeig (A, B)
 endfunction
 
 ## Check whether a matrix is quasi-triangular
-function retval = isquasitri (A)
+function retval = is_quasitri (A)
   if (length (A) <= 2)
     retval = true;
   else
@@ -140,8 +140,7 @@ endfunction
 %! assert (lambda, 3);
 
 ## Test input validation
-%!error ordeig ()
-%!error ordeig (1,2,3)
+%!error <Invalid call> ordeig ()
 %!error <A must be a square matrix> ordeig ('a')
 %!error <A must be a square matrix> ordeig ([1, 2, 3])
 %!error <A must be quasi-triangular> ordeig (magic (3))

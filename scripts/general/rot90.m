@@ -65,7 +65,7 @@
 
 function B = rot90 (A, k = 1)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -140,8 +140,7 @@ endfunction
 %! assert (rot90 (a, 3), rot90 (b, 2));
 
 ## Test input validation
-%!error rot90 ()
-%!error rot90 (1, 2, 3)
+%!error <Invalid call> rot90 ()
 %!error rot90 (1, ones (2))
 %!error rot90 (1, 1.5)
 %!error rot90 (1, 1+i)

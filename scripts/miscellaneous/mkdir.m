@@ -33,10 +33,11 @@
 ## If @var{dirname} is a relative path, and no @var{parent} directory is
 ## specified, then the present working directory is used.
 ##
-## If successful, @var{status} is 1, and @var{msg} and @var{msgid} are empty
-## strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
-## system-dependent error message, and @var{msgid} contains a unique message
-## identifier.
+## If successful, @var{status} is logical 1, and @var{msg}, @var{msgid} are
+## empty character strings ("").  Otherwise, @var{status} is logical 0,
+## @var{msg} contains a system-dependent error message, and @var{msgid}
+## contains a unique message identifier.  Note that the status code is exactly
+## opposite that of the @code{system} command.
 ##
 ## When creating a directory permissions will be set to
 ## @w{@code{0777 - UMASK}}.
@@ -50,30 +51,30 @@
 
 function [status, msg, msgid] = mkdir (parent, dirname)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
+  parent = tilde_expand (parent);
+
   if (nargin == 1)
     dirname = parent;
-
-    if (is_absolute_filename (tilde_expand (dirname)))
-      parent = "";
-    else
-      parent = [pwd(), filesep];
-    endif
   else
-    parent = [parent, filesep];
+    dirname = fullfile (parent, dirname);
   endif
 
+  dirname = make_absolute_filename (dirname);
+
   ## Move leading directory names from dirname to parent
-  [parent, dirname, ext] = fileparts ([parent, dirname]);
+  [parent, dirname, ext] = fileparts (dirname);
 
   [sts, msg, msgid] = mkdir_recur (parent, [dirname, ext]);
 
   if (nargout == 0)
     if (! sts)
       error ("mkdir: operation failed: %s", msg);
+    elseif (strcmp (msg, "directory exists"))
+      warning ("mkdir: directory exists\n");
     endif
   else
     status = sts;
@@ -84,7 +85,7 @@ endfunction
 ## Recursively make directories until parent/dirname can be created.
 function [status, msg, msgid] = mkdir_recur (parent, dirname)
 
-  status = 1;
+  status = true;
 
   if (isempty (parent))
     error ("mkdir: invalid PARENT");
@@ -112,7 +113,7 @@ endfunction
 %!   assert (isfolder (dir));
 %! unwind_protect_cleanup
 %!   confirm_recursive_rmdir (false, "local");
-%!   rmdir (dir1, "s");
+%!   sts = rmdir (dir1, "s");
 %! end_unwind_protect
 
 %!test <*53031>
@@ -125,8 +126,8 @@ endfunction
 %!   assert (status);
 %!   assert (isfolder (fullfile (tmp_dir, "subdir")));
 %! unwind_protect_cleanup
-%!   rmdir (fullfile (tmp_dir, "subdir"));
-%!   rmdir (tmp_dir);
+%!   sts = rmdir (fullfile (tmp_dir, "subdir"));
+%!   sts = rmdir (tmp_dir);
 %!   if (isempty (HOME))
 %!     unsetenv ("HOME");
 %!   else
@@ -134,9 +135,5 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
-%!test <*55540>
-%! fail ('mkdir ("__%hello%__", "world")', "invalid PARENT");
-
 ## Test input validation
-%!error mkdir ()
-%!error mkdir ("a", "b", "c")
+%!error <Invalid call> mkdir ()

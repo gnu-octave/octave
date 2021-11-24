@@ -31,6 +31,7 @@
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ov-complex.h"
+#include "ov-flt-complex.h"
 #include "ops.h"
 #include "xpow.h"
 
@@ -40,6 +41,8 @@
 #include "ov-cx-sparse.h"
 #include "smx-sm-cs.h"
 #include "smx-cs-sm.h"
+
+OCTAVE_NAMESPACE_BEGIN
 
 // sparse matrix by scalar ops.
 
@@ -105,8 +108,8 @@ DEFBINOP (el_ldiv, sparse_matrix, complex)
   const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
   const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
-  return octave_value (x_el_div (v2.complex_value (),
-                                 v1.sparse_matrix_value ()));
+  return octave_value (elem_xdiv (v2.complex_value (),
+                                  v1.sparse_matrix_value ()));
 }
 
 DEFBINOP_FN (el_and, sparse_matrix, complex, mx_el_and)
@@ -114,7 +117,7 @@ DEFBINOP_FN (el_or, sparse_matrix, complex, mx_el_or)
 
 DEFCATOP (sm_cs, sparse_matrix, complex)
 {
-  octave_sparse_matrix& v1 = dynamic_cast<octave_sparse_matrix&> (a1);
+  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
   const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
   SparseComplexMatrix tmp (1, 1, v2.complex_value ());
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
@@ -148,4 +151,9 @@ install_sm_cs_ops (octave::type_info& ti)
 
   INSTALL_ASSIGNCONV_TI (ti, octave_sparse_matrix, octave_complex,
                          octave_sparse_complex_matrix);
+
+  INSTALL_ASSIGNCONV_TI (ti, octave_sparse_matrix, octave_float_complex,
+                         octave_sparse_complex_matrix);
 }
+
+OCTAVE_NAMESPACE_END

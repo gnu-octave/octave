@@ -42,9 +42,6 @@ namespace octave
     delete m_list;
     delete m_lead_comm;
     delete m_trail_comm;
-#if defined (HAVE_LLVM)
-    delete m_compiled;
-#endif
   }
 
   // For.
@@ -57,9 +54,6 @@ namespace octave
     delete m_list;
     delete m_lead_comm;
     delete m_trail_comm;
-#if defined (HAVE_LLVM)
-    delete m_compiled;
-#endif
   }
 
   tree_complex_for_command::~tree_complex_for_command (void)

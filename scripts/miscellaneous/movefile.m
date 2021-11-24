@@ -44,22 +44,22 @@
 ## When the force flag @qcode{'f'} is given any existing files will be
 ## overwritten without prompting.
 ##
-## If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty
-## character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
-## system-dependent error message, and @var{msgid} contains a unique message
-## identifier.  Note that the status code is exactly opposite that of the
-## @code{system} command.
+## If successful, @var{status} is logical 1, and @var{msg}, @var{msgid} are
+## empty character strings ("").  Otherwise, @var{status} is logical 0,
+## @var{msg} contains a system-dependent error message, and @var{msgid}
+## contains a unique message identifier.  Note that the status code is exactly
+## opposite that of the @code{system} command.
 ## @seealso{rename, copyfile, unlink, delete, glob}
 ## @end deftypefn
 
 function [status, msg, msgid] = movefile (f1, f2, force)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
   max_cmd_line = 1024;
-  status = true;
+  sts = true;
   msg = "";
   msgid = "";
 
@@ -96,13 +96,31 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   ## If f1 has more than 1 element f2 must be a directory
   isdir = isfolder (f2);
   if (numel (f1) > 1 && ! isdir)
-    error ("movefile: when moving multiple files, F2 must be a directory");
+    if (nargout == 0)
+      error ("movefile: when copying multiple files, F2 must be a directory");
+    else
+      status = false;
+      msg = "when copying multiple files, F2 must be a directory";
+      msgid = "movefile";
+      return;
+    endif
   endif
 
   ## Protect the filename(s).
-  f1 = glob (f1);
+  if (ispc ())
+    f1 = __wglob__ (f1);
+  else
+    f1 = glob (f1);
+  endif
   if (isempty (f1))
-    error ("movefile: no files to move");
+    if (nargout == 0)
+      error ("movefile: no files to move");
+    else
+      status = false;
+      msg = "no files to move";
+      msgid = "movefile";
+      return;
+    endif
   endif
   p1 = sprintf ('"%s" ', f1{:});
   p2 = tilde_expand (f2);
@@ -129,11 +147,11 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       ## Move the file(s).
       [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
       if (err != 0)
-        status = false;
+        sts = false;
         msgid = "movefile";
       endif
       ## Load new file(s) in editor
-      __event_manager_file_renamed__ (status);
+      __event_manager_file_renamed__ (sts);
     endwhile
   else
     if (ispc () && ! isunix ()
@@ -147,11 +165,19 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     ## Move the file(s).
     [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
     if (err != 0)
-      status = false;
+      sts = false;
       msgid = "movefile";
     endif
     ## Load new file(s) in editor
-    __event_manager_file_renamed__ (status);
+    __event_manager_file_renamed__ (sts);
+  endif
+
+  if (nargout == 0)
+    if (! sts)
+      error ("movefile: operation failed: %s", msg);
+    endif
+  else
+    status = sts;
   endif
 
 endfunction
@@ -159,14 +185,14 @@ endfunction
 
 %!test
 %! unwind_protect
-%!   f1 = tempname;
+%!   f1 = tempname ();
 %!   tmp_var = pi;
 %!   save (f1, "tmp_var");
 %!   fid = fopen (f1, "rb");
 %!   assert (fid >= 0);
 %!   orig_data = fread (fid);
 %!   fclose (fid);
-%!   f2 = tempname;
+%!   f2 = tempname ();
 %!   assert (movefile (f1, f2));
 %!   assert (! exist (f1, "file"));
 %!   assert (exist (f2, "file"));
@@ -182,8 +208,8 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error movefile ()
-%!error movefile (1,2,3,4)
+%!error <Invalid call> movefile ()
 %!error <F1 must be a string> movefile (1, "foobar")
 %!error <F2 must be a string> movefile ("foobar", 1)
 %!error <F2 must be a directory> movefile ({"a", "b"}, "%_NOT_A_DIR_%")
+%!error <no files to move> movefile ("%_NOT_A_FILENAME1_%", "%_NOT_A_FILENAME2_%")

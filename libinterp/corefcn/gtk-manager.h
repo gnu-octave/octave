@@ -37,7 +37,7 @@
 
 namespace octave
 {
-  class gtk_manager
+  class OCTINTERP_API gtk_manager
   {
   public:
 
@@ -56,19 +56,19 @@ namespace octave
 
     void load_toolkit (const graphics_toolkit& tk)
     {
-      loaded_toolkits[tk.get_name ()] = tk;
+      m_loaded_toolkits[tk.get_name ()] = tk;
     }
 
     void unload_toolkit (const std::string& name)
     {
-      loaded_toolkits.erase (name);
+      m_loaded_toolkits.erase (name);
     }
 
     graphics_toolkit find_toolkit (const std::string& name) const
     {
-      auto p = loaded_toolkits.find (name);
+      auto p = m_loaded_toolkits.find (name);
 
-      if (p != loaded_toolkits.end ())
+      if (p != m_loaded_toolkits.end ())
         return p->second;
       else
         return graphics_toolkit ();
@@ -76,10 +76,10 @@ namespace octave
 
     Cell available_toolkits_list (void) const
     {
-      Cell m (1, available_toolkits.size ());
+      Cell m (1, m_available_toolkits.size ());
 
       octave_idx_type i = 0;
-      for (const auto& tkit : available_toolkits)
+      for (const auto& tkit : m_available_toolkits)
         m(i++) = tkit;
 
       return m;
@@ -87,10 +87,10 @@ namespace octave
 
     Cell loaded_toolkits_list (void) const
     {
-      Cell m (1, loaded_toolkits.size ());
+      Cell m (1, m_loaded_toolkits.size ());
 
       octave_idx_type i = 0;
-      for (const auto& nm_tkit_p : loaded_toolkits)
+      for (const auto& nm_tkit_p : m_loaded_toolkits)
         m(i++) = nm_tkit_p.first;
 
       return m;
@@ -98,32 +98,32 @@ namespace octave
 
     void unload_all_toolkits (void)
     {
-      while (! loaded_toolkits.empty ())
+      while (! m_loaded_toolkits.empty ())
         {
-          auto p = loaded_toolkits.begin ();
+          auto p = m_loaded_toolkits.begin ();
 
           std::string name = p->first;
 
           p->second.close ();
 
           // The toolkit may have unloaded itself.  If not, we'll do it here.
-          if (loaded_toolkits.find (name) != loaded_toolkits.end ())
+          if (m_loaded_toolkits.find (name) != m_loaded_toolkits.end ())
             unload_toolkit (name);
         }
     }
 
-    std::string default_toolkit (void) const { return dtk; }
+    std::string default_toolkit (void) const { return m_dtk; }
 
   private:
 
     // The name of the default toolkit.
-    std::string dtk;
+    std::string m_dtk;
 
     // The list of toolkits that we know about.
-    std::set<std::string> available_toolkits;
+    std::set<std::string> m_available_toolkits;
 
     // The list of toolkits we have actually loaded.
-    std::map<std::string, graphics_toolkit> loaded_toolkits;
+    std::map<std::string, graphics_toolkit> m_loaded_toolkits;
   };
 }
 

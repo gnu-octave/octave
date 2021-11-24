@@ -47,7 +47,7 @@ function y = fftfilt (b, x, n)
   ## of two larger than N and length(b).  This could result in length
   ## one blocks, but if the user knows better ...
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -143,7 +143,8 @@ endfunction
 %! assert (fftfilt (b.',x  ), [1 1 0 0 0 0 0 0 0 0]  );
 %! assert (fftfilt (b.',x.'), [1 1 0 0 0 0 0 0 0 0].');
 %! assert (fftfilt (b,  [x.' x.']), [1 1 0 0 0 0 0 0 0 0].'*[1 1]);
-%! assert (fftfilt (b,  [x.'+2*eps x.']) == [1 1 0 0 0 0 0 0 0 0].'*[1 1], [false(10, 1) true(10, 1)]);
+%! assert (fftfilt (b,  [x.'+2*eps x.']) == [1 1 0 0 0 0 0 0 0 0].'*[1 1],
+%!         [false(10, 1) true(10, 1)]);
 
 %!testif HAVE_FFTW
 %! r = sqrt (1/2) * (1+i);
@@ -187,8 +188,7 @@ endfunction
 %! assert (y0, y, 55*eps);
 
 ## Test input validation
-%!error fftfilt (1)
-%!error fftfilt (1, 2, 3, 4)
+%!error <Invalid call> fftfilt (1)
 %!error fftfilt (ones (2), 1)
 %!error fftfilt (2, ones (3,3,3))
 %!error fftfilt (2, 1, ones (2))

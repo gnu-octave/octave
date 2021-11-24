@@ -430,7 +430,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       int32_t imag = (tc.iscomplex () ? 1 : 0);
       os.write (reinterpret_cast<char *> (&imag), 4);
 
-      len = nr * nc;
+      len = static_cast<octave_idx_type> (nr) * nc;
     }
 
   // LEN includes the terminating character, and the file is also
@@ -465,9 +465,9 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
     }
   else if (tc.is_range ())
     {
-      Range r = tc.range_value ();
+      octave::range<double> r = tc.range_value ();
       double base = r.base ();
-      double inc = r.inc ();
+      double inc = r.increment ();
       octave_idx_type nel = r.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
         {

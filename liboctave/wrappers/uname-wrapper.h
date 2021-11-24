@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-extern int
+extern OCTAVE_API int
 octave_uname_wrapper (char **sysname, char **nodename,
                       char **release, char **version, char **machine);
 

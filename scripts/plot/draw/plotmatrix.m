@@ -78,7 +78,7 @@ function [h, ax, bigax, p, pax] = plotmatrix (varargin)
 
   [bigax2, varargin, nargin] = __plt_get_axis_arg__ ("plotmatrix", varargin{:});
 
-  if (nargin > 3 || nargin < 1)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
@@ -121,7 +121,7 @@ endfunction
 %! title ("plotmatrix() demo #1");
 
 
-function plotmatrixdelete (h, d, ax)
+function plotmatrixdelete (h, ~, ax)
 
   for i = 1 : numel (ax)
     hc = ax(i);
@@ -173,8 +173,8 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
     error ("plotmatrix: dimension mismatch in the arguments");
   endif
 
-  [dummy, m] = size (X);
-  [dummy, n] = size (Y);
+  m = columns (X);
+  n = columns (Y);
 
   h = [];
   ax = [];

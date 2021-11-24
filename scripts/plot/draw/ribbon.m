@@ -60,7 +60,7 @@ function h = ribbon (varargin)
     if (isvector (y))
       y = y(:);
     endif
-    x = 1:rows(y);
+    x = 1:rows (y);
     width = 0.75;
   elseif (nargin == 2)
     x = varargin{1};
@@ -122,6 +122,6 @@ endfunction
 %! colormap ("default");
 %! [x, y, z] = sombrero ();
 %! ribbon (y, z);
-%! title ("ribbon() plot of sombrero()");
+%! title ("ribbon() plot of sombrero ()");
 
 %!FIXME: Could have some input validation tests here

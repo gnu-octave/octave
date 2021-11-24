@@ -38,10 +38,9 @@
 #include "error.h"
 #include "graphics-handle.h"
 
-class graphics_object;
-
 namespace octave
 {
+  class graphics_object;
   class graphics_toolkit;
 
   class base_graphics_toolkit
@@ -285,10 +284,12 @@ namespace octave
   };
 }
 
+#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (6, "use 'octave::graphics_toolkit' instead")
 typedef octave::graphics_toolkit graphics_toolkit;
 
 OCTAVE_DEPRECATED (6, "use 'octave::base_graphics_toolkit' instead")
 typedef octave::base_graphics_toolkit base_graphics_toolkit;
+#endif
 
 #endif

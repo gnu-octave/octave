@@ -45,6 +45,14 @@ namespace octave
   {
   public:
 
+    enum
+    {
+      ROTATION_0   = 0,
+      ROTATION_90  = 1,
+      ROTATION_180 = 2,
+      ROTATION_270 = 3
+    };
+
     base_text_renderer (void) : text_processor () { }
 
     // No copying!
@@ -69,6 +77,9 @@ namespace octave
     set_font (const std::string& name, const std::string& weight,
               const std::string& angle, double size) = 0;
 
+    virtual bool
+    ok (void) { return true; };
+
     virtual octave_map
     get_system_fonts (void) = 0;
 
@@ -85,6 +96,15 @@ namespace octave
                      std::list<text_renderer::string>& lst,
                      Matrix& box, int halign, int valign, double rotation,
                      const caseless_str& interpreter = "tex") = 0;
+
+    void rotate_pixels (uint8NDArray& pixels, int rot_mode) const;
+
+    int rotation_to_mode (double rotation) const;
+
+    void fix_bbox_anchor (Matrix& bbox, int halign,
+                          int valign, int rot_mode,
+                          bool handle_rotation) const;
+
   };
 }
 

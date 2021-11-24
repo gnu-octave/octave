@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#include <memory>
+
 #include "CSparse.h"
 
 class RowVector;
@@ -45,6 +47,7 @@ namespace octave
 
     template <typename chol_type>
     class
+    OCTAVE_API
     sparse_chol
     {
     public:
@@ -60,11 +63,12 @@ namespace octave
 
       sparse_chol (const chol_type& a, octave_idx_type& info);
 
-      sparse_chol (const sparse_chol<chol_type>& a);
+      sparse_chol (const sparse_chol<chol_type>& a) = default;
 
-      virtual ~sparse_chol (void);
+      virtual ~sparse_chol (void) = default;
 
-      sparse_chol& operator = (const sparse_chol& a);
+      sparse_chol<chol_type>&
+      operator = (const sparse_chol<chol_type>& a) = default;
 
       chol_type L (void) const;
 
@@ -90,18 +94,13 @@ namespace octave
 
     private:
 
-      sparse_chol_rep *rep;
+      std::shared_ptr<sparse_chol_rep> m_rep;
     };
 
     template <typename chol_type>
+    OCTAVE_API
     chol_type
     chol2inv (const chol_type& r);
-
-    // SparseComplexMatrix specialization.
-
-    template <>
-    sparse_chol<SparseComplexMatrix>::sparse_chol
-      (const SparseComplexMatrix& a, octave_idx_type& info);
   }
 }
 

@@ -32,6 +32,8 @@
 #include "defun.h"
 #include "error.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (nproc, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} nproc ()
@@ -106,3 +108,5 @@ same as @code{current}, but overridable through the
 
 %!error nproc ("no_valid_option")
 */
+
+OCTAVE_NAMESPACE_END

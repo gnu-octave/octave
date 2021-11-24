@@ -57,7 +57,6 @@ endfunction
 %!assert (empirical_inv ([x, NaN], single (v)), single ([y, NaN]), eps)
 
 ## Test input validation
-%!error empirical_inv ()
-%!error empirical_inv (1)
-%!error empirical_inv (1,2,3)
+%!error <Invalid call> empirical_inv ()
+%!error <Invalid call> empirical_inv (1)
 %!error empirical_inv (1, ones (2))

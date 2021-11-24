@@ -57,8 +57,8 @@
 ## @end example
 ##
 ## Modifying the up vector does not modify the camera target
-## (@pxref{XREFcamtarget,,camtarget}).  Thus, the camera up vector might not be
-## orthogonal to the direction of the camera's view:
+## (@pxref{XREFcamtarget,,@code{camtarget}}).  Thus, the camera up vector might
+## not be orthogonal to the direction of the camera's view:
 ##
 ## @example
 ## @group

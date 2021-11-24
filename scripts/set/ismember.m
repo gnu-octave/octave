@@ -92,7 +92,7 @@ function [tf, s_idx] = ismember (a, s, varargin)
       s_idx = zeros (size (real_argout{2}));
       s_idx(tf) = min (real_argout{2}(tf), imag_argout{2}(tf));
     endif
-    return
+    return;
   endif
 
   ## lookup() does not handle logical values
@@ -294,7 +294,7 @@ endfunction
 %! assert (s_idx, 2);
 %!
 %! tf = ismember ([5, 4-3j, 3+4j], 5);
-%! assert (tf, logical ([1, 0, 0]))
+%! assert (tf, logical ([1, 0, 0]));
 %! [~, s_idx] = ismember ([5, 4-3j, 3+4j], 5);
 %! assert (s_idx, [1, 0, 0]);
 %!
@@ -303,8 +303,8 @@ endfunction
 %! assert (s_idx, 1);
 
 ## Test input validation
-%!error ismember ()
-%!error ismember (1)
-%!error ismember (1,2,3,4)
+%!error <Invalid call> ismember ()
+%!error <Invalid call> ismember (1)
+%!error <Invalid call> ismember (1,2,3,4)
 %!error <"stable" or "sorted" are not valid options> ismember (1,2, "sorted")
 %!error <"stable" or "sorted" are not valid options> ismember (1,2, "stable")

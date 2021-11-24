@@ -623,7 +623,7 @@ function [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin)
                           "box", box,
                           "xtick", [], "ytick", [],
                           "xlim", [0, 1], "ylim", [0, 1],
-                          "activepositionproperty", "position");
+                          "positionconstraint", "innerposition");
           setappdata (hlegend, "__axes_handle__", ud);
           try
             addproperty ("__legend_handle__", ud(1), "handle", hlegend);
@@ -1063,7 +1063,7 @@ function [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin)
                 ## This violates strict Matlab compatibility, but reliably
                 ## renders an aesthetic result.
                 set (ca(i), "position",  unmodified_axes_position,
-                            "activepositionproperty", "outerposition");
+                            "positionconstraint", "outerposition");
               else
                 ## numel (ca) > 1 for axes overlays (like plotyy)
                 set (ca(i), "position", new_pos);
@@ -1182,8 +1182,8 @@ function cb_legend_update (hleg, ~)
       outerposition = get (hleg, "unmodified_axes_outerposition");
       units = get (hax, "units");
       set (hax, "units", "points");
-      switch (get (hax, "activepositionproperty"))
-        case "position"
+      switch (get (hax, "positionconstraint"))
+        case "innerposition"
           set (hax, "outerposition", outerposition, "position", position);
         case "outerposition"
           set (hax, "position", position, "outerposition", outerposition);
@@ -1242,11 +1242,11 @@ function cb_legend_hideshow (hleg, ~, ca, orig_pos, new_pos)
 endfunction
 
 ## The legend "location" property has changed.
-function cb_legend_location (hleg, d)
+function cb_legend_location (hleg, ~)
 
-  ## If it isn't "none", which means manual positioning, then rebuild .
+  ## If it isn't "none", which means manual positioning, then rebuild.
   if (! strcmp (get (hleg, "location"), "none"))
-    cb_legend_update (hleg, d);
+    cb_legend_update (hleg, []);
   endif
 
 endfunction
@@ -1366,7 +1366,8 @@ function cb_line_listener (h, ~, hlegend, linelength, update_name)
     if (! strcmp (marker, "none"))
       hl = __go_line__ (hlegend, "xdata", xpos2, "ydata", ypos2, ...
                         "color", get (h, "color"), ...
-                        "marker", marker, "markeredgecolor", get (h, "markeredgecolor"), ...
+                        "marker", marker, ...
+                        "markeredgecolor", get (h, "markeredgecolor"), ...
                         "markerfacecolor", get (h, "markerfacecolor"), ...
                         "markersize", min (get (h, "markersize"), 10), ...
                         "linestyle", "none", ...
@@ -1557,7 +1558,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:0.1:7;
-%! h = plot (x,sin(x), x,cos(x), x,sin(x.^2/10), x,cos(x.^2/10));
+%! h = plot (x,sin (x), x,cos (x), x,sin (x.^2/10), x,cos (x.^2/10));
 %! title ("Only the sin() objects have keylabels");
 %! legend (h([1, 3]), {"sin (x)", "sin (x^2/10)"}, "location", "southwest");
 

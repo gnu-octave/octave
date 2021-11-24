@@ -57,7 +57,7 @@
 
 function s = untabify (t, tw = 8, deblank_arg = false)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   elseif (! (ischar (t) || iscellstr (t)))
     error ("untabify: T must be a string or cellstring");
@@ -122,6 +122,6 @@ endfunction
 %! s = char (randi ([97 97+25], 3, 3));
 %! assert (untabify (s), char (untabify (cellstr (s))));
 
-%!error untabify ()
-%!error untabify (1,2,3,4)
+## Test input validation
+%!error <Invalid call> untabify ()
 %!error <must be a string> untabify (1)

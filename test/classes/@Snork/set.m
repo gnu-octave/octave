@@ -5,7 +5,7 @@ function s = set (s, varargin)
     propName  = propArgs{1};
     propValue = propArgs{2};
     propArgs  = propArgs(3:end);
-    switch propName
+    switch (propName)
       case 'gick'
         s.gick = propValue;
       otherwise

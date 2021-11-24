@@ -35,6 +35,8 @@
 
 #include "builtin-defun-decls.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // This function implements the IKJ and JKI variants of Gaussian elimination to
 // perform the ILU0 decomposition.  The behavior is controlled by milu
 // parameter.  If milu = ['off'|'col'] the JKI version is performed taking
@@ -1005,3 +1007,5 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+
+OCTAVE_NAMESPACE_END

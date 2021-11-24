@@ -46,6 +46,8 @@
 #include "ovl.h"
 #include "pager.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // The symmetric column elimination tree code take from the Davis LDL code.
 // Copyright given elsewhere in this file.
 static void
@@ -311,7 +313,7 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
           if (knobs[COLAMD_DENSE_ROW] >= 0)
             octave_stdout << "knobs(1): " << User_knobs (0)
                           << ", rows with > max (16,"
-                          << knobs[COLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
+                          << knobs[COLAMD_DENSE_ROW] << "*sqrt (columns(A)))"
                           << " entries removed\n";
           else
             octave_stdout << "knobs(1): " << User_knobs (0)
@@ -374,20 +376,20 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
     }
 
   // Allocate workspace for colamd
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, p, n_col+1);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, p, n_col+1);
   for (octave_idx_type i = 0; i < n_col+1; i++)
     p[i] = cidx[i];
 
   octave_idx_type Alen = COLAMD_NAME (_recommended) (nnz, n_row, n_col);
-  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, A, Alen);
+  OCTAVE_LOCAL_BUFFER (suitesparse_integer, A, Alen);
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
   // Order the columns (destroys A)
   static_assert (COLAMD_STATS <= 40,
                  "colamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
-  octave::suitesparse_integer stats_storage[COLAMD_STATS];
-  octave::suitesparse_integer *stats = &stats_storage[0];
+  suitesparse_integer stats_storage[COLAMD_STATS];
+  suitesparse_integer *stats = &stats_storage[0];
   if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
     {
       COLAMD_NAME (_report)(stats);
@@ -592,11 +594,11 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
   static_assert (COLAMD_STATS <= 40,
                  "symamd: # of COLAMD_STATS exceeded.  Please report this to bugs.octave.org");
-  octave::suitesparse_integer stats_storage[COLAMD_STATS];
-  octave::suitesparse_integer *stats = &stats_storage[0];
-  if (! SYMAMD_NAME () (n_col, octave::to_suitesparse_intptr (ridx),
-                        octave::to_suitesparse_intptr (cidx),
-                        octave::to_suitesparse_intptr (perm),
+  suitesparse_integer stats_storage[COLAMD_STATS];
+  suitesparse_integer *stats = &stats_storage[0];
+  if (! SYMAMD_NAME () (n_col, to_suitesparse_intptr (ridx),
+                        to_suitesparse_intptr (cidx),
+                        to_suitesparse_intptr (perm),
                         knobs, stats, &calloc, &free))
     {
       SYMAMD_NAME (_report)(stats);
@@ -680,21 +682,31 @@ permutations on the tree.
   octave_idx_type *ridx = nullptr;
   octave_idx_type *cidx = nullptr;
 
-  if (! args(0).issparse ())
-    error ("etree: S must be a sparse matrix");
+  SparseComplexMatrix scm;
+  SparseBoolMatrix sbm;
+  SparseMatrix sm;
 
   if (args(0).iscomplex ())
     {
-      SparseComplexMatrix scm = args(0).sparse_complex_matrix_value ();
+      scm = args(0).sparse_complex_matrix_value ();
 
       n_row = scm.rows ();
       n_col = scm.cols ();
       ridx = scm.xridx ();
       cidx = scm.xcidx ();
     }
+  else if (args(0).islogical ())
+    {
+      sbm = args(0).sparse_bool_matrix_value ();
+
+      n_row = sbm.rows ();
+      n_col = sbm.cols ();
+      ridx = sbm.xridx ();
+      cidx = sbm.xcidx ();
+    }
   else
     {
-      SparseMatrix sm = args(0).sparse_matrix_value ();
+      sm = args(0).sparse_matrix_value ();
 
       n_row = sm.rows ();
       n_col = sm.cols ();
@@ -738,7 +750,7 @@ permutations on the tree.
   NDArray tree (dim_vector (1, n_col));
   for (octave_idx_type i = 0; i < n_col; i++)
     // We flag a root with n_col while Matlab does it with zero
-    // Convert for matlab compatible output
+    // Convert for Matlab-compatible output
     if (etree[i] == n_col)
       tree(i) = 0;
     else
@@ -763,12 +775,15 @@ permutations on the tree.
 }
 
 /*
-%!assert (etree (speye (2)), [0, 0]);
-%!assert (etree (gallery ("poisson", 16)), [2:256, 0]);
+%!assert (etree (sparse ([1,2], [1,2], [1,1], 2, 2)), [0, 0])
+%!assert (etree (sparse ([1,2], [1,2], [true, true], 2, 2)), [0, 0])
+%!assert (etree (sparse ([1,2], [1,2], [i,i], 2, 2)), [0, 0])
+%!assert (etree (gallery ("poisson", 16)), [2:256, 0])
 
-%!error etree ()
-%!error etree (1, 2, 3)
-%!error <S must be a sparse matrix> etree ([1, 2; 3, 4])
+%!error <Invalid call> etree ()
+%!error <Invalid call> etree (1, 2, 3)
 %!error <TYP must be a string> etree (speye (2), 3)
 %!error <is not square> etree (sprand (2, 4, .25))
 */
+
+OCTAVE_NAMESPACE_END

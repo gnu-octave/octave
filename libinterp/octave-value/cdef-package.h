@@ -53,7 +53,7 @@ namespace octave
     {
     public:
 
-      cdef_package_rep (void) : cdef_meta_object_rep (), member_count (0) { }
+      cdef_package_rep (void) : cdef_meta_object_rep (), m_member_count (0) { }
 
       cdef_package_rep& operator = (const cdef_package_rep&) = delete;
 
@@ -67,58 +67,61 @@ namespace octave
 
       void set_name (const std::string& nm) { put ("Name", nm); }
 
-      void install_class (const cdef_class& cls, const std::string& nm);
+      OCTINTERP_API void
+      install_class (const cdef_class& cls, const std::string& nm);
 
-      void install_function (const octave_value& fcn, const std::string& nm);
+      OCTINTERP_API void
+      install_function (const octave_value& fcn, const std::string& nm);
 
-      void install_package (const cdef_package& pack, const std::string& nm);
+      OCTINTERP_API void
+      install_package (const cdef_package& pack, const std::string& nm);
 
-      Cell get_classes (void) const;
+      OCTINTERP_API Cell get_classes (void) const;
 
-      Cell get_functions (void) const;
+      OCTINTERP_API Cell get_functions (void) const;
 
-      Cell get_packages (void) const;
+      OCTINTERP_API Cell get_packages (void) const;
 
-      octave_idx_type static_count (void) const { return member_count; }
+      octave_idx_type static_count (void) const { return m_member_count; }
 
       void destroy (void)
       {
-        if (member_count)
+        if (m_member_count)
           {
             m_count++;
             cdef_package lock (this);
 
-            member_count = 0;
-            class_map.clear ();
-            package_map.clear ();
+            m_member_count = 0;
+            m_class_map.clear ();
+            m_package_map.clear ();
           }
         else
           delete this;
       }
 
-      octave_value_list
+      OCTINTERP_API octave_value_list
       meta_subsref (const std::string& type,
                     const std::list<octave_value_list>& idx, int nargout);
 
-      void meta_release (void);
+      OCTINTERP_API void meta_release (void);
 
       bool meta_accepts_postfix_index (char type) const
       {
         return (type == '.');
       }
 
-      octave_value find (const std::string& nm);
+      OCTINTERP_API octave_value find (const std::string& nm);
 
     private:
 
-      std::string full_name;
-      std::map<std::string, cdef_class> class_map;
-      std::map<std::string, octave_value> function_map;
-      std::map<std::string, cdef_package> package_map;
+      std::string m_full_name;
+      std::map<std::string, cdef_class> m_class_map;
+      std::map<std::string, octave_value> m_function_map;
+      std::map<std::string, cdef_package> m_package_map;
 
       // The number of registered members in this package (classes, packages).
       // This only accounts for the members that back-reference to this package.
-      octave_idx_type member_count;
+      octave_idx_type m_member_count;
 
       typedef std::map<std::string, cdef_class>::iterator class_iterator;
       typedef std::map<std::string, cdef_class>::const_iterator class_const_iterator;
@@ -130,9 +133,9 @@ namespace octave
         package_const_iterator;
 
       cdef_package_rep (const cdef_package_rep& p)
-        : cdef_meta_object_rep (p), full_name (p.full_name),
-          class_map (p.class_map), function_map (p.function_map),
-          package_map (p.package_map), member_count (p.member_count)
+        : cdef_meta_object_rep (p), m_full_name (p.m_full_name),
+          m_class_map (p.m_class_map), m_function_map (p.m_function_map),
+          m_package_map (p.m_package_map), m_member_count (p.m_member_count)
       { }
 
       cdef_package wrap (void)
@@ -221,7 +224,7 @@ namespace octave
       return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ());
     }
 
-    friend void install_classdef (interpreter& interp);
+    friend OCTINTERP_API void install_classdef (interpreter& interp);
   };
 }
 

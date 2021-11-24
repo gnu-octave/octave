@@ -34,9 +34,7 @@
 
 function retval = list_primes (n = 25)
 
-  if (nargin > 1)
-    print_usage ();
-  elseif (! isreal (n) || ! isscalar (n))
+  if (! isreal (n) || ! isscalar (n))
     error ("list_primes: N must be a real scalar");
   endif
 
@@ -69,6 +67,5 @@ endfunction
 %!assert (list_primes (1), [2])
 
 ## Test input validation
-%!error list_primes (1, 2)
 %!error <N must be a real scalar> list_primes (i)
 %!error <N must be a real scalar> list_primes ([1 2])

@@ -46,8 +46,8 @@
 ## @noindent
 ## which produces a double logarithm plot of @var{y} versus @var{x}
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
-## format defined by @var{fmt}.  @xref{XREFerrorbar,,errorbar}, for available
-## formats and additional information.
+## format defined by @var{fmt}.  @xref{XREFerrorbar,,@code{errorbar}}, for
+## available formats and additional information.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.

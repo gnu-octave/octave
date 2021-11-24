@@ -49,13 +49,13 @@ Array<T>::nil_rep (void)
 // Note we can't specialize a member without also specializing the class.
 template <typename T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
-  : dimensions (dv), rep (a.rep),
-    slice_data (a.slice_data), slice_len (a.slice_len)
+  : m_dimensions (dv), m_rep (a.m_rep),
+    m_slice_data (a.m_slice_data), m_slice_len (a.m_slice_len)
 {
-  if (dimensions.safe_numel () != a.numel ())
+  if (m_dimensions.safe_numel () != a.numel ())
     {
-      std::string dimensions_str = a.dimensions.str ();
-      std::string new_dims_str = dimensions.str ();
+      std::string dimensions_str = a.m_dimensions.str ();
+      std::string new_dims_str = m_dimensions.str ();
 
       (*current_liboctave_error_handler)
         ("reshape: can't reshape %s array to %s array",
@@ -64,52 +64,52 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
 
   // This goes here because if an exception is thrown by the above,
   // destructor will be never called.
-  rep->count++;
-  dimensions.chop_trailing_singletons ();
+  m_rep->m_count++;
+  m_dimensions.chop_trailing_singletons ();
 }
 
 template <typename T>
 void
 Array<T>::fill (const T& val)
 {
-  if (rep->count > 1)
+  if (m_rep->m_count > 1)
     {
-      --rep->count;
-      rep = new ArrayRep (numel (), val);
-      slice_data = rep->data;
+      --m_rep->m_count;
+      m_rep = new ArrayRep (numel (), val);
+      m_slice_data = m_rep->m_data;
     }
   else
-    std::fill_n (slice_data, slice_len, val);
+    std::fill_n (m_slice_data, m_slice_len, val);
 }
 
 template <typename T>
 void
 Array<T>::clear (void)
 {
-  if (--rep->count == 0)
-    delete rep;
+  if (--m_rep->m_count == 0)
+    delete m_rep;
 
-  rep = nil_rep ();
-  rep->count++;
-  slice_data = rep->data;
-  slice_len = rep->len;
+  m_rep = nil_rep ();
+  m_rep->m_count++;
+  m_slice_data = m_rep->m_data;
+  m_slice_len = m_rep->m_len;
 
-  dimensions = dim_vector ();
+  m_dimensions = dim_vector ();
 }
 
 template <typename T>
 void
 Array<T>::clear (const dim_vector& dv)
 {
-  if (--rep->count == 0)
-    delete rep;
+  if (--m_rep->m_count == 0)
+    delete m_rep;
 
-  rep = new ArrayRep (dv.safe_numel ());
-  slice_data = rep->data;
-  slice_len = rep->len;
+  m_rep = new ArrayRep (dv.safe_numel ());
+  m_slice_data = m_rep->m_data;
+  m_slice_len = m_rep->m_len;
 
-  dimensions = dv;
-  dimensions.chop_trailing_singletons ();
+  m_dimensions = dv;
+  m_dimensions.chop_trailing_singletons ();
 }
 
 template <typename T>
@@ -122,16 +122,16 @@ Array<T>::squeeze (void) const
     {
       bool dims_changed = false;
 
-      dim_vector new_dimensions = dimensions;
+      dim_vector new_dimensions = m_dimensions;
 
       int k = 0;
 
       for (int i = 0; i < ndims (); i++)
         {
-          if (dimensions(i) == 1)
+          if (m_dimensions(i) == 1)
             dims_changed = true;
           else
-            new_dimensions(k++) = dimensions(i);
+            new_dimensions(k++) = m_dimensions(i);
         }
 
       if (dims_changed)
@@ -169,7 +169,7 @@ template <typename T>
 octave_idx_type
 Array<T>::compute_index (octave_idx_type i, octave_idx_type j) const
 {
-  return ::compute_index (i, j, dimensions);
+  return ::compute_index (i, j, m_dimensions);
 }
 
 template <typename T>
@@ -177,25 +177,25 @@ octave_idx_type
 Array<T>::compute_index (octave_idx_type i, octave_idx_type j,
                          octave_idx_type k) const
 {
-  return ::compute_index (i, j, k, dimensions);
+  return ::compute_index (i, j, k, m_dimensions);
 }
 
 template <typename T>
 octave_idx_type
 Array<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
-  return ::compute_index (ra_idx, dimensions);
+  return ::compute_index (ra_idx, m_dimensions);
 }
 
 template <typename T>
 T&
 Array<T>::checkelem (octave_idx_type n)
 {
-  // Do checks directly to avoid recomputing slice_len.
+  // Do checks directly to avoid recomputing m_slice_len.
   if (n < 0)
     octave::err_invalid_index (n);
-  if (n >= slice_len)
-    octave::err_index_out_of_range (1, 1, n+1, slice_len, dimensions);
+  if (n >= m_slice_len)
+    octave::err_index_out_of_range (1, 1, n+1, m_slice_len, m_dimensions);
 
   return elem (n);
 }
@@ -225,11 +225,11 @@ template <typename T>
 typename Array<T>::crefT
 Array<T>::checkelem (octave_idx_type n) const
 {
-  // Do checks directly to avoid recomputing slice_len.
+  // Do checks directly to avoid recomputing m_slice_len.
   if (n < 0)
     octave::err_invalid_index (n);
-  if (n >= slice_len)
-    octave::err_index_out_of_range (1, 1, n+1, slice_len, dimensions);
+  if (n >= m_slice_len)
+    octave::err_index_out_of_range (1, 1, n+1, m_slice_len, m_dimensions);
 
   return elem (n);
 }
@@ -260,7 +260,7 @@ template <typename T>
 Array<T>
 Array<T>::column (octave_idx_type k) const
 {
-  octave_idx_type r = dimensions(0);
+  octave_idx_type r = m_dimensions(0);
 
   return Array<T> (*this, dim_vector (r, 1), k*r, k*r + r);
 }
@@ -269,8 +269,8 @@ template <typename T>
 Array<T>
 Array<T>::page (octave_idx_type k) const
 {
-  octave_idx_type r = dimensions(0);
-  octave_idx_type c = dimensions(1);
+  octave_idx_type r = m_dimensions(0);
+  octave_idx_type c = m_dimensions(1);
   octave_idx_type p = r*c;
 
   return Array<T> (*this, dim_vector (r, c), k*p, k*p + p);
@@ -289,51 +289,42 @@ Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 // Helper class for multi-d dimension permuting (generalized transpose).
 class rec_permute_helper
 {
-  // STRIDE occupies the last half of the space allocated for dim to
-  // avoid a double allocation.
-
-  int n;
-  int top;
-  octave_idx_type *dim;
-  octave_idx_type *stride;
-  bool use_blk;
-
 public:
   rec_permute_helper (const dim_vector& dv, const Array<octave_idx_type>& perm)
 
-    : n (dv.ndims ()), top (0), dim (new octave_idx_type [2*n]),
-      stride (dim + n), use_blk (false)
+    : m_n (dv.ndims ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
+      m_stride (m_dim + m_n), m_use_blk (false)
   {
-    assert (n == perm.numel ());
+    assert (m_n == perm.numel ());
 
     // Get cumulative dimensions.
-    OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, n+1);
+    OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, m_n+1);
     cdim[0] = 1;
-    for (int i = 1; i < n+1; i++) cdim[i] = cdim[i-1] * dv(i-1);
+    for (int i = 1; i < m_n+1; i++) cdim[i] = cdim[i-1] * dv(i-1);
 
     // Setup the permuted strides.
-    for (int k = 0; k < n; k++)
+    for (int k = 0; k < m_n; k++)
       {
         int kk = perm(k);
-        dim[k] = dv(kk);
-        stride[k] = cdim[kk];
+        m_dim[k] = dv(kk);
+        m_stride[k] = cdim[kk];
       }
 
     // Reduce contiguous runs.
-    for (int k = 1; k < n; k++)
+    for (int k = 1; k < m_n; k++)
       {
-        if (stride[k] == stride[top]*dim[top])
-          dim[top] *= dim[k];
+        if (m_stride[k] == m_stride[m_top]*m_dim[m_top])
+          m_dim[m_top] *= m_dim[k];
         else
           {
-            top++;
-            dim[top] = dim[k];
-            stride[top] = stride[k];
+            m_top++;
+            m_dim[m_top] = m_dim[k];
+            m_stride[m_top] = m_stride[k];
           }
       }
 
     // Determine whether we can use block transposes.
-    use_blk = top >= 1 && stride[1] == 1 && stride[0] == dim[1];
+    m_use_blk = m_top >= 1 && m_stride[1] == 1 && m_stride[0] == m_dim[1];
 
   }
 
@@ -343,7 +334,10 @@ public:
 
   rec_permute_helper& operator = (const rec_permute_helper&) = delete;
 
-  ~rec_permute_helper (void) { delete [] dim; }
+  ~rec_permute_helper (void) { delete [] m_dim; }
+
+  template <typename T>
+  void permute (const T *src, T *dest) const { do_permute (src, dest, m_top); }
 
   // Helper method for fast blocked transpose.
   template <typename T>
@@ -392,8 +386,8 @@ private:
   {
     if (lev == 0)
       {
-        octave_idx_type step = stride[0];
-        octave_idx_type len = dim[0];
+        octave_idx_type step = m_stride[0];
+        octave_idx_type len = m_dim[0];
         if (step == 1)
           {
             std::copy_n (src, len, dest);
@@ -407,12 +401,12 @@ private:
             dest += len;
           }
       }
-    else if (use_blk && lev == 1)
-      dest = blk_trans (src, dest, dim[1], dim[0]);
+    else if (m_use_blk && lev == 1)
+      dest = blk_trans (src, dest, m_dim[1], m_dim[0]);
     else
       {
-        octave_idx_type step = stride[lev];
-        octave_idx_type len = dim[lev];
+        octave_idx_type step = m_stride[lev];
+        octave_idx_type len = m_dim[lev];
         for (octave_idx_type i = 0, j = 0; i < len; i++, j+= step)
           dest = do_permute (src + i * step, dest, lev-1);
       }
@@ -420,10 +414,16 @@ private:
     return dest;
   }
 
-public:
+  //--------
 
-  template <typename T>
-  void permute (const T *src, T *dest) const { do_permute (src, dest, top); }
+  // STRIDE occupies the last half of the space allocated for dim to
+  // avoid a double allocation.
+
+  int m_n;
+  int m_top;
+  octave_idx_type *m_dim;
+  octave_idx_type *m_stride;
+  bool m_use_blk;
 };
 
 template <typename T>
@@ -503,41 +503,32 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 
 class rec_index_helper
 {
-  // CDIM occupies the last half of the space allocated for dim to
-  // avoid a double allocation.
-
-  int n;
-  int top;
-  octave_idx_type *dim;
-  octave_idx_type *cdim;
-  idx_vector *idx;
-
 public:
-  rec_index_helper (const dim_vector& dv, const Array<idx_vector>& ia)
-    : n (ia.numel ()), top (0), dim (new octave_idx_type [2*n]),
-      cdim (dim + n), idx (new idx_vector [n])
+  rec_index_helper (const dim_vector& dv, const Array<octave::idx_vector>& ia)
+    : m_n (ia.numel ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
+      m_cdim (m_dim + m_n), m_idx (new octave::idx_vector [m_n])
   {
-    assert (n > 0 && (dv.ndims () == std::max (n, 2)));
+    assert (m_n > 0 && (dv.ndims () == std::max (m_n, 2)));
 
-    dim[0] = dv(0);
-    cdim[0] = 1;
-    idx[0] = ia(0);
+    m_dim[0] = dv(0);
+    m_cdim[0] = 1;
+    m_idx[0] = ia(0);
 
-    for (int i = 1; i < n; i++)
+    for (int i = 1; i < m_n; i++)
       {
         // Try reduction...
-        if (idx[top].maybe_reduce (dim[top], ia(i), dv(i)))
+        if (m_idx[m_top].maybe_reduce (m_dim[m_top], ia(i), dv(i)))
           {
             // Reduction successful, fold dimensions.
-            dim[top] *= dv(i);
+            m_dim[m_top] *= dv(i);
           }
         else
           {
-            // Unsuccessful, store index & cumulative dim.
-            top++;
-            idx[top] = ia(i);
-            dim[top] = dv(i);
-            cdim[top] = cdim[top-1] * dim[top-1];
+            // Unsuccessful, store index & cumulative m_dim.
+            m_top++;
+            m_idx[m_top] = ia(i);
+            m_dim[m_top] = dv(i);
+            m_cdim[m_top] = m_cdim[m_top-1] * m_dim[m_top-1];
           }
       }
   }
@@ -548,7 +539,21 @@ public:
 
   rec_index_helper& operator = (const rec_index_helper&) = delete;
 
-  ~rec_index_helper (void) { delete [] idx; delete [] dim; }
+  ~rec_index_helper (void) { delete [] m_idx; delete [] m_dim; }
+
+  template <typename T>
+  void index (const T *src, T *dest) const { do_index (src, dest, m_top); }
+
+  template <typename T>
+  void assign (const T *src, T *dest) const { do_assign (src, dest, m_top); }
+
+  template <typename T>
+  void fill (const T& val, T *dest) const { do_fill (val, dest, m_top); }
+
+  bool is_cont_range (octave_idx_type& l, octave_idx_type& u) const
+  {
+    return m_top == 0 && m_idx[0].is_cont_range (m_dim[0], l, u);
+  }
 
 private:
 
@@ -557,13 +562,13 @@ private:
   T * do_index (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
-      dest += idx[0].index (src, dim[0], dest);
+      dest += m_idx[0].index (src, m_dim[0], dest);
     else
       {
-        octave_idx_type nn = idx[lev].length (dim[lev]);
-        octave_idx_type d = cdim[lev];
+        octave_idx_type nn = m_idx[lev].length (m_dim[lev]);
+        octave_idx_type d = m_cdim[lev];
         for (octave_idx_type i = 0; i < nn; i++)
-          dest = do_index (src + d*idx[lev].xelem (i), dest, lev-1);
+          dest = do_index (src + d*m_idx[lev].xelem (i), dest, lev-1);
       }
 
     return dest;
@@ -574,13 +579,13 @@ private:
   const T * do_assign (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
-      src += idx[0].assign (src, dim[0], dest);
+      src += m_idx[0].assign (src, m_dim[0], dest);
     else
       {
-        octave_idx_type nn = idx[lev].length (dim[lev]);
-        octave_idx_type d = cdim[lev];
+        octave_idx_type nn = m_idx[lev].length (m_dim[lev]);
+        octave_idx_type d = m_cdim[lev];
         for (octave_idx_type i = 0; i < nn; i++)
-          src = do_assign (src, dest + d*idx[lev].xelem (i), lev-1);
+          src = do_assign (src, dest + d*m_idx[lev].xelem (i), lev-1);
       }
 
     return src;
@@ -591,32 +596,26 @@ private:
   void do_fill (const T& val, T *dest, int lev) const
   {
     if (lev == 0)
-      idx[0].fill (val, dim[0], dest);
+      m_idx[0].fill (val, m_dim[0], dest);
     else
       {
-        octave_idx_type nn = idx[lev].length (dim[lev]);
-        octave_idx_type d = cdim[lev];
+        octave_idx_type nn = m_idx[lev].length (m_dim[lev]);
+        octave_idx_type d = m_cdim[lev];
         for (octave_idx_type i = 0; i < nn; i++)
-          do_fill (val, dest + d*idx[lev].xelem (i), lev-1);
+          do_fill (val, dest + d*m_idx[lev].xelem (i), lev-1);
       }
   }
 
-public:
+  //--------
 
-  template <typename T>
-  void index (const T *src, T *dest) const { do_index (src, dest, top); }
+  // CDIM occupies the last half of the space allocated for dim to
+  // avoid a double allocation.
 
-  template <typename T>
-  void assign (const T *src, T *dest) const { do_assign (src, dest, top); }
-
-  template <typename T>
-  void fill (const T& val, T *dest) const { do_fill (val, dest, top); }
-
-  bool is_cont_range (octave_idx_type& l,
-                      octave_idx_type& u) const
-  {
-    return top == 0 && idx[0].is_cont_range (dim[0], l, u);
-  }
+  int m_n;
+  int m_top;
+  octave_idx_type *m_dim;
+  octave_idx_type *m_cdim;
+  octave::idx_vector *m_idx;
 };
 
 // Helper class for multi-d recursive resizing
@@ -624,35 +623,30 @@ public:
 // once (apart from reinitialization)
 class rec_resize_helper
 {
-  octave_idx_type *cext;
-  octave_idx_type *sext;
-  octave_idx_type *dext;
-  int n;
-
 public:
   rec_resize_helper (const dim_vector& ndv, const dim_vector& odv)
-    : cext (nullptr), sext (nullptr), dext (nullptr), n (0)
+    : m_cext (nullptr), m_sext (nullptr), m_dext (nullptr), m_n (0)
   {
     int l = ndv.ndims ();
     assert (odv.ndims () == l);
     octave_idx_type ld = 1;
     int i = 0;
     for (; i < l-1 && ndv(i) == odv(i); i++) ld *= ndv(i);
-    n = l - i;
-    cext = new octave_idx_type [3*n];
+    m_n = l - i;
+    m_cext = new octave_idx_type [3*m_n];
     // Trick to avoid three allocations
-    sext = cext + n;
-    dext = sext + n;
+    m_sext = m_cext + m_n;
+    m_dext = m_sext + m_n;
 
     octave_idx_type sld = ld;
     octave_idx_type dld = ld;
-    for (int j = 0; j < n; j++)
+    for (int j = 0; j < m_n; j++)
       {
-        cext[j] = std::min (ndv(i+j), odv(i+j));
-        sext[j] = sld *= odv(i+j);
-        dext[j] = dld *= ndv(i+j);
+        m_cext[j] = std::min (ndv(i+j), odv(i+j));
+        m_sext[j] = sld *= odv(i+j);
+        m_dext[j] = dld *= ndv(i+j);
       }
-    cext[0] *= ld;
+    m_cext[0] *= ld;
   }
 
   // No copying!
@@ -661,7 +655,11 @@ public:
 
   rec_resize_helper& operator = (const rec_resize_helper&) = delete;
 
-  ~rec_resize_helper (void) { delete [] cext; }
+  ~rec_resize_helper (void) { delete [] m_cext; }
+
+  template <typename T>
+  void resize_fill (const T *src, T *dest, const T& rfv) const
+  { do_resize_fill (src, dest, rfv, m_n-1); }
 
 private:
 
@@ -671,31 +669,32 @@ private:
   {
     if (lev == 0)
       {
-        std::copy_n (src, cext[0], dest);
-        std::fill_n (dest + cext[0], dext[0] - cext[0], rfv);
+        std::copy_n (src, m_cext[0], dest);
+        std::fill_n (dest + m_cext[0], m_dext[0] - m_cext[0], rfv);
       }
     else
       {
         octave_idx_type sd, dd, k;
-        sd = sext[lev-1];
-        dd = dext[lev-1];
-        for (k = 0; k < cext[lev]; k++)
+        sd = m_sext[lev-1];
+        dd = m_dext[lev-1];
+        for (k = 0; k < m_cext[lev]; k++)
           do_resize_fill (src + k * sd, dest + k * dd, rfv, lev - 1);
 
-        std::fill_n (dest + k * dd, dext[lev] - k * dd, rfv);
+        std::fill_n (dest + k * dd, m_dext[lev] - k * dd, rfv);
       }
   }
 
-public:
+  //--------
 
-  template <typename T>
-  void resize_fill (const T *src, T *dest, const T& rfv) const
-  { do_resize_fill (src, dest, rfv, n-1); }
+  octave_idx_type *m_cext;
+  octave_idx_type *m_sext;
+  octave_idx_type *m_dext;
+  int m_n;
 };
 
 template <typename T>
 Array<T>
-Array<T>::index (const idx_vector& i) const
+Array<T>::index (const octave::idx_vector& i) const
 {
   // Colon:
   //
@@ -726,7 +725,7 @@ Array<T>::index (const idx_vector& i) const
   else
     {
       if (i.extent (n) != n)
-        octave::err_index_out_of_range (1, 1, i.extent (n), n, dimensions);
+        octave::err_index_out_of_range (1, 1, i.extent (n), n, m_dimensions);
 
       dim_vector result_dims = i.orig_dimensions ();
       octave_idx_type idx_len = i.length ();
@@ -762,10 +761,10 @@ Array<T>::index (const idx_vector& i) const
 
 template <typename T>
 Array<T>
-Array<T>::index (const idx_vector& i, const idx_vector& j) const
+Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
 {
   // Get dimensions, allowing Fortran indexing in the 2nd dim.
-  dim_vector dv = dimensions.redim (2);
+  dim_vector dv = m_dimensions.redim (2);
   octave_idx_type r = dv(0);
   octave_idx_type c = dv(1);
   Array<T> retval;
@@ -778,15 +777,15 @@ Array<T>::index (const idx_vector& i, const idx_vector& j) const
   else
     {
       if (i.extent (r) != r)
-        octave::err_index_out_of_range (2, 1, i.extent (r), r, dimensions); // throws
+        octave::err_index_out_of_range (2, 1, i.extent (r), r, m_dimensions); // throws
       if (j.extent (c) != c)
-        octave::err_index_out_of_range (2, 2, j.extent (c), c, dimensions); // throws
+        octave::err_index_out_of_range (2, 2, j.extent (c), c, m_dimensions); // throws
 
       octave_idx_type n = numel ();
       octave_idx_type il = i.length (r);
       octave_idx_type jl = j.length (c);
 
-      idx_vector ii (i);
+      octave::idx_vector ii (i);
 
       if (ii.maybe_reduce (r, j, c))
         {
@@ -820,7 +819,7 @@ Array<T>::index (const idx_vector& i, const idx_vector& j) const
 
 template <typename T>
 Array<T>
-Array<T>::index (const Array<idx_vector>& ia) const
+Array<T>::index (const Array<octave::idx_vector>& ia) const
 {
   int ial = ia.numel ();
   Array<T> retval;
@@ -833,7 +832,7 @@ Array<T>::index (const Array<idx_vector>& ia) const
   else if (ial > 0)
     {
       // Get dimensions, allowing Fortran indexing in the last dim.
-      dim_vector dv = dimensions.redim (ial);
+      dim_vector dv = m_dimensions.redim (ial);
 
       // Check for out of bounds conditions.
       bool all_colons = true;
@@ -841,7 +840,7 @@ Array<T>::index (const Array<idx_vector>& ia) const
         {
           if (ia(i).extent (dv(i)) != dv(i))
             octave::err_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i),
-                                            dimensions); // throws
+                                            m_dimensions); // throws
 
           all_colons = all_colons && ia(i).is_colon ();
         }
@@ -923,19 +922,19 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
   if (n == nx - 1 && n > 0)
     {
       // Stack "pop" operation.
-      if (rep->count == 1)
-        slice_data[slice_len-1] = T ();
-      slice_len--;
-      dimensions = dv;
+      if (m_rep->m_count == 1)
+        m_slice_data[m_slice_len-1] = T ();
+      m_slice_len--;
+      m_dimensions = dv;
     }
   else if (n == nx + 1 && nx > 0)
     {
       // Stack "push" operation.
-      if (rep->count == 1
-          && slice_data + slice_len < rep->data + rep->len)
+      if (m_rep->m_count == 1
+          && m_slice_data + m_slice_len < m_rep->m_data + m_rep->m_len)
         {
-          slice_data[slice_len++] = rfv;
-          dimensions = dv;
+          m_slice_data[m_slice_len++] = rfv;
+          m_dimensions = dv;
         }
       else
         {
@@ -1013,14 +1012,14 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
   int dvl = dv.ndims ();
   if (dvl == 2)
     resize2 (dv(0), dv(1), rfv);
-  else if (dimensions != dv)
+  else if (m_dimensions != dv)
     {
-      if (dimensions.ndims () > dvl || dv.any_neg ())
+      if (m_dimensions.ndims () > dvl || dv.any_neg ())
         octave::err_invalid_resize ();
 
       Array<T> tmp (dv);
       // Prepare for recursive resizing.
-      rec_resize_helper rh (dv, dimensions.redim (dvl));
+      rec_resize_helper rh (dv, m_dimensions.redim (dvl));
 
       // Do it.
       rh.resize_fill (data (), tmp.fortran_vec (), rfv);
@@ -1030,7 +1029,7 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
 
 template <typename T>
 Array<T>
-Array<T>::index (const idx_vector& i, bool resize_ok, const T& rfv) const
+Array<T>::index (const octave::idx_vector& i, bool resize_ok, const T& rfv) const
 {
   Array<T> tmp = *this;
   if (resize_ok)
@@ -1054,13 +1053,13 @@ Array<T>::index (const idx_vector& i, bool resize_ok, const T& rfv) const
 
 template <typename T>
 Array<T>
-Array<T>::index (const idx_vector& i, const idx_vector& j,
+Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j,
                  bool resize_ok, const T& rfv) const
 {
   Array<T> tmp = *this;
   if (resize_ok)
     {
-      dim_vector dv = dimensions.redim (2);
+      dim_vector dv = m_dimensions.redim (2);
       octave_idx_type r = dv(0);
       octave_idx_type c = dv(1);
       octave_idx_type rx = i.extent (r);
@@ -1082,14 +1081,14 @@ Array<T>::index (const idx_vector& i, const idx_vector& j,
 
 template <typename T>
 Array<T>
-Array<T>::index (const Array<idx_vector>& ia,
+Array<T>::index (const Array<octave::idx_vector>& ia,
                  bool resize_ok, const T& rfv) const
 {
   Array<T> tmp = *this;
   if (resize_ok)
     {
       int ial = ia.numel ();
-      dim_vector dv = dimensions.redim (ial);
+      dim_vector dv = m_dimensions.redim (ial);
       dim_vector dvx = dim_vector::alloc (ial);
       for (int i = 0; i < ial; i++)
         dvx(i) = ia(i).extent (dv(i));
@@ -1103,7 +1102,7 @@ Array<T>::index (const Array<idx_vector>& ia,
           else
             tmp.resize (dvx, rfv);
 
-          if (tmp.dimensions != dvx)
+          if (tmp.m_dimensions != dvx)
             return Array<T> ();
         }
     }
@@ -1113,7 +1112,7 @@ Array<T>::index (const Array<idx_vector>& ia,
 
 template <typename T>
 void
-Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
+Array<T>::assign (const octave::idx_vector& i, const Array<T>& rhs, const T& rfv)
 {
   octave_idx_type n = numel ();
   octave_idx_type rhl = rhs.numel ();
@@ -1127,7 +1126,7 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
   if (nx != n)
     {
       // Optimize case A = []; A(1:n) = X with A empty.
-      if (dimensions.zero_by_zero () && colon)
+      if (m_dimensions.zero_by_zero () && colon)
         {
           if (rhl == 1)
             *this = Array<T> (dim_vector (1, nx), rhs(0));
@@ -1146,7 +1145,7 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
       if (rhl == 1)
         fill (rhs(0));
       else
-        *this = rhs.reshape (dimensions);
+        *this = rhs.reshape (m_dimensions);
     }
   else
     {
@@ -1160,18 +1159,18 @@ Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)
 // Assignment to a 2-dimensional array
 template <typename T>
 void
-Array<T>::assign (const idx_vector& i, const idx_vector& j,
+Array<T>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
                   const Array<T>& rhs, const T& rfv)
 {
-  bool initial_dims_all_zero = dimensions.all_zero ();
+  bool initial_dims_all_zero = m_dimensions.all_zero ();
 
   // Get RHS extents, discarding singletons.
   dim_vector rhdv = rhs.dims ();
 
   // Get LHS extents, allowing Fortran indexing in the second dim.
-  dim_vector dv = dimensions.redim (2);
+  dim_vector dv = m_dimensions.redim (2);
 
-  // Check for out-of-bounds and form resizing dimensions.
+  // Check for out-of-bounds and form resizing m_dimensions.
   dim_vector rdv;
 
   // In the special when all dimensions are zero, colons are allowed
@@ -1211,7 +1210,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
             }
 
           resize (rdv, rfv);
-          dv = dimensions;
+          dv = m_dimensions;
         }
 
       if (all_colons)
@@ -1220,7 +1219,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
           if (isfill)
             fill (rhs(0));
           else
-            *this = rhs.reshape (dimensions);
+            *this = rhs.reshape (m_dimensions);
         }
       else
         {
@@ -1228,7 +1227,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
           octave_idx_type n = numel ();
           octave_idx_type r = dv(0);
           octave_idx_type c = dv(1);
-          idx_vector ii (i);
+          octave::idx_vector ii (i);
 
           const T *src = rhs.data ();
           T *dest = fortran_vec ();
@@ -1264,7 +1263,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
 // Assignment to a multi-dimensional array
 template <typename T>
 void
-Array<T>::assign (const Array<idx_vector>& ia,
+Array<T>::assign (const Array<octave::idx_vector>& ia,
                   const Array<T>& rhs, const T& rfv)
 {
   int ial = ia.numel ();
@@ -1276,13 +1275,13 @@ Array<T>::assign (const Array<idx_vector>& ia,
     assign (ia(0), ia(1), rhs, rfv);
   else if (ial > 0)
     {
-      bool initial_dims_all_zero = dimensions.all_zero ();
+      bool initial_dims_all_zero = m_dimensions.all_zero ();
 
       // Get RHS extents, discarding singletons.
       dim_vector rhdv = rhs.dims ();
 
       // Get LHS extents, allowing Fortran indexing in the second dim.
-      dim_vector dv = dimensions.redim (ial);
+      dim_vector dv = m_dimensions.redim (ial);
 
       // Get the extents forced by indexing.
       dim_vector rdv;
@@ -1344,7 +1343,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
               if (isfill)
                 fill (rhs(0));
               else
-                *this = rhs.reshape (dimensions);
+                *this = rhs.reshape (m_dimensions);
             }
           else
             {
@@ -1365,14 +1364,19 @@ Array<T>::assign (const Array<idx_vector>& ia,
           // dimension mismatch, unless LHS and RHS both empty
           bool lhsempty, rhsempty;
           lhsempty = rhsempty = false;
+          dim_vector lhs_dv = dim_vector::alloc (ial);
           for (int i = 0; i < ial; i++)
             {
               octave_idx_type l = ia(i).length (rdv(i));
+              lhs_dv(i) = l;
               lhsempty = lhsempty || (l == 0);
               rhsempty = rhsempty || (rhdv(j++) == 0);
             }
           if (! lhsempty || ! rhsempty)
-            octave::err_nonconformant ("=", dv, rhdv);
+            {
+              lhs_dv.chop_trailing_singletons ();
+              octave::err_nonconformant ("=", lhs_dv, rhdv);
+            }
         }
     }
 }
@@ -1387,7 +1391,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
 
 template <typename T>
 void
-Array<T>::delete_elements (const idx_vector& i)
+Array<T>::delete_elements (const octave::idx_vector& i)
 {
   octave_idx_type n = numel ();
   if (i.is_colon ())
@@ -1401,7 +1405,7 @@ Array<T>::delete_elements (const idx_vector& i)
 
       octave_idx_type l, u;
       bool col_vec = ndims () == 2 && columns () == 1 && rows () != 1;
-      if (i.is_scalar () && i(0) == n-1 && dimensions.isvector ())
+      if (i.is_scalar () && i(0) == n-1 && m_dimensions.isvector ())
         {
           // Stack "pop" operation.
           resize1 (n-1);
@@ -1427,12 +1431,12 @@ Array<T>::delete_elements (const idx_vector& i)
 
 template <typename T>
 void
-Array<T>::delete_elements (int dim, const idx_vector& i)
+Array<T>::delete_elements (int dim, const octave::idx_vector& i)
 {
   if (dim < 0 || dim >= ndims ())
     (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
 
-  octave_idx_type n = dimensions(dim);
+  octave_idx_type n = m_dimensions(dim);
   if (i.is_colon ())
     {
       *this = Array<T> ();
@@ -1450,10 +1454,10 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
           octave_idx_type nd = n + l - u;
           octave_idx_type dl = 1;
           octave_idx_type du = 1;
-          dim_vector rdv = dimensions;
+          dim_vector rdv = m_dimensions;
           rdv(dim) = nd;
-          for (int k = 0; k < dim; k++) dl *= dimensions(k);
-          for (int k = dim + 1; k < ndims (); k++) du *= dimensions(k);
+          for (int k = 0; k < dim; k++) dl *= m_dimensions(k);
+          for (int k = dim + 1; k < ndims (); k++) du *= m_dimensions(k);
 
           // Special case deleting a contiguous range.
           Array<T> tmp = Array<T> (rdv);
@@ -1474,7 +1478,7 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
       else
         {
           // Use index.
-          Array<idx_vector> ia (dim_vector (ndims (), 1), idx_vector::colon);
+          Array<octave::idx_vector> ia (dim_vector (ndims (), 1), octave::idx_vector::colon);
           ia (dim) = i.complement (n);
           *this = index (ia);
         }
@@ -1483,7 +1487,7 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
 
 template <typename T>
 void
-Array<T>::delete_elements (const Array<idx_vector>& ia)
+Array<T>::delete_elements (const Array<octave::idx_vector>& ia)
 {
   int ial = ia.numel ();
 
@@ -1504,7 +1508,7 @@ Array<T>::delete_elements (const Array<idx_vector>& ia)
         }
       if (dim < 0)
         {
-          dim_vector dv = dimensions;
+          dim_vector dv = m_dimensions;
           dv(0) = 0;
           *this = Array<T> (dv);
         }
@@ -1533,7 +1537,7 @@ Array<T>::delete_elements (const Array<idx_vector>& ia)
 
           for (int i = 0; i < ial; i++)
             {
-              octave_idx_type dim_len = (i >= nd ? 1 : dimensions(i));
+              octave_idx_type dim_len = (i >= nd ? 1 : m_dimensions(i));
 
               if (ia(i).length (dim_len) == 0)
                 {
@@ -1562,17 +1566,17 @@ template <typename T>
 Array<T>&
 Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
 {
-  idx_vector i (r, r + a.rows ());
-  idx_vector j (c, c + a.columns ());
+  octave::idx_vector i (r, r + a.rows ());
+  octave::idx_vector j (c, c + a.columns ());
   if (ndims () == 2 && a.ndims () == 2)
     assign (i, j, a);
   else
     {
-      Array<idx_vector> idx (dim_vector (a.ndims (), 1));
+      Array<octave::idx_vector> idx (dim_vector (a.ndims (), 1));
       idx(0) = i;
       idx(1) = j;
       for (int k = 2; k < a.ndims (); k++)
-        idx(k) = idx_vector (0, a.dimensions(k));
+        idx(k) = octave::idx_vector (0, a.m_dimensions(k));
       assign (idx, a);
     }
 
@@ -1584,10 +1588,10 @@ Array<T>&
 Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 {
   octave_idx_type n = ra_idx.numel ();
-  Array<idx_vector> idx (dim_vector (n, 1));
+  Array<octave::idx_vector> idx (dim_vector (n, 1));
   const dim_vector dva = a.dims ().redim (n);
   for (octave_idx_type k = 0; k < n; k++)
-    idx(k) = idx_vector (ra_idx(k), ra_idx(k) + dva(k));
+    idx(k) = octave::idx_vector (ra_idx(k), ra_idx(k) + dva(k));
 
   assign (idx, a);
 
@@ -1741,7 +1745,7 @@ Array<T>::fortran_vec (void)
 {
   make_unique ();
 
-  return slice_data;
+  return m_slice_data;
 }
 
 // Non-real types don't have NaNs.
@@ -1788,10 +1792,14 @@ Array<T>::sort (int dim, sortmode mode) const
 
   if (stride == 1)
     {
+      // Special case along first dimension avoids gather/scatter AND directly
+      // sorts into destination buffer for an 11% performance boost.
       for (octave_idx_type j = 0; j < iter; j++)
         {
-          // copy and partition out NaNs.
-          // FIXME: impact on integer types noticeable?
+          // Copy and partition out NaNs.
+          // No need to special case integer types <T> from floating point
+          // types <T> to avoid sort_isnan() test as it makes no discernible
+          // performance impact.
           octave_idx_type kl = 0;
           octave_idx_type ku = ns;
           for (octave_idx_type i = 0; i < ns; i++)
@@ -1825,18 +1833,10 @@ Array<T>::sort (int dim, sortmode mode) const
       for (octave_idx_type j = 0; j < iter; j++)
         {
           octave_idx_type offset = j;
-          octave_idx_type offset2 = 0;
-
-          while (offset >= stride)
-            {
-              offset -= stride;
-              offset2++;
-            }
-
-          offset += offset2 * stride * ns;
+          octave_idx_type n_strides = j / stride;
+          offset += n_strides * stride * (ns - 1);
 
           // gather and partition out NaNs.
-          // FIXME: impact on integer types noticeable?
           octave_idx_type kl = 0;
           octave_idx_type ku = ns;
           for (octave_idx_type i = 0; i < ns; i++)
@@ -1908,10 +1908,11 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
 
   if (stride == 1)
     {
+      // Special case for dim 1 avoids gather/scatter for performance boost.
+      // See comments in Array::sort (dim, mode).
       for (octave_idx_type j = 0; j < iter; j++)
         {
           // copy and partition out NaNs.
-          // FIXME: impact on integer types noticeable?
           octave_idx_type kl = 0;
           octave_idx_type ku = ns;
           for (octave_idx_type i = 0; i < ns; i++)
@@ -1959,18 +1960,10 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
       for (octave_idx_type j = 0; j < iter; j++)
         {
           octave_idx_type offset = j;
-          octave_idx_type offset2 = 0;
-
-          while (offset >= stride)
-            {
-              offset -= stride;
-              offset2++;
-            }
-
-          offset += offset2 * stride * ns;
+          octave_idx_type n_strides = j / stride;
+          offset += n_strides * stride * (ns - 1);
 
           // gather and partition out NaNs.
-          // FIXME: impact on integer types noticeable?
           octave_idx_type kl = 0;
           octave_idx_type ku = ns;
           for (octave_idx_type i = 0; i < ns; i++)
@@ -2294,16 +2287,16 @@ Array<T>::find (octave_idx_type n, bool backward) const
 
   if ((numel () == 1 && retval.isempty ())
       || (rows () == 0 && dims ().numel (1) == 0))
-    retval.dimensions = dim_vector ();
+    retval.m_dimensions = dim_vector ();
   else if (rows () == 1 && ndims () == 2)
-    retval.dimensions = dim_vector (1, retval.numel ());
+    retval.m_dimensions = dim_vector (1, retval.numel ());
 
   return retval;
 }
 
 template <typename T>
 Array<T>
-Array<T>::nth_element (const idx_vector& n, int dim) const
+Array<T>::nth_element (const octave::idx_vector& n, int dim) const
 {
   if (dim < 0)
     (*current_liboctave_error_handler) ("nth_element: invalid dimension");
@@ -2330,11 +2323,11 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
 
   switch (n.idx_class ())
     {
-    case idx_vector::class_scalar:
+    case octave::idx_vector::class_scalar:
       mode = ASCENDING;
       lo = n(0);
       break;
-    case idx_vector::class_range:
+    case octave::idx_vector::class_range:
       {
         octave_idx_type inc = n.increment ();
         if (inc == 1)
@@ -2349,7 +2342,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
           }
       }
       break;
-    case idx_vector::class_vector:
+    case octave::idx_vector::class_vector:
       // This case resolves bug #51329, a fallback to allow the given index
       // to be a sequential vector instead of the typical scalar or range
       if (n(1) - n(0) == 1)
@@ -2403,7 +2396,6 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
       if (stride == 1)
         {
           // copy without NaNs.
-          // FIXME: impact on integer types noticeable?
           for (octave_idx_type i = 0; i < ns; i++)
             {
               T tmp = ov[i];
@@ -2419,7 +2411,6 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
         {
           octave_idx_type offset = j % stride;
           // copy without NaNs.
-          // FIXME: impact on integer types noticeable?
           for (octave_idx_type i = 0; i < ns; i++)
             {
               T tmp = ov[offset + i*stride];
@@ -2466,62 +2457,64 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
   return m;
 }
 
-#define NO_INSTANTIATE_ARRAY_SORT(T)                                    \
-  template <> Array<T>                                                  \
+#define NO_INSTANTIATE_ARRAY_SORT_API(T, API)                           \
+  template <> API Array<T>                                              \
   Array<T>::sort (int, sortmode) const                                  \
   {                                                                     \
     return *this;                                                       \
   }                                                                     \
-  template <> Array<T>                                                  \
+  template <> API Array<T>                                              \
   Array<T>::sort (Array<octave_idx_type> &sidx, int, sortmode) const    \
   {                                                                     \
     sidx = Array<octave_idx_type> ();                                   \
     return *this;                                                       \
   }                                                                     \
-  template <> sortmode                                                  \
-  Array<T>::issorted (sortmode) const                                  \
+  template <> API sortmode                                              \
+  Array<T>::issorted (sortmode) const                                   \
   {                                                                     \
     return UNSORTED;                                                    \
   }                                                                     \
-  Array<T>::compare_fcn_type                                            \
+  API Array<T>::compare_fcn_type                                        \
   safe_comparator (sortmode, const Array<T>&, bool)                     \
   {                                                                     \
     return nullptr;                                                     \
   }                                                                     \
-  template <> Array<octave_idx_type>                                    \
+  template <> API Array<octave_idx_type>                                \
   Array<T>::sort_rows_idx (sortmode) const                              \
   {                                                                     \
     return Array<octave_idx_type> ();                                   \
   }                                                                     \
-  template <> sortmode                                                  \
+  template <> API sortmode                                              \
   Array<T>::is_sorted_rows (sortmode) const                             \
   {                                                                     \
     return UNSORTED;                                                    \
   }                                                                     \
-  template <> octave_idx_type                                           \
+  template <> API octave_idx_type                                       \
   Array<T>::lookup (T const &, sortmode) const                          \
   {                                                                     \
     return 0;                                                           \
   }                                                                     \
-  template <> Array<octave_idx_type>                                    \
+  template <> API Array<octave_idx_type>                                \
   Array<T>::lookup (const Array<T>&, sortmode) const                    \
   {                                                                     \
     return Array<octave_idx_type> ();                                   \
   }                                                                     \
-  template <> octave_idx_type                                           \
+  template <> API octave_idx_type                                       \
   Array<T>::nnz (void) const                                            \
   {                                                                     \
     return 0;                                                           \
   }                                                                     \
-  template <> Array<octave_idx_type>                                    \
+  template <> API Array<octave_idx_type>                                \
   Array<T>::find (octave_idx_type, bool) const                          \
   {                                                                     \
     return Array<octave_idx_type> ();                                   \
   }                                                                     \
-  template <> Array<T>                                                  \
-  Array<T>::nth_element (const idx_vector&, int) const {                \
+  template <> API Array<T>                                              \
+  Array<T>::nth_element (const octave::idx_vector&, int) const {        \
     return Array<T> ();                                                 \
   }
+
+#define NO_INSTANTIATE_ARRAY_SORT(T) NO_INSTANTIATE_ARRAY_SORT_API (T,)
 
 template <typename T>
 Array<T>
@@ -2697,7 +2690,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
     return retval;
 
   int nidx = std::max (dv.ndims (), static_cast<octave_idx_type> (dim + 1));
-  Array<idx_vector> idxa (dim_vector (nidx, 1), idx_vector::colon);
+  Array<octave::idx_vector> idxa (dim_vector (nidx, 1), octave::idx_vector::colon);
   octave_idx_type l = 0;
 
   for (octave_idx_type i = 0; i < n; i++)
@@ -2719,7 +2712,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
       else
         u = l + 1;
 
-      idxa(dim) = idx_vector (l, u);
+      idxa(dim) = octave::idx_vector (l, u);
 
       retval.assign (idxa, array_list[i]);
 
@@ -2733,12 +2726,12 @@ template <typename T>
 void
 Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 {
-  os << prefix << "rep address: " << rep << '\n'
-     << prefix << "rep->len:    " << rep->len << '\n'
-     << prefix << "rep->data:   " << static_cast<void *> (rep->data) << '\n'
-     << prefix << "rep->count:  " << rep->count << '\n'
-     << prefix << "slice_data:  " << static_cast<void *> (slice_data) << '\n'
-     << prefix << "slice_len:   " << slice_len << '\n';
+  os << prefix << "m_rep address:   " << m_rep << '\n'
+     << prefix << "m_rep->m_len:    " << m_rep->m_len << '\n'
+     << prefix << "m_rep->m_data:   " << static_cast<void *> (m_rep->m_data) << '\n'
+     << prefix << "m_rep->m_count:  " << m_rep->m_count << '\n'
+     << prefix << "m_slice_data:    " << static_cast<void *> (m_slice_data) << '\n'
+     << prefix << "m_slice_len:     " << m_slice_len << '\n';
 
   // 2D info:
   //
@@ -2749,9 +2742,9 @@ Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 template <typename T>
 bool Array<T>::optimize_dimensions (const dim_vector& dv)
 {
-  bool retval = dimensions == dv;
+  bool retval = m_dimensions == dv;
   if (retval)
-    dimensions = dv;
+    m_dimensions = dv;
 
   return retval;
 }
@@ -2764,9 +2757,15 @@ void Array<T>::instantiation_guard ()
   T::__xXxXx__ ();
 }
 
-#define INSTANTIATE_ARRAY(T, API)                       \
-  template <> void Array<T>::instantiation_guard () { } \
-  template class API Array<T>
+#if defined (__clang__)
+#  define INSTANTIATE_ARRAY(T, API)                            \
+     template <> API void Array<T>::instantiation_guard () { } \
+     template class API Array<T>
+#else
+#  define INSTANTIATE_ARRAY(T, API)                            \
+     template <> API void Array<T>::instantiation_guard () { } \
+     template class Array<T>
+#endif
 
 // FIXME: is this used?
 

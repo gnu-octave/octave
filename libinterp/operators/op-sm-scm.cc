@@ -39,6 +39,8 @@
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // sparse matrix by sparse complex matrix ops.
 
 DEFBINOP_OP (add, sparse_matrix, sparse_complex_matrix, +)
@@ -182,3 +184,5 @@ install_sm_scm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_sparse_matrix, octave_sparse_complex_matrix,
                       sparse_complex_matrix_conv);
 }
+
+OCTAVE_NAMESPACE_END

@@ -109,7 +109,6 @@
 
 #include <cassert>
 #include <algorithm>
-#include <functional>
 #include <cstring>
 #include <stack>
 
@@ -125,7 +124,7 @@ octave_sort<T>::octave_sort (void) :
 { }
 
 template <typename T>
-octave_sort<T>::octave_sort (compare_fcn_type comp)
+octave_sort<T>::octave_sort (const compare_fcn_type& comp)
   : m_compare (comp), m_ms (nullptr)
 { }
 
@@ -144,7 +143,7 @@ octave_sort<T>::set_compare (sortmode mode)
   else if (mode == DESCENDING)
     m_compare = descending_compare;
   else
-    m_compare = nullptr;
+    m_compare = compare_fcn_type ();
 }
 
 template <typename T>
@@ -1513,16 +1512,20 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
 }
 
 template <typename T>
+using compare_fcn_ptr = bool (*) (typename ref_param<T>::type,
+                                  typename ref_param<T>::type);
+
+template <typename T>
 void
 octave_sort<T>::sort (T *data, octave_idx_type nel)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     sort (data, nel, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       sort (data, nel, std::greater<T> ());
     else
 #endif
@@ -1535,12 +1538,12 @@ void
 octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     sort (data, idx, nel, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       sort (data, idx, nel, std::greater<T> ());
     else
 #endif
@@ -1575,12 +1578,12 @@ octave_sort<T>::issorted (const T *data, octave_idx_type nel)
 {
   bool retval = false;
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     retval = issorted (data, nel, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       retval = issorted (data, nel, std::greater<T> ());
     else
 #endif
@@ -1590,11 +1593,12 @@ octave_sort<T>::issorted (const T *data, octave_idx_type nel)
   return retval;
 }
 
-// FIXME: is there really no way to make this local to the following function?
 struct sortrows_run_t
 {
+public:
   sortrows_run_t (octave_idx_type c, octave_idx_type o, octave_idx_type n)
     : col (c), ofs (o), nel (n) { }
+  //--------
   octave_idx_type col, ofs, nel;
 };
 
@@ -1662,12 +1666,12 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
                            octave_idx_type rows, octave_idx_type cols)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     sort_rows (data, idx, rows, cols, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       sort_rows (data, idx, rows, cols, std::greater<T> ());
     else
 #endif
@@ -1739,14 +1743,13 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
                                 octave_idx_type cols)
 {
   bool retval = false;
-
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     retval = is_sorted_rows (data, rows, cols, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       retval = is_sorted_rows (data, rows, cols, std::greater<T> ());
     else
 #endif
@@ -1785,19 +1788,18 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T& value)
 {
   octave_idx_type retval = 0;
-
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     retval = lookup (data, nel, value, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       retval = lookup (data, nel, value, std::greater<T> ());
     else
 #endif
       if (m_compare)
-        retval = lookup (data, nel, value, std::ptr_fun (m_compare));
+        retval = lookup (data, nel, value, m_compare);
 
   return retval;
 }
@@ -1823,17 +1825,17 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         octave_idx_type *idx)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     lookup (data, nel, values, nvalues, idx, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       lookup (data, nel, values, nvalues, idx, std::greater<T> ());
     else
 #endif
       if (m_compare)
-        lookup (data, nel, values, nvalues, idx, std::ptr_fun (m_compare));
+        lookup (data, nel, values, nvalues, idx, m_compare);
 }
 
 template <typename T>
@@ -1898,18 +1900,17 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
                                octave_idx_type *idx, bool rev)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     lookup_sorted (data, nel, values, nvalues, idx, rev, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       lookup_sorted (data, nel, values, nvalues, idx, rev, std::greater<T> ());
     else
 #endif
       if (m_compare)
-        lookup_sorted (data, nel, values, nvalues, idx, rev,
-                       std::ptr_fun (m_compare));
+        lookup_sorted (data, nel, values, nvalues, idx, rev, m_compare);
 }
 
 template <typename T>
@@ -1946,18 +1947,19 @@ octave_sort<T>::nth_element (T *data, octave_idx_type nel,
 {
   if (up < 0)
     up = lo + 1;
+
 #if defined (INLINE_ASCENDING_SORT)
-  if (m_compare == ascending_compare)
+  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
     nth_element (data, nel, lo, up, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (m_compare == descending_compare)
+    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
       nth_element (data, nel, lo, up, std::greater<T> ());
     else
 #endif
       if (m_compare)
-        nth_element (data, nel, lo, up, std::ptr_fun (m_compare));
+        nth_element (data, nel, lo, up, m_compare);
 }
 
 template <typename T>

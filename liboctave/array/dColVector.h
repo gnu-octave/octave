@@ -59,28 +59,31 @@ public:
     return *this;
   }
 
-  bool operator == (const ColumnVector& a) const;
-  bool operator != (const ColumnVector& a) const;
+  OCTAVE_API bool operator == (const ColumnVector& a) const;
+  OCTAVE_API bool operator != (const ColumnVector& a) const;
 
   // destructive insert/delete/reorder operations
 
-  ColumnVector& insert (const ColumnVector& a, octave_idx_type r);
+  OCTAVE_API ColumnVector& insert (const ColumnVector& a, octave_idx_type r);
 
-  ColumnVector& fill (double val);
-  ColumnVector& fill (double val, octave_idx_type r1, octave_idx_type r2);
+  OCTAVE_API ColumnVector& fill (double val);
+  OCTAVE_API ColumnVector&
+  fill (double val, octave_idx_type r1, octave_idx_type r2);
 
-  ColumnVector stack (const ColumnVector& a) const;
+  OCTAVE_API ColumnVector stack (const ColumnVector& a) const;
 
-  RowVector transpose (void) const;
+  OCTAVE_API RowVector transpose (void) const;
 
   friend OCTAVE_API ColumnVector real (const ComplexColumnVector& a);
   friend OCTAVE_API ColumnVector imag (const ComplexColumnVector& a);
 
   // resize is the destructive equivalent for this one
 
-  ColumnVector extract (octave_idx_type r1, octave_idx_type r2) const;
+  OCTAVE_API ColumnVector
+  extract (octave_idx_type r1, octave_idx_type r2) const;
 
-  ColumnVector extract_n (octave_idx_type r1, octave_idx_type n) const;
+  OCTAVE_API ColumnVector
+  extract_n (octave_idx_type r1, octave_idx_type n) const;
 
   // matrix by column vector -> column vector operations
 
@@ -94,10 +97,10 @@ public:
 
   // other operations
 
-  double min (void) const;
-  double max (void) const;
+  OCTAVE_API double min (void) const;
+  OCTAVE_API double max (void) const;
 
-  ColumnVector abs (void) const;
+  OCTAVE_API ColumnVector abs (void) const;
 
   // i/o
 

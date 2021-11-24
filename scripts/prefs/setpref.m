@@ -96,9 +96,7 @@ endfunction
 %!         "size mismatch for PREF and VAL");
 %! unwind_protect_cleanup
 %!   unlink (fullfile (tmp_home, ".octave_prefs"));
-%!   if (isfolder (tmp_home))
-%!     rmdir (tmp_home);
-%!   endif
+%!   sts = rmdir (tmp_home);
 %!   if (isempty (HOME))
 %!     unsetenv ("HOME");
 %!   else
@@ -106,9 +104,9 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
-%!error setpref ()
-%!error setpref (1)
-%!error setpref (1,2)
-%!error setpref (1,2,3,4)
+## Test input validation
+%!error <Invalid call> setpref ()
+%!error <Invalid call> setpref (1)
+%!error <Invalid call> setpref (1,2)
 %!error <GROUP must be a string> setpref (1, "pref1", 2)
 %!error <PREF must be a string> setpref ("group1", 1, 2)

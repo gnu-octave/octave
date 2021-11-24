@@ -88,8 +88,9 @@
 ## @end example
 ##
 ## Implementation Note: The search only includes objects with visible
-## handles (@w{HandleVisibility} = @qcode{"on"}).  @xref{XREFfindall,,findall},
-## to search for all objects including hidden ones.
+## handles (@w{HandleVisibility} = @qcode{"on"}).
+## @xref{XREFfindall,,@code{findall}}, to search for all objects including
+## hidden ones.
 ## @seealso{findall, allchild, get, set}
 ## @end deftypefn
 
@@ -329,7 +330,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   l = line;
+%!   l = line ();
 %!   obj = findobj (hf, "type", "line");
 %!   assert (l, obj);
 %!   assert (gca, findobj (hf, "type", "axes"));

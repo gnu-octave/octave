@@ -50,19 +50,18 @@ namespace octave
     class base_tm;
 
     class
-    OCTAVE_API
     time
     {
     public:
 
       time (void)
-        : ot_unix_time (0), ot_usec (0) { stamp (); }
+        : m_ot_unix_time (0), m_ot_usec (0) { stamp (); }
 
       time (time_t t)
-        : ot_unix_time (t), ot_usec (0) { }
+        : m_ot_unix_time (t), m_ot_usec (0) { }
 
       time (time_t t, long us)
-        : ot_unix_time (t), ot_usec ()
+        : m_ot_unix_time (t), m_ot_usec ()
       {
         long rem, extra;
 
@@ -79,23 +78,23 @@ namespace octave
             rem = 1000000 - us % 1000000;
           }
 
-        ot_usec = rem;
-        ot_unix_time += extra;
+        m_ot_usec = rem;
+        m_ot_unix_time += extra;
       }
 
-      time (double d);
+      OCTAVE_API time (double d);
 
-      time (const base_tm& tm);
+      OCTAVE_API time (const base_tm& tm);
 
       time (const time& ot)
-        : ot_unix_time (ot.ot_unix_time), ot_usec (ot.ot_usec) { }
+        : m_ot_unix_time (ot.m_ot_unix_time), m_ot_usec (ot.m_ot_usec) { }
 
       time& operator = (const time& ot)
       {
         if (this != &ot)
           {
-            ot_unix_time = ot.ot_unix_time;
-            ot_usec = ot.ot_usec;
+            m_ot_unix_time = ot.m_ot_unix_time;
+            m_ot_usec = ot.m_ot_usec;
           }
 
         return *this;
@@ -103,28 +102,28 @@ namespace octave
 
       ~time (void) = default;
 
-      void stamp (void);
+      OCTAVE_API void stamp (void);
 
       double double_value (void) const
       {
-        return as_double (ot_unix_time, ot_usec);
+        return as_double (m_ot_unix_time, m_ot_usec);
       }
 
-      time_t unix_time (void) const { return ot_unix_time; }
+      time_t unix_time (void) const { return m_ot_unix_time; }
 
-      long usec (void) const { return ot_usec; }
+      long usec (void) const { return m_ot_usec; }
 
-      std::string ctime (void) const;
+      OCTAVE_API std::string ctime (void) const;
 
-      friend std::ostream& operator << (std::ostream& os, const time& ot);
+      friend OCTAVE_API std::ostream& operator << (std::ostream& os, const time& ot);
 
     private:
 
       // Seconds since the epoch.
-      time_t ot_unix_time;
+      time_t m_ot_unix_time;
 
       // Additional microseconds.
-      long ot_usec;
+      long m_ot_usec;
     };
 
     inline bool
@@ -185,7 +184,6 @@ namespace octave
     }
 
     class
-    OCTAVE_API
     base_tm
     {
     public:
@@ -239,20 +237,20 @@ namespace octave
       long gmtoff (void) const { return m_gmtoff; }
       std::string zone (void) const { return m_zone; }
 
-      base_tm& usec (int v);
-      base_tm& sec (int v);
-      base_tm& min (int v);
-      base_tm& hour (int v);
-      base_tm& mday (int v);
-      base_tm& mon (int v);
-      base_tm& year (int v);
-      base_tm& wday (int v);
-      base_tm& yday (int v);
-      base_tm& isdst (int v);
-      base_tm& gmtoff (long v);
-      base_tm& zone (const std::string& s);
+      OCTAVE_API base_tm& usec (int v);
+      OCTAVE_API base_tm& sec (int v);
+      OCTAVE_API base_tm& min (int v);
+      OCTAVE_API base_tm& hour (int v);
+      OCTAVE_API base_tm& mday (int v);
+      OCTAVE_API base_tm& mon (int v);
+      OCTAVE_API base_tm& year (int v);
+      OCTAVE_API base_tm& wday (int v);
+      OCTAVE_API base_tm& yday (int v);
+      OCTAVE_API base_tm& isdst (int v);
+      OCTAVE_API base_tm& gmtoff (long v);
+      OCTAVE_API base_tm& zone (const std::string& s);
 
-      std::string strftime (const std::string& fmt) const;
+      OCTAVE_API std::string strftime (const std::string& fmt) const;
 
       std::string asctime (void) const
       { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
@@ -295,11 +293,10 @@ namespace octave
       // Time zone.
       std::string m_zone;
 
-      void init (void *p);
+      OCTAVE_API void init (void *p);
     };
 
     class
-    OCTAVE_API
     localtime : public base_tm
     {
     public:
@@ -323,11 +320,10 @@ namespace octave
 
     private:
 
-      void init (const time& ot);
+      OCTAVE_API void init (const time& ot);
     };
 
     class
-    OCTAVE_API
     gmtime : public base_tm
     {
     public:
@@ -348,44 +344,42 @@ namespace octave
 
     private:
 
-      void init (const time& ot);
+      OCTAVE_API void init (const time& ot);
     };
 
     class
-    OCTAVE_API
     strptime : public base_tm
     {
     public:
 
       strptime (const std::string& str, const std::string& fmt)
-        : base_tm (), nchars (0)
+        : base_tm (), m_nchars (0)
       {
         init (str, fmt);
       }
 
       strptime (const strptime& s)
-        : base_tm (s), nchars (s.nchars) { }
+        : base_tm (s), m_nchars (s.m_nchars) { }
 
       strptime& operator = (const strptime& s)
       {
         base_tm::operator = (s);
-        nchars = s.nchars;
+        m_nchars = s.m_nchars;
         return *this;
       }
 
-      int characters_converted (void) const { return nchars; }
+      int characters_converted (void) const { return m_nchars; }
 
       ~strptime (void) = default;
 
     private:
 
-      int nchars;
+      int m_nchars;
 
-      void init (const std::string& str, const std::string& fmt);
+      OCTAVE_API void init (const std::string& str, const std::string& fmt);
     };
 
     class
-    OCTAVE_API
     cpu_time
     {
     public:
@@ -416,7 +410,7 @@ namespace octave
         return *this;
       }
 
-      void stamp (void);
+      OCTAVE_API void stamp (void);
 
       double user (void) const
       {
@@ -498,7 +492,7 @@ namespace octave
         return *this;
       }
 
-      void stamp (void);
+      OCTAVE_API void stamp (void);
 
       cpu_time cpu (void) const { return m_cpu; }
 

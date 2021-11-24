@@ -210,28 +210,30 @@ octave::string::strncmpi (const T& str_a, const typename T::value_type *str_b,
 
 
 // Instantiations we need
-#define INSTANTIATE_OCTAVE_STRING(T)                                          \
-  template bool octave::string::strcmp<T> (const T&, const T&);               \
-  template bool octave::string::strcmp<T> (const T&,                          \
-                                           const typename T::value_type*);    \
-  template bool octave::string::strcmpi<T> (const T&, const T&);              \
-  template bool octave::string::strcmpi<T> (const T&,                         \
-                                            const typename T::value_type*);   \
-  template bool octave::string::strncmp<T> (const T&, const T&,               \
-                                            const typename T::size_type);     \
-  template bool octave::string::strncmp<T> (const T&,                         \
-                                            const typename T::value_type*,    \
-                                            const typename T::size_type);     \
-  template bool octave::string::strncmpi<T> (const T&, const T&,              \
-                                             const typename T::size_type n);  \
-  template bool octave::string::strncmpi<T> (const T&,                        \
-                                             const typename T::value_type*,   \
-                                             const typename T::size_type);
+#define INSTANTIATE_OCTAVE_STRING(T, API)                                     \
+  template API bool octave::string::strcmp<T> (const T&, const T&);           \
+  template API bool                                                           \
+  octave::string::strcmp<T> (const T&, const typename T::value_type*);        \
+  template API bool octave::string::strcmpi<T> (const T&, const T&);          \
+  template API bool                                                           \
+  octave::string::strcmpi<T> (const T&, const typename T::value_type*);       \
+  template API bool                                                           \
+  octave::string::strncmp<T> (const T&, const T&,                             \
+                              const typename T::size_type);                   \
+  template API bool                                                           \
+  octave::string::strncmp<T> (const T&, const typename T::value_type*,        \
+                              const typename T::size_type);                   \
+  template API bool                                                           \
+  octave::string::strncmpi<T> (const T&, const T&,                            \
+                               const typename T::size_type n);                \
+  template API bool                                                           \
+  octave::string::strncmpi<T> (const T&, const typename T::value_type*,       \
+                               const typename T::size_type);
 
 // We could also instantiate std::vector<char> but would it be
 // useful for anyone?
-INSTANTIATE_OCTAVE_STRING(std::string)
-INSTANTIATE_OCTAVE_STRING(Array<char>)
+INSTANTIATE_OCTAVE_STRING(std::string, OCTAVE_API)
+INSTANTIATE_OCTAVE_STRING(Array<char>, OCTAVE_API)
 
 #undef INSTANTIATE_OCTAVE_STRING
 
@@ -516,8 +518,7 @@ octave::string::u8_to_encoding (const std::string& who,
            who.c_str (), encoding.c_str (), std::strerror (errno));
     }
 
-  octave::unwind_protect frame;
-  frame.add_fcn (::free, static_cast<void *> (native_str));
+  octave::unwind_action free_native_str ([=] () { ::free (native_str); });
 
   std::string retval = std::string (native_str, length);
 
@@ -547,8 +548,7 @@ octave::string::u8_from_encoding (const std::string& who,
            who.c_str (), encoding.c_str (), std::strerror (errno));
     }
 
-  octave::unwind_protect frame;
-  frame.add_fcn (::free, static_cast<void *> (utf8_str));
+  octave::unwind_action free_utf8_str ([=] () { ::free (utf8_str); });
 
   std::string retval = std::string (reinterpret_cast<char *> (utf8_str), length);
 
@@ -594,8 +594,8 @@ octave::string::u8_validate (const std::string& who,
                   ("%s: converting from codepage '%s' to UTF-8 failed: %s",
                    who.c_str (), fallback.c_str (), std::strerror (errno));
 
-              octave::unwind_protect frame;
-              frame.add_fcn (::free, static_cast<void *> (val_utf8));
+              octave::unwind_action free_val_utf8
+                ([=] () { ::free (val_utf8); });
 
               out_str.append (reinterpret_cast<const char *> (val_utf8),
                               lengthp);
@@ -711,5 +711,5 @@ rational_approx (T val, int len)
 }
 
 // instantiate the template for float and double
-template std::string rational_approx <float> (float val, int len);
-template std::string rational_approx <double> (double val, int len);
+template OCTAVE_API std::string rational_approx <float> (float val, int len);
+template OCTAVE_API std::string rational_approx <double> (double val, int len);

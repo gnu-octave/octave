@@ -49,6 +49,8 @@ for now.
 #include "ov.h"
 #include "ovl.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 DEFUN (hash, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} hash (@var{hfun}, @var{str})
@@ -119,7 +121,7 @@ hash ("md5", fileread (file));
   std::string hash_type = args(0).string_value ();
   std::string str = args(1).string_value ();
 
-  return ovl (octave::crypto::hash (hash_type, str));
+  return ovl (crypto::hash (hash_type, str));
 }
 
 /*
@@ -238,3 +240,5 @@ hash ("md5", fileread (file));
 %!error hash ("sha1")
 %!error hash ("sha512")
 */
+
+OCTAVE_NAMESPACE_END

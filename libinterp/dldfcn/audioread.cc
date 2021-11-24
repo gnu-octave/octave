@@ -49,13 +49,7 @@
 #  include <sndfile.h>
 #endif
 
-#if defined (HAVE_SNDFILE)
-static void
-safe_close (SNDFILE *file)
-{
-  sf_close (file);
-}
-#endif
+OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (audioread, args, ,
            doc: /* -*- texinfo -*-
@@ -96,9 +90,13 @@ is stored in the audio file.
     error ("audioread: failed to open input file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  octave::unwind_protect frame;
+  unwind_action close_open_file ([=] () { sf_close (file); });
 
-  frame.add_fcn (safe_close, file);
+  // FIXME: It would be nicer to use a C++ expandable data container and
+  // read a file of unknown length into memory in chunks and determine the
+  // number of samples after reading.  See bug #60888.
+  if (info.frames == SF_COUNT_MAX)
+    error ("audioread: malformed header does not specify number of samples");
 
   OCTAVE_LOCAL_BUFFER (double, data, info.frames * info.channels);
 
@@ -114,12 +112,12 @@ is stored in the audio file.
       if (range.numel () != 2)
         error ("audioread: invalid specification for range of frames");
 
-      double dstart = (octave::math::isinf (range(0)) ? info.frames : range(0));
-      double dend = (octave::math::isinf (range(1)) ? info.frames : range(1));
+      double dstart = (math::isinf (range(0)) ? info.frames : range(0));
+      double dend = (math::isinf (range(1)) ? info.frames : range(1));
 
       if (dstart < 1 || dstart > dend || dend > info.frames
-          || octave::math::x_nint (dstart) != dstart
-          || octave::math::x_nint (dend) != dend)
+          || math::x_nint (dstart) != dstart
+          || math::x_nint (dend) != dend)
         error ("audioread: invalid specification for range of frames");
 
       start = dstart - 1;
@@ -410,7 +408,7 @@ Comment.
 
           double value = value_arg.xdouble_value ("audiowrite: Quality value must be a numeric scalar between 0 and 100");
 
-          if (octave::math::isnan (value) || value < 0 || value > 100)
+          if (math::isnan (value) || value < 0 || value > 100)
             error ("audiowrite: Quality value must be a number between 0 and 100");
 
           quality = value / 100;
@@ -431,9 +429,7 @@ Comment.
     error ("audiowrite: failed to open output file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  octave::unwind_protect frame;
-
-  frame.add_fcn (safe_close, file);
+  unwind_action close_open_file ([=] () { sf_close (file); });
 
   sf_command (file, SFC_SET_NORM_DOUBLE, nullptr, SF_TRUE);
   sf_command (file, SFC_SET_CLIPPING, nullptr, SF_TRUE) ;
@@ -614,7 +610,7 @@ Audio bit rate.  Unused, only present for compatibility with @sc{matlab}.
 
   std::string filename = args(0).xstring_value ("audioinfo: FILENAME must be a string");
 
-  octave::sys::file_stat fs (filename);
+  sys::file_stat fs (filename);
   if (! fs.exists ())
     error ("audioinfo: FILENAME '%s' not found", filename.c_str ());
 
@@ -626,23 +622,30 @@ Audio bit rate.  Unused, only present for compatibility with @sc{matlab}.
     error ("audioinfo: failed to open input file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  octave::unwind_protect frame;
-
-  frame.add_fcn (safe_close, file);
+  unwind_action close_open_file ([=] () { sf_close (file); });
 
   octave_scalar_map result;
 
-  std::string full_name = octave::sys::canonicalize_file_name (filename);
+  std::string full_name = sys::canonicalize_file_name (filename);
 
   result.assign ("Filename", full_name);
   result.assign ("CompressionMethod", "");
   result.assign ("NumChannels", info.channels);
   result.assign ("SampleRate", info.samplerate);
-  result.assign ("TotalSamples", info.frames);
+  double dframes;
+  if (info.frames != SF_COUNT_MAX)
+    dframes = info.frames;
+  else
+    dframes = -1;
+  result.assign ("TotalSamples", dframes);
 
-  double dframes = info.frames;
-  double drate = info.samplerate;
-  result.assign ("Duration", dframes / drate);
+  if (dframes != -1)
+    {
+      double drate = info.samplerate;
+      result.assign ("Duration", dframes / drate);
+    }
+  else
+    result.assign ("Duration", -1);
 
   int bits;
   switch (info.format & SF_FORMAT_SUBMASK)
@@ -779,3 +782,5 @@ with names that start with @var{format}.
 
   return octave_value_list ();
 }
+
+OCTAVE_NAMESPACE_END

@@ -65,7 +65,7 @@
 
 function y = rotdim (x, n, plane)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -164,5 +164,4 @@ endfunction
 ## FIXME: We need tests for multidimensional arrays
 ##        and different values of PLANE.
 
-%!error rotdim ()
-%!error rotdim (1, 2, 3, 4)
+%!error <Invalid call> rotdim ()

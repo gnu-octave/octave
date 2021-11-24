@@ -175,6 +175,8 @@ create vectors with evenly or logarithmically spaced elements.
 
 @DOCSTRING(randg)
 
+@DOCSTRING(rng)
+
 The generators operate in the new or old style together, it is not
 possible to mix the two.  Initializing any generator with
 @qcode{"state"} or @qcode{"seed"} causes the others to switch to the

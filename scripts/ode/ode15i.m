@@ -255,19 +255,20 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   ## Events
   options.haveeventfunction = ! isempty (options.Events);
 
-  [t, y, te, ye, ie] = __ode15__ (fun, trange, y0, yp0, options);
+  ## 3 arguments in the event callback of ode15i
+  [t, y, te, ye, ie] = __ode15__ (fun, trange, y0, yp0, options, 3);
 
   if (nargout == 2)
     varargout{1} = t;
     varargout{2} = y;
   elseif (nargout == 1)
-    varargout{1}.x = t;  # Time stamps are saved in field x
-    varargout{1}.y = y;  # Results are saved in field y
+    varargout{1}.x = t.';  # Time stamps saved in field x (row vector)
+    varargout{1}.y = y.';  # Results are saved in field y (row vector)
     varargout{1}.solver = solver;
     if (options.haveeventfunction)
-      varargout{1}.xe = te;  # Time info when an event occurred
-      varargout{1}.ye = ye;  # Results when an event occurred
-      varargout{1}.ie = ie;  # Index info which event occurred
+      varargout{1}.xe = te.';  # Time info when an event occurred
+      varargout{1}.ye = ye.';  # Results when an event occurred
+      varargout{1}.ie = ie.';  # Index info which event occurred
     endif
   elseif (nargout > 2)
     varargout = cell (1,5);
@@ -388,11 +389,11 @@ endfunction
 
 ## With empty options
 %!testif HAVE_SUNDIALS
-%! opt = odeset();
+%! opt = odeset ();
 %! [t, y] = ode15i (@rob, [0, 1e6, 2e6, 3e6, 4e6], [1; 0; 0],
 %!                  [-1e-4; 1e-4; 0], opt);
 %! assert ([t(end), y(end,:)], fref2, 1e-3);
-%! opt = odeset();
+%! opt = odeset ();
 
 ## Without options
 %!testif HAVE_SUNDIALS
@@ -504,7 +505,7 @@ endfunction
 %! opt = odeset ("Events", @ff);
 %! sol = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
 %! assert (isfield (sol, "ie"));
-%! assert (sol.ie, [0;1]);
+%! assert (sol.ie, [1, 2]);
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
 %! assert (sol.x(end), 10, 1);
@@ -514,20 +515,22 @@ endfunction
 %! opt = odeset ("Events", @ff);
 %! [t, y, te, ye, ie] = ode15i (@rob, [0, 100], [1; 0; 0],
 %!                              [-1e-4; 1e-4; 0], opt);
-%! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.2, 0.2, 0, 0]);
+%! assert (t(end), 10, 1);
+%! assert (te, [10; 10], 0.2);
+%! assert (ie, [1; 2]);
 
 ## Initial solutions as row vectors
 %!testif HAVE_SUNDIALS
 %! A = eye (2);
 %! [tout, yout] = ode15i (@(t, y, yp) A * y - A * yp, ...
 %! [0, 1], [1, 1], [1, 1]);
-%! assert (size (yout), [20, 2])
+%! assert (size (yout), [20, 2]);
 
 %!testif HAVE_SUNDIALS
 %! A = eye (2);
 %! [tout, yout] = ode15i (@(t, y, yp) A * y - A * yp, ...
 %! [0, 1], [1, 1], [1; 1]);
-%! assert (size (yout), [20, 2])
+%! assert (size (yout), [20, 2]);
 
 ## Jacobian fun wrong dimension
 %!testif HAVE_SUNDIALS

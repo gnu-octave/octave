@@ -38,6 +38,8 @@
 #include "xdiv.h"
 #include "xpow.h"
 
+OCTAVE_NAMESPACE_BEGIN
+
 // matrix unary ops.
 
 DEFUNOP_OP (uplus, complex_diag_matrix, /* no-op */)
@@ -121,3 +123,5 @@ install_cdm_cdm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_complex_diag_matrix, octave_complex_matrix,
                       complex_diag_matrix_to_complex_matrix);
 }
+
+OCTAVE_NAMESPACE_END

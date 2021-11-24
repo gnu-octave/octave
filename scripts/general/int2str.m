@@ -60,7 +60,7 @@
 
 function retval = int2str (n)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   elseif (! (isnumeric (n) || islogical (n) || ischar (n)))
     error ("int2str: N must be a numeric, logical, or character array");
@@ -108,6 +108,5 @@ endfunction
 %!assert (int2str ([1, 2, 3; 4, 5, 6]), ["1  2  3";"4  5  6"])
 %!assert (int2str ([]), "")
 
-%!error int2str ()
-%!error int2str (1, 2)
+%!error <Invalid call> int2str ()
 %!error <N must be a numeric> int2str ({1})

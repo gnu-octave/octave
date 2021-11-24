@@ -28,7 +28,7 @@
 
 class QWidget;
 
-namespace QtHandles
+namespace octave
 {
 
   class MenuContainer

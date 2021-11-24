@@ -50,7 +50,7 @@
 ##
 ## The optional return value @var{h} is a handle to the @nospell{"stem series"}
 ## hggroup containing the line and marker objects used for the plot.
-## @xref{XREFstem}, for a description of the @nospell{"stem series"}
+## @xref{XREFstem,,stem}, for a description of the @nospell{"stem series"}
 ## object.
 ##
 ## Example:

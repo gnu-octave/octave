@@ -28,10 +28,10 @@
 ##
 ## @table @code
 ## @item Octave:abbreviated-property-match
-## If the @code{Octave:abbreviated-property-match} warning is enabled, a warning
-## is printed if a non-exact or ambiguous match is being used for a operation
-## specifying an object property.  For example, for a graphics object,
-## @var{fig}, with the property @qcode{'displayname'},
+## If the @code{Octave:abbreviated-property-match} warning is enabled, a
+## warning is printed if a non-exact or ambiguous match is being used for a
+## operation specifying an object property.  For example, for a graphics
+## object, @var{fig}, with the property @qcode{'displayname'},
 ## @code{get (@var{fig}, 'dis')} elicits a warning if the
 ## @code{Octave:abbreviated-property-match} warning is enabled.
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{Z} =} iqr (@var{x})
+## @deftypefn  {} {@var{Z} =} iqr (@var{x})
 ## @deftypefnx {} {@var{Z} =} iqr (@var{x}, @var{dim})
 ## @deftypefnx {} {@var{Z} =} iqr (@var{x}, @qcode{"ALL"})
 ## Return the interquartile range of @var{x}, defined as the distance between
@@ -45,7 +45,7 @@
 ## The optional variable @var{dim} can be used to force @code{iqr} to operate
 ## over the specified dimension.  @var{dim} can either be a scalar dimension or
 ## a vector of non-repeating dimensions over which to operate.  In either case
-## @var{dim} must be positive integers. A vector @var{dim} concatenates all
+## @var{dim} must be positive integers.  A vector @var{dim} concatenates all
 ## specified diminsions for independent operation by @code{iqr}.
 ##
 ## Specifying dimension @qcode{"ALL"} will force @code{iqr} to operate

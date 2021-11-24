@@ -3255,9 +3255,8 @@ It is useful for error messages and prompts.
 
 // Deprecated variables and functions.
 
-// Deprecated in Octave 6.
-void
-mark_for_deletion (const std::string& file)
+// Remove when corresponding global deprecated function is removed.
+void mark_for_deletion_deprecated (const std::string& file)
 {
   octave::interpreter& interp
     = octave::__get_interpreter__ ("mark_for_deletion");
@@ -3265,9 +3264,8 @@ mark_for_deletion (const std::string& file)
   interp.mark_for_deletion (file);
 }
 
-// Deprecated in Octave 6.
-void
-cleanup_tmp_files (void)
+// Remove when corresponding global deprecated function is removed.
+void cleanup_tmp_files_deprecated (void)
 {
   octave::interpreter& interp
     = octave::__get_interpreter__ ("cleanup_tmp_files");

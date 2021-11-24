@@ -34,9 +34,15 @@
 
 OCTAVE_NAMESPACE_BEGIN
 
-extern OCTINTERP_API void mark_for_deletion (const std::string&);
+// Use this function internally until the function that uses it is
+// removed.  Remove when corresponding global deprecated function is
+// removed.
+extern void mark_for_deletion_deprecated (const std::string&);
 
-extern OCTINTERP_API void cleanup_tmp_files (void);
+// Use this function internally until the function that uses it is
+// removed.  Remove when corresponding global deprecated function is
+// removed.
+extern void cleanup_tmp_files_deprecated (void);
 
 OCTAVE_NAMESPACE_END
 
@@ -45,13 +51,13 @@ OCTAVE_NAMESPACE_END
 OCTAVE_DEPRECATED (6, "use 'interpreter::mark_for_deletion' instead")
 inline void mark_for_deletion (const std::string& fname)
 {
-  octave::mark_for_deletion (fname);
+  octave::mark_for_deletion_deprecated (fname);
 }
 
 OCTAVE_DEPRECATED (6, "use 'interpreter::cleanup_tmp_files' instead")
 inline void cleanup_tmp_files (void)
 {
-  octave::cleanup_tmp_files ();
+  octave::cleanup_tmp_files_deprecated ();
 }
 
 #endif

@@ -89,11 +89,6 @@ bool octave_completion_matches_called = false;
 // the next user prompt.
 bool Vdrawnow_requested = false;
 
-// TRUE if we are recording line numbers in a source file.
-// Always true except when debugging and taking input directly from
-// the terminal.
-bool Vtrack_line_num = true;
-
 OCTAVE_NAMESPACE_BEGIN
 
   static std::string

@@ -40,20 +40,4 @@ extern OCTINTERP_API void cleanup_tmp_files (void);
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (6, "use 'interpreter::mark_for_deletion' instead")
-inline void mark_for_deletion (const std::string& fname)
-{
-  octave::mark_for_deletion (fname);
-}
-
-OCTAVE_DEPRECATED (6, "use 'interpreter::cleanup_tmp_files' instead")
-inline void cleanup_tmp_files (void)
-{
-  octave::cleanup_tmp_files ();
-}
-
-#endif
-
 #endif

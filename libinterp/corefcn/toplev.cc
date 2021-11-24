@@ -54,7 +54,6 @@
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
-#include "file-io.h"
 #include "help.h"
 #include "interpreter-private.h"
 #include "octave.h"

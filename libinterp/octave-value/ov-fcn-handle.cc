@@ -3397,16 +3397,6 @@ is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2)
 
 OCTAVE_NAMESPACE_BEGIN
 
-  // DEPRECATED in Octave 6.
-
-  octave_value
-  make_fcn_handle (interpreter& interp, const std::string& nm)
-  {
-    tree_evaluator& tw = interp.get_evaluator ();
-
-    return tw.make_fcn_handle (nm);
-  }
-
 DEFUN (functions, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{s} =} functions (@var{fcn_handle})

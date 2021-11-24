@@ -178,12 +178,6 @@ maybe_missing_function_hook (const std::string& name)
   return octave::maybe_missing_function_hook (name);
 }
 
-OCTAVE_DEPRECATED (6, "use 'octave::get_function_handle' instead")
-extern OCTINTERP_API octave_function *
-extract_function (const octave_value& arg, const std::string& warn_for,
-                  const std::string& fname, const std::string& header,
-                  const std::string& trailer);
-
 #endif
 
 // The following macros should also be considered obsolete.

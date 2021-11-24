@@ -56,7 +56,6 @@
 #include "display.h"
 #include "error.h"
 #include "event-manager.h"
-#include "file-io.h"
 #include "graphics.h"
 #include "help.h"
 #include "input.h"
@@ -1996,24 +1995,6 @@ Undocumented internal function.
       }
 
     return found;
-  }
-
-  // Remove when corresponding public deprecated function is removed.
-  void interpreter::add_atexit_function_deprecated (const std::string& fname)
-  {
-    interpreter& interp
-      = __get_interpreter__ ("interpreter::add_atexit_function");
-
-    interp.add_atexit_fcn (fname);
-  }
-
-  // Remove when corresponding public deprecated function is removed.
-  bool interpreter::remove_atexit_function_deprecated (const std::string& fname)
-  {
-    interpreter& interp
-      = __get_interpreter__ ("interpreter::remove_atexit_function");
-
-    return interp.remove_atexit_fcn (fname);
   }
 
   // What internal options get configured by --traditional.

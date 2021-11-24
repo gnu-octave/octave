@@ -131,13 +131,6 @@ namespace octave
   err_index_out_of_range (int ndims, int dim, octave_idx_type idx,
                           octave_idx_type ext, const dim_vector& dv);
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (6, "use err_index_out_of_range (int, int, octave_idx_type, octave_idx_type, const dim_vector&) instead")
-  OCTAVE_NORETURN extern OCTAVE_API void
-  err_index_out_of_range (int ndims, int dim, octave_idx_type idx,
-                          octave_idx_type ext);
-#endif
-
   OCTAVE_NORETURN extern OCTAVE_API void
   err_del_index_out_of_range (bool is1d, octave_idx_type iext,
                               octave_idx_type ext);

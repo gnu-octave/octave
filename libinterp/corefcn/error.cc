@@ -2187,8 +2187,3 @@ interpreter_try (unwind_protect& frame)
 }
 
 OCTAVE_NAMESPACE_END
-
-// Deprecated variables and functions.
-
-// This variable is obsolete and always has the value 0.
-int error_state = 0;

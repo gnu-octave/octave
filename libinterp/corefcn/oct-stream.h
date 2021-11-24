@@ -476,7 +476,8 @@ namespace octave
     lookup (const octave_value& fid, const std::string& who = "") const;
 
     OCTINTERP_API int remove (int fid, const std::string& who = "");
-    OCTINTERP_API int remove (const octave_value& fid, const std::string& who = "");
+    OCTINTERP_API int remove (const octave_value& fid,
+                              const std::string& who = "");
 
     OCTINTERP_API void clear (bool flush = true);
 

@@ -1526,7 +1526,8 @@ public:
 
   bool islocked (void) const { return m_rep->islocked (); }
 
-  void call_object_destructor (void) { return m_rep->call_object_destructor (); }
+  void call_object_destructor (void)
+  { return m_rep->call_object_destructor (); }
 
   octave_value dump (void) const { return m_rep->dump (); }
 

@@ -99,7 +99,8 @@ OCTAVE_NAMESPACE_BEGIN
   void
   profiler::tree_node::build_flat (flat_profile& data) const
   {
-    // If this is not the top-level node, update profile entry for this function.
+    // If this is not the top-level node,
+    // update profile entry for this function.
     if (m_fcn_id != 0)
       {
         stats& entry = data[m_fcn_id - 1];
@@ -230,19 +231,21 @@ OCTAVE_NAMESPACE_BEGIN
     if (m_active_fcn)
       {
         assert (m_call_tree);
-        // FIXME: This assert statements doesn't make sense if profile() is called
-        //        from within a function hierarchy to begin with.  See bug #39587.
+        // FIXME: This assert statements doesn't make sense if profile() is
+        // called from within a function hierarchy to begin with.  See bug
+        // #39587.
         //assert (m_active_fcn != m_call_tree);
 
-        // Usually, if we are disabled this function is not even called.  But the
-        // call disabling the profiler is an exception.  So also check here
+        // Usually, if we are disabled this function is not even called.  But
+        // the call disabling the profiler is an exception.  So also check here
         // and only record the time if enabled.
         if (enabled ())
           add_current_time ();
 
         fcn_index_map::iterator pos = m_fcn_index.find (fcn);
-        // FIXME: This assert statements doesn't make sense if profile() is called
-        //        from within a function hierarchy to begin with.  See bug #39587.
+        // FIXME: This assert statements doesn't make sense if profile() is
+        // called from within a function hierarchy to begin with.  See bug
+        // #39587.
         //assert (pos != m_fcn_index.end ());
         m_active_fcn = m_active_fcn->exit (pos->second);
 

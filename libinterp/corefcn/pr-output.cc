@@ -2558,7 +2558,8 @@ octave_print_internal (std::ostream& os, const octave::range<double>& r,
           octave_idx_type col = 0;
           while (col < num_elem)
             {
-              octave_idx_type lim = (col + inc < num_elem ? col + inc : num_elem);
+              octave_idx_type lim = (col + inc < num_elem ? col + inc
+                                                          : num_elem);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);

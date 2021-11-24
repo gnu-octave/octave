@@ -157,7 +157,8 @@ xdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType& typ)
 
 OCTAVE_DEPRECATED (7, "use 'octave::xdiv' instead")
 inline SparseComplexMatrix
-xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+      MatrixType& typ)
 {
   return octave::xdiv (a, b, typ);
 }
@@ -269,7 +270,8 @@ xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType& typ)
 
 OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
 inline SparseComplexMatrix
-xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+          MatrixType& typ)
 {
   return octave::xleftdiv (a, b, typ);
 }
@@ -297,7 +299,8 @@ xleftdiv (const DiagMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
 
 OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
 inline SparseComplexMatrix
-xleftdiv (const ComplexDiagMatrix& a, const SparseComplexMatrix& b, MatrixType& typ)
+xleftdiv (const ComplexDiagMatrix& a, const SparseComplexMatrix& b,
+          MatrixType& typ)
 {
   return octave::xleftdiv (a, b, typ);
 }

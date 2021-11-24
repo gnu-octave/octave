@@ -593,7 +593,8 @@ octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     return false;
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid,
                         octave_H5P_DEFAULT);

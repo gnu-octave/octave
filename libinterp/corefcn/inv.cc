@@ -268,7 +268,8 @@ sparse matrix if possible.
 %!error <inverse of the null matrix not defined> inv (diag (complex ([0, 0])))
 
 %!testif HAVE_UMFPACK <*56232>
-%! fail ("A = inv (sparse ([1, 0, 0; 0, 0, 0; 0, 0, 1]))", "warning", "matrix singular");
+%! fail ("A = inv (sparse ([1, 0, 0; 0, 0, 0; 0, 0, 1]))",
+%!       "warning", "matrix singular");
 %! assert (A, sparse ([Inf, 0, 0; 0, 0, 0; 0, 0, Inf]));
 
 %!error inv ()

@@ -92,7 +92,8 @@ bool millerrabin (uint64_t div, uint64_t d, uint64_t r, uint64_t n)
 // prime or composite. The input is required to be a scalar 64-bit integer.
 bool isprimescalar (uint64_t n)
 {
-  // Fast return for even numbers. n==2 is excluded by the time this function is called.
+  // Fast return for even numbers.
+  // n==2 is excluded by the time this function is called.
   if (! (n & 1))
     return false;
 
@@ -191,7 +192,10 @@ You should call isprime(N) instead of directly calling this function.
 %!assert (__isprimelarge__ (uint64 (2305843009213693951)), true)
 %!assert (__isprimelarge__ (uint64 (18446744073709551557)), true)
 
-%!assert (__isprimelarge__ ([uint64(12345), uint64(2147483647), uint64(2305843009213693951), uint64(18446744073709551557)]), logical ([0 1 1 1]))
+%!assert (__isprimelarge__ ([uint64(12345), uint64(2147483647), ...
+%!                           uint64(2305843009213693951), ...
+%!                           uint64(18446744073709551557)]),
+%!        logical ([0 1 1 1]))
 
 %!error <unable to convert input> (__isprimelarge__ ({'foo'; 'bar'}))
 */

@@ -837,7 +837,8 @@ OCTAVE_NAMESPACE_BEGIN
 
           }
         else if (index.numel () > 0)
-          // Not first step: register all events and test if stop integration or not
+          // Not first step: register all events and test
+          // if stop integration or not
           {
             te.resize (temp + index.numel ());
             ye.resize (temp + index.numel (), m_num);

@@ -69,7 +69,8 @@ public:
 
   ~octave_dld_function (void);
 
-  void mark_fcn_file_up_to_date (const octave::sys::time& t) { m_t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t)
+  { m_t_checked = t; }
 
   std::string fcn_file_name (void) const;
 

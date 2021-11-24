@@ -57,11 +57,13 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool echo_commands (void) const { return m_echo_commands; }
 
-    bool experimental_terminal_widget (void) const { return m_experimental_terminal_widget; }
+    bool experimental_terminal_widget (void) const
+    { return m_experimental_terminal_widget; }
     bool forced_interactive (void) const { return m_forced_interactive; }
     bool forced_line_editing (void) const { return m_forced_line_editing; }
     bool gui (void) const { return m_gui; }
-    bool inhibit_startup_message (void) const { return m_inhibit_startup_message; }
+    bool inhibit_startup_message (void) const
+    { return m_inhibit_startup_message; }
     bool line_editing (void) const { return m_line_editing; }
 
     bool no_window_system (void) const { return m_no_window_system; }
@@ -74,7 +76,8 @@ OCTAVE_NAMESPACE_BEGIN
     bool traditional (void) const { return m_traditional; }
     bool verbose_flag (void) const { return m_verbose_flag; }
     std::string code_to_eval (void) const { return m_code_to_eval; }
-    std::list<std::string> command_line_path (void) const { return m_command_line_path; }
+    std::list<std::string> command_line_path (void) const
+    { return m_command_line_path; }
     std::string docstrings_file (void) const { return m_docstrings_file; }
     std::string doc_cache_file (void) const { return m_doc_cache_file; }
     std::string exec_path (void) const { return m_exec_path; }
@@ -87,7 +90,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     void echo_commands (bool arg) { m_echo_commands = arg; }
 
-    void experimental_terminal_widget (bool arg) { m_experimental_terminal_widget = arg; }
+    void experimental_terminal_widget (bool arg)
+    { m_experimental_terminal_widget = arg; }
     void forced_line_editing (bool arg) { m_forced_line_editing = arg; }
     void forced_interactive (bool arg) { m_forced_interactive = arg; }
     void gui (bool arg) { m_gui = arg; }
@@ -104,7 +108,8 @@ OCTAVE_NAMESPACE_BEGIN
     void traditional (bool arg) { m_traditional = arg; }
     void verbose_flag (bool arg) { m_verbose_flag = arg; }
     void code_to_eval (const std::string& arg) { m_code_to_eval = arg; }
-    void command_line_path (const std::list<std::string>& arg) { m_command_line_path = arg; }
+    void command_line_path (const std::list<std::string>& arg)
+    { m_command_line_path = arg; }
     void docstrings_file (const std::string& arg) { m_docstrings_file = arg; }
     void doc_cache_file (const std::string& arg) { m_doc_cache_file = arg; }
     void exec_path (const std::string& arg) { m_exec_path = arg; }
@@ -282,7 +287,8 @@ OCTAVE_NAMESPACE_BEGIN
     virtual bool gui_running (void) const { return false; }
     virtual void gui_running (bool) { }
 
-    void program_invocation_name (const std::string& nm) { m_program_invocation_name = nm; }
+    void program_invocation_name (const std::string& nm)
+    { m_program_invocation_name = nm; }
 
     void program_name (const std::string& nm) { m_program_name = nm; }
 

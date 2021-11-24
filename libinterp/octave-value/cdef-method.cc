@@ -218,7 +218,8 @@ namespace octave
     switch (type[0])
       {
       case '(':
-        retval = (execute (idx.front (), type.length () > 1 ? 1 : nargout, true));
+        retval = (execute (idx.front (),
+                           type.length () > 1 ? 1 : nargout, true));
         break;
 
       default:

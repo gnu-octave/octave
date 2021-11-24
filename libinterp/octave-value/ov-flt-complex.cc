@@ -326,7 +326,8 @@ octave_float_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, octave_H5P_DEFAULT);
 #endif

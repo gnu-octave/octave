@@ -777,7 +777,8 @@ namespace octave
     { }
 
     lexer (FILE *file, interpreter& interp, const std::string& encoding)
-      : base_lexer (interp), m_reader (interp, file, encoding), m_initial_input (true)
+      : base_lexer (interp), m_reader (interp, file, encoding),
+        m_initial_input (true)
     { }
 
     lexer (const std::string& eval_string, interpreter& interp)

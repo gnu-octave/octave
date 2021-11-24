@@ -361,8 +361,10 @@ strings instead of a character array.
 }
 
 /*
-%!assert (num2hex (-2:2), ["c000000000000000";"bff0000000000000";"0000000000000000";"3ff0000000000000";"4000000000000000"])
-%!assert (num2hex (single (-2:2)), ["c0000000";"bf800000";"00000000";"3f800000";"40000000"])
+%!assert (num2hex (-2:2),
+%!        ["c000000000000000";"bff0000000000000";"0000000000000000";"3ff0000000000000";"4000000000000000"])
+%!assert (num2hex (single (-2:2)),
+%!        ["c0000000";"bf800000";"00000000";"3f800000";"40000000"])
 %!assert (num2hex (intmax ("uint8")), "ff")
 %!assert (num2hex (intmax ("uint16")), "ffff")
 %!assert (num2hex (intmax ("uint32")), "ffffffff")

@@ -984,7 +984,8 @@ octave_map::column (octave_idx_type k) const
 octave_map
 octave_map::page (octave_idx_type k) const
 {
-  static Array<octave::idx_vector> ia (dim_vector (3, 1), octave::idx_vector::colon);
+  static Array<octave::idx_vector> ia (dim_vector (3, 1),
+                                       octave::idx_vector::colon);
 
   ia(2) = k;
   return index (ia);

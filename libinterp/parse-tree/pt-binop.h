@@ -76,7 +76,8 @@ namespace octave
 
     void mark_braindead_shortcircuit (void)
     {
-      if (m_etype == octave_value::op_el_and || m_etype == octave_value::op_el_or)
+      if (m_etype == octave_value::op_el_and
+          || m_etype == octave_value::op_el_or)
         {
           m_eligible_for_braindead_shortcircuit = true;
 

@@ -314,7 +314,8 @@ cholinsert, choldelete, cholshift}
 
 /*
 %!assert (chol ([2, 1; 1, 1]), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)], sqrt (eps))
-%!assert (chol (single ([2, 1; 1, 1])), single ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps ("single")))
+%!assert (chol (single ([2, 1; 1, 1])),
+%!        single ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps ("single")))
 
 %!assert (chol ([2, 1; 1, 1], "upper"), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)],
 %!        sqrt (eps))

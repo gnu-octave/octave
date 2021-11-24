@@ -208,7 +208,8 @@ namespace octave
     // FIXME: use a null object?
     cdef_object (void) : m_rep (new cdef_object_rep ()) { }
 
-    cdef_object (const cdef_object& obj) : m_rep (obj.m_rep) { m_rep->m_count++; }
+    cdef_object (const cdef_object& obj) : m_rep (obj.m_rep)
+    { m_rep->m_count++; }
 
     cdef_object (cdef_object_rep *r) : m_rep (r) { }
 
@@ -257,7 +258,8 @@ namespace octave
 
     bool is_meta_object (void) const { return m_rep->is_meta_object (); }
 
-    Array<cdef_object> array_value (void) const { return m_rep->array_value (); }
+    Array<cdef_object> array_value (void) const
+    { return m_rep->array_value (); }
 
     void put (const std::string& pname, const octave_value& val)
     {

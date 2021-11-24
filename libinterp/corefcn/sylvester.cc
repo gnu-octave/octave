@@ -158,8 +158,10 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
 }
 
 /*
-%!assert (sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12]), [1/2, 2/3; 2/3, 1/2], sqrt (eps))
-%!assert (sylvester (single ([1, 2; 3, 4]), single ([5, 6; 7, 8]), single ([9, 10; 11, 12])), single ([1/2, 2/3; 2/3, 1/2]), sqrt (eps ("single")))
+%!assert (sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12]),
+%!        [1/2, 2/3; 2/3, 1/2], sqrt (eps))
+%!assert (sylvester (single ([1, 2; 3, 4]), single ([5, 6; 7, 8]), single ([9, 10; 11, 12])),
+%!        single ([1/2, 2/3; 2/3, 1/2]), sqrt (eps ("single")))
 
 ## Test input validation
 %!error sylvester ()

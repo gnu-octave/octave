@@ -68,7 +68,8 @@ namespace octave
 
     octave_idx_type numel (void) const;
 
-    void set_index (const std::string& t, const std::list<octave_value_list>& i);
+    void set_index (const std::string& t,
+                    const std::list<octave_value_list>& i);
 
     void clear_index (void) { m_type = ""; m_idx.clear (); }
 

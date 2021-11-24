@@ -961,7 +961,8 @@ OCTAVE_NAMESPACE_BEGIN
     : m_rep (new file_reader (interp, file))
   { }
 
-  input_reader::input_reader (interpreter& interp, FILE *file, const std::string& enc)
+  input_reader::input_reader (interpreter& interp, FILE *file,
+                              const std::string& enc)
     : m_rep (new file_reader (interp, file, enc))
   { }
 

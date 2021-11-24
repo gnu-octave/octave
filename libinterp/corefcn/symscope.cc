@@ -335,7 +335,8 @@ namespace octave
   }
 
   bool symbol_scope_rep::look_nonlocal (const std::string& name,
-                                        std::size_t offset, symbol_record& result)
+                                        std::size_t offset,
+                                        symbol_record& result)
   {
     offset++;
 

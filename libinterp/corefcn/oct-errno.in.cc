@@ -321,7 +321,8 @@ octave_errno::list (void)
 int
 octave_errno::do_lookup (const std::string& name)
 {
-  return (m_errno_tbl.find (name) != m_errno_tbl.end ()) ? m_errno_tbl[name] : -1;
+  return (m_errno_tbl.find (name) != m_errno_tbl.end ()) ? m_errno_tbl[name]
+                                                         : -1;
 }
 
 octave_scalar_map

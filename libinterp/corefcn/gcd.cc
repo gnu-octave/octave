@@ -514,7 +514,8 @@ gcd ([15, 9], [20, 18])
 /*
 %!assert (gcd (200, 300, 50, 35), 5)
 %!assert (gcd (int16 (200), int16 (300), int16 (50), int16 (35)), int16 (5))
-%!assert (gcd (uint64 (200), uint64 (300), uint64 (50), uint64 (35)), uint64 (5))
+%!assert (gcd (uint64 (200), uint64 (300), uint64 (50), uint64 (35)),
+%!        uint64 (5))
 %!assert (gcd (18-i, -29+3i), -3-4i)
 
 %!test

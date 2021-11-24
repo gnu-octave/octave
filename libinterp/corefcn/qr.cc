@@ -1417,14 +1417,16 @@ economized (R is square).
 %! [Q,R] = qrupdate (Q, R, single (u), single (v));
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R)-R), Inf) == 0);
-%! assert (norm (vec (Q*R - single (A) - single (u)*single (v)'), Inf) < norm (single (A))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single (A) - single (u)*single (v)'), Inf)
+%!         < norm (single (A))*1e1*eps ("single"));
 %!
 %!test
 %! [Q,R] = qr (single (Ac));
 %! [Q,R] = qrupdate (Q, R, single (uc), single (vc));
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R)-R), Inf) == 0);
-%! assert (norm (vec (Q*R - single (Ac) - single (uc)*single (vc)'), Inf) < norm (single (Ac))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single (Ac) - single (uc)*single (vc)'), Inf)
+%!         < norm (single (Ac))*1e1*eps ("single"));
 */
 
 DEFUN (qrinsert, args, ,
@@ -1599,13 +1601,15 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrinsert (Q, R, 3, single (u));
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([A(:,1:2) u A(:,3)])), Inf) < norm (single (A))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single ([A(:,1:2) u A(:,3)])), Inf)
+%!         < norm (single (A))*1e1*eps ("single"));
 %!test
 %! [Q,R] = qr (single (Ac));
 %! [Q,R] = qrinsert (Q, R, 3, single (uc));
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([Ac(:,1:2) uc Ac(:,3)])), Inf) < norm (single (Ac))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single ([Ac(:,1:2) uc Ac(:,3)])), Inf)
+%!         < norm (single (Ac))*1e1*eps ("single"));
 %!test
 %! x = single ([0.85082  0.76426  0.42883 ]);
 %!
@@ -1613,7 +1617,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
 %! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf) < norm (single (A))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf) 
+%!         < norm (single (A))*1e1*eps ("single"));
 %!test
 %! x = single ([0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ]);
 %!
@@ -1621,7 +1626,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
 %! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([Ac(1:2,:);x;Ac(3:5,:)])), Inf) < norm (single (Ac))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single ([Ac(1:2,:);x;Ac(3:5,:)])), Inf)
+%!         < norm (single (Ac))*1e1*eps ("single"));
 */
 
 DEFUN (qrdelete, args, ,
@@ -1815,7 +1821,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3);
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
 %!
 %!test
 %! AA = single ([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1828,8 +1835,9 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3);
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps ("single"));
-%!
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
+
 %!test
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
 %!               0.594638  0.425302  0.562834  0.603537;
@@ -1841,7 +1849,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3, "row");
 %! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1.5e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
 %!testif HAVE_QRUPDATE
 %! ## Same test as above but with more precicision
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
@@ -1854,7 +1863,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3, "row");
 %! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
 %!
 %!test
 %! AA = single ([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1867,7 +1877,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3, "row");
 %! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
 */
 
 DEFUN (qrshift, args, ,

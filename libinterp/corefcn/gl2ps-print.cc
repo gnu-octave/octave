@@ -1325,16 +1325,20 @@ namespace octave
       std::swap (vp_lim_min(1), vp_lim_max(1));
 
     float clip_xmin
-      = do_clip ? (vp_lim_min(0) > m_xmin ? vp_lim_min(0) : m_xmin) : vp_lim_min(0);
+      = do_clip ? (vp_lim_min(0) > m_xmin ? vp_lim_min(0) : m_xmin)
+                : vp_lim_min(0);
 
     float clip_ymin
-      = do_clip ? (vp_lim_min(1) > m_ymin ? vp_lim_min(1) : m_ymin) : vp_lim_min(1);
+      = do_clip ? (vp_lim_min(1) > m_ymin ? vp_lim_min(1) : m_ymin)
+                : vp_lim_min(1);
 
     float clip_xmax
-      = do_clip ? (vp_lim_max(0) < m_xmax ? vp_lim_max(0) : m_xmax) : vp_lim_max(0);
+      = do_clip ? (vp_lim_max(0) < m_xmax ? vp_lim_max(0) : m_xmax)
+                : vp_lim_max(0);
 
     float clip_ymax
-      = do_clip ? (vp_lim_max(1) < m_ymax ? vp_lim_max(1) : m_ymax) : vp_lim_max(1);
+      = do_clip ? (vp_lim_max(1) < m_ymax ? vp_lim_max(1) : m_ymax)
+                : vp_lim_max(1);
 
     if (im_xmin < clip_xmin)
       j0 += (clip_xmin - im_xmin)/nor_dx + 1;

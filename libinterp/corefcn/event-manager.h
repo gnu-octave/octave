@@ -623,7 +623,8 @@ OCTAVE_NAMESPACE_BEGIN
         return false;
     }
 
-    bool gui_status_update (const std::string& feature, const std::string& status)
+    bool gui_status_update (const std::string& feature,
+                            const std::string& status)
     {
       if (enabled ())
         {

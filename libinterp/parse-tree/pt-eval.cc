@@ -4294,11 +4294,11 @@ Example:
           {
             if (m_dbstep_flag == 1 || is_end_of_fcn_or_script)
               {
-                // We get here if we are doing a "dbstep" or a "dbstep N" and the
-                // count has reached 1 so that we must stop and return to debug
-                // prompt.  Alternatively, "dbstep N" has been used but the end
-                // of the frame has been reached so we stop at the last line and
-                // return to prompt.
+                // We get here if we are doing a "dbstep" or a "dbstep N" and
+                // the count has reached 1 so that we must stop and return to
+                // debug prompt.  Alternatively, "dbstep N" has been used but
+                // the end of the frame has been reached so we stop at the last
+                // line and return to prompt.
 
                 break_on_this_statement = true;
               }

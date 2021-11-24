@@ -54,7 +54,8 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     idx = nda.find ();
 
   // The maximum element is always at the end.
-  octave_idx_type iext = (idx.isempty () ? 0 : idx.xelem (idx.numel () - 1) + 1);
+  octave_idx_type iext = (idx.isempty () ? 0
+                                         : idx.xelem (idx.numel () - 1) + 1);
 
   switch (nargout)
     {

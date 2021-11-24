@@ -1041,7 +1041,8 @@ namespace octave
                                      const std::shared_ptr<stack_frame>& parent_link,
                                      const std::shared_ptr<stack_frame>& static_link)
   {
-    return new compiled_fcn_stack_frame (tw, fcn, index, parent_link, static_link);
+    return new compiled_fcn_stack_frame (tw, fcn, index,
+                                         parent_link, static_link);
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
@@ -1059,7 +1060,8 @@ namespace octave
                                      const std::shared_ptr<stack_frame>& static_link,
                                      const std::shared_ptr<stack_frame>& access_link)
   {
-    return new user_fcn_stack_frame (tw, fcn, index, parent_link, static_link, access_link);
+    return new user_fcn_stack_frame (tw, fcn, index,
+                                     parent_link, static_link, access_link);
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,
@@ -1069,7 +1071,9 @@ namespace octave
                                      const local_vars_map& local_vars,
                                      const std::shared_ptr<stack_frame>& access_link)
   {
-    return new user_fcn_stack_frame (tw, fcn, index, parent_link, static_link, local_vars, access_link);
+    return new user_fcn_stack_frame (tw, fcn, index,
+                                     parent_link, static_link, local_vars,
+                                     access_link);
   }
 
   stack_frame * stack_frame::create (tree_evaluator& tw,

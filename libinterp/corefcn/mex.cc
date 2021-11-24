@@ -701,9 +701,11 @@ public:
 
   GET_DATA_METHOD (mxUint64, get_uint64s, mxUINT64_CLASS, mxREAL);
 
-  GET_DATA_METHOD (mxComplexDouble, get_complex_doubles, mxDOUBLE_CLASS, mxCOMPLEX);
+  GET_DATA_METHOD (mxComplexDouble, get_complex_doubles,
+                   mxDOUBLE_CLASS, mxCOMPLEX);
 
-  GET_DATA_METHOD (mxComplexSingle, get_complex_singles, mxDOUBLE_CLASS, mxCOMPLEX);
+  GET_DATA_METHOD (mxComplexSingle, get_complex_singles,
+                   mxDOUBLE_CLASS, mxCOMPLEX);
 
 #if 0
   /* We don't have these yet. */
@@ -1460,8 +1462,8 @@ public:
 protected:
 
   mxArray_matlab (bool interleaved, mxClassID id = mxUNKNOWN_CLASS)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id), m_ndims (0),
-      m_dims (nullptr)
+    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
+      m_ndims (0), m_dims (nullptr)
   { }
 
   mxArray_matlab (bool interleaved, mxClassID id, mwSize ndims,
@@ -1511,7 +1513,8 @@ protected:
   }
 
   mxArray_matlab (bool interleaved, mxClassID id, mwSize m, mwSize n)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id), m_ndims (2),
+    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
+      m_ndims (2),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
     m_dims[0] = m;

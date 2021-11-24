@@ -855,7 +855,8 @@ OCTAVE_NAMESPACE_BEGIN
                                       OCTAVE_VERSION ", %Y-%m-%d %T UTC";
           std::string comment_string = now.strftime (matlab_format);
 
-          std::size_t len = std::min (comment_string.length (), static_cast<std::size_t> (124));
+          std::size_t len = std::min (comment_string.length (),
+                                      static_cast<std::size_t> (124));
           memset (headertext, ' ', 124);
           memcpy (headertext, comment_string.data (), len);
 

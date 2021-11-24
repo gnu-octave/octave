@@ -719,10 +719,12 @@ as the other array.
 %!assert (bsxfun (f, a, b), a - repmat (b, [4, 1, 1]))
 %!assert (bsxfun (f, a, c), a - repmat (c, [1, 4, 1]))
 %!assert (bsxfun (f, a, d), a - repmat (d, [1, 1, 4]))
-%!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
+%!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])),
+%!        zeros ([4, 0, 4]))
 
 ## The test below is a very hard case to treat
-%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]))
+%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])),
+%!        zeros ([4, 4, 4, 4]))
 
 %!shared a, b, aa, bb
 %! ## FIXME: Set a known "good" random seed.  See bug #51779.

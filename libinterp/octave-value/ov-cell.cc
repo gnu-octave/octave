@@ -1045,7 +1045,8 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5_18)
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);

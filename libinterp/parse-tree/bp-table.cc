@@ -176,7 +176,7 @@ namespace octave
       {
         Array<octave_value> W = U.index (0);
         if (W.isempty () || W(0).isempty ())
-          es.debug_on_caught (true);    // like "dbstop if caught error" with no ID
+          es.debug_on_caught (true);  // like "dbstop if caught error" with no ID
         else if (! W(0).iscell ())
           fail = true;
         else
@@ -670,7 +670,8 @@ namespace octave
   // a breakpoint there.  Put the system into debug_mode.
   int bp_table::add_breakpoint_in_function (const std::string& fname,
                                             const std::string& class_name,
-                                            int line, const std::string& condition)
+                                            int line,
+                                            const std::string& condition)
   {
     bp_lines line_info;
     line_info.insert (line);

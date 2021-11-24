@@ -301,7 +301,8 @@ public:
   virtual octave_value as_uint32 (void) const;
   virtual octave_value as_uint64 (void) const;
 
-  virtual octave_base_value * try_narrowing_conversion (void) { return nullptr; }
+  virtual octave_base_value * try_narrowing_conversion (void)
+  { return nullptr; }
 
   virtual void maybe_economize (void) { }
 

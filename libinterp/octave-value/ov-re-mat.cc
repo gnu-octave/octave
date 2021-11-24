@@ -745,7 +745,8 @@ octave_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         octave_H5P_DEFAULT);
@@ -757,8 +758,8 @@ octave_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   double *mtmp = m.fortran_vec ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL, octave_H5S_ALL,
-                     octave_H5P_DEFAULT, mtmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL,
+                     octave_H5S_ALL, octave_H5P_DEFAULT, mtmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);

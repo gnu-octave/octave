@@ -974,7 +974,8 @@ OCTAVE_NAMESPACE_BEGIN
       source_file (file, "base");
   }
 
-  // FIXME: maybe we should also maintain a map to speed up this method of access.
+  // FIXME: maybe we should also maintain a map to speed up this method of
+  //        access.
 
   load_path::const_dir_info_list_iterator
   load_path::find_dir_info (const std::string& dir_arg) const
@@ -1745,7 +1746,8 @@ OCTAVE_NAMESPACE_BEGIN
         if (p != fcn_file_map.end ())
           {
             std::string fname
-              = sys::file_ops::concat (sys::file_ops::concat (dir, "private"), fcn);
+              = sys::file_ops::concat (sys::file_ops::concat (dir, "private"),
+                                       fcn);
 
             if (check_file_type (fname, type, p->second, fcn,
                                  "load_path::find_private_fcn"))
@@ -1916,7 +1918,8 @@ OCTAVE_NAMESPACE_BEGIN
 
                     if (symtab.is_built_in_function_name (base))
                       {
-                        std::string fcn_path = sys::file_ops::concat (dir_name, fname);
+                        std::string fcn_path = sys::file_ops::concat (dir_name,
+                                                                      fname);
 
                         warning_with_id ("Octave:shadowed-function",
                                          "function %s shadows a built-in function",
@@ -1938,7 +1941,8 @@ OCTAVE_NAMESPACE_BEGIN
                         && s_sys_path.find (old.dir_name) != std::string::npos
                         && in_path_list (s_sys_path, old.dir_name))
                       {
-                        std::string fcn_path = sys::file_ops::concat (dir_name, fname);
+                        std::string fcn_path = sys::file_ops::concat (dir_name,
+                                                                      fname);
 
                         warning_with_id ("Octave:shadowed-function",
                                          "function %s shadows a core library function",
@@ -2038,7 +2042,8 @@ OCTAVE_NAMESPACE_BEGIN
 
   void
   load_path::package_info::move_fcn_map (const std::string& dir_name,
-                                         const string_vector& fcn_files, bool at_end)
+                                         const string_vector& fcn_files,
+                                         bool at_end)
   {
     octave_idx_type len = fcn_files.numel ();
 
@@ -2392,7 +2397,8 @@ OCTAVE_NAMESPACE_BEGIN
                 sys::file_stat fs (nm);
 
                 if (fs && fs.is_dir ())
-                  retval += directory_path::path_sep_str () + genpath (nm, skip);
+                  retval += (directory_path::path_sep_str ()
+                             + genpath (nm, skip));
               }
           }
       }

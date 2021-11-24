@@ -421,7 +421,8 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -445,7 +446,8 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -470,7 +472,8 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -508,7 +511,8 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -545,7 +549,8 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -594,7 +599,8 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "data", save_type_hid, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "data", save_type_hid, space_hid,
                         octave_H5P_DEFAULT);
@@ -607,8 +613,8 @@ octave_sparse_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   double *dtmp = m.xdata ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL, octave_H5S_ALL,
-                     octave_H5P_DEFAULT, dtmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL,
+                     octave_H5S_ALL, octave_H5P_DEFAULT, dtmp) >= 0;
   H5Dclose (data_hid);
   H5Sclose (space_hid);
   H5Gclose (group_hid);

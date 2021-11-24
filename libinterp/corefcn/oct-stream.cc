@@ -347,9 +347,9 @@ namespace octave
     void add_elt_to_list (int width, bool discard, char type, char modifier,
                           const std::string& char_class = "");
 
-    void process_conversion (const std::string& s, std::size_t& i, std::size_t n,
-                             int& width, bool& discard, char& type,
-                             char& modifier);
+    void process_conversion (const std::string& s, std::size_t& i,
+                             std::size_t n, int& width, bool& discard,
+                             char& type, char& modifier);
 
     int finish_conversion (const std::string& s, std::size_t& i, std::size_t n,
                            int width, bool discard, char& type,
@@ -1751,7 +1751,8 @@ namespace octave
 
     int read_first_row (delimited_stream& is, textscan& ts);
 
-    std::list<octave_value> out_buf (void) const { return (m_output_container); }
+    std::list<octave_value> out_buf (void) const
+    { return (m_output_container); }
 
   private:
 
@@ -2906,7 +2907,7 @@ namespace octave
     // Check for +/- inf and NaN
     if (! valid && width_left >= 3)
       {
-        int i = lookahead (is, m_inf_nan, 3, false);  // false -> case insensitive
+        int i = lookahead (is, m_inf_nan, 3, false);  // false->case insensitive
         if (i == 0)
           {
             retval = numeric_limits<double>::Inf ();

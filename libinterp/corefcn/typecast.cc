@@ -239,8 +239,8 @@ typecast (@var{x}, "uint8")
     ;
   else if (numclass == "char")
     retval = octave_value (reinterpret_copy<charNDArray>
-                           (data, byte_size, old_dims), array.is_dq_string () ? '"'
-                           : '\'');
+                           (data, byte_size, old_dims),
+                           array.is_dq_string () ? '"' : '\'');
   else if (numclass[0] == 'i')
     {
       if (numclass == "int8")

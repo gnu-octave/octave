@@ -637,7 +637,8 @@ OCTAVE_NAMESPACE_BEGIN
             std::string name;
             int i = 0;
             int c;
-            while (file && (c = file.get ()) != std::istream::traits_type::eof ())
+            while (file
+                   && (c = file.get ()) != std::istream::traits_type::eof ())
               {
                 if (c == '\n' || c == '\r')
                   {

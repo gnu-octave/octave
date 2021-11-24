@@ -45,7 +45,8 @@ namespace octave
   public:
 
     tree_if_clause (int l = -1, int c = -1)
-      : tree (l, c), m_expr (nullptr), m_list (nullptr), m_lead_comm (nullptr) { }
+      : tree (l, c), m_expr (nullptr), m_list (nullptr), m_lead_comm (nullptr)
+    { }
 
     tree_if_clause (tree_statement_list *sl, comment_list *lc = nullptr,
                     int l = -1, int c = -1)
@@ -130,7 +131,8 @@ namespace octave
 
     tree_if_command (tree_if_command_list *lst, comment_list *lc,
                      comment_list *tc, int l = -1, int c = -1)
-      : tree_command (l, c), m_list (lst), m_lead_comm (lc), m_trail_comm (tc) { }
+      : tree_command (l, c), m_list (lst), m_lead_comm (lc), m_trail_comm (tc)
+    { }
 
     // No copying!
 
@@ -170,7 +172,8 @@ namespace octave
   public:
 
     tree_switch_case (int l = -1, int c = -1)
-      : tree (l, c), m_label (nullptr), m_list (nullptr), m_lead_comm (nullptr) { }
+      : tree (l, c), m_label (nullptr), m_list (nullptr), m_lead_comm (nullptr)
+    { }
 
     tree_switch_case (tree_statement_list *sl, comment_list *lc = nullptr,
                       int l = -1, int c = -1)

@@ -89,7 +89,8 @@ namespace octave
 
     int paren_count (void) const { return m_num_parens; }
 
-    bool is_postfix_indexed (void) const { return (m_postfix_index_type != '\0'); }
+    bool is_postfix_indexed (void) const
+    { return (m_postfix_index_type != '\0'); }
 
     char postfix_index (void) const { return m_postfix_index_type; }
 

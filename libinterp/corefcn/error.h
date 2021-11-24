@@ -174,7 +174,8 @@ class execution_exception;
 
     octave_map warning_options (void) const { return m_warning_options; }
 
-    void set_warning_options (const octave_map& val) { m_warning_options = val; }
+    void set_warning_options (const octave_map& val)
+    { m_warning_options = val; }
 
     octave_map warning_options (const octave_map& new_val)
     {
@@ -187,9 +188,7 @@ class execution_exception;
     last_error_message (const octave_value_list& args, int nargout);
 
     void set_last_error_message (const std::string& val)
-    {
-      m_last_error_message = val;
-    }
+    { m_last_error_message = val; }
 
     std::string last_error_message (void) const { return m_last_error_message; }
 
@@ -203,9 +202,11 @@ class execution_exception;
     OCTINTERP_API octave_value
     last_warning_message (const octave_value_list& args, int nargout);
 
-    void set_last_warning_message (const std::string& val) { m_last_warning_message = val; }
+    void set_last_warning_message (const std::string& val)
+    { m_last_warning_message = val; }
 
-    std::string last_warning_message (void) const { return m_last_warning_message; }
+    std::string last_warning_message (void) const
+    { return m_last_warning_message; }
 
     std::string last_warning_message (const std::string& s)
     {
@@ -217,7 +218,8 @@ class execution_exception;
     OCTINTERP_API octave_value
     last_warning_id (const octave_value_list& args, int nargout);
 
-    void set_last_warning_id (const std::string& val) { m_last_warning_id = val; }
+    void set_last_warning_id (const std::string& val)
+    { m_last_warning_id = val; }
 
     std::string last_warning_id (void) const { return m_last_warning_id; }
 

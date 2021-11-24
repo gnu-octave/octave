@@ -4137,7 +4137,8 @@ root_figure::properties::get_boundingbox (bool, const Matrix&) const
 %!   set (0, "units", "pixels");
 %!   assert (get (0, "screensize"), sz + [1, 1, 0, 0]);
 %!   set (0, "units", "characters");
-%!   assert (get (0, "screensize"), sz / dpi * (74.951 / 12.0), 0.5 / dpi * (74.951 / 12.0));
+%!   assert (get (0, "screensize"),
+%!           sz / dpi * (74.951 / 12.0), 0.5 / dpi * (74.951 / 12.0));
 %! unwind_protect_cleanup
 %!   set (0, "units", old_units);
 %! end_unwind_protect
@@ -5189,7 +5190,8 @@ axes::properties::init (void)
                    yaxislocation_is ("origin"),
                    m_xscale.is ("log") ? 2 : (xaxislocation_is ("origin") ? 0 :
                    (xaxislocation_is ("bottom") ? -1 : 1)), m_ylim);
-  calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"), false, 2, m_zlim);
+  calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"),
+                   false, 2, m_zlim);
 
   xset (m_xlabel.handle_value (), "handlevisibility", "off");
   xset (m_ylabel.handle_value (), "handlevisibility", "off");
@@ -6485,7 +6487,8 @@ axes::properties::update_xlabel_position (void)
       if (xlabel_props.horizontalalignmentmode_is ("auto"))
         {
           xlabel_props.set_horizontalalignment
-            (m_xstate > AXE_DEPTH_DIR ? "center" : (m_xyzSym ? "left" : "right"));
+            (m_xstate > AXE_DEPTH_DIR ? "center"
+                                      : (m_xyzSym ? "left" : "right"));
 
           xlabel_props.set_horizontalalignmentmode ("auto");
         }
@@ -6589,7 +6592,8 @@ axes::properties::update_ylabel_position (void)
       if (ylabel_props.horizontalalignmentmode_is ("auto"))
         {
           ylabel_props.set_horizontalalignment
-            (m_ystate > AXE_DEPTH_DIR ? "center" : (! m_xyzSym ? "left" : "right"));
+            (m_ystate > AXE_DEPTH_DIR ? "center"
+                                      : (! m_xyzSym ? "left" : "right"));
 
           ylabel_props.set_horizontalalignmentmode ("auto");
         }
@@ -10323,8 +10327,8 @@ scatter::properties::update_data (void)
   if (! cd.isempty () && (c_rows != 1 || c_cols != 3)
       && (c_rows != x_rows || (c_cols != 1 && c_cols != 3)))
     {
-      m_bad_data_msg = "cdata must be an rgb triplet or have the same number of "
-                     "rows as X and one or three columns";
+      m_bad_data_msg = "cdata must be an rgb triplet or have the same number "
+                       "of rows as X and one or three columns";
       return;
     }
 

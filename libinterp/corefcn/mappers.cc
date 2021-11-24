@@ -280,7 +280,8 @@ arg (3 + 4i)
 %!   assert (arg (single (-1)), single (pi));
 %! endif
 %!assert (arg (single (-i)), single (-pi/2))
-%!assert (arg (single ([1, i; -1, -i])), single ([0, pi/2; pi, -pi/2]), 2e1*eps ("single"))
+%!assert (arg (single ([1, i; -1, -i])),
+%!        single ([0, pi/2; pi, -pi/2]), 2e1*eps ("single"))
 
 %!error arg ()
 %!error arg (1, 2)
@@ -535,7 +536,8 @@ ceil ([-2.7, 2.7])
 %!assert (ceil (single ([2, 1.1, -1.1, -1])), single ([2, 2, -1, -1]))
 
 ## complex single precision
-%!assert (ceil (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single ([2+2i, 2+2i, -1-i, -1-i]))
+%!assert (ceil (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])),
+%!        single ([2+2i, 2+2i, -1-i, -1-i]))
 
 %!error ceil ()
 %!error ceil (1, 2)
@@ -732,13 +734,18 @@ erf (@var{y}) == @var{x}
 /*
 ## middle region
 %!assert (erf (erfinv ([-0.9 -0.3 0 0.4 0.8])), [-0.9 -0.3 0 0.4 0.8], eps)
-%!assert (erf (erfinv (single ([-0.9 -0.3 0 0.4 0.8]))), single ([-0.9 -0.3 0 0.4 0.8]), eps ("single"))
+%!assert (erf (erfinv (single ([-0.9 -0.3 0 0.4 0.8]))),
+%!        single ([-0.9 -0.3 0 0.4 0.8]), eps ("single"))
 ## tail region
-%!assert (erf (erfinv ([-0.999 -0.99 0.9999 0.99999])), [-0.999 -0.99 0.9999 0.99999], eps)
-%!assert (erf (erfinv (single ([-0.999 -0.99 0.9999 0.99999]))), single ([-0.999 -0.99 0.9999 0.99999]), eps ("single"))
+%!assert (erf (erfinv ([-0.999 -0.99 0.9999 0.99999])),
+%!        [-0.999 -0.99 0.9999 0.99999], eps)
+%!assert (erf (erfinv (single ([-0.999 -0.99 0.9999 0.99999]))),
+%!        single ([-0.999 -0.99 0.9999 0.99999]), eps ("single"))
 ## backward - loss of accuracy
-%!assert (erfinv (erf ([-3 -1 -0.4 0.7 1.3 2.8])), [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
-%!assert (erfinv (erf (single ([-3 -1 -0.4 0.7 1.3 2.8]))), single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
+%!assert (erfinv (erf ([-3 -1 -0.4 0.7 1.3 2.8])),
+%!        [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
+%!assert (erfinv (erf (single ([-3 -1 -0.4 0.7 1.3 2.8]))),
+%!        single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
 ## exceptional
 %!assert (erfinv ([-1, 1, 1.1, -2.1]), [-Inf, Inf, NaN, NaN])
 %!error erfinv (1+2i)
@@ -769,13 +776,18 @@ erfc (@var{y}) == @var{x}
 /*
 ## middle region
 %!assert (erfc (erfcinv ([1.9 1.3 1 0.6 0.2])), [1.9 1.3 1 0.6 0.2], eps)
-%!assert (erfc (erfcinv (single ([1.9 1.3 1 0.6 0.2]))), single ([1.9 1.3 1 0.6 0.2]), eps ("single"))
+%!assert (erfc (erfcinv (single ([1.9 1.3 1 0.6 0.2]))),
+%!        single ([1.9 1.3 1 0.6 0.2]), eps ("single"))
 ## tail region
-%!assert (erfc (erfcinv ([0.001 0.01 1.9999 1.99999])), [0.001 0.01 1.9999 1.99999], eps)
-%!assert (erfc (erfcinv (single ([0.001 0.01 1.9999 1.99999]))), single ([0.001 0.01 1.9999 1.99999]), eps ("single"))
+%!assert (erfc (erfcinv ([0.001 0.01 1.9999 1.99999])),
+%!        [0.001 0.01 1.9999 1.99999], eps)
+%!assert (erfc (erfcinv (single ([0.001 0.01 1.9999 1.99999]))),
+%!        single ([0.001 0.01 1.9999 1.99999]), eps ("single"))
 ## backward - loss of accuracy
-%!assert (erfcinv (erfc ([-3 -1 -0.4 0.7 1.3 2.8])), [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
-%!assert (erfcinv (erfc (single ([-3 -1 -0.4 0.7 1.3 2.8]))), single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
+%!assert (erfcinv (erfc ([-3 -1 -0.4 0.7 1.3 2.8])),
+%!        [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
+%!assert (erfcinv (erfc (single ([-3 -1 -0.4 0.7 1.3 2.8]))),
+%!        single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
 ## exceptional
 %!assert (erfcinv ([2, 0, -0.1, 2.1]), [-Inf, Inf, NaN, NaN])
 %!error erfcinv (1+2i)
@@ -957,8 +969,10 @@ To compute the matrix exponential, see @ref{Linear Algebra}.
 /*
 %!assert (exp ([0, 1, -1, -1000]), [1, e, 1/e, 0], sqrt (eps))
 %!assert (exp (1+i), e * (cos (1) + sin (1) * i), sqrt (eps))
-%!assert (exp (single ([0, 1, -1, -1000])), single ([1, e, 1/e, 0]), sqrt (eps ("single")))
-%!assert (exp (single (1+i)), single (e * (cos (1) + sin (1) * i)), sqrt (eps ("single")))
+%!assert (exp (single ([0, 1, -1, -1000])),
+%!        single ([1, e, 1/e, 0]), sqrt (eps ("single")))
+%!assert (exp (single (1+i)),
+%!        single (e * (cos (1) + sin (1) * i)), sqrt (eps ("single")))
 
 %!assert (exp ([Inf, -Inf, NaN]), [Inf 0 NaN])
 %!assert (exp (single ([Inf, -Inf, NaN])), single ([Inf 0 NaN]))
@@ -1061,7 +1075,8 @@ fix ([-2.7, 2.7])
 %!assert (fix ([1.1, 1, -1.1, -1]), [1, 1, -1, -1])
 %!assert (fix ([1.1+1.1i, 1+i, -1.1-1.1i, -1-i]), [1+i, 1+i, -1-i, -1-i])
 %!assert (fix (single ([1.1, 1, -1.1, -1])), single ([1, 1, -1, -1]))
-%!assert (fix (single ([1.1+1.1i, 1+i, -1.1-1.1i, -1-i])), single ([1+i, 1+i, -1-i, -1-i]))
+%!assert (fix (single ([1.1+1.1i, 1+i, -1.1-1.1i, -1-i])),
+%!        single ([1+i, 1+i, -1-i, -1-i]))
 
 %!error fix ()
 %!error fix (1, 2)
@@ -1094,7 +1109,8 @@ floor ([-2.7, 2.7])
 %!assert (floor ([2, 1.1, -1.1, -1]), [2, 1, -2, -1])
 %!assert (floor ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 1+i, -2-2i, -1-i])
 %!assert (floor (single ([2, 1.1, -1.1, -1])), single ([2, 1, -2, -1]))
-%!assert (floor (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single ([2+2i, 1+i, -2-2i, -1-i]))
+%!assert (floor (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])),
+%!        single ([2+2i, 1+i, -2-2i, -1-i]))
 
 %!error floor ()
 %!error floor (1, 2)
@@ -1360,13 +1376,15 @@ isinf ([13, Inf, NA, NaN])
 %!assert (! isinf (NaN))
 %!assert (! isinf (NA))
 %!assert (isinf (rand (1,10)), false (1,10))
-%!assert (isinf ([NaN -Inf -1 0 1 Inf NA]), [false, true, false, false, false, true, false])
+%!assert (isinf ([NaN -Inf -1 0 1 Inf NA]),
+%!        [false, true, false, false, false, true, false])
 
 %!assert (isinf (single (Inf)))
 %!assert (! isinf (single (NaN)))
 %!assert (! isinf (single (NA)))
 %!assert (isinf (single (rand (1,10))), false (1,10))
-%!assert (isinf (single ([NaN -Inf -1 0 1 Inf NA])), [false, true, false, false, false, true, false])
+%!assert (isinf (single ([NaN -Inf -1 0 1 Inf NA])),
+%!        [false, true, false, false, false, true, false])
 %!assert (! isinf ('a'))
 
 %!error isinf ()
@@ -1454,13 +1472,15 @@ isna ([13, Inf, NA, NaN])
 %!assert (! isna (NaN))
 %!assert (isna (NA))
 %!assert (isna (rand (1,10)), false (1,10))
-%!assert (isna ([NaN -Inf -1 0 1 Inf NA]), [false, false, false, false, false, false, true])
+%!assert (isna ([NaN -Inf -1 0 1 Inf NA]),
+%!        [false, false, false, false, false, false, true])
 
 %!assert (! isna (single (Inf)))
 %!assert (! isna (single (NaN)))
 %!assert (isna (single (NA)))
 %!assert (isna (single (rand (1,10))), false (1,10))
-%!assert (isna (single ([NaN -Inf -1 0 1 Inf NA])), [false, false, false, false, false, false, true])
+%!assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
+%!        [false, false, false, false, false, false, true])
 
 %!error isna ()
 %!error isna (1, 2)
@@ -1494,13 +1514,15 @@ isnan ([13, Inf, NA, NaN])
 %!assert (isnan (NaN))
 %!assert (isnan (NA))
 %!assert (isnan (rand (1,10)), false (1,10))
-%!assert (isnan ([NaN -Inf -1 0 1 Inf NA]), [true, false, false, false, false, false, true])
+%!assert (isnan ([NaN -Inf -1 0 1 Inf NA]),
+%!        [true, false, false, false, false, false, true])
 
 %!assert (! isnan (single (Inf)))
 %!assert (isnan (single (NaN)))
 %!assert (isnan (single (NA)))
 %!assert (isnan (single (rand (1,10))), false (1,10))
-%!assert (isnan (single ([NaN -Inf -1 0 1 Inf NA])), [true, false, false, false, false, false, true])
+%!assert (isnan (single ([NaN -Inf -1 0 1 Inf NA])),
+%!        [true, false, false, false, false, false, true])
 %!assert (! isnan ('a'))
 
 %!error isnan ()
@@ -1714,7 +1736,8 @@ To compute the matrix logarithm, see @ref{Linear Algebra}.
 %!assert (log ([-0.5, -1.5, -2.5]), log ([0.5, 1.5, 2.5]) + pi*1i, sqrt (eps))
 
 %!assert (log (single ([1, e, e^2])), single ([0, 1, 2]), sqrt (eps ("single")))
-%!assert (log (single ([-0.5, -1.5, -2.5])), single (log ([0.5, 1.5, 2.5]) + pi*1i), 4*eps ("single"))
+%!assert (log (single ([-0.5, -1.5, -2.5])),
+%!        single (log ([0.5, 1.5, 2.5]) + pi*1i), 4*eps ("single"))
 
 %!error log ()
 %!error log (1, 2)
@@ -1735,7 +1758,8 @@ Compute the base-10 logarithm of each element of @var{x}.
 
 /*
 %!assert (log10 ([0.01, 0.1, 1, 10, 100]), [-2, -1, 0, 1, 2], sqrt (eps))
-%!assert (log10 (single ([0.01, 0.1, 1, 10, 100])), single ([-2, -1, 0, 1, 2]), sqrt (eps ("single")))
+%!assert (log10 (single ([0.01, 0.1, 1, 10, 100])),
+%!        single ([-2, -1, 0, 1, 2]), sqrt (eps ("single")))
 
 %!error log10 ()
 %!error log10 (1, 2)
@@ -1763,7 +1787,8 @@ accurately in the neighborhood of zero.
 
 /*
 %!assert (log1p ([0, 2*eps, -2*eps]), [0, 2*eps, -2*eps], 1e-29)
-%!assert (log1p (single ([0, 2*eps, -2*eps])), single ([0, 2*eps, -2*eps]), 1e-29)
+%!assert (log1p (single ([0, 2*eps, -2*eps])),
+%!        single ([0, 2*eps, -2*eps]), 1e-29)
 
 %!error log1p ()
 %!error log1p (1, 2)
@@ -2054,12 +2079,16 @@ To compute the matrix square root, see @ref{Linear Algebra}.
 %!assert (sqrt (4), 2)
 %!assert (sqrt (-1), i)
 %!assert (sqrt (1+i), exp (0.5 * log (1+i)), sqrt (eps))
-%!assert (sqrt ([4, -4; i, 1-i]), [2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))], sqrt (eps))
+%!assert (sqrt ([4, -4; i, 1-i]),
+%!        [2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))], sqrt (eps))
 
 %!assert (sqrt (single (4)), single (2))
 %!assert (sqrt (single (-1)), single (i))
-%!assert (sqrt (single (1+i)), single (exp (0.5 * log (1+i))), sqrt (eps ("single")))
-%!assert (sqrt (single ([4, -4; i, 1-i])), single ([2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))]), sqrt (eps ("single")))
+%!assert (sqrt (single (1+i)),
+%!        single (exp (0.5 * log (1+i))), sqrt (eps ("single")))
+%!assert (sqrt (single ([4, -4; i, 1-i])),
+%!        single ([2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))]),
+%!        sqrt (eps ("single")))
 
 %!error sqrt ()
 %!error sqrt (1, 2)
@@ -2155,10 +2184,12 @@ DEFALIAS (lower, tolower);
 /*
 %!assert (tolower ("OCTAVE"), "octave")
 %!assert (tolower ("123OCTave! _&"), "123octave! _&")
-%!assert (tolower ({"ABC", "DEF", {"GHI", {"JKL"}}}), {"abc", "def", {"ghi", {"jkl"}}})
+%!assert (tolower ({"ABC", "DEF", {"GHI", {"JKL"}}}),
+%!        {"abc", "def", {"ghi", {"jkl"}}})
 %!assert (tolower (["ABC"; "DEF"]), ["abc"; "def"])
 %!assert (tolower ({["ABC"; "DEF"]}), {["abc";"def"]})
-%!assert (tolower (["ABCÄÖÜSS"; "abcäöüß"]), ["abcäöüss"; "abcäöüß"])
+%!assert (tolower (["ABCÄÖÜSS"; "abcäöüß"]),
+%!        ["abcäöüss"; "abcäöüß"])
 %!assert (tolower (repmat ("ÄÖÜ", 2, 1, 3)), repmat ("äöü", 2, 1, 3))
 %!assert (tolower (68), 68)
 %!assert (tolower ({[68, 68; 68, 68]}), {[68, 68; 68, 68]})
@@ -2221,10 +2252,12 @@ DEFALIAS (upper, toupper);
 /*
 %!assert (toupper ("octave"), "OCTAVE")
 %!assert (toupper ("123OCTave! _&"), "123OCTAVE! _&")
-%!assert (toupper ({"abc", "def", {"ghi", {"jkl"}}}), {"ABC", "DEF", {"GHI", {"JKL"}}})
+%!assert (toupper ({"abc", "def", {"ghi", {"jkl"}}}),
+%!        {"ABC", "DEF", {"GHI", {"JKL"}}})
 %!assert (toupper (["abc"; "def"]), ["ABC"; "DEF"])
 %!assert (toupper ({["abc"; "def"]}), {["ABC";"DEF"]})
-%!assert (toupper (["ABCÄÖÜSS"; "abcäöüß"]), ["ABCÄÖÜSS"; "ABCÄÖÜSS"])
+%!assert (toupper (["ABCÄÖÜSS"; "abcäöüß"]),
+%!        ["ABCÄÖÜSS"; "ABCÄÖÜSS"])
 %!assert (toupper (repmat ("äöü", 2, 1, 3)), repmat ("ÄÖÜ", 2, 1, 3))
 %!assert (toupper (100), 100)
 %!assert (toupper ({[100, 100; 100, 100]}), {[100, 100; 100, 100]})

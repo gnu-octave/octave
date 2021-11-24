@@ -859,19 +859,27 @@ nevermind:
 %! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!              "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## Input arguments can be of type cell arrays of character or strings
@@ -886,18 +894,26 @@ nevermind:
 %!test
 %! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, ...
 %!              "ErrorHandler", @__cellfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## Structures cannot be handled by cellfun
@@ -920,18 +936,26 @@ nevermind:
 %!test
 %! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, ...
 %!              "ErrorHandler", @__cellfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## Input arguments can be of type cell array of structure arrays
@@ -984,7 +1008,8 @@ nevermind:
 %!assert (cellfun ("size", {zeros([1,2,3]),1}, 2), [2,1])
 %!assert (cellfun ("size", {zeros([1,2,3]),1}, 3), [3,1])
 %!assert (cellfun (@atan2, {1,1}, {1,2}), [atan2(1,1), atan2(1,2)])
-%!assert (cellfun (@atan2, {1,1}, {1,2},"UniformOutput", false), {atan2(1,1), atan2(1,2)})
+%!assert (cellfun (@atan2, {1,1}, {1,2},"UniformOutput", false),
+%!        {atan2(1,1), atan2(1,2)})
 %!assert (cellfun (@sin, {1,2;3,4}), sin ([1,2;3,4]))
 %!assert (cellfun (@atan2, {1,1;1,1}, {1,2;1,2}), atan2 ([1,1;1,1],[1,2;1,2]))
 %!error cellfun (@factorial, {-1,3})
@@ -997,9 +1022,12 @@ nevermind:
 %! assert (c, {".d", ".h"});
 
 %!assert <*40467> (cellfun (@isreal, {1 inf nan []}), [true, true, true, true])
-%!assert <*40467> (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true})
-%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false])
-%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false})
+%!assert <*40467> (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false),
+%!                 {true, true, true, true})
+%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}),
+%!                 [false, false, false, false])
+%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false),
+%!                 {false, false, false, false})
 
 %!error cellfun (1)
 %!error cellfun ("isclass", 1)
@@ -1015,7 +1043,8 @@ nevermind:
 %!endfunction
 %!test <*58411>
 %! global __errmsg;
-%! assert (cellfun (@factorial, {1, 2, -3}, "ErrorHandler", @__errfcn), [1, 2, NaN]);
+%! assert (cellfun (@factorial, {1, 2, -3}, "ErrorHandler", @__errfcn),
+%!         [1, 2, NaN]);
 %! assert (! isempty (__errmsg));
 %! clear -global __errmsg;
 */
@@ -1537,19 +1566,27 @@ arrayfun (@@str2num, [1234],
 %! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test  # Overwriting setting of "UniformOutput" true
 %! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## Input arguments can be of type character or strings
@@ -1565,7 +1602,8 @@ arrayfun (@@str2num, [1234],
 %!test
 %! A = arrayfun (@(x,y) cell2str (x,y), ["a", "d"], ["c", "f"], ...
 %!               "ErrorHandler", @__arrayfunerror);
-%! B = isfield (A(1), "identifier") && isfield (A(1), "message") && isfield (A(1), "index");
+%! B = isfield (A(1), "identifier") && isfield (A(1), "message") ...
+%!     && isfield (A(1), "index");
 %! assert (B, true);
 
 ## Input arguments can be of type structure
@@ -1609,18 +1647,26 @@ arrayfun (@@str2num, [1234],
 %! assert (A, {true, false});
 %!test
 %! A = arrayfun (@(x,y) num2str(x,y), {1.1, 4.2}, {3.1, 2}, "ErrorHandler", @__arrayfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test
 %! A = arrayfun (@(x,y) num2str (x,y), {1.1, 4.2}, {3.1, 2}, ...
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 */
 

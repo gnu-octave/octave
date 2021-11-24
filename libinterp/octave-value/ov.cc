@@ -3171,28 +3171,36 @@ OCTAVE_NAMESPACE_BEGIN
         return make_range<float> (base, increment, limit, is_for_cmd_expr);
 
       case btyp_int8:
-        return make_range<octave_int8> (base, increment, limit, is_for_cmd_expr);
+        return make_range<octave_int8> (base, increment, limit,
+                                        is_for_cmd_expr);
 
       case btyp_int16:
-        return make_range<octave_int16> (base, increment, limit, is_for_cmd_expr);
+        return make_range<octave_int16> (base, increment, limit,
+                                         is_for_cmd_expr);
 
       case btyp_int32:
-        return make_range<octave_int32> (base, increment, limit, is_for_cmd_expr);
+        return make_range<octave_int32> (base, increment, limit,
+                                         is_for_cmd_expr);
 
       case btyp_int64:
-        return make_range<octave_int64> (base, increment, limit, is_for_cmd_expr);
+        return make_range<octave_int64> (base, increment, limit,
+                                         is_for_cmd_expr);
 
       case btyp_uint8:
-        return make_range<octave_uint8> (base, increment, limit, is_for_cmd_expr);
+        return make_range<octave_uint8> (base, increment, limit,
+                                         is_for_cmd_expr);
 
       case btyp_uint16:
-        return make_range<octave_uint16> (base, increment, limit, is_for_cmd_expr);
+        return make_range<octave_uint16> (base, increment, limit,
+                                          is_for_cmd_expr);
 
       case btyp_uint32:
-        return make_range<octave_uint32> (base, increment, limit, is_for_cmd_expr);
+        return make_range<octave_uint32> (base, increment, limit,
+                                          is_for_cmd_expr);
 
       case btyp_uint64:
-        return make_range<octave_uint64> (base, increment, limit, is_for_cmd_expr);
+        return make_range<octave_uint64> (base, increment, limit,
+                                          is_for_cmd_expr);
 
       case btyp_char:
         return make_range<char> (base, increment, limit, is_for_cmd_expr);

@@ -1127,8 +1127,10 @@ size) with successive @code{regexp} searches.
 %! assert (isempty (fieldnames (nm)));
 %! assert (sp, { "", "", "A", "", "E", "" });
 
-%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'), {6;[1,5,9];zeros(1,0)})
-%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
+%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'),
+%!        {6;[1,5,9];zeros(1,0)})
+%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}),
+%!        {6;[3,7];[1,9]})
 %!assert (regexp ('Strings', {'t','s'}), {2, 7})
 
 ## Test case for lookaround operators
@@ -1351,9 +1353,12 @@ pattern.
 %!error regexpi ('string', 'tri', 'BadArg')
 %!error regexpi ('string')
 
-%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'), {6;[1,5,9];zeros(1, 0)})
-%!assert (regexpi ({'asdfg-dfd', '-dfd-dfd-', 'qasfdfdaq'}, '-'), {6, [1,5,9], zeros(1,0)})
-%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
+%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'),
+%!        {6;[1,5,9];zeros(1, 0)})
+%!assert (regexpi ({'asdfg-dfd', '-dfd-dfd-', 'qasfdfdaq'}, '-'),
+%!        {6, [1,5,9], zeros(1,0)})
+%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}),
+%!        {6;[3,7];[1,9]})
 %!assert (regexpi ('Strings', {'t', 's'}), {2, [1, 7]})
 
 %!assert (regexpi ("\n", '\n'), 1)
@@ -1588,7 +1593,8 @@ function.
 
 ## Empty matches were broken on ARM architecture
 %!test <*52810>
-%! assert (strcmp (regexprep ("\nabc", "^(\t*)(abc)$", "$1$2", "lineanchors"), "\nabc"))
+%! assert (strcmp (regexprep ("\nabc", "^(\t*)(abc)$", "$1$2", "lineanchors"),
+%!                 "\nabc"));
 */
 
 OCTAVE_NAMESPACE_END

@@ -427,7 +427,8 @@ cleanup:
 %! fail ("symbfact (sparse (1), {1})", "TYP must be a string");
 %! fail ("symbfact (sparse (1), 'foobar')", 'unrecognized TYP "foobar"');
 %! fail ("symbfact (sparse (1), 'sym', {'L'})", "MODE must be a string");
-%! fail ('symbfact (sparse (1), "sym", "foobar")', 'unrecognized MODE "foobar"');
+%! fail ('symbfact (sparse (1), "sym", "foobar")',
+%!       'unrecognized MODE "foobar"');
 %! fail ("symbfact (sparse ([1, 2; 3, 4; 5, 6]))", "S must be a square matrix");
 
 */

@@ -797,7 +797,7 @@ classes.
 /*
 %!test
 %! randg ("state", 12);
-%! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]); # *** Please report
+%! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]);
 
 %!test
 %! ## Test a known fixed state
@@ -902,7 +902,7 @@ classes.
 %! endif
 %!test
 %! randg ("seed", 12);
-%!assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]) # *** Please report
+%! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
@@ -1022,7 +1022,7 @@ classes.
 /*
 %!test
 %! randp ("state", 12);
-%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);   # *** Please report
+%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);
 %!test
 %! ## Test a known fixed state
 %! randp ("state", 1);
@@ -1034,7 +1034,9 @@ classes.
 %!test
 %! ## Test a known fixed state
 %! randp ("state", 1);
-%! assert (randp (1e9, 1, 6), [999915677 999976657 1000047684 1000019035 999985749 999977692], -1e-6);
+%! assert (randp (1e9, 1, 6),
+%!         [999915677 999976657 1000047684 1000019035 999985749 999977692],
+%!         -1e-6);
 %!test
 %! ## Test a known fixed seed
 %! randp ("seed", 1);
@@ -1047,7 +1049,9 @@ classes.
 %!test
 %! ## Test a known fixed seed
 %! randp ("seed", 1);
-%! assert (randp (1e9, 1, 6), [1000006208 1000012224 999981120 999963520 999963072 999981440], -1e-6);
+%! assert (randp (1e9, 1, 6),
+%!         [1000006208 1000012224 999981120 999963520 999963072 999981440],
+%!         -1e-6);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
@@ -1076,7 +1080,7 @@ classes.
 %! endif
 %!test
 %! randp ("seed", 12);
-%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);   # *** Please report
+%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.

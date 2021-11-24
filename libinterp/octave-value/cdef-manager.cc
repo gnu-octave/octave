@@ -281,7 +281,8 @@ namespace octave
 
   static octave_value_list
   package_getAllPackages (interpreter& interp,
-                          const octave_value_list& /* args */, int /* nargout */)
+                          const octave_value_list& /* args */,
+                          int /* nargout */)
   {
     std::map<std::string, cdef_package> toplevel_packages;
 

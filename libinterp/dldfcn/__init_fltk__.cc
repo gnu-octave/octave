@@ -1340,7 +1340,8 @@ private:
       return 0;
   }
 
-  octave_scalar_map format_key_event (int e_key, const char *e_text, int e_state)
+  octave_scalar_map format_key_event (int e_key, const char *e_text,
+                                      int e_state)
   {
     octave_scalar_map evt;
 
@@ -1798,7 +1799,8 @@ private:
             case FL_RELEASE:
               if (! m_fp.get_windowbuttonupfcn ().isempty ())
                 {
-                  set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
+                  set_currentpoint (Fl::event_x (),
+                                    Fl::event_y () - menu_dy ());
                   m_fp.execute_windowbuttonupfcn ();
                 }
 

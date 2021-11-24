@@ -140,7 +140,8 @@ octave_classdef::subsref (const std::string& type,
         }
     }
 
-  retval = m_object.subsref (type, idx, 1, skip, octave::cdef_class (), auto_add);
+  retval = m_object.subsref (type, idx, 1, skip,
+                             octave::cdef_class (), auto_add);
 
   if (type.length () > skip && idx.size () > skip)
     retval = retval(0).next_subsref (1, type, idx, skip);

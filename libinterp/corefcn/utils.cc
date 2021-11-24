@@ -1491,7 +1491,8 @@ Return a structure containing the system-dependent errno values.
     return s.length ();
   }
 
-  std::size_t format (std::ostream& os, const std::string& enc, const char *fmt, ...)
+  std::size_t format (std::ostream& os, const std::string& enc,
+                      const char *fmt, ...)
   {
     std::size_t retval;
 
@@ -1505,8 +1506,8 @@ Return a structure containing the system-dependent errno values.
     return retval;
   }
 
-  std::size_t vformat (std::ostream& os, const std::string& enc, const char *fmt,
-                  va_list args)
+  std::size_t vformat (std::ostream& os, const std::string& enc,
+                       const char *fmt, va_list args)
   {
     std::string s = vasprintf (fmt, args);
 

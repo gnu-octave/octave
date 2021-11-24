@@ -645,7 +645,8 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_scalar_map retval;
 
-    int len = std::min (static_cast<int> (m_binary_ops.columns ()), m_num_types);
+    int len = std::min (static_cast<int> (m_binary_ops.columns ()),
+                        m_num_types);
 
     dim_vector tab_dims (len, len);
 
@@ -697,7 +698,8 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_scalar_map retval;
 
-    int len = std::min (static_cast<int> (m_assign_ops.columns ()), m_num_types);
+    int len = std::min (static_cast<int> (m_assign_ops.columns ()),
+                        m_num_types);
 
     dim_vector tab_dims (len, len);
 
@@ -722,7 +724,8 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_scalar_map retval;
 
-    int len = std::min (static_cast<int> (m_assignany_ops.columns ()), m_num_types);
+    int len = std::min (static_cast<int> (m_assignany_ops.columns ()),
+                        m_num_types);
 
     dim_vector tab_dims (1, len);
 

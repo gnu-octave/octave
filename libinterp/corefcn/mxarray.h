@@ -652,7 +652,8 @@ public:
   void set_field_by_number (mwIndex index, int key_num, mxArray *val)
   { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
 
-  int get_number_of_fields (void) const { return m_rep->get_number_of_fields (); }
+  int get_number_of_fields (void) const
+  { return m_rep->get_number_of_fields (); }
 
   const char * get_field_name_by_number (int key_num) const
   { DO_MUTABLE_METHOD (const char*, get_field_name_by_number (key_num)); }
@@ -668,7 +669,8 @@ public:
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
   { return m_rep->calc_single_subscript (nsubs, subs); }
 
-  std::size_t get_element_size (void) const { return m_rep->get_element_size (); }
+  std::size_t get_element_size (void) const
+  { return m_rep->get_element_size (); }
 
   bool mutation_needed (void) const { return m_rep->mutation_needed (); }
 

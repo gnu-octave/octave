@@ -59,7 +59,8 @@ namespace octave
 
       ~cdef_package_rep (void) = default;
 
-      cdef_object_rep * copy (void) const { return new cdef_package_rep (*this); }
+      cdef_object_rep * copy (void) const
+      { return new cdef_package_rep (*this); }
 
       bool is_package (void) const { return true; }
 

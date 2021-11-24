@@ -913,7 +913,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         if (ov_fcn.is_defined ())
                           // XXX FCN_HANDLE: SIMPLE/SCOPED
-                          tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
+                          tc = octave_value (new octave_fcn_handle (ov_fcn,
+                                                                    fname));
                       }
                     else
                       {
@@ -940,7 +941,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         if (ov_fcn.is_defined ())
                           // XXX FCN_HANDLE: SIMPLE/SCOPED
-                          tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
+                          tc = octave_value (new octave_fcn_handle (ov_fcn,
+                                                                    fname));
                         else
                           {
                             warning_with_id ("Octave:load:file-not-found",
@@ -1041,7 +1043,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               error ("load: failed to load anonymous function handle");
 
             // XXX FCN_HANDLE: ANONYMOUS
-            tc = octave_value (new octave_fcn_handle (fh->fcn_val (), local_vars));
+            tc = octave_value (new octave_fcn_handle (fh->fcn_val (),
+                                                      local_vars));
           }
         else
           error ("load: invalid function handle type");
@@ -2703,7 +2706,8 @@ save_mat5_binary_element (std::ostream& os,
     {
       if (tc.is_inline_function () || tc.isobject ())
         {
-          std::string classname = (tc.isobject () ? tc.class_name () : "inline");
+          std::string classname = (tc.isobject () ? tc.class_name ()
+                                                  : "inline");
           std::size_t namelen = classname.length ();
 
           if (namelen > max_namelen)

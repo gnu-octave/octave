@@ -500,7 +500,8 @@ recording using those parameters.
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
-%! ## There might be multiple devices with the same name (e.g. on Windows WDM-KS)
+%! ## There might be multiple devices with the same name
+%! ## (e.g., on Windows WDM-KS)
 %! ## Check only the first of each unique device name.
 %! [unq_out_name, idx_unique] = unique ({devinfo.output(:).Name});
 %! unq_out_id = [devinfo.output(idx_unique).ID];

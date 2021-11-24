@@ -277,30 +277,6 @@ max_str_len (mwSize m, const char **str)
   return max_len;
 }
 
-static int
-valid_key (const char *key)
-{
-  int retval = 0;
-
-  int nel = strlen (key);
-
-  if (nel > 0)
-    {
-      if (isalpha (key[0]))
-        {
-          for (int i = 1; i < nel; i++)
-            {
-              if (! (isalnum (key[i]) || key[i] == '_'))
-                return retval;
-            }
-
-          retval = 1;
-        }
-    }
-
-  return retval;
-}
-
 // ------------------------------------------------------------------
 
 mxArray_base::mxArray_base (bool interleaved)
@@ -2770,48 +2746,45 @@ public:
   {
     int retval = -1;
 
-    if (valid_key (key))
+    m_nfields++;
+
+    m_fields = static_cast<char **>
+      (mxRealloc (m_fields, m_nfields * sizeof (char *)));
+
+    if (m_fields)
       {
-        m_nfields++;
+        m_fields[m_nfields-1] = mxArray::strsave (key);
 
-        m_fields = static_cast<char **>
-                    (mxRealloc (m_fields, m_nfields * sizeof (char *)));
+        mwSize nel = get_number_of_elements ();
 
-        if (m_fields)
+        mwSize ntot = m_nfields * nel;
+
+        mxArray **new_data;
+        new_data = static_cast<mxArray **>
+          (mxArray::malloc (ntot * sizeof (mxArray *)));
+
+        if (new_data)
           {
-            m_fields[m_nfields-1] = mxArray::strsave (key);
+            mwIndex j = 0;
+            mwIndex k = 0;
+            mwIndex n = 0;
 
-            mwSize nel = get_number_of_elements ();
-
-            mwSize ntot = m_nfields * nel;
-
-            mxArray **new_data;
-            new_data = static_cast<mxArray **>
-                        (mxArray::malloc (ntot * sizeof (mxArray *)));
-
-            if (new_data)
+            for (mwIndex i = 0; i < ntot; i++)
               {
-                mwIndex j = 0;
-                mwIndex k = 0;
-                mwIndex n = 0;
-
-                for (mwIndex i = 0; i < ntot; i++)
+                if (++n == m_nfields)
                   {
-                    if (++n == m_nfields)
-                      {
-                        new_data[j++] = nullptr;
-                        n = 0;
-                      }
-                    else
-                      new_data[j++] = m_data[k++];
+                    new_data[j++] = nullptr;
+                    n = 0;
                   }
-
-                mxFree (m_data);
-
-                m_data = new_data;
-
-                retval = m_nfields - 1;
+                else
+                  new_data[j++] = m_data[k++];
               }
+
+            mxFree (m_data);
+
+            m_data = new_data;
+
+            retval = m_nfields - 1;
           }
       }
 

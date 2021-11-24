@@ -393,6 +393,80 @@ users of your library to changes in a shared library:
 These guidelines also appear in the GNU libtool manual, see
 https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html.
 
+Merging the default branch to stable before a release
+-----------------------------------------------------
+
+To merge default to stable for a release with version == MAJOR:
+
+NOTE, I use two separate repos, one in `/path/to/octave-stable` that is
+updated to the stable branch and one in `/path/to/octave-default` that
+is updated to the default branch.
+
+1. Update the repo in `/path/to/octave-stable` to the most recent change
+   on the stable branch.  Ensure that there are no pending changes (be
+   careful to avoid wiping out any changes you are currently working
+   on!):
+
+       cd /path/to/octave-stable
+       hg update -C stable
+
+2. Merge default to stable (there should never be any conflicts here;
+   you are just making the stable branch be whatever is on the current
+   default branch):
+
+       hg merge default
+
+3. Commit the change (replace VERSION with the correct version; it
+   should be of the form MAJOR.1.0):
+
+       hg commit -m "maint: Merge default to stable to begin VERSION release process."
+
+4. Bump version numbers and release date in `configure.ac` for pre-release:
+
+  * Set version in AC_INIT to MAJOR.0.1
+  * OCTAVE_MAJOR_VERSION should already be correct.
+  * Set OCTAVE_MINOR_VERSION to 0.
+  * Set OCTAVE_PATCH_VERSION to 1.
+  * Set OCTAVE_RELEASE_DATE to the current date.
+  * Set the year in OCTAVE_COPYRIGHT to the current year.  The
+    copyright dates in the source files should have already been
+    updated during the development cycle.  If not, that should be done
+    in a separate change before the merge.
+  * OCTAVE_API_VERSION and shared library version numbers may be
+    updated in a separate changeset just prior to creating the first
+    test release.
+
+       hg commit  ## Use commit message similar to the one in 8f8fab4c93ae
+
+5. Update the repo in `/path/to/octave-default` to the most recent change
+   on the default branch.  Ensure that there are no pending changes (be
+   careful to avoid wiping out any changes you are currently working
+   on!):
+
+       cd /path/to/octave-default
+       hg update -C default
+
+6. Merge stable back to default (there should not be conflicts in this
+   merge):
+
+       hg merge stable
+       hg commit -m "maint: Merge stable to default."
+
+7. Bump versions in `configure.ac` to begin active development of MAJOR+1:
+
+  * Set version in AC_INIT to MAJOR+1.0.0
+  * Set OCTAVE_MAJOR_VERSION to MAJOR+1
+  * Set OCTAVE_MINOR_VERSION to 0
+  * Set OCTAVE_PATCH_VERSION to 0
+
+       hg commit  ## Use commit message similar to the one in 1455418a5c4c
+
+8. Remove functions and properties deprecated in MAJOR-1 (see ecf207896f76,
+   for example)
+
+9. Update NEWS file for next development cycle (see 0ec5eaabaf2c, for
+   example).
+
 
 ################################################################################
 

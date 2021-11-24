@@ -23,27 +23,9 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// Written by John C. Campbell <jcc@bevo.che.wisc.edu>
-
 #if ! defined (octave_file_io_h)
 #define octave_file_io_h 1
 
-#include "octave-config.h"
-
-#include <string>
-
-OCTAVE_NAMESPACE_BEGIN
-
-// Use this function internally until the function that uses it is
-// removed.  Remove when corresponding global deprecated function is
-// removed.
-extern void mark_for_deletion_deprecated (const std::string&);
-
-// Use this function internally until the function that uses it is
-// removed.  Remove when corresponding global deprecated function is
-// removed.
-extern void cleanup_tmp_files_deprecated (void);
-
-OCTAVE_NAMESPACE_END
+#warning "file-io.h was deprecated in Octave 8 and will be removed in a future version."
 
 #endif

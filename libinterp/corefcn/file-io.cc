@@ -67,7 +67,6 @@
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "file-io.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -3251,26 +3250,6 @@ It is useful for error messages and prompts.
   stream_list& streams = interp.get_stream_list ();
 
   return const_value ("stderr", args, streams.stderr_file ());
-}
-
-// Deprecated variables and functions.
-
-// Remove when corresponding global deprecated function is removed.
-void mark_for_deletion_deprecated (const std::string& file)
-{
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("mark_for_deletion");
-
-  interp.mark_for_deletion (file);
-}
-
-// Remove when corresponding global deprecated function is removed.
-void cleanup_tmp_files_deprecated (void)
-{
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("cleanup_tmp_files");
-
-  interp.cleanup_tmp_files ();
 }
 
 OCTAVE_NAMESPACE_END

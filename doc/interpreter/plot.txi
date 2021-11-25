@@ -1076,23 +1076,25 @@ symbol @code{\deg} which maps to the degree symbol (U+00B0).
 @node @code{latex} interpreter
 @subsubsection @code{latex} interpreter
 @anchor{XREFlatexinterpreter}
-The @qcode{"latex"} interpreter only works if an external LaTeX tool chain is
-present.  Three binaries are needed: @code{latex}, @code{dvipng}, and
+The @qcode{"latex"} interpreter only works if an external @LaTeX{} tool chain
+is present.  Three binaries are needed: @code{latex}, @code{dvipng}, and
 @code{dvisvgm}.  If those binaries are installed but not on the path, one can
 still provide their respective path using the following environment variables:
-OCTAVE_LATEX_BINARY, OCTAVE_DVIPNG_BINARY, and OCTAVE_DVISVG_BINARY.
+@w{@env{OCTAVE_LATEX_BINARY}}, @w{@env{OCTAVE_DVIPNG_BINARY}}, and
+@w{@env{OCTAVE_DVISVG_BINARY}}.
 
 Note that Octave does not parse or validate the text strings when in
 @qcode{"latex"} mode---it is the responsibility of the programmer to generate
 valid strings which may include wrapping sections that should appear in Math
 mode with @qcode{'$'} characters.
-See e.g. @url{https://www.latex-project.org/help/documentation/} for
-documentation about LaTeX typesetting.
+See, for example, @url{https://www.latex-project.org/help/documentation/} for
+documentation about @LaTeX{} typesetting.
 
 For debugging purpose, a convenience environment variable,
-OCTAVE_LATEX_DEBUG_FLAG, can be set to trigger more verbose output when Octave
-fails to have a given text compiled by an external latex engine. E.g.
-@qcode{"x^2"} is not a valid LaTeX string and the following example should fail
+@w{@env{OCTAVE_LATEX_DEBUG_FLAG}}, can be set to trigger more verbose output
+when Octave fails to have a given text compiled by an external @LaTeX{} engine.
+For example, @qcode{"x^2"} is not a valid @LaTeX{} string and the following
+example should fail
 
 @example
 @group
@@ -1103,8 +1105,8 @@ title ("x^2", "interpreter", "latex")
 @end group
 @end example
 
-Searching the terminal output you should find some helpful info about the origin
-of the failure:
+Searching the terminal output you should find some helpful info about the
+origin of the failure:
 
 @example
 @group
@@ -1120,7 +1122,7 @@ l.6 x^
 @end group
 @end example
 
-If no usable latex tool chain is found at the first text rendering, using
+If no usable @LaTeX{} tool chain is found at the first text rendering, using
 the @qcode{"latex"} interpreter is equivalent to @qcode{"none"}.
 
 @node Printing and Saving Plots
@@ -1152,18 +1154,21 @@ in their capability to display unusual text and in their ability to print
 such text.  In general, the @qcode{"tex"} interpreter (default) is the best
 all-around performer for both on-screen display and printing.  However, for the
 reproduction of complicated text formulas the @qcode{"latex"} interpreter is
-preferred.  When printing with the @code{-painters} renderer, the default for
+preferred.  When printing with the @option{-painters} renderer, the default for
 all vector formats, two options may be considered:
+
 @itemize @bullet
 @item
-Use the @option{-svgconvert} option to allow for rendering LaTeX formulas. Note
-that the glyph are rendered as path and the original textual info are lost.
+Use the @option{-svgconvert} option to allow for rendering @LaTeX{} formulas.
+Note that the glyph are rendered as path and the original textual info are
+lost.
+
 @item
-Use one of the @option{-d*latex*} devices to produce a .tex file (plus support
-.eps or .pdf files) to be further processed by an external LaTeX engine.
-Note that the @code{print} function will first set the interpreter of all
-strings to @qcode{"latex"}, which means all strings must be valid latex strings.
-provided that all strings can be processed by LaTeX, not only those.
+Use one of the @option{-d*latex*} devices to produce a .tex file (plus
+supporting .eps or .pdf files) to be further processed by an external @LaTeX{}
+engine.  Note that the @code{print} function will first set the interpreter of
+all strings to @qcode{"latex"}, which means all strings must be valid @LaTeX{}
+strings.
 @end itemize
 
 A complete example showing the capabilities of text printing using the
@@ -1904,7 +1909,8 @@ returns a list of factory defaults.
 @cindex graphics colors
 @cindex colors, graphics
 
-Colors may be specified in three ways: 1) RGB triplets, 2) by name, or 3) by HTML notation.
+Colors may be specified in three ways: 1) RGB triplets, 2) by name, or 3) by
+HTML notation.
 
 @table @asis
 

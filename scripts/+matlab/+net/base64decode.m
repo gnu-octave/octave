@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{out_vec} =} matlab.net.base64decode (@var{b64_str})
+## @deftypefn {} {@var{out_vec} =} matlab.net.base64decode (@var{b64_str})
 ##
 ## Convert base64 encoded @var{b64_str} to uint8 vector @var{out_vec}.
 ##

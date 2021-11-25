@@ -3704,7 +3704,7 @@ The default value is true.  If this option is set to false, Octave will store
 diagonal matrices as full matrices.
 
 When called from inside a function with the @qcode{"local"} option, the setting
-is changed locally for the function and any subroutines it calls. The original
+is changed locally for the function and any subroutines it calls.  The original
 setting is restored when exiting the function.
 @seealso{optimize_range, optimize_permutation_matrix}
 @end deftypefn */)

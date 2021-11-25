@@ -1577,7 +1577,7 @@ Set and query the codepage that is used for reading .m files.
 
 DEFMETHOD (dir_encoding, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {}  {@var{current_encoding} =} dir_encoding (@var{dir})
+@deftypefn  {} {@var{current_encoding} =} dir_encoding (@var{dir})
 @deftypefnx {} {@var{prev_encoding} =} dir_encoding (@var{dir}, @var{encoding})
 @deftypefnx {} {} dir_encoding (@dots{})
 Set and query the @var{encoding} that is used for reading m-files in @var{dir}.
@@ -1587,7 +1587,7 @@ That encoding overrides the (globally set) m-file encoding.
 The string @var{DIR} must match the form how the directory would appear in the
 load path.
 
-The @var{encoding} must be a valid encoding identifier or @code{"delete"}.  In
+The @var{encoding} must be a valid encoding identifier or @qcode{"delete"}.  In
 the latter case, the (globally set) m-file encoding will be used for the given
 @var{dir}.
 
@@ -1598,7 +1598,7 @@ requested.
 The directory encoding is automatically read from the file @file{.oct-config}
 when a new path is added to the load path (for example with @code{addpath}).
 To set the encoding for all files in the same folder, that file must contain
-a line starting with @code{"encoding="} followed by the encoding identifier.
+a line starting with @qcode{"encoding="} followed by the encoding identifier.
 
 For example to set the file encoding for all files in the same folder to
 ISO 8859-1 (Latin-1), create a file @file{.oct-config} with the following

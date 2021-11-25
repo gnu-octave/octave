@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{b64_str} =} matlab.net.base64encode (@var{in})
+## @deftypefn {} {@var{b64_str} =} matlab.net.base64encode (@var{in})
 ##
 ## Convert @var{in} to a base64 encoded string @var{b64_str}.
 ##

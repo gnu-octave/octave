@@ -21,8 +21,8 @@ classdef jupyter_notebook < handle
   ## @deftypefn  {} {@var{notebook} =} jupyter_notebook (@var{notebook_file_name})
   ## @deftypefnx {} {@var{notebook} =} jupyter_notebook (@var{notebook_file_name}, @var{options})
   ##
-  ## Run and fill the Jupyter Notebook in @var{notebook_file_name} within
-  ## GNU Octave.
+  ## Run and fill the Jupyter Notebook in @var{notebook_file_name} within GNU
+  ## Octave.
   ##
   ## Supported are textual and graphical Octave outputs.
   ##
@@ -30,8 +30,8 @@ classdef jupyter_notebook < handle
   ## representing the JSON-decoded Jupyter Notebook.  This attribute is
   ## intentionally public to enable advanced notebook manipulations.
   ##
-  ## Note: Jupyter Notebook versions (@qcode{nbformat}) lower than 4.0 are
-  ## not supported.
+  ## Note: Jupyter Notebook versions (@qcode{nbformat}) lower than 4.0 are not
+  ## supported.
   ##
   ## The second argument @var{options} is a struct with fields:
   ## @itemize @bullet
@@ -50,9 +50,9 @@ classdef jupyter_notebook < handle
   ## PNG (default)
   ##
   ## @item
-  ## SVG (Note: If SVG images do not appear in the notebook, it is most
-  ## related to the Jupyter Notebook security mechanism and explicitly
-  ## "trusting" them is necessary).
+  ## SVG (Note: If SVG images do not appear in the notebook, it is most related
+  ## to the Jupyter Notebook security mechanism and explicitly "trusting" them
+  ## is necessary).
   ##
   ## @item
   ## JPG
@@ -78,22 +78,22 @@ classdef jupyter_notebook < handle
   ## ## Run all cells and generate the filled notebook
   ##
   ## ## Instantiate an object from the notebook file
-  ## notebook = jupyter_notebook("myNotebook.ipynb")
+  ## notebook = jupyter_notebook ("myNotebook.ipynb")
   ##     @result{} notebook =
   ##
   ##         <object jupyter_notebook>
   ##
   ## ## Run the code and embed the results in the @qcode{notebook} attribute
-  ## notebook.run_all()
+  ## notebook.run_all ()
   ## ## Generate the new notebook by overwriting the original notebook
-  ## notebook.generate_notebook("myNotebook.ipynb")
+  ## notebook.generate_notebook ("myNotebook.ipynb")
   ## @end group
   ##
   ## @group
   ## ## Run the second cell and generate the filled notebook
   ##
   ## ## Instantiate an object from the notebook file
-  ## notebook = jupyter_notebook("myNotebook.ipynb")
+  ## notebook = jupyter_notebook ("myNotebook.ipynb")
   ##     @result{} notebook =
   ##
   ##         <object jupyter_notebook>
@@ -101,20 +101,20 @@ classdef jupyter_notebook < handle
   ## ## Run the code and embed the results in the @qcode{notebook} attribute
   ## notebook.run(2)
   ## ## Generate the new notebook in a new file
-  ## notebook.generate_notebook("myNewNotebook.ipynb")
+  ## notebook.generate_notebook ("myNewNotebook.ipynb")
   ## @end group
   ##
   ## @group
   ## ## Generate an Octave script from a notebook
   ##
   ## ## Instantiate an object from the notebook file
-  ## notebook = jupyter_notebook("myNotebook.ipynb")
+  ## notebook = jupyter_notebook ("myNotebook.ipynb")
   ##     @result{} notebook =
   ##
   ##         <object jupyter_notebook>
   ##
   ## ## Generate the octave script
-  ## notebook.generate_octave_script("myScript.m")
+  ## notebook.generate_octave_script ("myScript.m")
   ## @end group
   ## @end example
   ##
@@ -228,7 +228,7 @@ classdef jupyter_notebook < handle
       ## Write an Octave script that has the contents of the Jupyter Notebook
       ## stored in the @qcode{notebook} attribute to @var{script_file_name}.
       ##
-      ## Non code cells are generated as block comments.
+      ## Non-code cells are generated as block comments.
       ##
       ## See @code{help jupyter_notebook} for examples.
       ##
@@ -306,7 +306,7 @@ classdef jupyter_notebook < handle
       ## The first Jupyter Notebook cell has the index 1.
       ##
       ## Note: The code evaluation of the Jupyter Notebook cells is done
-      ## in a separate Jupyter Notebook context.  Thus currently open
+      ## in a separate Jupyter Notebook context.  Thus, currently open
       ## figures and workspace variables won't be affected by executing
       ## this function.  However, current workspace variables cannot be
       ## accessed either.
@@ -462,7 +462,7 @@ classdef jupyter_notebook < handle
       ## output cells in the object.
       ##
       ## Note: The code evaluation of the Jupyter Notebook cells is done
-      ## in a separate Jupyter Notebook context.  Thus currently open
+      ## in a separate Jupyter Notebook context.  Thus, currently open
       ## figures and workspace variables won't be affected by executing
       ## this function.  However, current workspace variables cannot be
       ## accessed either.

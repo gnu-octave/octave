@@ -29,10 +29,10 @@
 ## @deftypefnx {} {} disable_range (@var{new_val}, "local")
 ## Query or set whether storing ranges in a special space-efficient format is
 ## disabled.
-## 
+##
 ## The default value is false.  If this option is set to true, Octave will
 ## store ranges as full matrices.
-## 
+##
 ## When called from inside a function with the @qcode{"local"} option, the
 ## setting is changed locally for the function and any subroutines it calls.
 ## The original setting is restored when exiting the function.

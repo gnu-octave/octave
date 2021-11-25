@@ -137,8 +137,8 @@
 ## formats.
 ##
 ## Strings using the @qcode{"latex"} interpreter, are rendered using path
-## objects. This looks good but note that textual info (font, characters@dots{})
-## are lost.
+## objects.  This looks good but note that textual info (font,
+## characters@dots{}) are lost.
 ##
 ## @item Output Simplification:
 ## By default, the option @option{-painters} renders patch and surface objects

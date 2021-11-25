@@ -821,7 +821,7 @@ this new file (if the current setting of @code{history_save} allows for this).
 
 The default value is @file{@w{@env{$DATA}}/octave/history}, where
 @w{@env{$DATA}} is the platform-specific location for (roaming) user data files
-(e.g. @w{@env{$XDG_DATA_HOME}} or, if that is not set, @file{~/.local/share} on
+(e.g., @w{@env{$XDG_DATA_HOME}} or, if that is not set, @file{~/.local/share} on
 Unix-like operating systems or @w{@env{%APPDATA%}} on Windows).  The default
 value may be overridden by the environment variable @w{@env{OCTAVE_HISTFILE}}.
 

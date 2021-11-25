@@ -508,7 +508,7 @@ Return the version number of Octave as a string.
 
 DEFUN (user_config_dir, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {cfg_dir = } user_config_dir ()
+@deftypefn {} {cfg_dir =} user_config_dir ()
 Return the (platform-specific) directory for user configuration.
 @seealso{user_data_dir}
 @end deftypefn */)
@@ -526,7 +526,7 @@ Return the (platform-specific) directory for user configuration.
 
 DEFUN (user_data_dir, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {data_dir = } user_data_dir ()
+@deftypefn {} {data_dir =} user_data_dir ()
 Return the (platform-specific) directory for user data.
 @seealso{user_config_dir}
 @end deftypefn */)

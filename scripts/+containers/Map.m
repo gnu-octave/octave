@@ -31,15 +31,15 @@ classdef Map < handle
   ## @deftypefnx {} {@var{m} =} containers.Map (@var{keys}, @var{vals}, @qcode{"UniformValues"}, @var{is_uniform})
   ## @deftypefnx {} {@var{m} =} containers.Map (@qcode{"KeyType"}, @var{kt}, @qcode{"ValueType"}, @var{vt})
   ##
-  ## Create an object of the containers.Map class that stores a list of key/value
-  ## pairs.
+  ## Create an object of the containers.Map class that stores a list of
+  ## key/value pairs.
   ##
   ## @var{keys} is an array of @emph{unique} keys for the map.  The keys can be
   ## numeric scalars or strings.  The type for numeric keys may be one of
   ## @qcode{"double"}, @qcode{"single"}, @qcode{"int32"}, @qcode{"uint32"},
   ## @qcode{"int64"}, or @qcode{"uint64"}.  Other numeric or logical keys will
-  ## be converted to @qcode{"double"}.  A single string key may be entered as is.
-  ## Multiple string keys are entered as a cell array of strings.
+  ## be converted to @qcode{"double"}.  A single string key may be entered as
+  ## is.  Multiple string keys are entered as a cell array of strings.
   ##
   ## @var{vals} is an array of values for the map with the @emph{same} number
   ## of elements as @var{keys}.
@@ -48,18 +48,18 @@ classdef Map < handle
   ## as the key type and @qcode{"any"} as the value type.
   ##
   ## The @qcode{"UniformValues"} option specifies whether the values of
-  ## the map must be strictly of the same type.  If @var{is_uniform} is true, any
-  ## values which would be added to the map are first validated to ensure they
-  ## are of the correct type.
+  ## the map must be strictly of the same type.  If @var{is_uniform} is true,
+  ## any values which would be added to the map are first validated to ensure
+  ## they are of the correct type.
   ##
-  ## When called with @qcode{"KeyType"} and @qcode{"ValueType"} arguments, create
-  ## an empty map with the specified types.  The inputs @var{kt} and @var{vt} are
-  ## the types for the keys and values of the map respectively.  Allowed values
-  ## for @var{kt} are @qcode{"char"}, @qcode{"double"}, @qcode{"single"},
-  ## @qcode{"int32"}, @qcode{"uint32"}, @qcode{"int64"}, @qcode{"uint64"}.
-  ## Allowed values for @var{vt} are @qcode{"any"}, @qcode{"char"},
-  ## @qcode{"double"}, @qcode{"single"}, @qcode{"int32"}, @qcode{"uint32"},
-  ## @qcode{"int64"}, @qcode{"uint64"}, @qcode{"logical"}.
+  ## When called with @qcode{"KeyType"} and @qcode{"ValueType"} arguments,
+  ## create an empty map with the specified types.  The inputs @var{kt} and
+  ## @var{vt} are the types for the keys and values of the map respectively.
+  ## Allowed values for @var{kt} are @qcode{"char"}, @qcode{"double"},
+  ## @qcode{"single"}, @qcode{"int32"}, @qcode{"uint32"}, @qcode{"int64"},
+  ## @qcode{"uint64"}.  Allowed values for @var{vt} are @qcode{"any"},
+  ## @qcode{"char"}, @qcode{"double"}, @qcode{"single"}, @qcode{"int32"},
+  ## @qcode{"uint32"}, @qcode{"int64"}, @qcode{"uint64"}, @qcode{"logical"}.
   ##
   ## The return value @var{m} is an object of the containers.Map class.
   ## @seealso{struct}
@@ -71,7 +71,8 @@ classdef Map < handle
     ## @deftypefn {} {@var{type} =} Map.KeyType ()
     ## Return the key type.
     ##
-    ## Possible values are listed above when describing input variable @var{kt}.
+    ## Possible values are listed above when describing input variable
+    ## @var{kt}.
     ## @end deftypefn
 
     KeyType   = "char";
@@ -80,7 +81,8 @@ classdef Map < handle
     ## @deftypefn {} {@var{type} =} Map.ValueType ()
     ## Return the value type.
     ##
-    ## Possible values are listed above when describing input variable @var{vt}.
+    ## Possible values are listed above when describing input variable
+    ## @var{vt}.
     ## @end deftypefn
 
     ValueType = "any";
@@ -274,11 +276,12 @@ classdef Map < handle
 
       ## -*- texinfo -*-
       ## @deftypefn {} {@var{mask} =} Map.isKey (@var{keySet})
-      ## Return a logical array which is true where the elements of @var{keySet} are
-      ## keys of the map and false otherwise.
+      ## Return a logical array which is true where the elements of
+      ## @var{keySet} are keys of the map and false otherwise.
       ##
-      ## @var{keySet} is a cell array of keys.  If a single key is being checked, it
-      ## can be entered directly as a scalar value or a char vector.
+      ## @var{keySet} is a cell array of keys.  If a single key is being
+      ## checked, it can be entered directly as a scalar value or a char
+      ## vector.
       ## @end deftypefn
 
       if (! iscell (keySet))
@@ -330,10 +333,12 @@ classdef Map < handle
       ## @deftypefn  {} {@var{l} =} Map.size (@var{n})
       ## @deftypefnx {} {@var{sz} =} Map.size ()
       ## @deftypefnx {} {@var{dim_1}, @dots{}, @var{dim_n} =} Map.size ()
-      ## If @var{n} is 1, return the number of key/value pairs in the map, otherwise
-      ## return 1.
-      ## Without input arguments, return vector @code{[@var{l}, 1]} where @var{l} is
-      ## the number of key/value pairs in the map.
+      ## If @var{n} is 1, return the number of key/value pairs in the map,
+      ## otherwise return 1.
+      ##
+      ## Without input arguments, return vector @code{[@var{l}, 1]} where
+      ## @var{l} is the number of key/value pairs in the map.
+      ##
       ## With multiple outputs, return @code{[@var{l}, @dots{}, 1]}.
       ## @end deftypefn
 

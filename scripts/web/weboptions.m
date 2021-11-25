@@ -31,10 +31,10 @@ classdef weboptions < handle
   ##
   ## Specify parameters for RESTful web services.
   ##
-  ## @code{weboptions} with no inputs returns a default @code{weboptions} object
-  ## to specify parameters for a request to a web service.  A @code{weboptions}
-  ## object can be an optional input argument to the @code{webread} and
-  ## @code{webwrite} functions.
+  ## @code{weboptions} with no inputs returns a default @code{weboptions}
+  ## object to specify parameters for a request to a web service.  A
+  ## @code{weboptions} object can be an optional input argument to the
+  ## @code{webread} and @code{webwrite} functions.
   ##
   ## Multiple name and value pair arguments may be specified in any order as
   ## @var{name1}, @var{value1}, @var{name2}, @var{value2}, etc.
@@ -58,7 +58,8 @@ classdef weboptions < handle
   ## current version of Octave as returned by @code{version}.
   ##
   ## @item
-  ## @samp{Timeout} --- Specify the timeout value for the connection in seconds.
+  ## @samp{Timeout} --- Specify the timeout value for the connection in
+  ## seconds.
   ##
   ## Default is 10 seconds.  @samp{Inf} is not currently supported.
   ##

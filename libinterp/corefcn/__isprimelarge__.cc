@@ -149,9 +149,9 @@ bool isprimescalar (uint64_t n)
 
 DEFUN (__isprimelarge__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{x} =} __isprimelarge__ (@var{n})
+@deftypefn {} {@var{x} =} __isprimelarge__ (@var{n})
 Use the Miller-Rabin test to find out whether the elements of N are prime or
-composite. The input N is required to be a vector or array of 64-bit integers.
+composite.  The input N is required to be a vector or array of 64-bit integers.
 You should call isprime(N) instead of directly calling this function.
 
 @seealso{isprime, factor}

@@ -231,11 +231,11 @@ returns
 @end example
 
 If the input matrix @var{A} is sparse, the sparse QR@tie{}factorization
-is computed by using @sc{SPQR} or @sc{CXSparse} (e.g., if @sc{SPQR} is not
+is computed by using @sc{SPQR} or @sc{cxsparse} (e.g., if @sc{SPQR} is not
 available).  Because the matrix @var{Q} is, in general, a full matrix, it is
 recommended to request only one return value @var{R}.  In that case, the
-computation avoids the construction of @var{Q} and returns a sparse @var{R} such
-that @code{@var{R} = chol (@var{A}' * @var{A})}.
+computation avoids the construction of @var{Q} and returns a sparse @var{R}
+such that @code{@var{R} = chol (@var{A}' * @var{A})}.
 
 If @var{A} is dense, an additional matrix @var{B} is supplied and two
 return values are requested, then @code{qr} returns @var{C}, where
@@ -261,7 +261,7 @@ it uses less memory and can handle rank-deficient matrices better.
 
 If the final argument is the string @qcode{"vector"} then @var{P} is a
 permutation vector (of the columns of @var{A}) instead of a permutation
-matrix. In this case, the defining relationship is:
+matrix.  In this case, the defining relationship is:
 
 @example
 @var{Q} * @var{R} = @var{A}(:, @var{P})
@@ -276,7 +276,7 @@ returned.  If the original matrix @var{A} has size MxN and M > N, then the
 columns in @var{Q} and omit the zeros in @var{R}.  If M @leq{} N, there is no
 difference between the economy and standard factorizations.  When calculating
 an @qcode{"economy"} factorization and @var{A} is dense, the output @var{P} is
-always a vector rather than a matrix. If @var{A} is sparse, output
+always a vector rather than a matrix.  If @var{A} is sparse, output
 @var{P} is a sparse permutation matrix.
 
 Background: The QR factorization has applications in the solution of least

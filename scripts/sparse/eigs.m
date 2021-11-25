@@ -204,7 +204,7 @@
 ## Programming Notes: For small problems, @var{n} < 500, consider using
 ## @code{eig (full (@var{A}))}.
 ##
-## If ARPACK fails to converge consider increasing the number of Lanczos
+## If @sc{arpack} fails to converge consider increasing the number of Lanczos
 ## vectors (@var{opt}.p), increasing the number of iterations
 ## (@var{opt}.maxiter), or decreasing the tolerance (@var{opt}.tol).
 ##

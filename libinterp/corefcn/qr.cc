@@ -234,8 +234,8 @@ If the input matrix @var{A} is sparse, the sparse QR@tie{}factorization
 is computed by using @sc{SPQR} or @sc{cxsparse} (e.g., if @sc{SPQR} is not
 available).  Because the matrix @var{Q} is, in general, a full matrix, it is
 recommended to request only one return value @var{R}.  In that case, the
-computation avoids the construction of @var{Q} and returns a sparse @var{R} such that
-@code{@var{R} = chol (@var{A}' * @var{A})}.
+computation avoids the construction of @var{Q} and returns a sparse @var{R}
+such that @code{@var{R} = chol (@var{A}' * @var{A})}.
 
 If @var{A} is dense, an additional matrix @var{B} is supplied and two
 return values are requested, then @code{qr} returns @var{C}, where

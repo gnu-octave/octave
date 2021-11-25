@@ -27,14 +27,13 @@
 #include "error.h"
 #include "ovl.h"
 
-#include <iostream>
-
 OCTAVE_NAMESPACE_BEGIN
 
 // This function implements the Schrage technique for modular multiplication.
 // The returned value is equivalent to "mod (a*b, modulus)"
 // but calculated without overflow.
-uint64_t safemultiply (uint64_t a, uint64_t b, uint64_t modulus)
+uint64_t
+safemultiply (uint64_t a, uint64_t b, uint64_t modulus)
 {
   if (! a || ! b)
     return 0;
@@ -58,7 +57,8 @@ uint64_t safemultiply (uint64_t a, uint64_t b, uint64_t modulus)
 
 // This function returns "mod (a^b, modulus)"
 // but calculated without overflow.
-uint64_t safepower (uint64_t a, uint64_t b, uint64_t modulus)
+uint64_t
+safepower (uint64_t a, uint64_t b, uint64_t modulus)
 {
   uint64_t retval = 1;
   while (b > 0)
@@ -73,7 +73,8 @@ uint64_t safepower (uint64_t a, uint64_t b, uint64_t modulus)
 
 // This function implements a single round of Miller-Rabin primality testing.
 // Returns false if composite, true if pseudoprime for this divisor.
-bool millerrabin (uint64_t div, uint64_t d, uint64_t r, uint64_t n)
+bool
+millerrabin (uint64_t div, uint64_t d, uint64_t r, uint64_t n)
 {
   uint64_t x = safepower (div, d, n);
   if (x == 1 || x == n-1)
@@ -90,7 +91,8 @@ bool millerrabin (uint64_t div, uint64_t d, uint64_t r, uint64_t n)
 
 // This function uses the Miller-Rabin test to find out whether the input is
 // prime or composite. The input is required to be a scalar 64-bit integer.
-bool isprimescalar (uint64_t n)
+bool
+isprimescalar (uint64_t n)
 {
   // Fast return for even numbers.
   // n==2 is excluded by the time this function is called.
@@ -101,10 +103,10 @@ bool isprimescalar (uint64_t n)
   uint64_t d = n-1;
   uint64_t r = 0;
   while (! (d & 1))
-  {
-    d >>= 1;
-    r++;
-  }
+    {
+      d >>= 1;
+      r++;
+    }
 
   // Miller-Rabin test with the first 12 primes.
   // If the number passes all 12 tests, then it is prime.

@@ -26,8 +26,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} saveas (@var{h}, @var{filename})
 ## @deftypefnx {} {} saveas (@var{h}, @var{filename}, @var{fmt})
-## Save graphic object @var{h} to the file @var{filename} in graphic format
+## Save graphics object @var{h} to the file @var{filename} in graphics format
 ## @var{fmt}.
+##
+## If @var{h} is the handle to a figure object, that figure object is saved.
+## If @var{h} is the handle to a different graphics object, the figure
+## containing that graphics object is saved.
 ##
 ## All device formats accepted by @code{print} may be used.  Common formats
 ## are:

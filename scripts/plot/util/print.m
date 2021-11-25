@@ -808,6 +808,18 @@ function rgbout = print (varargin)
 
 endfunction
 
+%!error <a graphics handle>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   x = 0:0.1:1;
+%!   y1 = x;
+%!   y2 = 2*x;
+%!   ax = plotyy (x, y1, x, y2);
+%!   saveas (ax, [tempname(), ".png"]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 function cmd = epstool (opts, filein, fileout)
   ## As epstool does not work with pipes, a subshell is used to
   ## permit piping.  Since this solution does not work with the DOS

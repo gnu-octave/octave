@@ -89,6 +89,9 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   for i = 1:numel (varargin)
+    if (! ischar (varargin{i}) && ! iscellstr (varargin{i}))
+      error ("print: input arguments must be a graphics handle or strings.");
+    endif
     arg = strtrim (varargin{i});
     if (ischar (arg))
       if (isempty (arg))

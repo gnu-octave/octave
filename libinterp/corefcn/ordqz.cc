@@ -117,7 +117,7 @@ selects the eigenvalues in the top left block of @var{AR} and @var{BR} in the
 following way:
 
 @table @asis
-@item @qcode{"S"}, @qcode{"udi"}
+@item @qcode{"S"}, @nospell{@qcode{"udi"}}
 small: leading block has all
 @tex
 $|\lambda| < 1$
@@ -126,7 +126,7 @@ $|\lambda| < 1$
 |@var{lambda}| < 1
 @end ifnottex
 
-@item @qcode{"B"}, @qcode{"udo"}
+@item @qcode{"B"}, @nospell{@qcode{"udo"}}
 big: leading block has all
 @tex
 $|\lambda| \geq 1$
@@ -135,11 +135,11 @@ $|\lambda| \geq 1$
 |@var{lambda}| @geq{} 1
 @end ifnottex
 
-@item @qcode{"-"}, @qcode{"lhp"}
+@item @qcode{"-"}, @nospell{@qcode{"lhp"}}
 negative real part: leading block has all eigenvalues in the open left
 half-plane
 
-@item @qcode{"+"}, @qcode{"rhp"}
+@item @qcode{"+"}, @nospell{@qcode{"rhp"}}
 non-negative real part: leading block has all eigenvalues in the closed right
 half-plane
 @end table

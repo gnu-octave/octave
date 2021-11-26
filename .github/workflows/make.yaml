@@ -157,7 +157,8 @@ jobs:
             cxx: "clang++"
 
     env:
-      MY_PATH: "/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/bison/bin:/usr/local/opt/texinfo/bin:/usr/local/opt/qt@5/bin:/Library/TeX/texbin"
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
 
     steps:
       - name: checkout repository
@@ -187,6 +188,11 @@ jobs:
             ccache gnu-sed openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
           eval "$(/usr/libexec/path_helper)"
+          echo "/Library/TeX/texbin" >> $GITHUB_PATH
+          echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
+          echo "/usr/local/opt/texinfo/bin" >> $GITHUB_PATH
+          echo "/usr/local/opt/bison/bin" >> $GITHUB_PATH
+          echo "/usr/local/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
 
       - name: prepare ccache
         # create human readable timestamp
@@ -194,7 +200,7 @@ jobs:
         run: |
           echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
 
-      - name: setup ccache
+      - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
         uses: actions/cache@v2
         with:
@@ -211,17 +217,14 @@ jobs:
           test -d /Users/runner/Library/Preferences/ccache || mkdir /Users/runner/Library/Preferences/ccache
           echo "max_size = 1.5G" >> /Users/runner/Library/Preferences/ccache/ccache.conf
           ccache -s
+          echo "$(brew --prefix)/opt/ccache/libexec" >> $GITHUB_PATH
 
       - name: bootstrap
-        run: |
-          export PATH="$MY_PATH:$PATH"
-          GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
         timeout-minutes: 30
         env:
-          MY_CC: ${{ matrix.cc }}
-          MY_CXX: ${{ matrix.cxx }}
           MY_CPPFLAGS: ${{ matrix.cppflags }}
           MY_LDFLAGS: ${{ matrix.ldflags }}
         # This is a hodgepodge of configure flags put together from the
@@ -232,16 +235,20 @@ jobs:
         # Amended with additional flags that seem to be needed.
         # Not all of those might be needed or be correct.
         run: |
-          export PATH="$MY_PATH:$PATH"
           echo $PATH
-          echo $MY_CC --version
-          $MY_CC --version
-          echo $MY_CXX --version
-          $MY_CXX --version
+          echo which ccache
+          which ccache
+          which $CC
+          echo $CC --version
+          $CC --version
+          which $CXX
+          echo $CXX --version
+          $CXX --version
+          which gfortran
+          echo gfortran --version
+          gfortran --version
           mkdir .build
           cd .build && ../configure \
-            CC="ccache $MY_CC" \
-            CXX="ccache $MY_CXX" \
             F77="ccache gfortran" \
             CPPFLAGS="-I/usr/local/opt/gettext/include -I/usr/local/opt/icu4c/include -I/usr/local/opt/qt@5/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include $MY_CPPFLAGS" \
             CXXFLAGS="-O2 -g -std=c++11" \
@@ -254,9 +261,7 @@ jobs:
             --prefix="${HOME}/usr"
 
       - name: build
-        run: |
-          export PATH="$MY_PATH:$PATH"
-          make -C ./.build all -j3 V=1
+        run: make -C ./.build all -j3 V=1
 
       - name: ccache status
         run: ccache -s

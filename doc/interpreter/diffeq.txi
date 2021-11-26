@@ -155,7 +155,7 @@ and @sc{dasrt}, which can be used to solve DAEs with constraints
 
 See @nospell{K. E. Brenan}, et al., @cite{Numerical Solution of Initial-Value
 Problems in Differential-Algebraic Equations}, North-Holland (1989),
-DOI: @url{https://doi.org/10.1137/1.9781611971224},
+@nospell{DOI}: @url{https://doi.org/10.1137/1.9781611971224},
 for more information about the implementation of @sc{dassl}.
 
 
@@ -212,7 +212,7 @@ Currently implemented solvers are:
 Detailed information on the solvers are given in @nospell{L. F. Shampine} and
 @nospell{M. W. Reichelt}, @cite{The MATLAB ODE Suite}, SIAM Journal on
 Scientific Computing, Vol. 18, 1997, pp. 1–22,
-DOI: @url{https://doi.org/10.1137/S1064827594276424}.
+@nospell{DOI}: @url{https://doi.org/10.1137/S1064827594276424}.
 
 @DOCSTRING(ode45)
 

@@ -135,10 +135,10 @@
 ## The maximum number of iterations.  The default is 300.
 ##
 ## @item p
-## The number of Lanzcos basis vectors to use.  More vectors will result in
-## faster convergence, but a greater use of memory.  The optimal value of
-## @code{p} is problem dependent and should be in the range @code{@var{k} + 1}
-## to @var{n}.  The default value is @code{2 * @var{k}}.
+## The number of @nospell{Lanczos} basis vectors to use.  More vectors will
+## result in faster convergence, but a greater use of memory.  The optimal
+## value of @code{p} is problem dependent and should be in the range
+## @code{@var{k} + 1} to @var{n}.  The default value is @code{2 * @var{k}}.
 ##
 ## @item v0
 ## The starting vector for the algorithm.  An initial vector close to the final
@@ -204,8 +204,8 @@
 ## Programming Notes: For small problems, @var{n} < 500, consider using
 ## @code{eig (full (@var{A}))}.
 ##
-## If @sc{arpack} fails to converge consider increasing the number of Lanczos
-## vectors (@var{opt}.p), increasing the number of iterations
+## If @sc{arpack} fails to converge consider increasing the number of
+## @nospell{Lanczos} vectors (@var{opt}.p), increasing the number of iterations
 ## (@var{opt}.maxiter), or decreasing the tolerance (@var{opt}.tol).
 ##
 ## Reference:

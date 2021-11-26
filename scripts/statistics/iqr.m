@@ -46,7 +46,7 @@
 ## over the specified dimension.  @var{dim} can either be a scalar dimension or
 ## a vector of non-repeating dimensions over which to operate.  In either case
 ## @var{dim} must be positive integers.  A vector @var{dim} concatenates all
-## specified diminsions for independent operation by @code{iqr}.
+## specified dimensions for independent operation by @code{iqr}.
 ##
 ## Specifying dimension @qcode{"ALL"} will force @code{iqr} to operate
 ## on all elements of @var{x}, and is equivalent to @code{iqr (@var{x}(:))}.

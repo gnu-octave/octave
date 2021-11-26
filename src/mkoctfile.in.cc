@@ -160,11 +160,11 @@ replace_prefix (std::string s)
 {
 #if defined (OCTAVE_REPLACE_PREFIX)
   const std::string match = "${prefix}";
-  const std::string repl = prepend_octave_exec_home ("");
+  const std::string repl = Voctave_exec_home;
   std::size_t pos = s.find (match);
   while (pos != std::string::npos )
     {
-      s.replace(pos, match.length (), repl);
+      s.replace (pos, match.length (), repl);
       pos = s.find (match);
     }
 #endif

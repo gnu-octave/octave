@@ -2627,6 +2627,7 @@ AC_SUBST(OCTAVE_RELOCATE_ALL)
 if test $OCTAVE_RELOCATE_ALL = yes; then
   AC_DEFINE(OCTAVE_REPLACE_PREFIX, 1, [Replace prefix in mkoctfile flags.])
 fi
+AM_CONDITIONAL([AMCOND_RELOCATE_ALL], [test $OCTAVE_RELOCATE_ALL = yes])
 
 ### Determine whether Mercurial ID should be embedded in library binaries.
 

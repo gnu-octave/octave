@@ -930,6 +930,15 @@ to right.";
 for the x-axis.  __modemsg__.   @xref{XREFxlim, , @w{xlim function}}.";
         s.valid = valid_2elvec;
 
+      case "xlimitmethod"
+        s.doc = "Method used to determine the x axis limits when the \
+@code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
+@qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
+value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
+objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
+margin of about 7%% of the data extent is added around the objects. \
+@xref{XREFaxis, , @w{axis function}}.";
+
       case "xlimmode"
       case "xminorgrid"
         s.doc = "Control whether minor x grid lines are displayed.";
@@ -975,6 +984,15 @@ to top.";
 for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.valid = valid_2elvec;
 
+      case "xlimitmethod"
+        s.doc = "Method used to determine the y axis limits when the \
+@code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
+@qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
+value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
+objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
+margin of about 7%% of the data extent is added around the objects. \
+@xref{XREFaxis, , @w{axis function}}.";
+
       case "ylimmode"
       case "yminorgrid"
         s.doc = "Control whether minor y grid lines are displayed.";
@@ -1012,6 +1030,15 @@ for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.doc = "Two-element vector @code{[zmin zmaz]} specifying the limits \
 for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.valid = valid_2elvec;
+
+      case "xlimitmethod"
+        s.doc = "Method used to determine the z axis limits when the \
+@code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
+@qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
+value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
+objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
+margin of about 7%% of the data extent is added around the objects. \
+@xref{XREFaxis, , @w{axis function}}.";
 
       case "zlimmode"
       case "zminorgrid"

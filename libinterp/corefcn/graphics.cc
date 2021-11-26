@@ -7786,7 +7786,8 @@ axes::properties::calc_tick_sep (double lo, double hi)
 Matrix
 axes::properties::get_axis_limits (double xmin, double xmax,
                                    double min_pos, double max_neg,
-                                   const bool logscale)
+                                   const bool logscale,
+                                   const std::string& method)
 {
   Matrix retval;
 
@@ -7838,17 +7839,38 @@ axes::properties::get_axis_limits (double xmin, double xmax,
                   max_val *= 0.9;
                 }
             }
-          if (min_val > 0)
+
+          if (method == "tickaligned")
             {
-              // Log plots with all positive data
-              min_val = std::pow (10, std::floor (log10 (min_val)));
-              max_val = std::pow (10, std::ceil (log10 (max_val)));
+              if (min_val > 0)
+                {
+                  // Log plots with all positive data
+                  min_val = std::pow (10, std::floor (log10 (min_val)));
+                  max_val = std::pow (10, std::ceil (log10 (max_val)));
+                }
+              else
+                {
+                  // Log plots with all negative data
+                  min_val = -std::pow (10, std::ceil (log10 (-min_val)));
+                  max_val = -std::pow (10, std::floor (log10 (-max_val)));
+                }
             }
-          else
+          else if (method == "padded")
             {
-              // Log plots with all negative data
-              min_val = -std::pow (10, std::ceil (log10 (-min_val)));
-              max_val = -std::pow (10, std::floor (log10 (-max_val)));
+              if (min_val > 0)
+                {
+                  // Log plots with all positive data
+                  double pad = (log10 (max_val) - log10 (min_val)) * 0.07;
+                  min_val = std::pow (10, log10 (min_val) - pad);
+                  max_val = std::pow (10, log10 (max_val) + pad);
+                }
+              else
+                {
+                  // Log plots with all negative data
+                  double pad = (log10 (-min_val) - log10 (-max_val)) * 0.07;
+                  min_val = -std::pow (10, log10 (-min_val) + pad);
+                  max_val = -std::pow (10, log10 (-max_val) - pad);
+                }
             }
         }
       else
@@ -7866,12 +7888,21 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               max_val += 0.1 * std::abs (max_val);
             }
 
-          double tick_sep = calc_tick_sep (min_val, max_val);
-          double min_tick = std::floor (min_val / tick_sep);
-          double max_tick = std::ceil (max_val / tick_sep);
-          // Prevent round-off from cropping ticks
-          min_val = std::min (min_val, tick_sep * min_tick);
-          max_val = std::max (max_val, tick_sep * max_tick);
+          if (method == "tickaligned")
+            {
+              double tick_sep = calc_tick_sep (min_val, max_val);
+              double min_tick = std::floor (min_val / tick_sep);
+              double max_tick = std::ceil (max_val / tick_sep);
+              // Prevent round-off from cropping ticks
+              min_val = std::min (min_val, tick_sep * min_tick);
+              max_val = std::max (max_val, tick_sep * max_tick);
+            }
+          else if (method == "padded")
+            {
+              double pad = 0.07 * (max_val - min_val);
+              min_val -= pad;
+              max_val += pad;
+            }
         }
     }
 
@@ -8086,13 +8117,16 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
                                        array_property& mticks,
                                        bool limmode_is_auto,
                                        bool tickmode_is_auto,
-                                       bool is_logscale)
+                                       bool is_logscale,
+                                       bool method_is_padded,
+                                       bool method_is_tight)
 {
   if (lims.get ().isempty ())
     return;
 
   double lo = (lims.get ().matrix_value ())(0);
   double hi = (lims.get ().matrix_value ())(1);
+
   double lo_lim = lo;
   double hi_lim = hi;
   bool is_negative = lo < 0 && hi < 0;
@@ -8136,17 +8170,28 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
       if (limmode_is_auto)
         {
-          // Adjust limits to include min and max ticks
           Matrix tmp_lims (1, 2);
-          tmp_lims(0) = std::min (tick_sep * i1, lo);
-          tmp_lims(1) = std::max (tick_sep * i2, hi);
+
+          if (! method_is_padded && ! method_is_tight)
+            {
+              // Adjust limits to include min and max ticks
+              tmp_lims(0) = std::min (tick_sep * i1, lo);
+              tmp_lims(1) = std::max (tick_sep * i2, hi);
+            }
+          else
+            {
+              tmp_lims(0) = lo;
+              tmp_lims(1) = hi;
+            }
 
           if (is_logscale)
             {
               tmp_lims(0) = std::pow (10., tmp_lims(0));
               tmp_lims(1) = std::pow (10., tmp_lims(1));
+
               if (tmp_lims(0) <= 0)
                 tmp_lims(0) = std::pow (10., lo);
+
               if (is_negative)
                 {
                   double tmp = tmp_lims(0);
@@ -8154,6 +8199,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
                   tmp_lims(1) = -tmp;
                 }
             }
+
           lims = tmp_lims;
         }
       else
@@ -8522,9 +8568,11 @@ axes::update_axis_limits (const std::string& axis_type,
         {
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'x');
 
+          std::string method = m_properties.get_xlimitmethod ();
           limits = m_properties.get_axis_limits (min_val, max_val,
                                                  min_pos, max_neg,
-                                                 m_properties.xscale_is ("log"));
+                                                 m_properties.xscale_is ("log"),
+                                                 method);
         }
       else
         m_properties.check_axis_limits (limits, kids,
@@ -8543,9 +8591,11 @@ axes::update_axis_limits (const std::string& axis_type,
         {
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'y');
 
+          std::string method = m_properties.get_ylimitmethod ();
           limits = m_properties.get_axis_limits (min_val, max_val,
                                                  min_pos, max_neg,
-                                                 m_properties.yscale_is ("log"));
+                                                 m_properties.yscale_is ("log"),
+                                                 method);
         }
       else
         m_properties.check_axis_limits (limits, kids,
@@ -8567,9 +8617,11 @@ axes::update_axis_limits (const std::string& axis_type,
           m_properties.set_has3Dkids ((max_val - min_val) >
                                       std::numeric_limits<double>::epsilon ());
 
+          std::string method = m_properties.get_zlimitmethod ();
           limits = m_properties.get_axis_limits (min_val, max_val,
                                                  min_pos, max_neg,
-                                                 m_properties.zscale_is ("log"));
+                                                 m_properties.zscale_is ("log"),
+                                                 method);
         }
       else
         {
@@ -8722,9 +8774,11 @@ axes::update_axis_limits (const std::string& axis_type)
         {
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'x');
 
+          std::string method = m_properties.get_xlimitmethod ();
           limits = m_properties.get_axis_limits (min_val, max_val,
                                                  min_pos, max_neg,
-                                                 m_properties.xscale_is ("log"));
+                                                 m_properties.xscale_is ("log"),
+                                                 method);
         }
       else
         {
@@ -8745,9 +8799,11 @@ axes::update_axis_limits (const std::string& axis_type)
         {
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'y');
 
+          std::string method = m_properties.get_ylimitmethod ();
           limits = m_properties.get_axis_limits (min_val, max_val,
                                                  min_pos, max_neg,
-                                                 m_properties.yscale_is ("log"));
+                                                 m_properties.yscale_is ("log"),
+                                                 method);
         }
       else
         {
@@ -8777,9 +8833,11 @@ axes::update_axis_limits (const std::string& axis_type)
               && ! m_properties.zscale_is ("log"))
             min_val = max_val = 0.;
 
+          std::string method = m_properties.get_zlimitmethod ();
           limits = m_properties.get_axis_limits (min_val, max_val,
                                                  min_pos, max_neg,
-                                                 m_properties.zscale_is ("log"));
+                                                 m_properties.zscale_is ("log"),
+                                                 method);
         }
       else
         {

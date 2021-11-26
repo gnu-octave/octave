@@ -3828,6 +3828,7 @@ public:
       bool_property xgrid , "off"
       handle_property xlabel SOf , make_graphics_handle ("text", m___myhandle__, false, false, false)
       row_vector_property xlim mu , default_lim ()
+      radio_property xlimitmethod u , "{tickaligned}|tight|padded"
       radio_property xlimmode al , "{auto}|manual"
       bool_property xminorgrid , "off"
       bool_property xminortick , "off"
@@ -3847,6 +3848,7 @@ public:
       bool_property ygrid , "off"
       handle_property ylabel SOf , make_graphics_handle ("text", m___myhandle__, false, false, false)
       row_vector_property ylim mu , default_lim ()
+      radio_property ylimitmethod u , "{tickaligned}|tight|padded"
       radio_property ylimmode al , "{auto}|manual"
       bool_property yminorgrid , "off"
       bool_property yminortick , "off"
@@ -3864,6 +3866,7 @@ public:
       bool_property zgrid , "off"
       handle_property zlabel SOf , make_graphics_handle ("text", m___myhandle__, false, false, false)
       row_vector_property zlim mu , default_lim ()
+      radio_property zlimitmethod u , "{tickaligned}|tight|padded"
       radio_property zlimmode al , "{auto}|manual"
       bool_property zminorgrid , "off"
       bool_property zminortick , "off"
@@ -4043,7 +4046,8 @@ public:
     {
       calc_ticks_and_lims (m_xlim, m_xtick, m_xminortickvalues,
                            m_xlimmode.is ("auto"), m_xtickmode.is ("auto"),
-                           m_xscale.is ("log"));
+                           m_xscale.is ("log"), m_xlimitmethod.is ("padded"),
+                           m_xlimitmethod.is ("tight"));
       if (m_xticklabelmode.is ("auto"))
         calc_ticklabels (m_xtick, m_xticklabel, m_xscale.is ("log"),
                          xaxislocation_is ("origin"),
@@ -4059,7 +4063,8 @@ public:
     {
       calc_ticks_and_lims (m_ylim, m_ytick, m_yminortickvalues,
                            m_ylimmode.is ("auto"), m_ytickmode.is ("auto"),
-                           m_yscale.is ("log"));
+                           m_yscale.is ("log"), m_ylimitmethod.is ("padded"),
+                           m_ylimitmethod.is ("tight"));
       if (m_yticklabelmode.is ("auto"))
         calc_ticklabels (m_ytick, m_yticklabel, m_yscale.is ("log"),
                          yaxislocation_is ("origin"),
@@ -4075,7 +4080,8 @@ public:
     {
       calc_ticks_and_lims (m_zlim, m_ztick, m_zminortickvalues,
                            m_zlimmode.is ("auto"), m_ztickmode.is ("auto"),
-                           m_zscale.is ("log"));
+                           m_zscale.is ("log"), m_zlimitmethod.is ("padded"),
+                           m_zlimitmethod.is ("tight"));
       if (m_zticklabelmode.is ("auto"))
         calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"), false,
                          2, m_zlim);
@@ -4180,7 +4186,8 @@ public:
     OCTINTERP_API void
     calc_ticks_and_lims (array_property& lims, array_property& ticks,
                          array_property& mticks, bool limmode_is_auto,
-                         bool tickmode_is_auto, bool is_logscale);
+                         bool tickmode_is_auto, bool is_logscale,
+                         bool method_is_padded, bool method_is_tight);
     OCTINTERP_API void
     calc_ticklabels (const array_property& ticks, any_property& labels,
                      bool is_logscale, const bool is_origin,
@@ -4229,7 +4236,7 @@ public:
     OCTINTERP_API Matrix
     get_axis_limits (double xmin, double xmax,
                      double min_pos, double max_neg,
-                     const bool logscale);
+                     const bool logscale, const std::string& method);
 
     OCTINTERP_API void
     check_axis_limits (Matrix& limits, const Matrix kids,
@@ -4241,7 +4248,8 @@ public:
 
       calc_ticks_and_lims (m_xlim, m_xtick, m_xminortickvalues,
                            m_xlimmode.is ("auto"), m_xtickmode.is ("auto"),
-                           m_xscale.is ("log"));
+                           m_xscale.is ("log"), m_xlimitmethod.is ("padded"),
+                           m_xlimitmethod.is ("tight"));
       if (m_xticklabelmode.is ("auto"))
         calc_ticklabels (m_xtick, m_xticklabel, m_xscale.is ("log"),
                          m_xaxislocation.is ("origin"),
@@ -4257,13 +4265,19 @@ public:
       update_axes_layout ();
     }
 
+    void update_xlimitmethod ()
+    {
+      update_xlim ();
+    }
+
     void update_ylim (void)
     {
       update_axis_limits ("ylim");
 
       calc_ticks_and_lims (m_ylim, m_ytick, m_yminortickvalues,
                            m_ylimmode.is ("auto"), m_ytickmode.is ("auto"),
-                           m_yscale.is ("log"));
+                           m_yscale.is ("log"), m_ylimitmethod.is ("padded"),
+                           m_ylimitmethod.is ("tight"));
       if (m_yticklabelmode.is ("auto"))
         calc_ticklabels (m_ytick, m_yticklabel, m_yscale.is ("log"),
                          yaxislocation_is ("origin"),
@@ -4279,13 +4293,19 @@ public:
       update_axes_layout ();
     }
 
+    void update_ylimitmethod ()
+    {
+      update_ylim ();
+    }
+
     void update_zlim (void)
     {
       update_axis_limits ("zlim");
 
       calc_ticks_and_lims (m_zlim, m_ztick, m_zminortickvalues,
                            m_zlimmode.is ("auto"), m_ztickmode.is ("auto"),
-                           m_zscale.is ("log"));
+                           m_zscale.is ("log"), m_zlimitmethod.is ("padded"),
+                           m_zlimitmethod.is ("tight"));
       if (m_zticklabelmode.is ("auto"))
         calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"), false,
                          2, m_zlim);
@@ -4295,6 +4315,11 @@ public:
       update_zscale ();
 
       update_axes_layout ();
+    }
+
+    void update_zlimitmethod ()
+    {
+      update_zlim ();
     }
 
     void trigger_normals_calc (void);

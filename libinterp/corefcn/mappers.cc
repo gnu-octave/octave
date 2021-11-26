@@ -135,7 +135,7 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
 
-%!testif ; ismac () || ispc ()   <*52627>
+%!testif ; ismac () || ispc ()   <52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! x = [1, -1, i, -i] .* 1e150;
@@ -165,7 +165,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-%!testif ; ismac ()   <*52627>
+%!testif ; ismac ()   <52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
 %! x = [1, 0, -1, 0];
@@ -187,7 +187,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
 
-%!testif ; ismac ()   <*52627>
+%!testif ; ismac ()   <52627>
 %! ## Same test code as above, but intended only for test statistics on Mac.
 %! ## Mac trig/hyperbolic functions have huge tolerances.
 %! x = single ([1, 0, -1, 0]);
@@ -207,7 +207,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
 
-%!testif ; ismac () || ispc ()   <*52627>
+%!testif ; ismac () || ispc ()   <52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! x = [1, -1, i, -i] .* 1e150;
@@ -341,7 +341,7 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
 
-%!testif ; ismac () || ispc ()   <*52627>
+%!testif ; ismac () || ispc ()   <52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows. Their trig/hyperbolic functions have huge tolerances.
 %! x = [1, -1, i, -i] .* 1e150;
@@ -383,7 +383,7 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
 
-%!testif ; ismac () || ispc ()   <*52627>
+%!testif ; ismac () || ispc ()   <52627>
 %! ## Same test code as above, but intended only for test statistics on Mac and
 %! ## Windows.  Their trig/hyperbolic functions have huge tolerances.
 %! x = [1, -1, i, -i] .* 1e150;

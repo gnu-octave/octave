@@ -165,6 +165,7 @@ function h = polar (varargin)
 endfunction
 
 function rtick = __calc_rtick__ (hax, maxr)
+
   ## FIXME: workaround: calculate r(ho)tick from xtick
   ##        It would be better to just calculate the values,
   ##        but that code is deep in the C++ for the plot engines.

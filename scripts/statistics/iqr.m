@@ -82,7 +82,7 @@ function z = iqr (x, dim)
   nd = ndims (x);
   sz = size (x);
 
-  if isempty (dim)
+  if (isempty (dim))
     ## Find first non-singleton dimension.
     if (max (sz) == 1)
       dim = 2;
@@ -173,6 +173,7 @@ function z = iqr (x, dim)
   endif
 
 endfunction
+
 
 %!assert (iqr (17), 0)
 %!assert (iqr (17, 1), 0)

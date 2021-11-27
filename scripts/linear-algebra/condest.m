@@ -248,6 +248,7 @@ function [cest, v] = condest (varargin)
 endfunction
 
 function retval = inv_sparse_fcn (flag, x, varargin)
+
   ## FIXME: Sparse algorithm is less accurate than full matrix version.
   ##        See BIST test for asymmetric matrix where relative tolerance
   ##        of 1e-12 is used for sparse, but 4e-16 for full matrix.

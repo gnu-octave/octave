@@ -115,10 +115,12 @@ endfunction
 ## Display cell array of paths
 
 function disp_path_list (what, path_list)
+
   printf ("   %s JAVA PATH\n\n", what);
   if (numel (path_list) > 0)
     printf ("      %s\n", path_list{:});
   else
     printf ("      - empty -\n");
   endif
+
 endfunction

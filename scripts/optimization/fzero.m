@@ -439,6 +439,7 @@ endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
 function fx = guarded_eval (fun, x)
+
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
@@ -446,6 +447,7 @@ function fx = guarded_eval (fun, x)
   elseif (isnan (fx))
     error ("Octave:fzero:isnan", "fzero: NaN value encountered");
   endif
+
 endfunction
 
 

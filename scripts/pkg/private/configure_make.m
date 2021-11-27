@@ -187,6 +187,7 @@ function [status, output] = shell (cmd, verbose)
 endfunction
 
 function body = __extract_test_code__ (nm)
+
   ## Collect all BIST lines starting %! from the file named nm
   ## and return them as a single \n-delimited string.
   fid = fopen (nm, "rt");
@@ -199,4 +200,5 @@ function body = __extract_test_code__ (nm)
     endwhile
     fclose (fid);
   endif
+
 endfunction

@@ -115,6 +115,7 @@ function outstr = do_output_file_extension ()
 endfunction
 
 function outstr = do_header (title_str, intro_str, toc_cstr)
+
   publish_comment = sprintf ("%s\n",
 "",
 "",
@@ -137,15 +138,15 @@ function outstr = do_header (title_str, intro_str, toc_cstr)
 '\usepackage[T1]{fontenc}',
 '\usepackage{lmodern}');
 
-  # "lstlisting" doesn't support multi-byte UTF-8 characters.
-  # Add substitution rules for some characters (commonly used in languages with
-  # Latin-based script).
-  # Set of substitions taken from:
-  # https://en.wikibooks.org/w/index.php?title=LaTeX/Source_Code_Listings&oldid=3815132#Encoding_issue
-  # FIXME: Any multi-byte UTF-8 character in a non-section comment without a
-  #        substitution rule will still cause an error.  This should be fixed
-  #        more generally, or a way how to work around this limitation should
-  #        be documented.
+  ## "lstlisting" doesn't support multi-byte UTF-8 characters.
+  ## Add substitution rules for some characters (commonly used in languages with
+  ## Latin-based script).
+  ## Set of substitions taken from:
+  ## https://en.wikibooks.org/w/index.php?title=LaTeX/Source_Code_Listings&oldid=3815132#Encoding_issue
+  ## FIXME: Any multi-byte UTF-8 character in a non-section comment without a
+  ##        substitution rule will still cause an error.  This should be fixed
+  ##        more generally, or a way how to work around this limitation should
+  ##        be documented.
   listings_option = sprintf ("%s\n",
 "",
 "",
@@ -236,19 +237,23 @@ str,
 endfunction
 
 function outstr = do_bulleted_list (cstr)
+
   outstr = ["\n" '\begin{itemize}' "\n"];
   for i = 1:numel (cstr)
     outstr = [outstr, '\item ' cstr{i} "\n"];
   endfor
   outstr = [outstr, '\end{itemize}' "\n"];
+
 endfunction
 
 function outstr = do_numbered_list (cstr)
+
   outstr = ["\n" '\begin{enumerate}' "\n"];
   for i = 1:numel (cstr)
     outstr = [outstr, '\item ' cstr{i} "\n"];
   endfor
   outstr = [outstr, "\\end{enumerate}\n"];
+
 endfunction
 
 function outstr = do_graphic (str)
@@ -303,6 +308,7 @@ function outstr = do_R ()
 endfunction
 
 function str = do_escape_special_chars (str)
+
   ## Escape \, {, }, &, %, #, _, ~, ^, <, >
   str = regexprep (str, '\\', "\\ensuremath{\\backslash}");
   str = regexprep (str, '(?<!\\)(\{|\}|&|%|#|_)', '\\$1');
@@ -312,4 +318,5 @@ function str = do_escape_special_chars (str)
   str = regexprep (str, '(?<!\\)\^', "\\^{}");
   str = regexprep (str, '(?<!\\)<', "\\ensuremath{<}");
   str = regexprep (str, '(?<!\\)>', "\\ensuremath{>}");
+
 endfunction

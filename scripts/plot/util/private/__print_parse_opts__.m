@@ -763,6 +763,7 @@ function value = convert2points (value, units)
 endfunction
 
 function device_list = gs_device_list ()
+
   ## Graphics formats/languages, not printers.
   device_list = {"bmp16"; "bmp16m"; "bmp256"; "bmp32b"; "bmpgray"; ...
                  "epswrite"; "eps2write"; "jpeg"; "jpegcymk"; "jpeggray";

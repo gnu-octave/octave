@@ -1253,6 +1253,7 @@ endfunction
 
 ## Axes to which legend was attached is being deleted/reset.  Delete legend.
 function cb_axes_deleted (~, ~, ca, hlegend)
+
   if (isaxes (hlegend))
     if (strcmp (get (ca(1), "beingdeleted"), "on"))
       ## Axes are being deleted.  Disable call to cb_restore_axes.
@@ -1260,6 +1261,7 @@ function cb_axes_deleted (~, ~, ca, hlegend)
     endif
     delete (hlegend);
   endif
+
 endfunction
 
 ## Restore position of axes object when legend is deleted.

@@ -117,6 +117,7 @@ function varargout = bar (varargin)
   [varargout{:}] = __bar__ ("bar", true, varargin{:});
 endfunction
 
+
 %!demo
 %! clf;
 %! y = rand (11, 1);

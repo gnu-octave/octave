@@ -76,7 +76,7 @@ function [ax, h1, h2] = plotyy (varargin)
 
   ## Check if first argument is axes handle(s).
   hax = [];
-  if numel (varargin) > 0
+  if (numel (varargin) > 0)
     if (isscalar (varargin{1}))
       [hax, varargin] = __plt_get_axis_arg__ ("plotyy", varargin{:});
     elseif (numel (varargin{1}) == 2 && all (isaxes (varargin{1})))
@@ -251,6 +251,7 @@ endfunction
 
 function update_prop (h, ~, ax2, prop)
   persistent recursion = false;
+
   ## Don't allow recursion
   if (! recursion && all (ishghandle ([h, ax2])))
     unwind_protect

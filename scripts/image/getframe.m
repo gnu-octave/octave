@@ -52,6 +52,7 @@
 ## @end deftypefn
 
 function frame = getframe (h = [], rect = [])
+
   hf = hax = [];
   if (isempty (h))
     hf = get (0, "currentfigure");

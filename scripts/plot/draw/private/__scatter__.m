@@ -199,9 +199,9 @@ function hs = __scatter__ (varargin)
 
 endfunction
 
-
+## Convert a color code to the corresponding RGB values
 function rgb = str2rgb (str)
-  ## Convert a color code to the corresponding RGB values
+
   rgb = [];
 
   switch (str)
@@ -221,6 +221,6 @@ function rgb = str2rgb (str)
       rgb = [0, 1, 1];
     case 'w'
       rgb = [1, 1, 1];
-endswitch
+  endswitch
 
 endfunction

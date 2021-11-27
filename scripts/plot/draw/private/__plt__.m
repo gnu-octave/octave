@@ -157,6 +157,7 @@ endfunction
 
 function [hlgnd, tlgnd, setlgnd] = __plt_key__ (hp, options,
                                                 hlgnd, tlgnd, setlgnd)
+
   n = numel (hp);
   if (numel (options) == 1)
     options = repmat (options(:), n, 1);

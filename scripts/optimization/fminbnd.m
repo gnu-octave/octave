@@ -276,6 +276,7 @@ endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
 function fx = guarded_eval (fun, x)
+
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
@@ -283,6 +284,7 @@ function fx = guarded_eval (fun, x)
   elseif (isnan (fx))
     error ("Octave:fmindbnd:isnan", "fminbnd: NaN value encountered");
   endif
+
 endfunction
 
 ## A hack for printing a formatted table
@@ -298,6 +300,7 @@ endfunction
 
 ## Print either a success termination message or bad news
 function print_exit_msg (info, opt=struct ())
+
   printf ("");
   switch (info)
     case 1
@@ -313,6 +316,7 @@ function print_exit_msg (info, opt=struct ())
       error ("fminbnd: internal error, info return code was %d", info);
   endswitch
   printf ("\n");
+
 endfunction
 
 

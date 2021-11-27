@@ -244,6 +244,7 @@ endfunction
 
 
 function f = font_spec (opts, varargin)
+
   for n = 1:2:numel (varargin)
     opts.(varargin{n}) = varargin{n+1};
   endfor

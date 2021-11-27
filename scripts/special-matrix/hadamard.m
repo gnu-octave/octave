@@ -134,6 +134,7 @@ function h = h20 ()
 endfunction
 
 function h = h28 ()
+
   ## Williamson matrix construction from
   ## http://www.research.att.com/~njas/hadamard/had.28.will.txt
   ## Normalized so that each row and column starts with +1

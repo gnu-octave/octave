@@ -91,6 +91,7 @@ endfunction
 
 ## This function extracts the first sentence from a plain text help text
 function [text, status] = first_sentence_plain_text (help_text, max_len)
+
   ## Extract first line by searching for a period followed by whitespace
   ## followed by a capital letter (Nearly the same rule as Texinfo).
   period_idx = regexp (help_text, '\.\s+(?:[A-Z]|\n)', "once");
@@ -119,6 +120,7 @@ endfunction
 ## render the text to plain text using makeinfo, and then extract the first
 ## line.
 function [text, status] = first_sentence_texinfo (help_text, max_len)
+
   ## Lines ending with "@\n" are continuation lines, so they should be
   ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
@@ -169,11 +171,13 @@ endfunction
 ## This function extracts the first sentence from a html help text.
 ## The function simply removes the tags and treats the text as plain text.
 function [text, status] = first_sentence_html (help_text, max_len)
+
   ## Strip tags
   [help_text, status] = strip_html_tags (help_text);
 
   ## Extract first line with plain text method.
   text = first_sentence_plain_text (help_text, max_len);
+
 endfunction
 
 

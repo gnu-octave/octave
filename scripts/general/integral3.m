@@ -256,6 +256,7 @@ function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
 endfunction
 
 function q = inner (x, f, ya, yb, za, zb, vectorized, method, abstol, reltol)
+
   q = zeros (size (x));
   for i = 1 : length (x)
     za2 = @(y) za(x(i), y);
@@ -272,6 +273,7 @@ function q = inner (x, f, ya, yb, za, zb, vectorized, method, abstol, reltol)
                      "AbsTol", abstol, "RelTol", reltol);
     endif
   endfor
+
 endfunction
 
 function q = inner_iterated (y, f2, za2, zb2, abstol, reltol)

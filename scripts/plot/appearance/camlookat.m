@@ -52,17 +52,17 @@
 ## @end deftypefn
 
 
-function camlookat (hh)
+function camlookat (h)
 
   if (nargin == 0)
     hax = gca ();
-    hh = get (hax, "children");
+    h = get (hax, "children");
   elseif (nargin == 1)
-    if (isaxes (hh))
-      hax = hh;
-      hh = get (hax, "children");
-    elseif (all (ishghandle (hh)))
-      hax = ancestor (hh, "axes");
+    if (isaxes (h))
+      hax = h;
+      h = get (hax, "children");
+    elseif (all (ishghandle (h)))
+      hax = ancestor (h, "axes");
       if (numel (hax) > 1)
         hax = unique ([hax{:}]);
       endif
@@ -72,24 +72,24 @@ function camlookat (hh)
     endif
   endif
 
-  if (isempty (hh))
+  if (isempty (h))
     return;
   endif
 
   x0 = x1 = y0 = y1 = z0 = z1 = [];
-  for i = 1:numel (hh)
-    h = hh(i);
+  for i = 1:numel (h)
+    hi = h(i);
 
-    if (! ishghandle (h))
+    if (! ishghandle (hi))
       error ("camlookat: Inputs must be handles");
     endif
 
-    x0_ = min (get (h, "xdata")(:));
-    x1_ = max (get (h, "xdata")(:));
-    y0_ = min (get (h, "ydata")(:));
-    y1_ = max (get (h, "ydata")(:));
-    z0_ = min (get (h, "zdata")(:));
-    z1_ = max (get (h, "zdata")(:));
+    x0_ = min (get (hi, "xdata")(:));
+    x1_ = max (get (hi, "xdata")(:));
+    y0_ = min (get (hi, "ydata")(:));
+    y1_ = max (get (hi, "ydata")(:));
+    z0_ = min (get (hi, "zdata")(:));
+    z1_ = max (get (hi, "zdata")(:));
 
     if (i == 1)
       x0 = x0_;  x1 = x1_;

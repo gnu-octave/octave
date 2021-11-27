@@ -506,6 +506,7 @@ classdef inputParser < handle
     endfunction
 
     function disp (this)
+
       if (nargin != 1)
         print_usage ();
       endif
@@ -519,6 +520,7 @@ classdef inputParser < handle
                b2s (this.StructExpand));
       printf ("Defined parameters:\n\n   {%s}\n",
               strjoin (this.Parameters, ", "));
+
     endfunction
 
   endmethods
@@ -526,6 +528,7 @@ classdef inputParser < handle
   methods (Access = private)
 
     function validate_name (this, type, name)
+
       if (! isvarname (name))
         error ("inputParser.add%s: NAME is an invalid identifier", method);
       elseif (any (strcmpi (this.Parameters, name)))
@@ -535,17 +538,21 @@ classdef inputParser < handle
                type, name);
       endif
       this.Parameters{end+1} = name;
+
     endfunction
 
     function validate_arg (this, name, val, in)
-        if (! val (in))
-          this.error (sprintf ("failed validation of %s with %s",
-                               toupper (name), func2str (val)));
-        endif
-        this.Results.(name) = in;
+
+      if (! val (in))
+        this.error (sprintf ("failed validation of %s with %s",
+                             toupper (name), func2str (val)));
+      endif
+      this.Results.(name) = in;
+
     endfunction
 
     function r = is_argname (this, type, name)
+
       r = ischar (name) && isrow (name);
       if (r)
         if (this.CaseSensitive)
@@ -562,23 +569,28 @@ classdef inputParser < handle
           endif
         endif
       endif
+
     endfunction
 
     function add_missing (this, type)
+
       unmatched = setdiff (fieldnames (this.(type)), fieldnames (this.Results));
       for namec = unmatched(:)'
         name = namec{1};
         this.UsingDefaults{end+1} = name;
         this.Results.(name) = this.(type).(name).def;
       endfor
+
     endfunction
 
     function error (this, msg)
+
       where = "";
       if (this.FunctionName)
         where = [this.FunctionName ": "];
       endif
       error ("%s%s", where, msg);
+
     endfunction
 
   endmethods

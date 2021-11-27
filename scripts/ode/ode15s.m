@@ -368,6 +368,7 @@ endfunction
 
 function [jac, jact] = wrapjacfun (t, y, yp, Jac, Mass,
                                    havetimedep, havejacfun)
+
   if (havejacfun)
     jac = - Jac (t, y);
   else

@@ -148,11 +148,13 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
 endfunction
 
 function [retval, status] = get_usage_html (help_text, max_len)
+
   ## Strip tags
   [help_text, status] = strip_html_tags (help_text);
 
   ## Extract first line with plain text method.
   retval = get_usage_plain_text (help_text, max_len);
+
 endfunction
 
 

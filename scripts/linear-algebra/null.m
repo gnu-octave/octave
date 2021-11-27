@@ -60,7 +60,7 @@ function Z = null (A, tol)
       s = diag (S);
     else
       s = S(1);
-    end
+    endif
     if (nargin == 1)
       tol = max (size (A)) * s(1) * eps (out_cls);
     endif

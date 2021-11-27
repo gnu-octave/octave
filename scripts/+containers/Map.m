@@ -109,6 +109,7 @@ classdef Map < handle
   methods (Access = public)
 
     function this = Map (varargin)
+
       if (nargin == 0)
         ## Empty object with "char" key type and "any" value type.
       elseif (nargin == 2 || (nargin == 4
@@ -294,7 +295,7 @@ classdef Map < handle
       tf = false (size (keySet));
       in = cellfun ("isnumeric", keySet) | cellfun ("islogical", keySet);
       if (! this.numeric_keys)
-        in = !in;
+        in = ! in;
       endif
       keySet = encode_keys (this, keySet(in));
       tf(in) = isfield (this.map, keySet);
@@ -320,7 +321,7 @@ classdef Map < handle
       endif
       in = cellfun ("isnumeric", keySet) | cellfun ("islogical", keySet);
       if (! this.numeric_keys)
-        in = !in;
+        in = ! in;
       endif
       keySet = encode_keys (this, keySet(in));
       in = isfield (this.map, keySet);
@@ -378,6 +379,7 @@ classdef Map < handle
     endfunction
 
     function sref = subsref (this, s)
+
       switch (s(1).type)
         case "."
           switch (s(1).subs)
@@ -390,7 +392,7 @@ classdef Map < handle
                 s(1) = [];
               else
                 sref = values (this);
-              end
+              endif
             case "size"
               sref = size (this);
             case "length"
@@ -437,9 +439,11 @@ classdef Map < handle
       if (numel (s) > 1)
         sref = subsref (sref, s(2:end));
       endif
+
     endfunction
 
     function this = subsasgn (this, s, val)
+
       if (numel (s) > 1)
         error ("containers.Map: only one level of indexing is supported");
       endif
@@ -472,6 +476,7 @@ classdef Map < handle
         case "{}"
           error ("containers.Map: only '()' indexing is supported for assigning values");
       endswitch
+
     endfunction
 
     function newobj = horzcat (varargin)
@@ -481,6 +486,7 @@ classdef Map < handle
     endfunction
 
     function newobj = vertcat (varargin)
+
       ## When concatenating maps, the data type of all values must be
       ## consistent with the ValueType of the leftmost map.
       keySet = cell (1, 0);
@@ -500,6 +506,7 @@ classdef Map < handle
         valueSet = [valueSet, values(varargin{i})];
       endfor
       newobj = containers.Map (keySet, valueSet);
+
     endfunction
 
     function disp (this)
@@ -517,6 +524,7 @@ classdef Map < handle
     ## All keys are encoded as strings.
     ## For numeric keys, this requires conversion.
     function keys = encode_keys (this, keys)
+
       if (iscellstr (keys) || ischar (keys))
         return;
       endif
@@ -536,6 +544,7 @@ classdef Map < handle
       if (cell_input)
         keys = reshape (cellstr (keys), orig_sz);
       endif
+
     endfunction
 
     function keys = decode_keys (this, keys)
@@ -547,6 +556,7 @@ classdef Map < handle
     endfunction
 
     function this = sort_keys (this)
+
       keySet = keys (this);
       if (this.numeric_keys)
         [~, p] = sort (cell2mat (keySet));
@@ -554,9 +564,11 @@ classdef Map < handle
         [~, p] = sort (keySet);
       endif
       this.map = orderfields (this.map, p);
+
     endfunction
 
     function check_types (this)
+
       switch (this.KeyType)
         case {"char"}
           this.numeric_keys = false;
@@ -573,6 +585,7 @@ classdef Map < handle
                                           "int64"; "uint64"})))
         error ("containers.Map: unsupported ValueType");
       endif
+
     endfunction
 
   endmethods

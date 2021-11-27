@@ -130,12 +130,14 @@ function [retval, errmsg] = license (cmd, feature, toggle)
 endfunction
 
 function username = get_username ()
+
   pw = getpwuid (getuid ());
   if (isstruct (pw))
     username = pw.name;
   else
     username = "octave_user";
   endif
+
 endfunction
 
 function [features, loaded] = get_all_features ()

@@ -77,6 +77,7 @@ function [ver, url] = get_forge_pkg (name)
     endif
     ## Try a simplistic method to determine similar names.
     function d = fdist (x)
+
       len1 = length (name);
       len2 = length (x);
       if (len1 <= len2)
@@ -86,7 +87,9 @@ function [ver, url] = get_forge_pkg (name)
         d = sum (abs (tolower (name(1:len2)) - tolower (x(1:len2)))) ...
             + (len1 - len2)*23;
       endif
+
     endfunction
+
     dist = cellfun ("fdist", t);
     [~, i] = min (dist);
     error ("get_forge_pkg: package not found: ""%s"".  Did you mean ""%s""?", ...

@@ -68,6 +68,7 @@ function [idx, p] = tsearchn (x, t, xi)
 endfunction
 
 function Beta = cart2bary (T, P)
+
   ## Conversion of Cartesian to Barycentric coordinates.
   ## Given a reference simplex in N dimensions represented by an
   ## N+1-by-N matrix, an arbitrary point P in Cartesian coordinates,

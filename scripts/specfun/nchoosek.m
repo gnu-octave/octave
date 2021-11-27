@@ -128,7 +128,7 @@ function C = nchoosek (v, k)
       denom = (1:k/2) .* (k:-1:k/2+1) / 2;
     endif
 
-    # Remove common factors from numerator and denominator
+    ## Remove common factors from numerator and denominator
     do
       for i = numel (denom):-1:1
         factors = gcd (denom(i), numer);
@@ -180,7 +180,7 @@ endfunction
 %!assert (nchoosek (1:5, 3),
 %!        [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
 
-# Test basic behavior for various input types
+## Test basic behavior for various input types
 %!assert (nchoosek ('a':'b', 2), 'ab')
 %!assert (nchoosek ("a":"b", 2), "ab")
 %!assert (nchoosek ({1,2}, 2), {1,2})
@@ -190,7 +190,7 @@ endfunction
 %! assert (nchoosek (s, 1), s(:));
 %! assert (nchoosek (s, 2), s);
 
-# Verify Matlab compatibility of return sizes & types
+## Verify Matlab compatibility of return sizes & types
 %!test
 %! x = nchoosek (1:2, 0);
 %! assert (size (x), [1, 0]);

@@ -65,14 +65,13 @@
 ## @end table
 ## @end deftypefn
 
-## Built-in profiler.
-function retval = profile (option)
+function retval = profile (arg)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  switch (option)
+  switch (arg)
     case "on"
       __profiler_enable__ (true);
 
@@ -99,7 +98,7 @@ function retval = profile (option)
       retval = struct ("FunctionTable", flat, "Hierarchical", tree);
 
     otherwise
-      warning ("profile: Unrecognized option '%s'", option);
+      warning ("profile: Unrecognized option '%s'", arg);
       print_usage ();
 
   endswitch

@@ -409,6 +409,7 @@ endfunction
 
 ## FIXME: too_close output is never used in function that calls this one.
 function [q, err, too_close] = __quadgk_eval__ (f, subs, eps1, trans)
+
   ## A (15,7) point pair of Gauss-Kronrod quadrature rules.
   ## The abscissa and weights are copied directly from dqk15w.f from quadpack.
 

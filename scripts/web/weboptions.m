@@ -163,6 +163,7 @@ classdef weboptions < handle
   methods
 
     function f = weboptions (varargin)
+
       if (rem (numel (varargin), 2) != 0)
         error ("weboptions: invalid number of arguments");
       else

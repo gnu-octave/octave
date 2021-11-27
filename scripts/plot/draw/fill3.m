@@ -118,13 +118,13 @@ function h = fill3 (varargin)
           num_cols = max ([columns(x), columns(y), columns(z)]);
           if (iscolumn (x))
             x = repmat (x, [1, num_cols]);
-          end
+          endif
           if (iscolumn (y))
             y = repmat (y, [1, num_cols]);
-          end
+          endif
           if (iscolumn (z))
             z = repmat (z, [1, num_cols]);
-          end
+          endif
         endif
 
         if (isrow (x))

@@ -439,6 +439,7 @@ function [h, s] = createui (s, par)
 endfunction
 
 function [h, sout, pout] = createhg (s, p, par, hilev)
+
   ## Here we infer from properties the type of hggroup we should build
   ## an call corresponding high level functions
   ## We manually set "hold on" to avoid next hggroup be deleted

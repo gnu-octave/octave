@@ -149,7 +149,7 @@ function x = betaincinv (y, a, b, tail = "lower")
   if (! isempty (idx))
     x_i(idx) = (a(idx) - 1) ./ (a(idx) + b(idx) - 2);
     y_i(idx) = betainc (x_i(idx), a(idx), b(idx));
-  end
+  endif
 
   ## Converge outwards
   tmpidx = find (a(idx) > 1);

@@ -91,6 +91,7 @@ function S = sprandsym (n, d)
 endfunction
 
 function r = pick_rand_diag (n, k)
+
   ## Pick a random number R of entries for the diagonal of a sparse NxN
   ## symmetric square matrix with exactly K nonzero entries, ensuring
   ## that this R is chosen uniformly over all such matrices.

@@ -39,6 +39,7 @@
 ## @end deftypefn
 
 function pr_out = printd (obj, filename)
+
   ## Convert any object acceptable to disp() into various display formats.
   ## obj is the input object.
   ## filename is the output file (with required suffix).

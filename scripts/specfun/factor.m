@@ -136,7 +136,7 @@ function [pf, n] = factor (q)
     ##
     ## are relevant and slow down significantly for large values of q.
   else
-    # For sufficiently large q, go up to the 5th root of q for now.
+    ## For sufficiently large q, go up to the 5th root of q for now.
     smallprimes = primes (feval (cls, q^0.2));
   endif
 
@@ -181,6 +181,7 @@ function [pf, n] = factor (q)
 endfunction
 
 function [pf, q] = reducefactors (qin, pfin, divisors)
+
   pf = pfin;
   q = qin;
   ## The following line is a few milliseconds faster than
@@ -198,6 +199,7 @@ function [pf, q] = reducefactors (qin, pfin, divisors)
       q /= pp;
     endwhile
   endfor
+
 endfunction
 
 

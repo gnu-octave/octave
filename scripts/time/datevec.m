@@ -205,6 +205,7 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
 endfunction
 
 function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
+
   original_f = f;   # Store for error messages.
 
   ## Play safe with percent signs.

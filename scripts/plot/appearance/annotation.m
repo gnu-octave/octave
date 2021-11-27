@@ -1132,6 +1132,7 @@ function update_textbox (h, ~, prop, htb)
 endfunction
 
 function XY = textcoordinates (hte, pos)
+
   ## Get the "tight" extent of the text object in points units
   textpos = get (hte, "position");
   rot = get (hte, "rotation");
@@ -1207,6 +1208,7 @@ function pXY = norm2pts (h, nXY)
 endfunction
 
 function pos = convertposition (h, from, to)
+
   ## FIXME: handle "characters" units
   pos = get (h, "position");
 

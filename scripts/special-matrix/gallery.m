@@ -511,6 +511,7 @@ function varargout = gallery (name, varargin)
 endfunction
 
 function C = cauchy (x, y)
+
   ## CAUCHY  Cauchy matrix.
   ##   C = CAUCHY(X, Y), where X, Y are N-vectors, is the N-by-N matrix
   ##   with C(i,j) = 1/(X(i)+Y(j)).   By default, Y = X.
@@ -563,9 +564,11 @@ function C = cauchy (x, y)
   endif
 
   C = 1 ./ (x + y.');
+
 endfunction
 
 function C = chebspec (n, k = 0)
+
   ## CHEBSPEC  Chebyshev spectral differentiation matrix.
   ##   C = CHEBSPEC(N, K) is a Chebyshev spectral differentiation
   ##   matrix of order N.  K = 0 (the default) or 1.
@@ -630,9 +633,11 @@ function C = chebspec (n, k = 0)
   if (k == 1)
     C = C(2:n+1,2:n+1);
   endif
+
 endfunction
 
 function C = chebvand (m, p)
+
   ## CHEBVAND Vandermonde-like matrix for the Chebyshev polynomials.
   ##   C = CHEBVAND(P), where P is a vector, produces the (primal)
   ##   Chebyshev Vandermonde matrix based on the points P,
@@ -682,9 +687,11 @@ function C = chebvand (m, p)
       C(i,:) = 2.*p.*C(i-1,:) - C(i-2,:);
     endfor
   endif
+
 endfunction
 
 function A = chow (n, alpha = 1, delta = 0)
+
   ## CHOW    Chow matrix - a singular Toeplitz lower Hessenberg matrix.
   ##   A = CHOW(N, ALPHA, DELTA) is a Toeplitz lower Hessenberg matrix
   ##   A = H(ALPHA) + DELTA*EYE, where H(i,j) = ALPHA^(i-j+1).
@@ -709,9 +716,11 @@ function A = chow (n, alpha = 1, delta = 0)
   endif
 
   A = toeplitz (alpha.^(1:n), [alpha 1 zeros(1, n-2)]) + delta * eye (n);
+
 endfunction
 
 function C = circul (v)
+
   ## CIRCUL  Circulant matrix.
   ##   C = CIRCUL(V) is the circulant matrix whose first row is V.
   ##   (A circulant matrix has the property that each row is obtained
@@ -744,9 +753,11 @@ function C = circul (v)
 
   v = v(:).';   # Make sure v is a row vector
   C = toeplitz ([v(1) v(n:-1:2)], v);
+
 endfunction
 
 function A = clement (n, k = 0)
+
   ## CLEMENT   Clement matrix - tridiagonal with zero diagonal entries.
   ##   CLEMENT(N, K) is a tridiagonal matrix with zero diagonal entries
   ##   and known eigenvalues.  It is singular if N is odd.  About 64
@@ -791,9 +802,11 @@ function A = clement (n, k = 0)
   else
     error ("gallery: K must have a value of 0 or 1 for clement matrix");
   endif
+
 endfunction
 
 function C = compar (A, k = 0)
+
   ## COMP    Comparison matrices.
   ##   COMP(A) is DIAG(B) - TRIL(B,-1) - TRIU(B,1), where B = ABS(A).
   ##   COMP(A, 1) is A with each diagonal element replaced by its
@@ -846,6 +859,7 @@ function C = compar (A, k = 0)
 endfunction
 
 function A = condex (n, k = 4, theta = 100)
+
   ## CONDEX   'Counterexamples' to matrix condition number estimators.
   ##   CONDEX(N, K, THETA) is a 'counterexample' matrix to a condition
   ##   estimator.  It has order N and scalar parameter THETA (default 100).
@@ -915,9 +929,11 @@ function A = condex (n, k = 4, theta = 100)
       A(i,i) = 1;
     endfor
   endif
+
 endfunction
 
 function A = cycol (n, k = max (round (n(end)/4), 1))
+
   ## CYCOL   Matrix whose columns repeat cyclically.
   ##   A = CYCOL([M N], K) is an M-by-N matrix of the form A = B(1:M,1:N)
   ##   where B = [C C C...] and C = RANDN(M, K).  Thus A's columns repeat
@@ -945,9 +961,11 @@ function A = cycol (n, k = max (round (n(end)/4), 1))
     A = [A A(:,1:k)];
   endfor
   A = A(:,1:n);
+
 endfunction
 
 function [c, d, e] = dorr (n, theta = 0.01)
+
   ## DORR  Dorr matrix - diagonally dominant, ill conditioned, tridiagonal.
   ##   [C, D, E] = DORR(N, THETA) returns the vectors defining a row diagonally
   ##   dominant, tridiagonal M-matrix that is ill conditioned for small
@@ -996,9 +1014,11 @@ function [c, d, e] = dorr (n, theta = 0.01)
   if (nargout <= 1)
     c = tridiag (c, d, e);
   endif
+
 endfunction
 
 function A = dramadah (n, k = 1)
+
   ## DRAMADAH  A (0,1) matrix whose inverse has large integer entries.
   ##   An anti-Hadamard matrix A is a matrix with elements 0 or 1 for
   ##   which MU(A) := NORM(INV(A),'FRO') is maximal.
@@ -1063,9 +1083,11 @@ function A = dramadah (n, k = 1)
     otherwise
       error ("gallery: unknown K '%d' for dramadah matrix", k);
   endswitch
+
 endfunction
 
 function A = fiedler (c)
+
   ## FIEDLER  Fiedler matrix - symmetric.
   ##   FIEDLER(C), where C is an n-vector, is the n-by-n symmetric
   ##   matrix with elements ABS(C(i)-C(j)).
@@ -1104,9 +1126,11 @@ function A = fiedler (c)
   c = c(:).';           # Ensure c is a row vector.
 
   A = abs (c - c.');
+
 endfunction
 
 function A = forsythe (n, alpha = sqrt (eps), lambda = 0)
+
   ## FORSYTHE  Forsythe matrix - a perturbed Jordan block.
   ##   FORSYTHE(N, ALPHA, LAMBDA) is the N-by-N matrix equal to
   ##   JORDBLOC(N, LAMBDA) except it has an ALPHA in the (N,1) position.
@@ -1126,9 +1150,11 @@ function A = forsythe (n, alpha = sqrt (eps), lambda = 0)
 
   A = jordbloc (n, lambda);
   A(n,1) = alpha;
+
 endfunction
 
 function F = frank (n, k = 0)
+
   ## FRANK   Frank matrix---ill conditioned eigenvalues.
   ##   F = FRANK(N, K) is the Frank matrix of order N.  It is upper
   ##   Hessenberg with determinant 1.  K = 0 is the default; if K = 1 the
@@ -1183,6 +1209,7 @@ function F = frank (n, k = 0)
     otherwise
       error ("gallery: K must have a value of 0 or 1 for frank matrix");
   endswitch
+
 endfunction
 
 function c = gcdmat (n)
@@ -1192,9 +1219,11 @@ function c = gcdmat (n)
     error ("gallery: N must be an integer for gcdmat matrix");
   endif
   c = gcd (repmat ((1:n)', [1 n]), repmat (1:n, [n 1]));
+
 endfunction
 
 function A = gearmat (n, i = n, j = -n)
+
   ## NOTE: this function was named gearm in the original Test Matrix Toolbox
   ## GEARMAT   Gear matrix.
   ##   A = GEARMAT(N,I,J) is the N-by-N matrix with ones on the sub- and
@@ -1225,9 +1254,11 @@ function A = gearmat (n, i = n, j = -n)
   A = diag (ones (n-1, 1), -1) + diag (ones (n-1, 1), 1);
   A(1, abs (i)) = sign (i);
   A(n, n+1 - abs (j)) = sign (j);
+
 endfunction
 
 function G = grcar (n, k = 3)
+
   ## GRCAR     Grcar matrix - a Toeplitz matrix with sensitive eigenvalues.
   ##   GRCAR(N, K) is an N-by-N matrix with -1s on the
   ##   subdiagonal, 1s on the diagonal, and K superdiagonals of 1s.
@@ -1251,9 +1282,11 @@ function G = grcar (n, k = 3)
   endif
 
   G = tril (triu (ones (n)), k) - diag (ones (n-1, 1), -1);
+
 endfunction
 
 function A = hanowa (n, d = -1)
+
   ## HANOWA  A matrix whose eigenvalues lie on a vertical line in the complex plane.
   ##   HANOWA(N, d) is the N-by-N block 2x2 matrix (thus N = 2M must be even)
   ##                 [d*EYE(M)   -DIAG(1:M)
@@ -1279,9 +1312,11 @@ function A = hanowa (n, d = -1)
   m = n/2;
   A = [ d*eye(m)  -diag(1:m)
         diag(1:m)  d*eye(m) ];
+
 endfunction
 
 function [v, beta] = house (x)
+
   ## HOUSE   Householder matrix.
   ##   If [v, beta] = HOUSE(x) then H = EYE - beta*v*v' is a Householder
   ##   matrix such that Hx = -sign(x(1))*norm(x)*e_1.
@@ -1326,6 +1361,7 @@ function [v, beta] = house (x)
     ##  beta = 1/(abs (s) * (abs (s) +abs(x(1)) would guarantee beta real.
     ##  But beta as above can be non-real (due to rounding) only when x is complex.
   endif
+
 endfunction
 
 function A = integerdata (varargin)
@@ -1371,6 +1407,7 @@ function A = integerdata (varargin)
 endfunction
 
 function A = invhess (x, y)
+
   ## INVHESS  Inverse of an upper Hessenberg matrix.
   ##   INVHESS(X, Y), where X is an N-vector and Y an N-1 vector,
   ##   is the matrix whose lower triangle agrees with that of
@@ -1422,9 +1459,11 @@ function A = invhess (x, y)
   for j = 2:n
     A(1:j-1,j) = y(1:j-1);
   endfor
+
 endfunction
 
 function A = invol (n)
+
   ## INVOL   An involutory matrix.
   ##   A = INVOL(N) is an N-by-N involutory (A*A = EYE(N)) and
   ##   ill-conditioned matrix.
@@ -1451,9 +1490,11 @@ function A = invol (n)
     d = -(n+i)*(n-i)*d/(i*i);
     A(i+1,:) = d * A(i+1,:);
   endfor
+
 endfunction
 
 function [A, detA] = ipjfact (n, k = 0)
+
   ## IPJFACT   A Hankel matrix with factorial elements.
   ##   A = IPJFACT(N, K) is the matrix with
   ##             A(i,j) = (i+j)!    (K = 0, default)
@@ -1512,9 +1553,11 @@ function [A, detA] = ipjfact (n, k = 0)
 
     detA = d;
   endif
+
 endfunction
 
 function J = jordbloc (n, lambda = 1)
+
   ## JORDBLOC  Jordan block.
   ##   JORDBLOC(N, LAMBDA) is the N-by-N Jordan block with eigenvalue
   ##   LAMBDA.  LAMBDA = 1 is the default.
@@ -1528,9 +1571,11 @@ function J = jordbloc (n, lambda = 1)
   endif
 
   J = lambda * eye (n) + diag (ones (n-1, 1), 1);
+
 endfunction
 
 function U = kahan (n, theta = 1.2, pert = 25)
+
   ## KAHAN  Kahan matrix - upper trapezoidal.
   ##   KAHAN(N, THETA) is an upper trapezoidal matrix
   ##   that has some interesting properties regarding estimation of
@@ -1581,9 +1626,11 @@ function U = kahan (n, theta = 1.2, pert = 25)
   else
     U = U(1:r,:);   # Reduce to an r-by-n matrix
   endif
+
 endfunction
 
 function A = kms (n, rho = 0.5)
+
   ## KMS   Kac-Murdock-Szego Toeplitz matrix.
   ##   A = KMS(N, RHO) is the N-by-N Kac-Murdock-Szego Toeplitz matrix with
   ##   A(i,j) = RHO^(ABS((i-j))) (for real RHO).
@@ -1616,9 +1663,11 @@ function A = kms (n, rho = 0.5)
   if (imag (rho))
     A = conj (tril (A,-1)) + triu (A);
   endif
+
 endfunction
 
 function B = krylov (A, x, j)
+
   ## KRYLOV    Krylov matrix.
   ##   KRYLOV(A, x, j) is the Krylov matrix
   ##        [x, Ax, A^2x, ..., A^(j-1)x],
@@ -1659,9 +1708,11 @@ function B = krylov (A, x, j)
   for i = 2:j
     B(:,i) = A*B(:,i-1);
   endfor
+
 endfunction
 
 function A = lauchli (n, mu = sqrt (eps))
+
   ## LAUCHLI   Lauchli matrix - rectangular.
   ##   LAUCHLI(N, MU) is the (N+1)-by-N matrix [ONES(1,N); MU*EYE(N))].
   ##   It is a well-known example in least squares and other problems
@@ -1682,9 +1733,11 @@ function A = lauchli (n, mu = sqrt (eps))
 
   A = [ones(1, n)
        mu*eye(n) ];
+
 endfunction
 
 function A = lehmer (n)
+
   ## LEHMER  Lehmer matrix - symmetric positive definite.
   ##   A = LEHMER(N) is the symmetric positive definite N-by-N matrix with
   ##                    A(i,j) = i/j for j >= i.
@@ -1709,9 +1762,11 @@ function A = lehmer (n)
   A = ones (n, 1) * (1:n);
   A = A./A';
   A = tril (A) + tril (A, -1)';
+
 endfunction
 
 function T = lesp (n)
+
   ## LESP   A tridiagonal matrix with real, sensitive eigenvalues.
   ##   LESP(N) is an N-by-N matrix whose eigenvalues are real and smoothly
   ##   distributed in the interval approximately [-2*N-3.5, -4.5].
@@ -1739,9 +1794,11 @@ function T = lesp (n)
 
   x = 2:n;
   T = full (tridiag (ones (size (x)) ./x, -(2*[x n+1]+1), x));
+
 endfunction
 
 function A = lotkin (n)
+
   ## LOTKIN  Lotkin matrix.
   ##   A = LOTKIN(N) is the Hilbert matrix with its first row altered to
   ##   all ones.  A is unsymmetric, ill-conditioned, and has many negative
@@ -1759,9 +1816,11 @@ function A = lotkin (n)
 
   A = hilb (n);
   A(1,:) = ones (1, n);
+
 endfunction
 
 function A = minij (n)
+
   ## MINIJ   Symmetric positive definite matrix MIN(i,j).
   ##   A = MINIJ(N) is the N-by-N symmetric positive definite matrix with
   ##   A(i,j) = MIN(i,j).
@@ -1786,9 +1845,11 @@ function A = minij (n)
   endif
 
   A = bsxfun (@min, 1:n, (1:n)');
+
 endfunction
 
 function A = moler (n, alpha = -1)
+
   ## MOLER   Moler matrix - symmetric positive definite.
   ##   A = MOLER(N, ALPHA) is the symmetric positive definite N-by-N matrix
   ##   U'*U where U = TRIW(N, ALPHA).
@@ -1811,9 +1872,11 @@ function A = moler (n, alpha = -1)
   endif
 
   A = triw (n, alpha)' * triw (n, alpha);
+
 endfunction
 
 function [A, T] = neumann (n)
+
   ## NEUMANN  Singular matrix from the discrete Neumann problem (sparse).
   ##   NEUMANN(N) is the singular, row diagonally dominant matrix resulting
   ##   from discretizing the Neumann problem with the usual five point
@@ -1846,6 +1909,7 @@ function [A, T] = neumann (n)
   T(n(1),n(1)-1) = -2;
 
   A = kron (T, eye (n(2))) + kron (eye (n(2)), T);
+
 endfunction
 
 function A = normaldata (varargin)
@@ -1890,6 +1954,7 @@ function A = normaldata (varargin)
 endfunction
 
 function Q = orthog (n, k = 1)
+
   ## ORTHOG Orthogonal and nearly orthogonal matrices.
   ##   Q = ORTHOG(N, K) selects the K'th type of matrix of order N.
   ##   K > 0 for exactly orthogonal matrices, K < 0 for diagonal scalings of
@@ -1973,9 +2038,11 @@ function Q = orthog (n, k = 1)
     otherwise
       error ("gallery: unknown K '%d' for orthog matrix", k);
   endswitch
+
 endfunction
 
 function A = parter (n)
+
   ## PARTER    Parter matrix - a Toeplitz matrix with singular values near PI.
   ##   PARTER(N) is the matrix with (i,j) element 1/(i-j+0.5).
   ##   It is a Cauchy matrix and a Toeplitz matrix.
@@ -1999,9 +2066,11 @@ function A = parter (n)
   endif
 
   A = cauchy ((1:n) + 0.5, -(1:n));
+
 endfunction
 
 function P = pei (n, alpha = 1)
+
   ## PEI    Pei matrix.
   ##   PEI(N, ALPHA), where ALPHA is a scalar, is the symmetric matrix
   ##   ALPHA*EYE(N) + ONES(N).
@@ -2021,9 +2090,11 @@ function P = pei (n, alpha = 1)
   endif
 
   P = alpha * eye (n) + ones (n);
+
 endfunction
 
 function A = poisson (n)
+
   ## POISSON   Block tridiagonal matrix from Poisson's equation (sparse).
   ##   POISSON(N) is the block tridiagonal matrix of order N^2
   ##   resulting from discretizing Poisson's equation with the
@@ -2043,9 +2114,11 @@ function A = poisson (n)
   S = tridiag (n, -1, 2, -1);
   I = speye (n);
   A = kron (I, S) + kron (S, I);
+
 endfunction
 
 function A = prolate (n, w = 0.25)
+
   ## PROLATE   Prolate matrix - symmetric, ill-conditioned Toeplitz matrix.
   ##   A = PROLATE(N, W) is the N-by-N prolate matrix with parameter W.
   ##   It is a symmetric Toeplitz matrix.
@@ -2072,9 +2145,11 @@ function A = prolate (n, w = 0.25)
   a(2:n) = sin (2*pi*w*(1:n-1)) ./ (pi*(1:n-1));
 
   A = toeplitz (a);
+
 endfunction
 
 function H = randhess (x)
+
   ## NOTE: this function was named ohess in the original Test Matrix Toolbox
   ## RANDHESS  Random, orthogonal upper Hessenberg matrix.
   ##   H = RANDHESS(N) is an N-by-N real, random, orthogonal
@@ -2122,9 +2197,11 @@ function H = randhess (x)
     H([i-1 i], :) = [ c*H(i-1,:)+s*H(i,:)
                      -s*H(i-1,:)+c*H(i,:) ];
   endfor
+
 endfunction
 
 function A = rando (n, k = 1)
+
   ## RANDO   Random matrix with elements -1, 0 or 1.
   ##   A = RANDO(N, K) is a random N-by-N matrix with elements from
   ##   one of the following discrete distributions (default K = 1):
@@ -2157,6 +2234,7 @@ endfunction
 
 function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = max (n) -1,
                       ku = kl)
+
   ## RANDSVD  Random matrix with pre-assigned singular values.
   ##   RANDSVD(N, KAPPA, MODE, KL, KU) is a (banded) random matrix of order N
   ##   with COND(A) = KAPPA and singular values from the distribution MODE.
@@ -2278,9 +2356,11 @@ function A = randsvd (n, kappa = sqrt (1/eps), mode = 3, kl = max (n) -1,
       A = bandred (A, kl, ku);
     endif
   endif
+
 endfunction
 
 function A = redheff (n)
+
   ## REDHEFF    A (0,1) matrix of Redheffer associated with the Riemann hypothesis.
   ##   A = REDHEFF(N) is an N-by-N matrix of 0s and 1s defined by
   ##       A(i,j) = 1 if j = 1 or if i divides j,
@@ -2314,9 +2394,11 @@ function A = redheff (n)
   i = (1:n)' * ones (1, n);
   A = ! rem (i', i);
   A(:,1) = ones (n, 1);
+
 endfunction
 
 function A = riemann (n)
+
   ## RIEMANN    A matrix associated with the Riemann hypothesis.
   ##   A = RIEMANN(N) is an N-by-N matrix for which the
   ##   Riemann hypothesis is true if and only if
@@ -2345,9 +2427,11 @@ function A = riemann (n)
   i = (2:n)' * ones (1, n-1);
   j = i';
   A = i .* (! rem (j, i)) - ones (n-1);
+
 endfunction
 
 function A = ris (n)
+
   ## NOTE: this function was named dingdong in the original Test Matrix Toolbox
   ## RIS       Dingdong matrix - a symmetric Hankel matrix.
   ##   A = RIS(N) is the symmetric N-by-N Hankel matrix with
@@ -2369,9 +2453,11 @@ function A = ris (n)
 
   p = -2*(1:n) + (n+1.5);
   A = cauchy (p);
+
 endfunction
 
 function A = smoke (n, k = 0)
+
   ## SMOKE     Smoke matrix - complex, with a 'smoke ring' pseudospectrum.
   ##   SMOKE(N) is an N-by-N matrix with 1s on the
   ##   superdiagonal, 1 in the (N,1) position, and powers of
@@ -2405,9 +2491,11 @@ function A = smoke (n, k = 0)
     otherwise,
       error ("gallery: K must have a value of 0 or 1 for smoke matrix");
   endswitch
+
 endfunction
 
 function T = toeppd (n, m = n, w = rand (m,1), theta = rand (m,1))
+
   ## NOTE: this function was named pdtoep in the original Test Matrix Toolbox
   ## TOEPPD   Symmetric positive definite Toeplitz matrix.
   ##   TOEPPD(N, M, W, THETA) is an N-by-N symmetric positive (semi-)
@@ -2439,9 +2527,11 @@ function T = toeppd (n, m = n, w = rand (m,1), theta = rand (m,1))
   for i = 1:m
     T += w(i) * cos (theta(i)*E);
   endfor
+
 endfunction
 
 function P = toeppen (n, a = 1, b = -10, c = 0, d = 10, e = 1)
+
   ## NOTE: this function was named pentoep in the original Test Matrix Toolbox
   ## TOEPPEN   Pentadiagonal Toeplitz matrix (sparse).
   ##   P = TOEPPEN(N, A, B, C, D, E) is the N-by-N pentadiagonal
@@ -2475,9 +2565,11 @@ function P = toeppen (n, a = 1, b = -10, c = 0, d = 10, e = 1)
 
   P = spdiags ([a*ones(n,1) b*ones(n,1) c*ones(n,1) d*ones(n,1) e*ones(n,1)],
                 -2:2, n, n);
+
 endfunction
 
 function T = tridiag (n, x = -1, y = 2, z = -1)
+
   ## TRIDIAG  Tridiagonal matrix (sparse).
   ##   TRIDIAG(X, Y, Z) is the tridiagonal matrix with subdiagonal X,
   ##   diagonal Y, and superdiagonal Z.
@@ -2523,9 +2615,11 @@ function T = tridiag (n, x = -1, y = 2, z = -1)
   ##  T = diag (x, -1) + diag (y) + diag (z, 1);  # For non-sparse matrix.
   n = numel (y);
   T = spdiags ([[x;0] y [0;z]], -1:1, n, n);
+
 endfunction
 
 function t = triw (n, alpha = -1, k = n(end) - 1)
+
   ## TRIW   Upper triangular matrix discussed by Wilkinson and others.
   ##   TRIW(N, ALPHA, K) is the upper triangular matrix with ones on
   ##   the diagonal and ALPHAs on the first K >= 0 superdiagonals.
@@ -2569,6 +2663,7 @@ function t = triw (n, alpha = -1, k = n(end) - 1)
   n = n(end);
 
   t = tril (eye (m, n) + alpha * triu (ones (m, n), 1), k);
+
 endfunction
 
 function A = uniformdata (varargin)
@@ -2613,6 +2708,7 @@ function A = uniformdata (varargin)
 endfunction
 
 function A = wathen (nx, ny, k = 0)
+
   ## WATHEN returns the Wathen matrix.
   ##
   ## Discussion:
@@ -2745,9 +2841,11 @@ function A = wathen (nx, ny, k = 0)
   if (k)
     A = diag (diag (A)) \ A;
   endif
+
 endfunction
 
 function [A, b] = wilk (n)
+
   ## WILK   Various specific matrices devised/discussed by Wilkinson.
   ##   [A, b] = WILK(N) is the matrix or system of order N.
   ##   N = 3: upper triangular system Ux=b illustrating inaccurate solution.
@@ -2805,10 +2903,12 @@ function [A, b] = wilk (n)
   else
     error ("gallery: unknown N '%d' for wilk matrix", n);
   endif
+
 endfunction
 
 ## NOTE: bandred is part of the Test Matrix Toolbox and is used by randsvd()
 function A = bandred (A, kl, ku)
+
   ## BANDRED  Band reduction by two-sided unitary transformations.
   ##   B = BANDRED(A, KL, KU) is a matrix unitarily equivalent to A
   ##   with lower bandwidth KL and upper bandwidth KU
@@ -2856,10 +2956,12 @@ function A = bandred (A, kl, ku)
   if (flip)
     A = A';
   endif
+
 endfunction
 
 ## NOTE: qmult is part of the Test Matrix Toolbox and is used by randsvd()
 function B = qmult (A)
+
   ## QMULT  Pre-multiply by random orthogonal matrix.
   ##   QMULT(A) is Q*A where Q is a random real orthogonal matrix from
   ##   the Haar distribution, of dimension the number of rows in A.
@@ -2904,6 +3006,7 @@ function B = qmult (A)
   endfor
   A(n,:) = A(n,:) * sign (randn);
   B = A;
+
 endfunction
 
 

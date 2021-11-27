@@ -232,6 +232,7 @@ function [userdata, systemdata] = memory ()
 endfunction
 
 function [status, meminfo] = lmemory ()
+
   ## Read pseudo files to gather memory information on Linux
 
   ## Read the proc/self/status pseudofile.

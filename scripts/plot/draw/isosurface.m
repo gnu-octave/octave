@@ -226,6 +226,7 @@ function varargout = isosurface (varargin)
 endfunction
 
 function [x, y, z, v, isoval, colors, noshare, verbose] = __get_check_isosurface_args__ (nout, varargin)
+
   ## get arguments from input and check values
   x = y = z = [];
   v = [];

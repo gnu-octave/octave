@@ -394,6 +394,7 @@ endfunction
 
 ## Axes to which colorbar was attached is being deleted/reset. Delete colorbar.
 function cb_axes_deleted (~, ~, hax, hcb)
+
   if (isaxes (hcb))
     if (strcmp (get (hax, "beingdeleted"), "on"))
       ## Axes are being deleted.  Disable call to cb_restore_axes.
@@ -401,6 +402,7 @@ function cb_axes_deleted (~, ~, hax, hcb)
     endif
     delete (hcb);
   endif
+
 endfunction
 
 ## Error on attempt to set logscale on colorbar axes

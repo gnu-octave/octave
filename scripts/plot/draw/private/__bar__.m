@@ -412,6 +412,7 @@ function update_xlim (h, ~)
 endfunction
 
 function update_basevalue_logscale (hax, ~, hg)
+
   if (strcmp (get (hax, "yscale"), "log"))
     warning ("off", "Octave:negative-data-log-axis", "local");
     if (get (hg, "basevalue") == 0)
@@ -422,6 +423,7 @@ function update_basevalue_logscale (hax, ~, hg)
       set (hg, "basevalue", 0);
     endif
   endif
+
 endfunction
 
 function update_baseline (h, ~)

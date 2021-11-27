@@ -92,6 +92,7 @@ function retval = logspace (a, b, n = 50)
 
 endfunction
 
+
 %!test
 %! x1 = logspace (1, 2);
 %! x2 = logspace (1, 2, 10.1);

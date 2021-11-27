@@ -1779,6 +1779,7 @@ function x = flip (x)
 endfunction
 
 function spacing_spec = create_spacingspec (f, s, gp_term)
+
   ## The gnuplot default font size is 10, and default spacing is 1.25.
   ## gnuplot has a concept of a figure global font, and sizes everything
   ## appropriate to that, including the legend spacing.
@@ -1863,6 +1864,7 @@ function idx = do_border_tick_3d (obj, plot_stream, idx)
   tick ('z', obj.zcolor, obj.tickdir, mirrorstr);
 
   function tick (axischar, color, tickdir, mirrorstr)
+
     if (isnumeric (color))
       if (length (color) == 3)
         colorspec = sprintf ('rgb "#%02x%02x%02x"', round (255*color));
@@ -1874,12 +1876,14 @@ function idx = do_border_tick_3d (obj, plot_stream, idx)
     endif
     fprintf (plot_stream, "set %ctics %s %s textcolor %s\n",
              axischar, tickdir, mirrorstr, colorspec);
+
   endfunction
 
 endfunction
 
 function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
                                                 plot_stream)
+
   idx = idx + 8;
   style = {};
   ltidx = [];
@@ -2141,6 +2145,7 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
 endfunction
 
 function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
+
   ## DATA is already transposed.
 
   ## Convert NA elements to normal NaN values because fprintf writes

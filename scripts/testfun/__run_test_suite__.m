@@ -246,12 +246,14 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
 endfunction
 
 function print_test_file_name (nm)
+
   nmlen = numel (nm);
   filler = repmat (".", 1, 63-nmlen);
   if (nmlen > 63)
     nm = ["..", nm(nmlen-60:end)];
   endif
   printf ("  %s %s", nm, filler);
+
 endfunction
 
 function fail_info = print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
@@ -355,11 +357,13 @@ function n = num_elts_matching_pattern (lst, pat)
 endfunction
 
 function report_files_with_no_tests (with, without, typ)
+
   pat = ['\' typ "$"];
   n_with = num_elts_matching_pattern (with, pat);
   n_without = num_elts_matching_pattern (without, pat);
   n_tot = n_with + n_without;
   printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
+
 endfunction
 
 

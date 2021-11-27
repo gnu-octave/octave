@@ -183,6 +183,7 @@ function [h, failed] = __patch__ (p, varargin)
 endfunction
 
 function retval = iscolorspec (arg)
+
   retval = false;
   if (ischar (arg))
     persistent colors = {"y", "yellow", "r", "red", "m", "magenta", ...
@@ -192,4 +193,5 @@ function retval = iscolorspec (arg)
       retval = true;
     endif
   endif
+
 endfunction

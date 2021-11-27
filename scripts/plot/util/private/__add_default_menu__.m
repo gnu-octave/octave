@@ -165,6 +165,7 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
 endfunction
 
 function toggle_visibility_cb (hf, ~, hmenu, htb)
+
   menu_state = ifelse (strcmp (get (hf, "menubar"), "figure"), "on", "off");
   toolbar_state = "on";
   if (strcmp (get (hf, "toolbar"), "auto"))
@@ -175,6 +176,7 @@ function toggle_visibility_cb (hf, ~, hmenu, htb)
 
   set (hmenu, "visible", menu_state);
   set (htb, "visible", toolbar_state);
+
 endfunction
 
 function open_cb (~, ~)
@@ -187,6 +189,7 @@ function open_cb (~, ~)
 endfunction
 
 function save_cb (h, ~, action)
+
   hfig = gcbf ();
   fname = get (hfig, "filename");
 
@@ -199,9 +202,11 @@ function save_cb (h, ~, action)
   elseif (strcmp (action, "saveas"))
     __save_as__ (hfig, fname);
   endif
+
 endfunction
 
 function __save_as__ (hf, fname = "")
+
   if (! isempty (fname))
     def = fname;
   else
@@ -387,6 +392,7 @@ function mouse_tools_cb (h, ~, htools, typ = "")
 endfunction
 
 function axes_cb (h, ~)
+
   hax = get (gcbf (), "currentaxes");
   if (! isempty (hax))
     if (strcmp (get (hax, "visible"), "on"))
@@ -395,9 +401,11 @@ function axes_cb (h, ~)
       set (hax, "visible", "on");
     endif
   endif
+
 endfunction
 
 function grid_cb (h, ~)
+
   hax = get (gcbf (), "currentaxes");
   if (! isempty (hax))
     if (strcmp (get (hax, "xgrid"), "on") && strcmp (get (hax, "ygrid"), "on"))
@@ -406,6 +414,7 @@ function grid_cb (h, ~)
       grid (hax, "on");
     endif
   endif
+
 endfunction
 
 function auto_cb (h, ~)

@@ -144,6 +144,7 @@ function deps_cell = fix_depends (depends)
 endfunction
 
 function valid = is_valid_pkg_version_string (str)
+
   ## We are limiting ourselves to this set of characters because the
   ## version will appear on the filepath.  The portable character, according to
   ## http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_278
@@ -162,4 +163,5 @@ function valid = is_valid_pkg_version_string (str)
   ## able to co-exist in the same directory, e.g., during package install or
   ## in a flat level package repository.
   valid = numel (regexp (str, '[^0-9a-zA-Z\.\+\-\~]')) == 0;
+
 endfunction

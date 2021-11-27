@@ -696,7 +696,7 @@ for the terminal window that is longer than one page is sent through a
 pager.
 
 This allows you to view one screenful at a time.  Some pagers
-(such as @code{less}---see @ref{Installation}) are also capable of moving
+(such as @code{less}---@pxref{Installation}) are also capable of moving
 backward on the output.
 
 When called from inside a function with the @qcode{"local"} option, the

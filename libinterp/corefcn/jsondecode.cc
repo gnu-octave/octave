@@ -498,8 +498,8 @@ The output @var{object} is an Octave object that contains the result of
 decoding @var{JSON_txt}.
 
 For more information about the options @qcode{"ReplacementStyle"} and
-@qcode{"Prefix"}, see
-@ref{XREFmatlab_lang_makeValidName,,matlab.lang.makeValidName}.
+@qcode{"Prefix"},
+@pxref{XREFmatlab_lang_makeValidName,,@code{matlab.lang.makeValidName}}.
 
 If the value of the option @qcode{"makeValidName"} is false then names
 will not be changed by @code{matlab.lang.makeValidName} and the

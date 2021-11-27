@@ -117,7 +117,7 @@ version of that library "libqhull_r" instead.
 - Octave's libraries are now built using symbol visibility by default.
 That means that less symbols are exported from these libraries.
 Configure with `--disable-lib-visibility-flags` to export all symbols
-(like in previous versions).
+(as in previous versions).
 
 - Octave's build system no longer appends "++" to the end of the
 "magick++" library name (set with the `--with-magick=` configure flag).
@@ -126,7 +126,7 @@ trailing "++") needs to be set in that option now.
 
 ### Graphical User Interface
 
-- The graphical user interface is now available in Hungarian and in
+- The graphical user interface is now available in Hungarian and
 Turkish.
 
 - In debug mode, symbol values are now shown in tooltips when hovering
@@ -218,9 +218,9 @@ vectors with rows corresponding to the input coordinate matrix.
 dimensions greater than `ndims (x)`.
 
 - The function `iqr` now uses Matlab compatible interpolation for
-quantile values.  Dimension input now allows a vector, "all", and
-dimensions greater than `ndims (x)`.  The function compatibly handles
-`Inf` and `NaN` input values.
+quantile values.  The dimension input now allows a vector, "all", and
+dimensions greater than `ndims (x)`.  The function also handles
+`Inf` and `NaN` input values in a Matlab-compatible manner.
 
 - The function `importdata` now produces more compatible results when
 the file contains a 2-D text matrix.

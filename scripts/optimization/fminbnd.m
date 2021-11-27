@@ -51,7 +51,8 @@
 ## @qcode{"TolX"} specifies the termination tolerance for the solution @var{x}.
 ## The default is @code{1e-4}.
 ##
-## For a description of the other options, see @ref{XREFoptimset,,optimset}.
+## For a description of the other options,
+## @pxref{XREFoptimset,,@code{optimset}}.
 ## To initialize an options structure with default values for @code{fminbnd}
 ## use @code{options = optimset ("fminbnd")}.
 ##

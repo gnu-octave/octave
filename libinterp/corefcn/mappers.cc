@@ -956,7 +956,7 @@ $e^{x}$
 @end ifnottex
 for each element of @var{x}.
 
-To compute the matrix exponential, see @ref{Linear Algebra}.
+To compute the matrix exponential, @pxref{Linear Algebra}.
 @seealso{log}
 @end deftypefn */)
 {
@@ -1721,7 +1721,7 @@ $\ln{(x)},$
 @end ifnottex
 for each element of @var{x}.
 
-To compute the matrix logarithm, see @ref{Linear Algebra}.
+To compute the matrix logarithm, @pxref{Linear Algebra}.
 @seealso{exp, log1p, log2, log10, logspace}
 @end deftypefn */)
 {
@@ -1966,7 +1966,7 @@ Return logical true if the value of @var{x} has its sign bit set and false
 otherwise.
 
 This behavior is consistent with the other logical functions.
-See @ref{Logical Values}.  The behavior differs from the C language function
+@xref{Logical Values}.  The behavior differs from the C language function
 which returns nonzero if the sign bit is set.
 
 This is not the same as @code{x < 0.0}, because IEEE 754 floating point
@@ -2065,7 +2065,7 @@ Compute the square root of each element of @var{x}.
 
 If @var{x} is negative, a complex result is returned.
 
-To compute the matrix square root, see @ref{Linear Algebra}.
+To compute the matrix square root, @pxref{Linear Algebra}.
 @seealso{realsqrt, nthroot}
 @end deftypefn */)
 {

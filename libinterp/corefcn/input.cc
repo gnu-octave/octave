@@ -1338,7 +1338,7 @@ Read the readline library initialization file @var{file}.
 If @var{file} is omitted, read the default initialization file
 (normally @file{~/.inputrc}).
 
-@xref{Readline Init File, , , readline, GNU Readline Library},
+@xref{Readline Init File,,,readline, GNU Readline Library},
 for details.
 @seealso{readline_re_read_init_file}
 @end deftypefn */)
@@ -1365,7 +1365,7 @@ DEFUN (readline_re_read_init_file, args, ,
 @deftypefn {} {} readline_re_read_init_file ()
 Re-read the last readline library initialization file that was read.
 
-@xref{Readline Init File, , , readline, GNU Readline Library},
+@xref{Readline Init File,,,readline, GNU Readline Library},
 for details.
 @seealso{readline_read_init_file}
 @end deftypefn */)

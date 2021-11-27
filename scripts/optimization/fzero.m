@@ -61,7 +61,8 @@
 ## @qcode{"TolX"} specifies the termination tolerance for the solution @var{x}.
 ## The default value is @code{eps}.
 ##
-## For a description of the other options, see @ref{XREFoptimset,,optimset}.
+## For a description of the other options,
+## @pxref{XREFoptimset,,@code{optimset}}.
 ## To initialize an options structure with default values for @code{fzero} use
 ## @code{options = optimset ("fzero")}.
 ##

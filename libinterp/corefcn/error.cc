@@ -1386,7 +1386,7 @@ If the warning message does not end with a newline character, Octave will
 print a traceback of all the function calls leading to the warning.  If the
 warning message does end in a newline character, Octave will suppress the
 traceback messages as it returns control to the top level.  For more details
-and examples, see @ref{XREFerror,,error}.
+and examples, @pxref{XREFerror,,@code{error}}.
 
 The optional warning identifier @var{id} allows users to enable or disable
 warnings tagged by this identifier.  A message identifier is a string of the

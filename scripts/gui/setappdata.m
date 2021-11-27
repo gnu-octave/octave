@@ -35,8 +35,8 @@
 ##
 ## Multiple @var{name}/@var{value} pairs can be specified.  Alternatively, a
 ## cell array of @var{names} and a corresponding cell array of @var{values} can
-## be specified.  Details on obtaining a list of valid application data
-## properties can be found in @ref{XREFgetappdata, ,getappdata}.
+## be specified.  For details on obtaining a list of valid application data
+## properties, @pxref{XREFgetappdata,,@code{getappdata}}.
 ##
 ## @seealso{getappdata, isappdata, rmappdata, guidata, get, set, getpref,
 ## setpref}

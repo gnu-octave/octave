@@ -320,7 +320,7 @@ classdef jupyter_notebook < handle
         print_usage ();
       endif
 
-      if (! (isscalar (cell_index) && isindex (cell_index))
+      if (! (isscalar (cell_index) && isindex (cell_index)))
         error ("jupyter_notebook: CELL_INDEX must be a scalar positive integer");
       endif
 

@@ -177,7 +177,7 @@ endfunction
 %!error <BASE must be an integer> dec2base (1, 2.5)
 %!error <BASE must be .* between 2 and 36> dec2base (1, 1)
 %!error <BASE must be .* between 2 and 36> dec2base (1, 37)
-%!error <LEN must be a non-negative integer> dec2base (1, 2, ones(2))
+%!error <LEN must be a non-negative integer> dec2base (1, 2, ones (2))
 %!error <LEN must be a non-negative integer> dec2base (1, 2, 2i)
 %!error <LEN must be a non-negative integer> dec2base (1, 2, -1)
 %!error <LEN must be a non-negative integer> dec2base (1, 2, 2.5)

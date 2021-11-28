@@ -805,9 +805,9 @@ endclassdef
 %!test <*56594>
 %! key = [1, 2, 3];
 %! val = {"One", "Two", "Three"};
-%! m = containers.Map(key, val);
+%! m = containers.Map (key, val);
 %! m (uint32 (1)) = "Four";
-%! assert (m.Count, uint64(3));
+%! assert (m.Count, uint64 (3));
 %! assert (keys (m), {1, 2, 3});
 %! assert (m(1), "Four");
 %! assert (m(uint16 (1)), "Four");

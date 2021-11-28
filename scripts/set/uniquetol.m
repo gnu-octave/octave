@@ -353,7 +353,7 @@ endfunction
 %!error <TOL must be .* non-complex> uniquetol (1, 1i)
 %!error <arguments must be passed in pairs> uniquetol (1, 2, "byrows")
 %!error <PROPERTY must be a string> uniquetol (1, 2, 3, "bar")
-%!error <A must be a 2-D array> uniquetol (ones(2,2,2), "byrows", true)
+%!error <A must be a 2-D array> uniquetol (ones (2,2,2), "byrows", true)
 %!error <DataScale must be a .* floating point> uniquetol (1, "DataScale", '1')
 %!error <DataScale must be .* positive> uniquetol (1, "DataScale", -1)
 %!error <DataScale must be .* positive> uniquetol (1, "DataScale", 1i)

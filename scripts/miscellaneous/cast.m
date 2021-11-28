@@ -106,7 +106,7 @@ function retval = cast (val, type, var)
   endif
 
   if (! isnumeric (val) && ! islogical (val) && ! ischar (val))
-    error("cast: type conversion from '%s' is not supported", class (val));
+    error ("cast: type conversion from '%s' is not supported", class (val));
   endif
 
   if (! any (strcmp (type, {"int8"; "uint8"; "int16"; "uint16"; "int32";
@@ -146,7 +146,7 @@ endfunction
 %!assert (cast ([-2.5 1.1 2.5], "uint64"), uint64 ([0 1 3]))
 %!assert (cast (1, "like", 2), 1)
 %!assert (cast (1, "like", 2i), complex (1))
-%!assert (cast (1, "like", speye(2)), sparse (1))
+%!assert (cast (1, "like", speye (2)), sparse (1))
 %!assert (cast (1, "like", sparse (2i)), complex (sparse (1)))
 %!assert (cast (single (1), "like", speye (2)), sparse (1))
 %!assert (cast (sparse (1), "like", 2), 1)

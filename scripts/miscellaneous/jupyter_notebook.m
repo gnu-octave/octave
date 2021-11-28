@@ -24,28 +24,30 @@
 classdef jupyter_notebook < handle
 
   ## -*- texinfo -*-
-  ## @deftypefn  {} {@var{notebook} =} jupyter_notebook (@var{notebook_file_name})
-  ## @deftypefnx {} {@var{notebook} =} jupyter_notebook (@var{notebook_file_name}, @var{options})
+  ## @deftypefn  {} {@var{notebook} =} jupyter_notebook (@var{notebook_filename})
+  ## @deftypefnx {} {@var{notebook} =} jupyter_notebook (@var{notebook_filename}, @var{options})
   ##
-  ## Run and fill the Jupyter Notebook in @var{notebook_file_name} within GNU
-  ## Octave.
+  ## Run and fill the Jupyter Notebook in file @var{notebook_filename} from
+  ## within GNU Octave.
   ##
-  ## Supported are textual and graphical Octave outputs.
+  ## Both text and graphical Octave outputs are supported.
   ##
-  ## This class has a public attribute @qcode{notebook} which is a struct
-  ## representing the JSON-decoded Jupyter Notebook.  This attribute is
+  ## This class has a public property @code{notebook} which is a structure
+  ## representing the JSON-decoded Jupyter Notebook.  This property is
   ## intentionally public to enable advanced notebook manipulations.
   ##
-  ## Note: Jupyter Notebook versions (@qcode{nbformat}) lower than 4.0 are not
+  ## Note: Jupyter Notebook versions (@code{nbformat}) lower than 4.0 are not
   ## supported.
   ##
-  ## The second argument @var{options} is a struct with fields:
+  ## The optional second argument @var{options} is a struct with fields:
+  ##
   ## @itemize @bullet
   ## @item
-  ## @qcode{tmpdir} to set the temporary working directory.
+  ## @code{tmpdir} to set the temporary working directory.
   ## @end itemize
   ##
-  ## @qcode{%plot} magic is supported with the following settings:
+  ## @code{%plot} magic is supported with the following settings:
+  ##
   ## @itemize @bullet
   ## @item
   ## "%plot -f <format>" or "%plot --format <format>": specifies the
@@ -55,10 +57,10 @@ classdef jupyter_notebook < handle
   ## @item
   ## PNG (default)
   ##
-  ## @item
-  ## SVG (Note: If SVG images do not appear in the notebook, it is most related
-  ## to the Jupyter Notebook security mechanism and explicitly "trusting" them
-  ## is necessary).
+  ## @item SVG
+  ## (Note: If SVG images do not appear in the notebook, it is most likely
+  ## related to Jupyter Notebook security mechanisms and explicitly "trusting"
+  ## them will be necessary).
   ##
   ## @item
   ## JPG
@@ -83,44 +85,32 @@ classdef jupyter_notebook < handle
   ## @group
   ## ## Run all cells and generate the filled notebook
   ##
-  ## ## Instantiate an object from the notebook file
-  ## notebook = jupyter_notebook ("myNotebook.ipynb")
-  ##     @result{} notebook =
-  ##
-  ##         <object jupyter_notebook>
-  ##
-  ## ## Run the code and embed the results in the @qcode{notebook} attribute
-  ## notebook.run_all ()
-  ## ## Generate the new notebook by overwriting the original notebook
-  ## notebook.generate_notebook ("myNotebook.ipynb")
+  ## ## Instantiate an object from a notebook file
+  ## notebook = jupyter_notebook ("myNotebook.ipynb");
+  ## ## Run the code and embed the results in the @code{notebook} property
+  ## notebook.run_all ();
+  ## ## Generate a new notebook by overwriting the original notebook
+  ## notebook.generate_notebook ("myNotebook.ipynb");
   ## @end group
   ##
   ## @group
-  ## ## Run the second cell and generate the filled notebook
+  ## ## Run just the second cell and generate the filled notebook
   ##
-  ## ## Instantiate an object from the notebook file
-  ## notebook = jupyter_notebook ("myNotebook.ipynb")
-  ##     @result{} notebook =
-  ##
-  ##         <object jupyter_notebook>
-  ##
-  ## ## Run the code and embed the results in the @qcode{notebook} attribute
-  ## notebook.run(2)
-  ## ## Generate the new notebook in a new file
-  ## notebook.generate_notebook ("myNewNotebook.ipynb")
+  ## ## Instantiate an object from a notebook file
+  ## notebook = jupyter_notebook ("myNotebook.ipynb");
+  ## ## Run the code and embed the results in the @code{notebook} property
+  ## notebook.run (2)
+  ## ## Generate a new notebook in a new file
+  ## notebook.generate_notebook ("myNewNotebook.ipynb");
   ## @end group
   ##
   ## @group
   ## ## Generate an Octave script from a notebook
   ##
-  ## ## Instantiate an object from the notebook file
-  ## notebook = jupyter_notebook ("myNotebook.ipynb")
-  ##     @result{} notebook =
-  ##
-  ##         <object jupyter_notebook>
-  ##
-  ## ## Generate the octave script
-  ## notebook.generate_octave_script ("myScript.m")
+  ## ## Instantiate an object from a notebook file
+  ## notebook = jupyter_notebook ("myNotebook.ipynb");
+  ## ## Generate the Octave script
+  ## notebook.generate_octave_script ("jup_script.m");
   ## @end group
   ## @end example
   ##
@@ -129,18 +119,18 @@ classdef jupyter_notebook < handle
 
   properties
 
-    notebook = struct()
+    notebook = struct ();
 
   endproperties
 
   properties (Access = "private")
 
-    context = struct("ans", "")
+    context = struct ("ans", "");
 
     ## Note: This name needs to be stored in a property because it is
     ## set in the constructor but used in some other methods.  However,
     ## we want to defer calling tempname() until immediately before
-    ## calling mkdir.  The temporary directory currently created and
+    ## calling mkdir().  The temporary directory currently created and
     ## deleted in the constructor and the name is reset to the empty
     ## string when the directory is deleted.  Another possible
     ## implementation might be to generate the name and create the
@@ -152,73 +142,71 @@ classdef jupyter_notebook < handle
 
   methods
 
-    function obj = jupyter_notebook (notebook_file_name, options)
+    function obj = jupyter_notebook (notebook_filename, options)
 
-      if ((nargin < 1) || (nargin > 2))
+      if (nargin < 1)
         print_usage ();
       endif
 
-      ## Validate options if present.
-      if ((nargin == 2) && ! isstruct (options))
-        error ("jupyter_notebook: options must be a struct");
+      if (! (ischar (notebook_filename) && isrow (notebook_filename)))
+        error ("jupyter_notebook: NOTEBOOK_FILENAME must be a string");
       endif
-      if ((nargin == 2) && (isfield (options, "tmpdir")))
+
+      ## Validate options if present.
+      if (nargin == 2 && ! isstruct (options))
+        error ("jupyter_notebook: OPTIONS must be a struct");
+      endif
+      if (nargin == 2 && isfield (options, "tmpdir"))
         obj.tmpdir = options.tmpdir;
       endif
 
-      if (! (ischar (notebook_file_name) && isrow (notebook_file_name)))
-        error ("jupyter_notebook: notebook_file_name must be a string");
-      endif
-
-      obj.notebook = jsondecode (fileread (notebook_file_name),
+      obj.notebook = jsondecode (fileread (notebook_filename),
                                  "makeValidName", false);
 
       ## Validate the notebook's format according to nbformat: 4.0
-      if (! (isfield (obj.notebook, "metadata")
-             && isfield (obj.notebook, "nbformat")
-             && isfield (obj.notebook, "nbformat_minor")
-             && isfield (obj.notebook, "cells")))
-        error ("jupyter_notebook: not valid format for Jupyter notebooks");
+      if (! all (isfield (obj.notebook,
+                          {"metadata", "nbformat", "nbformat_minor", "cells"})))
+        error ("jupyter_notebook: invalid format for Jupyter notebooks");
       endif
 
-      ## Issue a warning if the format is lower than 4.0
+      ## Issue a warning if the format is lower than 4.0.
       if (obj.notebook.nbformat < 4)
         warning (["jupyter_notebook: nbformat versions lower than 4.0 are ", ...
                   "not supported"]);
       endif
 
-      ## Handle the case if there is only one cell.
+      ## Handle the case of only one cell.
       ## Make "obj.notebook.cells" a cell of structs to match the format.
       if (numel (obj.notebook.cells) == 1)
         obj.notebook.cells = {obj.notebook.cells};
       endif
 
-      ## Handle the case if the cells have the same keys.
-      ## Make "obj.notebook.cells" a cell of structs instead of struct array
+      ## Handle the case where the cells have the same keys.
+      ## Make "obj.notebook.cells" a cell of structs, instead of struct array,
       ## to unify the indexing method.
       if (isstruct (obj.notebook.cells))
         obj.notebook.cells = num2cell (obj.notebook.cells);
       endif
 
       for i = 1:numel (obj.notebook.cells)
-        if (! isfield (obj.notebook.cells{i}, "source"))
-          error ("jupyter_notebook: cells must contain a \"source\" field");
+        nbcell = obj.notebook.cells{i};
+        if (! isfield (nbcell, "source"))
+          error ('jupyter_notebook: cells must contain a "source" field');
         endif
 
-        if (! isfield (obj.notebook.cells{i}, "cell_type"))
-          error ("jupyter_notebook: cells must contain a \"cell_type\" field");
+        if (! isfield (nbcell, "cell_type"))
+          error ('jupyter_notebook: cells must contain a "cell_type" field');
         endif
 
-        ## Handle when null JSON values are decoded into empty arrays.
-        if (isfield (obj.notebook.cells{i}, "execution_count")
-            && numel (obj.notebook.cells{i}.execution_count) == 0)
+        ## Handle null JSON values which are decoded into empty arrays.
+        if (isfield (nbcell, "execution_count")
+            && numel (nbcell.execution_count) == 0)
           obj.notebook.cells{i}.execution_count = 1;
         endif
 
-        ## Handle the case if there is only one output in the cell.
+        ## Handle the case of only one output in the cell.
         ## Make the outputs of the cell a cell of structs to match the format.
-        if (isfield (obj.notebook.cells{i}, "outputs")
-            && numel (obj.notebook.cells{i}.outputs) == 1)
+        if (isfield (nbcell, "outputs") && numel (nbcell.outputs) == 1)
           obj.notebook.cells{i}.outputs = {obj.notebook.cells{i}.outputs};
         endif
       endfor
@@ -226,77 +214,83 @@ classdef jupyter_notebook < handle
     endfunction
 
 
-    function generate_octave_script (obj, script_file_name)
+    function generate_octave_script (obj, script_filename)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {} generate_octave_script (@var{script_file_name})
+      ## @deftypefn {} {} generate_octave_script (@var{script_filename})
       ##
       ## Write an Octave script that has the contents of the Jupyter Notebook
-      ## stored in the @qcode{notebook} attribute to @var{script_file_name}.
+      ## stored in the @code{notebook} attribute to @var{script_filename}.
       ##
       ## Non-code cells are generated as block comments.
       ##
       ## See @code{help jupyter_notebook} for examples.
       ##
+      ## @seealso{jupyter_notebook}
       ## @end deftypefn
 
       if (nargin != 2)
         print_usage ();
       endif
 
-      if (! (ischar (script_file_name) && isrow (script_file_name)))
-        error ("jupyter_notebook: script_file_name must be a string");
+      if (! (ischar (script_filename) && isrow (script_filename)))
+        error ("jupyter_notebook: SCRIPT_FILENAME must be a string");
       endif
 
-      fhandle = fopen (script_file_name, "w");
+      fid = fopen (script_filename, "w");
 
       for i = 1:numel (obj.notebook.cells)
-        if (strcmp (obj.notebook.cells{i}.cell_type, "markdown"))
-          fputs (fhandle, "\n#{\n");
+        nbcell = obj.notebook.cells{i};
+        is_markdown = strcmp (nbcell.cell_type, "markdown");
+
+        if (is_markdown)
+          fputs (fid, "\n#{\n");
         endif
 
-        for k = 1:numel (obj.notebook.cells{i}.source)
-          fputs (fhandle, obj.notebook.cells{i}.source{k});
+        for k = 1:numel (nbcell.source)
+          fputs (fid, nbcell.source{k});
         endfor
 
-        if (strcmp (obj.notebook.cells{i}.cell_type, "markdown"))
-          fputs (fhandle, "\n#}\n");
+        if (is_markdown)
+          fputs (fid, "\n#}\n");
         endif
-        fputs (fhandle, "\n");
+        fputs (fid, "\n");
       endfor
-      fclose (fhandle);
+      fclose (fid);
 
     endfunction
 
 
-    function generate_notebook (obj, notebook_file_name)
+    function generate_notebook (obj, notebook_filename)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {} generate_notebook (@var{notebook_file_name})
+      ## @deftypefn {} {} generate_notebook (@var{notebook_filename})
       ##
-      ## Write the Jupyter Notebook stored in the @qcode{notebook}
-      ## attribute to @var{notebook_file_name}.
+      ## Write the Jupyter Notebook stored in the @code{notebook}
+      ## attribute to @var{notebook_filename}.
       ##
-      ## The @qcode{notebook} attribute is encoded to JSON text.
+      ## The @code{notebook} attribute is encoded to JSON text.
       ##
       ## See @code{help jupyter_notebook} for examples.
       ##
+      ## @seealso{jupyter_notebook}
       ## @end deftypefn
 
       if (nargin != 2)
         print_usage ();
       endif
 
-      if (! (ischar (notebook_file_name) && isrow (notebook_file_name)))
-        error ("jupyter_notebook: notebook_file_name must be a string");
+      if (! (ischar (notebook_filename) && isrow (notebook_filename)))
+        error ("jupyter_notebook: NOTEBOOK_FILENAME must be a string");
       endif
 
-      fhandle = fopen (notebook_file_name, "w");
+      fid = fopen (notebook_filename, "w");
 
-      fputs (fhandle, jsonencode (obj.notebook, "ConvertInfAndNaN", false,
-                                  "PrettyPrint", true));
+      fputs (fid, jsonencode (obj.notebook,
+                              "ConvertInfAndNaN", false,
+                              "PrettyPrint", true));
 
-      fclose (fhandle);
+      fclose (fid);
 
     endfunction
 
@@ -319,29 +313,31 @@ classdef jupyter_notebook < handle
       ##
       ## See @code{help jupyter_notebook} for examples.
       ##
+      ## @seealso{jupyter_notebook}
       ## @end deftypefn
 
       if (nargin != 2)
         print_usage ();
       endif
 
-      if (! (isscalar (cell_index) && ! islogical (cell_index)
-          && (mod (cell_index, 1) == 0) && (cell_index > 0)))
-        error ("jupyter_notebook: cell_index must be a scalar positive integer");
+      if (! (isscalar (cell_index) && isindex (cell_index)))
+        error ("jupyter_notebook: CELL_INDEX must be a scalar positive integer");
       endif
 
-      if (cell_index > length (obj.notebook.cells))
-        error ("jupyter_notebook: cell_index is out of bound");
+      if (cell_index > numel (obj.notebook.cells))
+        error ("jupyter_notebook: CELL_INDEX is out of bound");
       endif
 
-      if (! strcmp (obj.notebook.cells{cell_index}.cell_type, "code"))
+      nbcell = obj.notebook.cells{cell_index};
+
+      if (! strcmp (nbcell.cell_type, "code"))
         return;
       endif
 
       ## Remove previous outputs.
       obj.notebook.cells{cell_index}.outputs = {};
 
-      if (isempty (obj.notebook.cells{cell_index}.source))
+      if (isempty (nbcell.source))
         return;
       endif
 
@@ -354,12 +350,10 @@ classdef jupyter_notebook < handle
       printOptions.height = "480";
 
       ## Parse "plot magic" commands.
-      ## https://github.com/Calysto/metakernel/blob/master/metakernel/ ...
-      ##   magics/README.md#plot
-      for j = 1 : numel (obj.notebook.cells{cell_index}.source)
-        if (strncmpi (obj.notebook.cells{cell_index}.source{j}, "%plot", 5))
-          magics = strsplit (strtrim (
-            obj.notebook.cells{cell_index}.source{j}));
+      ## https://github.com/Calysto/metakernel/blob/master/metakernel/magics/README.md#plot
+      for j = 1 : numel (nbcell.source)
+        if (strncmpi (nbcell.source{j}, "%plot", 5))
+          magics = strsplit (strtrim (nbcell.source{j}));
           for i = 1 : numel (magics)
             if (any (strcmp (magics{i}, {"-f", "--format"}))
                 && (i < numel (magics)))
@@ -382,7 +376,7 @@ classdef jupyter_notebook < handle
       endfor
 
       ## Remember previously opened figures.
-      fig_ids = findall (0, "type", "figure");
+      fig_ids = findall (groot, "type", "figure");
 
       ## Create a new figure, if there are existing plots.
       if (! isempty (fig_ids))
@@ -391,15 +385,14 @@ classdef jupyter_notebook < handle
 
       stream_output = struct ("name", "stdout", "output_type", "stream");
 
-      output_lines = obj.evalCode (strjoin (
-        obj.notebook.cells{cell_index}.source));
+      output_lines = obj.evalCode (strjoin (nbcell.source));
 
-      if (! isempty(output_lines))
+      if (! isempty (output_lines))
         stream_output.text = {output_lines};
       endif
 
       if (isfield (stream_output, "text"))
-        obj.notebook.cells{cell_index}.outputs{end + 1} = stream_output;
+        obj.notebook.cells{cell_index}.outputs{end+1} = stream_output;
       endif
 
       ## If there are existing plots and newFig is empty, delete it.
@@ -408,14 +401,12 @@ classdef jupyter_notebook < handle
       endif
 
       ## Check for newly created figures.
-      fig_ids_new = setdiff (findall (0, "type", "figure"), fig_ids);
+      fig_ids_new = setdiff (findall (groot, "type", "figure"), fig_ids);
 
-      if (numel (fig_ids_new) > 0)
+      if (! isempty (fig_ids_new))
         if (! isempty (obj.tmpdir) && exist (obj.tmpdir, "dir"))
           ## Delete open figures before raising the error.
-          for i = 1:numel (fig_ids_new)
-            delete (fig_ids_new(i));
-          endfor
+          delete (fig_ids_new);
           error (["JupyterNotebook: temporary directory %s exists.  ", ...
                   "Please remove it manually."], obj.tmpdir);
         endif
@@ -426,13 +417,11 @@ classdef jupyter_notebook < handle
         else
           clear_tmpdir_property = false;
         endif
-        [status, msg, msgid] = mkdir (obj.tmpdir);
+        [status, msg] = mkdir (obj.tmpdir);
         if (status == 0)
           ## Delete open figures before raising the error.
-          for i = 1 : numel (fig_ids_new)
-            delete (fig_ids_new(i));
-          endfor
-          error (["jupyter_notebook: Cannot create a temporary directory. ", ...
+          delete (fig_ids_new);
+          error (["jupyter_notebook: cannot create a temporary directory. ", ...
                   msg]);
         endif
 
@@ -442,13 +431,13 @@ classdef jupyter_notebook < handle
 
         for i = 1:numel (fig_ids_new)
           figure (fig_ids_new(i), "visible", "off");
-          obj.embedImage (cell_index, fig_ids_new (i), printOptions);
+          obj.embedImage (cell_index, fig_ids_new(i), printOptions);
           delete (fig_ids_new(i));
         endfor
 
-        [status, msg, msgid] = rmdir (obj.tmpdir);
+        [status, msg] = rmdir (obj.tmpdir);
         if (status == 0)
-          error (["jupyter_notebook: Cannot delete the temporary ", ...
+          error (["jupyter_notebook: cannot delete the temporary ", ...
                   "directory. ", msg]);
         endif
         if (clear_tmpdir_property)
@@ -475,6 +464,7 @@ classdef jupyter_notebook < handle
       ##
       ## See @code{help jupyter_notebook} for examples.
       ##
+      ## @seealso{jupyter_notebook}
       ## @end deftypefn
 
       if (nargin != 1)
@@ -482,7 +472,7 @@ classdef jupyter_notebook < handle
       endif
 
       for i = 1:numel (obj.notebook.cells)
-        obj.run(i);
+        obj.run (i);
       endfor
 
     endfunction
@@ -492,7 +482,7 @@ classdef jupyter_notebook < handle
 
   methods (Access = "private")
 
-    function retVal = evalCode (__obj__, __code__)
+    function retval = evalCode (__obj__, __code__)
 
       ## Evaluate the code string "__code__" using "evalc".
       ## Before the code is evaluated, the previous notebook context is
@@ -503,12 +493,12 @@ classdef jupyter_notebook < handle
       endif
 
       if (isempty (__code__))
-        retVal = [];
+        retval = [];
         return;
       endif
 
       if (! (ischar (__code__) && isrow (__code__)))
-        error ("jupyter_notebook: code must be a string");
+        error ("jupyter_notebook: CODE must be a string");
       endif
 
       __obj__.loadContext ();
@@ -516,34 +506,38 @@ classdef jupyter_notebook < handle
       ## Add a statement to detect the value of the variable "ans"
       __code__ = [__code__, "\nans"];
 
-      retVal = strtrim (evalc (__code__, ["printf (\"error: \"); ", ...
+      retval = strtrim (evalc (__code__, ["printf (\"error: \"); ", ...
                                           "printf (lasterror.message)"]));
 
       ## Handle the "ans" variable in the context.
-      start_index = rindex (retVal, "ans =") + 6;
-      if ((start_index > 6))
-        if ((start_index <= length (retVal)))
+      start_index = rindex (retval, "ans =") + 6;
+      if (start_index > 6)
+        if (start_index <= length (retval))
           end_index = start_index;
-          while ((retVal(end_index) != "\n") && (end_index < length (retVal)))
-            end_index += 1;
-          endwhile
-          __obj__.context.ans = retVal(start_index:end_index);
+          ## FIXME: loops are slow.
+          idx = find (retval(start_index+1:end) == "\n", 1);
+          if (idx)
+            end_index = start_index + idx;
+          else
+            end_index = length (retval);
+          endif
+          __obj__.context.ans = retval(start_index:end_index);
         else
-          end_index = length (retVal);
+          end_index = length (retval);
           __obj__.context.ans = "";
         endif
 
         ## Delete the output of the additional statement if the execution
         ## is completed with no errors.
-        if (end_index == length (retVal))
+        if (end_index == length (retval))
           ## Remove the extra new line if there are other outputs with
           ## the "ans" statement output
           if (start_index == 7)
             start_index = 1;
           else
-            start_index = start_index - 7;
+            start_index -= 7;
           endif
-          retVal(start_index:end_index) = "";
+          retval(start_index:end_index) = "";
         endif
       endif
 
@@ -565,7 +559,7 @@ classdef jupyter_notebook < handle
       var_names = {evalin("caller", "whos").name};
 
       ## Store all variables to context.
-      for i = 1:length (var_names)
+      for i = 1:numel (var_names)
         if (! any (strcmp (var_names{i}, forbidden_var_names)))
           obj.context.(var_names{i}) = evalin ("caller", var_names{i});
         endif
@@ -636,7 +630,7 @@ classdef jupyter_notebook < handle
           return;
       endswitch
 
-      obj.notebook.cells{cell_index}.outputs{end + 1} = display_output;
+      obj.notebook.cells{cell_index}.outputs{end+1} = display_output;
 
     endfunction
 
@@ -649,8 +643,8 @@ classdef jupyter_notebook < handle
         mime = "image/jpeg";
       endif
 
-      image_path = fullfile (obj.tmpdir, ["temp.", fmt]);
-      print (figHandle, image_path, ["-d", fmt],
+      image_path = fullfile (obj.tmpdir, ["temp." fmt]);
+      print (figHandle, image_path, ["-d" fmt],
              ["-r" printOptions.resolution]);
 
       dstruct.output_type = "display_data";
@@ -676,7 +670,7 @@ classdef jupyter_notebook < handle
 
       ## FIXME: The following is a workaround until we can properly print
       ##        SVG images in the right width and height.
-      ## Detect the <svg> tag. it is either the first or the second item
+      ## Detect the <svg> tag; it is either the first or the second item.
       if (strncmpi (dstruct.data.("image/svg+xml"){1}, "<svg", 4))
         i = 1;
       else
@@ -685,10 +679,10 @@ classdef jupyter_notebook < handle
 
       ## Embed the width and height in the image itself
       svg_tag = dstruct.data.("image/svg+xml"){i};
-      svg_tag = regexprep (svg_tag, "width=\"(.*?)\"",
-                           ["width=\"" printOptions.width "px\""]);
-      svg_tag = regexprep (svg_tag, "height=\"(.*?)\"",
-                           ["height=\"" printOptions.height "px\""]);
+      svg_tag = regexprep (svg_tag, 'width=".*?"',
+                           ['width="' printOptions.width 'px"']);
+      svg_tag = regexprep (svg_tag, 'height=".*?"',
+                           ['height="' printOptions.height 'px"']);
       dstruct.data.("image/svg+xml"){i} = svg_tag;
 
       delete (image_path);
@@ -701,7 +695,7 @@ classdef jupyter_notebook < handle
       stream_output.name        = "stderr";
       stream_output.output_type = "stream";
       stream_output.text        = {error_msg};
-      obj.notebook.cells{cell_index}.outputs{end + 1} = stream_output;
+      obj.notebook.cells{cell_index}.outputs{end+1} = stream_output;
 
     endfunction
 
@@ -709,4 +703,12 @@ classdef jupyter_notebook < handle
 
 endclassdef
 
-#!error jupyter_notebook ()
+
+## FIXME: It would be useful to have tests of functionality in addition
+##        to just input validation.
+
+## Test input validation
+%!error <Invalid call> jupyter_notebook ()
+%!error <NOTEBOOK_FILENAME must be a string> jupyter_notebook (1)
+%!error <NOTEBOOK_FILENAME must be a string> jupyter_notebook (['a';'b'])
+%!error <OPTIONS must be a struct> jupyter_notebook ("fname", 1)

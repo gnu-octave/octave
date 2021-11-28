@@ -184,15 +184,15 @@ endfunction
 %!assert (iqr (1:10), 5)
 %!assert (iqr ((1:10).'), 5)
 %!assert (iqr (1:10, 2), 5)
-%!assert (iqr (1:10, 1), zeros(1, 10))
-%!assert (iqr (1:10, 3), zeros(1, 10))
+%!assert (iqr (1:10, 1), zeros (1, 10))
+%!assert (iqr (1:10, 3), zeros (1, 10))
 %!assert (iqr ([1:5; 2:6], "all"), 3)
 
 %!test
 %! x = reshape (1:6, [1 2 3]);
 %! assert (iqr (x), ones (1, 1, 3));
 %! assert (iqr (x, 1), zeros (1, 2, 3));
-%! assert (iqr (x, 2), ones( 1, 1, 3));
+%! assert (iqr (x, 2), ones (1, 1, 3));
 %! assert (iqr (x, 3), [3 3]);
 
 ## n-D arrays

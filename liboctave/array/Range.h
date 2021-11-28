@@ -322,11 +322,15 @@ namespace octave
 
     void init (void)
     {
+      // We need an integer division that is truncating decimals instead of
+      // rounding.  So, use underlying C++ types instead of octave_int<T>.
+      // FIXME: The numerator might underflow or overflow. Add checks for that.
       m_numel = ((m_increment == T (0)
                   || (m_limit > m_base && m_increment < T (0))
                   || (m_limit < m_base && m_increment > T (0)))
-                 ? T (0)
-                 : (m_limit - m_base + m_increment) / m_increment);
+                 ? 0
+                 : (m_limit.value () - m_base.value () + m_increment.value ())
+                   / m_increment.value ());
 
       m_final = m_base + (m_numel - 1) * m_increment;
     }

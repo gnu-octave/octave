@@ -75,7 +75,7 @@ function [s, iters] = logm (A, opt_iters = 100)
   endif
 
   eigv = diag (s);
-  n = rows(A);
+  n = rows (A);
   tol = n * eps (max (abs (eigv)));
   real_neg_eigv = (real (eigv) < -tol) & (imag (eigv) <= tol);
   if (any (real_neg_eigv))

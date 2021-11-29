@@ -67,20 +67,20 @@ class FloatComplexNDArray;
 // public functions that also need to be tagged as deprecated?
 
 enum convn_type
+{
+  convn_full,
+  convn_same,
+  convn_valid
+};
+
+namespace octave
+{
+  enum convn_type
   {
     convn_full,
     convn_same,
     convn_valid
   };
-
-namespace octave
-{
-  enum convn_type
-    {
-      convn_full,
-      convn_same,
-      convn_valid
-    };
 
   // double real X double real
 

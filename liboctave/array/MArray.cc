@@ -171,7 +171,7 @@ void MArray<T>::idx_add_nd (const octave::idx_vector& idx,
       ext = ddv(dim);
     }
 
-  octave_idx_type l,n,u,ns;
+  octave_idx_type l, n, u, ns;
   get_extent_triplet (ddv, dim, l, n, u);
   ns = sdv(dim);
 

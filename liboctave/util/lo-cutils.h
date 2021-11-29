@@ -33,7 +33,7 @@
 using std::size_t;
 extern "C" {
 #else
-#include <stddef.h>  
+#include <stddef.h>
 #endif
 
 OCTAVE_API void

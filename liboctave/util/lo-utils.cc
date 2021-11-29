@@ -502,15 +502,15 @@ namespace octave
     }
 
     bool int_multiply_overflow (unsigned long int a, unsigned long int b,
-                          unsigned long int *r)
+                                unsigned long int *r)
     {
       return octave_uli_multiply_overflow_wrapper (a, b, r);
     }
 
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
     bool int_multiply_overflow (unsigned long long int a,
-                          unsigned long long int b,
-                          unsigned long long int *r)
+                                unsigned long long int b,
+                                unsigned long long int *r)
     {
       return octave_ulli_multiply_overflow_wrapper (a, b, r);
     }

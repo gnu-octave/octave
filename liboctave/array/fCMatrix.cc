@@ -939,7 +939,7 @@ FloatComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
     typ = mattype.type (*this);
 
   if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
-    ret = FloatComplex (1,0) / (*this);
+    ret = FloatComplex (1, 0) / (*this);
   else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
@@ -1196,7 +1196,7 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
   if (typ == MatrixType::Lower || typ == MatrixType::Upper)
     {
       for (F77_INT i = 0; i < nc; i++)
-        retval *= elem (i,i);
+        retval *= elem (i, i);
     }
   else if (typ == MatrixType::Hermitian)
     {
@@ -1243,7 +1243,7 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
             }
 
           for (F77_INT i = 0; i < nc; i++)
-            retval *= atmp(i,i);
+            retval *= atmp(i, i);
 
           retval = retval.square ();
         }
@@ -1312,7 +1312,7 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
             {
               for (F77_INT i = 0; i < nc; i++)
                 {
-                  FloatComplex c = atmp(i,i);
+                  FloatComplex c = atmp(i, i);
                   retval *= (ipvt(i) != (i+1)) ? -c : c;
                 }
             }
@@ -3391,7 +3391,7 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
                                    F77_CHAR_ARG_LEN (1)));
           for (F77_INT j = 0; j < a_nr; j++)
             for (F77_INT i = 0; i < j; i++)
-              retval.xelem (j,i) = octave::math::conj (retval.xelem (i,j));
+              retval.xelem (j, i) = octave::math::conj (retval.xelem (i, j));
         }
       else
         {
@@ -3403,7 +3403,7 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
                                    F77_CHAR_ARG_LEN (1)));
           for (F77_INT j = 0; j < a_nr; j++)
             for (F77_INT i = 0; i < j; i++)
-              retval.xelem (j,i) = retval.xelem (i,j);
+              retval.xelem (j, i) = retval.xelem (i, j);
 
         }
 

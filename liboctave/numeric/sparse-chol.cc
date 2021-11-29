@@ -386,7 +386,7 @@ namespace octave
     sparse_chol<chol_type>::sparse_chol (const chol_type& a, bool natural,
                                          bool force)
       : m_rep (new typename
-             sparse_chol<chol_type>::sparse_chol_rep (a, natural, force))
+               sparse_chol<chol_type>::sparse_chol_rep (a, natural, force))
     { }
 
     template <typename chol_type>
@@ -394,7 +394,7 @@ namespace octave
                                          octave_idx_type& info,
                                          bool natural, bool force)
       : m_rep (new typename
-             sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, force))
+               sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, force))
     { }
 
     template <typename chol_type>
@@ -402,14 +402,14 @@ namespace octave
                                          octave_idx_type& info,
                                          bool natural)
       : m_rep (new typename
-             sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, false))
+               sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, false))
     { }
 
     template <typename chol_type>
     sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                          octave_idx_type& info)
       : m_rep (new typename
-             sparse_chol<chol_type>::sparse_chol_rep (a, info, false, false))
+               sparse_chol<chol_type>::sparse_chol_rep (a, info, false, false))
     { }
 
     template <typename chol_type>

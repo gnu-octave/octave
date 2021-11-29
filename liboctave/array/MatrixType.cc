@@ -105,7 +105,7 @@ matrix_real_probe (const MArray<T>& a)
       for (octave_idx_type j = 0;
            j < ncols && upper; j++)
         {
-          T d = a.elem (j,j);
+          T d = a.elem (j, j);
           upper = upper && (d != zero);
           lower = lower && (d != zero);
           hermitian = hermitian && (d > zero);
@@ -117,8 +117,8 @@ matrix_real_probe (const MArray<T>& a)
         {
           for (octave_idx_type i = 0; i < j; i++)
             {
-              T aij = a.elem (i,j);
-              T aji = a.elem (j,i);
+              T aij = a.elem (i, j);
+              T aji = a.elem (j, i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == aji
@@ -164,7 +164,7 @@ matrix_complex_probe (const MArray<std::complex<T>>& a)
       for (octave_idx_type j = 0;
            j < ncols && upper; j++)
         {
-          std::complex<T> d = a.elem (j,j);
+          std::complex<T> d = a.elem (j, j);
           upper = upper && (d != zero);
           lower = lower && (d != zero);
           hermitian = hermitian && (d.real () > zero && d.imag () == zero);
@@ -176,8 +176,8 @@ matrix_complex_probe (const MArray<std::complex<T>>& a)
         {
           for (octave_idx_type i = 0; i < j; i++)
             {
-              std::complex<T> aij = a.elem (i,j);
-              std::complex<T> aji = a.elem (j,i);
+              std::complex<T> aij = a.elem (i, j);
+              std::complex<T> aji = a.elem (j, i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == octave::math::conj (aji)
@@ -335,10 +335,10 @@ MatrixType::MatrixType (const MSparse<T>& a)
       if (! singular)
         {
           m_bandden = double (nnz) /
-                    (double (ncols) * (double (m_lower_band) +
-                                       double (m_upper_band)) -
-                     0.5 * double (m_upper_band + 1) * double (m_upper_band) -
-                     0.5 * double (m_lower_band + 1) * double (m_lower_band));
+                      (double (ncols) * (double (m_lower_band) +
+                                         double (m_upper_band)) -
+                       0.5 * double (m_upper_band + 1) * double (m_upper_band) -
+                       0.5 * double (m_lower_band + 1) * double (m_lower_band));
 
           if (nrows == ncols && m_sp_bandden != 1. && m_bandden > m_sp_bandden)
             {

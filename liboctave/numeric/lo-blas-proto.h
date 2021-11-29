@@ -35,62 +35,62 @@ extern "C"
   // DOT (liboctave/external/blas-xtra)
 
   F77_RET_T
-  F77_FUNC (xddot, XDDOT) (const F77_INT&, const F77_DBLE*,
-                           const F77_INT&, const F77_DBLE*,
+  F77_FUNC (xddot, XDDOT) (const F77_INT&, const F77_DBLE *,
+                           const F77_INT&, const F77_DBLE *,
                            const F77_INT&, F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xsdot, XSDOT) (const F77_INT&, const F77_REAL*,
-                           const F77_INT&, const F77_REAL*,
+  F77_FUNC (xsdot, XSDOT) (const F77_INT&, const F77_REAL *,
+                           const F77_INT&, const F77_REAL *,
                            const F77_INT&, F77_REAL&);
 
   // DOT3
 
   F77_RET_T
   F77_FUNC (ddot3, DDOT3) (const F77_INT&, const F77_INT&,
-                           const F77_INT&, const F77_DBLE*,
-                           const F77_DBLE*, F77_DBLE*);
+                           const F77_INT&, const F77_DBLE *,
+                           const F77_DBLE *, F77_DBLE *);
 
   F77_RET_T
   F77_FUNC (sdot3, SDOT3) (const F77_INT&, const F77_INT&,
-                           const F77_INT&, const F77_REAL*,
-                           const F77_REAL*, F77_REAL*);
+                           const F77_INT&, const F77_REAL *,
+                           const F77_REAL *, F77_REAL *);
 
   // DOTC (liboctave/external/blas-xtra)
 
   F77_RET_T
-  F77_FUNC (xcdotc, XCDOTC) (const F77_INT&, const F77_CMPLX*,
-                             const F77_INT&, const F77_CMPLX*,
-                             const F77_INT&, F77_CMPLX*);
+  F77_FUNC (xcdotc, XCDOTC) (const F77_INT&, const F77_CMPLX *,
+                             const F77_INT&, const F77_CMPLX *,
+                             const F77_INT&, F77_CMPLX *);
 
   F77_RET_T
-  F77_FUNC (xzdotc, XZDOTC) (const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX*);
+  F77_FUNC (xzdotc, XZDOTC) (const F77_INT&, const F77_DBLE_CMPLX *,
+                             const F77_INT&, const F77_DBLE_CMPLX *,
+                             const F77_INT&, F77_DBLE_CMPLX *);
 
   // DOTC3
 
   F77_RET_T
   F77_FUNC (cdotc3, CDOTC3) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_CMPLX*,
-                             const F77_CMPLX*, F77_CMPLX*);
+                             const F77_INT&, const F77_CMPLX *,
+                             const F77_CMPLX *, F77_CMPLX *);
 
   F77_RET_T
   F77_FUNC (zdotc3, ZDOTC3) (const F77_INT&, const F77_INT&,
-                             const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
+                             const F77_INT&, const F77_DBLE_CMPLX *,
+                             const F77_DBLE_CMPLX *, F77_DBLE_CMPLX *);
 
   // DOTU (liboctave/external/blas-xtra)
 
   F77_RET_T
-  F77_FUNC (xcdotu, XCDOTU) (const F77_INT&, const F77_CMPLX*,
-                             const F77_INT&, const F77_CMPLX*,
-                             const F77_INT&, F77_CMPLX*);
+  F77_FUNC (xcdotu, XCDOTU) (const F77_INT&, const F77_CMPLX *,
+                             const F77_INT&, const F77_CMPLX *,
+                             const F77_INT&, F77_CMPLX *);
 
   F77_RET_T
-  F77_FUNC (xzdotu, XZDOTU) (const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX*);
+  F77_FUNC (xzdotu, XZDOTU) (const F77_INT&, const F77_DBLE_CMPLX *,
+                             const F77_INT&, const F77_DBLE_CMPLX *,
+                             const F77_INT&, F77_DBLE_CMPLX *);
 
   // GEMM
 
@@ -99,9 +99,9 @@ extern "C"
                            F77_CONST_CHAR_ARG_DECL,
                            const F77_INT&, const F77_INT&,
                            const F77_INT&, const F77_CMPLX&,
-                           const F77_CMPLX*, const F77_INT&,
-                           const F77_CMPLX*, const F77_INT&,
-                           const F77_CMPLX&, F77_CMPLX*,
+                           const F77_CMPLX *, const F77_INT&,
+                           const F77_CMPLX *, const F77_INT&,
+                           const F77_CMPLX&, F77_CMPLX *,
                            const F77_INT&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
@@ -111,9 +111,9 @@ extern "C"
                            F77_CONST_CHAR_ARG_DECL,
                            const F77_INT&, const F77_INT&,
                            const F77_INT&, const F77_DBLE&,
-                           const F77_DBLE*, const F77_INT&,
-                           const F77_DBLE*, const F77_INT&,
-                           const F77_DBLE&, F77_DBLE*,
+                           const F77_DBLE *, const F77_INT&,
+                           const F77_DBLE *, const F77_INT&,
+                           const F77_DBLE&, F77_DBLE *,
                            const F77_INT&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
@@ -123,9 +123,9 @@ extern "C"
                            F77_CONST_CHAR_ARG_DECL,
                            const F77_INT&, const F77_INT&,
                            const F77_INT&, const F77_REAL&,
-                           const F77_REAL*, const F77_INT&,
-                           const F77_REAL*, const F77_INT&,
-                           const F77_REAL&, F77_REAL*,
+                           const F77_REAL *, const F77_INT&,
+                           const F77_REAL *, const F77_INT&,
+                           const F77_REAL&, F77_REAL *,
                            const F77_INT&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
@@ -135,9 +135,9 @@ extern "C"
                            F77_CONST_CHAR_ARG_DECL,
                            const F77_INT&, const F77_INT&,
                            const F77_INT&, const F77_DBLE_CMPLX&,
-                           const F77_DBLE_CMPLX*, const F77_INT&,
-                           const F77_DBLE_CMPLX*, const F77_INT&,
-                           const F77_DBLE_CMPLX&, F77_DBLE_CMPLX*,
+                           const F77_DBLE_CMPLX *, const F77_INT&,
+                           const F77_DBLE_CMPLX *, const F77_INT&,
+                           const F77_DBLE_CMPLX&, F77_DBLE_CMPLX *,
                            const F77_INT&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
@@ -147,37 +147,37 @@ extern "C"
   F77_RET_T
   F77_FUNC (cgemv, CGEMV) (F77_CONST_CHAR_ARG_DECL,
                            const F77_INT&, const F77_INT&,
-                           const F77_CMPLX&, const F77_CMPLX*,
-                           const F77_INT&, const F77_CMPLX*,
+                           const F77_CMPLX&, const F77_CMPLX *,
+                           const F77_INT&, const F77_CMPLX *,
                            const F77_INT&, const F77_CMPLX&,
-                           F77_CMPLX*, const F77_INT&
+                           F77_CMPLX *, const F77_INT&
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
                            const F77_INT&, const F77_INT&,
-                           const F77_DBLE&, const F77_DBLE*,
-                           const F77_INT&, const F77_DBLE*,
+                           const F77_DBLE&, const F77_DBLE *,
+                           const F77_INT&, const F77_DBLE *,
                            const F77_INT&, const F77_DBLE&,
-                           F77_DBLE*, const F77_INT&
+                           F77_DBLE *, const F77_INT&
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
                            const F77_INT&, const F77_INT&,
-                           const F77_REAL&, const F77_REAL*,
-                           const F77_INT&, const F77_REAL*,
+                           const F77_REAL&, const F77_REAL *,
+                           const F77_INT&, const F77_REAL *,
                            const F77_INT&, const F77_REAL&,
-                           F77_REAL*, const F77_INT&
+                           F77_REAL *, const F77_INT&
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
                            const F77_INT&, const F77_INT&,
-                           const F77_DBLE_CMPLX&, const F77_DBLE_CMPLX*,
-                           const F77_INT&, const F77_DBLE_CMPLX*,
+                           const F77_DBLE_CMPLX&, const F77_DBLE_CMPLX *,
+                           const F77_INT&, const F77_DBLE_CMPLX *,
                            const F77_INT&, const F77_DBLE_CMPLX&,
-                           F77_DBLE_CMPLX*, const F77_INT&
+                           F77_DBLE_CMPLX *, const F77_INT&
                            F77_CHAR_ARG_LEN_DECL);
 
   // MATM3
@@ -185,23 +185,23 @@ extern "C"
   F77_RET_T
   F77_FUNC (cmatm3, CMATM3) (const F77_INT&, const F77_INT&,
                              const F77_INT&, const F77_INT&,
-                             const F77_CMPLX*, const F77_CMPLX*,
-                             F77_CMPLX*);
+                             const F77_CMPLX *, const F77_CMPLX *,
+                             F77_CMPLX *);
   F77_RET_T
   F77_FUNC (dmatm3, DMATM3) (const F77_INT&, const F77_INT&,
                              const F77_INT&, const F77_INT&,
-                             const F77_DBLE*, const F77_DBLE*, F77_DBLE*);
+                             const F77_DBLE *, const F77_DBLE *, F77_DBLE *);
 
   F77_RET_T
   F77_FUNC (smatm3, SMATM3) (const F77_INT&, const F77_INT&,
                              const F77_INT&, const F77_INT&,
-                             const F77_REAL*, const F77_REAL*, F77_REAL*);
+                             const F77_REAL *, const F77_REAL *, F77_REAL *);
 
   F77_RET_T
   F77_FUNC (zmatm3, ZMATM3) (const F77_INT&, const F77_INT&,
                              const F77_INT&, const F77_INT&,
-                             const F77_DBLE_CMPLX*, const F77_DBLE_CMPLX*,
-                             F77_DBLE_CMPLX*);
+                             const F77_DBLE_CMPLX *, const F77_DBLE_CMPLX *,
+                             F77_DBLE_CMPLX *);
 
   // XERBLA
 

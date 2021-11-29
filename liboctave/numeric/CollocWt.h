@@ -80,57 +80,57 @@ namespace octave
     ~CollocWt (void) = default;
 
     CollocWt& resize (octave_idx_type nc)
-      {
-        m_n = nc;
-        m_initialized = false;
-        return *this;
-      }
+    {
+      m_n = nc;
+      m_initialized = false;
+      return *this;
+    }
 
     CollocWt& add_left (void)
-      {
-        m_inc_left = 1;
-        m_initialized = false;
-        return *this;
-      }
+    {
+      m_inc_left = 1;
+      m_initialized = false;
+      return *this;
+    }
 
     CollocWt& delete_left (void)
-      {
-        m_inc_left = 0;
-        m_initialized = false;
-        return *this;
-      }
+    {
+      m_inc_left = 0;
+      m_initialized = false;
+      return *this;
+    }
 
     CollocWt& set_left (double val);
 
     CollocWt& add_right (void)
-      {
-        m_inc_right = 1;
-        m_initialized = false;
-        return *this;
-      }
+    {
+      m_inc_right = 1;
+      m_initialized = false;
+      return *this;
+    }
 
     CollocWt& delete_right (void)
-      {
-        m_inc_right = 0;
-        m_initialized = false;
-        return *this;
-      }
+    {
+      m_inc_right = 0;
+      m_initialized = false;
+      return *this;
+    }
 
     CollocWt& set_right (double val);
 
     CollocWt& set_alpha (double val)
-      {
-        m_alpha = val;
-        m_initialized = false;
-        return *this;
-      }
+    {
+      m_alpha = val;
+      m_initialized = false;
+      return *this;
+    }
 
     CollocWt& set_beta (double val)
-      {
-        m_beta = val;
-        m_initialized = false;
-        return *this;
-      }
+    {
+      m_beta = val;
+      m_initialized = false;
+      return *this;
+    }
 
     octave_idx_type ncol (void) const { return m_n; }
 

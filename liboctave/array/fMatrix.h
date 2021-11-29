@@ -342,8 +342,8 @@ public:
   lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
            octave_idx_type& rank) const;
   OCTAVE_API FloatComplexMatrix
- lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
-          octave_idx_type& rank, float& rcon) const;
+  lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
+           octave_idx_type& rank, float& rcon) const;
 
   OCTAVE_API FloatColumnVector lssolve (const FloatColumnVector& b) const;
   OCTAVE_API FloatColumnVector

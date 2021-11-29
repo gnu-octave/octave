@@ -98,22 +98,22 @@ namespace octave
      const F77_INT&,            // M
      const F77_INT&,            // N
      const F77_INT&,            // P
-     F77_INT &,                 // K
-     F77_INT &,                 // L
-     T1*,                       // A(LDA,N)
+     F77_INT&,                  // K
+     F77_INT&,                  // L
+     T1 *,                      // A(LDA,N)
      const F77_INT&,            // LDA
-     T1*,                       // B(LDB,N)
+     T1 *,                      // B(LDB,N)
      const F77_INT&,            // LDB
-     T1*,                       // ALPHA(N)
-     T1*,                       // BETA(N)
-     T1*,                       // U(LDU,M)
+     T1 *,                      // ALPHA(N)
+     T1 *,                      // BETA(N)
+     T1 *,                      // U(LDU,M)
      const F77_INT&,            // LDU
-     T1*,                       // V(LDV,P)
+     T1 *,                      // V(LDV,P)
      const F77_INT&,            // LDV
-     T1*,                       // Q(LDQ,N)
+     T1 *,                      // Q(LDQ,N)
      const F77_INT&,            // LDQ
-     T1*,                       // WORK
-     F77_INT*,                  // IWORK(N)
+     T1 *,                      // WORK
+     F77_INT *,                 // IWORK(N)
      F77_INT&                   // INFO
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
@@ -130,23 +130,23 @@ namespace octave
      const F77_INT&,            // M
      const F77_INT&,            // N
      const F77_INT&,            // P
-     F77_INT &,                 // K
-     F77_INT &,                 // L
-     T1*,                       // A(LDA,N)
+     F77_INT&,                  // K
+     F77_INT&,                  // L
+     T1 *,                      // A(LDA,N)
      const F77_INT&,            // LDA
-     T1*,                       // B(LDB,N)
+     T1 *,                      // B(LDB,N)
      const F77_INT&,            // LDB
-     T1*,                       // ALPHA(N)
-     T1*,                       // BETA(N)
-     T1*,                       // U(LDU,M)
+     T1 *,                      // ALPHA(N)
+     T1 *,                      // BETA(N)
+     T1 *,                      // U(LDU,M)
      const F77_INT&,            // LDU
-     T1*,                       // V(LDV,P)
+     T1 *,                      // V(LDV,P)
      const F77_INT&,            // LDV
-     T1*,                       // Q(LDQ,N)
+     T1 *,                      // Q(LDQ,N)
      const F77_INT&,            // LDQ
-     T1*,                       // WORK
+     T1 *,                      // WORK
      const F77_INT&,            // LWORK
-     F77_INT*,                  // IWORK(N)
+     F77_INT *,                 // IWORK(N)
      F77_INT&                   // INFO
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
@@ -163,23 +163,23 @@ namespace octave
      const F77_INT&,            // M
      const F77_INT&,            // N
      const F77_INT&,            // P
-     F77_INT &,                 // K
-     F77_INT &,                 // L
-     T1*,                       // A(LDA,N)
+     F77_INT&,                  // K
+     F77_INT&,                  // L
+     T1 *,                      // A(LDA,N)
      const F77_INT&,            // LDA
-     T1*,                       // B(LDB,N)
+     T1 *,                      // B(LDB,N)
      const F77_INT&,            // LDB
-     T2*,                       // ALPHA(N)
-     T2*,                       // BETA(N)
-     T1*,                       // U(LDU,M)
+     T2 *,                      // ALPHA(N)
+     T2 *,                      // BETA(N)
+     T1 *,                      // U(LDU,M)
      const F77_INT&,            // LDU
-     T1*,                       // V(LDV,P)
+     T1 *,                      // V(LDV,P)
      const F77_INT&,            // LDV
-     T1*,                       // Q(LDQ,N)
+     T1 *,                      // Q(LDQ,N)
      const F77_INT&,            // LDQ
-     T1*,                       // WORK
-     T2*,                       // RWORK
-     F77_INT*,                  // IWORK(N)
+     T1 *,                      // WORK
+     T2 *,                      // RWORK
+     F77_INT *,                 // IWORK(N)
      F77_INT&                   // INFO
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
@@ -196,24 +196,24 @@ namespace octave
      const F77_INT&,            // M
      const F77_INT&,            // N
      const F77_INT&,            // P
-     F77_INT &,                 // K
-     F77_INT &,                 // L
-     T1*,                       // A(LDA,N)
+     F77_INT&,                  // K
+     F77_INT&,                  // L
+     T1 *,                      // A(LDA,N)
      const F77_INT&,            // LDA
-     T1*,                       // B(LDB,N)
+     T1 *,                      // B(LDB,N)
      const F77_INT&,            // LDB
-     T2*,                       // ALPHA(N)
-     T2*,                       // BETA(N)
-     T1*,                       // U(LDU,M)
+     T2 *,                      // ALPHA(N)
+     T2 *,                      // BETA(N)
+     T1 *,                      // U(LDU,M)
      const F77_INT&,            // LDU
-     T1*,                       // V(LDV,P)
+     T1 *,                      // V(LDV,P)
      const F77_INT&,            // LDV
-     T1*,                       // Q(LDQ,N)
+     T1 *,                      // Q(LDQ,N)
      const F77_INT&,            // LDQ
-     T1*,                       // WORK
+     T1 *,                      // WORK
      const F77_INT&,            // LWORK
-     T2*,                       // RWORK
-     F77_INT*,                  // IWORK(N)
+     T2 *,                      // RWORK
+     F77_INT *,                 // IWORK(N)
      F77_INT&                   // INFO
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
@@ -601,7 +601,7 @@ namespace octave
               // and R33 is stored in B(M-K+1:L,N+M-K-L+1:N)
               for (i = m; i < k + l; i++)
                 for (j = n - l - k + m; j < n; j++)
-                   R.xelem (i, j) = btmp.xelem (i - k, j);
+                  R.xelem (i, j) = btmp.xelem (i - k, j);
             }
 
           // Output X = Q*R'
@@ -670,12 +670,12 @@ namespace octave
           m_sigmaB.resize (p, n);
 
           for (i = 0; i < k; i++)
-            m_sigmaA.xelem (i,i) = 1.0;
+            m_sigmaA.xelem (i, i) = 1.0;
 
           for (i = 0; i < rank; i++)
             {
-              m_sigmaA.xelem (k+i,k+i) = alpha.xelem (k+i);
-              m_sigmaB.xelem (i,k+i) = beta.xelem (k+i);
+              m_sigmaA.xelem (k+i, k+i) = alpha.xelem (k+i);
+              m_sigmaB.xelem (i, k+i) = beta.xelem (k+i);
             }
 
           if (! fill_ptn)

@@ -262,7 +262,8 @@ namespace octave
 
           T *array = retval.fortran_vec ();
 
-          idx.loop (n, [=, &array] (octave_idx_type i) {
+          idx.loop (n, [=, &array] (octave_idx_type i)
+          {
             if (i == 0)
               // Required for proper NaN handling.
               *array++ = m_numel == 0 ? m_final : m_base;

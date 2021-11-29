@@ -81,8 +81,8 @@ namespace octave
       for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
-          m_balancing_mat.elem (i,i) = 1.0;
-          m_balancing_mat2.elem (i,i) = 1.0;
+          m_balancing_mat.elem (i, i) = 1.0;
+          m_balancing_mat2.elem (i, i) = 1.0;
         }
 
       double *p_balancing_mat = m_balancing_mat.fortran_vec ();
@@ -147,8 +147,8 @@ namespace octave
       for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
-          m_balancing_mat.elem (i,i) = 1.0;
-          m_balancing_mat2.elem (i,i) = 1.0;
+          m_balancing_mat.elem (i, i) = 1.0;
+          m_balancing_mat2.elem (i, i) = 1.0;
         }
 
       float *p_balancing_mat = m_balancing_mat.fortran_vec ();
@@ -215,8 +215,8 @@ namespace octave
       for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
-          m_balancing_mat.elem (i,i) = 1.0;
-          m_balancing_mat2.elem (i,i) = 1.0;
+          m_balancing_mat.elem (i, i) = 1.0;
+          m_balancing_mat2.elem (i, i) = 1.0;
         }
 
       double *p_balancing_mat = m_balancing_mat.fortran_vec ();
@@ -286,8 +286,8 @@ namespace octave
       for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
-          m_balancing_mat.elem (i,i) = 1.0;
-          m_balancing_mat2.elem (i,i) = 1.0;
+          m_balancing_mat.elem (i, i) = 1.0;
+          m_balancing_mat2.elem (i, i) = 1.0;
         }
 
       float *p_balancing_mat = m_balancing_mat.fortran_vec ();

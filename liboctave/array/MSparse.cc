@@ -260,7 +260,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
 
   if (a_nr == 1 && a_nc == 1)
     {
-      if (a.elem (0,0) == 0.)
+      if (a.elem (0, 0) == 0.)
         if (negate)
           r = -MSparse<T> (b);
         else
@@ -284,7 +284,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
     }
   else if (b_nr == 1 && b_nc == 1)
     {
-      if (b.elem (0,0) == 0.)
+      if (b.elem (0, 0) == 0.)
         r = MSparse<T> (a);
       else
         {
@@ -392,7 +392,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
 
   if (a_nr == 1 && a_nc == 1)
     {
-      if (a.elem (0,0) == 0.)
+      if (a.elem (0, 0) == 0.)
         r = MSparse<T> (b_nr, b_nc);
       else
         {
@@ -409,7 +409,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
     }
   else if (b_nr == 1 && b_nc == 1)
     {
-      if (b.elem (0,0) == 0.)
+      if (b.elem (0, 0) == 0.)
         r = MSparse<T> (a_nr, a_nc);
       else
         {
@@ -490,7 +490,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
 
   if (a_nr == 1 && a_nc == 1)
     {
-      T val = a.elem (0,0);
+      T val = a.elem (0, 0);
       T fill = val / T ();
       if (fill == T ())
         {
@@ -518,7 +518,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
     }
   else if (b_nr == 1 && b_nc == 1)
     {
-      T val = b.elem (0,0);
+      T val = b.elem (0, 0);
       T fill = T () / val;
       if (fill == T ())
         {
@@ -565,18 +565,18 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  r.elem (a.ridx (ja),i) = a.data (ja) / Zero;
+                  r.elem (a.ridx (ja), i) = a.data (ja) / Zero;
                   ja++; ja_lt_max= ja < ja_max;
                 }
               else if ((! ja_lt_max)
                        || (b.ridx (jb) < a.ridx (ja)))
                 {
-                  r.elem (b.ridx (jb),i) = Zero / b.data (jb);
+                  r.elem (b.ridx (jb), i) = Zero / b.data (jb);
                   jb++; jb_lt_max= jb < jb_max;
                 }
               else
                 {
-                  r.elem (a.ridx (ja),i) = a.data (ja) / b.data (jb);
+                  r.elem (a.ridx (ja), i) = a.data (ja) / b.data (jb);
                   ja++; ja_lt_max= ja < ja_max;
                   jb++; jb_lt_max= jb < jb_max;
                 }

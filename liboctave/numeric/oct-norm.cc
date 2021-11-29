@@ -519,7 +519,7 @@ namespace octave
     if (p == 2)
       {
         math::svd<MatrixT> fact (m, math::svd<MatrixT>::Type::sigma_only);
-        res = fact.singular_values () (0,0);
+        res = fact.singular_values () (0, 0);
       }
     else if (p == 1)
       res = octave::xcolnorms (m, static_cast<R> (1)).max ();

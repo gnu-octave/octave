@@ -35,26 +35,26 @@
 #include "lo-error.h"
 #include "quit.h"
 
-typedef F77_INT (*dasrt_fcn_ptr) (const double&, const double*, const double*,
-                                  double*, F77_INT&, double*, F77_INT*);
+typedef F77_INT (*dasrt_fcn_ptr) (const double&, const double *, const double *,
+                                  double *, F77_INT&, double *, F77_INT *);
 
-typedef F77_INT (*dasrt_jac_ptr) (const double&, const double*, const double*,
-                                  double*, const double&, double*, F77_INT*);
+typedef F77_INT (*dasrt_jac_ptr) (const double&, const double *, const double *,
+                                  double *, const double&, double *, F77_INT *);
 
 typedef F77_INT (*dasrt_constr_ptr) (const F77_INT&, const double&,
-                                     const double*, const F77_INT&,
-                                     double*, double*, F77_INT*);
+                                     const double *, const F77_INT&,
+                                     double *, double *, F77_INT *);
 
 extern "C"
 {
   F77_RET_T
   F77_FUNC (ddasrt, DDASRT) (dasrt_fcn_ptr, const F77_INT&, F77_DBLE&,
-                             F77_DBLE*, F77_DBLE*, const F77_DBLE&, F77_INT*,
-                             const F77_DBLE*, const F77_DBLE*, F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_INT*,
-                             const F77_INT&, F77_DBLE*, F77_INT*,
+                             F77_DBLE *, F77_DBLE *, const F77_DBLE&, F77_INT *,
+                             const F77_DBLE *, const F77_DBLE *, F77_INT&,
+                             F77_DBLE *, const F77_INT&, F77_INT *,
+                             const F77_INT&, F77_DBLE *, F77_INT *,
                              dasrt_jac_ptr, dasrt_constr_ptr, const F77_INT&,
-                             F77_INT*);
+                             F77_INT *);
 }
 
 static DAEFunc::DAERHSFunc user_fsub;
@@ -391,8 +391,8 @@ DASRT::integrate (const ColumnVector& tout)
 
       for (F77_INT i = 0; i < n; i++)
         {
-          x_out(0,i) = m_x(i);
-          xdot_out(0,i) = m_xdot(i);
+          x_out(0, i) = m_x(i);
+          xdot_out(0, i) = m_xdot(i);
         }
 
       for (octave_idx_type j = 1; j < n_out; j++)
@@ -412,8 +412,8 @@ DASRT::integrate (const ColumnVector& tout)
 
           for (F77_INT i = 0; i < n; i++)
             {
-              x_out(j,i) = m_x(i);
-              xdot_out(j,i) = m_xdot(i);
+              x_out(j, i) = m_x(i);
+              xdot_out(j, i) = m_xdot(i);
             }
 
           if (m_istate == 4)
@@ -517,8 +517,8 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
                 {
                   for (F77_INT i = 0; i < n; i++)
                     {
-                      x_out(i_out-1,i) = m_x(i);
-                      xdot_out(i_out-1,i) = m_xdot(i);
+                      x_out(i_out-1, i) = m_x(i);
+                      xdot_out(i_out-1, i) = m_xdot(i);
                     }
 
                   t_outs(i_out-1) = t_out;

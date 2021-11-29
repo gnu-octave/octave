@@ -45,11 +45,11 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dqagp, DQAGP) (quad_fcn_ptr, const F77_DBLE&, const F77_DBLE&,
-                           const F77_INT&, const F77_DBLE*,
+                           const F77_INT&, const F77_DBLE *,
                            const F77_DBLE&, const F77_DBLE&, F77_DBLE&,
                            F77_DBLE&, F77_INT&, F77_INT&,
                            const F77_INT&, const F77_INT&,
-                           F77_INT&, F77_INT*, F77_DBLE*);
+                           F77_INT&, F77_INT *, F77_DBLE *);
 
   F77_RET_T
   F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const F77_DBLE&,
@@ -57,15 +57,15 @@ extern "C"
                            const F77_DBLE&, F77_DBLE&, F77_DBLE&,
                            F77_INT&, F77_INT&,
                            const F77_INT&, const F77_INT&,
-                           F77_INT&, F77_INT*, F77_DBLE*);
+                           F77_INT&, F77_INT *, F77_DBLE *);
 
   F77_RET_T
   F77_FUNC (qagp, QAGP) (quad_float_fcn_ptr, const F77_REAL&, const F77_REAL&,
-                         const F77_INT&, const F77_REAL*, const F77_REAL&,
+                         const F77_INT&, const F77_REAL *, const F77_REAL&,
                          const F77_REAL&, F77_REAL&, F77_REAL&, F77_INT&,
                          F77_INT&, const F77_INT&,
                          const F77_INT&, F77_INT&,
-                         F77_INT*, F77_REAL*);
+                         F77_INT *, F77_REAL *);
 
   F77_RET_T
   F77_FUNC (qagi, QAGI) (quad_float_fcn_ptr, const F77_REAL&,
@@ -73,7 +73,7 @@ extern "C"
                          const F77_REAL&, F77_REAL&, F77_REAL&, F77_INT&,
                          F77_INT&, const F77_INT&,
                          const F77_INT&, F77_INT&,
-                         F77_INT*, F77_REAL*);
+                         F77_INT *, F77_REAL *);
 }
 
 static F77_INT

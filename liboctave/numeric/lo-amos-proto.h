@@ -35,8 +35,8 @@ extern "C"
   // AIRY
 
   F77_RET_T
-  F77_FUNC (cairy, CAIRY) (const F77_CMPLX*, const F77_INT&,
-                           const F77_INT&, F77_CMPLX*,
+  F77_FUNC (cairy, CAIRY) (const F77_CMPLX *, const F77_INT&,
+                           const F77_INT&, F77_CMPLX *,
                            F77_INT&, F77_INT&);
 
   F77_RET_T
@@ -48,75 +48,75 @@ extern "C"
   // BESH
 
   F77_RET_T
-  F77_FUNC (cbesh, CBESH) (const F77_CMPLX*, const F77_REAL&,
+  F77_FUNC (cbesh, CBESH) (const F77_CMPLX *, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
-                           const F77_INT&, F77_CMPLX*,
+                           const F77_INT&, F77_CMPLX *,
                            F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zbesh, ZBESH) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
                            const F77_INT&, const F77_INT&,
-                           const F77_INT&, F77_DBLE*, F77_DBLE*,
+                           const F77_INT&, F77_DBLE *, F77_DBLE *,
                            F77_INT&, F77_INT&);
 
   // BESI
 
   F77_RET_T
-  F77_FUNC (cbesi, CBESI) (const F77_CMPLX*, const F77_REAL&,
+  F77_FUNC (cbesi, CBESI) (const F77_CMPLX *, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
-                           F77_CMPLX*, F77_INT&, F77_INT&);
+                           F77_CMPLX *, F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zbesi, ZBESI) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
                            const F77_INT&, const F77_INT&,
-                           F77_DBLE*, F77_DBLE*, F77_INT&,
+                           F77_DBLE *, F77_DBLE *, F77_INT&,
                            F77_INT&);
 
   // BESJ
 
   F77_RET_T
-  F77_FUNC (cbesj, cBESJ) (const F77_CMPLX*, const F77_REAL&,
+  F77_FUNC (cbesj, cBESJ) (const F77_CMPLX *, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
-                           F77_CMPLX*, F77_INT&, F77_INT&);
+                           F77_CMPLX *, F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zbesj, ZBESJ) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
                            const F77_INT&, const F77_INT&,
-                           F77_DBLE*, F77_DBLE*, F77_INT&,
+                           F77_DBLE *, F77_DBLE *, F77_INT&,
                            F77_INT&);
 
   // BESK
 
   F77_RET_T
-  F77_FUNC (cbesk, CBESK) (const F77_CMPLX*, const F77_REAL&,
+  F77_FUNC (cbesk, CBESK) (const F77_CMPLX *, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
-                           F77_CMPLX*, F77_INT&, F77_INT&);
+                           F77_CMPLX *, F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zbesk, ZBESK) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
                            const F77_INT&, const F77_INT&,
-                           F77_DBLE*, F77_DBLE*, F77_INT&,
+                           F77_DBLE *, F77_DBLE *, F77_INT&,
                            F77_INT&);
 
   // BESY
 
   F77_RET_T
-  F77_FUNC (cbesy, CBESY) (const F77_CMPLX*, const F77_REAL&,
+  F77_FUNC (cbesy, CBESY) (const F77_CMPLX *, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
-                           F77_CMPLX*, F77_INT&,
-                           F77_CMPLX*, F77_INT&);
+                           F77_CMPLX *, F77_INT&,
+                           F77_CMPLX *, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zbesy, ZBESY) (const F77_DBLE&, const F77_DBLE&, const F77_DBLE&,
                            const F77_INT&, const F77_INT&,
-                           F77_DBLE*, F77_DBLE*, F77_INT&, F77_DBLE*,
-                           F77_DBLE*, F77_INT&);
+                           F77_DBLE *, F77_DBLE *, F77_INT&, F77_DBLE *,
+                           F77_DBLE *, F77_INT&);
 
   // BIRY
 
   F77_RET_T
-  F77_FUNC (cbiry, CBIRY) (const F77_CMPLX*, const F77_INT&, const F77_INT&,
-                           const F77_CMPLX*, F77_INT&);
+  F77_FUNC (cbiry, CBIRY) (const F77_CMPLX *, const F77_INT&, const F77_INT&,
+                           const F77_CMPLX *, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zbiry, ZBIRY) (const F77_DBLE&, const F77_DBLE&,

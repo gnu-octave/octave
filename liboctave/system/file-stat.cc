@@ -199,7 +199,7 @@ namespace octave
 
           // Remove trailing slashes
           while (full_file_name.length () > 1
-              && sys::file_ops::is_dir_sep (full_file_name.back ()))
+                 && sys::file_ops::is_dir_sep (full_file_name.back ()))
             full_file_name.pop_back ();
 
           // If path is a root (like "C:" or "\\SERVER\share"), add a

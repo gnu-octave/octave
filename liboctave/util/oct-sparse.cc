@@ -63,7 +63,7 @@ namespace octave
     return reinterpret_cast<const suitesparse_integer *> (i);
   }
 
-  octave_idx_type*
+  octave_idx_type *
   to_octave_idx_type_ptr (suitesparse_integer *i)
   {
     check_suitesparse_integer_size ();
@@ -71,7 +71,7 @@ namespace octave
     return reinterpret_cast<octave_idx_type *> (i);
   }
 
-  const octave_idx_type*
+  const octave_idx_type *
   to_octave_idx_type_ptr (const suitesparse_integer *i)
   {
     check_suitesparse_integer_size ();

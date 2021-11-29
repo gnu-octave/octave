@@ -1187,12 +1187,12 @@ SparseMatrix::dsolve (MatrixType& mattype, const Matrix& b,
       if (typ == MatrixType::Diagonal)
         for (octave_idx_type j = 0; j < b.cols (); j++)
           for (octave_idx_type i = 0; i < nm; i++)
-            retval(i,j) = b(i,j) / data (i);
+            retval(i, j) = b(i, j) / data (i);
       else
         for (octave_idx_type j = 0; j < b.cols (); j++)
           for (octave_idx_type k = 0; k < nc; k++)
             for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
-              retval(k,j) = b(ridx (i),j) / data (i);
+              retval(k, j) = b(ridx (i), j) / data (i);
 
       if (calc_cond)
         {
@@ -1335,12 +1335,12 @@ SparseMatrix::dsolve (MatrixType& mattype, const ComplexMatrix& b,
       if (typ == MatrixType::Diagonal)
         for (octave_idx_type j = 0; j < b.cols (); j++)
           for (octave_idx_type i = 0; i < nm; i++)
-            retval(i,j) = b(i,j) / data (i);
+            retval(i, j) = b(i, j) / data (i);
       else
         for (octave_idx_type j = 0; j < b.cols (); j++)
           for (octave_idx_type k = 0; k < nc; k++)
             for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
-              retval(k,j) = b(ridx (i),j) / data (i);
+              retval(k, j) = b(ridx (i), j) / data (i);
 
       if (calc_cond)
         {
@@ -1507,7 +1507,7 @@ SparseMatrix::utsolve (MatrixType& mattype, const Matrix& b,
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nr; i++)
-                work[i] = b(i,j);
+                work[i] = b(i, j);
               for (octave_idx_type i = nr; i < nc; i++)
                 work[i] = 0.;
 
@@ -1585,7 +1585,7 @@ SparseMatrix::utsolve (MatrixType& mattype, const Matrix& b,
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nr; i++)
-                work[i] = b(i,j);
+                work[i] = b(i, j);
               for (octave_idx_type i = nr; i < nc; i++)
                 work[i] = 0.;
 
@@ -2017,7 +2017,7 @@ SparseMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nr; i++)
-                cwork[i] = b(i,j);
+                cwork[i] = b(i, j);
               for (octave_idx_type i = nr; i < nc; i++)
                 cwork[i] = 0.;
 
@@ -2096,7 +2096,7 @@ SparseMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nr; i++)
-                cwork[i] = b(i,j);
+                cwork[i] = b(i, j);
               for (octave_idx_type i = nr; i < nc; i++)
                 cwork[i] = 0.;
 
@@ -2536,7 +2536,7 @@ SparseMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
                 for (octave_idx_type i = 0; i < nm; i++)
                   work[i] = 0.;
               for (octave_idx_type i = 0; i < nr; i++)
-                work[perm[i]] = b(i,j);
+                work[perm[i]] = b(i, j);
 
               for (octave_idx_type k = 0; k < nc; k++)
                 {
@@ -2634,7 +2634,7 @@ SparseMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nr; i++)
-                work[i] = b(i,j);
+                work[i] = b(i, j);
               for (octave_idx_type i = nr; i < nc; i++)
                 work[i] = 0.;
               for (octave_idx_type k = 0; k < nc; k++)
@@ -3088,7 +3088,7 @@ SparseMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
               for (octave_idx_type i = 0; i < nm; i++)
                 cwork[i] = 0.;
               for (octave_idx_type i = 0; i < nr; i++)
-                cwork[perm[i]] = b(i,j);
+                cwork[perm[i]] = b(i, j);
 
               for (octave_idx_type k = 0; k < nc; k++)
                 {
@@ -3187,7 +3187,7 @@ SparseMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nr; i++)
-                cwork[i] = b(i,j);
+                cwork[i] = b(i, j);
               for (octave_idx_type i = nr; i < nc; i++)
                 cwork[i] = 0.;
 
@@ -4191,7 +4191,7 @@ SparseMatrix::trisolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
                   for (F77_INT i = 0; i < b_nr; i++)
                     {
-                      Complex c = b(i,j);
+                      Complex c = b(i, j);
                       Bx[i] = c.real ();
                       Bz[i] = c.imag ();
                     }
@@ -5002,7 +5002,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
                     {
                       for (F77_INT i = 0; i < b_nr; i++)
                         {
-                          Complex c = b(i,j);
+                          Complex c = b(i, j);
                           Bx[i] = c.real ();
                           Bz[i] = c.imag ();
                         }
@@ -5157,7 +5157,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
                   char job = 'N';
                   F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
-                  retval.resize (nr,b_nc);
+                  retval.resize (nr, b_nc);
 
                   OCTAVE_LOCAL_BUFFER (double, Bz, nr);
                   OCTAVE_LOCAL_BUFFER (double, Bx, nr);
@@ -5332,7 +5332,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
                       for (F77_INT i = 0; i < b_nr; i++)
                         {
-                          Complex c = b(i,j);
+                          Complex c = b(i, j);
                           Bx[i] = c.real ();
                           Bz[i] = c.imag ();
                         }
@@ -5837,7 +5837,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
                 {
                   octave_idx_type jr = j * b.rows ();
                   for (octave_idx_type i = 0; i < b.rows (); i++)
-                    retval.xelem (i,j) = static_cast<double *>(X->x)[jr + i];
+                    retval.xelem (i, j) = static_cast<double *>(X->x)[jr + i];
                 }
 
               CHOLMOD_NAME(free_dense) (&X, cm);
@@ -6308,7 +6308,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                 {
                   octave_idx_type jr = j * b.rows ();
                   for (octave_idx_type i = 0; i < b.rows (); i++)
-                    retval.xelem (i,j) = static_cast<Complex *>(X->x)[jr + i];
+                    retval.xelem (i, j) = static_cast<Complex *>(X->x)[jr + i];
                 }
 
               CHOLMOD_NAME(free_dense) (&X, cm);
@@ -6360,7 +6360,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                 {
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     {
-                      Complex c = b(i,j);
+                      Complex c = b(i, j);
                       Bx[i] = c.real ();
                       Bz[i] = c.imag ();
                     }
@@ -6613,7 +6613,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                 {
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     {
-                      Complex c = b(i,j);
+                      Complex c = b(i, j);
                       Bx[i] = c.real ();
                       Bz[i] = c.imag ();
                     }

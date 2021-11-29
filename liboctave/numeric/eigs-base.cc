@@ -249,7 +249,7 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       for (octave_idx_type i = 0; i < n; i++)
-        retval.elem (i,j) = m.elem (static_cast<octave_idx_type> (qv[i]), j);
+        retval.elem (i, j) = m.elem (static_cast<octave_idx_type> (qv[i]), j);
     }
   return L.solve (ltyp, retval, err, rcond, nullptr);
 }
@@ -275,7 +275,7 @@ utsolve (const SM& U, const ColumnVector& Q, const M& m)
         {
           for (octave_idx_type i = 0; i < n; i++)
             retval.elem (static_cast<octave_idx_type> (qv[i]), j)
-              = tmp.elem (i,j);
+              = tmp.elem (i, j);
         }
     }
 
@@ -422,7 +422,7 @@ static bool
 LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
                 bool cholB, const ColumnVector& permB, double sigma,
                 SparseMatrix& L, SparseMatrix& U, octave_idx_type *P,
-                octave_idx_type *Q, ColumnVector &r)
+                octave_idx_type *Q, ColumnVector& r)
 {
   bool have_b = ! b.isempty ();
   octave_idx_type n = m.rows ();
@@ -439,7 +439,7 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
             {
               if (permB.numel ())
                 {
-                  SparseMatrix tmp (n,n,n);
+                  SparseMatrix tmp (n, n, n);
                   for (octave_idx_type i = 0; i < n; i++)
                     {
                       tmp.xcidx (i) = i;
@@ -521,7 +521,7 @@ static bool
 LuAminusSigmaB (const Matrix& m, const Matrix& b,
                 bool cholB, const ColumnVector& permB, double sigma,
                 Matrix& L, Matrix& U, octave_idx_type *P, octave_idx_type *Q,
-                ColumnVector &r)
+                ColumnVector& r)
 {
   bool have_b = ! b.isempty ();
   octave_idx_type n = m.cols ();
@@ -582,7 +582,7 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
   double maxU = octave::numeric_limits<double>::NaN ();
   for (octave_idx_type j = 0; j < n; j++)
     {
-      double d = std::abs (U.xelem (j,j));
+      double d = std::abs (U.xelem (j, j));
       if (octave::math::isnan (minU) || d < minU)
         minU = d;
 
@@ -603,7 +603,7 @@ static bool
 LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
                 bool cholB, const ColumnVector& permB, Complex sigma,
                 SparseComplexMatrix& L, SparseComplexMatrix& U,
-                octave_idx_type *P, octave_idx_type *Q, ColumnVector &r)
+                octave_idx_type *P, octave_idx_type *Q, ColumnVector& r)
 {
   bool have_b = ! b.isempty ();
   octave_idx_type n = m.rows ();
@@ -620,7 +620,7 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
             {
               if (permB.numel ())
                 {
-                  SparseMatrix tmp (n,n,n);
+                  SparseMatrix tmp (n, n, n);
                   for (octave_idx_type i = 0; i < n; i++)
                     {
                       tmp.xcidx (i) = i;
@@ -703,7 +703,7 @@ static bool
 LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
                 bool cholB, const ColumnVector& permB, Complex sigma,
                 ComplexMatrix& L, ComplexMatrix& U, octave_idx_type *P,
-                octave_idx_type *Q, ColumnVector &r)
+                octave_idx_type *Q, ColumnVector& r)
 {
   bool have_b = ! b.isempty ();
   octave_idx_type n = m.cols ();
@@ -764,7 +764,7 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
   double maxU = octave::numeric_limits<double>::NaN ();
   for (octave_idx_type j = 0; j < n; j++)
     {
-      double d = std::abs (U.xelem (j,j));
+      double d = std::abs (U.xelem (j, j));
       if (octave::math::isnan (minU) || d < minU)
         minU = d;
 
@@ -924,11 +924,11 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dsaupd, DSAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-         k, tol, presid, p, v, n, iparam,
-         ipntr, workd, workl, lwork, tmp_info
-         F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+       k, tol, presid, p, v, n, iparam,
+       ipntr, workd, workl, lwork, tmp_info
+       F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
       info = tmp_info;
 
@@ -965,14 +965,14 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         {
           if (have_b)
             {
-              Matrix mtmp (n,1);
+              Matrix mtmp (n, 1);
               for (F77_INT i = 0; i < n; i++)
-                mtmp(i,0) = workd[i + iptr(0) - 1];
+                mtmp(i, 0) = workd[i + iptr(0) - 1];
 
               mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
 
               for (F77_INT i = 0; i < n; i++)
-                workd[i+iptr(1)-1] = mtmp(i,0);
+                workd[i+iptr(1)-1] = mtmp(i, 0);
             }
           else if (! vector_product (m, workd + iptr(0) - 1,
                                      workd + iptr(1) - 1))
@@ -1009,11 +1009,11 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   double *d = eig_val.fortran_vec ();
 
   F77_FUNC (dseupd, DSEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
-     F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
-     ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
-     F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
+   F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
+   ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
+   F77_CHAR_ARG_LEN(2));
 
   if (info2 == 0)
     {
@@ -1200,11 +1200,11 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dsaupd, DSAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-         k, tol, presid, p, v, n, iparam,
-         ipntr, workd, workl, lwork, tmp_info
-         F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+       k, tol, presid, p, v, n, iparam,
+       ipntr, workd, workl, lwork, tmp_info
+       F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
       info = tmp_info;
 
       if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
@@ -1249,13 +1249,13 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = dtmp[P[i]] / r(P[i]);
+                    tmp(i, 0) = dtmp[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
                   double *ip2 = workd+iptr(1)-1;
                   for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
+                    ip2[Q[i]] = tmp(i, 0);
                 }
               else if (ido == 2)
                 vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
@@ -1265,13 +1265,13 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]] / r(P[i]);
+                    tmp(i, 0) = ip2[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
                   ip2 = workd+iptr(1)-1;
                   for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
+                    ip2[Q[i]] = tmp(i, 0);
                 }
             }
           else
@@ -1281,13 +1281,13 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
               Matrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
-                tmp(i,0) = ip2[P[i]] / r(P[i]);
+                tmp(i, 0) = ip2[P[i]] / r(P[i]);
 
               lusolve (L, U, tmp);
 
               ip2 = workd+iptr(1)-1;
               for (F77_INT i = 0; i < n; i++)
-                ip2[Q[i]] = tmp(i,0);
+                ip2[Q[i]] = tmp(i, 0);
             }
         }
       else
@@ -1321,11 +1321,11 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   double *d = eig_val.fortran_vec ();
 
   F77_FUNC (dseupd, DSEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
-     F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-     k, tol, presid, p, v, n, iparam, ipntr, workd, workl, lwork, info2
-     F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
+   F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+   k, tol, presid, p, v, n, iparam, ipntr, workd, workl, lwork, info2
+   F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
   if (info2 == 0)
     {
@@ -1544,11 +1544,11 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dsaupd, DSAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-         k, tol, presid, p, v, n, iparam,
-         ipntr, workd, workl, lwork, tmp_info
-         F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+       k, tol, presid, p, v, n, iparam,
+       ipntr, workd, workl, lwork, tmp_info
+       F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
       info = tmp_info;
 
@@ -1587,9 +1587,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             {
               if (mode == 1) // regular mode with factorized B
                 {
-                  Matrix mtmp (n,1);
+                  Matrix mtmp (n, 1);
                   for (F77_INT i = 0; i < n; i++)
-                    mtmp(i,0) = workd[i + iptr(0) - 1];
+                    mtmp(i, 0) = workd[i + iptr(0) - 1];
 
                   mtmp = utsolve (bt, permB, mtmp);
                   ColumnVector y = fun (mtmp, err);
@@ -1600,7 +1600,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                   mtmp = ltsolve (b, permB, y);
 
                   for (F77_INT i = 0; i < n; i++)
-                    workd[i+iptr(1)-1] = mtmp(i,0);
+                    workd[i+iptr(1)-1] = mtmp(i, 0);
                 }
               else // shift-invert mode
                 {
@@ -1694,11 +1694,11 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
   double *d = eig_val.fortran_vec ();
 
   F77_FUNC (dseupd, DSEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
-     F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-     k, tol, presid, p, v, n, iparam, ipntr, workd, workl, lwork, info2
-     F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
+   F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+   k, tol, presid, p, v, n, iparam, ipntr, workd, workl, lwork, info2
+   F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
   if (info2 == 0)
     {
@@ -1903,11 +1903,11 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       // On exit, ip(4) <= k + 1 is the number of converged eigenvalues.
       // See dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-         k, tol, presid, p, v, n, iparam,
-         ipntr, workd, workl, lwork, tmp_info
-         F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+       k, tol, presid, p, v, n, iparam,
+       ipntr, workd, workl, lwork, tmp_info
+       F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
       // k is not changed
 
       info = tmp_info;
@@ -1946,14 +1946,14 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         {
           if (have_b)
             {
-              Matrix mtmp (n,1);
+              Matrix mtmp (n, 1);
               for (F77_INT i = 0; i < n; i++)
-                mtmp(i,0) = workd[i + iptr(0) - 1];
+                mtmp(i, 0) = workd[i + iptr(0) - 1];
 
               mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
 
               for (F77_INT i = 0; i < n; i++)
-                workd[i+iptr(1)-1] = mtmp(i,0);
+                workd[i+iptr(1)-1] = mtmp(i, 0);
             }
           else if (! vector_product (m, workd + iptr(0) - 1,
                                      workd + iptr(1) - 1))
@@ -2001,11 +2001,11 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
   F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
-     sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
-     ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
-     F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
+   sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
+   ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
+   F77_CHAR_ARG_LEN(2));
   // on exit, if (and only if) rvec == true, k may have been increased by one
   // and be equal to ip(4), see dngets.
 
@@ -2062,16 +2062,16 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
-                    eig_vec(j,i) = Complex (z[j+off1], 0.);
+                    eig_vec(j, i) = Complex (z[j+off1], 0.);
                   i++;
                 }
               else
                 {
                   for (F77_INT j = 0; j < n; j++)
                     {
-                      eig_vec(j,i) = Complex (z[j+off1],z[j+off2]);
+                      eig_vec(j, i) = Complex (z[j+off1], z[j+off2]);
                       if (i < ip(4) - 1)
-                        eig_vec(j,i+1) = Complex (z[j+off1],-z[j+off2]);
+                        eig_vec(j, i+1) = Complex (z[j+off1], -z[j+off2]);
                     }
                   i+=2;
                 }
@@ -2080,7 +2080,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii)
+                  eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (),
                                octave::numeric_limits<double>::NaN ());
             }
@@ -2088,7 +2088,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii)
+                  eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
           if (note3)
@@ -2239,11 +2239,11 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       // On exit, ip(4) <= k + 1 is the number of converged eigenvalues.
       // See dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-         k, tol, presid, p, v, n, iparam,
-         ipntr, workd, workl, lwork, tmp_info
-         F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+       k, tol, presid, p, v, n, iparam,
+       ipntr, workd, workl, lwork, tmp_info
+       F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
       // k is not changed
 
       info = tmp_info;
@@ -2291,13 +2291,13 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = dtmp[P[i]] / r(P[i]);
+                    tmp(i, 0) = dtmp[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
                   double *ip2 = workd+iptr(1)-1;
                   for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
+                    ip2[Q[i]] = tmp(i, 0);
                 }
               else if (ido == 2)
                 vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
@@ -2307,13 +2307,13 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]] / r(P[i]);
+                    tmp(i, 0) = ip2[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
                   ip2 = workd+iptr(1)-1;
                   for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
+                    ip2[Q[i]] = tmp(i, 0);
                 }
             }
           else
@@ -2323,13 +2323,13 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               Matrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
-                tmp(i,0) = ip2[P[i]] / r(P[i]);
+                tmp(i, 0) = ip2[P[i]] / r(P[i]);
 
               lusolve (L, U, tmp);
 
               ip2 = workd+iptr(1)-1;
               for (F77_INT i = 0; i < n; i++)
-                ip2[Q[i]] = tmp(i,0);
+                ip2[Q[i]] = tmp(i, 0);
             }
         }
       else
@@ -2374,11 +2374,11 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
   F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
-     sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
-     ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
-     F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
+   sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
+   ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
+   F77_CHAR_ARG_LEN(2));
   // On exit, if (and only if) rvec == true, k may have been increased by one
   // and be equal to ip(4), see dngets.
 
@@ -2436,16 +2436,16 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
-                    eig_vec(j,i) = Complex (z[j+off1], 0.);
+                    eig_vec(j, i) = Complex (z[j+off1], 0.);
                   i++;
                 }
               else
                 {
                   for (F77_INT j = 0; j < n; j++)
                     {
-                      eig_vec(j,i) = Complex (z[j+off1],z[j+off2]);
+                      eig_vec(j, i) = Complex (z[j+off1], z[j+off2]);
                       if (i < ip(4) - 1)
-                        eig_vec(j,i+1) = Complex (z[j+off1],-z[j+off2]);
+                        eig_vec(j, i+1) = Complex (z[j+off1], -z[j+off2]);
                     }
                   i+=2;
                 }
@@ -2454,7 +2454,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii)
+                  eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (),
                                octave::numeric_limits<double>::NaN ());
             }
@@ -2462,7 +2462,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii)
+                  eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
         }
@@ -2651,11 +2651,11 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       // On exit, ip(4) <= k + 1 is the number of converged eigenvalues
       // see dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
-         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-         k, tol, presid, p, v, n, iparam,
-         ipntr, workd, workl, lwork, tmp_info
-         F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+       k, tol, presid, p, v, n, iparam,
+       ipntr, workd, workl, lwork, tmp_info
+       F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
       // k is not changed
 
       info = tmp_info;
@@ -2696,9 +2696,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             {
               if (mode == 1) // regular mode with factorized B
                 {
-                  Matrix mtmp (n,1);
+                  Matrix mtmp (n, 1);
                   for (F77_INT i = 0; i < n; i++)
-                    mtmp(i,0) = workd[i + iptr(0) - 1];
+                    mtmp(i, 0) = workd[i + iptr(0) - 1];
 
                   mtmp = utsolve (bt, permB, mtmp);
                   ColumnVector y = fun (mtmp, err);
@@ -2709,7 +2709,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                   mtmp = ltsolve (b, permB, y);
 
                   for (F77_INT i = 0; i < n; i++)
-                    workd[i+iptr(1)-1] = mtmp(i,0);
+                    workd[i+iptr(1)-1] = mtmp(i, 0);
                 }
               else // shift-invert mode
                 {
@@ -2814,11 +2814,11 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
-     sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
-     ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
-     F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
+   sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
+   ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
+   F77_CHAR_ARG_LEN(2));
   // On exit, if (and only if) rvec == true, k may have been increased by one
   // and be equal to ip(4), see dngets.
 
@@ -2876,16 +2876,16 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
               if (std::imag (eig_val(i)) == 0)
                 {
                   for (F77_INT j = 0; j < n; j++)
-                    eig_vec(j,i) = Complex (z[j+off1], 0.);
+                    eig_vec(j, i) = Complex (z[j+off1], 0.);
                   i++;
                 }
               else
                 {
                   for (F77_INT j = 0; j < n; j++)
                     {
-                      eig_vec(j,i) = Complex (z[j+off1],z[j+off2]);
+                      eig_vec(j, i) = Complex (z[j+off1], z[j+off2]);
                       if (i < ip(4) - 1)
-                        eig_vec(j,i+1) = Complex (z[j+off1],-z[j+off2]);
+                        eig_vec(j, i+1) = Complex (z[j+off1], -z[j+off2]);
                     }
                   i+=2;
                 }
@@ -2894,7 +2894,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii)
+                  eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (),
                                octave::numeric_limits<double>::NaN ());
             }
@@ -2902,7 +2902,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             {
               for (F77_INT ii = ip(4); ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
-                  eig_vec(jj,ii)
+                  eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
           if (note3)
@@ -2958,7 +2958,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       Array<double> ri (octave::rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (F77_INT i = 0; i < n; i++)
-        cresid(i) = Complex (rr(i),ri(i));
+        cresid(i) = Complex (rr(i), ri(i));
       octave::rand::distribution (rand_dist);
     }
   else if (m.cols () != cresid.numel ())
@@ -3071,12 +3071,12 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (znaupd, ZNAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 (typ.c_str (), 2),
-         k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
-         iparam, ipntr,
-         F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
-         tmp_info F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 (typ.c_str (), 2),
+       k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
+       iparam, ipntr,
+       F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
+       tmp_info F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
       info = tmp_info;
 
@@ -3113,12 +3113,12 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           if (have_b)
             {
-              ComplexMatrix mtmp (n,1);
+              ComplexMatrix mtmp (n, 1);
               for (F77_INT i = 0; i < n; i++)
-                mtmp(i,0) = workd[i + iptr(0) - 1];
+                mtmp(i, 0) = workd[i + iptr(0) - 1];
               mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
               for (F77_INT i = 0; i < n; i++)
-                workd[i+iptr(1)-1] = mtmp(i,0);
+                workd[i+iptr(1)-1] = mtmp(i, 0);
 
             }
           else if (! vector_product (m, workd + iptr(0) - 1,
@@ -3158,15 +3158,15 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   OCTAVE_LOCAL_BUFFER (Complex, workev, 2 * p);
 
   F77_FUNC (zneupd, ZNEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, F77_DBLE_CMPLX_ARG (d),
-     F77_DBLE_CMPLX_ARG (z), n, F77_CONST_DBLE_CMPLX_ARG (&sigma),
-     F77_DBLE_CMPLX_ARG (workev),
-     F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-     k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
-     iparam, ipntr,
-     F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
-     info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, F77_DBLE_CMPLX_ARG (d),
+   F77_DBLE_CMPLX_ARG (z), n, F77_CONST_DBLE_CMPLX_ARG (&sigma),
+   F77_DBLE_CMPLX_ARG (workev),
+   F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+   k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
+   iparam, ipntr,
+   F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
+   info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
   if (info2 == 0)
     {
@@ -3265,7 +3265,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       Array<double> ri (octave::rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (F77_INT i = 0; i < n; i++)
-        cresid(i) = Complex (rr(i),ri(i));
+        cresid(i) = Complex (rr(i), ri(i));
       octave::rand::distribution (rand_dist);
     }
   else if (m.cols () != cresid.numel ())
@@ -3359,12 +3359,12 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (znaupd, ZNAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-         k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
-         iparam, ipntr,
-         F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
-         tmp_info F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+       k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
+       iparam, ipntr,
+       F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
+       tmp_info F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
       info = tmp_info;
 
@@ -3410,13 +3410,13 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                   ComplexMatrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ctmp[P[i]] / r(P[i]);
+                    tmp(i, 0) = ctmp[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
                   Complex *ip2 = workd+iptr(1)-1;
                   for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
+                    ip2[Q[i]] = tmp(i, 0);
                 }
               else if (ido == 2)
                 vector_product (b, workd + iptr(0) - 1, workd + iptr(1) - 1);
@@ -3426,13 +3426,13 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                   ComplexMatrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]] / r(P[i]);
+                    tmp(i, 0) = ip2[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
                   ip2 = workd+iptr(1)-1;
                   for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
+                    ip2[Q[i]] = tmp(i, 0);
                 }
             }
           else
@@ -3442,13 +3442,13 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
               ComplexMatrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
-                tmp(i,0) = ip2[P[i]] / r(P[i]);
+                tmp(i, 0) = ip2[P[i]] / r(P[i]);
 
               lusolve (L, U, tmp);
 
               ip2 = workd+iptr(1)-1;
               for (F77_INT i = 0; i < n; i++)
-                ip2[Q[i]] = tmp(i,0);
+                ip2[Q[i]] = tmp(i, 0);
             }
         }
       else
@@ -3484,15 +3484,15 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   OCTAVE_LOCAL_BUFFER (Complex, workev, 2 * p);
 
   F77_FUNC (zneupd, ZNEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, F77_DBLE_CMPLX_ARG (d),
-     F77_DBLE_CMPLX_ARG (z), n, F77_CONST_DBLE_CMPLX_ARG (&sigma),
-     F77_DBLE_CMPLX_ARG (workev),
-     F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-     k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
-     iparam, ipntr,
-     F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
-     info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, F77_DBLE_CMPLX_ARG (d),
+   F77_DBLE_CMPLX_ARG (z), n, F77_CONST_DBLE_CMPLX_ARG (&sigma),
+   F77_DBLE_CMPLX_ARG (workev),
+   F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+   k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
+   iparam, ipntr,
+   F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
+   info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
   if (info2 == 0)
     {
@@ -3580,7 +3580,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
       Array<double> ri (octave::rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (F77_INT i = 0; i < n; i++)
-        cresid(i) = Complex (rr(i),ri(i));
+        cresid(i) = Complex (rr(i), ri(i));
       octave::rand::distribution (rand_dist);
     }
   else if (n != cresid.numel ())
@@ -3721,12 +3721,12 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
       F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (znaupd, ZNAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-         k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
-         iparam, ipntr,
-         F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
-         tmp_info F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+       F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+       k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
+       iparam, ipntr,
+       F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
+       tmp_info F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
       info = tmp_info;
 
@@ -3765,9 +3765,9 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
             {
               if (mode == 1) // regular mode with factorized B
                 {
-                  ComplexMatrix mtmp (n,1);
+                  ComplexMatrix mtmp (n, 1);
                   for (F77_INT i = 0; i < n; i++)
-                    mtmp(i,0) = workd[i + iptr(0) - 1];
+                    mtmp(i, 0) = workd[i + iptr(0) - 1];
 
                   mtmp = utsolve (bt, permB, mtmp);
                   ComplexColumnVector y = fun (mtmp, err);
@@ -3778,7 +3778,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
                   mtmp = ltsolve (b, permB, y);
 
                   for (F77_INT i = 0; i < n; i++)
-                    workd[i+iptr(1)-1] = mtmp(i,0);
+                    workd[i+iptr(1)-1] = mtmp(i, 0);
                 }
               else // shift-invert mode
                 {
@@ -3874,15 +3874,15 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
   OCTAVE_LOCAL_BUFFER (Complex, workev, 2 * p);
 
   F77_FUNC (zneupd, ZNEUPD)
-    (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, F77_DBLE_CMPLX_ARG (d),
-     F77_DBLE_CMPLX_ARG (z), n, F77_DBLE_CMPLX_ARG (&sigma),
-     F77_DBLE_CMPLX_ARG (workev),
-     F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-     F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
-     k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
-     iparam, ipntr,
-     F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
-     info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+  (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, F77_DBLE_CMPLX_ARG (d),
+   F77_DBLE_CMPLX_ARG (z), n, F77_DBLE_CMPLX_ARG (&sigma),
+   F77_DBLE_CMPLX_ARG (workev),
+   F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
+   k, tol, F77_DBLE_CMPLX_ARG (presid), p, F77_DBLE_CMPLX_ARG (v), n,
+   iparam, ipntr,
+   F77_DBLE_CMPLX_ARG (workd), F77_DBLE_CMPLX_ARG (workl), lwork, rwork,
+   info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
   if (info2 == 0)
     {

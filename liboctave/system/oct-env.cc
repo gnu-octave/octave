@@ -259,14 +259,14 @@ namespace octave
 
       if (cfg_dir.empty ())
         cfg_dir = do_get_home_directory () + sys::file_ops::dir_sep_str ()
-             + ".config";
+                  + ".config";
 
       return cfg_dir;
     }
 
-  std::string
-  env::do_get_user_data_directory (void) const
-  {
+    std::string
+    env::do_get_user_data_directory (void) const
+    {
       std::string data_dir;
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && defined (OCTAVE_USE_WINDOWS_API)
@@ -280,10 +280,10 @@ namespace octave
 
       if (data_dir.empty ())
         data_dir = do_get_home_directory () + sys::file_ops::dir_sep_str ()
-             + ".local" + sys::file_ops::dir_sep_str () + "share";
+                   + ".local" + sys::file_ops::dir_sep_str () + "share";
 
       return data_dir;
-  }
+    }
 
 
     // FIXME: this leaves no way to distinguish between a

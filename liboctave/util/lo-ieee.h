@@ -56,13 +56,13 @@ extern "C" {
           number of bits as an int */
 
 typedef union
-{
+  {
   double value;
   unsigned int word[2];
 } lo_ieee_double;
 
 typedef union
-{
+  {
   float value;
   unsigned int word;
 } lo_ieee_float;

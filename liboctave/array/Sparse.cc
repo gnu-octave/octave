@@ -692,9 +692,9 @@ Sparse<T>::Sparse (const Array<T>& a)
   for (octave_idx_type j = 0; j < nc; j++)
     {
       for (octave_idx_type i = 0; i < nr; i++)
-        if (a.elem (i,j) != T ())
+        if (a.elem (i, j) != T ())
           {
-            xdata (ii) = a.elem (i,j);
+            xdata (ii) = a.elem (i, j);
             xridx (ii++) = i;
           }
       xcidx (j+1) = ii;
@@ -2013,7 +2013,7 @@ Sparse<T>::assign (const octave::idx_vector& idx, const Sparse<T>& rhs)
         assign (idx, Sparse<T> (rhl, 1));
     }
   else
-    octave::err_nonconformant ("=", dim_vector(idx.length (n),1), rhs.dims());
+    octave::err_nonconformant ("=", dim_vector(idx.length (n), 1), rhs.dims());
 }
 
 template <typename T>
@@ -2369,7 +2369,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
 template <typename T>
 OCTAVE_API
 Sparse<T>
-Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
+Sparse<T>::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
                  sortmode mode) const
 {
   Sparse<T> m = *this;

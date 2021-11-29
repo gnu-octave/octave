@@ -128,7 +128,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
       // -- Set the objective coefficient of the corresponding
       // -- structural variable.  No constant term is assumed.
-      glp_set_obj_coef(lp,i+1,c[i]);
+      glp_set_obj_coef(lp, i+1, c[i]);
 
       if (isMIP)
         glp_set_col_kind (lp, i+1, vartype[i]);
@@ -401,12 +401,12 @@ Undocumented internal function.
         {
           for (int j = 0; j < mrowsc; j++)
             {
-              if (A(i,j) != 0)
+              if (A(i, j) != 0)
                 {
                   nz++;
                   rn(nz) = i + 1;
                   cn(nz) = j + 1;
-                  a(nz) = A(i,j);
+                  a(nz) = A(i, j);
                 }
             }
         }
@@ -475,7 +475,7 @@ Undocumented internal function.
   int isMIP = 0;
   for (int i = 0; i < mrowsc ; i++)
     {
-      if (VTYPE(i,0) == 'I')
+      if (VTYPE(i, 0) == 'I')
         {
           isMIP = 1;
           vartype(i) = GLP_IV;

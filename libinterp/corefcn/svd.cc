@@ -43,7 +43,7 @@ static std::string Vsvd_driver = "gesvd";
 
 template <typename T>
 static typename math::svd<T>::Type
-svd_type (int nargin, int nargout, const octave_value_list & args, const T & A)
+svd_type (int nargin, int nargout, const octave_value_list& args, const T& A)
 {
   if (nargout == 0 || nargout == 1)
     return math::svd<T>::Type::sigma_only;
@@ -65,11 +65,11 @@ static typename math::svd<T>::Driver
 svd_driver (void)
 {
   if (Vsvd_driver == "gejsv")
-      return math::svd<T>::Driver::GEJSV;
+    return math::svd<T>::Driver::GEJSV;
   else if (Vsvd_driver == "gesdd")
-      return math::svd<T>::Driver::GESDD;
+    return math::svd<T>::Driver::GESDD;
   else
-      return math::svd<T>::Driver::GESVD;  // default
+    return math::svd<T>::Driver::GESVD;  // default
 }
 
 DEFUN (svd, args, nargout,

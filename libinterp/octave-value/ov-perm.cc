@@ -325,7 +325,7 @@ octave_perm_matrix::edit_display (const float_display_format& fmt,
                                   octave_idx_type j) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, fmt, octave_int<octave_idx_type> (m_matrix(i,j)));
+  octave_print_internal (buf, fmt, octave_int<octave_idx_type> (m_matrix(i, j)));
   return buf.str ();
 }
 
@@ -522,7 +522,7 @@ octave_perm_matrix::short_disp (std::ostream& os) const
           for (octave_idx_type j = 0; j < nc; j++)
             {
               std::ostringstream buf;
-              octave_int<octave_idx_type> tval (m_matrix(i,j));
+              octave_int<octave_idx_type> tval (m_matrix(i, j));
               octave_print_internal (buf, tval);
               std::string tmp = buf.str ();
               std::size_t pos = tmp.find_first_not_of (' ');

@@ -119,8 +119,8 @@ public:
   { m_map.assign (k, rhs); };
 
   OCTINTERP_API octave_value
-   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
-             const octave_value& rhs);
+  subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
   OCTINTERP_API octave_value
   undef_subsasgn (const std::string& type,

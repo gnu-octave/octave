@@ -202,7 +202,7 @@ namespace octave
       }
   }
 
-  cdef_object_rep*
+  cdef_object_rep *
   cdef_object_base::make_array (void) const
   {
     cdef_object_rep *r = new cdef_object_array ();

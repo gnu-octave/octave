@@ -376,7 +376,7 @@ octave_matrix::sort (octave_idx_type dim, sortmode mode) const
 }
 
 octave_value
-octave_matrix::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
+octave_matrix::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
                      sortmode mode) const
 {
   if (idx_cache)

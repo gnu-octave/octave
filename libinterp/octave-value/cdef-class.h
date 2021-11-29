@@ -172,7 +172,7 @@ namespace octave
       OCTINTERP_API void find_names (std::set<std::string>& names, bool all);
 
       OCTINTERP_API void
-      find_properties (std::map<std::string,cdef_property>& props,
+      find_properties (std::map<std::string, cdef_property>& props,
                        int mode = 0);
 
       OCTINTERP_API void
@@ -196,11 +196,11 @@ namespace octave
 
       // The methods defined by this class.
 
-      std::map<std::string,cdef_method> m_method_map;
+      std::map<std::string, cdef_method> m_method_map;
 
       // The properties defined by this class.
 
-      std::map<std::string,cdef_property> m_property_map;
+      std::map<std::string, cdef_property> m_property_map;
 
       // The number of members in this class (methods, properties...)
 
@@ -223,10 +223,10 @@ namespace octave
 
       // Utility iterator typedefs.
 
-      typedef std::map<std::string,cdef_method>::iterator method_iterator;
-      typedef std::map<std::string,cdef_method>::const_iterator method_const_iterator;
-      typedef std::map<std::string,cdef_property>::iterator property_iterator;
-      typedef std::map<std::string,cdef_property>::const_iterator property_const_iterator;
+      typedef std::map<std::string, cdef_method>::iterator method_iterator;
+      typedef std::map<std::string, cdef_method>::const_iterator method_const_iterator;
+      typedef std::map<std::string, cdef_property>::iterator property_iterator;
+      typedef std::map<std::string, cdef_property>::const_iterator property_const_iterator;
 
       cdef_class_rep (const cdef_class_rep& c) = default;
     };
@@ -407,11 +407,11 @@ namespace octave
   public:
 
     enum
-      {
-       property_normal,
-       property_inherited,
-       property_all
-      };
+    {
+      property_normal,
+      property_inherited,
+      property_all
+    };
 
   private:
 

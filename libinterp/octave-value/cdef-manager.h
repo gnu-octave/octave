@@ -102,7 +102,7 @@ namespace octave
     make_class (const std::string& name, const cdef_class& super);
 
     OCTINTERP_API cdef_class
-     make_meta_class (const std::string& name, const cdef_class& super);
+    make_meta_class (const std::string& name, const cdef_class& super);
 
     OCTINTERP_API cdef_property
     make_property (const cdef_class& cls, const std::string& name,

@@ -39,7 +39,7 @@ class octave_value_list;
 OCTAVE_NAMESPACE_BEGIN
 
   class interpreter;
-class oprocstream;
+  class oprocstream;
 
   class
   OCTINTERP_API

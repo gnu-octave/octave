@@ -260,32 +260,32 @@ default_colororder (void)
 {
   Matrix retval (7, 3, 0.0);
 
-  retval(0,1) = 0.447;
-  retval(0,2) = 0.741;
+  retval(0, 1) = 0.447;
+  retval(0, 2) = 0.741;
 
-  retval(1,0) = 0.850;
-  retval(1,1) = 0.325;
-  retval(1,2) = 0.098;
+  retval(1, 0) = 0.850;
+  retval(1, 1) = 0.325;
+  retval(1, 2) = 0.098;
 
-  retval(2,0) = 0.929;
-  retval(2,1) = 0.694;
-  retval(2,2) = 0.125;
+  retval(2, 0) = 0.929;
+  retval(2, 1) = 0.694;
+  retval(2, 2) = 0.125;
 
-  retval(3,0) = 0.494;
-  retval(3,1) = 0.184;
-  retval(3,2) = 0.556;
+  retval(3, 0) = 0.494;
+  retval(3, 1) = 0.184;
+  retval(3, 2) = 0.556;
 
-  retval(4,0) = 0.466;
-  retval(4,1) = 0.674;
-  retval(4,2) = 0.188;
+  retval(4, 0) = 0.466;
+  retval(4, 1) = 0.674;
+  retval(4, 2) = 0.188;
 
-  retval(5,0) = 0.301;
-  retval(5,1) = 0.745;
-  retval(5,2) = 0.933;
+  retval(5, 0) = 0.301;
+  retval(5, 1) = 0.745;
+  retval(5, 2) = 0.933;
 
-  retval(6,0) = 0.635;
-  retval(6,1) = 0.078;
-  retval(6,2) = 0.184;
+  retval(6, 0) = 0.635;
+  retval(6, 1) = 0.078;
+  retval(6, 2) = 0.184;
 
   return retval;
 }
@@ -342,7 +342,7 @@ default_image_cdata (void)
   for (int col = 0; col < 64; col++)
     for (int row = 0; row < 64; row++)
       {
-        m(col,row) = static_cast<double> (default_im_data[i]);
+        m(col, row) = static_cast<double> (default_im_data[i]);
         i++;
       }
 
@@ -356,7 +356,7 @@ default_surface_xdata (void)
 
   for (int col = 0; col < 3; col++)
     for (int row = 0; row < 3; row++)
-      m(row,col) = col+1;
+      m(row, col) = col+1;
 
   return m;
 }
@@ -368,7 +368,7 @@ default_surface_ydata (void)
 
   for (int row = 0; row < 3; row++)
     for (int col = 0; col < 3; col++)
-      m(row,col) = row+1;
+      m(row, col) = row+1;
 
   return m;
 }
@@ -379,7 +379,7 @@ default_surface_zdata (void)
   Matrix m (3, 3, 0.0);
 
   for (int row = 0; row < 3; row++)
-    m(row,row) = 1.0;
+    m(row, row) = 1.0;
 
   return m;
 }
@@ -1208,7 +1208,7 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
   return result;
 }
 
-static base_graphics_object*
+static base_graphics_object *
 make_graphics_object_from_type (const caseless_str& type,
                                 const graphics_handle& h = graphics_handle (),
                                 const graphics_handle& p = graphics_handle ())
@@ -1413,11 +1413,11 @@ color_values::str2rgb (const std::string& str_arg)
     {
       try
         {
-          tmp_rgb[0] = static_cast<double> (stoi (str.substr (1,2), nullptr, 16))
+          tmp_rgb[0] = static_cast<double> (stoi (str.substr (1, 2), nullptr, 16))
                        / 255.0;
-          tmp_rgb[1] = static_cast<double> (stoi (str.substr (3,2), nullptr, 16))
+          tmp_rgb[1] = static_cast<double> (stoi (str.substr (3, 2), nullptr, 16))
                        / 255.0;
-          tmp_rgb[2] = static_cast<double> (stoi (str.substr (5,2), nullptr, 16))
+          tmp_rgb[2] = static_cast<double> (stoi (str.substr (5, 2), nullptr, 16))
                        / 255.0;
         }
       catch (const octave::execution_exception&)
@@ -1429,11 +1429,11 @@ color_values::str2rgb (const std::string& str_arg)
     {
       try
         {
-          tmp_rgb[0] = static_cast<double> (stoi (str.substr (1,1), nullptr, 16))
+          tmp_rgb[0] = static_cast<double> (stoi (str.substr (1, 1), nullptr, 16))
                        / 15.0;
-          tmp_rgb[1] = static_cast<double> (stoi (str.substr (2,1), nullptr, 16))
+          tmp_rgb[1] = static_cast<double> (stoi (str.substr (2, 1), nullptr, 16))
                        / 15.0;
-          tmp_rgb[2] = static_cast<double> (stoi (str.substr (3,1), nullptr, 16))
+          tmp_rgb[2] = static_cast<double> (stoi (str.substr (3, 1), nullptr, 16))
                        / 15.0;
         }
       catch (const octave::execution_exception&)
@@ -3690,7 +3690,7 @@ void
 base_properties::get_children_of_type (const caseless_str& chtype,
                                        bool get_invisible,
                                        bool traverse,
-                                       std::list<graphics_object> &children_list) const
+                                       std::list<graphics_object>& children_list) const
 {
   gh_manager& gh_mgr
     = octave::__get_gh_manager__ ("base_properties::get_children_of_type");
@@ -3786,7 +3786,8 @@ base_graphics_object::remove_all_listeners (void)
 }
 
 void
-base_graphics_object::build_user_defaults_map (property_list::pval_map_type& def, const std::string go_name) const
+base_graphics_object::build_user_defaults_map (property_list::pval_map_type& def,
+    const std::string go_name) const
 {
   property_list local_defaults = get_defaults_list ();
   const auto it = local_defaults.find (go_name);
@@ -5833,7 +5834,7 @@ xform_matrix (void)
   Matrix m (4, 4, 0.0);
 
   for (int i = 0; i < 4; i++)
-    m(i,i) = 1;
+    m(i, i) = 1;
 
   return m;
 }
@@ -5871,10 +5872,10 @@ xform_scale (double x, double y, double z)
 {
   Matrix m (4, 4, 0.0);
 
-  m(0,0) = x;
-  m(1,1) = y;
-  m(2,2) = z;
-  m(3,3) = 1;
+  m(0, 0) = x;
+  m(1, 1) = y;
+  m(2, 2) = z;
+  m(3, 3) = 1;
 
   return m;
 }
@@ -5884,10 +5885,10 @@ xform_translate (double x, double y, double z)
 {
   Matrix m = xform_matrix ();
 
-  m(0,3) = x;
-  m(1,3) = y;
-  m(2,3) = z;
-  m(3,3) = 1;
+  m(0, 3) = x;
+  m(1, 3) = y;
+  m(2, 3) = z;
+  m(3, 3) = 1;
 
   return m;
 }
@@ -5962,14 +5963,14 @@ unit_cube (void)
 {
   static double data[32] =
   {
-    0,0,0,1,
-    1,0,0,1,
-    0,1,0,1,
-    0,0,1,1,
-    1,1,0,1,
-    1,0,1,1,
-    0,1,1,1,
-    1,1,1,1
+    0, 0, 0, 1,
+    1, 0, 0, 1,
+    0, 1, 0, 1,
+    0, 0, 1, 1,
+    1, 1, 0, 1,
+    1, 0, 1, 1,
+    0, 1, 1, 1,
+    1, 1, 1, 1
   };
   Matrix m (4, 8);
 
@@ -6116,9 +6117,9 @@ axes::properties::update_camera (void)
 
   scale (x_view, 1, 1, -1);
   Matrix l = xform_matrix ();
-  l(0,0) = s(0); l(0,1) = s(1); l(0,2) = s(2);
-  l(1,0) = u(0); l(1,1) = u(1); l(1,2) = u(2);
-  l(2,0) = -f(0); l(2,1) = -f(1); l(2,2) = -f(2);
+  l(0, 0) = s(0); l(0, 1) = s(1); l(0, 2) = s(2);
+  l(1, 0) = u(0); l(1, 1) = u(1); l(1, 2) = u(2);
+  l(2, 0) = -f(0); l(2, 1) = -f(1); l(2, 2) = -f(2);
   x_view = x_view * l;
   translate (x_view, -c_eye(0), -c_eye(1), -c_eye(2));
   scale (x_view, pb(0), pb(1), pb(2));
@@ -7883,8 +7884,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
 }
 
 void
-axes::properties::check_axis_limits (Matrix &limits, const Matrix kids,
-                                     const bool logscale, char &update_type)
+axes::properties::check_axis_limits (Matrix& limits, const Matrix kids,
+                                     const bool logscale, char& update_type)
 {
   double min_val = octave::numeric_limits<double>::Inf ();
   double max_val = -octave::numeric_limits<double>::Inf ();
@@ -8136,7 +8137,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
       if (limmode_is_auto)
         {
           // Adjust limits to include min and max ticks
-          Matrix tmp_lims (1,2);
+          Matrix tmp_lims (1, 2);
           tmp_lims(0) = std::min (tick_sep * i1, lo);
           tmp_lims(1) = std::max (tick_sep * i2, hi);
 
@@ -8768,7 +8769,7 @@ axes::update_axis_limits (const std::string& axis_type)
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           m_properties.set_has3Dkids ((max_val - min_val) >
-                                     std::numeric_limits<double>::epsilon ());
+                                      std::numeric_limits<double>::epsilon ());
 
           // FIXME: How to correctly handle (positive or negative) log scale?
           if ((! octave::math::isfinite (min_val)
@@ -8787,7 +8788,7 @@ axes::update_axis_limits (const std::string& axis_type)
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           m_properties.set_has3Dkids ((max_val - min_val) >
-                                     std::numeric_limits<double>::epsilon ());
+                                      std::numeric_limits<double>::epsilon ());
 
           limits = m_properties.get_zlim ().matrix_value ();
           m_properties.check_axis_limits (limits, kids,
@@ -9225,7 +9226,7 @@ axes::properties::rotate_view (double delta_el, double delta_az,
   if (v(1) < -90)
     v(1) = -90;
 
-  v(0) = fmod (v(0) - delta_az + 720,360);
+  v(0) = fmod (v(0) - delta_az + 720, 360);
 
   set_view (v);
 
@@ -9768,12 +9769,12 @@ patch::properties::update_fvc (void)
     {
       for (octave_idx_type ii = 0; ii < nr; ii++)
         {
-          vert(kk,0) = xd(ii,jj);
-          vert(kk,1) = yd(ii,jj);
+          vert(kk, 0) = xd(ii, jj);
+          vert(kk, 1) = yd(ii, jj);
           if (is3D)
-            vert(kk,2) = zd(ii,jj);
+            vert(kk, 2) = zd(ii, jj);
 
-          idx(jj,ii) = static_cast<double> (kk+1);
+          idx(jj, ii) = static_cast<double> (kk+1);
 
           kk++;
         }
@@ -9800,7 +9801,7 @@ patch::properties::update_fvc (void)
 }
 
 // core coplanar tester
-bool is_coplanar (const Matrix &cov)
+bool is_coplanar (const Matrix& cov)
 {
   // Accuracy note: this test will also accept single precision input (although
   // stored in double precision).  This is because the error threshold is
@@ -9812,14 +9813,14 @@ bool is_coplanar (const Matrix &cov)
 }
 
 std::vector<octave_idx_type>
-coplanar_partition (const Matrix &vert, const Matrix &idx,
+coplanar_partition (const Matrix& vert, const Matrix& idx,
                     octave_idx_type nc, octave_idx_type jj)
 {
   std::vector<octave_idx_type> coplanar_ends;
 
   Matrix plane_pivot = Matrix (1, 3, 0.0);
   for (octave_idx_type i = 0; i < 3; i++)
-    plane_pivot(0,i) = vert(idx(0,jj)-1,i);
+    plane_pivot(0, i) = vert(idx(0, jj)-1, i);
 
   Matrix fc = Matrix (0, 3, 0.0);  // face corner vertex coordinates
   Matrix fa = Matrix (1, 3, 0.0);  // for append face corner
@@ -9837,7 +9838,7 @@ coplanar_partition (const Matrix &vert, const Matrix &idx,
       fc.resize (nc - 1, 3);
       for (octave_idx_type j = 1; j < nc; j++)
         for (octave_idx_type i = 0; i < 3; i++)
-          fc(j-1,i) = vert(idx(j,jj)-1,i) - plane_pivot(i);
+          fc(j-1, i) = vert(idx(j, jj)-1, i) - plane_pivot(i);
 
       coor_cov = fc.transpose () * fc;
       if (is_coplanar (coor_cov))
@@ -9870,7 +9871,7 @@ coplanar_partition (const Matrix &vert, const Matrix &idx,
       // The first point is implicitly included.
       for (octave_idx_type j = 0; j < 3; j++)
         for (octave_idx_type i = 0; i < 3; i++)
-          fc(j,i) = vert(idx(j+i_start,jj)-1,i) - plane_pivot(i);
+          fc(j, i) = vert(idx(j+i_start, jj)-1, i) - plane_pivot(i);
 
       // covariance matrix between coordinates of vertices
       coor_cov = fc.transpose () * fc;
@@ -9887,7 +9888,7 @@ coplanar_partition (const Matrix &vert, const Matrix &idx,
 
           // add a point to plane
           for (octave_idx_type i = 0; i < 3; i++)
-            fa(0,i) = vert(idx(i_end,jj)-1,i) - plane_pivot(i);
+            fa(0, i) = vert(idx(i_end, jj)-1, i) - plane_pivot(i);
           coor_cov += fa.transpose () * fa;
         }
 
@@ -9923,17 +9924,17 @@ patch::properties::update_data (void)
     {
       for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
         {
-          double valid_vert = idx(0,jj);
+          double valid_vert = idx(0, jj);
           bool turn_valid = false;
           for (octave_idx_type ii = 0; ii < idx.rows (); ii++)
             {
-              if (octave::math::isnan (idx(ii,jj)) || turn_valid)
+              if (octave::math::isnan (idx(ii, jj)) || turn_valid)
                 {
-                  idx(ii,jj) = valid_vert;
+                  idx(ii, jj) = valid_vert;
                   turn_valid = true;
                 }
               else
-                valid_vert = idx(ii,jj);
+                valid_vert = idx(ii, jj);
             }
         }
     }
@@ -9946,12 +9947,12 @@ patch::properties::update_data (void)
       m_coplanar_last_idx.resize (idx.columns ());
       for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
         {
-          if (octave::math::isnan (idx(3,jj)))
+          if (octave::math::isnan (idx(3, jj)))
             continue;
 
           // find first element that is NaN to get number of corners
           octave_idx_type nc = 3;
-          while (nc < fcmax && ! octave::math::isnan (idx(nc,jj)))
+          while (nc < fcmax && ! octave::math::isnan (idx(nc, jj)))
             nc++;
 
           // If any of the corners is NaN or Inf, skip coplanar test.
@@ -9961,8 +9962,8 @@ patch::properties::update_data (void)
             {
               const octave_idx_type k = idx(j, jj) - 1;
               if (! (octave::math::isfinite (vert(k, 0))
-                  && octave::math::isfinite (vert(k, 1))
-                  && octave::math::isfinite (vert(k, 2))))
+                     && octave::math::isfinite (vert(k, 1))
+                     && octave::math::isfinite (vert(k, 2))))
                 {
                   is_unclosed = true;
                   break;
@@ -10016,16 +10017,16 @@ patch::properties::update_data (void)
     {
       for (octave_idx_type ii = 0; ii < idx.rows (); ii++)
         {
-          octave_idx_type row = static_cast<octave_idx_type> (idx(ii,jj)-1);
-          xd(ii,jj) = vert(row,0);
-          yd(ii,jj) = vert(row,1);
+          octave_idx_type row = static_cast<octave_idx_type> (idx(ii, jj)-1);
+          xd(ii, jj) = vert(row, 0);
+          yd(ii, jj) = vert(row, 1);
 
           if (has_zd)
-            zd(ii,jj) = vert(row,2);
+            zd(ii, jj) = vert(row, 2);
 
           if (pervertex)
             for (int kk = 0; kk < fvc.columns (); kk++)
-              cd(ii,jj,kk) = fvc(row,kk);
+              cd(ii, jj, kk) = fvc(row, kk);
         }
     }
 
@@ -10080,7 +10081,7 @@ patch::properties::calc_face_normals (Matrix& fn)
       octave_idx_type nc = 3;
       if (max_nc > 3)
         {
-          while (nc < max_nc && ! octave::math::isnan (f(i,nc)))
+          while (nc < max_nc && ! octave::math::isnan (f(i, nc)))
             nc++;
         }
 
@@ -10092,17 +10093,17 @@ patch::properties::calc_face_normals (Matrix& fn)
       if (is_coplanar)
         {
           // fast way for coplanar polygons
-          i1 = f(i,0) - 1; i2 = f(i,1) - 1; i3 = f(i,nc-1) - 1;
+          i1 = f(i, 0) - 1; i2 = f(i, 1) - 1; i3 = f(i, nc-1) - 1;
 
           if (is_3D)
             cross_product
-              (v(i3,0) - v(i1,0), v(i3,1) - v(i1,1), v(i3,2) - v(i1,2),
-               v(i2,0) - v(i1,0), v(i2,1) - v(i1,1), v(i2,2) - v(i1,2),
-               nx, ny, nz);
+            (v(i3, 0) - v(i1, 0), v(i3, 1) - v(i1, 1), v(i3, 2) - v(i1, 2),
+             v(i2, 0) - v(i1, 0), v(i2, 1) - v(i1, 1), v(i2, 2) - v(i1, 2),
+             nx, ny, nz);
           else
             {
-              nz = (v(i2,0) - v(i1,0)) * (v(i3,1) - v(i1,1)) -
-                   (v(i2,1) - v(i1,1)) * (v(i3,0) - v(i1,0));
+              nz = (v(i2, 0) - v(i1, 0)) * (v(i3, 1) - v(i1, 1)) -
+                   (v(i2, 1) - v(i1, 1)) * (v(i3, 0) - v(i1, 0));
               // 2-d vertices always point towards +z
               nz = (nz < 0) ? -nz : nz;
             }
@@ -10115,20 +10116,20 @@ patch::properties::calc_face_normals (Matrix& fn)
           // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
 
           j1 = nc - 1; j2 = 0;
-          i1 = f(i,j1) - 1; i2 = f(i,j2) - 1;
+          i1 = f(i, j1) - 1; i2 = f(i, j2) - 1;
 
-          nx = (v(i2,1) - v(i1,1)) * (v(i1,2) + v(i2,2));
-          ny = (v(i2,2) - v(i1,2)) * (v(i1,0) + v(i2,0));
-          nz = (v(i2,0) - v(i1,0)) * (v(i1,1) + v(i2,1));
+          nx = (v(i2, 1) - v(i1, 1)) * (v(i1, 2) + v(i2, 2));
+          ny = (v(i2, 2) - v(i1, 2)) * (v(i1, 0) + v(i2, 0));
+          nz = (v(i2, 0) - v(i1, 0)) * (v(i1, 1) + v(i2, 1));
 
           for (octave_idx_type j = 1; j < nc; j++)
             {
               j1 = j-1; j2 = j;
-              i1 = f(i,j1) - 1; i2 = f(i,j2) - 1;
+              i1 = f(i, j1) - 1; i2 = f(i, j2) - 1;
 
-              nx += (v(i2,1) - v(i1,1)) * (v(i1,2) + v(i2,2));
-              ny += (v(i2,2) - v(i1,2)) * (v(i1,0) + v(i2,0));
-              nz += (v(i2,0) - v(i1,0)) * (v(i1,1) + v(i2,1));
+              nx += (v(i2, 1) - v(i1, 1)) * (v(i1, 2) + v(i2, 2));
+              ny += (v(i2, 2) - v(i1, 2)) * (v(i1, 0) + v(i2, 0));
+              nz += (v(i2, 0) - v(i1, 0)) * (v(i1, 1) + v(i2, 1));
             }
         }
 
@@ -10138,10 +10139,10 @@ patch::properties::calc_face_normals (Matrix& fn)
       // assign normal to current face
       if ( n_len < std::numeric_limits<double>::epsilon () )
         for (octave_idx_type j = 0; j < 3; j++)
-          fn(i,j) = 0.0;
+          fn(i, j) = 0.0;
       else
         for (octave_idx_type j = 0; j < 3; j++)
-          fn(i,j) = fnc(j) / n_len;
+          fn(i, j) = fnc(j) / n_len;
     }
 }
 
@@ -10212,12 +10213,12 @@ patch::properties::update_vertex_normals (bool reset, bool force)
           octave_idx_type nc = 3;
           if (max_nc > 3)
             {
-              while (nc < max_nc && ! octave::math::isnan (f(i,nc)))
+              while (nc < max_nc && ! octave::math::isnan (f(i, nc)))
                 nc++;
             }
 
           for (octave_idx_type j = 0; j < nc; j++)
-            vec_vn[static_cast<octave_idx_type> (f(i,j) - 1)].push_back (fn.row (i));
+            vec_vn[static_cast<octave_idx_type> (f(i, j) - 1)].push_back (fn.row (i));
         }
 
       // Third step: Calculate the normal for the vertices taking the average
@@ -10256,7 +10257,7 @@ patch::properties::update_vertex_normals (bool reset, bool force)
 
               // save normal in matrix
               for (octave_idx_type j = 0; j < 3; j++)
-                vn(i,j) = vn0(j)/n_len;
+                vn(i, j) = vn0(j)/n_len;
             }
         }
 
@@ -10336,7 +10337,7 @@ scatter::properties::update_data (void)
   if (s_rows != 1 && s_rows != x_rows)
     {
       m_bad_data_msg = "sizedata must be a scalar or a vector with the same "
-                     "dimensions as X";
+                       "dimensions as X";
       return;
     }
 }
@@ -10367,9 +10368,9 @@ scatter::properties::update_color (void)
                       % color_order.rows ();
 
   Matrix color = Matrix (1, 3, 0.);
-  color(0) = color_order(s,0);
-  color(1) = color_order(s,1);
-  color(2) = color_order(s,2);
+  color(0) = color_order(s, 0);
+  color(1) = color_order(s, 1);
+  color(2) = color_order(s, 2);
 
   octave::unwind_protect_var<bool> restore_var (updating_scatter_cdata, true);
 
@@ -10482,10 +10483,10 @@ surface::properties::update_face_normals (bool reset, bool force)
 
               if (x_mat || y_mat)
                 {
-                  x0 = x(x_mat?j1:0,y_mat?i1:0);
-                  x1 = x(x_mat?j1:0,y_mat?i2:0);
-                  x2 = x(x_mat?j2:0,y_mat?i2:0);
-                  x3 = x(x_mat?j2:0,y_mat?i1:0);
+                  x0 = x(x_mat?j1:0, y_mat?i1:0);
+                  x1 = x(x_mat?j1:0, y_mat?i2:0);
+                  x2 = x(x_mat?j2:0, y_mat?i2:0);
+                  x3 = x(x_mat?j2:0, y_mat?i1:0);
                   x1m0 = x1 - x0;
                   x2m1 = x2 - x1;
                   x3m2 = x3 - x2;
@@ -10494,10 +10495,10 @@ surface::properties::update_face_normals (bool reset, bool force)
                   x2p1 = x2 + x1;
                   x3p2 = x3 + x2;
                   x0p3 = x0 + x3;
-                  y0 = y(x_mat?j1:0,y_mat?i1:0);
-                  y1 = y(x_mat?j1:0,y_mat?i2:0);
-                  y2 = y(x_mat?j2:0,y_mat?i2:0);
-                  y3 = y(x_mat?j2:0,y_mat?i1:0);
+                  y0 = y(x_mat?j1:0, y_mat?i1:0);
+                  y1 = y(x_mat?j1:0, y_mat?i2:0);
+                  y2 = y(x_mat?j2:0, y_mat?i2:0);
+                  y3 = y(x_mat?j2:0, y_mat?i1:0);
                   y1m0 = y1 - y0;
                   y2m1 = y2 - y1;
                   y3m2 = y3 - y2;
@@ -10508,14 +10509,14 @@ surface::properties::update_face_normals (bool reset, bool force)
                   y0p3 = y0 + y3;
                 }
 
-              double& nx = n(j,i,0);
-              double& ny = n(j,i,1);
-              double& nz = n(j,i,2);
+              double& nx = n(j, i, 0);
+              double& ny = n(j, i, 1);
+              double& nz = n(j, i, 2);
 
-              z0 = z(j1,i1);
-              z1 = z(j1,i2);
-              z2 = z(j2,i2);
-              z3 = z(j2,i1);
+              z0 = z(j1, i1);
+              z1 = z(j1, i2);
+              z2 = z(j2, i2);
+              z3 = z(j2, i1);
 
               // calculate face normal with Newell's method
               // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
@@ -12118,7 +12119,7 @@ public:
 
   function_event (const function_event&) = delete;
 
-  function_event & operator = (const function_event&) = delete;
+  function_event& operator = (const function_event&) = delete;
 
   void execute (void)
   {

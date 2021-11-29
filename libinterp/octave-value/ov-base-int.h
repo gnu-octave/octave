@@ -171,7 +171,7 @@ public:
   OCTINTERP_API bool save_binary (std::ostream& os, bool);
 
   OCTINTERP_API bool load_binary (std::istream& is, bool swap,
-                    octave::mach_info::float_format);
+                                  octave::mach_info::float_format);
 protected:
 
   OCTINTERP_API bool

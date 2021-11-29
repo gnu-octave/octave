@@ -423,7 +423,7 @@ v = cellfun (@@det, a); # faster
 
   if (func.is_string ())
     {
-      retval = try_cellfun_internal_ops<boolNDArray,NDArray> (args, nargin);
+      retval = try_cellfun_internal_ops<boolNDArray, NDArray> (args, nargin);
 
       if (! retval.empty ())
         return retval;
@@ -1965,7 +1965,7 @@ mat2cell_mismatch (const dim_vector& dv,
 template <typename container>
 static void
 prepare_idx (container *idx, int idim, int nd,
-             const Array<octave_idx_type>* d)
+             const Array<octave_idx_type> *d)
 {
   octave_idx_type nidx = (idim < nd ? d[idim].numel () : 1);
   if (nidx == 1)
@@ -2032,7 +2032,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
           {
             octave_quit ();
 
-            retval.xelem (i,j) = a.index (ridx[i], cidx[j]);
+            retval.xelem (i, j) = a.index (ridx[i], cidx[j]);
           }
     }
 

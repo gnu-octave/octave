@@ -68,7 +68,7 @@ public:
 
   int_type pbackfail (int_type);
 
-  std::streamsize xsputn (const char*, std::streamsize);
+  std::streamsize xsputn (const char *, std::streamsize);
 
   std::streamsize xsgetn (char *, std::streamsize);
 
@@ -183,7 +183,7 @@ public:
 
   int_type pbackfail (int_type);
 
-  std::streamsize xsputn (const char*, std::streamsize);
+  std::streamsize xsputn (const char *, std::streamsize);
 
   std::streamsize xsgetn (char *, std::streamsize);
 

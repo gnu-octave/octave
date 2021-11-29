@@ -365,7 +365,7 @@ namespace octave
     std::size_t m_curr_idx;
 
     // List of format elements.
-    std::deque<scanf_format_elt*> m_fmt_elts;
+    std::deque<scanf_format_elt *> m_fmt_elts;
 
     // Temporary buffer.
     std::ostringstream m_buf;
@@ -864,7 +864,7 @@ namespace octave
     std::size_t m_curr_idx;
 
     // List of format elements.
-    std::deque<printf_format_elt*> m_fmt_elts;
+    std::deque<printf_format_elt *> m_fmt_elts;
 
     // Temporary buffer.
     std::ostringstream m_buf;
@@ -1781,7 +1781,7 @@ namespace octave
     std::size_t m_curr_idx;
 
     // List of format elements.
-    std::deque<textscan_format_elt*> m_fmt_elts;
+    std::deque<textscan_format_elt *> m_fmt_elts;
 
     // list holding column arrays of types specified by conversions
     std::list<octave_value> m_output_container;
@@ -2481,7 +2481,7 @@ namespace octave
     std::istringstream strstr (first_line);
     delimited_stream ds (strstr, is);
 
-    dim_vector dv (1,1);      // initial size of each output_container
+    dim_vector dv (1, 1);     // initial size of each output_container
     Complex val;
     octave_value val_type;
     m_nconv = 0;
@@ -2598,7 +2598,7 @@ namespace octave
     // Create our own buffered stream, for fast get/putback/tell/seek.
 
     // First, see how far ahead it should let us look.
-    int max_lookahead = std::max ({m_comment_len, m_treat_as_empty_len, 
+    int max_lookahead = std::max ({m_comment_len, m_treat_as_empty_len,
                                    m_delim_len, 3});  // 3 for NaN and Inf
 
     // Next, choose a buffer size to avoid reading too much, or too often.
@@ -2620,7 +2620,7 @@ namespace octave
     // Grow retval dynamically.  "size" is half the initial size
     // (FIXME: Should we start smaller if ntimes is large?)
     octave_idx_type size = ((ntimes < 8 && ntimes >= 0) ? ntimes : 1);
-    Array<octave_idx_type> row_idx (dim_vector (1,2));
+    Array<octave_idx_type> row_idx (dim_vector (1, 2));
     row_idx(1) = 0;
 
     int err = 0;
@@ -2714,7 +2714,7 @@ namespace octave
       }
 
     // convert return value to Cell array
-    Array<octave_idx_type> ra_idx (dim_vector (1,2));
+    Array<octave_idx_type> ra_idx (dim_vector (1, 2));
 
     // (err & 1) means "error, and no columns read this row
     // FIXME: This may redundant now that done_after=0 says the same
@@ -2738,7 +2738,7 @@ namespace octave
               dv = dim_vector (std::max (valid_rows - 1, 0), 1);
 
             ra_idx(1) = i;
-            retval = cat_op (retval, octave_value (Cell (col.resize (dv,0))),
+            retval = cat_op (retval, octave_value (Cell (col.resize (dv, 0))),
                              ra_idx);
             i++;
           }
@@ -2760,14 +2760,14 @@ namespace octave
                     ra_idx(1) = i++;
                     retval = cat_op (retval, octave_value (Cell (cur)), ra_idx);
                   }
-                cur = octave_value (col.resize (dv,0));
+                cur = octave_value (col.resize (dv, 0));
                 group_size = 1;
                 prev_type = col.type_id ();
               }
             else
               {
                 ra_idx(1) = group_size++;
-                cur = cat_op (cur, octave_value (col.resize (dv,0)), ra_idx);
+                cur = cat_op (cur, octave_value (col.resize (dv, 0)), ra_idx);
               }
           }
         ra_idx(1) = i;
@@ -3124,8 +3124,8 @@ namespace octave
               {
                 std::string delim = delimiters(i).string_value ();
                 std::size_t start = (retval.length () > delim.length ()
-                                ? retval.length () - delim.length ()
-                                : 0);
+                                     ? retval.length () - delim.length ()
+                                     : 0);
                 std::string may_match = retval.substr (start);
                 if (may_match == delim)
                   {
@@ -3611,7 +3611,7 @@ namespace octave
                       {
                         if (m_delim_list(j).is_sq_string ())
                           m_delim_list(j) = do_string_escapes (m_delim_list(j)
-                                                             .string_value ());
+                                                               .string_value ());
                         octave_idx_type len = m_delim_list(j).string_value ()
                                               .length ();
                         m_delim_len = std::max (static_cast<int> (len),
@@ -4433,8 +4433,8 @@ namespace octave
   }
 
   template void
-  do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
-                 Matrix&, double*, octave_idx_type&, octave_idx_type&,
+  do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
+                 Matrix&, double *, octave_idx_type&, octave_idx_type&,
                  octave_idx_type, octave_idx_type, bool);
 
 #define DO_WHITESPACE_CONVERSION()                                      \

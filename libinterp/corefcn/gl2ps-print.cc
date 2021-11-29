@@ -497,7 +497,7 @@ namespace octave
 
         // In EPS terminal read the header line by line and insert a
         // new procedure
-        const char* fcn = "/SRX  { gsave FCT moveto rotate xshow grestore } BD\n";
+        const char *fcn = "/SRX  { gsave FCT moveto rotate xshow grestore } BD\n";
         bool header_found = ! (m_term.find ("eps") != std::string::npos
                                || m_term.find ("svg") != std::string::npos);
 
@@ -1315,7 +1315,7 @@ namespace octave
 
     ColumnVector vp_lim_min
       = m_xform.untransform (std::numeric_limits <float>::epsilon (),
-                           std::numeric_limits <float>::epsilon ());
+                             std::numeric_limits <float>::epsilon ());
     ColumnVector vp_lim_max = m_xform.untransform (vp(2), vp(3));
 
     if (vp_lim_min(0) > vp_lim_max(0))
@@ -1387,9 +1387,9 @@ namespace octave
                     else
                       jj = w - j - 1;
 
-                    a[idx]   = xcdata(ii,jj,0);
-                    a[idx+1] = xcdata(ii,jj,1);
-                    a[idx+2] = xcdata(ii,jj,2);
+                    a[idx]   = xcdata(ii, jj, 0);
+                    a[idx+1] = xcdata(ii, jj, 1);
+                    a[idx+2] = xcdata(ii, jj, 2);
                   }
               }
 
@@ -1417,9 +1417,9 @@ namespace octave
                     else
                       jj = w - j - 1;
 
-                    a[idx]   = xcdata(ii,jj,0);
-                    a[idx+1] = xcdata(ii,jj,1);
-                    a[idx+2] = xcdata(ii,jj,2);
+                    a[idx]   = xcdata(ii, jj, 0);
+                    a[idx+1] = xcdata(ii, jj, 1);
+                    a[idx+2] = xcdata(ii, jj, 2);
                   }
               }
 
@@ -1447,9 +1447,9 @@ namespace octave
                     else
                       jj = w - j - 1;
 
-                    a[idx]   = xcdata(ii,jj,0);
-                    a[idx+1] = xcdata(ii,jj,1);
-                    a[idx+2] = xcdata(ii,jj,2);
+                    a[idx]   = xcdata(ii, jj, 0);
+                    a[idx+1] = xcdata(ii, jj, 1);
+                    a[idx+2] = xcdata(ii, jj, 2);
                   }
               }
 
@@ -1477,9 +1477,9 @@ namespace octave
                     else
                       jj = w - j - 1;
 
-                    a[idx]   = xcdata(ii,jj,0);
-                    a[idx+1] = xcdata(ii,jj,1);
-                    a[idx+2] = xcdata(ii,jj,2);
+                    a[idx]   = xcdata(ii, jj, 0);
+                    a[idx+1] = xcdata(ii, jj, 1);
+                    a[idx+2] = xcdata(ii, jj, 2);
                   }
               }
 

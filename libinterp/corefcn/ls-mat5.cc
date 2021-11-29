@@ -1142,7 +1142,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           classname = name;
         }
       }
-      // Fall-through
+    // Fall-through
 
     case MAT_FILE_STRUCT_CLASS:
       {
@@ -2013,7 +2013,7 @@ save_mat5_array_length (const double *val, octave_idx_type nel,
 }
 
 int
-save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
+save_mat5_array_length (const float * /* val */, octave_idx_type nel, bool)
 {
   if (nel > 0)
     {

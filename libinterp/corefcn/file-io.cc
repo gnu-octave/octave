@@ -634,7 +634,7 @@ fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}
   int fid = -1;
 
   stream os = do_stream_open (args(0), mode, arch, encoding, "fopen",
-                                      fid);
+                              fid);
 
   if (os)
     retval = ovl (streams.insert (os), "");

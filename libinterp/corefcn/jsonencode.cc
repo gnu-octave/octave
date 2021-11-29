@@ -133,33 +133,33 @@ encode_string (T& writer, const octave_value& obj,
       // In this case, we already have a vector. So, we transform it to 2-D
       // vector in order to be detected by "isvector" in the recursive call
       if (dims.num_ones () == ndims - 1)
-      {
-        // Handle the special case when the input is a vector with more than
-        // 2 dimensions (e.g. cat (8, ['a'], ['c'])).  In this case, we don't
-        // add dimension brackets and treat it as if it is a vector
-        if (level != 0)
-          // Place an opening and a closing bracket (represents a dimension)
-          // for every dimension that equals 1 until we reach the 2-D vector
-          for (int i = level; i < ndims - 1; ++i)
-            writer.StartArray ();
+        {
+          // Handle the special case when the input is a vector with more than
+          // 2 dimensions (e.g. cat (8, ['a'], ['c'])).  In this case, we don't
+          // add dimension brackets and treat it as if it is a vector
+          if (level != 0)
+            // Place an opening and a closing bracket (represents a dimension)
+            // for every dimension that equals 1 until we reach the 2-D vector
+            for (int i = level; i < ndims - 1; ++i)
+              writer.StartArray ();
 
-        encode_string (writer, array.as_row (), original_dims, level);
+          encode_string (writer, array.as_row (), original_dims, level);
 
-        if (level != 0)
-          for (int i = level; i < ndims - 1; ++i)
-            writer.EndArray ();
-      }
+          if (level != 0)
+            for (int i = level; i < ndims - 1; ++i)
+              writer.EndArray ();
+        }
       else
         {
           // We place an opening and a closing bracket for each dimension
           // that equals 1 to preserve the number of dimensions when decoding
           // the array after encoding it.
           if (original_dims(level) == 1 && level != 1)
-          {
-            writer.StartArray ();
-            encode_string (writer, array, original_dims, level + 1);
-            writer.EndArray ();
-          }
+            {
+              writer.StartArray ();
+              encode_string (writer, array, original_dims, level + 1);
+              writer.EndArray ();
+            }
           else
             {
               // The second dimension contains the number of the chars in
@@ -341,12 +341,12 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
           // that equals 1 to preserve the number of dimensions when decoding
           // the array after encoding it.
           if (original_dims (level) == 1)
-          {
-            writer.StartArray ();
-            encode_array (writer, array, ConvertInfAndNaN,
-                          original_dims, level + 1, is_logical);
-            writer.EndArray ();
-          }
+            {
+              writer.StartArray ();
+              encode_array (writer, array, ConvertInfAndNaN,
+                            original_dims, level + 1, is_logical);
+              writer.EndArray ();
+            }
           else
             {
               for (idx = 0; idx < ndims; ++idx)

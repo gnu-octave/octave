@@ -111,7 +111,7 @@ public:
 
   octave_value sort (octave_idx_type, sortmode) const
   { return octave_value (scalar); }
-  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type,
+  octave_value sort (Array<octave_idx_type>& sidx, octave_idx_type,
                      sortmode) const
   {
     sidx.resize (dim_vector (1, 1));

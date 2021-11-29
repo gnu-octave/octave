@@ -117,7 +117,7 @@ octave_lazy_index::sort (octave_idx_type dim, sortmode mode) const
 }
 
 octave_value
-octave_lazy_index::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
+octave_lazy_index::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
                          sortmode mode) const
 {
   const dim_vector odims = m_index.orig_dimensions ();

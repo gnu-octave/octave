@@ -392,7 +392,7 @@ octave_base_sparse<MT>::edit_display (const float_display_format& fmt,
                                       octave_idx_type j) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, fmt, this->matrix(i,j));
+  octave_print_internal (buf, fmt, this->matrix(i, j));
   return buf.str ();
 }
 
@@ -449,7 +449,7 @@ octave_base_sparse<T>::fast_elem_extract (octave_idx_type n) const
   octave_idx_type i = n % nr;
   octave_idx_type j = n / nr;
 
-  return (i < nr && j < nc) ? octave_value (matrix(i,j)) : octave_value ();
+  return (i < nr && j < nc) ? octave_value (matrix(i, j)) : octave_value ();
 }
 
 template <typename T>

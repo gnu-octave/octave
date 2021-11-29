@@ -1084,7 +1084,7 @@ __unicode_length__ ("aäbc")
       NDArray output (args(0).dims (), false);
       for (octave_idx_type i = 0; i < cellstr.numel (); i++)
         {
-          const uint8_t *src 
+          const uint8_t *src
             = reinterpret_cast<const uint8_t *> (cellstr(i).c_str ());
           output(i) = octave_u8_mbsnlen_wrapper (src, cellstr(i).size ());
         }

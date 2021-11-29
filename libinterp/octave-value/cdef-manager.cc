@@ -302,7 +302,7 @@ namespace octave
     int i = 0;
 
     for (const auto& nm_pkg : toplevel_packages)
-      c(i++,0) = to_ov (nm_pkg.second);
+      c(i++, 0) = to_ov (nm_pkg.second);
 
     return octave_value_list (octave_value (c));
   }

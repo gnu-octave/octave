@@ -76,7 +76,7 @@ octave_base_diag<DMT, MT>::subsref (const std::string& type,
 
 template <typename DMT, typename MT>
 octave_value
-octave_base_diag<DMT,MT>::diag (octave_idx_type k) const
+octave_base_diag<DMT, MT>::diag (octave_idx_type k) const
 {
   octave_value retval;
   if (m_matrix.rows () == 1 || m_matrix.cols () == 1)
@@ -486,7 +486,7 @@ octave_base_diag<DMT, MT>::edit_display (const float_display_format& fmt,
                                          octave_idx_type j) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, fmt, m_matrix(i,j));
+  octave_print_internal (buf, fmt, m_matrix(i, j));
   return buf.str ();
 }
 
@@ -610,7 +610,7 @@ octave_base_diag<DMT, MT>::short_disp (std::ostream& os) const
           for (octave_idx_type j = 0; j < nc; j++)
             {
               std::ostringstream buf;
-              octave_print_internal (buf, m_matrix(i,j));
+              octave_print_internal (buf, m_matrix(i, j));
               std::string tmp = buf.str ();
               std::size_t pos = tmp.find_first_not_of (' ');
               if (pos != std::string::npos)

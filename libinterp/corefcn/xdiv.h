@@ -80,7 +80,7 @@ extern FloatComplexMatrix elem_xdiv (float a, const FloatComplexMatrix& b);
 extern FloatComplexMatrix elem_xdiv (const FloatComplex a,
                                      const FloatMatrix& b);
 extern FloatComplexMatrix elem_xdiv (const FloatComplex a,
-                                    const FloatComplexMatrix& b);
+                                     const FloatComplexMatrix& b);
 
 extern FloatNDArray elem_xdiv (float a, const FloatNDArray& b);
 extern FloatComplexNDArray elem_xdiv (float a, const FloatComplexNDArray& b);

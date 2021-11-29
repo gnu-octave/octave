@@ -329,7 +329,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
           boolMatrix btmp (nr, nc);
           for (octave_idx_type j = 0; j < nc; j++)
             for (octave_idx_type i = 0; i < nr; i++)
-              btmp.elem (i,j) = (tmp.elem (i, j) != 0.);
+              btmp.elem (i, j) = (tmp.elem (i, j) != 0.);
 
           matrix = btmp;
         }

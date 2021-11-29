@@ -108,7 +108,7 @@ octave_base_matrix<Cell>::edit_display (const float_display_format&,
                                         octave_idx_type i,
                                         octave_idx_type j) const
 {
-  octave_value val = matrix(i,j);
+  octave_value val = matrix(i, j);
 
   std::string tname = val.type_name ();
   dim_vector dv = val.dims ();
@@ -173,7 +173,7 @@ octave_cell::subsref (const std::string& type,
         Cell tcell = tmp.cell_value ();
 
         if (tcell.numel () == 1)
-          retval(0) = tcell(0,0);
+          retval(0) = tcell(0, 0);
         else
           {
             // Return a comma-separated list.
@@ -223,7 +223,7 @@ octave_cell::subsref (const std::string& type,
         const Cell tcell = tmp.cell_value ();
 
         if (tcell.numel () == 1)
-          retval = tcell(0,0);
+          retval = tcell(0, 0);
         else
           {
             // Return a comma-separated list.
@@ -495,7 +495,7 @@ octave_cell::sort (octave_idx_type dim, sortmode mode) const
 }
 
 octave_value
-octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
+octave_cell::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
                    sortmode mode) const
 {
   octave_value retval;
@@ -683,7 +683,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
                   std::ostringstream buf;
                   buf << '[' << i+1 << ',' << j+1 << ']';
 
-                  octave_value val = matrix(i,j);
+                  octave_value val = matrix(i, j);
 
                   val.print_with_name (os, buf.str ());
                 }
@@ -1194,7 +1194,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (current_item >= static_cast<int> (num_obj))
         retval2 = -1;
       else
-        retval2 = hdf5_h5g_iterate (loc_id, name, &current_item,&dsub);
+        retval2 = hdf5_h5g_iterate (loc_id, name, &current_item, &dsub);
 
       if (retval2 <= 0)
         break;
@@ -1398,7 +1398,7 @@ c(2,1,:)(:)
   // we don't need a key lookup at all.
   for (octave_idx_type j = 0; j < n_elts; j++)
     for (octave_idx_type i = 0; i < num_fields; i++)
-      c.xelem (i,j) = m.contents(i)(j);
+      c.xelem (i, j) = m.contents(i)(j);
 
   return ovl (c);
 }

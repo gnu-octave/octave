@@ -1277,7 +1277,7 @@ private:
         std::stringstream cbuf;
         cbuf.precision (4);
         cbuf.width (6);
-        Matrix v (1,2,0);
+        Matrix v (1, 2, 0);
         v = ap.get ("view").matrix_value ();
         cbuf << "[azimuth: " << v(0) << ", elevation: " << v(1) << ']';
 
@@ -1316,15 +1316,15 @@ private:
 
         // front point (nearest to the viewer)
         ColumnVector tmp = ap.get_transform ().untransform (px, py, x_zlim(0));
-        pos(0,0) = tmp(0);
-        pos(0,1) = tmp(1);
-        pos(0,2) = tmp(2);
+        pos(0, 0) = tmp(0);
+        pos(0, 1) = tmp(1);
+        pos(0, 2) = tmp(2);
 
         // back point (furthest from the viewer)
         tmp = ap.get_transform ().untransform (px, py, x_zlim(1));
-        pos(1,0) = tmp(0);
-        pos(1,1) = tmp(1);
-        pos(1,2) = tmp(2);
+        pos(1, 0) = tmp(0);
+        pos(1, 1) = tmp(1);
+        pos(1, 2) = tmp(2);
 
         ap.set_currentpoint (pos);
         if (ap.get_tag () != "legend" && ap.get_tag () != "colorbar")
@@ -1749,7 +1749,7 @@ private:
                 {
                   pixel2status (m_ax_obj, m_pos_x, m_pos_y,
                                 Fl::event_x (), Fl::event_y () - menu_dy ());
-                  Matrix zoom_box (1,4,0);
+                  Matrix zoom_box (1, 4, 0);
                   zoom_box(0) = m_pos_x;
                   zoom_box(1) = m_pos_y;
                   zoom_box(2) = Fl::event_x ();
@@ -1819,7 +1819,7 @@ private:
                   if (m_canvas->zoom ())
                     {
                       m_canvas->zoom (false);
-                      double x0,y0,x1,y1;
+                      double x0, y0, x1, y1;
                       if (m_ax_obj && m_ax_obj.isa ("axes"))
                         {
                           axes::properties& ap = dynamic_cast<axes::properties&>
@@ -1828,8 +1828,8 @@ private:
                           int pos_x1 = Fl::event_x ();
                           int pos_y1 = Fl::event_y () - menu_dy ();
                           pixel2pos (m_ax_obj, pos_x1, pos_y1, x1, y1);
-                          Matrix xl (1,2,0);
-                          Matrix yl (1,2,0);
+                          Matrix xl (1, 2, 0);
+                          Matrix yl (1, 2, 0);
                           int dx = abs (m_pos_x - pos_x1);
                           int dy = abs (m_pos_y - pos_y1);
                           // Smallest zoom box must be 4 pixels square
@@ -2025,7 +2025,7 @@ private:
 
   static int curr_index;
 
-  typedef std::map<int, plot_window*> window_map;
+  typedef std::map<int, plot_window *> window_map;
 
   typedef window_map::iterator wm_iterator;;
 
@@ -2203,7 +2203,7 @@ private:
   static int str2idx (const caseless_str& clstr)
   {
     int ind;
-    if (clstr.find (fltk_idx_header,0) == 0)
+    if (clstr.find (fltk_idx_header, 0) == 0)
       {
         std::istringstream istr (clstr.substr (fltk_idx_header.size ()));
         if (istr >> ind)

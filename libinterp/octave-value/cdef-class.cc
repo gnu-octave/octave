@@ -286,7 +286,7 @@ namespace octave
   Cell
   cdef_class::cdef_class_rep::get_methods (bool include_ctor)
   {
-    std::map<std::string,cdef_method> meths;
+    std::map<std::string, cdef_method> meths;
 
     find_methods (meths, false, include_ctor);
 
@@ -396,7 +396,7 @@ namespace octave
   Cell
   cdef_class::cdef_class_rep::get_properties (int mode)
   {
-    std::map<std::string,cdef_property> props;
+    std::map<std::string, cdef_property> props;
 
     props = get_property_map (mode);
 
@@ -413,7 +413,7 @@ namespace octave
   std::map<std::string, cdef_property>
   cdef_class::cdef_class_rep::get_property_map (int mode)
   {
-    std::map<std::string,cdef_property> props;
+    std::map<std::string, cdef_property> props;
 
     find_properties (props, mode);
 

@@ -312,7 +312,7 @@ pr_max_internal (const MArray<T>& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        T val = m(i,j);
+        T val = m(i, j);
         if (! octave::math::isfinite (val))
           continue;
 
@@ -342,7 +342,7 @@ pr_min_internal (const MArray<T>& m)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-        T val = m(i,j);
+        T val = m(i, j);
         if (! octave::math::isfinite (val))
           continue;
 
@@ -1825,7 +1825,7 @@ octave_print_free (std::ostream& os, const MT& m, bool pr_as_read_syntax)
   for (octave_idx_type i = 0; i < nr; i++)
     {
       for (octave_idx_type j = 0; j < nc; j++)
-        os << ' ' << m.elem(i,j);
+        os << ' ' << m.elem (i, j);
 
       if (i < nr - 1)
         os << "\n";
@@ -1848,7 +1848,7 @@ pr_plus_format_matrix (std::ostream& os, const MT& m)
         {
           octave_quit ();
 
-          pr_plus_format (os, m(i,j));
+          pr_plus_format (os, m(i, j));
         }
 
       if (i < nr - 1)
@@ -1934,7 +1934,7 @@ octave_print_matrix_internal (std::ostream& os, const MT& m,
                             os << "  ";
                         }
 
-                      pr_float (os, fmt, m(i,j));
+                      pr_float (os, fmt, m(i, j));
                     }
 
                   col += inc;
@@ -1974,7 +1974,7 @@ octave_print_matrix_internal (std::ostream& os, const MT& m,
 
                       os << "  ";
 
-                      pr_float (os, fmt, m(i,j));
+                      pr_float (os, fmt, m(i, j));
                     }
 
                   if (i < nr - 1)
@@ -2050,7 +2050,7 @@ octave_print_diag_matrix_internal (std::ostream& os, const DMT& m,
                         os << "  ";
                     }
 
-                  pr_float (os, fmt, m(j,j));
+                  pr_float (os, fmt, m(j, j));
                 }
 
               col += inc;
@@ -2099,7 +2099,7 @@ octave_print_diag_matrix_internal (std::ostream& os, const DMT& m,
                       os << "  ";
 
                       if (i == j)
-                        pr_float (os, fmt, m(i,j));
+                        pr_float (os, fmt, m(i, j));
                       else
                         os << std::setw (zero_fw) << '0';
                     }
@@ -2380,7 +2380,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 
                       os << "  ";
 
-                      os << std::setw (fw) << m(i,j);
+                      os << std::setw (fw) << m(i, j);
                     }
 
                   if (i < nr - 1)
@@ -2536,7 +2536,7 @@ octave_print_internal (std::ostream& os, const octave::range<double>& r,
             {
               os << ' ';
               for (octave_idx_type i = 0; i < num_elem; i++)
-                os << ' ' << r.elem(i);
+                os << ' ' << r.elem (i);
               return;
             }
 
@@ -2770,7 +2770,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
           for (octave_idx_type ii = 0; ii < n_rows; ii++)
             {
               for (octave_idx_type jj = 0; jj < n_cols; jj++)
-                os << "  " << page(ii,jj);
+                os << "  " << page(ii, jj);
 
               os << "\n";
             }
@@ -3005,7 +3005,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                 {
                   octave_quit ();
 
-                  pr_plus_format (os, page(ii,jj));
+                  pr_plus_format (os, page(ii, jj));
                 }
 
               if ((ii < nr - 1) || (i < m -1))
@@ -3149,7 +3149,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                         {
                           octave_quit ();
                           os << "  ";
-                          pr_int (os, page(ii,jj), fw);
+                          pr_int (os, page(ii, jj), fw);
                         }
                       if ((ii < n_rows - 1) || (i < m -1))
                         os << "\n";

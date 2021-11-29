@@ -91,7 +91,7 @@ namespace octave
           }
 
         for (octave_idx_type j = 0; j < nc; j++)
-          val(i,j) = row(j);
+          val(i, j) = row(j);
 
         i++;
       }

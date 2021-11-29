@@ -322,7 +322,7 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 
 OCTAVE_NAMESPACE_BEGIN
 
-DEFMETHOD (bsxfun, interp,args, ,
+DEFMETHOD (bsxfun, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
 Apply a binary function @var{f} element-by-element to two array arguments

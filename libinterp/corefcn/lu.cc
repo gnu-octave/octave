@@ -171,7 +171,7 @@ permutation information.
           Matrix tmp = args(n++).matrix_value ();
           if (tmp.numel () == 1)
             {
-              thresh.resize (1,2);
+              thresh.resize (1, 2);
               thresh(0) = tmp(0);
               thresh(1) = tmp(0);
             }

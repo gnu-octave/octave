@@ -4232,8 +4232,8 @@ public:
                      const bool logscale);
 
     OCTINTERP_API void
-    check_axis_limits (Matrix &limits, const Matrix kids,
-                       const bool logscale, char &update_type);
+    check_axis_limits (Matrix& limits, const Matrix kids,
+                       const bool logscale, char& update_type);
 
     void update_xlim ()
     {
@@ -6573,7 +6573,7 @@ public:
 
   virtual void execute (void) = 0;
 
- private:
+private:
   int m_busyaction;
 };
 
@@ -6583,7 +6583,7 @@ graphics_event
 {
 public:
 
-  typedef void (*event_fcn) (void*);
+  typedef void (*event_fcn) (void *);
 
   graphics_event (void) = default;
 

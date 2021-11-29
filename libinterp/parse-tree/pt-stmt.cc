@@ -95,14 +95,16 @@ namespace octave
   tree_statement::is_breakpoint (void) const
   {
     return m_command ? m_command->is_breakpoint ()
-      : (m_expression ? m_expression->is_breakpoint () : false);
+                     : (m_expression ? m_expression->is_breakpoint ()
+                                     : false);
   }
 
   bool
   tree_statement::is_active_breakpoint (tree_evaluator& tw) const
   {
     return m_command ? m_command->is_active_breakpoint (tw)
-      : (m_expression ? m_expression->is_active_breakpoint (tw) : false);
+                     : (m_expression ? m_expression->is_active_breakpoint (tw)
+                                     : false);
   }
 
   std::string

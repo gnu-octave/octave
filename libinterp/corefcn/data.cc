@@ -1991,7 +1991,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           // be some additional setup needed, and so this should be avoided.
 
           octave_value tmp = args(0);
-          tmp = tmp.resize (dim_vector (0,0)).resize (dv);
+          tmp = tmp.resize (dim_vector (0, 0)).resize (dv);
 
           int dv_len = dv.ndims ();
           Array<octave_idx_type> ra_idx (dim_vector (dv_len, 1), 0);
@@ -4510,13 +4510,13 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
   if (nargin > 1 && args(nargin-2).is_string ()
       && args(nargin-2).string_value () == "like")
-  {
-    if (! args(nargin-1).islogical ())
-      error (R"(%s: input followed by "like" must be logical)", fcn);
+    {
+      if (! args(nargin-1).islogical ())
+        error (R"(%s: input followed by "like" must be logical)", fcn);
 
-    issparse = args(nargin-1).issparse ();
-    nargin -= 2;
-  }
+      issparse = args(nargin-1).issparse ();
+      nargin -= 2;
+    }
 
   switch (nargin)
     {
@@ -5312,7 +5312,7 @@ identity_matrix (int nr, int nc)
           int n = std::min (nr, nc);
 
           for (int i = 0; i < n; i++)
-            m(i,i) = one;
+            m(i, i) = one;
         }
 
       retval = m;
@@ -8408,7 +8408,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       const Array<float> in = args(0).float_array_value ();
       std::size_t inlen;
       inlen = in.numel () * sizeof (float) / sizeof (char);
-      const char*  inc;
+      const char *inc;
       inc = reinterpret_cast<const char *> (in.data ());
       char *out;
       if (base64_encode (inc, inlen, &out))
@@ -8422,7 +8422,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       const Array<double> in = args(0).array_value ();
       std::size_t inlen;
       inlen = in.numel () * sizeof (double) / sizeof (char);
-      const char*  inc;
+      const char *inc;
       inc = reinterpret_cast<const char *> (in.data ());
       char *out;
       if (base64_encode (inc, inlen, &out))

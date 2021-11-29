@@ -1507,7 +1507,7 @@ public:
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
   { return m_rep->sort (dim, mode); }
-  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+  octave_value sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
   { return m_rep->sort (sidx, dim, mode); }
 
@@ -1639,7 +1639,7 @@ protected:
 
 private:
 
-  static OCTINTERP_API octave_base_value *nil_rep (void);
+  static OCTINTERP_API octave_base_value * nil_rep (void);
 
   OCTINTERP_API assign_op unary_op_to_assign_op (unary_op op);
 

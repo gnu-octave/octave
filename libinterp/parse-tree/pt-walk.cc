@@ -72,7 +72,7 @@ namespace octave
 
   void tree_walker::visit_args_block_attribute_list (tree_args_block_attribute_list& lst)
   {
-    tree_identifier * attribute = lst.attribute ();
+    tree_identifier *attribute = lst.attribute ();
 
     if (attribute)
       attribute->accept (*this);

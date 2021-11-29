@@ -336,28 +336,28 @@ RT do_rightdiv_sm_dm (const SM& a, const DM& d)
 
 // -*- 9 -*-
 SparseMatrix
-xdiv (const SparseMatrix& a, const DiagMatrix& b, MatrixType &)
+xdiv (const SparseMatrix& a, const DiagMatrix& b, MatrixType&)
 {
   return do_rightdiv_sm_dm<SparseMatrix> (a, b);
 }
 
 // -*- 10 -*-
 SparseComplexMatrix
-xdiv (const SparseMatrix& a, const ComplexDiagMatrix& b, MatrixType &)
+xdiv (const SparseMatrix& a, const ComplexDiagMatrix& b, MatrixType&)
 {
   return do_rightdiv_sm_dm<SparseComplexMatrix> (a, b);
 }
 
 // -*- 11 -*-
 SparseComplexMatrix
-xdiv (const SparseComplexMatrix& a, const DiagMatrix& b, MatrixType &)
+xdiv (const SparseComplexMatrix& a, const DiagMatrix& b, MatrixType&)
 {
   return do_rightdiv_sm_dm<SparseComplexMatrix> (a, b);
 }
 
 // -*- 12 -*-
 SparseComplexMatrix
-xdiv (const SparseComplexMatrix& a, const ComplexDiagMatrix& b, MatrixType &)
+xdiv (const SparseComplexMatrix& a, const ComplexDiagMatrix& b, MatrixType&)
 {
   return do_rightdiv_sm_dm<SparseComplexMatrix> (a, b);
 }

@@ -84,7 +84,7 @@ gzfilebuf::setcompression (int comp_level, int comp_strategy)
 }
 
 // Open gzipped file
-gzfilebuf*
+gzfilebuf *
 gzfilebuf::open (const char *name, std::ios_base::openmode mode)
 {
   // Fail if file already open
@@ -111,7 +111,7 @@ gzfilebuf::open (const char *name, std::ios_base::openmode mode)
 }
 
 // Attach to gzipped file
-gzfilebuf*
+gzfilebuf *
 gzfilebuf::attach (int fd, std::ios_base::openmode mode)
 {
   // Fail if file already open
@@ -138,7 +138,7 @@ gzfilebuf::attach (int fd, std::ios_base::openmode mode)
 }
 
 // Close gzipped file
-gzfilebuf*
+gzfilebuf *
 gzfilebuf::close ()
 {
   // Fail immediately if no file is open
@@ -352,7 +352,7 @@ gzfilebuf::overflow (int_type c)
 }
 
 // Assign new buffer
-std::streambuf*
+std::streambuf *
 gzfilebuf::setbuf (char_type *p, std::streamsize n)
 {
   // First make sure stuff is sync'ed, for safety

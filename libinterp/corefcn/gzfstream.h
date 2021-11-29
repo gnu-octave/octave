@@ -95,7 +95,7 @@ public:
    *  @param  mode  Open mode flags.
    *  @return  @c this on success, NULL on failure.
   */
-  gzfilebuf*
+  gzfilebuf *
   open (const char *name,
         std::ios_base::openmode mode);
 
@@ -105,7 +105,7 @@ public:
    *  @param  mode  Open mode flags.
    *  @return  @c this on success, NULL on failure.
   */
-  gzfilebuf*
+  gzfilebuf *
   attach (int fd,
           std::ios_base::openmode mode);
 
@@ -113,7 +113,7 @@ public:
    *  @brief  Close gzipped file.
    *  @return  @c this on success, NULL on failure.
   */
-  gzfilebuf*
+  gzfilebuf *
   close ();
 
 protected:
@@ -165,7 +165,7 @@ protected:
    *
    *  Call setbuf(0,0) to enable unbuffered output.
   */
-  virtual std::streambuf*
+  virtual std::streambuf *
   setbuf (char_type *p,
           std::streamsize n);
 
@@ -305,7 +305,7 @@ public:
   /**
    *  Obtain underlying stream buffer.
   */
-  gzfilebuf*
+  gzfilebuf *
   rdbuf () const
   { return const_cast<gzfilebuf *>(&m_sb); }
 
@@ -392,7 +392,7 @@ public:
   /**
    *  Obtain underlying stream buffer.
   */
-  gzfilebuf*
+  gzfilebuf *
   rdbuf () const
   { return const_cast<gzfilebuf *>(&m_sb); }
 
@@ -460,7 +460,7 @@ public:
   template <typename Ta, typename Tb>
   friend gzofstream&
   operator<<(gzofstream&,
-             const gzomanip2<Ta,Tb>&);
+             const gzomanip2<Ta, Tb>&);
 
   // Constructor
   gzomanip2 (gzofstream& (*f)(gzofstream&, T1, T2),
@@ -487,22 +487,22 @@ setcompression (gzofstream& gzs, int l, int s = Z_DEFAULT_STRATEGY)
 // Manipulator constructor stores arguments
 template <typename T1, typename T2>
 inline
-gzomanip2<T1,T2>::gzomanip2 (gzofstream &(*f)(gzofstream &, T1, T2),
-                             T1 v1,
-                             T2 v2)
+gzomanip2<T1, T2>::gzomanip2 (gzofstream &(*f)(gzofstream&, T1, T2),
+                              T1 v1,
+                              T2 v2)
   : func(f), val1(v1), val2(v2)
 { }
 
 // Insertor applies underlying manipulator function to stream
 template <typename T1, typename T2>
 inline gzofstream&
-operator<<(gzofstream& s, const gzomanip2<T1,T2>& m)
+operator<<(gzofstream& s, const gzomanip2<T1, T2>& m)
 { return (*m.func)(s, m.val1, m.val2); }
 
 // Insert this onto stream to simplify setting of compression level
-inline gzomanip2<int,int>
+inline gzomanip2<int, int>
 setcompression (int l, int s = Z_DEFAULT_STRATEGY)
-{ return gzomanip2<int,int>(&setcompression, l, s); }
+{ return gzomanip2<int, int>(&setcompression, l, s); }
 
 #endif
 

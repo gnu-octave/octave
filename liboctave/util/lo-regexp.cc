@@ -349,8 +349,8 @@ namespace octave
                     && (i == 1 || ovector[2*i] != ovector[2*i-2]
                         || ovector[2*i-1] != ovector[2*i+1]))
                   {
-                    token_extents(pos_match,0) = double (ovector[2*i]+1);
-                    token_extents(pos_match++,1) = double (ovector[2*i+1]);
+                    token_extents(pos_match, 0) = double (ovector[2*i]+1);
+                    token_extents(pos_match++, 1) = double (ovector[2*i+1]);
                   }
               }
 
@@ -498,13 +498,13 @@ namespace octave
           {
             if (i < repstr.size () - 1 && repstr[i+1] == '$')
               {
-                repstr.erase (i,1);  // erase backslash
+                repstr.erase (i, 1); // erase backslash
                 i++;                 // skip over '$'
                 continue;
               }
             if (i < repstr.size () - 1 && repstr[i+1] == '\\')
               {
-                repstr.erase (i,1);  // erase 1st backslash
+                repstr.erase (i, 1); // erase 1st backslash
                 continue;
               }
           }

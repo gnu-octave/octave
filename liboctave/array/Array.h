@@ -533,7 +533,7 @@ public:
   OCTARRAY_API crefT checkelem (octave_idx_type i, octave_idx_type j) const;
 
   OCTARRAY_API crefT checkelem (octave_idx_type i, octave_idx_type j,
-                   octave_idx_type k) const;
+                                octave_idx_type k) const;
 
   OCTARRAY_API crefT checkelem (const Array<octave_idx_type>& ra_idx) const;
 
@@ -640,8 +640,9 @@ public:
     return index (i, resize_ok, resize_fill_value ());
   }
 
-  OCTARRAY_API Array<T> index (const octave::idx_vector& i, const octave::idx_vector& j, bool resize_ok,
-                  const T& rfv) const;
+  OCTARRAY_API Array<T> index (const octave::idx_vector& i, const octave::idx_vector& j,
+                               bool resize_ok,
+                               const T& rfv) const;
   Array<T> index (const octave::idx_vector& i, const octave::idx_vector& j,
                   bool resize_ok) const
   {
@@ -649,7 +650,7 @@ public:
   }
 
   OCTARRAY_API Array<T> index (const Array<octave::idx_vector>& ia, bool resize_ok,
-                  const T& rfv) const;
+                               const T& rfv) const;
   Array<T> index (const Array<octave::idx_vector>& ia, bool resize_ok) const
   {
     return index (ia, resize_ok, resize_fill_value ());
@@ -664,8 +665,9 @@ public:
     assign (i, rhs, resize_fill_value ());
   }
 
-  OCTARRAY_API void assign (const octave::idx_vector& i, const octave::idx_vector& j, const Array<T>& rhs,
-               const T& rfv);
+  OCTARRAY_API void assign (const octave::idx_vector& i, const octave::idx_vector& j,
+                            const Array<T>& rhs,
+                            const T& rfv);
   void assign (const octave::idx_vector& i, const octave::idx_vector& j, const Array<T>& rhs)
   {
     assign (i, j, rhs, resize_fill_value ());
@@ -714,8 +716,8 @@ public:
   OCTARRAY_API void print_info (std::ostream& os, const std::string& prefix) const;
 
   OCTARRAY_API Array<T> sort (int dim = 0, sortmode mode = ASCENDING) const;
-  OCTARRAY_API Array<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
-                 sortmode mode = ASCENDING) const;
+  OCTARRAY_API Array<T> sort (Array<octave_idx_type>& sidx, int dim = 0,
+                              sortmode mode = ASCENDING) const;
 
   //! Ordering is auto-detected or can be specified.
   OCTARRAY_API sortmode issorted (sortmode mode = UNSORTED) const;

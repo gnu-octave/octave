@@ -1118,7 +1118,7 @@ Array<T>::assign (const octave::idx_vector& i, const Array<T>& rhs, const T& rfv
   octave_idx_type rhl = rhs.numel ();
 
   if (rhl != 1 && i.length (n) != rhl)
-    octave::err_nonconformant ("=", dim_vector(i.length(n),1), rhs.dims());
+    octave::err_nonconformant ("=", dim_vector(i.length(n), 1), rhs.dims());
 
   octave_idx_type nx = i.extent (n);
   bool colon = i.is_colon_equiv (nx);
@@ -1870,7 +1870,7 @@ Array<T>::sort (int dim, sortmode mode) const
 
 template <typename T>
 Array<T>
-Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
+Array<T>::sort (Array<octave_idx_type>& sidx, int dim,
                 sortmode mode) const
 {
   if (dim < 0 || dim >= ndims ())

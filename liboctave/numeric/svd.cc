@@ -67,7 +67,7 @@ private:
   // functions could be called from GEJSV
   static F77_INT geqp3_lwork (F77_INT m, F77_INT n,
                               P *a, F77_INT lda,
-                              F77_INT* jpvt, P *tau, P *work,
+                              F77_INT *jpvt, P *tau, P *work,
                               F77_INT lwork, F77_INT& info);
 
   static F77_INT geqrf_lwork (F77_INT m, F77_INT n,
@@ -112,7 +112,7 @@ template<>
 F77_INT
 gejsv_lwork<Matrix>::geqp3_lwork (F77_INT m, F77_INT n,
                                   P *a, F77_INT lda,
-                                  F77_INT* jpvt, P *tau, P *work,
+                                  F77_INT *jpvt, P *tau, P *work,
                                   F77_INT lwork, F77_INT& info)
 {
   GEJSV_REAL_QP3_LWORK (dgeqp3, DGEQP3);
@@ -170,7 +170,7 @@ template<>
 F77_INT
 gejsv_lwork<FloatMatrix>::geqp3_lwork (F77_INT m, F77_INT n,
                                        P *a, F77_INT lda,
-                                       F77_INT* jpvt, P *tau, P *work,
+                                       F77_INT *jpvt, P *tau, P *work,
                                        F77_INT lwork, F77_INT& info)
 {
   GEJSV_REAL_QP3_LWORK (sgeqp3, SGEQP3);
@@ -463,7 +463,7 @@ namespace octave
     svd<FloatMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n, float *tmp_data,
                              F77_INT m1, float *s_vec, float *u, float *vt,
                              F77_INT nrow_vt1, std::vector<float>& work,
-                             F77_INT& lwork, F77_INT* iwork, F77_INT& info)
+                             F77_INT& lwork, F77_INT *iwork, F77_INT& info)
     {
       GESDD_REAL_STEP (sgesdd, SGESDD);
 
@@ -826,18 +826,18 @@ namespace octave
 
           if (iwork[2] == 1)
             (*current_liboctave_warning_with_id_handler)
-            ("Octave:convergence", "svd: (driver: GEJSV) "
-             "Denormal occured, possible loss of accuracy.");
+              ("Octave:convergence", "svd: (driver: GEJSV) "
+               "Denormal occured, possible loss of accuracy.");
 
           if (info < 0)
             (*current_liboctave_error_handler)
-            ("svd: (driver: GEJSV) Illegal argument at #%d",
-             static_cast<int> (-info));
+              ("svd: (driver: GEJSV) Illegal argument at #%d",
+               static_cast<int> (-info));
           else if (info > 0)
             (*current_liboctave_warning_with_id_handler)
-            ("Octave:convergence", "svd: (driver: GEJSV) "
-             "Fail to converge within max sweeps, "
-             "possible inaccurate result.");
+              ("Octave:convergence", "svd: (driver: GEJSV) "
+               "Fail to converge within max sweeps, "
+               "possible inaccurate result.");
 
           if (transposed)  // put things that need to transpose back here
             std::swap (m, n);

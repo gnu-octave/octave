@@ -839,7 +839,7 @@ namespace octave
 
       // Set the user agent for the curl request
       // Needed by mediaWiki API.
-      curl_version_info_data * data = curl_version_info(CURLVERSION_NOW);
+      curl_version_info_data *data = curl_version_info(CURLVERSION_NOW);
       const char *lib_ver = data->version;
       std::string user_agent
         ("GNU Octave/"

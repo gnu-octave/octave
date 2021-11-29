@@ -285,7 +285,7 @@ namespace octave
     {
       static typename T::element_type zero (0);
       for (octave_idx_type i = 0; i < a.rows (); i++)
-        if (a(i,i) == zero) return true;
+        if (a(i, i) == zero) return true;
       return false;
     }
 

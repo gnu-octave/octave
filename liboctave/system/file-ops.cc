@@ -722,10 +722,10 @@ namespace octave
       DWORD len = GetFinalPathNameByHandleW (h_file, buffer, buf_size,
                                              FILE_NAME_NORMALIZED);
       if (len >= buf_size)
-      {
+        {
           msg = "Error querying normalized name for \"" + name + "\"";
           return retval;
-      }
+        }
 
       retval = u8_from_wstring (std::wstring (buffer, len));
 

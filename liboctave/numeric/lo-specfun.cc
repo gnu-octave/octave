@@ -175,7 +175,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = airy (z(i,j), deriv, scaled, ierr(i,j));
+          retval(i, j) = airy (z(i, j), deriv, scaled, ierr(i, j));
 
       return retval;
     }
@@ -245,7 +245,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = airy (z(i,j), deriv, scaled, ierr(i,j));
+          retval(i, j) = airy (z(i, j), deriv, scaled, ierr(i, j));
 
       return retval;
     }
@@ -612,7 +612,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x(i,j), alpha, (scaled ? 2 : 1), ierr(i,j));
+          retval(i, j) = f (x(i, j), alpha, (scaled ? 2 : 1), ierr(i, j));
 
       return retval;
     }
@@ -630,7 +630,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x, alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
+          retval(i, j) = f (x, alpha(i, j), (scaled ? 2 : 1), ierr(i, j));
 
       return retval;
     }
@@ -660,7 +660,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x(i,j), alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
+          retval(i, j) = f (x(i, j), alpha(i, j), (scaled ? 2 : 1), ierr(i, j));
 
       return retval;
     }
@@ -733,7 +733,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x(i), alpha(j), (scaled ? 2 : 1), ierr(i,j));
+          retval(i, j) = f (x(i), alpha(j), (scaled ? 2 : 1), ierr(i, j));
 
       return retval;
     }
@@ -1152,7 +1152,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x(i,j), alpha, (scaled ? 2 : 1), ierr(i,j));
+          retval(i, j) = f (x(i, j), alpha, (scaled ? 2 : 1), ierr(i, j));
 
       return retval;
     }
@@ -1171,7 +1171,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x, alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
+          retval(i, j) = f (x, alpha(i, j), (scaled ? 2 : 1), ierr(i, j));
 
       return retval;
     }
@@ -1202,7 +1202,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x(i,j), alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
+          retval(i, j) = f (x(i, j), alpha(i, j), (scaled ? 2 : 1), ierr(i, j));
 
       return retval;
     }
@@ -1276,7 +1276,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = f (x(i), alpha(j), (scaled ? 2 : 1), ierr(i,j));
+          retval(i, j) = f (x(i), alpha(j), (scaled ? 2 : 1), ierr(i, j));
 
       return retval;
     }
@@ -1421,7 +1421,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = biry (z(i,j), deriv, scaled, ierr(i,j));
+          retval(i, j) = biry (z(i, j), deriv, scaled, ierr(i, j));
 
       return retval;
     }
@@ -1492,7 +1492,7 @@ namespace octave
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = biry (z(i,j), deriv, scaled, ierr(i,j));
+          retval(i, j) = biry (z(i, j), deriv, scaled, ierr(i, j));
 
       return retval;
     }

@@ -641,7 +641,7 @@ Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
     typ = mattype.type (*this);
 
   if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
-    ret = 1 / (*this); 
+    ret = 1 / (*this);
   else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
@@ -887,7 +887,7 @@ Matrix::determinant (MatrixType& mattype,
   if (typ == MatrixType::Lower || typ == MatrixType::Upper)
     {
       for (F77_INT i = 0; i < nc; i++)
-        retval *= elem (i,i);
+        retval *= elem (i, i);
     }
   else if (typ == MatrixType::Hermitian)
     {
@@ -935,7 +935,7 @@ Matrix::determinant (MatrixType& mattype,
             }
 
           for (F77_INT i = 0; i < nc; i++)
-            retval *= atmp(i,i);
+            retval *= atmp(i, i);
 
           retval = retval.square ();
         }
@@ -998,7 +998,7 @@ Matrix::determinant (MatrixType& mattype,
             {
               for (F77_INT i = 0; i < nc; i++)
                 {
-                  double c = atmp(i,i);
+                  double c = atmp(i, i);
                   retval *= (ipvt(i) != (i+1)) ? -c : c;
                 }
             }
@@ -2801,7 +2801,7 @@ xgemm (const Matrix& a, const Matrix& b,
                                F77_CHAR_ARG_LEN (1)));
       for (int j = 0; j < a_nr; j++)
         for (int i = 0; i < j; i++)
-          retval.xelem (j,i) = retval.xelem (i,j);
+          retval.xelem (j, i) = retval.xelem (i, j);
 
     }
   else

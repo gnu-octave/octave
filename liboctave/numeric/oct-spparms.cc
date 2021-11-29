@@ -197,7 +197,7 @@ namespace octave
   }
 
   void sparse_params::do_print_info (std::ostream& os,
-                                const std::string& prefix) const
+                                     const std::string& prefix) const
   {
     for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
       os << prefix << m_keys(i) << ": " << m_params(i) << "\n";

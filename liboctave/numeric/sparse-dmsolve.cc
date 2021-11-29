@@ -46,7 +46,7 @@
 
 template <typename T>
 static MSparse<T>
-dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
+dmsolve_extract (const MSparse<T>& A, const octave_idx_type *Pinv,
                  const octave_idx_type *Q, octave_idx_type rst,
                  octave_idx_type rend, octave_idx_type cst,
                  octave_idx_type cend, octave_idx_type maxnz = -1,
@@ -140,7 +140,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
 
 template <typename T>
 static MArray<T>
-dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
+dmsolve_extract (const MArray<T>& m, const octave_idx_type *,
                  const octave_idx_type *, octave_idx_type r1,
                  octave_idx_type r2, octave_idx_type c1,
                  octave_idx_type c2)
@@ -170,7 +170,7 @@ dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
 
 template <typename T>
 static void
-dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
+dmsolve_insert (MArray<T>& a, const MArray<T>& b, const octave_idx_type *Q,
                 octave_idx_type r, octave_idx_type c)
 {
   T *ax = a.fortran_vec ();
@@ -197,7 +197,7 @@ dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
 
 template <typename T>
 static void
-dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
+dmsolve_insert (MSparse<T>& a, const MSparse<T>& b, const octave_idx_type *Q,
                 octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type b_rows = b.rows ();
@@ -290,7 +290,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
 
 template <typename T, typename RT>
 static void
-dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
+dmsolve_permute (MArray<RT>& a, const MArray<T>& b, const octave_idx_type *p)
 {
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
@@ -314,7 +314,7 @@ dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
 
 template <typename T, typename RT>
 static void
-dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
+dmsolve_permute (MSparse<RT>& a, const MSparse<T>& b, const octave_idx_type *p)
 {
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();

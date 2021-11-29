@@ -97,7 +97,7 @@ namespace octave
 
     private:
 
-      template <typename RHS_T,typename RET_T>
+      template <typename RHS_T, typename RET_T>
       static OCTAVE_API RET_T
       min2norm_solve (const SPARSE_T& a, const RHS_T& b,
                       octave_idx_type& info, int order);

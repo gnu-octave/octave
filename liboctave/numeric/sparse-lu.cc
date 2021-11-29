@@ -524,7 +524,7 @@ namespace octave
 
                   if (lnz < 1)
                     m_L = lu_type (n_inner, nr,
-                                       static_cast<octave_idx_type> (1));
+                                   static_cast<octave_idx_type> (1));
                   else
                     m_L = lu_type (n_inner, nr, lnz);
 
@@ -534,7 +534,7 @@ namespace octave
 
                   if (unz < 1)
                     m_U = lu_type (n_inner, nc,
-                                       static_cast<octave_idx_type> (1));
+                                   static_cast<octave_idx_type> (1));
                   else
                     m_U = lu_type (n_inner, nc, unz);
 
@@ -762,7 +762,7 @@ namespace octave
 
                   if (lnz < 1)
                     m_L = lu_type (n_inner, nr,
-                                       static_cast<octave_idx_type> (1));
+                                   static_cast<octave_idx_type> (1));
                   else
                     m_L = lu_type (n_inner, nr, lnz);
 
@@ -772,7 +772,7 @@ namespace octave
 
                   if (unz < 1)
                     m_U = lu_type (n_inner, nc,
-                                       static_cast<octave_idx_type> (1));
+                                   static_cast<octave_idx_type> (1));
                   else
                     m_U = lu_type (n_inner, nc, unz);
 

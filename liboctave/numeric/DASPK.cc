@@ -36,28 +36,28 @@
 #include "lo-error.h"
 #include "quit.h"
 
-typedef F77_INT (*daspk_fcn_ptr) (const double&, const double*, const double*,
-                                  const double&, double*, F77_INT&, double*,
-                                  F77_INT*);
+typedef F77_INT (*daspk_fcn_ptr) (const double&, const double *, const double *,
+                                  const double&, double *, F77_INT&, double *,
+                                  F77_INT *);
 
-typedef F77_INT (*daspk_jac_ptr) (const double&, const double*, const double*,
-                                  double*, const double&, double*, F77_INT*);
+typedef F77_INT (*daspk_jac_ptr) (const double&, const double *, const double *,
+                                  double *, const double&, double *, F77_INT *);
 
 typedef F77_INT (*daspk_psol_ptr) (const F77_INT&, const double&,
-                                   const double*, const double*,
-                                   const double*, const double&,
-                                   const double*, double*, F77_INT*,
-                                   double*, const double&, F77_INT&,
-                                   double*, F77_INT*);
+                                   const double *, const double *,
+                                   const double *, const double&,
+                                   const double *, double *, F77_INT *,
+                                   double *, const double&, F77_INT&,
+                                   double *, F77_INT *);
 
 extern "C"
 {
   F77_RET_T
   F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const F77_INT&, F77_DBLE&,
-                             F77_DBLE*, F77_DBLE*, F77_DBLE&, const F77_INT*,
-                             const F77_DBLE*, const F77_DBLE*, F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_INT*,
-                             const F77_INT&, const F77_DBLE*, const F77_INT*,
+                             F77_DBLE *, F77_DBLE *, F77_DBLE&, const F77_INT *,
+                             const F77_DBLE *, const F77_DBLE *, F77_INT&,
+                             F77_DBLE *, const F77_INT&, F77_INT *,
+                             const F77_INT&, const F77_DBLE *, const F77_INT *,
                              daspk_jac_ptr, daspk_psol_ptr);
 }
 
@@ -106,7 +106,7 @@ static F77_INT
 ddaspk_psol (const F77_INT&, const double&, const double *,
              const double *, const double *, const double&,
              const double *, double *, F77_INT *, double *,
-             const double&, F77_INT&, double *, F77_INT*)
+             const double&, F77_INT&, double *, F77_INT *)
 {
   (*current_liboctave_error_handler) ("daspk: PSOL is not implemented");
 

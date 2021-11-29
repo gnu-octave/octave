@@ -73,15 +73,15 @@ public:
 
   template <typename T>
   OCTAVE_API
-  MatrixType (const MSparse<T> &a);
+  MatrixType (const MSparse<T>& a);
 
   OCTAVE_API MatrixType (const matrix_type t, bool _full = false);
 
   OCTAVE_API MatrixType (const matrix_type t, const octave_idx_type np,
-              const octave_idx_type *p, bool _full = false);
+                         const octave_idx_type *p, bool _full = false);
 
   OCTAVE_API MatrixType (const matrix_type t, const octave_idx_type ku,
-              const octave_idx_type kl, bool _full = false);
+                         const octave_idx_type kl, bool _full = false);
 
   OCTAVE_API ~MatrixType (void);
 

@@ -484,7 +484,8 @@ Range::index (const octave::idx_vector& idx) const
 
       double *array = retval.fortran_vec ();
 
-      idx.loop (n, [=, &array] (idx_vector i) {
+      idx.loop (n, [=, &array] (idx_vector i)
+      {
         if (i == 0)
           *array++ = m_base;
         else if (i < m_numel - 1)

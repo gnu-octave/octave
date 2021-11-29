@@ -197,12 +197,12 @@ protected:
 
 private:
 
-  static OCTAVE_API typename Sparse<T>::SparseRep *nil_rep (void);
+  static OCTAVE_API typename Sparse<T>::SparseRep * nil_rep (void);
 
 public:
 
   Sparse (void)
-    : m_rep (nil_rep ()), m_dimensions (dim_vector (0,0))
+    : m_rep (nil_rep ()), m_dimensions (dim_vector (0, 0))
   {
     m_rep->m_count++;
   }
@@ -581,7 +581,7 @@ public:
   OCTAVE_API Sparse<T>
   sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
   OCTAVE_API Sparse<T>
-  sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+  sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
         sortmode mode = ASCENDING) const;
 
   OCTAVE_API Sparse<T> diag (octave_idx_type k = 0) const;

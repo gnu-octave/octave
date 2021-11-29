@@ -253,6 +253,23 @@ namespace octave
   }
 
   template <typename T>
+  void
+  xinit (octave_int<T> base, octave_int<T> limit, octave_int<T> inc,
+         octave_int<T>& final_val, octave_idx_type& nel)
+  {
+      // We need an integer division that is truncating decimals instead of
+      // rounding.  So, use underlying C++ types instead of octave_int<T>.
+      // FIXME: The numerator might underflow or overflow. Add checks for that.
+      nel = ((inc == octave_int<T> (0)
+             || (limit > base && inc < octave_int<T> (0))
+             || (limit < base && inc > octave_int<T> (0)))
+            ? 0
+            : (limit.value () - base.value () + inc.value ()) / inc.value ());
+
+      final_val = base + (nel - 1) * inc;
+    }
+
+  template <typename T>
   bool
   xis_storable (T base, T limit, octave_idx_type nel)
   {
@@ -283,6 +300,62 @@ namespace octave
   template <>
   void
   range<float>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<octave_int8>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<octave_int16>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<octave_int32>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<octave_int64>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<octave_uint8>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<octave_uint16>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<octave_uint32>::init (void)
+  {
+    return xinit (m_base, m_limit, m_increment, m_final, m_numel);
+  }
+
+  template <>
+  void
+  range<octave_uint64>::init (void)
   {
     return xinit (m_base, m_limit, m_increment, m_final, m_numel);
   }

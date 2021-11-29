@@ -704,8 +704,8 @@ classdef jupyter_notebook < handle
 endclassdef
 
 
-## FIXME: It would be useful to have tests of functionality in addition
-##        to just input validation.
+## Note: Functional BIST tests are located in the 'test/jupyter-notebook'
+##       directory.
 
 ## Test input validation
 %!error <Invalid call> jupyter_notebook ()

@@ -430,7 +430,7 @@ namespace octave
     return retval;
   }
 
-  Table*
+  Table *
   Table::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
                  const graphics_object& go)
   {

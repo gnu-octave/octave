@@ -359,9 +359,9 @@ namespace octave
                                                      QPoint *local_pos)
   {
     long position = SendScintilla (SCI_GETCURRENTPOS);
-    long point_x  = SendScintilla (SCI_POINTXFROMPOSITION,0,position);
-    long point_y  = SendScintilla (SCI_POINTYFROMPOSITION,0,position);
-    *local_pos = QPoint (point_x,point_y);  // local cursor position
+    long point_x  = SendScintilla (SCI_POINTXFROMPOSITION, 0, position);
+    long point_y  = SendScintilla (SCI_POINTYFROMPOSITION, 0, position);
+    *local_pos = QPoint (point_x, point_y); // local cursor position
     *global_pos = mapToGlobal (*local_pos); // global position of cursor
   }
 
@@ -836,7 +836,7 @@ namespace octave
 #else
                                                QString::SkipEmptyParts);
 #endif
-  for (int i = 0; i < lines.count (); i++)
+    for (int i = 0; i < lines.count (); i++)
       {
         QString line = lines.at (i);
         if (line.trimmed ().isEmpty ())
@@ -904,7 +904,7 @@ namespace octave
         });
 
     // Disable opening a file at a breakpoint in case keyboard () is used
-    gui_settings* settings = rmgr.get_settings ();
+    gui_settings *settings = rmgr.get_settings ();
     bool show_dbg_file = settings->value (ed_show_dbg_file).toBool ();
     settings->setValue (ed_show_dbg_file.key, false);
 
@@ -1145,18 +1145,18 @@ namespace octave
       }
     endUndoAction ();
 
-      // restore the visible area
-      setFirstVisibleLine (first_line);
+    // restore the visible area
+    setFirstVisibleLine (first_line);
 
-      // fix cursor column if outside of new line length
-      int eol_len = eol_string ().length ();
-      if (line == lines () - 1)
-        eol_len = 0;
-      const int col_max = text (line).length () - eol_len;
-      if (col_max < col)
-        col = col_max;
+    // fix cursor column if outside of new line length
+    int eol_len = eol_string ().length ();
+    if (line == lines () - 1)
+      eol_len = 0;
+    const int col_max = text (line).length () - eol_len;
+    if (col_max < col)
+      col = col_max;
 
-      setCursorPosition (line, col);
+    setCursorPosition (line, col);
   }
 
   bool octave_qscintilla::event (QEvent *e)
@@ -1166,12 +1166,12 @@ namespace octave
         QHelpEvent *help_e = static_cast<QHelpEvent *>(e);
         QString variable = wordAtPoint (help_e->pos());
         QStringList symbol_names
-            = m_octave_qobj.get_workspace_model ()->get_symbol_names ();
+          = m_octave_qobj.get_workspace_model ()->get_symbol_names ();
         int symbol_idx = symbol_names.indexOf (variable);
         if (symbol_idx > -1)
           {
             QStringList symbol_values
-                = m_octave_qobj.get_workspace_model ()->get_symbol_values ();
+              = m_octave_qobj.get_workspace_model ()->get_symbol_values ();
             QToolTip::showText (help_e->globalPos(), variable
                                 + " = " + symbol_values.at (symbol_idx));
           }

@@ -62,7 +62,7 @@ namespace octave
     return QKeySequence ();
   }
 
-  Menu*
+  Menu *
   Menu::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
                 const graphics_object& go)
   {
@@ -270,7 +270,7 @@ namespace octave
       }
   }
 
-  QWidget*
+  QWidget *
   Menu::menu (void)
   {
     QAction *action = qWidget<QAction> ();

@@ -688,7 +688,7 @@ namespace octave
       = m_help_engine->linksForIdentifier (ref_name);
 #endif
 
-    QTabWidget *navi = static_cast<QTabWidget*> (widget (0));
+    QTabWidget *navi = static_cast<QTabWidget *> (widget (0));
 
     if (found_links.count() > 0)
       {
@@ -704,7 +704,7 @@ namespace octave
         // Switch to function index tab
         m_help_engine->indexWidget()->filterIndices (ref_name);
         QWidget *index_tab
-          = navi->findChild<QWidget*> ("documentation_tab_index");
+          = navi->findChild<QWidget *> ("documentation_tab_index");
         navi->setCurrentWidget (index_tab);
       }
     else
@@ -731,7 +731,7 @@ namespace octave
         search_query->setQuery (query);
 #endif
         QWidget *search_tab
-          = navi->findChild<QWidget*> ("documentation_tab_search");
+          = navi->findChild<QWidget *> ("documentation_tab_search");
         navi->setCurrentWidget (search_tab);
       }
   }
@@ -965,14 +965,14 @@ namespace octave
         anchor.remove (QRegExp ("^SEC_"));
         anchor.remove (QRegExp ("^XREF"));
         anchor.remove ("Concept-Index_cp_letter-");
-        anchor.replace ("-"," ");
+        anchor.replace ("-", " ");
 
         // replace encoded special chars by their unencoded versions
         QRegExp rx = QRegExp ("_00([0-7][0-9a-f])");
         int pos = 0;
         while ((pos = rx.indexIn(anchor, pos)) != -1)
           {
-            anchor.replace ("_00"+rx.cap (1), QChar (rx.cap (1).toInt (nullptr,16)));
+            anchor.replace ("_00"+rx.cap (1), QChar (rx.cap (1).toInt (nullptr, 16)));
             pos += rx.matchedLength();
           }
 
@@ -1016,7 +1016,7 @@ namespace octave
       }
   }
 
-  QVariant documentation_browser::loadResource (int type, const QUrl &url)
+  QVariant documentation_browser::loadResource (int type, const QUrl& url)
   {
     if (m_help_engine && url.scheme () == "qthelp")
       return QVariant (m_help_engine->fileData(url));

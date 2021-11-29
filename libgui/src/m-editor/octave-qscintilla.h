@@ -89,15 +89,15 @@ namespace octave
 
     void update_rowcol_indicator_signal (int line, int col);
     void execute_command_in_terminal_signal (const QString&);
-    void create_context_menu_signal (QMenu*);
+    void create_context_menu_signal (QMenu *);
     void context_menu_edit_signal (const QString&);
     void qsci_has_focus_signal (bool);
     void status_update (bool, bool);
     void show_doc_signal (const QString&);
     void context_menu_break_condition_signal (int);
     void context_menu_break_once (int);
-    void ctx_menu_run_finished_signal (bool, int, QTemporaryFile*,
-                                       QTemporaryFile*, bool, bool);
+    void ctx_menu_run_finished_signal (bool, int, QTemporaryFile *,
+                                       QTemporaryFile *, bool, bool);
     void focus_console_after_command_signal (void);
 
     void interpreter_event (const fcn_callback& fcn);
@@ -110,7 +110,7 @@ namespace octave
 
   private slots:
 
-    void ctx_menu_run_finished (bool, int, QTemporaryFile*, QTemporaryFile*,
+    void ctx_menu_run_finished (bool, int, QTemporaryFile *, QTemporaryFile *,
                                 bool, bool);
 
     void contextmenu_help (bool);

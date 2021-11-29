@@ -166,35 +166,35 @@ namespace octave
     QGridLayout *name_layout = new QGridLayout;
     name_group->setLayout (name_layout);
 
-    name_layout->addWidget (file_name_label,1,1, 1,1);
-    name_layout->addWidget (m_file_name_edit,1,2, 1,-1);
+    name_layout->addWidget (file_name_label, 1, 1, 1, 1);
+    name_layout->addWidget (m_file_name_edit, 1, 2, 1, -1);
 
-    name_layout->addWidget (start_dir_label,2,1);
-    name_layout->addWidget (m_start_dir_edit,2,2,1,3);
-    name_layout->addWidget (m_browse_button,2,5);
-    name_layout->setColumnStretch (2,1);
+    name_layout->addWidget (start_dir_label, 2, 1);
+    name_layout->addWidget (m_start_dir_edit, 2, 2, 1, 3);
+    name_layout->addWidget (m_browse_button, 2, 5);
+    name_layout->setColumnStretch (2, 1);
 
-    name_layout->addWidget (m_recurse_dirs_check,3,1);
-    name_layout->addWidget (m_include_dirs_check,3,2);
-    name_layout->addWidget (m_name_case_check,3,3);
+    name_layout->addWidget (m_recurse_dirs_check, 3, 1);
+    name_layout->addWidget (m_include_dirs_check, 3, 2);
+    name_layout->addWidget (m_name_case_check, 3, 3);
 
     // content options
     QGroupBox *content_group = new QGroupBox (tr ("File contents"));
     QGridLayout *content_layout = new QGridLayout;
     content_group->setLayout (content_layout);
-    content_layout->addWidget (m_contains_text_check,4,1);
-    content_layout->addWidget (m_contains_text_edit,4,2,1,3);
-    content_layout->setColumnStretch (2,1);
-    content_layout->addWidget (m_content_case_check,5,1);
+    content_layout->addWidget (m_contains_text_check, 4, 1);
+    content_layout->addWidget (m_contains_text_edit, 4, 2, 1, 3);
+    content_layout->setColumnStretch (2, 1);
+    content_layout->addWidget (m_content_case_check, 5, 1);
 
     QGridLayout *main_layout = new QGridLayout;
     main_layout->setSizeConstraint (QLayout::SetFixedSize);
     main_layout->addWidget (name_group, 0, 0);
     main_layout->addWidget (content_group, 1, 0);
-    main_layout->addWidget (button_box, 0, 1,3,1);
-    main_layout->addWidget (m_file_list,2,0);
-    main_layout->setRowStretch (2,1);
-    main_layout->addWidget (m_status_bar,3,0,1,-1);
+    main_layout->addWidget (button_box, 0, 1, 3, 1);
+    main_layout->addWidget (m_file_list, 2, 0);
+    main_layout->setRowStretch (2, 1);
+    main_layout->addWidget (m_status_bar, 3, 0, 1, -1);
 
     setLayout (main_layout);
 

@@ -119,7 +119,7 @@ namespace octave
     QToolButton *fullscreen_button = new QToolButton (m_title_widget);
     fullscreen_button->setDefaultAction (m_fullscreen_action);
     fullscreen_button->setFocusPolicy (Qt::NoFocus);
-    fullscreen_button->setIconSize (QSize (m_icon_size,m_icon_size));
+    fullscreen_button->setIconSize (QSize (m_icon_size, m_icon_size));
     QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
     fullscreen_button->setStyleSheet (css_button);
 
@@ -926,7 +926,7 @@ namespace octave
 
     if (indices.isEmpty ())
       {
-        start = QPoint (0,0);
+        start = QPoint (0, 0);
         end = tabsize;
       }
     else if (indices.size () == 1)
@@ -936,7 +936,7 @@ namespace octave
       }
     else
       {
-        end = QPoint (0,0);
+        end = QPoint (0, 0);
         start = tabsize;
 
         for (int i = 0; i < indices.size (); i++)
@@ -1240,8 +1240,8 @@ namespace octave
 
     // The old-style signal/slot connection appears to be needed here to
     // prevent a crash when closing a variable_dock_widget object.
-    connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
-             page, SLOT (handle_focus_change (QWidget*, QWidget*)));
+    connect (qApp, SIGNAL (focusChanged (QWidget *, QWidget *)),
+             page, SLOT (handle_focus_change (QWidget *, QWidget *)));
 
     connect (this, &variable_editor::visibilityChanged,
              page, &variable_dock_widget::setVisible);
@@ -1506,7 +1506,7 @@ namespace octave
   }
 
   void
-  variable_editor::variable_focused (const QString &name)
+  variable_editor::variable_focused (const QString& name)
   {
     m_current_focus_vname = name;
 
@@ -1636,8 +1636,8 @@ namespace octave
   }
 
   QAction *
-  variable_editor::add_tool_bar_button (const QIcon &icon,
-                                        const QString &text,
+  variable_editor::add_tool_bar_button (const QIcon& icon,
+                                        const QString& text,
                                         const QObject *receiver,
                                         const char *member)
   {
@@ -1665,7 +1665,7 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
     m_save_action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
-                                  this, SLOT (save ()));
+                                         this, SLOT (save ()));
     addAction (m_save_action);
     m_save_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     m_save_action->setStatusTip(tr("Save variable to a file"));

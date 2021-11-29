@@ -53,7 +53,7 @@ namespace octave
     // handled here?
     if (dw_icon_set_names[icon_set_found].name != "NONE")
       m_release_notes_icon = dw_icon_set_names[icon_set_found].path
-        + "ReleaseWidget.png";
+                             + "ReleaseWidget.png";
     else
       m_release_notes_icon = ":/actions/icons/logo.png";
 #endif

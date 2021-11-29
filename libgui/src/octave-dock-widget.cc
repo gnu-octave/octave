@@ -80,7 +80,7 @@ namespace octave
     m_dock_button = new QToolButton (m_title_widget);
     m_dock_button->setDefaultAction (m_dock_action);
     m_dock_button->setFocusPolicy (Qt::NoFocus);
-    m_dock_button->setIconSize (QSize (m_icon_size,m_icon_size));
+    m_dock_button->setIconSize (QSize (m_icon_size, m_icon_size));
 
     m_close_action = new QAction
       (QIcon (":/actions/icons/widget-close.png"), "", this);
@@ -88,7 +88,7 @@ namespace octave
     m_close_button = new QToolButton (m_title_widget);
     m_close_button->setDefaultAction (m_close_action);
     m_close_button->setFocusPolicy (Qt::NoFocus);
-    m_close_button->setIconSize (QSize (m_icon_size,m_icon_size));
+    m_close_button->setIconSize (QSize (m_icon_size, m_icon_size));
 
     QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
     m_dock_button->setStyleSheet (css_button);
@@ -99,7 +99,7 @@ namespace octave
     h_layout->addWidget (m_dock_button);
     h_layout->addWidget (m_close_button);
     h_layout->setSpacing (10);
-    h_layout->setContentsMargins (5,2,2,2);
+    h_layout->setContentsMargins (5, 2, 2, 2);
 
     m_title_widget->setLayout (h_layout);
 
@@ -108,11 +108,11 @@ namespace octave
         // Only connect the when a parent (main window) is given
         // copy & paste handling
         connect (p, SIGNAL (copyClipboard_signal ()),
-                this, SLOT (copyClipboard ()));
+                 this, SLOT (copyClipboard ()));
         connect (p, SIGNAL (pasteClipboard_signal ()),
-                this, SLOT (pasteClipboard ()));
+                 this, SLOT (pasteClipboard ()));
         connect (p, SIGNAL (selectAll_signal ()),
-                this, SLOT (selectAll ()));
+                 this, SLOT (selectAll ()));
 
         // undo handling
         connect (p, SIGNAL (undo_signal ()), this, SLOT (do_undo ()));
@@ -127,7 +127,7 @@ namespace octave
       = static_cast<QHBoxLayout *> (m_title_widget->layout ());
     QLabel *label = new QLabel (title, m_title_widget);
     label->setStyleSheet ("background-color: transparent;");
-    h_layout->insertWidget (0,label);
+    h_layout->insertWidget (0, label);
     setTitleBarWidget (m_title_widget);
     setWindowTitle (title);
   }
@@ -534,37 +534,37 @@ namespace octave
         default_dock_size = QRect (0, 0, w/10, h/10);
       }
 
-      m_recent_float_geom
-        = settings->value (dw_float_geometry.key.arg (objectName ()),
-                             default_floating_size).toRect ();
+    m_recent_float_geom
+      = settings->value (dw_float_geometry.key.arg (objectName ()),
+                         default_floating_size).toRect ();
 
-      QWidget dummy;
-      dummy.setGeometry (m_recent_float_geom);
+    QWidget dummy;
+    dummy.setGeometry (m_recent_float_geom);
 
-      if (QApplication::desktop ()->screenNumber (&dummy) == -1)
-        m_recent_float_geom = default_floating_size;
+    if (QApplication::desktop ()->screenNumber (&dummy) == -1)
+      m_recent_float_geom = default_floating_size;
 
-      // The following is required for ensure smooth transition from old
-      // saveGeomety to new QRect setting (see comment for restoring size
-      // of docked widgets)
-      QVariant dock_geom
-        = settings->value (dw_dock_geometry.key.arg (objectName ()),
-                           default_dock_size);
-      if (dock_geom.canConvert (QMetaType::QRect))
-        m_recent_dock_geom = dock_geom.toRect ();
-      else
-        m_recent_dock_geom = dw_dock_geometry.def.toRect ();
+    // The following is required for ensure smooth transition from old
+    // saveGeomety to new QRect setting (see comment for restoring size
+    // of docked widgets)
+    QVariant dock_geom
+      = settings->value (dw_dock_geometry.key.arg (objectName ()),
+                         default_dock_size);
+    if (dock_geom.canConvert (QMetaType::QRect))
+      m_recent_dock_geom = dock_geom.toRect ();
+    else
+      m_recent_dock_geom = dw_dock_geometry.def.toRect ();
 
     notice_settings (settings);  // call individual handler
 
     set_style (false);
 
     // Compacter design
-    QToolBar* toolbar = findChild <QToolBar *> ();
+    QToolBar *toolbar = findChild <QToolBar *> ();
     if (toolbar)
       toolbar->setStyleSheet (toolbar->styleSheet () + global_toolbar_style);
 
-    QMenuBar* menubar = findChild <QMenuBar *> ();
+    QMenuBar *menubar = findChild <QMenuBar *> ();
     if (menubar)
       menubar->setStyleSheet (menubar->styleSheet () + global_menubar_style);
 
@@ -628,7 +628,7 @@ namespace octave
     if (m_focus_follows_mouse && ! isFloating () && (e->type () == QEvent::Enter))
       activate ();
 
-    return QDockWidget::eventFilter (obj,e);
+    return QDockWidget::eventFilter (obj, e);
   }
 
   void

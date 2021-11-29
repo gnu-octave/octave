@@ -103,7 +103,7 @@ namespace octave
 
     //! Slot for handling a change in directory via double click.
 
-    void item_double_clicked (const QModelIndex & index);
+    void item_double_clicked (const QModelIndex& index);
 
     //! Slot for handling the up-directory button in the toolbar.
 

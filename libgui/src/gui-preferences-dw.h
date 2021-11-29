@@ -38,16 +38,16 @@ dw_title_custom_style ("DockWidgets/widget_title_custom_style",
 const gui_pref dw_title_3d ("DockWidgets/widget_title_3d", QVariant (50));
 
 const gui_pref
-dw_title_fg_color ("DockWidgets/title_fg_color", QVariant (QColor (0,0,0)));
+dw_title_fg_color ("DockWidgets/title_fg_color", QVariant (QColor (0, 0, 0)));
 
 const gui_pref dw_title_fg_color_active ("DockWidgets/title_fg_color_active",
-                                         QVariant (QColor (0,0,0)));
+                                         QVariant (QColor (0, 0, 0)));
 
 const gui_pref dw_title_bg_color ("DockWidgets/title_bg_color",
-                                  QVariant (QColor (255,255,255)));
+                                  QVariant (QColor (255, 255, 255)));
 
 const gui_pref dw_title_bg_color_active ("DockWidgets/title_bg_color_active",
-                                         QVariant (QColor (192,192,192)));
+                                         QVariant (QColor (192, 192, 192)));
 
 const gui_pref dw_icon_set ("DockWidgets/widget_icon_set", QVariant ("NONE"));
 

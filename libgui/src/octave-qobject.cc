@@ -133,7 +133,7 @@ namespace octave
   // Disable all Qt messages by default.
 
   static void
-  message_handler (QtMsgType, const QMessageLogContext &, const QString &)
+  message_handler (QtMsgType, const QMessageLogContext&, const QString&)
   { }
 
   //! Reimplement QApplication::notify.  Octave's own exceptions are

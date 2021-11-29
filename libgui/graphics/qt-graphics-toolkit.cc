@@ -324,7 +324,7 @@ namespace octave
     return ext;
   }
 
-  Object*
+  Object *
   qt_graphics_toolkit::toolkitObject (const graphics_object& go)
   {
     ObjectProxy *proxy = toolkitObjectProxy (go);
@@ -335,7 +335,7 @@ namespace octave
     return nullptr;
   }
 
-  ObjectProxy*
+  ObjectProxy *
   qt_graphics_toolkit::toolkitObjectProxy (const graphics_object& go)
   {
     if (go)

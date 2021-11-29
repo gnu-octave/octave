@@ -135,9 +135,9 @@ namespace octave
 
     ~variable_editor_stack (void) = default;
 
-    variable_editor_view *edit_view (void) {return m_edit_view;};
+    variable_editor_view * edit_view (void) {return m_edit_view;};
 
-    QTextEdit *disp_view (void) {return m_disp_view;};
+    QTextEdit * disp_view (void) {return m_disp_view;};
 
   signals:
 
@@ -160,7 +160,7 @@ namespace octave
 
   private:
 
-    QTextEdit *make_disp_view (QWidget *parent);
+    QTextEdit * make_disp_view (QWidget *parent);
 
     base_qobject& m_octave_qobj;
 
@@ -399,8 +399,8 @@ namespace octave
 
     void update_colors (void);
 
-    QAction *add_tool_bar_button (const QIcon &icon, const QString &text,
-                                  const QObject *receiver, const char *member);
+    QAction * add_tool_bar_button (const QIcon& icon, const QString& text,
+                                   const QObject *receiver, const char *member);
 
     void construct_tool_bar (void);
 

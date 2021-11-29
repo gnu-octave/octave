@@ -107,7 +107,7 @@ namespace octave
     void find_prev (void);
 
     //! Slot for updating the edit area when the active tab has changed
-    void update_edit_area (octave_qscintilla*);
+    void update_edit_area (octave_qscintilla *);
 
   private slots:
 
@@ -131,7 +131,7 @@ namespace octave
     void reject ();
 
     //! Reimplemented close event
-    void closeEvent (QCloseEvent* e);
+    void closeEvent (QCloseEvent *e);
 
     //! Update mru lists with new entry
     void mru_update (QComboBox *mru);

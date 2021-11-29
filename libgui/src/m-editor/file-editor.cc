@@ -82,7 +82,7 @@ namespace octave
     setMovable (true);
   }
 
-  tab_bar * file_editor_tab_widget::get_tab_bar (void) const
+  tab_bar *file_editor_tab_widget::get_tab_bar (void) const
   {
     return qobject_cast<tab_bar *> (tabBar ());
   }
@@ -144,7 +144,7 @@ namespace octave
 
   // insert global actions, that should also be displayed in the editor window,
   // into the editor's menu and/or toolbar
-  void file_editor::insert_global_actions (QList<QAction*> shared_actions)
+  void file_editor::insert_global_actions (QList<QAction *> shared_actions)
   {
     // actions/menus that have to be added to the toolbar or the menu
     QAction *open_action = shared_actions.at (OPEN_ACTION);
@@ -159,21 +159,21 @@ namespace octave
     // actions that are additionally enabled/disabled later by the editor
     // undo
     m_undo_action = shared_actions.at (UNDO_ACTION);
-    m_tool_bar->insertAction (m_redo_action,m_undo_action);
-    m_edit_menu->insertAction (m_redo_action,m_undo_action);
+    m_tool_bar->insertAction (m_redo_action, m_undo_action);
+    m_edit_menu->insertAction (m_redo_action, m_undo_action);
     // select all
     m_selectall_action = shared_actions.at (SELECTALL_ACTION);
-    m_edit_menu->insertAction (m_find_action,m_selectall_action);
+    m_edit_menu->insertAction (m_find_action, m_selectall_action);
     m_edit_menu->insertSeparator (m_find_action);
     // paste
     m_paste_action = shared_actions.at (PASTE_ACTION);
-    m_tool_bar->insertAction (m_find_action,m_paste_action);
-    m_edit_menu->insertAction (m_selectall_action,m_paste_action);
+    m_tool_bar->insertAction (m_find_action, m_paste_action);
+    m_edit_menu->insertAction (m_selectall_action, m_paste_action);
     m_edit_menu->insertSeparator (m_selectall_action);
     // copy
     m_copy_action = shared_actions.at (COPY_ACTION);
-    m_tool_bar->insertAction (m_paste_action,m_copy_action);
-    m_edit_menu->insertAction (m_paste_action,m_copy_action);
+    m_tool_bar->insertAction (m_paste_action, m_copy_action);
+    m_edit_menu->insertAction (m_paste_action, m_copy_action);
     // find files
     m_find_files_action = shared_actions.at (FIND_FILES_ACTION);
     m_edit_menu->insertAction (m_find_action, m_find_files_action);
@@ -401,7 +401,7 @@ namespace octave
       m_find_dialog->set_visible (enable);
 
     // Take care of the shortcuts
-    QHash<QMenu*, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
+    QHash<QMenu *, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
 
     while (i != m_hash_menu_text.constEnd ())
       {
@@ -894,7 +894,7 @@ namespace octave
     m_find_dialog->addAction (m_find_previous_action);
 
     // Update edit area
-    file_editor_tab* fet
+    file_editor_tab *fet
       = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
     m_find_dialog->update_edit_area (fet->qsci_edit_area ());
 
@@ -1676,7 +1676,7 @@ namespace octave
                                                   tr ("Octave Editor"),
                                                   tr ("File\n%1\ndoes not exist. "
                                                       "Do you want to create it?").arg (openFileName),
-                                                  QMessageBox::NoButton,nullptr);
+                                                  QMessageBox::NoButton, nullptr);
                         QPushButton *create_button =
                           msgBox->addButton (tr ("Create"), QMessageBox::YesRole);
                         msgBox->addButton (tr ("Cancel"), QMessageBox::RejectRole);
@@ -1968,15 +1968,15 @@ namespace octave
     m_fileMenu->addSeparator ();
 
     m_close_action
-      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
+      = add_action (m_fileMenu, rmgr.icon ("window-close", false),
                     tr ("&Close"), SLOT (request_close_file (bool)));
 
     m_close_all_action
-      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
+      = add_action (m_fileMenu, rmgr.icon ("window-close", false),
                     tr ("Close All"), SLOT (request_close_all_files (bool)));
 
     m_close_others_action
-      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
+      = add_action (m_fileMenu, rmgr.icon ("window-close", false),
                     tr ("Close Other Files"),
                     SLOT (request_close_other_files (bool)));
 
@@ -2410,13 +2410,13 @@ namespace octave
       qsci->undo ();
   }
 
-  file_editor_tab* file_editor::reset_focus (void)
+  file_editor_tab *file_editor::reset_focus (void)
   {
     // Reset the focus of the tab and the related edit area
     file_editor_tab *f
-       = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
-     emit fetab_set_focus (f);
-     return f;
+      = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
+    emit fetab_set_focus (f);
+    return f;
   }
 
   file_editor_tab *
@@ -2432,7 +2432,7 @@ namespace octave
              this, &file_editor::create_context_menu);
 
     connect (f->qsci_edit_area (),
-             SIGNAL (SCN_AUTOCCOMPLETED (const char*, int, int, int)),
+             SIGNAL (SCN_AUTOCCOMPLETED (const char *, int, int, int)),
              this, SLOT (reset_focus (void)));
 
     connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED (void)),
@@ -2480,8 +2480,8 @@ namespace octave
     connect (this, &file_editor::fetab_change_request,
              f, &file_editor_tab::change_editor_state);
 
-    connect (this, QOverload<const QWidget*, const QString&, bool>::of (&file_editor::fetab_save_file),
-             f, QOverload<const QWidget*, const QString&, bool>::of (&file_editor_tab::save_file));
+    connect (this, QOverload<const QWidget *, const QString&, bool>::of (&file_editor::fetab_save_file),
+             f, QOverload<const QWidget *, const QString&, bool>::of (&file_editor_tab::save_file));
 
     // Signals from the file_editor trivial operations
     connect (this, &file_editor::fetab_recover_from_exit,
@@ -2503,8 +2503,8 @@ namespace octave
     connect (this, &file_editor::fetab_context_edit,
              f, &file_editor_tab::context_edit);
 
-    connect (this, QOverload<const QWidget*>::of (&file_editor::fetab_save_file),
-             f, QOverload<const QWidget*>::of (&file_editor_tab::save_file));
+    connect (this, QOverload<const QWidget *>::of (&file_editor::fetab_save_file),
+             f, QOverload<const QWidget *>::of (&file_editor_tab::save_file));
 
     connect (this, &file_editor::fetab_save_file_as,
              f, QOverload<const QWidget *>::of (&file_editor_tab::save_file_as));
@@ -2790,7 +2790,7 @@ namespace octave
   }
 
   // Check whether this file is already open in the editor.
-  file_editor_tab * file_editor::find_tab_widget (const QString& file)
+  file_editor_tab *file_editor::find_tab_widget (const QString& file)
   {
     std::string std_file = file.toStdString ();
 

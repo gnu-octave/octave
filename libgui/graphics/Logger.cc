@@ -53,7 +53,7 @@ namespace octave
   Logger::~Logger (void)
   { }
 
-  Logger*
+  Logger *
   Logger::instance (void)
   {
     if (! s_instance)

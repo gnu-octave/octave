@@ -55,7 +55,7 @@
 
 #include "shared-fcns.h"
 
-static std::map<std::string,std::string> vars;
+static std::map<std::string, std::string> vars;
 
 static std::string usage_msg = "usage: octave-config [options]";
 

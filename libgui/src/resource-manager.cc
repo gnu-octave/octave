@@ -493,7 +493,7 @@ namespace octave
       {
         // Use a proxy, collect all required information
         QString proxy_type_string
-            = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
+          = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
 
         // The proxy type for the Qt proxy settings
         if (proxy_type_string == "Socks5Proxy")
@@ -532,9 +532,11 @@ namespace octave
         if (proxy_type_string == global_proxy_all_types.at (2))
           {
             const std::array<std::string, 6> env_vars =
-                { "ALL_PROXY", "all_proxy",
-                  "HTTP_PROXY", "http_proxy",
-                  "HTTPS_PROXY", "https_proxy" };
+            {
+              "ALL_PROXY", "all_proxy",
+              "HTTP_PROXY", "http_proxy",
+              "HTTPS_PROXY", "https_proxy"
+            };
 
             unsigned int count = 0;
             while (! proxy_url.isValid () && count < env_vars.size ())

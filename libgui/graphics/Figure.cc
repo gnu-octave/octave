@@ -96,9 +96,9 @@ namespace octave
     for (octave_idx_type ii = 0; ii < cdata.rows (); ii++)
       for (octave_idx_type jj = 0; jj < cdata.columns (); jj++)
         {
-          if (cdata(ii,jj) == 1.0)
+          if (cdata(ii, jj) == 1.0)
             tmp = black;
-          else if (cdata(ii,jj) == 2.0)
+          else if (cdata(ii, jj) == 2.0)
             tmp = white;
           else
             tmp.setAlpha (0);
@@ -109,7 +109,7 @@ namespace octave
     return retval;
   }
 
-  Figure*
+  Figure *
   Figure::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
                   const graphics_object& go)
   {
@@ -279,7 +279,7 @@ namespace octave
       }
   }
 
-  Container*
+  Container *
   Figure::innerContainer (void)
   {
     return m_container;
@@ -293,7 +293,7 @@ namespace octave
     if (canvas)
       canvas->redraw ();
 
-    for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject*> ())
+    for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
       {
         if (qobj->objectName () == "UIPanel"
             || qobj->objectName () == "UIButtonGroup"
@@ -383,7 +383,7 @@ namespace octave
           int toffset = 0;
           int boffset = 0;
 
-          for (auto *tb : win->findChildren<QToolBar*> ())
+          for (auto *tb : win->findChildren<QToolBar *> ())
             if (! tb->isHidden ())
               toffset += tb->sizeHint ().height ();
 
@@ -449,7 +449,7 @@ namespace octave
         else
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
         // Signal the change to uipanels as well
-        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject*> ())
+        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
           {
             if (qobj->objectName () == "UIPanel")
               {
@@ -475,7 +475,7 @@ namespace octave
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
         break;
         // Signal the change to uipanels as well
-        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject*> ())
+        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
           {
             if (qobj->objectName () == "UIPanel")
               {
@@ -592,13 +592,13 @@ namespace octave
   }
 
   void
-  Figure::do_connections (const QObject *receiver, const QObject* /* emitter */)
+  Figure::do_connections (const QObject *receiver, const QObject * /* emitter */)
   {
     Object::do_connections (receiver);
     Object::do_connections (receiver, m_container->canvas (m_handle));
   }
 
-  QWidget*
+  QWidget *
   Figure::menu (void)
   {
     return qWidget<QMainWindow> ()->menuBar ();
@@ -857,8 +857,8 @@ namespace octave
   Figure::figureWindowShown ()
   {
 #if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
-    QWindow* window = qWidget<QMainWindow> ()->windowHandle ();
-    QScreen* screen = window->screen ();
+    QWindow *window = qWidget<QMainWindow> ()->windowHandle ();
+    QScreen *screen = window->screen ();
 
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -872,7 +872,7 @@ namespace octave
   }
 
   void
-  Figure::screenChanged (QScreen* screen)
+  Figure::screenChanged (QScreen *screen)
   {
 #if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
@@ -901,7 +901,7 @@ namespace octave
     // Enable mouse tracking on every widgets
     m_container->setMouseTracking (true);
     m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
-    for (auto *w : m_container->findChildren<QWidget*> ())
+    for (auto *w : m_container->findChildren<QWidget *> ())
       w->setMouseTracking (true);
   }
 

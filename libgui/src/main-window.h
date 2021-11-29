@@ -283,7 +283,7 @@ namespace octave
                                          const char *member);
     void construct_debug_menu (QMenuBar *p);
     QAction * construct_window_menu_item (QMenu *p, const QString& item,
-                                          bool checkable, QWidget*);
+                                          bool checkable, QWidget *);
     void construct_tools_menu (QMenuBar *p);
     void construct_window_menu (QMenuBar *p);
     void construct_help_menu (QMenuBar *p);
@@ -305,7 +305,7 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
-    QHash<QMenu*, QStringList> m_hash_menu_text;
+    QHash<QMenu *, QStringList> m_hash_menu_text;
 
     QString m_default_encoding;
 

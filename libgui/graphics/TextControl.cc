@@ -38,7 +38,7 @@
 namespace octave
 {
 
-  TextControl*
+  TextControl *
   TextControl::create (octave::base_qobject& oct_qobj,
                        octave::interpreter& interp, const graphics_object& go)
   {

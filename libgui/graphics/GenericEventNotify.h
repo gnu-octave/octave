@@ -54,7 +54,7 @@ namespace octave
     void notifyReceiversAfter (QObject *obj, QEvent *evt);
 
   private:
-    QSet<GenericEventNotifyReceiver*> m_receivers;
+    QSet<GenericEventNotifyReceiver *> m_receivers;
   };
 
   class GenericEventNotifyReceiver

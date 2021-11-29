@@ -61,6 +61,16 @@ function p = primes (n)
     error ("primes: N must be finite (not +Inf or NaN)");
   endif
 
+  cls = class (n);     # if n is not double, store its class
+  n = double (n);      # and use only double for internal use.
+  # This conversion is needed for both calculation speed (twice as fast as
+  # integer) and also for the accuracy of the sieve calculation when given
+  # integer input, to avoid unwanted rounding in the sieve lengths.
+
+  if (n > flintmax ())
+    warning ("primes: input exceeds flintmax.  Results may be inaccurate.");
+  endif
+
   if (n < 353)
     ## Lookup table of first 70 primes
     a = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, ...
@@ -102,15 +112,16 @@ function p = primes (n)
     p = sort ([2, 3, 6*find(sievem)-1, 6*find(sievep)+1]);
   endif
 
-  if (! isa (n, "double"))
-    p = cast (p, class (n));
-  endif
+  # cast back to the type of the input
+  p = cast (p, cls);
 
 endfunction
 
 
 %!assert (size (primes (350)), [1, 70])
 %!assert (primes (357)(end), 353)
+%!assert (primes (uint64 (358))(end), uint64 (353))
+%!assert (primes (int32 (1e6))(end), int32 (999983))
 %!assert (class (primes (single (10))), "single")
 %!assert (class (primes (uint8 (10))), "uint8")
 %!assert (primes (-Inf), zeros (1,0))

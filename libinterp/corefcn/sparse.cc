@@ -222,7 +222,7 @@ sprandsym, spconvert, spfun}
           idx_vector j = args(1).index_vector ();
 
           if (args(2).islogical ())
-            retval = SparseBoolMatrix (args(2).bool_array_value (), i,j,
+            retval = SparseBoolMatrix (args(2).bool_array_value (), i, j,
                                        m, n, summation, nzmax);
           else if (args(2).iscomplex ())
             retval = SparseComplexMatrix (args(2).complex_array_value(),

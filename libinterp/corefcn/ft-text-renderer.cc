@@ -228,7 +228,7 @@ namespace octave
                   FcPattern *font = fs->fonts[i];
                   if (FcPatternGetString (font, FC_FAMILY, 0, &family)
                       == FcResultMatch)
-                    families(i) = std::string (reinterpret_cast<char*> (family));
+                    families(i) = std::string (reinterpret_cast<char *> (family));
                   else
                     families(i) = "unknown";
 
@@ -820,7 +820,7 @@ namespace octave
       }
   }
 
-  bool is_opaque (const FT_GlyphSlot &glyph, const int x, const int y)
+  bool is_opaque (const FT_GlyphSlot& glyph, const int x, const int y)
   {
     // Borrowed from https://stackoverflow.com/questions/14800827/
     //    indexing-pixels-in-a-monochrome-freetype-glyph-buffer
@@ -952,7 +952,7 @@ namespace octave
 
                     x0 = m_xoffset + face->glyph->bitmap_left;
                     y0 = m_line_yoffset + m_yoffset
-                      + (face->glyph->bitmap_top - 1);
+                         + (face->glyph->bitmap_top - 1);
 
                     // 'w' seems to have a negative -1
                     // face->glyph->bitmap_left, this is so we don't index out

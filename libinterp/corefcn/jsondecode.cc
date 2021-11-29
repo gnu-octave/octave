@@ -45,7 +45,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 static octave_value
 decode (const rapidjson::Value& val,
-        const octave::make_valid_name_options* options);
+        const octave::make_valid_name_options *options);
 
 //! Decodes a numerical JSON value into a scalar number.
 //!
@@ -95,19 +95,19 @@ decode_number (const rapidjson::Value& val)
 
 static octave_value
 decode_object (const rapidjson::Value& val,
-               const octave::make_valid_name_options* options)
+               const octave::make_valid_name_options *options)
 {
   octave_scalar_map retval;
 
   for (const auto& pair : val.GetObject ())
-  {
-    // Validator function "matlab.lang.makeValidName" to guarantee legitimate
-    // variable name.
-    std::string varname = pair.name.GetString ();
-    if (options != nullptr)
-      octave::make_valid_name (varname, *options);
-    retval.assign (varname, decode (pair.value, options));
-  }
+    {
+      // Validator function "matlab.lang.makeValidName" to guarantee legitimate
+      // variable name.
+      std::string varname = pair.name.GetString ();
+      if (options != nullptr)
+        octave::make_valid_name (varname, *options);
+      retval.assign (varname, decode (pair.value, options));
+    }
 
   return retval;
 }
@@ -188,7 +188,7 @@ decode_boolean_array (const rapidjson::Value& val)
 
 static octave_value
 decode_string_and_mixed_array (const rapidjson::Value& val,
-                               const octave::make_valid_name_options* options)
+                               const octave::make_valid_name_options *options)
 {
   Cell retval (dim_vector (val.Size (), 1));
   octave_idx_type index = 0;
@@ -224,7 +224,7 @@ decode_string_and_mixed_array (const rapidjson::Value& val,
 
 static octave_value
 decode_object_array (const rapidjson::Value& val,
-                     const octave::make_valid_name_options* options)
+                     const octave::make_valid_name_options *options)
 {
   Cell struct_cell = decode_string_and_mixed_array (val, options).cell_value ();
   string_vector field_names = struct_cell(0).scalar_map_value ().fieldnames ();
@@ -290,7 +290,7 @@ decode_object_array (const rapidjson::Value& val,
 
 static octave_value
 decode_array_of_arrays (const rapidjson::Value& val,
-                        const octave::make_valid_name_options* options)
+                        const octave::make_valid_name_options *options)
 {
   // Some arrays should be decoded as NDArrays and others as cell arrays
   Cell cell = decode_string_and_mixed_array (val, options).cell_value ();
@@ -400,7 +400,7 @@ decode_array_of_arrays (const rapidjson::Value& val,
 
 static octave_value
 decode_array (const rapidjson::Value& val,
-              const octave::make_valid_name_options* options)
+              const octave::make_valid_name_options *options)
 {
   // Handle empty arrays
   if (val.Empty ())
@@ -415,7 +415,7 @@ decode_array (const rapidjson::Value& val,
     {
       rapidjson::Type current_elem_type = elem.GetType ();
       if (is_numeric && ! (current_elem_type == rapidjson::kNullType
-          || current_elem_type == rapidjson::kNumberType))
+                           || current_elem_type == rapidjson::kNumberType))
         is_numeric = false;
       if (same_type && (current_elem_type != array_type))
         // RapidJSON doesn't have kBoolean Type it has kTrueType and kFalseType
@@ -463,7 +463,7 @@ decode_array (const rapidjson::Value& val,
 
 static octave_value
 decode (const rapidjson::Value& val,
-        const octave::make_valid_name_options* options)
+        const octave::make_valid_name_options *options)
 {
   if (val.IsBool ())
     return val.GetBool ();
@@ -598,11 +598,11 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
   for (auto i = 1; i < nargin; i = i + 2)
     {
       std::string parameter = args(i).xstring_value ("jsondecode: "
-        "option argument must be a string");
+                              "option argument must be a string");
       if (string::strcmpi (parameter, "makeValidName"))
         {
           use_makeValidName = args(i + 1).xbool_value ("jsondecode: "
-            "'makeValidName' value must be a bool");
+                              "'makeValidName' value must be a bool");
         }
       else
         make_valid_name_params.append (args.slice(i, 2));

@@ -326,9 +326,9 @@ Undocumented internal function.
   event_manager::filter_list filter_lst;
 
   for (octave_idx_type i = 0; i < flist.rows (); i++)
-    filter_lst.push_back (std::make_pair (flist(i,0),
+    filter_lst.push_back (std::make_pair (flist(i, 0),
                                           (flist.columns () > 1
-                                           ? flist(i,1) : "")));
+                                           ? flist(i, 1) : "")));
 
   flush_stdout ();
 
@@ -453,8 +453,8 @@ Undocumented internal function.
   std::list<float> nc;
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      nr.push_back (rc(i,0));
-      nc.push_back (rc(i,1));
+      nr.push_back (rc(i, 0));
+      nc.push_back (rc(i, 1));
     }
 
   Cell defaults = args(3).cell_value ();

@@ -280,7 +280,7 @@ octave_base_int_matrix<T>::edit_display (const float_display_format& fmt,
                                          octave_idx_type j) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, fmt, this->matrix(i,j));
+  octave_print_internal (buf, fmt, this->matrix(i, j));
   return buf.str ();
 }
 

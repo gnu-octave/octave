@@ -369,7 +369,7 @@ qp (const Matrix& H, const ColumnVector& q,
                     {
                       Wact(i) = Wact(i+1);
                       for (octave_idx_type j = 0; j < n; j++)
-                        Aact(n_eq+i,j) = Aact(n_eq+i+1,j);
+                        Aact(n_eq+i, j) = Aact(n_eq+i+1, j);
                       bact(n_eq+i) = bact(n_eq+i+1);
                     }
 

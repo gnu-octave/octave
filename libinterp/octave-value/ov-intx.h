@@ -521,7 +521,7 @@ public:
   matrix_value (bool = false) const
   {
     Matrix retval (1, 1);
-    retval(0,0) = scalar.double_value ();
+    retval(0, 0) = scalar.double_value ();
     return retval;
   }
 
@@ -529,7 +529,7 @@ public:
   float_matrix_value (bool = false) const
   {
     FloatMatrix retval (1, 1);
-    retval(0,0) = scalar.float_value ();
+    retval(0, 0) = scalar.float_value ();
     return retval;
   }
 
@@ -537,7 +537,7 @@ public:
   complex_matrix_value (bool = false) const
   {
     ComplexMatrix retval (1, 1);
-    retval(0,0) = Complex (scalar.double_value ());
+    retval(0, 0) = Complex (scalar.double_value ());
     return retval;
   }
 
@@ -545,7 +545,7 @@ public:
   float_complex_matrix_value (bool = false) const
   {
     FloatComplexMatrix retval (1, 1);
-    retval(0,0) = FloatComplex (scalar.float_value ());
+    retval(0, 0) = FloatComplex (scalar.float_value ());
     return retval;
   }
 

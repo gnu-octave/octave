@@ -3816,7 +3816,7 @@ mxCreateNumericMatrix_interleaved (mwSize m, mwSize n, mxClassID class_id,
 
 mxArray *
 mxCreateNumericMatrix (mwSize m, mwSize n, mxClassID class_id,
-                                mxComplexity flag)
+                       mxComplexity flag)
 {
   return maybe_mark_array (new mxArray (false, class_id, m, n, flag));
 }
@@ -3831,7 +3831,7 @@ mxCreateUninitNumericArray_interleaved (mwSize ndims, const mwSize *dims,
 
 mxArray *
 mxCreateUninitNumericArray (mwSize ndims, const mwSize *dims,
-                                     mxClassID class_id, mxComplexity flag)
+                            mxClassID class_id, mxComplexity flag)
 {
   return maybe_mark_array (new mxArray (false, class_id, ndims, dims, flag,
                                         false));
@@ -3846,7 +3846,7 @@ mxCreateUninitNumericMatrix_interleaved (mwSize m, mwSize n,
 
 mxArray *
 mxCreateUninitNumericMatrix (mwSize m, mwSize n, mxClassID class_id,
-                                      mxComplexity flag)
+                             mxComplexity flag)
 {
   return maybe_mark_array (new mxArray (false, class_id, m, n, flag, false));
 }
@@ -5117,7 +5117,7 @@ mexIsLocked (void)
   return retval;
 }
 
-std::map<std::string,int> mex_lock_count;
+std::map<std::string, int> mex_lock_count;
 
 void
 mexLock (void)

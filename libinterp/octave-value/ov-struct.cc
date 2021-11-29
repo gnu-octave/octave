@@ -470,13 +470,13 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                const octave_map& cmap = const_cast<const octave_map &> (m_map);
+                const octave_map& cmap = const_cast<const octave_map&> (m_map);
                 // cast to const reference, avoid forced key insertion.
                 if (idxf.all_scalars ()
                     || cmap.contents (key).index (idxf, true).numel () == 1)
                   {
                     m_map.assign (idxf,
-                                key, Cell (t_rhs.storable_value ()));
+                                  key, Cell (t_rhs.storable_value ()));
 
                     count++;
                     retval = octave_value (this);
@@ -699,7 +699,7 @@ octave_struct::edit_display (const float_display_format&,
       // 2-d struct array.  Rows and columns index individual
       // scalar structs.
 
-      val = m_map(r,c);
+      val = m_map(r, c);
     }
 
   std::string tname = val.type_name ();

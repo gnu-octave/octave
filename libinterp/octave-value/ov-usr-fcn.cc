@@ -739,7 +739,7 @@ Programming Note: @code{nargin} does not work on compiled functions
   return retval;
 }
 
-DEFMETHOD (nargout, interp,args, ,
+DEFMETHOD (nargout, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} nargout ()
 @deftypefnx {} {} nargout (@var{fcn})

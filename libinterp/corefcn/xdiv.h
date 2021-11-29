@@ -79,14 +79,14 @@ extern FloatMatrix elem_xdiv (float a, const FloatMatrix& b);
 extern FloatComplexMatrix elem_xdiv (float a, const FloatComplexMatrix& b);
 extern FloatComplexMatrix elem_xdiv (const FloatComplex a, const FloatMatrix& b);
 extern FloatComplexMatrix elem_xdiv (const FloatComplex a,
-                                    const FloatComplexMatrix& b);
+                                     const FloatComplexMatrix& b);
 
 extern FloatNDArray elem_xdiv (float a, const FloatNDArray& b);
 extern FloatComplexNDArray elem_xdiv (float a, const FloatComplexNDArray& b);
 extern FloatComplexNDArray elem_xdiv (const FloatComplex a,
-                                     const FloatNDArray& b);
+                                      const FloatNDArray& b);
 extern FloatComplexNDArray elem_xdiv (const FloatComplex a,
-                                     const FloatComplexNDArray& b);
+                                      const FloatComplexNDArray& b);
 
 extern FloatMatrix xleftdiv (const FloatMatrix& a, const FloatMatrix& b,
                              MatrixType& typ,
@@ -250,21 +250,24 @@ xleftdiv (const Matrix& a, const Matrix& b, MatrixType& typ, blas_trans_type tra
 
 OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
 inline ComplexMatrix
-xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType& typ, blas_trans_type transt = blas_no_trans)
+xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType& typ,
+          blas_trans_type transt = blas_no_trans)
 {
   return octave::xleftdiv (a, b, typ, transt);
 }
 
 OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
 inline ComplexMatrix
-xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType& typ, blas_trans_type transt = blas_no_trans)
+xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType& typ,
+          blas_trans_type transt = blas_no_trans)
 {
   return octave::xleftdiv (a, b, typ, transt);
 }
 
 OCTAVE_DEPRECATED (7, "use 'octave::xleftdiv' instead")
 inline ComplexMatrix
-xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ, blas_trans_type transt = blas_no_trans)
+xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ,
+          blas_trans_type transt = blas_no_trans)
 {
   return octave::xleftdiv (a, b, typ, transt);
 }

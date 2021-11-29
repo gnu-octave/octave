@@ -183,7 +183,7 @@ namespace octave
   }
 
   bool
-  cdef_method::cdef_method_rep::is_defined_in_class (const std::string &cname) const
+  cdef_method::cdef_method_rep::is_defined_in_class (const std::string& cname) const
   {
     return (m_function.is_function ()
             ? m_function.function_value ()->dispatch_class () == cname

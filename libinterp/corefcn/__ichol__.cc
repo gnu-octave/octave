@@ -91,7 +91,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
   // Input matrix pointers
   octave_idx_type *cidx = sm.cidx ();
   octave_idx_type *ridx = sm.ridx ();
-  T* data = sm.data ();
+  T *data = sm.data ();
 
   // Working arrays
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Lfirst, n);
@@ -235,7 +235,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
   // Input matrix pointers
   octave_idx_type *cidx = sm.cidx ();
   octave_idx_type *ridx = sm.ridx ();
-  T* data = sm.data ();
+  T *data = sm.data ();
 
   // Output matrix data structures.  Because the final zero pattern pattern of
   // the output matrix is not known due to fill-in elements, a heuristic
@@ -251,7 +251,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len, 1));
   octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
   Array <T> data_out_l (dim_vector (max_len, 1));
-  T* data_l = data_out_l.fortran_vec ();
+  T *data_l = data_out_l.fortran_vec ();
 
   // Working arrays
   OCTAVE_LOCAL_BUFFER (T, w_data, n);

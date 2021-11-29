@@ -51,7 +51,7 @@ mark_upper_triangular (const Matrix& a)
   const typename Matrix::element_type zero = typename Matrix::element_type ();
 
   for (octave_idx_type i = 0; i < n; i++)
-    if (a(i,i) == zero)
+    if (a(i, i) == zero)
       return retval;
 
   retval.matrix_type (MatrixType::Upper);

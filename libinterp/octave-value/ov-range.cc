@@ -246,7 +246,7 @@ ov_range<T>::subsref (const std::string& type,
 template <typename T>
 octave_value
 ov_range<T>::do_index_op (const octave_value_list& idx,
-                                   bool resize_ok)
+                          bool resize_ok)
 {
   if (idx.length () == 1 && ! resize_ok)
     {
@@ -723,7 +723,7 @@ ov_range<T>::save_binary (std::ostream& os, bool /* save_as_floats */)
 template <typename T>
 bool
 ov_range<T>::load_binary (std::istream& is, bool swap,
-                                   octave::mach_info::float_format /* fmt */)
+                          octave::mach_info::float_format /* fmt */)
 {
   // FIXME: Not always double!
 

@@ -290,7 +290,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
       // Short-circuit and return if range is empty
       if (r1 < r0 || c1 < c0)
-        return ovl (Matrix (0,0));
+        return ovl (Matrix (0, 0));
     }
 
   octave_idx_type i = 0;
@@ -351,7 +351,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
     rcnt--;
 
   if (rcnt > 0)
-    return ovl (Matrix (0,0));  // Not enough lines in file to satisfy RANGE
+    return ovl (Matrix (0, 0)); // Not enough lines in file to satisfy RANGE
   else
     r1 -= r0;
 
@@ -487,9 +487,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
               if (tmp_stream.eof ())
                 {
                   if (iscmplx)
-                    cdata(i,j++) = x;
+                    cdata(i, j++) = x;
                   else
-                    rdata(i,j++) = x;
+                    rdata(i, j++) = x;
                 }
               else
                 {
@@ -508,7 +508,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                               cdata = ComplexMatrix (rdata);
                             }
 
-                          cdata(i,j++) = Complex (0, x);
+                          cdata(i, j++) = Complex (0, x);
                         }
                       else
                         {
@@ -532,9 +532,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                         }
 
                       if (iscmplx)
-                        cdata(i,j++) = Complex (x, y);
+                        cdata(i, j++) = Complex (x, y);
                       else
-                        rdata(i,j++) = x;
+                        rdata(i, j++) = x;
                     }
                 }
             }
@@ -563,7 +563,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   if (iscmplx)
     {
       if ((i == 0 && j == 0) || (c0 > c1))
-        return ovl (ComplexMatrix (0,0));
+        return ovl (ComplexMatrix (0, 0));
 
       cdata = cdata.extract (0, c0, r1, c1);
       return ovl (cdata);
@@ -571,7 +571,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   else
     {
       if ((i == 0 && j == 0) || (c0 > c1))
-        return ovl (Matrix (0,0));
+        return ovl (Matrix (0, 0));
 
       rdata = rdata.extract (0, c0, r1, c1);
       return ovl (rdata);

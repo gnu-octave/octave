@@ -283,7 +283,7 @@ csymamd, amd, colamd, symamd, and other related orderings.
         error ("ccolamd: CMEMBER must be of length equal to #cols of A");
 
       // Order the columns (destroys A)
-      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats,cmember))
+      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, cmember))
         {
           CCOLAMD_NAME (_report) (stats);
 

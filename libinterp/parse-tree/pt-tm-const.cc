@@ -507,7 +507,7 @@ namespace octave
       found_non_empty:
 
         if (! m_all_empty)
-          ctmp = ctmp.resize (dim_vector (0,0)).resize (m_dv);
+          ctmp = ctmp.resize (dim_vector (0, 0)).resize (m_dv);
       }
 
     // Now, extract the values from the individual elements and insert

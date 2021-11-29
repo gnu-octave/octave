@@ -513,7 +513,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
         }
       else
         {
-          octave_map outer (dim_vector (3,1));
+          octave_map outer (dim_vector (3, 1));
           outer.assign ("bkpt", Cell (retmap));
           for (auto f = ew.begin (); f != ew.end (); f++)
             outer.setfield (f->first, ew.contents (f));

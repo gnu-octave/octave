@@ -289,8 +289,8 @@ namespace octave_value_typeinfo
   typedef octave::type_info::assignany_op_fcn assignany_op_fcn;
 
   extern OCTINTERP_API int register_type (const std::string& t_name,
-                            const std::string& c_name,
-                            const octave_value& val);
+                                          const std::string& c_name,
+                                          const octave_value& val);
 
   extern OCTINTERP_API octave_value lookup_type (const std::string& nm);
 

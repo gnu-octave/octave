@@ -136,7 +136,7 @@ namespace octave
 
       string (const std::string& s, font& f, const double x, const double y)
         : m_str (s), m_family (f.get_name ()), m_fnt (f), m_x (x), m_y (y),
-          m_z (0.0), m_xdata (), m_code (0), m_color (Matrix (1,3,0.0)),
+          m_z (0.0), m_xdata (), m_code (0), m_color (Matrix (1, 3, 0.0)),
           m_svg_element ()
       { }
 

@@ -1141,7 +1141,7 @@ On non-Windows platforms this function fails with an error.
     {
       octave_value key_val;
       LONG retval = get_regkey_value (h_rootkey, subkey_name,
-                                              value_name, key_val);
+                                      value_name, key_val);
       if (retval == ERROR_FILE_NOT_FOUND)
         error ("winqueryreg: no value found for '%s' at %s\\%s",
                value_name.c_str (), rootkey_name.c_str (),

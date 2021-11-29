@@ -81,7 +81,7 @@ namespace octave
     void accept (text_processor& p);
 
   private:
-    text_element_string (const text_element_string &);
+    text_element_string (const text_element_string&);
 
     //--------
 
@@ -159,7 +159,7 @@ namespace octave
 
   private:
     text_element_subscript (void);
-    
+
     //--------
 
     text_element *m_elem;
@@ -457,7 +457,7 @@ namespace octave
     text_element *m_result;
   };
 
-  inline text_element*
+  inline text_element *
   text_parser::parse (const std::string& s, const caseless_str& interpreter)
   {
     std::unique_ptr<text_parser> parser;

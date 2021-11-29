@@ -82,7 +82,7 @@ example, if the plot window is closed with a mouse click, Octave will not\n\
 be notified and will not update its internal list of open figure windows.\n\
 The qt toolkit is recommended instead.\n");
 
-          warned = true;
+        warned = true;
       }
   }
 

@@ -297,10 +297,10 @@ compatibility with @sc{matlab}.
   // First, declare variables used in both the real and complex cases.
   // FIXME: There are a lot of excess variables declared.
   //        Probably a better way to handle this.
-  Matrix QQ (nn,nn), ZZ (nn,nn), VR (nn,nn), VL (nn,nn);
+  Matrix QQ (nn, nn), ZZ (nn, nn), VR (nn, nn), VL (nn, nn);
   RowVector alphar (nn), alphai (nn), betar (nn);
   ComplexRowVector xalpha (nn), xbeta (nn);
-  ComplexMatrix CQ (nn,nn), CZ (nn,nn), CVR (nn,nn), CVL (nn,nn);
+  ComplexMatrix CQ (nn, nn), CZ (nn, nn), CVR (nn, nn), CVL (nn, nn);
   F77_INT ilo, ihi, info;
   char comp_q = (nargout >= 3 ? 'V' : 'N');
   char comp_z = ((nargout >= 4 || nargin == 3)? 'V' : 'N');
@@ -314,8 +314,8 @@ compatibility with @sc{matlab}.
       std::fill_n (ZZptr, ZZ.numel (), 0.0);
       for (F77_INT i = 0; i < nn; i++)
         {
-          QQ(i,i) = 1.0;
-          ZZ(i,i) = 1.0;
+          QQ(i, i) = 1.0;
+          ZZ(i, i) = 1.0;
         }
     }
 
@@ -760,18 +760,18 @@ compatibility with @sc{matlab}.
               if (j == (nn-1))
                 // Single column.
                 cinc = 1;
-              else if (aa(j+1,j) == 0)
+              else if (aa(j+1, j) == 0)
                 cinc = 1;
 
               // Now copy the eigenvector (s) to CVR, CVL.
               if (cinc == 1)
                 {
                   for (F77_INT i = 0; i < nn; i++)
-                    CVR(i,j) = VR(i,j);
+                    CVR(i, j) = VR(i, j);
 
                   if (side == 'B')
                     for (F77_INT i = 0; i < nn; i++)
-                      CVL(i,j) = VL(i,j);
+                      CVL(i, j) = VL(i, j);
                 }
               else
                 {
@@ -779,15 +779,15 @@ compatibility with @sc{matlab}.
 
                   for (F77_INT i = 0; i < nn; i++)
                     {
-                      CVR(i,j) = Complex (VR(i,j), VR(i,j+1));
-                      CVR(i,j+1) = Complex (VR(i,j), -VR(i,j+1));
+                      CVR(i, j) = Complex (VR(i, j), VR(i, j+1));
+                      CVR(i, j+1) = Complex (VR(i, j), -VR(i, j+1));
                     }
 
                   if (side == 'B')
                     for (F77_INT i = 0; i < nn; i++)
                       {
-                        CVL(i,j) = Complex (VL(i,j), VL(i,j+1));
-                        CVL(i,j+1) = Complex (VL(i,j), -VL(i,j+1));
+                        CVL(i, j) = Complex (VL(i, j), VL(i, j+1));
+                        CVL(i, j+1) = Complex (VL(i, j), -VL(i, j+1));
                       }
                 }
 

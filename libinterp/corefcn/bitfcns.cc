@@ -57,21 +57,21 @@ namespace std
   struct bit_and
   {
   public:
-    T operator() (const T & op1, const T & op2) const { return (op1 & op2); }
+    T operator() (const T& op1, const T& op2) const { return (op1 & op2); }
   };
 
   template <typename T>
   struct bit_or
   {
   public:
-    T operator() (const T & op1, const T & op2) const { return (op1 | op2); }
+    T operator() (const T& op1, const T& op2) const { return (op1 | op2); }
   };
 
   template <typename T>
   struct bit_xor
   {
   public:
-    T operator() (const T & op1, const T & op2) const { return (op1 ^ op2); }
+    T operator() (const T& op1, const T& op2) const { return (op1 ^ op2); }
   };
 }
 #endif

@@ -700,7 +700,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
 
 static int
 portaudio_play_callback (const void *, void *output, unsigned long frames,
-                         const PaStreamCallbackTimeInfo*,
+                         const PaStreamCallbackTimeInfo *,
                          PaStreamCallbackFlags, void *data)
 {
   audioplayer *player = static_cast<audioplayer *> (data);
@@ -1369,8 +1369,8 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           float sample_l = input8[i*channels] / scale_factor;
           float sample_r = input8[i*channels + (channels - 1)] / scale_factor;
 
-          sound(i,0) = sample_l;
-          sound(i,1) = sample_r;
+          sound(i, 0) = sample_l;
+          sound(i, 1) = sample_r;
         }
     }
   // FIXME: This is a workaround for a bug in PortAudio affecting 8-Bit
@@ -1389,8 +1389,8 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           float sample_r = (input16[i*channels + (channels - 1)] >> 8)
                            / scale_factor;
 
-          sound(i,0) = sample_l;
-          sound(i,1) = sample_r;
+          sound(i, 0) = sample_l;
+          sound(i, 1) = sample_r;
         }
     }
   else if (recorder->get_sampleFormat () == bits_to_format (16))
@@ -1404,8 +1404,8 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           float sample_l = input16[i*channels] / scale_factor;
           float sample_r = input16[i*channels + (channels - 1)] / scale_factor;
 
-          sound(i,0) = sample_l;
-          sound(i,1) = sample_r;
+          sound(i, 0) = sample_l;
+          sound(i, 1) = sample_r;
         }
     }
   else if (recorder->get_sampleFormat () == bits_to_format (24))
@@ -1436,8 +1436,8 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           if (sample_r32 & 0x00800000)
             sample_r32 |= 0xff000000;
 
-          sound(i,0) = sample_l32 / scale_factor;
-          sound(i,1) = sample_r32 / scale_factor;
+          sound(i, 0) = sample_l32 / scale_factor;
+          sound(i, 1) = sample_r32 / scale_factor;
         }
     }
 
@@ -1742,8 +1742,8 @@ audiorecorder::getaudiodata (void)
 
   for (unsigned int i = 0; i < ls; i++)
     {
-      audio(0,i) = left[i];
-      audio(1,i) = right[i];
+      audio(0, i) = left[i];
+      audio(1, i) = right[i];
     }
 
   return audio;

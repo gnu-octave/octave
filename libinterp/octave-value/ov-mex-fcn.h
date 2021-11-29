@@ -100,7 +100,7 @@ public:
 
   octave::dynamic_library get_shlib (void) const { return m_sh_lib; }
 
-  void *mex_fcn_ptr (void) const { return m_mex_fcn_ptr; }
+  void * mex_fcn_ptr (void) const { return m_mex_fcn_ptr; }
 
   bool is_fmex (void) const { return m_is_fmex; }
 

@@ -118,24 +118,24 @@ namespace octave
     // stored in the function scope corresponding to the stack frame.
 
     enum scope_flags
-      {
-        LOCAL,
-        GLOBAL,
-        PERSISTENT
-      };
+    {
+      LOCAL,
+      GLOBAL,
+      PERSISTENT
+    };
 
     // Index into the list of automatic variables for user-defined
     // function stack frames.
 
     enum auto_var_type
-      {
-        ARG_NAMES,
-        IGNORED,
-        NARGIN,
-        NARGOUT,
-        SAVED_WARNING_STATES,
-        NUM_AUTO_VARS
-      };
+    {
+      ARG_NAMES,
+      IGNORED,
+      NARGIN,
+      NARGOUT,
+      SAVED_WARNING_STATES,
+      NUM_AUTO_VARS
+    };
 
     stack_frame (void) = delete;
 
@@ -477,9 +477,9 @@ namespace octave
     }
 
     void non_const_unary_op (octave_value::unary_op op,
-                                const symbol_record& sym,
-                                const std::string& type,
-                                const std::list<octave_value_list>& idx)
+                             const symbol_record& sym,
+                             const std::string& type,
+                             const std::list<octave_value_list>& idx)
     {
       if (idx.empty ())
         varref (sym).non_const_unary_op (op);

@@ -101,7 +101,7 @@ Q_enq (CMK_Node *Q, octave_idx_type N, octave_idx_type& qt, const CMK_Node& o)
 // Dequeue operation (removes a node from the head)
 
 inline static CMK_Node
-Q_deq (CMK_Node * Q, octave_idx_type N, octave_idx_type& qh)
+Q_deq (CMK_Node *Q, octave_idx_type N, octave_idx_type& qh)
 {
   CMK_Node r = Q[qh];
   qh = (qh + 1) % (N + 1);

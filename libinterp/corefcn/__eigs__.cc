@@ -456,14 +456,14 @@ Undocumented internal function.
         {
           if (b_is_sparse)
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
-               eig_val, bscm, permB, cresid, octave_stdout, tol,
-               (nargout > 1), cholB, disp, maxit);
+                    (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
+                     eig_val, bscm, permB, cresid, octave_stdout, tol,
+                     (nargout > 1), cholB, disp, maxit);
           else
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
-               eig_val, bcm, permB, cresid, octave_stdout, tol,
-               (nargout > 1), cholB, disp, maxit);
+                    (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
+                     eig_val, bcm, permB, cresid, octave_stdout, tol,
+                     (nargout > 1), cholB, disp, maxit);
         }
       else if (have_sigma)
         {
@@ -524,14 +524,14 @@ Undocumented internal function.
         {
           if (b_is_sparse)
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
-               eig_val, bscm, permB, cresid, octave_stdout, tol,
-               (nargout > 1), cholB, disp, maxit);
+                    (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
+                     eig_val, bscm, permB, cresid, octave_stdout, tol,
+                     (nargout > 1), cholB, disp, maxit);
           else
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
-               eig_val, bcm, permB, cresid, octave_stdout, tol,
-               (nargout > 1), cholB, disp, maxit);
+                    (eigs_complex_fcn, n, typ, sigma, k, p, info, eig_vec,
+                     eig_val, bcm, permB, cresid, octave_stdout, tol,
+                     (nargout > 1), cholB, disp, maxit);
         }
       else
         {
@@ -578,14 +578,14 @@ Undocumented internal function.
             {
               if (b_is_sparse)
                 nconv = EigsRealSymmetricFunc
-                       (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
-                        eig_val, bsmm, permB, resid, octave_stdout, tol,
-                        (nargout > 1), cholB, disp, maxit);
+                        (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
+                         eig_val, bsmm, permB, resid, octave_stdout, tol,
+                         (nargout > 1), cholB, disp, maxit);
               else
                 nconv = EigsRealSymmetricFunc
-                       (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
-                        eig_val, bmm, permB, resid, octave_stdout, tol,
-                        (nargout > 1), cholB, disp, maxit);
+                        (eigs_fcn, n, typ, sigmar, k, p, info, eig_vec,
+                         eig_val, bmm, permB, resid, octave_stdout, tol,
+                         (nargout > 1), cholB, disp, maxit);
             }
           else if (have_sigma)
             {

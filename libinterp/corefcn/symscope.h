@@ -56,14 +56,14 @@ namespace octave
   public:
 
     typedef std::map<std::string, symbol_record>::const_iterator
-    table_const_iterator;
+      table_const_iterator;
     typedef std::map<std::string, symbol_record>::iterator
-    table_iterator;
+      table_iterator;
 
     typedef std::map<std::string, octave_value>::const_iterator
-    subfunctions_const_iterator;
+      subfunctions_const_iterator;
     typedef std::map<std::string, octave_value>::iterator
-    subfunctions_iterator;
+      subfunctions_iterator;
 
     symbol_scope_rep (const std::string& name = "")
       : m_name (name), m_symbols (), m_subfunctions (),
@@ -258,7 +258,7 @@ namespace octave
 
     std::list<std::string> parent_fcn_names (void) const;
 
-    octave_user_code *user_code (void) const { return m_code; }
+    octave_user_code * user_code (void) const { return m_code; }
 
     void set_user_code (octave_user_code *code) { m_code = code; }
 

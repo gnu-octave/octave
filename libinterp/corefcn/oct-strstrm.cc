@@ -63,16 +63,16 @@ istrstream::create (const char *data, std::ios::openmode arg_md,
 
 stream
 istrstream::create (const std::string& data, std::ios::openmode arg_md,
-                           mach_info::float_format flt_fmt,
-                           const std::string& encoding)
+                    mach_info::float_format flt_fmt,
+                    const std::string& encoding)
 {
   return stream (new istrstream (data, arg_md, flt_fmt, encoding));
 }
 
 stream
 ostrstream::create (std::ios::openmode arg_md,
-                           mach_info::float_format flt_fmt,
-                           const std::string& encoding)
+                    mach_info::float_format flt_fmt,
+                    const std::string& encoding)
 {
   return stream (new ostrstream (arg_md, flt_fmt, encoding));
 }

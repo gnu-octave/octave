@@ -261,7 +261,7 @@ namespace octave
     // Build an anonymous function handle.
     OCTINTERP_API tree_anon_fcn_handle *
     make_anon_fcn_handle (tree_parameter_list *param_list,
-                          tree_expression * expr, const filepos& at_pos);
+                          tree_expression *expr, const filepos& at_pos);
 
     // Build a colon expression.
     OCTINTERP_API tree_expression *

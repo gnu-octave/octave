@@ -202,7 +202,7 @@ namespace octave
       }
   }
 
-  cdef_object_rep*
+  cdef_object_rep *
   cdef_object_base::make_array (void) const
   {
     cdef_object_rep *r = new cdef_object_array ();
@@ -289,8 +289,9 @@ namespace octave
 
             for (octave_idx_type i = 0; i < n; i++)
               {
-                octave_value_list r = m_array(i).subsref (type, idx, 1, dummy_skip,
-                                                        dummy_cls);
+                octave_value_list r = m_array(i).subsref (type, idx, 1,
+                                                          dummy_skip,
+                                                          dummy_cls);
 
                 if (r.length () > 0)
                   c(i) = r(0);

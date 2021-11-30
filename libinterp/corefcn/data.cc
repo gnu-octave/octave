@@ -1295,7 +1295,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!        single ([1; 2; 3]))
 
 %!assert (diag (int8 ([1; 2; 3])), int8 ([1, 0, 0; 0, 2, 0; 0, 0, 3]))
-%!assert (diag (int8 ([1; 2; 3]), 1), 
+%!assert (diag (int8 ([1; 2; 3]), 1),
 %!        int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]))
 %!assert (diag (int8 ([1; 2; 3]), 2),
 %!        int8 ([0 0 1 0 0; 0 0 0 2 0; 0 0 0 0 3; 0 0 0 0 0; 0 0 0 0 0]))

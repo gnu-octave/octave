@@ -1617,7 +1617,7 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
 %! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf) 
+%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf)
 %!         < norm (single (A))*1e1*eps ("single"));
 %!test
 %! x = single ([0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ]);

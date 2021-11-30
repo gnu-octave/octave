@@ -192,7 +192,8 @@ namespace octave
 
   template <typename T>
   void
-  xinit (T base, T limit, T inc, T& final_val, octave_idx_type& nel)
+  xinit (T base, T limit, T inc, const bool reverse, T& final_val,
+         octave_idx_type& nel)
   {
     // Catch obvious NaN ranges.
     if (math::isnan (base) || math::isnan (limit) || math::isnan (inc))
@@ -201,6 +202,10 @@ namespace octave
         nel = 1;
         return;
       }
+
+    // Floating point numbers are always signed
+    if (reverse)
+      inc = -inc;
 
     // Catch empty ranges.
     if (inc == 0
@@ -254,9 +259,9 @@ namespace octave
 
   template <typename T>
   void
-  xinit (const octave_int<T>& base, const octave_int<T>& limit,
-         const octave_int<T>& inc, octave_int<T>& final_val,
-         octave_idx_type& nel)
+  xinit (const octave_int<T> base, const octave_int<T> limit,
+         const octave_int<T> inc, const bool reverse,
+         octave_int<T>& final_val, octave_idx_type& nel)
   {
     // We need an integer division that is truncating decimals instead
     // of rounding.  So, use underlying C++ types instead of
@@ -264,14 +269,28 @@ namespace octave
 
     // FIXME: The numerator might underflow or overflow. Add checks for
     // that.
+    if (reverse)
+      {
+        nel = ((inc == octave_int<T> (0)
+                || (limit > base && inc > octave_int<T> (0))
+                || (limit < base && inc < octave_int<T> (0)))
+               ? 0
+               : (base.value () - limit.value () + inc.value ())
+                 / inc.value ());
 
-    nel = ((inc == octave_int<T> (0)
-            || (limit > base && inc < octave_int<T> (0))
-            || (limit < base && inc > octave_int<T> (0)))
-           ? 0
-           : (limit.value () - base.value () + inc.value ()) / inc.value ());
+        final_val = base - (nel - 1) * inc;
+      }
+    else
+      {
+        nel = ((inc == octave_int<T> (0)
+                || (limit > base && inc < octave_int<T> (0))
+                || (limit < base && inc > octave_int<T> (0)))
+               ? 0
+               : (limit.value () - base.value () + inc.value ())
+                 / inc.value ());
 
-    final_val = base + (nel - 1) * inc;
+        final_val = base + (nel - 1) * inc;
+      }
   }
 
   template <typename T>
@@ -299,70 +318,70 @@ namespace octave
   void
   range<double>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<float>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<octave_int8>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<octave_int16>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<octave_int32>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<octave_int64>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<octave_uint8>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<octave_uint16>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<octave_uint32>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>
   void
   range<octave_uint64>::init (void)
   {
-    xinit (m_base, m_limit, m_increment, m_final, m_numel);
+    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
   template <>

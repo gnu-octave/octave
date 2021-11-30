@@ -43,7 +43,8 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
   for (octave_idx_type j = 0; j < Vc; j++)
     {
       ColumnVector Vcj = V.column (j);
-      h(j) = RowVector (Vcj.hermitian ()) * x;
+      RowVector Vcjh = Vcj.hermitian ();
+      h(j) = Vcjh * x;
       x -= h(j) * Vcj;
     }
 

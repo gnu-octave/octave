@@ -242,7 +242,7 @@ OCTAVE_NAMESPACE_BEGIN
     octave_scalar_map m;
 
     m.assign ("sys_argc", sys_argc ());
-    m.assign ("sys_argv", string_vector (sys_argv ()));
+    m.assign ("sys_argv", Cell (string_vector (sys_argv ())));
     m.assign ("echo_commands", echo_commands ());
     m.assign ("forced_interactive", forced_interactive ());
     m.assign ("forced_line_editing", forced_line_editing ());
@@ -267,8 +267,8 @@ OCTAVE_NAMESPACE_BEGIN
     m.assign ("info_file", info_file ());
     m.assign ("info_program", info_program ());
     m.assign ("texi_macros_file", texi_macros_file ());
-    m.assign ("all_args", all_args ());
-    m.assign ("remaining_args", remaining_args ());
+    m.assign ("all_args", Cell (all_args ()));
+    m.assign ("remaining_args", Cell (remaining_args ()));
 
     return m;
   }

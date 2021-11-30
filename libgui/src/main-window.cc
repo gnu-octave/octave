@@ -524,8 +524,8 @@ namespace octave
     // (when pressing <alt>), we can return immediately and reset the
     // focus to the previous widget
     if (! new_widget
-          || (new_widget == menuBar ())
-          || (new_widget == m_editor_menubar))
+        || (new_widget == menuBar ())
+        || (new_widget == m_editor_menubar))
       {
         if (m_active_dock)
           m_active_dock->setFocus ();
@@ -949,7 +949,7 @@ namespace octave
 
     QStyle *st = style ();
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
-    m_main_tool_bar->setIconSize (QSize (icon_size,icon_size));
+    m_main_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
     if (settings->value (global_status_bar).toBool ())
       m_status_bar->show ();
@@ -1853,7 +1853,7 @@ namespace octave
 
   void main_window::disable_menu_shortcuts (bool disable)
   {
-    QHash<QMenu*, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
+    QHash<QMenu *, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
 
     while (i != m_hash_menu_text.constEnd ())
       {
@@ -2132,7 +2132,7 @@ namespace octave
 #if defined (HAVE_QSCINTILLA)
     // call the editor to add actions which should also be available in the
     // editor's menu and tool bar
-    QList<QAction*> shared_actions;
+    QList<QAction *> shared_actions;
     shared_actions << m_new_script_action
                    << m_new_function_action
                    << m_open_action
@@ -2154,8 +2154,8 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
     m_open_action = add_action (
-                    file_menu, rmgr.icon ("document-open"), tr ("Open..."),
-                    SLOT (request_open_file (void)), this);
+                      file_menu, rmgr.icon ("document-open"), tr ("Open..."),
+                      SLOT (request_open_file (void)), this);
     m_open_action->setToolTip (tr ("Open an existing file in editor"));
 
 #if defined (HAVE_QSCINTILLA)
@@ -2713,9 +2713,9 @@ namespace octave
 #if defined (HAVE_QMAINWINDOW_RESIZEDOCKS)
     // resizeDockWidget was added to Qt in Qt 5.6
     if (width >= 0)
-      resizeDocks ({dw},{width},Qt::Horizontal);
+      resizeDocks ({dw}, {width}, Qt::Horizontal);
     if (height >= 0)
-      resizeDocks ({dw},{height},Qt::Vertical);
+      resizeDocks ({dw}, {height}, Qt::Vertical);
 #else
     // This replacement of resizeDockWidget is not very reliable.
     // But even if Qt4 is not yet

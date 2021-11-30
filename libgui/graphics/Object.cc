@@ -70,7 +70,7 @@ namespace octave
     if (m_qobject)
       {
         m_qobject->setProperty ("octave::Object",
-                                QVariant::fromValue<void*> (this));
+                                QVariant::fromValue<void *> (this));
         connect (m_qobject, &QObject::destroyed,
                  this, &Object::objectDestroyed);
       }
@@ -197,7 +197,7 @@ namespace octave
       m_qobject = nullptr;
   }
 
-  Object*
+  Object *
   Object::parentObject (octave::interpreter& interp, const graphics_object& go)
   {
     gh_manager& gh_mgr = interp.get_gh_manager ();
@@ -210,13 +210,13 @@ namespace octave
     return parent;
   }
 
-  Object*
+  Object *
   Object::fromQObject (QObject *obj)
   {
     QVariant v = obj->property ("octave::Object");
 
     if (v.isValid ())
-      return reinterpret_cast<Object *> (qvariant_cast<void*> (v));
+      return reinterpret_cast<Object *> (qvariant_cast<void *> (v));
 
     return nullptr;
   }

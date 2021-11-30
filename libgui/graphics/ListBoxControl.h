@@ -62,8 +62,8 @@ namespace octave
 
   private slots:
     void itemSelectionChanged (void);
-    void itemActivated (const QModelIndex &);
-    void itemPressed (QListWidgetItem*);
+    void itemActivated (const QModelIndex&);
+    void itemPressed (QListWidgetItem *);
 
   private:
     bool m_blockCallback;

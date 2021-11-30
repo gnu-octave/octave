@@ -205,7 +205,7 @@ namespace octave
     m_file_system_model = new QFileSystemModel (this);
     m_file_system_model->setResolveSymlinks (false);
     m_file_system_model->setFilter (
-        QDir::System | QDir::NoDotAndDotDot | QDir::AllEntries);
+      QDir::System | QDir::NoDotAndDotDot | QDir::AllEntries);
     QModelIndex rootPathIndex
       = m_file_system_model->setRootPath (startup_dir.absolutePath ());
 
@@ -286,8 +286,8 @@ namespace octave
     // but the function textActivated was not introduced until Qt 5.14
     // so we'll need a feature test.
 
-    connect (m_current_directory, SIGNAL (activated (const QString &)),
-             this, SLOT (set_current_directory (const QString &)));
+    connect (m_current_directory, SIGNAL (activated (const QString&)),
+             this, SLOT (set_current_directory (const QString&)));
 
     QCompleter *completer = new QCompleter (m_file_system_model, this);
     m_current_directory->setCompleter (completer);
@@ -367,14 +367,14 @@ namespace octave
 
   void files_dock_widget::do_sync_browser_directory (void)
   {
-    display_directory (m_octave_dir,false);  // false: no sync of octave dir
+    display_directory (m_octave_dir, false); // false: no sync of octave dir
   }
 
   void files_dock_widget::update_octave_directory (const QString& dir)
   {
     m_octave_dir = dir;
     if (m_sync_octave_dir)
-      display_directory (m_octave_dir,false);  // false: no sync of octave dir
+      display_directory (m_octave_dir, false); // false: no sync of octave dir
   }
 
   void files_dock_widget::display_directory (const QString& dir,
@@ -442,7 +442,7 @@ namespace octave
     gui_settings *settings = rmgr.get_settings ();
 
     QString key = m_columns_shown_keys.at (col);
-    bool shown = settings->value (key,false).toBool ();
+    bool shown = settings->value (key, false).toBool ();
     settings->setValue (key, ! shown);
     settings->sync ();
 
@@ -745,12 +745,12 @@ namespace octave
         if (multiple_files)
           if (it == rows.begin ())
             {
-               dlg_answer = QMessageBox::question (this,
-                              tr ("Delete file/directory"),
-                              tr ("Are you sure you want to delete all %1 selected files?\n").arg (file_cnt),
-                              QMessageBox::Yes | QMessageBox::No);
-               if (dlg_answer != QMessageBox::Yes)
-                 return;
+              dlg_answer = QMessageBox::question (this,
+                                                  tr ("Delete file/directory"),
+                                                  tr ("Are you sure you want to delete all %1 selected files?\n").arg (file_cnt),
+                                                  QMessageBox::Yes | QMessageBox::No);
+              if (dlg_answer != QMessageBox::Yes)
+                return;
             }
           else
             dlg_answer = QMessageBox::Yes;
@@ -919,7 +919,7 @@ namespace octave
 
     QStyle *st = style ();
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
-    m_navigation_tool_bar->setIconSize (QSize (icon_size,icon_size));
+    m_navigation_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
     // filenames are always shown, other columns can be hidden by settings
     for (int i = 0; i < 3; i++)
@@ -927,7 +927,7 @@ namespace octave
                                          ! settings->value (m_columns_shown_keys.at (i),false).toBool ());
 
     QDir::Filters current_filter = m_file_system_model->filter ();
-    if (settings->value (m_columns_shown_keys.at (3),false).toBool ())
+    if (settings->value (m_columns_shown_keys.at (3), false).toBool ())
       m_file_system_model->setFilter (current_filter | QDir::Hidden);
     else
       m_file_system_model->setFilter (current_filter & (~QDir::Hidden));
@@ -999,7 +999,7 @@ namespace octave
     bool ok;
 
     QString name = QInputDialog::getText (this, tr ("Create File"),
-                                          tr ("Create file in\n","String ends with \\n!") + parent_dir,
+                                          tr ("Create file in\n", "String ends with \\n!") + parent_dir,
                                           QLineEdit::Normal,
                                           tr ("New File.txt"), &ok);
     if (ok && name.length () > 0)
@@ -1017,7 +1017,7 @@ namespace octave
     bool ok;
 
     QString name = QInputDialog::getText (this, tr ("Create Directory"),
-                                          tr ("Create folder in\n","String ends with \\n!") + parent_dir,
+                                          tr ("Create folder in\n", "String ends with \\n!") + parent_dir,
                                           QLineEdit::Normal,
                                           tr ("New Directory"), &ok);
     if (ok && name.length () > 0)
@@ -1028,12 +1028,12 @@ namespace octave
       }
   }
 
-  void files_dock_widget::process_set_current_dir (const QString & dir)
+  void files_dock_widget::process_set_current_dir (const QString& dir)
   {
     emit displayed_directory_changed (dir);
   }
 
-  void files_dock_widget::process_find_files (const QString & dir)
+  void files_dock_widget::process_find_files (const QString& dir)
   {
     emit find_files_signal (dir);
   }

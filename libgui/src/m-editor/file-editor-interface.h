@@ -54,7 +54,7 @@ namespace octave
     virtual QToolBar * toolbar (void) = 0;
     virtual QMenuBar * menubar (void) = 0;
 
-    virtual void insert_global_actions (QList<QAction*>) = 0;
+    virtual void insert_global_actions (QList<QAction *>) = 0;
     virtual void handle_enter_debug_mode (void) = 0;
     virtual void handle_exit_debug_mode (void) = 0;
 

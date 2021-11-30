@@ -49,12 +49,12 @@ namespace octave
 
   public:
     Table (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-           const graphics_object& go, QTableWidget* tableWidget);
+           const graphics_object& go, QTableWidget *tableWidget);
     ~Table (void);
 
-    Container* innerContainer (void) { return m_container; }
+    Container * innerContainer (void) { return m_container; }
 
-    bool eventFilter (QObject* watched, QEvent* event);
+    bool eventFilter (QObject *watched, QEvent *event);
 
     static Table *
     create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
@@ -73,14 +73,14 @@ namespace octave
     void updateRowname (void);
 
   private slots:
-    void itemChanged (QTableWidgetItem* item);
+    void itemChanged (QTableWidgetItem *item);
     void comboBoxCurrentIndexChanged (const QString& value);
     void cellClicked (int row, int col);
     void itemSelectionChanged (void);
 
   private:
-    Container* m_container;
-    QTableWidget* m_tableWidget;
+    Container *m_container;
+    QTableWidget *m_tableWidget;
     octave_value m_curData;
     bool m_blockUpdates;
     bool m_keyPressHandlerDefined;

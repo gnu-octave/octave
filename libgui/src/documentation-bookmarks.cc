@@ -74,7 +74,7 @@ namespace octave
     m_tree->setColumnCount (1);
     m_tree->setHeaderHidden (true);
     m_tree->setEditTriggers (QAbstractItemView::EditKeyPressed
-                                      | QAbstractItemView::SelectedClicked);
+                             | QAbstractItemView::SelectedClicked);
 
     connect (m_tree, &QTreeWidget::customContextMenuRequested,
              this, &documentation_bookmarks::ctx_menu);
@@ -266,7 +266,7 @@ namespace octave
               }
           }
         else
-            (*it)->setHidden (true);
+          (*it)->setHidden (true);
 
         it++;
       }
@@ -370,7 +370,7 @@ namespace octave
       {
         if (*it)
           m_tree->takeTopLevelItem (
-                    m_tree->indexOfTopLevelItem (*it));
+            m_tree->indexOfTopLevelItem (*it));
       }
   }
 
@@ -431,22 +431,22 @@ namespace octave
   {
     switch (item->data (0, tag_role).toInt ())
       {
-        case folder_tag:
-          xml_writer->writeStartElement (dc_xbel_name_folder);
-          xml_writer->writeAttribute (dc_xbel_attr_folded,
-                    item->isExpanded () ? dc_xbel_value_no : dc_xbel_value_yes);
-          xml_writer->writeTextElement (dc_xbel_name_title, item->text(0));
-          for (int i = 0; i < item->childCount (); i++)
-            write_tree_item (xml_writer, item->child (i));
-          xml_writer->writeEndElement ();
-          break;
+      case folder_tag:
+        xml_writer->writeStartElement (dc_xbel_name_folder);
+        xml_writer->writeAttribute (dc_xbel_attr_folded,
+                                    item->isExpanded () ? dc_xbel_value_no : dc_xbel_value_yes);
+        xml_writer->writeTextElement (dc_xbel_name_title, item->text(0));
+        for (int i = 0; i < item->childCount (); i++)
+          write_tree_item (xml_writer, item->child (i));
+        xml_writer->writeEndElement ();
+        break;
 
-        case bookmark_tag:
-          xml_writer->writeStartElement (dc_xbel_name_bookmark);
-          xml_writer->writeAttribute (dc_xbel_attr_href, item->data (0, url_role).toString ());
-          xml_writer->writeTextElement (dc_xbel_name_title, item->text (0));
-          xml_writer->writeEndElement ();
-          break;
+      case bookmark_tag:
+        xml_writer->writeStartElement (dc_xbel_name_bookmark);
+        xml_writer->writeAttribute (dc_xbel_attr_href, item->data (0, url_role).toString ());
+        xml_writer->writeTextElement (dc_xbel_name_title, item->text (0));
+        xml_writer->writeEndElement ();
+        break;
       }
   }
 
@@ -494,9 +494,9 @@ namespace octave
           xml_reader.skipCurrentElement ();
       }
 
-     m_xbel_file.close ();
+    m_xbel_file.close ();
 
-     return error_message;
+    return error_message;
   }
 
   void documentation_bookmarks::read_next_item (QXmlStreamReader *xml_reader,

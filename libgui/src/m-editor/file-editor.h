@@ -101,7 +101,7 @@ namespace octave
 
     QMenuBar * menubar (void) { return m_menu_bar; }
 
-    void insert_global_actions (QList<QAction*>);
+    void insert_global_actions (QList<QAction *>);
 
     enum shared_actions_idx
     {
@@ -151,7 +151,7 @@ namespace octave
     void fetab_convert_eol (const QWidget *ID, QsciScintilla::EolMode eol_mode);
     void fetab_goto_line (const QWidget *ID, int line = -1);
     void fetab_move_match_brace (const QWidget *ID, bool select);
-    void fetab_completion (const QWidget*);
+    void fetab_completion (const QWidget *);
     void fetab_insert_debugger_pointer (const QWidget *ID, int line = -1);
     void fetab_delete_debugger_pointer (const QWidget *ID, int line = -1);
     void fetab_do_breakpoint_marker (bool insert, const QWidget *ID,
@@ -292,7 +292,7 @@ namespace octave
 
     void handle_autoc_cancelled (void);
 
-    file_editor_tab* reset_focus (void);
+    file_editor_tab * reset_focus (void);
 
   protected slots:
 
@@ -361,7 +361,7 @@ namespace octave
     QMenu * add_menu (QMenuBar *p, QString text);
 
     int m_number_of_tabs;
-    QHash<QMenu*, QStringList> m_hash_menu_text;
+    QHash<QMenu *, QStringList> m_hash_menu_text;
 
     QString m_ced;
 

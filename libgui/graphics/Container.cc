@@ -52,7 +52,7 @@ namespace octave
   Container::~Container (void)
   { }
 
-  Canvas*
+  Canvas *
   Container::canvas (const graphics_handle& gh, bool xcreate)
   {
     if (! m_canvas && xcreate)
@@ -131,7 +131,7 @@ namespace octave
   }
 
   void
-  Container::resizeEvent (QResizeEvent* /* event */)
+  Container::resizeEvent (QResizeEvent * /* event */)
   {
     if (m_canvas)
       m_canvas->qWidget ()->setGeometry (0, 0, width (), height ());

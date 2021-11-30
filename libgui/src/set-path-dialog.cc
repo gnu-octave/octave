@@ -164,7 +164,7 @@ namespace octave
     QGridLayout *main_layout = new QGridLayout;
     main_layout->addWidget (m_info_label, 0, 0);
     main_layout->addLayout (main_hboxlayout, 1, 0);
-    main_layout->addWidget (button_box,2, 0);
+    main_layout->addWidget (button_box, 2, 0);
 
     setLayout (main_layout);
 

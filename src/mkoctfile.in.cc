@@ -724,7 +724,7 @@ main (int argc, char **sys_argv)
     argv.push_back (sys_argv[i_arg]);
 #endif
 
- if (argc == 1)
+  if (argc == 1)
     {
       std::cout << usage_msg << std::endl;
       return 1;

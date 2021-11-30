@@ -463,7 +463,7 @@ namespace octave
       {
         shortcut_t sc = m_sc.at (i);
 
-        QTreeWidgetItem *section = m_level_hash[sc.m_settings_key.section (':',0,0)];
+        QTreeWidgetItem *section = m_level_hash[sc.m_settings_key.section (':', 0, 0)];
 
         // handle sections which have changed and do not correspond to the
         // previously defined keyname
@@ -761,7 +761,7 @@ namespace octave
         else
           sc.m_actual_sc = QKeySequence (sc.m_default_sc); // get default shortcut
 
-        m_sc.replace (i,sc);                   // replace the old with the new one
+        m_sc.replace (i, sc);                  // replace the old with the new one
 
         // update the tree view
         QTreeWidgetItem *tree_item = m_index_item_hash[i]; // get related tree item

@@ -69,7 +69,7 @@ namespace octave
       }
   }
 
-  ListBoxControl*
+  ListBoxControl *
   ListBoxControl::create (octave::base_qobject& oct_qobj,
                           octave::interpreter& interp,
                           const graphics_object& go)
@@ -209,12 +209,12 @@ namespace octave
   }
 
   void
-  ListBoxControl::itemActivated (const QModelIndex &)
+  ListBoxControl::itemActivated (const QModelIndex&)
   {
     m_selectionChanged = true;
   }
   void
-  ListBoxControl::itemPressed (QListWidgetItem*)
+  ListBoxControl::itemPressed (QListWidgetItem *)
   {
     m_selectionChanged = true;
   }

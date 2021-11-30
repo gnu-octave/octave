@@ -144,10 +144,10 @@ global_proxy_pass ("proxyPassword", QVariant (QString ()));
 
 const QStringList
 global_proxy_all_types (QStringList ()
-             << "HttpProxy"
-             << "Socks5Proxy"
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Environment Variables")
-);
+                        << "HttpProxy"
+                        << "Socks5Proxy"
+                        << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Environment Variables")
+                       );
 const QList<int>
 global_proxy_manual_types (QList<int> () << 0 << 1);
 

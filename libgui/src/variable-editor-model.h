@@ -43,7 +43,7 @@ namespace octave
   {
   public:
 
-    base_ve_model (const QString &expr, const octave_value& val);
+    base_ve_model (const QString& expr, const octave_value& val);
 
     virtual ~base_ve_model (void) = default;
 
@@ -138,11 +138,11 @@ namespace octave
 
   private:
 
-    static base_ve_model * create (const QString &expr, const octave_value& val);
+    static base_ve_model * create (const QString& expr, const octave_value& val);
 
   public:
 
-    variable_editor_model (const QString &expr, const octave_value& val,
+    variable_editor_model (const QString& expr, const octave_value& val,
                            QObject *parent = nullptr);
 
     ~variable_editor_model (void)

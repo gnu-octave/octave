@@ -197,8 +197,8 @@ namespace octave
     m_rep_active = false;
 
     // Connect required external signals
-    connect (ed, SIGNAL (edit_area_changed (octave_qscintilla*)),
-             this, SLOT (update_edit_area (octave_qscintilla*)));
+    connect (ed, SIGNAL (edit_area_changed (octave_qscintilla *)),
+             this, SLOT (update_edit_area (octave_qscintilla *)));
 
     setWindowModality (Qt::NonModal);
 
@@ -207,7 +207,7 @@ namespace octave
   }
 
   // The edit_area has changed: update relevant data of the file dialog
-  void find_dialog::update_edit_area (octave_qscintilla* edit_area)
+  void find_dialog::update_edit_area (octave_qscintilla *edit_area)
   {
     m_edit_area = edit_area;
     m_search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
@@ -297,19 +297,19 @@ namespace octave
     int xp = ed_bottom_right.x () - sizeHint ().width ();
     int yp = ed_bottom_right.y () - sizeHint ().height ();
 
-    m_last_position = s->value (ed_fdlg_pos.key, QPoint (xp,yp)).toPoint ();
+    m_last_position = s->value (ed_fdlg_pos.key, QPoint (xp, yp)).toPoint ();
     move (m_last_position);
 
     if (QApplication::desktop ()->screenNumber (this) == -1)
       {
         // Last used position is not on screen anymore, use default pos.
-        m_last_position = QPoint (xp,yp);
+        m_last_position = QPoint (xp, yp);
         move (m_last_position);
 
         if (QApplication::desktop ()->screenNumber (this) == -1)
           {
             // Default position is not on screen, last resort
-            m_last_position = QPoint (50,100);  // upper left
+            m_last_position = QPoint (50, 100); // upper left
             move (m_last_position);
           }
       }
@@ -396,7 +396,7 @@ namespace octave
     if (m_edit_area && m_edit_area->hasSelectedText ())
       {
         int lbeg, lend, cbeg, cend;
-        m_edit_area->getSelection (&lbeg,&cbeg,&lend,&cend);
+        m_edit_area->getSelection (&lbeg, &cbeg, &lend, &cend);
         if (lbeg == lend)
           m_search_line_edit->setCurrentText (m_edit_area->selectedText ());
       }
@@ -505,10 +505,10 @@ namespace octave
           {
             // Start from where the cursor is.  Fix QScintilla's cursor
             // positioning
-            m_edit_area->getCursorPosition (&line,&col);
+            m_edit_area->getCursorPosition (&line, &col);
             if (m_find_result_available && m_edit_area->hasSelectedText ())
               {
-                int currpos = m_edit_area->positionFromLineIndex (line,col);
+                int currpos = m_edit_area->positionFromLineIndex (line, col);
                 currpos -= (m_search_line_edit->currentText ().length ());
                 if (currpos < 0)
                   currpos = 0;
@@ -520,17 +520,17 @@ namespace octave
     // Do the search
     m_find_result_available
       = m_edit_area->findFirst (m_search_line_edit->currentText (),
-                               m_regex_check_box->isChecked (),
-                               m_case_check_box->isChecked (),
-                               m_whole_words_check_box->isChecked (),
-                               do_wrap,
-                               do_forward,
-                               line,col,
-                               true
+                                m_regex_check_box->isChecked (),
+                                m_case_check_box->isChecked (),
+                                m_whole_words_check_box->isChecked (),
+                                do_wrap,
+                                do_forward,
+                                line, col,
+                                true
 #if defined (HAVE_QSCI_VERSION_2_6_0)
-                               , true
+                                , true
 #endif
-                              );
+                               );
 
     if (m_find_result_available)
       {
@@ -540,7 +540,7 @@ namespace octave
 
         if (m_in_sel)
           {
-            m_edit_area->getCursorPosition (&line,&col);
+            m_edit_area->getCursorPosition (&line, &col);
             int pos = m_edit_area->positionFromLineIndex (line, col);
 
             int l1, c1, l2, c2;
@@ -614,7 +614,7 @@ namespace octave
       {
         handle_replace_text_changed ();
 
-        m_edit_area->getCursorPosition (&line,&col);
+        m_edit_area->getCursorPosition (&line, &col);
 
         m_rep_all = 1;
         find_next ();  // find first occurrence (forward)
@@ -637,7 +637,7 @@ namespace octave
         m_find_result_available = false;
 
         if (! m_search_selection_check_box->isChecked ())
-          m_edit_area->setCursorPosition (line,col);
+          m_edit_area->setCursorPosition (line, col);
       }
   }
 

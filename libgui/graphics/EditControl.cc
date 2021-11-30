@@ -39,7 +39,7 @@
 namespace octave
 {
 
-  EditControl*
+  EditControl *
   EditControl::create (octave::base_qobject& oct_qobj,
                        octave::interpreter& interp, const graphics_object& go)
   {
@@ -143,7 +143,7 @@ namespace octave
   { }
 
   void
-  EditControl::initCommon (QWidget*)
+  EditControl::initCommon (QWidget *)
   {
     m_textChanged = false;
   }

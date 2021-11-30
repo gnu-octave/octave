@@ -56,7 +56,7 @@ namespace octave
 
   protected slots:
 
-    virtual QMenu* createPopupMenu ();
+    virtual QMenu * createPopupMenu ();
 
     virtual bool event (QEvent *ev);
 
@@ -73,8 +73,8 @@ namespace octave
 
     void request_switch (int direction);
 
-    QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                         const char *member, QWidget *receiver);
+    QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                          const char *member, QWidget *receiver);
 
     base_qobject& m_octave_qobj;
 

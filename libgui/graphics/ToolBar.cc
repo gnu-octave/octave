@@ -55,7 +55,7 @@ namespace octave
     return QIcon (pix);
   }
 
-  static QAction*
+  static QAction *
   addEmptyAction (QToolBar *bar)
   {
     static const QIcon empty_icon = makeEmptyIcon ();
@@ -68,7 +68,7 @@ namespace octave
     return a;
   }
 
-  ToolBar*
+  ToolBar *
   ToolBar::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
                    const graphics_object& go)
   {

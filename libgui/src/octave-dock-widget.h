@@ -132,7 +132,7 @@ namespace octave
 
     void handle_settings (const gui_settings *);
 
-    void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
+    void handle_active_dock_changed (octave_dock_widget *, octave_dock_widget *);
 
     void save_settings (void);
 

@@ -52,9 +52,9 @@ namespace octave
     void pasteClipboard (void);
     void selectAll (void);
 
-    void showDoc (const QString & name);
-    void registerDoc (const QString & name);
-    void unregisterDoc (const QString & name);
+    void showDoc (const QString& name);
+    void registerDoc (const QString& name);
+    void unregisterDoc (const QString& name);
 
   private:
 

@@ -38,7 +38,7 @@ namespace octave
   led_indicator::led_indicator (led_state initial_state, QWidget *p)
     : QLabel (p)
   {
-    setFixedSize(12,12);
+    setFixedSize(12, 12);
     set_state (initial_state);
   }
 
@@ -48,16 +48,16 @@ namespace octave
 
     switch (state)
       {
-        case LED_STATE_NO:
-          break;
+      case LED_STATE_NO:
+        break;
 
-        case LED_STATE_INACTIVE:
-          col = QColor (Qt::darkRed);
-          break;
+      case LED_STATE_INACTIVE:
+        col = QColor (Qt::darkRed);
+        break;
 
-        case LED_STATE_ACTIVE:
-          col = QColor (Qt::darkGreen);
-          break;
+      case LED_STATE_ACTIVE:
+        col = QColor (Qt::darkGreen);
+        break;
       }
 
     setStyleSheet (style_sheet (col));

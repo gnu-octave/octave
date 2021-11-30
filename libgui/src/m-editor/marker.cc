@@ -88,7 +88,7 @@ namespace octave
   }
 
   void marker::handle_find_translation (int linenr, int& translation_linenr,
-                                        marker *& bp)
+                                        marker *&bp)
   {
     if (m_original_linenr == linenr)
       {

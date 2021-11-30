@@ -126,7 +126,7 @@ namespace octave
 // Some constants used several times in the settings
 
 // Special color indicating no change compared to default color
-const QColor settings_color_no_change (255,0,255);
+const QColor settings_color_no_change (255, 0, 255);
 
 // Other color schemes (currently one extra, but possibly more in the future)
 const QString settings_color_modes = QT_TRANSLATE_NOOP (

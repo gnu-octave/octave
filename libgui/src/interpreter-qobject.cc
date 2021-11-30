@@ -195,7 +195,7 @@ namespace octave
       }
   }
 
-  qt_interpreter_events * interpreter_qobject::qt_link (void)
+  qt_interpreter_events *interpreter_qobject::qt_link (void)
   {
     return m_octave_qobj.qt_link ();
   }

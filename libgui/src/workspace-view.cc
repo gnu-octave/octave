@@ -185,7 +185,7 @@ namespace octave
     m_model->notice_settings (settings); // update colors of model first
 
     for (int i = 0; i < ws_columns_shown.length (); i++)
-      m_view->setColumnHidden (i + 1, ! settings->value (ws_columns_shown_keys.at (i),true).toBool ());
+      m_view->setColumnHidden (i + 1, ! settings->value (ws_columns_shown_keys.at (i), true).toBool ());
 
     QString tool_tip;
 
@@ -303,7 +303,7 @@ namespace octave
                             &sig_mapper, SLOT (map ()));
         sig_mapper.setMapping (action, i);
         action->setCheckable (true);
-        action->setChecked (settings->value (ws_columns_shown_keys.at (i),true).toBool ());
+        action->setChecked (settings->value (ws_columns_shown_keys.at (i), true).toBool ());
       }
 
     // FIXME: We could use
@@ -333,7 +333,7 @@ namespace octave
     gui_settings *settings = rmgr.get_settings ();
 
     QString key = ws_columns_shown_keys.at (col);
-    bool shown = settings->value (key,true).toBool ();
+    bool shown = settings->value (key, true).toBool ();
 
     m_view->setColumnHidden (col + 1, shown);
 

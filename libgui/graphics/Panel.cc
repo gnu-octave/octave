@@ -92,7 +92,7 @@ namespace octave
     return bw;
   }
 
-  Panel*
+  Panel *
   Panel::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
                  const graphics_object& go)
   {
@@ -139,7 +139,7 @@ namespace octave
 
     if (frame->hasMouseTracking ())
       {
-        for (auto *w : frame->findChildren<QWidget*> ())
+        for (auto *w : frame->findChildren<QWidget *> ())
           w->setMouseTracking (true);
       }
 
@@ -421,7 +421,7 @@ namespace octave
   }
 
   void
-  Panel::do_connections (const QObject *receiver, const QObject* /* emitter */)
+  Panel::do_connections (const QObject *receiver, const QObject * /* emitter */)
   {
     Object::do_connections (receiver);
     Object::do_connections (receiver, m_container->canvas (m_handle));

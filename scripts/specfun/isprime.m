@@ -99,7 +99,7 @@ function t = isprime (x)
   ## Generate prime table of suitable length up to maxp.
   ## The value of maxp needs to be at least 37,
   ## because of the method used by __isprimelarge__ below.
-  maxp = 37;  
+  maxp = 37;
   pr = [2 3 5 7 11 13 17 19 23 29 31 37];
   t = lookup (pr, x, "b");  # quick search for table matches.
 
@@ -119,9 +119,9 @@ function t = isprime (x)
   ##         30e9       28.3848s       27.9982s
   ## which is close enough to interpolate, so final threshold = 29 billion.
   ##
-  ## The test code was this: 
-  ##   n = THRESHOLD - (1:1e7); tic; isprime(n); toc 
-  ##   n = THRESHOLD + (1:1e7); tic; isprime(n); toc 
+  ## The test code was this:
+  ##   n = THRESHOLD - (1:1e7); tic; isprime(n); toc
+  ##   n = THRESHOLD + (1:1e7); tic; isprime(n); toc
   ##
   ## Two notes for future programmers:
   ##

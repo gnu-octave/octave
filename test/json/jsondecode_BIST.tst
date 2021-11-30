@@ -602,7 +602,7 @@
 
 
 %%% Test 10: Decoding of objects inside an object without using makeValidName.
-%%%          Not Matlab compatible!       
+%%%          Not Matlab compatible!
 
 %!testif HAVE_RAPIDJSON
 %! json = ['{"object": {"  hi 1   ": 1, "%string.array": 2,' ...

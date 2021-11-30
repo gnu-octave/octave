@@ -43,7 +43,7 @@
 ## @xref{XREFload,,load function}.
 ##
 ## @item .ofig
-## Open the figure with @code{hgload}.  
+## Open the figure with @code{hgload}.
 ## @xref{XREFhgload,,hgload function}.
 ##
 ## @item .fig, .ofig

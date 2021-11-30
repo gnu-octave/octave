@@ -136,7 +136,7 @@ function y = betainc (x, a, b, tail = "lower")
   non_trivial = a_not_one & b_not_one;
   a_one &= b_not_one;
   b_one &= a_not_one;
-  
+
   if (strcmpi (tail, "lower"))
     y(a_b_one) = x(a_b_one);
     y(a_one) = 1 - (1 - x(a_one)) .^ b(a_one);
@@ -146,13 +146,13 @@ function y = betainc (x, a, b, tail = "lower")
     y(a_one) = (1 - x(a_one)) .^ b(a_one);
     y(b_one) = 1 - x(b_one) .^ a(b_one);
   endif
-  
+
   ## Non-Trivial cases
   ## In the following, we use the fact that the continued fraction Octave uses
   ## is more efficient when x <= a / (a + b).  Moreover, to compute the upper
   ## version, which is defined as I_x(a,b,"upper") = 1 - I_x(a,b) we use the
   ## property I_x(a,b) + I_(1-x) (b,a) = 1.
-  
+
   x = x(non_trivial);
   a = a(non_trivial);
   b = b(non_trivial);
@@ -182,7 +182,7 @@ function y = betainc (x, a, b, tail = "lower")
          + (gammaln (a + b) - gammaln (a) - gammaln (b)) + log (f);
   y_nt = real (exp (y_nt));
   y_nt(fflag) = 1 - y_nt(fflag);
-  
+
   y(non_trivial) = y_nt;
 
   ## Restore original shape

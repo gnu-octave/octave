@@ -323,15 +323,11 @@ namespace octave
 
     void init (void)
     {
-      // We need an integer division that is truncating decimals instead of
-      // rounding.  So, use underlying C++ types instead of octave_int<T>.
-      // FIXME: The numerator might underflow or overflow. Add checks for that.
       m_numel = ((m_increment == T (0)
                   || (m_limit > m_base && m_increment < T (0))
                   || (m_limit < m_base && m_increment > T (0)))
-                 ? 0
-                 : (m_limit.value () - m_base.value () + m_increment.value ())
-                   / m_increment.value ());
+                 ? T (0)
+                 : (m_limit - m_base + m_increment) / m_increment);
 
       m_final = m_base + (m_numel - 1) * m_increment;
     }
@@ -344,6 +340,14 @@ namespace octave
 
   template <> OCTAVE_API void range<double>::init (void);
   template <> OCTAVE_API void range<float>::init (void);
+  template <> OCTAVE_API void range<octave_int8>::init (void);
+  template <> OCTAVE_API void range<octave_int16>::init (void);
+  template <> OCTAVE_API void range<octave_int32>::init (void);
+  template <> OCTAVE_API void range<octave_int64>::init (void);
+  template <> OCTAVE_API void range<octave_uint8>::init (void);
+  template <> OCTAVE_API void range<octave_uint16>::init (void);
+  template <> OCTAVE_API void range<octave_uint32>::init (void);
+  template <> OCTAVE_API void range<octave_uint64>::init (void);
 
   template <> OCTAVE_API bool range<double>::is_storable (void) const;
   template <> OCTAVE_API bool range<float>::is_storable (void) const;

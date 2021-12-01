@@ -263,6 +263,10 @@ to true.
 - The function `repelem` now produces a row vector output when the input is
 a scalar.
 
+- The functions `var` and `std` now accept a weight vector as input and
+compute the weigthed variance.  Dimension input now allows a vector and
+the keyword "all".
+
 ### Alphabetical list of new functions added in Octave 7
 
 * `cospi`

@@ -25,8 +25,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} std (@var{x})
-## @deftypefnx {} {} std (@var{x}, @var{opt})
-## @deftypefnx {} {} std (@var{x}, @var{opt}, @var{dim})
+## @deftypefnx {} {} std (@var{x}, @var{w})
+## @deftypefnx {} {} std (@var{x}, @var{w}, @var{dim})
+## @deftypefnx {} {} std (@var{x}, @var{w}, @qcode{"ALL"})
 ## Compute the standard deviation of the elements of the vector @var{x}.
 ##
 ## The standard deviation is defined as
@@ -48,63 +49,47 @@
 ## where @math{N} is the number of elements of the @var{x} vector.
 ## @end ifnottex
 ##
-## If @var{x} is a matrix, compute the standard deviation for each column and
-## return them in a row vector.
+## If @var{x} is an array, compute the standard deviation for each column and
+## return them in a row vector (or for an n-D array, the result is returned as
+## an array of dimension 1 x n x m x @dots{}).
 ##
-## The argument @var{opt} determines the type of normalization to use.
-## Valid values are
+## The optional argument @var{w} determines the weighting scheme to use.  Valid
+## values are:
 ##
 ## @table @asis
-## @item 0:
-##   normalize with @math{N-1}, provides the square root of the best unbiased
-## estimator of the variance [default]
+## @item 0 [default]:
+## Normalize with @math{N-1}.  This provides the square root of the best
+## unbiased estimator of the variance.
 ##
 ## @item 1:
-##   normalize with @math{N}, this provides the square root of the second
-## moment around the mean
+## Normalize with @math{N}. This provides the square root of the second moment
+## around the mean.
+##
+## @item a vector:
+## Compute the weighted standard deviation with nonnegative scalar weights. The
+## length of @var{w} must be equal to the size of @var{x} along dimension
+## @var{dim}.
 ## @end table
 ##
-## If the optional argument @var{dim} is given, operate along this dimension.
+## If @math{N} is equal to 1 the value of @var{W} is ignored and
+## normalization by @math{N} is used.
+##
+## The optional variable @var{dim} forces @code{std} to operate over the
+## specified dimension.  @var{dim} can either be a scalar dimension or a vector
+## of non-repeating dimensions over which to operate.  Dimensions must be
+## positive integers, and the standard deviation is calculated over the array
+## slice defined by @var{dim}.
+##
+## Specifying dimension @qcode{"ALL"} will force @code{std} to operate on all
+## elements of @var{x}, and is equivalent to @code{std (@var{x}(:))}.
+##
+## When @var{dim} is a vector or @qcode{"ALL"}, @var{w} must be either 0 or 1.
 ## @seealso{var, bounds, mad, range, iqr, mean, median}
 ## @end deftypefn
 
-function retval = std (x, opt = 0, dim)
+function retval = std (varargin)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  if (! (isnumeric (x) || islogical (x)))
-    error ("std: X must be a numeric vector or matrix");
-  endif
-
-  if (isempty (opt))
-    opt = 0;
-  elseif (! isscalar (opt) || (opt != 0 && opt != 1))
-    error ("std: normalization OPT must be 0 or 1");
-  endif
-
-  nd = ndims (x);
-  sz = size (x);
-  if (nargin < 3)
-    ## Find the first non-singleton dimension.
-    (dim = find (sz > 1, 1)) || (dim = 1);
-  else
-    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
-      error ("std: DIM must be an integer and a valid dimension");
-    endif
-  endif
-
-  n = size (x, dim);
-  if (n == 1 || isempty (x))
-    if (isa (x, "single"))
-      retval = zeros (sz, "single");
-    else
-      retval = zeros (sz);
-    endif
-  else
-    retval = sqrt (sumsq (center (x, dim), dim) / (n - 1 + opt));
-  endif
+  retval = sqrt (var (varargin{:}));
 
 endfunction
 
@@ -121,14 +106,33 @@ endfunction
 %!assert (std ([1 2], 1), 0.5, 5*eps)
 %!assert (std (1), 0)
 %!assert (std (single (1)), single (0))
-%!assert (std ([]), [])
-%!assert (std (ones (1,3,0,2)), ones (1,3,0,2))
 %!assert (std ([1 2 3], [], 3), [0 0 0])
+
+##Test empty inputs
+%!assert (std ([]), NaN)
+%!assert (std ([],[],1), NaN(1,0))
+%!assert (std ([],[],2), NaN(0,1))
+%!assert (std ([],[],3), [])
+%!assert (std (ones (0,1)), NaN)
+%!assert (std (ones (1,0)), NaN)
+%!assert (std (ones (1,0), [], 1), NaN(1,0))
+%!assert (std (ones (1,0), [], 2), NaN)
+%!assert (std (ones (1,0), [], 3), NaN(1,0))
+%!assert (std (ones (0,1)), NaN)
+%!assert (std (ones (0,1), [], 1), NaN)
+%!assert (std (ones (0,1), [], 2), NaN(0,1))
+%!assert (std (ones (0,1), [], 3), NaN(0,1))
+%!assert (std (ones (1,3,0,2)), NaN(1,1,0,2))
+%!assert (std (ones (1,3,0,2), [], 1), NaN(1,3,0,2))
+%!assert (std (ones (1,3,0,2), [], 2), NaN(1,1,0,2))
+%!assert (std (ones (1,3,0,2), [], 3), NaN(1,3,1,2))
+%!assert (std (ones (1,3,0,2), [], 4), NaN(1,3,0))
+
 
 ## Test input validation
 %!error <Invalid call> std ()
 %!error <X must be a numeric> std (['A'; 'B'])
-%!error <OPT must be 0 or 1> std (1, 2)
-%!error <DIM must be an integer> std (1, [], ones (2,2))
-%!error <DIM must be an integer> std (1, [], 1.5)
-%!error <DIM must be .* a valid dimension> std (1, [], 0)
+%!error <W must be 0> std ([1 2], 2)
+%!error <DIM must be a positive integer> std (1, [], ones (2,2))
+%!error <DIM must be a positive integer> std (1, [], 1.5)
+%!error <DIM must be a positive integer> std (1, [], 0)

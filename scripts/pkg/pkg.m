@@ -35,22 +35,32 @@
 ## Global packages are installed by default in a system-wide location.  This is
 ## usually a subdirectory of the folder where Octave itself is installed.
 ## Therefore, Octave needs write access to this folder to install global
-## packages.  That usually means that Octave has to run with root access (or
-## "Run as administrator" on Windows) to be able to install packages globally.
+## packages, which is usually only available when Octave is run with
+## administrative privileges, such as when run as root (or superuser) on
+## Unix-like systems, or run with elevated privileges ("Run as administrator")
+## on Windows.
 ##
-## In contrast, local packages are installed by default in the user's
-## home directory (profile on Windows) and are only available to that specific
-## user.  Usually, they can be installed without root access (or administrative
-## privileges).
+## In contrast, local packages are installed by default in the user's home
+## directory (or user profile on Windows) and are only available to that
+## specific user.  Usually, they can be installed without administrative
+## privileges.
+##
+## When Octave is running with administrative privileges, @code{pkg} will
+## install packages to the global package location by default.  Otherwise,
+## packages will be installed to the local location by default.  The user can
+## override this default installation location with optional arguments
+## (@option{-local} or @option{-global}) as described below.  The currently
+## used default package installation location can be queried with
+## @code{pkg prefix}.
 ##
 ## For global and local packages, there are separate databases holding the
 ## information about the installed packages.  If some package is installed
 ## globally as well as locally, the local installation takes precedence over
-## ("shadows") the global one.  Which package installation (global or local) is
+## ("shadows") the global one.  Which (global or local) package installation is
 ## used can also be manipulated by using prefixes and/or using the
 ## @samp{local_list} input argument.  Using these mechanisms, several different
-## releases of one and the same package can be installed side by side as well
-## (but cannot be loaded simultaneously).
+## releases of the same package can be installed side by side as well (but
+## cannot be loaded simultaneously).
 ##
 ## Packages might depend on external software and/or other packages.  To be
 ## able to install such packages, these dependencies should be installed
@@ -128,18 +138,19 @@
 ##
 ## @item -local
 ## A local installation (package available only to current user) is forced,
-## even if the user has system privileges.
+## even if Octave is being run with administrative privileges.
 ##
 ## @item -global
 ## A global installation (package available to all users) is forced, even if
-## the user doesn't normally have system privileges.
+## Octave is not being run with administrative privileges.  The user must have
+## write access to the global package store.
 ##
 ## @item -forge
 ## Install a package directly from the Octave Forge repository.  This
 ## requires an internet connection and the cURL library.
 ##
 ## @emph{Security risk}: no verification of the package is performed
-## before the installation.  There are no signature for packages, or
+## before the installation.  There are no signatures for packages, or
 ## checksums to confirm the correct file was downloaded.  It has the
 ## same security issues as manually downloading the package from the
 ## Octave Forge repository and installing it.
@@ -151,8 +162,9 @@
 ##
 ## @item update
 ## Check installed Octave Forge packages against repository and update any
-## outdated items.  This requires an internet connection and the cURL library.
-## Usage:
+## outdated items.  Updated packages are installed either globally or locally
+## depending on whether Octave is running with elevated privileges.  This
+## requires an internet connection and the cURL library.  Usage:
 ##
 ## @example
 ## pkg update
@@ -160,6 +172,12 @@
 ##
 ## @noindent
 ## To update a single package use @code{pkg install -forge}
+## 
+## @noindent
+## Updates for multiple packages are sorted alphabetically and not checked for
+## dependencies affected by installation order.  If dependency order related
+## @code{pkg update} failures occur, use @code{pkg install -forge} to update
+## packages individually.
 ##
 ## @item uninstall
 ## Uninstall named packages.  For example,

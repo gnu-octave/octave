@@ -26,8 +26,9 @@ community-maintained set of packages that can be downloaded and
 installed in Octave.  At the time of writing the `Octave Forge' project
 can be found online at @url{https://octave.sourceforge.io}, but
 since the Internet is an ever-changing place this may not be true at
-the time of reading.  Therefore it is recommended to see the Octave
-website for an updated reference.
+the time of reading.  Therefore it is recommended to see
+@url{https://octave.org, the Octave website}for an
+updated reference.
 
 @menu
 * Installing and Removing Packages::
@@ -49,12 +50,12 @@ pkg install image-1.0.0.tar.gz
 
 @noindent
 If the package is installed successfully nothing will be printed on
-the prompt, but if an error occurred during installation it will be
-reported.  It is possible to install several packages at once by
-writing several package files after the @code{pkg install} command.
-If a different version of the package is already installed it will
-be removed prior to installing the new package.  This makes it easy to
-upgrade and downgrade the version of a package, but makes it
+the prompt, but if a warning or error occurred during installation it
+will be reported.  It is possible to install several packages at once
+by writing several package file names after the @code{pkg install}
+command.  If a different version of the package is already installed it
+will be removed prior to installing the new package.  This makes it
+easy to upgrade and downgrade the version of a package, but makes it
 impossible to have several versions of the same package installed at
 once.
 
@@ -70,9 +71,9 @@ pkg list
 @end example
 
 @noindent
-In this case only version 1.0.0 of the @code{image} package is
-installed.  The @qcode{'*'} character next to the package name shows that the
-image package is loaded and ready for use.
+In this case, version 1.0.0 of the @code{image} package is installed.
+The @qcode{'*'} character next to the package name shows that the image
+package is loaded and ready for use.
 
 It is possible to remove a package from the system using the
 @code{pkg uninstall} command like this
@@ -83,14 +84,14 @@ pkg uninstall image
 
 @noindent
 If the package is removed successfully nothing will be printed in the
-prompt, but if an error occurred it will be reported.  It should be
-noted that the package file used for installation is not needed for
-removal, and that only the package name as reported by @code{pkg list}
-should be used when removing a package.  It is possible to remove
-several packages at once by writing several package names after the
-@code{pkg uninstall} command.
+prompt, but if a warning or error occurred it will be reported.  It
+should be noted that the package file used for installation is not
+needed for removal, and that only the package name as reported by
+@code{pkg list} should be used when removing a package.  It is possible
+to remove several packages at once by writing several package names
+after the @code{pkg uninstall} command.
 
-To minimize the amount of code duplication between packages it is
+To minimize the amount of code duplication between packages, it is
 possible that one package depends on another one.  If a package
 depends on another, it will check if that package is installed
 during installation.  If it is not, an error will be reported and
@@ -137,11 +138,12 @@ pkg unload package_name
 
 It is possible to make both per-user (local) and system-wide (global)
 installations of a package.  If the user performing the installation is
-@code{root} (or Administrator with elevated rights on Windows), the
+@code{root} (or Administrator with elevated privileges on Windows), the
 packages by default install in a system-wide directory that defaults to
 @file{@var{OCTAVE_HOME}/share/octave/packages/}.  If the user is not
-@code{root} (or without elevated rights), packages are installed
-locally.  The default installation directory for local packages is
+@code{root} (or Octave is running without elevated privileges),
+packages are installed locally.  The default installation directory for
+local packages is
 @file{@var{user_data_dir}/octave/@var{OCTAVE_API_VERSION}/packages}.
 Packages will be installed in a subdirectory of the installation
 directory that will be named after the package.  It is possible to

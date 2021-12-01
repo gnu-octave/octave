@@ -121,11 +121,11 @@ function C = nchoosek (v, k)
     ## Since Odd*Even is guaranteed to be Even, also take out a factor
     ## of 2 from numerator and denominator.
     if (rem (k, 2))  # k is odd
-      numer = [(v-k+1:v-(k+1)/2) .* (v-1:-1:v-(k-1)/2) / 2, v];
-      denom = [(1:k/2) .* (k-1:-1:(k+1)/2) / 2, k];
+      numer = [((v-k+1:v-(k+1)/2) .* (v-1:-1:v-(k-1)/2)) / 2, v];
+      denom = [((1:(k-1)/2) .* (k-1:-1:(k+1)/2)) / 2, k];
     else             # k is even
-      numer = (v-k+1:v-k/2) .* (v:-1:v-k/2+1) / 2;
-      denom = (1:k/2) .* (k:-1:k/2+1) / 2;
+      numer = ((v-k+1:v-k/2) .* (v:-1:v-k/2+1)) / 2;
+      denom = ((1:k/2) .* (k:-1:k/2+1)) / 2;
     endif
 
     ## Remove common factors from numerator and denominator
@@ -140,7 +140,7 @@ function C = nchoosek (v, k)
       numer = numer(numer > 1);
     until (isempty (denom))
 
-    C = prod (numer);
+    C = prod (numer, "native");
     if (C > flintmax)
       warning ("nchoosek: possible loss of precision");
     endif
@@ -268,6 +268,11 @@ endfunction
 %! assert (size (x), [0, 4]);
 %! assert (isstruct (x));
 %! assert (fieldnames (x), {"a"; "b"});
+
+%!test <61565>
+%! x = nchoosek (uint8 (10), uint8 (5));
+%! assert (x, uint8 (252));
+%! assert (class (x), "uint8");
 
 ## Test input validation
 %!error <Invalid call> nchoosek ()

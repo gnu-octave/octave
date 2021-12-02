@@ -164,20 +164,35 @@
 ## Check installed Octave Forge packages against repository and update any
 ## outdated items.  Updated packages are installed either globally or locally
 ## depending on whether Octave is running with elevated privileges.  This
-## requires an internet connection and the cURL library.  Usage:
+## requires an internet connection and the cURL library.
 ##
+## Options for the install command and the names of individual packages to be
+## checked for updates may be specified as a list following the update
+## command. If the @option{-local} or @option{-global} option is specified,
+## @code{pkg update} limits the update check to the local or global installed
+## packages, and installs updates in that same context.  For example,
+##
+## Update all packages:
 ## @example
 ## pkg update
 ## @end example
 ##
+## Update all local packages:
+## @example
+## pkg update -local
+## @end example
+##
+## Update certain packages, ignore dependencies, max verbosity:
+## @example
+## pkg update -verbose -nodeps image signal geometry
+## @end example
+##
 ## @noindent
-## To update a single package use @code{pkg install -forge}
-## 
-## @noindent
-## Updates for multiple packages are sorted alphabetically and not checked for
-## dependencies affected by installation order.  If dependency order related
-## @code{pkg update} failures occur, use @code{pkg install -forge} to update
-## packages individually.
+## Updates for multiple packages are sorted alphabetically and not checked
+## for dependencies affected by installation order.  If dependency order
+## related @code{pkg update} failure occurs, use @code{pkg update -nodeps} to
+## ignore dependencies, or @code{pkg install -forge <package_name>} to update
+## individual packages manually.
 ##
 ## @item uninstall
 ## Uninstall named packages.  For example,
@@ -716,6 +731,21 @@ function [local_packages, global_packages] = pkg (varargin)
     case "update"
       installed_pkgs_lst = installed_packages (local_list, global_list);
 
+      ## If -global or -local, limit updates to global or local list pkgs
+      globalflag = any (strcmp (varargin, "-global"));
+      localflag = any (strcmp (varargin, "-local"));
+      if (globalflag || localflag)
+        if (globalflag && localflag)
+          error ("pkg: cannot specify both global and local options.")
+        elseif (globalflag)
+          [~, installed_pkgs_lst] = installed_packages (local_list, global_list);
+        else
+          [installed_pkgs_lst, ~] = installed_packages (local_list, global_list);
+        endif
+      else
+        installed_pkgs_lst = installed_packages (local_list, global_list);
+      endif
+
       ## Explicit list of packages to update, rather than all packages
       if (numel (files) > 0)
         update_lst = {};
@@ -744,7 +774,9 @@ function [local_packages, global_packages] = pkg (varargin)
           forge_pkg_version = "0";
         end_try_catch
         if (compare_versions (forge_pkg_version, installed_pkg_version, ">"))
-          feval (@pkg, "install", "-forge", installed_pkg_name);
+          options_to_pass = varargin (strncmp (varargin, "-", 1));
+          options_to_pass(end+1) = "-forge";
+          feval (@pkg, "install", options_to_pass{:}, installed_pkg_name);
         endif
       endfor
 

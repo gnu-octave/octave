@@ -4,6 +4,11 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 ### General improvements
 
 
+- The pkg update command now accepts options that are passed to pkg install
+for each updated package.  Specifying @option{-local} or @option{-global}
+will restrict update checks to local and global installed packgaes,
+respectively.
+
 ### Graphical User Interface
 
 

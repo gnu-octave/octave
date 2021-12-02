@@ -497,7 +497,7 @@
 %!error <colon operator upper bound invalid> (uint8(1):-1:-6)
 
 ## Extreme integer values.
-%!test <61132>
+%!test <*61132>
 %! types = {"int8", "int16", "int32", "int64", ...
 %!          "uint8", "uint16", "uint32", "uint64"};
 %! for i = 1:numel (types)
@@ -515,50 +515,38 @@
 
 ## Test that ranges do not exceed limits for integer types
 
-## Ascending ranges, signed
+## Ascending ranges, signed and unsigned
 %!test <*61300>
-%! int_types = {@int8, @int16, @int32, @int64};
-%! for i_type = 1:numel (int_types)
-%!   for i_start = 0:4
-%!     assert ((int_types{i_type} (i_start) : 6 : 100)([1,end]), ...
-%!             [int_types{i_type}(i_start), int_types{i_type}(96+i_start)]);
+%! types = {@int8, @int16, @int32, @int64, @uint8, @uint16, @uint32, @uint64};
+%! start = 0:5;
+%! finish = start + 6 * floor ((100 - start) / 6);
+%! for i_type = 1:numel (types)
+%!   for i_start = 1:numel(start)
+%!     assert ((types{i_type} (start(i_start)) : 6 : 100)([1,end]), ...
+%!             [types{i_type}(start(i_start)), types{i_type}(finish(i_start))]);
 %!   endfor
-%!   assert ((int_types{i_type} (5) : 6 : 100)([1,end]), ...
-%!           [int_types{i_type}(5), int_types{i_type}(95)]);
-%! endfor
-
-## Ascending ranges, unsigned
-%!test <*61300>
-%! int_types = {@uint8, @uint16, @uint32, @uint64};
-%! for i_type = 1:numel (int_types)
-%!   for i_start = 0:4
-%!     assert ((int_types{i_type} (i_start) : 6 : 100)([1,end]), ...
-%!             [int_types{i_type}(i_start), int_types{i_type}(96+i_start)]);
-%!   endfor
-%!   assert ((int_types{i_type} (5) : 6 : 100)([1,end]), ...
-%!           [int_types{i_type}(5), int_types{i_type}(95)]);
 %! endfor
 
 ## Descending ranges, signed
 %!test <*61300>
-%! int_types = {@int8, @int16, @int32, @int64};
-%! for i_type = 1:numel (int_types)
-%!   for i_start = 0:4
-%!     assert ((int_types{i_type} (100-i_start) : -6 : 0)([1,end]), ...
-%!             [int_types{i_type}(100-i_start), int_types{i_type}(4-i_start)]);
+%! types = {@int8, @int16, @int32, @int64};
+%! start = 100:-1:95;
+%! finish = start - 6 * floor (start / 6);
+%! for i_type = 1:numel (types)
+%!   for i_start = 1:numel(start)
+%!     assert ((types{i_type} (start(i_start)) : -6 : 0)([1,end]), ...
+%!             [types{i_type}(start(i_start)), types{i_type}(finish(i_start))]);
 %!   endfor
-%!   assert ((int_types{i_type} (95) : -6 : 0)([1,end]), ...
-%!           [int_types{i_type}(95), int_types{i_type}(5)]);
 %! endfor
 
 ## Descending ranges, unsigned
 %!test <*61132>
-%! int_types = {@uint8, @uint16, @uint32, @uint64};
-%! for i_type = 1:numel (int_types)
-%!   for i_start = 0:4
-%!     assert ((int_types{i_type} (100-i_start) : -6 : 0)([1,end]), ...
-%!             [int_types{i_type}(100-i_start), int_types{i_type}(4-i_start)]);
+%! types = {@uint8, @uint16, @uint32, @uint64};
+%! start = 100:-1:95;
+%! finish = start - 6 * floor (start / 6);
+%! for i_type = 1:numel (types)
+%!   for i_start = 1:numel(start)
+%!     assert ((types{i_type} (start(i_start)) : -6 : 0)([1,end]), ...
+%!             [types{i_type}(start(i_start)), types{i_type}(finish(i_start))]);
 %!   endfor
-%!   assert ((int_types{i_type} (95) : -6 : 0)([1,end]), ...
-%!           [int_types{i_type}(95), int_types{i_type}(5)]);
 %! endfor

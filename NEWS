@@ -124,6 +124,11 @@ Configure with `--disable-lib-visibility-flags` to export all symbols
 The real name of the "magick++" library (including any potentially
 trailing "++") needs to be set in that option now.
 
+- The pkg update command now accepts options that are passed to pkg install
+for each updated package.  Specifying @option{-local} or @option{-global}
+will restrict update checks to local and global installed packgaes,
+respectively.
+
 ### Graphical User Interface
 
 - The graphical user interface is now available in Hungarian and

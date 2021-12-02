@@ -192,7 +192,7 @@ namespace octave
 
   template <typename T>
   void
-  xinit (T base, T limit, T inc, const bool reverse, T& final_val,
+  xinit (T base, T limit, T inc, bool reverse, T& final_val,
          octave_idx_type& nel)
   {
     // Catch obvious NaN ranges.
@@ -259,8 +259,8 @@ namespace octave
 
   template <typename T>
   void
-  xinit (const octave_int<T> base, const octave_int<T> limit,
-         const octave_int<T> inc, const bool reverse,
+  xinit (const octave_int<T>& base, const octave_int<T>& limit,
+         const octave_int<T>& inc, bool reverse,
          octave_int<T>& final_val, octave_idx_type& nel)
   {
     // We need an integer division that is truncating decimals instead

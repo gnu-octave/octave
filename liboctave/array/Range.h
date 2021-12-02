@@ -57,7 +57,7 @@ namespace octave
     // to the value of base + a multiple of the increment.
 
     range (const T& base, const T& increment, const T& limit,
-           const bool& reverse = false)
+           bool reverse = false)
       : m_base (base), m_increment (increment), m_limit (limit),
         m_final (), m_numel (), m_reverse (reverse)
     {
@@ -82,13 +82,13 @@ namespace octave
     // FIXME: Is there a way to limit this to T == double?
 
     range (const T& base, const T& increment, const T& limit,
-           octave_idx_type numel, const bool& reverse = false)
+           octave_idx_type numel, bool reverse = false)
       : m_base (base), m_increment (increment), m_limit (limit),
         m_final (limit), m_numel (numel), m_reverse (reverse)
     { }
 
     range (const T& base, const T& increment, const T& limit,
-           const T& final, octave_idx_type numel, const bool& reverse = false)
+           const T& final, octave_idx_type numel, bool reverse = false)
       : m_base (base), m_increment (increment), m_limit (limit),
         m_final (final), m_numel (numel), m_reverse (reverse)
     { }
@@ -97,7 +97,7 @@ namespace octave
     // range<T> (base, limit) when T is octave_idx_type.
 
     static range<T> make_constant (const T& base, octave_idx_type numel,
-                                   const bool& reverse = false)
+                                   bool reverse = false)
     {
       // We could just make this constructor public, but it allows
       // inconsistent ranges to be constructed.  And it is probably much

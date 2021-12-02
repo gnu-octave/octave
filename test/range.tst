@@ -491,9 +491,10 @@
 %!error <colon operator lower bound invalid> (1.5:uint8(1):5)
 %!error <colon operator lower bound invalid> (-1:uint8(1):5)
 %!error <colon operator increment invalid> (uint8(1):1.5:5)
-%!error <colon operator increment invalid> (uint8(1):-1:5)
+%!error <colon operator increment invalid> (uint8(1):-256:5)
 %!error <colon operator upper bound invalid> (uint8(1):1:5.5)
 %!error <colon operator upper bound invalid> (uint8(1):1:256)
+%!error <colon operator upper bound invalid> (uint8(1):-1:-6)
 
 ## Extreme integer values.
 %!test <61132>
@@ -541,6 +542,18 @@
 ## Descending ranges, signed
 %!test <*61300>
 %! int_types = {@int8, @int16, @int32, @int64};
+%! for i_type = 1:numel (int_types)
+%!   for i_start = 0:4
+%!     assert ((int_types{i_type} (100-i_start) : -6 : 0)([1,end]), ...
+%!             [int_types{i_type}(100-i_start), int_types{i_type}(4-i_start)]);
+%!   endfor
+%!   assert ((int_types{i_type} (95) : -6 : 0)([1,end]), ...
+%!           [int_types{i_type}(95), int_types{i_type}(5)]);
+%! endfor
+
+## Descending ranges, unsigned
+%!test <*61132>
+%! int_types = {@uint8, @uint16, @uint32, @uint64};
 %! for i_type = 1:numel (int_types)
 %!   for i_start = 0:4
 %!     assert ((int_types{i_type} (100-i_start) : -6 : 0)([1,end]), ...

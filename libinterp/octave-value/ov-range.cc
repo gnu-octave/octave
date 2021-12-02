@@ -23,9 +23,9 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// This file should not include config.h.  It is only included in other
-// C++ source files that should have included config.h before including
-// this file.
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
 #include <istream>
 #include <ostream>
@@ -648,18 +648,24 @@ ov_range<T>::edit_display (const float_display_format& fmt,
 
 template <typename T>
 bool
-ov_range<T>::save_ascii (std::ostream& os)
+xsave_ascii (std::ostream& os, const octave::range<T>& r,
+             const bool with_reverse)
 {
-  octave::range<T> r = m_range;
   T base = r.base ();
   T limit = r.limit ();
   T inc = r.increment ();
+  bool rev = r.reverse ();
   octave_idx_type len = r.numel ();
 
   if (inc != T (0))
-    os << "# base, limit, increment\n";
+    os << "# base, limit, increment";
   else
-    os << "# base, length, increment\n";
+    os << "# base, length, increment";
+
+  if (with_reverse)
+    os << ", reverse\n";
+  else
+    os << "\n";
 
   octave::write_value<T> (os, base);
   os << ' ';
@@ -669,7 +675,74 @@ ov_range<T>::save_ascii (std::ostream& os)
     os << len;
   os << ' ';
   octave::write_value<T> (os, inc);
+  if (with_reverse)
+    os << ' ' << rev;
   os << "\n";
+
+  return true;
+}
+
+template <typename T>
+bool
+ov_range<T>::save_ascii (std::ostream& os)
+{
+  return xsave_ascii (os, m_range, false);
+}
+
+// specialize for saving with "reverse" flag
+
+template <>
+bool
+ov_range<octave_uint8>::save_ascii (std::ostream& os)
+{
+  return xsave_ascii (os, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint16>::save_ascii (std::ostream& os)
+{
+  return xsave_ascii (os, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint32>::save_ascii (std::ostream& os)
+{
+  return xsave_ascii (os, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint64>::save_ascii (std::ostream& os)
+{
+  return xsave_ascii (os, m_range, true);
+}
+
+template <typename T>
+bool
+xload_ascii (std::istream& is, octave::range<T>& r, const bool with_reverse)
+{
+  // # base, limit, range comment added by save ().
+  skip_comments (is);
+
+  T base, limit, inc;
+  bool rev = false;
+  is >> base >> limit >> inc;
+
+  if (with_reverse)
+    is >> rev;
+
+  if (! is)
+    error ("load: failed to load range constant");
+
+  if (inc != T (0))
+    r = octave::range<T> (base, inc, limit, rev);
+  else
+    {
+      octave_idx_type numel = static_cast<octave_idx_type> (limit);
+      r = octave::range<T>::make_constant (base, numel, rev);
+    }
 
   return true;
 }
@@ -678,35 +751,74 @@ template <typename T>
 bool
 ov_range<T>::load_ascii (std::istream& is)
 {
-  // # base, limit, range comment added by save ().
-  skip_comments (is);
-
-  T base, limit, inc;
-  is >> base >> limit >> inc;
-
-  if (! is)
-    error ("load: failed to load range constant");
-
-  if (inc != T (0))
-    m_range = octave::range<T> (base, limit, inc);
-  else
-    {
-      octave_idx_type numel = static_cast<octave_idx_type> (limit);
-      m_range = octave::range<T>::make_constant (base, numel);
-    }
-
-  return true;
+  return xload_ascii (is, m_range, false);
 }
+
+// specialize for loading with "reverse" flag
+
+template <>
+bool
+ov_range<octave_uint8>::load_ascii (std::istream& is)
+{
+  return xload_ascii (is, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint16>::load_ascii (std::istream& is)
+{
+  return xload_ascii (is, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint32>::load_ascii (std::istream& is)
+{
+  return xload_ascii (is, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint64>::load_ascii (std::istream& is)
+{
+  return xload_ascii (is, m_range, true);
+}
+
+/*
+%!test
+%! a = b = 1:4;
+%! sv_file = [tempname(), ".sav"];
+%! unwind_protect
+%!   save (sv_file, "a", "-text");
+%!   clear a;
+%!   load (sv_file);
+%!   assert (a, b);
+%! unwind_protect_cleanup
+%!   unlink (sv_file);
+%! end_unwind_protect
+
+%!test
+%! a = b = uint8(5):-1:0;
+%! sv_file = [tempname(), ".sav"];
+%! unwind_protect
+%!   save (sv_file, "a", "-text");
+%!   clear a;
+%!   load (sv_file);
+%!   assert (a, b);
+%! unwind_protect_cleanup
+%!   unlink (sv_file);
+%! end_unwind_protect
+*/
 
 template <typename T>
 bool
-ov_range<T>::save_binary (std::ostream& os, bool /* save_as_floats */)
+xsave_binary (std::ostream& os, bool /* save_as_floats */,
+              const octave::range<T>& r, const bool with_reverse)
 {
   // FIXME: Not always double!
 
   char tmp = LS_DOUBLE;
   os.write (reinterpret_cast<char *> (&tmp), 1);
-  octave::range<T> r = m_range;
   T bas = r.base ();
   T lim = r.limit ();
   T inc = r.increment ();
@@ -716,14 +828,55 @@ ov_range<T>::save_binary (std::ostream& os, bool /* save_as_floats */)
   os.write (reinterpret_cast<char *> (&bas), sizeof (T));
   os.write (reinterpret_cast<char *> (&lim), sizeof (T));
   os.write (reinterpret_cast<char *> (&inc), sizeof (T));
+  if (with_reverse)
+    {
+      bool rev = r.reverse ();
+      os.write (reinterpret_cast<char *> (&rev), sizeof (bool));
+    }
 
   return true;
 }
 
 template <typename T>
 bool
-ov_range<T>::load_binary (std::istream& is, bool swap,
-                          octave::mach_info::float_format /* fmt */)
+ov_range<T>::save_binary (std::ostream& os, bool save_as_floats)
+{
+  return xsave_binary (os, save_as_floats, m_range, false);
+}
+
+template <>
+bool
+ov_range<octave_uint8>::save_binary (std::ostream& os, bool save_as_floats)
+{
+  return xsave_binary (os, save_as_floats, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint16>::save_binary (std::ostream& os, bool save_as_floats)
+{
+  return xsave_binary (os, save_as_floats, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint32>::save_binary (std::ostream& os, bool save_as_floats)
+{
+  return xsave_binary (os, save_as_floats, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint64>::save_binary (std::ostream& os, bool save_as_floats)
+{
+  return xsave_binary (os, save_as_floats, m_range, true);
+}
+
+template <typename T>
+bool
+xload_binary (std::istream& is, bool swap,
+              octave::mach_info::float_format /* fmt */,
+              octave::range<T>& r, const bool with_reverse)
 {
   // FIXME: Not always double!
 
@@ -743,16 +896,90 @@ ov_range<T>::load_binary (std::istream& is, bool swap,
     return false;
   if (swap)
     swap_bytes<sizeof (T)> (&inc);
+  bool rev = false;
+  if (with_reverse)
+    {
+      if (! is.read (reinterpret_cast<char *> (&rev), sizeof (bool)))
+        return false;
+      if (swap)
+        swap_bytes<sizeof (bool)> (&rev);
+    }
   if (inc != T (0))
-    m_range = octave::range<T> (bas, inc, lim);
+    r = octave::range<T> (bas, inc, lim, rev);
   else
     {
       octave_idx_type numel = static_cast<octave_idx_type> (lim);
-      m_range = octave::range<T>::make_constant (bas, numel);
+      r = octave::range<T>::make_constant (bas, numel, rev);
     }
 
   return true;
 }
+
+template <typename T>
+bool
+ov_range<T>::load_binary (std::istream& is, bool swap,
+                          octave::mach_info::float_format fmt)
+{
+  return xload_binary (is, swap, fmt, m_range, false);
+}
+
+template <>
+bool
+ov_range<octave_uint8>::load_binary (std::istream& is, bool swap,
+                                     octave::mach_info::float_format fmt)
+{
+  return xload_binary (is, swap, fmt, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint16>::load_binary (std::istream& is, bool swap,
+                                      octave::mach_info::float_format fmt)
+{
+  return xload_binary (is, swap, fmt, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint32>::load_binary (std::istream& is, bool swap,
+                                      octave::mach_info::float_format fmt)
+{
+  return xload_binary (is, swap, fmt, m_range, true);
+}
+
+template <>
+bool
+ov_range<octave_uint64>::load_binary (std::istream& is, bool swap,
+                                      octave::mach_info::float_format fmt)
+{
+  return xload_binary (is, swap, fmt, m_range, true);
+}
+
+/*
+%!test
+%! a = b = 1:4;
+%! sv_file = [tempname(), ".dat"];
+%! unwind_protect
+%!   save (sv_file, "a", "-binary");
+%!   clear a;
+%!   load (sv_file);
+%!   assert (a, b);
+%! unwind_protect_cleanup
+%!   unlink (sv_file);
+%! end_unwind_protect
+
+%!test
+%! a = b = uint8(5):-1:0;
+%! sv_file = [tempname(), ".dat"];
+%! unwind_protect
+%!   save (sv_file, "a", "-binary");
+%!   clear a;
+%!   load (sv_file);
+%!   assert (a, b);
+%! unwind_protect_cleanup
+%!   unlink (sv_file);
+%! end_unwind_protect
+*/
 
 #if defined (HAVE_HDF5)
 
@@ -775,37 +1002,51 @@ hdf5_make_range_type (hid_t num_type)
   return type_id;
 }
 
-#endif
+template <typename T>
+static hid_t
+hdf5_make_range_rev_type (hid_t num_type)
+{
+  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (T) * 4);
+
+  H5Tinsert (type_id, "base", 0 * sizeof (T), num_type);
+  H5Tinsert (type_id, "limit", 1 * sizeof (T), num_type);
+  H5Tinsert (type_id, "increment", 2 * sizeof (T), num_type);
+  // FIXME: Storing "reverse" with the same width is inefficient.
+  H5Tinsert (type_id, "reverse", 3 * sizeof (T), num_type);
+
+  return type_id;
+}
 
 template <typename T>
 bool
-ov_range<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                        bool /* save_as_floats */)
+xsave_hdf5 (octave_hdf5_id loc_id, const char *name,
+            bool /* save_as_floats */, const octave::range<T>& r,
+            const octave_hdf5_id h5_save_type, const bool with_reverse)
 {
   bool retval = false;
 
-#if defined (HAVE_HDF5)
-
-  hsize_t dimens[3];
+  hsize_t dimens[3] = {0};
   hid_t space_hid, type_hid, data_hid;
   space_hid = type_hid = data_hid = -1;
 
   space_hid = H5Screate_simple (0, dimens, nullptr);
   if (space_hid < 0) return false;
 
-  type_hid = hdf5_make_range_type<T> (hdf5_save_type);
+  type_hid = with_reverse
+             ? hdf5_make_range_rev_type<T> (h5_save_type)
+             : hdf5_make_range_type<T> (h5_save_type);
   if (type_hid < 0)
     {
       H5Sclose (space_hid);
       return false;
     }
-#if defined (HAVE_HDF5_18)
+#  if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                         octave_H5P_DEFAULT);
-#else
+#  else
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, octave_H5P_DEFAULT);
-#endif
+#  endif
   if (data_hid < 0)
     {
       H5Sclose (space_hid);
@@ -813,11 +1054,14 @@ ov_range<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  octave::range<T> r = m_range;
-  T range_vals[3];
+  T range_vals[4];
   range_vals[0] = r.base ();
-  range_vals[1] = (r.increment () != T (0) ? r.limit () : r.numel ());
+  if (r.increment () != T (0))
+    range_vals[1] = r.limit ();
+  else
+    range_vals[1] = r.numel ();
   range_vals[2] = r.increment ();
+  range_vals[3] = r.reverse ();
 
   if (H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
                 octave_H5P_DEFAULT, range_vals)
@@ -834,32 +1078,124 @@ ov_range<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   H5Tclose (type_hid);
   H5Sclose (space_hid);
 
+  return retval;
+}
+
+#endif
+
+template <typename T>
+bool
+ov_range<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                        bool save_as_floats)
+{
+#if defined (HAVE_HDF5)
+  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
+                     false);
 #else
   octave_unused_parameter (loc_id);
   octave_unused_parameter (name);
 
   warn_save ("hdf5");
-#endif
 
-  return retval;
+  return false;
+#endif
 }
 
-template <typename T>
+template <>
 bool
-ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+ov_range<octave_uint8>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                   bool save_as_floats)
 {
-  bool retval = false;
+#if defined (HAVE_HDF5)
+  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
+                     true);
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
+
+  warn_save ("hdf5");
+
+  return false;
+#endif
+}
+
+template <>
+bool
+ov_range<octave_uint16>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                    bool save_as_floats)
+{
+#if defined (HAVE_HDF5)
+  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
+                     true);
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
+
+  warn_save ("hdf5");
+
+  return false;
+#endif
+}
+
+template <>
+bool
+ov_range<octave_uint32>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                    bool save_as_floats)
+{
+#if defined (HAVE_HDF5)
+  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
+                     true);
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
+
+  warn_save ("hdf5");
+
+  return false;
+#endif
+}
+
+template <>
+bool
+ov_range<octave_uint64>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                    bool save_as_floats)
+{
+#if defined (HAVE_HDF5)
+  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
+                     true);
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
+
+  warn_save ("hdf5");
+
+  return false;
+#endif
+}
 
 #if defined (HAVE_HDF5)
 
-#if defined (HAVE_HDF5_18)
+template <typename T>
+bool
+xload_hdf5 (octave_hdf5_id loc_id, const char *name, octave::range<T>& r,
+            const octave_hdf5_id h5_save_type, const bool with_reverse)
+{
+  bool retval = false;
+
+#  if defined (HAVE_HDF5_18)
   hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
-#else
+#  else
   hid_t data_hid = H5Dopen (loc_id, name);
-#endif
+#  endif
   hid_t type_hid = H5Dget_type (data_hid);
 
-  hid_t range_type = hdf5_make_range_type<T> (hdf5_save_type);
+  hid_t range_type = with_reverse
+                     ? hdf5_make_range_rev_type<T> (h5_save_type)
+                     : hdf5_make_range_type<T> (h5_save_type);
 
   if (! hdf5_types_compatible (type_hid, range_type))
     {
@@ -879,7 +1215,7 @@ ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  T rangevals[3];
+  T rangevals[4];
   if (H5Dread (data_hid, range_type, octave_H5S_ALL, octave_H5S_ALL,
                octave_H5P_DEFAULT, rangevals)
       >= 0)
@@ -888,12 +1224,14 @@ ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       // Don't use OCTAVE_RANGE_NELEM attribute, just reconstruct the range.
 
+      bool rev = with_reverse ? static_cast<bool> (rangevals[3]) : false;
+
       if (rangevals[2] != T (0))
-        m_range = octave::range<T> (rangevals[0], rangevals[1], rangevals[2]);
+        r = octave::range<T> (rangevals[0], rangevals[2], rangevals[1], rev);
       else
         {
           octave_idx_type numel = static_cast<octave_idx_type> (rangevals[1]);
-          m_range = octave::range<T>::make_constant (rangevals[0], numel);
+          r = octave::range<T>::make_constant (rangevals[0], numel, rev);
         }
     }
 
@@ -901,15 +1239,116 @@ ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Sclose (space_hid);
   H5Dclose (data_hid);
 
+  return retval;
+}
+
+#endif
+
+template <typename T>
+bool
+ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+{
+#if defined (HAVE_HDF5)
+  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, false);
 #else
   octave_unused_parameter (loc_id);
   octave_unused_parameter (name);
 
   warn_load ("hdf5");
-#endif
 
-  return retval;
+  return false;
+#endif
 }
+
+template <>
+bool
+ov_range<octave_uint8>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+{
+#if defined (HAVE_HDF5)
+  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, true);
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
+
+  return false;
+#endif
+}
+
+template <>
+bool
+ov_range<octave_uint16>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+{
+#if defined (HAVE_HDF5)
+  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, true);
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
+
+  return false;
+#endif
+}
+
+template <>
+bool
+ov_range<octave_uint32>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+{
+#if defined (HAVE_HDF5)
+  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, true);
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
+
+  return false;
+#endif
+}
+
+template <>
+bool
+ov_range<octave_uint64>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+{
+#if defined (HAVE_HDF5)
+  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, true);
+#else
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
+
+  return false;
+#endif
+}
+
+/*
+%!testif HAVE_HDF5
+%! a = b = 1:4;
+%! sv_file = [tempname(), ".h5"];
+%! unwind_protect
+%!   save (sv_file, "a", "-hdf5");
+%!   clear a;
+%!   load (sv_file);
+%!   assert (a, b);
+%! unwind_protect_cleanup
+%!   unlink (sv_file);
+%! end_unwind_protect
+
+%!testif HAVE_HDF5
+%! a = b = uint8(5):-1:0;
+%! sv_file = [tempname(), ".h5"];
+%! unwind_protect
+%!   save (sv_file, "a", "-hdf5");
+%!   clear a;
+%!   load (sv_file);
+%!   assert (a, b);
+%! unwind_protect_cleanup
+%!   unlink (sv_file);
+%! end_unwind_protect
+*/
 
 template <typename T>
 mxArray *

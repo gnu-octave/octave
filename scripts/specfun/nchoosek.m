@@ -141,8 +141,12 @@ function C = nchoosek (v, k)
     until (isempty (denom))
 
     C = prod (numer, "native");
-    if (C > flintmax)
-      warning ("nchoosek: possible loss of precision");
+    if (isfloat (C) && C > flintmax (C))
+      warning ("Octave:nchoosek:large-output-float", ...
+               "nchoosek: possible loss of precision");
+    elseif (isinteger (C) && C == intmax (C))
+      warning ("Octave:nchoosek:large-output-integer", ...
+               "nchoosek: result may have saturated at intmax");
     endif
   elseif (k == 0)
     C = v(zeros (1, 0));  # Return 1x0 object for Matlab compatibility
@@ -287,3 +291,4 @@ endfunction
 %!error <N must be a non-negative integer .= K> nchoosek (-100, 45)
 %!error <N must be a non-negative integer .= K> nchoosek (100.5, 45)
 %!warning <possible loss of precision> nchoosek (100, 45);
+%!warning <result .* saturated> nchoosek (uint64 (80), uint64 (40));

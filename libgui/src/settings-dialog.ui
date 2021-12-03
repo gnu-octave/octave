@@ -1179,7 +1179,7 @@
                   <item>
                    <widget class="QCheckBox" name="editor_cb_tabs_rotated">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Roate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>Rotated tabs</string>
@@ -2575,7 +2575,7 @@
                <item row="0" column="0">
                 <widget class="QCheckBox" name="cb_prevent_readline_conflicts">
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p&amp;gt;Disable global shortcuts in order to prevent interference with readline key strokes. Exceptions: Ctrl-C for interrupting the interpreter and the shortcuts for switching to other widgets.&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Disable global shortcuts in order to prevent interference with readline key strokes. Exceptions: Ctrl-C for interrupting the interpreter and the shortcuts for switching to other widgets.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
                   <string>Disable global shortcuts when Command Window has focus</string>

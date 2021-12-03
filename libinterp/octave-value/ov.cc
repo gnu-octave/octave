@@ -3037,14 +3037,15 @@ OCTAVE_NAMESPACE_BEGIN
                     || limit.is_uint32_type () || limit.is_uint64_type ())
                    && increment.scalar_value () < 0;
 
+    octave_value inc = (reverse ? -increment : increment);
+
     check_colon_operand<T> (base, "lower bound");
-    check_colon_operand<T> ((reverse ? -increment : increment), "increment");
+    check_colon_operand<T> (inc, "increment");
     check_colon_operand<T> (limit, "upper bound");
 
     T base_val = octave_value_extract<T> (base);
 
-    T increment_val = octave_value_extract<T> (reverse ? -increment
-                                                       : increment);
+    T increment_val = octave_value_extract<T> (inc);
 
     T limit_val = octave_value_extract<T> (limit);
 

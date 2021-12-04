@@ -31,10 +31,9 @@
 #include <iosfwd>
 #include <string>
 
+#include "Array-fwd.h"
 #include "str-vec.h"
 #include "dColVector.h"
-
-template <typename T> class Array;
 
 #define OCTAVE_SPARSE_CONTROLS_SIZE 13
 

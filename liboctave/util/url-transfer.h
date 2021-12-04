@@ -33,9 +33,8 @@
 #include <ostream>
 #include <string>
 
+#include "Array-fwd.h"
 #include "str-vec.h"
-
-template <typename T> class Array;
 
 namespace octave
 {

@@ -30,12 +30,12 @@
 
 #include <iosfwd>
 
+#include "Array-fwd.h"
 #include "oct-cmplx.h"
 #include "oct-inttypes-fwd.h"
 
 #include "pr-flt-fmt.h"
 
-template <typename T> class Array;
 class ComplexMatrix;
 class FloatComplexMatrix;
 class ComplexDiagMatrix;

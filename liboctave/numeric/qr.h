@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-template <typename T> class Array;
+#include "Array-fwd.h"
 
 namespace octave
 {

@@ -1,6 +1,7 @@
 ARRAY_INC = \
-  %reldir%/Array.h \
+  %reldir%/Array-fwd.h \
   %reldir%/Array-util.h \
+  %reldir%/Array.h \
   %reldir%/boolMatrix.h \
   %reldir%/boolNDArray.h \
   %reldir%/boolSparse.h \

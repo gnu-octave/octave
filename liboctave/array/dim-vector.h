@@ -36,10 +36,9 @@
 #include <initializer_list>
 #include <string>
 
+#include "Array-fwd.h"
 #include "oct-atomic.h"
 #include "oct-refcount.h"
-
-template <typename T> class Array;
 
 //! Vector representing the dimensions (size) of an Array.
 //!

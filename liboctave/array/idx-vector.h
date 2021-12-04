@@ -35,11 +35,11 @@
 #include <iosfwd>
 #include <memory>
 
+#include "Array-fwd.h"
 #include "dim-vector.h"
 #include "oct-inttypes-fwd.h"
 #include "oct-refcount.h"
 
-template <typename T> class Array;
 template <typename T> class Sparse;
 
 namespace octave

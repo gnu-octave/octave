@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
-template <typename T> class OCTARRAY_API Array;
+template <typename T, typename Alloc = std::allocator<T>>
+class OCTARRAY_API Array;
 
 #endif

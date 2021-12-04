@@ -37,9 +37,9 @@
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
 
-template <typename T>
-typename Array<T>::ArrayRep *
-Array<T>::nil_rep (void)
+template <typename T, typename Alloc>
+typename Array<T, Alloc>::ArrayRep *
+Array<T, Alloc>::nil_rep (void)
 {
   static ArrayRep nr;
   return &nr;
@@ -47,8 +47,8 @@ Array<T>::nil_rep (void)
 
 // This is similar to the template for containers but specialized for Array.
 // Note we can't specialize a member without also specializing the class.
-template <typename T>
-Array<T>::Array (const Array<T>& a, const dim_vector& dv)
+template <typename T, typename Alloc>
+Array<T, Alloc>::Array (const Array<T, Alloc>& a, const dim_vector& dv)
   : m_dimensions (dv), m_rep (a.m_rep),
     m_slice_data (a.m_slice_data), m_slice_len (a.m_slice_len)
 {
@@ -68,9 +68,9 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   m_dimensions.chop_trailing_singletons ();
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::fill (const T& val)
+Array<T, Alloc>::fill (const T& val)
 {
   if (m_rep->m_count > 1)
     {
@@ -82,9 +82,9 @@ Array<T>::fill (const T& val)
     std::fill_n (m_slice_data, m_slice_len, val);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::clear (void)
+Array<T, Alloc>::clear (void)
 {
   if (--m_rep->m_count == 0)
     delete m_rep;
@@ -97,9 +97,9 @@ Array<T>::clear (void)
   m_dimensions = dim_vector ();
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::clear (const dim_vector& dv)
+Array<T, Alloc>::clear (const dim_vector& dv)
 {
   if (--m_rep->m_count == 0)
     delete m_rep;
@@ -112,11 +112,11 @@ Array<T>::clear (const dim_vector& dv)
   m_dimensions.chop_trailing_singletons ();
 }
 
-template <typename T>
-Array<T>
-Array<T>::squeeze (void) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::squeeze (void) const
 {
-  Array<T> retval = *this;
+  Array<T, Alloc> retval = *this;
 
   if (ndims () > 2)
     {
@@ -159,37 +159,37 @@ Array<T>::squeeze (void) const
             }
         }
 
-      retval = Array<T> (*this, new_dimensions);
+      retval = Array<T, Alloc> (*this, new_dimensions);
     }
 
   return retval;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 octave_idx_type
-Array<T>::compute_index (octave_idx_type i, octave_idx_type j) const
+Array<T, Alloc>::compute_index (octave_idx_type i, octave_idx_type j) const
 {
   return ::compute_index (i, j, m_dimensions);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 octave_idx_type
-Array<T>::compute_index (octave_idx_type i, octave_idx_type j,
+Array<T, Alloc>::compute_index (octave_idx_type i, octave_idx_type j,
                          octave_idx_type k) const
 {
   return ::compute_index (i, j, k, m_dimensions);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 octave_idx_type
-Array<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
+Array<T, Alloc>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
   return ::compute_index (ra_idx, m_dimensions);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 T&
-Array<T>::checkelem (octave_idx_type n)
+Array<T, Alloc>::checkelem (octave_idx_type n)
 {
   // Do checks directly to avoid recomputing m_slice_len.
   if (n < 0)
@@ -200,30 +200,30 @@ Array<T>::checkelem (octave_idx_type n)
   return elem (n);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 T&
-Array<T>::checkelem (octave_idx_type i, octave_idx_type j)
+Array<T, Alloc>::checkelem (octave_idx_type i, octave_idx_type j)
 {
   return elem (compute_index (i, j));
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 T&
-Array<T>::checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
+Array<T, Alloc>::checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
 {
   return elem (compute_index (i, j, k));
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 T&
-Array<T>::checkelem (const Array<octave_idx_type>& ra_idx)
+Array<T, Alloc>::checkelem (const Array<octave_idx_type>& ra_idx)
 {
   return elem (compute_index (ra_idx));
 }
 
-template <typename T>
-typename Array<T>::crefT
-Array<T>::checkelem (octave_idx_type n) const
+template <typename T, typename Alloc>
+typename Array<T, Alloc>::crefT
+Array<T, Alloc>::checkelem (octave_idx_type n) const
 {
   // Do checks directly to avoid recomputing m_slice_len.
   if (n < 0)
@@ -234,56 +234,56 @@ Array<T>::checkelem (octave_idx_type n) const
   return elem (n);
 }
 
-template <typename T>
-typename Array<T>::crefT
-Array<T>::checkelem (octave_idx_type i, octave_idx_type j) const
+template <typename T, typename Alloc>
+typename Array<T, Alloc>::crefT
+Array<T, Alloc>::checkelem (octave_idx_type i, octave_idx_type j) const
 {
   return elem (compute_index (i, j));
 }
 
-template <typename T>
-typename Array<T>::crefT
-Array<T>::checkelem (octave_idx_type i, octave_idx_type j,
+template <typename T, typename Alloc>
+typename Array<T, Alloc>::crefT
+Array<T, Alloc>::checkelem (octave_idx_type i, octave_idx_type j,
                      octave_idx_type k) const
 {
   return elem (compute_index (i, j, k));
 }
 
-template <typename T>
-typename Array<T>::crefT
-Array<T>::checkelem (const Array<octave_idx_type>& ra_idx) const
+template <typename T, typename Alloc>
+typename Array<T, Alloc>::crefT
+Array<T, Alloc>::checkelem (const Array<octave_idx_type>& ra_idx) const
 {
   return elem (compute_index (ra_idx));
 }
 
-template <typename T>
-Array<T>
-Array<T>::column (octave_idx_type k) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::column (octave_idx_type k) const
 {
   octave_idx_type r = m_dimensions(0);
 
-  return Array<T> (*this, dim_vector (r, 1), k*r, k*r + r);
+  return Array<T, Alloc> (*this, dim_vector (r, 1), k*r, k*r + r);
 }
 
-template <typename T>
-Array<T>
-Array<T>::page (octave_idx_type k) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::page (octave_idx_type k) const
 {
   octave_idx_type r = m_dimensions(0);
   octave_idx_type c = m_dimensions(1);
   octave_idx_type p = r*c;
 
-  return Array<T> (*this, dim_vector (r, c), k*p, k*p + p);
+  return Array<T, Alloc> (*this, dim_vector (r, c), k*p, k*p + p);
 }
 
-template <typename T>
-Array<T>
-Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 {
   if (up < lo)
     up = lo;
 
-  return Array<T> (*this, dim_vector (up - lo, 1), lo, up);
+  return Array<T, Alloc> (*this, dim_vector (up - lo, 1), lo, up);
 }
 
 // Helper class for multi-d dimension permuting (generalized transpose).
@@ -426,11 +426,11 @@ private:
   bool m_use_blk;
 };
 
-template <typename T>
-Array<T>
-Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 {
-  Array<T> retval;
+  Array<T, Alloc> retval;
 
   Array<octave_idx_type> perm_vec = perm_vec_arg;
 
@@ -484,7 +484,7 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
   for (int i = 0; i < perm_vec_len; i++)
     dv_new(i) = dv(perm_vec(i));
 
-  retval = Array<T> (dv_new);
+  retval = Array<T, Alloc> (dv_new);
 
   if (numel () > 0)
     {
@@ -692,9 +692,9 @@ private:
   int m_n;
 };
 
-template <typename T>
-Array<T>
-Array<T>::index (const octave::idx_vector& i) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::index (const octave::idx_vector& i) const
 {
   // Colon:
   //
@@ -715,12 +715,12 @@ Array<T>::index (const octave::idx_vector& i) const
   //   array    | anything | same size as index
 
   octave_idx_type n = numel ();
-  Array<T> retval;
+  Array<T, Alloc> retval;
 
   if (i.is_colon ())
     {
       // A(:) produces a shallow copy as a column vector.
-      retval = Array<T> (*this, dim_vector (n, 1));
+      retval = Array<T, Alloc> (*this, dim_vector (n, 1));
     }
   else
     {
@@ -744,12 +744,12 @@ Array<T>::index (const octave::idx_vector& i) const
       octave_idx_type l, u;
       if (idx_len != 0 && i.is_cont_range (n, l, u))
         // If suitable, produce a shallow slice.
-        retval = Array<T> (*this, result_dims, l, u);
+        retval = Array<T, Alloc> (*this, result_dims, l, u);
       else
         {
           // Don't use resize here to avoid useless initialization for POD
           // types.
-          retval = Array<T> (result_dims);
+          retval = Array<T, Alloc> (result_dims);
 
           if (idx_len != 0)
             i.index (data (), n, retval.fortran_vec ());
@@ -759,20 +759,20 @@ Array<T>::index (const octave::idx_vector& i) const
   return retval;
 }
 
-template <typename T>
-Array<T>
-Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
 {
   // Get dimensions, allowing Fortran indexing in the 2nd dim.
   dim_vector dv = m_dimensions.redim (2);
   octave_idx_type r = dv(0);
   octave_idx_type c = dv(1);
-  Array<T> retval;
+  Array<T, Alloc> retval;
 
   if (i.is_colon () && j.is_colon ())
     {
       // A(:,:) produces a shallow copy.
-      retval = Array<T> (*this, dv);
+      retval = Array<T, Alloc> (*this, dv);
     }
   else
     {
@@ -792,11 +792,11 @@ Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
           octave_idx_type l, u;
           if (ii.length () > 0 && ii.is_cont_range (n, l, u))
             // If suitable, produce a shallow slice.
-            retval = Array<T> (*this, dim_vector (il, jl), l, u);
+            retval = Array<T, Alloc> (*this, dim_vector (il, jl), l, u);
           else
             {
               // Don't use resize to avoid useless initialization for POD types.
-              retval = Array<T> (dim_vector (il, jl));
+              retval = Array<T, Alloc> (dim_vector (il, jl));
 
               ii.index (data (), n, retval.fortran_vec ());
             }
@@ -804,7 +804,7 @@ Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
       else
         {
           // Don't use resize to avoid useless initialization for POD types.
-          retval = Array<T> (dim_vector (il, jl));
+          retval = Array<T, Alloc> (dim_vector (il, jl));
 
           const T *src = data ();
           T *dest = retval.fortran_vec ();
@@ -817,12 +817,12 @@ Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
   return retval;
 }
 
-template <typename T>
-Array<T>
-Array<T>::index (const Array<octave::idx_vector>& ia) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::index (const Array<octave::idx_vector>& ia) const
 {
   int ial = ia.numel ();
-  Array<T> retval;
+  Array<T, Alloc> retval;
 
   // FIXME: is this dispatching necessary?
   if (ial == 1)
@@ -849,7 +849,7 @@ Array<T>::index (const Array<octave::idx_vector>& ia) const
         {
           // A(:,:,...,:) produces a shallow copy.
           dv.chop_trailing_singletons ();
-          retval = Array<T> (*this, dv);
+          retval = Array<T, Alloc> (*this, dv);
         }
       else
         {
@@ -864,11 +864,11 @@ Array<T>::index (const Array<octave::idx_vector>& ia) const
           octave_idx_type l, u;
           if (rh.is_cont_range (l, u))
             // If suitable, produce a shallow slice.
-            retval = Array<T> (*this, rdv, l, u);
+            retval = Array<T, Alloc> (*this, rdv, l, u);
           else
             {
               // Don't use resize to avoid useless initialization for POD types.
-              retval = Array<T> (rdv);
+              retval = Array<T, Alloc> (rdv);
 
               // Do it.
               rh.index (data (), retval.fortran_vec ());
@@ -881,9 +881,9 @@ Array<T>::index (const Array<octave::idx_vector>& ia) const
 
 // The default fill value.  Override if you want a different one.
 
-template <typename T>
+template <typename T, typename Alloc>
 T
-Array<T>::resize_fill_value (void) const
+Array<T, Alloc>::resize_fill_value (void) const
 {
   static T zero = T ();
   return zero;
@@ -892,9 +892,9 @@ Array<T>::resize_fill_value (void) const
 // Yes, we could do resize using index & assign.  However, that would
 // possibly involve a lot more memory traffic than we actually need.
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::resize1 (octave_idx_type n, const T& rfv)
+Array<T, Alloc>::resize1 (octave_idx_type n, const T& rfv)
 {
   if (n < 0 || ndims () != 2)
     octave::err_invalid_resize ();
@@ -940,7 +940,7 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
         {
           static const octave_idx_type max_stack_chunk = 1024;
           octave_idx_type nn = n + std::min (nx, max_stack_chunk);
-          Array<T> tmp (Array<T> (dim_vector (nn, 1)), dv, 0, n);
+          Array<T, Alloc> tmp (Array<T, Alloc> (dim_vector (nn, 1)), dv, 0, n);
           T *dest = tmp.fortran_vec ();
 
           std::copy_n (data (), nx, dest);
@@ -951,7 +951,7 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
     }
   else if (n != nx)
     {
-      Array<T> tmp = Array<T> (dv);
+      Array<T, Alloc> tmp = Array<T, Alloc> (dv);
       T *dest = tmp.fortran_vec ();
 
       octave_idx_type n0 = std::min (n, nx);
@@ -963,9 +963,9 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
+Array<T, Alloc>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
 {
   if (r < 0 || c < 0 || ndims () != 2)
     octave::err_invalid_resize ();
@@ -974,7 +974,7 @@ Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
   octave_idx_type cx = columns ();
   if (r != rx || c != cx)
     {
-      Array<T> tmp = Array<T> (dim_vector (r, c));
+      Array<T, Alloc> tmp = Array<T, Alloc> (dim_vector (r, c));
       T *dest = tmp.fortran_vec ();
 
       octave_idx_type r0 = std::min (r, rx);
@@ -1005,9 +1005,9 @@ Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::resize (const dim_vector& dv, const T& rfv)
+Array<T, Alloc>::resize (const dim_vector& dv, const T& rfv)
 {
   int dvl = dv.ndims ();
   if (dvl == 2)
@@ -1017,7 +1017,7 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
       if (m_dimensions.ndims () > dvl || dv.any_neg ())
         octave::err_invalid_resize ();
 
-      Array<T> tmp (dv);
+      Array<T, Alloc> tmp (dv);
       // Prepare for recursive resizing.
       rec_resize_helper rh (dv, m_dimensions.redim (dvl));
 
@@ -1027,11 +1027,11 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
     }
 }
 
-template <typename T>
-Array<T>
-Array<T>::index (const octave::idx_vector& i, bool resize_ok, const T& rfv) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::index (const octave::idx_vector& i, bool resize_ok, const T& rfv) const
 {
-  Array<T> tmp = *this;
+  Array<T, Alloc> tmp = *this;
   if (resize_ok)
     {
       octave_idx_type n = numel ();
@@ -1039,24 +1039,24 @@ Array<T>::index (const octave::idx_vector& i, bool resize_ok, const T& rfv) cons
       if (n != nx)
         {
           if (i.is_scalar ())
-            return Array<T> (dim_vector (1, 1), rfv);
+            return Array<T, Alloc> (dim_vector (1, 1), rfv);
           else
             tmp.resize1 (nx, rfv);
         }
 
       if (tmp.numel () != nx)
-        return Array<T> ();
+        return Array<T, Alloc> ();
     }
 
   return tmp.index (i);
 }
 
-template <typename T>
-Array<T>
-Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j,
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::index (const octave::idx_vector& i, const octave::idx_vector& j,
                  bool resize_ok, const T& rfv) const
 {
-  Array<T> tmp = *this;
+  Array<T, Alloc> tmp = *this;
   if (resize_ok)
     {
       dim_vector dv = m_dimensions.redim (2);
@@ -1067,24 +1067,24 @@ Array<T>::index (const octave::idx_vector& i, const octave::idx_vector& j,
       if (r != rx || c != cx)
         {
           if (i.is_scalar () && j.is_scalar ())
-            return Array<T> (dim_vector (1, 1), rfv);
+            return Array<T, Alloc> (dim_vector (1, 1), rfv);
           else
             tmp.resize2 (rx, cx, rfv);
         }
 
       if (tmp.rows () != rx || tmp.columns () != cx)
-        return Array<T> ();
+        return Array<T, Alloc> ();
     }
 
   return tmp.index (i, j);
 }
 
-template <typename T>
-Array<T>
-Array<T>::index (const Array<octave::idx_vector>& ia,
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::index (const Array<octave::idx_vector>& ia,
                  bool resize_ok, const T& rfv) const
 {
-  Array<T> tmp = *this;
+  Array<T, Alloc> tmp = *this;
   if (resize_ok)
     {
       int ial = ia.numel ();
@@ -1098,21 +1098,21 @@ Array<T>::index (const Array<octave::idx_vector>& ia,
           for (int i = 0; i < ial; i++)
             all_scalars = all_scalars && ia(i).is_scalar ();
           if (all_scalars)
-            return Array<T> (dim_vector (1, 1), rfv);
+            return Array<T, Alloc> (dim_vector (1, 1), rfv);
           else
             tmp.resize (dvx, rfv);
 
           if (tmp.m_dimensions != dvx)
-            return Array<T> ();
+            return Array<T, Alloc> ();
         }
     }
 
   return tmp.index (ia);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::assign (const octave::idx_vector& i, const Array<T>& rhs, const T& rfv)
+Array<T, Alloc>::assign (const octave::idx_vector& i, const Array<T, Alloc>& rhs, const T& rfv)
 {
   octave_idx_type n = numel ();
   octave_idx_type rhl = rhs.numel ();
@@ -1129,9 +1129,9 @@ Array<T>::assign (const octave::idx_vector& i, const Array<T>& rhs, const T& rfv
       if (m_dimensions.zero_by_zero () && colon)
         {
           if (rhl == 1)
-            *this = Array<T> (dim_vector (1, nx), rhs(0));
+            *this = Array<T, Alloc> (dim_vector (1, nx), rhs(0));
           else
-            *this = Array<T> (rhs, dim_vector (1, nx));
+            *this = Array<T, Alloc> (rhs, dim_vector (1, nx));
           return;
         }
 
@@ -1157,10 +1157,10 @@ Array<T>::assign (const octave::idx_vector& i, const Array<T>& rhs, const T& rfv
 }
 
 // Assignment to a 2-dimensional array
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
-                  const Array<T>& rhs, const T& rfv)
+Array<T, Alloc>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
+                  const Array<T, Alloc>& rhs, const T& rfv)
 {
   bool initial_dims_all_zero = m_dimensions.all_zero ();
 
@@ -1203,9 +1203,9 @@ Array<T>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
           if (dv.zero_by_zero () && all_colons)
             {
               if (isfill)
-                *this = Array<T> (rdv, rhs(0));
+                *this = Array<T, Alloc> (rdv, rhs(0));
               else
-                *this = Array<T> (rhs, rdv);
+                *this = Array<T, Alloc> (rhs, rdv);
               return;
             }
 
@@ -1261,10 +1261,10 @@ Array<T>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
 }
 
 // Assignment to a multi-dimensional array
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::assign (const Array<octave::idx_vector>& ia,
-                  const Array<T>& rhs, const T& rfv)
+Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
+                  const Array<T, Alloc>& rhs, const T& rfv)
 {
   int ial = ia.numel ();
 
@@ -1327,9 +1327,9 @@ Array<T>::assign (const Array<octave::idx_vector>& ia,
                 {
                   rdv.chop_trailing_singletons ();
                   if (isfill)
-                    *this = Array<T> (rdv, rhs(0));
+                    *this = Array<T, Alloc> (rdv, rhs(0));
                   else
-                    *this = Array<T> (rhs, rdv);
+                    *this = Array<T, Alloc> (rhs, rdv);
                   return;
                 }
 
@@ -1389,14 +1389,14 @@ Array<T>::assign (const Array<octave::idx_vector>& ia,
 %!error <op1 is 2x2, op2 is 2x1> a(1:2,2:3) = [1;2]
 */
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::delete_elements (const octave::idx_vector& i)
+Array<T, Alloc>::delete_elements (const octave::idx_vector& i)
 {
   octave_idx_type n = numel ();
   if (i.is_colon ())
     {
-      *this = Array<T> ();
+      *this = Array<T, Alloc> ();
     }
   else if (i.length (n) != 0)
     {
@@ -1414,7 +1414,7 @@ Array<T>::delete_elements (const octave::idx_vector& i)
         {
           // Special case deleting a contiguous range.
           octave_idx_type m = n + l - u;
-          Array<T> tmp (dim_vector (col_vec ? m : 1, ! col_vec ? m : 1));
+          Array<T, Alloc> tmp (dim_vector (col_vec ? m : 1, ! col_vec ? m : 1));
           const T *src = data ();
           T *dest = tmp.fortran_vec ();
           std::copy_n (src, l, dest);
@@ -1429,9 +1429,9 @@ Array<T>::delete_elements (const octave::idx_vector& i)
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::delete_elements (int dim, const octave::idx_vector& i)
+Array<T, Alloc>::delete_elements (int dim, const octave::idx_vector& i)
 {
   if (dim < 0 || dim >= ndims ())
     (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
@@ -1439,7 +1439,7 @@ Array<T>::delete_elements (int dim, const octave::idx_vector& i)
   octave_idx_type n = m_dimensions(dim);
   if (i.is_colon ())
     {
-      *this = Array<T> ();
+      *this = Array<T, Alloc> ();
     }
   else if (i.length (n) != 0)
     {
@@ -1460,7 +1460,7 @@ Array<T>::delete_elements (int dim, const octave::idx_vector& i)
           for (int k = dim + 1; k < ndims (); k++) du *= m_dimensions(k);
 
           // Special case deleting a contiguous range.
-          Array<T> tmp = Array<T> (rdv);
+          Array<T, Alloc> tmp = Array<T, Alloc> (rdv);
           const T *src = data ();
           T *dest = tmp.fortran_vec ();
           l *= dl; u *= dl; n *= dl;
@@ -1485,9 +1485,9 @@ Array<T>::delete_elements (int dim, const octave::idx_vector& i)
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::delete_elements (const Array<octave::idx_vector>& ia)
+Array<T, Alloc>::delete_elements (const Array<octave::idx_vector>& ia)
 {
   int ial = ia.numel ();
 
@@ -1510,7 +1510,7 @@ Array<T>::delete_elements (const Array<octave::idx_vector>& ia)
         {
           dim_vector dv = m_dimensions;
           dv(0) = 0;
-          *this = Array<T> (dv);
+          *this = Array<T, Alloc> (dv);
         }
       else if (k == ial)
         {
@@ -1562,9 +1562,9 @@ Array<T>::delete_elements (const Array<octave::idx_vector>& ia)
 
 }
 
-template <typename T>
-Array<T>&
-Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
+template <typename T, typename Alloc>
+Array<T, Alloc>&
+Array<T, Alloc>::insert (const Array<T, Alloc>& a, octave_idx_type r, octave_idx_type c)
 {
   octave::idx_vector i (r, r + a.rows ());
   octave::idx_vector j (c, c + a.columns ());
@@ -1583,9 +1583,9 @@ Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
   return *this;
 }
 
-template <typename T>
-Array<T>&
-Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
+template <typename T, typename Alloc>
+Array<T, Alloc>&
+Array<T, Alloc>::insert (const Array<T, Alloc>& a, const Array<octave_idx_type>& ra_idx)
 {
   octave_idx_type n = ra_idx.numel ();
   Array<octave::idx_vector> idx (dim_vector (n, 1));
@@ -1598,9 +1598,9 @@ Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
   return *this;
 }
 
-template <typename T>
-Array<T>
-Array<T>::transpose (void) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::transpose (void) const
 {
   assert (ndims () == 2);
 
@@ -1609,7 +1609,7 @@ Array<T>::transpose (void) const
 
   if (nr >= 8 && nc >= 8)
     {
-      Array<T> result (dim_vector (nc, nr));
+      Array<T, Alloc> result (dim_vector (nc, nr));
 
       // Reuse the implementation used for permuting.
 
@@ -1619,7 +1619,7 @@ Array<T>::transpose (void) const
     }
   else if (nr > 1 && nc > 1)
     {
-      Array<T> result (dim_vector (nc, nr));
+      Array<T, Alloc> result (dim_vector (nc, nr));
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
@@ -1630,7 +1630,7 @@ Array<T>::transpose (void) const
   else
     {
       // Fast transpose for vectors and empty matrices.
-      return Array<T> (*this, dim_vector (nc, nr));
+      return Array<T, Alloc> (*this, dim_vector (nc, nr));
     }
 }
 
@@ -1641,9 +1641,9 @@ no_op_fcn (const T& x)
   return x;
 }
 
-template <typename T>
-Array<T>
-Array<T>::hermitian (T (*fcn) (const T&)) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::hermitian (T (*fcn) (const T&)) const
 {
   assert (ndims () == 2);
 
@@ -1655,7 +1655,7 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
 
   if (nr >= 8 && nc >= 8)
     {
-      Array<T> result (dim_vector (nc, nr));
+      Array<T, Alloc> result (dim_vector (nc, nr));
 
       // Blocked transpose to attempt to avoid cache misses.
 
@@ -1695,7 +1695,7 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
     }
   else
     {
-      Array<T> result (dim_vector (nc, nr));
+      Array<T, Alloc> result (dim_vector (nc, nr));
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
@@ -1739,9 +1739,9 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
 
 */
 
-template <typename T>
+template <typename T, typename Alloc>
 T *
-Array<T>::fortran_vec (void)
+Array<T, Alloc>::fortran_vec (void)
 {
   make_unique ();
 
@@ -1756,14 +1756,14 @@ sort_isnan (typename ref_param<T>::type)
   return false;
 }
 
-template <typename T>
-Array<T>
-Array<T>::sort (int dim, sortmode mode) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::sort (int dim, sortmode mode) const
 {
   if (dim < 0)
     (*current_liboctave_error_handler) ("sort: invalid dimension");
 
-  Array<T> m (dims ());
+  Array<T, Alloc> m (dims ());
 
   dim_vector dv = m.dims ();
 
@@ -1868,15 +1868,15 @@ Array<T>::sort (int dim, sortmode mode) const
   return m;
 }
 
-template <typename T>
-Array<T>
-Array<T>::sort (Array<octave_idx_type>& sidx, int dim,
-                sortmode mode) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::sort (Array<octave_idx_type>& sidx, int dim,
+                       sortmode mode) const
 {
   if (dim < 0 || dim >= ndims ())
     (*current_liboctave_error_handler) ("sort: invalid dimension");
 
-  Array<T> m (dims ());
+  Array<T, Alloc> m (dims ());
 
   dim_vector dv = m.dims ();
 
@@ -2009,9 +2009,9 @@ Array<T>::sort (Array<octave_idx_type>& sidx, int dim,
   return m;
 }
 
-template <typename T>
-typename Array<T>::compare_fcn_type
-safe_comparator (sortmode mode, const Array<T>& /* a */,
+template <typename T, typename Alloc>
+typename Array<T, Alloc>::compare_fcn_type
+safe_comparator (sortmode mode, const Array<T, Alloc>& /* a */,
                  bool /* allow_chk */)
 {
   if (mode == ASCENDING)
@@ -2022,9 +2022,9 @@ safe_comparator (sortmode mode, const Array<T>& /* a */,
     return nullptr;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 sortmode
-Array<T>::issorted (sortmode mode) const
+Array<T, Alloc>::issorted (sortmode mode) const
 {
   octave_sort<T> lsort;
 
@@ -2054,9 +2054,9 @@ Array<T>::issorted (sortmode mode) const
 
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 Array<octave_idx_type>
-Array<T>::sort_rows_idx (sortmode mode) const
+Array<T, Alloc>::sort_rows_idx (sortmode mode) const
 {
   Array<octave_idx_type> idx;
 
@@ -2072,9 +2072,9 @@ Array<T>::sort_rows_idx (sortmode mode) const
   return idx;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 sortmode
-Array<T>::is_sorted_rows (sortmode mode) const
+Array<T, Alloc>::is_sorted_rows (sortmode mode) const
 {
   octave_sort<T> lsort;
 
@@ -2133,9 +2133,9 @@ Array<T>::is_sorted_rows (sortmode mode) const
 }
 
 // Do a binary lookup in a sorted array.
-template <typename T>
+template <typename T, typename Alloc>
 octave_idx_type
-Array<T>::lookup (const T& value, sortmode mode) const
+Array<T, Alloc>::lookup (const T& value, sortmode mode) const
 {
   octave_idx_type n = numel ();
   octave_sort<T> lsort;
@@ -2154,9 +2154,9 @@ Array<T>::lookup (const T& value, sortmode mode) const
   return lsort.lookup (data (), n, value);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 Array<octave_idx_type>
-Array<T>::lookup (const Array<T>& values, sortmode mode) const
+Array<T, Alloc>::lookup (const Array<T, Alloc>& values, sortmode mode) const
 {
   octave_idx_type n = numel ();
   octave_idx_type nval = values.numel ();
@@ -2198,9 +2198,9 @@ Array<T>::lookup (const Array<T>& values, sortmode mode) const
   return idx;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 octave_idx_type
-Array<T>::nnz (void) const
+Array<T, Alloc>::nnz (void) const
 {
   const T *src = data ();
   octave_idx_type nel = numel ();
@@ -2213,9 +2213,9 @@ Array<T>::nnz (void) const
   return retval;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 Array<octave_idx_type>
-Array<T>::find (octave_idx_type n, bool backward) const
+Array<T, Alloc>::find (octave_idx_type n, bool backward) const
 {
   Array<octave_idx_type> retval;
   const T *src = data ();
@@ -2294,9 +2294,9 @@ Array<T>::find (octave_idx_type n, bool backward) const
   return retval;
 }
 
-template <typename T>
-Array<T>
-Array<T>::nth_element (const octave::idx_vector& n, int dim) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::nth_element (const octave::idx_vector& n, int dim) const
 {
   if (dim < 0)
     (*current_liboctave_error_handler) ("nth_element: invalid dimension");
@@ -2313,7 +2313,7 @@ Array<T>::nth_element (const octave::idx_vector& n, int dim) const
   dv.chop_trailing_singletons ();
   dim = std::min (dv.ndims (), static_cast<octave_idx_type> (dim));
 
-  Array<T> m (dv);
+  Array<T, Alloc> m (dv);
 
   if (m.isempty ())
     return m;
@@ -2464,7 +2464,7 @@ Array<T>::nth_element (const octave::idx_vector& n, int dim) const
     return *this;                                                       \
   }                                                                     \
   template <> API Array<T>                                              \
-  Array<T>::sort (Array<octave_idx_type> &sidx, int, sortmode) const    \
+  Array<T>::sort (Array<octave_idx_type> &sidx, int, sortmode) const  \
   {                                                                     \
     sidx = Array<octave_idx_type> ();                                   \
     return *this;                                                       \
@@ -2516,13 +2516,13 @@ Array<T>::nth_element (const octave::idx_vector& n, int dim) const
 
 #define NO_INSTANTIATE_ARRAY_SORT(T) NO_INSTANTIATE_ARRAY_SORT_API (T,)
 
-template <typename T>
-Array<T>
-Array<T>::diag (octave_idx_type k) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::diag (octave_idx_type k) const
 {
   dim_vector dv = dims ();
   octave_idx_type nd = dv.ndims ();
-  Array<T> d;
+  Array<T, Alloc> d;
 
   if (nd > 2)
     (*current_liboctave_error_handler) ("Matrix must be 2-dimensional");
@@ -2584,7 +2584,7 @@ Array<T>::diag (octave_idx_type k) const
       if (nnr == 1)
         {
           octave_idx_type n = nnc + std::abs (k);
-          d = Array<T> (dim_vector (n, n), resize_fill_value ());
+          d = Array<T, Alloc> (dim_vector (n, n), resize_fill_value ());
 
           for (octave_idx_type i = 0; i < nnc; i++)
             d.xelem (i+roff, i+coff) = elem (0, i);
@@ -2592,7 +2592,7 @@ Array<T>::diag (octave_idx_type k) const
       else
         {
           octave_idx_type n = nnr + std::abs (k);
-          d = Array<T> (dim_vector (n, n), resize_fill_value ());
+          d = Array<T, Alloc> (dim_vector (n, n), resize_fill_value ());
 
           for (octave_idx_type i = 0; i < nnr; i++)
             d.xelem (i+roff, i+coff) = elem (i, 0);
@@ -2602,14 +2602,14 @@ Array<T>::diag (octave_idx_type k) const
   return d;
 }
 
-template <typename T>
-Array<T>
-Array<T>::diag (octave_idx_type m, octave_idx_type n) const
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::diag (octave_idx_type m, octave_idx_type n) const
 {
   if (ndims () != 2 || (rows () != 1 && cols () != 1))
     (*current_liboctave_error_handler) ("cat: invalid dimension");
 
-  Array<T> retval (dim_vector (m, n), resize_fill_value ());
+  Array<T, Alloc> retval (dim_vector (m, n), resize_fill_value ());
 
   octave_idx_type nel = std::min (numel (), std::min (m, n));
   for (octave_idx_type i = 0; i < nel; i++)
@@ -2618,9 +2618,9 @@ Array<T>::diag (octave_idx_type m, octave_idx_type n) const
   return retval;
 }
 
-template <typename T>
-Array<T>
-Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
+template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::cat (int dim, octave_idx_type n, const Array<T, Alloc> *array_list)
 {
   // Default concatenation.
   bool (dim_vector::*concat_rule) (const dim_vector&, int) = &dim_vector::concat;
@@ -2636,7 +2636,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
   if (n == 1)
     return array_list[0];
   else if (n == 0)
-    return Array<T> ();
+    return Array<T, Alloc> ();
 
   // Special case:
   //
@@ -2684,7 +2684,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
     if (! (dv.*concat_rule) (array_list[i].dims (), dim))
       (*current_liboctave_error_handler) ("cat: dimension mismatch");
 
-  Array<T> retval (dv);
+  Array<T, Alloc> retval (dv);
 
   if (retval.isempty ())
     return retval;
@@ -2722,9 +2722,9 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
   return retval;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 void
-Array<T>::print_info (std::ostream& os, const std::string& prefix) const
+Array<T, Alloc>::print_info (std::ostream& os, const std::string& prefix) const
 {
   os << prefix << "m_rep address:   " << m_rep << '\n'
      << prefix << "m_rep->m_len:    " << m_rep->m_len << '\n'
@@ -2739,8 +2739,8 @@ Array<T>::print_info (std::ostream& os, const std::string& prefix) const
   //     << prefix << "cols: " << cols () << "\n";
 }
 
-template <typename T>
-bool Array<T>::optimize_dimensions (const dim_vector& dv)
+template <typename T, typename Alloc>
+bool Array<T, Alloc>::optimize_dimensions (const dim_vector& dv)
 {
   bool retval = m_dimensions == dv;
   if (retval)
@@ -2749,29 +2749,33 @@ bool Array<T>::optimize_dimensions (const dim_vector& dv)
   return retval;
 }
 
-template <typename T>
-void Array<T>::instantiation_guard ()
+template <typename T, typename Alloc>
+void Array<T, Alloc>::instantiation_guard ()
 {
   // This guards against accidental implicit instantiations.
-  // Array<T> instances should always be explicit and use INSTANTIATE_ARRAY.
+  // Array<T, Alloc> instances should always be explicit and use INSTANTIATE_ARRAY.
   T::__xXxXx__ ();
 }
 
 #if defined (__clang__)
-#  define INSTANTIATE_ARRAY(T, API)                            \
-     template <> API void Array<T>::instantiation_guard () { } \
-     template class API Array<T>
+#  define INSTANTIATE_ARRAY(T, API)             \
+  template <> API void                          \
+  Array<T>::instantiation_guard () { }          \
+                                                \
+  template class API Array<T>
 #else
-#  define INSTANTIATE_ARRAY(T, API)                            \
-     template <> API void Array<T>::instantiation_guard () { } \
-     template class Array<T>
+#  define INSTANTIATE_ARRAY(T, API)             \
+  template <> API void                          \
+  Array<T>::instantiation_guard () { }          \
+                                                \
+  template class Array<T>
 #endif
 
 // FIXME: is this used?
 
-template <typename T>
+template <typename T, typename Alloc>
 std::ostream&
-operator << (std::ostream& os, const Array<T>& a)
+operator << (std::ostream& os, const Array<T, Alloc>& a)
 {
   dim_vector a_dims = a.dims ();
 

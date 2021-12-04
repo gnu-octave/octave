@@ -789,7 +789,12 @@ public:
 
   //! Apply function fcn to each element of the Array<T, Alloc>.  This function
   //! is optimized with a manually unrolled loop.
+#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+  template <typename U, typename F,
+            typename A = std::pmr::polymorphic_allocator<U>>
+#else
   template <typename U, typename F, typename A = std::allocator<U>>
+#endif
   Array<U, A>
   map (F fcn) const
   {
@@ -821,12 +826,20 @@ public:
 
   //@{
   //! Overloads for function references.
+#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+  template <typename U, typename A = std::pmr::polymorphic_allocator<U>>
+#else
   template <typename U, typename A = std::allocator<U>>
+#endif
   Array<U, A>
   map (U (&fcn) (T)) const
   { return map<U, U (&) (T), A> (fcn); }
 
+#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+  template <typename U, typename A = std::pmr::polymorphic_allocator<U>>
+#else
   template <typename U, typename A = std::allocator<U>>
+#endif
   Array<U, A>
   map (U (&fcn) (const T&)) const
   { return map<U, U (&) (const T&), A> (fcn); }

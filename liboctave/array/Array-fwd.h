@@ -28,7 +28,17 @@
 
 #include "octave-config.h"
 
+#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+#  include <memory_resource>
+
+template <typename T, typename Alloc = std::pmr::polymorphic_allocator<T>>
+class OCTARRAY_API Array;
+
+#else
+
 template <typename T, typename Alloc = std::allocator<T>>
 class OCTARRAY_API Array;
+
+#endif
 
 #endif

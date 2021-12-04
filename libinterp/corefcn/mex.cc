@@ -255,10 +255,43 @@ extern "C"
 
 // #define DEBUG 1
 
+#if DEBUG
+#  include <iostream>
+#endif
+
+static void *
+xmalloc (size_t n)
+{
+  void *ptr = std::malloc (n);
+
+#if DEBUG
+  std::cerr << "xmalloc (" << n << ") = " << ptr << std::endl;
+#endif
+
+  return ptr;
+}
+
+static void *
+xrealloc (void *ptr, size_t n)
+{
+  void *newptr = std::realloc (ptr, n);
+
+#if DEBUG
+  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr
+            << std::endl;
+#endif
+
+  return newptr;
+}
+
 static void
 xfree (void *ptr)
 {
-  ::free (ptr);
+#if DEBUG
+  std::cerr << "xfree (" << ptr << ")" << std::endl;
+#endif
+
+  std::free (ptr);
 }
 
 static mwSize
@@ -3276,7 +3309,7 @@ public:
   // Allocate memory.
   void * malloc_unmarked (std::size_t n)
   {
-    void *ptr = std::malloc (n);
+    void *ptr = xmalloc (n);
 
     if (! ptr)
       {
@@ -3332,7 +3365,7 @@ public:
         auto p_local = m_memlist.find (ptr);
         auto p_global = s_global_memlist.find (ptr);
 
-        v = std::realloc (ptr, n);
+        v = xrealloc (ptr, n);
 
         if (v)
           {
@@ -3542,7 +3575,7 @@ mex *mex_context = nullptr;
 void *
 mxArray::malloc (std::size_t n)
 {
-  return mex_context ? mex_context->malloc_unmarked (n) : std::malloc (n);
+  return mex_context ? mex_context->malloc_unmarked (n) : xmalloc (n);
 }
 
 void *
@@ -3662,14 +3695,14 @@ mxCalloc (std::size_t n, std::size_t size)
 void *
 mxMalloc (std::size_t n)
 {
-  return mex_context ? mex_context->malloc (n) : std::malloc (n);
+  return mex_context ? mex_context->malloc (n) : xmalloc (n);
 }
 
 void *
 mxRealloc (void *ptr, std::size_t size)
 {
-  return mex_context ? mex_context->realloc (ptr, size)
-                     : std::realloc (ptr, size);
+  return (mex_context
+          ? mex_context->realloc (ptr, size) : xrealloc (ptr, size));
 }
 
 void

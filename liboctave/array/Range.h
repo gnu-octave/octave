@@ -30,12 +30,11 @@
 
 #include <iosfwd>
 
+#include "Array-fwd.h"
 #include "dMatrix.h"
 #include "dim-vector.h"
 #include "lo-error.h"
 #include "oct-sort.h"
-
-template <typename T> class Array;
 
 namespace octave
 {

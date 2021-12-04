@@ -625,6 +625,7 @@ namespace octave
   void settings_dialog::update_editor_lexers (int def)
   {
 #if defined (HAVE_QSCINTILLA)
+
     QCheckBox *cb_color_mode
       = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.key);
 
@@ -639,15 +640,15 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-#if defined (HAVE_LEXER_OCTAVE)
+#  if defined (HAVE_LEXER_OCTAVE)
     lexer = new QsciLexerOctave ();
     update_lexer (lexer, settings, m, def);
     delete lexer;
-#elif defined (HAVE_LEXER_MATLAB)
+#  elif defined (HAVE_LEXER_MATLAB)
     lexer = new QsciLexerMatlab ();
     update_lexer (lexer, settings, m, def);
     delete lexer;
-#endif
+#  endif
 
     lexer = new QsciLexerCPP ();
     update_lexer (lexer, settings, m, def);
@@ -676,6 +677,11 @@ namespace octave
     lexer = new octave_txt_lexer ();
     update_lexer (lexer, settings, m, def);
     delete lexer;
+
+#else
+
+    octave_unused_parameter (def);
+
 #endif
   }
 

@@ -35,7 +35,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -55,8 +55,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1023</width>
-            <height>615</height>
+            <width>657</width>
+            <height>629</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -584,8 +584,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1037</width>
-            <height>571</height>
+            <width>668</width>
+            <height>267</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -864,9 +864,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-913</y>
-            <width>1023</width>
-            <height>1492</height>
+            <y>0</y>
+            <width>765</width>
+            <height>1515</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -2173,8 +2173,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1037</width>
-            <height>571</height>
+            <width>595</width>
+            <height>410</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2323,8 +2323,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1037</width>
-            <height>571</height>
+            <width>259</width>
+            <height>67</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2385,8 +2385,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1037</width>
-            <height>571</height>
+            <width>605</width>
+            <height>233</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2550,8 +2550,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1037</width>
-            <height>571</height>
+            <width>1035</width>
+            <height>569</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2575,7 +2575,10 @@
                <item row="0" column="0">
                 <widget class="QCheckBox" name="cb_prevent_readline_conflicts">
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Disable global shortcuts in order to prevent interference with readline key strokes. Exceptions: Ctrl-C for interrupting the interpreter and the shortcuts for switching to other widgets.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>Disable global shortcuts in order to prevent
+interference with readline key strokes.
+Exceptions: Ctrl-C for interrupting the interpreter
+and the shortcuts for switching to other widgets.</string>
                  </property>
                  <property name="text">
                   <string>Disable global shortcuts when Command Window has focus</string>
@@ -2587,6 +2590,10 @@
                </item>
                <item row="1" column="0">
                 <widget class="QCheckBox" name="cb_prevent_readline_conflicts_menu">
+                 <property name="toolTip">
+                  <string>Disable menu accelerators in order to prevent
+interference with readline key strokes.</string>
+                 </property>
                  <property name="text">
                   <string>Disable menu accelerators of main window menus when Commmand Window has focus</string>
                  </property>
@@ -2704,14 +2711,14 @@
                  <attribute name="headerCascadingSectionResizes">
                   <bool>false</bool>
                  </attribute>
+                 <attribute name="headerMinimumSectionSize">
+                  <number>64</number>
+                 </attribute>
                  <attribute name="headerDefaultSectionSize">
                   <number>120</number>
                  </attribute>
                  <attribute name="headerHighlightSections">
                   <bool>false</bool>
-                 </attribute>
-                 <attribute name="headerMinimumSectionSize">
-                  <number>64</number>
                  </attribute>
                  <attribute name="headerStretchLastSection">
                   <bool>true</bool>
@@ -2763,8 +2770,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1037</width>
-            <height>571</height>
+            <width>703</width>
+            <height>310</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

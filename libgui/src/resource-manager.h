@@ -29,7 +29,9 @@
 #include <QComboBox>
 #include <QIcon>
 #include <QPointer>
-#include <Qsci/qscilexer.h>
+#if defined (HAVE_QSCINTILLA)
+#  include <Qsci/qscilexer.h>
+#endif
 #include <QTranslator>
 #include <QTemporaryFile>
 

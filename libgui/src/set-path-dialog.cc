@@ -74,7 +74,7 @@ namespace octave
     m_add_folder_button->setMenu (add_dir_menu);
     add_dir_menu->addAction (tr ("Single Folder"),
                              this, &set_path_dialog::add_dir);
-    add_dir_menu->addAction (tr ("Folder with Subfolders"),
+    add_dir_menu->addAction (tr ("Folder With Subfolders"),
                              this, &set_path_dialog::add_dir_subdirs);
 
     m_move_to_top_button = new QPushButton (tr ("Move to Top"));

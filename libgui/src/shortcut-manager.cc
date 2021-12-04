@@ -188,7 +188,7 @@ namespace octave
     init (tr ("Reset Default Window Layout"), sc_main_window_reset);
 
     // help
-    init (tr ("Show Ondisk Documentation"), sc_main_help_ondisk_doc);
+    init (tr ("Show On-disk Documentation"), sc_main_help_ondisk_doc);
     init (tr ("Show Online Documentation"), sc_main_help_online_doc);
     init (tr ("Report Bug"), sc_main_help_report_bug);
     init (tr ("Octave Packages"), sc_main_help_packages);

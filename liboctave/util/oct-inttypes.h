@@ -36,18 +36,7 @@
 
 #include "lo-mappers.h"
 #include "lo-traits.h"
-
-template <typename T> class octave_int;
-
-typedef octave_int<int8_t> octave_int8;
-typedef octave_int<int16_t> octave_int16;
-typedef octave_int<int32_t> octave_int32;
-typedef octave_int<int64_t> octave_int64;
-
-typedef octave_int<uint8_t> octave_uint8;
-typedef octave_int<uint16_t> octave_uint16;
-typedef octave_int<uint32_t> octave_uint32;
-typedef octave_int<uint64_t> octave_uint64;
+#include "oct-inttypes-fwd.h"
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
@@ -1350,6 +1339,5 @@ OCTAVE_INT_IDX_TYPE_BIN_OP (*)
 OCTAVE_INT_IDX_TYPE_BIN_OP (/)
 
 #undef OCTAVE_INT_IDX_TYPE_BIN_OP
-
 
 #endif

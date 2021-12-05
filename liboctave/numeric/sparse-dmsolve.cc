@@ -36,7 +36,7 @@
 #include "MatrixType.h"
 #include "dSparse.h"
 #include "lo-error.h"
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 #include "oct-locbuf.h"
 #include "oct-sort.h"
 #include "oct-sparse.h"

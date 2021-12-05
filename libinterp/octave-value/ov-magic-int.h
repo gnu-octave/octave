@@ -31,7 +31,7 @@
 #include <iosfwd>
 #include <string>
 
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 
 #include "ov-base.h"
 #include "ov-re-mat.h"

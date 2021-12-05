@@ -29,7 +29,7 @@
 #include "octave-config.h"
 
 #include "mxtypes.h"
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 
 template <typename T>
 class

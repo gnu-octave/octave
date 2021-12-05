@@ -44,6 +44,7 @@ ARRAY_INC = \
   %reldir%/MSparse.h \
   %reldir%/PermMatrix.h \
   %reldir%/Range.h \
+  %reldir%/Sparse-fwd.h \
   %reldir%/Sparse.h \
   %reldir%/uint16NDArray.h \
   %reldir%/uint32NDArray.h \

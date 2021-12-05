@@ -1094,6 +1094,7 @@ ov_range<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 #else
   octave_unused_parameter (loc_id);
   octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
 
   warn_save ("hdf5");
 

@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-template <typename T> class octave_int;
+template <typename T> class OCTAVE_API octave_int;
 
 typedef octave_int<int8_t> octave_int8;
 typedef octave_int<int16_t> octave_int16;

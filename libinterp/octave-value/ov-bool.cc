@@ -30,7 +30,7 @@
 #include <istream>
 #include <ostream>
 
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 
 #include "mx-base.h"
 

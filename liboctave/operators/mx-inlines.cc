@@ -38,7 +38,7 @@
 #include "Array.h"
 #include "bsxfun.h"
 #include "oct-cmplx.h"
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 #include "oct-locbuf.h"
 
 // Provides some commonly repeated, basic loop templates.

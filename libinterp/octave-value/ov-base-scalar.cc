@@ -30,7 +30,7 @@
 #include <ostream>
 #include <sstream>
 
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 
 #include "ovl.h"
 #include "ov-base.h"

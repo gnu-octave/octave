@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 
 // Instantiate Arrays of integer values.
 

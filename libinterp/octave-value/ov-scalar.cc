@@ -30,7 +30,7 @@
 #include <istream>
 #include <ostream>
 
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 
 #include "data-conv.h"
 #include "mach-info.h"

@@ -37,7 +37,7 @@
 
 #include "Array-fwd.h"
 #include "dim-vector.h"
-#include "oct-inttypes-fwd.h"
+#include "oct-inttypes.h"
 #include "oct-refcount.h"
 #include "Sparse-fwd.h"
 

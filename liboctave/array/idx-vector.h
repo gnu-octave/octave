@@ -39,8 +39,7 @@
 #include "dim-vector.h"
 #include "oct-inttypes-fwd.h"
 #include "oct-refcount.h"
-
-template <typename T> class Sparse;
+#include "Sparse-fwd.h"
 
 namespace octave
 {

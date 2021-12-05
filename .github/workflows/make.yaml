@@ -60,7 +60,7 @@ jobs:
         run: |
           echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
 
-      - name: setup ccache
+      - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
         # uses: actions/cache@v2
         # The original action doesn't upload on error. Use this fork instead.
@@ -215,7 +215,7 @@ jobs:
         # Limit the maximum size to avoid exceeding the total cache limits.
         run: |
           test -d /Users/runner/Library/Preferences/ccache || mkdir /Users/runner/Library/Preferences/ccache
-          echo "max_size = 1.5G" >> /Users/runner/Library/Preferences/ccache/ccache.conf
+          echo "max_size = 0.9G" >> /Users/runner/Library/Preferences/ccache/ccache.conf
           ccache -s
           echo "$(brew --prefix)/opt/ccache/libexec" >> $GITHUB_PATH
 
@@ -405,7 +405,7 @@ jobs:
         run: |
           echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
 
-      - name: setup ccache
+      - name: restore ccache
         # Setup the github cache used to maintain the ccache from one job to the next
         uses: actions/cache@v2
         with:
@@ -420,7 +420,7 @@ jobs:
         run: |
           which ccache
           test -d ~/.ccache || mkdir -p ~/.ccache
-          echo "max_size = 1.2G" > ~/.ccache/ccache.conf
+          echo "max_size = 0.9G" > ~/.ccache/ccache.conf
           echo "compression = true" >> ~/.ccache/ccache.conf
           ccache -s
           # create ccache helper script for Fortran compiler

@@ -277,9 +277,9 @@ namespace octave
           global_pos = editor_rect.topLeft ();   // yes, take top left corner
       }
 
-#if defined (HAVE_QSCI_VERSION_2_6_0)
+#  if defined (HAVE_QSCI_VERSION_2_6_0)
     if (! in_left_margin)
-#endif
+#  endif
       {
         // fill context menu with editor's standard actions
         emit create_context_menu_signal (context_menu);
@@ -305,7 +305,7 @@ namespace octave
               }
           }
       }
-#if defined (HAVE_QSCI_VERSION_2_6_0)
+#  if defined (HAVE_QSCI_VERSION_2_6_0)
     else
       {
         // remove all standard actions from scintilla
@@ -319,10 +319,15 @@ namespace octave
                                      &octave_qscintilla::contextmenu_break_condition);
         act->setData (local_pos);
       }
-#endif
+#  endif
 
     // finally show the menu
     context_menu->exec (global_pos);
+
+#else
+
+    octave_unused_parameter (e);
+
 #endif
   }
 
@@ -1061,6 +1066,8 @@ namespace octave
   {
 #if defined (HAVE_QSCI_VERSION_2_6_0)
     emit context_menu_break_once (lineAt (local_pos));
+#else
+    octave_unused_parameter (local_pos);
 #endif
   }
 

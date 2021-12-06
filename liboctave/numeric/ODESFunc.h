@@ -28,9 +28,9 @@
 
 #include "octave-config.h"
 
-#include "dMatrix.h"
+#include "mx-fwd.h"
 
-class ColumnVector;
+#include "dMatrix.h"
 
 class
 ODESFunc

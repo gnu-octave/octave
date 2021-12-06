@@ -28,26 +28,9 @@
 
 #include "octave-config.h"
 
+#include "mx-fwd.h"
+
 #include "oct-cmplx.h"
-
-class ColumnVector;
-class RowVector;
-class Matrix;
-
-class FloatColumnVector;
-class FloatRowVector;
-class FloatMatrix;
-
-class ComplexColumnVector;
-class ComplexRowVector;
-class ComplexMatrix;
-
-class FloatComplexColumnVector;
-class FloatComplexRowVector;
-class FloatComplexMatrix;
-
-class SparseMatrix;
-class SparseComplexMatrix;
 
 // The remaining includes can be removed when the deprecated functions
 // at the end of this file are removed.

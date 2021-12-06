@@ -39,12 +39,7 @@
 #include "dMatrix.h"
 #include "dNDArray.h"
 #include "oct-cmplx.h"
-
-class PermMatrix;
-class DiagMatrix;
-class ComplexDiagMatrix;
-class SparseMatrix;
-class SparseBoolMatrix;
+#include "mx-fwd.h"
 
 class
 OCTAVE_API

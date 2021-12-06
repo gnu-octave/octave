@@ -37,8 +37,7 @@
 
 #include "Array-fwd.h"
 #include "Sparse-fwd.h"
-
-class PermMatrix;
+#include "mx-fwd.h"
 
 // Two dimensional sparse class.  Handles the reference counting for
 // all the derived classes.

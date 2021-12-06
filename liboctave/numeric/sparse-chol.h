@@ -30,11 +30,9 @@
 
 #include <memory>
 
-#include "CSparse.h"
+#include "mx-fwd.h"
 
-class RowVector;
-class SparseMatrix;
-class SparseComplexMatrix;
+#include "CSparse.h"
 
 namespace octave
 {

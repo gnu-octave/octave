@@ -28,10 +28,9 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "mx-fwd.h"
 
-class ColumnVector;
-class PermMatrix;
+#include "Array.h"
 
 namespace octave
 {

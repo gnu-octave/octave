@@ -30,36 +30,7 @@
 
 // Classes we declare.
 
-class Matrix;
-class ComplexMatrix;
-class FloatMatrix;
-class FloatComplexMatrix;
-class boolMatrix;
-class charMatrix;
-
-class NDArray;
-class ComplexNDArray;
-class FloatNDArray;
-class FloatComplexNDArray;
-class boolNDArray;
-class charNDArray;
-
-class ColumnVector;
-class ComplexColumnVector;
-class FloatColumnVector;
-class FloatComplexColumnVector;
-
-class RowVector;
-class ComplexRowVector;
-class FloatRowVector;
-class FloatComplexRowVector;
-
-class DiagMatrix;
-class ComplexDiagMatrix;
-class FloatDiagMatrix;
-class FloatComplexDiagMatrix;
-
-class PermMatrix;
+#include "mx-fwd.h"
 
 template <typename T> class aepbalance;
 

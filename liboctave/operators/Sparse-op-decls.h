@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-class SparseBoolMatrix;
+#include "mx-fwd.h"
 
 #define SPARSE_BIN_OP_DECL(R, OP, X, Y, API)    \
   extern API R OP (const X&, const Y&)

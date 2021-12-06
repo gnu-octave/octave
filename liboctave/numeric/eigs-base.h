@@ -32,12 +32,8 @@
 #include <iosfwd>
 #include <string>
 
+#include "mx-fwd.h"
 #include "oct-cmplx.h"
-
-class ColumnVector;
-class ComplexColumnVector;
-class Matrix;
-class ComplexMatrix;
 
 typedef
 std::function<ColumnVector (const ColumnVector& x, int& eigs_error)> EigsFunc;

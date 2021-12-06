@@ -30,10 +30,10 @@
 
 #include <string>
 
+#include "mx-fwd.h"
+
 #include "Array.h"
 #include "DASSL-opts.h"
-
-class Matrix;
 
 class
 OCTAVE_API

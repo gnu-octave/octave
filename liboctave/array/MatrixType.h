@@ -28,14 +28,9 @@
 
 #include "octave-config.h"
 
-#include "MSparse.h"
+#include "mx-fwd.h"
 
-class Matrix;
-class ComplexMatrix;
-class FloatMatrix;
-class FloatComplexMatrix;
-class SparseMatrix;
-class SparseComplexMatrix;
+#include "MSparse.h"
 
 class
 MatrixType

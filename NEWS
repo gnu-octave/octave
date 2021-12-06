@@ -137,6 +137,12 @@ Turkish.
 - In debug mode, symbol values are now shown in tooltips when hovering
 variables in the editor panel.
 
+- The "Disable global shortcuts when Command Window has focus" GUI
+preference under the Shortcuts Tab is now disabled by default.  This option
+disables keyboard shortcuts to avoid interference with realdine key strokes
+in the Command Window.  Unlike versions prior to Octave 7, this preference
+now also affects the Ctrl-C/V shortcuts for copy/paste.
+
 ### Graphics backend
 
 - Support for Qt4 for both graphics and the GUI has been removed.

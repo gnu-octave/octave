@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1995-2021 The Octave Project Developers
+// Copyright (C) 2021 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,24 +23,11 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if defined (HAVE_CONFIG_H)
-#  include "config.h"
+#if ! defined (octave_intNDArray_fwd_h)
+#define octave_intNDArray_fwd_h 1
+
+#include "octave-config.h"
+
+template <typename T> class OCTAVE_API intNDArray;
+
 #endif
-
-// Instantiate MArrays of FloatComplex values.
-
-#include "oct-cmplx.h"
-
-#include "MArray.h"
-#include "MArray.cc"
-
-INSTANTIATE_MARRAY (FloatComplex, OCTAVE_API);
-
-INSTANTIATE_MARRAY_FRIENDS (FloatComplex, OCTAVE_API)
-
-#include "MDiagArray2.h"
-#include "MDiagArray2.cc"
-
-template class MDiagArray2<FloatComplex>;
-
-INSTANTIATE_MDIAGARRAY2_FRIENDS (FloatComplex, OCTAVE_API)

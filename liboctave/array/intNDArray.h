@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include "intNDArray-fwd.h"
 #include "MArray.h"
 #include "boolNDArray.h"
 
@@ -35,7 +36,6 @@ class NDArray;
 
 template <typename T>
 class
-OCTAVE_API
 intNDArray : public MArray<T>
 {
 public:

@@ -36,7 +36,9 @@ ARRAY_INC = \
   %reldir%/int32NDArray.h \
   %reldir%/int64NDArray.h \
   %reldir%/int8NDArray.h \
+  %reldir%/intNDArray-fwd.h \
   %reldir%/intNDArray.h \
+  %reldir%/MArray-fwd.h \
   %reldir%/MArray.h \
   %reldir%/Matrix.h \
   %reldir%/MatrixType.h \
@@ -44,6 +46,7 @@ ARRAY_INC = \
   %reldir%/MSparse.h \
   %reldir%/PermMatrix.h \
   %reldir%/Range.h \
+  %reldir%/range-fwd.h \
   %reldir%/Sparse-fwd.h \
   %reldir%/Sparse.h \
   %reldir%/uint16NDArray.h \

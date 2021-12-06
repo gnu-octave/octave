@@ -33,6 +33,7 @@
 #include <iosfwd>
 #include <string>
 
+#include "Array-fwd.h"
 #include "Range.h"
 
 #include "lo-mappers.h"

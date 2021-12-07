@@ -124,10 +124,10 @@ Configure with `--disable-lib-visibility-flags` to export all symbols
 The real name of the "magick++" library (including any potentially
 trailing "++") needs to be set in that option now.
 
-- The pkg update command now accepts options that are passed to pkg install
-for each updated package.  Specifying @option{-local} or @option{-global}
-will restrict update checks to local and global installed packgaes,
-respectively.
+- The `pkg update` command now accepts options that are passed to `pkg
+install` for each updated package.  Specifying @option{-local} or
+@option{-global} will restrict update checks to local or global
+installed packages, respectively.
 
 ### Graphical User Interface
 
@@ -136,6 +136,12 @@ Turkish.
 
 - In debug mode, symbol values are now shown in tooltips when hovering
 variables in the editor panel.
+
+- The "Disable global shortcuts when Command Window has focus" GUI
+preference under the Shortcuts tab is now disabled by default.  This
+option disables keyboard shortcuts to avoid interference with readline
+key strokes in the Command Window.  Unlike versions prior to Octave 7,
+this preference now also affects the Ctrl-C/V shortcuts for copy/paste.
 
 ### Graphics backend
 

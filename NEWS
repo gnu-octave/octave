@@ -34,7 +34,7 @@ from Octave 8.
 
 - The environment variable used by `mkoctfile` for linker flags is now
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,
-  and has been removed from Octave 8.
+  and will be removed in a future version of Octave.
 
 ### Old release news
 

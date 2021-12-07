@@ -1455,6 +1455,10 @@ value of @var{x} is 3.
 For matrix and vector arguments, the increment and decrement operators
 work on each element of the operand.
 
+The increment and decrement operators must "hug" their corresponding
+variable.  That means, no white spaces are allowed between these
+operators and the variable they affect.
+
 Here is a list of all the increment and decrement expressions.
 
 @table @code

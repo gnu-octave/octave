@@ -391,7 +391,7 @@ nonexistent-file:
 .gdbinit: etc/gdbinit
 	$(AM_V_GEN)$(gdbinit-install-rule)
 
-NEWS: etc/NEWS.7
+NEWS: etc/NEWS.8
 	$(AM_V_GEN)cp $< $@
 .PHONY: NEWS
 

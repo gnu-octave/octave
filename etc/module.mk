@@ -12,7 +12,6 @@
   %reldir%/NEWS.5.md \
   %reldir%/NEWS.6.md \
   %reldir%/NEWS.7.md \
-  %reldir%/PROJECTS \
   %reldir%/gdbinit
 
 %canon_reldir%_EXTRA_DIST += \

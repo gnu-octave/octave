@@ -141,6 +141,12 @@ in the file being edited.  In addition, Octave maintainers have
 written a lot on the subject.  See
 <https://wiki.octave.org/Contribution_guidelines>.
 
+Projects
+--------
+
+A list of proposed projects is maintained at
+<https://wiki.octave.org/Projects>.
+
 Bugs and patches
 ----------------
 

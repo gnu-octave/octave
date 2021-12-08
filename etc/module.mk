@@ -5,14 +5,14 @@
 %canon_reldir%_MAINTAINERCLEANFILES =
 
 %canon_reldir%_EXTRA_DIST += \
-  %reldir%/NEWS.1 \
-  %reldir%/NEWS.2 \
-  %reldir%/NEWS.3 \
-  %reldir%/NEWS.4 \
-  %reldir%/NEWS.5 \
-  %reldir%/NEWS.6 \
-  %reldir%/NEWS.7 \
-  %reldir%/NEWS.8 \
+  %reldir%/NEWS.1.md \
+  %reldir%/NEWS.2.md \
+  %reldir%/NEWS.3.md \
+  %reldir%/NEWS.4.md \
+  %reldir%/NEWS.5.md \
+  %reldir%/NEWS.6.md \
+  %reldir%/NEWS.7.md \
+  %reldir%/NEWS.8.md \
   %reldir%/PROJECTS \
   %reldir%/gdbinit
 

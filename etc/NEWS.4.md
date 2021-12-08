@@ -1344,7 +1344,3 @@ Summary of important user-visible changes for version 4.0 (2015-05-23):
     GCC compilers >= 5.0 require this feature.  Non-x87 hardware, or
     hardware using SSE options exclusively, can disable float truncation
     if desired.
-
----------------------------------------------------------
-
-See NEWS.3 for old news.

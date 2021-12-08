@@ -1715,7 +1715,3 @@ Summary of important user-visible changes for version 3.0 (2007-12-21):
     expcdf, expinv, exppdf and exprnd have been modified to compute
     the distributions using the standard scale factor rather than
     one over the scale factor.
-
----------------------------------------------------------
-
-See NEWS.2 for old news.

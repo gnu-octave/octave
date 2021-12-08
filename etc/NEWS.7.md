@@ -398,12 +398,3 @@ except for some extremely simple bits of code as examples for
 demonstration purposes only).  The following functions related to the
 JIT compiler have also been removed: `debug_jit`, `jit_enable`,
 `jit_failcnt`, and `jit_startcnt`.
-
-### Old release news
-
-- [Octave 6.x](etc/NEWS.6)
-- [Octave 5.x](etc/NEWS.5)
-- [Octave 4.x](etc/NEWS.4)
-- [Octave 3.x](etc/NEWS.3)
-- [Octave 2.x](etc/NEWS.2)
-- [Octave 1.x](etc/NEWS.1)

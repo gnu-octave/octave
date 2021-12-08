@@ -333,12 +333,7 @@ AC_PROG_CXX
 AC_PROG_CXXCPP
 
 ## Ensure that the C++ compiler fully supports C++11.
-dnl Test must occur after calling AC_PROG_CXX, which tests for language
-dnl features and sets the shell variable ac_cv_prog_cxx_cxx11 appropriately.
-
-if test x"$ac_cv_prog_cxx_cxx11" = xno; then
-  AC_MSG_ERROR([a compiler that fully supports C++11 is required to build Octave])
-fi
+AX_CXX_COMPILE_STDCXX(11, [], [])
 
 ### Determine which C compiler to use (we expect to find gcc).
 

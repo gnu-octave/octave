@@ -251,7 +251,7 @@ jobs:
           cd .build && ../configure \
             F77="ccache gfortran" \
             CPPFLAGS="-I/usr/local/opt/gettext/include -I/usr/local/opt/icu4c/include -I/usr/local/opt/qt@5/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include $MY_CPPFLAGS" \
-            CXXFLAGS="-O2 -g -std=c++11" \
+            CXXFLAGS="-O2 -g" \
             LDFLAGS="-L/usr/local/lib -L/usr/local/opt/bison/lib -L/usr/local/opt/gettext/lib -L/usr/local/opt/icu4c/lib -L/usr/local/opt/readline/lib -L/usr/local/opt/sqlite/lib $MY_LDFLAGS" \
             PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig:/usr/local/opt/icu4c/lib/pkgconfig:/usr/local/opt/qt@5/lib/pkgconfig" \
             QCOLLECTIONGENERATOR="qhelpgenerator" \

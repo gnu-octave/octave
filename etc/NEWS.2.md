@@ -1032,5 +1032,3 @@ Summary of changes for version 2.0 (1996-12-10):
   * Many more bug fixes.
 
   * ChangeLogs are now kept in each subdirectory.
-
-See NEWS.1 for old news.

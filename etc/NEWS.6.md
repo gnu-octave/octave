@@ -531,12 +531,3 @@ and have been removed from Octave 6.
   `uicontrol`          | `fontweight`              | `"demi"` and `"light"`
   `uipanel`            | `fontweight`              | `"demi"` and `"light"`
   `uitable`            | `fontweight`              | `"demi"` and `"light"`
-
-
-### Old release news
-
-- [Octave 5.x](etc/NEWS.5)
-- [Octave 4.x](etc/NEWS.4)
-- [Octave 3.x](etc/NEWS.3)
-- [Octave 2.x](etc/NEWS.2)
-- [Octave 1.x](etc/NEWS.1)

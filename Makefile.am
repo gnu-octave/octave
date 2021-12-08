@@ -326,9 +326,7 @@ DISTCLEANFILES += \
   .gdbinit
 
 MAINTAINERCLEANFILES += \
-  $(BUILT_DISTFILES) \
-  ChangeLog \
-  HG-ID
+  $(BUILT_DISTFILES)
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 

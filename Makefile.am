@@ -145,13 +145,13 @@ BUILT_DISTFILES += \
   BUGS \
   ChangeLog \
   HG-ID \
-  INSTALL.OCTAVE
+  INSTALL.OCTAVE \
+  NEWS
 
 EXTRA_DIST += \
   CITATION \
   COPYING \
   INSTALL \
-  NEWS \
   README \
   octave.doap \
   run-octave.in \
@@ -326,9 +326,7 @@ DISTCLEANFILES += \
   .gdbinit
 
 MAINTAINERCLEANFILES += \
-  $(BUILT_DISTFILES) \
-  ChangeLog \
-  HG-ID
+  $(BUILT_DISTFILES)
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
@@ -392,6 +390,10 @@ nonexistent-file:
 
 .gdbinit: etc/gdbinit
 	$(AM_V_GEN)$(gdbinit-install-rule)
+
+NEWS: etc/NEWS.7
+	$(AM_V_GEN)cp $< $@
+.PHONY: NEWS
 
 define changelog-from-hg-log
   rm -f $@-t && \

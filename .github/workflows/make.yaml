@@ -32,6 +32,10 @@ jobs:
             compiler: gcc
             ccache-max: 6G
 
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+
     steps:
       - name: checkout repository
         uses: actions/checkout@v2
@@ -81,25 +85,28 @@ jobs:
           test -d ~/.ccache || mkdir ~/.ccache
           echo "max_size = $CCACHE_MAX" >> ~/.ccache/ccache.conf
           ccache -s
+          echo "/usr/lib/ccache" >> $GITHUB_PATH
 
       - name: bootstrap
         run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
         timeout-minutes: 30
-        env:
-          MY_CC: ${{ matrix.cc }}
-          MY_CXX: ${{ matrix.cxx }}
         run: |
-          echo $MY_CC --version
-          $MY_CC --version
-          echo $MY_CXX --version
-          $MY_CXX --version
+          echo $PATH
+          echo which ccache
+          which ccache
+          which $CC
+          echo $CC --version
+          $CC --version
+          which $CXX
+          echo $CXX --version
+          $CXX --version
+          which gfortran
+          echo gfortran --version
+          gfortran --version
           mkdir .build
           cd .build && ../configure \
-            CC="ccache $MY_CC" \
-            CXX="ccache $MY_CXX" \
-            F77="ccache gfortran" \
             CPPFLAGS="-I/usr/include/hdf5/serial -I/usr/include/suitesparse" \
             LDFLAGS="-L/usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/hdf5/serial"
 

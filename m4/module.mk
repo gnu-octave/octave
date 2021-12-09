@@ -2,6 +2,7 @@ EXTRA_DIST += \
   %reldir%/module.mk \
   %reldir%/ax_blas.m4 \
   %reldir%/ax_compare_version.m4 \
+  %reldir%/ax_cxx_compile_stdcxx.m4 \
   %reldir%/ax_lapack.m4 \
   %reldir%/ax_openmp.m4 \
   %reldir%/ax_pthread.m4 \

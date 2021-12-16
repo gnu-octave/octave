@@ -448,6 +448,7 @@ Script Files
 
 * Publish Octave Script Files::
 * Publishing Markup::
+* Jupyter Notebooks::
 
 Publishing Markup
 

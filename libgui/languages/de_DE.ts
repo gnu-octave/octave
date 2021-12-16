@@ -356,27 +356,27 @@
     <message>
         <location filename="../src/command-widget.cc" line="+57"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Pause</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop</source>
-        <translation type="unfinished">Beenden</translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Fortfahren</translation>
+        <translation>Fortfahren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Command Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehlseingabe</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Command Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehlsausgabe</translation>
     </message>
 </context>
 <context>
@@ -384,7 +384,7 @@
     <message>
         <location filename="../src/community-news.cc" line="+70"/>
         <source>Octave Community News</source>
-        <translation type="unfinished">Neuigkeiten aus der Octave-Community</translation>
+        <translation>Neuigkeiten aus der Octave-Community</translation>
     </message>
 </context>
 <context>
@@ -440,7 +440,7 @@ im Befehlsfenster angezeigt werden.</translation>
     <message>
         <location line="+22"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesezeichen</translation>
     </message>
     <message>
         <location line="+86"/>
@@ -506,7 +506,7 @@ im Befehlsfenster angezeigt werden.</translation>
     <message>
         <location line="+55"/>
         <source>Bookmark current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesezeichen für aktuelle Seite setzen</translation>
     </message>
     <message>
         <location line="+430"/>
@@ -520,62 +520,63 @@ im Befehlsfenster angezeigt werden.</translation>
         <location filename="../src/documentation-bookmarks.cc" line="+102"/>
         <source>
 No documentation bookmarks loaded!</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Keine Lesezeichen für Dokumentaton geladen!</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave: Loading Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave: Lesezeichen für Dokumentation laden</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Filter</source>
-        <translation type="unfinished">Filter</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuer Ordner</translation>
     </message>
     <message>
         <location line="+105"/>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Ö&amp;ffnen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Umbenennen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Löschen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner &amp;hinzufügen</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Hide &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter &amp;ausblenden</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter &amp;einblenden</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Octave: Saving Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave: Lesezeichen der Dokumentation speichern</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -584,31 +585,39 @@ No documentation bookmarks loaded!</source>
 
 Documentation bookmarks are not saved!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Datei %1 nicht schreiben
+%2.
+
+Lesezeichen der Dokumentation wurde nicht gespeichert!
+</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Unable to read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Datei %1 nicht lesen:
+%2.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No start element found in %1.
 Invalid bookmark file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Anfangselement in %1 gefunden:
+Ungültige Lesezeichendatei?</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>The file
 %1
 is not a valid XBEL file verison 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei
+%1
+ist keine gültige XBEL-Datei Version 1.0.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Unknown title</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannter Titel</translation>
     </message>
 </context>
 <context>
@@ -1122,7 +1131,7 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="+49"/>
         <source>Copy Full File &amp;Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiere vollständigen Datei&amp;pfad</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -1352,7 +1361,9 @@ Einen anderen Namen wählen?</translation>
         <source>%1
  already exists
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+existiert bereits.
+Überschrieben?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -1572,12 +1583,12 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="+12"/>
         <source>Rename error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Umbenennen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Datei %1 nicht in %2 umbenennen.</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1590,7 +1601,8 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Sollen wirklich alle %1 ausgewählten Dateien gelöscht werden?
+</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1607,12 +1619,12 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Löschen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei %1 kann nicht gelöscht werden.</translation>
     </message>
     <message>
         <location line="+185"/>
@@ -1628,18 +1640,18 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <location line="+1"/>
         <source>Create file in
 </source>
-        <comment>String ends with 
+        <comment>String ends with
 !</comment>
-        <translation type="unfinished">Neue Datei in
+        <translation>Neue Datei in
 </translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Create folder in
 </source>
-        <comment>String ends with 
+        <comment>String ends with
 !</comment>
-        <translation type="unfinished">Neues Verzeichnis in
+        <translation>Neues Verzeichnis in
 </translation>
     </message>
     <message>
@@ -1704,7 +1716,15 @@ Mehr über jede Möglichkeit finden Sie im Internet unter &lt;a href=&quot;https
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Weitere Informationen zu Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Webseite &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Online-Dokumentation als &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- oder &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-Dokument (öffnet im externen Browser)&lt;/li&gt;
+&lt;li&gt;Dokumentationsbrowser in der Octave GUI über das Hilfe-Menü&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2132,7 +2152,7 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
     <message>
         <location line="-344"/>
         <source>Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler</translation>
     </message>
     <message>
         <location line="+345"/>
@@ -2322,27 +2342,27 @@ die nicht editiert werden kann.</translation>
     <message>
         <location line="+6"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start &amp;Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Starte &amp;Profiler-Session</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler-Session wieder &amp;aufnehmen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Stop Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler &amp;beenden</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler-&amp;Daten anzeigen</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -2693,17 +2713,17 @@ existiert nicht. Soll sie erzeugt werden?</translation>
     <message>
         <location filename="../src/release-notes.cc" line="+80"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">Die Datei &apos;%1&apos; mit Versionshinweisen ist leer.</translation>
+        <translation>Die Datei &apos;%1&apos; mit Versionshinweisen ist leer.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">Die Datei &apos;%1&apos; mit Versionshinweisen kann nicht gelesen werden.</translation>
+        <translation>Die Datei &apos;%1&apos; mit Versionshinweisen kann nicht gelesen werden.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished">Versionshinweise zu Octave</translation>
+        <translation>Versionshinweise zu Octave</translation>
     </message>
 </context>
 <context>
@@ -2757,7 +2777,7 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="+2"/>
         <source>Folder With Subfolders</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner mit Unterordnern</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2947,46 +2967,50 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="+1"/>
         <source>persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>persistent</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-global.h" line="+149"/>
         <source>Environment Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Umgebungsvariablen</translation>
     </message>
     <message>
         <location filename="../src/gui-settings.h" line="+132"/>
         <source>Second color mode (light/dark)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alternatives Farbschema (hell/dunkel)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Switches to another set of colors.
 Useful for defining a dark/light mode.
 Discards non-applied current changes!</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählt ein anderes Farbschema aus.
+Das kann für die Einrichtung ein es Hell/Dunkel-Modus.
+Verwirft noch nicht angewendete Änderungen!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Reload default colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard&amp;farben erneut laden</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default colors,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lädt die Standardfarben erneut,
+abhängig vom aktuell gewählten Modus.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Reload default styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard&amp;styles erneut laden</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default values of the styles,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lädt die Standardstyles erneut,
+abhängig vom aktuell gewählten Modus.</translation>
     </message>
 </context>
 <context>
@@ -3032,7 +3056,11 @@ Die Überprüfung erfolgt höchstens einmal am Tag, und nur Neuigkeiten werden a
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Erlaube Octave, sich beim Start mit der Octave Webseite zu verbinden,
+um aktuelle Meldungen und Informationen der Octave-Gemeinschaft anzuzeigen.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3185,17 +3213,17 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="+3"/>
         <source>Start/Stop Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Starte/Beende Profiler-Session</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profile-Session wieder aufnehmen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler-Daten anzeigen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3593,12 +3621,12 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="+21"/>
         <source>Bookmark this Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesezeichen der aktuellen Seite setzen</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>Tools Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug-Menü</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -3638,7 +3666,7 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="-24"/>
         <source>Show On-disk Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Offline-Dokumentation anzeigen</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -3899,12 +3927,12 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
         <location line="+5"/>
         <location line="+6"/>
         <source>Save in format ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere im Format ...</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Save variable to a file in different format</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere Variable in anderem Format</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -4251,12 +4279,12 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="-509"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wenn ausgewählt, folgt der Fokus der im Hauptfenster verankerten Unterfenster dem Mauszeiger. Dies ermöglicht eine gleiches Verhalten innerhalb des Hauptfensters, wenn &amp;quot;Fokus folgt Mauszeiger&amp;quot; in der Desktop-Umgebung eingestellt ist.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Focus follows mouse for widgets docked to the main window</source>
-        <translation type="unfinished"></translation>
+        <translation>Fokus folgt dem Mauszeiger für Unterfenster, die im Hauptfenster verankert sind</translation>
     </message>
     <message>
         <location line="+487"/>
@@ -4266,22 +4294,22 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+221"/>
         <source>Rotated tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Gedrehte Reiter</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Position</source>
-        <translation type="unfinished">Position</translation>
+        <translation>Position</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Max. tab width in chars (0: no limit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Max. Breite von Reitern in Zeichen (0: keine Grenze)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. width of a tab in characters (average char. width). Especially useful for rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. Breite der Reiter in Anzahl Zeichen (durchschnittl. Zeichenbreite). Insbesondere bei gedrehten Reitern hilfreich.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+275"/>
@@ -4611,7 +4639,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+29"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reiter drehen: Vertikal, wenn oben oder unten und horizontal, wenn links oder rechts. Die Schließen-Schaltfläche wird in gedrehten Reitern nicht angezeigt.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+74"/>
@@ -4716,12 +4744,12 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+10"/>
         <source>Force newline at end when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzwinge ein Leerzeile am Ende der Datei beim Speichern</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove trailing spaces when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>Entferne Leerzeichen am Zeilenende beim Speichern</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -4761,7 +4789,8 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+117"/>
         <source>Disable menu accelerators of main window menus when Commmand Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Deaktiviere Tastenkürzel zur Aktivierung
+von Menüs wenn das Befehlsfenster den Fokus hat</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -4807,12 +4836,12 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+10"/>
         <source>Proxy Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy-Server</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; oder &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. Mit der letztgenannten Auswahl wird der Proxy-Server durch die erste nicht leere Umgebungsvariable ALL_PROXY, HTTP_PROXY oder HTTPS_PROXY bestimmt.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -4850,7 +4879,11 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
 interference with readline key strokes.
 Exceptions: Ctrl-C for interrupting the interpreter
 and the shortcuts for switching to other widgets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deaktiviert globale Tastenkürzel um
+Überschneidungen mit den readline Tastenkürzeln
+zu vermeiden. Ausnahmen: Ctrl-C zur Unterbrechung
+einer Rechnung oder die Tastenkürzel zum Wechseln
+der aktiven Unterfenster.</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -4881,7 +4914,9 @@ and the shortcuts for switching to other widgets.</source>
         <location line="+54"/>
         <source>Disable menu accelerators in order to prevent
 interference with readline key strokes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deaktiviere Tastenkürzel zur Aktivierung
+von Menüs um Konflikte mit den readline
+Tastenkürzeln zu vermeiden.</translation>
     </message>
     <message>
         <location line="+54"/>

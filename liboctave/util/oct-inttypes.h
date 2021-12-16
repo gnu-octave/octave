@@ -779,9 +779,7 @@ class octave_int_arith
 { };
 
 template <typename T>
-class
-OCTAVE_API
-octave_int : public octave_int_base<T>
+class octave_int : public octave_int_base<T>
 {
 public:
 

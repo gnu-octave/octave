@@ -35,13 +35,12 @@
 #include "dim-vector.h"
 #include "lo-error.h"
 #include "oct-sort.h"
+#include "range-fwd.h"
 
 namespace octave
 {
   template <typename T>
-  class
-  OCTAVE_API
-  range
+  class range
   {
   public:
 

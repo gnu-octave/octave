@@ -23,22 +23,14 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_Array_fwd_h)
-#define octave_Array_fwd_h 1
+#if ! defined (octave_range_fwd_h)
+#define octave_range_fwd_h 1
 
 #include "octave-config.h"
 
-#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
-#  include <memory_resource>
-
-template <typename T, typename Alloc = std::pmr::polymorphic_allocator<T>>
-class OCTARRAY_API Array;
-
-#else
-
-template <typename T, typename Alloc = std::allocator<T>>
-class OCTARRAY_API Array;
-
-#endif
+namespace octave
+{
+  template <typename T> class OCTAVE_API range;
+}
 
 #endif

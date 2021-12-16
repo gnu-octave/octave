@@ -27,6 +27,12 @@
 #  include "config.h"
 #endif
 
+#define DEBUG 1
+
+#if defined (DEBUG)
+#  include <iostream>
+#endif
+
 #include <cstdarg>
 #include <cstdlib>
 #include <cstring>
@@ -34,9 +40,12 @@
 
 #include <limits>
 #include <map>
+#include <memory_resource>
 #include <set>
 #include <string>
 
+// Needed to instantiate Array objects with custom allocator.
+#include "Array.cc"
 #include "f77-fcn.h"
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
@@ -253,18 +262,12 @@ extern "C"
   extern OCTINTERP_API void mxSetImagData (mxArray *ptr, void *pi);
 }
 
-// #define DEBUG 1
-
-#if DEBUG
-#  include <iostream>
-#endif
-
 static void *
 xmalloc (size_t n)
 {
   void *ptr = std::malloc (n);
 
-#if DEBUG
+#if defined (DEBUG)
   std::cerr << "xmalloc (" << n << ") = " << ptr << std::endl;
 #endif
 
@@ -276,7 +279,7 @@ xrealloc (void *ptr, size_t n)
 {
   void *newptr = std::realloc (ptr, n);
 
-#if DEBUG
+#if defined (DEBUG)
   std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr
             << std::endl;
 #endif
@@ -287,7 +290,7 @@ xrealloc (void *ptr, size_t n)
 static void
 xfree (void *ptr)
 {
-#if DEBUG
+#if defined (DEBUG)
   std::cerr << "xfree (" << ptr << ")" << std::endl;
 #endif
 
@@ -309,6 +312,63 @@ max_str_len (mwSize m, const char **str)
 
   return max_len;
 }
+
+// FIXME: Is there a better/standard way to do this job?
+
+template <typename T>
+class fp_type_traits
+{
+public:
+  static const bool is_complex = false;
+};
+
+template <>
+class fp_type_traits<Complex>
+{
+public:
+  static const bool is_complex = true;
+};
+
+template <>
+class fp_type_traits <FloatComplex>
+{
+public:
+  static const bool is_complex = true;
+};
+
+#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+#  include <memory_resource>
+
+class mx_memory_resource : public std::pmr::memory_resource
+{
+private:
+
+  void * do_allocate (std::size_t bytes, size_t /*alignment*/)
+  {
+    void *ptr = xmalloc (bytes);
+
+    if (! ptr)
+      throw std::bad_alloc ();
+
+    return ptr;
+  }
+
+  void do_deallocate (void* ptr, std::size_t /*bytes*/,
+                      std::size_t /*alignment*/)
+  {
+    xfree (ptr);
+  }
+
+  bool do_is_equal (const std::pmr::memory_resource& other) const noexcept
+  {
+    return this == dynamic_cast<const mx_memory_resource *> (&other);
+  }
+};
+
+// FIXME: Is it OK for the memory resource object to be defined this
+// way?
+static mx_memory_resource the_mx_memory_resource;
+#endif
 
 // ------------------------------------------------------------------
 
@@ -2079,13 +2139,46 @@ protected:
   octave_value
   fp_to_ov (const dim_vector& dv) const
   {
+    octave_value retval;
+
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
-    Array<ELT_T> val (ppr, dv);
+#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
-    maybe_disown_ptr (m_pr);
+    octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
 
-    return octave_value (val);
+    return octave_value (Array<ELT_T> (ppr, dv, &the_mx_memory_resource));
+
+#else
+
+    if (fp_type_traits<ELT_T>::is_complex)
+      {
+        // Mixing malloc and delete[] for arrays of Complex and
+        // FloatComplex objects is not possible.
+
+        Array<ELT_T> val (dv);
+
+        ELT_T *ptr = val.fortran_vec ();
+
+        mwSize nel = get_number_of_elements ();
+
+        for (mwIndex i = 0; i < nel; i++)
+          ptr[i] = ppr[i];
+
+        return octave_value (val);
+      }
+    else
+      {
+        // Although behavior is not specified by the standard, it should
+        // work to mix malloc and delete[] for arrays of float and
+        // double.
+
+        octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
+
+        return octave_value (Array<ELT_T> (ppr, dv));
+      }
+
+#endif
   }
 
   template <typename ELT_T, typename ARRAY_T, typename ARRAY_ELT_T>
@@ -2097,11 +2190,17 @@ protected:
 
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
-#if 0
-    ARRAY_T val (ppr, dv);
+#if 0 && defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
-    maybe_disown_ptr (m_pr);
+    octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
+
+    return ARRAY_T (ppr, dv, &the_mx_memory_resource);
+
 #else
+
+    // All octave_int types are objects so we can't mix malloc and
+    // delete[] and we always have to copy.
+
     ARRAY_T val (dv);
 
     ARRAY_ELT_T *ptr = val.fortran_vec ();
@@ -2110,9 +2209,10 @@ protected:
 
     for (mwIndex i = 0; i < nel; i++)
       ptr[i] = ppr[i];
-#endif
 
     return octave_value (val);
+
+#endif
   }
 
 protected:
@@ -2362,6 +2462,9 @@ private:
     mwSize nel = get_number_of_elements ();
 
     T *ppr = static_cast<T *> (m_pr);
+
+    // We allocate in the Array<T> constructor and copy here, so we
+    // don't need the custom allocator for this object.
 
     Array<std::complex<T>> val (dv);
 

@@ -400,6 +400,8 @@ if test $octave_cv_broken_stl_algo_h = yes; then
   OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
 fi
 
+OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
+
 ### Check version number when using gcc.
 dnl It might be different from the g++ version number.
 

@@ -28,12 +28,11 @@
 
 #include "octave-config.h"
 
+#include "intNDArray-fwd.h"
 #include "MArray.h"
 #include "bsxfun-decl.h"
 #include "mx-defs.h"
 #include "mx-op-decl.h"
-
-template <typename T> class intNDArray;
 
 class
 OCTAVE_API

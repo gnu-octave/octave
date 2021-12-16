@@ -31,13 +31,13 @@
 #include <memory>
 
 #include "oct-cmplx.h"
+#include "MArray-fwd.h"
 
 class Matrix;
 class ComplexMatrix;
 class SparseMatrix;
 class SparseComplexMatrix;
 class ColumnVector;
-template <typename T> class MArray;
 
 namespace octave
 {

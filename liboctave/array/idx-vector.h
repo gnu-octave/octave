@@ -40,11 +40,10 @@
 #include "oct-inttypes.h"
 #include "oct-refcount.h"
 #include "Sparse-fwd.h"
+#include "range-fwd.h"
 
 namespace octave
 {
-  template <typename T> class range;
-
   // Design rationale:
   //
   // idx_vector is a reference-counting, polymorphic pointer, that can

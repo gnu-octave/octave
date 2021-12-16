@@ -32,7 +32,7 @@
 #include "MArray.h"
 #include "MArray.cc"
 
-INSTANTIATE_MARRAY (float);
+INSTANTIATE_MARRAY (float, OCTAVE_API);
 
 INSTANTIATE_MARRAY_FRIENDS (float, OCTAVE_API)
 

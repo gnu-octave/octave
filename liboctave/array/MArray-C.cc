@@ -34,7 +34,7 @@
 #include "MArray.h"
 #include "MArray.cc"
 
-INSTANTIATE_MARRAY (Complex);
+INSTANTIATE_MARRAY (Complex, OCTAVE_API);
 
 INSTANTIATE_MARRAY_FRIENDS (Complex, OCTAVE_API)
 

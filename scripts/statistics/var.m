@@ -216,7 +216,7 @@ function retval = var (x, w = 0, dim)
           endif
           den = sum (w);
           mu = sum (w .* x, dim) ./ sum (w);
-          retval = sum (w .* ((x .- mu) .^ 2), dim) / den;
+          retval = sum (w .* ((x - mu) .^ 2), dim) / den;
         endif
       endif
     endif

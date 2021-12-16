@@ -40,7 +40,9 @@
 
 #include <limits>
 #include <map>
-#include <memory_resource>
+#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+#  include <memory_resource>
+#endif
 #include <set>
 #include <string>
 
@@ -337,7 +339,6 @@ public:
 };
 
 #if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
-#  include <memory_resource>
 
 class mx_memory_resource : public std::pmr::memory_resource
 {
@@ -368,6 +369,7 @@ private:
 // FIXME: Is it OK for the memory resource object to be defined this
 // way?
 static mx_memory_resource the_mx_memory_resource;
+
 #endif
 
 // ------------------------------------------------------------------

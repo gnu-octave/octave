@@ -258,7 +258,7 @@ dnl
 dnl Check whether std::pmr::polymorphic_allocator is available.
 dnl
 AC_DEFUN([OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR], [
-  AC_CACHE_CHECK([whether std::pmr::polymorphic_allocator is avalable],
+  AC_CACHE_CHECK([whether std::pmr::polymorphic_allocator is available],
     [octave_cv_std_pmr_polymorphic_allocator],
     [AC_LANG_PUSH(C++)
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -295,7 +295,7 @@ AC_DEFUN([OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR], [
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_std_pmr_polymorphic_allocator = yes; then
-    AC_DEFINE(HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR, 1,
+    AC_DEFINE(OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR, 1,
       [Define to 1 if std::pmr::polymorphic_allocator is available.])
   fi
 ])

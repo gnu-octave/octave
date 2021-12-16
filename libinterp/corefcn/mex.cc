@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#define DEBUG 1
+// #define DEBUG 1
 
 #if defined (DEBUG)
 #  include <iostream>
@@ -40,7 +40,7 @@
 
 #include <limits>
 #include <map>
-#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 #  include <memory_resource>
 #endif
 #include <set>
@@ -338,7 +338,7 @@ public:
   static const bool is_complex = true;
 };
 
-#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
 class mx_memory_resource : public std::pmr::memory_resource
 {
@@ -2145,7 +2145,7 @@ protected:
 
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
-#if defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
     octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
 
@@ -2192,7 +2192,7 @@ protected:
 
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
-#if 0 && defined (HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+#if 0 && defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
     octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
 

@@ -1379,6 +1379,7 @@ execute commands from any file.
 @menu
 * Publish Octave Script Files::
 * Publishing Markup::
+* Jupyter Notebooks::
 @end menu
 
 @node Publish Octave Script Files
@@ -1734,6 +1735,16 @@ markup, that is only visible in this kind of output.
 # </latex>
 @end group
 @end example
+
+@node Jupyter Notebooks
+@subsection Jupyter Notebooks
+@cindex Jupyter Notebooks
+
+Jupyter notebooks are one popular technique for displaying code, text, and
+graphical output together in a comprehensive manner.  Octave can publish
+results to a Jupyter notebook with the function @code{jupyter_notebook}.
+
+@DOCSTRING(jupyter_notebook)
 
 @node Function Handles and Anonymous Functions
 @section Function Handles and Anonymous Functions

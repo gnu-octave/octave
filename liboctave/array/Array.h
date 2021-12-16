@@ -136,7 +136,7 @@ protected:
 
     typedef std::allocator_traits<Alloc> Alloc_traits;
 
-    typedef typename Alloc_traits::rebind_traits<T> T_Alloc_traits;
+    typedef typename Alloc_traits::template rebind_traits<T> T_Alloc_traits;
     typedef typename T_Alloc_traits::pointer pointer;
 
     pointer m_data;

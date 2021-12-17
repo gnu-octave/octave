@@ -19,6 +19,7 @@ OV_SPARSE_INC = \
 
 OCTAVE_VALUE_INC = \
   %reldir%/cdef-class.h \
+  %reldir%/cdef-fwd.h \
   %reldir%/cdef-manager.h \
   %reldir%/cdef-method.h \
   %reldir%/cdef-object.h \

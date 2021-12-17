@@ -33,6 +33,7 @@
 
 #include "oct-refcount.h"
 
+#include "cdef-fwd.h"
 #include "error.h"
 #include "oct-map.h"
 #include "ov.h"
@@ -40,9 +41,6 @@
 
 namespace octave
 {
-  class cdef_object;
-  class cdef_class;
-
   // This is mainly a bootstrap class to declare the expected interface.
   // The actual base class is cdef_class_base, which is declared after
   // cdef_object, such that it can contain cdef_object objects.
@@ -201,6 +199,7 @@ namespace octave
   };
 
   class
+  OCTINTERP_API
   cdef_object
   {
   public:
@@ -350,6 +349,7 @@ namespace octave
   };
 
   class
+  OCTINTERP_API
   cdef_object_base : public cdef_object_rep
   {
   public:
@@ -387,6 +387,7 @@ namespace octave
   };
 
   class
+  OCTINTERP_API
   cdef_object_array : public cdef_object_base
   {
   public:
@@ -454,6 +455,7 @@ namespace octave
   };
 
   class
+  OCTINTERP_API
   cdef_object_scalar : public cdef_object_base
   {
   public:
@@ -540,6 +542,7 @@ namespace octave
   };
 
   class
+  OCTINTERP_API
   handle_cdef_object : public cdef_object_scalar
   {
   public:
@@ -575,6 +578,7 @@ namespace octave
   };
 
   class
+  OCTINTERP_API
   value_cdef_object : public cdef_object_scalar
   {
   public:
@@ -605,6 +609,7 @@ namespace octave
   };
 
   class
+  OCTINTERP_API
   cdef_meta_object_rep : public handle_cdef_object
   {
   public:
@@ -652,6 +657,7 @@ namespace octave
   };
 
   class
+  OCTINTERP_API
   cdef_meta_object : public cdef_object
   {
   public:

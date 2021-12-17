@@ -31,14 +31,13 @@
 #include <list>
 #include <string>
 
+#include "cdef-fwd.h"
+
 class octave_value;
 class Cell;
 
 namespace octave
 {
-  class cdef_class;
-  class cdef_package;
-
   extern OCTINTERP_API std::string
   get_base_name (const std::string& nm);
 

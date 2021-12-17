@@ -41,6 +41,7 @@
 namespace octave
 {
   class
+  OCTINTERP_API
   cdef_property : public cdef_meta_object
   {
     friend class cdef_class;

@@ -2656,10 +2656,17 @@ AC_ARG_ENABLE(lib-visibility-flags,
      *) AC_MSG_ERROR([bad value $enableval for --enable-lib-visibility-flags]) ;;
    esac])
 
-if test $ENABLE_LIB_VISIBILITY_FLAGS = yes && test $HAVE_VISIBILITY = 0; then
-  AC_MSG_NOTICE([cannot build with visibility flags on this platform])
-  ENABLE_LIB_VISIBILITY_FLAGS=no
-fi
+case $host_os in
+  msdosmsvc | mingw* | cygwin*)
+    # Assume that symbol export is working on that platform
+  ;;
+  *)
+    if test $ENABLE_LIB_VISIBILITY_FLAGS = yes && test $HAVE_VISIBILITY = 0; then
+      AC_MSG_NOTICE([cannot build with visibility flags on this platform])
+      ENABLE_LIB_VISIBILITY_FLAGS=no
+    fi
+  ;;
+esac
 
 if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
   AC_DEFINE(OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS, 1,

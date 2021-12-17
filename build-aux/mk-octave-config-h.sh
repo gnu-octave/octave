@@ -181,6 +181,13 @@ octave_unused_parameter (const T&)
 #    define octave_unused_parameter(param) (void) param;
 #  endif
 
+/* Defined to 1 if Octave libraries were built with visibility flags */
+EOF
+
+$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS.*$\)/#  \1/p' $config_h_file
+
+cat << EOF
+
 #  if defined (OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS)
 #    if defined (_WIN32) || defined (__CYGWIN__)
 #      if defined (__GNUC__)

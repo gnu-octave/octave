@@ -34,6 +34,7 @@
 
 #include "oct-refcount.h"
 
+#include "cdef-fwd.h"
 #include "cdef-object.h"
 #include "ov.h"
 
@@ -42,6 +43,7 @@ namespace octave
   class interpreter;
 
   class
+  OCTINTERP_API
   cdef_package : public cdef_meta_object
   {
     friend class cdef_class;

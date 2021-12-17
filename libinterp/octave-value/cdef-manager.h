@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include "cdef-class.h"
+#include "cdef-fwd.h"
 #include "cdef-method.h"
 #include "cdef-package.h"
 #include "cdef-property.h"
@@ -38,7 +39,9 @@ namespace octave
 {
   class interpreter;
 
-  class cdef_manager
+  class
+  OCTINTERP_API
+  cdef_manager
   {
   public:
 

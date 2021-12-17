@@ -34,6 +34,7 @@
 
 #include "oct-refcount.h"
 
+#include "cdef-fwd.h"
 #include "cdef-method.h"
 #include "cdef-object.h"
 #include "cdef-package.h"
@@ -48,6 +49,7 @@ namespace octave
   class tree_classdef;
 
   class
+  OCTINTERP_API
   cdef_class : public cdef_meta_object
   {
   private:

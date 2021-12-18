@@ -28,8 +28,7 @@
 
 #include "octave-config.h"
 
-class Matrix;
-class ColumnVector;
+#include "mx-fwd.h"
 
 class
 DAEFunc

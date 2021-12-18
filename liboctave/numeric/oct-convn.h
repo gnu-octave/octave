@@ -28,25 +28,7 @@
 
 #include "octave-config.h"
 
-class ColumnVector;
-class RowVector;
-class Matrix;
-class NDArray;
-
-class ComplexColumnVector;
-class ComplexRowVector;
-class ComplexMatrix;
-class ComplexNDArray;
-
-class FloatColumnVector;
-class FloatRowVector;
-class FloatMatrix;
-class FloatNDArray;
-
-class FloatComplexColumnVector;
-class FloatComplexRowVector;
-class FloatComplexMatrix;
-class FloatComplexNDArray;
+#include "mx-fwd.h"
 
 // The remaining includes can be removed when the global enum
 // declaration, the convert_enum function, and the deprecated functions

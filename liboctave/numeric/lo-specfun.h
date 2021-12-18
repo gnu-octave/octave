@@ -28,21 +28,10 @@
 
 #include "octave-config.h"
 
+#include "mx-fwd.h"
+
 #include "Array.h"
 #include "oct-cmplx.h"
-
-class ComplexColumnVector;
-class ComplexMatrix;
-class ComplexNDArray;
-class FloatComplexColumnVector;
-class FloatComplexMatrix;
-class FloatComplexNDArray;
-class FloatMatrix;
-class FloatNDArray;
-class FloatRowVector;
-class Matrix;
-class NDArray;
-class RowVector;
 
 namespace octave
 {

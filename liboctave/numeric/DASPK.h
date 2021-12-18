@@ -33,7 +33,7 @@
 #include "Array.h"
 #include "DASPK-opts.h"
 
-class Matrix;
+#include "mx-fwd.h"
 
 class
 OCTAVE_API

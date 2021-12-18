@@ -48,6 +48,7 @@ ARRAY_INC = \
   %reldir%/int8NDArray.h \
   %reldir%/intNDArray-fwd.h \
   %reldir%/intNDArray.h \
+  %reldir%/mx-fwd.h \
   %reldir%/range-fwd.h \
   %reldir%/uint16NDArray.h \
   %reldir%/uint32NDArray.h \

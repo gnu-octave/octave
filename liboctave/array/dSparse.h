@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#include "mx-fwd.h"
+
 #include "CColVector.h"
 #include "CMatrix.h"
 #include "DET.h"
@@ -37,11 +39,6 @@
 #include "dColVector.h"
 #include "dMatrix.h"
 #include "dNDArray.h"
-
-class PermMatrix;
-class DiagMatrix;
-class SparseComplexMatrix;
-class SparseBoolMatrix;
 
 class
 SparseMatrix : public MSparse<double>

@@ -29,10 +29,9 @@
 #include "octave-config.h"
 
 #include "intNDArray-fwd.h"
+#include "mx-fwd.h"
 #include "MArray.h"
 #include "boolNDArray.h"
-
-class NDArray;
 
 template <typename T>
 class

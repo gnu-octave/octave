@@ -33,8 +33,7 @@
 #include "Sparse.h"
 #include "boolMatrix.h"
 #include "boolNDArray.h"
-
-class SparseMatrix;
+#include "mx-fwd.h"
 
 class
 OCTAVE_API

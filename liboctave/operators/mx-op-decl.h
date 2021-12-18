@@ -31,8 +31,7 @@
 #define BIN_OP_DECL(R, OP, X, Y, API)           \
   extern API R OP (const X&, const Y&)
 
-class boolMatrix;
-class boolNDArray;
+#include "mx-fwd.h"
 
 #define CMP_OP_DECL(OP, X, Y, API)              \
   extern API boolMatrix OP (const X&, const Y&)

@@ -30,10 +30,10 @@
 
 #include <iosfwd>
 
+#include "mx-fwd.h"
+
 #include "CColVector.h"
 #include "CMatrix.h"
-
-class Matrix;
 
 class
 OCTAVE_API

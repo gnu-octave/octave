@@ -32,12 +32,7 @@
 
 #include "oct-cmplx.h"
 #include "MArray-fwd.h"
-
-class Matrix;
-class ComplexMatrix;
-class SparseMatrix;
-class SparseComplexMatrix;
-class ColumnVector;
+#include "mx-fwd.h"
 
 namespace octave
 {

@@ -400,7 +400,19 @@ if test $octave_cv_broken_stl_algo_h = yes; then
   OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
 fi
 
-OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
+ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no
+AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
+  [AS_HELP_STRING([--enable-std-pmr-polymorphic-allocator],
+    [build libraries requiring std::pmr::polymorphic_allocator if possible. This allows more efficient transfer of arrays at the .mex file interface. That also means that all libraries including Octave headers (e.g., .oct files) must be able to compile with that C++17 feature.])],
+  [case $enableval in
+     yes) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes ;;
+     no) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-std-pmr-polymorphic-allocator]) ;;
+   esac])
+
+if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
+  OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
+fi
 
 ### Check version number when using gcc.
 dnl It might be different from the g++ version number.

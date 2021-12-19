@@ -302,14 +302,14 @@ public:
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  OCTINTERP_API octave_value (double base, double limit, double inc)
+  octave_value (double base, double limit, double inc)
     : m_rep (make_range_rep_deprecated (base, inc, limit))
   {
     maybe_mutate ();
   }
 
   OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  OCTINTERP_API octave_value (const Range& r, bool force_range = false)
+  octave_value (const Range& r, bool force_range = false)
     : m_rep (make_range_rep_deprecated (r, force_range))
   {
     maybe_mutate ();

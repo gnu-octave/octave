@@ -111,7 +111,7 @@ public:
   using octave_base_value::assign;
 
   template <typename RHS_T>
-  OCTINTERP_API void assign (const octave_value_list& idx, const RHS_T& rhs)
+  void assign (const octave_value_list& idx, const RHS_T& rhs)
   {
     octave_idx_type len = idx.length ();
 

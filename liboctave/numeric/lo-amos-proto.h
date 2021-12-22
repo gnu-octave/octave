@@ -75,7 +75,7 @@ extern "C"
   // BESJ
 
   F77_RET_T
-  F77_FUNC (cbesj, cBESJ) (const F77_CMPLX *, const F77_REAL&,
+  F77_FUNC (cbesj, CBESJ) (const F77_CMPLX *, const F77_REAL&,
                            const F77_INT&, const F77_INT&,
                            F77_CMPLX *, F77_INT&, F77_INT&);
 

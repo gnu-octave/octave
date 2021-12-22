@@ -26,6 +26,8 @@
 #if ! defined (octave_gui_utils_h)
 #define octave_gui_utils_h 1
 
+#include "octave-config.h"
+
 #include <QColor>
 
 namespace octave

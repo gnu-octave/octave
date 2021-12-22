@@ -1332,7 +1332,7 @@ void QConsolePrivate::startCommand (void)
 
   if (! cmd.isEmpty ())
     {
-      STARTUPINFO si;
+      STARTUPINFOW si;
       PROCESS_INFORMATION pi;
 
       ZeroMemory (&si, sizeof (si));

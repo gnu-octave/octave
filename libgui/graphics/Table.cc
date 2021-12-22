@@ -196,10 +196,15 @@ namespace octave
   {
     Qt::AlignmentFlag flag = Qt::AlignRight;
     QString text;
-    if (val.is_string ())
+    if (val.isempty ())
+      {
+        text = "";
+        flag = Qt::AlignLeft;
+      }
+    else if (val.is_string ())
       {
         text = octave::Utils::fromStdString (val.string_value ());
-        flag = Qt::AlignLeft ;
+        flag = Qt::AlignLeft;
       }
     else if (val.iscomplex ())
       {
@@ -242,7 +247,7 @@ namespace octave
           {
             text = QString::number (c.real (), 'g', 5) + " + "
                    + QString::number (c.imag (), 'g', 5) + "i";
-            flag = Qt::AlignLeft ;
+            flag = Qt::AlignLeft;
           }
       }
     else if (val.is_double_type () )
@@ -301,12 +306,12 @@ namespace octave
         if (format == "char" || format == "popup" || format == "")
           {
             text = Utils::fromStdString (b ? "true" : "false");
-            flag = Qt::AlignLeft ;
+            flag = Qt::AlignLeft;
           }
         else if (format == "+")
           {
             text = Utils::fromStdString (b ? "+" : "");
-            flag = Qt::AlignLeft ;
+            flag = Qt::AlignLeft;
           }
         else
           text = Utils::fromStdString (b ? "1" : "0");

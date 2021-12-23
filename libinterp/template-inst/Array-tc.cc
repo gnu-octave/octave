@@ -51,9 +51,12 @@ extern template class Array<octave::idx_vector>;
 extern template class Array<octave_idx_type>;
 extern template class Array<std::string>;
 
+#if defined (HAVE_PRAGMA_GCC_VISIBILITY)
 // Visibility attributes are ignored on template instantiation.
 // As a work-around, set visibility to default overriding compiler options.
-#pragma GCC visibility push(default)
+#  pragma GCC visibility push(default)
+#endif
+
 NO_INSTANTIATE_ARRAY_SORT_API (octave_value, OCTINTERP_API);
 INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
 
@@ -62,5 +65,8 @@ INSTANTIATE_ARRAY (octave_value *, OCTINTERP_API);
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave::cdef_object, OCTINTERP_API);
 INSTANTIATE_ARRAY (octave::cdef_object, OCTINTERP_API);
-#pragma GCC visibility pop
+
+#if defined (HAVE_PRAGMA_GCC_VISIBILITY)
+#  pragma GCC visibility pop
+#endif
 

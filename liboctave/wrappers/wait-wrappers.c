@@ -124,8 +124,8 @@ octave_wuntraced_wrapper (void)
 // Disable the unused parameter warning for the following wrapper functions.
 // The <sys/wait.h> header provided by gnulib may define some of the W*
 // macros to expand to a constant and ignore the parameter.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
 
 int
@@ -178,5 +178,5 @@ octave_wtermsig_wrapper (int status)
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 // Restore prevailing warning state for remainder of the file.
-#pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 #endif

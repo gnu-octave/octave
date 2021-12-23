@@ -2833,11 +2833,11 @@ AC_SUBST(WARN_LDFLAGS)
 ### Check for GCC-specific pragmas to control warnings.
 
 AC_LANG_PUSH(C++)
-AC_CACHE_CHECK([for @%:@pragma GCC diagnostic push/pop/ignore],
+AC_CACHE_CHECK([for @%:@pragma GCC diagnostic push/pop/ignored],
   [octave_cv_gcc_has_pragma_GCC_diagnostic],
   [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignore "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
   int three = (int) 3.1415926;
 #pragma GCC diagnostic pop
     ]])],
@@ -2848,14 +2848,30 @@ AC_LANG_POP(C++)
 
 if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
   AC_DEFINE(HAVE_PRAGMA_GCC_DIAGNOSTIC, 1,
-    [Define to 1 if GCC supports @%:@pragma GCC diagnostic ...])
+    [Define to 1 if compiler supports @%:@pragma GCC diagnostic ...])
+fi
+
+AC_CACHE_CHECK([for @%:@pragma GCC visibility push/pop],
+  [octave_cv_gcc_has_pragma_GCC_visiblity],
+  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
+#pragma GCC visibility push(default)
+  int three = 3;
+#pragma GCC visiblity pop(default)
+    ]])],
+    [octave_cv_gcc_has_pragma_GCC_visiblity=yes],
+    [octave_cv_gcc_has_pragma_GCC_visiblity=no])],
+  ])
+
+if test $octave_cv_gcc_has_pragma_GCC_visiblity = yes; then
+  AC_DEFINE(HAVE_PRAGMA_GCC_VISIBILITY, 1,
+    [Define to 1 if compiler supports @%:@pragma GCC visiblity ...])
 fi
 
 ## Check for one unusual warning used in pragmas that is not always available
 if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
   OCTAVE_CC_FLAG([-Wimplicit-fallthrough],
     [AC_DEFINE(HAVE_WARN_IMPLICIT_FALLTHROUGH, 1,
-      [Define to 1 if GCC supports -Wimplicit-fallthrough warning])])
+      [Define to 1 if compiler supports -Wimplicit-fallthrough warning])])
 fi
 
 ### These are recommended by the gnulib bootstrap script:

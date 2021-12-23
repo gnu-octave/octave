@@ -33,7 +33,7 @@ in libBLAS.dylib are not conforming to F2C calling conventions, as
 they should.  This breaks them in 64-bit builds on the x86_64
 architecture.
 
-Newer gfortran compoilers no longer default to the F2C calling
+Newer gfortran compilers no longer default to the F2C calling
 convention.  These wrappers map the F2C conformant functions in
 libBLAS and libLAPACK to the native gfortran calling convention, so
 that the libraries can be used with software built for x86_64
@@ -59,11 +59,13 @@ architecture.
 #  define VECLIB_FILE "/System/Library/Frameworks/vecLib.framework/Versions/A/vecLib"
 #endif
 
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 /*
  * Since this is a wrapper for fortran functions,
  * we do not have prototypes for them.
  */
-#pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#  pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#endif
 
 #include <dlfcn.h>
 #include <stdlib.h>

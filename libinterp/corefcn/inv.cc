@@ -70,11 +70,14 @@ sparse matrix if possible.
 
   octave_value arg = args(0);
 
+  if (!(arg.isnumeric () || arg.islogical ()))
+    err_wrong_type_arg ("inv", arg);
+
   if (arg.isempty ())
     return ovl (Matrix ());
 
   if (arg.rows () != arg.columns ())
-    err_square_matrix_required ("inverse", "A");
+    err_square_matrix_required ("inv", "A");
 
   octave_value result;
   octave_idx_type info;
@@ -191,6 +194,8 @@ sparse matrix if possible.
             }
         }
       else
+        // Shouldn't get here since we checked for suitable arg earlier.
+        // Maybe for some user-defined classes?
         err_wrong_type_arg ("inv", arg);
     }
 

@@ -42,6 +42,7 @@
 #include "Array.h"
 #include "Cell.h"
 #include "byte-swap.h"
+#include "lo-cutils.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
@@ -3897,7 +3898,7 @@ namespace octave
 
     int i;
     int (*compare)(const char *, const char *, std::size_t);
-    compare = (case_sensitive ? strncmp : strncasecmp);
+    compare = (case_sensitive ? strncmp : octave_strncasecmp);
 
     for (i = 0; i < targets.numel (); i++)
       {

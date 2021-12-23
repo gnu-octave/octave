@@ -2658,19 +2658,10 @@ AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
 
 ### Determine whether libraries should be linked with visibility attributes
 
-case $host_os in
-  darwin*)
-    # Don't enable visibility flags by default on macOS. See bug #59820.
-    ENABLE_LIB_VISIBILITY_FLAGS=no
-  ;;
-  *)
-    ENABLE_LIB_VISIBILITY_FLAGS=yes
-  ;;
-esac
-
+ENABLE_LIB_VISIBILITY_FLAGS=no
 AC_ARG_ENABLE(lib-visibility-flags,
-  [AS_HELP_STRING([--disable-lib-visibility-flags],
-    [don't build libraries with visibility flags (export all symbols)])],
+  [AS_HELP_STRING([--enable-lib-visibility-flags],
+    [Build libraries with visibility flags (don't export all symbols). This feature is experimental and should only be used for testing.])],
   [case $enableval in
      yes) ENABLE_LIB_VISIBILITY_FLAGS=yes ;;
      no) ENABLE_LIB_VISIBILITY_FLAGS=no ;;

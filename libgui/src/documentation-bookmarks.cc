@@ -478,7 +478,7 @@ namespace octave
       {
         error_message = tr ("The file\n"
                             "%1\n"
-                            "is not a valid XBEL file verison 1.0.")
+                            "is not a valid XBEL file version 1.0.")
                             .arg (m_xbel_file.fileName ());
         return error_message;
       }

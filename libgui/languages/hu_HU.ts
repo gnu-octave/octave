@@ -161,72 +161,72 @@
     <message>
         <location filename="../../../qsci/qscilexerbash.cpp" line="+203"/>
         <source>Default</source>
-        <translation type="unfinished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Szám</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Kulcsszó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Kétszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Művelet</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Azonosító</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalár</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Parameter expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Paraméterbővítés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordított ékezetek</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Itteni dokumentum határoló</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyszeres-idézett itteni dokumentum</translation>
     </message>
 </context>
 <context>
@@ -234,42 +234,42 @@
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+174"/>
         <source>Default</source>
-        <translation type="unfinished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Kulcsszó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Címke</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide command character</source>
-        <translation type="unfinished"></translation>
+        <translation>Parancskarakter elrejtése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>External command</source>
-        <translation type="unfinished"></translation>
+        <translation>Külső parancs</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Változó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Művelet</translation>
     </message>
 </context>
 <context>
@@ -277,282 +277,282 @@
     <message>
         <location filename="../../../qsci/qscilexercpp.cpp" line="+364"/>
         <source>Default</source>
-        <translation type="unfinished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive default</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív alapértelmezett</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>C megjegyzése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív C megjegyzése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>C++ megjegyzése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív C++ megjegyzése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaDoc stílusú C megjegyzése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív JavaDoc stílusú C megjegyzése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Szám</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive number</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív szám</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Kulcsszó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív kulcsszó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Kétszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív kétszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív egyszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID azonosító</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív IDL UUID azonosító</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Előfeldolgozó blokk</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív előfeldolgozó blokk</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Művelet</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív művelet</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Azonosító</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív azonosító</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Lezáratlan karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív lezáratlan karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>C# szó szerinti karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív C# szó szerinti karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaScript szabványos kifejezése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív JavaScript szabványos kifejezése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaDoc stílusú C++ megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív JavaDoc stílusú C++ megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Másodlagos kulcsszavak és azonosítók</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív másodlagos kulcsszavak és azonosítók</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaDoc kulcsszó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív JavaDoc kulcsszó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaDoc kulcsszóhiba</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív JavaDoc kulcsszóhiba</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Globális osztályok és típusdefiníciók</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív globális osztályok és típusdefiníciók</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>C++ nyers karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív C++ nyers karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Hármas-idézett szó szerinti Vala-karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív hármas-idézett szó szerinti Vala-karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Kettőskereszt-idézett Pike-karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív kettőskereszt-idézett Pike-karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Előfeldolgozó C megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív előfeldolgozó C megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Előfeldolgozó JavaDoc stílusú megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív előfeldolgozó JavaDoc stílusú megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>User-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Felhasználó által meghatározott szövegállandó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive user-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív felhasználó által meghatározott szövegállandó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Feladatjelölő</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív feladatjelölő</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Vezérlősorozat</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Inaktív vezérlősorozat</translation>
     </message>
 </context>
 <context>
@@ -560,62 +560,62 @@
     <message>
         <location filename="../../../qsci/qscilexerdiff.cpp" line="+106"/>
         <source>Default</source>
-        <translation type="unfinished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished">Parancs</translation>
+        <translation>Parancs</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Header</source>
-        <translation type="unfinished"></translation>
+        <translation>Fejléc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Position</source>
-        <translation type="unfinished">Szövegbeosztás</translation>
+        <translation>Szövegbeosztás</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Sor eltávolítva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added line</source>
-        <translation type="unfinished"></translation>
+        <translation>Sor hozzáadva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Changed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Sor megváltozva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added adding patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Javítókészlet hozzáadása hozzáadva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed adding patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Javítókészlet hozzáadása eltávolítva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added removing patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Javítókészlet eltávolítása hozzáadva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed removing patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Javítókészlet eltávolítása eltávolítva</translation>
     </message>
 </context>
 <context>
@@ -623,47 +623,47 @@
     <message>
         <location filename="../../../qsci/qscilexermatlab.cpp" line="+133"/>
         <source>Default</source>
-        <translation type="unfinished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished">Parancs</translation>
+        <translation>Parancs</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Szám</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Kulcsszó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Művelet</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Azonosító</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Kétszeres-idézett karakterlánc</translation>
     </message>
 </context>
 <context>
@@ -671,207 +671,207 @@
     <message>
         <location filename="../../../qsci/qscilexerperl.cpp" line="+328"/>
         <source>Default</source>
-        <translation type="unfinished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD</source>
-        <translation type="unfinished"></translation>
+        <translation>POD</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Szám</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Kulcsszó</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Kétszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyszeres-idézett karakterlánc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Művelet</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Azonosító</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalár</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Array</source>
-        <translation type="unfinished"></translation>
+        <translation>Tömb</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hash</source>
-        <translation type="unfinished"></translation>
+        <translation>Kettőskereszt</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Symbol table</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólumtábla</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabványos kifejezés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution</source>
-        <translation type="unfinished"></translation>
+        <translation>Helyettesítés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordított ékezetek</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Data section</source>
-        <translation type="unfinished"></translation>
+        <translation>Adatok szakasz</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Itteni dokumentum határoló</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyszeres-idézett itteni dokumentum</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Kétszeres-idézett itteni dokumentum</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordított ékezet itteni dokumentum</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (q)</source>
-        <translation type="unfinished"></translation>
+        <translation>Idézett karakterlánc (q)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq)</source>
-        <translation type="unfinished"></translation>
+        <translation>Idézett karakterlánc (qq)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Idézett karakterlánc (qx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Idézett karakterlánc (qr)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qw)</source>
-        <translation type="unfinished"></translation>
+        <translation>Idézett karakterlánc (qw)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD verbatim</source>
-        <translation type="unfinished"></translation>
+        <translation>POD szó szerint</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Subroutine prototype</source>
-        <translation type="unfinished"></translation>
+        <translation>Alprogram prototípusa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Azonosító formázása</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format body</source>
-        <translation type="unfinished"></translation>
+        <translation>Törzs formázása</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kétszeres-idézett karakterlánc (interpolált változó)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordítás</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabványos kifejezés (interpolált változó)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Helyettesítés (interpolált változó)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordított ékezetek (interpolált változó)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kétszeres-idézett itteni dokumentum (interpolált változó)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordított ékezet itteni dokumentum (interpolált változó)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Idézett karakterlánc (qq, interpolált változó)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Idézett karakterlánc (qx, interpolált változó)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Idézett karakterlánc (qr, interpolált változó)</translation>
     </message>
 </context>
 <context>
@@ -879,37 +879,37 @@
     <message>
         <location filename="../../../qsci/qsciscintilla.cpp" line="+4475"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Visszavonás</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Ismét</translation>
+        <translation>&amp;Ismét</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">&amp;Kivágás</translation>
+        <translation>&amp;Kivágás</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Másolás</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Beilles&amp;ztés</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Select All</source>
-        <translation type="unfinished">Összes kijelölése</translation>
+        <translation>Összes kijelölése</translation>
     </message>
 </context>
 <context>
@@ -1108,27 +1108,27 @@
     <message>
         <location filename="../src/command-widget.cc" line="+57"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Szüneteltetés</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop</source>
-        <translation type="unfinished">Leállítás</translation>
+        <translation>Leállítás</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Folytatás</translation>
+        <translation>Folytatás</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Command Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Parancsbevitel</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Command Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Parancskimenet</translation>
     </message>
 </context>
 <context>
@@ -1136,7 +1136,7 @@
     <message>
         <location filename="../src/community-news.cc" line="+70"/>
         <source>Octave Community News</source>
-        <translation type="unfinished">Oktáv közösségi hírek</translation>
+        <translation>Oktáv közösségi hírek</translation>
     </message>
 </context>
 <context>
@@ -1189,7 +1189,7 @@ Csak a parancsablakban található súgószövegek lesznek elérhetők.</transla
     <message>
         <location line="+22"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Könyvjelzők</translation>
     </message>
     <message>
         <location line="+86"/>
@@ -1255,7 +1255,7 @@ Csak a parancsablakban található súgószövegek lesznek elérhetők.</transla
     <message>
         <location line="+55"/>
         <source>Bookmark current page</source>
-        <translation type="unfinished"></translation>
+        <translation>A jelenlegi oldal megjelölése könyvjelzővel</translation>
     </message>
     <message>
         <location line="+430"/>
@@ -1269,62 +1269,63 @@ Csak a parancsablakban található súgószövegek lesznek elérhetők.</transla
         <location filename="../src/documentation-bookmarks.cc" line="+102"/>
         <source>
 No documentation bookmarks loaded!</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Nincsenek betöltve dokumentációs könyvjelzők!</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave: Loading Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Oktáv: Dokumentációs könyvjelzők betöltése…</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Írjon be szöveget a könyvjelzők közötti kereséshez</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Filter</source>
-        <translation type="unfinished">Szűrő</translation>
+        <translation>Szűrő</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Új mappa</translation>
     </message>
     <message>
         <location line="+105"/>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Megnyitás</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Átne&amp;vezés</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eltávolítás</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa &amp;hozzáadása</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Hide &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűrő &amp;elrejtése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűrő &amp;megjelenítése</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Octave: Saving Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Oktáv: Dokumentációs könyvjelzők mentése</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1333,31 +1334,38 @@ No documentation bookmarks loaded!</source>
 
 Documentation bookmarks are not saved!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 fájl nem írható:
+%2.
+
+A dokumentációs könyvjelzők nem kerülnek mentésre!
+</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Unable to read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 fájl nem olvasható:
+%2.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No start element found in %1.
 Invalid bookmark file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem található kezdőelem itt: %1.
+Érvénytelen könyvjelzőfájl?</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>The file
 %1
 is not a valid XBEL file verison 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 fájl
+nem érvényes 1.0-s verziójú XBEL-fájl.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Unknown title</source>
-        <translation type="unfinished"></translation>
+        <translation>Ismeretlen cím</translation>
     </message>
 </context>
 <context>
@@ -1862,7 +1870,7 @@ for write: %2.</source>
     <message>
         <location line="+49"/>
         <source>Copy Full File &amp;Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Teljes fájl &amp;elérési út másolása</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2081,7 +2089,8 @@ Más nevet szeretne választani?</translation>
         <source>%1
  already exists
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 fájl már létezik.
+Szeretné felülírni? </translation>
     </message>
     <message>
         <location line="+85"/>
@@ -2299,12 +2308,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+12"/>
         <source>Rename error</source>
-        <translation type="unfinished"></translation>
+        <translation>Átnevezési hiba</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem sikerült átnevezni a(z) „%1” fájlt a következőre: „%2”.</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -2317,7 +2326,8 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Biztosan törli az összes %1 kijelölt fájlt?
+</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2334,12 +2344,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished"></translation>
+        <translation>Törlési hiba</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem sikerült törölni a(z) „%1” fájlt.</translation>
     </message>
     <message>
         <location line="+185"/>
@@ -2357,7 +2367,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Fájl létrehozása itt:
+        <translation>Fájl létrehozása a következő helyen:
 </translation>
     </message>
     <message>
@@ -2366,7 +2376,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Mappa létrehozása itt:
+        <translation>Mappa létrehozása a következő helyen:
 </translation>
     </message>
     <message>
@@ -2431,7 +2441,15 @@ Mindegyikről további információt a &lt;a href=&quot;https://octave.org/suppo
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;További információ az Oktávról:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Látogassa meg a &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; oldalt (külső böngészőben nyílik meg)&lt;/li&gt;
+&lt;li&gt;Szerezze be a dokumentációt online &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- vagy &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-dokumentumként (külső böngészőben nyílik meg)&lt;/li&gt;
+&lt;li&gt;Nyissa meg az Octave GUI dokumentációs böngészőjét a súgó menüvel&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2859,7 +2877,7 @@ Kattintson a „Tovább” gombra a konfigurációs fájl létrehozásához és 
     <message>
         <location line="-344"/>
         <source>Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>Profilkészítő</translation>
     </message>
     <message>
         <location line="+345"/>
@@ -3050,27 +3068,27 @@ beágyazott függvény és nem szerkeszthető.</translation>
     <message>
         <location line="+6"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eszközök</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start &amp;Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Profilkészítő munkamenet indítása</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profilkészítő munkamenet &amp;folytatása</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Stop Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>Profilkészítő munkamenet &amp;leállítása</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiladatok &amp;megjelenítése</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3417,17 +3435,17 @@ does not exist. Do you want to create it?</source>
     <message>
         <location filename="../src/release-notes.cc" line="+80"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">A kiadási megjegyzések fájlja „%1” üres.</translation>
+        <translation>A kiadási megjegyzések fájlja „%1” üres.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">A kiadási megjegyzések fájlja „%1” nem olvasható.</translation>
+        <translation>A kiadási megjegyzések fájlja „%1” nem olvasható.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished">Oktáv kiadási megjegyzések</translation>
+        <translation>Oktáv kiadási megjegyzések</translation>
     </message>
 </context>
 <context>
@@ -3477,7 +3495,7 @@ Az oktáv grafikus felhasználói felületét most be kell zárni.</translation>
     <message>
         <location line="+2"/>
         <source>Folder With Subfolders</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa almappákkal</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3668,46 +3686,50 @@ Az oktáv grafikus felhasználói felületét most be kell zárni.</translation>
     <message>
         <location line="+1"/>
         <source>persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>tartós</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-global.h" line="+149"/>
         <source>Environment Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Környezeti változók</translation>
     </message>
     <message>
         <location filename="../src/gui-settings.h" line="+132"/>
         <source>Second color mode (light/dark)</source>
-        <translation type="unfinished"></translation>
+        <translation>Második színmód (világos/sötét)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Switches to another set of colors.
 Useful for defining a dark/light mode.
 Discards non-applied current changes!</source>
-        <translation type="unfinished"></translation>
+        <translation>Színkészlet váltása.
+Hasznos a sötét/világos mód meghatározásához.
+Elveti a nem alkalmazott jelenlegi változtatásokat!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Reload default colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett színek új&amp;ratöltése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default colors,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Újratölti az alapértelmezett színeket,
+a jelenlegi kiválasztott módtól függően.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Reload default styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett stílusok új&amp;ratöltése</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default values of the styles,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Újratölti a stílusok alapértelmezett értékeit,
+a jelenlegi kiválasztott módtól függően.</translation>
     </message>
 </context>
 <context>
@@ -3753,7 +3775,10 @@ Naponta legfeljebb egyszer jelentkezik be, és a hírek csak akkor jelennek meg,
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Engedélyezze az Oktávnak, hogy csatlakozzon az Oktáv webhelyéhez, amikor az elkezdi megjeleníteni az Oktáv közösséggel kapcsolatos jelenlegi híreket és információkat.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3902,17 +3927,17 @@ Mindenképpen szeretné használni a gyorsítóparancsot az előző műveletből
     <message>
         <location line="+3"/>
         <source>Start/Stop Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profilkészítő munkamenet indítása/leállítása</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profilkészítő munkamenet folytatása</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiladatok megjelenítése</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4310,12 +4335,12 @@ Mindenképpen szeretné használni a gyorsítóparancsot az előző műveletből
     <message>
         <location line="+21"/>
         <source>Bookmark this Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Oldal megjelölése könyvjelzővel</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>Tools Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Eszközök menü</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4355,7 +4380,7 @@ Mindenképpen szeretné használni a gyorsítóparancsot az előző műveletből
     <message>
         <location line="-24"/>
         <source>Show On-disk Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Lemezen lévő dokumentáció megjelenítése</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -4616,12 +4641,12 @@ Menteni szeretné az aktuális gyorsítóparancs-készletet, vagy törölni szer
         <location line="+5"/>
         <location line="+6"/>
         <source>Save in format ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálás másként…</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Save variable to a file in different format</source>
-        <translation type="unfinished"></translation>
+        <translation>Változó exportálása különböző formátumú fájlba</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -4965,12 +4990,12 @@ Menteni szeretné az aktuális gyorsítóparancs-készletet, vagy törölni szer
     <message>
         <location line="-509"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ha be van állítva, a főablakhoz rögzített vezérlők fókusza az egérkurzort követi. Ennek célja ugyanaz a viselkedés a főablakon belül, amikor az asztali környezetben a „Fókusz követi az egeret” funkciót használjuk.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Focus follows mouse for widgets docked to the main window</source>
-        <translation type="unfinished"></translation>
+        <translation>Fókusz követi az egeret a vezérlők rögzítve a főablakba</translation>
     </message>
     <message>
         <location line="+487"/>
@@ -4980,22 +5005,22 @@ Menteni szeretné az aktuális gyorsítóparancs-készletet, vagy törölni szer
     <message>
         <location line="+221"/>
         <source>Rotated tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Elforgatott lapok</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Position</source>
-        <translation type="unfinished">Szövegbeosztás</translation>
+        <translation>Szövegbeosztás</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Max. tab width in chars (0: no limit)</source>
-        <translation type="unfinished"></translation>
+        <translation>A tabulátor legfeljebb szélessége karakterekben (0: korlátlan)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. width of a tab in characters (average char. width). Especially useful for rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A tabulátor legfeljebb szélessége karakterekben (átlagos karakterszélesség). Különösen hasznos elforgatott lapok esetén.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -5330,7 +5355,7 @@ Menteni szeretné az aktuális gyorsítóparancs-készletet, vagy törölni szer
     <message>
         <location line="+29"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Lapok elforgatása: Függőleges, ha felül vagy alul van, és vízszintes, ha balra vagy jobbra van. A bezárás gomb nem jelenik meg az elforgatott lapokon.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+74"/>
@@ -5430,12 +5455,12 @@ Menteni szeretné az aktuális gyorsítóparancs-készletet, vagy törölni szer
     <message>
         <location line="+10"/>
         <source>Force newline at end when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>Újsor kényszerítése a végére a fájl mentésekor</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove trailing spaces when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl mentésekor távolítsa el a záró szóközöket</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -5475,7 +5500,7 @@ Menteni szeretné az aktuális gyorsítóparancs-készletet, vagy törölni szer
     <message>
         <location line="+117"/>
         <source>Disable menu accelerators of main window menus when Commmand Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>A főablak menüinek menügyorsítóinak letiltása, ha a Parancsablak fókuszban van</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -5521,12 +5546,12 @@ Menteni szeretné az aktuális gyorsítóparancs-készletet, vagy törölni szer
     <message>
         <location line="+10"/>
         <source>Proxy Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxykiszolgáló</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Válassza ki &lt;span style=&quot; font-style:italic;&quot;&gt;HTTP-proxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; vagy &lt;span style=&quot; font-style:italic;&quot;&gt;Környezeti változók&lt;/span&gt;. Az utolsó kiválasztással a proxy az első nem üres környezeti változóból (ALL_PROXY, HTTP_PROXY vagy HTTPS_PROXY) kerül átvételre.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -5564,7 +5589,10 @@ Menteni szeretné az aktuális gyorsítóparancs-készletet, vagy törölni szer
 interference with readline key strokes.
 Exceptions: Ctrl-C for interrupting the interpreter
 and the shortcuts for switching to other widgets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Globális billentyűparancsok letiltása a
+ReadLine billentyűleütésekkel való zavar elkerülése érdekében.
+Kivételek: Ctrl-C az értelmező megszakítására és a
+billentyűparancsok más vezérlőkre való váltásra.</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -5595,7 +5623,8 @@ and the shortcuts for switching to other widgets.</source>
         <location line="+54"/>
         <source>Disable menu accelerators in order to prevent
 interference with readline key strokes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Globális billentyűparancsok letiltása a
+ReadLine billentyűleütésekkel való zavar elkerülése érdekében.</translation>
     </message>
     <message>
         <location line="+54"/>

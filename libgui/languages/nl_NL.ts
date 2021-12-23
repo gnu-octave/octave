@@ -2075,27 +2075,27 @@ Wil je die overschrijven?</translation>
     <message>
         <location filename="../src/command-widget.cc" line="+57"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Pauze</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop</source>
-        <translation type="unfinished">Stop</translation>
+        <translation>Stop</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Doorgaan</translation>
+        <translation>Doorgaan</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Command Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Opdracht invoer</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Command Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Opdracht uitvoer</translation>
     </message>
 </context>
 <context>
@@ -2103,7 +2103,7 @@ Wil je die overschrijven?</translation>
     <message>
         <location filename="../src/community-news.cc" line="+70"/>
         <source>Octave Community News</source>
-        <translation type="unfinished">Octave Community Nieuws</translation>
+        <translation>Octave Community Nieuws</translation>
     </message>
 </context>
 <context>
@@ -2158,7 +2158,7 @@ het Opdrachtvenster beschikbaar.</translation>
     <message>
         <location line="+22"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Bladwijzers</translation>
     </message>
     <message>
         <location line="+86"/>
@@ -2224,7 +2224,7 @@ het Opdrachtvenster beschikbaar.</translation>
     <message>
         <location line="+55"/>
         <source>Bookmark current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Bladwijzer naar huidige pagina</translation>
     </message>
     <message>
         <location line="+430"/>
@@ -2238,62 +2238,63 @@ het Opdrachtvenster beschikbaar.</translation>
         <location filename="../src/documentation-bookmarks.cc" line="+102"/>
         <source>
 No documentation bookmarks loaded!</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Geen documentatie bladwijzers geladen!</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave: Loading Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave: documentatie bladwijzers inlezen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst om te zoeken in bladwijzers</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Filter</source>
-        <translation type="unfinished">Filter</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>New Folder</source>
-        <translation type="unfinished">Nieuwe map</translation>
+        <translation>Nieuwe map</translation>
     </message>
     <message>
         <location line="+105"/>
         <source>&amp;Open</source>
-        <translation type="unfinished">&amp;Open</translation>
+        <translation>&amp;Open</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished">He&amp;rnoem</translation>
+        <translation>He&amp;rnoem</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verwijder</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>M&amp;ap toevoegen</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Hide &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Verberg &amp;filter</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon &amp;filter</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Octave: Saving Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave: Documentatie bladwijzers bewaren</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2302,31 +2303,39 @@ No documentation bookmarks loaded!</source>
 
 Documentation bookmarks are not saved!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan bestand %1
+%2.
+
+Documentatie bladwijzers niet opgeslagen!
+</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Unable to read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan bestand %1 niet lezen:
+%2.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No start element found in %1.
 Invalid bookmark file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen begin gevonden in %1.
+Ongeldig bladwijzerbestand?</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>The file
 %1
 is not a valid XBEL file verison 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand
+%1
+niet herkend als XBEL versie 1.0 bestand.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Unknown title</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekende titel</translation>
     </message>
 </context>
 <context>
@@ -2838,7 +2847,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+49"/>
         <source>Copy Full File &amp;Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Volledig &amp;pad kopiëren</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3070,7 +3079,9 @@ Wil je een andere naam kiezen?</translation>
         <source>%1
  already exists
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+ bestaat al.
+Wil je het overschrijven?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -3290,12 +3301,13 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location line="+12"/>
         <source>Rename error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij hernoemen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon bestand &quot;%1&quot; niet hernoemen
+ naar &quot;%2&quot;.</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -3308,7 +3320,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Weet je zeker dat je alle %1 bestanden wil wissen?</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3325,12 +3337,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij verwijderen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon bestand &quot;%1&quot; niet verwijderen.</translation>
     </message>
     <message>
         <location line="+185"/>
@@ -3348,7 +3360,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Maak nieuw bestand in
+        <translation>Maak nieuw bestand in 
 </translation>
     </message>
     <message>
@@ -3357,7 +3369,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Maak nieuwe map in
+        <translation>Maak nieuwe map in
 </translation>
     </message>
     <message>
@@ -3422,7 +3434,15 @@ Meer informatie hierover is te verkrijgen via een bezoek aan &lt;a href=&quot;ht
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Voor meer informatie over Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ga naar &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opent in browser)&lt;/li&gt;
+&lt;li&gt;Verkrijg de on-line documentatie hier: &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-document (opent in browser)&lt;/li&gt;
+&lt;li&gt;Open de documentatiebrowser van de Octave GUI met het help menu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3850,7 +3870,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     <message>
         <location line="-344"/>
         <source>Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler</translation>
     </message>
     <message>
         <location line="+345"/>
@@ -4040,27 +4060,27 @@ functie en kan niet worden bewerkt.</translation>
     <message>
         <location line="+6"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Gereedschappen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start &amp;Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler sessie he&amp;rvatten</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Stop Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler &amp;stoppen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Toon Profile gegevens</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -4410,17 +4430,17 @@ bestaat niet. Wilt u het aanmaken?</translation>
     <message>
         <location filename="../src/release-notes.cc" line="+80"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">Bestand met release notes &apos;%1&apos; is leeg.</translation>
+        <translation>Bestand met release notes &apos;%1&apos; is leeg.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">Bestand met release notes &apos;%1&apos; kan niet worden gelezen.</translation>
+        <translation>Bestand met release notes &apos;%1&apos; kan niet worden gelezen.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished">Octave Release Notes</translation>
+        <translation>Octave Release Notes</translation>
     </message>
 </context>
 <context>
@@ -4473,7 +4493,7 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location line="+2"/>
         <source>Folder With Subfolders</source>
-        <translation type="unfinished"></translation>
+        <translation>Map met Submappen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4663,46 +4683,50 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location line="+1"/>
         <source>persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>persistent</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-global.h" line="+149"/>
         <source>Environment Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Omgevingsvariabelen</translation>
     </message>
     <message>
         <location filename="../src/gui-settings.h" line="+132"/>
         <source>Second color mode (light/dark)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tweede kleurenmodus (licht/donker)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Switches to another set of colors.
 Useful for defining a dark/light mode.
 Discards non-applied current changes!</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakelt naar een andere set kleuren.
+Handig voor definiëren van een lichte/donkere modus.
+Let op: wist nog niet toegepaste aanpassingen!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Reload default colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard kleuren he&amp;rstellen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default colors,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard kleuren herstellen,
+afhankelijk van de huidige gekozen modus.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Reload default styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard stijlen he&amp;rstellen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default values of the styles,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard stijlen herstellen,
+afhankelijk van huidige gekozen modus.</translation>
     </message>
 </context>
 <context>
@@ -4748,7 +4772,10 @@ Dit zal hooguit eenmaal daags geschieden en nieuws wordt alleen weergegeven als 
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Sta Octave toe om tijdens starten met de Octave web site verbinding te maken om nieuws en informatie te laten zien van de Octave community.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -4900,17 +4927,17 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     <message>
         <location line="+3"/>
         <source>Start/Stop Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler sessie starten of stoppen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler sessie hervatten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiler resultaten tonen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5308,12 +5335,12 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     <message>
         <location line="+21"/>
         <source>Bookmark this Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Bladwijzer naar deze pagina</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>Tools Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Gereedschappen Menu</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5353,7 +5380,7 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     <message>
         <location line="-24"/>
         <source>Show On-disk Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon Documentatie op schijf</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -5614,12 +5641,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <location line="+5"/>
         <location line="+6"/>
         <source>Save in format ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bewaar in format ...</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Save variable to a file in different format</source>
-        <translation type="unfinished"></translation>
+        <translation>Bewaar variabele in ander format</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -6248,7 +6275,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+29"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Roteer tabs: Verticaal indien boven- of onderaan en Horizontal indien links of rechts. De sluitknop wordt niet getoond in geroteerde tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+74"/>
@@ -6388,12 +6415,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+10"/>
         <source>Force newline at end when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>Forceer regeleinde aan eind van bestand bij opslaan</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove trailing spaces when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder spaties aan einde van regels bij opslaan bestand</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -6408,12 +6435,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="-253"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Indien actief volgt focus van in het hoofdvenster gedockte widgets de muiscursor. Dit is bedoeld om binnen het hoofdvenster hetzelfde &amp;quot;focus follows mouse&amp;quot; gedrag te verkrijgen als in de desktopomgeving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Focus follows mouse for widgets docked to the main window</source>
-        <translation type="unfinished"></translation>
+        <translation>Focus volgt muiscursor voor in hoofdvenster gedockte widgets</translation>
     </message>
     <message>
         <location line="+278"/>
@@ -6423,22 +6450,22 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+430"/>
         <source>Rotated tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Geroteerde tabs</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Position</source>
-        <translation type="unfinished">Positie</translation>
+        <translation>Positie</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Max. tab width in chars (0: no limit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Max. tabbreedte in karakters (0: ongelimiteerd)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. width of a tab in characters (average char. width). Especially useful for rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. tabbreedt in karakters (gemiddelde kar. breedte). Vooral handig voor geroteerde tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+958"/>
@@ -6478,7 +6505,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+117"/>
         <source>Disable menu accelerators of main window menus when Commmand Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel menusneltoetsen van hoofdvenster uit als Command Windows het focus heeft</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -6524,12 +6551,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+10"/>
         <source>Proxy Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy Server</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kies &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; of &lt;span style=&quot; font-style:italic;&quot;&gt;Omgevingsvariaben&lt;/span&gt;. Ingeval van de laatste optie wordt de proxy overgenomen van de eerste niet-lege omgevingsvariabele ALL_PROXY, HTTP_PROXY of HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -6567,7 +6594,9 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
 interference with readline key strokes.
 Exceptions: Ctrl-C for interrupting the interpreter
 and the shortcuts for switching to other widgets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel globale sneltoetsen uit om interferentie met readline toetsen te voorkomen.
+Uitzonderingen: Ctrl-C om de interpreter te onderbreken
+en de sneltoetsen om naar andere widgets te gaan.</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -6603,7 +6632,7 @@ and the shortcuts for switching to other widgets.</source>
         <location line="-44"/>
         <source>Disable menu accelerators in order to prevent
 interference with readline key strokes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel globale sneltoetsen uit om interferentie met readline toetsen te voorkomen.</translation>
     </message>
     <message>
         <location line="+134"/>

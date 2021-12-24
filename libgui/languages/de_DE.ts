@@ -521,7 +521,7 @@ im Befehlsfenster angezeigt werden.</translation>
         <source>
 No documentation bookmarks loaded!</source>
         <translation>
-Keine Lesezeichen für Dokumentaton geladen!</translation>
+Keine Lesezeichen für Dokumentation geladen!</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -531,7 +531,7 @@ Keine Lesezeichen für Dokumentaton geladen!</translation>
     <message>
         <location line="+10"/>
         <source>Enter text to search the bookmarks</source>
-        <translation></translation>
+        <translation>Text für Suche in Lesezeichen eingeben</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -585,7 +585,7 @@ Keine Lesezeichen für Dokumentaton geladen!</translation>
 
 Documentation bookmarks are not saved!
 </source>
-        <translation>Kann Datei %1 nicht schreiben
+        <translation>Kann Datei &quot;%1&quot; nicht schreiben:
 %2.
 
 Lesezeichen der Dokumentation wurde nicht gespeichert!
@@ -595,7 +595,7 @@ Lesezeichen der Dokumentation wurde nicht gespeichert!
         <location line="+55"/>
         <source>Unable to read file %1:
 %2.</source>
-        <translation>Kann Datei %1 nicht lesen:
+        <translation>Kann Datei &quot;%1&quot; nicht lesen:
 %2.</translation>
     </message>
     <message>
@@ -609,7 +609,7 @@ Ungültige Lesezeichendatei?</translation>
         <location line="+9"/>
         <source>The file
 %1
-is not a valid XBEL file verison 1.0.</source>
+is not a valid XBEL file version 1.0.</source>
         <translation>Die Datei
 %1
 ist keine gültige XBEL-Datei Version 1.0.</translation>
@@ -1363,7 +1363,7 @@ Einen anderen Namen wählen?</translation>
 Do you want to overwrite it?</source>
         <translation>%1
 existiert bereits.
-Überschrieben?</translation>
+Überschreiben?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -1588,7 +1588,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="+1"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation>Kann Datei %1 nicht in %2 umbenennen.</translation>
+        <translation>Kann Datei &quot;%1&quot; nicht in &quot;%2&quot; umbenennen.</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1624,7 +1624,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation>Datei %1 kann nicht gelöscht werden.</translation>
+        <translation>Datei &quot;%1&quot; kann nicht gelöscht werden.</translation>
     </message>
     <message>
         <location line="+185"/>
@@ -1720,8 +1720,8 @@ Mehr über jede Möglichkeit finden Sie im Internet unter &lt;a href=&quot;https
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Weitere Informationen zu Octave:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Webseite &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
-&lt;li&gt;Online-Dokumentation als &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- oder &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-Dokument (öffnet im externen Browser)&lt;/li&gt;
+&lt;li&gt;Webseite &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (öffnet sich in externem Browser)&lt;/li&gt;
+&lt;li&gt;Online-Dokumentation als &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- oder &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-Dokument (öffnet sich in externem Browser)&lt;/li&gt;
 &lt;li&gt;Dokumentationsbrowser in der Octave GUI über das Hilfe-Menü&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
@@ -2985,7 +2985,7 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
 Useful for defining a dark/light mode.
 Discards non-applied current changes!</source>
         <translation>Wählt ein anderes Farbschema aus.
-Das kann für die Einrichtung ein es Hell/Dunkel-Modus.
+Kann z.B. für die Einrichtung eines Hell/Dunkel-Modus verwendet werden.
 Verwirft noch nicht angewendete Änderungen!</translation>
     </message>
     <message>
@@ -3218,7 +3218,7 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="+1"/>
         <source>Resume Profiler Session</source>
-        <translation>Profile-Session wieder aufnehmen</translation>
+        <translation>Profiler-Session wieder aufnehmen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3621,7 +3621,7 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="+21"/>
         <source>Bookmark this Page</source>
-        <translation>Lesezeichen der aktuellen Seite setzen</translation>
+        <translation>Lesezeichen zur aktuellen Seite setzen</translation>
     </message>
     <message>
         <location line="+91"/>
@@ -4279,7 +4279,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="-509"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wenn ausgewählt, folgt der Fokus der im Hauptfenster verankerten Unterfenster dem Mauszeiger. Dies ermöglicht eine gleiches Verhalten innerhalb des Hauptfensters, wenn &amp;quot;Fokus folgt Mauszeiger&amp;quot; in der Desktop-Umgebung eingestellt ist.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wenn ausgewählt, folgt der Fokus der im Hauptfenster verankerten Unterfenster dem Mauszeiger. Dies ermöglicht ein gleiches Verhalten innerhalb des Hauptfensters, wenn &amp;quot;Fokus folgt Mauszeiger&amp;quot; in der Desktop-Umgebung eingestellt ist.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4790,7 +4790,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
         <location line="+117"/>
         <source>Disable menu accelerators of main window menus when Commmand Window has focus</source>
         <translation>Deaktiviere Tastenkürzel zur Aktivierung
-von Menüs wenn das Befehlsfenster den Fokus hat</translation>
+von Menüs, wenn das Befehlsfenster den Fokus hat</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -4879,7 +4879,7 @@ von Menüs wenn das Befehlsfenster den Fokus hat</translation>
 interference with readline key strokes.
 Exceptions: Ctrl-C for interrupting the interpreter
 and the shortcuts for switching to other widgets.</source>
-        <translation>Deaktiviert globale Tastenkürzel um
+        <translation>Deaktiviert globale Tastenkürzel, um
 Überschneidungen mit den readline Tastenkürzeln
 zu vermeiden. Ausnahmen: Ctrl-C zur Unterbrechung
 einer Rechnung oder die Tastenkürzel zum Wechseln
@@ -4915,7 +4915,7 @@ der aktiven Unterfenster.</translation>
         <source>Disable menu accelerators in order to prevent
 interference with readline key strokes.</source>
         <translation>Deaktiviere Tastenkürzel zur Aktivierung
-von Menüs um Konflikte mit den readline
+von Menüs, um Konflikte mit den readline
 Tastenkürzeln zu vermeiden.</translation>
     </message>
     <message>

@@ -2357,7 +2357,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
   ac_octave_save_LIBS=$LIBS
   LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $LIBS"
   dnl Current API functions present in SUNDIALS version 4
-  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNSparseMatrix_Reallocate])
+  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNSparseMatrix_Reallocate SUNContext_Create])
   dnl FIXME: The purpose of the following tests is to detect the deprecated
   dnl API from SUNDIALS version 3, which should only be used if the current
   dnl API tests above failed. For now, always test for ida_direct.h.
@@ -2378,6 +2378,14 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
     octave_have_sundials_compatible_api=no
   fi
   AC_MSG_RESULT([$octave_have_sundials_compatible_api])
+  dnl Octave doesn't yet support the SUNContext API introduced in SUNDIALS 6.0.
+  dnl For now, check for that API and de-activate features if it is found.
+  dnl FIXME: Properly support that API.
+  AC_MSG_CHECKING([whether SUNDIALS API uses SUNContext object])
+  AC_MSG_RESULT([$ac_cv_func_SUNContext_Create])
+  if test "x$ac_cv_func_SUNContext_Create" = xyes; then
+    octave_have_sundials_compatible_api=no
+  fi
   if test $octave_have_sundials_compatible_api = no; then
     warn_sundials_disabled="SUNDIALS libraries do not provide an API that is compatible with Octave.  The solvers ode15i and ode15s will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])

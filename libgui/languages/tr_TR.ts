@@ -167,7 +167,7 @@
     <message>
         <location filename="../../../qsci/qscilexerbash.cpp" line="+203"/>
         <source>Default</source>
-        <translation>Ön tanımlı</translation>
+        <translation>Varsayılan</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1118,27 +1118,27 @@
     <message>
         <location filename="../src/command-widget.cc" line="+57"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Duraklat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop</source>
-        <translation type="unfinished">Dur</translation>
+        <translation>Durdur</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Devam</translation>
+        <translation>Devam</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Command Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Komut Girdisi</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Command Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Komut Çıktısı</translation>
     </message>
 </context>
 <context>
@@ -1146,7 +1146,7 @@
     <message>
         <location filename="../src/community-news.cc" line="+70"/>
         <source>Octave Community News</source>
-        <translation type="unfinished">Octave Topluluk Haberleri</translation>
+        <translation>Octave Topluluk Haberleri</translation>
     </message>
 </context>
 <context>
@@ -1201,7 +1201,7 @@ Komut Penceresi açılacaktır.</translation>
     <message>
         <location line="+22"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Yer İmleri</translation>
     </message>
     <message>
         <location line="+86"/>
@@ -1267,7 +1267,7 @@ Komut Penceresi açılacaktır.</translation>
     <message>
         <location line="+55"/>
         <source>Bookmark current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli sayfayı işaretle</translation>
     </message>
     <message>
         <location line="+430"/>
@@ -1281,62 +1281,63 @@ Komut Penceresi açılacaktır.</translation>
         <location filename="../src/documentation-bookmarks.cc" line="+102"/>
         <source>
 No documentation bookmarks loaded!</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Hiçbir belge yer imi yüklenmedi!</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave: Loading Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave: Dokümantasyon Yer İmlerini Yükleme</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Yer imlerini aramak için metni girin</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtre</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>New Folder</source>
-        <translation type="unfinished">Yeni Klasör</translation>
+        <translation>Yeni Klasör</translation>
     </message>
     <message>
         <location line="+105"/>
         <source>&amp;Open</source>
-        <translation type="unfinished">&amp;Aç</translation>
+        <translation>&amp;Aç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished">&amp;Yeniden Adlandır</translation>
+        <translation>&amp;Yeniden Adlandır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished"></translation>
+        <translation>Kald&amp;ır</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Klasör Ekle</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Hide &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtreyi &amp;Gizle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtreyi &amp;Göster</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Octave: Saving Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave: Dokümantasyon Yer İmlerini Kaydetme</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1345,31 +1346,39 @@ No documentation bookmarks loaded!</source>
 
 Documentation bookmarks are not saved!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1 dosyası yazılamıyor:
+%2.
+
+Dokümantasyon yer imleri kaydedilmez!
+</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Unable to read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 dosyası okunamıyor:
+%2.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No start element found in %1.
 Invalid bookmark file?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 içinde başlangıç öğesi bulunamadı.
+Geçersiz yer imi dosyası?</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>The file
 %1
 is not a valid XBEL file verison 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya
+%1
+geçerli bir XBEL dosyası sürümü 1.0 değil.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Unknown title</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilinmeyen başlık</translation>
     </message>
 </context>
 <context>
@@ -1881,7 +1890,7 @@ yazmak için: %2.</translation>
     <message>
         <location line="+49"/>
         <source>Copy Full File &amp;Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Tam Dosya Yolunu &amp;Kopyala</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2111,7 +2120,9 @@ Başka bir isim seçmek ister misin?</translation>
         <source>%1
  already exists
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+  zaten var
+Üzerine yazmak istiyor musunuz?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -2331,12 +2342,12 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
     <message>
         <location line="+12"/>
         <source>Rename error</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeniden adlandırma hatası</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; dosyası &quot;%2&quot; olarak yeniden adlandırılamadı.</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -2349,7 +2360,8 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen %1 dosyanın tümünü silmek istediğinizden emin misiniz?
+</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2366,12 +2378,12 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished"></translation>
+        <translation>Silme hatası</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; dosyası silinemedi.</translation>
     </message>
     <message>
         <location line="+185"/>
@@ -2389,7 +2401,7 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">İçinde dosya oluştur
+        <translation>İçinde dosya oluştur
 </translation>
     </message>
     <message>
@@ -2398,7 +2410,7 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">İçinde klasör oluştur
+        <translation>İçinde klasör oluştur
 </translation>
     </message>
     <message>
@@ -2463,7 +2475,15 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Octave hakkında daha fazla bilgi için:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ziyaret edin &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (harici tarayıcıda açılır)&lt;/li&gt;
+&lt;li&gt;Belgeleri çevrimiçi olarak şu şekilde alın &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Yardım menüsüyle Octave Arayüzünün belge tarayıcısını açın&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2891,7 +2911,7 @@ Bir yapılandırma dosyası oluşturmak ve Octave&apos;ı başlatmak için &apos
     <message>
         <location line="-344"/>
         <source>Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil oluşturucu</translation>
     </message>
     <message>
         <location line="+345"/>
@@ -3081,27 +3101,27 @@ işlevi ve düzenlenemez.</translation>
     <message>
         <location line="+6"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Araçlar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start &amp;Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil &amp;Oluşturucu Oturumunu Başlatın</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Profil Oturumunu Sürdür</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Stop Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Profil Oluşturucuyu Durdur</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Profil Verilerini Göster</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3451,17 +3471,17 @@ mevcut değil. Onu oluşturmak ister misin?</translation>
     <message>
         <location filename="../src/release-notes.cc" line="+80"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">Sürüm notları dosyası &apos;%1&apos; boş.</translation>
+        <translation>&apos;%1&apos; sürüm notları dosyası boş.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">&apos;%1&apos; sürüm notları dosyası okunamıyor.</translation>
+        <translation>&apos;%1&apos; sürüm notları dosyası okunamıyor.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished">Octave Sürüm Notları</translation>
+        <translation>Octave Sürüm Notları</translation>
     </message>
 </context>
 <context>
@@ -3514,7 +3534,7 @@ Octave ARAYÜZÜ şimdi kapatılmalıdır.</translation>
     <message>
         <location line="+2"/>
         <source>Folder With Subfolders</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt Klasörlü Klasör</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3704,46 +3724,50 @@ Octave ARAYÜZÜ şimdi kapatılmalıdır.</translation>
     <message>
         <location line="+1"/>
         <source>persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>ısrarcı</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-global.h" line="+149"/>
         <source>Environment Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Ortam Değişkenleri</translation>
     </message>
     <message>
         <location filename="../src/gui-settings.h" line="+132"/>
         <source>Second color mode (light/dark)</source>
-        <translation type="unfinished"></translation>
+        <translation>İkinci renk modu (açık/koyu)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Switches to another set of colors.
 Useful for defining a dark/light mode.
 Discards non-applied current changes!</source>
-        <translation type="unfinished"></translation>
+        <translation>Başka bir renk grubuna geçer.
+Karanlık/aydınlık modunu tanımlamak için kullanışlıdır.
+Uygulanmayan mevcut değişiklikleri atar!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Reload default colors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Varsayılan renkleri yeniden yükle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default colors,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan renkleri yeniden yükler,
+o anda seçili moda bağlı olarak.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Reload default styles</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Varsayılan stilleri yeniden yükle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default values of the styles,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stillerin varsayılan değerlerini yeniden yükler,
+o anda seçili moda bağlı olarak.</translation>
     </message>
 </context>
 <context>
@@ -3789,7 +3813,10 @@ Kontrol her gün en fazla bir kez yapılacak ve haberler yalnızca haberleri son
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Octave topluluğu hakkında güncel haberleri ve bilgileri görüntülemeye başladığında, Octave&apos;nin Octave web sitesine bağlanmasına izin verin.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3943,17 +3970,17 @@ Kısayolu bir önceki eylemden kaldırarak kullanmak istiyor musunuz?</translati
     <message>
         <location line="+3"/>
         <source>Start/Stop Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil Oluşturucu Oturumunu Başlat/Durdur</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil Oluşturucu Oturumunu Sürdür</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil Verilerini Göster</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4352,12 +4379,12 @@ Kısayolu bir önceki eylemden kaldırarak kullanmak istiyor musunuz?</translati
     <message>
         <location line="+21"/>
         <source>Bookmark this Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu sayfayı işaretle</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>Tools Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Araçlar Menüsü</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4398,7 +4425,7 @@ Kısayolu bir önceki eylemden kaldırarak kullanmak istiyor musunuz?</translati
     <message>
         <location line="-24"/>
         <source>Show On-disk Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Disk Üzerindeki Belgeleri Göster</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -4660,12 +4687,12 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
         <location line="+5"/>
         <location line="+6"/>
         <source>Save in format ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatta kaydet ...</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Save variable to a file in different format</source>
-        <translation type="unfinished"></translation>
+        <translation>Değişkeni farklı biçimde bir dosyaya kaydedin</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -5009,12 +5036,12 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
     <message>
         <location line="-509"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ayarlanırsa, ana pencereye sabitlenmiş widget&apos;ların odağı fare imlecini takip eder. Bu, &amp;quot;odak fareyi izler&amp;quot; masaüstü ortamı için kullanılır.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Focus follows mouse for widgets docked to the main window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ana pencereye yerleştirilmiş araçlar için odak fareyi takip eder</translation>
     </message>
     <message>
         <location line="+487"/>
@@ -5024,22 +5051,22 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
     <message>
         <location line="+221"/>
         <source>Rotated tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Döndürülmüş sekmeler</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Position</source>
-        <translation type="unfinished">Pozisyon</translation>
+        <translation>Pozisyon</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Max. tab width in chars (0: no limit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Azami. karakter cinsinden sekme genişliği (0: sınır yok)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. width of a tab in characters (average char. width). Especially useful for rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Azami. karakter cinsinden bir sekmenin genişliği (ortalama karakter genişliği). Döndürülmüş sekmeler için özellikle kullanışlıdır.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+260"/>
@@ -5374,7 +5401,7 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
     <message>
         <location line="+29"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sekmeleri döndür: Üstte veya alttayken dikey, solda veya sağdayken yatay. Kapat düğmesi döndürülen sekmelerde gösterilmez.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+74"/>
@@ -5474,12 +5501,12 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
     <message>
         <location line="+10"/>
         <source>Force newline at end when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı kaydederken sonunda yeni satırı zorla</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove trailing spaces when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı kaydederken sondaki boşlukları kaldırın</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -5519,7 +5546,7 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
     <message>
         <location line="+117"/>
         <source>Disable menu accelerators of main window menus when Commmand Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Komut Penceresi odaklandığında ana pencere menülerinin menü hızlandırıcılarını devre dışı bırakın</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -5565,12 +5592,12 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
     <message>
         <location line="+10"/>
         <source>Proxy Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy sunucu</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Seçim &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Ortam Değişkenleri&lt;/span&gt;. Son seçim ile proxy, boş olmayan ilk ortam değişkeni ALL_PROXY, HTTP_PROXY veya HTTPS_PROXY&apos;den alınır .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -5608,7 +5635,10 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
 interference with readline key strokes.
 Exceptions: Ctrl-C for interrupting the interpreter
 and the shortcuts for switching to other widgets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Önlemek için genel kısayolları devre dışı bırakın.
+okuma satırı tuş vuruşlarına müdahale.
+İstisnalar: Tercümanı kesmek için Ctrl-C
+ve diğer araçlara geçiş için kısayollar.</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -5639,7 +5669,8 @@ and the shortcuts for switching to other widgets.</source>
         <location line="+54"/>
         <source>Disable menu accelerators in order to prevent
 interference with readline key strokes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Önlemek için menü hızlandırıcılarını devre dışı bırakın.
+okuma satırı tuş vuruşlarına müdahale.</translation>
     </message>
     <message>
         <location line="+54"/>

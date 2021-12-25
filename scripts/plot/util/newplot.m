@@ -199,8 +199,10 @@ function hax = newplot (hsave = [])
             && ! any (strcmp({dbstack().name}, "plotyy")))
           ## Hack for bug #44246.  There is no way to reset or remove a
           ## property created with addproperty short of deleting the object.
+          old_units = get (ca, "units");
+          old_position = get (ca, "position");
           delete (ca);
-          ca = axes ();
+          ca = axes ("units", old_units, "position", old_position);
         elseif (do_reset)
           rcn = getappdata (ca, "__subplotrcn__");
           delete (allchild (ca));
@@ -263,6 +265,18 @@ endfunction
 %!   ## kids are deleted for axes
 %!   newplot (hax);
 %!   assert (isempty (get (hax, "children")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("units", "normalized", "position", [0.1, 0.1, 0.8, 0.3]);
+%!   plotyy (hax, 1:4, 1:4, 1:4, 4:-1:1);
+%!   hax2 = newplot ();
+%!   assert (get (hax2, "units"), "normalized");
+%!   assert (get (hax2, "position"), [0.1, 0.1, 0.8, 0.3]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

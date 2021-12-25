@@ -45,6 +45,7 @@
 #include <QPrintDialog>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QSaveFile>
 #include <QStyle>
 #include <QTextBlock>
 #include <QTextCodec>
@@ -2183,7 +2184,7 @@ namespace octave
                                       bool remove_on_success,
                                       bool restore_breakpoints)
   {
-    QFile file (file_to_save);
+    QSaveFile file (file_to_save);
 
     // stop watching file
     QStringList trackedFiles = m_file_system_watcher.files ();
@@ -2239,36 +2240,50 @@ namespace octave
 
     out.flush ();
     QApplication::restoreOverrideCursor ();
-    file.flush ();
-    file.close ();
 
-    // file exists now
-    QFileInfo file_info = QFileInfo (file);
-    QString full_file_to_save = file_info.canonicalFilePath ();
+    // Finish writing by committing the changes to disk,
+    // where nothing is done when an error occurred while writing above
+    bool writing_ok = file.commit ();
 
-    // save filename after closing file as set_file_name starts watching again
-    set_file_name (full_file_to_save);   // make absolute
-
-    // set the window title to actual filename (not modified)
-    update_window_title (false);
-
-    // file is save -> not modified, update encoding in statusbar
-    m_edit_area->setModified (false);
-    m_enc_indicator->setText (m_encoding);
-
-    emit tab_ready_to_close ();
-
-    if (remove_on_success)
+    if (writing_ok)
       {
-        emit tab_remove_request ();
-        return;  // Don't touch member variables after removal
-      }
+        // Writing was successful: file exists now
+        QFileInfo file_info = QFileInfo (file.fileName ());
+        QString full_file_to_save = file_info.canonicalFilePath ();
 
-    // Attempt to restore the breakpoints if that is desired.
-    // This is only allowed if the tab is not closing since changing
-    // breakpoints would reopen the tab in this case.
-    if (restore_breakpoints)
-      check_restore_breakpoints ();
+        // save filename after closing file as set_file_name starts watching again
+        set_file_name (full_file_to_save);   // make absolute
+
+        // set the window title to actual filename (not modified)
+        update_window_title (false);
+
+        // file is save -> not modified, update encoding in statusbar
+        m_edit_area->setModified (false);
+        m_enc_indicator->setText (m_encoding);
+
+        emit tab_ready_to_close ();
+
+        if (remove_on_success)
+          {
+            emit tab_remove_request ();
+            return;  // Don't touch member variables after removal
+          }
+
+        // Attempt to restore the breakpoints if that is desired.
+        // This is only allowed if the tab is not closing since changing
+        // breakpoints would reopen the tab in this case.
+        if (restore_breakpoints)
+          check_restore_breakpoints ();
+      }
+    else
+      {
+        QMessageBox::critical (nullptr,
+                               tr ("Octave Editor"),
+                               tr ("The changes could not be saved to the file\n"
+                                   "%1")
+                                   .arg (file.fileName ())
+                              );
+      }
   }
 
   void file_editor_tab::save_file_as (bool remove_on_success)

@@ -2378,13 +2378,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
     octave_have_sundials_compatible_api=no
   fi
   AC_MSG_RESULT([$octave_have_sundials_compatible_api])
-  dnl Octave doesn't yet support the SUNContext API introduced in SUNDIALS 6.0.
-  dnl For now, check for that API and de-activate features if it is found.
-  dnl FIXME: Properly support that API.
-  AC_MSG_CHECKING([whether SUNDIALS API uses SUNContext object])
-  AC_MSG_RESULT([$ac_cv_func_SUNContext_Create])
   if test "x$ac_cv_func_SUNContext_Create" = xyes; then
-    octave_have_sundials_compatible_api=no
+    AC_DEFINE(HAVE_SUNDIALS_SUNCONTEXT, 1,
+      [Define to 1 if SUNDIALS' API is using a SUNContext object.])
   fi
   if test $octave_have_sundials_compatible_api = no; then
     warn_sundials_disabled="SUNDIALS libraries do not provide an API that is compatible with Octave.  The solvers ode15i and ode15s will be disabled."
@@ -2452,11 +2448,12 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
      #  include <ufsparse/klu.h>
      #endif
     ])
+  ## Check for current KLU function name first.
   OCTAVE_CHECK_LIB(sundials_sunlinsolklu, SUNLINSOL_KLU, [],
-    [], [SUNKLU], [],
+    [], [SUNLinSol_KLU], [],
     [don't use SUNDIALS SUNLINSOL_KLU library, disable ode15i and ode15s sparse Jacobian],
-    [AC_CHECK_FUNCS([SUNLinSol_KLU SUNKLU])
-     AC_CACHE_CHECK([whether compiling a program that calls SUNKLU works],
+    [AC_CHECK_FUNCS([SUNLinSol_KLU])
+     AC_CACHE_CHECK([whether compiling a program that calls SUNLinSol_KLU works],
       [octave_cv_sundials_sunlinsol_klu],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if defined (HAVE_IDA_IDA_H)
@@ -2478,11 +2475,53 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
          #include <sunlinsol/sunlinsol_klu.h>
          #endif
          ]], [[
-         SUNKLU (0, 0);
+         #if defined (HAVE_SUNCONTEXT_CREATE)
+           SUNContext *sunContext;
+           if (SUNContext_Create (NULL, sunContext) < 0)
+             1/0;  // provoke an error
+           SUNLinSol_KLU (0, 0, *sunContext);
+           SUNContext_Free (sunContext);
+         #else
+           SUNLinSol_KLU (0, 0);
+         #endif
       ]])],
       octave_cv_sundials_sunlinsol_klu=yes,
       octave_cv_sundials_sunlinsol_klu=no)
     ])])
+  if test "x$octave_cv_sundials_sunlinsol_klu" = xno; then
+    ## Check for deprecated KLU function name second.
+    OCTAVE_CHECK_LIB(sundials_sunlinsolklu, SUNLINSOL_KLU, [],
+      [], [SUNKLU], [],
+      [don't use SUNDIALS SUNLINSOL_KLU library, disable ode15i and ode15s sparse Jacobian],
+      [AC_CHECK_FUNCS([SUNKLU])
+       AC_CACHE_CHECK([whether compiling a program that calls SUNLinSol_KLU works],
+        [octave_cv_sundials_sunlinsol_klu],
+        [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+           #if defined (HAVE_IDA_IDA_H)
+           #include <ida/ida.h>
+           #endif
+           #if defined (HAVE_KLU_H)
+           #include <klu.h>
+           #endif
+           #if defined (HAVE_KLU_KLU_H)
+           #include <klu/klu.h>
+           #endif
+           #if defined (HAVE_SUITESPARSE_KLU_H)
+           #include <suitesparse/klu.h>
+           #endif
+           #if defined (HAVE_UFPARSE_KLU_H)
+           #include <ufsparse/klu.h>
+           #endif
+           #if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
+           #include <sunlinsol/sunlinsol_klu.h>
+           #endif
+           ]], [[
+           SUNKLU (0, 0);
+        ]])],
+        octave_cv_sundials_sunlinsol_klu=yes,
+        octave_cv_sundials_sunlinsol_klu=no)
+      ])])
+  fi
   if test "x$ac_cv_header_sunlinsol_sunlinsol_klu_h" = xyes \
      && test "x$octave_cv_sundials_sunlinsol_klu" = xyes; then
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,

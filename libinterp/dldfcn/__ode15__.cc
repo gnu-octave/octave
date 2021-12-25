@@ -194,6 +194,9 @@ OCTAVE_NAMESPACE_BEGIN
       IDAFree (&m_mem);
       SUNLinSolFree (m_sunLinearSolver);
       SUNMatDestroy (m_sunJacMatrix);
+#  if defined (HAVE_SUNDIALS_SUNCONTEXT)
+      SUNContext_Free (&m_sunContext);
+#  endif
     }
 
     IDA&
@@ -253,7 +256,11 @@ OCTAVE_NAMESPACE_BEGIN
 
     static ColumnVector NVecToCol (N_Vector& v, octave_f77_int_type n);
 
+#  if defined (HAVE_SUNDIALS_SUNCONTEXT)
+    N_Vector ColToNVec (const ColumnVector& data, octave_f77_int_type n);
+#  else
     static N_Vector ColToNVec (const ColumnVector& data, octave_f77_int_type n);
+#  endif
 
     void
     set_up (const ColumnVector& y);
@@ -366,6 +373,9 @@ OCTAVE_NAMESPACE_BEGIN
     DAEJacFuncSparse m_jacspfun;
     DAEJacCellDense m_jacdcell;
     DAEJacCellSparse m_jacspcell;
+#  if defined (HAVE_SUNDIALS_SUNCONTEXT)
+    SUNContext m_sunContext;
+#  endif
     SUNMatrix m_sunJacMatrix;
     SUNLinearSolver m_sunLinearSolver;
   };
@@ -395,6 +405,12 @@ OCTAVE_NAMESPACE_BEGIN
       puntrr[i] = res(i);
   }
 
+#  if defined (HAVE_SUNDIALS_SUNCONTEXT)
+#    define OCTAVE_SUNCONTEXT , m_sunContext
+#  else
+#    define OCTAVE_SUNCONTEXT
+#  endif
+
   void
   IDA::set_up (const ColumnVector& y)
   {
@@ -407,18 +423,21 @@ OCTAVE_NAMESPACE_BEGIN
         // Initially allocate memory for 0 entries. We will reallocate when we
         // get the Jacobian matrix from the user and know the actual number of
         // entries.
-        m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, 0, CSC_MAT);
+        m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, 0, CSC_MAT
+                                          OCTAVE_SUNCONTEXT);
 #    else
         octave_f77_int_type max_elems;
         if (math::int_multiply_overflow (m_num, m_num, &max_elems))
           error ("Unable to allocate memory for sparse Jacobian");
 
-        m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, max_elems, CSC_MAT);
+        m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, max_elems, CSC_MAT
+                                          OCTAVE_SUNCONTEXT);
 #    endif
         if (! m_sunJacMatrix)
           error ("Unable to create sparse Jacobian for Sundials");
 
-        m_sunLinearSolver = SUNLinSol_KLU (yy, m_sunJacMatrix);
+        m_sunLinearSolver = SUNLinSol_KLU (yy, m_sunJacMatrix
+                                           OCTAVE_SUNCONTEXT);
         if (! m_sunLinearSolver)
           error ("Unable to create KLU sparse solver");
 
@@ -437,11 +456,12 @@ OCTAVE_NAMESPACE_BEGIN
     else
       {
 
-        m_sunJacMatrix = SUNDenseMatrix (m_num, m_num);
+        m_sunJacMatrix = SUNDenseMatrix (m_num, m_num OCTAVE_SUNCONTEXT);
         if (! m_sunJacMatrix)
           error ("Unable to create dense Jacobian for Sundials");
 
-        m_sunLinearSolver = SUNLinSol_Dense (yy, m_sunJacMatrix);
+        m_sunLinearSolver = SUNLinSol_Dense (yy, m_sunJacMatrix
+                                             OCTAVE_SUNCONTEXT);
         if (! m_sunLinearSolver)
           error ("Unable to create dense linear solver");
 
@@ -540,7 +560,7 @@ OCTAVE_NAMESPACE_BEGIN
   N_Vector
   IDA::ColToNVec (const ColumnVector& data, octave_f77_int_type n)
   {
-    N_Vector v = N_VNew_Serial (n);
+    N_Vector v = N_VNew_Serial (n OCTAVE_SUNCONTEXT);
 
     realtype *punt = nv_data_s (v);
 
@@ -563,7 +583,13 @@ OCTAVE_NAMESPACE_BEGIN
   IDA::initialize (void)
   {
     m_num = to_f77_int (m_y0.numel ());
+#  if defined (HAVE_SUNDIALS_SUNCONTEXT)
+    if (SUNContext_Create (nullptr, &m_sunContext) < 0)
+      error ("__ode15__: unable to create context for SUNDIALS");
+    m_mem = IDACreate (m_sunContext);
+#  else
     m_mem = IDACreate ();
+#  endif
 
     N_Vector yy = ColToNVec (m_y0, m_num);
 
@@ -726,7 +752,7 @@ OCTAVE_NAMESPACE_BEGIN
         if (status == 0)
           {
             // Interpolate in tend
-            N_Vector dky = N_VNew_Serial (m_num);
+            N_Vector dky = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
 
             if (IDAGetDky (m_mem, tend, 0, dky) != 0)
               error ("IDA failed to interpolate y");
@@ -891,9 +917,9 @@ OCTAVE_NAMESPACE_BEGIN
     realtype h = 0, tcur = 0;
     bool status = 0;
 
-    N_Vector dky = N_VNew_Serial (m_num);
+    N_Vector dky = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
 
-    N_Vector dkyp = N_VNew_Serial (m_num);
+    N_Vector dkyp = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
 
     ColumnVector yout (m_num);
     ColumnVector ypout (m_num);

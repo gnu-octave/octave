@@ -3,6 +3,11 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 
 ### General improvements
 
+- Octave's libraries are now built using symbol visibility by default.
+That means that less symbols are exported from these libraries.
+Configure with `--disable-lib-visibility-flags` to export all symbols
+(as in previous versions).
+
 
 ### Graphical User Interface
 

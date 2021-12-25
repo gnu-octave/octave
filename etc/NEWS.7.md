@@ -119,11 +119,6 @@ API is now 6.1 (Windows 7 or newer).
 deprecated upstream.  Octave now (optionally) requires the re-entrant
 version of that library "libqhull_r" instead.
 
-- Octave's libraries are now built using symbol visibility by default.
-That means that less symbols are exported from these libraries.
-Configure with `--disable-lib-visibility-flags` to export all symbols
-(as in previous versions).
-
 - Octave's build system no longer appends "++" to the end of the
 "magick++" library name (set with the `--with-magick=` configure flag).
 The real name of the "magick++" library (including any potentially

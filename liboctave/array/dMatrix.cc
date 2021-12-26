@@ -640,8 +640,20 @@ Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
   if (typ == MatrixType::Unknown)
     typ = mattype.type (*this);
 
-  if (typ == MatrixType::Diagonal)  // a scalar is also classified as Diagonal.
-    ret = 1 / (*this);
+  if (typ == MatrixType::Diagonal)  // a scalar is classified as Diagonal.
+    {
+      ret = 1 / (*this);
+      if (calc_cond)
+        {
+          double scalar = this->elem (0);
+          if (octave::math::isfinite (scalar) && scalar != 0)
+            rcon = 1.0;
+          else if (octave::math::isinf (scalar) || scalar == 0)
+            rcon = 0.0;
+          else
+            rcon = octave::numeric_limits<double>::NaN ();
+        }
+    }
   else if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcon, force, calc_cond);
   else

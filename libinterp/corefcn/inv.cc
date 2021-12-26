@@ -127,8 +127,8 @@ sparse matrix if possible.
     }
   else if (arg.is_perm_matrix ())
     {
-      rcond = 1.0;
       info = 0;
+      rcond = 1.0;
       result = arg.perm_matrix_value ().inverse ();
     }
   else if (isfloat)
@@ -138,7 +138,7 @@ sparse matrix if possible.
           FloatMatrix m = arg.float_matrix_value ();
 
           MatrixType mattyp = args(0).matrix_type ();
-          result = m.inverse (mattyp, info, frcond, 1);
+          result = m.inverse (mattyp, info, frcond, true, true);
           args(0).matrix_type (mattyp);
         }
       else if (arg.iscomplex ())
@@ -146,7 +146,7 @@ sparse matrix if possible.
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
           MatrixType mattyp = args(0).matrix_type ();
-          result = m.inverse (mattyp, info, frcond, 1);
+          result = m.inverse (mattyp, info, frcond, true, true);
           args(0).matrix_type (mattyp);
         }
     }
@@ -159,7 +159,7 @@ sparse matrix if possible.
               SparseMatrix m = arg.sparse_matrix_value ();
 
               MatrixType mattyp = args(0).matrix_type ();
-              result = m.inverse (mattyp, info, rcond, 1);
+              result = m.inverse (mattyp, info, rcond, true, true);
               args(0).matrix_type (mattyp);
             }
           else
@@ -167,7 +167,7 @@ sparse matrix if possible.
               Matrix m = arg.matrix_value ();
 
               MatrixType mattyp = args(0).matrix_type ();
-              result = m.inverse (mattyp, info, rcond, 1);
+              result = m.inverse (mattyp, info, rcond, true, true);
               args(0).matrix_type (mattyp);
             }
         }
@@ -178,7 +178,7 @@ sparse matrix if possible.
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
               MatrixType mattyp = args(0).matrix_type ();
-              result = m.inverse (mattyp, info, rcond, 1);
+              result = m.inverse (mattyp, info, rcond, true, true);
               args(0).matrix_type (mattyp);
             }
           else
@@ -186,7 +186,7 @@ sparse matrix if possible.
               ComplexMatrix m = arg.complex_matrix_value ();
 
               MatrixType mattyp = args(0).matrix_type ();
-              result = m.inverse (mattyp, info, rcond, 1);
+              result = m.inverse (mattyp, info, rcond, true, true);
               args(0).matrix_type (mattyp);
             }
         }
@@ -200,58 +200,164 @@ sparse matrix if possible.
   if (nargout > 1)
     retval(1) = (isfloat ? octave_value (frcond) : octave_value (rcond));
 
-  bool rcond_plus_one_eq_one = false;
-
-  if (isfloat)
+  if (nargout < 2)
     {
-      volatile float xrcond = frcond;
-      rcond_plus_one_eq_one = xrcond + 1.0f == 1.0f;
-    }
-  else
-    {
-      volatile double xrcond = rcond;
-      rcond_plus_one_eq_one = xrcond + 1.0 == 1.0;
-    }
+      bool is_singular;
 
-  if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
-    warn_singular_matrix (isfloat ? frcond : rcond);
+      if (isfloat)
+        is_singular = ((frcond + 1.0f == 1.0f) || octave::math::isnan (frcond))
+                      && ! arg.is_scalar_type ();
+      else
+        is_singular = ((rcond + 1.0 == 1.0) || octave::math::isnan (rcond))
+                      && ! arg.is_scalar_type ();
+
+      if (info == -1 || is_singular)
+        warn_singular_matrix (isfloat ? frcond : rcond);
+    }
 
   return retval;
 }
 
 /*
-%!assert (inv ([1, 2; 3, 4]), [-2, 1; 1.5, -0.5], sqrt (eps))
-%!assert (inv (single ([1, 2; 3, 4])), single ([-2, 1; 1.5, -0.5]),
-%!        sqrt (eps ("single")))
-
-## Test special inputs
-%!assert (inv (zeros (2,0)), [])
-%!warning <matrix singular> assert (inv (0), Inf)
-## NOTE: Matlab returns +Inf for -0 input, but it returns -Inf for 1/-0.
-## These should be the same and in Octave they are.
-%!warning <matrix singular> assert (inv (-0), -Inf)
-%!warning <matrix singular> assert (inv (single (0)), single (Inf))
-%!warning <matrix singular> assert (inv (complex (0, 0)), Inf)
-%!warning <matrix singular> assert (inv (single (complex (0,1)) - i),
-%!                                  single (Inf))
-%!warning <matrix singular> assert (inv (zeros (2,2)), Inf (2,2))
-%!warning <matrix singular> assert (inv (Inf), 0)
-%!warning <matrix singular> assert (inv (-Inf), -0)
-%!warning <matrix singular> assert (inv (single (Inf)), single (0))
-%!warning <matrix singular> assert (inv (complex (1, Inf)), 0)
-%!warning <matrix singular> assert (inv (single (complex (1,Inf))), single (0))
-%!assert (inv (Inf (2,2)), NaN (2,2))
-
-%!test
-%! [xinv, rcond] = inv (single ([1,2;3,4]));
-%! assert (isa (xinv, "single"));
-%! assert (isa (rcond, "single"));
-
+## Basic test for double/single matrices
+%!assert (inv ([1, 2; 3, 4]), [-2, 1; 1.5, -0.5], 5*eps)
 %!test
 %! [xinv, rcond] = inv ([1,2;3,4]);
-%! assert (isa (xinv, "double"));
+%! assert (xinv, [-2, 1; 1.5, -0.5], 5*eps);
 %! assert (isa (rcond, "double"));
 
+%!assert (inv (single ([1, 2; 3, 4])), single ([-2, 1; 1.5, -0.5]),
+%!        5*eps ("single"))
+%!test
+%! [xinv, rcond] = inv (single ([1,2;3,4]));
+%! assert (xinv, single ([-2, 1; 1.5, -0.5]), 5*eps ("single"));
+%! assert (isa (rcond, "single"));
+
+## Normal scalar cases
+%!assert (inv (2), 0.5)
+%!test
+%! [xinv, rcond] = inv (2);
+%! assert (xinv, 0.5);
+%! assert (rcond, 1);
+%!assert (inv (single (2)), single (0.5))
+%!test
+%! [xinv, rcond] = inv (single (2));
+%! assert (xinv, single (0.5));
+%! assert (rcond, single (1));
+%!assert (inv (complex (1, -1)), 0.5+0.5i)
+%!test
+%! [xinv, rcond] = inv (complex (1, -1));
+%! assert (xinv, 0.5+0.5i);
+%! assert (rcond, 1);
+%!assert (inv (complex (single (1), -1)), single (0.5+0.5i))
+%!test
+%! [xinv, rcond] = inv (complex (single (1), -1));
+%! assert (xinv, single (0.5+0.5i));
+%! assert (rcond, single (1));
+
+## Test special inputs
+## Empty matrix
+%!assert (inv (zeros (2,0)), [])
+
+## Scalar "0"
+%!assert (inv (0), Inf)
+%!test
+%! [xinv, rcond] = inv (0);
+%! assert (xinv, Inf);
+%! assert (rcond, 0);
+%!assert (inv (single (0)), single (Inf))
+%!test
+%! [xinv, rcond] = inv (single (0));
+%! assert (xinv, single (Inf));
+%! assert (rcond, single (0));
+%!assert (inv (complex (0, 0)), Inf)
+%!test
+%! [xinv, rcond] = inv (complex (0, 0));
+%! assert (xinv, Inf);
+%! assert (rcond, 0);
+%!assert (inv (complex (single (0), 0)), single (Inf))
+%!test
+%! [xinv, rcond] = inv (complex (single (0), 0));
+%! assert (xinv, single (Inf));
+%! assert (rcond, single (0));
+## NOTE: Matlab returns +Inf for -0 input, but it returns -Inf for 1/-0.
+## These should be the same, and in Octave they are.
+%!assert (inv (-0), -Inf)
+%!test
+%! [xinv, rcond] = inv (-0);
+%! assert (xinv, -Inf);
+%! assert (rcond, 0);
+
+## Scalar "Inf"
+%!assert (inv (Inf), 0)
+%!test
+%! [xinv, rcond] = inv (Inf);
+%! assert (xinv, 0);
+%! assert (rcond, 0);
+%!assert (inv (single (Inf)), single (0))
+%!test
+%! [xinv, rcond] = inv (single (Inf));
+%! assert (xinv, single (0));
+%! assert (rcond, single (0));
+%!assert (inv (complex (1, Inf)), 0)
+%!test
+%! [xinv, rcond] = inv (complex (1, Inf));
+%! assert (xinv, 0);
+%! assert (rcond, 0);
+%!assert (inv (complex (single (1), Inf)), single (0))
+%!test
+%! [xinv, rcond] = inv (complex (single (1), Inf));
+%! assert (xinv, single (0));
+%! assert (rcond, single (0));
+
+## Scalar "NaN"
+%!assert (inv (NaN), NaN)
+%!test
+%! [xinv, rcond] = inv (NaN);
+%! assert (xinv, NaN);
+%! assert (rcond, NaN);
+%!assert (inv (single (NaN)), single (NaN))
+%!test
+%! [xinv, rcond] = inv (single (NaN));
+%! assert (xinv, single (NaN));
+%! assert (rcond, single (NaN));
+%!assert (inv (complex (1, NaN)), complex (NaN, NaN))
+%!test
+%! [xinv, rcond] = inv (complex (1, NaN));
+%! assert (xinv, complex (NaN, NaN));
+%! assert (rcond, NaN);
+%!assert (inv (complex (single (1), NaN)), complex (single (NaN), NaN))
+%!test
+%! [xinv, rcond] = inv (complex (single (1), NaN));
+%! assert (xinv, complex (single (NaN), NaN));
+%! assert (rcond, single (NaN));
+
+## Matrix special values
+## Matrix of all zeroes
+%!warning <matrix singular> assert (inv (zeros (2,2)), Inf (2,2))
+%!test
+%! [xinv, rcond] = inv (zeros (2,2));
+%! assert (xinv, Inf (2,2));
+%! assert (rcond, 0);
+## Matrix of all Inf
+%!warning <rcond = > assert (inv (Inf (2,2)), NaN (2,2))
+%!test
+%! [xinv, rcond] = inv (Inf (2,2));
+%! assert (xinv, NaN (2,2));
+%! assert (rcond, NaN);
+## Matrix of all NaN
+%!warning <rcond = > assert (inv (NaN (2,2)), NaN (2,2))
+%!test
+%! [xinv, rcond] = inv (NaN (2,2));
+%! assert (xinv, NaN (2,2));
+%! assert (rcond, NaN);
+
+## Special diagonal matrices
+%!test
+%! fail ("A = inv (diag ([1, 0, 1]))", "warning", "matrix singular");
+%! assert (A, diag ([Inf, Inf, Inf]));
+
+## Special sparse matrices
 %!testif HAVE_UMFPACK <*56232>
 %! fail ("A = inv (sparse ([1, 2;0 ,0]))", "warning", "matrix singular");
 %! assert (A, sparse ([Inf, Inf; 0, 0]));
@@ -259,13 +365,6 @@ sparse matrix if possible.
 %!testif HAVE_UMFPACK <*56232>
 %! fail ("A = inv (sparse ([1i, 2;0 ,0]))", "warning", "matrix singular");
 %! assert (A, sparse ([Inf, Inf; 0, 0]));
-
-%!test
-%! fail ("A = inv (diag ([1, 0, 1]))", "warning", "matrix singular");
-%! assert (A, diag ([Inf, Inf, Inf]));
-
-%!error <inverse of the null matrix not defined> inv (diag ([0, 0]))
-%!error <inverse of the null matrix not defined> inv (diag (complex ([0, 0])))
 
 %!testif HAVE_UMFPACK <*56232>
 %! fail ("A = inv (sparse ([1, 0, 0; 0, 0, 0; 0, 0, 1]))",
@@ -276,6 +375,8 @@ sparse matrix if possible.
 %!error inv ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
 %!error <inverse of the null matrix not defined> inv (sparse (2, 2, 0))
+%!error <inverse of the null matrix not defined> inv (diag ([0, 0]))
+%!error <inverse of the null matrix not defined> inv (diag (complex ([0, 0])))
 */
 
 DEFALIAS (inverse, inv);

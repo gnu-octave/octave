@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) %!-2019 The Octave Project Developers
+## Copyright (C) 2009-2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.

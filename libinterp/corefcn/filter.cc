@@ -106,6 +106,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   if (a_len <= 1 && si_len <= 0)
     return b(0) * x;
 
+  // Here onwards, either a_len > 1 or si_len >= 1 or both.
+
   y.resize (x_dims, 0.0);
 
   octave_idx_type x_stride = 1;
@@ -113,29 +115,69 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
     x_stride *= x_dims(i);
 
   octave_idx_type x_num = x_dims.numel () / x_len;
+  // For deconv and fftfilt, x_num seems to always be 1.
+  // For directly calling filter, it can be more than 1.
+
   for (octave_idx_type num = 0; num < x_num; num++)
     {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-        x_offset = num * x_len;
-      else
-        {
-          x_offset = num;
-          octave_idx_type n_strides = num / x_stride;
-          x_offset += n_strides * x_stride * (x_len - 1);
-        }
+      octave_idx_type x_offset = (x_stride == 1) ? num * x_len
+                         : num + (num / x_stride) * x_stride * (x_len - 1);
+
       octave_idx_type si_offset = num * si_len;
+
+      // Try to achieve a balance between speed and interruptibility.
+      //
+      // One extreme is to not check for interruptions at all, which gives
+      // good speed but the user cannot use Ctrl-C for the whole duration.
+      // The other end is to check frequently from inside an inner loop,
+      // which slows down performance by 5X or 6X.
+      //
+      // Putting any sort of check in an inner loop seems to prevent the
+      // compiler from optimizing the loop, so we cannot say "check for
+      // interruptions every M iterations" using an if-statement.
+      //
+      // This is a compromise approach to split the total numer of loop
+      // executions into num_outer and num_inner, to provide periodic checks
+      // for interruptions without writing a conditional inside a tight loop.
+      //
+      // To make it more interruptible and run more slowly, reduce num_inner.
+      // To speed it up but make it less interruptible, increase it.
+      // May need to increase it slowly over time as computers get faster.
+      // The aim is to not lose Ctrl-C ability for longer than about 2 seconds.
+      //
+      // In December 2021, num_inner = 100000 is acceptable.
+
+      octave_idx_type num_execs = si_len-1; // 0 to num_execs-1
+      octave_idx_type num_inner = 100000;
+      octave_idx_type num_outer = num_execs / num_inner;
+
+      // The following if-else block depends on a_len and si_len,
+      // both of which are loop invariants in this 0 <= num < x_num loop.
+      // But x_num is so small in practice that using the if-else inside
+      // the loop has more benefits than duplicating the outer for-loop,
+      // even though the checks are on loop invariants.
+
+      // We cannot have a_len <= 1 AND si_len <= 0 because that case already
+      // returned above. This means exactly one of the following blocks
+      // inside the if-conditional will be obeyed: it is not possible for the
+      // if-block and the else-block to *both* skip. Therefore any code that
+      // is common to both branches can be pulled out here without affecting
+      // correctness or speed.
+
+      T *py = y.fortran_vec ();
+      T *psi = si.fortran_vec ();
+      const T *pb = b.data ();
+      const T *px = x.data ();
+      psi += si_offset;
 
       if (a_len > 1)
         {
-          T *py = y.fortran_vec ();
-          T *psi = si.fortran_vec ();
-
           const T *pa = a.data ();
-          const T *pb = b.data ();
-          const T *px = x.data ();
 
-          psi += si_offset;
+          // Usually the last element to be written will be si_len-1
+          // but if si_len is 0, then we need the 0th element to be written.
+          // Pulling this check out of the for-loop makes it run faster.
+          octave_idx_type iidx = (si_len > 0) ? si_len-1 : 0;
 
           for (octave_idx_type i = 0, idx = x_offset;
                i < x_len;
@@ -143,34 +185,27 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
             {
               py[idx] = psi[0] + pb[0] * px[idx];
 
-              if (si_len > 0)
+              // Outer and inner loops for interruption management
+              for (octave_idx_type u = 0; u <= num_outer; u++)
                 {
-                  for (octave_idx_type j = 0; j < si_len - 1; j++)
-                    {
-                      octave_quit ();
+                  octave_idx_type lo = u * num_inner;
+                  octave_idx_type hi = (lo + num_inner < num_execs-1)
+                                     ? lo + num_inner : num_execs-1;
 
-                      psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
-                    }
+                  // Inner loop, no interruption
+                  for (octave_idx_type j = lo; j <= hi; j++)
+                    psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
 
-                  psi[si_len-1] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
+                  octave_quit();  // Check for interruptions
                 }
-              else
-                {
-                  octave_quit ();
 
-                  psi[0] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
-                }
+              psi[iidx] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
             }
         }
-      else if (si_len > 0)
+      else // a_len <= 1 ==> si_len MUST be > 0
         {
-          T *py = y.fortran_vec ();
-          T *psi = si.fortran_vec ();
-
-          const T *pb = b.data ();
-          const T *px = x.data ();
-
-          psi += si_offset;
+          // This else-block is almost the same as the above if-block,
+          // except for the absence of variable pa.
 
           for (octave_idx_type i = 0, idx = x_offset;
                i < x_len;
@@ -178,23 +213,21 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
             {
               py[idx] = psi[0] + pb[0] * px[idx];
 
-              if (si_len > 1)
+              // Outer and inner loops for interruption management
+              for (octave_idx_type u = 0; u <= num_outer; u++)
                 {
-                  for (octave_idx_type j = 0; j < si_len - 1; j++)
-                    {
-                      octave_quit ();
+                  octave_idx_type lo = u * num_inner;
+                  octave_idx_type hi = (lo + num_inner < num_execs-1)
+                                     ? lo + num_inner : num_execs-1;
 
-                      psi[j] = psi[j+1] + pb[j+1] * px[idx];
-                    }
+                  // Inner loop, no interruption
+                  for (octave_idx_type j = lo; j <= hi; j++)
+                    psi[j] = psi[j+1] + pb[j+1] * px[idx];
 
-                  psi[si_len-1] = pb[si_len] * px[idx];
+                  octave_quit();  // Check for interruptions
                 }
-              else
-                {
-                  octave_quit ();
 
-                  psi[0] = pb[1] * px[idx];
-                }
+              psi[si_len-1] = pb[si_len] * px[idx];
             }
         }
     }

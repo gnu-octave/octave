@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} acscd (@var{x})
+## @deftypefn {} {@var{y} =} acscd (@var{x})
 ## Compute the inverse cosecant in degrees for each element of @var{x}.
 ## @seealso{cscd, acsc}
 ## @end deftypefn

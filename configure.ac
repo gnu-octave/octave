@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 ########################################################################
 ##
-## Copyright (C) 1993-2021 The Octave Project Developers
+## Copyright (C) 1993-2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -46,7 +46,7 @@ OCTAVE_PATCH_VERSION=0
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_COPYRIGHT="Copyright (C) 2021 The Octave Project Developers."
+OCTAVE_COPYRIGHT="Copyright (C) 2021-2022 The Octave Project Developers."
 
 OCTAVE_RELEASE_DATE="2021-11-24"
 

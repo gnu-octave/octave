@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2019 John W. Eaton
+@c Copyright (C) 2007-2022 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c

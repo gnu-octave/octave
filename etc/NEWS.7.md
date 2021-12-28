@@ -327,8 +327,8 @@ major release after 7):
   ---------|-------------|------------
   **       | ^           | Matrix exponent
   .**      | .^          | Element-by-element exponent
-  .+       | +           | Element-by-element exponent
-  .-       | -           | Element-by-element exponent
+  .+       | +           | Element-by-element addition
+  .-       | -           | Element-by-element subtraction
 
 - Interpreter
 

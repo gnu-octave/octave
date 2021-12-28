@@ -12650,7 +12650,7 @@ root_figure::init_factory_properties (void)
 
 DEFMETHOD (ishghandle, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} ishghandle (@var{h})
+@deftypefn {} {@var{tf} =} ishghandle (@var{h})
 Return true if @var{h} is a graphics handle and false otherwise.
 
 @var{h} may also be a matrix of handles in which case a logical array is

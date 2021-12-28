@@ -1171,7 +1171,7 @@ exit all debugging levels and return to the Octave prompt.
 
 DEFMETHOD (isdebugmode, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} isdebugmode ()
+@deftypefn {} {@var{tf} =} isdebugmode ()
 Return true if in debugging mode, otherwise false.
 @seealso{dbwhere, dbstack, dbstatus}
 @end deftypefn */)

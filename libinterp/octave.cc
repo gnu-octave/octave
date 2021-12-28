@@ -429,7 +429,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (isguirunning, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isguirunning ()
+@deftypefn {} {@var{tf} =} isguirunning ()
 Return true if Octave is running in GUI mode and false otherwise.
 @seealso{have_window_system}
 @end deftypefn */)

@@ -1013,7 +1013,7 @@ accurately in the neighborhood of zero.
 
 DEFUN (isfinite, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isfinite (@var{x})
+@deftypefn {} {@var{tf} =} isfinite (@var{x})
 Return a logical array which is true where the elements of @var{x} are
 finite values and false where they are not.
 
@@ -1215,7 +1215,7 @@ Return the imaginary part of @var{z} as a real number.
 
 DEFUNX ("isalnum", Fisalnum, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isalnum (@var{s})
+@deftypefn {} {@var{tf} =} isalnum (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 letters or digits and false where they are not.
 
@@ -1245,7 +1245,7 @@ This is equivalent to (@code{isalpha (@var{s}) | isdigit (@var{s})}).
 
 DEFUNX ("isalpha", Fisalpha, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isalpha (@var{s})
+@deftypefn {} {@var{tf} =} isalpha (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 letters and false where they are not.
 
@@ -1274,7 +1274,7 @@ This is equivalent to (@code{islower (@var{s}) | isupper (@var{s})}).
 
 DEFUNX ("isascii", Fisascii, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isascii (@var{s})
+@deftypefn {} {@var{tf} =} isascii (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 ASCII characters (in the range 0 to 127 decimal) and false where they are
 not.
@@ -1298,7 +1298,7 @@ not.
 
 DEFUNX ("iscntrl", Fiscntrl, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} iscntrl (@var{s})
+@deftypefn {} {@var{tf} =} iscntrl (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 control characters and false where they are not.
 @seealso{ispunct, isspace, isalpha, isdigit}
@@ -1324,7 +1324,7 @@ control characters and false where they are not.
 
 DEFUNX ("isdigit", Fisdigit, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isdigit (@var{s})
+@deftypefn {} {@var{tf} =} isdigit (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 decimal digits (0-9) and false where they are not.
 @seealso{isxdigit, isalpha, isletter, ispunct, isspace, iscntrl}
@@ -1350,7 +1350,7 @@ decimal digits (0-9) and false where they are not.
 
 DEFUN (isinf, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isinf (@var{x})
+@deftypefn {} {@var{tf} =} isinf (@var{x})
 Return a logical array which is true where the elements of @var{x} are
 infinite and false where they are not.
 
@@ -1393,7 +1393,7 @@ isinf ([13, Inf, NA, NaN])
 
 DEFUNX ("isgraph", Fisgraph, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isgraph (@var{s})
+@deftypefn {} {@var{tf} =} isgraph (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 printable characters (but not the space character) and false where they are
 not.
@@ -1420,7 +1420,7 @@ not.
 
 DEFUNX ("islower", Fislower, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} islower (@var{s})
+@deftypefn {} {@var{tf} =} islower (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 lowercase letters and false where they are not.
 @seealso{isupper, isalpha, isletter, isalnum}
@@ -1446,7 +1446,7 @@ lowercase letters and false where they are not.
 
 DEFUN (isna, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isna (@var{x})
+@deftypefn {} {@var{tf} =} isna (@var{x})
 Return a logical array which is true where the elements of @var{x} are
 NA (missing) values and false where they are not.
 
@@ -1488,7 +1488,7 @@ isna ([13, Inf, NA, NaN])
 
 DEFUN (isnan, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isnan (@var{x})
+@deftypefn {} {@var{tf} =} isnan (@var{x})
 Return a logical array which is true where the elements of @var{x} are
 NaN values and false where they are not.
 
@@ -1531,7 +1531,7 @@ isnan ([13, Inf, NA, NaN])
 
 DEFUNX ("isprint", Fisprint, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isprint (@var{s})
+@deftypefn {} {@var{tf} =} isprint (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 printable characters (including the space character) and false where they
 are not.
@@ -1558,7 +1558,7 @@ are not.
 
 DEFUNX ("ispunct", Fispunct, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} ispunct (@var{s})
+@deftypefn {} {@var{tf} =} ispunct (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 punctuation characters and false where they are not.
 @seealso{isalpha, isdigit, isspace, iscntrl}
@@ -1587,7 +1587,7 @@ punctuation characters and false where they are not.
 
 DEFUNX ("isspace", Fisspace, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isspace (@var{s})
+@deftypefn {} {@var{tf} =} isspace (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 whitespace characters (space, formfeed, newline, carriage return, tab, and
 vertical tab) and false where they are not.
@@ -1614,7 +1614,7 @@ vertical tab) and false where they are not.
 
 DEFUNX ("isupper", Fisupper, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isupper (@var{s})
+@deftypefn {} {@var{tf} =} isupper (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 uppercase letters and false where they are not.
 @seealso{islower, isalpha, isletter, isalnum}
@@ -1640,7 +1640,7 @@ uppercase letters and false where they are not.
 
 DEFUNX ("isxdigit", Fisxdigit, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} isxdigit (@var{s})
+@deftypefn {} {@var{tf} =} isxdigit (@var{s})
 Return a logical array which is true where the elements of @var{s} are
 hexadecimal digits (0-9 and @nospell{a-fA-F}).
 @seealso{isdigit}

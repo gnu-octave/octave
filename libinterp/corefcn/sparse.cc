@@ -46,7 +46,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (issparse, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} issparse (@var{x})
+@deftypefn {} {@var{tf} =} issparse (@var{x})
 Return true if @var{x} is a sparse matrix.
 @seealso{ismatrix}
 @end deftypefn */)

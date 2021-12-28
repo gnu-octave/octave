@@ -1224,7 +1224,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (iscell, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} iscell (@var{x})
+@deftypefn {} {@var{tf} =} iscell (@var{x})
 Return true if @var{x} is a cell array object.
 @seealso{ismatrix, isstruct, iscellstr, isa}
 @end deftypefn */)
@@ -1290,7 +1290,7 @@ dimensions.
 
 DEFUN (iscellstr, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} iscellstr (@var{cell})
+@deftypefn {} {@var{tf} =} iscellstr (@var{cell})
 Return true if every element of the cell array @var{cell} is a character
 string.
 @seealso{ischar, isstring}

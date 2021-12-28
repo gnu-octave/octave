@@ -124,7 +124,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (isglobal, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} isglobal (@var{name})
+@deftypefn {} {@var{tf} =} isglobal (@var{name})
 Return true if @var{name} is a globally visible variable.
 
 For example:

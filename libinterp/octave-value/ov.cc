@@ -3625,7 +3625,7 @@ If @var{idx} is an empty structure array with fields @samp{type} and
 
 DEFUN (is_sq_string, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_sq_string (@var{x})
+@deftypefn {} {@var{tf} =} is_sq_string (@var{x})
 Return true if @var{x} is a single-quoted character string.
 @seealso{is_dq_string, ischar}
 @end deftypefn */)
@@ -3648,7 +3648,7 @@ Return true if @var{x} is a single-quoted character string.
 
 DEFUN (is_dq_string, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_dq_string (@var{x})
+@deftypefn {} {@var{tf} =} is_dq_string (@var{x})
 Return true if @var{x} is a double-quoted character string.
 @seealso{is_sq_string, ischar}
 @end deftypefn */)

@@ -3315,8 +3315,8 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.
 
 DEFUN (islogical, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} islogical (@var{x})
-@deftypefnx {} {} isbool (@var{x})
+@deftypefn  {} {@var{tf} =} islogical (@var{x})
+@deftypefnx {} {@var{tf} =} isbool (@var{x})
 Return true if @var{x} is a logical object.
 @seealso{ischar, isfloat, isinteger, isstring, isnumeric, isa}
 @end deftypefn */)
@@ -3345,7 +3345,7 @@ DEFALIAS (isbool, islogical);
 
 DEFUN (isinteger, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isinteger (@var{x})
+@deftypefn {} {@var{tf} =} isinteger (@var{x})
 Return true if @var{x} is an integer object (int8, uint8, int16, etc.).
 
 Note that @w{@code{isinteger (14)}} is false because numeric constants in
@@ -3403,7 +3403,7 @@ Octave are double precision floating point values.
 
 DEFUN (iscomplex, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} iscomplex (@var{x})
+@deftypefn {} {@var{tf} =} iscomplex (@var{x})
 Return true if @var{x} is a complex-valued numeric object.
 @seealso{isreal, isnumeric, ischar, isfloat, islogical, isstring, isa}
 @end deftypefn */)
@@ -3433,7 +3433,7 @@ Return true if @var{x} is a complex-valued numeric object.
 
 DEFUN (isfloat, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isfloat (@var{x})
+@deftypefn {} {@var{tf} =} isfloat (@var{x})
 Return true if @var{x} is a floating-point numeric object.
 
 Objects of class double or single are floating-point objects.
@@ -3758,7 +3758,7 @@ complex ([1, 2], [3, 4])
 
 DEFUN (isreal, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isreal (@var{x})
+@deftypefn {} {@var{tf} =} isreal (@var{x})
 Return true if @var{x} is a non-complex matrix or scalar.
 
 For compatibility with @sc{matlab}, this includes logical and character
@@ -3774,7 +3774,7 @@ matrices.
 
 DEFUN (isempty, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isempty (@var{a})
+@deftypefn {} {@var{tf} =} isempty (@var{a})
 Return true if @var{a} is an empty matrix (any one of its dimensions is
 zero).
 @seealso{isnull, isa}
@@ -3793,7 +3793,7 @@ zero).
 
 DEFUN (isnumeric, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isnumeric (@var{x})
+@deftypefn {} {@var{tf} =} isnumeric (@var{x})
 Return true if @var{x} is a numeric object, i.e., an integer, real, or
 complex array.
 
@@ -3826,7 +3826,7 @@ iscell, isstruct, isa}
 
 DEFUN (isscalar, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isscalar (@var{x})
+@deftypefn {} {@var{tf} =} isscalar (@var{x})
 Return true if @var{x} is a scalar.
 
 A scalar is an object with two dimensions for which @code{size (@var{x})}
@@ -3865,7 +3865,7 @@ returns @w{@code{[1, 1]}}.
 
 DEFUN (isvector, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isvector (@var{x})
+@deftypefn {} {@var{tf} =} isvector (@var{x})
 Return true if @var{x} is a vector.
 
 A vector is a 2-D array where one of the dimensions is equal to 1 (either
@@ -3906,7 +3906,7 @@ array (a scalar) is also a vector.
 
 DEFUN (isrow, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isrow (@var{x})
+@deftypefn {} {@var{tf} =} isrow (@var{x})
 Return true if @var{x} is a row vector.
 
 A row vector is a 2-D array for which @code{size (@var{x})} returns
@@ -3955,7 +3955,7 @@ A row vector is a 2-D array for which @code{size (@var{x})} returns
 
 DEFUN (iscolumn, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} iscolumn (@var{x})
+@deftypefn {} {@var{tf} =} iscolumn (@var{x})
 Return true if @var{x} is a column vector.
 
 A column vector is a 2-D array for which @code{size (@var{x})} returns
@@ -4004,7 +4004,7 @@ A column vector is a 2-D array for which @code{size (@var{x})} returns
 
 DEFUN (ismatrix, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} ismatrix (@var{x})
+@deftypefn {} {@var{tf} =} ismatrix (@var{x})
 Return true if @var{x} is a 2-D array.
 
 A matrix is an object with two dimensions (@code{ndims (@var{x}) == 2}) for
@@ -4053,7 +4053,7 @@ N.
 
 DEFUN (issquare, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} issquare (@var{x})
+@deftypefn {} {@var{tf} =} issquare (@var{x})
 Return true if @var{x} is a 2-D square array.
 
 A square array is a 2-D object for which @code{size (@var{x})} returns
@@ -7327,9 +7327,9 @@ get_sort_mode_option (const octave_value& arg)
 
 DEFUN (issorted, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} issorted (@var{a})
-@deftypefnx {} {} issorted (@var{a}, @var{mode})
-@deftypefnx {} {} issorted (@var{a}, "rows", @var{mode})
+@deftypefn  {} {@var{tf} =} issorted (@var{a})
+@deftypefnx {} {@var{tf} =} issorted (@var{a}, @var{mode})
+@deftypefnx {} {@var{tf} =} issorted (@var{a}, "rows", @var{mode})
 Return true if the array is sorted according to @var{mode}, which may be either
 @qcode{"ascend"}, @qcode{"descend"}, or @qcode{"either"}.
 

@@ -93,7 +93,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (isvarname, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isvarname (@var{name})
+@deftypefn {} {@var{tf} =} isvarname (@var{name})
 Return true if @var{name} is a valid variable name.
 
 A valid variable name is composed of letters, digits, and underscores ("_"),
@@ -1099,7 +1099,7 @@ replaces the unprintable alert character with its printable representation.
 
 DEFUN (is_absolute_filename, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_absolute_filename (@var{file})
+@deftypefn {} {@var{tf} =} is_absolute_filename (@var{file})
 Return true if @var{file} is an absolute filename.
 @seealso{is_rooted_relative_filename, make_absolute_filename, isfolder}
 @end deftypefn */)
@@ -1120,7 +1120,7 @@ Return true if @var{file} is an absolute filename.
 
 DEFUN (is_rooted_relative_filename, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_rooted_relative_filename (@var{file})
+@deftypefn {} {@var{tf} =} is_rooted_relative_filename (@var{file})
 Return true if @var{file} is a rooted-relative filename.
 @seealso{is_absolute_filename, make_absolute_filename, isfolder}
 @end deftypefn */)
@@ -1629,8 +1629,8 @@ Return a structure containing the system-dependent errno values.
 
 DEFMETHOD (isindex, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} isindex (@var{ind})
-@deftypefnx {} {} isindex (@var{ind}, @var{n})
+@deftypefn  {} {@var{tf} =} isindex (@var{ind})
+@deftypefnx {} {@var{tf} =} isindex (@var{ind}, @var{n})
 Return true if @var{ind} is a valid index.
 
 Valid indices are either positive integers (although possibly of real data
@@ -1769,7 +1769,7 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 
 DEFUN (isstudent, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isstudent ()
+@deftypefn {} {@var{tf} =} isstudent ()
 Return true if running in the student edition of @sc{matlab}.
 
 @code{isstudent} always returns false in Octave.

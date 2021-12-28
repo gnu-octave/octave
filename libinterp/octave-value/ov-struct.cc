@@ -1894,7 +1894,7 @@ orderfields, isstruct, structfun}
 
 DEFUN (isstruct, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isstruct (@var{x})
+@deftypefn {} {@var{tf} =} isstruct (@var{x})
 Return true if @var{x} is a structure or a structure array.
 @seealso{ismatrix, iscell, isa}
 @end deftypefn */)
@@ -1934,8 +1934,8 @@ Implements @code{fieldnames()} for structures and Octave objects.
 
 DEFUN (isfield, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} isfield (@var{x}, "@var{name}")
-@deftypefnx {} {} isfield (@var{x}, @var{name})
+@deftypefn  {} {@var{tf} =} isfield (@var{x}, "@var{name}")
+@deftypefnx {} {@var{tf} =} isfield (@var{x}, @var{name})
 Return true if the @var{x} is a structure and it includes an element named
 @var{name}.
 

@@ -3593,7 +3593,7 @@ functions.  This option is no longer supported.
 
 DEFUN (is_function_handle, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_function_handle (@var{x})
+@deftypefn {} {@var{tf} =} is_function_handle (@var{x})
 Return true if @var{x} is a function handle.
 @seealso{isa, typeinfo, class, functions}
 @end deftypefn */)

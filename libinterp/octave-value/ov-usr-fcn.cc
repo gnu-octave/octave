@@ -905,7 +905,7 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 
 DEFMETHOD (isargout, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} isargout (@var{k})
+@deftypefn {} {@var{tf} =} isargout (@var{k})
 Within a function, return a logical value indicating whether the argument
 @var{k} will be assigned to a variable on output.
 

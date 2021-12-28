@@ -1802,7 +1802,7 @@ is derived.
 
 DEFUN (isa, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isa (@var{obj}, @var{classname})
+@deftypefn {} {@var{tf} =} isa (@var{obj}, @var{classname})
 Return true if @var{obj} is an object from the class @var{classname}.
 
 @var{classname} may also be one of the following class categories:
@@ -1928,7 +1928,7 @@ Undocumented internal function.
 
 DEFUN (isobject, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isobject (@var{x})
+@deftypefn {} {@var{tf} =} isobject (@var{x})
 Return true if @var{x} is a class object.
 @seealso{class, typeinfo, isa, ismethod, isprop}
 @end deftypefn */)

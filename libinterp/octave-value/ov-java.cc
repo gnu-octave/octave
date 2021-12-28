@@ -3469,7 +3469,7 @@ The original variable value is restored when exiting the function.
 
 DEFUN (isjava, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isjava (@var{x})
+@deftypefn {} {@var{tf} =} isjava (@var{x})
 Return true if @var{x} is a Java object.
 @seealso{class, typeinfo, isa, javaObject}
 @end deftypefn */)

@@ -1361,7 +1361,7 @@ graphics callbacks execution.
 
 DEFUN (isieee, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isieee ()
+@deftypefn {} {@var{tf} =} isieee ()
 Return true if your computer @emph{claims} to conform to the IEEE standard
 for floating point calculations.
 

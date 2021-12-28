@@ -290,7 +290,7 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 
 DEFUN (ischar, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} ischar (@var{x})
+@deftypefn {} {@var{tf} =} ischar (@var{x})
 Return true if @var{x} is a character array.
 @seealso{isfloat, isinteger, islogical, isnumeric, isstring, iscellstr, isa}
 @end deftypefn */)

@@ -33,10 +33,10 @@
 ## corresponding value.  Given a structure of @var{properties} with fields
 ## corresponding to property names, set the value of those properties to the
 ## field values.  Given only the audioplayer object, return a structure of
-## settable properties.
+## configurable properties (i.e., writeable properties).
 ## @end deftypefn
 
-function settable = set (varargin)
+function properties = set (varargin)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -45,9 +45,9 @@ function settable = set (varargin)
   player = struct (varargin{1}).player;
 
   if (nargin == 1)
-    settable.SampleRate = {};
-    settable.Tag = {};
-    settable.UserData = {};
+    properties.SampleRate = {};
+    properties.Tag = {};
+    properties.UserData = {};
   elseif (nargin == 2)
     for [value, property] = varargin{2}
       setproperty (player, property, value);

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{properties} =} __get_properties__ (@var{recorder})
+## @deftypefn {} {@var{props} =} __get_properties__ (@var{recorder})
 ## Return a struct containing all named properties of the recorder object
 ## @var{recorder}.
 ## @end deftypefn

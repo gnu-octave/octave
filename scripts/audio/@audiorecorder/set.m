@@ -33,10 +33,10 @@
 ## property to a corresponding value.  Given a structure with fields
 ## corresponding to property names, set the value of those properties to the
 ## corresponding field values.  Given only the recorder object, return a
-## structure of settable properties.
+## configurable properties (i.e., writeable properties).
 ## @end deftypefn
 
-function settable = set (varargin)
+function properties = set (varargin)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -45,9 +45,9 @@ function settable = set (varargin)
   recorder = struct (varargin{1}).recorder;
 
   if (nargin == 1)
-    settable.SampleRate = {};
-    settable.Tag = {};
-    settable.UserData = {};
+    properties.SampleRate = {};
+    properties.Tag = {};
+    properties.UserData = {};
   elseif (nargin == 2)
     for [value, property] = varargin{2}
       setproperty (recorder, property, value);

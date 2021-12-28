@@ -24,8 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} cd (@var{f})
+## @deftypefn  {} {@var{cwd} =} cd (@var{f})
 ## @deftypefnx {} {} cd (@var{f}, @var{path})
+## @deftypefnx {} {@var{new_cwd} =} cd (@var{f}, @var{path})
 ## Get or set the remote directory on the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.

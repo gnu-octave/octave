@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{properties} =} __get_properties__ (@var{player})
+## @deftypefn {} {@var{props} =} __get_properties__ (@var{player})
 ## Return a struct containing all named properties of the audioplayer object
 ## @var{player}.
 ## @end deftypefn

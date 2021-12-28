@@ -24,17 +24,17 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isrecording (@var{recorder})
+## @deftypefn {} {@var{tf} =} isrecording (@var{recorder})
 ## Return true if the audiorecorder object @var{recorder} is currently
 ## recording audio and false otherwise.
 ## @end deftypefn
 
-function result = isrecording (recorder)
+function tf = isrecording (recorder)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  result = __recorder_isrecording__ (struct (recorder).recorder);
+  tf = __recorder_isrecording__ (struct (recorder).recorder);
 
 endfunction

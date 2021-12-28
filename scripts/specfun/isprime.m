@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isprime (@var{x})
+## @deftypefn {} {@var{tf} =} isprime (@var{x})
 ## Return a logical array which is true where the elements of @var{x} are prime
 ## numbers and false where they are not.
 ##
@@ -72,7 +72,7 @@
 ## @seealso{primes, factor, gcd, lcm}
 ## @end deftypefn
 
-function t = isprime (x)
+function tf = isprime (x)
 
   if (nargin < 1)
     print_usage ();
@@ -81,12 +81,12 @@ function t = isprime (x)
   endif
 
   if (isempty (x))
-    t = x;
+    tf = x;
     return;
   endif
 
   if (iscomplex (x))
-    t = isgaussianprime (x);
+    tf = isgaussianprime (x);
     return;
   endif
 
@@ -101,7 +101,7 @@ function t = isprime (x)
   ## because of the method used by __isprimelarge__ below.
   maxp = 37;
   pr = [2 3 5 7 11 13 17 19 23 29 31 37];
-  t = lookup (pr, x, "b");  # quick search for table matches.
+  tf = lookup (pr, x, "b");  # quick search for table matches.
 
   THRESHOLD = 29e9;
   ## FIXME: THRESHOLD is the input value at which Miller-Rabin
@@ -143,7 +143,7 @@ function t = isprime (x)
     ## Start by dividing through by the small primes until the remaining list
     ## of entries is small (and most likely prime themselves).
     pr2 = primes (sqrt (max (m)));
-    t |= lookup (pr2, x, "b");
+    tf |= lookup (pr2, x, "b");
     for p = pr2
       m = m(rem (m, p) != 0);
       if (numel (m) < numel (pr) / 10)
@@ -160,20 +160,20 @@ function t = isprime (x)
 
     ## Add any remaining entries, which are truly prime, to the results.
     if ( ! isempty (m))
-      t |= lookup (sort (m), x, "b");
+      tf |= lookup (sort (m), x, "b");
     endif
   endif
 
   ## Process remaining entries (everything above THRESHOLD) with Miller-Rabin
   ii = (x(:)' > THRESHOLD);
-  t(ii) = __isprimelarge__ (x(ii));
+  tf(ii) = __isprimelarge__ (x(ii));
 
 endfunction
 
-function t = isgaussianprime (z)
+function tf = isgaussianprime (z)
 
   ## Assume prime unless proven otherwise
-  t = true (size (z));
+  tf = true (size (z));
 
   x = real (z);
   y = imag (z);
@@ -183,13 +183,13 @@ function t = isgaussianprime (z)
   xidx = y==0 & mod (x, 4) == 3;
   yidx = x==0 & mod (y, 4) == 3;
 
-  t(xidx) &= isprime (x(xidx));
-  t(yidx) &= isprime (y(yidx));
+  tf(xidx) &= isprime (x(xidx));
+  tf(yidx) &= isprime (y(yidx));
 
   ## Otherwise, prime if x^2 + y^2 is prime
   zidx = ! (xidx | yidx);          # Skip entries that were already evaluated
   zabs = x(zidx).^2 + y(zidx).^2;
-  t(zidx) &= isprime (zabs);
+  tf(zidx) &= isprime (zabs);
 
 endfunction
 

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} istriu (@var{A})
+## @deftypefn {} {@var{tf} =} istriu (@var{A})
 ## Return true if @var{A} is an upper triangular matrix.
 ##
 ## An upper triangular matrix has nonzero entries only on the main diagonal and
@@ -32,16 +32,16 @@
 ## @seealso{isdiag, isbanded, istril, triu, bandwidth}
 ## @end deftypefn
 
-function retval = istriu (A)
+function tf = istriu (A)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  retval = (isnumeric (A) || islogical (A)) && ndims (A) == 2;
-  if (retval)
+  tf = (isnumeric (A) || islogical (A)) && ndims (A) == 2;
+  if (tf)
     [i, j] = find (A);
-    retval = all (i <= j);
+    tf = all (i <= j);
   endif
 
 endfunction

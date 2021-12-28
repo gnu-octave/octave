@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} isgraphics (@var{h})
-## @deftypefnx {} {} isgraphics (@var{h}, @var{type})
+## @deftypefn  {} {@var{tf} =} isgraphics (@var{h})
+## @deftypefnx {} {@var{tf} =} isgraphics (@var{h}, @var{type})
 ## Return true if @var{h} is a graphics handle (of type @var{type}) and false
 ## otherwise.
 ##
@@ -34,7 +34,7 @@
 ## @seealso{ishghandle, ishandle, isaxes, isfigure}
 ## @end deftypefn
 
-function retval = isgraphics (h, type = "")
+function tf = isgraphics (h, type = "")
 
   if (nargin < 1)
     print_usage ();
@@ -45,10 +45,10 @@ function retval = isgraphics (h, type = "")
   endif
 
   ## Octave has no Simulink equivalent so it is sufficient to call ishghandle.
-  retval = ishghandle (h);
+  tf = ishghandle (h);
 
-  if (nargin == 2 && any (retval))
-    retval(retval) = strcmpi (get (h(retval), "type"), type);
+  if (nargin == 2 && any (tf))
+    tf(tf) = strcmpi (get (h(tf), "type"), type);
   endif
 
 endfunction

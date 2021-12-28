@@ -24,24 +24,24 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isdiag (@var{A})
+## @deftypefn {} {@var{tf} =} isdiag (@var{A})
 ## Return true if @var{A} is a diagonal matrix.
 ## @seealso{isbanded, istril, istriu, diag, bandwidth}
 ## @end deftypefn
 
-function retval = isdiag (A)
+function tf = isdiag (A)
 
   if (nargin < 1)
     print_usage ();
   endif
 
   if (strfind (typeinfo (A), "diagonal matrix"))
-    retval = true;
+    tf = true;
   elseif ((isnumeric (A) || islogical (A)) && ndims (A) == 2)
     [i, j] = find (A);
-    retval = all (i == j);
+    tf = all (i == j);
   else
-    retval = false;
+    tf = false;
   endif
 
 endfunction

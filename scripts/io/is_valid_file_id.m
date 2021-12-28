@@ -24,23 +24,23 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} is_valid_file_id (@var{fid})
+## @deftypefn {} {@var{tf} =} is_valid_file_id (@var{fid})
 ## Return true if @var{fid} refers to an open file.
 ## @seealso{freport, fopen}
 ## @end deftypefn
 
-function retval = is_valid_file_id (fid)
+function tf = is_valid_file_id (fid)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  retval = false;
+  tf = false;
 
   try
     if (isscalar (fid))
       [file, mode, arch] = fopen (fid);
-      retval = ! isempty (file);
+      tf = ! isempty (file);
     endif
   end_try_catch
 

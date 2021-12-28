@@ -24,17 +24,17 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isplaying (@var{player})
+## @deftypefn {} {@var{tf} =} isplaying (@var{player})
 ## Return true if the audioplayer object @var{player} is currently playing back
 ## audio and false otherwise.
 ## @end deftypefn
 
-function result = isplaying (player)
+function tf = isplaying (player)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  result = __player_isplaying__ (struct (player).player);
+  tf = __player_isplaying__ (struct (player).player);
 
 endfunction

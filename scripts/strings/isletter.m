@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isletter (@var{s})
+## @deftypefn {} {@var{tf} =} isletter (@var{s})
 ## Return a logical array which is true where the elements of @var{s}
 ## are letters and false where they are not.
 ##
@@ -32,13 +32,13 @@
 ## @seealso{isalpha, isdigit, ispunct, isspace, iscntrl, isalnum}
 ## @end deftypefn
 
-function retval = isletter (s)
+function tf = isletter (s)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  retval = isalpha (s);
+  tf = isalpha (s);
 
 endfunction
 

@@ -24,14 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} ismac ()
+## @deftypefn {} {@var{tf} =} ismac ()
 ## Return true if Octave is running on a Mac OS X system and false otherwise.
 ## @seealso{isunix, ispc}
 ## @end deftypefn
 
-function retval = ismac ()
+function tf = ismac ()
 
-  retval = __octave_config_info__ ("mac");
+  tf = __octave_config_info__ ("mac");
 
 endfunction
 

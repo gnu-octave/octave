@@ -33,7 +33,7 @@
 ## is_rooted_relative_filename}
 ## @end deftypefn
 
-function retval = isfolder (f)
+function tf = isfolder (f)
 
   if (nargin < 1)
     print_usage ();
@@ -44,10 +44,10 @@ function retval = isfolder (f)
   endif
 
   f = cellstr (f);
-  retval = false (size (f));
+  tf = false (size (f));
   for i = 1:numel (f)
     [info, err] = stat (f{i});
-    retval(i) = (! err && S_ISDIR (info.mode));
+    tf(i) = (! err && S_ISDIR (info.mode));
   endfor
 
 endfunction

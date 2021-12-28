@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isstrprop (@var{str}, @var{prop})
+## @deftypefn {} {@var{tf} =} isstrprop (@var{str}, @var{prop})
 ## Test character string properties.
 ##
 ## For example:
@@ -91,7 +91,7 @@
 ## isspace, ispunct, iscntrl, isgraph, isprint, isascii}
 ## @end deftypefn
 
-function retval = isstrprop (str, prop)
+function tf = isstrprop (str, prop)
 
   if (nargin != 2)
     print_usage ();
@@ -99,29 +99,29 @@ function retval = isstrprop (str, prop)
 
   switch (prop)
     case "alpha"
-      retval = isalpha (str);
+      tf = isalpha (str);
     case {"alnum", "alphanum"}
-      retval = isalnum (str);
+      tf = isalnum (str);
     case "ascii"
-      retval = isascii (str);
+      tf = isascii (str);
     case "cntrl"
-      retval = iscntrl (str);
+      tf = iscntrl (str);
     case "digit"
-      retval = isdigit (str);
+      tf = isdigit (str);
     case {"graph", "graphic"}
-      retval = isgraph (str);
+      tf = isgraph (str);
     case "lower"
-      retval = islower (str);
+      tf = islower (str);
     case "print"
-      retval = isprint (str);
+      tf = isprint (str);
     case "punct"
-      retval = ispunct (str);
+      tf = ispunct (str);
     case {"space", "wspace"}
-      retval = isspace (str);
+      tf = isspace (str);
     case "upper"
-      retval = isupper (str);
+      tf = isupper (str);
     case "xdigit"
-      retval = isxdigit (str);
+      tf = isxdigit (str);
     otherwise
       error ("isstrprop: invalid string property");
   endswitch

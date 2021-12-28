@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} isdefinite (@var{A})
-## @deftypefnx {} {} isdefinite (@var{A}, @var{tol})
+## @deftypefn  {} {@var{tf} =} isdefinite (@var{A})
+## @deftypefnx {} {@var{tf} =} isdefinite (@var{A}, @var{tol})
 ## Return true if @var{A} is symmetric positive definite matrix within the
 ## tolerance specified by @var{tol}.
 ##
@@ -47,14 +47,14 @@
 ## @seealso{issymmetric, ishermitian}
 ## @end deftypefn
 
-function retval = isdefinite (A, tol)
+function tf = isdefinite (A, tol)
 
   if (nargin < 1)
     print_usage ();
   endif
 
   ## Validate inputs
-  retval = false;
+  tf = false;
   if (! isnumeric (A))
     return;
   endif
@@ -76,7 +76,7 @@ function retval = isdefinite (A, tol)
   e = tol * eye (rows (A));
   [~, p] = chol (A - e);
   if (p == 0)
-    retval = true;
+    tf = true;
   endif
 
 endfunction

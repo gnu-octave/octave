@@ -101,7 +101,12 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   endif
   ## Texinfo crashes if @end tex does not appear first on the line.
   text = regexprep (text, '^ +@end tex', '@end tex', 'lineanchors');
-  text = regexprep (text, '@seealso', '@xseealso');
+  ## Replace @seealso with Octave specific @xseealso macro, and escape '@'
+  [s, e] = regexp (text, '@seealso{.*}');
+  if (! isempty (s))
+    esc_text = strrep (text(s+8:e), '@', '@@');
+    text = [text(1:s), 'xseealso', esc_text, text(e+1:end)];
+  endif
 
   ## We don't want *ref macros to clutter plain text output with "Note ..."
   if (strcmp (output_type, "plain text"))

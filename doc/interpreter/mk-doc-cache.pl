@@ -34,25 +34,22 @@ use File::Spec;
 use File::Temp;
 
 my $doc_delim = "\x{1d}";
-my $tex_delim_pat = qr/\Q-*- texinfo -*-\E/;
+my $tex_delim_ptn = qr/\Q-*- texinfo -*-\E/;
 
-## Returns a File::Temp object with texinfo code.
+## Returns a File::Temp object with Texinfo code.
 sub make_texinfo_file
 {
   my $srcdir = shift;
   my $macro_fpath = shift;
   my @docstrings = @_;
 
-  my $t_file = File::Temp->new (UNLINK => 1);
+  my $tmpfile = File::Temp->new (UNLINK => 1);
 
   ## Only the first file is the macro file.  Copy its contents verbatim.
-  open (my $macro_fh, "<", $macro_fpath)
+  open (my $FH_macro, "<", $macro_fpath)
     or die "Unable to open $macro_fpath for reading: $!\n";
-  while (<$macro_fh>)
-    {
-      print {$t_file} $_;
-    }
-  close ($macro_fh);
+  while (<$FH_macro>) {  print {$tmpfile} $_;  }
+  close ($FH_macro);
 
   foreach my $filepath (@docstrings)
     {
@@ -64,35 +61,44 @@ sub make_texinfo_file
           ## tree, from released sources.
           $filepath = File::Spec->catfile ($srcdir, $filepath);
         }
-      open (my $fh, "<", $filepath)
+      open (my $FH, "<", $filepath)
         or die "Unable to open $filepath for reading: $!\n";
 
       my $in_header = 1;
-      while (my $line = <$fh>)
+      while (my $line = <$FH>)
         {
           ## DOCSTRINGS header ends once we find the first function.
           if ($in_header && $line =~ m/^$doc_delim/)
             {
               $in_header = 0;
             }
-          next if $in_header;
-          next if $line =~ /$tex_delim_pat/;
+          next if ($in_header);
+          next if ($line =~ /$tex_delim_ptn/);
 
-          $line =~ s/\@seealso/\@xseealso/g;
+          ## Change @seealso to private @xseealso macro
+          if ($line =~ m'@seealso')
+          {
+            ## Combine @seealso macro spread over multiple lines
+            while ($line !~ m/}$/) {  $line .= <$FH>;  }
 
-          ## escape {}@ characters for texinfo
-          $line =~ s/([{}\@])/\@$1/g
-            if $line =~ m/^$doc_delim/;
+            ## escape @ characters in old-style class names like @ftp
+            $line =~ s/\@(\w)/\@\@$1/g;
+            $line =~ s'@@seealso'@xseealso';
+          }
 
-          print {$t_file} $line;
+          ## escape {}@ characters in Texinfo anchor name (e.g., @ftp/dir.m)
+          $line =~ s/([{}@])/\@$1/g if ($line =~ m/^$doc_delim/);
+
+          print {$tmpfile} $line;
         }
-      close ($fh);
+      close ($FH);
     }
 
-  print {$t_file} $doc_delim;
+  print {$tmpfile} $doc_delim;
 
-  $t_file->flush ();
-  return $t_file;
+  $tmpfile->flush ();
+
+  return $tmpfile;
 }
 
 sub get_info_text
@@ -106,7 +112,7 @@ sub get_info_text
     if (! defined $info_text);
 
   die "makeinfo produced no output!"
-    if ! $info_text;
+    if (! $info_text);
 
   return $info_text;
 }
@@ -117,7 +123,7 @@ sub split_info
 
   ## Constant patterns.  We only check for two underscores at the end,
   ## and not at the start, to also skip @class/__method__
-  my $private_name_pat = qr/__$/;
+  my $private_name_ptn = qr/__$/;
 
   my @formatted = ();
 
@@ -135,7 +141,7 @@ sub split_info
 
       my ($symbol, $doc) = split (/[\r\n]/, $block, 2);
 
-      next if (length ($symbol) > 2 && $symbol =~ m/$private_name_pat/);
+      next if (length ($symbol) > 2 && $symbol =~ m/$private_name_ptn/);
 
       if (! defined ($doc))
       {
@@ -156,6 +162,7 @@ sub split_info
 
       push (@formatted, [($symbol, $doc, $first_sentence)]);
     }
+
   return @formatted;
 }
 
@@ -164,22 +171,26 @@ sub print_element
   my ($str) = @_;
   my $len = length ($str);
 
-  print "# name: <cell-element>\n";
-  print "# type: sq_string\n";
-  print "# elements: 1\n";
-  print "# length: $len\n";
-  print "$str\n\n\n";
+  print <<__END_OF_ELEMENT__;
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: $len
+$str\n\n
+__END_OF_ELEMENT__
 }
 
 sub print_cache
 {
   my $num = @_;
 
-  print "# created by mk-doc-cache.pl\n";
-  print "# name: cache\n";
-  print "# type: cell\n";
-  print "# rows: 3\n";
-  print "# columns: $num\n";
+  print <<__END_OF_CACHE_HDR__;
+# created by mk-doc-cache.pl
+# name: cache
+# type: cell
+# rows: 3
+# columns: $num
+__END_OF_CACHE_HDR__
 
   foreach my $elt (@_)
     {
@@ -194,6 +205,8 @@ sub print_cache
     }
 }
 
+## FIXME: This is a very C/C++ way of coding things.
+## Perl convention would just be to have the executable code at end of file.
 sub main
 {
   my $srcdir = shift;

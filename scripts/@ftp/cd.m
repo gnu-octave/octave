@@ -37,6 +37,7 @@
 ##
 ## If the directory does not exist, an error message is printed and the
 ## working directory is not changed.
+## @seealso{@ftp/dir, @ftp/ftp}
 ## @end deftypefn
 
 function path = cd (f, path)

@@ -29,6 +29,7 @@
 ## over the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
+## @seealso{@ftp/delete, @ftp/rmdir, @ftp/ftp}
 ## @end deftypefn
 
 function rename (f, oldname, newname)

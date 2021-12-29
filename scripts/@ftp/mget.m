@@ -38,6 +38,7 @@
 ## If a third string argument @var{target} is given, then it must indicate
 ## the path to the local destination directory.  @var{target} may be a
 ## relative or absolute path.
+## @seealso{@ftp/mput, @ftp/ftp}
 ## @end deftypefn
 
 function mget (f, file, target = "")

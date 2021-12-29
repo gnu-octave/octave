@@ -33,6 +33,7 @@
 ## If the optional output @var{lst} is requested return a struct array
 ## with one entry per file with the fields @code{name}, @code{date},
 ## @code{bytes}, @code{isdir}, @code{datenum}.
+## @seealso{@ftp/cd, @ftp/mkdir, @ftp/rmdir, @ftp/ftp}
 ## @end deftypefn
 
 function lst = dir (f)

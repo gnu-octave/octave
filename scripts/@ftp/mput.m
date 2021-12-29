@@ -36,6 +36,7 @@
 ##
 ## The optional output argument @var{file_list} contains a cell array of
 ## strings with the names of the uploaded files.
+## @seealso{@ftp/mget, @ftp/mkdir, @ftp/ftp}
 ## @end deftypefn
 
 function retval = mput (f, file)

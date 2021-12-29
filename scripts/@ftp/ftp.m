@@ -50,6 +50,8 @@
 ## @item rmdir @tab Remove remote directory
 ## @end multitable
 ##
+## @seealso{@ftp/ascii, @ftp/binary, @ftp/cd, @ftp/close, @ftp/delete,
+## @ftp/dir, @ftp/mget, @ftp/mkdir, @ftp/mput, @ftp/rename, @ftp/rmdir}
 ## @end deftypefn
 
 function obj = ftp (host = "", username = "anonymous", password = "")

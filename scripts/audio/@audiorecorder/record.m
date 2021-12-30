@@ -34,12 +34,18 @@
 ## @seealso{@audiorecorder/recordblocking, @audiorecorder/audiorecorder}
 ## @end deftypefn
 
-function record (varargin)
+function record (recorder, length)
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
+  hrecorder = struct (recorder).recorder;
+
+  if (nargin == 1)
+    __recorder_record__ (hrecorder);
+  else
+    __recorder_record__ (hrecorder, length);
   endif
 
-  __recorder_record__ (struct (varargin{1}).recorder, varargin{2:end});
-
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

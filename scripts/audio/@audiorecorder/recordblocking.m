@@ -31,12 +31,16 @@
 ## @seealso{@audiorecorder/record, @audiorecorder/audiorecorder}
 ## @end deftypefn
 
-function recordblocking (varargin)
+function recordblocking (recorder, length)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  __recorder_recordblocking__ (struct (varargin{1}).recorder, varargin{2});
+  __recorder_recordblocking__ (struct (recorder).recorder, length);
 
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

@@ -33,44 +33,36 @@
 
 function props = __get_properties__ (recorder)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  if (__recorder_isrecording__ (struct (recorder).recorder))
-    running = "on";
-  else
-    running = "off";
-  endif
+  hrecorder = struct (recorder).recorder;
 
   props = struct ("BitsPerSample",
-                  __recorder_get_nbits__ (struct (recorder).recorder),
+                  __recorder_get_nbits__ (hrecorder),
 
                   "CurrentSample",
-                  __recorder_get_sample_number__ (struct (recorder).recorder),
+                  __recorder_get_sample_number__ (hrecorder),
 
                   "DeviceID",
-                  __recorder_get_id__ (struct (recorder).recorder),
+                  __recorder_get_id__ (hrecorder),
 
                   "NumberOfChannels",
-                  __recorder_get_channels__ (struct (recorder).recorder),
+                  __recorder_get_channels__ (hrecorder),
 
                   "Running",
-                  running,
+                  ifelse (__recorder_isrecording__ (hrecorder), "on", "off"),
 
                   "SampleRate",
-                  __recorder_get_fs__ (struct (recorder).recorder),
+                  __recorder_get_fs__ (hrecorder),
 
                   "TotalSamples",
-                  __recorder_get_total_samples__ (struct (recorder).recorder),
+                  __recorder_get_total_samples__ (hrecorder),
 
                   "Tag",
-                  __recorder_get_tag__ (struct (recorder).recorder),
+                  __recorder_get_tag__ (hrecorder),
 
                   "Type",
                   "audiorecorder",
 
                   "UserData",
-                  __recorder_get_userdata__ (struct (recorder).recorder));
+                  __recorder_get_userdata__ (hrecorder));
 
 endfunction

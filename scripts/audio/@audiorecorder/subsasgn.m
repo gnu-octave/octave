@@ -31,7 +31,7 @@
 ## @seealso{@audiorecorder/audiorecorder}
 ## @end deftypefn
 
-function value = subsasgn (recorder, idx, rhs)
+function recorder = subsasgn (recorder, idx, rhs)
 
   if (nargin != 3)
     print_usage ();
@@ -44,9 +44,20 @@ function value = subsasgn (recorder, idx, rhs)
   if (strcmp (idx(1).type, "."))
     field = idx.subs;
     set (recorder, field, rhs);
-    value = recorder;
   else
     error ("@audiorecorder/subsasgn: invalid subscript type");
   endif
 
 endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! recorder.Tag = "mytag";
+%! assert (get (recorder, "Tag"), "mytag");
+
+## Test input validation
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! fail ("recorder(1).Tag = 5", "invalid subscript type");
+%! fail ("recorder{1}.Tag = 5", "invalid subscript type");

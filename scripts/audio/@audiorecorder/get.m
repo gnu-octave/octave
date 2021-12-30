@@ -37,28 +37,60 @@
 ## @seealso{@audiorecorder/set, @audiorecorder/audiorecorder}
 ## @end deftypefn
 
-function retval = get (varargin)
+function value = get (recorder, name)
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-  endif
-
-  properties = __get_properties__ (varargin{1});
+  properties = __get_properties__ (recorder);
 
   if (nargin == 1)
-    retval = properties;
+    value = properties;
   elseif (nargin == 2)
-    pnames = varargin{2};
+    pnames = name;
     if (ischar (pnames))
-      retval = getfield (properties, pnames);
+      value = getproperty (properties, pnames);
     elseif (iscellstr (pnames))
-      retval = cell (size (pnames));
+      value = cell (size (pnames));
       for i = 1:numel (pnames)
-        retval{i} = getfield (properties, pnames{i});
+        value{i} = getproperty (properties, pnames{i});
       endfor
     else
-      error ("@audiorecorder/get: invalid NAME argument");
+      error ("@audiorecorder/get: NAME must be a string or cell array of strings");
     endif
   endif
 
 endfunction
+
+function value = getproperty (properties, pname)
+
+  persistent valid_props;
+  if (isempty (valid_props))
+    valid_props = { "BitsPerSample", "CurrentSample", "DeviceID", ...
+                    "NumberOfChannels", "Running", "SampleRate", ...
+                    "TotalSamples", "Tag", "Type", "UserData" };
+  endif
+
+  idx = find (strcmpi (pname, valid_props), 1);
+  if (isempty (idx))
+    error ('@audiorecorder/get: "%s" is not a valid property name', pname);
+  endif
+
+  value = properties.(valid_props{idx});
+
+endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! props = get (recorder);
+%! assert (fieldnames (props), {"BitsPerSample"; "CurrentSample"; "DeviceID";
+%!         "NumberOfChannels"; "Running"; "SampleRate"; "TotalSamples"; "Tag";
+%!         "Type"; "UserData"});
+%! value = get (recorder, "Running");
+%! assert (value, "off");
+%! values = get (recorder, {"SampleRate", "BitsPerSample", "NumberOfChannels"});
+%! assert (values, {44100, 16, 2});
+
+## Test input validation
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! fail ("get (recorder, 1)", "NAME must be a string");
+%! fail ('get (recorder, "foobar")', '"foobar" is not a valid property');

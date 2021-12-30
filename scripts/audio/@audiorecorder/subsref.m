@@ -49,3 +49,15 @@ function value = subsref (recorder, idx)
   endif
 
 endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! set (recorder, "Tag", "mytag");
+%! assert (recorder.Tag, "mytag");
+
+## Test input validation
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! fail ("recorder(1).Tag", "invalid subscript type");
+%! fail ("recorder{1}.Tag", "invalid subscript type");

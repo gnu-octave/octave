@@ -32,10 +32,11 @@
 
 function tf = isrecording (recorder)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   tf = __recorder_isrecording__ (struct (recorder).recorder);
 
 endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! assert (isrecording (recorder), false);

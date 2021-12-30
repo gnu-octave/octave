@@ -36,33 +36,64 @@
 ## @seealso{@audiorecorder/audiorecorder}
 ## @end deftypefn
 
-function data = getaudiodata (varargin)
+function data = getaudiodata (recorder, datatype)
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-  endif
-
-  recorder = varargin{1};
+  hrecorder = struct (recorder).recorder;
 
   if (nargin == 1)
-    data = __recorder_getaudiodata__ (struct (recorder).recorder);
+    data = __recorder_getaudiodata__ (hrecorder);
   else
-    data = __recorder_getaudiodata__ (struct (recorder).recorder);
-    type = varargin{2};
-    switch (type)
+    data = __recorder_getaudiodata__ (hrecorder);
+    switch (datatype)
+      case "double"
+        ## Do nothing, data is already of type double
+      case "single"
+        data = single (data);
       case "int16"
         data = int16 (data * (2.0 ^ 15));
       case "int8"
         data = int8 (data * (2.0 ^ 7));
       case "uint8"
         data = uint8 ((data + 1.0) * 0.5 * (2.0 ^ 8 - 1));
+      otherwise
+        error ('@audiorecorder/getaudiodata: invalid DATATYPE "%s"', datatype)
     endswitch
   endif
 
   if (get (recorder, "NumberOfChannels") == 2)
-    data = data';
+    data = data.';
   else
-    data = data(1,:)';
+    data = data(1,:).';
   endif
 
 endfunction
+
+
+## Tests of audiorecorder must not actually record anything.
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! data = getaudiodata (recorder);
+%! assert (isa (data, "double"));
+%! data = getaudiodata (recorder, "double");
+%! assert (isa (data, "double"));
+%! data = getaudiodata (recorder, "single");
+%! assert (isa (data, "single"));
+%! data = getaudiodata (recorder, "int16");
+%! assert (isa (data, "int16"));
+%! data = getaudiodata (recorder, "int8");
+%! assert (isa (data, "int8"));
+%! data = getaudiodata (recorder, "uint8");
+%! assert (isa (data, "uint8"));
+%! assert (size (data)(1), recorder.TotalSamples);
+%! assert (size (data)(2), 2);
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 8, 1);
+%! data = getaudiodata (recorder);
+%! assert (size (data)(1), recorder.TotalSamples);
+%! assert (size (data)(2), 1);
+
+## Test input validation
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! recorder = audiorecorder (44100, 16, 2);
+%! fail ("getaudiodata (recorder, 'foobar')", "invalid DATATYPE");

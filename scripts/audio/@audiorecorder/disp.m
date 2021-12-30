@@ -31,13 +31,13 @@
 
 function disp (recorder)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   printf ("audiorecorder object with properties:\n\n");
   for [val, prop] = __get_properties__ (recorder)
     printf ("  %s = ", prop), disp (val);
   endfor
 
 endfunction
+
+
+## No tests possible/needed for this function
+%!assert (1)

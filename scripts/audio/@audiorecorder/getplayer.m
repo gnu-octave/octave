@@ -30,15 +30,20 @@
 ## @seealso{@audioplayer/audioplayer, @audiorecorder/audiorecorder}
 ## @end deftypefn
 
-function player = getplayer (varargin)
+function player = getplayer (recorder)
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-  endif
-
-  recorder = varargin{1};
   data = getaudiodata (recorder);
-  player = audioplayer (data, get (recorder, "SampleRate"),
+  player = audioplayer (data,
+                        get (recorder, "SampleRate"),
                         get (recorder, "BitsPerSample"));
 
 endfunction
+
+
+## FIXME: Uncomment when audioplayer constructor supports null data
+%!#testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!# recorder = audiorecorder (44100, 16, 2);
+%!# player = getplayer (recorder);
+%!# assert (isa (player, "audioplayer"));
+%!# assert (player.SampleRate, 44100);
+%!# assert (player.BitsPerSample, 16);

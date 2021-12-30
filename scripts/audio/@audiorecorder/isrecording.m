@@ -27,6 +27,7 @@
 ## @deftypefn {} {@var{tf} =} isrecording (@var{recorder})
 ## Return true if the audiorecorder object @var{recorder} is currently
 ## recording audio and false otherwise.
+## @seealso{@audiorecorder/pause, @audiorecorder/audiorecorder}
 ## @end deftypefn
 
 function tf = isrecording (recorder)

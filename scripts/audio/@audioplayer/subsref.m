@@ -28,6 +28,7 @@
 ## Perform subscripted selection on the audio player object @var{player}.
 ##
 ## Return the player property value named by @var{idx}.
+## @seealso{@audioplayer/audioplayer}
 ## @end deftypefn
 
 function value = subsref (player, idx)

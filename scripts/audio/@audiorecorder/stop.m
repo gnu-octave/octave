@@ -25,7 +25,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} stop (@var{recorder})
-## Stop the audiorecorder object @var{recorder} and clean up any audio streams.
+## Stop recording with audiorecorder object @var{recorder} and clean up any
+## audio streams.
+## @seealso{@audiorecorder/pause, @audiorecorder/resume,
+## @audiorecorder/audiorecorder}
 ## @end deftypefn
 
 function stop (recorder)

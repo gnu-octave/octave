@@ -32,16 +32,35 @@
 ## Create an audioplayer object that will play back data @var{y} at sample
 ## rate @var{fs}.
 ##
-## The optional arguments @var{nbits}, and @var{id} specify the bit depth and
-## player device id, respectively.  Device IDs may be found using the
-## audiodevinfo function.  Given an audioplayer object, use the data from the
-## object to initialize the player.
+## The signal @var{y} can be a vector (mono audio) or a two-dimensional array
+## (multi-channel audio).
 ##
-## The signal @var{y} can be a vector or a two-dimensional array.
+## The optional arguments @var{nbits} and @var{id} specify the number of bits
+## per sample and player device ID, respectively.  Device IDs may be found
+## using the @code{audiodevinfo} function.
 ##
-## The following example will create an audioplayer object that will play
-## back one second of white noise at 44100 sample rate using 8 bits per
-## sample.
+## Given an audiorecorder object @var{recorder}, use the data from the object
+## to initialize the player.
+##
+## The list of actions for an audioplayer object are shown below.  All
+## methods require an audioplayer object as the first argument.
+##
+## @multitable @columnfractions 0.2 0.75
+## @headitem Method @tab Description
+## @item get @tab Read audioplayer property values
+## @item isplaying @tab Return true if audioplayer is playing
+## @item pause @tab Pause audioplayer playback
+## @item play @tab Play audio stored in audioplayer object w/o blocking
+## @item playblocking @tab Play audio stored in audioplayer object
+## @item resume @tab Resume playback after pause
+## @item set @tab Write audioplayer property values
+## @item stop @tab Stop playback
+## @end multitable
+##
+## Example
+##
+## Create an audioplayer object that will play back one second of white noise
+## at 44100 sample rate using 8 bits per sample.
 ##
 ## @example
 ## @group
@@ -50,8 +69,13 @@
 ## play (player);
 ## @end group
 ## @end example
+## @seealso{@audioplayer/get, @audioplayer/isplaying, @audioplayer/pause,
+## @audioplayer/play, @audioplayer/playblocking, @audioplayer/resume,
+## @audioplayer/set, @audioplayer/stop, audiodevinfo,
+## @audiorecorder/audiorecorder, sound, soundsc}
 ## @end deftypefn
 
+################################################################################
 ## FIXME: callbacks don't work properly, apparently because portaudio
 ## will execute the callbacks in a separate thread, and calling Octave
 ## functions in a separate thread which is likely to cause trouble with
@@ -85,6 +109,7 @@
 ## # play for as long as you want
 ## stop (player);
 ## @end group
+################################################################################
 
 function player = audioplayer (varargin)
 

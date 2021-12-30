@@ -26,12 +26,17 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} playblocking (@var{player})
 ## @deftypefnx {} {} playblocking (@var{player}, @var{start})
-## @deftypefnx {} {} playblocking (@var{player}, @var{limits})
-## Play audio stored in the audioplayer object @var{player} with blocking.
+## @deftypefnx {} {} playblocking (@var{player}, [@var{start}, @var{end}])
+## Play audio stored in the audioplayer object @var{player} with blocking
+## (synchronous I/O).
 ##
-## Given optional argument start, begin playing at @var{start} samples in the
-## recording.  Given a two-element vector @var{limits}, begin and end playing
-## at the number of samples specified by the elements of the vector.
+## If the optional argument @var{start} is provided, begin playing
+## @var{start} samples in to the recording.
+##
+## If the optional argument @var{end} is provided, stop playing at
+## @var{end} samples into the recording.
+## @seealso{@audioplayer/play, @audioplayer/pause, @audioplayer/stop,
+## @audioplayer/audioplayer}
 ## @end deftypefn
 
 function playblocking (varargin)

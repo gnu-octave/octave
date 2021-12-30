@@ -25,7 +25,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} pause (@var{player})
-## Pause the audioplayer @var{player}.
+## Pause playback of audioplayer @var{player}.
+## @seealso{@audioplayer/resume, @audioplayer/stop, @audioplayer/audioplayer}
 ## @end deftypefn
 
 function pause (player)

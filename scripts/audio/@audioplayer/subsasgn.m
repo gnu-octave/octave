@@ -28,6 +28,7 @@
 ## Perform subscripted assignment on the audio player object @var{player}.
 ##
 ## Assign the value of @var{rhs} to the player property named by @var{idx}.
+## @seealso{@audioplayer/audioplayer}
 ## @end deftypefn
 
 function value = subsasgn (player, idx, rhs)

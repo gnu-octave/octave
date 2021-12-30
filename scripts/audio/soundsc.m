@@ -49,14 +49,10 @@
 ## @seealso{sound, @audioplayer/audioplayer, record}
 ## @end deftypefn
 
-function soundsc (y, fs, nbits, yrange)
+function soundsc (y, fs, nbits, yrange = [])
 
   if (nargin < 1)
     print_usage ();
-  endif
-
-  if (nargin < 4)
-    yrange = [];
   endif
 
   if (nargin < 2 || isempty (fs))

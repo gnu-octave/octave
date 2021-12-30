@@ -36,7 +36,7 @@
 ## @seealso{@audiorecorder/audiorecorder, sound, soundsc}
 ## @end deftypefn
 
-function x = record (sec, fs = 8000)
+function data = record (sec, fs = 8000)
 
   if (nargin < 1)
     print_usage ();
@@ -50,16 +50,14 @@ function x = record (sec, fs = 8000)
     error ("record: sample rate FS must be a positive number");
   endif
 
-  x = [];
+  data = [];
 
   if (sec > 0)
-
     rec = audiorecorder (fs, 16, 1);
 
     recordblocking (rec, sec);
 
-    x = getaudiodata (rec);
-
+    data = getaudiodata (rec);
   endif
 
 endfunction

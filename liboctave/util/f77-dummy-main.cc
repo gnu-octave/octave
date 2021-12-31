@@ -27,15 +27,21 @@
 #  include "config.h"
 #endif
 
-#include <assert.h>
+#include <cassert>
 
-/* Dummy Fortran main declaration, needed in order to link to some
-   Fortran libraries.  See the AC_F77_DUMMY_MAIN macro documentation.
-   This function should never be called. */
+// Dummy Fortran main declaration, needed in order to link to some
+// Fortran libraries.  See the AC_F77_DUMMY_MAIN macro documentation.
+// This function should never be called.
 
 #if defined (F77_DUMMY_MAIN)
-#  if defined (__cplusplus)
+
 extern "C"
-#  endif
-int F77_DUMMY_MAIN () { assert (0); return 1; }
+int
+F77_DUMMY_MAIN (void)
+{
+  assert (0);
+
+  return 1;
+}
+
 #endif

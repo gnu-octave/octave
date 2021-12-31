@@ -51,10 +51,9 @@ UTIL_F77_SRC = \
   %reldir%/r1mach.f
 
 UTIL_C_SRC = \
-  %reldir%/f2c-main.c \
-  %reldir%/lo-cutils.c \
   %reldir%/blaswrap.c \
   %reldir%/f77-fcn.c \
+  %reldir%/lo-cutils.c \
   %reldir%/lo-error.c \
   %reldir%/oct-rl-edit.c \
   %reldir%/oct-rl-hist.c
@@ -64,6 +63,7 @@ UTIL_SRC = \
   %reldir%/cmd-edit.cc \
   %reldir%/cmd-hist.cc \
   %reldir%/data-conv.cc \
+  %reldir%/f77-dummy-main.cc \
   %reldir%/file-info.cc \
   %reldir%/glob-match.cc \
   %reldir%/kpse.cc \

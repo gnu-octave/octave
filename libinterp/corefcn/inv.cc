@@ -70,7 +70,7 @@ sparse matrix if possible.
 
   octave_value arg = args(0);
 
-  if (!(arg.isnumeric () || arg.islogical ()))
+  if (! arg.isnumeric ())
     err_wrong_type_arg ("inv", arg);
 
   if (arg.isempty ())

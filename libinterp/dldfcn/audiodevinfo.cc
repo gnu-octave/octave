@@ -565,8 +565,8 @@ public:
   octave_value get_userdata (void);
   PaStream * get_stream (void);
 
-  void playblocking (void);
   void play (void);
+  void playblocking (void);
   void pause (void);
   void resume (void);
   void stop (void);
@@ -886,7 +886,7 @@ audioplayer::~audioplayer (void)
   if (isplaying ())
     {
       warning_with_id ("Octave:audio-interrupt",
-                       "interrupting playing audioplayer");
+                       "interrupting audioplayer during playback");
       stop ();
     }
 }
@@ -1558,7 +1558,7 @@ audiorecorder::~audiorecorder (void)
   if (isrecording ())
     {
       warning_with_id ("Octave:audio-interrupt",
-                       "interrupting recording audiorecorder");
+                       "interrupting audiorecorder during recording");
       stop ();
     }
 }
@@ -1657,7 +1657,9 @@ audiorecorder::get_id (void)
 void
 audiorecorder::set_channels (int channels_arg)
 {
-  assert (channels_arg == 1 || channels_arg == 2);
+  if (channels_arg != 1 && channels_arg != 2)
+    error ("audiorecorder: number of channels must be 1 or 2");
+
   channels = channels_arg;
 }
 
@@ -1935,7 +1937,7 @@ Undocumented internal function.
                           || args(0).is_inline_function ());
 
       if (is_function)
-        error ("audiorecorder: callbacks not yet implemented");
+        error ("audiorecorder: callback functions are not yet implemented");
     }
 
   if (nargin >= 3)
@@ -2369,7 +2371,7 @@ Undocumented internal function.
                       || args(0).is_inline_function ());
 
   if (is_function)
-    error ("audioplayer: callbacks not yet implemented");
+    error ("audioplayer: callback functions are not yet implemented");
 
   recorder->set_y (args(0));
   recorder->set_fs (args(1).int_value ());

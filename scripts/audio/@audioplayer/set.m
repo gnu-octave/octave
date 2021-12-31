@@ -38,49 +38,81 @@
 ## @seealso{@audioplayer/get, @audioplayer/audioplayer}
 ## @end deftypefn
 
-function properties = set (varargin)
+function properties = set (player, varargin)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin > 3)
     print_usage ();
   endif
 
-  player = struct (varargin{1}).player;
+  hplayer = struct (player).player;
 
   if (nargin == 1)
-    properties.SampleRate = {};
-    properties.Tag = {};
-    properties.UserData = {};
+    properties = struct ("SampleRate", {{}}, "Tag", {{}}, "UserData", {{}});
   elseif (nargin == 2)
-    for [value, property] = varargin{2}
-      setproperty (player, property, value);
+    for [value, property] = varargin{1}
+      setproperty (hplayer, property, value);
     endfor
   elseif (nargin == 3)
-    if (iscell (varargin{2}))
+    if (iscell (varargin{1}))
       index = 1;
-      for property = varargin{2}
-        setproperty (player, char (property), varargin{3}{index});
+      for property = varargin{1}
+        setproperty (hplayer, char (property), varargin{2}{index});
         index += 1;
       endfor
     else
-      setproperty (player, varargin{2}, varargin{3});
+      setproperty (hplayer, varargin{1}, varargin{2});
     endif
-  else
-    error ("@audioplayer/set: wrong number of arguments to the set method");
   endif
 
 endfunction
 
 function setproperty (player, property, value)
 
-  switch (property)
-    case "SampleRate"
+  switch (lower (property))
+    case "samplerate"
       __player_set_fs__ (player, value);
-    case "Tag"
+    case "tag"
       __player_set_tag__ (player, value);
-    case "UserData"
+    case "userdata"
       __player_set_userdata__ (player, value);
     otherwise
-      error ("audioplayer: no such property or the property specified is read-only");
+      error ('@audioplayer/set: "%s" is not a valid property name or is read-only', property);
   endswitch
 
 endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! set (player, "SampleRate", 8800);
+%! set (player, "Tag", "mytag");
+%! ## Also test case insensitivity
+%! set (player, "USERdata", [1, 2; 3, 4]);
+%! assert (player.SampleRate, 8800);
+%! assert (player.Tag, "mytag");
+%! assert (player.UserData, [1, 2; 3, 4]);
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! set (player, {"SampleRate", "Tag", "UserData"},
+%!              {8800, "mytag", [1, 2; 3, 4]});
+%! assert (player.SampleRate, 8800);
+%! assert (player.Tag, "mytag");
+%! assert (player.UserData, [1, 2; 3, 4]);
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! props = set (player);
+%! props.SampleRate = 8800;
+%! props.Tag = "mytag";
+%! props.UserData = [1, 2; 3, 4];
+%! set (player, props);
+%! assert (player.SampleRate, 8800);
+%! assert (player.Tag, "mytag");
+%! assert (player.UserData, [1, 2; 3, 4]);
+
+## Test input validation
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! fail ('set (player, "foobar", 1)', "not a valid property name"); 
+%! fail ('set (player, "Running", 1)', "is read-only"); 

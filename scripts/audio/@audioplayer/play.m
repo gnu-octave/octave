@@ -38,12 +38,18 @@
 ## @audioplayer/audioplayer}
 ## @end deftypefn
 
-function play (varargin)
+function play (player, length)
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
+  hplayer = struct (player).player;
+
+  if (nargin == 1)
+    __player_play__ (hplayer);
+  else
+    __player_play__ (hplayer, length);
   endif
 
-  __player_play__ (struct (varargin{1}).player, varargin{2:end});
-
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

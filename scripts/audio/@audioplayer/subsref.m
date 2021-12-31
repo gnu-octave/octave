@@ -49,3 +49,15 @@ function value = subsref (player, idx)
   endif
 
 endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! set (player, "Tag", "mytag");
+%! assert (player.Tag, "mytag");
+
+## Test input validation
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! fail ("player(1).Tag", "invalid subscript type");
+%! fail ("player{1}.Tag", "invalid subscript type");

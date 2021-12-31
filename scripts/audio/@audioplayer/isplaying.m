@@ -32,10 +32,11 @@
 
 function tf = isplaying (player)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   tf = __player_isplaying__ (struct (player).player);
 
 endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! assert (isplaying (player), false);

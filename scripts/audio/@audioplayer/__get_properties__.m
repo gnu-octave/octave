@@ -32,44 +32,36 @@
 
 function props = __get_properties__ (player)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  if (__player_isplaying__ (struct (player).player))
-    running = "on";
-  else
-    running = "off";
-  endif
+  hplayer = struct (player).player;
 
   props = struct ("BitsPerSample",
-                  __player_get_nbits__ (struct (player).player),
+                  __player_get_nbits__ (hplayer),
 
                   "CurrentSample",
-                  __player_get_sample_number__ (struct (player).player),
+                  __player_get_sample_number__ (hplayer),
 
                   "DeviceID",
-                  __player_get_id__ (struct (player).player),
+                  __player_get_id__ (hplayer),
 
                   "NumberOfChannels",
-                  __player_get_channels__ (struct (player).player),
+                  __player_get_channels__ (hplayer),
 
                   "Running",
-                  running,
+                  ifelse (__player_isplaying__ (hplayer), "on", "off"),
 
                   "SampleRate",
-                  __player_get_fs__ (struct (player).player),
+                  __player_get_fs__ (hplayer),
 
                   "TotalSamples",
-                  __player_get_total_samples__ (struct (player).player),
+                  __player_get_total_samples__ (hplayer),
 
                   "Tag",
-                  __player_get_tag__ (struct (player).player),
+                  __player_get_tag__ (hplayer),
 
                   "Type",
                   "audioplayer",
 
                   "UserData",
-                  __player_get_userdata__ (struct (player).player));
+                  __player_get_userdata__ (hplayer));
 
 endfunction

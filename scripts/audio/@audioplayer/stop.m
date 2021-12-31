@@ -32,10 +32,10 @@
 
 function stop (player)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   __player_stop__ (struct (player).player);
 
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

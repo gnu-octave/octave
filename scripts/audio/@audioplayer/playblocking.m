@@ -31,7 +31,7 @@
 ## (synchronous I/O).
 ##
 ## If the optional argument @var{start} is provided, begin playing
-## @var{start} samples in to the recording.
+## @var{start} samples into the recording.
 ##
 ## If the optional argument @var{end} is provided, stop playing at
 ## @var{end} samples into the recording.
@@ -39,12 +39,16 @@
 ## @audioplayer/audioplayer}
 ## @end deftypefn
 
-function playblocking (varargin)
+function playblocking (player, length)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin != 2)
     print_usage ();
   endif
 
-  __player_playblocking__ (struct (varargin{1}).player, varargin{2:end});
+  __player_playblocking__ (struct (player).player, length);
 
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

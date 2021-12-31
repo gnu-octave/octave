@@ -125,15 +125,22 @@ function player = audioplayer (varargin)
     elseif (nargin == 2)
       recorder = varargin{1};
       data = getaudiodata (recorder);
-      player = audioplayer (data, get (recorder, "SampleRate"),
-                            get (recorder, "BitsPerSample"), varargin{2});
+      player = audioplayer (data,
+                            get (recorder, "SampleRate"),
+                            get (recorder, "BitsPerSample"),
+                            varargin{2});
     else
       print_usage ();
     endif
   else
-    if (ischar (varargin{1}))
-      varargin{1} = str2func (varargin{1});
+    ## FIXME: Prevent use of callbacks until situation is fixed.
+    if (is_function_handle (varargin{1}) || ischar (varargin{1}))
+      error ("audioplayer: first argument cannot be a callback function");
     endif
+    ## FIXME: Uncomment when callback functions are supported.
+    ## if (ischar (varargin{1}))
+    ##   varargin{1} = str2func (varargin{1});
+    ## endif
     player.player = __player_audioplayer__ (varargin{:});
     player = class (player, "audioplayer");
   endif
@@ -142,6 +149,7 @@ endfunction
 
 
 %!demo
+%! ## Generate 2 seconds of white noise and play it back with a pause
 %! fs = 44100;
 %! audio = 0.25 * randn (2, 2*fs);
 %! player = audioplayer (audio, fs);
@@ -169,37 +177,34 @@ endfunction
 %! assert (player2.TotalSamples, 44100);
 
 %!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
-%! audio = 0.25 * randn (2, 44100);
+%! audio = randn (8000, 1);
 %! fs = 44100;
-%! player = audioplayer (audio, fs);
-%! set (player, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
-%! assert (player.SampleRate, 8000);
-%! assert (player.Tag, "tag");
-%! assert (player.UserData, [1, 2; 3, 4]);
+%! player = audioplayer (audio, fs, 16);
+%! assert (player.NumberOfChannels, 1);
+%! assert (player.SampleRate, 44100);
+%! assert (player.BitsPerSample, 16);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
-%! audio = 0.25 * randn (2, 44100);
-%! fs = 44100;
-%! player = audioplayer (audio, fs);
-%! settable = set (player);
-%! settable.SampleRate = 8000;
-%! settable.Tag = "tag";
-%! settable.UserData = [1, 2; 3, 4];
-%! set (player, settable);
-%! assert (player.SampleRate, 8000);
-%! assert (player.Tag, "tag");
-%! assert (player.UserData, [1, 2; 3, 4]);
+## FIXME: Callbacks do not work currently (5/31/2020) so BIST tests commented.
+%!#function [sound, status] = callback (samples)
+%!#  sound = rand (samples, 2) - 0.5;
+%!#  status = 0;
+%!#endfunction
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
-%! audio = 0.25 * randn (2, 44100);
-%! fs = 44100;
-%! player = audioplayer (audio, fs);
-%! player.SampleRate = 8000;
-%! player.Tag = "tag";
-%! player.UserData = [1, 2; 3, 4];
-%! properties = get (player, {"SampleRate", "Tag", "UserData"});
-%! assert (properties, {8000, "tag", [1, 2; 3, 4]});
+%!#testif HAVE_PORTAUDIO
+%!# player = audioplayer (@callback, 44100);
+%!# play (player);
+%!# pause (2);
+%!# stop (player);
+%!# assert (1);
 
+%!#testif HAVE_PORTAUDIO
+%!# player = audioplayer ("callback", 44100, 16);
+%!# play (player);
+%!# pause (2);
+%!# stop (player);
+%!# assert (1);
+
+## Verify input validation
 %!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! ## Verify nbits option only accepts 8, 16, 24
 %! fail ("audioplayer (1, 8e3, 9)", "NBITS must be 8, 16, or 24");
@@ -208,22 +213,5 @@ endfunction
 %! player = audioplayer (1, 8e3, 16);
 %! player = audioplayer (1, 8e3, 24);
 
-## FIXME: Callbacks do not work currently (5/31/2020) so BIST tests commented.
-#%!function [sound, status] = callback (samples)
-#%!  sound = rand (samples, 2) - 0.5;
-#%!  status = 0;
-#%!endfunction
-
-#%!testif HAVE_PORTAUDIO
-#%! player = audioplayer (@callback, 44100);
-#%! play (player);
-#%! pause (2);
-#%! stop (player);
-#%! assert (1);
-
-#%!testif HAVE_PORTAUDIO
-#%! player = audioplayer ("callback", 44100, 16);
-#%! play (player);
-#%! pause (2);
-#%! stop (player);
-#%! assert (1);
+%!error <first argument cannot be a callback> audioplayer (@ls, 8000)
+%!error <first argument cannot be a callback> audioplayer ("ls", 8000)

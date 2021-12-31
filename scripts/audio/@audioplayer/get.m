@@ -37,28 +37,62 @@
 ## @seealso{@audioplayer/set, @audioplayer/audioplayer}
 ## @end deftypefn
 
-function retval = get (varargin)
+function value = get (player, name)
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-  endif
-
-  properties = __get_properties__ (varargin{1});
+  properties = __get_properties__ (player);
 
   if (nargin == 1)
-    retval = properties;
+    value = properties;
   elseif (nargin == 2)
-    pnames = varargin{2};
+    pnames = name;
     if (ischar (pnames))
-      retval = getfield (properties, pnames);
+      value = getproperty (properties, pnames);
     elseif (iscellstr (pnames))
-      retval = cell (size (pnames));
+      value = cell (size (pnames));
       for i = 1:numel (pnames)
-        retval{i} = getfield (properties, pnames{i});
+        value{i} = getproperty (properties, pnames{i});
       endfor
     else
-      error ("@audioplayer/get: invalid NAME argument");
+      error ("@audioplayer/get: NAME must be a string or cell array of strings");
     endif
   endif
 
 endfunction
+
+function value = getproperty (properties, pname)
+
+  persistent valid_props;
+  if (isempty (valid_props))
+    valid_props = { "BitsPerSample", "CurrentSample", "DeviceID", ...
+                    "NumberOfChannels", "Running", "SampleRate", ...
+                    "TotalSamples", "Tag", "Type", "UserData" };
+  endif
+
+  idx = find (strcmpi (pname, valid_props), 1);
+  if (isempty (idx))
+    error ('@audioplayer/get: "%s" is not a valid property name', pname);
+  endif
+
+  value = properties.(valid_props{idx});
+
+endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! props = get (player);
+%! assert (fieldnames (props), {"BitsPerSample"; "CurrentSample"; "DeviceID";
+%!         "NumberOfChannels"; "Running"; "SampleRate"; "TotalSamples"; "Tag";
+%!         "Type"; "UserData"});
+%! value = get (player, "Running");
+%! assert (value, "off");
+%! value = get (player, "ruNNIng");  # test case insensitivity
+%! assert (value, "off");
+%! values = get (player, {"SampleRate", "BitsPerSample", "TotalSamples"});
+%! assert (values, {44100, 8, 2});
+
+## Test input validation
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! fail ("get (player, 1)", "NAME must be a string");
+%! fail ('get (player, "foobar")', '"foobar" is not a valid property');

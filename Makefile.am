@@ -233,7 +233,7 @@ SUBDIRS = libgnu
 # See bug #45578.
 BUILT_SOURCES += libgnu/libgnu.la
 
-libgnu/libgnu.la: oct-conf-post.h
+libgnu/libgnu.la: oct-conf-post-private.h oct-conf-post-public.h
 	cd libgnu && $(MAKE) $(AM_MAKEFLAGS) all
 
 include liboctave/module.mk
@@ -299,7 +299,8 @@ icons-dist-hook:
 endif
 
 BUILT_SOURCES += \
-  oct-conf-post.h \
+  oct-conf-post-private.h \
+  oct-conf-post-public.h \
   octave-config.h \
   run-octave \
   $(DIRSTAMP_FILES)
@@ -331,6 +332,7 @@ MAINTAINERCLEANFILES += \
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 nodist_octinclude_HEADERS += \
+  oct-conf-post-public.h \
   octave-config.h
 
 OCTAVE_INTERPRETER_TARGETS += \

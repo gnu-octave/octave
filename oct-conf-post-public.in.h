@@ -23,6 +23,12 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+#if defined (__cplusplus)
+#  include <cinttypes>
+#else
+#  include <inttypes.h>
+#endif
+
 #  define OCTAVE_NAMESPACE_BEGIN namespace octave {
 #  define OCTAVE_NAMESPACE_END }
 
@@ -54,6 +60,10 @@
 #  define OCTAVE_DEPRECATED(ver, msg)
 #  define OCTAVE_NORETURN
 #  define OCTAVE_UNUSED
+
+/* #  undef HAVE_OCTAVE_DEPRECATED_ATTR */
+/* #  undef HAVE_OCTAVE_NORETURN_ATTR */
+/* #  undef HAVE_OCTAVE_UNUSED_ATTR */
 #endif
 
 #if defined (__MINGW32__)
@@ -94,16 +104,6 @@
 #  endif
 #endif
 
-/* This macro is intended to be used only to enable inline functions or
-   typedefs that provide access to symbols that have been moved to the
-   octave namespace.  It may be temporarily useful to define this macro
-   when moving a symbol to the octave namespace but it should not be
-   defined when building released versions of Octave, as building those
-   should not require deprecated symbols.  It is defined in
-   octave-config.h, so users of Octave may continue to access symbols
-   using the deprecated names.  */
-/* #undef OCTAVE_PROVIDE_DEPRECATED_SYMBOLS */
-
 #if defined (__cplusplus)
 template <typename T>
 static inline void
@@ -112,76 +112,6 @@ octave_unused_parameter (const T&)
 #else
 #  define octave_unused_parameter(param) (void) param;
 #endif
-
-#if ! defined (HAVE_DEV_T)
-typedef short dev_t;
-#endif
-
-#if ! defined (HAVE_INO_T)
-typedef unsigned long ino_t;
-#endif
-
-#if defined (_MSC_VER)
-#  define __WIN32__ 1
-#  define WIN32 1
-   /* missing parameters in macros */
-#  pragma warning (disable: 4003)
-   /* missing implementations in template instantiation */
-#  pragma warning (disable: 4996)
-   /* deprecated function names (FIXME: ???) */
-#  pragma warning (disable: 4661)
-#endif
-
-#if defined (__APPLE__) && defined (__MACH__)
-#  define OCTAVE_USE_OS_X_API 1
-#endif
-
-/* Silence deprecated API warning from Apple OS > 10.14 */
-#if defined (__APPLE__) && defined (__MACH__) && defined (HAVE_OPENGL)
-#  define GL_SILENCE_DEPRECATION 1
-#endif
-
-/* Define to 1 if we expect to have <windows.h>, Sleep, etc. */
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-#  define OCTAVE_USE_WINDOWS_API 1
-#endif
-
-#if defined (OCTAVE_USE_WINDOWS_API)
-#  define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#elif defined (__CYGWIN__)
-#  define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
-#else
-#  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
-#endif
-
-#if defined (__MINGW32__)
-  /* We need to include this header or __MSVCRT_VERSION__ might not be defined
-     to the correct value */
-#  include <_mingw.h>
-#endif
-/* assume that Windows will support UTF-8 locales when using UCRT */
-#if defined (__MSVCRT_VERSION__) && __MSVCRT_VERSION__ == 0x0E00
-#  define OCTAVE_HAVE_WINDOWS_UTF8_LOCALE 1
-#endif
-
-/* sigsetjmp is a macro, not a function. */
-#if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
-#  define OCTAVE_HAVE_SIG_JUMP 1
-#endif
-
-/* To be able to use long doubles for 64-bit mixed arithmetics, we need
-   them at least 80 bits wide and we need roundl declared in math.h.
-   FIXME: Maybe substitute this by a more precise check in the future?  */
-#if (SIZEOF_LONG_DOUBLE >= 10) && defined (HAVE_ROUNDL)
-#  define OCTAVE_INT_USE_LONG_DOUBLE
-#  if (SIZEOF_LONG_DOUBLE < 16                                          \
-       && (defined __i386__ || defined __x86_64__) && defined __GNUC__)
-#    define OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED 1
-#  endif
-#endif
-
-/* oct-dlldefs.h */
 
 #if defined (OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS)
 #  if defined (_WIN32) || defined (__CYGWIN__)
@@ -239,6 +169,27 @@ typedef unsigned long ino_t;
 #  define OCTGUI_API OCTAVE_IMPORT
 #endif
 
+#if defined (OCTAVE_ENABLE_64)
+#  define OCTAVE_IDX_TYPE_FORMAT PRId64
+#else
+#  define OCTAVE_IDX_TYPE_FORMAT PRId32
+#endif
+
+#if OCTAVE_SIZEOF_F77_INT_TYPE == 8
+#  define OCTAVE_F77_INT_TYPE_FORMAT PRId64
+#else
+#  define OCTAVE_F77_INT_TYPE_FORMAT PRId32
+#endif
+
+#define OCTAVE_HAVE_F77_INT_TYPE 1
+
+#if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
+#  define OCTAVE_THREAD_LOCAL
+#endif
+
+typedef OCTAVE_IDX_TYPE octave_idx_type;
+typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
+
 /* Backward compatibility */
 
 #if defined (OCTAVE_ENABLE_64)
@@ -254,41 +205,3 @@ typedef unsigned long ino_t;
 #else
 #  define OCTAVE_FLOAT_TRUNCATE
 #endif
-
-#if defined (__cplusplus)
-#  include <cinttypes>
-#else
-#  include <inttypes.h>
-#endif
-
-typedef OCTAVE_IDX_TYPE octave_idx_type;
-
-#if defined (OCTAVE_ENABLE_64)
-#  define OCTAVE_IDX_TYPE_FORMAT PRId64
-#else
-#  define OCTAVE_IDX_TYPE_FORMAT PRId32
-#endif
-
-typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
-
-#if OCTAVE_SIZEOF_F77_INT_TYPE == 8
-#  define OCTAVE_F77_INT_TYPE_FORMAT PRId64
-#else
-#  define OCTAVE_F77_INT_TYPE_FORMAT PRId32
-#endif
-
-#define OCTAVE_HAVE_F77_INT_TYPE 1
-
-#if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
-#  define OCTAVE_THREAD_LOCAL
-#endif
-
-/* Make all .oct file interpreter functions and methods static.  */
-#define OCTAVE_USE_STATIC_DEFUN
-
-/* Tag indicating Octave's autoconf-generated config.h has been
-   included.  This symbol is provided because autoconf-generated
-   config.h files do not define a multiple-inclusion guard.  See also
-   the notes at the top of the generated octave-config.h file.  */
-
-#define OCTAVE_AUTOCONFIG_H_INCLUDED 1

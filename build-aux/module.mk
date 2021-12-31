@@ -27,7 +27,8 @@ $(GEN_CONFIG_SHELL) : %.sh : %.in.sh config.status
 	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@
 
 GEN_CONFIG_INC = \
-  oct-conf-post.h
+  oct-conf-post-private.h \
+  oct-conf-post-public.h
 
 $(GEN_CONFIG_INC) : %.h : %.in.h config.status
 	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@

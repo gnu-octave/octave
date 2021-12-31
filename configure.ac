@@ -2269,7 +2269,7 @@ if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
-dnl Define this way instead of with an #if in oct-conf-post.h so that
+dnl Define this way instead of with an #if in oct-conf-post-private.h so that
 dnl the build features script will get the correct value.
 dnl
 dnl The test on the sunlinsol_klu.h header is a bit of a kluge.
@@ -2994,7 +2994,8 @@ CXXFLAGS="$original_octave_configure_CXXFLAGS"
 
 ### Add footer to config.h
 
-AH_BOTTOM([#include "oct-conf-post.h"])
+AH_BOTTOM([#include "oct-conf-post-private.h"])
+AH_BOTTOM([#include "oct-conf-post-public.h"])
 
 ### Make all AC_DEFINES available to testif feature of test.m function.
 dnl This must reside at the bottom of configure.ac after all AC_DEFINES
@@ -3091,12 +3092,19 @@ AC_CONFIG_FILES([
   liboctave/octave.pc:liboctave/octave.in.pc
   libinterp/octinterp.pc:libinterp/octinterp.in.pc])
 
-dnl We use a .in.h file for oct-conf-post.h simply to copy it to the build tree
+dnl We use a .in.h file for oct-conf-post-private.h and
+dnl oct-conf-post-public.h simply to copy it to the build tree
 dnl so that we don't have to add the -I${top_srcdir} to any CPPFLAGS variables.
 
-AC_CONFIG_FILES([oct-conf-post.h-tmp:oct-conf-post.in.h])
-AC_CONFIG_COMMANDS([oct-conf-post.h],
-  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post.h-tmp oct-conf-post.h])
+AC_CONFIG_FILES([
+  oct-conf-post-private.h-tmp:oct-conf-post-private.in.h
+  oct-conf-post-public.h-tmp:oct-conf-post-public.in.h])
+
+AC_CONFIG_COMMANDS([oct-conf-post-private.h],
+  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post-private.h-tmp oct-conf-post-private.h])
+
+AC_CONFIG_COMMANDS([oct-conf-post-public.h],
+  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post-public.h-tmp oct-conf-post-public.h])
 
 OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
   liboctave/external/mk-f77-def.sh

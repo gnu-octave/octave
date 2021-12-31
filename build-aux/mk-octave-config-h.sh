@@ -100,208 +100,22 @@ cat << EOF
 #define octave_octave_config_h 1
 
 #if ! defined (OCTAVE_AUTOCONFIG_H_INCLUDED)
-
-#  if defined (__cplusplus)
-#    include <cinttypes>
-#  else
-#    include <inttypes.h>
-#  endif
-
-#  define OCTAVE_NAMESPACE_BEGIN namespace octave {
-#  define OCTAVE_NAMESPACE_END }
-
-#  if defined (__GNUC__)
-#    if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
-#      define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__ ("[" #ver "]: " msg)))
-#    else
-#      define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__))
-#    endif
-#    define OCTAVE_NORETURN __attribute__ ((__noreturn__))
-#    define OCTAVE_UNUSED __attribute__ ((__unused__))
-
-#    define HAVE_OCTAVE_DEPRECATED_ATTR 1
-#    define HAVE_OCTAVE_NORETURN_ATTR 1
-#    define HAVE_OCTAVE_UNUSED_ATTR 1
-#  else
-#    define OCTAVE_DEPRECATED(ver, msg)
-#    define OCTAVE_NORETURN
-#    define OCTAVE_UNUSED
-
-/* #    undef HAVE_OCTAVE_DEPRECATED_ATTR */
-/* #    undef HAVE_OCTAVE_NORETURN_ATTR */
-/* #    undef HAVE_OCTAVE_UNUSED_ATTR */
-#  endif
-
-#  if defined (__MINGW32__)
-    /* MinGW requires special handling due to different format specifiers
-     * on different platforms.  The macro __MINGW_PRINTF_FORMAT maps to
-     * either gnu_printf or ms_printf depending on where we are compiling
-     * to avoid warnings on format specifiers that are legal.
-     * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1331349  */
-#    if defined (__cplusplus)
-#      include <cstdio>
-#    else
-#      include <stdio.h>
-#    endif
-
-#    define OCTAVE_FORMAT_PRINTF(stringIndex, firstToCheck) \
-       __attribute__ ((format (__MINGW_PRINTF_FORMAT, stringIndex, firstToCheck)))
-
-#    define HAVE_OCTAVE_FORMAT_PRINTF_ATTR 1
-#  elif defined (__GNUC__)
-     /* The following attributes are used with gcc and clang compilers.  */
-#    define OCTAVE_FORMAT_PRINTF(index, first) \
-       __attribute__ ((__format__(printf, index, first)))
-
-#    define HAVE_OCTAVE_FORMAT_PRINTF_ATTR 1
-#  else
-#    define OCTAVE_FORMAT_PRINTF(index, first)
-
-/* #    undef HAVE_OCTAVE_FORMAT_PRINTF_ATTR */
-#  endif
-
-#  if ! defined (OCTAVE_FALLTHROUGH)
-#    if defined (__cplusplus) && __cplusplus > 201402L
-#      define OCTAVE_FALLTHROUGH [[fallthrough]]
-#    elif defined (__GNUC__) && __GNUC__ < 7
-#      define OCTAVE_FALLTHROUGH ((void) 0)
-#    else
-#      define OCTAVE_FALLTHROUGH __attribute__ ((__fallthrough__))
-#    endif
-#  endif
-
-#  define OCTAVE_PROVIDE_DEPRECATED_SYMBOLS 1
-
-#  if defined (__cplusplus)
-template <typename T>
-static inline void
-octave_unused_parameter (const T&)
-{ }
-#  else
-#    define octave_unused_parameter(param) (void) param;
-#  endif
-
-/* Defined to 1 if Octave libraries were built with visibility flags */
 EOF
-
-$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS.*$\)/#  \1/p' $config_h_file
-
-cat << EOF
-
-#  if defined (OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS)
-#    if defined (_WIN32) || defined (__CYGWIN__)
-#      if defined (__GNUC__)
-         /* GCC */
-#        define OCTAVE_EXPORT __attribute__ ((dllexport))
-#        define OCTAVE_IMPORT __attribute__ ((dllimport))
-#      else
-         /* MSVC */
-#        define OCTAVE_EXPORT __declspec(dllexport)
-#        define OCTAVE_IMPORT __declspec(dllimport)
-#      endif
-#    else
-       /* All other platforms. */
-#      define OCTAVE_EXPORT __attribute__ ((visibility ("default")))
-#      define OCTAVE_IMPORT
-#    endif
-#  else
-#      define OCTAVE_EXPORT
-#      define OCTAVE_IMPORT
-#  endif
-
-/* API macro for liboctave */
-#if defined (OCTAVE_DLL)
-#  define OCTAVE_API OCTAVE_EXPORT
-#else
-#  define OCTAVE_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libinterp */
-#if defined (OCTINTERP_DLL)
-#  define OCTINTERP_API OCTAVE_EXPORT
-#else
-#  define OCTINTERP_API OCTAVE_IMPORT
-#endif
-
-/* API macro for the Array class in liboctave and liboctinterp */
-#if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
-#  define OCTARRAY_API OCTAVE_EXPORT
-#else
-#  define OCTARRAY_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libinterp/graphics */
-#if defined (OCTGRAPHICS_DLL)
-#  define OCTGRAPHICS_API OCTAVE_EXPORT
-#else
-#  define OCTGRAPHICS_API OCTAVE_IMPORT
-#endif
-
-/* API macro for libgui */
-#if defined (OCTGUI_DLL)
-#  define OCTGUI_API OCTAVE_EXPORT
-#else
-#  define OCTGUI_API OCTAVE_IMPORT
-#endif
-EOF
-
-octave_idx_type="`$SED -n 's/#define OCTAVE_IDX_TYPE \([_a-zA-Z][_a-zA-Z0-9]*\)/\1/p' $config_h_file`"
-
-if test -z "$octave_idx_type"; then
-  echo "mk-octave-config-h.sh: failed to find OCTAVE_IDX_TYPE in $config_h_file" 1>&2
-  exit 1
-fi
-
-octave_f77_int_type="`$SED -n 's/#define OCTAVE_F77_INT_TYPE \([_a-zA-Z][_a-zA-Z0-9]*\)/\1/p' $config_h_file`"
-
-if test -z "$octave_f77_int_type"; then
-  echo "mk-octave-config-h.sh: failed to find OCTAVE_F77_INT_TYPE in $config_h_file" 1>&2
-  exit 1
-fi
-
-cat << EOF
-
-typedef $octave_idx_type octave_idx_type;
-typedef $octave_f77_int_type octave_f77_int_type;
-
-#  define OCTAVE_HAVE_F77_INT_TYPE 1
-
-
-#  if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
-#    define OCTAVE_THREAD_LOCAL
-#  endif
-
-EOF
-
-if grep "#define OCTAVE_ENABLE_FLOAT_TRUNCATE 1" $config_h_file > /dev/null; then
-  echo "#  define OCTAVE_FLOAT_TRUNCATE volatile"
-else
-  echo "#  define OCTAVE_FLOAT_TRUNCATE"
-fi
-
-echo ""
 
 $SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_64.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_FLOAT_TRUNCATE.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_OPENMP.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_F77_INT_TYPE.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_IDX_TYPE.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_F77_INT_TYPE.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_IDX_TYPE.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_INT.*$\)/#  \1/p' $config_h_file
-
-cat << EOF
-
-#  if defined (OCTAVE_ENABLE_64)
-#    define OCTAVE_IDX_TYPE_FORMAT PRId64
-#  else
-#    define OCTAVE_IDX_TYPE_FORMAT PRId32
-#  endif
-
-EOF
-
 $SED -n 's/#\(\(undef\|define\) gid_t.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) uid_t.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) nlink_t.*$\)/#  \1/p' $config_h_file
@@ -369,6 +183,14 @@ echo ""
 $SED -n 's/#\(\(undef\|define\) F77_FUNC.*$\)/#  \1/p' $config_h_file
 
 cat << EOF
+
+/* Enable inline functions or typedefs that provide access to
+   symbols that have been moved to the octave namespace so that
+   users of Octave may continue to access symbols using the
+   deprecated names.  */
+#  define OCTAVE_PROVIDE_DEPRECATED_SYMBOLS 1
+
+#  include "oct-conf-post-public.h"
 
 #endif
 

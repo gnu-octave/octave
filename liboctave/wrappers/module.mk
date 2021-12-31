@@ -24,6 +24,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/set-program-name-wrapper.h \
   %reldir%/signal-wrappers.h \
   %reldir%/stat-wrappers.h \
+  %reldir%/strcase-wrappers.h \
   %reldir%/strdup-wrapper.h \
   %reldir%/strftime-wrapper.h \
   %reldir%/strmode-wrapper.h \
@@ -67,6 +68,7 @@ WRAPPERS_SRC = \
   %reldir%/set-program-name-wrapper.c \
   %reldir%/signal-wrappers.c \
   %reldir%/stat-wrappers.c \
+  %reldir%/strcase-wrappers.c \
   %reldir%/strdup-wrapper.c \
   %reldir%/strftime-wrapper.c \
   %reldir%/strmode-wrapper.c \

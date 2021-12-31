@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2000-2022 The Octave Project Developers
+// Copyright (C) 2022 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,17 +23,27 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if defined (HAVE_CONFIG_H)
-#  include "config.h"
+#if ! defined (octave_strcase_wrappers_h)
+#define octave_strcase_wrappers_h 1
+
+#include "octave-config.h"
+
+#if defined (__cplusplus)
+#include <cstddef>
+using std::size_t;
+extern "C" {
+#else
+#include <stddef.h>
 #endif
 
-#include <stdlib.h>
+OCTAVE_API int
+octave_strcasecmp (const char *s1, const char *s2);
 
-#include "lo-cutils.h"
+OCTAVE_API int
+octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
-OCTAVE_API void
-octave_qsort (void *base, size_t n, size_t size,
-              int (*cmp) (const void *, const void *))
-{
-  qsort (base, n, size, cmp);
+#if defined (__cplusplus)
 }
+#endif
+
+#endif

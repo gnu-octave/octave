@@ -48,6 +48,7 @@
 #include "pathsearch.h"
 #include "quit.h"
 #include "str-vec.h"
+#include "strcase-wrappers.h"
 #include "vasprintf-wrapper.h"
 
 #include "Cell.h"

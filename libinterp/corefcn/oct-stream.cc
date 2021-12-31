@@ -42,7 +42,6 @@
 #include "Array.h"
 #include "Cell.h"
 #include "byte-swap.h"
-#include "lo-cutils.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
@@ -50,6 +49,7 @@
 #include "octave-preserve-stream-state.h"
 #include "quit.h"
 #include "str-vec.h"
+#include "strcase-wrappers.h"
 
 #include "error.h"
 #include "errwarn.h"

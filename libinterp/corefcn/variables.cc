@@ -1395,7 +1395,7 @@ DEFUN (missing_function_hook, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} missing_function_hook ()
 @deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val})
-@deftypefnx {} {} missing_function_hook (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val}, "local")
 Query or set the internal variable that specifies the function to call
 to provide extra information when an unknown identifier is referenced.
 
@@ -1496,7 +1496,7 @@ DEFUN (missing_component_hook, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} missing_component_hook ()
 @deftypefnx {} {@var{old_val} =} missing_component_hook (@var{new_val})
-@deftypefnx {} {} missing_component_hook (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} missing_component_hook (@var{new_val}, "local")
 Query or set the internal variable that specifies the function to call when
 a component of Octave is missing.
 

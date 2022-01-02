@@ -1138,7 +1138,7 @@ DEFMETHOD (max_stack_depth, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} max_stack_depth ()
 @deftypefnx {} {@var{old_val} =} max_stack_depth (@var{new_val})
-@deftypefnx {} {} max_stack_depth (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} max_stack_depth (@var{new_val}, "local")
 Query or set the internal limit on the number of times a function may
 be called recursively.
 

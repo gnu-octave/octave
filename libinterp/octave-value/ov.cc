@@ -3673,7 +3673,7 @@ DEFUN (optimize_permutation_matrix, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} optimize_permutation_matrix ()
 @deftypefnx {} {@var{old_val} =} optimize_permutation_matrix (@var{new_val})
-@deftypefnx {} {} optimize_permutation_matrix (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} optimize_permutation_matrix (@var{new_val}, "local")
 Query or set whether a special space-efficient format is used for storing
 permutation matrices.
 
@@ -3704,7 +3704,7 @@ DEFUN (optimize_diagonal_matrix, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} optimize_diagonal_matrix ()
 @deftypefnx {} {@var{old_val} =} optimize_diagonal_matrix (@var{new_val})
-@deftypefnx {} {} optimize_diagonal_matrix (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} optimize_diagonal_matrix (@var{new_val}, "local")
 Query or set whether a special space-efficient format is used for storing
 diagonal matrices.
 
@@ -3749,7 +3749,7 @@ DEFUN (optimize_range, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} optimize_range ()
 @deftypefnx {} {@var{old_val} =} optimize_range (@var{new_val})
-@deftypefnx {} {} optimize_range (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} optimize_range (@var{new_val}, "local")
 Query or set whether a special space-efficient format is used for storing
 ranges.
 

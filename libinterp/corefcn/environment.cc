@@ -157,7 +157,7 @@ DEFMETHOD (EDITOR, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} EDITOR ()
 @deftypefnx {} {@var{old_val} =} EDITOR (@var{new_val})
-@deftypefnx {} {} EDITOR (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} EDITOR (@var{new_val}, "local")
 Query or set the internal variable that specifies the default text editor.
 
 The default value is taken from the environment variable @w{@env{EDITOR}}
@@ -192,7 +192,7 @@ DEFMETHOD (EXEC_PATH, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} EXEC_PATH ()
 @deftypefnx {} {@var{old_val} =} EXEC_PATH (@var{new_val})
-@deftypefnx {} {} EXEC_PATH (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} EXEC_PATH (@var{new_val}, "local")
 Query or set the internal variable that specifies a colon separated
 list of directories to append to the shell PATH when executing external
 programs.
@@ -229,7 +229,7 @@ DEFMETHOD (IMAGE_PATH, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} IMAGE_PATH ()
 @deftypefnx {} {@var{old_val} =} IMAGE_PATH (@var{new_val})
-@deftypefnx {} {} IMAGE_PATH (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} IMAGE_PATH (@var{new_val}, "local")
 Query or set the internal variable that specifies a colon separated
 list of directories in which to search for image files.
 

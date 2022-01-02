@@ -2123,7 +2123,7 @@ DEFMETHOD (beep_on_error, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} beep_on_error ()
 @deftypefnx {} {@var{old_val} =} beep_on_error (@var{new_val})
-@deftypefnx {} {} beep_on_error (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} beep_on_error (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will try
 to ring the terminal bell before printing an error message.
 
@@ -2141,7 +2141,7 @@ DEFMETHOD (debug_on_error, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_on_error ()
 @deftypefnx {} {@var{old_val} =} debug_on_error (@var{new_val})
-@deftypefnx {} {} debug_on_error (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} debug_on_error (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will try
 to enter the debugger when an error is encountered.
 
@@ -2163,7 +2163,7 @@ DEFMETHOD (debug_on_warning, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_on_warning ()
 @deftypefnx {} {@var{old_val} =} debug_on_warning (@var{new_val})
-@deftypefnx {} {} debug_on_warning (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} debug_on_warning (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will try
 to enter the debugger when a warning is encountered.
 

@@ -713,7 +713,7 @@ DEFUN (confirm_recursive_rmdir, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} confirm_recursive_rmdir ()
 @deftypefnx {} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})
-@deftypefnx {} {} confirm_recursive_rmdir (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave
 will ask for confirmation before recursively removing a directory tree.
 

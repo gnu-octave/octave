@@ -1449,7 +1449,7 @@ DEFMETHOD (PS1, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PS1 ()
 @deftypefnx {} {@var{old_val} =} PS1 (@var{new_val})
-@deftypefnx {} {} PS1 (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} PS1 (@var{new_val}, "local")
 Query or set the primary prompt string.
 
 When executing interactively, Octave displays the primary prompt when it is
@@ -1493,7 +1493,7 @@ DEFMETHOD (PS2, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PS2 ()
 @deftypefnx {} {@var{old_val} =} PS2 (@var{new_val})
-@deftypefnx {} {} PS2 (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} PS2 (@var{new_val}, "local")
 Query or set the secondary prompt string.
 
 The secondary prompt is printed when Octave is expecting additional input to
@@ -1517,7 +1517,7 @@ DEFMETHOD (completion_append_char, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} completion_append_char ()
 @deftypefnx {} {@var{old_val} =} completion_append_char (@var{new_val})
-@deftypefnx {} {} completion_append_char (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} completion_append_char (@var{new_val}, "local")
 Query or set the internal character variable that is appended to
 successful command-line completion attempts.
 
@@ -1646,7 +1646,7 @@ DEFMETHOD (auto_repeat_debug_command, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} auto_repeat_debug_command ()
 @deftypefnx {} {@var{old_val} =} auto_repeat_debug_command (@var{new_val})
-@deftypefnx {} {} auto_repeat_debug_command (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} auto_repeat_debug_command (@var{new_val}, "local")
 Query or set the internal variable that controls whether debugging
 commands are automatically repeated when the input line is empty (typing
 just @key{RET}).

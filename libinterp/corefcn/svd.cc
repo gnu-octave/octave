@@ -400,7 +400,7 @@ DEFUN (svd_driver, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} svd_driver ()
 @deftypefnx {} {@var{old_val} =} svd_driver (@var{new_val})
-@deftypefnx {} {} svd_driver (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} svd_driver (@var{new_val}, "local")
 Query or set the underlying @sc{lapack} driver used by @code{svd}.
 
 Currently recognized values are @qcode{"gesdd"}, @qcode{"gesvd"}, and

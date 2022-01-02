@@ -517,7 +517,7 @@ DEFUN (debug_on_interrupt, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_on_interrupt ()
 @deftypefnx {} {@var{old_val} =} debug_on_interrupt (@var{new_val})
-@deftypefnx {} {} debug_on_interrupt (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} debug_on_interrupt (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will try
 to enter debugging mode when it receives an interrupt signal (typically
 generated with @kbd{C-c}).
@@ -551,7 +551,7 @@ DEFUN (sighup_dumps_octave_core, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} sighup_dumps_octave_core ()
 @deftypefnx {} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})
-@deftypefnx {} {} sighup_dumps_octave_core (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave tries
 to save all current variables to the file @file{octave-workspace} if it
 receives a hangup signal.
@@ -582,7 +582,7 @@ DEFUN (sigquit_dumps_octave_core, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} sigquit_dumps_octave_core ()
 @deftypefnx {} {@var{old_val} =} sigquit_dumps_octave_core (@var{new_val})
-@deftypefnx {} {} sigquit_dumps_octave_core (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} sigquit_dumps_octave_core (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave tries
 to save all current variables to the file @file{octave-workspace} if it
 receives a quit signal.
@@ -613,7 +613,7 @@ DEFUN (sigterm_dumps_octave_core, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} sigterm_dumps_octave_core ()
 @deftypefnx {} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})
-@deftypefnx {} {} sigterm_dumps_octave_core (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave tries
 to save all current variables to the file @file{octave-workspace} if it
 receives a terminate signal.

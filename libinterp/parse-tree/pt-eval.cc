@@ -5105,7 +5105,7 @@ DEFMETHOD (max_recursion_depth, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} max_recursion_depth ()
 @deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val})
-@deftypefnx {} {} max_recursion_depth (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val}, "local")
 Query or set the internal limit on the number of times a function may
 be called recursively.
 
@@ -5140,7 +5140,7 @@ DEFMETHOD (whos_line_format, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} whos_line_format ()
 @deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})
-@deftypefnx {} {} whos_line_format (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val}, "local")
 Query or set the format string used by the command @code{whos}.
 
 A full format string is:
@@ -5221,7 +5221,7 @@ DEFMETHOD (silent_functions, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} silent_functions ()
 @deftypefnx {} {@var{old_val} =} silent_functions (@var{new_val})
-@deftypefnx {} {} silent_functions (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} silent_functions (@var{new_val}, "local")
 Query or set the internal variable that controls whether internal
 output from a function is suppressed.
 
@@ -5255,7 +5255,7 @@ DEFMETHOD (string_fill_char, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} string_fill_char ()
 @deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val})
-@deftypefnx {} {} string_fill_char (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val}, "local")
 Query or set the internal variable used to pad all rows of a character
 matrix to the same length.
 
@@ -5304,7 +5304,7 @@ DEFMETHOD (PS4, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PS4 ()
 @deftypefnx {} {@var{old_val} =} PS4 (@var{new_val})
-@deftypefnx {} {} PS4 (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} PS4 (@var{new_val}, "local")
 Query or set the character string used to prefix output produced
 when echoing commands is enabled.
 

@@ -869,7 +869,7 @@ DEFUN (optimize_subsasgn_calls, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} optimize_subsasgn_calls ()
 @deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})
-@deftypefnx {} {} optimize_subsasgn_calls (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val}, "local")
 Query or set the internal flag for @code{subsasgn} method call
 optimizations.
 

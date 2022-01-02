@@ -2215,7 +2215,7 @@ DEFUN (struct_levels_to_print, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} struct_levels_to_print ()
 @deftypefnx {} {@var{old_val} =} struct_levels_to_print (@var{new_val})
-@deftypefnx {} {} struct_levels_to_print (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} struct_levels_to_print (@var{new_val}, "local")
 Query or set the internal variable that specifies the number of
 structure levels to display.
 
@@ -2234,7 +2234,7 @@ DEFUN (print_struct_array_contents, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} print_struct_array_contents ()
 @deftypefnx {} {@var{old_val} =} print_struct_array_contents (@var{new_val})
-@deftypefnx {} {} print_struct_array_contents (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} print_struct_array_contents (@var{new_val}, "local")
 Query or set the internal variable that specifies whether to print struct
 array contents.
 

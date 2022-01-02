@@ -54,7 +54,7 @@ DEFUN (output_precision, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} output_precision ()
 @deftypefnx {} {@var{old_val} =} output_precision (@var{new_val})
-@deftypefnx {} {} output_precision (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} output_precision (@var{new_val}, "local")
 Query or set the internal variable that specifies the minimum number of
 significant figures to display for numeric output.
 

@@ -26,7 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{val} =} disable_range ()
 ## @deftypefnx {} {@var{old_val} =} disable_range (@var{new_val})
-## @deftypefnx {} {} disable_range (@var{new_val}, "local")
+## @deftypefnx {} {@var{old_val} =} disable_range (@var{new_val}, "local")
 ## Query or set whether storing ranges in a special space-efficient format is
 ## disabled.
 ##

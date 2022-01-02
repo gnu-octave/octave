@@ -867,7 +867,7 @@ DEFMETHOD (history_timestamp_format_string, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} history_timestamp_format_string ()
 @deftypefnx {} {@var{old_val} =} history_timestamp_format_string (@var{new_val})
-@deftypefnx {} {} history_timestamp_format_string (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} history_timestamp_format_string (@var{new_val}, "local")
 Query or set the internal variable that specifies the format string
 for the comment line that is written to the history file when Octave
 exits.
@@ -902,7 +902,7 @@ DEFUN (history_save, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} history_save ()
 @deftypefnx {} {@var{old_val} =} history_save (@var{new_val})
-@deftypefnx {} {} history_save (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} history_save (@var{new_val}, "local")
 Query or set the internal variable that controls whether commands entered
 on the command line are saved in the history file.
 

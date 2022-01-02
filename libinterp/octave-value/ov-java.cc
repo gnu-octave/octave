@@ -3375,7 +3375,7 @@ DEFUN (java_matrix_autoconversion, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} java_matrix_autoconversion ()
 @deftypefnx {} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})
-@deftypefnx {} {} java_matrix_autoconversion (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} java_matrix_autoconversion (@var{new_val}, "local")
 Query or set the internal variable that controls whether Java arrays are
 automatically converted to Octave matrices.
 
@@ -3406,7 +3406,7 @@ DEFUN (java_unsigned_autoconversion, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} java_unsigned_autoconversion ()
 @deftypefnx {} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})
-@deftypefnx {} {} java_unsigned_autoconversion (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val}, "local")
 Query or set the internal variable that controls how integer classes are
 converted when @code{java_matrix_autoconversion} is enabled.
 
@@ -3438,7 +3438,7 @@ DEFUN (debug_java, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_java ()
 @deftypefnx {} {@var{old_val} =} debug_java (@var{new_val})
-@deftypefnx {} {} debug_java (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} debug_java (@var{new_val}, "local")
 Query or set the internal variable that determines whether extra debugging
 information regarding the initialization of the JVM and any Java exceptions
 is printed.

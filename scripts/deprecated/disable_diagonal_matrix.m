@@ -26,7 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{val} =} disable_diagonal_matrix ()
 ## @deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})
-## @deftypefnx {} {} disable_diagonal_matrix (@var{new_val}, "local")
+## @deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val}, "local")
 ## Query or set whether storing diagonal matrices in a special space-efficient
 ## format is disabled.
 ##

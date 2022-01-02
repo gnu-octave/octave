@@ -4060,7 +4060,7 @@ DEFUN (fixed_point_format, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} fixed_point_format ()
 @deftypefnx {} {@var{old_val} =} fixed_point_format (@var{new_val})
-@deftypefnx {} {} fixed_point_format (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} fixed_point_format (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will
 use a scaled format to print matrix values.
 
@@ -4103,7 +4103,7 @@ DEFUN (print_empty_dimensions, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} print_empty_dimensions ()
 @deftypefnx {} {@var{old_val} =} print_empty_dimensions (@var{new_val})
-@deftypefnx {} {} print_empty_dimensions (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} print_empty_dimensions (@var{new_val}, "local")
 Query or set the internal variable that controls whether the dimensions of
 empty matrices are printed along with the empty matrix symbol, @samp{[]}.
 
@@ -4134,7 +4134,7 @@ DEFUN (split_long_rows, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} split_long_rows ()
 @deftypefnx {} {@var{old_val} =} split_long_rows (@var{new_val})
-@deftypefnx {} {} split_long_rows (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} split_long_rows (@var{new_val}, "local")
 Query or set the internal variable that controls whether rows of a matrix
 may be split when displayed to a terminal window.
 

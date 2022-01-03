@@ -376,8 +376,10 @@ sparse matrix if possible.
 %!       "warning", "matrix singular");
 %! assert (A, sparse ([Inf, 0, 0; 0, 0, 0; 0, 0, Inf]));
 
-%!error inv ()
-%!error inv ([1, 2; 3, 4], 2)
+%!error <Invalid call> inv ()
+%!error <Invalid call> inv ([1, 2; 3, 4], 2)
+%!error <wrong type argument> inv ("Hello World")
+%!error <wrong type argument> inv ({1})
 %!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
 %!error <inverse of the null matrix not defined> inv (sparse (2, 2, 0))
 %!error <inverse of the null matrix not defined> inv (diag ([0, 0]))

@@ -61,17 +61,21 @@ function y = poly (x)
     print_usage ();
   endif
 
-  m = min (size (x));
-  n = max (size (x));
-  if (m == 0)
+  if (! isnumeric (x))
+    error ("poly: input must be numeric, not type %s", class (x));
+  elseif (ndims (x) > 2)
+    error ("poly: input must be a vector or a square matrix");
+  elseif (isempty (x))
     y = 1;
     return;
-  elseif (m == 1)
+  elseif (isvector (x))
+    n = numel (x);
     v = x;
-  elseif (m == n)
-    v = eig (x);
+  elseif (! issquare (x))
+    error ("poly: input matrix must be square");
   else
-    print_usage ();
+    n = size (x,1);
+    v = eig (x);
   endif
 
   y = zeros (1, n+1);
@@ -113,4 +117,7 @@ endfunction
 %! assert (y, [1 + 0i, -9 - 3i, 25 + 24i, -17 - 57i, -12 + 36i]);
 
 %!error <Invalid call> poly ()
-%!error poly ([1, 2, 3; 4, 5, 6])
+%!error <input must be numeric> poly ("foo")
+%!error <input must be numeric> poly ({1, "foo"; "bar", 1})
+%!error <input must be a vector or a square matrix> poly (ones (2, 2, 2))
+%!error <matrix must be square> poly ([1, 2, 3; 4, 5, 6])

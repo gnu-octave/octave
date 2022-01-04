@@ -347,7 +347,12 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   in_infeasible = (n_in > 0 && any (Ain*x0-bin < -rtol*(1+abs (bin))));
 
   info = 0;
-  if (eq_infeasible || in_infeasible)
+
+  if (isdefinite (H) != 1)
+    info = 2;
+  endif
+
+  if (info == 0 && (eq_infeasible || in_infeasible))
     ## The initial guess is not feasible.
     ## First, define an xbar that is feasible with respect to the
     ## equality constraints.
@@ -454,3 +459,9 @@ endfunction
 %!
 %! assert (isstruct (INFO) && isfield (INFO, "info") && (INFO.info == 0));
 %! assert ([x obj_qp], [1.0 0.5], eps);
+
+%!test <*61762>
+%! [x, obj, info] = qp ([], [21, 30, 39; 30, 45, 60; 39, 60, 81], [-40; -65; -90]);
+%! assert (x, zeros (3, 1));
+%! assert (obj, 0);
+%! assert (info.info, 2);

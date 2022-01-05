@@ -33,7 +33,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "lo-cutils.h"
 #include "oct-cmplx.h"
 #include "quit.h"
 

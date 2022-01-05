@@ -9,7 +9,6 @@ UTIL_INC = \
   %reldir%/file-info.h \
   %reldir%/glob-match.h \
   %reldir%/lo-array-errwarn.h \
-  %reldir%/lo-cutils.h \
   %reldir%/lo-hash.h \
   %reldir%/lo-ieee.h \
   %reldir%/lo-regexp.h \
@@ -53,7 +52,6 @@ UTIL_F77_SRC = \
 UTIL_C_SRC = \
   %reldir%/blaswrap.c \
   %reldir%/f77-fcn.c \
-  %reldir%/lo-cutils.c \
   %reldir%/lo-error.c \
   %reldir%/oct-rl-edit.c \
   %reldir%/oct-rl-hist.c

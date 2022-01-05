@@ -117,15 +117,17 @@ endfunction
 function outstr = do_header (title_str, intro_str, toc_cstr)
 
   mathjax_str = sprintf ("%s\n",
-'<script type="text/x-mathjax-config">',
-"MathJax.Hub.Config({",
-"  tex2jax: { inlineMath: [['$','$'], ['\\\\(','\\\\)']] },",
-"  TeX: { equationNumbers: { autoNumber: 'all' } }",
-"});",
+"<script>",
+"MathJax = {",
+"  tex: {",
+"    inlineMath: [['$','$'], ['\\\\(','\\\\)']],",
+"    tags: 'all'",
+"  }",
+"};",
 "</script>",
-['<script type="text/javascript" async ', ...
- 'src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?', ...
- 'config=TeX-MML-AM_CHTML"></script>']);
+'<script type="text/javascript" async ',
+'src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">',
+"</script>");
 
   stylesheet_str = sprintf ("%s\n",
 "<style>",

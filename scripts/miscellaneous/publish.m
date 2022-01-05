@@ -859,9 +859,9 @@ function str = format_text (str, formatter)
 
   ## Regular expressions for the formats:
   ##
-  ## 1) Links "<http://www.someurl.com>"
+  ## 1) Links "<https://www.someurl.com>"
   ## 2) Links "<octave:Function SOME TEXT>"
-  ## 3) Links "<http://www.someurl.com SOME TEXT>"
+  ## 3) Links "<https://www.someurl.com SOME TEXT>"
   ## 4) LaTeX block math "$$x^2$$"
   ## 5) LaTeX inline math "$x^2$"
   ## 6) Bold *text*
@@ -893,7 +893,7 @@ function str = format_text (str, formatter)
                        "once");
       switch (i)
         case 1
-          ## Links "<http://www.someurl.com>"
+          ## Links "<https://www.someurl.com>"
           url = cstr{j};
           cstr{j} = formatter ("link", url(2:end-1), url(2:end-1));
         case 2
@@ -902,16 +902,17 @@ function str = format_text (str, formatter)
           url = cstr{j};
           url = texinfo_esc (url(9:idx-1));
           v = version ();
-          if (v(end) == '+')
-            v = "interpreter";
+          if (v(end) != '0')  # No official release
+            v = "latest";
+          else
+            v = ["v" v];  # "v6.4.0" etc.
           endif
-          url = sprintf ( ...
-            "https://www.gnu.org/software/octave/doc/%s/XREF%s.html", v, url);
+          url = sprintf ("https://octave.org/doc/%s/XREF%s.html", v, url);
           txt = cstr{j};
           txt = format_text (txt(idx+1:end-1), formatter);
           cstr{j} = formatter ("link", url, txt);
         case 3
-          ## Links "<http://www.someurl.com SOME TEXT>"
+          ## Links "<https://www.someurl.com SOME TEXT>"
           idx = strfind (cstr{j}, " ")(1);
           url = cstr{j};
           url = url(2:idx-1);

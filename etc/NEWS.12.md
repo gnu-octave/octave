@@ -27,6 +27,11 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   N-dimensional indexing operation of a sparse matrix is attempted.  Both
   behaviors are Matlab-compatible.
 
+* The function `ismember` now supports the `"legacy"` option for determining
+  which index position to return when there are multiple matches.  The default
+  behavior is now to return the first instance.  The legacy option returns
+  the location of the last instance instead, and was the default behavior in
+  previous Octave versions and in Matlab release R2012b and earlier.
 
 ### Alphabetical list of new functions added in Octave 12
 

@@ -64,6 +64,9 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 
   octave_value arg = args(0);
 
+  if (! arg.isnumeric ())
+    err_wrong_type_arg ("pinv", arg);
+
   if (arg.isempty ())
     return ovl (Matrix ());
 
@@ -197,6 +200,12 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 %! y = pinv (x, 2);
 %! assert (diag (y), [1/3 1/2 0 0 0]');
 
+## Basic test for integer inputs
+%!assert (pinv (int32 (2)), 0.5)
+%!assert (pinv (uint32 (2)), 0.5)
+%!assert (pinv (int64 (2)), 0.5)
+%!assert (pinv (uint64 (2)), 0.5)
+
 ## Test special case of 0 scalars and vectors
 %!assert (pinv (0), 0)
 %!assert (pinv ([0, 0, 0]), [0; 0; 0])
@@ -206,6 +215,12 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 %!assert (pinv (complex ([0,0,0], [0,0,0])), [0; 0; 0])
 %!assert (pinv (complex (single (0),0)), single (0))
 %!assert (pinv (complex (single ([0,0,0]), [0,0,0])), single ([0; 0; 0]))
+
+## Test input validation
+%!error <wrong type argument> pinv ("Hello World")
+%!error <wrong type argument> pinv ({1})
+%!error <wrong type argument> pinv (true)
+
 */
 
 OCTAVE_NAMESPACE_END

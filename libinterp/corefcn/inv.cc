@@ -238,6 +238,12 @@ sparse matrix if possible.
 %! assert (xinv, single ([-2, 1; 1.5, -0.5]), 5*eps ("single"));
 %! assert (isa (rcond, "single"));
 
+## Basic test for integer inputs
+%!assert (inv (int32 (2)), 0.5)
+%!assert (inv (uint32 (2)), 0.5)
+%!assert (inv (int64 (2)), 0.5)
+%!assert (inv (uint64 (2)), 0.5)
+
 ## Normal scalar cases
 %!assert (inv (2), 0.5)
 %!test
@@ -380,6 +386,7 @@ sparse matrix if possible.
 %!error <Invalid call> inv ([1, 2; 3, 4], 2)
 %!error <wrong type argument> inv ("Hello World")
 %!error <wrong type argument> inv ({1})
+%!error <wrong type argument> inv (true)
 %!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
 %!error <inverse of the null matrix not defined> inv (sparse (2, 2, 0))
 %!error <inverse of the null matrix not defined> inv (diag ([0, 0]))

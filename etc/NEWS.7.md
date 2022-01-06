@@ -310,11 +310,11 @@ major release after 7):
 
 - Functions
 
-  Function                   | Replacement
-  -------------------------- |----------------------------
-  disable_diagonal_matrix    | optimize_diagonal_matrix
-  disable_permutation_matrix | optimize_permutation_matrix
-  disable_range              | optimize_range
+  Function                     | Replacement
+  ---------------------------- |----------------------------
+  `disable_diagonal_matrix`    | `optimize_diagonal_matrix`
+  `disable_permutation_matrix` | `optimize_permutation_matrix`
+  `disable_range`              | `optimize_range`
 
 - Properties
 
@@ -325,10 +325,10 @@ major release after 7):
 
   Operator | Replacement | Description
   ---------|-------------|------------
-  **       | ^           | Matrix exponent
-  .**      | .^          | Element-by-element exponent
-  .+       | +           | Element-by-element addition
-  .-       | -           | Element-by-element subtraction
+  `**`     | `^`         | Matrix exponent
+  `.**`    | `.^`        | Element-by-element exponent
+  `.+`     | `+`         | Element-by-element addition
+  `.-`     | `-`         | Element-by-element subtraction
 
 - Interpreter
 

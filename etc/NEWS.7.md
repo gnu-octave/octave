@@ -1,5 +1,5 @@
-Summary of important user-visible changes for version 7 (yyyy-mm-dd):
-----------------------------------------------------------------------
+Summary of important user-visible changes for version 7 (2022-01-05)
+--------------------------------------------------------------------
 
 ### General improvements
 

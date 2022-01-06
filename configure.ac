@@ -48,7 +48,7 @@ OCTAVE_VERSION="$PACKAGE_VERSION"
 
 OCTAVE_COPYRIGHT="Copyright (C) 2021-2022 The Octave Project Developers."
 
-OCTAVE_RELEASE_DATE="2021-11-24"
+OCTAVE_RELEASE_DATE="2022-01-05"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly
@@ -63,7 +63,7 @@ dnl
 dnl FIXME: Since we also set libtool versions for liboctave and libinterp,
 dnl perhaps we should be computing the "api version" from those versions numbers
 dnl in some way instead of setting it independently here.
-OCTAVE_API_VERSION="api-v56+"
+OCTAVE_API_VERSION="api-v57+"
 
 AC_SUBST(OCTAVE_MAJOR_VERSION)
 AC_SUBST(OCTAVE_MINOR_VERSION)

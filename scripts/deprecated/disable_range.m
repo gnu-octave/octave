@@ -27,6 +27,10 @@
 ## @deftypefn  {} {@var{val} =} disable_range ()
 ## @deftypefnx {} {@var{old_val} =} disable_range (@var{new_val})
 ## @deftypefnx {} {@var{old_val} =} disable_range (@var{new_val}, "local")
+##
+## @code{disable_range} is deprecated and will be removed in Octave version 9.
+## Use @code{optimize_range} instead.
+##
 ## Query or set whether storing ranges in a special space-efficient format is
 ## disabled.
 ##

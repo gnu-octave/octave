@@ -27,6 +27,10 @@
 ## @deftypefn  {} {@var{val} =} disable_diagonal_matrix ()
 ## @deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})
 ## @deftypefnx {} {@var{old_val} =} disable_diagonal_matrix (@var{new_val}, "local")
+##
+## @code{disable_diagonal_matrix} is deprecated and will be removed in Octave
+## version 9.  Use @code{optimize_diagonal_matrix} instead.
+##
 ## Query or set whether storing diagonal matrices in a special space-efficient
 ## format is disabled.
 ##

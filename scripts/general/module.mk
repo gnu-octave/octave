@@ -64,7 +64,6 @@ FCN_FILE_DIRS += \
   %reldir%/rng.m \
   %reldir%/rot90.m \
   %reldir%/rotdim.m \
-  %reldir%/shift.m \
   %reldir%/shiftdim.m \
   %reldir%/sortrows.m \
   %reldir%/sph2cart.m \

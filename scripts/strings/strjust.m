@@ -94,7 +94,7 @@ function y = strjust (s, pos = "right")
   endif
 
   ## Adjust the column indices.
-  jdx += shift (idx);
+  jdx += shift(idx);
 
   ## Create a blank matrix and position the nonblank characters.
   y = repmat (" ", nr, nc);

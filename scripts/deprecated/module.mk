@@ -4,7 +4,8 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/.oct-config \
   %reldir%/disable_diagonal_matrix.m \
   %reldir%/disable_permutation_matrix.m \
-  %reldir%/disable_range.m
+  %reldir%/disable_range.m \
+  %reldir%/shift.m
 
 %canon_reldir%dir = $(fcnfiledir)/deprecated
 

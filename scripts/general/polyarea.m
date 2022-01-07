@@ -55,9 +55,9 @@ function a = polyarea (x, y, dim)
   endif
 
   if (nargin == 2)
-    a = abs (sum (x .* (shift (y, -1) - shift (y, 1)))) / 2;
+    a = abs (sum (x .* (circshift (y, -1) - circshift (y, 1)))) / 2;
   else
-    a = abs (sum (x .* (shift (y, -1, dim) - shift (y, 1, dim)), dim)) / 2;
+    a = abs (sum (x .* (circshift (y, -1, dim) - circshift (y, 1, dim)), dim)) / 2;
   endif
 
 endfunction

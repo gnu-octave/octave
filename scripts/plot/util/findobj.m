@@ -217,7 +217,7 @@ function h = findobj (varargin)
 
   numpairs = np - 1;
   if (! isempty (logicaloperator))
-    logicaloperator = shift (logicaloperator, 1);
+    logicaloperator = circshift (logicaloperator, 1);
   endif
 
   ## Load all objects which qualify for being searched.

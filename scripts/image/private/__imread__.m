@@ -61,7 +61,7 @@ function varargout = __imread__ (filename, varargin)
     if (sum (idx) > 1)
       error ("imread: Index or Frames may only be specified once");
     endif
-    val = varargin{shift (idx, 1)};
+    val = varargin{circshift (idx, 1)};
     if (! is_valid_index_option (val) && ! strcmpi (val, "all"))
       error ("imread: %s must be a vector or the string 'all'", varargin{idx});
     endif

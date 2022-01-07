@@ -26,15 +26,29 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} shift (@var{x}, @var{b})
 ## @deftypefnx {} {} shift (@var{x}, @var{b}, @var{dim})
+##
+## @code{shift} is deprecated and will be removed in Octave version 10.  Use
+## @code{circshift} instead.
+##
 ## If @var{x} is a vector, perform a circular shift of length @var{b} of
 ## the elements of @var{x}.
 ##
 ## If @var{x} is a matrix, do the same for each column of @var{x}.
 ##
 ## If the optional @var{dim} argument is given, operate along this dimension.
+## @seealso{circshift}
 ## @end deftypefn
 
+## FIXME: DEPRECATED: Remove in version 10.
+
 function y = shift (x, b, dim)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "shift is deprecated and will be removed from a future version of Octave, please use circshift instead\n");
+  endif
 
   if (nargin < 2)
     print_usage ();

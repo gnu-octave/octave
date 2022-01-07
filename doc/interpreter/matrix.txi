@@ -112,8 +112,6 @@ its elements may have, consult @ref{Status of Variables}.
 
 @DOCSTRING(circshift)
 
-@DOCSTRING(shift)
-
 @DOCSTRING(shiftdim)
 
 @DOCSTRING(sort)

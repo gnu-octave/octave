@@ -27,6 +27,12 @@ The following functions and properties have been deprecated in Octave 8
 and will be removed from Octave 10 (or whatever version is the second
 major release after 8):
 
+- Functions
+
+  Function               | Replacement
+  -----------------------|------------------
+  `shift`                | `circshift`
+
 
 The following functions were deprecated in Octave 6 and have been removed
 from Octave 8.

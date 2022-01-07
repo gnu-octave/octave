@@ -302,9 +302,9 @@ the keyword "all".
 * `ytickangle`
 * `ztickangle`
 
-### Deprecated functions, properties, and operators
+### Deprecated functions and operators
 
-The following functions and properties have been deprecated in Octave 7
+The following functions and operators have been deprecated in Octave 7
 and will be removed from Octave 9 (or whatever version is the second
 major release after 7):
 
@@ -316,11 +316,6 @@ major release after 7):
   `disable_permutation_matrix` | `optimize_permutation_matrix`
   `disable_range`              | `optimize_range`
 
-- Properties
-
-  Object           | Property      | Value
-  -----------------|---------------|------------
-                   |               |
 - Operators
 
   Operator | Replacement | Description

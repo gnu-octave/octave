@@ -76,7 +76,7 @@ jobs:
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
 
       - name: configure ccache
         env:
@@ -215,7 +215,7 @@ jobs:
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
 
       - name: configure ccache
         # The cache doesn't seem to compress well on macOS. Is it already compressed?
@@ -420,7 +420,7 @@ jobs:
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}:refs/heads/default
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.

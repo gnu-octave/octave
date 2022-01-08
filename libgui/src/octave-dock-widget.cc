@@ -626,7 +626,7 @@ namespace octave
     // for widgets docked to the main window (non floating) and activate
     // the widget currently under the mouse
     if (m_focus_follows_mouse && ! isFloating () && (e->type () == QEvent::Enter))
-      activate ();
+      setFocus ();
 
     return QDockWidget::eventFilter (obj, e);
   }

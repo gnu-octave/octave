@@ -143,6 +143,10 @@ option disables keyboard shortcuts to avoid interference with readline
 key strokes in the Command Window.  Unlike versions prior to Octave 7,
 this preference now also affects the Ctrl-C/V shortcuts for copy/paste.
 
+- In command line mode, i.e. when Octave is started without the --gui option,
+the doc command now opens the GUI documentation browser as a standalone widget,
+provided that Octave was compiled with GUI support.
+
 ### Graphics backend
 
 - Support for Qt4 for both graphics and the GUI has been removed.

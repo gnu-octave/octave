@@ -150,7 +150,7 @@ endif
 ## Increment the following version numbers as needed and according
 ## to the rules in the etc/HACKING.md file:
 
-%canon_reldir%_liboctinterp_current = 9
+%canon_reldir%_liboctinterp_current = 10
 %canon_reldir%_liboctinterp_revision = 0
 %canon_reldir%_liboctinterp_age = 0
 

@@ -1064,6 +1064,29 @@ plot ((1:10) * 3);\n\
 before rendering.\n\
 @xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
 
+      case "itemhitfcn"
+        s.doc = "Callback function which is executed when a legend item \
+is clicked.  @xref{Callbacks, , @w{Callbacks section}}.\n\
+\n\
+The callback function must have the following prototype \
+@code{fcn (hlegend, evnt)}, where @code{hlegend} is the legend object handle \
+and @code{evnt} is a structure with the following fields:\n\
+@table @code\n\
+@item Peer\n\
+Handle of the plot object to which the clicked item is associated.\n\
+@item Region\n\
+May be @qcode{\"icon\"} or @qcode{\"label\"} depending on which part of \
+the item is clicked.\n\
+@item SelectionType\n\
+One of @qcode{\"normal\"}, @qcode{\"extend\"}, @qcode{\"open\"}, or \
+@qcode{\"alt\"}. \
+@xref{XREFfigureselectiontype, , @w{Figure @qcode{\"selectiontype\"}}}.\n\
+@item Source\n\
+Handle of the legend object.\n\
+@item EventName\n\
+Name is @qcode{\"ItemHit\"}.\n\
+@end table";
+
       case "location"
         s.doc = "Control the location of the legend.";
 
@@ -2077,8 +2100,8 @@ function s = getstructure (objname, base = [], props = {})
     if (isempty (props))
         props = {"autoupdate", "box", "color", "edgecolor", "fontangle", ...
                  "fontname", "fontsize", "fontunits", "fontweight", ...
-                 "location", "numcolumns", "orientation", "position", ...
-                 "string", "textcolor", "title", "units"};
+                 "itemhitfcn", "location", "numcolumns", "orientation", ...
+                 "position", "string", "textcolor", "title", "units"};
     endif
   elseif (strcmp (objname, "scatter"))
     ## Make sure to get a scatter object independent of graphics toolkit

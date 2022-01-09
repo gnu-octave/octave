@@ -308,7 +308,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                       "deletefcn", {@reset_cb, hl});
 
     ## Listeners to foreign objects properties are stored for later
-    ## deletion in "delfunction"
+    ## deletion in "reset_cb"
     hax = opts.axes_handles(1);
     hf = ancestor (hax, "figure");
 
@@ -350,7 +350,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
     addlistener (hl, "textcolor", ...
                  @(h, ~) set (findobj (h, "type", "text"), ...
-                               "color", get (hl, "textcolor")));
+                              "color", get (hl, "textcolor")));
 
     addlistener (hl, "visible", @update_visible_cb);
 
@@ -1076,14 +1076,21 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
 
       ## Main line
       vals = get (hplt(1), lprops);
-      hicon = __go_line__ (hl, [lprops; vals]{:});
+      hicon = __go_line__ (hl, [lprops; vals]{:}, ...
+                           "pickableparts", "all", ...
+                           "buttondownfcn", ...
+                           {@execute_itemhit, hl, hplt, "icon"});
+
       addproperty ("markerxdata", hicon, "double", 0);
       addproperty ("markerydata", hicon, "double", 0);
 
       ## Additional line for the marker
       vals = get (hplt(end), mprops);
       hmarker = __go_line__ (hl, "handlevisibility", "off", ...
-                             "xdata", 0, "ydata", 0, [mprops; vals]{:});
+                             "xdata", 0, "ydata", 0, [mprops; vals]{:}, ...
+                             "pickableparts", "all", ...
+                             "buttondownfcn", ...
+                             {@execute_itemhit, hl, hplt, "icon"});
       update_marker_cb (hmarker);
 
       ## Listeners
@@ -1127,7 +1134,10 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       vals {end-1} = mean (vals {end-1}, 1);
       vals {end} = mean (vals {end}, 1);
 
-      hicon = __go_scatter__ (hl, [all_sprops; vals]{:});
+      hicon = __go_scatter__ (hl, [all_sprops; vals]{:}, ...
+                              "pickableparts", "all", ...
+                              "buttondownfcn", ...
+                              {@execute_itemhit, hl, hplt, "icon"});
 
       ## Simple Listeners
       safe_property_link (hplt(1), hicon, sprops);
@@ -1151,7 +1161,10 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       ## Main patch
 
       vals = get (hplt(1), pprops);
-      hicon = __go_patch__ (hl, [pprops; vals]{:});
+      hicon = __go_patch__ (hl, [pprops; vals]{:}, ...
+                            "pickableparts", "all", ...
+                            "buttondownfcn", ...
+                            {@execute_itemhit, hl, hplt, "icon"});
 
       addproperty ("innerxdata", hicon, "any", 0);
       addproperty ("innerydata", hicon, "any", 0);
@@ -1159,7 +1172,10 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       ## Additional patch for the inner contour
       vals = get (hplt(end), pprops);
       htmp =  __go_patch__ (hl, "handlevisibility", "off", ...
-                            "xdata", 0, "ydata", 0, [pprops; vals]{:});
+                            "xdata", 0, "ydata", 0, [pprops; vals]{:}, ...
+                            "pickableparts", "all", ...
+                            "buttondownfcn", ...
+                            {@execute_itemhit, hl, hplt, "icon"});
 
       ## Listeners
       safe_property_link (hplt(1), hicon, pprops);
@@ -1177,10 +1193,27 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
 
   endswitch
 
-  htxt = __go_text__ (hl, txtpval{:}, "string", str);
+  htxt = __go_text__ (hl, txtpval{:}, "string", str, ...
+                      "pickableparts", "all", ...
+                      "buttondownfcn", {@execute_itemhit, hl, hplt, "label"});
+
+  set (htxt, "buttondownfcn", {@execute_itemhit, hl, hplt, "label"});
 
   addproperty ("peer_object", htxt, "double", base_hplt);
   addproperty ("peer_object", hicon, "double", base_hplt);
+
+endfunction
+
+function execute_itemhit (h, ~, hl, hplt, region)
+
+  fcn = get (hl, "itemhitfcn");
+
+  if (! isempty (fcn))
+    evt = struct ("Peer", hplt, "Region", region, ...
+                  "SelectionType", get (gcbf (), "selectiontype"), ...
+                  "Source", hl, "EventName", "ItemHit");
+    fcn (hl, evt)
+  endif
 
 endfunction
 

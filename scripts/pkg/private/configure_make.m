@@ -40,11 +40,7 @@ function configure_make (desc, packdir, verbose)
                                   sprintf ("mkoctfile-%s%s", ver, ext));
     octave_config_program = fullfile (octave_bindir, ...
                                       sprintf ("octave-config-%s%s", ver, ext));
-    if (ispc () && ! isunix ())
-      octave_binary = fullfile (octave_bindir, sprintf ("octave-%s.bat", ver));
-    else
-      octave_binary = fullfile (octave_bindir, sprintf ("octave-%s%s", ver, ext));
-    endif
+    octave_binary = fullfile (octave_bindir, sprintf ("octave-%s%s", ver, ext));
 
     if (! exist (mkoctfile_program, "file"))
       __gripe_missing_component__ ("pkg", "mkoctfile");

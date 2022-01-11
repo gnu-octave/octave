@@ -951,9 +951,10 @@ occurred.
     else if (type == REG_SZ || type == REG_EXPAND_SZ)
       {
         // strings in registry might not be zero terminated
+        wchar_t *dataw = reinterpret_cast<wchar_t *> (data);
+        DWORD lengthw = length / sizeof (wchar_t);
         std::wstring reg_string
-          = std::wstring (reinterpret_cast<wchar_t *> (data),
-                          length / sizeof (wchar_t));
+          = std::wstring (dataw, lengthw - (dataw[lengthw-1]==0));
         value = string_vector (sys::u8_from_wstring (reg_string));
       }
 

@@ -192,7 +192,7 @@ public:
     return btyp_isinteger (builtin_type ());
   }
 
-  bool isreal (void) const { return isfloat (); }
+  bool isreal (void) const { return true; }
 
   bool isnumeric (void) const
   {

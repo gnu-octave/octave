@@ -3418,7 +3418,9 @@ Example:
       {
         std::string name = user_function.name ();
 
-        error ("%s: function called with too many inputs", name.c_str ());
+        error_with_id ("Octave:invalid-fun-call",
+                       "%s: function called with too many inputs",
+                       name.c_str ());
       }
 
     define_parameter_list_from_arg_vector (param_list, args);
@@ -3433,7 +3435,9 @@ Example:
           {
             std::string name = user_function.name ();
 
-            error ("%s: function called with too many outputs", name.c_str ());
+            error_with_id ("Octave:invalid-fun-call",
+                           "%s: function called with too many outputs",
+                           name.c_str ());
           }
       }
 

@@ -141,12 +141,9 @@ function h = fill (varargin)
         ## For Matlab compatibility, return 1 patch object for each column
         for j = 1 : columns (x)
           if (one_color)
-            [htmp, err] = __patch__ (hax, x(:,j), y(:,j), cdata, opts{:});
+            htmp = __patch__ (hax, x(:,j), y(:,j), cdata, opts{:});
           else
-            [htmp, err] = __patch__ (hax, x(:,j), y(:,j), cdata(:,j), opts{:});
-          endif
-          if (err)
-            print_usage ();
+            htmp = __patch__ (hax, x(:,j), y(:,j), cdata(:,j), opts{:});
           endif
           hlist(end+1, 1) = htmp;
         endfor

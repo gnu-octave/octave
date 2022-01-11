@@ -154,8 +154,6 @@ namespace octave
     int m_selection_line;
     int m_selection_col;
     int m_indicator_id;
-
-    QFont m_tooltip_font;
   };
 }
 

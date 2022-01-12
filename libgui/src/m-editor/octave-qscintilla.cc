@@ -113,8 +113,7 @@ namespace octave
   octave_qscintilla::octave_qscintilla (QWidget *p, base_qobject& oct_qobj)
     : QsciScintilla (p), m_octave_qobj (oct_qobj), m_debug_mode (false),
       m_word_at_cursor (), m_selection (), m_selection_replacement (),
-      m_selection_line (-1), m_selection_col (-1), m_indicator_id (1),
-      m_tooltip_font (QToolTip::font ())
+      m_selection_line (-1), m_selection_col (-1), m_indicator_id (1)
   {
     connect (this, SIGNAL (textChanged (void)),
              this, SLOT (text_changed (void)));
@@ -1352,19 +1351,12 @@ namespace octave
 
   void octave_qscintilla::handle_enter_debug_mode (void)
   {
-    // Set tool tip font to the lexers default font
-    m_tooltip_font = QToolTip::font ();   // Save current font
-    QToolTip::setFont (lexer ()->defaultFont ());
-
     m_debug_mode = true;
   }
 
   void octave_qscintilla::handle_exit_debug_mode (void)
   {
     m_debug_mode = false;
-
-    // Reset tool tip font
-    QToolTip::setFont (m_tooltip_font);
   }
 
 }

@@ -11944,10 +11944,6 @@ gh_manager::make_graphics_handle (const std::string& go_name,
 
   m_handle_map[h] = go;
 
-  // Overriding defaults will work now because the handle is valid
-  // and we can find parent objects (not just handles).
-  go.override_defaults ();
-
   if (go_name == "axes")
     {
       // Handle defaults for labels since overriding defaults for
@@ -11971,6 +11967,10 @@ gh_manager::make_graphics_handle (const std::string& go_name,
       tgo = get_object (props.get_title ());
       tgo.override_defaults ();
     }
+
+  // Overriding defaults will work now because the handle is valid
+  // and we can find parent objects (not just handles).
+  go.override_defaults ();
 
   if (call_createfcn)
     bgo->get_properties ().execute_createfcn ();

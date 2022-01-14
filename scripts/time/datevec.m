@@ -208,6 +208,13 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
 
   original_f = f;   # Store for error messages.
 
+  if (any (ismember (f, "hsfYD")))
+    warning ("Octave:date-format-spec:wrong-case", ...
+             ["datevec: Format specifiers for dates should be lower case,", ...
+              " format specifiers for time should be upper case. ", ...
+              " Possible issue with 'm' (month) and 'M' (minutes)?"]);
+  endif
+
   ## Play safe with percent signs.
   f = strrep (f, "%", "%%");
 

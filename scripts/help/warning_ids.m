@@ -422,12 +422,10 @@
 ## elicits a warning if the @code{Octave:str-to-num} warning is enabled.
 ## By default, the @code{Octave:str-to-num} warning is disabled.
 ##
-## @item Octave:text_interpreter
-## If the @code{Octave:text_interpreter} warning is enabled, a warning is
-## printed when the @qcode{"interpreter"} property of a text graphics object
-## is set to the unsupported value of @qcode{"latex"}.  Even when enabled,
-## the warning message is printed just once per Octave session.
-## By default, the @code{Octave:glyph-render} warning is enabled.
+## @item Octave:LaTeX:internal-error
+## If the @code{Octave:LaTeX:internal-error} warning is enabled, a warning is
+## printed whenever the LaTeX renderer for text in plots encounters an issue.
+## By default, the @code{Octave:LaTeX:internal-error} warning is enabled.
 ##
 ## @item Octave:unimplemented-matlab-functionality
 ## If the @code{Octave:unimplemented-matlab-functionality} warning is enabled,

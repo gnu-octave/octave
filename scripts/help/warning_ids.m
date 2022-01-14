@@ -178,6 +178,13 @@
 ## different file target than the programmer intended is being used.
 ## By default, the @code{Octave:data-file-in-path} warning is enabled.
 ##
+## @item Octave:datevec:date-format-spec
+## If the @code{Octave:datevec:date-format-spec} warning is enabled, a warning
+## is printed if the date format specification contains questionable date or
+## time specifiers.  Typical bad patterns are using upper case date specifiers
+## or lower case time specifiers.
+## By default, the @code{Octave:datevec:date-format-spec} warning is enabled.
+##
 ## @item Octave:deprecated-function
 ## If the @code{Octave:deprecated-function} warning is enabled, a
 ## warning is issued when Octave encounters a function that is obsolete and

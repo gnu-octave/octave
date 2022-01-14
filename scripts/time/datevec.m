@@ -251,9 +251,10 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
   elseif (numel (strfind (f, "%m")) + numel (strfind (f, "%b"))
           + numel (strfind (f, "%B")) > 1)
     err_or_warn ("datevec: multiple month specifiers in %s", original_f);
-  elseif (numel (strfind (f, "%d")) + numel (strfind (f, "%a"))
-          + numel (strfind (f, "%A")) > 1)
+  elseif (numel (strfind (f, "%d")) > 1)
     err_or_warn ("datevec: multiple day specifiers in %s", original_f);
+  elseif (numel (strfind (f, "%a"))+ numel (strfind (f, "%A")) > 1)
+    err_or_warn ("datevec: multiple day of week specifiers in %s", original_f);
   elseif (numel (strfind (f, "%H")) + numel (strfind (f, "%I")) > 1)
     err_or_warn ("datevec: multiple hour specifiers in %s", original_f);
   elseif (numel (strfind (f, "%M")) > 1)

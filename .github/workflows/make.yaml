@@ -361,9 +361,10 @@ jobs:
           # The first block is for mandatory dependencies.
           # The second block is for optional dependencies needed when building from a release tarball.
           # The third block is for additional dependencies needed when building from a repository checkout.
-          # The fourth block is for additional run-time dependencies that aren't needed to build (to run test suite).
+          # The fourth block is for additional run-time dependencies (to run test suite) that aren't needed to build.
           install: >-
             base-devel
+            ${{ matrix.target-prefix }}-autotools
             ${{ matrix.target-prefix }}-toolchain
             ${{ matrix.target-prefix }}-lapack
             ${{ matrix.target-prefix }}-openblas

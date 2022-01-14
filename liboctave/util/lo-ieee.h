@@ -26,9 +26,9 @@
 #if ! defined (octave_lo_ieee_h)
 #define octave_lo_ieee_h 1
 
-#include <cmath>
-
 #include "octave-config.h"
+
+#include <cmath>
 
 #if defined (__cplusplus)
 extern "C" {

@@ -87,9 +87,9 @@
 #if ! defined (octave_oct_sort_h)
 #define octave_oct_sort_h 1
 
-#include <functional>
-
 #include "octave-config.h"
+
+#include <functional>
 
 #include "lo-traits.h"
 

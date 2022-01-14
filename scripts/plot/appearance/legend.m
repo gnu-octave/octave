@@ -1091,6 +1091,7 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
                              "pickableparts", "all", ...
                              "buttondownfcn", ...
                              {@execute_itemhit, hl, hplt, "icon"});
+      addproperty ("markertruesize", hmarker, "double", NaN);
       update_marker_cb (hmarker);
 
       ## Listeners
@@ -1102,7 +1103,8 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
                    @(h, ~) set (hmarker, "xdata", get (h, "markerxdata")));
       addlistener (hicon, "visible", ...
                    @(h, ~) set (hmarker, "visible", get (h, "visible")));
-      addlistener (hmarker, "markersize", @update_marker_cb);
+      addlistener (hmarker, "markersize", {@update_marker_cb, true});
+      addlistener (hmarker, "marker", {@update_marker_cb, false});
       add_safe_listener (hl, hplt(1), "beingdeleted",
                          @(~, ~) delete ([hicon hmarker]))
       if (! strcmp (typ, "__errplot__"))
@@ -1246,10 +1248,47 @@ function update_displayname_cb (h, ~, hl)
 
 endfunction
 
-function update_marker_cb (h, ~)
+## Enforce maximum size of marker so it doesn't overflow legend key
+function update_marker_cb (h, ~, sz_updated = true)
+  persistent is_updating = false;
 
-  if (get (h, "markersize") > 8)
-    set (h, "markersize", 8);
+  if (is_updating)
+    return;
+  endif
+
+  if (sz_updated)
+    ## Size was changed
+    sz = get (h, "markersize");
+    set (h, "markertruesize", sz);  # store true marker size
+
+    if (sz > 8)
+      is_updating = true;
+
+      mark = get (h, "marker");
+      if (strcmp (mark, '.'))
+        set (h, "markersize", min ([sz, 24]));
+      else
+        set (h, "markersize", 8);
+      endif
+
+      is_updating = false;
+    endif
+
+  else
+    ## Marker style was changed
+    sz = get (h, "markertruesize");
+    if (sz > 8)
+      is_updating = true;
+
+      mark = get (h, "marker");
+      if (strcmp (mark, '.'))
+        set (h, "markersize", min ([sz, 24]));
+      else
+        set (h, "markersize", 8);
+      endif
+
+      is_updating = false;
+    endif
   endif
 
 endfunction
@@ -2072,6 +2111,18 @@ endfunction
 %! plot (1:10);
 %! legend ("Legend Text");
 %! title ({"Multi-line", "titles", "are *not* a", "problem"});
+
+%!demo  # bug 61814
+%! clf;
+%! data = [ [1:5]' , [5:-1:1]', 2.5*ones(5,1) ];
+%! hp = plot (data);
+%! set (hp(1), "marker", 'x', "markersize", 15);
+%! set (hp(2), "marker", 'o', "markersize", 30);
+%! set (hp(3), "marker", '.', "markersize", 30);
+%! legend ({"data1", "data2", "data3"}, "location", "north");
+%! set (hp(2), "marker", '.');
+%! set (hp(3), "marker", 'o');
+%! title ("Marker sizes do not overflow legend box");
 
 ## Test input validation
 %!test

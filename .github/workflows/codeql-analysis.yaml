@@ -110,6 +110,7 @@ jobs:
           # The third block is for additional dependencies needed when building from a repository checkout.
           install: >-
             base-devel
+            ${{ matrix.target-prefix }}-autotools
             ${{ matrix.target-prefix }}-toolchain
             ${{ matrix.target-prefix }}-lapack
             ${{ matrix.target-prefix }}-openblas

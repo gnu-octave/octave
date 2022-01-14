@@ -44,6 +44,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QScreen>
 #include <QStyle>
 #include <QStyleFactory>
 #include <QTextBrowser>
@@ -51,6 +52,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QToolBar>
+#include <QWindow>
 
 // QTerminal includes
 #include "QTerminal.h"
@@ -1543,7 +1545,29 @@ namespace octave
 
     if (isMaximized())
       {
-        setGeometry( QApplication::desktop ()->availableGeometry (this));
+        // If the window state is restored to maximized layout, the
+        // horizontal layout is not preserved. This cann be avoided by
+        // setting the geometry to the max. available geometry. However, on
+        // X11, the available geometry (excluding task bar etc.) is equal to
+        // the total geometry leading to a full screen mode without window
+        // decorations. This in turn can be avoided by reducing the max.
+        // size by a few pixels.
+
+        QScreen *s = windowHandle ()->screen ();  // Get current screen
+        QRect av_geom = s->availableGeometry ();  // Get available and total
+        QRect geom = s->geometry ();              // screen geometry
+
+        QList<QScreen *> screen_list = QGuiApplication::screens ();
+        if ((screen_list.length () > 1) && (av_geom == geom))
+          {
+            // If we have more than one monitor and available and total
+            // geometry are the same, reduce this too large geometry
+            QRect new_geom (av_geom.x () + 1, av_geom.y () + 1,
+                            av_geom.width ()-2, av_geom.height ()-2);
+            setGeometry (new_geom);
+          }
+        else
+          setGeometry (av_geom);  // Set (correct) available geometry
       }
 
     if (! restoreState (settings->value (mw_state).toByteArray ()))

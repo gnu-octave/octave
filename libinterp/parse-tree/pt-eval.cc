@@ -3418,6 +3418,9 @@ Example:
       {
         std::string name = user_function.name ();
 
+        if (name.empty ())
+          name = "@<anonymous>";
+
         error_with_id ("Octave:invalid-fun-call",
                        "%s: function called with too many inputs",
                        name.c_str ());

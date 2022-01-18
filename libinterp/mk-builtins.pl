@@ -152,18 +152,6 @@ $name (const octave_value_list& = octave_value_list (), int = 0);
 
   print "\n#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)\n\n";
 
-  foreach $name (sort (@method_names))
-  {
-    print "OCTAVE_DEPRECATED (7, \"use 'octave::$name' instead\")
-inline octave_value_list
-$name (octave::interpreter& interp, const octave_value_list& args = octave_value_list (), int nargout = 0)
-{
-  return octave::$name (interp, args, nargout);
-}
-
-";
-  }
-
   foreach $name (sort (@fcn_names))
   {
     print "OCTAVE_DEPRECATED (7, \"use 'octave::$name' instead\")

@@ -380,8 +380,6 @@ OCTAVE_NAMESPACE_BEGIN
     Cell& line = retval.contents (2);
     Cell& column = retval.contents (3);
 
-    bool have_column = false;
-
     octave_idx_type k = 0;
 
     for (const auto& frm : frames)
@@ -389,18 +387,10 @@ OCTAVE_NAMESPACE_BEGIN
         file(k) = frm.file_name ();
         name(k) = frm.fcn_name ();
         line(k) = frm.line ();
-        int c = frm.column ();
-        if (c > 0)
-          {
-            have_column = true;
-            column(k) = c;
-          }
+        column(k) = frm.column ();
 
         k++;
       }
-
-    if (! have_column)
-      retval.rmfield ("column");
 
     return retval;
   }
@@ -413,13 +403,7 @@ OCTAVE_NAMESPACE_BEGIN
     Cell file = stack.contents ("file");
     Cell name = stack.contents ("name");
     Cell line = stack.contents ("line");
-    Cell column;
-    bool have_column = false;
-    if (stack.contains ("column"))
-      {
-        have_column = true;
-        column = stack.contents ("column");
-      }
+    Cell column = stack.contents ("column");
 
     octave_idx_type nel = name.numel ();
 
@@ -427,8 +411,7 @@ OCTAVE_NAMESPACE_BEGIN
       frames.push_back (frame_info (file(i).string_value (),
                                     name(i).string_value (),
                                     line(i).int_value (),
-                                    (have_column
-                                     ? column(i).int_value () : -1)));
+                                    column(i).int_value ()));
 
     return frames;
   }
@@ -619,13 +602,23 @@ OCTAVE_NAMESPACE_BEGIN
 
     execution_exception ee ("error", id, msg, stack_info);
 
-    if (! stack.isempty ()
-        && ! (stack.contains ("file") && stack.contains ("name")
-              && stack.contains ("line")))
-      error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
-
     if (! stack.isempty ())
-      ee.set_stack_info (make_stack_frame_list (stack));
+      {
+        if (! (stack.contains ("file") && stack.contains ("name")
+               && stack.contains ("line")))
+          error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
+
+        if (! stack.contains ("column"))
+          {
+            octave_map new_stack = stack;
+
+            new_stack.setfield ("column", Cell (octave_value (-1)));
+
+            ee.set_stack_info (make_stack_frame_list (new_stack));
+          }
+        else
+          ee.set_stack_info (make_stack_frame_list (stack));
+      }
 
     throw_error (ee);
   }

@@ -304,13 +304,13 @@ function ZI = interp2 (varargin)
       yb{1,1} = t2 + 1;
 
       ZI = zeros (size (XI));
-      for i = 1:2
-        for j = 1:2
-          zidx = sub2ind (size (Z), yidx+(j-1), xidx+(i-1));
-          ZI += xb{1,i} .* yb{1,j} .*   Z(zidx);
-          ZI += xb{2,i} .* yb{1,j} .*  DX(zidx);
-          ZI += xb{1,i} .* yb{2,j} .*  DY(zidx);
-          ZI += xb{2,i} .* yb{2,j} .* DXY(zidx);
+      for ix = 1:2
+        for iy = 1:2
+          zidx = sub2ind (size (Z), yidx+(iy-1), xidx+(ix-1));
+          ZI += xb{1,ix} .* yb{1,iy} .*   Z(zidx);
+          ZI += xb{2,ix} .* yb{1,iy} .*  DX(zidx);
+          ZI += xb{1,ix} .* yb{2,iy} .*  DY(zidx);
+          ZI += xb{2,ix} .* yb{2,iy} .* DXY(zidx);
         endfor
       endfor
 

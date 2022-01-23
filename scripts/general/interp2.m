@@ -254,8 +254,20 @@ function ZI = interp2 (varargin)
       ## first order derivatives
       DX = __pchip_deriv__ (X, Z, 2);
       DY = __pchip_deriv__ (Y, Z, 1);
-      ## Compute mixed derivatives row-wise and column-wise, use the average.
+      ## Compute mixed derivatives row-wise and column-wise.  Use the average.
       DXY = (__pchip_deriv__ (X, DY, 2) + __pchip_deriv__ (Y, DX, 1))/2;
+
+      if (iscomplex (Z))
+        ## __pchip_deriv__ works only on real part.  Do it again for imag part.
+        ## FIXME: Adapt __pchip_deriv__ to correctly handle complex input.
+
+        ## first order derivatives
+        DX += 1i * __pchip_deriv__ (X, imag (Z), 2);
+        DY += 1i * __pchip_deriv__ (Y, imag (Z), 1);
+        ## Compute mixed derivatives row-wise and column-wise.  Use the average.
+        DXY += 1i * (__pchip_deriv__ (X, imag (DY), 2)
+                     + __pchip_deriv__ (Y, imag (DX), 1))/2;
+      endif
 
       ## do the bicubic interpolation
       hx = diff (X); hx = hx(xidx);
@@ -327,7 +339,11 @@ function ZI = interp2 (varargin)
 
   ## extrapolation 'extrap'
   if (isempty (extrap))
-    extrap = NA;
+    if (iscomplex (Z))
+      extrap = complex (NA, NA);
+    else
+      extrap = NA;
+    endif
   endif
 
   if (X(1) < X(end))
@@ -479,6 +495,20 @@ endfunction
 %! result = interp2 (x,y,orig, xi, yi);
 %!
 %! assert (result, expected, 1000*eps);
+
+## Test that interpolating a complex matrix is equivalent to interpolating its
+## real and imaginary parts separately.
+%!test <61863>
+%! xi = [2.5, 3.5];
+%! yi = [0.5, 1.5]';
+%! orig = rand (2, 3) + 1i * rand (2, 3);
+%! for method = {"nearest", "linear", "pchip", "spline"}
+%!   interp_complex = interp2 (orig, xi, yi, method{1});
+%!   interp_real = interp2 (real (orig), xi, yi, method{1});
+%!   interp_imag = interp2 (imag (orig), xi, yi, method{1});
+%!   assert (real (interp_complex), interp_real)
+%!   assert (imag (interp_complex), interp_imag)
+%! endfor
 
 %!test  # 2^n refinement form
 %! x = [1,2,3];

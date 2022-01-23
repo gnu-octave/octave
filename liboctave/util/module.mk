@@ -73,6 +73,7 @@ UTIL_SRC = \
   %reldir%/quit.cc \
   %reldir%/oct-atomic.c \
   %reldir%/oct-base64.cc \
+  %reldir%/oct-cmplx.cc \
   %reldir%/oct-glob.cc \
   %reldir%/oct-inttypes.cc \
   %reldir%/oct-mutex.cc \

@@ -984,7 +984,7 @@ to top.";
 for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.valid = valid_2elvec;
 
-      case "xlimitmethod"
+      case "ylimitmethod"
         s.doc = "Method used to determine the y axis limits when the \
 @code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
 @qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
@@ -1031,7 +1031,7 @@ margin of about 7%% of the data extent is added around the objects. \
 for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.valid = valid_2elvec;
 
-      case "xlimitmethod"
+      case "zlimitmethod"
         s.doc = "Method used to determine the z axis limits when the \
 @code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
 @qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \

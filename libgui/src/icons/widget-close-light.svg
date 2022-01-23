@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -10,11 +8,14 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="32"
-   height="32"
+   width="12"
+   height="12"
    id="svg2"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="widget-close-light.svg">
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="widget-close-light.svg"
+   inkscape:export-filename="/home/lilge/Software/octave/dev-default/libgui/src/icons/widget-close-light.png"
+   inkscape:export-xdpi="1024"
+   inkscape:export-ydpi="1024">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -24,17 +25,18 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1217"
-     inkscape:window-height="737"
+     inkscape:window-width="1920"
+     inkscape:window-height="1024"
      id="namedview7"
      showgrid="true"
      inkscape:zoom="13.632822"
-     inkscape:cx="17.746364"
-     inkscape:cy="1.4474508"
-     inkscape:window-x="-1"
-     inkscape:window-y="34"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg2">
+     inkscape:cx="1.3521061"
+     inkscape:cy="17.927867"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g15"
+     inkscape:document-rotation="0">
     <inkscape:grid
        type="xygrid"
        id="grid2984"
@@ -57,16 +59,20 @@
   </metadata>
   <defs
      id="defs6" />
-  <path
-     d="M 25,25 7,7"
-     id="path2989"
-     style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-     inkscape:connector-curvature="0"
-     sodipodi:nodetypes="cc" />
-  <path
-     sodipodi:nodetypes="cc"
-     inkscape:connector-curvature="0"
-     style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-     id="path2985"
-     d="M 25,7 7,25" />
+  <g
+     id="g15"
+     transform="translate(-10,-10)">
+    <path
+       d="M 20,20 12,12"
+       id="path2989"
+       style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2985"
+       d="m 20,12 -8,8" />
+  </g>
 </svg>

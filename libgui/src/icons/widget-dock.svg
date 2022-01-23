@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -9,42 +7,19 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="12px"
+   width="12px"
+   id="Camada_2"
+   data-name="Camada 2"
+   viewBox="0 0 12 12"
    version="1.1"
-   width="32"
-   height="32"
-   id="svg2"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="widget-dock.svg">
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1080"
-     inkscape:window-height="731"
-     id="namedview11"
-     showgrid="true"
-     inkscape:zoom="18.044858"
-     inkscape:cx="19.259858"
-     inkscape:cy="17.962102"
-     inkscape:window-x="126"
-     inkscape:window-y="24"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="g3792">
-    <inkscape:grid
-       type="xygrid"
-       id="grid2988"
-       empspacing="5"
-       visible="true"
-       enabled="true"
-       snapvisiblegridlinesonly="true" />
-  </sodipodi:namedview>
+   sodipodi:docname="widget-dock.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   inkscape:export-filename="/home/lilge/Software/octave/dev-default/libgui/src/icons/widget-dock.png"
+   inkscape:export-xdpi="1228.8"
+   inkscape:export-ydpi="1228.8">
   <metadata
-     id="metadata8">
+     id="metadata18">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -55,41 +30,58 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1024"
+     id="namedview16"
+     showgrid="true"
+     inkscape:snap-bbox="false"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     inkscape:zoom="63.24"
+     inkscape:cx="2.4658444"
+     inkscape:cy="6"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Camada_2"
+     inkscape:document-rotation="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid854" />
+  </sodipodi:namedview>
   <defs
-     id="defs6" />
-  <g
-     transform="translate(-7.7007624,-11.348432)"
-     id="g3792"
-     style="stroke-linecap:square;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke:#141414;stroke-opacity:1">
-    <rect
-       width="22.000002"
-       height="23.000002"
-       rx="0.2512264"
-       ry="0.0025005043"
-       x="12.700763"
-       y="15.736354"
-       id="rect3794"
-       style="color:#000000;fill:none;stroke:#141414;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-    <rect
-       width="22"
-       height="2.0000005"
-       rx="0.2512264"
-       ry="0.0025005043"
-       x="12.700763"
-       y="15.736354"
-       id="rect3796"
-       style="color:#000000;fill:#141414;fill-opacity:1;stroke:#141414;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-  </g>
+     id="defs7">
+    <style
+       id="style2">.cls-1{fill:none;}.cls-2{fill:#1a1a1a;}.cls-3{clip-path:url(#clip-path);}</style>
+    <clipPath
+       id="clip-path">
+      <polygon
+         class="cls-1"
+         points="8 1 4 1 4 4 8 4 8 8 11 8 11 4 11 1 8 1"
+         id="polygon4" />
+    </clipPath>
+  </defs>
   <path
-     d="M 14,4.3879221 14,27.387922"
-     id="path3800"
-     style="fill:none;stroke:#141414;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-     inkscape:connector-curvature="0"
-     sodipodi:nodetypes="cc" />
+     class="cls-2"
+     d="M 9.7247915,10 H 2.2826 C 2.1265243,10 2,9.8734757 2,9.7174 V 3 h 8 L 9.9838287,9.7174 C 9.983453,9.8734752 9.8808672,10 9.7247915,10 Z M 11,10.21686 V 1.7528293 C 11,1.3566203 10.671421,1 10.275212,1 H 1.7139008 C 1.3176918,1 1,1.2997229 1,1.695932 v 8.474553 C 1,10.566694 1.2822727,11 1.6784818,11 H 10.285956 C 10.682165,11 11,10.613069 11,10.21686 Z"
+     id="path9"
+     sodipodi:nodetypes="sssccsssssssssss" />
   <path
-     d="m 14,17.387922 13,0"
-     id="path3804"
-     style="fill:none;stroke:#141414;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-     inkscape:connector-curvature="0"
+     style="fill:none;stroke:#000000;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+     d="m 5,2 v 8"
+     id="path856" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 11,7.0670448 H 4.8136142"
+     id="path858"
      sodipodi:nodetypes="cc" />
 </svg>

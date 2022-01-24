@@ -332,8 +332,43 @@ AM_CONDITIONAL([AMCOND_INSTALL_INTERNAL_FONT_FILES],
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
-## Ensure that the C++ compiler fully supports C++11.
-AX_CXX_COMPILE_STDCXX(11, [], [])
+ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no
+AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
+  [AS_HELP_STRING([--enable-std-pmr-polymorphic-allocator],
+    [build libraries requiring std::pmr::polymorphic_allocator if possible. This allows more efficient transfer of arrays at the .mex file interface. That also means that all libraries including Octave headers (e.g., .oct files) must be able to compile with that C++17 feature.])],
+  [case $enableval in
+     yes) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes ;;
+     no) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-std-pmr-polymorphic-allocator]) ;;
+   esac])
+
+### Check compiler capabilities.
+
+if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
+  ## Test for flags to fully support C++17 (with GNU extensions).
+  AX_CXX_COMPILE_STDCXX(17, ext, [])
+  if test "$HAVE_CXX17" = 0; then
+    ## A compiler supporting C++17 with GNU extensions couldn't be found.
+    ## Try without forcing GNU extensions.
+    AX_CXX_COMPILE_STDCXX(17, [], [])
+  fi
+else
+  HAVE_CXX17=0
+fi
+if test "$HAVE_CXX17" = 0; then
+  ## Ensure that the C++ compiler fully supports C++11 preferably with GNU
+  ## extensions.
+  AX_CXX_COMPILE_STDCXX(11, ext, [])
+  if test "$HAVE_CXX11" = 0; then
+    ## A compiler supporting C++11 with GNU extensions couldn't be found.
+    ## Try without forcing GNU extensions.  Fail if that's not the case.
+    AX_CXX_COMPILE_STDCXX(11, [], mandatory)
+  fi
+fi
+
+if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
+  OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
+fi
 
 ### Determine which C compiler to use (we expect to find gcc).
 
@@ -398,20 +433,6 @@ AM_CONDITIONAL([AMCOND_HAVE_BROKEN_STL_ALGO_H],
 if test $octave_cv_broken_stl_algo_h = yes; then
   warn_stl_algo_h="Found nth_element broken in g++ $GXX_VERSION.  Attempting to repair by using local patched version of bits/stl_algo.h."
   OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
-fi
-
-ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no
-AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
-  [AS_HELP_STRING([--enable-std-pmr-polymorphic-allocator],
-    [build libraries requiring std::pmr::polymorphic_allocator if possible. This allows more efficient transfer of arrays at the .mex file interface. That also means that all libraries including Octave headers (e.g., .oct files) must be able to compile with that C++17 feature.])],
-  [case $enableval in
-     yes) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes ;;
-     no) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no ;;
-     *) AC_MSG_ERROR([bad value $enableval for --enable-std-pmr-polymorphic-allocator]) ;;
-   esac])
-
-if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
-  OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
 fi
 
 ### Check version number when using gcc.

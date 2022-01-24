@@ -123,6 +123,9 @@
 %!                 struct ("file", "foo.m", "name", "foo", "line", 13));
 %!     rethrow (y);
 %!   catch
+%!     stk = y.stack;
+%!     [stk.column] = deal (-1);
+%!     y.stack = stk;
 %!     assert (y, lasterror ());
 %!   end_try_catch
 %! end_try_catch

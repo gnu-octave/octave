@@ -111,6 +111,11 @@ function ret = pchip (x, y, xi)
 
   ## Compute derivatives.
   d = __pchip_deriv__ (x, y, 2);
+  if (iscomplex (y))
+    ## __pchip_deriv__ ignores imaginary part.  Do it again for imag part.
+    ## FIXME: Adapt __pchip_deriv__ to correctly handle complex input.
+    d += 1i * __pchip_deriv__ (x, imag (y), 2);
+  endif
   d1 = d(:, 1:n-1);
   d2 = d(:, 2:n);
 

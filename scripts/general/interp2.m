@@ -257,18 +257,6 @@ function ZI = interp2 (varargin)
       ## Compute mixed derivatives row-wise and column-wise.  Use the average.
       DXY = (__pchip_deriv__ (X, DY, 2) + __pchip_deriv__ (Y, DX, 1))/2;
 
-      if (iscomplex (Z))
-        ## __pchip_deriv__ works only on real part.  Do it again for imag part.
-        ## FIXME: Adapt __pchip_deriv__ to correctly handle complex input.
-
-        ## first order derivatives
-        DX += 1i * __pchip_deriv__ (X, imag (Z), 2);
-        DY += 1i * __pchip_deriv__ (Y, imag (Z), 1);
-        ## Compute mixed derivatives row-wise and column-wise.  Use the average.
-        DXY += 1i * (__pchip_deriv__ (X, imag (DY), 2)
-                     + __pchip_deriv__ (Y, imag (DX), 1))/2;
-      endif
-
       ## do the bicubic interpolation
       hx = diff (X); hx = hx(xidx);
       hy = diff (Y); hy = hy(yidx);
@@ -498,7 +486,7 @@ endfunction
 
 ## Test that interpolating a complex matrix is equivalent to interpolating its
 ## real and imaginary parts separately.
-%!test <61863>
+%!test <*61863>
 %! xi = [2.5, 3.5];
 %! yi = [0.5, 1.5]';
 %! orig = rand (2, 3) + 1i * rand (2, 3);

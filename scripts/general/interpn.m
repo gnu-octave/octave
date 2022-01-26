@@ -185,11 +185,6 @@ function vi = interpn (varargin)
 
   if (strcmp (method, "linear"))
     vi = __lin_interpn__ (x{:}, v, y{:});
-    if (iscomplex (v))
-      ## __lin_interpn__ ignores imaginary part. Do it again for imag part.
-      ## FIXME: Adapt __lin_interpn__ to correctly handle complex input.
-      vi += 1i * __lin_interpn__ (x{:}, imag (v), y{:});
-    endif
     vi(isna (vi)) = extrapval;
   elseif (strcmp (method, "nearest"))
     ## FIXME: This seems overly complicated.  Is there a way to simplify

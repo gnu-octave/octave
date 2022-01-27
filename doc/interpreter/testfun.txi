@@ -352,7 +352,7 @@ Check block, report a test failure but do not abort testing.  If
 if the test fails, like this:
 
 @example
-!!!!! Known bug:  MESSAGE
+!!!!! known bug:  MESSAGE
 @end example
 
 @noindent
@@ -360,12 +360,24 @@ If the message is an integer, it is interpreted as a bug ID for the
 Octave bug tracker and reported as
 
 @example
-!!!!! Known bug: https://octave.org/testfailure/?BUG-ID
+!!!!! known bug: https://octave.org/testfailure/?BUG-ID
 @end example
 
 @noindent
 in which BUG-ID is the integer bug number.  The intent is to allow
 clearer documentation of known problems.
+
+@noindent
+If @code{MESSAGE} is an integer preceeded by an asterisk (e.g.,
+@code{*12345}), it is interpreted as the id for a bug report that has
+been closed.  That usually means that the issue probed in this test has
+been resolved.  If such tests are failing, they are reported as
+regressions by the @code{test} function:
+
+@example
+!!!!! regression: https://octave.org/testfailure/?BUG-ID
+@end example
+
 
 @item  %!error
 @itemx %!error <MESSAGE>

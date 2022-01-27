@@ -345,25 +345,16 @@ AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
 ### Check compiler capabilities.
 
 if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
-  ## Test for flags to fully support C++17 (with GNU extensions).
-  AX_CXX_COMPILE_STDCXX(17, ext, [])
-  if test "$HAVE_CXX17" = 0; then
-    ## A compiler supporting C++17 with GNU extensions couldn't be found.
-    ## Try without forcing GNU extensions.
-    AX_CXX_COMPILE_STDCXX(17, [], [])
-  fi
+  ## Test for flags to fully support C++17.
+  ## Preferably with GNU extensions if flags are required.
+  AX_CXX_COMPILE_STDCXX(17, [], [])
 else
   HAVE_CXX17=0
 fi
 if test "$HAVE_CXX17" = 0; then
-  ## Ensure that the C++ compiler fully supports C++11 preferably with GNU
-  ## extensions.
-  AX_CXX_COMPILE_STDCXX(11, ext, [])
-  if test "$HAVE_CXX11" = 0; then
-    ## A compiler supporting C++11 with GNU extensions couldn't be found.
-    ## Try without forcing GNU extensions.  Fail if that's not the case.
-    AX_CXX_COMPILE_STDCXX(11, [], mandatory)
-  fi
+  ## Ensure that the C++ compiler fully supports C++11.
+  ## Preferably with GNU extensions if flags are required.
+  AX_CXX_COMPILE_STDCXX(11, [], mandatory)
 fi
 
 if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then

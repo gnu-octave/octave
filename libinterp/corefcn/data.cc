@@ -3472,6 +3472,12 @@ complex ([1, 2], [3, 4])
 @end example
 @seealso{real, imag, iscomplex, abs, arg}
 @end deftypefn */)
+// Programming Note: Throughout this function the coding pattern
+// octave_value (new XXX)) is used.  This is done specifically because the
+// default octave_value constructor would otherwise perform automatic narrowing
+// (i.e., complex values with 0 for the imaginary part would be converted
+// to real values).  The complex() function *must* return a complex value
+// even when the imaginary part is 0.
 {
   int nargin = args.length ();
 
@@ -3609,11 +3615,10 @@ complex ([1, 2], [3, 4])
                 {
                   const FloatNDArray im_val = im.float_array_value ();
 
-                  FloatComplexNDArray result (im_val.dims (),
-                                              FloatComplex ());
+                  FloatComplexNDArray result (im_val.dims ());
 
                   for (octave_idx_type i = 0; i < im_val.numel (); i++)
-                    result.xelem (i) = FloatComplex (re_val, im_val(i));
+                    result.xelem (i) = FloatComplex (re_val, im_val.xelem (i));
 
                   retval = octave_value (new octave_float_complex_matrix
                                          (result));
@@ -3627,11 +3632,10 @@ complex ([1, 2], [3, 4])
                 {
                   float im_val = im.float_value ();
 
-                  FloatComplexNDArray result (re_val.dims (),
-                                              FloatComplex ());
+                  FloatComplexNDArray result (re_val.dims ());
 
                   for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                    result.xelem (i) = FloatComplex (re_val(i), im_val);
+                    result.xelem (i) = FloatComplex (re_val.xelem (i), im_val);
 
                   retval = octave_value (new octave_float_complex_matrix
                                          (result));
@@ -3643,12 +3647,11 @@ complex ([1, 2], [3, 4])
                   if (re_val.dims () != im_val.dims ())
                     error ("complex: dimension mismatch");
 
-                  FloatComplexNDArray result (re_val.dims (),
-                                              FloatComplex ());
+                  FloatComplexNDArray result (re_val.dims ());
 
                   for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                    result.xelem (i) = FloatComplex (re_val(i),
-                                                     im_val(i));
+                    result.xelem (i) = FloatComplex (re_val.xelem (i),
+                                                     im_val.xelem (i));
 
                   retval = octave_value (new octave_float_complex_matrix
                                          (result));
@@ -3670,10 +3673,10 @@ complex ([1, 2], [3, 4])
             {
               const NDArray im_val = im.array_value ();
 
-              ComplexNDArray result (im_val.dims (), Complex ());
+              ComplexNDArray result (im_val.dims ());
 
               for (octave_idx_type i = 0; i < im_val.numel (); i++)
-                result.xelem (i) = Complex (re_val, im_val(i));
+                result.xelem (i) = Complex (re_val, im_val.xelem (i));
 
               retval = octave_value (new octave_complex_matrix (result));
             }
@@ -3686,10 +3689,10 @@ complex ([1, 2], [3, 4])
             {
               double im_val = im.double_value ();
 
-              ComplexNDArray result (re_val.dims (), Complex ());
+              ComplexNDArray result (re_val.dims ());
 
               for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                result.xelem (i) = Complex (re_val(i), im_val);
+                result.xelem (i) = Complex (re_val.xelem (i), im_val);
 
               retval = octave_value (new octave_complex_matrix (result));
             }
@@ -3703,7 +3706,8 @@ complex ([1, 2], [3, 4])
               ComplexNDArray result (re_val.dims (), Complex ());
 
               for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                result.xelem (i) = Complex (re_val(i), im_val(i));
+                result.xelem (i) = Complex (re_val.xelem (i),
+                                            im_val.xelem (i));
 
               retval = octave_value (new octave_complex_matrix (result));
             }

@@ -225,6 +225,67 @@ OCTAVE_NAMESPACE_BEGIN
     Vlast_prompt_time.stamp ();
   }
 
+  //! Check if directory contains modified subdirectories.
+  //!
+  //! @param d directory to check
+  //! @param last_checked time of last check
+  //!
+  //! Path patterns that need to be checked for modifications:
+  //!
+  //!    private/
+  //!
+  //!    @class/
+  //!    @class/private/
+  //!
+  //!    +namespace/
+  //!    +namespace/private/
+  //!    +namespace/@class/
+  //!    +namespace/@class/private/
+  //!
+  //! Recursion into sub-namespaces:
+  //!
+  //!    +namespace/+subnamespace/<like above>
+  //!
+  //! @return true if directory contains modified subdirectories
+
+  static bool
+  subdirs_modified (const std::string& d, const sys::time& last_checked)
+  {
+    sys::dir_entry dir (d);
+
+    if (dir)
+      {
+        string_vector flist = dir.read ();
+
+        octave_idx_type len = flist.numel ();
+
+        for (octave_idx_type i = 0; i < len; i++)
+          {
+            std::string fname = flist[i];
+
+            std::string full_name = sys::file_ops::concat (d, fname);
+
+            sys::file_stat fs (full_name);
+
+            // Check if directory AND if relevant (@,+,private)
+            // AND (if modified OR recursion into (@,+) sub-directories)
+            if (fs && fs.is_dir ()
+                && (fname[0] == '@' || fname[0] == '+' || fname == "private")
+                && ((fs.mtime () + fs.time_resolution () > last_checked)
+                    || ((fname[0] == '@' || fname[0] == '+')
+                        && subdirs_modified (full_name, last_checked))))
+              return true;
+          }
+      }
+    else
+      {
+        std::string msg = dir.error ();
+        warning ("load_path: %s: %s", d.c_str (), msg.c_str ());
+      }
+
+    return false;
+  }
+
   std::string load_path::s_sys_path;
   load_path::abs_dir_cache_type load_path::s_abs_dir_cache;
 
@@ -1341,9 +1402,6 @@ OCTAVE_NAMESPACE_BEGIN
         return false;
       }
 
-    sys::file_stat pfs (sys::file_ops::concat (dir_name, "private"));
-    bool has_private_dir = pfs && pfs.is_dir ();
-
     if (is_relative)
       {
         try
@@ -1363,9 +1421,7 @@ OCTAVE_NAMESPACE_BEGIN
 
                 if ((fs.mtime () + fs.time_resolution ()
                      > di.dir_time_last_checked)
-                    || (has_private_dir
-                        && (pfs.mtime () + pfs.time_resolution ()
-                            > dir_time_last_checked)))
+                    || subdirs_modified (dir_name, dir_time_last_checked))
                   initialize ();
                 else
                   {
@@ -1400,9 +1456,7 @@ OCTAVE_NAMESPACE_BEGIN
       }
     // Absolute path, check timestamp to see whether it requires re-caching
     else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked
-             || (has_private_dir
-                 && (pfs.mtime () + pfs.time_resolution ()
-                     > dir_time_last_checked)))
+             || subdirs_modified (dir_name, dir_time_last_checked))
       initialize ();
 
     return true;

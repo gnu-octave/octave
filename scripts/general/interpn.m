@@ -175,10 +175,20 @@ function vi = interpn (varargin)
     [y{:}] = ndgrid (y{:});
   endif
 
+  if (! strcmp (method, "spline") && isempty (extrapval))
+    if (iscomplex (v))
+      extrapval = NA + 1i*NA;
+    else
+      extrapval = NA;
+    endif
+  endif
+
   if (strcmp (method, "linear"))
     vi = __lin_interpn__ (x{:}, v, y{:});
-    if (isempty (extrapval))
-      extrapval = NA;
+    if (iscomplex (v))
+      ## __lin_interpn__ ignores imaginary part. Do it again for imag part.
+      ## FIXME: Adapt __lin_interpn__ to correctly handle complex input.
+      vi += 1i * __lin_interpn__ (x{:}, imag (v), y{:});
     endif
     vi(isna (vi)) = extrapval;
   elseif (strcmp (method, "nearest"))
@@ -204,9 +214,6 @@ function vi = interpn (varargin)
     for i = 1 : nd
       idx |= y{i} < min (x{i}(:)) | y{i} > max (x{i}(:));
     endfor
-    if (isempty (extrapval))
-      extrapval = NA;
-    endif
     vi(idx) = extrapval;
     vi = reshape (vi, yshape);
   elseif (strcmp (method, "spline"))
@@ -352,6 +359,21 @@ endfunction
 %! assert (interpn (z), zout, tol);
 %! assert (interpn (z, "linear"), zout, tol);
 %! assert (interpn (z, "spline"), zout, tol);
+
+## Test that interpolating a complex matrix is equivalent to interpolating its
+## real and imaginary parts separately.
+%!test <*61907>
+%! yi = [0.5, 1.5]';
+%! xi = [2.5, 3.5];
+%! zi = [2.25, 4.75];
+%! v = rand (4, 3, 5) + 1i * rand (4, 3, 5);
+%! for method = {"nearest", "linear", "spline"}
+%!   vi_complex = interpn (v, yi, xi, zi, method{1});
+%!   vi_real = interpn (real (v), yi, xi, zi, method{1});
+%!   vi_imag = interpn (imag (v), yi, xi, zi, method{1});
+%!   assert (real (vi_complex), vi_real)
+%!   assert (imag (vi_complex), vi_imag)
+%! endfor
 
 ## Test input validation
 %!error <Invalid call> interpn ()

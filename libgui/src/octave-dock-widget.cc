@@ -29,18 +29,20 @@
 
 #include <QAction>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QScreen>
 #include <QStyle>
 #include <QToolBar>
 #include <QMenuBar>
+#include <QWindow>
 
 #include "gui-preferences-dw.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
+#include "gui-utils.h"
 #include "main-window.h"
 #include "octave-dock-widget.h"
 #include "octave-qobject.h"
@@ -513,12 +515,8 @@ namespace octave
       m_icon_color_active = "";
 
 
-    QWidget *ref_widget = m_main_window;
-    if (! ref_widget)
-      ref_widget = this;
-
     int x, y, w, h;
-    QApplication::desktop ()->availableGeometry (ref_widget).getRect (&x, &y, &w, &h);
+    QGuiApplication::primaryScreen ()->availableGeometry ().getRect (&x, &y, &w, &h);
     QRect default_floating_size = QRect (x+16, y+32, w/3, h/2);
 
     QRect default_dock_size;
@@ -538,11 +536,7 @@ namespace octave
       = settings->value (dw_float_geometry.key.arg (objectName ()),
                          default_floating_size).toRect ();
 
-    QWidget dummy;
-    dummy.setGeometry (m_recent_float_geom);
-
-    if (QApplication::desktop ()->screenNumber (&dummy) == -1)
-      m_recent_float_geom = default_floating_size;
+    adjust_to_screen (m_recent_float_geom, default_floating_size);
 
     // The following is required for ensure smooth transition from old
     // saveGeomety to new QRect setting (see comment for restoring size

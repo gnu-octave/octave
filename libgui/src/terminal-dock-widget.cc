@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include <QDesktopWidget>
+#include <QScreen>
 
 // This header is only needed for the new terminal widget.
 #include "command-widget.h"
@@ -107,8 +107,8 @@ namespace octave
     int win_x =  metrics.maxWidth()*80;
     int win_y =  metrics.height()*25;
 
-    int max_x = QApplication::desktop ()->screenGeometry (this).width ();
-    int max_y = QApplication::desktop ()->screenGeometry (this).height ();
+    int max_x = QGuiApplication::primaryScreen ()->availableGeometry ().width ();
+    int max_y = QGuiApplication::primaryScreen ()->availableGeometry ().height ();
 
     if (win_x > max_x)
       win_x = max_x;

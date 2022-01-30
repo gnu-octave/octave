@@ -35,7 +35,6 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QDesktopServices>
-#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QIcon>
 #include <QInputDialog>
@@ -69,6 +68,7 @@
 #include "gui-preferences-nr.h"
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
+#include "gui-utils.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
 #include "news-reader.h"
@@ -2721,15 +2721,6 @@ namespace octave
 
          F__mfile_encoding__ (interp, ovl (mfile_encoding));
        });
-  }
-
-  // Get size of screen where the main window is located
-  void main_window::get_screen_geometry (int& width, int& height)
-  {
-    QRect screen_geometry = QApplication::desktop ()->availableGeometry (this);
-
-    width = screen_geometry.width ();
-    height = screen_geometry.height ();
   }
 
   void main_window::resize_dock (QDockWidget *dw, int width, int height)

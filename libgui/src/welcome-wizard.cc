@@ -28,7 +28,6 @@
 #endif
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QVBoxLayout>

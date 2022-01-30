@@ -51,8 +51,6 @@ namespace octave
 
   private:
 
-    void get_screen_geometry (int& width, int& height);
-
     QTextBrowser *m_browser;
     QString m_release_notes_icon;
   };

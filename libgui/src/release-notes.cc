@@ -27,15 +27,17 @@
 #  include "config.h"
 #endif
 
-#include <QDesktopWidget>
+#include <QApplication>
 #include <QFile>
 #include <QIcon>
 #include <QLayout>
+#include <QScreen>
 #include <QTextBrowser>
 #include <QTextStream>
 #include <QThread>
 
 #include "release-notes.h"
+#include "gui-utils.h"
 #include "gui-preferences-nr.h"
 #include "news-reader.h"
 #include "octave-qobject.h"
@@ -116,14 +118,4 @@ namespace octave
     activateWindow ();
   }
 
-  // FIXME: This function is duplicated in main_window.cc.  Maybe it
-  // should be a utility function?
-
-  void release_notes::get_screen_geometry (int& width, int& height)
-  {
-    QRect screen_geometry = QApplication::desktop ()->availableGeometry (this);
-
-    width = screen_geometry.width ();
-    height = screen_geometry.height ();
-  }
 }

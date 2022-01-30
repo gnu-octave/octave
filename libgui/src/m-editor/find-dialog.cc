@@ -71,7 +71,6 @@
 #include <QCheckBox>
 #include <QCheckBox>
 #include <QCompleter>
-#include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QIcon>
@@ -83,6 +82,7 @@
 
 #include "find-dialog.h"
 #include "gui-preferences-ed.h"
+#include "gui-utils.h"
 #include "resource-manager.h"
 #include "octave-qobject.h"
 
@@ -293,27 +293,21 @@ namespace octave
     m_backward_check_box->setChecked (FIND_DLG_BACK & opts);
     m_search_selection_check_box->setChecked (FIND_DLG_SEL & opts);
 
-    // Position:  lower right of editor's position
+    // Default position:  lower right of editor's position
     int xp = ed_bottom_right.x () - sizeHint ().width ();
     int yp = ed_bottom_right.y () - sizeHint ().height ();
+    QRect default_geometry (xp, yp, sizeHint ().width (), sizeHint ().height ());
 
+    // Last position from settings
     m_last_position = s->value (ed_fdlg_pos.key, QPoint (xp, yp)).toPoint ();
+    QRect last_geometry (m_last_position,
+                         QSize (sizeHint ().width (), sizeHint ().height ()));
+
+    // Make sure we are on the screen
+    adjust_to_screen (last_geometry, default_geometry);
+    m_last_position = last_geometry.topLeft ();
+
     move (m_last_position);
-
-    if (QApplication::desktop ()->screenNumber (this) == -1)
-      {
-        // Last used position is not on screen anymore, use default pos.
-        m_last_position = QPoint (xp, yp);
-        move (m_last_position);
-
-        if (QApplication::desktop ()->screenNumber (this) == -1)
-          {
-            // Default position is not on screen, last resort
-            m_last_position = QPoint (50, 100); // upper left
-            move (m_last_position);
-          }
-      }
-
   }
 
   // set text of "search from start" depending on backward search

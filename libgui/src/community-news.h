@@ -61,8 +61,6 @@ namespace octave
     void construct (base_qobject& oct_qobj, const QString& base_url,
                     const QString& page, int serial);
 
-    void get_screen_geometry (int& width, int& height);
-
     QTextBrowser *m_browser;
   };
 }

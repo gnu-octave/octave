@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include <QColor>
+#include <QRect>
 
 namespace octave
 {
@@ -55,6 +56,28 @@ namespace octave
   interpolate_color (const QColor& col1, const QColor& col2,
                      double fs, double fv);
 
+
+  /*!
+      Get the screen geometry of the actual screen.
+
+      @param width integer variable for storing the screen width
+      @param height integer variable for storing the screen height
+  */
+
+  extern OCTGUI_API void
+  get_screen_geometry (int& width, int& height);
+
+
+  /*!
+      Adjust geometry to be completely on a screen
+
+      @param actual_geometry QRect with actual widget geometry; this is
+             changed to the updated geometry which is on the screen.
+      @param default_geometry the default geometry that is used in case
+             the actual geometry os on no available screen.
+  */
+  extern OCTGUI_API void
+  adjust_to_screen (QRect& actual_geometry, const QRect& default_geometry);
 }
 
 #endif

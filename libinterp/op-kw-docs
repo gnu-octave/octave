@@ -765,7 +765,14 @@ elsewhere.
 @c libinterp/parse-tree/oct-parse.yy
 -*- texinfo -*-
 @deftypefn {} {} return
-Return from a function.
+Return execution control immediately from a function or script to the calling
+code.
+
+@code{return} is used to stop executing code and exit an m-file immediately
+rather than continuing until the end of the function or script is reached.
+
+If the function or script was invoked directly, rather than from calling code
+in an m-file, then Octave returns to the command line.
 @seealso{function}
 @end deftypefn
 spmd

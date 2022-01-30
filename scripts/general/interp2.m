@@ -69,7 +69,8 @@
 ## interpolation with smooth first derivative.
 ##
 ## @item @qcode{"cubic"}
-## Cubic interpolation (same as @qcode{"pchip"}).
+## Cubic interpolation using a convolution kernel function---third order
+## method with smooth first derivative.
 ##
 ## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
@@ -149,7 +150,7 @@ function ZI = interp2 (varargin)
     ## Calculate the interleaved input vectors.
     p = 2^n;
     XI = (p:p*zc)/p;
-    YI = (p:p*zr)'/p;
+    YI = (p:p*zr).'/p;
   endif
   if (! isnumeric (XI) || ! isnumeric (YI))
     error ("interp2: XI, YI must be numeric");
@@ -180,7 +181,13 @@ function ZI = interp2 (varargin)
     error ("interp2: Y must be strictly monotonic");
   endif
 
-  if (any (strcmp (method, {"nearest", "linear", "pchip", "cubic"})))
+  if (strcmp (method, "cubic") && (rows (Z) < 3 || columns (Z) < 3))
+    warning (["interp2: cubic requires at least 3 points in each ", ...
+              "dimension.  Falling back to linear interpolation."]);
+    method = "linear";
+  endif
+
+  if (any (strcmp (method, {"nearest", "linear", "pchip"})))
 
     ## If Xi and Yi are vectors of different orientation build a grid
     if ((isrow (XI) && iscolumn (YI)) || (iscolumn (XI) && isrow (YI)))
@@ -244,11 +251,10 @@ function ZI = interp2 (varargin)
       idx = sub2ind (size (Z), yidx+jj, xidx+ii);
       ZI = Z(idx);
 
-    elseif (strcmp (method, "pchip") || strcmp (method, "cubic"))
+    elseif (strcmp (method, "pchip"))
 
       if (length (X) < 2 || length (Y) < 2)
-        error ("interp2: %s requires at least 2 points in each dimension",
-               method);
+        error ("interp2: pchip requires at least 2 points in each dimension");
       endif
 
       ## first order derivatives
@@ -314,15 +320,50 @@ function ZI = interp2 (varargin)
     endif
 
     if (strcmp (method, "spline"))
-      if (isgriddata (XI) && isgriddata (YI'))
+      if (isgriddata (XI) && isgriddata (YI.'))
         ZI = __splinen__ ({Y, X}, Z, {YI(:,1), XI(1,:)}, extrap, "spline");
       else
         error ("interp2: XI, YI must have uniform spacing ('meshgrid' format)");
       endif
+      return; # spline doesn't need NA extrapolation value (MATLAB compatibility)
+    elseif (strcmp (method, "cubic"))
+      ## reduce to vectors if interpolation points are a meshgrid
+      if (size_equal (XI, YI) && all (all (XI(1, :) == XI & YI(:, 1) == YI)))
+        XI = XI(1, :);
+        YI = YI(:, 1);
+      endif
+
+      ## make X a row vector
+      X = X.';
+
+      ## quadratic padding + additional zeros for the special case of copying
+      ## the last line (like x=1:5, xi=5, requires to have indexes 6 and 7)
+      row_1 = 3*Z(1, :, :) - 3*Z(2, :, :) + Z(3, :, :);
+      row_end = 3*Z(end, :, :) - 3*Z(end-1, :, :) + Z(end-2, :, :);
+      ZI = [3*row_1(:, 1, :) - 3*row_1(:, 2, :) + row_1(:, 3, :), ...
+            row_1, ...
+            3*row_1(:, end, :) - 3*row_1(:, end-1, :) + row_1(:, end-2, :), ...
+            0;
+            #
+            3*Z(:, 1, :) - 3*Z(:, 2, :) + Z(:, 3, :), ...
+            Z, ...
+            3*Z(:, end, :) - 3*Z(:, end-1, :) + Z(:, end-2, :), ...
+            zeros(rows (Z), 1, size (Z, 3));
+            #
+            3*row_end(:, 1, :) - 3*row_end(:, 2, :) + row_end(:, 3, :), ...
+            row_end, ...
+            3*row_end(:, end, :) - 3*row_end(:, end-1, :) + row_end(:, end-2, :), ...
+            0;
+            zeros(1, columns (Z) + 3, size (Z, 3))];
+
+      ## interpolate
+      if (isrow (XI) && iscolumn (YI))
+        ZI = conv_interp_vec (ZI, Y, YI, @cubic, [-2, 2], 1);
+        ZI = conv_interp_vec (ZI, X, XI, @cubic, [-2, 2], 2);
+      else
+        ZI = conv_interp_pairs (ZI, X, Y, XI, YI, @cubic, [-2, 2]);
+      endif
     endif
-
-    return; # spline doesn't need NA extrapolation value (MATLAB compatibility)
-
   endif
 
   ## extrapolation 'extrap'
@@ -355,6 +396,62 @@ function b = isgriddata (X)
   b = ! any (d1(:) != 0);
 endfunction
 
+## cubic convolution kernel with a = -0.5 for MATLAB compatibility.
+function w = cubic (h)
+  absh = abs (h);
+  absh01 = absh <= 1;
+  absh12 = absh <= 2 & ~absh01;
+  absh_sqr = absh .* absh;
+  absh_cube = absh_sqr .* absh;
+  w = (1.5 * absh_cube - 2.5 * absh_sqr + 1)             .* absh01 ...  # for |h| <= 1
+    + (-0.5 * absh_cube + 2.5 * absh_sqr - 4 * absh + 2) .* absh12;     # for 1 < |h| <= 2
+end
+
+## bicubic interpolation of full matrix in one direction with vector
+function out = conv_interp_vec (Z, XY, XIYI, kernel, kernel_bounds, axis)
+  ## allocate output
+  out_shape = size (Z);
+  out_shape(axis) = length (XIYI);
+  out = zeros (out_shape);
+
+  ## get indexes and distances h
+  spread = abs (XY(1) - XY(2));
+  idx = lookup (XY, XIYI, "l");
+  h = (XIYI - XY(idx)) / spread;
+  idx += -kernel_bounds(1) - 1;  # apply padding for indexes
+
+  ## interpolate
+  for shift = kernel_bounds(1)+1 : kernel_bounds(2)
+    if axis == 1
+      out += Z(idx + shift, :) .* kernel (shift - h);
+    else
+      out += Z(:, idx + shift) .* kernel (shift - h);
+    endif
+  endfor
+endfunction
+
+## bicubic interpolation of arbitrary XI-YI-pairs
+function out = conv_interp_pairs (Z, X, Y, XI, YI, kernel, kernel_bounds)
+  spread_x = abs (X(1, 1) - X(1, 2));
+  spread_y = abs (Y(1, 1) - Y(2, 1));
+  idx_x = lookup (X, XI, "l");
+  idx_y = lookup (Y, YI, "l");
+  h_x = (XI - reshape (X(idx_x), size (idx_x))) / spread_x;
+  h_y = (YI - reshape (Y(idx_y), size (idx_y))) / spread_y;
+
+  # adjust indexes for padding
+  idx_x += -kernel_bounds(1) - 1;
+  idx_y += -kernel_bounds(1) - 1;
+
+  shifts = kernel_bounds(1)+1 : kernel_bounds(2);
+  [SX(1,1,:,:), SY(1,1,:,:)] = meshgrid (shifts, shifts);
+  pixels = Z(sub2ind (size (Z), idx_y + SY, idx_x + SX));
+  kernel_y = kernel (reshape (shifts, 1, 1, [], 1) - h_y);
+  kernel_x = kernel (reshape (shifts, 1, 1, 1, []) - h_x);
+  out_x = sum (pixels .* kernel_x, 4);
+  out = sum (out_x .* kernel_y, 3);
+endfunction
+
 
 %!demo
 %! clf;
@@ -362,7 +459,7 @@ endfunction
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,4];  y = [10,11,12];
 %! xi = linspace (min (x), max (x), 17);
-%! yi = linspace (min (y), max (y), 26)';
+%! yi = linspace (min (y), max (y), 26).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "linear"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
@@ -371,9 +468,9 @@ endfunction
 %! clf;
 %! colormap ("default");
 %! [x,y,A] = peaks (10);
-%! x = x(1,:)';  y = y(:,1);
+%! x = x(1,:).';  y = y(:,1);
 %! xi = linspace (min (x), max (x), 41);
-%! yi = linspace (min (y), max (y), 41)';
+%! yi = linspace (min (y), max (y), 41).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "linear"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
@@ -384,7 +481,7 @@ endfunction
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,4];  y = [10,11,12];
 %! xi = linspace (min (x), max (x), 17);
-%! yi = linspace (min (y), max (y), 26)';
+%! yi = linspace (min (y), max (y), 26).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "nearest"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
@@ -393,33 +490,31 @@ endfunction
 %! clf;
 %! colormap ("default");
 %! [x,y,A] = peaks (10);
-%! x = x(1,:)';  y = y(:,1);
+%! x = x(1,:).';  y = y(:,1);
 %! xi = linspace (min (x), max (x), 41);
-%! yi = linspace (min (y), max (y), 41)';
+%! yi = linspace (min (y), max (y), 41).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "nearest"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
 
-## 'pchip' commented out since it is the same as 'cubic'
-%!#demo
+%!demo
 %! clf;
 %! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,2];  y = [10,11,12];
 %! xi = linspace (min (x), max (x), 17);
-%! yi = linspace (min (y), max (y), 26)';
+%! yi = linspace (min (y), max (y), 26).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "pchip"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
 
-## 'pchip' commented out since it is the same as 'cubic'
-%!#demo
+%!demo
 %! clf;
 %! colormap ("default");
 %! [x,y,A] = peaks (10);
-%! x = x(1,:)';  y = y(:,1);
+%! x = x(1,:).';  y = y(:,1);
 %! xi = linspace (min (x), max (x), 41);
-%! yi = linspace (min (y), max (y), 41)';
+%! yi = linspace (min (y), max (y), 41).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "pchip"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
@@ -430,7 +525,7 @@ endfunction
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,2];  y = [10,11,12];
 %! xi = linspace (min (x), max (x), 17);
-%! yi = linspace (min (y), max (y), 26)';
+%! yi = linspace (min (y), max (y), 26).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "cubic"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
@@ -439,9 +534,9 @@ endfunction
 %! clf;
 %! colormap ("default");
 %! [x,y,A] = peaks (10);
-%! x = x(1,:)';  y = y(:,1);
+%! x = x(1,:).';  y = y(:,1);
 %! xi = linspace (min (x), max (x), 41);
-%! yi = linspace (min (y), max (y), 41)';
+%! yi = linspace (min (y), max (y), 41).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "cubic"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
@@ -452,7 +547,7 @@ endfunction
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,2];  y = [10,11,12];
 %! xi = linspace (min (x), max (x), 17);
-%! yi = linspace (min (y), max (y), 26)';
+%! yi = linspace (min (y), max (y), 26).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "spline"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
@@ -461,36 +556,115 @@ endfunction
 %! clf;
 %! colormap ("default");
 %! [x,y,A] = peaks (10);
-%! x = x(1,:)';  y = y(:,1);
+%! x = x(1,:).';  y = y(:,1);
 %! xi = linspace (min (x), max (x), 41);
-%! yi = linspace (min (y), max (y), 41)';
+%! yi = linspace (min (y), max (y), 41).';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "spline"));
 %! [x,y] = meshgrid (x,y);
 %! hold on; plot3 (x,y,A,"b*"); hold off;
 
+%!shared x, y, orig, xi, yi, expected
 %!test  # simple test
 %! x = [1,2,3];
 %! y = [4,5,6,7];
 %! [X, Y] = meshgrid (x, y);
 %! orig = X.^2 + Y.^3;
-%! xi = [1.2,2, 1.5];
-%! yi = [6.2, 4.0, 5.0]';
+%! xi = [0.8, 1.2, 2.0, 1.5];
+%! yi = [6.2, 4.0, 5.0, 7.1].';
 %!
+%! # check nearest neighbor
 %! expected = ...
-%!   [243,   245.4,  243.9;
-%!     65.6,  68,     66.5;
-%!    126.6, 129,    127.5];
-%! result = interp2 (x,y,orig, xi, yi);
+%!   [NA, 217, 220, 220;
+%!    NA,  65,  68,  68;
+%!    NA, 126, 129, 129;
+%!    NA,  NA,  NA,  NA];
+%! result = interp2 (x, y, orig, xi, yi, "nearest");
+%! assert (result, expected);
 %!
+%! # check invariance of translation
+%! result = interp2 (x+3, y-7, orig, xi+3, yi-7, "nearest");
+%! assert (result, expected);
+%!
+%! # check invariance of scaling
+%! result = interp2 (x*3, y*(-7), orig, xi*3, yi*(-7), "nearest");
+%! assert (result, expected);
+%!
+%! # check interpolation with index pairs
+%! result = interp2 (x, y, orig, xi(2:4), yi(1:3).', "nearest");
+%! assert (result, expected(sub2ind(size(expected), 1:3, 2:4)));
+%!
+%! # check bilinear interpolation
+%! expected = ...
+%!   [NA, 243,     245.4,   243.9;
+%!    NA,  65.6,    68,      66.5;
+%!    NA, 126.6,   129,     127.5;
+%!    NA,  NA,      NA,      NA];
+%! result = interp2 (x, y, orig, xi, yi);
 %! assert (result, expected, 1000*eps);
+%!
+%! # check invariance of translation
+%! result = interp2 (x+3, y-7, orig, xi+3, yi-7);
+%! assert (result, expected, 1000*eps);
+%!
+%! # check invariance of scaling
+%! result = interp2 (x*3, y*(-7), orig, xi*3, yi*(-7));
+%! assert (result, expected, 1000*eps);
+%!
+%! # check interpolation with index pairs
+%! result = interp2 (x, y, orig, xi(2:4), yi(1:3).');
+%! assert (result, expected(sub2ind(size(expected), 1:3, 2:4)), 1000*eps);
+%!
+%! # check spline interpolation
+%! expected = ...
+%!   [238.968,  239.768,  242.328,  240.578;
+%!     64.64,    65.44,    68,       66.25;
+%!    125.64,   126.44,   129,      127.25;
+%!    358.551,  359.351,  361.911,  360.161];
+%! result = interp2 (x, y, orig, xi, yi, "spline");
+%! assert (result, expected, 1000*eps);
+%!
+%! # check invariance of translation
+%! result = interp2 (x+3, y-7, orig, xi+3, yi-7, "spline");
+%! assert (result, expected, 1000*eps);
+%!
+%! # check invariance of scaling
+%! result = interp2 (x*3, y*(-7), orig, xi*3, yi*(-7), "spline");
+%! assert (result, expected, 1000*eps);
+%!
+%!xtest
+%! # FIXME: spline interpolation does not support index pairs, Matlab does.
+%! result = interp2 (x, y, orig, xi(2:4), yi(1:3).', "spline");
+%! assert (result, expected(sub2ind(size(expected), 1:3, 2:4)), 1000*eps);
+%!
+%!test <*61754>
+%! # check bicubic interpolation
+%! expected = ...
+%!   [NA, 239.96,  242.52,  240.77;
+%!    NA,  65.44,   68,      66.25;
+%!    NA, 126.44,  129,     127.25;
+%!    NA,  NA,      NA,      NA];
+%! result = interp2 (x, y, orig, xi, yi, "cubic");
+%! assert (result, expected, 10000*eps);
+%!
+%! # check invariance of translation
+%! result = interp2 (x+3, y-7, orig, xi+3, yi-7, "cubic");
+%! assert (result, expected, 10000*eps);
+%!
+%! # check invariance of scaling
+%! result = interp2 (x*3, y*(-7), orig, xi*3, yi*(-7), "cubic");
+%! assert (result, expected, 10000*eps);
+%!
+%! # check interpolation with index pairs
+%! result = interp2 (x, y, orig, xi(2:4), yi(1:3).', "cubic");
+%! assert (result, expected(sub2ind(size(expected), 1:3, 2:4)), 10000*eps);
 
 ## Test that interpolating a complex matrix is equivalent to interpolating its
 ## real and imaginary parts separately.
 %!test <*61863>
 %! xi = [2.5, 3.5];
-%! yi = [0.5, 1.5]';
-%! orig = rand (2, 3) + 1i * rand (2, 3);
-%! for method = {"nearest", "linear", "pchip", "spline"}
+%! yi = [0.5, 1.5].';
+%! orig = rand (4, 3) + 1i * rand (4, 3);
+%! for method = {"nearest", "linear", "pchip", "cubic", "spline"}
 %!   interp_complex = interp2 (orig, xi, yi, method{1});
 %!   interp_real = interp2 (real (orig), xi, yi, method{1});
 %!   interp_imag = interp2 (imag (orig), xi, yi, method{1});
@@ -503,7 +677,7 @@ endfunction
 %! y = [4,5,6,7];
 %! [X, Y] = meshgrid (x, y);
 %! orig = X.^2 + Y.^3;
-%! xi = [1:0.25:3];  yi = [4:0.25:7]';
+%! xi = [1:0.25:3];  yi = [4:0.25:7].';
 %! expected = interp2 (x,y,orig, xi, yi);
 %! result = interp2 (orig, 2);
 %!
@@ -523,18 +697,20 @@ endfunction
 %! [X, Y] = meshgrid (x,y);
 %! orig = X.^2 + Y.^3;
 %! xi = [0,4];
-%! yi = [3,8]';
+%! yi = [3,8].';
 %! assert (interp2 (x,y,orig, xi, yi), [NA,NA;NA,NA]);
 %! assert (interp2 (x,y,orig, xi, yi,"linear", 0), [0,0;0,0]);
 %! assert (interp2 (x,y,orig, xi, yi,"linear", 2), [2,2;2,2]);
 %! assert (interp2 (x,y,orig, xi, yi,"spline", 2), [2,2;2,2]);
 %! assert (interp2 (x,y,orig, xi, yi,"linear", 0+1i), [0+1i,0+1i;0+1i,0+1i]);
 %! assert (interp2 (x,y,orig, xi, yi,"spline"), [27,43;512,528]);
+%! assert (interp2 (x,y,orig, xi, yi,"cubic"), [NA,NA;NA,NA]);
+%! assert (interp2 (x,y,orig, xi, yi,"cubic", 2), [2,2;2,2]);
 
 %!test  # for values at boundaries
 %! A = [1,2;3,4];
 %! x = [0,1];
-%! y = [2,3]';
+%! y = [2,3].';
 %! assert (interp2 (x,y,A,x,y,"linear"), A);
 %! assert (interp2 (x,y,A,x,y,"nearest"), A);
 
@@ -557,20 +733,26 @@ endfunction
 %!assert (interp2 (z), zout, tol)
 %!assert (interp2 (z, "linear"), zout, tol)
 %!assert (interp2 (z, "pchip"), zout, tol)
-%!assert (interp2 (z, "cubic"), zout, 10 * tol)
+%!assert (interp2 (z, "cubic"), zout, tol)
 %!assert (interp2 (z, "spline"), zout, tol)
-%!assert (interp2 (z, [2 3 1], [2 2 2]', "linear"),
+%!assert (interp2 (z, [2 3 1], [2 2 2].', "linear"),
 %!        repmat ([5, 7, 3], [3, 1]), tol)
-%!assert (interp2 (z, [2 3 1], [2 2 2]', "pchip"),
+%!assert (interp2 (z, [2 3 1], [2 2 2].', "pchip"),
 %!        repmat ([5, 7, 3], [3, 1]), tol)
-%!assert (interp2 (z, [2 3 1], [2 2 2]', "cubic"),
-%!        repmat ([5, 7, 3], [3, 1]), 10 * tol)
-%!assert (interp2 (z, [2 3 1], [2 2 2]', "spline"),
+%!assert (interp2 (z, [2 3 1], [2 2 2].', "cubic"),
+%!        repmat ([5, 7, 3], [3, 1]), tol)
+%!assert (interp2 (z, [2 3 1], [2 2 2].', "spline"),
 %!        repmat ([5, 7, 3], [3, 1]), tol)
 %!assert (interp2 (z, [2 3 1], [2 2 2], "linear"), [5 7 3], tol)
 %!assert (interp2 (z, [2 3 1], [2 2 2], "pchip"), [5 7 3], tol)
-%!assert (interp2 (z, [2 3 1], [2 2 2], "cubic"), [5 7 3], 10 * tol)
+%!assert (interp2 (z, [2 3 1], [2 2 2], "cubic"), [5 7 3], tol)
 %!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol)
+%!assert (interp2 (z, [3; 3; 3], [2; 3; 1], "linear"), [7; 9; 5], tol)
+%!assert (interp2 (z, [3; 3; 3], [2; 3; 1], "pchip"), [7; 9; 5], tol)
+%!assert (interp2 (z, [3; 3; 3], [2; 3; 1], "cubic"), [7; 9; 5], tol)
+%!xtest
+%! # FIXME: single column yields single row with spline interpolation (numbers are correct)
+%! assert (interp2 (z, [3; 3; 3], [2; 3; 1], "spline"), [7; 9; 5], tol)
 
 ## Test input validation
 %!error interp2 (1, 1, 1, 1, 1, 2)    # only 5 numeric inputs
@@ -582,10 +764,10 @@ endfunction
 %!error <N must be an integer .= 0> interp2 (ones (2), -1)
 %!error <N must be an integer .= 0> interp2 (ones (2), 1.5)
 %!warning <ignoring unsupported '\*' flag> interp2 (rand (3,3), 1, "*linear");
-%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, 'linear', {1})
-%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, 'linear', ones (2,2))
-%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, 'linear', "abc")
-%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, 'linear', "extrap")
+%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, "linear", {1})
+%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, "linear", ones (2,2))
+%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, "linear", "abc")
+%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, "linear", "extrap")
 %!error <X, Y must be numeric matrices> interp2 ({1}, 1, ones (2), 1, 1)
 %!error <X, Y must be numeric matrices> interp2 (1, {1}, ones (2), 1, 1)
 %!error <XI, YI must be numeric> interp2 (1, 1, ones (2), {1}, 1)
@@ -601,3 +783,5 @@ endfunction
 %!error <XI, YI must have uniform spacing> interp2 (1:2, 1:2, ones (2), [1 2 4], [1 2 3], "spline")
 %!error <XI, YI must have uniform spacing> interp2 (1:2, 1:2, ones (2), [1 2 3], [1 2 4], "spline")
 %!error interp2 (1, 1, 1, 1, 1, "foobar")
+%!warning <cubic requires at least 3 points in each dimension.> interp2 (eye(2), 1.5, 1.5, "cubic");
+

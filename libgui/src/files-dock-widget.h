@@ -207,6 +207,7 @@ namespace octave
     QToolBar *m_navigation_tool_bar;
     QAction *m_sync_octave_directory_action;
     QAction *m_sync_browser_directory_action;
+    QAction *m_rename_action;
 
     //! The file system model.
 

@@ -41,6 +41,8 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QSizePolicy>
+#include <QStyledItemDelegate>
+#include <QTimer>
 #include <QToolButton>
 #include <QUrl>
 
@@ -67,6 +69,113 @@ namespace octave
     {
       if (e->button () != Qt::RightButton)
         QTreeView::mousePressEvent (e);
+    }
+  };
+
+  // to have file renamed in the file tree, it has to be renamed in
+  // QFileSystemModel::setData.
+  // For the editor to behave correctly, some signals must be sent before
+  // and after the rename
+  class file_system_model : public QFileSystemModel
+  {
+  public:
+    file_system_model (files_dock_widget *p) : QFileSystemModel (p) {}
+
+    ~file_system_model () = default;
+
+    bool setData (const QModelIndex &idx, const QVariant &value,
+                  int role) override
+    {
+      if (!idx.isValid () || idx.column () != 0 || role != Qt::EditRole
+          || (flags (idx) & Qt::ItemIsEditable) == 0)
+        {
+          return false;
+        }
+
+      QString new_name = value.toString ();
+      QString old_name = idx.data ().toString ();
+      if (new_name == old_name)
+        return true;
+      if (new_name.isEmpty ()
+          || QDir::toNativeSeparators (new_name).contains (QDir::separator ()))
+        {
+          display_rename_failed_message (old_name, new_name);
+          return false;
+        }
+
+      auto parent_dir = QDir(filePath (parent (idx)));
+
+      files_dock_widget *fdw = static_cast<files_dock_widget*>(parent());
+
+
+      fdw->file_remove_signal(parent_dir.filePath(old_name), parent_dir.filePath(new_name));
+
+      if (!parent_dir.rename (old_name, new_name))
+        {
+          display_rename_failed_message (old_name, new_name);
+          fdw->file_renamed_signal(false);
+          return false;
+        }
+
+      fdw->file_renamed_signal(true);
+
+      emit fileRenamed(parent_dir.absolutePath(), old_name, new_name);
+      revert();
+
+      return true;
+    }
+
+  private:
+    void display_rename_failed_message (const QString &old_name,
+                                        const QString &new_name)
+    {
+      const QString message =
+
+          files_dock_widget::tr ("Could not rename file \"%1\" to \"%2\".")
+              .arg (old_name)
+              .arg (new_name);
+      QMessageBox::information (static_cast<QWidget *> (parent ()),
+                                QFileSystemModel::tr ("Invalid filename"),
+                                message, QMessageBox::Ok);
+    }
+  };
+
+  // Delegate to improve ergonomy of file renaming by pre-selecting the text
+  // before the extension.
+  class RenameItemDelegate : public QStyledItemDelegate
+  {
+  public:
+    RenameItemDelegate (QObject *parent = nullptr)
+        : QStyledItemDelegate{ parent }
+    {
+    }
+
+    void setEditorData (QWidget *editor,
+                        const QModelIndex &index) const override
+    {
+      QLineEdit *line_edit = qobject_cast<QLineEdit *> (editor);
+
+      if (!line_edit)
+        {
+          QStyledItemDelegate::setEditorData (editor, index);
+          return;
+        }
+
+      QString filename = index.data (Qt::EditRole).toString ();
+
+      int select_len = filename.indexOf (QChar ('.'));
+      if (select_len == -1)
+        select_len = filename.size ();
+
+      line_edit->setText (filename);
+
+      // Qt calls QLineEdit::selectAll after this function is called, so to
+      // actually restrict the selection, we have to post the modification at
+      // the end of the event loop.
+      // QTimer allows this easily with 0 as timeout.
+      QTimer::singleShot (0, [=] () {
+        line_edit->setSelection (0, select_len);
+      });
     }
   };
 
@@ -202,7 +311,7 @@ namespace octave
         startup_dir = QDir ();
       }
 
-    m_file_system_model = new QFileSystemModel (this);
+    m_file_system_model = new file_system_model (this);
     m_file_system_model->setResolveSymlinks (false);
     m_file_system_model->setFilter (
       QDir::System | QDir::NoDotAndDotDot | QDir::AllEntries);
@@ -218,6 +327,24 @@ namespace octave
     m_file_tree_view->setAlternatingRowColors (true);
     m_file_tree_view->setAnimated (true);
     m_file_tree_view->setToolTip (tr ("Double-click to open file/folder, right click for alternatives"));
+
+    // allow renaming directly in the tree view with
+    // m_file_tree_view->edit(index)
+    m_file_system_model->setReadOnly (false);
+    // delegate to improve rename ergonomy by pre-selecting text up to the
+    // extension
+    auto *rename_delegate = new RenameItemDelegate (this);
+    m_file_tree_view->setItemDelegateForColumn (0, rename_delegate);
+    // prevent the tree view to override Octave's double-click behavior
+    m_file_tree_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
+    // create the rename action (that will be added to context menu)
+    // and associate to F2 key shortcut
+    m_rename_action = new QAction (tr ("Rename..."), this);
+    m_rename_action->setShortcut (Qt::Key_F2);
+    m_rename_action->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    connect (m_rename_action, &QAction::triggered, this,
+             &files_dock_widget::contextmenu_rename);
+    addAction(m_rename_action);
 
     // get sort column and order as well as column state (order and width)
 
@@ -582,8 +709,7 @@ namespace octave
           }
 
         menu.addSeparator ();
-        menu.addAction (tr ("Rename..."),
-                        this, &files_dock_widget::contextmenu_rename);
+        menu.addAction (m_rename_action);
         menu.addAction (rmgr.icon ("edit-delete"), tr ("Delete..."),
                         this, &files_dock_widget::contextmenu_delete);
 
@@ -694,37 +820,8 @@ namespace octave
     if (rows.size () > 0)
       {
         QModelIndex index = rows[0];
-
-        QFileInfo info = m_file_system_model->fileInfo (index);
-        QDir path = info.absoluteDir ();
-        QString old_name = info.fileName ();
-        bool ok;
-
-        QString new_name
-          = QInputDialog::getText (this, tr ("Rename file/directory"),
-                                   tr ("Rename file/directory:\n")
-                                   + old_name + tr ("\n to: "),
-                                   QLineEdit::Normal, old_name, &ok);
-        if (ok && new_name.length () > 0)
-          {
-            new_name = path.absolutePath () + '/' + new_name;
-            old_name = path.absolutePath () + '/' + old_name;
-            // editor: close old
-            emit file_remove_signal (old_name, new_name);
-            // Do the renaming
-            QFile f (old_name);  // Must use QFile, not QDir (bug #56298)
-            bool st = f.rename (new_name);
-            if (! st)
-              QMessageBox::warning (this, tr ("Rename error"),
-                                    tr ("Could not rename file \"%1\" to \"%2\".").
-                                    arg (old_name).arg (new_name));
-            // editor: load new/old file depending on success
-            emit file_renamed_signal (st);
-            // Clear cache of file browser
-            m_file_system_model->revert ();
-          }
+        m_file_tree_view->edit(index);
       }
-
   }
 
   void files_dock_widget::contextmenu_delete (bool)

@@ -71,9 +71,11 @@ function T = delaunayn (pts, varargin)
   if (isempty (varargin) || isempty (varargin{1}))
     try
       T = __delaunayn__ (pts);
-    catch
+    catch err
       if (columns (pts) <= 2)
         T = __delaunayn__ (pts, "Qt Qbb Qc Qz");
+      else
+        rethrow (err);
       endif
     end_try_catch
   else

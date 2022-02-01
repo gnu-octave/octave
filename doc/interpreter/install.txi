@@ -649,6 +649,8 @@ libraries are limited to arrays with dimensions that are smaller than
 
 @item SuiteSparse
 
+@item @sc{sundials ida}
+
 @item @sc{arpack}
 @end itemize
 
@@ -699,6 +701,12 @@ Note that the test case above usually requires twice the memory, if
 Note further, that the data type @code{single} has a precision of
 about 23 binary bits.  In this particular example no rounding errors
 occur.
+
+Generally, it is best to have all of these libraries in versions that
+support 32-bit indexing, or all of these libraries must support 64-bit
+indexing.  Mixing libraries with 64-bit indexing with libraries with
+32-bit indexing can cause unpredictable behavior including program
+crashes with possible loss of data.
 
 The following instructions were tested with the development version of
 Octave and GCC 4.3.4 on an x86_64 Debian system and may be out of date
@@ -786,6 +794,12 @@ done
 
 @noindent
 Other systems may require a different solution.
+
+@item @sc{sundials ida}
+(@url{https://computing.llnl.gov/projects/sundials/ida})
+
+When configuring with @code{cmake} add the flag
+@option{-DSUNDIALS_INDEX_SIZE=64}.
 
 @item @sc{arpack} (@url{https://forge.scilab.org/index.php/p/arpack-ng/})
 

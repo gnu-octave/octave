@@ -349,6 +349,7 @@ Run the shell script @file{configure}.  This will determine the features
 your system has (or doesn't have) and create a file named
 @file{Makefile} from each of the files named @file{Makefile.in}.
 
+For a complete list of configure options, run @file{configure --help}.
 Here is a summary of the configure options that are most frequently used
 when building Octave:
 
@@ -442,8 +443,9 @@ operations.)  Use this option to specify a particular @sc{lapack}
 library that Octave should use.
 
 @item --with-magick=<lib>
-Select the library to use for image I/O@.  The two possible values are
-@qcode{"GraphicsMagick"} (default) or @qcode{"ImageMagick"}.
+Select the Magick++ library to use for image I/O@.  For many
+distributions, possible values are @qcode{"GraphicsMagick++"} (default)
+or @qcode{"ImageMagick++"}.
 
 @item --with-sepchar=<char>
 Use <char> as the path separation character.  This option can help when
@@ -491,9 +493,9 @@ Don't use the @sc{hdf5} library, disable reading and writing of
 Don't use OpenGL, disable native graphics toolkit for plotting.  You
 will need @code{gnuplot} installed in order to make plots.
 
-@item --without-qhull
-Don't use Qhull, disable @code{delaunay}, @code{convhull}, and
-related functions.
+@item --without-qhull_r
+Don't use (re-entrant) Qhull, disable @code{delaunay}, @code{convhull},
+and related functions.
 
 @item --without-qrupdate
 Don't use @sc{qrupdate}, disable QR and Cholesky update functions.
@@ -501,7 +503,7 @@ Don't use @sc{qrupdate}, disable QR and Cholesky update functions.
 @item --without-umfpack
 Don't use @sc{umfpack}, disable some sparse matrix functionality.
 
-@item --without-zlib
+@item --without-z
 Don't use the zlib library, disable data file compression and support
 for recent MAT file formats.
 

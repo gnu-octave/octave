@@ -213,7 +213,8 @@ Command-line editing library (@url{https://www.gnu.org/s/readline}).
 If you wish to build Octave without GNU readline installed, you must use
 the @option{--disable-readline} option when running the configure script.
 
-The following external software packages are optional but recommended:
+The following external software packages are optional.  Octave can be
+built without them but certain features might be missing:
 
 @table @asis
 @item ARPACK
@@ -314,6 +315,12 @@ building the GUI@.  It is a large framework, but the only components
 required are the GUI, core, and network modules.  Since Octave 4.0, the
 default graphics renderer (@qcode{"qt"}) has been Qt-based, which has
 been OpenGL-based.
+
+@item RapidJSON
+A fast JSON parser/generator for C++ with both SAX/DOM style API
+(@url{https://rapidjson.org/}).  RapidJSON is required to read or write
+from or to JSON files with the functions @code{jsondecode} and
+@code{jsonencode}.
 
 @item SuiteSparse
 Sparse matrix factorization library

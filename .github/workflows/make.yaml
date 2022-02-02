@@ -308,7 +308,7 @@ jobs:
 
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [windows-2019]
+        os: [windows-latest]
         compiler: [gcc]
         target: [x86_64, i686]
         include:

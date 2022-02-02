@@ -87,7 +87,7 @@ static void disable_app_nap (void)
   unsigned long long NSActivityLatencyCritical = 0xFF00000000ULL;
 
   // Avoid errors on older versions of OS X
-  process_info_class = static_cast<Class> (objc_getClass ("NSProcessInfo"));
+  process_info_class = reinterpret_cast<Class> (objc_getClass ("NSProcessInfo"));
   if (process_info_class == nil)
     return;
 

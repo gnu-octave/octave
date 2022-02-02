@@ -84,7 +84,6 @@ function configure_make (desc, packdir, verbose)
       cmd = ["cd '" src "'; " scenv " ./configure " flags];
       [status, output] = shell (cmd, verbose);
       if (status != 0)
-        sts = rmdir (desc.dir, "s");
         disp (output);
         error ("pkg: error running the configure script for %s", desc.name);
       endif
@@ -101,7 +100,6 @@ function configure_make (desc, packdir, verbose)
       [status, output] = shell (sprintf ("%s make --jobs %i --directory '%s'",
                                          scenv, jobs, src), verbose);
       if (status != 0)
-        sts = rmdir (desc.dir, "s");
         disp (output);
         error ("pkg: error running 'make' for the %s package", desc.name);
       endif

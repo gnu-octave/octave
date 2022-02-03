@@ -377,9 +377,9 @@ containing the nonzero values.  For example:
 @end group
 @end example
 
-If @var{x} is multidimensional array of size m x n x p x @dots{}, @var{j} is
-the column location as if @var{x} was flattened into a two-dimensional matrix
-of size m x (n + p + @dots{}).
+If @var{x} is a multidimensional array of size m x n x p x @dots{}, @var{j}
+contains the column locations as if @var{x} was flattened into a
+two-dimensional matrix of size m x (n + p + @dots{}).
 
 Note that this function is particularly useful for sparse matrices, as
 it extracts the nonzero elements as vectors, which can then be used to

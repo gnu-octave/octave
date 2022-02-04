@@ -377,7 +377,7 @@ containing the nonzero values.  For example:
 @end group
 @end example
 
-If @var{x} is a multidimensional array of size m x n x p x @dots{}, @var{j}
+If @var{x} is a multi-dimensional array of size m x n x p x @dots{}, @var{j}
 contains the column locations as if @var{x} was flattened into a
 two-dimensional matrix of size m x (n + p + @dots{}).
 

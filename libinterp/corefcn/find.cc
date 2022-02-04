@@ -378,6 +378,10 @@ containing the nonzero values.  For example:
 @end group
 @end example
 
+If @var{x} is a multi-dimensional array of size m x n x p x @dots{}, @var{j}
+contains the column locations as if @var{x} was flattened into a
+two-dimensional matrix of size m x (n + p + @dots{}).
+
 Note that this function is particularly useful for sparse matrices, as
 it extracts the nonzero elements as vectors, which can then be used to
 create the original matrix.  For example:
@@ -588,6 +592,15 @@ b = sparse (i, j, v, sz(1), sz(2));
 %! assert (i, ifull);
 %! assert (j, jfull);
 %! assert (all (v == 1));
+
+%!test <*61986>
+%! P = cat (3, eye(3), eye(3));
+%! loc = find (P);
+%! [i, j, v] = find(P);
+%! assert (loc, [1, 5, 9, 10, 14, 18]');
+%! assert (i, [1, 2, 3, 1, 2, 3]');
+%! assert (j, [1, 2, 3, 4, 5, 6]');
+%! assert (v, [1, 1, 1, 1, 1, 1]');
 
 %!assert <*53655> (find (false), zeros (0, 0))
 %!assert <*53655> (find ([false, false]), zeros (1, 0))

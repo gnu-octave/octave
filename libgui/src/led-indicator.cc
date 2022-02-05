@@ -52,11 +52,12 @@ namespace octave
         break;
 
       case LED_STATE_INACTIVE:
-        col = QColor (Qt::darkRed);
+        col = QColor (Qt::darkGray);
+        col.setRedF (col.redF () * 1.25);
         break;
 
       case LED_STATE_ACTIVE:
-        col = QColor (Qt::darkGreen);
+        col = QColor (Qt::red);
         break;
       }
 

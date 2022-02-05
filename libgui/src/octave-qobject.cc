@@ -258,12 +258,6 @@ namespace octave
     connect (qt_link (), &qt_interpreter_events::copy_image_to_clipboard_signal,
              this, &base_qobject::copy_image_to_clipboard);
 
-    // Get settings file.
-    m_resource_manager.reload_settings ();
-
-    // After settings.
-    config_translators ();
-
     connect (qt_link (), &qt_interpreter_events::show_documentation_signal,
              this, &base_qobject::show_documentation_window);
 

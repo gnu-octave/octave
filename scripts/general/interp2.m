@@ -182,7 +182,7 @@ function ZI = interp2 (varargin)
   endif
 
   if (strcmp (method, "cubic") && (rows (Z) < 3 || columns (Z) < 3))
-    warning (["interp2: cubic requires at least 3 points in each ", ...
+    warning (["interp2: cubic requires at least 3 points in each " ...
               "dimension.  Falling back to linear interpolation."]);
     method = "linear";
   endif
@@ -261,7 +261,7 @@ function ZI = interp2 (varargin)
       DX = __pchip_deriv__ (X, Z, 2);
       DY = __pchip_deriv__ (Y, Z, 1);
       ## Compute mixed derivatives row-wise and column-wise.  Use the average.
-      DXY = (__pchip_deriv__ (X, DY, 2) + __pchip_deriv__ (Y, DX, 1))/2;
+      DXY = (__pchip_deriv__ (X, DY, 2) + __pchip_deriv__ (Y, DX, 1)) / 2;
 
       ## do the bicubic interpolation
       hx = diff (X); hx = hx(xidx);
@@ -310,7 +310,7 @@ function ZI = interp2 (varargin)
 
     endif
 
-  else
+  else  # cubic or spline methods
 
     ## Check dimensions of XI and YI
     if (isvector (XI) && isvector (YI) && ! size_equal (XI, YI))
@@ -325,7 +325,7 @@ function ZI = interp2 (varargin)
       else
         error ("interp2: XI, YI must have uniform spacing ('meshgrid' format)");
       endif
-      return; # spline doesn't need NA extrapolation value (MATLAB compatibility)
+      return;  # spline doesn't use extrapolation value (MATLAB compatibility)
     elseif (strcmp (method, "cubic"))
       ## reduce to vectors if interpolation points are a meshgrid
       if (size_equal (XI, YI) && all (all (XI(1, :) == XI & YI(:, 1) == YI)))
@@ -337,7 +337,7 @@ function ZI = interp2 (varargin)
       X = X.';
 
       ## quadratic padding + additional zeros for the special case of copying
-      ## the last line (like x=1:5, xi=5, requires to have indexes 6 and 7)
+      ## the last line (like x=1:5, xi=5, requires to have indices 6 and 7)
       row_1 = 3*Z(1, :, :) - 3*Z(2, :, :) + Z(3, :, :);
       row_end = 3*Z(end, :, :) - 3*Z(end-1, :, :) + Z(end-2, :, :);
       ZI = [3*row_1(:, 1, :) - 3*row_1(:, 2, :) + row_1(:, 3, :), ...
@@ -398,17 +398,22 @@ endfunction
 
 ## cubic convolution kernel with a = -0.5 for MATLAB compatibility.
 function w = cubic (h)
+
   absh = abs (h);
   absh01 = absh <= 1;
-  absh12 = absh <= 2 & ~absh01;
+  absh12 = absh <= 2 & ! absh01;
   absh_sqr = absh .* absh;
   absh_cube = absh_sqr .* absh;
-  w = (1.5 * absh_cube - 2.5 * absh_sqr + 1)             .* absh01 ...  # for |h| <= 1
-    + (-0.5 * absh_cube + 2.5 * absh_sqr - 4 * absh + 2) .* absh12;     # for 1 < |h| <= 2
-end
+  w = ...  # for |h| <= 1
+      (1.5 * absh_cube - 2.5 * absh_sqr + 1) .* absh01 ...
+      ...  # for 1 < |h| <= 2
+      + (-0.5 * absh_cube + 2.5 * absh_sqr - 4 * absh + 2) .* absh12;
+
+endfunction
 
 ## bicubic interpolation of full matrix in one direction with vector
 function out = conv_interp_vec (Z, XY, XIYI, kernel, kernel_bounds, axis)
+
   ## allocate output
   out_shape = size (Z);
   out_shape(axis) = length (XIYI);
@@ -422,16 +427,18 @@ function out = conv_interp_vec (Z, XY, XIYI, kernel, kernel_bounds, axis)
 
   ## interpolate
   for shift = kernel_bounds(1)+1 : kernel_bounds(2)
-    if axis == 1
+    if (axis == 1)
       out += Z(idx + shift, :) .* kernel (shift - h);
     else
       out += Z(:, idx + shift) .* kernel (shift - h);
     endif
   endfor
+
 endfunction
 
 ## bicubic interpolation of arbitrary XI-YI-pairs
 function out = conv_interp_pairs (Z, X, Y, XI, YI, kernel, kernel_bounds)
+
   spread_x = abs (X(1, 1) - X(1, 2));
   spread_y = abs (Y(1, 1) - Y(2, 1));
   idx_x = lookup (X, XI, "l");
@@ -450,6 +457,7 @@ function out = conv_interp_pairs (Z, X, Y, XI, YI, kernel, kernel_bounds)
   kernel_x = kernel (reshape (shifts, 1, 1, 1, []) - h_x);
   out_x = sum (pixels .* kernel_x, 4);
   out = sum (out_x .* kernel_y, 3);
+
 endfunction
 
 
@@ -778,10 +786,9 @@ endfunction
 %!error <X and Y size must match the dimensions of Z> interp2 (1:2, 1:2, ones (3,2), 1, 1)
 %!error <X must be strictly monotonic> interp2 ([1 0 2], 1:3, ones (3,3), 1, 1)
 %!error <Y must be strictly monotonic> interp2 (1:3, [1 0 2], ones (3,3), 1, 1)
+%!warning <cubic requires at least 3 points in each dimension.> interp2 (eye(2), 1.5, 1.5, "cubic");
 %!error <XI and YI must be matrices of equal size> interp2 (1:2, 1:2, ones (2), ones (2,2), 1)
 %!error <XI and YI must be matrices of equal size> interp2 (1:2, 1:2, ones (2), 1, ones (2,2))
 %!error <XI, YI must have uniform spacing> interp2 (1:2, 1:2, ones (2), [1 2 4], [1 2 3], "spline")
 %!error <XI, YI must have uniform spacing> interp2 (1:2, 1:2, ones (2), [1 2 3], [1 2 4], "spline")
 %!error interp2 (1, 1, 1, 1, 1, "foobar")
-%!warning <cubic requires at least 3 points in each dimension.> interp2 (eye(2), 1.5, 1.5, "cubic");
-

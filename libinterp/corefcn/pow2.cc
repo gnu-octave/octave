@@ -29,6 +29,8 @@
 
 #include <cmath>
 
+#include "lo-array-errwarn.h"
+
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -46,7 +48,7 @@ map_2_xldexp (Array<T>& y, const Array<T>& f, const Array<T>& e)
   else if (f.numel () == 1)
     y = Array<T> (e.dims ());
   else
-    error ("pow2: Input dimensions must agree.");
+    octave::err_nonconformant ("pow2", f.dims (), e.dims ());
 
   octave_idx_type f_inc = (f.numel () == 1) ? 0 : 1;
   octave_idx_type e_inc = (e.numel () == 1) ? 0 : 1;
@@ -79,7 +81,7 @@ map_2_xldexp_sparse (SparseMatrix& y, const SparseMatrix& f,
         }
     }
   else
-    error ("pow2: Input dimensions must agree.");
+    octave::err_nonconformant ("pow2", f.dims (), e.dims ());
 }
 
 OCTAVE_NAMESPACE_BEGIN
@@ -166,8 +168,8 @@ to C/C++ standard function @code{ldexp()}.
     err_wrong_type_arg ("pow2", args(1));
 
   if (args(0).iscomplex () || args(1).iscomplex ())
-    warning_with_id ("Octave:pow2:only-real",
-                     "pow2: Imaginary part is ignored.");
+    warning_with_id ("Octave:pow2:imaginary-ignored",
+                     "pow2: imaginary part is ignored");
 
   // Note: Matlab R2021a errors on `pow2 (sparse (f), single (e))`,
   //       but sparsity in f determines output and can significantly
@@ -252,7 +254,7 @@ to C/C++ standard function @code{ldexp()}.
 %! f = [2 2];
 %! e = [2 2];
 %! z = [8 8];
-%! warning ("off", "Octave:pow2:only-real", "local");
+%! warning ("off", "Octave:pow2:imaginary-ignored", "local");
 %! for i = 1:numel (fcns)
 %!   fcn = fcns{i};
 %!   assert (pow2 (fcn (f), fcn (e)), real (fcn (z)));
@@ -270,14 +272,14 @@ to C/C++ standard function @code{ldexp()}.
 %! f = [1+1i, 1];
 %! e = 2;
 %! z = [4, 4];
-%! warning ("off", "Octave:pow2:only-real", "local");
+%! warning ("off", "Octave:pow2:imaginary-ignored", "local");
 %! assert (pow2 (f, e), z);
 
 %!test
 %! f = 1;
 %! e = [1+1i, 1];
 %! z = [2, 2];
-%! warning ("off", "Octave:pow2:only-real", "local");
+%! warning ("off", "Octave:pow2:imaginary-ignored", "local");
 %! assert (pow2 (f, e), z);
 
 %!test
@@ -311,6 +313,13 @@ to C/C++ standard function @code{ldexp()}.
 %! assert (pow2 (sparse (0), speye  (N)),   sparse(N,N));
 
 %!error <Invalid call> pow2 ()
+%!error <Invalid call> pow2 (1,2,3)
+%!error <wrong type argument> pow2 (int8 (1))
+%!error <wrong type argument> pow2 (2, int8 (1))
+%!warning <imaginary part is ignored> pow2 (i, 2);
+%!warning <imaginary part is ignored> pow2 (2, i);
+%!error <pow2: nonconformant arguments> pow2 ([1,2], [3,4,5])
+%!error <pow2: nonconformant arguments> pow2 (sparse ([1,2]), sparse ([3,4,5]))
 */
 
 OCTAVE_NAMESPACE_END

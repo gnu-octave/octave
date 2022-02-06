@@ -361,6 +361,11 @@
 ## By default, the @code{Octave:possible-matlab-short-circuit-operator} warning
 ## is enabled.
 ##
+## @item Octave:pow2:imaginary-ignored
+## If the @code{Octave:pow2:imaginary-ignored} warning is enabled, a warning is
+## printed if either input to @code{pow2} is complex.
+## By default, the @code{Octave:pow2:imaginary-ignored} warning is enabled.
+##
 ## @item Octave:recursive-path-search
 ## If the @code{Octave:recursive-path-search} warning is enabled, Octave
 ## will issue a warning if @code{addpath} is used with double trailing

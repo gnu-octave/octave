@@ -33,14 +33,18 @@
 #include "error.h"
 #include "errwarn.h"
 
+// FIXME: According to cppreference.com the implementation of `ldexp (f, e)`
+// might be less efficient that the corresponding `f * exp2 (e)`.  Consider
+// replacing our implementation with the latter.
+
 template <typename T>
 void
 map_2_xldexp (Array<T>& y, const Array<T>& f, const Array<T>& e)
 {
   if (f.numel () == e.numel () || e.numel () == 1)
-    y = Array<T>(f.dims ());
+    y = Array<T> (f.dims ());
   else if (f.numel () == 1)
-    y = Array<T>(e.dims ());
+    y = Array<T> (e.dims ());
   else
     error ("pow2: Input dimensions must agree.");
 
@@ -70,7 +74,7 @@ map_2_xldexp_sparse (SparseMatrix& y, const SparseMatrix& f,
           // Determine current column.
           while (i >= f.cidx (col))
             col++;
-          int ee = static_cast<int> (e.elem (f.ridx (i), col - 1));
+          int ee = static_cast<int> (e.xelem (f.ridx (i), col - 1));
           y.data (i) = std::ldexp (f.data (i), ee);
         }
     }
@@ -102,7 +106,7 @@ y = f .* (2 .^ e).
 @end ifnottex
 where for complex inputs only the real part of both inputs is regarded
 and from @var{e} only the real integer part.  This calling form corresponds
-to C/C++ standard function ldexp().
+to C/C++ standard function @code{ldexp()}.
 @seealso{log2, nextpow2, power}
 @end deftypefn */)
 {
@@ -134,7 +138,7 @@ to C/C++ standard function ldexp().
           FloatNDArray x = args(0).float_array_value ();
           FloatNDArray y (x.dims ());
           for (octave_idx_type i = 0; i < y.numel (); i++)
-            y.xelem (i) = exp2f (x.xelem (i));
+            y.xelem (i) = std::exp2 (x.xelem (i));
           return ovl (y);
         }
       else
@@ -142,7 +146,7 @@ to C/C++ standard function ldexp().
           NDArray x = args(0).array_value ();
           NDArray y (x.dims ());
           for (octave_idx_type i = 0; i < y.numel (); i++)
-            y.xelem (i) = exp2 (x.xelem (i));
+            y.xelem (i) = std::exp2 (x.xelem (i));
 
           // Preserve sparse datatype, but even for sparse input fill-up
           // is unavoidable `2^0 == 1` thus cast only.
@@ -154,7 +158,7 @@ to C/C++ standard function ldexp().
     }
 
   // For Matlab compatibility, the two argument call `y = pow2 (f, e)`
-  // corresponds to std::ldexp() (see bug #61968).  The result y is
+  // corresponds to std::ldexp() (see bug #61968).  The resulting y is
   // computed quickly by adding the integer part of e to the floating-point
   // exponent of f.
 
@@ -277,7 +281,7 @@ to C/C++ standard function ldexp().
 %! assert (pow2 (f, e), z);
 
 %!test
-%! f = f = [1/2, pi/4, -3/4, 1/2, 1-eps()/2, 1/2];
+%! f = [1/2, pi/4, -3/4, 1/2, 1-eps()/2, 1/2];
 %! e = [1, 2, 2, -51, 1024, -1021];
 %! z = [1, pi, -3, eps(), realmax(), realmin()];
 %! assert (pow2 (f, e), z);

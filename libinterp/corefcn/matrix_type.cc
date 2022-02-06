@@ -541,13 +541,13 @@ LU@tie{}factorization.  Once the matrix has been factorized,
 %!assert (matrix_type (1i*speye (10,11)([2:10,1],:)), "Permuted Diagonal")
 %!assert (matrix_type (1i*speye (11,10)), "Diagonal")
 %!assert (matrix_type (1i*speye (11,10)([2:11,1],:)), "Permuted Diagonal")
-%#!assert (matrix_type ([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]]), "Upper")
-%#!assert (matrix_type ([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]](:,[2,1,3:12])), "Permuted Upper")
+%!#assert (matrix_type ([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]]), "Upper")
+%!#assert (matrix_type ([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]](:,[2,1,3:12])), "Permuted Upper")
 %!assert (matrix_type ([speye(11,9),[1i;sparse(8,1);1i;0]]), "Upper")
 %!assert (matrix_type ([speye(11,9),[1i;sparse(8,1);1i;0]](:,[2,1,3:10])),
 %!        "Permuted Upper")
-%#!assert (matrix_type ([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]), "Lower")
-%#!assert (matrix_type ([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]([2,1,3:12],:)), "Permuted Lower")
+%!#assert (matrix_type ([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]), "Lower")
+%!#assert (matrix_type ([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]([2,1,3:12],:)), "Permuted Lower")
 %!assert (matrix_type ([speye(9,11);[1i,sparse(1,8),1i,0]]), "Lower")
 %!assert (matrix_type ([speye(9,11);[1i,sparse(1,8),1i,0]]([2,1,3:10],:)),
 %!        "Permuted Lower")

@@ -229,6 +229,7 @@ COREFCN_SRC = \
   %reldir%/ordschur.cc \
   %reldir%/pager.cc \
   %reldir%/pinv.cc \
+  %reldir%/pow2.cc \
   %reldir%/pr-flt-fmt.cc \
   %reldir%/pr-output.cc \
   %reldir%/procstream.cc \

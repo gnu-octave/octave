@@ -128,13 +128,13 @@ namespace octave
 
     virtual void notice_settings (const gui_settings *) { }
 
+    virtual void save_settings (void);
+
     void init_window_menu_entry (void);
 
     void handle_settings (const gui_settings *);
 
     void handle_active_dock_changed (octave_dock_widget *, octave_dock_widget *);
-
-    void save_settings (void);
 
     void moveEvent (QMoveEvent *event);
 

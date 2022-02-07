@@ -2591,7 +2591,7 @@ namespace octave
     m_main_tool_bar->addWidget (m_current_directory_combo_box);
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     QAction *current_dir_up
-      = m_main_tool_bar->addAction (rmgr.icon ("go-up"),
+      = m_main_tool_bar->addAction (rmgr.icon ("folder-up"),
                                     tr ("One directory up"));
     QAction *current_dir_search
       = m_main_tool_bar->addAction (rmgr.icon ("folder"),

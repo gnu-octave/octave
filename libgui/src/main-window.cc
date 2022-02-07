@@ -467,6 +467,11 @@ namespace octave
     // close the main window without exiting the application.
     connect (qApp, &QApplication::aboutToQuit,
              dw, &octave_dock_widget::save_settings);
+
+    // The following is required when the exp. terminal widget is used
+    // and the main window is closed (no exit via interpreter)
+    connect (this, &main_window::close_gui_signal,
+             dw, &octave_dock_widget::save_settings);
   }
 
   bool main_window::command_window_has_focus (void) const

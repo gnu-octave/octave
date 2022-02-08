@@ -8054,7 +8054,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
           idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (col1, sl1))
                    - SparseT (retval.index (col2, sl2));
-          assert (retval.columns () == k-1);
+          error_unless (retval.columns () == k-1);
           order--;
           k--;
         }
@@ -8067,7 +8067,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
           idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (sl1, col1))
                    - SparseT (retval.index (sl2, col2));
-          assert (retval.rows () == k-1);
+          error_unless (retval.rows () == k-1);
           order--;
           k--;
         }
@@ -8247,7 +8247,8 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 {
   Array<T> retval;
 
-  assert (rep.ndims () == 2 && rep.rows () == 2);
+  if (rep.ndims () != 2 || rep.rows () != 2)
+    error ("repelems: R must be a 2-row, N-column matrix of integers");
 
   octave_idx_type n = rep.columns ();
   octave_idx_type l = 0;

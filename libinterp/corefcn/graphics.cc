@@ -5504,11 +5504,11 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   // FIXME: Should this have all properties in it?
   // Including ones we do don't implement?
 
-  // FIXME: This function is probably never called without mode == "reset"
-  //        Check that this is the case with an assert statement (1/6/2017).
+  // FIXME: This function is probably never called without mode == "reset".
+  //        Verify this is the case with error_unless() (1/6/2017).
   //        If there are reports of problems then figure out what code is
   //        calling it with the mode set to something else.
-  assert (mode == "reset");
+  error_unless (mode == "reset");
 
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;

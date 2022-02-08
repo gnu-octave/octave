@@ -2628,14 +2628,14 @@ OCTAVE_NAMESPACE_BEGIN
 
     tree_statement_list *b = f->body ();
 
-    assert (b->length () == 1);
+    panic_if (b->length () != 1);
 
     tree_statement *s = b->front ();
 
     if (! s)
       error ("invalid anonymous function handle");
 
-    assert (s->is_expression ());
+    panic_unless (s->is_expression ());
 
     tree_expression *e = s->expression ();
 

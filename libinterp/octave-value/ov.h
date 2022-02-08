@@ -1526,8 +1526,7 @@ public:
 
   bool islocked (void) const { return m_rep->islocked (); }
 
-  void call_object_destructor (void)
-  { return m_rep->call_object_destructor (); }
+  void call_object_destructor (void) { return m_rep->call_object_destructor (); }
 
   octave_value dump (void) const { return m_rep->dump (); }
 
@@ -1873,6 +1872,8 @@ OV_COMP_BINOP_FN (op_mul_herm)
 extern OCTINTERP_API void install_types (octave::type_info&);
 
 // Templated value extractors.
+// FIXME: would be more consistent to use panic_impossible(), rather than
+//        assert(), but including "error.h" leads to compilation errors.
 template <typename Value>
 inline Value octave_value_extract (const octave_value&)
 { assert (false); }

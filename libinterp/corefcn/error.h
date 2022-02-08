@@ -410,9 +410,6 @@ OCTAVE_NAMESPACE_END
 // not deprecated and eventually removed, does it make sense to also
 // define them inside the octave namespace?
 
-#define panic_impossible()                                              \
-  panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
-
 extern OCTINTERP_API void
 vmessage (const char *name, const char *fmt, va_list args);
 
@@ -507,6 +504,46 @@ extern OCTINTERP_API void vpanic (const char *fmt, va_list args);
 OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN
 extern OCTINTERP_API void panic (const char *fmt, ...);
+
+#define panic_impossible()                                              \
+  panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+
+OCTINTERP_API inline
+void panic_if (bool cond)
+{
+#ifndef NDEBUG
+  if (cond)
+    panic_impossible ();
+  else
+    return;
+#endif
+}
+
+OCTINTERP_API inline
+void panic_unless (bool cond)
+{
+  panic_if (! cond);
+}
+
+#define error_impossible()                                              \
+  error ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+
+OCTINTERP_API inline
+void error_if (bool cond)
+{
+#ifndef NDEBUG
+  if (cond)
+    error_impossible ();
+  else
+    return;
+#endif
+}
+
+OCTINTERP_API inline
+void error_unless (bool cond)
+{
+  error_if (! cond);
+}
 
 OCTAVE_NAMESPACE_BEGIN
 

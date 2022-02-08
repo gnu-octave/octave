@@ -657,7 +657,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     octave_idx_type nel = ident.numel ();
 
-    assert (nel != 0);
+    panic_if (nel == 0);
 
     bool found = false;
 
@@ -689,8 +689,7 @@ OCTAVE_NAMESPACE_BEGIN
     // The warning state "all" is always supposed to remain in the list,
     // so we should always find a state, either explicitly or by using the
     // state for "all".
-
-    assert (found);
+    panic_unless (found);
 
     retval.assign ("identifier", id);
     retval.assign ("state", val);

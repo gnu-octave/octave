@@ -300,7 +300,7 @@ static inline T
 pr_max_internal (const MArray<T>& m)
 {
   // We expect a 2-d array.
-  assert (m.ndims () == 2);
+  error_unless (m.ndims () == 2);
 
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -680,7 +680,7 @@ template <typename MT>
 static inline float_display_format
 make_matrix_format (const MT& m)
 {
-  assert (m.ndims () == 2);
+  error_unless (m.ndims () == 2);
 
   if (free_format)
     return float_display_format ();
@@ -1570,7 +1570,7 @@ static inline void
 print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc,
                     bool pr_as_read_syntax)
 {
-  assert (nr == 0 || nc == 0);
+  error_unless (nr == 0 || nc == 0);
 
   if (pr_as_read_syntax)
     {
@@ -1592,7 +1592,7 @@ static inline void
 print_empty_nd_array (std::ostream& os, const dim_vector& dims,
                       bool pr_as_read_syntax)
 {
-  assert (dims.any_zero ());
+  error_unless (dims.any_zero ());
 
   if (pr_as_read_syntax)
     os << "zeros (" << dims.str (',') << ')';

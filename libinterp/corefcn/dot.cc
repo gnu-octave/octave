@@ -37,12 +37,14 @@
 
 OCTAVE_NAMESPACE_BEGIN
 
+// FIXME: input 'y' is no longer necessary (2/5/2022).
+//        At some point it would be better to change all occurrences of
+//        get_red_dims to eliminate this input parameter.
 static void
-get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
+get_red_dims (const dim_vector& x, const dim_vector& /* y */, int dim,
               dim_vector& z, F77_INT& m, F77_INT& n, F77_INT& k)
 {
   int nd = x.ndims ();
-  assert (nd == y.ndims ());
   z = dim_vector::alloc (nd);
   octave_idx_type tmp_m = 1;
   octave_idx_type tmp_n = 1;

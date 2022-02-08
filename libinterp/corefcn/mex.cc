@@ -462,7 +462,7 @@ public:
     mxArray *retval = m_val.as_mxArray (m_interleaved);
 
     // RETVAL is assumed to be an mxArray_matlab object.  Should we
-    // assert that condition here?
+    // error_unless that condition here?
 
     if (retval)
       {

@@ -91,7 +91,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 {
   Cell retval;
 
-  assert (idx.length () == 1);
+  panic_if (idx.length () != 1);
 
   std::string nm = idx(0).string_value ();
 
@@ -321,7 +321,7 @@ octave_struct::subsasgn (const std::string& type,
 
                 octave_value_list key_idx = *++p;
 
-                assert (key_idx.length () == 1);
+                panic_if (key_idx.length () != 1);
 
                 std::string key = key_idx(0).string_value ();
 
@@ -377,7 +377,7 @@ octave_struct::subsasgn (const std::string& type,
           {
             octave_value_list key_idx = idx.front ();
 
-            assert (key_idx.length () == 1);
+            panic_if (key_idx.length () != 1);
 
             std::string key = key_idx(0).string_value ();
 
@@ -443,7 +443,7 @@ octave_struct::subsasgn (const std::string& type,
             octave_value_list key_idx = *++p;
             octave_value_list idxf = idx.front ();
 
-            assert (key_idx.length () == 1);
+            panic_if (key_idx.length () != 1);
 
             std::string key = key_idx(0).string_value ();
 
@@ -514,7 +514,7 @@ octave_struct::subsasgn (const std::string& type,
       {
         octave_value_list key_idx = idx.front ();
 
-        assert (key_idx.length () == 1);
+        panic_if (key_idx.length () != 1);
 
         std::string key = key_idx(0).string_value ();
 
@@ -1107,7 +1107,7 @@ octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
 {
   octave_value retval;
 
-  assert (idx.length () == 1);
+  panic_if (idx.length () != 1);
 
   std::string nm = idx(0).string_value ();
 
@@ -1228,7 +1228,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       octave_value_list key_idx = idx.front ();
 
-      assert (key_idx.length () == 1);
+      panic_if (key_idx.length () != 1);
 
       std::string key = key_idx(0).string_value ();
 
@@ -2114,7 +2114,7 @@ A(1)
   // result dimensions.
   dim_vector rdv = vals.dims ().redim (nd);
 
-  assert (ext == rdv(dim));
+  panic_unless (ext == rdv(dim));
   if (nd == 2)
     {
       rdv(0) = rdv(1-dim);

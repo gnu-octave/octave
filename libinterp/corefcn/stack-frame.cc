@@ -31,6 +31,7 @@
 #include "str-vec.h"
 
 #include "defun.h"
+#include "error.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
@@ -1603,7 +1604,7 @@ namespace octave
     // scope.  If the symbol wasn't present before, it should be outside
     // the range so we need to resize then update offsets.
 
-    assert (data_offset >= size ());
+    panic_unless (data_offset >= size ());
 
     resize (data_offset+1);
 
@@ -1654,7 +1655,7 @@ namespace octave
 
     if (sym)
       {
-        assert (sym.frame_offset () == 0);
+        panic_unless (sym.frame_offset () == 0);
 
         return sym;
       }
@@ -1683,7 +1684,7 @@ namespace octave
         // All symbol records in a script scope should have zero offset,
         // which means we redirect our lookup using
         // lexical_frame_offsets and values_offets.
-        assert (sym.frame_offset () == 0);
+        panic_unless (sym.frame_offset () == 0);
 
         return sym;
       }
@@ -1693,7 +1694,7 @@ namespace octave
 
     sym = scope.find_symbol (name);
 
-    assert (sym);
+    panic_unless (sym.is_valid ());
 
     resize_and_update_script_offsets (sym);
 
@@ -2104,7 +2105,7 @@ namespace octave
           {
             // FIXME: do we need to ensure that the called
             // function is a child of the caller?  Does it hurt
-            // to assert this condition, at least for now?
+            // to panic_unless this condition, at least for now?
 
             alink = static_link;
           }
@@ -2112,7 +2113,7 @@ namespace octave
           {
             // FIXME: do we need to check that the parent of the
             // called function is also a parent of the caller?
-            // Does it hurt to assert this condition, at least
+            // Does it hurt to panic_unless this condition, at least
             // for now?
 
             int links_to_follow = caller_nesting_depth - nesting_depth + 1;
@@ -2225,7 +2226,7 @@ namespace octave
 
     sym = scope.find_symbol (name);
 
-    assert (sym);
+    panic_unless (sym.is_valid ());
 
     return sym;
   }
@@ -2392,7 +2393,7 @@ namespace octave
 
     sym = m_scope.find_symbol (name);
 
-    assert (sym);
+    panic_unless (sym.is_valid ());
 
     return sym;
   }

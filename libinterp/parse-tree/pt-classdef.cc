@@ -61,10 +61,9 @@ namespace octave
         // part of an index expression.  It is also not an identifier in
         // the syntax tree but we need to handle it as if it were.  So
         // call the function here.
-
         octave_function *f = tmp.function_value (true);
 
-        assert (f);
+        panic_unless (f);
 
         return f->call (tw, nargout);
       }

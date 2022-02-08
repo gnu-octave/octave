@@ -55,8 +55,8 @@ template <typename R, typename T>
 static MArray<T>
 kron (const MArray<R>& a, const MArray<T>& b)
 {
-  assert (a.ndims () == 2);
-  assert (b.ndims () == 2);
+  error_unless (a.ndims () == 2);
+  error_unless (b.ndims () == 2);
 
   octave_idx_type nra = a.rows ();
   octave_idx_type nrb = b.rows ();
@@ -86,7 +86,7 @@ template <typename R, typename T>
 static MArray<T>
 kron (const MDiagArray2<R>& a, const MArray<T>& b)
 {
-  assert (b.ndims () == 2);
+  error_unless (b.ndims () == 2);
 
   octave_idx_type nra = a.rows ();
   octave_idx_type nrb = b.rows ();

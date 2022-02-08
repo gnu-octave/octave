@@ -6658,7 +6658,7 @@ namespace octave
     std::ptrdiff_t input_buf_size
       = static_cast<std::ptrdiff_t> (input_buf_elts) * input_elt_size;
 
-    assert (input_buf_size >= 0);
+    error_if (input_buf_size < 0);
 
     // Must also work and return correct type object for 0 elements to read.
     std::istream *isp = input_stream ();

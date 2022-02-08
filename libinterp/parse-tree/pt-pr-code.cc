@@ -1203,7 +1203,7 @@ namespace octave
   void
   tree_print_code::indent (void)
   {
-    assert (m_curr_print_indent_level >= 0);
+    panic_unless (m_curr_print_indent_level >= 0);
 
     if (m_beginning_of_line)
       {

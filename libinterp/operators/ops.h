@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include "Array-util.h"
+#include "error.h"
 
 namespace octave
 {
@@ -130,7 +131,7 @@ namespace octave
     CONCAT2 (octave_, t1)& v1 = dynamic_cast<CONCAT2 (octave_, t1)&> (a1); \
     const CONCAT2 (octave_, t2)& v2 = dynamic_cast<const CONCAT2 (octave_, t2)&> (a2); \
                                                                         \
-    assert (idx.empty ());                                              \
+    error_unless (idx.empty ());                                        \
     v1.matrix_ref () op v2.CONCAT2 (f, _value) ();                      \
                                                                         \
     return octave_value ();                                             \
@@ -145,7 +146,7 @@ namespace octave
     CONCAT2 (octave_, t1)& v1 = dynamic_cast<CONCAT2 (octave_, t1)&> (a1); \
     const CONCAT2 (octave_, t2)& v2 = dynamic_cast<const CONCAT2 (octave_, t2)&> (a2); \
                                                                         \
-    assert (idx.empty ());                                              \
+    error_unless (idx.empty ());                                        \
     fnop (v1.matrix_ref (), v2.CONCAT2 (f, _value) ());                 \
                                                                         \
     return octave_value ();                                             \

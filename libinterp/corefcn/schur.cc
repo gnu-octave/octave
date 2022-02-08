@@ -46,7 +46,7 @@ mark_upper_triangular (const Matrix& a)
   octave_value retval = a;
 
   octave_idx_type n = a.rows ();
-  assert (a.columns () == n);
+  error_unless (a.columns () == n);
 
   const typename Matrix::element_type zero = typename Matrix::element_type ();
 

@@ -281,7 +281,7 @@ octave_class::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& 
 Cell
 octave_class::dotref (const octave_value_list& idx)
 {
-  assert (idx.length () == 1);
+  panic_if (idx.length () != 1);
 
   std::string method_class = get_current_method_class ();
 
@@ -654,7 +654,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 octave_value_list key_idx = *++p;
 
-                assert (key_idx.length () == 1);
+                panic_if (key_idx.length () != 1);
 
                 std::string key = key_idx(0).xstring_value ("invalid index for class assignment");
 
@@ -692,7 +692,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           {
             octave_value_list key_idx = idx.front ();
 
-            assert (key_idx.length () == 1);
+            panic_if (key_idx.length () != 1);
 
             std::string key = key_idx(0).string_value ();
 
@@ -747,7 +747,7 @@ octave_class::subsasgn_common (const octave_value& obj,
             auto p = idx.begin ();
             octave_value_list key_idx = *++p;
 
-            assert (key_idx.length () == 1);
+            panic_if (key_idx.length () != 1);
 
             std::string key = key_idx(0).xstring_value ("assignment to class element failed");
 
@@ -785,7 +785,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       {
         octave_value_list key_idx = idx.front ();
 
-        assert (key_idx.length () == 1);
+        panic_if (key_idx.length () != 1);
 
         std::string key = key_idx(0).string_value ();
 
@@ -1068,7 +1068,7 @@ octave_class::reconstruct_exemplar (void)
           // Something has gone terribly wrong if
           // symbol_table::find_method (c_name, c_name) does not return
           // a class constructor for the class c_name...
-          assert (have_ctor);
+          panic_unless (have_ctor);
         }
 
       if (have_ctor)

@@ -504,8 +504,8 @@ octave_user_function::accept (octave::tree_walker& tw)
 octave::tree_expression *
 octave_user_function::special_expr (void)
 {
-  assert (is_special_expr ());
-  assert (m_cmd_list->length () == 1);
+  panic_unless (is_special_expr ());
+  panic_if (m_cmd_list->length () != 1);
 
   octave::tree_statement *stmt = m_cmd_list->front ();
   return stmt->expression ();

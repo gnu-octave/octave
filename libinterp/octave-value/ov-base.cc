@@ -1355,7 +1355,7 @@ bool octave_base_value::s_beginning_of_line = true;
 void
 octave_base_value::indent (std::ostream& os) const
 {
-  assert (s_curr_print_indent_level >= 0);
+  panic_unless (s_curr_print_indent_level >= 0);
 
   if (s_beginning_of_line)
     {

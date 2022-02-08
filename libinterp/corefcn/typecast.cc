@@ -206,8 +206,6 @@ typecast (@var{x}, "uint8")
       else if (array.is_uint64_type ())
         get_data_and_bytesize (array.uint64_array_value (), data, byte_size,
                                old_dims, frame);
-      else
-        assert (0);
     }
   else if (array.iscomplex ())
     {
@@ -548,8 +546,6 @@ column vector.
         retval = do_bitunpack (array.uint32_array_value ());
       else if (array.is_uint64_type ())
         retval = do_bitunpack (array.uint64_array_value ());
-      else
-        assert (0);
     }
   else if (array.iscomplex ())
     {

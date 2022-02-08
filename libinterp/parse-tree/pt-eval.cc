@@ -3487,7 +3487,7 @@ Example:
 
         if (user_function.is_special_expr ())
           {
-            assert (cmd_list->length () == 1);
+            panic_if (cmd_list->length () != 1);
 
             tree_statement *stmt = cmd_list->front ();
 

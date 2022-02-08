@@ -52,8 +52,6 @@ OCTAVE_NAMESPACE_BEGIN
     for (const auto& nm : list)
       retval(i++) = nm;
 
-    assert (i == n);
-
     return retval;
   }
 
@@ -88,10 +86,10 @@ OCTAVE_NAMESPACE_BEGIN
   profiler::tree_node*
   profiler::tree_node::exit (octave_idx_type /* fcn */)
   {
-    // FIXME: These assert statements don't make sense if profile() is called
-    //        from within a function hierarchy to begin with.  See bug #39587.
-    //  assert (m_parent);
-    //  assert (m_fcn_id == fcn);
+    // FIXME: These panic_unless statements don't make sense if profile() is
+    //  called from within a function hierarchy to begin with.  See bug #39587.
+    //  panic_unless (m_parent);
+    //  panic_unless (m_fcn_id == fcn);
 
     return m_parent;
   }
@@ -108,7 +106,7 @@ OCTAVE_NAMESPACE_BEGIN
         entry.m_time += m_time;
         entry.m_calls += m_calls;
 
-        assert (m_parent);
+        panic_unless (m_parent);
         if (m_parent->m_fcn_id != 0)
           {
             entry.m_parents.insert (m_parent->m_fcn_id);
@@ -162,7 +160,6 @@ OCTAVE_NAMESPACE_BEGIN
 
         ++i;
       }
-    assert (i == n);
 
     octave_map retval;
 
@@ -196,8 +193,8 @@ OCTAVE_NAMESPACE_BEGIN
   profiler::enter_function (const std::string& fcn)
   {
     // The enter class will check and only call us if the profiler is active.
-    assert (enabled ());
-    assert (m_call_tree);
+    panic_unless (enabled ());
+    panic_unless (m_call_tree);
 
     // If there is already an active function, add to its time before
     // pushing the new one.
@@ -230,11 +227,11 @@ OCTAVE_NAMESPACE_BEGIN
   {
     if (m_active_fcn)
       {
-        assert (m_call_tree);
-        // FIXME: This assert statements doesn't make sense if profile() is
-        // called from within a function hierarchy to begin with.  See bug
-        // #39587.
-        //assert (m_active_fcn != m_call_tree);
+        panic_unless (m_call_tree);
+        // FIXME: This panic_unless statements doesn't make sense if profile()
+        //        is called from within a function hierarchy to begin with.
+        //        See bug #39587.
+        // panic_unless (m_active_fcn != m_call_tree);
 
         // Usually, if we are disabled this function is not even called.  But
         // the call disabling the profiler is an exception.  So also check here
@@ -243,10 +240,10 @@ OCTAVE_NAMESPACE_BEGIN
           add_current_time ();
 
         fcn_index_map::iterator pos = m_fcn_index.find (fcn);
-        // FIXME: This assert statements doesn't make sense if profile() is
-        // called from within a function hierarchy to begin with.  See bug
-        // #39587.
-        //assert (pos != m_fcn_index.end ());
+        // FIXME: This panic_unless statements doesn't make sense if profile()
+        //        is called from within a function hierarchy to begin with.
+        //        See bug #39587.
+        // panic_unless (pos != m_fcn_index.end ());
         m_active_fcn = m_active_fcn->exit (pos->second);
 
         // If this was an "inner call", we resume executing the parent function

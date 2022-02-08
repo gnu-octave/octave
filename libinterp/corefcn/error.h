@@ -508,8 +508,8 @@ extern OCTINTERP_API void panic (const char *fmt, ...);
 #define panic_impossible()                                              \
   panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
 
-OCTINTERP_API inline
-void panic_if (bool cond)
+inline void
+panic_if (bool cond)
 {
 #ifndef NDEBUG
   if (cond)
@@ -519,8 +519,8 @@ void panic_if (bool cond)
 #endif
 }
 
-OCTINTERP_API inline
-void panic_unless (bool cond)
+inline void
+panic_unless (bool cond)
 {
   panic_if (! cond);
 }
@@ -528,8 +528,8 @@ void panic_unless (bool cond)
 #define error_impossible()                                              \
   error ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
 
-OCTINTERP_API inline
-void error_if (bool cond)
+inline void
+error_if (bool cond)
 {
 #ifndef NDEBUG
   if (cond)
@@ -539,8 +539,8 @@ void error_if (bool cond)
 #endif
 }
 
-OCTINTERP_API inline
-void error_unless (bool cond)
+inline void
+error_unless (bool cond)
 {
   error_if (! cond);
 }

@@ -516,6 +516,9 @@ panic_if (bool cond)
     panic_impossible ();
   else
     return;
+
+#else
+  octave_unused_parameter (cond);
 #endif
 }
 
@@ -536,6 +539,9 @@ error_if (bool cond)
     error_impossible ();
   else
     return;
+
+#else
+  octave_unused_parameter (cond);
 #endif
 }
 

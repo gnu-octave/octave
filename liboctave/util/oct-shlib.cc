@@ -221,11 +221,13 @@ namespace octave
         const char *msg = dlerror ();
 
         if (msg)
-          (*current_liboctave_error_handler) ("%s: failed to load: %s",
-                                              m_file.c_str (), msg);
+          (*current_liboctave_error_handler)
+            ("%s: failed to load\nIncompatible version or missing dependency?"
+             "\n%s", m_file.c_str (), msg);
         else
-          (*current_liboctave_error_handler) ("%s: failed to load",
-                                              m_file.c_str ());
+          (*current_liboctave_error_handler)
+            ("%s: failed to load\nIncompatible version or missing dependency?",
+             m_file.c_str ());
       }
   }
 

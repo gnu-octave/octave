@@ -6593,9 +6593,6 @@ namespace octave
     // consistent with the order of the elements in the data_type enum in the
     // oct_data_conv class.
 
-    // Expose this in a future version?
-    std::size_t char_count = 0;
-
     std::ptrdiff_t tmp_count = 0;
 
     try
@@ -6699,7 +6696,6 @@ namespace octave
 
             std::size_t gcount = is.gcount ();
 
-            char_count += gcount;
             cur_pos += gcount;
 
             octave_idx_type nel = gcount / input_elt_size;

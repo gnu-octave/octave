@@ -107,7 +107,7 @@ OCTAVE_NAMESPACE_BEGIN
       };
 
     debugger (interpreter& interp, std::size_t level)
-      : m_interpreter (interp), m_level (level), m_debug_frame (0),
+      : m_interpreter (interp), m_level (level),
         m_execution_mode (EX_NORMAL), m_in_debug_repl (false)
     { }
 
@@ -134,7 +134,6 @@ OCTAVE_NAMESPACE_BEGIN
     interpreter& m_interpreter;
 
     std::size_t m_level;
-    std::size_t m_debug_frame;
     execution_mode m_execution_mode;
     bool m_in_debug_repl;
   };

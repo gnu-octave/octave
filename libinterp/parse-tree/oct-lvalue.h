@@ -106,8 +106,6 @@ namespace octave
     std::string m_type;
 
     std::list<octave_value_list> m_idx;
-
-    octave_idx_type m_nel;
   };
 }
 

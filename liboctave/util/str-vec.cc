@@ -244,7 +244,6 @@ string_vector::list_in_columns (std::ostream& os, int width,
   for (octave_idx_type row = 0; row < nr; row++)
     {
       count = row;
-      octave_idx_type pos = 0;
 
       // Print the next row.
 
@@ -264,7 +263,6 @@ string_vector::list_in_columns (std::ostream& os, int width,
           octave_idx_type spaces_to_pad = max_name_length - name_length;
           for (octave_idx_type i = 0; i < spaces_to_pad; i++)
             os << ' ';
-          pos += max_name_length;
         }
       os << "\n";
     }

@@ -3298,7 +3298,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     // are in deep doo doo.
 
     uintmax_t long_int_val;
-    assert (sscanf (yytxt.c_str (), "%jx", &long_int_val));
+    int status = sscanf (yytxt.c_str (), "%jx", &long_int_val);
+    assert (status);
 
     octave_value ov_value
       = make_integer_value (long_int_val, unsigned_val, bytes);

@@ -965,27 +965,42 @@ Undocumented internal function.
 
     OCTAVE_SAFE_CALL (feval, ("close", ovl ("all"), 0));
 
-    // If we are attached to a GUI, process pending events and
-    // disable the link.
-
-    OCTAVE_SAFE_CALL (m_event_manager.process_events, (true));
-    OCTAVE_SAFE_CALL (m_event_manager.disable, ());
-
-    OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
-
     // Any atexit functions added after this function call won't be
     // executed.  Each atexit function is executed with
     // OCTAVE_SAFE_CALL, so we don't need that here.
 
     execute_atexit_fcns ();
 
-    // Clear all functions and variables.
+    // Clear all functions and variables while the event manager is
+    // still processing events and notify the event manager.  This way,
+    // the workspace model will be cleared before the GUI exits.
+
+    // FIXME: This approach seems a bit fragile since there could be
+    // other places in the GUI that have references to interpreter
+    // objects.  How can we reliably ensure that they are all removed
+    // before the interpreter exits?  Maybe the best solution is to
+    // always start the GUI from the interpreter and close it when the
+    // interpreter exits?  However, the workspace model is owned by the
+    // base_qobject object not the workspace viewer or the main window,
+    // so simply closing the GUI window(s) is not sufficient.  See also
+    // bug #61994.
 
     // Note that we don't force symbols to be cleared, so we will
     // respect mlock at this point.  Later, we'll force all variables
     // and functions to be cleared.
 
     OCTAVE_SAFE_CALL (clear_all, ());
+    OCTAVE_SAFE_CALL (m_event_manager.set_workspace, ());
+
+    // If we are attached to a GUI, queue and event to close it (only
+    // works with the new terminal widget), process pending events and
+    // disable the link.
+
+    OCTAVE_SAFE_CALL (m_event_manager.close_gui, ());
+    OCTAVE_SAFE_CALL (m_event_manager.process_events, (true));
+    OCTAVE_SAFE_CALL (m_event_manager.disable, ());
+
+    OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 
     // We may still have some figures.  Close them.
 

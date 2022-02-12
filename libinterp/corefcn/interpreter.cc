@@ -653,8 +653,6 @@ Undocumented internal function.
 
   interpreter::~interpreter (void)
   {
-    shutdown ();
-
     delete m_gh_manager;
   }
 
@@ -853,7 +851,11 @@ Undocumented internal function.
                   exit_status = status;
 
                 if (! options.persist ())
-                  return exit_status;
+                  {
+                    shutdown ();
+
+                    return exit_status;
+                  }
               }
 
             // If there is an extra argument, see if it names a file to
@@ -868,7 +870,11 @@ Undocumented internal function.
                   exit_status = status;
 
                 if (! options.persist ())
-                  return exit_status;
+                  {
+                    shutdown ();
+
+                    return exit_status;
+                  }
               }
 
             if (options.forced_interactive ())
@@ -905,6 +911,8 @@ Undocumented internal function.
       {
         exit_status = xe.exit_status ();
       }
+
+    shutdown ();
 
     return exit_status;
   }

@@ -166,8 +166,6 @@ OCTAVE_NAMESPACE_BEGIN
 
     int execute (void);
 
-    void shutdown (void);
-
     bool server_mode (void) const { return m_evaluator.server_mode (); }
 
     bool interactive (void) const
@@ -553,6 +551,8 @@ OCTAVE_NAMESPACE_BEGIN
     int main_loop (void);
 
     int server_loop (void);
+
+    void shutdown (void);
 
     void execute_atexit_fcns (void);
 

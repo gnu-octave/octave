@@ -94,7 +94,7 @@ namespace octave
         exit_status = xe.exit_status ();
       }
 
-    interp.shutdown ();
+    // FIXME: The following comment doesn't seem to make sense now.
 
     // Signal that the interpreter is done executing code in the
     // main REPL, from script files, or command line eval arguments.

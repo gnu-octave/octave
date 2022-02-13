@@ -201,6 +201,8 @@ namespace octave
 
     virtual bool confirm_shutdown (void);
 
+    bool is_gui_app (void) const { return m_gui_app; }
+
     template <typename T> void connect_interpreter_events (T *widget)
     {
       connect (widget, QOverload<const fcn_callback&>::of (&T::interpreter_event),

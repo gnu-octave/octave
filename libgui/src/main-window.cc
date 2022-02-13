@@ -1984,7 +1984,8 @@ namespace octave
 
         e->ignore ();
 
-        if (m_octave_qobj.experimental_terminal_widget ())
+        if (m_octave_qobj.experimental_terminal_widget ()
+            && ! m_octave_qobj.is_gui_app ())
           emit close_gui_signal ();
         else
           {

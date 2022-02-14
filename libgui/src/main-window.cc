@@ -1563,7 +1563,7 @@ namespace octave
         QRect geom = s->geometry ();              // screen geometry
 
         QList<QScreen *> screen_list = QGuiApplication::screens ();
-        if ((screen_list.length () > 1) && (av_geom == geom))
+        if (screen_list.length () > 1)
           {
             // If we have more than one monitor and available and total
             // geometry are the same, reduce this too large geometry

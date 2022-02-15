@@ -64,6 +64,8 @@ namespace octave
     bool conditional_close (void);
 
     void update_breakpoints ();
+    void set_file_name (const QString& fileName);
+    void enable_file_watcher (bool do_enable);
 
     QString file_name (void) const { return m_file_name; }
     QString encoding (void) const { return m_encoding; }
@@ -255,7 +257,6 @@ namespace octave
   protected:
 
     void closeEvent (QCloseEvent *event);
-    void set_file_name (const QString& fileName);
 
   private:
 

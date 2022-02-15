@@ -89,6 +89,12 @@ namespace octave
       }
     };
 
+    struct removed_file_data
+    {
+      file_editor_tab *editor_tab;
+      QString new_file_name;
+    };
+
     file_editor (QWidget *p, base_qobject& oct_qobj);
 
     ~file_editor (void) = default;
@@ -487,7 +493,7 @@ namespace octave
     QPointer<find_dialog> m_find_dialog;
 
     // List of data on temporarily closed files for later reloading.
-    QList<session_data> m_tmp_closed_files;
+    QList<removed_file_data> m_tmp_closed_files;
   };
 }
 

@@ -1167,7 +1167,7 @@ namespace octave
   {
     // Clear old list of file data and declare a structure for file data
     m_tmp_closed_files.clear ();
-    session_data f_data;
+    removed_file_data f_data;
 
     // Preprocessing old name(s)
     QString old_name_clean = old_name.trimmed ();
@@ -1201,22 +1201,12 @@ namespace octave
 
             if (editor_tab)
               {
-                // Get index and line.
 
-                f_data.encoding = editor_tab->encoding ();
-                f_data.index = m_tab_widget->indexOf (editor_tab);
-                int l, c;
-                editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
-                f_data.line = l + 1;
+                editor_tab->enable_file_watcher (false);
 
-                // Close it silently
-                m_no_focus = true;  // Remember for not focussing editor
-                editor_tab->file_has_changed (QString (), true);  // Close the tab
-                m_no_focus = false;  // Back to normal
-
-                // For reloading old file if error while removing
-                f_data.file_name = old_names.at (i);
-                // For reloading new file (if new_file is not empty)
+                // For re-enabling tracking if error while removing/renaming
+                f_data.editor_tab = editor_tab;
+                // For renaming into new file (if new_file is not empty)
                 if (new_is_dir)
                   {
                     std::string ndir = new_name.toStdString ();
@@ -1239,27 +1229,24 @@ namespace octave
   {
     m_no_focus = true;  // Remember for not focussing editor
 
-    // Loop over all files that have to be reloaded.  Start at the end of the
+    // Loop over all files that have to be handled.  Start at the end of the
     // list, otherwise the stored indexes are not correct.
     for (int i = m_tmp_closed_files.count () - 1; i >= 0; i--)
       {
-        // Load old or new file
         if (load_new)
           {
-            if (! m_tmp_closed_files.at (i).new_file_name.isEmpty ())
-              request_open_file (m_tmp_closed_files.at (i).new_file_name,
-                                 m_tmp_closed_files.at (i).encoding,
-                                 m_tmp_closed_files.at (i).line,
-                                 false, false, true, "",
-                                 m_tmp_closed_files.at (i).index);
+            // Close file (remove) or rename into new file (rename)
+            if (m_tmp_closed_files.at (i).new_file_name.isEmpty ())
+              m_tmp_closed_files.at (i).editor_tab->file_has_changed (QString (), true);
+            else
+              m_tmp_closed_files.at (i).editor_tab->set_file_name (
+                                    m_tmp_closed_files.at (i).new_file_name);
           }
         else
           {
-            request_open_file (m_tmp_closed_files.at (i).file_name,
-                               m_tmp_closed_files.at (i).encoding,
-                               m_tmp_closed_files.at (i).line,
-                               false, false, true, "",
-                               m_tmp_closed_files.at (i).index);
+            // Something went wrong while renaming or removing:
+            // Leave everything as it is but reactivate tracking
+            m_tmp_closed_files.at (i).editor_tab->enable_file_watcher (true);
           }
 
       }
@@ -2704,7 +2691,7 @@ namespace octave
                                        const QString& new_name)
   {
     QDir old_dir (old_name);
-    session_data f_data;
+    removed_file_data f_data;
 
     std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
 
@@ -2731,52 +2718,39 @@ namespace octave
             && (rel_path_to_file.left (3) != QString ("../")))
           {
             // The currently considered file is included in the
-            // removed/renamed diectory: Delete it.
-            m_no_focus = true;  // Remember for not focussing editor
-
+            // removed/renamed diectory: remeber it
             if (editor_tab)
               {
-                // Get index and line
-                int l, c;
-                editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
-                f_data.line = l + 1;
-                f_data.index = m_tab_widget->indexOf (editor_tab);
-                // Close
-                editor_tab->file_has_changed (QString (), true);
-              }
-            m_no_focus = false;  // Back to normal
+                editor_tab->enable_file_watcher (false);
+                f_data.editor_tab = editor_tab;
 
-            // Store file for possible later reload
-            f_data.file_name = file_name;
-
-            // Add the new file path and the encoding for later reloading
-            // if new_name is given
-            if (! new_name.isEmpty ())
-              {
-                QDir new_dir (new_name);
-                QString append_to_new_dir;
-                if (new_dir.exists ())
+                // Add the new file path and the encoding for later reloading
+                // if new_name is given
+                if (! new_name.isEmpty ())
                   {
-                    // The new directory already exists (movefile was used).
-                    // This means, we have to add the name (not the path)
-                    // of the old dir and the relative path to the file
-                    // to new dir.
-                    append_to_new_dir
-                      = old_dir.dirName () + "/" + rel_path_to_file;
+                    QDir new_dir (new_name);
+                    QString append_to_new_dir;
+                    if (new_dir.exists ())
+                      {
+                        // The new directory already exists (movefile was used).
+                        // This means, we have to add the name (not the path)
+                        // of the old dir and the relative path to the file
+                        // to new dir.
+                        append_to_new_dir
+                          = old_dir.dirName () + "/" + rel_path_to_file;
+                      }
+                    else
+                      append_to_new_dir = rel_path_to_file;
+
+                    f_data.new_file_name
+                      = new_dir.absoluteFilePath (append_to_new_dir);
                   }
                 else
-                  append_to_new_dir = rel_path_to_file;
+                  f_data.new_file_name = ""; // no new name, just removing this file
 
-                f_data.new_file_name
-                  = new_dir.absoluteFilePath (append_to_new_dir);
+                // Store data in list for later reloading
+                m_tmp_closed_files << f_data;
               }
-            else
-              f_data.new_file_name = ""; // no new name, just removing this file
-
-            f_data.encoding = editor_tab->encoding (); // store the encoding
-
-            // Store data in list for later reloading
-            m_tmp_closed_files << f_data;
           }
       }
   }

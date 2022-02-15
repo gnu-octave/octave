@@ -509,6 +509,9 @@ namespace octave
         update_lexer ();
       }
 
+    // set the window title to actual filename (not modified)
+    update_window_title (m_edit_area->isModified ());
+
     // update the file editor with current editing directory
     emit editor_state_changed (m_copy_available, m_is_octave_file,
                                m_edit_area->isModified ());
@@ -530,6 +533,14 @@ namespace octave
       }
 
     return true;
+  }
+
+  void file_editor_tab::enable_file_watcher (bool do_enable)
+  {
+    if (do_enable)
+      m_file_system_watcher.addPath (m_file_name);
+    else
+      m_file_system_watcher.removePath (m_file_name);
   }
 
   // We cannot create a breakpoint when the file is modified
@@ -1845,9 +1856,8 @@ namespace octave
     QApplication::restoreOverrideCursor ();
 
     m_copy_available = false;     // no selection yet available
-    set_file_name (file_to_load);
-    update_window_title (false); // window title (no modification)
     m_edit_area->setModified (false); // loaded file is not modified yet
+    set_file_name (file_to_load);
 
     update_eol_indicator ();
 
@@ -2251,15 +2261,12 @@ namespace octave
         QFileInfo file_info = QFileInfo (file.fileName ());
         QString full_file_to_save = file_info.canonicalFilePath ();
 
-        // save filename after closing file as set_file_name starts watching again
-        set_file_name (full_file_to_save);   // make absolute
-
-        // set the window title to actual filename (not modified)
-        update_window_title (false);
-
         // file is save -> not modified, update encoding in statusbar
         m_edit_area->setModified (false);
         m_enc_indicator->setText (m_encoding);
+
+        // save filename after closing file as set_file_name starts watching again
+        set_file_name (full_file_to_save);   // make absolute
 
         emit tab_ready_to_close ();
 

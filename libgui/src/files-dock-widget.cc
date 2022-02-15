@@ -791,8 +791,8 @@ namespace octave
                                           tr ("Could not delete file \"%1\".").
                                           arg (info.filePath ()));
                     // Reload the old file
-                    emit file_renamed_signal (false);
                   }
+                emit file_renamed_signal (st);
               }
 
             m_file_system_model->revert ();

@@ -828,7 +828,6 @@ namespace octave
 
     // Wait for worker to suspend
     qt_link->lock ();
-
     // Close the file if opened
 #if defined (HAVE_QSCINTILLA)
     m_editor_window->handle_file_remove (o, n);

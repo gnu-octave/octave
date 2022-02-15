@@ -1558,9 +1558,9 @@ namespace octave
         // decorations. This in turn can be avoided by reducing the max.
         // size by a few pixels.
 
-        QScreen *s = windowHandle ()->screen ();  // Get current screen
-        QRect av_geom = s->availableGeometry ();  // Get available and total
-        QRect geom = s->geometry ();              // screen geometry
+        // Get available geometry for current screen.
+        QScreen *s = windowHandle ()->screen ();
+        QRect av_geom = s->availableGeometry ();
 
         QList<QScreen *> screen_list = QGuiApplication::screens ();
         if (screen_list.length () > 1)

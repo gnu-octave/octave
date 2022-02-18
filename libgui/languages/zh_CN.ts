@@ -59,12 +59,12 @@
     <message>
         <location filename="../src/settings-dialog.cc" line="+845"/>
         <source>Difference to the default size</source>
-        <translation>和默认大小的差别</translation>
+        <translation>和默认大小的差值</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Background color, pink (255, 0, 255) means default</source>
-        <translation>背景颜色，粉红色 (255,0,255) 代表默认值 {255, 0, 255)?}</translation>
+        <translation>背景颜色，粉红色 (255,0,255) 代表默认值</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -537,12 +537,12 @@
     <message>
         <location line="+3"/>
         <source>Task marker</source>
-        <translation type="unfinished">任务标记</translation>
+        <translation>任务标记</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive task marker</source>
-        <translation type="unfinished">非活动的任务标记</translation>
+        <translation>非活动的任务标记</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -600,22 +600,22 @@
     <message>
         <location line="+3"/>
         <source>Added adding patch</source>
-        <translation type="unfinished">已添加的添加补丁</translation>
+        <translation>已添加的新增补丁</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed adding patch</source>
-        <translation type="unfinished">已移除的添加补丁</translation>
+        <translation>已移除的新增补丁</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added removing patch</source>
-        <translation type="unfinished">已添加的移除补丁</translation>
+        <translation>已添加的删除补丁</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed removing patch</source>
-        <translation type="unfinished">已移除的移除补丁</translation>
+        <translation>已移除的删除补丁</translation>
     </message>
 </context>
 <context>
@@ -1108,27 +1108,27 @@
     <message>
         <location filename="../src/command-widget.cc" line="+57"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>暂停</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop</source>
-        <translation type="unfinished">停止</translation>
+        <translation>停止</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">继续</translation>
+        <translation>继续</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Command Input</source>
-        <translation type="unfinished"></translation>
+        <translation>命令输入</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Command Output</source>
-        <translation type="unfinished"></translation>
+        <translation>命令输出</translation>
     </message>
 </context>
 <context>
@@ -1136,7 +1136,7 @@
     <message>
         <location filename="../src/community-news.cc" line="+70"/>
         <source>Octave Community News</source>
-        <translation type="unfinished">Octave 社区新闻</translation>
+        <translation>Octave 社区新闻</translation>
     </message>
 </context>
 <context>
@@ -1191,7 +1191,7 @@ the Command Window will be available.</source>
     <message>
         <location line="+22"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>书签</translation>
     </message>
     <message>
         <location line="+86"/>
@@ -1257,7 +1257,7 @@ the Command Window will be available.</source>
     <message>
         <location line="+55"/>
         <source>Bookmark current page</source>
-        <translation type="unfinished"></translation>
+        <translation>为此页面添加书签</translation>
     </message>
     <message>
         <location line="+430"/>
@@ -1271,62 +1271,63 @@ the Command Window will be available.</source>
         <location filename="../src/documentation-bookmarks.cc" line="+102"/>
         <source>
 No documentation bookmarks loaded!</source>
-        <translation type="unfinished"></translation>
+        <translation>
+没有文档书签被加载!</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave: Loading Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave: 载入文档书签中</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>输入文本搜索书签</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Filter</source>
-        <translation type="unfinished">过滤器</translation>
+        <translation>过滤器</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹</translation>
     </message>
     <message>
         <location line="+105"/>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation>打开 (&amp;O)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名 (&amp;R)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished"></translation>
+        <translation>删除 (&amp;V)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>添加文件夹 (&amp;A)</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Hide &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>隐藏过滤器 (&amp;F)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>显示过滤器 (&amp;F)</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Octave: Saving Documentation Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave: 保存文档书签</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1335,31 +1336,39 @@ No documentation bookmarks loaded!</source>
 
 Documentation bookmarks are not saved!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>无法写入文件 %1:
+%2.
+
+文档书签未保存!
+</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Unable to read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法读取文件 %1:
+%2.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No start element found in %1.
 Invalid bookmark file?</source>
-        <translation type="unfinished"></translation>
+        <translation>文件 %1 中找不到起始元素。
+是否是无效的标签文件?</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>The file
 %1
 is not a valid XBEL file verison 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>文件
+%1
+不是一个有效的 XBEL 文件版本 1.0。</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Unknown title</source>
-        <translation type="unfinished"></translation>
+        <translation>未知标题</translation>
     </message>
 </context>
 <context>
@@ -1466,7 +1475,7 @@ for read: %2.</source>
 does not exist. Do you want to create it?</source>
         <translation>文件
 %1
-不存在。你希望创建它吗？</translation>
+不存在。您希望创建它吗？</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1710,7 +1719,7 @@ for write: %2.</source>
     <message>
         <location line="+4"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation>打开/关闭书签 (&amp;B)</translation>
+        <translation>切换书签 (&amp;B)</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1805,7 +1814,7 @@ for write: %2.</source>
     <message>
         <location line="+4"/>
         <source>Toggle &amp;Breakpoint</source>
-        <translation>打开/关闭断点 (&amp;B)</translation>
+        <translation>切换断点 (&amp;B)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1870,7 +1879,7 @@ for write: %2.</source>
     <message>
         <location line="+49"/>
         <source>Copy Full File &amp;Path</source>
-        <translation type="unfinished"></translation>
+        <translation>复制完整的文件路径 (&amp;P)</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2099,7 +2108,9 @@ Do you want to choose another name?</source>
         <source>%1
  already exists
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+ 已经存在
+您确定要覆盖它吗?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -2319,12 +2330,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+12"/>
         <source>Rename error</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名错误</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法将文件 &quot;%1&quot; 重命名为 &quot;%2&quot;。</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -2337,13 +2348,14 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished"></translation>
+        <translation>您确定要删除所有 %1 选择的文件吗？
+</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Are you sure you want to delete
 </source>
-        <translation>你确实希望删除
+        <translation>您确定要删除
 </translation>
     </message>
     <message>
@@ -2354,12 +2366,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished"></translation>
+        <translation>删除错误</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法删除文件 &quot;%1&quot;。</translation>
     </message>
     <message>
         <location line="+185"/>
@@ -2377,7 +2389,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">创建文件于
+        <translation>创建文件于
 </translation>
     </message>
     <message>
@@ -2386,7 +2398,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">创建目录于
+        <translation>创建目录于
 </translation>
     </message>
     <message>
@@ -2451,7 +2463,15 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;更多信息关于 Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;访问 &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (在外部浏览器中打开)&lt;/li&gt;
+&lt;li&gt;获取在线文档 &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- 或者 &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;- (在外部浏览器中打开)&lt;/li&gt;
+&lt;li&gt;使用帮助菜单打开Octave GUI的文档浏览器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2858,12 +2878,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location filename="../src/main-window.cc" line="+658"/>
         <source>Save Workspace As</source>
-        <translation>工作空间另存为</translation>
+        <translation>工作区另存为</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Load Workspace</source>
-        <translation>载入工作空间</translation>
+        <translation>导入工作区</translation>
     </message>
     <message>
         <location line="+204"/>
@@ -2879,7 +2899,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="-344"/>
         <source>Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>性能探查器</translation>
     </message>
     <message>
         <location line="+345"/>
@@ -2944,12 +2964,12 @@ function and can not be edited.</source>
     <message>
         <location line="+9"/>
         <source>Load Workspace...</source>
-        <translation>载入工作空间...</translation>
+        <translation>导入工作区...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Save Workspace As...</source>
-        <translation>工作空间另存为...</translation>
+        <translation>工作区另存为...</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3024,7 +3044,7 @@ function and can not be edited.</source>
     <message>
         <location line="+3"/>
         <source>Clear Workspace</source>
-        <translation>清空工作空间</translation>
+        <translation>清空工作区</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3044,17 +3064,17 @@ function and can not be edited.</source>
     <message>
         <location line="+3"/>
         <source>Step</source>
-        <translation>单步</translation>
+        <translation>单步跳过</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step In</source>
-        <translation>步入</translation>
+        <translation>单步执行</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step Out</source>
-        <translation>步出</translation>
+        <translation>单步停止</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3064,32 +3084,32 @@ function and can not be edited.</source>
     <message>
         <location line="+9"/>
         <source>Quit Debug Mode</source>
-        <translation>退出调试</translation>
+        <translation>退出调试模式</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>工具 (&amp;T)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start &amp;Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>启动性能分析会话 (&amp;P)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>恢复性能分析会话 (&amp;R)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Stop Profiler</source>
-        <translation type="unfinished"></translation>
+        <translation>停止性能分析 (&amp;S)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>显示性能分析数据 (&amp;S)</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3114,7 +3134,7 @@ function and can not be edited.</source>
     <message>
         <location line="+3"/>
         <source>Show Workspace</source>
-        <translation>显示工作空间</translation>
+        <translation>显示工作区</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3149,7 +3169,7 @@ function and can not be edited.</source>
     <message>
         <location line="+3"/>
         <source>Workspace</source>
-        <translation>工作空间</translation>
+        <translation>工作区</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3185,7 +3205,7 @@ function and can not be edited.</source>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation>报告问题</translation>
+        <translation>缺陷反馈</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3439,17 +3459,17 @@ does not exist. Do you want to create it?</source>
     <message>
         <location filename="../src/release-notes.cc" line="+80"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">发行注记文件 &apos;%1&apos; 是空的。</translation>
+        <translation>发行注记文件 &apos;%1&apos; 是空的。</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">发行注记文件 &apos;%1&apos; 无法读取。</translation>
+        <translation>发行注记文件 &apos;%1&apos; 无法读取。</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished">Octave 发行注记</translation>
+        <translation>Octave 发行注记</translation>
     </message>
 </context>
 <context>
@@ -3492,17 +3512,17 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="+2"/>
         <source>Add Folder...</source>
-        <translation>添加目录...</translation>
+        <translation>添加文件夹...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Single Folder</source>
-        <translation>单文件夹</translation>
+        <translation>单个文件夹</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Folder With Subfolders</source>
-        <translation type="unfinished"></translation>
+        <translation>有子目录的文件夹</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3582,17 +3602,17 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="-651"/>
         <source>IBeam Cursor</source>
-        <translation type="unfinished">IBeam 光标</translation>
+        <translation>IBeam 光标</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Block Cursor</source>
-        <translation type="unfinished">块状光标</translation>
+        <translation>块状光标</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Underline Cursor</source>
-        <translation type="unfinished">给光标添加下划线</translation>
+        <translation>下划线光标</translation>
     </message>
     <message>
         <location line="+168"/>
@@ -3612,17 +3632,17 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="+3"/>
         <source>Hide tools tips</source>
-        <translation>隐藏工具小贴士</translation>
+        <translation>隐藏工具提示</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-cs.h" line="+76"/>
         <source>foreground</source>
-        <translation type="unfinished">前景</translation>
+        <translation>前景色</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation>背景</translation>
+        <translation>背景色</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3657,81 +3677,85 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location filename="../src/gui-preferences-ve.h" line="+74"/>
         <source>Foreground</source>
-        <translation type="unfinished">前景</translation>
+        <translation>前景色</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation>背景</translation>
+        <translation>背景色</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished">所选前景</translation>
+        <translation>所选前景色</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished">所选背景</translation>
+        <translation>所选背景色</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished">交替的背景</translation>
+        <translation>备选背景色</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="+91"/>
         <source>argument</source>
-        <translation type="unfinished"></translation>
+        <translation>参数</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>global</source>
-        <translation type="unfinished">全局</translation>
+        <translation>全局变量</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>持久变量</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-global.h" line="+149"/>
         <source>Environment Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>环境变量</translation>
     </message>
     <message>
         <location filename="../src/gui-settings.h" line="+132"/>
         <source>Second color mode (light/dark)</source>
-        <translation type="unfinished"></translation>
+        <translation>第二颜色模式（浅色/深色）</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Switches to another set of colors.
 Useful for defining a dark/light mode.
 Discards non-applied current changes!</source>
-        <translation type="unfinished"></translation>
+        <translation>切换到另一组颜色。
+对定义 深色/浅色 模式有用.
+丢弃当前未应用的改动!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Reload default colors</source>
-        <translation type="unfinished"></translation>
+        <translation>重新导入默认颜色 (&amp;R)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default colors,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>重新加载默认颜色，
+依赖于当前所选的模式。</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Reload default styles</source>
-        <translation type="unfinished"></translation>
+        <translation>重新导入默认样式 (&amp;R)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Reloads the default values of the styles,
 depending on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>重新加载样式默认值，
+依赖于当前所选模式。</translation>
     </message>
 </context>
 <context>
@@ -3777,7 +3801,10 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;当 Octave 显示有关 Octave 社区的新闻和信息时，允许 Octave 连接到该网站。&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3833,12 +3860,12 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+1"/>
         <source>Load Workspace</source>
-        <translation>载入工作空间</translation>
+        <translation>导入工作区</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save Workspace As</source>
-        <translation>工作空间另存为</translation>
+        <translation>工作区另存为</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3888,7 +3915,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+1"/>
         <source>Clear Workspace</source>
-        <translation>清空工作空间</translation>
+        <translation>清空工作区</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3929,17 +3956,17 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+3"/>
         <source>Start/Stop Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>启动/停止性能分析会话</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Resume Profiler Session</source>
-        <translation type="unfinished"></translation>
+        <translation>恢复性能分析会话</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Profile Data</source>
-        <translation type="unfinished"></translation>
+        <translation>显示性能分析数据</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3959,7 +3986,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+1"/>
         <source>Show Workspace</source>
-        <translation>显示工作空间</translation>
+        <translation>显示工作区</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3994,7 +4021,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+1"/>
         <source>Workspace</source>
-        <translation>工作空间</translation>
+        <translation>工作区</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4337,12 +4364,12 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+21"/>
         <source>Bookmark this Page</source>
-        <translation type="unfinished"></translation>
+        <translation>为此标签页添加标签</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>Tools Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>工具菜单</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4382,7 +4409,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="-24"/>
         <source>Show On-disk Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>显示磁盘中的文档</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -4643,12 +4670,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <location line="+5"/>
         <location line="+6"/>
         <source>Save in format ...</source>
-        <translation type="unfinished"></translation>
+        <translation>保存为格式...</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Save variable to a file in different format</source>
-        <translation type="unfinished"></translation>
+        <translation>以不同的格式保存变量到文件</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -4792,7 +4819,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation>类</translation>
+        <translation>类型</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4826,7 +4853,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location filename="../src/workspace-view.cc" line="+59"/>
         <source>Workspace</source>
-        <translation>工作空间</translation>
+        <translation>工作区</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4952,7 +4979,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-630"/>
         <source>Text inactive</source>
-        <translation>不活动的文本</translation>
+        <translation>不活动的文本颜色</translation>
     </message>
     <message>
         <location line="-32"/>
@@ -4978,7 +5005,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+13"/>
         <source>Background inactive</source>
-        <translation>不活动的背景</translation>
+        <translation>不活动的背景颜色</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -5095,7 +5122,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+23"/>
         <source>Replace word by suggested one</source>
-        <translation>使用建议的单词替换原有的</translation>
+        <translation>使用建议的单词替换原单词</translation>
     </message>
     <message>
         <location line="-10"/>
@@ -5306,7 +5333,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+29"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;旋转标签页：在顶部或底部时为垂直，在左侧或右侧时为水平。 关闭按钮在旋转后的标签页中不显示。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+74"/>
@@ -5396,7 +5423,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+47"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
-        <translation>在启动时或者当编辑器关闭后再次显示时，恢复上次会话的编辑器标签页</translation>
+        <translation>在启动时或编辑器关闭后再次显示时，恢复上次会话的编辑器标签页</translation>
     </message>
     <message>
         <location line="+105"/>
@@ -5411,12 +5438,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-133"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;如果选中，则停靠到主窗口组件的焦点跟随鼠标光标。 这是为了在&amp;quot;焦点跟随鼠标&amp;quot;时在主窗口中具有相同的行为。 用于桌面环境。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Focus follows mouse for widgets docked to the main window</source>
-        <translation type="unfinished"></translation>
+        <translation>组件停靠到主窗口时焦点跟随鼠标</translation>
     </message>
     <message>
         <location line="+182"/>
@@ -5427,32 +5454,32 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-1223"/>
         <source>Rotated tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>旋转标签页</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Position</source>
-        <translation type="unfinished">位置</translation>
+        <translation>位置</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Max. tab width in chars (0: no limit)</source>
-        <translation type="unfinished"></translation>
+        <translation>以字符为单位的最大标签页宽度（0：无限制）</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. width of a tab in characters (average char. width). Especially useful for rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;以字符为单位的最大制表符宽度（平均字符宽度）。 特别是对旋转标签页有用。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+851"/>
         <source>Force newline at end when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>保存文件时强制在文件结尾换行</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove trailing spaces when saving file</source>
-        <translation type="unfinished"></translation>
+        <translation>保存文件时删除末尾空格</translation>
     </message>
     <message>
         <location line="+76"/>
@@ -5467,7 +5494,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+75"/>
         <source>Workspace</source>
-        <translation>工作空间</translation>
+        <translation>工作区</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -5482,7 +5509,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+117"/>
         <source>Disable menu accelerators of main window menus when Commmand Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>当命令窗口获取焦点时禁用主窗口菜单的菜单快捷键</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -5528,12 +5555,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+10"/>
         <source>Proxy Server</source>
-        <translation type="unfinished"></translation>
+        <translation>代理服务器</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;选择 &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; 或者 &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;。 选中最后一个选项时，代理取自第一个非空的环境变量 ALL_PROXY, HTTP_PROXY 或 HTTPS_PROXY 。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -5611,13 +5638,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
 interference with readline key strokes.
 Exceptions: Ctrl-C for interrupting the interpreter
 and the shortcuts for switching to other widgets.</source>
-        <translation type="unfinished"></translation>
+        <translation>禁用全局快捷键以防止
+干扰 readline 快捷键。
+异常: Ctrl-C 用于中断解释器
+和切换到其他组件的快捷键。</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Disable menu accelerators in order to prevent
 interference with readline key strokes.</source>
-        <translation type="unfinished"></translation>
+        <translation>禁用菜单快捷键以防止
+干扰 readline 快捷键。</translation>
     </message>
     <message>
         <location line="+54"/>

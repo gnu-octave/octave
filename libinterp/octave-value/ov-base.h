@@ -40,6 +40,7 @@
 #include "mx-base.h"
 #include "str-vec.h"
 
+#include "auto-shlib.h"
 #include "oct-hdf5-types.h"
 #include "oct-stream.h"
 
@@ -912,6 +913,28 @@ private:
   static bool s_beginning_of_line;
 
   DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA
+};
+
+class
+OCTINTERP_API
+octave_base_dld_value : public octave_base_value
+{
+public:
+
+  octave_base_dld_value (void) = default;
+
+  ~octave_base_dld_value (void)
+  {
+    m_containing_dynamic_library.delete_later ();
+  }
+
+  octave_base_dld_value (const octave_base_dld_value&) = default;
+
+  octave_base_dld_value& operator = (const octave_base_dld_value&) = default;
+
+private:
+
+  octave::auto_shlib m_containing_dynamic_library;
 };
 
 // TRUE means to perform automatic sparse to real mutation if there

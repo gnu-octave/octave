@@ -26,19 +26,25 @@
 
 // Integer values.
 
+// Derive from octave_base_dld_value instead of octave_base_value
+// so that octave_integer values created by that dynamically loaded
+// make_int.oct file will be tracked automatically and the .oct file
+// will not be closed until all functions and values that it creates are
+// deleted.
+
 class
-octave_integer : public octave_base_value
+octave_integer : public octave_base_dld_value
 {
 public:
 
   octave_integer (void)
-    : octave_base_value (), scalar (0) { }
+    : octave_base_dld_value (), scalar (0) { }
 
   octave_integer (int i)
-    : octave_base_value (), scalar (i) { }
+    : octave_base_dld_value (), scalar (i) { }
 
   octave_integer (const octave_integer& s)
-    : octave_base_value (), scalar (s.scalar) { }
+    : octave_base_dld_value (), scalar (s.scalar) { }
 
   ~octave_integer (void) = default;
 
@@ -219,7 +225,6 @@ Creates an integer variable from VAL.")
   if (! type_loaded)
     {
       octave_integer::register_type ();
-      interp.mlock ();
 
       octave_stdout << "installing integer type at type-id = "
                     << octave_integer::static_type_id () << "\n";

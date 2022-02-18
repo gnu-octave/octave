@@ -991,7 +991,7 @@ Undocumented internal function.
     // and functions to be cleared.
 
     OCTAVE_SAFE_CALL (clear_all, ());
-    OCTAVE_SAFE_CALL (m_event_manager.set_workspace, ());
+    OCTAVE_SAFE_CALL (m_event_manager.clear_workspace, ());
 
     // If we are attached to a GUI, queue and event to close it (only
     // works with the new terminal widget), process pending events and

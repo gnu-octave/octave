@@ -133,7 +133,7 @@ namespace octave
         delete m_rep;
     }
 
-    void delete_later (void);
+    OCTAVE_API void delete_later (void);
 
     dynamic_library (const dynamic_library& sl)
       : m_rep (sl.m_rep)

@@ -133,6 +133,8 @@ namespace octave
         delete m_rep;
     }
 
+    void delete_later (void);
+
     dynamic_library (const dynamic_library& sl)
       : m_rep (sl.m_rep)
     {
@@ -204,6 +206,11 @@ namespace octave
 
     dynlib_rep *m_rep;
   };
+
+  // FIXME: Currently must return int so that it may be used as an
+  // event_hook function.
+
+  OCTAVE_API int release_unreferenced_dynamic_libraries (void);
 }
 
 #endif

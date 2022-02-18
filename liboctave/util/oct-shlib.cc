@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <list>
 #include <map>
 
 extern "C"
@@ -59,6 +60,20 @@ extern int dlclose (void *);
 
 namespace octave
 {
+  std::list<dynamic_library> possibly_unreferenced_dynamic_libraries;
+
+  void dynamic_library::delete_later (void)
+  {
+    possibly_unreferenced_dynamic_libraries.push_back (*this);
+  }
+
+  int release_unreferenced_dynamic_libraries (void)
+  {
+    possibly_unreferenced_dynamic_libraries.clear ();
+
+    return 0;
+  }
+
   dynamic_library::dynlib_rep::dynlib_rep (const std::string& f)
     : m_count (1), m_fcn_names (), m_file (f), m_time_loaded (),
       m_search_all_loaded (false)

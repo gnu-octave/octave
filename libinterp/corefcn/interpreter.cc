@@ -1335,6 +1335,8 @@ Undocumented internal function.
 
   int interpreter::main_loop (void)
   {
+    command_editor::add_event_hook (release_unreferenced_dynamic_libraries);
+
     return m_evaluator.repl ();
   }
 

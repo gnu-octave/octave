@@ -189,6 +189,8 @@ OCTAVE_NAMESPACE_BEGIN
 
             command_editor::run_event_hooks ();
 
+            release_unreferenced_dynamic_libraries ();
+
             sleep (0.1);
           }
         catch (const interrupt_exception&)
@@ -898,6 +900,8 @@ OCTAVE_NAMESPACE_BEGIN
             // and eliminate the need for the busy-wait loop.
 
             command_editor::run_event_hooks ();
+
+            release_unreferenced_dynamic_libraries ();
 
             sleep (0.1);
           }

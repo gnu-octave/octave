@@ -546,7 +546,7 @@ classdef jupyter_notebook < handle
     endfunction
 
 
-    function saveContext (obj, op)
+    function saveContext (obj)
 
       ## Save the context in private "obj" attribute.
 

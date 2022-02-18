@@ -64,22 +64,6 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 // Gets the shlib of the currently executing DLD function, if any.
 extern OCTINTERP_API dynamic_library get_current_shlib (void);
 
-// FIXME: this class doesn't seem to be used in Octave.  Is it
-// really needed?
-
-// This is a convenience class that calls the above function automatically at
-// construction time.  When deriving new classes, you can either use it as a
-// field or as a parent (with multiple inheritance).
-
-class auto_shlib : public dynamic_library
-{
-public:
-
-  auto_shlib (void) : dynamic_library (get_current_shlib ()) { }
-
-  auto_shlib (const dynamic_library& shl) : dynamic_library (shl) { }
-};
-
 OCTAVE_NAMESPACE_END
 
 // Some of these functions are widely used, so maybe we should avoid

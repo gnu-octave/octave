@@ -17,6 +17,7 @@ $(OPT_HANDLERS): $(srcdir)/build-aux/mk-opts.pl
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 COREFCN_INC = \
+  %reldir%/auto-shlib.h \
   %reldir%/base-text-renderer.h \
   %reldir%/Cell.h \
   %reldir%/c-file-ptr-stream.h \
@@ -125,6 +126,7 @@ COREFCN_SRC = \
   %reldir%/__pchip_deriv__.cc \
   %reldir%/__qp__.cc \
   %reldir%/amd.cc \
+  %reldir%/auto-shlib.cc \
   %reldir%/balance.cc \
   %reldir%/base-text-renderer.cc \
   %reldir%/besselj.cc \

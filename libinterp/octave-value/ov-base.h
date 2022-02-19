@@ -930,8 +930,6 @@ public:
 
   octave_base_dld_value (const octave_base_dld_value&) = default;
 
-  octave_base_dld_value& operator = (const octave_base_dld_value&) = default;
-
 private:
 
   octave::auto_shlib m_containing_dynamic_library;

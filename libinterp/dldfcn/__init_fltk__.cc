@@ -38,7 +38,6 @@ To initialize:
 #  include "config.h"
 #endif
 
-#include "auto-shlib.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
@@ -2270,16 +2269,12 @@ public:
 
   fltk_graphics_toolkit (octave::interpreter& interp)
     : octave::base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
-      m_interpreter (interp), input_event_hook_fcn_id (),
-      m_containing_dynamic_library ()
+      m_interpreter (interp), input_event_hook_fcn_id ()
   {
     Fl::visual (FL_RGB);
   }
 
-  ~fltk_graphics_toolkit (void)
-  {
-    m_containing_dynamic_library.delete_later ();
-  }
+  ~fltk_graphics_toolkit (void) = default;
 
   bool is_valid (void) const { return true; }
 
@@ -2491,8 +2486,6 @@ private:
   octave::interpreter& m_interpreter;
 
   octave_value_list input_event_hook_fcn_id;
-
-  octave::auto_shlib m_containing_dynamic_library;
 };
 
 #endif
@@ -2532,6 +2525,8 @@ Undocumented internal function.
     error ("__init_fltk__: no graphics DISPLAY available");
   else if (! toolkit_loaded)
     {
+      interp.mlock ();
+
       octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
       fltk_graphics_toolkit *fltk = new fltk_graphics_toolkit (interp);

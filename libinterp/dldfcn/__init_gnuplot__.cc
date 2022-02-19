@@ -38,7 +38,6 @@ To initialize:
 
 #include <string>
 
-#include "auto-shlib.h"
 #include "dMatrix.h"
 #include "file-stat.h"
 #include "oct-env.h"
@@ -64,8 +63,7 @@ class gnuplot_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
   gnuplot_graphics_toolkit (octave::interpreter& interp)
-    : octave::base_graphics_toolkit ("gnuplot"), m_interpreter (interp),
-      m_containing_dynamic_library ()
+    : octave::base_graphics_toolkit ("gnuplot"), m_interpreter (interp)
   {
     static bool warned = false;
 
@@ -88,10 +86,7 @@ The qt toolkit is recommended instead.\n");
       }
   }
 
-  ~gnuplot_graphics_toolkit (void)
-  {
-    m_containing_dynamic_library.delete_later ();
-  }
+  ~gnuplot_graphics_toolkit (void) = default;
 
   bool is_valid (void) const { return true; }
 
@@ -205,8 +200,6 @@ private:
   }
 
   octave::interpreter& m_interpreter;
-
-  octave::auto_shlib m_containing_dynamic_library;
 };
 
 static bool
@@ -269,6 +262,8 @@ Undocumented internal function.
 
       graphics_toolkit tk (new gnuplot_graphics_toolkit (interp));
       gtk_mgr.load_toolkit (tk);
+
+      interp.mlock ();
     }
 
   return octave_value_list ();

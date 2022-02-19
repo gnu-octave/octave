@@ -278,20 +278,26 @@ jobs:
         # if the test suite crashes.  But if we don't continue, we'll loose the
         # ccache and other jobs will be cancelled, too.
         # It would be nice if we could mark the job as "yellow" (and continue)
-        # in that case.
-        # It would also be nice if we could analyze the test suite results
-        # automatically.
+        # in that case.  The second best thing is to display a warning in the
+        # job summary (see below).
         continue-on-error: true
         timeout-minutes: 60
         run: |
           echo 'makeinfo_program ("/usr/local/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
-          make -C ./.build check
+          make -C ./.build check | tee ./test-suite.log
 
       - name: display test log
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run:  |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          echo Finished analyzing test suite results.
 
 
   windows:
@@ -484,9 +490,8 @@ jobs:
         # if the test suite crashes.  But if we don't continue, we'll loose the
         # ccache and other jobs will be cancelled, too.
         # It would be nice if we could mark the job as "yellow" (and continue)
-        # in that case.
-        # It would also be nice if we could analyze the test suite results
-        # automatically.
+        # in that case.  The second best thing is to display a warning in the
+        # job summary (see below).
         continue-on-error: true
         timeout-minutes: 60
 
@@ -496,10 +501,17 @@ jobs:
         run: |
           echo 'makeinfo_program (sprintf ("%s && cd %s/../usr/bin && perl makeinfo", OCTAVE_HOME ()(1:2), OCTAVE_HOME ()));' \
             >> "${MINGW_PREFIX}/share/octave/site/m/startup/octaverc"
-          octave --eval "__run_test_suite__"
+          octave --eval "diary ('test-suite.log'); __run_test_suite__ ();"
 
       - name: display test log
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5
         run: cat fntests.log
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run:  |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          echo Finished analyzing test suite results.

@@ -84,33 +84,76 @@ function z = idivide (x, y, op)
     op = tolower (op);
   endif
 
-  if (isfloat (x))
-    if (isinteger (y))
-      typ = class (y);
-    else
-      error ("idivide: at least one input (X or Y) must be an integer type");
-    endif
-  elseif (isfloat (y))
-    if (isinteger (x))
-      typ = class (x);
-    else
-      error ("idivide: at least one input (X or Y) must be an integer type");
-    endif
-  else
-    typ = class (x);
-    if (! strcmp (typ, class (y)))
-      error ("idivide: integer type of X (%s) must match integer type of Y (%s)", typ, class (y));
-    endif
+  if (! isinteger (x) && ! isinteger (y))
+    error ("idivide: at least one input (X or Y) must be an integer type");
+  elseif (isinteger (x) && isinteger (y) && ! strcmp (class (x), class (y)))
+    error ("idivide: integer type of X (%s) must match integer type of Y (%s)",
+           class (x), class (y));
   endif
 
+  z = x ./ y;
   if (strcmp (op, "fix"))
-    z = cast (fix (double (x) ./ double (y)), typ);
+    ## The following is an optimized version of `z -= (z .* y > x) .* sign (y)`.
+    if (isscalar (y))
+      if (y > 0)
+        z -= (z * y > x);
+      else
+        z += (z * y > x);
+      endif
+    else
+      y_sel = (y > 0);
+      if (isscalar (x))
+        z(y_sel) -= (z(y_sel) .* y(y_sel) > x);
+        y_sel = ! y_sel;
+        z(y_sel) += (z(y_sel) .* y(y_sel) > x);
+      else
+        z(y_sel) -= (z(y_sel) .* y(y_sel) > x(y_sel));
+        y_sel = ! y_sel;
+        z(y_sel) += (z(y_sel) .* y(y_sel) > x(y_sel));
+      endif
+    endif
   elseif (strcmp (op, "round"))
-    z = x ./ y;
+    return;
   elseif (strcmp (op, "floor"))
-    z = cast (floor (double (x) ./ double (y)), typ);
+    ## The following is an optimized version of `z -= (z .* abs (y) > sign (y) .* x)`.
+    if (isscalar (y))
+      if (y > 0)
+        z -= (z * y > x);
+      else
+        z -= (z * y < x);
+      endif
+    else
+      y_sel = (y > 0);
+      if (isscalar (x))
+        z(y_sel) -= (z(y_sel) .* y(y_sel) > x);
+        y_sel = ! y_sel;
+        z(y_sel) -= (z(y_sel) .* y(y_sel) < x);
+      else
+        z(y_sel) -= (z(y_sel) .* y(y_sel) > x(y_sel));
+        y_sel = ! y_sel;
+        z(y_sel) -= (z(y_sel) .* y(y_sel) < x(y_sel));
+      endif
+    endif
   elseif (strcmp (op, "ceil"))
-    z = cast (ceil (double (x) ./ double (y)), typ);
+    ## The following is an optimized version of `z += (z .* abs (y) < sign (y) .* x)`.
+    if (isscalar (y))
+      if (y > 0)
+        z += (z * y < x);
+      else
+        z += (z * y > x);
+      endif
+    else
+      y_sel = (y > 0);
+      if (isscalar (x))
+        z(y_sel) += (z(y_sel) .* y(y_sel) < x);
+        y_sel = ! y_sel;
+        z(y_sel) += (z(y_sel) .* y(y_sel) > x);
+      else
+        z(y_sel) += (z(y_sel) .* y(y_sel) < x(y_sel));
+        y_sel = ! y_sel;
+        z(y_sel) += (z(y_sel) .* y(y_sel) > x(y_sel));
+      endif
+    endif
   else
     error ('idivide: unrecognized rounding type "%s"', op);
   endif
@@ -138,6 +181,20 @@ endfunction
 %!assert (idivide (a, bf, "floor"), int8 ([-1, 0]))
 %!assert (idivide (a, bf, "ceil"), int8 ([0, 1]))
 %!assert (idivide (a, bf, "round"), int8 ([-1, 1]))
+
+%!shared c, d
+%! c = int64 (4e16);
+%! d = int64 ([-2e8, 2e8]);
+
+%!assert <*61319> (idivide (c, d + int64 (1)), d + int64 ([-1, -1]))
+%!assert <*61319> (idivide (c, d + int64 (1), "floor"), d + int64 ([-2, -1]))
+%!assert <*61319> (idivide (c, d + int64 (1), "ceil"), d + int64 ([-1, 0]))
+%!assert <*61319> (idivide (c, d + int64 (1), "round"), d + int64 ([-1, -1]))
+
+%!assert <*61319> (idivide (c + int64 (1), d), d)
+%!assert <*61319> (idivide (c + int64 (1), d, "floor"), d + int64 ([-1, 0]))
+%!assert <*61319> (idivide (c + int64 (1), d, "ceil"), d + int64 ([0, 1]))
+%!assert <*61319> (idivide (c + int64 (1), d, "round"), d)
 
 ## Test input validation
 %!error idivide (uint8 (1))

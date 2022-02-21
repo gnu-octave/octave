@@ -4801,13 +4801,6 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 {
   octave_value_list args;
 
-  // FIXME: do we need unwind protect to clean up args?  Off hand, I
-  // would say that this problem is endemic to Octave and we will
-  // continue to have memory leaks after Ctrl-C until proper exception
-  // handling is implemented.
-
-  // FIXME: Proper exception handling has been implemented (Jan. 2016).
-  //        Can this code be re-factored?
   args.resize (nargin);
 
   for (int i = 0; i < nargin; i++)

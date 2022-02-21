@@ -340,7 +340,7 @@ public:
 
 #if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
-class mx_memory_resource : public std::pmr::memory_resource
+class mx_deleting_memory_resource : public std::pmr::memory_resource
 {
 private:
 
@@ -362,13 +362,40 @@ private:
 
   bool do_is_equal (const std::pmr::memory_resource& other) const noexcept
   {
-    return this == dynamic_cast<const mx_memory_resource *> (&other);
+    return this == dynamic_cast<const mx_deleting_memory_resource *> (&other);
+  }
+};
+
+class mx_preserving_memory_resource : public std::pmr::memory_resource
+{
+private:
+
+  void * do_allocate (std::size_t bytes, size_t /*alignment*/)
+  {
+    void *ptr = xmalloc (bytes);
+
+    if (! ptr)
+      throw std::bad_alloc ();
+
+    return ptr;
+  }
+
+  void do_deallocate (void* /*ptr*/, std::size_t /*bytes*/,
+                      std::size_t /*alignment*/)
+  { }
+
+  bool do_is_equal (const std::pmr::memory_resource& other) const noexcept
+  {
+    return this == dynamic_cast<const mx_preserving_memory_resource *> (&other);
   }
 };
 
 // FIXME: Is it OK for the memory resource object to be defined this
 // way?
-static mx_memory_resource the_mx_memory_resource;
+static mx_deleting_memory_resource the_mx_deleting_memory_resource;
+static mx_preserving_memory_resource the_mx_preserving_memory_resource;
+
+static std::pmr::memory_resource *current_mx_memory_resource = &the_mx_deleting_memory_resource;
 
 #endif
 
@@ -2147,38 +2174,30 @@ protected:
 
 #if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
-    octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
+    if (current_mx_memory_resource == &the_mx_deleting_memory_resource)
+      {
+        octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
 
-    return octave_value (Array<ELT_T> (ppr, dv, &the_mx_memory_resource));
+        return octave_value (Array<ELT_T> (ppr, dv, current_mx_memory_resource));
+      }
+    else
+      return octave_value (Array<ELT_T> (ppr, dv, current_mx_memory_resource));
 
 #else
 
-    if (fp_type_traits<ELT_T>::is_complex)
-      {
-        // Mixing malloc and delete[] for arrays of Complex and
-        // FloatComplex objects is not possible.
+    // Copy data instead of allowing the octave_value object to borrow
+    // the mxArray object data.
 
-        Array<ELT_T> val (dv);
+    Array<ELT_T> val (dv);
 
-        ELT_T *ptr = val.fortran_vec ();
+    ELT_T *ptr = val.fortran_vec ();
 
-        mwSize nel = get_number_of_elements ();
+    mwSize nel = get_number_of_elements ();
 
-        for (mwIndex i = 0; i < nel; i++)
-          ptr[i] = ppr[i];
+    for (mwIndex i = 0; i < nel; i++)
+      ptr[i] = ppr[i];
 
-        return octave_value (val);
-      }
-    else
-      {
-        // Although behavior is not specified by the standard, it should
-        // work to mix malloc and delete[] for arrays of float and
-        // double.
-
-        octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
-
-        return octave_value (Array<ELT_T> (ppr, dv));
-      }
+    return octave_value (val);
 
 #endif
   }
@@ -2194,14 +2213,17 @@ protected:
 
 #if 0 && defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
+    // FIXME: Currently not allowed because we don't have the necessary
+    // constructors for integer arrays.
+
     octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
 
-    return ARRAY_T (ppr, dv, &the_mx_memory_resource);
+    return ARRAY_T (ppr, dv, current_mx_memory_resource);
 
 #else
 
-    // All octave_int types are objects so we can't mix malloc and
-    // delete[] and we always have to copy.
+    // Copy data instead of allowing the octave_value object to borrow
+    // the mxArray object data.
 
     ARRAY_T val (dv);
 
@@ -4784,6 +4806,10 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
 
   retval.resize (nargout);
 
+  // If using std::pmr::memory_resource object to manage memory, pass
+  // default allocator here because we are done with these mxArray
+  // values and want Octave to delete them.
+
   for (int i = 0; i < nargout; i++)
     retval(i) = mxArray::as_octave_value (argout[i], false);
 
@@ -4798,23 +4824,40 @@ mexFunctionName (void)
   return mex_context ? mex_context->function_name () : "unknown";
 }
 
+static inline octave_value_list
+mx_to_ov_args (int nargin, mxArray *argin[])
+{
+  // Use a separate function for this job so that the
+  // current_mx_memory_resource will be restored immediately after the
+  // octave_value objects borrow the mxArray data.  We could also use a
+  // dummy scope in mexCallMATLAB, but this function seems less likely
+  // to be accidentally deleted.
+
+  octave_value_list args (nargin);
+
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+
+  // Use allocator that doesn't free memory because Octave may mutate
+  // the value (single element mxArray -> scalar octave_value object,
+  // for example) and we need these objects to continue to exist after
+  // mexCallMATLAB returns.
+
+  octave::unwind_protect_var<std::pmr::memory_resource *>
+    upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+
+#endif
+
+  for (int i = 0; i < nargin; i++)
+    args(i) = mxArray::as_octave_value (argin[i]);
+
+  return args;
+}
+
 int
 mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
                mxArray *argin[], const char *fname)
 {
-  octave_value_list args;
-
-  // FIXME: do we need unwind protect to clean up args?  Off hand, I
-  // would say that this problem is endemic to Octave and we will
-  // continue to have memory leaks after Ctrl-C until proper exception
-  // handling is implemented.
-
-  // FIXME: Proper exception handling has been implemented (Jan. 2016).
-  //        Can this code be re-factored?
-  args.resize (nargin);
-
-  for (int i = 0; i < nargin; i++)
-    args(i) = mxArray::as_octave_value (argin[i]);
+  octave_value_list args = mx_to_ov_args (nargin, argin);
 
   octave::interpreter& interp = octave::__get_interpreter__ ("mexCallMATLAB");
 
@@ -5148,7 +5191,20 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
   octave::interpreter& interp = octave::__get_interpreter__ ("mexPutVariable");
 
   if (! strcmp (space, "global"))
-    interp.global_assign (name, mxArray::as_octave_value (ptr));
+    {
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+
+    // Use allocator that doesn't free memory because Octave may mutate
+    // the value (single element mxArray -> scalar octave_value object,
+    // for example) and we need these objects to continue to exist after
+    // mexCallMATLAB returns.
+
+      octave::unwind_protect_var<std::pmr::memory_resource *>
+        upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+#endif
+
+      interp.global_assign (name, mxArray::as_octave_value (ptr));
+    }
   else
     {
       // FIXME: should this be in variables.cc?
@@ -5172,6 +5228,18 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 
               tw.goto_base_frame ();
             }
+
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+
+          // Use allocator that doesn't free memory because Octave may
+          // mutate the value (single element mxArray -> scalar
+          // octave_value object, for example) and we need these objects
+          // to continue to exist after mexCallMATLAB returns.
+
+          octave::unwind_protect_var<std::pmr::memory_resource *>
+            upv (current_mx_memory_resource,
+                 &the_mx_preserving_memory_resource);
+#endif
 
           interp.assign (name, mxArray::as_octave_value (ptr));
         }
@@ -5281,6 +5349,18 @@ mexLock (void)
 int
 mexSet (double handle, const char *property, mxArray *val)
 {
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+
+  // Use allocator that doesn't free memory because Octave may mutate
+  // the value (single element mxArray -> scalar octave_value object,
+  // for example) and we need these objects to continue to exist after
+  // mexCallMATLAB returns.
+
+  octave::unwind_protect_var<std::pmr::memory_resource *>
+    upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+
+#endif
+
   bool ret = octave::set_property_in_handle (handle, property,
                                              mxArray::as_octave_value (val),
                                              "mexSet");

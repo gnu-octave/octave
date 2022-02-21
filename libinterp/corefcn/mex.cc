@@ -2150,32 +2150,19 @@ protected:
 
 #else
 
-    if (fp_type_traits<ELT_T>::is_complex)
-      {
-        // Mixing malloc and delete[] for arrays of Complex and
-        // FloatComplex objects is not possible.
+    // Copy data instead of allowing the octave_value object to borrow
+    // the mxArray object data.
 
-        Array<ELT_T> val (dv);
+    Array<ELT_T> val (dv);
 
-        ELT_T *ptr = val.fortran_vec ();
+    ELT_T *ptr = val.fortran_vec ();
 
-        mwSize nel = get_number_of_elements ();
+    mwSize nel = get_number_of_elements ();
 
-        for (mwIndex i = 0; i < nel; i++)
-          ptr[i] = ppr[i];
+    for (mwIndex i = 0; i < nel; i++)
+      ptr[i] = ppr[i];
 
-        return octave_value (val);
-      }
-    else
-      {
-        // Although behavior is not specified by the standard, it should
-        // work to mix malloc and delete[] for arrays of float and
-        // double.
-
-        octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
-
-        return octave_value (Array<ELT_T> (ppr, dv));
-      }
+    return octave_value (val);
 
 #endif
   }

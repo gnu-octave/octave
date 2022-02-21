@@ -1965,7 +1965,7 @@ namespace octave
         {
           double u = 2*r + r*r + i*i;
           retval = Complex (log1p (u / (1+std::sqrt (u+1))),
-                            atan2 (1 + r, i));
+                            atan2 (i, 1 + r));
         }
       else
         retval = std::log (Complex (1) + x);
@@ -1984,7 +1984,7 @@ namespace octave
         {
           float u = 2*r + r*r + i*i;
           retval = FloatComplex (log1p (u / (1+std::sqrt (u+1))),
-                                 atan2 (1 + r, i));
+                                 atan2 (i, 1 + r));
         }
       else
         retval = std::log (FloatComplex (1) + x);

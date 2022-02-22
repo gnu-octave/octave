@@ -61,6 +61,7 @@ namespace octave
 
     void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
                              QTranslator *gui_tr);
+    void config_icon_theme (void);
 
     gui_settings * get_settings (void) const;
 

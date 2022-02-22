@@ -135,6 +135,8 @@ namespace octave
 
     setObjectName (gui_obj_name_main_window);
 
+    rmgr.config_icon_theme ();
+
     rmgr.update_network_settings ();
 
     // We provide specific terminal capabilities, so ensure that

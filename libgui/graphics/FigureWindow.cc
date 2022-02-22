@@ -38,7 +38,7 @@ namespace octave
     : FigureWindowBase (xparent)
   {
     // set icon from application resources
-    setWindowIcon (QIcon (":/actions/icons/graphic_logo_Figure.png"));
+    setWindowIcon (QIcon::fromTheme ("graphic_logo_Figure"));
   }
 
   FigureWindow::~FigureWindow (void)

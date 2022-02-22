@@ -313,6 +313,7 @@ namespace octave
 
             // After settings.
             config_translators ();
+            m_resource_manager.config_icon_theme ();
 
             // Initilize the shortcut-manager
             m_shortcut_manager.init_data ();

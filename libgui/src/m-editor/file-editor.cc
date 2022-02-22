@@ -2202,15 +2202,16 @@ namespace octave
     view_menu->addSeparator ();
 
     m_zoom_in_action
-      = add_action (view_menu, rmgr.icon ("zoom-in"), tr ("Zoom &In"),
+      = add_action (view_menu, rmgr.icon ("view-zoom-in"), tr ("Zoom &In"),
                     SLOT (zoom_in (bool)));
 
     m_zoom_out_action
-      = add_action (view_menu, rmgr.icon ("zoom-out"), tr ("Zoom &Out"),
+      = add_action (view_menu, rmgr.icon ("view-zoom-out"), tr ("Zoom &Out"),
                     SLOT (zoom_out (bool)));
 
     m_zoom_normal_action
-      = add_action (view_menu, tr ("&Normal Size"), SLOT (zoom_normal (bool)));
+      = add_action (view_menu, rmgr.icon ("view-zoom-original"), tr ("&Normal Size"),
+                    SLOT (zoom_normal (bool)));
 
     view_menu->addSeparator ();
 

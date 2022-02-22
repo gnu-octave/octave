@@ -185,6 +185,30 @@ namespace octave
 
   }
 
+  void resource_manager::config_icon_theme (void)
+  {
+    QStringList fallbacks (QIcon::fallbackSearchPaths ());
+
+// FIXME: update fallbacks depending on selection (tango, octave or system)
+// Can cursor be moce to :/cursor and added as search path
+// By this, we can generate the list of themes from the :/icons dir?
+
+    if (m_settings && (! m_settings->value (global_icon_theme).toBool ()))
+      {
+        QIcon::setThemeName ("tango");
+        fallbacks << ":/icons/octave/128x128";
+      }
+    else
+      {
+        QIcon::setThemeName ("");
+        fallbacks << ":/icons/octave/128x128";
+      }
+
+    fallbacks << ":/cursors";
+
+    QIcon::setFallbackSearchPaths (fallbacks);
+  }
+
   gui_settings * resource_manager::get_settings (void) const
   {
     return m_settings;
@@ -581,18 +605,8 @@ namespace octave
     sys::env::putenv ("HTTPS_PROXY", proxy_url_str);
   }
 
-  QIcon resource_manager::icon (const QString& icon_name, bool fallback)
+  QIcon resource_manager::icon (const QString& icon_name, bool)
   {
-    // If system icon theme is not desired, take own icon files
-    if (! m_settings->value (global_icon_theme).toBool ())
-      return QIcon (":/actions/icons/" + icon_name + ".png");
-
-    // Use system icon theme with own files as fallback except when the
-    // fallback is explicitly disabled (fallback=false)
-    if (fallback)
-      return QIcon::fromTheme (icon_name,
-                               QIcon (":/actions/icons/" + icon_name + ".png"));
-    else
       return QIcon::fromTheme (icon_name);
   }
 

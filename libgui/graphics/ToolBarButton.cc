@@ -155,9 +155,7 @@ namespace octave
   template <typename T>
   QIcon ToolBarButton<T>::get_icon (const std::string& name)
   {
-    octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-    return rmgr.icon (QString::fromStdString (name));
+    return QIcon::fromTheme (QString::fromStdString (name));
   }
 
 }

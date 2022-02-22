@@ -77,7 +77,7 @@ namespace octave
     m_title_widget = new QWidget ();
 
     m_dock_action = new QAction
-      (QIcon (":/actions/icons/widget-undock.png"), "", this);
+      (QIcon::fromTheme ("widget-undock"), "", this);
     m_dock_action->setToolTip (tr ("Undock widget"));
     m_dock_button = new QToolButton (m_title_widget);
     m_dock_button->setDefaultAction (m_dock_action);
@@ -85,7 +85,7 @@ namespace octave
     m_dock_button->setIconSize (QSize (m_icon_size, m_icon_size));
 
     m_close_action = new QAction
-      (QIcon (":/actions/icons/widget-close.png"), "", this);
+      (QIcon::fromTheme ("widget-close"), "", this);
     m_close_action->setToolTip (tr ("Close widget"));
     m_close_button = new QToolButton (m_title_widget);
     m_close_button->setDefaultAction (m_close_action);
@@ -233,9 +233,9 @@ namespace octave
 
     m_close_action->setToolTip (tr ("Hide widget"));
 
-    setStyleSheet (qdockwidget_css (QString (":/actions/icons/widget-close.png"),
+    setStyleSheet (qdockwidget_css (QString (":/icons/octave/widget-close.png"),
                                     QString ("Close widget"),
-                                    QString (":/actions/icons/widget-undock.png"),
+                                    QString (":/icons/octave/widget-undock.png"),
                                     QString ("Undock widget"),
                                     m_icon_size,
                                     QString (""),
@@ -311,8 +311,7 @@ namespace octave
     // adjust the (un)dock icon
     if (titleBarWidget ())
       {
-        m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock"
-                                       + m_icon_color + ".png"));
+        m_dock_action->setIcon (QIcon::fromTheme ("widget-dock" + m_icon_color));
         m_dock_action->setToolTip (tr ("Dock widget"));
       }
     else
@@ -370,8 +369,7 @@ namespace octave
              this, &octave_dock_widget::make_window);
     if (titleBarWidget ())
       {
-        m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock"
-                                       + m_icon_color + ".png"));
+        m_dock_action->setIcon (QIcon::fromTheme ("widget-undock" + m_icon_color));
         m_dock_action->setToolTip (tr ("Undock widget"));
       }
     else
@@ -798,22 +796,22 @@ namespace octave
         css_background = QString ("");
       }
 
-    QString full_dock_icon = ":/actions/icons/" + dock_icon + icon_col + ".png";
-    QString full_close_icon = ":/actions/icons/widget-close" + icon_col + ".png";
+    QString full_dock_icon = dock_icon + icon_col;
+    QString full_close_icon = "widget-close" + icon_col;
     if (titleBarWidget ())
       {
         titleBarWidget ()->setStyleSheet (css_foreground + css_background);
         css_button = QString ("QToolButton {background: transparent; border: 0px;}");
         m_dock_button->setStyleSheet (css_button);
         m_close_button->setStyleSheet (css_button);
-        m_dock_action->setIcon (QIcon (full_dock_icon));
-        m_close_action->setIcon (QIcon (full_close_icon));
+        m_dock_action->setIcon (QIcon::fromTheme (full_dock_icon));
+        m_close_action->setIcon (QIcon::fromTheme (full_close_icon));
       }
     else
       {
-        setStyleSheet (qdockwidget_css (full_close_icon,
+        setStyleSheet (qdockwidget_css (":/icons/octave/" + full_close_icon + ".png",
                                         close_tooltip,
-                                        full_dock_icon,
+                                        ":/icons/octave/" + full_dock_icon + ".png",
                                         dock_tooltip,
                                         m_icon_size,
                                         css_foreground,

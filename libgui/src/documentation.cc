@@ -417,13 +417,13 @@ namespace octave
     // Zoom
     m_tool_bar->addSeparator ();
     m_action_zoom_in
-      = add_action (rmgr.icon ("zoom-in"), tr ("Zoom in"),
+      = add_action (rmgr.icon ("view-zoom-in"), tr ("Zoom in"),
                     SLOT (zoom_in (void)), m_doc_browser, m_tool_bar);
     m_action_zoom_out
-      = add_action (rmgr.icon ("zoom-out"), tr ("Zoom out"),
+      = add_action (rmgr.icon ("view-zoom-out"), tr ("Zoom out"),
                     SLOT (zoom_out (void)), m_doc_browser, m_tool_bar);
     m_action_zoom_original
-      = add_action (rmgr.icon ("zoom-original"), tr ("Zoom original"),
+      = add_action (rmgr.icon ("view-zoom-original"), tr ("Zoom original"),
                     SLOT (zoom_original (void)), m_doc_browser, m_tool_bar);
 
     // Bookmarks (connect slots later)

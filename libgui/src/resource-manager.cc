@@ -187,11 +187,17 @@ namespace octave
 
   void resource_manager::config_icon_theme (void)
   {
+#if (QT_VERSION >= 0x051100)
     QStringList fallbacks (QIcon::fallbackSearchPaths ());
+#else
+    QStringList fallbacks;
+#endif
 
 // FIXME: update fallbacks depending on selection (tango, octave or system)
 // Can cursor be moce to :/cursor and added as search path
 // By this, we can generate the list of themes from the :/icons dir?
+
+
 
     if (m_settings && (! m_settings->value (global_icon_theme).toBool ()))
       {
@@ -206,7 +212,9 @@ namespace octave
 
     fallbacks << ":/cursors";
 
+#if (QT_VERSION >= 0x051100)
     QIcon::setFallbackSearchPaths (fallbacks);
+#endif
   }
 
   gui_settings * resource_manager::get_settings (void) const

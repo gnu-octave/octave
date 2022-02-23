@@ -59,7 +59,6 @@
         <file>icons/octave/128x128/widget-undock-light.png</file>
         <file>icons/octave/index.theme</file>
         <file>icons/tango/128x128/applications-system.png</file>
-        <file>icons/tango/128x128/applications-system.png</file>
         <file>icons/tango/128x128/bookmark-new.png</file>
         <file>icons/tango/128x128/dialog-error.png</file>
         <file>icons/tango/128x128/dialog-information.png</file>
@@ -80,7 +79,6 @@
         <file>icons/tango/128x128/folder.png</file>
         <file>icons/tango/128x128/folder-new.png</file>
         <file>icons/tango/128x128/folder-up.png</file>
-        <file>icons/tango/128x128/font-x-generic.png</file>
         <file>icons/tango/128x128/go-down.png</file>
         <file>icons/tango/128x128/go-first.png</file>
         <file>icons/tango/128x128/go-home.png</file>

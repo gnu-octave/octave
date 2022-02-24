@@ -67,7 +67,7 @@ namespace octave
 {
   resource_manager::resource_manager (void)
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
-      m_default_settings (nullptr), m_temporary_files ()
+      m_default_settings (nullptr), m_temporary_files (), m_icon_fallbacks ()
   {
     // Let gui_settings decide where to put the ini file with gui preferences
     m_default_settings
@@ -187,34 +187,23 @@ namespace octave
 
   void resource_manager::config_icon_theme (void)
   {
-#if (QT_VERSION >= 0x051100)
-    QStringList fallbacks (QIcon::fallbackSearchPaths ());
-#else
-    QStringList fallbacks;
-#endif
-
+     m_icon_fallbacks.clear ();
 // FIXME: update fallbacks depending on selection (tango, octave or system)
 // Can cursor be moce to :/cursor and added as search path
 // By this, we can generate the list of themes from the :/icons dir?
 
-
-
     if (m_settings && (! m_settings->value (global_icon_theme).toBool ()))
       {
         QIcon::setThemeName ("tango");
-        fallbacks << ":/icons/octave/128x128";
+        m_icon_fallbacks << global_icon_fallback_paths.at (ICON_THEME_OCTAVE);
       }
     else
       {
         QIcon::setThemeName ("");
-        fallbacks << ":/icons/octave/128x128";
+        m_icon_fallbacks << global_icon_fallback_paths.at (ICON_THEME_OCTAVE);
       }
 
-    fallbacks << ":/cursors";
-
-#if (QT_VERSION >= 0x051100)
-    QIcon::setFallbackSearchPaths (fallbacks);
-#endif
+    m_icon_fallbacks << global_icon_fallback_paths.at (ICON_THEME_CURSORS);
   }
 
   gui_settings * resource_manager::get_settings (void) const
@@ -615,7 +604,17 @@ namespace octave
 
   QIcon resource_manager::icon (const QString& icon_name, bool)
   {
-      return QIcon::fromTheme (icon_name);
+    if (QIcon::hasThemeIcon (icon_name))
+      return QIcon (QIcon::fromTheme (icon_name));
+
+    for (int i = 0; i < m_icon_fallbacks.length (); i++ )
+      {
+        QString icon_file (m_icon_fallbacks.at (i) + icon_name + ".png");
+        if (QFile (icon_file).exists ())
+          return QIcon (icon_file);
+      }
+
+      return QIcon ();
   }
 
   // get a list of all available encodings

@@ -84,6 +84,22 @@ global_icon_size ("toolbar_icon_size", QVariant (0));
 const gui_pref
 global_icon_theme ("use_system_icon_theme", QVariant (true));
 
+enum
+{
+  ICON_THEME_SYSTEM,
+  ICON_THEME_OCTAVE,
+  ICON_THEME_TANGO,
+  ICON_THEME_CURSORS
+};
+
+const QStringList
+global_icon_fallback_paths (QStringList ()
+                        << ""
+                        << ":/icons/octave/128x128/"
+                        << ":/icons/tango/128x128/"
+                        << ":/cursors/"
+                       );
+
 // Other
 
 const gui_pref

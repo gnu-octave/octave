@@ -123,6 +123,8 @@ namespace octave
     gui_settings *m_default_settings;
 
     QList<QTemporaryFile *> m_temporary_files;
+
+    QStringList m_icon_fallbacks;
   };
 }
 

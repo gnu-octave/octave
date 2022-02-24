@@ -29,11 +29,13 @@
 
 #include <QAction>
 #include <QIcon>
+#include <QString>
 #include <QWidget>
 
 #include "ToolBarButton.h"
 #include "QtHandlesUtils.h"
 #include "octave-qobject.h"
+#include "gui-preferences-global.h"
 
 namespace octave
 {
@@ -155,7 +157,7 @@ namespace octave
   template <typename T>
   QIcon ToolBarButton<T>::get_icon (const std::string& name)
   {
-    return QIcon::fromTheme (QString::fromStdString (name));
+    return QIcon (global_icon_fallback_paths.at (ICON_THEME_OCTAVE) + QString::fromStdString (name) + ".png");
   }
 
 }

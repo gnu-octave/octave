@@ -37,46 +37,72 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/graphic_logo_FilesDockWidget.png \
   %reldir%/icons/octave/128x128/graphic_logo_HistoryDockWidget.png \
   %reldir%/icons/octave/128x128/graphic_logo_NewsDockWidget.png \
-  %reldir%/icons/octave/128x128/graphic_logo_TerminalDockWidget.png \
-  %reldir%/icons/octave/128x128/graphic_logo_WorkspaceView.png \
   %reldir%/icons/octave/128x128/graphic_logo_ReleaseWidget.png \
+  %reldir%/icons/octave/128x128/graphic_logo_TerminalDockWidget.png \
   %reldir%/icons/octave/128x128/graphic_logo_VariableEditor.png \
-  %reldir%/icons/octave/128x128/graphic_logo_DocumentationDockWidget.svg \
-  %reldir%/icons/octave/128x128/graphic_logo_FileEditor.svg \
-  %reldir%/icons/octave/128x128/graphic_logo_FilesDockWidget.svg \
-  %reldir%/icons/octave/128x128/graphic_logo_HistoryDockWidget.svg \
-  %reldir%/icons/octave/128x128/graphic_logo_NewsDockWidget.svg \
-  %reldir%/icons/octave/128x128/graphic_logo_TerminalDockWidget.svg \
-  %reldir%/icons/octave/128x128/graphic_logo_WorkspaceView.svg \
-  %reldir%/icons/octave/128x128/graphic_logo_ReleaseWidget.svg \
-  %reldir%/icons/octave/128x128/graphic_logo_VariableEditor.svg \
+  %reldir%/icons/octave/128x128/graphic_logo_WorkspaceView.png \
   %reldir%/icons/octave/128x128/letter_logo_DocumentationDockWidget.png \
   %reldir%/icons/octave/128x128/letter_logo_FileEditor.png \
   %reldir%/icons/octave/128x128/letter_logo_FilesDockWidget.png \
   %reldir%/icons/octave/128x128/letter_logo_HistoryDockWidget.png \
   %reldir%/icons/octave/128x128/letter_logo_NewsDockWidget.png \
-  %reldir%/icons/octave/128x128/letter_logo_TerminalDockWidget.png \
-  %reldir%/icons/octave/128x128/letter_logo_WorkspaceView.png \
   %reldir%/icons/octave/128x128/letter_logo_ReleaseWidget.png \
+  %reldir%/icons/octave/128x128/letter_logo_TerminalDockWidget.png \
   %reldir%/icons/octave/128x128/letter_logo_VariableEditor.png \
-  %reldir%/icons/octave/128x128/letter_logo_DocumentationDockWidget.svg \
-  %reldir%/icons/octave/128x128/letter_logo_FileEditor.svg \
-  %reldir%/icons/octave/128x128/letter_logo_FilesDockWidget.svg \
-  %reldir%/icons/octave/128x128/letter_logo_HistoryDockWidget.svg \
-  %reldir%/icons/octave/128x128/letter_logo_NewsDockWidget.svg \
-  %reldir%/icons/octave/128x128/letter_logo_TerminalDockWidget.svg \
-  %reldir%/icons/octave/128x128/letter_logo_WorkspaceView.svg \
-  %reldir%/icons/octave/128x128/letter_logo_ReleaseWidget.svg \
-  %reldir%/icons/octave/128x128/letter_logo_VariableEditor.svg \
+  %reldir%/icons/octave/128x128/letter_logo_WorkspaceView.png \
   %reldir%/icons/octave/128x128/logo.png \
   %reldir%/icons/octave/128x128/plot-xy-curve.png \
   %reldir%/icons/octave/128x128/system-run.png \
-  %reldir%/icons/octave/128x128/widget-close.png \
-  %reldir%/icons/octave/128x128/widget-dock.png \
-  %reldir%/icons/octave/128x128/widget-undock.png \
   %reldir%/icons/octave/128x128/widget-close-light.png \
+  %reldir%/icons/octave/128x128/widget-close.png \
   %reldir%/icons/octave/128x128/widget-dock-light.png \
+  %reldir%/icons/octave/128x128/widget-dock.png \
   %reldir%/icons/octave/128x128/widget-undock-light.png \
+  %reldir%/icons/octave/128x128/widget-undock.png \
+  %reldir%/icons/octave/scalable/bp-next.svg \
+  %reldir%/icons/octave/scalable/bp-prev.svg \
+  %reldir%/icons/octave/scalable/bp-rm-all.svg \
+  %reldir%/icons/octave/scalable/bp-toggle.svg \
+  %reldir%/icons/octave/scalable/db-cont.svg \
+  %reldir%/icons/octave/scalable/db-step-in.svg \
+  %reldir%/icons/octave/scalable/db-step-out.svg \
+  %reldir%/icons/octave/scalable/db-step.svg \
+  %reldir%/icons/octave/scalable/db-stop.svg \
+  %reldir%/icons/octave/scalable/figure-axes.svg \
+  %reldir%/icons/octave/scalable/figure-grid.svg \
+  %reldir%/icons/octave/scalable/figure-pan.svg \
+  %reldir%/icons/octave/scalable/figure-rotate.svg \
+  %reldir%/icons/octave/scalable/figure-text.svg \
+  %reldir%/icons/octave/scalable/figure-zoom-in.svg \
+  %reldir%/icons/octave/scalable/figure-zoom-original.svg \
+  %reldir%/icons/octave/scalable/figure-zoom-out.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_DocumentationDockWidget.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_Figure.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_FileEditor.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_FilesDockWidget.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_HistoryDockWidget.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_NewsDockWidget.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_ReleaseWidget.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_TerminalDockWidget.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_VariableEditor.svg \
+  %reldir%/icons/octave/scalable/graphic_logo_WorkspaceView.svg \
+  %reldir%/icons/octave/scalable/letter_logo_DocumentationDockWidget.svg \
+  %reldir%/icons/octave/scalable/letter_logo_FileEditor.svg \
+  %reldir%/icons/octave/scalable/letter_logo_FilesDockWidget.svg \
+  %reldir%/icons/octave/scalable/letter_logo_HistoryDockWidget.svg \
+  %reldir%/icons/octave/scalable/letter_logo_NewsDockWidget.svg \
+  %reldir%/icons/octave/scalable/letter_logo_ReleaseWidget.svg \
+  %reldir%/icons/octave/scalable/letter_logo_TerminalDockWidget.svg \
+  %reldir%/icons/octave/scalable/letter_logo_VariableEditor.svg \
+  %reldir%/icons/octave/scalable/letter_logo_WorkspaceView.svg \
+  %reldir%/icons/octave/scalable/plot-xy-curve.svg \
+  %reldir%/icons/octave/scalable/system-run.svg \
+  %reldir%/icons/octave/scalable/widget-close-light.svg \
+  %reldir%/icons/octave/scalable/widget-close.svg \
+  %reldir%/icons/octave/scalable/widget-dock-light.svg \
+  %reldir%/icons/octave/scalable/widget-dock.svg \
+  %reldir%/icons/octave/scalable/widget-undock-light.svg \
+  %reldir%/icons/octave/scalable/widget-undock.svg \
   %reldir%/icons/tango/index.theme \
   %reldir%/icons/tango/128x128/applications-system.png \
   %reldir%/icons/tango/128x128/bookmark-new.png \
@@ -91,14 +117,14 @@ octave_gui_ICONS = \
   %reldir%/icons/tango/128x128/edit-copy.png \
   %reldir%/icons/tango/128x128/edit-cut.png \
   %reldir%/icons/tango/128x128/edit-delete.png \
-  %reldir%/icons/tango/128x128/edit-find.png \
   %reldir%/icons/tango/128x128/edit-find-replace.png \
+  %reldir%/icons/tango/128x128/edit-find.png \
   %reldir%/icons/tango/128x128/edit-paste.png \
   %reldir%/icons/tango/128x128/edit-redo.png \
   %reldir%/icons/tango/128x128/edit-undo.png \
-  %reldir%/icons/tango/128x128/folder.png \
   %reldir%/icons/tango/128x128/folder-new.png \
   %reldir%/icons/tango/128x128/folder-up.png \
+  %reldir%/icons/tango/128x128/folder.png \
   %reldir%/icons/tango/128x128/go-down.png \
   %reldir%/icons/tango/128x128/go-first.png \
   %reldir%/icons/tango/128x128/go-home.png \
@@ -111,7 +137,41 @@ octave_gui_ICONS = \
   %reldir%/icons/tango/128x128/view-refresh.png \
   %reldir%/icons/tango/128x128/view-zoom-in.png \
   %reldir%/icons/tango/128x128/view-zoom-original.png \
-  %reldir%/icons/tango/128x128/view-zoom-out.png
+  %reldir%/icons/tango/128x128/view-zoom-out.png \
+  %reldir%/icons/tango/scalable/applications-system.svg \
+  %reldir%/icons/tango/scalable/bookmark-new.svg \
+  %reldir%/icons/tango/scalable/dialog-error.svg \
+  %reldir%/icons/tango/scalable/dialog-information.svg \
+  %reldir%/icons/tango/scalable/dialog-warning.svg \
+  %reldir%/icons/tango/scalable/document-new.svg \
+  %reldir%/icons/tango/scalable/document-open.svg \
+  %reldir%/icons/tango/scalable/document-print.svg \
+  %reldir%/icons/tango/scalable/document-save.svg \
+  %reldir%/icons/tango/scalable/document-save-as.svg \
+  %reldir%/icons/tango/scalable/edit-copy.svg \
+  %reldir%/icons/tango/scalable/edit-cut.svg \
+  %reldir%/icons/tango/scalable/edit-delete.svg \
+  %reldir%/icons/tango/scalable/edit-find-replace.svg \
+  %reldir%/icons/tango/scalable/edit-find.svg \
+  %reldir%/icons/tango/scalable/edit-paste.svg \
+  %reldir%/icons/tango/scalable/edit-redo.svg \
+  %reldir%/icons/tango/scalable/edit-undo.svg \
+  %reldir%/icons/tango/scalable/folder-new.svg \
+  %reldir%/icons/tango/scalable/folder-up.svg \
+  %reldir%/icons/tango/scalable/folder.svg \
+  %reldir%/icons/tango/scalable/go-down.svg \
+  %reldir%/icons/tango/scalable/go-first.svg \
+  %reldir%/icons/tango/scalable/go-home.svg \
+  %reldir%/icons/tango/scalable/go-last.svg \
+  %reldir%/icons/tango/scalable/go-next.svg \
+  %reldir%/icons/tango/scalable/go-previous.svg \
+  %reldir%/icons/tango/scalable/go-up.svg \
+  %reldir%/icons/tango/scalable/preferences-system.svg \
+  %reldir%/icons/tango/scalable/user-home.svg \
+  %reldir%/icons/tango/scalable/view-refresh.svg \
+  %reldir%/icons/tango/scalable/view-zoom-in.svg \
+  %reldir%/icons/tango/scalable/view-zoom-original.svg \
+  %reldir%/icons/tango/scalable/view-zoom-out.svg
 
 octave_gui_MOC =
 

@@ -52,6 +52,19 @@ function configure_make (desc, packdir, verbose)
       __gripe_missing_component__ ("pkg", "octave");
     endif
 
+    if (ispc () && ! isunix ())
+      # replace all backslashes with forward slashes
+      mkoctfile_program = strrep (mkoctfile_program, '\', '/');
+      octave_config_program = strrep (octave_config_program, '\', '/');
+      octave_binary = strrep (octave_binary, '\', '/');
+    endif
+
+    # escape spaces in file paths unless they are already escaped
+    mkoctfile_program = regexprep (mkoctfile_program, '([^\\]) ', '$1\\ ');
+    octave_config_program = regexprep (octave_config_program, ...
+                                       '([^\\]) ', '$1\\ ');
+    octave_binary = regexprep (octave_binary, '([^\\]) ', '$1\\ ');
+
     if (verbose)
       mkoctfile_program = [mkoctfile_program " --verbose"];
     endif
@@ -151,7 +164,6 @@ endfunction
 function [status, output] = shell (cmd, verbose)
   persistent have_sh;
 
-  cmd = strrep (cmd, '\', '/');
   if (ispc () && ! isunix ())
     if (isempty (have_sh))
       if (system ('sh.exe -c "exit"'))

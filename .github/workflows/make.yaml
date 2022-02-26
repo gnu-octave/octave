@@ -371,7 +371,8 @@ jobs:
           install: >-
             base-devel
             ${{ matrix.target-prefix }}-autotools
-            ${{ matrix.target-prefix }}-toolchain
+            ${{ matrix.target-prefix }}-cc
+            ${{ matrix.target-prefix }}-gcc-fortran
             ${{ matrix.target-prefix }}-lapack
             ${{ matrix.target-prefix }}-openblas
             ${{ matrix.target-prefix }}-pcre

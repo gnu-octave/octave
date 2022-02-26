@@ -1787,8 +1787,14 @@ accurately in the neighborhood of zero.
 
 /*
 %!assert (log1p ([0, 2*eps, -2*eps]), [0, 2*eps, -2*eps], 1e-29)
-%!assert (log1p (single ([0, 2*eps, -2*eps])),
+%!assert (log1p (single ([0, 2*eps, -2*eps])), ...
 %!        single ([0, 2*eps, -2*eps]), 1e-29)
+## Compare to result from Wolfram Alpha rounded to 16 significant digits
+%!assert <*62094> (log1p (0.1i), ...
+%!                 0.004975165426584041 + 0.09966865249116203i, eps (0.2))
+%!assert <*62094> (log1p (single (0.1i)), ...
+%!                 single (0.004975165426584041 + 0.09966865249116203i), ...
+%!                 eps (single (0.2)))
 
 %!error log1p ()
 %!error log1p (1, 2)

@@ -53,7 +53,7 @@ namespace octave
   namespace sys
   {
     time::time (double d)
-      : m_ot_unix_time (static_cast<time_t> (d)), m_ot_usec (0)
+      : m_ot_unix_time (static_cast<OCTAVE_TIME_T> (d)), m_ot_usec (0)
     {
       double ip;
       m_ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
@@ -113,7 +113,9 @@ namespace octave
     void
     time::stamp (void)
     {
-      octave_gettimeofday_wrapper (&m_ot_unix_time, &m_ot_usec);
+      time_t ot_unix_time;
+      octave_gettimeofday_wrapper (&ot_unix_time, &m_ot_usec);
+      m_ot_unix_time = ot_unix_time;
     }
 
     // From the mktime() manual page:
@@ -346,7 +348,10 @@ namespace octave
     void
     cpu_time::stamp (void)
     {
-      octave_cpu_time (&m_usr_sec, &m_sys_sec, &m_usr_usec, &m_sys_usec);
+      time_t usr_sec, sys_sec;
+      octave_cpu_time (&usr_sec, &sys_sec, &m_usr_usec, &m_sys_usec);
+      m_usr_sec = usr_sec;
+      m_sys_sec = sys_sec;
     }
 
     void

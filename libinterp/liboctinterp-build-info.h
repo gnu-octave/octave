@@ -28,8 +28,6 @@
 
 #include "octave-config.h"
 
-#include <ctime>
-
 #include <string>
 
 extern OCTINTERP_API std::string liboctinterp_hg_id (void);

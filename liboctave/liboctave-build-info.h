@@ -28,8 +28,6 @@
 
 #include "octave-config.h"
 
-#include <ctime>
-
 #include <string>
 
 extern OCTAVE_API std::string liboctave_hg_id (void);

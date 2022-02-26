@@ -95,10 +95,10 @@ public:
   virtual octave::symbol_scope scope (void) { return octave::symbol_scope (); }
 
   virtual octave::sys::time time_parsed (void) const
-  { return octave::sys::time (static_cast<time_t> (0)); }
+  { return octave::sys::time (static_cast<OCTAVE_TIME_T> (0)); }
 
   virtual octave::sys::time time_checked (void) const
-  { return octave::sys::time (static_cast<time_t> (0)); }
+  { return octave::sys::time (static_cast<OCTAVE_TIME_T> (0)); }
 
   virtual int call_depth (void) const { return 0; }
 

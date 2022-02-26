@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <ctime>
 #include <unordered_map>
 #include <string>
 

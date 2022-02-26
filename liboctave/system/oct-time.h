@@ -28,13 +28,11 @@
 
 #include "octave-config.h"
 
-#include <ctime>
-
 #include <iosfwd>
 #include <string>
 
 static inline double
-as_double (time_t sec, long usec)
+as_double (OCTAVE_TIME_T sec, long usec)
 {
   // Unix time will be exactly representable as a double for more than
   // 100 million years, so no worry there, and microseconds has a
@@ -57,10 +55,10 @@ namespace octave
       time (void)
         : m_ot_unix_time (0), m_ot_usec (0) { stamp (); }
 
-      time (time_t t)
+      time (OCTAVE_TIME_T t)
         : m_ot_unix_time (t), m_ot_usec (0) { }
 
-      time (time_t t, long us)
+      time (OCTAVE_TIME_T t, long us)
         : m_ot_unix_time (t), m_ot_usec ()
       {
         long rem, extra;
@@ -109,7 +107,7 @@ namespace octave
         return as_double (m_ot_unix_time, m_ot_usec);
       }
 
-      time_t unix_time (void) const { return m_ot_unix_time; }
+      OCTAVE_TIME_T unix_time (void) const { return m_ot_unix_time; }
 
       long usec (void) const { return m_ot_usec; }
 
@@ -120,7 +118,7 @@ namespace octave
     private:
 
       // Seconds since the epoch.
-      time_t m_ot_unix_time;
+      OCTAVE_TIME_T m_ot_unix_time;
 
       // Additional microseconds.
       long m_ot_usec;
@@ -422,21 +420,21 @@ namespace octave
         return as_double (m_sys_sec, m_sys_usec);
       }
 
-      time_t user_sec (void) const { return m_usr_sec; }
+      OCTAVE_TIME_T user_sec (void) const { return m_usr_sec; }
       long user_usec (void) const { return m_usr_usec; }
 
-      time_t system_sec (void) const { return m_sys_sec; }
+      OCTAVE_TIME_T system_sec (void) const { return m_sys_sec; }
       long system_usec (void) const { return m_sys_usec; }
 
     private:
 
-      time_t m_usr_sec;
-      time_t m_sys_sec;
+      OCTAVE_TIME_T m_usr_sec;
+      OCTAVE_TIME_T m_sys_sec;
 
       long m_usr_usec;
       long m_sys_usec;
 
-      cpu_time (time_t usr_sec, time_t sys_sec, long usr_usec, long sys_usec)
+      cpu_time (OCTAVE_TIME_T usr_sec, OCTAVE_TIME_T sys_sec, long usr_usec, long sys_usec)
         : m_usr_sec (usr_sec), m_sys_sec (sys_sec),
           m_usr_usec (usr_usec), m_sys_usec (sys_usec)
       { }

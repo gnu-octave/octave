@@ -167,14 +167,15 @@ Undocumented internal function
 
           for (octave_idx_type i = 0; i < n; i++)
             {
-              time_t ftime;
+              OCTAVE_TIME_T ftime;
               bool fisdir;
               double fsize;
 
               url_xfer.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
               fileisdir(i) = fisdir;
-              filectime(i) = ctime (&ftime);
+              time_t ftime_t = ftime;
+              filectime(i) = ctime (&ftime_t);
               filesize(i)  = fsize;
               filedatenum(i) = double (ftime);
             }
@@ -439,7 +440,7 @@ Undocumented internal function
         {
           n++;
 
-          time_t ftime;
+          OCTAVE_TIME_T ftime;
           bool fisdir;
           double fsize;
 

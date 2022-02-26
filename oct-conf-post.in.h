@@ -279,6 +279,9 @@ typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 
 #define OCTAVE_HAVE_F77_INT_TYPE 1
 
+/* time type in API is always 64 bits wide */
+#define OCTAVE_TIME_T int64_t
+
 #if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
 #  define OCTAVE_THREAD_LOCAL
 #endif

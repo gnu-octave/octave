@@ -6045,7 +6045,10 @@ namespace octave
       {
         std::ostream& os = *osp;
 
-        os << s;
+        if (encoding ().compare ("utf-8"))
+          os << string::u8_to_encoding (who, s, encoding ());
+        else
+          os << s;
 
         if (! os)
           error (who, "write error");

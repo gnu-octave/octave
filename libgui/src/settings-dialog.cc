@@ -137,7 +137,9 @@ namespace octave
     icon_size_normal->setChecked (true);  // the default
     icon_size_small->setChecked (icon_size < 0);
     icon_size_large->setChecked (icon_size > 0);
-    cb_system_icon_theme->setChecked (settings->value (global_icon_theme).toBool ());
+    combo_box_icon_theme->addItems (global_all_icon_theme_names);
+    int theme = settings->value (global_icon_theme_index.key).toInt ();
+    combo_box_icon_theme->setCurrentIndex (theme);
 
     // which icon has to be selected
     QButtonGroup *icon_group = new QButtonGroup (this);
@@ -1020,7 +1022,7 @@ namespace octave
     // icon size and theme
     int icon_size = icon_size_large->isChecked () - icon_size_small->isChecked ();
     settings->setValue (global_icon_size.key, icon_size);
-    settings->setValue (global_icon_theme.key, cb_system_icon_theme->isChecked ());
+    settings->setValue (global_icon_theme_index.key, combo_box_icon_theme->currentIndex ());
 
     // native file dialogs
     settings->setValue (global_use_native_dialogs.key, cb_use_native_file_dialogs->isChecked ());

@@ -79,7 +79,7 @@ namespace octave
     m_title_widget = new QWidget ();
 
     m_dock_action = new QAction
-      (rmgr.icon ("widget-undock"), "", this);
+      (rmgr.icon ("widget-undock", true), "", this);
     m_dock_action->setToolTip (tr ("Undock widget"));
     m_dock_button = new QToolButton (m_title_widget);
     m_dock_button->setDefaultAction (m_dock_action);
@@ -87,7 +87,7 @@ namespace octave
     m_dock_button->setIconSize (QSize (m_icon_size, m_icon_size));
 
     m_close_action = new QAction
-      (rmgr.icon ("widget-close"), "", this);
+      (rmgr.icon ("widget-close", true), "", this);
     m_close_action->setToolTip (tr ("Close widget"));
     m_close_button = new QToolButton (m_title_widget);
     m_close_button->setDefaultAction (m_close_action);
@@ -236,9 +236,9 @@ namespace octave
     m_close_action->setToolTip (tr ("Hide widget"));
 
     setStyleSheet (qdockwidget_css (
-      global_icon_fallback_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
+      global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
       QString ("Close widget"),
-      global_icon_fallback_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
+      global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
       QString ("Undock widget"),
       m_icon_size,
       QString (""),
@@ -316,7 +316,7 @@ namespace octave
     if (titleBarWidget ())
       {
         resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        m_dock_action->setIcon (rmgr.icon ("widget-dock" + m_icon_color));
+        m_dock_action->setIcon (rmgr.icon ("widget-dock" + m_icon_color, true));
         m_dock_action->setToolTip (tr ("Dock widget"));
       }
     else
@@ -374,7 +374,7 @@ namespace octave
              this, &octave_dock_widget::make_window);
     if (titleBarWidget ())
       {
-        m_dock_action->setIcon (rmgr.icon ("widget-undock" + m_icon_color));
+        m_dock_action->setIcon (rmgr.icon ("widget-undock" + m_icon_color, true));
         m_dock_action->setToolTip (tr ("Undock widget"));
       }
     else
@@ -810,14 +810,14 @@ namespace octave
         css_button = QString ("QToolButton {background: transparent; border: 0px;}");
         m_dock_button->setStyleSheet (css_button);
         m_close_button->setStyleSheet (css_button);
-        m_dock_action->setIcon (rmgr.icon (full_dock_icon));
-        m_close_action->setIcon (rmgr.icon (full_close_icon));
+        m_dock_action->setIcon (rmgr.icon (full_dock_icon, true));
+        m_close_action->setIcon (rmgr.icon (full_close_icon, true));
       }
     else
       {
-        setStyleSheet (qdockwidget_css (global_icon_fallback_paths.at (ICON_THEME_OCTAVE) + full_close_icon + ".png",
+        setStyleSheet (qdockwidget_css (global_icon_paths.at (ICON_THEME_OCTAVE) + full_close_icon + ".png",
                                         close_tooltip,
-                                        global_icon_fallback_paths.at (ICON_THEME_OCTAVE) + full_dock_icon + ".png",
+                                        global_icon_paths.at (ICON_THEME_OCTAVE) + full_dock_icon + ".png",
                                         dock_tooltip,
                                         m_icon_size,
                                         css_foreground,

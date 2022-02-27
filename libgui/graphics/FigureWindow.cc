@@ -39,7 +39,7 @@ namespace octave
     : FigureWindowBase (xparent)
   {
     // set icon from application resources
-    setWindowIcon (QIcon (global_icon_fallback_paths.at (ICON_THEME_OCTAVE)));
+    setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)));
   }
 
   FigureWindow::~FigureWindow (void)

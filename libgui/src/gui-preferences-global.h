@@ -86,21 +86,33 @@ global_icon_theme ("use_system_icon_theme", QVariant (true));
 
 enum
 {
-  ICON_THEME_SYSTEM,
+  ICON_THEME_SYSTEM = 0,
   ICON_THEME_OCTAVE,
   ICON_THEME_TANGO,
   ICON_THEME_CURSORS
-};
+}  ;
 
 const QStringList
-global_icon_fallback_paths (QStringList ()
+global_icon_paths (QStringList ()
                         << ""
                         << ":/icons/octave/128x128/"
                         << ":/icons/tango/128x128/"
-                        << ":/cursors/"
+                        << ":/icons/cursors/"
                        );
 
-// Other
+const gui_pref
+global_icon_theme_index ("icon_theme", QVariant (ICON_THEME_SYSTEM));
+const QStringList
+global_all_icon_themes (QStringList ()
+                        << ""
+                        << "octave"
+                        << "tango"
+                        << "cursors");
+const QStringList
+global_all_icon_theme_names (QStringList ()
+                        << "System"
+                        << "Octave"
+                        << "Tango");
 
 const gui_pref
 global_status_bar ("show_status_bar", QVariant (true));

@@ -157,7 +157,7 @@ namespace octave
   template <typename T>
   QIcon ToolBarButton<T>::get_icon (const std::string& name)
   {
-    return QIcon (global_icon_fallback_paths.at (ICON_THEME_OCTAVE) + QString::fromStdString (name) + ".png");
+    return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + QString::fromStdString (name) + ".png");
   }
 
 }

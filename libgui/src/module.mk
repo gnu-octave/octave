@@ -1,17 +1,17 @@
 octave_gui_ICONS = \
-  %reldir%/cursors/license.md \
-  %reldir%/cursors/bottom_left_corner.png \
-  %reldir%/cursors/bottom_right_corner.png \
-  %reldir%/cursors/bottom_side.png \
-  %reldir%/cursors/circle.png \
-  %reldir%/cursors/cross.png \
-  %reldir%/cursors/fleur.png \
-  %reldir%/cursors/hand2.png \
-  %reldir%/cursors/left_side.png \
-  %reldir%/cursors/right_side.png \
-  %reldir%/cursors/top_left_corner.png \
-  %reldir%/cursors/top_right_corner.png \
-  %reldir%/cursors/top_side.png \
+  %reldir%/icons/cursors/license.md \
+  %reldir%/icons/cursors/bottom_left_corner.png \
+  %reldir%/icons/cursors/bottom_right_corner.png \
+  %reldir%/icons/cursors/bottom_side.png \
+  %reldir%/icons/cursors/circle.png \
+  %reldir%/icons/cursors/cross.png \
+  %reldir%/icons/cursors/fleur.png \
+  %reldir%/icons/cursors/hand2.png \
+  %reldir%/icons/cursors/left_side.png \
+  %reldir%/icons/cursors/right_side.png \
+  %reldir%/icons/cursors/top_left_corner.png \
+  %reldir%/icons/cursors/top_right_corner.png \
+  %reldir%/icons/cursors/top_side.png \
   %reldir%/icons/license.md \
   %reldir%/icons/octave/index.theme \
   %reldir%/icons/octave/128x128/bp-next.png \
@@ -23,6 +23,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/db-step-out.png \
   %reldir%/icons/octave/128x128/db-step.png \
   %reldir%/icons/octave/128x128/db-stop.png \
+  %reldir%/icons/octave/128x128/document-open.png \
   %reldir%/icons/octave/128x128/figure-axes.png \
   %reldir%/icons/octave/128x128/figure-grid.png \
   %reldir%/icons/octave/128x128/figure-pan.png \
@@ -31,6 +32,9 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/figure-zoom-in.png \
   %reldir%/icons/octave/128x128/figure-zoom-original.png \
   %reldir%/icons/octave/128x128/figure-zoom-out.png \
+  %reldir%/icons/octave/128x128/folder-new.png \
+  %reldir%/icons/octave/128x128/folder-up.png \
+  %reldir%/icons/octave/128x128/folder.png \
   %reldir%/icons/octave/128x128/graphic_logo_DocumentationDockWidget.png \
   %reldir%/icons/octave/128x128/graphic_logo_Figure.png \
   %reldir%/icons/octave/128x128/graphic_logo_FileEditor.png \
@@ -53,6 +57,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/logo.png \
   %reldir%/icons/octave/128x128/plot-xy-curve.png \
   %reldir%/icons/octave/128x128/system-run.png \
+  %reldir%/icons/octave/128x128/user-home.svg \
   %reldir%/icons/octave/128x128/widget-close-light.png \
   %reldir%/icons/octave/128x128/widget-close.png \
   %reldir%/icons/octave/128x128/widget-dock-light.png \
@@ -68,6 +73,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/db-step-out.svg \
   %reldir%/icons/octave/scalable/db-step.svg \
   %reldir%/icons/octave/scalable/db-stop.svg \
+  %reldir%/icons/octave/scalable/document-open.svg \
   %reldir%/icons/octave/scalable/figure-axes.svg \
   %reldir%/icons/octave/scalable/figure-grid.svg \
   %reldir%/icons/octave/scalable/figure-pan.svg \
@@ -76,6 +82,9 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/figure-zoom-in.svg \
   %reldir%/icons/octave/scalable/figure-zoom-original.svg \
   %reldir%/icons/octave/scalable/figure-zoom-out.svg \
+  %reldir%/icons/octave/scalable/folder-new.svg \
+  %reldir%/icons/octave/scalable/folder-up.svg \
+  %reldir%/icons/octave/scalable/folder.svg \
   %reldir%/icons/octave/scalable/graphic_logo_DocumentationDockWidget.svg \
   %reldir%/icons/octave/scalable/graphic_logo_Figure.svg \
   %reldir%/icons/octave/scalable/graphic_logo_FileEditor.svg \
@@ -97,6 +106,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/letter_logo_WorkspaceView.svg \
   %reldir%/icons/octave/scalable/plot-xy-curve.svg \
   %reldir%/icons/octave/scalable/system-run.svg \
+  %reldir%/icons/octave/scalable/user-home.svg \
   %reldir%/icons/octave/scalable/widget-close-light.svg \
   %reldir%/icons/octave/scalable/widget-close.svg \
   %reldir%/icons/octave/scalable/widget-dock-light.svg \

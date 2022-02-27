@@ -35,7 +35,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -55,8 +55,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>657</width>
-            <height>629</height>
+            <width>1021</width>
+            <height>618</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -68,30 +68,44 @@
              <layout class="QVBoxLayout" name="verticalLayout_21">
               <item>
                <layout class="QGridLayout" name="gridLayout">
-                <item row="1" column="1">
-                 <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <item row="7" column="0">
+                 <widget class="QLabel" name="label_15">
+                  <property name="text">
+                   <string>Dock widget title bar</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="label_9">
+                  <property name="text">
+                   <string>Dock widgets window icons</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_29">
+                  <property name="text">
+                   <string>Style</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_17">
                   <item>
-                   <widget class="QComboBox" name="comboBox_language">
+                   <widget class="QComboBox" name="combo_styles">
                     <property name="minimumSize">
                      <size>
                       <width>135</width>
                       <height>0</height>
                      </size>
                     </property>
-                    <property name="insertPolicy">
-                     <enum>QComboBox::InsertAtBottom</enum>
-                    </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLabel" name="label_10">
-                    <property name="text">
-                     <string>(requires restart)</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_3">
+                   <spacer name="horizontalSpacer">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -105,19 +119,26 @@
                   </item>
                  </layout>
                 </item>
-                <item row="7" column="0">
-                 <widget class="QLabel" name="label_15">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_2">
                   <property name="text">
-                   <string>Dock widget title bar</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                   <string>Language</string>
                   </property>
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <layout class="QVBoxLayout" name="verticalLayout_5">
-                  <item>
+                 <layout class="QGridLayout" name="gridLayout_16">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_4">
+                    <property name="text">
+                     <string>Icon theme (requires restart)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QComboBox" name="combo_box_icon_theme"/>
+                  </item>
+                  <item row="0" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_6">
                     <item>
                      <widget class="QRadioButton" name="icon_size_small">
@@ -143,58 +164,10 @@
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <spacer name="horizontalSpacer_4">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
                    </layout>
                   </item>
-                  <item>
-                   <widget class="QCheckBox" name="cb_system_icon_theme">
-                    <property name="text">
-                     <string>Use system icon theme if available (requires restart)</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="5" column="1">
-                 <layout class="QHBoxLayout" name="horizontalLayout_9">
-                  <item>
-                   <widget class="QRadioButton" name="general_icon_octave">
-                    <property name="text">
-                     <string>Octave logo only</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="general_icon_letter">
-                    <property name="text">
-                     <string>Letter icons</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="general_icon_graphic">
-                    <property name="text">
-                     <string>Graphic icons</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_6">
+                  <item row="1" column="2">
+                   <spacer name="horizontalSpacer_5">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -207,23 +180,6 @@
                    </spacer>
                   </item>
                  </layout>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_8">
-                  <property name="text">
-                   <string>Toolbar Icons</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QLabel" name="label_9">
-                  <property name="text">
-                   <string>Icon set for dock widgets</string>
-                  </property>
-                 </widget>
                 </item>
                 <item row="7" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -387,27 +343,40 @@
                   </item>
                  </layout>
                 </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_2">
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_8">
                   <property name="text">
-                   <string>Language</string>
+                   <string>Toolbar Icons</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
-                 <layout class="QHBoxLayout" name="horizontalLayout_17">
+                <item row="1" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_8">
                   <item>
-                   <widget class="QComboBox" name="combo_styles">
+                   <widget class="QComboBox" name="comboBox_language">
                     <property name="minimumSize">
                      <size>
                       <width>135</width>
                       <height>0</height>
                      </size>
                     </property>
+                    <property name="insertPolicy">
+                     <enum>QComboBox::InsertAtBottom</enum>
+                    </property>
                    </widget>
                   </item>
                   <item>
-                   <spacer name="horizontalSpacer">
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>(requires restart)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_3">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -421,12 +390,46 @@
                   </item>
                  </layout>
                 </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_29">
-                  <property name="text">
-                   <string>Style</string>
-                  </property>
-                 </widget>
+                <item row="5" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_9">
+                  <item>
+                   <widget class="QRadioButton" name="general_icon_octave">
+                    <property name="text">
+                     <string>Octave logo only</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="general_icon_letter">
+                    <property name="text">
+                     <string>Letter icons</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="general_icon_graphic">
+                    <property name="text">
+                     <string>Graphic icons</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_6">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -584,8 +587,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>668</width>
-            <height>267</height>
+            <width>1035</width>
+            <height>569</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -865,8 +868,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>765</width>
-            <height>1515</height>
+            <width>1021</width>
+            <height>1497</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -2173,8 +2176,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>595</width>
-            <height>410</height>
+            <width>1035</width>
+            <height>569</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2323,8 +2326,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>259</width>
-            <height>67</height>
+            <width>1035</width>
+            <height>569</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2385,8 +2388,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>605</width>
-            <height>233</height>
+            <width>1035</width>
+            <height>569</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2770,8 +2773,8 @@ interference with readline key strokes.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>703</width>
-            <height>310</height>
+            <width>1035</width>
+            <height>569</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

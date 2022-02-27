@@ -1,17 +1,17 @@
 <RCC>
     <qresource prefix="/">
-        <file>cursors/bottom_left_corner.png</file>
-        <file>cursors/bottom_right_corner.png</file>
-        <file>cursors/bottom_side.png</file>
-        <file>cursors/circle.png</file>
-        <file>cursors/cross.png</file>
-        <file>cursors/fleur.png</file>
-        <file>cursors/hand2.png</file>
-        <file>cursors/left_side.png</file>
-        <file>cursors/right_side.png</file>
-        <file>cursors/top_left_corner.png</file>
-        <file>cursors/top_right_corner.png</file>
-        <file>cursors/top_side.png</file>
+        <file>icons/cursors/bottom_left_corner.png</file>
+        <file>icons/cursors/bottom_right_corner.png</file>
+        <file>icons/cursors/bottom_side.png</file>
+        <file>icons/cursors/circle.png</file>
+        <file>icons/cursors/cross.png</file>
+        <file>icons/cursors/fleur.png</file>
+        <file>icons/cursors/hand2.png</file>
+        <file>icons/cursors/left_side.png</file>
+        <file>icons/cursors/right_side.png</file>
+        <file>icons/cursors/top_left_corner.png</file>
+        <file>icons/cursors/top_right_corner.png</file>
+        <file>icons/cursors/top_side.png</file>
         <file>icons/octave/128x128/bp-toggle.png</file>
         <file>icons/octave/128x128/bp-rm-all.png</file>
         <file>icons/octave/128x128/bp-prev.png</file>
@@ -21,6 +21,7 @@
         <file>icons/octave/128x128/db-step-in.png</file>
         <file>icons/octave/128x128/db-step-out.png</file>
         <file>icons/octave/128x128/db-stop.png</file>
+        <file>icons/octave/128x128/document-open.png</file>
         <file>icons/octave/128x128/figure-axes.png</file>
         <file>icons/octave/128x128/figure-grid.png</file>
         <file>icons/octave/128x128/figure-pan.png</file>
@@ -29,6 +30,9 @@
         <file>icons/octave/128x128/figure-zoom-in.png</file>
         <file>icons/octave/128x128/figure-zoom-original.png</file>
         <file>icons/octave/128x128/figure-zoom-out.png</file>
+        <file>icons/octave/128x128/folder.png</file>
+        <file>icons/octave/128x128/folder-new.png</file>
+        <file>icons/octave/128x128/folder-up.png</file>
         <file>icons/octave/128x128/graphic_logo_FilesDockWidget.png</file>
         <file>icons/octave/128x128/graphic_logo_Figure.png</file>
         <file>icons/octave/128x128/graphic_logo_FileEditor.png</file>
@@ -51,6 +55,7 @@
         <file>icons/octave/128x128/logo.png</file>
         <file>icons/octave/128x128/plot-xy-curve.png</file>
         <file>icons/octave/128x128/system-run.png</file>
+        <file>icons/octave/128x128/user-home.png</file>
         <file>icons/octave/128x128/widget-close.png</file>
         <file>icons/octave/128x128/widget-dock.png</file>
         <file>icons/octave/128x128/widget-undock.png</file>

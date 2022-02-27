@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <unistd.h>
+
 #include <algorithm>
 #include <array>
 #include <string>
@@ -187,23 +189,48 @@ namespace octave
 
   void resource_manager::config_icon_theme (void)
   {
-     m_icon_fallbacks.clear ();
-// FIXME: update fallbacks depending on selection (tango, octave or system)
-// Can cursor be moce to :/cursor and added as search path
-// By this, we can generate the list of themes from the :/icons dir?
+    m_icon_fallbacks.clear ();
 
-    if (m_settings && (! m_settings->value (global_icon_theme).toBool ()))
+    int theme = global_icon_theme_index.def.toInt ();
+
+    if (m_settings)
       {
-        QIcon::setThemeName ("tango");
-        m_icon_fallbacks << global_icon_fallback_paths.at (ICON_THEME_OCTAVE);
-      }
-    else
-      {
-        QIcon::setThemeName ("");
-        m_icon_fallbacks << global_icon_fallback_paths.at (ICON_THEME_OCTAVE);
+       // check for new and old setting and use old if required
+       if (! m_settings->contains (global_icon_theme_index.key))
+         {
+           // new pref does not exist
+           if (m_settings->value (global_icon_theme).toBool ())
+             theme = ICON_THEME_SYSTEM;
+           else
+             theme = ICON_THEME_OCTAVE;
+           m_settings->setValue (global_icon_theme_index.key, theme);  // add new
+           m_settings->remove (global_icon_theme.key); // remove deprecated key
+         }
+       else
+         {
+           // get new settings
+           theme = m_settings->value (global_icon_theme_index).toInt ();
+         }
       }
 
-    m_icon_fallbacks << global_icon_fallback_paths.at (ICON_THEME_CURSORS);
+   QIcon::setThemeName (global_all_icon_themes.at (theme));
+
+   // set the required fallback search paths
+   switch (theme)
+    {
+      case ICON_THEME_SYSTEM:
+        m_icon_fallbacks << global_icon_paths.at (ICON_THEME_OCTAVE);
+        m_icon_fallbacks << global_icon_paths.at (ICON_THEME_TANGO);
+        break;
+      case ICON_THEME_TANGO:
+        m_icon_fallbacks << global_icon_paths.at (ICON_THEME_OCTAVE);
+        break;
+      case ICON_THEME_OCTAVE:
+        m_icon_fallbacks << global_icon_paths.at (ICON_THEME_TANGO);
+        break;
+    }
+
+    m_icon_fallbacks << global_icon_paths.at (ICON_THEME_CURSORS);
   }
 
   gui_settings * resource_manager::get_settings (void) const
@@ -602,8 +629,11 @@ namespace octave
     sys::env::putenv ("HTTPS_PROXY", proxy_url_str);
   }
 
-  QIcon resource_manager::icon (const QString& icon_name, bool)
+  QIcon resource_manager::icon (const QString& icon_name, bool octave_only)
   {
+    if (octave_only)
+      return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + icon_name + ".png");
+
     if (QIcon::hasThemeIcon (icon_name))
       return QIcon (QIcon::fromTheme (icon_name));
 
@@ -614,6 +644,7 @@ namespace octave
           return QIcon (icon_file);
       }
 
+      //QIcon::setThemeName (current_theme);
       return QIcon ();
   }
 

@@ -2328,6 +2328,8 @@ as the name of the function when reporting errors.
 %! C = textscan ('5973459727478852968', '%u64');
 %! assert (C{1}, uint64 (5973459727478852968));
 
+%!assert <*60711> (textscan('1,.,2', '%f', 'Delimiter', ','), {1});
+
 */
 
 // These tests have end-comment sequences, so can't just be in a comment

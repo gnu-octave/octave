@@ -2851,6 +2851,11 @@ namespace octave
 
         if (i > 0)
           valid = true;           // valid if at least one digit after '.'
+        else if (! valid)         // if there was nothing before and after '.'
+          {
+            is.putback (ch);
+            ch = '.';
+          }
 
         // skip remainder after '.', to field width, to look for exponent
         if (i == precision)

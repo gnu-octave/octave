@@ -57,7 +57,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/logo.png \
   %reldir%/icons/octave/128x128/plot-xy-curve.png \
   %reldir%/icons/octave/128x128/system-run.png \
-  %reldir%/icons/octave/128x128/user-home.svg \
+  %reldir%/icons/octave/128x128/user-home.png \
   %reldir%/icons/octave/128x128/widget-close-light.png \
   %reldir%/icons/octave/128x128/widget-close.png \
   %reldir%/icons/octave/128x128/widget-dock-light.png \

@@ -97,7 +97,7 @@ namespace octave
 
     void update_network_settings (void);
 
-    QIcon icon (const QString& icon_name, bool ocatve_only = false);
+    QIcon icon (const QString& icon_name, bool octave_only = false);
 
     void get_codecs (QStringList *codecs);
 

@@ -28,6 +28,17 @@
 
 #include "octave-config.h"
 
-template <typename T> class OCTAVE_API Sparse;
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+#  include <memory_resource>
+
+template <typename T, typename Alloc = std::pmr::polymorphic_allocator<T>>
+class OCTAVE_API Sparse;
+
+#else
+
+template <typename T, typename Alloc = std::allocator<T>>
+class OCTARRAY_API Sparse;
+
+#endif
 
 #endif

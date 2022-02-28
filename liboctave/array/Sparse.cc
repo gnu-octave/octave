@@ -52,18 +52,18 @@
 
 #include "PermMatrix.h"
 
-template <typename T>
-OCTAVE_API typename Sparse<T>::SparseRep *
-Sparse<T>::nil_rep (void)
+template <typename T, typename Alloc>
+OCTAVE_API typename Sparse<T, Alloc>::SparseRep *
+Sparse<T, Alloc>::nil_rep (void)
 {
-  static typename Sparse<T>::SparseRep nr;
+  static typename Sparse<T, Alloc>::SparseRep nr;
   return &nr;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 T&
-Sparse<T>::SparseRep::elem (octave_idx_type r, octave_idx_type c)
+Sparse<T, Alloc>::SparseRep::elem (octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type i;
 
@@ -102,10 +102,10 @@ Sparse<T>::SparseRep::elem (octave_idx_type r, octave_idx_type c)
   return m_data[i];
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 T
-Sparse<T>::SparseRep::celem (octave_idx_type r, octave_idx_type c) const
+Sparse<T, Alloc>::SparseRep::celem (octave_idx_type r, octave_idx_type c) const
 {
   if (m_nzmax > 0)
     for (octave_idx_type i = m_cidx[c]; i < m_cidx[c + 1]; i++)
@@ -114,10 +114,10 @@ Sparse<T>::SparseRep::celem (octave_idx_type r, octave_idx_type c) const
   return T ();
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
+Sparse<T, Alloc>::SparseRep::maybe_compress (bool remove_zeros)
 {
   if (remove_zeros)
     {
@@ -139,10 +139,10 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
   change_length (m_cidx[m_ncols]);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::SparseRep::change_length (octave_idx_type nz)
+Sparse<T, Alloc>::SparseRep::change_length (octave_idx_type nz)
 {
   for (octave_idx_type j = m_ncols; j > 0 && m_cidx[j] > nz; j--)
     m_cidx[j] = nz;
@@ -157,34 +157,34 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
       // Reallocate.
       octave_idx_type min_nzmax = std::min (nz, m_nzmax);
 
-      octave_idx_type *new_ridx = new octave_idx_type [nz];
+      octave_idx_type *new_ridx = idx_type_allocate (nz);
       std::copy_n (m_ridx, min_nzmax, new_ridx);
 
-      delete [] m_ridx;
+      idx_type_deallocate (m_ridx, m_nzmax);
       m_ridx = new_ridx;
 
-      T *new_data = new T [nz];
+      T *new_data = T_allocate (nz);
       std::copy_n (m_data, min_nzmax, new_data);
 
-      delete [] m_data;
+      T_deallocate (m_data, m_nzmax);
       m_data = new_data;
 
       m_nzmax = nz;
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 bool
-Sparse<T>::SparseRep::indices_ok (void) const
+Sparse<T, Alloc>::SparseRep::indices_ok (void) const
 {
   return sparse_indices_ok (m_ridx, m_cidx, m_nrows, m_ncols, nnz ());
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 bool
-Sparse<T>::SparseRep::any_element_is_nan (void) const
+Sparse<T, Alloc>::SparseRep::any_element_is_nan (void) const
 {
   octave_idx_type nz = nnz ();
 
@@ -195,14 +195,15 @@ Sparse<T>::SparseRep::any_element_is_nan (void) const
   return false;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
+Sparse<T, Alloc>::Sparse (octave_idx_type nr, octave_idx_type nc,
+                                        T val)
   : m_rep (nullptr), m_dimensions (dim_vector (nr, nc))
 {
   if (val != T ())
     {
-      m_rep = new typename Sparse<T>::SparseRep (nr, nc, m_dimensions.safe_numel ());
+      m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, m_dimensions.safe_numel ());
 
       octave_idx_type ii = 0;
       xcidx (0) = 0;
@@ -218,16 +219,16 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
     }
   else
     {
-      m_rep = new typename Sparse<T>::SparseRep (nr, nc, 0);
+      m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, 0);
       for (octave_idx_type j = 0; j < nc+1; j++)
         xcidx (j) = 0;
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>::Sparse (const PermMatrix& a)
-  : m_rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
+Sparse<T, Alloc>::Sparse (const PermMatrix& a)
+  : m_rep (new typename Sparse<T, Alloc>::SparseRep (a.rows (), a.cols (), a.rows ())),
     m_dimensions (dim_vector (a.rows (), a.cols ()))
 {
   octave_idx_type n = a.rows ();
@@ -243,21 +244,21 @@ Sparse<T>::Sparse (const PermMatrix& a)
     data (i) = 1.0;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>::Sparse (const dim_vector& dv)
+Sparse<T, Alloc>::Sparse (const dim_vector& dv)
   : m_rep (nullptr), m_dimensions (dv)
 {
   if (dv.ndims () != 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const dim_vector&): dimension mismatch");
 
-  m_rep = new typename Sparse<T>::SparseRep (dv(0), dv(1), 0);
+  m_rep = new typename Sparse<T, Alloc>::SparseRep (dv(0), dv(1), 0);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
+Sparse<T, Alloc>::Sparse (const Sparse<T, Alloc>& a, const dim_vector& dv)
   : m_rep (nullptr), m_dimensions (dv)
 {
 
@@ -278,7 +279,7 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
   octave_idx_type old_nr = old_dims(0);
   octave_idx_type old_nc = old_dims(1);
 
-  m_rep = new typename Sparse<T>::SparseRep (new_nr, new_nc, new_nzmax);
+  m_rep = new typename Sparse<T, Alloc>::SparseRep (new_nr, new_nc, new_nzmax);
 
   octave_idx_type kk = 0;
   xcidx (0) = 0;
@@ -298,12 +299,13 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
     xcidx (k+1) = new_nzmax;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>::Sparse (const Array<T>& a, const octave::idx_vector& r,
-                   const octave::idx_vector& c, octave_idx_type nr,
-                   octave_idx_type nc, bool sum_terms,
-                   octave_idx_type nzm)
+Sparse<T, Alloc>::Sparse (const Array<T>& a,
+                          const octave::idx_vector& r,
+                          const octave::idx_vector& c,
+                          octave_idx_type nr, octave_idx_type nc,
+                          bool sum_terms, octave_idx_type nzm)
   : m_rep (nullptr), m_dimensions ()
 {
   if (nr < 0)
@@ -338,7 +340,7 @@ Sparse<T>::Sparse (const Array<T>& a, const octave::idx_vector& r,
     (*current_liboctave_error_handler) ("sparse: dimension mismatch");
 
   // Only create m_rep after input validation to avoid memory leak.
-  m_rep = new typename Sparse<T>::SparseRep (nr, nc, (nzm > 0 ? nzm : 0));
+  m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, (nzm > 0 ? nzm : 0));
 
   if (rl <= 1 && cl <= 1)
     {
@@ -666,9 +668,9 @@ Sparse<T>::Sparse (const Array<T>& a, const octave::idx_vector& r,
 %!assert <*51880> (sparse (1:2, 2, 1:2, 2, 3), sparse ([0, 1, 0; 0, 2, 0]))
 */
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>::Sparse (const Array<T>& a)
+Sparse<T, Alloc>::Sparse (const Array<T>& a)
   : m_rep (nullptr), m_dimensions (a.dims ())
 {
   if (m_dimensions.ndims () > 2)
@@ -685,7 +687,7 @@ Sparse<T>::Sparse (const Array<T>& a)
     if (a(i) != T ())
       new_nzmax++;
 
-  m_rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmax);
+  m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, new_nzmax);
 
   octave_idx_type ii = 0;
   xcidx (0) = 0;
@@ -701,17 +703,17 @@ Sparse<T>::Sparse (const Array<T>& a)
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>::~Sparse (void)
+Sparse<T, Alloc>::~Sparse (void)
 {
   if (--m_rep->m_count == 0)
     delete m_rep;
 }
 
-template <typename T>
-Sparse<T>&
-Sparse<T>::operator = (const Sparse<T>& a)
+template <typename T, typename Alloc>
+Sparse<T, Alloc>&
+Sparse<T, Alloc>::operator = (const Sparse<T, Alloc>& a)
 {
   if (this != &a)
     {
@@ -727,16 +729,16 @@ Sparse<T>::operator = (const Sparse<T>& a)
   return *this;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 octave_idx_type
-Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
+Sparse<T, Alloc>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
   octave_idx_type n = m_dimensions.ndims ();
 
   if (n <= 0 || n != ra_idx.numel ())
     (*current_liboctave_error_handler)
-      ("Sparse<T>::compute_index: invalid ra_idxing operation");
+      ("Sparse<T, Alloc>::compute_index: invalid ra_idxing operation");
 
   octave_idx_type retval = -1;
 
@@ -751,50 +753,51 @@ Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
   return retval;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 T
-Sparse<T>::range_error (const char *fcn, octave_idx_type n) const
+Sparse<T, Alloc>::range_error (const char *fcn, octave_idx_type n) const
 {
   (*current_liboctave_error_handler) ("%s (%" OCTAVE_IDX_TYPE_FORMAT "): "
                                       "range error", fcn, n);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 T&
-Sparse<T>::range_error (const char *fcn, octave_idx_type n)
+Sparse<T, Alloc>::range_error (const char *fcn, octave_idx_type n)
 {
   (*current_liboctave_error_handler) ("%s (%" OCTAVE_IDX_TYPE_FORMAT "): "
                                       "range error", fcn, n);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 T
-Sparse<T>::range_error (const char *fcn, octave_idx_type i,
-                        octave_idx_type j) const
+Sparse<T, Alloc>::range_error (const char *fcn, octave_idx_type i,
+                                             octave_idx_type j) const
 {
   (*current_liboctave_error_handler)
     ("%s (%" OCTAVE_IDX_TYPE_FORMAT ", %" OCTAVE_IDX_TYPE_FORMAT "): "
      "range error", fcn, i, j);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 T&
-Sparse<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
+Sparse<T, Alloc>::range_error (const char *fcn, octave_idx_type i,
+                                             octave_idx_type j)
 {
   (*current_liboctave_error_handler)
     ("%s (%" OCTAVE_IDX_TYPE_FORMAT ", %" OCTAVE_IDX_TYPE_FORMAT "): "
      "range error", fcn, i, j);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 T
-Sparse<T>::range_error (const char *fcn,
-                        const Array<octave_idx_type>& ra_idx) const
+Sparse<T, Alloc>::range_error (const char *fcn,
+                                             const Array<octave_idx_type>& ra_idx) const
 {
   std::ostringstream buf;
 
@@ -815,10 +818,11 @@ Sparse<T>::range_error (const char *fcn,
   (*current_liboctave_error_handler) ("%s", buf_str.c_str ());
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 T&
-Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
+Sparse<T, Alloc>::range_error (const char *fcn,
+                               const Array<octave_idx_type>& ra_idx)
 {
   std::ostringstream buf;
 
@@ -839,12 +843,12 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
   (*current_liboctave_error_handler) ("%s", buf_str.c_str ());
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::reshape (const dim_vector& new_dims) const
+Sparse<T, Alloc>
+Sparse<T, Alloc>::reshape (const dim_vector& new_dims) const
 {
-  Sparse<T> retval;
+  Sparse<T, Alloc> retval;
   dim_vector dims2 = new_dims;
 
   if (dims2.ndims () > 2)
@@ -868,7 +872,7 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
           octave_idx_type new_nc = dims2 (1);
           octave_idx_type old_nr = rows ();
           octave_idx_type old_nc = cols ();
-          retval = Sparse<T> (new_nr, new_nc, new_nnz);
+          retval = Sparse<T, Alloc> (new_nr, new_nc, new_nnz);
 
           octave_idx_type kk = 0;
           retval.xcidx (0) = 0;
@@ -919,10 +923,10 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
   return retval;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
+Sparse<T, Alloc>
+Sparse<T, Alloc>::permute (const Array<octave_idx_type>& perm_vec, bool) const
 {
   // The only valid permutations of a sparse array are [1, 2] and [2, 1].
 
@@ -948,10 +952,10 @@ Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
   return trans ? this->transpose () : *this;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::resize1 (octave_idx_type n)
+Sparse<T, Alloc>::resize1 (octave_idx_type n)
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -968,10 +972,10 @@ Sparse<T>::resize1 (octave_idx_type n)
     octave::err_invalid_resize ();
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::resize (const dim_vector& dv)
+Sparse<T, Alloc>::resize (const dim_vector& dv)
 {
   octave_idx_type n = dv.ndims ();
 
@@ -981,10 +985,10 @@ Sparse<T>::resize (const dim_vector& dv)
   resize (dv(0), dv(1));
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
+Sparse<T, Alloc>::resize (octave_idx_type r, octave_idx_type c)
 {
   if (r < 0 || c < 0)
     (*current_liboctave_error_handler) ("can't resize to negative dimension");
@@ -1017,9 +1021,9 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
 
   if (c != m_rep->m_ncols)
     {
-      octave_idx_type *new_cidx = new octave_idx_type [c+1];
+      octave_idx_type *new_cidx = m_rep->idx_type_allocate (c+1);
       std::copy_n (m_rep->m_cidx, std::min (c, m_rep->m_ncols) + 1, new_cidx);
-      delete [] m_rep->m_cidx;
+      m_rep->idx_type_deallocate (m_rep->m_cidx, m_rep->m_ncols);
       m_rep->m_cidx = new_cidx;
 
       if (c > m_rep->m_ncols)
@@ -1032,10 +1036,11 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
   m_rep->change_length (m_rep->nnz ());
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>&
-Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
+Sparse<T, Alloc>&
+Sparse<T, Alloc>::insert (const Sparse<T, Alloc>& a,
+                          octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type a_rows = a.rows ();
   octave_idx_type a_cols = a.cols ();
@@ -1056,9 +1061,9 @@ Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
       if (ridx (j) < r || ridx (j) >= r + a_rows)
         nel++;
 
-  Sparse<T> tmp (*this);
+  Sparse<T, Alloc> tmp (*this);
   --m_rep->m_count;
-  m_rep = new typename Sparse<T>::SparseRep (nr, nc, nel);
+  m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, nel);
 
   for (octave_idx_type i = 0; i < tmp.cidx (c); i++)
     {
@@ -1114,10 +1119,11 @@ Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
   return *this;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>&
-Sparse<T>::insert (const Sparse<T>& a, const Array<octave_idx_type>& ra_idx)
+Sparse<T, Alloc>&
+Sparse<T, Alloc>::insert (const Sparse<T, Alloc>& a,
+                          const Array<octave_idx_type>& ra_idx)
 {
 
   if (ra_idx.numel () != 2)
@@ -1126,17 +1132,17 @@ Sparse<T>::insert (const Sparse<T>& a, const Array<octave_idx_type>& ra_idx)
   return insert (a, ra_idx(0), ra_idx(1));
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::transpose (void) const
+Sparse<T, Alloc>
+Sparse<T, Alloc>::transpose (void) const
 {
   assert (ndims () == 2);
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
   octave_idx_type nz = nnz ();
-  Sparse<T> retval (nc, nr, nz);
+  Sparse<T, Alloc> retval (nc, nr, nz);
 
   for (octave_idx_type i = 0; i < nz; i++)
     retval.xcidx (ridx (i) + 1)++;
@@ -1184,12 +1190,12 @@ lblookup (const octave_idx_type *ridx, octave_idx_type nr,
     return std::lower_bound (ridx, ridx + nr, ri) - ridx;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::delete_elements (const octave::idx_vector& idx)
+Sparse<T, Alloc>::delete_elements (const octave::idx_vector& idx)
 {
-  Sparse<T> retval;
+  Sparse<T, Alloc> retval;
 
   assert (ndims () == 2);
 
@@ -1207,7 +1213,7 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx)
   if (nc == 1)
     {
       // Sparse column vector.
-      const Sparse<T> tmp = *this; // constant copy to prevent COW.
+      const Sparse<T, Alloc> tmp = *this; // constant copy to prevent COW.
 
       octave_idx_type lb, ub;
 
@@ -1219,7 +1225,7 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx)
           octave_idx_type ui = lblookup (tmp.ridx (), nz, ub);
           // Copy data and adjust indices.
           octave_idx_type nz_new = nz - (ui - li);
-          *this = Sparse<T> (nr - (ub - lb), 1, nz_new);
+          *this = Sparse<T, Alloc> (nr - (ub - lb), 1, nz_new);
           std::copy_n (tmp.data (), li, data ());
           std::copy_n (tmp.ridx (), li, xridx ());
           std::copy (tmp.data () + ui, tmp.data () + nz, xdata () + li);
@@ -1246,7 +1252,7 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx)
                 }
             }
 
-          *this = Sparse<T> (nr - sl, 1, nz_new);
+          *this = Sparse<T, Alloc> (nr - sl, 1, nz_new);
           std::copy_n (ridx_new, nz_new, ridx ());
           std::copy_n (data_new, nz_new, xdata ());
           xcidx (1) = nz_new;
@@ -1258,11 +1264,11 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx)
       octave_idx_type lb, ub;
       if (idx.is_cont_range (nc, lb, ub))
         {
-          const Sparse<T> tmp = *this;
+          const Sparse<T, Alloc> tmp = *this;
           octave_idx_type lbi = tmp.cidx (lb);
           octave_idx_type ubi = tmp.cidx (ub);
           octave_idx_type new_nz = nz - (ubi - lbi);
-          *this = Sparse<T> (1, nc - (ub - lb), new_nz);
+          *this = Sparse<T, Alloc> (1, nc - (ub - lb), new_nz);
           std::copy_n (tmp.data (), lbi, data ());
           std::copy (tmp.data () + ubi, tmp.data () + nz, xdata () + lbi);
           std::fill_n (ridx (), new_nz, static_cast<octave_idx_type> (0));
@@ -1276,7 +1282,7 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx)
   else if (idx.length (nel) != 0)
     {
       if (idx.is_colon_equiv (nel))
-        *this = Sparse<T> ();
+        *this = Sparse<T, Alloc> ();
       else
         {
           *this = index (octave::idx_vector::colon);
@@ -1286,10 +1292,11 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx)
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::delete_elements (const octave::idx_vector& idx_i, const octave::idx_vector& idx_j)
+Sparse<T, Alloc>::delete_elements (const octave::idx_vector& idx_i,
+                                   const octave::idx_vector& idx_j)
 {
   assert (ndims () == 2);
 
@@ -1308,21 +1315,21 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx_i, const octave::idx_v
           if (lb == 0 && ub == nc)
             {
               // Delete all rows and columns.
-              *this = Sparse<T> (nr, 0);
+              *this = Sparse<T, Alloc> (nr, 0);
             }
           else if (nz == 0)
             {
               // No elements to preserve; adjust dimensions.
-              *this = Sparse<T> (nr, nc - (ub - lb));
+              *this = Sparse<T, Alloc> (nr, nc - (ub - lb));
             }
           else
             {
-              const Sparse<T> tmp = *this;
+              const Sparse<T, Alloc> tmp = *this;
               octave_idx_type lbi = tmp.cidx (lb);
               octave_idx_type ubi = tmp.cidx (ub);
               octave_idx_type new_nz = nz - (ubi - lbi);
 
-              *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
+              *this = Sparse<T, Alloc> (nr, nc - (ub - lb), new_nz);
               std::copy_n (tmp.data (), lbi, data ());
               std::copy_n (tmp.ridx (), lbi, ridx ());
               std::copy (tmp.data () + ubi, tmp.data () + nz, xdata () + lbi);
@@ -1346,20 +1353,20 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx_i, const octave::idx_v
           if (lb == 0 && ub == nr)
             {
               // Delete all rows and columns.
-              *this = Sparse<T> (0, nc);
+              *this = Sparse<T, Alloc> (0, nc);
             }
           else if (nz == 0)
             {
               // No elements to preserve; adjust dimensions.
-              *this = Sparse<T> (nr - (ub - lb), nc);
+              *this = Sparse<T, Alloc> (nr - (ub - lb), nc);
             }
           else
             {
               // This is more memory-efficient than the approach below.
-              const Sparse<T> tmpl = index (octave::idx_vector (0, lb), idx_j);
-              const Sparse<T> tmpu = index (octave::idx_vector (ub, nr), idx_j);
-              *this = Sparse<T> (nr - (ub - lb), nc,
-                                 tmpl.nnz () + tmpu.nnz ());
+              const Sparse<T, Alloc> tmpl = index (octave::idx_vector (0, lb), idx_j);
+              const Sparse<T, Alloc> tmpu = index (octave::idx_vector (ub, nr), idx_j);
+              *this = Sparse<T, Alloc> (nr - (ub - lb), nc,
+                                        tmpl.nnz () + tmpu.nnz ());
               for (octave_idx_type j = 0, k = 0; j < nc; j++)
                 {
                   for (octave_idx_type i = tmpl.cidx (j); i < tmpl.cidx (j+1);
@@ -1383,7 +1390,7 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx_i, const octave::idx_v
         {
           // This is done by transposing, deleting columns, then transposing
           // again.
-          Sparse<T> tmp = transpose ();
+          Sparse<T, Alloc> tmp = transpose ();
           tmp.delete_elements (idx_j, idx_i);
           *this = tmp.transpose ();
         }
@@ -1406,10 +1413,10 @@ Sparse<T>::delete_elements (const octave::idx_vector& idx_i, const octave::idx_v
     }
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::delete_elements (int dim, const octave::idx_vector& idx)
+Sparse<T, Alloc>::delete_elements (int dim, const octave::idx_vector& idx)
 {
   if (dim == 0)
     delete_elements (idx, octave::idx_vector::colon);
@@ -1419,12 +1426,12 @@ Sparse<T>::delete_elements (int dim, const octave::idx_vector& idx)
     (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
+Sparse<T, Alloc>
+Sparse<T, Alloc>::index (const octave::idx_vector& idx, bool resize_ok) const
 {
-  Sparse<T> retval;
+  Sparse<T, Alloc> retval;
 
   assert (ndims () == 2);
 
@@ -1443,7 +1450,7 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
       else
         {
           // Fast magic colon processing.
-          retval = Sparse<T> (nel, 1, nz);
+          retval = Sparse<T, Alloc> (nel, 1, nz);
 
           for (octave_idx_type i = 0; i < nc; i++)
             {
@@ -1465,7 +1472,7 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
 
       // resize_ok is completely handled here.
       octave_idx_type ext = idx.extent (nel);
-      Sparse<T> tmp = *this;
+      Sparse<T, Alloc> tmp = *this;
       tmp.resize1 (ext);
       retval = tmp.index (idx);
     }
@@ -1475,7 +1482,7 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
       // since you have a scalar stored as a sparse matrix, and
       // then want to make a dense matrix with sparse representation.
       // Ok, we'll do it, but you deserve what you get!!
-      retval = (Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ()));
+      retval = (Sparse<T, Alloc> (idx_dims(0), idx_dims(1), nz ? data (0) : T ()));
     }
   else if (nc == 1)
     {
@@ -1499,7 +1506,7 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
           octave_idx_type ui = lblookup (ridx (), nz, ub);
           // Copy data and adjust indices.
           octave_idx_type nz_new = ui - li;
-          retval = Sparse<T> (ub - lb, 1, nz_new);
+          retval = Sparse<T, Alloc> (ub - lb, 1, nz_new);
           std::copy_n (data () + li, nz_new, retval.data ());
           mx_inline_sub (nz_new, retval.xridx (), ridx () + li, lb);
           retval.xcidx (1) = nz_new;
@@ -1508,7 +1515,7 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
         {
           if (idx.is_range () && idx.increment () == -1)
             {
-              retval = Sparse<T> (nr, 1, nz);
+              retval = Sparse<T, Alloc> (nr, 1, nz);
 
               for (octave_idx_type j = 0; j < nz; j++)
                 retval.ridx (j) = nr - ridx (nz - j - 1) - 1;
@@ -1520,7 +1527,7 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
             {
               Array<T> tmp = array_value ();
               tmp = tmp.index (idx);
-              retval = Sparse<T> (tmp);
+              retval = Sparse<T, Alloc> (tmp);
             }
         }
       else
@@ -1545,7 +1552,7 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
             lidx.xelem (i) = lblookup (ridx (), nz, idxa(i));
 
           // Count matches.
-          retval = Sparse<T> (idxa.rows (), idxa.cols ());
+          retval = Sparse<T, Alloc> (idxa.rows (), idxa.cols ());
           for (octave_idx_type j = 0; j < new_nc; j++)
             {
               octave_idx_type nzj = 0;
@@ -1580,14 +1587,14 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
     {
       octave_idx_type lb, ub;
       if (idx.is_scalar ())
-        retval = Sparse<T> (1, 1, elem (0, idx(0)));
+        retval = Sparse<T, Alloc> (1, 1, elem (0, idx(0)));
       else if (idx.is_cont_range (nel, lb, ub))
         {
           // Special-case a contiguous range.
           octave_idx_type lbi = cidx (lb);
           octave_idx_type ubi = cidx (ub);
           octave_idx_type new_nz = ubi - lbi;
-          retval = Sparse<T> (1, ub - lb, new_nz);
+          retval = Sparse<T, Alloc> (1, ub - lb, new_nz);
           std::copy_n (data () + lbi, new_nz, retval.data ());
           std::fill_n (retval.ridx (), new_nz, static_cast<octave_idx_type> (0));
           mx_inline_sub (ub - lb + 1, retval.cidx (), cidx () + lb, lbi);
@@ -1596,13 +1603,13 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
         {
           // Sparse row vectors occupy O(nr) storage anyway, so let's just
           // convert the matrix to full, index, and sparsify the result.
-          retval = Sparse<T> (array_value ().index (idx));
+          retval = Sparse<T, Alloc> (array_value ().index (idx));
         }
     }
   else
     {
       if (nr != 0 && idx.is_scalar ())
-        retval = Sparse<T> (1, 1, elem (idx(0) % nr, idx(0) / nr));
+        retval = Sparse<T, Alloc> (1, 1, elem (idx(0) % nr, idx(0) / nr));
       else
         {
           // Indexing a non-vector sparse matrix by linear indexing.
@@ -1620,13 +1627,14 @@ Sparse<T>::index (const octave::idx_vector& idx, bool resize_ok) const
   return retval;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx_j,
-                  bool resize_ok) const
+Sparse<T, Alloc>
+Sparse<T, Alloc>::index (const octave::idx_vector& idx_i,
+                         const octave::idx_vector& idx_j,
+                         bool resize_ok) const
 {
-  Sparse<T> retval;
+  Sparse<T, Alloc> retval;
 
   assert (ndims () == 2);
 
@@ -1645,7 +1653,7 @@ Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx
         {
           octave_idx_type ext_i = idx_i.extent (nr);
           octave_idx_type ext_j = idx_j.extent (nc);
-          Sparse<T> tmp = *this;
+          Sparse<T, Alloc> tmp = *this;
           tmp.resize (ext_i, ext_j);
           retval = tmp.index (idx_i, idx_j);
         }
@@ -1660,7 +1668,7 @@ Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx
       // a scalar, so let's just convert the matrix to full, index,
       // and sparsify the result.
 
-      retval = Sparse<T> (array_value ().index (idx_i, idx_j));
+      retval = Sparse<T, Alloc> (array_value ().index (idx_i, idx_j));
     }
   else if (idx_i.is_colon ())
     {
@@ -1674,7 +1682,7 @@ Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx
           octave_idx_type lbi = cidx (lb);
           octave_idx_type ubi = cidx (ub);
           octave_idx_type new_nz = ubi - lbi;
-          retval = Sparse<T> (nr, ub - lb, new_nz);
+          retval = Sparse<T, Alloc> (nr, ub - lb, new_nz);
           std::copy_n (data () + lbi, new_nz, retval.data ());
           std::copy_n (ridx () + lbi, new_nz, retval.ridx ());
           mx_inline_sub (ub - lb + 1, retval.cidx (), cidx () + lb, lbi);
@@ -1682,7 +1690,7 @@ Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx
       else
         {
           // Count new nonzero elements.
-          retval = Sparse<T> (nr, m);
+          retval = Sparse<T, Alloc> (nr, m);
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_idx_type jj = idx_j(j);
@@ -1715,7 +1723,7 @@ Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx
   else if (idx_i.is_scalar ())
     {
       octave_idx_type ii = idx_i(0);
-      retval = Sparse<T> (1, m);
+      retval = Sparse<T, Alloc> (1, m);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, ij, m);
       for (octave_idx_type j = 0; j < m; j++)
         {
@@ -1750,7 +1758,7 @@ Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx
     }
   else if (idx_i.is_cont_range (nr, lb, ub))
     {
-      retval = Sparse<T> (n, m);
+      retval = Sparse<T, Alloc> (n, m);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, li, m);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, ui, m);
       for (octave_idx_type j = 0; j < m; j++)
@@ -1784,7 +1792,7 @@ Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx
     {
       // The columns preserve their length, just need to renumber and sort them.
       // Count new nonzero elements.
-      retval = Sparse<T> (nr, m);
+      retval = Sparse<T, Alloc> (nr, m);
       for (octave_idx_type j = 0; j < m; j++)
         {
           octave_idx_type jj = idx_j(j);
@@ -1865,12 +1873,13 @@ Sparse<T>::index (const octave::idx_vector& idx_i, const octave::idx_vector& idx
   return retval;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::assign (const octave::idx_vector& idx, const Sparse<T>& rhs)
+Sparse<T, Alloc>::assign (const octave::idx_vector& idx,
+                          const Sparse<T, Alloc>& rhs)
 {
-  Sparse<T> retval;
+  Sparse<T, Alloc> retval;
 
   assert (ndims () == 2);
 
@@ -1937,8 +1946,8 @@ Sparse<T>::assign (const octave::idx_vector& idx, const Sparse<T>& rhs)
                 {
                   // Clearing elements or exceeding capacity, allocate afresh
                   // and paste pieces.
-                  const Sparse<T> tmp = *this;
-                  *this = Sparse<T> (nr, 1, new_nz);
+                  const Sparse<T, Alloc> tmp = *this;
+                  *this = Sparse<T, Alloc> (nr, 1, new_nz);
 
                   // Head ...
                   std::copy_n (tmp.data (), li, data ());
@@ -1982,7 +1991,7 @@ Sparse<T>::assign (const octave::idx_vector& idx, const Sparse<T>& rhs)
             }
           else
             {
-              const Sparse<T> tmp = *this;
+              const Sparse<T, Alloc> tmp = *this;
               octave_idx_type new_nz = nz + rhl;
               // Disassembly our matrix...
               Array<octave_idx_type> new_ri (dim_vector (new_nz, 1));
@@ -1993,7 +2002,7 @@ Sparse<T>::assign (const octave::idx_vector& idx, const Sparse<T>& rhs)
               idx.copy_data (new_ri.fortran_vec () + nz);
               new_data.assign (octave::idx_vector (nz, new_nz), rhs.array_value ());
               // ... reassembly.
-              *this = Sparse<T> (new_data, new_ri, 0, nr, nc, false);
+              *this = Sparse<T, Alloc> (new_data, new_ri, 0, nr, nc, false);
             }
         }
       else
@@ -2008,33 +2017,35 @@ Sparse<T>::assign (const octave::idx_vector& idx, const Sparse<T>& rhs)
     {
       rhl = idx.length (n);
       if (rhs.nnz () != 0)
-        assign (idx, Sparse<T> (rhl, 1, rhs.data (0)));
+        assign (idx, Sparse<T, Alloc> (rhl, 1, rhs.data (0)));
       else
-        assign (idx, Sparse<T> (rhl, 1));
+        assign (idx, Sparse<T, Alloc> (rhl, 1));
     }
   else
     octave::err_nonconformant ("=", dim_vector(idx.length (n), 1), rhs.dims());
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::assign (const octave::idx_vector& idx, const T& rhs)
+Sparse<T, Alloc>::assign (const octave::idx_vector& idx,
+                                        const T& rhs)
 {
   // FIXME: Converting the RHS and forwarding to the sparse matrix
   // assignment function is simpler, but it might be good to have a
   // specialization...
 
-  assign (idx, Sparse<T> (1, 1, rhs));
+  assign (idx, Sparse<T, Alloc> (1, 1, rhs));
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::assign (const octave::idx_vector& idx_i,
-                   const octave::idx_vector& idx_j, const Sparse<T>& rhs)
+Sparse<T, Alloc>::assign (const octave::idx_vector& idx_i,
+                          const octave::idx_vector& idx_j,
+                          const Sparse<T, Alloc>& rhs)
 {
-  Sparse<T> retval;
+  Sparse<T, Alloc> retval;
 
   assert (ndims () == 2);
 
@@ -2136,8 +2147,8 @@ Sparse<T>::assign (const octave::idx_vector& idx_i,
                 {
                   // Clearing elements or exceeding capacity, allocate afresh
                   // and paste pieces.
-                  const Sparse<T> tmp = *this;
-                  *this = Sparse<T> (nr, nc, new_nz);
+                  const Sparse<T, Alloc> tmp = *this;
+                  *this = Sparse<T, Alloc> (nr, nc, new_nz);
 
                   // Head...
                   std::copy_n (tmp.data (), li, data ());
@@ -2173,8 +2184,8 @@ Sparse<T>::assign (const octave::idx_vector& idx_i,
             }
           else
             {
-              const Sparse<T> tmp = *this;
-              *this = Sparse<T> (nr, nc);
+              const Sparse<T, Alloc> tmp = *this;
+              *this = Sparse<T, Alloc> (nr, nc);
               OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, jsav, nc, -1);
 
               // Assemble column lengths.
@@ -2243,7 +2254,7 @@ Sparse<T>::assign (const octave::idx_vector& idx_i,
       else
         {
           // Split it into 2 assignments and one indexing.
-          Sparse<T> tmp = index (octave::idx_vector::colon, idx_j);
+          Sparse<T, Alloc> tmp = index (octave::idx_vector::colon, idx_j);
           tmp.assign (idx_i, octave::idx_vector::colon, rhs);
           assign (octave::idx_vector::colon, idx_j, tmp);
         }
@@ -2253,9 +2264,9 @@ Sparse<T>::assign (const octave::idx_vector& idx_i,
       n = idx_i.length (nr);
       m = idx_j.length (nc);
       if (rhs.nnz () != 0)
-        assign (idx_i, idx_j, Sparse<T> (n, m, rhs.data (0)));
+        assign (idx_i, idx_j, Sparse<T, Alloc> (n, m, rhs.data (0)));
       else
-        assign (idx_i, idx_j, Sparse<T> (n, m));
+        assign (idx_i, idx_j, Sparse<T, Alloc> (n, m));
     }
   else if (idx_i.length (nr) == m && idx_j.length (nc) == n
            && (n == 1 || m == 1))
@@ -2266,17 +2277,18 @@ Sparse<T>::assign (const octave::idx_vector& idx_i,
     octave::err_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::assign (const octave::idx_vector& idx_i,
-                   const octave::idx_vector& idx_j, const T& rhs)
+Sparse<T, Alloc>::assign (const octave::idx_vector& idx_i,
+                          const octave::idx_vector& idx_j,
+                          const T& rhs)
 {
   // FIXME: Converting the RHS and forwarding to the sparse matrix
   // assignment function is simpler, but it might be good to have a
   // specialization...
 
-  assign (idx_i, idx_j, Sparse<T> (1, 1, rhs));
+  assign (idx_i, idx_j, Sparse<T, Alloc> (1, 1, rhs));
 }
 
 // Can't use versions of these in Array.cc due to duplication of the
@@ -2299,12 +2311,12 @@ sparse_descending_compare (typename ref_param<T>::type a,
   return (a > b);
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
+Sparse<T, Alloc>
+Sparse<T, Alloc>::sort (octave_idx_type dim, sortmode mode) const
 {
-  Sparse<T> m = *this;
+  Sparse<T, Alloc> m = *this;
 
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -2327,7 +2339,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
     lsort.set_compare (sparse_descending_compare<T>);
   else
     (*current_liboctave_error_handler)
-      ("Sparse<T>::sort: invalid MODE");
+      ("Sparse<T, Alloc>::sort: invalid MODE");
 
   T *v = m.data ();
   octave_idx_type *mcidx = m.cidx ();
@@ -2366,13 +2378,13 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   return m;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
-                 sortmode mode) const
+Sparse<T, Alloc>
+Sparse<T, Alloc>::sort (Array<octave_idx_type>& sidx,
+                        octave_idx_type dim, sortmode mode) const
 {
-  Sparse<T> m = *this;
+  Sparse<T, Alloc> m = *this;
 
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -2398,7 +2410,7 @@ Sparse<T>::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
     indexed_sort.set_compare (sparse_descending_compare<T>);
   else
     (*current_liboctave_error_handler)
-      ("Sparse<T>::sort: invalid MODE");
+      ("Sparse<T, Alloc>::sort: invalid MODE");
 
   T *v = m.data ();
   octave_idx_type *mcidx = m.cidx ();
@@ -2474,14 +2486,14 @@ Sparse<T>::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
   return m;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::diag (octave_idx_type k) const
+Sparse<T, Alloc>
+Sparse<T, Alloc>::diag (octave_idx_type k) const
 {
   octave_idx_type nnr = rows ();
   octave_idx_type nnc = cols ();
-  Sparse<T> d;
+  Sparse<T, Alloc> d;
 
   if (nnr == 0 || nnc == 0)
     ; // do nothing
@@ -2517,7 +2529,7 @@ Sparse<T>::diag (octave_idx_type k) const
                   nel++;
             }
 
-          d = Sparse<T> (ndiag, 1, nel);
+          d = Sparse<T, Alloc> (ndiag, 1, nel);
           d.xcidx (0) = 0;
           d.xcidx (1) = nel;
 
@@ -2567,7 +2579,7 @@ Sparse<T>::diag (octave_idx_type k) const
           octave_idx_type nc = 1;
           octave_idx_type nz = 0;
 
-          d = Sparse<T> (nr, nc, nz);
+          d = Sparse<T, Alloc> (nr, nc, nz);
         }
     }
   else  // one of dimensions == 1 (vector)
@@ -2590,7 +2602,7 @@ Sparse<T>::diag (octave_idx_type k) const
           octave_idx_type n = nnc + std::abs (k);
           octave_idx_type nz = nnz ();
 
-          d = Sparse<T> (n, n, nz);
+          d = Sparse<T, Alloc> (n, n, nz);
 
           if (nnz () > 0)
             {
@@ -2616,7 +2628,7 @@ Sparse<T>::diag (octave_idx_type k) const
           octave_idx_type n = nnr + std::abs (k);
           octave_idx_type nz = nnz ();
 
-          d = Sparse<T> (n, n, nz);
+          d = Sparse<T, Alloc> (n, n, nz);
 
           if (nnz () > 0)
             {
@@ -2648,10 +2660,11 @@ Sparse<T>::diag (octave_idx_type k) const
   return d;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T>
-Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
+Sparse<T, Alloc>
+Sparse<T, Alloc>::cat (int dim, octave_idx_type n,
+                       const Sparse<T, Alloc> *sparse_list)
 {
   // Default concatenation.
   bool (dim_vector::*concat_rule) (const dim_vector&, int) = &dim_vector::concat;
@@ -2681,7 +2694,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
       total_nz += sparse_list[i].nnz ();
     }
 
-  Sparse<T> retval (dv, total_nz);
+  Sparse<T, Alloc> retval (dv, total_nz);
 
   if (retval.isempty ())
     return retval;
@@ -2700,7 +2713,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
             octave_idx_type rcum = 0;
             for (octave_idx_type i = 0; i < n; i++)
               {
-                const Sparse<T>& spi = sparse_list[i];
+                const Sparse<T, Alloc>& spi = sparse_list[i];
                 // Skipping empty matrices.  See the comment in Array.cc.
                 if (spi.isempty ())
                   continue;
@@ -2747,10 +2760,10 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
   return retval;
 }
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 Array<T>
-Sparse<T>::array_value () const
+Sparse<T, Alloc>::array_value () const
 {
   Array<T> retval (dims (), T ());
   if (rows () == 1)
@@ -3075,10 +3088,10 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 
 */
 
-template <typename T>
+template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
+Sparse<T, Alloc>::print_info (std::ostream& os, const std::string& prefix) const
 {
   os << prefix << "m_rep address:  " << m_rep << "\n"
      << prefix << "m_rep->m_nzmax: " << m_rep->m_nzmax  << "\n"
@@ -3091,15 +3104,15 @@ Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
 }
 
 #if defined (__clang__)
-#  define INSTANTIATE_SPARSE(T)                                         \
-     template class OCTAVE_API Sparse<T>;                               \
-     template OCTAVE_API std::istream&                                  \
-     read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,             \
-                            T (*read_fcn) (std::istream&));
+#  define INSTANTIATE_SPARSE(T)                                 \
+  template class OCTAVE_API Sparse<T>;                          \
+  template OCTAVE_API std::istream&                             \
+  read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,        \
+                         T (*read_fcn) (std::istream&));
 #else
-#  define INSTANTIATE_SPARSE(T)                                         \
-     template class Sparse<T>;                                          \
-     template OCTAVE_API std::istream&                                  \
-     read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,             \
-                            T (*read_fcn) (std::istream&));
+#  define INSTANTIATE_SPARSE(T)                                 \
+  template class Sparse<T>;                                     \
+  template OCTAVE_API std::istream&                             \
+  read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,        \
+                         T (*read_fcn) (std::istream&));
 #endif

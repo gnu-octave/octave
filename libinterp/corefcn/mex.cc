@@ -2635,14 +2635,46 @@ protected:
   {
     ELT_T *ppr = static_cast<ELT_T *> (m_pr);
 
-    Sparse<ELT_T> val (dv, static_cast<octave_idx_type> (m_nzmax),
-                       ppr, m_ir, m_jc);
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
-    maybe_disown_ptr (m_pr);
-    maybe_disown_ptr (m_ir);
-    maybe_disown_ptr (m_jc);
+    if (current_mx_memory_resource == &the_mx_deleting_memory_resource)
+      {
+        octave::unwind_action act ([=] () {
+          maybe_disown_ptr (m_pr);
+          maybe_disown_ptr (m_ir);
+          maybe_disown_ptr (m_jc);
+        });
+
+        return octave_value
+          (Sparse<ELT_T> (dv,  static_cast<octave_idx_type> (m_nzmax),
+                          ppr, m_ir, m_jc, current_mx_memory_resource));
+      }
+    else
+      return octave_value
+        (Sparse<ELT_T> (dv,  static_cast<octave_idx_type> (m_nzmax),
+                        ppr, m_ir, m_jc, current_mx_memory_resource));
+#else
+
+    // Copy data instead of allowing the octave_value object to borrow
+    // the mxArray object data.
+
+    octave_idx_type m = dv(0);
+    octave_idx_type n = dv(1);
+
+    Sparse<ELT_T> val (m, n, static_cast<octave_idx_type> (m_nzmax));
+
+    for (mwIndex i = 0; i < m_nzmax; i++)
+      {
+        val.xdata (i) = ppr[i];
+        val.xridx (i) = m_ir[i];
+      }
+
+    for (mwIndex i = 0; i < n + 1; i++)
+      val.xcidx (i) = m_jc[i];
 
     return octave_value (val);
+
+#endif
   }
 
   // Maximun number of nonzero elements.

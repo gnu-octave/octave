@@ -312,8 +312,6 @@ AC_DEFUN([OCTAVE_CHECK_CXSPARSE_VERSION_OK], [
     AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_SUITESPARSE_CS_H)
         #include <suitesparse/cs.h>
-        #elif defined (HAVE_UFSPARSE_CS_H)
-        #include <ufsparse/cs.h>
         #elif defined (HAVE_CXSPARSE_CS_H)
         #include <cxsparse/cs.h>
         #elif defined (HAVE_CS_H)
@@ -3587,8 +3585,6 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
         #include <math.h>
         #if defined (HAVE_SUITESPARSE_UMFPACK_H)
         # include <suitesparse/umfpack.h>
-        #elif defined (HAVE_UFSPARSE_UMFPACK_H)
-        # include <ufsparse/umfpack.h>
         #elif defined (HAVE_UMFPACK_UMFPACK_H)
         # include <umfpack/umfpack.h>
         #elif defined (HAVE_UMFPACK_H)

@@ -639,7 +639,7 @@ endfunction
 %! result = interp2 (x*3, y*(-7), orig, xi*3, yi*(-7), "spline");
 %! assert (result, expected, 1000*eps);
 %!
-%!xtest
+%!test <62133>
 %! # FIXME: spline interpolation does not support index pairs, Matlab does.
 %! result = interp2 (x, y, orig, xi(2:4), yi(1:3).', "spline");
 %! assert (result, expected(sub2ind(size(expected), 1:3, 2:4)), 1000*eps);
@@ -758,7 +758,7 @@ endfunction
 %!assert (interp2 (z, [3; 3; 3], [2; 3; 1], "linear"), [7; 9; 5], tol)
 %!assert (interp2 (z, [3; 3; 3], [2; 3; 1], "pchip"), [7; 9; 5], tol)
 %!assert (interp2 (z, [3; 3; 3], [2; 3; 1], "cubic"), [7; 9; 5], tol)
-%!xtest
+%!test <62132>
 %! # FIXME: single column yields single row with spline interpolation (numbers are correct)
 %! assert (interp2 (z, [3; 3; 3], [2; 3; 1], "spline"), [7; 9; 5], tol)
 

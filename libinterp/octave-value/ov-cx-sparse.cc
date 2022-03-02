@@ -60,49 +60,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
 octave_base_value *
 octave_sparse_complex_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = nullptr;
-
-  if (Vsparse_auto_mutate)
-    {
-      int nr = matrix.rows ();
-      int nc = matrix.cols ();
-
-      // Don't use numel, since it can overflow for very large matrices
-      // Note that for the tests on matrix size, they become approximative
-      // since they involves a cast to double to avoid issues of overflow
-      if (matrix.rows () == 1 && matrix.cols () == 1)
-        {
-          // Const copy of the matrix, so the right version of () operator used
-          const SparseComplexMatrix tmp (matrix);
-
-          Complex c = tmp (0, 0);
-
-          if (c.imag () == 0.0)
-            retval = new octave_scalar (c.real ());
-          else
-            retval = new octave_complex (c);
-        }
-      else if (nr == 0 || nc == 0)
-        retval = new octave_matrix (Matrix (nr, nc));
-      else if (matrix.all_elements_are_real ())
-        if (matrix.cols () > 0 && matrix.rows () > 0
-            && (double (matrix.byte_size ()) > double (matrix.rows ())
-                * double (matrix.cols ()) * sizeof (double)))
-          retval = new octave_matrix (::real (matrix.matrix_value ()));
-        else
-          retval = new octave_sparse_matrix (::real (matrix));
-      else if (matrix.cols () > 0 && matrix.rows () > 0
-               && (double (matrix.byte_size ()) > double (matrix.rows ())
-                   * double (matrix.cols ()) * sizeof (Complex)))
-        retval = new octave_complex_matrix (matrix.matrix_value ());
-    }
-  else
-    {
-      if (matrix.all_elements_are_real ())
-        retval = new octave_sparse_matrix (::real (matrix));
-    }
-
-  return retval;
+  return (matrix.all_elements_are_real ()
+          ? new octave_sparse_matrix (::real (matrix)) : nullptr);
 }
 
 double

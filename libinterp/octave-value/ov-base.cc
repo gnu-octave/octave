@@ -98,8 +98,7 @@ std::string btyp_class_name[btyp_num_types+1] =
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
                                      "<unknown type>", "unknown");
 
-// TRUE means to perform automatic sparse to real mutation if there
-// is memory to be saved
+// DEPRECATED in Octave 8.
 bool Vsparse_auto_mutate = false;
 
 octave_base_value *
@@ -1546,50 +1545,5 @@ install_base_type_conversions (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_base_value, octave_char_matrix_str, string_conv);
   INSTALL_WIDENOP_TI (ti, octave_base_value, octave_cell, cell_conv);
 }
-
-DEFUN (sparse_auto_mutate, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} sparse_auto_mutate ()
-@deftypefnx {} {@var{old_val} =} sparse_auto_mutate (@var{new_val})
-@deftypefnx {} {@var{old_val} =} sparse_auto_mutate (@var{new_val}, "local")
-Query or set the internal variable that controls whether Octave will
-automatically mutate sparse matrices to full matrices to save memory.
-
-For example:
-
-@example
-@group
-s = speye (3);
-sparse_auto_mutate (false);
-s(:, 1) = 1;
-typeinfo (s)
-@result{} sparse matrix
-sparse_auto_mutate (true);
-s(1, :) = 1;
-typeinfo (s)
-@result{} matrix
-@end group
-@end example
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@end deftypefn */)
-{
-  return set_internal_variable (Vsparse_auto_mutate, args, nargout,
-                                "sparse_auto_mutate");
-}
-
-/*
-%!test
-%! s = speye (3);
-%! sparse_auto_mutate (false);
-%! s(:, 1) = 1;
-%! assert (typeinfo (s), "sparse matrix");
-%! sparse_auto_mutate (true);
-%! s(1, :) = 1;
-%! assert (typeinfo (s), "matrix");
-%! sparse_auto_mutate (false);
-*/
 
 OCTAVE_NAMESPACE_END

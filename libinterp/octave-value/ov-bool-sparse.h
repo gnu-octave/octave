@@ -84,8 +84,6 @@ public:
 
   type_conv_info numeric_conversion_function (void) const;
 
-  octave_base_value * try_narrowing_conversion (void);
-
   // FIXME: Adapt idx_vector to allow sparse logical indexing without overflow!
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {

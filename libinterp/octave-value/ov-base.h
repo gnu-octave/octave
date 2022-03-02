@@ -935,8 +935,7 @@ private:
   octave::auto_shlib m_containing_dynamic_library;
 };
 
-// TRUE means to perform automatic sparse to real mutation if there
-// is memory to be saved
+OCTAVE_DEPRECATED (8, "Vsparse_auto_mutate is obsolete and is now always false")
 extern OCTINTERP_API bool Vsparse_auto_mutate;
 
 // Utility function to convert C++ arguments used in subsref/subsasgn into an

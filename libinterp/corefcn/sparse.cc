@@ -155,9 +155,6 @@ sprandsym, spconvert, spfun}
 
   octave_value retval;
 
-  // Temporarily disable sparse_auto_mutate if set (it's obsolete anyway).
-  unwind_protect_var<bool> restore_var (Vsparse_auto_mutate, false);
-
   if (nargin == 1)
     {
       octave_value arg = args(0);

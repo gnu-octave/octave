@@ -5,7 +5,8 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/disable_diagonal_matrix.m \
   %reldir%/disable_permutation_matrix.m \
   %reldir%/disable_range.m \
-  %reldir%/shift.m
+  %reldir%/shift.m \
+  %reldir%/sparse_auto_mutate.m
 
 %canon_reldir%dir = $(fcnfiledir)/deprecated
 

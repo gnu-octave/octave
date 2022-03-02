@@ -91,8 +91,6 @@ public:
   octave_base_value * empty_clone (void) const
   { return new octave_sparse_matrix (); }
 
-  octave_base_value * try_narrowing_conversion (void);
-
   octave::idx_vector index_vector (bool require_integers = false) const;
 
   builtin_type_t builtin_type (void) const { return btyp_double; }

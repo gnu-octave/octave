@@ -65,6 +65,15 @@
         <file>icons/octave/index.theme</file>
         <file>icons/tango/128x128/applications-system.png</file>
         <file>icons/tango/128x128/bookmark-new.png</file>
+        <file>icons/tango/128x128/bp-toggle.png</file>
+        <file>icons/tango/128x128/bp-rm-all.png</file>
+        <file>icons/tango/128x128/bp-prev.png</file>
+        <file>icons/tango/128x128/bp-next.png</file>
+        <file>icons/tango/128x128/db-cont.png</file>
+        <file>icons/tango/128x128/db-step.png</file>
+        <file>icons/tango/128x128/db-step-in.png</file>
+        <file>icons/tango/128x128/db-step-out.png</file>
+        <file>icons/tango/128x128/db-stop.png</file>
         <file>icons/tango/128x128/dialog-error.png</file>
         <file>icons/tango/128x128/dialog-information.png</file>
         <file>icons/tango/128x128/dialog-warning.png</file>

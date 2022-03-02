@@ -116,6 +116,15 @@ octave_gui_ICONS = \
   %reldir%/icons/tango/index.theme \
   %reldir%/icons/tango/128x128/applications-system.png \
   %reldir%/icons/tango/128x128/bookmark-new.png \
+  %reldir%/icons/tango/128x128/bp-next.png \
+  %reldir%/icons/tango/128x128/bp-prev.png \
+  %reldir%/icons/tango/128x128/bp-rm-all.png \
+  %reldir%/icons/tango/128x128/bp-toggle.png \
+  %reldir%/icons/tango/128x128/db-cont.png \
+  %reldir%/icons/tango/128x128/db-step-in.png \
+  %reldir%/icons/tango/128x128/db-step-out.png \
+  %reldir%/icons/tango/128x128/db-step.png \
+  %reldir%/icons/tango/128x128/db-stop.png \
   %reldir%/icons/tango/128x128/dialog-error.png \
   %reldir%/icons/tango/128x128/dialog-information.png \
   %reldir%/icons/tango/128x128/dialog-warning.png \
@@ -150,6 +159,15 @@ octave_gui_ICONS = \
   %reldir%/icons/tango/128x128/view-zoom-out.png \
   %reldir%/icons/tango/scalable/applications-system.svg \
   %reldir%/icons/tango/scalable/bookmark-new.svg \
+  %reldir%/icons/tango/scalable/bp-next.svg \
+  %reldir%/icons/tango/scalable/bp-prev.svg \
+  %reldir%/icons/tango/scalable/bp-rm-all.svg \
+  %reldir%/icons/tango/scalable/bp-toggle.svg \
+  %reldir%/icons/tango/scalable/db-cont.svg \
+  %reldir%/icons/tango/scalable/db-step-in.svg \
+  %reldir%/icons/tango/scalable/db-step-out.svg \
+  %reldir%/icons/tango/scalable/db-step.svg \
+  %reldir%/icons/tango/scalable/db-stop.svg \
   %reldir%/icons/tango/scalable/dialog-error.svg \
   %reldir%/icons/tango/scalable/dialog-information.svg \
   %reldir%/icons/tango/scalable/dialog-warning.svg \

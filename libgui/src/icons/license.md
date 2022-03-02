@@ -9,6 +9,20 @@ The icons in the directory **tango** are taken from the Tango-Desktop-Projekt
 
 The Tango base icon theme is released to the Public Domain.
 
+The following icons are created by the Octave developers using elements
+of the tango icon theme:
+
+- bp-next.svg
+- bp-prev.svg
+- bp-rm_all.svg
+- bp-toggle.svg
+- db-cont.svg
+- db-step-in.svg
+- db-step-out.svg
+- db-step.svg
+- db-stop.svg
+
+
 ## Icons by Octave developers
 
 The icons in the directory **octave** are created by the Octave developers.
@@ -54,25 +68,27 @@ The icons in the directory **octave** are created by the Octave developers.
 - plot-xy-curve.svg
 - system-run.svg
 
-Cursors from the standard DMZ theme
-===================================
 
-https://github.com/GalliumOS/dmz-cursor-theme/tree/master/DMZ-White
+## Cursor icons
 
-bottom_left_corner.png
-bottom_right_corner.png
-bottom_side.png
-cross.png
-fleur.png
-hand2.png
-left_side.png
-right_side.png
-top_left_corner.png
-top_right_corner.png
-top_side.png
+The directory **cursors** contains cursor icons required by Octave.
+The following cursors are taken from the [standrad DMZ theme](https://github.com/GalliumOS/dmz-cursor-theme/tree/master/DMZ-White):
 
-Cursor created by the Octave developers
-with elements from the DMZ theme:
+- bottom_left_corner.png
+- bottom_right_corner.png
+- bottom_side.png
+- cross.png
+- fleur.png
+- hand2.png
+- left_side.png
+- right_side.png
+- top_left_corner.png
+- top_right_corner.png
+- top_side.png
 
-circle.png
-circle.svg
+## Cursor created by the Octave developers
+
+The following cursors are created by the Octave developers with elements from the DMZ theme:
+
+- circle.png
+- circle.svg

@@ -1,5 +1,5 @@
 octave_gui_ICONS = \
-  %reldir%/icons/cursors/license.md \
+  %reldir%/icons/license.md \
   %reldir%/icons/cursors/bottom_left_corner.png \
   %reldir%/icons/cursors/bottom_right_corner.png \
   %reldir%/icons/cursors/bottom_side.png \
@@ -12,18 +12,30 @@ octave_gui_ICONS = \
   %reldir%/icons/cursors/top_left_corner.png \
   %reldir%/icons/cursors/top_right_corner.png \
   %reldir%/icons/cursors/top_side.png \
-  %reldir%/icons/license.md \
   %reldir%/icons/octave/index.theme \
   %reldir%/icons/octave/128x128/bp-next.png \
   %reldir%/icons/octave/128x128/bp-prev.png \
   %reldir%/icons/octave/128x128/bp-rm-all.png \
   %reldir%/icons/octave/128x128/bp-toggle.png \
+  %reldir%/icons/octave/128x128/bookmark-new.png \
   %reldir%/icons/octave/128x128/db-cont.png \
   %reldir%/icons/octave/128x128/db-step-in.png \
   %reldir%/icons/octave/128x128/db-step-out.png \
   %reldir%/icons/octave/128x128/db-step.png \
   %reldir%/icons/octave/128x128/db-stop.png \
+  %reldir%/icons/octave/128x128/dialog-error.png \
+  %reldir%/icons/octave/128x128/document-new.png \
   %reldir%/icons/octave/128x128/document-open.png \
+  %reldir%/icons/octave/128x128/document-print.png \
+  %reldir%/icons/octave/128x128/document-save-as.png \
+  %reldir%/icons/octave/128x128/document-save.png \
+  %reldir%/icons/octave/128x128/edit-copy.png \
+  %reldir%/icons/octave/128x128/edit-cut.png \
+  %reldir%/icons/octave/128x128/edit-find-replace.png \
+  %reldir%/icons/octave/128x128/edit-find.png \
+  %reldir%/icons/octave/128x128/edit-paste.png \
+  %reldir%/icons/octave/128x128/edit-redo.png \
+  %reldir%/icons/octave/128x128/edit-undo.png \
   %reldir%/icons/octave/128x128/figure-axes.png \
   %reldir%/icons/octave/128x128/figure-grid.png \
   %reldir%/icons/octave/128x128/figure-pan.png \
@@ -35,6 +47,12 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/folder-new.png \
   %reldir%/icons/octave/128x128/folder-up.png \
   %reldir%/icons/octave/128x128/folder.png \
+  %reldir%/icons/octave/128x128/go-down.png \
+  %reldir%/icons/octave/128x128/go-first.png \
+  %reldir%/icons/octave/128x128/go-last.png \
+  %reldir%/icons/octave/128x128/go-next.png \
+  %reldir%/icons/octave/128x128/go-previous.png \
+  %reldir%/icons/octave/128x128/go-up.png \
   %reldir%/icons/octave/128x128/graphic_logo_DocumentationDockWidget.png \
   %reldir%/icons/octave/128x128/graphic_logo_Figure.png \
   %reldir%/icons/octave/128x128/graphic_logo_FileEditor.png \
@@ -64,6 +82,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/widget-dock.png \
   %reldir%/icons/octave/128x128/widget-undock-light.png \
   %reldir%/icons/octave/128x128/widget-undock.png \
+  %reldir%/icons/octave/scalable/bookmark-new.svg \
   %reldir%/icons/octave/scalable/bp-next.svg \
   %reldir%/icons/octave/scalable/bp-prev.svg \
   %reldir%/icons/octave/scalable/bp-rm-all.svg \
@@ -73,7 +92,19 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/db-step-out.svg \
   %reldir%/icons/octave/scalable/db-step.svg \
   %reldir%/icons/octave/scalable/db-stop.svg \
+  %reldir%/icons/octave/scalable/dialog-error.svg \
+  %reldir%/icons/octave/scalable/document-new.svg \
   %reldir%/icons/octave/scalable/document-open.svg \
+  %reldir%/icons/octave/scalable/document-print.svg \
+  %reldir%/icons/octave/scalable/document-save-as.svg \
+  %reldir%/icons/octave/scalable/document-save.svg \
+  %reldir%/icons/octave/scalable/edit-copy.svg \
+  %reldir%/icons/octave/scalable/edit-cut.svg \
+  %reldir%/icons/octave/scalable/edit-find-replace.svg \
+  %reldir%/icons/octave/scalable/edit-find.svg \
+  %reldir%/icons/octave/scalable/edit-paste.svg \
+  %reldir%/icons/octave/scalable/edit-redo.svg \
+  %reldir%/icons/octave/scalable/edit-undo.svg \
   %reldir%/icons/octave/scalable/figure-axes.svg \
   %reldir%/icons/octave/scalable/figure-grid.svg \
   %reldir%/icons/octave/scalable/figure-pan.svg \
@@ -85,6 +116,12 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/folder-new.svg \
   %reldir%/icons/octave/scalable/folder-up.svg \
   %reldir%/icons/octave/scalable/folder.svg \
+  %reldir%/icons/octave/scalable/go-down.svg \
+  %reldir%/icons/octave/scalable/go-first.svg \
+  %reldir%/icons/octave/scalable/go-last.svg \
+  %reldir%/icons/octave/scalable/go-next.svg \
+  %reldir%/icons/octave/scalable/go-previous.svg \
+  %reldir%/icons/octave/scalable/go-up.svg \
   %reldir%/icons/octave/scalable/graphic_logo_DocumentationDockWidget.svg \
   %reldir%/icons/octave/scalable/graphic_logo_Figure.svg \
   %reldir%/icons/octave/scalable/graphic_logo_FileEditor.svg \

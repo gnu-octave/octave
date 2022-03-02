@@ -12,6 +12,7 @@
         <file>icons/cursors/top_left_corner.png</file>
         <file>icons/cursors/top_right_corner.png</file>
         <file>icons/cursors/top_side.png</file>
+        <file>icons/octave/128x128/bookmark-new.png</file>
         <file>icons/octave/128x128/bp-toggle.png</file>
         <file>icons/octave/128x128/bp-rm-all.png</file>
         <file>icons/octave/128x128/bp-prev.png</file>
@@ -21,7 +22,19 @@
         <file>icons/octave/128x128/db-step-in.png</file>
         <file>icons/octave/128x128/db-step-out.png</file>
         <file>icons/octave/128x128/db-stop.png</file>
+        <file>icons/octave/128x128/dialog-error.png</file>
+        <file>icons/octave/128x128/document-new.png</file>
         <file>icons/octave/128x128/document-open.png</file>
+        <file>icons/octave/128x128/document-print.png</file>
+        <file>icons/octave/128x128/document-save-as.png</file>
+        <file>icons/octave/128x128/document-save.png</file>
+        <file>icons/octave/128x128/edit-copy.png</file>
+        <file>icons/octave/128x128/edit-cut.png</file>
+        <file>icons/octave/128x128/edit-find-replace.png</file>
+        <file>icons/octave/128x128/edit-find.png</file>
+        <file>icons/octave/128x128/edit-paste.png</file>
+        <file>icons/octave/128x128/edit-redo.png</file>
+        <file>icons/octave/128x128/edit-undo.png</file>
         <file>icons/octave/128x128/figure-axes.png</file>
         <file>icons/octave/128x128/figure-grid.png</file>
         <file>icons/octave/128x128/figure-pan.png</file>
@@ -33,6 +46,12 @@
         <file>icons/octave/128x128/folder.png</file>
         <file>icons/octave/128x128/folder-new.png</file>
         <file>icons/octave/128x128/folder-up.png</file>
+        <file>icons/octave/128x128/go-down.png</file>
+        <file>icons/octave/128x128/go-first.png</file>
+        <file>icons/octave/128x128/go-last.png</file>
+        <file>icons/octave/128x128/go-next.png</file>
+        <file>icons/octave/128x128/go-previous.png</file>
+        <file>icons/octave/128x128/go-up.png</file>
         <file>icons/octave/128x128/graphic_logo_FilesDockWidget.png</file>
         <file>icons/octave/128x128/graphic_logo_Figure.png</file>
         <file>icons/octave/128x128/graphic_logo_FileEditor.png</file>

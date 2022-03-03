@@ -230,7 +230,7 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
     QAction *directory_up_action
-      = new QAction (rmgr.icon ("folder-up"), "", m_navigation_tool_bar);
+      = new QAction (rmgr.icon ("folder-up", false, "go-up"), "", m_navigation_tool_bar);
     directory_up_action->setToolTip (tr ("One directory up"));
 
     m_sync_browser_directory_action

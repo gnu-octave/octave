@@ -183,7 +183,6 @@ octave_gui_ICONS = \
   %reldir%/icons/tango/128x128/edit-redo.png \
   %reldir%/icons/tango/128x128/edit-undo.png \
   %reldir%/icons/tango/128x128/folder-new.png \
-  %reldir%/icons/tango/128x128/folder-up.png \
   %reldir%/icons/tango/128x128/folder.png \
   %reldir%/icons/tango/128x128/go-down.png \
   %reldir%/icons/tango/128x128/go-first.png \
@@ -226,7 +225,6 @@ octave_gui_ICONS = \
   %reldir%/icons/tango/scalable/edit-redo.svg \
   %reldir%/icons/tango/scalable/edit-undo.svg \
   %reldir%/icons/tango/scalable/folder-new.svg \
-  %reldir%/icons/tango/scalable/folder-up.svg \
   %reldir%/icons/tango/scalable/folder.svg \
   %reldir%/icons/tango/scalable/go-down.svg \
   %reldir%/icons/tango/scalable/go-first.svg \

@@ -46,6 +46,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/figure-zoom-original.png \
   %reldir%/icons/octave/128x128/figure-zoom-out.png \
   %reldir%/icons/octave/128x128/folder-new.png \
+  %reldir%/icons/octave/128x128/folder-settings.png \
   %reldir%/icons/octave/128x128/folder-up.png \
   %reldir%/icons/octave/128x128/folder.png \
   %reldir%/icons/octave/128x128/go-down.png \
@@ -116,6 +117,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/figure-zoom-original.svg \
   %reldir%/icons/octave/scalable/figure-zoom-out.svg \
   %reldir%/icons/octave/scalable/folder-new.svg \
+  %reldir%/icons/octave/scalable/folder-settings.svg \
   %reldir%/icons/octave/scalable/folder-up.svg \
   %reldir%/icons/octave/scalable/folder.svg \
   %reldir%/icons/octave/scalable/go-down.svg \

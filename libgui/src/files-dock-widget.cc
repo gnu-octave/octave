@@ -255,8 +255,9 @@ namespace octave
     popdown_menu->addAction (m_sync_octave_directory_action);
     popdown_button->setMenu (popdown_menu);
     popdown_button->setPopupMode (QToolButton::InstantPopup);
-    popdown_button->setDefaultAction (new QAction (rmgr.icon ("applications-system"),
-                                                   "", m_navigation_tool_bar));
+    popdown_button->setDefaultAction (
+        new QAction (rmgr.icon ("folder-settings", false, "applications-system"),
+        "", m_navigation_tool_bar));
 
     popdown_menu->addSeparator ();
     popdown_menu->addAction (rmgr.icon ("folder"),

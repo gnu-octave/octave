@@ -629,13 +629,16 @@ namespace octave
     sys::env::putenv ("HTTPS_PROXY", proxy_url_str);
   }
 
-  QIcon resource_manager::icon (const QString& icon_name, bool octave_only)
+  QIcon resource_manager::icon (const QString& icon_name, bool octave_only,
+                                const QString& icon_alt_name)
   {
     if (octave_only)
       return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + icon_name + ".png");
 
     if (QIcon::hasThemeIcon (icon_name))
       return QIcon (QIcon::fromTheme (icon_name));
+    else if ((! icon_alt_name.isEmpty ()) && QIcon::hasThemeIcon (icon_alt_name))
+      return QIcon (QIcon::fromTheme (icon_alt_name));
 
     for (int i = 0; i < m_icon_fallbacks.length (); i++ )
       {

@@ -7,6 +7,14 @@ MAINTAINERCLEANFILES =
 TEST_FILES =
 noinst_TEST_FILES =
 
+octave_dirstamp = $(am__leading_dot)octave-dirstamp
+
+DIRSTAMP_FILES += $(octave_dirstamp)
+
+$(DIRSTAMP_FILES):
+	$(AM_V_GEN)$(MKDIR_P) $(@D) && \
+	: > $@
+
 TEST_FILES += \
   fntests.m \
   args.tst \
@@ -59,8 +67,6 @@ TEST_FILES += \
   try.tst \
   unwind.tst \
   while.tst
-
-DIRSTAMP_FILES += $(octave_dirstamp)
 
 include bug-35448/module.mk
 include bug-35881/module.mk
@@ -169,16 +175,16 @@ sparse.tst: mk-sparse-tst.sh | $(octave_dirstamp)
 	mv $@-t $@
 
 GENERATED_BC_OVERLOADS_DIRS := \
-  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh test --list-dirs)
+  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-dirs)
 
 GENERATED_BC_OVERLOADS_FILES := \
-  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh test --list-files)
+  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-files)
 
 $(GENERATED_BC_OVERLOADS_FILES): mk-bc-overloads-tst-stamp
 
 .bc-overload-tests-stamp: mk-bc-overloads-tst.sh bc-overloads-expected | $(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@ && \
-	$(SHELL) $(srcdir)/mk-bc-overloads-tst.sh test $(srcdir)/bc-overloads-expected && \
+	$(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test $(srcdir)/bc-overloads-expected && \
 	touch $@
 
 GENERATED_TEST_FILES = \

@@ -225,7 +225,7 @@ ALL_LOCAL_TARGETS =
 # Other directories are handled directly from this Makefile,
 # but also review the included module.mk makefile fragments.
 
-SUBDIRS = libgnu
+SUBDIRS = libgnu test
 
 # All of build depends on having libgnu.
 # Add the library to BUILT_SOURCES so it is created early in the build process
@@ -245,7 +245,6 @@ include doc/module.mk
 include etc/module.mk
 include examples/module.mk
 include m4/module.mk
-include test/module.mk
 include build-aux/module.mk
 
 DIST_HOOKS := \

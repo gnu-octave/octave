@@ -3101,6 +3101,7 @@ AC_CONFIG_FILES([
   build-aux/check-subst-vars.sh:build-aux/check-subst-vars.in.sh
   doc/doxyhtml/Doxyfile
   libgnu/Makefile
+  test/Makefile
   liboctave/octave.pc:liboctave/octave.in.pc
   libinterp/octinterp.pc:libinterp/octinterp.in.pc])
 

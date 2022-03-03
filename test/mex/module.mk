@@ -30,8 +30,9 @@ am__vopt_mkmexfile_1 = -v
 
 ## And probably many others...
 MKOCTFILECPPFLAGS = \
+  -I$(top_builddir) \
   -I$(top_srcdir)/libinterp/corefcn \
-  -Ilibinterp/corefcn
+  -I$(top_builddir)/libinterp/corefcn
 MKOCTFILELDFLAGS = \
   -L$(top_builddir)/libinterp/.libs \
   -L$(top_builddir)/liboctave/.libs
@@ -41,8 +42,9 @@ MKOCTFILE = \
   $(top_builddir)/src/mkoctfile $(MKOCTFILECPPFLAGS) $(MKOCTFILELDFLAGS)
 
 MKMEXFILECPPFLAGS = \
+  -I$(top_builddir) \
   -I$(top_srcdir)/libinterp/corefcn \
-  -Ilibinterp/corefcn
+  -I$(top_builddir)/libinterp/corefcn
 MKMEXFILELDFLAGS = \
   -L$(top_builddir)/libinterp/.libs \
   -L$(top_builddir)/liboctave/.libs

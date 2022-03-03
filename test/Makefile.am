@@ -175,16 +175,16 @@ sparse.tst: mk-sparse-tst.sh | $(octave_dirstamp)
 	mv $@-t $@
 
 GENERATED_BC_OVERLOADS_DIRS := \
-  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh test --list-dirs)
+  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-dirs)
 
 GENERATED_BC_OVERLOADS_FILES := \
-  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh test --list-files)
+  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-files)
 
 $(GENERATED_BC_OVERLOADS_FILES): mk-bc-overloads-tst-stamp
 
 .bc-overload-tests-stamp: mk-bc-overloads-tst.sh bc-overloads-expected | $(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@ && \
-	$(SHELL) $(srcdir)/mk-bc-overloads-tst.sh test $(srcdir)/bc-overloads-expected && \
+	$(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test $(srcdir)/bc-overloads-expected && \
 	touch $@
 
 GENERATED_TEST_FILES = \

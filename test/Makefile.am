@@ -7,6 +7,14 @@ MAINTAINERCLEANFILES =
 TEST_FILES =
 noinst_TEST_FILES =
 
+octave_dirstamp = $(am__leading_dot)octave-dirstamp
+
+DIRSTAMP_FILES += $(octave_dirstamp)
+
+$(DIRSTAMP_FILES):
+	$(AM_V_GEN)$(MKDIR_P) $(@D) && \
+	: > $@
+
 TEST_FILES += \
   fntests.m \
   args.tst \
@@ -59,8 +67,6 @@ TEST_FILES += \
   try.tst \
   unwind.tst \
   while.tst
-
-DIRSTAMP_FILES += $(octave_dirstamp)
 
 include bug-35448/module.mk
 include bug-35881/module.mk

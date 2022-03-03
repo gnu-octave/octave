@@ -13,6 +13,7 @@ octave_gui_ICONS = \
   %reldir%/icons/cursors/top_right_corner.png \
   %reldir%/icons/cursors/top_side.png \
   %reldir%/icons/octave/index.theme \
+  %reldir%/icons/octave/128x128/applications-system.png \
   %reldir%/icons/octave/128x128/bp-next.png \
   %reldir%/icons/octave/128x128/bp-prev.png \
   %reldir%/icons/octave/128x128/bp-rm-all.png \
@@ -82,6 +83,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/widget-dock.png \
   %reldir%/icons/octave/128x128/widget-undock-light.png \
   %reldir%/icons/octave/128x128/widget-undock.png \
+  %reldir%/icons/octave/scalable/applications-system.svg \
   %reldir%/icons/octave/scalable/bookmark-new.svg \
   %reldir%/icons/octave/scalable/bp-next.svg \
   %reldir%/icons/octave/scalable/bp-prev.svg \

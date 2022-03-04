@@ -32,7 +32,9 @@ major release after 8):
   Function               | Replacement
   -----------------------|------------------
   `shift`                | `circshift`
+  `sparse_auto_mutate`   | none (see below)
 
+- The `sparse_auto_mutate` function no longer has any effect on Octave's behavior.  Prevoiusly, after calling `sparse_auto_mutate (true)`, Octave would automatically convert sparse matrices to full when a sparse matrix required more memory than simply using full matrix storage.  This setting was `false` by default for compatibility with Matlab.  Now you must manually convert to full storage when desired.
 
 The following functions were deprecated in Octave 6 and have been removed
 from Octave 8.

@@ -169,14 +169,7 @@ OCTAVE_NAMESPACE_BEGIN
   format (std::ostream& os, const char *fmt, ...);
 
   extern OCTINTERP_API std::size_t
-  format (std::ostream& os, const std::string& enc, const char *fmt, ...);
-
-  extern OCTINTERP_API std::size_t
   vformat (std::ostream& os, const char *fmt, va_list args);
-
-  extern OCTINTERP_API std::size_t
-  vformat (std::ostream& os, const std::string& enc,
-           const char *fmt, va_list args);
 
   extern OCTINTERP_API std::string
   vasprintf (const char *fmt, va_list args);

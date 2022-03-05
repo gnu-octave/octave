@@ -904,6 +904,34 @@ Return a non-negative number on success or EOF on error.
   return puts_internal (interp, who, args);
 }
 
+/*
+## Check if text is correctly converted to output encoding
+%!test <*61839>
+%! str = "aäöu";  # string with non-ASCII characters
+%! fname = tempname ();
+%! fid = fopen (fname, "wt", "n", "ISO-8859-1");
+%! unwind_protect
+%!   fprintf (fid, '%s\n', str);
+%!   fdisp (fid, str);
+%!   fputs (fid, str);
+%!   fclose (fid);
+%!   ## re-open file for reading in binary mode
+%!   fid = fopen (fname, "rb");
+%!   fb = fread (fid);
+%!   fclose (fid);
+%!   ## check file content
+%!   encoded = [97 228 246 117];  # original string in ISO-8859-1 encoding
+%!   if (ispc ())
+%!     eol = double ("\r\n");
+%!   else
+%!     eol = double ("\n");
+%!   endif
+%!   assert (fb.', [encoded eol encoded eol encoded])
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
+*/
+
 DEFMETHOD (puts, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} puts (@var{string})
@@ -2277,6 +2305,7 @@ as the name of the function when reporting errors.
 %! fid = fopen (f, "w+", "n", "iso-8859-1");
 %! unwind_protect
 %!   fprintf (fid, "abc,äöü\n");
+%!   fflush (fid);
 %!   fseek (fid, 0, "bof");
 %!   obs = textscan (fid, "%s", "delimiter", ",");
 %!   fclose (fid);

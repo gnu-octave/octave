@@ -4045,7 +4045,7 @@ namespace octave
   base_stream::clearerr (void)
   {
     std::istream *is = input_stream ();
-    std::ostream *os = output_stream ();
+    std::ostream *os = preferred_output_stream ();
 
     if (is)
       is->clear ();
@@ -5425,7 +5425,7 @@ namespace octave
   {
     int retval = -1;
 
-    std::ostream *os = output_stream ();
+    std::ostream *os = preferred_output_stream ();
 
     if (! os)
       invalid_operation ("fflush", "writing");
@@ -5635,24 +5635,23 @@ namespace octave
 
   template <typename T>
   static int
-  do_printf_conv (std::ostream& os, const std::string& encoding,
-                  const char *fmt, int nsa, int sa_1, int sa_2, T arg,
-                  const std::string& who)
+  do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
+                  int sa_2, T arg, const std::string& who)
   {
     int retval = 0;
 
     switch (nsa)
       {
       case 2:
-        retval = format (os, encoding, fmt, sa_1, sa_2, arg);
+        retval = format (os, fmt, sa_1, sa_2, arg);
         break;
 
       case 1:
-        retval = format (os, encoding, fmt, sa_1, arg);
+        retval = format (os, fmt, sa_1, arg);
         break;
 
       case 0:
-        retval = format (os, encoding, fmt, arg);
+        retval = format (os, fmt, arg);
         break;
 
       default:
@@ -5666,7 +5665,7 @@ namespace octave
   static std::size_t
   do_printf_string (std::ostream& os, const printf_format_elt *elt,
                     int nsa, int sa_1, int sa_2, const std::string& arg,
-                    const std::string& encoding, const std::string& who)
+                    const std::string& who)
   {
     if (nsa > 2)
       ::error ("%s: internal error handling format", who.c_str ());
@@ -5680,12 +5679,6 @@ namespace octave
     std::size_t prec = (nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec));
 
     std::string print_str = prec < arg.length () ? arg.substr (0, prec) : arg;
-    if (encoding.compare ("utf-8"))
-      {
-        std::size_t src_len = print_str.length ();
-        print_str = string::u8_to_encoding (who, print_str, encoding);
-        len -= src_len - print_str.length ();
-      }
 
     std::size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
 
@@ -5812,8 +5805,8 @@ namespace octave
               tval = (lo_ieee_is_NA (dval) ? "NA" : "NaN");
           }
 
-        retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa, sa_1,
-                                  sa_2, tval, who);
+        retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, tval,
+                                  who);
       }
     else
       {
@@ -5832,8 +5825,8 @@ namespace octave
                 // Insert "long" modifier.
                 tfmt.replace (tfmt.rfind (type), 1, llmod + type);
 
-                retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
-                                          sa_1, sa_2, tval.value (), who);
+                retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
+                                          tval.value (), who);
               }
             else
               {
@@ -5841,8 +5834,8 @@ namespace octave
 
                 double dval = val.double_value (true);
 
-                retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
-                                          sa_1, sa_2, dval, who);
+                retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
+                                          dval, who);
               }
             break;
 
@@ -5854,8 +5847,8 @@ namespace octave
                 // Insert "long" modifier.
                 tfmt.replace (tfmt.rfind (type), 1, llmod + type);
 
-                retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
-                                          sa_1, sa_2, tval.value (), who);
+                retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
+                                          tval.value (), who);
               }
             else
               {
@@ -5863,8 +5856,8 @@ namespace octave
 
                 double dval = val.double_value (true);
 
-                retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
-                                          sa_1, sa_2, dval, who);
+                retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
+                                          dval, who);
               }
             break;
 
@@ -5873,8 +5866,8 @@ namespace octave
             {
               double dval = val.double_value (true);
 
-              retval += do_printf_conv (os, encoding (), tfmt.c_str (), nsa,
-                                        sa_1, sa_2, dval, who);
+              retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
+                                        dval, who);
             }
             break;
 
@@ -5906,7 +5899,7 @@ namespace octave
 
     octave_idx_type m_nconv = fmt_list.num_conversions ();
 
-    std::ostream *osp = output_stream ();
+    std::ostream *osp = preferred_output_stream ();
 
     if (! osp)
       invalid_operation (who, "writing");
@@ -5959,18 +5952,12 @@ namespace octave
 
             if (elt->type == '%')
               {
-                if (encoding ().compare ("utf-8"))
-                  os << string::u8_to_encoding (who, "%", encoding ());
-                else
-                  os << '%';
+                os << '%';
                 retval++;
               }
             else if (elt->args == 0 && ! elt->text.empty ())
               {
-                if (encoding ().compare ("utf-8"))
-                  os << string::u8_to_encoding (who, elt->text, encoding ());
-                else
-                  os << elt->text;
+                os << elt->text;
                 retval += (elt->text.length ());
               }
             else if (elt->type == 's' || elt->type == 'c')
@@ -5984,8 +5971,7 @@ namespace octave
                         std::string sval = val.string_value ();
 
                         retval += do_printf_string (os, elt, nsa, sa_1,
-                                                    sa_2, sval, encoding (),
-                                                    who);
+                                                    sa_2, sval, who);
                       }
                     else
                       retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
@@ -6042,7 +6028,7 @@ namespace octave
   {
     int retval = -1;
 
-    std::ostream *osp = output_stream ();
+    std::ostream *osp = preferred_output_stream ();
 
     if (! osp)
       invalid_operation (who, "writing");
@@ -6050,10 +6036,7 @@ namespace octave
       {
         std::ostream& os = *osp;
 
-        if (encoding ().compare ("utf-8"))
-          os << string::u8_to_encoding (who, s, encoding ());
-        else
-          os << s;
+        os << s;
 
         if (! os)
           error (who, "write error");
@@ -6371,7 +6354,10 @@ namespace octave
   stream::close (void)
   {
     if (stream_ok ())
+    {
+      m_rep->flush ();
       m_rep->close ();
+    }
   }
 
   template <typename SRC_T, typename DST_T>

@@ -72,6 +72,24 @@ octave_u32_conv_to_encoding_strict (const char *tocode, const uint32_t *src,
                                src, srclen, NULL, NULL, lengthp);
 }
 
+uint8_t *
+octave_u8_conv_from_encoding_offsets
+  (const char *fromcode, const char *src, size_t srclen,
+   size_t *offsets, size_t *lengthp)
+{
+  return u8_conv_from_encoding (fromcode, iconveh_question_mark,
+                                src, srclen, offsets, NULL, lengthp);
+}
+
+char *
+octave_u8_conv_to_encoding_offsets
+  (const char *tocode, const uint8_t *src, size_t srclen,
+   size_t *offsets, size_t *lengthp)
+{
+  return u8_conv_to_encoding (tocode, iconveh_question_mark,
+                              src, srclen, offsets, NULL, lengthp);
+}
+
 char *
 u8_from_wchar (const wchar_t *wc)
 {

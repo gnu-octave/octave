@@ -35,6 +35,8 @@
 #include <memory>
 #include <string>
 
+#include "oct-string.h"
+
 // These only appear as reference arguments or return values.
 
 class Cell;
@@ -73,7 +75,8 @@ namespace octave
                  mach_info::float_format ff = mach_info::native_float_format (),
                  const std::string& encoding = "utf-8")
       : m_mode (arg_md), m_flt_fmt (ff), m_encoding (encoding),
-        m_fail (false), m_open_state (true), m_errmsg ()
+        m_conv_ostream (nullptr), m_fail (false), m_open_state (true),
+        m_errmsg ()
     { }
 
     // No copying!
@@ -114,6 +117,31 @@ namespace octave
     // automatically work for this stream.
 
     virtual std::ostream * output_stream (void) { return nullptr; }
+
+    // Return either the original output stream or one wrapped with the
+    // encoding facet.
+
+    std::ostream * preferred_output_stream (void)
+    {
+      if (! m_encoding.compare ("utf-8"))
+        return output_stream ();
+
+      if (m_conv_ostream)
+        return m_conv_ostream;
+
+      // wrap the output stream with encoding conversion facet
+      std::ostream *os = output_stream ();
+      if (os && *os)
+      {
+        convfacet_u8 *facet = new convfacet_u8 (m_encoding);
+        std::wbuffer_convert<convfacet_u8, char> *converter
+          = new std::wbuffer_convert<convfacet_u8, char> (os->rdbuf (),
+                                                          facet);
+        m_conv_ostream = new std::ostream (converter);
+      }
+
+      return (m_conv_ostream ? m_conv_ostream : output_stream ());
+    }
 
     // Return TRUE if this stream is open.
 
@@ -182,6 +210,16 @@ namespace octave
 
     // Code page
     std::string m_encoding;
+
+    // encoding conversion facet
+    typedef string::deletable_facet<string::codecvt_u8> convfacet_u8;
+
+    std::wbuffer_convert<convfacet_u8, char> *m_converter;
+
+    // wrappers for encoding conversion
+    // std::istream *m_conv_istream;
+
+    std::ostream *m_conv_ostream;
 
     // TRUE if an error has occurred.
     bool m_fail;
@@ -415,7 +453,7 @@ namespace octave
 
     std::ostream * output_stream (void)
     {
-      return m_rep ? m_rep->output_stream () : nullptr;
+      return (m_rep ? m_rep->preferred_output_stream () : nullptr);
     }
 
     void clearerr (void) { if (m_rep) m_rep->clearerr (); }

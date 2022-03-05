@@ -607,6 +607,90 @@ octave::string::u8_validate (const std::string& who,
   return num_replacements;
 }
 
+typedef octave::string::codecvt_u8::InternT InternT;
+typedef octave::string::codecvt_u8::ExternT ExternT;
+typedef octave::string::codecvt_u8::StateT StateT;
+
+typename std::codecvt<InternT, ExternT, StateT>::result
+octave::string::codecvt_u8::do_out
+  (StateT& /* state */,
+   const InternT* from, const InternT* from_end, const InternT*& from_next,
+   ExternT* to, ExternT* to_end, ExternT*& to_next) const
+{
+  if (from_end < from)
+    return std::codecvt<InternT, ExternT, StateT>::noconv;
+
+  // Convert from UTF-8 to output encoding
+  std::size_t srclen = (from_end-from) * sizeof (InternT);
+  std::size_t lengthp = (to_end-to) * sizeof (ExternT);
+  const uint8_t *u8_str = reinterpret_cast<const uint8_t *> (from);
+  char *enc_str = octave_u8_conv_to_encoding (m_enc.c_str (), u8_str, srclen,
+                                              &lengthp);
+
+  size_t max = to_end - to;
+  if (lengthp < max)
+    max = lengthp;
+
+  // copy conversion result to output
+  // FIXME: Handle incomplete UTF-8 characters at end of buffer.
+  std::copy_n (enc_str, max, to);
+  ::free (enc_str);
+
+  from_next = from + srclen;
+  to_next = to + max;
+
+  return std::codecvt<InternT, ExternT, StateT>::ok;
+}
+
+typename std::codecvt<InternT, ExternT, StateT>::result
+octave::string::codecvt_u8::do_in
+  (StateT& /* state */,
+   const ExternT* from, const ExternT* from_end, const ExternT*& from_next,
+   InternT* to, InternT* to_end, InternT*& to_next) const
+{
+  // Convert from input encoding to UTF-8
+  std::size_t srclen = (from_end-from) * sizeof (ExternT);
+  std::size_t lengthp = (to_end-to) * sizeof (InternT);
+  const char *enc_str = reinterpret_cast<const char *> (from);
+  uint8_t *u8_str = octave_u8_conv_from_encoding (m_enc.c_str (),
+                                                  enc_str, srclen, &lengthp);
+
+  std::size_t max = to_end - to;
+  if (lengthp < max)
+    max = lengthp;
+
+  // copy conversion result to output
+  std::copy_n (u8_str, max, to);
+  ::free (u8_str);
+
+  from_next = from + srclen;
+  to_next = to + max;
+
+  return std::codecvt<InternT, ExternT, StateT>::ok;
+}
+
+int octave::string::codecvt_u8::do_length
+  (StateT& /* state */, const ExternT *src, const ExternT *end,
+   std::size_t max) const
+{
+  // return number of external characters that produce MAX internal ones
+  std::size_t srclen = end-src;
+  std::size_t offsets[srclen];
+  std::size_t lengthp = max;
+  octave_u8_conv_from_encoding_offsets (m_enc.c_str (), src, srclen, offsets,
+                                        &lengthp);
+  std::size_t ext_char;
+  for (ext_char = 0; ext_char < srclen; ext_char++)
+  {
+    if (offsets[ext_char] != static_cast<size_t> (-1)
+        && offsets[ext_char] >= max)
+      break;
+  }
+
+  return ext_char;
+}
+
+
 template <typename T>
 std::string
 rational_approx (T val, int len)

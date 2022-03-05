@@ -1492,34 +1492,6 @@ Return a structure containing the system-dependent errno values.
     return s.length ();
   }
 
-  std::size_t format (std::ostream& os, const std::string& enc,
-                      const char *fmt, ...)
-  {
-    std::size_t retval;
-
-    va_list args;
-    va_start (args, fmt);
-
-    retval = vformat (os, enc, fmt, args);
-
-    va_end (args);
-
-    return retval;
-  }
-
-  std::size_t vformat (std::ostream& os, const std::string& enc,
-                       const char *fmt, va_list args)
-  {
-    std::string s = vasprintf (fmt, args);
-
-    if (enc.compare ("utf-8"))
-      os << string::u8_to_encoding ("printf", s, enc);
-    else
-      os << s;
-
-    return s.length ();
-  }
-
   std::string vasprintf (const char *fmt, va_list args)
   {
     std::string retval;

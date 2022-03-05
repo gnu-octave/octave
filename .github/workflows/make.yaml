@@ -294,7 +294,7 @@ jobs:
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
-        run:  |
+        run: |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
           echo Finished analyzing test suite results.
@@ -523,7 +523,7 @@ jobs:
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
-        run:  |
+        run: |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
           echo Finished analyzing test suite results.

@@ -24,6 +24,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/db-step-out.png \
   %reldir%/icons/octave/128x128/db-step.png \
   %reldir%/icons/octave/128x128/db-stop.png \
+  %reldir%/icons/octave/128x128/dialog-information.png \
   %reldir%/icons/octave/128x128/dialog-error.png \
   %reldir%/icons/octave/128x128/document-new.png \
   %reldir%/icons/octave/128x128/document-open.png \
@@ -78,6 +79,9 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/plot-xy-curve.png \
   %reldir%/icons/octave/128x128/system-run.png \
   %reldir%/icons/octave/128x128/user-home.png \
+  %reldir%/icons/octave/128x128/view-zoom-in.png \
+  %reldir%/icons/octave/128x128/view-zoom-original.png \
+  %reldir%/icons/octave/128x128/view-zoom-out.png \
   %reldir%/icons/octave/128x128/widget-close-light.png \
   %reldir%/icons/octave/128x128/widget-close.png \
   %reldir%/icons/octave/128x128/widget-dock-light.png \
@@ -95,6 +99,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/db-step-out.svg \
   %reldir%/icons/octave/scalable/db-step.svg \
   %reldir%/icons/octave/scalable/db-stop.svg \
+  %reldir%/icons/octave/scalable/dialog-information.svg \
   %reldir%/icons/octave/scalable/dialog-error.svg \
   %reldir%/icons/octave/scalable/document-new.svg \
   %reldir%/icons/octave/scalable/document-open.svg \
@@ -148,6 +153,9 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/plot-xy-curve.svg \
   %reldir%/icons/octave/scalable/system-run.svg \
   %reldir%/icons/octave/scalable/user-home.svg \
+  %reldir%/icons/octave/scalable/view-zoom-in.svg \
+  %reldir%/icons/octave/scalable/view-zoom-original.svg \
+  %reldir%/icons/octave/scalable/view-zoom-out.svg \
   %reldir%/icons/octave/scalable/widget-close-light.svg \
   %reldir%/icons/octave/scalable/widget-close.svg \
   %reldir%/icons/octave/scalable/widget-dock-light.svg \

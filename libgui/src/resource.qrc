@@ -23,6 +23,7 @@
         <file>icons/octave/128x128/db-step-in.png</file>
         <file>icons/octave/128x128/db-step-out.png</file>
         <file>icons/octave/128x128/db-stop.png</file>
+        <file>icons/octave/128x128/dialog-information.png</file>
         <file>icons/octave/128x128/dialog-error.png</file>
         <file>icons/octave/128x128/document-new.png</file>
         <file>icons/octave/128x128/document-open.png</file>
@@ -77,6 +78,9 @@
         <file>icons/octave/128x128/plot-xy-curve.png</file>
         <file>icons/octave/128x128/system-run.png</file>
         <file>icons/octave/128x128/user-home.png</file>
+        <file>icons/octave/128x128/view-zoom-in.png</file>
+        <file>icons/octave/128x128/view-zoom-original.png</file>
+        <file>icons/octave/128x128/view-zoom-out.png</file>
         <file>icons/octave/128x128/widget-close.png</file>
         <file>icons/octave/128x128/widget-dock.png</file>
         <file>icons/octave/128x128/widget-undock.png</file>

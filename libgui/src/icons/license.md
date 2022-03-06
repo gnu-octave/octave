@@ -46,6 +46,7 @@ under the CC0 1.0 Universal license.
 - db-step
 - db-stop
 - dialog-error
+- dialog-information
 - document-new
 - document-open
 - document-print
@@ -70,6 +71,9 @@ under the CC0 1.0 Universal license.
 - go-up
 - system-run
 - user-home
+- view-zoom-in
+- view-zoom-out
+- view-zoom-original
 
 ### Icons containing elements from the Tango theme
 

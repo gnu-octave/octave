@@ -441,9 +441,9 @@ endfunction
 function [h, sout, pout] = createhg (s, p, par, hilev)
 
   ## Here we infer from properties the type of hggroup we should build
-  ## an call corresponding high level functions
+  ## and call the corresponding high level functions.
   ## We manually set "hold on" to avoid next hggroup be deleted
-  ## the proper value of axes "nextplot" will finally be recovered
+  ## the proper value of axes "nextplot" will finally be recovered.
 
   hold on;
   if (hilev)
@@ -473,6 +473,12 @@ function [h, sout, pout] = createhg (s, p, par, hilev)
     h = hggroup ("parent", par);
     addmissingprops (h, s.properties);
     s.special = [];
+  endif
+
+  ## Check for polar plots with special "polar_grid" object
+  ## FIXME: A hack to fix bug #62093.
+  if (strcmp (s.properties.tag, "polar_grid"))
+    s.properties.handlevisibility = "off";
   endif
 
   sout = s;

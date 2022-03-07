@@ -58,13 +58,19 @@ function s = hdl2struct (h)
       hnot = findobj (h, "-depth", 1, "tag", "legend", "-or", "tag", "colorbar",
                                       "-or", "type", "uimenu");
       kids = allkids(! ismember (allkids, hnot));
+      if (strcmp (s.type, "axes"))
+        ## Check for polar plots with special "polar_grid" object
+        ## FIXME: A hack to fix bug #62093.
+        kids = [kids; findall(h, "tag", "polar_grid")];
+      endif
+
       nkids = length (kids);
       for i = nkids:-1:1
         s.children(++ii) = hdl2struct (kids(i));
       endfor
     endif
 
-    ## add non "children" children objects (title, xlabel, ...) and
+    ## Add non "children" children objects (title, xlabel, ...) and
     ## hggroup children and tag them in "special"
     if (strcmp (s.type, "hggroup"))
       special = allkids;

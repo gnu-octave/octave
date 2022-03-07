@@ -89,6 +89,8 @@ namespace octave
 
     tree_expression * dup (symbol_scope& scope) const;
 
+    bool is_colon_expression (void) const { return true; }
+
     octave_value evaluate (tree_evaluator&, int nargout = 1);
 
     octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)

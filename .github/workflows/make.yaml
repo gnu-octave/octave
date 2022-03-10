@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: install dependencies
         env:
@@ -169,7 +169,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: install dependencies
         # This step sometimes takes long and still recovers. But sometimes it
@@ -423,7 +423,7 @@ jobs:
         run: pacman --noconfirm -S ${TARGET_PREFIX}-mesa
 
       - name: checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: prepare ccache
         # Create human readable timestamp

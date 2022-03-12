@@ -32,7 +32,6 @@
 #  include "config.h"
 #endif
 
-#include <ctime>
 #include <cstdio>
 #include <cstring>
 

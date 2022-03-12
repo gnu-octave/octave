@@ -1488,7 +1488,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     is_relative = ! sys::env::absolute_pathname (dir_name);
 
-    dir_time_last_checked = sys::time (static_cast<time_t> (0));
+    dir_time_last_checked = sys::time (static_cast<OCTAVE_TIME_T> (0));
 
     sys::file_stat fs (dir_name);
 

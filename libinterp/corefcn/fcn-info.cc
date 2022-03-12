@@ -603,7 +603,7 @@ OCTAVE_NAMESPACE_BEGIN
                         // Same file.  If it is out of date, then reload it.
 
                         sys::time ottp = fcn->time_parsed ();
-                        time_t tp = ottp.unix_time ();
+                        OCTAVE_TIME_T tp = ottp.unix_time ();
 
                         fcn->mark_fcn_file_up_to_date (sys::time ());
 

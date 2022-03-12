@@ -101,7 +101,7 @@ namespace octave
 
         for (octave_idx_type i = 0; i < sv.numel (); i++)
           {
-            time_t ftime;
+            OCTAVE_TIME_T ftime;
             bool fisdir;
             double fsize;
 
@@ -547,7 +547,7 @@ namespace octave
     }
 
     void get_fileinfo (const std::string& filename, double& filesize,
-                       time_t& filetime, bool& fileisdir)
+                       OCTAVE_TIME_T& filetime, bool& fileisdir)
     {
       std::string path = pwd ();
 
@@ -573,7 +573,7 @@ namespace octave
         }
 
       fileisdir = false;
-      time_t ft;
+      OCTAVE_TIME_T ft;
       curl_easy_getinfo (m_curl, CURLINFO_FILETIME, &ft);
       filetime = ft;
       double fs;

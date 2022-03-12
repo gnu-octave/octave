@@ -28,8 +28,6 @@
 
 #include "octave-config.h"
 
-#include <ctime>
-
 #include <string>
 
 extern std::string octave_hg_id (void);

@@ -131,7 +131,7 @@ namespace octave
 
     virtual void get_fileinfo (const std::string& /* filename */,
                                double& /* filesize */,
-                               time_t& /* filetime */,
+                               OCTAVE_TIME_T& /* filetime */,
                                bool& /* fileisdir */) { }
 
     virtual std::string pwd (void) { return ""; }
@@ -247,7 +247,7 @@ namespace octave
     string_vector list (void) { return m_rep->list (); }
 
     void get_fileinfo (const std::string& filename, double& filesize,
-                       time_t& filetime, bool& fileisdir)
+                       OCTAVE_TIME_T& filetime, bool& fileisdir)
     {
       m_rep->get_fileinfo (filename, filesize, filetime, fileisdir);
     }

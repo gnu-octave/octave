@@ -28,8 +28,6 @@
 
 #include "octave-config.h"
 
-#include <ctime>
-
 #include <string>
 
 #include "comment-list.h"
@@ -64,8 +62,8 @@ protected:
                     octave::tree_statement_list *cmds = nullptr,
                     const std::string& ds = "")
     : octave_function (nm, ds), m_scope (scope), m_file_name (fnm),
-      m_t_parsed (static_cast<time_t> (0)),
-      m_t_checked (static_cast<time_t> (0)),
+      m_t_parsed (static_cast<OCTAVE_TIME_T> (0)),
+      m_t_checked (static_cast<OCTAVE_TIME_T> (0)),
       m_file_info (nullptr), m_cmd_list (cmds)
   {
     if (m_scope)

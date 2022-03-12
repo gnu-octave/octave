@@ -50,7 +50,7 @@ namespace octave
     public:
 
       dynlib_rep (void)
-        : m_count (1), m_fcn_names (), m_file (), m_time_loaded (time_t ()),
+        : m_count (1), m_fcn_names (), m_file (), m_time_loaded (OCTAVE_TIME_T ()),
           m_search_all_loaded (false)
       { }
 

@@ -235,9 +235,9 @@ namespace octave
             }
           else
             {
-              m_atime = sys::time (sys_atime);
-              m_mtime = sys::time (sys_mtime);
-              m_ctime = sys::time (sys_ctime);
+              m_atime = sys::time (static_cast<OCTAVE_TIME_T> (sys_atime));
+              m_mtime = sys::time (static_cast<OCTAVE_TIME_T> (sys_mtime));
+              m_ctime = sys::time (static_cast<OCTAVE_TIME_T> (sys_ctime));
             }
 
           m_initialized = true;
@@ -267,9 +267,9 @@ namespace octave
             }
           else
             {
-              m_atime = sys::time (sys_atime);
-              m_mtime = sys::time (sys_mtime);
-              m_ctime = sys::time (sys_ctime);
+              m_atime = sys::time (static_cast<OCTAVE_TIME_T> (sys_atime));
+              m_mtime = sys::time (static_cast<OCTAVE_TIME_T> (sys_mtime));
+              m_ctime = sys::time (static_cast<OCTAVE_TIME_T> (sys_ctime));
             }
 
           m_initialized = true;

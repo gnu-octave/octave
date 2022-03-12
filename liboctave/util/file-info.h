@@ -42,7 +42,7 @@ namespace octave
   public:
 
     file_info (void)
-      : m_file_buf (), m_offsets (), m_timestamp (static_cast<time_t> (0))
+      : m_file_buf (), m_offsets (), m_timestamp (static_cast<OCTAVE_TIME_T> (0))
     { }
 
     file_info (const std::string& text, const sys::time& timestamp)

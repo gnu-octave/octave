@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <ctime>
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>

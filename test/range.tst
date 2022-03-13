@@ -491,7 +491,7 @@
 %!error <colon operator lower bound invalid> (1.5:uint8(1):5)
 %!error <colon operator lower bound invalid> (-1:uint8(1):5)
 %!error <colon operator increment invalid> (uint8(1):1.5:5)
-%!error <colon operator increment invalid> (uint8(1):-256:5)
+%!error <colon operator increment invalid> (uint8(1):NaN:5)
 %!error <colon operator upper bound invalid> (uint8(1):1:5.5)
 %!error <colon operator upper bound invalid> (uint8(1):1:256)
 %!error <colon operator upper bound invalid> (uint8(1):-1:-6)

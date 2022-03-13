@@ -29,6 +29,8 @@
 
 #include <cmath>
 
+#include <type_traits>
+
 #include "data-conv.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -3022,76 +3024,302 @@ OCTAVE_NAMESPACE_BEGIN
       error ("colon operator %s invalid (not an integer or out of range for given integer type)", op_str);
   }
 
-// Templated version used for various integer types (int8, uint16, ...)
-  template <typename T>
+  // Return the difference between two unsigned integers as an unsigned
+  // integer of the same type.
+
+  template <typename UT,
+            typename std::enable_if<(std::is_integral<UT>::value
+                                     && std::is_unsigned<UT>::value),
+                                    bool>::type = true>
+  UT
+  integer_difference (UT a, UT b)
+  {
+    return a > b ? a - b : b - a;
+  }
+
+  // Return the difference between two signed integers as an unsigned
+  // integer corresponding to the signed type.
+
+  template <typename ST,
+            typename UT = typename std::make_unsigned<ST>::type,
+            typename std::enable_if<(std::is_integral<ST>::value
+                                     && std::is_signed<ST>::value),
+                                    bool>::type = true>
+  UT
+  integer_difference (ST a, ST b)
+  {
+    // Map to unsigned.
+    // Idea from https://stackoverflow.com/questions/10589559
+
+    static const UT offset
+      = UT (0) - static_cast<UT> (std::numeric_limits<ST>::min ());
+
+    UT au = static_cast<UT> (a) + offset;
+    UT bu = static_cast<UT> (b) + offset;
+
+    return integer_difference (au, bu);
+  }
+
+  // Number of elements in an integer range taking care to avoid
+  // overflow.  Base and limit are of the same type.  If they are
+  // unsigned, then increment is also of the same type.  If they are
+  // signed, then the type of increment is the unsigned type
+  // corresponding to T.  Assumes that the base and limit values are
+  // consistent with the sign of the original increment (not an empty
+  // range) so we can calculate numel with the absolute value of the
+  // increment and the absolute difference between the base and limit
+  // values.
+
+  template <typename T,
+            typename UT = typename std::make_unsigned<T>::type,
+            typename std::enable_if<std::is_integral<T>::value,
+                                    bool>::type = true>
+  octave_idx_type
+  range_numel_aux (T base, UT unsigned_increment, T limit)
+  {
+    // Adding one to DIFF/INCREMENT may overflow, so check whether it is
+    // out of range before adding.
+
+    UT nel_m1 = integer_difference (limit, base) / unsigned_increment;
+
+    // FIXME: fix error message.
+    if (nel_m1 > std::numeric_limits<octave_idx_type>::max () - 1)
+      error ("too many elements for range!");
+
+    return static_cast<octave_idx_type> (nel_m1) + 1;
+  }
+
+  // Number of elements in an integer range base:increment:limit.  Base,
+  // increment, and limit are of the same signed type.
+
+  template <typename ST,
+            typename std::enable_if<(std::is_integral<ST>::value
+                                     && std::is_signed<ST>::value),
+                                    bool>::type = true>
+  octave_idx_type
+  range_numel (ST base, ST increment, ST limit)
+  {
+    typedef typename std::make_unsigned<ST>::type UT;
+
+    if (increment == 0
+        || (increment > 0 && base > limit)
+        || (increment < 0 && base < limit))
+      return 0;
+
+    UT unsigned_increment = (increment < 0
+                             ? UT (0) - static_cast<UT> (increment)
+                             : static_cast<UT> (increment));
+
+    return range_numel_aux (base, unsigned_increment, limit);
+  }
+
+  // Number of elements in an integer range base:increment:limit.  Base,
+  // increment, and limit are unsigned and of the same type.
+
+  template <typename UT,
+            typename std::enable_if<(std::is_integral<UT>::value
+                                     && std::is_unsigned<UT>::value),
+                                    bool>::type = true>
+  octave_idx_type
+  range_numel (UT base, UT increment, UT limit)
+  {
+    // Unsigned, INCREMENT is always >= 0.
+    if (increment == 0 || base > limit)
+      return 0;
+
+    return range_numel_aux (base, increment, limit);
+  }
+
+  // Number of elements in an integer range base:increment:limit.  Base
+  // and limit are of the same type and increment is a double value.
+
+  template <typename T,
+            typename UT = typename std::make_unsigned<T>::type,
+            typename std::enable_if<std::is_integral<T>::value,
+                                    bool>::type = true>
+  octave_idx_type
+  range_numel (T base, double increment, T limit)
+  {
+    double intpart;
+    if (math::isnan (increment) || std::modf (increment, &intpart) != 0.0)
+      error ("colon operator increment invalid (not an integer)");
+
+    if (increment == 0
+        || (increment > 0 && base > limit)
+        || (increment < 0 && base < limit))
+      return 0;
+
+    static const UT max_val = std::numeric_limits<UT>::max ();
+
+    double abs_increment = std::abs (increment);
+
+    if (abs_increment > max_val)
+      return 1;
+
+    return range_numel_aux (base, static_cast<UT> (abs_increment), limit);
+  }
+
+  // Make a range from integer values.  Increment may be integer or double.
+
+  template <typename T,
+            typename IT,
+            typename std::enable_if<(std::is_integral<T>::value
+                                     && std::is_arithmetic<IT>::value),
+                                    bool>::type = true>
   octave_value
-  make_range (const octave_value& base, const octave_value& increment,
-              const octave_value& limit, bool for_cmd_expr)
+  make_int_range (T base, IT increment, T limit)
+  {
+    octave_idx_type nel = range_numel (base, increment, limit);
+
+    // For now, we create arrays instead of range<T> for all types
+    // except double.
+
+    Array<octave_int<T>> result (dim_vector (1, nel));
+
+    if (nel > 0)
+      {
+        T val = base;
+        result.xelem (0) = val;
+        for (octave_idx_type i = 1; i < nel; i++)
+          {
+            val += increment;
+            result.xelem (i) = val;
+          }
+      }
+
+    return octave_value (result);
+  }
+
+  // Make a range from floating point values.
+
+  // FIXME: Try again to define memory efficient range classes for
+  // integer and floating point values?  Maybe with the templates
+  // defined in this file we could do that in a reasonable way?
+  // Regardless of that, it might be good to provide special treatment
+  // of colon expressions in FOR loops so that we can eliminate the
+  // "is_for_cmd_expr / force_rage" flag from the parser and the
+  // octave_value constructors for range objects.
+
+  // NOTE: We define this function separately for float and double so
+  // that we can avoid having to instantiate ov_range<float>.  We DO
+  // instantiate range<float> but only so we can take advantage of the
+  // range<T> class to generate the corresponding array of float values
+  // and not have to duplicate that code here.
+
+  template <typename T,
+            typename std::enable_if<std::is_same<T, double>::value,
+                                    bool>::type = true>
+  octave_value
+  make_float_range (T base, T increment, T limit, bool is_for_cmd_expr)
+  {
+    if (math::isnan (base)
+        || math::isnan (increment)
+        || math::isnan (limit))
+      return octave_value (numeric_limits<T>::NaN ());
+
+    if (increment == 0
+        || (increment > 0 && base > limit)
+        || (increment < 0 && base < limit))
+      return octave_value (Array<T> (dim_vector (1, 0)));
+
+    // At this point, we know that the base and limit values are
+    // consistent with the sign of the increment (not an empty range).
+
+    range<T> r (base, increment, limit);
+
+    if (! is_for_cmd_expr && ! r.is_storable ())
+      error ("range with infinite number of elements cannot be stored");
+
+    return octave_value (r, is_for_cmd_expr);
+  }
+
+  template <typename T,
+            typename std::enable_if<std::is_same<T, float>::value,
+                                    bool>::type = true>
+  octave_value
+  make_float_range (T base, T increment, T limit, bool is_for_cmd_expr)
+  {
+    if (math::isnan (base)
+        || math::isnan (increment)
+        || math::isnan (limit))
+      return octave_value (numeric_limits<T>::NaN ());
+
+    if (increment == 0
+        || (increment > 0 && base > limit)
+        || (increment < 0 && base < limit))
+      return octave_value (Array<T> (dim_vector (1, 0)));
+
+    // At this point, we know that the base and limit values are
+    // consistent with the sign of the increment (not an empty range).
+
+    range<T> r (base, increment, limit);
+
+    if (! is_for_cmd_expr && ! r.is_storable ())
+      error ("range with infinite number of elements cannot be stored");
+
+    return octave_value (r.array_value ());
+  }
+
+  template <typename T,
+            typename std::enable_if<(std::is_same<T, octave_int8>::value
+                                     || std::is_same<T, octave_uint8>::value
+                                     || std::is_same<T, octave_int16>::value
+                                     || std::is_same<T, octave_uint16>::value
+                                     || std::is_same<T, octave_int32>::value
+                                     || std::is_same<T, octave_uint32>::value
+                                     || std::is_same<T, octave_int64>::value
+                                     || std::is_same<T, octave_uint64>::value),
+                                    bool>::type = true>
+  octave_value
+  make_int_range (const octave_value& base, const octave_value& increment,
+                  const octave_value& limit)
   {
     if (base.isempty () || increment.isempty () || limit.isempty ())
-      return octave_value (range<T> (), for_cmd_expr);
-
-    bool reverse = (base.is_uint8_type () || base.is_uint16_type ()
-                    || base.is_uint32_type () || base.is_uint64_type ()
-                    || limit.is_uint8_type () || limit.is_uint16_type ()
-                    || limit.is_uint32_type () || limit.is_uint64_type ())
-                   && increment.scalar_value () < 0;
-
-    octave_value inc = (reverse ? -increment : increment);
+      return octave_value (Array<T> (dim_vector (1, 0)));
 
     check_colon_operand<T> (base, "lower bound");
-    check_colon_operand<T> (inc, "increment");
     check_colon_operand<T> (limit, "upper bound");
 
+    typename T::val_type base_val = octave_value_extract<T> (base).value ();
+    typename T::val_type limit_val = octave_value_extract<T> (limit).value ();
+
+    if (increment.is_double_type ())
+      {
+        double increment_val = increment.double_value ();
+
+        return make_int_range (base_val, increment_val, limit_val);
+      }
+
+    check_colon_operand<T> (increment, "increment");
+
+    typename T::val_type increment_val
+      = octave_value_extract<T> (increment).value ();
+
+    return make_int_range (base_val, increment_val, limit_val);
+  }
+
+  template <typename T,
+            typename std::enable_if<std::is_floating_point<T>::value,
+                                    bool>::type = true>
+  octave_value
+  make_float_range (const octave_value& base, const octave_value& increment,
+                    const octave_value& limit, bool is_for_cmd_expr)
+  {
+    if (base.isempty () || increment.isempty () || limit.isempty ())
+      return octave_value (Array<T> (dim_vector (1, 0)));
+
     T base_val = octave_value_extract<T> (base);
-
-    T increment_val = octave_value_extract<T> (inc);
-
+    T increment_val = octave_value_extract<T> (increment);
     T limit_val = octave_value_extract<T> (limit);
 
-    range<T> r (base_val, increment_val, limit_val, reverse);
-
-    return octave_value (r, for_cmd_expr);
+    return make_float_range (base_val, increment_val, limit_val,
+                             is_for_cmd_expr);
   }
 
-  template <>
+
   octave_value
-  make_range<double> (const octave_value& base, const octave_value& increment,
-                      const octave_value& limit, bool for_cmd_expr)
-  {
-    if (base.isempty () || increment.isempty () || limit.isempty ())
-      return octave_value (range<double> (), for_cmd_expr);
-
-    double base_val = base.double_value ();
-    double increment_val = increment.double_value ();
-    double limit_val = limit.double_value ();
-
-    range<double> r (base_val, increment_val, limit_val);
-
-    return octave_value (r, for_cmd_expr);
-  }
-
-  template <>
-  octave_value
-  make_range<float> (const octave_value& base, const octave_value& increment,
-                     const octave_value& limit, bool for_cmd_expr)
-  {
-    if (base.isempty () || increment.isempty () || limit.isempty ())
-      return octave_value (range<float> (), for_cmd_expr);
-
-    float base_val = base.float_value ();
-    float increment_val = increment.float_value ();
-    float limit_val = limit.float_value ();
-
-    range<float> r (base_val, increment_val, limit_val);
-
-    return octave_value (r, for_cmd_expr);
-  }
-
-  template <>
-  octave_value
-  make_range<char> (const octave_value& base, const octave_value& increment,
-                    const octave_value& limit, bool for_cmd_expr)
+  make_char_range (const octave_value& base, const octave_value& increment,
+                   const octave_value& limit)
   {
     octave_value retval;
 
@@ -3110,7 +3338,7 @@ OCTAVE_NAMESPACE_BEGIN
 
         range<double> tmp (mtx_base(0), mtx_increment(0), mtx_limit(0));
 
-        retval = octave_value (tmp, for_cmd_expr);
+        retval = octave_value (tmp);
       }
 
     return retval.convert_to_str (false, true, type);
@@ -3168,42 +3396,45 @@ OCTAVE_NAMESPACE_BEGIN
     // For compatibility with Matlab, don't allow the range used in
     // a FOR loop expression to be converted to a Matrix.
 
+    // For now, these functions create arrays instead of range<T> for
+    // all types except double.
+
     switch (type_id)
       {
       case btyp_double:
       case btyp_complex:
-        return make_range<double> (base, increment, limit, is_for_cmd_expr);
+        return make_float_range<double> (base, increment, limit, is_for_cmd_expr);
 
       case btyp_float:
       case btyp_float_complex:
-        return make_range<float> (base, increment, limit, is_for_cmd_expr);
+        return make_float_range<float> (base, increment, limit, is_for_cmd_expr);
 
       case btyp_int8:
-        return make_range<octave_int8> (base, increment, limit, is_for_cmd_expr);
+        return make_int_range<octave_int8> (base, increment, limit);
 
       case btyp_int16:
-        return make_range<octave_int16> (base, increment, limit, is_for_cmd_expr);
+        return make_int_range<octave_int16> (base, increment, limit);
 
       case btyp_int32:
-        return make_range<octave_int32> (base, increment, limit, is_for_cmd_expr);
+        return make_int_range<octave_int32> (base, increment, limit);
 
       case btyp_int64:
-        return make_range<octave_int64> (base, increment, limit, is_for_cmd_expr);
+        return make_int_range<octave_int64> (base, increment, limit);
 
       case btyp_uint8:
-        return make_range<octave_uint8> (base, increment, limit, is_for_cmd_expr);
+        return make_int_range<octave_uint8> (base, increment, limit);
 
       case btyp_uint16:
-        return make_range<octave_uint16> (base, increment, limit, is_for_cmd_expr);
+        return make_int_range<octave_uint16> (base, increment, limit);
 
       case btyp_uint32:
-        return make_range<octave_uint32> (base, increment, limit, is_for_cmd_expr);
+        return make_int_range<octave_uint32> (base, increment, limit);
 
       case btyp_uint64:
-        return make_range<octave_uint64> (base, increment, limit, is_for_cmd_expr);
+        return make_int_range<octave_uint64> (base, increment, limit);
 
       case btyp_char:
-        return make_range<char> (base, increment, limit, is_for_cmd_expr);
+        return make_char_range (base, increment, limit);
 
       case btyp_unknown:
         error ("incompatible types found in range expression");

@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <deque>
 #include <fstream>
+#include <limits>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -1245,7 +1246,7 @@ namespace octave
 
     // Load new data into buffer, and set eob, last, idx.
     // Return EOF at end of file, 0 otherwise.
-    int refresh_buf (void);
+    int refresh_buf (bool initialize = false);
 
     // Get a character, relying on caller to call field_done if
     // a delimiter has been reached.
@@ -1290,7 +1291,7 @@ namespace octave
 
     bool eof (void)
     {
-      return (m_eob == m_buf && m_i_stream.eof ())
+      return (m_eob == m_buf + m_overlap && m_i_stream.eof ())
               || (m_flags & std::ios_base::eofbit);
     }
 
@@ -1316,6 +1317,17 @@ namespace octave
 
     bool no_progress (void) { return m_progress_marker == m_idx; }
 
+    // Number of characters remaining until end of stream if it is already
+    // buffered. int_max otherwise.
+
+    std::ptrdiff_t remaining (void)
+    {
+      if (m_eob < m_buf + m_bufsize)
+        return m_eob - m_idx;
+      else
+        return std::numeric_limits<std::ptrdiff_t>::max ();
+    }
+
   private:
 
     // Number of characters to read from the file at once.
@@ -1336,6 +1348,9 @@ namespace octave
 
     // Position after last character in buffer.
     char *m_eob;
+
+    // Overlap with old content when refreshing buffer.
+    std::ptrdiff_t m_overlap;
 
     // True if there is delimiter in the buffer after idx.
     bool m_delimited;
@@ -1371,7 +1386,7 @@ namespace octave
     m_eob = m_buf + m_bufsize;
     m_idx = m_eob;                // refresh_buf shouldn't try to copy old data
     m_progress_marker = m_idx;
-    refresh_buf ();               // load the first batch of data
+    refresh_buf (true);           // load the first batch of data
   }
 
   // Used to create a stream from a strstream from data read from a dstr.
@@ -1387,7 +1402,7 @@ namespace octave
       {
         m_i_stream.clear ();
         m_i_stream.seekg (m_buf_in_file);
-        m_i_stream.read (m_buf, m_idx - m_buf);
+        m_i_stream.read (m_buf, m_idx - m_buf - m_overlap);
       }
 
     delete [] m_buf;
@@ -1445,7 +1460,7 @@ namespace octave
   // processed.
 
   int
-  delimited_stream::refresh_buf (void)
+  delimited_stream::refresh_buf (bool initialize)
   {
     if (eof ())
       return std::istream::traits_type::eof ();
@@ -1456,36 +1471,54 @@ namespace octave
       m_idx = m_eob;
 
     std::size_t old_remaining = m_eob - m_idx;
+    std::size_t old_overlap = 0;
+
+    if (initialize || (m_idx - m_buf <= 0))
+      m_overlap = 0;
+    else
+      {
+        old_overlap = m_overlap;
+        // Retain the last 25 bytes in the buffer.  That should be more than enough
+        // to putback an entire double precision floating point number in decimal
+        // including 3 digit exponent and signs.  Do we ever need to putback more
+        // than that?
+        m_overlap = 25;
+        // Assure we don't "underflow" with the overlap
+        m_overlap = std::min (m_overlap, m_idx - m_buf - 1);
+      }
 
     octave_quit ();                       // allow ctrl-C
 
-    if (old_remaining > 0)
+    if (old_remaining + m_overlap > 0)
       {
-        m_buf_in_file += (m_idx - m_buf);
-        memmove (m_buf, m_idx, old_remaining);
+        m_buf_in_file += (m_idx - old_overlap - m_buf);
+        std::memmove (m_buf, m_idx - m_overlap, m_overlap + old_remaining);
       }
     else
       m_buf_in_file = m_i_stream.tellg ();  // record for destructor
 
-    m_progress_marker -= m_idx - m_buf;  // where original idx would have been
-    m_idx = m_buf;
+    // where original idx would have been
+    m_progress_marker -= m_idx - m_overlap - m_buf;
+    m_idx = m_buf + m_overlap;
 
     int gcount;   // chars read
     if (! m_i_stream.eof ())
       {
-        m_i_stream.read (m_buf + old_remaining, m_bufsize - old_remaining);
+        m_i_stream.read (m_buf + m_overlap + old_remaining,
+                         m_bufsize - m_overlap - old_remaining);
         gcount = m_i_stream.gcount ();
       }
     else
       gcount = 0;
 
-    m_eob = m_buf + old_remaining + gcount;
+    m_eob = m_buf + m_overlap + old_remaining + gcount;
     m_last = m_eob;
     if (gcount == 0)
       {
         m_delimited = false;
 
-        if (m_eob != m_buf)   // no more data in file, but still some to go
+        if (m_eob != m_buf + m_overlap)
+          // no more data in file, but still some to go
           retval = 0;
         else
           // file and buffer are both done.
@@ -1495,13 +1528,14 @@ namespace octave
       {
         m_delimited = true;
 
-        for (m_last = m_eob - m_longest; m_last - m_buf >= 0; m_last--)
+        for (m_last = m_eob - m_longest; m_last - m_buf - m_overlap >= 0;
+             m_last--)
           {
             if (m_delims.find (*m_last) != std::string::npos)
               break;
           }
 
-        if (m_last < m_buf)
+        if (m_last < m_buf + m_overlap)
           m_delimited = false;
 
         retval = 0;
@@ -1525,7 +1559,7 @@ namespace octave
   {
     char *retval;
 
-    if (m_eob - m_idx > size)
+    if (m_eob - m_idx >= size)
       {
         retval = m_idx;
         m_idx += size;
@@ -2614,8 +2648,8 @@ namespace octave
       }
     // Finally, create the stream.
     delimited_stream is (isp,
-                         (m_delim_table.empty () ? m_whitespace + "\r\n"
-                                               : m_delims),
+                         (m_delims.empty () ? m_whitespace + "\r\n"
+                                            : m_delims),
                          max_lookahead, buf_size);
 
     // Grow retval dynamically.  "size" is half the initial size
@@ -2790,12 +2824,12 @@ namespace octave
     double retval = 0;
     bool valid = false;         // syntactically correct double?
 
-    int ch = is.peek ();
+    int ch = is.peek_undelim ();
 
     if (ch == '+')
       {
         is.get ();
-        ch = is.peek ();
+        ch = is.peek_undelim ();
         if (width_left)
           width_left--;
       }
@@ -2803,7 +2837,7 @@ namespace octave
       {
         sign = -1;
         is.get ();
-        ch = is.peek ();
+        ch = is.peek_undelim ();
         if (width_left)
           width_left--;
       }
@@ -2869,7 +2903,7 @@ namespace octave
     bool used_exp = false;
     if (valid && width_left > 1 && m_exp_chars.find (ch) != std::string::npos)
       {
-        int ch1 = is.peek ();
+        int ch1 = is.peek_undelim ();
         if (ch1 == '-' || ch1 == '+' || (ch1 >= '0' && ch1 <= '9'))
           {
             // if 1.0e+$ or some such, this will set failbit, as we want
@@ -2888,7 +2922,7 @@ namespace octave
                 is.get ();
               }
             valid = false;
-            while (width_left-- && is && (ch = is.get ()) >= '0' && ch <= '9')
+            while (width_left-- && is && (ch = is.get_undelim ()) >= '0' && ch <= '9')
               {
                 exp = exp*10 + ch - '0';
                 valid = true;
@@ -2911,7 +2945,7 @@ namespace octave
       is.putback (ch);
 
     // Check for +/- inf and NaN
-    if (! valid && width_left >= 3)
+    if (! valid && width_left >= 3 && is.remaining () >= 3)
       {
         int i = lookahead (is, m_inf_nan, 3, false);  // false->case insensitive
         if (i == 0)
@@ -2947,23 +2981,23 @@ namespace octave
     bool as_empty = false;  // did we fail but match a "treat_as_empty" string?
     bool inf = false;
 
-    int ch = is.peek ();
+    int ch = is.peek_undelim ();
     if (ch == '+' || ch == '-')   // check for [+-][ij] with no coefficients
       {
         ch = is.get ();
-        int ch2 = is.peek ();
+        int ch2 = is.peek_undelim ();
         if (ch2 == 'i' || ch2 == 'j')
           {
             double value = 1;
             is.get ();
             // Check not -inf
-            if (is.peek () == 'n')
+            if (is.peek_undelim () == 'n')
               {
                 char *pos = is.tellg ();
                 std::ios::iostate state = is.rdstate ();
 
                 is.get ();
-                ch2 = is.get ();
+                ch2 = is.get_undelim ();
                 if (ch2 == 'f')
                   {
                     inf = true;
@@ -2974,6 +3008,8 @@ namespace octave
                 else
                   {
                     is.clear (state);
+                    // FIXME: Buffer might have refreshed.
+                    //        pos might no longer be valid.
                     is.seekg (pos);   // reset to position before look-ahead
                   }
               }
@@ -2989,6 +3025,7 @@ namespace octave
         char *pos = is.tellg ();
         std::ios::iostate state = is.rdstate ();
         //re = read_value<double> (is);
+        // FIXME: read_double might refresh the buffer.  So seekg might be off.
         re = read_double (is, fmt);
 
         // check for "treat as empty" string
@@ -3040,7 +3077,8 @@ namespace octave
           {
             state = is.rdstate ();   // before tellg, since that fails at EOF
 
-            ch = is.peek ();   // ch == EOF if read failed; no need to chk fail
+            ch = is.peek_undelim ();
+            // ch == EOF if read failed; no need to chk fail
             if (ch == 'i' || ch == 'j')           // pure imaginary
               {
                 is.get ();
@@ -3054,11 +3092,13 @@ namespace octave
                 state = is.rdstate ();
 
                 //im = read_value<double> (is);
+                // FIXME: read_double might refresh the buffer.
+                //        So seekg might be off after this.
                 im = read_double (is, fmt);
                 if (is.fail ())
                   im = 1;
 
-                if (is.peek () == 'i' || is.peek () == 'j')
+                if (is.peek_undelim () == 'i' || is.peek_undelim () == 'j')
                   is.get ();
                 else
                   {
@@ -3169,7 +3209,7 @@ namespace octave
               val.append (std::max (val.length (),
                                     static_cast<std::size_t> (16)), '\0');
 
-            int ch = is.get ();
+            int ch = is.get_undelim ();
             if (is_delim (ch) || ch == std::istream::traits_type::eof ())
               {
                 is.putback (ch);
@@ -3227,7 +3267,7 @@ namespace octave
   {
     skip_whitespace (is);
 
-    if (is.peek () != '"')
+    if (is.peek_undelim () != '"')
       scan_string (is, fmt, val);
     else
       {
@@ -3508,7 +3548,7 @@ namespace octave
               {
                 if (m_delim_list.isempty ())
                   {
-                    if (! is_delim (is.peek ()))
+                    if (! is_delim (is.peek_undelim ()))
                       this_conversion_failed = true;
                   }
                 else  // Cell array of multi-character delimiters
@@ -3932,7 +3972,7 @@ namespace octave
           {
             is.get ();
             if (c1 == m_eol1 && is.peek_undelim () == m_eol2)
-              is.get_undelim ();          // if \r\n, skip the \n too.
+              is.get ();          // if \r\n, skip the \n too.
 
             if (multiple_delims_as_one)
               {

@@ -489,14 +489,6 @@ jobs:
         continue-on-error: true
         run: ccache -s
 
-      - name: install
-        # Install Octave
-
-        # Relocation issues with the graphicsmagick++ libraries on mingw require
-        # installing Octave before running the test suite.
-        # See: https://github.com/msys2/MINGW-packages/pull/9931
-        run: make -C ./.build install V=1
-
       - name: check
         # Continuing on error in this step means that jobs will be "green" even
         # if the test suite crashes.  But if we don't continue, we'll loose the
@@ -510,16 +502,20 @@ jobs:
         # Perl scripts cannot be run as executables on Windows (no shebang mechanism).
         # We need to wrap them by calling the perl executable explicitly.
 
+        # mkoctfile seems to have trouble when gcc is called via ccache. So,
+        # remove the directory with the ccache wrappers from PATH.
+
         run: |
-          echo 'makeinfo_program (sprintf ("%s && cd %s/../usr/bin && perl makeinfo", OCTAVE_HOME ()(1:2), OCTAVE_HOME ()));' \
-            >> "${MINGW_PREFIX}/share/octave/site/m/startup/octaverc"
-          octave --eval "diary ('test-suite.log'); __run_test_suite__ ();"
+          echo "makeinfo_program ('$(cygpath -w /usr/bin | cut -c1,2) && cd $(cygpath -w /usr/bin) && perl makeinfo');" \
+            >> ./scripts/startup/site-rcfile
+          export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
+          make -C ./.build check | tee ./test-suite.log
 
       - name: display test log
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5
-        run: cat fntests.log
+        run: cat ./.build/test/fntests.log
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"

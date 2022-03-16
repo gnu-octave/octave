@@ -3240,7 +3240,7 @@ dnl
 AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   case "$canonical_host_type" in
     *-*-mingw* | *-*-msdosmsvc)
-      ac_octave_gs_names="gswin32c gs mgs"
+      ac_octave_gs_names="gs gswin32c gswin64c mgs"
     ;;
     *)
       ac_octave_gs_names="gs"

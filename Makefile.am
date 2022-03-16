@@ -460,17 +460,18 @@ install-oct: oct-file-pkg-add
 	if [ -n "`cat $(OCT_FILE_PKG_ADD_FILES)`" ]; then \
 	  $(INSTALL_DATA) oct-file-pkg-add $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi
+	top_build_dir=`pwd` && \
 	cd $(DESTDIR)$(octlibdir) && \
 	for ltlib in $(OCT_FILE_LIBS); do \
 	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
-	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \
+	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$top_build_dir/$$ltlib`; \
 	  if [ -n "$$dl" ]; then \
 	    $(INSTALL_PROGRAM) $$dl $(DESTDIR)$(octfiledir)/`echo $$f | $(SED) 's,^lib,,; s,\.la$$,.oct,'`; \
 	  else \
 	    echo "error: dlname is empty in $$ltlib!"; \
 	    exit 1; \
 	  fi; \
-	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$f`; \
+	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$top_build_dir/$$ltlib`; \
 	  if [ -n "$$lnames" ]; then \
 	    rm -f $$f $$lnames $$dl; \
 	  fi \

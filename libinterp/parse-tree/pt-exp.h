@@ -81,6 +81,8 @@ namespace octave
 
     virtual bool is_boolean_expression (void) const { return false; }
 
+    virtual bool is_colon_expression (void) const { return false; }
+
     virtual bool lvalue_ok (void) const { return false; }
 
     virtual bool rvalue_ok (void) const { return false; }

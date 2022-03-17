@@ -328,6 +328,10 @@ namespace octave
     xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
 
+  // For now, only define for float and double.
+
+#if 0
+
   template <>
   void
   range<octave_int8>::init (void)
@@ -383,6 +387,8 @@ namespace octave
   {
     xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
   }
+
+#endif
 
   template <>
   bool

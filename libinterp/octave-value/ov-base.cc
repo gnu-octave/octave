@@ -810,16 +810,20 @@ octave_base_value::cellstr_value (void) const
   err_wrong_type_arg ("octave_base_value::cellstr_value()", type_name ());
 }
 
-octave::range<float>
-octave_base_value::float_range_value (void) const
-{
-  err_wrong_type_arg ("octave_base_value::float_range_value()", type_name ());
-}
-
 octave::range<double>
 octave_base_value::range_value (void) const
 {
   err_wrong_type_arg ("octave_base_value::range_value()", type_name ());
+}
+
+// For now, disable all but range<double>.
+
+#if 0
+
+octave::range<float>
+octave_base_value::float_range_value (void) const
+{
+  err_wrong_type_arg ("octave_base_value::float_range_value()", type_name ());
 }
 
 octave::range<octave_int8>
@@ -869,6 +873,8 @@ octave_base_value::uint64_range_value (void) const
 {
   err_wrong_type_arg ("octave_base_value::uint64_range_value()", type_name ());
 }
+
+#endif
 
 octave_map
 octave_base_value::map_value (void) const

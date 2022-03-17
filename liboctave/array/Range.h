@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include <iosfwd>
+#include <type_traits>
 
 #include "Array-fwd.h"
 #include "dMatrix.h"
@@ -39,8 +40,13 @@
 
 namespace octave
 {
+  // For now, only define for floating point types.  However, we only
+  // need range<float> as a temporary local variable in make_float_range
+  // in ov.cc.
+
   template <typename T>
-  class range
+  class
+  range<T, typename std::enable_if<std::is_floating_point<T>::value>::type>
   {
   public:
 
@@ -123,9 +129,26 @@ namespace octave
       return range<T> (base, increment, final_val, numel, reverse);
     }
 
-    range (const range<T>&) = default;
+    range (const range<T>& r)
+      : m_base (r.m_base), m_increment (r.m_increment),
+        m_limit (r.m_limit), m_final (r.m_final),
+        m_numel (r.m_numel), m_reverse (r.m_reverse)
+    { }
 
-    range<T>& operator = (const range<T>&) = default;
+    range<T>& operator = (const range<T>& r)
+    {
+      if (this != &r)
+        {
+          m_base = r.m_base;
+          m_increment = r.m_increment;
+          m_limit = r.m_limit;
+          m_final = r.m_final;
+          m_numel = r.m_numel;
+          m_reverse = r.m_reverse;
+        }
+
+      return *this;
+    }
 
     ~range (void) = default;
 
@@ -370,6 +393,13 @@ namespace octave
 
   template <> OCTAVE_API void range<double>::init (void);
   template <> OCTAVE_API void range<float>::init (void);
+
+  // For now, only define for floating point types.  However, we only
+  // need range<float> as a temporary local variable in make_float_range
+  // in ov.cc.
+
+#if 0
+
   template <> OCTAVE_API void range<octave_int8>::init (void);
   template <> OCTAVE_API void range<octave_int16>::init (void);
   template <> OCTAVE_API void range<octave_int32>::init (void);
@@ -378,6 +408,8 @@ namespace octave
   template <> OCTAVE_API void range<octave_uint16>::init (void);
   template <> OCTAVE_API void range<octave_uint32>::init (void);
   template <> OCTAVE_API void range<octave_uint64>::init (void);
+
+#endif
 
   template <> OCTAVE_API bool range<double>::is_storable (void) const;
   template <> OCTAVE_API bool range<float>::is_storable (void) const;

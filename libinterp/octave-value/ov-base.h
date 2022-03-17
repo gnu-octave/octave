@@ -630,9 +630,13 @@ public:
 
   virtual Array<std::string> cellstr_value (void) const;
 
-  virtual octave::range<float> float_range_value (void) const;
-
   virtual octave::range<double> range_value (void) const;
+
+  // For now, disable all but range<double>.
+
+#if 0
+
+  virtual octave::range<float> float_range_value (void) const;
 
   virtual octave::range<octave_int8> int8_range_value (void) const;
 
@@ -649,6 +653,8 @@ public:
   virtual octave::range<octave_uint32> uint32_range_value (void) const;
 
   virtual octave::range<octave_uint64> uint64_range_value (void) const;
+
+#endif
 
   virtual octave_map map_value (void) const;
 

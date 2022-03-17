@@ -30,7 +30,7 @@
 
 namespace octave
 {
-  template <typename T> class OCTAVE_API range;
+  template <typename T, typename ENABLE = void> class OCTAVE_API range;
 }
 
 #endif

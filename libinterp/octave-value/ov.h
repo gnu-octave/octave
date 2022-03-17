@@ -316,28 +316,44 @@ public:
   }
 #endif
 
-  OCTINTERP_API octave_value (const octave::range<char>& r, char type,
-                              bool force_range = false);
-  OCTINTERP_API octave_value (const octave::range<float>& r,
-                              bool force_range = false);
   OCTINTERP_API octave_value (const octave::range<double>& r,
                               bool force_range = false);
+
+  // For now, disable all but range<double>.
+
+#if 0
+
+  OCTINTERP_API octave_value (const octave::range<float>& r,
+                              bool force_range = false);
+
   OCTINTERP_API octave_value (const octave::range<octave_int8>& r,
                               bool force_range = false);
+
   OCTINTERP_API octave_value (const octave::range<octave_int16>& r,
                               bool force_range = false);
+
   OCTINTERP_API octave_value (const octave::range<octave_int32>& r,
                               bool force_range = false);
+
   OCTINTERP_API octave_value (const octave::range<octave_int64>& r,
                               bool force_range = false);
+
   OCTINTERP_API octave_value (const octave::range<octave_uint8>& r,
                               bool force_range = false);
+
   OCTINTERP_API octave_value (const octave::range<octave_uint16>& r,
                               bool force_range = false);
+
   OCTINTERP_API octave_value (const octave::range<octave_uint32>& r,
                               bool force_range = false);
+
   OCTINTERP_API octave_value (const octave::range<octave_uint64>& r,
                               bool force_range = false);
+
+  OCTINTERP_API octave_value (const octave::range<char>& r, char type,
+                              bool force_range = false);
+#endif
+
   OCTINTERP_API octave_value (const octave_map& m);
   OCTINTERP_API octave_value (const octave_scalar_map& m);
   OCTINTERP_API octave_value (const std::map<std::string, octave_value>&);
@@ -1008,11 +1024,15 @@ public:
   Array<std::string> cellstr_value (void) const
   { return m_rep->cellstr_value (); }
 
-  octave::range<float> float_range_value (void) const
-  { return m_rep->float_range_value (); }
-
   octave::range<double> range_value (void) const
   { return m_rep->range_value (); }
+
+  // For now, disable all but range<double>.
+
+#if 0
+
+  octave::range<float> float_range_value (void) const
+  { return m_rep->float_range_value (); }
 
   octave::range<octave_int8> int8_range_value (void) const
   { return m_rep->int8_range_value (); }
@@ -1037,6 +1057,8 @@ public:
 
   octave::range<octave_uint64> uint64_range_value (void) const
   { return m_rep->uint64_range_value (); }
+
+#endif
 
   OCTINTERP_API octave_map map_value (void) const;
 
@@ -1269,11 +1291,15 @@ public:
 
   OCTINTERP_API Array<std::string> xcellstr_value (const char *fmt, ...) const;
 
-  OCTINTERP_API octave::range<float>
-  xfloat_range_value (const char *fmt, ...) const;
-
   OCTINTERP_API octave::range<double>
   xrange_value (const char *fmt, ...) const;
+
+  // For now, disable all but range<double>.
+
+#if 0
+
+  OCTINTERP_API octave::range<float>
+  xfloat_range_value (const char *fmt, ...) const;
 
   OCTINTERP_API octave::range<octave_int8>
   xint8_range_value (const char *fmt, ...) const;
@@ -1298,6 +1324,8 @@ public:
 
   OCTINTERP_API octave::range<octave_uint64>
   xuint64_range_value (const char *fmt, ...) const;
+
+#endif
 
   OCTINTERP_API octave_map xmap_value (const char *fmt, ...) const;
 

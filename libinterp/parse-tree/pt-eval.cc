@@ -3096,6 +3096,9 @@ Example:
             return;
           }
 
+        // For now, disable all but range<double>.
+
+#if 0
         if (rhs.is_int64_type ())
           {
             execute_range_loop (rhs.int64_range_value (), line, ult, loop_body);
@@ -3149,6 +3152,7 @@ Example:
             execute_range_loop (rhs.float_range_value (), line, ult, loop_body);
             return;
           }
+#endif
       }
 
     if (rhs.is_scalar_type ())

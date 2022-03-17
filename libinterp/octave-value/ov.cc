@@ -1093,35 +1093,22 @@ octave_value::make_range_rep_deprecated (const Range& r, bool force_range)
     return dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
 }
 
-octave_value::octave_value (const octave::range<char>& r, char type,
-                            bool /*force_range*/)
-#if 0
-  : m_rep (force_range || optimize_range
-           ? dynamic_cast<octave_base_value *> (new octave_char_range (r, type))
-           : dynamic_cast<octave_base_value *> (type == '"'
-                                                ? new octave_char_matrix_dq_str (r.array_value ())
-                                                : new octave_char_matrix_sq_str (r.array_value ())))
-#else
-  : m_rep (type == '"'
-           ? new octave_char_matrix_dq_str (r.array_value ())
-           : new octave_char_matrix_sq_str (r.array_value ()))
-#endif
+octave_value::octave_value (const octave::range<double>& r, bool force_range)
+  : m_rep (force_range || Voptimize_range
+           ? dynamic_cast<octave_base_value *> (new ov_range<double> (r))
+           : dynamic_cast<octave_base_value *> (new octave_matrix (r.array_value ())))
 {
   maybe_mutate ();
 }
+
+// For now, disable all but range<double>.
+
+#if 0
 
 octave_value::octave_value (const octave::range<float>& r, bool force_range)
   : m_rep (force_range || Voptimize_range
            ? dynamic_cast<octave_base_value *> (new ov_range<float> (r))
            : dynamic_cast<octave_base_value *> (new octave_float_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<double>& r, bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<double> (r))
-           : dynamic_cast<octave_base_value *> (new octave_matrix (r.array_value ())))
 {
   maybe_mutate ();
 }
@@ -1197,6 +1184,25 @@ octave_value::octave_value (const octave::range<octave_uint64>& r,
 {
   maybe_mutate ();
 }
+
+octave_value::octave_value (const octave::range<char>& r, char type,
+                            bool /*force_range*/)
+#if 0
+  : m_rep (force_range || optimize_range
+           ? dynamic_cast<octave_base_value *> (new octave_char_range (r, type))
+           : dynamic_cast<octave_base_value *> (type == '"'
+                                                ? new octave_char_matrix_dq_str (r.array_value ())
+                                                : new octave_char_matrix_sq_str (r.array_value ())))
+#else
+  : m_rep (type == '"'
+           ? new octave_char_matrix_dq_str (r.array_value ())
+           : new octave_char_matrix_sq_str (r.array_value ()))
+#endif
+{
+  maybe_mutate ();
+}
+
+#endif
 
 octave_value::octave_value (const octave_map& m)
   : m_rep (new octave_struct (m))
@@ -2229,8 +2235,13 @@ XVALUE_EXTRACTOR (string_vector, xstring_vector_value, string_vector_value)
 XVALUE_EXTRACTOR (Cell, xcell_value, cell_value)
 XVALUE_EXTRACTOR (Array<std::string>, xcellstr_value, cellstr_value)
 
-XVALUE_EXTRACTOR (octave::range<float>, xfloat_range_value, float_range_value)
 XVALUE_EXTRACTOR (octave::range<double>, xrange_value, range_value)
+
+// For now, disable all but ov_range<double>.
+
+#if 0
+
+XVALUE_EXTRACTOR (octave::range<float>, xfloat_range_value, float_range_value)
 XVALUE_EXTRACTOR (octave::range<octave_int8>, xint8_range_value, int8_range_value)
 XVALUE_EXTRACTOR (octave::range<octave_int16>, xint16_range_value, int16_range_value)
 XVALUE_EXTRACTOR (octave::range<octave_int32>, xint32_range_value, int32_range_value)
@@ -2239,6 +2250,8 @@ XVALUE_EXTRACTOR (octave::range<octave_uint8>, xuint8_range_value, uint8_range_v
 XVALUE_EXTRACTOR (octave::range<octave_uint16>, xuint16_range_value, uint16_range_value)
 XVALUE_EXTRACTOR (octave::range<octave_uint32>, xuint32_range_value, uint32_range_value)
 XVALUE_EXTRACTOR (octave::range<octave_uint64>, xuint64_range_value, uint64_range_value)
+
+#endif
 
 XVALUE_EXTRACTOR (octave_map, xmap_value, map_value)
 XVALUE_EXTRACTOR (octave_scalar_map, xscalar_map_value, scalar_map_value)
@@ -3523,8 +3536,13 @@ install_types (octave::type_info& ti)
   octave_diag_matrix::register_type (ti);
   octave_complex_matrix::register_type (ti);
   octave_complex_diag_matrix::register_type (ti);
-  ov_range<float>::register_type (ti);
   ov_range<double>::register_type (ti);
+
+  // For now, disable all but ov_range<double>.
+
+#if 0
+
+  ov_range<float>::register_type (ti);
   ov_range<octave_int8>::register_type (ti);
   ov_range<octave_int16>::register_type (ti);
   ov_range<octave_int32>::register_type (ti);
@@ -3533,6 +3551,9 @@ install_types (octave::type_info& ti)
   ov_range<octave_uint16>::register_type (ti);
   ov_range<octave_uint32>::register_type (ti);
   ov_range<octave_uint64>::register_type (ti);
+
+#endif
+
   octave_bool::register_type (ti);
   octave_bool_matrix::register_type (ti);
   octave_char_matrix_str::register_type (ti);

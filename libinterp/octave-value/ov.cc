@@ -3102,6 +3102,49 @@ OCTAVE_NAMESPACE_BEGIN
     return static_cast<octave_idx_type> (nel_m1) + 1;
   }
 
+  // Convert signed range increment to unsigned.
+
+  template <typename ST,
+            typename UT = typename std::make_unsigned<ST>::type,
+            typename std::enable_if<(std::is_integral<ST>::value
+                                     && std::is_signed<ST>::value),
+                                    bool>::type = true>
+  UT
+  range_increment (ST increment)
+  {
+    return (increment < 0
+            ? UT (0) - static_cast<UT> (increment)
+            : static_cast<UT> (increment));
+  }
+
+  // "Convert" unsigned range increment to unsigned.  A no-op, but
+  // needed to provide a consistent interface for other template
+  // functions.
+
+  template <typename T,
+            typename UT = typename std::make_unsigned<T>::type,
+            typename std::enable_if<(std::is_integral<UT>::value
+                                     && std::is_unsigned<UT>::value),
+                                    bool>::type = true>
+  UT
+  range_increment (UT increment)
+  {
+    return increment;
+  }
+
+  // Convert double range increment to unsigned.  Enable by return type.
+
+  template <typename T,
+            typename UT = typename std::make_unsigned<T>::type>
+  typename std::enable_if<(std::is_integral<UT>::value
+                           && std::is_unsigned<UT>::value), UT>::type
+  range_increment (double increment)
+  {
+    double abs_increment = std::abs (increment);
+
+    return static_cast<UT> (abs_increment);
+  }
+
   // Number of elements in an integer range base:increment:limit.  Base,
   // increment, and limit are of the same signed type.
 
@@ -3119,9 +3162,7 @@ OCTAVE_NAMESPACE_BEGIN
         || (increment < 0 && base < limit))
       return 0;
 
-    UT unsigned_increment = (increment < 0
-                             ? UT (0) - static_cast<UT> (increment)
-                             : static_cast<UT> (increment));
+    UT unsigned_increment = range_increment<ST> (increment);
 
     return range_numel_aux (base, unsigned_increment, limit);
   }
@@ -3169,7 +3210,9 @@ OCTAVE_NAMESPACE_BEGIN
     if (abs_increment > max_val)
       return 1;
 
-    return range_numel_aux (base, static_cast<UT> (abs_increment), limit);
+    UT unsigned_increment = range_increment<T> (increment);
+
+    return range_numel_aux (base, unsigned_increment, limit);
   }
 
   // Make a range from integer values.  Increment may be integer or double.
@@ -3191,12 +3234,28 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (nel > 0)
       {
+        typedef typename std::make_unsigned<T>::type UT;
+
+        UT unsigned_increment = range_increment<T> (increment);
+
         T val = base;
         result.xelem (0) = val;
-        for (octave_idx_type i = 1; i < nel; i++)
+
+        if (limit > base)
           {
-            val += increment;
-            result.xelem (i) = val;
+            for (octave_idx_type i = 1; i < nel; i++)
+              {
+                val += unsigned_increment;
+                result.xelem (i) = val;
+              }
+          }
+        else
+          {
+            for (octave_idx_type i = 1; i < nel; i++)
+              {
+                val -= unsigned_increment;
+                result.xelem (i) = val;
+              }
           }
       }
 
@@ -3210,7 +3269,7 @@ OCTAVE_NAMESPACE_BEGIN
   // defined in this file we could do that in a reasonable way?
   // Regardless of that, it might be good to provide special treatment
   // of colon expressions in FOR loops so that we can eliminate the
-  // "is_for_cmd_expr / force_rage" flag from the parser and the
+  // "is_for_cmd_expr / force_range" flag from the parser and the
   // octave_value constructors for range objects.
 
   // NOTE: We define this function separately for float and double so

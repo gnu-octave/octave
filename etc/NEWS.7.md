@@ -76,6 +76,11 @@ constants in array expressions with leading zeros so that they use the
 same number of digits for each value such as
 `[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
+- The colon operator now works for integer (int8, int16, ..., uint64)
+and single data types.  However, only double ranges use a
+memory-efficient storage scheme internally.  Other data types are
+stored as ordinary arrays.
+
 - The increment and decrement operators `++` and `--` must "hug" their
 corresponding variables.  In previous versions of Octave, whitespaces
 between these operators and the variable they affect were allowed.  That

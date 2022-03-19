@@ -52,6 +52,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/folder.png \
   %reldir%/icons/octave/128x128/go-down.png \
   %reldir%/icons/octave/128x128/go-first.png \
+  %reldir%/icons/octave/128x128/go-home.png \
   %reldir%/icons/octave/128x128/go-last.png \
   %reldir%/icons/octave/128x128/go-next.png \
   %reldir%/icons/octave/128x128/go-previous.png \
@@ -127,6 +128,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/folder.svg \
   %reldir%/icons/octave/scalable/go-down.svg \
   %reldir%/icons/octave/scalable/go-first.svg \
+  %reldir%/icons/octave/scalable/go-home.svg \
   %reldir%/icons/octave/scalable/go-last.svg \
   %reldir%/icons/octave/scalable/go-next.svg \
   %reldir%/icons/octave/scalable/go-previous.svg \

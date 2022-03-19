@@ -60,11 +60,15 @@ under the CC0 1.0 Universal license.
 - edit-redo
 - edit-undo
 - folder-new
+- figure-zoom-in
+- figure-zoom-original
+- figure-zoom-out
 - folder-settings
 - folder-up
 - folder
 - go-down
 - go-first
+- go-home
 - go-last
 - go-next
 - go-previous
@@ -80,9 +84,6 @@ under the CC0 1.0 Universal license.
 - figure-pan
 - figure-rotate
 - figure-text
-- figure-zoom-in
-- figure-zoom-original
-- figure-zoom-out
 - graphic_logo_DocumentationDockWidget
 - graphic_logo_Figure
 - graphic_logo_FileEditor

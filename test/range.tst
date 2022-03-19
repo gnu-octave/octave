@@ -550,3 +550,106 @@
 %!             [types{i_type}(start(i_start)), types{i_type}(finish(i_start))]);
 %!   endfor
 %! endfor
+
+## Class of range operator output
+%!test
+%! types = {@double, @single, ...
+%!          @int8, @int16, @int32, @int64, ...
+%!          @uint8, @uint16, @uint32, @uint64};
+%! for i_type = 1:numel (types)
+%!   ## with implicit increment
+%!   assert (class (types{i_type} (0) : types{i_type} (10)), ...
+%!           func2str (types{i_type}));
+%!   ## with matching increment
+%!   assert (class (types{i_type} (0) : types{i_type} (2) : types{i_type} (10)), ...
+%!           func2str (types{i_type}));
+%!   ## with double increment (ascending)
+%!   assert (class (types{i_type} (0) : 2 : types{i_type} (10)), ...
+%!           func2str (types{i_type}));
+%!   ## with double increment (descending)
+%!   assert (class (types{i_type} (10) : -2 : types{i_type} (0)), ...
+%!           func2str (types{i_type}));
+%! endfor
+
+## Signed integer ranges with large span
+%!test <*61788>  # ascending ranges
+%! assert (int8 (-100) : int8 (50) : int8 (100), ...
+%!         int8 ([-100, -50, 0, 50, 100]));
+%! assert (int16 (-3e4) : int16 (1.5e4) : int16 (3e4), ...
+%!         int16 ([-3e4, -1.5e4, 0, 1.5e4, 3e4]));
+%! assert (int32 (-2e9) : int32 (1e9) : int32 (2e9), ...
+%!         int32 ([-2e9, -1e9, 0, 1e9, 2e9]));
+%! assert (int64 (-9e18) : int64 (4.5e18) : int64 (9e18), ...
+%!         [int64(-9e18), int64(-4.5e18), 0, int64(4.5e18), int64(9e18)]);
+%!test <*61788>  # descending ranges
+%! assert (int8 (100) : int8 (-50) : int8 (-100), ...
+%!         int8 ([100, 50, 0, -50, -100]));
+%! assert (int16 (3e4) : int16 (-1.5e4) : int16 (-3e4), ...
+%!         int16 ([3e4, 1.5e4, 0, -1.5e4, -3e4]));
+%! assert (int32 (2e9) : int32 (-1e9) : int32 (-2e9), ...
+%!         int32 ([2e9, 1e9, 0, -1e9, -2e9]));
+%! assert (int64 (9e18) : int64 (-4.5e18) : int64 (-9e18), ...
+%!         [int64(9e18), int64(4.5e18), 0, int64(-4.5e18), int64(-9e18)]);
+
+## integer ranges with double increments
+%!test  # ascending ranges
+%! types = {@int8, @int16, @int32, @int64, ...
+%!          @uint8, @uint16, @uint32, @uint64};
+%! for i_type = 1:numel (types)
+%!   assert (types{i_type} (0) : 2 : types{i_type} (10), ...
+%!           types{i_type} ([0, 2, 4, 6, 8, 10]));
+%! endfor
+%!test  # descending ranges
+%! types = {@int8, @int16, @int32, @int64, ...
+%!          @uint8, @uint16, @uint32, @uint64};
+%! for i_type = 1:numel (types)
+%!   assert (types{i_type} (10) : -2 : types{i_type} (0), ...
+%!           types{i_type} ([10, 8, 6, 4, 2, 0]));
+%! endfor
+
+## integer range with large double increments
+%!test  # ascending ranges
+%! types = {"int8", "int16", "int32", "int64"};
+%! for i_type = 1:numel (types)
+%!   assert (intmin (types{i_type}) : double (intmax (types{i_type})) + 1 : intmax (types{i_type}), ...
+%!           [intmin(types{i_type}), 0]);
+%! endfor
+%!test  # descending ranges
+%! types = {"int8", "int16", "int32", "int64"};
+%! for i_type = 1:numel (types)
+%!   assert (intmax (types{i_type}) : double (intmin (types{i_type})) : intmin (types{i_type}), ...
+%!           [intmax(types{i_type}), -1]);
+%!   ## FIXME: This leads to a deadlock for "int64".
+%!   ## assert (intmax (types{i_type}) : -2*double (intmax (types{i_type})) : intmin (types{i_type}), ...
+%!   ##         [intmax(types{i_type}), -intmax(types{i_type})]);
+%! endfor
+
+## integer range near intmax
+%!test
+%! types = {"int8", "int16", "int32", "int64", ...
+%!          "uint8", "uint16", "uint32", "uint64"};
+%! for i_type = 1:numel (types)
+%!   hi = intmax (types{i_type});
+%!   lo = hi - 5;
+%!   ## ascending range
+%!   assert (lo:hi, ...
+%!           intmax(types{i_type}) - 5 + (0:5));
+%!   ## descending range
+%!   assert (hi:-1:lo, ...
+%!           intmax(types{i_type}) - 5 + (5:-1:0));
+%! endfor
+
+## integer range near intmin
+%!test
+%! types = {"int8", "int16", "int32", "int64", ...
+%!          "uint8", "uint16", "uint32", "uint64"};
+%! for i_type = 1:numel (types)
+%!   lo = intmin (types{i_type});
+%!   hi = lo + 5;
+%!   ## ascending range
+%!   assert (lo:hi, ...
+%!           intmin(types{i_type}) + (0:5));
+%!   ## descending range
+%!   assert (hi:-1:lo, ...
+%!           intmin(types{i_type}) + (5:-1:0));
+%! endfor

@@ -766,13 +766,7 @@ xload_ascii (std::istream& is, octave::range<T>& r, const bool with_reverse)
   if (! is)
     error ("load: failed to load range constant");
 
-  if (inc != T (0))
-    r = octave::range<T> (base, inc, limit, rev);
-  else
-    {
-      octave_idx_type numel = static_cast<octave_idx_type> (limit);
-      r = octave::range<T>::make_constant (base, numel, rev);
-    }
+  r = octave::range<T> (base, inc, limit, rev);
 
   return true;
 }
@@ -946,13 +940,8 @@ xload_binary (std::istream& is, bool swap,
       if (swap)
         swap_bytes<sizeof (bool)> (&rev);
     }
-  if (inc != T (0))
-    r = octave::range<T> (bas, inc, lim, rev);
-  else
-    {
-      octave_idx_type numel = static_cast<octave_idx_type> (lim);
-      r = octave::range<T>::make_constant (bas, numel, rev);
-    }
+
+  r = octave::range<T> (bas, inc, lim, rev);
 
   return true;
 }
@@ -1280,13 +1269,7 @@ xload_hdf5 (octave_hdf5_id loc_id, const char *name, octave::range<T>& r,
 
       bool rev = with_reverse ? static_cast<bool> (rangevals[3]) : false;
 
-      if (rangevals[2] != T (0))
-        r = octave::range<T> (rangevals[0], rangevals[2], rangevals[1], rev);
-      else
-        {
-          octave_idx_type numel = static_cast<octave_idx_type> (rangevals[1]);
-          r = octave::range<T>::make_constant (rangevals[0], numel, rev);
-        }
+      r = octave::range<T> (rangevals[0], rangevals[2], rangevals[1], rev);
     }
 
   H5Tclose (range_type);

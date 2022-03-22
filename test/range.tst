@@ -611,17 +611,30 @@
 %!test  # ascending ranges
 %! types = {"int8", "int16", "int32", "int64"};
 %! for i_type = 1:numel (types)
-%!   assert (intmin (types{i_type}) : double (intmax (types{i_type})) + 1 : intmax (types{i_type}), ...
+%!   assert (intmin (types{i_type}) : -double (intmin (types{i_type})) : intmax (types{i_type}), ...
 %!           [intmin(types{i_type}), 0]);
+%!   ## FIXME: This test leads to a deadlock for "int64".
+%!   ## assert (intmin (types{i_type}) : -2*double (intmin (types{i_type})) : intmax (types{i_type}), ...
+%!   ##         intmin (types{i_type}));
+%!   if (! strcmp (types, "int64"))
+%!     ## The increment cannot be represented in double precision for "int64"
+%!     assert (intmin (types{i_type}) : 2*double (intmax (types{i_type})) : intmin (types{i_type}), ...
+%!             [intmin(types{i_type}), intmax(types{i_type})-1]);
+%!   endif
 %! endfor
 %!test  # descending ranges
 %! types = {"int8", "int16", "int32", "int64"};
 %! for i_type = 1:numel (types)
 %!   assert (intmax (types{i_type}) : double (intmin (types{i_type})) : intmin (types{i_type}), ...
 %!           [intmax(types{i_type}), -1]);
-%!   ## FIXME: This leads to a deadlock for "int64".
-%!   ## assert (intmax (types{i_type}) : -2*double (intmax (types{i_type})) : intmin (types{i_type}), ...
-%!   ##         [intmax(types{i_type}), -intmax(types{i_type})]);
+%!   ## FIXME: This test leads to a deadlock for "int64".
+%!   ## assert (intmax (types{i_type}) : 2*double (intmin (types{i_type})) : intmin (types{i_type}), ...
+%!   ##         intmax (types{i_type}));
+%!   if (! strcmp (types, "int64"))
+%!     ## The increment cannot be represented in double precision for "int64"
+%!     assert (intmax (types{i_type}) : -2*double (intmax (types{i_type})) : intmin (types{i_type}), ...
+%!             [intmax(types{i_type}), -intmax(types{i_type})]);
+%!   endif
 %! endfor
 
 ## integer range near intmax

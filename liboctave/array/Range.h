@@ -76,40 +76,17 @@ namespace octave
     }
 
     // Allow conversion from (presumably) properly constructed Range
-    // objects and to create constant ranges (see the static
-    // make_constant method).  The values of base, limit, increment,
-    // and numel must be consistent.
-
-    // FIXME: Actually check that base, limit, increment, and numel are
+    // objects.  The values of base, limit, increment, and numel must be
     // consistent.
 
-    // FIXME: Is there a way to limit this to T == double?
+    // FIXME: Actually check that base, limit, increment, and numel are
+    // consistent?
 
     range (const T& base, const T& increment, const T& limit,
            octave_idx_type numel, bool reverse = false)
       : m_base (base), m_increment (increment), m_limit (limit),
         m_final (limit), m_numel (numel), m_reverse (reverse)
     { }
-
-    range (const T& base, const T& increment, const T& limit,
-           const T& final, octave_idx_type numel, bool reverse = false)
-      : m_base (base), m_increment (increment), m_limit (limit),
-        m_final (final), m_numel (numel), m_reverse (reverse)
-    { }
-
-    // We don't use a constructor for this because it will conflict with
-    // range<T> (base, limit) when T is octave_idx_type.
-
-    static range<T> make_constant (const T& base, octave_idx_type numel,
-                                   bool reverse = false)
-    {
-      // We could just make this constructor public, but it allows
-      // inconsistent ranges to be constructed.  And it is probably much
-      // clearer to see "make_constant" instead of puzzling over the
-      // purpose of this strange constructor form.
-
-      return range<T> (base, T (), base, numel, reverse);
-    }
 
     // We don't use a constructor for this because it will conflict with
     // range<T> (base, limit, increment) when T is octave_idx_type.
@@ -120,7 +97,7 @@ namespace octave
     {
       // We could just make this constructor public, but it allows
       // inconsistent ranges to be constructed.  And it is probably much
-      // clearer to see "make_constant" instead of puzzling over the
+      // clearer to see "make_n_element_range" instead of puzzling over the
       // purpose of this strange constructor form.
 
       T final_val = (reverse ? base - (numel - 1) * increment
@@ -423,7 +400,6 @@ Range
 {
 public:
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (void)
     : m_base (0), m_limit (0), m_inc (0), m_numel (0)
@@ -439,7 +415,6 @@ public:
     : m_base (r.base ()), m_limit (r.final_value ()), m_inc (r.increment ()),
       m_numel (r.numel ())
   { }
-#endif
 
   Range (const Range& r) = default;
 
@@ -447,7 +422,6 @@ public:
 
   ~Range (void) = default;
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
   OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
   Range (double b, double l)
     : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ())
@@ -477,7 +451,6 @@ public:
     if (! octave::math::isinf (m_limit))
       m_limit = limit_internal ();
   }
-#endif
 
   // The range has a finite number of elements.
   bool ok (void) const

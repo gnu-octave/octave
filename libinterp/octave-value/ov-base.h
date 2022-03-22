@@ -387,6 +387,8 @@ public:
 
   virtual bool is_storable (void) const { return true; }
 
+  virtual bool is_legacy_object (void) const { return false; }
+
   bool isempty (void) const { return (dims ().any_zero ()); }
 
   bool is_zero_by_zero (void) const { return dims().zero_by_zero (); }

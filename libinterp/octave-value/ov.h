@@ -640,6 +640,9 @@ public:
   bool is_undefined (void) const
   { return ! is_defined (); }
 
+  bool is_legacy_object (void) const
+  { return m_rep->is_legacy_object (); }
+
   bool isempty (void) const
   { return m_rep->isempty (); }
 
@@ -1483,21 +1486,19 @@ public:
 
   bool save_ascii (std::ostream& os) { return m_rep->save_ascii (os); }
 
-  bool load_ascii (std::istream& is) { return m_rep->load_ascii (is); }
+  OCTINTERP_API bool load_ascii (std::istream& is);
 
   bool save_binary (std::ostream& os, bool save_as_floats)
   { return m_rep->save_binary (os, save_as_floats); }
 
-  bool load_binary (std::istream& is, bool swap,
-                    octave::mach_info::float_format fmt)
-  { return m_rep->load_binary (is, swap, fmt); }
+  OCTINTERP_API bool load_binary (std::istream& is, bool swap,
+                                  octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
                   bool save_as_floats)
   { return m_rep->save_hdf5 (loc_id, name, save_as_floats); }
 
-  bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
-  { return m_rep->load_hdf5 (loc_id, name); }
+  OCTINTERP_API bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   OCTINTERP_API int
   write (octave::stream& os, int block_size,

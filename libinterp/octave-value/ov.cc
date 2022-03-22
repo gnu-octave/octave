@@ -3255,6 +3255,11 @@ OCTAVE_NAMESPACE_BEGIN
 
     UT unsigned_increment = range_increment<T> (increment);
 
+    // If the increment wasn't zero before but it is now, the cast to UT
+    // wrapped around. The range can only have one value.
+    if (unsigned_increment == 0)
+      return 1;
+
     return range_numel_aux (base, unsigned_increment, limit);
   }
 

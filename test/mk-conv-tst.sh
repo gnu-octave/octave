@@ -73,7 +73,7 @@ cat <<EOF
 %!
 %!test
 %! if (optimize_range ())
-%!   assert (typeinfo (r), "range")
+%!   assert (typeinfo (r), "double_range")
 %! else
 %!   assert (typeinfo (r), "matrix")
 %! endif

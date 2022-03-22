@@ -143,7 +143,7 @@ octave_hdf5_id ov_range<octave_uint64>::hdf5_save_type = 0;
 #endif
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<double>,
-                                              "range", "double");
+                                              "double_range", "double");
 
 // For now, disable all but ov_range<double>.
 

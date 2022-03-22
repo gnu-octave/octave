@@ -53,6 +53,7 @@ OCTAVE_VALUE_INC = \
   %reldir%/ov-flt-re-mat.h \
   %reldir%/ov-java.h \
   %reldir%/ov-lazy-idx.h \
+  %reldir%/ov-legacy-range.h \
   %reldir%/ov-magic-int.h \
   %reldir%/ov-mex-fcn.h \
   %reldir%/ov-null-mat.h \
@@ -119,6 +120,7 @@ OCTAVE_VALUE_SRC = \
   %reldir%/ov-flt-re-mat.cc \
   %reldir%/ov-java.cc \
   %reldir%/ov-lazy-idx.cc \
+  %reldir%/ov-legacy-range.cc \
   %reldir%/ov-magic-int.cc \
   %reldir%/ov-mex-fcn.cc \
   %reldir%/ov-null-mat.cc \

@@ -48,6 +48,7 @@
 #include "ov-flt-re-mat.h"
 #include "ov-re-diag.h"
 #include "ov-flt-re-diag.h"
+#include "ov-legacy-range.h"
 #include "ov-perm.h"
 #include "ov-bool-sparse.h"
 #include "ov-cx-sparse.h"
@@ -1076,8 +1077,17 @@ octave_value::octave_value (const Array<std::string>& cellstr)
 octave_base_value *
 octave_value::make_range_rep_deprecated (double base, double inc, double limit)
 {
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
   return dynamic_cast<octave_base_value *>
-    (new ov_range<double> (octave::range<double> (base, inc, limit)));
+    (new octave_legacy_range (Range (base, inc, limit)));
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic pop
+#endif
 }
 
 // Remove when public constructor that uses this function is removed.
@@ -1087,8 +1097,8 @@ octave_value::make_range_rep_deprecated (const Range& r, bool force_range)
   if (! force_range && ! r.ok ())
     error ("invalid range");
 
-  if (force_range || Voptimize_range)
-    return make_range_rep_deprecated (r.base (), r.increment (), r.limit ());
+  if ((force_range || Voptimize_range))
+    return dynamic_cast<octave_base_value *> (new octave_legacy_range (r));
   else
     return dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
 }
@@ -2350,6 +2360,39 @@ octave_value::print_info (std::ostream& os, const std::string& prefix) const
   m_rep->print_info (os, prefix + ' ');
 }
 
+bool octave_value::load_ascii (std::istream& is)
+{
+  bool status = m_rep->load_ascii (is);
+
+  // Force conversion of legacy objects.
+  if (is_legacy_object ())
+    maybe_mutate ();
+
+  return status;
+}
+bool octave_value::load_binary (std::istream& is, bool swap,
+                                octave::mach_info::float_format fmt)
+{
+  bool status = m_rep->load_binary (is, swap, fmt);
+
+  // Force conversion of legacy objects.
+  if (is_legacy_object ())
+    maybe_mutate ();
+
+  return status;
+}
+
+bool octave_value::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+{
+  bool status = m_rep->load_hdf5 (loc_id, name);
+
+  // Force conversion of legacy objects.
+  if (is_legacy_object ())
+    maybe_mutate ();
+
+  return status;
+}
+
 const void *
 octave_value::mex_get_data (mxClassID class_id, mxComplexity complexity) const
 {
@@ -3595,6 +3638,11 @@ install_types (octave::type_info& ti)
   octave_diag_matrix::register_type (ti);
   octave_complex_matrix::register_type (ti);
   octave_complex_diag_matrix::register_type (ti);
+
+  // Legacy range type, preserved to allow loading "constant" ranges
+  // from data files.
+  octave_legacy_range::register_type (ti);
+
   ov_range<double>::register_type (ti);
 
   // For now, disable all but ov_range<double>.
@@ -4078,7 +4126,7 @@ setting is restored when exiting the function.
 %!  r = base:limit;
 %!endfunction
 
-%!assert (typeinfo (__test_dr__ (true)), "range")
+%!assert (typeinfo (__test_dr__ (true)), "double_range")
 %!assert (typeinfo (__test_dr__ (false)), "matrix")
 */
 

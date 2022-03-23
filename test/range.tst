@@ -608,7 +608,7 @@
 %! endfor
 
 ## integer range with large double increments
-%!test  # ascending ranges
+%!test <62212>  # ascending ranges
 %! types = {"int8", "int16", "int32", "int64"};
 %! for i_type = 1:numel (types)
 %!   assert (intmin (types{i_type}) : -double (intmin (types{i_type})) : intmax (types{i_type}), ...
@@ -621,7 +621,7 @@
 %!             [intmin(types{i_type}), intmax(types{i_type})-1]);
 %!   endif
 %! endfor
-%!test  # descending ranges
+%!test <62212>  # descending ranges
 %! types = {"int8", "int16", "int32", "int64"};
 %! for i_type = 1:numel (types)
 %!   assert (intmax (types{i_type}) : double (intmin (types{i_type})) : intmin (types{i_type}), ...

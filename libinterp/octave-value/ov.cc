@@ -3250,15 +3250,15 @@ OCTAVE_NAMESPACE_BEGIN
 
     double abs_increment = std::abs (increment);
 
-    if (abs_increment > max_val)
+    // Technically, this condition should be `abs_increment > max_val`.
+    // But intmax('uint64') is not representable exactly as floating point
+    // number.  Instead, it "rounds" up by 1 to 2^64.  To account for
+    // this, use the following expression which works for all unsigned
+    // integer types.
+    if ((abs_increment-1.) >= max_val)
       return 1;
 
     UT unsigned_increment = range_increment<T> (increment);
-
-    // If the increment wasn't zero before but it is now, the cast to UT
-    // wrapped around. The range can only have one value.
-    if (unsigned_increment == 0)
-      return 1;
 
     return range_numel_aux (base, unsigned_increment, limit);
   }

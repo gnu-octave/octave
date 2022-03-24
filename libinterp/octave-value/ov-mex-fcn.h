@@ -114,7 +114,7 @@ private:
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  mutable octave::sys::time m_time_checked;
+  octave::sys::time m_time_checked;
 
   bool m_interleaved;
 

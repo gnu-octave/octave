@@ -244,7 +244,7 @@ namespace octave
     }
 
     std::string
-    env::do_get_user_config_directory (void) const
+    env::do_get_user_config_directory (void)
     {
       std::string cfg_dir;
 
@@ -265,7 +265,7 @@ namespace octave
     }
 
     std::string
-    env::do_get_user_data_directory (void) const
+    env::do_get_user_data_directory (void)
     {
       std::string data_dir;
 
@@ -319,7 +319,7 @@ namespace octave
     }
 
     void
-    env::do_set_program_name (const std::string& s) const
+    env::do_set_program_name (const std::string& s)
     {
       static bool initialized = false;
 
@@ -353,7 +353,7 @@ namespace octave
     // same as $HOME, then replace that with '~'.
 
     std::string
-    env::do_polite_directory_format (const std::string& name) const
+    env::do_polite_directory_format (const std::string& name)
     {
       std::string retval;
 
@@ -516,7 +516,7 @@ namespace octave
     // Return a string which is the current working directory.
 
     std::string
-    env::do_getcwd () const
+    env::do_getcwd (void)
     {
       if (! m_follow_symbolic_links)
         m_current_directory = "";
@@ -531,7 +531,7 @@ namespace octave
     // running.
 
     std::string
-    env::do_get_home_directory (void) const
+    env::do_get_home_directory (void)
     {
       std::string hd = do_getenv ("HOME");
 
@@ -558,7 +558,7 @@ namespace octave
     }
 
     std::string
-    env::do_get_user_name (void) const
+    env::do_get_user_name (void)
     {
       if (m_user_name.empty ())
         {
@@ -571,7 +571,7 @@ namespace octave
     }
 
     std::string
-    env::do_get_host_name (void) const
+    env::do_get_host_name (void)
     {
       if (m_host_name.empty ())
         {

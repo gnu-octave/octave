@@ -94,7 +94,7 @@ namespace octave
 
       static bool instance_ok (void);
 
-      std::string do_polite_directory_format (const std::string& name) const;
+      std::string do_polite_directory_format (const std::string& name);
 
       bool do_absolute_pathname (const std::string& s) const;
 
@@ -105,19 +105,19 @@ namespace octave
       std::string do_make_absolute (const std::string& s,
                                     const std::string& dot_path) const;
 
-      std::string do_getcwd (void) const;
+      std::string do_getcwd (void);
 
-      std::string do_get_home_directory (void) const;
+      std::string do_get_home_directory (void);
 
       std::string do_get_temp_directory (void) const;
 
-      std::string do_get_user_config_directory (void) const;
+      std::string do_get_user_config_directory (void);
 
-      std::string do_get_user_data_directory (void) const;
+      std::string do_get_user_data_directory (void);
 
-      std::string do_get_user_name (void) const;
+      std::string do_get_user_name (void);
 
-      std::string do_get_host_name (void) const;
+      std::string do_get_host_name (void);
 
       std::string do_getenv (const std::string& name) const;
 
@@ -125,7 +125,7 @@ namespace octave
 
       bool do_chdir (const std::string& newdir);
 
-      void do_set_program_name (const std::string& s) const;
+      void do_set_program_name (const std::string& s);
 
       void pathname_backup (std::string& path, int n) const;
 
@@ -148,16 +148,16 @@ namespace octave
       bool m_verbatim_pwd;
 
       // Where are we?
-      mutable std::string m_current_directory;
+      std::string m_current_directory;
 
       // Etc.
-      mutable std::string m_prog_name;
+      std::string m_prog_name;
 
-      mutable std::string m_prog_invocation_name;
+      std::string m_prog_invocation_name;
 
-      mutable std::string m_user_name;
+      std::string m_user_name;
 
-      mutable std::string m_host_name;
+      std::string m_host_name;
     };
   }
 }

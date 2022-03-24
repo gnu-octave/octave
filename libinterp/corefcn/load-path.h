@@ -69,7 +69,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool remove (const std::string& dir);
 
-    void update (void) const;
+    void update (void);
 
     bool contains_canonical (const std::string& dir_name) const;
 
@@ -536,11 +536,11 @@ OCTAVE_NAMESPACE_BEGIN
     void add (const std::string& dir, bool at_end, bool warn);
 
     void add (const dir_info& di, bool at_end, const std::string& pname = "",
-              bool updating = false) const;
+              bool updating = false);
 
     bool is_package (const std::string& name) const;
 
-    package_info& get_package (const std::string& name) const
+    package_info& get_package (const std::string& name)
     {
       if (! name.empty () && is_package (name))
         {
@@ -568,13 +568,13 @@ OCTAVE_NAMESPACE_BEGIN
 
     interpreter& m_interpreter;
 
-    mutable package_map_type m_package_map;
+    package_map_type m_package_map;
 
-    mutable package_info m_top_level_package;
+    package_info m_top_level_package;
 
-    mutable dir_info_list_type m_dir_info_list;
+    dir_info_list_type m_dir_info_list;
 
-    mutable std::set<std::string> m_init_dirs;
+    std::set<std::string> m_init_dirs;
 
     std::string m_command_line_path;
 

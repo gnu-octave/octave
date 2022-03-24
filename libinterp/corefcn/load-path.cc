@@ -454,7 +454,7 @@ OCTAVE_NAMESPACE_BEGIN
   }
 
   void
-  load_path::update (void) const
+  load_path::update (void)
   {
     // I don't see a better way to do this because we need to
     // preserve the correct directory ordering for new files that
@@ -1287,7 +1287,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   void
   load_path::add (const dir_info& di, bool at_end,
-                  const std::string& pname, bool updating) const
+                  const std::string& pname, bool updating)
   {
     package_info& l = get_package (pname);
 

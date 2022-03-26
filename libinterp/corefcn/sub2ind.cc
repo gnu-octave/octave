@@ -195,7 +195,7 @@ Convert linear indices to subscripts.
 
 The input @var{dims} is a dimension vector where each element is the size of
 the array in the respective dimension (@pxref{XREFsize,,@code{size}}).  The
-second input @var{ind} contains linear indies to be converted.
+second input @var{ind} contains linear indices to be converted.
 
 The outputs @var{s1}, @dots{}, @var{sN} contain the converted subscripts.
 
@@ -220,12 +220,8 @@ Consider the following 3-by-3 matrices:
 The left matrix contains the linear indices for each matrix element.  The right
 matrix shows the subscript tuples for the same matrix.
 
-The following example shows how to convert the two-dimensional indices
-@code{(2,1)} and @code{(2,3)} of a 3-by-3 matrix to linear indices with a
-single call to @code{sub2ind}.
-
 The following example shows how to convert the linear indices @code{2} and
-@code{8} in a 3-by-3 matrix into subscripts.
+@code{8} to appropriate subscripts of a 3-by-3 matrix.
 
 @example
 @group

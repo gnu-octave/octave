@@ -60,6 +60,11 @@ under the CC0 1.0 Universal license.
 - edit-redo
 - edit-undo
 - folder-new
+- figure-axes
+- figure-grid
+- figure-pan
+- figure-rotate
+- figure-text
 - figure-zoom-in
 - figure-zoom-original
 - figure-zoom-out
@@ -81,9 +86,6 @@ under the CC0 1.0 Universal license.
 
 ### Icons containing elements from the Tango theme
 
-- figure-pan
-- figure-rotate
-- figure-text
 - graphic_logo_DocumentationDockWidget
 - graphic_logo_Figure
 - graphic_logo_FileEditor
@@ -103,10 +105,8 @@ under the CC0 1.0 Universal license.
 - letter_logo_WorkspaceView
 - plot-xy-curve
 
-### Icons created independently from other themes
+### Icons created independently
 
-- figure-axes
-- figure-grid
 - logo
 - widget-close
 - widget-dock

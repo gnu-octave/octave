@@ -228,7 +228,11 @@ template <typename xop>
 bool
 octave_int_cmp_op::emulate_mop (uint64_t x, double y)
 {
-  static const double xxup = std::numeric_limits<uint64_t>::max ();
+  // The following cast changes the value to 2^64 (which is outside the range
+  // of `uint64_t`).  Take care to handle this correctly (e.g., don't cast back
+  // to `uint64_t`)!
+  static const double xxup
+    = static_cast<double> (std::numeric_limits<uint64_t>::max ());
   // This converts to the nearest double.  Unless there's an equality, the
   // result is clear.
   double xx = x;
@@ -248,8 +252,14 @@ template <typename xop>
 bool
 octave_int_cmp_op::emulate_mop (int64_t x, double y)
 {
-  static const double xxup = std::numeric_limits<int64_t>::max ();
-  static const double xxlo = std::numeric_limits<int64_t>::min ();
+  // The following cast changes the value to 2^63 (which is outside the range
+  // of `int64_t`).  Take care to handle this correctly (e.g., don't cast back
+  // to `int64_t`)!  The same applies to the lower limit on systems using one's
+  // complement.
+  static const double xxup
+    = static_cast<double> (std::numeric_limits<int64_t>::max ());
+  static const double xxlo
+    = static_cast<double> (std::numeric_limits<int64_t>::min ());
   // This converts to the nearest double.  Unless there's an equality, the
   // result is clear.
   double xx = x;
@@ -452,6 +462,8 @@ template <>
 OCTAVE_API octave_int64
 operator + (const octave_int64& x, const double& y)
 {
+  // The following cast changes the value to 2^63 (which is outside the range
+  // of `int64_t`).
   if (fabs (y) < static_cast<double> (octave_int64::max ()))
     return x + octave_int64 (y);
   else
@@ -487,7 +499,9 @@ template <>
 OCTAVE_API octave_uint64
 operator - (const double& x, const octave_uint64& y)
 {
-  if (x <= static_cast<double> (octave_uint64::max ()))
+  // The following cast changes the value to 2^64 (which is outside the range
+  // of `uint64_t`).
+  if (x < static_cast<double> (octave_uint64::max ()))
     return octave_uint64 (x) - y;
   else
     {
@@ -581,7 +595,10 @@ template <>
 OCTAVE_API octave_uint64
 operator * (const octave_uint64& x, const double& y)
 {
-  if (y >= 0 && y < octave_uint64::max () && y == octave::math::fix (y))
+  // The following cast changes the value to 2^64 (which is outside the range
+  // of `uint64_t`).
+  if (y >= 0 && y < static_cast<double> (octave_uint64::max ())
+      && y == octave::math::fix (y))
     return x * octave_uint64 (static_cast<uint64_t> (y));
   else if (y == 0.5)
     return x / octave_uint64 (static_cast<uint64_t> (2));
@@ -616,7 +633,10 @@ template <>
 OCTAVE_API octave_int64
 operator * (const octave_int64& x, const double& y)
 {
-  if (fabs (y) < octave_int64::max () && y == octave::math::fix (y))
+  // The following cast changes the value to 2^63 (which is outside the range
+  // of `int64_t`).
+  if (fabs (y) < static_cast<double> (octave_int64::max ())
+      && y == octave::math::fix (y))
     return x * octave_int64 (static_cast<int64_t> (y));
   else if (fabs (y) == 0.5)
     return x / octave_int64 (static_cast<uint64_t> (4*y));
@@ -666,7 +686,10 @@ template <>
 OCTAVE_API octave_uint64
 operator / (const octave_uint64& x, const double& y)
 {
-  if (y >= 0 && y < octave_uint64::max () && y == octave::math::fix (y))
+  // The following cast changes the value to 2^64 (which is outside the range
+  // of `uint64_t`).
+  if (y >= 0 && y < static_cast<double> (octave_uint64::max ())
+      && y == octave::math::fix (y))
     return x / octave_uint64 (y);
   else
     return x * (1.0/y);
@@ -676,7 +699,10 @@ template <>
 OCTAVE_API octave_int64
 operator / (const octave_int64& x, const double& y)
 {
-  if (fabs (y) < octave_int64::max () && y == octave::math::fix (y))
+  // The following cast changes the value to 2^63 (which is outside the range
+  // of `int64_t`).
+  if (fabs (y) < static_cast<double> (octave_int64::max ())
+      && y == octave::math::fix (y))
     return x / octave_int64 (y);
   else
     return x * (1.0/y);

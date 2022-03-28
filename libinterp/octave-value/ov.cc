@@ -3073,8 +3073,11 @@ OCTAVE_NAMESPACE_BEGIN
 
     double dval = val.double_value ();
     double intpart;
+    static const double out_of_range_top
+      = static_cast<double> (std::numeric_limits<typename T::val_type>::max ())
+        + 1.;
 
-    if (dval > std::numeric_limits<typename T::val_type>::max ()
+    if (dval >= out_of_range_top
         || dval < std::numeric_limits<typename T::val_type>::min ()
         || std::modf (dval, &intpart) != 0.0)
       error ("colon operator %s invalid (not an integer or out of range for given integer type)", op_str);
@@ -3246,16 +3249,18 @@ OCTAVE_NAMESPACE_BEGIN
         || (increment < 0 && base < limit))
       return 0;
 
-    static const UT max_val = std::numeric_limits<UT>::max ();
+    static const double out_of_range_top
+      = static_cast<double> (std::numeric_limits<UT>::max ()) + 1.;
 
     double abs_increment = std::abs (increment);
 
-    // Technically, this condition should be `abs_increment > max_val`.
+    // Technically, this condition should be
+    // `abs_increment > std::numeric_limits<UT>::max ()`.
     // But intmax('uint64') is not representable exactly as floating point
     // number.  Instead, it "rounds" up by 1 to 2^64.  To account for
     // this, use the following expression which works for all unsigned
     // integer types.
-    if ((abs_increment-1.) >= max_val)
+    if (abs_increment >= out_of_range_top)
       return 1;
 
     UT unsigned_increment = range_increment<T> (increment);

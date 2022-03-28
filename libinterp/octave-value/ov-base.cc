@@ -474,11 +474,13 @@ octave_base_value::print_info (std::ostream& os,
         err_wrong_type_arg (ee, "octave_base_value::" #F "_value ()", type_name ()); \
       }                                                                 \
                                                                         \
+    static const double out_of_range_top                                \
+      = static_cast<double>(std::numeric_limits<T>::max ()) + 1.;       \
     if (require_int && octave::math::x_nint (d) != d)                   \
       error_with_cfn ("conversion of %g to " #T " value failed", d);    \
     else if (d < std::numeric_limits<T>::min ())                        \
       retval = std::numeric_limits<T>::min ();                          \
-    else if (d > std::numeric_limits<T>::max ())                        \
+    else if (d >= out_of_range_top)                                     \
       retval = std::numeric_limits<T>::max ();                          \
     else                                                                \
       retval = static_cast<T> (octave::math::fix (d));                  \

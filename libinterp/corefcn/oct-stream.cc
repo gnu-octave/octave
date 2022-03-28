@@ -141,7 +141,10 @@ namespace octave
           ::error ("%s: negative value invalid as size specification",
                    who.c_str ());
 
-        if (d > std::numeric_limits<octave_idx_type>::max ())
+        static const double out_of_range_top
+          = static_cast<double> (std::numeric_limits<octave_idx_type>::max ())
+            + 1.;
+        if (d >= out_of_range_top)
           ::error ("%s: dimension too large for Octave's index type",
                    who.c_str ());
 

@@ -700,6 +700,10 @@ rational_approx (T val, int len)
   if (len <= 0)
     len = 10;
 
+  static const T out_of_range_top
+    = static_cast<T>(std::numeric_limits<int>::max ()) + 1.;
+  static const T out_of_range_bottom
+    = static_cast<T>(std::numeric_limits<int>::min ()) - 1.;
   if (octave::math::isinf (val))
     {
       if (val > 0)
@@ -709,8 +713,7 @@ rational_approx (T val, int len)
     }
   else if (octave::math::isnan (val))
     s = "0/0";
-  else if (val < std::numeric_limits<int>::min ()
-           || val > std::numeric_limits<int>::max ()
+  else if (val <= out_of_range_bottom || val >= out_of_range_top
            || octave::math::x_nint (val) == val)
     {
       std::ostringstream buf;
@@ -740,7 +743,7 @@ rational_approx (T val, int len)
           T nextd = d;
 
           // Have we converged to 1/intmax ?
-          if (std::abs (flip) > static_cast<T> (std::numeric_limits<int>::max ()))
+          if (std::abs (flip) > out_of_range_top)
             {
               lastn = n;
               lastd = d;
@@ -771,8 +774,8 @@ rational_approx (T val, int len)
                 break;
             }
 
-          if (std::abs (n) > std::numeric_limits<int>::max ()
-              || std::abs (d) > std::numeric_limits<int>::max ())
+          if (std::abs (n) >= out_of_range_top
+              || std::abs (d) >= out_of_range_top)
             break;
 
           s = buf.str ();

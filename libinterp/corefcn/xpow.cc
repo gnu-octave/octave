@@ -76,8 +76,18 @@ static inline bool
 xisint (T x)
 {
   return (octave::math::x_nint (x) == x
-          && ((x >= 0 && x < std::numeric_limits<int>::max ())
-              || (x <= 0 && x > std::numeric_limits<int>::min ())));
+          && x <= std::numeric_limits<int>::max ()
+          && x >= std::numeric_limits<int>::min ());
+}
+
+static inline bool
+xisint (float x)
+{
+  static const float out_of_range_top
+    = static_cast<float>(std::numeric_limits<int>::max ()) + 1.;
+  return (octave::math::x_nint (x) == x
+          && x < out_of_range_top
+          && x >= std::numeric_limits<int>::min ());
 }
 
 // Safer pow functions.

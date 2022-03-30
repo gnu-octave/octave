@@ -53,7 +53,7 @@
 ## @seealso{cylinder, ellipsoid, rectangle}
 ## @end deftypefn
 
-function [xx, yy, zz] = sphere (varargin)
+function [x, y, z] = sphere (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("sphere", varargin{:});
 
@@ -61,22 +61,25 @@ function [xx, yy, zz] = sphere (varargin)
     print_usage ();
   elseif (nargin == 1)
     n = varargin{1};
+    if (! (isreal (n) && isscalar (n) && n > 0))
+      error ("sphere: N must be a real scalar > 0");
+    endif
   else
     n = 20;
   endif
 
   theta = linspace (0, 2*pi, n+1);
   phi = linspace (-pi/2, pi/2, n+1);
-  [theta,phi] = meshgrid (theta, phi);
+  [theta, phi] = meshgrid (theta, phi);
 
-  x = cos (phi) .* cos (theta);
-  y = cos (phi) .* sin (theta);
-  z = sin (phi);
+  xx = cos (phi) .* cos (theta);
+  yy = cos (phi) .* sin (theta);
+  zz = sin (phi);
 
   if (nargout > 0)
-    xx = x;
-    yy = y;
-    zz = z;
+    x = xx;
+    y = yy;
+    z = zz;
   else
     oldfig = [];
     if (! isempty (hax))
@@ -85,7 +88,7 @@ function [xx, yy, zz] = sphere (varargin)
     unwind_protect
       hax = newplot (hax);
 
-      surf (x, y, z);
+      surf (xx, yy, zz);
     unwind_protect_cleanup
       if (! isempty (oldfig))
         set (0, "currentfigure", oldfig);
@@ -94,3 +97,19 @@ function [xx, yy, zz] = sphere (varargin)
   endif
 
 endfunction
+
+
+%!demo
+%! clf;
+%! colormap ("default");
+%! [x, y, z] = sphere (40);
+%! surf (3*x, 3*y, 3*z);
+%! axis equal;
+%! title ("sphere of radius 3");
+
+## Test input validation
+%!error <Invalid call> sphere (-1,1)
+%!error <N must be a real scalar> sphere (2i)
+%!error <N must be a real scalar> sphere ([])
+%!error <N must be a real scalar> sphere (ones (2,2))
+%!error <N must be a real scalar . 0> sphere (-1)

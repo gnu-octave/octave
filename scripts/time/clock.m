@@ -24,12 +24,16 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} clock ()
+## @deftypefn {} {@var{datevec} =} clock ()
+## @deftypefn {} {[@var{datevec}, @var{isdst}] =} clock ()
 ## Return the current local date and time as a date vector.
 ##
 ## The date vector contains the following fields: current year, month (1-12),
 ## day (1-31), hour (0-23), minute (0-59), and second (0-61).  The seconds
 ## field has a fractional part after the decimal point for extended accuracy.
+##
+## The optional second output @var{isdst} is true if Daylight Savings Time
+## (DST) is in effect for the system's time zone.
 ##
 ## For example:
 ##
@@ -45,18 +49,19 @@
 ## @seealso{now, date, datevec}
 ## @end deftypefn
 
-function retval = clock ()
+function [datevec, isdst] = clock ()
 
   tm = localtime (time ());
 
-  retval = zeros (1, 6);
+  datevec = zeros (1, 6);
+  datevec(1) = tm.year + 1900;
+  datevec(2) = tm.mon + 1;
+  datevec(3) = tm.mday;
+  datevec(4) = tm.hour;
+  datevec(5) = tm.min;
+  datevec(6) = tm.sec + tm.usec / 1e6;
 
-  retval(1) = tm.year + 1900;
-  retval(2) = tm.mon + 1;
-  retval(3) = tm.mday;
-  retval(4) = tm.hour;
-  retval(5) = tm.min;
-  retval(6) = tm.sec + tm.usec / 1e6;
+  isdst = tm.isdst;
 
 endfunction
 

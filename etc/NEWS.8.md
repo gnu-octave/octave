@@ -17,6 +17,10 @@ Configure with `--disable-lib-visibility-flags` to export all symbols
 
 ### Matlab compatibility
 
+- `cylinder` now accepts a scalar for the radius argument.
+
+- `clock` now has an optional second output `ISDST` which indicates if
+  Daylight Savings Time is in effect for the system's time zone.
 
 ### Alphabetical list of new functions added in Octave 8
 
@@ -34,7 +38,12 @@ major release after 8):
   `shift`                | `circshift`
   `sparse_auto_mutate`   | none (see below)
 
-- The `sparse_auto_mutate` function no longer has any effect on Octave's behavior.  Prevoiusly, after calling `sparse_auto_mutate (true)`, Octave would automatically convert sparse matrices to full when a sparse matrix required more memory than simply using full matrix storage.  This setting was `false` by default for compatibility with Matlab.  Now you must manually convert to full storage when desired.
+- The `sparse_auto_mutate` function no longer has any effect on Octave's
+  behavior.  Previously, after calling `sparse_auto_mutate (true)`,
+  Octave would automatically convert sparse matrices to full when a
+  sparse matrix required more memory than simply using full matrix
+  storage.  This setting was `false` by default for compatibility with
+  Matlab.  Now you must manually convert to full storage when desired.
 
 The following functions were deprecated in Octave 6 and have been removed
 from Octave 8.

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{datevec} =} clock ()
-## @deftypefn {} {[@var{datevec}, @var{isdst}] =} clock ()
+## @deftypefn  {} {@var{datevec} =} clock ()
+## @deftypefnx {} {[@var{datevec}, @var{isdst}] =} clock ()
 ## Return the current local date and time as a date vector.
 ##
 ## The date vector contains the following fields: current year, month (1-12),

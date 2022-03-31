@@ -71,7 +71,7 @@
 ## @seealso{which, ls, exist}
 ## @end deftypefn
 
-function retval = what (dir)
+function w = what (dir)
 
   if (nargin == 0)
     dir = { pwd() };
@@ -98,26 +98,26 @@ function retval = what (dir)
 
    ## Lookup info for each directory
    for i = 1 : numel (dir)
-     w(i) = __what__ (dir{i});
+     ws(i) = __what__ (dir{i});
    endfor
 
    ## If none was found, return an empty struct
    if (numel (dir) == 0)
-     w = __what__ ("");
-     w = resize (w, [0, 1]);  # Matlab compatibility, return 0x1 empty array
+     ws = __what__ ("");
+     ws = resize (ws, [0, 1]);  # Matlab compatibility, return 0x1 empty array
    endif
 
   if (nargout == 0)
-    for i = 1 : numel (w)
-      __print_fnames__ ("M-files in directory", w(i).path, w(i).m);
-      __print_fnames__ ("\nMAT-files in directory", w(i).path, w(i).mat);
-      __print_fnames__ ("\nMEX-files in directory", w(i).path, w(i).mex);
-      __print_fnames__ ("\nOCT-files in directory", w(i).path, w(i).oct);
-      __print_fnames__ ("\nClasses in directory", w(i).path, w(i).classes);
-      __print_fnames__ ("\nPackages in directory", w(i).path, w(i).packages);
+    for i = 1 : numel (ws)
+      __print_fnames__ ("M-files in directory", ws(i).path, ws(i).m);
+      __print_fnames__ ("\nMAT-files in directory", ws(i).path, ws(i).mat);
+      __print_fnames__ ("\nMEX-files in directory", ws(i).path, ws(i).mex);
+      __print_fnames__ ("\nOCT-files in directory", ws(i).path, ws(i).oct);
+      __print_fnames__ ("\nClasses in directory", ws(i).path, ws(i).classes);
+      __print_fnames__ ("\nPackages in directory", ws(i).path, ws(i).packages);
     endfor
   else
-    retval = w;
+    w = ws;
   endif
 
 endfunction

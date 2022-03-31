@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} poly (@var{A})
-## @deftypefnx {} {} poly (@var{x})
+## @deftypefn  {} {@var{y} =} poly (@var{A})
+## @deftypefnx {} {@var{y} =} poly (@var{x})
 ## If @var{A} is a square @math{N}-by-@math{N} matrix, @code{poly (@var{A})}
 ## is the row vector of the coefficients of @code{det (z * eye (N) - A)},
 ## the characteristic polynomial of @var{A}.

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} betainc (@var{x}, @var{a}, @var{b})
-## @deftypefnx {} {} betainc (@var{x}, @var{a}, @var{b}, @var{tail})
+## @deftypefn  {} {@var{I} =} betainc (@var{x}, @var{a}, @var{b})
+## @deftypefnx {} {@var{I} =} betainc (@var{x}, @var{a}, @var{b}, @var{tail})
 ## Compute the incomplete beta function.
 ##
 ## This is defined as
@@ -72,7 +72,7 @@
 ## @seealso{beta, betaincinv, betaln}
 ## @end deftypefn
 
-function y = betainc (x, a, b, tail = "lower")
+function I = betainc (x, a, b, tail = "lower")
 
   if (nargin < 3)
     print_usage ();
@@ -115,7 +115,7 @@ function y = betainc (x, a, b, tail = "lower")
 
   ## Convert to floating point if necessary
   if (isinteger (x))
-    y = double (x);
+    I = double (x);
   endif
   if (isinteger (a))
     a = double (a);
@@ -125,7 +125,7 @@ function y = betainc (x, a, b, tail = "lower")
   endif
 
   ## Initialize output array
-  y = zeros (size (x), class (x));
+  I = zeros (size (x), class (x));
 
   ## Trivial cases (long code here trades memory for speed)
   a_one = (a == 1);
@@ -138,13 +138,13 @@ function y = betainc (x, a, b, tail = "lower")
   b_one &= a_not_one;
 
   if (strcmpi (tail, "lower"))
-    y(a_b_one) = x(a_b_one);
-    y(a_one) = 1 - (1 - x(a_one)) .^ b(a_one);
-    y(b_one) = x(b_one) .^ a(b_one);
+    I(a_b_one) = x(a_b_one);
+    I(a_one) = 1 - (1 - x(a_one)) .^ b(a_one);
+    I(b_one) = x(b_one) .^ a(b_one);
   elseif (strcmpi (tail, "upper"))
-    y(a_b_one) = 1 - x(a_b_one);
-    y(a_one) = (1 - x(a_one)) .^ b(a_one);
-    y(b_one) = 1 - x(b_one) .^ a(b_one);
+    I(a_b_one) = 1 - x(a_b_one);
+    I(a_one) = (1 - x(a_one)) .^ b(a_one);
+    I(b_one) = 1 - x(b_one) .^ a(b_one);
   endif
 
   ## Non-Trivial cases
@@ -183,10 +183,10 @@ function y = betainc (x, a, b, tail = "lower")
   y_nt = real (exp (y_nt));
   y_nt(fflag) = 1 - y_nt(fflag);
 
-  y(non_trivial) = y_nt;
+  I(non_trivial) = y_nt;
 
   ## Restore original shape
-  y = reshape (y, orig_sz);
+  I = reshape (I, orig_sz);
 
 endfunction
 

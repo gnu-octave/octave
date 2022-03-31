@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} expint (@var{x})
+## @deftypefn {} {@var{y} =} expint (@var{x})
 ## Compute the exponential integral.
 ##
 ## The exponential integral is defined as:

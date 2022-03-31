@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} std (@var{x})
-## @deftypefnx {} {} std (@var{x}, @var{w})
-## @deftypefnx {} {} std (@var{x}, @var{w}, @var{dim})
-## @deftypefnx {} {} std (@var{x}, @var{w}, @qcode{"ALL"})
+## @deftypefn  {} {@var{y} =} std (@var{x})
+## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w})
+## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w}, @var{dim})
+## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w}, @qcode{"ALL"})
 ## Compute the standard deviation of the elements of the vector @var{x}.
 ##
 ## The standard deviation is defined as
@@ -87,9 +87,9 @@
 ## @seealso{var, bounds, mad, range, iqr, mean, median}
 ## @end deftypefn
 
-function retval = std (varargin)
+function y = std (varargin)
 
-  retval = sqrt (var (varargin{:}));
+  y = sqrt (var (varargin{:}));
 
 endfunction
 

@@ -27,8 +27,8 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} inputname (@var{n})
-## @deftypefnx {} {} inputname (@var{n}, @var{ids_only})
+## @deftypefn  {} {@var{namestr} =} inputname (@var{n})
+## @deftypefnx {} {@var{namestr} =} inputname (@var{n}, @var{ids_only})
 ## Return the name of the @var{n}-th argument to the calling function.
 ##
 ## If the argument is not a simple variable name, return an empty string.
@@ -73,7 +73,7 @@
 ##   arrayfun (fn, a, 'uniformoutput', false)
 ##   % output is {'fn', 'a', '', ''}
 
-function name = inputname (n, ids_only = true)
+function namestr = inputname (n, ids_only = true)
 
   if (nargin < 1)
     print_usage ();
@@ -84,16 +84,16 @@ function name = inputname (n, ids_only = true)
   endif
 
   try
-    name = evalin ("caller", sprintf ("__varval__ ('.argn.'){%d}", n));
+    namestr = evalin ("caller", sprintf ("__varval__ ('.argn.'){%d}", n));
   catch
-    name = "";
+    namestr = "";
     return;
   end_try_catch
 
   ## For compatibility with Matlab, return empty string if argument name is
   ## not a valid identifier.
-  if (ids_only && ! isvarname (name))
-    name = "";
+  if (ids_only && ! isvarname (namestr))
+    namestr = "";
   elseif (ids_only)
     ## More complicated checking is required to verify name (bug #59103).
     ## NAME may be text, like "Inf", which is an acceptable variable name
@@ -101,9 +101,9 @@ function name = inputname (n, ids_only = true)
     ## variable name, rather than a function or IEEE number.
     try
       v = evalin ("caller",
-                  sprintf ("evalin ('caller', '__varval__ (\"%s\")')", name));
+                  sprintf ("evalin ('caller', '__varval__ (\"%s\")')", namestr));
     catch
-      name = "";
+      namestr = "";
     end_try_catch
   endif
 

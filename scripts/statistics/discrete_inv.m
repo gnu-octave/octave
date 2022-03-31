@@ -24,13 +24,13 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} discrete_inv (@var{x}, @var{v}, @var{p})
+## @deftypefn {} {@var{q} =} discrete_inv (@var{x}, @var{v}, @var{p})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the univariate distribution which assumes the values in
 ## @var{v} with probabilities @var{p}.
 ## @end deftypefn
 
-function inv = discrete_inv (x, v, p)
+function q = discrete_inv (x, v, p)
 
   if (nargin != 3)
     print_usage ();
@@ -47,9 +47,9 @@ function inv = discrete_inv (x, v, p)
   endif
 
   if (isa (x, "single") || isa (v, "single") || isa (p, "single"))
-    inv = NaN (size (x), "single");
+    q = NaN (size (x), "single");
   else
-    inv = NaN (size (x));
+    q = NaN (size (x));
   endif
 
   ## FIXME: This isn't elegant.  But cumsum and lookup together produce
@@ -62,13 +62,13 @@ function inv = discrete_inv (x, v, p)
   p = cumsum (p(idx)(:)) / sum (p);  # Reshape and normalize probability vector
 
   k = (x == 0);
-  inv(k) = v(1);
+  q(k) = v(1);
 
   k = (x == 1);
-  inv(k) = v(end);
+  q(k) = v(end);
 
   k = (x > 0) & (x < 1);
-  inv(k) = v(length (p) - lookup (sort (p, "descend"), x(k)) + 1);
+  q(k) = v(length (p) - lookup (sort (p, "descend"), x(k)) + 1);
 
 endfunction
 

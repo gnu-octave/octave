@@ -28,6 +28,7 @@
 ## @deftypefnx {} {} help --list
 ## @deftypefnx {} {} help .
 ## @deftypefnx {} {} help
+## @deftypefnx {} {@var{help_text} =} help (@dots{})
 ## Display the help text for @var{name}.
 ##
 ## For example, the command @kbd{help help} prints a short message describing

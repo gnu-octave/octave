@@ -28,7 +28,7 @@
 ## @deftypefnx {} {} print (@var{options})
 ## @deftypefnx {} {} print (@var{filename}, @var{options})
 ## @deftypefnx {} {} print (@var{hfig}, @dots{})
-## @deftypefnx {} {@var{rgb} =} print (@qcode{"-RGBImage"}, @dots{})
+## @deftypefnx {} {@var{RGB} =} print (@qcode{"-RGBImage"}, @dots{})
 ## Format a figure for printing and either save it to a file, send it to a
 ## printer, or return an RGB image.
 ##
@@ -415,7 +415,7 @@
 ## @seealso{saveas, getframe, savefig, hgsave, orient, figure}
 ## @end deftypefn
 
-function rgbout = print (varargin)
+function RGB = print (varargin)
 
   opts = __print_parse_opts__ (varargin{:});
 
@@ -754,7 +754,7 @@ function rgbout = print (varargin)
       otherwise
         if (strcmp (opts.renderer, "opengl"))
           if (opts.rgb_output)
-            rgbout = __get_frame__ (opts.figure);
+            RGB = __get_frame__ (opts.figure);
           else
             compression = "none";
 

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} usejava (@var{feature})
+## @deftypefn {} {@var{tf} =} usejava (@var{feature})
 ## Return true if the Java element @var{feature} is available.
 ##
 ## Possible features are:
@@ -52,32 +52,32 @@
 ## @seealso{javachk}
 ## @end deftypefn
 
-function retval = usejava (feature)
+function tf = usejava (feature)
 
   if (nargin < 1 || ! ischar (feature))
     print_usage ();
   endif
 
-  retval = false;
+  tf = false;
 
   switch (feature)
     ## For each feature, try methods() on a Java class of a feature
     case "awt"
       try
         dum = methods ("java.awt.Frame");
-        retval = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
+        tf = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
       end_try_catch
     case "desktop"
-      ## Octave has no Java based GUI/desktop, leave retval = false
+      ## Octave has no Java based GUI/desktop, leave tf = false
     case "jvm"
       try
         dum = methods ("java.lang.Runtime");
-        retval = true;
+        tf = true;
       end_try_catch
     case "swing"
       try
         dum = methods ("javax.swing.Popup");
-        retval = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
+        tf = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
       end_try_catch
     otherwise
       error ("usejava: unrecognized FEATURE '%s'", feature);

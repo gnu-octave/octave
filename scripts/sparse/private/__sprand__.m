@@ -27,9 +27,9 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} __sprand__ (@var{s}, @var{randfun})
-## @deftypefnx {} {} __sprand__ (@var{m}, @var{n}, @var{d}, @var{fcnname}, @var{randfun})
-## @deftypefnx {} {} __sprand__ (@var{m}, @var{n}, @var{d}, @var{rc}, @var{fcnname}, @var{randfun})
+## @deftypefn  {} {@var{S} =} __sprand__ (@var{s}, @var{randfun})
+## @deftypefnx {} {@var{S} =} __sprand__ (@var{m}, @var{n}, @var{d}, @var{fcnname}, @var{randfun})
+## @deftypefnx {} {@var{S} =} __sprand__ (@var{m}, @var{n}, @var{d}, @var{rc}, @var{fcnname}, @var{randfun})
 ## Undocumented internal function.
 ## @end deftypefn
 

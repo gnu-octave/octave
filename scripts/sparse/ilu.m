@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} ilu (@var{A})
-## @deftypefnx {} {} ilu (@var{A}, @var{opts})
+## @deftypefn  {} {@var{LUA} =} ilu (@var{A})
+## @deftypefnx {} {@var{LUA} =} ilu (@var{A}, @var{opts})
 ## @deftypefnx {} {[@var{L}, @var{U}] =} ilu (@dots{})
 ## @deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} ilu (@dots{})
 ##

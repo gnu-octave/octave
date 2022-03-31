@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} dec2bin (@var{d})
-## @deftypefnx {} {} dec2bin (@var{d}, @var{len})
+## @deftypefn  {} {@var{bstr} =} dec2bin (@var{d})
+## @deftypefnx {} {@var{bstr} =} dec2bin (@var{d}, @var{len})
 ## Return a string of ones and zeros representing the conversion of the integer
 ## @var{d} to a binary number.
 ##
@@ -63,7 +63,7 @@
 ## @seealso{bin2dec, dec2base, dec2hex}
 ## @end deftypefn
 
-function b = dec2bin (d, len)
+function bstr = dec2bin (d, len)
 
   if (nargin == 0)
     print_usage ();
@@ -92,9 +92,9 @@ function b = dec2bin (d, len)
   endif
 
   if (nargin == 1)
-    b = dec2base (d, 2);
+    bstr = dec2base (d, 2);
   else
-    b = dec2base (d, 2, len);
+    bstr = dec2base (d, 2, len);
   endif
 
 endfunction

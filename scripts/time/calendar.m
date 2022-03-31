@@ -41,7 +41,7 @@
 ## @seealso{datenum, datestr}
 ## @end deftypefn
 
-function varargout = calendar (varargin)
+function c = calendar (y, m)
 
   switch (nargin)
     case 0
@@ -49,31 +49,30 @@ function varargout = calendar (varargin)
       y = v(1);
       m = v(2);
       d = v(3);
+
     case 1
-      v = datevec (varargin{1});
+      v = datevec (y);
       y = v(1);
       m = v(2);
       d = v(3);
+
     case 2
-      y = varargin{1};
-      m = varargin{2};
       d = [];
-    otherwise
-      print_usage ();
+
   endswitch
 
-  c = zeros (7, 6);
+  cal = zeros (7, 6);
   dayone = datenum (y, m, 1);
   ndays = eomday (y, m);
-  c(weekday (dayone) - 1 + [1:ndays]) = 1:ndays;
+  cal(weekday (dayone) - 1 + [1:ndays]) = 1:ndays;
 
   if (nargout > 0)
-    varargout{1} = c';
+    c = cal';
   else
     ## Layout the calendar days, 6 columns per day, 7 days per row.
-    str = sprintf ("    %2d    %2d    %2d    %2d    %2d    %2d    %2d\n", c);
+    str = sprintf ("    %2d    %2d    %2d    %2d    %2d    %2d    %2d\n", cal);
 
-    ## Print an asterisk before the specified date
+    ## Print an asterisk before the specified date.
     if (! isempty (d))
       pos = weekday (dayone) + d - 1;
       idx = 6*pos + fix (pos / 7.1) - ifelse (d < 10, 1, 2);
@@ -101,6 +100,3 @@ endfunction
 
 %!assert ((calendar(2000,2))'(2:31), [0:29])
 %!assert ((calendar(1957,10))'(2:33), [0:31])
-
-## Test input validation
-%!error calendar (1,2,3)

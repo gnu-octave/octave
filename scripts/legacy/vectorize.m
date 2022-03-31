@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} vectorize (@var{fun})
+## @deftypefn {} {@var{vfun} =} vectorize (@var{fun})
 ## Create a vectorized version of the anonymous function or expression
 ## @var{fun} by replacing all occurrences of @code{*}, @code{/}, etc.,
 ## with @code{.*}, @code{./}, etc.
@@ -39,7 +39,7 @@
 ## anyway, and most expressions will probably be short.  It may also be
 ## buggy.  Well, don't use this function!
 
-function retval = vectorize (fun)
+function vfun = vectorize (fun)
 
   persistent warned = false;
   if (! warned)
@@ -62,9 +62,9 @@ function retval = vectorize (fun)
     args = expr(1:idx);
     expr = expr(idx+1:end);
     new_expr = __vectorize__ (expr);
-    retval = str2func ([args, new_expr]);
+    vfun = str2func ([args, new_expr]);
   elseif (ischar (fun))
-    retval = __vectorize__ (fun);
+    vfun = __vectorize__ (fun);
   else
     error ("vectorize: FUN must be a string or anonymous function handle");
   endif

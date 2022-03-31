@@ -43,7 +43,6 @@
 ## @seealso{profexplore, profile}
 ## @end deftypefn
 
-## Built-in profiler.
 function profshow (data, n = 20)
 
   if (nargin == 0)

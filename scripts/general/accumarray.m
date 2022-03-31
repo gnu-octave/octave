@@ -24,8 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
-## @deftypefnx {} {} accumarray (@var{subs}, @var{vals}, @dots{})
+## @deftypefn  {} {@var{A} =} accumarray (@var{subs}, @var{vals})
+## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz})
+## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func})
+## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval})
+## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
 ##
 ## Create an array by accumulating the elements of a vector into the
 ## positions defined by their subscripts.

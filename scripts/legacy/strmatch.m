@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} strmatch (@var{s}, @var{A})
-## @deftypefnx {} {} strmatch (@var{s}, @var{A}, "exact")
+## @deftypefn  {} {@var{idx} =} strmatch (@var{s}, @var{A})
+## @deftypefnx {} {@var{idx} =} strmatch (@var{s}, @var{A}, "exact")
 ##
 ## This function is obsolete.  @strong{Use an alternative} such as
 ## @code{strncmp} or @code{strcmp} instead.

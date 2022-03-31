@@ -27,10 +27,10 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fail (@var{code})
-## @deftypefnx {} {} fail (@var{code}, @var{pattern})
-## @deftypefnx {} {} fail (@var{code}, "warning")
-## @deftypefnx {} {} fail (@var{code}, "warning", @var{pattern})
+## @deftypefn  {} {@var{status} =} fail (@var{code})
+## @deftypefnx {} {@var{status} =} fail (@var{code}, @var{pattern})
+## @deftypefnx {} {@var{status} =} fail (@var{code}, "warning")
+## @deftypefnx {} {@var{status} =} fail (@var{code}, "warning", @var{pattern})
 ##
 ## Return true if @var{code} fails with an error message matching
 ## @var{pattern}, otherwise produce an error.
@@ -65,7 +65,7 @@
 ## @seealso{assert, error}
 ## @end deftypefn
 
-function retval = fail (code, pattern, warning_pattern)
+function status = fail (code, pattern, warning_pattern)
 
   if (nargin < 1)
     print_usage ();
@@ -95,7 +95,7 @@ function retval = fail (code, pattern, warning_pattern)
 
   ## Allow assert (fail ())
   if (nargout)
-    retval = true;
+    status = true;
   endif
 
   if (test_warning)

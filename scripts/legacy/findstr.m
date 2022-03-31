@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} findstr (@var{s}, @var{t})
-## @deftypefnx {} {} findstr (@var{s}, @var{t}, @var{overlap})
+## @deftypefn  {} {@var{v} =} findstr (@var{s}, @var{t})
+## @deftypefnx {} {@var{v} =} findstr (@var{s}, @var{t}, @var{overlap})
 ##
 ## This function is obsolete.  Use @code{strfind} instead.
 ##

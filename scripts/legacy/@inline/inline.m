@@ -24,14 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} inline (@var{str})
-## @deftypefnx {} {} inline (@var{str}, @var{arg1}, @dots{})
-## @deftypefnx {} {} inline (@var{str}, @var{n})
+## @deftypefn  {} {@var{fobj} =} inline (@var{str})
+## @deftypefnx {} {@var{fobj} =} inline (@var{str}, @var{arg1}, @dots{})
+## @deftypefnx {} {@var{fobj} =} inline (@var{str}, @var{n})
 ##
 ## This function is obsolete.  Use anonymous functions
 ## (@pxref{Anonymous Functions}) instead.
 ##
-## Create an inline function from the character string @var{str}.
+## Create an inline function object from the character string @var{str}.
 ##
 ## If called with a single argument, the arguments of the generated
 ## function are extracted from the function itself.  The generated
@@ -55,7 +55,7 @@
 ## @seealso{argnames, formula, vectorize, str2func}
 ## @end deftypefn
 
-function obj = inline (expr, varargin)
+function fobj = inline (expr, varargin)
 
   persistent warned = false;
   if (! warned)
@@ -103,7 +103,7 @@ function obj = inline (expr, varargin)
   p.isEmpty = false;
   p.version = 1;
 
-  obj = __inline_ctor__ (p);
+  fobj = __inline_ctor__ (p);
 
 endfunction
 

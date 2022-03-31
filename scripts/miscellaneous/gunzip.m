@@ -25,34 +25,34 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} gunzip (@var{gzfile})
-## @deftypefnx {} {} gunzip (@var{gzfile}, @var{dir})
+## @deftypefnx {} {} gunzip (@var{gzfile}, @var{outdir})
 ## @deftypefnx {} {@var{filelist} =} gunzip (@dots{})
 ## Unpack the gzip archive @var{gzfile}.
 ##
 ## If @var{gzfile} is a directory, all gzfiles in the directory will be
 ## recursively unpacked.
 ##
-## If @var{dir} is specified the files are unpacked in this directory rather
+## If @var{outdir} is specified the files are unpacked in this directory rather
 ## than the one where @var{gzfile} is located.
 ##
 ## The optional output @var{filelist} is a list of the uncompressed files.
 ## @seealso{gzip, unpack, bunzip2, unzip, untar}
 ## @end deftypefn
 
-function filelist = gunzip (gzfile, dir = [])
+function filelist = gunzip (gzfile, outdir = [])
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  if (isempty (dir) && ischar (gzfile))
-    dir = fileparts (gzfile);
+  if (isempty (outdir) && ischar (gzfile))
+    outdir = fileparts (gzfile);
   endif
 
   if (nargout > 0)
-    filelist = unpack (gzfile, dir, "gz");
+    filelist = unpack (gzfile, outdir, "gz");
   else
-    unpack (gzfile, dir, "gz");
+    unpack (gzfile, outdir, "gz");
   endif
 
 endfunction

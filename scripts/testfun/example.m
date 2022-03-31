@@ -28,7 +28,7 @@
 ## @deftypefnx {} {} example @var{name} @var{n}
 ## @deftypefnx {} {} example ("@var{name}")
 ## @deftypefnx {} {} example ("@var{name}", @var{n})
-## @deftypefnx {} {[@var{s}, @var{idx}] =} example (@dots{})
+## @deftypefnx {} {[@var{codestr}, @var{codeidx}] =} example (@dots{})
 ##
 ## Display the code for example @var{n} associated with the function
 ## @var{name}, but do not run it.
@@ -36,14 +36,14 @@
 ## If @var{n} is not specified, all examples are displayed.
 ##
 ## When called with output arguments, the examples are returned in the form of
-## a string @var{s}, with @var{idx} indicating the ending position of the
-## various examples.
+## a string @var{codestr}, with @var{codeidx} indicating the ending position of
+## the various examples.
 ##
 ## For a complete explanation @pxref{XREFdemo,,@code{demo}}.
 ## @seealso{demo, test}
 ## @end deftypefn
 
-function [ex_code, ex_idx] = example (name, n = 0)
+function [codestr, codeidx] = example (name, n = 0)
 
   if (nargin < 1)
     print_usage ();
@@ -74,15 +74,15 @@ function [ex_code, ex_idx] = example (name, n = 0)
   if (nargout > 0)
     if (n > 0)
       if (n <= length (idx))
-        ex_code = code(idx(n):idx(n+1)-1);
-        ex_idx = [1, length(ex_code)+1];
+        codestr = code(idx(n):idx(n+1)-1);
+        codeidx = [1, length(codestr)+1];
       else
-        ex_code = "";
-        ex_idx = [];
+        codestr = "";
+        codeidx = [];
       endif
     else
-      ex_code = code;
-      ex_idx = idx;
+      codestr = code;
+      codeidx = idx;
     endif
   else
     if (n > 0)

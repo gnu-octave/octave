@@ -58,7 +58,7 @@
 ## @seealso{dir, readdir, glob, what, stat, filesep, ls_command}
 ## @end deftypefn
 
-function retval = ls (varargin)
+function list = ls (varargin)
 
   if (! iscellstr (varargin))
     error ("ls: all arguments must be character strings");
@@ -100,7 +100,7 @@ function retval = ls (varargin)
     elseif (nargout == 0)
       puts (output);
     else
-      retval = strvcat (regexp (output, "[\r\n]+", "split"){:});
+      list = strvcat (regexp (output, "[\r\n]+", "split"){:});
     endif
   else
     ## Just let the output flow if the pager is off.  That way the

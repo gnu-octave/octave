@@ -24,11 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} randi (@var{imax})
-## @deftypefnx {} {} randi (@var{imax}, @var{n})
-## @deftypefnx {} {} randi (@var{imax}, @var{m}, @var{n}, @dots{})
-## @deftypefnx {} {} randi ([@var{imin} @var{imax}], @dots{})
-## @deftypefnx {} {} randi (@dots{}, "@var{class}")
+## @deftypefn  {} {@var{R} =} randi (@var{imax})
+## @deftypefnx {} {@var{R} =} randi (@var{imax}, @var{n})
+## @deftypefnx {} {@var{R} =} randi (@var{imax}, @var{m}, @var{n}, @dots{})
+## @deftypefnx {} {@var{R} =} randi ([@var{imin} @var{imax}], @dots{})
+## @deftypefnx {} {@var{R} =} randi (@dots{}, "@var{class}")
 ## Return random integers in the range 1:@var{imax}.
 ##
 ## Additional arguments determine the shape of the return matrix.  When no
@@ -37,7 +37,7 @@
 ## is returned.  Two or more arguments will return a multi-dimensional matrix
 ## @w{(@var{m} x @var{n} x @dots{})}.
 ##
-## The integer range may optionally be described by a two element matrix with a
+## The integer range may optionally be described by a two-element matrix with a
 ## lower and upper bound in which case the returned integers will be on the
 ## interval @w{[@var{imin}, @var{imax}]}.
 ##
@@ -56,10 +56,10 @@
 ## returned by the @code{flintmax} function.  For IEEE floating point numbers
 ## this value is @w{@math{2^{53} - 1}}.
 ##
-## @seealso{rand}
+## @seealso{rand, randn}
 ## @end deftypefn
 
-function ri = randi (bounds, varargin)
+function R = randi (bounds, varargin)
 
   if (nargin < 1)
     print_usage ();
@@ -121,7 +121,7 @@ function ri = randi (bounds, varargin)
     r_prim = r_prim(r_prim < K*rng);
   until (numel (r_prim) >= N)           # should practically always be true
 
-  ri = imin + floor (reshape (r_prim(1:N), varargin{:}) / K);
+  R = imin + floor (reshape (r_prim(1:N), varargin{:}) / K);
 
   if (! strcmp (rclass, "double"))
     if (strfind (rclass, "int"))
@@ -141,7 +141,7 @@ function ri = randi (bounds, varargin)
                 " Values might be truncated to requested type."]);
     endif
 
-    ri = cast (ri, rclass);
+    R = cast (R, rclass);
   endif
 
 endfunction

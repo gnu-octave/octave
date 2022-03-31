@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} statistics (@var{x})
-## @deftypefnx {} {} statistics (@var{x}, @var{dim})
+## @deftypefn  {} {@var{stats} =} statistics (@var{x})
+## @deftypefnx {} {@var{stats} =} statistics (@var{x}, @var{dim})
 ## Return a vector with the minimum, first quartile, median, third quartile,
 ## maximum, mean, standard deviation, skewness, and kurtosis of the elements of
 ## the vector @var{x}.

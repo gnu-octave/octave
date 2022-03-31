@@ -24,11 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} flipud (@var{x})
+## @deftypefn {} {@var{B} =} flipud (@var{A})
 ## Flip array upside down.
 ##
-## Return a copy of @var{x} with the order of the rows reversed.  In other
-## words, @var{x} is flipped upside-down about a horizontal axis.  For example:
+## Return a copy of @var{A} with the order of the rows reversed.  In other
+## words, @var{A} is flipped upside-down about a horizontal axis.  For example:
 ##
 ## @example
 ## @group
@@ -41,12 +41,12 @@
 ## @seealso{fliplr, flip, rot90, rotdim}
 ## @end deftypefn
 
-function y = flipud (x)
+function B = flipud (A)
 
   if (nargin < 1)
     print_usage ();
   endif
-  y = flip (x, 1);
+  B = flip (A, 1);
 
 endfunction
 

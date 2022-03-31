@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} median (@var{x})
-## @deftypefnx {} {} median (@var{x}, @var{dim})
+## @deftypefn  {} {@var{y} =} median (@var{x})
+## @deftypefnx {} {@var{y} =} median (@var{x}, @var{dim})
 ## Compute the median value of the elements of the vector @var{x}.
 ##
 ## When the elements of @var{x} are sorted, say
@@ -60,7 +60,7 @@
 ## @seealso{mean, mode}
 ## @end deftypefn
 
-function retval = median (x, dim)
+function y = median (x, dim)
 
   if (nargin < 1)
     print_usage ();
@@ -88,16 +88,16 @@ function retval = median (x, dim)
   n = size (x, dim);
   k = floor ((n+1) / 2);
   if (mod (n, 2) == 1)
-    retval = nth_element (x, k, dim);
+    y = nth_element (x, k, dim);
   else
-    retval = sum (nth_element (x, k:k+1, dim), dim, "native") / 2;
+    y = sum (nth_element (x, k:k+1, dim), dim, "native") / 2;
     if (islogical (x))
-      retval = logical (retval);
+      y = logical (y);
     endif
   endif
   ## Inject NaNs where needed, to be consistent with Matlab.
   if (isfloat (x))
-    retval(any (isnan (x), dim)) = NaN;
+    y(any (isnan (x), dim)) = NaN;
   endif
 
 endfunction

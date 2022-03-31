@@ -75,7 +75,7 @@
 ## @seealso{rand, randn}
 ## @end deftypefn
 
-function retval = rng (varargin)
+function s = rng (varargin)
 
   if (nargin > 2)
     print_usage ();
@@ -93,12 +93,12 @@ function retval = rng (varargin)
   ## Type is the generator name.
   ## Seed is the initial seed value.
   ## State is a structure describing internal state of the generator.
-  s = struct ("Type", "twister",
-              "Seed", "Not applicable",
-              "State", {{rand("state"), randn("state")}});
+  srng = struct ("Type", "twister",
+                 "Seed", "Not applicable",
+                 "State", {{rand("state"), randn("state")}});
 
   if (nargin == 0)
-    retval = s;
+    s = srng;
     return;
   endif
 
@@ -135,7 +135,7 @@ function retval = rng (varargin)
 
   ## Set the type of random number generator and seed it
   if (isempty (generator))
-    generator = s.Type;
+    generator = srng.Type;
   endif
   switch (generator)
     case "twister"
@@ -158,7 +158,7 @@ function retval = rng (varargin)
   endswitch
 
   if (nargout > 0)
-    retval = s;
+    s = srng;
   endif
 
 endfunction

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} lcm (@var{x}, @var{y})
-## @deftypefnx {} {} lcm (@var{x}, @var{y}, @dots{})
+## @deftypefn  {} {@var{l} =} lcm (@var{x}, @var{y})
+## @deftypefnx {} {@var{l} =} lcm (@var{x}, @var{y}, @dots{})
 ## Compute the least common multiple of @var{x} and @var{y}, or of the list of
 ## all arguments.
 ##

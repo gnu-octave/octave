@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} hurst (@var{x})
+## @deftypefn {} {@var{H} =} hurst (@var{x})
 ## Estimate the Hurst parameter of sample @var{x} via the rescaled range
 ## statistic.
 ##
@@ -33,14 +33,14 @@
 
 function H = hurst (x)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   endif
 
   if (isscalar (x))
     error ("hurst: X must not be a scalar");
   elseif (isvector (x))
-    x = reshape (x, length (x), 1);
+    x = x(:);  # always use column vector
   endif
 
   [xr, xc] = size (x);

@@ -24,9 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} uipanel (@var{property}, @var{value}, @dots{})
-## @deftypefnx {} {} uipanel (@var{parent}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {} {@var{hui} =} uipanel (@dots{})
+## @deftypefn  {} {@var{hui} =} uipanel ()
+## @deftypefnx {} {@var{hui} =} uipanel (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uipanel (@var{parent})
+## @deftypefnx {} {@var{hui} =} uipanel (@var{parent}, @var{property}, @var{value}, @dots{})
 ##
 ## Create a uipanel object.
 ##

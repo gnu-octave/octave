@@ -24,8 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fsolve (@var{fcn}, @var{x0})
-## @deftypefnx {} {} fsolve (@var{fcn}, @var{x0}, @var{options})
+## @deftypefn  {} {@var{x} =} fsolve (@var{fcn}, @var{x0})
+## @deftypefnx {} {@var{x} =} fsolve (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}] =} fsolve (@dots{})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}] =} fsolve (@dots{})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fsolve (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ##

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} compan (@var{c})
+## @deftypefn {} {@var{A} =} compan (@var{c})
 ## Compute the companion matrix corresponding to polynomial coefficient vector
 ## @var{c}.
 ##
@@ -63,7 +63,7 @@
 
 function A = compan (c)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   endif
 

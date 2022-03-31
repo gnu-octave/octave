@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} commutation_matrix (@var{m}, @var{n})
+## @deftypefn {} {@var{k} =} commutation_matrix (@var{m}, @var{n})
 ## Return the commutation matrix
 ## @tex
 ##  $K_{m,n}$

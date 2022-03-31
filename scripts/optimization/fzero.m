@@ -24,8 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fzero (@var{fun}, @var{x0})
-## @deftypefnx {} {} fzero (@var{fun}, @var{x0}, @var{options})
+## @deftypefn  {} {@var{x} =} fzero (@var{fun}, @var{x0})
+## @deftypefnx {} {@var{x} =} fzero (@var{fun}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}] =} fzero (@dots{})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}] =} fzero (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
 ## Find a zero of a univariate function.
 ##

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} sinetone (@var{freq}, @var{rate}, @var{sec}, @var{ampl})
+## @deftypefn {} {@var{y} =} sinetone (@var{freq}, @var{rate}, @var{sec}, @var{ampl})
 ## Return a sinetone of frequency @var{freq} with a length of @var{sec}
 ## seconds at sampling rate @var{rate} and with amplitude @var{ampl}.
 ##
@@ -34,7 +34,7 @@
 ## @seealso{sinewave}
 ## @end deftypefn
 
-function retval = sinetone (freq, rate = 8000, sec = 1, ampl = 64)
+function y = sinetone (freq, rate = 8000, sec = 1, ampl = 64)
 
   if (nargin < 1)
     print_usage ();
@@ -52,10 +52,10 @@ function retval = sinetone (freq, rate = 8000, sec = 1, ampl = 64)
   n = length (freq);
   ns = round (rate * sec);
 
-  retval = zeros (ns, n);
+  y = zeros (ns, n);
 
   for k = 1:n
-    retval(:, k) = ampl(k) * sin (2 * pi * (1:ns) / rate * freq(k))';
+    y(:, k) = ampl(k) * sin (2 * pi * (1:ns) / rate * freq(k))';
   endfor
 
 endfunction

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} rot90 (@var{A})
-## @deftypefnx {} {} rot90 (@var{A}, @var{k})
+## @deftypefn  {} {@var{B} =} rot90 (@var{A})
+## @deftypefnx {} {@var{B} =} rot90 (@var{A}, @var{k})
 ## Rotate array by 90 degree increments.
 ##
 ## Return a copy of @var{A} with the elements rotated counterclockwise in

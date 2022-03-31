@@ -24,8 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{hui} =} uibuttongroup (@var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uibuttongroup ()
+## @deftypefnx {} {@var{hui} =} uibuttongroup (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uibuttongroup (@var{parent})
 ## @deftypefnx {} {@var{hui} =} uibuttongroup (@var{parent}, @var{property}, @var{value}, @dots{})
+## @c FIXME: 3rd form is not documented by Matlab nor implemented in Octave.
+## @c        Should it be removed?  (1/9/2022).
 ## @deftypefnx {} {} uibuttongroup (@var{h})
 ##
 ## Create a uibuttongroup object and return a handle to it.

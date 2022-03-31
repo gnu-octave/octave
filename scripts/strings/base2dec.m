@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} base2dec (@var{s}, @var{base})
-## Convert @var{s} from a string of digits in base @var{base} to a decimal
+## @deftypefn {} {@var{d} =} base2dec (@var{str}, @var{base})
+## Convert @var{str} from a string of digits in base @var{base} to a decimal
 ## integer (base 10).
 ##
 ## @example
@@ -35,15 +35,16 @@
 ## @end group
 ## @end example
 ##
-## If @var{s} is a string matrix, return a column vector with one value per
-## row of @var{s}.  If a row contains invalid symbols then the corresponding
+## If @var{str} is a string matrix, return a column vector with one value per
+## row of @var{str}.  If a row contains invalid symbols then the corresponding
 ## value will be NaN@.
 ##
-## If @var{s} is a cell array of strings, return a column vector with one
-## value per cell element in @var{s}.
+## If @var{str} is a cell array of strings, return a column vector with one
+## value per cell element in @var{str}.
 ##
 ## If @var{base} is a string, the characters of @var{base} are used as the
-## symbols for the digits of @var{s}.  Space (' ') may not be used as a symbol.
+## symbols for the digits of @var{str}.  Space (' ') may not be used as a
+## symbol.
 ##
 ## @example
 ## @group
@@ -54,16 +55,16 @@
 ## @seealso{dec2base, bin2dec, hex2dec}
 ## @end deftypefn
 
-function out = base2dec (s, base)
+function d = base2dec (str, base)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (iscellstr (s))
-    s = char (s);
-  elseif (! ischar (s))
-    error ("base2dec: S must be a string or cellstring");
+  if (iscellstr (str))
+    str = char (str);
+  elseif (! ischar (str))
+    error ("base2dec: STR must be a string or cellstring");
   endif
 
   symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -81,16 +82,16 @@ function out = base2dec (s, base)
   elseif (! (base >= 2 && base <= length (symbols)))
     error ("base2dec: BASE must be between 2 and 36, or a string of symbols");
   else
-    s = toupper (s);
+    str = toupper (str);
   endif
 
   ## Right justify the values and squeeze out any spaces.
   ## This looks complicated, but indexing solution is very fast
   ## compared to alternatives which use cellstr or cellfun or looping.
-  [nr, nc] = size (s);
+  [nr, nc] = size (str);
   if (nc > 1)   # Bug #35621
-    s = s.';
-    nonbl = s != " ";
+    str = str.';
+    nonbl = str != " ";
     num_nonbl = sum (nonbl);
     nc = max (num_nonbl);
     num_blank = nc - num_nonbl;
@@ -102,8 +103,8 @@ function out = base2dec (s, base)
 
     ## Create a blank matrix and position the nonblank characters.
     s2 = repmat (" ", nc, nr);
-    s2(idx) = s(nonbl);
-    s = s2.';
+    s2(idx) = str(nonbl);
+    str = s2.';
   endif
 
   ## Lookup value of symbols in symbol table, with invalid symbols
@@ -111,11 +112,11 @@ function out = base2dec (s, base)
   table = NaN (1, 256);
   table(double (symbols(1:base))) = 0 : base-1;
   table(double (" ")) = 0;
-  s = reshape (table(double (s)), size (s));
+  str = reshape (table(double (str)), size (str));
 
   ## Multiply the resulting digits by the appropriate power
   ## and sum the rows.
-  out = s * (base .^ (columns (s)-1 : -1 : 0)');
+  d = str * (base .^ (columns (str)-1 : -1 : 0)');
 
 endfunction
 

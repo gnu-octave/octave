@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv})
-## @deftypefnx {} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv}, @var{se})
+## @deftypefn  {} {@var{refl} =} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv})
+## @deftypefnx {} {@var{refl} =} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv}, @var{se})
 ## Calculate the specular reflection strength of a surface defined by the
 ## normal vector elements @var{sx}, @var{sy}, @var{sz} using Phong's
 ## approximation.
@@ -40,7 +40,7 @@
 ## @seealso{diffuse, surfl}
 ## @end deftypefn
 
-function retval = specular (sx, sy, sz, lv, vv, se)
+function refl = specular (sx, sy, sz, lv, vv, se)
 
   if (nargin < 5)
     print_usage ();
@@ -86,13 +86,13 @@ function retval = specular (sx, sy, sz, lv, vv, se)
   v_dot_n = (sx * vv(1) + sy * vv(2) + sz * vv(3)) ./ ns;
 
   ## Calculate specular reflection using Phong's approximation
-  retval = 2 * l_dot_n .* v_dot_n - dot (lv, vv);
+  refl = 2 * l_dot_n .* v_dot_n - dot (lv, vv);
 
   ## Set reflectance to zero if light is on the other side
-  retval(l_dot_n < 0) = 0;
+  refl(l_dot_n < 0) = 0;
 
   ## Allow positive values only
-  retval(retval < 0) = 0;
-  retval .^= se;
+  refl(refl < 0) = 0;
+  refl .^= se;
 
 endfunction

@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} blackman (@var{m})
-## @deftypefnx {} {} blackman (@var{m}, "periodic")
-## @deftypefnx {} {} blackman (@var{m}, "symmetric")
+## @deftypefn  {} {@var{c} =} blackman (@var{m})
+## @deftypefnx {} {@var{c} =} blackman (@var{m}, "periodic")
+## @deftypefnx {} {@var{c} =} blackman (@var{m}, "symmetric")
 ## Return the filter coefficients of a @nospell{Blackman} window of length
 ## @var{m}.
 ##
@@ -46,7 +46,7 @@ function c = blackman (m, opt)
     print_usage ();
   endif
 
-  if (! (isscalar (m) && (m == fix (m)) && (m > 0)))
+  if (! (isscalar (m) && m > 0 && m == fix (m)))
     error ("blackman: M must be a positive integer");
   endif
 

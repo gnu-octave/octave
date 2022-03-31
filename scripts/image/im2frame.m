@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} im2frame (@var{rgb})
-## @deftypefnx {} {} im2frame (@var{x}, @var{map})
+## @deftypefn  {} {@var{frame} =} im2frame (@var{rgb})
+## @deftypefnx {} {@var{frame} =} im2frame (@var{x}, @var{map})
 ## Convert image to movie frame.
 ##
 ## A movie frame is simply a struct with the fields @qcode{"cdata"} and

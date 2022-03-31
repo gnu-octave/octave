@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} cosint (@var{x})
+## @deftypefn {} {@var{y} =} cosint (@var{x})
 ## Compute the cosine integral function:
 ## @tex
 ## $$
@@ -76,7 +76,7 @@
 
 function y = cosint (x)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   endif
 

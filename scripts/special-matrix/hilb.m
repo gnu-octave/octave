@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} hilb (@var{n})
+## @deftypefn {} {@var{h} =} hilb (@var{n})
 ## Return the Hilbert matrix of order @var{n}.
 ##
 ## The @math{i,j} element of a Hilbert matrix is defined as
@@ -58,9 +58,9 @@
 ## @seealso{invhilb}
 ## @end deftypefn
 
-function retval = hilb (n)
+function h = hilb (n)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   elseif (! isscalar (n))
     error ("hilb: N must be a scalar integer");
@@ -69,7 +69,7 @@ function retval = hilb (n)
   ## Very elegant solution by N. Higham
   ## https://nhigham.com/2020/06/30/what-is-the-hilbert-matrix/
   j = 1:n;
-  retval = 1 ./ (j' + j - 1);
+  h = 1 ./ (j' + j - 1);
 
 endfunction
 

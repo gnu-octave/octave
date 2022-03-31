@@ -24,11 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} moment (@var{x}, @var{p})
-## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{type})
-## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim})
-## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{type}, @var{dim})
-## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim}, @var{type})
+## @deftypefn  {} {@var{m} =} moment (@var{x}, @var{p})
+## @deftypefnx {} {@var{m} =} moment (@var{x}, @var{p}, @var{type})
+## @deftypefnx {} {@var{m} =} moment (@var{x}, @var{p}, @var{dim})
+## @deftypefnx {} {@var{m} =} moment (@var{x}, @var{p}, @var{type}, @var{dim})
+## @deftypefnx {} {@var{m} =} moment (@var{x}, @var{p}, @var{dim}, @var{type})
 ## Compute the @var{p}-th central moment of the vector @var{x}.
 ##
 ## The @var{p}-th central moment of @var{x} is defined as:

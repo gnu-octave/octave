@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} kendall (@var{x})
-## @deftypefnx {} {} kendall (@var{x}, @var{y})
+## @deftypefn  {} {@var{tau} =} kendall (@var{x})
+## @deftypefnx {} {@var{tau} =} kendall (@var{x}, @var{y})
 ## @cindex Kendall's Tau
 ## Compute Kendall's
 ## @tex

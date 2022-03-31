@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fileattrib ()
+## @deftypefn  {} {} fileattrib
+## @deftypefnx {} {} fileattrib @var{file}
 ## @deftypefnx {} {} fileattrib (@var{file})
 ## @deftypefnx {} {[@var{status}, @var{attrib}] =} fileattrib (@dots{})
 ## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@dots{})

@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} dir
-## @deftypefnx {} {} dir (@var{directory})
+## @deftypefnx {} {} dir @var{directory}
 ## @deftypefnx {} {[@var{list}] =} dir (@var{directory})
 ## Display file listing for directory @var{directory}.
 ##
@@ -75,13 +75,13 @@
 ## FIXME: This is quite slow for large directories.
 ##        Perhaps it should be converted to C++?
 
-function retval = dir (directory = ".")
+function list = dir (directory = ".")
 
   if (! ischar (directory))
     error ("dir: DIRECTORY argument must be a string");
   endif
 
-  ## Prep the retval.
+  ## Prep the list.
   info = struct (zeros (0, 1),
            {"name", "folder" "date", "bytes", "isdir", "datenum", "statinfo"});
 
@@ -181,7 +181,7 @@ function retval = dir (directory = ".")
   ## Return the output arguments.
   if (nargout > 0)
     ## Return the requested structure.
-    retval = info;
+    list = info;
   elseif (numel (info) > 0)
     ## Print the structure to the screen.
     printf ("%s", list_in_columns ({info.name}));

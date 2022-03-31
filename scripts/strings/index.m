@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} index (@var{s}, @var{t})
-## @deftypefnx {} {} index (@var{s}, @var{t}, @var{direction})
+## @deftypefn  {} {@var{n} =} index (@var{s}, @var{t})
+## @deftypefnx {} {@var{n} =} index (@var{s}, @var{t}, @var{direction})
 ## Return the position of the first occurrence of the string @var{t} in the
 ## string @var{s}, or 0 if no occurrence is found.
 ##

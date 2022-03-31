@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} range (@var{x})
-## @deftypefnx {} {} range (@var{x}, @var{dim})
+## @deftypefn  {} {@var{y} =} range (@var{x})
+## @deftypefnx {} {@var{y} =} range (@var{x}, @var{dim})
 ## Return the range, i.e., the difference between the maximum and the minimum
 ## of the input data.
 ##

@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} spectral_adf (@var{c})
-## @deftypefnx {} {} spectral_adf (@var{c}, @var{win})
-## @deftypefnx {} {} spectral_adf (@var{c}, @var{win}, @var{b})
+## @deftypefn  {} {@var{sde} =} spectral_adf (@var{c})
+## @deftypefnx {} {@var{sde} =} spectral_adf (@var{c}, @var{win})
+## @deftypefnx {} {@var{sde} =} spectral_adf (@var{c}, @var{win}, @var{b})
 ## Return the spectral density estimator given a vector of autocovariances
 ## @var{c}, window name @var{win}, and bandwidth, @var{b}.
 ##
@@ -39,7 +39,7 @@
 ## @seealso{spectral_xdf}
 ## @end deftypefn
 
-function retval = spectral_adf (c, win, b)
+function sde = spectral_adf (c, win, b)
 
   if (nargin < 1)
     print_usage ();
@@ -66,9 +66,9 @@ function retval = spectral_adf (c, win, b)
 
   c .*= w;
 
-  retval = 2 * real (fft (c)) - c(1);
-  retval = [(zeros (cr, 1)), retval];
-  retval(:, 1) = (0 : cr-1)' / cr;
+  sde = 2 * real (fft (c)) - c(1);
+  sde = [(zeros (cr, 1)), sde];
+  sde(:, 1) = (0 : cr-1)' / cr;
 
 endfunction
 

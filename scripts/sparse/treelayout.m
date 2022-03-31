@@ -24,21 +24,21 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} treelayout (@var{tree})
-## @deftypefnx {} {} treelayout (@var{tree}, @var{permutation})
+## @deftypefn  {} {[@var{x}, @var{y}] =} treelayout (@var{tree})
+## @deftypefnx {} {[@var{x}, @var{y}] =} treelayout (@var{tree}, @var{permutation})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{h}, @var{s}] =} treelayout (@dots{})
 ## treelayout lays out a tree or a forest.
 ##
 ## The first argument @var{tree} is a vector of predecessors.
 ##
-## The parameter @var{permutation} is an optional postorder permutation.
+## The optional parameter @var{permutation} is a postorder permutation.
 ##
 ## The complexity of the algorithm is O(n) in terms of time and memory
 ## requirements.
 ## @seealso{etreeplot, gplot, treeplot}
 ## @end deftypefn
 
-function [x_coordinate, y_coordinate, height, s] = ...
-                                                 treelayout (tree, permutation)
+function [x, y, h, s] = treelayout (tree, permutation)
 
   if (nargin < 1)
     print_usage ();
@@ -162,7 +162,7 @@ function [x_coordinate, y_coordinate, height, s] = ...
     ## If there is not any descendant of "parent node":
     if (stk(end,2) != par_number)
      left_most += 1;
-     x_coordinate_r(par_number) = left_most;
+     x_r(par_number) = left_most;
      max_ht = min (max_ht, level);
      if (length (stk) > 1 && find ((circshift (stk,1) - stk) == 0) > 1
          && stk(end,2) != stk(end-1,2))
@@ -181,7 +181,7 @@ function [x_coordinate, y_coordinate, height, s] = ...
 
         ## The level have to be decreased.
 
-        x_coordinate_r(par_number_vec) = left_most;
+        x_r(par_number_vec) = left_most;
         stk(position:end,:) = [];
       endif
 
@@ -192,8 +192,8 @@ function [x_coordinate, y_coordinate, height, s] = ...
       par_number = stk(end,1);
       ## If there is another branch start to search it.
       if (par_number != -1)
-        y_coordinate(par_number) = level;
-        x_coordinate_l(par_number) = left_most + 1;
+        y(par_number) = level;
+        x_l(par_number) = left_most + 1;
       endif
     else
 
@@ -201,16 +201,16 @@ function [x_coordinate, y_coordinate, height, s] = ...
       ## them and go on through it.
       level -= 1;
       par_number = stk(end,1);
-      y_coordinate(par_number) = level;
-      x_coordinate_l(par_number) = left_most + 1;
+      y(par_number) = level;
+      x_l(par_number) = left_most + 1;
     endif
   endwhile
 
   ## Calculate the x coordinates (the known values are the position
   ## of most left and most right descendants).
-  x_coordinate = (x_coordinate_l + x_coordinate_r) / 2;
+  x = (x_l + x_r) / 2;
 
-  height = num_nodes - max_ht - 1;
+  h = num_nodes - max_ht - 1;
 
 endfunction
 

@@ -24,11 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} mean (@var{x})
-## @deftypefnx {} {} mean (@var{x}, @var{dim})
-## @deftypefnx {} {} mean (@var{x}, @var{opt})
-## @deftypefnx {} {} mean (@var{x}, @var{dim}, @var{opt})
-## @deftypefnx {} {} mean (@dots{}, @var{outtype})
+## @deftypefn  {} {@var{y} =} mean (@var{x})
+## @deftypefnx {} {@var{y} =} mean (@var{x}, @var{dim})
+## @deftypefnx {} {@var{y} =} mean (@var{x}, @var{opt})
+## @deftypefnx {} {@var{y} =} mean (@var{x}, @var{dim}, @var{opt})
+## @deftypefnx {} {@var{y} =} mean (@dots{}, @var{outtype})
 ## Compute the mean of the elements of the vector @var{x}.
 ##
 ## The mean is defined as

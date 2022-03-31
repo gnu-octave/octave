@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} structfun (@var{func}, @var{S})
-## @deftypefnx {} {[@var{A}, @dots{}] =} structfun (@dots{})
-## @deftypefnx {} {} structfun (@dots{}, "ErrorHandler", @var{errfunc})
-## @deftypefnx {} {} structfun (@dots{}, "UniformOutput", @var{val})
+## @deftypefn  {} {@var{A} =} structfun (@var{func}, @var{S})
+## @deftypefnx {} {@var{A} =} structfun (@dots{}, "ErrorHandler", @var{errfunc})
+## @deftypefnx {} {@var{A} =} structfun (@dots{}, "UniformOutput", @var{val})
+## @deftypefnx {} {[@var{A}, @var{B}, @dots{}] =} structfun (@dots{})
 ##
 ## Evaluate the function named @var{name} on the fields of the structure
 ## @var{S}.  The fields of @var{S} are passed to the function @var{func}

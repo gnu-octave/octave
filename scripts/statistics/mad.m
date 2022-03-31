@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} mad (@var{x})
-## @deftypefnx {} {} mad (@var{x}, @var{opt})
-## @deftypefnx {} {} mad (@var{x}, @var{opt}, @var{dim})
+## @deftypefn  {} {@var{y} =} mad (@var{x})
+## @deftypefnx {} {@var{y} =} mad (@var{x}, @var{opt})
+## @deftypefnx {} {@var{y} =} mad (@var{x}, @var{opt}, @var{dim})
 ## Compute the mean or median absolute deviation of the elements of @var{x}.
 ##
 ## The mean absolute deviation is defined as

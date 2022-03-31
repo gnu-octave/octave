@@ -26,7 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{C} =} bitset (@var{A}, @var{n})
 ## @deftypefnx {} {@var{C} =} bitset (@var{A}, @var{n}, @var{val})
-## Set or reset bit(s) @var{n} of the unsigned integers in @var{A}.
+## Set or reset bit(s) at position @var{n} of the unsigned integers in @var{A}.
 ##
 ## The least significant bit is @var{n} = 1.  @w{@var{val} = 0} resets bits and
 ## @w{@var{val} = 1} sets bits.  If no @var{val} is specified it defaults to

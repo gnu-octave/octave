@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} cstrcat (@var{s1}, @var{s2}, @dots{})
+## @deftypefn {} {@var{str} =} cstrcat (@var{s1}, @var{s2}, @dots{})
 ## Return a string containing all the arguments concatenated horizontally
 ## with trailing white space preserved.
 ##
@@ -48,14 +48,14 @@
 ## @seealso{strcat, char, strvcat}
 ## @end deftypefn
 
-function st = cstrcat (varargin)
+function str = cstrcat (varargin)
 
   if (nargin == 0)
-    ## Special because if varargin is empty, iscellstr still returns
+    ## Special case because if varargin is empty, iscellstr still returns
     ## true but then "[varargin{:}]" would be of class double.
-    st = "";
+    str = "";
   elseif (iscellstr (varargin))
-    st = [varargin{:}];
+    str = [varargin{:}];
   else
     error ("cstrcat: arguments must be character strings");
   endif
@@ -64,15 +64,16 @@ endfunction
 
 
 ## Test the dimensionality
-## 1d
+## 1-D
 %!assert (cstrcat ("ab ", "ab "), "ab ab ")
-## 2d
+## 2-D
 %!assert (cstrcat (["ab ";"cde"], ["ab ";"cde"]), ["ab ab ";"cdecde"])
 
 %!assert (cstrcat ("foo", "bar"), "foobar")
 %!assert (cstrcat (["a "; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
 
+## Special null case
 %!assert (cstrcat (), "")
 
 ## Test input validation
-%!error cstrcat (1, 2)
+%!error <arguments must be character strings> cstrcat (1, 2)

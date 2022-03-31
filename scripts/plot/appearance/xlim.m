@@ -55,12 +55,12 @@
 ## @seealso{ylim, zlim, axis, set, get, gca}
 ## @end deftypefn
 
-function retval = xlim (varargin)
+function xlimits = xlim (varargin)
 
-  ret = __axis_limits__ ("xlim", varargin{:});
+  lims = __axis_limits__ ("xlim", varargin{:});
 
-  if (! isempty (ret))
-    retval = ret;
+  if (! isempty (lims))
+    xlimits = lims;
   endif
 
 endfunction

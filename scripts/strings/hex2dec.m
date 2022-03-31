@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} hex2dec (@var{s})
+## @deftypefn {} {@var{d} =} hex2dec (@var{str})
 ## Return the integer corresponding to the hexadecimal number represented by
-## the string @var{s}.
+## the string @var{str}.
 ##
 ## For example:
 ##
@@ -39,22 +39,22 @@
 ## @end group
 ## @end example
 ##
-## If @var{s} is a string matrix, return a column vector with one converted
-## number per row of @var{s}; Invalid rows evaluate to NaN@.
+## If @var{str} is a string matrix, return a column vector with one converted
+## number per row of @var{str}; Invalid rows evaluate to NaN@.
 ##
-## If @var{s} is a cell array of strings, return a column vector with one
-## converted number per cell element in @var{s}.
+## If @var{str} is a cell array of strings, return a column vector with one
+## converted number per cell element in @var{str}.
 ##
 ## @seealso{dec2hex, base2dec, bin2dec}
 ## @end deftypefn
 
-function d = hex2dec (s)
+function d = hex2dec (str)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   endif
 
-  d = base2dec (s, 16);
+  d = base2dec (str, 16);
 
 endfunction
 
@@ -66,4 +66,4 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> hex2dec ()
-%!error <S must be a string> hex2dec (1)
+%!error <STR must be a string> hex2dec (1)

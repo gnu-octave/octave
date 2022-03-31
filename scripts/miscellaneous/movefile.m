@@ -30,6 +30,8 @@
 ## @deftypefnx {} {} movefile (@var{f1})
 ## @deftypefnx {} {} movefile (@var{f1}, @var{f2})
 ## @deftypefnx {} {} movefile (@var{f1}, @var{f2}, 'f')
+## @deftypefnx {} {[@var{status}] =} movefile (@dots{})
+## @deftypefnx {} {[@var{status}, @var{msg}] =} movefile (@dots{})
 ## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} movefile (@dots{})
 ## Move the source file or directory @var{f1} to the destination @var{f2}.
 ##

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} powerset (@var{a})
-## @deftypefnx {} {} powerset (@var{a}, "rows")
+## @deftypefn  {} {@var{p} =} powerset (@var{a})
+## @deftypefnx {} {@var{p} =} powerset (@var{a}, "rows")
 ## Compute the powerset (all subsets) of the set @var{a}.
 ##
 ## The set @var{a} must be a numerical matrix or a cell array of strings.  The

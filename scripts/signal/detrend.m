@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} detrend (@var{x}, @var{p})
+## @deftypefn {} {@var{y} =} detrend (@var{x}, @var{p})
 ## If @var{x} is a vector, @code{detrend (@var{x}, @var{p})} removes the
 ## best fit of a polynomial of order @var{p} from the data @var{x}.
 ##
@@ -55,7 +55,7 @@ function y = detrend (x, p = 1)
   elseif (ischar (p) && strcmpi (p, "linear"))
     p = 1;
   elseif (! isscalar (p) || p < 0 || p != fix (p))
-    error ("detrend: P must be \"constant\", \"linear\", or a positive integer");
+    error ('detrend: P must be "constant", "linear", or a positive integer');
   endif
 
   [m, n] = size (x);
@@ -107,4 +107,3 @@ endfunction
 %!error detrend (1, "invalid")
 %!error detrend (1, -1)
 %!error detrend (1, 1.25)
-

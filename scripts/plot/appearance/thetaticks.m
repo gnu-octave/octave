@@ -48,7 +48,7 @@
 ## @seealso{rticks, xticks, yticks, zticks, polar, get, set}
 ## @end deftypefn
 
-function retval = thetaticks (varargin)
+function tickval = thetaticks (varargin)
 
   ## FIXME: Update function to work with polaraxes objects once that function
   ##        is implemented in Octave.  For compatibility with Matlab this may
@@ -57,12 +57,12 @@ function retval = thetaticks (varargin)
   hax = [];
   switch (nargin)
     case 0
-      retval = get (gca , "ttick");  # will error if no ttick exists.
+      tickval = get (gca , "ttick");  # will error if no ttick exists.
       return;
 
     case 1
       if (isaxes (varargin{1}))
-        retval = get (varargin{1}, "ttick");
+        tickval = get (varargin{1}, "ttick");
         return;
       else
         arg = varargin{1};
@@ -99,7 +99,7 @@ function retval = thetaticks (varargin)
     ##    arg = tolower (arg);
     ## switch (arg)
     ##   case "mode"
-    ##     retval = get (hax, "ttickmode");
+    ##     tickval = get (hax, "ttickmode");
     ##
     ##   case {"auto", "manual"}
     ##     if (nargout > 0)

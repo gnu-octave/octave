@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} gammainc (@var{x}, @var{a})
-## @deftypefnx {} {} gammainc (@var{x}, @var{a}, @var{tail})
+## @deftypefn  {} {@var{y} =} gammainc (@var{x}, @var{a})
+## @deftypefnx {} {@var{y} =} gammainc (@var{x}, @var{a}, @var{tail})
 ## Compute the normalized incomplete gamma function.
 ##
 ## This is defined as

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} dec2base (@var{d}, @var{base})
-## @deftypefnx {} {} dec2base (@var{d}, @var{base}, @var{len})
+## @deftypefn  {} {@var{str} =} dec2base (@var{d}, @var{base})
+## @deftypefnx {} {@var{str} =} dec2base (@var{d}, @var{base}, @var{len})
 ## Return a string of symbols in base @var{base} corresponding to the
 ## non-negative integer @var{d}.
 ##
@@ -56,7 +56,7 @@
 ## @seealso{base2dec, dec2bin, dec2hex}
 ## @end deftypefn
 
-function retval = dec2base (d, base, len)
+function str = dec2base (d, base, len)
 
   if (nargin < 2)
     print_usage ();
@@ -109,7 +109,7 @@ function retval = dec2base (d, base, len)
   endfor
 
   ## convert digits to symbols
-  retval = reshape (symbols(digits+1), size (digits));
+  str = reshape (symbols(digits+1), size (digits));
 
   ## Check if the first element is the zero symbol.  It seems possible
   ## that LEN is provided, and is less than the computed MAX_LEN and
@@ -117,8 +117,8 @@ function retval = dec2base (d, base, len)
   ## have a leading zero to remove.  But if LEN >= MAX_LEN, we should
   ## not remove any leading zeros.
   if ((nargin == 2 || (nargin == 3 && max_len > len))
-      && columns (retval) != 1 && ! any (retval(:,1) != symbols(1)))
-    retval = retval(:,2:end);
+      && columns (str) != 1 && ! any (str(:,1) != symbols(1)))
+    str = str(:,2:end);
   endif
 
 endfunction

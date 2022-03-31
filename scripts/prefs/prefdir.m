@@ -24,9 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} prefdir
-## @deftypefnx {} {} prefdir (1)
-## @deftypefnx {} {@var{dir} =} prefdir
+## @deftypefn  {} {@var{dir} =} prefdir
+## @deftypefnx {} {@var{dir} =} prefdir (1)
 ## Return the directory that holds the preferences for Octave.
 ##
 ## Examples:

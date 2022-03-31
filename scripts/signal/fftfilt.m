@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fftfilt (@var{b}, @var{x})
-## @deftypefnx {} {} fftfilt (@var{b}, @var{x}, @var{n})
+## @deftypefn  {} {@var{y} =} fftfilt (@var{b}, @var{x})
+## @deftypefnx {} {@var{y} =} fftfilt (@var{b}, @var{x}, @var{n})
 ## Filter @var{x} with the FIR filter @var{b} using the FFT.
 ##
 ## If @var{x} is a matrix, filter each column of the matrix.

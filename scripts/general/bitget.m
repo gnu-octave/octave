@@ -24,8 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{c} =} bitget (@var{A}, @var{n})
-## Return the status of bit(s) @var{n} of the unsigned integers in @var{A}.
+## @deftypefn {} {@var{C} =} bitget (@var{A}, @var{n})
+## Return the bit value at position(s) @var{n} of the unsigned integers in
+## @var{A}.
 ##
 ## The least significant bit is @var{n} = 1.
 ##

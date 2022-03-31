@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} cond (@var{A})
-## @deftypefnx {} {} cond (@var{A}, @var{p})
+## @deftypefn  {} {@var{c} =} cond (@var{A})
+## @deftypefnx {} {@var{c} =} cond (@var{A}, @var{p})
 ## Compute the @var{p}-norm condition number of a matrix with respect to
 ## inversion.
 ##
@@ -51,7 +51,7 @@
 ## @seealso{condest, rcond, condeig, norm, svd}
 ## @end deftypefn
 
-function retval = cond (A, p = 2)
+function c = cond (A, p = 2)
 
   if (nargin < 1)
     print_usage ();
@@ -63,7 +63,7 @@ function retval = cond (A, p = 2)
 
   if (p == 2)
     if (isempty (A))
-      retval = 0.0;
+      c = 0.0;
     elseif (any (! isfinite (A(:))))
       error ("cond: A must not contain Inf or NaN values");
     else
@@ -71,13 +71,13 @@ function retval = cond (A, p = 2)
       sigma_1 = sigma(1);
       sigma_n = sigma(end);
       if (sigma_1 == 0 || sigma_n == 0)
-        retval = Inf;
+        c = Inf;
       else
-        retval = sigma_1 / sigma_n;
+        c = sigma_1 / sigma_n;
       endif
     endif
   else
-    retval = norm (A, p) * norm (inv (A), p);
+    c = norm (A, p) * norm (inv (A), p);
   endif
 
 endfunction

@@ -24,43 +24,43 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} optimget (@var{options}, @var{parname})
-## @deftypefnx {} {} optimget (@var{options}, @var{parname}, @var{default})
-## Return the specific option @var{parname} from the optimization options
+## @deftypefn  {} {@var{optval} =} optimget (@var{options}, @var{optname})
+## @deftypefnx {} {@var{optval} =} optimget (@var{options}, @var{optname}, @var{default})
+## Return the specific option @var{optname} from the optimization options
 ## structure @var{options} created by @code{optimset}.
 ##
-## If @var{parname} is not defined then return @var{default} if supplied,
+## If @var{optname} is not defined then return @var{default} if supplied,
 ## otherwise return an empty matrix.
 ## @seealso{optimset}
 ## @end deftypefn
 
-function retval = optimget (options, parname, default)
+function optval = optimget (options, optname, default)
 
-  if (nargin < 2 || ! isstruct (options) || ! ischar (parname))
+  if (nargin < 2 || ! isstruct (options) || ! ischar (optname))
     print_usage ();
   endif
 
   ## Expand partial-length names into full names
   opts = __all_opts__ ();
-  idx = strncmpi (opts, parname, length (parname));
+  idx = strncmpi (opts, optname, length (optname));
   nmatch = sum (idx);
 
   if (nmatch == 1)
-    parname = opts{idx};
+    optname = opts{idx};
   elseif (nmatch == 0)
-    warning ("optimget: unrecognized option: %s", parname);
+    warning ("optimget: unrecognized option: %s", optname);
   else
     fmt = sprintf ("optimget: ambiguous option: %%s (%s%%s)",
                    repmat ("%s, ", 1, nmatch-1));
-    warning (fmt, parname, opts{idx});
+    warning (fmt, optname, opts{idx});
   endif
 
-  if (isfield (options, parname) && ! isempty (options.(parname)))
-    retval = options.(parname);
+  if (isfield (options, optname) && ! isempty (options.(optname)))
+    optval = options.(optname);
   elseif (nargin > 2)
-    retval = default;
+    optval = default;
   else
-    retval = [];
+    optval = [];
   endif
 
 endfunction

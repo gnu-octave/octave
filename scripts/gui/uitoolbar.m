@@ -24,9 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} uitoolbar (@var{property}, @var{value}, @dots{})
-## @deftypefnx {} {} uitoolbar (@var{parent}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {} {@var{hui} =} uitoolbar (@dots{})
+## @deftypefn  {} {@var{hui} =} uitoolbar ()
+## @deftypefnx {} {@var{hui} =} uitoolbar (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uitoolbar (@var{parent})
+## @deftypefnx {} {@var{hui} =} uitoolbar (@var{parent}, @var{property}, @var{value}, @dots{})
 ##
 ## Create a uitoolbar object.  A uitoolbar displays uitoggletool and uipushtool
 ## buttons.

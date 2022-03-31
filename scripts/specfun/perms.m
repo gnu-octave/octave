@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} perms (@var{v})
+## @deftypefn {} {@var{P} =} perms (@var{v})
 ## Generate all permutations of vector @var{v} with one row per permutation.
 ##
 ## Results are returned in inverse lexicographic order.  The result has size
@@ -56,7 +56,7 @@
 ## type.  However, benchmarking shows doubles are faster.  If this changes in
 ## a later version of Octave the index variables here can be made uint8.
 
-function A = perms (v)
+function P = perms (v)
 
   if (nargin < 1)
     print_usage ();
@@ -73,13 +73,13 @@ function A = perms (v)
   if (n < 4)    # special cases for small n
     switch (n)
       case 0
-        A = reshape (v, 1, 0);
+        P = reshape (v, 1, 0);
       case 1
-        A = v;
+        P = v;
       case 2
-        A = [v([2 1]);v];
+        P = [v([2 1]);v];
       case 3
-        A = v([3 2 1; 3 1 2; 2 3 1; 2 1 3; 1 3 2; 1 2 3]);
+        P = v([3 2 1; 3 1 2; 2 3 1; 2 1 3; 1 3 2; 1 2 3]);
     endswitch
   else
     v = v(end:-1:1);
@@ -101,12 +101,12 @@ function A = perms (v)
 
     n += 1;
     f *= n-1;
-    A = v(1)(ones (factorial (n), n));
-    A(:,1) = v(ones (f, 1),:)(:);
+    P = v(1)(ones (factorial (n), n));
+    P(:,1) = v(ones (f, 1),:)(:);
 
     for i = 1:n
       b = v([1:i-1 i+1:n]);
-      A((1:f)+(i-1)*f, 2:end) = b(idx);
+      P((1:f)+(i-1)*f, 2:end) = b(idx);
     endfor
   endif
 

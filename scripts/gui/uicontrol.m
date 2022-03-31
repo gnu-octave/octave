@@ -24,7 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{hui} =} uicontrol (@var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uicontrol ()
+## @deftypefnx {} {@var{hui} =} uicontrol (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uicontrol (@var{parent})
 ## @deftypefnx {} {@var{hui} =} uicontrol (@var{parent}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {} {} uicontrol (@var{h})
 ##

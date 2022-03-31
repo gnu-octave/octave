@@ -33,40 +33,40 @@
 ## @seealso{fftshift}
 ## @end deftypefn
 
-function retval = ifftshift (x, dim)
+function x = ifftshift (y, dim)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) || islogical (x) || ischar (x)))
-    error ("ifftshift: X must be a vector or matrix");
+  if (! (isnumeric (y) || islogical (y) || ischar (y)))
+    error ("ifftshift: Y must be a vector or matrix");
   endif
 
   if (nargin == 2)
     if (! (isscalar (dim) && dim > 0 && dim == fix (dim)))
       error ("ifftshift: dimension DIM must be a positive integer");
     endif
-    nd = ndims (x);
-    sz = size (x);
+    nd = ndims (y);
+    sz = size (y);
     sz2 = floor (sz(dim) / 2);
     idx = repmat ({':'}, nd, 1);
     idx{dim} = [sz2+1:sz(dim), 1:sz2];
-    retval = x(idx{:});
+    x = y(idx{:});
   else
-    if (isvector (x))
-      xl = length (x);
-      xx = floor (xl/2);
-      retval = x([xx+1:xl, 1:xx]);
+    if (isvector (y))
+      yl = length (y);
+      y2 = floor (yl/2);
+      x = y([y2+1:yl, 1:y2]);
     else
-      nd = ndims (x);
-      sz = size (x);
+      nd = ndims (y);
+      sz = size (y);
       sz2 = floor (sz ./ 2);
       idx = cell ();
       for i = 1:nd
         idx{i} = [sz2(i)+1:sz(i), 1:sz2(i)];
       endfor
-      retval = x(idx{:});
+      x = y(idx{:});
     endif
   endif
 

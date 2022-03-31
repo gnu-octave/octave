@@ -24,8 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fminunc (@var{fcn}, @var{x0})
-## @deftypefnx {} {} fminunc (@var{fcn}, @var{x0}, @var{options})
+## @deftypefn  {} {@var{x} =} fminunc (@var{fcn}, @var{x0})
+## @deftypefnx {} {@var{x} =} fminunc (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}] =} fminunc (@var{fcn}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}] =} fminunc (@var{fcn}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminunc (@var{fcn}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{grad}] =} fminunc (@var{fcn}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.

@@ -44,7 +44,6 @@
 ## @seealso{profshow, profexplore, profile}
 ## @end deftypefn
 
-## Built-in profiler.
 function profexport (dir, name = "", data)
 
   if (nargin < 1)

@@ -28,7 +28,7 @@
 ## @deftypefnx {} {} surfnorm (@var{z})
 ## @deftypefnx {} {} surfnorm (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {} {} surfnorm (@var{hax}, @dots{})
-## @deftypefnx {} {[@var{nx}, @var{ny}, @var{nz}] =} surfnorm (@dots{})
+## @deftypefnx {} {[@var{Nx}, @var{Ny}, @var{Nz}] =} surfnorm (@dots{})
 ## Find the vectors normal to a meshgridded surface.
 ##
 ## If @var{x} and @var{y} are vectors, then a typical vertex is
@@ -48,7 +48,7 @@
 ## rather than the current axes returned by @code{gca}.
 ##
 ## If output arguments are requested then the components of the normal
-## vectors are returned in @var{nx}, @var{ny}, and @var{nz} and no plot is
+## vectors are returned in @var{Nx}, @var{Ny}, and @var{Nz} and no plot is
 ## made.  The normal vectors are unnormalized (magnitude != 1).  To normalize,
 ## use
 ##

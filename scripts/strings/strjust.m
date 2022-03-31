@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} strjust (@var{s})
-## @deftypefnx {} {} strjust (@var{s}, @var{pos})
+## @deftypefn  {} {@var{str} =} strjust (@var{s})
+## @deftypefnx {} {@var{str} =} strjust (@var{s}, @var{pos})
 ## Return the text, @var{s}, justified according to @var{pos}, which may
 ## be @qcode{"left"}, @qcode{"center"}, or @qcode{"right"}.
 ##
@@ -49,7 +49,7 @@
 ## @seealso{deblank, strrep, strtrim, untabify}
 ## @end deftypefn
 
-function y = strjust (s, pos = "right")
+function str = strjust (s, pos = "right")
 
   if (nargin < 1)
     print_usage ();
@@ -58,7 +58,7 @@ function y = strjust (s, pos = "right")
   endif
 
   if (isempty (s))
-    y = s;
+    str = s;
     return;
   endif
 
@@ -97,8 +97,8 @@ function y = strjust (s, pos = "right")
   jdx += shift(idx);
 
   ## Create a blank matrix and position the nonblank characters.
-  y = repmat (" ", nr, nc);
-  y(sub2ind ([nr, nc], idx, jdx)) = s(nonbl);
+  str = repmat (" ", nr, nc);
+  str(sub2ind ([nr, nc], idx, jdx)) = s(nonbl);
 
 endfunction
 

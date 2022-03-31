@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} expm (@var{A})
+## @deftypefn {} {@var{r} =} expm (@var{A})
 ## Return the exponential of a matrix.
 ##
 ## The matrix exponential is defined as the infinite Taylor series

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __vectorize__ (@var{expr})
+## @deftypefn {} {@var{new_expr} =} __vectorize__ (@var{expr})
 ## Undocumented internal function.
 ## @end deftypefn
 

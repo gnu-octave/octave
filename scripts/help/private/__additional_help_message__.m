@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __additional_help_message__ ()
+## @deftypefn {} {@var{msg} =} __additional_help_message__ ()
 ## Undocumented internal function.
 ## @end deftypefn
 

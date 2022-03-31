@@ -34,7 +34,7 @@
 ## @deftypefnx {} {} legend ("@var{command}")
 ## @deftypefnx {} {} legend (@var{hax}, @dots{})
 ## @deftypefnx {} {} legend (@var{hleg}, @dots{})
-## @deftypefnx {} {@var{hleg, hplt} =} legend (@dots{})
+## @deftypefnx {} {@var{hleg} =} legend (@dots{})
 ##
 ## Display a legend for the current axes using the specified strings as labels.
 ##

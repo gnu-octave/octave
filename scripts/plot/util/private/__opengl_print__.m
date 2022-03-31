@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __opengl_print__ (@var{@dots{}})
+## @deftypefn {} {@var{opts} =} __opengl_print__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 

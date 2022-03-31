@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} conv (@var{a}, @var{b})
-## @deftypefnx {} {} conv (@var{a}, @var{b}, @var{shape})
+## @deftypefn  {} {@var{y} =} conv (@var{a}, @var{b})
+## @deftypefnx {} {@var{y} =} conv (@var{a}, @var{b}, @var{shape})
 ## Convolve two vectors @var{a} and @var{b}.
 ##
 ## When @var{a} and @var{b} are the coefficient vectors of two polynomials, the

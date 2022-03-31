@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} center (@var{x})
-## @deftypefnx {} {} center (@var{x}, @var{dim})
+## @deftypefn  {} {@var{y} =} center (@var{x})
+## @deftypefnx {} {@var{y} =} center (@var{x}, @var{dim})
 ## Center data by subtracting its mean.
 ##
 ## If @var{x} is a vector, subtract its mean.
@@ -42,7 +42,7 @@
 ## @seealso{zscore}
 ## @end deftypefn
 
-function retval = center (x, dim)
+function y = center (x, dim)
 
   if (nargin < 1)
     print_usage ();
@@ -70,12 +70,12 @@ function retval = center (x, dim)
   n = size (x, dim);
 
   if (n == 0)
-    retval = x;
+    y = x;
   else
     ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
     ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
-    retval = bsxfun (@minus, x, mean (x, dim));
-    ## retval = x - mean (x, dim);   # automatic broadcasting
+    y = bsxfun (@minus, x, mean (x, dim));
+    ## y = x - mean (x, dim);   # automatic broadcasting
   endif
 
 endfunction

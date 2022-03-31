@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} argnames (@var{fun})
+## @deftypefn {} {@var{args} =} argnames (@var{fun})
 ## Return a cell array of character strings containing the names of the
 ## arguments of the inline function @var{fun}.
 ## @seealso{inline, formula, vectorize}

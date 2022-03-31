@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} polyarea (@var{x}, @var{y})
-## @deftypefnx {} {} polyarea (@var{x}, @var{y}, @var{dim})
+## @deftypefn  {} {@var{a} =} polyarea (@var{x}, @var{y})
+## @deftypefnx {} {@var{a} =} polyarea (@var{x}, @var{y}, @var{dim})
 ##
 ## Determine area of a polygon by triangle method.
 ##

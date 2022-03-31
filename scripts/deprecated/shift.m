@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} shift (@var{x}, @var{b})
-## @deftypefnx {} {} shift (@var{x}, @var{b}, @var{dim})
+## @deftypefn  {} {@var{y} =} shift (@var{x}, @var{b})
+## @deftypefnx {} {@var{y} =} shift (@var{x}, @var{b}, @var{dim})
 ##
 ## @code{shift} is deprecated and will be removed in Octave version 10.  Use
 ## @code{circshift} instead.

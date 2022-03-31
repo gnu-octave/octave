@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} nthargout (@var{n}, @var{func}, @dots{})
-## @deftypefnx {} {} nthargout (@var{n}, @var{ntot}, @var{func}, @dots{})
+## @deftypefn  {} {@var{arg} =} nthargout (@var{n}, @var{func}, @dots{})
+## @deftypefnx {} {@var{arg} =} nthargout (@var{n}, @var{ntot}, @var{func}, @dots{})
 ## Return the @var{n}th output argument of the function specified by the
 ## function handle or string @var{func}.
 ##
@@ -35,9 +35,9 @@
 ## indices of the output, in which case the output will be a cell array of the
 ## requested output arguments.
 ##
-## The intended use @code{nthargout} is to avoid intermediate variables.  For
-## example, when finding the indices of the maximum entry of a matrix, the
-## following two compositions of nthargout
+## The intended use of @code{nthargout} is to avoid intermediate variables.
+## For  example, when finding the indices of the maximum entry of a matrix, the
+## following two compositions of @code{nthargout}
 ##
 ## @example
 ## @group
@@ -61,8 +61,8 @@
 ## @end group
 ## @end example
 ##
-## It can also be helpful to have all output arguments in a single cell in the
-## following manner:
+## It can also be helpful to have all output arguments collected in a single
+## cell array as the following code demonstrates:
 ##
 ## @example
 ## @var{USV} = nthargout ([1:3], @@svd, hilb (5));
@@ -71,7 +71,7 @@
 ## @seealso{nargin, nargout, varargin, varargout, isargout}
 ## @end deftypefn
 
-function out = nthargout (n, varargin)
+function arg = nthargout (n, varargin)
 
   if (nargin < 2)
     print_usage ();
@@ -99,9 +99,9 @@ function out = nthargout (n, varargin)
   try
     [outargs{:}] = feval (func, args{:});
     if (numel (n) > 1)
-      out = outargs(n);
+      arg = outargs(n);
     else
-      out = outargs{n};
+      arg = outargs{n};
     endif
   catch
     err = lasterr ();

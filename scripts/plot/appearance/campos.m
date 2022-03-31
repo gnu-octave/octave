@@ -24,12 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{P} =} campos ()
+## @deftypefn  {} {@var{p} =} campos ()
 ## @deftypefnx {} {} campos ([@var{x} @var{y} @var{z}])
 ## @deftypefnx {} {@var{mode} =} campos ("mode")
 ## @deftypefnx {} {} campos (@var{mode})
-## @deftypefnx {} {} campos (@var{ax}, @dots{})
-## Set or get the camera position.
+## @deftypefnx {} {} campos (@var{hax}, @dots{})
+## Get or set the camera position.
 ##
 ## The default camera position is determined automatically based on the scene.
 ## For example, to get the camera position:
@@ -77,7 +77,7 @@
 ## @end example
 ##
 ## By default, these commands affect the current axis; alternatively, an axis
-## can be specified by the optional argument @var{ax}.
+## can be specified by the optional argument @var{hax}.
 ##
 ## @seealso{camup, camtarget, camva}
 ## @end deftypefn
@@ -161,7 +161,7 @@ endfunction
 %!   delete (hf);
 %! end_unwind_protect
 
-## test ax input by creating another axis
+## test hax input by creating another axis
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

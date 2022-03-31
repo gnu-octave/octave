@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} camzoom (@var{zf})
-## @deftypefnx {} {} camzoom (@var{ax}, @var{zf})
+## @deftypefnx {} {} camzoom (@var{hax}, @var{zf})
 ## Zoom the camera in or out.
 ##
 ## A value of @var{zf} larger than 1 ``zooms in'' such that the scene appears
@@ -59,7 +59,7 @@
 ## @end example
 ##
 ## By default, these commands affect the current axis; alternatively, an axis
-## can be specified by the optional argument @var{ax}.
+## can be specified by the optional argument @var{hax}.
 ##
 ## @seealso{camroll, camorbit, camlookat, camva}
 ## @end deftypefn
@@ -143,7 +143,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-## test ax input by creating another axis
+## test hax input by creating another axis
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

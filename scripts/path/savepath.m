@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} savepath ()
-## @deftypefnx {} {} savepath (@var{file})
+## @deftypefn  {} {} savepath
+## @deftypefnx {} {} savepath @var{file}
 ## @deftypefnx {} {@var{status} =} savepath (@dots{})
 ## Save the unique portion of the current function search path that is
 ## not set during Octave's initialization process to @var{file}.
@@ -46,7 +46,7 @@
 ## @seealso{path, addpath, rmpath, genpath, pathdef}
 ## @end deftypefn
 
-function retval = savepath (file)
+function status = savepath (file)
 
   beginstring = "## Begin savepath auto-created section, do not edit";
   endstring   = "## End savepath auto-created section";
@@ -170,8 +170,8 @@ function retval = savepath (file)
 
     fprintf (fid, "%s\n", post{:});
   unwind_protect_cleanup
-    status = fclose (fid);
-    if (status < 0)
+    sts = fclose (fid);
+    if (sts < 0)
       error ("savepath: could not close savefile after writing, %s", file);
     elseif (nargin == 0)
       warning ("off", "backtrace", "local");
@@ -181,7 +181,7 @@ function retval = savepath (file)
   end_unwind_protect
 
   if (nargout > 0)
-    retval = 0;
+    status = 0;
   endif
 
 endfunction

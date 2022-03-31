@@ -45,22 +45,22 @@
 ## @seealso{xtickangle, ytickangle, get, set}
 ## @end deftypefn
 
-function retval = ztickangle (hax, angle)
+function angle = ztickangle (hax, angle)
 
   switch (nargin)
     case 0
-      retval = __tickangle__ (mfilename ());
+      angle = __tickangle__ (mfilename ());
 
     case 1
       if (nargout > 0)
-        retval = __tickangle__ (mfilename (), hax);
+        angle = __tickangle__ (mfilename (), hax);
       else
         __tickangle__ (mfilename (), hax);
       endif
 
     case 2
       if (nargout > 0)
-        retval = __tickangle__ (mfilename (), hax, angle);
+        angle = __tickangle__ (mfilename (), hax, angle);
       else
         __tickangle__ (mfilename (), hax, angle);
       endif

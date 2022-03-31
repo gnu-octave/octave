@@ -24,9 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} uipushtool (@var{property}, @var{value}, @dots{})
+## @deftypefn  {} {} uipushtool ()
+## @deftypefnx {} {} uipushtool (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} uipushtool (@var{parent})
 ## @deftypefnx {} {} uipushtool (@var{parent}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {} {@var{hui} =} uipushtool (@dots{})
 ##
 ## Create a uipushtool object.
 ##

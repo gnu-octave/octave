@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} vech (@var{x})
+## @deftypefn {} {@var{v} =} vech (@var{x})
 ## Return the vector obtained by eliminating all superdiagonal elements of
 ## the square matrix @var{x} and stacking the result one column above the
 ## other.
@@ -36,8 +36,6 @@
 
 ## See Magnus and Neudecker (1988), Matrix differential calculus with
 ## applications in statistics and econometrics.
-
-## Author KH <Kurt.Hornik@wu-wien.ac.at>
 
 function v = vech (x)
 
@@ -58,4 +56,6 @@ endfunction
 
 %!assert (vech ([1, 2, 3; 4, 5, 6; 7, 8, 9]), [1; 4; 7; 5; 8; 9])
 
+## Test input validation
 %!error <Invalid call> vech ()
+%!error <X must be square> vech ([1,2,3;4,5,6])

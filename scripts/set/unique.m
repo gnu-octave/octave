@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} unique (@var{x})
-## @deftypefnx {} {} unique (@var{x}, "rows")
-## @deftypefnx {} {} unique (@dots{}, "sorted")
-## @deftypefnx {} {} unique (@dots{}, "stable")
+## @deftypefn  {} {@var{y} =} unique (@var{x})
+## @deftypefnx {} {@var{y} =} unique (@var{x}, "rows")
+## @deftypefnx {} {@var{y} =} unique (@dots{}, "sorted")
+## @deftypefnx {} {@var{y} =} unique (@dots{}, "stable")
 ## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
 ## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "first")
 ## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "last")

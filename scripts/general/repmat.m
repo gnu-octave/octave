@@ -24,11 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} repmat (@var{A}, @var{m})
-## @deftypefnx {} {} repmat (@var{A}, @var{m}, @var{n})
-## @deftypefnx {} {} repmat (@var{A}, @var{m}, @var{n}, @var{p} @dots{})
-## @deftypefnx {} {} repmat (@var{A}, [@var{m} @var{n}])
-## @deftypefnx {} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
+## @deftypefn  {} {@var{B} =} repmat (@var{A}, @var{m})
+## @deftypefnx {} {@var{B} =} repmat (@var{A}, @var{m}, @var{n})
+## @deftypefnx {} {@var{B} =} repmat (@var{A}, @var{m}, @var{n}, @var{p} @dots{})
+## @deftypefnx {} {@var{B} =} repmat (@var{A}, [@var{m} @var{n}])
+## @deftypefnx {} {@var{B} =} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
 ## Repeat matrix or N-D array.
 ##
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
@@ -42,7 +42,7 @@
 ## @seealso{bsxfun, kron, repelems}
 ## @end deftypefn
 
-function x = repmat (A, m, varargin)
+function B = repmat (A, m, varargin)
 
   if (nargin < 2)
     print_usage ();
@@ -107,21 +107,21 @@ function x = repmat (A, m, varargin)
   if (numel (A) == 1)
     ## optimize the scalar fill case.
     if (any (idx == 0))
-      x = resize (A, idx);
+      B = resize (A, idx);
     else
-      x(1:prod (idx)) = A;
-      x = reshape (x, idx);
+      B(1:prod (idx)) = A;
+      B = reshape (B, idx);
     endif
   elseif (ndims (A) == 2 && length (idx) < 3)
     if (issparse (A))
-      x = kron (ones (idx), A);
+      B = kron (ones (idx), A);
     else
       ## indexing is now faster, so we use it rather than kron.
       m = rows (A); n = columns (A);
       p = idx(1); q = idx(2);
-      x = reshape (A, m, 1, n, 1);
-      x = x(:, ones (1, p), :, ones (1, q));
-      x = reshape (x, m*p, n*q);
+      B = reshape (A, m, 1, n, 1);
+      B = B(:, ones (1, p), :, ones (1, q));
+      B = reshape (B, m*p, n*q);
     endif
   else
     aidx = size (A);
@@ -138,7 +138,7 @@ function x = repmat (A, m, varargin)
     ## add singleton dims
     aaidx(2,:) = 1;
     A = reshape (A, aaidx(:));
-    x = reshape (A (cidx{:}), idx .* aidx);
+    B = reshape (A (cidx{:}), idx .* aidx);
   endif
 
 endfunction

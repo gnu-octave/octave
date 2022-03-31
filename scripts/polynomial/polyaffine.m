@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} polyaffine (@var{f}, @var{mu})
+## @deftypefn {} {@var{g} =} polyaffine (@var{f}, @var{mu})
 ## Return the coefficients of the polynomial vector @var{f} after an affine
 ## transformation.
 ##

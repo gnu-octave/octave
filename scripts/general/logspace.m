@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} logspace (@var{a}, @var{b})
-## @deftypefnx {} {} logspace (@var{a}, @var{b}, @var{n})
-## @deftypefnx {} {} logspace (@var{a}, pi, @var{n})
+## @deftypefn  {} {@var{y} =} logspace (@var{a}, @var{b})
+## @deftypefnx {} {@var{y} =} logspace (@var{a}, @var{b}, @var{n})
+## @deftypefnx {} {@var{y} =} logspace (@var{a}, pi, @var{n})
 ## Return a row vector with @var{n} elements logarithmically spaced from
 ## @tex
 ## $10^{a}$ to $10^{b}$.
@@ -72,7 +72,7 @@
 ## @seealso{linspace}
 ## @end deftypefn
 
-function retval = logspace (a, b, n = 50)
+function y = logspace (a, b, n = 50)
 
   if (nargin < 2)
     print_usage ();
@@ -88,7 +88,7 @@ function retval = logspace (a, b, n = 50)
     b = log10 (pi);
   endif
 
-  retval = 10 .^ (linspace (a, b, npoints));
+  y = 10 .^ (linspace (a, b, npoints));
 
 endfunction
 

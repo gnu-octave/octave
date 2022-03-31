@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} cplxpair (@var{z})
-## @deftypefnx {} {} cplxpair (@var{z}, @var{tol})
-## @deftypefnx {} {} cplxpair (@var{z}, @var{tol}, @var{dim})
+## @deftypefn  {} {@var{zsort} =} cplxpair (@var{z})
+## @deftypefnx {} {@var{zsort} =} cplxpair (@var{z}, @var{tol})
+## @deftypefnx {} {@var{zsort} =} cplxpair (@var{z}, @var{tol}, @var{dim})
 ## Sort the numbers @var{z} into complex conjugate pairs ordered by increasing
 ## real part.
 ##
@@ -57,14 +57,14 @@
 
 ## 2006-05-12 David Bateman - Modified for NDArrays
 
-function y = cplxpair (z, tol, dim)
+function zsort = cplxpair (z, tol, dim)
 
   if (nargin < 1)
     print_usage ();
   endif
 
   if (isempty (z))
-    y = zeros (size (z));
+    zsort = zeros (size (z));
     return;
   endif
 
@@ -108,7 +108,7 @@ function y = cplxpair (z, tol, dim)
   [~, idx] = sort (q, 1);
   midx = idx + rows (idx) * ones (rows (idx), 1) * [0:columns(idx)-1];
   z = z(midx);
-  y = z;
+  zsort = z;
 
   ## For each remaining z, place the value and its conjugate at the start of
   ## the returned list, and remove them from further consideration.
@@ -125,16 +125,16 @@ function y = cplxpair (z, tol, dim)
       ## For pairs, select the one with positive imaginary part and use it and
       ## it's conjugate, but list the negative imaginary pair first.
       if (imag (z(i,j)) > 0)
-        y([i, i+1],j) = [conj(z(i,j)), z(i,j)];
+        zsort([i, i+1],j) = [conj(z(i,j)), z(i,j)];
       else
-        y([i, i+1],j) = [conj(z(idx+i,j)), z(idx+i,j)];
+        zsort([i, i+1],j) = [conj(z(idx+i,j)), z(idx+i,j)];
       endif
       z(idx+i,j) = z(i+1,j);
     endfor
   endfor
 
   ## Reshape the output matrix.
-  y = ipermute (reshape (y, sz), perm);
+  zsort = ipermute (reshape (zsort, sz), perm);
 
 endfunction
 

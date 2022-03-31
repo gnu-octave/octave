@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} ranks (@var{x})
-## @deftypefnx {} {} ranks (@var{x}, @var{dim})
-## @deftypefnx {} {} ranks (@var{x}, @var{dim}, @var{rtype})
+## @deftypefn  {} {@var{y} =} ranks (@var{x})
+## @deftypefnx {} {@var{y} =} ranks (@var{x}, @var{dim})
+## @deftypefnx {} {@var{y} =} ranks (@var{x}, @var{dim}, @var{rtype})
 ## Return the ranks (in the sense of order statistics) of @var{x} along the
 ## first non-singleton dimension adjusted for ties.
 ##

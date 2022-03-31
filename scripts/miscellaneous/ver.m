@@ -56,7 +56,7 @@
 ## @seealso{version, usejava, pkg}
 ## @end deftypefn
 
-function retval = ver (package = "")
+function v = ver (package = "")
 
   if (nargout == 0)
     hg_id = __octave_config_info__ ("hg_id");
@@ -91,24 +91,24 @@ function retval = ver (package = "")
     if (isempty (package))
       ## Start with the version info for Octave
       [octver, octdate] = version ();
-      retval = struct ("Name", "Octave", "Version", octver,
-                       "Release", [], "Date", octdate);
+      v = struct ("Name", "Octave", "Version", octver,
+                  "Release", [], "Date", octdate);
       lst = pkg ("list");
       for i = 1:numel (lst)
-        retval(end+1) = struct ("Name", lst{i}.name, "Version", lst{i}.version,
-                                "Release", [], "Date", lst{i}.date);
+        v(end+1) = struct ("Name", lst{i}.name, "Version", lst{i}.version,
+                           "Release", [], "Date", lst{i}.date);
       endfor
     elseif (strcmpi (package, "Octave"))
       [octver, octdate] = version ();
-      retval = struct ("Name", "Octave", "Version", octver,
-                       "Release", [], "Date", octdate);
+      v = struct ("Name", "Octave", "Version", octver,
+                  "Release", [], "Date", octdate);
     else
       lst = pkg ("list", package);
       if (isempty (lst))
-        retval = struct ("Name", {}, "Version", {}, "Release", {}, "Date", {});
+        v = struct ("Name", {}, "Version", {}, "Release", {}, "Date", {});
       else
-        retval = struct ("Name", lst{1}.name, "Version", lst{1}.version,
-                         "Release", [], "Date", lst{1}.date);
+        v = struct ("Name", lst{1}.name, "Version", lst{1}.version,
+                    "Release", [], "Date", lst{1}.date);
       endif
     endif
   endif

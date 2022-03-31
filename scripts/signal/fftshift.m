@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fftshift (@var{x})
-## @deftypefnx {} {} fftshift (@var{x}, @var{dim})
+## @deftypefn  {} {@var{y} =} fftshift (@var{x})
+## @deftypefnx {} {@var{y} =} fftshift (@var{x}, @var{dim})
 ## Perform a shift of the vector @var{x}, for use with the @code{fft} and
 ## @code{ifft} functions, in order to move the frequency 0 to the center of
 ## the vector or matrix.
@@ -49,7 +49,7 @@
 ## @seealso{ifftshift}
 ## @end deftypefn
 
-function retval = fftshift (x, dim)
+function y = fftshift (x, dim)
 
   if (nargin < 1)
     print_usage ();
@@ -69,12 +69,12 @@ function retval = fftshift (x, dim)
     idx = cell ();
     idx = repmat ({':'}, nd, 1);
     idx{dim} = [sz2+1:sz(dim), 1:sz2];
-    retval = x(idx{:});
+    y = x(idx{:});
   else
     if (isvector (x))
       xl = length (x);
       xx = ceil (xl/2);
-      retval = x([xx+1:xl, 1:xx]);
+      y = x([xx+1:xl, 1:xx]);
     else
       nd = ndims (x);
       sz = size (x);
@@ -83,7 +83,7 @@ function retval = fftshift (x, dim)
       for i = 1:nd
         idx{i} = [sz2(i)+1:sz(i), 1:sz2(i)];
       endfor
-      retval = x(idx{:});
+      y = x(idx{:});
     endif
   endif
 

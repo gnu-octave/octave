@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} etime (@var{t2}, @var{t1})
+## @deftypefn {} {@var{secs} =} etime (@var{t2}, @var{t1})
 ## Return the difference in seconds between two time values returned from
 ## @code{clock} (@math{@var{t2} - @var{t1}}).
 ##

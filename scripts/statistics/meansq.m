@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} meansq (@var{x})
-## @deftypefnx {} {} meansq (@var{x}, @var{dim})
+## @deftypefn  {} {@var{y} =} meansq (@var{x})
+## @deftypefnx {} {@var{y} =} meansq (@var{x}, @var{dim})
 ## Compute the mean square of the elements of the vector @var{x}.
 ##
 ## The mean square is defined as

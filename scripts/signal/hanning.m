@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} hanning (@var{m})
-## @deftypefnx {} {} hanning (@var{m}, "periodic")
-## @deftypefnx {} {} hanning (@var{m}, "symmetric")
+## @deftypefn  {} {@var{c} =} hanning (@var{m})
+## @deftypefnx {} {@var{c} =} hanning (@var{m}, "periodic")
+## @deftypefnx {} {@var{c} =} hanning (@var{m}, "symmetric")
 ## Return the filter coefficients of a Hanning window of length @var{m}.
 ##
 ## If the optional argument @qcode{"periodic"} is given, the periodic form
@@ -45,7 +45,7 @@ function c = hanning (m, opt)
     print_usage ();
   endif
 
-  if (! (isscalar (m) && (m == fix (m)) && (m > 0)))
+  if (! (isscalar (m) && m > 0 && m == fix (m)))
     error ("hanning: M must be a positive integer");
   endif
 

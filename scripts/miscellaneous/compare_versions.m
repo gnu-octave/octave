@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
+## @deftypefn {} {@var{tf} =} compare_versions (@var{v1}, @var{v2}, @var{operator})
 ## Compare two version strings using the given @var{operator}.
 ##
 ## This function assumes that versions @var{v1} and @var{v2} are arbitrarily
@@ -72,7 +72,7 @@
 ## @code{double ("1").}
 ## @end deftypefn
 
-function out = compare_versions (v1, v2, operator)
+function tf = compare_versions (v1, v2, operator)
 
   if (nargin != 3)
     print_usage ();
@@ -165,18 +165,18 @@ function out = compare_versions (v1, v2, operator)
 
   if (isempty (firstdiff))
     ## They're equal.
-    out = equal_op;
+    tf = equal_op;
   elseif (lt_op || gt_op)
     ## They're correctly less than or greater than.
-    out = (vcmp(firstdiff) > 0);
+    tf = (vcmp(firstdiff) > 0);
   else
     ## They're not correctly less than or greater than, and they're not equal.
-    out = false;
+    tf = false;
   endif
 
   ## Reverse the output if not is given.
   if (not_op)
-    out = ! out;
+    tf = ! tf;
   endif
 
 endfunction

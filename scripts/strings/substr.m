@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} substr (@var{s}, @var{offset})
+## @deftypefn  {} {@var{str} =} substr (@var{s}, @var{offset})
 ## @deftypefnx {} {} substr (@var{s}, @var{offset}, @var{len})
 ## Return the substring of @var{s} which starts at character number
 ## @var{offset} and is @var{len} characters long.
@@ -52,7 +52,7 @@
 ## This function is patterned after the equivalent function in Perl.
 ## @end deftypefn
 
-function t = substr (s, offset, len)
+function str = substr (s, offset, len)
 
   if (nargin < 2)
     print_usage ();
@@ -91,7 +91,7 @@ function t = substr (s, offset, len)
     error ("substr: No overlap with chosen values of OFFSET and LEN");
   endif
 
-  t = s(:, offset:eos);
+  str = s(:, offset:eos);
 
 endfunction
 

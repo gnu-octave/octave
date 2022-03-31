@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} betaln (@var{a}, @var{b})
+## @deftypefn {} {@var{lnb} =} betaln (@var{a}, @var{b})
 ## Compute the natural logarithm of the Beta function for real inputs @var{a}
 ## and @var{b}.
 ##
@@ -48,7 +48,7 @@
 ## @seealso{beta, betainc, betaincinv, gammaln}
 ## @end deftypefn
 
-function retval = betaln (a, b)
+function lnb = betaln (a, b)
 
   if (nargin != 2)
     print_usage ();
@@ -60,7 +60,7 @@ function retval = betaln (a, b)
     error ("betaln: A and B must have consistent sizes");
   endif
 
-  retval = gammaln (a) + gammaln (b) - gammaln (a + b);
+  lnb = gammaln (a) + gammaln (b) - gammaln (a + b);
 
 endfunction
 

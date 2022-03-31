@@ -24,20 +24,19 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} im2double (@var{img})
-## @deftypefnx {} {} im2double (@var{img}, "indexed")
+## @deftypefn  {} {@var{dimg} =} im2double (@var{img})
+## @deftypefnx {} {@var{dimg} =} im2double (@var{img}, "indexed")
 ## Convert image to double precision.
 ##
-## The conversion of @var{img} to double precision, is dependent
-## on the type of input image.  The following input classes are
-## supported:
+## The conversion of @var{img} to double precision, is dependent on the type of
+## input image.  The following input classes are supported:
 ##
 ## @table @samp
 ## @item uint8, uint16, and int16
 ## The range of values from the class is scaled to the interval [0 1].
 ##
 ## @item logical
-## True and false values are assigned a value of 0 and 1 respectively.
+## True and false values are assigned a value of 1 and 0 respectively.
 ##
 ## @item single
 ## Values are cast to double.
@@ -47,15 +46,15 @@
 ##
 ## @end table
 ##
-## If @var{img} is an indexed image, then the second argument should be
-## the string @qcode{"indexed"}.  If so, then @var{img} must either be
-## of floating point class, or unsigned integer class and it will simply
-## be cast to double.  If it is an integer class, a +1 offset is applied.
+## If @var{img} is an indexed image, then the second argument should be the
+## string @qcode{"indexed"}.  If so, then @var{img} must either be of floating
+## point class, or unsigned integer class and it will simply be cast to double.
+## If it is an integer class, an offset of +1 is applied.
 ##
 ## @seealso{double}
 ## @end deftypefn
 
-function img = im2double (img, im_type)
+function dimg = im2double (img, im_type)
 
   if (nargin < 1)
     print_usage ();
@@ -64,12 +63,12 @@ function img = im2double (img, im_type)
   if (nargin == 1)
     ## "normal" (non-indexed) images
     switch (class (img))
-      case "uint8",   img = double (img) / 255;
-      case "uint16",  img = double (img) / 65535;
-      case "int16",   img = (double (img) + 32768) / 65535;
-      case "single",  img = double (img);
-      case "logical", img = double (img);
-      case "double",  # do nothing
+      case "uint8",   dimg = double (img) / 255;
+      case "uint16",  dimg = double (img) / 65535;
+      case "int16",   dimg = (double (img) + 32768) / 65535;
+      case "single",  dimg = double (img);
+      case "logical", dimg = double (img);
+      case "double",  dimg = img;
       otherwise, error ('im2double: IMG is of unsupported class "%s"', class (img));
     endswitch
   else
@@ -77,9 +76,9 @@ function img = im2double (img, im_type)
     if (! strcmpi (im_type, "indexed"))
       error ('im2double: second input argument must be the string "indexed"');
     elseif (any (isa (img, {"uint8", "uint16"})))
-      img = double (img) + 1;
+      dimg = double (img) + 1;
     elseif (isfloat (img) || isbool (img))
-      img = double (img);
+      dimg = double (img);
     else
       ## Technically, it could also be of logical class and we do not
       ## enforce positive integers for floating for Matlab compatibility.

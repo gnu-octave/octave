@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} invhilb (@var{n})
+## @deftypefn {} {@var{hinv} =} invhilb (@var{n})
 ## Return the inverse of the Hilbert matrix of order @var{n}.
 ##
 ## This can be computed exactly using
@@ -79,7 +79,7 @@
 ## @seealso{hilb}
 ## @end deftypefn
 
-function retval = invhilb (n)
+function hinv = invhilb (n)
 
   if (nargin < 1)
     print_usage ();
@@ -101,17 +101,17 @@ function retval = invhilb (n)
   ## However, it rounds the answer to the nearest integer, which
   ## justifies the claim about exactness made above.
 
-  retval = zeros (n);
+  hinv = zeros (n);
   k = [1:n];
   p = k .* bincoeff (k+n-1, k-1) .* bincoeff (n, k);
   p(2:2:n) = -p(2:2:n);
   if (n < 203)
     for l = 1:n
-      retval(l,:) = (p(l) * p) ./ [l:l+n-1];
+      hinv(l,:) = (p(l) * p) ./ [l:l+n-1];
     endfor
   else
     for l = 1:n
-      retval(l,:) = p(l) * (p ./ [l:l+n-1]);
+      hinv(l,:) = p(l) * (p ./ [l:l+n-1]);
     endfor
   endif
 

@@ -36,13 +36,10 @@
 ## @seealso{profile, profshow}
 ## @end deftypefn
 
-## Built-in profiler.
 function profexplore (data)
 
   if (nargin == 0)
     data = profile ("info");
-  elseif (nargin < 1)
-    print_usage ();
   endif
 
   ## The actual work is done by a recursive worker function, since that

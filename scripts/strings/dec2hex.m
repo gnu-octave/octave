@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} dec2hex (@var{d})
-## @deftypefnx {} {} dec2hex (@var{d}, @var{len})
+## @deftypefn  {} {@var{hstr} =} dec2hex (@var{d})
+## @deftypefnx {} {@var{hstr} =} dec2hex (@var{d}, @var{len})
 ## Return a string representing the conversion of the integer @var{d} to a
 ## hexadecimal (base16) number.
 ##
@@ -53,7 +53,7 @@
 ## @seealso{hex2dec, dec2base, dec2bin}
 ## @end deftypefn
 
-function h = dec2hex (d, len)
+function hstr = dec2hex (d, len)
 
   if (nargin == 0)
     print_usage ();
@@ -82,9 +82,9 @@ function h = dec2hex (d, len)
   endif
 
   if (nargin == 1)
-    h = dec2base (d, 16);
+    hstr = dec2base (d, 16);
   else
-    h = dec2base (d, 16, len);
+    hstr = dec2base (d, 16, len);
   endif
 
 endfunction

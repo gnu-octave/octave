@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} discrete_rnd (@var{v}, @var{p})
-## @deftypefnx {} {} discrete_rnd (@var{v}, @var{p}, @var{r})
-## @deftypefnx {} {} discrete_rnd (@var{v}, @var{p}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {} {} discrete_rnd (@var{v}, @var{p}, [@var{sz}])
+## @deftypefn  {} {@var{rnd} =} discrete_rnd (@var{v}, @var{p})
+## @deftypefnx {} {@var{rnd} =} discrete_rnd (@var{v}, @var{p}, @var{r})
+## @deftypefnx {} {@var{rnd} =} discrete_rnd (@var{v}, @var{p}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {@var{rnd} =} discrete_rnd (@var{v}, @var{p}, [@var{sz}])
 ## Return a matrix of random samples from the univariate distribution which
 ## assumes the values in @var{v} with probabilities @var{p}.
 ##

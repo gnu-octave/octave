@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} spearman (@var{x})
-## @deftypefnx {} {} spearman (@var{x}, @var{y})
+## @deftypefn  {} {@var{rho} =} spearman (@var{x})
+## @deftypefnx {} {@var{rho} =} spearman (@var{x}, @var{y})
 ## @cindex Spearman's Rho
 ## Compute Spearman's rank correlation coefficient
 ## @tex

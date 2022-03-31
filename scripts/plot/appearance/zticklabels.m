@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{tickval} =} zticklabels
+## @deftypefn  {} {@var{labels} =} zticklabels
 ## @deftypefnx {} {@var{mode} =} zticklabels ("mode")
 ## @deftypefnx {} {} zticklabels (@var{tickval})
 ## @deftypefnx {} {} zticklabels ("auto")
@@ -56,17 +56,17 @@
 ## @seealso{zticks, xticklabels, zticklabels, get, set}
 ## @end deftypefn
 
-function retval = zticklabels (varargin)
+function labels = zticklabels (varargin)
 
   hax = [];
   switch (nargin)
     case 0
-      retval = get (gca , "zticklabel"); # will error if no zticklabel exists.
+      labels = get (gca , "zticklabel"); # will error if no zticklabel exists.
       return;
 
     case 1
       if (isaxes (varargin{1}))
-        retval = get (varargin{1}, "zticklabel");
+        labels = get (varargin{1}, "zticklabel");
         return;
       else
         arg = varargin{1};
@@ -117,7 +117,7 @@ function retval = zticklabels (varargin)
     arg = tolower (arg);
     switch (arg)
       case "mode"
-        retval = get (hax, "zticklabelmode");
+        labels = get (hax, "zticklabelmode");
 
       case {"auto", "manual"}
         if (nargout > 0)

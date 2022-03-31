@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} bin2dec (@var{s})
+## @deftypefn {} {} bin2dec (@var{str})
 ## Return the decimal number corresponding to the binary number represented
-## by the string @var{s}.
+## by the string @var{str}.
 ##
 ## For example:
 ##
@@ -47,21 +47,21 @@
 ## @end group
 ## @end example
 ##
-## If @var{s} is a string matrix, return a column vector with one converted
-## number per row of @var{s}; Invalid rows evaluate to NaN@.
+## If @var{str} is a string matrix, return a column vector with one converted
+## number per row of @var{str}; Invalid rows evaluate to NaN@.
 ##
-## If @var{s} is a cell array of strings, return a column vector with one
-## converted number per cell element in @var{s}.
+## If @var{str} is a cell array of strings, return a column vector with one
+## converted number per cell element in @var{str}.
 ## @seealso{dec2bin, base2dec, hex2dec}
 ## @end deftypefn
 
-function d = bin2dec (s)
+function d = bin2dec (str)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   endif
 
-  d = base2dec (s, 2);
+  d = base2dec (str, 2);
 
 endfunction
 
@@ -76,4 +76,4 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> bin2dec ()
-%!error <S must be a string> bin2dec (1)
+%!error <STR must be a string> bin2dec (1)

@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} spectral_xdf (@var{x})
-## @deftypefnx {} {} spectral_xdf (@var{x}, @var{win})
-## @deftypefnx {} {} spectral_xdf (@var{x}, @var{win}, @var{b})
+## @deftypefn  {} {@var{sde} =} spectral_xdf (@var{x})
+## @deftypefnx {} {@var{sde} =} spectral_xdf (@var{x}, @var{win})
+## @deftypefnx {} {@var{sde} =} spectral_xdf (@var{x}, @var{win}, @var{b})
 ## Return the spectral density estimator given a data vector @var{x}, window
 ## name @var{win}, and bandwidth, @var{b}.
 ##
@@ -39,7 +39,7 @@
 ## @seealso{spectral_adf}
 ## @end deftypefn
 
-function retval = spectral_xdf (x, win, b)
+function sde = spectral_xdf (x, win, b)
 
   if (nargin < 1)
     print_usage ();
@@ -66,11 +66,11 @@ function retval = spectral_xdf (x, win, b)
 
   x -= sum (x) / xr;
 
-  retval = (abs (fft (x)) / xr).^2;
-  retval = real (ifft (fft (retval) .* fft (w)));
+  sde = (abs (fft (x)) / xr).^2;
+  sde = real (ifft (fft (sde) .* fft (w)));
 
-  retval = [(zeros (xr, 1)), retval];
-  retval(:, 1) = (0 : xr-1)' / xr;
+  sde = [(zeros (xr, 1)), sde];
+  sde(:, 1) = (0 : xr-1)' / xr;
 
 endfunction
 

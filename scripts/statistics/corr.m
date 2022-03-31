@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} corr (@var{x})
-## @deftypefnx {} {} corr (@var{x}, @var{y})
+## @deftypefn  {} {@var{r} =} corr (@var{x})
+## @deftypefnx {} {@var{r} =} corr (@var{x}, @var{y})
 ## Compute matrix of correlation coefficients.
 ##
 ## If each row of @var{x} and @var{y} is an observation and each column is
@@ -49,7 +49,7 @@
 ## @seealso{cov}
 ## @end deftypefn
 
-function retval = corr (x, y = [])
+function r = corr (x, y = [])
 
   if (nargin < 1)
     print_usage ();
@@ -60,9 +60,9 @@ function retval = corr (x, y = [])
   ## Special case, scalar is always 100% correlated with itself
   if (isscalar (x))
     if (isa (x, "single"))
-      retval = single (1);
+      r = single (1);
     else
-      retval = 1;
+      r = 1;
     endif
     return;
   endif
@@ -72,11 +72,11 @@ function retval = corr (x, y = [])
   if (nargin == 2)
     c = cov (x, y);
     s = std (x)' * std (y);
-    retval = c ./ s;
+    r = c ./ s;
   else
     c = cov (x);
     s = sqrt (diag (c));
-    retval = c ./ (s * s');
+    r = c ./ (s * s');
   endif
 
 endfunction

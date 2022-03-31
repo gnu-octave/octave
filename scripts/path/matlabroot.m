@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} matlabroot ()
+## @deftypefn {} {@var{dir} =} matlabroot ()
 ## Return the name of the top-level Octave installation directory.
 ##
 ## This is an alias for the function @w{@code{OCTAVE_HOME}} provided for
@@ -32,9 +32,9 @@
 ## @seealso{OCTAVE_HOME}
 ## @end deftypefn
 
-function retval = matlabroot ()
+function dir = matlabroot ()
 
-  retval = OCTAVE_HOME ();
+  dir = OCTAVE_HOME ();
 
 endfunction
 

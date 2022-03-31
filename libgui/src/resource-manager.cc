@@ -40,11 +40,7 @@
 #include <QLibraryInfo>
 #include <QMessageBox>
 #include <QNetworkProxy>
-#if defined (HAVE_QSTANDARDPATHS)
-#  include <QStandardPaths>
-#else
-#  include <QDesktopServices>
-#endif
+#include <QStandardPaths>
 
 #include <QTextCodec>
 
@@ -731,6 +727,58 @@ namespace octave
     combo->setMaxVisibleItems (12);
   }
 
+
+  // Extending getenv such taht is gets and returns std::string
+  std::string resource_manager::octave_getenv (const std::string& name)
+  {
+    char *value = ::getenv (name.c_str ());
+    return value ? value : "";
+  }
+
+  // The following routine for determining the current temp directory
+  // is taken from mkoctfile.in.cc and updated such that the fallback
+  // is the location that QStandardPaths::writableLocation returns.
+  QString resource_manager::get_temp_dir ()
+  {
+    std::string tempd;
+
+    tempd = octave_getenv ("TMPDIR");
+
+#if defined (__MINGW32__) || defined (_MSC_VER)
+
+    if (tempd.empty ())
+      tempd = octave_getenv ("TEMP");
+
+    if (tempd.empty ())
+      tempd = octave_getenv ("TMP");
+
+#if defined (P_tmpdir)
+    if (tempd.empty ())
+      tempd = P_tmpdir;
+#endif
+
+    // Some versions of MinGW and MSVC either don't define P_tmpdir, or
+    // define it to a single backslash.
+    if (tempd == R"(\)")
+      tempd = "";
+
+#else
+
+#if defined (P_tmpdir)
+    if (tempd.empty ())
+      tempd = P_tmpdir;
+#endif
+
+#endif
+
+    if (tempd.empty ())
+      return QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
+             QDir::separator() + "octave";
+    else
+      return QString::fromStdString (tempd);
+  }
+
+
   QPointer<QTemporaryFile>
   resource_manager::create_tmp_file (const QString& extension,
                                      const QString& contents)
@@ -740,8 +788,7 @@ namespace octave
       ext = QString (".") + ext;
 
     // Create octave dir within temp. dir
-    QString tmp_dir = QDir::tempPath () + QDir::separator() + "octave";
-    QDir::temp ().mkdir ("octave");
+    QString tmp_dir = get_temp_dir ();
 
     // Create temp. file
     QPointer<QTemporaryFile> tmp_file

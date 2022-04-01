@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{C} =} bitset (@var{A}, @var{n})
-## @deftypefnx {} {@var{C} =} bitset (@var{A}, @var{n}, @var{val})
+## @deftypefn  {} {@var{B} =} bitset (@var{A}, @var{n})
+## @deftypefnx {} {@var{B} =} bitset (@var{A}, @var{n}, @var{val})
 ## Set or reset bit(s) at position @var{n} of the unsigned integers in @var{A}.
 ##
 ## The least significant bit is @var{n} = 1.  @w{@var{val} = 0} resets bits and
@@ -62,7 +62,7 @@
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, intmax, flintmax}
 ## @end deftypefn
 
-function C = bitset (A, n, val = true)
+function B = bitset (A, n, val = true)
 
   if (nargin < 2)
     print_usage ();
@@ -79,28 +79,28 @@ function C = bitset (A, n, val = true)
 
   ## Special case of empty input
   if (isempty (A))
-    C = [];
+    B = [];
     return;
   endif
 
   sz = size (A);
-  cl = class (A);
+  cls = class (A);
 
   if (isfloat (A) && isreal (A))
-    Bmax = flintmax (cl);
+    Bmax = flintmax (cls);
     Amax = ceil (log2 (Bmax));
   elseif (isinteger (A))
-    Bmax = intmax (cl);
+    Bmax = intmax (cls);
     Amax = ceil (log2 (Bmax));
   else
-    error ("bitset: invalid class %s", cl);
+    error ("bitset: invalid class %s", cls);
   endif
 
-  if (any ((n < 1)(:)) || any ((n > Amax)(:)))
+  if (any (n(:) < 1) || any (n(:) > Amax))
     error ("bitset: N must be in the range [1,%d]", Amax);
   endif
 
-  mask = bitshift (cast (1, cl), uint8 (n) - uint8 (1));
+  mask = bitshift (cast (1, cls), uint8 (n) - uint8 (1));
 
   on = logical (val);
   off = ! on;
@@ -113,9 +113,9 @@ function C = bitset (A, n, val = true)
     offmask = mask(off);
   endif
 
-  C = zeros (sz, cl);
-  C(on) = bitor (A(on), onmask);
-  C(off) = bitand (A(off), bitcmp (offmask));
+  B = zeros (sz, cls);
+  B(on) = bitor (A(on), onmask);
+  B(off) = bitand (A(off), bitcmp (offmask));
 
 endfunction
 
@@ -131,6 +131,7 @@ endfunction
 %!   endfor
 %! endfor
 
+## Special case of empty input
 %!assert (bitset ([], 1), [])
 
 %!assert <*36458> (bitset (uint8 ([1, 2;3 4]), 1, [0 1; 0 1]),
@@ -145,16 +146,16 @@ endfunction
 %!error <Invalid call> bitset ()
 %!error <Invalid call> bitset (1)
 %!error <A must be .= 0> bitset (-1, 2)
-%!error <must be the same size or scalar> bitset (1, [1 2], [1 2 3])
 %!error <must be the same size or scalar> bitset ([1 2], [1 2 3])
+%!error <must be the same size or scalar> bitset (1, [1 2], [1 2 3])
 %!error <invalid class char> bitset ("1", 2)
 %!error <N must be in the range \[1,53\]> bitset (0, 0)
 %!error <N must be in the range \[1,53\]> bitset (0, 55)
 %!error <N must be in the range \[1,24\]> bitset (single (0), 0)
 %!error <N must be in the range \[1,24\]> bitset (single (0), 26)
-%!error <N must be in the range \[1,8\]> bitset (uint8 (0), 0)
-%!error <N must be in the range \[1,8\]> bitset (uint8 (0), 9)
+%!error <N must be in the range \[1,7\]> bitset (int8 (0), 0)
 %!error <N must be in the range \[1,7\]> bitset (int8 (0), 9)
+%!error <N must be in the range \[1,8\]> bitset (uint8 (0), 9)
 %!error <N must be in the range \[1,15\]> bitset (int16 (0), 17)
 %!error <N must be in the range \[1,16\]> bitset (uint16 (0), 17)
 %!error <N must be in the range \[1,31\]> bitset (int32 (0), 33)

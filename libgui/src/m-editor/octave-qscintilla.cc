@@ -948,8 +948,11 @@ namespace octave
 
              // Remove line and column from first line of error message only
              // if it is related to the tmp itself, i.e. only if the
-             // the error stack size is 0 or 1
-             if (stack.size () < 2)
+             // the error stack size is 0, 1, or, if in debug mode, 2
+             size_t max_stack_size = 1;
+             if (dbg)
+               max_stack_size = 2;
+             if (stack.size () <= max_stack_size)
                {
                  QRegExp rx ("source: error sourcing file [^\n]*$");
                  if (new_msg.contains (rx))
@@ -984,8 +987,11 @@ namespace octave
                    }
                }
 
-             // Drop first stack level, i.e. temporary function file
+             // Drop first stack level, which is the temporary function file,
+             // or, if in debug mode, drop first two stack levels
              if (stack.size () > 0)
+               stack.pop_back ();
+             if (dbg && (stack.size () > 0))
                stack.pop_back ();
 
              // Clean up before throwing the modified error.

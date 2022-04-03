@@ -115,10 +115,6 @@ namespace octave
     */
     QFont copy_font_attributes (const QFont& attr, const QFont& base) const;
 
-    std::string octave_getenv (const std::string& name);
-
-    QString get_temp_dir (void);
-
     QString m_settings_directory;
 
     QString m_settings_file;

@@ -42,7 +42,7 @@
 #include "file-ops.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
-#include "tmpfile-wrapper.h"
+#include "oct-env.h"
 #include "unistd-wrappers.h"
 #include "unistr-wrappers.h"
 #include "unwind-prot.h"
@@ -396,7 +396,9 @@ namespace octave
           gl2ps_sort = GL2PS_NO_SORT;
 
         // Use a temporary file in case an overflow happens
-        FILE *tmpf = octave_tmpfile_wrapper ();
+        std::string tmpfile (sys::tempnam (sys::env::get_temp_directory (),
+                             "oct-"));
+        FILE *tmpf = sys::fopen_tmp (tmpfile, "w+b");
 
         if (! tmpf)
           error ("gl2ps_renderer::draw: couldn't open temporary file for printing");

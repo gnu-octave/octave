@@ -382,6 +382,30 @@ namespace octave
 #endif
     }
 
+    std::FILE *
+    fopen_tmp (const std::string& name, const std::string& mode)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+      // Append "D" to the mode string to indicate that this is a temporary
+      // file that should be deleted when the last open handle is closed.
+      std::string tmp_mode = mode + "D";
+
+      return std::fopen (name.c_str (), tmp_mode.c_str ());
+
+#else
+
+      std::FILE *fptr = std::fopen (name.c_str (), mode.c_str ());
+
+      // From gnulib: This relies on the Unix semantics that a file is not
+      // really removed until it is closed.
+      octave_unlink_wrapper (name.c_str ());
+
+      return fptr;
+
+#endif
+    }
+
     std::fstream
     fstream (const std::string& filename, const std::ios::openmode mode)
     {

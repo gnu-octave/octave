@@ -94,7 +94,6 @@ FCN_FILE_DIRS += \
   %reldir%/swapbytes.m \
   %reldir%/symvar.m \
   %reldir%/tar.m \
-  %reldir%/tempdir.m \
   %reldir%/unix.m \
   %reldir%/unpack.m \
   %reldir%/untar.m \

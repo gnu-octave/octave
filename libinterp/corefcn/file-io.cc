@@ -60,7 +60,6 @@
 #include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
-#include "tmpfile-wrapper.h"
 #include "unistd-wrappers.h"
 
 #include "builtin-defun-decls.h"
@@ -2883,6 +2882,51 @@ The function @code{fclose} may also be used for the same purpose.
   return ovl (streams.remove (args(0), "pclose"));
 }
 
+DEFUN (tempdir, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{dir} =} tempdir ()
+Return the name of the host system's directory for temporary files.
+
+The directory name is taken first from the environment variable @env{TMPDIR}.
+If that does not exist, the environment variable @env{TMP} (and on Windows
+platforms also with higher priority the environment variable @env{TEMP}) is
+checked.  If none of those are set, the system default returned by
+@code{P_tmpdir} is used.
+@seealso{P_tmpdir, tempname, mkstemp, tmpfile}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin > 0)
+    print_usage ();
+
+  std::string tmpdir = sys::env::get_temp_directory ();
+
+  if (! sys::file_ops::is_dir_sep (tmpdir.back ()))
+    tmpdir += sys::file_ops::dir_sep_str ();
+
+  return ovl (tmpdir);
+}
+
+/*
+%!assert (ischar (tempdir ()))
+
+%!test
+%! old_wstate = warning ("off");
+%! old_tmpdir = getenv ("TMPDIR");
+%! unwind_protect
+%!   setenv ("TMPDIR", "__MY_TMP_DIR__");
+%!   assert (tempdir (), ["__MY_TMP_DIR__" filesep()]);
+%! unwind_protect_cleanup
+%!   if (! isempty (old_tmpdir))
+%!     setenv ("TMPDIR", old_tmpdir);
+%!   else
+%!     unsetenv ("TMPDIR");
+%!   endif
+%!   warning (old_wstate);
+%! end_unwind_protect
+*/
+
 DEFUN (tempname, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{fname} =} tempname ()
@@ -2912,8 +2956,6 @@ by the time your program attempts to open it.  If this is a concern,
 
   if (nargin > 0)
     dir = args(0).xstring_value ("tempname: DIR must be a string");
-  else
-    dir = sys::env::getenv ("TMPDIR");
 
   std::string pfx ("oct-");
 
@@ -2996,15 +3038,15 @@ system-dependent error message.
 
   octave_value_list retval;
 
-  FILE *fid = octave_tmpfile_wrapper ();
+  std::string tmpfile (sys::tempnam (sys::env::get_temp_directory (), "oct-"));
+
+  FILE *fid = sys::fopen_tmp (tmpfile, "w+b");
 
   if (fid)
     {
-      std::string nm;
-
       std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
 
-      stream s = stdiostream::create (nm, fid, md);
+      stream s = stdiostream::create (tmpfile, fid, md);
 
       if (! s)
         {

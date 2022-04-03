@@ -30,7 +30,6 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/strmode-wrapper.h \
   %reldir%/strptime-wrapper.h \
   %reldir%/time-wrappers.h \
-  %reldir%/tmpfile-wrapper.h \
   %reldir%/uname-wrapper.h \
   %reldir%/unicase-wrappers.h \
   %reldir%/uniconv-wrappers.h \
@@ -74,7 +73,6 @@ WRAPPERS_SRC = \
   %reldir%/strmode-wrapper.c \
   %reldir%/strptime-wrapper.c \
   %reldir%/time-wrappers.c \
-  %reldir%/tmpfile-wrapper.c \
   %reldir%/uname-wrapper.c \
   %reldir%/unicase-wrappers.c \
   %reldir%/uniconv-wrappers.c \

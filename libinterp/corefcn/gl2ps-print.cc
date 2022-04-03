@@ -529,7 +529,11 @@ namespace octave
                     //        Modify resulting svg to use points instead.
                     //        Remove this "else if" block, and
                     //        make header_found true for SVG if gl2ps is fixed.
-                    std::string srchstr (str);
+
+                    // Specify number of characters because STR may have
+                    // come from std::fread and not end with a NUL
+                    // character.
+                    std::string srchstr (str, nread);
                     std::size_t pos = srchstr.find ("<svg ");
                     if (! header_found && pos != std::string::npos)
                       {

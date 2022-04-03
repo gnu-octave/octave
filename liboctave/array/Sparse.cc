@@ -1023,7 +1023,7 @@ Sparse<T, Alloc>::resize (octave_idx_type r, octave_idx_type c)
     {
       octave_idx_type *new_cidx = m_rep->idx_type_allocate (c+1);
       std::copy_n (m_rep->m_cidx, std::min (c, m_rep->m_ncols) + 1, new_cidx);
-      m_rep->idx_type_deallocate (m_rep->m_cidx, m_rep->m_ncols);
+      m_rep->idx_type_deallocate (m_rep->m_cidx, m_rep->m_ncols + 1);
       m_rep->m_cidx = new_cidx;
 
       if (c > m_rep->m_ncols)

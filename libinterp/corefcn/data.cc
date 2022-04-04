@@ -7249,13 +7249,12 @@ ordered lists.
 // specified by @var{mode}, which can either be 'ascend' or 'descend'
 // and return the index vector corresponding to the sort order.
 //
-// This function does not yet support sparse matrices.
+// FIXME: This function does not yet support sparse matrices.
 
-// FIXME: Is this function used anymore?  12/14/2015
 DEFUN (__sort_rows_idx__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __sort_rows_idx__ (@var{a}, @var{mode})
-Undocumented internal function.
+@deftypefn {} {@var{idx} =} __sort_rows_idx__ (@var{A}, @var{mode})
+Called internally from @file{sortrows.m}.
 @end deftypefn */)
 {
   int nargin = args.length ();

@@ -7245,6 +7245,53 @@ ordered lists.
 %!error sort (1, 2, 3, 4)
 */
 
+// Sort the rows of the matrix @var{a} according to the order
+// specified by @var{mode}, which can either be 'ascend' or 'descend'
+// and return the index vector corresponding to the sort order.
+//
+// This function does not yet support sparse matrices.
+
+// FIXME: Is this function used anymore?  12/14/2015
+DEFUN (__sort_rows_idx__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __sort_rows_idx__ (@var{a}, @var{mode})
+Undocumented internal function.
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  if (nargin == 2 && ! args(1).is_string ())
+    error ("__sort_rows_idx__: second argument must be a string");
+
+  sortmode smode = ASCENDING;
+  if (nargin > 1)
+    {
+      std::string mode = args(1).string_value ();
+      if (mode == "ascend")
+        smode = ASCENDING;
+      else if (mode == "descend")
+        smode = DESCENDING;
+      else
+        error (R"(__sort_rows_idx__: MODE must be either "ascend" or "descend")");
+    }
+
+  octave_value arg = args(0);
+
+  if (arg.issparse ())
+    error ("__sort_rows_idx__: sparse matrices not yet supported");
+
+  if (arg.ndims () != 2)
+    error ("__sort_rows_idx__: needs a 2-D object");
+
+  Array<octave_idx_type> idx = arg.sort_rows_idx (smode);
+
+  // This cannot be ovl(), relies on special overloaded octave_value call.
+  return octave_value (idx, true, true);
+}
+
 static sortmode
 get_sort_mode_option (const octave_value& arg)
 {

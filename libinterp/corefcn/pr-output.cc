@@ -3399,12 +3399,11 @@ Note that the output from @code{fdisp} always ends with a newline.
 
   std::ostream *osp = os.output_stream ();
 
-  octave_value arg = args(1);
-
-  if (osp)
-    arg.print (*osp);
-  else
+  if (! osp)
     error ("fdisp: stream FID not open for writing");
+
+  octave_value arg = args(1);
+  arg.print (*osp);
 
   return ovl ();
 }

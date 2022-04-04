@@ -694,7 +694,7 @@ static Matrix
 convert_position (const Matrix& pos, const caseless_str& from_units,
                   const caseless_str& to_units, const Matrix& parent_dim)
 {
-  Matrix retval (1, pos.numel ());
+  Matrix retval (1, pos.numel (), 0.0);
   double res = 0;
   bool is_rectangle = (pos.numel () == 4);
   bool is_2D = (pos.numel () == 2);
@@ -829,8 +829,6 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
             }
         }
     }
-  else if (! is_rectangle && ! is_2D)
-    retval(2) = 0;
 
   return retval;
 }

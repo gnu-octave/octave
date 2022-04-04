@@ -49,8 +49,8 @@ DEFUN_DLD (fftw, args, ,
 @deftypefnx {} {} fftw ("planner", @var{method})
 @deftypefnx {} {@var{wisdom} =} fftw ("dwisdom")
 @deftypefnx {} {} fftw ("dwisdom", @var{wisdom})
-@deftypefnx {} {} fftw ("threads", @var{nthreads})
 @deftypefnx {} {@var{nthreads} =} fftw ("threads")
+@deftypefnx {} {} fftw ("threads", @var{nthreads})
 
 Manage @sc{fftw} wisdom data.
 

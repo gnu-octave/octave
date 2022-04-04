@@ -293,7 +293,7 @@ datestr, datevec, calendar, weekday}
 
 DEFUN (strftime, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} strftime (@var{fmt}, @var{tm_struct})
+@deftypefn {} {@var{str} =} strftime (@var{fmt}, @var{tm_struct})
 Format the time structure @var{tm_struct} in a flexible way using the format
 string @var{fmt} that contains @samp{%} substitutions similar to those in
 @code{printf}.

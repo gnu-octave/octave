@@ -2162,7 +2162,7 @@ Undocumented internal function.
 
 DEFUN_DLD (__recorder_isrecording__, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __recorder_isrecording__ (@var{recorder})
+@deftypefn {} {@var{tf} =} __recorder_isrecording__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -2575,7 +2575,7 @@ Undocumented internal function.
 
 DEFUN_DLD (__player_isplaying__, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __player_isplaying__ (@var{player})
+@deftypefn {} {@var{tf} =} __player_isplaying__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {

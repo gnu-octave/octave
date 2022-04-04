@@ -623,13 +623,14 @@ The current state can be determined via @code{page_screen_output}.
 
 DEFUN (terminal_size, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} terminal_size ()
-Query or set the size of the terminal window.  If called with no
-arguments, return a two-element row vector containing the current size
-of the terminal window in characters (rows and columns).  If called with
-a two-element vector of integer values, set the terminal size and return
-the previous setting.  Setting the size manually should not be needed
-when using readline for command-line editing.
+@deftypefn  {} {[@var{rows}, @var{cols}] =} terminal_size ()
+@deftypefnx {} {} terminal_size ([@var{rows}, @var{cols}])
+Query or set the size of the terminal window.  If called with no arguments,
+return a two-element row vector containing the current size of the terminal
+window in characters (rows and columns).  If called with a two-element vector
+of integer values, set the terminal size and return the previous setting.
+Setting the size manually should not be needed when using readline for
+command-line editing.
 @seealso{list_in_columns}
 @end deftypefn */)
 {

@@ -39,8 +39,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (psi, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} psi (@var{z})
-@deftypefnx {} {} psi (@var{k}, @var{z})
+@deftypefn  {} {@var{y} =} psi (@var{z})
+@deftypefnx {} {@var{y} =} psi (@var{k}, @var{z})
 Compute the psi (polygamma) function.
 
 The polygamma functions are the @var{k}th derivative of the logarithm

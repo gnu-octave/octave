@@ -3471,9 +3471,9 @@ particular output format.
 
 DEFUN (func2str, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} func2str (@var{fcn_handle})
-Return a string containing the name of the function referenced by the
-function handle @var{fcn_handle}.
+@deftypefn {} {@var{str} =} func2str (@var{fcn_handle})
+Return a string containing the name of the function referenced by the function
+handle @var{fcn_handle}.
 @seealso{str2func, functions}
 @end deftypefn */)
 {
@@ -3505,12 +3505,23 @@ function handle @var{fcn_handle}.
 
 DEFMETHOD (str2func, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} str2func (@var{fcn_name})
-Return a function handle constructed from the string @var{fcn_name}.
+@deftypefn {} {@var{hfcn} =} str2func (@var{str})
+Return a function handle constructed from the string @var{str}.
 
-Previous versions of Octave accepted an optional second argument,
-@qcode{"global"}, that caused str2func to ignore locally visible
-functions.  This option is no longer supported.
+The input may be the name of a function such as @qcode{"sin"} or a string
+defining a function such as @qcode{"@@(x) sin (x + pi)"}.
+
+Programming Note: In most cases it will be better to use anonymous function
+syntax and let the Octave parser create the function handle rather than use
+@code{str2func}.  For example:
+
+@example
+@group
+hfcn = @@sin ;
+hfcn = @@(x) sin (x + pi) ;
+@end group
+@end example
+
 @seealso{func2str, functions}
 @end deftypefn */)
 {

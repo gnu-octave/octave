@@ -614,7 +614,6 @@ buffer to be edited.
 @end deftypefn */)
 {
   // FIXME: should this be limited to the top-level context?
-
   if (args.length () > 2)
     print_usage ();
 
@@ -629,8 +628,8 @@ DEFMETHOD (history, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} history
 @deftypefnx {} {} history @var{opt1} @dots{}
-@deftypefnx {} {@var{h} =} history ()
-@deftypefnx {} {@var{h} =} history (@var{opt1}, @dots{})
+@deftypefnx {} {@var{H} =} history ()
+@deftypefnx {} {@var{H} =} history (@var{opt1}, @dots{})
 If invoked with no arguments, @code{history} displays a list of commands
 that you have executed.
 

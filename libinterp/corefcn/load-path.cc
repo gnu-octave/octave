@@ -2462,8 +2462,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (genpath, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} genpath (@var{dir})
-@deftypefnx {} {} genpath (@var{dir}, @var{skip}, @dots{})
+@deftypefn  {} {@var{pathstr} =} genpath (@var{dir})
+@deftypefnx {} {@var{pathstr} =} genpath (@var{dir}, @var{skipdir1}, @dots{})
 Return a path constructed from @var{dir} and all its subdirectories.
 
 The path does not include package directories (beginning with @samp{+}),
@@ -2516,8 +2516,9 @@ Reinitialize Octave's load path directory cache.
 
 DEFMETHOD (command_line_path, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} command_line_path ()
-Return the command line path variable.
+@deftypefn {} {@var{pathstr} =} command_line_path ()
+Return the path argument given to Octave at the command line when the
+interpreter was started (@env{--path @var{arg}}).
 
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
 @end deftypefn */)
@@ -2532,9 +2533,10 @@ Return the command line path variable.
 
 DEFMETHOD (restoredefaultpath, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} restoredefaultpath ()
+@deftypefn {} {@var{pathstr} =} restoredefaultpath ()
 Restore Octave's path to its initial state at startup.
 
+The re-initialized path is returned as an output.
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
 @end deftypefn */)
 {
@@ -2555,7 +2557,7 @@ Restore Octave's path to its initial state at startup.
 
 DEFMETHOD (__pathorig__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {@var{val} =} __pathorig__ ()
+@deftypefn {} {@var{str} =} __pathorig__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -2624,6 +2626,7 @@ DEFMETHOD (addpath, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} addpath (@var{dir1}, @dots{})
 @deftypefnx {} {} addpath (@var{dir1}, @dots{}, @var{option})
+@deftypefnx {} {@var{oldpath} =} addpath (@dots{})
 Add named directories to the function search path.
 
 If @var{option} is @qcode{"-begin"} or 0 (the default), prepend the directory
@@ -2761,7 +2764,8 @@ For each directory that is added, and that was not already in the path,
 
 DEFMETHOD (rmpath, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} rmpath (@var{dir1}, @dots{})
+@deftypefn  {} {} rmpath (@var{dir1}, @dots{})
+@deftypefnx {} {@var{oldpath} =} rmpath (@var{dir1}, @dots{})
 Remove @var{dir1}, @dots{} from the current function search path.
 
 In addition to accepting individual directory arguments, lists of
@@ -2821,7 +2825,7 @@ and runs it if it exists.
 DEFMETHOD (__dump_load_path__, interp, , ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __dump_load_path__ ()
-Undocumented internal function.
+Pretty print Octave path directories and the files within each directory.
 @end deftypefn */)
 {
   load_path& lp = interp.get_load_path ();

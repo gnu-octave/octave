@@ -36,8 +36,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (nproc, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} nproc ()
-@deftypefnx {} {} nproc (@var{query})
+@deftypefn  {} {@var{n} =} nproc ()
+@deftypefnx {} {@var{n} =} nproc (@var{query})
 Return the current number of available processors.
 
 If called with the optional argument @var{query}, modify how processors

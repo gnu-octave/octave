@@ -3037,10 +3037,14 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__java_init__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __java_init__ ()
-Internal function used @strong{only} when debugging Java interface.
+@deftypefn {} {@var{status} =} __java_init__ ()
+Internal function used @strong{only} when debugging the Java interface.
 
-Function will directly call initialize_java to create an instance of a JVM.
+This function will directly call @code{initialize_java} to create an instance
+of a JVM.
+
+The return variable @var{status} is 1 if the Java interface has been created,
+and 0 otherwise.
 @end deftypefn */)
 {
 #if defined (HAVE_JAVA)
@@ -3065,8 +3069,7 @@ DEFUN (__java_exit__, , ,
 @deftypefn {} {} __java_exit__ ()
 Internal function used @strong{only} when debugging Java interface.
 
-Function will directly call terminate_jvm to destroy the current JVM
-instance.
+Function will directly call terminate_jvm to destroy the current JVM instance.
 @end deftypefn */)
 {
 #if defined (HAVE_JAVA)
@@ -3337,7 +3340,7 @@ equivalent
 
 DEFUN (__java2mat__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __java2mat__ (@var{javaobj})
+@deftypefn {} {@var{mat} =} __java2mat__ (@var{javaobj})
 Undocumented internal function.
 @end deftypefn */)
 {

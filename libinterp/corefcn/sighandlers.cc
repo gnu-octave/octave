@@ -494,7 +494,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (SIG, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} SIG ()
+@deftypefn {} {@var{S} =} SIG ()
 Return a structure containing Unix signal names and their defined values.
 @end deftypefn */)
 {

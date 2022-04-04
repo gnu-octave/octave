@@ -1174,7 +1174,7 @@ DEFMETHOD (who, interp, args, nargout,
 @deftypefn  {} {} who
 @deftypefnx {} {} who pattern @dots{}
 @deftypefnx {} {} who option pattern @dots{}
-@deftypefnx {} {C =} who ("pattern", @dots{})
+@deftypefnx {} {C =} who (@dots{})
 List currently defined variables matching the given patterns.
 
 Valid pattern syntax is the same as described for the @code{clear} command.

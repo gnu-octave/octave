@@ -270,20 +270,21 @@ get_mapper_fun_options (symbol_table& symtab,
 
 DEFMETHOD (cellfun, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} cellfun (@var{name}, @var{C})
-@deftypefnx {} {} cellfun ("size", @var{C}, @var{k})
-@deftypefnx {} {} cellfun ("isclass", @var{C}, @var{class})
-@deftypefnx {} {} cellfun (@var{func}, @var{C})
-@deftypefnx {} {} cellfun (@var{func}, @var{C}, @var{D})
-@deftypefnx {} {[@var{a}, @dots{}] =} cellfun (@dots{})
-@deftypefnx {} {} cellfun (@dots{}, "ErrorHandler", @var{errfunc})
-@deftypefnx {} {} cellfun (@dots{}, "UniformOutput", @var{val})
+@deftypefn  {} {@var{A} =} cellfun ("@var{fcn}", @var{C})
+@deftypefnx {} {@var{A} =} cellfun ("size", @var{C}, @var{k})
+@deftypefnx {} {@var{A} =} cellfun ("isclass", @var{C}, @var{class})
+@deftypefnx {} {@var{A} =} cellfun (@@@var{fcn}, @var{C})
+@deftypefnx {} {@var{A} =} cellfun (@var{fcn}, @var{C})
+@deftypefnx {} {@var{A} =} cellfun (@var{fcn}, @var{C1}, @var{C2}, @dots{})
+@deftypefnx {} {[@var{A1}, @var{A2}, @dots{}] =} cellfun (@dots{})
+@deftypefnx {} {@var{A} =} cellfun (@dots{}, "ErrorHandler", @var{errfunc})
+@deftypefnx {} {@var{A} =} cellfun (@dots{}, "UniformOutput", @var{val})
 
-Evaluate the function named @var{name} on the elements of the cell array
+Evaluate the function named "@var{fcn}" on the elements of the cell array
 @var{C}.
 
 Elements in @var{C} are passed on to the named function individually.  The
-function @var{name} can be one of the functions
+function @var{fcn} can be one of the functions
 
 @table @code
 @item isempty
@@ -316,11 +317,10 @@ Return the size along the @var{k}-th dimension.
 Return 1 for elements of @var{class}.
 @end table
 
-Additionally, @code{cellfun} accepts an arbitrary function @var{func}
-in the form of an inline function, function handle, or the name of a
-function (in a character string).  The function can take one or more
-arguments, with the inputs arguments given by @var{C}, @var{D}, etc.
-Equally the function can return one or more output arguments.  For example:
+Additionally, @code{cellfun} accepts an arbitrary function @var{fcn} in the
+form of an inline function, function handle, or the name of a function (in a
+character string).  The function can take one or more arguments, with the
+inputs arguments given by @var{C1}, @var{C2}, etc.  For example:
 
 @example
 @group
@@ -329,9 +329,10 @@ cellfun ("atan2", @{1, 0@}, @{0, 1@})
 @end group
 @end example
 
-The number of output arguments of @code{cellfun} matches the number of
-output arguments of the function.  The outputs of the function will be
-collected into the output arguments of @code{cellfun} like this:
+The number of output arguments of @code{cellfun} matches the number of output
+arguments of the function and can be greater than one.  When there are multiple
+outputs of the function they will be collected into the output arguments of
+@code{cellfun} like this:
 
 @example
 @group
@@ -348,14 +349,14 @@ endfunction
 @end group
 @end example
 
-Note that per default the output argument(s) are arrays of the same size as
+Note that, per default, the output argument(s) are arrays of the same size as
 the input arguments.  Input arguments that are singleton (1x1) cells will be
 automatically expanded to the size of the other arguments.
 
-If the parameter @qcode{"UniformOutput"} is set to true (the default),
-then the function must return scalars which will be concatenated into the
-return array(s).  If @qcode{"UniformOutput"} is false, the outputs are
-concatenated into a cell array (or cell arrays).  For example:
+If the parameter @qcode{"UniformOutput"} is set to true (the default), then the
+function must return scalars which will be concatenated into the return
+array(s).  If @qcode{"UniformOutput"} is false, the outputs are concatenated
+into a cell array (or cell arrays).  For example:
 
 @example
 @group
@@ -366,7 +367,7 @@ cellfun ("tolower", @{"Foo", "Bar", "FooBar"@},
 @end example
 
 Given the parameter @qcode{"ErrorHandler"}, then @var{errfunc} defines a
-function to call in case @var{func} generates an error.  The form of the
+function to call in case @var{fcn} generates an error.  The form of the
 function is
 
 @example
@@ -375,7 +376,7 @@ function [@dots{}] = errfunc (@var{s}, @dots{})
 
 @noindent
 where there is an additional input argument to @var{errfunc} relative to
-@var{func}, given by @var{s}.  This is a structure with the elements
+@var{fcn}, given by @var{s}.  This is a structure with the elements
 @qcode{"identifier"}, @qcode{"message"}, and @qcode{"index"} giving
 respectively the error identifier, the error message, and the index into the
 input arguments of the element that caused the error.  For example:
@@ -388,18 +389,18 @@ cellfun ("factorial", @{-1,2@}, "ErrorHandler", @@foo)
 @end group
 @end example
 
-Use @code{cellfun} intelligently.  The @code{cellfun} function is a
-useful tool for avoiding loops.  It is often used with anonymous
-function handles; however, calling an anonymous function involves an
-overhead quite comparable to the overhead of an m-file function.
-Passing a handle to a built-in function is faster, because the
-interpreter is not involved in the internal loop.  For example:
+Use @code{cellfun} intelligently.  The @code{cellfun} function is a useful tool
+for avoiding loops.  It is often used with anonymous function handles; however,
+calling an anonymous function involves an overhead quite comparable to the
+overhead of an m-file function.  Passing a handle to a built-in function is
+faster, because the interpreter is not involved in the internal loop.  For
+example:
 
 @example
 @group
-a = @{@dots{}@}
-v = cellfun (@@(x) det (x), a); # compute determinants
-v = cellfun (@@det, a); # faster
+C = @{@dots{}@}
+v = cellfun (@@(x) det (x), C); # compute determinants
+v = cellfun (@@det, C);         # 40% faster
 @end group
 @end example
 
@@ -1055,31 +1056,38 @@ nevermind:
 
 DEFMETHOD (arrayfun, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} arrayfun (@var{func}, @var{A})
-@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A})
-@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})
-@deftypefnx {} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{A}, @dots{})
-@deftypefnx {} {} arrayfun (@dots{}, "UniformOutput", @var{val})
-@deftypefnx {} {} arrayfun (@dots{}, "ErrorHandler", @var{errfunc})
+@deftypefn  {} {@var{B} =} arrayfun (@var{fcn}, @var{A})
+@deftypefnx {} {@var{B} =} arrayfun (@var{fcn}, @var{A1}, @var{A2}, @dots{})
+@deftypefnx {} {[@var{B1}, @var{B2}, @dots{}] =} arrayfun (@var{fcn}, @var{A}, @dots{})
+@deftypefnx {} {@var{B} =} arrayfun (@dots{}, "UniformOutput", @var{val})
+@deftypefnx {} {@var{B} =} arrayfun (@dots{}, "ErrorHandler", @var{errfunc})
 
 Execute a function on each element of an array.
 
 This is useful for functions that do not accept array arguments.  If the
-function does accept array arguments it is better to call the function
+function does accept array arguments it is @emph{better} to call the function
 directly.
 
-The first input argument @var{func} can be a string, a function
-handle, an inline function, or an anonymous function.  The input
-argument @var{A} can be a logic array, a numeric array, a string
-array, a structure array, or a cell array.  By a call of the function
-@code{arrayfun} all elements of @var{A} are passed on to the named
-function @var{func} individually.
+The first input argument @var{fcn} can be a string, a function handle, an
+inline function, or an anonymous function.  The input argument @var{A} can be a
+logical array, a numeric array, a string array, a structure array, or a cell
+array.  @code{arrayfun} passes all elements of @var{A} individually to the
+function @var{fcn} and collects the results.  The equivalent pseudo-code is
 
-The named function can also take more than two input arguments, with
-the input arguments given as third input argument @var{b}, fourth
-input argument @var{c}, @dots{}  If given more than one array input
-argument then all input arguments must have the same sizes, for
-example:
+@example
+@group
+cls = class (@var{fcn} (@var{A}(1));
+@var{B} = zeros (size (@var{A}), cls);
+for i = 1:numel (@var{A})
+  @var{B}(i) = @var{fcn} (@var{A}(i))
+endfor
+@end group
+@end example
+
+The named function can also take more than two input arguments, with the input
+arguments given as third input argument @var{A2}, fourth input argument
+@var{A2}, @dots{}  If given more than one array input argument then all input
+arguments must have the same sizes.  For example:
 
 @example
 @group
@@ -1090,10 +1098,10 @@ arrayfun (@@atan2, [1, 0], [0, 1])
 
 If the parameter @var{val} after a further string input argument
 @qcode{"UniformOutput"} is set @code{true} (the default), then the named
-function @var{func} must return a single element which then will be
-concatenated into the return value and is of type matrix.  Otherwise,
-if that parameter is set to @code{false}, then the outputs are
-concatenated in a cell array.  For example:
+function @var{fcn} must return a single element which then will be concatenated
+into the return value and is of type matrix.  Otherwise, if that parameter is
+set to @code{false}, then the outputs are concatenated in a cell array.  For
+example:
 
 @example
 @group
@@ -1107,9 +1115,8 @@ arrayfun (@@(x,y) x:y, "abc", "def", "UniformOutput", false)
 @end group
 @end example
 
-If more than one output arguments are given then the named function
-must return the number of return values that also are expected, for
-example:
+If more than one output arguments are given then the named function must return
+the number of return values that also are expected, for example:
 
 @example
 @group
@@ -1135,23 +1142,22 @@ C =
 
 If the parameter @var{errfunc} after a further string input argument
 @qcode{"ErrorHandler"} is another string, a function handle, an inline
-function, or an anonymous function, then @var{errfunc} defines a
-function to call in the case that @var{func} generates an error.
-The definition of the function must be of the form
+function, or an anonymous function, then @var{errfunc} defines a function to
+call in the case that @var{fcn} generates an error.  The definition of the
+function must be of the form
 
 @example
 function [@dots{}] = errfunc (@var{s}, @dots{})
 @end example
 
 @noindent
-where there is an additional input argument to @var{errfunc}
-relative to @var{func}, given by @var{s}.  This is a structure with
-the elements @qcode{"identifier"}, @qcode{"message"}, and
-@qcode{"index"} giving, respectively, the error identifier, the error
-message, and the index of the array elements that caused the error.  The
-size of the output argument of @var{errfunc} must have the same size as the
-output argument of @var{func}, otherwise a real error is thrown.  For
-example:
+where there is an additional input argument to @var{errfunc} relative to
+@var{fcn}, given by @var{s}.  This is a structure with the elements
+@qcode{"identifier"}, @qcode{"message"}, and @qcode{"index"} giving,
+respectively, the error identifier, the error message, and the index of the
+array elements that caused the error.  The size of the output argument of
+@var{errfunc} must have the same size as the output argument of @var{fcn},
+otherwise a real error is thrown.  For example:
 
 @example
 @group

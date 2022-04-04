@@ -724,9 +724,9 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__dump_symtab_info__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} __dump_symtab_info__ ()
-@deftypefnx {} {} __dump_symtab_info__ (@var{function})
-Undocumented internal function.
+@deftypefn  {} {@var{S} =} __dump_symtab_info__ ()
+@deftypefnx {} {@var{S} =} __dump_symtab_info__ (@var{function})
+Return a structure with information from the symbol table.
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -753,7 +753,7 @@ Undocumented internal function.
 
 DEFMETHOD (__get_cmdline_fcn_txt__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __get_cmdline_fcn_txt__ (@var{name})
+@deftypefn {} {@var{str} =} __get_cmdline_fcn_txt__ (@var{name})
 Undocumented internal function.
 @end deftypefn */)
 {

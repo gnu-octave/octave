@@ -12784,7 +12784,7 @@ is_handle_visible (const octave_value& val)
 
 DEFUN (__is_handle_visible__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __is_handle_visible__ (@var{h})
+@deftypefn {} {@var{tf} =} __is_handle_visible__ (@var{h})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13249,7 +13249,7 @@ lists respectively.
 
 DEFMETHOD (__get__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __get__ (@var{h})
+@deftypefn {} {@var{props} =} __get__ (@var{h})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13371,7 +13371,7 @@ make_graphics_object (const std::string& go_name,
 
 DEFMETHOD (__go_figure__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_figure__ (@var{fignum})
+@deftypefn {} {@var{hfig} =} __go_figure__ (@var{fignum})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13513,7 +13513,7 @@ calc_dimensions (const graphics_object& go)
 
 DEFMETHOD (__calc_dimensions__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __calc_dimensions__ (@var{axes})
+@deftypefn {} {@var{ndims} =} __calc_dimensions__ (@var{axes})
 Internal function.
 
 Determine the number of dimensions in a graphics object, either 2 or 3.
@@ -13533,7 +13533,7 @@ Determine the number of dimensions in a graphics object, either 2 or 3.
 
 DEFMETHOD (__go_axes__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_axes__ (@var{parent})
+@deftypefn {} {@var{hax} =} __go_axes__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13542,7 +13542,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_line__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_line__ (@var{parent})
+@deftypefn {} {@var{hl} =} __go_line__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13551,7 +13551,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_text__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_text__ (@var{parent})
+@deftypefn {} {@var{ht} =} __go_text__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13560,7 +13560,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_image__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_image__ (@var{parent})
+@deftypefn {} {@var{hi} =} __go_image__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13569,7 +13569,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_surface__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_surface__ (@var{parent})
+@deftypefn {} {@var{hs} =} __go_surface__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13578,7 +13578,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_patch__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_patch__ (@var{parent})
+@deftypefn {} {@var{hp} =} __go_patch__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13587,7 +13587,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_scatter__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_scatter__ (@var{parent})
+@deftypefn {} {@var{hs} =} __go_scatter__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13596,7 +13596,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_light__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_light__ (@var{parent})
+@deftypefn {} {@var{hl} =} __go_light__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13605,7 +13605,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_hggroup__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_hggroup__ (@var{parent})
+@deftypefn {} {@var{hgg} =} __go_hggroup__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13614,7 +13614,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uimenu__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uimenu__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uimenu__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13623,7 +13623,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uicontrol__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uicontrol__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uicontrol__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13632,7 +13632,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uibuttongroup__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uibuttongroup__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uibuttongroup__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13641,7 +13641,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uipanel__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uipanel__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uipanel__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13650,7 +13650,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uicontextmenu__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uicontextmenu__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uicontextmenu__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13659,7 +13659,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uitable__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uitable__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uitable__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13668,7 +13668,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uitoolbar__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uitoolbar__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uitoolbar__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13677,7 +13677,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uipushtool__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uipushtool__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uipushtool__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13686,7 +13686,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_uitoggletool__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_uitoggletool__ (@var{parent})
+@deftypefn {} {@var{hui} =} __go_uitoggletool__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13727,7 +13727,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_handles__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_handles__ (@var{show_hidden})
+@deftypefn {} {@var{hg_list} =} __go_handles__ (@var{show_hidden})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13745,7 +13745,7 @@ Undocumented internal function.
 
 DEFMETHOD (__go_figure_handles__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_figure_handles__ (@var{show_hidden})
+@deftypefn {} {@var{hfig_list} =} __go_figure_handles__ (@var{show_hidden})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -13862,7 +13862,7 @@ Internal function: returns the pixel size of the image in normalized units.
 
 DEFMETHOD (available_graphics_toolkits, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} available_graphics_toolkits ()
+@deftypefn {} {@var{toolkits} =} available_graphics_toolkits ()
 Return a cell array of registered graphics toolkits.
 @seealso{graphics_toolkit, register_graphics_toolkit}
 @end deftypefn */)
@@ -13878,8 +13878,11 @@ Return a cell array of registered graphics toolkits.
 
 DEFMETHOD (register_graphics_toolkit, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} register_graphics_toolkit (@var{toolkit})
+@deftypefn {} {} register_graphics_toolkit ("@var{toolkit}")
 List @var{toolkit} as an available graphics toolkit.
+
+Programming Note: No input validation is done on the input string; it is simply
+added to the list of possible graphics toolkits.
 @seealso{available_graphics_toolkits}
 @end deftypefn */)
 {
@@ -13901,7 +13904,7 @@ List @var{toolkit} as an available graphics toolkit.
 
 DEFMETHOD (loaded_graphics_toolkits, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} loaded_graphics_toolkits ()
+@deftypefn {} {@var{toolkits} =} loaded_graphics_toolkits ()
 Return a cell array of the currently loaded graphics toolkits.
 @seealso{available_graphics_toolkits}
 @end deftypefn */)

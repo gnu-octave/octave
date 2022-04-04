@@ -1907,8 +1907,8 @@ Return true if @var{x} is a structure or a structure array.
 
 DEFUN (__fieldnames__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __fieldnames__ (@var{struct})
-@deftypefnx {} {} __fieldnames__ (@var{obj})
+@deftypefn  {} {@var{names} =} __fieldnames__ (@var{struct})
+@deftypefnx {} {@var{names} =} __fieldnames__ (@var{obj})
 Internal function.
 
 Implements @code{fieldnames()} for structures and Octave objects.
@@ -1988,7 +1988,7 @@ dimension is returned.
 
 DEFUN (numfields, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} numfields (@var{s})
+@deftypefn {} {@var{n} =} numfields (@var{s})
 Return the number of fields of the structure @var{s}.
 @seealso{fieldnames}
 @end deftypefn */)
@@ -2056,8 +2056,8 @@ get_cell2struct_fields (const octave_value& arg)
 
 DEFUN (cell2struct, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} cell2struct (@var{cell}, @var{fields})
-@deftypefnx {} {} cell2struct (@var{cell}, @var{fields}, @var{dim})
+@deftypefn  {} {@var{S} =} cell2struct (@var{cell}, @var{fields})
+@deftypefnx {} {@var{S} =} cell2struct (@var{cell}, @var{fields}, @var{dim})
 Convert @var{cell} to a structure.
 
 The number of fields in @var{fields} must match the number of elements in
@@ -2067,10 +2067,10 @@ is omitted, a value of 1 is assumed.
 
 @example
 @group
-A = cell2struct (@{"Peter", "Hannah", "Robert";
+S = cell2struct (@{"Peter", "Hannah", "Robert";
                    185, 170, 168@},
                  @{"Name","Height"@}, 1);
-A(1)
+S(1)
    @result{}
       @{
         Name   = Peter

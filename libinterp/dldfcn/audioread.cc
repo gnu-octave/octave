@@ -465,8 +465,9 @@ Comment.
       offset += chunk_size;
     }
 
-  // FIXME: shouldn't we return something to indicate whether the file
-  // was written successfully?
+  // FIXME: Shouldn't we return something to indicate whether the file
+  //        was written successfully?  On the other hand, Matlab doesn't
+  //        return anything.
   return ovl ();
 
 #else
@@ -780,6 +781,8 @@ with names that start with @var{format}.
         }
     }
 
+  return octave_value_list ();
+
 #else
 
   octave_unused_parameter (args);
@@ -788,8 +791,6 @@ with names that start with @var{format}.
                         "getting sound formats through libsndfile");
 
 #endif
-
-  return octave_value_list ();
 }
 
 OCTAVE_NAMESPACE_END

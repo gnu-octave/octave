@@ -225,7 +225,7 @@ If running in command-line mode, start the GUI desktop.
 
 DEFMETHOD (__event_manager_enabled__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_enabled__ ()
+@deftypefn {} {@var{tf} =} __event_manager_enabled__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -236,7 +236,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_have_dialogs__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_have_dialogs__ ()
+@deftypefn {} {@var{tf} =} __event_manager_have_dialogs__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -247,7 +247,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_edit_file__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_edit_file__ (@var{file})
+@deftypefn {} {@var{status} =} __event_manager_edit_file__ (@var{file})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -279,7 +279,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_question_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
+@deftypefn {} {@var{btn_val} =} __event_manager_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -306,7 +306,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_file_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{multiselect}, @var{pathname})
+@deftypefn {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __event_manager_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{multiselect}, @var{pathname})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -375,7 +375,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_list_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{initial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
+@deftypefn {} {[@var{sel}, @var{ok}] =} __event_manager_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{initial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -431,7 +431,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_input_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
+@deftypefn {} {@var{cstr} =} __event_manager_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -483,7 +483,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_named_icon__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_dialog_icons__ (@var{icon_name})
+@deftypefn {} {@var{icon} =} __event_manager_dialog_icons__ (@var{icon_name})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -501,9 +501,10 @@ Undocumented internal function.
   return ovl (retval);
 }
 
+// FIXME: Why does this function return any value at all?
 DEFMETHOD (__event_manager_show_preferences__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_show_preferences__ ()
+@deftypefn {} {@var{status} =} __event_manager_show_preferences__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -514,7 +515,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_apply_preferences__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_apply_preferences__ ()
+@deftypefn {} {@var{status} =} __event_manager_apply_preferences__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -525,7 +526,8 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_gui_preference__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_gui_preference__ ()
+@deftypefn  {} {@var{prefval} =} __event_manager_gui_preference__ (@var{key})
+@deftypefnx {} {@var{prefval} =} __event_manager_gui_preference__ (@var{key}, @var{value})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -645,7 +647,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_show_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_show_documentation__ (@var{filename})
+@deftypefn {} {@var{status} =} __event_manager_show_documentation__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -661,7 +663,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_register_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_register_documentation__ (@var{filename})
+@deftypefn {} {@var{status} =} __event_manager_register_documentation__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -677,7 +679,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_unregister_documentation__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_unregister_documentation__ (@var{filename})
+@deftypefn {} {@var{status} =} __event_manager_unregister_documentation__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -758,7 +760,7 @@ Undocumented internal function.
 
 DEFMETHOD (__event_manager_gui_status_update__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_gui_status_update__ (@var{feature}, @var{status})
+@deftypefn {} {@var{status} =} __event_manager_gui_status_update__ (@var{feature}, @var{status})
 Internal function for updating the status of some features in the GUI.
 @end deftypefn */)
 {
@@ -792,7 +794,7 @@ Internal function for updating the status of some features in the GUI.
 
 DEFMETHOD (__event_manager_update_gui_lexer__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __event_manager_update_gui_lexer__ ()
+@deftypefn {} {@var{status} =} __event_manager_update_gui_lexer__ ()
 Undocumented internal function.
 @end deftypefn */)
 {

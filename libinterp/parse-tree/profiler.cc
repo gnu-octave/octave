@@ -385,7 +385,7 @@ OCTAVE_NAMESPACE_BEGIN
 // Enable or disable the profiler data collection.
 DEFMETHOD (__profiler_enable__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __profiler_enable__ ()
+@deftypefn {} {@var{state} =} __profiler_enable__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -431,7 +431,7 @@ Undocumented internal function.
 // Query the timings collected by the profiler.
 DEFMETHOD (__profiler_data__, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __profiler_data__ ()
+@deftypefn {} {@var{data} =} __profiler_data__ ()
 Undocumented internal function.
 @end deftypefn */)
 {

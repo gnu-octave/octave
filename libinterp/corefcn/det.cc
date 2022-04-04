@@ -54,7 +54,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (det, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} det (@var{A})
+@deftypefn  {} {@var{d} =} det (@var{A})
 @deftypefnx {} {[@var{d}, @var{rcond}] =} det (@var{A})
 Compute the determinant of @var{A}.
 

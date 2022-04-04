@@ -53,9 +53,9 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (hash, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} hash (@var{hfun}, @var{str})
+@deftypefn {} {@var{hashval} =} hash ("@var{hashfcn}", @var{str})
 Calculate the hash value of the string @var{str} using the hash function
-@var{hfun}.
+@var{hashfcn}.
 
 The available hash functions are given in the table below.
 

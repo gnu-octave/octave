@@ -191,8 +191,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__open_with_system_app__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __open_with_system_app__ (@var{file})
-Internal function.  Returns 1 on successful system call and 0 otherwise.
+@deftypefn {} {@var{status} =} __open_with_system_app__ (@var{file})
+Return 1 on successful system call and 0 otherwise.
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -819,7 +819,7 @@ DEFALIAS (home, clc);
 
 DEFUN (getenv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} getenv (@var{var})
+@deftypefn {} {@var{val} =} getenv ("@var{var}")
 Return the value of the environment variable @var{var}.
 
 For example,
@@ -847,13 +847,16 @@ returns a string containing the value of your path.
 
 DEFUN (setenv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} setenv (@var{var}, @var{value})
+@deftypefn  {} {} setenv ("@var{var}", @var{value})
 @deftypefnx {} {} setenv (@var{var})
 @deftypefnx {} {} putenv (@dots{})
 Set the value of the environment variable @var{var} to @var{value}.
 
 If no @var{value} is specified then the variable will be assigned the null
 string.
+
+Programming Note: @code{putenv} is an alias for @code{setenv} and can be used
+interchangeably.
 @seealso{unsetenv, getenv}
 @end deftypefn */)
 {
@@ -1209,29 +1212,31 @@ On non-Windows platforms this function fails with an error.
 
 DEFMETHOD (kbhit, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} kbhit ()
-@deftypefnx {} {} kbhit (1)
+@deftypefn  {} {@var{c} =} kbhit ()
+@deftypefnx {} {@var{c} =} kbhit (1)
 Read a single keystroke from the keyboard.
 
-If called with an argument, don't wait for a keypress.
+If called with an argument (typically 1), don't wait for a keypress and
+immediately return the next keystroke in the keyboard input buffer or an empty
+string ("") if no keystroke is available.
 
 For example,
 
 @example
-x = kbhit ();
+c = kbhit ();
 @end example
 
 @noindent
-will set @var{x} to the next character typed at the keyboard as soon as
-it is typed.
+will set @var{c} to the next character typed at the keyboard as soon as it is
+typed.
 
 @example
-x = kbhit (1);
+c = kbhit (1);
 @end example
 
 @noindent
-is identical to the above example, but doesn't wait for a keypress,
-returning the empty string if no key is available.
+is identical to the above example, but doesn't wait for a keypress, returning
+the empty string if no key is available.
 @seealso{input, pause}
 @end deftypefn */)
 {
@@ -1272,8 +1277,8 @@ tic; pause (0.05); toc
 @end group
 @end example
 
-The following example prints a message and then waits 5 seconds before
-clearing the screen.
+The following example prints a message and then waits 5 seconds before clearing
+the screen.
 
 @example
 @group
@@ -1381,7 +1386,7 @@ No actual tests are performed.
 
 DEFUN (native_float_format, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} native_float_format ()
+@deftypefn {} {@var{fmtstr} =} native_float_format ()
 Return the native floating point format as a string.
 @end deftypefn */)
 {
@@ -1396,8 +1401,8 @@ Return the native floating point format as a string.
 
 DEFUN (tilde_expand, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} tilde_expand (@var{string})
-@deftypefnx {} {} tilde_expand (@var{cellstr})
+@deftypefn  {} {@var{newstr} =} tilde_expand (@var{string})
+@deftypefnx {} {@var{newcstr} =} tilde_expand (@var{cellstr})
 Perform tilde expansion on @var{string}.
 
 If @var{string} begins with a tilde character, (@samp{~}), all of the
@@ -1469,7 +1474,7 @@ equivalent to
 
 DEFUN (__blas_version__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __blas_version__ ()
+@deftypefn {} {@var{verstr} =} __blas_version__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -1478,7 +1483,7 @@ Undocumented internal function.
 
 DEFUN (__lapack_version__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __lapack_version__ ()
+@deftypefn {} {@var{verstr} =} __lapack_version__ ()
 Undocumented internal function.
 @end deftypefn */)
 {

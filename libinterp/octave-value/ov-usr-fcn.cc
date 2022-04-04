@@ -652,8 +652,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (nargin, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} nargin ()
-@deftypefnx {} {} nargin (@var{fcn})
+@deftypefn  {} {@var{n} =} nargin ()
+@deftypefnx {} {@var{n} =} nargin (@var{fcn})
 Report the number of input arguments to a function.
 
 Called from within a function, return the number of arguments passed to the
@@ -741,8 +741,8 @@ Programming Note: @code{nargin} does not work on compiled functions
 
 DEFMETHOD (nargout, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} nargout ()
-@deftypefnx {} {} nargout (@var{fcn})
+@deftypefn  {} {@var{n} =} nargout ()
+@deftypefnx {} {@var{n} =} nargout (@var{fcn})
 Report the number of output arguments from a function.
 
 Called from within a function, return the number of values the caller

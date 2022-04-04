@@ -1248,13 +1248,24 @@ If @code{keyboard} is invoked without arguments, a default prompt of
 
 DEFUN (completion_matches, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} completion_matches (@var{hint})
-Generate possible completions given @var{hint}.
+@deftypefn {} {@var{completion_list} =} completion_matches ("@var{hint}")
+Generate possible word completions for Octave given the character sequence
+@var{hint}.
 
-This function is provided for the benefit of programs like Emacs which
-might be controlling Octave and handling user input.  The current
-command number is not incremented when this function is called.  This is
-a feature, not a bug.
+This function is provided for the benefit of programs like Emacs which might be
+controlling Octave and handling user input.  For example:
+
+@example
+@group
+completion_matches ("sine")
+@result{}
+sinetone
+sinewave
+@end group
+@end example
+
+Programming Note: The current command number in Octave is not incremented when
+this function is called.  This is a feature, not a bug.
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1332,7 +1343,8 @@ a feature, not a bug.
 
 DEFUN (readline_read_init_file, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} readline_read_init_file (@var{file})
+@deftypefn  {} {} readline_read_init_file ()
+@deftypefnx {} {} readline_read_init_file (@var{file})
 Read the readline library initialization file @var{file}.
 
 If @var{file} is omitted, read the default initialization file
@@ -1555,7 +1567,7 @@ Undocumented internal function.
 
 DEFMETHOD (__gud_mode__, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __gud_mode__ ()
+@deftypefn {} {@var{state} =} __gud_mode__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -1566,8 +1578,12 @@ Undocumented internal function.
 
 DEFMETHOD (__mfile_encoding__, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {@var{current_encoding} =} __mfile_encoding__ (@var{new_encoding})
-Set and query the codepage that is used for reading .m files.
+@deftypefn  {} {@var{current_encoding} =} __mfile_encoding__ ()
+@deftypefnx {} {} __mfile_encoding__ (@var{new_encoding})
+@deftypefnx {} {@var{old_encoding} =} __mfile_encoding__ (@var{new_encoding})
+Query or set the codepage that is used for reading m-files.
+
+The input and output are strings naming a particular codepage, e.g., "utf-8".
 @end deftypefn */)
 {
   input_system& input_sys = interp.get_input_system ();
@@ -1578,22 +1594,22 @@ Set and query the codepage that is used for reading .m files.
 DEFMETHOD (dir_encoding, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{current_encoding} =} dir_encoding (@var{dir})
-@deftypefnx {} {@var{prev_encoding} =} dir_encoding (@var{dir}, @var{encoding})
-@deftypefnx {} {} dir_encoding (@dots{})
-Set and query the @var{encoding} that is used for reading m-files in @var{dir}.
+@deftypefnx {} {} dir_encoding (@var{dir}, @var{new_encoding})
+@deftypefnx {} {} dir_encoding (@var{dir}, "delete")
+@deftypefnx {} {@var{old_encoding} =} dir_encoding (@var{dir}, @var{new_encoding})
+Query or set the @var{encoding} that is used for reading m-files in @var{dir}.
 
-That encoding overrides the (globally set) m-file encoding.
+The per-directory encoding overrides the (globally set) m-file encoding.
 
-The string @var{DIR} must match the form how the directory would appear in the
-load path.
+The string @var{DIR} must match how the directory would appear in the load
+path.
 
-The @var{encoding} must be a valid encoding identifier or @qcode{"delete"}.  In
-the latter case, the (globally set) m-file encoding will be used for the given
-@var{dir}.
+The @var{new_encoding} input must be a valid encoding identifier or
+@qcode{"delete"}.  In the latter case, any per-directory encoding is removed
+and the (globally set) m-file encoding will be used for the given @var{dir}.
 
-The currently or previously used encoding is returned in @var{current_encoding}
-or @var{prev_encoding}, respectively.  The output argument must be explicitly
-requested.
+The currently or previously used encoding is returned only if an output
+argument is requested.
 
 The directory encoding is automatically read from the file @file{.oct-config}
 when a new path is added to the load path (for example with @code{addpath}).

@@ -341,8 +341,8 @@ find_config_info (const octave_scalar_map& m, const std::string& key)
 
 DEFUN (__octave_config_info__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __octave_config_info__ ()
-@deftypefnx {} {} __octave_config_info__ (@var{option})
+@deftypefn  {} {@var{S} =} __octave_config_info__ ()
+@deftypefnx {} {@var{S} =} __octave_config_info__ (@var{option})
 Return a structure containing configuration and installation information for
 Octave.
 

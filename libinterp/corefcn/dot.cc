@@ -75,7 +75,8 @@ get_red_dims (const dim_vector& x, const dim_vector& /* y */, int dim,
 
 DEFUN (dot, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} dot (@var{x}, @var{y}, @var{dim})
+@deftypefn  {} {@var{z} =} dot (@var{x}, @var{y})
+@deftypefnx {} {@var{z} =} dot (@var{x}, @var{y}, @var{dim})
 Compute the dot product of two vectors.
 
 If @var{x} and @var{y} are matrices, calculate the dot products along the
@@ -351,7 +352,7 @@ do_blkmm (const octave_value& xov, const octave_value& yov)
 
 DEFUN (blkmm, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} blkmm (@var{A}, @var{B})
+@deftypefn {} {@var{C} =} blkmm (@var{A}, @var{B})
 Compute products of matrix blocks.
 
 The blocks are given as 2-dimensional subarrays of the arrays @var{A},

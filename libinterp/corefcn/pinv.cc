@@ -42,9 +42,9 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (pinv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} pinv (@var{x})
-@deftypefnx {} {} pinv (@var{x}, @var{tol})
-Return the @nospell{Moore-Penrose} pseudoinverse of @var{x}.
+@deftypefn  {} {@var{B} =} pinv (@var{A})
+@deftypefnx {} {@var{B} =} pinv (@var{A}, @var{tol})
+Return the @nospell{Moore-Penrose} pseudoinverse of @var{A}.
 
 Singular values less than @var{tol} are ignored.
 

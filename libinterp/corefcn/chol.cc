@@ -360,7 +360,7 @@ cholinsert, choldelete, cholshift}
 
 DEFUN (cholinv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} cholinv (@var{A})
+@deftypefn {} {@var{Ainv} =} cholinv (@var{A})
 Compute the inverse of the symmetric positive definite matrix @var{A} using
 the Cholesky@tie{}factorization.
 @seealso{chol, chol2inv, inv}
@@ -484,13 +484,13 @@ the Cholesky@tie{}factorization.
 
 DEFUN (chol2inv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} chol2inv (@var{U})
+@deftypefn {} {@var{Ainv} =} chol2inv (@var{R})
 Invert a symmetric, positive definite square matrix from its Cholesky
-decomposition, @var{U}.
+decomposition, @var{R}.
 
-Note that @var{U} should be an upper-triangular matrix with positive
-diagonal elements.  @code{chol2inv (@var{U})} provides
-@code{inv (@var{U}'*@var{U})} but it is much faster than using @code{inv}.
+Note that @var{R} should be an upper-triangular matrix with positive diagonal
+elements.  @code{chol2inv (@var{U})} provides @code{inv (@var{R}'*@var{R})} but
+is much faster than using @code{inv}.
 @seealso{chol, cholinv, inv}
 @end deftypefn */)
 {

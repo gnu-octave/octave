@@ -506,7 +506,7 @@ streameuler3d_internal (const octave_value_list& args, const char *fcn)
 
 DEFUN (__streameuler2d__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __streameuler2d__ (@var{U}, @var{V}, @var{TX}, @var{TY}, @var{ZETA}, @var{XI}, @var{H}, @var{MAXNVERTS})
+@deftypefn {} {@var{output} =} __streameuler2d__ (@var{U}, @var{V}, @var{TX}, @var{TY}, @var{ZETA}, @var{XI}, @var{H}, @var{MAXNVERTS})
 Calculates the streamline in a vector field @code{[@var{U}, @var{V}]} starting
 from a seed point at position @code{[@var{ZETA}, @var{XI}]}.  The integrator
 used is Heun's Scheme.  The step size can be controlled by @var{H}.  The
@@ -521,7 +521,7 @@ Jacobian matrix can be defined for each grid cell by
 
 DEFUN (__streameuler3d__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __streameuler3d__ (@var{U}, @var{V}, @var{W}, @var{TX}, @var{TY}, @var{TZ}, @var{ZETA}, @var{XI}, @var{RHO}, @var{H}, @var{MAXNVERTS})
+@deftypefn {} {@var{output} =} __streameuler3d__ (@var{U}, @var{V}, @var{W}, @var{TX}, @var{TY}, @var{TZ}, @var{ZETA}, @var{XI}, @var{RHO}, @var{H}, @var{MAXNVERTS})
 Calculates the streamline in a vector field @code{[@var{U}, @var{V}, @var{W}]}
 starting from a seed point at position
 @code{[@var{ZETA}, @var{XI}, @var{RHO}]}.  The integrator used is Heun's

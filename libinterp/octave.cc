@@ -450,7 +450,7 @@ Return true if Octave is running in GUI mode and false otherwise.
 
 DEFUN (argv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} argv ()
+@deftypefn {} {@var{args} =} argv ()
 Return the command line arguments passed to Octave.
 
 For example, if you invoked Octave using the command
@@ -481,9 +481,9 @@ an example of how to create an executable Octave script.
 
 DEFUN (cmdline_options, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} argv ()
-Return a structure containing info about the command line arguments
-passed to Octave.
+@deftypefn {} {@var{opt_struct} =} cmdline_options ()
+Return a structure containing info about the command line arguments passed to
+Octave.
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -501,13 +501,13 @@ passed to Octave.
 
 DEFUN (program_invocation_name, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} program_invocation_name ()
+@deftypefn {} {@var{name} =} program_invocation_name ()
 Return the name that was typed at the shell prompt to run Octave.
 
-If executing a script from the command line (e.g., @code{octave foo.m})
-or using an executable Octave script, the program name is set to the
-name of the script.  @xref{Executable Octave Programs}, for an example of
-how to create an executable Octave script.
+If executing a script from the command line (e.g., @code{octave foo.m}) or
+using an executable Octave script, the program name is set to the name of the
+script.  @xref{Executable Octave Programs}, for an example of how to create an
+executable Octave script.
 @seealso{program_name}
 @end deftypefn */)
 {
@@ -524,7 +524,7 @@ how to create an executable Octave script.
 
 DEFUN (program_name, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} program_name ()
+@deftypefn {} {@var{name} =} program_name ()
 Return the last component of the value returned by
 @code{program_invocation_name}.
 @seealso{program_invocation_name}

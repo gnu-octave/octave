@@ -245,14 +245,14 @@ dispatch_kron (const octave_value& a, const octave_value& b)
 
 DEFUN (kron, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} kron (@var{A}, @var{B})
-@deftypefnx {} {} kron (@var{A1}, @var{A2}, @dots{})
+@deftypefn  {} {@var{C} =} kron (@var{A}, @var{B})
+@deftypefnx {} {@var{C} =} kron (@var{A1}, @var{A2}, @dots{})
 Form the Kronecker product of two or more matrices.
 
 This is defined block by block as
 
 @example
-x = [ a(i,j)*b ]
+c = [ a(i,j)*b ]
 @end example
 
 For example:

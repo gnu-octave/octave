@@ -41,8 +41,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (abs, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} abs (@var{z})
-Compute the magnitude of @var{z}.
+@deftypefn {} {@var{z} =} abs (@var{x})
+Compute the magnitude of @var{x}.
 
 The magnitude is defined as
 @tex
@@ -88,7 +88,7 @@ abs (3 + 4i)
 
 DEFUN (acos, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} acos (@var{x})
+@deftypefn {} {@var{y} =} acos (@var{x})
 Compute the inverse cosine in radians for each element of @var{x}.
 @seealso{cos, acosd}
 @end deftypefn */)
@@ -148,7 +148,7 @@ Compute the inverse cosine in radians for each element of @var{x}.
 
 DEFUN (acosh, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} acosh (@var{x})
+@deftypefn {} {@var{y} =} acosh (@var{x})
 Compute the inverse hyperbolic cosine for each element of @var{x}.
 @seealso{cosh}
 @end deftypefn */)
@@ -220,7 +220,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 
 DEFUN (angle, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} angle (@var{z})
+@deftypefn {} {@var{theta} =} angle (@var{z})
 @xref{XREFarg,,@code{arg}}.
 @seealso{arg}
 @end deftypefn */)
@@ -233,8 +233,8 @@ DEFUN (angle, args, ,
 
 DEFUN (arg, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} arg (@var{z})
-@deftypefnx {} {} angle (@var{z})
+@deftypefn  {} {@var{theta} =} arg (@var{z})
+@deftypefnx {} {@var{theta} =} angle (@var{z})
 Compute the argument, i.e., angle of @var{z}.
 
 This is defined as,
@@ -289,7 +289,7 @@ arg (3 + 4i)
 
 DEFUN (asin, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} asin (@var{x})
+@deftypefn {} {@var{y} =} asin (@var{x})
 Compute the inverse sine in radians for each element of @var{x}.
 @seealso{sin, asind}
 @end deftypefn */)
@@ -354,7 +354,7 @@ Compute the inverse sine in radians for each element of @var{x}.
 
 DEFUN (asinh, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} asinh (@var{x})
+@deftypefn {} {@var{y} =} asinh (@var{x})
 Compute the inverse hyperbolic sine for each element of @var{x}.
 @seealso{sinh}
 @end deftypefn */)
@@ -396,7 +396,7 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 
 DEFUN (atan, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} atan (@var{x})
+@deftypefn {} {@var{y} =} atan (@var{x})
 Compute the inverse tangent in radians for each element of @var{x}.
 @seealso{tan, atand}
 @end deftypefn */)
@@ -435,7 +435,7 @@ Compute the inverse tangent in radians for each element of @var{x}.
 
 DEFUN (atanh, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} atanh (@var{x})
+@deftypefn {} {@var{y} =} atanh (@var{x})
 Compute the inverse hyperbolic tangent for each element of @var{x}.
 @seealso{tanh}
 @end deftypefn */)
@@ -470,7 +470,7 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.
 
 DEFUN (cbrt, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} cbrt (@var{x})
+@deftypefn {} {@var{y} =} cbrt (@var{x})
 Compute the real-valued cube root of each element of @var{x}.
 
 Unlike @code{@var{x}^(1/3)}, the result will be negative if @var{x} is
@@ -502,7 +502,7 @@ If any element of @var{x} is complex, @code{cbrt} aborts with an error.
 
 DEFUN (ceil, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} ceil (@var{x})
+@deftypefn {} {@var{y} =} ceil (@var{x})
 Return the smallest integer not less than @var{x}.
 
 This is equivalent to rounding towards positive infinity.
@@ -545,7 +545,7 @@ ceil ([-2.7, 2.7])
 
 DEFUN (conj, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} conj (@var{z})
+@deftypefn {} {@var{zc} =} conj (@var{z})
 Return the complex conjugate of @var{z}.
 
 The complex conjugate is defined as
@@ -583,7 +583,7 @@ $\bar{z} = x - iy$.
 
 DEFUN (cos, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} cos (@var{x})
+@deftypefn {} {@var{y} =} cos (@var{x})
 Compute the cosine for each element of @var{x} in radians.
 @seealso{acos, cosd, cosh}
 @end deftypefn */)
@@ -617,7 +617,7 @@ Compute the cosine for each element of @var{x} in radians.
 
 DEFUN (cosh, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} cosh (@var{x})
+@deftypefn {} {@var{y} =} cosh (@var{x})
 Compute the hyperbolic cosine for each element of @var{x}.
 @seealso{acosh, sinh, tanh}
 @end deftypefn */)
@@ -645,7 +645,7 @@ Compute the hyperbolic cosine for each element of @var{x}.
 
 DEFUN (erf, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} erf (@var{z})
+@deftypefn {} {@var{v} =} erf (@var{z})
 Compute the error function.
 
 The error function is defined as
@@ -714,7 +714,7 @@ erf (z) = --------- *  | e^(-t^2) dt
 
 DEFUN (erfinv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} erfinv (@var{x})
+@deftypefn {} {@var{y} =} erfinv (@var{x})
 Compute the inverse error function.
 
 The inverse error function is defined such that
@@ -756,7 +756,7 @@ erf (@var{y}) == @var{x}
 
 DEFUN (erfcinv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} erfcinv (@var{x})
+@deftypefn {} {@var{y} =} erfcinv (@var{x})
 Compute the inverse complementary error function.
 
 The inverse complementary error function is defined such that
@@ -798,7 +798,7 @@ erfc (@var{y}) == @var{x}
 
 DEFUN (erfc, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} erfc (@var{z})
+@deftypefn {} {@var{v} =} erfc (@var{z})
 Compute the complementary error function.
 
 The complementary error function is defined as
@@ -828,7 +828,7 @@ $1 - {\rm erf} (z)$.
 
 DEFUN (erfcx, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} erfcx (@var{z})
+@deftypefn {} {@var{v} =} erfcx (@var{z})
 Compute the scaled complementary error function.
 
 The scaled complementary error function is defined as
@@ -870,7 +870,7 @@ exp (z^2) * erfc (z)
 
 DEFUN (erfi, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} erfi (@var{z})
+@deftypefn {} {@var{v} =} erfi (@var{z})
 Compute the imaginary error function.
 
 The imaginary error function is defined as
@@ -907,7 +907,7 @@ $$
 
 DEFUN (dawson, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} dawson (@var{z})
+@deftypefn {} {@var{v} =} dawson (@var{z})
 Compute the Dawson (scaled imaginary error) function.
 
 The Dawson function is defined as
@@ -946,7 +946,7 @@ $$
 
 DEFUN (exp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} exp (@var{x})
+@deftypefn {} {@var{y} =} exp (@var{x})
 Compute
 @tex
 $e^{x}$
@@ -983,7 +983,7 @@ To compute the matrix exponential, @pxref{Linear Algebra}.
 
 DEFUN (expm1, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} expm1 (@var{x})
+@deftypefn {} {@var{y} =} expm1 (@var{x})
 Compute
 @tex
 $ e^{x} - 1 $
@@ -1050,7 +1050,7 @@ isfinite ([13, Inf, NA, NaN])
 
 DEFUN (fix, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} fix (@var{x})
+@deftypefn {} {@var{y} =} fix (@var{x})
 Truncate fractional portion of @var{x} and return the integer portion.
 
 This is equivalent to rounding towards zero.  If @var{x} is complex, return
@@ -1084,7 +1084,7 @@ fix ([-2.7, 2.7])
 
 DEFUN (floor, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} floor (@var{x})
+@deftypefn {} {@var{y} =} floor (@var{x})
 Return the largest integer not greater than @var{x}.
 
 This is equivalent to rounding towards negative infinity.  If @var{x} is
@@ -1118,7 +1118,7 @@ floor ([-2.7, 2.7])
 
 DEFUN (gamma, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} gamma (@var{z})
+@deftypefn {} {@var{v} =} gamma (@var{z})
 Compute the Gamma function.
 
 The Gamma function is defined as
@@ -1187,7 +1187,7 @@ loss of precision.  The final result is then
 
 DEFUN (imag, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} imag (@var{z})
+@deftypefn {} {@var{y} =} imag (@var{z})
 Return the imaginary part of @var{z} as a real number.
 @seealso{real, conj}
 @end deftypefn */)
@@ -1668,9 +1668,12 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).
 
 DEFUN (lgamma, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} gammaln (@var{x})
-@deftypefnx {} {} lgamma (@var{x})
+@deftypefn  {} {@var{y} =} gammaln (@var{x})
+@deftypefnx {} {@var{y} =} lgamma (@var{x})
 Return the natural logarithm of the gamma function of @var{x}.
+
+Programming Note: @code{lgamma} is an alias for @code{gammaln} and either name
+can be used in Octave.
 @seealso{gamma, gammainc}
 @end deftypefn */)
 {
@@ -1711,7 +1714,7 @@ Return the natural logarithm of the gamma function of @var{x}.
 
 DEFUN (log, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} log (@var{x})
+@deftypefn {} {@var{y} =} log (@var{x})
 Compute the natural logarithm,
 @tex
 $\ln{(x)},$
@@ -1745,7 +1748,7 @@ To compute the matrix logarithm, @pxref{Linear Algebra}.
 
 DEFUN (log10, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} log10 (@var{x})
+@deftypefn {} {@var{y} =} log10 (@var{x})
 Compute the base-10 logarithm of each element of @var{x}.
 @seealso{log, log2, logspace, exp}
 @end deftypefn */)
@@ -1767,7 +1770,7 @@ Compute the base-10 logarithm of each element of @var{x}.
 
 DEFUN (log1p, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} log1p (@var{x})
+@deftypefn {} {@var{y} =} log1p (@var{x})
 Compute
 @tex
 $\ln{(1 + x)}$
@@ -1802,7 +1805,7 @@ accurately in the neighborhood of zero.
 
 DEFUN (real, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} real (@var{z})
+@deftypefn {} {@var{x} =} real (@var{z})
 Return the real part of @var{z}.
 @seealso{imag, conj}
 @end deftypefn */)
@@ -1830,7 +1833,7 @@ Return the real part of @var{z}.
 
 DEFUN (round, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} round (@var{x})
+@deftypefn {} {@var{y} =} round (@var{x})
 Return the integer nearest to @var{x}.
 
 If @var{x} is complex, return
@@ -1875,7 +1878,7 @@ round ([-2.7, 2.7])
 
 DEFUN (roundb, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} roundb (@var{x})
+@deftypefn {} {@var{y} =} roundb (@var{x})
 Return the integer nearest to @var{x}.  If there are two nearest
 integers, return the even one (banker's rounding).
 
@@ -1915,7 +1918,7 @@ return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.
 
 DEFUN (sign, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} sign (@var{x})
+@deftypefn {} {@var{y} =} sign (@var{x})
 Compute the @dfn{signum} function.
 
 This is defined as
@@ -1967,7 +1970,7 @@ whether zero is signed, use the @code{signbit} function.
 
 DEFUNX ("signbit", Fsignbit, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} signbit (@var{x})
+@deftypefn {} {@var{y} =} signbit (@var{x})
 Return logical true if the value of @var{x} has its sign bit set and false
 otherwise.
 
@@ -2006,7 +2009,7 @@ but @code{signbit (-0.0)} will return a nonzero value.
 
 DEFUN (sin, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} sin (@var{x})
+@deftypefn {} {@var{y} =} sin (@var{x})
 Compute the sine for each element of @var{x} in radians.
 @seealso{asin, sind, sinh}
 @end deftypefn */)
@@ -2038,7 +2041,7 @@ Compute the sine for each element of @var{x} in radians.
 
 DEFUN (sinh, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} sinh (@var{x})
+@deftypefn {} {@var{y} =} sinh (@var{x})
 Compute the hyperbolic sine for each element of @var{x}.
 @seealso{asinh, cosh, tanh}
 @end deftypefn */)
@@ -2066,7 +2069,7 @@ Compute the hyperbolic sine for each element of @var{x}.
 
 DEFUN (sqrt, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} sqrt (@var{x})
+@deftypefn {} {@var{y} =} sqrt (@var{x})
 Compute the square root of each element of @var{x}.
 
 If @var{x} is negative, a complex result is returned.
@@ -2102,7 +2105,7 @@ To compute the matrix square root, @pxref{Linear Algebra}.
 
 DEFUN (tan, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} tan (@var{z})
+@deftypefn {} {@var{y} =} tan (@var{z})
 Compute the tangent for each element of @var{x} in radians.
 @seealso{atan, tand, tanh}
 @end deftypefn */)
@@ -2134,7 +2137,7 @@ Compute the tangent for each element of @var{x} in radians.
 
 DEFUN (tanh, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} tanh (@var{x})
+@deftypefn {} {@var{y} =} tanh (@var{x})
 Compute hyperbolic tangent for each element of @var{x}.
 @seealso{atanh, sinh, cosh}
 @end deftypefn */)
@@ -2162,8 +2165,8 @@ Compute hyperbolic tangent for each element of @var{x}.
 
 DEFUNX ("tolower", Ftolower, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn  {} {} tolower (@var{s})
-@deftypefnx {} {} lower (@var{s})
+@deftypefn  {} {@var{y} =} tolower (@var{s})
+@deftypefnx {} {@var{y} =} lower (@var{s})
 Return a copy of the string or cell string @var{s}, with each uppercase
 character replaced by the corresponding lowercase one; non-alphabetic
 characters are left unchanged.
@@ -2176,6 +2179,10 @@ tolower ("MiXeD cAsE 123")
       @result{} "mixed case 123"
 @end group
 @end example
+
+Programming Note: @code{lower} is an alias for @code{tolower} and either name
+can be used in Octave.
+
 @seealso{toupper}
 @end deftypefn */)
 {
@@ -2230,8 +2237,8 @@ DEFALIAS (lower, tolower);
 
 DEFUNX ("toupper", Ftoupper, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn  {} {} toupper (@var{s})
-@deftypefnx {} {} upper (@var{s})
+@deftypefn  {} {@var{y} =} toupper (@var{s})
+@deftypefnx {} {@var{y} =} upper (@var{s})
 Return a copy of the string or cell string @var{s}, with each lowercase
 character replaced by the corresponding uppercase one; non-alphabetic
 characters are left unchanged.
@@ -2244,6 +2251,10 @@ toupper ("MiXeD cAsE 123")
       @result{} "MIXED CASE 123"
 @end group
 @end example
+
+Programming Note: @code{upper} is an alias for @code{toupper} and either name
+can be used in Octave.
+
 @seealso{tolower}
 @end deftypefn */)
 {

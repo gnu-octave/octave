@@ -195,9 +195,9 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
 
 DEFUN (fft, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} fft (@var{x})
-@deftypefnx {} {} fft (@var{x}, @var{n})
-@deftypefnx {} {} fft (@var{x}, @var{n}, @var{dim})
+@deftypefn  {} {@var{y} =} fft (@var{x})
+@deftypefnx {} {@var{y} =} fft (@var{x}, @var{n})
+@deftypefnx {} {@var{y} =} fft (@var{x}, @var{n}, @var{dim})
 Compute the discrete Fourier transform of @var{x} using
 a Fast Fourier Transform (FFT) algorithm.
 
@@ -224,23 +224,23 @@ dimension of the matrix along which the FFT is performed.
 
 DEFUN (ifft, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} ifft (@var{x})
-@deftypefnx {} {} ifft (@var{x}, @var{n})
-@deftypefnx {} {} ifft (@var{x}, @var{n}, @var{dim})
-Compute the inverse discrete Fourier transform of @var{x}
+@deftypefn  {} {@var{x} =} ifft (@var{y})
+@deftypefnx {} {@var{x} =} ifft (@var{y}, @var{n})
+@deftypefnx {} {@var{x} =} ifft (@var{y}, @var{n}, @var{dim})
+Compute the inverse discrete Fourier transform of @var{y}
 using a Fast Fourier Transform (FFT) algorithm.
 
 The inverse FFT is calculated along the first non-singleton dimension
-of the array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes
-the inverse FFT for each column of @var{x}.
+of the array.  Thus if @var{y} is a matrix, @code{ifft (@var{y})} computes
+the inverse FFT for each column of @var{y}.
 
 If called with two arguments, @var{n} is expected to be an integer
-specifying the number of elements of @var{x} to use, or an empty
+specifying the number of elements of @var{y} to use, or an empty
 matrix to specify that its value should be ignored.  If @var{n} is
 larger than the dimension along which the inverse FFT is calculated, then
-@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is
+@var{y} is resized and padded with zeros.  Otherwise, if @var{n} is
 smaller than the dimension along which the inverse FFT is calculated,
-then @var{x} is truncated.
+then @var{y} is truncated.
 
 If called with three arguments, @var{dim} is an integer specifying the
 dimension of the matrix along which the inverse FFT is performed.

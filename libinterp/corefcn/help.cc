@@ -786,8 +786,8 @@ The format is a string which is one of @qcode{"texinfo"}, @qcode{"html"}, or
 
 DEFUN (__operators__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __operators__ ()
-Undocumented internal function.
+@deftypefn {} {@var{cstr} =} __operators__ ()
+Return a cell array of strings of all possible Octave operators.
 @end deftypefn */)
 {
   return ovl (Cell (operator_names));
@@ -804,7 +804,7 @@ DEFALIAS (__keywords__, iskeyword)
 DEFMETHOD (__builtins__, interp, , ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __builtins__ ()
-Undocumented internal function.
+Return a cell array of all builtin (compiled) functions available to Octave.
 @end deftypefn */)
 {
   symbol_table& symtab = interp.get_symbol_table ();
@@ -816,7 +816,7 @@ Undocumented internal function.
 
 DEFMETHOD (localfunctions, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} localfunctions ()
+@deftypefn {} {@var{subfcn_list} =} localfunctions ()
 Return a list of all local functions, i.e., subfunctions, within the current
 file.
 
@@ -872,7 +872,7 @@ the return value is an empty cell array.
 
 DEFMETHOD (__which__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __which__ (@var{name}, @dots{})
+@deftypefn {} {@var{var_struct} =} __which__ (@var{name}, @dots{})
 Undocumented internal function.
 @end deftypefn */)
 {

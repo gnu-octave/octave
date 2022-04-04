@@ -111,24 +111,24 @@ context that exists at the breakpoint.  When the breakpoint is encountered,
 @var{condition} will be evaluated, and execution will stop if
 @var{condition} is true.  If @var{condition} cannot be evaluated, for
 example because it refers to an undefined variable, an error will be thrown.
- Expressions with side effects (such as @code{y++ > 1}) will alter
-variables, and should generally be avoided.  Conditions containing quotes
-(@samp{"}, @samp{'}) or comment characters (@samp{#}, @samp{%}) must be
-enclosed in quotes.  (This does not apply to conditions entered from the
-editor's context menu.)  For example:
+Expressions with side effects (such as @code{y++ > 1}) will alter variables,
+and should generally be avoided.  Conditions containing quotes (@samp{"},
+@samp{'}) or comment characters (@samp{#}, @samp{%}) must be enclosed in
+quotes.  (This does not apply to conditions entered from the editor's context
+menu.)  For example:
 
 @example
 dbstop in axis at 246 if 'any (opt == "x")'
 @end example
 
-The form specifying @var{event} does not cause a specific breakpoint at a
-given function and line number.  Instead it causes debug mode to be entered
-when certain unexpected events are encountered.  Possible values are
+The form specifying @var{event} does not cause a specific breakpoint at a given
+function and line number.  Instead it causes debug mode to be entered when
+certain unexpected events are encountered.  Possible values are
 
 @table @code
 @item error
-Stop when an error is reported.  This is equivalent to specifying
-both @code{debug_on_error (true)} and @code{debug_on_interrupt (true)}.
+Stop when an error is reported.  This is equivalent to specifying both
+@code{debug_on_error (true)} and @code{debug_on_interrupt (true)}.
 
 @item caught error
 Stop when an error is caught by a try-catch block (not yet implemented).
@@ -145,10 +145,9 @@ Stop when a warning is reported.  This is equivalent to specifying
 @end table
 
 The events @code{error}, @code{caught error}, and @code{warning} can all be
-followed by a string specifying an error ID or warning ID@.  If that is
-done, only errors with the specified ID will cause execution to stop.  To
-stop on one of a set of IDs, multiple @code{dbstop} commands must be
-issued.
+followed by a string specifying an error ID or warning ID@.  If that is done,
+only errors with the specified ID will cause execution to stop.  To stop on one
+of a set of IDs, multiple @code{dbstop} commands must be issued.
 
 Breakpoints and events can be removed using the @code{dbclear} command with
 the same syntax.
@@ -158,11 +157,11 @@ the commands @code{bp_state = dbstatus; @dots{}; dbstop (bp_state)}.
 
 The optional output @var{rline} is the real line number where the breakpoint
 was set.  This can differ from the specified line if the line is not
-executable.  For example, if a breakpoint attempted on a blank line then
-Octave will set the real breakpoint at the next executable line.
+executable.  For example, if a breakpoint attempted on a blank line then Octave
+will set the real breakpoint at the next executable line.
 
-When a file is re-parsed, such as when it is modified outside the GUI,
-all breakpoints within the file are cleared.
+When a file is re-parsed, such as when it is modified outside the GUI, all
+breakpoints within the file are cleared.
 
 @seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning,
 debug_on_interrupt}
@@ -332,7 +331,7 @@ files.
 DEFMETHOD (dbstatus, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbstatus
-@deftypefnx {} {} dbstatus @var{func}
+@deftypefnx {} {} dbstatus @var{fcn}
 @deftypefnx {} {@var{bp_list} =} dbstatus @dots{}
 Report the location of active breakpoints.
 
@@ -340,11 +339,11 @@ When called with no input or output arguments, print the list of all
 functions with breakpoints and the line numbers where those breakpoints are
 set.
 
-If a function name @var{func} is specified then only report breakpoints
+If a function name @var{fcn} is specified then only report breakpoints
 for the named function and its subfunctions.
 
 The optional return argument @var{bp_list} is a struct array with the
-following fields.
+following fields:
 
 @table @asis
 @item name

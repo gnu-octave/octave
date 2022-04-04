@@ -905,8 +905,8 @@ If no function is named then unlock the current function.
 
 DEFMETHOD (mislocked, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} mislocked ()
-@deftypefnx {} {} mislocked (@var{fcn})
+@deftypefn  {} {@var{tf} =} mislocked ()
+@deftypefnx {} {@var{tf} =} mislocked (@var{fcn})
 Return true if the named function @var{fcn} is locked in memory.
 
 If no function is named then return true if the current function is locked.

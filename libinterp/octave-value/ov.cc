@@ -1306,7 +1306,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (double, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} double (@var{x})
+@deftypefn {} {@var{y} =} double (@var{x})
 Convert @var{x} to double precision type.
 @seealso{single}
 @end deftypefn */)
@@ -1350,7 +1350,7 @@ Convert @var{x} to double precision type.
 
 DEFUN (single, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} single (@var{x})
+@deftypefn {} {@var{y} =} single (@var{x})
 Convert @var{x} to single precision type.
 @seealso{double}
 @end deftypefn */)
@@ -1391,7 +1391,7 @@ Convert @var{x} to single precision type.
 
 DEFUN (int8, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} int8 (@var{x})
+@deftypefn {} {@var{y} =} int8 (@var{x})
 Convert @var{x} to 8-bit integer type.
 @seealso{uint8, int16, uint16, int32, uint32, int64, uint64}
 @end deftypefn */)
@@ -1413,7 +1413,7 @@ Convert @var{x} to 8-bit integer type.
 
 DEFUN (int16, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} int16 (@var{x})
+@deftypefn {} {@var{y} =} int16 (@var{x})
 Convert @var{x} to 16-bit integer type.
 @seealso{int8, uint8, uint16, int32, uint32, int64, uint64}
 @end deftypefn */)
@@ -1435,7 +1435,7 @@ Convert @var{x} to 16-bit integer type.
 
 DEFUN (int32, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} int32 (@var{x})
+@deftypefn {} {@var{y} =} int32 (@var{x})
 Convert @var{x} to 32-bit integer type.
 @seealso{int8, uint8, int16, uint16, uint32, int64, uint64}
 @end deftypefn */)
@@ -1457,7 +1457,7 @@ Convert @var{x} to 32-bit integer type.
 
 DEFUN (int64, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} int64 (@var{x})
+@deftypefn {} {@var{y} =} int64 (@var{x})
 Convert @var{x} to 64-bit integer type.
 @seealso{int8, uint8, int16, uint16, int32, uint32, uint64}
 @end deftypefn */)
@@ -1479,7 +1479,7 @@ Convert @var{x} to 64-bit integer type.
 
 DEFUN (uint8, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} uint8 (@var{x})
+@deftypefn {} {@var{y} =} uint8 (@var{x})
 Convert @var{x} to unsigned 8-bit integer type.
 @seealso{int8, int16, uint16, int32, uint32, int64, uint64}
 @end deftypefn */)
@@ -1501,7 +1501,7 @@ Convert @var{x} to unsigned 8-bit integer type.
 
 DEFUN (uint16, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} uint16 (@var{x})
+@deftypefn {} {@var{y} =} uint16 (@var{x})
 Convert @var{x} to unsigned 16-bit integer type.
 @seealso{int8, uint8, int16, int32, uint32, int64, uint64}
 @end deftypefn */)
@@ -1523,7 +1523,7 @@ Convert @var{x} to unsigned 16-bit integer type.
 
 DEFUN (uint32, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} uint32 (@var{x})
+@deftypefn {} {@var{y} =} uint32 (@var{x})
 Convert @var{x} to unsigned 32-bit integer type.
 @seealso{int8, uint8, int16, uint16, int32, int64, uint64}
 @end deftypefn */)
@@ -1545,7 +1545,7 @@ Convert @var{x} to unsigned 32-bit integer type.
 
 DEFUN (uint64, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} uint64 (@var{x})
+@deftypefn {} {@var{y} =} uint64 (@var{x})
 Convert @var{x} to unsigned 64-bit integer type.
 @seealso{int8, uint8, int16, uint16, int32, uint32, int64}
 @end deftypefn */)
@@ -3724,7 +3724,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (sizeof, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} sizeof (@var{val})
+@deftypefn {} {@var{sz} =} sizeof (@var{val})
 Return the size of @var{val} in bytes.
 @seealso{whos}
 @end deftypefn */)
@@ -3802,7 +3802,7 @@ decode_subscripts (const char *name, const octave_value& arg,
 
 DEFUN (subsref, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} subsref (@var{val}, @var{idx})
+@deftypefn {} {@var{newval} =} subsref (@var{val}, @var{idx})
 Perform the subscripted element selection operation on @var{val} according
 to the subscript specified by @var{idx}.
 
@@ -3854,7 +3854,7 @@ If @var{idx} is an empty structure array with fields @samp{type} and
 
 DEFUN (subsasgn, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} subsasgn (@var{val}, @var{idx}, @var{rhs})
+@deftypefn {} {@var{newval} =} subsasgn (@var{val}, @var{idx}, @var{rhs})
 Perform the subscripted assignment operation according to the subscript
 specified by @var{idx}.
 

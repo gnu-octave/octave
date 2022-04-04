@@ -324,7 +324,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (bsxfun, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
+@deftypefn {} {@var{C} =} bsxfun (@var{f}, @var{A}, @var{B})
 Apply a binary function @var{f} element-by-element to two array arguments
 @var{A} and @var{B}, expanding singleton dimensions in either input argument as
 necessary.

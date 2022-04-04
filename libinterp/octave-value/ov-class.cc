@@ -1727,13 +1727,13 @@ OCTAVE_NAMESPACE_BEGIN
 DEFMETHOD (class, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{classname} =} class (@var{obj})
-@deftypefnx {} {} class (@var{s}, @var{id})
-@deftypefnx {} {} class (@var{s}, @var{id}, @var{p}, @dots{})
-Return the class of the object @var{obj}, or create a class with
-fields from structure @var{s} and name (string) @var{id}.
+@deftypefnx {} {@var{cls} =} class (@var{s}, @var{classname})
+@deftypefnx {} {@var{cls} =} class (@var{s}, @var{classname}, @var{parent1}, @dots{})
+Return the class of the object @var{obj}, or create a class with fields from
+structure @var{s} and name (string) @var{classname}.
 
-Additional arguments name a list of parent classes from which the new class
-is derived.
+Additional arguments name a list of parent classes from which the new class is
+derived.
 @seealso{typeinfo, isa}
 @end deftypefn */)
 {
@@ -1911,7 +1911,7 @@ belongs to.
 
 DEFUN (__parent_classes__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __parent_classes__ (@var{x})
+@deftypefn {} {@var{Ccls} =} __parent_classes__ (@var{x})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -2038,7 +2038,7 @@ may @emph{only} be called from a class constructor.
                inf_class.c_str (), sup_class.c_str ());
     }
 
-  return octave_value();
+  return ovl ();
 }
 
 // The following classes allow us to define "inline" function objects as
@@ -2148,14 +2148,11 @@ octave_inline_fcn::execute (tree_evaluator& tw, int nargout,
 
 DEFUN (__inline_ctor__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __inline_ctor__ (@var{prop_struct})
-Internal function.
-
+@deftypefn {} {@var{inline_obj} =} __inline_ctor__ (@var{prop_struct})
 Implements final construction for inline objects.
 @end deftypefn */)
 {
   // Input validation has already been done in input.m.
-
   return octave_value (new octave_inline (args(0).map_value ()));
 }
 

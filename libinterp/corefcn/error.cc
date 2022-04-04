@@ -1254,7 +1254,6 @@ disable escape sequence expansion use a second backslash before the sequence
 @seealso{warning, lasterror}
 @end deftypefn */)
 {
-
   int nargin = args.length ();
 
   if (nargin == 0)
@@ -2078,7 +2077,7 @@ message identifier.
 
 With one argument, set the last warning message to @var{msg}.
 
-With two arguments, also set the last message identifier.
+With two arguments, also set the last message identifier to @var{msgid}.
 @seealso{warning, lasterror, lasterr}
 @end deftypefn */)
 {

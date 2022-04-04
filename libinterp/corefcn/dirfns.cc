@@ -91,8 +91,8 @@ changes the current working directory to @file{~/octave}.  If the
 directory does not exist, an error message is printed and the working
 directory is not changed.
 
-@code{chdir} is an alias for @code{cd} and can be used in all of the same
-calling formats.
+Programming Note: @code{chdir} is an alias for @code{cd} and can be used with
+all of the same calling formats.
 
 Compatibility Note: When called with no arguments, @sc{matlab} prints the
 present working directory rather than changing to the user's home directory.
@@ -131,8 +131,7 @@ DEFALIAS (chdir, cd);
 
 DEFUN (pwd, , ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} pwd ()
-@deftypefnx {} {@var{dir} =} pwd ()
+@deftypefn {} {@var{dir} =} pwd ()
 Return the current working directory.
 @seealso{cd, dir, ls, mkdir, rmdir}
 @end deftypefn */)
@@ -182,7 +181,9 @@ error message.
 
 DEFUN (__mkdir__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __mkdir__ (@var{parent}, @var{dir})
+@deftypefn  {} {} __mkdir__ (@var{dir})
+@deftypefnx {} {} __mkdir__ (@var{parent}, @var{dir})
+@deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} __mkdir__ (@dots{})
 Internal function called by mkdir.m.
 @seealso{mkdir, rmdir, pwd, cd, umask}
 @end deftypefn */)
@@ -392,7 +393,7 @@ error message.
 
 DEFUNX ("readlink", Freadlink, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn  {} {} readlink @var{symlink}
+@deftypefn  {} {@var{result} =} readlink @var{symlink}
 @deftypefnx {} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})
 Read the value of the symbolic link @var{symlink}.
 
@@ -470,7 +471,7 @@ error message.
 
 DEFUN (glob, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} glob (@var{pattern})
+@deftypefn {} {@var{cstr} =} glob (@var{pattern})
 Given an array of pattern strings (as a char array or a cell array) in
 @var{pattern}, return a cell array of filenames that match any of
 them, or an empty cell array if no patterns match.
@@ -537,7 +538,7 @@ supported.
 
 DEFUN (__wglob__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __wglob__ (@var{pattern})
+@deftypefn {} {@var{cstr} =} __wglob__ (@var{pattern})
 Windows-like glob for dir.
 
 Given an array of pattern strings (as a char array or a cell array) in
@@ -635,7 +636,7 @@ glob ("*.*")
 
 DEFUN (__fnmatch__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} fnmatch (@var{pattern}, @var{string})
+@deftypefn {} {@var{TF} =} fnmatch (@var{pattern}, @var{string})
 Return true or false for each element of @var{string} that matches any of
 the elements of the string array @var{pattern}, using the rules of
 filename pattern matching.
@@ -664,7 +665,7 @@ fnmatch ("a*b", @{"ab"; "axyzb"; "xyzab"@})
 
 DEFUN (filesep, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} filesep ()
+@deftypefn  {} {@var{sep} =} filesep ()
 @deftypefnx {} {} filesep ("all")
 Return the system-dependent character used to separate directory names.
 

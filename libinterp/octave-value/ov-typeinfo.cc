@@ -909,8 +909,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (typeinfo, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} typeinfo ()
-@deftypefnx {} {} typeinfo (@var{expr})
+@deftypefn  {} {@var{typestr} =} typeinfo (@var{expr})
+@deftypefnx {} {@var{cstr} =} typeinfo ()
 
 Return the type of the expression @var{expr}, as a string.
 

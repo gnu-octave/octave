@@ -58,7 +58,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (__fltk_uigetfile__, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __fltk_uigetfile__ (@dots{})
+@deftypefn {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __fltk_uigetfile__ (@dots{})
 Undocumented internal function.
 @end deftypefn */)
 {

@@ -55,7 +55,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (have_window_system, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} have_window_system ()
+@deftypefn {} {@var{tf} =} have_window_system ()
 Return true if a window system is available (X11, Windows, or Apple OS X)
 and false otherwise.
 @seealso{isguirunning}

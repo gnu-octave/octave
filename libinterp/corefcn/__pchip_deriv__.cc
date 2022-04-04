@@ -43,7 +43,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__pchip_deriv__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})
+@deftypefn {} {@var{d} =} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})
 Undocumented internal function.
 @end deftypefn */)
 {

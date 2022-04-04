@@ -1237,10 +1237,10 @@ Return true if @var{x} is a cell array object.
 
 DEFUN (cell, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} cell (@var{n})
-@deftypefnx {} {} cell (@var{m}, @var{n})
-@deftypefnx {} {} cell (@var{m}, @var{n}, @var{k}, @dots{})
-@deftypefnx {} {} cell ([@var{m} @var{n} @dots{}])
+@deftypefn  {} {@var{C} =} cell (@var{n})
+@deftypefnx {} {@var{C} =} cell (@var{m}, @var{n})
+@deftypefnx {} {@var{C} =} cell (@var{m}, @var{n}, @var{k}, @dots{})
+@deftypefnx {} {@var{C} =} cell ([@var{m} @var{n} @dots{}])
 Create a new cell array object.
 
 If invoked with a single scalar integer argument, return a square

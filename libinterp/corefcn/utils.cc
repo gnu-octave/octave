@@ -615,8 +615,8 @@ If no files are found, return an empty cell array.
 
 DEFUN (file_in_path, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} file_in_path (@var{path}, @var{file})
-@deftypefnx {} {} file_in_path (@var{path}, @var{file}, "all")
+@deftypefn  {} {@var{fname} =} file_in_path (@var{path}, @var{file})
+@deftypefnx {} {@var{fname} =} file_in_path (@var{path}, @var{file}, "all")
 Return the absolute name of @var{file} if it can be found in @var{path}.
 
 The value of @var{path} should be a colon-separated list of directories in
@@ -926,7 +926,7 @@ If no files are found, return an empty cell array.
 
 DEFUN (do_string_escapes, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} do_string_escapes (@var{string})
+@deftypefn {} {@var{newstr} =} do_string_escapes (@var{string})
 Convert escape sequences in @var{string} to the characters they represent.
 
 Escape sequences begin with a leading backslash
@@ -1039,13 +1039,13 @@ Escape sequences begin with a leading backslash
 
 DEFUN (undo_string_escapes, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} undo_string_escapes (@var{s})
-Convert special characters in strings back to their escaped forms.
+@deftypefn {} {@var{newstr} =} undo_string_escapes (@var{string})
+Convert special characters in @var{string} back to their escaped forms.
 
 For example, the expression
 
 @example
-bell = "\a";
+@var{bell} = "\a";
 @end example
 
 @noindent
@@ -1071,7 +1071,7 @@ replaces the unprintable alert character with its printable representation.
   if (args.length () != 1)
     print_usage ();
 
-  std::string str = args(0).xstring_value ("undo_string_escapes: S argument must be a string");
+  std::string str = args(0).xstring_value ("undo_string_escapes: STRING argument must be a string");
 
   return ovl (undo_string_escapes (str));
 }
@@ -1142,9 +1142,8 @@ Return true if @var{file} is a rooted-relative filename.
 
 DEFUN (make_absolute_filename, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} make_absolute_filename (@var{file})
-Return the full name of @var{file} beginning from the root of the file
-system.
+@deftypefn {} {@var{abs_fname} =} make_absolute_filename (@var{file})
+Return the full name of @var{file} beginning from the root of the file system.
 
 No check is done for the existence of @var{file}.  No tilde expansion of
 @var{file} is performed.
@@ -1289,7 +1288,7 @@ a recognized error code then -1 is returned.
 
 DEFUN (errno_list, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} errno_list ()
+@deftypefn {} {@var{S} =} errno_list ()
 Return a structure containing the system-dependent errno values.
 @seealso{errno}
 @end deftypefn */)

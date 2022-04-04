@@ -603,21 +603,21 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__meta_get_package__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __meta_get_package__ ()
+@deftypefn {} {@var{pkg} =} __meta_get_package__ (@var{pkg_name})
 Undocumented internal function.
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
+  std::string cname = args(0).xstring_value ("PKG_NAME must be a string");
 
   return to_ov (lookup_package (cname));
 }
 
 DEFUN (metaclass, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} metaclass (obj)
+@deftypefn {} {@var{metaclass_obj} =} metaclass (obj)
 Returns the meta.class object corresponding to the class of @var{obj}.
 @end deftypefn */)
 {
@@ -636,17 +636,17 @@ Returns the meta.class object corresponding to the class of @var{obj}.
 
 DEFUN (properties, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} properties (@var{class_name})
-@deftypefnx {} {} properties (@var{obj})
-@deftypefnx {} {@var{plist} =} properties (@dots{})
-Return or display the public properties for the named class
-@var{class_name} or classdef object @var{obj}.
+@deftypefn  {} {} properties (@var{obj})
+@deftypefnx {} {} properties (@var{class_name})
+@deftypefnx {} {@var{proplist} =} properties (@dots{})
+Display or return the public properties for the classdef object @var{obj} or
+the named class @var{class_name}.
 
-If an output value is requested, return the list of property names in a
-cell array.
+If an output value is requested, return the list of property names in a cell
+array.
 
-Programming Note: Property names are returned if the @code{GetAccess}
-attribute is public and if the @code{Hidden} attribute is false.
+Programming Note: Property names are returned if the @code{GetAccess} attribute
+is public and if the @code{Hidden} attribute is false.
 @seealso{methods}
 @end deftypefn */)
 {
@@ -722,10 +722,8 @@ attribute is public and if the @code{Hidden} attribute is false.
 
 DEFMETHOD (__methods__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} __methods__ (@var{x})
-@deftypefnx {} {} __methods__ ("classname")
-Internal function.
-
+@deftypefn  {} {@var{mtds} =} __methods__ (@var{obj})
+@deftypefnx {} {@var{mtds} =} __methods__ ("classname")
 Implements @code{methods} for Octave class objects and classnames.
 @seealso{methods}
 @end deftypefn */)
@@ -764,7 +762,6 @@ Implements @code{methods} for Octave class objects and classnames.
     }
 
   // The following will also find methods for legacy @CLASS objects.
-
   load_path& lp = interp.get_load_path ();
 
   sv.append (lp.methods (class_name));

@@ -41,7 +41,7 @@
 ## If a filename is given then the file extension is extracted and used as
 ## filter.  In addition, the path is selected as current path in the dialog and
 ## the filename is selected as default file.
-## Example: @code{uigetfile ("myfun.m")}
+## Example: @code{uigetfile ("myfcn.m")}
 ##
 ## @item A single file extension @qcode{"*.ext"}
 ## Example: @code{uigetfile ("*.ext")}

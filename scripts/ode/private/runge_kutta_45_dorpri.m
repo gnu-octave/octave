@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals}, @var{t_next})
+## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fcn}, @var{t}, @var{x}, @var{dt})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fcn}, @var{t}, @var{x}, @var{dt}, @var{options})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fcn}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fcn}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals}, @var{t_next})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_45_dorpri (@dots{})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_45_dorpri (@dots{})
 ##
@@ -67,7 +67,7 @@
 ## to use in an FSAL scheme or for dense output.
 ## @end deftypefn
 
-function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (fun, t, x, dt,
+function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (fcn, t, x, dt,
                                                              options = [],
                                                              k_vals = [],
                                                              t_next = t + dt)
@@ -100,14 +100,14 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (fun, t, x, dt,
   if (! isempty (k_vals))    # k values from previous step are passed
     k(:,1) = k_vals(:,end);  # FSAL property
   else
-    k(:,1) = feval (fun, t, x, args{:});
+    k(:,1) = feval (fcn, t, x, args{:});
   endif
 
-  k(:,2) = feval (fun, s(2), x + k(:,1)   * aa(2, 1).'  , args{:});
-  k(:,3) = feval (fun, s(3), x + k(:,1:2) * aa(3, 1:2).', args{:});
-  k(:,4) = feval (fun, s(4), x + k(:,1:3) * aa(4, 1:3).', args{:});
-  k(:,5) = feval (fun, s(5), x + k(:,1:4) * aa(5, 1:4).', args{:});
-  k(:,6) = feval (fun, s(6), x + k(:,1:5) * aa(6, 1:5).', args{:});
+  k(:,2) = feval (fcn, s(2), x + k(:,1)   * aa(2, 1).'  , args{:});
+  k(:,3) = feval (fcn, s(3), x + k(:,1:2) * aa(3, 1:2).', args{:});
+  k(:,4) = feval (fcn, s(4), x + k(:,1:3) * aa(4, 1:3).', args{:});
+  k(:,5) = feval (fcn, s(5), x + k(:,1:4) * aa(5, 1:4).', args{:});
+  k(:,6) = feval (fcn, s(6), x + k(:,1:5) * aa(6, 1:5).', args{:});
 
   ## compute new time and new values for the unknowns
   ## t_next = t + dt;
@@ -116,7 +116,7 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (fun, t, x, dt,
   ## if the estimation of the error is required
   if (nargout >= 3)
     ## new solution to be compared with the previous one
-    k(:,7) = feval (fun, t_next, x_next, args{:});
+    k(:,7) = feval (fcn, t_next, x_next, args{:});
     cc_prime = dt * c_prime;
     x_est = x + k * cc_prime(:);
   endif

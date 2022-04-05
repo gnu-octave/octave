@@ -35,8 +35,8 @@
 ##
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline
-## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
-## parameters to @code{Afun} are passed after @var{x0}.
+## function @code{Afcn} such that @code{Afcn(x) = A * x}.  Additional
+## parameters to @code{Afcn} are passed after @var{x0}.
 ##
 ## @item @var{b} is the right hand side vector.  It must be a column vector
 ## with the same number of rows as @var{A}.
@@ -115,10 +115,10 @@
 ## restart = 5;
 ## [M1, M2] = ilu (A); # in this tridiag case it corresponds to chol (A)'
 ## M = M1 * M2;
-## Afun = @@(x) A * x;
-## Mfun = @@(x) M \ x;
-## M1fun = @@(x) M1 \ x;
-## M2fun = @@(x) M2 \ x;
+## Afcn = @@(x) A * x;
+## Mfcn = @@(x) M \ x;
+## M1fcn = @@(x) M1 \ x;
+## M2fcn = @@(x) M2 \ x;
 ## @end group
 ## @end example
 ##
@@ -132,7 +132,7 @@
 ## @code{@var{A} * @var{x}}
 ##
 ## @example
-## x = tfqmr (Afun, b, [], n)
+## x = tfqmr (Afcn, b, [], n)
 ## @end example
 ##
 ## @sc{Example 3:} @code{tfqmr} with a preconditioner matrix @var{M}
@@ -144,7 +144,7 @@
 ## @sc{Example 4:} @code{tfqmr} with a function as preconditioner
 ##
 ## @example
-## x = tfqmr (Afun, b, 1e-6, n, Mfun)
+## x = tfqmr (Afcn, b, 1e-6, n, Mfcn)
 ## @end example
 ##
 ## @sc{Example 5:} @code{tfqmr} with preconditioner matrices @var{M1}
@@ -157,7 +157,7 @@
 ## @sc{Example 6:} @code{tfmqr} with functions as preconditioners
 ##
 ## @example
-## x = tfqmr (Afun, b, 1e-6, n, M1fun, M2fun)
+## x = tfqmr (Afcn, b, 1e-6, n, M1fcn, M2fcn)
 ## @end example
 ##
 ## @sc{Example 7:} @code{tfqmr} with as input a function requiring an argument
@@ -170,8 +170,8 @@
 ##      y = A * y;
 ##    endfor
 ##  endfunction
-## Apfun = @@(x, string, p) Ap (A, x, string, p);
-## x = tfqmr (Apfun, b, [], [], [], [], [], 2);
+## Apfcn = @@(x, string, p) Ap (A, x, string, p);
+## x = tfqmr (Apfcn, b, [], [], [], [], [], 2);
 ## @end group
 ## @end example
 ##
@@ -206,7 +206,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
          tfqmr (A, b, tol = [], maxit = [], M1 = [], M2 = [], ...
                 x0 = [], varargin)
 
-  [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, "tfqmr");
+  [Afcn, M1fcn, M2fcn] = __alltohandles__ (A, b, M1, M2, "tfqmr");
 
   [tol, maxit, x0] = __default__input__ ({1e-06, 2 * min(20, rows (b)), ...
                                           zeros(rows (b), 1)}, tol, ...
@@ -233,7 +233,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   resvec = zeros (maxit, 1);
   flag = 1;
 
-  w = u = r = r_star = b - feval (Afun, x0, varargin{:});
+  w = u = r = r_star = b - feval (Afcn, x0, varargin{:});
   rho_1 = (r_star' * r);
   d = 0;
   tau = norm (r, 2);
@@ -243,9 +243,9 @@ function [x_min, flag, relres, iter_min, resvec] = ...
 
   try
     warning ("error", "Octave:singular-matrix", "local");
-    u_hat = feval (M1fun, u, varargin{:});
-    u_hat = feval (M2fun, u_hat, varargin{:});
-    v = feval (Afun, u_hat, varargin{:});
+    u_hat = feval (M1fcn, u, varargin{:});
+    u_hat = feval (M2fcn, u_hat, varargin{:});
+    v = feval (Afcn, u_hat, varargin{:});
   catch
     flag = 2;
   end_try_catch
@@ -262,16 +262,16 @@ function [x_min, flag, relres, iter_min, resvec] = ...
       alpha = rho_1 / v_r;
       u_1 = u - alpha * v;  # u at the after iteration
     endif
-    u_hat = feval (M1fun, u, varargin{:});
-    u_hat = feval (M2fun, u_hat, varargin{:});
-    w -= alpha * feval (Afun, u_hat, varargin{:});
+    u_hat = feval (M1fcn, u, varargin{:});
+    u_hat = feval (M2fcn, u_hat, varargin{:});
+    w -= alpha * feval (Afcn, u_hat, varargin{:});
     d = u_hat + ((theta * theta) / alpha) * eta * d;
     theta = norm (w, 2) / tau;
     c = 1 / sqrt (1 + theta * theta);
     tau *= theta * c;
     eta = (c * c) * alpha;
     x += eta * d;
-    r -= eta * feval (Afun, d, varargin{:});
+    r -= eta * feval (Afcn, d, varargin{:});
     if (it < 0) # iter is odd
       rho_2 = rho_1;
       rho_1 = (r_star' * w);
@@ -283,10 +283,10 @@ function [x_min, flag, relres, iter_min, resvec] = ...
       endif
       beta = rho_1 / rho_2;
       u_1 = w + beta * u; # u at the after iteration
-      u1_hat = feval (M1fun, u_1, varargin{:});
-      u1_hat = feval (M2fun, u1_hat, varargin{:});
-      v = feval (Afun, u1_hat, varargin{:}) + ...
-          beta * (feval (Afun, u_hat, varargin{:}) + beta * v);
+      u1_hat = feval (M1fcn, u_1, varargin{:});
+      u1_hat = feval (M2fcn, u1_hat, varargin{:});
+      v = feval (Afcn, u1_hat, varargin{:}) + ...
+          beta * (feval (Afcn, u_hat, varargin{:}) + beta * v);
     endif
     u = u_1;
     iter += 1;
@@ -355,28 +355,28 @@ endfunction
 %! M1 = diag (sqrt (diag (A)));
 %! M2 = M1;
 %! maxit = 10;
-%! Afun = @(z) A * z;
-%! M1_fun = @(z) M1 \ z;
-%! M2_fun = @(z) M2 \ z;
+%! Afcn = @(z) A * z;
+%! M1_fcn = @(z) M1 \ z;
+%! M2_fcn = @(z) M2 \ z;
 %! [x, flag] = tfqmr (A,b);
 %! assert (flag, 0);
 %! [x, flag] = tfqmr (A, b, [], maxit, M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = tfqmr (A, b, [], maxit, M1_fun, M2_fun);
+%! [x, flag] = tfqmr (A, b, [], maxit, M1_fcn, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = tfqmr (A, b, [], maxit, M1_fun, M2);
+%! [x, flag] = tfqmr (A, b, [], maxit, M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = tfqmr (A, b, [], maxit, M1, M2_fun);
+%! [x, flag] = tfqmr (A, b, [], maxit, M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = tfqmr (Afun, b);
+%! [x, flag] = tfqmr (Afcn, b);
 %! assert (flag, 0);
-%! [x, flag] = tfqmr (Afun, b, [], maxit, M1, M2);
+%! [x, flag] = tfqmr (Afcn, b, [], maxit, M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = tfqmr (Afun, b, [], maxit, M1_fun, M2);
+%! [x, flag] = tfqmr (Afcn, b, [], maxit, M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = tfqmr (Afun, b, [], maxit, M1, M2_fun);
+%! [x, flag] = tfqmr (Afcn, b, [], maxit, M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = tfqmr (Afun, b, [], maxit, M1_fun, M2_fun);
+%! [x, flag] = tfqmr (Afcn, b, [], maxit, M1_fcn, M2_fcn);
 %! assert (flag, 0);
 
 %!shared A, b, n, M1, M2
@@ -393,15 +393,15 @@ endfunction
 %! assert (x, ones (size (b)), 1e-7);
 %!
 %!test
-%!function y = afun (x, a)
+%!function y = afcn (x, a)
 %!  y = a * x;
 %!endfunction
 %!
 %! tol = 1e-8;
 %! maxit = 15;
 %!
-%! [x, flag, relres, iter, resvec] = tfqmr (@(x) afun (x, A), b,
-%!                                             tol, maxit, M1, M2);
+%! [x, flag, relres, iter, resvec] = tfqmr (@(x) afcn (x, A), b,
+%!                                          tol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 
 %!test
@@ -458,11 +458,11 @@ endfunction
 %! assert (class (x), "single");
 
 %!test
-%!function y = Afun (x)
+%!function y = Afcn (x)
 %!  A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
 %!  y = A * x;
 %!endfunction
-%! [x, flag] = tfqmr ("Afun", [1; 2; 2; 3]);
+%! [x, flag] = tfqmr ("Afcn", [1; 2; 2; 3]);
 %! assert (x, ones (4, 1), 1e-6);
 
 %!test # unpreconditioned residual
@@ -481,23 +481,23 @@ endfunction
 %! [M1, M2] = ilu (A + 0.1 * eye (n));
 %! M = M1 * M2;
 %! x = tfqmr (A, b, [], n);
-%! Afun = @(x) A * x;
-%! x = tfqmr (Afun, b, [], n);
+%! Afcn = @(x) A * x;
+%! x = tfqmr (Afcn, b, [], n);
 %! x = tfqmr (A, b, 1e-6, n, M);
 %! x = tfqmr (A, b, 1e-6, n, M1, M2);
-%! Mfun = @(z) M \ z;
-%! x = tfqmr (Afun, b, 1e-6, n, Mfun);
-%! M1fun = @(z) M1 \ z;
-%! M2fun = @(z) M2 \ z;
-%! x = tfqmr (Afun, b, 1e-6, n, M1fun, M2fun);
+%! Mfcn = @(z) M \ z;
+%! x = tfqmr (Afcn, b, 1e-6, n, Mfcn);
+%! M1fcn = @(z) M1 \ z;
+%! M2fcn = @(z) M2 \ z;
+%! x = tfqmr (Afcn, b, 1e-6, n, M1fcn, M2fcn);
 %! function y = Ap (A, x, z) # compute A^z * x or (A^z)' * x
 %!    y = x;
 %!    for i = 1:z
 %!      y = A * y;
 %!    endfor
 %!  endfunction
-%! Afun = @(x, p) Ap (A, x, p);
-%! x = tfqmr (Afun, b, [], 2*n, [], [], [], 2); # solution of A^2 * x = b
+%! Afcn = @(x, p) Ap (A, x, p);
+%! x = tfqmr (Afcn, b, [], 2*n, [], [], [], 2); # solution of A^2 * x = b
 
 %!demo
 %! n = 10;

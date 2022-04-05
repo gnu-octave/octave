@@ -24,18 +24,18 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{args} =} argnames (@var{fun})
+## @deftypefn {} {@var{args} =} argnames (@var{fcn})
 ## Return a cell array of character strings containing the names of the
-## arguments of the inline function @var{fun}.
+## arguments of the inline function @var{fcn}.
 ## @seealso{inline, formula, vectorize}
 ## @end deftypefn
 
-function args = argnames (obj)
+function args = argnames (fcn)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   endif
 
-  args = obj.args;
+  args = fcn.args;
 
 endfunction

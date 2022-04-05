@@ -147,8 +147,8 @@ function cache = gen_doc_cache_in_dir (directory)
   endif
 
   ## create cache
-  func = @(s_) create_cache (__list_functions__ (s_));
-  cache = cellfun (func, directory, "UniformOutput", false);
+  f_lsfcn = @(dir) create_cache (__list_functions__ (dir));
+  cache = cellfun (f_lsfcn, directory, "UniformOutput", false);
 
   ## concatenate results
   cache = [cache{:}];

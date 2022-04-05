@@ -24,14 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{x} =} fzero (@var{fun}, @var{x0})
-## @deftypefnx {} {@var{x} =} fzero (@var{fun}, @var{x0}, @var{options})
+## @deftypefn  {} {@var{x} =} fzero (@var{fcn}, @var{x0})
+## @deftypefnx {} {@var{x} =} fzero (@var{fcn}, @var{x0}, @var{options})
 ## @deftypefnx {} {[@var{x}, @var{fval}] =} fzero (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}] =} fzero (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
 ## Find a zero of a univariate function.
 ##
-## @var{fun} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function to evaluate.
 ##
 ## @var{x0} should be a two-element vector specifying two points which
@@ -40,7 +40,7 @@
 ## following must hold
 ##
 ## @example
-## sign (@var{fun}(@var{x0}(1))) * sign (@var{fun}(@var{x0}(2))) <= 0
+## sign (@var{fcn}(@var{x0}(1))) * sign (@var{fcn}(@var{x0}(2))) <= 0
 ## @end example
 ##
 ## If @var{x0} is a single scalar then several nearby and distant values are
@@ -127,10 +127,10 @@
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("fzero");
 
-function [x, fval, info, output] = fzero (fun, x0, options = struct ())
+function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
 
   ## Get default options if requested.
-  if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
+  if (nargin == 1 && ischar (fcn) && strcmp (fcn, "defaults"))
     x = struct ("Display", "notify", "FunValCheck", "off",
                 "MaxFunEvals", Inf, "MaxIter", Inf,
                 "OutputFcn", [], "TolX", eps);
@@ -141,8 +141,8 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     print_usage ();
   endif
 
-  if (ischar (fun))
-    fun = str2func (fun);
+  if (ischar (fcn))
+    fcn = str2func (fcn);
   endif
 
   displev = optimget (options, "Display", "notify");
@@ -166,8 +166,8 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   mu = 0.5;
 
   if (funvalchk)
-    ## Replace fun with a guarded version.
-    fun = @(x) guarded_eval (fun, x);
+    ## Replace fcn with a guarded version.
+    fcn = @(x) guarded_eval (fcn, x);
   endif
 
   info = 0;  # The default exit flag if number of iterations exceeded.
@@ -178,20 +178,20 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Prepare...
   a = x0(1);
-  fa = fun (a);
+  fa = fcn (a);
   nfev = 1;
   if (length (x0) > 1)
     b = x0(2);
-    fb = fun (b);
+    fb = fcn (b);
     nfev += 1;
   else
     ## Try to find a value for b which brackets a zero-crossing
     if (displev == 1)
       printf ( ...
         "\nSearch for an interval around %g containing a sign change:\n", a);
-      printf (" Func-count    a          f(a)             b          ");
+      printf (" Fcn-count    a          f(a)             b          ");
       printf ("f(b)        Procedure\n");
-      fmt_str = " %4d   %13.6g %13.6g %13.6g %13.6g   %s\n";
+      fmt_str = " %4d  %13.6g %13.6g %13.6g %13.6g   %s\n";
     endif
 
     ## For very small values, switch to absolute rather than relative search
@@ -206,7 +206,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     ## Search in an ever-widening range around the initial point.
     for srch = [-.01 +.025 -.05 +.10 -.25 +.50 -1 +2.5 -5 +10 -50 +100 -500 +1000]
       b = aa + aa*srch;
-      fb = fun (b);
+      fb = fcn (b);
       nfev += 1;
       if (displev == 1)
         printf (fmt_str, nfev, a, fa, b, fb, "search");
@@ -233,8 +233,8 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   if (displev == 1)
     printf ("\nSearch for a zero in the interval [%g, %g]:\n", a, b);
-    disp (" Func-count    x          f(x)             Procedure");
-    fmt_str = " %4d   %13.6g %13.6g        %s\n";
+    disp (" Fcn-count    x          f(x)             Procedure");
+    fmt_str = " %4d  %13.6g %13.6g        %s\n";
   endif
 
   slope0 = (fb - fa) / (b - a);
@@ -345,7 +345,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
     ## Calculate new point.
     x = c;
-    fval = fc = fun (c);
+    fval = fc = fcn (c);
     niter += 1; nfev += 1;
     if (displev == 1)
       printf (fmt_str, nfev, x, fc, "interpolation");
@@ -440,9 +440,9 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
-function fx = guarded_eval (fun, x)
+function fx = guarded_eval (fcn, x)
 
-  fx = fun (x);
+  fx = fcn (x);
   fx = fx(1);
   if (! isreal (fx))
     error ("Octave:fzero:notreal", "fzero: non-real value encountered");

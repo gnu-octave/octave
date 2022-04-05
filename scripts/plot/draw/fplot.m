@@ -24,17 +24,17 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fplot (@var{fn})
-## @deftypefnx {} {} fplot (@var{fn}, @var{limits})
+## @deftypefn  {} {} fplot (@var{fcn})
+## @deftypefnx {} {} fplot (@var{fcn}, @var{limits})
 ## @deftypefnx {} {} fplot (@dots{}, @var{tol})
 ## @deftypefnx {} {} fplot (@dots{}, @var{n})
 ## @deftypefnx {} {} fplot (@dots{}, @var{fmt})
 ## @deftypefnx {} {} fplot (@dots{}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {} {} fplot (@var{hax}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{y}] =} fplot (@dots{})
-## Plot a function @var{fn} within the range defined by @var{limits}.
+## Plot a function @var{fcn} within the range defined by @var{limits}.
 ##
-## @var{fn} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function to evaluate.
 ##
 ## The limits of the plot are of the form @w{@code{[@var{xlo}, @var{xhi}]}} or
@@ -99,19 +99,19 @@ function [X, Y] = fplot (varargin)
     print_usage ();
   endif
 
-  fn = varargin{1};
-  if (isa (fn, "inline"))
-    fn = vectorize (inline (fn));
-    nam = formula (fn);
-  elseif (is_function_handle (fn))
-    nam = func2str (fn);
-  elseif (all (isalnum (fn)))
-    nam = fn;
-  elseif (ischar (fn))
-    fn = vectorize (inline (fn));
-    nam = formula (fn);
+  fcn = varargin{1};
+  if (isa (fcn, "inline"))
+    fcn = vectorize (inline (fcn));
+    nam = formula (fcn);
+  elseif (is_function_handle (fcn))
+    nam = func2str (fcn);
+  elseif (all (isalnum (fcn)))
+    nam = fcn;
+  elseif (ischar (fcn))
+    fcn = vectorize (inline (fcn));
+    nam = formula (fcn);
   else
-    error ("fplot: FN must be a function handle, inline function, or string");
+    error ("fplot: FCN must be a function handle, inline function, or string");
   endif
 
   if (nargin > 1 && isnumeric (varargin{2}))
@@ -163,21 +163,21 @@ function [X, Y] = fplot (varargin)
   endif
 
   try
-    y0 = feval (fn, x0);
+    y0 = feval (fcn, x0);
     if (isscalar (y0))
-      warning ("fplot: FN is not a vectorized function which reduces performance");
-      fn = @(x) arrayfun (fn, x);  # Create a new fn that accepts vectors
-      y0 = feval (fn, x0);
+      warning ("fplot: FCN is not a vectorized function which reduces performance");
+      fcn = @(x) arrayfun (fcn, x);  # Create a new fcn that accepts vectors
+      y0 = feval (fcn, x0);
     endif
   catch
     ## feval failed, maybe it is because the function is not vectorized?
-    fn = @(x) arrayfun (fn, x);  # Create a new fn that accepts vectors
-    y0 = feval (fn, x0);
-    warning ("fplot: FN is not a vectorized function which reduces performance");
+    fcn = @(x) arrayfun (fcn, x);  # Create a new fcn that accepts vectors
+    y0 = feval (fcn, x0);
+    warning ("fplot: FCN is not a vectorized function which reduces performance");
   end_try_catch
 
   x = linspace (limits(1), limits(2), n)';
-  y = feval (fn, x);
+  y = feval (fcn, x);
 
   if (rows (x0) == rows (y0))
     fcn_transpose = false;
@@ -186,7 +186,7 @@ function [X, Y] = fplot (varargin)
     y0 = y0.';
     y = y.';
   else
-    error ("fplot: invalid function FN (# of outputs not equal to inputs)");
+    error ("fplot: invalid function FCN (# of outputs not equal to inputs)");
   endif
 
   err0 = Inf;
@@ -213,7 +213,7 @@ function [X, Y] = fplot (varargin)
     err0 = err;
     n = 2 * (n - 1) + 1;
     x = linspace (limits(1), limits(2), n)';
-    y = feval (fn, x);
+    y = feval (fcn, x);
     if (fcn_transpose)
       y = y.';
     endif
@@ -274,16 +274,16 @@ endfunction
 
 %!test
 %! ## Function requiring transpose
-%! fn = @(x) 2 * x(:).';
-%! [x, y] = fplot (fn, [-1, 1]);
+%! fcn = @(x) 2 * x(:).';
+%! [x, y] = fplot (fcn, [-1, 1]);
 %! assert (columns (y) == 1);
 %! assert (rows (x) == rows (y));
 %! assert (y, 2*x);
 
 %!test
 %! ## Constant value function
-%! fn = @(x) 0;
-%! [x, y] = fplot (fn, [-1, 1]);
+%! fcn = @(x) 0;
+%! [x, y] = fplot (fcn, [-1, 1]);
 %! assert (columns (y) == 1);
 %! assert (rows (x) == rows (y));
 %! assert (y, repmat ([0], size (x)));
@@ -313,15 +313,15 @@ endfunction
 ## Test input validation
 %!error <Invalid call> fplot ()
 %!error <Invalid call> fplot (1,2,3,4,5,6)
-%!error <FN must be a function handle> fplot (1, [0 1])
+%!error <FCN must be a function handle> fplot (1, [0 1])
 %!error <LIMITS must be a real vector> fplot (@cos, [i, 2*i])
 %!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1])
 %!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1 2 3])
 %!error <bad input in position 2> fplot (@cos, "linewidth")
 %!error <bad input in position 3> fplot (@cos, [-1,1], {1})
-%!warning <FN is not a vectorized function>
-%! fn = @(x) 0;
-%! [x,y] = fplot (fn, [-1,1]);
-%!error <invalid function FN>
-%! fn = @(x) [x;x];
-%! fplot (fn, [-1,1]);
+%!warning <FCN is not a vectorized function>
+%! fcn = @(x) 0;
+%! [x,y] = fplot (fcn, [-1,1]);
+%!error <invalid function FCN>
+%! fcn = @(x) [x;x];
+%! fplot (fcn, [-1,1]);

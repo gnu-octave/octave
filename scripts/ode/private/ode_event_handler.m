@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{retval} =} ode_event_handler (@var{@@evtfun}, @var{t}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
+## @deftypefn {} {@var{retval} =} ode_event_handler (@var{@@evtfcn}, @var{t}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
 ##
-## Return the solution of the event function (@var{@@evtfun}) which is
+## Return the solution of the event function (@var{@@evtfcn}) which is
 ## specified in the form of a function handle.
 ##
 ## The second input argument @var{t} is a scalar double and specifies the time
@@ -60,7 +60,7 @@
 ## necessary to call it directly.
 ## @end deftypefn
 
-function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
+function retval = ode_event_handler (evtfcn, t, y, flag = "", varargin)
 
   ## No error handling has been implemented in this function to achieve
   ## the highest performance possible.
@@ -85,9 +85,9 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
     ## Process the event, i.e.,
     ## find the zero crossings for either a rising or falling edge
     if (! iscell (y))
-      inpargs = {evtfun, t, y};
+      inpargs = {evtfcn, t, y};
     else
-      inpargs = {evtfun, t, y{1}, y{2}};
+      inpargs = {evtfcn, t, y{1}, y{2}};
       y = y{1};  # Delete cell element 2
     endif
     if (nargin > 4)
@@ -141,9 +141,9 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
     firstrun = true;
 
     if (! iscell (y))
-      inpargs = {evtfun, t, y};
+      inpargs = {evtfcn, t, y};
     else
-      inpargs = {evtfun, t, y{1}, y{2}};
+      inpargs = {evtfcn, t, y{1}, y{2}};
       y = y{1};  # Delete cell element 2
     endif
     if (nargin > 4)

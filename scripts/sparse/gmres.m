@@ -36,8 +36,8 @@
 ##
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline
-## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
-## parameters to @code{Afun} are passed after @var{x0}.
+## function @code{Afcn} such that @code{Afcn(x) = A * x}.  Additional
+## parameters to @code{Afcn} are passed after @var{x0}.
 ##
 ## @item @var{b} is the right hand side vector.  It must be a column vector
 ## with the same numbers of rows as @var{A}.
@@ -141,10 +141,10 @@
 ## restart = 5;
 ## [M1, M2] = ilu (A); # in this tridiag case, it corresponds to lu (A)
 ## M = M1 * M2;
-## Afun = @@(x) A * x;
-## Mfun = @@(x) M \ x;
-## M1fun = @@(x) M1 \ x;
-## M2fun = @@(x) M2 \ x;
+## Afcn = @@(x) A * x;
+## Mfcn = @@(x) M \ x;
+## M1fcn = @@(x) M1 \ x;
+## M2fcn = @@(x) M2 \ x;
 ## @end group
 ## @end example
 ##
@@ -158,7 +158,7 @@
 ## @code{@var{A} * @var{x}}
 ##
 ## @example
-## x = gmres (Afun, b, [], [], n)
+## x = gmres (Afcn, b, [], [], n)
 ## @end example
 ##
 ## @sc{Example 3:} usage of @code{gmres} with the restart
@@ -180,7 +180,7 @@
 ## @sc{Example 5:} @code{gmres} with a function as preconditioner
 ##
 ## @example
-## x = gmres (Afun, b, [], 1e-6, n, Mfun)
+## x = gmres (Afcn, b, [], 1e-6, n, Mfcn)
 ## @end example
 ##
 ## @sc{Example 6:} @code{gmres} with preconditioner matrices @var{M1}
@@ -193,7 +193,7 @@
 ## @sc{Example 7:} @code{gmres} with functions as preconditioners
 ##
 ## @example
-## x = gmres (Afun, b, 1e-6, n, M1fun, M2fun)
+## x = gmres (Afcn, b, 1e-6, n, M1fcn, M2fcn)
 ## @end example
 ##
 ## @sc{Example 8:} @code{gmres} with as input a function requiring an argument
@@ -206,8 +206,8 @@
 ##        y = A * y;
 ##      endfor
 ##   endfunction
-## Apfun = @@(x, p) Ap (A, x, p);
-## x = gmres (Apfun, b, [], [], [], [], [], [], 2);
+## Apfcn = @@(x, p) Ap (A, x, p);
+## x = gmres (Apfcn, b, [], [], [], [], [], [], 2);
 ## @end group
 ## @end example
 ##
@@ -248,7 +248,7 @@ function [x_min, flag, relres, it, resvec] = ...
     class_name = "double";
   endif
 
-  [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, "gmres");
+  [Afcn, M1fcn, M2fcn] = __alltohandles__ (A, b, M1, M2, "gmres");
 
   ## Check if the inputs are empty, and in case set them
   [tol, x0] = __default__input__ ({1e-06, zeros(size (b))}, tol, x0);
@@ -329,15 +329,15 @@ function [x_min, flag, relres, it, resvec] = ...
   flag = 1; # Default flag is maximum # of iterations exceeded
 
   ## begin loop
-  u = feval (Afun, x_old, varargin{:});
+  u = feval (Afcn, x_old, varargin{:});
   try
     warning ("error", "Octave:singular-matrix", "local");
-    prec_res = feval (M1fun, b - u, varargin{:});  # M1*(b-u)
-    prec_res = feval (M2fun, prec_res, varargin{:});
+    prec_res = feval (M1fcn, b - u, varargin{:});  # M1*(b-u)
+    prec_res = feval (M2fcn, prec_res, varargin{:});
     presn = norm (prec_res, 2);
     resvec(1) = presn;
-    z = feval (M1fun, b, varargin{:});
-    z = feval (M2fun, z, varargin{:});
+    z = feval (M1fcn, b, varargin{:});
+    z = feval (M2fcn, z, varargin{:});
     prec_b_norm = norm (z, 2);
     B (1) = presn;
     V(:, 1) = prec_res / presn;
@@ -352,18 +352,18 @@ function [x_min, flag, relres, it, resvec] = ...
       restart_it = 1;
       outer_it += 1;
       x_old = x;
-      u = feval (Afun, x_old, varargin{:});
-      prec_res = feval (M1fun, b - u, varargin{:});
-      prec_res = feval (M2fun, prec_res, varargin{:});
+      u = feval (Afcn, x_old, varargin{:});
+      prec_res = feval (M1fcn, b - u, varargin{:});
+      prec_res = feval (M2fcn, prec_res, varargin{:});
       presn = norm (prec_res, 2);
       B(1) = presn;
       H(:) = 0;
       V(:, 1) = prec_res / presn;
     endif
     ## basic iteration
-    u = feval (Afun, V(:, restart_it), varargin{:});
-    tmp = feval (M1fun, u, varargin{:});
-    tmp = feval (M2fun, tmp, varargin{:});
+    u = feval (Afcn, V(:, restart_it), varargin{:});
+    tmp = feval (M1fcn, u, varargin{:});
+    tmp = feval (M2fcn, tmp, varargin{:});
     [V(:,restart_it + 1), H(1:restart_it + 1, restart_it)] = ...
       mgorth (tmp, V(:,1:restart_it));
     Y = (H(1:restart_it + 1, 1:restart_it) \ B(1:restart_it + 1));
@@ -469,23 +469,23 @@ endfunction
 %! M = M1 * M2;
 %! x = gmres (A, b, [], [], n);
 %! x = gmres (A, b, restart, [], n);  # gmres with restart
-%! Afun = @(x) A * x;
-%! x = gmres (Afun, b, [], [], n);
+%! Afcn = @(x) A * x;
+%! x = gmres (Afcn, b, [], [], n);
 %! x = gmres (A, b, [], 1e-6, n, M);  # gmres without restart
 %! x = gmres (A, b, [], 1e-6, n, M1, M2);
-%! Mfun = @(x) M \ x;
-%! x = gmres (Afun, b, [], 1e-6, n, Mfun);
-%! M1fun = @(x) M1 \ x;
-%! M2fun = @(x) M2 \ x;
-%! x = gmres (Afun, b, [], 1e-6, n, M1fun, M2fun);
+%! Mfcn = @(x) M \ x;
+%! x = gmres (Afcn, b, [], 1e-6, n, Mfcn);
+%! M1fcn = @(x) M1 \ x;
+%! M2fcn = @(x) M2 \ x;
+%! x = gmres (Afcn, b, [], 1e-6, n, M1fcn, M2fcn);
 %! function y = Ap (A, x, p)  # compute A^p * x
 %!    y = x;
 %!    for i = 1:p
 %!      y = A * y;
 %!    endfor
 %!  endfunction
-%! Afun = @(x, p) Ap (A, x, p);
-%! x = gmres (Afun, b, [], [], n, [], [], [], 2);  # solution of A^2 * x = b
+%! Afcn = @(x, p) Ap (A, x, p);
+%! x = gmres (Afcn, b, [], [], n, [], [], [], 2);  # solution of A^2 * x = b
 
 %!demo
 %! n = 10;
@@ -510,28 +510,28 @@ endfunction
 %! b = sum (A, 2);
 %! M1 = diag (sqrt (diag (A)));
 %! M2 = M1;
-%! Afun = @(z) A * z;
-%! M1_fun = @(z) M1 \ z;
-%! M2_fun = @(z) M2 \ z;
+%! Afcn = @(z) A * z;
+%! M1_fcn = @(z) M1 \ z;
+%! M2_fcn = @(z) M2 \ z;
 %! [x, flag] = gmres (A, b);
 %! assert (flag, 0);
 %! [x, flag] = gmres (A, b, [], [], [], M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = gmres (A, b, [], [], [], M1_fun, M2_fun);
+%! [x, flag] = gmres (A, b, [], [], [], M1_fcn, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = gmres (A, b, [], [], [], M1_fun, M2);
+%! [x, flag] = gmres (A, b, [], [], [], M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = gmres (A, b, [], [], [], M1, M2_fun);
+%! [x, flag] = gmres (A, b, [], [], [], M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = gmres (Afun, b);
+%! [x, flag] = gmres (Afcn, b);
 %! assert (flag, 0);
-%! [x, flag] = gmres (Afun, b, [],[],[], M1, M2);
+%! [x, flag] = gmres (Afcn, b, [],[],[], M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = gmres (Afun, b, [],[],[], M1_fun, M2);
+%! [x, flag] = gmres (Afcn, b, [],[],[], M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = gmres (Afun, b, [],[],[], M1, M2_fun);
+%! [x, flag] = gmres (Afcn, b, [],[],[], M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = gmres (Afun, b, [],[],[], M1_fun, M2_fun);
+%! [x, flag] = gmres (Afcn, b, [],[],[], M1_fcn, M2_fcn);
 %! assert (flag, 0);
 
 %!test
@@ -634,11 +634,11 @@ endfunction
 %! assert (class (x), "single");
 
 %!test
-%!function y = Afun (x)
+%!function y = Afcn (x)
 %!   A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
 %!   y = A * x;
 %!endfunction
-%! [x, flag] = gmres ("Afun", [1; 2; 2; 3]);
+%! [x, flag] = gmres ("Afcn", [1; 2; 2; 3]);
 %! assert (x, ones (4, 1), 1e-6);
 
 %!test # preconditioned residual

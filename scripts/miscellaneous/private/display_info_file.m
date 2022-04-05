@@ -26,10 +26,10 @@
 ## news() and citation() are very much alike.  They both do the same thing,
 ## just for different files.  This function does all the work.
 
-function display_info_file (func, package, file)
+function display_info_file (fcn, package, file)
 
   if (! ischar (package))
-    error ("%s: PACKAGE must be a string", func);
+    error ("%s: PACKAGE must be a string", fcn);
   endif
 
   if (strcmpi (package, "octave"))
@@ -40,16 +40,16 @@ function display_info_file (func, package, file)
     names     = cellfun (@(x) x.name, installed, "UniformOutput", false);
     pos       = strcmpi (names, package);
     if (! any (pos))
-      error ("%s: package '%s' is not installed", func, package);
+      error ("%s: package '%s' is not installed", fcn, package);
     endif
     filepath = fullfile (installed{pos}.dir, "packinfo", file);
   endif
 
   if (! exist (filepath, "file"))
     if (strcmpi (package, "octave"))
-      error ("%s: broken installation -- unable to locate %s file", func, file);
+      error ("%s: broken installation -- unable to locate %s file", fcn, file);
     else
-      error ("%s: unable to locate %s file for package %s", func, file, package);
+      error ("%s: unable to locate %s file for package %s", fcn, file, package);
     endif
   endif
 

@@ -24,16 +24,16 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __bar__ (@var{vertical}, @var{func}, @dots{})
+## @deftypefn {} {} __bar__ (@var{vertical}, @var{fcn}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function varargout = __bar__ (func, vertical, varargin)
+function varargout = __bar__ (fcn, vertical, varargin)
 
-  [hax, varargin, nargin] = __plt_get_axis_arg__ (func, varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ (fcn, varargin{:});
 
   if (! isnumeric (varargin{1}))
-    error ("%s: Y must be numeric", func);
+    error ("%s: Y must be numeric", fcn);
   endif
 
   width = 0.8;
@@ -63,9 +63,9 @@ function varargout = __bar__ (func, vertical, varargin)
       idx = 2;
     else
       if (! isvector (x))
-        error ("%s: X must be a vector", func);
+        error ("%s: X must be a vector", fcn);
       elseif (numel (unique (x)) != numel (x))
-        error ("%s: X vector values must be unique", func);
+        error ("%s: X vector values must be unique", fcn);
       endif
       idx = 3;
     endif
@@ -99,7 +99,7 @@ function varargout = __bar__ (func, vertical, varargin)
     else
       if ((ischar (varargin{idx}) || iscellstr (varargin{idx}))
           && ! have_line_spec)
-        [linespec, valid] = __pltopt__ (func, varargin{idx}, false);
+        [linespec, valid] = __pltopt__ (fcn, varargin{idx}, false);
         if (valid)
           have_line_spec = true;
           ## FIXME: strange parse error requires semicolon to be spaced
@@ -133,7 +133,7 @@ function varargout = __bar__ (func, vertical, varargin)
     y = y.';
   endif
   if (ngrp != rows (y))
-    error ("%s: length of X and Y must be equal", func);
+    error ("%s: length of X and Y must be equal", fcn);
   endif
 
   nbars = columns (y);

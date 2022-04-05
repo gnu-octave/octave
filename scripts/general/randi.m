@@ -188,9 +188,9 @@ endfunction
 %! max_single = double (flintmax ("single"));
 
 ## Test that no warning thrown if IMAX is exactly on the limits of the range
-%!function test_no_warning (func, varargin)
+%!function test_no_warning (fcn, varargin)
 %!  lastwarn ("");
-%!  func (varargin{:});
+%!  fcn (varargin{:});
 %!  assert (lastwarn (), "");
 %!endfunction
 %!test test_no_warning (@randi, max_int8, "int8");

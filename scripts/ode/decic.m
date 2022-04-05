@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{y0_new}, @var{yp0_new}] =} decic (@var{fun}, @var{t0}, @var{y0}, @var{fixed_y0}, @var{yp0}, @var{fixed_yp0})
-## @deftypefnx {} {[@var{y0_new}, @var{yp0_new}] =} decic (@var{fun}, @var{t0}, @var{y0}, @var{fixed_y0}, @var{yp0}, @var{fixed_yp0}, @var{options})
+## @deftypefn  {} {[@var{y0_new}, @var{yp0_new}] =} decic (@var{fcn}, @var{t0}, @var{y0}, @var{fixed_y0}, @var{yp0}, @var{fixed_yp0})
+## @deftypefnx {} {[@var{y0_new}, @var{yp0_new}] =} decic (@var{fcn}, @var{t0}, @var{y0}, @var{fixed_y0}, @var{yp0}, @var{fixed_yp0}, @var{options})
 ## @deftypefnx {} {[@var{y0_new}, @var{yp0_new}, @var{resnorm}] =} decic (@dots{})
 ##
 ## Compute consistent implicit ODE initial conditions @var{y0_new} and
@@ -34,12 +34,12 @@
 ## A maximum of @code{length (@var{y0})} components between @var{fixed_y0} and
 ## @var{fixed_yp0} may be chosen as fixed values.
 ##
-## @var{fun} is a function handle.  The function must accept three inputs where
+## @var{fcn} is a function handle.  The function must accept three inputs where
 ## the first is time @var{t}, the second is a column vector of unknowns
 ## @var{y}, and the third is a column vector of unknowns @var{yp}.
 ##
 ## @var{t0} is the initial time such that
-## @code{@var{fun}(@var{t0}, @var{y0_new}, @var{yp0_new}) = 0}, specified as a
+## @code{@var{fcn}(@var{t0}, @var{y0_new}, @var{yp0_new}) = 0}, specified as a
 ## scalar.
 ##
 ## @var{y0} is a vector used as the initial guess for @var{y}.
@@ -93,7 +93,7 @@
 ## @seealso{ode15i, odeset}
 ## @end deftypefn
 
-function [y0_new, yp0_new, resnorm] = decic (fun, t0,
+function [y0_new, yp0_new, resnorm] = decic (fcn, t0,
                                              y0, fixed_y0, yp0, fixed_yp0,
                                              options)
 
@@ -102,9 +102,9 @@ function [y0_new, yp0_new, resnorm] = decic (fun, t0,
   endif
 
   ## Validate inputs
-  if (! is_function_handle (fun))
+  if (! is_function_handle (fcn))
     error ("Octave:invalid-input-arg",
-           "decic: FUN must be a valid function handle");
+           "decic: FCN must be a valid function handle");
   endif
 
   if (! (isnumeric (t0) && isscalar (t0)))
@@ -171,7 +171,7 @@ function [y0_new, yp0_new, resnorm] = decic (fun, t0,
   x0 = [y0(! fixed_y0); yp0(! fixed_yp0)];
   opt = optimset ("tolfun", TolFun, "tolx", TolX, "FinDiffType", "central");
   x = ...
-    fminunc (@(x) objective (x, t0, y0, fixed_y0, yp0, fixed_yp0, nl, nu, fun),
+    fminunc (@(x) objective (x, t0, y0, fixed_y0, yp0, fixed_yp0, nl, nu, fcn),
              x0, opt);
 
   y0_new  = y0;
@@ -180,18 +180,18 @@ function [y0_new, yp0_new, resnorm] = decic (fun, t0,
   y0_new(! fixed_y0)   = x(1:nl);
   yp0_new(! fixed_yp0) = x(nl+1:nl+nu);
   if (isargout (3))
-    resnorm = fun (t0, y0_new, yp0_new);
+    resnorm = fcn (t0, y0_new, yp0_new);
   endif
 
 endfunction
 
-function res = objective (x, t0, y0, fixed_y0, yp0, fixed_yp0, nl, nu, fun)
+function res = objective (x, t0, y0, fixed_y0, yp0, fixed_yp0, nl, nu, fcn)
 
   y = y0;
   y(! fixed_y0) = x(1:nl);
   yp = yp0;
   yp(! fixed_yp0) = x(nl+1:nl+nu);
-  res = sqrt (sum (fun (t0, y, yp) .^ 2));
+  res = sqrt (sum (fcn (t0, y, yp) .^ 2));
 
 endfunction
 
@@ -221,7 +221,7 @@ endfunction
 %!error <Invalid call> decic (1,2,3)
 %!error <Invalid call> decic (1,2,3,4)
 %!error <Invalid call> decic (1,2,3,4,5)
-%!error <FUN must be a valid function handle>
+%!error <FCN must be a valid function handle>
 %! decic (1, 0, [1; 0; 0], [1; 1; 0], [-1e-4; 1; 0], [0; 0; 0]);
 %!error <T0 must be a numeric scalar>
 %! decic (@rob, [1, 1], [1; 0; 0], [1; 1; 0], [-1e-4; 1; 0], [0; 0; 0]);

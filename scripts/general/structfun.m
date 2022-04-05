@@ -24,16 +24,16 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{A} =} structfun (@var{func}, @var{S})
-## @deftypefnx {} {@var{A} =} structfun (@dots{}, "ErrorHandler", @var{errfunc})
+## @deftypefn  {} {@var{A} =} structfun (@var{fcn}, @var{S})
+## @deftypefnx {} {@var{A} =} structfun (@dots{}, "ErrorHandler", @var{errfcn})
 ## @deftypefnx {} {@var{A} =} structfun (@dots{}, "UniformOutput", @var{val})
 ## @deftypefnx {} {[@var{A}, @var{B}, @dots{}] =} structfun (@dots{})
 ##
 ## Evaluate the function named @var{name} on the fields of the structure
-## @var{S}.  The fields of @var{S} are passed to the function @var{func}
+## @var{S}.  The fields of @var{S} are passed to the function @var{fcn}
 ## individually.
 ##
-## @code{structfun} accepts an arbitrary function @var{func} in the form of an
+## @code{structfun} accepts an arbitrary function @var{fcn} in the form of an
 ## inline function, function handle, or the name of a function (in a character
 ## string).  In the case of a character string argument, the function must
 ## accept a single argument named @var{x}, and it must return a string value.
@@ -57,16 +57,16 @@
 ## @end group
 ## @end example
 ##
-## Given the parameter @qcode{"ErrorHandler"}, @var{errfunc} defines a function
-## to call in case @var{func} generates an error.  The form of the function is
+## Given the parameter @qcode{"ErrorHandler"}, @var{errfcn} defines a function
+## to call in case @var{fcn} generates an error.  The form of the function is
 ##
 ## @example
-## function [@dots{}] = errfunc (@var{se}, @dots{})
+## function [@dots{}] = errfcn (@var{se}, @dots{})
 ## @end example
 ##
 ## @noindent
-## where there is an additional input argument to @var{errfunc} relative to
-## @var{func}, given by @nospell{@var{se}}.  This is a structure with the
+## where there is an additional input argument to @var{errfcn} relative to
+## @var{fcn}, given by @nospell{@var{se}}.  This is a structure with the
 ## elements @qcode{"identifier"}, @qcode{"message"} and @qcode{"index"},
 ## giving respectively the error identifier, the error message, and the index
 ## into the input arguments of the element that caused the error.  For an
@@ -75,7 +75,7 @@
 ## @seealso{cellfun, arrayfun, spfun}
 ## @end deftypefn
 
-function varargout = structfun (func, S, varargin)
+function varargout = structfun (fcn, S, varargin)
 
   if (nargin < 2)
     print_usage ();
@@ -105,7 +105,7 @@ function varargout = structfun (func, S, varargin)
   endif
 
   varargout = cell (max ([nargout, 1]), 1);
-  [varargout{:}] = cellfun (func, struct2cell (S), varargin{:});
+  [varargout{:}] = cellfun (fcn, struct2cell (S), varargin{:});
 
   if (! uniform_output)
     varargout = cellfun ("cell2struct", varargout, {fieldnames(S)}, {1}, ...

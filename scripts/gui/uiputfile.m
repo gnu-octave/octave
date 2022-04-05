@@ -37,7 +37,7 @@
 ## @item @qcode{"/path/to/filename.ext"}
 ## If a filename is given the file extension is extracted and used as filter.
 ## In addition the path is selected as current path in the dialog and the
-## filename is selected as default file.  Example: @code{uiputfile ("myfun.m")}
+## filename is selected as default file.  Example: @code{uiputfile ("myfcn.m")}
 ##
 ## @item @qcode{"*.ext"}
 ## A single file extension.

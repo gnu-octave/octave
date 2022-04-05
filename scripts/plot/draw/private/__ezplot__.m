@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pltfunc}, @var{varargin})
+## @deftypefn {} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pltfcn}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -34,11 +34,11 @@
 ##           called was called correctly.  The actual plotting occurs near
 ##           the end in an unwind_protect block.
 
-function [h, needusage] = __ezplot__ (pltfunc, varargin)
+function [h, needusage] = __ezplot__ (pltfcn, varargin)
 
-  ezfunc = ["ez" pltfunc];
+  ezfcn = ["ez" pltfcn];
 
-  [hax, varargin, nargin] = __plt_get_axis_arg__ (ezfunc, varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ (ezfcn, varargin{:});
 
   ## Define outputs early in case of shorting out of function with return;
   h = [];
@@ -48,14 +48,14 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     return;
   endif
 
-  iscontour = strncmp (pltfunc, "contour", 7);
+  iscontour = strncmp (pltfcn, "contour", 7);
 
   ## Defaults for ezplot
   isplot  = true;
   isplot3 = false;
   ispolar = false;
   nargs = 1;
-  switch (pltfunc)
+  switch (pltfcn)
     case "plot"
       ## defaults already set
 
@@ -75,24 +75,24 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
   endswitch
 
   parametric = false;
-  fun = varargin{1};
-  if (ischar (fun))
-    if (exist (fun, "file") || exist (fun, "builtin"))
-      fun = str2func (fun);            # convert to function handle
+  fcn = varargin{1};
+  if (ischar (fcn))
+    if (exist (fcn, "file") || exist (fcn, "builtin"))
+      fcn = str2func (fcn);            # convert to function handle
     else
-      fun = vectorize (inline (fun));  # convert to inline function
+      fcn = vectorize (inline (fcn));  # convert to inline function
     endif
   endif
 
-  if (isa (fun, "inline"))
-    argids = argnames (fun);
+  if (isa (fcn, "inline"))
+    argids = argnames (fcn);
     if (isplot && length (argids) == 2)
       nargs = 2;
     elseif (numel (argids) != nargs)
-      error ("%s: expecting a function of %d arguments", ezfunc, nargs);
+      error ("%s: expecting a function of %d arguments", ezfcn, nargs);
     endif
-    fun = vectorize (fun);
-    fstr = formula (fun);
+    fcn = vectorize (fcn);
+    fstr = formula (fcn);
     if (isplot)
       xarg = argids{1};
       if (nargs == 2)
@@ -110,8 +110,8 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       xarg = argids{1};
       yarg = argids{2};
     endif
-  elseif (is_function_handle (fun))
-    fstr = func2str (fun);
+  elseif (is_function_handle (fcn))
+    fstr = func2str (fcn);
     idx = index (fstr, ')');
     if (idx != 0)
       args = regexp (fstr(3:(idx-1)), '\w+', 'match');
@@ -119,7 +119,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     else
       args = {"x"};
       try
-        if (builtin ("nargin", fun) == 2)
+        if (builtin ("nargin", fcn) == 2)
           args{2} = "y";
         endif
       end_try_catch
@@ -127,7 +127,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     if (isplot && length (args) == 2)
       nargs = 2;
     elseif (numel (args) != nargs)
-      error ("%s: expecting a function of %d arguments", ezfunc, nargs);
+      error ("%s: expecting a function of %d arguments", ezfcn, nargs);
     endif
     if (isplot)
       xarg = args{1};
@@ -147,11 +147,11 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       yarg = args{2};
     endif
   else
-    error ("%s: F must be a string or function handle", ezfunc);
+    error ("%s: F must be a string or function handle", ezfcn);
   endif
 
   if (nargin > 2 || (nargin == 2 && isplot))
-    funx = fun;
+    funx = fcn;
     fstrx = fstr;
     funy = varargin{2};
     if (ischar (funy) && ! strcmp (funy, "circ") && ! strcmp (funy, "animate"))
@@ -162,13 +162,13 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
         funy = vectorize (inline (funy));
       endif
       if (numel (argnames (funy)) != nargs)
-        error ("%s: expecting a function of %d arguments", ezfunc, nargs);
+        error ("%s: expecting a function of %d arguments", ezfcn, nargs);
       endif
       fstry = formula (funy);
     elseif (isa (funy, "inline"))
       parametric = true;
       if (numel (argnames (funy)) != nargs)
-        error ("%s: expecting a function of %d arguments", ezfunc, nargs);
+        error ("%s: expecting a function of %d arguments", ezfcn, nargs);
       endif
       funy = vectorize (funy);
       fstry = formula (funy);
@@ -183,7 +183,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
         args = {"y"};
       endif
       if (numel (args) != nargs)
-        error ("%s: expecting a function of %d arguments", ezfunc, nargs);
+        error ("%s: expecting a function of %d arguments", ezfcn, nargs);
       endif
     endif
 
@@ -192,7 +192,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       return;
     elseif (parametric && isplot)
       if (nargs == 2)
-        error ("%s: can not define a parametric function in this manner", ezfunc);
+        error ("%s: can not define a parametric function in this manner", ezfcn);
       else
         xarg = "x";
         yarg = "y";
@@ -207,12 +207,12 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
           funz = vectorize (inline (funz));
         endif
         if (numel (argnames (funz)) > nargs)
-          error ("%s: expecting a function of %d arguments", ezfunc, nargs);
+          error ("%s: expecting a function of %d arguments", ezfcn, nargs);
         endif
         fstrz = formula (funz);
       elseif (isa (funz, "inline"))
         if (numel (argnames (funz)) != nargs)
-          error ("%s: expecting a function of %d arguments", ezfunc, nargs);
+          error ("%s: expecting a function of %d arguments", ezfcn, nargs);
         endif
         funz = vectorize (funz);
         fstrz = formula (funz);
@@ -226,10 +226,10 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
           args = {"z"};
         endif
         if (numel (args) != nargs)
-          error ("%s: expecting a function of %d arguments", ezfunc, nargs);
+          error ("%s: expecting a function of %d arguments", ezfcn, nargs);
         endif
       else
-        error ("%s: parametric plots require 3 functions", ezfunc);
+        error ("%s: parametric plots require 3 functions", ezfcn);
       endif
     endif
   endif
@@ -264,7 +264,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     elseif (numel (arg) == 4 && isempty (domain))
       domain = arg(:).';
     else
-      error ("%s: expecting scalar N, or 2-/4-element vector DOM", ezfunc);
+      error ("%s: expecting scalar N, or 2-/4-element vector DOM", ezfcn);
     endif
   endwhile
 
@@ -273,11 +273,11 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     return;
   elseif (circ && parametric)
     error ("%s: can not have both circular domain and parametric function",
-           ezfunc);
+           ezfcn);
   endif
 
   if (animate && ! isplot3)
-    error ("%s: animate option only valid for ezplot3", ezfunc);
+    error ("%s: animate option only valid for ezplot3", ezfcn);
   endif
 
   if (parametric)
@@ -366,7 +366,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       endif
     else  # non-parametric plots
       if (isplot && nargs == 2)
-        Z = feval (fun, X, Y);
+        Z = feval (fcn, X, Y);
 
         ## Matlab returns line objects for this case and so can't call
         ## contour directly as it returns patch objects to allow colormaps
@@ -385,18 +385,18 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
         endwhile
       else
         if (ispolar)
-          Z = feval (fun, X);
+          Z = feval (fcn, X);
           ## FIXME: Why aren't singularities eliminated for polar plots?
         elseif (isplot)
-          Z = feval (fun, X);
+          Z = feval (fcn, X);
           ## Eliminate the singularities
           Z = __eliminate_sing__ (Z);
           domain = find_valid_domain (X, [], Z);
         elseif (iscontour)
-          Z = feval (fun, X, Y);
+          Z = feval (fcn, X, Y);
           Z = __eliminate_sing__ (Z);
         else  #  mesh, surf plots
-          Z = feval (fun, X, Y);
+          Z = feval (fcn, X, Y);
           Z = __eliminate_sing__ (Z);
           if (circ)
             ## Use domain calculated at the start.
@@ -426,7 +426,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
   unwind_protect
     hax = newplot (hax);
     if (iscontour)
-      [~, h] = feval (pltfunc, hax, X, Y, Z);
+      [~, h] = feval (pltfcn, hax, X, Y, Z);
     elseif (isplot && nargs == 2)
       h = zeros (length (XX), 1);
       hold_state = get (hax, "nextplot");
@@ -442,7 +442,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       set (hax, "nextplot", hold_state);
       axis (hax, domain);
     elseif (isplot || ispolar)
-      h = feval (pltfunc, hax, X, Z);
+      h = feval (pltfcn, hax, X, Z);
       if (isplot)
         if (! parametric)
           axis (hax, domain);
@@ -454,12 +454,12 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       if (animate)
         comet3 (hax, X, Y, Z);
       else
-        h = feval (pltfunc, hax, X, Y, Z);
+        h = feval (pltfcn, hax, X, Y, Z);
       endif
       grid (hax, "on");
       zlabel (hax, "z");
     else  # mesh and surf plots
-      h = feval (pltfunc, hax, X, Y, Z);
+      h = feval (pltfcn, hax, X, Y, Z);
       ## FIXME: surf, mesh should really do a better job of setting zlim
       if (! parametric)
         axis (hax, domain);

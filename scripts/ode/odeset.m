@@ -139,7 +139,7 @@
 ## Print solver statistics after simulation.
 ##
 ## @item @code{Vectorized}: @{@qcode{"off"}@} | @qcode{"on"}
-## Specify whether @code{odefun} can be passed multiple values of the
+## Specify whether @code{odefcn} can be passed multiple values of the
 ## state at once.
 ##
 ## @end table

@@ -29,7 +29,7 @@
 ## by the complementary private function colorspace_conversion_revert()
 
 function [in_arg, sz, is_im, is_nd] ...
-            = colorspace_conversion_input_check (func, arg_name, in_arg)
+            = colorspace_conversion_input_check (fcn, arg_name, in_arg)
 
   cls = class (in_arg);
   sz = size (in_arg);
@@ -38,11 +38,11 @@ function [in_arg, sz, is_im, is_nd] ...
   if (! iscolormap (in_arg))
     if (! any (strcmp (cls, {"uint8", "int8", "int16", "uint16", ...
                              "single", "double"})))
-      error ("%s: %s of invalid data type '%s'", func, arg_name, cls);
+      error ("%s: %s of invalid data type '%s'", fcn, arg_name, cls);
     elseif (size (in_arg, 3) != 3)
-      error ("%s: %s must be a colormap or %s image", func, arg_name, arg_name);
+      error ("%s: %s must be a colormap or %s image", fcn, arg_name, arg_name);
     elseif (! isreal (in_arg) || ! isnumeric (in_arg))
-      error ("%s: %s must be numeric and real", func, arg_name);
+      error ("%s: %s must be numeric and real", fcn, arg_name);
     endif
     is_im = true;
 
@@ -60,7 +60,7 @@ function [in_arg, sz, is_im, is_nd] ...
       is_nd = true;
       in_arg = permute (in_arg, [1 2 4 3]);
     elseif (nd > 4)
-      error ("%s: invalid %s with more than 4 dimensions", func, arg_name);
+      error ("%s: invalid %s with more than 4 dimensions", fcn, arg_name);
     endif
     in_arg = reshape (in_arg, [numel(in_arg)/3 3]);
   else

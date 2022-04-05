@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{vfun} =} vectorize (@var{fun})
+## @deftypefn {} {@var{vfcn} =} vectorize (@var{fcn})
 ## Create a vectorized version of the anonymous function or expression
-## @var{fun} by replacing all occurrences of @code{*}, @code{/}, etc.,
+## @var{fcn} by replacing all occurrences of @code{*}, @code{/}, etc.,
 ## with @code{.*}, @code{./}, etc.
 ##
 ## Note that the transformation is extremely simplistic.  Use of this
@@ -39,7 +39,7 @@
 ## anyway, and most expressions will probably be short.  It may also be
 ## buggy.  Well, don't use this function!
 
-function vfun = vectorize (fun)
+function vfcn = vectorize (fcn)
 
   persistent warned = false;
   if (! warned)
@@ -52,21 +52,21 @@ function vfun = vectorize (fun)
     print_usage ();
   endif
 
-  if (isa (fun, "function_handle"))
-    finfo = functions (fun);
+  if (isa (fcn, "function_handle"))
+    finfo = functions (fcn);
     if (! strcmp (finfo.type, "anonymous"))
-      error ("vectorize: FUN must be a string or anonymous function handle");
+      error ("vectorize: FCN must be a string or anonymous function handle");
     endif
     expr = finfo.function;
     idx = index (expr, ")");
     args = expr(1:idx);
     expr = expr(idx+1:end);
     new_expr = __vectorize__ (expr);
-    vfun = str2func ([args, new_expr]);
-  elseif (ischar (fun))
-    vfun = __vectorize__ (fun);
+    vfcn = str2func ([args, new_expr]);
+  elseif (ischar (fcn))
+    vfcn = __vectorize__ (fcn);
   else
-    error ("vectorize: FUN must be a string or anonymous function handle");
+    error ("vectorize: FCN must be a string or anonymous function handle");
   endif
 
 endfunction
@@ -92,4 +92,4 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> vectorize ()
-%!error <FUN must be a string or anonymous function handle> vectorize (1)
+%!error <FCN must be a string or anonymous function handle> vectorize (1)

@@ -32,7 +32,7 @@
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ##
-## @var{fun} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function to evaluate.  @var{fcn} should accept a vector (array)
 ## defining the unknown variables, and return a vector of left-hand sides of
 ## the equations.  Right-hand sides are defined to be zeros.  In other words,
@@ -152,7 +152,7 @@
 ## recent vector.  A short example how this can be achieved follows:
 ##
 ## @example
-## function [fval, fjac] = user_func (x, optimvalues, state)
+## function [fval, fjac] = user_fcn (x, optimvalues, state)
 ## persistent sav = [], sav0 = [];
 ## if (nargin == 1)
 ##   ## evaluation call
@@ -173,7 +173,7 @@
 ##
 ## ## @dots{}
 ##
-## fsolve (@@user_func, x0, optimset ("OutputFcn", @@user_func, @dots{}))
+## fsolve (@@user_fcn, x0, optimset ("OutputFcn", @@user_fcn, @dots{}))
 ## @end example
 ## @seealso{fzero, optimset}
 ## @end deftypefn
@@ -509,12 +509,12 @@ function [x, fval, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
-function [fx, jx] = guarded_eval (fun, x, complexeqn)
+function [fx, jx] = guarded_eval (fcn, x, complexeqn)
 
   if (nargout > 1)
-    [fx, jx] = fun (x);
+    [fx, jx] = fcn (x);
   else
-    fx = fun (x);
+    fx = fcn (x);
     jx = [];
   endif
 
@@ -675,7 +675,7 @@ endfunction
 %! assert (norm (c - c_opt, Inf) < tol);
 %! assert (norm (fval) < norm (noise));
 
-%!function y = cfun (x)
+%!function y = cfcn (x)
 %!  y(1) = (1+i)*x(1)^2 - (1-i)*x(2) - 2;
 %!  y(2) = sqrt (x(1)*x(2)) - (1-2i)*x(3) + (3-4i);
 %!  y(3) = x(1) * x(2) - x(3)^2 + (3+2i);
@@ -685,7 +685,7 @@ endfunction
 %! x_opt = [-1+i, 1-i, 2+i];
 %! x = [i, 1, 1+i];
 %!
-%! [x, f, info] = fsolve (@cfun, x, optimset ("ComplexEqn", "on"));
+%! [x, f, info] = fsolve (@cfcn, x, optimset ("ComplexEqn", "on"));
 %! tol = 1e-5;
 %! assert (norm (f) < tol);
 %! assert (norm (x - x_opt, Inf) < tol);

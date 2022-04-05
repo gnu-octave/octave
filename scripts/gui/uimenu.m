@@ -40,9 +40,9 @@
 ##
 ## @item @qcode{"callback"}
 ## Is the function called when this menu entry is executed.  It can be either a
-## function string (e.g., @qcode{"myfun"}), a function handle (e.g., @@myfun)
+## function string (e.g., @qcode{"myfcn"}), a function handle (e.g., @@myfcn)
 ## or a cell array containing the function handle and arguments for the
-## callback function (e.g., @{@@myfun, arg1, arg2@}).
+## callback function (e.g., @{@@myfcn, arg1, arg2@}).
 ##
 ## @item @qcode{"checked"}
 ## Can be set @qcode{"on"} or @qcode{"off"}.  Sets a mark at this menu entry.

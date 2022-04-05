@@ -24,12 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} =} starting_stepsize (@var{order}, @var{func}, @var{t0}, @var{x0}, @var{AbsTol}, @var{RelTol}, @var{normcontrol}, @var{args})
+## @deftypefn {} {@var{h} =} starting_stepsize (@var{order}, @var{fcn}, @var{t0}, @var{x0}, @var{AbsTol}, @var{RelTol}, @var{normcontrol}, @var{args})
 ##
 ## Determine a good initial timestep for an ODE solver of order @var{order}
 ## using the algorithm described in reference [1].
 ##
-## The input argument @var{func}, is the function describing the differential
+## The input argument @var{fcn}, is the function describing the differential
 ## equations, @var{t0} is the initial time, and @var{x0} is the initial
 ## condition.  @var{AbsTol} and @var{RelTol} are the absolute and relative
 ## tolerance on the ODE integration taken from an ode options structure.
@@ -42,7 +42,7 @@
 ##
 ## @seealso{odepkg}
 
-function h = starting_stepsize (order, func, t0, x0,
+function h = starting_stepsize (order, fcn, t0, x0,
                                 AbsTol, RelTol, normcontrol,
                                 args = {})
 
@@ -50,7 +50,7 @@ function h = starting_stepsize (order, func, t0, x0,
   d0 = AbsRel_norm (x0, x0, AbsTol, RelTol, normcontrol);
 
   ## compute norm of the function evaluated at initial conditions
-  y = func (t0, x0, args{:});
+  y = fcn (t0, x0, args{:});
   if (iscell (y))
     y = y{1};
   endif
@@ -66,7 +66,7 @@ function h = starting_stepsize (order, func, t0, x0,
   x1 = x0 + h0 * y;
 
   ## approximate the derivative norm
-  yh = func (t0+h0, x1, args{:});
+  yh = fcn (t0+h0, x1, args{:});
   if (iscell (yh))
     yh = yh{1};
   endif

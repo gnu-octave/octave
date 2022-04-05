@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{t}, @var{y}] =} ode15i (@var{fun}, @var{trange}, @var{y0}, @var{yp0})
-## @deftypefnx {} {[@var{t}, @var{y}] =} ode15i (@var{fun}, @var{trange}, @var{y0}, @var{yp0}, @var{ode_opt})
+## @deftypefn  {} {[@var{t}, @var{y}] =} ode15i (@var{fcn}, @var{trange}, @var{y0}, @var{yp0})
+## @deftypefnx {} {[@var{t}, @var{y}] =} ode15i (@var{fcn}, @var{trange}, @var{y0}, @var{yp0}, @var{ode_opt})
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode15i (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode15i (@dots{})
 ## @deftypefnx {} {} ode15i (@dots{})
@@ -35,7 +35,7 @@
 ## @code{ode15i} uses a variable step, variable order BDF (Backward
 ## Differentiation Formula) method that ranges from order 1 to 5.
 ##
-## @var{fun} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function that defines the ODE: @code{0 = f(t,y,yp)}.  The
 ## function must accept three inputs where the first is time @var{t}, the
 ## second is the function value @var{y} (a column vector), and the third
@@ -96,7 +96,7 @@
 ## @seealso{decic, odeset, odeget}
 ## @end deftypefn
 
-function varargout = ode15i (fun, trange, y0, yp0, varargin)
+function varargout = ode15i (fcn, trange, y0, yp0, varargin)
 
   if (nargin < 4)
     print_usage ();
@@ -112,8 +112,8 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
    options = odeset ();
   endif
 
-  ## Check fun, trange, y0, yp0
-  fun = check_default_input (fun, trange, solver, y0, yp0);
+  ## Check fcn, trange, y0, yp0
+  fcn = check_default_input (fcn, trange, solver, y0, yp0);
 
   if (! isempty (options.Jacobian))
     if (ischar (options.Jacobian))
@@ -172,7 +172,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   ## Jacobian
   options.havejac       = false;
   options.havejacsparse = false;
-  options.havejacfun    = false;
+  options.havejacfcn    = false;
 
   if (! isempty (options.Jacobian))
     options.havejac = true;
@@ -196,7 +196,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       endif
 
     elseif (is_function_handle (options.Jacobian))
-      options.havejacfun = true;
+      options.havejacfcn = true;
       if (nargin (options.Jacobian) == 3)
         [J1, J2] = options.Jacobian (trange(1), y0, yp0);
 
@@ -208,7 +208,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
                  'ode15i: "Jacobian" function must evaluate to a real square matrix');
         endif
         if (issparse (J1) && issparse (J2))
-          options.havejacsparse = true;  # Jac is sparse fun
+          options.havejacsparse = true;  # Jac is sparse fcn
         endif
       else
         error ("Octave:invalid-input-arg",
@@ -256,7 +256,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   options.haveeventfunction = ! isempty (options.Events);
 
   ## 3 arguments in the event callback of ode15i
-  [t, y, te, ye, ie] = __ode15__ (fun, trange, y0, yp0, options, 3);
+  [t, y, te, ye, ie] = __ode15__ (fcn, trange, y0, yp0, options, 3);
 
   if (nargout == 2)
     varargout{1} = t;
@@ -286,7 +286,7 @@ endfunction
 
 %!demo
 %! ## Solve Robertson's equations with ode15i
-%! fun = @(t, y, yp) [-(yp(1) + 0.04*y(1) - 1e4*y(2)*y(3));
+%! fcn = @(t, y, yp) [-(yp(1) + 0.04*y(1) - 1e4*y(2)*y(3));
 %!                    -(yp(2) - 0.04*y(1) + 1e4*y(2)*y(3) + 3e7*y(2)^2);
 %!                    y(1) + y(2) + y(3) - 1];
 %!
@@ -295,7 +295,7 @@ endfunction
 %! yp0 = [-1e-4; 1e-4; 0];
 %! tspan = [0 4*logspace(-6, 6)];
 %!
-%! [t, y] = ode15i (fun, tspan, y0, yp0, opt);
+%! [t, y] = ode15i (fcn, tspan, y0, yp0, opt);
 %!
 %! y(:,2) = 1e4 * y(:, 2);
 %! figure (2);
@@ -442,19 +442,19 @@ endfunction
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
 
-## Jacobian fun dense
+## Jacobian fcn dense
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", @jacfundense);
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
 
-## Jacobian fun dense as string
+## Jacobian fcn dense as string
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", "jacfundense");
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
 
-## Jacobian fun sparse
+## Jacobian fcn sparse
 %!testif HAVE_SUNDIALS_SUNLINSOL_KLU
 %! opt = odeset ("Jacobian", @jacfunsparse, "AbsTol", 1e-7, "RelTol", 1e-7);
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
@@ -532,7 +532,7 @@ endfunction
 %! [0, 1], [1, 1], [1; 1]);
 %! assert (size (yout), [20, 2]);
 
-## Jacobian fun wrong dimension
+## Jacobian fcn wrong dimension
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", @jacwrong);
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
@@ -585,7 +585,7 @@ endfunction
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
 %!       '"Jacobian" function "_5yVNhWVJWJn47RKnzxPsyb_" not found');
 
-%!function ydot = fun (t, y, yp)
+%!function ydot = fcn (t, y, yp)
 %!  ydot = [y - yp];
 %!endfunction
 
@@ -602,54 +602,54 @@ endfunction
 %! fail ("ode15i (1, 1, 1)", "Invalid call to ode15i");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1, 1, 1, 1)", "ode15i: fun must be of class:");
+%! fail ("ode15i (1, 1, 1, 1)", "ode15i: fcn must be of class:");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1, 1, 1, 1, 1)", "ode15i: fun must be of class:");
+%! fail ("ode15i (1, 1, 1, 1, 1)", "ode15i: fcn must be of class:");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1, 1, 1, 1, 1, 1)", "ode15i: fun must be of class:");
+%! fail ("ode15i (1, 1, 1, 1, 1, 1)", "ode15i: fcn must be of class:");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (@fun, 1, 1, 1)",
+%! fail ("ode15i (@fcn, 1, 1, 1)",
 %!       "ode15i: invalid value assigned to field 'trange'");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (@fun, [1, 1], 1, 1)",
+%! fail ("ode15i (@fcn, [1, 1], 1, 1)",
 %!       "ode15i: invalid value assigned to field 'trange'");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (@fun, [1, 2], 1, [1, 2])",
+%! fail ("ode15i (@fcn, [1, 2], 1, [1, 2])",
 %!       "ode15i: y0 must have 2 elements");
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("RelTol", "_5yVNhWVJWJn47RKnzxPsyb_");
-%! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
+%! fail ("[t, y] = ode15i (@fcn, [0, 2], 2, 2, opt)",
 %!       "ode15i: RelTol must be of class:");
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("RelTol", [1, 2]);
-%! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
+%! fail ("[t, y] = ode15i (@fcn, [0, 2], 2, 2, opt)",
 %!       "ode15i: RelTol must be scalar");
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("RelTol", -2);
-%! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
+%! fail ("[t, y] = ode15i (@fcn, [0, 2], 2, 2, opt)",
 %!       "ode15i: RelTol must be positive");
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", "_5yVNhWVJWJn47RKnzxPsyb_");
-%! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
+%! fail ("[t, y] = ode15i (@fcn, [0, 2], 2, 2, opt)",
 %!       "ode15i: AbsTol must be of class:");
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", -1);
-%! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
+%! fail ("[t, y] = ode15i (@fcn, [0, 2], 2, 2, opt)",
 %!       "ode15i: AbsTol must be positive");
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", [1, 1, 1]);
-%! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
+%! fail ("[t, y] = ode15i (@fcn, [0, 2], 2, 2, opt)",
 %!       'ode15i: invalid value assigned to field "AbsTol"');
 
 %!testif HAVE_SUNDIALS

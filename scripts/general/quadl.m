@@ -28,7 +28,7 @@
 ## @deftypefnx {} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol})
 ## @deftypefnx {} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
 ## @deftypefnx {} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {} {[@var{q}, @var{nfun}] =} quadl (@dots{})
+## @deftypefnx {} {[@var{q}, @var{nfev}] =} quadl (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
 ## an adaptive @nospell{Lobatto} rule.
@@ -55,7 +55,7 @@
 ##
 ## The result of the integration is returned in @var{q}.
 ##
-## The optional output @var{nfun} indicates the total number of function
+## The optional output @var{nfev} indicates the total number of function
 ## evaluations performed.
 ##
 ## Reference: @nospell{W. Gander and W. Gautschi}, @cite{Adaptive Quadrature -
@@ -72,7 +72,7 @@
 ## 2003-08-05 Shai Ayal
 ##   * permission from author to release as GPL
 
-function [q, nfun] = quadl (f, a, b, tol = [], trace = false, varargin)
+function [q, nfev] = quadl (f, a, b, tol = [], trace = false, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -97,17 +97,17 @@ function [q, nfun] = quadl (f, a, b, tol = [], trace = false, varargin)
   endif
 
   y = feval (f, [a, b], varargin{:});
-  nfun = 1;
+  nfev = 1;
 
   fa = y(1);
   fb = y(2);
 
   h = b - a;
 
-  [q, nfun, hmin] = adaptlobstp (f, a, b, fa, fb, Inf, nfun, abs (h),
+  [q, nfev, hmin] = adaptlobstp (f, a, b, fa, fb, Inf, nfev, abs (h),
                                  tol, trace, varargin{:});
 
-  if (nfun > 10_000)
+  if (nfev > 10_000)
     warning ("quadl: maximum iteration count reached -- possible singular integral");
   elseif (any (! isfinite (q(:))))
     warning ("quadl: infinite or NaN function evaluations were returned");
@@ -117,13 +117,13 @@ function [q, nfun] = quadl (f, a, b, tol = [], trace = false, varargin)
 
 endfunction
 
-function [q, nfun, hmin] = adaptlobstp (f, a, b, fa, fb, q0, nfun, hmin,
+function [q, nfev, hmin] = adaptlobstp (f, a, b, fa, fb, q0, nfev, hmin,
                                         tol, trace, varargin)
 
   persistent alpha = sqrt (2/3);
   persistent beta = 1 / sqrt (5);
 
-  if (nfun > 10_000)
+  if (nfev > 10_000)
     q = q0;
     return;
   endif
@@ -136,7 +136,7 @@ function [q, nfun, hmin] = adaptlobstp (f, a, b, fa, fb, q0, nfun, hmin,
   mrr = m + alpha*h;
   x = [mll, ml, m, mr, mrr];
   y = feval (f, x, varargin{:});
-  nfun += 1;
+  nfev += 1;
   fmll = y(1);
   fml  = y(2);
   fm   = y(3);
@@ -150,25 +150,25 @@ function [q, nfun, hmin] = adaptlobstp (f, a, b, fa, fb, q0, nfun, hmin,
   endif
 
   if (trace)
-    disp ([nfun, a, b-a, i1]);
+    disp ([nfev, a, b-a, i1]);
   endif
 
-  ## Force at least one adaptive step (nfun > 2 test).
-  if ((abs (i1-i2) < tol || mll <= a || b <= mrr) && nfun > 2)
+  ## Force at least one adaptive step (nfev > 2 test).
+  if ((abs (i1-i2) < tol || mll <= a || b <= mrr) && nfev > 2)
     q = i1;
   else
     q = zeros (6, 1, class (x));
-    [q(1), nfun, hmin] = adaptlobstp (f, a  , mll, fa  , fmll, q0/6, nfun, hmin,
+    [q(1), nfev, hmin] = adaptlobstp (f, a  , mll, fa  , fmll, q0/6, nfev, hmin,
                                       tol, trace, varargin{:});
-    [q(2), nfun, hmin] = adaptlobstp (f, mll, ml , fmll, fml , q0/6, nfun, hmin,
+    [q(2), nfev, hmin] = adaptlobstp (f, mll, ml , fmll, fml , q0/6, nfev, hmin,
                                       tol, trace, varargin{:});
-    [q(3), nfun, hmin] = adaptlobstp (f, ml , m  , fml , fm  , q0/6, nfun, hmin,
+    [q(3), nfev, hmin] = adaptlobstp (f, ml , m  , fml , fm  , q0/6, nfev, hmin,
                                       tol, trace, varargin{:});
-    [q(4), nfun, hmin] = adaptlobstp (f, m  , mr , fm  , fmr , q0/6, nfun, hmin,
+    [q(4), nfev, hmin] = adaptlobstp (f, m  , mr , fm  , fmr , q0/6, nfev, hmin,
                                       tol, trace, varargin{:});
-    [q(5), nfun, hmin] = adaptlobstp (f, mr , mrr, fmr , fmrr, q0/6, nfun, hmin,
+    [q(5), nfev, hmin] = adaptlobstp (f, mr , mrr, fmr , fmrr, q0/6, nfev, hmin,
                                       tol, trace, varargin{:});
-    [q(6), nfun, hmin] = adaptlobstp (f, mrr, b  , fmrr, fb  , q0/6, nfun, hmin,
+    [q(6), nfev, hmin] = adaptlobstp (f, mrr, b  , fmrr, fb  , q0/6, nfev, hmin,
                                       tol, trace, varargin{:});
     q = sum (q);
   endif
@@ -189,11 +189,11 @@ endfunction
 
 ## test different tolerances.
 %!test
-%! [q, nfun1] = quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.5, []);
+%! [q, nfev1] = quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.5, []);
 %! assert (q, (60 + sin (4) - sin (64))/12, 0.5);
-%! [q, nfun2] = quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.1, []);
+%! [q, nfev2] = quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.1, []);
 %! assert (q, (60 + sin (4) - sin (64))/12, 0.1);
-%! assert (nfun2 > nfun1);
+%! assert (nfev2 > nfev1);
 
 %!test  # test single input/output
 %! assert (class (quadl (@sin, 0, 1)), "double");

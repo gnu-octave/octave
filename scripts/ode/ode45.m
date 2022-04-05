@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{t}, @var{y}] =} ode45 (@var{fun}, @var{trange}, @var{init})
-## @deftypefnx {} {[@var{t}, @var{y}] =} ode45 (@var{fun}, @var{trange}, @var{init}, @var{ode_opt})
+## @deftypefn  {} {[@var{t}, @var{y}] =} ode45 (@var{fcn}, @var{trange}, @var{init})
+## @deftypefnx {} {[@var{t}, @var{y}] =} ode45 (@var{fcn}, @var{trange}, @var{init}, @var{ode_opt})
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode45 (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode45 (@dots{})
 ## @deftypefnx {} {} ode45 (@dots{})
@@ -33,7 +33,7 @@
 ## Solve a set of non-stiff Ordinary Differential Equations (non-stiff ODEs)
 ## with the well known explicit @nospell{Dormand-Prince} method of order 4.
 ##
-## @var{fun} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function that defines the ODE: @code{y' = f(t,y)}.  The function
 ## must accept two inputs where the first is time @var{t} and the second is a
 ## column vector of unknowns @var{y}.
@@ -89,7 +89,7 @@
 ## @seealso{odeset, odeget, ode23, ode15s}
 ## @end deftypefn
 
-function varargout = ode45 (fun, trange, init, varargin)
+function varargout = ode45 (fcn, trange, init, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -100,7 +100,7 @@ function varargout = ode45 (fun, trange, init, varargin)
 
   if (nargin >= 4)
     if (! isstruct (varargin{1}))
-      ## varargin{1:len} are parameters for fun
+      ## varargin{1:len} are parameters for fcn
       odeopts = odeset ();
       funarguments = varargin;
     elseif (numel (varargin) > 1)
@@ -139,16 +139,16 @@ function varargout = ode45 (fun, trange, init, varargin)
   endif
   init = init(:);
 
-  if (ischar (fun))
-    if (! exist (fun))
+  if (ischar (fcn))
+    if (! exist (fcn))
       error ("Octave:invalid-input-arg",
-             ['ode45: function "' fun '" not found']);
+             ['ode45: function "' fcn '" not found']);
     endif
-    fun = str2func (fun);
+    fcn = str2func (fcn);
   endif
-  if (! is_function_handle (fun))
+  if (! is_function_handle (fcn))
     error ("Octave:invalid-input-arg",
-           "ode45: FUN must be a valid function handle");
+           "ode45: FCN must be a valid function handle");
   endif
 
   ## Start preprocessing, have a look which options are set in odeopts,
@@ -194,7 +194,7 @@ function varargout = ode45 (fun, trange, init, varargin)
 
   if (isempty (odeopts.InitialStep))
     odeopts.InitialStep = odeopts.direction * ...
-                          starting_stepsize (order, fun, trange(1), init,
+                          starting_stepsize (order, fcn, trange(1), init,
                                              odeopts.AbsTol, odeopts.RelTol,
                                              strcmpi (odeopts.NormControl, "on"),
                                              odeopts.funarguments);
@@ -220,12 +220,12 @@ function varargout = ode45 (fun, trange, init, varargin)
     if (! strcmp (odeopts.MStateDependence, "none"))
       ### constant mass matrices have already
       mass = @(t,x) odeopts.Mass (t, x, odeopts.funarguments{:});
-      fun = @(t,x) mass (t, x, odeopts.funarguments{:}) ...
-                   \ fun (t, x, odeopts.funarguments{:});
+      fcn = @(t,x) mass (t, x, odeopts.funarguments{:}) ...
+                   \ fcn (t, x, odeopts.funarguments{:});
     else
       mass = @(t) odeopts.Mass (t, odeopts.funarguments{:});
-      fun = @(t,x) mass (t, odeopts.funarguments{:}) ...
-                   \ fun (t, x, odeopts.funarguments{:});
+      fcn = @(t,x) mass (t, odeopts.funarguments{:}) ...
+                   \ fcn (t, x, odeopts.funarguments{:});
     endif
   endif
 
@@ -239,7 +239,7 @@ function varargout = ode45 (fun, trange, init, varargin)
   endif
 
   solution = integrate_adaptive (@runge_kutta_45_dorpri,
-                                 order, fun, trange, init, odeopts);
+                                 order, fcn, trange, init, odeopts);
 
   ## Postprocessing, do whatever when terminating integration algorithm
   if (odeopts.haveoutputfunction)  # Cleanup plotter
@@ -523,4 +523,4 @@ endfunction
 %!error <invalid time span> ode45 (@fpol, [1 1], [3 15 1])
 %!error <INIT must be a numeric> ode45 (@fpol, [0 25], {[3 15 1]})
 %!error <INIT must be a .* vector> ode45 (@fpol, [0 25], [3 15 1; 3 15 1])
-%!error <FUN must be a valid function handle> ode45 (1, [0 25], [3 15 1])
+%!error <FCN must be a valid function handle> ode45 (1, [0 25], [3 15 1])

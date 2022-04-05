@@ -26,9 +26,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{A} =} accumarray (@var{subs}, @var{vals})
 ## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz})
-## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func})
-## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval})
-## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
+## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{fcn})
+## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{fcn}, @var{fillval})
+## @deftypefnx {} {@var{A} =} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{fcn}, @var{fillval}, @var{issparse})
 ##
 ## Create an array by accumulating the elements of a vector into the
 ## positions defined by their subscripts.
@@ -49,14 +49,14 @@
 ##
 ## The default action of @code{accumarray} is to sum the elements with
 ## the same subscripts.  This behavior can be modified by defining the
-## @var{func} function.  This should be a function or function handle
+## @var{fcn} function.  This should be a function or function handle
 ## that accepts a column vector and returns a scalar.  The result of the
 ## function should not depend on the order of the subscripts.
 ##
 ## The elements of the returned array that have no subscripts associated
 ## with them are set to zero.  Defining @var{fillval} to some other value
 ## allows these values to be defined.  This behavior changes, however,
-## for certain values of @var{func}.  If @var{func} is @code{@@min}
+## for certain values of @var{fcn}.  If @var{fcn} is @code{@@min}
 ## (respectively, @code{@@max}) then the result will be filled with the
 ## minimum (respectively, maximum) integer if @var{vals} is of integral
 ## type, logical false (respectively, logical true) if @var{vals} is of
@@ -126,7 +126,7 @@
 ## The complexity of accumarray in general for the non-sparse case is
 ## generally O(M+N), where N is the number of subscripts and M is the
 ## maximum subscript (linearized in multi-dimensional case).  If
-## @var{func} is one of @code{@@sum} (default), @code{@@max},
+## @var{fcn} is one of @code{@@sum} (default), @code{@@max},
 ## @code{@@min} or @code{@@(x) @{x@}}, an optimized code path is used.
 ## Note that for general reduction function the interpreter overhead can
 ## play a major part and it may be more efficient to do multiple
@@ -135,7 +135,7 @@
 ## @seealso{accumdim, unique, sparse}
 ## @end deftypefn
 
-function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])
+function A = accumarray (subs, vals, sz = [], fcn = [], fillval = [], issparse = [])
 
   if (nargin < 2)
     print_usage ();
@@ -163,10 +163,10 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     endif
   endif
 
-  if (isempty (func))
-    func = @sum;
-  elseif (! is_function_handle (func))
-    error ("accumarray: FUNC must be a function handle");
+  if (isempty (fcn))
+    fcn = @sum;
+  elseif (! is_function_handle (fcn))
+    error ("accumarray: FCN must be a function handle");
   endif
 
   if (isempty (fillval))
@@ -204,7 +204,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       error ("accumarray: in the sparse case, values must be numeric or logical");
     endif
 
-    if (func != @sum)
+    if (fcn != @sum)
 
       ## Reduce values.  This is not needed if we're about to sum them,
       ## because "sparse" can do that.
@@ -216,7 +216,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       jdx = find (any (diff (subs, 1, 1), 2));
       jdx = [jdx; n];
 
-      vals = cellfun (func, mat2cell (vals(:)(idx), diff ([0; jdx])));
+      vals = cellfun (fcn, mat2cell (vals(:)(idx), diff ([0; jdx])));
       subs = subs(jdx, :);
       mode = "unique";
     else
@@ -267,7 +267,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     ## Some built-in reductions handled efficiently.
 
-    if (func == @sum)
+    if (fcn == @sum)
       ## Fast summation.
       if (isempty (sz))
         A = __accumarray_sum__ (subs, vals);
@@ -283,7 +283,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
         mask(subs) = false;
         A(mask) = fillval;
       endif
-    elseif (func == @max)
+    elseif (fcn == @max)
       ## Fast maximization.
 
       if (isinteger (vals))
@@ -310,7 +310,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
         mask(subs) = false;
         A(mask) = fillval;
       endif
-    elseif (func == @min)
+    elseif (fcn == @min)
       ## Fast minimization.
 
       if (isinteger (vals))
@@ -358,8 +358,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       ## Optimize the case when function is @(x) {x}, i.e., we just want
       ## to collect the values to cells.
       persistent simple_cell_str = func2str (@(x) {x});
-      if (! strcmp (func2str (func), simple_cell_str))
-        vals = cellfun (func, vals);
+      if (! strcmp (func2str (fcn), simple_cell_str))
+        vals = cellfun (fcn, vals);
       endif
 
       subs = subs(jdx);
@@ -458,9 +458,9 @@ endfunction
 %!   assert (accumarray (zeros (0, 1), [], [] , funcs{idx}), zeros (0, 1));
 %! endfor
 
-## Matlab returns an array of doubles even though FUNC returns cells.  In
+## Matlab returns an array of doubles even though FCN returns cells.  In
 ## Octave, we do not have that bug, at least for this case.
 %!assert (accumarray (zeros (0, 1), [], [0 1] , @(x) {x}), cell (0, 1))
 
-%!error <FUNC must be a function handle>
+%!error <FCN must be a function handle>
 %! accumarray ([1; 2; 3], [1; 2; 3], [3 1], '@(x) {x}')

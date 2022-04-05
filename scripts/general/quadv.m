@@ -28,7 +28,7 @@
 ## @deftypefnx {} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol})
 ## @deftypefnx {} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
 ## @deftypefnx {} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {} {[@var{q}, @var{nfun}] =} quadv (@dots{})
+## @deftypefnx {} {[@var{q}, @var{nfev}] =} quadv (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
 ## using an adaptive Simpson's rule.
@@ -57,7 +57,7 @@
 ##
 ## The result of the integration is returned in @var{q}.
 ##
-## The optional output @var{nfun} indicates the total number of function
+## The optional output @var{nfev} indicates the total number of function
 ## evaluations performed.
 ##
 ## Note: @code{quadv} is written in Octave's scripting language and can be
@@ -70,7 +70,7 @@
 ## Algorithm: See https://en.wikipedia.org/wiki/Adaptive_Simpson%27s_method
 ## for basic explanation.  See NOTEs and FIXME for Octave modifications.
 
-function [q, nfun] = quadv (f, a, b, tol = [], trace = false, varargin)
+function [q, nfev] = quadv (f, a, b, tol = [], trace = false, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -89,7 +89,7 @@ function [q, nfun] = quadv (f, a, b, tol = [], trace = false, varargin)
 
   if (trace)
     ## Print column headers once above trace display.
-    printf ("  nfun          a            (b - a)         q_interval\n");
+    printf ("  nfev          a            (b - a)         q_interval\n");
   endif
 
   ## NOTE: Split the interval into 3 parts which avoids problems with periodic
@@ -110,46 +110,46 @@ function [q, nfun] = quadv (f, a, b, tol = [], trace = false, varargin)
   fb2 = feval (f, b2, varargin{:});
   fc3 = feval (f, c3, varargin{:});
   fb  = feval (f, b,  varargin{:});
-  nfun = 7;
+  nfev = 7;
 
   ## NOTE: If there are edge singularities, move edge point by eps*(b-a) as
   ## discussed in Shampine paper used to implement quadgk.
   if (any (isinf (fa(:))))
     fa = feval (f, a + eps * (b-a), varargin{:});
-    nfun++;
+    nfev++;
   endif
   if (any (isinf (fb(:))))
     fb = feval (f, b - eps * (b-a), varargin{:});
-    nfun++;
+    nfev++;
   endif
 
   ## Region 1
   h = (b1 - a);
   q1 = h / 6 * (fa + 4*fc1 + fb1);
 
-  [q1, nfun, hmin1] = simpsonstp (f, a, b1, c1, fa, fb1, fc1, q1, tol,
-                                  nfun, abs (h), trace, varargin{:});
+  [q1, nfev, hmin1] = simpsonstp (f, a, b1, c1, fa, fb1, fc1, q1, tol,
+                                  nfev, abs (h), trace, varargin{:});
 
   ## Region 2
   h = (b2 - b1);
   q2 = h / 6 * (fb1 + 4*fc2 + fb2);
 
-  [q2, nfun, hmin2] = simpsonstp (f, b1, b2, c2, fb1, fb2, fc2, q2, tol,
-                                  nfun, abs (h), trace, varargin{:});
+  [q2, nfev, hmin2] = simpsonstp (f, b1, b2, c2, fb1, fb2, fc2, q2, tol,
+                                  nfev, abs (h), trace, varargin{:});
 
   ## Region 3
   h = (b - b2);
   q3 = h / 6 * (fb2 + 4*fc3 + fb);
 
-  [q3, nfun, hmin3] = simpsonstp (f, b2, b, c3, fb2, fb, fc3, q3, tol,
-                                  nfun, abs (h), trace, varargin{:});
+  [q3, nfev, hmin3] = simpsonstp (f, b2, b, c3, fb2, fb, fc3, q3, tol,
+                                  nfev, abs (h), trace, varargin{:});
 
   ## Total integral over all 3 regions and verify results
   q = q1 + q2 + q3;
 
   hmin = min ([hmin1, hmin2, hmin3]);
 
-  if (nfun > 10_000)
+  if (nfev > 10_000)
     warning ("quadv: maximum iteration count reached -- possible singular integral");
   elseif (any (! isfinite (q(:))))
     warning ("quadv: infinite or NaN function evaluations were returned");
@@ -159,10 +159,10 @@ function [q, nfun] = quadv (f, a, b, tol = [], trace = false, varargin)
 
 endfunction
 
-function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, tol,
-                                       nfun, hmin, trace, varargin)
+function [q, nfev, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, tol,
+                                       nfev, hmin, trace, varargin)
 
-  if (nfun > 10_000)   # stop endless recursion
+  if (nfev > 10_000)   # stop endless recursion
     q = q0;
     return;
   endif
@@ -171,7 +171,7 @@ function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, tol,
   e = (c + b) / 2;
   fd = feval (f, d, varargin{:});
   fe = feval (f, e, varargin{:});
-  nfun += 2;
+  nfev += 2;
   q1 = (c - a) / 6 * (fa + 4*fd + fc);
   q2 = (b - c) / 6 * (fc + 4*fe + fb);
   q = q1 + q2;
@@ -184,7 +184,7 @@ function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, tol,
 
   if (trace)
     printf ("%5d   %#14.11g   %16.10e   %-16.11g\n",
-            nfun,  a,         b-a,      q + delta/15);
+            nfev,  a,         b-a,      q + delta/15);
   endif
 
   ## NOTE: Not vectorizing q-q0 in the norm provides a more rigid criterion
@@ -194,10 +194,10 @@ function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, tol,
     ## each bisection interval should use tol/2.  However, Matlab does not
     ## do this, and it would also profoundly increase the number of function
     ## evaluations required.
-    [q1, nfun, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, tol,
-                                   nfun, hmin, trace, varargin{:});
-    [q2, nfun, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, tol,
-                                   nfun, hmin, trace, varargin{:});
+    [q1, nfev, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, tol,
+                                   nfev, hmin, trace, varargin{:});
+    [q2, nfev, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, tol,
+                                   nfev, hmin, trace, varargin{:});
     q = q1 + q2;
   else
     q += delta / 15;   # NOTE: Richardson extrapolation correction

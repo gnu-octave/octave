@@ -37,7 +37,7 @@
 ## @code{fminunc} attempts to determine a vector @var{x} such that
 ## @code{@var{fcn} (@var{x})} is a local minimum.
 ##
-## @var{fun} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function to evaluate.  @var{fcn} should accept a vector (array)
 ## defining the unknown variables, and return the objective function value,
 ## optionally with gradient.
@@ -413,12 +413,12 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
-function [fx, gx] = guarded_eval (fun, x)
+function [fx, gx] = guarded_eval (fcn, x)
 
   if (nargout > 1)
-    [fx, gx] = fun (x);
+    [fx, gx] = fcn (x);
   else
-    fx = fun (x);
+    fx = fcn (x);
     gx = [];
   endif
 

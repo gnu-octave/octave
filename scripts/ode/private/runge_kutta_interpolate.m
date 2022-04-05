@@ -23,7 +23,7 @@
 ##
 ########################################################################
 
-function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, args)
+function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, fcn, args)
 
   switch (order)
 
@@ -34,7 +34,7 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, a
       if (! isempty (k_vals))
         der = k_vals(:,1);
       else
-        der = feval (func, z(1) , u(:,1), args);
+        der = feval (fcn, z(1) , u(:,1), args);
       endif
       u_interp = quadratic_interpolation (z, u, der, t);
 
@@ -48,8 +48,8 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, a
     otherwise
       warning (["High order interpolation not yet implemented: ", ...
                 "using cubic interpolation instead"]);
-      der(:,1) = feval (func, z(1), u(:,1), args);
-      der(:,2) = feval (func, z(2), u(:,2), args);
+      der(:,1) = feval (fcn, z(1), u(:,1), args);
+      der(:,2) = feval (fcn, z(2), u(:,2), args);
       u_interp = hermite_cubic_interpolation (z, u, der, t);
 
   endswitch

@@ -27,7 +27,7 @@
 ## @deftypefn  {} {@var{nest} =} normest1 (@var{A})
 ## @deftypefnx {} {@var{nest} =} normest1 (@var{A}, @var{t})
 ## @deftypefnx {} {@var{nest} =} normest1 (@var{A}, @var{t}, @var{x0})
-## @deftypefnx {} {@var{nest} =} normest1 (@var{Afun}, @var{t}, @var{x0}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {@var{nest} =} normest1 (@var{Afcn}, @var{t}, @var{x0}, @var{p1}, @var{p2}, @dots{})
 ## @deftypefnx {} {[@var{nest}, @var{v}] =} normest1 (@var{A}, @dots{})
 ## @deftypefnx {} {[@var{nest}, @var{v}, @var{w}] =} normest1 (@var{A}, @dots{})
 ## @deftypefnx {} {[@var{nest}, @var{v}, @var{w}, @var{iter}] =} normest1 (@var{A}, @dots{})
@@ -39,7 +39,7 @@
 ## estimate of the 1-norm of a linear operator @var{A} when matrix-vector
 ## products @code{@var{A} * @var{x}} and @code{@var{A}' * @var{x}} can be
 ## cheaply computed.  In this case, instead of the matrix @var{A}, a function
-## @code{@var{Afun} (@var{flag}, @var{x})} is used; it must return:
+## @code{@var{Afcn} (@var{flag}, @var{x})} is used; it must return:
 ##
 ## @itemize @bullet
 ## @item
@@ -69,7 +69,7 @@
 ## @end example
 ##
 ## The parameters @var{p1}, @var{p2}, @dots{} are arguments of
-## @code{@var{Afun} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}.
+## @code{@var{Afcn} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}.
 ##
 ## The default value for @var{t} is 2.  The algorithm requires matrix-matrix
 ## products with sizes @var{n} x @var{n} and @var{n} x @var{t}.
@@ -134,8 +134,8 @@ function [nest, v, w, iter] = normest1 (A, t = [], x0 = [], varargin)
     Aismat = false;
     Aisreal = A ("real", [], varargin{:});
     n = A ("dim", [], varargin{:});
-    Afun = @(x) A ("notransp", x, varargin{:});
-    A1fun = @(x) A ("transp", x, varargin{:});
+    Afcn = @(x) A ("notransp", x, varargin{:});
+    A1fcn = @(x) A ("transp", x, varargin{:});
   else
     error ("normest1: A must be a square matrix or a function handle");
   endif
@@ -175,7 +175,7 @@ function [nest, v, w, iter] = normest1 (A, t = [], x0 = [], varargin)
     if (Aismat)
       Y = A * X;
     else
-      Y = Afun (X);
+      Y = Afcn (X);
     endif
     iter(2)++;
     [nest, j] = max (sum (abs (Y), 1), [], 2);
@@ -222,7 +222,7 @@ function [nest, v, w, iter] = normest1 (A, t = [], x0 = [], varargin)
       if (Aismat)
         Z = A' * S;
       else
-        Z = A1fun (S);  # (3) of Algorithm 2.4
+        Z = A1fcn (S);  # (3) of Algorithm 2.4
       endif
       iter(2)++;
       h = max (abs (Z), [], 2);
@@ -254,7 +254,7 @@ function [nest, v, w, iter] = normest1 (A, t = [], x0 = [], varargin)
 endfunction
 
 
-%!function z = afun_A (flag, x, A, n)
+%!function z = afcn_A (flag, x, A, n)
 %!  switch (flag)
 %!  case {"dim"}
 %!    z = n;
@@ -266,7 +266,7 @@ endfunction
 %!    z = A * x;
 %!  endswitch
 %!endfunction
-%!function z = afun_A_P (flag, x, A, m)
+%!function z = afcn_A_P (flag, x, A, m)
 %!  switch (flag)
 %!  case "dim"
 %!    z = length (A);
@@ -297,17 +297,17 @@ endfunction
 %! X = [1,1,-1;1,1,1;1,1,-1;1,-1,-1]/3;
 %! assert (normest1 (A, 3, X), norm (A, 1), 2 * eps);
 
-## test Afun
+## test Afcn
 %!test
 %! A = rand (10);
 %! n = length (A);
-%! Afun = @(flag, x) afun_A (flag, x, A, n);
-%! assert (normest1 (Afun), norm (A, 1), 2 * eps);
+%! Afcn = @(flag, x) afcn_A (flag, x, A, n);
+%! assert (normest1 (Afcn), norm (A, 1), 2 * eps);
 
-## test Afun with parameters
+## test Afcn with parameters
 %!test
 %! A = rand (10);
-%! assert (normest1 (@afun_A_P, [], [], A, 3), norm (A ^ 3, 1), 1000 * eps);
+%! assert (normest1 (@afcn_A_P, [], [], A, 3), norm (A ^ 3, 1), 1000 * eps);
 
 ## test output
 %!test

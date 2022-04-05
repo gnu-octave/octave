@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{solution} =} integrate_adaptive (@var{@@stepper}, @var{order}, @var{@@func}, @var{tspan}, @var{x0}, @var{options})
+## @deftypefn {} {@var{solution} =} integrate_adaptive (@var{@@stepper}, @var{order}, @var{@@fcn}, @var{tspan}, @var{x0}, @var{options})
 ##
 ## This function file can be called by an ODE solver function in order to
 ## integrate the set of ODEs on the interval @var{[t0, t1]} with an adaptive
@@ -68,7 +68,7 @@
 ##
 ## @end deftypefn
 
-function solution = integrate_adaptive (stepper, order, func, tspan, x0,
+function solution = integrate_adaptive (stepper, order, fcn, tspan, x0,
                                         options)
 
   fixed_times = numel (tspan) > 2;
@@ -79,7 +79,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   ## Get first initial timestep
   dt = options.InitialStep;
   if (isempty (dt))
-    dt = starting_stepsize (order, func, t, x,
+    dt = starting_stepsize (order, fcn, t, x,
                             options.AbsTol, options.RelTol,
                             strcmp (options.NormControl, "on"),
                             options.funarguments);
@@ -133,7 +133,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     ## Compute integration step from t_old to t_new = t_old + dt
     [t_new, options.comp] = kahan (t_old, options.comp, dt);
     [t_new, x_new, x_est, new_k_vals] = ...
-      stepper (func, t_old, x_old, dt, options, k_vals, t_new);
+      stepper (fcn, t_old, x_old, dt, options, k_vals, t_new);
 
     solution.cntcycles += 1;
 
@@ -163,7 +163,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           iout = max (t_caught);
           x(:, t_caught) = ...
             runge_kutta_interpolate (order, [t_old t_new], [x_old x_new],
-                                     t(t_caught), new_k_vals, dt, func,
+                                     t(t_caught), new_k_vals, dt, fcn,
                                      options.funarguments);
 
           istep += 1;

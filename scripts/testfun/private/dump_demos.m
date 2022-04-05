@@ -196,11 +196,11 @@ function dump_all_demos (directory, fid, fmt)
     demos = get_demos (fcn);
     for d = 1:numel (demos)
       idx = sprintf ("%02d", d);
-      base_fn = sprintf ("%s_%s", fcn, idx);
-      fn = sprintf ('%s.%s', base_fn, fmt);
+      base_fcn = sprintf ("%s_%s", fcn, idx);
+      fn = sprintf ('%s.%s', base_fcn, fmt);
       ## Wrap each demo in a function which create a local scope
       ## to prevent that a previous demo overwrites i or pi, for example
-      fprintf (fid, "\nfunction %s ()\n", base_fn);
+      fprintf (fid, "\nfunction %s ()\n", base_fcn);
       fprintf (fid, "    %s\n\n", demos{d});
       fprintf (fid, "end\n\n");
 
@@ -212,7 +212,7 @@ function dump_all_demos (directory, fid, fmt)
       ## here (https://savannah.gnu.org/bugs/?42557).
       fprintf (fid, "    rand ('seed', 1);\n");
       fprintf (fid, "    tic ();\n");
-      fprintf (fid, "    %s ();\n", base_fn);
+      fprintf (fid, "    %s ();\n", base_fcn);
       fprintf (fid, "    t_plot = toc ();\n");
       fprintf (fid, "    fig = (get (0, 'currentfigure'));\n");
       fprintf (fid, "    if (~ isempty (fig))\n");
@@ -229,8 +229,8 @@ function dump_all_demos (directory, fid, fmt)
       fprintf (fid, "    fprintf ('File ""%s"" already exists.\\n');\n", fn);
       fprintf (fid, "  end\n");
       fprintf (fid, "catch\n");
-      fprintf (fid, "  fprintf ('ERROR in %s: %%s\\n', lasterr ());\n", base_fn);
-      fprintf (fid, "  err_fid = fopen ('%s.err', 'w');\n", base_fn);
+      fprintf (fid, "  fprintf ('ERROR in %s: %%s\\n', lasterr ());\n", base_fcn);
+      fprintf (fid, "  err_fid = fopen ('%s.err', 'w');\n", base_fcn);
       fprintf (fid, "  fprintf (err_fid, '%%s', lasterr ());\n");
       fprintf (fid, "  fclose (err_fid);\n");
       fprintf (fid, "end\n");

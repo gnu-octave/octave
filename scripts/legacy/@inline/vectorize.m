@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} vectorize (@var{fun})
-## Create a vectorized version of the inline function @var{fun} by
+## @deftypefn {} {@var{vfcn} =} vectorize (@var{fcn})
+## Create a vectorized version of the inline function @var{fcn} by
 ## replacing all occurrences of @code{*}, @code{/}, etc., with
 ## @code{.*}, @code{./}, etc.
 ##
@@ -47,15 +47,15 @@
 ## The following function was translated directly from the original C++
 ## version.  Yes, it will be slow, but the use of inline functions is
 ## strongly discouraged anyway, and most expressions will probably be
-## short.  It may also be buggy.  Well, don't use this object!  Use
+## short.  It may also be buggy.  Well, don't use this function!  Use
 ## function handles instead!
 
-function fcn = vectorize (obj)
+function vfcn = vectorize (fcn)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  fcn = inline (__vectorize__ (obj.expr));
+  vfcn = inline (__vectorize__ (fcn.expr));
 
 endfunction

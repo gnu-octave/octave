@@ -55,8 +55,8 @@ function names = __all_opts__ (varargin)
     for i = 1:nargin
       try
         opts = optimset (varargin{i});
-        fn = fieldnames (opts).';
-        names = [names, fn];
+        fcn = fieldnames (opts).';
+        names = [names, fcn];
       catch
         ## throw the error as a warning.
         warning (lasterr ());

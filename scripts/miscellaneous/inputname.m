@@ -59,9 +59,9 @@
 ##
 ##   c = {'a', 'b'}
 ##   y = 1; z = 2;
-##   func (c, y, z)
+##   fcn (c, y, z)
 ##   % inputname() would return 'c', 'y', 'z' for the inputs.
-##   func (c{1}, y, z)
+##   fcn (c{1}, y, z)
 ##   % inputname() would return '', '', '' for the inputs.
 ##
 ## 3) If inputname is not called from a function, Matlab walks up the stack

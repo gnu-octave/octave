@@ -27,8 +27,8 @@
 ## @deftypefn  {} {@var{A} =} accumdim (@var{subs}, @var{vals})
 ## @deftypefnx {} {@var{A} =} accumdim (@var{subs}, @var{vals}, @var{dim})
 ## @deftypefnx {} {@var{A} =} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n})
-## @deftypefnx {} {@var{A} =} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func})
-## @deftypefnx {} {@var{A} =} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func}, @var{fillval})
+## @deftypefnx {} {@var{A} =} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{fcn})
+## @deftypefnx {} {@var{A} =} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{fcn}, @var{fillval})
 ## Create an array by accumulating the slices of an array into the
 ## positions defined by their subscripts along a specified dimension.
 ##
@@ -43,7 +43,7 @@
 ##
 ## The default action of @code{accumdim} is to sum the subarrays with the
 ## same subscripts.  This behavior can be modified by defining the
-## @var{func} function.  This should be a function or function handle
+## @var{fcn} function.  This should be a function or function handle
 ## that accepts an array and a dimension, and reduces the array along
 ## this dimension.  As a special exception, the built-in @code{min} and
 ## @code{max} functions can be used directly, and @code{accumdim}
@@ -69,7 +69,7 @@
 ## @seealso{accumarray}
 ## @end deftypefn
 
-function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
+function A = accumdim (subs, vals, dim, n = 0, fcn = [], fillval = 0)
 
   if (nargin < 2)
     print_usage ();
@@ -108,7 +108,7 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
     error ("accumdim: dimension mismatch");
   endif
 
-  if (isempty (func) || func == @sum)
+  if (isempty (fcn) || fcn == @sum)
     ## Fast summation case.
     A = __accumdim_sum__ (subs, vals, dim, n);
 
@@ -137,10 +137,10 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
   subsc{dim} = idx;
   vals = mat2cell (vals(subsc{:}), szc{:});
   ## Apply reductions.  Special case min, max.
-  if (func == @min || func == @max)
-    vals = cellfun (func, vals, {[]}, {dim}, "uniformoutput", false);
+  if (fcn == @min || fcn == @max)
+    vals = cellfun (fcn, vals, {[]}, {dim}, "uniformoutput", false);
   else
-    vals = cellfun (func, vals, {dim}, "uniformoutput", false);
+    vals = cellfun (fcn, vals, {dim}, "uniformoutput", false);
   endif
   subs = subs(jdx);
 

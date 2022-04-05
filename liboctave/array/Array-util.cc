@@ -623,17 +623,16 @@ ind2sub (const dim_vector& dv, const octave::idx_vector& idx)
   Array<octave::idx_vector> retval (dim_vector (n, 1));
   octave_idx_type numel = dv.numel ();
 
-  if (idx.extent (numel) > numel)
-    (*current_liboctave_error_handler) ("ind2sub: index out of range");
-
   if (idx.is_scalar ())
     {
       octave_idx_type k = idx(0);
-      for (octave_idx_type j = 0; j < n; j++)
+      for (octave_idx_type j = 0; j < n-1; j++)
         {
           retval(j) = k % dv(j);
           k /= dv(j);
         }
+
+      retval(n-1) = idx(0) < numel ? k % dv(n-1) : k;
     }
   else
     {
@@ -646,11 +645,13 @@ ind2sub (const dim_vector& dv, const octave::idx_vector& idx)
       for (octave_idx_type i = 0; i < len; i++)
         {
           octave_idx_type k = idx(i);
-          for (octave_idx_type j = 0; j < n; j++)
+          for (octave_idx_type j = 0; j < n-1; j++)
             {
               rdata[j](i) = k % dv(j);
               k /= dv(j);
             }
+
+          rdata[n-1](i) = idx(i) < numel ? k % dv(n-1) : k;
         }
 
       for (octave_idx_type j = 0; j < n; j++)

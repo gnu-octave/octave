@@ -17,6 +17,9 @@ Configure with `--disable-lib-visibility-flags` to export all symbols
 
 ### Matlab compatibility
 
+- `sub2ind` now supports index values outside of the size specified by
+  the subscripts.
+
 - `cylinder` now accepts a scalar for the radius argument.
 
 - `clock` now has an optional second output `ISDST` which indicates if

@@ -216,12 +216,12 @@ function varargout = ode15s (fcn, trange, y0, varargin)
   ## Jacobian
   options.havejac       = false;
   options.havejacsparse = false;
-  options.havejacfun    = false;
+  options.havejacfcn    = false;
 
   if (! isempty (options.Jacobian))
     options.havejac = true;
     if (is_function_handle (options.Jacobian))
-      options.havejacfun = true;
+      options.havejacfcn = true;
       if (nargin (options.Jacobian) == 2)
         A = options.Jacobian (trange(1), y0);
         if (! issquare (A) || rows (A) != n || ! isnumeric (A) || ! isreal (A))
@@ -263,13 +263,13 @@ function varargout = ode15s (fcn, trange, y0, varargin)
 
   ## If Mass or Jacobian is fcn, then new Jacobian is fcn
   if (options.havejac)
-    if (options.havejacfun || options.havetimedep)
+    if (options.havejacfcn || options.havetimedep)
       options.Jacobian = @ (t, y, yp) wrapjacfcn (t, y, yp,
                                                   options.Jacobian,
                                                   options.Mass,
                                                   options.havetimedep,
-                                                  options.havejacfun);
-      options.havejacfun = true;
+                                                  options.havejacfcn);
+      options.havejacfcn = true;
     else   # All matrices are constant
       if (! isempty (options.Mass))
         options.Jacobian = {[- options.Jacobian], [options.Mass]};

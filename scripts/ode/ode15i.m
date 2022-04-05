@@ -172,7 +172,7 @@ function varargout = ode15i (fcn, trange, y0, yp0, varargin)
   ## Jacobian
   options.havejac       = false;
   options.havejacsparse = false;
-  options.havejacfun    = false;
+  options.havejacfcn    = false;
 
   if (! isempty (options.Jacobian))
     options.havejac = true;
@@ -196,7 +196,7 @@ function varargout = ode15i (fcn, trange, y0, yp0, varargin)
       endif
 
     elseif (is_function_handle (options.Jacobian))
-      options.havejacfun = true;
+      options.havejacfcn = true;
       if (nargin (options.Jacobian) == 3)
         [J1, J2] = options.Jacobian (trange(1), y0, yp0);
 

@@ -445,7 +445,6 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
 ### FUNCTION
 
       elseif (strcmp (__type, "function"))
-        persistent __fn = 0;
         __name_position = function_name (__block);
         if (isempty (__name_position))
           __success = false;

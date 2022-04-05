@@ -320,28 +320,28 @@ namespace octave
   }
 
   // now the dispatchers
-#define DEFINE_DISPATCHER(FUNC_NAME, ARG_TYPE, RES_TYPE)        \
+#define DEFINE_DISPATCHER(FCN_NAME, ARG_TYPE, RES_TYPE)         \
   template <typename T, typename R>                             \
-  RES_TYPE FUNC_NAME (const ARG_TYPE& v, R p)                   \
+  RES_TYPE FCN_NAME (const ARG_TYPE& v, R p)                    \
   {                                                             \
     RES_TYPE res;                                               \
     if (p == 2)                                                 \
-      FUNC_NAME (v, res, norm_accumulator_2<R> ());             \
+      FCN_NAME (v, res, norm_accumulator_2<R> ());              \
     else if (p == 1)                                            \
-      FUNC_NAME (v, res, norm_accumulator_1<R> ());             \
+      FCN_NAME (v, res, norm_accumulator_1<R> ());              \
     else if (lo_ieee_isinf (p))                                 \
       {                                                         \
         if (p > 0)                                              \
-          FUNC_NAME (v, res, norm_accumulator_inf<R> ());       \
+          FCN_NAME (v, res, norm_accumulator_inf<R> ());        \
         else                                                    \
-          FUNC_NAME (v, res, norm_accumulator_minf<R> ());      \
+          FCN_NAME (v, res, norm_accumulator_minf<R> ());       \
       }                                                         \
     else if (p == 0)                                            \
-      FUNC_NAME (v, res, norm_accumulator_0<R> ());             \
+      FCN_NAME (v, res, norm_accumulator_0<R> ());              \
     else if (p > 0)                                             \
-      FUNC_NAME (v, res, norm_accumulator_p<R> (p));            \
+      FCN_NAME (v, res, norm_accumulator_p<R> (p));             \
     else                                                        \
-      FUNC_NAME (v, res, norm_accumulator_mp<R> (p));           \
+      FCN_NAME (v, res, norm_accumulator_mp<R> (p));            \
     return res;                                                 \
   }
 
@@ -564,7 +564,7 @@ namespace octave
 
   // and finally, here's what we've promised in the header file
 
-#define DEFINE_XNORM_FUNCS(PREFIX, RTYPE)                               \
+#define DEFINE_XNORM_FCNS(PREFIX, RTYPE)                                \
   RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p)                  \
   {                                                                     \
     return vector_norm (x, p);                                          \
@@ -582,10 +582,10 @@ namespace octave
     return vector_norm (x, static_cast<RTYPE> (2));                     \
   }
 
-  DEFINE_XNORM_FUNCS(, double)
-  DEFINE_XNORM_FUNCS(Complex, double)
-  DEFINE_XNORM_FUNCS(Float, float)
-  DEFINE_XNORM_FUNCS(FloatComplex, float)
+  DEFINE_XNORM_FCNS(, double)
+  DEFINE_XNORM_FCNS(Complex, double)
+  DEFINE_XNORM_FCNS(Float, float)
+  DEFINE_XNORM_FCNS(FloatComplex, float)
 
   // this is needed to avoid copying the sparse matrix for xfrobnorm
   template <typename T, typename R>
@@ -598,7 +598,7 @@ namespace octave
     res = acc;
   }
 
-#define DEFINE_XNORM_SPARSE_FUNCS(PREFIX, RTYPE)                \
+#define DEFINE_XNORM_SPARSE_FCNS(PREFIX, RTYPE)                 \
   RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p)        \
   {                                                             \
     return matrix_norm (x, p, PREFIX##Matrix ());               \
@@ -610,10 +610,10 @@ namespace octave
     return res;                                                 \
   }
 
-  DEFINE_XNORM_SPARSE_FUNCS(, double)
-  DEFINE_XNORM_SPARSE_FUNCS(Complex, double)
+  DEFINE_XNORM_SPARSE_FCNS(, double)
+  DEFINE_XNORM_SPARSE_FCNS(Complex, double)
 
-#define DEFINE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE)        \
+#define DEFINE_COLROW_NORM_FCNS(PREFIX, RPREFIX, RTYPE)         \
   RPREFIX##RowVector                                            \
   xcolnorms (const PREFIX##Matrix& m, RTYPE p)                  \
   {                                                             \
@@ -625,11 +625,11 @@ namespace octave
     return row_norms (m, p);                                    \
   }                                                             \
 
-  DEFINE_COLROW_NORM_FUNCS(, , double)
-  DEFINE_COLROW_NORM_FUNCS(Complex, , double)
-  DEFINE_COLROW_NORM_FUNCS(Float, Float, float)
-  DEFINE_COLROW_NORM_FUNCS(FloatComplex, Float, float)
+  DEFINE_COLROW_NORM_FCNS(, , double)
+  DEFINE_COLROW_NORM_FCNS(Complex, , double)
+  DEFINE_COLROW_NORM_FCNS(Float, Float, float)
+  DEFINE_COLROW_NORM_FCNS(FloatComplex, Float, float)
 
-  DEFINE_COLROW_NORM_FUNCS(Sparse, , double)
-  DEFINE_COLROW_NORM_FUNCS(SparseComplex, , double)
+  DEFINE_COLROW_NORM_FCNS(Sparse, , double)
+  DEFINE_COLROW_NORM_FCNS(SparseComplex, , double)
 }

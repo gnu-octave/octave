@@ -441,18 +441,18 @@ mx_inline_pow (std::size_t n, R *r, X x, const Y *y)
 
 // Arbitrary function appliers.
 // The function is a template parameter to enable inlining.
-template <typename R, typename X, R fun (X x)>
+template <typename R, typename X, R fcn (X x)>
 inline void mx_inline_map (std::size_t n, R *r, const X *x)
 {
   for (std::size_t i = 0; i < n; i++)
-    r[i] = fun (x[i]);
+    r[i] = fcn (x[i]);
 }
 
-template <typename R, typename X, R fun (const X& x)>
+template <typename R, typename X, R fcn (const X& x)>
 inline void mx_inline_map (std::size_t n, R *r, const X *x)
 {
   for (std::size_t i = 0; i < n; i++)
-    r[i] = fun (x[i]);
+    r[i] = fcn (x[i]);
 }
 
 // Appliers.  Since these call the operation just once, we pass it as
@@ -470,18 +470,18 @@ do_mx_unary_op (const Array<X>& x,
 
 // Shortcuts for applying mx_inline_map.
 
-template <typename R, typename X, R fun (X)>
+template <typename R, typename X, R fcn (X)>
 inline Array<R>
 do_mx_unary_map (const Array<X>& x)
 {
-  return do_mx_unary_op<R, X> (x, mx_inline_map<R, X, fun>);
+  return do_mx_unary_op<R, X> (x, mx_inline_map<R, X, fcn>);
 }
 
-template <typename R, typename X, R fun (const X&)>
+template <typename R, typename X, R fcn (const X&)>
 inline Array<R>
 do_mx_unary_map (const Array<X>& x)
 {
-  return do_mx_unary_op<R, X> (x, mx_inline_map<R, X, fun>);
+  return do_mx_unary_op<R, X> (x, mx_inline_map<R, X, fcn>);
 }
 
 template <typename R>

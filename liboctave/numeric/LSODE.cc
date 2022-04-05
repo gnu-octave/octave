@@ -52,7 +52,7 @@ extern "C"
                              F77_INT&);
 }
 
-static ODEFunc::ODERHSFunc user_fun;
+static ODEFunc::ODERHSFunc user_fcn;
 static ODEFunc::ODEJacFunc user_jac;
 static ColumnVector *tmp_x;
 
@@ -66,7 +66,7 @@ lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
   //       In that case we have to create a temporary vector object
   //       and copy.
 
-  tmp_deriv = (*user_fun) (*tmp_x, time);
+  tmp_deriv = (*user_fcn) (*tmp_x, time);
 
   if (tmp_deriv.isempty ())
     ierr = -1;
@@ -192,10 +192,10 @@ LSODE::do_integrate (double tout)
 
       tmp_x = &m_x;
 
-      user_fun = function ();
+      user_fcn = function ();
       user_jac = jacobian_function ();
 
-      ColumnVector m_xdot = (*user_fun) (m_x, m_t);
+      ColumnVector m_xdot = (*user_fcn) (m_x, m_t);
 
       if (m_x.numel () != m_xdot.numel ())
         {

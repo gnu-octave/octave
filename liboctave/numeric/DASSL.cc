@@ -55,7 +55,7 @@ extern "C"
                              dassl_jac_ptr);
 }
 
-static DAEFunc::DAERHSFunc user_fun;
+static DAEFunc::DAERHSFunc user_fcn;
 static DAEFunc::DAEJacFunc user_jac;
 
 static F77_INT nn;
@@ -78,7 +78,7 @@ ddassl_f (const double& time, const double *state, const double *deriv,
 
   octave_idx_type tmp_ires = ires;
 
-  tmp_delta = user_fun (tmp_state, tmp_deriv, time, tmp_ires);
+  tmp_delta = user_fcn (tmp_state, tmp_deriv, time, tmp_ires);
 
   ires = octave::to_f77_int (tmp_ires);
 
@@ -161,14 +161,14 @@ DASSL::do_integrate (double tout)
 
       // DAEFunc
 
-      user_fun = DAEFunc::function ();
+      user_fcn = DAEFunc::function ();
       user_jac = DAEFunc::jacobian_function ();
 
-      if (user_fun)
+      if (user_fcn)
         {
           octave_idx_type ires = 0;
 
-          ColumnVector res = (*user_fun) (m_x, m_xdot, m_t, ires);
+          ColumnVector res = (*user_fcn) (m_x, m_xdot, m_t, ires);
 
           if (res.numel () != m_x.numel ())
             {

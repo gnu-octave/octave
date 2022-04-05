@@ -1062,7 +1062,7 @@ namespace octave
             if (to_screen)
               octave_stdout << "stop if error\n";
             else
-              retval.assign ("errs", octave_value(""));
+              retval.assign ("errs", octave_value (""));
           }
         else
           {
@@ -1089,7 +1089,7 @@ namespace octave
             if (to_screen)
               octave_stdout << "stop if caught error\n";
             else
-              retval.assign ("caught", octave_value(""));
+              retval.assign ("caught", octave_value (""));
           }
         else
           {
@@ -1116,7 +1116,7 @@ namespace octave
             if (to_screen)
               octave_stdout << "stop if warning\n";
             else
-              retval.assign ("warn", octave_value(""));
+              retval.assign ("warn", octave_value (""));
           }
         else
           {
@@ -1141,7 +1141,7 @@ namespace octave
         if (to_screen)
           octave_stdout << "stop if interrupt\n";
         else
-          retval.assign ("intr", octave_value ());
+          retval.assign ("intr", octave_value (""));
       }
 
     return retval;

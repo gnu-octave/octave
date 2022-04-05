@@ -248,7 +248,7 @@ do_minmax_body (const octave_value_list& args,
 
   octave_value_list retval (nargout > 1 ? 2 : 1);
 
-  const char *func = (ismin ? "min" : "max");
+  const char *fcn = (ismin ? "min" : "max");
 
   if (nargin == 3 || nargin == 1)
     {
@@ -259,10 +259,10 @@ do_minmax_body (const octave_value_list& args,
           dim = args(2).int_value (true) - 1;
 
           if (dim < 0)
-            error ("%s: DIM must be a valid dimension", func);
+            error ("%s: DIM must be a valid dimension", fcn);
 
           if (! args(1).isempty ())
-            warning ("%s: second argument is ignored", func);
+            warning ("%s: second argument is ignored", fcn);
         }
 
       switch (arg.builtin_type ())
@@ -348,7 +348,7 @@ do_minmax_body (const octave_value_list& args,
           break;
 
         default:
-          err_wrong_type_arg (func, arg);
+          err_wrong_type_arg (fcn, arg);
         }
     }
   else
@@ -425,7 +425,7 @@ do_minmax_body (const octave_value_list& args,
         //   break;
 
         default:
-          error ("%s: cannot compute %s (%s, %s)", func, func,
+          error ("%s: cannot compute %s (%s, %s)", fcn, fcn,
                  argx.type_name ().c_str (), argy.type_name ().c_str ());
         }
 
@@ -925,7 +925,7 @@ do_cumminmax_body (const octave_value_list& args,
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  const char *func = (ismin ? "cummin" : "cummax");
+  const char *fcn = (ismin ? "cummin" : "cummax");
 
   octave_value arg = args(0);
   int dim = -1;
@@ -934,7 +934,7 @@ do_cumminmax_body (const octave_value_list& args,
       dim = args(1).int_value (true) - 1;
 
       if (dim < 0)
-        error ("%s: DIM must be a valid dimension", func);
+        error ("%s: DIM must be a valid dimension", fcn);
     }
 
   octave_value_list retval;
@@ -985,7 +985,7 @@ do_cumminmax_body (const octave_value_list& args,
       break;
 
     default:
-      err_wrong_type_arg (func, arg);
+      err_wrong_type_arg (fcn, arg);
     }
 
   return retval;

@@ -699,7 +699,7 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = false;
         curr_lexer->m_at_beginning_of_statement = false;
 
-        if (curr_lexer->m_defining_func
+        if (curr_lexer->m_defining_fcn
             && ! curr_lexer->m_parsed_function_name.top ())
           curr_lexer->m_looking_at_return_list = true;
         else
@@ -2256,7 +2256,7 @@ If @var{name} is omitted, return a list of keywords.
     m_bracketflag = 0;
     m_braceflag = 0;
     m_looping = 0;
-    m_defining_func = 0;
+    m_defining_fcn = 0;
     m_looking_at_function_handle = 0;
     m_block_comment_nesting_level = 0;
     m_command_arg_paren_count = 0;
@@ -2697,7 +2697,7 @@ looks_like_shebang (const std::string& s)
 
       case end_kw:
         if (inside_any_object_index ()
-            || (m_defining_func
+            || (m_defining_fcn
                 && ! (m_looking_at_return_list
                       || m_parsed_function_name.top ())))
           {
@@ -2849,7 +2849,7 @@ looks_like_shebang (const std::string& s)
         break;
 
       case function_kw:
-        m_defining_func++;
+        m_defining_fcn++;
         m_parsed_function_name.push (false);
 
         if (! m_force_script && m_token_count == 0 && input_from_file ())

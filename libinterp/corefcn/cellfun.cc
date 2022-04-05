@@ -71,7 +71,7 @@ static octave_value_list
 get_output_list (error_system& es,
                  octave_idx_type count, octave_idx_type nargout,
                  const octave_value_list& inputlist,
-                 octave_value& func,
+                 octave_value& fcn,
                  octave_value& error_handler)
 {
   octave_value_list tmp;
@@ -80,7 +80,7 @@ get_output_list (error_system& es,
 
   try
     {
-      tmp = feval (func, inputlist, nargout);
+      tmp = feval (fcn, inputlist, nargout);
     }
   catch (const execution_exception& ee)
     {
@@ -277,7 +277,7 @@ DEFMETHOD (cellfun, interp, args, nargout,
 @deftypefnx {} {@var{A} =} cellfun (@var{fcn}, @var{C})
 @deftypefnx {} {@var{A} =} cellfun (@var{fcn}, @var{C1}, @var{C2}, @dots{})
 @deftypefnx {} {[@var{A1}, @var{A2}, @dots{}] =} cellfun (@dots{})
-@deftypefnx {} {@var{A} =} cellfun (@dots{}, "ErrorHandler", @var{errfunc})
+@deftypefnx {} {@var{A} =} cellfun (@dots{}, "ErrorHandler", @var{errfcn})
 @deftypefnx {} {@var{A} =} cellfun (@dots{}, "UniformOutput", @var{val})
 
 Evaluate the function named "@var{fcn}" on the elements of the cell array
@@ -366,16 +366,16 @@ cellfun ("tolower", @{"Foo", "Bar", "FooBar"@},
 @end group
 @end example
 
-Given the parameter @qcode{"ErrorHandler"}, then @var{errfunc} defines a
+Given the parameter @qcode{"ErrorHandler"}, then @var{errfcn} defines a
 function to call in case @var{fcn} generates an error.  The form of the
 function is
 
 @example
-function [@dots{}] = errfunc (@var{s}, @dots{})
+function [@dots{}] = errfcn (@var{s}, @dots{})
 @end example
 
 @noindent
-where there is an additional input argument to @var{errfunc} relative to
+where there is an additional input argument to @var{errfcn} relative to
 @var{fcn}, given by @var{s}.  This is a structure with the elements
 @qcode{"identifier"}, @qcode{"message"}, and @qcode{"index"} giving
 respectively the error identifier, the error message, and the index into the
@@ -418,11 +418,11 @@ v = cellfun (@@det, C);         # 40% faster
   octave_value_list retval;
   int nargout1 = (nargout < 1 ? 1 : nargout);
 
-  octave_value func = args(0);
+  octave_value fcn = args(0);
 
   symbol_table& symtab = interp.get_symbol_table ();
 
-  if (func.is_string ())
+  if (fcn.is_string ())
     {
       retval = try_cellfun_internal_ops<boolNDArray, NDArray> (args, nargin);
 
@@ -434,18 +434,18 @@ v = cellfun (@@det, C);         # 40% faster
       std::string name = args(0).string_value ();
 
       if (! valid_identifier (name))
-        func = get_function_handle (interp, args(0), "x");
+        fcn = get_function_handle (interp, args(0), "x");
       else
         {
-          func = symtab.find_function (name);
+          fcn = symtab.find_function (name);
 
-          if (func.is_undefined ())
+          if (fcn.is_undefined ())
             error ("cellfun: invalid function NAME: %s", name.c_str ());
         }
     }
 
-  if (! func.is_function_handle () && ! func.is_inline_function ()
-      && ! func.is_function ())
+  if (! fcn.is_function_handle () && ! fcn.is_inline_function ()
+      && ! fcn.is_function ())
     error ("cellfun: argument NAME must be a string or function handle");
 
   bool uniform_output = true;
@@ -457,7 +457,7 @@ v = cellfun (@@det, C);         # 40% faster
   // more specific function class, so this can result in fewer polymorphic
   // function calls as the function gets called for each value of the array.
   {
-    if (func.is_function_handle () || func.is_inline_function ())
+    if (fcn.is_function_handle () || fcn.is_inline_function ())
       {
         // FIXME: instead of checking for overloaded functions as we did
         // previously but is no longer possible, we could check whether
@@ -467,7 +467,7 @@ v = cellfun (@@det, C);         # 40% faster
         goto nevermind;
       }
 
-    std::string name = func.function_value () -> name ();
+    std::string name = fcn.function_value () -> name ();
     octave_value f = symtab.find_function (name);
 
     if (f.is_defined ())
@@ -490,7 +490,7 @@ v = cellfun (@@det, C);         # 40% faster
 
         // Okay, we tried, doesn't work, let's do the best we can instead
         // and avoid polymorphic calls for each element of the array.
-        func = f;
+        fcn = f;
       }
   }
 
@@ -560,7 +560,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (es, count, nargout, inputlist, func,
+            = get_output_list (es, count, nargout, inputlist, fcn,
                                error_handler);
 
           int tmp_numel = tmp.length ();
@@ -646,7 +646,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (es, count, nargout, inputlist, func,
+            = get_output_list (es, count, nargout, inputlist, fcn,
                                error_handler);
 
           if (nargout > 0 && tmp.length () < nargout)
@@ -1060,7 +1060,7 @@ DEFMETHOD (arrayfun, interp, args, nargout,
 @deftypefnx {} {@var{B} =} arrayfun (@var{fcn}, @var{A1}, @var{A2}, @dots{})
 @deftypefnx {} {[@var{B1}, @var{B2}, @dots{}] =} arrayfun (@var{fcn}, @var{A}, @dots{})
 @deftypefnx {} {@var{B} =} arrayfun (@dots{}, "UniformOutput", @var{val})
-@deftypefnx {} {@var{B} =} arrayfun (@dots{}, "ErrorHandler", @var{errfunc})
+@deftypefnx {} {@var{B} =} arrayfun (@dots{}, "ErrorHandler", @var{errfcn})
 
 Execute a function on each element of an array.
 
@@ -1140,23 +1140,23 @@ C =
 @end group
 @end example
 
-If the parameter @var{errfunc} after a further string input argument
+If the parameter @var{errfcn} after a further string input argument
 @qcode{"ErrorHandler"} is another string, a function handle, an inline
-function, or an anonymous function, then @var{errfunc} defines a function to
+function, or an anonymous function, then @var{errfcn} defines a function to
 call in the case that @var{fcn} generates an error.  The definition of the
 function must be of the form
 
 @example
-function [@dots{}] = errfunc (@var{s}, @dots{})
+function [@dots{}] = errfcn (@var{s}, @dots{})
 @end example
 
 @noindent
-where there is an additional input argument to @var{errfunc} relative to
+where there is an additional input argument to @var{errfcn} relative to
 @var{fcn}, given by @var{s}.  This is a structure with the elements
 @qcode{"identifier"}, @qcode{"message"}, and @qcode{"index"} giving,
 respectively, the error identifier, the error message, and the index of the
 array elements that caused the error.  The size of the output argument of
-@var{errfunc} must have the same size as the output argument of @var{fcn},
+@var{errfcn} must have the same size as the output argument of @var{fcn},
 otherwise a real error is thrown.  For example:
 
 @example
@@ -1182,22 +1182,22 @@ arrayfun (@@str2num, [1234],
   octave_value_list retval;
   int nargout1 = (nargout < 1 ? 1 : nargout);
   bool symbol_table_lookup = false;
-  octave_value func = args(0);
+  octave_value fcn = args(0);
 
   symbol_table& symtab = interp.get_symbol_table ();
 
-  if (func.is_string ())
+  if (fcn.is_string ())
     {
       // See if we can convert the string into a function.
       std::string name = args(0).string_value ();
 
       if (! valid_identifier (name))
-        func = get_function_handle (interp, args(0), "x");
+        fcn = get_function_handle (interp, args(0), "x");
       else
         {
-          func = symtab.find_function (name);
+          fcn = symtab.find_function (name);
 
-          if (func.is_undefined ())
+          if (fcn.is_undefined ())
             error_with_id ("Octave:invalid-input-arg",
                            "arrayfun: invalid function NAME: %s",
                            name.c_str ());
@@ -1206,8 +1206,8 @@ arrayfun (@@str2num, [1234],
         }
     }
 
-  if (func.is_function_handle () || func.is_inline_function ()
-      || func.is_function ())
+  if (fcn.is_function_handle () || fcn.is_inline_function ()
+      || fcn.is_function ())
     {
       // The following is an optimization because the symbol table can give a
       // more specific function class, so this can result in fewer polymorphic
@@ -1215,7 +1215,7 @@ arrayfun (@@str2num, [1234],
 
       if (! symbol_table_lookup)
         {
-          if (func.is_function_handle () || func.class_name () == "inline")
+          if (fcn.is_function_handle () || fcn.class_name () == "inline")
             {
               // FIXME: instead of checking for overloaded functions as
               // we did previously but is no longer possible, we could
@@ -1227,10 +1227,10 @@ arrayfun (@@str2num, [1234],
             }
 
           octave_value f
-            = symtab.find_function (func.function_value () -> name ());
+            = symtab.find_function (fcn.function_value () -> name ());
 
           if (f.is_defined ())
-            func = f;
+            fcn = f;
         }
 
     nevermind:
@@ -1301,7 +1301,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (es, count, nargout, inputlist, func,
+                = get_output_list (es, count, nargout, inputlist, fcn,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -1393,7 +1393,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (es, count, nargout, inputlist, func,
+                = get_output_list (es, count, nargout, inputlist, fcn,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)

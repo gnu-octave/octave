@@ -1430,11 +1430,11 @@ maybe_missing_function_hook (const std::string& name)
         restore_var (Vmissing_function_hook);
 
       // Clear the variable prior to calling the function.
-      const std::string func_name = Vmissing_function_hook;
+      const std::string fcn_name = Vmissing_function_hook;
       Vmissing_function_hook.clear ();
 
       // Call.
-      octave_value_list tmp = octave::feval (func_name, octave_value (name), 1);
+      octave_value_list tmp = octave::feval (fcn_name, octave_value (name), 1);
 
       if (tmp.length () == 1 && tmp(0).is_string ())
         return tmp(0).string_value ();

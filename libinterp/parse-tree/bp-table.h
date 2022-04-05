@@ -210,7 +210,7 @@ namespace octave
 
     void parse_dbfunction_params (const char *who,
                                   const octave_value_list& args,
-                                  std::string& func_name,
+                                  std::string& fcn_name,
                                   std::string& class_name,
                                   bp_table::bp_lines& lines,
                                   std::string& cond);

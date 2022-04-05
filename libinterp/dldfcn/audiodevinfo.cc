@@ -538,8 +538,8 @@ public:
   void init (void);
   void init_fn (void);
   void set_y (const octave_value& y);
-  void set_y (octave_function *fn);
-  void set_y (std::string fn);
+  void set_y (octave_function *fcn);
+  void set_y (std::string fcn);
   Matrix& get_y (void);
   RowVector get_left (void) const;
   RowVector get_right (void) const;
@@ -1004,9 +1004,9 @@ audioplayer::set_y (const octave_value& y_arg)
 }
 
 void
-audioplayer::set_y (octave_function *fn)
+audioplayer::set_y (octave_function *fcn)
 {
-  octave_callback_function = fn;
+  octave_callback_function = fcn;
   channels = 2;
   reset_end_sample ();
 }

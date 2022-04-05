@@ -294,7 +294,7 @@ namespace octave
         m_bracketflag (0),
         m_braceflag (0),
         m_looping (0),
-        m_defining_func (0),
+        m_defining_fcn (0),
         m_looking_at_function_handle (0),
         m_block_comment_nesting_level (0),
         m_command_arg_paren_count (0),
@@ -451,7 +451,7 @@ namespace octave
     int m_looping;
 
     // nonzero means we're in the middle of defining a function.
-    int m_defining_func;
+    int m_defining_fcn;
 
     // nonzero means we are parsing a function handle.
     int m_looking_at_function_handle;

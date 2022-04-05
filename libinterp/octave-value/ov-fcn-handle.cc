@@ -1683,10 +1683,10 @@ OCTAVE_NAMESPACE_BEGIN
                 if (file_name.substr (0, oct_home.size ()) == oct_home)
                   file_name = file_name.substr (oct_home.size ());
 
-                octave_value subfun = fcn->find_subfunction (m_name);
+                octave_value subfcn = fcn->find_subfunction (m_name);
 
-                if (subfun.is_defined ())
-                  m_fcn = subfun;
+                if (subfcn.is_defined ())
+                  m_fcn = subfcn;
               }
           }
       }
@@ -2215,7 +2215,7 @@ OCTAVE_NAMESPACE_BEGIN
         std::istringstream nm_is (m_name.substr (anl));
         nm_is >> len;
 
-        // Anonymous functons don't have names.  We just used this
+        // Anonymous functions don't have names.  We just used this
         // string as temporary storage to pass the number of local
         // variable values.
 
@@ -2521,16 +2521,16 @@ OCTAVE_NAMESPACE_BEGIN
     // HDF5 doesn't print out all sorts of error messages if we
     // call H5Aopen for a non-existing attribute
 
-    H5E_auto_t err_func;
-    void *err_func_data;
+    H5E_auto_t err_fcn;
+    void *err_fcn_data;
 
     // turn off error reporting temporarily, but save the error
     // reporting function:
 #if defined (HAVE_HDF5_18)
-    H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
+    H5Eget_auto (octave_H5E_DEFAULT, &err_fcn, &err_fcn_data);
     H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
-    H5Eget_auto (&err_func, &err_func_data);
+    H5Eget_auto (&err_fcn, &err_fcn_data);
     H5Eset_auto (nullptr, nullptr);
 #endif
 
@@ -2546,9 +2546,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     // restore error reporting:
 #if defined (HAVE_HDF5_18)
-    H5Eset_auto (octave_H5E_DEFAULT, err_func, err_func_data);
+    H5Eset_auto (octave_H5E_DEFAULT, err_fcn, err_fcn_data);
 #else
-    H5Eset_auto (err_func, err_func_data);
+    H5Eset_auto (err_fcn, err_fcn_data);
 #endif
 
     // Set up temporary scope to use for evaluating the text that
@@ -3542,7 +3542,7 @@ hfcn = @@(x) sin (x + pi) ;
       // temporary scope to use for evaluating the text that defines
       // the anonymous function.  Here we want
       //
-      //   str2fun ("@(args) expr")
+      //   str2func ("@(args) expr")
       //
       // to behave the same as if
       //
@@ -3587,7 +3587,7 @@ hfcn = @@(x) sin (x + pi) ;
 */
 
 /*
-%!function y = __testrecursionfunc (f, x, n)
+%!function y = __testrecursionfcn (f, x, n)
 %!  if (nargin < 3)
 %!    n = 0;
 %!  endif
@@ -3595,11 +3595,11 @@ hfcn = @@(x) sin (x + pi) ;
 %!    y = f (x);
 %!  else
 %!    n++;
-%!    y = __testrecursionfunc (@(x) f (2*x), x, n);
+%!    y = __testrecursionfcn (@(x) f (2*x), x, n);
 %!  endif
 %!endfunction
 %!
-%!assert (__testrecursionfunc (@(x) x, 1), 8)
+%!assert (__testrecursionfcn (@(x) x, 1), 8)
 */
 
 DEFUN (is_function_handle, args, ,

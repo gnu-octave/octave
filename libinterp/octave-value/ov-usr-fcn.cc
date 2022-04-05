@@ -410,35 +410,35 @@ octave_user_function::subfunctions (void) const
   return m_scope.subfunctions ();
 }
 
-// Find definition of final subfunction in list of subfuns:
+// Find definition of final subfunction in list of subfcns:
 //
 //  sub1>sub2>...>subN
 
 octave_value
-octave_user_function::find_subfunction (const std::string& subfuns_arg) const
+octave_user_function::find_subfunction (const std::string& subfcns_arg) const
 {
-  std::string subfuns = subfuns_arg;
+  std::string subfcns = subfcns_arg;
 
-  std::string first_fun = subfuns;
+  std::string first_fcn = subfcns;
 
-  std::size_t pos = subfuns.find ('>');
+  std::size_t pos = subfcns.find ('>');
 
   if (pos == std::string::npos)
-    subfuns = "";
+    subfcns = "";
   else
     {
-      first_fun = subfuns.substr (0, pos-1);
-      subfuns = subfuns.substr (pos+1);
+      first_fcn = subfcns.substr (0, pos-1);
+      subfcns = subfcns.substr (pos+1);
     }
 
-  octave_value ov_fcn = m_scope.find_subfunction (first_fun);
+  octave_value ov_fcn = m_scope.find_subfunction (first_fcn);
 
-  if (subfuns.empty ())
+  if (subfcns.empty ())
     return ov_fcn;
 
   octave_user_function *fcn = ov_fcn.user_function_value ();
 
-  return fcn->find_subfunction (subfuns);
+  return fcn->find_subfunction (subfcns);
 }
 
 bool
@@ -692,25 +692,25 @@ Programming Note: @code{nargin} does not work on compiled functions
 
   if (nargin == 1)
     {
-      octave_value func = args(0);
+      octave_value fcn = args(0);
 
-      if (func.is_string ())
+      if (fcn.is_string ())
         {
           symbol_table& symtab = interp.get_symbol_table ();
 
-          std::string name = func.string_value ();
-          func = symtab.find_function (name);
-          if (func.is_undefined ())
+          std::string name = fcn.string_value ();
+          fcn = symtab.find_function (name);
+          if (fcn.is_undefined ())
             error ("nargin: invalid function name: %s", name.c_str ());
         }
 
-      octave_function *fcn_val = func.function_value (true);
+      octave_function *fcn_val = fcn.function_value (true);
       if (! fcn_val)
         error ("nargin: FCN must be a string or function handle");
 
-      octave_user_function *fcn = fcn_val->user_function_value (true);
+      octave_user_function *ufcn = fcn_val->user_function_value (true);
 
-      if (! fcn)
+      if (! ufcn)
         {
           // Matlab gives up for histc, so maybe it's ok that we
           // give up sometimes too?
@@ -720,10 +720,10 @@ Programming Note: @code{nargin} does not work on compiled functions
                  type.c_str ());
         }
 
-      tree_parameter_list *m_param_list = fcn->parameter_list ();
+      tree_parameter_list *m_param_list = ufcn->parameter_list ();
 
       retval = (m_param_list ? m_param_list->length () : 0);
-      if (fcn->takes_varargs ())
+      if (ufcn->takes_varargs ())
         retval = -1 - retval;
     }
   else
@@ -803,36 +803,36 @@ returns -1 for all anonymous functions.
 
   if (nargin == 1)
     {
-      octave_value func = args(0);
+      octave_value fcn = args(0);
 
-      if (func.is_string ())
+      if (fcn.is_string ())
         {
           symbol_table& symtab = interp.get_symbol_table ();
 
-          std::string name = func.string_value ();
-          func = symtab.find_function (name);
-          if (func.is_undefined ())
+          std::string name = fcn.string_value ();
+          fcn = symtab.find_function (name);
+          if (fcn.is_undefined ())
             error ("nargout: invalid function name: %s", name.c_str ());
         }
 
-      if (func.is_inline_function ())
+      if (fcn.is_inline_function ())
         return ovl (1);
 
-      if (func.is_function_handle ())
+      if (fcn.is_function_handle ())
         {
-          octave_fcn_handle *fh = func.fcn_handle_value ();
+          octave_fcn_handle *fh = fcn.fcn_handle_value ();
 
           if (fh->is_anonymous ())
             return ovl (-1);
         }
 
-      octave_function *fcn_val = func.function_value (true);
+      octave_function *fcn_val = fcn.function_value (true);
       if (! fcn_val)
         error ("nargout: FCN must be a string or function handle");
 
-      octave_user_function *fcn = fcn_val->user_function_value (true);
+      octave_user_function *ufcn = fcn_val->user_function_value (true);
 
-      if (! fcn)
+      if (! ufcn)
         {
           // Matlab gives up for histc, so maybe it's ok that we
           // give up sometimes too?
@@ -842,11 +842,11 @@ returns -1 for all anonymous functions.
                  type.c_str ());
         }
 
-      tree_parameter_list *m_ret_list = fcn->return_list ();
+      tree_parameter_list *m_ret_list = ufcn->return_list ();
 
       retval = (m_ret_list ? m_ret_list->length () : 0);
 
-      if (fcn->takes_var_return ())
+      if (ufcn->takes_var_return ())
         retval = -1 - retval;
     }
   else

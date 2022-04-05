@@ -307,17 +307,17 @@ hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name)
   // HDF5 doesn't print out all sorts of error messages if we
   // call H5Aopen for a non-existing attribute
 
-  H5E_auto_t err_func;
-  void *err_func_data;
+  H5E_auto_t err_fcn;
+  void *err_fcn_data;
 
   // turn off error reporting temporarily, but save the error
   // reporting function:
 
 #if defined (HAVE_HDF5_18)
-  H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
+  H5Eget_auto (octave_H5E_DEFAULT, &err_fcn, &err_fcn_data);
   H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
-  H5Eget_auto (&err_func, &err_func_data);
+  H5Eget_auto (&err_fcn, &err_fcn_data);
   H5Eset_auto (nullptr, nullptr);
 #endif
 
@@ -332,9 +332,9 @@ hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name)
 
   // restore error reporting:
 #if defined (HAVE_HDF5_18)
-  H5Eset_auto (octave_H5E_DEFAULT, err_func, err_func_data);
+  H5Eset_auto (octave_H5E_DEFAULT, err_fcn, err_fcn_data);
 #else
-  H5Eset_auto (err_func, err_func_data);
+  H5Eset_auto (err_fcn, err_fcn_data);
 #endif
   return retval;
 
@@ -355,17 +355,17 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
   // HDF5 doesn't print out all sorts of error messages if we
   // call H5Aopen for a non-existing attribute
 
-  H5E_auto_t err_func;
-  void *err_func_data;
+  H5E_auto_t err_fcn;
+  void *err_fcn_data;
 
   // turn off error reporting temporarily, but save the error
   // reporting function:
 
 #if defined (HAVE_HDF5_18)
-  H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
+  H5Eget_auto (octave_H5E_DEFAULT, &err_fcn, &err_fcn_data);
   H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
-  H5Eget_auto (&err_func, &err_func_data);
+  H5Eget_auto (&err_fcn, &err_fcn_data);
   H5Eset_auto (nullptr, nullptr);
 #endif
 
@@ -384,9 +384,9 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 
   // restore error reporting:
 #if defined (HAVE_HDF5_18)
-  H5Eset_auto (octave_H5E_DEFAULT, err_func, err_func_data);
+  H5Eset_auto (octave_H5E_DEFAULT, err_fcn, err_fcn_data);
 #else
-  H5Eset_auto (err_func, err_func_data);
+  H5Eset_auto (err_fcn, err_fcn_data);
 #endif
   return retval;
 

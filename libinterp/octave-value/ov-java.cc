@@ -2028,10 +2028,10 @@ initialize_java (void)
 }
 
 JNIEXPORT jboolean JNICALL
-Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring funcName,
+Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring fcnName,
                              jobjectArray argin, jobjectArray argout)
 {
-  std::string fname = jstring_to_string (env, funcName);
+  std::string fname = jstring_to_string (env, fcnName);
 
   int nargout = env->GetArrayLength (argout);
   int nargin = env->GetArrayLength (argin);

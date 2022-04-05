@@ -1658,8 +1658,8 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 */
 
   octave_value_list
-  do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
-                     const char *fun_name, const octave_value_list& args,
+  do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
+                     const char *fcn_name, const octave_value_list& args,
                      int nargout)
   {
     octave_value_list new_args = args;
@@ -1693,7 +1693,7 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
                 dims = ccells[i].dims ();
               }
             else if (dims != ccells[i].dims ())
-              error ("%s: cell arguments must have matching sizes", fun_name);
+              error ("%s: cell arguments must have matching sizes", fcn_name);
           }
       }
 
@@ -1708,10 +1708,10 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 
         octave_quit ();
 
-        const octave_value_list tmp = fun (new_args, nargout);
+        const octave_value_list tmp = fcn (new_args, nargout);
 
         if (tmp.length () < nargout)
-          error ("%s: do_simple_cellfun: internal error", fun_name);
+          error ("%s: do_simple_cellfun: internal error", fcn_name);
 
         for (int i = 0; i < nargout; i++)
           rcells[i](j) = tmp(i);
@@ -1726,12 +1726,12 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
   }
 
   octave_value
-  do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
-                     const char *fun_name, const octave_value_list& args)
+  do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
+                     const char *fcn_name, const octave_value_list& args)
   {
     octave_value retval;
 
-    const octave_value_list tmp = do_simple_cellfun (fun, fun_name, args, 1);
+    const octave_value_list tmp = do_simple_cellfun (fcn, fcn_name, args, 1);
 
     if (tmp.length () > 0)
       retval = tmp(0);

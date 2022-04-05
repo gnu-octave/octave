@@ -6566,10 +6566,10 @@ public:
 
 OCTINTERP_API octave_value
 get_property_from_handle (double handle, const std::string& property,
-                          const std::string& func);
+                          const std::string& fcn);
 OCTINTERP_API bool
 set_property_in_handle (double handle, const std::string& property,
-                        const octave_value& arg, const std::string& func);
+                        const octave_value& arg, const std::string& fcn);
 
 // ---------------------------------------------------------------------
 

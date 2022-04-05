@@ -125,10 +125,10 @@ defun_usage_message (const char *fmt, ...)
   va_end (args);
 }
 
-typedef void (*error_fun)(const char *, const char *, ...);
+typedef void (*error_fcn)(const char *, const char *, ...);
 
 static std::string
-handle_message (error_fun f, const char *id, const char *msg,
+handle_message (error_fcn f, const char *id, const char *msg,
                 const octave_value_list& args, bool have_fmt)
 {
   std::string retval;

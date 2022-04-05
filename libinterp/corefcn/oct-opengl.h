@@ -70,9 +70,9 @@ namespace octave
     // class that does nothing.  This makes the implementation of
     // other things that rely on this class slightly simpler.
 
-    virtual void glAlphaFunc (GLenum func, GLclampf ref)
+    virtual void glAlphaFunc (GLenum fcn, GLclampf ref)
     {
-      ::glAlphaFunc (func, ref);
+      ::glAlphaFunc (fcn, ref);
     }
 
     virtual void glBegin (GLenum mode)
@@ -160,9 +160,9 @@ namespace octave
       ::glDeleteTextures (n, textures);
     }
 
-    virtual void glDepthFunc (GLenum func)
+    virtual void glDepthFunc (GLenum fcn)
     {
-      ::glDepthFunc (func);
+      ::glDepthFunc (fcn);
     }
 
     virtual void glDisable (GLenum cap)

@@ -338,13 +338,13 @@ namespace octave
 
   void bp_table::parse_dbfunction_params (const char *who,
                                           const octave_value_list& args,
-                                          std::string& func_name,
+                                          std::string& fcn_name,
                                           std::string& class_name,
                                           bp_table::bp_lines& lines,
                                           std::string& cond)
   {
     int nargin = args.length ();
-    func_name = "";
+    fcn_name = "";
     class_name = "";
     lines = bp_table::bp_lines ();
 
@@ -395,10 +395,10 @@ namespace octave
         switch (tok)
           {
           case dbstop_in:
-            func_name = args(pos).string_value ();
+            fcn_name = args(pos).string_value ();
             if (seen_in)
               error ("%s: Too many function names specified -- %s",
-                     who, func_name.c_str ());
+                     who, fcn_name.c_str ());
             else if (seen_at || seen_if)
               error ("%s: function name must come before line number and 'if'",
                      who);
@@ -426,9 +426,9 @@ namespace octave
                 if (atoi (arg.c_str ()) == 0)
                   {
                     // We have class and function names but already
-                    // stored the class name in func_name.
-                    class_name = func_name;
-                    func_name = arg;
+                    // stored the class name in fcn_name.
+                    class_name = fcn_name;
+                    fcn_name = arg;
                     pos++;
                     break;
                   }
@@ -438,7 +438,7 @@ namespace octave
               {
                 // It was a line number.  Get function name from debugger.
                 if (m_evaluator.in_debug_repl ())
-                  func_name = m_evaluator.get_user_code ()->profiler_name ();
+                  fcn_name = m_evaluator.get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
                          "and 'if'", who);

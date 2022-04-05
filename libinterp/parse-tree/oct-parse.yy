@@ -2099,12 +2099,12 @@ method_decl     : stash_comment method_decl1
                   {
                     OCTAVE_YYUSE ($3);
 
-                    lexer.m_defining_func++;
+                    lexer.m_defining_fcn++;
                     lexer.m_parsed_function_name.push (false);
                   }
                   method_decl1
                   {
-                    lexer.m_defining_func--;
+                    lexer.m_defining_fcn--;
                     lexer.m_parsed_function_name.pop ();
 
                     $$ = parser.finish_classdef_external_method ($5, $2, $1);
@@ -4271,7 +4271,7 @@ OCTAVE_NAMESPACE_BEGIN
     m_curr_fcn_depth--;
     m_function_scopes.pop ();
 
-    m_lexer.m_defining_func--;
+    m_lexer.m_defining_fcn--;
     m_lexer.m_parsed_function_name.pop ();
     m_lexer.m_looking_at_return_list = false;
     m_lexer.m_looking_at_parameter_list = false;

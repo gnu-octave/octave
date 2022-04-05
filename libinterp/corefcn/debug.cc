@@ -78,13 +78,13 @@ bp_lines_to_ov (const octave::bp_table::bp_lines& lines)
 
 DEFMETHOD (dbstop, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} dbstop @var{func}
-@deftypefnx {} {} dbstop @var{func} @var{line}
-@deftypefnx {} {} dbstop @var{func} @var{line1} @var{line2} @dots{}
+@deftypefn  {} {} dbstop @var{fcn}
+@deftypefnx {} {} dbstop @var{fcn} @var{line}
+@deftypefnx {} {} dbstop @var{fcn} @var{line1} @var{line2} @dots{}
 @deftypefnx {} {} dbstop @var{line1} @dots{}
-@deftypefnx {} {} dbstop in @var{func}
-@deftypefnx {} {} dbstop in @var{func} at @var{line}
-@deftypefnx {} {} dbstop in @var{func} at @var{line} if "@var{condition}"
+@deftypefnx {} {} dbstop in @var{fcn}
+@deftypefnx {} {} dbstop in @var{fcn} at @var{line}
+@deftypefnx {} {} dbstop in @var{fcn} at @var{line} if "@var{condition}"
 @deftypefnx {} {} dbstop in @var{class} at @var{method}
 @deftypefnx {} {} dbstop if @var{event}
 @deftypefnx {} {} dbstop if @var{event} @var{ID}
@@ -93,16 +93,16 @@ DEFMETHOD (dbstop, interp, args, ,
 
 Set breakpoints for the built-in debugger.
 
-@var{func} is the name of a function on the current @code{path}.  When
-already in debug mode the @var{func} argument can be omitted and the current
+@var{fcn} is the name of a function on the current @code{path}.  When
+already in debug mode the @var{fcn} argument can be omitted and the current
 function will be used.  Breakpoints at subfunctions are set with the scope
 operator @samp{>}.  For example, If @file{file.m} has a subfunction
-@code{func2}, then a breakpoint in @code{func2} can be specified by
-@code{file>func2}.
+@code{fcn2}, then a breakpoint in @code{fcn2} can be specified by
+@code{file>fcn2}.
 
 @var{line} is the line number at which to break.  If @var{line} is not
 specified, it defaults to the first executable line in the file
-@file{func.m}.  Multiple lines can be specified in a single command; when
+@file{fcn.m}.  Multiple lines can be specified in a single command; when
 function syntax is used, the lines may also be passed as a single vector
 argument (@code{[@var{line1}, @var{line2}, @dots{}]}).
 
@@ -255,26 +255,26 @@ debug_on_interrupt}
 
 DEFMETHOD (dbclear, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} dbclear @var{func}
-@deftypefnx {} {} dbclear @var{func} @var{line}
-@deftypefnx {} {} dbclear @var{func} @var{line1} @var{line2} @dots{}
+@deftypefn  {} {} dbclear @var{fcn}
+@deftypefnx {} {} dbclear @var{fcn} @var{line}
+@deftypefnx {} {} dbclear @var{fcn} @var{line1} @var{line2} @dots{}
 @deftypefnx {} {} dbclear @var{line} @dots{}
 @deftypefnx {} {} dbclear all
-@deftypefnx {} {} dbclear in @var{func}
-@deftypefnx {} {} dbclear in @var{func} at @var{line}
+@deftypefnx {} {} dbclear in @var{fcn}
+@deftypefnx {} {} dbclear in @var{fcn} at @var{line}
 @deftypefnx {} {} dbclear if @var{event}
-@deftypefnx {} {} dbclear ("@var{func}")
-@deftypefnx {} {} dbclear ("@var{func}", @var{line})
-@deftypefnx {} {} dbclear ("@var{func}", @var{line1}, @var{line2}, @dots{})
-@deftypefnx {} {} dbclear ("@var{func}", @var{line1}, @dots{})
+@deftypefnx {} {} dbclear ("@var{fcn}")
+@deftypefnx {} {} dbclear ("@var{fcn}", @var{line})
+@deftypefnx {} {} dbclear ("@var{fcn}", @var{line1}, @var{line2}, @dots{})
+@deftypefnx {} {} dbclear ("@var{fcn}", @var{line1}, @dots{})
 @deftypefnx {} {} dbclear (@var{line}, @dots{})
 @deftypefnx {} {} dbclear ("all")
-Delete a breakpoint at line number @var{line} in the function @var{func}.
+Delete a breakpoint at line number @var{line} in the function @var{fcn}.
 
 Arguments are
 
 @table @var
-@item func
+@item fcn
 Function name as a string variable.  When already in debug mode this
 argument can be omitted and the current function will be used.
 
@@ -347,8 +347,8 @@ following fields:
 
 @table @asis
 @item name
-The name of the function with a breakpoint.  A subfunction, say @code{func2}
-within an m-file, say @file{file.m}, is specified as @code{file>func2}.
+The name of the function with a breakpoint.  A subfunction, say @code{fcn2}
+within an m-file, say @file{file.m}, is specified as @code{file>fcn2}.
 
 @item file
 The name of the m-file where the function code is located.
@@ -483,9 +483,9 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
       for (const auto& fnm_bp_p : bp_list)
         {
           std::string filename = fnm_bp_p.first;
-          const char *sub_fun = strchr (filename.c_str (), '>');
-          if (sub_fun)
-            filename = filename.substr(0, sub_fun - filename.c_str ());
+          const char *sub_fcn = strchr (filename.c_str (), '>');
+          if (sub_fcn)
+            filename = filename.substr(0, sub_fcn - filename.c_str ());
           octave_value path_name;
           path_name
             = octave::sys::canonicalize_file_name (help_sys.which (filename));
@@ -602,10 +602,10 @@ DEFMETHOD (dbtype, interp, args, ,
 @deftypefnx {} {} dbtype @var{lineno}
 @deftypefnx {} {} dbtype @var{startl:endl}
 @deftypefnx {} {} dbtype @var{startl:end}
-@deftypefnx {} {} dbtype @var{func}
-@deftypefnx {} {} dbtype @var{func} @var{lineno}
-@deftypefnx {} {} dbtype @var{func} @var{startl:endl}
-@deftypefnx {} {} dbtype @var{func} @var{startl:end}
+@deftypefnx {} {} dbtype @var{fcn}
+@deftypefnx {} {} dbtype @var{fcn} @var{lineno}
+@deftypefnx {} {} dbtype @var{fcn} @var{startl:endl}
+@deftypefnx {} {} dbtype @var{fcn} @var{startl:end}
 Display a script file with line numbers.
 
 When called with no arguments in debugging mode, display the script file
@@ -639,7 +639,7 @@ numbers.
 
       break;
 
-    case 1:  // (dbtype start:end) || (dbtype func) || (dbtype lineno)
+    case 1:  // (dbtype start:end) || (dbtype fcn) || (dbtype lineno)
       {
         std::string arg = argv[1];
 
@@ -671,11 +671,11 @@ numbers.
                            start, end);
               }
           }
-        else  // (dbtype func) || (dbtype lineno)
+        else  // (dbtype fcn) || (dbtype lineno)
           {
             int line = atoi (arg.c_str ());
 
-            if (line == 0)  // (dbtype func)
+            if (line == 0)  // (dbtype fcn)
               {
                 dbg_fcn = tw.get_user_code (arg);
 
@@ -700,7 +700,7 @@ numbers.
       }
       break;
 
-    case 2:  // (dbtype func start:end) || (dbtype func start)
+    case 2:  // (dbtype fcn start:end) || (dbtype fcn start)
       {
         dbg_fcn = tw.get_user_code (argv[1]);
 

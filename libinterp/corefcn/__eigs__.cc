@@ -195,7 +195,7 @@ Undocumented internal function.
   SparseComplexMatrix ascm, bscm, bsct;
   int b_arg = 0;
   bool have_b = false;
-  bool have_a_fun = false;
+  bool have_a_fcn = false;
   bool a_is_complex = false;
   bool b_is_complex = false;
   bool symmetric = false;
@@ -234,7 +234,7 @@ Undocumented internal function.
 
       n = args(1).nint_value ();
       arg_offset = 1;
-      have_a_fun = true;
+      have_a_fcn = true;
     }
   else
     {
@@ -343,7 +343,7 @@ Undocumented internal function.
         }
 
       // isreal is ignored if A is not a function
-      if (have_a_fun)
+      if (have_a_fcn)
         {
           tmp = map.getfield ("isreal");
           if (tmp.is_defined ())
@@ -398,7 +398,7 @@ Undocumented internal function.
     error ("eigs: incorrect number of arguments");
 
   // Test undeclared (no issym) matrix inputs for symmetry
-  if (! sym_tested && ! have_a_fun)
+  if (! sym_tested && ! have_a_fcn)
     {
       if (a_is_complex)
         {
@@ -452,7 +452,7 @@ Undocumented internal function.
       ComplexMatrix eig_vec;
       ComplexColumnVector eig_val;
 
-      if (have_a_fun)
+      if (have_a_fcn)
         {
           if (b_is_sparse)
             nconv = EigsComplexNonSymmetricFunc
@@ -520,7 +520,7 @@ Undocumented internal function.
       ComplexMatrix eig_vec;
       ComplexColumnVector eig_val;
 
-      if (have_a_fun)
+      if (have_a_fcn)
         {
           if (b_is_sparse)
             nconv = EigsComplexNonSymmetricFunc
@@ -574,7 +574,7 @@ Undocumented internal function.
           Matrix eig_vec;
           ColumnVector eig_val;
 
-          if (have_a_fun)
+          if (have_a_fcn)
             {
               if (b_is_sparse)
                 nconv = EigsRealSymmetricFunc
@@ -624,7 +624,7 @@ Undocumented internal function.
           ComplexMatrix eig_vec;
           ComplexColumnVector eig_val;
 
-          if (have_a_fun)
+          if (have_a_fcn)
             {
               if (b_is_sparse)
                 nconv = EigsRealNonSymmetricFunc

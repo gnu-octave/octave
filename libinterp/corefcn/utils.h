@@ -181,14 +181,14 @@ OCTAVE_NAMESPACE_BEGIN
 
   extern OCTINTERP_API
   octave_value_list
-  do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
-                     const char *fun_name, const octave_value_list& args,
+  do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
+                     const char *fcn_name, const octave_value_list& args,
                      int nargout);
 
   extern OCTINTERP_API
   octave_value
-  do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
-                     const char *fun_name, const octave_value_list& args);
+  do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
+                     const char *fcn_name, const octave_value_list& args);
 
 OCTAVE_NAMESPACE_END
 

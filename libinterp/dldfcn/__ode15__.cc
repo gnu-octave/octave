@@ -169,22 +169,22 @@ OCTAVE_NAMESPACE_BEGIN
 
     //Default
     IDA (void)
-      : m_t0 (0.0), m_y0 (), m_yp0 (), m_havejac (false), m_havejacfun (false),
-        m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fun (),
+      : m_t0 (0.0), m_y0 (), m_yp0 (), m_havejac (false), m_havejacfcn (false),
+        m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fcn (),
         m_ida_jac (), m_dfdy (nullptr), m_dfdyp (nullptr), m_spdfdy (nullptr),
-        m_spdfdyp (nullptr), m_fun (nullptr), m_jacfun (nullptr),
-        m_jacspfun (nullptr), m_jacdcell (nullptr), m_jacspcell (nullptr),
+        m_spdfdyp (nullptr), m_fcn (nullptr), m_jacfcn (nullptr),
+        m_jacspfcn (nullptr), m_jacdcell (nullptr), m_jacspcell (nullptr),
         m_sunJacMatrix (nullptr), m_sunLinearSolver (nullptr)
     { }
 
 
     IDA (realtype t, ColumnVector y, ColumnVector yp,
          const octave_value& ida_fcn, DAERHSFuncIDA daefun)
-      : m_t0 (t), m_y0 (y), m_yp0 (yp), m_havejac (false), m_havejacfun (false),
-        m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fun (ida_fcn),
+      : m_t0 (t), m_y0 (y), m_yp0 (yp), m_havejac (false), m_havejacfcn (false),
+        m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fcn (ida_fcn),
         m_ida_jac (), m_dfdy (nullptr), m_dfdyp (nullptr), m_spdfdy (nullptr),
-        m_spdfdyp (nullptr), m_fun (daefun), m_jacfun (nullptr),
-        m_jacspfun (nullptr), m_jacdcell (nullptr), m_jacspcell (nullptr),
+        m_spdfdyp (nullptr), m_fcn (daefun), m_jacfcn (nullptr),
+        m_jacspfcn (nullptr), m_jacdcell (nullptr), m_jacspcell (nullptr),
         m_sunJacMatrix (nullptr), m_sunLinearSolver (nullptr)
     { }
 
@@ -202,10 +202,10 @@ OCTAVE_NAMESPACE_BEGIN
     IDA&
     set_jacobian (const octave_value& jac, DAEJacFuncDense j)
     {
-      m_jacfun = j;
+      m_jacfcn = j;
       m_ida_jac = jac;
       m_havejac = true;
-      m_havejacfun = true;
+      m_havejacfcn = true;
       m_havejacsparse = false;
 
       return *this;
@@ -214,10 +214,10 @@ OCTAVE_NAMESPACE_BEGIN
     IDA&
     set_jacobian (const octave_value& jac, DAEJacFuncSparse j)
     {
-      m_jacspfun = j;
+      m_jacspfcn = j;
       m_ida_jac = jac;
       m_havejac = true;
-      m_havejacfun = true;
+      m_havejacfcn = true;
       m_havejacsparse = true;
 
       return *this;
@@ -230,7 +230,7 @@ OCTAVE_NAMESPACE_BEGIN
       m_dfdy = dy;
       m_dfdyp = dyp;
       m_havejac = true;
-      m_havejacfun = false;
+      m_havejacfcn = false;
       m_havejacsparse = false;
 
       return *this;
@@ -244,7 +244,7 @@ OCTAVE_NAMESPACE_BEGIN
       m_spdfdy = dy;
       m_spdfdyp = dyp;
       m_havejac = true;
-      m_havejacfun = false;
+      m_havejacfcn = false;
       m_havejacsparse = true;
 
       return *this;
@@ -358,19 +358,19 @@ OCTAVE_NAMESPACE_BEGIN
     ColumnVector m_y0;
     ColumnVector m_yp0;
     bool m_havejac;
-    bool m_havejacfun;
+    bool m_havejacfcn;
     bool m_havejacsparse;
     void *m_mem;
     octave_f77_int_type m_num;
-    octave_value m_ida_fun;
+    octave_value m_ida_fcn;
     octave_value m_ida_jac;
     Matrix *m_dfdy;
     Matrix *m_dfdyp;
     SparseMatrix *m_spdfdy;
     SparseMatrix *m_spdfdyp;
-    DAERHSFuncIDA m_fun;
-    DAEJacFuncDense m_jacfun;
-    DAEJacFuncSparse m_jacspfun;
+    DAERHSFuncIDA m_fcn;
+    DAEJacFuncDense m_jacfcn;
+    DAEJacFuncSparse m_jacspfcn;
     DAEJacCellDense m_jacdcell;
     DAEJacCellSparse m_jacspcell;
 #  if defined (HAVE_SUNDIALS_SUNCONTEXT)
@@ -397,7 +397,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     ColumnVector yp = IDA::NVecToCol (yyp, m_num);
 
-    ColumnVector res = (*m_fun) (y, yp, t, m_ida_fun);
+    ColumnVector res = (*m_fcn) (y, yp, t, m_ida_fcn);
 
     realtype *puntrr = nv_data_s (rr);
 
@@ -487,8 +487,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     Matrix jac;
 
-    if (m_havejacfun)
-      jac = (*m_jacfun) (y, yp, t, cj, m_ida_jac);
+    if (m_havejacfcn)
+      jac = (*m_jacfcn) (y, yp, t, cj, m_ida_jac);
     else
       jac = (*m_jacdcell) (m_dfdy, m_dfdyp, cj);
 
@@ -510,8 +510,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     SparseMatrix jac;
 
-    if (m_havejacfun)
-      jac = (*m_jacspfun) (y, yp, t, cj, m_ida_jac);
+    if (m_havejacfcn)
+      jac = (*m_jacspfcn) (y, yp, t, cj, m_ida_jac);
     else
       jac = (*m_jacspcell) (m_spdfdy, m_spdfdyp, cj);
 
@@ -1149,14 +1149,14 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool havejacsparse = options.getfield ("havejacsparse").bool_value ();
 
-    bool havejacfun = options.getfield ("havejacfun").bool_value ();
+    bool havejacfcn = options.getfield ("havejacfcn").bool_value ();
 
     Matrix ida_dfdy, ida_dfdyp;
     SparseMatrix ida_spdfdy, ida_spdfdyp;
 
     if (havejac)
       {
-        if (havejacfun)
+        if (havejacfcn)
           {
             octave_value ida_jac = options.getfield ("Jacobian");
 
@@ -1278,7 +1278,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN_DLD (__ode15__, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {@var{t}, @var{y} =} __ode15__ (@var{fun}, @var{tspan}, @var{y0}, @var{yp0}, @var{options}, @var{num_event_args})
+@deftypefn {} {@var{t}, @var{y} =} __ode15__ (@var{fcn}, @var{tspan}, @var{y0}, @var{yp0}, @var{ode_opt}, @var{num_event_args})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -1289,11 +1289,11 @@ Undocumented internal function.
   if (args.length () != 6)
     print_usage ();
 
-  // Check odefun
+  // Check ODE function
   octave_value ida_fcn = args(0);
 
   if (! ida_fcn.is_function_handle ())
-    error ("__ode15__: odefun must be a function handle");
+    error ("__ode15__: FCN must be a function handle");
 
   // Check input tspan
   ColumnVector tspan
@@ -1301,7 +1301,7 @@ Undocumented internal function.
 
   octave_idx_type numt = tspan.numel ();
 
-  realtype t0 = tspan (0);
+  realtype t0 = tspan(0);
 
   if (numt < 2)
     error ("__ode15__: TRANGE must contain at least 2 elements");
@@ -1310,23 +1310,23 @@ Undocumented internal function.
 
   // input y0 and yp0
   ColumnVector y0
-    = args(2).xvector_value ("__ode15__: initial state y0 must be a vector");
+    = args(2).xvector_value ("__ode15__: initial state Y0 must be a vector");
 
   ColumnVector yp0
-    = args(3).xvector_value ("__ode15__: initial state yp0 must be a vector");
+    = args(3).xvector_value ("__ode15__: initial state YP0 must be a vector");
 
 
   if (y0.numel () != yp0.numel ())
-    error ("__ode15__: initial state y0 and yp0 must have the same length");
+    error ("__ode15__: initial state Y0 and YP0 must have the same length");
   else if (y0.numel () < 1)
-    error ("__ode15__: initial state yp0 must be a vector or a scalar");
+    error ("__ode15__: initial state YP0 must be a vector or a scalar");
 
 
   if (! args(4).isstruct ())
-    error ("__ode15__: OPTS argument must be a structure");
+    error ("__ode15__: ODE_OPT argument must be a structure");
 
   octave_scalar_map options
-    = args(4).xscalar_map_value ("__ode15__: OPTS argument must be a scalar structure");
+    = args(4).xscalar_map_value ("__ode15__: ODE_OPT argument must be a scalar structure");
 
   // Provided number of arguments in the ode callback function
   octave_idx_type num_event_args

@@ -4420,13 +4420,13 @@ Example:
 
   octave_map tree_evaluator::get_autoload_map (void) const
   {
-    Cell func_names (dim_vector (m_autoload_map.size (), 1));
+    Cell fcn_names (dim_vector (m_autoload_map.size (), 1));
     Cell file_names (dim_vector (m_autoload_map.size (), 1));
 
     octave_idx_type i = 0;
     for (const auto& fcn_fname : m_autoload_map)
       {
-        func_names(i) = fcn_fname.first;
+        fcn_names(i) = fcn_fname.first;
         file_names(i) = fcn_fname.second;
 
         i++;
@@ -4434,7 +4434,7 @@ Example:
 
     octave_map m;
 
-    m.assign ("function", func_names);
+    m.assign ("function", fcn_names);
     m.assign ("file", file_names);
 
     return m;

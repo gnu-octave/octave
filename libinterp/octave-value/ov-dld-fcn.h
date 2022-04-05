@@ -63,9 +63,9 @@ public:
 
   // No copying!
 
-  octave_dld_function (const octave_dld_function& fn) = delete;
+  octave_dld_function (const octave_dld_function& fcn) = delete;
 
-  octave_dld_function& operator = (const octave_dld_function& fn) = delete;
+  octave_dld_function& operator = (const octave_dld_function& fcn) = delete;
 
   ~octave_dld_function (void);
 

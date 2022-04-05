@@ -432,7 +432,7 @@ parameters for @code{dasrt}.
   if (dasrt_fcn.is_undefined ())
     error ("dasrt: FCN argument is not a valid function name or handle");
 
-  DAERTFunc func (dasrt_user_f);
+  DAERTFunc fcn (dasrt_user_f);
 
   argp++;
 
@@ -457,7 +457,7 @@ parameters for @code{dasrt}.
         {
           argp++;
 
-          func.set_constraint_function (dasrt_user_cf);
+          fcn.set_constraint_function (dasrt_user_cf);
         }
     }
 
@@ -485,11 +485,11 @@ parameters for @code{dasrt}.
     }
 
   if (dasrt_jac.is_defined ())
-    func.set_jacobian_function (dasrt_user_j);
+    fcn.set_jacobian_function (dasrt_user_j);
 
   DASRT_result output;
 
-  DASRT dae = DASRT (state, stateprime, tzero, func);
+  DASRT dae = DASRT (state, stateprime, tzero, fcn);
 
   dae.set_options (dasrt_opts);
 

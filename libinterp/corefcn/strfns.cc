@@ -319,7 +319,7 @@ Return true if @var{x} is a character array.
 */
 
 static octave_value
-do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
+do_strcmp_fcn (const octave_value& arg0, const octave_value& arg1,
                octave_idx_type n, const char *fcn_name,
                bool (*array_op) (const Array<char>&, const Array<char>&,
                                  octave_idx_type),
@@ -526,7 +526,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
 
 // These are required so that they match the same signature as strncmp
-// and strncmpi and can therefore be used in do_strcmp_fun.
+// and strncmpi and can therefore be used in do_strcmp_fcn.
 
 template <typename T, typename T_size_type>
 static bool
@@ -560,7 +560,7 @@ This is just the opposite of the corresponding C library function.
   if (args.length () != 2)
     print_usage ();
 
-  return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmp",
+  return ovl (do_strcmp_fcn (args(0), args(1), 0, "strcmp",
                              strcmp_ignore_n, strcmp_ignore_n));
 }
 
@@ -651,7 +651,7 @@ This is just the opposite of the corresponding C library function.
   octave_idx_type n = args(2).idx_type_value ();
 
   if (n > 0)
-    return ovl (do_strcmp_fun (args(0), args(1), n, "strncmp",
+    return ovl (do_strcmp_fcn (args(0), args(1), n, "strncmp",
                                string::strncmp,
                                string::strncmp));
   else
@@ -698,7 +698,7 @@ This is just the opposite of the corresponding C library function.
   if (args.length () != 2)
     print_usage ();
 
-  return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmpi",
+  return ovl (do_strcmp_fcn (args(0), args(1), 0, "strcmpi",
                              strcmpi_ignore_n, strcmpi_ignore_n));
 }
 
@@ -732,7 +732,7 @@ This is just the opposite of the corresponding C library function.
   octave_idx_type n = args(2).idx_type_value ();
 
   if (n > 0)
-    return ovl (do_strcmp_fun (args(0), args(1), n, "strncmpi",
+    return ovl (do_strcmp_fcn (args(0), args(1), n, "strncmpi",
                                string::strncmpi,
                                string::strncmpi));
   else

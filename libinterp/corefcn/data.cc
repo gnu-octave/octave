@@ -4626,14 +4626,14 @@ val = ones (m,n, "uint8")
 ## n to be a 1x0 vector (returns 0x0) but not a 0x1 vector.  Octave supports
 ## any vector and therefore must support 0x1, 1x0, and 0x0x1 (but not 0x1x1).
 %!test <*47298>
-%! funcs = {@zeros, @ones, @inf, @nan, @NA, @i, @pi, @e};
-%! for idx = 1:numel (funcs)
-%!   func = funcs{idx};
-%!   assert (func (zeros (1, 0)), zeros (0, 0));
-%!   assert (func (zeros (0, 1)), zeros (0, 0));
-%!   assert (func (zeros (0, 1, 1)), zeros (0, 0));
-%!   fail ([func2str(func) " ([])"]);
-%!   fail ([func2str(func) " (zeros (0, 0, 1))"]);
+%! fcns = {@zeros, @ones, @inf, @nan, @NA, @i, @pi, @e};
+%! for idx = 1:numel (fcns)
+%!   fcn = fcns{idx};
+%!   assert (fcn (zeros (1, 0)), zeros (0, 0));
+%!   assert (fcn (zeros (0, 1)), zeros (0, 0));
+%!   assert (fcn (zeros (0, 1, 1)), zeros (0, 0));
+%!   fail ([func2str(fcn) " ([])"]);
+%!   fail ([func2str(fcn) " (zeros (0, 0, 1))"]);
 %! endfor
 */
 
@@ -7665,7 +7665,7 @@ do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
 }
 
 static octave_value_list
-do_accumarray_minmax_fun (const octave_value_list& args,
+do_accumarray_minmax_fcn (const octave_value_list& args,
                           bool ismin)
 {
   int nargin = args.length ();
@@ -7740,7 +7740,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
     }
   catch (const index_exception& ie)
     {
-      error ("do_accumarray_minmax_fun: invalid index %s", ie.what ());
+      error ("do_accumarray_minmax_fcn: invalid index %s", ie.what ());
     }
 
   return retval;
@@ -7752,7 +7752,7 @@ DEFUN (__accumarray_min__, args, ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  return do_accumarray_minmax_fun (args, true);
+  return do_accumarray_minmax_fcn (args, true);
 }
 
 DEFUN (__accumarray_max__, args, ,
@@ -7761,7 +7761,7 @@ DEFUN (__accumarray_max__, args, ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  return do_accumarray_minmax_fun (args, false);
+  return do_accumarray_minmax_fcn (args, false);
 }
 
 template <typename NDT>

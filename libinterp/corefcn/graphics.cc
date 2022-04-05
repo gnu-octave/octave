@@ -14318,7 +14318,7 @@ addproperty ("my_style", gcf, "linelinestyle", "--");
 
 octave_value
 get_property_from_handle (double handle, const std::string& property,
-                          const std::string& func)
+                          const std::string& fcn)
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ("get_property_from_handle");
 
@@ -14327,14 +14327,14 @@ get_property_from_handle (double handle, const std::string& property,
   graphics_object go = gh_mgr.get_object (handle);
 
   if (! go)
-    error ("%s: invalid handle (= %g)", func.c_str (), handle);
+    error ("%s: invalid handle (= %g)", fcn.c_str (), handle);
 
   return go.get (caseless_str (property));
 }
 
 bool
 set_property_in_handle (double handle, const std::string& property,
-                        const octave_value& arg, const std::string& func)
+                        const octave_value& arg, const std::string& fcn)
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ("set_property_in_handle");
 
@@ -14343,7 +14343,7 @@ set_property_in_handle (double handle, const std::string& property,
   graphics_object go = gh_mgr.get_object (handle);
 
   if (! go)
-    error ("%s: invalid handle (= %g)", func.c_str (), handle);
+    error ("%s: invalid handle (= %g)", fcn.c_str (), handle);
 
   go.set (caseless_str (property), arg);
 

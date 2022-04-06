@@ -32,10 +32,6 @@
 
 function args = argnames (fcn)
 
-  if (nargin != 1)
-    print_usage ();
-  endif
-
   args = fcn.args;
 
 endfunction

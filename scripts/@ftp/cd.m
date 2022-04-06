@@ -42,10 +42,6 @@
 
 function path = cd (f, path)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   if (nargin == 2)
     __ftp_cwd__ (f.curlhandle, path);
   endif

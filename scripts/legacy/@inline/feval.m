@@ -25,10 +25,6 @@
 
 function retval = feval (fcn, varargin)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   fh = eval (sprintf ("@(%s) %s", strjoin (fcn.args, ","), fcn.expr));
 
   retval = fh (varargin{:});

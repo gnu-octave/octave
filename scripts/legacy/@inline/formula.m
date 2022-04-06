@@ -34,10 +34,6 @@
 
 function fcnstr = formula (obj)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   fcnstr = obj.expr;
 
 endfunction

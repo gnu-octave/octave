@@ -52,10 +52,6 @@
 
 function vfcn = vectorize (fcn)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   vfcn = inline (__vectorize__ (fcn.expr));
 
 endfunction

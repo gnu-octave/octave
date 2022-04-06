@@ -6,7 +6,8 @@ Things to do before making a release:
 
   * Update version number and release year in CITATION.
 
-  * Update the NEWS file.  Include release date in Summary header.
+  * Update the etc/NEWS.N.md file corresponding to the major release
+    number N.  Include release date in Summary header.
 
   * Update the NEWS-<VERSION>.html, index.in, news.in, and download.in
     files for the web site.

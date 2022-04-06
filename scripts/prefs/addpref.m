@@ -82,9 +82,11 @@ endfunction
 
 %!test
 %! HOME = getenv ("HOME");
+%! tmpdir = tempname ();
 %! save_default_options ("-binary", "local");
 %! unwind_protect
-%!   setenv ("HOME", P_tmpdir ());
+%!   mkdir (tmpdir);
+%!   setenv ("HOME", tmpdir);
 %!
 %!   addpref ("group1", "pref1", [1 2 3]);
 %!   assert (getpref ("group1", "pref1"), [1 2 3]);
@@ -101,7 +103,8 @@ endfunction
 %!         "preference prefA already exists in GROUP group2");
 %!
 %! unwind_protect_cleanup
-%!   unlink (fullfile (P_tmpdir (), ".octave_prefs"));
+%!   unlink (fullfile (tmpdir, ".octave_prefs"));
+%!   rmdir (tmpdir);
 %!   if (isempty (HOME))
 %!     unsetenv ("HOME");
 %!   else

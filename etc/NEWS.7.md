@@ -1,4 +1,4 @@
-Summary of important user-visible changes for version 7 (2022-03-18)
+Summary of important user-visible changes for version 7 (2022-04-06)
 --------------------------------------------------------------------
 
 ### General improvements

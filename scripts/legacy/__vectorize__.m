@@ -28,6 +28,11 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
+## The following function was translated directly from the original C++
+## version.  Yes, it will be slow, but its use is strongly discouraged
+## anyway, and most expressions will probably be short.  It may also be
+## buggy.  Well, don't use this function!
+
 function new_expr = __vectorize__ (expr);
 
   new_expr = "";

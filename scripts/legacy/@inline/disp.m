@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2022 The Octave Project Developers
+## Copyright (C) 2017-2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,16 +24,19 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{fcnstr} =} formula (@var{fobj})
-## Return a character string representing the inline function @var{fobj}.
-##
-## Programming Note: @code{char (@var{fobj})} is equivalent to
-## @code{formula (@var{fobj})}.
-## @seealso{char, argnames, vectorize, inline}
+## @deftypefn {} {} disp (@var{fobj})
+## Display an @code{inline} function object.
+## @seealso{display}
 ## @end deftypefn
 
-function fcnstr = formula (obj)
+function disp (fobj)
 
-  fcnstr = obj.expr;
+  disp ("inline function object:");
+  ## FIXME: inputname doesn't work with @class methods
+  ## str = inputname (1);
+  ## args = strjoin (fobj.args, ',');
+  ## str = [str '(' args ')' " = " fobj.expr];
+  ## disp (str);
+  disp (formula (fobj));
 
 endfunction

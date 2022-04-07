@@ -23,9 +23,9 @@
 ##
 ########################################################################
 
-function retval = feval (fcn, varargin)
+function retval = feval (fobj, varargin)
 
-  fh = eval (sprintf ("@(%s) %s", strjoin (fcn.args, ","), fcn.expr));
+  fh = eval (sprintf ("@(%s) %s", strjoin (fobj.args, ","), fobj.expr));
 
   retval = fh (varargin{:});
 

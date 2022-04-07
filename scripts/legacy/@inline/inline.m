@@ -37,7 +37,7 @@
 ## function are extracted from the function itself.  The generated
 ## function arguments will then be in alphabetical order.  It should be
 ## noted that i and j are ignored as arguments due to the ambiguity
-## between their use as a variable or their use as an built-in constant.
+## between their use as a variable and their use as an built-in constant.
 ## All arguments followed by a parenthesis are considered to be
 ## functions.  If no arguments are found, a function taking a single
 ## argument named @code{x} will be created.

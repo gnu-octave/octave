@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2022 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,16 +24,17 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{fcnstr} =} formula (@var{fobj})
-## Return a character string representing the inline function @var{fobj}.
+## @deftypefn {} {@var{args} =} symvar (@var{fobj})
+## Return a cell array of character strings containing the names of the
+## arguments of the inline function object @var{fobj}.
 ##
-## Programming Note: @code{char (@var{fobj})} is equivalent to
-## @code{formula (@var{fobj})}.
-## @seealso{char, argnames, vectorize, inline}
+## Programming Note: @code{symvar (@var{fobj})} is equivalent to
+## @code{argnames (@var{fobj})}.
+## @seealso{argnames, formula, vectorize, inline}
 ## @end deftypefn
 
-function fcnstr = formula (obj)
+function args = symvar (fobj)
 
-  fcnstr = obj.expr;
+  args = fobj.args;
 
 endfunction

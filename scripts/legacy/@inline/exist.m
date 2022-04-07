@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2022 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,16 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{fcnstr} =} formula (@var{fobj})
-## Return a character string representing the inline function @var{fobj}.
+## @deftypefn {} {@var{C} =} exist (@var{fobj})
+## Return code 1 indicating @var{fobj} is an Octave variable.
 ##
-## Programming Note: @code{char (@var{fobj})} is equivalent to
-## @code{formula (@var{fobj})}.
-## @seealso{char, argnames, vectorize, inline}
+## @seealso{inline}
 ## @end deftypefn
 
-function fcnstr = formula (obj)
+function retval = exist (fobj)
 
-  fcnstr = obj.expr;
+  retval = 1;
 
 endfunction

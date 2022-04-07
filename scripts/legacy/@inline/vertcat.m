@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2022 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,16 +24,16 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{fcnstr} =} formula (@var{fobj})
-## Return a character string representing the inline function @var{fobj}.
+## @deftypefn {} {} vertcat (@var{fobj1}, @var{dots})
+## Vertically concatenate inline function objects.
 ##
-## Programming Note: @code{char (@var{fobj})} is equivalent to
-## @code{formula (@var{fobj})}.
-## @seealso{char, argnames, vectorize, inline}
+## Concatenating inline function objects is @strong{not} possible;
+## Octave emits an error if this function is called.
+## @seealso{inline}
 ## @end deftypefn
 
-function fcnstr = formula (obj)
+function vertcat (varargin)
 
-  fcnstr = obj.expr;
+  error ("@inline/vertcat: concatenating inline function objects is not possible");
 
 endfunction

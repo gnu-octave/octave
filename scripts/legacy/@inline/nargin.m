@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2022 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,16 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{fcnstr} =} formula (@var{fobj})
-## Return a character string representing the inline function @var{fobj}.
-##
-## Programming Note: @code{char (@var{fobj})} is equivalent to
-## @code{formula (@var{fobj})}.
-## @seealso{char, argnames, vectorize, inline}
+## @deftypefn {} {@var{n} =} nargin (@var{fobj})
+## Return the number of input arguments for the inline function object
+## @var{fobj}.
+## @seealso{nargout, argnames, inline}
 ## @end deftypefn
 
-function fcnstr = formula (obj)
+function n = nargin (fobj)
 
-  fcnstr = obj.expr;
+  n = fobj.numArgs;
 
 endfunction

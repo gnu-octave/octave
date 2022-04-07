@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2022 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,16 +24,17 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{fcnstr} =} formula (@var{fobj})
-## Return a character string representing the inline function @var{fobj}.
+## @deftypefn {} {@var{n} =} nargout (@var{fobj})
+## Return the number of output arguments for the inline function object
+## @var{fobj}.
 ##
-## Programming Note: @code{char (@var{fobj})} is equivalent to
-## @code{formula (@var{fobj})}.
-## @seealso{char, argnames, vectorize, inline}
+## Programming Note: The return value is always 1 because @code{inline}
+## function objects only support one output.
+## @seealso{nargin, inline}
 ## @end deftypefn
 
-function fcnstr = formula (obj)
+function n = nargout (fobj)
 
-  fcnstr = obj.expr;
+  n = 1;
 
 endfunction

@@ -26,12 +26,20 @@ FCN_FILE_DIRS += %reldir%/@inline
 
 %canon_reldir%_@inline_FCN_FILES = \
   %reldir%/@inline/argnames.m \
+  %reldir%/@inline/cat.m \
   %reldir%/@inline/char.m \
+  %reldir%/@inline/disp.m \
+  %reldir%/@inline/exist.m \
   %reldir%/@inline/feval.m \
   %reldir%/@inline/formula.m \
+  %reldir%/@inline/horzcat.m \
   %reldir%/@inline/inline.m \
+  %reldir%/@inline/nargin.m \
+  %reldir%/@inline/nargout.m \
   %reldir%/@inline/subsref.m \
-  %reldir%/@inline/vectorize.m
+  %reldir%/@inline/symvar.m \
+  %reldir%/@inline/vectorize.m \
+  %reldir%/@inline/vertcat.m
 
 %canon_reldir%_@inlinedir = $(fcnfiledir)/legacy/@inline
 

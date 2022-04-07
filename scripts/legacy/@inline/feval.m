@@ -25,8 +25,6 @@
 
 function retval = feval (fobj, varargin)
 
-  fh = eval (sprintf ("@(%s) %s", strjoin (fobj.args, ","), fobj.expr));
-
-  retval = fh (varargin{:});
+  retval = fobj.fh (varargin{:});
 
 endfunction

@@ -8,7 +8,6 @@ That means that less symbols are exported from these libraries.
 Configure with `--disable-lib-visibility-flags` to export all symbols
 (as in previous versions).
 
-
 ### Graphical User Interface
 
 
@@ -16,6 +15,9 @@ Configure with `--disable-lib-visibility-flags` to export all symbols
 
 
 ### Matlab compatibility
+
+- `inline` functions now support all Matlab methods.  The performance
+  of `inline` functions has also been improved.
 
 - `sub2ind` now supports index values outside of the size specified by
   the subscripts.

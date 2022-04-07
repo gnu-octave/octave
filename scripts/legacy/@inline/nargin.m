@@ -32,6 +32,6 @@
 
 function n = nargin (fobj)
 
-  n = fobj.numArgs;
+  n = fobj.nargs;
 
 endfunction

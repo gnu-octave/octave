@@ -97,7 +97,10 @@ function fobj = inline (expr, varargin)
 
   p.expr = expr;
   p.args = args(:);
-  p.numArgs = numel (args);
+  p.nargs = numel (args);
+  p.fh = eval (sprintf ("@(%s) %s", strjoin (args(:), ","), expr));
+
+  ## FIXME: Do we need these parts of inline struct anymore (4/6/22)?
   tmp = [args; num2cell(1:numel(args))];
   p.inputExpr = sprintf ("%s = INLINE_INPUTS_{%d}; ", tmp{:});
   p.isEmpty = false;

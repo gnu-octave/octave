@@ -430,8 +430,6 @@ OCTAVE_NAMESPACE_BEGIN
 
     profiler& get_profiler (void) { return m_profiler; }
 
-    call_stack& get_call_stack (void) { return m_call_stack; }
-
     void push_stack_frame (const symbol_scope& scope);
 
     void push_stack_frame (octave_user_function *fcn,

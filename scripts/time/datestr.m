@@ -107,7 +107,7 @@
 ## If @var{f} is not specified or is @code{-1}, then use 0, 1 or 16, depending
 ## on whether the date portion or the time portion of @var{date} is empty.
 ##
-## If @var{p} is nor specified, it defaults to the current year minus 50.
+## If @var{p} is not specified, it defaults to the current year minus 50.
 ##
 ## If a matrix or cell array of dates is given, a column vector of date strings
 ## is returned.

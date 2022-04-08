@@ -44,7 +44,11 @@
 #include "pt-walk.h"
 #include "stack-frame.h"
 
+class octave_builtin;
+class octave_mex_function;
 class octave_user_code;
+class octave_user_function;
+class octave_user_script;
 
 OCTAVE_NAMESPACE_BEGIN
 
@@ -245,6 +249,15 @@ OCTAVE_NAMESPACE_BEGIN
     void visit_complex_for_command (tree_complex_for_command&);
 
     void visit_spmd_command (tree_spmd_command&);
+
+    octave_value evaluate_anon_fcn_handle (tree_anon_fcn_handle& afh);
+
+    octave_value_list
+    execute_builtin_function (octave_builtin& builtin_function, int nargout,
+                              const octave_value_list& args);
+    octave_value_list
+    execute_mex_function (octave_mex_function& mex_function, int nargout,
+                          const octave_value_list& args);
 
     void visit_octave_user_script (octave_user_script&);
 

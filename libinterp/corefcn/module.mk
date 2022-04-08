@@ -58,7 +58,6 @@ COREFCN_INC = \
   %reldir%/ls-oct-text.h \
   %reldir%/ls-oct-binary.h \
   %reldir%/ls-utils.h \
-  %reldir%/mex.h \
   %reldir%/mexproto.h \
   %reldir%/mx-type-traits.h \
   %reldir%/mxarray.h \
@@ -103,6 +102,7 @@ COREFCN_INC = \
 
 NOINSTALL_COREFCN_INC = \
   %reldir%/interpreter-private.h \
+  %reldir%/mex-private.h \
   %reldir%/oct-hdf5.h \
   %reldir%/oct-opengl.h
 

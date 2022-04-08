@@ -53,9 +53,11 @@
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "mex-private.h"
 #include "octave.h"
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
+#include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
@@ -3323,11 +3325,162 @@ Example:
       body->accept (*this);
   }
 
-  void
-  tree_evaluator::visit_octave_user_script (octave_user_script&)
+  octave_value
+  tree_evaluator::evaluate_anon_fcn_handle (tree_anon_fcn_handle& afh)
   {
-    // ??
-    panic_impossible ();
+    // FIXME: should CMD_LIST be limited to a single expression?
+    // I think that is what Matlab does.
+
+    symbol_scope new_scope;
+    symbol_scope scope = afh.scope ();
+    if (scope)
+      new_scope = scope.dup ();
+
+    tree_parameter_list *param_list = afh.parameter_list ();
+    tree_parameter_list *param_list_dup
+      = param_list ? param_list->dup (new_scope) : nullptr;
+
+    tree_parameter_list *ret_list = nullptr;
+
+    tree_statement_list *stmt_list = nullptr;
+
+    symbol_scope parent_scope = get_current_scope ();
+
+    new_scope.set_parent (parent_scope);
+    new_scope.set_primary_parent (parent_scope);
+
+    tree_expression *expr = afh.expression ();
+    if (expr)
+      {
+        tree_expression *expr_dup = expr->dup (new_scope);
+        tree_statement *stmt = new tree_statement (expr_dup, nullptr);
+        stmt_list = new tree_statement_list (stmt);
+      }
+
+    tree_anon_scopes anon_fcn_ctx (afh);
+
+    std::set<std::string> free_vars = anon_fcn_ctx.free_variables ();
+
+    stack_frame::local_vars_map local_vars;
+
+    std::shared_ptr<stack_frame> frame
+      = m_call_stack.get_current_stack_frame ();
+
+    for (auto& name : free_vars)
+      {
+        octave_value val = frame->varval (name);
+
+        if (val.is_defined ())
+          local_vars[name] = val;
+      }
+
+    octave_user_function *af
+      = new octave_user_function (new_scope, param_list_dup, ret_list,
+                                  stmt_list);
+
+    octave_function *curr_fcn = m_call_stack.current_function ();
+
+    bool is_nested = false;
+
+    if (curr_fcn)
+      {
+        // FIXME: maybe it would be better to just stash curr_fcn
+        // instead of individual bits of info about it?
+
+        // An anonymous function defined inside another nested function
+        // or parent of a nested function also behaves like a nested
+        // function.
+
+        if (curr_fcn->is_parent_function () || curr_fcn->is_nested_function ())
+          {
+            is_nested = true;
+            af->mark_as_nested_function ();
+            new_scope.set_nesting_depth (parent_scope.nesting_depth () + 1);
+          }
+
+        af->stash_dir_name (curr_fcn->dir_name ());
+
+        new_scope.cache_fcn_file_name (curr_fcn->fcn_file_name ());
+        new_scope.cache_dir_name (curr_fcn->dir_name ());
+
+        // The following is needed so that class method dispatch works
+        // properly for anonymous functions that wrap class methods.
+
+        if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
+          af->stash_dispatch_class (curr_fcn->dispatch_class ());
+
+        af->stash_fcn_file_name (curr_fcn->fcn_file_name ());
+      }
+
+    af->mark_as_anonymous_function ();
+
+    octave_value ov_fcn (af);
+
+    return (is_nested
+            ? octave_value (new octave_fcn_handle (ov_fcn, local_vars, frame))
+            : octave_value (new octave_fcn_handle (ov_fcn, local_vars)));
+  }
+
+  octave_value_list
+  tree_evaluator::execute_builtin_function (octave_builtin& builtin_function,
+                                            int nargout,
+                                            const octave_value_list& args)
+  {
+    octave_value_list retval;
+
+    if (args.has_magic_colon ())
+      error ("invalid use of colon in function argument list");
+
+    profiler::enter<octave_builtin> block (m_profiler, builtin_function);
+
+    octave_builtin::fcn fcn = builtin_function.function ();
+
+    if (fcn)
+      retval = (*fcn) (args, nargout);
+    else
+      {
+        octave_builtin::meth meth = builtin_function.method ();
+
+        retval = (*meth) (m_interpreter, args, nargout);
+      }
+
+    // Do not allow null values to be returned from functions.
+    // FIXME: perhaps true builtins should be allowed?
+
+    retval.make_storable_values ();
+
+    // Fix the case of a single undefined value.
+    // This happens when a compiled function uses
+    //
+    //   octave_value retval;
+    //
+    // instead of
+    //
+    //   octave_value_list retval;
+    //
+    // the idiom is very common, so we solve that here.
+
+    if (retval.length () == 1 && retval.xelem (0).is_undefined ())
+      retval.clear ();
+
+    return retval;
+  }
+
+  octave_value_list
+  tree_evaluator::execute_mex_function (octave_mex_function& mex_function,
+                                        int nargout,
+                                        const octave_value_list& args)
+  {
+    octave_value_list retval;
+
+    if (args.has_magic_colon ())
+      error ("invalid use of colon in function argument list");
+
+    profiler::enter<octave_mex_function> block (m_profiler, mex_function);
+
+    retval = call_mex (mex_function, args, nargout);
+
+    return retval;
   }
 
   octave_value_list
@@ -3374,7 +3527,7 @@ Example:
   }
 
   void
-  tree_evaluator::visit_octave_user_function (octave_user_function&)
+  tree_evaluator::visit_octave_user_script (octave_user_script&)
   {
     // ??
     panic_impossible ();
@@ -3537,6 +3690,13 @@ Example:
       }
 
     return retval;
+  }
+
+  void
+  tree_evaluator::visit_octave_user_function (octave_user_function&)
+  {
+    // ??
+    panic_impossible ();
   }
 
   void

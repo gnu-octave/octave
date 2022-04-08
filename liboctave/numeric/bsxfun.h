@@ -68,13 +68,13 @@ is_valid_inplace_bsxfun (const std::string& name,
   if (r_nd < x_nd)
     return false;
 
-  for (int i = 0; i < r_nd; i++)
+  for (int i = 0; i < x_nd; i++)
     {
       octave_idx_type rk = rdv(i);
       octave_idx_type xk = xdv(i);
 
       // Only two valid conditions to check; can't stretch rk
-      if (! ((rk == xk) || (rk != 1 && xk == 1)))
+      if ((rk != xk) && xk != 1)
         return false;
     }
 

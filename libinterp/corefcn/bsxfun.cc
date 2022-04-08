@@ -815,6 +815,33 @@ as the other array.
 %! r = bsxfun (@times, im, mask);
 %! assert (r(:,:,1), repmat (single ([0, 0, 1+i, 1+i]), [4, 1]));
 
+## automatic broadcasting with inplace times operator
+%!test <*38466>
+%! a = ones (2, 2, 2);
+%! b = 2 * ones (2, 1);
+%! a .*= b;
+%! assert (a, 2 * ones (2, 2, 2));
+
+%!test <*38466>
+%! a = ones (2, 2, 2);
+%! b = 2 * ones (1, 2);
+%! a .*= b;
+%! assert (a, 2 * ones (2, 2, 2));
+
+%!test <*38466>
+%! a = ones (2, 2, 2);
+%! b = 2 * ones (2, 2);
+%! a .*= b;
+%! assert (a, 2 * ones (2, 2, 2));
+
+%!test <*38466>
+%! a = ones (2, 2, 2);
+%! b = 2 * ones (1, 1, 2);
+%! a .*= b;
+%! assert (a, 2 * ones (2, 2, 2));
+
+%!assert (ones (2,2,2) .* ones (1,2), ones (2,2,2));
+
 */
 
 OCTAVE_NAMESPACE_END

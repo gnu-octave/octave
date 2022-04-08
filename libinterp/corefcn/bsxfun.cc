@@ -816,25 +816,25 @@ as the other array.
 %! assert (r(:,:,1), repmat (single ([0, 0, 1+i, 1+i]), [4, 1]));
 
 ## automatic broadcasting with inplace times operator
-%!test <*38466>
+%!test <38466>
 %! a = ones (2, 2, 2);
 %! b = 2 * ones (2, 1);
 %! a .*= b;
 %! assert (a, 2 * ones (2, 2, 2));
 
-%!test <*38466>
+%!test <38466>
 %! a = ones (2, 2, 2);
 %! b = 2 * ones (1, 2);
 %! a .*= b;
 %! assert (a, 2 * ones (2, 2, 2));
 
-%!test <*38466>
+%!test <38466>
 %! a = ones (2, 2, 2);
 %! b = 2 * ones (2, 2);
 %! a .*= b;
 %! assert (a, 2 * ones (2, 2, 2));
 
-%!test <*38466>
+%!test
 %! a = ones (2, 2, 2);
 %! b = 2 * ones (1, 1, 2);
 %! a .*= b;

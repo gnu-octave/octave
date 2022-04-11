@@ -32,9 +32,9 @@
 ##
 ## List directory contents.
 ##
-## The @code{ls} command is implemented by calling the native operating
-## system's directory listing command---available @var{options} will vary from
-## system to system.
+## The @code{ls} function forwards to the @code{ls} command if it is available.
+## It falls back to calling the native operating system's directory listing
+## command.  Available @var{options} may vary from system to system.
 ##
 ## Filenames are subject to shell expansion if they contain any wildcard
 ## characters @samp{*}, @samp{?}, @samp{[]}.  To find a literal example of a
@@ -64,14 +64,29 @@ function list = ls (varargin)
     error ("ls: all arguments must be character strings");
   endif
 
+  ls_cmd = ls_command ();
+
   if (nargin > 0)
     args = tilde_expand (varargin);
+
     if (ispc () && ! isunix ())
-      idx = ! strncmp (args, '/', 1);
-      ## Enclose paths, potentially having spaces, in double quotes:
-      args(idx) = strcat ('"', args(idx), '"');
-      ## shell (cmd.exe) on MinGW uses '^' as escape character
-      args = regexprep (args, '([^\w.*?])', '^$1');
+      if (strncmp (ls_cmd, "ls", 2))
+        ## Replace backslashes with forward slashes (unless they escape a glob
+        ## pattern)
+        args = regexprep (args, '\\(?![\*\?\[\]])', '/');
+        ## Enclose paths, potentially having spaces, in double quotes:
+        args = strcat ('"', args, '"');
+        ## Exclude glob patterns from quoted part of FILENAMES string
+        args = regexprep (args, '(?<!\\)([\*\?])', '"$1"');
+        args = regexprep (args, '(?<!\\)\[', '"[');
+        args = regexprep (args, '(?<!\\)\[', ']"');
+      else
+        idx = ! strncmp (args, '/', 1);
+        ## Enclose paths, potentially having spaces, in double quotes:
+        args(idx) = strcat ('"', args(idx), '"');
+        ## shell (cmd.exe) on MinGW uses '^' as escape character
+        args = regexprep (args, '([^\w.*?])', '^$1');
+      endif
     else
       ## Escape any special characters in filename
       args = regexprep (args, '([^][\w.*?-])', '\\$1');
@@ -80,12 +95,12 @@ function list = ls (varargin)
       ## Example: list = ls ("-l /usr/bin")
       args = regexprep (args, '(-\w+)(?:\\ )+', '$1 ');
     endif
+
     args = sprintf ("%s ", args{:});
   else
     args = "";
   endif
 
-  ls_cmd = ls_command ();
   if (nargout > 0 && strncmp (ls_cmd, "ls", 2))
     args = ["-1 ", args];
   endif

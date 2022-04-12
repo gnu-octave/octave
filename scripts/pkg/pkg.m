@@ -696,6 +696,10 @@ function [local_packages, global_packages] = pkg (varargin)
           global_packages = standardize_paths (global_packages);
         endif
         global_packages = make_rel_paths (global_packages);
+        global_list_dir = fileparts (global_list);
+        if (! isempty (global_list_dir) && ! exist (global_list_dir, "dir"))
+          mkdir (global_list_dir);
+        endif
         save (global_list, "global_packages");
         if (nargout)
           local_packages = global_packages;
@@ -706,6 +710,10 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = save_order (local_packages);
         if (ispc)
           local_packages = standardize_paths (local_packages);
+        endif
+        local_list_dir = fileparts (local_list);
+        if (! isempty (local_list_dir) && ! exist (local_list_dir, "dir"))
+          mkdir (local_list_dir);
         endif
         save (local_list, "local_packages");
         if (! nargout)

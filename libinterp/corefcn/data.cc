@@ -4148,7 +4148,12 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          {
+            if (args(i).numel () > 1)
+              error ("%s: dimensions must be scalars.", fcn);
+
+            dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          }
       }
       break;
     }
@@ -4300,7 +4305,12 @@ fill_matrix (const octave_value_list& args, double val, float fval,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          {
+            if (args(i).numel () > 1)
+              error ("%s: dimensions must be scalars.", fcn);
+
+            dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          }
       }
       break;
     }
@@ -4382,7 +4392,12 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          {
+            if (args(i).numel () > 1)
+              error ("%s: dimensions must be scalars.", fcn);
+
+            dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          }
       }
       break;
     }
@@ -4446,7 +4461,12 @@ fill_matrix (const octave_value_list& args, const Complex& val,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          {
+            if (args(i).numel () > 1)
+              error ("%s: dimensions must be scalars.", fcn);
+
+            dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          }
       }
       break;
     }
@@ -4524,7 +4544,12 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          {
+            if (args(i).numel () > 1)
+              error ("%s: dimensions must be scalars.", fcn);
+
+            dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
+          }
       }
       break;
     }
@@ -4618,6 +4643,10 @@ val = ones (m,n, "uint8")
 %!error <conversion of 1.1 .*failed> ones (1, 1.1)
 %!error <conversion of 1.1 .*failed> ones ([1, 1.1])
 %!error <sparse ND .* not supported> ones (3, 3, 3, "like", speye (1))
+%!error <must be scalar> ones (1:3, 1)
+%!error <must be scalar> ones (1, 1:3)
+%!error <must be scalar> ones (1, 2, 1:3)
+%!error <must be scalar> ones (1:3, 1, "like", single (1))
 */
 
 /*
@@ -4699,6 +4728,10 @@ val = zeros (m,n, "uint8")
 %!error <conversion of 1.1 .*failed> zeros (1, 1.1, 2)
 %!error <conversion of 1.1 .*failed> zeros ([1, 1.1, 2])
 %!error <sparse ND .* not supported> zeros (3, 3, 3, "like", speye (1))
+%!error <must be scalar> zeros (1:3, 1)
+%!error <must be scalar> zeros (1, 1:3)
+%!error <must be scalar> zeros (1, 2, 1:3)
+%!error <must be scalar> zeros (1:3, 1, "like", single (1))
 */
 
 DEFUN (Inf, args, ,
@@ -4772,6 +4805,10 @@ DEFALIAS (inf, Inf);
 %!error Inf (3, 4, 5, "int8")
 %!error <input .* floating> Inf (3, 3, "like", true)
 %!error <input .* floating> Inf (2, "like", uint8 (1))
+%!error <must be scalar> Inf (1:3, 1)
+%!error <must be scalar> Inf (1, 1:3)
+%!error <must be scalar> Inf (1, 2, 1:3)
+%!error <must be scalar> Inf (1:3, 1, "like", single (1))
 */
 
 DEFUN (NaN, args, ,
@@ -4853,6 +4890,10 @@ DEFALIAS (nan, NaN);
 %!error NaN (3, 4, 5, "int8")
 %!error <input .* floating> NaN (3, 3, "like", true)
 %!error <input .* floating> NaN (2, "like", uint8 (1))
+%!error <must be scalar> NaN (1:3, 1)
+%!error <must be scalar> NaN (1, 1:3)
+%!error <must be scalar> NaN (1, 2, 1:3)
+%!error <must be scalar> NaN (1:3, 1, "like", single (1))
 */
 
 DEFUN (e, args, ,
@@ -5005,6 +5046,10 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 %!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])),
 %!        single ([2^-24 2^-23 2^-22 2^104 2^-149 2^-149 2^-149 NaN NaN]))
 %!error <X must be of a floating point type> eps (uint8 ([0 1 2]))
+%!error <must be scalar> eps (1:3, 1)
+%!error <must be scalar> eps (1, 1:3)
+%!error <must be scalar> eps (1, 2, 1:3)
+%!error <must be scalar> eps (1:3, 1, "single")
 */
 
 DEFUN (pi, args, ,
@@ -5245,6 +5290,9 @@ If a logical variable @var{var} is specified after @qcode{"like"}, the output
 
 %!error false (2, 3, "double")
 %!error <input .* logical> false (2, 1, "like", sparse (1))
+%!error <must be scalar> false (1:3, 1)
+%!error <must be scalar> false (1, 1:3)
+%!error <must be scalar> false (1, 2, 1:3)
 */
 
 DEFUN (true, args, ,
@@ -5277,6 +5325,9 @@ If a logical variable @var{var} is specified after @qcode{"like"}, the output
 
 %!error true (2, 3, "double")
 %!error <input .* logical> true (2, 1, "like", double (1))
+%!error <must be scalar> true (1:3, 1)
+%!error <must be scalar> true (1, 1:3)
+%!error <must be scalar> true (1, 2, 1:3)
 */
 
 template <typename MT>

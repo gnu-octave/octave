@@ -48,16 +48,16 @@ if [ $# -eq 2 ]; then
   shift
   case "$1" in
     --list-files)
-      echo $output_dir/tbcover.m
-      echo $output_dir/bc-overloads.tst
+      echo tbcover.m
+      echo bc-overloads.tst
       for class in $CLASSES; do
-        echo $output_dir/@$class/tbcover.m
+        echo @$class/tbcover.m
       done
       exit
     ;;
     --list-dirs)
       for class in $CLASSES; do
-        echo $output_dir/@$class
+        echo @$class
       done
       exit
     ;;
@@ -70,16 +70,16 @@ if [ $# -eq 2 ]; then
     ;;
   esac
 else
-  echo "usage: build-bc-overload-tests.sh output_dir option" 1>&2
+  echo "usage: mk-bc-overload-tst.sh output_dir option" 1>&2
   exit 1
 fi
 
 for class in $CLASSES; do
-  DIR="$output_dir/@$class"
+  DIR="@$class"
   test -d $DIR || mkdir $DIR || { echo "error: could not create $DIR"; exit; }
   cat > $DIR/tbcover.m << EOF
 % !!! DO NOT EDIT !!!
-% generated automatically by build-bc-overload-tests.sh
+% generated automatically by mk-bc-overload-tst.sh
 function s = tbcover (x, y)
   s = '$class';
 EOF
@@ -87,7 +87,7 @@ done
 
 cat > $output_dir/tbcover.m << EOF
 % !!! DO NOT EDIT !!!
-% generated automatically by build-bc-overload-tests.sh
+% generated automatically by mk-bc-overload-tst.sh
 function s = tbcover (x, y)
   s = 'none';
 EOF

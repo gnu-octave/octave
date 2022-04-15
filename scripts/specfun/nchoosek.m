@@ -115,18 +115,8 @@ function C = nchoosek (v, k)
     ## Steps: 1) Make a list of integers for numerator and denominator,
     ## 2) filter out common factors, 3) multiply what remains.
     k = min (k, v-k);
-
-    ## For a ~25% performance boost, multiply values pairwise so there
-    ## are fewer elements in do/until loop which is the slow part.
-    ## Since Odd*Even is guaranteed to be Even, also take out a factor
-    ## of 2 from numerator and denominator.
-    if (rem (k, 2))  # k is odd
-      numer = [((v-k+1:v-(k+1)/2) .* (v-1:-1:v-(k-1)/2)) / 2, v];
-      denom = [((1:(k-1)/2) .* (k-1:-1:(k+1)/2)) / 2, k];
-    else             # k is even
-      numer = ((v-k+1:v-k/2) .* (v:-1:v-k/2+1)) / 2;
-      denom = ((1:k/2) .* (k:-1:k/2+1)) / 2;
-    endif
+    numer = (v-k+1):v;
+    denom = (1:k);
 
     ## Remove common factors from numerator and denominator
     do
@@ -292,3 +282,10 @@ endfunction
 %!error <N must be a non-negative integer .= K> nchoosek (100.5, 45)
 %!warning <possible loss of precision> nchoosek (100, 45);
 %!warning <result .* saturated> nchoosek (uint64 (80), uint64 (40));
+%!warning <result .* saturated> nchoosek (uint32 (80), uint32 (40));
+%!warning <result .* saturated> nchoosek (uint16 (80), uint16 (40));
+%!warning <result .* saturated> nchoosek ( uint8 (80),  uint8 (40));
+%!warning <result .* saturated> nchoosek ( int64 (80),  int64 (40));
+%!warning <result .* saturated> nchoosek ( int32 (80),  int32 (40));
+%!warning <result .* saturated> nchoosek ( int16 (80),  int16 (40));
+%!warning <result .* saturated> nchoosek (  int8 (80),   int8 (40));

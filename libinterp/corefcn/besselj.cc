@@ -616,12 +616,16 @@ Error---no computation, algorithm termination condition not met, return
 
 DEFUN (airy, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})
+@deftypefn  {} {@var{a} =} airy (@var{z})
+@deftypefnx {} {@var{a} =} airy (@var{k}, @var{z})
+@deftypefnx {} {@var{a} =} airy (@var{k}, @var{z}, @var{scale})
+@deftypefnx {} {[@var{a}, @var{ierr}] =} airy (@dots{})
+
 Compute Airy functions of the first and second kind, and their derivatives.
 
 @example
 @group
- K   Function   Scale factor (if "opt" is supplied)
+ K   Function   Scale factor (if @var{scale} is true)
 ---  --------   ---------------------------------------
  0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))
  1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))
@@ -633,9 +637,12 @@ Compute Airy functions of the first and second kind, and their derivatives.
 The function call @code{airy (@var{z})} is equivalent to
 @code{airy (0, @var{z})}.
 
-The result is the same size as @var{z}.
+The optional third input @var{scale} determines whether to
+apply scaling as described above. It is false by default.
 
-If requested, @var{ierr} contains the following status information and
+The result @var{a} is the same size as @var{z}.
+
+The optional output @var{ierr} contains the following status information and
 is the same size as the result.
 
 @enumerate 0
@@ -677,42 +684,35 @@ return @code{NaN}.
         error ("airy: K must be 0, 1, 2, or 3");
     }
 
-  bool scale = (nargin == 3);
+  bool scale = (nargin == 3) && args(2).xbool_value ("airy: scale option must be a logical value");
 
   int idx = (nargin == 1 ? 0 : 1);
+
+  Array<octave_idx_type> ierr;
+  octave_value result;
 
   if (args(idx).is_single_type ())
     {
       FloatComplexNDArray z = args(idx).xfloat_complex_array_value ("airy: Z must be a complex matrix");
 
-      Array<octave_idx_type> ierr;
-      octave_value result;
-
       if (kind > 1)
         result = math::biry (z, kind == 3, scale, ierr);
       else
         result = math::airy (z, kind == 1, scale, ierr);
-
-      retval(0) = result;
-      if (nargout > 1)
-        retval(1) = NDArray (ierr);
     }
   else
     {
       ComplexNDArray z = args(idx).xcomplex_array_value ("airy: Z must be a complex matrix");
 
-      Array<octave_idx_type> ierr;
-      octave_value result;
-
       if (kind > 1)
         result = math::biry (z, kind == 3, scale, ierr);
       else
         result = math::airy (z, kind == 1, scale, ierr);
-
-      retval(0) = result;
-      if (nargout > 1)
-        retval(1) = NDArray (ierr);
     }
+
+  retval(0) = result;
+  if (nargout > 1)
+    retval(1) = NDArray (ierr);
 
   return retval;
 }

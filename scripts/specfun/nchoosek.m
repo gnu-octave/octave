@@ -115,8 +115,23 @@ function C = nchoosek (v, k)
     ## Steps: 1) Make a list of integers for numerator and denominator,
     ## 2) filter out common factors, 3) multiply what remains.
     k = min (k, v-k);
-    numer = (v-k+1):v;
-    denom = (1:k);
+
+    if (isinteger (v) || isinteger (k))
+      numer = (v-k+1):v;
+      denom = (1:k);
+    else
+      ## For a ~25% performance boost, multiply values pairwise so there
+      ## are fewer elements in do/until loop which is the slow part.
+      ## Since Odd*Even is guaranteed to be Even, also take out a factor
+      ## of 2 from numerator and denominator.
+      if (rem (k, 2))  # k is odd
+        numer = [((v-k+1:v-(k+1)/2) .* (v-1:-1:v-(k-1)/2)) / 2, v];
+        denom = [((1:(k-1)/2) .* (k-1:-1:(k+1)/2)) / 2, k];
+      else             # k is even
+        numer = ((v-k+1:v-k/2) .* (v:-1:v-k/2+1)) / 2;
+        denom = ((1:k/2) .* (k:-1:k/2+1)) / 2;
+      endif
+    endif
 
     ## Remove common factors from numerator and denominator
     do

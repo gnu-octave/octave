@@ -718,8 +718,24 @@ return @code{NaN}.
 }
 
 /*
-FIXME: Function airy does not yet have BIST tests
+%!test <*62321>
+%! assert (airy (0,  1, false), 0.1352924163128814, 1e-14)
+%! assert (airy (0, -1, false), 0.5355608832923521, 1e-14)
+%! assert (airy (0,  i, false), 0.3314933054321411 - 0.3174498589684437i, 1e-14)
+%! assert (airy (0, -i, false), 0.3314933054321411 + 0.3174498589684437i, 1e-14)
+%! assert (airy (0,  1, true), 0.2635136447491401, 1e-14)
+%! assert (airy (0, -1, true), 0.4208904755499093 - 0.3311746779333462i, 1e-14)
+%! assert (airy (0,  i, true), 0.2743053542644657 - 0.08256069414005915i, 1e-14)
+%! assert (airy (0, -i, true), 0.2743053542644657 + 0.08256069414005915i, 1e-14)
+
+%!error (airy ())
+%!error (airy (0, 1, 2, 3))
+%!error <K must be an integer value> (airy ("foo", 2, false))
+%!error <K must be 0, 1, 2, or 3> (airy (3743, 2, false))
+%!error <scale option must be a logical value> (airy (0, 2, "foo"))
+%!error <Z must be a complex matrix> (airy (0, "foo", false))
 */
+
 
 /*
 ## Test values computed with GP/PARI version 2.3.3

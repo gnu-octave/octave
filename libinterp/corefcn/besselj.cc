@@ -355,6 +355,10 @@ Error---no computation, algorithm termination condition not met, return
 
 /*
 %!# Function besselj is tested along with other bessels at the end of this file
+
+## besselj specific BIST
+%!assert <*48316> (! any (isnan (besselj (1, 10.^[5:12]))))
+
 */
 
 DEFUN (bessely, args, nargout,
@@ -466,6 +470,10 @@ Error---no computation, algorithm termination condition not met, return
 
 /*
 %!# Function besseli is tested along with other bessels at the end of this file
+
+## besseli specific BIST
+%!assert (! isinf (besseli (0, 700))) 
+
 */
 
 DEFUN (besselk, args, nargout,

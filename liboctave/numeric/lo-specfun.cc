@@ -138,11 +138,9 @@ namespace octave
 
       F77_INT id = (deriv ? 1 : 0);
       F77_INT nz, t_ierr;
+      F77_INT sc = (scaled ? 2 : 1);
 
-      if (scaled)
-        F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, t_ierr);
-      else
-        F77_FUNC (zairy, ZAIRY) (zr, zi, id, 1, ar, ai, nz, t_ierr);
+      F77_FUNC (zairy, ZAIRY) (zr, zi, id, sc, ar, ai, nz, t_ierr);
 
       ierr = t_ierr;
 
@@ -194,13 +192,10 @@ namespace octave
 
       F77_INT id = (deriv ? 1 : 0);
       F77_INT nz, t_ierr;
+      F77_INT sc = (scaled ? 2 : 1);
 
-      if (scaled)
-        F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
-                                 F77_CMPLX_ARG (&a), nz, t_ierr);
-      else
-        F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 1,
-                                 F77_CMPLX_ARG (&a), nz, t_ierr);
+      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, sc,
+                               F77_CMPLX_ARG (&a), nz, t_ierr);
 
       ierr = t_ierr;
 
@@ -1365,11 +1360,9 @@ namespace octave
 
       F77_INT id = (deriv ? 1 : 0);
       F77_INT t_ierr;
+      F77_INT sc = (scaled ? 2 : 1);
 
-      if (scaled)
-        F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, t_ierr);
-      else
-        F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 1, ar, ai, t_ierr);
+      F77_FUNC (zbiry, ZBIRY) (zr, zi, id, sc, ar, ai, t_ierr);
 
       ierr = t_ierr;
 
@@ -1421,13 +1414,10 @@ namespace octave
 
       F77_INT id = (deriv ? 1 : 0);
       F77_INT t_ierr;
+      F77_INT sc = (scaled ? 2 : 1);
 
-      if (scaled)
-        F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
-                                 F77_CMPLX_ARG (&a), t_ierr);
-      else
-        F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 1,
-                                 F77_CMPLX_ARG (&a), t_ierr);
+      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, sc,
+                               F77_CMPLX_ARG (&a), t_ierr);
 
       ierr = t_ierr;
 

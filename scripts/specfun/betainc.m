@@ -139,12 +139,16 @@ function I = betainc (x, a, b, tail = "lower")
 
   if (strcmpi (tail, "lower"))
     I(a_b_one) = x(a_b_one);
-    I(a_one) = 1 - (1 - x(a_one)) .^ b(a_one);
+    ## See bug #62329.
+    ## equivalent to "1 - (1 - x(a_one)) .^ b(a_one)", but less roundoff error
+    I(a_one) = - expm1 (log1p (- x(a_one)) .* b(a_one));
     I(b_one) = x(b_one) .^ a(b_one);
   elseif (strcmpi (tail, "upper"))
     I(a_b_one) = 1 - x(a_b_one);
-    I(a_one) = (1 - x(a_one)) .^ b(a_one);
-    I(b_one) = 1 - x(b_one) .^ a(b_one);
+    ## equivalent to "(1 - x(a_one)) .^ b(a_one)", but less roundoff error
+    I(a_one) = exp (log1p (- x(a_one)) .* b(a_one));
+    ## equivalent to "1 - x(b_one) .^ a(b_one)", but less roundoff error
+    I(b_one) = - expm1 (log (x(b_one)) .* a(b_one));
   endif
 
   ## Non-Trivial cases
@@ -245,10 +249,18 @@ endfunction
 %! [a,b] = ndgrid (linspace (1e-4, 100, 20), linspace (1e-4, 100, 20));
 %! assert (betainc (0, a, b), zeros (20));
 %! assert (betainc (1, a, b), ones (20));
+%! assert (betainc (0, a, b, "upper"), ones (20));
+%! assert (betainc (1, a, b, "upper"), zeros (20));
 
 %!test <*34405>
 %! assert (betainc (NaN, 1, 2), NaN);
 %! assert (betainc (0.5, 1, Inf), 1);
+
+%!test <*62329>
+%! assert (betainc (2e-20, 1, 0.5), 1e-20, -1e-15)
+%! assert (betainc (2e-5, 1, 0.5), 2e-5 / (1 + sqrt (1 - 2e-5)), -1e-15)
+%! assert (betainc (0.99, 1, 0.5, "upper"), 0.1, -1e-15)
+%! assert (betainc (0.99, 0.5, 1, "upper"), - expm1 (log (0.99)/2), -1e-15)
 
 ## Test input validation
 %!error <Invalid call> betainc ()

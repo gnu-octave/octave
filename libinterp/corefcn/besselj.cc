@@ -759,6 +759,13 @@ return @code{NaN}.
 %! assert (airy (3, -1,  true),   0.5923756264227923,                       1e-15);
 %! assert (airy (3, +i,  true),   0.0842735134099415 - 0.0804106412111761i, 1e-15);
 %! assert (airy (3, -i,  true),   0.0842735134099415 + 0.0804106412111761i, 1e-15);
+%! z = -1 - 1e-6i;
+%! s1 = exp (2/3 * z * sqrt(z));
+%! s2 = exp (-abs (real (2/3 * z * sqrt(z))));
+%! assert (airy (0, z, true), s1 * airy (0, z, false), 1e-15);
+%! assert (airy (1, z, true), s1 * airy (1, z, false), 1e-15);
+%! assert (airy (2, z, true), s2 * airy (2, z, false), 1e-15);
+%! assert (airy (3, z, true), s2 * airy (3, z, false), 1e-15);
 
 Input validation tests
 %!error airy ()

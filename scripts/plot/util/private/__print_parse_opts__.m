@@ -108,6 +108,10 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.force_solid = -1;
       elseif (any (strcmp (arg, {"-opengl", "-painters"})))
         arg_st.renderer = arg(2:end);
+      elseif (strcmp (arg, "-image"))
+        arg_st.renderer = "opengl";
+      elseif (strcmp (arg, "-vector"))
+        arg_st.renderer = "painters";
       elseif (strcmp (arg, "-RGBImage"))
         arg_st.rgb_output = true;
         arg_st.renderer = "opengl";

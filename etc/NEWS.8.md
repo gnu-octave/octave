@@ -27,6 +27,9 @@ Configure with `--disable-lib-visibility-flags` to export all symbols
 - `clock` now has an optional second output `ISDST` which indicates if
   Daylight Savings Time is in effect for the system's time zone.
 
+- `print` now accepts option `-image` to specify the "opengl" renderer
+  and `-vector` to specify the "painters" renderer.
+
 ### Alphabetical list of new functions added in Octave 8
 
 

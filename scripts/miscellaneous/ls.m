@@ -76,10 +76,12 @@ function list = ls (varargin)
         args = regexprep (args, '\\(?![\*\?\[\]])', '/');
         ## Enclose paths, potentially having spaces, in double quotes:
         args = strcat ('"', args, '"');
-        ## Exclude glob patterns from quoted part of FILENAMES string
+        ## Exclude glob patterns and escaped characters from quoted part of
+        ## FILENAMES string
         args = regexprep (args, '(?<!\\)([\*\?])', '"$1"');
         args = regexprep (args, '(?<!\\)\[', '"[');
         args = regexprep (args, '(?<!\\)\[', ']"');
+        args = regexprep (args, '(\\.)', '"$1"');
       else
         idx = ! strncmp (args, '/', 1);
         ## Enclose paths, potentially having spaces, in double quotes:

@@ -172,6 +172,7 @@ namespace octave
     QApplication *qapp = m_octave_qobj.qapplication ();
 
     m_default_style = qapp->style ()->objectName ();
+    m_default_palette = qapp->palette ();
 
     gui_settings *settings = rmgr.get_settings ();
 
@@ -911,12 +912,24 @@ namespace octave
     if (preferred_style == global_style.def.toString ())
       preferred_style = m_default_style;
 
-    QStyle *new_style = QStyleFactory::create (preferred_style);
-    if (new_style)
-      {
-        QApplication *qapp = m_octave_qobj.qapplication ();
+    QApplication* qapp = m_octave_qobj.qapplication();
 
-        qapp->setStyle (new_style);
+    if (preferred_style == global_extra_styles.at (EXTRA_STYLE_FUSION_DARK))
+      {
+        QStyle *new_style = QStyleFactory::create (QStringLiteral("Fusion"));
+        if (new_style)
+          qapp->setStyle (new_style);
+        qapp->setPalette (getFusionDarkPalette());
+        qapp->setStyleSheet ("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+      }
+    else
+      {
+        QStyle *new_style = QStyleFactory::create (preferred_style);
+        if (new_style)
+          {
+            qapp->setPalette (m_default_palette);
+            qapp->setStyle (new_style);
+          }
       }
 
     // the widget's icons (when floating)
@@ -995,6 +1008,33 @@ namespace octave
     else
       QApplication::setCursorFlashTime (0);  // no flashing
 
+  }
+
+  QPalette main_window::getFusionDarkPalette()
+  {
+    QPalette darkPalette;
+    darkPalette.setColor(QPalette::Window, QColor(53, 53, 53));
+    darkPalette.setColor(QPalette::WindowText, Qt::white);
+    darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(127, 127, 127));
+    darkPalette.setColor(QPalette::Base, QColor(42, 42, 42));
+    darkPalette.setColor(QPalette::AlternateBase, QColor(66, 66, 66));
+    darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
+    darkPalette.setColor(QPalette::ToolTipText, Qt::white);
+    darkPalette.setColor(QPalette::Text, Qt::white);
+    darkPalette.setColor(QPalette::Disabled, QPalette::Text, QColor(127, 127, 127));
+    darkPalette.setColor(QPalette::Dark, QColor(35, 35, 35));
+    darkPalette.setColor(QPalette::Shadow, QColor(20, 20, 20));
+    darkPalette.setColor(QPalette::Button, QColor(53, 53, 53));
+    darkPalette.setColor(QPalette::ButtonText, Qt::white);
+    darkPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(127, 127, 127));
+    darkPalette.setColor(QPalette::BrightText, Qt::red);
+    darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
+    darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+    darkPalette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(80, 80, 80));
+    darkPalette.setColor(QPalette::HighlightedText, Qt::white);
+    darkPalette.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(127, 127, 127));
+
+    return darkPalette;
   }
 
   void main_window::prepare_to_exit (void)

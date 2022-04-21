@@ -116,6 +116,7 @@ namespace octave
 
     // Global style
     QStringList styles = QStyleFactory::keys();
+    styles.append (global_extra_styles);
     combo_styles->addItems (styles);
     combo_styles->insertItem (0, global_style.def.toString ());
     combo_styles->insertSeparator (1);

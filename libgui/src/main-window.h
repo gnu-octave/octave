@@ -153,10 +153,10 @@ namespace octave
     void open_donate_page (void);
     void process_settings_dialog_request (const QString& desired_tab
                                           = QString ());
-
     void show_about_octave (void);
     void notice_settings (const gui_settings *settings,
                           bool update_by_worker = false);
+    QPalette getFusionDarkPalette();
     void prepare_to_exit (void);
     void go_to_previous_widget (void);
     void reset_windows (void);
@@ -309,6 +309,7 @@ namespace octave
     QString m_default_encoding;
 
     QString m_default_style;
+    QPalette m_default_palette;
 
     //! Toolbar.
 

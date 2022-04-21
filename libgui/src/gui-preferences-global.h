@@ -117,6 +117,15 @@ global_all_icon_theme_names (QStringList ()
 const gui_pref
 global_status_bar ("show_status_bar", QVariant (true));
 
+
+enum
+{
+  EXTRA_STYLE_FUSION_DARK = 0
+}  ;
+const QStringList
+global_extra_styles (QStringList ()
+                        << "Fusion-Dark");
+
 #if defined (Q_OS_MAC)
 // prevent native file dialogs on MAC by setting the default "false" and
 // setting the flag for ignoring the pref to "true" (3rd argument)

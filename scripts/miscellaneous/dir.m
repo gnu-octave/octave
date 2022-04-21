@@ -63,16 +63,16 @@
 ## @var{directory} is subject to shell expansion if it contains any wildcard
 ## characters @samp{*}, @samp{?}, @samp{[]}.  If these wildcard characters are
 ## escaped with a backslash @samp{\} (e.g., @samp{\*}) on a POSIX platform,
-## they aren't treated as wildcards but as the corresponding literal character.
-## On Windows, it is not possible to escape wildcard characters because
-## backslash @samp{\} is treated as a file separator.  On Windows, use
-## @code{ls} instead for file or folder names that contain characters that
-## would be treated as wildcards by @code{dir}.
+## then they are not treated as wildcards, but as the corresponding literal
+## character.  On Windows, it is not possible to escape wildcard characters
+## because backslash @samp{\} is treated as a file separator.  On Windows, use
+## @code{ls} for file or folder names that contain characters that would be
+## treated as wildcards by @code{dir}.
 ##
 ## Note that for symbolic links, @code{dir} returns information about the
-## file that the symbolic link points to rather than the link itself.
-## However, if the link points to a nonexistent file, @code{dir} returns
-## information about the link.
+## file that the symbolic link points to rather than the link itself.  However,
+## if the link points to a nonexistent file, @code{dir} returns information
+## about the link.
 ## @seealso{ls, readdir, glob, what, stat, lstat}
 ## @end deftypefn
 

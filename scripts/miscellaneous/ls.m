@@ -38,8 +38,8 @@
 ##
 ## Filenames are subject to shell expansion if they contain any wildcard
 ## characters @samp{*}, @samp{?}, @samp{[]}.  If these wildcard characters are
-## escaped with a backslash @samp{\} (e.g., @samp{\*}), they aren't treated as
-## wildcards but as the corresponding literal character.
+## escaped with a backslash @samp{\} (e.g., @samp{\*}) then they are not
+## treated as wildcards, but instead as the corresponding literal character.
 ##
 ## If the optional output @var{list} is requested then @code{ls} returns a
 ## character array with one row for each file/directory name.
@@ -73,12 +73,12 @@ function list = ls (varargin)
       if (strncmp (ls_cmd, "ls", 2))
         ## Replace backslashes with forward slashes (unless they escape a glob
         ## pattern)
-        args = regexprep (args, '\\(?![\*\?\[\]])', '/');
+        args = regexprep (args, '\\(?![*?\[\]])', '/');
         ## Enclose paths, potentially having spaces, in double quotes:
         args = strcat ('"', args, '"');
         ## Exclude glob patterns and escaped characters from quoted part of
         ## FILENAMES string
-        args = regexprep (args, '(?<!\\)([\*\?])', '"$1"');
+        args = regexprep (args, '(?<!\\)([*?])', '"$1"');
         args = regexprep (args, '(?<!\\)\[', '"[');
         args = regexprep (args, '(?<!\\)\[', ']"');
         args = regexprep (args, '(\\.)', '"$1"');

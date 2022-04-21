@@ -37,9 +37,9 @@
 ## command.  Available @var{options} may vary from system to system.
 ##
 ## Filenames are subject to shell expansion if they contain any wildcard
-## characters @samp{*}, @samp{?}, @samp{[]}.  To find a literal example of a
-## wildcard character the wildcard must be escaped using the backslash operator
-## @samp{\}.
+## characters @samp{*}, @samp{?}, @samp{[]}.  If these wildcard characters are
+## escaped with a backslash @samp{\} (e.g., @samp{\*}), they aren't treated as
+## wildcards but as the corresponding literal character.
 ##
 ## If the optional output @var{list} is requested then @code{ls} returns a
 ## character array with one row for each file/directory name.

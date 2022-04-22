@@ -91,7 +91,7 @@ function list = ls (varargin)
       endif
     else
       ## Escape any special characters in filename
-      args = regexprep (args, '([^][\w.*?-])', '\\$1');
+      args = regexprep (args, '(?<!\\)([^][\w.*?-\\])', '\\$1');
       ## Undo escaped spaces following command args
       ## Only used for command form where single str contains many args.
       ## Example: list = ls ("-l /usr/bin")

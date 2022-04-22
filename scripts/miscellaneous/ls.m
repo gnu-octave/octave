@@ -71,8 +71,8 @@ function retval = ls (varargin)
 
     if (ispc () && ! isunix ())
       if (strncmp (ls_cmd, "ls", 2))
-        ## Replace backslashes with forward slashes (unless they escape a glob
-        ## pattern)
+        ## Replace backslashes with forward slashes (unless they escape a
+        ## wildcard character)
         args = regexprep (args, '\\(?![*?\[\]])', '/');
         ## Enclose paths, potentially having spaces, in double quotes:
         args = strcat ('"', args, '"');
@@ -80,7 +80,7 @@ function retval = ls (varargin)
         ## FILENAMES string
         args = regexprep (args, '(?<!\\)([*?])', '"$1"');
         args = regexprep (args, '(?<!\\)\[', '"[');
-        args = regexprep (args, '(?<!\\)\[', ']"');
+        args = regexprep (args, '(?<!\\)\]', ']"');
         args = regexprep (args, '(\\.)', '"$1"');
       else
         idx = ! strncmp (args, '/', 1);

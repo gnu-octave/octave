@@ -920,23 +920,7 @@ namespace octave
       }
 
     // the widget's icons (when floating)
-    QString icon_set
-      = settings->value (dw_icon_set).toString ();
-
-    int count = 0;
-    int icon_set_found = 0; // default
-
-    while (! dw_icon_set_names[count].name.isEmpty ())
-      {
-        // while not end of data
-        if (dw_icon_set_names[count].name == icon_set)
-          {
-            // data of desired icon set found
-            icon_set_found = count;
-            break;
-          }
-        count++;
-      }
+    QString icon_set = settings->value (dw_icon_set).toString ();
 
     QString icon;
     for (auto *widget : dock_widget_list ())
@@ -945,8 +929,8 @@ namespace octave
         if (! name.isEmpty ())
           {
             // if child has a name
-            icon = dw_icon_set_names[icon_set_found].path; // prefix | octave-logo
-            if (dw_icon_set_names[icon_set_found].name != "NONE")
+            icon = dw_icon_set_names[icon_set];
+            if (icon_set != "NONE")
               icon += name + ".png"; // add widget name and ext.
             widget->setWindowIcon (QIcon (icon));
           }
@@ -2021,7 +2005,7 @@ namespace octave
 
   void main_window::construct (void)
   {
-    setWindowIcon (QIcon (":/actions/icons/logo.png"));
+    setWindowIcon (QIcon (dw_icon_set_names["NONE"]));
 
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 

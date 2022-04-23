@@ -83,7 +83,6 @@ namespace octave
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
 
-    setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("Command Window"));
 
     setWidget (m_terminal);

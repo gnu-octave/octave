@@ -55,7 +55,6 @@ namespace octave
       m_filter (new QComboBox (this)),
       m_filter_widget (new QWidget (this))
   {
-    setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("Workspace"));
     setStatusTip (tr ("View the variables in the active workspace."));
 

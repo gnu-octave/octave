@@ -51,6 +51,7 @@
 #include "builtin-defun-decls.h"
 #include "dw-main-window.h"
 #include "gui-preferences-cs.h"
+#include "gui-preferences-dw.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-sc.h"
 #include "gui-preferences-ve.h"
@@ -171,7 +172,8 @@ namespace octave
   {
     if (toplevel)
       {
-        m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
+        m_dock_action->setIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
+                                       + "widget-dock.png"));
         m_dock_action->setToolTip (tr ("Dock widget"));
 
         setWindowFlags (Qt::Window);
@@ -188,7 +190,8 @@ namespace octave
       }
     else
       {
-        m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));
+        m_dock_action->setIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
+                                       + "widget-undock.png"));
         m_dock_action->setToolTip (tr ("Undock widget"));
 
         setFocus ();
@@ -1113,7 +1116,6 @@ namespace octave
   {
     set_title (tr ("Variable Editor"));
     setStatusTip (tr ("Edit variables."));
-    setWindowIcon (QIcon (":/actions/icons/logo.png"));
     setAttribute (Qt::WA_AlwaysShowToolTips);
 
     m_main->setParent (this);

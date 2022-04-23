@@ -1316,10 +1316,13 @@ namespace octave
     // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
     if (! rotated)
       {
+        QString icon = global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png";
+
         QString close_button_css_mac (
             "QTabBar::close-button"
-            "  { width: 6px; image: url(:/actions/icons/widget-close.png);"
-            "    subcontrol-position: button; }\n"
+            " { image: url(" + icon + ");"
+            " padding: 4px;"
+            "   subcontrol-position: bottom; }\n"
             "QTabBar::close-button:hover"
             "  { background-color: #cccccc; }");
 
@@ -2367,7 +2370,6 @@ namespace octave
              this, &file_editor::active_tab_changed);
 
     resize (500, 400);
-    setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("Editor"));
 
     check_actions ();

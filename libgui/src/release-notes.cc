@@ -38,6 +38,7 @@
 
 #include "release-notes.h"
 #include "gui-utils.h"
+#include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
 #include "news-reader.h"
 #include "octave-qobject.h"
@@ -46,19 +47,20 @@
 
 namespace octave
 {
-  release_notes::release_notes (void)
-    : QWidget (nullptr), m_browser (nullptr),
-      m_release_notes_icon (":/actions/icons/logo.png")
+  release_notes::release_notes (base_qobject& oct_qobj)
+    : QWidget (nullptr), m_browser (nullptr)
   {
-#if 0
-    // The following code was in main-window.cc.  How should that be
-    // handled here?
-    if (dw_icon_set_names[icon_set_found].name != "NONE")
-      m_release_notes_icon = dw_icon_set_names[icon_set_found].path
+
+    resource_manager& rmgr = oct_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    // The icon
+    QString icon_set = settings->value (dw_icon_set).toString ();
+    if (icon_set != "NONE")
+      m_release_notes_icon = dw_icon_set_names[icon_set]
                              + "ReleaseWidget.png";
     else
-      m_release_notes_icon = ":/actions/icons/logo.png";
-#endif
+      m_release_notes_icon = dw_icon_set_names[icon_set];
 
     std::string news_file = config::oct_etc_dir () + "/NEWS";
 

@@ -676,6 +676,11 @@ namespace octave
        {
          // INTERPRETER THREAD
 
+         // Act as though this action was entered at the command propmt
+         // so that the interpreter will check for updated file time
+         // stamps.
+         Vlast_prompt_time.stamp ();
+
          tree_evaluator& tw = interp.get_evaluator ();
 
          if (tw.in_debug_repl ())

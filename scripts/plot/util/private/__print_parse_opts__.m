@@ -491,8 +491,10 @@ function arg_st = __print_parse_opts__ (varargin)
                            6 / get (0, "screenpixelsperinch");
     arg_st.ghostscript.resolution = 72;
     arg_st.ghostscript.papersize = arg_st.canvas_size;
+    papersize_points = arg_st.canvas_size * 72;
     arg_st.ghostscript.epscrop = true;
     arg_st.ghostscript.pageoffset = [0, 0];
+    paperposition = [0, 0];
   endif
 
   if (arg_st.formatted_for_printing)

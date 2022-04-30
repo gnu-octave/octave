@@ -101,27 +101,29 @@ function h = findobj (varargin)
     handles = 0;
     n1 = 0;
   else
-    if (! isempty (varargin{1}))
-      if (ishghandle (varargin{1}(1)))
-        handles = varargin{1};
-        n1 = 2;
-      else
-        handles = 0;
-        n1 = 1;
-      endif
-    else
+    if (isempty (varargin{1}))
       ## Return [](0x1) for compatibility.
       h = zeros (0, 1);
       return;
     endif
+    arg1 = varargin{1};
+    if (isnumeric (arg1))
+      if (! all (ishghandle (arg1)))
+        error ("findobj: invalid graphics handles in input HLIST");
+      endif
+      handles = arg1;
+      n1 = 2;
+    else
+      handles = 0;
+      n1 = 1;
+    endif
     if (n1 <= nargin)
-      if (ischar (varargin{n1}))
-        if (strcmpi (varargin{n1}, "flat"))
-          depth = 0;
-          n1 += 1;
-        endif
-      else
+      if (! ischar (varargin{n1}))
         error ("findobj: properties and options must be strings");
+      endif
+      if (strcmpi (varargin{n1}, "flat"))
+        depth = 0;
+        n1 += 1;
       endif
     endif
   endif
@@ -443,3 +445,7 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## Test input validation
+%!error <invalid graphics handles in input HLIST> findobj ([0 1 10], "flat")
+%!error <properties and options must be strings> findobj ({0}, "flat")

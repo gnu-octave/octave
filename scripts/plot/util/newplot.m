@@ -155,7 +155,6 @@ function hax = newplot (hsave = [])
   set (cf, "nextplot", "add");  # Matlab compatibility
 
   do_reset = true;
-  deleteall = false;
   if (isempty (ca))
     ca = get (cf, "currentaxes");
     if (isempty (ca))
@@ -163,6 +162,9 @@ function hax = newplot (hsave = [])
       do_reset = false;
     endif
     deleteall = true;
+  else
+    set (cf, "currentaxes", ca);
+    deleteall = false;
   endif
 
   anp = get (ca, "nextplot");

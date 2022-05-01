@@ -519,3 +519,25 @@ jobs:
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
           echo Finished analyzing test suite results.
+
+      - name: install and compress
+        if: matrix.msystem == 'MINGW64'
+        continue-on-error: true
+        run: |
+          echo "::group::Installing Octave"
+          mkdir -p /c/octave/pkg
+          make -C ./.build DESTDIR=/c/octave/pkg install
+          echo "::endgroup::"
+          echo "::group::Compressing Octave package"
+          cd /c/octave/pkg
+          tar -cvzf octave.tar.gz *
+          echo "::endgroup::"
+
+      - name: upload build artifact
+        if: matrix.msystem == 'MINGW64'
+        continue-on-error: true
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.target-prefix }}-octave-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          path: C:\octave\pkg\octave.tar.gz
+          retention-days: 7

@@ -315,24 +315,19 @@ jobs:
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
         os: [windows-latest]
-        compiler: [gcc]
-        target: [x86_64, i686]
+        msystem: [MINGW64, MINGW32]
         include:
-          - compiler: gcc
-            target: x86_64
+          - msystem: MINGW64
+            mingw-prefix: mingw64
             target-triplet: x86_64-w64-mingw32
             target-prefix: mingw-w64-x86_64
-            msystem: MINGW64
-            mingw-prefix: mingw64
             cc: gcc
             cxx: g++
             f77: gfortran
-          - compiler: gcc
-            target: i686
+          - msystem: MINGW32
+            mingw-prefix: mingw32
             target-triplet: i686-w64-mingw32
             target-prefix: mingw-w64-i686
-            msystem: MINGW32
-            mingw-prefix: mingw32
             cc: gcc
             cxx: g++
             f77: gfortran
@@ -355,7 +350,8 @@ jobs:
         run : |
           Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
 
-      - uses: msys2/setup-msys2@v2
+      - name: install MSYS2 build environment
+        uses: msys2/setup-msys2@v2
         with:
           update: true
 
@@ -436,10 +432,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: C:/msys64/home/runneradmin/.ccache
-          key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          key: ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.target }}:refs/heads/default
+            ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}
+            ccache:${{ matrix.os }}:${{ matrix.msystem }}:refs/heads/default
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
@@ -506,7 +502,7 @@ jobs:
         # remove the directory with the ccache wrappers from PATH.
 
         run: |
-          echo "makeinfo_program ('$(cygpath -w /usr/bin | cut -c1,2) && cd $(cygpath -w /usr/bin) && perl makeinfo');" \
+          echo "makeinfo_program (sprintf ('%s && cd %s && perl makeinfo', [s=nthargout(2, @system, 'cygpath -w /usr/bin')](1:2), strtrim (s)));" \
             >> ./scripts/startup/site-rcfile
           export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
           make -C ./.build check | tee ./test-suite.log

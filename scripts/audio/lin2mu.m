@@ -74,9 +74,36 @@ function y = lin2mu (x, n)
   ## add bias.
   x = min (abs (x), 32635) + 132;
 
-  ## Find exponent and fraction of bineary representation.
+  ## Find exponent and fraction of binary representation.
   [f, e] = log2 (x);
 
   y = 64 * sig - 16 * e - fix (32 * f) + 335;
 
 endfunction
+
+## Test functionality
+%!test
+%! x = -1:1;
+%! y = x';
+%! assert (lin2mu (x), (lin2mu (y))')
+%! assert (lin2mu (x), [0, 255, 128])
+
+%!assert (lin2mu ([0, 1, NaN, inf, -inf], 8), [255, 231, NaN, 128, 0])
+%!assert (lin2mu ([]), [])
+%!assert (lin2mu (0), 255)
+%!assert (lin2mu (0, 0), 255)
+%!assert (lin2mu (0, 8), 255)
+%!assert (lin2mu (0, 16), 255)
+%!assert (lin2mu (2, 8), 219)
+%!assert (lin2mu (3, []), 255)
+%!assert (lin2mu (3, 16), 255)
+%!assert (lin2mu (repmat (-0.23, 1, 1000), 0), repmat (34, 1, 1000))
+%!assert (lin2mu (ones (2, 2), 0), repmat (128, 2))
+
+## Test input validation
+%!error <Invalid call> lin2mu ()
+%!warning <no precision specified, so using 8> assert (lin2mu (2), 219)
+%!error <N must be either 0, 8 or 16> lin2mu (1, 2)
+%!error <N must be either 0, 8 or 16> lin2mu (1, [1,2])
+%!error <N must be either 0, 8 or 16> lin2mu (1, ones (1, 2))
+%!error <abs: not defined for cell> lin2mu ({2:5})

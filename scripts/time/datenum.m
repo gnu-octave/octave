@@ -136,8 +136,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
       endif
       ## Preserve shape if necessary, and work with column vectors
       ## for the remainder of the function.
-      do_reshape = (columns (year) > 1 || columns (month) > 1
-                    || columns (day) > 1);
+      do_reshape = ! iscolumn (day);
       if (do_reshape)
         sz_reshape = size (day);
         year = year(:);
@@ -216,6 +215,8 @@ endfunction
 %! t = t';
 %! n = n';
 %! assert (datenum (t(1,:), t(2,:), t(3,:), t(4,:), t(5,:), t(6,:)), n, 2*eps);
+
+%!assert (size (datenum (2000, 1, ones(1, 1, 3))), [1 1 3])
 
 ## Test fractional years including leap years
 %!assert (fix (datenum ([2001.999 1 1; 2001.999 2 1])), [731216; 731247])

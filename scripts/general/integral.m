@@ -26,6 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} integral (@var{f}, @var{a}, @var{b})
 ## @deftypefnx {} {@var{q} =} integral (@var{f}, @var{a}, @var{b}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {[@var{q}, @var{err}] =} integral (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
 ## adaptive quadrature.
@@ -46,6 +47,11 @@
 ## or both limits are complex, @code{integral} will perform a straight line
 ## path integral.  Alternatively, a complex domain path can be specified using
 ## the @qcode{"Waypoints"} option (see below).
+##
+## The optional output @var{err} contains an integration quality measure from
+## the called integrator.  This is an absolute error estimate from @code{quadcc}
+## and @code{quadgk}, and the number of function evaluations for array-valued
+## functions passed to @code{quadv}.
 ##
 ## Additional optional parameters can be specified using
 ## @qcode{"@var{property}", @var{value}} pairs.  Valid properties are:
@@ -110,10 +116,15 @@
 ##          dblquad, triplequad}
 ## @end deftypefn
 
-function q = integral (f, a, b, varargin)
+function [q, err] = integral (f, a, b, varargin)
 
   if (nargin < 3 || (mod (nargin, 2) == 0))
     print_usage ();
+  endif
+
+  error_flag = false;
+  if (nargout == 2)
+    error_flag = true;
   endif
 
   ## quadcc can't handle complex limits or integrands, but quadgk & quadv can.
@@ -130,11 +141,19 @@ function q = integral (f, a, b, varargin)
     ## Let quadcc function handle input checks on function and limits.
     if (! f_is_complex)
       try
-        q = quadcc (f, a, b);
+        if (error_flag)
+          [q, err] = quadcc (f, a, b);
+        else
+          q = quadcc (f, a, b);
+        endif
       catch quaderror
         if (strcmp (quaderror.message,
                     "quadcc: integrand F must return a single, real-valued vector"))
-          q = quadgk (f, a, b);
+          if (error_flag)
+            [q, err] = quadgk (f, a, b);
+          else
+            q = quadgk (f, a, b);
+          endif
         else
           error (quaderror.message);
         endif
@@ -142,7 +161,11 @@ function q = integral (f, a, b, varargin)
 
     else
       ## Complex-valued integral
-      q = quadgk (f, a, b);
+      if (error_flag)
+        [q, err] = quadgk (f, a, b);
+      else
+        q = quadgk (f, a, b);
+      endif
     endif
 
   else
@@ -193,8 +216,11 @@ function q = integral (f, a, b, varargin)
       if (isempty (abstol))
         abstol = ifelse (issingle, 1e-5, 1e-10);
       endif
-
-      q = quadv (f, a, b, abstol);
+      if (error_flag)
+        [q, err] = quadv (f, a, b, abstol);
+      else
+        q = quadv (f, a, b, abstol);
+      endif
 
     else
       if (isempty (abstol))
@@ -205,23 +231,41 @@ function q = integral (f, a, b, varargin)
       endif
 
       if (! isempty (waypoints))
-        q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol,
+        if (error_flag)
+          [q, err] = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol,
                              "WayPoints", waypoints);
+        else
+          q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol,
+                             "WayPoints", waypoints);
+        endif
+
       else
         if (! f_is_complex)
           try
-            q = quadcc (f, a, b, [abstol, reltol]);
+            if (error_flag)
+              [q, err] = quadcc (f, a, b, [abstol, reltol]);
+            else
+              q = quadcc (f, a, b, [abstol, reltol]);
+            endif
           catch quaderror
             if (strcmp (quaderror.message,
                         "quadcc: integrand F must return a single, real-valued vector"))
-              q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+              if (error_flag)
+                [q, err] = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+              else
+                q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+              endif
             else
               error (quaderror.message);
             endif
           end_try_catch
         else
           ## Complex-valued integral
-          q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+          if (error_flag)
+            [q, err] = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+          else
+            q = quadgk (f, a, b, "AbsTol", abstol, "RelTol", reltol);
+          endif
         endif
       endif
     endif
@@ -305,6 +349,15 @@ endfunction
 %!test
 %! assert (integral (@(x) [x,x,x; x,exp(x),x; x,x,x], 0, 1, "ArrayValued", 1),
 %!         [0.5,0.5,0.5; 0.5,(exp (1) - 1),0.5; 0.5,0.5,0.5], 1e-10);
+
+##test 2nd output
+%!test <*62412>
+%! [~, err] = integral (@(x) ones (size (x)), 0, 1); ##quadcc
+%! assert (err, 0, 5*eps); ## err ~3e-16
+%! [~, err] = integral (@(x) ones (size (x)), 0, 1, "waypoints", 1); ##quadgk
+%! assert (err, 0, 1000*eps); ## err ~7e-14
+%! [~, err] = integral (@(x) ones (size (x)), 0, 1, "arrayvalued", true); ##quadv
+%! assert (err, 0, 20); ## nfev ~13
 
 ## Test input validation
 %!error integral (@sin)

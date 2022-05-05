@@ -8,6 +8,9 @@ That means that less symbols are exported from these libraries.
 Configure with `--disable-lib-visibility-flags` to export all symbols
 (as in previous versions).
 
+- `integral` can now output a second argument passing the error
+parameter from the underlying integrator.
+
 ### Graphical User Interface
 
 

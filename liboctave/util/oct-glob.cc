@@ -157,6 +157,24 @@ namespace octave
     find_files (std::list<std::string>& dirlist, const std::string& dir,
                 const std::string& pat, std::string& file)
     {
+      if (! pat.compare (".") || ! pat.compare (".."))
+        {
+          // shortcut for trivial patterns that would expand to a folder name
+
+          // get next component of path (or file name)
+          std::size_t sep_pos
+            = file.find_first_of (sys::file_ops::dir_sep_chars ());
+          std::string pat_str = file.substr (0, sep_pos);
+          std::string file_str = (sep_pos != std::string::npos
+                                  && file.length () > sep_pos+1)
+                                 ? file.substr (sep_pos+1) : "";
+
+          // call this function recursively with next path component in PAT
+          find_files (dirlist, sys::file_ops::concat (dir, pat),
+                      pat_str, file_str);
+          return;
+        }
+
       // remove leading file separators
       while (file.length () > 1 && sys::file_ops::is_dir_sep (file[0]))
         file = file.substr (1, std::string::npos);
@@ -178,6 +196,7 @@ namespace octave
 
           if (file.empty ())
             {
+              // Don't include "." and ".." in matches.
               if (found_dir.compare (".") && found_dir.compare (".."))
                 dirlist.push_back (sys::file_ops::concat (dir, found_dir));
             }

@@ -535,6 +535,37 @@ supported.
   return ovl (Cell (pattern.glob ()));
 }
 
+/*
+%!test
+%! tmpdir = tempname ();
+%! filename = {"file1", "file2", "file3", "myfile1", "myfile1b"};
+%! if (mkdir (tmpdir))
+%!   cwd = pwd ();
+%!   cd (tmpdir);
+%!   if (strcmp (canonicalize_file_name (pwd), canonicalize_file_name (tmpdir)))
+%!     a = 0;
+%!     for n = 1:5
+%!       save (filename{n}, "a");
+%!     endfor
+%!   else
+%!     sts = rmdir (tmpdir);
+%!     error ("Couldn't change to temporary directory");
+%!   endif
+%! else
+%!   error ("Couldn't create temporary directory");
+%! endif
+%! result1 = glob ("*file1");
+%! result2 = glob ("myfile?");
+%! result3 = glob ("file[12]");
+%! for n = 1:5
+%!   delete (filename{n});
+%! endfor
+%! cd (cwd);
+%! sts = rmdir (tmpdir);
+%! assert (result1, {"file1"; "myfile1"});
+%! assert (result2, {"myfile1"});
+%! assert (result3, {"file1"; "file2"});
+*/
 
 DEFUN (__wglob__, args, ,
        doc: /* -*- texinfo -*-
@@ -603,35 +634,32 @@ glob ("*.*")
 }
 
 /*
-%!test
-%! tmpdir = tempname ();
-%! filename = {"file1", "file2", "file3", "myfile1", "myfile1b"};
-%! if (mkdir (tmpdir))
-%!   cwd = pwd ();
-%!   cd (tmpdir);
-%!   if (strcmp (canonicalize_file_name (pwd), canonicalize_file_name (tmpdir)))
-%!     a = 0;
-%!     for n = 1:5
-%!       save (filename{n}, "a");
-%!     endfor
-%!   else
-%!     sts = rmdir (tmpdir);
-%!     error ("Couldn't change to temporary directory");
-%!   endif
-%! else
-%!   error ("Couldn't create temporary directory");
+%!test <*62414>
+%! ## get name of current directory and one file in it
+%! [~, curr_dir, ext] = fileparts (pwd ());
+%! curr_dir = [curr_dir, ext];
+%! files = dir ();
+%! if (numel (files) < 3)
+%!   return;
 %! endif
-%! result1 = glob ("*file1");
-%! result2 = glob ("myfile?");
-%! result3 = glob ("file[12]");
-%! for n = 1:5
-%!   delete (filename{n});
-%! endfor
-%! cd (cwd);
-%! sts = rmdir (tmpdir);
-%! assert (result1, {"file1"; "myfile1"});
-%! assert (result2, {"myfile1"});
-%! assert (result3, {"file1"; "file2"});
+%! ## check some patterns including "." and ".."
+%! file_in_pwd = files(3).name;
+%! assert (__wglob__ (file_in_pwd), {file_in_pwd});
+%! glob_pattern = fullfile (".", file_in_pwd);
+%! assert (__wglob__ (glob_pattern), {glob_pattern});
+%! glob_pattern = fullfile ("..", curr_dir, file_in_pwd);
+%! assert (__wglob__ (glob_pattern), {glob_pattern});
+%! glob_pattern = fullfile ("..", curr_dir, "..", ".", curr_dir, ".", file_in_pwd);
+%! assert (__wglob__ (glob_pattern), {glob_pattern});
+
+%!test <*62414>
+%! old_dir = cd (fileparts (which ("plot.m")));
+%! unwind_protect
+%!   assert (__wglob__ (fullfile (".", "*.m")), ...
+%!           fullfile (".", __wglob__ ("*.m")));
+%! unwind_protect_cleanup
+%!   cd (old_dir);
+%! end_unwind_protect
 */
 
 DEFUN (__fnmatch__, args, ,

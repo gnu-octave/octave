@@ -48,11 +48,6 @@
 ## path integral.  Alternatively, a complex domain path can be specified using
 ## the @qcode{"Waypoints"} option (see below).
 ##
-## The optional output @var{err} contains an integration quality measure from
-## the called integrator.  This is an absolute error estimate from @code{quadcc}
-## and @code{quadgk}, and the number of function evaluations for array-valued
-## functions passed to @code{quadv}.
-##
 ## Additional optional parameters can be specified using
 ## @qcode{"@var{property}", @var{value}} pairs.  Valid properties are:
 ##
@@ -78,6 +73,11 @@
 ## Define the relative error tolerance for the quadrature.  The default
 ## relative tolerance is 1e-6 (1e-4 for single).
 ## @end table
+##
+## The optional output @var{err} contains an integration quality measure from
+## the called integrator.  This is an absolute error estimate from @code{quadcc}
+## and @code{quadgk}, and the number of function evaluations for array-valued
+## functions passed to @code{quadv}.
 ##
 ## Adaptive quadrature is used to minimize the estimate of error until the
 ## following is satisfied:
@@ -122,10 +122,7 @@ function [q, err] = integral (f, a, b, varargin)
     print_usage ();
   endif
 
-  error_flag = false;
-  if (nargout == 2)
-    error_flag = true;
-  endif
+  error_flag = (nargout == 2);
 
   ## quadcc can't handle complex limits or integrands, but quadgk & quadv can.
   ## Check for simple cases of complex limits and integrand.
@@ -352,12 +349,12 @@ endfunction
 
 ##test 2nd output
 %!test <*62412>
-%! [~, err] = integral (@(x) ones (size (x)), 0, 1); ##quadcc
-%! assert (err, 0, 5*eps); ## err ~3e-16
-%! [~, err] = integral (@(x) ones (size (x)), 0, 1, "waypoints", 1); ##quadgk
-%! assert (err, 0, 1000*eps); ## err ~7e-14
-%! [~, err] = integral (@(x) ones (size (x)), 0, 1, "arrayvalued", true); ##quadv
-%! assert (err, 0, 20); ## nfev ~13
+%! [~, err] = integral (@(x) ones (size (x)), 0, 1);  # quadcc
+%! assert (err, 0, 5*eps);  # err ~3e-16
+%! [~, err] = integral (@(x) ones (size (x)), 0, 1, "waypoints", 1);  # quadgk
+%! assert (err, 0, 1000*eps);  # err ~7e-14
+%! [~, err] = integral (@(x) ones (size (x)), 0, 1, "arrayvalued", true); # quadv
+%! assert (err, 0, 20);  # nfev ~13
 
 ## Test input validation
 %!error integral (@sin)

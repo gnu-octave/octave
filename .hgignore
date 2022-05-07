@@ -25,7 +25,7 @@ syntax: regexp
 (^|/)config.log$
 (^|/)config.status$
 
-^Makefile\.in$
+(^|/)Makefile\.in$
 ^INSTALL$
 
 ## CMake associated files

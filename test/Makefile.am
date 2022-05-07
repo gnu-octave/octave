@@ -218,7 +218,9 @@ uninstall-test-files:
 	done
 .PHONY: uninstall-test-files
 
-BUILT_SOURCES += $(GENERATED_TEST_FILES)
+BUILT_SOURCES += \
+  $(GENERATED_TEST_FILES) \
+  $(DIRSTAMP_FILES)
 
 EXTRA_DIST += \
   bc-overloads-expected \

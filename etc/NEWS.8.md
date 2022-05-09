@@ -33,6 +33,9 @@ parameter from the underlying integrator.
 - `print` now accepts option `-image` to specify the "opengl" renderer
   and `-vector` to specify the "painters" renderer.
 
+- `format` now accepts the option "default", which is equivalent to
+  calling `format` without any options to reset the default state.
+
 ### Alphabetical list of new functions added in Octave 8
 
 

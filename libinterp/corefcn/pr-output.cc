@@ -3614,7 +3614,15 @@ set_format_style (int argc, const string_vector& argv)
       std::string arg = argv[idx++];
       std::transform (arg.begin (), arg.end (), arg.begin (), tolower);
 
-      if (arg == "short")
+      if (arg == "default")
+        {
+          format = "short";
+          init_format_state ();
+          set_output_prec (5);
+          Vcompact_format = false;
+          uppercase_format = false;
+        }
+      else if (arg == "short")
         {
           format = arg;
           init_format_state ();
@@ -3806,6 +3814,7 @@ DEFUN (format, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} format
 @deftypefnx {} {} format options
+@deftypefnx {} {} format (@var{options})
 @deftypefnx {} {[@var{format}, @var{formatspacing}, @var{uppercase}] =} format
 Reset or specify the format of the output produced by @code{disp} and Octave's
 normal echoing mechanism.
@@ -3817,13 +3826,16 @@ one of the conversion functions such as @code{single}, @code{uint8},
 
 By default, Octave displays 5 significant digits in a human readable form
 (option @samp{short}, option @samp{lowercase}, and option @samp{loose} format
-for matrices).  If @code{format} is invoked without any options, this default
-format is restored.
+for matrices).  If @code{format} is invoked without any options, or the option
+@samp{default} is specified, then this default format is restored.
 
 Valid format options for floating point numbers are listed in the following
 table.
 
 @table @code
+@item default
+Restore the default format state described above.
+
 @item short
 Fixed point format with 5 significant figures (default).
 
@@ -3969,10 +3981,12 @@ produce a more readable output with less data per page.
 @end table
 
 If @code{format} is called with multiple competing options, the rightmost one
-is used.  In case of an error the format remains unchanged.
+is used, except for @samp{default} which will override all other options. In
+case of an error the format remains unchanged.
 
 If called with one to three output arguments, and no inputs, return the current
-format, format spacing, and uppercase preference.
+format, format spacing, and uppercase preference.  Specifying both outputs and
+inputs will produce an error.
 
 @seealso{fixed_point_format, output_precision, split_long_rows,
 print_empty_dimensions, rats}
@@ -4020,11 +4034,22 @@ print_empty_dimensions, rats}
 %!   assert (str, "3.1415927E+00\n");
 %!   new_fmt = format ();
 %!   assert (new_fmt, "longe");
-%!   ## Test resetting format
+%!   ## Test resetting format (method #1)
 %!   format compact;
 %!   [~, new_spacing] = format ();
 %!   assert (new_spacing, "compact");
 %!   format;
+%!   [new_fmt, new_spacing, new_case] = format ();
+%!   assert (new_fmt, "short");
+%!   assert (new_spacing, "loose");
+%!   assert (new_case, "lowercase");
+%!   ## Test resetting format (method #2)
+%!   format compact uppercase long e;
+%!   [new_fmt, new_spacing, new_case] = format ();
+%!   assert (new_fmt, "longe");
+%!   assert (new_spacing, "compact");
+%!   assert (new_case, "uppercase");
+%!   format ("default");
 %!   [new_fmt, new_spacing, new_case] = format ();
 %!   assert (new_fmt, "short");
 %!   assert (new_spacing, "loose");

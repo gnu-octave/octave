@@ -59,9 +59,6 @@ simple_gcd (double a, double b)
   return aa;
 }
 
-// Don't use the Complex and FloatComplex typedefs because we need to
-// refer to the actual float precision FP in the body (and when gcc
-// implements template aliases from C++0x, can do a small fix here).
 template <typename FP>
 static void
 divide (const std::complex<FP>& a, const std::complex<FP>& b,

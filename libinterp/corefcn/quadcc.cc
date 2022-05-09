@@ -1488,7 +1488,7 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 
 // The actual integration routine.
 
-DEFMETHOD (quadcc, interp, args, ,
+DEFMETHOD (quadcc, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})
 @deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})
@@ -1537,8 +1537,11 @@ The result of the integration is returned in @var{q}.
 @var{nr_points} is the number of points at which the integrand was evaluated.
 
 If the adaptive integration did not converge, the value of @var{err} will be
-larger than the requested tolerance.  Therefore, it is recommended to verify
-this value for difficult integrands.
+larger than the requested tolerance.  If only a single output is requested then
+a warning will be emitted when the requested tolerance is not met.  If the
+second output @var{err} is requested then no warning is issued and it is the
+responsibility of the programmer to inspect and determine whether the results
+are satisfactory.
 
 @code{quadcc} is capable of dealing with non-numeric values of the integrand
 such as @code{NaN} or @code{Inf}.  If the integral diverges, and @code{quadcc}
@@ -2204,6 +2207,9 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
     }
 #endif
 
+ if (nargout < 2 && err > std::max (abstol, reltol * std::abs (igral)))
+    warning ("quadcc: Error tolerance not met.  Estimated error: %g\n", err);
+
   if (issingle)
     return ovl (static_cast<float> (igral), err, neval);
   else
@@ -2212,14 +2218,16 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 
 /*
 %!assert (quadcc (@sin, -pi, pi), 0, 1e-10)
-%!assert (quadcc (inline ("sin"), -pi, pi), 0, 1e-10)
+%!test
+%! warning ("off", "Octave:legacy-function", "local");
+%! assert (quadcc (inline ("sin"), -pi, pi), 0, 1e-10);
 %!assert (quadcc ("sin", -pi, pi), 0, 1e-10)
 
 %!assert (quadcc (@sin, -pi, 0), -2, 1e-10)
 %!assert (quadcc (@sin, 0, pi), 2, 1e-10)
 %!assert (quadcc (@(x) 1./sqrt (x), 0, 1), 2, -1e-6)
 %!assert (quadcc (@(x) 1./(sqrt (x).*(x+1)), 0, Inf), pi, -1e-6)
-%!assert (quadcc (@(x) 1./(sqrt (x).*(x+1)), 0, Inf, [0, 1e-8]), pi, -1e-8)
+%!assert (quadcc (@(x) 1./(sqrt (x).*(x+1)), 0, Inf, [0, 2e-7]), pi, -2e-7)
 
 %!assert (quadcc (@(x) exp (-x .^ 2), -Inf, Inf), sqrt (pi), 1e-10)
 %!assert (quadcc (@(x) exp (-x .^ 2), -Inf, 0), sqrt (pi)/2, 1e-10)
@@ -2242,6 +2250,12 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 %! assert (class (quadcc (@sin, single (0), 1)), "single");
 %! assert (class (quadcc (@sin, 0, single (1))), "single");
 %! assert (class (quadcc (@sin, single (0), single (1))), "single");
+
+%!test<62412>
+%! f = @(t) -1 ./ t.^1.1;
+%! fail ("quadcc (f, 1, Inf)", "warning", "Error tolerance not met");
+%! [q, err] = quadcc (f, 1, Inf);
+%! assert (err > 1);
 
 ## Test input validation
 %!error quadcc ()

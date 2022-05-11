@@ -5821,7 +5821,7 @@ public:
   protected:
     void init (void)
     {
-      m_position.add_constraint ("min", 0, false);
+      m_position.add_constraint ("min", 0, true);
     }
   };
 

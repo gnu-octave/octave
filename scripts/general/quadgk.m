@@ -359,7 +359,7 @@ function [q, err] = quadgk (f, a, b, varargin)
     tol = max (abstol, reltol .* abs (q0));
 
     ## If the global error estimate is met then exit
-    if (err0 < tol)
+    if (err0 <= tol)
       q = q0;
       err = err0;
       break;

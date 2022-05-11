@@ -2251,11 +2251,11 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 %! assert (class (quadcc (@sin, 0, single (1))), "single");
 %! assert (class (quadcc (@sin, single (0), single (1))), "single");
 
-%!test<62412>
+%!test <*62412>
 %! f = @(t) -1 ./ t.^1.1;
 %! fail ("quadcc (f, 1, Inf)", "warning", "Error tolerance not met");
 %! [q, err] = quadcc (f, 1, Inf);
-%! assert (err > 1);
+%! assert (err > 1e-5);
 
 ## Test input validation
 %!error quadcc ()

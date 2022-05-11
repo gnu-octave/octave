@@ -123,7 +123,12 @@
 ##
 ## @var{err} is an approximate bound on the error in the integral
 ## @w{@code{abs (@var{q} - @var{I})}}, where @var{I} is the exact value of the
-## integral.
+## integral.  If the adaptive integration did not converge, the value of
+## @var{err} will be larger than the requested tolerance.  If only a single
+## output is requested then a warning will be emitted when the requested
+## tolerance is not met.  If the second output @var{err} is requested then no
+## warning is issued and it is the responsibility of the programmer to inspect
+## and determine whether the results are satisfactory.
 ##
 ## Reference: @nospell{L.F. Shampine},
 ## @cite{"Vectorized adaptive quadrature in @sc{matlab}"}, Journal of
@@ -400,7 +405,7 @@ function [q, err] = quadgk (f, a, b, varargin)
     [q_subs, q_errs] = __quadgk_eval__ (f, subs, eps1, trans);
   endwhile
 
-  if (err > max (abstol, reltol * abs (q)))
+  if (nargout < 2 && err > max (abstol, reltol * abs (q)))
     warning (warn_id,
              "quadgk: Error tolerance not met.  Estimated error %g", err);
   endif
@@ -469,7 +474,9 @@ endfunction
 
 
 %!assert (quadgk (@sin,-pi,pi), 0, 1e-10)
-%!assert (quadgk (inline ("sin"),-pi,pi), 0, 1e-10)
+%!test
+%! warning ("off", "Octave:legacy-function", "local");
+%! assert (quadgk (inline ("sin"), -pi, pi), 0, 1e-10);
 %!assert (quadgk ("sin",-pi,pi), 0, 1e-10)
 %!assert (quadgk (@sin,-pi,pi, "WayPoints", 0, "MaxIntervalCount", 100,
 %!                "RelTol", 1e-3, "AbsTol", 1e-6, "trace", false), 0, 1e-6)
@@ -494,6 +501,12 @@ endfunction
 %!test
 %! f = @(x) x .^ 5 .* exp (-x) .* sin (x);
 %! assert (quadgk (f, 0, Inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, -1e-8);
+
+%!test <*62412>
+%! f = @(t) -1 ./ t.^1.1;
+%! fail ("quadgk (f, 1, Inf)", "warning", "Error tolerance not met");
+%! [q, err] = quadgk (f, 1, Inf);
+%! assert (err > 1e-5);
 
 ## Test input validation
 %!error quadgk (@sin)

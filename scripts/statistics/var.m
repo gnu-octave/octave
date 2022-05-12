@@ -24,10 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} var (@var{x})
-## @deftypefnx {} {} var (@var{x}, @var{w})
-## @deftypefnx {} {} var (@var{x}, @var{w}, @var{dim})
-## @deftypefnx {} {} var (@var{x}, @var{w}, @qcode{"ALL"})
+## @deftypefn  {} {@var{v} =} var (@var{x})
+## @deftypefnx {} {@var{v} =} var (@var{x}, @var{w})
+## @deftypefnx {} {@var{v} =} var (@var{x}, @var{w}, @var{dim})
+## @deftypefnx {} {@var{v} =} var (@var{x}, @var{w}, @qcode{"ALL"})
+## @deftypefnx {} {[@var{v}, @var{m}] =} var (@dots{})
 ## Compute the variance of the elements of the vector @var{x}.
 ##
 ## The variance is defined as
@@ -85,10 +86,14 @@
 ## elements of @var{x}, and is equivalent to @code{var (@var{x}(:))}.
 ##
 ## When @var{dim} is a vector or @qcode{"ALL"}, @var{w} must be either 0 or 1.
+##
+## If requested the optional second output variable @var{mu} will contain the
+## mean or weighted mean used to calcluate @var{v}, and will be the same size
+## as @var{v}.
 ## @seealso{cov, std, skewness, kurtosis, moment}
 ## @end deftypefn
 
-function retval = var (x, w = 0, dim)
+function [v, mu] = var (x, w = 0, dim)
 
   if (nargin < 1)
     print_usage ();
@@ -100,12 +105,17 @@ function retval = var (x, w = 0, dim)
     error ("var: X must be a numeric vector or matrix");
   endif
 
+  if (isempty (w))
+    w = 0;
+  endif
+
   nd = ndims (x);
   sz = size (x);
   emptydimflag = false;
 
   if (isempty (dim))
-    emptydimflag = true;  ## Compatibliity hack for empty x, ndims==2
+    emptydimflag = true;  # Compatibliity hack for empty x, ndims==2
+
     ## Find the first non-singleton dimension.
    (dim = find (sz != 1, 1)) || (dim = 1);
 
@@ -169,9 +179,7 @@ function retval = var (x, w = 0, dim)
   endif
 
   n = size (x, dim);
-  if (isempty (w))
-    w = 0;
-  elseif (! isvector (w) ||
+  if (! isvector (w) ||
           ! isnumeric (w) ||
           (isvector (w) && any (w < 0)) ||
           (isscalar (w) && ((w != 0 && w != 1) && (n != 1))))
@@ -180,11 +188,13 @@ function retval = var (x, w = 0, dim)
 
   if (isempty (x))
     if (emptydimflag && isequal (sz, [0 0]))
-      retval = NaN;
+      v = NaN;
+      mu = NaN;
     else
       output_size = sz;
       output_size(dim) = 1;
-      retval = NaN(output_size);
+      v = NaN(output_size);
+      mu = NaN(output_size);
     endif
   else
     if (n == 1)
@@ -193,14 +203,19 @@ function retval = var (x, w = 0, dim)
                   "in the dimension along which variance is calculated"])
       else
         if (isa (x, "single"))
-          retval = zeros (sz, "single");
+          v = zeros (sz, "single");
+          mu = x;
         else
-          retval = zeros (sz);
+          v = zeros (sz);
+          mu = x;
         endif
       endif
     else
       if (isscalar (w))
-        retval = sumsq (center (x, dim), dim) / (n - 1 + w);
+        v = sumsq (center (x, dim), dim) / (n - 1 + w);
+        if (nargout == 2)
+          mu = mean (x, dim);
+        endif
       else
         ## Weighted variance
         if (length (w) != n)
@@ -215,8 +230,8 @@ function retval = var (x, w = 0, dim)
             w = reshape (w, newdims);
           endif
           den = sum (w);
-          mu = sum (w .* x, dim) ./ sum (w);
-          retval = sum (w .* ((x - mu) .^ 2), dim) / den;
+          mu = sum (w .* x, dim) ./ den;
+          v = sum (w .* ((x - mu) .^ 2), dim) ./ den;
         endif
       endif
     endif
@@ -238,6 +253,7 @@ endfunction
 %!assert (var (ones (2,2,2), [1:2], 3), [(zeros (2,2))])
 %!assert (var ([1 2; 3 4], 0, 'all'), var ([1:4]))
 %!assert (var (reshape ([1:8], 2, 2, 2), 0, [1 3]), [17/3 17/3], eps)
+%!assert (var ([1 2 3;1 2 3], [], [1 2]), 0.8, eps)
 
 ##Test empty inputs
 %!assert (var ([]), NaN)
@@ -258,6 +274,49 @@ endfunction
 %!assert (var (ones (1,3,0,2), [], 2), NaN(1,1,0,2))
 %!assert (var (ones (1,3,0,2), [], 3), NaN(1,3,1,2))
 %!assert (var (ones (1,3,0,2), [], 4), NaN(1,3,0))
+
+##Test second output
+%!test <*62395>
+%! [~, m] = var (13);
+%! assert (m, 13);
+%! [~, m] = var (single(13));
+%! assert (m, single(13));
+%! [~, m] = var ([1, 2, 3; 3 2 1], []);
+%! assert (m, [2 2 2]);
+%! [~, m] = var ([1, 2, 3; 3 2 1], [], 1);
+%! assert (m, [2 2 2]);
+%! [~, m] = var ([1, 2, 3; 3 2 1], [], 2);
+%! assert (m, [2 2]');
+%! [~, m] = var ([1, 2, 3; 3 2 1], [], 3);
+%! assert (m, [1 2 3; 3 2 1]);
+
+## 2nd output, weighted inputs, vector dims
+%!test <*62395>
+%! [~, m] = var(5,99);
+%! assert (m, 5);
+%! [~, m] = var ([1:7], [1:7]);
+%! assert (m, 5);
+%! [~, m] = var ([eye(3)], [1:3]);
+%! assert (m, [1/6, 1/3, 0.5], eps);
+%! [~, m] = var (ones (2,2,2), [1:2], 3);
+%! assert (m, ones (2,2));
+%! [~, m] = var ([1 2; 3 4], 0, 'all');
+%! assert (m, 2.5, eps);
+%! [~, m] = var (reshape ([1:8], 2, 2, 2), 0, [1 3]);
+%! assert (m, [3.5, 5.5], eps);
+
+## 2nd output, empty inputs
+%!test <*62395>
+%! [~, m] = var ([]);
+%! assert (m, NaN);
+%! [~, m] = var ([],[],1);
+%! assert (m, NaN(1,0));
+%! [~, m] = var ([],[],2);
+%! assert (m, NaN(0,1));
+%! [~, m] = var ([],[],3);
+%! assert (m, []);
+%! [~, m] = var (ones (1,3,0,2));
+%! assert (m, NaN(1,1,0,2));
 
 ## Test input validation
 %!error <Invalid call> var ()

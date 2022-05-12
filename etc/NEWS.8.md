@@ -36,9 +36,11 @@ parameter from the underlying integrator.
 - `format` now accepts the option "default", which is equivalent to
   calling `format` without any options to reset the default state.
 
-
 - `quadgk` now stops iterating when `error <= tolerance` while the previous
   condition was `error < tolerance`.
+
+- `var` and `std` now optionally output a second argument containing the mean
+  or weighted mean.
 
 ### Alphabetical list of new functions added in Octave 8
 

@@ -28,6 +28,7 @@
 ## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w})
 ## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w}, @var{dim})
 ## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w}, @qcode{"ALL"})
+## @deftypefnx {} {[@var{y}, @var{mu}] =} std (@dots{})
 ## Compute the standard deviation of the elements of the vector @var{x}.
 ##
 ## The standard deviation is defined as
@@ -84,12 +85,21 @@
 ## elements of @var{x}, and is equivalent to @code{std (@var{x}(:))}.
 ##
 ## When @var{dim} is a vector or @qcode{"ALL"}, @var{w} must be either 0 or 1.
+##
+## If requested the optional second output variable @var{mu} will contain the
+## mean or weighted mean used to calcluate @var{y}, and will be the same size
+## as @var{y}.
 ## @seealso{var, bounds, mad, range, iqr, mean, median}
 ## @end deftypefn
 
-function y = std (varargin)
+function [y, mu] = std (varargin)
 
-  y = sqrt (var (varargin{:}));
+  if (nargout < 2)
+    y = sqrt (var (varargin{:}));
+  else
+    [y, mu] = var (varargin{:});
+    y = sqrt (y);
+  endif
 
 endfunction
 
@@ -127,6 +137,27 @@ endfunction
 %!assert (std (ones (1,3,0,2), [], 2), NaN(1,1,0,2))
 %!assert (std (ones (1,3,0,2), [], 3), NaN(1,3,1,2))
 %!assert (std (ones (1,3,0,2), [], 4), NaN(1,3,0))
+
+##Test second output
+%!test <*62395>
+%! [~, m] = std (1);
+%! assert (m, 1);
+%! [~, m] = std ([1,2,3; 3,2,1]);
+%! assert (m, [2,2,2]);
+%! [~, m] = std ([]);
+%! assert (m, NaN);
+%! [~, m] = std ([1 2 3], 0);
+%! assert (m, 2);
+%! [~, m] = std ([1 2 3], 1);
+%! assert (m, 2);
+%! [~, m] = std ([1 2 3], [1 2 3]);
+%! assert (m, 7/3, eps);
+%! [~, m] = std ([1 2 3], [], 1);
+%! assert (m, [1 2 3]);
+%! [~, m] = std ([1 2 3; 1,2,3], [], [1 2]);
+%! assert (m, 2);
+%! [~, m] = std ([1 2 3; 1,2,3], [], "all");
+%! assert (m, 2);
 
 
 ## Test input validation

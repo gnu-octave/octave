@@ -5793,11 +5793,16 @@ public:
 
     BEGIN_PROPERTIES (uimenu)
       string_property accelerator , ""
-      callback_property callback , Matrix ()
+      // Deprecated in R2017b (replaced by "MenuSelectedFcn")
+      callback_property callback hgs , Matrix ()
       bool_property checked , "off"
       bool_property enable , "on"
       color_property foregroundcolor , color_values (0, 0, 0)
-      string_property label gs , ""
+      // Deprecated in R2017b (replaced by "Text")
+      string_property label hgs , ""
+      callback_property menuselectedfcn , Matrix ()
+      // Deprecated in R2017b, but replacement of re-ordering "children"
+      // property of parent does not work yet in Octave.
       double_property position , 0
       bool_property separator , "off"
       string_property text , ""
@@ -5807,7 +5812,7 @@ public:
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 
-    // Redirect calls from "Label" to "Text".
+    // Make "Label" an alias for "Text".
     std::string get_label (void) const
     {
       return get_text ();
@@ -5816,6 +5821,17 @@ public:
     void set_label (const octave_value& val)
     {
       set_text (val);
+    }
+
+    // Make "Callback" an alias for "MenuSelectedFcn".
+    octave_value get_callback (void) const
+    {
+      return get_menuselectedfcn ();
+    }
+
+    void set_callback (const octave_value& val)
+    {
+      set_menuselectedfcn (val);
     }
 
   protected:

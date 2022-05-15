@@ -35,37 +35,39 @@
 ##
 ## @table @asis
 ## @item @qcode{"accelerator"}
-## A string containing the key combination together with CTRL to execute this
+## A string containing the key, together with CTRL, to execute this
 ## menu entry (e.g., @qcode{"x"} for CTRL+x).
-##
-## @item @qcode{"callback"}
-## Is the function called when this menu entry is executed.  It can be either a
-## function string (e.g., @qcode{"myfcn"}), a function handle (e.g., @@myfcn)
-## or a cell array containing the function handle and arguments for the
-## callback function (e.g., @{@@myfcn, arg1, arg2@}).
 ##
 ## @item @qcode{"checked"}
 ## Can be set @qcode{"on"} or @qcode{"off"}.  Sets a mark at this menu entry.
 ##
 ## @item @qcode{"enable"}
-## Can be set @qcode{"on"} or @qcode{"off"}.  If disabled the menu entry
-## cannot be selected and it is grayed out.
+## Can be set @qcode{"on"} or @qcode{"off"}.  If disabled then the menu entry
+## cannot be selected and is grayed out.
 ##
 ## @item @qcode{"foregroundcolor"}
-## A color value setting the text color for this menu entry.
+## A color value for the text of the menu entry.
 ##
-## @item @qcode{"label"}
-## A string containing the label for this menu entry.  A @qcode{"&"}-symbol
-## can be used to mark the @qcode{"accelerator"} character (e.g.,
-## @nospell{@qcode{"E&xit"}})
+## @item @qcode{"menuselectedfcn"}
+## The function called when this menu entry is executed.  It can be either a
+## function string (e.g., @qcode{"myfcn"}), a function handle (e.g., @@myfcn)
+## or a cell array containing the function handle and arguments for the
+## callback function (e.g., @{@@myfcn, arg1, arg2@}).
 ##
 ## @item @qcode{"position"}
-## An scalar value containing the relative menu position.  The entry with the
-## lowest value is at the first position starting from left or top.
+## A scalar value containing the relative menu position.  The first position
+## has value 1 and will be either the left or top depending on the orientation
+## of the uimenu.
 ##
 ## @item @qcode{"separator"}
-## Can be set @qcode{"on"} or @qcode{"off"}.  If enabled it draws a separator
-## line above the current position.  It is ignored for top level entries.
+## Can be set @qcode{"on"} or @qcode{"off"}.  If enabled, a separator
+## line is drawn above the current position.  This property is ignored for
+## top-level entries.
+##
+## @item @qcode{"text"}
+## A string containing the text for this menu entry.  A @qcode{"&"}-symbol
+## can be used to mark the @qcode{"accelerator"} character (e.g.,
+## @nospell{@qcode{"E&xit"}}).
 ##
 ## @end table
 ##
@@ -75,12 +77,12 @@
 ##
 ## @example
 ## @group
-## f = uimenu ("label", "&File", "accelerator", "f");
-## e = uimenu ("label", "&Edit", "accelerator", "e");
-## uimenu (f, "label", "Close", "accelerator", "q", ...
-##            "callback", "close (gcf)");
-## uimenu (e, "label", "Toggle &Grid", "accelerator", "g", ...
-##            "callback", "grid (gca)");
+## f = uimenu ("text", "&File", "accelerator", "f");
+## e = uimenu ("text", "&Edit", "accelerator", "e");
+## uimenu (f, "text", "Close", "accelerator", "q", ...
+##            "menuselectedfcn", "close (gcf)");
+## uimenu (e, "text", "Toggle &Grid", "accelerator", "g", ...
+##            "menuselectedfcn", "grid (gca)");
 ## @end group
 ## @end example
 ## @seealso{figure}
@@ -91,10 +93,10 @@ function hui = uimenu (varargin)
   [h, args] = __uiobject_split_args__ ("uimenu", varargin,
                                        {"figure", "uicontextmenu", "uimenu"});
 
-  tmp = __go_uimenu__ (h, args{:});
+  htmp = __go_uimenu__ (h, args{:});
 
   if (nargout > 0)
-    hui = tmp;
+    hui = htmp;
   endif
 
 endfunction
@@ -105,18 +107,20 @@ endfunction
 %! surfl (peaks);
 %! colormap (copper (64));
 %! shading ('interp');
-%! f = uimenu ('label', '&File', 'accelerator', 'f');
-%! e = uimenu ('label', '&Edit', 'accelerator', 'e');
-%! uimenu (f, 'label', 'Close', 'accelerator', 'q', 'callback', 'close (gcf)');
-%! uimenu (e, 'label', 'Toggle &Grid', 'accelerator', 'g', 'callback', 'grid (gca)');
+%! f = uimenu ('text', '&File', 'accelerator', 'f');
+%! e = uimenu ('text', '&Edit', 'accelerator', 'e');
+%! uimenu (f, 'text', 'Close', 'accelerator', 'q', ...
+%!            'menuselectedfcn', 'close (gcf)');
+%! uimenu (e, 'text', 'Toggle &Grid', 'accelerator', 'g', ...
+%!            'menuselectedfcn', 'grid (gca)');
 
 %!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   ui = uimenu ("label", "mylabel");
+%!   ui = uimenu ("text", "mytext");
 %!   assert (findobj (hf, "type", "uimenu"), ui);
-%!   assert (get (ui, "label"), "mylabel");
+%!   assert (get (ui, "text"), "mytext");
 %!   assert (get (ui, "checked"), "off");
 %!   assert (get (ui, "separator"), "off");
 %!   assert (get (ui, "enable"), "on");
@@ -131,9 +135,9 @@ endfunction
 %! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   uif = findall (hf, "label", "&file");
+%!   uif = findall (hf, "text", "&file");
 %!   assert (ishghandle (uif));
-%!   uie = findall (hf, "label", "&edit");
+%!   uie = findall (hf, "text", "&edit");
 %!   assert (ishghandle (uie));
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -144,8 +148,8 @@ endfunction
 %! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   uie = findall (hf, "label", "&edit");
-%!   myui = uimenu (uie, "label", "mylabel");
+%!   uie = findall (hf, "text", "&edit");
+%!   myui = uimenu (uie, "text", "mytext");
 %!   assert (ancestor (myui, "uimenu", "toplevel"), uie);
 %! unwind_protect_cleanup
 %!   close (hf);

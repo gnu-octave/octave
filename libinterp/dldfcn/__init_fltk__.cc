@@ -297,7 +297,7 @@ private:
 
 static void script_cb (Fl_Widget *, void *data)
 {
-  static_cast<uimenu::properties *> (data)->execute_callback ();
+  static_cast<uimenu::properties *> (data)->execute_menuselectedfcn ();
 }
 
 class fltk_uimenu
@@ -463,7 +463,7 @@ public:
       }
   }
 
-  void update_callback (uimenu::properties& uimenup)
+  void update_menuselectedfcn (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
@@ -472,7 +472,7 @@ public:
           = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
-            if (! uimenup.get_callback ().isempty ())
+            if (! uimenup.get_menuselectedfcn ().isempty ())
               item->callback (static_cast<Fl_Callback *> (script_cb),
                               static_cast<void *> (&uimenup));
             else
@@ -635,7 +635,7 @@ public:
 
     add_entry (uimenup);
     update_foregroundcolor (uimenup);
-    update_callback (uimenup);
+    update_menuselectedfcn (uimenup);
     update_accelerator (uimenup);
     update_enable (uimenup);
     update_visible (uimenup);
@@ -962,8 +962,8 @@ public:
             m_uimenu->update_accelerator (uimenup);
             break;
 
-          case uimenu::properties::ID_CALLBACK:
-            m_uimenu->update_callback (uimenup);
+          case uimenu::properties::ID_MENUSELECTEDFCN:
+            m_uimenu->update_menuselectedfcn (uimenup);
             break;
 
           case uimenu::properties::ID_CHECKED:

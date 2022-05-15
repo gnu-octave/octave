@@ -110,3 +110,17 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!test
+%! ## Test input validation, done only in xlim since it is common to ylim,zlim.
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot3 ([0,1.1], [0,1], [0, 1]);
+%!   fail ("xlim ({1, 2})", "LIMITS must be a 2-element vector");
+%!   fail ("xlim ([1, 2, 3])", "LIMITS must be a 2-element vector");
+%!   fail ("xlim ([2, 1])", "axis limits must be increasing");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+

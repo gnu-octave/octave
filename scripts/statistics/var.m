@@ -52,9 +52,9 @@
 ## where @math{N} is the length of the @var{x} vector.
 ##
 ## @end ifnottex
-## If @var{x} is an array, compute the variance for each column and return
-## them in a row vector (or for an n-D array, the result is returned as
-## an array of dimension 1 x n x m x @dots{}).
+## If @var{x} is an array, compute the variance for each column and return them
+## in a row vector (or for an n-D array, the result is returned as an array of
+## dimension 1 x n x m x @dots{}).
 ##
 ## The optional argument @var{w} determines the weighting scheme to use.  Valid
 ## values are
@@ -65,40 +65,36 @@
 ## unbiased estimator of the variance.
 ##
 ## @item 1:
-## Normalize with @math{N}, this provides the square root of the second moment
-## around the mean
+## Normalize with @math{N}@.  This provides the square root of the second
+## moment around the mean.
 ##
 ## @item a vector:
-## Compute the weighted variance with nonnegative scalar weights.  The length of
-## @var{w} must be equal to the size of @var{x} along dimension @var{dim}.
+## Compute the weighted variance with non-negative scalar weights.  The length
+## of @var{w} must equal the size of @var{x} along dimension @var{dim}.
 ## @end table
 ##
-## If @math{N} is equal to 1 the value of @var{W} is ignored and
-## normalization by @math{N} is used.
+## If @math{N} is equal to 1 the value of @var{W} is ignored and normalization
+## by @math{N} is used.
 ##
 ## The optional variable @var{dim} forces @code{var} to operate over the
-## specified dimension.  @var{dim} can either be a scalar dimension or a vector
-## of non-repeating dimensions over which to operate.  Dimensions must be
-## positive integers, and the variance is calculated over the array slice
-## defined by @var{dim}.
+## specified dimension(s).  @var{dim} can either be a scalar dimension or a
+## vector of non-repeating dimensions.  Dimensions must be positive integers,
+## and the variance is calculated over the array slice defined by @var{dim}.
 ##
-## Specifying dimension @qcode{"ALL"} will force @code{var} to operate on all
+## Specifying dimension @qcode{"all"} will force @code{var} to operate on all
 ## elements of @var{x}, and is equivalent to @code{var (@var{x}(:))}.
 ##
-## When @var{dim} is a vector or @qcode{"ALL"}, @var{w} must be either 0 or 1.
+## When @var{dim} is a vector or @qcode{"all"}, @var{w} must be either 0 or 1.
 ##
-## If requested the optional second output variable @var{mu} will contain the
-## mean or weighted mean used to calcluate @var{v}, and will be the same size
-## as @var{v}.
+## The optional second output variable @var{mu} contains the mean or weighted
+## mean used to calculate @var{v}, and will be the same size as @var{v}.
 ## @seealso{cov, std, skewness, kurtosis, moment}
 ## @end deftypefn
 
-function [v, mu] = var (x, w = 0, dim)
+function [v, mu] = var (x, w = 0, dim = [])
 
   if (nargin < 1)
     print_usage ();
-  elseif (nargin < 3)
-    dim = [];
   endif
 
   if (! (isnumeric (x) || islogical (x)))
@@ -114,130 +110,126 @@ function [v, mu] = var (x, w = 0, dim)
   emptydimflag = false;
 
   if (isempty (dim))
-    emptydimflag = true;  # Compatibliity hack for empty x, ndims==2
+    emptydimflag = true;  # Compatibility hack for empty x, ndims==2
 
     ## Find the first non-singleton dimension.
-   (dim = find (sz != 1, 1)) || (dim = 1);
+    (dim = find (sz != 1, 1)) || (dim = 1);
 
   else
-    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
-      if (isvector (dim) &&
-          isnumeric (dim) &&
-          all (dim > 0) &&
-          all (rem (dim, 1) == 0))
-        if (dim != unique (dim, "stable"))
-          error (["var: vector DIM must contain non-repeating positive"...
-                  "integers"]);
-        endif
-        ## Check W
-        if (! isscalar (w))
-          error ("var: W must be either 0 or 1 when DIM is a vector");
-        endif
-
-        ## Reshape X to compute the variance over an array slice
-        if (iscolumn (dim))
-          dim = transpose (dim);
-        endif
-
-        collapsed_dims = dim;
-        dim = dim(end);
-
-        ## Permute X to cluster the dimensions to collapse
-        highest_dim = max ([nd, collapsed_dims]);
-        perm_start = perm_end = [1:highest_dim];
-        perm_start(dim:end) = [];
-        perm_start(ismember (perm_start, collapsed_dims)) = [];
-        perm_end(1:dim) = [];
-        perm_end(ismember (perm_end, collapsed_dims)) = [];
-        perm = [perm_start, collapsed_dims, perm_end];
-
-        x = permute (x, perm);
-
-        ## Collapse the given dimensions
-        newshape = ones (1, highest_dim);
-        newshape(1:nd) = sz;
-        newshape(collapsed_dims(1:(end - 1))) = 1;
-        newshape(dim) = prod (sz(collapsed_dims));
-
-        ## New X with collapsed dimensions
-        x = reshape (x, newshape);
-      elseif (ischar (dim) &&
-              strcmp (tolower (dim), "all"))
-        ## Check W
-        if (! isscalar (w))
-          error ("var: W must be either 0 or 1 when using 'ALL' as dimension");
-        endif
-
-        ## "ALL" equals to collapsing all elements to a single vector
-        x = x(:);
-        dim = 1;
-        sz = size (x);
-      else
+    if (isscalar (dim))
+      if (dim < 1 || dim != fix (dim))
         error ("var: DIM must be a positive integer scalar, vector, or 'all'");
       endif
+    elseif (isnumeric (dim))
+      if (! isvector (dim) && all (dim > 0) && all (rem (dim, 1) == 0))
+        error ("var: DIM must be a positive integer scalar, vector, or 'all'");
+      endif
+      if (dim != unique (dim, "stable"))
+        error ("var: vector DIM must contain non-repeating positive integers");
+      endif
+      if (! isscalar (w))
+        error ("var: W must be either 0 or 1 when DIM is a vector");
+      endif
+
+      ## Reshape X to compute the variance over an array slice
+      if (iscolumn (dim))
+        dim = dim.';
+      endif
+
+      collapsed_dims = dim;
+      dim = dim(end);
+
+      ## Permute X to cluster the dimensions to collapse
+      max_dim = max ([nd, collapsed_dims]);
+      perm_start = perm_end = [1:max_dim];
+      perm_start(dim:end) = [];
+      perm_start(ismember (perm_start, collapsed_dims)) = [];
+      perm_end(1:dim) = [];
+      perm_end(ismember (perm_end, collapsed_dims)) = [];
+      perm = [perm_start, collapsed_dims, perm_end];
+
+      x = permute (x, perm);
+
+      ## Collapse the given dimensions
+      newshape = ones (1, max_dim);
+      newshape(1:nd) = sz;
+      newshape(collapsed_dims(1:(end-1))) = 1;
+      newshape(dim) = prod (sz(collapsed_dims));
+
+      ## New X with collapsed dimensions
+      x = reshape (x, newshape);
+
+    elseif (ischar (dim) && strcmpi (dim, "all"))
+      if (! isscalar (w))
+        error ("var: W must be either 0 or 1 when using 'all' as dimension");
+      endif
+
+      ## "all" equates to collapsing all elements to a single vector
+      x = x(:);
+      dim = 1;
+      sz = size (x);
+    else
+      error ("var: DIM must be a positive integer scalar, vector, or 'all'");
     endif
   endif
 
   n = size (x, dim);
-  if (! isvector (w) ||
-          ! isnumeric (w) ||
-          (isvector (w) && any (w < 0)) ||
+  if (! isvector (w) || ! isnumeric (w)
+      || (isvector (w) && any (w < 0)) ||
           (isscalar (w) && ((w != 0 && w != 1) && (n != 1))))
     error ("var: W must be 0, 1, or a vector of positive integers");
   endif
 
   if (isempty (x))
-    if (emptydimflag && isequal (sz, [0 0]))
+    ## Empty matrix special case
+    if (emptydimflag && nd == 2 && all (sz == [0, 0]))
       v = NaN;
       mu = NaN;
     else
-      output_size = sz;
-      output_size(dim) = 1;
-      v = NaN(output_size);
-      mu = NaN(output_size);
+      sz(dim) = 1;
+      v = NaN (sz);
+      mu = NaN (sz);
+    endif
+  elseif (n == 1)
+    ## Scalar special case
+    if (! isscalar (w))
+      error (["var: the length of W must be equal to the size of X " ...
+              "in the dimension along which variance is calculated"]);
+    endif
+    if (isa (x, "single"))
+      v = zeros (sz, "single");
+      mu = x;
+    else
+      v = zeros (sz);
+      mu = x;
     endif
   else
-    if (n == 1)
-      if (! isscalar (w))
-        error (["var: the length of W must be equal to the size of X "...
-                  "in the dimension along which variance is calculated"])
-      else
-        if (isa (x, "single"))
-          v = zeros (sz, "single");
-          mu = x;
-        else
-          v = zeros (sz);
-          mu = x;
-        endif
+    ## Regular algorithm
+    if (isscalar (w))
+      v = sumsq (center (x, dim), dim) / (n - 1 + w);
+      if (nargout == 2)
+        mu = mean (x, dim);
       endif
     else
-      if (isscalar (w))
-        v = sumsq (center (x, dim), dim) / (n - 1 + w);
-        if (nargout == 2)
-          mu = mean (x, dim);
-        endif
-      else
-        ## Weighted variance
-        if (length (w) != n)
-          error (["var: the length of W must be equal to the size of X "...
-                  "in the dimension along which variance is calculated"]);
-        else
-          if ((dim == 1 && rows (w) == 1) ||
-              (dim == 2 && columns (w) == 1))
-            w = transpose (w);
-          elseif (dim > 2)
-            newdims = [(ones (1, (dim - 1))), (length (w))];
-            w = reshape (w, newdims);
-          endif
-          den = sum (w);
-          mu = sum (w .* x, dim) ./ den;
-          v = sum (w .* ((x - mu) .^ 2), dim) ./ den;
-        endif
+      ## Weighted variance
+      if (numel (w) != n)
+        error (["var: the length of W must be equal to the size of X " ...
+                "in the dimension along which variance is calculated"]);
       endif
+      if ((dim == 1 && isrow (w)) || (dim == 2 && iscolumn (w)))
+        w = w.';
+      elseif (dim > 2)
+        newdims = [ones(1, dim - 1), numel(w)];
+        w = reshape (w, newdims);
+      endif
+      den = sum (w);
+      mu = sum (w .* x, dim) ./ den;
+      v = sum (w .* ((x - mu) .^ 2), dim) ./ den;
     endif
   endif
 
 endfunction
+
 
 %!assert (var (13), 0)
 %!assert (var (single (13)), single (0))
@@ -255,7 +247,7 @@ endfunction
 %!assert (var (reshape ([1:8], 2, 2, 2), 0, [1 3]), [17/3 17/3], eps)
 %!assert (var ([1 2 3;1 2 3], [], [1 2]), 0.8, eps)
 
-##Test empty inputs
+## Test empty inputs
 %!assert (var ([]), NaN)
 %!assert (var ([],[],1), NaN(1,0))
 %!assert (var ([],[],2), NaN(0,1))
@@ -275,7 +267,7 @@ endfunction
 %!assert (var (ones (1,3,0,2), [], 3), NaN(1,3,1,2))
 %!assert (var (ones (1,3,0,2), [], 4), NaN(1,3,0))
 
-##Test second output
+## Test second output
 %!test <*62395>
 %! [~, m] = var (13);
 %! assert (m, 13);

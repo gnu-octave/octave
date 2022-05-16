@@ -35,7 +35,7 @@
 ## containing data for the Octave process:
 ##
 ## @table @code
-## @item @var{MaxPossibleArrayBytes}
+## @item MaxPossibleArrayBytes
 ## Maximum size for an array to be allocated.  Be aware that this includes
 ## @emph{all} physical memory and swap space.  Allocating that amount of memory
 ## might result in system instability, data corruption, and/or file system
@@ -43,21 +43,21 @@
 ## largest contiguous memory block might further limit the maximum possible
 ## allocatable array.  This check is not currently implemented.
 ##
-## @item @var{MemAvailableAllArrays}
+## @item MemAvailableAllArrays
 ## The total size of available memory in bytes.
 ##
-## @item @var{ram_available_all_arrays}
+## @item ram_available_all_arrays
 ## The maximum size for an array that can be allocated in physical memory
 ## (excluding swap space).  Note that depending on the platform (32-bit
 ## systems), the largest contiguous memory block might further limit the
 ## maximum possible allocatable array.  This check is not currently
 ## implemented.
 ##
-## @item  @var{MemUsedMATLAB}
-## @itemx @var{mem_used_octave}
+## @item  MemUsedMATLAB
+## @itemx mem_used_octave
 ## The memory (including swap space) currently used by Octave in bytes.
 ##
-## @item @var{ram_used_octave}
+## @item ram_used_octave
 ## The physical memory (excluding swap space) currently used by Octave in
 ## bytes.
 ##
@@ -67,39 +67,49 @@
 ## following fields containing information about the system's memory:
 ##
 ## @table @code
-## @item @var{PhysicalMemory.Available}
+## @item PhysicalMemory.Available
 ## The currently available physical memory in bytes.
 ##
-## @item @var{PhysicalMemory.Total}
+## @item PhysicalMemory.Total
 ## The total physical memory in bytes.
 ##
-## @item @var{SystemMemory.Available}
+## @item SystemMemory.Available
 ## The currently available memory (including swap space) in bytes.
 ##
-## @item @var{SystemMemory.Total}
+## @item SystemMemory.Total
 ## The total memory (including swap space) in bytes.
 ##
-## @item @var{VirtualAddressSpace.Available}
+## @item VirtualAddressSpace.Available
 ## The currently available virtual address space in bytes.
 ##
-## @item @var{VirtualAddressSpace.Total}
+## @item VirtualAddressSpace.Total
 ## The total virtual address space in bytes.
 ##
 ## @end table
 ##
+## Example #1 : print formatted table of memory usage
+##
 ## @example
 ## @group
 ## memory ()
-##    @result{} System    RAM: 3934008 KiB,  swap: 4087804 KiB
-##       Octave    RAM:  170596 KiB,  virt: 1347944 KiB
-##       Free      RAM: 1954940 KiB,  swap: 4087804 KiB
-##       Available RAM: 2451948 KiB, total: 6042744 KiB
+## @result{}
+## System    RAM: 3934008 KiB,  swap: 4087804 KiB
+## Octave    RAM:  170596 KiB,  virt: 1347944 KiB
+## Free      RAM: 1954940 KiB,  swap: 4087804 KiB
+## Available RAM: 2451948 KiB, total: 6042744 KiB
 ## @end group
+## @end example
 ##
+## Example #2 : return structs with memory usage information
+##
+## @example
 ## @group
 ## [userdata, systemdata] = memory ()
-##    @result{} userdata =
-##      scalar structure containing the fields:
+## @result{}
+##  userdata =
+##
+##    scalar structure containing the fields:
+##
 ##      MaxPossibleArrayBytes = 6.1622e+09
 ##      MemAvailableAllArrays = 6.1622e+09
 ##      ram_available_all_arrays = 2.4883e+09
@@ -107,24 +117,34 @@
 ##      mem_used_octave = 1.3825e+09
 ##      ram_used_octave = 1.7824e+08
 ##
-##    systemdata =
-##      scalar structure containing the fields:
+##  systemdata =
+##
+##    scalar structure containing the fields:
+##
 ##      PhysicalMemory =
+##
 ##        scalar structure containing the fields:
+##
 ##          Available = 2.4954e+09
 ##          Total = 4.0284e+09
+##
 ##      SystemMemory =
+##
 ##        scalar structure containing the fields:
+##
 ##          Available = 6.6813e+09
 ##          Total = 8.2143e+09
+##
 ##      VirtualAddressSpace =
+##
 ##        scalar structure containing the fields:
+##
 ##          Available = 2.8147e+14
 ##          Total = 2.8147e+14
 ## @end group
 ## @end example
 ##
-## This function is implemented for Linux and Windows only.
+## Programming Note: This function is implemented for Linux and Windows only.
 ##
 ## @seealso{computer, getpid, getrusage, nproc, uname}
 ## @end deftypefn

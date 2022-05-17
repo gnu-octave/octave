@@ -44,6 +44,7 @@ parameter from the underlying integrator.
 
 ### Alphabetical list of new functions added in Octave 8
 
+* `uifigure`
 
 ### Deprecated functions, properties, and operators
 

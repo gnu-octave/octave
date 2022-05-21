@@ -96,7 +96,7 @@ namespace octave
     m_help_engine->setProperty ("_q_readonly",
                                 QVariant::fromValue<bool> (true));
 
-    QString tmpdir = QDir::tempPath();
+    QString tmpdir = QString::fromStdString (sys::env::get_temp_directory ());
     m_collection
       = QString::fromStdString (sys::tempnam (tmpdir.toStdString (),
                                               "oct-qhelp-"));

@@ -2201,8 +2201,24 @@ namespace octave
     if (trackedFiles.contains (file_to_save))
       m_file_system_watcher.removePath (file_to_save);
 
-    // open the file for writing
-    if (! file.open (QIODevice::WriteOnly))
+    // Remove trailing white spaces if desired
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    if (settings->value (ed_rm_trailing_spaces).toBool ())
+      {
+        // Replace trailing spaces, make sure edit area is writable,
+        // which is not the case when saving at exit or when closing
+        // the modified file.
+        bool ro = m_edit_area->isReadOnly ();
+        m_edit_area->setReadOnly (false); // allow writing for replace_all
+        m_edit_area->replace_all ("[ \\t]+$", "", true, false, false);
+        m_edit_area->setReadOnly (ro);    // recover read only state
+      }
+
+    // open the file for writing (use QIODevice::ReadWrite for avoiding
+    // truncating the previous file contents)
+    if (! file.open (QIODevice::ReadWrite))
       {
         // Unsuccessful, begin watching file again if it was being
         // watched previously.
@@ -2230,13 +2246,6 @@ namespace octave
     QTextCodec *codec = check_valid_codec ();
     if (! codec)
       return;   // No valid codec
-
-    // Remove trailing white spaces if desired
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-
-    if (settings->value (ed_rm_trailing_spaces).toBool ())
-      m_edit_area->replace_all ("[ \\t]+$", "", true, false, false);
 
     // Save the file
     out.setCodec (codec);

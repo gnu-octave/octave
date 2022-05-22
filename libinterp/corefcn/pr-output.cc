@@ -3845,18 +3845,19 @@ Fixed point format with 16 significant figures.
 As with the @samp{short} format, Octave will switch to an exponential @samp{e}
 format if it is unable to format a matrix properly using the current format.
 
-@item  short e
-@itemx long e
+@item  shorte
+@itemx longe
 Exponential format.  The number to be represented is split between a mantissa
 and an exponent (power of 10).  The mantissa has 5 significant digits in the
 short format.  In the long format, double values are displayed with 16
 significant digits and single values are displayed with 8.  For example,
-with the @samp{short e} format, @code{pi} is displayed as @code{3.1416e+00}.
+with the @samp{shorte} format, @code{pi} is displayed as @code{3.1416e+00}.
+Optionally, the trailing @samp{e} can be split into a second argument.
 
-@item  short g
-@itemx long g
+@item  shortg
+@itemx longg
 Optimally choose between fixed point and exponential format based on the
-magnitude of the number.  For example, with the @samp{short g} format,
+magnitude of the number.  For example, with the @samp{shortg} format,
 @code{pi .^ [2; 4; 8; 16; 32]} is displayed as
 
 @example
@@ -3870,12 +3871,14 @@ ans =
   8.1058e+15
 @end group
 @end example
+Optionally, the trailing @samp{g} can be split into a second argument.
 
-@item  short eng
-@itemx long eng
-Identical to @samp{short e} or @samp{long e} but displays the value using an
+@item  shorteng
+@itemx longeng
+Identical to @samp{shorte} or @samp{longe} but displays the value using an
 engineering format, where the exponent is divisible by 3.  For example, with
-the @samp{short eng} format, @code{10 * pi} is displayed as @code{31.416e+00}.
+the @samp{shorteng} format, @code{10 * pi} is displayed as @code{31.416e+00}.
+Optionally, the trailing @samp{eng} can be split into a second argument.
 
 @item  free
 @itemx none

@@ -14,7 +14,7 @@ jobs:
       matrix:
         # For available GitHub-hosted runners, see:
         # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [ubuntu-20.04, ubuntu-18.04]
+        os: [ubuntu-22.04, ubuntu-20.04, ubuntu-18.04]
         compiler: [gcc, clang]
         include:
           - compiler: gcc
@@ -147,7 +147,7 @@ jobs:
 
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [macos-10.15, macos-11]
+        os: [macos-10.15, macos-11, macos-12]
         # Most (or all) homebrew packages are compiled with clang and link
         # against libc++.  So we also use clang to avoid issues with symbols
         # that don't match.

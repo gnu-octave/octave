@@ -16,6 +16,9 @@ parameter from the underlying integrator.
 
 ### Graphics backend
 
+- Additional properties have been added to the `figure` graphics object:
+    * `"innerposition"` (equivalent to `"position"`)
+    * `"windowstate"` (not yet implemented)
 
 ### Matlab compatibility
 
@@ -41,6 +44,13 @@ parameter from the underlying integrator.
 
 - `var` and `std` now optionally output a second argument containing the mean
   or weighted mean.
+
+- The default state for certain graphics properties has been made
+  consistent with Matlab.
+
+  Object      | Property         | Default State
+  ------------|------------------|------------
+  `figure`    | `"dockcontrols"` | `"on"`
 
 ### Alphabetical list of new functions added in Octave 8
 

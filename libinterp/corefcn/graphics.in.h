@@ -3149,6 +3149,17 @@ public:
 
     OCTINTERP_API void adopt (const graphics_handle& h);
 
+    // Alias "innerposition" to "position".
+    octave_value get_innerposition (void) const
+    {
+      return get_position ();
+    }
+
+    void set_innerposition (const octave_value& val)
+    {
+      set_position (val);
+    }
+
     OCTINTERP_API void set_position (const octave_value& val,
                                      bool do_notify_toolkit = true);
 
@@ -3189,9 +3200,10 @@ public:
       string_property currentcharacter r , ""
       handle_property currentobject r , graphics_handle ()
       array_property currentpoint r , Matrix (2, 1, 0)
-      bool_property dockcontrols , "off"
+      bool_property dockcontrols , "on"
       string_property filename , ""
       bool_property graphicssmoothing , "on"
+      array_property innerposition sg , default_figure_position ()
       bool_property integerhandle S , "on"
       bool_property inverthardcopy , "on"
       callback_property keypressfcn , Matrix ()
@@ -3209,7 +3221,7 @@ public:
       array_property papersize U , default_figure_papersize ()
       radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property paperunits Su , "{inches}|centimeters|normalized|points"
-      radio_property pointer , "crosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
+      radio_property pointer , "{arrow}|crosshair|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 1)
       array_property pointershapehotspot , Matrix (1, 2, 1)
       array_property position s , default_figure_position ()
@@ -3230,6 +3242,7 @@ public:
       callback_property windowkeypressfcn , Matrix ()
       callback_property windowkeyreleasefcn , Matrix ()
       callback_property windowscrollwheelfcn , Matrix ()
+      radio_property windowstate , "{normal}|minimized|maximized|fullscreen"
       radio_property windowstyle , "{normal}|modal|docked"
 
       // Overridden base property

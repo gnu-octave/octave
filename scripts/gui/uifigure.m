@@ -53,8 +53,15 @@ function h = uifigure (varargin)
 
   h = __go_figure__ (NaN, "handlevisibility", "off",
                           "numbertitle", "off", "integerhandle", "off",
-                          "menubar", "none", "toolbar", "none", 
-                          varargin{:});
+                          "menubar", "none", "toolbar", "none");
+
+  ## Add uifigure-specific properties on top of regular figure graphics object
+  ## FIXME: There is no implementation behind these properties.
+  addproperty ("AutoResizeChildren", h, "boolean", "on");
+  addproperty ("Scrollable", h, "boolean", "off");
+
+  ## Apply any overrides.
+  set (h, varargin{:});
 
 endfunction
 
@@ -63,7 +70,8 @@ endfunction
 %! hf = uifigure ("visible", "off");
 %! unwind_protect
 %!   assert (isfigure (hf));
-%!   assert (get (hf, {"numbertitle", "menubar"}), {"off", "none"});
+%!   assert (get (hf, {"numbertitle", "menubar", "scrollable"}),
+%!                    {"off", "none", "off"});
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

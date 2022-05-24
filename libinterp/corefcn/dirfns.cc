@@ -666,8 +666,8 @@ glob ("*.*")
 %! old_dir = cd (fileparts (which ("plot.m")));
 %! unwind_protect
 %!   assert (__wglob__ ("private"), {"private"});
-%!   assert (__wglob__ ("private/"), {["private), filesep()]});
-%!   assert (__wglob__ ("private///"), {["private), filesep()]});
+%!   assert (__wglob__ ("private/"), {["private", filesep()]});
+%!   assert (__wglob__ ("private///"), {["private", filesep()]});
 %!   assert (__wglob__ ("./private"), {fullfile(".", "private")});
 %!   assert (__wglob__ ("./private/"), ...
 %!           {[fullfile(".", "private"), filesep()]});

@@ -660,6 +660,24 @@ glob ("*.*")
 %! unwind_protect_cleanup
 %!   cd (old_dir);
 %! end_unwind_protect
+
+## retain trailing file separator
+%!test <*62414>
+%! old_dir = cd (fileparts (which ("plot.m")));
+%! unwind_protect
+%!   assert (__wglob__ ("private"), {"private"});
+%!   assert (__wglob__ ("private/"), {["private), filesep()]});
+%!   assert (__wglob__ ("private///"), {["private), filesep()]});
+%!   assert (__wglob__ ("./private"), {fullfile(".", "private")});
+%!   assert (__wglob__ ("./private/"), ...
+%!           {[fullfile(".", "private"), filesep()]});
+%!   assert (__wglob__ ("./private///"), ...
+%!           {[fullfile(".", "private"), filesep()]});
+%!   assert (__wglob__ (["./p*","/"]), ...
+%!           {[fullfile(".", "private"), filesep()]});
+%! unwind_protect_cleanup
+%!   cd (old_dir);
+%! end_unwind_protect
 */
 
 DEFUN (__fnmatch__, args, ,

@@ -393,7 +393,8 @@ OCTAVE_NAMESPACE_BEGIN
                        const std::shared_ptr<stack_frame>& stack_context)
       : base_nested_fcn_handle (fcn, name), m_stack_context (stack_context)
     {
-      m_stack_context->mark_closure_context ();
+      if (m_stack_context)
+        m_stack_context->mark_closure_context ();
     }
 
     nested_fcn_handle (const nested_fcn_handle&) = default;
@@ -2690,7 +2691,10 @@ OCTAVE_NAMESPACE_BEGIN
                                               const std::shared_ptr<stack_frame>& stack_context)
     : base_anonymous_fcn_handle (fcn, local_vars),
       m_stack_context (stack_context)
-  { }
+  {
+    if (m_stack_context)
+      m_stack_context->mark_closure_context ();
+  }
 
   octave_value anonymous_fcn_handle::make_weak_anonymous_handle (void) const
   {

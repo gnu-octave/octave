@@ -100,9 +100,7 @@ namespace octave
             {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-              std::replace_if (xpat.begin (), xpat.end (),
-                               std::bind2nd (std::equal_to<char> (), '\\'),
-                               '/');
+              std::replace (xpat.begin (), xpat.end (), '/', '\\');
 #endif
 
               int err = octave_glob_wrapper (xpat.c_str (),
@@ -133,10 +131,7 @@ namespace octave
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)    \
   && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-                          std::replace_if (tmp.begin (), tmp.end (),
-                                           std::bind2nd (std::equal_to<char> (),
-                                                         '/'),
-                                           '\\');
+                          std::replace (tmp.begin (), tmp.end (), '/', '\\');
 #endif
 
                           retval[k++] = tmp;
@@ -157,6 +152,13 @@ namespace octave
     find_files (std::list<std::string>& dirlist, const std::string& dir,
                 const std::string& pat, std::string& file)
     {
+      // remove leading file separators
+      bool is_file_empty = file.empty ();
+      while (! file.empty () && sys::file_ops::is_dir_sep (file[0]))
+        file = file.substr (1, std::string::npos);
+
+      bool is_trailing_file_sep = ! is_file_empty && file.empty ();
+
       if (! pat.compare (".") || ! pat.compare (".."))
         {
           // shortcut for trivial patterns that would expand to a folder name
@@ -165,19 +167,23 @@ namespace octave
           std::size_t sep_pos
             = file.find_first_of (sys::file_ops::dir_sep_chars ());
           std::string pat_str = file.substr (0, sep_pos);
-          std::string file_str = (sep_pos != std::string::npos
-                                  && file.length () > sep_pos+1)
-                                 ? file.substr (sep_pos+1) : "";
+          std::string file_str = (sep_pos != std::string::npos)
+                                 ? file.substr (sep_pos) : "";
+
+          // Original pattern ends with "." or "..". Take it as we have it.
+          if (pat_str.empty ())
+            {
+              if (is_trailing_file_sep)
+                pat_str = sys::file_ops::dir_sep_char ();
+              dirlist.push_back (sys::file_ops::concat (dir, pat) + pat_str);
+              return;
+            }
 
           // call this function recursively with next path component in PAT
           find_files (dirlist, sys::file_ops::concat (dir, pat),
                       pat_str, file_str);
           return;
         }
-
-      // remove leading file separators
-      while (file.length () > 1 && sys::file_ops::is_dir_sep (file[0]))
-        file = file.substr (1, std::string::npos);
 
       // find first file in directory that matches pattern in PAT
       std::wstring wpat = u8_to_wstring (sys::file_ops::concat (dir, pat));
@@ -192,13 +198,22 @@ namespace octave
       // find all files that match pattern
       do
         {
+          // must be directory if pattern continues
+          if (! (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+              && (! file.empty () || is_trailing_file_sep))
+            continue;
+
           std::string found_dir = u8_from_wstring (ffd.cFileName);
 
           if (file.empty ())
             {
               // Don't include "." and ".." in matches.
               if (found_dir.compare (".") && found_dir.compare (".."))
-                dirlist.push_back (sys::file_ops::concat (dir, found_dir));
+                {
+                  if (is_trailing_file_sep)
+                    found_dir += sys::file_ops::dir_sep_char ();
+                  dirlist.push_back (sys::file_ops::concat (dir, found_dir));
+                }
             }
           else
             {
@@ -206,9 +221,8 @@ namespace octave
               std::size_t sep_pos
                 = file.find_first_of (sys::file_ops::dir_sep_chars ());
               std::string pat_str = file.substr (0, sep_pos);
-              std::string file_str = (sep_pos != std::string::npos
-                                      && file.length () > sep_pos+1)
-                                     ? file.substr (sep_pos+1) : "";
+              std::string file_str = (sep_pos != std::string::npos)
+                                     ? file.substr (sep_pos) : "";
 
               // call this function recursively with next path component in PAT
               find_files (dirlist, sys::file_ops::concat (dir, found_dir),
@@ -239,12 +253,11 @@ namespace octave
           if (xpat.empty ())
             continue;
 
-          // separate component until first dir separator
+          // separate component until first file separator
           std::size_t sep_pos
             = xpat.find_first_of (sys::file_ops::dir_sep_chars ());
-          std::string file = (sep_pos != std::string::npos
-                              && xpat.length () > sep_pos+1)
-                             ? xpat.substr (sep_pos+1) : "";
+          std::string file = (sep_pos != std::string::npos)
+                             ? xpat.substr (sep_pos) : "";
           xpat = xpat.substr (0, sep_pos);
 
           std::string dir = "";
@@ -260,9 +273,8 @@ namespace octave
               sep_pos = file.find_first_of (sys::file_ops::dir_sep_chars ());
               dir = xpat;
               xpat = file.substr (0, sep_pos);
-              file = (sep_pos != std::string::npos
-                      && file.length () > sep_pos+1)
-                     ? file.substr (sep_pos+1) : "";
+              file = (sep_pos != std::string::npos)
+                     ? file.substr (sep_pos) : "";
               if (xpat.empty ())
                 {
                   // don't glob if input is only disc root

@@ -77,8 +77,12 @@ function build (builddir, tarballs, verbose)
     else
       arch_abi = getarch ();
       configure_make (desc, build_root, verbose);
-      unlink (fullfile (build_root, "src", "configure"));
-      unlink (fullfile (build_root, "src", "Makefile"));
+      if exist (fullfile (build_root, "src", "configure"), "file")
+        unlink (fullfile (build_root, "src", "configure"));
+      endif
+      if exist (fullfile (build_root, "src", "Makefile"), "file")
+        unlink (fullfile (build_root, "src", "Makefile"));
+      endif
     endif
     tar_name = [desc.name "-" desc.version "-" arch_abi ".tar"];
     tar_path = fullfile (builddir, tar_name);

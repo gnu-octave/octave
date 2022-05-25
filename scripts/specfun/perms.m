@@ -25,15 +25,20 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{P} =} perms (@var{v})
+## @deftypefnx {} {@var{P} =} perms (@var{v}, "unique")
 ## Generate all permutations of vector @var{v} with one row per permutation.
 ##
 ## Results are returned in inverse lexicographic order.  The result has size
 ## @code{factorial (@var{n}) * @var{n}}, where @var{n} is the length of
-## @var{v}.  Any repetitions are included in the output.  To generate just the
-## unique permutations use @code{unique (perms (@var{v}), "rows")(end:-1:1,:)}.
+## @var{v}.  Any repetitions are included in the output.
 ##
-## Example
+## If the optional second argument is the string "unique", then only unique
+## permutations are returned, using a method that uses less memory than
+## @code{unique (perms (@var{v}), "rows")} and can be faster for
+## certain inputs.  In this case, the results are not guaranteed to be in any
+## particular order.
 ##
+## Example 1
 ## @example
 ## @group
 ## perms ([1, 2, 3])
@@ -47,8 +52,25 @@
 ## @end group
 ## @end example
 ##
-## Programming Note: The maximum length of @var{v} should be less than or
-## equal to 10 to limit memory consumption.
+## Example 2
+## @example
+## @group
+## perms ([1, 1, 2, 2], "unique")
+## @result{}
+##   2   2   1   1
+##   2   1   2   1
+##   2   1   1   2
+##   1   2   2   1
+##   1   2   1   2
+##   1   1   2   2
+## @end group
+## @end example
+##
+## Programming Notes: If the "unique" argument is not used, the length of
+## @var{v} should be no more than 10-12 to limit memory consumption.  To get
+## unique results, test both @code{perms (@var{v}, "unique")} and 
+## @code{unique (perms (@var{v}), "rows")} to compare speed and
+## memory usage.
 ## @seealso{permute, randperm, nchoosek}
 ## @end deftypefn
 
@@ -56,12 +78,27 @@
 ## type.  However, benchmarking shows doubles are faster.  If this changes in
 ## a later version of Octave the index variables here can be made uint8.
 
-function P = perms (v)
+function P = perms (v, opt)
 
   if (nargin < 1)
     print_usage ();
+  elseif (nargin == 2)
+    if (! isequal (opt, "unique"))
+      error ("perms: Second option must be the string ""unique"".");
+    else
+      tmp = numel (unique (v));
+      if (tmp == 1)
+        P = reshape (v, 1, []);
+        return
+      elseif (tmp < numel (v))
+        P = __perms_unique__ (v);
+        return
+      endif
+    endif
   endif
 
+  ## If we are here, then we want all permutations, not just unique ones.
+  ## Or the user passed the "unique" option but the input had no repetitions.
   v = v(:).';
   if (isnumeric (v) || ischar (v))
     ## Order of output is only dependent on the actual values for
@@ -112,6 +149,65 @@ function P = perms (v)
 
 endfunction
 
+function P = __perms_unique__ (v)
+  uvec = unique (v);
+  len = numel (v);
+  lenvec = (1:len);
+  ulen = numel (uvec);
+
+  ## Calculate frequencies. Slightly faster to not use hist() or histc().
+  for i = ulen:-1:1
+    freq (i) = nnz (v == uvec(i));
+  endfor
+
+  ## Performance is improved by handling the most frequent elements first.
+  ## This can mess with the output order though. Currently we do not promise
+  ## the results will be in any specific order.
+  [freq, order] = sort (freq, "descend");
+  uvec = uvec (order);
+
+  ## Call nchoosek for each choice and do a Cartesian set product,
+  ## avoiding collisions.
+  indx = nchoosek (lenvec, freq(1));
+  for i = 2:ulen
+    this = nchoosek (lenvec, freq(i));
+
+    new = zeros (rows (indx) + 1e5, columns (indx) + columns (this));
+    ## Preallocate 1e5 extra rows.
+    pos = 0;
+    for j = 1:rows (this)
+      tmp = indx;
+      for k = this(j,:)
+        tmp = tmp (all (tmp ~= k, 2), :);
+      endfor
+
+      r = rows (tmp);
+      c = columns (tmp);
+      if (pos + r > rows(new))  # allocate more memory on the fly
+        new (pos+r+1e5, 1) = 0;
+      endif
+
+      new ((pos+1):(pos+r), 1:c) = tmp;
+      new ((pos+1):(pos+r), (c+1):end) = repmat (this(j,:), r, 1);
+      pos += r;
+
+      # fprintf (1, "%d\t%d\t%d\t%d\t%d\t%f\n", i, j, r, pos, rows(new), toc);
+    endfor
+    indx = new (1:pos, :);
+  endfor
+  clear new tmp this  # clear large variables before building P
+
+  indx = (indx-1) * rows (indx) + (1:rows (indx))';
+
+  ## Initialize P to be the same size as indx with the same class as v.
+  P = repmat (v, rows(indx), 1);
+  pos = 0;
+  for i = 1:ulen
+    P (indx (:, (pos + 1):(pos + freq(i)))) = uvec (i);
+    pos += freq(i);
+  endfor
+
+endfunction
 
 %!assert (rows (perms (1:6)), factorial (6))
 %!assert (perms (pi), pi)
@@ -123,7 +219,13 @@ endfunction
 %!assert (unique (perms (1:5)(:))', 1:5)
 %!assert (perms (int8 (1:4)), int8 (perms (1:4)))
 
+%!assert (sortrows (perms ("abb", "unique")), ["abb"; "bab"; "bba"]);
+%!assert (size (perms ([1 1 1 1 2 2 2 3 3], "unique")), [1260 9])
+%!assert (size (perms (int8([1 1 1 1 1 2 2 2 2 3 3 3]), "unique")), [27720 12])
+
 %!error <Invalid call> perms ()
+%!error <.*Second option must be the string.*> perms (1:5, "nonexistent")
+%!error <.*Second option must be the string.*> perms (1:5, {"foo"})
 
 ## Should work for any array type, such as cells and structs, and not
 ## only for numeric data.

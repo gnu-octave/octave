@@ -11,6 +11,11 @@ Configure with `--disable-lib-visibility-flags` to export all symbols
 - `integral` can now output a second argument passing the error
 parameter from the underlying integrator.
 
+- `perms` now accepts a second argument "unique" to return only unique
+permutations for inputs with repeated elements.  It is faster and takes
+less memory to call `perms ('aaaabbbbcccc', "unique")` than to call
+`unique (perms ('aaaabbbbcccc'), "rows")`.
+
 ### Graphical User Interface
 
 

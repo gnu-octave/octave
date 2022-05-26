@@ -565,6 +565,15 @@ supported.
 %! assert (result1, {"file1"; "myfile1"});
 %! assert (result2, {"myfile1"});
 %! assert (result3, {"file1"; "file2"});
+
+## Check backslash handling on Windows
+%!testif ; ispc ()
+%! win_dir = getenv ("WINDIR");
+%! assert (glob (win_dir), {win_dir});
+%! assert (glob ([win_dir, filesep]), {[win_dir, filesep]});
+%! win_dir2 = strrep(win_dir, filesep, '/');
+%! assert (glob (win_dir2), {win_dir});
+%! assert (glob ([win_dir2, '/']), {[win_dir, filesep]});
 */
 
 DEFUN (__wglob__, args, ,

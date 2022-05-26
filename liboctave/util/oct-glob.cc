@@ -100,7 +100,7 @@ namespace octave
             {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
-              std::replace (xpat.begin (), xpat.end (), '/', '\\');
+              std::replace (xpat.begin (), xpat.end (), '\\', '/');
 #endif
 
               int err = octave_glob_wrapper (xpat.c_str (),

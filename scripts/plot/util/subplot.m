@@ -288,7 +288,7 @@ function hax = subplot (varargin)
               ## appdata "__subplotposition__", use the existing axes.
               found = true;
               hsubplot = child;
-            else
+            elseif (exist ("rows", "var"))
               ## Check if this axes is a subplot with the same layout and
               ## index as the requested one
               rcn = getappdata (child, "__subplotrcn__");
@@ -644,6 +644,18 @@ endfunction
 %!   assert (gca (), h2);
 %!   subplot ("position", [0.5 0.5 0.3 0.2]);
 %!   assert (! ishghandle (h2));
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+
+## Mixed rcn and position mode
+%!test <*62526>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = subplot (2, 2, 1);
+%!   h2 = subplot ("position", [0.5 0.5 0.3 0.3]);
+%!   h3 = subplot (223);
+%!   assert (get (hf, "children"), [h3; h2; h1]);
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect

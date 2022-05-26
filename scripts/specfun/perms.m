@@ -30,13 +30,12 @@
 ##
 ## Results are returned in inverse lexicographic order.  The result has size
 ## @code{factorial (@var{n}) * @var{n}}, where @var{n} is the length of
-## @var{v}.  Any repetitions are included in the output.
+## @var{v}.  Any repeated elements are included in the output.
 ##
-## If the optional second argument is the string "unique", then only unique
-## permutations are returned, using a method that uses less memory than
-## @code{unique (perms (@var{v}), "rows")} and can be faster for
-## certain inputs.  In this case, the results are not guaranteed to be in any
-## particular order.
+## If the optional argument "unique" is given, then only unique permutations
+## are returned, using less memory and generally taking less time than calling
+## @code{unique (perms (@var{v}), "rows")}.  In this case, the results are
+## not guaranteed to be in any particular order.
 ##
 ## Example 1
 ## @example
@@ -66,11 +65,9 @@
 ## @end group
 ## @end example
 ##
-## Programming Notes: If the "unique" argument is not used, the length of
-## @var{v} should be no more than 10-12 to limit memory consumption.  To get
-## unique results, test both @code{perms (@var{v}, "unique")} and 
-## @code{unique (perms (@var{v}), "rows")} to compare speed and
-## memory usage.
+## Programming Note: If the "unique" option is not used, the length of @var{v}
+## should be no more than 10-12 to limit memory consumption.  Even with
+## "unique", there should be no more than 10-12 unique elements in @var{v}.
 ## @seealso{permute, randperm, nchoosek}
 ## @end deftypefn
 
@@ -161,7 +158,7 @@ function P = __perms_unique__ (v)
   endfor
 
   ## Performance is improved by handling the most frequent elements first.
-  ## This can mess with the output order though. Currently we do not promise
+  ## This can change the output order though.  Currently we do not promise
   ## the results will be in any specific order.
   [freq, order] = sort (freq, "descend");
   uvec = uvec (order);
@@ -183,19 +180,17 @@ function P = __perms_unique__ (v)
 
       r = rows (tmp);
       c = columns (tmp);
-      if (pos + r > rows(new))  # allocate more memory on the fly
-        new (pos+r+1e5, 1) = 0;
+      if (pos + r > rows(new))  # Allocate more memory on the fly
+        new (pos + r + 1e5, 1) = 0;
       endif
 
       new ((pos+1):(pos+r), 1:c) = tmp;
       new ((pos+1):(pos+r), (c+1):end) = repmat (this(j,:), r, 1);
       pos += r;
-
-      # fprintf (1, "%d\t%d\t%d\t%d\t%d\t%f\n", i, j, r, pos, rows(new), toc);
     endfor
     indx = new (1:pos, :);
   endfor
-  clear new tmp this  # clear large variables before building P
+  clear new tmp this  # Clear large variables before building P
 
   indx = (indx-1) * rows (indx) + (1:rows (indx))';
 

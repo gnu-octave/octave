@@ -226,7 +226,7 @@ function [output, status] = mkoctfile (varargin)
   [sts, out] = system (cmd);
 
   if (nargout > 0)
-    [output, status] = deal (out, sts);
+    [output, status] = deal (strtrim (out), sts);
     if (sts != 0)
       warning ("mkoctfile: building exited with failure status\n");
     endif

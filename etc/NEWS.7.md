@@ -325,6 +325,10 @@ major release after 7):
   `disable_permutation_matrix` | `optimize_permutation_matrix`
   `disable_range`              | `optimize_range`
 
+  For plot functions, the use of numbers to select line colors in
+  shorthand formats was an undocumented feature that is deprecated in
+  Octave 7 and will be removed from Octave 9.
+
 - Operators
 
   Operator | Replacement | Description
@@ -361,11 +365,6 @@ from Octave 8 (or whatever version is the second major release after 6):
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,
   and a warning is now emitted if it is used, but it will continue to
   work.
-
-- Using numbers to select line colors in short hand formats was an
-  un-documented feature that is deprecated in Octave 7 and will be
-  removed from Octave 9.
-
 
 ### Removed functions, properties, and features
 

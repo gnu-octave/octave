@@ -197,6 +197,11 @@
 ## scheduled for removal from Octave.
 ## By default, the @code{Octave:deprecated-keyword} warning is enabled.
 ##
+## @item Octave:deprecated-option
+## If the @code{Octave:deprecated-option} warning is enabled, a
+## warning is issued when an obsolete option or input to a function is used.
+## By default, the @code{Octave:deprecated-option} warning is enabled.
+##
 ## @item Octave:deprecated-property
 ## If the @code{Octave:deprecated-property} warning is enabled, a
 ## warning is issued when Octave encounters a graphics property that

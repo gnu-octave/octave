@@ -362,6 +362,10 @@ from Octave 8 (or whatever version is the second major release after 6):
   and a warning is now emitted if it is used, but it will continue to
   work.
 
+- Using numbers to select line colors in short hand formats was an
+  un-documented feature that is deprecated in Octave 7 and will be
+  removed from Octave 9.
+
 
 ### Removed functions, properties, and features
 

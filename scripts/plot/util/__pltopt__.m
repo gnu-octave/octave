@@ -158,6 +158,12 @@ function [options, valid] = decode_linespec (caller, opt, err_on_invalid)
     topt = opt(1);
     n = 1;
 
+    if (any (topt == "0":"6"))
+      warning ("Octave:deprecated-option", ...
+               ["%s: using numbers to select line colors is deprecated.  ", ...
+                "Use the corresponding color identifier instead."], caller);
+    endif
+
     ## LineStyles
     if (strncmp (opt, "--", 2) || strncmp (opt, "-.", 2))
       options.linestyle = opt(1:2);
@@ -181,10 +187,13 @@ function [options, valid] = decode_linespec (caller, opt, err_on_invalid)
           n = 9;
         endif
       endif
-        ## Backward compatibility.  Leave undocumented.
-        if (topt == "@")
-          topt = "+";
-        endif
+      ## Backward compatibility.  Leave undocumented.
+      if (topt == "@")
+        warning ("Octave:deprecated-option", ...
+                 "%s: marker type '@' is deprecated.  Use '+' instead.", ...
+                 caller);
+        topt = "+";
+      endif
       options.marker = topt;
     ## Numeric color specs are for backward compatibility.  Don't document.
     elseif (topt == "k" || topt == "0")

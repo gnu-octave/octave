@@ -659,6 +659,9 @@ Return true if Octave was invoked with the @env{--traditional} option.
 
   interpreter::~interpreter (void)
   {
+    if (! m_app_context)
+      shutdown ();
+
     delete m_gh_manager;
   }
 
@@ -911,14 +914,16 @@ Return true if Octave was invoked with the @env{--traditional} option.
               }
             else
               exit_status = main_loop ();
+
+            shutdown ();
           }
       }
     catch (const exit_exception& xe)
       {
         exit_status = xe.exit_status ();
-      }
 
-    shutdown ();
+        shutdown ();
+      }
 
     return exit_status;
   }

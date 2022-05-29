@@ -24,14 +24,20 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{y} =} mu2lin (@var{x}, @var{n})
+## @deftypefn  {} {@var{y} =} mu2lin (@var{x})
+## @deftypefnx {} {@var{y} =} mu2lin (@var{x}, @var{n})
 ## Convert audio data from mu-law to linear.
 ##
-## Mu-law values are 8-bit unsigned integers.  Linear values use @var{n}-bit
-## signed integers or floating point values in the range -1 @leq{} @var{y}
-## @leq{} 1 if @var{n} is 0.
+## Mu-law values are 8-bit unsigned integers in the range 0 @leq{} @var{y}
+## @leq{} 255.  Linear values use floating point values in the range
+## -@var{linmax} @leq{} @var{x} @var{linmax} (where
+## @code{@var{linmax} = 32124/32768 =~ 0.98}) when @var{n} is zero (default).
+## If @var{n} is 8 or 16 then @var{n}-bit signed integers are used instead.
 ##
-## If @var{n} is not specified it defaults to 0.
+## Programming Note: @code{mu2lin} maps maximum mu-law inputs to values
+## slightly below the maximum ([-0.98, +0.98]) representable with a linear
+## scale.  Because of this, @code{mu2lin (lin2mu (@var{x}))} might not
+## reproduce the original input.
 ## @seealso{lin2mu}
 ## @end deftypefn
 
@@ -41,8 +47,13 @@ function y = mu2lin (x, n = 0)
     print_usage ();
   endif
 
-  if (n != 0 && n != 8 && n != 16)
-    error ("mu2lin: N must be either 0, 8, or 16");
+  if (nargin == 2)
+    if (! isscalar (n) && ! isreal (n)
+        || (n != 0 && n != 8 && n != 16))
+      error ("lin2mu: N must be either 0, 8, or 16");
+    elseif (isempty (n))
+      n = 0;
+    endif
   endif
 
   ulaw = [32124, 31100, 30076, 29052, 28028, 27004, 25980, 24956, ...
@@ -74,7 +85,7 @@ function y = mu2lin (x, n = 0)
     ## [ -32768, 32767 ] -> [ -1, 1)
     y /= 32768;
   elseif (n == 8)
-    ld = max (abs (y (:)));
+    ld = max (abs (y(:)));
     if (ld < 16384 && ld > 0)
       sc = 64 / ld;
     else
@@ -84,3 +95,32 @@ function y = mu2lin (x, n = 0)
   endif
 
 endfunction
+
+
+## Test functionality
+%!shared linmax
+%! linmax = 32124 / 32768;
+
+%!test
+%! x = [0, 128, 255];
+%! y = x';
+%! assert (mu2lin (x), (mu2lin (y))');
+%! assert (mu2lin (x), [-linmax, +linmax, 0]);
+
+%!assert (mu2lin ([]), [])
+%!assert (mu2lin (255), 0)
+%!assert (mu2lin (255, 0), 0)
+%!assert (mu2lin (255, 8), 0)
+%!assert (mu2lin (255, 16), 0)
+%!assert (mu2lin (128, []), linmax)
+%!assert (mu2lin (128, 8), 125)
+%!assert (mu2lin (128, 16), 32124)
+%!assert (mu2lin (zeros (1, 1000), 0), repmat (-linmax, 1, 1000))
+%!assert (mu2lin (255*ones (2, 2), 0), zeros (2, 2))
+
+## Test input validation
+%!error <Invalid call> mu2lin ()
+%!error <N must be either 0, 8, or 16> mu2lin (1, 2)
+%!error <N must be either 0, 8, or 16> mu2lin (1, [1,2])
+%!error <N must be either 0, 8, or 16> mu2lin (1, ones (1, 2))
+%!error mu2lin ({2:5})

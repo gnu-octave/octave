@@ -30,18 +30,12 @@
 ## The output data class (double, single, uint32, etc.@:) is the same as the
 ## input class of @var{n}.  The algorithm used is the Sieve of Eratosthenes.
 ##
-## Note: If you need a specific number of primes you can use the fact that the
-## distance from one prime to the next is, on average, proportional to the
-## logarithm of the prime.  Integrating, one finds that there are about
-## @math{k} primes less than
-## @tex
-## $k \log (5 k)$.
-## @end tex
-## @ifnottex
-## k*log (5*k).
-## @end ifnottex
+## Note: For a specific number @var{n} of primes, call @code{list_primes (N)},
+## or @code{primes (N*log (K*N))(1:N)} where @var{K} is about 5 or 6.
+## This works because the distance from one prime to the next is proportional
+## to the logarithm of the prime, on average.  On integrating, there are about
+## @var{n} primes less than @code{N * log(5*N)}.
 ##
-## See also @code{list_primes} if you need a specific number @var{n} of primes.
 ## @seealso{list_primes, isprime}
 ## @end deftypefn
 

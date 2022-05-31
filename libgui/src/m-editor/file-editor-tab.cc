@@ -2218,7 +2218,7 @@ namespace octave
 
     // open the file for writing (use QIODevice::ReadWrite for avoiding
     // truncating the previous file contents)
-    if (! file.open (QIODevice::ReadWrite))
+    if (! file.open (QIODevice::WriteOnly))
       {
         // Unsuccessful, begin watching file again if it was being
         // watched previously.

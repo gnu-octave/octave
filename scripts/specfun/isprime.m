@@ -103,21 +103,19 @@ function tf = isprime (x)
   pr = [2 3 5 7 11 13 17 19 23 29 31 37];
   tf = lookup (pr, x, "b");  # quick search for table matches.
 
-  THRESHOLD = 29e9;
+  THRESHOLD = 195e8;
   ## FIXME: THRESHOLD is the input value at which Miller-Rabin
   ## becomes more efficient than direct division. For smaller numbers,
   ## use direct division. For larger numbers, use Miller-Rabin.
   ##
-  ## From numerical experiments in Oct 2021, this was observed:
+  ## From numerical experiments in Jun 2022, this was observed:
   ##    THRESHOLD       Division       Miller-Rabin
-  ##        380e9       75.0466s       30.868s
-  ##        100e9       45.0874s       29.1794s
-  ##         10e9       18.5075s       25.4392s
-  ##         50e9       31.6317s       27.7251s
-  ##         25e9       25.1215s       27.004s
-  ##         38e9       31.4674s       28.1336s
-  ##         30e9       28.3848s       27.9982s
-  ## which is close enough to interpolate, so final threshold = 29 billion.
+  ##         29e9       29.8196s       26.2484s       (previous value)
+  ##         20e9       26.7445s       26.0161s
+  ##         10e9       20.9330s       25.3247s
+  ##         19e9       26.5397s       26.8987s
+  ##        195e8       26.5735s       26.4749s
+  ## which is close enough, so new threshold = 195e8.
   ##
   ## The test code was this:
   ##   n = THRESHOLD - (1:1e7); tic; isprime(n); toc

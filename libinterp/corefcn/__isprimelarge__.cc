@@ -116,20 +116,12 @@ isprimescalar (uint64_t n)
   // If the number passes all 12 tests, then it is prime.
   // If it fails any, then it is composite.
   // The first 12 primes suffice to test all 64-bit integers.
-  if (! millerrabin ( 2, d, r, n))  return false;
-  if (! millerrabin ( 3, d, r, n))  return false;
-  if (! millerrabin ( 5, d, r, n))  return false;
-  if (! millerrabin ( 7, d, r, n))  return false;
-  if (! millerrabin (11, d, r, n))  return false;
-  if (! millerrabin (13, d, r, n))  return false;
-  if (! millerrabin (17, d, r, n))  return false;
-  if (! millerrabin (19, d, r, n))  return false;
-  if (! millerrabin (23, d, r, n))  return false;
-  if (! millerrabin (29, d, r, n))  return false;
-  if (! millerrabin (31, d, r, n))  return false;
-  if (! millerrabin (37, d, r, n))  return false;
-  // If we are all the way here, then it is prime.
-  return true;
+  return millerrabin ( 2, d, r, n) && millerrabin ( 3, d, r, n)
+      && millerrabin ( 5, d, r, n) && millerrabin ( 7, d, r, n)
+      && millerrabin (11, d, r, n) && millerrabin (13, d, r, n)
+      && millerrabin (17, d, r, n) && millerrabin (19, d, r, n)
+      && millerrabin (23, d, r, n) && millerrabin (29, d, r, n)
+      && millerrabin (31, d, r, n) && millerrabin (37, d, r, n);
 
   /*
   Mathematical references for the curious as to why we need only

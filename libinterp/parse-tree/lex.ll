@@ -3575,9 +3575,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     //   pi +1
     //
     // are parsed as an addition expression instead of as a command-style
-    // function call with the argument "+1".  Also for compatibility with
-    // Matlab, if we are at the top level workspace, do not consider IDENT
-    // as a possible command if it is already known to be a variable.
+    // function call with the argument "+1".
 
     if (m_at_beginning_of_statement
         && ! (m_parsing_anon_fcn_body

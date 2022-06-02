@@ -88,8 +88,15 @@ is no longer the case.
 
 - For compatibility with command syntax, inplace operators (`+=`, `-=`,
 `*=`, `.*=`, `/=`, `./=`, `\=`, `.\=`, `^=`, `.^=`, `|=`, `&=`) must now
-be followed by a whitespace character.  That was not a requirement in
-previous versions of Octave.
+either be followed by a whitespace character or must not be preceded by a
+whitespace character.  For commands with binary operators (`+`, `-`, `*`,
+ `.*`, `/`, `./`, `\`, `.\`, `^`, `.^`, `|`, `&`, `||`, `&&`) without
+assignment, the same rules apply.  That was not a requirement in previous
+versions of Octave.
+E.g., `a + b`, `a+ b`, or `a+b` are valid if `a` is a variable.  In
+contrast, `a +b` will throw an error if `a` is a variable.  The latter
+example is now interpreted as command syntax expression equivalent to the
+function syntax expression `a ("+b")`.
 
 - The `mldivide` function (i.e., the `\` operator) now uses an LU
 decomposition to solve nearly singular full square matrices.  This is

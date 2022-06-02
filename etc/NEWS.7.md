@@ -86,6 +86,11 @@ corresponding variables.  In previous versions of Octave, whitespaces
 between these operators and the variable they affect were allowed.  That
 is no longer the case.
 
+- For compatibility with command syntax, inplace operators (`+=`, `-=`,
+`*=`, `.*=`, `/=`, `./=`, `\=`, `.\=`, `^=`, `.^=`, `|=`, `&=`) must now
+be followed by a whitespace character.  That was not a requirement in
+previous versions of Octave.
+
 - The `mldivide` function (i.e., the `\` operator) now uses an LU
 decomposition to solve nearly singular full square matrices.  This is
 Matlab-compatible and yields results which more nearly minimize `norm

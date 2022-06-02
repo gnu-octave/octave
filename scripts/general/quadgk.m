@@ -27,7 +27,7 @@
 ## @deftypefn  {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b})
 ## @deftypefnx {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol})
 ## @deftypefnx {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol}, @var{trace})
-## @deftypefnx {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, "@var{prop}", @var{val}, @dots{})
 ## @deftypefnx {} {[@var{q}, @var{err}] =} quadgk (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
@@ -35,7 +35,8 @@
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
 ## of the function to evaluate.  The function @var{f} must be vectorized and
-## return a vector of output values when given a vector of input values.
+## return a vector of output values when given a vector of input values (See
+## property @qcode{"ArrayValued"} for an exception to this rule).
 ##
 ## @var{a} and @var{b} are the lower and upper limits of integration.  Either
 ## or both limits may be infinite or contain weak end singularities.  Variable
@@ -60,8 +61,8 @@
 ## subintervals at this step, (2) the current estimate of the error @var{err},
 ## (3) the current estimate for the integral @var{q}.
 ##
-## The behavior of the algorithm can be configured by passing arguments
-## to @code{quadgk} as pairs @qcode{"@var{prop}", @var{val}}.  Valid properties
+## The behavior of the algorithm can be configured by passing arguments to
+## @code{quadgk} as pairs @qcode{"@var{prop}", @var{val}}.  Valid properties
 ## are
 ##
 ## @table @code
@@ -73,28 +74,52 @@
 ## Define the relative error tolerance for the quadrature.  The default
 ## relative tolerance is 1e-6 (1e-4 for single).
 ##
-## @item MaxIntervalCount
-## @code{quadgk} initially subdivides the interval on which to perform the
-## quadrature into 10 intervals.  Subintervals that have an unacceptable error
-## are subdivided and re-evaluated.  If the number of subintervals exceeds 650
-## subintervals at any point then a poor convergence is signaled and the
-## current estimate of the integral is returned.  The property
-## @qcode{"MaxIntervalCount"} can be used to alter the number of subintervals
-## that can exist before exiting.
-##
-## @item WayPoints
-## Discontinuities in the first derivative of the function to integrate can be
-## flagged with the @qcode{"WayPoints"} property.  This forces the ends of a
-## subinterval to fall on the breakpoints of the function and can result in
-## significantly improved estimation of the error in the integral, faster
-## computation, or both.  For example,
+## @item ArrayValued
+## When set to true, the function @var{f} produces an array output for a scalar
+## input.  The default is false which requires that @var{f} produce an output
+## that is the same size as the input.  For example,
 ##
 ## @example
-## quadgk (@@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1)
+## quadgk (@@(x) x .^ (1:5), 0, 2, "ArrayValued", 1)
+## @end example
+##
+## will integrate @code{[x.^1, x.^2, x.^3, x.^4, x.^5]} in one function call
+## rather than having to repeatedly define a single anonymous function and
+## use a normal invocation of @code{quadgk}.
+##
+## @item WayPoints
+## Specify points which will become endpoints for subintervals in the
+## algorithm which can result in significantly improved estimation of the error
+## in the integral, faster computation, or both.  It can be useful to specify
+## more subintervals around a region where the integrand is rapidly changing or
+## to flag locations where there is a discontinuity in the first derivative
+## of the function.  For example, the signum function has a discontinuity at
+## @code{x == 0} and by specifying a waypoint
+##
+## @example
+## quadgk (@@(x) sign (x), -0.5, 1, "Waypoints", [0])
 ## @end example
 ##
 ## @noindent
-## signals the breakpoint in the integrand at @code{@var{x} = 1}.
+## the error bound is reduced from 4e-7 to 1e-13.
+##
+## If the function has @strong{singularities} within the region of integration
+## those should not be addressed with waypoints.  Instead, the overall integral
+## should be decomposed into a sum of several smaller integrals such that the
+## singularity occurs as one of the bounds of integration in the call to
+## @code{quadgk}.
+##
+## If any of the waypoints are complex then contour integration is performed as
+## documented below.
+##
+## @item MaxIntervalCount
+## @code{quadgk} initially subdivides the interval on which to perform the
+## quadrature into 10 intervals or, if WayPoints are given, at each waypoint.
+## Subintervals that have an unacceptable error are subdivided and
+## re-evaluated.  If the number of subintervals exceeds 650 subintervals at any
+## point then a poor convergence is signaled and the current estimate of the
+## integral is returned.  The property @qcode{"MaxIntervalCount"} can be used
+## to alter the number of subintervals that can exist before exiting.
 ##
 ## @item Trace
 ## If logically true @code{quadgk} prints information on the convergence of the
@@ -102,7 +127,7 @@
 ## @end table
 ##
 ## If any of @var{a}, @var{b}, or @var{waypoints} is complex then the
-## quadrature is treated as a contour integral along a piecewise continuous
+## quadrature is treated as a contour integral along a piecewise linear
 ## path defined by
 ## @code{[@var{a}, @var{waypoints}(1), @var{waypoints}(2), @dots{}, @var{b}]}.
 ## In this case the integral is assumed to have no edge singularities.  For
@@ -136,7 +161,7 @@
 ## Feb 2008.
 ##
 ## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad, integral,
-##           integral2, integral3}
+##          integral2, integral3}
 ## @end deftypefn
 
 function [q, err] = quadgk (f, a, b, varargin)
@@ -145,17 +170,11 @@ function [q, err] = quadgk (f, a, b, varargin)
     print_usage ();
   endif
 
-  if (b < a)
-    ## Reverse integration
-    [q, err] = quadgk (f, b, a, varargin{:});
-    q = -q;
-    return;
-  endif
-
   abstol = [];
   reltol = [];
   waypoints = [];
   maxint = 650;
+  arrayvalued = false;
   trace = false;
 
   ## Parse options if present.
@@ -181,26 +200,34 @@ function [q, err] = quadgk (f, a, b, varargin)
         if (! ischar (varargin{idx}))
           error ("quadgk: property PROP must be a string");
         endif
-        str = varargin{idx++};
-        switch (tolower (str))
+        prop = varargin{idx++};
+        switch (tolower (prop))
           case "reltol"
             reltol = varargin{idx++};
           case "abstol"
             abstol = varargin{idx++};
           case "waypoints"
             waypoints = varargin{idx++}(:);
-            if (isreal (waypoints))
-              waypoints(waypoints < a | waypoints > b) = [];
-            endif
           case "maxintervalcount"
             maxint = varargin{idx++};
+          case "arrayvalued"
+            arrayvalued = varargin{idx++};
           case "trace"
             trace = varargin{idx++};
           otherwise
-            error ("quadgk: unknown property '%s'", str);
+            error ("quadgk: unknown property '%s'", prop);
         endswitch
       endwhile
     endif
+  endif
+
+  reverse = 1;
+  contour = iscomplex (a) || iscomplex (b) || iscomplex (waypoints);
+  if ((b < a) && ! contour)
+    ## Reverse integration
+    [b, a] = deal (a, b);
+    waypoints = sort (waypoints(waypoints > a & waypoints < b));
+    reverse = -1;
   endif
 
   issingle = (isa (a, "single") || isa (b, "single")
@@ -218,6 +245,9 @@ function [q, err] = quadgk (f, a, b, varargin)
     error ("quadgk: RELTOL must be a scalar >=0");
   endif
 
+  ## FIXME: No validation of inputs MaxIntervalCount, Waypoints, ArrayValued,
+  ##        Trace.
+
   ## Convert function given as a string to a function handle
   if (ischar (f))
     f = @(x) feval (f, x);
@@ -226,12 +256,13 @@ function [q, err] = quadgk (f, a, b, varargin)
   ## Use variable substitution to weaken endpoint singularities and
   ## to perform integration with endpoints at infinity.
   ## No transform for contour integrals.
-  if (iscomplex (a) || iscomplex (b) || iscomplex (waypoints))
+  if (contour)
     ## contour integral, no transform
     subs = [a; waypoints; b];
     h = sum (abs (diff (subs)));
-    h0 = h;
     trans = @(t) t;
+    ## Ensure f is always vectorized even if specified as, e.g., f = @(x) 1;
+    f = @(t) f (t) + 0*t;
   elseif (isinf (a) && isinf (b))
     ## Standard infinite to finite integral transformation.
     ##   \int_{-\infinity_^\infinity f(x) dx = \int_-1^1 f (g(t)) g'(t) dt
@@ -247,7 +278,6 @@ function [q, err] = quadgk (f, a, b, varargin)
       subs = linspace (-1, 1, 11)';
     endif
     h = 2;
-    h0 = b - a;
     trans = @(t) t ./ (1 - t.^2);
     f = @(t) f (t ./ (1 - t .^ 2)) .* (1 + t .^ 2) ./ ((1 - t .^ 2) .^ 2);
   elseif (isinf (a))
@@ -273,7 +303,6 @@ function [q, err] = quadgk (f, a, b, varargin)
       subs = linspace (-1, 0, 11)';
     endif
     h = 1;
-    h0 = b - a;
     trans = @(t) b - (t ./ (1 + t)).^2;
     f = @(s) - 2 * s .* f (b -  (s ./ (1 + s)) .^ 2) ./ ((1 + s) .^ 3);
   elseif (isinf (b))
@@ -298,7 +327,6 @@ function [q, err] = quadgk (f, a, b, varargin)
       subs = linspace (0, 1, 11)';
     endif
     h = 1;
-    h0 = b - a;
     trans = @(t) a + (t ./ (1 - t)).^2;
     f = @(s) 2 * s .* f (a +  (s ./ (1 - s)) .^ 2) ./ ((1 - s) .^ 3);
   else
@@ -320,7 +348,6 @@ function [q, err] = quadgk (f, a, b, varargin)
       subs = linspace (-1, 1, 11)';
     endif
     h = 2;
-    h0 = b - a;
     trans = @(t) ((b - a) ./ 4) * t .* (3 - t.^2) + (b + a) ./ 2;
     f = @(t) f((b - a) ./ 4 .* t .* (3 - t.^2) + (b + a) ./ 2) .* ...
          3 .* (b - a) ./ 4 .* (1 - t.^2);
@@ -328,92 +355,170 @@ function [q, err] = quadgk (f, a, b, varargin)
 
   ## Split interval into at least 10 subinterval with a 15 point
   ## Gauss-Kronrod rule giving a minimum of 150 function evaluations.
-  while (length (subs) < 11)
-    subs = [subs.' ; subs(1:end-1).' + diff(subs.') ./ 2, NaN](:)(1 : end - 1);
+  while (numel (subs) < 11)
+    subs = [subs.' ; subs(1:end-1).' + diff(subs.') ./ 2, NaN](:)(1:end-1);
   endwhile
   subs = [subs(1:end-1), subs(2:end)];
 
   warn_id = "Octave:quadgk:warning-termination";
 
-  if (issingle)
-    eps1 = eps ("single");
+  if (! arrayvalued)
+    ## Initial evaluation of the integrand on the subintervals.
+    [q_subs, q_errs] = __quadgk_eval__ (f, subs, trans);
+    q0 = sum (q_subs);
+    err0 = sum (q_errs);
+
+    first = true;
+    while (true)
+      ## Quit if any evaluations are not finite (Inf or NaN).
+      if (any (! isfinite (q_subs)))
+        warning (warn_id, "quadgk: non-finite integrand encountered");
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      tol = max (abstol, reltol .* abs (q0));
+
+      ## If the global error estimate is met then exit.
+      if (err0 <= tol)
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      ## Accept the subintervals that meet the convergence criteria.
+      idx = find (abs (q_errs) < tol .* abs (diff (subs, 1, 2)) ./ h);
+      if (first)
+        q = sum (q_subs(idx));
+        err = sum (q_errs(idx));
+        first = false;
+      else
+        q0 = q + sum (q_subs);
+        err0 = err + sum (q_errs);
+        q += sum (q_subs(idx));
+        err += sum (q_errs(idx));
+      endif
+      subs(idx,:) = [];
+
+      ## If no remaining subintervals then exit.
+      if (isempty (subs))
+        break;
+      endif
+
+      if (trace)
+        disp ([rows(subs), err, q0]);
+      endif
+
+      ## Split remaining subintervals in two
+      mid = (subs(:,1) + subs(:,2)) ./ 2;
+      subs = [subs(:,1), mid; mid, subs(:,2)];
+
+      ## If the maximum subinterval count is met, then
+      ## accept remaining subinterval and exit.
+      if (rows (subs) > maxint)
+        warning (warn_id, "quadgk: maximum interval count (%d) exceeded", maxint);
+        q += sum (q_subs);
+        err += sum (q_errs);
+        break;
+      endif
+
+      ## Evaluation of the integrand on the remaining subintervals
+      [q_subs, q_errs] = __quadgk_eval__ (f, subs, trans);
+    endwhile
+
+    if (nargout < 2 && err > max (abstol, reltol * abs (q)))
+      warning (warn_id,
+               "quadgk: Error tolerance not met.  Estimated error %g", err);
+    endif
+
+    ## Reverse integral if necessary.
+    q = reverse * q;
+
   else
-    eps1 = eps ("double");
-  endif
+    ## f is array-valued
+    sz = size (f (subs(1)));
 
-  ## Initial evaluation of the integrand on the subintervals
-  [q_subs, q_errs] = __quadgk_eval__ (f, subs, eps1, trans);
-  q0 = sum (q_subs);
-  err0 = sum (q_errs);
+    ## Initial evaluation of the integrand on the subintervals
+    [q_subs, q_errs] = __quadgk_eval_array__ (f, subs, trans, prod (sz));
+    q0 = sum (q_subs, 1);
+    err0 = sum (q_errs, 1);
 
-  first = true;
-  while (true)
-    ## Quit if any evaluations are not finite (Inf or NaN).
-    if (any (! isfinite (q_subs)))
-      warning (warn_id, "quadgk: non-finite integrand encountered");
-      q = q0;
-      err = err0;
-      break;
+    first = true;
+    while (true)
+      ## Quit if any evaluations are not finite (Inf or NaN).
+      if (any (! isfinite (q_subs)(:)))
+        warning (warn_id, "quadgk: non-finite integrand encountered");
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      tol = max (abstol, reltol .* abs (q0));
+
+      ## If the global error estimate is met then exit
+      if (err0 <= tol)
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      ## Accept subintervals that meet the convergence criteria in all entries.
+      idx = find (all (abs (q_errs) < tol .* abs (diff (subs, 1, 2)) ./ h, 2));
+      if (first)
+        q = sum (q_subs(idx,:), 1);
+        err = sum (q_errs(idx,:), 1);
+        first = false;
+      else
+        q0 = q + sum (q_subs, 1);
+        err0 = err + sum (q_errs, 1);
+        q += sum (q_subs(idx,:), 1);
+        err += sum (q_errs(idx,:), 1);
+      endif
+      subs(idx,:) = [];
+
+      ## If no remaining subintervals exit
+      if (isempty (subs))
+        break;
+      endif
+
+      if (trace)
+        disp ([rows(subs), err(1, 1), q0(1, 1)]); # print only first entry
+      endif
+
+      ## Split remaining subintervals in two
+      mid = (subs(:,1) + subs(:,2)) ./ 2;
+      subs = [subs(:,1), mid; mid, subs(:,2)];
+
+      ## If the maximum subinterval count is met accept remaining subinterval
+      ## and exit
+      if (rows (subs) > maxint)
+        warning (warn_id, "quadgk: maximum interval count (%d) exceeded", maxint);
+        q += sum (q_subs, 1);
+        err += sum (q_errs, 1);
+        break;
+      endif
+
+      ## Evaluation of the integrand on the remaining subintervals
+      [q_subs, q_errs] = __quadgk_eval_array__ (f, subs, trans, prod (sz));
+    endwhile
+
+    i = find (err > max (abstol, reltol * abs (q)), 1);
+    if (nargout < 2 && length (i) > 0)
+      ## like ind2sub, only as vector.
+      j = mod (floor ((i-1)./cumprod ([1 sz(1:end-1)])),sz)+1;
+      s = ["(" sprintf("%d,",j)(1:end-1) ")"];
+      warning (warn_id,
+               "quadgk: Error tolerance not met.  First entry at index %s with estimated error %g", s, err(i));
     endif
 
-    tol = max (abstol, reltol .* abs (q0));
-
-    ## If the global error estimate is met then exit
-    if (err0 <= tol)
-      q = q0;
-      err = err0;
-      break;
-    endif
-
-    ## Accept the subintervals that meet the convergence criteria.
-    idx = find (abs (q_errs) < tol .* abs (diff (subs, [], 2)) ./ h);
-    if (first)
-      q = sum (q_subs(idx));
-      err = sum (q_errs(idx));
-      first = false;
-    else
-      q0 = q + sum (q_subs);
-      err0 = err + sum (q_errs);
-      q += sum (q_subs(idx));
-      err += sum (q_errs(idx));
-    endif
-    subs(idx,:) = [];
-
-    ## If no remaining subintervals exit
-    if (rows (subs) == 0)
-      break;
-    endif
-
-    if (trace)
-      disp ([rows(subs), err, q0]);
-    endif
-
-    ## Split remaining subintervals in two
-    mid = (subs(:,2) + subs(:,1)) ./ 2;
-    subs = [subs(:,1), mid; mid, subs(:,2)];
-
-    ## If the maximum subinterval count is met accept remaining subinterval
-    ## and exit
-    if (rows (subs) > maxint)
-      warning (warn_id, "quadgk: maximum interval count (%d) exceeded", maxint);
-      q += sum (q_subs);
-      err += sum (q_errs);
-      break;
-    endif
-
-    ## Evaluation of the integrand on the remaining subintervals
-    [q_subs, q_errs] = __quadgk_eval__ (f, subs, eps1, trans);
-  endwhile
-
-  if (nargout < 2 && err > max (abstol, reltol * abs (q)))
-    warning (warn_id,
-             "quadgk: Error tolerance not met.  Estimated error %g", err);
+    q = reverse * reshape (q, sz);
+    err = reshape (err, sz);
   endif
 
 endfunction
 
-## FIXME: too_close output is never used in function that calls this one.
-function [q, err, too_close] = __quadgk_eval__ (f, subs, eps1, trans)
+function [q, err] = __quadgk_eval__ (f, subs, trans)
 
   ## A (15,7) point pair of Gauss-Kronrod quadrature rules.
   ## The abscissa and weights are copied directly from dqk15w.f from quadpack.
@@ -443,26 +548,65 @@ function [q, err, too_close] = __quadgk_eval__ (f, subs, eps1, trans)
              0.3818300505051889e+00,  0.2797053914892767e+00, ...
              0.1294849661688697e+00]);
 
-  halfwidth = diff (subs, [], 2) ./ 2;
+  halfwidth = diff (subs, 1, 2) ./ 2;
   center = sum (subs, 2) ./ 2;
   t = (halfwidth * abscissa) + center;
   x = trans ([t(:,1), t(:,end)]);
 
-  ## Shampine suggests 100 * eps1, beginning of section 6.
-  if (any (abs (diff (x, [], 2) ./ max (abs (x), [], 2))) < 100 * eps1)
-    too_close = true;
-    q = 0;
-    err = 0;
-    return;
-  endif
-
-  too_close = false;
   y = reshape (f (t(:)), size (t));
 
   ## This is faster than using bsxfun as the * operator can use a
   ## single BLAS call, rather than rows (sub) calls to the @times function.
   q = sum (y * weights15, 2) .* halfwidth;
   err = abs (sum (y(:,2:2:end) * weights7, 2) .* halfwidth - q);
+
+endfunction
+
+function [q, err] = __quadgk_eval_array__ (f, subs, trans, nel)
+
+  ## A (15,7) point pair of Gauss-Kronrod quadrature rules.
+  ## The abscissa and weights are copied directly from dqk15w.f from quadpack.
+
+  persistent abscissa = [-0.9914553711208126e+00, -0.9491079123427585e+00, ...
+                         -0.8648644233597691e+00, -0.7415311855993944e+00, ...
+                         -0.5860872354676911e+00, -0.4058451513773972e+00, ...
+                         -0.2077849550078985e+00,  0.0000000000000000e+00, ...
+                          0.2077849550078985e+00,  0.4058451513773972e+00, ...
+                          0.5860872354676911e+00,  0.7415311855993944e+00, ...
+                          0.8648644233597691e+00,  0.9491079123427585e+00, ...
+                          0.9914553711208126e+00];
+
+  persistent weights15 = ...
+            [0.2293532201052922e-01,  0.6309209262997855e-01, ...
+             0.1047900103222502e+00,  0.1406532597155259e+00, ...
+             0.1690047266392679e+00,  0.1903505780647854e+00, ...
+             0.2044329400752989e+00,  0.2094821410847278e+00, ...
+             0.2044329400752989e+00,  0.1903505780647854e+00, ...
+             0.1690047266392679e+00,  0.1406532597155259e+00, ...
+             0.1047900103222502e+00,  0.6309209262997855e-01, ...
+             0.2293532201052922e-01];
+
+  persistent weights7 = ...
+            [0.1294849661688697e+00,  0.2797053914892767e+00, ...
+             0.3818300505051889e+00,  0.4179591836734694e+00, ...
+             0.3818300505051889e+00,  0.2797053914892767e+00, ...
+             0.1294849661688697e+00];
+
+  halfwidth = diff (subs, 1, 2) ./ 2;
+  center = sum (subs, 2) ./ 2;
+  t = (halfwidth * abscissa) + center;
+  x = trans ([t(:,1), t(:,end)]);
+
+  y = zeros (nel, columns(t), rows(t));
+  for i = 1:rows (t)
+    for j = 1:columns(t)
+      y(:,j,i) = f (t(i,j))(:);
+    endfor
+  endfor
+  y = permute (y, [2 3 1]);
+
+  q = reshape (weights15 * y(:,:), [rows(t), nel]) .* halfwidth;
+  err = abs (reshape (weights7 * y(2:2:end,:), rows (t), nel) .* halfwidth - q);
 
 endfunction
 
@@ -502,11 +646,18 @@ endfunction
 %! f = @(x) x .^ 5 .* exp (-x) .* sin (x);
 %! assert (quadgk (f, 0, Inf, "RelTol", 1e-8, "AbsTol", 1e-12), -15, -1e-8);
 
-%!test <*62412>
+## Test vector-valued functions
+%!assert (quadgk (@(x) [(sin (x)), (sin (2 * x))], 0, pi, "arrayvalued", 1),
+%!        [2, 0], 1e-6)
+
+## Test matrix-valued functions
+%!assert (quadgk (@(x) [ x,x,x; x,1./sqrt(x),x; x,x,x ], 0, 1, "arrayvalued",1),
+%!        [0.5,0.5,0.5; 0.5,2,0.5; 0.5,0.5,0.5], 15*1e-6);
+
+## Bug #62412
+%!warning <Error tolerance not met>
 %! f = @(t) -1 ./ t.^1.1;
-%! fail ("quadgk (f, 1, Inf)", "warning", "Error tolerance not met");
-%! [q, err] = quadgk (f, 1, Inf);
-%! assert (err > 1e-5);
+%! quadgk (f, 1, Inf);
 
 ## Test input validation
 %!error quadgk (@sin)

@@ -243,7 +243,7 @@ public:
 
 private:
 
-  double m_scale;
+  double m_scale = 1.0;
 
   float_format m_real_fmt;
 

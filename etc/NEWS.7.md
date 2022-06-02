@@ -120,7 +120,7 @@ deleted.
 - Binary and hexadecimal constants like `0b101` and `0xDEADBEEF` now
 create integers (unsigned by default) with sizes determined from the
 number of digits present.  For example, `0xff` creates a `uint8` value
-and `0xDEADBEEF` creates a `uint64` value.  You may also use a suffix of
+and `0xDEADBEEF` creates a `uint32` value.  You may also use a suffix of
 the form `u8`, `u16`, `u32`, `u64`, `s8`, `s16`, `s32`, or `s64` to
 explicitly specify the data type to use (`u` or `s` to indicate unsigned
 or signed and the number to indicate the integer size).

@@ -8,7 +8,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 ### Improvements and fixes
 
 - Avoid out-of-bounds indexing when checking for broadcastable inplace operators (bug #38466).
-- `hdl2struct.m`: Fix saving of uibuttongroups (bug #62266).
+- `hdl2struct.m`: Fix saving of `uibuttongroups` (bug #62266).
 - Fix `ls` with glob patterns on Windows (bug #62282).
 - `pkg.m`: Create directory before saving file (bug #62303).
 - `nchoosek.m`: Fix freeze-up for certain integer inputs (bug #62319).
@@ -35,7 +35,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 ### GUI
 
 - Fix removing trailing spaces on closing a modified file (bug #62271).
-- Replace use of depreciated `QDesktopWidget` in GUI.
+- Replace use of deprecated `QDesktopWidget` in GUI.
 - Fix display in Variable Editor when `fixed_point_format` is on (bug #62544).
 
 ### Build system / Tests

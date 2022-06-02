@@ -52,7 +52,7 @@
 ## operator @code{./} and all user functions to @code{quadgk} should do the
 ## same.
 ##
-## The optional argument @var{tol} defines the absolute tolerance used to stop
+## The optional argument @var{abstol} defines the absolute tolerance used to stop
 ## the integration procedure.  The default value is 1e-10 (1e-5 for single).
 ##
 ## The algorithm used by @code{quadgk} involves subdividing the integration

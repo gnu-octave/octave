@@ -9,12 +9,15 @@ Configure with `--disable-lib-visibility-flags` to export all symbols
 (as in previous versions).
 
 - `integral` can now output a second argument passing the error
-parameter from the underlying integrator.
+measurement used by the underlying integrator.
 
 - `perms` now accepts a second argument "unique" to return only unique
 permutations for inputs with repeated elements.  It is faster and takes
 less memory to call `perms ('aaaabbbbcccc', "unique")` than to call
 `unique (perms ('aaaabbbbcccc'), "rows")`.
+
+- `quadgk` can now accept the `ArrayValued` input parameter to handle
+array-valued input functions.
 
 ### Graphical User Interface
 
@@ -49,6 +52,9 @@ less memory to call `perms ('aaaabbbbcccc', "unique")` than to call
 
 - `var` and `std` now optionally output a second argument containing the mean
   or weighted mean.
+
+- `integral` can now accept the 'ArrayValued' option in combination with
+  'RelTol' and 'WayPoints'.
 
 - The default state for certain graphics properties has been made
   consistent with Matlab.

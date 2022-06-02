@@ -1,5 +1,67 @@
+Summary of bugs fixed for version 7.2.0 (tbd):
+----------------------------------------------------
+
+See: ***add link to release announcement here***
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+- Avoid out-of-bounds indexing when checking for broadcastable inplace operators (bug #38466).
+- `hdl2struct.m`: Fix saving of `uibuttongroups` (bug #62266).
+- Fix `ls` with glob patterns on Windows (bug #62282).
+- `pkg.m`: Create directory before saving file (bug #62303).
+- `nchoosek.m`: Fix freeze-up for certain integer inputs (bug #62319).
+- `nchoosek.m`: Restore fast path code for floating point inputs (bug #62319).
+- `betainc.m`: Use sophisticated technique for calculating exponents to avoid inaccuracies (bug #62329).
+- `ls.m`: Fix handling of `\` on UNIX platforms (bug #62282).
+- `findobj.m`: Fix input validation of graphics handles (bug #62378).
+- `newplot.m`: Backed out changeset fdd58773ac02 (bug #61945).
+- `__print_parse_opts__.m`: Initialize variables in all cases for print warnings (bug #62287).
+- `__wglob__`: Correctly handle `.` and `..` in patterns on Windows (bug #62414).
+- `datenum.m`: Correctly handle arrays with leading singleton dimensions (bug #62407).
+- Stop incorrect error when `reset()` called on `uimenu` handle (bug #62425).
+- Emit more informative error message on empty input when setting axis limits (bug #62541).
+- `msgbox.m`: Allow "custom" `cdata` for icon (bug #62445).
+- Fix memory leak with nested functions and anonymous functions (bug #62459).
+- `__wglob__`: Retain trailing file separator on Windows (bug #62414).
+- `pkg`: Avoid error when unlinking non-existent files (bug #62436).
+- `mkoctfile.m`: Trim whitespace (newline) around system output.
+- `subplot.m`: Avoid error when mixing `rcn` and `"position"` calling form (bug #62526).
+- `plot`: Deprecate using numbers to select line colors (bug #62470).
+- Don't shut down interpreter immediately on `execute` (bug #62308).
+- `isprime.m` and `__isprimelarge__.cc`: Minor performance tweaks.
+
+### GUI
+
+- Fix removing trailing spaces on closing a modified file (bug #62271).
+- Replace use of deprecated `QDesktopWidget` in GUI.
+- Fix display in Variable Editor when `fixed_point_format` is on (bug #62544).
+
+### Build system / Tests
+
+- `addpref.m`: Recode test to work with multiple running instances of Octave.
+- Don't leak build directories in installed directories (bug #62295).
+- Import `hash-buffer` modules from gnulib (bug #62416).
+- Remove `.dirstamp` files from `test/` directory with `maintainer-clean` target.
+
+### Documentation
+
+- Fix minor typo in datestr.m.
+- `ls.m`: Improve wording in docstring (bug #62282).
+- `dir.m`: Clarify wildcard behavior on Windows in docstring (bug #62282).
+- `memory.m`: Redo documentation to be formatted correctly in Info output.
+- Document contracted `format` arguments (bug #62417).
+- `humps.m`: Fix mismatch between TeX docstring and non-TeX docstring.
+- `warning_ids.m`: Add new warning ID `"Octave:deprecated-option"`.
+- `primes.m`: Move code examples before math theory.
+- `primes.m`: Mark variables in docstring with `@var{}` macro.
+
+
 Summary of important user-visible changes for version 7 (2022-04-06)
 --------------------------------------------------------------------
+
+See: https://www.gnu.org/software/octave/news/release/2022/04/06/octave-7.1.0-released.html
 
 ### General improvements
 
@@ -58,7 +120,7 @@ deleted.
 - Binary and hexadecimal constants like `0b101` and `0xDEADBEEF` now
 create integers (unsigned by default) with sizes determined from the
 number of digits present.  For example, `0xff` creates a `uint8` value
-and `0xDEADBEEF` creates a `uint64` value.  You may also use a suffix of
+and `0xDEADBEEF` creates a `uint32` value.  You may also use a suffix of
 the form `u8`, `u16`, `u32`, `u64`, `s8`, `s16`, `s32`, or `s64` to
 explicitly specify the data type to use (`u` or `s` to indicate unsigned
 or signed and the number to indicate the integer size).

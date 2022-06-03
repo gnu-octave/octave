@@ -253,14 +253,32 @@ namespace octave
           if (xpat.empty ())
             continue;
 
+          std::string dir = "";
+
           // separate component until first file separator
           std::size_t sep_pos
             = xpat.find_first_of (sys::file_ops::dir_sep_chars ());
+
+          // handle UNC paths
+          if (sep_pos == 0 && xpat.length () > 1
+              && sys::file_ops::is_dir_sep (xpat[1]))
+            {
+              // start pattern with a file, i.e., "\\SERVER\share\file"
+              sep_pos = xpat.find_first_of (sys::file_ops::dir_sep_chars (), 2);
+              if (sep_pos != std::string::npos)
+                sep_pos = xpat.find_first_of (sys::file_ops::dir_sep_chars (),
+                                              sep_pos + 1);
+              if (sep_pos != std::string::npos)
+                {
+                  dir = xpat.substr(0, sep_pos);
+                  xpat = xpat.substr (sep_pos+1);
+                  sep_pos = xpat.find_first_of (sys::file_ops::dir_sep_chars ());
+                }
+            }
+
           std::string file = (sep_pos != std::string::npos)
                              ? xpat.substr (sep_pos) : "";
           xpat = xpat.substr (0, sep_pos);
-
-          std::string dir = "";
 
           if ((sep_pos == 2 || xpat.length () == 2) && xpat[1] == ':')
             {

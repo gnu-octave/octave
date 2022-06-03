@@ -47,7 +47,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Documentation
 
-- Fix minor typo in datestr.m.
+- `datestr.m`: Fix minor typo.
 - `ls.m`: Improve wording in docstring (bug #62282).
 - `dir.m`: Clarify wildcard behavior on Windows in docstring (bug #62282).
 - `memory.m`: Redo documentation to be formatted correctly in Info output.
@@ -148,17 +148,19 @@ corresponding variables.  In previous versions of Octave, whitespaces
 between these operators and the variable they affect were allowed.  That
 is no longer the case.
 
-- For compatibility with command syntax, inplace operators (`+=`, `-=`,
-`*=`, `.*=`, `/=`, `./=`, `\=`, `.\=`, `^=`, `.^=`, `|=`, `&=`) must now
-either be followed by a whitespace character or must not be preceded by a
-whitespace character.  For commands with binary operators (`+`, `-`, `*`,
- `.*`, `/`, `./`, `\`, `.\`, `^`, `.^`, `|`, `&`, `||`, `&&`) without
-assignment, the same rules apply.  That was not a requirement in previous
-versions of Octave.
-E.g., `a + b`, `a+ b`, or `a+b` are valid if `a` is a variable.  In
-contrast, `a +b` will throw an error if `a` is a variable.  The latter
-example is now interpreted as command syntax expression equivalent to the
-function syntax expression `a ("+b")`.
+- When an expression involving operators could be interpreted ambiguously
+either as command style syntax or function style syntax, it is
+interpreted as command style syntax in more cases than in previous
+versions.  To still be interpreted as function style syntax, inplace
+operators (`+=`, `-=`, `*=`, `.*=`, `/=`, `./=`, `\=`, `.\=`, `^=`,
+`.^=`, `|=`, `&=`) must now either be followed by a whitespace character
+or must not be preceded by a whitespace character.  For ambiguous
+expressions involving binary operators (`+`, `-`, `*`, `.*`, `/`, `./`,
+`\`, `.\`, `^`, `.^`, `|`, `&`, `||`, `&&`), the same rules apply.
+E.g., `a + b`, `a+ b`, or `a+b` are valid expressions if `a` is a
+variable.  In contrast, `a +b` will throw an error if `a` is a variable.
+The latter example is now interpreted as a command syntax expression
+(equivalent to the function syntax expression `a ("+b")`).
 
 - The `mldivide` function (i.e., the `\` operator) now uses an LU
 decomposition to solve nearly singular full square matrices.  This is

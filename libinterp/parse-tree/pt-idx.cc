@@ -366,7 +366,26 @@ namespace octave
         std::string nm =  id->name ();
 
         if (is_var && is_word_list_cmd ())
-          error ("%s used as variable and later as function", nm.c_str ());
+          {
+            bool maybe_binary_op = false;
+            if ((*p_args) && (*p_args)->length () > 0)
+              {
+                // check if first character of first argument might be (the
+                // start of) a binary operator
+                std::string ops = "+-*/\\.^|&";
+                string_vector arg_list = (*p_args)->get_arg_names ();
+                if (! arg_list.isempty ()
+                    && (ops.find (arg_list(0)[1]) != std::string::npos))
+                  maybe_binary_op = true;
+              }
+
+            std::string advice;
+            if (maybe_binary_op)
+              advice = "\nCheck whitespace around potential binary operator.";
+
+            error ("variable \"%s\" used as function in command style expression%s",
+                   nm.c_str (), advice.c_str ());
+          }
 
         if (! is_var)
           {

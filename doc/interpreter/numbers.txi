@@ -775,6 +775,64 @@ min (single (1), 0)
 @noindent
 where the returned value is single precision.
 
+Many functions and operators will also promote integer or logical types to
+double, or single to double, especially if they take only one argument.
+
+@example
+@group
+a = det (int8 ([1 2; 3 4]))
+    @result{} a = -2
+class (a)
+    @result{} double
+@end group
+@end example
+
+But there are also exceptions for promoting to double, especially if the
+function or operator in question can take multiple arguments.
+
+@example
+@group
+a = eig (int8 ([1 2; 3 4]))
+    @result{} error: eig: wrong type argument 'int8 matrix'
+@end group
+@end example
+
+When the two operands are both integers but of different widths, then the
+behavior depends on the operator or the function in question.  For some
+operators and functions, narrow-bitwidth operands are promoted to a wider
+bitwidth:
+
+@example
+@group
+a = min (int8 (100), int16 (200))
+    @result{} 100
+class (a)
+    @result{} int16
+@end group
+@end example
+
+However, not all functions or operators will accept integer operands of
+differing types:
+
+@example
+@group
+int8 (100) + int16 (200)
+   @result{} error: binary operator '+' not implemented
+   for 'int8 scalar' by 'int16 scalar' operations
+@end group
+@end example
+
+Further, in most cases, both operands need to be signed or both need to be
+unsigned.  Mixing signed and unsigned usually causes an error, even if they
+are of the same bitwidth.
+
+@example
+@group
+min (int8 (100), uint16 (200))
+   @result{} error: min: cannot compute min (int8 scalar, uint16 scalar)
+@end group
+@end example
+
 In the case of mixed type indexed assignments, the type is not
 changed.  For example,
 

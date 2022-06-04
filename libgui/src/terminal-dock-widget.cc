@@ -155,4 +155,13 @@ namespace octave
       emit update_prompt_signal (prompt);
   }
 
+  void terminal_dock_widget::init_command_prompt ()
+  {
+    if (m_experimental_terminal_widget)
+      {
+        command_widget *cmd = get_command_widget ();
+        if (cmd)
+          cmd->init_command_prompt ();
+      }
+  }
 }

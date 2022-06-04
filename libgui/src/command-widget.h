@@ -27,6 +27,7 @@
 #define octave_command_widget_h 1
 
 #include <QWidget>
+#include <QTextEdit>
 
 #include "octave-qobject.h"
 #include "gui-settings.h"
@@ -34,11 +35,40 @@
 class QLabel;
 class QLineEdit;
 class QStrung;
-class QTextBrowser;
+class QTextEdit;
 
 namespace octave
 {
   class base_qobject;
+  class command_widget;
+
+  class console : public QTextEdit
+  {
+    Q_OBJECT
+
+  public:
+
+    console (command_widget *p);
+
+  public slots:
+
+    void new_command_line (void);
+
+  protected:
+
+    void keyPressEvent (QKeyEvent *e);
+
+  private:
+
+    void accept_command_line (void);
+
+    void append_block (void);
+
+    int m_command_block_number;
+    command_widget *m_command_widget;
+    QTextDocument *m_document;
+
+  };
 
   class command_widget : public QWidget
   {
@@ -47,6 +77,10 @@ namespace octave
   public:
 
     command_widget (base_qobject& oct_qobj, QWidget *p);
+
+    void init_command_prompt ();
+
+    QString prompt (void);
 
   signals:
 
@@ -59,7 +93,11 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
+    void new_command_line_signal (void);
+
   public slots:
+
+    void process_input_line (const QString& input_line);
 
     void update_prompt (const QString& prompt);
 
@@ -67,17 +105,11 @@ namespace octave
 
     void notice_settings (const gui_settings *settings);
 
-  protected slots:
-
-    void accept_input_line (void);
-
   private:
 
     bool m_incomplete_parse;
-    QLabel *m_prompt;
-    QLineEdit *m_line_edit;
-    QTextBrowser *m_output_display;
-    QColor m_input_color;
+    QString m_prompt;
+    console *m_console;
   };
 }
 

@@ -1806,6 +1806,7 @@ namespace octave
           });
       }
 
+    m_command_window->init_command_prompt ();
     focus_command_window ();  // make sure that the command window has focus
   }
 

@@ -49,6 +49,8 @@ namespace octave
 
     bool has_focus (void) const;
 
+    void init_command_prompt ();
+
     // FIXME: The next two functions could be eliminated (or combined)
     // if we had a common interface for the old and new terminal
     // widgets.

@@ -72,6 +72,8 @@ namespace octave
 
     void interpreter_output_signal (const QString&);
 
+    void execute_command_signal (const QString&);
+
   public slots:
 
     void notice_settings (const gui_settings *settings);

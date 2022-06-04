@@ -282,6 +282,11 @@ namespace octave
         connect (cmd_widget, &QTerminal::clear_command_window_request,
                  this, &main_window::handle_clear_command_window_request);
       }
+    else
+      {
+        connect (this, &main_window::execute_command_signal,
+                 m_command_window, &terminal_dock_widget::execute_command_signal);
+      }
   }
 
   void main_window::adopt_documentation_widget (void)
@@ -1141,19 +1146,26 @@ namespace octave
 
   void main_window::execute_command_in_terminal (const QString& command)
   {
-    emit interpreter_event
-      ([=] (void)
-       {
-         // INTERPRETER THREAD
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        emit execute_command_signal (command);
+      }
+    else
+      {
+        emit interpreter_event
+          ([=] (void)
+           {
+             // INTERPRETER THREAD
 
-         std::string pending_input = command_editor::get_current_line ();
+             std::string pending_input = command_editor::get_current_line ();
 
-         command_editor::set_initial_input (pending_input);
-         command_editor::replace_line (command.toStdString ());
-         command_editor::redisplay ();
-         command_editor::interrupt_event_loop ();
-         command_editor::accept_line ();
-       });
+             command_editor::set_initial_input (pending_input);
+             command_editor::replace_line (command.toStdString ());
+             command_editor::redisplay ();
+             command_editor::interrupt_event_loop ();
+             command_editor::accept_line ();
+           });
+      }
 
     focus_console_after_command ();
   }

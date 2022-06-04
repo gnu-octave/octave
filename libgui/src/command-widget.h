@@ -52,7 +52,9 @@ namespace octave
 
   public slots:
 
-    void new_command_line (void);
+    void new_command_line (const QString& command = QString ());
+
+    void execute_command (const QString& command);
 
   protected:
 
@@ -78,6 +80,8 @@ namespace octave
 
     command_widget (base_qobject& oct_qobj, QWidget *p);
 
+    console * get_console ( ) { return m_console; };
+
     void init_command_prompt ();
 
     QString prompt (void);
@@ -93,7 +97,7 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
-    void new_command_line_signal (void);
+    void new_command_line_signal (const QString& command = QString ());
 
   public slots:
 

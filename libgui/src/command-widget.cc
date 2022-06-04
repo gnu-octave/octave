@@ -184,7 +184,7 @@ namespace octave
   }
 
   // Prepare a new command line with the current prompt
-  void console::new_command_line ()
+  void console::new_command_line (const QString& command)
   {
     QTextCursor cursor (m_document->lastBlock ());
 
@@ -194,7 +194,7 @@ namespace octave
         cursor.insertBlock ();
       }
 
-    cursor.insertText (m_command_widget->prompt ());
+    cursor.insertText (m_command_widget->prompt () + command);
     setTextCursor (cursor);
   }
 
@@ -223,6 +223,16 @@ namespace octave
     cursor.movePosition (QTextCursor::EndOfBlock);
     cursor.insertBlock ();
     setTextCursor (cursor);
+  }
+
+  // Execute a command
+  void console::execute_command (const QString& command)
+  {
+    if (command.trimmed ().isEmpty ())
+      return;
+
+    new_command_line (command);
+    accept_command_line ();
   }
 
   // Re-implement key event

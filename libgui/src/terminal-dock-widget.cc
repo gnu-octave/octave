@@ -53,6 +53,7 @@ namespace octave
     if (m_experimental_terminal_widget)
       {
         command_widget *widget = new command_widget (oct_qobj, this);
+        console *con = widget->get_console ();
 
         connect (this, &terminal_dock_widget::settings_changed,
                  widget, &command_widget::notice_settings);
@@ -62,6 +63,9 @@ namespace octave
 
         connect (this, &terminal_dock_widget::interpreter_output_signal,
                  widget, &command_widget::insert_interpreter_output);
+
+        connect (this, &terminal_dock_widget::execute_command_signal,
+                con, &console::execute_command);
 
         m_terminal = widget;
       }

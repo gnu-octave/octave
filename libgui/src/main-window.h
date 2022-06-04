@@ -129,6 +129,8 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
+    void execute_command_signal (const QString& command);
+
   public slots:
 
     void focus_changed (QWidget *w_old, QWidget *w_new);

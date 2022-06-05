@@ -148,19 +148,42 @@ corresponding variables.  In previous versions of Octave, whitespaces
 between these operators and the variable they affect were allowed.  That
 is no longer the case.
 
-- When an expression involving operators could be interpreted ambiguously
-either as command style syntax or function style syntax, it is
-interpreted as command style syntax in more cases than in previous
-versions.  To still be interpreted as function style syntax, inplace
-operators (`+=`, `-=`, `*=`, `.*=`, `/=`, `./=`, `\=`, `.\=`, `^=`,
-`.^=`, `|=`, `&=`) must now either be followed by a whitespace character
-or must not be preceded by a whitespace character.  For ambiguous
-expressions involving binary operators (`+`, `-`, `*`, `.*`, `/`, `./`,
-`\`, `.\`, `^`, `.^`, `|`, `&`, `||`, `&&`), the same rules apply.
-E.g., `a + b`, `a+ b`, or `a+b` are valid expressions if `a` is a
-variable.  In contrast, `a +b` will throw an error if `a` is a variable.
-The latter example is now interpreted as a command syntax expression
-(equivalent to the function syntax expression `a ("+b")`).
+- Parsing of command-style function calls has changed to improve
+consistency of behavior and compatibility with Matlab.  This change
+affects statements that begin with binary operator expressions when the
+first operand is a plain symbol followed by a whitespace character and
+the binary operator is not followed by a whitespace character.  For
+example, the statement `cmd -option` is parsed as a command-style
+function call, not a binary subtraction operation.
+
+    This change affects all binary operators: `+`, `-`, `*`, `/`, `\`,
+`^`, `.*`, `./`, `.\`, `.^`, `|`, `&`, `||`, `&&`, `+=`, `-=`, `*=`,
+`/=`, `\=`, `^=`, `.*=`, `./=`, `.\=`, `.^=`, `|=`, and `&=`.
+
+    Previous versions of Octave would attempt to determine whether the
+first operand in an expression was a variable, and if so, parse
+expressions like `var -val` as an expression.  However, this attempt to
+"do the right thing" could cause trouble (for example, if a variable is
+only defined conditionally).
+
+    Now, parsing command-style function calls is purely based on syntax.
+
+    Command-style function call syntax is only allowed at the beginning
+of a statement.  Expressions in other contexts are not affected, so an
+expression like `a + b +c` will not be parsed as a command-style function
+call.
+
+    For compatibility with Matlab, a binary expression at the beginning
+of a statement that starts with one of the symbols `I`, `i`, `J`, `j`,
+`Inf`, `inf`, `NaN`, `nan`, or `pi` is never parsed as a command-style
+function call.  Octave also extends this behavior to `e`, which is not
+present as a special numeric constant in Matlab.
+
+    Note that full compatibility with Matlab, which does not have the
+OP= operators, would require that even `a -= b` is parsed as a
+command-style function call.  As that would significantly hinder the use
+of these operators, Octave treats them as the other binary operators
+instead of providing fully compatible behavior.
 
 - The `mldivide` function (i.e., the `\` operator) now uses an LU
 decomposition to solve nearly singular full square matrices.  This is

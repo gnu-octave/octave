@@ -2248,6 +2248,7 @@ namespace octave
 
     out.flush ();
     QApplication::restoreOverrideCursor ();
+    file.resize (file.pos());
     file.flush ();
     file.close ();
 

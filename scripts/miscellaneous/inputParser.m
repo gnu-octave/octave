@@ -543,9 +543,29 @@ classdef inputParser < handle
 
     function validate_arg (this, name, val, in)
 
-      if (! val (in))
-        this.error (sprintf ("failed validation of %s with %s",
-                             toupper (name), func2str (val)));
+      ## Checking "nargout (val)" doesn't work for builtin functions.
+      ## So, we need to use this nested try-catch construct.
+      err = sprintf ('Checked with "%s"', func2str (val));
+      try
+        ok = val (in);
+      catch exception
+        if (strcmp (exception.identifier, "Octave:invalid-fun-call"))
+          ## check if function also fails when called without output argument
+          try
+            val (in);
+            ok = true;
+          catch exception
+            ok = false;
+            err = exception.message;
+          end_try_catch
+        else
+          ok = false;
+          err = exception.message;
+        endif
+      end_try_catch
+      if (! ok)
+        this.error (sprintf ("failed validation of %s. %s",
+                             toupper (name), err));
       endif
       this.Results.(name) = in;
 
@@ -859,7 +879,7 @@ endclassdef
 %! assert (p.Unmatched, struct ());
 
 ## Test for patch #9241
-%!error <failed validation of A with ischar>
+%!error <failed validation of A.*ischar>
 %! p = inputParser ();
 %! p.addParameter ("a", [], @ischar);
 %! p.parse ("a", 1);

@@ -102,7 +102,7 @@ same value:
 * Integer Data Types::
 * Bit Manipulations::
 * Logical Values::
-* Promotion and Demotion of Data Types::
+* Automatic Conversion of Data Types::
 * Predicates for Numeric Objects::
 @end menu
 
@@ -709,8 +709,8 @@ or @code{false} functions.
 
 @DOCSTRING(false)
 
-@node Promotion and Demotion of Data Types
-@section Promotion and Demotion of Data Types
+@node Automatic Conversion of Data Types
+@section Automatic Conversion of Data Types
 
 Many operators and functions can work with mixed data types.  For example,
 
@@ -719,38 +719,22 @@ Many operators and functions can work with mixed data types.  For example,
 uint8 (1) + 1
     @result{} 2
 @end group
-@end example
 
-@noindent
-where the above operator works with an 8-bit integer and a double precision
-value and returns an 8-bit integer value.  Note that the type is demoted
-to an 8-bit integer, rather than promoted to a double precision value as
-might be expected.  The reason is that if Octave promoted values in
-expressions like the above with all numerical constants would need to be
-explicitly cast to the appropriate data type like
-
-@example
-@group
-uint8 (1) + uint8 (1)
-    @result{} 2
-@end group
-@end example
-
-@noindent
-which becomes difficult for the user to apply uniformly and might allow
-hard to find bugs to be introduced.  The same applies to single precision
-values where a mixed operation such as
-
-@example
 @group
 single (1) + 1
     @result{} 2
 @end group
+
+@group
+min (single (1), 0)
+   @result{} 0
+@end group
 @end example
 
 @noindent
-returns a single precision value.  The mixed operations that are valid
-and their returned data types are
+where the results are respectively of types uint8, single, and single
+respectively.  This is done for Matlab compatibility.  Valid mixed operations
+are defined as follows:
 
 @multitable @columnfractions .2 .3 .3 .2
 @headitem @tab Mixed Operation @tab Result @tab
@@ -763,20 +747,8 @@ and their returned data types are
 @item @tab single OP logical @tab single @tab
 @end multitable
 
-The same logic applies to functions with mixed arguments such as
-
-@example
-@group
-min (single (1), 0)
-   @result{} 0
-@end group
-@end example
-
-@noindent
-where the returned value is single precision.
-
-Many functions and operators will also promote integer or logical types to
-double, or single to double, especially if they take only one argument.
+When functions expect a double but are passed other types, automatic
+conversion is function-dependent:
 
 @example
 @group
@@ -785,22 +757,15 @@ a = det (int8 ([1 2; 3 4]))
 class (a)
     @result{} double
 @end group
-@end example
 
-But there are also exceptions for promoting to double, especially if the
-function or operator in question can take multiple arguments.
-
-@example
 @group
 a = eig (int8 ([1 2; 3 4]))
     @result{} error: eig: wrong type argument 'int8 matrix'
 @end group
 @end example
 
-When the two operands are both integers but of different widths, then the
-behavior depends on the operator or the function in question.  For some
-operators and functions, narrow-bitwidth operands are promoted to a wider
-bitwidth:
+When two operands are both integers but of different widths, then some cases
+convert them to the wider bitwidth, and other cases throw an error:
 
 @example
 @group
@@ -809,12 +774,7 @@ a = min (int8 (100), int16 (200))
 class (a)
     @result{} int16
 @end group
-@end example
 
-However, not all functions or operators will accept integer operands of
-differing types:
-
-@example
 @group
 int8 (100) + int16 (200)
    @result{} error: binary operator '+' not implemented
@@ -822,14 +782,14 @@ int8 (100) + int16 (200)
 @end group
 @end example
 
-Further, in most cases, both operands need to be signed or both need to be
+For two integer operands, they typically need to both be signed or both be
 unsigned.  Mixing signed and unsigned usually causes an error, even if they
 are of the same bitwidth.
 
 @example
 @group
-min (int8 (100), uint16 (200))
-   @result{} error: min: cannot compute min (int8 scalar, uint16 scalar)
+min (int16 (100), uint16 (200))
+   @result{} error: min: cannot compute min (int16 scalar, uint16 scalar)
 @end group
 @end example
 

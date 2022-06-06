@@ -291,7 +291,7 @@ Numeric Data Types
 * Integer Data Types::
 * Bit Manipulations::
 * Logical Values::
-* Promotion and Demotion of Data Types::
+* Automatic Conversion of Data Types::
 * Predicates for Numeric Objects::
 
 Matrices

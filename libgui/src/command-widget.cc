@@ -48,10 +48,10 @@
 
 namespace octave
 {
-  command_widget::command_widget (base_qobject&, QWidget *p)
+  command_widget::command_widget (base_qobject& oct_qobj, QWidget *p)
     : QWidget (p), m_incomplete_parse (false),
       m_prompt (QString ()),
-      m_console (new console (this))
+      m_console (new console (this, oct_qobj))
   {
     QPushButton *pause_button = new QPushButton (tr("Pause"), this);
     QPushButton *stop_button = new QPushButton (tr("Stop"), this);
@@ -116,11 +116,7 @@ namespace octave
 
   void command_widget::insert_interpreter_output (const QString& msg)
   {
-    QTextCursor cursor = m_console->textCursor ();
-
-    cursor.insertText (msg);
-
-    m_console->setTextCursor (cursor);
+    m_console->append (msg);
   }
 
   void command_widget::process_input_line (const QString& input_line)
@@ -169,60 +165,49 @@ namespace octave
   }
 
 
-  // The console itself using QTextEdit with QTextBlock and QTextCursor.
-  // This implementation is based on the basic concept of "qpconsole" as
-  // proposed by user "DerManu" in the Qt-forum thread
+  // The console itself using QScintilla.
+  // This implementation is partly based on the basic concept of
+  // "qpconsole" as proposed by user "DerManu" in the Qt-forum thread
   // https://forum.qt.io/topic/28765/command-terminal-using-qtextedit
 
-  console::console (command_widget *p)
-    : QTextEdit (p),
-      m_command_block_number (-1),
-      m_command_widget (p),
-      m_document (new QTextDocument (this))
+  console::console (command_widget *p, base_qobject&)
+    : QsciScintilla (p),
+      m_command_position (-1),
+      m_command_widget (p)
   {
-    setDocument (m_document);
   }
 
   // Prepare a new command line with the current prompt
   void console::new_command_line (const QString& command)
   {
-    QTextCursor cursor (m_document->lastBlock ());
+    if (! text (lines () -1).isEmpty ())
+      append ("\n");
 
-    if (! m_document->lastBlock ().text ().isEmpty ())
-      {
-        cursor.movePosition (QTextCursor::EndOfBlock);
-        cursor.insertBlock ();
-      }
+    append_string (m_command_widget->prompt ());
 
-    cursor.insertText (m_command_widget->prompt () + command);
-    setTextCursor (cursor);
+    int line, index;
+    getCursorPosition (&line,&index);
+    m_command_position = positionFromLineIndex (line, index);
+
+    append_string (command);
   }
 
   // Accept the current command line (or block)
   void console::accept_command_line ()
   {
-    QString input_line = m_document->lastBlock().text();
+    QString input_line = text (lines () - 1);
 
     if (input_line.startsWith (m_command_widget->prompt ()))
       input_line.remove(0, m_command_widget->prompt ().length ());
 
     input_line = input_line.trimmed ();
-  
-    append_block ();
+
+    append_string ("\n");
 
     if (input_line.isEmpty ())
       new_command_line ();
     else
       m_command_widget->process_input_line (input_line);
-  }
-
-  // Append a block to the document
-  void console::append_block ()
-  {
-    QTextCursor cursor (m_document->lastBlock ());
-    cursor.movePosition (QTextCursor::EndOfBlock);
-    cursor.insertBlock ();
-    setTextCursor (cursor);
   }
 
   // Execute a command
@@ -235,6 +220,17 @@ namespace octave
     accept_command_line ();
   }
 
+  // Append a string and update the curdor püosition
+  void console::append_string (const QString& string)
+  {
+    append (string);
+
+    int line, index;
+    lineIndexFromPosition (text ().length (), &line, &index);
+
+    setCursorPosition (line, index);
+  }
+
   // Re-implement key event
   void console::keyPressEvent (QKeyEvent *e)
   {
@@ -243,7 +239,7 @@ namespace octave
       accept_command_line ();
     else
       // Otherwise, process the expected event
-      QTextEdit::keyPressEvent(e);                          
+      QsciScintilla::keyPressEvent(e);
   }
 
 }

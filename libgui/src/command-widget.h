@@ -27,28 +27,26 @@
 #define octave_command_widget_h 1
 
 #include <QWidget>
-#include <QTextEdit>
+
+#include <Qsci/qsciscintilla.h>
 
 #include "octave-qobject.h"
 #include "gui-settings.h"
 
-class QLabel;
-class QLineEdit;
-class QStrung;
-class QTextEdit;
+class QsciScintilla;
 
 namespace octave
 {
   class base_qobject;
   class command_widget;
 
-  class console : public QTextEdit
+  class console : public QsciScintilla
   {
     Q_OBJECT
 
   public:
 
-    console (command_widget *p);
+    console (command_widget *p, base_qobject& oct_qobj);
 
   public slots:
 
@@ -62,11 +60,11 @@ namespace octave
 
   private:
 
+    void append_string (const QString& string);
+
     void accept_command_line (void);
 
-    void append_block (void);
-
-    int m_command_block_number;
+    int m_command_position;
     command_widget *m_command_widget;
     QTextDocument *m_document;
 

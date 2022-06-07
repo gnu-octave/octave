@@ -2705,53 +2705,50 @@ looks_like_shebang (const std::string& s)
             return 0;
           }
 
-        tok_val = new token (end_kw, token::simple_end, m_tok_beg, m_tok_end);
+        tok_val = new token (kw->tok, token::simple_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case end_try_catch_kw:
-        tok_val = new token (end_try_catch_kw, token::try_catch_end, m_tok_beg,
+        tok_val = new token (kw->tok, token::try_catch_end, m_tok_beg,
                              m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case end_unwind_protect_kw:
-        tok_val = new token (end_unwind_protect_kw,
-                             token::unwind_protect_end, m_tok_beg, m_tok_end);
+        tok_val = new token (kw->tok, token::unwind_protect_end, m_tok_beg,
+                             m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endfor_kw:
-        tok_val = new token (endfor_kw, token::for_end, m_tok_beg, m_tok_end);
+        tok_val = new token (kw->tok, token::for_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endfunction_kw:
-        tok_val = new token (endfunction_kw, token::function_end, m_tok_beg,
+        tok_val = new token (kw->tok, token::function_end, m_tok_beg,
                              m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endif_kw:
-        tok_val = new token (endif_kw, token::if_end, m_tok_beg, m_tok_end);
+        tok_val = new token (kw->tok, token::if_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endparfor_kw:
-        tok_val = new token (endparfor_kw, token::parfor_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::parfor_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endswitch_kw:
-        tok_val = new token (endswitch_kw, token::switch_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::switch_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endwhile_kw:
-        tok_val = new token (endwhile_kw, token::while_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::while_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
@@ -2759,38 +2756,38 @@ looks_like_shebang (const std::string& s)
 #if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
         return 0;
 #else
-        tok_val = new token (endarguments_kw, token::arguments_end, m_tok_beg,
+        tok_val = new token (kw->tok, token::arguments_end, m_tok_beg,
                              m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 #endif
 
       case endclassdef_kw:
-        tok_val = new token (endclassdef_kw, token::classdef_end, m_tok_beg,
+        tok_val = new token (kw->tok, token::classdef_end, m_tok_beg,
                              m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endenumeration_kw:
-        tok_val = new token (endenumeration_kw, token::enumeration_end,
-                             m_tok_beg, m_tok_end);
+        tok_val = new token (kw->tok, token::enumeration_end, m_tok_beg,
+                             m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endevents_kw:
-        tok_val = new token (endevents_kw, token::events_end, m_tok_beg,
+        tok_val = new token (kw->tok, token::events_end, m_tok_beg,
                              m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endmethods_kw:
-        tok_val = new token (endmethods_kw, token::methods_end, m_tok_beg,
+        tok_val = new token (kw->tok, token::methods_end, m_tok_beg,
                              m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endproperties_kw:
-        tok_val = new token (endproperties_kw, token::properties_end, m_tok_beg,
+        tok_val = new token (kw->tok, token::properties_end, m_tok_beg,
                              m_tok_end);
         m_at_beginning_of_statement = true;
         break;
@@ -2894,7 +2891,7 @@ looks_like_shebang (const std::string& s)
         break;
 
       case endspmd_kw:
-        tok_val = new token (endspmd_kw, token::spmd_end, m_tok_beg, m_tok_end);
+        tok_val = new token (kw->tok, token::spmd_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
@@ -2903,10 +2900,10 @@ looks_like_shebang (const std::string& s)
           if ((m_reading_fcn_file || m_reading_script_file
                || m_reading_classdef_file)
               && ! m_fcn_file_full_name.empty ())
-            tok_val = new token (magic_file_kw, m_fcn_file_full_name,
+            tok_val = new token (kw->tok, m_fcn_file_full_name,
                                  m_tok_beg, m_tok_end);
           else
-            tok_val = new token (magic_file_kw, "stdin", m_tok_beg, m_tok_end);
+            tok_val = new token (kw->tok, "stdin", m_tok_beg, m_tok_end);
         }
         break;
 
@@ -2914,8 +2911,7 @@ looks_like_shebang (const std::string& s)
         {
           int l = m_tok_beg.line ();
           octave_value ov_value (static_cast<double> (l));
-          tok_val = new token (magic_line_kw, ov_value, "",
-                               m_tok_beg, m_tok_end);
+          tok_val = new token (kw->tok, ov_value, "", m_tok_beg, m_tok_end);
         }
         break;
 

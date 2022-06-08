@@ -319,7 +319,7 @@ endfunction
 
 ## Test combined parameters
 %!assert (integral (@(x) [sin(x), cos(x)], 0, pi, "ArrayValued", 1,
-%!                   "Waypoints", [0.5]), [2, 0], eps);
+%!                   "Waypoints", [0.5]), [2, 0], 2*eps);
 
 ##test 2nd output
 %!test <*62412>

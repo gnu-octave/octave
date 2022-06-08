@@ -173,8 +173,22 @@ namespace octave
   console::console (command_widget *p, base_qobject&)
     : QsciScintilla (p),
       m_command_position (-1),
-      m_command_widget (p)
+      m_cursor_position (0),
+      m_text_changed (false),
+      m_command_widget (p),
+      m_last_key_string (QString ())
   {
+    setMargins (0);
+    setWrapMode (QsciScintilla::WrapWord);
+
+    connect (this, SIGNAL (cursorPositionChanged (int, int)),
+             this, SLOT (cursor_position_changed (int, int)));
+
+    connect (this, SIGNAL (textChanged (void)),
+             this, SLOT (text_changed (void)));
+
+    connect (this, SIGNAL (modificationAttempted (void)),
+             this, SLOT (move_cursor_to_end (void)));
   }
 
   // Prepare a new command line with the current prompt
@@ -223,12 +237,49 @@ namespace octave
   // Append a string and update the curdor püosition
   void console::append_string (const QString& string)
   {
+    setReadOnly (false);
     append (string);
 
     int line, index;
     lineIndexFromPosition (text ().length (), &line, &index);
 
     setCursorPosition (line, index);
+  }
+
+  // Cursor position changed: Are we in the command line or not?
+  void console::cursor_position_changed (int line, int col)
+  {
+    m_command_position = positionFromLineIndex (line, col);
+    if (m_cursor_position < m_command_position)
+      {
+        // We are in the read only area
+        if (m_text_changed && (m_cursor_position == m_command_position - 1))
+          undo ();  // And here we have tried to remove the prompt by Backspace
+        else
+          setReadOnly (true);
+      }
+    else
+      setReadOnly (false);  // Writable area
+
+    m_text_changed = false;
+  }
+
+  // User attempted to type on read only mode: move cursor at end and allow
+  // editing
+  void console::move_cursor_to_end (void)
+  {
+    if ((! m_last_key_string.isEmpty ()) && (m_last_key_string.at (0).isPrint ()))
+      {
+        append_string (m_last_key_string);
+        setReadOnly (true); // Avoid that changing read only text is done afterwards
+      }
+  }
+
+  // Text has changed: is cursor still in "writable" area?
+  // This signal seems to be emitted before cursor position changed.
+  void console::text_changed (void)
+  {
+    m_text_changed = true;
   }
 
   // Re-implement key event
@@ -238,8 +289,11 @@ namespace octave
       // On "return", accept the current command line
       accept_command_line ();
     else
-      // Otherwise, process the expected event
-      QsciScintilla::keyPressEvent(e);
+      {
+        // Otherwise, store text process the expected event
+        m_last_key_string = e->text ();
+        QsciScintilla::keyPressEvent(e);
+      }
   }
 
 }

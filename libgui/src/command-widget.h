@@ -50,6 +50,12 @@ namespace octave
 
   public slots:
 
+    void cursor_position_changed (int line, int col);
+
+    void text_changed (void);
+
+    void move_cursor_to_end (void);
+
     void new_command_line (const QString& command = QString ());
 
     void execute_command (const QString& command);
@@ -65,8 +71,10 @@ namespace octave
     void accept_command_line (void);
 
     int m_command_position;
+    int m_cursor_position;
+    bool m_text_changed;
     command_widget *m_command_widget;
-    QTextDocument *m_document;
+    QString m_last_key_string;
 
   };
 

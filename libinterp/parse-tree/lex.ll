@@ -2927,6 +2927,14 @@ looks_like_shebang (const std::string& s)
     return kw->tok;
   }
 
+/*
+
+## check if magic file and line keywords are working
+%!assert <*62587> (ischar (__FILE__))
+%!assert <*62587> (isnumeric (__LINE__))
+
+*/
+
   bool
   base_lexer::fq_identifier_contains_keyword (const std::string& s)
   {

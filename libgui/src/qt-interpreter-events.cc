@@ -510,9 +510,12 @@ namespace octave
     if (m_octave_qobj.experimental_terminal_widget ()
         && m_octave_qobj.have_terminal_window ())
       {
+        // Output the exception message
         std::ostringstream buf;
         ee.display (buf);
         emit interpreter_output_signal (QString::fromStdString (buf.str ()));
+        // Create w new command line
+        emit new_command_line_signal ();
       }
     else
       {

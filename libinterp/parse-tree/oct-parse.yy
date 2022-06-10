@@ -6477,12 +6477,6 @@ does.
 %! [a,] = gcd (1,2);
 %! [a,b,] = gcd (1, 2);
 
-%!test <*62587>
-%! assert (ischar (__FILE__))
-
-%!test <*62587>
-%! assert (isnumeric (__LINE__))
-
 ## Can't assign to a keyword
 %!error eval ("switch = 13;")
 

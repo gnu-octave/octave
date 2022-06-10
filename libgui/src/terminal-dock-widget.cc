@@ -67,6 +67,9 @@ namespace octave
         connect (this, &terminal_dock_widget::execute_command_signal,
                 con, &console::execute_command);
 
+        connect (this, &terminal_dock_widget::new_command_line_signal,
+                con, &console::new_command_line);
+
         m_terminal = widget;
       }
     else
@@ -145,18 +148,6 @@ namespace octave
   void terminal_dock_widget::notice_settings (const gui_settings *settings)
   {
     emit settings_changed (settings);
-  }
-
-  void terminal_dock_widget::interpreter_output (const QString& msg)
-  {
-    if (m_experimental_terminal_widget)
-      emit interpreter_output_signal (msg);
-  }
-
-  void terminal_dock_widget::update_prompt (const QString& prompt)
-  {
-    if (m_experimental_terminal_widget)
-      emit update_prompt_signal (prompt);
   }
 
   void terminal_dock_widget::init_command_prompt ()

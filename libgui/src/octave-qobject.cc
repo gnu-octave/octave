@@ -474,10 +474,13 @@ namespace octave
                      this, &base_qobject::interpreter_stop);
 
             connect (qt_link (), &qt_interpreter_events::interpreter_output_signal,
-                     m_terminal_widget, &terminal_dock_widget::interpreter_output);
+                     m_terminal_widget, &terminal_dock_widget::interpreter_output_signal);
 
             connect (qt_link (), &qt_interpreter_events::update_prompt_signal,
-                     m_terminal_widget, &terminal_dock_widget::update_prompt);
+                     m_terminal_widget, &terminal_dock_widget::update_prompt_signal);
+
+            connect (qt_link (), &qt_interpreter_events::new_command_line_signal,
+                     m_terminal_widget, &terminal_dock_widget::new_command_line_signal);
 
             connect_interpreter_events (cmd_widget);
           }

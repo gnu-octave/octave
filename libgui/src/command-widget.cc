@@ -249,14 +249,17 @@ namespace octave
   // Cursor position changed: Are we in the command line or not?
   void console::cursor_position_changed (int line, int col)
   {
-    m_command_position = positionFromLineIndex (line, col);
+    m_cursor_position = positionFromLineIndex (line, col);
     if (m_cursor_position < m_command_position)
       {
         // We are in the read only area
         if (m_text_changed && (m_cursor_position == m_command_position - 1))
-          undo ();  // And here we have tried to remove the prompt by Backspace
-        else
-          setReadOnly (true);
+          {
+            setReadOnly (false);
+            insert (m_command_widget->prompt ().right (1)); // And here we have tried to remove the prompt by Backspace
+            setCursorPosition (line+1, col);
+          }
+        setReadOnly (true);
       }
     else
       setReadOnly (false);  // Writable area

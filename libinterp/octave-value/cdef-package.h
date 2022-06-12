@@ -227,7 +227,7 @@ namespace octave
       return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ());
     }
 
-    friend OCTINTERP_API void install_classdef (interpreter& interp);
+    friend void install_classdef (octave::interpreter& interp);
   };
 }
 

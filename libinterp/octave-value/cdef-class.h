@@ -431,7 +431,7 @@ namespace octave
     friend OCTINTERP_API bool operator != (const cdef_class&, const cdef_class&);
     friend OCTINTERP_API bool operator < (const cdef_class&, const cdef_class&);
 
-    friend OCTINTERP_API void install_classdef (interpreter& interp);
+    friend void install_classdef (octave::interpreter& interp);
   };
 
   inline bool

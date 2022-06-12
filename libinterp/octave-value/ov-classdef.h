@@ -166,7 +166,7 @@ private:
   static const std::string t_name;
 };
 
-OCTINTERP_API void install_classdef (octave::interpreter& interp);
+void install_classdef (octave::interpreter& interp);
 
 class octave_classdef_meta : public octave_function
 {

@@ -34,8 +34,7 @@
 ##
 ## If the optional argument @qcode{"unique"} is given, then only unique
 ## permutations are returned, using less memory and generally taking less time
-## than calling @code{unique (perms (@var{v}), "rows")}.  In this case, the
-## results are not guaranteed to be in any particular order.
+## than calling @code{unique (perms (@var{v}), "rows")}.
 ##
 ## Example 1
 ##
@@ -83,23 +82,15 @@ function P = perms (v, opt)
     print_usage ();
   endif
 
+  unique_v = 0;
   if (nargin == 2)
     if (! strcmpi (opt, "unique"))
       error ('perms: option must be the string "unique".');
-    endif
-    uniqv = unique (v);
-    n = numel (uniqv);
-    if (n == 1)
-      P = v;
-      return;
-    elseif (n < numel (v))
-      P = unique_perms (v, uniqv);
-      return;
+    else
+      unique_v = 1;
     endif
   endif
 
-  ## If we are here, then we want all permutations, not just unique ones.
-  ## Or the user passed the "unique" option but the input had no repetitions.
   v = v(:).';  # convert to row vector
   if (isnumeric (v) || ischar (v))
     ## Order of output is only dependent on the actual values for
@@ -119,93 +110,71 @@ function P = perms (v, opt)
       case 3
         P = v([3 2 1; 3 1 2; 2 3 1; 2 1 3; 1 3 2; 1 2 3]);
     endswitch
+    if (unique_v)
+      P = unique (P, "rows");
+    endif
   else
-    v = v(end:-1:1);
-    n-= 1;
+    if (! unique_v)
+      v = v(end:-1:1);
+      n-= 1;
 
-    idx = zeros (factorial (n), n);
-    idx(1:6, n-2:n) = [1, 2, 3;1, 3, 2;2, 1, 3;2, 3, 1;3, 1, 2;3, 2, 1]+(n-3);
-    f = 2;    # jump-start for efficiency with medium n
-    for j = 3:n-1
-      b = 1:n;
-      f *= j;
-      perm = idx(1:f, n-(j-1):n);
-      idx(1:(j+1)*f, n-j) = (n-j:n)(ones (f, 1),:)(:);
-      for i=0:j
-        b(i+n-j) -= 1;
-        idx((1:f)+i*f, n-(j-1):n) = b(perm);
+      idx = zeros (factorial (n), n);
+      idx(1:6, n-2:n) = [1, 2, 3;1, 3, 2;2, 1, 3;2, 3, 1;3, 1, 2;3, 2, 1]+(n-3);
+      f = 2;    # jump-start for efficiency with medium n
+      for j = 3:n-1
+        b = 1:n;
+        f *= j;
+        perm = idx(1:f, n-(j-1):n);
+        idx(1:(j+1)*f, n-j) = (n-j:n)(ones (f, 1),:)(:);
+        for i=0:j
+          b(i+n-j) -= 1;
+          idx((1:f)+i*f, n-(j-1):n) = b(perm);
+        endfor
       endfor
-    endfor
 
-    n += 1;
-    f *= n-1;
-    P = v(1)(ones (factorial (n), n));
-    P(:,1) = v(ones (f, 1),:)(:);
+      n += 1;
+      f *= n-1;
+      P = v(1)(ones (factorial (n), n));
+      P(:,1) = v(ones (f, 1),:)(:);
 
-    for i = 1:n
-      b = v([1:i-1 i+1:n]);
-      P((1:f)+(i-1)*f, 2:end) = b(idx);
-    endfor
+      for i = 1:n
+        b = v([1:i-1 i+1:n]);
+        P((1:f)+(i-1)*f, 2:end) = b(idx);
+      endfor
+    else  # user wants unique permutations
+      [v, i, j] = unique(v);
+      h = accumarray (j, 1)';
+      idx = m_perms (h);
+      P = v (sortrows (idx'));
+    endif
   endif
 
 endfunction
 
-function P = unique_perms (v, uniqv)
-  lenvec = 1:numel (v);
-  n_uniq = numel (uniqv);
+function out_perms = m_perms (multis)
 
-  ## Calculate frequencies. Slightly faster to not use hist() or histc().
-  for i = n_uniq:-1:1
-    freq(i) = nnz (v == uniqv(i));
-  endfor
+  l = numel (multis);
+  if (l == 1)
+    out_perms = uint8 (ones (multis, 1));
+  else
+    p1 = m_perms (multis (1:floor (l/2)));
+    p2 = m_perms (multis (floor(l/2)+1:l)) + max (p1 (:, 1));
+    l1 = rows (p1);
+    l2 = rows (p2);
+    cp1 = columns (p1);
+    cp2 = columns (p2);
 
-  ## Performance is improved by handling the most frequent elements first.
-  ## This can change the output order though.  Currently we do not promise
-  ## the results will be in any specific order.
-  [freq, order] = sort (freq, "descend");
-  uniqv = uniqv(order);
+    p = nchoosek (1:l1+l2, l1);
+    rp = rows(p);
 
-  ## Call nchoosek for each choice and do a Cartesian set product,
-  ## avoiding collisions.
-  idx = nchoosek (lenvec, freq(1));
-  for i = 2:n_uniq
-    this = nchoosek (lenvec, freq(i));
-
-    new = zeros (rows (idx) + 1e5, columns (idx) + columns (this));
-    ## Preallocate 1e5 extra rows.
-    pos = 0;
-    for j = 1:rows (this)
-      tmp = idx;
-      for k = this(j,:)
-        tmp = tmp(all (tmp != k, 2), :);
-      endfor
-
-      r = rows (tmp);
-      c = columns (tmp);
-      if (pos + r > rows (new))  # Allocate more memory on the fly
-        new(pos + r + 1e5, 1) = 0;
-      endif
-
-      new(pos+1:pos+r, 1:c) = tmp;
-      new(pos+1:pos+r, c+1:end) = repmat (this(j,:), r, 1);
-      pos += r;
-    endfor
-    idx = new(1:pos, :);
-  endfor
-  clear new tmp this  # Free memory before building P
-
-  idx = (idx-1) * rows (idx) + (1:rows (idx))';
-
-  ## Initialize P to be the same size as idx with the same class as v.
-  P = repmat (v, rows(idx), 1);
-  pos = 0;
-  for i = 1:n_uniq
-    P(idx(:, (pos + 1):(pos + freq(i)))) = uniqv(i);
-    pos += freq(i);
-  endfor
+    ii = false (l1+l2, rp);
+    ii(p + (0:rp - 1)' * (l1 + l2)) = true;
+    out_perms = zeros (l1 + l2, cp1 * cp2 * rp, "uint8");
+    out_perms (repmat ( ii, cp1 * cp2, 1)(:)) = repmat (p1, cp2, rp)(:);
+    out_perms (repmat (!ii, cp1 * cp2, 1)(:)) = repmat (p2, 1, cp1 * rp)(:);
+  endif
 
 endfunction
-
 
 %!assert (rows (perms (1:6)), factorial (6))
 %!assert (perms (pi), pi)

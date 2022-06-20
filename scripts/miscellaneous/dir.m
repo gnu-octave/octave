@@ -157,12 +157,7 @@ function list = dir (directory = ".")
           if (! is_same_file (last_dir, tmpdir))
             ## Caching mechanism to speed up function
             last_dir = tmpdir;
-            if (ispc () && strncmp (last_dir, '\\', 2))
-              ## Windows UNC network file name is used as is
-              last_absdir = last_dir;
-            else
-              last_absdir = canonicalize_file_name (last_dir);
-            endif
+            last_absdir = canonicalize_file_name (last_dir);
           endif
           info(cnt).folder = last_absdir;
           lt = localtime (st.mtime);

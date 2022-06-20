@@ -35,6 +35,8 @@
 #include <vector>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
+#  include <cctype>
+
 #  include <windows.h>
 #  include "unwind-prot.h"
 #else
@@ -733,7 +735,27 @@ namespace octave
       // "Normal" paths are prefixed by "\\?\".
       // UNC paths are prefixed by "\\?\UNC\".
       if (retval.compare (0, 8, R"(\\?\UNC\)") == 0)
-        retval = retval.erase (2, 6);
+        {
+          retval = retval.erase (2, 6);
+
+          // If the initial path looked like a mapped network drive, replace
+          // "\\server\share" portion of path with drive root.
+          if (name[1] == ':')
+            {
+              // Find where "share" portion of UNC path ends
+              std::size_t sep_pos
+                = retval.find_first_of (file_ops::dir_sep_chars (), 2);
+              if (sep_pos != std::string::npos)
+                sep_pos = retval.find_first_of (file_ops::dir_sep_chars (),
+                                                sep_pos + 1);
+              if (sep_pos != std::string::npos)
+                retval = retval.substr (sep_pos-2);
+              else
+                retval.resize (2);  // no file component
+              retval[0] = std::toupper (name[0]);
+              retval[1] = ':';
+            }
+        }
       else if (retval.compare (0, 4, R"(\\?\)") == 0)
         retval = retval.erase (0, 4);
 #else

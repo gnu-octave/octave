@@ -275,6 +275,9 @@ classdef inputParser < handle
                 "after Parameter or Switch"]);
       endif
       this.validate_name ("Optional", name);
+      if (iscell (def))
+        def = {def};
+      endif
       this.Optional{end+1} = struct ("name", name, "def", def, "val", val);
     endfunction
 

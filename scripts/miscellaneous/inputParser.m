@@ -895,3 +895,23 @@ endclassdef
 %! r = p.Results;
 %! assert (r.first, 1);
 %! assert (r.second, {"test", 1, 2, 3});
+
+%!test <*62639>
+%! p = inputParser ();
+%! p.addOptional ("opt", {});
+%! p.parse ();
+%! r = p.Results;
+%! assert (r.opt, {});
+%! p.parse ("x");
+%! r = p.Results;
+%! assert (r.opt, "x");
+
+%!test <*62639>
+%! p = inputParser ();
+%! p.addOptional ("opt", {1,2,3});
+%! p.parse ();
+%! r = p.Results;
+%! assert (r.opt, {1,2,3});
+%! p.parse ("x");
+%! r = p.Results;
+%! assert (r.opt, "x");

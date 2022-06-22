@@ -551,7 +551,7 @@ On non-Windows platforms, this function fails with an error.
     int tty_fd = STDIN_FILENO;
     if (! octave_isatty_wrapper (tty_fd))
       {
-        interpreter& interp = __get_interpreter__ ("raw_mode");
+        interpreter& interp = __get_interpreter__ ();
 
         if (interp.interactive () && ! application::forced_interactive ())
           error ("stdin is not a tty!");

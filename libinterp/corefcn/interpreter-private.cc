@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <iostream>
 #include <list>
 #include <string>
 
@@ -50,151 +51,151 @@
 
 namespace octave
 {
-  interpreter& __get_interpreter__ (const std::string& who)
+  interpreter& __get_interpreter__ (void)
   {
     interpreter *interp = interpreter::the_interpreter ();
 
     if (! interp)
       {
+        std::cerr << "fatal error: octave interpreter context missing" << std::endl;
         abort ();
-        error ("%s: interpreter context missing", who.c_str ());
       }
 
     return *interp;
   }
 
-  dynamic_loader& __get_dynamic_loader__ (const std::string& who)
+  dynamic_loader& __get_dynamic_loader__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_dynamic_loader ();
   }
 
-  error_system& __get_error_system__ (const std::string& who)
+  error_system& __get_error_system__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_error_system ();
   }
 
-  gh_manager& __get_gh_manager__ (const std::string& who)
+  gh_manager& __get_gh_manager__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_gh_manager ();
   }
 
-  help_system& __get_help_system__ (const std::string& who)
+  help_system& __get_help_system__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_help_system ();
   }
 
-  input_system& __get_input_system__ (const std::string& who)
+  input_system& __get_input_system__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_input_system ();
   }
 
-  output_system& __get_output_system__ (const std::string& who)
+  output_system& __get_output_system__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_output_system ();
   }
 
-  load_path& __get_load_path__ (const std::string& who)
+  load_path& __get_load_path__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_load_path ();
   }
 
-  load_save_system& __get_load_save_system__ (const std::string& who)
+  load_save_system& __get_load_save_system__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_load_save_system ();
   }
 
-  event_manager& __get_event_manager__ (const std::string& who)
+  event_manager& __get_event_manager__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_event_manager ();
   }
 
-  type_info& __get_type_info__ (const std::string& who)
+  type_info& __get_type_info__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_type_info ();
   }
 
-  symbol_table& __get_symbol_table__ (const std::string& who)
+  symbol_table& __get_symbol_table__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_symbol_table ();
   }
 
-  symbol_scope __get_current_scope__ (const std::string& who)
+  symbol_scope __get_current_scope__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_current_scope ();
   }
 
-  symbol_scope __require_current_scope__ (const std::string& who)
+  symbol_scope __require_current_scope__ (void)
   {
-    symbol_scope scope = __get_current_scope__ (who);
+    symbol_scope scope = __get_current_scope__ ();
 
     if (! scope)
-      error ("%s: symbol table scope missing", who.c_str ());
+      error ("__require_current_scope__: symbol table scope missing");
 
     return scope;
   }
 
-  tree_evaluator& __get_evaluator__ (const std::string& who)
+  tree_evaluator& __get_evaluator__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_evaluator ();
   }
 
-  bp_table& __get_bp_table__ (const std::string& who)
+  bp_table& __get_bp_table__ (void)
   {
-    tree_evaluator& tw = __get_evaluator__ (who);
+    tree_evaluator& tw = __get_evaluator__ ();
 
     return tw.get_bp_table ();
   }
 
-  child_list& __get_child_list__ (const std::string& who)
+  child_list& __get_child_list__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_child_list ();
   }
 
-  cdef_manager& __get_cdef_manager__ (const std::string& who)
+  cdef_manager& __get_cdef_manager__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_cdef_manager ();
   }
 
-  display_info& __get_display_info__ (const std::string& who)
+  display_info& __get_display_info__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_display_info ();
   }
 
-  gtk_manager& __get_gtk_manager__ (const std::string& who)
+  gtk_manager& __get_gtk_manager__ (void)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.get_gtk_manager ();
   }

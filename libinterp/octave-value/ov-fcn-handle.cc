@@ -520,8 +520,7 @@ OCTAVE_NAMESPACE_BEGIN
       if (m_fcn.is_defined ())
         return m_fcn.function_value ();
 
-      symbol_table& symtab
-        = __get_symbol_table__ ("class_simple_fcn_handle::function_value");
+      symbol_table& symtab = __get_symbol_table__ ();
 
       // FIXME: is caching the correct thing to do?
       // Cache this value so that the pointer will be valid as long as the
@@ -917,7 +916,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   internal_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    interpreter& interp = __get_interpreter__ ("internal_fcn_handle::call");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (m_fcn, args, nargout);
   }
@@ -950,7 +949,7 @@ OCTAVE_NAMESPACE_BEGIN
     // it is a classdef meta object, then build TYPE and IDX arguments and
     // make a subsref call using them.
 
-    interpreter& interp = __get_interpreter__ ("simple_fcn_handle::call");
+    interpreter& interp = __get_interpreter__ ();
 
     octave_value fcn_to_call;
 
@@ -1137,8 +1136,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (m_fcn.is_defined ())
       return m_fcn.function_value ();
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("simple_fcn_handle::function_value");
+    symbol_table& symtab = __get_symbol_table__ ();
 
     // FIXME: is caching the correct thing to do?
     // Cache this value so that the pointer will be valid as long as the
@@ -1157,8 +1155,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (m_fcn.is_defined ())
       return m_fcn.user_function_value ();
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("simple_fcn_handle::user_function_value");
+    symbol_table& symtab = __get_symbol_table__ ();
 
     // FIXME: is caching the correct thing to do?
     // Cache this value so that the pointer will be valid as long as the
@@ -1174,8 +1171,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (m_fcn.is_defined ())
       return m_fcn;
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("simple_fcn_handle::user_function_value");
+    symbol_table& symtab = __get_symbol_table__ ();
 
     // FIXME: is caching the correct thing to do?
     // Cache this value so that the pointer will be valid as long as the
@@ -1465,7 +1461,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     // FIXME: we aren't really using the scope yet.  Hmm.
 
-    interpreter& interp = __get_interpreter__ ("simple_fcn_handle::call");
+    interpreter& interp = __get_interpreter__ ();
 
     if (! m_fcn.is_defined ())
       {
@@ -1642,8 +1638,7 @@ OCTAVE_NAMESPACE_BEGIN
     // It is not an error if this fails.  We can report later that the
     // handle is invalid.
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("scoped_fcn_handle::find_function");
+    symbol_table& symtab = __get_symbol_table__ ();
 
     if (m_parentage.size () == 1)
       {
@@ -1821,7 +1816,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   nested_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    tree_evaluator& tw = __get_evaluator__ ("nested_fcn_handle::call");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
@@ -1849,7 +1844,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   weak_nested_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    tree_evaluator& tw = __get_evaluator__ ("weak_nested_fcn_handle::call");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
@@ -1903,7 +1898,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   class_simple_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    interpreter& interp = __get_interpreter__ ("class_simple_fcn_handle::call");
+    interpreter& interp = __get_interpreter__ ();
 
     if (m_obj.is_defined ())
       {
@@ -2122,8 +2117,7 @@ OCTAVE_NAMESPACE_BEGIN
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
-    interpreter& interp
-      = __get_interpreter__ ("base_anonymous_fcn_handle::load_ascii");
+    interpreter& interp = __get_interpreter__ ();
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2239,8 +2233,7 @@ OCTAVE_NAMESPACE_BEGIN
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
-    interpreter& interp
-      = __get_interpreter__ ("base_anonymous_fcn_handle::load_binary");
+    interpreter& interp = __get_interpreter__ ();
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2555,8 +2548,7 @@ OCTAVE_NAMESPACE_BEGIN
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
-    interpreter& interp
-      = __get_interpreter__ ("base_anonymous_fcn_handle::load_hdf5");
+    interpreter& interp = __get_interpreter__ ();
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2654,8 +2646,7 @@ OCTAVE_NAMESPACE_BEGIN
     // values to the object returned by eval_string?  This code is also is
     // duplicated in read_mat5_binary_element in ls-mat5.cc.
 
-    interpreter& interp
-      = __get_interpreter__ ("base_anonymous_fcn_handle::parse");
+    interpreter& interp = __get_interpreter__ ();
 
     // Set up temporary scope to use for evaluating the text that defines
     // the anonymous function so that we don't pick up values of random
@@ -2712,7 +2703,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    tree_evaluator& tw = __get_evaluator__ ("anonymous_fcn_handle::call");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
@@ -2764,7 +2755,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   weak_anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    tree_evaluator& tw = __get_evaluator__ ("anonymous_fcn_handle::call");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 

@@ -255,7 +255,7 @@ octave_classdef::xnumel (const octave_value_list& idx)
 
           // Temporarily set lvalue list of current statement to NULL, to avoid
           // using that list for the execution of the method "numel"
-          octave::interpreter& interp = octave::__get_interpreter__ ("octave_classdef::xnumel");
+          octave::interpreter& interp = octave::__get_interpreter__ ();
           octave::tree_evaluator& tw = interp.get_evaluator();
 
           octave::unwind_action act ([&tw] (const std::list<octave::octave_lvalue> *lvl)

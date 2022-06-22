@@ -51,9 +51,11 @@ namespace octave
 
   // FIXME: This is not ideal, but it avoids including
   // interpreter-private.h here and bringing in a lot of unnecessary
-  // symbols that require even more header files.
+  // symbols that require even more header files.  Since the typeinfo
+  // object is required to load a user-defined octave_value object,
+  // maybe this function should be declared in a public header file?
 
-  extern OCTINTERP_API type_info& __get_type_info__ (const std::string&);
+  extern OCTINTERP_API type_info& __get_type_info__ (void);
 }
 
 class Cell;
@@ -205,8 +207,7 @@ DEF_BTYP_TRAITS (btyp_char, char);
   tspec const std::string t::c_name (c);                                \
   tspec void t::register_type (void)                                    \
   {                                                                     \
-    octave::type_info& type_info                                        \
-      = octave::__get_type_info__ (#t "::register_type");               \
+    octave::type_info& type_info = octave::__get_type_info__ ();        \
                                                                         \
     register_type (type_info);                                          \
   }                                                                     \

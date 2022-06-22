@@ -1551,8 +1551,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    gh_manager& gh_mgr
-      = __get_gh_manager__ ("opengl_renderer::draw_axes_x_grid");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     int xstate = props.get_xstate ();
 
@@ -1748,8 +1747,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    gh_manager& gh_mgr
-      = __get_gh_manager__ ("opengl_renderer::draw_axes_y_grid");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     int ystate = props.get_ystate ();
 
@@ -1944,8 +1942,7 @@ namespace octave
   void
   opengl_renderer::draw_axes_z_grid (const axes::properties& props)
   {
-    gh_manager& gh_mgr
-      = __get_gh_manager__ ("opengl_renderer::draw_axes_z_grid");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     int zstate = props.get_zstate ();
 
@@ -2167,8 +2164,7 @@ namespace octave
                                     std::list<graphics_object>& obj_list)
   {
 #if defined (HAVE_OPENGL)
-    gh_manager& gh_mgr
-      = __get_gh_manager__ ("opengl_renderer::draw_axes_all_lights");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     Matrix children = props.get_all_children ();
 
@@ -3771,8 +3767,7 @@ namespace octave
 
         if (props.markerfacecolor_is ("auto"))
           {
-            gh_manager& gh_mgr
-              = __get_gh_manager__ ("opengl_renderer::draw_scatter");
+            gh_manager& gh_mgr = __get_gh_manager__ ();
             graphics_object go = gh_mgr.get_object (props.get___myhandle__ ());
             graphics_object ax = go.get_ancestor ("axes");
             const axes::properties& ax_props
@@ -4163,7 +4158,7 @@ namespace octave
   {
     int len = hlist.numel ();
 
-    gh_manager& gh_mgr = __get_gh_manager__ ("opengl_renderer::draw");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     for (int i = len-1; i >= 0; i--)
       {
@@ -4664,7 +4659,7 @@ namespace octave
   double
   opengl_renderer::points_to_pixels (const double val) const
   {
-    gh_manager& gh_mgr = __get_gh_manager__ ("opengl_renderer::points_to_pixels");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     // FIXME: Does making this static cause problems if figure is moved to a
     //        2nd monitor with a different value for "screenpixelsperinch"?

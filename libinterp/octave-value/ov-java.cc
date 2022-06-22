@@ -2097,8 +2097,7 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
 JNIEXPORT void JNICALL
 Java_org_octave_Octave_doEvalString (JNIEnv *env, jclass, jstring cmd)
 {
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("Java_org_octave_Octave_doEvalString");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   std::string s = jstring_to_string (env, cmd);
   int pstatus;

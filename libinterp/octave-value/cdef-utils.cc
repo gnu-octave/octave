@@ -80,7 +80,7 @@ namespace octave
   lookup_class (const std::string& name, bool error_if_not_found,
                 bool load_if_not_found)
   {
-    cdef_manager& cdm = __get_cdef_manager__ ("lookup_class");
+    cdef_manager& cdm = __get_cdef_manager__ ();
 
     return cdm.find_class (name, error_if_not_found, load_if_not_found);
   }
@@ -238,7 +238,7 @@ namespace octave
   lookup_package (const std::string& name, bool error_if_not_found,
                   bool load_if_not_found)
   {
-    cdef_manager& cdm = __get_cdef_manager__ ("lookup_package");
+    cdef_manager& cdm = __get_cdef_manager__ ();
 
     return cdm.find_package (name, error_if_not_found, load_if_not_found);
   }
@@ -257,7 +257,7 @@ namespace octave
     // methods will use the dispatch class of the class in which they
     // are defined instead of the class in which they are executing.
 
-    tree_evaluator& tw = __get_evaluator__ ("get_class_context");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     std::string dispatch_class = tw.get_dispatch_class ();
 

@@ -693,7 +693,7 @@ If no files are found, return an empty cell array.
     if (! suffix.empty ())
       nm.append (suffix);
 
-    load_path& lp = __get_load_path__ ("file_in_path");
+    load_path& lp = __get_load_path__ ();
 
     return sys::env::make_absolute (lp.find_file (nm));
   }
@@ -717,7 +717,7 @@ If no files are found, return an empty cell array.
 
         if (! local_file_ok)
           {
-            load_path& lp = __get_load_path__ ("find_data_file_in_load_path");
+            load_path& lp = __get_load_path__ ();
 
             // Not directly found; search load path.
             std::string tmp = sys::env::make_absolute (lp.find_file (fname));
@@ -754,7 +754,7 @@ If no files are found, return an empty cell array.
           }
         else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
           {
-            load_path& lp = __get_load_path__ ("fcn_file_in_path");
+            load_path& lp = __get_load_path__ ();
 
             retval = lp.find_fcn_file (name.substr (0, len-2));
           }
@@ -765,7 +765,7 @@ If no files are found, return an empty cell array.
             if (pos != std::string::npos)
               fname = name.substr (0, pos);
 
-            load_path& lp = __get_load_path__ ("fcn_file_in_path");
+            load_path& lp = __get_load_path__ ();
 
             retval = lp.find_fcn_file (fname);
           }
@@ -783,7 +783,7 @@ If no files are found, return an empty cell array.
 
     if (! dir.empty ())
       {
-        load_path& lp = __get_load_path__ ("contents_file_in_path");
+        load_path& lp = __get_load_path__ ();
 
         std::string tcontents
           = sys::file_ops::concat (lp.find_dir (dir), "Contents.m");
@@ -1535,7 +1535,7 @@ Return a structure containing the system-dependent errno values.
     // Allow free access to graphics resources while the interpreter thread
     // is asleep
 
-    gh_manager& gh_mgr = __get_gh_manager__ ("sleep");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     if (do_graphics_events)
       gh_mgr.unlock ();

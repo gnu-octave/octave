@@ -91,7 +91,7 @@ namespace octave
     {
       bool retval = false;
 
-      gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::has_alpha");
+      gh_manager& gh_mgr = __get_gh_manager__ ();
 
       graphics_object go = gh_mgr.get_object (h);
 
@@ -295,7 +295,7 @@ namespace octave
   {
     bool retval = true;
 
-    gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::has_2D_axes");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     graphics_object go = gh_mgr.get_object (h);
 
@@ -327,7 +327,7 @@ namespace octave
   {
     std::string retval;
 
-    gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::get_title");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     graphics_object go = gh_mgr.get_object (h);
 

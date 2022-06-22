@@ -622,8 +622,7 @@ load_inline_fcn (hid_t loc_id, const char *name, octave_value& retval)
 
   args(0) = std::string (iftext_tmp);
 
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("load_inline_fcn");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   octave_value_list tmp = interp.feval ("inline", args, 1);
 
@@ -672,8 +671,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 
   std::string vname = name;
 
-  octave::type_info& type_info
-    = octave::__get_type_info__ ("hdf5_read_next_data_internal");
+  octave::type_info& type_info = octave::__get_type_info__ ();
 
   // Allow identifiers as all digits so we can load lists saved by
   // earlier versions of Octave.

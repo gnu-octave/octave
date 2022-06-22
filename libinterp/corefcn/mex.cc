@@ -3448,8 +3448,7 @@ public:
   {
     if (! m_fname)
       {
-        octave::tree_evaluator& tw
-          = octave::__get_evaluator__ ("mex::function_name");
+        octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
         octave_function *fcn = tw.current_function ();
 
@@ -4895,7 +4894,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 {
   octave_value_list args = mx_to_ov_args (nargin, argin);
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexCallMATLAB");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   bool execution_error = false;
 
@@ -4992,7 +4991,7 @@ mexEvalString (const char *s)
 {
   int retval = 0;
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexEvalString");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   int parse_status;
   bool execution_error = false;
@@ -5021,7 +5020,7 @@ mexEvalStringWithTrap (const char *s)
 {
   mxArray *mx = nullptr;
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexEvalString");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   int parse_status;
   bool execution_error = false;
@@ -5159,7 +5158,7 @@ mexGetVariable (const char *space, const char *name)
 
   octave_value val;
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexGetVariable");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   if (! strcmp (space, "global"))
     val = interp.global_varval (name);
@@ -5224,7 +5223,7 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
   if (! name || name[0] == '\0')
     return 1;
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexPutVariable");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   if (! strcmp (space, "global"))
     {
@@ -5354,7 +5353,7 @@ mexIsLocked (void)
     {
       const char *fname = mexFunctionName ();
 
-      octave::interpreter& interp = octave::__get_interpreter__ ("mexIsLocked");
+      octave::interpreter& interp = octave::__get_interpreter__ ();
 
       retval = interp.mislocked (fname);
     }
@@ -5376,7 +5375,7 @@ mexLock (void)
       else
         mex_lock_count[fname]++;
 
-      octave::interpreter& interp = octave::__get_interpreter__ ("mexLock");
+      octave::interpreter& interp = octave::__get_interpreter__ ();
 
       interp.mlock ();
     }
@@ -5418,8 +5417,7 @@ mexUnlock (void)
 
           if (count == 0)
             {
-              octave::interpreter& interp
-                = octave::__get_interpreter__ ("mexUnLock");
+              octave::interpreter& interp = octave::__get_interpreter__ ();
 
               interp.munlock (fname);
 

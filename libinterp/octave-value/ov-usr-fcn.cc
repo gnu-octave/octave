@@ -75,8 +75,7 @@ octave_user_code::~octave_user_code (void)
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (m_cmd_list)
     {
-      octave::event_manager& evmgr
-        = octave::__get_event_manager__ ("octave_user_code::~octave_user_code");
+      octave::event_manager& evmgr = octave::__get_event_manager__ ();
 
       m_cmd_list->remove_all_breakpoints (evmgr, m_file_name);
     }
@@ -622,8 +621,7 @@ octave_user_function::print_code_function_trailer (const std::string& prefix)
 void
 octave_user_function::restore_warning_states (void)
 {
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("octave_user_function::restore_warning_states");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   octave::tree_evaluator& tw = interp.get_evaluator ();
 

@@ -86,8 +86,7 @@ get_output_list (error_system& es,
     {
       if (error_handler.is_defined ())
         {
-          interpreter& interp
-            = __get_interpreter__ ("get_output_list");
+          interpreter& interp = __get_interpreter__ ();
 
           es.save_exception (ee);
           interp.recover_from_exception ();

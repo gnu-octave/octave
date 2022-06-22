@@ -76,7 +76,7 @@ static void
 error_1 (octave::execution_exception& ee, const char *id, const char *fmt,
          va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("error_1");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.error_1 (ee, id, fmt, args);
 }
@@ -85,7 +85,7 @@ OCTAVE_NORETURN
 static void
 error_1 (const char *id, const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("error_1");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.error_1 (id, fmt, args);
 }
@@ -111,7 +111,7 @@ check_state (const std::string& state)
 static void
 vwarning (const char *id, const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("warning");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.vwarning (id, fmt, args);
 }
@@ -955,7 +955,7 @@ message (const char *name, const char *fmt, ...)
 void
 vusage_with_id (const char *id, const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("warning_enabled");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.vusage (id, fmt, args);
 }
@@ -1108,7 +1108,7 @@ OCTAVE_NORETURN
 void
 vpanic (const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("vpanic");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.vpanic (fmt, args);
 }
@@ -1814,7 +1814,7 @@ set_warning_state (const std::string& id, const std::string& state)
   args(1) = id;
   args(0) = state;
 
-  interpreter& interp = __get_interpreter__ ("set_warning_state");
+  interpreter& interp = __get_interpreter__ ();
 
   return Fwarning (interp, args, 1);
 }
@@ -1822,7 +1822,7 @@ set_warning_state (const std::string& id, const std::string& state)
 octave_value_list
 set_warning_state (const octave_value_list& args)
 {
-  interpreter& interp = __get_interpreter__ ("set_warning_state");
+  interpreter& interp = __get_interpreter__ ();
 
   return Fwarning (interp, args, 1);
 }
@@ -1830,7 +1830,7 @@ set_warning_state (const octave_value_list& args)
 int
 warning_enabled (const std::string& id)
 {
-  error_system& es = __get_error_system__ ("warning_enabled");
+  error_system& es = __get_error_system__ ();
 
   return es.warning_enabled (id);
 }
@@ -1838,7 +1838,7 @@ warning_enabled (const std::string& id)
 void
 disable_warning (const std::string& id)
 {
-  error_system& es = __get_error_system__ ("disable_warning");
+  error_system& es = __get_error_system__ ();
 
   es.disable_warning (id);
 }
@@ -2172,7 +2172,7 @@ The original variable value is restored when exiting the function.
 void
 interpreter_try (unwind_protect& frame)
 {
-  error_system& es = __get_error_system__ ("interpreter_try");
+  error_system& es = __get_error_system__ ();
 
   es.interpreter_try (frame);
 }

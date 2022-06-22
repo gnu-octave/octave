@@ -634,8 +634,7 @@ namespace octave
   void
   cdef_class::cdef_class_rep::meta_release (void)
   {
-    cdef_manager& cdm
-      = __get_cdef_manager__ ("cdef_class::cdef_class_rep::meta_release");
+    cdef_manager& cdm = __get_cdef_manager__ ();
 
     cdm.unregister_class (wrap ());
   }
@@ -745,8 +744,7 @@ namespace octave
 
         static cdef_object empty_class;
 
-        cdef_manager& cdm
-          = __get_cdef_manager__ ("cdef_class::cdef_class_rep::construct_object");
+        cdef_manager& cdm = __get_cdef_manager__ ();
 
         if (this_cls == cdm.meta_class ())
           {
@@ -892,7 +890,7 @@ namespace octave
           }
       }
 
-    cdef_manager& cdm = __get_cdef_manager__ ("cdef_class::make_meta_class");
+    cdef_manager& cdm = __get_cdef_manager__ ();
 
     retval = cdm.make_class (full_class_name, slist);
 

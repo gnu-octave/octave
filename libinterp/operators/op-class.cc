@@ -55,9 +55,9 @@ oct_unop_default (const octave_value& a, const std::string& opname)
 {
   std::string class_name = a.class_name ();
 
-  octave_value meth
-    = octave::__get_symbol_table__ ("oct_unop_" + opname)
-      .find_method (opname, class_name);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+
+  octave_value meth = symtab.find_method (opname, class_name);
 
   if (meth.is_defined ())
     {
@@ -140,8 +140,7 @@ static octave_value
 oct_binop_default (const octave_value& a1, const octave_value& a2,
                    const std::string& opname)
 {
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("oct_binop_" + opname);
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
   // Dispatch to first (leftmost) operand by default.
   std::string dispatch_type = a1.class_name ();

@@ -128,7 +128,7 @@ namespace octave
       text_renderer::string str ("", fnt, 0.0, 0.0);
       str.set_color (m_color);
 
-      gh_manager& gh_mgr = octave::__get_gh_manager__ ("text_to_strlist");
+      gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
       gh_manager::latex_data ldata = gh_mgr.get_latex_data (key (txt, halign));
 
@@ -306,8 +306,7 @@ namespace octave
                          "latex_renderer:: failed to read png data. %s",
                          ee.message ().c_str ());
 
-        interpreter& interp
-          = __get_interpreter__ ("latex_renderer::read_image");
+        interpreter& interp = __get_interpreter__ ();
 
         interp.recover_from_exception ();
 
@@ -355,7 +354,7 @@ namespace octave
   latex_renderer::render (const std::string& txt, int halign)
   {
     // Render if it was not already done
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("latex_renderer::render");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     gh_manager::latex_data ldata = gh_mgr.get_latex_data (key (txt, halign));
 

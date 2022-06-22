@@ -349,7 +349,7 @@ Return true if Octave was invoked with the @env{--traditional} option.
                                bool verbose = false,
                                bool require_file = true)
   {
-    interpreter& interp = __get_interpreter__ ("safe_source_file");
+    interpreter& interp = __get_interpreter__ ();
 
     try
       {

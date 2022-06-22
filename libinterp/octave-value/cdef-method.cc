@@ -74,8 +74,7 @@ namespace octave
       {
         if (is_dummy_method (m_function))
           {
-            load_path& lp
-              = __get_load_path__ ("cdef_method::cdef_method_rep::check_method");
+            load_path& lp = __get_load_path__ ();
 
             std::string name = get_name ();
             std::string cls_name = m_dispatch_type;

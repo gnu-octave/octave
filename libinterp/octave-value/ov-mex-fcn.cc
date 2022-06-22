@@ -73,8 +73,7 @@ octave_mex_function::~octave_mex_function (void)
   if (m_exit_fcn_ptr)
     (*m_exit_fcn_ptr) ();
 
-  octave::dynamic_loader& dyn_loader
-    = octave::__get_dynamic_loader__ ("~octave_mex_function");
+  octave::dynamic_loader& dyn_loader = octave::__get_dynamic_loader__ ();
 
   dyn_loader.remove_mex (m_name, m_sh_lib);
 }

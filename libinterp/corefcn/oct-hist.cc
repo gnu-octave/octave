@@ -142,8 +142,7 @@ OCTAVE_NAMESPACE_BEGIN
           {
             if (command_history::add (tmp))
               {
-                event_manager& evmgr
-                  = __get_event_manager__ ("edit_history_add_hist");
+                event_manager& evmgr = __get_event_manager__ ();
 
                 evmgr.append_history (tmp);
               }

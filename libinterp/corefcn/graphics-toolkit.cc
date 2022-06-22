@@ -36,7 +36,7 @@ namespace octave
   void
   base_graphics_toolkit::update (const graphics_handle& h, int id)
   {
-    gh_manager& gh_mgr = __get_gh_manager__ ("base_graphics_toolkit::update");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     graphics_object go = gh_mgr.get_object (h);
 
@@ -46,8 +46,7 @@ namespace octave
   bool
   base_graphics_toolkit::initialize (const graphics_handle& h)
   {
-    gh_manager& gh_mgr
-      = __get_gh_manager__ ("base_graphics_toolkit::initialize");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     graphics_object go = gh_mgr.get_object (h);
 
@@ -57,8 +56,7 @@ namespace octave
   void
   base_graphics_toolkit::finalize (const graphics_handle& h)
   {
-    gh_manager& gh_mgr
-      = __get_gh_manager__ ("base_graphics_toolkit::finalize");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     graphics_object go = gh_mgr.get_object (h);
 

@@ -200,7 +200,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
         }
     }
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("octave_class");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
   symtab.add_to_parent_map (id, m_parent_list);
 }
@@ -231,8 +231,7 @@ octave_class::get_current_method_class (void)
 
   if (nparents () > 0)
     {
-      octave::tree_evaluator& tw
-        = octave::__get_evaluator__ ("octave_class::get_current_method_class");
+      octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
       octave_function *fcn = tw.current_function ();
 
@@ -313,8 +312,7 @@ octave_class::size (void)
 
   Matrix retval (1, 2, 1.0);
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("octave_class::size");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
   octave_value meth = symtab.find_method ("size", class_name ());
 
@@ -354,8 +352,7 @@ octave_class::xnumel (const octave_value_list& idx)
   octave_idx_type retval = -1;
   const std::string cn = class_name ();
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("octave_class::numel");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
   octave_value meth = symtab.find_method ("numel", cn);
 
@@ -450,8 +447,7 @@ octave_class::subsref (const std::string& type,
     }
   else
     {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_class::subsref");
+      octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
       octave_value meth = symtab.find_method ("subsref", class_name ());
 
@@ -551,8 +547,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
   if (! (in_class_method () || called_from_builtin ()))
     {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_class::subsasgn_common");
+      octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
       octave_value meth = symtab.find_method ("subsasgn", class_name ());
 
@@ -828,8 +823,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 octave::idx_vector
 octave_class::index_vector (bool require_integers) const
 {
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("octave_class::index_vector");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
   octave_value meth = symtab.find_method ("subsindex", class_name ());
 
@@ -877,8 +871,7 @@ octave_class::is_true (void) const
 {
   bool retval = false;
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("octave_class::is_true");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
   octave_value meth = symtab.find_method ("logical", class_name ());
 
@@ -996,8 +989,7 @@ octave_class::string_vector_value (bool pad) const
 {
   string_vector retval;
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("octave_class::string_vector_value");
+  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
   octave_value meth = symtab.find_method ("char", class_name ());
 
@@ -1049,8 +1041,7 @@ octave_class::reconstruct_exemplar (void)
     retval = true;
   else
     {
-      octave::interpreter& interp
-        = octave::__get_interpreter__  ("octave_class::reconstruct_exemplar");
+      octave::interpreter& interp = octave::__get_interpreter__ ();
 
       octave::symbol_table& symtab = interp.get_symbol_table ();
 
@@ -1174,7 +1165,7 @@ octave_class::save_ascii (std::ostream& os)
   os << "# classname: " << class_name () << "\n";
   octave_map m;
 
-  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_ascii");
+  octave::load_path& lp = octave::__get_load_path__ ();
 
   if (lp.find_method (class_name (), "saveobj") != "")
     {
@@ -1248,7 +1239,7 @@ octave_class::load_ascii (std::istream& is)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_ascii");
+      octave::load_path& lp = octave::__get_load_path__ ();
 
       if (lp.find_method (classname, "loadobj") != "")
         {
@@ -1279,7 +1270,7 @@ octave_class::save_binary (std::ostream& os, bool save_as_floats)
 
   octave_map m;
 
-  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_binary");
+  octave::load_path& lp = octave::__get_load_path__ ();
 
   if (lp.find_method (class_name (), "saveobj") != "")
     {
@@ -1368,7 +1359,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! reconstruct_parents ())
             warning ("load: unable to reconstruct object inheritance");
 
-          octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_binary");
+          octave::load_path& lp = octave::__get_load_path__ ();
 
           if (lp.find_method (c_name, "loadobj") != "")
             {
@@ -1407,7 +1398,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   octave_map m;
   octave_map::iterator i;
 
-  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_hdf5");
+  octave::load_path& lp = octave::__get_load_path__ ();
 
 #if defined (HAVE_HDF5_18)
   group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
@@ -1617,7 +1608,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_hdf5");
+      octave::load_path& lp = octave::__get_load_path__ ();
 
       if (lp.find_method (c_name, "loadobj") != "")
         {
@@ -1655,8 +1646,7 @@ octave_class::as_mxArray (bool) const
 bool
 octave_class::in_class_method (void)
 {
-  octave::tree_evaluator& tw
-    = octave::__get_evaluator__ ("octave_class::in_class_method");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
   octave_function *fcn = tw.current_function ();
 

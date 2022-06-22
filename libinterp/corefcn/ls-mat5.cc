@@ -512,8 +512,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   if (read_mat5_tag (is, swap, type, element_length, is_small_data_element))
     return retval;                      // EOF
 
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("read_mat5_binary_element");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   if (type == miCOMPRESSED)
     {
@@ -2724,8 +2723,7 @@ save_mat5_binary_element (std::ostream& os,
 
       octave_map m;
 
-      octave::load_path& lp
-        = octave::__get_load_path__ ("save_mat5_binary_element");
+      octave::load_path& lp = octave::__get_load_path__ ();
 
       if (tc.isobject ()
           && lp.find_method (tc.class_name (), "saveobj") != "")

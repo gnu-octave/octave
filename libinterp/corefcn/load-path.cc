@@ -158,7 +158,7 @@ OCTAVE_NAMESPACE_BEGIN
     // Look in private directory corresponding to current function (if
     // any).
 
-    symbol_scope scope = __get_current_scope__ ("find_private_file");
+    symbol_scope scope = __get_current_scope__ ();
 
     octave_user_code *curr_code = scope ? scope.user_code () : nullptr;
 
@@ -210,12 +210,12 @@ OCTAVE_NAMESPACE_BEGIN
   static void
   rehash_internal (void)
   {
-    load_path& lp = __get_load_path__ ("rehash_internal");
+    load_path& lp = __get_load_path__ ();
 
     lp.update ();
 
     // Signal the GUI allowing updating the load path dialog
-    event_manager& evmgr = __get_event_manager__ ("rehash_internal");
+    event_manager& evmgr = __get_event_manager__ ();
     evmgr.update_path_dialog ();
 
     // FIXME: maybe we should rename this variable since it is being
@@ -1213,8 +1213,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (! cfile)
       {
         // reset directory encoding
-        input_system& input_sys
-          = __get_input_system__ ("load_path::read_dir_config");
+        input_system& input_sys = __get_input_system__ ();
 
         std::string enc_val = "delete";
         input_sys.set_dir_encoding (dir, enc_val);
@@ -1257,16 +1256,14 @@ OCTAVE_NAMESPACE_BEGIN
               continue;
 
             // set encoding for this directory in input system
-            input_system& input_sys
-              = __get_input_system__ ("load_path::read_dir_config");
+            input_system& input_sys = __get_input_system__ ();
             input_sys.set_dir_encoding (dir, enc_val);
             return;
           }
       }
 
     // reset directory encoding
-    input_system& input_sys
-      = __get_input_system__ ("load_path::read_dir_config");
+    input_system& input_sys = __get_input_system__ ();
 
     std::string enc_val = "delete";
     input_sys.set_dir_encoding (dir, enc_val);
@@ -1448,8 +1445,7 @@ OCTAVE_NAMESPACE_BEGIN
             // Skip updating if we don't know where we are, but don't
             // treat it as an error.
 
-            interpreter& interp
-              = __get_interpreter__ ("load_path::dir_info::update");
+            interpreter& interp = __get_interpreter__ ();
 
             interp.recover_from_exception ();
           }
@@ -1517,8 +1513,7 @@ OCTAVE_NAMESPACE_BEGIN
             // Skip updating if we don't know where we are but don't treat
             // it as an error.
 
-            interpreter& interp
-              = __get_interpreter__ ("load_path::dir_info::initialize");
+            interpreter& interp = __get_interpreter__ ();
 
             interp.recover_from_exception ();
           }
@@ -1967,8 +1962,7 @@ OCTAVE_NAMESPACE_BEGIN
               {
                 if (file_info_list.empty ())
                   {
-                    symbol_table& symtab
-                      = __get_symbol_table__ ("load_path::package_info::add_to_fcn_map");
+                    symbol_table& symtab = __get_symbol_table__ ();
 
                     if (symtab.is_built_in_function_name (base))
                       {

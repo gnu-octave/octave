@@ -1238,8 +1238,7 @@ octave_base_value::numeric_assign (const std::string& type,
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
 
-  octave::type_info& ti
-    = octave::__get_type_info__ ("octave_base_value::numeric_assign");
+  octave::type_info& ti = octave::__get_type_info__ ();
 
   octave::type_info::assign_op_fcn f
     = ti.lookup_assign_op (octave_value::op_asn_eq, t_lhs, t_rhs);
@@ -1517,8 +1516,7 @@ make_idx_args (const std::string& type,
 bool
 called_from_builtin (void)
 {
-  octave::tree_evaluator& tw
-    = octave::__get_evaluator__ ("called_from_builtin");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
   octave_function *fcn = tw.caller_function ();
 

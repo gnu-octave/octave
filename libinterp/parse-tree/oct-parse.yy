@@ -2996,7 +2996,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (base->is_constant () && limit->is_constant ()
         && (! incr || incr->is_constant ()))
       {
-        interpreter& interp = __get_interpreter__ ("finish_colon_expression");
+        interpreter& interp = __get_interpreter__ ();
 
         try
           {
@@ -4838,8 +4838,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (local_fcns)
       {
-        symbol_table& symtab
-          = __get_symbol_table__ ("base_parser::finish_classdef_file");
+        symbol_table& symtab = __get_symbol_table__ ();
 
         for (tree_statement *elt : *local_fcns)
           {
@@ -5129,8 +5128,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (e->is_constant ())
       {
-        tree_evaluator& tw
-          = __get_evaluator__ ("validate_matrix_for_assignment");
+        tree_evaluator& tw = __get_evaluator__ ();
 
         octave_value ov = e->evaluate (tw);
 
@@ -5193,7 +5191,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (array_list->all_elements_are_constant ())
       {
-        interpreter& interp = __get_interpreter__ ("finish_array_list");
+        interpreter& interp = __get_interpreter__ ();
 
         try
           {
@@ -5957,7 +5955,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (! file.empty ())
       {
-        interpreter& interp = __get_interpreter__ ("get_help_from_file");
+        interpreter& interp = __get_interpreter__ ();
 
         symbol_found = true;
 
@@ -6023,7 +6021,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     int len = file.length ();
 
-    interpreter& interp = __get_interpreter__ ("load_fcn_from_file");
+    interpreter& interp = __get_interpreter__ ();
 
     dynamic_loader& dyn_loader = interp.get_dynamic_loader ();
 
@@ -6190,7 +6188,7 @@ the filename and the extension.
   source_file (const std::string& file_name, const std::string& context,
                bool verbose, bool require_file)
   {
-    interpreter& interp = __get_interpreter__ ("source_file");
+    interpreter& interp = __get_interpreter__ ();
 
     interp.source_file (file_name, context, verbose, require_file);
   }
@@ -6240,7 +6238,7 @@ context of the function that called the present function
   octave_value_list
   feval (const char *name, const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (name, args, nargout);
   }
@@ -6248,7 +6246,7 @@ context of the function that called the present function
   octave_value_list
   feval (const std::string& name, const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (name, args, nargout);
   }
@@ -6256,7 +6254,7 @@ context of the function that called the present function
   octave_value_list
   feval (octave_function *fcn, const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (fcn, args, nargout);
   }
@@ -6264,7 +6262,7 @@ context of the function that called the present function
   octave_value_list
   feval (const octave_value& val, const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (val, args, nargout);
   }
@@ -6272,7 +6270,7 @@ context of the function that called the present function
   octave_value_list
   feval (const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (args, nargout);
   }

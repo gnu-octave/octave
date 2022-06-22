@@ -127,7 +127,7 @@ OCTAVE_NAMESPACE_BEGIN
   int
   pager_buf::sync (void)
   {
-    output_system& output_sys = __get_output_system__ ("pager_buf::sync");
+    output_system& output_sys = __get_output_system__ ();
 
     char *buf = pbase ();
 
@@ -164,7 +164,7 @@ OCTAVE_NAMESPACE_BEGIN
   int
   diary_buf::sync (void)
   {
-    output_system& output_sys = __get_output_system__ ("__stdout__");
+    output_system& output_sys = __get_output_system__ ();
 
     std::ofstream& external_diary_file = output_sys.external_diary_file ();
 
@@ -259,7 +259,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   void flush_stdout (void)
   {
-    output_system& output_sys = __get_output_system__ ("flush_stdout");
+    output_system& output_sys = __get_output_system__ ();
 
     output_sys.flush_stdout ();
   }
@@ -491,14 +491,14 @@ OCTAVE_NAMESPACE_BEGIN
 
   std::ostream& __stdout__ (void)
   {
-    output_system& output_sys = __get_output_system__ ("__stdout__");
+    output_system& output_sys = __get_output_system__ ();
 
     return output_sys.__stdout__ ();
   }
 
   std::ostream& __diary__ (void)
   {
-    output_system& output_sys = __get_output_system__ ("__diary__");
+    output_system& output_sys = __get_output_system__ ();
 
     return output_sys.__diary__ ();
   }

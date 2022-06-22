@@ -100,7 +100,7 @@ namespace octave
       }
     catch (const execution_exception&)
       {
-        interpreter& interp = __get_interpreter__ ("convert_to_valid_int");
+        interpreter& interp = __get_interpreter__ ();
 
         interp.recover_from_exception ();
 
@@ -4104,7 +4104,7 @@ namespace octave
   base_stream::do_gets (octave_idx_type max_len, bool& err,
                         bool strip_newline, const std::string& who)
   {
-    interpreter& interp = __get_interpreter__ ("base_stream::do_gets");
+    interpreter& interp = __get_interpreter__ ();
 
     if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
@@ -4221,7 +4221,7 @@ namespace octave
   off_t
   base_stream::skipl (off_t num, bool& err, const std::string& who)
   {
-    interpreter& interp = __get_interpreter__ ("base_stream::skipl");
+    interpreter& interp = __get_interpreter__ ();
 
     if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
@@ -4716,7 +4716,7 @@ namespace octave
                          octave_idx_type& conversion_count,
                          const std::string& who)
   {
-    interpreter& interp = __get_interpreter__ ("base_stream::do_scanf");
+    interpreter& interp = __get_interpreter__ ();
 
     if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
@@ -5343,7 +5343,7 @@ namespace octave
 
         // FIXME: is this the right thing to do?
 
-        interpreter& interp = __get_interpreter__ ("base_stream::do_oscanf");
+        interpreter& interp = __get_interpreter__ ();
 
         if (interp.interactive () && ! application::forced_interactive ()
             && name () == "stdin")
@@ -5438,7 +5438,7 @@ namespace octave
                             const std::string& who,
                             octave_idx_type& read_count)
   {
-    interpreter& interp = __get_interpreter__ ("base_stream::do_textscan");
+    interpreter& interp = __get_interpreter__ ();
 
     if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",

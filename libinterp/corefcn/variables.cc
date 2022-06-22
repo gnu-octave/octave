@@ -81,8 +81,7 @@ is_valid_function (const std::string& fcn_name,
 
   if (! fcn_name.empty ())
     {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("is_valid_function");
+      octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
       octave_value val = symtab.find_function (fcn_name);
 
@@ -328,7 +327,7 @@ symbol_exist (interpreter& interp, const std::string& name,
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
-  octave::interpreter& interp = octave::__get_interpreter__ ("symbol_exist");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   return octave::symbol_exist (interp, name, type);
 }
@@ -352,8 +351,7 @@ unique_symbol_name (const std::string& basename)
   if (nm.substr (0, 2) == "__")
     nm.append ("__");
 
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("unique_symbol_name");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   while (symbol_exist (interp, nm, "any"))
     nm.insert (pos++, 1, alpha[GET_IDX (len)]);
@@ -562,8 +560,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
 static octave::unwind_protect *
 curr_fcn_unwind_protect_frame (void)
 {
-  octave::tree_evaluator& tw
-    = octave::__get_evaluator__ ("curr_fcn_unwind_protect_frame");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
   return tw.curr_fcn_unwind_protect_frame ();
 }
@@ -1412,8 +1409,7 @@ The original variable value is restored when exiting the function.
 std::string
 maybe_missing_function_hook (const std::string& name)
 {
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("maybe_missing_function_hook");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   // Don't do this if we're handling errors.
   if (Vmissing_function_hook.empty ())

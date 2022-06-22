@@ -727,7 +727,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   string_vector make_name_list (void)
   {
-    help_system& help_sys = __get_help_system__ ("make_name_list");
+    help_system& help_sys = __get_help_system__ ();
 
     return help_sys.make_name_list ();
   }

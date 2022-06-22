@@ -939,7 +939,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 void
 show_octave_dbstack (void)
 {
-  do_dbstack (octave::__get_interpreter__ ("show_octave_dbstack"),
+  do_dbstack (octave::__get_interpreter__ (),
               octave_value_list (), 0, std::cerr);
 }
 

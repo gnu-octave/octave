@@ -113,8 +113,7 @@ run_command_and_return_output (const std::string& cmd_str)
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
   frame.add_delete (cmd);
 
-  child_list& kids
-    = __get_child_list__ ("run_command_and_return_output");
+  child_list& kids = __get_child_list__ ();
   frame.add (&child_list::remove, kids, cmd->pid ());
 
   if (! *cmd)

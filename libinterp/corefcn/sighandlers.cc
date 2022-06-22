@@ -93,8 +93,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (save_vars)
       {
-        load_save_system& load_save_sys
-          = __get_load_save_system__ ("my_friendly_exit");
+        load_save_system& load_save_sys = __get_load_save_system__ ();
 
         load_save_sys.dump_octave_core ();
       }
@@ -191,7 +190,7 @@ OCTAVE_NAMESPACE_BEGIN
     static const bool have_sigusr2
       = octave_get_sig_number ("SIGUSR2", &sigusr2);
 
-    child_list& kids = __get_child_list__ ("respond_to_pending_signals");
+    child_list& kids = __get_child_list__ ();
 
     for (int sig = 0; sig < octave_num_signals (); sig++)
       {

@@ -1691,8 +1691,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
           int tthis = this->type_id ();
           int trhs = rhs.type_id ();
 
-          octave::type_info& ti
-            = octave::__get_type_info__ ("octave_value::assign");
+          octave::type_info& ti = octave::__get_type_info__ ();
 
           f = ti.lookup_assign_op (op, tthis, trhs);
         }
@@ -2495,7 +2494,7 @@ octave_value::non_const_unary_op (unary_op op)
       // Genuine.
       int t = type_id ();
 
-      octave::type_info& ti = octave::__get_type_info__ ("non_const_unary_op");
+      octave::type_info& ti = octave::__get_type_info__ ();
 
       octave::type_info::non_const_unary_op_fcn f
         = ti.lookup_non_const_unary_op (op, t);
@@ -2558,8 +2557,7 @@ octave_value::non_const_unary_op (unary_op op)
       // Only attempt to operate in-place if this variable is unshared.
       if (m_rep->count == 1)
         {
-          octave::type_info& ti
-            = octave::__get_type_info__ ("non_const_unary_op");
+          octave::type_info& ti = octave::__get_type_info__ ();
 
           f = ti.lookup_non_const_unary_op (op, t);
         }
@@ -2843,7 +2841,7 @@ OCTAVE_NAMESPACE_BEGIN
   binary_op (octave_value::binary_op op, const octave_value& v1,
              const octave_value& v2)
   {
-    type_info& ti = __get_type_info__ ("binary_op");
+    type_info& ti = __get_type_info__ ();
 
     return binary_op (ti, op, v1, v2);
   }
@@ -2937,7 +2935,7 @@ OCTAVE_NAMESPACE_BEGIN
   binary_op (octave_value::compound_binary_op op,
              const octave_value& v1, const octave_value& v2)
   {
-    type_info& ti = __get_type_info__ ("binary_op");
+    type_info& ti = __get_type_info__ ();
 
     return binary_op (ti, op, v1, v2);
   }
@@ -3024,7 +3022,7 @@ OCTAVE_NAMESPACE_BEGIN
   cat_op (const octave_value& v1, const octave_value& v2,
           const Array<octave_idx_type>& ra_idx)
   {
-    type_info& ti = __get_type_info__ ("cat_op");
+    type_info& ti = __get_type_info__ ();
 
     return cat_op (ti, v1, v2, ra_idx);
   }
@@ -3489,7 +3487,7 @@ OCTAVE_NAMESPACE_BEGIN
             tmp1(0) = base;
           }
 
-        interpreter& interp = __get_interpreter__ ("colon_op");
+        interpreter& interp = __get_interpreter__ ();
 
         symbol_table& symtab = interp.get_symbol_table ();
 
@@ -3630,7 +3628,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value
   unary_op (octave_value::unary_op op, const octave_value& v)
   {
-    type_info& ti = __get_type_info__ ("unary_op");
+    type_info& ti = __get_type_info__ ();
 
     return unary_op (ti, op, v);
   }

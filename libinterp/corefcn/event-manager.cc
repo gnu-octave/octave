@@ -48,7 +48,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   static int readline_event_hook (void)
   {
-    event_manager& evmgr = __get_event_manager__ ("octave_readline_hook");
+    event_manager& evmgr = __get_event_manager__ ();
 
     evmgr.process_events ();
 

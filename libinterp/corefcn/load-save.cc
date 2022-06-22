@@ -2066,8 +2066,7 @@ OCTAVE_NAMESPACE_END
 void
 dump_octave_core (void)
 {
-  octave::load_save_system& load_save_sys
-    = octave::__get_load_save_system__ ("dump_octave_core");
+  octave::load_save_system& load_save_sys = octave::__get_load_save_system__ ();
 
   load_save_sys.dump_octave_core ();
 }

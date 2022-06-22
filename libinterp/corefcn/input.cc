@@ -178,8 +178,7 @@ OCTAVE_NAMESPACE_BEGIN
         if (pos != std::string::npos)
           base_name = base_name.substr (0, pos);
 
-        interpreter& interp
-          = __get_interpreter__ ("generate_struct_completions");
+        interpreter& interp = __get_interpreter__ ();
 
         if (interp.is_variable (base_name))
           {
@@ -372,8 +371,7 @@ OCTAVE_NAMESPACE_BEGIN
                   }
                 else
                   {
-                    input_system& input_sys
-                      = __get_input_system__ ("generate_completion");
+                    input_system& input_sys = __get_input_system__ ();
 
                     command_editor::set_completion_append_character
                       (input_sys.completion_append_char ());
@@ -391,8 +389,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_quit ();
 
-    input_system& input_sys
-      = __get_input_system__ ("internal_input_event_hook_fcn");
+    input_system& input_sys = __get_input_system__ ();
 
     input_sys.run_input_event_hooks ();
 

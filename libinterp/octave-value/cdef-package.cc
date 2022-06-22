@@ -114,8 +114,7 @@ namespace octave
   {
     std::string symbol_name = get_name () + '.' + nm;
 
-    interpreter& interp
-      = __get_interpreter__ ("cdef_package::cdef_package_rep::find");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.find (symbol_name);
   }
@@ -194,8 +193,7 @@ namespace octave
     //        match the one already referenced by those classes or
     //        sub-packages.
 
-    cdef_manager& cdm
-      = __get_cdef_manager__ ("cdef_package::cdef_package_rep::meta_release");
+    cdef_manager& cdm = __get_cdef_manager__ ();
 
     // Don't delete the "meta" package.
     if (this != cdm.meta ().get_rep ())

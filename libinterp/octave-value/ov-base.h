@@ -56,6 +56,11 @@ namespace octave
   // maybe this function should be declared in a public header file?
 
   extern OCTINTERP_API type_info& __get_type_info__ (void);
+
+  // For now just preserve the old interface and don't mark it as deprecated.  This function
+  // is currently an internal, private function.  Additional changes may be made before
+  // version 8 is finally released.
+  inline type_info& __get_type_info__ (const std::string&) { return __get_type_info__ (); }
 }
 
 class Cell;

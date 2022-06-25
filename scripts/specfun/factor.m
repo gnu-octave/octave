@@ -150,23 +150,31 @@ function [pf, n] = factor (q)
   ## q itself will be divided by those prime factors to become smaller,
   ## unless q was prime to begin with.
 
-  ## Now go all the way to sqrt(q), where q is smaller than the original q in
-  ## most cases.
-  ##
-  ## Note: Do not try to weed out the smallprimes inside largeprimes, whether
-  ## using length(smallprimes) or max(smallprimes) -- it slows it down!
-  largeprimes = primes (sqrt (q));
-  [pf, q] = reducefactors (q, pf, largeprimes);
-
-  ## At this point, all prime factors <= the sqrt of the original q have been
-  ## pulled out in ascending order.
-  ##
-  ## If q = 1, then no further primes are left.
-  ## If q > 1, then q itself must be prime, and it must be the single prime
-  ## factor that was larger than the sqrt of the original q.
-  if (q > 1)
+  if (isprime (q))
+    ## This is an optimization for numbers like 18446744073709551566
+    ## == 2 * 9223372036854775783, where the small factors can be pulled
+    ## out easily and the remaining is prime.  This optimization reduces
+    ## 14.3 s to 1.8 ms (8000X faster) for such cases.
     pf(end+1) = q;
-  endif
+  else
+    ## Now go all the way to sqrt(q), where q is smaller than the original q in
+    ## most cases.
+    ##
+    ## Note: Do not try to weed out the smallprimes inside largeprimes, whether
+    ## using length(smallprimes) or max(smallprimes) -- it slows it down!
+    largeprimes = primes (sqrt (q));
+    [pf, q] = reducefactors (q, pf, largeprimes);
+
+    ## At this point, all prime factors <= the sqrt of the original q have been
+    ## pulled out in ascending order.
+    ##
+    ## If q = 1, then no further primes are left.
+    ## If q > 1, then q itself must be prime, and it must be the single prime
+    ## factor that was larger than the sqrt of the original q.
+    if (q > 1)
+      pf(end+1) = q;
+    endif
+  end
 
   ## At this point, all prime factors have been pulled out of q in ascending
   ## order.  There is no need to sort(pf).

@@ -140,7 +140,7 @@ NUM (({D}+\.?{D}*)|(\.{D}+))
     return FONTSIZE;
   }
 
-"\\color[m_rgb]" {
+"\\color[rgb]" {
     BEGIN (MAYBE_NUM_MODE);
     return COLOR_RGB;
   }

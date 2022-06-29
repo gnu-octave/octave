@@ -1,8 +1,6 @@
 Summary of bugs fixed for version 7.2.0 (tbd):
 ----------------------------------------------------
 
-See: ***add link to release announcement here***
-
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
@@ -31,12 +29,21 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `plot`: Deprecate using numbers to select line colors (bug #62470).
 - Don't shut down interpreter immediately on `execute` (bug #62308).
 - `isprime.m` and `__isprimelarge__.cc`: Minor performance tweaks.
+- `__wglob__`: Handle patterns with UNC paths on Windows (bug #62576).
+- Change wording of error message when using a variable as function (bug #62552).
+- `inputParser.m`: Adapt for interpreter changes regarding number of output arguments (bug #62420).
+- Store token ID, not keyword ID when parsing keywords (bug #62587).
+- `canonicalize_file_name`: Do not translate mapped network drive to UNC path (bug #62576).
+- `inputParser`: Correctly handle cell default values for optional parameters (bug #62639).
+- `factor.m`: Performance tweak to avoid division in certain cases.
+- Fix regression with `\color[rgb]` TeX pattern (bug #62668).
 
 ### GUI
 
 - Fix removing trailing spaces on closing a modified file (bug #62271).
 - Replace use of deprecated `QDesktopWidget` in GUI.
 - Fix display in Variable Editor when `fixed_point_format` is on (bug #62544).
+- Fix file length when saving shorter content in editor (bug #62588).
 
 ### Build system / Tests
 
@@ -44,6 +51,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Don't leak build directories in installed directories (bug #62295).
 - Import `hash-buffer` modules from gnulib (bug #62416).
 - Remove `.dirstamp` files from `test/` directory with `maintainer-clean` target.
+- Add tests for `__FILE__` and `__LINE__` (bug #52587).
 
 ### Documentation
 
@@ -56,6 +64,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `warning_ids.m`: Add new warning ID `"Octave:deprecated-option"`.
 - `primes.m`: Move code examples before math theory.
 - `primes.m`: Mark variables in docstring with `@var{}` macro.
+- Rewrite section on automatic type conversions (bug #62283).
 
 
 Summary of important user-visible changes for version 7 (2022-04-06)

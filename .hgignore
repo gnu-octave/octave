@@ -40,6 +40,7 @@ syntax: regexp
 ## Scripts associated with building Octave
 ^build-aux/config\.(guess|rpath|sub)$
 (^|/)build-aux/check-subst-vars\.sh$
+^build-aux/compile$
 ^build-aux/depcomp$
 ^build-aux/install-sh$
 ^build-aux/ltmain\.sh$
@@ -123,3 +124,4 @@ syntax: regexp
 ## Test associated patterns
 -tst$
 
+^.build/*

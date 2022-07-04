@@ -83,9 +83,11 @@ namespace octave
 
     while ((new_pos = m_pattern.find ("(?", pos)) != std::string::npos)
       {
-        if (m_pattern.at (new_pos + 2) == '<'
-            && !(m_pattern.at (new_pos + 3) == '='
-                 || m_pattern.at (new_pos + 3) == '!'))
+        if (m_pattern.size () > new_pos + 2
+            && m_pattern.at (new_pos + 2) == '<'
+            && ! (m_pattern.size () > new_pos + 3
+                  && (m_pattern.at (new_pos + 3) == '='
+                      || m_pattern.at (new_pos + 3) == '!')))
           {
             // The syntax of named tokens in pcre is "(?P<name>...)" while
             // we need a syntax "(?<name>...)", so fix that here.  Also an
@@ -137,7 +139,8 @@ namespace octave
 
             pos = tmp_pos;
           }
-        else if (m_pattern.at (new_pos + 2) == '<')
+        else if (m_pattern.size () > new_pos + 2
+                 && m_pattern.at (new_pos + 2) == '<')
           {
             // Find lookbehind operators of arbitrary length (ie like
             // "(?<=[a-z]*)") and replace with a maximum length operator

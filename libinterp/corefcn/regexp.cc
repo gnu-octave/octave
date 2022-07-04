@@ -912,6 +912,7 @@ size) with successive @code{regexp} searches.
 
 ## segfault test
 %!assert (regexp ("abcde", "."), [1,2,3,4,5])
+%!assert <*62704> (regexpi('(', '\(?'), 1)
 ## Infinite loop test
 %!assert (isempty (regexp ("abcde", "")))
 

@@ -83,11 +83,15 @@ namespace octave
 
     while ((new_pos = m_pattern.find ("(?", pos)) != std::string::npos)
       {
+        std::size_t tmp_pos;
         if (m_pattern.size () > new_pos + 2
             && m_pattern.at (new_pos + 2) == '<'
             && ! (m_pattern.size () > new_pos + 3
                   && (m_pattern.at (new_pos + 3) == '='
-                      || m_pattern.at (new_pos + 3) == '!')))
+                      || m_pattern.at (new_pos + 3) == '!'))
+            && (tmp_pos = m_pattern.find_first_of ('>', new_pos))
+               != std::string::npos
+            && m_pattern.find_first_of (')', tmp_pos) != std::string::npos)
           {
             // The syntax of named tokens in pcre is "(?P<name>...)" while
             // we need a syntax "(?<name>...)", so fix that here.  Also an
@@ -97,12 +101,6 @@ namespace octave
             // named token name on both sides of the alternative.  Also fix
             // that here by replacing name tokens by dummy names, and dealing
             // with the dummy names later.
-
-            std::size_t tmp_pos = m_pattern.find_first_of ('>', new_pos);
-
-            if (tmp_pos == std::string::npos)
-              (*current_liboctave_error_handler)
-                ("regexp: syntax error in pattern");
 
             std::string tmp_name
               = m_pattern.substr (new_pos+3, tmp_pos-new_pos-3);

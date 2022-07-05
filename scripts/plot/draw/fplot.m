@@ -101,6 +101,8 @@ function [X, Y] = fplot (varargin)
 
   fcn = varargin{1};
   if (isa (fcn, "inline"))
+    ## Don't warn about intentional use of inline functions (Bug #62682)
+    warning ("off", "Octave:legacy-function", "local");
     fcn = vectorize (inline (fcn));
     nam = formula (fcn);
   elseif (is_function_handle (fcn))
@@ -108,6 +110,8 @@ function [X, Y] = fplot (varargin)
   elseif (all (isalnum (fcn)))
     nam = fcn;
   elseif (ischar (fcn))
+    ## Don't warn about intentional use of inline functions (Bug #62682)
+    warning ("off", "Octave:legacy-function", "local");
     fcn = vectorize (inline (fcn));
     nam = formula (fcn);
   else

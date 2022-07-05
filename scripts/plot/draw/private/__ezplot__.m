@@ -76,6 +76,8 @@ function [h, needusage] = __ezplot__ (pltfcn, varargin)
 
   parametric = false;
   fcn = varargin{1};
+  ## Don't warn about intentional use of inline functions (Bug #62682)
+  warning ("off", "Octave:legacy-function", "local");
   if (ischar (fcn))
     if (exist (fcn, "file") || exist (fcn, "builtin"))
       fcn = str2func (fcn);            # convert to function handle

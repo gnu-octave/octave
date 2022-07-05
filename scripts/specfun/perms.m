@@ -32,7 +32,7 @@
 ## @code{factorial (@var{n}) * @var{n}}, where @var{n} is the length of
 ## @var{v}.  Any repeated elements are included in the output.
 ##
-## If the optional argument @qcode{"unique"} is given, then only unique
+## If the optional argument @qcode{"unique"} is given then only unique
 ## permutations are returned, using less memory and generally taking less time
 ## than calling @code{unique (perms (@var{v}), "rows")}.
 ##
@@ -57,18 +57,19 @@
 ## @group
 ## perms ([1, 1, 2, 2], "unique")
 ## @result{}
-##   2   2   1   1
-##   2   1   2   1
-##   2   1   1   2
-##   1   2   2   1
-##   1   2   1   2
 ##   1   1   2   2
+##   1   2   1   2
+##   1   2   2   1
+##   2   1   1   2
+##   2   1   2   1
+##   2   2   1   1
 ## @end group
 ## @end example
 ##
 ## Programming Note: If the @qcode{"unique"} option is not used, the length of
 ## @var{v} should be no more than 10-12 to limit memory consumption.  Even with
-## @qcode{"unique"}, there should be no more than 10-12 unique elements in @var{v}.
+## @qcode{"unique"}, there should be no more than 10-12 unique elements in
+## @var{v}.
 ## @seealso{permute, randperm, nchoosek}
 ## @end deftypefn
 
@@ -82,13 +83,12 @@ function P = perms (v, opt)
     print_usage ();
   endif
 
-  unique_v = 0;
+  unique_v = false;
   if (nargin == 2)
     if (! strcmpi (opt, "unique"))
-      error ('perms: option must be the string "unique".');
-    else
-      unique_v = 1;
+      error ('perms: option must be the string "unique"');
     endif
+    unique_v = true;
   endif
 
   v = v(:).';  # convert to row vector
@@ -113,68 +113,71 @@ function P = perms (v, opt)
     if (unique_v)
       P = unique (P, "rows");
     endif
-  else
-    if (! unique_v)
-      v = v(end:-1:1);
-      n-= 1;
 
-      idx = zeros (factorial (n), n);
-      idx(1:6, n-2:n) = [1, 2, 3;1, 3, 2;2, 1, 3;2, 3, 1;3, 1, 2;3, 2, 1]+(n-3);
-      f = 2;    # jump-start for efficiency with medium n
-      for j = 3:n-1
-        b = 1:n;
-        f *= j;
-        perm = idx(1:f, n-(j-1):n);
-        idx(1:(j+1)*f, n-j) = (n-j:n)(ones (f, 1),:)(:);
-        for i=0:j
-          b(i+n-j) -= 1;
-          idx((1:f)+i*f, n-(j-1):n) = b(perm);
-        endfor
+  elseif (! unique_v)
+    ## FIXME: Brief explanation of the algorithm being used would be useful.
+    v = v(end:-1:1);
+    n-= 1;
+
+    idx = zeros (factorial (n), n);
+    idx(1:6, n-2:n) = [1, 2, 3;1, 3, 2;2, 1, 3;2, 3, 1;3, 1, 2;3, 2, 1]+(n-3);
+    f = 2;    # jump-start for efficiency with medium n
+    for j = 3:n-1
+      b = 1:n;
+      f *= j;
+      perm = idx(1:f, n-(j-1):n);
+      idx(1:(j+1)*f, n-j) = (n-j:n)(ones (f, 1),:)(:);
+      for i = 0:j
+        b(i+n-j) -= 1;
+        idx((1:f)+i*f, n-(j-1):n) = b(perm);
       endfor
+    endfor
 
-      n += 1;
-      f *= n-1;
-      P = v(1)(ones (factorial (n), n));
-      P(:,1) = v(ones (f, 1),:)(:);
+    n += 1;
+    f *= n-1;
+    P = v(1)(ones (factorial (n), n));
+    P(:,1) = v(ones (f, 1),:)(:);
 
-      for i = 1:n
-        b = v([1:i-1 i+1:n]);
-        P((1:f)+(i-1)*f, 2:end) = b(idx);
-      endfor
-    else  # user wants unique permutations
-      [v, i, j] = unique(v);
-      h = accumarray (j, 1)';
-      idx = m_perms (h);
-      P = v (sortrows (idx'));
-    endif
+    for i = 1:n
+      b = v([1:i-1 i+1:n]);
+      P((1:f)+(i-1)*f, 2:end) = b(idx);
+    endfor
+
+  else  # unique permutations
+    [v, ~, j] = unique (v);
+    h = accumarray (j, 1)';
+    idx = m_perms (h);
+    P = v(sortrows (idx'));
   endif
 
 endfunction
 
 function out_perms = m_perms (multis)
+  ## FIXME: Brief explanation of the algorithm being used would be useful.
 
   l = numel (multis);
   if (l == 1)
     out_perms = uint8 (ones (multis, 1));
   else
     p1 = m_perms (multis (1:floor (l/2)));
-    p2 = m_perms (multis (floor(l/2)+1:l)) + max (p1 (:, 1));
+    p2 = m_perms (multis (floor (l/2+1):l)) + max (p1(:, 1));
     l1 = rows (p1);
     l2 = rows (p2);
     cp1 = columns (p1);
     cp2 = columns (p2);
 
     p = nchoosek (1:l1+l2, l1);
-    rp = rows(p);
+    rp = rows (p);
 
     ii = false (l1+l2, rp);
     ii(p + (0:rp - 1)' * (l1 + l2)) = true;
     out_perms = zeros (l1 + l2, cp1 * cp2 * rp, "uint8");
-    out_perms (repmat ( ii, cp1 * cp2, 1)(:)) = repmat (p1, cp2, rp)(:);
-    out_perms (repmat (!ii, cp1 * cp2, 1)(:)) = repmat (p2, 1, cp1 * rp)(:);
+    out_perms(repmat ( ii, cp1 * cp2, 1)(:)) = repmat (p1, cp2, rp)(:);
+    out_perms(repmat (!ii, cp1 * cp2, 1)(:)) = repmat (p2, 1, cp1 * rp)(:);
   endif
 
 endfunction
+
 
 %!assert (rows (perms (1:6)), factorial (6))
 %!assert (perms (pi), pi)
@@ -190,8 +193,8 @@ endfunction
 %!assert (size (perms ([1 1 1 1 2 2 2 3 3], "unique")), [1260 9])
 %!assert (size (perms (int8([1 1 1 1 1 2 2 2 2 3 3 3]), "unique")), [27720 12])
 
-## Should work for any array type, such as cells and structs, and not
-## only for numeric data.
+## Should work for any array type, such as cells and structs,
+## and not only for numeric data.
 
 %!assert <*52431> (perms ({1}), {1})
 %!assert <*52431> (perms ({0.1, "foo"}), {"foo", 0.1; 0.1, "foo"})
@@ -230,6 +233,6 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> perms ()
-%!error <option must be the string> perms (1:5, "foobar")
-%!error <option must be the string> perms (1:5, {"foo"})
+%!error <option must be the string "unique"> perms (1:5, "foobar")
+%!error <option must be the string "unique"> perms (1:5, {"foo"})
 

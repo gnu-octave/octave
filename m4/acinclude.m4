@@ -689,7 +689,7 @@ dnl FIXME: remove this test when we drop support for Qt older than 5.3.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QPRINTER_SETPAGESIZE], [
   AC_CACHE_CHECK([for QPrinter::setPageSize in <QPrinter>],
-    [octave_cv_func_qprinter_setpagesizes],
+    [octave_cv_func_qprinter_setpagesize],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     ac_octave_save_CXXFLAGS="$CXXFLAGS"

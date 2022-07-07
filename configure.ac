@@ -403,16 +403,16 @@ gl_EARLY
 
 GXX_VERSION=
 if test "$GXX" = yes; then
-  AC_MSG_CHECKING([C++ compiler version number])
-  gxx_version=`$CXX -v 2>&1 | $GREP "^.*g.. version" | \
-    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+  AC_CACHE_CHECK([g++ compiler version number],
+    [octave_cv_gxx_version],
+    [octave_cv_gxx_version=[`$CXX -v 2>&1 | $GREP "^.*g.. version" | $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`]
+  ])
 
-  AX_COMPARE_VERSION([$gxx_version], [lt], [4.1],
-    [warn_gxx_version="g++ version $gxx_version is likely to cause problems"
+  AX_COMPARE_VERSION([$octave_cv_gxx_version], [lt], [4.1],
+    [warn_gxx_version="g++ version $octave_cv_gxx_version is likely to cause problems"
      OCTAVE_CONFIGURE_WARNING([warn_gxx_version])])
 
-  GXX_VERSION=$gxx_version
-  AC_MSG_RESULT([$GXX_VERSION])
+  GXX_VERSION=$octave_cv_gxx_version
 fi
 AC_SUBST(GXX_VERSION)
 
@@ -431,16 +431,16 @@ dnl It might be different from the g++ version number.
 
 GCC_VERSION=
 if test "$GCC" = yes; then
-  AC_MSG_CHECKING([C compiler version number])
-  gcc_version=`$CC -v 2>&1 | $GREP "^.*gcc version" | \
-    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+  AC_CACHE_CHECK([gcc compiler version number],
+    [octave_cv_gcc_version],
+    [octave_cv_gcc_version=[`$CC -v 2>&1 | $GREP "^.*gcc version" | $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`]
+  ])
 
-  AX_COMPARE_VERSION([$gcc_version], [lt], [3],
-    [warn_gcc_version="gcc version $gcc_version is likely to cause problems"
+  AX_COMPARE_VERSION([$octave_cv_gcc_version], [lt], [3],
+    [warn_gcc_version="gcc version $octave_cv_gcc_version is likely to cause problems"
      OCTAVE_CONFIGURE_WARNING([warn_gcc_version])])
 
-  GCC_VERSION=$gcc_version
-  AC_MSG_RESULT([$GCC_VERSION])
+  GCC_VERSION=$octave_cv_gcc_version
 fi
 AC_SUBST(GCC_VERSION)
 
@@ -2443,11 +2443,14 @@ do
   fi
 
   ## Check Java version is recent enough.
-  AC_MSG_CHECKING([for Java version])
-  java_version=[`"$JAVA" -version 2>&1 | $SED -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)".*/\1/p'`]
-  AC_MSG_RESULT([$java_version])
-  java_major=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
-  java_minor=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
+  AC_CACHE_CHECK([for Java version],
+    [octave_cv_java_version],
+    [octave_cv_java_version=[`"$JAVA" -version 2>&1 | $SED -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)".*/\1/p'`]
+  ])
+
+  java_major=[`echo $octave_cv_java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
+  java_minor=[`echo $octave_cv_java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
+
   if test $java_major -gt 1 || (test $java_major -eq 1 && test $java_minor -ge 5); then
     :  # Version is OK.  Do nothing.
   else

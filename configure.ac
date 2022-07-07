@@ -781,7 +781,7 @@ if test $ax_blas_ok = no || test $ax_lapack_ok = no; then
   AC_MSG_ERROR([BLAS and LAPACK libraries are required])
 fi
 
-case $ax_blas_integer_size in
+case $ax_cv_blas_integer_size in
   4)
     HAVE_64_BIT_BLAS=no
   ;;
@@ -794,8 +794,8 @@ case $ax_blas_integer_size in
 esac
 
 OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
-if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
-  if test $ax_blas_integer_size -eq 8; then
+if test $octave_cv_sizeof_fortran_integer -ne $ax_cv_blas_integer_size; then
+  if test $ax_cv_blas_integer_size -eq 8; then
     case $F77 in
       *gfortran*)
         case $F77_INTEGER_8_FLAG in
@@ -825,8 +825,8 @@ if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
   fi
   ## We intentionally don't attempt to fix things up if the default
   ## Fortran integer size is 8 but BLAS appears to use 4-byte integers.
-  if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
-    AC_MSG_ERROR([your Fortran compiler must have an option for setting the default integer size to be the same size as your BLAS library uses ($ax_blas_integer_size bytes).  See the file INSTALL for more information.])
+  if test $octave_cv_sizeof_fortran_integer -ne $ax_cv_blas_integer_size; then
+    AC_MSG_ERROR([your Fortran compiler must have an option for setting the default integer size to be the same size as your BLAS library uses ($ax_cv_blas_integer_size bytes).  See the file INSTALL for more information.])
   fi
 fi
 AC_SUBST(F77_INTEGER_8_FLAG)

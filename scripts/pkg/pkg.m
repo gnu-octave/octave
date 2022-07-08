@@ -600,6 +600,15 @@ function [local_packages, global_packages] = pkg (varargin)
             endfor
           endif
         endif
+
+        ## make sure the PREFIX and the ARCHPREFIX directories are created
+        if (! isfolder (prefix))
+          mkdir (prefix);
+        endif
+        if (! isfolder (archprefix))
+          mkdir (archprefix);
+        endif
+
         install (files, deps, prefix, archprefix, verbose, local_list,
                  global_list, global_install);
 

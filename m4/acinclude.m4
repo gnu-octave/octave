@@ -3500,23 +3500,26 @@ dnl Check for options that can be passed to tar to make archives reproducible.
 dnl
 AC_DEFUN([OCTAVE_PROG_TAR_REPRODUCIBLE], [
   AC_MSG_CHECKING([for options to make reproducible archives with GNU tar])
-dnl This uses Automake's logic for finding GNU tar under various names
-  for octave_tar in tar gnutar gtar :; do
-    $octave_tar --version >/dev/null 2>&1 && break
-  done
-dnl If we have a valid GNU tar program, see if it supports sets of options
-  if test x"$octave_tar" != x:; then
-    octave_tar_flags=
-    echo > conftest.txt
-    for octave_tar_flag in --owner=0 --group=0 --numeric-owner --sort=name; do
-      $octave_tar -cf conftest.tar $octave_tar_flags $octave_tar_flag conftest.txt 2>/dev/null
-      if test $? -eq 0; then
-        octave_tar_flags="${octave_tar_flags:+$octave_tar_flags }$octave_tar_flag"
-      fi
+  AC_CACHE_VAL([octave_cv_tar_flags],
+    [octave_cv_tar_flags=
+    dnl This uses Automake's logic for finding GNU tar under various names
+    for octave_tar in tar gnutar gtar :; do
+      $octave_tar --version >/dev/null 2>&1 && break
     done
-    rm -f conftest.tar conftest.txt
-    REPRODUCIBLE_TAR_FLAGS="$octave_tar_flags"
-  fi
+    dnl If we have a valid GNU tar program, see if it supports sets of options
+    if test x"$octave_tar" != x:; then
+      echo > conftest.txt
+      for octave_tar_flag in --owner=0 --group=0 --numeric-owner --sort=name; do
+        $octave_tar -cf conftest.tar $octave_cv_tar_flags $octave_tar_flag conftest.txt 2>/dev/null
+        if test $? -eq 0; then
+          octave_cv_tar_flags="${octave_cv_tar_flags:+$octave_cv_tar_flags }$octave_tar_flag"
+        fi
+      done
+      rm -f conftest.tar conftest.txt
+    fi
+  ])
+
+  REPRODUCIBLE_TAR_FLAGS="$octave_cv_tar_flags"
   AC_SUBST(REPRODUCIBLE_TAR_FLAGS)
   AC_MSG_RESULT([$REPRODUCIBLE_TAR_FLAGS])
 ])

@@ -886,7 +886,7 @@ puts_internal (interpreter& interp, const std::string& who,
 
   stream os = streams.lookup (args(0), who);
 
-  return ovl (os.puts (args(1), who));
+  return ovl (- (os.puts (args(1), who) < 0));
 }
 
 DEFMETHOD (fputs, interp, args, ,
@@ -898,7 +898,8 @@ The string is written to the file with no additional formatting.  Use
 @code{fdisp} instead to automatically append a newline character appropriate
 for the local machine.
 
-Return a non-negative number on success or EOF on error.
+The optional output @var{status} is 0 for success, or -1 if an error was
+encountered.
 @seealso{fdisp, fprintf, fwrite, fopen}
 @end deftypefn */)
 {
@@ -943,7 +944,8 @@ Write a string to the standard output with no formatting.
 The string is written verbatim to the standard output.  Use @code{disp} to
 automatically append a newline character appropriate for the local machine.
 
-Return a non-negative number on success and EOF on error.
+The optional output @var{status} is 0 for success, or -1 if an error was
+encountered.
 @seealso{fputs, disp}
 @end deftypefn */)
 {

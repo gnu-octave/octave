@@ -1353,7 +1353,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
       [octave_cv_lib_hdf5_dll=no],
       [save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DWIN32 -D_HDF5USEDLL_"
-      save_LIBS="$LIBS"
+      ac_octave_save_LIBS="$LIBS"
       LIBS="$HDF5_LIBS $LIBS"
       AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <hdf5.h>
@@ -1364,7 +1364,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
         octave_cv_lib_hdf5_dll=yes,
         octave_cv_lib_hdf5_dll=no)
       CFLAGS="$save_CFLAGS"
-      LIBS="$save_LIBS"
+      LIBS="$ac_octave_save_LIBS"
     ])
   ])
   if test $octave_cv_lib_hdf5_dll = yes; then
@@ -1432,7 +1432,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
       ])
       case $canonical_host_type in
         *-*-mingw32* | *-*-msdosmsvc)
-          save_LIBS="$LIBS"
+          ac_octave_save_LIBS="$LIBS"
           LIBS="$LIBS -lopengl32"
           AC_MSG_CHECKING([for glEnable in -lopengl32])
           AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -1448,7 +1448,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
             glEnable(GL_SMOOTH);
             ]])], [OPENGL_LIBS="-lopengl32 -lglu32"])
 
-          LIBS="$save_LIBS"
+          LIBS="$ac_octave_save_LIBS"
           if test -n "$OPENGL_LIBS"; then
             AC_MSG_RESULT([yes])
           else
@@ -1759,7 +1759,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       [save_CPPFLAGS="$CPPFLAGS"
       save_CXXFLAGS="$CXXFLAGS"
       save_LDFLAGS="$LDFLAGS"
-      save_LIBS="$LIBS"
+      ac_octave_save_LIBS="$LIBS"
       CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
       CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
       LDFLAGS="$QT_LDFLAGS $LDFLAGS"
@@ -1782,7 +1782,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       CPPFLAGS="$save_CPPFLAGS"
       CXXFLAGS="$save_CXXFLAGS"
       LDFLAGS="$save_LDFLAGS"
-      LIBS="$save_LIBS"
+      LIBS="$ac_octave_save_LIBS"
       AC_LANG_POP([C++])
     ])
 

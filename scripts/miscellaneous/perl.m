@@ -36,27 +36,32 @@
 ## @seealso{system, python}
 ## @end deftypefn
 
-function [output, status] = perl (scriptfile = "-e ''", varargin)
+function [output, status] = perl (scriptfile, varargin)
 
-  ## VARARGIN is initialized to {}(1x0) if no additional arguments are
-  ## supplied, so there is no need to check for it, or provide an
-  ## initial value in the argument list of the function definition.
-
-  if (ischar (scriptfile)
-      && (   (nargin == 1 && ! isempty (scriptfile))
-          || (nargin != 1 && iscellstr (varargin))))
-    if (! strcmp (scriptfile(1:2), "-e"))
-      ## Attempt to find file in loadpath.  No effect for absolute filenames.
-      scriptfile = file_in_loadpath (scriptfile);
-    endif
-
-    [status, output] = system (["perl " scriptfile ...
-                                sprintf(" %s", varargin{:})]);
-  else
-    error ("perl: invalid arguments");
+  if (nargin < 1)
+    print_usage ();
   endif
+
+  if (! ischar (scriptfile) || isempty (scriptfile))
+    error ("perl: SCRIPTFILE must be a non-empty string");
+  endif
+  if (nargin > 1 && ! iscellstr (varargin))
+    error ("perl: ARGUMENTS must be strings");
+  endif
+
+  if (numel (scriptfile) < 2 || ! strcmp (scriptfile(1:2), "-e"))
+    ## Attempt to find file in loadpath.  No effect for absolute filenames.
+    scriptfile = file_in_loadpath (scriptfile);
+  endif
+
+  [status, output] = system (["perl " scriptfile ...
+                              sprintf(" %s", varargin{:})]);
 
 endfunction
 
 
-%!error <invalid arguments> perl (123)
+## Test input validation
+%!error <Invalid call> perl ()
+%!error <SCRIPTFILE must be a non-empty string> perl (123)
+%!error <SCRIPTFILE must be a non-empty string> perl ("")
+%!error <ARGUMENTS must be strings> perl ("perlfile", 123)

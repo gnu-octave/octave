@@ -36,23 +36,28 @@
 ## @seealso{system, perl}
 ## @end deftypefn
 
-function [output, status] = python (scriptfile = "-c ''", varargin)
+function [output, status] = python (scriptfile, varargin)
 
   persistent pyexec = get_python_executable ();
 
-  if (ischar (scriptfile)
-      && (   (nargin == 1 && ! isempty (scriptfile))
-          || (nargin != 1 && iscellstr (varargin))))
-    if (! strcmp (scriptfile(1:2), "-c"))
+  if (nargin < 1)
+    print_usage ();
+  endif
+
+  if (! ischar (scriptfile) || isempty (scriptfile))
+    error ("python: SCRIPTFILE must be a non-empty string");
+  endif
+  if (nargin > 1 && ! iscellstr (varargin))
+    error ("python: ARGUMENTS must be strings");
+  endif
+
+  if (numel (scriptfile) < 2 || ! strcmp (scriptfile(1:2), "-c"))
       ## Attempt to find file in loadpath.  No effect for absolute filenames.
       scriptfile = file_in_loadpath (scriptfile);
     endif
 
-    [status, output] = system ([pyexec " " scriptfile, ...
-                                sprintf(" %s", varargin{:})]);
-  else
-    error ("python: invalid arguments");
-  endif
+  [status, output] = system ([pyexec " " scriptfile, ...
+                              sprintf(" %s", varargin{:})]);
 
 endfunction
 
@@ -72,4 +77,8 @@ function pyexec = get_python_executable ()
 endfunction
 
 
-%!error <invalid arguments> python (123)
+## Test input validation
+%!error <Invalid call> python ()
+%!error <SCRIPTFILE must be a non-empty string> python (123)
+%!error <SCRIPTFILE must be a non-empty string> python ("")
+%!error <ARGUMENTS must be strings> python ("pythonfile", 123)

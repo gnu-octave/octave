@@ -3409,7 +3409,7 @@ dnl
 dnl Find Python program.
 dnl
 AC_DEFUN([OCTAVE_PROG_PYTHON], [
-  AC_CHECK_PROG(PYTHON, python, python, [])
+  AC_CHECK_PROGS(PYTHON, [python3 python], python, [])
   AC_SUBST(PYTHON)
 ])
 dnl

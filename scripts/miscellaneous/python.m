@@ -38,6 +38,8 @@
 
 function [output, status] = python (scriptfile = "-c ''", varargin)
 
+  persistent pyexec = get_python_executable ();
+
   if (ischar (scriptfile)
       && (   (nargin == 1 && ! isempty (scriptfile))
           || (nargin != 1 && iscellstr (varargin))))
@@ -46,10 +48,25 @@ function [output, status] = python (scriptfile = "-c ''", varargin)
       scriptfile = file_in_loadpath (scriptfile);
     endif
 
-    [status, output] = system (["python ", scriptfile, ...
+    [status, output] = system ([pyexec " " scriptfile, ...
                                 sprintf(" %s", varargin{:})]);
   else
     error ("python: invalid arguments");
+  endif
+
+endfunction
+
+function pyexec = get_python_executable () 
+
+  pyexec = getenv ("PYTHON");
+  if (isempty (pyexec))
+    ## PEP394 says Python 3 installs should all provide this command
+    pyexec = "python3";
+
+    if (ispc () && (! isunix ()))
+      ## 2020-03: Python.org installer/Anaconda do not provide python3
+      pyexec = "python";
+    endif
   endif
 
 endfunction

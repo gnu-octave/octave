@@ -1,5 +1,29 @@
+dnl --------------------------------------------------------------------
 dnl
-dnl Check for BLAS libary and if valid determine integer size in library
+dnl Copyright (C) 2022 The Octave Project Developers
+dnl
+dnl See the file COPYRIGHT.md in the top-level directory of this
+dnl distribution or <https://octave.org/copyright/>.
+dnl
+dnl This file is part of Octave.
+dnl
+dnl Octave is free software: you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation, either version 3 of the License, or
+dnl (at your option) any later version.
+dnl
+dnl Octave is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with Octave; see the file COPYING.  If not, see
+dnl <https://www.gnu.org/licenses/>.
+dnl
+dnl --------------------------------------------------------------------
+dnl
+dnl Check for BLAS library and, if valid, determine integer size of library
 dnl
 AC_DEFUN([OCTAVE_BLAS], [
   AC_PREREQ(2.50)
@@ -12,8 +36,8 @@ AC_DEFUN([OCTAVE_BLAS], [
     ax_cv_blas_integer_size=4
     AC_MSG_CHECKING([BLAS can be called from Fortran])
     AC_MSG_RESULT([yes assumed for cross compilation])
-  elif test x"$ax_blas_ok" = xyes; then
-    save_octave_blas_f77_func_LIBS="$LIBS"
+  elif test $ax_blas_ok = yes; then
+    ac_octave_save_LIBS="$LIBS"
     LIBS="$BLAS_LIBS $LIBS"
     AC_LANG_PUSH(Fortran 77)
     ## Check BLAS library integer size.
@@ -74,7 +98,7 @@ c 8-byte integers.
       ])
 
   AC_LANG_POP(Fortran 77)
-  LIBS="$save_octave_blas_f77_func_LIBS"
+  LIBS="$ac_octave_save_LIBS"
 fi
 
 ])

@@ -370,17 +370,17 @@ public:
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool flag)
   {
-    return save_hdf5_internal (loc_id, hdf5_save_type, name, flag);
+    return save_hdf5_internal (loc_id, s_hdf5_save_type, name, flag);
   }
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
   {
-    return load_hdf5_internal (loc_id, hdf5_save_type, name);
+    return load_hdf5_internal (loc_id, s_hdf5_save_type, name);
   }
 
 private:
 
-  static octave_hdf5_id hdf5_save_type;
+  static octave_hdf5_id s_hdf5_save_type;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -683,17 +683,17 @@ public:
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool flag)
   {
-    return save_hdf5_internal (loc_id, hdf5_save_type, name, flag);
+    return save_hdf5_internal (loc_id, s_hdf5_save_type, name, flag);
   }
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
   {
-    return load_hdf5_internal (loc_id, hdf5_save_type, name);
+    return load_hdf5_internal (loc_id, s_hdf5_save_type, name);
   }
 
 private:
 
-  static octave_hdf5_id hdf5_save_type;
+  static octave_hdf5_id s_hdf5_save_type;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

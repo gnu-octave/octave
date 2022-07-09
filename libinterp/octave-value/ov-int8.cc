@@ -56,8 +56,8 @@
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
-octave_hdf5_id octave_int8_matrix::hdf5_save_type = HDF5_SAVE_TYPE;
-octave_hdf5_id octave_int8_scalar::hdf5_save_type = HDF5_SAVE_TYPE;
+octave_hdf5_id octave_int8_matrix::s_hdf5_save_type = HDF5_SAVE_TYPE;
+octave_hdf5_id octave_int8_scalar::s_hdf5_save_type = HDF5_SAVE_TYPE;
 
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.

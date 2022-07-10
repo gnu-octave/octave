@@ -31,11 +31,16 @@ AC_DEFUN([OCTAVE_BLAS], [
   AX_BLAS
 
   if test "$cross_compiling" = yes ; then
-    dnl Assume generic 4-byte BLAS library exists when cross compiling
+    dnl Assume BLAS library exists when cross compiling
     ax_blas_ok=yes
-    ax_cv_blas_integer_size=4
     AC_MSG_CHECKING([BLAS can be called from Fortran])
     AC_MSG_RESULT([yes assumed for cross compilation])
+    dnl Assume generic 4-byte BLAS library if not specified
+    AC_MSG_CHECKING([BLAS library integer size])
+    if test -z "$ax_cv_blas_integer_size" ; then
+      ax_cv_blas_integer_size=4
+    fi
+    AC_MSG_RESULT([$ax_cv_blas_integer_size assumed for cross compilation])
   elif test $ax_blas_ok = yes; then
     ac_octave_save_LIBS="$LIBS"
     LIBS="$BLAS_LIBS $LIBS"

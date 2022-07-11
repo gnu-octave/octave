@@ -83,28 +83,28 @@ public:
 public:
 
   int8NDArray
-  int8_array_value (void) const { return int8NDArray (matrix); }
+  int8_array_value (void) const { return int8NDArray (m_matrix); }
 
   int16NDArray
-  int16_array_value (void) const { return int16NDArray (matrix); }
+  int16_array_value (void) const { return int16NDArray (m_matrix); }
 
   int32NDArray
-  int32_array_value (void) const { return int32NDArray (matrix); }
+  int32_array_value (void) const { return int32NDArray (m_matrix); }
 
   int64NDArray
-  int64_array_value (void) const { return int64NDArray (matrix); }
+  int64_array_value (void) const { return int64NDArray (m_matrix); }
 
   uint8NDArray
-  uint8_array_value (void) const { return uint8NDArray (matrix); }
+  uint8_array_value (void) const { return uint8NDArray (m_matrix); }
 
   uint16NDArray
-  uint16_array_value (void) const { return uint16NDArray (matrix); }
+  uint16_array_value (void) const { return uint16NDArray (m_matrix); }
 
   uint32NDArray
-  uint32_array_value (void) const { return uint32NDArray (matrix); }
+  uint32_array_value (void) const { return uint32NDArray (m_matrix); }
 
   uint64NDArray
-  uint64_array_value (void) const { return uint64NDArray (matrix); }
+  uint64_array_value (void) const { return uint64NDArray (m_matrix); }
 
   double
   double_value (bool = false) const
@@ -117,7 +117,7 @@ public:
     warn_implicit_conversion ("Octave:array-to-scalar",
                               type_name (), "real scalar");
 
-    retval = matrix(0).double_value ();
+    retval = m_matrix(0).double_value ();
 
     return retval;
   }
@@ -133,7 +133,7 @@ public:
     warn_implicit_conversion ("Octave:array-to-scalar",
                               type_name (), "real scalar");
 
-    retval = matrix(0).float_value ();
+    retval = m_matrix(0).float_value ();
 
     return retval;
   }
@@ -152,9 +152,9 @@ public:
 
     retval = Matrix (dv(0), dv(1));
     double *vec = retval.fortran_vec ();
-    octave_idx_type nel = matrix.numel ();
+    octave_idx_type nel = m_matrix.numel ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = matrix(i).double_value ();
+      vec[i] = m_matrix(i).double_value ();
 
     return retval;
   }
@@ -169,9 +169,9 @@ public:
 
     retval = FloatMatrix (dv(0), dv(1));
     float *vec = retval.fortran_vec ();
-    octave_idx_type nel = matrix.numel ();
+    octave_idx_type nel = m_matrix.numel ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = matrix(i).float_value ();
+      vec[i] = m_matrix(i).float_value ();
 
     return retval;
   }
@@ -186,9 +186,9 @@ public:
 
     retval = ComplexMatrix (dv(0), dv(1));
     Complex *vec = retval.fortran_vec ();
-    octave_idx_type nel = matrix.numel ();
+    octave_idx_type nel = m_matrix.numel ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = Complex (matrix(i).double_value ());
+      vec[i] = Complex (m_matrix(i).double_value ());
 
     return retval;
   }
@@ -203,9 +203,9 @@ public:
 
     retval = FloatComplexMatrix (dv(0), dv(1));
     FloatComplex *vec = retval.fortran_vec ();
-    octave_idx_type nel = matrix.numel ();
+    octave_idx_type nel = m_matrix.numel ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = FloatComplex (matrix(i).float_value ());
+      vec[i] = FloatComplex (m_matrix(i).float_value ());
 
     return retval;
   }
@@ -213,44 +213,44 @@ public:
   NDArray
   array_value (bool = false) const
   {
-    NDArray retval (matrix.dims ());
+    NDArray retval (m_matrix.dims ());
     double *vec = retval.fortran_vec ();
-    octave_idx_type nel = matrix.numel ();
+    octave_idx_type nel = m_matrix.numel ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = matrix(i).double_value ();
+      vec[i] = m_matrix(i).double_value ();
     return retval;
   }
 
   FloatNDArray
   float_array_value (bool = false) const
   {
-    FloatNDArray retval (matrix.dims ());
+    FloatNDArray retval (m_matrix.dims ());
     float *vec = retval.fortran_vec ();
-    octave_idx_type nel = matrix.numel ();
+    octave_idx_type nel = m_matrix.numel ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = matrix(i).float_value ();
+      vec[i] = m_matrix(i).float_value ();
     return retval;
   }
 
   ComplexNDArray
   complex_array_value (bool = false) const
   {
-    ComplexNDArray retval (matrix.dims ());
+    ComplexNDArray retval (m_matrix.dims ());
     Complex *vec = retval.fortran_vec ();
-    octave_idx_type nel = matrix.numel ();
+    octave_idx_type nel = m_matrix.numel ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = Complex (matrix(i).double_value ());
+      vec[i] = Complex (m_matrix(i).double_value ());
     return retval;
   }
 
   FloatComplexNDArray
   float_complex_array_value (bool = false) const
   {
-    FloatComplexNDArray retval (matrix.dims ());
+    FloatComplexNDArray retval (m_matrix.dims ());
     FloatComplex *vec = retval.fortran_vec ();
-    octave_idx_type nel = matrix.numel ();
+    octave_idx_type nel = m_matrix.numel ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = FloatComplex (matrix(i).float_value ());
+      vec[i] = FloatComplex (m_matrix(i).float_value ());
     return retval;
   }
 
@@ -261,12 +261,12 @@ public:
 
     octave_idx_type nel = numel ();
 
-    if (warn && matrix.any_element_not_one_or_zero ())
+    if (warn && m_matrix.any_element_not_one_or_zero ())
       warn_logical_conversion ();
 
     bool *vec = retval.fortran_vec ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = matrix(i).bool_value ();
+      vec[i] = m_matrix(i).bool_value ();
 
     return retval;
   }
@@ -280,7 +280,7 @@ public:
 
     char *vec = retval.fortran_vec ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = matrix(i).char_value ();
+      vec[i] = m_matrix(i).char_value ();
 
     return retval;
   }
@@ -303,13 +303,14 @@ public:
 
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
-    return idx_cache ? *idx_cache : set_idx_cache (octave::idx_vector (matrix));
+    return m_idx_cache ? *m_idx_cache
+                       : set_idx_cache (octave::idx_vector (m_matrix));
   }
 
   int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
-  { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
+  { return os.write (m_matrix, block_size, output_type, skip, flt_fmt); }
 
   mxArray * as_mxArray (bool interleaved) const
   {
@@ -321,7 +322,7 @@ public:
 
     mwSize nel = numel ();
 
-    const OCTAVE_INT_T *pdata = matrix.data ();
+    const OCTAVE_INT_T *pdata = m_matrix.data ();
 
     for (mwIndex i = 0; i < nel; i++)
       pd[i] = pdata[i].value ();
@@ -334,29 +335,29 @@ public:
     switch (umap)
       {
       case umap_abs:
-        return matrix.abs ();
+        return m_matrix.abs ();
       case umap_signum:
-        return matrix.signum ();
+        return m_matrix.signum ();
       case umap_ceil:
       case umap_conj:
       case umap_fix:
       case umap_floor:
       case umap_real:
       case umap_round:
-        return matrix;
+        return m_matrix;
       case umap_imag:
-        return intNDArray<OCTAVE_INT_T> (matrix.dims (), OCTAVE_INT_T ());
+        return intNDArray<OCTAVE_INT_T> (m_matrix.dims (), OCTAVE_INT_T ());
       case umap_isnan:
       case umap_isna:
       case umap_isinf:
-        return boolNDArray (matrix.dims (), false);
+        return boolNDArray (m_matrix.dims (), false);
       case umap_isfinite:
-        return boolNDArray (matrix.dims (), true);
+        return boolNDArray (m_matrix.dims (), true);
 
       // Special cases for Matlab compatibility.
       case umap_xtolower:
       case umap_xtoupper:
-        return matrix;
+        return m_matrix;
 
       default:
         {

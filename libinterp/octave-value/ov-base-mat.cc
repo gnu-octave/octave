@@ -137,8 +137,8 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 
   octave_idx_type n_idx = idx.length ();
 
-  int nd = matrix.ndims ();
-  const MT& cmatrix = matrix;
+  int nd = m_matrix.ndims ();
+  const MT& cmatrix = m_matrix;
 
   // If we catch an indexing error in index_vector, we flag an error in
   // index k.  Ensure it is the right value before each idx_vector call.
@@ -152,7 +152,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
         {
         case 0:
           warn_empty_index (type_name ());
-          retval = matrix;
+          retval = m_matrix;
           break;
 
         case 1:
@@ -163,7 +163,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
             if (! resize_ok && i.is_scalar ())
               retval = cmatrix.checkelem (i(0));
             else
-              retval = MT (matrix.index (i, resize_ok));
+              retval = MT (m_matrix.index (i, resize_ok));
           }
           break;
 
@@ -178,7 +178,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
             if (! resize_ok && i.is_scalar () && j.is_scalar ())
               retval = cmatrix.checkelem (i(0), j(0));
             else
-              retval = MT (matrix.index (i, j, resize_ok));
+              retval = MT (m_matrix.index (i, j, resize_ok));
           }
           break;
 
@@ -186,7 +186,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
           {
             Array<octave::idx_vector> idx_vec (dim_vector (n_idx, 1));
             bool scalar_opt = n_idx == nd && ! resize_ok;
-            const dim_vector dv = matrix.dims ();
+            const dim_vector dv = m_matrix.dims ();
 
             for (k = 0; k < n_idx; k++)
               {
@@ -198,7 +198,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
             if (scalar_opt)
               retval = cmatrix.checkelem (conv_to_int_array (idx_vec));
             else
-              retval = MT (matrix.index (idx_vec, resize_ok));
+              retval = MT (m_matrix.index (idx_vec, resize_ok));
           }
           break;
         }
@@ -244,7 +244,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
           {
             octave::idx_vector i = idx (0).index_vector ();
 
-            matrix.assign (i, rhs);
+            m_matrix.assign (i, rhs);
           }
           break;
 
@@ -255,7 +255,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
             k = 1;
             octave::idx_vector j = idx (1).index_vector ();
 
-            matrix.assign (i, j, rhs);
+            m_matrix.assign (i, j, rhs);
           }
           break;
 
@@ -266,7 +266,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
             for (k = 0; k < n_idx; k++)
               idx_vec(k) = idx(k).index_vector ();
 
-            matrix.assign (idx_vec, rhs);
+            m_matrix.assign (idx_vec, rhs);
           }
           break;
         }
@@ -284,11 +284,11 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 
 template <typename MT>
 MatrixType
-octave_base_matrix<MT>::matrix_type (const MatrixType& _typ) const
+octave_base_matrix<MT>::matrix_type (const MatrixType& typ) const
 {
-  delete typ;
-  typ = new MatrixType (_typ);
-  return *typ;
+  delete m_typ;
+  m_typ = new MatrixType (typ);
+  return *m_typ;
 }
 
 template <typename MT>
@@ -298,7 +298,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 {
   octave_idx_type n_idx = idx.length ();
 
-  int nd = matrix.ndims ();
+  int nd = m_matrix.ndims ();
 
   MT mrhs (dim_vector (1, 1), rhs);
 
@@ -321,10 +321,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
             octave::idx_vector i = idx (0).index_vector ();
 
             // optimize single scalar index.
-            if (i.is_scalar () && i(0) < matrix.numel ())
-              matrix(i(0)) = rhs;
+            if (i.is_scalar () && i(0) < m_matrix.numel ())
+              m_matrix(i(0)) = rhs;
             else
-              matrix.assign (i, mrhs);
+              m_matrix.assign (i, mrhs);
           }
           break;
 
@@ -337,10 +337,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 
             // optimize two scalar indices.
             if (i.is_scalar () && j.is_scalar () && nd == 2
-                && i(0) < matrix.rows () && j(0) < matrix.columns ())
-              matrix(i(0), j(0)) = rhs;
+                && i(0) < m_matrix.rows () && j(0) < m_matrix.columns ())
+              m_matrix(i(0), j(0)) = rhs;
             else
-              matrix.assign (i, j, mrhs);
+              m_matrix.assign (i, j, mrhs);
           }
           break;
 
@@ -348,7 +348,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
           {
             Array<octave::idx_vector> idx_vec (dim_vector (n_idx, 1));
             bool scalar_opt = n_idx == nd;
-            const dim_vector dv = matrix.dims ().redim (n_idx);
+            const dim_vector dv = m_matrix.dims ().redim (n_idx);
 
             for (k = 0; k < n_idx; k++)
               {
@@ -369,10 +369,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
                     j += idx_vec(i)(0) * n;
                     n *= dv (i);
                   }
-                matrix(j) = rhs;
+                m_matrix(j) = rhs;
               }
             else
-              matrix.assign (idx_vec, mrhs);
+              m_matrix.assign (idx_vec, mrhs);
           }
           break;
         }
@@ -399,7 +399,7 @@ octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx(i) = idx(i).index_vector ();
 
-  matrix.delete_elements (ra_idx);
+  m_matrix.delete_elements (ra_idx);
 
   // Clear cache.
   clear_cached_info ();
@@ -409,7 +409,7 @@ template <typename MT>
 octave_value
 octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
 {
-  MT retval (matrix);
+  MT retval (m_matrix);
   if (fill)
     retval.resize (dv, 0);
   else
@@ -423,12 +423,12 @@ bool
 octave_base_matrix<MT>::is_true (void) const
 {
   bool retval = false;
-  dim_vector dv = matrix.dims ();
+  dim_vector dv = m_matrix.dims ();
   int nel = dv.numel ();
 
   if (nel > 0)
     {
-      MT t1 (matrix.reshape (dim_vector (nel, 1)));
+      MT t1 (m_matrix.reshape (dim_vector (nel, 1)));
 
       if (t1.any_element_is_nan ())
         octave::err_nan_to_logical_conversion ();
@@ -466,25 +466,25 @@ void
 octave_base_matrix<MT>::print_info (std::ostream& os,
                                     const std::string& prefix) const
 {
-  matrix.print_info (os, prefix);
+  m_matrix.print_info (os, prefix);
 }
 
 template <typename MT>
 void
 octave_base_matrix<MT>::short_disp (std::ostream& os) const
 {
-  if (matrix.isempty ())
+  if (m_matrix.isempty ())
     os << "[]";
-  else if (matrix.ndims () == 2)
+  else if (m_matrix.ndims () == 2)
     {
       // FIXME: should this be configurable?
       octave_idx_type max_elts = 10;
       octave_idx_type elts = 0;
 
-      octave_idx_type nel = matrix.numel ();
+      octave_idx_type nel = m_matrix.numel ();
 
-      octave_idx_type nr = matrix.rows ();
-      octave_idx_type nc = matrix.columns ();
+      octave_idx_type nr = m_matrix.rows ();
+      octave_idx_type nc = m_matrix.columns ();
 
       os << '[';
 
@@ -493,7 +493,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
           for (octave_idx_type j = 0; j < nc; j++)
             {
               std::ostringstream buf;
-              octave_print_internal (buf, matrix(j*nr+i));
+              octave_print_internal (buf, m_matrix(j*nr+i));
               std::string tmp = buf.str ();
               std::size_t pos = tmp.find_first_not_of (' ');
               if (pos != std::string::npos)
@@ -525,7 +525,7 @@ template <typename MT>
 float_display_format
 octave_base_matrix<MT>::get_edit_display_format (void) const
 {
-  return make_format (matrix);
+  return make_format (m_matrix);
 }
 
 template <typename MT>
@@ -535,7 +535,7 @@ octave_base_matrix<MT>::edit_display (const float_display_format& fmt,
                                       octave_idx_type j) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, fmt, matrix(i, j));
+  octave_print_internal (buf, fmt, m_matrix(i, j));
   return buf.str ();
 }
 
@@ -543,8 +543,8 @@ template <typename MT>
 octave_value
 octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
 {
-  if (n < matrix.numel ())
-    return matrix(n);
+  if (n < m_matrix.numel ())
+    return m_matrix(n);
   else
     return octave_value ();
 }
@@ -554,7 +554,7 @@ bool
 octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
                                           const octave_value& x)
 {
-  if (n < matrix.numel ())
+  if (n < m_matrix.numel ())
     {
       // Don't use builtin_type () here to avoid an extra VM call.
       typedef typename MT::element_type ET;
@@ -563,7 +563,7 @@ octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
         return false;
 
       // Set up the pointer to the proper place.
-      void *here = reinterpret_cast<void *> (&matrix(n));
+      void *here = reinterpret_cast<void *> (&m_matrix(n));
       // Ask x to store there if it can.
       return x.get_rep ().fast_elem_insert_self (here, btyp);
     }

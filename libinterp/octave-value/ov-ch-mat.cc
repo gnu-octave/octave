@@ -60,7 +60,7 @@ template class octave_base_matrix<charNDArray>;
 octave::idx_vector
 octave_char_matrix::index_vector (bool /* require_integers */) const
 {
-  const char *p = matrix.data ();
+  const char *p = m_matrix.data ();
   if (numel () == 1 && *p == ':')
     return octave::idx_vector (':');
   else
@@ -76,7 +76,7 @@ octave_char_matrix::double_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "real scalar");
 
-  return static_cast<unsigned char> (matrix(0, 0));
+  return static_cast<unsigned char> (m_matrix(0, 0));
 }
 
 float
@@ -88,7 +88,7 @@ octave_char_matrix::float_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "real scalar");
 
-  return static_cast<unsigned char> (matrix(0, 0));
+  return static_cast<unsigned char> (m_matrix(0, 0));
 }
 
 octave_int64
@@ -102,7 +102,7 @@ octave_char_matrix::int64_scalar_value () const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "int64 scalar");
 
-  retval = octave_int64 (matrix(0, 0));
+  retval = octave_int64 (m_matrix(0, 0));
 
   return retval;
 }
@@ -118,7 +118,7 @@ octave_char_matrix::uint64_scalar_value () const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "uint64 scalar");
 
-  retval = octave_uint64 (matrix(0, 0));
+  retval = octave_uint64 (m_matrix(0, 0));
 
   return retval;
 }
@@ -132,7 +132,7 @@ octave_char_matrix::complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "complex scalar");
 
-  return Complex (static_cast<unsigned char> (matrix(0, 0)), 0);
+  return Complex (static_cast<unsigned char> (m_matrix(0, 0)), 0);
 }
 
 FloatComplex
@@ -148,7 +148,7 @@ octave_char_matrix::float_complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "complex scalar");
 
-  retval = static_cast<unsigned char> (matrix(0, 0));
+  retval = static_cast<unsigned char> (m_matrix(0, 0));
 
   return retval;
 }
@@ -156,68 +156,68 @@ octave_char_matrix::float_complex_value (bool) const
 octave_value
 octave_char_matrix::as_double (void) const
 {
-  return NDArray (matrix);
+  return NDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_single (void) const
 {
-  return FloatNDArray (matrix);
+  return FloatNDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_int8 (void) const
 {
-  return int8NDArray (matrix);
+  return int8NDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_int16 (void) const
 {
-  return int16NDArray (matrix);
+  return int16NDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_int32 (void) const
 {
-  return int32NDArray (matrix);
+  return int32NDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_int64 (void) const
 {
-  return int64NDArray (matrix);
+  return int64NDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_uint8 (void) const
 {
-  return uint8NDArray (matrix);
+  return uint8NDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_uint16 (void) const
 {
-  return uint16NDArray (matrix);
+  return uint16NDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_uint32 (void) const
 {
-  return uint32NDArray (matrix);
+  return uint32NDArray (m_matrix);
 }
 
 octave_value
 octave_char_matrix::as_uint64 (void) const
 {
-  return uint64NDArray (matrix);
+  return uint64NDArray (m_matrix);
 }
 
 void
 octave_char_matrix::print_raw (std::ostream& os,
                                bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, matrix, pr_as_read_syntax,
+  octave_print_internal (os, m_matrix, pr_as_read_syntax,
                          current_print_indent_level ());
 }
 
@@ -230,7 +230,7 @@ octave_char_matrix::as_mxArray (bool interleaved) const
 
   mwSize nel = numel ();
 
-  const char *pdata = matrix.data ();
+  const char *pdata = m_matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
     pd[i] = pdata[i];
@@ -261,22 +261,22 @@ octave_char_matrix::map (unary_mapper_t umap) const
     {
 #define STRING_MAPPER(UMAP,FCN,TYPE)                                  \
     case umap_ ## UMAP:                                               \
-      return octave_value (matrix.map<TYPE, int (&) (int)> (FCN))
+      return octave_value (m_matrix.map<TYPE, int (&) (int)> (FCN))
 
     STRING_MAPPER (xisascii, xisascii, bool);
 
 #define STRING_U8_MAPPER(UMAP,FCN)                                             \
     case umap_ ## UMAP:                                                        \
       {                                                                        \
-        charNDArray in_m = matrix;                                             \
-        Array<octave_idx_type> p (dim_vector (matrix.ndims (), 1));            \
-        if (matrix.ndims () > 1)                                               \
+        charNDArray in_m = m_matrix;                                           \
+        Array<octave_idx_type> p (dim_vector (m_matrix.ndims (), 1));          \
+        if (m_matrix.ndims () > 1)                                             \
           {                                                                    \
-            for (octave_idx_type i=0; i < matrix.ndims (); i++)                \
+            for (octave_idx_type i=0; i < m_matrix.ndims (); i++)              \
               p(i) = i;                                                        \
             p(0) = 1;                                                          \
             p(1) = 0;                                                          \
-            in_m = matrix.permute (p);                                         \
+            in_m = m_matrix.permute (p);                                       \
           }                                                                    \
         boolNDArray b_array = boolNDArray (in_m.dims ());                      \
         const uint8_t *in = reinterpret_cast<const uint8_t *> (in_m.data ());  \
@@ -291,8 +291,8 @@ octave_char_matrix::map (unary_mapper_t umap) const
             b_array(i+j) = is_upper;                                           \
           i += mblen;                                                          \
         }                                                                      \
-        return octave_value ((matrix.ndims () > 1) ? b_array.permute (p, true) \
-                                                   : b_array);                 \
+        return octave_value ((m_matrix.ndims () > 1) ? b_array.permute (p, true) \
+                                                     : b_array);               \
       }
 
     STRING_U8_MAPPER (xisalnum, octave_uc_is_alnum_wrapper);
@@ -310,29 +310,29 @@ octave_char_matrix::map (unary_mapper_t umap) const
 #define STRING_U8_FCN(UMAP,U8_FCN,STD_FCN)                                     \
     case umap_ ## UMAP:                                                        \
       {                                                                        \
-        charNDArray in_m = matrix;                                             \
-        Array<octave_idx_type> p (dim_vector (matrix.ndims (), 1));            \
-        if (matrix.ndims () > 1)                                               \
+        charNDArray in_m = m_matrix;                                           \
+        Array<octave_idx_type> p (dim_vector (m_matrix.ndims (), 1));          \
+        if (m_matrix.ndims () > 1)                                             \
           {                                                                    \
-            for (octave_idx_type i=0; i < matrix.ndims (); i++)                \
+            for (octave_idx_type i=0; i < m_matrix.ndims (); i++)              \
               p(i) = i;                                                        \
             p(0) = 1;                                                          \
             p(1) = 0;                                                          \
-            in_m = matrix.permute (p);                                         \
+            in_m = m_matrix.permute (p);                                       \
           }                                                                    \
         std::size_t output_length = in_m.numel ();                             \
         charNDArray ch_array = charNDArray (in_m.dims ());                     \
         const uint8_t *in = reinterpret_cast<const uint8_t *> (in_m.data ());  \
         uint8_t *buf = reinterpret_cast<uint8_t *> (ch_array.fortran_vec ());  \
-        U8_FCN (in, matrix.numel (), nullptr, buf, &output_length);            \
-        if (output_length != static_cast<std::size_t> (matrix.numel ()))       \
+        U8_FCN (in, m_matrix.numel (), nullptr, buf, &output_length);          \
+        if (output_length != static_cast<std::size_t> (m_matrix.numel ()))     \
           {                                                                    \
             warning_with_id ("Octave:multi_byte_char_length",                  \
                              "UMAP: Possible multi-byte error.");              \
-            return octave_value (matrix.map<char, int (&) (int)> (STD_FCN));   \
+            return octave_value (m_matrix.map<char, int (&) (int)> (STD_FCN)); \
           }                                                                    \
-        return octave_value ((matrix.ndims () > 1) ? ch_array.permute (p, true)\
-                                                   : ch_array);                \
+        return octave_value ((m_matrix.ndims () > 1) ? ch_array.permute (p, true)\
+                                                     : ch_array);              \
       }
 
     STRING_U8_FCN (xtolower, octave_u8_tolower_wrapper, std::tolower);

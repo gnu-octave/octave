@@ -94,8 +94,8 @@ octave_float_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
-  if (matrix.numel () == 1)
-    retval = new octave_float_scalar (matrix (0));
+  if (m_matrix.numel () == 1)
+    retval = new octave_float_scalar (m_matrix (0));
 
   return retval;
 }
@@ -109,7 +109,7 @@ octave_float_matrix::double_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "real matrix", "real scalar");
 
-  return matrix(0, 0);
+  return m_matrix(0, 0);
 }
 
 float
@@ -121,7 +121,7 @@ octave_float_matrix::float_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "real matrix", "real scalar");
 
-  return matrix(0, 0);
+  return m_matrix(0, 0);
 }
 
 // FIXME
@@ -129,13 +129,13 @@ octave_float_matrix::float_value (bool) const
 Matrix
 octave_float_matrix::matrix_value (bool) const
 {
-  return Matrix (FloatMatrix (matrix));
+  return Matrix (FloatMatrix (m_matrix));
 }
 
 FloatMatrix
 octave_float_matrix::float_matrix_value (bool) const
 {
-  return FloatMatrix (matrix);
+  return FloatMatrix (m_matrix);
 }
 
 Complex
@@ -147,7 +147,7 @@ octave_float_matrix::complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "real matrix", "complex scalar");
 
-  return Complex (matrix(0, 0), 0);
+  return Complex (m_matrix(0, 0), 0);
 }
 
 FloatComplex
@@ -163,7 +163,7 @@ octave_float_matrix::float_complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "real matrix", "complex scalar");
 
-  retval = matrix(0, 0);
+  retval = m_matrix(0, 0);
 
   return retval;
 }
@@ -173,42 +173,42 @@ octave_float_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_float_matrix::complex_matrix_value (bool) const
 {
-  return ComplexMatrix (FloatMatrix (matrix));
+  return ComplexMatrix (FloatMatrix (m_matrix));
 }
 
 FloatComplexMatrix
 octave_float_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (FloatMatrix (matrix));
+  return FloatComplexMatrix (FloatMatrix (m_matrix));
 }
 
 ComplexNDArray
 octave_float_matrix::complex_array_value (bool) const
 {
-  return ComplexNDArray (matrix);
+  return ComplexNDArray (m_matrix);
 }
 
 FloatComplexNDArray
 octave_float_matrix::float_complex_array_value (bool) const
 {
-  return FloatComplexNDArray (matrix);
+  return FloatComplexNDArray (m_matrix);
 }
 
 NDArray
 octave_float_matrix::array_value (bool) const
 {
-  return NDArray (matrix);
+  return NDArray (m_matrix);
 }
 
 boolNDArray
 octave_float_matrix::bool_array_value (bool warn) const
 {
-  if (matrix.any_element_is_nan ())
+  if (m_matrix.any_element_is_nan ())
     octave::err_nan_to_logical_conversion ();
-  if (warn && matrix.any_element_not_one_or_zero ())
+  if (warn && m_matrix.any_element_not_one_or_zero ())
     warn_logical_conversion ();
 
-  return boolNDArray (matrix);
+  return boolNDArray (m_matrix);
 }
 
 charNDArray
@@ -219,7 +219,7 @@ octave_float_matrix::char_array_value (bool) const
   octave_idx_type nel = numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval.elem (i) = static_cast<char> (matrix.elem (i));
+    retval.elem (i) = static_cast<char> (m_matrix.elem (i));
 
   return retval;
 }
@@ -242,70 +242,70 @@ octave_float_matrix::sparse_complex_matrix_value (bool) const
 octave_value
 octave_float_matrix::as_double (void) const
 {
-  return NDArray (matrix);
+  return NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_single (void) const
 {
-  return FloatNDArray (matrix);
+  return FloatNDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_int8 (void) const
 {
-  return int8NDArray (matrix);
+  return int8NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_int16 (void) const
 {
-  return int16NDArray (matrix);
+  return int16NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_int32 (void) const
 {
-  return int32NDArray (matrix);
+  return int32NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_int64 (void) const
 {
-  return int64NDArray (matrix);
+  return int64NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_uint8 (void) const
 {
-  return uint8NDArray (matrix);
+  return uint8NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_uint16 (void) const
 {
-  return uint16NDArray (matrix);
+  return uint16NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_uint32 (void) const
 {
-  return uint32NDArray (matrix);
+  return uint32NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::as_uint64 (void) const
 {
-  return uint64NDArray (matrix);
+  return uint64NDArray (m_matrix);
 }
 
 octave_value
 octave_float_matrix::diag (octave_idx_type k) const
 {
   octave_value retval;
-  if (k == 0 && matrix.ndims () == 2
-      && (matrix.rows () == 1 || matrix.columns () == 1))
-    retval = FloatDiagMatrix (DiagArray2<float> (matrix));
+  if (k == 0 && m_matrix.ndims () == 2
+      && (m_matrix.rows () == 1 || m_matrix.columns () == 1))
+    retval = FloatDiagMatrix (DiagArray2<float> (m_matrix));
   else
     retval = octave_base_matrix<FloatNDArray>::diag (k);
 
@@ -315,11 +315,11 @@ octave_float_matrix::diag (octave_idx_type k) const
 octave_value
 octave_float_matrix::diag (octave_idx_type m, octave_idx_type n) const
 {
-  if (matrix.ndims () != 2
-      || (matrix.rows () != 1 && matrix.columns () != 1))
+  if (m_matrix.ndims () != 2
+      || (m_matrix.rows () != 1 && m_matrix.columns () != 1))
     error ("diag: expecting vector argument");
 
-  FloatMatrix mat (matrix);
+  FloatMatrix mat (m_matrix);
 
   return mat.diag (m, n);
 }
@@ -339,7 +339,7 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
     {
       octave_quit ();
 
-      float d = matrix(i);
+      float d = m_matrix(i);
 
       if (octave::math::isnan (d))
         octave::err_nan_to_character_conversion ();
@@ -442,7 +442,7 @@ octave_float_matrix::load_ascii (std::istream& is)
       if (! is)
         error ("load: failed to load matrix constant");
 
-      matrix = tmp;
+      m_matrix = tmp;
     }
   else if (kw == "rows")
     {
@@ -459,10 +459,10 @@ octave_float_matrix::load_ascii (std::istream& is)
           if (! is)
             error ("load: failed to load matrix constant");
 
-          matrix = tmp;
+          m_matrix = tmp;
         }
       else if (nr == 0 || nc == 0)
-        matrix = FloatMatrix (nr, nc);
+        m_matrix = FloatMatrix (nr, nc);
       else
         panic_impossible ();
     }
@@ -552,7 +552,7 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
       if (! is)
         return false;
 
-      matrix = m;
+      m_matrix = m;
     }
   else
     {
@@ -572,7 +572,7 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
       if (! is)
         return false;
 
-      matrix = m;
+      m_matrix = m;
     }
   return true;
 }
@@ -658,7 +658,7 @@ octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize (dv);
+    m_matrix.resize (dv);
   if (empty)
     return (empty > 0);
 
@@ -703,7 +703,7 @@ octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                octave_H5P_DEFAULT, re) >= 0)
     {
       retval = true;
-      matrix = m;
+      m_matrix = m;
     }
 
   H5Sclose (space_id);
@@ -723,7 +723,7 @@ void
 octave_float_matrix::print_raw (std::ostream& os,
                                 bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, matrix, pr_as_read_syntax,
+  octave_print_internal (os, m_matrix, pr_as_read_syntax,
                          current_print_indent_level ());
 }
 
@@ -736,7 +736,7 @@ octave_float_matrix::as_mxArray (bool interleaved) const
 
   mwSize nel = numel ();
 
-  const float *pdata = matrix.data ();
+  const float *pdata = m_matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
     pd[i] = pdata[i];
@@ -789,16 +789,16 @@ octave_float_matrix::map (unary_mapper_t umap) const
   switch (umap)
     {
     case umap_imag:
-      return FloatNDArray (matrix.dims (), 0.0);
+      return FloatNDArray (m_matrix.dims (), 0.0);
 
     case umap_real:
     case umap_conj:
-      return matrix;
+      return m_matrix;
 
     // Mappers handled specially.
 #define ARRAY_METHOD_MAPPER(UMAP, FCN)        \
     case umap_ ## UMAP:                       \
-      return octave_value (matrix.FCN ())
+      return octave_value (m_matrix.FCN ())
 
     ARRAY_METHOD_MAPPER (abs, abs);
     ARRAY_METHOD_MAPPER (isnan, isnan);
@@ -807,11 +807,11 @@ octave_float_matrix::map (unary_mapper_t umap) const
 
 #define ARRAY_MAPPER(UMAP, TYPE, FCN)                 \
     case umap_ ## UMAP:                               \
-      return octave_value (matrix.map<TYPE> (FCN))
+      return octave_value (m_matrix.map<TYPE> (FCN))
 
 #define RC_ARRAY_MAPPER(UMAP, TYPE, FCN)      \
     case umap_ ## UMAP:                       \
-      return do_rc_map (matrix, FCN)
+      return do_rc_map (m_matrix, FCN)
 
     RC_ARRAY_MAPPER (acos, FloatComplex, octave::math::rc_acos);
     RC_ARRAY_MAPPER (acosh, FloatComplex, octave::math::rc_acosh);
@@ -856,7 +856,7 @@ octave_float_matrix::map (unary_mapper_t umap) const
     // Special cases for Matlab compatibility.
     case umap_xtolower:
     case umap_xtoupper:
-      return matrix;
+      return m_matrix;
 
     case umap_xisalnum:
     case umap_xisalpha:

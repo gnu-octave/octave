@@ -70,14 +70,14 @@ octave_value
 octave_base_matrix<Cell>::do_index_op (const octave_value_list& idx,
                                        bool resize_ok)
 {
-  return matrix.index (idx, resize_ok);
+  return m_matrix.index (idx, resize_ok);
 }
 
 template <>
 void
 octave_base_matrix<Cell>::assign (const octave_value_list& idx, const Cell& rhs)
 {
-  matrix.assign (idx, rhs);
+  m_matrix.assign (idx, rhs);
 }
 
 template <>
@@ -87,16 +87,16 @@ octave_base_matrix<Cell>::assign (const octave_value_list& idx,
 {
   // FIXME: Really?
   if (rhs.iscell ())
-    matrix.assign (idx, rhs.cell_value ());
+    m_matrix.assign (idx, rhs.cell_value ());
   else
-    matrix.assign (idx, Cell (rhs));
+    m_matrix.assign (idx, Cell (rhs));
 }
 
 template <>
 void
 octave_base_matrix<Cell>::delete_elements (const octave_value_list& idx)
 {
-  matrix.delete_elements (idx);
+  m_matrix.delete_elements (idx);
 }
 
 // FIXME: this list of specializations is becoming so long that we should
@@ -108,7 +108,7 @@ octave_base_matrix<Cell>::edit_display (const float_display_format&,
                                         octave_idx_type i,
                                         octave_idx_type j) const
 {
-  octave_value val = matrix(i, j);
+  octave_value val = m_matrix(i, j);
 
   std::string tname = val.type_name ();
   dim_vector dv = val.dims ();
@@ -120,8 +120,8 @@ template <>
 octave_value
 octave_base_matrix<Cell>::fast_elem_extract (octave_idx_type n) const
 {
-  if (n < matrix.numel ())
-    return Cell (matrix(n));
+  if (n < m_matrix.numel ())
+    return Cell (m_matrix(n));
   else
     return octave_value ();
 }
@@ -133,9 +133,9 @@ octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
 {
   const octave_cell *xrep = dynamic_cast<const octave_cell *> (&x.get_rep ());
 
-  bool retval = xrep && xrep->matrix.numel () == 1 && n < matrix.numel ();
+  bool retval = xrep && xrep->m_matrix.numel () == 1 && n < m_matrix.numel ();
   if (retval)
-    matrix(n) = xrep->matrix(0);
+    m_matrix(n) = xrep->m_matrix(0);
 
   return retval;
 }
@@ -146,8 +146,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 
 void octave_cell::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
 {
-  for (octave_idx_type i = 0; i < matrix.numel (); i++)
-    matrix(i).break_closure_cycles (frame);
+  for (octave_idx_type i = 0; i < m_matrix.numel (); i++)
+    m_matrix(i).break_closure_cycles (frame);
 }
 
 octave_value_list
@@ -306,8 +306,8 @@ octave_cell::subsasgn (const std::string& type,
 
         case '{':
           {
-            matrix.make_unique ();
-            Cell tmpc = matrix.index (idx.front (), true);
+            m_matrix.make_unique ();
+            Cell tmpc = m_matrix.index (idx.front (), true);
 
             std::list<octave_value_list> next_idx (idx);
 
@@ -435,7 +435,7 @@ octave_cell::iscellstr (void) const
     retval = true;
   else
     {
-      retval = matrix.iscellstr ();
+      retval = m_matrix.iscellstr ();
       // Allocate empty cache to mark that this is indeed a cellstr.
       if (retval)
         m_cellstr_cache.reset (new Array<std::string> ());
@@ -471,7 +471,7 @@ octave_cell::byte_size (void) const
   std::size_t retval = 0;
 
   for (octave_idx_type i = 0; i < numel (); i++)
-    retval += matrix(i).byte_size ();
+    retval += m_matrix(i).byte_size ();
 
   return retval;
 }
@@ -567,7 +567,7 @@ octave_cell::is_true (void) const
 octave_value_list
 octave_cell::list_value (void) const
 {
-  return octave_value_list (matrix);
+  return octave_value_list (m_matrix);
 }
 
 string_vector
@@ -585,7 +585,7 @@ octave_cell::string_vector_value (bool pad) const
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      string_vector s = matrix(i).string_vector_value ();
+      string_vector s = m_matrix(i).string_vector_value ();
 
       octave_idx_type s_len = s.numel ();
 
@@ -639,7 +639,7 @@ octave_cell::cellstr_value (void) const
     error ("invalid conversion from cell array to array of strings");
 
   if (m_cellstr_cache->isempty ())
-    *m_cellstr_cache = matrix.cellstr_value ();
+    *m_cellstr_cache = m_matrix.cellstr_value ();
 
   return *m_cellstr_cache;
 }
@@ -659,7 +659,7 @@ octave_cell::print (std::ostream& os, bool)
 void
 octave_cell::print_raw (std::ostream& os, bool) const
 {
-  int nd = matrix.ndims ();
+  int nd = m_matrix.ndims ();
 
   if (nd == 2)
     {
@@ -683,7 +683,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
                   std::ostringstream buf;
                   buf << '[' << i+1 << ',' << j+1 << ']';
 
-                  octave_value val = matrix(i, j);
+                  octave_value val = m_matrix(i, j);
 
                   val.print_with_name (os, buf.str ());
                 }
@@ -707,7 +707,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
   else
     {
       indent (os);
-      dim_vector dv = matrix.dims ();
+      dim_vector dv = m_matrix.dims ();
       os << '{' << dv.str () << " Cell Array}";
       newline (os);
     }
@@ -735,7 +735,7 @@ octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
 void
 octave_cell::short_disp (std::ostream& os) const
 {
-  os << (matrix.isempty () ? "{}" : "...");
+  os << (m_matrix.isempty () ? "{}" : "...");
 }
 
 #define CELL_ELT_TAG "<cell-element>"
@@ -844,7 +844,7 @@ octave_cell::load_ascii (std::istream& is)
       if (! is)
         error ("load: failed to load matrix constant");
 
-      matrix = tmp;
+      m_matrix = tmp;
     }
   else if (kw == "rows")
     {
@@ -880,10 +880,10 @@ octave_cell::load_ascii (std::istream& is)
           if (! is)
             error ("load: failed to load cell element");
 
-          matrix = tmp;
+          m_matrix = tmp;
         }
       else if (nr == 0 || nc == 0)
-        matrix = Cell (nr, nc);
+        m_matrix = Cell (nr, nc);
       else
         panic_impossible ();
     }
@@ -989,7 +989,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
   if (! is)
     error ("load: failed to load matrix constant");
 
-  matrix = tmp;
+  m_matrix = tmp;
 
   return true;
 }
@@ -998,7 +998,7 @@ const void *
 octave_cell::mex_get_data (void) const
 {
   clear_cellstr_cache ();
-  return matrix.data ();
+  return m_matrix.data ();
 }
 
 bool
@@ -1119,7 +1119,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize (dv);
+    m_matrix.resize (dv);
   if (empty)
     return (empty > 0);
 
@@ -1206,7 +1206,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   if (retval2 >= 0)
     {
-      matrix = m;
+      m_matrix = m;
       retval = true;
     }
 
@@ -1426,7 +1426,7 @@ octave_cell::as_mxArray (bool interleaved) const
 
   mwSize nel = numel ();
 
-  const octave_value *p = matrix.data ();
+  const octave_value *p = m_matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
     elts[i] = new mxArray (interleaved, p[i]);
@@ -1441,7 +1441,7 @@ octave_cell::map (unary_mapper_t umap) const
     {
 #define FORWARD_MAPPER(UMAP)                  \
     case umap_ ## UMAP:                       \
-      return matrix.UMAP ()
+      return m_matrix.UMAP ()
 
     FORWARD_MAPPER (xisalnum);
     FORWARD_MAPPER (xisalpha);

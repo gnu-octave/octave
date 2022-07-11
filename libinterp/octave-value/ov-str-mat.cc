@@ -105,14 +105,14 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
       switch (len)
         {
         case 0:
-          retval = octave_value (matrix, type);
+          retval = octave_value (m_matrix, type);
           break;
 
         case 1:
           {
             octave::idx_vector i = idx (0).index_vector ();
 
-            retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
+            retval = octave_value (charNDArray (m_matrix.index (i, resize_ok)),
                                    type);
           }
           break;
@@ -123,7 +123,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
             k = 1;
             octave::idx_vector j = idx (1).index_vector ();
 
-            retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
+            retval = octave_value (charNDArray (m_matrix.index (i, j, resize_ok)),
                                    type);
           }
           break;
@@ -135,7 +135,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
             for (k = 0; k < len; k++)
               idx_vec(k) = idx(k).index_vector ();
 
-            retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)), type);
+            retval = octave_value (charNDArray (m_matrix.index (idx_vec, resize_ok)), type);
           }
           break;
         }
@@ -153,7 +153,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 octave_value
 octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
 {
-  charNDArray retval (matrix);
+  charNDArray retval (m_matrix);
   if (fill)
     retval.resize (dv, 0);
   else
@@ -211,10 +211,10 @@ octave_char_matrix_str::string_vector_value (bool) const
 {
   string_vector retval;
 
-  if (matrix.ndims () != 2)
+  if (m_matrix.ndims () != 2)
     error ("invalid conversion of charNDArray to string_vector");
 
-  charMatrix chm (matrix);
+  charMatrix chm (m_matrix);
 
   octave_idx_type n = chm.rows ();
 
@@ -229,10 +229,10 @@ octave_char_matrix_str::string_vector_value (bool) const
 std::string
 octave_char_matrix_str::string_value (bool) const
 {
-  if (matrix.ndims () != 2)
+  if (m_matrix.ndims () != 2)
     error ("invalid conversion of charNDArray to string");
 
-  charMatrix chm (matrix);
+  charMatrix chm (m_matrix);
 
   if (chm.rows () > 1)
     warning_with_id ("Octave:charmat-truncated",
@@ -256,10 +256,10 @@ octave_char_matrix_str::cellstr_value (void) const
 {
   Array<std::string> retval;
 
-  if (matrix.ndims () != 2)
+  if (m_matrix.ndims () != 2)
     error ("cellstr: cannot convert multidimensional arrays");
 
-  const charMatrix chm (matrix);
+  const charMatrix chm (m_matrix);
   octave_idx_type nr = chm.rows ();
   retval.clear (nr, 1);
   for (octave_idx_type i = 0; i < nr; i++)
@@ -272,16 +272,16 @@ void
 octave_char_matrix_str::print_raw (std::ostream& os,
                                    bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, matrix, pr_as_read_syntax,
+  octave_print_internal (os, m_matrix, pr_as_read_syntax,
                          current_print_indent_level (), true);
 }
 
 void
 octave_char_matrix_str::short_disp (std::ostream& os) const
 {
-  if (matrix.ndims () == 2 && numel () > 0)
+  if (m_matrix.ndims () == 2 && numel () > 0)
     {
-      charMatrix chm (matrix);
+      charMatrix chm (m_matrix);
       std::string tmp = chm.row_as_string (0);
 
       // FIXME: should this be configurable?
@@ -312,7 +312,7 @@ octave_char_matrix_str::edit_display (const float_display_format&,
     }
 
   std::string tname = type_name ();
-  dim_vector dv = matrix.dims ();
+  dim_vector dv = m_matrix.dims ();
   std::string dimstr = dv.str ();
   return "[" + dimstr + " " + tname + "]";
 }
@@ -388,7 +388,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
       charNDArray tmp(dv);
 
       if (tmp.isempty ())
-        matrix = tmp;
+        m_matrix = tmp;
       else
         {
           char *ftmp = tmp.fortran_vec ();
@@ -398,7 +398,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
           if (! is.read (ftmp, dv.numel ()) || ! is)
             error ("load: failed to load string constant");
 
-          matrix = tmp;
+          m_matrix = tmp;
         }
     }
   else if (kw == "elements")
@@ -437,7 +437,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
           chm.insert (tmp, i, 0);
         }
 
-      matrix = chm;
+      m_matrix = chm;
     }
   else if (kw == "length")
     {
@@ -459,7 +459,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
           if (! is)
             error ("load: failed to load string constant");
 
-          matrix = tmp;
+          m_matrix = tmp;
         }
     }
   else
@@ -535,7 +535,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
       if (! is)
         return false;
 
-      matrix = m;
+      m_matrix = m;
     }
   else
     {
@@ -559,7 +559,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
             }
           chm.insert (btmp, i, 0);
         }
-      matrix = chm;
+      m_matrix = chm;
     }
   return true;
 }
@@ -636,7 +636,7 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize (dv);
+    m_matrix.resize (dv);
   if (empty)
     return (empty > 0);
 
@@ -685,7 +685,7 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                    octave_H5P_DEFAULT, str) >= 0)
         {
           retval = true;
-          matrix = m;
+          m_matrix = m;
         }
 
       H5Tclose (type_hid);
@@ -723,7 +723,7 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                   return false;
                 }
 
-              matrix = charMatrix (s);
+              m_matrix = charMatrix (s);
 
               H5Tclose (st_id);
               H5Tclose (type_hid);
@@ -774,7 +774,7 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                   chm.insert (s + i*(slen+1), i, 0);
                 }
 
-              matrix = chm;
+              m_matrix = chm;
 
               H5Tclose (st_id);
               H5Tclose (type_hid);

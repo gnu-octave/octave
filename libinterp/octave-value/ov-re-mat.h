@@ -107,8 +107,8 @@ public:
 
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
-    return idx_cache ? *idx_cache
-                     : set_idx_cache (octave::idx_vector (matrix));
+    return m_idx_cache ? *m_idx_cache
+                     : set_idx_cache (octave::idx_vector (m_matrix));
   }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
@@ -122,28 +122,28 @@ public:
   bool isfloat (void) const { return true; }
 
   int8NDArray
-  int8_array_value (void) const { return int8NDArray (matrix); }
+  int8_array_value (void) const { return int8NDArray (m_matrix); }
 
   int16NDArray
-  int16_array_value (void) const { return int16NDArray (matrix); }
+  int16_array_value (void) const { return int16NDArray (m_matrix); }
 
   int32NDArray
-  int32_array_value (void) const { return int32NDArray (matrix); }
+  int32_array_value (void) const { return int32NDArray (m_matrix); }
 
   int64NDArray
-  int64_array_value (void) const { return int64NDArray (matrix); }
+  int64_array_value (void) const { return int64NDArray (m_matrix); }
 
   uint8NDArray
-  uint8_array_value (void) const { return uint8NDArray (matrix); }
+  uint8_array_value (void) const { return uint8NDArray (m_matrix); }
 
   uint16NDArray
-  uint16_array_value (void) const { return uint16NDArray (matrix); }
+  uint16_array_value (void) const { return uint16NDArray (m_matrix); }
 
   uint32NDArray
-  uint32_array_value (void) const { return uint32NDArray (matrix); }
+  uint32_array_value (void) const { return uint32NDArray (m_matrix); }
 
   uint64NDArray
-  uint64_array_value (void) const { return uint64NDArray (matrix); }
+  uint64_array_value (void) const { return uint64NDArray (m_matrix); }
 
   double double_value (bool = false) const;
 
@@ -172,9 +172,9 @@ public:
 
   charNDArray char_array_value (bool = false) const;
 
-  NDArray array_value (bool = false) const { return matrix; }
+  NDArray array_value (bool = false) const { return m_matrix; }
 
-  FloatNDArray float_array_value (bool = false) const { return matrix; }
+  FloatNDArray float_array_value (bool = false) const { return m_matrix; }
 
   SparseMatrix sparse_matrix_value (bool = false) const;
 
@@ -238,7 +238,7 @@ public:
   int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
-  { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
+  { return os.write (m_matrix, block_size, output_type, skip, flt_fmt); }
 
   mxArray * as_mxArray (bool interleaved) const;
 

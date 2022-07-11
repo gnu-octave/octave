@@ -90,9 +90,9 @@ octave_bool_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
-  if (matrix.ndims () == 2)
+  if (m_matrix.ndims () == 2)
     {
-      boolMatrix bm (matrix);
+      boolMatrix bm (m_matrix);
 
       octave_idx_type nr = bm.rows ();
       octave_idx_type nc = bm.cols ();
@@ -113,7 +113,7 @@ octave_bool_matrix::double_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "bool matrix", "real scalar");
 
-  return matrix(0, 0);
+  return m_matrix(0, 0);
 }
 
 float
@@ -125,7 +125,7 @@ octave_bool_matrix::float_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "bool matrix", "real scalar");
 
-  return matrix(0, 0);
+  return m_matrix(0, 0);
 }
 
 Complex
@@ -137,7 +137,7 @@ octave_bool_matrix::complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "bool matrix", "complex scalar");
 
-  return Complex (matrix(0, 0), 0);
+  return Complex (m_matrix(0, 0), 0);
 }
 
 FloatComplex
@@ -153,7 +153,7 @@ octave_bool_matrix::float_complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "bool matrix", "complex scalar");
 
-  retval = matrix(0, 0);
+  retval = m_matrix(0, 0);
 
   return retval;
 }
@@ -169,68 +169,68 @@ octave_bool_matrix::convert_to_str_internal (bool pad, bool force,
 octave_value
 octave_bool_matrix::as_double (void) const
 {
-  return NDArray (matrix);
+  return NDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_single (void) const
 {
-  return FloatNDArray (matrix);
+  return FloatNDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_int8 (void) const
 {
-  return int8NDArray (matrix);
+  return int8NDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_int16 (void) const
 {
-  return int16NDArray (matrix);
+  return int16NDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_int32 (void) const
 {
-  return int32NDArray (matrix);
+  return int32NDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_int64 (void) const
 {
-  return int64NDArray (matrix);
+  return int64NDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_uint8 (void) const
 {
-  return uint8NDArray (matrix);
+  return uint8NDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_uint16 (void) const
 {
-  return uint16NDArray (matrix);
+  return uint16NDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_uint32 (void) const
 {
-  return uint32NDArray (matrix);
+  return uint32NDArray (m_matrix);
 }
 
 octave_value
 octave_bool_matrix::as_uint64 (void) const
 {
-  return uint64NDArray (matrix);
+  return uint64NDArray (m_matrix);
 }
 
 void
 octave_bool_matrix::print_raw (std::ostream& os,
                                bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, matrix, pr_as_read_syntax,
+  octave_print_internal (os, m_matrix, pr_as_read_syntax,
                          current_print_indent_level ());
 }
 
@@ -296,7 +296,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
       boolNDArray btmp (dv);
 
       if (btmp.isempty ())
-        matrix = btmp;
+        m_matrix = btmp;
       else
         {
           NDArray tmp(dv);
@@ -308,7 +308,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
           for (octave_idx_type i = 0; i < btmp.numel (); i++)
             btmp.elem (i) = (tmp.elem (i) != 0.);
 
-          matrix = btmp;
+          m_matrix = btmp;
         }
     }
   else if (kw == "rows")
@@ -331,10 +331,10 @@ octave_bool_matrix::load_ascii (std::istream& is)
             for (octave_idx_type i = 0; i < nr; i++)
               btmp.elem (i, j) = (tmp.elem (i, j) != 0.);
 
-          matrix = btmp;
+          m_matrix = btmp;
         }
       else if (nr == 0 || nc == 0)
-        matrix = boolMatrix (nr, nc);
+        m_matrix = boolMatrix (nr, nc);
       else
         panic_impossible ();
     }
@@ -423,7 +423,7 @@ octave_bool_matrix::load_binary (std::istream& is, bool swap,
   bool *mtmp = m.fortran_vec ();
   for (octave_idx_type i = 0; i < nel; i++)
     mtmp[i] = (htmp[i] ? 1 : 0);
-  matrix = m;
+  m_matrix = m;
 
   return true;
 }
@@ -501,7 +501,7 @@ octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize (dv);
+    m_matrix.resize (dv);
   if (empty)
     return (empty > 0);
 
@@ -551,7 +551,7 @@ octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       for (octave_idx_type i = 0; i < nel; i++)
         btmp.elem (i) = htmp[i];
 
-      matrix = btmp;
+      m_matrix = btmp;
     }
 
   H5Dclose (data_hid);
@@ -575,7 +575,7 @@ octave_bool_matrix::as_mxArray (bool interleaved) const
 
   mwSize nel = numel ();
 
-  const bool *pdata = matrix.data ();
+  const bool *pdata = m_matrix.data ();
 
   for (mwIndex i = 0; i < nel; i++)
     pd[i] = pdata[i];

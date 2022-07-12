@@ -65,6 +65,8 @@ array-valued input functions.
 
 ### Alphabetical list of new functions added in Octave 8
 
+* `pagectranspose`
+* `pagetranspose`
 * `uifigure`
 
 ### Deprecated functions, properties, and operators

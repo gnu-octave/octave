@@ -47,6 +47,8 @@ FCN_FILE_DIRS += \
   %reldir%/logspace.m \
   %reldir%/nextpow2.m \
   %reldir%/num2str.m \
+  %reldir%/pagectranspose.m \
+  %reldir%/pagetranspose.m \
   %reldir%/pol2cart.m \
   %reldir%/polyarea.m \
   %reldir%/postpad.m \

@@ -6470,15 +6470,15 @@ binary_assoc_op_defun_body (octave_value::binary_op op,
 
 DEFUN (plus, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{z} =} plus (@var{x}, @var{y})
-@deftypefnx {} {@var{z} =} plus (@var{x1}, @var{x2}, @dots{})
-This function and @w{@tcode{@var{x} + @var{y}}} are equivalent.
+@deftypefn  {} {@var{C} =} plus (@var{A}, @var{B})
+@deftypefnx {} {@var{C} =} plus (@var{A1}, @var{A2}, @dots{})
+This function and @w{@tcode{@var{A} + @var{B}}} are equivalent.
 
 If more arguments are given, the summation is applied
 cumulatively from left to right:
 
 @example
-(@dots{}((@var{x1} + @var{x2}) + @var{x3}) + @dots{})
+(@dots{}((@var{A1} + @var{A2}) + @var{A3}) + @dots{})
 @end example
 
 @seealso{minus, uplus}

@@ -44,6 +44,7 @@
 #include "file-ops.h"
 #include "iconv-wrappers.h"
 #include "localcharset-wrapper.h"
+#include "oct-env.h"
 #include "oct-string.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -573,8 +574,10 @@ OCTAVE_NAMESPACE_BEGIN
   std::string input_system::dir_encoding (const std::string& dir)
   {
     std::string enc = m_mfile_encoding;
+    // use canonicalized path as key
+    const std::string key = sys::canonicalize_file_name (dir);
 
-    auto enc_it = m_dir_encoding.find (load_path_dir (dir));
+    auto enc_it = m_dir_encoding.find (key);
     if (enc_it != m_dir_encoding.end ())
       enc = enc_it->second;
 

@@ -1204,9 +1204,12 @@ OCTAVE_NAMESPACE_BEGIN
   void
   load_path::read_dir_config (const std::string& dir) const
   {
+    // use canonicalized path as key
+    const std::string key = sys::canonicalize_file_name (dir);
+
     // read file with directory configuration
-    std::string conf_file = dir + sys::file_ops::dir_sep_str ()
-                            + ".oct-config";
+    const std::string
+    conf_file = key + sys::file_ops::dir_sep_str () + ".oct-config";
 
     FILE* cfile = sys::fopen (conf_file, "rb");
 
@@ -1216,7 +1219,7 @@ OCTAVE_NAMESPACE_BEGIN
         input_system& input_sys = __get_input_system__ ();
 
         std::string enc_val = "delete";
-        input_sys.set_dir_encoding (dir, enc_val);
+        input_sys.set_dir_encoding (key, enc_val);
         return;
       }
 
@@ -1257,7 +1260,7 @@ OCTAVE_NAMESPACE_BEGIN
 
             // set encoding for this directory in input system
             input_system& input_sys = __get_input_system__ ();
-            input_sys.set_dir_encoding (dir, enc_val);
+            input_sys.set_dir_encoding (key, enc_val);
             return;
           }
       }

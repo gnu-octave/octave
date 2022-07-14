@@ -458,7 +458,7 @@ function copy_built_files (desc, packdir, verbose)
         if (verbose)
           printf ("copyfile");
           printf (" %s", archindependent{:});
-          printf ("%s\n", instdir);
+          printf (" %s\n", instdir);
         endif
         [status, output] = copyfile (archindependent, instdir);
         if (status != 1)

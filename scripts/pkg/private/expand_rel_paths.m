@@ -31,7 +31,7 @@
 function pkg_list = expand_rel_paths (pkg_list)
 
   ## Prepend location of OCTAVE_HOME to install directories
-  loc = OCTAVE_HOME ();
+  loc = regexptranslate ("escape", OCTAVE_HOME ());
   for i = 1:numel (pkg_list)
     ## Be sure to only prepend OCTAVE_HOME to pertinent package paths
     pkg_list{i}.dir = regexprep (pkg_list{i}.dir, "^__OH__", loc);

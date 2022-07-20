@@ -23,6 +23,10 @@
 ##
 ########################################################################
 
+## Note: The cache of dir_encoding from .oct-config files in the load path
+## persists even after removing the folder from the load path.
+## Explictily, delete it when removing the path.
+
 ## test file in current directory
 
 %!assert (dir_encoding ("."), "windows-1252")
@@ -48,6 +52,7 @@
 %!   assert (dir_encoding (fullfile (pwd (), "CP1251")), "windows-1251");
 %! unwind_protect_cleanup
 %!   path (path_orig);
+%!   dir_encoding (canonicalize_file_name ("CP1251"), "delete");
 %! end_unwind_protect
 
 %!test
@@ -63,6 +68,7 @@
 %!   assert (strfind (help_str, ref_str));
 %! unwind_protect_cleanup
 %!   path (path_orig);
+%!   dir_encoding (canonicalize_file_name ("CP1251"), "delete");
 %! end_unwind_protect
 
 
@@ -79,6 +85,7 @@
 %!   assert (dir_encoding (fullfile (pwd (), "CP1251")), "windows-1251");
 %! unwind_protect_cleanup
 %!   path (path_orig);
+%!   dir_encoding (canonicalize_file_name ("CP1251"), "delete");
 %! end_unwind_protect
 
 %!test
@@ -95,5 +102,45 @@
 %!   assert (strfind (help_str, ref_str));
 %! unwind_protect_cleanup
 %!   path (path_orig);
+%!   dir_encoding (canonicalize_file_name ("CP1251"), "delete");
 %! end_unwind_protect
 
+
+## oruntests with file in current folder with .oct-config file
+%!test <*62780>
+%! ## wrap in "evalc" to suppress output to the log
+%! evalc ('oruntests (".");');
+
+## oruntests with file in different folder (not in load path) with
+## "dir_encoding"
+%!test <*62780>
+%! unwind_protect
+%!   dir_encoding (canonicalize_file_name ("CP1251"), "windows-1251");
+%!   ## use "evalc" to suppress output to the log
+%!   evalc ('oruntests ("CP1251");');
+%! unwind_protect_cleanup
+%!   dir_encoding (canonicalize_file_name ("CP1251"), "delete");
+%! end_unwind_protect
+
+## oruntests with file in different folder (not in load path) with
+## "__mfile_encoding__"
+%!test <*62780>
+%! old_mfile_encoding = __mfile_encoding__ ("windows-1251");
+%! unwind_protect
+%!   ## use "evalc" to suppress output to the log
+%!   evalc ('oruntests ("CP1251");');
+%! unwind_protect_cleanup
+%!   __mfile_encoding__ (old_mfile_encoding);
+%! end_unwind_protect
+
+## oruntests with file in different folder with .oct-config file (in load path)
+%!test <*62780>
+%! path_orig = path ();
+%! unwind_protect
+%!   addpath (canonicalize_file_name ("CP1251"));
+%!   ## use "evalc" to suppress output to the log
+%!   evalc ('oruntests ("CP1251");');
+%! unwind_protect_cleanup
+%!   path (path_orig);
+%!   dir_encoding (canonicalize_file_name ("CP1251"), "delete");
+%! end_unwind_protect

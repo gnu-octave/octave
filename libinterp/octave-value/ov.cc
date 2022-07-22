@@ -3871,7 +3871,7 @@ matrix to zero.
 val = magic (3);
 idx.type = "()";
 idx.subs = @{":", 1:2@};
-subsasgn (val, idx, 0)
+val = subsasgn (val, idx, 0)
      @result{}  [ 0   0   6
            0   0   7
            0   0   2 ]

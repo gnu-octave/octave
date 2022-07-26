@@ -1371,6 +1371,30 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 #endif
 ]])
 
+### Configure Bison as push or pull parser.
+
+ENABLE_COMMAND_LINE_PUSH_PARSER=yes
+AC_ARG_ENABLE([command-line-push-parser],
+  [AS_HELP_STRING([--disable-command-line-push-parser],
+    [don't use Bison's push parser interface in the command line REPL])],
+  [if test "$enableval" = no; then ENABLE_COMMAND_LINE_PUSH_PARSER=no; fi], [])
+if test $ENABLE_COMMAND_LINE_PUSH_PARSER = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER, 1,
+    [Define to 1 to use Bison's push parser interface in the command line REPL.])
+fi
+
+### Configuring building of *experimental* Virtual Machine evaluator
+
+ENABLE_VM_EVALUATOR=yes
+AC_ARG_ENABLE([vm-evaluator],
+  [AS_HELP_STRING([--disable-vm-evaluator],
+    [don't compile *experimental* virtual machine evaluator])],
+  [if test "$enableval" = no; then ENABLE_VM_EVALUATOR=no; fi], [])
+if test $ENABLE_VM_EVALUATOR = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_VM_EVALUATOR, 1,
+    [Define to 1 to build experimental Virtual Machine evaluator.])
+fi
+
 ### Check for the Qhull library.
 
 QHULL_CPPFLAGS=
@@ -1458,18 +1482,6 @@ OCTAVE_ENABLE_READLINE
 
 ## Find a termlib to use.
 OCTAVE_CHECK_LIB_TERMLIB
-
-### Use push parser by default now.
-
-ENABLE_COMMAND_LINE_PUSH_PARSER=yes
-AC_ARG_ENABLE([command-line-push-parser],
-  [AS_HELP_STRING([--disable-command-line-push-parser],
-    [don't use Bison's push parser interface in the command line REPL])],
-  [if test "$enableval" = no; then ENABLE_COMMAND_LINE_PUSH_PARSER=no; fi], [])
-if test $ENABLE_COMMAND_LINE_PUSH_PARSER = yes; then
-  AC_DEFINE(OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER, 1,
-    [Define to 1 to use Bison's push parser interface in the command line REPL.])
-fi
 
 ### Check for ZLIB library.
 

@@ -37,6 +37,12 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `inputParser`: Correctly handle cell default values for optional parameters (bug #62639).
 - `factor.m`: Performance tweak to avoid division in certain cases.
 - Fix regression with `\color[rgb]` TeX pattern (bug #62668).
+- `regexp`: Check pattern length before accessing it (bug #62704).
+- `pkg.m`: Create `PREFIX` and `ARCHPREFIX` directories (bug #62681).
+- `pkg`: Replace `OCTAVE_HOME` in `PREFIX` and `ARCHPREFIX` independently (bug #62681).
+- `randmtzig.cc`: Add missing `#include <ctime>` (bug #62750).
+- `pkg`: Fix formatting of `copyfile` message (bug #62769).
+- `pkg`: Escape special characters in `OCTAVE_HOME` for `regexprep` (bug #62681).
 
 ### GUI
 
@@ -65,6 +71,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `primes.m`: Move code examples before math theory.
 - `primes.m`: Mark variables in docstring with `@var{}` macro.
 - Rewrite section on automatic type conversions (bug #62283).
+- `subsasgn`: Correct example code (bug #33221).
 
 
 Summary of important user-visible changes for version 7 (2022-04-06)

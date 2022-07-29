@@ -86,6 +86,7 @@ PARSE_TREE_SRC = \
   %reldir%/pt-stmt.cc \
   %reldir%/pt-tm-const.cc \
   %reldir%/pt-unop.cc \
+  %reldir%/pt-vm-eval.cc \
   %reldir%/pt-walk.cc \
   %reldir%/pt.cc \
   %reldir%/token.cc

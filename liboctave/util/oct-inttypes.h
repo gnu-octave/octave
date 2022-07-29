@@ -862,6 +862,12 @@ public:
 
 #undef OCTAVE_INT_UN_OP
 
+  octave_int<T> operator ~ (void) const
+  {
+    T bitinv = ~ m_ival;
+    return bitinv;
+  }
+
   // Homogeneous binary integer operations.
 #define OCTAVE_INT_BIN_OP(OP, NAME, ARGT)               \
   inline octave_int<T>                                  \

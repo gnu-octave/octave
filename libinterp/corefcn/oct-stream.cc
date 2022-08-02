@@ -5042,7 +5042,7 @@ namespace octave
 
                     // If it looks like we have a matching failure, then
                     // reset the failbit in the stream state.
-                    if (is.rdstate () & std::ios::failbit)
+                    if (! is.eof () && is.rdstate () & std::ios::failbit)
                       {
                         error (who, "format failed to match");
                         is.clear (is.rdstate () & (~std::ios::failbit));

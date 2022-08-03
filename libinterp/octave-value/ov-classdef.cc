@@ -774,8 +774,3 @@ Implements @code{methods} for Octave class objects and classnames.
 
 OCTAVE_NAMESPACE_END
 
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

@@ -387,6 +387,13 @@
 %! assert (msg, "");
 %! assert (pos, 6);
 
+%!test <*62723>
+%! [val, count, msg, pos] = sscanf ("p", "%c");
+%! assert (val, "p");
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
 %!test
 %! [a, b, c] = sscanf ("1.2 3 foo", "%f%d%s", "C");
 %! [v1, c1, m1] = sscanf ("1 2 3 4 5 6", "%d");

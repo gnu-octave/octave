@@ -746,6 +746,7 @@ Implements @code{methods} for Octave class objects and classnames.
 
   if (cls.ok ())
     {
+      // Find methods for classdef objects.
       std::map<std::string, cdef_method> method_map
         = cls.get_method_map (false, true);
 
@@ -760,11 +761,13 @@ Implements @code{methods} for Octave class objects and classnames.
 
       sv = string_vector (method_names);
     }
+  else
+    {
+      // Find methods for legacy @CLASS objects.
+      load_path& lp = interp.get_load_path ();
 
-  // The following will also find methods for legacy @CLASS objects.
-  load_path& lp = interp.get_load_path ();
-
-  sv.append (lp.methods (class_name));
+      sv = string_vector (lp.methods (class_name));
+    }
 
   return ovl (Cell (sv));
 }

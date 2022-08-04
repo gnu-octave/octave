@@ -709,6 +709,16 @@ namespace octave
                                    FILE_SHARE_READ, nullptr, OPEN_EXISTING,
                                    FILE_FLAG_BACKUP_SEMANTICS, nullptr);
 
+      // Might have been a symbolic link that points to a network share.
+      // It looks like opening a network share itself (not a file or folder
+      // *on* a share) might return an invalid handle. As a workaround, try to
+      // open a handle to the symbolic link itself (and do not resolve it).
+      if (h_file == INVALID_HANDLE_VALUE)
+        h_file = CreateFileW (wname.c_str (), GENERIC_READ,
+                              FILE_SHARE_READ, nullptr, OPEN_EXISTING,
+                              FILE_FLAG_BACKUP_SEMANTICS
+                              | FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+
       if (h_file == INVALID_HANDLE_VALUE)
         {
           msg = "Unable to open file \"" + name + "\"";
@@ -742,12 +752,49 @@ namespace octave
           // "\\server\share" portion of path with drive root.
           if (name[1] == ':')
             {
-              // Find where "share" portion of UNC path ends
+              // Find where "share" portion of UNC path ends.
               std::size_t sep_pos
                 = retval.find_first_of (file_ops::dir_sep_chars (), 2);
               if (sep_pos != std::string::npos)
                 sep_pos = retval.find_first_of (file_ops::dir_sep_chars (),
                                                 sep_pos + 1);
+
+              // Check if original drive letter was a map to this UNC share.
+              std::wstring orig_map = wname.substr (0, 2);
+              HANDLE h_map = CreateFileW (orig_map.c_str (), GENERIC_READ,
+                                          FILE_SHARE_READ, nullptr,
+                                          OPEN_EXISTING,
+                                          FILE_FLAG_BACKUP_SEMANTICS
+                                          | FILE_FLAG_OPEN_REPARSE_POINT,
+                                          nullptr);
+              if (h_file != INVALID_HANDLE_VALUE)
+                {
+                  unwind_action close_map_handle (CloseHandle, h_map);
+                  len = GetFinalPathNameByHandleW (h_map, buffer, buf_size,
+                                                   FILE_NAME_NORMALIZED);
+
+                  std::string orig_dest
+                    = u8_from_wstring (std::wstring (buffer, len));
+
+                  if (orig_dest.compare (0, 8, R"(\\?\UNC\)") == 0)
+                    {
+                      orig_dest = orig_dest.erase (2, 6);
+                      // Find where "share" portion of UNC path ends.
+                      std::size_t sep_pos_orig
+                        = orig_dest.find_first_of (file_ops::dir_sep_chars (),
+                                                   2);
+                      if (sep_pos_orig != std::string::npos)
+                        sep_pos_orig
+                          = retval.find_first_of (file_ops::dir_sep_chars (),
+                                                  sep_pos_orig + 1);
+                      if (retval.substr (0, sep_pos)
+                            .compare (orig_dest.substr (0, sep_pos_orig)))
+                        // share doesn't match mapped drive
+                        return retval;
+                    }
+                }
+
+              // File is on mapped share.
               if (sep_pos != std::string::npos)
                 retval = retval.substr (sep_pos-2);
               else

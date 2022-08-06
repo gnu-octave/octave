@@ -52,7 +52,25 @@ Array<T, Alloc>::Array (const Array<T, Alloc>& a, const dim_vector& dv)
   : m_dimensions (dv), m_rep (a.m_rep),
     m_slice_data (a.m_slice_data), m_slice_len (a.m_slice_len)
 {
-  if (m_dimensions.safe_numel () != a.numel ())
+  bool invalid_size = false;
+
+  octave_idx_type new_numel = 0;
+
+  try
+    {
+      // Safe numel may throw a bad_alloc error because the new
+      // dimensions are too large to allocate.  Trap that here so
+      // we can issue a more helpful diagnostic that is consistent
+      // with other size mismatch failures.
+
+      new_numel = m_dimensions.safe_numel ();
+    }
+  catch (const std::bad_alloc&)
+    {
+      invalid_size = true;
+    }
+
+  if (invalid_size || new_numel != a.numel ())
     {
       std::string dimensions_str = a.m_dimensions.str ();
       std::string new_dims_str = m_dimensions.str ();

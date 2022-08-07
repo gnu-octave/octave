@@ -1592,24 +1592,20 @@ namespace octave
         // setting the geometry to the max. available geometry. However, on
         // X11, the available geometry (excluding task bar etc.) is equal to
         // the total geometry leading to a full screen mode without window
-        // decorations. This in turn can be avoided by reducing the max.
-        // size by a few pixels.
+        // decorations. This in turn can be avoided by explicitly adding
+        // a title bar in the window flags.
 
-        // Get available geometry for current screen.
+        // Get available geometry for current screen and set this
+        // window's geometry to it.
         QScreen *s = windowHandle ()->screen ();
         QRect av_geom = s->availableGeometry ();
+        setGeometry (av_geom);  // Set (correct) available geometry
 
-        QList<QScreen *> screen_list = QGuiApplication::screens ();
-        if (screen_list.length () > 1)
-          {
-            // If we have more than one monitor and available and total
-            // geometry are the same, reduce this too large geometry
-            QRect new_geom (av_geom.x () + 1, av_geom.y () + 1,
-                            av_geom.width ()-2, av_geom.height ()-2);
-            setGeometry (new_geom);
-          }
-        else
-          setGeometry (av_geom);  // Set (correct) available geometry
+        // Force full title bar
+        setWindowFlags(Qt::WindowTitleHint
+                       | Qt::WindowMinMaxButtonsHint
+                       | Qt::WindowSystemMenuHint
+                       | Qt::WindowCloseButtonHint);
       }
 
     if (! restoreState (settings->value (mw_state).toByteArray ()))

@@ -8,6 +8,9 @@ That means that less symbols are exported from these libraries.
 Configure with `--disable-lib-visibility-flags` to export all symbols
 (as in previous versions).
 
+- `filter` is now 5X faster, which also speeds up `deconv`, `fftfilt`
+and `arma_rnd` by the same amount.
+
 - `integral` can now output a second argument passing the error
 measurement used by the underlying integrator.
 

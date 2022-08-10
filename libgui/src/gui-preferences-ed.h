@@ -199,6 +199,9 @@ ed_session_ind ("editor/saved_session_tab_index", QVariant (QStringList ()));
 const gui_pref
 ed_session_lines ("editor/saved_session_lines", QVariant (QStringList ()));
 
+const gui_pref
+ed_session_bookmarks ("editor/saved_session_bookmarks", QVariant (QStringList ()));
+
 // Tabs
 const QStringList
 ed_tab_position_names (QStringList ()

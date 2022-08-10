@@ -337,12 +337,16 @@ namespace octave
     QStringList session_lines
       = settings->value (ed_session_lines).toStringList ();
 
+    QStringList session_bookmarks
+      = settings->value (ed_session_bookmarks).toStringList ();
+
     // fill a list of the struct and sort it (depending on index)
     QList<session_data> s_data;
 
     bool do_encoding = (session_encodings.count () == sessionFileNames.count ());
     bool do_index = (session_index.count () == sessionFileNames.count ());
     bool do_lines = (session_lines.count () == sessionFileNames.count ());
+    bool do_bookmarks = (session_bookmarks.count () == sessionFileNames.count ());
 
     for (int n = 0; n < sessionFileNames.count (); ++n)
       {
@@ -351,13 +355,15 @@ namespace octave
           continue;
 
         session_data item = { 0, -1, sessionFileNames.at (n),
-                              QString (), QString ()};
+                              QString (), QString (), QString ()};
         if (do_lines)
           item.line = session_lines.at (n).toInt ();
         if (do_index)
           item.index = session_index.at (n).toInt ();
         if (do_encoding)
           item.encoding = session_encodings.at (n);
+        if (do_bookmarks)
+          item.bookmarks = session_bookmarks.at (n);
 
         s_data << item;
       }
@@ -367,7 +373,8 @@ namespace octave
     // finally open the files with the desired encoding in the desired order
     for (int n = 0; n < s_data.count (); ++n)
       request_open_file (s_data.at (n).file_name, s_data.at (n).encoding,
-                         s_data.at (n).line);
+                         s_data.at (n).line, false, false, true, "", -1,
+                         s_data.at (n).bookmarks);
   }
 
   void file_editor::activate (void)
@@ -440,6 +447,7 @@ namespace octave
     QStringList fet_encodings;
     QStringList fet_index;
     QStringList fet_lines;
+    QStringList fet_bookmarks;
 
     std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
 
@@ -460,6 +468,8 @@ namespace octave
             int l, c;
             editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
             fet_lines.append (index.setNum (l + 1));
+
+            fet_bookmarks.append (editor_tab->get_all_bookmarks ());
           }
       }
 
@@ -467,6 +477,7 @@ namespace octave
     settings->setValue (ed_session_enc.key, fet_encodings);
     settings->setValue (ed_session_ind.key, fet_index);
     settings->setValue (ed_session_lines.key, fet_lines);
+    settings->setValue (ed_session_bookmarks.key, fet_bookmarks);
     settings->sync ();
   }
 
@@ -1535,7 +1546,8 @@ namespace octave
                                        const QString& encoding,
                                        int line, bool debug_pointer,
                                        bool breakpoint_marker, bool insert,
-                                       const QString& cond, int index)
+                                       const QString& cond, int index,
+                                       const QString& bookmarks)
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
@@ -1708,6 +1720,17 @@ namespace octave
                             request_open_file (openFileName);
                           }
                       }
+                  }
+              }
+
+            if (! bookmarks.isEmpty ())
+              {
+                // Restore bookmarks
+                for (const auto& bms : bookmarks.split (','))
+                  {
+                    int bm = bms.toInt ();
+                    if (fileEditorTab)
+                      fileEditorTab->qsci_edit_area ()->markerAdd (bm, marker::bookmark);
                   }
               }
 

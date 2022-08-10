@@ -82,6 +82,7 @@ namespace octave
       QString file_name;
       QString new_file_name;
       QString encoding;
+      QString bookmarks;
 
       bool operator < (const session_data& other) const
       {
@@ -313,7 +314,8 @@ namespace octave
                             const QString& encoding = QString (),
                             int line = -1, bool debug_pointer = false,
                             bool breakpoint_marker = false, bool insert = true,
-                            const QString& cond = "", int index = -1);
+                            const QString& cond = "", int index = -1,
+                            const QString& bookmarks = QString ());
     void request_preferences (bool);
     void request_styles_preferences (bool);
 

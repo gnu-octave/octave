@@ -276,8 +276,12 @@ namespace octave
     void update_lexer (void);
 
     void show_dialog (QDialog *dlg, bool modal);
+
   public:
+
     int check_file_modified (bool remove = false);
+    QString get_all_bookmarks (void);
+
   private:
     void do_comment_selected_text (bool comment, bool input_str = false);
     void do_indent_selected_text (bool indent);

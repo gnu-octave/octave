@@ -1134,6 +1134,27 @@ namespace octave
     m_edit_area->setCursorPosition (prevline, 0);
   }
 
+
+  QString file_editor_tab::get_all_bookmarks ()
+  {
+    QString bmlist;
+    int line = 0;
+
+    while (line > -1)
+      {
+        line = m_edit_area->markerFindNext (line, (1 << marker::bookmark));
+        if (line > -1)
+          {
+            if (! bmlist.isEmpty ())
+              bmlist += ",";
+            bmlist += QString::number (line);
+            line++;   // search from next line, otherwise same line found again
+          }
+      }
+
+    return bmlist;
+  }
+
   void file_editor_tab::remove_bookmark (const QWidget *ID)
   {
     if (ID != this)

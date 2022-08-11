@@ -80,10 +80,15 @@ namespace octave
     if (! init_ret)
       (*current_liboctave_error_handler) ("Error initializing FFTW threads");
 
-    // Use number of processors available to the current process
-    // This can be later changed with fftw ("threads", nthreads).
+    // Check number of processors available to the current process
     m_nthreads =
       octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT_OVERRIDABLE);
+
+    // Limit number of threads to 3 by default
+    // See: https://octave.discourse.group/t/3121
+    // This can be later changed with fftw ("threads", nthreads).
+    if (m_nthreads > 3)
+      m_nthreads = 3;
 
     fftw_plan_with_nthreads (m_nthreads);
 #endif

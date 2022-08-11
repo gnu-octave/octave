@@ -134,9 +134,9 @@ transforms can be set with
 fftw ("threads", @var{NTHREADS})
 @end example
 
-Note that octave must be compiled with multi-threaded @sc{fftw} support for
-this feature.  The number of processors available to the current process is
-used per default.
+Note that Octave must be compiled with multi-threaded @sc{fftw} support for
+this feature.  By default, the number of (logical) processors available to the
+current process or @var{3} is used (whichever is smaller).
 
 @seealso{fft, ifft, fft2, ifft2, fftn, ifftn}
 @end deftypefn */)

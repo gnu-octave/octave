@@ -38,7 +38,10 @@ DEFUN (nproc, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{n} =} nproc ()
 @deftypefnx {} {@var{n} =} nproc (@var{query})
-Return the current number of available processors.
+Return the current number of available (logical) processors.
+
+This returns the number of logical processors.  For processors with
+hyperthreading, this is larger than the number of physical cores.
 
 If called with the optional argument @var{query}, modify how processors
 are counted as follows:

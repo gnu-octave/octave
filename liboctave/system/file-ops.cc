@@ -749,59 +749,46 @@ namespace octave
           retval = retval.erase (2, 6);
 
           // If the initial path looked like a mapped network drive, replace
-          // "\\server\share" portion of path with drive root.
-          if (name[1] == ':')
-            {
-              // Find where "share" portion of UNC path ends.
-              std::size_t sep_pos
-                = retval.find_first_of (file_ops::dir_sep_chars (), 2);
-              if (sep_pos != std::string::npos)
-                sep_pos = retval.find_first_of (file_ops::dir_sep_chars (),
-                                                sep_pos + 1);
+          // portion of path that corresponds to mapped root with drive root.
+          if (name.size () < 2 || name[1] != ':')
+            return retval;
 
-              // Check if original drive letter was a map to this UNC share.
-              std::wstring orig_map = wname.substr (0, 2);
-              HANDLE h_map = CreateFileW (orig_map.c_str (), GENERIC_READ,
-                                          FILE_SHARE_READ, nullptr,
-                                          OPEN_EXISTING,
-                                          FILE_FLAG_BACKUP_SEMANTICS
-                                          | FILE_FLAG_OPEN_REPARSE_POINT,
-                                          nullptr);
-              if (h_file != INVALID_HANDLE_VALUE)
-                {
-                  unwind_action close_map_handle (CloseHandle, h_map);
-                  len = GetFinalPathNameByHandleW (h_map, buffer, buf_size,
-                                                   FILE_NAME_NORMALIZED);
+          // UNC path corresponding to original drive letter (mappped drive)
+          std::wstring orig_map = wname.substr (0, 2);
+          HANDLE h_map = CreateFileW (orig_map.c_str (), GENERIC_READ,
+                                      FILE_SHARE_READ, nullptr, OPEN_EXISTING,
+                                      FILE_FLAG_BACKUP_SEMANTICS
+                                      | FILE_FLAG_OPEN_REPARSE_POINT,
+                                      nullptr);
 
-                  std::string orig_dest
-                    = u8_from_wstring (std::wstring (buffer, len));
+          if (h_map == INVALID_HANDLE_VALUE)
+            // cannot determine common root
+            return retval;
 
-                  if (orig_dest.compare (0, 8, R"(\\?\UNC\)") == 0)
-                    {
-                      orig_dest = orig_dest.erase (2, 6);
-                      // Find where "share" portion of UNC path ends.
-                      std::size_t sep_pos_orig
-                        = orig_dest.find_first_of (file_ops::dir_sep_chars (),
-                                                   2);
-                      if (sep_pos_orig != std::string::npos)
-                        sep_pos_orig
-                          = retval.find_first_of (file_ops::dir_sep_chars (),
-                                                  sep_pos_orig + 1);
-                      if (retval.substr (0, sep_pos)
-                            .compare (orig_dest.substr (0, sep_pos_orig)))
-                        // share doesn't match mapped drive
-                        return retval;
-                    }
-                }
+          unwind_action close_map_handle (CloseHandle, h_map);
+          len = GetFinalPathNameByHandleW (h_map, buffer, buf_size,
+                                           FILE_NAME_NORMALIZED);
 
-              // File is on mapped share.
-              if (sep_pos != std::string::npos)
-                retval = retval.substr (sep_pos-2);
-              else
-                retval.resize (2);  // no file component
-              retval[0] = std::toupper (name[0]);
-              retval[1] = ':';
-            }
+          std::string orig_root
+            = u8_from_wstring (std::wstring (buffer, len));
+
+          if (orig_root.compare (0, 8, R"(\\?\UNC\)"))
+            // root was not a mapped share
+            return retval;
+
+          orig_root = orig_root.erase (2, 6);
+          if (retval.compare (0, orig_root.size (), orig_root))
+            // start of UNC path doesn't match mapped drive root
+            return retval;
+
+          // file is on mapped share
+          size_t sep_pos = orig_root.size ();
+          if (sep_pos != retval.size ())
+            retval = retval.substr (sep_pos-2);
+          else
+            retval.resize (2);  // no file component
+          retval[0] = std::toupper (name[0]);
+          retval[1] = ':';
         }
       else if (retval.compare (0, 4, R"(\\?\)") == 0)
         retval = retval.erase (0, 4);

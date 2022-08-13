@@ -1436,7 +1436,7 @@ a duplicate file descriptor.
 @seealso{fcntl, F_GETFD, F_GETFL, F_SETFD, F_SETFL}
 @end deftypefn */)
 {
-  static int val = octave_f_dupfd_wrapper ();
+  static const int val = octave_f_dupfd_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_DUPFD", "F_DUPFD");
@@ -1452,7 +1452,7 @@ the file descriptor flags.
 @seealso{fcntl, F_DUPFD, F_GETFL, F_SETFD, F_SETFL}
 @end deftypefn */)
 {
-  static int val = octave_f_getfd_wrapper ();
+  static const int val = octave_f_getfd_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_GETFD", "F_GETFD");
@@ -1468,7 +1468,7 @@ the file status flags.
 @seealso{fcntl, F_DUPFD, F_GETFD, F_SETFD, F_SETFL}
 @end deftypefn */)
 {
-  static int val = octave_f_getfl_wrapper ();
+  static const int val = octave_f_getfl_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_GETFL", "F_GETFL");
@@ -1484,7 +1484,7 @@ descriptor flags.
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}
 @end deftypefn */)
 {
-  static int val = octave_f_setfd_wrapper ();
+  static const int val = octave_f_setfd_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_SETFD", "F_SETFD");
@@ -1500,7 +1500,7 @@ status flags.
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}
 @end deftypefn */)
 {
-  static int val = octave_f_setfl_wrapper ();
+  static const int val = octave_f_setfl_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_SETFL", "F_SETFL");
@@ -1520,7 +1520,7 @@ to indicate each write operation appends, or that may be passed to
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_append_wrapper ();
+  static const int val = octave_o_append_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_APPEND", "O_APPEND");
@@ -1539,7 +1539,7 @@ Return the numerical value of the @code{O_ASYNC} macro.
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_async_wrapper ();
+  static const int val = octave_o_async_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_ASYNC", "O_ASYNC");
@@ -1559,7 +1559,7 @@ exist.
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_creat_wrapper ();
+  static const int val = octave_o_creat_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_CREAT", "O_CREAT");
@@ -1578,7 +1578,7 @@ Return the numerical value of the @code{O_EXCL}.
 O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_excl_wrapper ();
+  static const int val = octave_o_excl_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_EXCL", "O_EXCL");
@@ -1598,7 +1598,7 @@ passsed to @code{fcntl} to set non-blocking I/O.
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_nonblock_wrapper ();
+  static const int val = octave_o_nonblock_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_NONBLOCK", "O_NONBLOCK");
@@ -1617,7 +1617,7 @@ Return the numerical value of the @code{O_RDONLY}.
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_rdonly_wrapper ();
+  static const int val = octave_o_rdonly_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_RDONLY", "O_RDONLY");
@@ -1637,7 +1637,7 @@ writing.
 O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_rdwr_wrapper ();
+  static const int val = octave_o_rdwr_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_RDWR", "O_RDWR");
@@ -1656,7 +1656,7 @@ Return the numerical value of the @code{O_SYNC}.
 O_RDWR, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_sync_wrapper ();
+  static const int val = octave_o_sync_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_SYNC", "O_SYNC");
@@ -1676,7 +1676,7 @@ when writing.
 O_RDWR, O_SYNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_trunc_wrapper ();
+  static const int val = octave_o_trunc_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_TRUNC", "O_TRUNC");
@@ -1695,7 +1695,7 @@ Return the numerical value of the @code{O_WRONLY}.
 O_RDWR, O_SYNC, O_TRUNC}
 @end deftypefn */)
 {
-  static int val = octave_o_wronly_wrapper ();
+  static const int val = octave_o_wronly_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_WRONLY", "O_WRONLY");

@@ -435,9 +435,10 @@ Undocumented internal function.
     {
       SparseMatrix L;
       SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();
+      RowVector sm_col_norms = xcolnorms (sm_l, 1);
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
-        (sm_l, L, xcolnorms (sm_l, 1).fortran_vec (), droptol, michol);
+        (sm_l, L, sm_col_norms.fortran_vec (), droptol, michol);
 
       return ovl (L);
     }

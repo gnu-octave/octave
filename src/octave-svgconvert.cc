@@ -660,12 +660,6 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
         }
       else if (elt.tagName () == "rect")
         {
-          // Color
-          QColor col (Qt::black);
-          QString str = elt.attribute ("fill");
-          if (! str.isEmpty ())
-            col = QColor (str);
-
           // Position
           double x = elt.attribute ("x").toDouble ();
           double y = elt.attribute ("y").toDouble ();
@@ -674,10 +668,19 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
           double wd = elt.attribute ("width").toDouble ();
           double hg = elt.attribute ("height").toDouble ();
 
-          painter.setBrush (col);
+          // Color
+          QColor saved_color = painter.brush ().color ();
+
+          QString str = elt.attribute ("fill");
+          if (! str.isEmpty ())
+            painter.setBrush (QColor (str));
+
           painter.setPen (Qt::NoPen);
 
           painter.drawRect (QRectF (x, y, wd, hg));
+
+          if (! str.isEmpty ())
+            painter.setBrush (saved_color);
         }
       else if (elt.tagName () == "polygon")
         {

@@ -862,7 +862,7 @@ namespace octave
 
   void main_window::open_octave_packages_page (void)
   {
-    QDesktopServices::openUrl (QUrl ("https://octave.org/packages.html"));
+    QDesktopServices::openUrl (QUrl ("https://packages.octave.org/index.html"));
   }
 
   void main_window::open_contribute_page (void)

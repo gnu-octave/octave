@@ -1671,7 +1671,8 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
   else
     {
       // Intervals around singularities.
-      sing = args(4).array_value ().fortran_vec ();
+      NDArray arr = args(4).array_value ();
+      sing = arr.fortran_vec ();
       iivals[0] = a;
       std::copy_n (sing, nivals-1, iivals+1);
       iivals[nivals] = b;

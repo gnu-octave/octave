@@ -483,9 +483,11 @@ Undocumented internal function.
       SparseMatrix sm_l = Ftril (ovl (sm, -1))(0).sparse_matrix_value ();
       SparseMatrix U, L;
 
+      RowVector sm_col_norms = xcolnorms (sm);
+      ColumnVector sm_row_norms = xrownorms (sm);
       ilu_crout <SparseMatrix, double> (sm_l, sm_u, L, U,
-                                        xcolnorms (sm).fortran_vec (),
-                                        xrownorms (sm).fortran_vec (),
+                                        sm_col_norms.fortran_vec (),
+                                        sm_row_norms.fortran_vec (),
                                         droptol, milu);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));

@@ -271,6 +271,10 @@ function filelist = unpack (file, dir = [], filetype = "")
   unwind_protect
     unsetenv ("TAR_OPTIONS");
     cd (dir);
+    if (ispc ())
+      ## Escape backslashes (necessary for UNC paths).
+      file = strrep (file, '\', '\\');
+    endif
     [status, output] = system (sprintf ([command " 2>&1"], file));
   unwind_protect_cleanup
     cd (origdir);

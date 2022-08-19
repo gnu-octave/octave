@@ -534,6 +534,10 @@ function [local_packages, global_packages] = pkg (varargin)
         if (octave_forge)
           [urls, local_files] = cellfun ("get_forge_download", files,
                                          "uniformoutput", false);
+          if (verbose)
+            fprintf ("downloading tarball(s) from:%s\n", ...
+                     sprintf ("\n- %s", urls{:}));
+          endif
           [files, succ] = cellfun ("urlwrite", urls, local_files,
                                    "uniformoutput", false);
           succ = [succ{:}];

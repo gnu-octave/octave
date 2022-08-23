@@ -750,11 +750,12 @@ namespace octave
 
           // If the initial path looked like a mapped network drive, replace
           // portion of path that corresponds to mapped root with drive root.
-          if (name.size () < 2 || name[1] != ':')
+          if (name.size () < 3 || name[1] != ':')
             return retval;
 
           // UNC path corresponding to original drive letter (mappped drive)
-          std::wstring orig_map = wname.substr (0, 2);
+          std::wstring orig_map = wname.substr (0, 3);
+          orig_map[2] = L'\\';
           HANDLE h_map = CreateFileW (orig_map.c_str (), GENERIC_READ,
                                       FILE_SHARE_READ, nullptr, OPEN_EXISTING,
                                       FILE_FLAG_BACKUP_SEMANTICS

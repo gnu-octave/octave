@@ -49,10 +49,8 @@ function n = nextpow2 (x)
     error ("nextpow2: X must be numeric");
   endif
 
-  [f, n] = log2 (abs (x));
-  idx = (n == 0);   # Find any failures of log2 function (n == 0)
-  n(idx) = f(idx);  # and copy over value.
-  n(f == 0.5)--;
+  n = ceil (log2 (abs (x)));
+  n(x == 0) = 0;  # special case
 
 endfunction
 
@@ -64,6 +62,8 @@ endfunction
 %!assert (nextpow2 (-17), 5)
 %!assert (nextpow2 (-31), 5)
 %!assert (nextpow2 (1:17), [0 1 2 2 3 3 3 3 4 4 4 4 4 4 4 4 5])
+%!assert (nextpow2 (0.5), -1)
+%!assert (nextpow2 (0.6), 0)
 ## Special cases
 %!assert (nextpow2 (0), 0)
 %!assert (nextpow2 (1), 0)

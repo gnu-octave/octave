@@ -62,8 +62,8 @@ endfunction
 %!assert (nextpow2 (-17), 5)
 %!assert (nextpow2 (-31), 5)
 %!assert (nextpow2 (1:17), [0 1 2 2 3 3 3 3 4 4 4 4 4 4 4 4 5])
-%!assert (nextpow2 (0.5), -1)
-%!assert (nextpow2 (0.6), 0)
+%!assert <*62947> (nextpow2 (0.5), -1)
+%!assert <*62947> (nextpow2 (0.6), 0)
 ## Special cases
 %!assert (nextpow2 (0), 0)
 %!assert (nextpow2 (1), 0)

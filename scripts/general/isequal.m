@@ -171,6 +171,13 @@ function tf = isequal (x, varargin)
         ## function type.  Use '==' operator which is overloaded.
         tf = (x == y);
 
+      elseif (isjava (x))
+        try
+          tf = x.equals (y);
+        catch
+          error ('isequal: Java object does not implement "equals" function');
+        end_try_catch
+
       else
         error ("isequal: Impossible to reach code.  File a bug report.");
 
@@ -543,6 +550,14 @@ endfunction
 ## Matlab compatibility
 %!assert (isequal (sparse (1), sparse (1)), true)
 %!assert (isequal (sparse (1), sparse (1)), sparse (1), true)
+
+## Java objects
+%!test <*62930>
+%! int1 = javaObject ("java.lang.Integer", 1.0);
+%! int2 = javaObject ("java.lang.Integer", 2.0);
+%! assert (isequal (int1, int1));
+%! assert (! isequal (int1, 1.0));
+%! assert (! isequal (int1, int2));
 
 ## test input validation
 %!error <Invalid call> isequal ()

@@ -552,7 +552,7 @@ endfunction
 %!assert (isequal (sparse (1), sparse (1)), sparse (1), true)
 
 ## Java objects
-%!test <*62930>
+%!testif HAVE_JAVA; usejava ("jvm")  <*62930>
 %! int1 = javaObject ("java.lang.Integer", 1.0);
 %! int2 = javaObject ("java.lang.Integer", 2.0);
 %! assert (isequal (int1, int1));

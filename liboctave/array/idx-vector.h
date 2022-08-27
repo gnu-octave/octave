@@ -171,7 +171,8 @@ namespace octave
                      octave_idx_type step, direct)
         : idx_base_rep (), m_start (start), m_len (len), m_step (step) { }
 
-      // Zero-based constructor.
+      // Zero-based constructor for index range starting at `start` (inclusive)
+      // and ending at `limit` (exclusive) in steps of `step`.
       idx_range_rep (octave_idx_type start, octave_idx_type limit,
                      octave_idx_type step);
 

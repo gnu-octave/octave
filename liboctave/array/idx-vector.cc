@@ -103,8 +103,10 @@ namespace octave
                                             octave_idx_type limit,
                                             octave_idx_type step)
     : idx_base_rep (), m_start(start),
-      m_len (step ? std::max ((limit - start) / step,
-                              static_cast<octave_idx_type> (0))
+      // Round length away from zero to catch incomplete intervals
+      m_len (step
+             ? std::max ((limit - start + step - (step > 0 ? 1 : -1)) / step,
+                         static_cast<octave_idx_type> (0))
              : -1),
       m_step (step)
   {

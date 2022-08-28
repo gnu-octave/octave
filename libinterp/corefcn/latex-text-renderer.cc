@@ -215,7 +215,24 @@ namespace octave
     if (m_tmp_dir.empty ())
       {
         //Create the temporary directory
+#if defined (OCTAVE_USE_WINDOWS_API)
+        static std::string base_tmp_dir;
+
+        if (base_tmp_dir.empty ())
+          {
+            base_tmp_dir = sys::env::get_temp_directory ();
+
+            // Make sure we don't get short 8.3 path on Windows since some
+            // versions of latex on that platform don't support them
+            // (see bug #62779)
+            if (base_tmp_dir.find ('~') != std::string::npos)
+              base_tmp_dir = sys::canonicalize_file_name (base_tmp_dir);
+          }
+
+        m_tmp_dir = sys::tempnam (base_tmp_dir, "latex");
+#else
         m_tmp_dir = sys::tempnam ("", "latex");
+#endif
 
         if (sys::mkdir (m_tmp_dir, 0700) != 0)
           {

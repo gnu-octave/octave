@@ -407,8 +407,8 @@ function [q, qerr] = tensorproduct (f, ya, yb, tile, xtrans, ytrans, ztrans, sin
   ty = ty * ones (1, 15);
 
   z = yhalfwidth .* f (x, y) .* ztrans(tx, ty) .* xhalfwidth;
-  q = weights15 * (weights15 * z)';
-  qerr = abs (weights7 * (weights7 * z)' - q);
+  q = weights15 * (weights15 * z).';
+  qerr = abs (weights7 * (weights7 * z).' - q);
 
 endfunction
 

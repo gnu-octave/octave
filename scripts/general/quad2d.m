@@ -438,6 +438,8 @@ endfunction
 
 %!assert (quad2d (@plus, 1, 2, 3, 4), 5, 1e-10)
 
+%!assert <*62972> (quad2d (@(x,y) 1i*ones (size (x)), 0,1,0,1), 1i)
+
 ## Test input validation
 %!error <Invalid call> quad2d ()
 %!error <Invalid call> quad2d (@plus)

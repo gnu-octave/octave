@@ -804,6 +804,35 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION], [
   fi
 ])
 dnl
+dnl Check whether the Qt method QPainter::setRenderHint accepts the
+dnl QPainter::LosslessImageRendering flag.  This flag was introduced in Qt 5.13.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS], [
+  AC_CACHE_CHECK([for QPainter::LosslessImageRendering flag],
+    [octave_cv_func_qpainter_setrenderhint_lossless],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QPainter>
+        ]], [[
+        QPainter painter;
+        painter.setRenderHint (QPainter::LosslessImageRendering);
+        ]])],
+      octave_cv_func_qpainter_setrenderhint_lossless=yes,
+      octave_cv_func_qpainter_setrenderhint_lossless=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qpainter_setrenderhint_lossless = yes; then
+    AC_DEFINE(HAVE_QPAINTER_RENDERHINT_LOSSLESS, 1,
+      [Define to 1 if you have the `QPainter::LosslessImageRendering' flag.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
@@ -2279,6 +2308,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER
     OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA
     OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
+    OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS
 
     OCTAVE_CHECK_QOVERLOAD_TEMPLATE
     OCTAVE_CHECK_QREGION_ITERATORS

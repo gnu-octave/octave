@@ -152,8 +152,8 @@
 ## output to be rasterized.
 ## @end table
 ##
-## Caution: @option{-svgconvert} may lead to inaccurate rendering of image
-## objects.
+## Caution: If Octave was built against Qt version earlier than 5.13,
+## @option{-svgconvert} may lead to inaccurate rendering of image objects.
 ##
 ## @item  -portrait
 ## @itemx -landscape

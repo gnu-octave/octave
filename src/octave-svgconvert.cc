@@ -653,6 +653,9 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
                 }
 
               painter.setRenderHint (QPainter::Antialiasing, false);
+#if defined (HAVE_QPAINTER_RENDERHINT_LOSSLESS)
+              painter.setRenderHint (QPainter::LosslessImageRendering);
+#endif
               painter.drawImage (pos, img);
               painter.setRenderHint (QPainter::Antialiasing, true);
               painter.restore  ();

@@ -69,7 +69,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.rgb_output = false;
   arg_st.send_to_printer = false;
   arg_st.special_flag = "textnormal";
-  arg_st.svgconvert = false;
+  arg_st.svgconvert = true;
   arg_st.svgconvert_binary = __quote_path__ (__svgconv_binary__ ());
   arg_st.tight = true;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
@@ -125,6 +125,8 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.tight = true;
       elseif (strcmp (arg, "-svgconvert"))
         arg_st.svgconvert = true;
+      elseif (strcmp (arg, "-nosvgconvert"))
+        arg_st.svgconvert = false;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
       elseif (strcmp (arg, "-fillpage"))
@@ -234,11 +236,6 @@ function arg_st = __print_parse_opts__ (varargin)
     warning ('Octave:print:deprecated-format',
              'print: "%s" format is no more officially supported', ...
              arg_st.devopt);
-  endif
-
-  ## By default, postprocess svg files using svgconvert.
-  if (strcmp (arg_st.devopt, "svg"))
-    arg_st.svgconvert = true;
   endif
 
   ## By default, use the "opengl" renderer for all raster outputs

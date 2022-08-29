@@ -45,6 +45,11 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 
 ### Graphics backend
 
+- When printing, the option `-svgconvert` is now the default.  If you want to
+use the more limited EPS-based tool chain (the former default)&mdash;e.g., if
+you encounter inaccurate image rendering&mdash;you can pass the `-nosvgconvert`
+option to the `print` function.
+
 - Additional properties have been added to the `figure` graphics object:
     * `"innerposition"` (equivalent to `"position"`)
     * `"windowstate"` (not yet implemented)

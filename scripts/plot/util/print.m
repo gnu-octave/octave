@@ -127,9 +127,10 @@
 ## JPEG) and @qcode{"painters"} for vector formats (e.g., PDF)@.  These options
 ## are only supported for the "qt" graphics toolkit.
 ##
-## @item -svgconvert
-##   When using the @option{-painters} renderer, this enables a different
-## backend toolchain with enhanced characteristics:
+## @item -svgconvert (default)
+## @item -nosvgconvert
+##   When using the @option{-painters} renderer, this enables or disables the
+## SVG based backend toolchain with enhanced characteristics:
 ##
 ## @table @asis
 ## @item Font handling:
@@ -263,9 +264,8 @@
 ##
 ## Use @code{pdfcrop} if you don't want the surrounding page.
 ##
-## By default, PDF inherits the same limitations as PostScript.
-## For an enhanced output with complete text support and basic transparency,
-## use the @option{-svgconvert} option.
+## Caution: with @option{-nosvgconvert} option, PDF inherits the same
+## limitations as PostScript (limited set of fonts and lack of transparency).
 ##
 ##   @item  eps(2)
 ##   @itemx epsc(2)
@@ -273,7 +273,7 @@
 ##
 ## The OpenGL-based graphics toolkits always generate PostScript level 3.0.
 ## They have limited support for text unless using the @option{-svgconvert}
-## option.
+## option (the default).
 ## Limitations include using only ASCII characters (e.g., no Greek letters)
 ## and support for just three base PostScript fonts: Helvetica (the default),
 ## Times, or Courier.  Any other font will be replaced by Helvetica.

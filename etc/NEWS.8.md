@@ -31,6 +31,9 @@ array-valued input functions.
     * `"innerposition"` (equivalent to `"position"`)
     * `"windowstate"` (not yet implemented)
 
+- Legend now features a new property `"itemhitfcn"`, allowing the execution of a
+callback function when a legend item is clicked.
+
 ### Matlab compatibility
 
 - `inline` functions now support all Matlab methods.  The performance

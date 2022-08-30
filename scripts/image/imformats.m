@@ -289,7 +289,7 @@ function bool = isa_magick (coder, filename)
   bool = false;
   try
     info = __magick_ping__ (filename, 1);
-    bool = strcmp (coder, info.Format);
+    bool = strcmp (coder, info.format);
   end_try_catch
 
 endfunction

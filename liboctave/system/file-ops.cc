@@ -778,6 +778,11 @@ namespace octave
             return retval;
 
           orig_root = orig_root.erase (2, 6);
+          // trim trailing file separators from UNC path corresponding to root
+          std::string file_seps = file_ops::dir_sep_chars ();
+          while (file_seps.find (orig_root.back ()) != std::string::npos)
+            orig_root.pop_back ();
+
           if (retval.compare (0, orig_root.size (), orig_root))
             // start of UNC path doesn't match mapped drive root
             return retval;

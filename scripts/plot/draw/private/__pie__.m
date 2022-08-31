@@ -162,7 +162,7 @@ function hlist = __pie__ (caller, varargin)
 
 endfunction
 
-function update_text_pos (all_handles)
+function update_text_pos (~, ~, all_handles)
 
   ## Text objects in the foreground should be at the base level.
   ## Text objects in the background should be at the top level.

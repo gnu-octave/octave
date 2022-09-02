@@ -40,7 +40,9 @@
 // QTerminal includes
 #include "QTerminal.h"
 
-#include "command-widget.h"
+#if defined (HAVE_QSCINTILLA)
+#  include "command-widget.h"
+#endif
 #include "community-news.h"
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
@@ -461,6 +463,7 @@ namespace octave
           = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw, *this));
         if (experimental_terminal_widget ())
           {
+#if defined (HAVE_QSCINTILLA)
             command_widget *cmd_widget
               = m_terminal_widget->get_command_widget ();
 
@@ -483,6 +486,7 @@ namespace octave
                      m_terminal_widget, &terminal_dock_widget::new_command_line_signal);
 
             connect_interpreter_events (cmd_widget);
+#endif
           }
         else
           {

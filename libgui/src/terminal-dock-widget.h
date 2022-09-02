@@ -58,8 +58,10 @@ namespace octave
     // Only valid if using the old terminal widget.
     QTerminal * get_qterminal (void);
 
+#if defined (HAVE_QSCINTILLA)
     // Only valid if using the new terminal widget.
     command_widget * get_command_widget (void);
+#endif
 
   signals:
 

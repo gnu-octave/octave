@@ -159,7 +159,9 @@ OCTAVE_NAMESPACE_BEGIN
             break;
 
           case EXPERIMENTAL_TERMINAL_WIDGET_OPTION:
+#if defined (HAVE_QSCINTILLA)
             m_experimental_terminal_widget = true;
+#endif
             break;
 
           case GUI_OPTION:

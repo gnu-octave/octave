@@ -30,7 +30,9 @@
 #include <QScreen>
 
 // This header is only needed for the new terminal widget.
-#include "command-widget.h"
+#if defined (HAVE_QSCINTILLA)
+#  include "command-widget.h"
+#endif
 
 // This header is only needed for the old terminal widget.
 #include "QTerminal.h"
@@ -52,6 +54,7 @@ namespace octave
     // matter much if we will eventually be removing the old terminal.
     if (m_experimental_terminal_widget)
       {
+#if defined (HAVE_QSCINTILLA)
         command_widget *widget = new command_widget (oct_qobj, this);
         console *con = widget->get_console ();
 
@@ -71,6 +74,7 @@ namespace octave
                 con, &console::new_command_line);
 
         m_terminal = widget;
+#endif
       }
     else
       {
@@ -139,11 +143,13 @@ namespace octave
             ? nullptr : dynamic_cast<QTerminal *> (m_terminal));
   }
 
+#if defined (HAVE_QSCINTILLA)
   command_widget * terminal_dock_widget::get_command_widget (void)
   {
     return (m_experimental_terminal_widget
             ? dynamic_cast<command_widget *> (m_terminal) : nullptr);
   }
+#endif
 
   void terminal_dock_widget::notice_settings (const gui_settings *settings)
   {
@@ -154,9 +160,11 @@ namespace octave
   {
     if (m_experimental_terminal_widget)
       {
+#if defined (HAVE_QSCINTILLA)
         command_widget *cmd = get_command_widget ();
         if (cmd)
           cmd->init_command_prompt ();
+#endif
       }
   }
 }

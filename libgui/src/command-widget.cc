@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#if defined (HAVE_QSCINTILLA)
+
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -300,3 +302,5 @@ namespace octave
   }
 
 }
+
+#endif

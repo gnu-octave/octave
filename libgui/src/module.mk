@@ -265,17 +265,23 @@ OCTAVE_GUI_SRC_M_EDITOR_MOC = \
 
 $(OCTAVE_GUI_SRC_M_EDITOR_MOC): | %reldir%/m-editor/$(octave_dirstamp)
 
+OCTAVE_GUI_SRC_COMMAND_WIDGET_MOC = \
+  %reldir%/moc-command-widget.cc
+
+$(OCTAVE_GUI_SRC_COMMAND_WIDGET_MOC): | %reldir%/$(octave_dirstamp)
+
 octave_gui_MOC += \
-  $(OCTAVE_GUI_SRC_M_EDITOR_MOC)
+  $(OCTAVE_GUI_SRC_M_EDITOR_MOC) \
+  $(OCTAVE_GUI_SRC_COMMAND_WIDGET_MOC)
 
 DIRSTAMP_FILES += \
-  %reldir%/m-editor/$(octave_dirstamp)
+  %reldir%/m-editor/$(octave_dirstamp) \
+  %reldir%/$(octave_dirstamp)
 
 endif
 
 OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-external-editor-interface.cc \
-  %reldir%/moc-command-widget.cc \
   %reldir%/moc-community-news.cc \
   %reldir%/moc-dialog.cc \
   %reldir%/moc-documentation-dock-widget.cc \

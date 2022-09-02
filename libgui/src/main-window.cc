@@ -58,8 +58,8 @@
 
 #if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
+#  include "command-widget.h"
 #endif
-#include "command-widget.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-ed.h"

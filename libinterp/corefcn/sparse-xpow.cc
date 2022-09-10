@@ -109,15 +109,51 @@ xpow (const SparseMatrix& a, double b)
 
       btmp--;
 
-      while (btmp > 0)
+      // There are two approaches to the actual exponentiation.
+      // Exponentiation by squaring uses only a logarithmic number
+      // of multiplications but the matrices it multiplies tend to be dense
+      // towards the end.
+      // Linear multiplication uses a linear number of multiplications
+      // but one of the matrices it uses will be as sparse as the original matrix.
+      //
+      // The time to multiply fixed-size matrices is strongly affected by their
+      // sparsity. Denser matrices take much longer to multiply together.
+      // See this URL for a worked-through example:
+      // https://octave.discourse.group/t/3216/4
+      //
+      // The tradeoff is between many fast multiplications or a few slow ones.
+      //
+      // Large exponents favor the squaring technique, and sparse matrices favor
+      // linear multiplication.
+      //
+      // We calculate a threshold based on the sparsity of the input
+      // and use squaring for exponents larger than that.
+      //
+      // FIXME: Improve this threshold calculation.
+
+      uint64_t sparsity = atmp.numel() / atmp.nnz(); // reciprocal of density
+      int threshold = (sparsity >= 10000) ? 40
+                    : (sparsity >=  1000) ? 30
+                    : (sparsity >=   100) ? 20
+                    : 3;
+
+      if (btmp > threshold) // use squaring technique
         {
-          if (btmp & 1)
+          while (btmp > 0)
+            {
+              if (btmp & 1)
+                result = result * atmp;
+
+              btmp >>= 1;
+
+              if (btmp > 0)
+                atmp = atmp * atmp;
+            }
+        }
+      else // use linear multiplication
+        {
+          for (int i = 0; i < btmp; i++)
             result = result * atmp;
-
-          btmp >>= 1;
-
-          if (btmp > 0)
-            atmp = atmp * atmp;
         }
 
       retval = result;

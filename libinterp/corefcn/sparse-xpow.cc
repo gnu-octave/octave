@@ -213,15 +213,35 @@ xpow (const SparseComplexMatrix& a, double b)
 
       btmp--;
 
-      while (btmp > 0)
+      // Select multiplication sequence based on sparsity of atmp.
+      // See the long comment in xpow (const SparseMatrix& a, double b)
+      // for more details.
+      //
+      // FIXME: Improve this threshold calculation.
+
+      uint64_t sparsity = atmp.numel() / atmp.nnz(); // reciprocal of density
+      int threshold = (sparsity >= 10000) ? 40
+                    : (sparsity >=  1000) ? 30
+                    : (sparsity >=   100) ? 20
+                    : 3;
+
+      if (btmp > threshold) // use squaring technique
         {
-          if (btmp & 1)
+          while (btmp > 0)
+            {
+              if (btmp & 1)
+                result = result * atmp;
+
+              btmp >>= 1;
+
+              if (btmp > 0)
+                atmp = atmp * atmp;
+            }
+        }
+      else // use linear multiplication
+        {
+          for (int i = 0; i < btmp; i++)
             result = result * atmp;
-
-          btmp >>= 1;
-
-          if (btmp > 0)
-            atmp = atmp * atmp;
         }
 
       retval = result;

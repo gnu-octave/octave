@@ -47,7 +47,7 @@
 
 OCTAVE_NAMESPACE_BEGIN
 
-static inline int
+static inline bool
 xisint (double x)
 {
   return (octave::math::x_nint (x) == x

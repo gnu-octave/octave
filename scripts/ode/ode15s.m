@@ -554,21 +554,21 @@ endfunction
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", [1, 0, 0; 0, 1, 0; 0, 0, 0],
 %!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", sparse ([1, 0, 0; 0, 1, 0; 0, 0, 0]),
 %!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
+%!testif HAVE_SUNDIALS
 %! warning ("off", "ode15s:mass_state_dependent_provided", "local");
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefunstate,
@@ -584,14 +584,14 @@ endfunction
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefuntime,
 %!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
-%!testif HAVE_SUNDIALS_SUNLINSOL_KLU
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @masssparsefuntime,
 %!               "Jacobian", @jacfunsparse);

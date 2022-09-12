@@ -2189,7 +2189,9 @@ fi
 ### Check for KLU library and header.
 
 OCTAVE_CHECK_LIB(klu, KLU,
-  [KLU library not found.  This will result in some lack of functionality for sparse matrices.],
+   [KLU library not found.  This will result in some lack of functionality for sparse matrices.
+  Sparse computations in ode15{i,s} solvers will still be supported but will suffer a hit in
+  time taken.],
   [klu.h suitesparse/klu.h klu/klu.h], [klu_solve],
   [], [don't use KLU library, disable some sparse matrix functionality])
 

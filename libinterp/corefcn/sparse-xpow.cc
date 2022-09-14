@@ -132,9 +132,8 @@ xpow (const SparseMatrix& a, double b)
       // FIXME: Improve this threshold calculation.
 
       uint64_t sparsity = atmp.numel() / atmp.nnz(); // reciprocal of density
-      int threshold = (sparsity >= 10000) ? 40
-                    : (sparsity >=  1000) ? 30
-                    : (sparsity >=   100) ? 20
+      int threshold = (sparsity >= 1000) ? 40
+                    : (sparsity >=  100) ? 20
                     : 3;
 
       if (btmp > threshold) // use squaring technique
@@ -220,9 +219,8 @@ xpow (const SparseComplexMatrix& a, double b)
       // FIXME: Improve this threshold calculation.
 
       uint64_t sparsity = atmp.numel() / atmp.nnz(); // reciprocal of density
-      int threshold = (sparsity >= 10000) ? 40
-                    : (sparsity >=  1000) ? 30
-                    : (sparsity >=   100) ? 20
+      int threshold = (sparsity >= 1000) ? 40
+                    : (sparsity >=  100) ? 20
                     : 3;
 
       if (btmp > threshold) // use squaring technique

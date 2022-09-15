@@ -39,13 +39,13 @@
 ## @audioplayer/audioplayer}
 ## @end deftypefn
 
-function playblocking (player, length)
+function playblocking (player, start)
 
-  if (nargin != 2)
-    print_usage ();
+  if (nargin == 1)
+    __player_playblocking__ (struct (player).player);
+  else
+    __player_playblocking__ (struct (player).player, start);
   endif
-
-  __player_playblocking__ (struct (player).player, length);
 
 endfunction
 

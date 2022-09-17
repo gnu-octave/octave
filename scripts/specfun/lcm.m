@@ -53,6 +53,14 @@ function l = lcm (varargin)
     l(msk) = 0;
   endfor
 
+  if (isfloat (l) && l > flintmax (l))
+    warning ("Octave:lcm:large-output-float", ...
+             "lcm: possible loss of precision");
+  elseif (isinteger (l) && l == intmax (l))
+    warning ("Octave:lcm:large-output-integer", ...
+             "lcm: result may have saturated at intmax");
+  endif
+
 endfunction
 
 
@@ -63,3 +71,13 @@ endfunction
 %!error <Invalid call> lcm (1)
 %!error <same size or scalar> lcm ([1 2], [1 2 3])
 %!error <arguments must be numeric> lcm ([1 2], {1 2})
+%!warning <loss of precision>   lcm (num2cell (double (1:47)){:});
+%!warning <loss of precision>   lcm (num2cell (single (1:47)){:});
+%!warning <result .* saturated> lcm (num2cell (uint64 (1:47)){:});
+%!warning <result .* saturated> lcm (num2cell (uint32 (1:47)){:});
+%!warning <result .* saturated> lcm (num2cell (uint16 (1:47)){:});
+%!warning <result .* saturated> lcm (num2cell ( uint8 (1:47)){:});
+%!warning <result .* saturated> lcm (num2cell ( int64 (1:47)){:});
+%!warning <result .* saturated> lcm (num2cell ( int32 (1:47)){:});
+%!warning <result .* saturated> lcm (num2cell ( int16 (1:47)){:});
+%!warning <result .* saturated> lcm (num2cell (  int8 (1:47)){:});

@@ -66,8 +66,11 @@ xpow (const SparseMatrix& a, double b)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  if (nr == 0 || nc == 0 || nr != nc)
+  if (nr != nc)
     error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
+
+  if (nr == 0 && nc == 0)
+    return a;
 
   if (! xisint (b))
     error ("use full(a) ^ full(b)");

@@ -66,11 +66,12 @@ xpow (const SparseMatrix& a, double b)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
+  if (nr == 0 || nc == 0)
+    return SparseMatrix();
+
+  // If we are here, A is not empty ==> A needs to be square.
   if (nr != nc)
     error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
-
-  if (nr == 0 && nc == 0)
-    return a;
 
   if (! xisint (b))
     error ("use full(a) ^ full(b)");
@@ -100,6 +101,9 @@ xpow (const SparseMatrix& a, double b)
           double rcond = 0.0;
           MatrixType mattyp (a);
 
+          // FIXME: This causes an error if the input sparse matrix is all-zeros.
+          // That behavior is inconsistent with A ^ b when A is a full all-zeros
+          // matrix, which just returns Inf of the same size with a warning.
           atmp = a.inverse (mattyp, info, rcond, 1);
 
           if (info == -1)
@@ -107,6 +111,9 @@ xpow (const SparseMatrix& a, double b)
         }
       else
         atmp = a;
+
+      if (atmp.nnz() == 0)  // Fast return for all-zeros matrix
+        return atmp;
 
       SparseMatrix result (atmp);
 
@@ -172,7 +179,11 @@ xpow (const SparseComplexMatrix& a, double b)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  if (nr == 0 || nc == 0 || nr != nc)
+  if (nr == 0 || nc == 0)
+    return SparseMatrix();
+
+  // If we are here, A is not empty ==> A needs to be square.
+  if (nr != nc)
     error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
 
   if (! xisint (b))
@@ -210,6 +221,9 @@ xpow (const SparseComplexMatrix& a, double b)
         }
       else
         atmp = a;
+
+      if (atmp.nnz() == 0)  // Fast return for all-zeros matrix
+        return atmp;
 
       SparseComplexMatrix result (atmp);
 
@@ -301,6 +315,30 @@ scalar_xpow (const S& a, const SM& b)
 /*
 %!assert (sparse (2) .^ [3, 4], sparse ([8, 16]))
 %!assert <47775> (sparse (2i) .^ [3, 4], sparse ([-0-8i, 16]))
+
+%!test <*63080>
+%! Z = sparse ([]);
+%! A = sparse (zeros (0, 2));
+%! B = sparse (zeros (2, 0));
+%! assert (Z ^  1, Z);
+%! assert (Z ^  0, Z);
+%! assert (Z ^ -1, Z);
+%! assert (A ^  1, Z);
+%! assert (A ^  0, Z);
+%! assert (A ^ -1, Z);
+%! assert (B ^  1, Z);
+%! assert (B ^  0, Z);
+%! assert (B ^ -1, Z);
+
+%!test <*63080>
+%! A = sparse (zeros (2, 2));
+%! assert (A ^  1, A);
+%! assert (A ^  0, sparse (eye (2, 2)));
+
+%!test <63080>
+%! A = sparse (zeros (2, 2));
+%! assert (A ^ -1, sparse (inf (2, 2)));
+
 */
 
 // -*- 1 -*-
@@ -802,5 +840,6 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 
   return result;
 }
+
 
 OCTAVE_NAMESPACE_END

@@ -67,7 +67,7 @@ xpow (const SparseMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0)
-    return SparseMatrix();
+    return SparseMatrix ();
 
   // If we are here, A is not empty ==> A needs to be square.
   if (nr != nc)
@@ -112,7 +112,7 @@ xpow (const SparseMatrix& a, double b)
       else
         atmp = a;
 
-      if (atmp.nnz() == 0)  // Fast return for all-zeros matrix
+      if (atmp.nnz () == 0)  // Fast return for all-zeros matrix
         return atmp;
 
       SparseMatrix result (atmp);
@@ -124,7 +124,8 @@ xpow (const SparseMatrix& a, double b)
       // of multiplications but the matrices it multiplies tend to be dense
       // towards the end.
       // Linear multiplication uses a linear number of multiplications
-      // but one of the matrices it uses will be as sparse as the original matrix.
+      // but one of the matrices it uses will be as sparse as the original
+      // matrix.
       //
       // The time to multiply fixed-size matrices is strongly affected by their
       // sparsity. Denser matrices take much longer to multiply together.
@@ -133,15 +134,15 @@ xpow (const SparseMatrix& a, double b)
       //
       // The tradeoff is between many fast multiplications or a few slow ones.
       //
-      // Large exponents favor the squaring technique, and sparse matrices favor
-      // linear multiplication.
+      // Large exponents favor the squaring technique, and sparse matrices
+      // favor linear multiplication.
       //
       // We calculate a threshold based on the sparsity of the input
       // and use squaring for exponents larger than that.
       //
       // FIXME: Improve this threshold calculation.
 
-      uint64_t sparsity = atmp.numel() / atmp.nnz(); // reciprocal of density
+      uint64_t sparsity = atmp.numel () / atmp.nnz (); // reciprocal of density
       int threshold = (sparsity >= 1000) ? 40
                     : (sparsity >=  100) ? 20
                     : 3;
@@ -180,7 +181,7 @@ xpow (const SparseComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0)
-    return SparseMatrix();
+    return SparseMatrix ();
 
   // If we are here, A is not empty ==> A needs to be square.
   if (nr != nc)
@@ -222,7 +223,7 @@ xpow (const SparseComplexMatrix& a, double b)
       else
         atmp = a;
 
-      if (atmp.nnz() == 0)  // Fast return for all-zeros matrix
+      if (atmp.nnz () == 0)  // Fast return for all-zeros matrix
         return atmp;
 
       SparseComplexMatrix result (atmp);
@@ -235,7 +236,7 @@ xpow (const SparseComplexMatrix& a, double b)
       //
       // FIXME: Improve this threshold calculation.
 
-      uint64_t sparsity = atmp.numel() / atmp.nnz(); // reciprocal of density
+      uint64_t sparsity = atmp.numel () / atmp.nnz (); // reciprocal of density
       int threshold = (sparsity >= 1000) ? 40
                     : (sparsity >=  100) ? 20
                     : 3;

@@ -61,7 +61,9 @@ function h = uifigure (varargin)
   addproperty ("Scrollable", h, "boolean", "off");
 
   ## Apply any overrides.
-  set (h, varargin{:});
+  if (! isempty (varargin))
+    set (h, varargin{:});
+  endif
 
 endfunction
 

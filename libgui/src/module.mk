@@ -275,8 +275,7 @@ octave_gui_MOC += \
   $(OCTAVE_GUI_SRC_COMMAND_WIDGET_MOC)
 
 DIRSTAMP_FILES += \
-  %reldir%/m-editor/$(octave_dirstamp) \
-  %reldir%/$(octave_dirstamp)
+  %reldir%/m-editor/$(octave_dirstamp)
 
 endif
 

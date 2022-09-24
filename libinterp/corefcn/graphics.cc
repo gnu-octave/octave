@@ -8052,6 +8052,21 @@ axes::properties::check_axis_limits (Matrix& limits, const Matrix kids,
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect
+
+## Check that graphics objects with hidden handle visibility are included in
+## axis limit calculation.
+%!test <*63095>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   plot (hax, [0, 1]);
+%!   assert (get (hax, "ylim"), [0, 1]);
+%!   hold (hax, "on");
+%!   plot (hax, [2, 0], "handlevisibility", "off");
+%!   assert (get (hax, "ylim"), [0, 2]);
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
 */
 
 void
@@ -8696,7 +8711,7 @@ axes::update_axis_limits (const std::string& axis_type)
           != updating_aspectratios.end ()))
     return;
 
-  Matrix kids = m_properties.get_children ();
+  Matrix kids = m_properties.get_all_children ();
 
   double min_val = octave::numeric_limits<double>::Inf ();
   double max_val = -octave::numeric_limits<double>::Inf ();

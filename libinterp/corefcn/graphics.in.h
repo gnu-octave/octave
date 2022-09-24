@@ -4641,11 +4641,8 @@ public:
                                 : lim(2));
           lim(3) = (lim(3) >= 0 ? -octave::numeric_limits<double>::Inf ()
                                 : lim(3));
-          set_zliminclude ("on");
           set_zlim (lim);
         }
-      else
-        set_zliminclude ("off");
     }
 
     OCTINTERP_API void request_autopos (void);

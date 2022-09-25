@@ -29,13 +29,19 @@
 ## Return a string of ones and zeros representing the conversion of the integer
 ## @var{d} to a binary number.
 ##
-## If @var{d} is negative, return the two's complement binary value of @var{d}.
 ## If @var{d} is a matrix or cell array, return a string matrix with one row
 ## for each element in @var{d}, padded with leading zeros to the width of the
 ## largest value.
 ##
 ## The optional second argument, @var{len}, specifies the minimum number of
 ## digits in the result.
+##
+## For negative elements of @var{d}, return the binary value of the two's
+## complement.  The result is padded with leading ones to 8, 16, 32, or 64
+## bits as appropriate for the magnitude of the input.  Positive input
+## elements are padded with leading zeros to the same width.  If the second
+## argument @var{len} exceeds that calculated width, the result is further
+## padded with leading zeros, for compatibility with @sc{matlab}.
 ##
 ## Examples:
 ##
@@ -48,9 +54,6 @@
 ##      @result{} "11110010"
 ## @end group
 ## @end example
-##
-## Programming Notes: The largest negative value that can be converted into
-## two's complement is @code{- (flintmax () / 2)}.
 ##
 ## Known @sc{matlab} Incompatibility: @sc{matlab}'s @code{dec2bin} allows
 ## non-integer values for @var{d}, truncating the value using the equivalent
@@ -75,19 +78,32 @@ function bstr = dec2bin (d, len)
   ## Create column vector for algorithm (output is always col. vector anyways)
   d = d(:);
 
-  lt_zero_idx = (d < 0);
-  if (any (lt_zero_idx))
-    ## FIXME: Need an algorithm that works with larger values such as int64.
-    if (any (d(lt_zero_idx) < -2^52))
-      error ("dec2bin: negative inputs cannot be less than -flintmax () / 2");
-    elseif (any (d(lt_zero_idx) < intmin ("int32")))
-      d(lt_zero_idx) += flintmax ();
-    elseif (any (d < intmin ("int16")))
-      d(lt_zero_idx) += double (intmax ("uint32")) + 1;
-    elseif (any (d < intmin ("int8")))
-      d(lt_zero_idx) += double (intmax ("uint16"))+ 1;
+  neg = (d < 0);  # keep track of which elements are negative
+  if (any (neg))  # must be a signed type
+    ## Cast to a suitable signed integer type, then to unsigned.
+    ## Ensure that the left-most bit of the unsigned number is 1,
+    ## to signify negative input.
+    tmp = int64 (d);
+    if (all (tmp >= -128 & tmp <= 127))
+      d = int8 (d);
+      d(neg) = (d(neg) + intmax (d)) + 1;
+      d = uint8 (d);
+      d(neg) += uint8 (128);
+    elseif (all (tmp >= -32768 & tmp <= 32767))
+      d = int16 (d);
+      d(neg) = (d(neg) + intmax (d)) + 1;
+      d = uint16 (d);
+      d(neg) += uint16 (32768);
+    elseif (all (tmp >= -2147483648 & tmp <= 2147483647))
+      d = int32 (d);
+      d(neg) = (d(neg) + intmax (d)) + 1;
+      d = uint32 (d);
+      d(neg) += uint32 (2147483648);
     else
-      d(lt_zero_idx) += double (intmax ("uint8")) + 1;
+      d = int64 (d);
+      d(neg) = (d(neg) + intmax (d)) + 1;
+      d = uint64 (d);
+      d(neg) += uint64 (9223372036854775808);
     endif
   endif
 
@@ -111,25 +127,20 @@ endfunction
 %!assert (dec2bin (-3), "11111101")
 %!assert (dec2bin (-3, 3), "11111101")
 %!assert (dec2bin (-3, 9), "011111101")
-%!assert (dec2bin (-2^7 -1), "1111111101111111")
-%!assert (dec2bin (-2^15 -1), "11111111111111110111111111111111")
-## FIXME: Matlab generates a string that is 64 characters long
-%!assert (dec2bin (-2^31 -1),
-%!        "11111111111111111111101111111111111111111111111111111")
+%!assert (dec2bin (-2^7 - 1), "1111111101111111")
+%!assert (dec2bin (-2^15 - 1), "11111111111111110111111111111111")
+%!assert (dec2bin (-2^31 - 1),
+%!        "1111111111111111111111111111111101111111111111111111111111111111")
 %!assert (dec2bin (-2^52),
-%!        "10000000000000000000000000000000000000000000000000000")
-## FIXME: Uncomment when support for int64 is added
-%!#assert (dec2bin (-2^63),
+%!        "1111111111110000000000000000000000000000000000000000000000000000")
+%!assert (dec2bin (-2^63),
 %!        "1000000000000000000000000000000000000000000000000000000000000000")
-%!#test
-%! assert (dec2bin (int64 (-2^63)),
-%!        "1000000000000000000000000000000000000000000000000000000000000000");
-%!#test
-%! assert (dec2bin (int64 (-2^63) -1),
-%!        "1000000000000000000000000000000000000000000000000000000000000000");
-%!#test
-%! assert (dec2bin (int64 (-2^63) +1),
-%!        "1000000000000000000000000000000000000000000000000000000000000001");
+%!assert (dec2bin (int64 (-2) ^ 63),
+%!        "1000000000000000000000000000000000000000000000000000000000000000")
+%!assert (dec2bin (int64 (-2) ^ 63 - 1),
+%!        "1000000000000000000000000000000000000000000000000000000000000000")
+%!assert (dec2bin (int64 (-2) ^ 63 + 1),
+%!        "1000000000000000000000000000000000000000000000000000000000000001")
 %!assert (dec2bin ([-1, -2; -3, -4]),
 %!        ["11111111"; "11111101"; "11111110"; "11111100"])
 %!assert (dec2bin ([1, 2; 3, -4]),
@@ -139,4 +150,4 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> dec2bin ()
-%!error <negative inputs cannot be less than> dec2bin (- flintmax ())
+

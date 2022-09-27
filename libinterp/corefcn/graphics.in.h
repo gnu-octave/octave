@@ -1825,12 +1825,13 @@ protected:
     bool add_hidden = true;
 
     const Matrix visible_kids = do_get_children (false);
+    const Matrix hidden_kids = do_get_children (true);
 
     if (visible_kids.numel () == new_kids.numel ())
       {
         Matrix t1 = visible_kids.sort ();
         Matrix t2 = new_kids_column.sort ();
-        Matrix t3 = get_hidden ().sort ();
+        Matrix t3 = hidden_kids.sort ();
 
         if (t1 != t2)
           is_ok = false;
@@ -1842,22 +1843,22 @@ protected:
       is_ok = false;
 
     if (! is_ok)
-      error ("set: new children must be a permutation of existing children");
-
-    Matrix tmp = new_kids_column;
-
-    if (add_hidden)
-      tmp.stack (get_hidden ());
+      error ("set: new children list must be a permutation of existing "
+             "children with visible handles");
 
     m_children_list.clear ();
 
     // Don't use do_init_children here, as that reverses the
     // order of the list, and we don't want to do that if setting
     // the child list directly.
-    for (octave_idx_type i = 0; i < tmp.numel (); i++)
-      m_children_list.push_back (tmp.xelem (i));
+    for (octave_idx_type i = 0; i < new_kids_column.numel (); i++)
+      m_children_list.push_back (new_kids_column.xelem (i));
 
-    return is_ok;
+    if (add_hidden)
+      for (octave_idx_type i = 0; i < hidden_kids.numel (); i++)
+        m_children_list.push_back (hidden_kids.xelem (i));
+
+    return true;
   }
 
 private:

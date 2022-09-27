@@ -76,6 +76,9 @@ callback function when a legend item is clicked.
 
 ### Alphabetical list of new functions added in Octave 8
 
+* `clearAllMemoizedCaches`
+* `matlab.lang.MemoizedFunction`
+* `memoize`
 * `pagectranspose`
 * `pagetranspose`
 * `uifigure`

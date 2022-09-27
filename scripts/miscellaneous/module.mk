@@ -3,6 +3,7 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__memoize__.m \
   %reldir%/private/__publish_html_output__.m \
   %reldir%/private/__publish_latex_output__.m \
   %reldir%/private/__w2mpth__.m \
@@ -15,6 +16,7 @@ FCN_FILE_DIRS += \
   %reldir%/bunzip2.m \
   %reldir%/cast.m \
   %reldir%/citation.m \
+  %reldir%/clearAllMemoizedCaches.m \
   %reldir%/clearvars.m \
   %reldir%/compare_versions.m \
   %reldir%/computer.m \
@@ -46,6 +48,7 @@ FCN_FILE_DIRS += \
   %reldir%/loadobj.m \
   %reldir%/ls.m \
   %reldir%/ls_command.m \
+  %reldir%/memoize.m \
   %reldir%/memory.m \
   %reldir%/menu.m \
   %reldir%/methods.m \

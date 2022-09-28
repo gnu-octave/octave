@@ -22,6 +22,11 @@ less memory to call `perms ('aaaabbbbcccc', "unique")` than to call
 - `quadgk` can now accept the `ArrayValued` input parameter to handle
 array-valued input functions.
 
+- `delaunayn` now has consistent trivial simplex checking and removal for all
+input dimensions, simplex checking 3D inputs is now vectorized, and >3D simplex
+checking performance has been improved.  Input type checking has also been
+added for improved error handling.
+
 ### Graphical User Interface
 
 

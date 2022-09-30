@@ -139,10 +139,11 @@ function T = delaunayn (pts, varargin)
                 edge_vecs(:,2,2) .* edge_vecs(:,1,3));
 
     else
-      ## >= 4-D: simplex 'volume' proportional to det|edge_vecs|
+      ## 1D and >= 4-D: simplex 'volume' proportional to det|edge_vecs|
 
       ## FIXME: Vectorize this for nD inputs without excessive memory impact
-      ## over __delaunayn__ itself.  Perhaps with a paged determinant function.
+      ## over __delaunayn__ itself, or move simplex checking into __delaunayn__.
+      ## Perhaps with an optimized page-wise determinant.
       ## see bug #60818 for speed/memory improvement attempts and concerns.
 
       vol = zeros (nt, 1);
@@ -161,6 +162,16 @@ function T = delaunayn (pts, varargin)
 
     ##Remove trivially small simplexes from T
     T(idx, :) = [];
+
+    ## ensure ccw node order for consistent outward normal (bug #53397)
+    ## simplest method of maintaining positive unit normal direction is to
+    ## reverse order of two nodes. this preserves 'nice' monotonic descending
+    ## node 1 ordering.  Currently ignores 1D cases for compatibility.
+
+    if ((dim > 1) && any (negvol = (vol (!idx) < 0)))
+      T(negvol, [2, 3]) = T(negvol, [3, 2]);
+    endif
+
   endif
 endfunction
 
@@ -180,24 +191,48 @@ endfunction
 %! assert (sortrows (sort (delaunayn ([x(:) y(:) z(:)]), 2)),
 %!         [1,2,3,4;1,2,4,5]);
 
-## 3D test with trivial simplex removal
+## 3-D test with trivial simplex removal
 %!testif HAVE_QHULL
 %! x = [0 0 0; 0 0 1; 0 1 0; 1 0 0; 0 1 1; 1 0 1; 1 1 0; 1 1 1; 0.5 0.5 0.5];
 %! T = sortrows (sort (delaunayn (x), 2));
 %! assert (rows (T), 12);
 
-## 4D single simplex test
+## 4-D single simplex test
 %!testif HAVE_QHULL
 %! x = [0 0 0 0; 1 0 0 0; 1 1 0 0; 0 0 1 0; 0 0 0 1];
 %! T = sort (delaunayn (x), 2);
 %! assert (T, [1 2 3 4 5]);
 
-## 4D two simplices test
+## 4-D two simplices test
 %!testif HAVE_QHULL
 %! x = [0 0 0 0; 1 0 0 0; 1 1 0 0; 0 0 1 0; 0 0 0 1; 0 0 0 2];
 %! T = sortrows (sort (delaunayn (x), 2));
 %! assert (rows (T), 2);
 %! assert (T, [1 2 3 4 5; 2 3 4 5 6]);
+
+## Test negative simplex produce positive normals
+## 2-D test
+%!testif HAVE_QHULL <*53397>
+%! x = [-1, 0; 0, 1; 1, 0; 0, -1; 0, 0];
+%! y = delaunayn (x);
+%! edges = permute (reshape (x(y(:, 2:end), :).', [2, 4, 2]), [2, 1, 3]) - ...
+%!                   x(y(:, 1), :, ones (1, 1, 2));
+%! vol = edges(:,1,1) .* edges(:,2,2) - edges(:,1,2) .* edges(:,2,1);
+%! assert (all (vol >= 0));
+
+## 3-D test
+%!testif HAVE_QHULL <*53397>
+%! x = [[-1, -1, 1, 0, -1]',[-1, 1, 1, 0, -1]',[0, 0, 0, 1, 1]'];
+%! y = delaunayn (x);
+%! edges = permute (reshape (x(y(:, 2:end), :).', [3, 2, 3]), [2, 1, 3]) - ...
+%!                   x(y(:, 1), :, ones (1, 1, 3));
+%! vol = edges(:,1,1) .* ...
+%!            (edges(:,2,2) .* edges(:,3,3) - edges(:,3,2) .* edges(:,2,3)) ...
+%!       - edges(:,2,1) .* ...
+%!            (edges(:,1,2) .* edges(:,3,3) - edges(:,3,2) .* edges(:,1,3)) ...
+%!       + edges(:,3,1) .* ...
+%!            (edges(:,1,2) .* edges(:,2,3) - edges(:,2,2) .* edges(:,1,3));
+%! assert (all (vol >= 0));
 
 ## Input validation tests
 %!error <Invalid call> delaunayn ()

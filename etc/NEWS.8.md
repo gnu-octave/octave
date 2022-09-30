@@ -24,8 +24,9 @@ array-valued input functions.
 
 - `delaunayn` now has consistent trivial simplex checking and removal for all
 input dimensions, simplex checking 3D inputs is now vectorized, and >3D simplex
-checking performance has been improved.  Input type checking has also been
-added for improved error handling.
+checking performance has been improved.  Simplexes points are now ordered so
+they will all have positive outward normal vectors. Input type checking has
+also been added for improved error handling.
 
 ### Graphical User Interface
 

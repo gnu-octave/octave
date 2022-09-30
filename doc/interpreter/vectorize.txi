@@ -42,6 +42,7 @@ code.
 * Broadcasting::               Broadcasting operations
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
+* Memoization::                Memoization techniques
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 @end menu
@@ -550,6 +551,33 @@ useful.
 @DOCSTRING(accumarray)
 
 @DOCSTRING(accumdim)
+
+@node Memoization
+@section Memoization Techniques
+
+Memoization is a technique to cache the results of slow function calls and return the cached value when the function is called with the same inputs again, instead of reevaluating it.  It is very common to replace function calls with lookup tables if the same inputs are happening over and over again in a known, predictable way.  Memoization is, at its core, an extension of this practice where the lookup table is extended even during runtime for new arguments not seen previously.  A basic theoretical background can be found on Wikipedia or any undergraduate-level computer science textbook.
+
+Octave's @code{memoize} function provides drop-in memoization functionality for any user function or Octave function, including compiled functions.  To memoize a function @code{z = foo(x, y)}, use this pattern:
+
+@example
+@group
+foo2 = memoize (@@(@var{x, y}) @var{foo(x, y)});
+z = foo2 (x, y);
+@end group
+@end example
+
+In the above example, the first line creates a memoized version @code{foo2} of the function @code{foo}.  For simple functions with only trivial wrapping, this line can also be shortened to
+@example
+@group
+foo2 = memoize (@@foo);
+@end group
+@end example
+
+The second line @code{z = foo2 (x, y);} calls that memoized version @code{foo2} instead of the original function, allowing @code{memoize} to intercept the call and replace it with a looked-up value from a table if the inputs have occurred before, instead of evaluating the original function again.  Note that this will not accelerate the @emph{first} call to the function but only subsequent calls.
+
+Note that due to the overhead incurred by @code{memoize} to create and manage the lookup tables for each function the user seeks to memoize, this technique is useful only for functions that take a significant time to execute, at least a few seconds.  Such functions can be replaced by table lookups taking only a millisecond or less, but if the original function itself was taking only milliseconds or microseconds, memoizing it will not speed it up.
+
+Octave's memoization also allows the user to clear the cache of lookup values when it is no longer needed, using the function @code{clearAllMemoizedCaches}.
 
 @node Miscellaneous Techniques
 @section Miscellaneous Techniques

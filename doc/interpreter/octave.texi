@@ -664,6 +664,7 @@ Vectorization and Faster Code Execution
 * Broadcasting::               Broadcasting operations
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
+* Memoization::                Memoization techniques
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 

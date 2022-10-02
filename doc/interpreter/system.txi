@@ -583,7 +583,7 @@ produced with.
 
 Octave supplies the @code{hash} function to calculate hash values of
 strings and files, the latter in combination with the @code{fileread}
-function.  The @code{hash} function supports the most common used
-cryptographic hash functions, namely MD5 and SHA-1.
+function.  The @code{hash} function supports many commonly used hash
+methods.
 
 @DOCSTRING(hash)

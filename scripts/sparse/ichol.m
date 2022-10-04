@@ -364,7 +364,7 @@ endfunction
 
 ## ICHOLT tests
 
-#%!test
+%!#test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;
 %! opts.michol = "off";
@@ -376,8 +376,8 @@ endfunction
 %! opts.shape = "lower";
 %! L = ichol (A1, opts);
 %! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.2065, 1e-4);
-%!
-#%!test
+
+%!#test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;
 %! opts.michol = "on";
@@ -390,7 +390,7 @@ endfunction
 %! opts.diagcomp = 3e-3;
 %! L = ichol (A1, opts);
 %! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.3266, 1e-4);
-%!
+
 %!test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;
@@ -400,7 +400,7 @@ endfunction
 %! opts.michol = "on";
 %! L = ichol (A2, opts);
 %! assert (norm (A2 - L*L', "fro") / norm (A2, "fro"), 0.2377, 1e-4);
-%!
+
 %!test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;
@@ -410,7 +410,7 @@ endfunction
 %! opts.michol = "on";
 %! L = ichol (A3, opts);
 %! assert (norm (A3 - L*L', "fro") / norm (A3, "fro"), eps, eps);
-%!
+
 %!test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;
@@ -420,7 +420,7 @@ endfunction
 %! opts.michol = "on";
 %! L = ichol (A4, opts);
 %! assert (norm (A4 - L*L', "fro") / norm (A4, "fro"), 0.2118, 1e-4);
-%!
+
 %!test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;

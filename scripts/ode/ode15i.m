@@ -469,7 +469,7 @@ endfunction
 %! assert ([t2(end), y2(end,:)], [0, 1, 0, 0], 2e-2);
 
 ## Solve in backward direction with MaxStep option
-#%!testif HAVE_SUNDIALS
+%!#testif HAVE_SUNDIALS
 %! YPref = [-0.001135972751027; -0.000000027483627; 0.001136000234654];
 %! Yref = [0.617234887614937, 0.000006153591397, 0.382758958793666];
 %! opt = odeset ("MaxStep", 1e-2);
@@ -479,7 +479,7 @@ endfunction
 %! assert (t2(9)-t2(10), 1e-2, 1e-2);
 
 ## Solve in backward direction starting with intermediate step
-#%!testif HAVE_SUNDIALS
+%!#testif HAVE_SUNDIALS
 %! YPref = [-0.001135972751027; -0.000000027483627; 0.001136000234654];
 %! Yref = [0.617234887614937, 0.000006153591397, 0.382758958793666];
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0]);

@@ -55,7 +55,7 @@ endfunction
 %!assert (isstring (1), false)
 %!assert (isstring ('a'), false)
 ## FIXME: when string arrays are implemented, this should return true.
-#%!assert (isstring ("b"), true)
+%!#assert (isstring ("b"), true)
 %!assert (isstring ({'a'}), false)
 %!assert (isstring ({"b"}), false)
 

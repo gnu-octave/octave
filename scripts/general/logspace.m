@@ -133,8 +133,8 @@ endfunction
 ## FIXME: These are bizarre corner cases for Matlab compatibility.  See
 ## bug #56933.  This is marked as "Won't Fix", but if linspace is updated at
 ## some point then these tests can be re-instated.
-##%!assert (logspace (-Inf, 0, 3), [0, NaN, 1])
-##%!assert (logspace (Inf, 0, 3), [Inf, NaN, 1])
+%!#assert (logspace (-Inf, 0, 3), [0, NaN, 1])
+%!#assert (logspace (Inf, 0, 3), [Inf, NaN, 1])
 
 ## Test input validation
 %!error <Invalid call> logspace ()

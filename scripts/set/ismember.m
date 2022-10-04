@@ -122,7 +122,7 @@ function [tf, s_idx] = ismember (a, s, varargin)
 
   by_rows = any (strcmp ("rows", varargin));
   ## FIXME: uncomment if bug #56692 is addressed.
-  ##optlegacy = any (strcmp ("legacy", varargin));
+  ## optlegacy = any (strcmp ("legacy", varargin));
 
   if (! by_rows)
     s = s(:);

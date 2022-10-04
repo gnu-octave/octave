@@ -70,7 +70,7 @@ function T = delaunayn (pts, varargin)
 
   ## NOTE: varargin options input validation is performed in __delaunayn__
   if ((! isnumeric (pts)) || (ndims (pts) > 2))
-    error ("delaunayn: input points must be a two dimensional numeric array.");
+    error ("delaunayn: input PTS must be a 2-dimensional numeric array");
   endif
 
   ## Perform delaunay calculation using either default or specified options
@@ -89,7 +89,7 @@ function T = delaunayn (pts, varargin)
   endif
 
   ## Begin check for and removal of trivial simplices
-  if (! isequal (T, 0)) # skip trivial simplex check if no simplexes
+  if (! isequal (T, 0))  # skip trivial simplex check if no simplexes
 
     if (isa (pts, "single"))
       tol = 1e3 * eps ("single");
@@ -108,23 +108,23 @@ function T = delaunayn (pts, varargin)
     ## of the two volumes means that the factor factorial(ndim+1) is dropped
     ## from volume calculations.
 
-    [nt, nd] = size (T); # nt = simplex count, nd = # of simplex points
+    [nt, nd] = size (T);  # nt = simplex count, nd = # of simplex points
     dim = nd - 1;
 
-    ## calculate common origin edge vectors for each simplex (p2-p1,p3-p1,...)
-    ## store in 3D array such that:
+    ## Calculate common origin edge vectors for each simplex (p2-p1,p3-p1,...)
+    ## Store in 3-D array such that:
     ## rows = nt simplexes, cols = coordinates, pages = simplex edges
     edge_vecs =  permute (reshape (pts(T(:, 2:nd), :).', [dim, nt, dim]), ...
                           [2, 1, 3]) - pts(T(:, 1), :, ones (1, 1, dim));
 
-    ## calculate orthogonal simplex volumes for comparison
+    ## Calculate orthogonal simplex volumes for comparison
     orthog_simplex_vols = sqrt (prod (sumsq (edge_vecs, 2), 3));
 
-    ## calculate simplex volumes according to problem dimension
+    ## Calculate simplex volumes according to problem dimension
     if (nd == 3)
       ## 2-D: area = cross product of triangle edge vectors
-      vol = edge_vecs(:,1,1) .* edge_vecs(:,2,2)...
-                  - edge_vecs(:,1,2) .* edge_vecs(:,2,1);
+      vol = edge_vecs(:,1,1) .* edge_vecs(:,2,2) ...
+            - edge_vecs(:,1,2) .* edge_vecs(:,2,1);
 
     elseif (nd == 4)
       ## 3-D: vol = scalar triple product [a.(b x c)]
@@ -139,41 +139,40 @@ function T = delaunayn (pts, varargin)
                 edge_vecs(:,2,2) .* edge_vecs(:,1,3));
 
     else
-      ## 1D and >= 4-D: simplex 'volume' proportional to det|edge_vecs|
+      ## 1-D and >= 4-D: simplex 'volume' proportional to det|edge_vecs|
 
-      ## FIXME: Vectorize this for nD inputs without excessive memory impact
-      ## over __delaunayn__ itself, or move simplex checking into __delaunayn__.
-      ## Perhaps with an optimized page-wise determinant.
-      ## see bug #60818 for speed/memory improvement attempts and concerns.
-
+      ## FIXME: Vectorize this for n-D inputs without excessive memory impact
+      ## over __delaunayn__ itself, or move simplex checking into __delaunayn__;
+      ## perhaps with an optimized page-wise determinant.
+      ## See bug #60818 for speed/memory improvement attempts and concerns.
       vol = zeros (nt, 1);
 
-      ##reshape so det can operate in dim1&2
+      ## Reshape so det can operate in dim 1&2
       edge_vecs = permute (edge_vecs, [3, 2, 1]);
 
-      ## calculate determinant for arbitrary problem dimension
+      ## Calculate determinant for arbitrary problem dimension
       for ii = 1:nt
         vol(ii) = det (edge_vecs(:, :, ii));
       endfor
     endif
 
-    ## mark simplices with relative volume < tol for removal
+    ## Mark simplices with relative volume < tol for removal
     idx = (abs ((vol) ./ orthog_simplex_vols)) < tol;
 
-    ##Remove trivially small simplexes from T
+    ## Remove trivially small simplexes from T
     T(idx, :) = [];
 
-    ## ensure ccw node order for consistent outward normal (bug #53397)
+    ## Ensure CCW node order for consistent outward normal (bug #53397)
     ## simplest method of maintaining positive unit normal direction is to
-    ## reverse order of two nodes. this preserves 'nice' monotonic descending
-    ## node 1 ordering.  Currently ignores 1D cases for compatibility.
-
-    if ((dim > 1) && any (negvol = (vol (!idx) < 0)))
+    ## reverse order of two nodes; this preserves 'nice' monotonic descending
+    ## node 1 ordering.  Currently ignores 1-D cases for compatibility.
+    if (dim > 1 && any (negvol = (vol(! idx) < 0)))
       T(negvol, [2, 3]) = T(negvol, [3, 2]);
     endif
 
   endif
 endfunction
+
 
 ## Test 1-D input
 %!testif HAVE_QHULL
@@ -216,7 +215,7 @@ endfunction
 %! x = [-1, 0; 0, 1; 1, 0; 0, -1; 0, 0];
 %! y = delaunayn (x);
 %! edges = permute (reshape (x(y(:, 2:end), :).', [2, 4, 2]), [2, 1, 3]) - ...
-%!                   x(y(:, 1), :, ones (1, 1, 2));
+%!         x(y(:, 1), :, ones (1, 1, 2));
 %! vol = edges(:,1,1) .* edges(:,2,2) - edges(:,1,2) .* edges(:,2,1);
 %! assert (all (vol >= 0));
 
@@ -225,7 +224,7 @@ endfunction
 %! x = [[-1, -1, 1, 0, -1]',[-1, 1, 1, 0, -1]',[0, 0, 0, 1, 1]'];
 %! y = delaunayn (x);
 %! edges = permute (reshape (x(y(:, 2:end), :).', [3, 2, 3]), [2, 1, 3]) - ...
-%!                   x(y(:, 1), :, ones (1, 1, 3));
+%!         x(y(:, 1), :, ones (1, 1, 3));
 %! vol = edges(:,1,1) .* ...
 %!            (edges(:,2,2) .* edges(:,3,3) - edges(:,3,2) .* edges(:,2,3)) ...
 %!       - edges(:,2,1) .* ...
@@ -236,8 +235,7 @@ endfunction
 
 ## Input validation tests
 %!error <Invalid call> delaunayn ()
-%!error <input points must be> delaunayn ("abc")
-%!error <input points must be> delaunayn ({1})
-%!error <input points must be> delaunayn (true)
-%!error <input points must be> delaunayn (cat (3, [1 2 3], [4 5 6]))
-
+%!error <input PTS must be> delaunayn ("abc")
+%!error <input PTS must be> delaunayn ({1})
+%!error <input PTS must be> delaunayn (true)
+%!error <input PTS must be> delaunayn (ones (3,3,3))

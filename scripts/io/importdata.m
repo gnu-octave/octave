@@ -316,7 +316,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
         ## FIXME: This code should be redundant because dlmread was called
         ##        with "emptyval", NA.  Delete if there are no problems
         ##        detected after some time.  Commented out: 5/23/2020.
-        ##output.data(ridx, (col+1):end) = NA;
+        ## output.data(ridx, (col+1):end) = NA;
         missing_idx = missing_idx(1:col);
       endif
       text = fields(missing_idx);

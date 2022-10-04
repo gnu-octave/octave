@@ -47,7 +47,7 @@ function vfcn = vectorize (fcn)
     print_usage ();
   endif
 
-  if (isa (fcn, "function_handle"))
+  if (is_function_handle (fcn))
     finfo = functions (fcn);
     if (! strcmp (finfo.type, "anonymous"))
       error ("vectorize: FCN must be a string or anonymous function handle");

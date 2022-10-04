@@ -194,7 +194,7 @@ function varargout = ode23s (fcn, trange, init, varargin)
   if (! isempty (odeopts.Mass) && isnumeric (odeopts.Mass))
     havemasshandle = false;
     mass = odeopts.Mass;     # constant mass
-  elseif (isa (odeopts.Mass, "function_handle"))
+  elseif (is_function_handle (odeopts.Mass))
     havemasshandle = true;   # mass defined by a function handle
     odeopts.Mass = feval (odeopts.Mass, trange(1), init,
                           odeopts.funarguments{:});

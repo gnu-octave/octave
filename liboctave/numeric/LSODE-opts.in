@@ -169,18 +169,18 @@ OPTION
   NAME = "jacobian type"
   DOC_ITEM
 A string specifying the type of Jacobian used with the stiff backward
-differentiation formula (BDF) integration method. Valid values are
+differentiation formula (BDF) integration method.  Valid values are
 
 @table @asis
 @item @qcode{"full"}
-The default. All partial derivatives are approximated or used from the
+The default.  All partial derivatives are approximated or used from the
 user-supplied Jacobian function.
 
 @item @qcode{"banded"}
 Only the diagonal and the number of lower and upper subdiagonals specified by
 the options @qcode{"lower jacobian subdiagonals"} and @qcode{"upper jacobian
 subdiagonals"}, respectively, are approximated or used from the user-supplied
-Jacobian function. A user-supplied Jacobian function may set all other
+Jacobian function.  A user-supplied Jacobian function may set all other
 partial derivatives to arbitrary values.
 
 @item @qcode{"diagonal"}
@@ -209,7 +209,7 @@ OPTION
   NAME = "lower jacobian subdiagonals"
   DOC_ITEM
 Number of lower subdiagonals used if option @qcode{"jacobian type"} is set to
-@qcode{"banded"}. The default is zero.
+@qcode{"banded"}.  The default is zero.
 
   END_DOC_ITEM
   TYPE = "octave_idx_type"
@@ -221,7 +221,7 @@ OPTION
   NAME = "upper jacobian subdiagonals"
   DOC_ITEM
 Number of upper subdiagonals used if option @qcode{"jacobian type"} is set to
-@qcode{"banded"}. The default is zero.
+@qcode{"banded"}.  The default is zero.
 
   END_DOC_ITEM
   TYPE = "octave_idx_type"

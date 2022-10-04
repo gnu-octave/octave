@@ -266,7 +266,7 @@ function varargout = textread (filename, format = "%f", varargin)
   warning ("off", "Octave:legacy-function", "local");
   [varargout{1:max (nargout, 1)}] = strread (str, format, varargin{:});
 
-  ## Hack to concatenate/reshape numeric output into 2D array (undocumented ML)
+  ## Hack to concatenate/reshape numeric output into 2-D array (undocumented ML)
   ## In ML this only works in case of an empty format string
   if (isempty (format))
     ## Get number of fields per line.
@@ -334,7 +334,7 @@ endfunction
 %! unlink (f);
 %! assert (a, d(2:7, 1), 1e-2);
 
-## Test reading 2D matrix with empty format
+## Test reading 2-D matrix with empty format
 %!test
 %! f = tempname ();
 %! d = rand (5, 2);

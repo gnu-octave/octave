@@ -231,9 +231,9 @@ function ZI = interp2 (varargin)
       Xsc = (XI - X(xidx)) ./ (diff (X)(xidx));
       Ysc = (YI - Y(yidx)) ./ (diff (Y)(yidx));
 
-      ## Get 2D index.
+      ## Get 2-D index.
       idx = sub2ind (size (a), yidx, xidx);
-      ## Dispose of the 1D indices at this point to save memory.
+      ## Dispose of the 1-D indices at this point to save memory.
       clear xidx yidx;
 
       ## Apply plane equation

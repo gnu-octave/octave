@@ -102,7 +102,7 @@ function labels = yticklabels (varargin)
 
     endif
 
-    ## Convert any numeric elements to characters, make it a 1D cell array.
+    ## Convert any numeric elements to characters, make it a 1-D cell array.
     arg = cellfun (@num2str, arg, "UniformOutput", false)(:);
 
     ## Pad with blank cell entries if needed.

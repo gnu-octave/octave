@@ -305,6 +305,7 @@ endfunction
 %! [y,i,~] = unique ([4,4,2,2,2,3,1], "stable");
 %! assert (y, [4,2,3,1]);
 %! assert (i, [1;3;6;7]);
+%! ## FIXME: 'j' input not calculated with stable
 %! ##assert (j, []);
 
 %!test
@@ -337,6 +338,7 @@ endfunction
 %! [y,i,~] = unique (A, "rows", "stable");
 %! assert (y, [4,5,6; 1,2,3]);
 %! assert (A(i,:), y);
+%! ## FIXME: 'j' output not calculated correctly with "stable"
 %! ##assert (y(j,:), A);
 
 ## Test "legacy" option

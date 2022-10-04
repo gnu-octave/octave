@@ -84,7 +84,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
       dr = dr(1) / dr(2);
     else
-      ## FIXME: need to properly implement 3D
+      ## FIXME: need to properly implement 3-D
       dr = mean (dr(1:2)) / dr(3);
     endif
   else
@@ -95,7 +95,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
       x = [1, 1];
     else
-      ## 3D plots need to be sized down to fit in the window.
+      ## 3-D plots need to be sized down to fit in the window.
       x = 1.0 ./ sqrt ([2, 2.5]);
     endif
     fprintf (plot_stream, "set tmargin screen %.15g;\n",
@@ -1422,7 +1422,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
   endwhile
 
-  ## This is needed to prevent warnings for rotations in 3D plots, while
+  ## This is needed to prevent warnings for rotations in 3-D plots, while
   ## allowing colorbars with contours.
   if (nd == 2 || (data_idx > 1 && ! view_map))
     fputs (plot_stream, "set pm3d implicit;\n");

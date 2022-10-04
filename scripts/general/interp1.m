@@ -479,7 +479,7 @@ endfunction
 %! %--------------------------------------------------------
 %! % red curve is left-continuous and blue is right-continuous at x = 2
 
-##FIXME: add test for N-d arguments here
+## FIXME: add test for N-d arguments here
 
 ## For each type of interpolated test, confirm that the interpolated
 ## value at the knots match the values at the knots.  Points away

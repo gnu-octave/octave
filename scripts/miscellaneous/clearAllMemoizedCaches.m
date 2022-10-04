@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2021 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -34,15 +34,12 @@
 ## @seealso{memoize}
 ## @end deftypefn
 
-function clearAllMemoizedCaches
-
-   if (nargin || nargout)
-    print_usage ();
-  endif
+function clearAllMemoizedCaches ()
 
   __memoize__ ();
 
 endfunction
+
 
 ## Mark file as being tested.  No real test needed for this function.
 %!assert (1)

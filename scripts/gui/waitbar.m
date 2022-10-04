@@ -139,7 +139,7 @@ function h = waitbar (varargin)
     ## Add createcancelbtn property
     addproperty ("createcancelbtn", hf, "figurebuttondownfcn");
     ## FIXME: Can't add listener because of bug #55963.
-    #addlistener (hf, "createcancelbtn", {@updatecancelbutton, ax});
+    ## addlistener (hf, "createcancelbtn", {@updatecancelbutton, ax});
 
     if (! isempty (varargin))
       set (hf, varargin{:});

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2021 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -26,8 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{mem_fcn_handle} =} memoize (@var{fcn_handle})
 ##
-## Create a memoized version @var{mem_fcn_handle} of function
-## @var{fcn_handle}.
+## Create a memoized version @var{mem_fcn_handle} of function @var{fcn_handle}.
 ##
 ## Each call to the memoized version @var{mem_fcn_handle} checks the inputs
 ## against an internally maintained table, and if the inputs have occurred
@@ -35,12 +34,12 @@
 ## itself instead of evaluating the full function again.  This speeds up the
 ## execution of functions that are called with the same inputs multiple times.
 ##
-## For example, here we take a slow user-written function named
-## @code{slow_fcn} and memoize it to a new handle @code{cyc}.
-## The first executions of both versions take the same time, but the subsequent
-## executions of the memoized version returns the previously computed value,
-## thus reducing 2.4 seconds of runtime to only 2.4 milliseconds.  The final
-## check verifies that the same result was returned from both versions.
+## For example, here we take a slow user-written function named @code{slow_fcn}
+## and memoize it to a new handle @code{cyc}.  The first executions of both
+## versions take the same time, but the subsequent executions of the memoized
+## version returns the previously computed value, thus reducing 2.4 seconds of
+## runtime to only 2.4 milliseconds.  The final check verifies that the same
+## result was returned from both versions.
 ##
 ## @example
 ## @group
@@ -65,10 +64,11 @@
 
 function mem_fcn_handle = memoize (fcn_handle)
 
-  if (nargin != 1 || nargout > 1)
+  if (nargin != 1)
     print_usage ();
   endif
-  if (! isa (fcn_handle, "function_handle"))
+
+  if (! is_function_handle (fcn_handle))
     error ("memoize: FCN_HANDLE must be a function handle");
   endif
 
@@ -76,13 +76,14 @@ function mem_fcn_handle = memoize (fcn_handle)
 
 endfunction
 
+
 %!test
 %! fcn1 = memoize (@sin);
 %! assert (isa (fcn1, "matlab.lang.MemoizedFunction"));
 %! fcn1 (pi);
 %! fcn2 = memoize (@sin);
 %! fcn2 (2*pi);
-%! assert (isequal (fcn1, fcn2))
+%! assert (isequal (fcn1, fcn2));
 
 %!test
 %! fcn = memoize (@rand);
@@ -100,8 +101,6 @@ endfunction
 %! clearCache (fcn);
 %! fcn.clearCache;
 
-# Test input validation
-%!error memoize ();
-%!error memoize (1, 2);
-%!error [a, b] = memoize (1);
-%!error memoize (1);
+## Test input validation
+%!error <Invalid call> memoize ();
+%!error <FCN_HANDLE must be a function handle> memoize (1);

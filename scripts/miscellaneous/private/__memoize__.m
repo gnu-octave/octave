@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2021 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -26,7 +26,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{mem_fcn_handle} =} __memoize__ (@var{fcn_handle})
 ## @deftypefn  {} {} __memoize__ ()
-## Internal function used by memoize.
+## Internal function used by @code{memoize}.
 ##
 ## @seealso{clearAllMemoizedCaches, memoize}
 ## @end deftypefn
@@ -36,7 +36,7 @@ function mem_fcn_handle = __memoize__ (fcn_handle)
 
   if (nargin)
 
-    for i=1:numel (cached_mem_fcn_handle)
+    for i = 1:numel (cached_mem_fcn_handle)
       if (isequal (cached_mem_fcn_handle{i}.Function, fcn_handle))
         mem_fcn_handle = cached_mem_fcn_handle{i};
         return;
@@ -48,7 +48,7 @@ function mem_fcn_handle = __memoize__ (fcn_handle)
 
   else
 
-    for i=1:numel (cached_mem_fcn_handle)
+    for i = 1:numel (cached_mem_fcn_handle)
       clearCache (cached_mem_fcn_handle{i});
     endfor
 

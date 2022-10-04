@@ -83,8 +83,9 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
   endif
 
   if (nargin > 6)
-    ## Current 2D implementation has nargin max = 6, since no triangulation
-    ## options are passed to the 2D algorithm. 3D algorithm requires nargin >=7
+    ## Current 2-D implementation has nargin max = 6, since no triangulation
+    ## options are passed to the 2-D algorithm.
+    ## 3-D algorithm requires nargin >=7.
 
     if (nargout > 1)
       error ("griddata: only one output argument valid for 3-D interpolation");
@@ -92,7 +93,7 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
     rx = griddata3 (x, y, z, varargin{:});
 
   else
-    ## for nargin 5 or 6, assign varargin terms to variables for 2D algorithm
+    ## for nargin 5 or 6, assign varargin terms to variables for 2-D algorithm
     xi = varargin{1};
     yi = varargin{2};
 

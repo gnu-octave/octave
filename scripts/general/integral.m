@@ -321,7 +321,7 @@ endfunction
 %!assert (integral (@(x) [sin(x), cos(x)], 0, pi, "ArrayValued", 1,
 %!                   "Waypoints", [0.5]), [2, 0], 2*eps);
 
-##test 2nd output
+## Test 2nd output
 %!test <*62412>
 %! [~, err] = integral (@(x) ones (size (x)), 0, 1);  # quadcc
 %! assert (err, 0, 5*eps);  # err ~3e-16

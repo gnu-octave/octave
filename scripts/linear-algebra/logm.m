@@ -143,7 +143,7 @@ endfunction
 ######      (SIAM, 2008.).
 #######################################################################
 
-##LOGM_PADE_PF   Evaluate Pade approximant to matrix log by partial fractions.
+## LOGM_PADE_PF   Evaluate Pade approximant to matrix log by partial fractions.
 ##   Y = LOGM_PADE_PF(A,M) evaluates the [M/M] Pade approximation to
 ##   LOG(EYE(SIZE(A))+A) using a partial fraction expansion.
 

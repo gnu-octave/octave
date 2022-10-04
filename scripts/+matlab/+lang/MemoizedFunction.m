@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2021 The Octave Project Developers
+## Copyright (C) 2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -23,7 +23,6 @@
 ##
 ########################################################################
 
-
 classdef MemoizedFunction < handle
 
   properties (GetAccess = public, SetAccess = private)
@@ -43,15 +42,16 @@ classdef MemoizedFunction < handle
 
     function this = MemoizedFunction (fcn_handle)
       if (! isa (fcn_handle, "function_handle"))
-        error (["matlab.lang.MemoizedFunction: FCN_HANDLE must be a ", ...
-                "function handle"]);
+        error ("matlab.lang.MemoizedFunction: FCN_HANDLE must be a function handle");
       endif
       this.Function = fcn_handle;
       this.Cache = init_cache ();
     endfunction
 
     function varargout = subsref (this, s)
+
       switch (s(1).type)
+
         case "."
           switch (s(1).subs)
             case "Function"
@@ -69,13 +69,14 @@ classdef MemoizedFunction < handle
               error ("matlab.lang.MemoizedFunction: unknown property '%s'", ...
                      s(1).subs);
           endswitch
+
         case "()"
           n_out = ifelse (nargout == 0, 1, nargout);
           if (! this.Enabled)
             [varargout{1:n_out}] = feval (this.Function, s(1).subs{:});
           else
             cache_idx = [];
-            for i=1:numel (this.Cache.Inputs)
+            for i = 1:numel (this.Cache.Inputs)
               if (isequaln (this.Cache.Inputs{i}, s(1).subs) ...
                   && isequal (this.Cache.Nargout(i), nargout))
                 cache_idx = i;
@@ -88,13 +89,13 @@ classdef MemoizedFunction < handle
               this.Cache.HitCount(cache_idx) += 1;
             else
               [varargout{1:n_out}] = feval (this.Function, s(1).subs{:});
-              n = numel(this.Cache.Inputs) + 1;
+              n = numel (this.Cache.Inputs) + 1;
               if (n > this.CacheSize)
                 this.Cache.Inputs(1)   = [];
                 this.Cache.Nargout(1)  = [];
                 this.Cache.Outputs(1)  = [];
                 this.Cache.HitCount(1) = [];
-                n -= 1; # FIFO
+                n -= 1;  # FIFO
               endif
               this.Cache.Inputs{n}   = s(1).subs;
               this.Cache.Nargout(n)  = nargout;
@@ -103,38 +104,42 @@ classdef MemoizedFunction < handle
               this.Cache.TotalMisses += 1;
             endif
           endif
+
         otherwise
-          error (["matlab.lang.MemoizedFunction: only '()' indexing is ", ...
-                  "supported"]);
+          error ("matlab.lang.MemoizedFunction: only '()' indexing is supported");
+
       endswitch
+
       if (numel (s) > 1)
         varargout{1} = subsref (varargout{1}, s(2:end));
       endif
+
     endfunction
 
     function this = subsasgn (this, s, val)
+
       if (numel (s) > 1)
-        error (["matlab.lang.MemoizedFunction: only one level of indexing ", ...
-                "is supported"]);
+        error ("matlab.lang.MemoizedFunction: only one level of indexing is supported");
       endif
+
       switch (s(1).type)
+
         case "."
           switch (s(1).subs)
             case "Function"
-              error (["matlab.lang.MemoizedFunction: property Function is ", ...
-                      "read-only"]);
+              error ("matlab.lang.MemoizedFunction: property Function is read-only");
+
             case "Enabled"
               if (! isscalar (val) || ! (isnumeric (val) || islogical (val)) ...
                   || ! isfinite (val))
-                error (["matlab.lang.MemoizedFunction: Enabled must be a ", ...
-                        "logical scalar"]);
+                error ("matlab.lang.MemoizedFunction: Enabled must be a logical scalar");
               endif
               this.Enabled = logical (val);
+
             case "CacheSize"
               if (! isscalar (val) || ! isnumeric (val) || ! isfinite (val) ...
-                  || ceil (val) != val || val < 1)
-                error (["matlab.lang.MemoizedFunction: CacheSize must ", ...
-                        "be a positive integer scalar"])
+                  || val < 1 || fix (val) != val)
+                error ("matlab.lang.MemoizedFunction: CacheSize must be a positive integer scalar");
               endif
               this.CacheSize = double (val);
               n = numel(this.Cache.Inputs) - this.CacheSize;
@@ -144,41 +149,44 @@ classdef MemoizedFunction < handle
                 this.Cache.Outputs(1:n)  = [];
                 this.Cache.HitCount(1:n) = [];
               endif
+
             otherwise
               error ("matlab.lang.MemoizedFunction: unknown property '%s'", ...
                      s(1).subs);
           endswitch
+
         otherwise
-          error (["matlab.lang.MemoizedFunction: only '.' indexing is ", ...
-                  "supported for assigning values"]);
+          error ("matlab.lang.MemoizedFunction: only '.' indexing is supported for assigning values");
+
       endswitch
+
     endfunction
 
     function clearCache (this)
-      if (nargin > 1 || nargout)
-        error ("matlab.lang.MemoizedFunction: Invalid call");
-      endif
       this.Cache = init_cache ();
     endfunction
 
     function s = stats (this)
+
       if (isempty (this.Cache.Inputs))
         CacheHitRatePercent   = 0;
         CacheOccupancyPercent = 0;
         MostHitCachedInput    = [];
       else
-        CacheHitRatePercent   = (this.Cache.TotalHits / ...
-          (this.Cache.TotalHits + this.Cache.TotalMisses)) * 100;
-        CacheOccupancyPercent = numel (this.Cache.Inputs) / this.CacheSize * 100;
+        CacheHitRatePercent   = 100 * (this.Cache.TotalHits /
+                                (this.Cache.TotalHits + this.Cache.TotalMisses));
+        CacheOccupancyPercent = 100 * (numel (this.Cache.Inputs)
+                                       / this.CacheSize);
         [~, i] = max (this.Cache.HitCount);
-        MostHitCachedInput    = struct ("Hits", this.Cache.HitCount(i), ...
+        MostHitCachedInput    = struct ("Hits", this.Cache.HitCount(i),
                                         "Input", {this.Cache.Inputs{i}});
       endif
-      s = struct (...
-      "Cache",                 this.Cache, ...
-      "MostHitCachedInput",    MostHitCachedInput, ...
-      "CacheHitRatePercent",   CacheHitRatePercent, ...
-      "CacheOccupancyPercent", CacheOccupancyPercent);
+      s = struct (
+        "Cache",                 this.Cache,
+        "MostHitCachedInput",    MostHitCachedInput,
+        "CacheHitRatePercent",   CacheHitRatePercent,
+        "CacheOccupancyPercent", CacheOccupancyPercent);
+
     endfunction
 
     function newobj = horzcat (varargin)
@@ -186,7 +194,7 @@ classdef MemoizedFunction < handle
     endfunction
 
     function newobj = horzcat (varargin)
-      error ("matlab.lang.MemoizedFunction:  concatenation is not allowed");
+      error ("matlab.lang.MemoizedFunction: concatenation is not allowed");
     endfunction
 
   endmethods
@@ -194,10 +202,10 @@ classdef MemoizedFunction < handle
 endclassdef
 
 function cache = init_cache ()
-cache = struct ("Inputs",      {{}}, ...
-                "Nargout",     [], ...
-                "Outputs",     {{}}, ...
-                "HitCount",    [], ...
-                "TotalHits",   0, ...
-                "TotalMisses", 0);
+  cache = struct ("Inputs",      {{}},
+                  "Nargout",     [],
+                  "Outputs",     {{}},
+                  "HitCount",    [],
+                  "TotalHits",   0,
+                  "TotalMisses", 0);
 endfunction

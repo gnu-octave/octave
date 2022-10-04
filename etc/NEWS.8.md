@@ -4,29 +4,30 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 ### General improvements
 
 - Octave's libraries are now built using symbol visibility by default.
-That means that less symbols are exported from these libraries.
-Configure with `--disable-lib-visibility-flags` to export all symbols
-(as in previous versions).
+  That means that less symbols are exported from these libraries.
+  Configure with `--disable-lib-visibility-flags` to export all symbols
+  (as in previous versions).
 
 - `filter` is now 5X faster, which also speeds up `deconv`, `fftfilt`
-and `arma_rnd` by the same amount.
+  and `arma_rnd` by the same amount.
 
 - `integral` can now output a second argument passing the error
-measurement used by the underlying integrator.
+  measurement used by the underlying integrator.
 
 - `perms` now accepts a second argument "unique" to return only unique
-permutations for inputs with repeated elements.  It is faster and takes
-less memory to call `perms ('aaaabbbbcccc', "unique")` than to call
-`unique (perms ('aaaabbbbcccc'), "rows")`.
+  permutations for inputs with repeated elements.  It is faster and
+  takes less memory to call `perms ('aaaabbbbcccc', "unique")` than to
+  call `unique (perms ('aaaabbbbcccc'), "rows")`.
 
 - `quadgk` can now accept the `ArrayValued` input parameter to handle
-array-valued input functions.
+  array-valued input functions.
 
-- `delaunayn` now has consistent trivial simplex checking and removal for all
-input dimensions, simplex checking 3D inputs is now vectorized, and >3D simplex
-checking performance has been improved.  Simplexes points are now ordered so
-they will all have positive outward normal vectors. Input type checking has
-also been added for improved error handling.
+- `delaunayn` now has consistent trivial simplex checking and removal
+  for all input dimensions, simplex checking 3D inputs is now
+  vectorized, and >3D simplex checking performance has been improved.
+  Simplexes points are now ordered so they will all have positive
+  outward normal vectors.  Input type checking has also been added for
+  improved error handling.
 
 ### Graphical User Interface
 
@@ -37,8 +38,8 @@ also been added for improved error handling.
     * `"innerposition"` (equivalent to `"position"`)
     * `"windowstate"` (not yet implemented)
 
-- Legend now features a new property `"itemhitfcn"`, allowing the execution of a
-callback function when a legend item is clicked.
+- Legend now features a new property `"itemhitfcn"`, allowing the
+  execution of a callback function when a legend item is clicked.
 
 ### Matlab compatibility
 

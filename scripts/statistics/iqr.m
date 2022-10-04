@@ -95,7 +95,7 @@ function z = iqr (x, dim)
         && all (dim > 0) && all (rem (dim, 1) == 0))
 
       if (((num_vecdims = numel (dim)) > 1) && all (diff (sort (dim))))
-        ## DIM must be 1D and non repeating.
+        ## DIM must be 1-D and non repeating.
 
         ## Detect trivial case of DIM being all dimensions (same as "all").
         highest_dim = (max (nd, max (dim)));

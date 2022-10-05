@@ -156,7 +156,6 @@ function varargout = ode45 (fcn, trange, init, varargin)
   [defaults, classes, attributes] = odedefaults (numel (init),
                                                  trange(1), trange(end));
 
-  ## FIXME: Refine is not correctly implemented yet
   defaults = odeset (defaults, "Refine", 4);
 
   persistent ode45_ignore_options = ...
@@ -196,8 +195,8 @@ function varargout = ode45 (fcn, trange, init, varargin)
     odeopts.InitialStep = odeopts.direction * ...
                           starting_stepsize (order, fcn, trange(1), init,
                                              odeopts.AbsTol, odeopts.RelTol,
-                                             strcmpi (odeopts.NormControl, "on"),
-                                             odeopts.funarguments);
+                                             strcmpi (odeopts.NormControl,
+                                             "on"), odeopts.funarguments);
   endif
 
   if (! isempty (odeopts.Mass))
@@ -229,12 +228,7 @@ function varargout = ode45 (fcn, trange, init, varargin)
     endif
   endif
 
-  if (nargout == 1)
-    ## Single output requires auto-selected intermediate times,
-    ## which is obtained by NOT specifying specific solution times.
-    trange = [trange(1); trange(end)];
-    odeopts.Refine = [];  # disable Refine when single output requested
-  elseif (numel (trange) > 2)
+  if (numel (trange) > 2)
     odeopts.Refine = [];  # disable Refine when specific times requested
   endif
 
@@ -246,8 +240,9 @@ function varargout = ode45 (fcn, trange, init, varargin)
     feval (odeopts.OutputFcn, [], [], "done", odeopts.funarguments{:});
   endif
   if (! isempty (odeopts.Events))   # Cleanup event function handling
-    ode_event_handler (odeopts.Events, solution.t(end),
-                       solution.x(end,:).', "done", odeopts.funarguments{:});
+    ode_event_handler (odeopts.Events, solution.ode_t(end), ...
+                       solution.ode_x(end,:).', "done", ...
+                       odeopts.funarguments{:});
   endif
 
   ## Print additional information if option Stats is set
@@ -265,16 +260,16 @@ function varargout = ode45 (fcn, trange, init, varargin)
   endif
 
   if (nargout == 2)
-    varargout{1} = solution.t;      # Time stamps are first output argument
-    varargout{2} = solution.x;      # Results are second output argument
+    varargout{1} = solution.output_t; # Time stamps are first output argument
+    varargout{2} = solution.output_x; # Results are second output argument
   elseif (nargout == 1)
-    varargout{1}.x = solution.t.';  # Time stamps saved in field x (row vector)
-    varargout{1}.y = solution.x.';  # Results are saved in field y (row vector)
-    varargout{1}.solver = solver;   # Solver name is saved in field solver
+    varargout{1}.x = solution.ode_t.'; #Time stamps saved in field x (row vect.)
+    varargout{1}.y = solution.ode_x.'; #Results are saved in field y (row vect.)
+    varargout{1}.solver = solver; # Solver name is saved in field solver
     if (! isempty (odeopts.Events))
-      varargout{1}.xe = solution.event{3};  # Time info when an event occurred
-      varargout{1}.ye = solution.event{4};  # Results when an event occurred
-      varargout{1}.ie = solution.event{2};  # Index info which event occurred
+      varargout{1}.xe = solution.event{3}.'; # Time info when an event occurred
+      varargout{1}.ye = solution.event{4}.'; # Results when an event occurred
+      varargout{1}.ie = solution.event{2}.'; # Index info which event occurred
     endif
     if (strcmpi (odeopts.Stats, "on"))
       varargout{1}.stats = struct ();
@@ -287,8 +282,8 @@ function varargout = ode45 (fcn, trange, init, varargin)
     endif
   elseif (nargout > 2)
     varargout = cell (1,5);
-    varargout{1} = solution.t;
-    varargout{2} = solution.x;
+    varargout{1} = solution.output_t;
+    varargout{2} = solution.output_x;
     if (! isempty (odeopts.Events))
       varargout{3} = solution.event{3};  # Time info when an event occurred
       varargout{4} = solution.event{4};  # Results when an event occurred
@@ -355,7 +350,8 @@ endfunction
 %!      error ('fout: step "init"');
 %!    endif
 %!  elseif (isempty (flag))
-%!    if (! isequal (size (t), [1, 1]))
+%!  # Multiple steps can be sent in one function call
+%!    if (! isequal ( size (t), size (y)))
 %!      error ('fout: step "calc"');
 %!    endif
 %!  elseif (strcmp (flag, "done"))
@@ -371,8 +367,16 @@ endfunction
 %! [t, y] = ode45 (@fpol, [0 2], [2 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 %!test  # not too many steps
-%! [t, y] = ode45 (@fpol, [0 2], [2 0]);
+%! [t, y] = ode45 (@fpol, [0 2], [2 0], odeset("Refine",1));
 %! assert (size (t) < 20);
+%!test  # correct number of steps with Refine
+%! [t1, y1] = ode45 (@fpol, [0 2], [2 0], odeset ("Refine", 1));
+%! [t2, y2] = ode45 (@fpol, [0 2], [2 0], odeset ("Refine", 4));
+%! [t3, y3] = ode45 (@fpol, [0 2], [2 0]); #default Refine=4
+%! s = ode45 (@fpol, [0 2], [2 0], odeset ("Refine", 4));
+%! assert (length (t2) == length (t3));
+%! assert (length (t2) == 4*length (t1) - 3);
+%! assert (length (s.x) == length (t1));
 %!test  # anonymous function instead of real function
 %! fvdp = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %! [t, y] = ode45 (fvdp, [0 2], [2 0]);
@@ -392,7 +396,7 @@ endfunction
 %! [t, y] = ode45 (@(t,y) y, [-2 0], 2);
 %! assert ([t(end), y(end,:)], vref, 1e-1);
 %!test  # InitialStep option
-%! opt = odeset ("InitialStep", 1e-8);
+%! opt = odeset ("InitialStep", 1e-8, "Refine", 1);
 %! [t, y] = ode45 (@fpol, [0 0.2], [2 0], opt);
 %! assert ([t(2)-t(1)], [1e-8], 1e-9);
 %!test  # MaxStep option
@@ -447,8 +451,8 @@ endfunction
 %! opt = odeset ("NonNegative", 2);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end); sol.y(:,end)], [2; 2; 0], 0.5);
-%!test  # Details of OutputSel and Refine can't be tested
-%! opt = odeset ("OutputFcn", @fout, "OutputSel", 1, "Refine", 5);
+%!test  # Details of OutputSel can't be tested
+%! opt = odeset ("OutputFcn", @fout, "OutputSel", 1);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %!test  # Stats must add further elements in sol
 %! opt = odeset ("Stats", "on");
@@ -464,13 +468,11 @@ endfunction
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
 %!test  # Events option, now stop integration
-%! warning ("off", "integrate_adaptive:unexpected_termination", "local");
 %! opt = odeset ("Events", @fevn, "NormControl", "on");
 %! sol = ode45 (@fpol, [0 10], [2 0], opt);
-%! assert ([sol.ie, sol.xe, sol.ye],
+%! assert ([sol.ie, sol.xe, sol.ye.'],
 %!         [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
 %!test  # Events option, five output arguments
-%! warning ("off", "integrate_adaptive:unexpected_termination", "local");
 %! opt = odeset ("Events", @fevn, "NormControl", "on");
 %! [t, y, vxe, ye, vie] = ode45 (@fpol, [0 10], [2 0], opt);
 %! assert ([vie, vxe, ye],
@@ -511,8 +513,14 @@ endfunction
 %!test # Check that imaginary part of solution does not get inverted
 %! sol = ode45 (@(x,y) 1, [0 1], 1i);
 %! assert (imag (sol.y), ones (size (sol.y)));
-%! [x, y] = ode45 (@(x,y) 1, [0 1], 1i);
+%! [x, y] = ode45 (@(x,y) 1, [0 1], 1i, odeset ("Refine", 1));
 %! assert (imag (y), ones (size (y)));
+
+## FIXME: convert to demo or a visible=off test with failable assert/error
+##        statemments
+##%!test # Make sure odeplot works (default OutputFcn when no return value)
+##%! ode45 (@fpol, [0 2], [2 0]);
+##%! close all
 
 %!error <Invalid call> ode45 ()
 %!error <Invalid call> ode45 (1)

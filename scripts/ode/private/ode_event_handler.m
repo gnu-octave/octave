@@ -115,16 +115,47 @@ function retval = ode_event_handler (evtfcn, t, y, flag = "", varargin)
         else
           retcell{1} = any (term(idx));     # Stop integration or not
         endif
-        idx = idx(1);  # Use first event found if there are multiple.
-        retcell{2}(evtcnt,1) = idx;
-        ## Calculate the time stamp when the event function returned 0 and
-        ## calculate new values for the integration results, we do both by
-        ## a linear interpolation.
-        tnew = t - evt(idx) * (t - told) / (evt(idx) - evtold(idx));
-        ynew = (y - (t - tnew) * (y - yold) / (t - told)).';
-        retcell{3}(evtcnt,1) = tnew;
-        retcell{4}(evtcnt,:) = ynew;
-        evtcnt += 1;
+        evtcntnew = 1;
+        ## Add all events this step to the output.
+        for idx2 = idx                      # Loop through all values of idx
+          ## Calculate the time stamp when the event function returned 0 and
+          ## calculate new values for the integration results, we do both by
+          ## a linear interpolation.
+          tnew = t - evt(idx2) * (t - told) / (evt(idx2) - evtold(idx2));
+          ynew = (y - (t - tnew) * (y - yold) / (t - told)).';
+          tnews(evtcntnew, 1) = tnew;
+          ynews(evtcntnew, :) = ynew;
+          terms(evtcntnew, 1) = term(idx2);
+          evtcntnew += 1;
+        endfor
+        ## Sort by time of event
+        if length (idx) > 1
+          [tnews, idx_sort] = sort (tnews, "ascend");
+          idxs = idx(idx_sort);
+          ynews = ynews(idx_sort,:);
+          terms = terms(idx_sort);
+        else
+          idxs = idx;
+        endif
+        ## Check for terminal events and remove any events after terminal.
+        ## Any events at same time as first terminal event will be retained.
+        idx3 = find (terms, 1);          # Find first terminal event by time
+        if ! isempty (idx3)
+          t_cutoff = tnews(idx3);
+          ## Last index to return
+          evtcntnew = find (tnews == t_cutoff, 1, "last");
+        else
+          evtcntnew = length (terms);         # Return all indices if no terminal
+        endif
+        idxs = idxs(1:evtcntnew);
+        tnews = tnews(1:evtcntnew);
+
+        ## Populate return values with sorted, clipped values
+        evtcntrange = evtcnt - 1 + (1:evtcntnew);
+        evtcnt += evtcntnew;
+        retcell{2}(evtcntrange, 1) = idxs(:);
+        retcell{3}(evtcntrange, 1) = tnews(:);
+        retcell{4}(evtcntrange, :) = ynews(1:evtcntnew,:);
       endif
 
     endif

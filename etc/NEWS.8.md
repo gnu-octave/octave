@@ -29,6 +29,9 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
   outward normal vectors.  Input type checking has also been added for
   improved error handling.
 
+- `Refine` option is now implemented in functions `ode45`, `ode23`, 
+  and `ode23s`.
+
 ### Graphical User Interface
 
 
@@ -75,6 +78,10 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
   Object      | Property         | Default State
   ------------|------------------|------------
   `figure`    | `"dockcontrols"` | `"on"`
+  
+- `ode45`, `ode23`, and `ode23s` have improved results for options `Events`,
+  `OutputFcn`, and `Refine`, along with corrected orientation of struct 
+  outputs.
 
 ### Alphabetical list of new functions added in Octave 8
 

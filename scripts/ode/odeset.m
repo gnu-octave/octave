@@ -130,7 +130,6 @@
 ## time step or also at intermediate time instances.  The value should be
 ## a scalar indicating the number of equally spaced time points to use
 ## within each timestep at which to return output.
-## @emph{Note}: This option is not yet implemented.
 ##
 ## @item @code{RelTol}: positive scalar
 ## Relative error tolerance.

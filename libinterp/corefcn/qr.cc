@@ -800,10 +800,16 @@ orthogonal basis of @code{span (A)}.
 %! assert (r, re, sqrt (eps));
 %! assert (q'*b, c, sqrt (eps));
 
+## Empty matrices
 %!test
 %! assert (qr (zeros (0, 0)), zeros (0, 0))
 %! assert (qr (zeros (1, 0)), zeros (1, 0))
 %! assert (qr (zeros (0, 1)), zeros (0, 1))
+
+%!test <*63069>
+%! assert (qr (sparse (0, 0)), sparse (0, 0))
+%! assert (qr (sparse (1, 0)), sparse (1, 0))
+%! assert (qr (sparse (0, 1)), sparse (0, 1))
 
 %!error qr ()
 %!error qr ([1, 2; 3, 4], 0, 2)

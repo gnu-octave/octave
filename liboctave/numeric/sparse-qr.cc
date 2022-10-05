@@ -509,9 +509,9 @@ namespace octave
       octave_idx_type nr = a.rows ();
       octave_idx_type nc = a.cols ();
 
-      if (nr <= 0 || nc <= 0)
+      if (nr < 0 || nc < 0)
         (*current_liboctave_error_handler)
-          ("matrix dimension with negative or zero size");
+          ("matrix dimension with negative size");
 
       if (order < 0 || order > 9)
         (*current_liboctave_error_handler)
@@ -707,9 +707,9 @@ namespace octave
       if (nrows != b_nr)
         (*current_liboctave_error_handler)
           ("sparse_qr: matrix dimension mismatch");
-      else if (b_nc <= 0 || b_nr <= 0)
+      else if (b_nc < 0 || b_nr < 0)
         (*current_liboctave_error_handler)
-          ("sparse_qr: matrix dimension with negative or zero size");
+          ("sparse_qr: matrix dimension with negative size");
 
       cholmod_dense *QTB;  // Q' * B
       cholmod_dense B = rod2rcd (b);
@@ -904,9 +904,9 @@ namespace octave
       octave_idx_type b_nc = b.cols ();
       Matrix x (ncols, b_nc);  // X = m_E'*(m_R\(Q'*B))
 
-      if (nrows <= 0 || ncols <= 0 || b_nc <= 0 || b_nr <= 0)
+      if (nrows < 0 || ncols < 0 || b_nc < 0 || b_nr < 0)
         (*current_liboctave_error_handler)
-          ("matrix dimension with negative or zero size");
+          ("matrix dimension with negative size");
 
       if (nrows < 0 || ncols < 0 || nrows != b_nr)
         (*current_liboctave_error_handler) ("matrix dimension mismatch");
@@ -1444,9 +1444,9 @@ namespace octave
       octave_idx_type nr = a.rows ();
       octave_idx_type nc = a.cols ();
 
-      if (nr <= 0 || nc <= 0)
+      if (nr < 0 || nc < 0)
         (*current_liboctave_error_handler)
-          ("matrix dimension with negative or zero size");
+          ("matrix dimension with negative size");
 
       if (order < 0 || order > 9)
         (*current_liboctave_error_handler)
@@ -1643,9 +1643,9 @@ namespace octave
       if (nrows != b_nr)
         (*current_liboctave_error_handler) ("matrix dimension mismatch");
 
-      if (b_nc <= 0 || b_nr <= 0)
+      if (b_nc < 0 || b_nr < 0)
         (*current_liboctave_error_handler)
-          ("matrix dimension with negative or zero size");
+          ("matrix dimension with negative size");
 
       cholmod_dense *QTB;  // Q' * B
       cholmod_dense B = cod2ccd (b);
@@ -3118,9 +3118,9 @@ namespace octave
 
       int order = cxsparse_defaults<SPARSE_T>::order;
 
-      if (nr <= 0 || nc <= 0 || b_nc <= 0 || b_nr <= 0)
+      if (nr < 0 || nc < 0 || b_nc < 0 || b_nr < 0)
         (*current_liboctave_error_handler)
-          ("matrix dimension with negative or zero size");
+          ("matrix dimension with negative size");
 
       if ( nr != b_nr)
         (*current_liboctave_error_handler)

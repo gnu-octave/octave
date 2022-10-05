@@ -346,7 +346,6 @@ endif
 doc_EXTRA_DIST += \
   $(BUILT_OCTAVE_TEXI_SRC) \
   $(srcdir)/%reldir%/octave.info \
-  %reldir%/TODO \
   %reldir%/doc-cache \
   %reldir%/octave.dvi \
   %reldir%/octave.ps \

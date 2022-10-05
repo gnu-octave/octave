@@ -670,6 +670,8 @@ public:
 
   virtual string_vector map_keys (void) const;
 
+  virtual bool isfield (const std::string&) const;
+
   virtual std::size_t nparents (void) const;
 
   virtual std::list<std::string> parent_class_name_list (void) const;

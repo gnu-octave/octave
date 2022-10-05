@@ -1070,6 +1070,9 @@ public:
   string_vector map_keys (void) const
   { return m_rep->map_keys (); }
 
+  bool isfield (const std::string& field_name) const
+  { return m_rep->isfield (field_name); }
+
   std::size_t nparents (void) const
   { return m_rep->nparents (); }
 

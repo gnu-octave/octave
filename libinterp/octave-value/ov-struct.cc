@@ -1951,7 +1951,7 @@ dimension is returned.
 
   if (args(0).isstruct ())
     {
-      octave_map m = args(0).map_value ();
+      octave_value m = args(0);
 
       // FIXME: should this work for all types that can do
       // structure reference operations?

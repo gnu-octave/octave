@@ -901,6 +901,12 @@ octave_base_value::map_keys (void) const
   err_wrong_type_arg ("octave_base_value::map_keys()", type_name ());
 }
 
+bool
+octave_base_value::isfield (const std::string&) const
+{
+  err_wrong_type_arg ("octave_base_value::isfield()", type_name ());
+}
+
 std::size_t
 octave_base_value::nparents (void) const
 {

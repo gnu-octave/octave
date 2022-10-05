@@ -1261,7 +1261,10 @@ dimensions.
       break;
 
     case 1:
-      get_dimensions (args(0), "cell", dims);
+      if (args(0).iscell ())
+        return args(0);  // shortcut path for input which is already a Cell
+      else
+        get_dimensions (args(0), "cell", dims);
       break;
 
     default:
@@ -1283,6 +1286,15 @@ dimensions.
 }
 
 /*
+
+%!test <*63132>
+%! x = {1, 3};
+%! y = cell (x);
+%! assert (x, y);
+%! x = cell (0, 3);
+%! y = cell (x);
+%! assert (x, y);
+
 ## This might work on some system someday, but for now, who has a system
 ## where a 16 yottabyte array can be allocated?  See bug #50934.
 %!error <out of memory> cell (1e24, 1)

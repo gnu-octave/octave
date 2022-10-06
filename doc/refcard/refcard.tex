@@ -55,8 +55,8 @@
 % I chose to omit.  In general, not all synonyms for commands are
 % covered, nor all variations of a command.
 
-\def\octaveversion{3.0.0}
-\def\refcardedition{2.0}
+\def\octaveversion{8.0.0}
+\def\refcardedition{3.0}
 
 % ------------------
 % multicolumn format
@@ -379,6 +379,7 @@
 % -------------------------------------
 
 {\vbbf Octave Quick Reference}\hfil{\smrm Octave Version \octaveversion}\qquad
+\centerline{\smrm Copyright 1996-2022 The Octave Project Developers\qquad Permissions on back}
 
 \sec Starting Octave;
 octave&start interactive Octave session\cr
@@ -389,8 +390,7 @@ octave --help&describe command line options\cr
 
 \sec Stopping Octave;
 quit {\rm or} exit&exit Octave\cr
-INTERRUPT&({\it e.g.} \ctl{c}) terminate current command and return to
-  top-level prompt\cr
+Ctrl-C&terminate current command and return to top-level prompt\cr
 \endsec
 
 \sec Getting Help;
@@ -400,109 +400,29 @@ doc {\it command}&search for {\it command} in Octave manual\cr
 lookfor {\it str}&search for {\it command} based on {\it str}\cr
 \endsec
 
-\sec Motion in Info;
-SPC {\rm or} C-v&scroll forward one screenful\cr
-DEL {\rm or} M-v&scroll backward one screenful\cr
-C-l&redraw the display\cr
-\endsec
-
-\sec Node Selection in Info;
-n&select the next node\cr
-p&select the previous node\cr
-u&select the `up' node\cr
-t&select the `top' node\cr
-d&select the directory node\cr
-<&select the first node in the current file\cr
->&select the last node in the current file\cr
-% ]&move forward through the node structure\cr
-% [&move backward through the nodes\cr
-g&reads the name of a node and selects it\cr
-C-x k&kills the current node\cr
-\endsec
-
-\sec Searching in Info;
-s&search for a string\cr
-C-s&search forward incrementally\cr
-C-r&search backward incrementally\cr
-i&search index \& go to corresponding node\cr
-,&go to next match from last `i' command\cr
-\endsec
-
-\sec Command-Line Cursor Motion;
-C-b&move back one character\cr
-C-f&move forward one character\cr
-C-a&move to the start of the line\cr
-C-e&move to the end of the line\cr
-M-f&move forward a word\cr
-M-b&move backward a word\cr
-C-l&clear screen, reprinting current line at top\cr
-\endsec
-
-\sec Inserting or Changing Text;
-M-TAB&insert a tab character\cr
-DEL&delete character to the left of the cursor\cr
-C-d&delete character under the cursor\cr
-C-v&add the next character verbatim\cr
-C-t&transpose characters at the point\cr
-M-t&transpose words at the point\cr
-% M-u&uppercase the current word\cr
-% M-l&lowercase the current word\cr
-% M-c&capitalize the current word\cr
-\endsec
-
-\vfill
-\line{\smrm \opt{ } surround optional arguments
-  \hfill ... show one or more arguments}
-\vskip0.25\baselineskip
-\eject
-
-\sec Killing and Yanking;
-C-k&kill to the end of the line\cr
-C-y&yank the most recently killed text\cr
-M-d&kill to the end of the current word\cr
-M-DEL&kill the word behind the cursor\cr
-M-y&rotate the kill ring and yank the new top\cr
-\endsec
-
 \sec Command Completion and History;
 TAB&complete a command or variable name\cr
-M-?&list possible completions\cr
-
-RET&enter the current line \cr
-C-p&move `up' through the history list\cr
-C-n&move `down' through the history list\cr
-M-<&move to the first line in the history\cr
-M->&move to the last line in the history\cr
-C-r&search backward in the history list\cr
-C-s&search forward in the history list\cr
-
-history \opt{{-q}} \opt{{\it N\/}}&list {\it N\/} previous history lines,
-  omitting history numbers if {\tt -q}\cr
-history -w \opt{{\it file}}&write history to {\it file\/} ({\tt
-  \char'0176/.octave\_hist} if no {\it file\/} argument)\cr
-history -r \opt{{\it file}}&read history from {\it file\/} ({\tt
-  \char'0176/.octave\_hist} if no {\it file\/} argument)\cr
-
-edit\_history {\it lines}&edit and then run previous
-  commands from the history list\cr
-run\_history {\it lines}&run previous commands from the
-  history list\cr
-\quad\opt{{\it beg\/}} \opt{{\it end\/}}&Specify the first and last
-  history commands to edit or run.\cr
-\omit\hfill\vbox{\hsize=\idnwid\rm\vskip0.25ex
-  If {\it beg}\/ is greater than {\it end},
-  reverse the list of commands before editing.  If {\it end\/} is
-  omitted, select commands from {\it beg\/} to the end of the history
-  list.  If both arguments are omitted, edit the previous item in the
-  history list.}\span\cr
+Alt-?&list possible completions\cr
+Ctrl-r, Ctrl-s&search command history\cr
 \endsec
 
-\sec Shell Commands;
+\sec Directory and Path Commands;
 cd {\it dir}&change working directory to {\it dir}\cr
 pwd&print working directory\cr
 ls \opt{{\it options}}&print directory listing\cr
 getenv ({\it string})&return value of named environment variable\cr
-system ({\it cmd})&execute arbitrary shell command string\cr
+what&list .m and .mat files in the current directory\cr
+path&display the current Octave function path.\cr
+pathdef&display the default path.\cr
+addpath ({\it dir})&add a directory to the path.\cr
+EXEC\_PATH&manipulate the Octave executable path.\cr
+\endsec
+
+\sec Package Management;
+pkg install -forge&download and install package\cr
+pkg install &install an already downloaded package\cr
+pkg list&display installed packages.\cr
+pkg load / pkg unload &Load and unload an installed package.\cr
 \endsec
 
 \sec Matrices;
@@ -515,44 +435,52 @@ system ({\it cmd})&execute arbitrary shell command string\cr
 [ {\it x}, {\it y}, ... ]&enter a row vector\cr
 [ {\it x}; {\it y}; ... ]&enter a column vector\cr
 [ {\it w}, {\it x}; {\it y}, {\it z} ]&enter a 2$\times$2 matrix\cr
+rows&number of rows of matrix\cr
+columns&number of columns of matrix\cr
+zeros&create matrix of zeros\cr
+ones&create matrix of ones\cr
+eye&create identity matrix\cr
+diag&create diagonal matrix\cr
+rand randi randn&create matrix of random values\cr
+all&true if all elements nonzero\cr
+any&true if at least one element nonzero\cr
+nnz ({\it s})&Count nonzero elements of {\it s}.\cr
+sparse&create a sparse matrix\cr
 \endsec
 
 \sec Multi-dimensional Arrays;
-\omit\vbox{\rm\vskip0.25ex
-  Multi-dimensional arrays may be created with the {\it cat} or
-  {\it reshape} commands from two-dimensional sub-matrices.
-  \vskip0.75ex}\span\cr
-squeeze ({\it arr})&remove singleton dimensions of the array.\cr
-ndims ({\it arr})&number of dimensions in the array.\cr
-permute ({\it arr}, {\it p})&permute the dimensions of an array.\cr
-ipermute ({\it arr}, {\it p})&array inverse permutation.\cr
-\endsec
-
-\vfill\eject
-
-\sec ;
-shiftdim ({\it arr}, {\it s})&rotate the array dimensions.\cr
-circshift ({\it arr}, {\it s})&rotate the array elements.\cr
-\endsec
-
-\sec Sparse Matrices;
-sparse (...)&create a sparse matrix.\cr
-speye ({\it n)}&create sparse identity matrix.\cr
-sprand ({\it n}, {\it m}, {\it d})&sparse rand matrix of density {\it d}.\cr
-spdiags (...)&sparse generalization of {\it diag}.\cr
-nnz ({\it s})&No. nonzero elements in sparse matrix.\cr
+cat&concatenate variables along the specified dimension\cr
+reshape&change the shape of vector or matrix or array\cr
+squeeze&remove singleton dimensions\cr
+ndims&number of dimensions\cr
+permute, ipermute, shiftdim&permute the dimensions of an array, like a generalized transpose\cr
+circshift&rotate the array elements\cr
+meshgrid&create coordinate matrices useful for vectorization\cr
 \endsec
 
 \sec Ranges;
 {\it base} : {\it limit}\cr
 {\it base} : {\it incr} : {\it limit}\cr
 \omit\hfill\vbox{\hsize=\idnwid\rm\vskip0.75ex
-  Specify a range of values beginning with {\it base\/} with no elements
-  greater than {\it limit}.  If it is omitted, the default value of
-  {\it incr\/} is 1.  Negative increments are permitted.}\span\cr
+  {\it incr} == 1 if not specified. Negative ranges allowed.}\span\cr
 \endsec
 
-\sec Strings and Common Escape Sequences;
+\sec Numeric Types And Values;
+\omit\vbox{\rm\vskip0.5ex
+  Integers saturate in Octave. They do not wrap around.
+  \vskip0.75ex}\span\cr
+int8, int16, int32, int64&Signed integers\cr
+uint8, uint16, uint32, uint64&Unsigned integers\cr
+single double&32-bit / 64-bitIEEE floating point\cr
+intmin, intmax, flintmax&Integer limits of given type\cr
+realmax, realmin&Floating point limits of given type\cr
+Inf, NaN, NA&IEEE infinity, NaN, missing value\cr
+eps&machine precision\cr
+pi, e&3.14159..., 2.71828...\cr
+i, j&$\sqrt{-1}$\cr
+\endsec
+
+\sec Strings;
 \omit\vbox{\rm\vskip0.5ex
   A {\it string constant\/} consists of a sequence of characters
   enclosed in either double-quote or single-quote marks. Strings
@@ -563,48 +491,32 @@ nnz ({\it s})&No. nonzero elements in sparse matrix.\cr
 \char'134 '&a literal single-quote character\cr
 \char'134 n&newline, ASCII code 10\cr
 \char'134 t&horizontal tab, ASCII code 9\cr
+sprintf, sscanf&formatted IO to/from string\cr
+strcmp&compare strings\cr
+strcat&concatenate strings\cr
+strfind, regexp&strings matching substrings or regular expressions\cr
+strrep, regexprep&match and replace sub-strings\cr
 \endsec
 
 \sec Index Expressions;
 {\it var} ({\it idx})&select elements of a vector\cr
 {\it var} ({\it idx1}, {\it idx2})&select elements of a matrix\cr
-
-\quad {\it scalar}&select row (column) corresponding to {\it scalar}\cr
-\quad {\it vector}&select rows (columns) corresponding to the elements
-  of {\it vector}\cr
-\quad {\it range}&select rows (columns) corresponding to the elements
-  of {\it range}\cr
-\quad :&select all rows (columns)\cr
+{\it var} ({\it [1 3]}, {\it :})&rows 1 and 3\cr
+{\it var} ({\it :}, {\it [2 end]})&the second and last columns\cr
+{\it var} ({\it 1:2:end}, {\it 2:2:end})&submatrix with odd rows and even columns\cr
+{\it var1} ({\it var2} == 0)&elements of {\it var1} corresponding to zero elements of {\it var2}\cr
+{\it var} ({:})&all elements as a column vector\cr
 \endsec
 
-\sec Global and Persistent Variables;
-global {\it var1} ...&Declare variables global.\cr
-global {\it var1} = {\it val}&Declare variable global. Set initial value.\cr
-persistent {\it var1}&Declare a variable as static to a function.\cr
-persistent {\it var1} = {\it val}&Declare a variable as static to a
-  function and set its initial value.\cr
-\omit\hfill\vbox{\rm\vskip0.25ex
-  Global variables may be accessed inside the body of a function
-  without having to be passed in the function parameter list provided
-  they are declared global when used.}\span\cr
+\sec Cells and Structures;
+%
+% FIXME add classdef to this section?
+%
+{\it{var}}.{\it{field}} = ...&set a field of a structure.\cr
+{\it{var}}$\{${\it{idx}}$\}$ = ...&set an element of a cell array.\cr
+cellfun ({\it f}, {\it c})&apply a function to elements of cell array.\cr
+fieldnames ({\it s})&returns the fields of a structure.\cr
 \endsec
-
-\sec Selected Built-in Functions;
-EDITOR&editor to use with {\tt edit\_history}\cr
-Inf, NaN&IEEE infinity, NaN\cr
-NA&Missing value\cr
-PAGER&program to use to paginate output\cr
-ans&last result not explicitly assigned\cr
-eps&machine precision\cr
-pi&$\pi$\cr
-1i&$\sqrt{-1}$\cr
-realmax&maximum representable value\cr
-realmin&minimum representable value\cr
-\endsec
-
-\vfill
-\centerline{\smrm Copyright 1996-2022 The Octave Project Developers\qquad Permissions on back}
-\eject
 
 \sec Assignment Expressions;
 {\it var} = {\it expr}&assign expression to variable\cr
@@ -613,9 +525,10 @@ realmin&minimum representable value\cr
 {\it var} $\{${\it idx}$\}$ = {\it expr}&assign elements of a cell array.\cr
 \endsec
 
-\sec Arithmetic and Increment Operators;
-{\it x} + {\it y}&addition\cr
-{\it x} - {\it y}&subtraction\cr
+\sec Arithmetic Operators;
+\omit \vbox{\rm\vskip0.75ex
+  If two operands are of different sizes, scalars and singleton dimensions are automatically expanded. Non-singleton dimensions need to match.\vskip0.75ex}\span\cr
+{\it x} + {\it y}, {\it x} - {\it y}&addition, subtraction\cr
 {\it x} * {\it y}&matrix multiplication\cr
 {\it x} .* {\it y}&element by element multiplication\cr
 {\it x} / {\it y}&right division, conceptually equivalent to
@@ -626,29 +539,27 @@ realmin&minimum representable value\cr
 {\it x} .\char'134{} {\it y}&element by element left division\cr
 {\it x} \char'136{} {\it y}&power operator\cr
 {\it x} .\char'136{} {\it y}&element by element power operator\cr
-- {\it x}&negation\cr
-+ {\it x}&unary plus (a no-op)\cr
-{\it x} '&complex conjugate transpose\cr
-{\it x} .'&transpose\cr
-++ {\it x}\quad{\rm(}-- {\it x}{\rm)}&increment (decrement),
-  return {\it new\/} value\cr
-{\it x} ++\quad{\rm(}{\it x} --{\rm)}&increment (decrement),
-  return {\it old\/} value\cr
++=, -=, *=, .*=, /=, ./=, \char'134{}=, .\char'134{}=, \char'136{}=, .\char'136{}=&in-place equivalents of the above operators\cr
+-{\it x}&negation\cr
++{\it x}&unary plus (a no-op)\cr
+{\it x}'&complex conjugate transpose\cr
+{\it x}.'&transpose\cr
+++{\it x}, --{\it x}&increment / decrement, return {\it new\/} value\cr
+{\it x}++, {\it x}--&increment / decrement, return {\it old\/} value\cr
 \endsec
 
 \sec Comparison and Boolean Operators;
 \omit \vbox{\rm\vskip0.75ex
   These operators work on an element-by-element basis.  Both arguments
   are always evaluated.\vskip0.75ex}\span\cr
-{\it x} < {\it y}&true if {\it x\/} is less than {\it y}\cr
-{\it x} <= {\it y}&true if {\it x\/} is less than or equal to {\it y}\cr
-{\it x} == {\it y}&true if {\it x\/} is equal to {\it y}\cr
-{\it x} >= {\it y}&true if {\it x\/} is greater than or equal to {\it y}\cr
-{\it x} > {\it y}&true if {\it x\/} is greater than {\it y}\cr
-{\it x} != {\it y}&true if {\it x\/} is not equal to {\it y}\cr
-{\it x} \& {\it y}&true if both {\it x\/} and {\it y\/} are true\cr
-{\it x} | {\it y}&true if at least one of {\it x\/} or {\it y\/} is true\cr
-! {\it bool}&true if {\it bool\/} is false\cr
+< <= == >= >&less than, less than or equal to, equal to, greater than or equal to, greater than\cr
+%
+% FIXME add ~= and ~. TeX mangles the tilde and escaping with \ or {} does not help.
+%
+!=&not equal to\cr
+\&&logical AND\cr
+|&logical OR\cr
+!&logical NOT\cr
 \endsec
 
 \sec Short-circuit Boolean Operators;
@@ -667,6 +578,7 @@ realmin&minimum representable value\cr
   precedence.\vskip0.75ex}\span\cr
 ;\ \ ,&statement separators\cr
 =&assignment, groups left to right\cr
++= -= *= /=  etc &in-place operators\cr
 ||\ \ \&\&&logical ``or'' and ``and''\cr
 |\ \ \&&element-wise ``or'' and ``and''\cr
 < <= == >= > !=&relational operators\cr
@@ -678,69 +590,45 @@ realmin&minimum representable value\cr
 \char'136\ \ .\char'136&exponentiation\cr
 \endsec
 
-\vfill\eject
+\sec General programming;
+\omit \vbox{\rm\vskip0.5ex
+  endfor, endwhile, endif etc can all be replaced by end.
+  \vskip0.75ex}\span\cr
+for x = 1:10
 
-\sec Paths and Packages;
-path&display the current Octave function path.\cr
-pathdef&display the default path.\cr
-addpath ({\it dir})&add a directory to the path.\cr
-EXEC\_PATH&manipulate the Octave executable path.\cr
-pkg list&display installed packages.\cr
-pkg load {\it pack}&Load an installed package.\cr
+endfor & for loop\cr
+
+while (x <= 10)
+
+endwhile & while loop\cr
+
+do
+
+until (x > 10) & do-until loop\cr
+
+if (x < 5)
+
+elseif (x < 6)
+
+else
+
+endif & if-then-else\cr
+
+break & exit innermost loop\cr
+
+continue & go to beginning of innermost loop\cr
+
+return & return to calling function\cr
+
+%
+% FIXME: insert underscore for unwind_protect / unwind_protect_cleanup without TeX choking.
+%
+unwind protect & execute cleanup code always\cr
+
+try catch & execute cleanup code only if exception occurs\cr
 \endsec
 
-\sec Cells and Structures;
-{\it{var}}.{\it{field}} = ...&set a field of a structure.\cr
-{\it{var}}$\{${\it{idx}}$\}$ = ...&set an element of a cell array.\cr
-cellfun ({\it f}, {\it c})&apply a function to elements of cell array.\cr
-fieldnames ({\it s})&returns the fields of a structure.\cr
-\endsec
-
-\widesec Statements;
-for {\it identifier} = {\it expr} {\it stmt-list} endfor\cr
-\hfill\vbox{\hsize=\idnwid\rm\vskip0.25ex
-  Execute {\it stmt-list} once for each column of {\it expr}.  The
-  variable {\it identifier} is set to the value of the current column
-  during each iteration.}\cr\cr
-while ({\it condition}) {\it stmt-list} endwhile\cr
-\hfill\vbox{\hsize=\idnwid\rm\vskip0.25ex
-  Execute {\it stmt-list} while {\it condition} is true.}\cr\cr
-\hbox{\vtop{\hsize=\itmwid\tt break}
-  \vtop{\hsize=\dfnwid\rm exit innermost loop}}\cr
-\hbox{\vtop{\hsize=\itmwid\tt continue}
-  \vtop{\hsize=\dfnwid\rm go to beginning of innermost loop}}\cr
-\hbox{\vtop{\hsize=\itmwid\tt return}
-  \vtop{\hsize=\dfnwid\rm return to calling function}}\cr\cr
-if ({\it condition}) {\it if-body} \opt{{\tt else} {\it else-body}} endif\cr
-\hfill\vbox{\hsize=\idnwid\rm\vskip0.25ex
-  Execute {\it if-body} if {\it condition} is true, otherwise execute
-  {\it else-body}.}\cr
-if ({\it condition}) {\it if-body} \opt{{\tt elseif} ({\it condition})
-  {\it elseif-body}} endif\cr
-\hfill\vbox{\hsize=\idnwid\rm\vskip0.25ex
-  Execute {\it if-body} if {\it condition} is true, otherwise execute
-  the {\it elseif-body} corresponding to the first {\tt elseif}
-  condition that is true, otherwise execute {\it else-body}.}\cr
-\hfill\vbox{\hsize=\idnwid\rm\vskip0.25ex
-  Any number of {\tt elseif} clauses may appear in an {\tt if}
-  statement.}\cr\cr
-unwind\_protect {\it body} unwind\_protect\_cleanup {\it cleanup} end\cr
-\hfill\vbox{\hsize=\idnwid\rm\vskip0.25ex
-  Execute {\it body}.  Execute {\it cleanup} no matter how control
-exits {\it body}.}\cr
-try {\it body} catch {\it cleanup} end\cr
-\hfill\vbox{\hsize=\idnwid\rm\vskip0.25ex
-  Execute {\it body}. Execute {\it cleanup} if {\it body} fails.}\cr
-\endsec
-
-\altsec Strings;
-strcmp ({\it s}, {\it t})&compare strings\cr
-strcat ({\it s}, {\it t}, ...)&concatenate strings\cr
-regexp ({\it str}, {\it pat})&strings matching regular expression\cr
-regexprep ({\it str}, {\it pat}, {\it rep})&Match and replace sub-strings\cr
-\endsec
-
-\widesec Defining Functions;
+\widesec Functions;
 function \opt{{\it ret-list}} {\it function-name}
   \opt{\hskip0.2em({\it arg-list})\hskip0.2em}\cr
 \quad{\it function-body}\cr
@@ -751,212 +639,131 @@ endfunction\cr\cr
   be empty.}\cr
 \endsec
 
-\vfill\eject
-
 \sec Function Handles;
-@{\it{func}}& Define a function handle to {\it func}.\cr
-@({\it var1}, ...) {\it expr}&Define an anonymous function handle.\cr
-str2func ({\it str})&Create a function handle from a string.\cr
+@{\it{func}}& define a function handle to {\it func}.\cr
+@({\it var1}, ...) {\it expr}&define an anonymous function\cr
+str2func func2str&convert function to/from string\cr
 functions ({\it handle})&Return information about a function handle.\cr
-func2str ({\it handle})&Return a string representation of a
-function handle.\cr
 {\it handle} ({\it arg1}, ...)&Evaluate a function handle.\cr
-feval ({\it func}, {\it arg1}, ...)&Evaluate a function handle or
-  string, passing remaining args to {\it func}\cr
+feval &Evaluate a function handle or string\cr
 \omit\vbox{\rm\vskip0.25ex
   Anonymous function handles take a copy of the variables in the
   current workspace.\vskip0.75ex}\span\cr
 \endsec
 
-\sec Miscellaneous Functions;
+\sec Global and Persistent Variables;
+global {\it var1} = ...&global variables\cr
+persistent {\it var1} = ...&persistent / static variables\cr
+\omit\hfill\vbox{\rm\vskip0.25ex
+  Global variables may be accessed inside the body of a function
+  without having to be passed in the function parameter list provided
+  they are declared global when used.}\span\cr
+\endsec
+
+\sec Common Functions;
+disp&display value of variable\cr
+printf&formatted output to {\tt stdout}\cr
+input, scanf&input from {\tt stdin}\cr
+who, whos&list current variables\cr
+clear {\it pattern}&clear variables matching pattern\cr
+exist&check existence of variable or function\cr
+find&return indices of nonzero elements\cr
+sort&return a sorted array\cr
+sortrows&sort whole rows in numerical or lexicographic order\cr
+sum, prod&sum, product of elements\cr
+mod, rem&remainder functions\cr
+min, max, range, mean, median, mode, std, var&basic statistics functions\cr
+cov ({\it x}, {\it y})&covariance\cr
+corrcoef ({\it x}, {\it y})&correlation coefficient\cr
+\endsec
+
+\sec Error Handling;
 eval ({\it str})&evaluate {\it str} as a command\cr
+system ({\it cmd})&execute arbitrary shell command string\cr
 error ({\it message})&print message and return to top level\cr
 warning ({\it message})&print a warning message\cr
-clear {\it pattern}&clear variables matching pattern\cr
-exist ({\it str})&check existence of variable or function\cr
-who, whos&list current variables\cr
-whos {\it var}&details of the variable {\it var}\cr
 \endsec
 
-\sec Basic Matrix Manipulations;
-rows ({\it a})&return number of rows of {\it a}\cr
-columns ({\it a})&return number of columns of {\it a}\cr
-all ({\it a})&check if all elements of {\it a\/} nonzero\cr
-any ({\it a})&check if any elements of {\it a\/} nonzero\cr
-\endsec
+\sec File I/O, Loading, Saving;
+fopen, fclose & open and close file\cr
+fprintf, fscanf, textscan&formatted file I/O\cr
+fgets, fread&read from file\cr
+fputs, fwrite&write to file\cr
+fflush&flush pending output\cr
+feof&true if end of file\cr
 
-\sec ;
-find ({\it a})&return indices of nonzero elements\cr
-sort ({\it a})&order elements in each column of {\it a}\cr
-sum ({\it a})&sum elements in columns of {\it a}\cr
-prod ({\it a})&product of elements in columns of {\it a}\cr
-min ({\it args})&find minimum values\cr
-max ({\it args})&find maximum values\cr
-rem ({\it x}, {\it y})&find remainder of {\it x}/{\it y}\cr
-reshape ({\it a}, {\it m}, {\it n})&reformat {\it a} to be {\it m} by
-  {\it n}\cr
-diag ({\it v}, {\it k})&create diagonal matrices\cr
-linspace ({\it b}, {\it l}, {\it n})&create vector of linearly-spaced
-  elements\cr
-logspace ({\it b}, {\it l}, {\it n})&create vector of log-spaced
-  elements\cr
-eye ({\it n}, {\it m})&create {\it n\/} by {\it m\/} identity matrix\cr
-ones ({\it n}, {\it m})&create {\it n\/} by {\it m\/} matrix of ones\cr
-zeros ({\it n}, {\it m})&create {\it n\/} by {\it m\/} matrix of zeros\cr
-rand ({\it n}, {\it m})&create {\it n\/} by {\it m\/} matrix of random
-  values\cr
+save, load &save or load variables to or from file\cr
+save -binary &save variables in binary format (faster)\cr
+dlmread dlmwrite&read and write delimited data\cr
+csvread csvwrite&read and write CSV files\cr
+xlsread xlswrite&read and write XLS spreadsheets\cr
 \endsec
-
-% sin ({\it a}) cos({\it a}) tan({\it a})&trigonometric functions\cr
-% asin ({\it a}) acos({\it a}) atan({\it a})&inverse trigonometric functions\cr
-% sinh ({\it a}) cosh({\it a}) tanh({\it a})&hyperbolic trig functions\cr
-% asinh ({\it a}) acosh({\it a}) atanh({\it a})&inverse hyperbolic trig
-% functions\cr\cr
 
 \sec Linear Algebra;
-chol ({\it a})&Cholesky factorization\cr
-det ({\it a})&compute the determinant of a matrix\cr
-eig ({\it a})&eigenvalues and eigenvectors\cr
-expm ({\it a})&compute the exponential of a matrix\cr
-hess ({\it a})&compute Hessenberg decomposition\cr
-inverse ({\it a})&invert a square matrix\cr
-norm ({\it a}, {\it p})&compute the {\it p}-norm of a matrix\cr
-pinv ({\it a})&compute pseudoinverse of {\it a}\cr
-qr ({\it a})&compute the QR factorization of a matrix\cr
-rank ({\it a})&matrix rank\cr
-sprank ({\it a})&structural matrix rank\cr
-schur ({\it a})&Schur decomposition of a matrix\cr
-svd ({\it a})&singular value decomposition\cr
-syl ({\it a}, {\it b}, {\it c})&solve the Sylvester equation\cr
+det & determinant\cr
+eig &eigenvalues and eigenvectors\cr
+inv &matrix inverse\cr
+norm &vector norm, matrix norm\cr
+rank &matrix rank\cr
+qr &QR factorization\cr
+chol &Cholesky factorization\cr
+svd &singular value decomposition\cr
 \endsec
-
-\vfill\eject
 
 \sec Equations, ODEs, DAEs, Quadrature;
-*fsolve&solve nonlinear algebraic equations\cr
-*lsode&integrate nonlinear ODEs\cr
-*dassl&integrate nonlinear DAEs\cr
-*quad&integrate nonlinear functions\cr
-perror ({\it nm}, {\it code})&for functions that return numeric
-  codes, print error message for named function and given error
-  code\cr\cr
-\omit \vbox{\rm
-  {\tt *} See the on-line or printed manual for the complete list of
-  arguments for these functions.}\span\cr
+fsolve&solve nonlinear algebraic equations\cr
+lsode&integrate nonlinear ODEs\cr
+dassl&integrate nonlinear DAEs\cr
+quad&integrate nonlinear functions\cr
 \endsec
 
-% \altsec Sets;
-% create\_set ({\it a}, {\it b})&create row vector of unique values\cr
-% complement ({\it a}, {\it b})&elements of {\it b} not in {\it a}\cr
-% intersection ({\it a}, {\it b})&intersection of sets {\it a} and {\it b}\cr
-% union ({\it a}, {\it b})&union of sets {\it a} and {\it b}\cr
-% \endsec
+\sec Sets;
+setdiff&set difference\cr
+intersection&set intersection\cr
+union&set union\cr
+unique&discard duplicate elements\cr
+\endsec
 
 \sec Signal Processing;
-fft ({\it a})&Fast Fourier Transform using FFTW\cr
-ifft ({\it a})&inverse FFT using FFTW\cr
-freqz ({\it args})&FIR filter frequency response\cr
-filter ({\it a}, {\it b}, {\it x})&filter by transfer function\cr
-conv ({\it a}, {\it b})&convolve two vectors\cr
-hamming ({\it n})&return Hamming window coefficients\cr
-hanning ({\it n})&return Hanning window coefficients\cr
+fft, ifft({\it a})&FFT and inverse FFT\cr
+freqz &FIR filter frequency response\cr
+filter &filter by transfer function\cr
+conv, deconv &convolution, deconvolution\cr
 \endsec
-
-\altsec Image Processing;
-colormap ({\it map})&set the current colormap\cr
-gray2ind ({\it i}, {\it n})&convert gray scale to Octave image\cr
-image ({\it img}, {\it zoom})&display an Octave image matrix\cr
-imagesc ({\it img}, {\it zoom})&display scaled matrix as image\cr
-imread ({\it file})&load an image file\cr
-imshow ({\it img}, {\it map})&display Octave image\cr
-imshow ({\it i}, {\it n})&display gray scale image\cr
-imshow ({\it r}, {\it g}, {\it b})&display RGB image\cr
-imwrite ({\it img}, {\it file})&write images in various file formats\cr
-ind2gray ({\it img}, {\it map})&convert Octave image to gray scale\cr
-ind2rgb ({\it img}, {\it map})&convert indexed image to RGB\cr
-rgb2ind ({\it r}, {\it g}, {\it b})&convert RGB to Octave image\cr
-save a matrix to {\it file}\span\cr
-\endsec
-
-\altsec C-style Input and Output;
-fopen ({\it name}, {\it mode})&open file {\it name}\cr
-fclose ({\it file})&close {\it file}\cr
-printf ({\it fmt}, ...)&formatted output to {\tt stdout}\cr
-fprintf ({\it file}, {\it fmt}, ...)&formatted output to {\it file}\cr
-sprintf ({\it fmt}, ...)&formatted output to string\cr
-scanf ({\it fmt})&formatted input from {\tt stdin}\cr
-fscanf ({\it file}, {\it fmt})&formatted input from {\it file}\cr
-sscanf ({\it str}, {\it fmt})&formatted input from {\it string}\cr
-fgets ({\it file}, {\it len})&read {\it len\/} characters from {\it file\/}\cr
-fflush ({\it file})&flush pending output to {\it file}\cr
-ftell ({\it file})&return file pointer position\cr
-frewind ({\it file})&move file pointer to beginning\cr
-freport&print a info for open files\cr
-fread ({\it file}, {\it size}, {\it prec})&read binary data files\cr
-fwrite ({\it file}, {\it size}, {\it prec})&write binary data files\cr
-feof ({\it file})&determine if pointer is at EOF\cr
-\omit \vbox{\rm\vskip0.75ex
-  A file may be referenced either by name or by the number returned
-  from {\tt fopen}.  Three files are preconnected when Octave starts:
-  {\tt stdin}, {\tt stdout}, and {\tt stderr}.\vskip0.75ex}\span\cr
-\endsec
-
-\sec Other Input and Output functions;
-save {\it file} {\it var} ...&save variables in {\it file}\cr
-load {\it file}&load variables from {\it file}\cr
-disp ({\it var})&display value of {\it var} to screen\cr
-\endsec
-
-\vfill\eject
 
 \sec Polynomials;
-compan ({\it p})&companion matrix\cr
-conv ({\it a}, {\it b})&convolution\cr
-deconv ({\it a}, {\it b})&deconvolve two vectors\cr
-poly ({\it a})&create polynomial from a matrix\cr
-polyderiv ({\it p})&derivative of polynomial\cr
-polyreduce ({\it p})&integral of polynomial\cr
-polyval ({\it p}, {\it x})&value of polynomial at {\it x}\cr
-polyvalm ({\it p}, {\it x})&value of polynomial at {\it x}\cr
-roots ({\it p})&polynomial roots\cr
-residue ({\it a}, {\it b})&partial fraction expansion of
-ratio {\it a}/{\it b}\cr
+conv, deconv & polynomial multiplication and division\cr
+poly &characteristic polynomial of a matrix\cr
+polyder polyint&polynomial derivative or integral\cr
+polyfit polyval& fit polynomial to data and evaluate it\cr
+roots &polynomial roots\cr
+residue &partial fraction expansion\cr
 \endsec
 
-\sec Statistics;
-corrcoef ({\it x}, {\it y})&correlation coefficient\cr
-cov ({\it x}, {\it y})&covariance\cr
-mean ({\it a})&mean value\cr
-median ({\it a})&median value\cr
-std ({\it a})&standard deviation\cr
-var ({\it a})&variance\cr
+\sec Image Processing;
+colormap &set the current colormap\cr
+image, imagesc &display Octave image matrix, scaled\cr
+imread imwrite&load or save an image file\cr
 \endsec
 
 \sec Plotting Functions;
-plot ({\it args})&2D plot with linear axes\cr
-plot3 ({\it args})&3D plot with linear axes\cr
-line ({\it args})&2D or 3D line\cr
-patch ({\it args})&2D patch\cr
-semilogx ({\it args})&2D plot with logarithmic x-axis\cr
-semilogy ({\it args})&2D plot with logarithmic y-axis\cr
-loglog ({\it args})&2D plot with logarithmic axes\cr
-bar ({\it args})&plot bar charts\cr
-stairs ({\it x}, {\it y})&plot stairsteps\cr
-stem ({\it x}, {\it y})&plot a stem graph\cr
-hist ({\it y}, {\it x})&plot histograms\cr
-contour ({\it x}, {\it y}, {\it z})&contour plot\cr
-title ({\it string})&set plot title\cr
-axis ({\it limits})&set axis ranges\cr
-xlabel ({\it string})&set x-axis label\cr
-ylabel ({\it string})&set y-axis label\cr
-zlabel ({\it string})&set z-axis label\cr
-text ({\it x}, {\it y}, {\it str})&add text to a plot\cr
-legend ({\it string})&set label in plot key\cr
-grid \opt{on$|$off}&set grid state\cr
-hold \opt{on$|$off}&set hold state\cr
-ishold&return 1 if hold is on, 0 otherwise\cr
-mesh ({\it x}, {\it y}, {\it z})&plot 3D surface\cr
-meshgrid ({\it x}, {\it y})&create mesh coordinate matrices\cr
+plot plot3 &2D / 3D plot with linear axes\cr
+line &2D or 3D line\cr
+patch fill&2D patch, optionally colored\cr
+semilogx semilogy loglog&2D plot with logarithmic x-axis / y-axis / both axes\cr
+bar &bar charts\cr
+stairs &plot stairsteps\cr
+stem &plot a stem graph\cr
+hist &plot histogram\cr
+contour &contour plot\cr
+title &set plot title\cr
+axis &set axis ranges\cr
+xlabel ylabel zlabel  &set axis labels\cr
+text &add text to a plot\cr
+legend &make a legend box\cr
+grid &set grid state\cr
+hold &set hold state\cr
+mesh trimesh surf &plot 3D surfaces\cr
 \endsec
 
 \vskip 0pt plus 2fill

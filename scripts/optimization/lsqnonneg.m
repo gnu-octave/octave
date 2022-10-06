@@ -69,8 +69,10 @@
 ## @end itemize
 ##
 ## @item lambda
-## @c FIXME: Something is output from the function, but what is it?
-## Undocumented output
+## Conjugate gradient at the converged point.  Zero elements are usually
+## abutting coordinate planes.  Negative elements are stable to small
+## perturbations.
+##
 ## @end table
 ## @seealso{pqpnonneg, lscov, optimset}
 ## @end deftypefn
@@ -219,6 +221,11 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x0 
   if (isargout (6))
     lambda = zeros (size (x));
     lambda(p) = w;
+    ## FIXME: The above line errors when the solution is NOT constrained
+    ## by non-negativity!  That case happens when the lsqnonneg solution
+    ## is the same as the fminunc solution.  Ideally the user would not
+    ## be using lsqnonneg if nonnegativity constraints are not active, but we
+    ## should handle that more gracefully.
   endif
 
 endfunction

@@ -118,17 +118,31 @@ endfunction
 %! ## Solve an anonymous implementation of the Van der Pol equation
 %! ## and display the results while solving
 %! fvdp = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
-%! opt = odeset ("OutputFcn", @odeplot, "RelTol", 1e-6);
-%! sol = ode45 (fvdp, [0 20], [2 0], opt);
+%! opt = odeset ("RelTol", 1e-6);
+%! ode45 (fvdp, [0 20], [2 0], opt);
 
-## FIXME: convert to demo or a visible=off test with failable assert/error
-##        statemments
-## Test that the function works for expected ode OutputFcn calls
-## %!test
-## %! t = linspace(0,2,10);
-## %! y = [0.2*t; -0.1*t.^2-1; sin(t)];
-## %! odeplot ([0 2], y(:,1), "init");
-## %! odeplot (t(2), y(:,2), []);
-## %! odeplot (t(3:end), y(:, 3:end), []);
-## %! odeplot ([], [], "done");
-## %! close all
+%!demo
+%! ## Demonstrate simple multi-curve plot from t = 0 to 2 using initial,
+%! ## intermediate, and terminating odeplot calling syntaxes.
+%! t = linspace(0,2,10);
+%! y = [0.2*t; -0.1*t.^2-1; sin(t)];
+%!
+%! disp("Plot initial points\n");
+%! odeplot ([0 2], y(:,1), "init");
+%! title("Plot first time step");
+%! pause(1.5);
+%!
+%! disp("Append single time step\n");
+%! odeplot (t(2), y(:,2), []);
+%! title("Append second time step");
+%! pause(1.5);
+%!
+%! disp("Append remaining time steps\n");
+%! odeplot (t(3:end), y(:, 3:end), []);
+%! title("Plot all time steps");
+%! pause(1.5);
+%!
+%! disp("Terminate odeplot\n");
+%! odeplot ([], [], "done");
+%! title("Plot complete");
+

@@ -516,12 +516,6 @@ endfunction
 %! [x, y] = ode45 (@(x,y) 1, [0 1], 1i, odeset ("Refine", 1));
 %! assert (imag (y), ones (size (y)));
 
-## FIXME: convert to demo or a visible=off test with failable assert/error
-##        statemments
-##%!test # Make sure odeplot works (default OutputFcn when no return value)
-##%! ode45 (@fpol, [0 2], [2 0]);
-##%! close all
-
 %!error <Invalid call> ode45 ()
 %!error <Invalid call> ode45 (1)
 %!error <Invalid call> ode45 (1,2)

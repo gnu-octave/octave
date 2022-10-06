@@ -121,8 +121,9 @@ function solution = integrate_adaptive (stepper, order, fcn, tspan, x0,
   have_EventFcn = false;
   if (! isempty (options.Events))
     have_EventFcn  = true;
-    ode_event_handler (options.Events, tspan(1), ode_x,
-                       "init", options.funarguments{:});
+    options.Events = @(t,y) options.Events (t, y, options.funarguments{:});
+    ode_event_handler (options.Events, tspan(1), ode_x, ...
+                       [], order, "init");
   endif
 
   if (options.havenonnegative)
@@ -171,8 +172,8 @@ function solution = integrate_adaptive (stepper, order, fcn, tspan, x0,
 
       ## Check for Events
       if (have_EventFcn)
-        solution.event = ode_event_handler (options.Events, t_new, x_new, ...
-                                            [], options.funarguments{:});
+        solution.event = ode_event_handler ([], t_new, x_new, ...
+                                            new_k_vals, [], []);
         ## Check for terminal Event
         if (! isempty (solution.event{1}) && solution.event{1} == 1)
           ode_t(istep) = solution.event{3}(end);

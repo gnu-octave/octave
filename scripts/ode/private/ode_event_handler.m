@@ -24,43 +24,45 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{retval} =} ode_event_handler (@var{@@evtfcn}, @var{t}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
+## @deftypefn {} {@var{retval} =} ode_event_handler (@var{@@evt_fcn}, @var{t}, @var{y}, @var{k_vals}, @var{ord}, @var{flag})
 ##
-## Return the solution of the event function (@var{@@evtfcn}) which is
+## Return the solution of the event function (@var{@@evt_fcn}) which is
 ## specified in the form of a function handle.
 ##
 ## The second input argument @var{t} is a scalar double and specifies the time
 ## of the event evaluation.
 ##
-## The third input argument @var{y} may be a column vector of type double
-## (for ODEs and DAEs) which specifies the solutions.  Alternatives, @var{y}
-## may be a cell array (for IDEs and DDEs) which specifies the solutions and
-## derivatives.
+## The third input argument @var{y} is a scalar or a column vector of type
+## double which specifies the solution(s) at time @var{t}.
 ##
-## The fourth input argument @var{flag} is of type string.  Valid values are:
+## The fourth input argument @var{k_vals} is a vector or matrix with the
+## k values obtained from the most recent integration step.
+##
+## The fifth input argument @var{ord} the order of the integration technique.
+##
+## The sixth input argument @var{flag} is of type string.  Valid values are:
 ##
 ## @table @option
 ## @item  @qcode{"init"}
 ## Initialize internal persistent variables of the function
 ## @code{ode_event_handler} and return an empty cell array of size 4.
 ##
-## @item  @qcode{"calc"}
-## Evaluate the event function and return the solution @var{retval} as a cell
-## array of size 4.
+## @item  @qcode{""}
+## (default) Evaluate the event function and return the solution @var{retval}
+## as a cell array of size 4. Inputs @var{ord} and @var{@@evt_fcn} are ignored,
+## since they are set in the @qcode{"init"} step.
 ##
 ## @item  @qcode{"done"}
 ## Clean up internal variables of the function @code{ode_event_handler} and
-## return an empty cell array of size 4.
+## return an empty cell array of size 4. All other inputs are ignored with
+## this flag.
 ## @end table
-##
-## If additional input arguments @var{par1}, @var{par2}, @dots{} are given
-## these parameters are passed directly to the event function.
 ##
 ## This function is an ODE internal helper function and it should never be
 ## necessary to call it directly.
 ## @end deftypefn
 
-function retval = ode_event_handler (evtfcn, t, y, flag = "", varargin)
+function retval = ode_event_handler (evt_fcn, t, y, k_vals, ord, flag = "")
 
   ## No error handling has been implemented in this function to achieve
   ## the highest performance possible.
@@ -77,23 +79,14 @@ function retval = ode_event_handler (evtfcn, t, y, flag = "", varargin)
   ## yold    the ODE result
   ## retcell the return values cell array
   ## evtcnt  the counter for how often this function has been called
-  persistent evtold told yold retcell;
+  persistent evtold told yold retcell order evtfcn;
   persistent evtcnt = 1;   # Don't remove.  Required for Octave parser.
   persistent firstrun = true;
 
   if (isempty (flag))
     ## Process the event, i.e.,
     ## find the zero crossings for either a rising or falling edge
-    if (! iscell (y))
-      inpargs = {evtfcn, t, y};
-    else
-      inpargs = {evtfcn, t, y{1}, y{2}};
-      y = y{1};  # Delete cell element 2
-    endif
-    if (nargin > 4)
-      inpargs = {inpargs{:}, varargin{:}};
-    endif
-    [evt, term, dir] = feval (inpargs{:});
+    [evt, term, dir] = evtfcn (t, y);
 
     ## We require that all return values be row vectors
     evt = evt(:).'; term = term(:).'; dir = dir(:).';
@@ -119,10 +112,21 @@ function retval = ode_event_handler (evtfcn, t, y, flag = "", varargin)
         ## Add all events this step to the output.
         for idx2 = idx                      # Loop through all values of idx
           ## Calculate the time stamp when the event function returned 0 and
-          ## calculate new values for the integration results, we do both by
-          ## a linear interpolation.
-          tnew = t - evt(idx2) * (t - told) / (evt(idx2) - evtold(idx2));
-          ynew = (y - (t - tnew) * (y - yold) / (t - told)).';
+          ## calculate new values for the integration results. We do both by
+          ## root solving, calling the Event function with y values from
+          ## the RK interpolation polynomial. Set tolerance to zero (actually
+          ## uses machine tolerance based criterion in this case) since we
+          ## don't have a way for the user to specify an acceptable tolerance.
+          ## For simple Event functions, this means we're basically root
+          ## finding on a small interval for a polynomial, so we expect
+          ## pretty quick convergence.
+          tvals = [told t];
+          yvals = [yold y];
+          tnew = fzero(@(t2) evtfcn_val (evtfcn, t2, ...
+                       runge_kutta_interpolate (order, tvals, yvals, ...
+                       t2, k_vals), idx2), tvals, optimset ("TolX", 0));
+          ynew = runge_kutta_interpolate (order, tvals, yvals, tnew, k_vals);
+
           tnews(evtcntnew, 1) = tnew;
           ynews(evtcntnew, :) = ynew;
           terms(evtcntnew, 1) = term(idx2);
@@ -170,17 +174,10 @@ function retval = ode_event_handler (evtfcn, t, y, flag = "", varargin)
     ## a value for evtold.
 
     firstrun = true;
+    order = ord;
+    evtfcn = evt_fcn;
 
-    if (! iscell (y))
-      inpargs = {evtfcn, t, y};
-    else
-      inpargs = {evtfcn, t, y{1}, y{2}};
-      y = y{1};  # Delete cell element 2
-    endif
-    if (nargin > 4)
-      inpargs = {inpargs{:}, varargin{:}};
-    endif
-    [evtold, ~, ~] = feval (inpargs{:});
+    [evtold, ~, ~] = evtfcn (t, y);
 
     ## We require that all return values be row vectors
     evtold = evtold(:).'; told = t; yold = y;
@@ -190,9 +187,14 @@ function retval = ode_event_handler (evtfcn, t, y, flag = "", varargin)
   elseif (strcmp (flag, "done"))
     ## Clear this event handling function
     firstrun = true;
-    evtold = told = yold = evtcnt = [];
+    evtold = told = yold = evtcnt = order = evtfcn = [];
     retval = retcell = cell (1,4);
 
   endif
 
+endfunction
+
+function val = evtfcn_val (evtfcn, t, y, ind)
+  [evt, ~, ~] = evtfcn (t, y);
+  val = evt(ind);
 endfunction

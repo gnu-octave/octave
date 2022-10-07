@@ -214,10 +214,10 @@ $$ J = {\partial f_i \over \partial x_j} = \left[\matrix{
   & \cdots
   & {\partial f_2 \over \partial x_N} \cr
  \vdots & \vdots & \ddots & \vdots \cr
-{\partial f_3 \over \partial x_1}
-  & {\partial f_3 \over \partial x_2}
+{\partial f_M \over \partial x_1}
+  & {\partial f_M \over \partial x_2}
   & \cdots
-  & {\partial f_3 \over \partial x_N} \cr}\right]$$
+  & {\partial f_M \over \partial x_N} \cr}\right]$$
 @end tex
 @ifnottex
 
@@ -235,7 +235,7 @@ jac = ---- = |                       |
              |  .    .      .   .    |
              |  .    .       .  .    |
              |                       |
-             | df_N  df_N       df_N |
+             | df_M  df_M       df_M |
              | ----  ----  ...  ---- |
              | dx_1  dx_2       dx_N |
 @end group

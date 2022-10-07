@@ -71,9 +71,11 @@
 ## @end itemize
 ##
 ## @item lambda
-## Conjugate gradient at the converged point.  Zero elements are usually
-## abutting coordinate planes.  Negative elements are stable to small
-## perturbations.
+## Lagrange multipliers.  If these are non-zero, the corresponding @var{x}
+## values should be zero, indicating the solution is pressed up against a
+## coordinate plane.  The magnitude indicates how much the residual would
+## improve if the @code{@var{x} >= 0} constraints were relaxed in that
+## direction.
 ##
 ## @end table
 ## @seealso{lsqnonneg, qp, optimset}
@@ -224,12 +226,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [],
   endif
   if (isargout (5))
     lambda = zeros (size (x));
-    lambda(p) = w;
-    ## FIXME: The above line errors when the solution is NOT constrained
-    ## by non-negativity!  That case happens when the lsqnonneg solution
-    ## is the same as the fminunc solution.  Ideally the user would not
-    ## be using lsqnonneg if nonnegativity constraints are not active, but we
-    ## should handle that more gracefully.
+    lambda (setdiff (1:numel(x), p)) = w;
   endif
 
 endfunction
@@ -245,6 +242,35 @@ endfunction
 %! C = rand (20, 10);
 %! d = rand (20, 1);
 %! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps);
+
+## Test Lagrange multiplier duality: lambda .* x == 0
+%!test
+%! [x, resid, ~, ~, lambda] = pqpnonneg ([3 2; 2 2], [6; 5]);
+%! assert (x, [0 0]', eps);
+%! assert (resid, 0, eps);
+%! assert (lambda, [-6 -5]', eps);
+%! assert (x .* lambda, [0 0]')
+
+%!test
+%! [x, resid, ~, ~, lambda] = pqpnonneg ([3 2; 2 2], [6; -5]);
+%! assert (x, [0 2.5]', eps);
+%! assert (resid, -6.25, eps);
+%! assert (lambda, [-11 0]', eps);
+%! assert (x .* lambda, [0 0]')
+
+%!test
+%! [x, resid, ~, ~, lambda] = pqpnonneg ([3 2; 2 2], [-6; 5]);
+%! assert (x, [2 0]', eps);
+%! assert (resid, -6, eps);
+%! assert (lambda, [0 -9]', eps);
+%! assert (x .* lambda, [0 0]')
+
+%!test
+%! [x, resid, ~, ~, lambda] = pqpnonneg ([3 2; 2 2], [-6; -5]);
+%! assert (x, [1 1.5]', 10*eps);
+%! assert (resid, -6.75, eps);
+%! assert (lambda, [0 0]', eps);
+%! assert (x .* lambda, [0 0]')
 
 ## Test input validation
 %!error <Invalid call> pqpnonneg ()

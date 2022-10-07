@@ -32,7 +32,7 @@
 ## Calculate curl of vector field given by the arrays @var{fx}, @var{fy}, and
 ## @var{fz} or @var{fx}, @var{fy} respectively.
 ## @tex
-## $$ curl F(x,y,z) = \left( {\partial{d} \over \partial{y}} F_z - {\partial{d} \over \partial{z}} F_y, {\partial{d} \over \partial{z}} F_x - {\partial{d} \over \partial{x}} F_z, {\partial{d} \over \partial{x}} F_y - {\partial{d} \over \partial{y}} F_x \right)$$
+## $$ curl F(x,y,z) = \left( {\partial{F_z} \over \partial{y}} - {\partial{F_y} \over \partial{z}}, {\partial{F_x} \over \partial{z}} - {\partial{F_z} \over \partial{x}}, {\partial{F_y} \over \partial{x}} - {\partial{F_x} \over \partial{y}} \right)$$
 ## @end tex
 ## @ifnottex
 ##

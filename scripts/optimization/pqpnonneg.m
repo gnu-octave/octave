@@ -32,8 +32,8 @@
 ## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}] =} pqpnonneg (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}, @var{lambda}] =} pqpnonneg (@dots{})
 ##
-## Minimize @code{1/2*@var{x}'*@var{c}*@var{x} + @var{d}'*@var{x}} subject to
-## @code{@var{x} >= 0}.
+## Minimize @code{ (1/2 * @var{x}' * @var{c} * @var{x} + @var{d}' * @var{x}) }
+## subject to @code{@var{x} >= 0}.
 ##
 ## @var{c} and @var{d} must be real matrices, and @var{c} must be symmetric and
 ## positive definite.

@@ -4653,7 +4653,8 @@ val = ones (m,n, "uint8")
 ## Tests for bug #47298
 ## Matlab requires the size to be a row vector.  In that logic, it supports
 ## n to be a 1x0 vector (returns 0x0) but not a 0x1 vector.  Octave supports
-## any vector and therefore must support 0x1, 1x0, and 0x0x1 (but not 0x1x1).
+## row and column vectors and therefore must support 0x1, 1x0, and 0x1x1.
+## Also any empty input results in a 0x0 output.
 %!test <*47298>
 %! fcns = {@zeros, @ones, @inf, @nan, @NA, @i, @pi, @e};
 %! for idx = 1:numel (fcns)
@@ -4661,8 +4662,8 @@ val = ones (m,n, "uint8")
 %!   assert (fcn (zeros (1, 0)), zeros (0, 0));
 %!   assert (fcn (zeros (0, 1)), zeros (0, 0));
 %!   assert (fcn (zeros (0, 1, 1)), zeros (0, 0));
-%!   fail ([func2str(fcn) " ([])"]);
-%!   fail ([func2str(fcn) " (zeros (0, 0, 1))"]);
+%!   assert (fcn (zeros ([])), zeros (0, 0));
+%!   assert (fcn (zeros (0, 0, 1)), zeros (0, 0));
 %! endfor
 */
 

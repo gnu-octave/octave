@@ -1339,10 +1339,9 @@ Return a structure containing the system-dependent errno values.
   void get_dimensions (const octave_value& a, const char *warn_for,
                        dim_vector& dim)
   {
-    // We support dimensions to be specified by any vector, even if it's a
-    // vector of dimensions 0x1, 1x0, 1x1x0, or 1x1x6.  If the vector ends
-    // up being empty, the final dimensions end up being 0x0.
-    if (! a.dims ().isvector ())
+    // We support dimensions to be specified by a vector, even if it's empty.
+    // If the vector is empty, the final dimensions end up being 0x0.
+    if (! a.dims ().isvector () && a.dims ().numel () != 0)
       error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
 
     const Array<octave_idx_type> v = a.octave_idx_type_vector_value (true);

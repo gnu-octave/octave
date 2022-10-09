@@ -247,8 +247,6 @@ uninstall-built-in-docstrings:
 	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings
 .PHONY: uninstall-built-in-docstrings
 
-pkgconfig_DATA += $(%canon_reldir%_pkgconfig_DATA)
-
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \

@@ -268,7 +268,7 @@ endfunction
 %!test
 %! [x, resid, ~, ~, lambda] = pqpnonneg ([3 2; 2 2], [-6; -5]);
 %! assert (x, [1 1.5]', 10*eps);
-%! assert (resid, -6.75, eps);
+%! assert (resid, -6.75, 10*eps);
 %! assert (lambda, [0 0]', eps);
 %! assert (x .* lambda, [0 0]')
 

@@ -5,15 +5,46 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
 
+- `scanf`: Don't set error when reaching end of stream (bug #62723).
+- Fix duplicate names displayed with mixed `@class`/`classdef` classes (bug #62802).
+- `canonicalize_file_name`: Handle symlinks to UNC network shares (bug #62847).
+- `canonicalize_file_name`: Generalize check for mapped network drive (bug #62847).
+- `fortran_vec`: Fix instances of method chaining that may cause dangling pointer.
+- Fix wrong color in PDF printout of some LaTeX strings (bug #62884).
+- `unpack.m`: Escape backslashes in paths on Windows (bug #62888).
+- `canonicalize_file_name`: Check root of potential mapped network drive (bug #62847).
+- `nextpow2.m`: Fix for input between 0.5 and 1 (bug #62947).
+- `quad2d`: Fix unintended complex conjugate return (bug #62972).
+- Make sure we don't pass short 8.3 path to `latex` on Windows (bug #62779).
+- `canonicalize_file_name`: Trim trailing file separators from root of mapped network drive (bug #62847).
+- `imformats.m`: Fix `isa` function in return value (bug #62974).
+- `pie3`: Fix "Too many input" args error.
+- Accept negative inputs to -2^63 for `dec2bin` and `dec2hex` (bug #63089).
+- Fix incorrect `lambda` outputs for `lsqnonneg` and `pqpnonneg` (bug #63178).
+
 ### GUI
 
 ### Build system / Tests
 
+- `io.tst`: Add test case for `scanf` (bug #62723).
+- `nextpow2.m`: Add bug number tag to regression tests (bug #62947).
+- `quad2d.m`: Add BIST to cset b0e90ca8e679 (bug #62972).
+
 ### Documentation
+
+- `uitable.m`: Fix example code (bug #62824).
+- Clarify number of processors returned by `nproc` with hyperthreading.
+- Minor wording change to hashing documentation.
+- `lsqnonneg` and `pqpnonneg`: Document undocumented outputs.
+- `pqpnonneg.m`: Improve docstring readability.
+- `lsode`: Make TeX and non-TeX docstrings agree.
+- `curl`: Fix error in TeX docstring.
 
 
 Summary of bugs fixed for version 7.2.0 (2022-07-28):
 ----------------------------------------------------
+
+See: https://octave.org/news/release/2022/07/28/octave-7.2.0-released.html
 
 ### Improvements and fixes
 

@@ -56,7 +56,6 @@
 % covered, nor all variations of a command.
 
 \def\octaveversion{8.0.0}
-\def\refcardedition{3.1.1}
 
 % ------------------
 % multicolumn format
@@ -378,10 +377,10 @@
 % The actual text of the reference card
 % -------------------------------------
 
-{\vbbf Octave Quick Reference}\hfil{\smrm Octave Version \octaveversion}\qquad
+{\vbbf Octave Quick Reference}\hfil{\smrm Octave \octaveversion}\qquad
 {\smrm Copyright 1996-2022 The Octave Project Developers}
 
-\sec Starting and Stopping;
+\altsec Starting and Stopping;
 octave&start interactive Octave CLI session\cr
 octave --gui&start interactive Octave GUI\cr
 octave {\it file}&run Octave commands in {\it file}\cr
@@ -408,18 +407,23 @@ Ctrl-r Ctrl-s&search command history\cr
 cd {\it dir}&change working directory to {\it dir}\cr
 pwd&print working directory\cr
 ls \opt{{\it options}}&print directory listing\cr
-what&list .m and .mat files in the current directory\cr
-path&display the search path for Octave functions\cr
-pathdef&display the default search path\cr
+what&list .m/.mat files in the current directory\cr
+path&search path for Octave functions\cr
+pathdef&default search path\cr
 addpath ({\it dir})&add a directory to the path\cr
-getenv ({\it string})&return value of named environment variable\cr
+getenv ({\it var})&value of environment variable\cr
 \endsec
 
-\sec Package Management;
+\altsec Package Management;
+\omit\vbox{\rm\vskip0.25ex
+  Add-on packages are independent of core Octave, listed at
+  {https://gnu-octave.github.io/packages/} \vskip0.75ex}\span\cr
 pkg install -forge {\it pkg}&download and install {\it pkg}\cr
-pkg install {\it pkgfile}&install already downloaded package file\cr
-pkg list&display installed packages\cr
-pkg load / pkg unload {\it pkg}&load/unload installed package {\it pkg}\cr
+pkg install {\it file.tar.gz}&install pre-downloaded package file\cr
+pkg list&show installed packages\cr
+pkg load / pkg unload&load/unload installed package\cr
+statistics optimization control signal image symbolic etc.&various common
+packages\cr
 \endsec
 
 \sec Matrices;
@@ -432,23 +436,20 @@ pkg load / pkg unload {\it pkg}&load/unload installed package {\it pkg}\cr
 [ {\it x}, {\it y}, ... ]&enter a row vector\cr
 [ {\it x}; {\it y}; ... ]&enter a column vector\cr
 [ {\it w}, {\it x}; {\it y}, {\it z} ]&enter a 2$\times$2 matrix\cr
-rows&number of rows of matrix\cr
-columns&number of columns of matrix\cr
-zeros&create matrix of zeros\cr
-ones&create matrix of ones\cr
-eye&create identity matrix\cr
-diag&create diagonal matrix\cr
+rows columns&number of rows/columns of matrix\cr
+zeros ones&create matrix of zeros/ones\cr
+eye diag&create identity/diagonal matrix\cr
 rand randi randn&create matrix of random values\cr
-sparse&create a sparse matrix\cr
+sparse spalloc&create a sparse matrix\cr
 all&true if all elements nonzero\cr
 any&true if at least one element nonzero\cr
-nnz &number of nonzero elements\cr
+nnz&number of nonzero elements\cr
 \endsec
 
 \sec Multi-dimensional Arrays;
 ndims&number of dimensions\cr
-reshape&change the shape of an array\cr
-resize&change shape with possible data loss\cr
+reshape squeeze&change array shape\cr
+resize&change array shape, lossy\cr
 cat&join arrays along a given dimension\cr
 permute ipermute shiftdim&like N-dimensional transpose\cr
 circshift&cyclically shift array elements\cr
@@ -464,7 +465,7 @@ meshgrid&matrices useful for vectorization\cr
   {\it incr} == 1 if not specified.  Negative ranges allowed.}\span\cr
 \endsec
 
-\sec Numeric Types and Values;
+\altsec Numeric Types and Values;
 \omit\vbox{\rm\vskip0.5ex
   Integers saturate in Octave.  They do not roll over.
   \vskip0.75ex}\span\cr
@@ -472,7 +473,7 @@ int8 int16 int32 int64&signed integers\cr
 uint8 uint16 uint32 uint64&unsigned integers\cr
 single double&32-bit/64-bit IEEE floating point\cr
 intmin intmax flintmax&integer limits of given type\cr
-realmax realmin&floating point limits of given type\cr
+realmin realmax&floating point limits of given type\cr
 inf nan NA&IEEE infinity, NaN, missing value\cr
 eps&machine precision\cr
 pi e&3.14159..., 2.71828...\cr
@@ -500,9 +501,9 @@ strrep regexprep&find and replace patterns\cr
 \sec Index Expressions;
 {\it var}({\it idx})&select elements of a vector\cr
 {\it var}({\it idx1}, {\it idx2})&select elements of a matrix\cr
-{\it var}({\it [1 3]}, {\it :})&rows 1 and 3\cr
-{\it var}({\it :}, {\it [2 end]})&the second and last columns\cr
-{\it var}({\it 1:2:end}, {\it 2:2:end})&get odd rows and even columns\cr
+{\it var}({[1 3], :})&rows 1 and 3\cr
+{\it var}({:, [2 end]})&the second and last columns\cr
+{\it var}({1:2:end, 2:2:end})&get odd rows and even columns\cr
 {\it var1}({\it var2} == 0)&elements of {\it var1} corresponding to zero
 elements of {\it var2}\cr
 {\it var}({:})&all elements as a column vector\cr
@@ -593,21 +594,24 @@ in-place equivalents of the above operators\cr
 ;\ \ ,&statement separators\cr
 \endsec
 
-\sec General programming;
+\altsec General programming;
 \omit \vbox{\rm\vskip0.5ex
   endfor, endwhile, endif etc. can all be replaced by end.
   \vskip0.75ex}\span\cr
 for x = 1:10
 
 endfor & for loop\cr
+\cr
 
 while (x <= 10)
 
 endwhile & while loop\cr
+\cr
 
 do
 
 until (x > 10) & do-until loop\cr
+\cr
 
 if (x < 5)
 
@@ -616,6 +620,7 @@ elseif (x < 6)
 else
 
 endif & if-then-else\cr
+\cr
 
 switch (tf)
 
@@ -626,16 +631,21 @@ case "false"
 otherwise
 
 endswitch & switch-case\cr
+\cr
 
 break & exit innermost loop\cr
+\cr
 
 continue & go to start of innermost loop\cr
+\cr
 
 return & jump back from function to caller\cr
+\cr
 
 try
 
 catch & cleanup only on exception\cr
+\cr
 
 unwind\char'137 protect
 
@@ -648,24 +658,27 @@ function \opt{{\it ret-list} =} {\it function-name}
 \quad{\it function-body}\cr
 endfunction\cr\cr
 {\rm {\it ret-list\/} may be a single identifier or a comma-separated
-  list of identifiers delimited by square brackets.\vskip0.75ex}\cr
+  list of identifiers enclosed by square brackets.\vskip0.75ex}\cr
 {\rm {\it arg-list\/} is a comma-separated list of identifiers and may
   be empty.}\cr
 \endsec
 
-\sec Function Handles;
+\sec Function Handles and Evaluation;
 @{\it{func}}&create a function handle to {\it func}\cr
-@({\it var1}, ...) {\it expr}&define an anonymous function\cr
+@({\it vars}) {\it expr}&define an anonymous function\cr
 str2func func2str&convert function to/from string\cr
 functions ({\it handle})&Return information about a function handle\cr
-{\it handle} ({\it arg1}, ...)&Evaluate a function handle\cr
+{\it f} ({\it args})&Evaluate a function handle {\it f}\cr
 feval &Evaluate a function handle or string\cr
+eval ({\it str})&evaluate {\it str} as a command\cr
+system ({\it cmd})&execute arbitrary shell command string\cr
+&\cr
 \omit\vbox{\rm\vskip0.25ex
   Anonymous function handles make a copy of the variables in the
   current workspace at the time of creation.\vskip0.75ex}\span\cr
 \endsec
 
-\sec Global and Persistent Variables;
+\altsec Global and Persistent Variables;
 global {\it var} = ...&declare \& initialize global variable\cr
 persistent {\it var} = ...&persistent/static variable\cr
 \omit\hfill\vbox{\rm\vskip0.25ex
@@ -680,7 +693,7 @@ printf&formatted output to {\tt stdout}\cr
 input scanf&input from {\tt stdin}\cr
 who whos&list current variables\cr
 clear {\it pattern}&clear variables matching pattern\cr
-exist&check existence of variable or function\cr
+exist&check existence of identifier\cr
 find&return indices of nonzero elements\cr
 sort&return a sorted array\cr
 unique&discard duplicate elements\cr
@@ -691,20 +704,18 @@ min max range mean median std&basic statistics\cr
 \endsec
 
 \sec Error Handling;
-eval ({\it str})&evaluate {\it str} as a command\cr
-system ({\it cmd})&execute arbitrary shell command string\cr
 error ({\it message})&print message and return to top level\cr
 warning ({\it message})&print a warning message\cr
 \endsec
 
 \sec File I/O, Loading, Saving;
-save load &save or load variables to or from file\cr
-save -binary &save variables in binary format (faster)\cr
-dlmread dlmwrite&read and write delimited data\cr
-csvread csvwrite&read and write CSV files\cr
-xlsread xlswrite&read and write XLS spreadsheets\cr
-
-fopen fclose & open and close file\cr
+save load &save/load variables to/from file\cr
+save -binary &save in binary format (faster)\cr
+dlmread dlmwrite&read/write delimited data\cr
+csvread csvwrite&read/write CSV files\cr
+xlsread xlswrite&read/write XLS spreadsheets\cr
+&\cr
+fopen fclose & open/close files\cr
 fprintf fscanf textscan&formatted file I/O\cr
 fflush&flush pending output\cr
 \endsec
@@ -739,21 +750,21 @@ poly &matrix characteristic polynomial\cr
 polyder polyint&polynomial derivative or integral\cr
 polyfit polyval&polynomial fitting and evaluation\cr
 residue &partial fraction expansion\cr
-legendre bessel airy&special function\cr
+legendre bessel&special functions\cr
 &\cr
 conv conv2& convolution, polynomial multiplication\cr
 deconv& deconvolution, polynomial division\cr
 &\cr
-fft fft2 ifft({\it a})&FFT and inverse FFT\cr
+fft fft2 ifft({\it a})&FFT / inverse FFT\cr
 freqz &FIR filter frequency response\cr
 filter &filter by transfer function\cr
 \endsec
 
-\sec Plotting and Graphics;
+\altsec Plotting and Graphics;
 plot plot3 &2D / 3D plot with linear axes\cr
 line &2D or 3D line\cr
 patch fill&2D patch, optionally colored\cr
-semilogx semilogy loglog&2D plot with one or both axes on a log scale\cr
+semilogx semilogy loglog&logarithmic axes\cr
 bar hist&bar chart, histogram\cr
 stairs stem&stairsteps and stem graphs\cr
 contour &contour plot\cr
@@ -777,19 +788,15 @@ colormap &get or set colormap\cr
 \hrule width \hsize
 \par\vskip10pt
 {\smrm\parskip=6pt
-Edition \refcardedition\ for Octave Version \octaveversion.
+Quick reference for Octave \octaveversion.
 Copyright 1996-2022 The Octave Project Developers.  The authors assume
-no responsibility for any errors on this card.
+no responsibility for any errors on this card.  This card may be freely
+distributed under the terms of the GNU General Public License.
 
-This card may be freely distributed under the terms of the GNU
-General Public License.
+Octave license and copyright: https://octave.org/copyright/
 
 \TeX{} Macros for this card by Roland Pesch (pesch@cygnus.com),
 originally for the GDB reference card
-
-Octave itself is free software; you are welcome to distribute copies of
-it under the terms of the GNU General Public License.  There is
-absolutely no warranty for Octave.
 }
 
 \end

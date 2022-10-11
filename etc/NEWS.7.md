@@ -21,6 +21,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `pie3`: Fix "Too many input" args error.
 - Accept negative inputs to -2^63 for `dec2bin` and `dec2hex` (bug #63089).
 - Fix incorrect `lambda` outputs for `lsqnonneg` and `pqpnonneg` (bug #63178).
+- `addtodate.m`: Fix wrong month returned when subtracting a month from some end-of-month dates (bug #60671).
 
 ### GUI
 

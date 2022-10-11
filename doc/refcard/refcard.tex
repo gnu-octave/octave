@@ -40,7 +40,7 @@
 % horizontal and vertical margin space measured from *paper edge*
 % and the interline and interspec spacing.
 % In order to support a new papersize, you have to fiddle with the
-% latter four dimensions. Just try out a few values.
+% latter four dimensions.  Just try out a few values.
 % All other values will be computed at process time so it should be
 % quite easy to support different paper sizes - only four values to
 % guess :-)
@@ -135,9 +135,9 @@
 
 % No printed folding guide:
 
-%\def\vdecor{\hskip\hmargin plus1fil
-%  \hskip\barwidth plus1fil
-%  \hskip\hmargin plus1fil}
+\def\vdecor{\hskip\hmargin plus1fil
+  \hskip\barwidth plus1fil
+  \hskip\hmargin plus1fil}
 
 % Solid line folding guide:
 
@@ -147,11 +147,11 @@
 
 % For small marks near top and bottom as folding guide:
 
-\def\vdecor{\hskip\hmargin plus1fil%
-  \vbox to \vsize{\hbox to \barwidth{\vrule height\barheight width\barwidth}%
-  \vfill
-  \hbox to \barwidth{\vrule height\barheight width\barwidth}}%
-  \hskip\hmargin plus1fil}
+%\def\vdecor{\hskip\hmargin plus1fil%
+%  \vbox to \vsize{\hbox to \barwidth{\vrule height\barheight width\barwidth}%
+%  \vfill
+%  \hbox to \barwidth{\vrule height\barheight width\barwidth}}%
+%  \hskip\hmargin plus1fil}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                      %
@@ -379,13 +379,13 @@
 % -------------------------------------
 
 {\vbbf Octave Quick Reference}\hfil{\smrm Octave Version \octaveversion}\qquad
-\centerline{\smrm Copyright 1996-2022 The Octave Project Developers
-\qquad Permissions on back}
+{\smrm Copyright 1996-2022 The Octave Project Developers}
 
-\sec Starting And Stopping;
-octave&start interactive Octave session\cr
-octave {\it file}&run Octave on commands in {\it file}\cr
-octave --eval {\it code}&Evaluate {\it code} using Octave\cr
+\sec Starting and Stopping;
+octave&start interactive Octave CLI session\cr
+octave --gui&start interactive Octave GUI\cr
+octave {\it file}&run Octave commands in {\it file}\cr
+octave --eval {\it code}&evaluate {\it code} using Octave\cr
 octave --help&describe command line options\cr
 quit {\rm or} exit&exit Octave\cr
 Ctrl-C&terminate current command and return to top-level prompt\cr
@@ -401,33 +401,32 @@ lookfor {\it str}&search for {\it command} based on {\it str}\cr
 \sec Command Completion and History;
 TAB&complete a command or variable name\cr
 Alt-?&list possible completions\cr
-Ctrl-r, Ctrl-s&search command history\cr
+Ctrl-r Ctrl-s&search command history\cr
 \endsec
 
 \sec Directory and Path Commands;
 cd {\it dir}&change working directory to {\it dir}\cr
 pwd&print working directory\cr
 ls \opt{{\it options}}&print directory listing\cr
-getenv ({\it string})&return value of named environment variable\cr
 what&list .m and .mat files in the current directory\cr
-path&display the current Octave function path\cr
-pathdef&display the default path\cr
+path&display the search path for Octave functions\cr
+pathdef&display the default search path\cr
 addpath ({\it dir})&add a directory to the path\cr
-EXEC\_PATH&manipulate the Octave executable path\cr
+getenv ({\it string})&return value of named environment variable\cr
 \endsec
 
 \sec Package Management;
-pkg install -forge&download and install package\cr
-pkg install &install an already downloaded package\cr
+pkg install -forge {\it pkg}&download and install {\it pkg}\cr
+pkg install {\it pkgfile}&install already downloaded package file\cr
 pkg list&display installed packages\cr
-pkg load / pkg unload &Load and unload an installed package\cr
+pkg load / pkg unload {\it pkg}&load/unload installed package {\it pkg}\cr
 \endsec
 
 \sec Matrices;
 \omit\vbox{\rm\vskip0.25ex
   Square brackets delimit literal matrices.  Commas separate elements
   on the same row.  Semicolons separate rows.  Commas may be replaced
-  by spaces, and semicolons may be replaced by one or more newlines.
+  by spaces, and semicolons may be replaced by newlines.
   Elements of a matrix may be arbitrary expressions, assuming
   all the dimensions agree.\vskip0.75ex}\span\cr
 [ {\it x}, {\it y}, ... ]&enter a row vector\cr
@@ -440,38 +439,40 @@ ones&create matrix of ones\cr
 eye&create identity matrix\cr
 diag&create diagonal matrix\cr
 rand randi randn&create matrix of random values\cr
+sparse&create a sparse matrix\cr
 all&true if all elements nonzero\cr
 any&true if at least one element nonzero\cr
-nnz &count nonzero elements\cr
-sparse&create a sparse matrix\cr
+nnz &number of nonzero elements\cr
 \endsec
 
 \sec Multi-dimensional Arrays;
-cat&concatenate along a given dimension\cr
-reshape&change the shape of an array\cr
-squeeze&remove singleton dimensions\cr
 ndims&number of dimensions\cr
-permute, ipermute, shiftdim&like N-dimensional transpose\cr
+reshape&change the shape of an array\cr
+resize&change shape with possible data loss\cr
+cat&join arrays along a given dimension\cr
+permute ipermute shiftdim&like N-dimensional transpose\cr
 circshift&cyclically shift array elements\cr
 meshgrid&matrices useful for vectorization\cr
 \endsec
 
 \sec Ranges;
+\omit\vbox{\rm\vskip0.25ex
+  Create sequences of real numbers as row vectors.\vskip0.75ex}\span\cr
 {\it base} : {\it limit}\cr
 {\it base} : {\it incr} : {\it limit}\cr
 \omit\hfill\vbox{\hsize=\idnwid\rm\vskip0.75ex
-  {\it incr} == 1 if not specified. Negative ranges allowed.}\span\cr
+  {\it incr} == 1 if not specified.  Negative ranges allowed.}\span\cr
 \endsec
 
-\sec Numeric Types And Values;
+\sec Numeric Types and Values;
 \omit\vbox{\rm\vskip0.5ex
-  Integers saturate in Octave. They do not wrap around.
+  Integers saturate in Octave.  They do not roll over.
   \vskip0.75ex}\span\cr
-int8 int16 int32 int64&Signed integers\cr
-uint8 uint16 uint32 uint64&Unsigned integers\cr
-single double&32-bit / 64-bit IEEE floating point\cr
-intmin intmax, flintmax&Integer limits of given type\cr
-realmax realmin&Floating point limits of given type\cr
+int8 int16 int32 int64&signed integers\cr
+uint8 uint16 uint32 uint64&unsigned integers\cr
+single double&32-bit/64-bit IEEE floating point\cr
+intmin intmax flintmax&integer limits of given type\cr
+realmax realmin&floating point limits of given type\cr
 inf nan NA&IEEE infinity, NaN, missing value\cr
 eps&machine precision\cr
 pi e&3.14159..., 2.71828...\cr
@@ -481,7 +482,7 @@ i j&$\sqrt{-1}$\cr
 \sec Strings;
 \omit\vbox{\rm\vskip0.5ex
   A {\it string constant\/} consists of a sequence of characters
-  enclosed in either double-quote or single-quote marks. Strings
+  enclosed in either double-quote or single-quote marks.  Strings
   in double-quotes allow the use of the escape sequences below.
   \vskip0.75ex}\span\cr
 \char'134\char'134&a literal backslash\cr
@@ -491,7 +492,7 @@ i j&$\sqrt{-1}$\cr
 \char'134 t&horizontal tab, ASCII code 9\cr
 sprintf sscanf&formatted IO to/from string\cr
 strcmp&compare strings\cr
-strcat&concatenate strings\cr
+strcat&join strings\cr
 strfind regexp&find matching patterns\cr
 strrep regexprep&find and replace patterns\cr
 \endsec
@@ -508,10 +509,11 @@ elements of {\it var2}\cr
 \endsec
 
 \sec Cells, Structures, and Classdefs;
-{\it{var}}.{\it{field}} = ...&set a field of a structure\cr
 {\it{var}}$\{${\it{idx}}$\}$ = ...&set an element of a cell array\cr
 cellfun ({\it f}, {\it c})&apply a function to elements of cell array\cr
+{\it{var}}.{\it{field}} = ...&set a field of a structure\cr
 fieldnames ({\it s})&returns the fields of a structure\cr
+structfun ({\it f}, {\it s})&apply a function to fields of structure\cr
 classdef&define new classes for OOP\cr
 \endsec
 
@@ -528,19 +530,19 @@ classdef&define new classes for OOP\cr
 %
 \omit \vbox{\rm\vskip0.75ex
   If two operands are of different sizes, scalars and singleton dimensions are
-  automatically expanded. Non-singleton dimensions need to match.
+  automatically expanded.  Non-singleton dimensions need to match.
   \vskip0.75ex}\span\cr
 {\it x} + {\it y}, {\it x} - {\it y}&addition, subtraction\cr
 {\it x} * {\it y}&matrix multiplication\cr
-{\it x} .* {\it y}&element by element multiplication\cr
+{\it x} .* {\it y}&element-by-element multiplication\cr
 {\it x} / {\it y}&right division, conceptually equivalent to
   {\tt (inverse~(y')~*~x')'}\cr
-{\it x} ./ {\it y}&element by element right division\cr
+{\it x} ./ {\it y}&element-by-element right division\cr
 {\it x} \char'134{} {\it y}&left division, conceptually equivalent to
   {\tt inverse~(x)~*~y}\cr
-{\it x} .\char'134{} {\it y}&element by element left division\cr
+{\it x} .\char'134{} {\it y}&element-by-element left division\cr
 {\it x} \char'136{} {\it y}&power operator\cr
-{\it x} .\char'136{} {\it y}&element by element power operator\cr
+{\it x} .\char'136{} {\it y}&element-by-element power operator\cr
 += -= *= .*= /= ./= \char'134{}= .\char'134{}= \char'136{}= .\char'136{}=&
 in-place equivalents of the above operators\cr
 -{\it x}&negation\cr
@@ -564,7 +566,7 @@ in-place equivalents of the above operators\cr
 
 \sec Short-circuit Boolean Operators;
 \omit \vbox{\rm\vskip0.75ex
-  Operators evaluate left-to-right. Operands are only evaluated if
+  Operators evaluate left-to-right.  Operands are only evaluated if
   necessary, stopping once overall truth value can be determined.
   Non-scalar operands are converted to scalars with
   {\tt all}.\vskip0.75ex}\span\cr
@@ -576,25 +578,24 @@ in-place equivalents of the above operators\cr
 
 \sec Operator Precedence;
 \omit \vbox{\rm\vskip0.5ex
-  Table of Octave operators, in order of {\tt increasing}
+  Table of Octave operators, in order of {\tt decreasing}
   precedence.\vskip0.75ex}\span\cr
-;\ \ ,&statement separators\cr
-=&assignment, groups left to right\cr
-+= -= *= /=  etc &in-place operators\cr
-||\ \ \&\&&logical ``or'' and ``and''\cr
-|\ \ \&&element-wise ``or'' and ``and''\cr
-< <= == >= > !=&relational operators\cr
-:&colon\cr
-+\ \ -&addition and subtraction\cr
-* / \char'134\ \ .*\ \ ./\ \ .\char'134&multiplication and division\cr
-'\ \ .'&transpose\cr
+() $\{\}$ . & array index, cell index, structure index\cr
+'\ \ .'\ \ \char'136\ \ .\char'136&transpose and exponentiation\cr
 +\ \ -\ \ ++\ \ --\ \ !&unary minus, increment, logical ``not''\cr
-\char'136\ \ .\char'136&exponentiation\cr
+* / \char'134\ \ .*\ \ ./\ \ .\char'134&multiplication and division\cr
++\ \ -&addition and subtraction\cr
+:&colon\cr
+< <= == >= > !=&relational operators\cr
+\&\ \ |&element-wise ``and'' and ``or''\cr
+\&\&\ \ ||&logical ``and'' and ``or''\cr
+= += -= *= /=  etc.&assignment, groups left to right\cr
+;\ \ ,&statement separators\cr
 \endsec
 
 \sec General programming;
 \omit \vbox{\rm\vskip0.5ex
-  endfor, endwhile, endif etc can all be replaced by end.
+  endfor, endwhile, endif etc. can all be replaced by end.
   \vskip0.75ex}\span\cr
 for x = 1:10
 
@@ -630,7 +631,7 @@ break & exit innermost loop\cr
 
 continue & go to start of innermost loop\cr
 
-return & jump back to calling location\cr
+return & jump back from function to caller\cr
 
 try
 
@@ -638,46 +639,46 @@ catch & cleanup only on exception\cr
 
 unwind\char'137 protect
 
-unwind\char'137 protect\char'137 cleanup & cleanup always \cr
+unwind\char'137 protect\char'137 cleanup& cleanup always \cr
 \endsec
 
 \widesec Functions;
-function \opt{{\it ret-list}} {\it function-name}
+function \opt{{\it ret-list} =} {\it function-name}
   \opt{\hskip0.2em({\it arg-list})\hskip0.2em}\cr
 \quad{\it function-body}\cr
 endfunction\cr\cr
 {\rm {\it ret-list\/} may be a single identifier or a comma-separated
-  list of identifiers delimited by square-brackets.\vskip0.75ex}\cr
+  list of identifiers delimited by square brackets.\vskip0.75ex}\cr
 {\rm {\it arg-list\/} is a comma-separated list of identifiers and may
   be empty.}\cr
 \endsec
 
 \sec Function Handles;
-@{\it{func}}& define a function handle to {\it func}\cr
+@{\it{func}}&create a function handle to {\it func}\cr
 @({\it var1}, ...) {\it expr}&define an anonymous function\cr
 str2func func2str&convert function to/from string\cr
 functions ({\it handle})&Return information about a function handle\cr
 {\it handle} ({\it arg1}, ...)&Evaluate a function handle\cr
 feval &Evaluate a function handle or string\cr
 \omit\vbox{\rm\vskip0.25ex
-  Anonymous function handles take a copy of the variables in the
-  current workspace.\vskip0.75ex}\span\cr
+  Anonymous function handles make a copy of the variables in the
+  current workspace at the time of creation.\vskip0.75ex}\span\cr
 \endsec
 
 \sec Global and Persistent Variables;
-global {\it var1} = ...&global variables\cr
-persistent {\it var1} = ...&persistent / static variables\cr
+global {\it var} = ...&declare \& initialize global variable\cr
+persistent {\it var} = ...&persistent/static variable\cr
 \omit\hfill\vbox{\rm\vskip0.25ex
   Global variables may be accessed inside the body of a function
   without having to be passed in the function parameter list provided
-  they are declared global when used.}\span\cr
+  that they are declared global when used.}\span\cr
 \endsec
 
 \sec Common Functions;
 disp&display value of variable\cr
 printf&formatted output to {\tt stdout}\cr
-input, scanf&input from {\tt stdin}\cr
-who, whos&list current variables\cr
+input scanf&input from {\tt stdin}\cr
+who whos&list current variables\cr
 clear {\it pattern}&clear variables matching pattern\cr
 exist&check existence of variable or function\cr
 find&return indices of nonzero elements\cr
@@ -725,9 +726,9 @@ chol &Cholesky factorization\cr
 svd &singular value decomposition\cr
 &\cr
 fsolve&solve nonlinear algebraic equations\cr
-lsode&integrate nonlinear ODEs\cr
+lsode ode45&integrate nonlinear ODEs\cr
 dassl&integrate nonlinear DAEs\cr
-quad&integrate nonlinear functions\cr
+integral&integrate nonlinear functions\cr
 &\cr
 union&set union\cr
 intersection&set intersection\cr
@@ -748,7 +749,7 @@ freqz &FIR filter frequency response\cr
 filter &filter by transfer function\cr
 \endsec
 
-\sec Plotting And Graphics;
+\sec Plotting and Graphics;
 plot plot3 &2D / 3D plot with linear axes\cr
 line &2D or 3D line\cr
 patch fill&2D patch, optionally colored\cr

@@ -69,7 +69,7 @@
 ## @end itemize
 ##
 ## @item lambda
-## Lagrange multipliers.  If these are non-zero, the corresponding @var{x}
+## Lagrange multipliers.  If these are nonzero, the corresponding @var{x}
 ## values should be zero, indicating the solution is pressed up against a
 ## coordinate plane.  The magnitude indicates how much the residual would
 ## improve if the @code{@var{x} >= 0} constraints were relaxed in that

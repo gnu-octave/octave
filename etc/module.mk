@@ -26,6 +26,10 @@
   %reldir%/OLD-ChangeLogs/test-ChangeLog
 
 fallback_FONT_FILES = \
+  %reldir%/fonts/FreeMono.otf \
+  %reldir%/fonts/FreeMonoBold.otf \
+  %reldir%/fonts/FreeMonoBoldOblique.otf \
+  %reldir%/fonts/FreeMonoOblique.otf \
   %reldir%/fonts/FreeSans.otf \
   %reldir%/fonts/FreeSansBold.otf \
   %reldir%/fonts/FreeSansBoldOblique.otf \

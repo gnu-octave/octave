@@ -34,6 +34,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QFontDatabase>
 #include <QHelpContentWidget>
 #include <QHelpIndexWidget>
 #if defined (HAVE_NEW_QHELPINDEXWIDGET_API) \
@@ -995,6 +996,40 @@ namespace octave
     setOpenLinks (false);
     connect (this, &documentation_browser::anchorClicked,
              this, [=] (const QUrl& url) { handle_index_clicked (url); });
+
+    // Make sure we have access to one of the monospace fonts listed in
+    // octave.css for rendering formated code blocks
+    QStringList fonts = {"Fantasque Sans Mono", "FreeMono", "Courier New",
+                         "Cousine", "Courier"};
+
+    bool load_default_font = true;
+
+    for (int i = 0; i < fonts.size (); ++i)
+      {
+        QFont font (fonts.at (i));
+        if (font.exactMatch ())
+          {
+            load_default_font = false;
+            break;
+          }
+      }
+
+    if (load_default_font)
+      {
+        QString fonts_dir =
+          QString::fromStdString (sys::env::getenv ("OCTAVE_FONTS_DIR")
+                                  + sys::file_ops::dir_sep_str ());
+
+        QStringList default_fonts = {"FreeMono", "FreeMonoBold",
+                                     "FreeMonoBoldOblique", "FreeMonoOblique"};
+
+        for (int i = 0; i < default_fonts.size (); ++i)
+          {
+            QString fontpath =
+              fonts_dir + default_fonts.at(i) + QString (".otf");
+            QFontDatabase::addApplicationFont (fontpath);
+          }
+      }
   }
 
   void documentation_browser::handle_index_clicked (const QUrl& url,

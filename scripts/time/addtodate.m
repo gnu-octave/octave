@@ -123,20 +123,19 @@ endfunction
 %!assert (addtodate ([d;d+1], 1, "month"), [d+31;d+1+31])
 %!assert (addtodate ([d d+1], 1, "month"), [d+31 d+1+31])
 
-## end of month days check
-%!test <60671>
-%! assert (addtodate (datenum ("2020-12-31"), -1, "month"), 738125)
-%! assert (addtodate (datenum ("2020-12-30"), -1, "month"), 738125)
-%! assert (addtodate (datenum ("2020-12-29"), -1, "month"), 738124)
-%! assert (addtodate (datenum ("2021-03-31"), -1, "month"), 738215)
-%! assert (addtodate (datenum ("2021-03-29"), -1, "month"), 738215)
-%! assert (addtodate (datenum ("2020-03-30"), -1, "month"), 737850)
-%! assert (addtodate (datenum ("2020-03-29"), -1, "month"), 737850)
-%! assert (addtodate (datenum ("2020-03-28"), -1, "month"), 737849)
-%! assert (addtodate (datenum ("2020-02-29"), -1, "month"), 737819)
-%! assert (addtodate (datenum ("2020-02-28"), -1, "month"), 737818)
-%! assert (addtodate (datenum ("2020-01-31"), +1, "month"), 737850)
- 
+## end of month days
+%!assert <*60671> (addtodate (datenum ("2020-12-31"), -1, "month"), 738125)
+%!assert <*60671> (addtodate (datenum ("2020-12-30"), -1, "month"), 738125)
+%!assert <*60671> (addtodate (datenum ("2020-12-29"), -1, "month"), 738124)
+%!assert <*60671> (addtodate (datenum ("2021-03-31"), -1, "month"), 738215)
+%!assert <*60671> (addtodate (datenum ("2021-03-29"), -1, "month"), 738215)
+%!assert <*60671> (addtodate (datenum ("2020-03-30"), -1, "month"), 737850)
+%!assert <*60671> (addtodate (datenum ("2020-03-29"), -1, "month"), 737850)
+%!assert <*60671> (addtodate (datenum ("2020-03-28"), -1, "month"), 737849)
+%!assert <*60671> (addtodate (datenum ("2020-02-29"), -1, "month"), 737819)
+%!assert <*60671> (addtodate (datenum ("2020-02-28"), -1, "month"), 737818)
+%!assert <*60671> (addtodate (datenum ("2020-01-31"), +1, "month"), 737850)
+
 
 ## Test input validation
 %!error <Invalid call> addtodate ()

@@ -860,7 +860,7 @@ namespace octave
                            QMessageBox::Yes | QMessageBox::No);
           }
 
-        if (dlg_answer)
+        if (dlg_answer == QMessageBox::Yes)
           {
             if (info.isDir ())
               {

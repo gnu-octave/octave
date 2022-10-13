@@ -66,11 +66,11 @@ jobs:
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        # uses: actions/cache@v2
+        # uses: actions/cache@v3
         # The original action doesn't upload on error. Use this fork instead.
         # FIXME: Consider reverting to the original action when it allows uploading on error.
         #        See: https://github.com/actions/cache/issues/92
-        uses: pat-s/always-upload-cache@v2
+        uses: pat-s/always-upload-cache@v3
         with:
           path: ~/.ccache
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
@@ -209,7 +209,7 @@ jobs:
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /Users/runner/Library/Caches/ccache
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
@@ -429,7 +429,7 @@ jobs:
 
       - name: restore ccache
         # Setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: C:/msys64/home/runneradmin/.ccache
           key: ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}

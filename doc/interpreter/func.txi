@@ -263,13 +263,13 @@ endfunction
 @end group
 @end example
 
-Octave automatically reports an error if you call a function with more
-arguments than expected.  Octave does not automatically report an error if
-you call a function with too few arguments, since functions in general may
-have default arguments, but any attempt to use a variable that has not been
-given a value will result in an error.  To avoid such problems and to provide
-useful messages, we can check for such possibilities and issue our own
-error messages.
+Octave automatically reports an error if a function in a .m file is called
+with more arguments than expected.  Octave does not automatically report an
+error if a function is called with too few arguments, since functions in
+general may have default arguments, but any attempt to use a variable that
+has not been given a value will result in an error.  Functions can check
+the arguments they are called with to avoid such problems and to provide
+more context-specific error messages.
 
 @DOCSTRING(nargin)
 
@@ -386,9 +386,11 @@ the user of the function has requested.  The implicit assignment to the
 built-in variable @code{ans} does not figure in the count of output
 arguments, so the value of @code{nargout} may be zero.
 
-The @code{svd} and @code{lu} functions are examples of built-in
+The @code{svd} and @code{hist} functions are examples of built-in
 functions that behave differently depending on the value of
-@code{nargout}.
+@code{nargout}.  For example, @code{hist} will draw a histogram when called
+with no output variables, but if called with outputs it will return the
+frequency counts and/or bin centers without creating a plot.
 
 It is possible to write functions that only set some return values.  For
 example, calling the function

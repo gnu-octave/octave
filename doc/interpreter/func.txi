@@ -263,13 +263,13 @@ endfunction
 @end group
 @end example
 
-Octave automatically reports an error if a function in a .m file is called
-with more arguments than expected.  Octave does not automatically report an
-error if a function is called with too few arguments, since functions in
-general may have default arguments, but any attempt to use a variable that
-has not been given a value will result in an error.  Functions can check
-the arguments they are called with to avoid such problems and to provide
-more context-specific error messages.
+Octave automatically reports an error for functions written in .m file code
+if they are called with more arguments than expected.  Octave does not
+automatically report an error if a function is called with too few arguments,
+since functions in general may have default arguments, but any attempt to use
+a variable that has not been given a value will result in an error.
+Functions can check the arguments they are called with to avoid such problems
+and to provide more context-specific error messages.
 
 @DOCSTRING(nargin)
 

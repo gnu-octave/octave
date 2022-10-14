@@ -237,7 +237,7 @@ endfunction
 @end group
 @end example
 
-There is still one additional problem with this function.  What if it is
+There is still one remaining problem with this function.  What if it is
 called without an argument?  Without additional error checking, Octave
 will probably print an error message that won't really help you track
 down the source of the error.  To allow you to catch errors like this,
@@ -263,13 +263,13 @@ endfunction
 @end group
 @end example
 
-Although Octave does not automatically report an error if you call a
-function with more arguments than expected, doing so probably indicates
-that something is wrong.  Octave also does not automatically report an
-error if a function is called with too few arguments, but any attempt to
-use a variable that has not been given a value will result in an error.
-To avoid such problems and to provide useful messages, we check for both
-possibilities and issue our own error message.
+Octave automatically reports an error if you call a function with more
+arguments than expected.  Octave does not automatically report an error if
+you call a function with too few arguments, since functions in general may
+have default arguments, but any attempt to use a variable that has not been
+given a value will result in an error.  To avoid such problems and to provide
+useful messages, we can check for such possibilities and issue our own
+error messages.
 
 @DOCSTRING(nargin)
 

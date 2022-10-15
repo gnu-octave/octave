@@ -312,32 +312,110 @@ endfunction
 %! assert (m, NaN(1,1,0,2));
 
 ## Test Inf and NaN inputs
-%!assert <*63203> (var (Inf), NaN)
-%!assert <*63203> (var (NaN), NaN)
-%!assert <*63203> (var ([1, Inf, 3]), NaN)
-%!assert <*63203> (var ([1, Inf, 3]'), NaN)
-%!assert <*63203> (var ([1, NaN, 3]), NaN)
-%!assert <*63203> (var ([1, NaN, 3]'), NaN)
-%!assert <*63203> (var ([1, Inf, 3], [], 1), [0, NaN, 0])
-%!assert <*63203> (var ([1, Inf, 3], [], 2), NaN)
-%!assert <*63203> (var ([1, Inf, 3], [], 3), [0, NaN, 0])
-%!assert <*63203> (var ([1, NaN, 3], [], 1), [0, NaN, 0])
-%!assert <*63203> (var ([1, NaN, 3], [], 2), NaN)
-%!assert <*63203> (var ([1, NaN, 3], [], 3), [0, NaN, 0])
-%!assert <*63203> (var ([1, 2, 3; 3, Inf, 5]), [2, NaN, 2])
-%!assert <*63203> (var ([1, Inf, 3; 3, Inf, 5]), [2, NaN, 2])
-%!assert <*63203> (var ([1, 2, 3; 3, NaN, 5]), [2, NaN, 2])
-%!assert <*63203> (var ([1, NaN, 3; 3, NaN, 5]), [2, NaN, 2])
-%!assert <*63203> (var ([Inf, 2, NaN]), NaN)
-%!assert <*63203> (var ([Inf, 2, NaN]'), NaN)
-%!assert <*63203> (var ([NaN, 2, Inf]), NaN)
-%!assert <*63203> (var ([NaN, 2, Inf]'), NaN)
-%!assert <*63203> (var ([Inf, 2, NaN], [], 1), [NaN, 0, NaN])
-%!assert <*63203> (var ([Inf, 2, NaN], [], 2), NaN)
-%!assert <*63203> (var ([NaN, 2, Inf], [], 1), [NaN, 0, NaN])
-%!assert <*63203> (var ([NaN, 2, Inf], [], 2), NaN)
-%!assert <*63203> (var ([1, 3, NaN; 3, 5, Inf]), [2, 2, NaN])
-%!assert <*63203> (var ([1, 3, Inf; 3, 5, NaN]), [2, 2, NaN]);
+%!test <*63203>
+%! [v, m] = var (Inf);
+%! assert (v, NaN);
+%! assert (m, Inf);
+%!test <*63203>
+%! [v, m] = var (NaN);
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([1, Inf, 3]);
+%! assert (v, NaN);
+%! assert (m, Inf);
+%!test <*63203>
+%! [v, m] = var ([1, Inf, 3]');
+%! assert (v, NaN);
+%! assert (m, Inf);
+%!test <*63203>
+%! [v, m] = var ([1, NaN, 3]);
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([1, NaN, 3]');
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([1, Inf, 3], [], 1);
+%! assert (v, [0, NaN, 0]);
+%! assert (m, [1, Inf, 3]);
+%!test <*63203>
+%! [v, m] = var ([1, Inf, 3], [], 2);
+%! assert (v, NaN);
+%! assert (m, Inf);
+%!test <*63203>
+%! [v, m] = var ([1, Inf, 3], [], 3);
+%! assert (v, [0, NaN, 0]);
+%! assert (m, [1, Inf, 3]);
+%!test <*63203>
+%! [v, m] = var ([1, NaN, 3], [], 1);
+%! assert (v, [0, NaN, 0]);
+%! assert (m, [1, NaN, 3]);
+%!test <*63203>
+%! [v, m] = var ([1, NaN, 3], [], 2);
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([1, NaN, 3], [], 3);
+%! assert (v, [0, NaN, 0]);
+%! assert (m, [1, NaN, 3]);
+%!test <*63203>
+%! [v, m] = var ([1, 2, 3; 3, Inf, 5]);
+%! assert (v, [2, NaN, 2]);
+%! assert (m, [2, Inf, 4]);
+%!test <*63203>
+%! [v, m] = var ([1, Inf, 3; 3, Inf, 5]);
+%! assert (v, [2, NaN, 2]);
+%! assert (m, [2, Inf, 4]);
+%!test <*63203>
+%! [v, m] = var ([1, 2, 3; 3, NaN, 5]);
+%! assert (v, [2, NaN, 2]);
+%! assert (m, [2, NaN, 4]);
+%!test <*63203>
+%! [v, m] = var ([1, NaN, 3; 3, NaN, 5]);
+%! assert (v, [2, NaN, 2]);
+%! assert (m, [2, NaN, 4]);
+%!test <*63203>
+%! [v, m] = var ([Inf, 2, NaN]);
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([Inf, 2, NaN]');
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([NaN, 2, Inf]);
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([NaN, 2, Inf]');
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([Inf, 2, NaN], [], 1);
+%! assert (v, [NaN, 0, NaN]);
+%! assert (m, [Inf, 2, NaN]);
+%!test <*63203>
+%! [v, m] = var ([Inf, 2, NaN], [], 2);
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([NaN, 2, Inf], [], 1);
+%! assert (v, [NaN, 0, NaN]);
+%! assert (m, [NaN, 2, Inf]);
+%!test <*63203>
+%! [v, m] = var ([NaN, 2, Inf], [], 2);
+%! assert (v, NaN);
+%! assert (m, NaN);
+%!test <*63203>
+%! [v, m] = var ([1, 3, NaN; 3, 5, Inf]);
+%! assert (v, [2, 2, NaN]);
+%! assert (m, [2, 4, NaN]);
+%!test <*63203>
+%! [v, m] = var ([1, 3, Inf; 3, 5, NaN]);
+%! assert (v, [2, 2, NaN]);
+%! assert (m, [2, 4, NaN]);
 
 ## Test input validation
 %!error <Invalid call> var ()

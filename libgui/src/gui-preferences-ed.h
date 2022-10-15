@@ -144,7 +144,7 @@ const gui_pref
 ed_highlight_current_line ("editor/highlightCurrentLine", QVariant (true));
 
 const gui_pref
-ed_highlight_current_line_color ("editor/highlight_current_line_color",
+ed_highlight_current_line_color ("editor/highlightCurrentLineColor",
                                  QVariant (settings_color_no_change));
 
 const gui_pref

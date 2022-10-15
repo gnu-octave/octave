@@ -122,6 +122,12 @@ namespace octave
     mkdir (const std::string&, mode_t, std::string&);
 
     extern OCTAVE_API int
+    recursive_mkdir (const std::string& name, mode_t mode);
+
+    extern OCTAVE_API int
+    recursive_mkdir (const std::string& name, mode_t mode, std::string& msg);
+
+    extern OCTAVE_API int
     mkfifo (const std::string&, mode_t);
 
     extern OCTAVE_API int

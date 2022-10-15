@@ -370,7 +370,8 @@ namespace octave
             if (! hist_dir.empty ())
               {
                 sys::file_stat fs (hist_dir);
-                if (! fs.is_dir () && (sys::mkdir (hist_dir, 0777) < 0))
+                if (! fs.is_dir ()
+                    && (sys::recursive_mkdir (hist_dir, 0777) < 0))
                   (*current_liboctave_error_handler)
                     ("%s: Could not create directory \"%s\" for history",
                      "gnu_history::do_write", hist_dir.c_str ());

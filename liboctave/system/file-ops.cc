@@ -416,6 +416,59 @@ namespace octave
       return status;
     }
 
+    int recursive_mkdir (const std::string& name, mode_t mode)
+    {
+      std::string msg;
+      return recursive_mkdir (name, mode, msg);
+    }
+
+    int recursive_mkdir (const std::string& name, mode_t mode, std::string& msg)
+    {
+      int status;
+
+      // account for root in absolute directories
+#if defined (OCTAVE_USE_WINDOWS_API)
+      // root of current drive
+      std::size_t skip_root = 0;
+      if (name.size () > 1)
+        {
+          if (name[1] == ':')
+            // drive root (e.g., C:\)
+            skip_root = 2;
+          else if (file_ops::is_dir_sep (name[0])
+                   && file_ops::is_dir_sep (name[1]))
+            {
+              // UNC path root (e.g., \\SERVER\share\)
+              skip_root = name.find_first_of (file_ops::dir_sep_chars (), 2);
+              skip_root = name.find_first_of (file_ops::dir_sep_chars (),
+                                              skip_root + 1);
+            }
+        }
+
+      std::size_t delim = name.find_first_of (file_ops::dir_sep_chars (),
+                                              skip_root + 1);
+#else
+      std::size_t delim = name.find_first_of (file_ops::dir_sep_chars (), 1);
+#endif
+
+      // iterate over all componenents of NAME and make directories
+      while (delim != std::string::npos)
+        {
+          std::string base = name.substr (0, delim);
+          sys::file_stat fs (base);
+          if (! fs.is_dir ())
+          {
+            status = mkdir (base, mode, msg);
+            if (status < 0)
+              return status;
+          }
+          delim = name.find_first_of (file_ops::dir_sep_chars (), delim + 1);
+        }
+
+      // finally, create requested directory
+      return mkdir (name, mode, msg);
+    }
+
     int mkfifo (const std::string& nm, mode_t md)
     {
       std::string msg;

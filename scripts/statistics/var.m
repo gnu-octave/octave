@@ -203,6 +203,7 @@ function [v, mu] = var (x, w = 0, dim = [])
       v = zeros (sz);
       mu = x;
     endif
+    v(isnan (x) | isinf (x)) = NaN;
   else
     ## Regular algorithm
     if (isscalar (w))
@@ -309,6 +310,34 @@ endfunction
 %! assert (m, []);
 %! [~, m] = var (ones (1,3,0,2));
 %! assert (m, NaN(1,1,0,2));
+
+## Test Inf and NaN inputs
+%!assert <*63203> (var (Inf), NaN)
+%!assert <*63203> (var (NaN), NaN)
+%!assert <*63203> (var ([1, Inf, 3]), NaN)
+%!assert <*63203> (var ([1, Inf, 3]'), NaN)
+%!assert <*63203> (var ([1, NaN, 3]), NaN)
+%!assert <*63203> (var ([1, NaN, 3]'), NaN)
+%!assert <*63203> (var ([1, Inf, 3], [], 1), [0, NaN, 0])
+%!assert <*63203> (var ([1, Inf, 3], [], 2), NaN)
+%!assert <*63203> (var ([1, Inf, 3], [], 3), [0, NaN, 0])
+%!assert <*63203> (var ([1, NaN, 3], [], 1), [0, NaN, 0])
+%!assert <*63203> (var ([1, NaN, 3], [], 2), NaN)
+%!assert <*63203> (var ([1, NaN, 3], [], 3), [0, NaN, 0])
+%!assert <*63203> (var ([1, 2, 3; 3, Inf, 5]), [2, NaN, 2])
+%!assert <*63203> (var ([1, Inf, 3; 3, Inf, 5]), [2, NaN, 2])
+%!assert <*63203> (var ([1, 2, 3; 3, NaN, 5]), [2, NaN, 2])
+%!assert <*63203> (var ([1, NaN, 3; 3, NaN, 5]), [2, NaN, 2])
+%!assert <*63203> (var ([Inf, 2, NaN]), NaN)
+%!assert <*63203> (var ([Inf, 2, NaN]'), NaN)
+%!assert <*63203> (var ([NaN, 2, Inf]), NaN)
+%!assert <*63203> (var ([NaN, 2, Inf]'), NaN)
+%!assert <*63203> (var ([Inf, 2, NaN], [], 1), [NaN, 0, NaN])
+%!assert <*63203> (var ([Inf, 2, NaN], [], 2), NaN)
+%!assert <*63203> (var ([NaN, 2, Inf], [], 1), [NaN, 0, NaN])
+%!assert <*63203> (var ([NaN, 2, Inf], [], 2), NaN)
+%!assert <*63203> (var ([1, 3, NaN; 3, 5, Inf]), [2, 2, NaN])
+%!assert <*63203> (var ([1, 3, Inf; 3, 5, NaN]), [2, 2, NaN]);
 
 ## Test input validation
 %!error <Invalid call> var ()

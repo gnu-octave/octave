@@ -22,6 +22,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Accept negative inputs to -2^63 for `dec2bin` and `dec2hex` (bug #63089).
 - Fix incorrect `lambda` outputs for `lsqnonneg` and `pqpnonneg` (bug #63178).
 - `addtodate.m`: Fix wrong month returned when subtracting a month from some end-of-month dates (bug #60671).
+- `var.m`: Fix some Inf and NaN inputs returning 0 instead of NaN (bug #63203)
 
 ### GUI
 

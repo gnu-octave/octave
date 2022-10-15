@@ -907,7 +907,13 @@ namespace octave
     m_edit_area->setMarginsBackgroundColor (bgm);
     m_edit_area->setFoldMarginColors (bgm, fgm);
 
-    bgm = interpolate_color (bg, fg, 0.5, 0.1);
+    QColor current_line_bg
+      = settings->color_value (ed_highlight_current_line_color, mode);
+    if (current_line_bg == settings_color_no_change)
+       bgm = interpolate_color (bg, fg, 0.5, 0.1);  // It is the "auto" color
+     else
+       bgm = current_line_bg;  // Specific color given
+
     m_edit_area->setCaretLineBackgroundColor (bgm);
 
     // color indicator for highlighting all occurrences:

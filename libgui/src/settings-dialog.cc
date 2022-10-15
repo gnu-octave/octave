@@ -457,22 +457,38 @@ namespace octave
 
 #if defined (HAVE_QSCINTILLA)
 
-    int ed_mode = settings->value (ed_color_mode).toInt ();
+    int mode = settings->value (ed_color_mode).toInt ();
 
     QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes,
                                               group_box_editor_styles);
     cb_color_mode->setToolTip (settings_color_modes_tooltip);
-    cb_color_mode->setChecked (ed_mode > 0);
+    cb_color_mode->setChecked (mode > 0);
     cb_color_mode->setObjectName (ed_color_mode.key);
 
     QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_styles);
     pb_reload_default_colors->setToolTip (settings_reload_styles_tooltip);
 
-    editor_style_grid->addWidget (cb_color_mode, 0, 0);
-    editor_style_grid->addWidget (pb_reload_default_colors, 0, 1);
-    editor_style_grid->addItem (new QSpacerItem (5, 5, QSizePolicy::Expanding), 0, 2);
+    color_picker *current_line_color = new color_picker (
+      settings->value (ed_highlight_current_line_color.key +
+                       settings_color_modes_ext[mode],
+                       ed_highlight_current_line_color.def).value<QColor> (), this);
+    current_line_color->setObjectName (ed_highlight_current_line_color.key);
+    QLabel *current_line_color_label = new QLabel(
+      tr ("Color of highlighted current line (magenta (255,0,255) for automatic color)")
+    );
 
+    QHBoxLayout *color_mode = new QHBoxLayout ();
+    color_mode->addWidget (cb_color_mode);
+    color_mode->addItem (new QSpacerItem (5, 5, QSizePolicy::Expanding));
+    color_mode->addWidget (pb_reload_default_colors);
 
+    QHBoxLayout *current_line = new QHBoxLayout ();
+    current_line->addWidget (current_line_color_label);
+    current_line->addWidget (current_line_color);
+    current_line->addItem (new QSpacerItem (5, 5, QSizePolicy::Expanding));
+
+    editor_styles_layout->addLayout (color_mode);
+    editor_styles_layout->addLayout (current_line);
 
     // update colors depending on second theme selection
     connect (cb_color_mode, &QCheckBox::stateChanged,
@@ -629,6 +645,9 @@ namespace octave
   {
 #if defined (HAVE_QSCINTILLA)
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
     QCheckBox *cb_color_mode
       = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.key);
 
@@ -636,12 +655,24 @@ namespace octave
     if (cb_color_mode && cb_color_mode->isChecked ())
       m = 1;
 
+    color_picker *c_picker = findChild <color_picker *> (ed_highlight_current_line_color.key);
+    if (c_picker)
+      {
+        if (def != settings_reload_default_colors_flag)
+          {
+            // Get current value from settings or the default
+            c_picker->set_color (settings->color_value (ed_highlight_current_line_color, m));
+          }
+        else
+          {
+            // Get the default value
+            c_picker->set_color (settings->get_color_value (ed_highlight_current_line_color.def, m));
+          }
+      }
+
     // editor styles: create lexer, read settings, and
     // create or update dialog elements
     QsciLexer *lexer;
-
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
 
 #  if defined (HAVE_LEXER_OCTAVE)
     lexer = new QsciLexerOctave ();
@@ -911,6 +942,11 @@ namespace octave
     color_picker *color;
     color_picker *bg_color;
     int default_size = 10;
+
+    color = findChild <color_picker *> (ed_highlight_current_line_color.key);
+    if (color)
+      settings->setValue (ed_highlight_current_line_color.key
+                          + settings_color_modes_ext[mode], color->color ());
 
     QString default_font_name
       = settings->value (global_mono_font).toString ();

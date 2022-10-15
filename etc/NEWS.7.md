@@ -25,6 +25,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `var.m`: Fix some Inf and NaN inputs returning 0 instead of NaN (bug #63203)
 
 ### GUI
+- Respect confirmation when deleting files in file browser widget (bug #63198).
 
 ### Build system / Tests
 
@@ -41,6 +42,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `pqpnonneg.m`: Improve docstring readability.
 - `lsode`: Make TeX and non-TeX docstrings agree.
 - `curl`: Fix error in TeX docstring.
+- Update text on function argument checking.
 
 
 Summary of bugs fixed for version 7.2.0 (2022-07-28):

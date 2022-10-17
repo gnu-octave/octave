@@ -210,3 +210,6 @@
 %! x = bug_60763 ();
 %! assert (x.foobar (), {"some_property"});
 %! assert (x.methods (), 42);
+
+## test class with methods in @folder and in classdef definition
+%!assert <*62802> (numel (methods ("class_bug62802")), 4)

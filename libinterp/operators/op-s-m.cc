@@ -68,7 +68,10 @@ DEFBINOP (ldiv, scalar, matrix)
   const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
   const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
-  return octave_value (v2.array_value () / v1.double_value ());
+  const auto& tmp1 = v1.double_value ();
+  const auto& tmp2 = v2.array_value ();
+  const auto& tmp3 = tmp2 / tmp1;
+  return octave_value (tmp3);
 }
 
 DEFNDBINOP_FN (lt, scalar, matrix, scalar, array, mx_el_lt)
@@ -87,7 +90,10 @@ DEFBINOP (el_ldiv, scalar, matrix)
   const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
   const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
-  return octave_value (v2.array_value () / v1.double_value ());
+  const auto& tmp1 = v1.double_value ();
+  const auto& tmp2 = v2.array_value ();
+  const auto& tmp3 = tmp2 / tmp1;
+  return octave_value (tmp3);
 }
 
 DEFNDBINOP_FN (el_and, scalar, matrix, scalar, array, mx_el_and)

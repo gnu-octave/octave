@@ -81,7 +81,10 @@ DEFBINOP (ldiv, complex, sparse_complex_matrix)
   const octave_sparse_complex_matrix& v2
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
-  return octave_value (v2.sparse_complex_matrix_value () / v1.complex_value ());
+  const auto& tmp1 = v1.complex_value ();
+  const auto& tmp2 = v2.sparse_complex_matrix_value ();
+  const auto& tmp3 = tmp2 / tmp1;
+  return octave_value (tmp3);
 }
 
 DEFBINOP_FN (lt, complex, sparse_complex_matrix, mx_el_lt)
@@ -102,7 +105,10 @@ DEFBINOP (el_ldiv, complex, sparse_complex_matrix)
   const octave_sparse_complex_matrix& v2
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
-  return octave_value (v2.sparse_complex_matrix_value () / v1.complex_value ());
+  const auto& tmp1 = v1.complex_value ();
+  const auto& tmp2 = v2.sparse_complex_matrix_value ();
+  const auto& tmp3 = tmp2 / tmp1;
+  return octave_value (tmp3);
 }
 
 DEFBINOP_FN (el_and, complex, sparse_complex_matrix, mx_el_and)

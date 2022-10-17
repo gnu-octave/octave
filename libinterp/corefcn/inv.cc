@@ -93,38 +93,42 @@ sparse matrix if possible.
         {
           if (isfloat)
             {
-              result = arg.float_complex_diag_matrix_value ().inverse (info);
+              const auto& tmp = arg.float_complex_diag_matrix_value ();
+              result = tmp.inverse (info);
               if (info == -1)
                 frcond = 0.0f;
               else if (nargout > 1)
-                frcond = arg.float_complex_diag_matrix_value ().rcond ();
+                frcond = tmp.rcond ();
             }
           else
             {
-              result = arg.complex_diag_matrix_value ().inverse (info);
+              const auto& tmp = arg.complex_diag_matrix_value ();
+              result = tmp.inverse (info);
               if (info == -1)
                 rcond = 0.0;
               else if (nargout > 1)
-                rcond = arg.complex_diag_matrix_value ().rcond ();
+                rcond = tmp.rcond ();
             }
         }
       else
         {
           if (isfloat)
             {
-              result = arg.float_diag_matrix_value ().inverse (info);
+              const auto& tmp = arg.float_diag_matrix_value ();
+              result = tmp.inverse (info);
               if (info == -1)
                 frcond = 0.0f;
               else if (nargout > 1)
-                frcond = arg.float_diag_matrix_value ().rcond ();
+                frcond = tmp.rcond ();
             }
           else
             {
-              result = arg.diag_matrix_value ().inverse (info);
+              const auto& tmp = arg.diag_matrix_value ();
+              result = tmp.inverse (info);
               if (info == -1)
                 rcond = 0.0;
               else if (nargout > 1)
-                rcond = arg.diag_matrix_value ().rcond ();
+                rcond = tmp.rcond ();
             }
         }
     }
@@ -132,7 +136,8 @@ sparse matrix if possible.
     {
       info = 0;
       rcond = 1.0;
-      result = arg.perm_matrix_value ().inverse ();
+      const auto& tmp = arg.perm_matrix_value ();
+      result = tmp.inverse ();
     }
   else if (isfloat)
     {

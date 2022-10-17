@@ -96,30 +96,37 @@ For that, use any of the condition number functions: @code{cond},
               retval(0) = arg.float_complex_diag_matrix_value ()
                           .determinant ().value ();
               if (nargout > 1)
-                retval(1) = arg.float_complex_diag_matrix_value ().rcond ();
+                {
+                  const auto& tmp = arg.float_complex_diag_matrix_value ();
+                  retval(1) = tmp.rcond ();
+                }
             }
           else
             {
-              retval(0) = arg.complex_diag_matrix_value ()
-                          .determinant ().value ();
+              const auto& tmp1 = arg.complex_diag_matrix_value ();
+              const auto& tmp2 = tmp1.determinant ();
+              retval(0) = tmp2.value ();
               if (nargout > 1)
-                retval(1) = arg.complex_diag_matrix_value ().rcond ();
+                retval(1) = tmp1.rcond ();
             }
         }
       else
         {
           if (isfloat)
             {
-              retval(0) = arg.float_diag_matrix_value ()
-                          .determinant ().value ();
+              const auto& tmp1 = arg.float_diag_matrix_value ();
+              const auto& tmp2 = tmp1.determinant ();
+              retval(0) = tmp2.value ();
               if (nargout > 1)
-                retval(1) = arg.float_diag_matrix_value ().rcond ();
+                retval(1) = tmp1.rcond ();
             }
           else
             {
-              retval(0) = arg.diag_matrix_value ().determinant ().value ();
+              const auto& tmp1 = arg.diag_matrix_value ();
+              const auto& tmp2 = tmp1.determinant ();
+              retval(0) = tmp2.value ();
               if (nargout > 1)
-                retval(1) = arg.diag_matrix_value ().rcond ();
+                retval(1) = tmp1.rcond ();
             }
         }
     }
@@ -128,7 +135,8 @@ For that, use any of the condition number functions: @code{cond},
       if (nargout <= 1)
         retval.resize (1);
 
-      retval(0) = static_cast<double> (arg.perm_matrix_value ().determinant ());
+      const auto& tmp = arg.perm_matrix_value ();
+      retval(0) = static_cast<double> (tmp.determinant ());
       if (nargout > 1)
         retval(1) = 1.0;
     }

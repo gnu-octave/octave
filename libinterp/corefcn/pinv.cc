@@ -86,9 +86,15 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
             error ("pinv: TOL must be greater than zero");
 
           if (arg.isreal ())
-            retval = arg.float_diag_matrix_value ().pseudo_inverse (tol);
+            {
+              const auto& tmp = arg.float_diag_matrix_value ();
+              retval = tmp.pseudo_inverse (tol);
+            }
           else
-            retval = arg.float_complex_diag_matrix_value ().pseudo_inverse (tol);
+            {
+              const auto& tmp = arg.float_complex_diag_matrix_value ();
+              retval = tmp.pseudo_inverse (tol);
+            }
         }
       else
         {
@@ -100,14 +106,21 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
             error ("pinv: TOL must be greater than zero");
 
           if (arg.isreal ())
-            retval = arg.diag_matrix_value ().pseudo_inverse (tol);
+            {
+              const auto& tmp = arg.diag_matrix_value ();
+              retval = tmp.pseudo_inverse (tol);
+            }
           else
-            retval = arg.complex_diag_matrix_value ().pseudo_inverse (tol);
+            {
+              const auto& tmp = arg.complex_diag_matrix_value ();
+              retval = tmp.pseudo_inverse (tol);
+            }
         }
     }
   else if (arg.is_perm_matrix ())
     {
-      retval = arg.perm_matrix_value ().inverse ();
+      const auto& tmp = arg.perm_matrix_value ();
+      retval = tmp.inverse ();
     }
   else if (isfloat)
     {

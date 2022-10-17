@@ -46,8 +46,10 @@ Undocumented internal function.
   if (args.length () != 2)
     print_usage ();
 
-  Matrix x = args(0).matrix_value ().transpose ();
-  Matrix xi = args(1).matrix_value ().transpose ();
+  const auto& tmp0 = args(0).matrix_value ();
+  const auto& tmp1 = args(1).matrix_value ();
+  Matrix x  = tmp0.transpose ();
+  Matrix xi = tmp1.transpose ();
 
   if (x.rows () != xi.rows () || x.columns () < 1)
     error ("__dsearchn__: number of rows of X and XI must match");

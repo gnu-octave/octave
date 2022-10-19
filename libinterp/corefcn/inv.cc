@@ -93,42 +93,38 @@ sparse matrix if possible.
         {
           if (isfloat)
             {
-              const auto& tmp = arg.float_complex_diag_matrix_value ();
-              result = tmp.inverse (info);
+              result = arg.float_complex_diag_matrix_value ().inverse (info);
               if (info == -1)
                 frcond = 0.0f;
               else if (nargout > 1)
-                frcond = tmp.rcond ();
+                frcond = arg.float_complex_diag_matrix_value ().rcond ();
             }
           else
             {
-              const auto& tmp = arg.complex_diag_matrix_value ();
-              result = tmp.inverse (info);
+              result = arg.complex_diag_matrix_value ().inverse (info);
               if (info == -1)
                 rcond = 0.0;
               else if (nargout > 1)
-                rcond = tmp.rcond ();
+                rcond = arg.complex_diag_matrix_value ().rcond ();
             }
         }
       else
         {
           if (isfloat)
             {
-              const auto& tmp = arg.float_diag_matrix_value ();
-              result = tmp.inverse (info);
+              result = arg.float_diag_matrix_value ().inverse (info);
               if (info == -1)
                 frcond = 0.0f;
               else if (nargout > 1)
-                frcond = tmp.rcond ();
+                frcond = arg.float_diag_matrix_value ().rcond ();
             }
           else
             {
-              const auto& tmp = arg.diag_matrix_value ();
-              result = tmp.inverse (info);
+              result = arg.diag_matrix_value ().inverse (info);
               if (info == -1)
                 rcond = 0.0;
               else if (nargout > 1)
-                rcond = tmp.rcond ();
+                rcond = arg.diag_matrix_value ().rcond ();
             }
         }
     }
@@ -136,8 +132,7 @@ sparse matrix if possible.
     {
       info = 0;
       rcond = 1.0;
-      const auto& tmp = arg.perm_matrix_value ();
-      result = tmp.inverse ();
+      result = arg.perm_matrix_value ().inverse ();
     }
   else if (isfloat)
     {

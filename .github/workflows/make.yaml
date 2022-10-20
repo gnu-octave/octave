@@ -137,6 +137,14 @@ jobs:
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
           echo No unknown failing tests.
 
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run:  |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
 
   macos:
     runs-on: ${{ matrix.os }}
@@ -298,6 +306,14 @@ jobs:
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
           echo Finished analyzing test suite results.
+
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run:  |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
 
 
   windows:
@@ -519,6 +535,14 @@ jobs:
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
           echo Finished analyzing test suite results.
+
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run:  |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
 
       - name: install and compress
         if: matrix.msystem == 'MINGW64'

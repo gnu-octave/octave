@@ -70,6 +70,7 @@ template class octave_sort<unsigned long long>;
 INSTANTIATE_ARRAY (unsigned char, OCTAVE_API);
 INSTANTIATE_ARRAY (unsigned short, OCTAVE_API);
 INSTANTIATE_ARRAY (unsigned int, OCTAVE_API);
+INSTANTIATE_ARRAY (unsigned long, OCTAVE_API);
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
 INSTANTIATE_ARRAY (unsigned long long, OCTAVE_API);
 #endif

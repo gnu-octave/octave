@@ -434,13 +434,14 @@ jobs:
         # Create human readable timestamp
         id: ccache_cache_timestamp
         run: |
+          echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
           echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the github cache used to maintain the ccache from one job to the next
         uses: actions/cache@v3
         with:
-          path: C:/msys64/home/runneradmin/.ccache
+          path: ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
           key: ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}
@@ -450,9 +451,10 @@ jobs:
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
         run: |
           which ccache
-          test -d ~/.ccache || mkdir -p ~/.ccache
-          echo "max_size = 0.9G" > ~/.ccache/ccache.conf
-          echo "compression = true" >> ~/.ccache/ccache.conf
+          test -d ${{ steps.ccache_cache_timestamp.outputs.ccachedir }} || mkdir -p ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
+          echo "max_size = 0.9G" > ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}/ccache.conf
+          ccache -p
           ccache -s
           # create ccache helper script for Fortran compiler
           echo -e '#!/bin/bash\nccache '$MINGW_PREFIX'/bin/'$F77' "$@"' > $MINGW_PREFIX/lib/ccache/bin/$F77

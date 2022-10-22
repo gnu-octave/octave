@@ -371,7 +371,8 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   m_font.setPointSize (9);
   m_font.setStyleHint (QFont::TypeWriter);
 
-  m_buffer = m_tmpBuffer = 0;
+  m_buffer = nullptr;
+  m_tmpBuffer = nullptr;
 
   m_consoleView = new QConsoleView (parent);
   m_horizontalScrollBar = new QScrollBar (Qt::Horizontal, parent);

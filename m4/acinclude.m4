@@ -2554,7 +2554,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,
       [Define to 1 if SUNDIALS IDA is configured with SUNLINSOL_KLU enabled.])
   else
-    warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinksol_klu.h is not usable.  The solvers ode15i and ode15s will not support the sparse Jacobian feature."
+    warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinsol_klu.h is not usable.  The solvers ode15i and ode15s will not support the sparse Jacobian feature."
     OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_klu])
   fi
 ])

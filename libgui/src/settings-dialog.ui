@@ -867,7 +867,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-839</y>
+            <y>0</y>
             <width>1021</width>
             <height>1427</height>
            </rect>
@@ -1074,7 +1074,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Highlight current line</string>
+                   <string>Highlight current line (color adjustable below with edtior styles)</string>
                   </property>
                  </widget>
                 </item>

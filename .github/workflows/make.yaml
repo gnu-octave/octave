@@ -71,7 +71,7 @@ jobs:
         # create human readable timestamp
         id: ccache_cache_timestamp
         run: |
-          echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
@@ -214,7 +214,7 @@ jobs:
         # create human readable timestamp
         id: ccache_cache_timestamp
         run: |
-          echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
@@ -434,7 +434,7 @@ jobs:
         # Create human readable timestamp
         id: ccache_cache_timestamp
         run: |
-          echo "::set-output name=TIMESTAMP::$(date +"%Y-%m-%d_%H-%M-%S")"
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the github cache used to maintain the ccache from one job to the next

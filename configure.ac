@@ -662,16 +662,24 @@ AC_ARG_ENABLE([no-undefined],
   [NO_UNDEFINED_LDFLAG="$DEFAULT_NO_UNDEFINED_LDFLAG"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
 
+case $host_os in
+  cygwin* | darwin* )
+    DEFAULT_LINK_ALL_DEPS="yes"
+  ;;
+  *)
+    DEFAULT_LINK_ALL_DEPS="no"
+  ;;
+esac
 AC_ARG_ENABLE([link-all-dependencies],
   [AS_HELP_STRING([--enable-link-all-dependencies],
-    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems)])],
+    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems).  This is done by default for cygwin* or darwin* hosts.])],
   [case $enableval in
      yes) link_all_deps=yes ;;
      no)  link_all_deps=no ;;
      *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-dependencies])
      ;;
    esac],
-  [link_all_deps=no])
+  [link_all_deps="$DEFAULT_LINK_ALL_DEPS"])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
 ### Check for BLAS and LAPACK libraries.

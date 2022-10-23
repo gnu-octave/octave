@@ -1042,6 +1042,8 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       typ = creator;
       switch (creator)
         case "__contour__"
+          ## Eliminate eventual text objects created by clabel
+          kids(strcmp (get (kids, "type"), "text")) = [];
           hplt = [kids(end), kids(1)];
         case {"__errplot__", "__quiver__", "__stem__"}
           hplt = kids(2:-1:1);

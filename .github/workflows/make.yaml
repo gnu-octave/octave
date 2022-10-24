@@ -25,12 +25,21 @@ jobs:
             compiler-pkgs: "clang"
             cc: "clang"
             cxx: "clang++"
-          # "ccache" on Ubuntu 20.04 with gcc seems to require much more cache
-          # storage than on the other runners to work effectively.
-          - ccache-max: 3G
+          # "ccache" on Ubuntu 20.04 doesn't compress the cache.
+          # Clang seems to generally require less cache size (smaller object files?).
+          - ccache-max: 1.2G
           - os: ubuntu-20.04
             compiler: gcc
             ccache-max: 6G
+          - os: ubuntu-22.04
+            compiler: gcc
+            ccache-max: 1.2G
+          - os: ubuntu-20.04
+            compiler: clang
+            ccache-max: 3G
+          - os: ubuntu-22.04
+            compiler: clang
+            ccache-max: 400M
 
     env:
       CC: ${{ matrix.cc }}

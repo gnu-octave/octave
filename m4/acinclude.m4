@@ -3490,7 +3490,7 @@ AC_DEFUN([OCTAVE_PROG_SED], [
         _count=0
         echo $ECHO_N "0123456789$ECHO_C" >"$tmp/sed.in"
         # Check for GNU sed and select it if it is found.
-        if "${_sed}" --version 2>&1 < /dev/null | egrep '(GNU)' > /dev/null; then
+        if "${_sed}" --version 2>&1 < /dev/null | $EGREP '(GNU)' > /dev/null; then
           octave_cv_prog_sed=${_sed}
           break;
         fi

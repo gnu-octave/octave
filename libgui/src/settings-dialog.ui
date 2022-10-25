@@ -1074,7 +1074,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Highlight current line (color adjustable below with edtior styles)</string>
+                   <string>Highlight current line (color adjustable below with editor styles)</string>
                   </property>
                  </widget>
                 </item>

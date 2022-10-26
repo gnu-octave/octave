@@ -489,7 +489,8 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     print_usage ();
   endif
 
-   if (! isvector (c) || iscomplex (c) || ischar (c) || any (! isfinite (c)))
+   if (! isvector (c) || iscomplex (c) || ischar (c) || any (isinf (c))
+       || any (isnan (c)))
      error ("glpk: C must be a real vector with finite values");
   endif
   nx = length (c);
@@ -504,7 +505,7 @@ function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
   if (! isreal (A))
     error ("glpk: A must be real valued, not %s", typeinfo (A));
   endif
-  if (any (! isfinite (A(:))))
+  if (any (isinf (A(:))) || any (isnan (A(:))))
     error ("glpk: The values in A must be finite");
   endif
 

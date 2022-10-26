@@ -152,9 +152,9 @@
 ## @end deftypefn
 
 function [z, centervalues, scalevalues] = normalize (x, varargin)
-  ## FIXME: until NANFLAG option is implemented in std, mean, median, etc.,
-  ## normalize cannot efficiently reproduce some behavior with NaN's in x.
-  ## xtests added to capture this.
+  ## FIXME: until NANFLAG/OMITNAN option is implemented in std, mean, median,
+  ## etc., normalize cannot efficiently reproduce some behavior with NaN's in x.
+  ## xtests added to capture this. (see bug #50571)
 
   ## FIXME: when table class is implemented, remove DataVariables error line in
   ## option checking section and add DataVariables data handling switch setion.
@@ -206,12 +206,13 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
         ##FIXME: remove error on next line when Tables is implemented
         error ("normalize: DataVariables method not yet implemented.");
         if (vararg_idx == (nargin - 1))
-          error ("normalize: DataVariables requires a table variable be specified");
+          error ("normalize: DataVariables requires a table variable", ...
+                 " be specified");
         elseif (datavariables_flag == true)
           error ("normalize: DataVariables may only be specified once");
         else
           datavariables_flag = true;
-          datavar = varargin{vararg_idx+1}; #if Tables case sensitive, cannot tolower
+          datavar = varargin{vararg_idx+1}; #no tolower if Tables case sensitive
           vararg_idx++;
         endif
 
@@ -233,8 +234,10 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
             methodoption = [];
           else
             ## not scale and center, throw appropriate error
-            if any (strcmp (prop, {"zscore", "norm", "range", "scale", "center", "medianiqr"}))
-              error ("normalize: methods `%s` and `%s` may not be combined", method, prop);
+            if any (strcmp (prop, {"zscore", "norm", "range", "scale", ...
+                       "center", "medianiqr"}))
+              error ("normalize: methods `%s` and `%s` may not be combined", ...
+                       method, prop);
             else
               error ("normalize: unknown method `%s`", prop);
             endif
@@ -261,7 +264,8 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
 
           case "norm"
             method = "norm";
-            if ((vararg_idx < (nargin - 1)) && isnumeric (varargin{vararg_idx+1}))
+            if ((vararg_idx < (nargin - 1)) && ...
+                    isnumeric (varargin{vararg_idx+1}))
               nextprop = varargin{vararg_idx+1};
               if (isscalar (nextprop) && (nextprop > 0))
                 if (!isempty (methodoption))
@@ -270,7 +274,8 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
                 methodoption = nextprop;
                 vararg_idx++;
               else
-                error ("normalize: 'norm' option must be a positive scalar or Inf")
+                error ("normalize: 'norm' option must be a positive scalar or ",
+                       "Inf");
               endif
             endif
             if (isempty (methodoption))
@@ -288,7 +293,8 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
                 methodoption = nextprop;
                 vararg_idx++;
               else
-                error ("normalize: 'range' must be specified as a 2-element row vector [a b]");
+                error ("normalize: 'range' must be specified as a ", ...
+                        "2-element row vector [a b]");
               endif
             endif
             if (isempty (methodoption))
@@ -323,7 +329,8 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
             method = "center";
             if (vararg_idx < (nargin - 1))
               nextprop = tolower (varargin{vararg_idx+1});
-              if (isscalar (nextprop) || any (strcmp (nextprop, {"mean", "median"})))
+              if (isscalar (nextprop) || ...
+                   any (strcmp (nextprop, {"mean", "median"})))
                 if (!isempty (methodoption))
                   error ("normalize: only one method option may be specified");
                 endif
@@ -608,8 +615,8 @@ endfunction
 
 ## Matlab ignores NaNs, operating as if the vector had one less element, then
 ## returns the result retaining the NaN in the solution.
-%!xtest assert (normalize ([1 2 NaN], 2), [-1, 1, NaN]*sqrt(2)/2)
-%!xtest assert (normalize ([1 2 NaN; 1 2 3], 2), [[-1 1 NaN]*sqrt(2)/2; -1 0 1], eps)
+%!assert <50571> (normalize ([1 2 NaN], 2), [-1, 1, NaN]*sqrt(2)/2)
+%!assert <50571> (normalize ([1 2 NaN; 1 2 3], 2), [[-1 1 NaN]*sqrt(2)/2; -1 0 1], eps)
 
 ## Test input validation
 %!error normalize ()
@@ -623,9 +630,9 @@ endfunction
 %!error <may not be combined> normalize ([1 2 3], "norm", "zscore")
 %!error <unknown method> normalize ([1 2 3], "norm", "foo")
 %!error <too many methods specified> normalize ([1 2 3], "scale", "center", "norm")
-%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", -1)
-%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", -Inf)
-%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", [1 2])
+%!error <'norm' option must be a positive scalar or> normalize ([1 2 3], "norm", -1)
+%!error <'norm' option must be a positive scalar or> normalize ([1 2 3], "norm", -Inf)
+%!error <'norm' option must be a positive scalar or> normalize ([1 2 3], "norm", [1 2])
 %!error <'range' must be specified as> normalize ([1 2 3], "range", [1 2]')
 %!error <'range' must be specified as> normalize ([1 2 3], "range", [1 2 3])
 %!error <'range' must be specified as> normalize ([1 2 3], "range", 1)

@@ -72,6 +72,9 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 - `integral` can now accept the 'ArrayValued' option in combination with
   'RelTol' and 'WayPoints'.
 
+- File system operations that remove files (e.g., `unlink` or `rmdir`) now also
+  remove files that have their read-only file attribute set on Windows.
+
 - The default state for certain graphics properties has been made
   consistent with Matlab.
 

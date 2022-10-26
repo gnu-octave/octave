@@ -23,6 +23,9 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Fix incorrect `lambda` outputs for `lsqnonneg` and `pqpnonneg` (bug #63178).
 - `addtodate.m`: Fix wrong month returned when subtracting a month from some end-of-month dates (bug #60671).
 - `var.m`: Fix some Inf and NaN inputs returning 0 instead of NaN (bug #63203)
+- `legend.m`: Fix error with `contour` plot containing `clabel`s (bug #63262).
+- `dec2bin.m`: Fix input validation (bug #63089).
+- `glpk.m`: Avoid using `isfinite` on potentially sparse input.
 
 ### GUI
 - Respect confirmation when deleting files in file browser widget (bug #63198).
@@ -32,6 +35,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `io.tst`: Add test case for `scanf` (bug #62723).
 - `nextpow2.m`: Add bug number tag to regression tests (bug #62947).
 - `quad2d.m`: Add BIST to cset b0e90ca8e679 (bug #62972).
+- Add test for number of methods with `classdef` in @folder (bug #62802).
+- Use Autoconf macro to find `egrep` executable.
 
 ### Documentation
 

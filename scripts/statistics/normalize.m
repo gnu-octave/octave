@@ -206,8 +206,8 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
         ##FIXME: remove error on next line when Tables is implemented
         error ("normalize: DataVariables method not yet implemented.");
         if (vararg_idx == (nargin - 1))
-          error ("normalize: DataVariables requires a table variable", ...
-                 " be specified");
+          error (["normalize: DataVariables requires a table variable", ...
+                 " be specified"]);
         elseif (datavariables_flag == true)
           error ("normalize: DataVariables may only be specified once");
         else
@@ -274,8 +274,8 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
                 methodoption = nextprop;
                 vararg_idx++;
               else
-                error ("normalize: 'norm' option must be a positive scalar or ",
-                       "Inf");
+                error (["normalize: 'norm' option must be a positive ", ...
+                        "scalar or Inf"]);
               endif
             endif
             if (isempty (methodoption))
@@ -293,8 +293,8 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
                 methodoption = nextprop;
                 vararg_idx++;
               else
-                error ("normalize: 'range' must be specified as a ", ...
-                        "2-element row vector [a b]");
+                error (["normalize: 'range' must be specified as a ", ...
+                        "2-element row vector [a b]"]);
               endif
             endif
             if (isempty (methodoption))
@@ -630,9 +630,9 @@ endfunction
 %!error <may not be combined> normalize ([1 2 3], "norm", "zscore")
 %!error <unknown method> normalize ([1 2 3], "norm", "foo")
 %!error <too many methods specified> normalize ([1 2 3], "scale", "center", "norm")
-%!error <'norm' option must be a positive scalar or> normalize ([1 2 3], "norm", -1)
-%!error <'norm' option must be a positive scalar or> normalize ([1 2 3], "norm", -Inf)
-%!error <'norm' option must be a positive scalar or> normalize ([1 2 3], "norm", [1 2])
+%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", -1)
+%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", -Inf)
+%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", [1 2])
 %!error <'range' must be specified as> normalize ([1 2 3], "range", [1 2]')
 %!error <'range' must be specified as> normalize ([1 2 3], "range", [1 2 3])
 %!error <'range' must be specified as> normalize ([1 2 3], "range", 1)

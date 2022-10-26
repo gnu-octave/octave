@@ -34,6 +34,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/movstd.m \
   %reldir%/movsum.m \
   %reldir%/movvar.m \
+  %reldir%/normalize.m \
   %reldir%/prctile.m \
   %reldir%/quantile.m \
   %reldir%/range.m \

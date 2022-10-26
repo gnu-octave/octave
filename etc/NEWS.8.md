@@ -88,6 +88,7 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 * `clearAllMemoizedCaches`
 * `matlab.lang.MemoizedFunction`
 * `memoize`
+* `normalize`
 * `pagectranspose`
 * `pagetranspose`
 * `uifigure`

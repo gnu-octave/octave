@@ -1041,7 +1041,7 @@ namespace octave
     rmgr.remove_tmp_file (tmp_hist);
 
     emit interpreter_event
-      ([this, dbg, auto_repeat] (interpreter& interp)
+      ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
          if (dbg)

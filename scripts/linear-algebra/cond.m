@@ -64,10 +64,12 @@ function c = cond (A, p = 2)
   if (p == 2)
     if (isempty (A))
       c = 0.0;
-    elseif (any (! isfinite (A(:))))
-      error ("cond: A must not contain Inf or NaN values");
     else
-      sigma   = svd (A);
+      try
+        sigma = svd (A);
+      catch
+        error ("cond: A must not contain Inf or NaN values");
+      end_try_catch
       sigma_1 = sigma(1);
       sigma_n = sigma(end);
       if (sigma_1 == 0 || sigma_n == 0)

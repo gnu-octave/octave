@@ -58,8 +58,8 @@
 ## independently on the first non-singleton dimension in @var{X}.
 ##
 ## The optional second input variable @var{DIM} can be used to force
-## code{normalize} to operate over the specified dimension. @var{DIM} must be an
-## integer scalar.
+## @code{normalize} to operate over the specified dimension. @var{DIM}
+## must be an integer scalar.
 ##
 ## The optional input variables @var{Method} and @var{Option} can be used to
 ## specify the type of normalization performed on @var{X}.  Note that only the

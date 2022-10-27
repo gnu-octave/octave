@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2017-2020 The Octave Project Developers
+## Copyright (C) 2017-2022 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,65 +24,66 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{Z} =} normalize (@var{X})
-## @deftypefnx {} {@var{Z} =} normalize (@var{X}, @var{dim})
-## @deftypefnx {} {@var{Z} =} normalize (@dots{}, @var{method})
-## @deftypefnx {} {@var{Z} =} normalize (@dots{}, @var{method}, @var{Option})
-## @deftypefnx {} {@var{Z} =} normalize (@dots{}, @var{scale}, @var{ScaleOption}, @var{center}, @var{CenterOption})
-## @deftypefnx {} {[@var{Z}, @var{C}, @var{S}] =} normalize (@dots{})
+## @deftypefn  {} {@var{z} =} normalize (@var{x})
+## @deftypefnx {} {@var{z} =} normalize (@var{x}, @var{dim})
+## @deftypefnx {} {@var{z} =} normalize (@dots{}, @var{method})
+## @deftypefnx {} {@var{z} =} normalize (@dots{}, @var{method}, @var{option})
+## @deftypefnx {} {@var{z} =} normalize (@dots{}, @var{scale}, @var{scaleoption}, @var{center}, @var{centeroption})
+## @deftypefnx {} {[@var{z}, @var{c}, @var{s}] =} normalize (@dots{})
 ##
-## Return a normalization of the data in @var{X} using one of several available
+## Return a normalization of the data in @var{x} using one of several available
 ## scaling and centering methods.
 ##
-## @code{normalize} by default will return the @code{zscore} of @var{X}, defined
-## as the number of standard deviations each element is from the mean of
-## @var{X}.  This is equivalent to centering at the mean of the data and scaling
-## by the standard deviation.
+## @code{normalize} by default will return the @code{zscore} of @var{x},
+## defined as the number of standard deviations each element is from the mean
+## of @var{x}.  This is equivalent to centering at the mean of the data and
+## scaling by the standard deviation.
 ##
-## The returned value @var{Z} will have the same size as @var{X}. The optional
-## return variables @var{C} and @var{S} are the centering and scaling factors
+## The returned value @var{z} will have the same size as @var{x}.  The optional
+## return variables @var{c} and @var{s} are the centering and scaling factors
 ## used in the normalization such that:
 ##
 ## @example
 ## @group
-##   @tcode{@var{Z} = (@var{X} - @var{C}) ./ @var{S}}
+##   @tcode{@var{z} = (@var{x} - @var{c}) ./ @var{s}}
 ## @end group
 ## @end example
 ##
-## If @var{X} is a vector, @code{normalize} will operate on the data in @var{X}.
+## If @var{x} is a vector, @code{normalize} will operate on the data in
+## @var{x}.
 ##
-## If @var{X} is a matrix, @code{normalize} will operate independently on
-## each column in @var{X}.
+## If @var{x} is a matrix, @code{normalize} will operate independently on
+## each column in @var{x}.
 ##
-## If @var{X} is a n-dimensional array, @code{normalize} will operate
-## independently on the first non-singleton dimension in @var{X}.
+## If @var{x} is an N-dimensional array, @code{normalize} will operate
+## independently on the first non-singleton dimension in @var{x}.
 ##
-## The optional second input variable @var{DIM} can be used to force
-## @code{normalize} to operate over the specified dimension. @var{DIM}
-## must be an integer scalar.
+## If the optional second argument @var{dim} is given, operate along this
+## dimension.
 ##
-## The optional input variables @var{Method} and @var{Option} can be used to
-## specify the type of normalization performed on @var{X}.  Note that only the
+## The optional inputs @var{method} and @var{option} can be used to specify the
+## type of normalization performed on @var{x}.  Note that only the
 ## @option{scale} and @option{center} options may be specified together using
 ## any of the methods defined below.  Valid normalization methods are:
 ##
 ## @table @code
 ## @item zscore
-## (Default) Normalizes the elements in @var{X} to the scaled distance from a
-##  central value. Valid Options:
+## (Default) Normalizes the elements in @var{x} to the scaled distance from a
+##  central value.  Valid Options:
 ##
 ##    @table @code
 ##    @item std
-##    (Default) Data is centered at @code{mean(@var{X})} and scaled by the
-#      standard deviation.
+##    (Default) Data is centered at @code{mean (@var{x})} and scaled by the
+##      standard deviation.
+##
 ##    @item robust
-##    Data is centered at @code{median(@var{X})} and scaled by the median
+##    Data is centered at @code{median (@var{x})} and scaled by the median
 ##    absolute deviation.
 ##    @end table
 ##
 ## @item norm
-## @var{Z} is the general vector norm of @var{X}, with @var{OPTION} being the
-## normalization factor @var{P} that determines the vector norm type according
+## @var{z} is the general vector norm of @var{x}, with @var{option} being the
+## normalization factor @var{p} that determines the vector norm type according
 ## to:
 ## @tex
 ## $$Z = \left (\sum_k \left | X_k \right |^P  \right )^{1/P}$$
@@ -91,55 +92,61 @@
 ##
 ## @example
 ## @group
-##   @tcode{@var{Z} = [sum (abs(@var{X})^@var{P})]^(1/@var{P})}
+##   @tcode{@var{z} = [sum (abs (@var{x}) .^ @var{p})] ^ (1/@var{p})}
 ## @end group
 ## @end example
 ##
 ## @end ifnottex
-## @var{P} can be any positive scalar, specific values being:
+## @var{p} can be any positive scalar, specific values being:
 ##
 ##    @table @code
-##    @item @var{P} = 1
-##    @var{X} is normalized by @code{sum (abs (@var{X}))}.
-##    @item @var{P} = 2
-##    (Default) @var{X} is normalized by the Euclidian norm, or vector
+##    @item @var{p} = 1
+##    @var{x} is normalized by @code{sum (abs (@var{x}))}.
+##
+##    @item @var{p} = 2
+##    (Default) @var{x} is normalized by the Euclidian norm, or vector
 ##    magnitude, of the elements.
+##
 ##    @item @var{P} = Inf
-##    @var{X} is normalized by @code{max (abs (@var{X}))}.
+##    @var{x} is normalized by @code{max (abs (@var{x}))}.
 ##    @end table
 ##
 ## @item scale
-## @var{X} is scaled by a factor determined by @var{Option}, which can be a
+## @var{x} is scaled by a factor determined by @var{option}, which can be a
 ## numeric scalar or one of the following:
 ##
 ##    @table @code
 ##    @item std
-##    (Default) @var{X} is scaled by its standard deviation.
+##    (Default) @var{x} is scaled by its standard deviation.
+##
 ##    @item mad
-##    @var{X} is scaled by its median absolute deviation.
+##    @var{x} is scaled by its median absolute deviation.
+##
 ##    @item first
-##    @var{X} is scaled by the first element in the vector.
+##    @var{x} is scaled by its first element.
+##
 ##    @item iqr
-##    @var{X} is scaled by the vector's interquartile range.
+##    @var{x} is scaled by its interquartile range.
 ##    @end table
 ##
 ## @item range
-## @var{X} is scaled to fit the range specified by @var{Option} as a two element
-## scalar row vector.  The default range is [0 1].
+## @var{x} is scaled to fit the range specified by @var{option} as a two
+## element scalar row vector.  The default range is [0, 1].
 ##
 ## @item center
-## @var{X} is shifted by an amount determined by @var{Option}, which can be a
+## @var{x} is shifted by an amount determined by @var{option}, which can be a
 ## numeric scalar or one of the following:
 ##
 ##    @table @code
 ##    @item mean
-##    (Default) @var{X} is shifted by @code{mean (@var{X})}.
+##    (Default) @var{x} is shifted by @code{mean (@var{x})}.
+##
 ##    @item median
-##    @var{X} is shifted by @code{median (@var{X})}.
+##    @var{x} is shifted by @code{median (@var{x})}.
 ##    @end table
 ##
 ## @item medianiqr
-## @var{X} is shifted such by @code{median (@var{X})} and scaled by the vector's
+## @var{x} is shifted by @code{median (@var{x})} and scaled by the
 ## interquartile range.
 ## @end table
 ##
@@ -147,92 +154,98 @@
 ##
 ## @enumerate
 ## @item
-## The DataVariables option is not yet implemented in @code{normalize} for
-## Table class @var{X} inputs.
+## The option @option{DataVariables} is not yet implemented for Table class
+## @var{x} inputs.
 ##
 ## @item
-## Certain arrays containing NaN elements may not return Matlab compatible
+## Certain arrays containing NaN elements may not return @sc{matlab} compatible
 ## output.
 ## @end enumerate
 ##
 ## @seealso{zscore, iqr, norm, rescale, std, median, mean, mad}
 ## @end deftypefn
 
-function [z, centervalues, scalevalues] = normalize (x, varargin)
-  ## FIXME: until NANFLAG/OMITNAN option is implemented in std, mean, median,
-  ## etc., normalize cannot efficiently reproduce some behavior with NaN's in x.
-  ## xtests added to capture this. (see bug #50571)
+function [z, c, s] = normalize (x, varargin)
 
-  ## FIXME: when table class is implemented, remove DataVariables error line in
-  ## option checking section and add DataVariables data handling switch setion.
+  ## FIXME: Until NANFLAG/OMITNAN option is implemented in std, mean, median,
+  ## etc., normalize cannot efficiently reproduce some behavior with NaNs in
+  ## x.  xtests added to capture this.  (See bug #50571)
 
-  ## input checks
-  if ((nargin < 1) || (nargin > 8))
+  ## FIXME: When table class is implemented, remove DataVariables error line in
+  ## option checking section and add DataVariables data handling switch
+  ## section.
+
+  ## Input validation
+  if (nargin < 1 || nargin > 8)
     print_usage ();
   endif
 
-  if !(isnumeric (x) || islogical (x))
+  if (! isnumeric (x))
     error ("normalize: X must be a numeric vector, matrix, or array");
   endif
 
   if (nargin == 1)
-    ## directly handle simple 1 input case.
-    [scalevalues, centervalues] = std (x);
-    z = (x - centervalues)./ scalevalues;
+    ## Directly handle simple 1 input case.
+    [s, c] = std (x);
+    z = (x - c) ./ s;
 
   else
-    ## parse input options
-    dim = []; # default = vector dimension, matrix column, or 1st n-dim >1
-    method = []; # default = zscore
-    methodoption = []; # default = std
+    ## Parse input options
+    dim = [];
+    method = [];
+    methodoption = [];
     datavariables_flag = false;
     datavar = [];
     scale_and_center_flag = false;
 
     vararg_idx = 1;
-    ##only second optional input can be numeric without following a method
-    if isnumeric (varargin{1})
+    ## Only second optional input can be numeric without following a method.
+    if (isnumeric (varargin{1}))
       dim = varargin{1};
-      ##check for valid dimensions
-      if !((isscalar (dim)) && (dim > 0) && (dim == fix (dim)))
-        error ("normalize: DIM must be a positive scalar integer");
+      ## Check for valid dimensions
+      if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
+        error ("normalize: DIM must be an integer and a valid dimension");
       endif
       vararg_idx++;
     endif
 
-    ## parse varargin to determine methods then options
-    while (vararg_idx <= (nargin - 1))
-      ## arguments after second cannot be numeric without following a method
-      if isnumeric (varargin{vararg_idx})
+    ## Parse varargin to determine methods then options.
+    n_varargin = nargin - 1;
+    while (vararg_idx <= n_varargin)
+      ## Arguments after second cannot be numeric without following a method.
+      if (isnumeric (varargin{vararg_idx}))
         print_usage ();
       endif
 
       prop = tolower (varargin{vararg_idx});
 
-      if (strcmp (prop,"datavariables"))
-        ##FIXME: remove error on next line when Tables is implemented
-        error ("normalize: DataVariables method not yet implemented.");
-        if (vararg_idx == (nargin - 1))
+      if (strcmp (prop, "datavariables"))
+        ## FIXME: Remove error on next line and undo block comment when support
+        ## for Tables is implemented.
+        error ("normalize: DataVariables method not yet implemented");
+        #{
+        if (vararg_idx == n_varargin)
           error (["normalize: DataVariables requires a table variable", ...
                  " be specified"]);
         elseif (datavariables_flag == true)
           error ("normalize: DataVariables may only be specified once");
         else
           datavariables_flag = true;
-          datavar = varargin{vararg_idx+1}; #no tolower if Tables case sensitive
+          datavar = varargin{vararg_idx+1};
           vararg_idx++;
         endif
+        #}
 
       else
-        if (!isempty (method))
-        ## catch if a second method is passed
+        if (! isempty (method))
+          ## Catch if a second method is passed
           if (scale_and_center_flag)
             ## if true, already specified two methods, three never possible
-            error ("normalize: too many methods specified");
+            error ("normalize: more than two methods specified");
 
-          elseif ((strcmp ({method, prop}, {"center", "scale"})) ...
-                || strcmp ({method, prop}, {"scale", "center"}))
-            ## only scale and center can be called together
+          elseif (strcmp ({method, prop}, {"center", "scale"})
+                  || strcmp ({method, prop}, {"scale", "center"}))
+            ## Only scale and center can be called together
             scale_and_center_flag = true;
             ## scale/center order doesn't matter, avoid overwriting first one
             stored_method = method;
@@ -241,26 +254,23 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
             methodoption = [];
           else
             ## not scale and center, throw appropriate error
-            if any (strcmp (prop, {"zscore", "norm", "range", "scale", ...
-                       "center", "medianiqr"}))
-              error ("normalize: methods `%s` and `%s` may not be combined", ...
-                       method, prop);
+            if (any (strcmp (prop, {"zscore", "norm", "range", "scale", ...
+                                    "center", "medianiqr"})))
+              error ("normalize: methods '%s' and '%s' may not be combined",
+                     method, prop);
             else
-              error ("normalize: unknown method `%s`", prop);
+              error ("normalize: unknown method '%s'", prop);
             endif
           endif
         endif
 
-        ## determine method and whether there's an appropriate option specified
+        ## Determine method and whether there's an appropriate option specified
         switch (prop)
           case "zscore"
             method = "zscore";
-            if (vararg_idx < (nargin - 1))
+            if (vararg_idx < n_varargin)
               nextprop = tolower (varargin{vararg_idx+1});
               if (strcmp (nextprop, "std") || strcmp (nextprop, "robust"))
-                if (!isempty (methodoption))
-                  error ("normalize: only one method option may be specified");
-                endif
                 methodoption = nextprop;
                 vararg_idx++;
               endif
@@ -271,13 +281,9 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
 
           case "norm"
             method = "norm";
-            if ((vararg_idx < (nargin - 1)) && ...
-                    isnumeric (varargin{vararg_idx+1}))
+            if (vararg_idx < n_varargin && isnumeric (varargin{vararg_idx+1}))
               nextprop = varargin{vararg_idx+1};
               if (isscalar (nextprop) && (nextprop > 0))
-                if (!isempty (methodoption))
-                  error ("normalize: only one method option may be specified");
-                endif
                 methodoption = nextprop;
                 vararg_idx++;
               else
@@ -291,38 +297,31 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
 
           case "range"
             method = "range";
-            if (vararg_idx < (nargin - 1) && isnumeric (varargin{vararg_idx+1}))
+            if (vararg_idx < n_varargin && isnumeric (varargin{vararg_idx+1}))
               nextprop = varargin{vararg_idx+1};
-              if (size (nextprop) == [1 2])
-                if (!isempty (methodoption))
-                  error ("normalize: only one method option may be specified");
-                endif
-                methodoption = nextprop;
-                vararg_idx++;
-              else
+              if (any (size (nextprop) != [1 2]))
                 error (["normalize: 'range' must be specified as a ", ...
-                        "2-element row vector [a b]"]);
+                        "2-element row vector [a, b]"]);
               endif
+              methodoption = nextprop;
+              vararg_idx++;
             endif
             if (isempty (methodoption))
-              methodoption = [0 1];
+              methodoption = [0, 1];
             endif
 
           case "scale"
             method = "scale";
-            if (vararg_idx < (nargin - 1))
+            if (vararg_idx < n_varargin)
               nextprop = tolower (varargin{vararg_idx+1});
               if (isnumeric (nextprop))
-                if (!isscalar (nextprop))
+                if (! isscalar (nextprop))
                   error ("normalize: scale value must be a scalar");
                 else
                   methodoption = nextprop;
                   vararg_idx++;
                 endif
               elseif (any (strcmp (nextprop, {"std", "mad", "first", "iqr"})))
-                if (!isempty (methodoption))
-                  error ("normalize: only one method option may be specified");
-                endif
                 methodoption = nextprop;
                 vararg_idx++;
               endif
@@ -334,13 +333,10 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
 
           case "center"
             method = "center";
-            if (vararg_idx < (nargin - 1))
+            if (vararg_idx < n_varargin)
               nextprop = tolower (varargin{vararg_idx+1});
-              if (isscalar (nextprop) || ...
-                   any (strcmp (nextprop, {"mean", "median"})))
-                if (!isempty (methodoption))
-                  error ("normalize: only one method option may be specified");
-                endif
+              if (isscalar (nextprop)
+                  || any (strcmp (nextprop, {"mean", "median"})))
                 methodoption = nextprop;
                 vararg_idx++;
               elseif (isnumeric (nextprop))
@@ -356,83 +352,71 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
 
           otherwise
             error ("normalize: unknown method '%s'", prop);
+
         endswitch
       endif
+
       vararg_idx++;
     endwhile
 
-    if scale_and_center_flag
+    if (scale_and_center_flag)
       method = "scaleandcenter";
     endif
 
-    if isempty (method)
+    if (isempty (method))
       method = 'zscore';
       methodoption = 'std';
     endif
 
-    if isempty (dim)
-      if isvector (x)
-        if iscolumn (x)
-          dim = 1;
-        else
-          dim = 2;
-        endif
-      elseif (ismatrix(x))
-        ## matrix x, operate independently along columns
-        dim = 1;
-      else
-        ## operate on first non-singleton dimension.
-        dim = find ((size (x) > 1), 1);
-      endif
-
+    if (isempty (dim))
+      ## Operate on first non-singleton dimension.
+      (dim = find (size (x) > 1, 1)) || (dim = 1);
     endif
-
 
     ## Perform normalization based on specified methods
 
-    ## FIXME: DataTables option not handled below. Fix after Table Class
+    ## FIXME: DataTables option not handled below.  Fix after Table Class
     ## has been implemented.
 
-    ## Default scaling factors:
-    centervalues = 0;
-    scalevalues = 1;
+    ## Default center/scale factors:
+    c = 0;
+    s = 1;
 
     switch (method)
       case "zscore"
-        switch methodoption
+        switch (methodoption)
           case "std"
-            [scalevalues, centervalues] = std (x, [], dim);
+            [s, c] = std (x, [], dim);
           case "robust"
-            ##center/median to zero and MAD = 1
-            centervalues = median (x, dim);
-            scalevalues = median (abs (x - centervalues), dim);
+            ## center/median to zero and MAD = 1
+            c = median (x, dim);
+            s = median (abs (x - c), dim);
         endswitch
 
       case "norm"
-        switch methodoption
+        switch (methodoption)
           case 1
-            scalevalues = sum (abs (x), dim);
+            s = sum (abs (x), dim);
           case Inf
-            scalevalues = max (abs (x), [], dim);
+            s = max (abs (x), [], dim);
           otherwise
-            scalevalues = sum ((abs (x) .^ methodoption), dim) .^...
-                                 (1./methodoption);
+            s = sum (abs (x) .^ methodoption, dim) .^ (1/methodoption);
         endswitch
 
       case "range"
         ## if any range element = 0, avoid divide by zero by replacing that
-        ## range element with 1. output will be zero+min due to x-min(x)=0.
+        ## range element with 1.  output will be zero+min due to x-min(x)=0.
         x_range = range (x, dim);
         x_range(x_range == 0) = 1;
         z_range = methodoption(2) - methodoption(1);
-        scalevalues = x_range ./ z_range;
-        centervalues = min (x, [], dim) - (methodoption(1) .* scalevalues);
+        s = x_range ./ z_range;
+        c = min (x, [], dim) - (methodoption(1) .* s);
 
       case "scale"
-        scalevalues = process_scale_option (x, dim, methodoption);
+        s = process_scale_option (x, dim, methodoption);
 
       case "center"
-        centervalues = process_center_option (x, dim, methodoption);
+        c = process_center_option (x, dim, methodoption);
 
       case "scaleandcenter"
         ## repeats scale and center using appropriate order and info
@@ -449,35 +433,41 @@ function [z, centervalues, scalevalues] = normalize (x, varargin)
             scale_option = methodoption;
         endswitch
 
-        scalevalues = process_scale_option (x, dim, scale_option);
-        centervalues = process_center_option (x, dim, center_option);
+        s = process_scale_option (x, dim, scale_option);
+        c = process_center_option (x, dim, center_option);
 
       case "medianiqr"
-        centervalues = median (x, dim);
-        scalevalues = iqr (x, dim);
+        c = median (x, dim);
+        s = iqr (x, dim);
+
     endswitch
 
   endif
 
-  ## div by scale factor.  if scale = 0, div by zero = Inf is ok.
-  z = (x - centervalues) ./ scalevalues;
+  ## Divide by scale factor.  If scale = 0, divide by zero = Inf, which is OK.
+  z = (x - c) ./ s;
+
 endfunction
 
 function c = process_center_option (x, dim, center_option)
-        if (isnumeric (center_option))
-          c = center_option;
-        else
-          switch (center_option)
-            case "mean"
-              c = mean (x, dim);
-            case "median"
-              c = median (x, dim);
-          endswitch
-        endif
+
+  if (isnumeric (center_option))
+    c = center_option;
+  else
+    switch (center_option)
+      case "mean"
+        c = mean (x, dim);
+      case "median"
+        c = median (x, dim);
+    endswitch
+  endif
+
 endfunction
 
 function s = process_scale_option (x, dim, scale_option)
-  warning("off", "Octave:divide-by-zero");
+
+  warning ("off", "Octave:divide-by-zero", "local");
+
   if (isnumeric (scale_option))
     s = scale_option;
   else
@@ -494,8 +484,9 @@ function s = process_scale_option (x, dim, scale_option)
         s = iqr (x, dim);
     endswitch
   endif
-  warning("on", "Octave:divide-by-zero")
+
 endfunction
+
 
 ## no method specified, using zscore & std
 %!assert (normalize ([1,2,3]), [-1,0,1])
@@ -566,7 +557,7 @@ endfunction
 %!assert (normalize ([2,0,-2;0,2,0;-2,-2,2], "medianiqr"), [1 0 -1; 0 1 0; -1 -1 1]*2/3)
 %!assert (normalize (magic (3), "medianiqr"), [8/5 -1 0; -2/5 0 2/5; 0 1 -8/5]*2/3)
 
-##test nan and inf
+## Test NaN and Inf
 %!assert (normalize ([1 2 Inf], 2), [NaN, NaN, NaN])
 %!assert (normalize ([1 2 3], 1), [NaN, NaN, NaN])
 %!assert (normalize ([1 2 3], 3), [NaN, NaN, NaN])
@@ -581,11 +572,11 @@ endfunction
 %!assert (normalize ([Inf, Inf]', 2), [NaN, NaN]')
 %!assert (normalize ([1 2 NaN; NaN 3 4], 1), [NaN -1 NaN; NaN 1 NaN]*sqrt(2)/2, eps)
 
-##Two input methods, must be scale and center
+## Two input methods, must be scale and center
 %!assert (normalize (magic(3), "scale", "center"), normalize (magic(3), "zscore"), eps)
 %!assert (normalize (magic(3), "center", "scale"), normalize (magic(3), "zscore"), eps)
 
-##Test additional outputs
+## Test additional outputs
 %!test
 %! [z, c, s] = normalize ([1, 2, 3], 2);
 %! assert ({z, c, s}, {[-1 0 1], [2], [1]});
@@ -626,27 +617,21 @@ endfunction
 %!assert <50571> (normalize ([1 2 NaN; 1 2 3], 2), [[-1 1 NaN]*sqrt(2)/2; -1 0 1], eps)
 
 ## Test input validation
-%!error normalize ()
-%!error normalize (1, 2, 3)
+%!error <Invalid call> normalize ()
+%!error <Invalid call> normalize (1, 2, 3)
 %!error <X must be a numeric> normalize (['A'; 'B'])
-%!error <DIM must be a positive scalar integer> normalize (1, ones (2,2))
-%!error <DIM must be a positive scalar integer> normalize (1, 1.5)
-%!error <DIM must be a positive scalar integer> normalize (1, -1)
-%!error <DIM must be a positive scalar integer> normalize (1, [1 2])
-%!error <DIM must be a positive scalar integer> normalize (1, 0)
-%!error <may not be combined> normalize ([1 2 3], "norm", "zscore")
-%!error <unknown method> normalize ([1 2 3], "norm", "foo")
-%!error <too many methods specified> normalize ([1 2 3], "scale", "center", "norm")
-%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", -1)
-%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", -Inf)
+%!error <DIM must be an integer> normalize (1, ones (2,2))
+%!error <DIM must be an integer> normalize (1, 1.5)
+%!error <DIM must be .* a valid dimension> normalize (1, 0)
+%!error <more than two methods specified> normalize ([1 2 3], "scale", "center", "norm")
+%!error <methods .* may not be combined> normalize ([1 2 3], "norm", "zscore")
+%!error <unknown method 'foo'> normalize ([1 2 3], "norm", "foo")
+%
 %!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", [1 2])
+%!error <'norm' option must be a positive scalar or Inf> normalize ([1 2 3], "norm", -1)
 %!error <'range' must be specified as> normalize ([1 2 3], "range", [1 2]')
 %!error <'range' must be specified as> normalize ([1 2 3], "range", [1 2 3])
 %!error <'range' must be specified as> normalize ([1 2 3], "range", 1)
 %!error <scale value must be a scalar> normalize ([1 2 3], "scale", [1 2 3])
-%!error <scale value must be a scalar> normalize ([1 2 3], "scale", [1 2 3]')
-%!error <scale value must be a scalar> normalize ([1 2 3], "scale", [1 2; 3 4])
 %!error <center shift must be a scalar value> normalize ([1 2 3], "center", [1 2])
-%!error <center shift must be a scalar value> normalize ([1 2 3], "center", [1 2]')
-%!error <center shift must be a scalar value> normalize ([1 2 3], "center", [1 2; 3 4])
-%!error <unknown method> normalize ([1 2 3], "foo")
+%!error <unknown method 'foo'> normalize ([1 2 3], "foo")

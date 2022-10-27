@@ -31,11 +31,17 @@
 ## @deftypefnx {} {@var{Z} =} normalize (@dots{}, @var{scale}, @var{ScaleOption}, @var{center}, @var{CenterOption})
 ## @deftypefnx {} {[@var{Z}, @var{C}, @var{S}] =} normalize (@dots{})
 ##
-## Returns a normalization of @var{X}.  The default normalization is the
-## @code{zscore} of @var{X}, defined as the number of standard deviations each
-## element is from the mean of @var{X}.  The returned value @var{Z} will have
-## the same size as @var{X}. The optional return variables @var{C} and @var{S}
-## are the centering and scaling factors used in the normalization such that:
+## Return a normalization of the data in @var{X} using one of several available
+## scaling and centering methods.
+##
+## @code{normalize} by default will return the @code{zscore} of @var{X}, defined
+## as the number of standard deviations each element is from the mean of
+## @var{X}.  This is equivalent to centering at the mean of the data and scaling
+## by the standard deviation.
+##
+## The returned value @var{Z} will have the same size as @var{X}. The optional
+## return variables @var{C} and @var{S} are the centering and scaling factors
+## used in the normalization such that:
 ##
 ## @example
 ## @group
@@ -51,8 +57,9 @@
 ## If @var{X} is a n-dimensional array, @code{normalize} will operate
 ## independently on the first non-singleton dimension in @var{X}.
 ##
-## The optional second input variable @var{DIM} can be used to force @code{normalize}
-## to operate over the specified dimension. @var{DIM} must be an integer scalar.
+## The optional second input variable @var{DIM} can be used to force
+## code{normalize} to operate over the specified dimension. @var{DIM} must be an
+## integer scalar.
 ##
 ## The optional input variables @var{Method} and @var{Option} can be used to
 ## specify the type of normalization performed on @var{X}.  Note that only the

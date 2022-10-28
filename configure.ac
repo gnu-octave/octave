@@ -664,7 +664,7 @@ AC_ARG_ENABLE([no-undefined],
 AC_SUBST(NO_UNDEFINED_LDFLAG)
 
 case $host_os in
-  cygwin* | darwin* )
+  cygwin* )
     DEFAULT_LINK_ALL_DEPS="yes"
   ;;
   *)

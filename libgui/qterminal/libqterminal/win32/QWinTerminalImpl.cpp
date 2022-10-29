@@ -20,6 +20,21 @@ see <https://www.gnu.org/licenses/>.
 
 */
 
+#include <algorithm>
+#include <csignal>
+#include <cstdio>
+#include <cstdarg>
+#include <cstring>
+
+#define WIN32_LEAN_AND_MEAN
+#if ! defined (_WIN32_WINNT) && ! defined (NTDDI_VERSION)
+#define _WIN32_WINNT 0x0500
+#endif
+#include <windows.h>
+#include <fcntl.h>
+#include <io.h>
+#include <versionhelpers.h>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QColor>
@@ -39,19 +54,6 @@ see <https://www.gnu.org/licenses/>.
 #include <QDropEvent>
 #include <QUrl>
 #include <QMimeData>
-
-#include <fcntl.h>
-#include <io.h>
-#include <stdio.h>
-#include <stdarg.h>
-#define WIN32_LEAN_AND_MEAN
-#if ! defined (_WIN32_WINNT) && ! defined (NTDDI_VERSION)
-#define _WIN32_WINNT 0x0500
-#endif
-#include <windows.h>
-#include <versionhelpers.h>
-#include <cstring>
-#include <csignal>
 
 #include "QWinTerminalImpl.h"
 #include "QTerminalColors.h"
@@ -273,7 +275,7 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 {
   if (end.y () < begin.y ()
       || (end.y () == begin.y () && end.x () < begin.x ()))
-    qSwap (begin, end);
+    std::swap (begin, end);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -455,10 +457,9 @@ QConsolePrivate::~QConsolePrivate (void)
       TerminateProcess (m_process, (UINT)-1);
       m_consoleThread->wait ();
     }
-  if (m_buffer)
-    delete [] m_buffer;
-  if (m_tmpBuffer)
-    delete [] m_tmpBuffer;
+
+  delete [] m_buffer;
+  delete [] m_tmpBuffer;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1060,29 +1061,14 @@ void QConsolePrivate::syncConsoleParameters (void)
   COORD bs;
   SMALL_RECT sr;
 
-  bs.X = sbi.dwSize.X;
+  bs.X = m_bufferSize.width ();
   bs.Y = m_bufferSize.height ();
-  sr.Left   = sbi.srWindow.Left;
-  sr.Right  = sbi.srWindow.Right;
-  sr.Top    = m_consoleRect.top ();
+  sr.Left = m_consoleRect.left ();
+  sr.Right = m_consoleRect.right ();
+  sr.Top = m_consoleRect.top ();
   sr.Bottom = m_consoleRect.bottom ();
 
-  if (bs.Y > sbi.dwSize.Y)
-    {
-      SetConsoleScreenBufferSize (hStdOut, bs);
-      SetConsoleWindowInfo (hStdOut, TRUE, &sr);
-    }
-  else
-    {
-      SetConsoleWindowInfo (hStdOut, TRUE, &sr);
-      SetConsoleScreenBufferSize (hStdOut, bs);
-    }
-
-  bs.X = m_bufferSize.width ();
-  sr.Left  = m_consoleRect.left ();
-  sr.Right = m_consoleRect.right ();
-
-  if (bs.X > sbi.dwSize.X)
+  if (bs.X * bs.Y > sbi.dwSize.X * sbi.dwSize.Y)
     {
       SetConsoleScreenBufferSize (hStdOut, bs);
       SetConsoleWindowInfo (hStdOut, TRUE, &sr);
@@ -1098,12 +1084,10 @@ void QConsolePrivate::syncConsoleParameters (void)
   log ("  window: (%d, %d) -> (%d, %d)\n",
        sr.Left, sr.Top, sr.Right, sr.Bottom);
 
-  if (m_buffer)
-    delete [] m_buffer;
-  if (m_tmpBuffer)
-    delete [] m_tmpBuffer;
+  delete [] m_buffer;
+  delete [] m_tmpBuffer;
 
-  int bufSize = m_consoleRect.width () * m_consoleRect.height ();
+  std::size_t bufSize = m_consoleRect.width () * m_consoleRect.height ();
 
   m_buffer = new CHAR_INFO[bufSize];
   m_tmpBuffer = new CHAR_INFO[bufSize];
@@ -1263,6 +1247,8 @@ void QConsolePrivate::monitorConsole (void)
 
   if (GetConsoleScreenBufferInfo (hStdOut, &sbi))
     {
+      bool need_console_sync = false;
+
       if (m_bufferSize.width () != sbi.dwSize.X
           || m_bufferSize.height () != sbi.dwSize.Y)
         {
@@ -1271,6 +1257,7 @@ void QConsolePrivate::monitorConsole (void)
           m_bufferSize.rheight () = sbi.dwSize.Y;
           updateHorizontalScrollBar ();
           updateVerticalScrollBar ();
+          need_console_sync = true;
         }
 
       if (m_cursorPos.x () != sbi.dwCursorPosition.X
@@ -1302,20 +1289,28 @@ void QConsolePrivate::monitorConsole (void)
                                  sbi.srWindow.Bottom - sbi.srWindow.Top + 1);
           updateHorizontalScrollBar ();
           updateVerticalScrollBar ();
+          syncConsoleParameters ();
           updateConsoleView ();
           return;
         }
+
+      if (need_console_sync)
+      {
+        syncConsoleParameters ();
+        updateConsoleView ();
+        return;
+      }
 
       if (m_tmpBuffer && m_buffer)
         {
           grabConsoleBuffer (m_tmpBuffer);
           if (memcmp (m_tmpBuffer, m_buffer,
-                      sizeof (CHAR_INFO) * m_consoleRect.width () *
-                      m_consoleRect.height ()))
+                      sizeof (CHAR_INFO) * m_consoleRect.width ()
+                      * m_consoleRect.height ()))
             {
               // FIXME: compute the area to update based on the
               // difference between the 2 buffers.
-              qSwap (m_buffer, m_tmpBuffer);
+              std::swap (m_buffer, m_tmpBuffer);
               updateConsoleView (false);
             }
         }
@@ -1742,7 +1737,7 @@ void QWinTerminalImpl::setCursorColor (bool useForegroundColor,
   d->setCursorColor (useForegroundColor, color);
 }
 
-void QWinTerminalImpl::setScrollBufferSize(int value)
+void QWinTerminalImpl::setScrollBufferSize (int value)
 {
   d->setScrollBufferSize (value);
 }

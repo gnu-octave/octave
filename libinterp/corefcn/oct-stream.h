@@ -214,7 +214,10 @@ namespace octave
     // encoding conversion facet
     typedef string::deletable_facet<string::codecvt_u8> convfacet_u8;
 
-    std::wbuffer_convert<convfacet_u8, char> *m_converter;
+    // FIXME: Identified by compiler as unused private field.
+    // Commented out 10/29/2022.
+    // If there are no repercussions, delete entirely.
+    // std::wbuffer_convert<convfacet_u8, char> *m_converter;
 
     // wrappers for encoding conversion
     // std::istream *m_conv_istream;

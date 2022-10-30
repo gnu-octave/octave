@@ -213,12 +213,12 @@ inline void mx_inline_not2 (std::size_t n, bool *r)
       r[i] = xx OP (NOT2 logical_value (y[i]));                         \
   }
 
-DEFMXBOOLOP (mx_inline_and, , &, )
-DEFMXBOOLOP (mx_inline_or, , |, )
-DEFMXBOOLOP (mx_inline_not_and, !, &, )
-DEFMXBOOLOP (mx_inline_not_or, !, |, )
-DEFMXBOOLOP (mx_inline_and_not, , &, !)
-DEFMXBOOLOP (mx_inline_or_not, , |, !)
+DEFMXBOOLOP (mx_inline_and, , &&, )
+DEFMXBOOLOP (mx_inline_or, , ||, )
+DEFMXBOOLOP (mx_inline_not_and, !, &&, )
+DEFMXBOOLOP (mx_inline_not_or, !, ||, )
+DEFMXBOOLOP (mx_inline_and_not, , &&, !)
+DEFMXBOOLOP (mx_inline_or_not, , ||, !)
 
 template <typename X>
 inline void

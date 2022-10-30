@@ -1044,7 +1044,7 @@ namespace octave
     if (ID != this)
       return;
 
-    if (m_edit_area->isModified () | ! valid_file_name ())
+    if (m_edit_area->isModified () || ! valid_file_name ())
       {
         save_file (m_file_name);  // save file dialog
 

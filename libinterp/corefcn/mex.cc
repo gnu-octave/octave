@@ -450,7 +450,9 @@ calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
 
 static inline void * maybe_mark_foreign (void *ptr);
 
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 static inline void maybe_disown_ptr (void *ptr);
+#endif
 
 #define VOID_MUTATION_METHOD(FCN_NAME, ARG_LIST)        \
   void FCN_NAME ARG_LIST { request_mutation (); }
@@ -3757,6 +3759,8 @@ maybe_mark_foreign (void *ptr)
   return ptr;
 }
 
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+
 static inline void
 maybe_disown_ptr (void *ptr)
 {
@@ -3767,6 +3771,8 @@ maybe_disown_ptr (void *ptr)
       mex_context->mark_foreign (ptr);
     }
 }
+
+#endif
 
 static inline mxArray *
 maybe_unmark_array (mxArray *ptr)

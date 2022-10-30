@@ -728,7 +728,6 @@ rational_approx (T val, int len)
       T n = octave::math::round (val);
       T d = 1;
       T frac = val - n;
-      int m = 0;
 
       std::ostringstream init_buf;
       init_buf.flags (std::ios::fixed);
@@ -760,7 +759,6 @@ rational_approx (T val, int len)
           buf.flags (std::ios::fixed);
           buf << std::setprecision (0) << static_cast<int> (n)
               << '/' << static_cast<int> (d);
-          m++;
 
           if (n < 0 && d < 0)
             {

@@ -570,7 +570,8 @@ namespace octave
 
       if (info < 0)
         (*current_liboctave_error_handler)
-          ("*ggsvd.f: argument %d illegal", -info);
+          ("*ggsvd.f: argument %" OCTAVE_F77_INT_TYPE_FORMAT " illegal",
+           -info);
 
       if (info > 0)
         (*current_liboctave_error_handler)

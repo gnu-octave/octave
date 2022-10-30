@@ -187,7 +187,6 @@ function [z, c, s] = normalize (x, varargin)
   if (nargin == 1)
     ## Directly handle simple 1 input case.
     [s, c] = std (x);
-    z = (x - c) ./ s;
 
   else
     ## Parse input options

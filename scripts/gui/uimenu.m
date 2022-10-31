@@ -50,9 +50,10 @@
 ##
 ## @item @qcode{"menuselectedfcn"}
 ## The function called when this menu entry is executed.  It can be either a
-## function string (e.g., @qcode{"myfcn"}), a function handle (e.g., @@myfcn)
-## or a cell array containing the function handle and arguments for the
-## callback function (e.g., @{@@myfcn, arg1, arg2@}).
+## function string (e.g., @qcode{"@nospell{myfcn}"}), a function handle (e.g.,
+## @@@nospell{myfcn}) or a cell array containing the function handle and
+## arguments for the callback function (e.g., @{@@@nospell{myfcn}, arg1,
+## arg2@}).
 ##
 ## @item @qcode{"position"}
 ## A scalar value containing the relative menu position.  The first position

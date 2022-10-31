@@ -410,10 +410,10 @@ is
       +=  -=  .*=  ./=  .\=  .^=  &=  |=
 @end example
 
-Here is a real example of the power of broadcasting.  The Floyd-Warshall
-algorithm is used to calculate the shortest path lengths between every pair of
-vertices in a graph.  A naive implementation for a graph adjacency matrix of
-order @var{n} might look like this:
+Here is a real example of the power of broadcasting.  The
+@nospell{Floyd-Warshall} algorithm is used to calculate the shortest path
+lengths between every pair of vertices in a graph.  A naive implementation for
+a graph adjacency matrix of order @var{n} might look like this:
 
 @example
 @group
@@ -471,8 +471,8 @@ A moment of thought will prove that this operation is simply the much
 faster ordinary matrix multiplication, @code{@var{c} = @var{a}*@var{b};}.
 
 A note on terminology: ``broadcasting'' is the term popularized by the
-Numpy numerical environment in the Python programming language.  In other
-programming languages and environments, broadcasting may also be known
+@nospell{Numpy} numerical environment in the Python programming language.  In
+other programming languages and environments, broadcasting may also be known
 as @emph{binary singleton expansion} (@nospell{BSX}, in @sc{matlab}, and the
 origin of the name of the @code{bsxfun} function), @emph{recycling} (R
 programming language), @emph{single-instruction multiple data} (SIMD),

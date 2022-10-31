@@ -270,10 +270,10 @@ will remove the function from the list and Octave will not call
 @code{last_words} when it exits.
 
 The optional output @var{status} is only available when unregistering a
-function.  The value is true if the unregistering was succesful and false
+function.  The value is true if the unregistering was successful and false
 otherwise.
 
-Progamming Note: @code{atexit} only removes the first occurrence of a function
+Programming Note: @code{atexit} only removes the first occurrence of a function
 from the list; if a function was placed in the list multiple times with
 @code{atexit}, it must also be removed from the list multiple times.
 @seealso{quit}

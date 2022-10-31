@@ -250,15 +250,15 @@ approximation of @code{@var{A} \ @var{B}} to be calculated as
 @end group
 @end example
 
-If @var{A} is a sparse MxN matrix and an additional matrix @var{B} is
+If @var{A} is a sparse @nospell{MxN} matrix and an additional matrix @var{B} is
 supplied, one or two return values are possible.  If one return value @var{X}
 is requested and M < N, then @var{X} is the minimum 2-norm solution of
 @w{@code{@var{A} \ @var{B}}}.  If M >= N, @var{X} is the least squares
 approximation @w{of @code{@var{A} \ @var{B}}}.  If two return values are
 requested, @var{C} and @var{R} have the same meaning as in the dense case
-(@var{C} is dense and @var{R} is sparse).
-The version with one return parameter should be preferred because
-it uses less memory and can handle rank-deficient matrices better.
+(@var{C} is dense and @var{R} is sparse).  The version with one return
+parameter should be preferred because it uses less memory and can handle
+rank-deficient matrices better.
 
 If the final argument is the string @qcode{"vector"} then @var{P} is a
 permutation vector (of the columns of @var{A}) instead of a permutation
@@ -271,14 +271,14 @@ matrix.  In this case, the defining relationship is:
 The default, however, is to return a permutation matrix and this may be
 explicitly specified by using a final argument of @qcode{"matrix"}.
 
-If the final argument is the scalar 0 or the string @qcode{"econ"}, an
-economy factorization is returned.  If the original matrix @var{A} has size
-MxN and M > N, then the economy factorization will calculate just N rows in
-@var{R} and N columns in @var{Q} and omit the zeros in @var{R}.  If M @leq{}
-N, there is no difference between the economy and standard factorizations.
-When calculating an economy factorization and @var{A} is dense, the output
-@var{P} is always a vector rather than a matrix.  If @var{A} is sparse,
-output @var{P} is a sparse permutation matrix.
+If the final argument is the scalar 0 or the string @qcode{"econ"}, an economy
+factorization is returned.  If the original matrix @var{A} has size
+@nospell{MxN} and M > N, then the economy factorization will calculate just N
+rows in @var{R} and N columns in @var{Q} and omit the zeros in @var{R}.  If M
+@leq{} N, there is no difference between the economy and standard
+factorizations.  When calculating an economy factorization and @var{A} is
+dense, the output @var{P} is always a vector rather than a matrix.  If @var{A}
+is sparse, output @var{P} is a sparse permutation matrix.
 
 Background: The QR factorization has applications in the solution of least
 squares problems

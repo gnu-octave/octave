@@ -110,7 +110,7 @@ Digital Equipment Corporation, for an equipment grant as part of their
 External Research Program.
 
 @item
-Sun Microsystems, Inc., for an Academic Equipment grant.
+@nospell{Sun Microsystems}, Inc., for an Academic Equipment grant.
 
 @item
 International Business Machines, Inc., for providing equipment as part

@@ -389,7 +389,10 @@ function [z, c, s] = normalize (x, varargin)
           case "robust"
             ## center/median to zero and MAD = 1
             c = median (x, dim);
-            s = median (abs (x - c), dim);
+            ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
+            ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
+            s = median (abs (bsxfun (@minus, x , c)), dim);
+            ## s = median (abs (x - c), dim);   # Automatic broadcasting
         endswitch
 
       case "norm"
@@ -444,7 +447,11 @@ function [z, c, s] = normalize (x, varargin)
   endif
 
   ## Divide by scale factor.  If scale = 0, divide by zero = Inf, which is OK.
-  z = (x - c) ./ s;
+
+  ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
+  ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
+  z = bsxfun (@rdivide, bsxfun (@minus, x , c), s);
+  ## z = (x - c) ./ s;  # Automatic broadcasting
 
 endfunction
 
@@ -609,6 +616,33 @@ endfunction
 %! assert ({z, c, s}, {[NaN, NaN, NaN], Inf, NaN});
 %! [z, c, s] = normalize (Inf);
 %! assert ({z, c, s}, {NaN, Inf, NaN});
+
+## Test sparse and diagonal inputs
+%!test
+%! [z, c, s] = normalize (eye (2));
+%! assert (z, (sqrt(2)/2)*[1, -1; -1, 1], eps);
+%! assert (c, [0.5, 0.5], eps);
+%! assert (s, (sqrt(2)/2)*[1, 1], eps);
+%!test
+%! [z, c, s] = normalize (sparse (eye (2)));
+%! assert (full (z), (sqrt(2)/2)*[1, -1; -1, 1], eps);
+%! assert (full (c), [0.5, 0.5], eps);
+%! assert (full (s), (sqrt(2)/2)*[1, 1], eps);
+%!test
+%! [z, c, s] = normalize (sparse (magic (3)), "zscore", "robust");
+%! assert (full (z), [4 -1 0; -1 0 1; 0 1 -4], eps);
+%! assert (full (c), [4, 5, 6], eps);
+%! assert (full (s), [1, 4, 1], eps);
+%!test <55765>
+%! [z, c, s] = normalize (sparse (eye(2)));
+%! assert (issparse (z));
+%! assert (issparse (c));
+%! assert (issparse (s));
+%!test <55765>
+%! [z, c, s] = normalize (sparse (magic (3)), "zscore", "robust");
+%! assert (issparse (z));
+%! assert (issparse (c));
+%! assert (issparse (s));
 
 ## Matlab ignores NaNs, operating as if the vector had one less element, then
 ## returns the result retaining the NaN in the solution.

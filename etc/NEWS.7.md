@@ -23,6 +23,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Fix incorrect `lambda` outputs for `lsqnonneg` and `pqpnonneg` (bug #63178).
 - `addtodate.m`: Fix wrong month returned when subtracting a month from some end-of-month dates (bug #60671).
 - `var.m`: Fix some Inf and NaN inputs returning 0 instead of NaN (bug #63203)
+- `var.m`: Fix automatic broadcasting error for sparse and diagonal matrix inputs with vector weighting (bug #63291).
 - `legend.m`: Fix error with `contour` plot containing `clabel`s (bug #63262).
 - `dec2bin.m`: Fix input validation (bug #63089).
 - `glpk.m`: Avoid using `isfinite` on potentially sparse input.

@@ -216,8 +216,13 @@ function retval = var (x, w = 0, dim)
             w = reshape (w, newdims);
           endif
           den = sum (w);
-          mu = sum (w .* x, dim) ./ sum (w);
-          retval = sum (w .* ((x - mu) .^ 2), dim) / den;
+          ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
+          ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
+          mu = sum (bsxfun (@times, w , x), dim) ./ sum (w);
+          retval = sum (bsxfun (@times, w, ...
+                                bsxfun (@minus, x, mu) .^ 2), dim) / den;
+          ## mu = sum (w .* x, dim) ./ sum (w); # automatic broadcasting
+          ## retval = sum (w .* ((x - mu) .^ 2), dim) / den;
         endif
       endif
     endif
@@ -287,6 +292,14 @@ endfunction
 %!assert <*63203> (var ([NaN, 2, Inf], [], 2), NaN)
 %!assert <*63203> (var ([1, 3, NaN; 3, 5, Inf]), [2, 2, NaN])
 %!assert <*63203> (var ([1, 3, Inf; 3, 5, NaN]), [2, 2, NaN]);
+
+## Test sparse/diagonal inputs
+%!assert <*63291> (var (2 * eye (2)), [2, 2])
+%!assert <*63291> (var (4 * eye (2), [1, 3]), [3, 3])
+%!assert <*63291> (full (var (sparse (2 * eye (2)))), [2, 2])
+%!assert <*63291> (full (var (sparse (4 * eye (2)), [1, 3])), [3, 3])
+%!assert <63291> (issparse (var (sparse (2 * eye (2)))))
+%!assert <63291> (issparse (var (sparse (4 * eye (2)), [1, 3])))
 
 ## Test input validation
 %!error <Invalid call> var ()

@@ -224,8 +224,14 @@ function [v, mu] = var (x, w = 0, dim = [])
         w = reshape (w, newdims);
       endif
       den = sum (w);
-      mu = sum (w .* x, dim) ./ den;
-      v = sum (w .* ((x - mu) .^ 2), dim) ./ den;
+
+      ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
+      ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
+      mu = sum (bsxfun (@times, w , x), dim) ./ den;
+      v = sum (bsxfun (@times, w, ...
+                            bsxfun (@minus, x, mu) .^ 2), dim) ./ den;
+      ## mu = sum (w .* x, dim) ./ den; # automatic broadcasting
+      ## v = sum (w .* ((x - mu) .^ 2), dim) ./ den;
     endif
   endif
 
@@ -416,6 +422,33 @@ endfunction
 %! [v, m] = var ([1, 3, Inf; 3, 5, NaN]);
 %! assert (v, [2, 2, NaN]);
 %! assert (m, [2, 4, NaN]);
+
+## Test sparse/diagonal inputs
+%!test <*63291>
+%! [v, m] = var (2 * eye (2));
+%! assert (v, [2, 2]);
+%! assert (m, [1, 1]);
+%!test <*63291>
+%! [v, m] = var (4 * eye (2), [1, 3]);
+%! assert (v, [3, 3]);
+%! assert (m, [1, 3]);
+%!test <*63291>
+%! [v, m] = var (sparse (2 * eye (2)));
+%! assert (full (v), [2, 2]);
+%! assert (full (m), [1, 1]);
+%!test <*63291>
+%! [v, m] = var (sparse (4 * eye (2)), [1, 3]);
+%! assert (full (v), [3, 3]);
+%! assert (full (m), [1, 3]);
+
+%!test <63291>
+%! [v, m] = var (sparse (eye (2)));
+%! assert (issparse (v));
+%! assert (issparse (m));
+%!test <63291>
+%! [v, m] = var (sparse (eye (2)), [1, 3]);
+%! assert (issparse (v));
+%! assert (issparse (m));
 
 ## Test input validation
 %!error <Invalid call> var ()

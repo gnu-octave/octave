@@ -69,7 +69,8 @@ DEFUN (schur, args, nargout,
 @cindex Schur decomposition
 Compute the Schur@tie{}decomposition of @var{A}.
 
-The Schur@tie{}decomposition is defined as
+The Schur@tie{}decomposition is an eigendecomposition of a square matrix
+@var{A} defined as
 @tex
 $$
  S = U^T A U
@@ -100,34 +101,32 @@ $2 \times 2$
 @ifnottex
 @code{2 x 2}
 @end ifnottex
-along the diagonal.  The diagonal elements of @var{S}
-(or the eigenvalues of the
-@tex
-$2 \times 2$
-@end tex
-@ifnottex
-@code{2 x 2}
-@end ifnottex
-blocks, when appropriate) are the eigenvalues of @var{A} and @var{S}.
+along the diagonal.
 
-The default for real matrices is a real Schur@tie{}decomposition.
-A complex decomposition may be forced by passing the flag
-@qcode{"complex"}.
+The default for real matrices is a real Schur@tie{}decomposition.  A complex
+decomposition may be forced by passing the flag @qcode{"complex"}.
 
 The eigenvalues are optionally ordered along the diagonal according to the
-value of @var{opt}.  @code{@var{opt} = "a"} indicates that all eigenvalues
-with negative real parts should be moved to the leading block of @var{S}
-(used in @code{are}), @code{@var{opt} = "d"} indicates that all
-eigenvalues with magnitude less than one should be moved to the leading
-block of @var{S} (used in @code{dare}), and @code{@var{opt} = "u"}, the
-default, indicates that no ordering of eigenvalues should occur.  The
-leading @var{k} columns of @var{U} always span the @var{A}-invariant
-subspace corresponding to the @var{k} leading eigenvalues of @var{S}.
+value of @var{opt}:
 
-The Schur@tie{}decomposition is used to compute eigenvalues of a square
-matrix, and has applications in the solution of algebraic @nospell{Riccati}
-equations in control (see @code{are} and @code{dare}).
-@seealso{rsf2csf, ordschur, ordeig, lu, chol, hess, qr, qz, svd}
+@table @asis
+@item @qcode{@var{opt} = "a"}
+Move eigenvalues with negative real parts to the leading block of @var{S}.
+Mnemonic: @qcode{"a"} for Algebraic @nospell{Riccati} Equations, where this
+ordering is useful.
+
+@item @qcode{@var{opt} = "d"}
+Move eigenvalues with magnitude less than one to the leading block of @var{S}.
+Mnemonic: @qcode{"d"} for Discrete Algebraic @nospell{Riccati} Equations,
+where this ordering is useful.
+
+@item @qcode{@var{opt} = "u"}
+Unordered.  No particular ordering of eigenvalues (default).
+@end table
+
+The leading @var{k} columns of @var{U} always span the @var{A}-invariant
+subspace corresponding to the @var{k} leading eigenvalues of @var{S}.
+@seealso{rsf2csf, ordschur, ordeig, lu, chol, hess, qr, qz, svd, eig}
 @end deftypefn */)
 {
   int nargin = args.length ();

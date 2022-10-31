@@ -581,6 +581,7 @@ z = foo2 (x, y);
 In the above example, the first line creates a memoized version @code{foo2} of
 the function @code{foo}.  For simple functions with only trivial wrapping, this
 line can also be shortened to:
+
 @example
 @group
 foo2 = memoize (@@foo);
@@ -603,6 +604,7 @@ original function itself was taking only milliseconds, memoizing it will not
 speed it up.
 
 Recursive functions can be memoized as well, using a pattern like:
+
 @example
 @group
 function z = foo (x, y)

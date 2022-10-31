@@ -118,13 +118,14 @@
 ##
 ## @item  -image | -opengl
 ## @itemx -vector | -painters
-##   Specifies whether the pixel-based renderer (@env{-image} or @env{-opengl})
-## or vector-based renderer (@env{-vector} or @env{-painters}) is used.  This
-## is equivalent to changing the figure's @qcode{"Renderer"} property.  When
-## the figure @nospell{@qcode{"RendererMode"}} property is @qcode{"auto"} (the
-## default) Octave will use the @qcode{"opengl"} renderer for raster formats
-## (e.g., JPEG) and @qcode{"painters"} for vector formats (e.g., PDF)@.  These
-## options are only supported for the "qt" graphics toolkit.
+##   Specifies whether the pixel-based renderer (@option{-image} or
+## @option{-opengl}) or vector-based renderer (@option{-vector} or
+## @option{-painters}) is used.  This is equivalent to changing the figure's
+## @qcode{"Renderer"} property.  When the figure
+## @nospell{@qcode{"RendererMode"}} property is @qcode{"auto"} (the default)
+## Octave will use the @qcode{"opengl"} renderer for raster formats (e.g.,
+## JPEG) and @qcode{"painters"} for vector formats (e.g., PDF)@.  These options
+## are only supported for the "qt" graphics toolkit.
 ##
 ## @item -svgconvert
 ##   When using the @option{-painters} renderer, this enables a different

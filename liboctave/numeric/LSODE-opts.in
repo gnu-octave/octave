@@ -159,6 +159,7 @@ OPTION
   NAME = "step limit"
   DOC_ITEM
 Maximum number of steps allowed (default is 100000).
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "100000"

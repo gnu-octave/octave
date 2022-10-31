@@ -3871,6 +3871,7 @@ ans =
   8.1058e+15
 @end group
 @end example
+
 Optionally, the trailing @samp{g} can be split into a second argument.
 
 @item  shorteng
@@ -3984,7 +3985,7 @@ produce a more readable output with less data per page.
 @end table
 
 If @code{format} is called with multiple competing options, the rightmost one
-is used, except for @samp{default} which will override all other options. In
+is used, except for @samp{default} which will override all other options.  In
 case of an error the format remains unchanged.
 
 If called with one to three output arguments, and no inputs, return the current

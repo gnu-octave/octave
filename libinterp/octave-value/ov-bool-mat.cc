@@ -594,7 +594,8 @@ Any nonzero values will be converted to true (1) while zero values will be
 converted to false (0).  The non-numeric value NaN cannot be converted and will
 produce an error.
 
-Compatibility Note: Octave accepts complex values as input, whereas @sc{matlab} issues an error.
+Compatibility Note: Octave accepts complex values as input, whereas @sc{matlab}
+issues an error.
 @seealso{double, single, char}
 @end deftypefn */)
 {

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} clearAllMemoizedCaches ()
+## @deftypefn {} {} clearAllMemoizedCaches ()
 ## Clear all memoized caches.
 ##
 ## Memoization maintains internal tables of which functions have been called

@@ -168,21 +168,24 @@
 ##
 ## Options for the install command and the names of individual packages to be
 ## checked for updates may be specified as a list following the update
-## command. If the @option{-local} or @option{-global} option is specified,
+## command.  If the @option{-local} or @option{-global} option is specified,
 ## @code{pkg update} limits the update check to the local or global installed
 ## packages, and installs updates in that same context.  For example,
 ##
 ## Update all packages:
+##
 ## @example
 ## pkg update
 ## @end example
 ##
 ## Update all local packages:
+##
 ## @example
 ## pkg update -local
 ## @end example
 ##
 ## Update certain packages, ignore dependencies, max verbosity:
+##
 ## @example
 ## pkg update -verbose -nodeps image signal geometry
 ## @end example

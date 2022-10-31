@@ -36,7 +36,7 @@
 ## requested output arguments.
 ##
 ## The intended use of @code{nthargout} is to avoid intermediate variables.
-## For  example, when finding the indices of the maximum entry of a matrix, the
+## For example, when finding the indices of the maximum entry of a matrix, the
 ## following two compositions of @code{nthargout}
 ##
 ## @example

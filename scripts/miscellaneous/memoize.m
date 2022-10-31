@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{mem_fcn_handle} =} memoize (@var{fcn_handle})
+## @deftypefn {} {@var{mem_fcn_handle} =} memoize (@var{fcn_handle})
 ##
 ## Create a memoized version @var{mem_fcn_handle} of function @var{fcn_handle}.
 ##

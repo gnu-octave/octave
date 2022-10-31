@@ -646,7 +646,7 @@ The function call @code{airy (@var{z})} is equivalent to
 @code{airy (0, @var{z})}.
 
 The optional third input @var{scale} determines whether to
-apply scaling as described above. It is false by default.
+apply scaling as described above.  It is false by default.
 
 The result @var{a} is the same size as @var{z}.
 

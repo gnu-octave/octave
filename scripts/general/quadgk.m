@@ -52,8 +52,9 @@
 ## operator @code{./} and all user functions to @code{quadgk} should do the
 ## same.
 ##
-## The optional argument @var{abstol} defines the absolute tolerance used to stop
-## the integration procedure.  The default value is 1e-10 (1e-5 for single).
+## The optional argument @var{abstol} defines the absolute tolerance used to
+## stop the integration procedure.  The default value is 1e-10 (1e-5 for
+## single).
 ##
 ## The algorithm used by @code{quadgk} involves subdividing the integration
 ## interval and evaluating each subinterval.  If @var{trace} is true then after
@@ -83,6 +84,7 @@
 ## quadgk (@@(x) x .^ (1:5), 0, 2, "ArrayValued", 1)
 ## @end example
 ##
+## @noindent
 ## will integrate @code{[x.^1, x.^2, x.^3, x.^4, x.^5]} in one function call
 ## rather than having to repeatedly define a single anonymous function and
 ## use a normal invocation of @code{quadgk}.

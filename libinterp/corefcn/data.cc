@@ -144,7 +144,7 @@ any (eye (2, 4))
 @end example
 
 If the optional argument @var{dim} is supplied, work along dimension @var{dim}.
-For example: 
+For example:
 
 @example
 @group

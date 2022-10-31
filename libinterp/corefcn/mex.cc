@@ -46,8 +46,10 @@
 #include <set>
 #include <string>
 
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 // Needed to instantiate Array objects with custom allocator.
-#include "Array.cc"
+#  include "Array.cc"
+#endif
 #include "f77-fcn.h"
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
@@ -72,6 +74,21 @@
 #include "utils.h"
 #include "variables.h"
 #include "graphics.h"
+
+
+// Prevent implicit instantiations without the necessary specializations
+// on some platforms (Windows, others?).
+
+extern template class Array<Complex>;
+extern template class Array<FloatComplex>;
+extern template class Array<bool>;
+extern template class Array<char>;
+extern template class Array<double>;
+extern template class Array<float>;
+extern template class Array<octave::idx_vector>;
+extern template class Array<octave_idx_type>;
+extern template class Array<std::string>;
+
 
 // These must be declared extern "C" but may be omitted from the set of
 // symbols declared in mexproto.h, so we declare them here as well.

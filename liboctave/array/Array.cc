@@ -86,6 +86,19 @@ Array<T, Alloc>::Array (const Array<T, Alloc>& a, const dim_vector& dv)
   m_dimensions.chop_trailing_singletons ();
 }
 
+// We need to dllexport this constructor from explicit template
+// instantiations with specializations. One way to do this is to mark the
+// declaration with the corresponding attributes and define the
+// constructor separately here.
+template <typename T, typename Alloc>
+Array<T, Alloc>::Array (T *ptr, const dim_vector& dv, const Alloc& xallocator)
+  : m_dimensions (dv),
+    m_rep (new typename Array<T, Alloc>::ArrayRep (ptr, dv, xallocator)),
+    m_slice_data (m_rep->m_data), m_slice_len (m_rep->m_len)
+{
+  m_dimensions.chop_trailing_singletons ();
+}
+
 template <typename T, typename Alloc>
 void
 Array<T, Alloc>::fill (const T& val)

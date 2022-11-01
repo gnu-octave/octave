@@ -69,8 +69,7 @@ DEFUN (schur, args, nargout,
 @cindex Schur decomposition
 Compute the Schur@tie{}decomposition of @var{A}.
 
-The Schur@tie{}decomposition is an eigendecomposition of a square matrix
-@var{A} defined as
+The Schur@tie{}decomposition of a square matrix @var{A} is defined as
 @tex
 $$
  S = U^T A U

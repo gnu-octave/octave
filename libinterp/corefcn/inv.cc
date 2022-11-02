@@ -80,7 +80,7 @@ sparse matrix if possible.
     err_square_matrix_required ("inv", "A");
 
   octave_value result;
-  octave_idx_type info;
+  octave_idx_type info = 0;
   double rcond = 0.0;
   float frcond = 0.0;
   bool isfloat = arg.is_single_type ();

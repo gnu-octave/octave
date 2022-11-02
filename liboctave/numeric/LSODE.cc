@@ -131,6 +131,8 @@ LSODE::do_integrate (double tout)
 
       user_jac_ignore_ml_mu = true;
 
+      m_iwork = Array<octave_f77_int_type> (dim_vector (2, 1));
+
       m_iwork(0) = lower_jacobian_subdiagonals ();  // 'ML' in dlsode.f
 
       m_iwork(1) = upper_jacobian_subdiagonals ();  // 'MU' in dlsode.f

@@ -27,6 +27,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `legend.m`: Fix error with `contour` plot containing `clabel`s (bug #63262).
 - `dec2bin.m`: Fix input validation (bug #63089).
 - `glpk.m`: Avoid using `isfinite` on potentially sparse input.
+- `var.m`: Use `bsxfun` rather than broadcasting with vector weighting (bug #63291).
+- Fix out of bound indexing in in-place broadcasting operations (bug #63303).
 
 ### GUI
 - Respect confirmation when deleting files in file browser widget (bug #63198).
@@ -49,6 +51,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `lsode`: Make TeX and non-TeX docstrings agree.
 - `curl`: Fix error in TeX docstring.
 - Update text on function argument checking.
+- `schur`: Update documentation.
 
 
 Summary of bugs fixed for version 7.2.0 (2022-07-28):

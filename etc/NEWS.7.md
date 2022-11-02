@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 7.3.0 (tbd):
+Summary of bugs fixed for version 7.3.0 (2022-11-02):
 ----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX

@@ -146,7 +146,7 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
   dim_vector dvr = r.dims ();
   dim_vector dvx = x.dims ();
   octave_idx_type nd = r.ndims ();
-  dvx.redim (nd);
+  dvx = dvx.redim (nd);
 
   const X *xvec = x.data ();
   R *rvec = r.fortran_vec ();

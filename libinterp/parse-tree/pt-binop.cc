@@ -69,49 +69,6 @@ namespace octave
   octave_value
   tree_binary_expression::evaluate (tree_evaluator& tw, int)
   {
-    octave_value val;
-
-    if (is_eligible_for_braindead_shortcircuit ())
-      {
-        if (m_lhs)
-          {
-            octave_value a = m_lhs->evaluate (tw);
-
-            if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
-              {
-                bool result = false;
-
-                bool a_true = a.is_true ();
-
-                if (a_true)
-                  {
-                    if (m_etype == octave_value::op_el_or)
-                      {
-                        matlab_style_short_circuit_warning ("|");
-                        return octave_value (true);
-                      }
-                  }
-                else
-                  {
-                    if (m_etype == octave_value::op_el_and)
-                      {
-                        matlab_style_short_circuit_warning ("&");
-                        return octave_value (false);
-                      }
-                  }
-
-                if (m_rhs)
-                  {
-                    octave_value b = m_rhs->evaluate (tw);
-
-                    result = b.is_true ();
-                  }
-
-                return octave_value (result);
-              }
-          }
-      }
-
     if (m_lhs)
       {
         octave_value a = m_lhs->evaluate (tw);
@@ -135,12 +92,73 @@ namespace octave
 
                 type_info& ti = interp.get_type_info ();
 
-                val = binary_op (ti, m_etype, a, b);
+                return binary_op (ti, m_etype, a, b);
               }
           }
       }
 
-    return val;
+    return octave_value ();
+  }
+
+  tree_expression *
+  tree_braindead_shortcircuit_binary_expression::dup (symbol_scope& scope) const
+  {
+    tree_braindead_shortcircuit_binary_expression *new_be
+      = new tree_braindead_shortcircuit_binary_expression
+          (m_lhs ? m_lhs->dup (scope) : nullptr,
+           m_rhs ? m_rhs->dup (scope) : nullptr,
+           line (), column (), op_type ());
+
+    new_be->copy_base (*this);
+
+    return new_be;
+  }
+
+  octave_value
+  tree_braindead_shortcircuit_binary_expression::evaluate (tree_evaluator& tw,
+                                                           int)
+  {
+    if (m_lhs)
+      {
+        octave_value a = m_lhs->evaluate (tw);
+
+        if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
+          {
+            bool result = false;
+
+            bool a_true = a.is_true ();
+
+            octave_value::binary_op oper_type = op_type ();
+
+            if (a_true)
+              {
+                if (oper_type == octave_value::op_el_or)
+                  {
+                    matlab_style_short_circuit_warning ("|");
+                    return octave_value (true);
+                  }
+              }
+            else
+              {
+                if (oper_type == octave_value::op_el_and)
+                  {
+                    matlab_style_short_circuit_warning ("&");
+                    return octave_value (false);
+                  }
+              }
+
+            if (m_rhs)
+              {
+                octave_value b = m_rhs->evaluate (tw);
+
+                result = b.is_true ();
+              }
+
+            return octave_value (result);
+          }
+      }
+
+    return octave_value ();
   }
 
   // Boolean expressions.

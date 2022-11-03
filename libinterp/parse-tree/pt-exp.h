@@ -107,8 +107,6 @@ namespace octave
 
     virtual std::string original_text (void) const;
 
-    virtual void mark_braindead_shortcircuit (void) { }
-
     void mark_as_for_cmd_expr (void) { m_for_cmd_expr = true; }
 
     bool is_for_cmd_expr (void) const { return m_for_cmd_expr; }

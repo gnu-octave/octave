@@ -51,7 +51,7 @@ namespace octave
                             octave_value::binary_op t
                             = octave_value::unknown_binary_op)
       : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr), m_etype (t),
-        m_eligible_for_braindead_shortcircuit (false)
+        m_preserve_operands (false)
     { }
 
     tree_binary_expression (tree_expression *a, tree_expression *b,
@@ -59,7 +59,7 @@ namespace octave
                             octave_value::binary_op t
                             = octave_value::unknown_binary_op)
       : tree_expression (l, c), m_lhs (a), m_rhs (b), m_etype (t),
-        m_eligible_for_braindead_shortcircuit (false)
+        m_preserve_operands (false)
     { }
 
     // No copying!
@@ -70,21 +70,14 @@ namespace octave
 
     ~tree_binary_expression (void)
     {
-      delete m_lhs;
-      delete m_rhs;
-    }
-
-    void mark_braindead_shortcircuit (void)
-    {
-      if (m_etype == octave_value::op_el_and
-          || m_etype == octave_value::op_el_or)
+      if (! m_preserve_operands)
         {
-          m_eligible_for_braindead_shortcircuit = true;
-
-          m_lhs->mark_braindead_shortcircuit ();
-          m_rhs->mark_braindead_shortcircuit ();
+          delete m_lhs;
+          delete m_rhs;
         }
     }
+
+    void preserve_operands (void) { m_preserve_operands = true; }
 
     bool is_binary_expression (void) const { return true; }
 
@@ -96,11 +89,6 @@ namespace octave
 
     tree_expression * lhs (void) { return m_lhs; }
     tree_expression * rhs (void) { return m_rhs; }
-
-    bool is_eligible_for_braindead_shortcircuit (void) const
-    {
-      return m_eligible_for_braindead_shortcircuit;
-    }
 
     tree_expression * dup (symbol_scope& scope) const;
 
@@ -131,9 +119,37 @@ namespace octave
     // The type of the expression.
     octave_value::binary_op m_etype;
 
-    // TRUE if this is an | or & expression in the condition of an IF
-    // or WHILE statement.
-    bool m_eligible_for_braindead_shortcircuit;
+    // If TRUE, don't delete m_lhs and m_rhs in destructor;
+    bool m_preserve_operands;
+  };
+
+  class tree_braindead_shortcircuit_binary_expression
+    : public tree_binary_expression
+  {
+  public:
+
+    tree_braindead_shortcircuit_binary_expression (tree_expression *a,
+                                                   tree_expression *b,
+                                                   int l, int c,
+                                                   octave_value::binary_op t)
+      : tree_binary_expression (a, b, l, c, t)
+    { }
+
+    // No copying!
+
+    tree_braindead_shortcircuit_binary_expression
+      (const tree_braindead_shortcircuit_binary_expression&) = delete;
+
+    tree_braindead_shortcircuit_binary_expression&
+    operator = (const tree_braindead_shortcircuit_binary_expression&) = delete;
+
+    ~tree_braindead_shortcircuit_binary_expression (void) = default;
+
+    tree_expression * dup (symbol_scope& scope) const;
+
+    octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+    using tree_binary_expression::evaluate_n;
   };
 
   // Boolean expressions.

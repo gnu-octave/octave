@@ -1100,7 +1100,7 @@ if_cmd_list1    : expression stmt_begin opt_sep opt_list
                   {
                     OCTAVE_YYUSE ($3);
 
-                    $1->mark_braindead_shortcircuit ();
+                    parser.maybe_convert_to_braindead_shortcircuit ($1);
 
                     $$ = parser.start_if_command ($1, $4);
                   }
@@ -1112,7 +1112,7 @@ elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt
                   {
                     OCTAVE_YYUSE ($3, $6);
 
-                    $4->mark_braindead_shortcircuit ();
+                    parser.maybe_convert_to_braindead_shortcircuit ($4);
 
                     $$ = parser.make_elseif_clause ($1, $4, $7, $2);
                   }
@@ -1182,7 +1182,7 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   {
                     OCTAVE_YYUSE ($5);
 
-                    $3->mark_braindead_shortcircuit ();
+                    parser.maybe_convert_to_braindead_shortcircuit ($3);
 
                     if (! ($$ = parser.make_while_command ($1, $3, $6, $7, $2)))
                       {
@@ -3138,6 +3138,37 @@ OCTAVE_NAMESPACE_BEGIN
     int c = tok_val->column ();
 
     return maybe_compound_binary_expression (op1, op2, l, c, t);
+  }
+
+  void
+  base_parser::maybe_convert_to_braindead_shortcircuit (tree_expression*& expr)
+  {
+    if (expr->is_binary_expression ())
+      {
+        tree_binary_expression *binexp
+          = dynamic_cast<tree_binary_expression *> (expr);
+
+        tree_expression *lhs = binexp->lhs ();
+        tree_expression *rhs = binexp->rhs ();
+
+        maybe_convert_to_braindead_shortcircuit (lhs);
+        maybe_convert_to_braindead_shortcircuit (rhs);
+
+        octave_value::binary_op op_type = binexp->op_type ();
+        if (op_type == octave_value::op_el_and
+            || op_type == octave_value::op_el_or)
+          {
+            binexp->preserve_operands ();
+
+            int line = expr->line ();
+            int column = expr->column ();
+
+            delete expr;
+
+            expr = new tree_braindead_shortcircuit_binary_expression
+              (lhs, rhs, line, column, op_type);
+          }
+      }
   }
 
   // Build a boolean expression.

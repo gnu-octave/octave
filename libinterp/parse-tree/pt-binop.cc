@@ -45,8 +45,6 @@ namespace octave
     warning_with_id ("Octave:possible-matlab-short-circuit-operator",
                      "Matlab-style short-circuit operation performed for operator %s",
                      op);
-
-    m_braindead_shortcircuit_warning_issued = true;
   }
 
   std::string

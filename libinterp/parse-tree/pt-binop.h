@@ -51,16 +51,16 @@ namespace octave
                             octave_value::binary_op t
                             = octave_value::unknown_binary_op)
       : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr), m_etype (t),
-        m_eligible_for_braindead_shortcircuit (false),
-        m_braindead_shortcircuit_warning_issued (false) { }
+        m_eligible_for_braindead_shortcircuit (false)
+    { }
 
     tree_binary_expression (tree_expression *a, tree_expression *b,
                             int l = -1, int c = -1,
                             octave_value::binary_op t
                             = octave_value::unknown_binary_op)
       : tree_expression (l, c), m_lhs (a), m_rhs (b), m_etype (t),
-        m_eligible_for_braindead_shortcircuit (false),
-        m_braindead_shortcircuit_warning_issued (false) { }
+        m_eligible_for_braindead_shortcircuit (false)
+    { }
 
     // No copying!
 
@@ -134,10 +134,6 @@ namespace octave
     // TRUE if this is an | or & expression in the condition of an IF
     // or WHILE statement.
     bool m_eligible_for_braindead_shortcircuit;
-
-    // TRUE if we have already issued a warning about short circuiting
-    // for this operator.
-    bool m_braindead_shortcircuit_warning_issued;
   };
 
   // Boolean expressions.

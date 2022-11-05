@@ -216,7 +216,7 @@ uint64_t
 pollardrho (uint64_t n, uint64_t c = 1ULL)
 {
   uint64_t i = 1ULL, j = 2ULL;  // cycle index values
-  uint64_t x = (c+2) % n;       // can also be rand () % n
+  uint64_t x = (c+1) % n;       // can also be rand () % n
   uint64_t y = x;               // other value in the chain
   uint64_t g = 0;               // GCD
 
@@ -224,12 +224,13 @@ pollardrho (uint64_t n, uint64_t c = 1ULL)
     {
       i++;
 
-      // Calculate x = mod (x^2 - c, n) without overflow.
-      x = safemultiply (x, x, n);
-      x = (x >= c) ? (x - c) : (x + n - c);
+      // Calculate x = mod (x^2 + c, n) without overflow.
+      x = safemultiply (x, x, n) + c;
+      if (x >= n)
+        x -= n;
 
       // Calculate GCD (abs (x-y), n).
-      g = (x == y) ? 0 : (x > y) ? localgcd (x - y, n) : localgcd (y - x, n);
+      g = (x > y) ? localgcd (x - y, n) : (x < y) ? localgcd (y - x, n) : 0;
 
       if (i == j)  // cycle detected ==> double j
         {
@@ -242,10 +243,8 @@ pollardrho (uint64_t n, uint64_t c = 1ULL)
 
       if (g > 1ULL)  // found GCD ==> exit loop properly
         {
-          if (n % g)   // nonzero remainder ==> not a factor
-            return 0;  // rare but theoretically possible case.
-          else         // normal case
-            return g;  // GCD is a divisor of n by definition.
+          error_unless (n % g == 0);  // theoretical possibility of GCD error
+          return g;
         }
     }
 }

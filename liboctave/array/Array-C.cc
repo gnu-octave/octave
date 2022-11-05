@@ -33,14 +33,15 @@
 #include "lo-mappers.h"
 
 #include "Array.h"
-#include "Array-base.cc"
-#include "oct-sort.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class Array<octave::idx_vector>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API Array<octave::idx_vector>;
 extern template class Array<octave_idx_type>;
+
+#include "Array-base.cc"
+#include "oct-sort.cc"
 
 template <>
 inline bool
@@ -94,7 +95,7 @@ safe_comparator (sortmode mode, const Array<Complex>& a, bool allow_chk)
 
 template class octave_sort<Complex>;
 
-INSTANTIATE_ARRAY (Complex, OCTAVE_API);
+INSTANTIATE_ARRAY (Complex, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
 
 template OCTAVE_API std::ostream& operator << (std::ostream&,
                                                const Array<Complex>&);

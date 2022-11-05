@@ -30,21 +30,22 @@
 // Instantiate Arrays of char values.
 
 #include "Array.h"
+
+// Prevent implicit instantiations on some systems (Windows, others?)
+// that can lead to duplicate definitions of static data members.
+
+extern template class OCTAVE_EXTERN_TEMPLATE_API Array<octave::idx_vector>;
+extern template class Array<octave_idx_type>;
+
 #include "Array-base.cc"
 
 #define INLINE_ASCENDING_SORT 1
 #define INLINE_DESCENDING_SORT 1
 #include "oct-sort.cc"
 
-// Prevent implicit instantiations on some systems (Windows, others?)
-// that can lead to duplicate definitions of static data members.
-
-extern template class Array<octave::idx_vector>;
-extern template class Array<octave_idx_type>;
-
 template class octave_sort<char>;
 
-INSTANTIATE_ARRAY (char, OCTAVE_API);
+INSTANTIATE_ARRAY (char, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
 
 template OCTAVE_API std::ostream& operator << (std::ostream&,
                                                const Array<char>&);

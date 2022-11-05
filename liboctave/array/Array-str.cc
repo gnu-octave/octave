@@ -32,16 +32,17 @@
 // Instantiate Arrays of strings.
 
 #include "Array.h"
-#include "Array-base.cc"
-
-#include "oct-sort.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class Array<octave::idx_vector>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API Array<octave::idx_vector>;
 extern template class Array<octave_idx_type>;
+
+#include "Array-base.cc"
+
+#include "oct-sort.cc"
 
 template class octave_sort<std::string>;
 
-INSTANTIATE_ARRAY (std::string, OCTAVE_API);
+INSTANTIATE_ARRAY (std::string, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);

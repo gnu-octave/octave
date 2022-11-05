@@ -29,7 +29,6 @@
 #  include "config.h"
 #endif
 
-#include "Array.h"
 #include "Array-oct.cc"
 
 #include "ov.h"
@@ -45,13 +44,13 @@
 #endif
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave_value, OCTINTERP_API);
-INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave_value, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave_value *, OCTINTERP_API);
-INSTANTIATE_ARRAY (octave_value *, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave_value *, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave::cdef_object, OCTINTERP_API);
-INSTANTIATE_ARRAY (octave::cdef_object, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave::cdef_object, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
 
 #if defined (HAVE_PRAGMA_GCC_VISIBILITY)
 #  pragma GCC visibility pop

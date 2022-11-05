@@ -47,11 +47,11 @@ DECL_COMPLEXR_COMP(<=)
 
 // extern template instantiations
 # define EXT_INST_COMPLEXR_COMP(OP, T)                                       \
-    extern template OCTAVE_API                                               \
+    extern template OCTAVE_EXTERN_TEMPLATE_API                               \
     bool operator OP (const std::complex<T>& a, const std::complex<T>& b);   \
-    extern template OCTAVE_API                                               \
+    extern template OCTAVE_EXTERN_TEMPLATE_API                               \
     bool operator OP (const std::complex<T>& a, T b);                        \
-    extern template OCTAVE_API                                               \
+    extern template OCTAVE_EXTERN_TEMPLATE_API                               \
     bool operator OP (T a, const std::complex<T>& b);
 
 EXT_INST_COMPLEXR_COMP(>, double)

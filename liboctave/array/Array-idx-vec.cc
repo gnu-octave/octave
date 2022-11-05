@@ -32,13 +32,14 @@
 #include "idx-vector.h"
 
 #include "Array.h"
-#include "Array-base.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
 extern template class Array<octave_idx_type>;
 
+#include "Array-base.cc"
+
 NO_INSTANTIATE_ARRAY_SORT_API (octave::idx_vector, OCTAVE_API);
 
-INSTANTIATE_ARRAY (octave::idx_vector, OCTAVE_API);
+INSTANTIATE_ARRAY (octave::idx_vector, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);

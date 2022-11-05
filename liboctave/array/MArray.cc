@@ -380,16 +380,8 @@ void MArray<T>::instantiation_guard ()
   T::__xXxXx__ ();
 }
 
-#if defined (__clang__)
-#  define INSTANTIATE_MARRAY(T, API)            \
+#define INSTANTIATE_MARRAY(T, API)            \
   template <> API void                          \
   MArray<T>::instantiation_guard () { }         \
                                                 \
   template class API MArray<T>
-#else
-#  define INSTANTIATE_MARRAY(T, API)            \
-  template <> API void                          \
-  MArray<T>::instantiation_guard () { }         \
-                                                \
-  template class MArray<T>
-#endif

@@ -32,12 +32,12 @@
 #  include <memory_resource>
 
 template <typename T, typename Alloc = std::pmr::polymorphic_allocator<T>>
-class OCTAVE_API Sparse;
+class OCTAVE_TEMPLATE_API Sparse;
 
 #else
 
 template <typename T, typename Alloc = std::allocator<T>>
-class OCTARRAY_API Sparse;
+class OCTAVE_TEMPLATE_API Sparse;
 
 #endif
 

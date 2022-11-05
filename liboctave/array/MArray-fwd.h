@@ -28,6 +28,6 @@
 
 #include "octave-config.h"
 
-template <typename T> class OCTARRAY_API MArray;
+template <typename T> class OCTAVE_TEMPLATE_API MArray;
 
 #endif

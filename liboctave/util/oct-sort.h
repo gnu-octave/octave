@@ -98,7 +98,7 @@ enum sortmode { UNSORTED = 0, ASCENDING, DESCENDING };
 
 template <typename T>
 class
-OCTARRAY_API
+OCTAVE_TEMPLATE_API
 octave_sort
 {
 public:
@@ -348,7 +348,7 @@ private:
 
 template <typename T>
 class
-OCTARRAY_API
+OCTAVE_TEMPLATE_API
 vec_index
 {
 public:

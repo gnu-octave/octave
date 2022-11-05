@@ -198,4 +198,86 @@ You should call isprime(N) instead of directly calling this function.
 %!error <unable to convert input> (__isprimelarge__ ({'foo'; 'bar'}))
 */
 
+
+// This function implements a fast, private GCD function
+// optimized for uint64_t.  No input validation by design.
+inline
+uint64_t
+localgcd (uint64_t a, uint64_t b)
+{
+  return (a <= b) ? ( (b % a == 0) ? a : localgcd (a, b % a) )
+                  : ( (a % b == 0) ? b : localgcd (a % b, b) );
+}
+
+// This function implements a textbook version of the Pollard Rho
+// factorization algorithm with Brent update.
+// The code is short and simple, but the math behind it is complicated.
+uint64_t
+pollardrho (uint64_t n, uint64_t c = 1ULL)
+{
+  uint64_t i = 1ULL, j = 2ULL;  // cycle index values
+  uint64_t x = (c+2) % n;       // can also be rand () % n
+  uint64_t y = x;               // other value in the chain
+  uint64_t g = 0;               // GCD
+
+  while (true)
+    {
+      i++;
+
+      // Calculate x = mod (x^2 - c, n) without overflow.
+      x = safemultiply (x, x, n);
+      x = (x >= c) ? (x - c) : (x + n - c);
+
+      // Calculate GCD (abs (x-y), n).
+      g = (x == y) ? 0 : (x > y) ? localgcd (x - y, n) : localgcd (y - x, n);
+
+      if (i == j)  // cycle detected ==> double j
+        {
+          y = x;
+          j <<= 1;
+        }
+
+      if (g == n)  // restart with a different c
+        return pollardrho (n, c + 2);
+
+      if (g > 1ULL)  // found GCD ==> exit loop properly
+        {
+          if (n % g)   // nonzero remainder ==> not a factor
+            return 0;  // rare but theoretically possible case.
+          else         // normal case
+            return g;  // GCD is a divisor of n by definition.
+        }
+    }
+}
+
+DEFUN (__pollardrho__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{x} =} __pollardrho__ (@var{n})
+Private function.  Use the Pollard Rho test to find a factor of @var{n}.
+The input @var{n} is required to be a composite 64-bit integer.
+Do not pass it a prime input!  You should call factor(@var{n}) instead
+of directly calling this function.
+
+@seealso{isprime, factor}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+  if (nargin != 1)
+    print_usage ();
+
+  octave_uint64 inp = args(0).xuint64_scalar_value
+    ("__pollardrho__: unable to convert input. Call factor() instead.");
+
+  uint64_t n = inp;
+  octave_uint64 retval = pollardrho (n);
+
+  return ovl (retval);
+}
+
+/*
+%!assert (__pollardrho__ (uint64 (78567695338254293)), uint64 (443363))
+
+%!error <unable to convert input> (__pollardrho__ ({'foo'; 'bar'}))
+*/
+
 OCTAVE_NAMESPACE_END

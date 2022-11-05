@@ -67,77 +67,19 @@ function [pf, n] = factor (q)
     error ("factor: Q too large to factor (> flintmax)");
   endif
 
-  ## The basic idea is to divide by the prime numbers from 1 to sqrt(q).
-  ## But primes(sqrt(q)) can be very time-consuming to compute for q > 1e16,
-  ## so we divide by smaller primes first.
-  ##
-  ## This won't make a difference for prime q, but it makes a big (100x)
-  ## difference for large composite q.  Since there are many more composites
-  ## than primes, this leads overall to a speedup.
-  ##
-  ## There is at most one prime greater than sqrt(q), and if it exists,
-  ## it has multiplicity 1, so no need to consider any factors greater
-  ## than sqrt(q) directly.  If there were two factors p1, p2 > sqrt(q), then
-  ##
-  ##   q >= p1*p2 > sqrt(q)*sqrt(q) == q,
-  ##
-  ## which is a contradiction.
-  ##
-  ## The following calculation of transition and number of divisors to use
-  ## was determined empirically.  As of now (October 2021) it gives the best
-  ## overall performance over the range of 1 <= q <= intmax ("uint64").
-  ##
-  ## For future programmers: check periodically for performance improvements
-  ## and tune this transition as required.  Trials that didn't yield success
-  ## in (October 2021):
-  ##
-  ## 1.) persistent smallprimes = primes (FOO)
-  ##
-  ##     For various fixed FOO in the range 10 <= FOO <= 10e6.
-  ##     (FOO is independent of q.)  The thought had been that making it
-  ##     persistent would cache it so it didn't need to be recomputed for
-  ##     subsequent calls, but it slowed it down overall.  It seems calling
-  ##     primes twice with smaller q is still faster than one persistent
-  ##     call for a large q.
-  ##
-  ## 2.) smallprimes = primes (q ^ FOO)
-  ##
-  ##     For various values of FOO.  For FOO >= 0.25 or FOO <= 0.16, the
-  ##     performance is very poor.  FOO needs to be in the 0.17 to 0.24 range,
-  ##     somewhat.  Benchmark experiments indicate it should increase gently
-  ##     from 0.18 to 0.21 as q goes from 10^11 to 10^18.
-  ##
-  ##     But putting in such an expression would require calculating the log
-  ##     of q, which defeats any performance improvement.  Or a step-wise
-  ##     approximation like:
-  ##
-  ##     foo = 0.18 + 0.01 * (q > 1e12) + 0.01 * (q > 1e14) ...
-  ##                                    + 0.01 * (q > 1e16);
-  ##     smallprimes = primes (feval (cls, q^foo));
-  ##
-  ##     where the RHS of foo would go from 0.18 to 0.21 over several orders
-  ##     of magnitude without calling the log.  Obviously that is overly
-  ##     empirical, so putting in q^0.2 seems to be the most robust overall
-  ##     for 64-bit q.
+  ## The overall flow is this:
+  ## 1. Divide by small primes smaller than q^0.2, if any.
+  ## 2. Use Pollard Rho to reduce the value below 1e10 if possible.
+  ## 3. Divide by primes smaller than sqrt (q), if any.
+  ## 4. At all stages, stop if the remaining value is prime.
 
-  ## Lookup table for sufficiently small values for q.
-  if (q < 10e9)
-    ## Lookup, rather calling up to primes(100) is about 3% faster, than the
-    ## previous value of primes(30).  Same for very small q < 1e6.
-    ##
-    ## For 1e9 < q < 10e9 the lookup approach is about 7% faster.
-
+  ## First divide by primes (q ^ 0.2).
+  ## For q < 1e10, we can hard-code the primes.
+  if (q < 1e10)
     smallprimes = feval (cls, ...
       [2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97]);
-
-    ## Only for really small values of q, statements like
-    ##
-    ##   smallprimes(smallprimes > q) = [];
-    ##
-    ## are relevant and slow down significantly for large values of q.
   else
-    ## For sufficiently large q, go up to the 5th root of q for now.
-    smallprimes = primes (feval (cls, q^0.2));
+    smallprimes = primes (feval (cls, q ^ 0.2));
   endif
 
   ## pf is the list of prime factors returned with type of input class.
@@ -147,37 +89,41 @@ function [pf, n] = factor (q)
   ## pf now contains all prime factors of q within smallprimes, including
   ## repetitions, in ascending order.
   ##
-  ## q itself will be divided by those prime factors to become smaller,
+  ## q itself has been divided by those prime factors to become smaller,
   ## unless q was prime to begin with.
 
+  sortflag = false;
   if (isprime (q))
-    ## This is an optimization for numbers like 18446744073709551566
-    ## == 2 * 9223372036854775783, where the small factors can be pulled
-    ## out easily and the remaining is prime.  This optimization reduces
-    ## 14.3 s to 1.8 ms (8000X faster) for such cases.
     pf(end+1) = q;
   else
-    ## Now go all the way to sqrt(q), where q is smaller than the original q in
-    ## most cases.
-    ##
-    ## Note: Do not try to weed out the smallprimes inside largeprimes, whether
-    ## using length(smallprimes) or max(smallprimes) -- it slows it down!
-    largeprimes = primes (sqrt (q));
-    [pf, q] = reducefactors (q, pf, largeprimes);
+    ## Use Pollard Rho technique to pull factors one at a time.
+    while (q > 1e10 && ! isprime (q))
+      pr = feval (cls, __pollardrho__ (q));  # pr is a prime factor.
+      [pf, q] = reducefactors (q, pf, pr);
+      ## q is now divided by all occurrences of factor pr.
+      sortflag = true;
+    endwhile
 
-    ## At this point, all prime factors <= the sqrt of the original q have been
-    ## pulled out in ascending order.
-    ##
-    ## If q = 1, then no further primes are left.
-    ## If q > 1, then q itself must be prime, and it must be the single prime
-    ## factor that was larger than the sqrt of the original q.
-    if (q > 1)
+    if (isprime (q))
       pf(end+1) = q;
-    endif
-  end
+    else
+      ## If we are here, then q is composite but less than 1e10,
+      ## and that is fast enough to test by division.
+      largeprimes = primes (feval (cls, sqrt (q)));
+      [pf, q] = reducefactors (q, pf, largeprimes);
 
-  ## At this point, all prime factors have been pulled out of q in ascending
-  ## order.  There is no need to sort(pf).
+      ## If q is still not 1, then it must be a prime of power 1.
+      if (q > 1)
+        pf(end+1) = q;
+      endif
+    endif
+  endif
+
+  ## The Pollard Rho technique can give factors in arbitrary order,
+  ## so we need to sort pf if that was used.
+  if (sortflag)
+    pf = sort (pf);
+  endif
 
   ## Determine multiplicity.
   if (nargout > 1)
@@ -192,16 +138,11 @@ function [pf, q] = reducefactors (qin, pfin, divisors)
 
   pf = pfin;
   q = qin;
-  ## The following line is a few milliseconds faster than
-  ## divisors (mod (q, divisors) ~= 0) = [];
   divisors = divisors (mod (q, divisors) == 0);
 
   for pp = divisors  # for each factor in turn
     ## Keep extracting all occurrences of that factor before going to larger
     ## factors.
-    ##
-    ## Note: mod() was marginally faster than rem(), when assessed over 10e6
-    ##       trials of the whole factor() function.
     while (mod (q, pp) == 0)
       pf(end+1) = pp;
       q /= pp;

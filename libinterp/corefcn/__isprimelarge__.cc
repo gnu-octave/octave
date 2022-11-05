@@ -238,7 +238,7 @@ pollardrho (uint64_t n, uint64_t c = 1ULL)
           j <<= 1;
         }
 
-      if (g == n)  // restart with a different c
+      if (g == n || i > 1000000ULL)  // cut losses, restart with a different c
         return pollardrho (n, c + 2);
 
       if (g > 1ULL)  // found GCD ==> exit loop properly
@@ -275,6 +275,7 @@ of directly calling this function.
 
 /*
 %!assert (__pollardrho__ (uint64 (78567695338254293)), uint64 (443363))
+%!assert (__pollardrho__ (1084978968791), uint64 (832957))
 
 %!error <unable to convert input> (__pollardrho__ ({'foo'; 'bar'}))
 */

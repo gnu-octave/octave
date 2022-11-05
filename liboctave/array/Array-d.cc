@@ -31,7 +31,7 @@
 
 #include "lo-mappers.h"
 #include "Array.h"
-#include "Array.cc"
+#include "Array-base.cc"
 #include "oct-locbuf.h"
 
 #define INLINE_ASCENDING_SORT 1

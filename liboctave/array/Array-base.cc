@@ -23,6 +23,10 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+// Do not include this file directly to instantiate the Array<T> template
+// class in code outside liboctave.  Include "Array-oct.cc" or "Array.cc"
+// instead.
+
 // This file should not include config.h.  It is only included in other
 // C++ source files that should have included config.h before including
 // this file.

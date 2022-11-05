@@ -30,26 +30,13 @@
 #endif
 
 #include "Array.h"
-#include "Array.cc"
+#include "Array-oct.cc"
 
 #include "ov.h"
 #include "cdef-class.h"
 #include "cdef-object.h"
 
 #include "oct-sort.cc"
-
-// Prevent implicit instantiations on some systems (Windows, others?)
-// that can lead to duplicate definitions of static data members.
-
-extern template class Array<Complex>;
-extern template class Array<FloatComplex>;
-extern template class Array<bool>;
-extern template class Array<char>;
-extern template class Array<double>;
-extern template class Array<float>;
-extern template class Array<octave::idx_vector>;
-extern template class Array<octave_idx_type>;
-extern template class Array<std::string>;
 
 #if defined (HAVE_PRAGMA_GCC_VISIBILITY)
 // Visibility attributes are ignored on template instantiation.

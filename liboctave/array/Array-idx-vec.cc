@@ -32,7 +32,7 @@
 #include "idx-vector.h"
 
 #include "Array.h"
-#include "Array.cc"
+#include "Array-base.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.

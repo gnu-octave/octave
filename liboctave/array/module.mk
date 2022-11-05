@@ -121,7 +121,8 @@ ARRAY_SRC = \
   %reldir%/uint8NDArray.cc
 
 LIBOCTAVE_TEMPLATE_SRC += \
-  %reldir%/Array.cc \
+  %reldir%/Array-base.cc \
+  %reldir%/Array-oct.cc \
   %reldir%/DiagArray2.cc \
   %reldir%/MArray.cc \
   %reldir%/MDiagArray2.cc \

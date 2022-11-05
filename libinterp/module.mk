@@ -89,7 +89,8 @@ octinclude_HEADERS += \
   $(LIBINTERP_OPERATORS_INC) \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
-  $(PARSER_INC)
+  $(PARSER_INC) \
+  $(TEMPLATE_INST_INC)
 
 noinst_HEADERS += \
   %reldir%/options.h \

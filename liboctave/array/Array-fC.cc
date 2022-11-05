@@ -33,7 +33,7 @@
 #include "lo-mappers.h"
 
 #include "Array.h"
-#include "Array.cc"
+#include "Array-base.cc"
 #include "oct-sort.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)

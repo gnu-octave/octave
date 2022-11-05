@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2022 The Octave Project Developers
+// Copyright (C) 2022 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,25 +23,16 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if defined (HAVE_CONFIG_H)
-#  include "config.h"
-#endif
 
-#include <string>
+// Include this file when instantiating the Array class with new types in
+// projects linking to "liboctinterp".
 
-// Instantiate Arrays of strings.
+#include "Array-oct.cc"
 
-#include "Array.h"
-#include "Array-base.cc"
+// "Protect" Array<T> instantiations that are exported by liboctinterp from
+// being implicitly instantiated in compilation units including this file.
 
-#include "oct-sort.cc"
-
-// Prevent implicit instantiations on some systems (Windows, others?)
-// that can lead to duplicate definitions of static data members.
-
-extern template class Array<octave::idx_vector>;
-extern template class Array<octave_idx_type>;
-
-template class octave_sort<std::string>;
-
-INSTANTIATE_ARRAY (std::string, OCTAVE_API);
+// instantiated in Array-tc.cc
+extern template class Array<octave_value>;
+extern template class Array<octave_value *>;
+extern template class Array<octave::cdef_object>;

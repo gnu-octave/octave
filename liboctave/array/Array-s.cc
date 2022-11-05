@@ -30,7 +30,7 @@
 // Instantiate Arrays of short int values.
 
 #include "Array.h"
-#include "Array.cc"
+#include "Array-base.cc"
 
 #define INLINE_ASCENDING_SORT 1
 #define INLINE_DESCENDING_SORT 1

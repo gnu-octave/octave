@@ -1567,7 +1567,8 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
   if (swap)
     swap_bytes<8> (&subsys_offset, 1);
 
-  if (subsys_offset != 0x2020202020202020ULL && subsys_offset != 0ULL)
+  if (subsys_offset != UINT64_C (0x2020202020202020)
+      && subsys_offset != UINT64_C (0))
     {
       // Read the subsystem data block
       is.seekg (subsys_offset, std::ios::beg);

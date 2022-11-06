@@ -304,9 +304,15 @@ public:
   // object is deleted.  The dimension vector DV must be consistent with
   // the size of the allocated PTR array.
 
-  OCTARRAY_API
+  OCTARRAY_OVERRIDABLE_FUNC_API
   explicit Array (T *ptr, const dim_vector& dv,
-                  const Alloc& xallocator = Alloc ());
+                  const Alloc& xallocator = Alloc ())
+    : m_dimensions (dv),
+      m_rep (new typename Array<T, Alloc>::ArrayRep (ptr, dv, xallocator)),
+      m_slice_data (m_rep->m_data), m_slice_len (m_rep->m_len)
+  {
+    m_dimensions.chop_trailing_singletons ();
+  }
 
   //! Reshape constructor.
   OCTARRAY_API Array (const Array<T, Alloc>& a, const dim_vector& dv);

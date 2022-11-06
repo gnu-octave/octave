@@ -47,7 +47,7 @@
 ## @end group
 ## @end example
 ##
-## For even larger inputs, use @code{sym} if you have the symbolic package
+## For even larger inputs, use @code{sym} if you have the Symbolic package
 ## installed and loaded:
 ##
 ## @example

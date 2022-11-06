@@ -36,8 +36,28 @@
 ## their multiplicities.  That is,
 ## @code{prod (@var{pf} .^ @var{n}) == @var{q}}.
 ##
-## Implementation Note: The input @var{q} must be less than @code{flintmax}
-## when the input is a floating-point class (double or single).
+## Implementation Note: If the input @var{q} is @code{single} or @code{double},
+## then it must not exceed the corresponding @code{flintmax}.  For larger
+## inputs, cast them to @code{uint64} if they're less than 2^64:
+##
+## @example
+## @group
+## factor (uint64 (18446744073709011493))
+##    @result{}     571111    761213  42431951
+## @end group
+## @end example
+##
+## For even larger inputs, use @code{sym} if you have the symbolic package
+## installed and loaded:
+##
+## @example
+## @group
+## factor (sym ('9444733049654361449941'))
+##    @result{} (sym)
+##               1           1
+##  1099511627689 ⋅8589934669
+## @end group
+## @end example
 ## @seealso{gcd, lcm, isprime, primes}
 ## @end deftypefn
 

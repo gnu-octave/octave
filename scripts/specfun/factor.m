@@ -95,18 +95,27 @@ function [pf, n] = factor (q)
   sortflag = false;
   if (isprime (q))
     pf(end+1) = q;
-  else
+  elseif (q > 1)
     ## Use Pollard Rho technique to pull factors one at a time.
     while (q > 1e10 && ! isprime (q))
-      pr = feval (cls, __pollardrho__ (q));  # pr is a prime factor.
+      pr = feval (cls, __pollardrho__ (q));  # pr is a factor of q.
+
+      ## There is a small chance (13 in 1e5) that pr is not actually prime.
+      ## To guard against that, factorize pr, which will force smaller factors
+      ## to be found.  The use of isprime above guards against infinite
+      ## recursion.
+      if (! isprime (pr))
+        pr = factor (pr);
+      end
+
       [pf, q] = reducefactors (q, pf, pr);
-      ## q is now divided by all occurrences of factor pr.
+      ## q is now divided by all occurrences of factor(s) pr.
       sortflag = true;
     endwhile
 
     if (isprime (q))
       pf(end+1) = q;
-    else
+    elseif (q > 1)
       ## If we are here, then q is composite but less than 1e10,
       ## and that is fast enough to test by division.
       largeprimes = primes (feval (cls, sqrt (q)));
@@ -166,6 +175,22 @@ endfunction
 %!   assert (prod (pf.^n), i);
 %!   assert (all ([0,pf] != [pf,0]));
 %! endfor
+
+## Make sure that all factors returned are indeed prime, even when
+## __pollardrho__ returns a composite factor.
+%!assert (all (isprime (factor (uint64 (18446744073707633197)))))
+%!assert (all (isprime (factor (uint64 (18446744073707551733)))))
+%!assert (all (isprime (factor (uint64 (18446744073709427857)))))
+%!assert (all (isprime (factor (uint64 (18446744073709396891)))))
+%!assert (all (isprime (factor (uint64 (18446744073708666563)))))
+%!assert (all (isprime (factor (uint64 (18446744073708532009)))))
+%!assert (all (isprime (factor (uint64 (18446744073708054211)))))
+%!assert (all (isprime (factor (uint64 (18446744073707834741)))))
+%!assert (all (isprime (factor (uint64 (18446744073707298053)))))
+%!assert (all (isprime (factor (uint64 (18446744073709407383)))))
+%!assert (all (isprime (factor (uint64 (18446744073708730121)))))
+%!assert (all (isprime (factor (uint64 (18446744073708104447)))))
+%!assert (all (isprime (factor (uint64 (18446744073709011493)))))
 
 %!assert (factor (uint8 (8)), uint8 ([2 2 2]))
 %!assert (factor (single (8)), single ([2 2 2]))

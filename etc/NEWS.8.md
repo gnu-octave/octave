@@ -29,6 +29,10 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
   outward normal vectors.  Input type checking has also been added for
   improved error handling.
 
+- `factor` now factorizes all 64-bit integers in roughly the same time.
+  Previously, the product of two large primes took much longer to factorize
+  than highly composite inputs.
+
 - `Refine` option is now implemented in functions `ode45`, `ode23`, 
   and `ode23s`.
 

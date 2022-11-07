@@ -1677,17 +1677,18 @@ if test $check_magick = yes; then
     LIBS="$MAGICK_LDFLAGS $MAGICK_LIBS $LIBS"
     AC_LANG_PUSH(C++)
     AC_CHECK_HEADER([Magick++.h], [
-      AC_CACHE_CHECK([for Magick::ColorRGB in Magick++.h],
-        [octave_cv_func_magick_colorrgb],
+      AC_CACHE_CHECK([for Magick::ColorRGB and Magick::PixelPacket in Magick++.h],
+        [octave_cv_func_magick],
         [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <Magick++.h>
           ]], [[
           Magick::ColorRGB c;
+          Magick::PixelPacket pix;
           ]])],
-          octave_cv_func_magick_colorrgb=yes,
-          octave_cv_func_magick_colorrgb=no)
+          octave_cv_func_magick=yes,
+          octave_cv_func_magick=no)
         ])
-      if test $octave_cv_func_magick_colorrgb = yes; then
+      if test $octave_cv_func_magick = yes; then
         use_magick=yes
         warn_magick=
       fi

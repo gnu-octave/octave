@@ -30,8 +30,6 @@
 #include <list>
 #include <sstream>
 
-#include <pcre.h>
-
 #include "base-list.h"
 #include "oct-locbuf.h"
 #include "quit.h"

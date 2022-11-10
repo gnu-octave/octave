@@ -1598,37 +1598,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [
   fi
 ])
 dnl
-dnl Find a suitable termlib to use.
-dnl
-AC_DEFUN([OCTAVE_CHECK_LIB_TERMLIB], [
-  TERM_LIBS=
-  ac_octave_save_LIBS="$LIBS"
-  AC_SEARCH_LIBS([tputs],
-                 [ncurses curses termcap terminfo termlib],
-                 [], [])
-  LIBS="$ac_octave_save_LIBS"
-  case "$ac_cv_search_tputs" in
-    -l*)
-      TERM_LIBS="$ac_cv_search_tputs"
-    ;;
-    no)
-      warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, or -ltermlib!"
-      AC_MSG_WARN([$warn_termlibs])
-    ;;
-  esac
-
-dnl  Old code (9/9/2012).  Delete when new code is definitely proven.
-dnl
-dnl  for _termlib in ncurses curses termcap terminfo termlib; do
-dnl    AC_CHECK_LIB([${_termlib}], [tputs], [
-dnl      TERM_LIBS="-l${termlib}"
-dnl      octave_cv_lib_found_termlib=yes
-dnl      break])
-dnl  done
-
-  AC_SUBST(TERM_LIBS)
-])
-dnl
 dnl Check whether new API is used with QHelpIndexWidget.
 dnl Under new API, QHelpIndexWidget emits documentActivates.
 dnl Under old API, QHelpIndexWidget emits linkActivated.
@@ -2915,7 +2884,6 @@ dnl readline.
 dnl
 AC_DEFUN([OCTAVE_ENABLE_READLINE], [
   USE_READLINE=yes
-  READLINE_LIBS=
   AC_ARG_ENABLE([readline],
     [AS_HELP_STRING([--disable-readline],
       [do not use readline library])],
@@ -2924,20 +2892,14 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
        warn_readline="command editing and history features require GNU Readline"
      fi])
   if test $USE_READLINE = yes; then
-    dnl RHEL 5 and older systems require termlib set before enabling readline
-    AC_REQUIRE([OCTAVE_CHECK_LIB_TERMLIB])
-    ac_octave_save_LIBS="$LIBS"
-    LIBS="$TERM_LIBS"
-    AC_CHECK_LIB([readline], [rl_set_keyboard_input_timeout],
-      [READLINE_LIBS="-lreadline"
+    gl_FUNC_READLINE
+    if test "$gl_cv_lib_readline" != no; then
       AC_DEFINE(USE_READLINE, 1, [Define to 1 to use the readline library.])
-      ],
-      [AC_MSG_WARN([I need GNU Readline 4.2 or later])
+    else
+      AC_MSG_WARN([I need GNU Readline 4.2 or later])
       AC_MSG_ERROR([this is fatal unless you specify --disable-readline])
-    ])
-    LIBS="$ac_octave_save_LIBS"
+    fi
   fi
-  AC_SUBST(READLINE_LIBS)
 ])
 dnl
 dnl Check if Fortran compiler handles FLAG command line option.  If

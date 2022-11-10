@@ -547,7 +547,6 @@ specified option.
            { "SH_LDFLAGS", build_env::SH_LDFLAGS },
            { "STATIC_LIBS", build_env::STATIC_LIBS },
            { "SUITESPARSECONFIG_LIBS", build_env::SUITESPARSECONFIG_LIBS },
-           { "TERM_LIBS", build_env::TERM_LIBS },
            { "UMFPACK_CPPFLAGS", build_env::UMFPACK_CPPFLAGS },
            { "UMFPACK_LDFLAGS", build_env::UMFPACK_LDFLAGS },
            { "UMFPACK_LIBS", build_env::UMFPACK_LIBS },

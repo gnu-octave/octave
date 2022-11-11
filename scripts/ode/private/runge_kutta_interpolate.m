@@ -23,21 +23,22 @@
 ##
 ########################################################################
 
-function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals)
+function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, fcn, args)
 
   switch (order)
 
     case 1
-      ## Unused
       u_interp = interp1 (z, u.', t, "linear");
 
     case 2
-      ## ode23s with Rosenbrock scheme:
-      der = k_vals(:,1);
+      if (! isempty (k_vals))
+        der = k_vals(:,1);
+      else
+        der = feval (fcn, z(1) , u(:,1), args);
+      endif
       u_interp = quadratic_interpolation (z, u, der, t);
 
     case 3
-      ## ode23 with Bogacki-Shampine scheme:
       u_interp = hermite_cubic_interpolation (z, u, k_vals, t);
 
     case 5
@@ -45,10 +46,11 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals)
       u_interp = hermite_quartic_interpolation (z, u, k_vals, t);
 
     otherwise
-      ## This should never happen
-      warning (["runge_kutta_interpolate: Invalid/unimplemented ", ...
-                "interpolation order: using linear interpolation instead"]);
-      u_interp = interp1 (z, u.', t, "linear");
+      warning (["High order interpolation not yet implemented: ", ...
+                "using cubic interpolation instead"]);
+      der(:,1) = feval (fcn, z(1), u(:,1), args);
+      der(:,2) = feval (fcn, z(2), u(:,2), args);
+      u_interp = hermite_cubic_interpolation (z, u, der, t);
 
   endswitch
 

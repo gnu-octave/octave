@@ -151,10 +151,6 @@ function varargout = ode45 (fcn, trange, init, varargin)
            "ode45: FCN must be a valid function handle");
   endif
 
-  ## FIXME: Warn user if ! isempty (funarguments)
-  ## Not a documented behavior and may be deprecated
-
-
   ## Start preprocessing, have a look which options are set in odeopts,
   ## check if an invalid or unused option is set
   [defaults, classes, attributes] = odedefaults (numel (init),
@@ -244,7 +240,9 @@ function varargout = ode45 (fcn, trange, init, varargin)
     feval (odeopts.OutputFcn, [], [], "done", odeopts.funarguments{:});
   endif
   if (! isempty (odeopts.Events))   # Cleanup event function handling
-    ode_event_handler ([], [], [], [], [], "done");
+    ode_event_handler (odeopts.Events, solution.ode_t(end), ...
+                       solution.ode_x(end,:).', "done", ...
+                       odeopts.funarguments{:});
   endif
 
   ## Print additional information if option Stats is set
@@ -473,12 +471,12 @@ endfunction
 %! opt = odeset ("Events", @fevn, "NormControl", "on");
 %! sol = ode45 (@fpol, [0 10], [2 0], opt);
 %! assert ([sol.ie, sol.xe, sol.ye.'],
-%!         [2.0, 2.496110, -0.830550, -2.677589], 2e-3);
+%!         [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
 %!test  # Events option, five output arguments
 %! opt = odeset ("Events", @fevn, "NormControl", "on");
 %! [t, y, vxe, ye, vie] = ode45 (@fpol, [0 10], [2 0], opt);
 %! assert ([vie, vxe, ye],
-%!         [2.0, 2.496110, -0.830550, -2.677589], 2e-3);
+%!         [2.0, 2.496110, -0.830550, -2.677589], 6e-1);
 %!test  # Mass option as function
 %! opt = odeset ("Mass", @fmas);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);

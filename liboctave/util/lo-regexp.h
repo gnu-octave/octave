@@ -51,7 +51,7 @@ namespace octave
     regexp (const std::string& pat = "",
             const regexp::opts& opt = regexp::opts (),
             const std::string& w = "regexp")
-      : m_pattern (pat), m_options (opt), m_data (nullptr), m_named_pats (),
+      : m_pattern (pat), m_options (opt), m_code (nullptr), m_named_pats (),
         m_names (0), m_named_idx (), m_who (w)
     {
       compile_internal ();
@@ -225,7 +225,7 @@ namespace octave
     opts m_options;
 
     // Internal data describing the regular expression.
-    void *m_data;
+    void *m_code;
 
     string_vector m_named_pats;
     int m_names;

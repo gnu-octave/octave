@@ -64,8 +64,8 @@ namespace octave
   void
   regexp::free (void)
   {
-    if (m_data)
-      pcre_free (static_cast<pcre *> (m_data));
+    if (m_code)
+      pcre_free (static_cast<pcre *> (m_code));
   }
 
   void
@@ -239,10 +239,10 @@ namespace octave
          | (m_options.freespacing () ? PCRE_EXTENDED : 0)
          | PCRE_UTF8);
 
-    m_data = pcre_compile (buf_str.c_str (), pcre_options,
+    m_code = pcre_compile (buf_str.c_str (), pcre_options,
                            &err, &erroffset, nullptr);
 
-    if (! m_data)
+    if (! m_code)
       (*current_liboctave_error_handler)
         ("%s: %s at position %d of expression", m_who.c_str (), err, erroffset);
   }
@@ -266,7 +266,7 @@ namespace octave
     char *nametable;
     std::size_t idx = 0;
 
-    pcre *re = static_cast<pcre *> (m_data);
+    pcre *re = static_cast<pcre *> (m_code);
 
     pcre_fullinfo (re, nullptr, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
     pcre_fullinfo (re, nullptr, PCRE_INFO_NAMECOUNT, &namecount);

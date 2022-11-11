@@ -315,7 +315,7 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
 
   vars["LIBOCTINTERP"] = "-loctinterp";
 
-  vars["READLINE_LIBS"] = "-lreadline";
+  vars["READLINE_LIBS"] = %OCTAVE_CONF_READLINE_LIBS%;
 
   vars["LAPACK_LIBS"] = get_variable ("LAPACK_LIBS", %OCTAVE_CONF_LAPACK_LIBS%);
 

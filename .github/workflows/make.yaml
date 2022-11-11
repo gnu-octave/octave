@@ -258,7 +258,7 @@ jobs:
         # https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/octave.rb
         # Amended with additional flags that seem to be needed.
         # Not all of those might be needed or be correct.
-        # FIXME: Building the documentation is broken with texinfo 8.0
+        # FIXME: Building the documentation is broken with texinfo 7.0
         run: |
           echo $PATH
           echo which ccache

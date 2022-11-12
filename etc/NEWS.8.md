@@ -33,7 +33,7 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
   Previously, the product of two large primes took much longer to factorize
   than highly composite inputs.
 
-- `Refine` option is now implemented in functions `ode45`, `ode23`, 
+- `Refine` option is now implemented in functions `ode45`, `ode23`,
   and `ode23s`.
 
 ### Graphical User Interface
@@ -70,6 +70,12 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 - `quadgk` now stops iterating when `error <= tolerance` while the previous
   condition was `error < tolerance`.
 
+- `mean` now accepts vector dimensions and options to handle `NaN` values.
+  The option `"a"` (arithmetic mean), `"g"` (geometric mean), and `"h"`
+  (harmonic mean) are no longer accepted, only the arithmetic mean is computed.
+  For the geometric and harmonic mean, please use respective functions
+  `geomean` and `harmmean` from the Octave Statistics package.
+
 - `var` and `std` now optionally output a second argument containing the mean
   or weighted mean.
 
@@ -85,9 +91,9 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
   Object      | Property         | Default State
   ------------|------------------|------------
   `figure`    | `"dockcontrols"` | `"on"`
-  
+
 - `ode45`, `ode23`, and `ode23s` have improved results for options `Events`,
-  `OutputFcn`, and `Refine`, along with corrected orientation of struct 
+  `OutputFcn`, and `Refine`, along with corrected orientation of struct
   outputs.
 
 ### Alphabetical list of new functions added in Octave 8

@@ -1,5 +1,6 @@
-#! /bin/sh
-# Bootstrap this package from checked-out sources.
+#!/bin/sh
+# Convenience script for fetching auxiliary files that are omitted from
+# the version control repository of this package.
 
 # Copyright (C) 2003-2022 Free Software Foundation, Inc.
 #
@@ -17,22 +18,27 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Originally written by Paul Eggert.  The canonical version of this
-# script is maintained as top/bootstrap in gnulib. However, to be
+# script is maintained as top/autopull.sh in gnulib.  However, to be
 # useful to your package, you should place a copy of it under version
 # control in the top-level directory of your package.  The intent is
 # that all customization can be done with a bootstrap.conf file also
 # maintained in your version control; gnulib comes with a template
 # build-aux/bootstrap.conf to get you started.
+#
+# Alternatively, you can use an autopull.sh script that is specific
+# to your package.
 
-# Please report bugs or propose patches to bug-gnulib@gnu.org.
-
-scriptversion=2022-07-29.23; # UTC
+scriptversion=2022-07-24.15; # UTC
 
 me="$0"
 medir=`dirname "$me"`
 
 # Read the function library and the configuration.
 . "$medir"/bootstrap-funclib.sh
+
+# Ensure that CDPATH is not set.  Otherwise, the output from cd
+# would cause trouble in at least one use below.
+(unset CDPATH) >/dev/null 2>&1 && unset CDPATH
 
 usage() {
   cat <<EOF
@@ -43,28 +49,20 @@ Optional environment variables:
   GNULIB_SRCDIR            Specifies the local directory where gnulib
                            sources reside.  Use this if you already
                            have gnulib sources on your machine, and
-                           do not want to waste your bandwidth downloading
-                           them again.
-  GNULIB_URL               Cloneable URL of the gnulib repository.
-
-Options:
-  --gnulib-srcdir=DIRNAME  specify the local directory where gnulib
-                           sources reside.  Use this if you already
-                           have gnulib sources on your machine, and
-                           you want to use these sources.  Defaults
-                           to \$GNULIB_SRCDIR
-  --gnulib-refdir=DIRNAME  specify the local directory where a gnulib
+                           you want to use these sources.
+  GNULIB_REFDIR            Specifies the local directory where a gnulib
                            repository (with a .git subdirectory) resides.
                            Use this if you already have gnulib sources
                            and history on your machine, and do not want
                            to waste your bandwidth downloading them again.
-                           Defaults to \$GNULIB_REFDIR
+  GNULIB_URL               Cloneable URL of the gnulib repository.
+
+Options:
   --bootstrap-sync         if this bootstrap script is not identical to
                            the version in the local gnulib sources,
                            update this script, and then restart it with
                            /bin/sh or the shell \$CONFIG_SHELL
   --no-bootstrap-sync      do not check whether bootstrap is out of sync
-  --copy                   copy files instead of creating symbolic links
   --force                  attempt to bootstrap even if the sources seem
                            not to have been checked out
   --no-git                 do not use git to update gnulib.  Requires that
@@ -118,9 +116,6 @@ EOF
 
 # Parse options.
 
-# Whether to use copies instead of symlinks.
-copy=false
-
 # Use git to update gnulib sources
 use_git=true
 
@@ -132,20 +127,14 @@ do
     exit;;
   --version)
     set -e
-    echo "bootstrap $scriptversion"
+    echo "autopull.sh $scriptversion"
     echo "$copyright"
     exit 0
     ;;
-  --gnulib-srcdir=*)
-    GNULIB_SRCDIR=${option#--gnulib-srcdir=};;
-  --gnulib-refdir=*)
-    GNULIB_REFDIR=${option#--gnulib-refdir=};;
   --skip-po)
     SKIP_PO=t;;
   --force)
     checkout_only_file=;;
-  --copy)
-    copy=true;;
   --bootstrap-sync)
     bootstrap_sync=true;;
   --no-bootstrap-sync)
@@ -163,45 +152,115 @@ test -z "$GNULIB_SRCDIR" || test -d "$GNULIB_SRCDIR" \
   || die "Error: \$GNULIB_SRCDIR environment variable or --gnulib-srcdir option is specified, but does not denote a directory"
 
 if test -n "$checkout_only_file" && test ! -r "$checkout_only_file"; then
-  die "Bootstrapping from a non-checked-out distribution is risky."
+  die "Running this script from a non-checked-out distribution is risky."
 fi
 
 check_build_prerequisites $use_git
 
-if ! test -f "$medir"/bootstrap-funclib.sh; then
-  # We have only completed the first phase of an upgrade from a bootstrap
-  # version < 2022-07-24. Need to do the second phase now.
-  bootstrap_sync=true
-fi
-
-if $bootstrap_sync; then
+if $use_gnulib || $bootstrap_sync; then
   prepare_GNULIB_SRCDIR
-  upgrade_bootstrap
-  # Since we have now upgraded if needed, no need to try it a second time below.
-  bootstrap_sync=false
+  if $bootstrap_sync; then
+    upgrade_bootstrap
+  fi
 fi
 
-echo "$0: Bootstrapping from checked-out $package sources..."
-
-# Pass GNULIB_SRCDIR to autopull.sh and autogen.sh.
-export GNULIB_SRCDIR
-
-# Pass GNULIB_REFDIR to autopull.sh.
-export GNULIB_REFDIR
-
-if $use_git || test -z "$SKIP_PO"; then
-  "$medir"/autopull.sh \
-      `if $bootstrap_sync; then echo ' --bootstrap-sync'; else echo ' --no-bootstrap-sync'; fi` \
-      `if test -z "$checkout_only_file"; then echo ' --force'; fi` \
-      `if ! $use_git; then echo ' --no-git'; fi` \
-      `if test -n "$SKIP_PO"; then echo ' --skip-po'; fi` \
-    || die "autopull.sh failed."
+# Find sha1sum, named gsha1sum on MacPorts, shasum on Mac OS X 10.6.
+# Also find the compatible sha1 utility on the BSDs
+if test x"$SKIP_PO" = x; then
+  find_tool SHA1SUM sha1sum gsha1sum shasum sha1
 fi
 
-"$medir"/autogen.sh \
-    `if $copy; then echo ' --copy'; fi` \
-    `if test -z "$checkout_only_file"; then echo ' --force'; fi` \
-  || die "autogen.sh failed."
+# See if we can use gnulib's git-merge-changelog merge driver.
+if $use_git && test -d .git && check_exists git; then
+  if git config merge.merge-changelog.driver >/dev/null ; then
+    :
+  elif check_exists git-merge-changelog; then
+    echo "$0: initializing git-merge-changelog driver"
+    git config merge.merge-changelog.name 'GNU-style ChangeLog merge driver'
+    git config merge.merge-changelog.driver 'git-merge-changelog %O %A %B'
+  else
+    echo "$0: consider installing git-merge-changelog from gnulib"
+  fi
+fi
+
+# ----------------------------- Get translations. -----------------------------
+
+download_po_files() {
+  subdir=$1
+  domain=$2
+  echo "$me: getting translations into $subdir for $domain..."
+  cmd=$(printf "$po_download_command_format" "$subdir" "$domain")
+  eval "$cmd"
+}
+
+# Mirror .po files to $po_dir/.reference and copy only the new
+# or modified ones into $po_dir.  Also update $po_dir/LINGUAS.
+# Note po files that exist locally only are left in $po_dir but will
+# not be included in LINGUAS and hence will not be distributed.
+update_po_files() {
+  # Directory containing primary .po files.
+  # Overwrite them only when we're sure a .po file is new.
+  po_dir=$1
+  domain=$2
+
+  # Mirror *.po files into this dir.
+  # Usually contains *.s1 checksum files.
+  ref_po_dir="$po_dir/.reference"
+
+  test -d $ref_po_dir || mkdir $ref_po_dir || return
+  download_po_files $ref_po_dir $domain \
+    && ls "$ref_po_dir"/*.po 2>/dev/null |
+      sed 's|.*/||; s|\.po$||' > "$po_dir/LINGUAS" || return
+
+  langs=$(cd $ref_po_dir && echo *.po | sed 's/\.po//g')
+  test "$langs" = '*' && langs=x
+  for po in $langs; do
+    case $po in x) continue;; esac
+    new_po="$ref_po_dir/$po.po"
+    cksum_file="$ref_po_dir/$po.s1"
+    if ! test -f "$cksum_file" ||
+        ! test -f "$po_dir/$po.po" ||
+        ! $SHA1SUM -c "$cksum_file" < "$new_po" > /dev/null 2>&1; then
+      echo "$me: updated $po_dir/$po.po..."
+      cp "$new_po" "$po_dir/$po.po" \
+          && $SHA1SUM < "$new_po" > "$cksum_file" || return
+    fi
+  done
+}
+
+case $SKIP_PO in
+'')
+  if test -d po; then
+    update_po_files po $package || exit
+  fi
+
+  if test -d runtime-po; then
+    update_po_files runtime-po $package-runtime || exit
+  fi;;
+esac
+
+# -----------------------------------------------------------------------------
+
+bootstrap_post_pull_hook \
+  || die "bootstrap_post_pull_hook failed"
+
+# Don't proceed if there are uninitialized submodules.  In particular,
+# autogen.sh will remove dangling links, which might be links into
+# uninitialized submodules.
+# But it's OK if the 'gnulib' submodule is uninitialized, as long as
+# GNULIB_SRCDIR is set.
+if $use_git; then
+  # Uninitialized submodules are listed with an initial dash.
+  uninitialized=`git submodule | grep '^-' | awk '{ print $2 }'`
+  if test -n "$GNULIB_SRCDIR"; then
+    uninitialized=`echo "$uninitialized" | grep -v '^gnulib$'`
+  fi
+  if test -n "$uninitialized"; then
+    die "Some git submodules are not initialized: "`echo "$uninitialized" | tr '\n' ',' | sed -e 's|,$|.|'`" Either use option '--no-git', or run 'git submodule update --init' and bootstrap again."
+  fi
+fi
+
+echo "$0: done.  Now you can run './autogen.sh'."
 
 # ----------------------------------------------------------------------------
 

@@ -1531,6 +1531,41 @@ AC_DEFUN([OCTAVE_CHECK_LIB_PCRE_OK], [
   fi
 ])
 dnl
+dnl Check whether PCRE2 is compiled with --enable-utf.
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_PCRE2_OK], [
+  AC_CACHE_CHECK([whether PCRE2 library was compiled with UTF support],
+    [octave_cv_lib_pcre2_ok],
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <stdio.h>
+        #define PCRE2_CODE-uNIT_WIDTH 8
+        #if defined (HAVE_PCRE2_H)
+        #  include <pcre2.h>
+        #elif defined (HAVE_PCRE2_PCRE2_H)
+        #  include <pcre2/pcre2.h>
+        #endif
+        ]], [[
+        const char *pattern = "test";
+        int err;
+        PCRE2_SIZE erroffset;
+        pcre2_code *data = pcre2_compile ((PCRE2_SPTR) pattern, PCRE2_ZERO_TERMINATED, PCRE2_UTF, &err, &erroffset, nullptr);
+        return (! data);
+      ]])],
+      octave_cv_lib_pcre2_ok=yes,
+      octave_cv_lib_pcre2_ok=no,
+      octave_cv_lib_pcre2_ok=yes)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_lib_pcre2_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
 dnl Check whether Qhull works (does not crash).
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [

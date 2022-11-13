@@ -1375,14 +1375,42 @@ if test $ENABLE_VM_EVALUATOR = yes; then
     [Define to 1 to build experimental Virtual Machine evaluator.])
 fi
 
-### Check for PCRE regex library.
+### Check for PCRE2 or PCRE regex library, requiring one to exist.
 
-OCTAVE_CHECK_LIB(pcre, PCRE,
-  [], [pcre.h pcre/pcre.h], [pcre_compile], [], [],
-  [OCTAVE_CHECK_LIB_PCRE_OK([],
-    [AC_MSG_ERROR([PCRE library must be built with UTF support (--enable-utf)])])
-  ],
-  [libpcre], [REQUIRED])
+have_pcre2=no
+have_pcre=no
+save_CPPLAGS="$CPPFLAGS"
+CPPFLAGS="-DPCRE2_CODE_UNIT_WIDTH=8 $CPPFLAGS"
+OCTAVE_CHECK_LIB(pcre2, PCRE2,
+  [], [pcre2.h pcre2/pcre2.h], [pcre2_compile_8], [], [],
+  [OCTAVE_CHECK_LIB_PCRE2_OK([have_pcre2=yes],
+    [AC_MSG_ERROR([PCRE2 library must be built with UTF support (--enable-utf)])])],
+  [libpcre2-8])
+CPPFLAGS="$save_CPPFLAGS"
+
+if test $have_pcre2 = no; then
+  OCTAVE_CHECK_LIB(pcre, PCRE,
+    [], [pcre.h pcre/pcre.h], [pcre_compile], [], [],
+    [OCTAVE_CHECK_LIB_PCRE_OK([have_pcre=yes],
+      [AC_MSG_ERROR([PCRE library must be built with UTF support (--enable-utf)])])],
+    [libpcre])
+fi
+
+if test $have_pcre2 = yes; then
+  AC_DEFINE(HAVE_PCRE2, 1, [Define to 1 if PCRE2 is available.])
+
+  ## Only one of PCRE2 or PCRE is used, so avoid having to define and use
+  ## both PCRE2_* and PCRE_* variables everywhere.
+
+  PCRE_CPPFLAGS="$PCRE2_CPPFLAGS"
+  PCRE_LDFLAGS="$PCRE2_LDFLAGS"
+  PCRE_LIBS="$PCRE2_LIBS"
+
+elif test $have_pcre = yes; then
+  AC_DEFINE(HAVE_PCRE, 1, [Define to 1 if PCRE is available.])
+else
+  AC_MSG_ERROR([to build Octave, you must have the PCRE or PCRE2 library and header files installed])
+fi
 
 ### Check for Qhull library.
 

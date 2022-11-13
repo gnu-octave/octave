@@ -188,6 +188,10 @@ namespace octave
       string_vector m_named_tokens;
       string_vector m_tokens;
       Matrix m_token_extents;
+
+      // FIXME: Are these values declared as double because that's what
+      // Octave interpreter functions will store?  Should they be int or
+      // size_t instead?
       double m_start;
       double m_end;
     };

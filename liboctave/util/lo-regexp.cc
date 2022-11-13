@@ -32,10 +32,19 @@
 #include <string>
 #include <vector>
 
-#if defined (HAVE_PCRE_H)
-#  include <pcre.h>
-#elif defined (HAVE_PCRE_PCRE_H)
-#  include <pcre/pcre.h>
+#if defined (HAVE_PCRE2_H) || defined (HAVE_PCRE2_PCRE2_H)
+#  define PCRE2_CODE_UNIT_WIDTH 8
+#  if defined (HAVE_PCRE2_H)
+#    include <pcre2.h>
+#  elif defined (HAVE_PCRE2_PCRE2_H)
+#    include <pcre2/pcre2.h>
+#  endif
+#elif defined (HAVE_PCRE_H) || defined (HAVE_PCRE_PCRE_H)
+#  if defined (HAVE_PCRE_H)
+#    include <pcre.h>
+#  elif defined (HAVE_PCRE_PCRE_H)
+#    include <pcre/pcre.h>
+#  endif
 #endif
 
 #include "Matrix.h"
@@ -46,6 +55,47 @@
 #include "lo-regexp.h"
 #include "str-vec.h"
 #include "unistr-wrappers.h"
+#include "unwind-prot.h"
+
+#if defined (HAVE_PCRE2)
+typedef pcre2_code octave_pcre_code;
+typedef PCRE2_SIZE OCTAVE_PCRE_SIZE;
+void (*octave_pcre_code_free) (octave_pcre_code *) = pcre2_code_free;
+#  define OCTAVE_PCRE_CASELESS PCRE2_CASELESS
+#  define OCTAVE_PCRE_DOTALL PCRE2_DOTALL
+#  define OCTAVE_PCRE_MULTILINE PCRE2_MULTILINE
+#  define OCTAVE_PCRE_EXTENDED PCRE2_EXTENDED
+#  define OCTAVE_PCRE_UTF PCRE2_UTF
+#  define OCTAVE_PCRE_INFO_CAPTURECOUNT PCRE2_INFO_CAPTURECOUNT
+#  define OCTAVE_PCRE_INFO_NAMECOUNT PCRE2_INFO_NAMECOUNT
+#  define OCTAVE_PCRE_INFO_NAMEENTRYSIZE PCRE2_INFO_NAMEENTRYSIZE
+#  define OCTAVE_PCRE_INFO_NAMETABLE PCRE2_INFO_NAMETABLE
+#elif defined (HAVE_PCRE)
+typedef pcre octave_pcre_code;
+typedef int OCTAVE_PCRE_SIZE;
+void (*octave_pcre_code_free) (void *) = pcre_free;
+#  define OCTAVE_PCRE_CASELESS PCRE_CASELESS
+#  define OCTAVE_PCRE_DOTALL PCRE_DOTALL
+#  define OCTAVE_PCRE_MULTILINE PCRE_MULTILINE
+#  define OCTAVE_PCRE_EXTENDED PCRE_EXTENDED
+#  define OCTAVE_PCRE_UTF PCRE_UTF8
+#  define OCTAVE_PCRE_INFO_CAPTURECOUNT PCRE_INFO_CAPTURECOUNT
+#  define OCTAVE_PCRE_INFO_NAMECOUNT PCRE_INFO_NAMECOUNT
+#  define OCTAVE_PCRE_INFO_NAMEENTRYSIZE PCRE_INFO_NAMEENTRYSIZE
+#  define OCTAVE_PCRE_INFO_NAMETABLE PCRE_INFO_NAMETABLE
+#else
+#  error "PCRE2 or PCRE library is required to build Octave"
+#endif
+
+static inline int
+octave_pcre_pattern_info (const octave_pcre_code *code, int what, void *where)
+{
+#if defined (HAVE_PCRE2)
+  return pcre2_pattern_info (code, what, where);
+#else
+  return pcre_fullinfo (code, nullptr, what, where);
+#endif
+}
 
 namespace octave
 {
@@ -64,8 +114,7 @@ namespace octave
   void
   regexp::free (void)
   {
-    if (m_code)
-      pcre_free (static_cast<pcre *> (m_code));
+    octave_pcre_code_free (static_cast<octave_pcre_code *> (m_code));
   }
 
   void
@@ -229,15 +278,42 @@ namespace octave
     while ((pos = buf_str.find ('\0')) != std::string::npos)
       buf_str.replace (pos, 1, "\\000");
 
+    int pcre_options
+      = (  (m_options.case_insensitive () ? OCTAVE_PCRE_CASELESS : 0)
+         | (m_options.dotexceptnewline () ? 0 : OCTAVE_PCRE_DOTALL)
+         | (m_options.lineanchors () ? OCTAVE_PCRE_MULTILINE : 0)
+         | (m_options.freespacing () ? OCTAVE_PCRE_EXTENDED : 0)
+         | OCTAVE_PCRE_UTF);
+
+#if defined (HAVE_PCRE2)
+    PCRE2_SIZE erroffset;
+    int errnumber;
+
+    m_code = pcre2_compile (reinterpret_cast<PCRE2_SPTR> (buf_str.c_str ()),
+                            PCRE2_ZERO_TERMINATED, pcre_options,
+                            &errnumber, &erroffset, nullptr);
+
+    if (! m_code)
+      {
+        // PCRE docs say:
+        //
+        //   If the buffer is too small, the message is truncated (but
+        //   still with a trailing zero), and the negative error code
+        //   PCRE2_ERROR_NOMEMORY is returned. None of the messages are
+        //   very long; a buffer size of 120 code units is ample.
+        //
+        // so we assume that 256 will be large enough to avoid truncated
+        // messages.
+
+        PCRE2_UCHAR err [256];
+        pcre2_get_error_message (errnumber, err, sizeof (err));
+        (*current_liboctave_error_handler)
+          ("%s: %s at position %zu of expression", m_who.c_str (), err,
+           erroffset);
+      }
+#else
     const char *err;
     int erroffset;
-
-    int pcre_options
-      = (  (m_options.case_insensitive () ? PCRE_CASELESS : 0)
-         | (m_options.dotexceptnewline () ? 0 : PCRE_DOTALL)
-         | (m_options.lineanchors () ? PCRE_MULTILINE : 0)
-         | (m_options.freespacing () ? PCRE_EXTENDED : 0)
-         | PCRE_UTF8);
 
     m_code = pcre_compile (buf_str.c_str (), pcre_options,
                            &err, &erroffset, nullptr);
@@ -245,6 +321,7 @@ namespace octave
     if (! m_code)
       (*current_liboctave_error_handler)
         ("%s: %s at position %d of expression", m_who.c_str (), err, erroffset);
+#endif
   }
 
   regexp::match_data
@@ -266,14 +343,17 @@ namespace octave
     char *nametable;
     std::size_t idx = 0;
 
-    pcre *re = static_cast<pcre *> (m_code);
+    octave_pcre_code *re = static_cast<octave_pcre_code *> (m_code);
 
-    pcre_fullinfo (re, nullptr, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
-    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMECOUNT, &namecount);
-    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
-    pcre_fullinfo (re, nullptr, PCRE_INFO_NAMETABLE, &nametable);
+    octave_pcre_pattern_info (re, OCTAVE_PCRE_INFO_CAPTURECOUNT, &subpatterns);
+    octave_pcre_pattern_info (re, OCTAVE_PCRE_INFO_NAMECOUNT, &namecount);
+    octave_pcre_pattern_info (re, OCTAVE_PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
+    octave_pcre_pattern_info (re, OCTAVE_PCRE_INFO_NAMETABLE, &nametable);
 
-    OCTAVE_LOCAL_BUFFER (int, ovector, (subpatterns+1)*3);
+#if defined (HAVE_PCRE)
+    OCTAVE_LOCAL_BUFFER (OCTAVE_PCRE_SIZE, ovector, (subpatterns+1)*3);
+#endif
+
     OCTAVE_LOCAL_BUFFER (int, nidx, namecount);
 
     for (int i = 0; i < namecount; i++)
@@ -288,6 +368,27 @@ namespace octave
       {
         octave_quit ();
 
+#if defined (HAVE_PCRE2)
+        pcre2_match_data *m_data = pcre2_match_data_create_from_pattern (re, NULL);
+
+        unwind_action cleanup_match_data
+          ([=] () { pcre2_match_data_free (m_data); });
+
+        int matches = pcre2_match (re, reinterpret_cast<PCRE2_SPTR> (buffer.c_str ()),
+                                   buffer.length (), idx,
+                                   PCRE2_NO_UTF_CHECK | (idx ? PCRE2_NOTBOL : 0),
+                                   m_data, nullptr);
+
+        if (matches < 0 && matches != PCRE2_ERROR_NOMATCH)
+            (*current_liboctave_error_handler)
+              ("%s: internal error calling pcre2_match; "
+               "error code from pcre2_match is %i", m_who.c_str (), matches);
+
+        if (matches == PCRE2_ERROR_NOMATCH)
+          break;
+
+        OCTAVE_PCRE_SIZE *ovector = pcre2_get_ovector_pointer (m_data);
+#else
         int matches = pcre_exec (re, nullptr, buffer.c_str (),
                                  buffer.length (), idx,
                                  PCRE_NO_UTF8_CHECK | (idx ? PCRE_NOTBOL : 0),
@@ -330,7 +431,8 @@ namespace octave
 
         if (matches == PCRE_ERROR_NOMATCH)
           break;
-        else if (ovector[0] >= ovector[1] && ! m_options.emptymatch ())
+#endif
+        if (ovector[0] >= ovector[1] && ! m_options.emptymatch ())
           {
             // Zero length match.  Skip to next char.
             idx = ovector[0] + 1;
@@ -346,7 +448,12 @@ namespace octave
 
             for (int i = 1; i < matches; i++)
               {
-                if (ovector[2*i] >= 0 && ovector[2*i+1] > 0
+#if defined (HAVE_PCRE2)
+                if (ovector[2*i] != PCRE2_SIZE_MAX
+#else
+                if (ovector[2*i] >= 0
+#endif
+                    && ovector[2*i+1] > 0
                     && (i == 1 || ovector[2*i] != ovector[2*i-2]
                         || ovector[2*i-1] != ovector[2*i+1]))
                   {
@@ -357,9 +464,14 @@ namespace octave
 
             token_extents.resize (pos_match, 2);
 
-            double start = double (ovector[0]+1);
-            double end = double (ovector[1]);
+            OCTAVE_PCRE_SIZE start = ovector[0] + 1;
+            OCTAVE_PCRE_SIZE end = ovector[1];
 
+#if defined (HAVE_PCRE2)
+             // Must use explicit length constructor as match can contain '\0'.
+            std::string match_string = std::string (buffer.c_str() + start - 1,
+                                                    end - start + 1);
+#else
             const char **listptr;
             int status = pcre_get_substring_list (buffer.c_str (), ovector,
                                                   matches, &listptr);
@@ -371,6 +483,7 @@ namespace octave
 
             // Must use explicit length constructor as match can contain '\0'.
             std::string match_string = std::string (*listptr, end - start + 1);
+#endif
 
             string_vector tokens (pos_match);
             string_vector named_tokens (m_names);
@@ -379,7 +492,12 @@ namespace octave
 
             for (int i = 1; i < matches; i++)
               {
-                if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+#if defined (HAVE_PCRE2)
+                if (ovector[2*i] != PCRE2_SIZE_MAX
+#else
+                if (ovector[2*i] >= 0
+#endif
+                    && ovector[2*i+1] > 0)
                   {
                     if (i == 1 || ovector[2*i] != ovector[2*i-2]
                         || ovector[2*i-1] != ovector[2*i+1])
@@ -396,25 +514,45 @@ namespace octave
                                   {
                                     std::size_t len = ovector[2*i+1] - ovector[2*i];
                                     named_tokens(m_named_idx(j))
-                                      = std::string (*(listptr+i-pos_offset),
-                                                     len);
+#if defined (HAVE_PCRE2)
+                                      = std::string (buffer.c_str () + ovector[2*i], len);
+#else
+                                      = std::string (*(listptr+i-pos_offset), len);
+#endif
                                     break;
                                   }
                               }
                           }
 
                         std::size_t len = ovector[2*i+1] - ovector[2*i];
+#if defined (HAVE_PCRE2)
+                        tokens(pos_match++) = std::string (buffer.c_str() + ovector[2*i], len);
+#else
                         tokens(pos_match++) = std::string (*(listptr+i), len);
+#endif
                       }
                     else
                       pos_offset++;
                   }
               }
 
+#if ! defined (HAVE_PCRE2)
             pcre_free_substring_list (listptr);
+#endif
+
+            // FIXME: MATCH_ELEMENT uses double values for these,
+            // presumably because that is what the Octave interpreter
+            // uses.  Should we check that the values don't exceed
+            // flintmax here?  It seems unlikely that it would happen,
+            // but...
+
+            double dstart = static_cast<double> (start);
+            double dend = static_cast<double> (end);
 
             regexp::match_element new_elem (named_tokens, tokens, match_string,
-                                            token_extents, start, end);
+                                            token_extents,
+                                            dstart, dend);
+
             lst.push_back (new_elem);
 
             if (ovector[1] <= ovector[0])

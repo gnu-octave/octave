@@ -369,7 +369,8 @@ namespace octave
         octave_quit ();
 
 #if defined (HAVE_PCRE2)
-        pcre2_match_data *m_data = pcre2_match_data_create_from_pattern (re, NULL);
+        pcre2_match_data *m_data
+          = pcre2_match_data_create_from_pattern (re, nullptr);
 
         unwind_action cleanup_match_data
           ([=] () { pcre2_match_data_free (m_data); });

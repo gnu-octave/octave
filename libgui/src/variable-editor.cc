@@ -1212,7 +1212,7 @@ namespace octave
       }
 
     QDockWidget *existing_qdw = m_main->findChild<QDockWidget *> (name);
-    if (existing_qdw != NULL)
+    if (existing_qdw)
       {
         // Already open.
 

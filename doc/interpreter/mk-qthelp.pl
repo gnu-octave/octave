@@ -26,8 +26,11 @@ $htmlfname = File::Spec->catfile ($basedir, $htmldir, "index.html");
 open (my $HTML, "<", $htmlfname) or die "Unable to open $htmlfname";
 
 # Skip through preamble of file to find start of list
-while (($_ = <$HTML>) !~ /^<div class="contents">/ ) {;}
-while (($_ = <$HTML>) !~ /^<ul class="no-bullet">/ ) {;}
+while (defined ($_ = <$HTML>) and ! /^<div class="contents">/ ) {;}
+while (defined ($_ = <$HTML>)
+         and ! /^<ul class="(?:no-bullet|toc-numbered-mark)">/ ) {;}
+
+die "index.html: reached EOF without finding data start pattern" if eof ($HTML);
 
 $level = 0;
 while (<$HTML>)
@@ -68,7 +71,11 @@ $htmlfname = File::Spec->catfile ($basedir, $htmldir, "Function-Index.html");
 open ($HTML, "<", $htmlfname) or die "Unable to open $htmlfname";
 
 # Skip through preamble of file to find start of list
-while (($_ = <$HTML>) !~ /^<table class="index-fn/ ) {;}
+while (defined ($_ = <$HTML>)
+         and ! /^<table class="(?:index-fn|fn-entries)/ ) {;}
+
+die "Function-Index.html: reached EOF without finding data start pattern"
+  if eof ($HTML);
 
 while (<$HTML>)
 {

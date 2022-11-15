@@ -38,6 +38,15 @@ function varargout = which (varargin)
     print_usage ();
   endif
 
+  ## FIXME: "-all" option not implemented.  Warn user that only the first
+  ##        result found will be returned.  See bug #32088.
+  if (any (isall = strcmpi (varargin, "-all")))
+    warning (["which: '-all' not yet implemented - only the first result ", ...
+             "will be returned\n"]);
+    varargin = varargin(! isall);
+    nargin = nargin - sum (isall);
+  endif
+
   m = __which__ (varargin{:});
 
   ## Check whether each name is a variable, variables take precedence over
@@ -113,4 +122,5 @@ endfunction
 
 %!error <Invalid call> which ()
 %!error <Invalid call> which (1)
+%!warning <'-all' not yet implemented> which ("1", "-all")
 

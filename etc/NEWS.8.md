@@ -36,6 +36,10 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 - `Refine` option is now implemented in functions `ode45`, `ode23`,
   and `ode23s`.
 
+- Octave is now compatible to PCRE2 (UTF-8). PCRE2 is preferred over PCRE
+  if both are installed.  Configure with `--without-pcre2` if you prefer
+  that Octave uses PCRE in this case.
+
 ### Graphical User Interface
 
 

@@ -677,7 +677,7 @@ namespace octave
 
         QCheckBox *shift
           = new QCheckBox (tr ("Add Shift modifier\n"
-                               "(allows to enter number keys)"));
+                               "(allows one to enter number keys)"));
 
         shift->setStyleSheet
           ("QCheckBox::indicator { subcontrol-position: left top; }");

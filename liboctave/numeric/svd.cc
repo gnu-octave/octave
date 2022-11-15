@@ -827,7 +827,7 @@ namespace octave
           if (iwork[2] == 1)
             (*current_liboctave_warning_with_id_handler)
               ("Octave:convergence", "svd: (driver: GEJSV) "
-               "Denormal occured, possible loss of accuracy.");
+               "Denormal occurred, possible loss of accuracy.");
 
           if (info < 0)
             (*current_liboctave_error_handler)

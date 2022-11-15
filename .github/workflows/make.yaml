@@ -258,7 +258,6 @@ jobs:
         # https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/octave.rb
         # Amended with additional flags that seem to be needed.
         # Not all of those might be needed or be correct.
-        # FIXME: Building the documentation is broken with texinfo 7.0
         run: |
           echo $PATH
           echo which ccache
@@ -280,7 +279,6 @@ jobs:
             LDFLAGS="-L/usr/local/lib -L/usr/local/opt/bison/lib -L/usr/local/opt/gettext/lib -L/usr/local/opt/icu4c/lib -L/usr/local/opt/readline/lib -L/usr/local/opt/sqlite/lib $MY_LDFLAGS" \
             PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig:/usr/local/opt/icu4c/lib/pkgconfig:/usr/local/opt/qt@5/lib/pkgconfig" \
             QCOLLECTIONGENERATOR="qhelpgenerator" \
-            --disable-docs \
             --with-x=no \
             --with-blas="-L/usr/local/opt/openblas/lib -lopenblas" \
             --with-java-homedir="/usr/local/opt/openjdk" \

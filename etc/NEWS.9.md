@@ -35,10 +35,14 @@ from Octave 9.
 
 - Functions
 
-  Function               | Replacement
-  -----------------------|------------------
+  Function                     | Replacement
+  -----------------------------|------------------
+  `disable_diagonal_matrix`    | `optimize_diagonal_matrix`
+  `disable_permutation_matrix` | `optimize_permutation_matrix`
+  `disable_range`              | `optimize_range`
 
-
+  For plot functions, the use of numbers to select line colors in
+  shorthand formats was an undocumented feature was removed from Octave 9.
 
 ### Old release news
 

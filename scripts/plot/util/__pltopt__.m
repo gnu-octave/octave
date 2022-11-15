@@ -195,20 +195,19 @@ function [options, valid] = decode_linespec (caller, opt, err_on_invalid)
         topt = "+";
       endif
       options.marker = topt;
-    ## Numeric color specs are for backward compatibility.  Don't document.
-    elseif (topt == "k" || topt == "0")
+    elseif (topt == "k")
       options.color = [0, 0, 0];
-    elseif (topt == "r" || topt == "1")
+    elseif (topt == "r")
       if (strncmp (opt, "red", 3))
         n = 3;
       endif
       options.color = [1, 0, 0];
-    elseif (topt == "g" || topt == "2")
+    elseif (topt == "g")
       if (strncmp (opt, "green", 5))
         n = 5;
       endif
       options.color = [0, 1, 0];
-    elseif (topt == "b" || topt == "3")
+    elseif (topt == "b")
       if (strncmp (opt, "black", 5))
         options.color = [0, 0, 0];
         n = 5;
@@ -223,17 +222,17 @@ function [options, valid] = decode_linespec (caller, opt, err_on_invalid)
         n = 6;
       endif
       options.color = [1, 1, 0];
-    elseif (topt == "m" || topt == "4")
+    elseif (topt == "m")
       if (strncmp (opt, "magenta", 7))
         n = 7;
       endif
       options.color = [1, 0, 1];
-    elseif (topt == "c" || topt == "5")
+    elseif (topt == "c")
       if (strncmp (opt, "cyan", 4))
         n = 4;
       endif
       options.color = [0, 1, 1];
-    elseif (topt == "w" || topt == "6")
+    elseif (topt == "w")
       if (strncmp (opt, "white", 5))
         n = 5;
       endif

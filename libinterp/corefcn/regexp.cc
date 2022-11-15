@@ -919,6 +919,10 @@ size) with successive @code{regexp} searches.
 %!assert (regexp ('abcabc', 'abc$'), 4)
 %!assert (regexp ('abcabc', '^abc$'), zeros (1,0))
 
+## UTF-8 test with character vector "âé🙂ïõù"
+%!assert (regexp (char ([195, 162, 195, 169, 240, 159, 153, 130, 195, 175, ...
+%!                       195, 181, 195, 185]), "."), [1, 3, 5, 9, 11, 13])
+
 %!test
 %! [s, e, te, m, t] = regexp (' No Match ', 'f(.*)uck');
 %! assert (s, zeros (1,0));

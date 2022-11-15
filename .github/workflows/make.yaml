@@ -207,7 +207,7 @@ jobs:
           brew reinstall gcc
           brew install arpack epstool fftw fig2dev fltk fontconfig freetype \
             ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 libsndfile \
-            libtool openblas pcre portaudio pstoedit qhull qrupdate \
+            libtool openblas pcre2 portaudio pstoedit qhull qrupdate \
             qscintilla2 qt@5 rapidjson readline suite-sparse sundials texinfo \
             ccache gnu-sed openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
@@ -398,7 +398,7 @@ jobs:
             ${{ matrix.target-prefix }}-gcc-fortran
             ${{ matrix.target-prefix }}-lapack
             ${{ matrix.target-prefix }}-openblas
-            ${{ matrix.target-prefix }}-pcre
+            ${{ matrix.target-prefix }}-pcre2
 
             ${{ matrix.target-prefix }}-arpack
             ${{ matrix.target-prefix }}-curl
@@ -635,7 +635,7 @@ jobs:
             gperf
             libtool
             liblapack-devel
-            libpcre-devel
+            libpcre2-devel
             libreadline-devel
 
             ghostscript

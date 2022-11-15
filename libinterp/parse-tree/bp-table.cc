@@ -176,7 +176,7 @@ namespace octave
       {
         Array<octave_value> W = U.index (0);
         if (W.isempty () || W(0).isempty ())
-          es.debug_on_caught (true);    // like "dbstop if caught error" with no ID
+          es.debug_on_caught (true);  // like "dbstop if caught error" with no ID
         else if (! W(0).iscell ())
           fail = true;
         else
@@ -338,13 +338,13 @@ namespace octave
 
   void bp_table::parse_dbfunction_params (const char *who,
                                           const octave_value_list& args,
-                                          std::string& func_name,
+                                          std::string& fcn_name,
                                           std::string& class_name,
                                           bp_table::bp_lines& lines,
                                           std::string& cond)
   {
     int nargin = args.length ();
-    func_name = "";
+    fcn_name = "";
     class_name = "";
     lines = bp_table::bp_lines ();
 
@@ -395,10 +395,10 @@ namespace octave
         switch (tok)
           {
           case dbstop_in:
-            func_name = args(pos).string_value ();
+            fcn_name = args(pos).string_value ();
             if (seen_in)
               error ("%s: Too many function names specified -- %s",
-                     who, func_name.c_str ());
+                     who, fcn_name.c_str ());
             else if (seen_at || seen_if)
               error ("%s: function name must come before line number and 'if'",
                      who);
@@ -426,9 +426,9 @@ namespace octave
                 if (atoi (arg.c_str ()) == 0)
                   {
                     // We have class and function names but already
-                    // stored the class name in func_name.
-                    class_name = func_name;
-                    func_name = arg;
+                    // stored the class name in fcn_name.
+                    class_name = fcn_name;
+                    fcn_name = arg;
                     pos++;
                     break;
                   }
@@ -438,7 +438,7 @@ namespace octave
               {
                 // It was a line number.  Get function name from debugger.
                 if (m_evaluator.in_debug_repl ())
-                  func_name = m_evaluator.get_user_code ()->profiler_name ();
+                  fcn_name = m_evaluator.get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
                          "and 'if'", who);
@@ -538,14 +538,14 @@ namespace octave
 %! dbclear all;   # Clear out breakpoints before test
 %! dbstop help;
 %! dbstop in ls;
-%! dbstop help at 104;
-%! dbstop in ls 123;     ## 123 is a comment; code line is at 126
+%! dbstop help at 105;  # 105 is a comment; code line is at 106
+%! dbstop in ls 123;    # 123 is a comment; code line is at 126
 %! dbstop help 204 if a==5;
 %! dbstop if error Octave:undefined-function;
 %! s = dbstatus;
 %! dbclear all;
 %! assert ({s.bkpt(:).name}, {"help", "help", "help>do_contents", "ls", "ls"});
-%! assert ([s.bkpt(:).line], [55, 105, 207, 63, 126]);
+%! assert ([s.bkpt(:).line], [56, 106, 208, 63, 126]);
 %! assert (s.errs, {"Octave:undefined-function"});
 */
 
@@ -670,7 +670,8 @@ namespace octave
   // a breakpoint there.  Put the system into debug_mode.
   int bp_table::add_breakpoint_in_function (const std::string& fname,
                                             const std::string& class_name,
-                                            int line, const std::string& condition)
+                                            int line,
+                                            const std::string& condition)
   {
     bp_lines line_info;
     line_info.insert (line);

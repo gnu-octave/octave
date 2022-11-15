@@ -53,17 +53,17 @@
 ## @seealso{yticklabels, xticks, zticks, rticks, thetaticks, get, set}
 ## @end deftypefn
 
-function retval = yticks (varargin)
+function tickval = yticks (varargin)
 
   hax = [];
   switch (nargin)
     case 0
-      retval = get (gca , "ytick");  # will error if no ytick exists.
+      tickval = get (gca , "ytick");  # will error if no ytick exists.
       return;
 
     case 1
       if (isaxes (varargin{1}))
-        retval = get (varargin{1}, "ytick");
+        tickval = get (varargin{1}, "ytick");
         return;
       else
         arg = varargin{1};
@@ -99,7 +99,7 @@ function retval = yticks (varargin)
     arg = tolower (arg);
     switch (arg)
       case "mode"
-        retval = get (hax, "ytickmode");
+        tickval = get (hax, "ytickmode");
 
       case {"auto", "manual"}
         if (nargout > 0)

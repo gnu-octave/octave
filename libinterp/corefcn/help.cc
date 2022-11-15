@@ -637,7 +637,8 @@ OCTAVE_NAMESPACE_BEGIN
             std::string name;
             int i = 0;
             int c;
-            while (file && (c = file.get ()) != std::istream::traits_type::eof ())
+            while (file
+                   && (c = file.get ()) != std::istream::traits_type::eof ())
               {
                 if (c == '\n' || c == '\r')
                   {
@@ -726,7 +727,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   string_vector make_name_list (void)
   {
-    help_system& help_sys = __get_help_system__ ("make_name_list");
+    help_system& help_sys = __get_help_system__ ();
 
     return help_sys.make_name_list ();
   }
@@ -785,8 +786,8 @@ The format is a string which is one of @qcode{"texinfo"}, @qcode{"html"}, or
 
 DEFUN (__operators__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __operators__ ()
-Undocumented internal function.
+@deftypefn {} {@var{cstr} =} __operators__ ()
+Return a cell array of strings of all possible Octave operators.
 @end deftypefn */)
 {
   return ovl (Cell (operator_names));
@@ -803,7 +804,7 @@ DEFALIAS (__keywords__, iskeyword)
 DEFMETHOD (__builtins__, interp, , ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __builtins__ ()
-Undocumented internal function.
+Return a cell array of all builtin (compiled) functions available to Octave.
 @end deftypefn */)
 {
   symbol_table& symtab = interp.get_symbol_table ();
@@ -815,7 +816,7 @@ Undocumented internal function.
 
 DEFMETHOD (localfunctions, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} localfunctions ()
+@deftypefn {} {@var{subfcn_list} =} localfunctions ()
 Return a list of all local functions, i.e., subfunctions, within the current
 file.
 
@@ -871,7 +872,7 @@ the return value is an empty cell array.
 
 DEFMETHOD (__which__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __which__ (@var{name}, @dots{})
+@deftypefn {} {@var{var_struct} =} __which__ (@var{name}, @dots{})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -954,7 +955,7 @@ DEFMETHOD (built_in_docstrings_file, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} built_in_docstrings_file ()
 @deftypefnx {} {@var{old_val} =} built_in_docstrings_file (@var{new_val})
-@deftypefnx {} {} built_in_docstrings_file (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} built_in_docstrings_file (@var{new_val}, "local")
 Query or set the internal variable that specifies the name of the
 file containing docstrings for built-in Octave functions.
 
@@ -979,7 +980,7 @@ DEFMETHOD (doc_cache_file, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} doc_cache_file ()
 @deftypefnx {} {@var{old_val} =} doc_cache_file (@var{new_val})
-@deftypefnx {} {} doc_cache_file (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} doc_cache_file (@var{new_val}, "local")
 Query or set the internal variable that specifies the name of the
 Octave documentation cache file.
 
@@ -1008,7 +1009,7 @@ DEFMETHOD (info_file, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} info_file ()
 @deftypefnx {} {@var{old_val} =} info_file (@var{new_val})
-@deftypefnx {} {} info_file (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} info_file (@var{new_val}, "local")
 Query or set the internal variable that specifies the name of the
 Octave info file.
 
@@ -1034,7 +1035,7 @@ DEFMETHOD (info_program, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} info_program ()
 @deftypefnx {} {@var{old_val} =} info_program (@var{new_val})
-@deftypefnx {} {} info_program (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} info_program (@var{new_val}, "local")
 Query or set the internal variable that specifies the name of the
 info program to run.
 
@@ -1057,7 +1058,7 @@ DEFMETHOD (makeinfo_program, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} makeinfo_program ()
 @deftypefnx {} {@var{old_val} =} makeinfo_program (@var{new_val})
-@deftypefnx {} {} makeinfo_program (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} makeinfo_program (@var{new_val}, "local")
 Query or set the internal variable that specifies the name of the
 program that Octave runs to format help text containing
 Texinfo markup commands.
@@ -1079,7 +1080,7 @@ DEFMETHOD (suppress_verbose_help_message, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} suppress_verbose_help_message ()
 @deftypefnx {} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})
-@deftypefnx {} {} suppress_verbose_help_message (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} suppress_verbose_help_message (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave
 will add additional help information to the end of the output from
 the @code{help} command and usage messages for built-in commands.
@@ -1098,7 +1099,7 @@ DEFMETHOD (texi_macros_file, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} texi_macros_file ()
 @deftypefnx {} {@var{old_val} =} texi_macros_file (@var{new_val})
-@deftypefnx {} {} texi_macros_file (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} texi_macros_file (@var{new_val}, "local")
 Query or set the internal variable that specifies the name of the
 file containing Texinfo macros that are prepended to documentation strings
 before they are passed to makeinfo.

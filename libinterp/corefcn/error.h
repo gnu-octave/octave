@@ -174,7 +174,8 @@ class execution_exception;
 
     octave_map warning_options (void) const { return m_warning_options; }
 
-    void set_warning_options (const octave_map& val) { m_warning_options = val; }
+    void set_warning_options (const octave_map& val)
+    { m_warning_options = val; }
 
     octave_map warning_options (const octave_map& new_val)
     {
@@ -187,9 +188,7 @@ class execution_exception;
     last_error_message (const octave_value_list& args, int nargout);
 
     void set_last_error_message (const std::string& val)
-    {
-      m_last_error_message = val;
-    }
+    { m_last_error_message = val; }
 
     std::string last_error_message (void) const { return m_last_error_message; }
 
@@ -203,9 +202,11 @@ class execution_exception;
     OCTINTERP_API octave_value
     last_warning_message (const octave_value_list& args, int nargout);
 
-    void set_last_warning_message (const std::string& val) { m_last_warning_message = val; }
+    void set_last_warning_message (const std::string& val)
+    { m_last_warning_message = val; }
 
-    std::string last_warning_message (void) const { return m_last_warning_message; }
+    std::string last_warning_message (void) const
+    { return m_last_warning_message; }
 
     std::string last_warning_message (const std::string& s)
     {
@@ -217,7 +218,8 @@ class execution_exception;
     OCTINTERP_API octave_value
     last_warning_id (const octave_value_list& args, int nargout);
 
-    void set_last_warning_id (const std::string& val) { m_last_warning_id = val; }
+    void set_last_warning_id (const std::string& val)
+    { m_last_warning_id = val; }
 
     std::string last_warning_id (void) const { return m_last_warning_id; }
 
@@ -408,9 +410,6 @@ OCTAVE_NAMESPACE_END
 // not deprecated and eventually removed, does it make sense to also
 // define them inside the octave namespace?
 
-#define panic_impossible()                                              \
-  panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
-
 extern OCTINTERP_API void
 vmessage (const char *name, const char *fmt, va_list args);
 
@@ -506,6 +505,52 @@ OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN
 extern OCTINTERP_API void panic (const char *fmt, ...);
 
+#define panic_impossible()                                              \
+  panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+
+inline void
+panic_if (bool cond)
+{
+#ifndef NDEBUG
+  if (cond)
+    panic_impossible ();
+  else
+    return;
+
+#else
+  octave_unused_parameter (cond);
+#endif
+}
+
+inline void
+panic_unless (bool cond)
+{
+  panic_if (! cond);
+}
+
+#define error_impossible()                                              \
+  error ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+
+inline void
+error_if (bool cond)
+{
+#ifndef NDEBUG
+  if (cond)
+    error_impossible ();
+  else
+    return;
+
+#else
+  octave_unused_parameter (cond);
+#endif
+}
+
+inline void
+error_unless (bool cond)
+{
+  error_if (! cond);
+}
+
 OCTAVE_NAMESPACE_BEGIN
 
 //! Helper function for print_usage defined in defun.cc.
@@ -566,14 +611,6 @@ inline void interpreter_try (octave::unwind_protect& uwp)
   octave::interpreter_try (uwp);
 }
 
-OCTAVE_DEPRECATED (6, "this function is obsolete and should not be needed")
-inline void reset_error_handler (void) { }
 #endif
-
-// This symbol must have be declared with the correct visibility
-// attributes when Octave is built, so it must appear unconditionally in
-// this header file.
-OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
-extern OCTINTERP_API int error_state;
 
 #endif

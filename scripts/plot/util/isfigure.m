@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isfigure (@var{h})
+## @deftypefn {} {@var{tf} =} isfigure (@var{h})
 ## Return true if @var{h} is a figure graphics handle and false otherwise.
 ##
 ## If @var{h} is a matrix then return a logical array which is true where the
@@ -33,16 +33,16 @@
 ## @seealso{isaxes, ishghandle, isgraphics}
 ## @end deftypefn
 
-function retval = isfigure (h)
+function tf = isfigure (h)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  retval = ishghandle (h);
+  tf = ishghandle (h);
 
-  if (any (retval))
-    retval(retval) = strcmp (get (h(retval), "type"), "figure");
+  if (any (tf))
+    tf(tf) = strcmp (get (h(tf), "type"), "figure");
   endif
 
 endfunction

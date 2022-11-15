@@ -28,10 +28,11 @@
 ## @deftypefnx {} {} license inuse
 ## @deftypefnx {} {} license inuse @var{feature}
 ## @deftypefnx {} {} license ("inuse")
-## @deftypefnx {} {@var{retval} =} license ("inuse")
-## @deftypefnx {} {@var{retval} =} license ("test", @var{feature})
-## @deftypefnx {} {@var{retval} =} license ("checkout", @var{feature})
-## @deftypefnx {} {[@var{retval}, @var{errmsg}] =} license ("checkout", @var{feature})
+## @deftypefnx {} {@var{license_struct} =} license ("inuse")
+## @deftypefnx {} {@var{license_struct} =} license ("inuse", @var{feature})
+## @deftypefnx {} {@var{status} =} license ("test", @var{feature})
+## @deftypefnx {} {@var{status} =} license ("checkout", @var{feature})
+## @deftypefnx {} {[@var{status}, @var{errmsg}] =} license ("checkout", @var{feature})
 ## Get license information for Octave and Octave packages.
 ##
 ## GNU Octave is free software distributed under the GNU General Public
@@ -41,12 +42,12 @@
 ## When called with no extra input arguments, it returns the Octave license,
 ## otherwise the first input defines the operation mode and must be one of
 ## the following strings: @code{inuse}, @code{test}, and @code{checkout}.
-## The optional @var{feature} argument can either be @qcode{"octave"} (core),
-## or an Octave package.
+## The optional @var{feature} argument can either be @qcode{"octave"} (core)
+## or the name of an Octave package.
 ##
 ## @table @asis
 ## @item @qcode{"inuse"}
-## Returns a list of loaded features, i.e., octave and the list of loaded
+## Print a list of loaded features, i.e., "octave" and the list of loaded
 ## packages.  If an output is requested, it returns a struct array with
 ## the fields @qcode{"feature"}, and @qcode{"user"}.
 ##
@@ -66,11 +67,11 @@
 ## @seealso{pkg, ver, version}
 ## @end deftypefn
 
-function [retval, errmsg] = license (cmd, feature, toggle)
+function [status, errmsg] = license (cmd, feature, toggle)
 
   if (nargin == 0)
     ## then only give information about Octave core
-    retval = "GNU General Public License";
+    status = "GNU General Public License";
     return;
   endif
 
@@ -86,7 +87,7 @@ function [retval, errmsg] = license (cmd, feature, toggle)
       if (nargout == 0)
         printf ("%s\n", features{:});
       else
-        retval = struct ("feature", features, "user", get_username ());
+        status = struct ("feature", features, "user", get_username ());
       endif
 
     case "test"
@@ -105,7 +106,7 @@ function [retval, errmsg] = license (cmd, feature, toggle)
         endswitch
       endif
 
-      retval = any (strcmp (features, feature));
+      status = any (strcmp (features, feature));
 
     case "checkout"
       ## I guess we could have the checkout command load packages but it's not
@@ -116,10 +117,10 @@ function [retval, errmsg] = license (cmd, feature, toggle)
         print_usage ();
       endif
 
-      retval = any (strcmp (features, feature));
+      status = any (strcmp (features, feature));
       errmsg = "";
 
-      if (! retval)
+      if (! status)
         errmsg = ['No package named "' feature '" installed'];
       endif
 

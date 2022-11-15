@@ -44,7 +44,6 @@
 ## @seealso{profshow, profexplore, profile}
 ## @end deftypefn
 
-## Built-in profiler.
 function profexport (dir, name = "", data)
 
   if (nargin < 1)
@@ -88,7 +87,7 @@ function profexport (dir, name = "", data)
 
   __writeFlat (fullfile (dir, "index.html"), name, data.FunctionTable);
   for i = 1 : length (data.FunctionTable)
-    __writeFunc (fullfile (dir, sprintf ("func-%d.html", i)), name, ...
+    __writeFunc (fullfile (dir, sprintf ("function-%d.html", i)), name, ...
                  data.FunctionTable, i);
   endfor
 
@@ -176,7 +175,7 @@ function lst = __buildParentOrChildList (table, inds)
     return;
   endif
 
-  template = "<a href='func-%num.html'>%name</a>";
+  template = "<a href='function-%num.html'>%name</a>";
 
   lst = "";
   for i = 1 : length (inds)

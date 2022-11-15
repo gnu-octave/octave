@@ -237,8 +237,7 @@ have_gnuplot_binary (void)
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("have_gnuplot_binary");
+      octave::interpreter& interp = octave::__get_interpreter__ ();
 
       interp.recover_from_exception ();
     }

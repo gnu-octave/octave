@@ -379,12 +379,12 @@ fvdp = @@(@var{y},@var{t}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y
 
   double tzero = out_times (0);
 
-  ODEFunc func (lsode_user_function);
+  ODEFunc fcn (lsode_user_function);
 
   if (lsode_jac.is_defined ())
-    func.set_jacobian_function (lsode_user_jacobian);
+    fcn.set_jacobian_function (lsode_user_jacobian);
 
-  LSODE ode (state, tzero, func);
+  LSODE ode (state, tzero, fcn);
 
   ode.set_options (lsode_opts);
 

@@ -81,8 +81,7 @@ is_valid_function (const std::string& fcn_name,
 
   if (! fcn_name.empty ())
     {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("is_valid_function");
+      octave::symbol_table& symtab = octave::__get_symbol_table__ ();
 
       octave_value val = symtab.find_function (fcn_name);
 
@@ -124,7 +123,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (isglobal, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} isglobal (@var{name})
+@deftypefn {} {@var{tf} =} isglobal (@var{name})
 Return true if @var{name} is a globally visible variable.
 
 For example:
@@ -328,7 +327,7 @@ symbol_exist (interpreter& interp, const std::string& name,
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
-  octave::interpreter& interp = octave::__get_interpreter__ ("symbol_exist");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   return octave::symbol_exist (interp, name, type);
 }
@@ -352,8 +351,7 @@ unique_symbol_name (const std::string& basename)
   if (nm.substr (0, 2) == "__")
     nm.append ("__");
 
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("unique_symbol_name");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   while (symbol_exist (interp, nm, "any"))
     nm.insert (pos++, 1, alpha[GET_IDX (len)]);
@@ -562,8 +560,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
 static octave::unwind_protect *
 curr_fcn_unwind_protect_frame (void)
 {
-  octave::tree_evaluator& tw
-    = octave::__get_evaluator__ ("curr_fcn_unwind_protect_frame");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
   return tw.curr_fcn_unwind_protect_frame ();
 }
@@ -772,7 +769,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   int nargin = args.length ();
 
-  assert (var < nchoices);
+  error_unless (var < nchoices);
 
   if (nargout > 0 || nargin == 0)
     retval = choices[var];
@@ -905,8 +902,8 @@ If no function is named then unlock the current function.
 
 DEFMETHOD (mislocked, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} mislocked ()
-@deftypefnx {} {} mislocked (@var{fcn})
+@deftypefn  {} {@var{tf} =} mislocked ()
+@deftypefnx {} {@var{tf} =} mislocked (@var{fcn})
 Return true if the named function @var{fcn} is locked in memory.
 
 If no function is named then return true if the current function is locked.
@@ -1395,7 +1392,7 @@ DEFUN (missing_function_hook, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} missing_function_hook ()
 @deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val})
-@deftypefnx {} {} missing_function_hook (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val}, "local")
 Query or set the internal variable that specifies the function to call
 to provide extra information when an unknown identifier is referenced.
 
@@ -1412,8 +1409,7 @@ The original variable value is restored when exiting the function.
 std::string
 maybe_missing_function_hook (const std::string& name)
 {
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("maybe_missing_function_hook");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   // Don't do this if we're handling errors.
   if (Vmissing_function_hook.empty ())
@@ -1430,11 +1426,11 @@ maybe_missing_function_hook (const std::string& name)
         restore_var (Vmissing_function_hook);
 
       // Clear the variable prior to calling the function.
-      const std::string func_name = Vmissing_function_hook;
+      const std::string fcn_name = Vmissing_function_hook;
       Vmissing_function_hook.clear ();
 
       // Call.
-      octave_value_list tmp = octave::feval (func_name, octave_value (name), 1);
+      octave_value_list tmp = octave::feval (fcn_name, octave_value (name), 1);
 
       if (tmp.length () == 1 && tmp(0).is_string ())
         return tmp(0).string_value ();
@@ -1496,7 +1492,7 @@ DEFUN (missing_component_hook, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} missing_component_hook ()
 @deftypefnx {} {@var{old_val} =} missing_component_hook (@var{new_val})
-@deftypefnx {} {} missing_component_hook (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} missing_component_hook (@var{new_val}, "local")
 Query or set the internal variable that specifies the function to call when
 a component of Octave is missing.
 
@@ -1525,45 +1521,3 @@ should return an error message to be displayed.
 }
 
 OCTAVE_NAMESPACE_END
-
-// DEPRECATED in Octave 6
-
-octave_function *
-extract_function (const octave_value& arg, const std::string& warn_for,
-                  const std::string& fname, const std::string& header,
-                  const std::string& trailer)
-{
-  octave_function *retval = is_valid_function (arg, warn_for, 0);
-
-  if (! retval)
-    {
-      std::string s = arg.xstring_value ("%s: argument must be a string",
-                                         warn_for.c_str ());
-
-      std::string cmd = header;
-      cmd.append (s);
-      cmd.append (trailer);
-
-      int parse_status;
-
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("extract_function");
-
-      interp.eval_string (cmd, true, parse_status, 0);
-
-      if (parse_status != 0)
-        error ("%s: '%s' is not valid as a function",
-               warn_for.c_str (), fname.c_str ());
-
-      retval = is_valid_function (fname, warn_for, 0);
-
-      if (! retval)
-        error ("%s: '%s' is not valid as a function",
-               warn_for.c_str (), fname.c_str ());
-
-      warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
-               warn_for.c_str ());
-    }
-
-  return retval;
-}

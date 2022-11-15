@@ -91,7 +91,8 @@ namespace octave
 
     int paren_count (void) const { return m_num_parens; }
 
-    bool is_postfix_indexed (void) const { return (m_postfix_index_type != '\0'); }
+    bool is_postfix_indexed (void) const
+    { return (m_postfix_index_type != '\0'); }
 
     char postfix_index (void) const { return m_postfix_index_type; }
 
@@ -105,8 +106,6 @@ namespace octave
     virtual std::string name (void) const { return "<unknown>"; }
 
     virtual std::string original_text (void) const;
-
-    virtual void mark_braindead_shortcircuit (void) { }
 
     void mark_as_for_cmd_expr (void) { m_for_cmd_expr = true; }
 

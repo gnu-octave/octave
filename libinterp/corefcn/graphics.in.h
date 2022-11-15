@@ -950,7 +950,8 @@ public:
 
   const std::string& current_value (void) const { return m_current_val; }
 
-  std::string values_as_string (void) const { return m_vals.values_as_string (); }
+  std::string values_as_string (void) const
+  { return m_vals.values_as_string (); }
 
   Cell values_as_cell (void) const { return m_vals.values_as_cell (); }
 
@@ -1378,7 +1379,8 @@ public:
   array_property (void)
     : base_property ("", graphics_handle ()), m_data (Matrix ()),
       m_min_val (), m_max_val (), m_min_pos (), m_max_neg (),
-      m_type_constraints (), m_size_constraints (), m_finite_constraint (NO_CHECK),
+      m_type_constraints (), m_size_constraints (),
+      m_finite_constraint (NO_CHECK),
       m_minval (std::pair<double, bool> (octave_NaN, true)),
       m_maxval (std::pair<double, bool> (octave_NaN, true))
   {
@@ -1389,7 +1391,8 @@ public:
                   const octave_value& m)
     : base_property (nm, h), m_data (m.issparse () ? m.full_value () : m),
       m_min_val (), m_max_val (), m_min_pos (), m_max_neg (),
-      m_type_constraints (), m_size_constraints (), m_finite_constraint (NO_CHECK),
+      m_type_constraints (), m_size_constraints (),
+      m_finite_constraint (NO_CHECK),
       m_minval (std::pair<double, bool> (octave_NaN, true)),
       m_maxval (std::pair<double, bool> (octave_NaN, true))
   {
@@ -1401,8 +1404,10 @@ public:
   // copy constraints.
   array_property (const array_property& p)
     : base_property (p), m_data (p.m_data),
-      m_min_val (p.m_min_val), m_max_val (p.m_max_val), m_min_pos (p.m_min_pos), m_max_neg (p.m_max_neg),
-      m_type_constraints (), m_size_constraints (), m_finite_constraint (NO_CHECK),
+      m_min_val (p.m_min_val), m_max_val (p.m_max_val),
+      m_min_pos (p.m_min_pos), m_max_neg (p.m_max_neg),
+      m_type_constraints (), m_size_constraints (),
+      m_finite_constraint (NO_CHECK),
       m_minval (std::pair<double, bool> (octave_NaN, true)),
       m_maxval (std::pair<double, bool> (octave_NaN, true))
   { }
@@ -1820,12 +1825,13 @@ protected:
     bool add_hidden = true;
 
     const Matrix visible_kids = do_get_children (false);
+    const Matrix hidden_kids = do_get_children (true);
 
     if (visible_kids.numel () == new_kids.numel ())
       {
         Matrix t1 = visible_kids.sort ();
         Matrix t2 = new_kids_column.sort ();
-        Matrix t3 = get_hidden ().sort ();
+        Matrix t3 = hidden_kids.sort ();
 
         if (t1 != t2)
           is_ok = false;
@@ -1837,22 +1843,22 @@ protected:
       is_ok = false;
 
     if (! is_ok)
-      error ("set: new children must be a permutation of existing children");
-
-    Matrix tmp = new_kids_column;
-
-    if (add_hidden)
-      tmp.stack (get_hidden ());
+      error ("set: new children list must be a permutation of existing "
+             "children with visible handles");
 
     m_children_list.clear ();
 
     // Don't use do_init_children here, as that reverses the
     // order of the list, and we don't want to do that if setting
     // the child list directly.
-    for (octave_idx_type i = 0; i < tmp.numel (); i++)
-      m_children_list.push_back (tmp.xelem (i));
+    for (octave_idx_type i = 0; i < new_kids_column.numel (); i++)
+      m_children_list.push_back (new_kids_column.xelem (i));
 
-    return is_ok;
+    if (add_hidden)
+      for (octave_idx_type i = 0; i < hidden_kids.numel (); i++)
+        m_children_list.push_back (hidden_kids.xelem (i));
+
+    return true;
   }
 
 private:
@@ -3144,6 +3150,17 @@ public:
 
     OCTINTERP_API void adopt (const graphics_handle& h);
 
+    // Alias "innerposition" to "position".
+    octave_value get_innerposition (void) const
+    {
+      return get_position ();
+    }
+
+    void set_innerposition (const octave_value& val)
+    {
+      set_position (val);
+    }
+
     OCTINTERP_API void set_position (const octave_value& val,
                                      bool do_notify_toolkit = true);
 
@@ -3184,9 +3201,10 @@ public:
       string_property currentcharacter r , ""
       handle_property currentobject r , graphics_handle ()
       array_property currentpoint r , Matrix (2, 1, 0)
-      bool_property dockcontrols , "off"
+      bool_property dockcontrols , "on"
       string_property filename , ""
       bool_property graphicssmoothing , "on"
+      array_property innerposition sg , default_figure_position ()
       bool_property integerhandle S , "on"
       bool_property inverthardcopy , "on"
       callback_property keypressfcn , Matrix ()
@@ -3204,7 +3222,7 @@ public:
       array_property papersize U , default_figure_papersize ()
       radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property paperunits Su , "{inches}|centimeters|normalized|points"
-      radio_property pointer , "crosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
+      radio_property pointer , "{arrow}|crosshair|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 1)
       array_property pointershapehotspot , Matrix (1, 2, 1)
       array_property position s , default_figure_position ()
@@ -3225,6 +3243,7 @@ public:
       callback_property windowkeypressfcn , Matrix ()
       callback_property windowkeyreleasefcn , Matrix ()
       callback_property windowscrollwheelfcn , Matrix ()
+      radio_property windowstate , "{normal}|minimized|maximized|fullscreen"
       radio_property windowstyle , "{normal}|modal|docked"
 
       // Overridden base property
@@ -3383,7 +3402,9 @@ public:
   graphics_xform (const Matrix& xm, const Matrix& xim,
                   const scaler& x, const scaler& y, const scaler& z,
                   const Matrix& zl)
-    : m_xform (xm), m_xform_inv (xim), m_sx (x), m_sy (y), m_sz (z), m_zlim (zl) { }
+    : m_xform (xm), m_xform_inv (xim), m_sx (x), m_sy (y),
+      m_sz (z), m_zlim (zl)
+  { }
 
   graphics_xform (const graphics_xform& g)
     : m_xform (g.m_xform), m_xform_inv (g.m_xform_inv), m_sx (g.m_sx),
@@ -3553,7 +3574,10 @@ public:
     OCTINTERP_API void update_title_position (void);
 
     graphics_xform get_transform (void) const
-    { return graphics_xform (m_x_render, m_x_render_inv, m_sx, m_sy, m_sz, m_x_zlim); }
+    {
+      return graphics_xform (m_x_render, m_x_render_inv,
+                             m_sx, m_sy, m_sz, m_x_zlim);
+    }
 
     Matrix get_transform_matrix (void) const { return m_x_render; }
     Matrix get_inverse_transform_matrix (void) const { return m_x_render_inv; }
@@ -3603,7 +3627,10 @@ public:
     bool get_nearhoriz (void) const { return m_nearhoriz; }
 
     ColumnVector pixel2coord (double px, double py) const
-    { return get_transform ().untransform (px, py, (m_x_zlim(0)+m_x_zlim(1))/2); }
+    {
+      return get_transform ().untransform (px, py,
+                                           (m_x_zlim(0)+m_x_zlim(1))/2);
+    }
 
     ColumnVector coord2pixel (double x, double y, double z) const
     { return get_transform ().transform (x, y, z); }
@@ -3766,7 +3793,8 @@ public:
       radio_property gridcolormode , "{auto}|manual"
       radio_property gridlinestyle , "{-}|--|:|-.|none"
       array_property innerposition sg , default_axes_position ()
-      // FIXME: Should be an array of "interaction objects". Make it read-only for now.
+      // FIXME: Should be an array of "interaction objects".
+      // Make it read-only for now.
       any_property interactions r , Matrix ()
       double_property labelfontsizemultiplier u , 1.1
       radio_property layer u , "{bottom}|top"
@@ -3814,6 +3842,7 @@ public:
       bool_property xgrid , "off"
       handle_property xlabel SOf , make_graphics_handle ("text", m___myhandle__, false, false, false)
       row_vector_property xlim mu , default_lim ()
+      radio_property xlimitmethod u , "{tickaligned}|tight|padded"
       radio_property xlimmode al , "{auto}|manual"
       bool_property xminorgrid , "off"
       bool_property xminortick , "off"
@@ -3833,6 +3862,7 @@ public:
       bool_property ygrid , "off"
       handle_property ylabel SOf , make_graphics_handle ("text", m___myhandle__, false, false, false)
       row_vector_property ylim mu , default_lim ()
+      radio_property ylimitmethod u , "{tickaligned}|tight|padded"
       radio_property ylimmode al , "{auto}|manual"
       bool_property yminorgrid , "off"
       bool_property yminortick , "off"
@@ -3850,6 +3880,7 @@ public:
       bool_property zgrid , "off"
       handle_property zlabel SOf , make_graphics_handle ("text", m___myhandle__, false, false, false)
       row_vector_property zlim mu , default_lim ()
+      radio_property zlimitmethod u , "{tickaligned}|tight|padded"
       radio_property zlimmode al , "{auto}|manual"
       bool_property zminorgrid , "off"
       bool_property zminortick , "off"
@@ -4029,7 +4060,8 @@ public:
     {
       calc_ticks_and_lims (m_xlim, m_xtick, m_xminortickvalues,
                            m_xlimmode.is ("auto"), m_xtickmode.is ("auto"),
-                           m_xscale.is ("log"));
+                           m_xscale.is ("log"), m_xlimitmethod.is ("padded"),
+                           m_xlimitmethod.is ("tight"));
       if (m_xticklabelmode.is ("auto"))
         calc_ticklabels (m_xtick, m_xticklabel, m_xscale.is ("log"),
                          xaxislocation_is ("origin"),
@@ -4045,7 +4077,8 @@ public:
     {
       calc_ticks_and_lims (m_ylim, m_ytick, m_yminortickvalues,
                            m_ylimmode.is ("auto"), m_ytickmode.is ("auto"),
-                           m_yscale.is ("log"));
+                           m_yscale.is ("log"), m_ylimitmethod.is ("padded"),
+                           m_ylimitmethod.is ("tight"));
       if (m_yticklabelmode.is ("auto"))
         calc_ticklabels (m_ytick, m_yticklabel, m_yscale.is ("log"),
                          yaxislocation_is ("origin"),
@@ -4061,7 +4094,8 @@ public:
     {
       calc_ticks_and_lims (m_zlim, m_ztick, m_zminortickvalues,
                            m_zlimmode.is ("auto"), m_ztickmode.is ("auto"),
-                           m_zscale.is ("log"));
+                           m_zscale.is ("log"), m_zlimitmethod.is ("padded"),
+                           m_zlimitmethod.is ("tight"));
       if (m_zticklabelmode.is ("auto"))
         calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"), false,
                          2, m_zlim);
@@ -4109,7 +4143,8 @@ public:
     void update_zticklabelmode (void)
     {
       if (m_zticklabelmode.is ("auto"))
-        calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"), false, 2, m_zlim);
+        calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"),
+                         false, 2, m_zlim);
     }
 
     void update_fontname (void)
@@ -4165,7 +4200,8 @@ public:
     OCTINTERP_API void
     calc_ticks_and_lims (array_property& lims, array_property& ticks,
                          array_property& mticks, bool limmode_is_auto,
-                         bool tickmode_is_auto, bool is_logscale);
+                         bool tickmode_is_auto, bool is_logscale,
+                         bool method_is_padded, bool method_is_tight);
     OCTINTERP_API void
     calc_ticklabels (const array_property& ticks, any_property& labels,
                      bool is_logscale, const bool is_origin,
@@ -4214,7 +4250,7 @@ public:
     OCTINTERP_API Matrix
     get_axis_limits (double xmin, double xmax,
                      double min_pos, double max_neg,
-                     const bool logscale);
+                     const bool logscale, const std::string& method);
 
     OCTINTERP_API void
     check_axis_limits (Matrix& limits, const Matrix kids,
@@ -4226,7 +4262,8 @@ public:
 
       calc_ticks_and_lims (m_xlim, m_xtick, m_xminortickvalues,
                            m_xlimmode.is ("auto"), m_xtickmode.is ("auto"),
-                           m_xscale.is ("log"));
+                           m_xscale.is ("log"), m_xlimitmethod.is ("padded"),
+                           m_xlimitmethod.is ("tight"));
       if (m_xticklabelmode.is ("auto"))
         calc_ticklabels (m_xtick, m_xticklabel, m_xscale.is ("log"),
                          m_xaxislocation.is ("origin"),
@@ -4242,13 +4279,19 @@ public:
       update_axes_layout ();
     }
 
+    void update_xlimitmethod ()
+    {
+      update_xlim ();
+    }
+
     void update_ylim (void)
     {
       update_axis_limits ("ylim");
 
       calc_ticks_and_lims (m_ylim, m_ytick, m_yminortickvalues,
                            m_ylimmode.is ("auto"), m_ytickmode.is ("auto"),
-                           m_yscale.is ("log"));
+                           m_yscale.is ("log"), m_ylimitmethod.is ("padded"),
+                           m_ylimitmethod.is ("tight"));
       if (m_yticklabelmode.is ("auto"))
         calc_ticklabels (m_ytick, m_yticklabel, m_yscale.is ("log"),
                          yaxislocation_is ("origin"),
@@ -4264,13 +4307,19 @@ public:
       update_axes_layout ();
     }
 
+    void update_ylimitmethod ()
+    {
+      update_ylim ();
+    }
+
     void update_zlim (void)
     {
       update_axis_limits ("zlim");
 
       calc_ticks_and_lims (m_zlim, m_ztick, m_zminortickvalues,
                            m_zlimmode.is ("auto"), m_ztickmode.is ("auto"),
-                           m_zscale.is ("log"));
+                           m_zscale.is ("log"), m_zlimitmethod.is ("padded"),
+                           m_zlimitmethod.is ("tight"));
       if (m_zticklabelmode.is ("auto"))
         calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"), false,
                          2, m_zlim);
@@ -4280,6 +4329,11 @@ public:
       update_zscale ();
 
       update_axes_layout ();
+    }
+
+    void update_zlimitmethod ()
+    {
+      update_zlim ();
     }
 
     void trigger_normals_calc (void);
@@ -4588,11 +4642,8 @@ public:
                                 : lim(2));
           lim(3) = (lim(3) >= 0 ? -octave::numeric_limits<double>::Inf ()
                                 : lim(3));
-          set_zliminclude ("on");
           set_zlim (lim);
         }
-      else
-        set_zliminclude ("off");
     }
 
     OCTINTERP_API void request_autopos (void);
@@ -5753,11 +5804,16 @@ public:
 
     BEGIN_PROPERTIES (uimenu)
       string_property accelerator , ""
-      callback_property callback , Matrix ()
+      // Deprecated in R2017b (replaced by "MenuSelectedFcn")
+      callback_property callback hgs , Matrix ()
       bool_property checked , "off"
       bool_property enable , "on"
       color_property foregroundcolor , color_values (0, 0, 0)
-      string_property label gs , ""
+      // Deprecated in R2017b (replaced by "Text")
+      string_property label hgs , ""
+      callback_property menuselectedfcn , Matrix ()
+      // Deprecated in R2017b, but replacement of re-ordering "children"
+      // property of parent does not work yet in Octave.
       double_property position , 0
       bool_property separator , "off"
       string_property text , ""
@@ -5767,7 +5823,7 @@ public:
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 
-    // Redirect calls from "Label" to "Text".
+    // Make "Label" an alias for "Text".
     std::string get_label (void) const
     {
       return get_text ();
@@ -5776,6 +5832,17 @@ public:
     void set_label (const octave_value& val)
     {
       set_text (val);
+    }
+
+    // Make "Callback" an alias for "MenuSelectedFcn".
+    octave_value get_callback (void) const
+    {
+      return get_menuselectedfcn ();
+    }
+
+    void set_callback (const octave_value& val)
+    {
+      set_menuselectedfcn (val);
     }
 
   protected:
@@ -6526,10 +6593,10 @@ public:
 
 OCTINTERP_API octave_value
 get_property_from_handle (double handle, const std::string& property,
-                          const std::string& func);
+                          const std::string& fcn);
 OCTINTERP_API bool
 set_property_in_handle (double handle, const std::string& property,
-                        const octave_value& arg, const std::string& func);
+                        const octave_value& arg, const std::string& fcn);
 
 // ---------------------------------------------------------------------
 

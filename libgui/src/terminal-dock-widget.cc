@@ -30,7 +30,9 @@
 #include <QScreen>
 
 // This header is only needed for the new terminal widget.
-#include "command-widget.h"
+#if defined (HAVE_QSCINTILLA)
+#  include "command-widget.h"
+#endif
 
 // This header is only needed for the old terminal widget.
 #include "QTerminal.h"
@@ -52,7 +54,9 @@ namespace octave
     // matter much if we will eventually be removing the old terminal.
     if (m_experimental_terminal_widget)
       {
+#if defined (HAVE_QSCINTILLA)
         command_widget *widget = new command_widget (oct_qobj, this);
+        console *con = widget->get_console ();
 
         connect (this, &terminal_dock_widget::settings_changed,
                  widget, &command_widget::notice_settings);
@@ -63,7 +67,14 @@ namespace octave
         connect (this, &terminal_dock_widget::interpreter_output_signal,
                  widget, &command_widget::insert_interpreter_output);
 
+        connect (this, &terminal_dock_widget::execute_command_signal,
+                con, &console::execute_command);
+
+        connect (this, &terminal_dock_widget::new_command_line_signal,
+                con, &console::new_command_line);
+
         m_terminal = widget;
+#endif
       }
     else
       {
@@ -83,7 +94,6 @@ namespace octave
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
 
-    setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("Command Window"));
 
     setWidget (m_terminal);
@@ -133,27 +143,28 @@ namespace octave
             ? nullptr : dynamic_cast<QTerminal *> (m_terminal));
   }
 
+#if defined (HAVE_QSCINTILLA)
   command_widget * terminal_dock_widget::get_command_widget (void)
   {
     return (m_experimental_terminal_widget
             ? dynamic_cast<command_widget *> (m_terminal) : nullptr);
   }
+#endif
 
   void terminal_dock_widget::notice_settings (const gui_settings *settings)
   {
     emit settings_changed (settings);
   }
 
-  void terminal_dock_widget::interpreter_output (const QString& msg)
+  void terminal_dock_widget::init_command_prompt ()
   {
     if (m_experimental_terminal_widget)
-      emit interpreter_output_signal (msg);
+      {
+#if defined (HAVE_QSCINTILLA)
+        command_widget *cmd = get_command_widget ();
+        if (cmd)
+          cmd->init_command_prompt ();
+#endif
+      }
   }
-
-  void terminal_dock_widget::update_prompt (const QString& prompt)
-  {
-    if (m_experimental_terminal_widget)
-      emit update_prompt_signal (prompt);
-  }
-
 }

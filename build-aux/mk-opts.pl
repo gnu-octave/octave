@@ -427,7 +427,7 @@ _END_EMIT_OPT_CLASS_HEADER_
 
   for ($i = 0; $i < $OPT_NUM; $i++)
     {
-      if ($INIT_VALUE[$i])
+      if (defined $INIT_VALUE[$i])
         {
           print "      $OPTVAR[$i] = $INIT_VALUE[$i];\n";
         }

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} strtrim (@var{s})
+## @deftypefn {} {@var{s} =} strtrim (@var{s})
 ## Remove leading and trailing whitespace from @var{s}.
 ##
 ## If @var{s} is a matrix, @var{strtrim} trims each row to the length of

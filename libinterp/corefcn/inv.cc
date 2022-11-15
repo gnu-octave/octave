@@ -70,14 +70,17 @@ sparse matrix if possible.
 
   octave_value arg = args(0);
 
+  if (! arg.isnumeric ())
+    err_wrong_type_arg ("inv", arg);
+
   if (arg.isempty ())
     return ovl (Matrix ());
 
   if (arg.rows () != arg.columns ())
-    err_square_matrix_required ("inverse", "A");
+    err_square_matrix_required ("inv", "A");
 
   octave_value result;
-  octave_idx_type info;
+  octave_idx_type info = 0;
   double rcond = 0.0;
   float frcond = 0.0;
   bool isfloat = arg.is_single_type ();
@@ -191,6 +194,8 @@ sparse matrix if possible.
             }
         }
       else
+        // Shouldn't get here since we checked for suitable arg earlier.
+        // Maybe for some user-defined classes?
         err_wrong_type_arg ("inv", arg);
     }
 
@@ -232,6 +237,12 @@ sparse matrix if possible.
 %! [xinv, rcond] = inv (single ([1,2;3,4]));
 %! assert (xinv, single ([-2, 1; 1.5, -0.5]), 5*eps ("single"));
 %! assert (isa (rcond, "single"));
+
+## Basic test for integer inputs
+%!assert (inv (int32 (2)), 0.5)
+%!assert (inv (uint32 (2)), 0.5)
+%!assert (inv (int64 (2)), 0.5)
+%!assert (inv (uint64 (2)), 0.5)
 
 ## Normal scalar cases
 %!assert (inv (2), 0.5)
@@ -367,11 +378,15 @@ sparse matrix if possible.
 %! assert (A, sparse ([Inf, Inf; 0, 0]));
 
 %!testif HAVE_UMFPACK <*56232>
-%! fail ("A = inv (sparse ([1, 0, 0; 0, 0, 0; 0, 0, 1]))", "warning", "matrix singular");
+%! fail ("A = inv (sparse ([1, 0, 0; 0, 0, 0; 0, 0, 1]))",
+%!       "warning", "matrix singular");
 %! assert (A, sparse ([Inf, 0, 0; 0, 0, 0; 0, 0, Inf]));
 
-%!error inv ()
-%!error inv ([1, 2; 3, 4], 2)
+%!error <Invalid call> inv ()
+%!error <Invalid call> inv ([1, 2; 3, 4], 2)
+%!error <wrong type argument> inv ("Hello World")
+%!error <wrong type argument> inv ({1})
+%!error <wrong type argument> inv (true)
 %!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
 %!error <inverse of the null matrix not defined> inv (sparse (2, 2, 0))
 %!error <inverse of the null matrix not defined> inv (diag ([0, 0]))

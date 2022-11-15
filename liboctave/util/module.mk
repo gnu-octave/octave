@@ -9,7 +9,6 @@ UTIL_INC = \
   %reldir%/file-info.h \
   %reldir%/glob-match.h \
   %reldir%/lo-array-errwarn.h \
-  %reldir%/lo-cutils.h \
   %reldir%/lo-hash.h \
   %reldir%/lo-ieee.h \
   %reldir%/lo-regexp.h \
@@ -51,8 +50,6 @@ UTIL_F77_SRC = \
   %reldir%/r1mach.f
 
 UTIL_C_SRC = \
-  %reldir%/f2c-main.c \
-  %reldir%/lo-cutils.c \
   %reldir%/blaswrap.c \
   %reldir%/f77-fcn.c \
   %reldir%/lo-error.c \
@@ -64,6 +61,7 @@ UTIL_SRC = \
   %reldir%/cmd-edit.cc \
   %reldir%/cmd-hist.cc \
   %reldir%/data-conv.cc \
+  %reldir%/f77-dummy-main.cc \
   %reldir%/file-info.cc \
   %reldir%/glob-match.cc \
   %reldir%/kpse.cc \
@@ -75,6 +73,7 @@ UTIL_SRC = \
   %reldir%/quit.cc \
   %reldir%/oct-atomic.c \
   %reldir%/oct-base64.cc \
+  %reldir%/oct-cmplx.cc \
   %reldir%/oct-glob.cc \
   %reldir%/oct-inttypes.cc \
   %reldir%/oct-mutex.cc \

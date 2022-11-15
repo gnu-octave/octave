@@ -127,8 +127,6 @@ OCTAVE_INTERPRETER_TARGETS += \
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
-pkgconfig_DATA += $(%canon_reldir%_pkgconfig_DATA)
-
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \

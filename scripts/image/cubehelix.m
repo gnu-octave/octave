@@ -87,7 +87,7 @@ function map = cubehelix (n, start = 0.5, rots = -1.5, hue = 1, gamma = 1)
 endfunction
 
 
-## A better demo of this colormap would be a 3D plot in NTSC instead of
+## A better demo of this colormap would be a 3-D plot in NTSC instead of
 ## RGB values.  That would really show what this colormap is about.
 %!demo
 %! ## Show the 'cubehelix' colormap profile and as an image

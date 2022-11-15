@@ -57,7 +57,7 @@
 ## @seealso{ellipsoid, rectangle, sphere}
 ## @end deftypefn
 
-function [xx, yy, zz] = cylinder (varargin)
+function [x, y, z] = cylinder (varargin)
 
   [hax, args, nargs] = __plt_get_axis_arg__ ("cylinder", varargin{:});
 
@@ -74,21 +74,24 @@ function [xx, yy, zz] = cylinder (varargin)
     n = args{2};
   endif
 
-  if (length (r) < 2)
-    error ("cylinder: length (R) must be larger than 2");
+  if (! isvector (r))
+    error ("cylinder: R must be a scalar or vector");
+  endif
+  if (isscalar (r))
+    r .*= [1 1];  # expand single radius specification to required 2-term form
   endif
 
   phi = linspace (0, 2*pi, n+1);
   idx = 1:length (r);
   [phi, idx] = meshgrid (phi, idx);
-  z = (idx - 1) / (length (r) - 1);
+  zz = (idx - 1) / (length (r) - 1);
   r = r(idx);
-  [x, y] = pol2cart (phi, r);
+  [xx, yy] = pol2cart (phi, r);
 
   if (nargout > 0)
-    xx = x;
-    yy = y;
-    zz = z;
+    x = xx;
+    y = yy;
+    z = zz;
   else
     oldfig = [];
     if (! isempty (hax))
@@ -96,7 +99,7 @@ function [xx, yy, zz] = cylinder (varargin)
     endif
     unwind_protect
       hax = newplot (hax);
-      surf (x, y, z);
+      surf (xx, yy, zz);
     unwind_protect_cleanup
       if (! isempty (oldfig))
         set (0, "currentfigure", oldfig);
@@ -113,3 +116,8 @@ endfunction
 %! [x, y, z] = cylinder (10:-1:0, 50);
 %! surf (x, y, z);
 %! title ("cylinder() with linearly shrinking radius produces a cone");
+
+## Test input validation
+%!error <Invalid call> cylinder (1,2,3)
+%!error <R must be a scalar> cylinder ([])
+%!error <R must be a scalar or vector> cylinder (ones (2,2))

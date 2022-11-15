@@ -73,11 +73,13 @@ namespace octave
           }
       }
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     // the custom (extra) title bar of the widget
     m_title_widget = new QWidget ();
 
     m_dock_action = new QAction
-      (QIcon (":/actions/icons/widget-undock.png"), "", this);
+      (rmgr.icon ("widget-undock", true), "", this);
     m_dock_action->setToolTip (tr ("Undock widget"));
     m_dock_button = new QToolButton (m_title_widget);
     m_dock_button->setDefaultAction (m_dock_action);
@@ -85,7 +87,7 @@ namespace octave
     m_dock_button->setIconSize (QSize (m_icon_size, m_icon_size));
 
     m_close_action = new QAction
-      (QIcon (":/actions/icons/widget-close.png"), "", this);
+      (rmgr.icon ("widget-close", true), "", this);
     m_close_action->setToolTip (tr ("Close widget"));
     m_close_button = new QToolButton (m_title_widget);
     m_close_button->setDefaultAction (m_close_action);
@@ -233,13 +235,15 @@ namespace octave
 
     m_close_action->setToolTip (tr ("Hide widget"));
 
-    setStyleSheet (qdockwidget_css (QString (":/actions/icons/widget-close.png"),
-                                    QString ("Close widget"),
-                                    QString (":/actions/icons/widget-undock.png"),
-                                    QString ("Undock widget"),
-                                    m_icon_size,
-                                    QString (""),
-                                    QString ("")));
+    setStyleSheet (qdockwidget_css (
+      global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
+      QString ("Close widget"),
+      global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
+      QString ("Undock widget"),
+      m_icon_size,
+      QString (""),
+      QString ("")));
+
     if (widget ())
       widget ()->setToolTip (QString (""));
 
@@ -311,8 +315,8 @@ namespace octave
     // adjust the (un)dock icon
     if (titleBarWidget ())
       {
-        m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock"
-                                       + m_icon_color + ".png"));
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        m_dock_action->setIcon (rmgr.icon ("widget-dock" + m_icon_color, true));
         m_dock_action->setToolTip (tr ("Dock widget"));
       }
     else
@@ -370,8 +374,7 @@ namespace octave
              this, &octave_dock_widget::make_window);
     if (titleBarWidget ())
       {
-        m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock"
-                                       + m_icon_color + ".png"));
+        m_dock_action->setIcon (rmgr.icon ("widget-undock" + m_icon_color, true));
         m_dock_action->setToolTip (tr ("Undock widget"));
       }
     else
@@ -798,22 +801,23 @@ namespace octave
         css_background = QString ("");
       }
 
-    QString full_dock_icon = ":/actions/icons/" + dock_icon + icon_col + ".png";
-    QString full_close_icon = ":/actions/icons/widget-close" + icon_col + ".png";
+    QString full_dock_icon = dock_icon + icon_col;
+    QString full_close_icon = "widget-close" + icon_col;
     if (titleBarWidget ())
       {
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
         titleBarWidget ()->setStyleSheet (css_foreground + css_background);
         css_button = QString ("QToolButton {background: transparent; border: 0px;}");
         m_dock_button->setStyleSheet (css_button);
         m_close_button->setStyleSheet (css_button);
-        m_dock_action->setIcon (QIcon (full_dock_icon));
-        m_close_action->setIcon (QIcon (full_close_icon));
+        m_dock_action->setIcon (rmgr.icon (full_dock_icon, true));
+        m_close_action->setIcon (rmgr.icon (full_close_icon, true));
       }
     else
       {
-        setStyleSheet (qdockwidget_css (full_close_icon,
+        setStyleSheet (qdockwidget_css (global_icon_paths.at (ICON_THEME_OCTAVE) + full_close_icon + ".png",
                                         close_tooltip,
-                                        full_dock_icon,
+                                        global_icon_paths.at (ICON_THEME_OCTAVE) + full_dock_icon + ".png",
                                         dock_tooltip,
                                         m_icon_size,
                                         css_foreground,

@@ -77,7 +77,8 @@ extern OCTINTERP_API octave_value xpow (const ComplexDiagMatrix& a,
 
 extern OCTINTERP_API octave_value elem_xpow (double a, const Matrix& b);
 extern OCTINTERP_API octave_value elem_xpow (double a, const ComplexMatrix& b);
-extern OCTINTERP_API octave_value elem_xpow (double a, const octave::range<double>& r);
+extern OCTINTERP_API octave_value elem_xpow (double a,
+                                             const octave::range<double>& r);
 
 extern OCTINTERP_API octave_value elem_xpow (const Matrix& a, double b);
 extern OCTINTERP_API octave_value elem_xpow (const Matrix& a, const Matrix& b);
@@ -88,7 +89,8 @@ extern OCTINTERP_API octave_value elem_xpow (const Matrix& a,
 extern OCTINTERP_API octave_value elem_xpow (const Complex& a, const Matrix& b);
 extern OCTINTERP_API octave_value elem_xpow (const Complex& a,
                                              const ComplexMatrix& b);
-extern OCTINTERP_API octave_value elem_xpow (const Complex& a, const octave::range<double>& r);
+extern OCTINTERP_API octave_value elem_xpow (const Complex& a,
+                                             const octave::range<double>& r);
 
 extern OCTINTERP_API octave_value elem_xpow (const ComplexMatrix& a, double b);
 extern OCTINTERP_API octave_value elem_xpow (const ComplexMatrix& a,

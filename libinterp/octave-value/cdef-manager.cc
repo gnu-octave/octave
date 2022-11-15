@@ -172,7 +172,7 @@ namespace octave
     return retval;
   }
 
-#define META_CLASS_CMP(OP, CLSA, CLSB, FUN)                             \
+#define META_CLASS_CMP(OP, CLSA, CLSB, FCN)                             \
   static octave_value_list                                              \
   class_ ## OP (const octave_value_list& args, int /* nargout */)       \
   {                                                                     \
@@ -189,7 +189,7 @@ namespace octave
                                                                         \
     cdef_class clsb = to_cdef (args(1));                                \
                                                                         \
-    retval(0) = FUN (CLSA, CLSB);                                       \
+    retval(0) = FCN (CLSA, CLSB);                                       \
                                                                         \
     return retval;                                                      \
   }
@@ -281,7 +281,8 @@ namespace octave
 
   static octave_value_list
   package_getAllPackages (interpreter& interp,
-                          const octave_value_list& /* args */, int /* nargout */)
+                          const octave_value_list& /* args */,
+                          int /* nargout */)
   {
     std::map<std::string, cdef_package> toplevel_packages;
 

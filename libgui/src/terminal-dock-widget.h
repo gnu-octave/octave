@@ -49,6 +49,8 @@ namespace octave
 
     bool has_focus (void) const;
 
+    void init_command_prompt ();
+
     // FIXME: The next two functions could be eliminated (or combined)
     // if we had a common interface for the old and new terminal
     // widgets.
@@ -56,30 +58,29 @@ namespace octave
     // Only valid if using the old terminal widget.
     QTerminal * get_qterminal (void);
 
+#if defined (HAVE_QSCINTILLA)
     // Only valid if using the new terminal widget.
     command_widget * get_command_widget (void);
+#endif
 
   signals:
 
     void settings_changed (const gui_settings *settings);
 
-    // Note: UPDATE_PROMPT_SIGNAL and INTERPRETER_OUTPUT_SIGNAL are
+    // Note: the following four signals are
     // currently only used by the new experimental terminal widget.
 
     void update_prompt_signal (const QString&);
 
     void interpreter_output_signal (const QString&);
 
+    void new_command_line_signal (const QString& = QString ());
+
+    void execute_command_signal (const QString&);
+
   public slots:
 
     void notice_settings (const gui_settings *settings);
-
-    // Note: INTERPRETER_OUTPUT and UPDATE_PROMPT are currently only
-    // used by the new experimental terminal widget.
-
-    void interpreter_output (const QString&);
-
-    void update_prompt (const QString&);
 
   private:
 

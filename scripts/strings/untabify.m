@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} untabify (@var{t})
-## @deftypefnx {} {} untabify (@var{t}, @var{tw})
-## @deftypefnx {} {} untabify (@var{t}, @var{tw}, @var{deblank})
+## @deftypefn  {} {@var{str} =} untabify (@var{t})
+## @deftypefnx {} {@var{str} =} untabify (@var{t}, @var{tw})
+## @deftypefnx {} {@var{str} =} untabify (@var{t}, @var{tw}, @var{deblank})
 ## Replace TAB characters in @var{t} with spaces.
 ##
 ## The input, @var{t}, may be either a 2-D character array, or a cell array of
@@ -55,7 +55,7 @@
 ## @seealso{strjust, strsplit, deblank}
 ## @end deftypefn
 
-function s = untabify (t, tw = 8, deblank_arg = false)
+function str = untabify (t, tw = 8, deblank_arg = false)
 
   if (nargin < 1)
     print_usage ();
@@ -64,13 +64,13 @@ function s = untabify (t, tw = 8, deblank_arg = false)
   endif
 
   if (ischar (t))
-    s = replace_tabs (t, tw);
+    str = replace_tabs (t, tw);
   else
-    s = cellfun (@replace_tabs, t, {tw}, "uniformoutput", false);
+    str = cellfun (@replace_tabs, t, {tw}, "uniformoutput", false);
   endif
 
   if (deblank_arg)
-    s = deblank (s);
+    str = deblank (str);
   endif
 
 endfunction

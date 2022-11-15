@@ -68,7 +68,7 @@ namespace octave
         frame.protect_var (quit_allowed);
         quit_allowed = false;
 
-        interpreter& interp = __get_interpreter__ ("cdef_object_rep::release");
+        interpreter& interp = __get_interpreter__ ();
 
         interpreter_try (frame);
 

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} polyder (@var{p})
-## @deftypefnx {} {[@var{k}] =} polyder (@var{a}, @var{b})
+## @deftypefn  {} {@var{k} =} polyder (@var{p})
+## @deftypefnx {} {@var{k} =} polyder (@var{a}, @var{b})
 ## @deftypefnx {} {[@var{q}, @var{d}] =} polyder (@var{b}, @var{a})
 ## Return the coefficients of the derivative of the polynomial whose
 ## coefficients are given by the vector @var{p}.

@@ -653,6 +653,9 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
                 }
 
               painter.setRenderHint (QPainter::Antialiasing, false);
+#if defined (HAVE_QPAINTER_RENDERHINT_LOSSLESS)
+              painter.setRenderHint (QPainter::LosslessImageRendering);
+#endif
               painter.drawImage (pos, img);
               painter.setRenderHint (QPainter::Antialiasing, true);
               painter.restore  ();
@@ -824,6 +827,26 @@ void reconstruct_polygons (QDomElement& parent_elt)
     replace_polygons (parent_elt, collection[ii].first, collection[ii].second);
 }
 
+void add_custom_properties (QDomElement& parent_elt)
+{
+  QDomNodeList nodes = parent_elt.childNodes ();
+
+  for (int ii = 0; ii < nodes.count (); ii++)
+    {
+      QDomNode node = nodes.at (ii);
+      if (! node.isElement ())
+        continue;
+
+      QDomElement elt = node.toElement ();
+
+      if (elt.tagName () == "image")
+        elt.setAttribute ("image-rendering", "optimizeSpeed");
+      else
+        add_custom_properties (elt);
+    }
+
+}
+
 #if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
 extern "C"
 int
@@ -959,6 +982,9 @@ read from stdin\n\
   // Do basic polygons reconstruction
   if (QString (argv[5]).toInt ())
     reconstruct_polygons (root);
+
+  // Add custom properties to SVG
+  add_custom_properties (root);
 
   // Draw
   if (! strcmp (argv[2], "pdf"))

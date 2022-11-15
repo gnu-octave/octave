@@ -217,7 +217,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool load_binary (std::istream& is, bool swap, mach_info::float_format fmt);
 
-    bool save_hdf5 (octave_hdf5_id loc_hid, const char *name, bool save_as_floats);
+    bool save_hdf5 (octave_hdf5_id loc_hid, const char *name,
+                    bool save_as_floats);
 
     bool load_hdf5 (octave_hdf5_id& group_hid, octave_hdf5_id& space_hid,
                     octave_hdf5_id& type_hid);
@@ -289,7 +290,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool load_binary (std::istream& is, bool swap, mach_info::float_format fmt);
 
-    bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
+    bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                    bool save_as_floats);
 
     bool load_hdf5 (octave_hdf5_id& group_hid, octave_hdf5_id& space_hid,
                     octave_hdf5_id& type_hid);
@@ -362,7 +364,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool load_binary (std::istream& is, bool swap, mach_info::float_format fmt);
 
-    bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
+    bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                    bool save_as_floats);
 
     bool load_hdf5 (octave_hdf5_id& group_hid, octave_hdf5_id& space_hid,
                     octave_hdf5_id& type_hid);
@@ -517,8 +520,7 @@ OCTAVE_NAMESPACE_BEGIN
       if (m_fcn.is_defined ())
         return m_fcn.function_value ();
 
-      symbol_table& symtab
-        = __get_symbol_table__ ("class_simple_fcn_handle::function_value");
+      symbol_table& symtab = __get_symbol_table__ ();
 
       // FIXME: is caching the correct thing to do?
       // Cache this value so that the pointer will be valid as long as the
@@ -553,7 +555,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool load_binary (std::istream& is, bool swap, mach_info::float_format fmt);
 
-    bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
+    bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                    bool save_as_floats);
 
     bool load_hdf5 (octave_hdf5_id& group_hid, octave_hdf5_id& space_hid,
                     octave_hdf5_id& type_hid);
@@ -657,7 +660,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     bool load_binary (std::istream& is, bool swap, mach_info::float_format fmt);
 
-    bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
+    bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                    bool save_as_floats);
 
     bool load_hdf5 (octave_hdf5_id& group_hid, octave_hdf5_id& space_hid,
                     octave_hdf5_id& type_hid);
@@ -912,7 +916,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   internal_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    interpreter& interp = __get_interpreter__ ("internal_fcn_handle::call");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (m_fcn, args, nargout);
   }
@@ -945,7 +949,7 @@ OCTAVE_NAMESPACE_BEGIN
     // it is a classdef meta object, then build TYPE and IDX arguments and
     // make a subsref call using them.
 
-    interpreter& interp = __get_interpreter__ ("simple_fcn_handle::call");
+    interpreter& interp = __get_interpreter__ ();
 
     octave_value fcn_to_call;
 
@@ -1132,8 +1136,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (m_fcn.is_defined ())
       return m_fcn.function_value ();
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("simple_fcn_handle::function_value");
+    symbol_table& symtab = __get_symbol_table__ ();
 
     // FIXME: is caching the correct thing to do?
     // Cache this value so that the pointer will be valid as long as the
@@ -1152,8 +1155,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (m_fcn.is_defined ())
       return m_fcn.user_function_value ();
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("simple_fcn_handle::user_function_value");
+    symbol_table& symtab = __get_symbol_table__ ();
 
     // FIXME: is caching the correct thing to do?
     // Cache this value so that the pointer will be valid as long as the
@@ -1169,8 +1171,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (m_fcn.is_defined ())
       return m_fcn;
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("simple_fcn_handle::user_function_value");
+    symbol_table& symtab = __get_symbol_table__ ();
 
     // FIXME: is caching the correct thing to do?
     // Cache this value so that the pointer will be valid as long as the
@@ -1360,7 +1361,8 @@ OCTAVE_NAMESPACE_BEGIN
     a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid,
                       octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
-    a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, octave_H5P_DEFAULT);
+    a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid,
+                      octave_H5P_DEFAULT);
 #endif
 
     if (a_id >= 0)
@@ -1459,7 +1461,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     // FIXME: we aren't really using the scope yet.  Hmm.
 
-    interpreter& interp = __get_interpreter__ ("simple_fcn_handle::call");
+    interpreter& interp = __get_interpreter__ ();
 
     if (! m_fcn.is_defined ())
       {
@@ -1636,8 +1638,7 @@ OCTAVE_NAMESPACE_BEGIN
     // It is not an error if this fails.  We can report later that the
     // handle is invalid.
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("scoped_fcn_handle::find_function");
+    symbol_table& symtab = __get_symbol_table__ ();
 
     if (m_parentage.size () == 1)
       {
@@ -1678,10 +1679,10 @@ OCTAVE_NAMESPACE_BEGIN
                 if (file_name.substr (0, oct_home.size ()) == oct_home)
                   file_name = file_name.substr (oct_home.size ());
 
-                octave_value subfun = fcn->find_subfunction (m_name);
+                octave_value subfcn = fcn->find_subfunction (m_name);
 
-                if (subfun.is_defined ())
-                  m_fcn = subfun;
+                if (subfcn.is_defined ())
+                  m_fcn = subfcn;
               }
           }
       }
@@ -1815,7 +1816,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   nested_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    tree_evaluator& tw = __get_evaluator__ ("nested_fcn_handle::call");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
@@ -1843,7 +1844,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   weak_nested_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    tree_evaluator& tw = __get_evaluator__ ("weak_nested_fcn_handle::call");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
@@ -1897,7 +1898,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   class_simple_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    interpreter& interp = __get_interpreter__ ("class_simple_fcn_handle::call");
+    interpreter& interp = __get_interpreter__ ();
 
     if (m_obj.is_defined ())
       {
@@ -2116,8 +2117,7 @@ OCTAVE_NAMESPACE_BEGIN
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
-    interpreter& interp
-      = __get_interpreter__ ("base_anonymous_fcn_handle::load_ascii");
+    interpreter& interp = __get_interpreter__ ();
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2210,7 +2210,7 @@ OCTAVE_NAMESPACE_BEGIN
         std::istringstream nm_is (m_name.substr (anl));
         nm_is >> len;
 
-        // Anonymous functons don't have names.  We just used this
+        // Anonymous functions don't have names.  We just used this
         // string as temporary storage to pass the number of local
         // variable values.
 
@@ -2233,8 +2233,7 @@ OCTAVE_NAMESPACE_BEGIN
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
-    interpreter& interp
-      = __get_interpreter__ ("base_anonymous_fcn_handle::load_binary");
+    interpreter& interp = __get_interpreter__ ();
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2390,7 +2389,8 @@ OCTAVE_NAMESPACE_BEGIN
           retval = false;
 #if defined (HAVE_HDF5_18)
         data_hid = H5Gcreate (group_hid, "symbol table",
-                              octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                              octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                              octave_H5P_DEFAULT);
 #else
         data_hid = H5Gcreate (group_hid, "symbol table", 0);
 #endif
@@ -2515,16 +2515,16 @@ OCTAVE_NAMESPACE_BEGIN
     // HDF5 doesn't print out all sorts of error messages if we
     // call H5Aopen for a non-existing attribute
 
-    H5E_auto_t err_func;
-    void *err_func_data;
+    H5E_auto_t err_fcn;
+    void *err_fcn_data;
 
     // turn off error reporting temporarily, but save the error
     // reporting function:
 #if defined (HAVE_HDF5_18)
-    H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
+    H5Eget_auto (octave_H5E_DEFAULT, &err_fcn, &err_fcn_data);
     H5Eset_auto (octave_H5E_DEFAULT, nullptr, nullptr);
 #else
-    H5Eget_auto (&err_func, &err_func_data);
+    H5Eget_auto (&err_fcn, &err_fcn_data);
     H5Eset_auto (nullptr, nullptr);
 #endif
 
@@ -2540,16 +2540,15 @@ OCTAVE_NAMESPACE_BEGIN
 
     // restore error reporting:
 #if defined (HAVE_HDF5_18)
-    H5Eset_auto (octave_H5E_DEFAULT, err_func, err_func_data);
+    H5Eset_auto (octave_H5E_DEFAULT, err_fcn, err_fcn_data);
 #else
-    H5Eset_auto (err_func, err_func_data);
+    H5Eset_auto (err_fcn, err_fcn_data);
 #endif
 
     // Set up temporary scope to use for evaluating the text that
     // defines the anonymous function.
 
-    interpreter& interp
-      = __get_interpreter__ ("base_anonymous_fcn_handle::load_hdf5");
+    interpreter& interp = __get_interpreter__ ();
 
     tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2622,14 +2621,14 @@ OCTAVE_NAMESPACE_BEGIN
 
     tree_statement_list *b = f->body ();
 
-    assert (b->length () == 1);
+    panic_if (b->length () != 1);
 
     tree_statement *s = b->front ();
 
     if (! s)
       error ("invalid anonymous function handle");
 
-    assert (s->is_expression ());
+    panic_unless (s->is_expression ());
 
     tree_expression *e = s->expression ();
 
@@ -2647,8 +2646,7 @@ OCTAVE_NAMESPACE_BEGIN
     // values to the object returned by eval_string?  This code is also is
     // duplicated in read_mat5_binary_element in ls-mat5.cc.
 
-    interpreter& interp
-      = __get_interpreter__ ("base_anonymous_fcn_handle::parse");
+    interpreter& interp = __get_interpreter__ ();
 
     // Set up temporary scope to use for evaluating the text that defines
     // the anonymous function so that we don't pick up values of random
@@ -2705,7 +2703,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    tree_evaluator& tw = __get_evaluator__ ("anonymous_fcn_handle::call");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
@@ -2757,7 +2755,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value_list
   weak_anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
   {
-    tree_evaluator& tw = __get_evaluator__ ("anonymous_fcn_handle::call");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
@@ -2958,14 +2956,16 @@ octave_fcn_handle::load_ascii (std::istream& is)
           std::string name;
           is >> name;
 
-          new_rep.reset (new octave::simple_fcn_handle (name, fpath, octaveroot));
+          new_rep.reset (new octave::simple_fcn_handle (name, fpath,
+                                                        octaveroot));
         }
       else if (subtype == "scopedfunction")
         {
           std::string name;
           is >> name;
 
-          new_rep.reset (new octave::scoped_fcn_handle (name, fpath, octaveroot));
+          new_rep.reset (new octave::scoped_fcn_handle (name, fpath,
+                                                        octaveroot));
         }
       else if (subtype == "anonymous")
         new_rep.reset (new octave::anonymous_fcn_handle ());
@@ -2974,14 +2974,16 @@ octave_fcn_handle::load_ascii (std::istream& is)
           std::string name;
           is >> name;
 
-          new_rep.reset (new octave::nested_fcn_handle (name, fpath, octaveroot));
+          new_rep.reset (new octave::nested_fcn_handle (name, fpath,
+                                                        octaveroot));
         }
       else if (subtype == "classsimple")
         {
           std::string name;
           is >> name;
 
-          new_rep.reset (new octave::class_simple_fcn_handle (name, fpath, octaveroot));
+          new_rep.reset (new octave::class_simple_fcn_handle (name, fpath,
+                                                              octaveroot));
         }
     }
 
@@ -3081,7 +3083,8 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       else if (subtype == "nested")
         new_rep.reset (new octave::nested_fcn_handle (name, fpath, octaveroot));
       else if (subtype == "classsimple")
-        new_rep.reset (new octave::class_simple_fcn_handle (name, fpath, octaveroot));
+        new_rep.reset (new octave::class_simple_fcn_handle (name, fpath,
+                                                            octaveroot));
     }
 
   if (! new_rep)
@@ -3234,7 +3237,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
       else if (subtype == "nested")
         new_rep.reset (new octave::nested_fcn_handle (name, fpath, octaveroot));
       else if (subtype == "classsimple")
-        new_rep.reset (new octave::class_simple_fcn_handle (name, fpath, octaveroot));
+        new_rep.reset (new octave::class_simple_fcn_handle (name, fpath,
+                                                            octaveroot));
     }
 
   bool status = false;
@@ -3401,16 +3405,6 @@ is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2)
 
 OCTAVE_NAMESPACE_BEGIN
 
-  // DEPRECATED in Octave 6.
-
-  octave_value
-  make_fcn_handle (interpreter& interp, const std::string& nm)
-  {
-    tree_evaluator& tw = interp.get_evaluator ();
-
-    return tw.make_fcn_handle (nm);
-  }
-
 DEFUN (functions, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{s} =} functions (@var{fcn_handle})
@@ -3472,9 +3466,9 @@ particular output format.
 
 DEFUN (func2str, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} func2str (@var{fcn_handle})
-Return a string containing the name of the function referenced by the
-function handle @var{fcn_handle}.
+@deftypefn {} {@var{str} =} func2str (@var{fcn_handle})
+Return a string containing the name of the function referenced by the function
+handle @var{fcn_handle}.
 @seealso{str2func, functions}
 @end deftypefn */)
 {
@@ -3506,12 +3500,23 @@ function handle @var{fcn_handle}.
 
 DEFMETHOD (str2func, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} str2func (@var{fcn_name})
-Return a function handle constructed from the string @var{fcn_name}.
+@deftypefn {} {@var{hfcn} =} str2func (@var{str})
+Return a function handle constructed from the string @var{str}.
 
-Previous versions of Octave accepted an optional second argument,
-@qcode{"global"}, that caused str2func to ignore locally visible
-functions.  This option is no longer supported.
+The input may be the name of a function such as @qcode{"sin"} or a string
+defining a function such as @qcode{"@@(x) sin (x + pi)"}.
+
+Programming Note: In most cases it will be better to use anonymous function
+syntax and let the Octave parser create the function handle rather than use
+@code{str2func}.  For example:
+
+@example
+@group
+hfcn = @@sin ;
+hfcn = @@(x) sin (x + pi) ;
+@end group
+@end example
+
 @seealso{func2str, functions}
 @end deftypefn */)
 {
@@ -3532,7 +3537,7 @@ functions.  This option is no longer supported.
       // temporary scope to use for evaluating the text that defines
       // the anonymous function.  Here we want
       //
-      //   str2fun ("@(args) expr")
+      //   str2func ("@(args) expr")
       //
       // to behave the same as if
       //
@@ -3577,7 +3582,7 @@ functions.  This option is no longer supported.
 */
 
 /*
-%!function y = __testrecursionfunc (f, x, n)
+%!function y = __testrecursionfcn (f, x, n)
 %!  if (nargin < 3)
 %!    n = 0;
 %!  endif
@@ -3585,16 +3590,16 @@ functions.  This option is no longer supported.
 %!    y = f (x);
 %!  else
 %!    n++;
-%!    y = __testrecursionfunc (@(x) f (2*x), x, n);
+%!    y = __testrecursionfcn (@(x) f (2*x), x, n);
 %!  endif
 %!endfunction
 %!
-%!assert (__testrecursionfunc (@(x) x, 1), 8)
+%!assert (__testrecursionfcn (@(x) x, 1), 8)
 */
 
 DEFUN (is_function_handle, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_function_handle (@var{x})
+@deftypefn {} {@var{tf} =} is_function_handle (@var{x})
 Return true if @var{x} is a function handle.
 @seealso{isa, typeinfo, class, functions}
 @end deftypefn */)

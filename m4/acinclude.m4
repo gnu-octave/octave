@@ -1,12 +1,11 @@
-dnl aclocal.m4 -- extra macros for configuring Octave
+dnl acinclude.m4 -- extra macros for configuring Octave
 dnl
 dnl --------------------------------------------------------------------
 dnl
 dnl Copyright (C) 1995-2022 The Octave Project Developers
 dnl
 dnl See the file COPYRIGHT.md in the top-level directory of this
-dnl or <https://octave.org/copyright/>.
-dnl
+dnl distribution or <https://octave.org/copyright/>.
 dnl
 dnl This file is part of Octave.
 dnl
@@ -689,7 +688,7 @@ dnl FIXME: remove this test when we drop support for Qt older than 5.3.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QPRINTER_SETPAGESIZE], [
   AC_CACHE_CHECK([for QPrinter::setPageSize in <QPrinter>],
-    [octave_cv_func_qprinter_setpagesizes],
+    [octave_cv_func_qprinter_setpagesize],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     ac_octave_save_CXXFLAGS="$CXXFLAGS"
@@ -802,6 +801,35 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION], [
   if test $octave_cv_func_qwheelevent_position = yes; then
     AC_DEFINE(HAVE_QWHEELEVENT_POSITION, 1,
       [Define to 1 if you have the `QWheelEvent::position' member function.])
+  fi
+])
+dnl
+dnl Check whether the Qt method QPainter::setRenderHint accepts the
+dnl QPainter::LosslessImageRendering flag.  This flag was introduced in Qt 5.13.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS], [
+  AC_CACHE_CHECK([for QPainter::LosslessImageRendering flag],
+    [octave_cv_func_qpainter_setrenderhint_lossless],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QPainter>
+        ]], [[
+        QPainter painter;
+        painter.setRenderHint (QPainter::LosslessImageRendering);
+        ]])],
+      octave_cv_func_qpainter_setrenderhint_lossless=yes,
+      octave_cv_func_qpainter_setrenderhint_lossless=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qpainter_setrenderhint_lossless = yes; then
+    AC_DEFINE(HAVE_QPAINTER_RENDERHINT_LOSSLESS, 1,
+      [Define to 1 if you have the `QPainter::LosslessImageRendering' flag.])
   fi
 ])
 dnl
@@ -1354,7 +1382,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
       [octave_cv_lib_hdf5_dll=no],
       [save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DWIN32 -D_HDF5USEDLL_"
-      save_LIBS="$LIBS"
+      ac_octave_save_LIBS="$LIBS"
       LIBS="$HDF5_LIBS $LIBS"
       AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <hdf5.h>
@@ -1365,7 +1393,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
         octave_cv_lib_hdf5_dll=yes,
         octave_cv_lib_hdf5_dll=no)
       CFLAGS="$save_CFLAGS"
-      LIBS="$save_LIBS"
+      LIBS="$ac_octave_save_LIBS"
     ])
   ])
   if test $octave_cv_lib_hdf5_dll = yes; then
@@ -1433,7 +1461,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
       ])
       case $canonical_host_type in
         *-*-mingw32* | *-*-msdosmsvc)
-          save_LIBS="$LIBS"
+          ac_octave_save_LIBS="$LIBS"
           LIBS="$LIBS -lopengl32"
           AC_MSG_CHECKING([for glEnable in -lopengl32])
           AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -1449,7 +1477,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
             glEnable(GL_SMOOTH);
             ]])], [OPENGL_LIBS="-lopengl32 -lglu32"])
 
-          LIBS="$save_LIBS"
+          LIBS="$ac_octave_save_LIBS"
           if test -n "$OPENGL_LIBS"; then
             AC_MSG_RESULT([yes])
           else
@@ -1495,6 +1523,41 @@ AC_DEFUN([OCTAVE_CHECK_LIB_PCRE_OK], [
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_lib_pcre_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
+dnl Check whether PCRE2 is compiled with --enable-utf.
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_PCRE2_OK], [
+  AC_CACHE_CHECK([whether PCRE2 library was compiled with UTF support],
+    [octave_cv_lib_pcre2_ok],
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <stdio.h>
+        #define PCRE2_CODE-uNIT_WIDTH 8
+        #if defined (HAVE_PCRE2_H)
+        #  include <pcre2.h>
+        #elif defined (HAVE_PCRE2_PCRE2_H)
+        #  include <pcre2/pcre2.h>
+        #endif
+        ]], [[
+        const char *pattern = "test";
+        int err;
+        PCRE2_SIZE erroffset;
+        pcre2_code *data = pcre2_compile ((PCRE2_SPTR) pattern, PCRE2_ZERO_TERMINATED, PCRE2_UTF, &err, &erroffset, nullptr);
+        return (! data);
+      ]])],
+      octave_cv_lib_pcre2_ok=yes,
+      octave_cv_lib_pcre2_ok=no,
+      octave_cv_lib_pcre2_ok=yes)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_lib_pcre2_ok = yes; then
     $1
     :
   else
@@ -1568,37 +1631,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [
     $2
     :
   fi
-])
-dnl
-dnl Find a suitable termlib to use.
-dnl
-AC_DEFUN([OCTAVE_CHECK_LIB_TERMLIB], [
-  TERM_LIBS=
-  ac_octave_save_LIBS="$LIBS"
-  AC_SEARCH_LIBS([tputs],
-                 [ncurses curses termcap terminfo termlib],
-                 [], [])
-  LIBS="$ac_octave_save_LIBS"
-  case "$ac_cv_search_tputs" in
-    -l*)
-      TERM_LIBS="$ac_cv_search_tputs"
-    ;;
-    no)
-      warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, or -ltermlib!"
-      AC_MSG_WARN([$warn_termlibs])
-    ;;
-  esac
-
-dnl  Old code (9/9/2012).  Delete when new code is definitely proven.
-dnl
-dnl  for _termlib in ncurses curses termcap terminfo termlib; do
-dnl    AC_CHECK_LIB([${_termlib}], [tputs], [
-dnl      TERM_LIBS="-l${termlib}"
-dnl      octave_cv_lib_found_termlib=yes
-dnl      break])
-dnl  done
-
-  AC_SUBST(TERM_LIBS)
 ])
 dnl
 dnl Check whether new API is used with QHelpIndexWidget.
@@ -1760,7 +1792,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       [save_CPPFLAGS="$CPPFLAGS"
       save_CXXFLAGS="$CXXFLAGS"
       save_LDFLAGS="$LDFLAGS"
-      save_LIBS="$LIBS"
+      ac_octave_save_LIBS="$LIBS"
       CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
       CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
       LDFLAGS="$QT_LDFLAGS $LDFLAGS"
@@ -1783,7 +1815,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       CPPFLAGS="$save_CPPFLAGS"
       CXXFLAGS="$save_CXXFLAGS"
       LDFLAGS="$save_LDFLAGS"
-      LIBS="$save_LIBS"
+      LIBS="$ac_octave_save_LIBS"
       AC_LANG_POP([C++])
     ])
 
@@ -2280,6 +2312,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER
     OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA
     OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
+    OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS
 
     OCTAVE_CHECK_QOVERLOAD_TEMPLATE
     OCTAVE_CHECK_QREGION_ITERATORS
@@ -2525,7 +2558,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,
       [Define to 1 if SUNDIALS IDA is configured with SUNLINSOL_KLU enabled.])
   else
-    warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinksol_klu.h is not usable.  The solvers ode15i and ode15s will not support the sparse Jacobian feature."
+    warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinsol_klu.h is not usable.  The solvers ode15i and ode15s will not support the sparse Jacobian feature."
     OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_klu])
   fi
 ])
@@ -2886,7 +2919,6 @@ dnl readline.
 dnl
 AC_DEFUN([OCTAVE_ENABLE_READLINE], [
   USE_READLINE=yes
-  READLINE_LIBS=
   AC_ARG_ENABLE([readline],
     [AS_HELP_STRING([--disable-readline],
       [do not use readline library])],
@@ -2895,20 +2927,14 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
        warn_readline="command editing and history features require GNU Readline"
      fi])
   if test $USE_READLINE = yes; then
-    dnl RHEL 5 and older systems require termlib set before enabling readline
-    AC_REQUIRE([OCTAVE_CHECK_LIB_TERMLIB])
-    ac_octave_save_LIBS="$LIBS"
-    LIBS="$TERM_LIBS"
-    AC_CHECK_LIB([readline], [rl_set_keyboard_input_timeout],
-      [READLINE_LIBS="-lreadline"
+    gl_FUNC_READLINE
+    if test "$gl_cv_lib_readline" != no; then
       AC_DEFINE(USE_READLINE, 1, [Define to 1 to use the readline library.])
-      ],
-      [AC_MSG_WARN([I need GNU Readline 4.2 or later])
+    else
+      AC_MSG_WARN([I need GNU Readline 4.2 or later])
       AC_MSG_ERROR([this is fatal unless you specify --disable-readline])
-    ])
-    LIBS="$ac_octave_save_LIBS"
+    fi
   fi
-  AC_SUBST(READLINE_LIBS)
 ])
 dnl
 dnl Check if Fortran compiler handles FLAG command line option.  If
@@ -3240,7 +3266,7 @@ dnl
 AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   case "$canonical_host_type" in
     *-*-mingw* | *-*-msdosmsvc)
-      ac_octave_gs_names="gswin32c gs mgs"
+      ac_octave_gs_names="gs gswin32c gswin64c mgs"
     ;;
     *)
       ac_octave_gs_names="gs"
@@ -3409,7 +3435,7 @@ dnl
 dnl Find Python program.
 dnl
 AC_DEFUN([OCTAVE_PROG_PYTHON], [
-  AC_CHECK_PROG(PYTHON, python, python, [])
+  AC_CHECK_PROGS(PYTHON, [python3 python], python, [])
   AC_SUBST(PYTHON)
 ])
 dnl
@@ -3500,23 +3526,26 @@ dnl Check for options that can be passed to tar to make archives reproducible.
 dnl
 AC_DEFUN([OCTAVE_PROG_TAR_REPRODUCIBLE], [
   AC_MSG_CHECKING([for options to make reproducible archives with GNU tar])
-dnl This uses Automake's logic for finding GNU tar under various names
-  for octave_tar in tar gnutar gtar :; do
-    $octave_tar --version >/dev/null 2>&1 && break
-  done
-dnl If we have a valid GNU tar program, see if it supports sets of options
-  if test x"$octave_tar" != x:; then
-    octave_tar_flags=
-    echo > conftest.txt
-    for octave_tar_flag in --owner=0 --group=0 --numeric-owner --sort=name; do
-      $octave_tar -cf conftest.tar $octave_tar_flags $octave_tar_flag conftest.txt 2>/dev/null
-      if test $? -eq 0; then
-        octave_tar_flags="${octave_tar_flags:+$octave_tar_flags }$octave_tar_flag"
-      fi
+  AC_CACHE_VAL([octave_cv_tar_flags],
+    [octave_cv_tar_flags=
+    dnl This uses Automake's logic for finding GNU tar under various names
+    for octave_tar in tar gnutar gtar :; do
+      $octave_tar --version >/dev/null 2>&1 && break
     done
-    rm -f conftest.tar conftest.txt
-    REPRODUCIBLE_TAR_FLAGS="$octave_tar_flags"
-  fi
+    dnl If we have a valid GNU tar program, see if it supports sets of options
+    if test x"$octave_tar" != x:; then
+      echo > conftest.txt
+      for octave_tar_flag in --owner=0 --group=0 --numeric-owner --sort=name; do
+        $octave_tar -cf conftest.tar $octave_cv_tar_flags $octave_tar_flag conftest.txt 2>/dev/null
+        if test $? -eq 0; then
+          octave_cv_tar_flags="${octave_cv_tar_flags:+$octave_cv_tar_flags }$octave_tar_flag"
+        fi
+      done
+      rm -f conftest.tar conftest.txt
+    fi
+  ])
+
+  REPRODUCIBLE_TAR_FLAGS="$octave_cv_tar_flags"
   AC_SUBST(REPRODUCIBLE_TAR_FLAGS)
   AC_MSG_RESULT([$REPRODUCIBLE_TAR_FLAGS])
 ])

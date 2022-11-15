@@ -24,16 +24,16 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} cast (@var{val}, "@var{type}")
-## @deftypefnx {} {} cast (@var{val}, "@var{like}", @var{var})
-## Convert @var{val} to data type @var{type}.
+## @deftypefn  {} {@var{y} =} cast (@var{x}, "@var{type}")
+## @deftypefnx {} {@var{y} =} cast (@var{x}, "@var{like}", @var{var})
+## Convert @var{x} to data type @var{type}.
 ##
-## The input @var{val} may be a scalar, vector, or matrix of a class that is
+## The input @var{x} may be a scalar, vector, or matrix of a class that is
 ## convertible to the target class (see below).
 ##
-## If a variable @var{var} is specified after @qcode{"like"}, @var{val} is
+## If a variable @var{var} is specified after @qcode{"like"}, @var{x} is
 ## converted to the same data type and sparsity attribute.  If @var{var} is
-## complex, @var{val} will be complex, too.
+## complex, @var{x} will be complex, too.
 ##
 ## @var{var} may be and @var{type} may name any of the following built-in
 ## numeric classes:
@@ -55,7 +55,7 @@
 ## @end group
 ## @end example
 ##
-## The value @var{val} may be modified to fit within the range of the new type.
+## The value @var{x} may be modified to fit within the range of the new type.
 ##
 ## Examples:
 ##
@@ -68,7 +68,7 @@
 ## @end group
 ## @end example
 ##
-## Programming Note: This function relies on the object @var{val} having a
+## Programming Note: This function relies on the object @var{x} having a
 ## conversion method named @var{type}.  User-defined classes may implement only
 ## a subset of the full list of types shown above.  In that case, it may be
 ## necessary to call cast twice in order to reach the desired type.
@@ -84,7 +84,7 @@
 ## double, single, logical, char, class, typeinfo}
 ## @end deftypefn
 
-function retval = cast (val, type, var)
+function y = cast (x, type, var)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -105,8 +105,8 @@ function retval = cast (val, type, var)
     print_usage ();
   endif
 
-  if (! isnumeric (val) && ! islogical (val) && ! ischar (val))
-    error ("cast: type conversion from '%s' is not supported", class (val));
+  if (! isnumeric (x) && ! islogical (x) && ! ischar (x))
+    error ("cast: type conversion from '%s' is not supported", class (x));
   endif
 
   if (! any (strcmp (type, {"int8"; "uint8"; "int16"; "uint16"; "int32";
@@ -115,17 +115,17 @@ function retval = cast (val, type, var)
     error ("cast: type conversion to '%s' is not supported", type);
   endif
 
-  retval = feval (type, val);
+  y = feval (type, x);
 
   if (is_like)
-    if (issparse (var) && ! issparse (retval))
-      ## retval is of the same type as var, so it must be convertible to sparse
-      retval = sparse (retval);
-    elseif (! issparse (var) && issparse (retval))
-      retval = full (retval);
+    if (issparse (var) && ! issparse (y))
+      ## y is of the same type as var, so it must be convertible to sparse
+      y = sparse (y);
+    elseif (! issparse (var) && issparse (y))
+      y = full (y);
     endif
-    if (iscomplex (var) || iscomplex (val))
-      retval = complex (retval);
+    if (iscomplex (var) || iscomplex (x))
+      y = complex (y);
     endif
   endif
 

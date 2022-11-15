@@ -32,12 +32,13 @@
 #  include <memory_resource>
 
 template <typename T, typename Alloc = std::pmr::polymorphic_allocator<T>>
-class OCTARRAY_API Array;
+class OCTAVE_TEMPLATE_API Array;
 
 #else
+#  include <memory>
 
 template <typename T, typename Alloc = std::allocator<T>>
-class OCTARRAY_API Array;
+class OCTAVE_TEMPLATE_API Array;
 
 #endif
 

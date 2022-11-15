@@ -24,20 +24,20 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} inline (@var{str})
-## @deftypefnx {} {} inline (@var{str}, @var{arg1}, @dots{})
-## @deftypefnx {} {} inline (@var{str}, @var{n})
+## @deftypefn  {} {@var{fobj} =} inline (@var{str})
+## @deftypefnx {} {@var{fobj} =} inline (@var{str}, @var{arg1}, @dots{})
+## @deftypefnx {} {@var{fobj} =} inline (@var{str}, @var{n})
 ##
 ## This function is obsolete.  Use anonymous functions
 ## (@pxref{Anonymous Functions}) instead.
 ##
-## Create an inline function from the character string @var{str}.
+## Create an inline function object from the character string @var{str}.
 ##
 ## If called with a single argument, the arguments of the generated
 ## function are extracted from the function itself.  The generated
 ## function arguments will then be in alphabetical order.  It should be
 ## noted that i and j are ignored as arguments due to the ambiguity
-## between their use as a variable or their use as an built-in constant.
+## between their use as a variable and their use as an built-in constant.
 ## All arguments followed by a parenthesis are considered to be
 ## functions.  If no arguments are found, a function taking a single
 ## argument named @code{x} will be created.
@@ -55,7 +55,7 @@
 ## @seealso{argnames, formula, vectorize, str2func}
 ## @end deftypefn
 
-function obj = inline (expr, varargin)
+function fobj = inline (expr, varargin)
 
   persistent warned = false;
   if (! warned)
@@ -97,13 +97,16 @@ function obj = inline (expr, varargin)
 
   p.expr = expr;
   p.args = args(:);
-  p.numArgs = numel (args);
+  p.nargs = numel (args);
+  p.fh = eval (sprintf ("@(%s) %s", strjoin (args(:), ","), expr));
+
+  ## FIXME: Do we need these parts of inline struct anymore (4/6/22)?
   tmp = [args; num2cell(1:numel(args))];
   p.inputExpr = sprintf ("%s = INLINE_INPUTS_{%d}; ", tmp{:});
   p.isEmpty = false;
   p.version = 1;
 
-  obj = __inline_ctor__ (p);
+  fobj = __inline_ctor__ (p);
 
 endfunction
 

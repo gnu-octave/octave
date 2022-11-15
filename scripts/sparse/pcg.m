@@ -36,8 +36,8 @@
 ## @itemize
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline function
-## @code{Afun} such that @code{Afun(x) = A * x}.  Additional parameters to
-## @code{Afun} may be passed after @var{x0}.
+## @code{Afcn} such that @code{Afcn(x) = A * x}.  Additional parameters to
+## @code{Afcn} may be passed after @var{x0}.
 ##
 ## @var{A} has to be Hermitian and Positive Definite (@nospell{HPD})@.  If
 ## @code{pcg} detects @var{A} not to be positive definite, a warning is printed
@@ -163,10 +163,10 @@
 ## M1 = ichol (A); # in this tridiagonal case it corresponds to chol (A)'
 ## M2 = M1';
 ## M = M1 * M2;
-## Afun = @@(x) A * x;
-## Mfun = @@(x) M \ x;
-## M1fun = @@(x) M1 \ x;
-## M2fun = @@(x) M2 \ x;
+## Afcn = @@(x) A * x;
+## Mfcn = @@(x) M \ x;
+## M1fcn = @@(x) M1 \ x;
+## M2fcn = @@(x) M2 \ x;
 ## @end group
 ## @end example
 ##
@@ -180,7 +180,7 @@
 ## @code{@var{A} * @var{x}}
 ##
 ## @example
-## x = pcg (Afun, b)
+## x = pcg (Afcn, b)
 ## @end example
 ##
 ## @sc{Example 3:} @code{pcg} with a preconditioner matrix @var{M}
@@ -192,7 +192,7 @@
 ## @sc{Example 4:} @code{pcg} with a function as preconditioner
 ##
 ## @example
-## x = pcg (Afun, b, 1e-6, 100, Mfun)
+## x = pcg (Afcn, b, 1e-6, 100, Mfcn)
 ## @end example
 ##
 ## @sc{Example 5:} @code{pcg} with preconditioner matrices @var{M1}
@@ -205,7 +205,7 @@
 ## @sc{Example 6:} @code{pcg} with functions as preconditioners
 ##
 ## @example
-## x = pcg (Afun, b, 1e-6, 100, M1fun, M2fun)
+## x = pcg (Afcn, b, 1e-6, 100, M1fcn, M2fcn)
 ## @end example
 ##
 ## @sc{Example 7:} @code{pcg} with as input a function requiring an argument
@@ -218,8 +218,8 @@
 ##        y = A * y;
 ##      endfor
 ##   endfunction
-## Apfun = @@(x, p) Ap (A, x, p);
-## x = pcg (Apfun, b, [], [], [], [], [], 2);
+## Apfcn = @@(x, p) Ap (A, x, p);
+## x = pcg (Apfcn, b, [], [], [], [], [], 2);
 ## @end group
 ## @end example
 ##
@@ -275,7 +275,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   ## Check if the input data A,b,m1,m2 are consistent (i.e. if they are
   ## matrix or function handle)
 
-  [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, "pcg");
+  [Afcn, M1fcn, M2fcn] = __alltohandles__ (A, b, M1, M2, "pcg");
 
   maxit += 2;
   n_arg_out = nargout;
@@ -301,7 +301,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   ## x_pr (x previous) needs to check the stagnation
   ## x_min needs to save the iterated with minimum residual
 
-  r = b - feval (Afun, x, varargin{:});
+  r = b - feval (Afcn, x, varargin{:});
   iter = 2;
   iter_min = 0;
   flag = 1;
@@ -320,15 +320,15 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
     if (iter == 2) # Check whether M1 or M2 are singular
       try
         warning ("error","Octave:singular-matrix","local");
-        z = feval (M1fun, r, varargin{:});
-        z = feval (M2fun, z, varargin{:});
+        z = feval (M1fcn, r, varargin{:});
+        z = feval (M2fcn, z, varargin{:});
       catch
         flag = 2;
         break;
       end_try_catch
     else
-      z = feval (M1fun, r, varargin{:});
-      z = feval (M2fun, z, varargin{:});
+      z = feval (M1fcn, r, varargin{:});
+      z = feval (M2fcn, z, varargin{:});
     endif
 
     tau = z' * r;
@@ -336,7 +336,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
     beta = tau / old_tau;
     old_tau = tau;
     p = z + beta * p;
-    w = feval (Afun, p, varargin{:});
+    w = feval (Afcn, p, varargin{:});
 
     ## Needed only for eigest.
 
@@ -378,8 +378,8 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   if (n_arg_out > 5)
   ## Apply the preconditioner once more and finish with the precond
   ## residual.
-    z = feval (M1fun, r, varargin{:});
-    z = feval (M2fun, z, varargin{:});
+    z = feval (M1fcn, r, varargin{:});
+    z = feval (M2fcn, z, varargin{:});
   endif
 
   ## (Eventually) computes the eigenvalue of inv(m2)*inv(m1)*A
@@ -466,24 +466,24 @@ endfunction
 %! M2 = M1';
 %! M = M1 * M2;
 %! x = pcg (A, b);
-%! Afun = @(x) A * x;
-%! x = pcg (Afun, b);
+%! Afcn = @(x) A * x;
+%! x = pcg (Afcn, b);
 %! x = pcg (A, b, 1e-6, 100, M);
 %! x = pcg (A, b, 1e-6, 100, M1, M2);
-%! Mfun = @(x) M \ x;
-%! x = pcg (Afun, b, 1e-6, 100, Mfun);
-%! M1fun = @(x) M1 \ x;
-%! M2fun = @(x) M2 \ x;
-%! x = pcg (Afun, b, 1e-6, 100, M1fun, M2fun);
+%! Mfcn = @(x) M \ x;
+%! x = pcg (Afcn, b, 1e-6, 100, Mfcn);
+%! M1fcn = @(x) M1 \ x;
+%! M2fcn = @(x) M2 \ x;
+%! x = pcg (Afcn, b, 1e-6, 100, M1fcn, M2fcn);
 %! function y = Ap (A, x, p)  # compute A^p * x
 %!    y = x;
 %!    for i = 1:p
 %!      y = A * y;
 %!    endfor
 %!  endfunction
-%! Afun = @(x, p) Ap (A, x, p);
+%! Afcn = @(x, p) Ap (A, x, p);
 %! ## solution of A^2 * x = b
-%! x = pcg (Afun, b, [], [], [], [], [], 2);
+%! x = pcg (Afcn, b, [], [], [], [], [], 2);
 
 %!demo
 %! n = 10;
@@ -506,32 +506,32 @@ endfunction
 %! b = A * ones (5, 1);
 %! M1 = diag (sqrt (diag (A)));
 %! M2 = M1;  # M1 * M2 is the Jacobi preconditioner
-%! Afun = @(z) A*z;
-%! M1_fun = @(z) M1 \ z;
-%! M2_fun = @(z) M2 \ z;
+%! Afcn = @(z) A*z;
+%! M1_fcn = @(z) M1 \ z;
+%! M2_fcn = @(z) M2 \ z;
 %! [x, flag, ~, iter] = pcg (A,b);
 %! assert (flag, 0);
 %! [x, flag, ~ , iter] = pcg (A, b, [], [], M1 * M2);
 %! assert (flag, 0);
 %! [x, flag, ~ , iter] = pcg (A, b, [], [], M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = pcg (A, b, [], [], M1_fun, M2_fun);
+%! [x, flag] = pcg (A, b, [], [], M1_fcn, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = pcg (A, b,[],[], M1_fun, M2);
+%! [x, flag] = pcg (A, b,[],[], M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = pcg (A, b,[],[], M1, M2_fun);
+%! [x, flag] = pcg (A, b,[],[], M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = pcg (Afun, b);
+%! [x, flag] = pcg (Afcn, b);
 %! assert (flag, 0);
-%! [x, flag] = pcg (Afun, b,[],[], M1 * M2);
+%! [x, flag] = pcg (Afcn, b,[],[], M1 * M2);
 %! assert (flag, 0);
-%! [x, flag] = pcg (Afun, b,[],[], M1, M2);
+%! [x, flag] = pcg (Afcn, b,[],[], M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = pcg (Afun, b,[],[], M1_fun, M2);
+%! [x, flag] = pcg (Afcn, b,[],[], M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = pcg (Afun, b,[],[], M1, M2_fun);
+%! [x, flag] = pcg (Afcn, b,[],[], M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = pcg (Afun, b,[],[], M1_fun, M2_fun);
+%! [x, flag] = pcg (Afcn, b,[],[], M1_fcn, M2_fcn);
 %! assert (flag, 0);
 
 %!test
@@ -658,11 +658,11 @@ endfunction
 %! assert (class (x), "single");
 
 %!test
-%!function y = Afun (x)
+%!function y = Afcn (x)
 %!   A = toeplitz ([2, 1, 0, 0]);
 %!   y = A * x;
 %!endfunction
-%! [x, flag] = pcg ("Afun", [3; 4; 4; 3]);
+%! [x, flag] = pcg ("Afcn", [3; 4; 4; 3]);
 %! assert (x, ones (4, 1), 1e-6);
 
 %!test

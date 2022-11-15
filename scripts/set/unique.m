@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} unique (@var{x})
-## @deftypefnx {} {} unique (@var{x}, "rows")
-## @deftypefnx {} {} unique (@dots{}, "sorted")
-## @deftypefnx {} {} unique (@dots{}, "stable")
+## @deftypefn  {} {@var{y} =} unique (@var{x})
+## @deftypefnx {} {@var{y} =} unique (@var{x}, "rows")
+## @deftypefnx {} {@var{y} =} unique (@dots{}, "sorted")
+## @deftypefnx {} {@var{y} =} unique (@dots{}, "stable")
 ## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
 ## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "first")
 ## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "last")
@@ -305,6 +305,7 @@ endfunction
 %! [y,i,~] = unique ([4,4,2,2,2,3,1], "stable");
 %! assert (y, [4,2,3,1]);
 %! assert (i, [1;3;6;7]);
+%! ## FIXME: 'j' input not calculated with stable
 %! ##assert (j, []);
 
 %!test
@@ -337,6 +338,7 @@ endfunction
 %! [y,i,~] = unique (A, "rows", "stable");
 %! assert (y, [4,5,6; 1,2,3]);
 %! assert (A(i,:), y);
+%! ## FIXME: 'j' output not calculated correctly with "stable"
 %! ##assert (y(j,:), A);
 
 ## Test "legacy" option

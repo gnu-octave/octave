@@ -61,6 +61,7 @@ namespace octave
 
     void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
                              QTranslator *gui_tr);
+    void config_icon_theme (void);
 
     gui_settings * get_settings (void) const;
 
@@ -96,7 +97,8 @@ namespace octave
 
     void update_network_settings (void);
 
-    QIcon icon (const QString& icon_name, bool fallback = true);
+    QIcon icon (const QString& icon_name, bool octave_only = false,
+                const QString& icon_alt_name = QString ());
 
     void get_codecs (QStringList *codecs);
 
@@ -122,6 +124,8 @@ namespace octave
     gui_settings *m_default_settings;
 
     QList<QTemporaryFile *> m_temporary_files;
+
+    QStringList m_icon_fallbacks;
   };
 }
 

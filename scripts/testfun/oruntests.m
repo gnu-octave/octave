@@ -119,6 +119,11 @@ function retval = has_functions (f)
     endif
     str = fread (fid, "*char")';
     fclose (fid);
+    enc = dir_encoding (fileparts (f));
+    if (! strcmp (enc, "utf-8"))
+      ## convert from input encoding to UTF-8
+      str = native2unicode (uint8 (str), enc);
+    endif
     retval = ! isempty (regexp (str,'^(?:DEFUN|DEFUN_DLD|DEFUNX)\>',
                                     'lineanchors', 'once'));
   elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
@@ -138,6 +143,11 @@ function retval = has_tests (f)
 
   str = fread (fid, "*char").';
   fclose (fid);
+  enc = dir_encoding (fileparts (f));
+  if (! strcmp (enc, "utf-8"))
+    ## convert from input encoding to UTF-8
+    str = native2unicode (uint8 (str), enc);
+  endif
   retval = ! isempty (regexp (str,
                               '^%!(assert|error|fail|test|xtest|warning)',
                               'lineanchors', 'once'));

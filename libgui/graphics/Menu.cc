@@ -294,13 +294,13 @@ namespace octave
 
     if (action->isCheckable ())
       action->setChecked (! action->isChecked ());
-    emit gh_callback_event (m_handle, "callback");
+    emit gh_callback_event (m_handle, "menuselectedfcn");
   }
 
   void
   Menu::actionHovered (void)
   {
-    emit gh_callback_event (m_handle, "callback");
+    emit gh_callback_event (m_handle, "menuselectedfcn");
   }
 
   void

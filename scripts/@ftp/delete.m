@@ -28,6 +28,7 @@
 ## Delete the remote file @var{file} over the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
+## @seealso{@ftp/rmdir, @ftp/rename, @ftp/ftp}
 ## @end deftypefn
 
 function delete (f, file)

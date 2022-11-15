@@ -2,24 +2,23 @@ Update bootstrap script from upstream gnulib to automatically fetch from reposit
 
 See also: https://lists.gnu.org/archive/html/bug-gnulib/2020-08/msg00150.html
 
-diff --git a/bootstrap b/bootstrap
-index 8f76d6962..2d0a06376 100755
---- a/bootstrap
-+++ b/bootstrap
-@@ -670,6 +670,11 @@ if $use_gnulib; then
-         || cleanup_gnulib
+diff -urN a/bootstrap-funclib.sh b/bootstrap-funclib.sh
+--- a/bootstrap-funclib.sh.	2022-11-12 13:47:39.921059000 +0100
++++ b/bootstrap-funclib.sh	2022-11-12 13:55:04.393284235 +0100
+@@ -532,6 +532,11 @@
+         fi
  
-       trap - 1 2 13 15
+         trap - 1 2 13 15
 +
-+    elif test -n "$GNULIB_REVISION" \
-+         && ! git --git-dir="$gnulib_path"/.git cat-file \
-+              commit "$GNULIB_REVISION"; then
-+      git --git-dir="$gnulib_path"/.git fetch
++      elif test -n "$GNULIB_REVISION" \
++           && ! git --git-dir="$gnulib_path"/.git cat-file \
++                commit "$GNULIB_REVISION"; then
++        git --git-dir="$gnulib_path"/.git fetch
+       fi
      fi
      GNULIB_SRCDIR=$gnulib_path
-     ;;
-@@ -704,6 +709,10 @@ if $use_gnulib; then
- 
+@@ -543,6 +548,10 @@
+   # XXX Should this be done if $use_git is false?
    if test -d "$GNULIB_SRCDIR"/.git && test -n "$GNULIB_REVISION" \
       && ! git_modules_config submodule.gnulib.url >/dev/null; then
 +    if ! git --git-dir="$GNULIB_SRCDIR"/.git cat-file \

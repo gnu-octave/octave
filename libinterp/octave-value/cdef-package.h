@@ -61,7 +61,8 @@ namespace octave
 
       ~cdef_package_rep (void) = default;
 
-      cdef_object_rep * copy (void) const { return new cdef_package_rep (*this); }
+      cdef_object_rep * copy (void) const
+      { return new cdef_package_rep (*this); }
 
       bool is_package (void) const { return true; }
 
@@ -226,7 +227,7 @@ namespace octave
       return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ());
     }
 
-    friend OCTINTERP_API void install_classdef (interpreter& interp);
+    friend void install_classdef (octave::interpreter& interp);
   };
 }
 

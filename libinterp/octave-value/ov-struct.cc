@@ -91,7 +91,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 {
   Cell retval;
 
-  assert (idx.length () == 1);
+  panic_if (idx.length () != 1);
 
   std::string nm = idx(0).string_value ();
 
@@ -321,7 +321,7 @@ octave_struct::subsasgn (const std::string& type,
 
                 octave_value_list key_idx = *++p;
 
-                assert (key_idx.length () == 1);
+                panic_if (key_idx.length () != 1);
 
                 std::string key = key_idx(0).string_value ();
 
@@ -377,7 +377,7 @@ octave_struct::subsasgn (const std::string& type,
           {
             octave_value_list key_idx = idx.front ();
 
-            assert (key_idx.length () == 1);
+            panic_if (key_idx.length () != 1);
 
             std::string key = key_idx(0).string_value ();
 
@@ -443,7 +443,7 @@ octave_struct::subsasgn (const std::string& type,
             octave_value_list key_idx = *++p;
             octave_value_list idxf = idx.front ();
 
-            assert (key_idx.length () == 1);
+            panic_if (key_idx.length () != 1);
 
             std::string key = key_idx(0).string_value ();
 
@@ -514,7 +514,7 @@ octave_struct::subsasgn (const std::string& type,
       {
         octave_value_list key_idx = idx.front ();
 
-        assert (key_idx.length () == 1);
+        panic_if (key_idx.length () != 1);
 
         std::string key = key_idx(0).string_value ();
 
@@ -1107,7 +1107,7 @@ octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
 {
   octave_value retval;
 
-  assert (idx.length () == 1);
+  panic_if (idx.length () != 1);
 
   std::string nm = idx(0).string_value ();
 
@@ -1228,7 +1228,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       octave_value_list key_idx = idx.front ();
 
-      assert (key_idx.length () == 1);
+      panic_if (key_idx.length () != 1);
 
       std::string key = key_idx(0).string_value ();
 
@@ -1885,14 +1885,16 @@ orderfields, isstruct, structfun}
 %!assert (size (x), [0,0])
 %!assert (isstruct (x))
 %!assert (isempty (fieldnames (x)))
-%!fail ('struct ("a",{1,2},"b",{1,2,3})', 'dimensions of parameter 2 do not match those of parameter 4')
+%!fail ('struct ("a",{1,2},"b",{1,2,3})',
+%!      'dimensions of parameter 2 do not match those of parameter 4')
 %!error <arguments must occur as "field", VALUE pairs> struct (1,2,3,4)
-%!fail ('struct ("1",2,"3")', 'struct: additional arguments must occur as "field", VALUE pairs')
+%!fail ('struct ("1",2,"3")',
+%!      'struct: additional arguments must occur as "field", VALUE pairs')
 */
 
 DEFUN (isstruct, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isstruct (@var{x})
+@deftypefn {} {@var{tf} =} isstruct (@var{x})
 Return true if @var{x} is a structure or a structure array.
 @seealso{ismatrix, iscell, isa}
 @end deftypefn */)
@@ -1905,8 +1907,8 @@ Return true if @var{x} is a structure or a structure array.
 
 DEFUN (__fieldnames__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __fieldnames__ (@var{struct})
-@deftypefnx {} {} __fieldnames__ (@var{obj})
+@deftypefn  {} {@var{names} =} __fieldnames__ (@var{struct})
+@deftypefnx {} {@var{names} =} __fieldnames__ (@var{obj})
 Internal function.
 
 Implements @code{fieldnames()} for structures and Octave objects.
@@ -1932,8 +1934,8 @@ Implements @code{fieldnames()} for structures and Octave objects.
 
 DEFUN (isfield, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} isfield (@var{x}, "@var{name}")
-@deftypefnx {} {} isfield (@var{x}, @var{name})
+@deftypefn  {} {@var{tf} =} isfield (@var{x}, "@var{name}")
+@deftypefnx {} {@var{tf} =} isfield (@var{x}, @var{name})
 Return true if the @var{x} is a structure and it includes an element named
 @var{name}.
 
@@ -1949,7 +1951,7 @@ dimension is returned.
 
   if (args(0).isstruct ())
     {
-      octave_map m = args(0).map_value ();
+      octave_value m = args(0);
 
       // FIXME: should this work for all types that can do
       // structure reference operations?
@@ -1986,7 +1988,7 @@ dimension is returned.
 
 DEFUN (numfields, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} numfields (@var{s})
+@deftypefn {} {@var{n} =} numfields (@var{s})
 Return the number of fields of the structure @var{s}.
 @seealso{fieldnames}
 @end deftypefn */)
@@ -2054,8 +2056,8 @@ get_cell2struct_fields (const octave_value& arg)
 
 DEFUN (cell2struct, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} cell2struct (@var{cell}, @var{fields})
-@deftypefnx {} {} cell2struct (@var{cell}, @var{fields}, @var{dim})
+@deftypefn  {} {@var{S} =} cell2struct (@var{cell}, @var{fields})
+@deftypefnx {} {@var{S} =} cell2struct (@var{cell}, @var{fields}, @var{dim})
 Convert @var{cell} to a structure.
 
 The number of fields in @var{fields} must match the number of elements in
@@ -2065,10 +2067,10 @@ is omitted, a value of 1 is assumed.
 
 @example
 @group
-A = cell2struct (@{"Peter", "Hannah", "Robert";
+S = cell2struct (@{"Peter", "Hannah", "Robert";
                    185, 170, 168@},
                  @{"Name","Height"@}, 1);
-A(1)
+S(1)
    @result{}
       @{
         Name   = Peter
@@ -2112,7 +2114,7 @@ A(1)
   // result dimensions.
   dim_vector rdv = vals.dims ().redim (nd);
 
-  assert (ext == rdv(dim));
+  panic_unless (ext == rdv(dim));
   if (nd == 2)
     {
       rdv(0) = rdv(1-dim);
@@ -2213,7 +2215,7 @@ DEFUN (struct_levels_to_print, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} struct_levels_to_print ()
 @deftypefnx {} {@var{old_val} =} struct_levels_to_print (@var{new_val})
-@deftypefnx {} {} struct_levels_to_print (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} struct_levels_to_print (@var{new_val}, "local")
 Query or set the internal variable that specifies the number of
 structure levels to display.
 
@@ -2232,7 +2234,7 @@ DEFUN (print_struct_array_contents, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} print_struct_array_contents ()
 @deftypefnx {} {@var{old_val} =} print_struct_array_contents (@var{new_val})
-@deftypefnx {} {} print_struct_array_contents (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} print_struct_array_contents (@var{new_val}, "local")
 Query or set the internal variable that specifies whether to print struct
 array contents.
 

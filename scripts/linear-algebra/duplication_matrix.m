@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} duplication_matrix (@var{n})
+## @deftypefn {} {@var{d} =} duplication_matrix (@var{n})
 ## Return the duplication matrix
 ## @tex
 ##  $D_n$
@@ -37,21 +37,21 @@
 ##  $n^2 \times n(n+1)/2$
 ## @end tex
 ## @ifnottex
-## @math{n^2} by @math{n*(n+1)/2}
+## @math{N^2}-by-@math{N*(N+1)/2}
 ## @end ifnottex
 ## matrix such that
 ## @tex
 ##  $D_n * {\rm vech} (A) = {\rm vec} (A)$
 ## @end tex
 ## @ifnottex
-## @nospell{@math{Dn vech (A) = vec (A)}}
+## @nospell{@code{Dn * vech (A) = vec (A)}}
 ## @end ifnottex
 ## for all symmetric
 ## @tex
 ##  $n \times n$
 ## @end tex
 ## @ifnottex
-## @math{n} by @math{n}
+## @math{N}-by-@math{N}
 ## @end ifnottex
 ## matrices
 ## @tex

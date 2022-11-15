@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} autoreg_matrix (@var{y}, @var{k})
+## @deftypefn {} {@var{x} =} autoreg_matrix (@var{y}, @var{k})
 ## Given a time series (vector) @var{y}, return a matrix with ones in the first
 ## column and the first @var{k} lagged values of @var{y} in the other columns.
 ##
@@ -35,7 +35,7 @@
 ## The resulting matrix may be used as a regressor matrix in autoregressions.
 ## @end deftypefn
 
-function X = autoreg_matrix (y, k)
+function x = autoreg_matrix (y, k)
 
   if (nargin != 2)
     print_usage ();
@@ -47,9 +47,9 @@ function X = autoreg_matrix (y, k)
 
   T = length (y);
   y = reshape (y, T, 1);
-  X = ones (T, k+1);
+  x = ones (T, k+1);
   for j = 1 : k
-    X(:, j+1) = [(zeros (j, 1)); y(1:T-j)];
+    x(:, j+1) = [(zeros (j, 1)); y(1:T-j)];
   endfor
 
 endfunction

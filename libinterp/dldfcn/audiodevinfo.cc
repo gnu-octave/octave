@@ -499,7 +499,8 @@ recording using those parameters.
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
-%! ## There might be multiple devices with the same name (e.g. on Windows WDM-KS)
+%! ## There might be multiple devices with the same name
+%! ## (e.g., on Windows WDM-KS)
 %! ## Check only the first of each unique device name.
 %! [unq_out_name, idx_unique] = unique ({devinfo.output(:).Name});
 %! unq_out_id = [devinfo.output(idx_unique).ID];
@@ -537,8 +538,8 @@ public:
   void init (void);
   void init_fn (void);
   void set_y (const octave_value& y);
-  void set_y (octave_function *fn);
-  void set_y (std::string fn);
+  void set_y (octave_function *fcn);
+  void set_y (std::string fcn);
   Matrix& get_y (void);
   RowVector get_left (void) const;
   RowVector get_right (void) const;
@@ -563,8 +564,8 @@ public:
   octave_value get_userdata (void);
   PaStream * get_stream (void);
 
-  void playblocking (void);
   void play (void);
+  void playblocking (void);
   void pause (void);
   void resume (void);
   void stop (void);
@@ -884,7 +885,7 @@ audioplayer::~audioplayer (void)
   if (isplaying ())
     {
       warning_with_id ("Octave:audio-interrupt",
-                       "interrupting playing audioplayer");
+                       "interrupting audioplayer during playback");
       stop ();
     }
 }
@@ -1003,9 +1004,9 @@ audioplayer::set_y (const octave_value& y_arg)
 }
 
 void
-audioplayer::set_y (octave_function *fn)
+audioplayer::set_y (octave_function *fcn)
 {
-  octave_callback_function = fn;
+  octave_callback_function = fcn;
   channels = 2;
   reset_end_sample ();
 }
@@ -1556,7 +1557,7 @@ audiorecorder::~audiorecorder (void)
   if (isrecording ())
     {
       warning_with_id ("Octave:audio-interrupt",
-                       "interrupting recording audiorecorder");
+                       "interrupting audiorecorder during recording");
       stop ();
     }
 }
@@ -1655,7 +1656,9 @@ audiorecorder::get_id (void)
 void
 audiorecorder::set_channels (int channels_arg)
 {
-  assert (channels_arg == 1 || channels_arg == 2);
+  if (channels_arg != 1 && channels_arg != 2)
+    error ("audiorecorder: number of channels must be 1 or 2");
+
   channels = channels_arg;
 }
 
@@ -1931,7 +1934,7 @@ Undocumented internal function.
                           || args(0).is_inline_function ());
 
       if (is_function)
-        error ("audiorecorder: callbacks not yet implemented");
+        error ("audiorecorder: callback functions are not yet implemented");
     }
 
   if (nargin >= 3)
@@ -2159,7 +2162,7 @@ Undocumented internal function.
 
 DEFUN_DLD (__recorder_isrecording__, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __recorder_isrecording__ (@var{recorder})
+@deftypefn {} {@var{tf} =} __recorder_isrecording__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -2343,7 +2346,7 @@ Undocumented internal function.
                       || args(0).is_inline_function ());
 
   if (is_function)
-    error ("audioplayer: callbacks not yet implemented");
+    error ("audioplayer: callback functions are not yet implemented");
 
   recorder->set_y (args(0));
   recorder->set_fs (args(1).int_value ());
@@ -2572,7 +2575,7 @@ Undocumented internal function.
 
 DEFUN_DLD (__player_isplaying__, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __player_isplaying__ (@var{player})
+@deftypefn {} {@var{tf} =} __player_isplaying__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {

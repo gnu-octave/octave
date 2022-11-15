@@ -64,7 +64,7 @@
 ## Eventually we need to also support these features:
 ## @deftypefnx {} {zoom_object_handle =} zoom (@var{hfig})
 
-function h = zoom (hfig, option)
+function zoom (hfig, option)
 
   ## FIXME: Presumably should implement this for Matlab compatibility.
   if (nargin == 1 && nargout > 0 && isfigure (hfig))

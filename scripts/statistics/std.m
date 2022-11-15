@@ -24,10 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} std (@var{x})
-## @deftypefnx {} {} std (@var{x}, @var{w})
-## @deftypefnx {} {} std (@var{x}, @var{w}, @var{dim})
-## @deftypefnx {} {} std (@var{x}, @var{w}, @qcode{"ALL"})
+## @deftypefn  {} {@var{y} =} std (@var{x})
+## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w})
+## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w}, @var{dim})
+## @deftypefnx {} {@var{y} =} std (@var{x}, @var{w}, @qcode{"ALL"})
+## @deftypefnx {} {[@var{y}, @var{mu}] =} std (@dots{})
 ## Compute the standard deviation of the elements of the vector @var{x}.
 ##
 ## The standard deviation is defined as
@@ -62,34 +63,46 @@
 ## unbiased estimator of the variance.
 ##
 ## @item 1:
-## Normalize with @math{N}. This provides the square root of the second moment
-## around the mean.
+## Normalize with @math{N}@.  This provides the square root of the second
+## moment around the mean.
 ##
 ## @item a vector:
-## Compute the weighted standard deviation with nonnegative scalar weights. The
-## length of @var{w} must be equal to the size of @var{x} along dimension
+## Compute the weighted standard deviation with non-negative scalar weights.
+## The length of @var{w} must equal the size of @var{x} along dimension
 ## @var{dim}.
 ## @end table
 ##
-## If @math{N} is equal to 1 the value of @var{W} is ignored and
-## normalization by @math{N} is used.
+## If @math{N} is equal to 1 the value of @var{W} is ignored and normalization
+## by @math{N} is used.
 ##
 ## The optional variable @var{dim} forces @code{std} to operate over the
-## specified dimension.  @var{dim} can either be a scalar dimension or a vector
-## of non-repeating dimensions over which to operate.  Dimensions must be
-## positive integers, and the standard deviation is calculated over the array
-## slice defined by @var{dim}.
+## specified dimension(s).  @var{dim} can either be a scalar dimension or a
+## vector of non-repeating dimensions.  Dimensions must be positive integers,
+## and the standard deviation is calculated over the array slice defined by
+## @var{dim}.
 ##
-## Specifying dimension @qcode{"ALL"} will force @code{std} to operate on all
+## Specifying dimension @qcode{"all"} will force @code{std} to operate on all
 ## elements of @var{x}, and is equivalent to @code{std (@var{x}(:))}.
 ##
-## When @var{dim} is a vector or @qcode{"ALL"}, @var{w} must be either 0 or 1.
+## When @var{dim} is a vector or @qcode{"all"}, @var{w} must be either 0 or 1.
+##
+## The optional second output variable @var{mu} contains the mean or weighted
+## mean used to calculate @var{y}, and will be the same size as @var{y}.
 ## @seealso{var, bounds, mad, range, iqr, mean, median}
 ## @end deftypefn
 
-function retval = std (varargin)
+function [y, mu] = std (varargin)
 
-  retval = sqrt (var (varargin{:}));
+  if (nargin < 1)
+    print_usage ();
+  endif
+
+  if (nargout < 2)
+    y = sqrt (var (varargin{:}));
+  else
+    [y, mu] = var (varargin{:});
+    y = sqrt (y);
+  endif
 
 endfunction
 
@@ -108,31 +121,5 @@ endfunction
 %!assert (std (single (1)), single (0))
 %!assert (std ([1 2 3], [], 3), [0 0 0])
 
-##Test empty inputs
-%!assert (std ([]), NaN)
-%!assert (std ([],[],1), NaN(1,0))
-%!assert (std ([],[],2), NaN(0,1))
-%!assert (std ([],[],3), [])
-%!assert (std (ones (0,1)), NaN)
-%!assert (std (ones (1,0)), NaN)
-%!assert (std (ones (1,0), [], 1), NaN(1,0))
-%!assert (std (ones (1,0), [], 2), NaN)
-%!assert (std (ones (1,0), [], 3), NaN(1,0))
-%!assert (std (ones (0,1)), NaN)
-%!assert (std (ones (0,1), [], 1), NaN)
-%!assert (std (ones (0,1), [], 2), NaN(0,1))
-%!assert (std (ones (0,1), [], 3), NaN(0,1))
-%!assert (std (ones (1,3,0,2)), NaN(1,1,0,2))
-%!assert (std (ones (1,3,0,2), [], 1), NaN(1,3,0,2))
-%!assert (std (ones (1,3,0,2), [], 2), NaN(1,1,0,2))
-%!assert (std (ones (1,3,0,2), [], 3), NaN(1,3,1,2))
-%!assert (std (ones (1,3,0,2), [], 4), NaN(1,3,0))
-
-
 ## Test input validation
 %!error <Invalid call> std ()
-%!error <X must be a numeric> std (['A'; 'B'])
-%!error <W must be 0> std ([1 2], 2)
-%!error <DIM must be a positive integer> std (1, [], ones (2,2))
-%!error <DIM must be a positive integer> std (1, [], 1.5)
-%!error <DIM must be a positive integer> std (1, [], 0)

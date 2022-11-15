@@ -98,7 +98,8 @@ namespace octave
                                     bool breakpoint_marker = false,
                                     bool insert = true,
                                     const QString& cond = "",
-                                    int index = -1) = 0;
+                                    int index = -1,
+                                    const QString& bookmarks = QString ()) = 0;
   };
 }
 

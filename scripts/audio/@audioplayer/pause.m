@@ -25,15 +25,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} pause (@var{player})
-## Pause the audioplayer @var{player}.
+## Pause playback of audioplayer @var{player}.
+## @seealso{@audioplayer/resume, @audioplayer/stop, @audioplayer/audioplayer}
 ## @end deftypefn
 
 function pause (player)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   __player_pause__ (struct (player).player);
 
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

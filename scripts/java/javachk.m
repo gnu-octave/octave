@@ -24,9 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} javachk (@var{feature})
-## @deftypefnx {} {} javachk (@var{feature}, @var{caller})
-## @deftypefnx {} {@var{msg} =} javachk (@dots{})
+## @deftypefn  {} {@var{msg} =} javachk (@var{feature})
+## @deftypefnx {} {@var{msg} =} javachk (@var{feature}, @var{caller})
 ## Check for the presence of the Java @var{feature} in the current session.
 ## Return an error structure if @var{feature} is not available, not enabled,
 ## or not recognized.

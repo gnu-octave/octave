@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} istril (@var{A})
+## @deftypefn {} {@var{tf} =} istril (@var{A})
 ## Return true if @var{A} is a lower triangular matrix.
 ##
 ## A lower triangular matrix has nonzero entries only on the main diagonal and
@@ -32,16 +32,16 @@
 ## @seealso{istriu, isbanded, isdiag, tril, bandwidth}
 ## @end deftypefn
 
-function retval = istril (A)
+function tf = istril (A)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  retval = (isnumeric (A) || islogical (A)) && ndims (A) == 2;
-  if (retval)
+  tf = (isnumeric (A) || islogical (A)) && ndims (A) == 2;
+  if (tf)
     [i, j] = find (A);
-    retval = all (i >= j);
+    tf = all (i >= j);
   endif
 
 endfunction

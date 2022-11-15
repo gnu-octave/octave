@@ -29,27 +29,13 @@
 #  include "config.h"
 #endif
 
-#include "Array.h"
-#include "Array.cc"
+#include "Array-oct.cc"
 
 #include "ov.h"
 #include "cdef-class.h"
 #include "cdef-object.h"
 
 #include "oct-sort.cc"
-
-// Prevent implicit instantiations on some systems (Windows, others?)
-// that can lead to duplicate definitions of static data members.
-
-extern template class Array<Complex>;
-extern template class Array<FloatComplex>;
-extern template class Array<bool>;
-extern template class Array<char>;
-extern template class Array<double>;
-extern template class Array<float>;
-extern template class Array<octave::idx_vector>;
-extern template class Array<octave_idx_type>;
-extern template class Array<std::string>;
 
 #if defined (HAVE_PRAGMA_GCC_VISIBILITY)
 // Visibility attributes are ignored on template instantiation.
@@ -58,13 +44,13 @@ extern template class Array<std::string>;
 #endif
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave_value, OCTINTERP_API);
-INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave_value, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave_value *, OCTINTERP_API);
-INSTANTIATE_ARRAY (octave_value *, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave_value *, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave::cdef_object, OCTINTERP_API);
-INSTANTIATE_ARRAY (octave::cdef_object, OCTINTERP_API);
+INSTANTIATE_ARRAY (octave::cdef_object, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
 
 #if defined (HAVE_PRAGMA_GCC_VISIBILITY)
 #  pragma GCC visibility pop

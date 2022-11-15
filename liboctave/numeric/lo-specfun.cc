@@ -138,23 +138,11 @@ namespace octave
 
       F77_INT id = (deriv ? 1 : 0);
       F77_INT nz, t_ierr;
+      F77_INT sc = (scaled ? 2 : 1);
 
-      F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, t_ierr);
+      F77_FUNC (zairy, ZAIRY) (zr, zi, id, sc, ar, ai, nz, t_ierr);
 
       ierr = t_ierr;
-
-      if (! scaled)
-        {
-          Complex expz = exp (- 2.0 / 3.0 * z * sqrt (z));
-
-          double rexpz = expz.real ();
-          double iexpz = expz.imag ();
-
-          double tmp = ar*rexpz - ai*iexpz;
-
-          ai = ar*iexpz + ai*rexpz;
-          ar = tmp;
-        }
 
       if (zi == 0.0 && (! scaled || zr >= 0.0))
         ai = 0.0;
@@ -204,27 +192,15 @@ namespace octave
 
       F77_INT id = (deriv ? 1 : 0);
       F77_INT nz, t_ierr;
+      F77_INT sc = (scaled ? 2 : 1);
 
-      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
+      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, sc,
                                F77_CMPLX_ARG (&a), nz, t_ierr);
 
       ierr = t_ierr;
 
       float ar = a.real ();
       float ai = a.imag ();
-
-      if (! scaled)
-        {
-          FloatComplex expz = exp (- 2.0f / 3.0f * z * sqrt (z));
-
-          float rexpz = expz.real ();
-          float iexpz = expz.imag ();
-
-          float tmp = ar*rexpz - ai*iexpz;
-
-          ai = ar*iexpz + ai*rexpz;
-          ar = tmp;
-        }
 
       if (z.imag () == 0.0 && (! scaled || z.real () >= 0.0))
         ai = 0.0;
@@ -1384,23 +1360,11 @@ namespace octave
 
       F77_INT id = (deriv ? 1 : 0);
       F77_INT t_ierr;
+      F77_INT sc = (scaled ? 2 : 1);
 
-      F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, t_ierr);
+      F77_FUNC (zbiry, ZBIRY) (zr, zi, id, sc, ar, ai, t_ierr);
 
       ierr = t_ierr;
-
-      if (! scaled)
-        {
-          Complex expz = exp (std::abs (std::real (2.0 / 3.0 * z * sqrt (z))));
-
-          double rexpz = expz.real ();
-          double iexpz = expz.imag ();
-
-          double tmp = ar*rexpz - ai*iexpz;
-
-          ai = ar*iexpz + ai*rexpz;
-          ar = tmp;
-        }
 
       if (zi == 0.0 && (! scaled || zr >= 0.0))
         ai = 0.0;
@@ -1450,28 +1414,15 @@ namespace octave
 
       F77_INT id = (deriv ? 1 : 0);
       F77_INT t_ierr;
+      F77_INT sc = (scaled ? 2 : 1);
 
-      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
+      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, sc,
                                F77_CMPLX_ARG (&a), t_ierr);
 
       ierr = t_ierr;
 
       float ar = a.real ();
       float ai = a.imag ();
-
-      if (! scaled)
-        {
-          FloatComplex expz
-            = exp (std::abs (std::real (2.0f / 3.0f * z * sqrt (z))));
-
-          float rexpz = expz.real ();
-          float iexpz = expz.imag ();
-
-          float tmp = ar*rexpz - ai*iexpz;
-
-          ai = ar*iexpz + ai*rexpz;
-          ar = tmp;
-        }
 
       if (z.imag () == 0.0 && (! scaled || z.real () >= 0.0))
         ai = 0.0;

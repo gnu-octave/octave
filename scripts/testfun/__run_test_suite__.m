@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs})
-## @deftypefnx {} {} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs}, @var{topsrcdir}, @var{topbuilddir})
+## @deftypefn  {} {[@var{pass}, @var{fail}, @var{xfail}, @var{xbug}, @var{skip}, @var{rtskip}, @var{regress}]} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs})
+## @deftypefnx {} {[@var{pass}, @var{fail}, @var{xfail}, @var{xbug}, @var{skip}, @var{rtskip}, @var{regress}]} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs}, @var{topsrcdir}, @var{topbuilddir})
 ## Undocumented internal function.
 ## @end deftypefn
 

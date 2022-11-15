@@ -68,7 +68,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  assert (x.numel () == xdot.numel ());
+  error_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -117,7 +117,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  assert (x.numel () == xdot.numel ());
+  error_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -367,11 +367,11 @@ parameters for @code{daspk}.
 
   double tzero = out_times (0);
 
-  DAEFunc func (daspk_user_function);
+  DAEFunc fcn (daspk_user_function);
   if (daspk_jac.is_defined ())
-    func.set_jacobian_function (daspk_user_jacobian);
+    fcn.set_jacobian_function (daspk_user_jacobian);
 
-  DASPK dae (state, deriv, tzero, func);
+  DASPK dae (state, deriv, tzero, fcn);
   dae.set_options (daspk_opts);
 
   Matrix output;

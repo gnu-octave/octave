@@ -159,7 +159,9 @@ OCTAVE_NAMESPACE_BEGIN
             break;
 
           case EXPERIMENTAL_TERMINAL_WIDGET_OPTION:
+#if defined (HAVE_QSCINTILLA)
             m_experimental_terminal_widget = true;
+#endif
             break;
 
           case GUI_OPTION:
@@ -242,7 +244,7 @@ OCTAVE_NAMESPACE_BEGIN
     octave_scalar_map m;
 
     m.assign ("sys_argc", sys_argc ());
-    m.assign ("sys_argv", string_vector (sys_argv ()));
+    m.assign ("sys_argv", Cell (string_vector (sys_argv ())));
     m.assign ("echo_commands", echo_commands ());
     m.assign ("forced_interactive", forced_interactive ());
     m.assign ("forced_line_editing", forced_line_editing ());
@@ -267,8 +269,8 @@ OCTAVE_NAMESPACE_BEGIN
     m.assign ("info_file", info_file ());
     m.assign ("info_program", info_program ());
     m.assign ("texi_macros_file", texi_macros_file ());
-    m.assign ("all_args", all_args ());
-    m.assign ("remaining_args", remaining_args ());
+    m.assign ("all_args", Cell (all_args ()));
+    m.assign ("remaining_args", Cell (remaining_args ()));
 
     return m;
   }
@@ -429,7 +431,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (isguirunning, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isguirunning ()
+@deftypefn {} {@var{tf} =} isguirunning ()
 Return true if Octave is running in GUI mode and false otherwise.
 @seealso{have_window_system}
 @end deftypefn */)
@@ -450,7 +452,7 @@ Return true if Octave is running in GUI mode and false otherwise.
 
 DEFUN (argv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} argv ()
+@deftypefn {} {@var{args} =} argv ()
 Return the command line arguments passed to Octave.
 
 For example, if you invoked Octave using the command
@@ -481,9 +483,9 @@ an example of how to create an executable Octave script.
 
 DEFUN (cmdline_options, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} argv ()
-Return a structure containing info about the command line arguments
-passed to Octave.
+@deftypefn {} {@var{opt_struct} =} cmdline_options ()
+Return a structure containing info about the command line arguments passed to
+Octave.
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -501,13 +503,13 @@ passed to Octave.
 
 DEFUN (program_invocation_name, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} program_invocation_name ()
+@deftypefn {} {@var{name} =} program_invocation_name ()
 Return the name that was typed at the shell prompt to run Octave.
 
-If executing a script from the command line (e.g., @code{octave foo.m})
-or using an executable Octave script, the program name is set to the
-name of the script.  @xref{Executable Octave Programs}, for an example of
-how to create an executable Octave script.
+If executing a script from the command line (e.g., @code{octave foo.m}) or
+using an executable Octave script, the program name is set to the name of the
+script.  @xref{Executable Octave Programs}, for an example of how to create an
+executable Octave script.
 @seealso{program_name}
 @end deftypefn */)
 {
@@ -524,7 +526,7 @@ how to create an executable Octave script.
 
 DEFUN (program_name, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} program_name ()
+@deftypefn {} {@var{name} =} program_name ()
 Return the last component of the value returned by
 @code{program_invocation_name}.
 @seealso{program_invocation_name}

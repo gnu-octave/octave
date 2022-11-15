@@ -357,17 +357,17 @@ gen_matrix:
 
 DEFUN (rand, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} rand (@var{n})
-@deftypefnx {} {} rand (@var{m}, @var{n}, @dots{})
-@deftypefnx {} {} rand ([@var{m} @var{n} @dots{}])
+@deftypefn  {} {@var{x} =} rand (@var{n})
+@deftypefnx {} {@var{x} =} rand (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} rand ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{x} =} rand (@dots{}, "single")
+@deftypefnx {} {@var{x} =} rand (@dots{}, "double")
 @deftypefnx {} {@var{v} =} rand ("state")
 @deftypefnx {} {} rand ("state", @var{v})
 @deftypefnx {} {} rand ("state", "reset")
 @deftypefnx {} {@var{v} =} rand ("seed")
 @deftypefnx {} {} rand ("seed", @var{v})
 @deftypefnx {} {} rand ("seed", "reset")
-@deftypefnx {} {} rand (@dots{}, "single")
-@deftypefnx {} {} rand (@dots{}, "double")
 Return a matrix with random elements uniformly distributed on the
 interval (0, 1).
 
@@ -550,17 +550,17 @@ static std::string current_distribution = rand::distribution ();
 
 DEFUN (randn, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} randn (@var{n})
-@deftypefnx {} {} randn (@var{m}, @var{n}, @dots{})
-@deftypefnx {} {} randn ([@var{m} @var{n} @dots{}])
+@deftypefn  {} {@var{x} =} randn (@var{n})
+@deftypefnx {} {@var{x} =} randn (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} randn ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{x} =} randn (@dots{}, "single")
+@deftypefnx {} {@var{x} =} randn (@dots{}, "double")
 @deftypefnx {} {@var{v} =} randn ("state")
 @deftypefnx {} {} randn ("state", @var{v})
 @deftypefnx {} {} randn ("state", "reset")
 @deftypefnx {} {@var{v} =} randn ("seed")
 @deftypefnx {} {} randn ("seed", @var{v})
 @deftypefnx {} {} randn ("seed", "reset")
-@deftypefnx {} {} randn (@dots{}, "single")
-@deftypefnx {} {} randn (@dots{}, "double")
 Return a matrix with normally distributed random elements having zero mean
 and variance one.
 
@@ -617,17 +617,17 @@ J. Statistical Software, vol 5, 2000,
 
 DEFUN (rande, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} rande (@var{n})
-@deftypefnx {} {} rande (@var{m}, @var{n}, @dots{})
-@deftypefnx {} {} rande ([@var{m} @var{n} @dots{}])
+@deftypefn  {} {@var{x} =} rande (@var{n})
+@deftypefnx {} {@var{x} =} rande (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} rande ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{x} =} rande (@dots{}, "single")
+@deftypefnx {} {@var{x} =} rande (@dots{}, "double")
 @deftypefnx {} {@var{v} =} rande ("state")
 @deftypefnx {} {} rande ("state", @var{v})
 @deftypefnx {} {} rande ("state", "reset")
 @deftypefnx {} {@var{v} =} rande ("seed")
 @deftypefnx {} {} rande ("seed", @var{v})
 @deftypefnx {} {} rande ("seed", "reset")
-@deftypefnx {} {} rande (@dots{}, "single")
-@deftypefnx {} {} rande (@dots{}, "double")
 Return a matrix with exponentially distributed random elements.
 
 The arguments are handled the same as the arguments for @code{rand}.
@@ -686,17 +686,17 @@ J. Statistical Software, vol 5, 2000,
 
 DEFUN (randg, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} randg (@var{a}, @var{n})
-@deftypefnx {} {} randg (@var{a}, @var{m}, @var{n}, @dots{})
-@deftypefnx {} {} randg (@var{a}, [@var{m} @var{n} @dots{}])
+@deftypefn  {} {@var{x} =} randg (@var{a}, @var{n})
+@deftypefnx {} {@var{x} =} randg (@var{a}, @var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} randg (@var{a}, [@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{x} =} randg (@dots{}, "single")
+@deftypefnx {} {@var{x} =} randg (@dots{}, "double")
 @deftypefnx {} {@var{v} =} randg ("state")
 @deftypefnx {} {} randg ("state", @var{v})
 @deftypefnx {} {} randg ("state", "reset")
 @deftypefnx {} {@var{v} =} randg ("seed")
 @deftypefnx {} {} randg ("seed", @var{v})
 @deftypefnx {} {} randg ("seed", "reset")
-@deftypefnx {} {} randg (@dots{}, "single")
-@deftypefnx {} {} randg (@dots{}, "double")
 
 Return a matrix with @code{gamma (@var{a},1)} distributed random elements.
 
@@ -796,7 +796,7 @@ classes.
 /*
 %!test
 %! randg ("state", 12);
-%! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]); # *** Please report
+%! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]);
 
 %!test
 %! ## Test a known fixed state
@@ -901,7 +901,7 @@ classes.
 %! endif
 %!test
 %! randg ("seed", 12);
-%!assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]) # *** Please report
+%! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
@@ -961,17 +961,17 @@ classes.
 
 DEFUN (randp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} randp (@var{l}, @var{n})
-@deftypefnx {} {} randp (@var{l}, @var{m}, @var{n}, @dots{})
-@deftypefnx {} {} randp (@var{l}, [@var{m} @var{n} @dots{}])
+@deftypefn  {} {@var{x} =} randp (@var{l}, @var{n})
+@deftypefnx {} {@var{x} =} randp (@var{l}, @var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} randp (@var{l}, [@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{x} =} randp (@dots{}, "single")
+@deftypefnx {} {@var{x} =} randp (@dots{}, "double")
 @deftypefnx {} {@var{v} =} randp ("state")
 @deftypefnx {} {} randp ("state", @var{v})
 @deftypefnx {} {} randp ("state", "reset")
 @deftypefnx {} {@var{v} =} randp ("seed")
 @deftypefnx {} {} randp ("seed", @var{v})
 @deftypefnx {} {} randp ("seed", "reset")
-@deftypefnx {} {} randp (@dots{}, "single")
-@deftypefnx {} {} randp (@dots{}, "double")
 Return a matrix with Poisson distributed random elements with mean value
 parameter given by the first argument, @var{l}.
 
@@ -1021,7 +1021,7 @@ classes.
 /*
 %!test
 %! randp ("state", 12);
-%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);   # *** Please report
+%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);
 %!test
 %! ## Test a known fixed state
 %! randp ("state", 1);
@@ -1033,7 +1033,9 @@ classes.
 %!test
 %! ## Test a known fixed state
 %! randp ("state", 1);
-%! assert (randp (1e9, 1, 6), [999915677 999976657 1000047684 1000019035 999985749 999977692], -1e-6);
+%! assert (randp (1e9, 1, 6),
+%!         [999915677 999976657 1000047684 1000019035 999985749 999977692],
+%!         -1e-6);
 %!test
 %! ## Test a known fixed seed
 %! randp ("seed", 1);
@@ -1046,7 +1048,9 @@ classes.
 %!test
 %! ## Test a known fixed seed
 %! randp ("seed", 1);
-%! assert (randp (1e9, 1, 6), [1000006208 1000012224 999981120 999963520 999963072 999981440], -1e-6);
+%! assert (randp (1e9, 1, 6),
+%!         [1000006208 1000012224 999981120 999963520 999963072 999981440],
+%!         -1e-6);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
@@ -1075,7 +1079,7 @@ classes.
 %! endif
 %!test
 %! randp ("seed", 12);
-%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);   # *** Please report
+%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
@@ -1106,8 +1110,8 @@ classes.
 
 DEFUN (randperm, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} randperm (@var{n})
-@deftypefnx {} {} randperm (@var{n}, @var{m})
+@deftypefn  {} {@var{v} =} randperm (@var{n})
+@deftypefnx {} {@var{v} =} randperm (@var{n}, @var{m})
 Return a row vector containing a random permutation of @code{1:@var{n}}.
 
 If @var{m} is supplied, return @var{m} unique entries, sampled without

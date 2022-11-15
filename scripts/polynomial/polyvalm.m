@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} polyvalm (@var{c}, @var{x})
+## @deftypefn {} {@var{y} =} polyvalm (@var{c}, @var{x})
 ## Evaluate a polynomial in the matrix sense.
 ##
 ## @code{polyvalm (@var{c}, @var{x})} will evaluate the polynomial in the

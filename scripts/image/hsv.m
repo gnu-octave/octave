@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} hsv (@var{n})
+## @deftypefn  {} {@var{map} =} hsv ()
+## @deftypefnx {} {@var{map} =} hsv (@var{n})
 ## Create color colormap.  This colormap begins with red, changes through
 ## yellow, green, cyan, blue, and magenta, before returning to red.
 ##

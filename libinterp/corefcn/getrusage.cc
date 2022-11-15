@@ -38,7 +38,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (getrusage, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} getrusage ()
+@deftypefn {} {@var{procstats} =} getrusage ()
 Return a structure containing a number of statistics about the current
 Octave process.
 

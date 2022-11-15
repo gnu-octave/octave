@@ -127,7 +127,7 @@ OCTAVE_NAMESPACE_BEGIN
   int
   pager_buf::sync (void)
   {
-    output_system& output_sys = __get_output_system__ ("pager_buf::sync");
+    output_system& output_sys = __get_output_system__ ();
 
     char *buf = pbase ();
 
@@ -164,7 +164,7 @@ OCTAVE_NAMESPACE_BEGIN
   int
   diary_buf::sync (void)
   {
-    output_system& output_sys = __get_output_system__ ("__stdout__");
+    output_system& output_sys = __get_output_system__ ();
 
     std::ofstream& external_diary_file = output_sys.external_diary_file ();
 
@@ -259,7 +259,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   void flush_stdout (void)
   {
-    output_system& output_sys = __get_output_system__ ("flush_stdout");
+    output_system& output_sys = __get_output_system__ ();
 
     output_sys.flush_stdout ();
   }
@@ -491,14 +491,14 @@ OCTAVE_NAMESPACE_BEGIN
 
   std::ostream& __stdout__ (void)
   {
-    output_system& output_sys = __get_output_system__ ("__stdout__");
+    output_system& output_sys = __get_output_system__ ();
 
     return output_sys.__stdout__ ();
   }
 
   std::ostream& __diary__ (void)
   {
-    output_system& output_sys = __get_output_system__ ("__diary__");
+    output_system& output_sys = __get_output_system__ ();
 
     return output_sys.__diary__ ();
   }
@@ -623,13 +623,14 @@ The current state can be determined via @code{page_screen_output}.
 
 DEFUN (terminal_size, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} terminal_size ()
-Query or set the size of the terminal window.  If called with no
-arguments, return a two-element row vector containing the current size
-of the terminal window in characters (rows and columns).  If called with
-a two-element vector of integer values, set the terminal size and return
-the previous setting.  Setting the size manually should not be needed
-when using readline for command-line editing.
+@deftypefn  {} {[@var{rows}, @var{cols}] =} terminal_size ()
+@deftypefnx {} {} terminal_size ([@var{rows}, @var{cols}])
+Query or set the size of the terminal window.  If called with no arguments,
+return a two-element row vector containing the current size of the terminal
+window in characters (rows and columns).  If called with a two-element vector
+of integer values, set the terminal size and return the previous setting.
+Setting the size manually should not be needed when using readline for
+command-line editing.
 @seealso{list_in_columns}
 @end deftypefn */)
 {
@@ -666,7 +667,7 @@ DEFMETHOD (page_output_immediately, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} page_output_immediately ()
 @deftypefnx {} {@var{old_val} =} page_output_immediately (@var{new_val})
-@deftypefnx {} {} page_output_immediately (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} page_output_immediately (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave sends
 output to the pager as soon as it is available.
 
@@ -690,7 +691,7 @@ DEFMETHOD (page_screen_output, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} page_screen_output ()
 @deftypefnx {} {@var{old_val} =} page_screen_output (@var{new_val})
-@deftypefnx {} {} page_screen_output (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} page_screen_output (@var{new_val}, "local")
 Query or set the internal variable that controls whether output intended
 for the terminal window that is longer than one page is sent through a
 pager.
@@ -714,7 +715,7 @@ DEFMETHOD (PAGER, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PAGER ()
 @deftypefnx {} {@var{old_val} =} PAGER (@var{new_val})
-@deftypefnx {} {} PAGER (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} PAGER (@var{new_val}, "local")
 Query or set the internal variable that specifies the program to use
 to display terminal output on your system.
 
@@ -737,7 +738,7 @@ DEFMETHOD (PAGER_FLAGS, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PAGER_FLAGS ()
 @deftypefnx {} {@var{old_val} =} PAGER_FLAGS (@var{new_val})
-@deftypefnx {} {} PAGER_FLAGS (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} PAGER_FLAGS (@var{new_val}, "local")
 Query or set the internal variable that specifies the options to pass
 to the pager.
 

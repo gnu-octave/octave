@@ -122,7 +122,7 @@ public:
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const;
 
-  ComplexNDArray complex_array_value (bool = false) const { return matrix; }
+  ComplexNDArray complex_array_value (bool = false) const { return m_matrix; }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const;
 
@@ -141,11 +141,11 @@ public:
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
-  void increment (void) { matrix += FloatComplex (1.0); }
+  void increment (void) { m_matrix += FloatComplex (1.0); }
 
-  void decrement (void) { matrix -= FloatComplex (1.0); }
+  void decrement (void) { m_matrix -= FloatComplex (1.0); }
 
-  void changesign (void) { matrix.changesign (); }
+  void changesign (void) { m_matrix.changesign (); }
 
   bool save_ascii (std::ostream& os);
 

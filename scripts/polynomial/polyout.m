@@ -47,7 +47,7 @@
 ## @seealso{polyreduce}
 ## @end deftypefn
 
-function y = polyout (c, x)
+function str = polyout (c, x)
 
   if (nargin < 1)
     print_usage ();
@@ -67,26 +67,26 @@ function y = polyout (c, x)
   if (n > 0)
     n1 = n+1;
 
-    tmp = coeff (c(1));
-    for ii = 2:n
-      if (real (c(ii)) < 0)
+    s = coeff (c(1));
+    for i = 2:n
+      if (real (c(i)) < 0)
         ns = " - ";
-        c(ii) = -c(ii);
+        c(i) = -c(i);
       else
         ns = " + ";
       endif
 
-      tmp = sprintf ("%s*%s^%d%s%s", tmp, x, n1-ii, ns, coeff (c(ii)));
+      s = sprintf ("%s*%s^%d%s%s", s, x, n1-i, ns, coeff (c(i)));
 
     endfor
   else
-    tmp = " ";
+    s = " ";
   endif
 
   if (nargout == 0)
-    disp (tmp);
+    disp (s);
   else
-    y = tmp;
+    str = s;
   endif
 
 endfunction

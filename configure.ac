@@ -27,7 +27,7 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [7.3.1], [https://octave.org/bugs.html], [octave],
+AC_INIT([GNU Octave], [8.0.0], [https://octave.org/bugs.html], [octave],
         [https://www.gnu.org/software/octave/])
 
 ### Declare version numbers
@@ -39,9 +39,9 @@ dnl AC_INIT requires it to be static, not computed from shell variables.
 ## explains how to update these numbers for release and development
 ## versions.
 
-OCTAVE_MAJOR_VERSION=7
-OCTAVE_MINOR_VERSION=3
-OCTAVE_PATCH_VERSION=1
+OCTAVE_MAJOR_VERSION=8
+OCTAVE_MINOR_VERSION=0
+OCTAVE_PATCH_VERSION=0
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
@@ -63,7 +63,7 @@ dnl
 dnl FIXME: Since we also set libtool versions for liboctave and libinterp,
 dnl perhaps we should be computing the "api version" from those versions numbers
 dnl in some way instead of setting it independently here.
-OCTAVE_API_VERSION="api-v57"
+OCTAVE_API_VERSION="api-v57+"
 
 AC_SUBST(OCTAVE_MAJOR_VERSION)
 AC_SUBST(OCTAVE_MINOR_VERSION)
@@ -135,7 +135,7 @@ OCTAVE_SET_DEFAULT([octfiledir],
   '${libdir}/octave/${version}/oct/${canonical_host_type}')
 
 ## Directories that Octave should search for object files that will be
-## dynamically loaded and that are specific to this site (i.e. customizations),
+## dynamically loaded and that are specific to this site (i.e., customizations),
 ## before consulting ${octfiledir}.  This should be a colon-separated list of
 ## directories.
 OCTAVE_SET_DEFAULT([localoctfiledir],
@@ -156,7 +156,7 @@ OCTAVE_SET_DEFAULT([octincludedir], '${includedir}/octave-${version}/octave')
 OCTAVE_SET_DEFAULT([fcnfiledir], '${datadir}/octave/${version}/m')
 
 ## Directories that Octave should search for function files specific to this
-## site (i.e. customizations), before consulting ${fcnfiledir}.
+## site (i.e., customizations), before consulting ${fcnfiledir}.
 ## This should be a colon-separated list of directories.
 OCTAVE_SET_DEFAULT([localfcnfiledir], '${datadir}/octave/site/m')
 
@@ -253,7 +253,7 @@ OCTAVE_PROG_RSVG_CONVERT
 AM_CONDITIONAL([AMCOND_HAVE_ICON_TOOLS],
   [test -n "$ICOTOOL" && test -n "$RSVG_CONVERT"])
 
-### Path separator.
+### Determine path separator.
 
 sepchar=':'
 AC_ARG_WITH([sepchar],
@@ -280,9 +280,9 @@ AC_DEFINE_UNQUOTED(SEPCHAR_STR, ["$sepchar"],
   [Define this to be the path separator for your system, as a string.])
 
 ### Define the path to the shell on the host system.
-### Most systems will ensure /bin/sh is the default shell so this can be safely
-### ignored by almost everyone.  However, when building for Android, for
-### example, this will need to be set.
+dnl Most systems will ensure /bin/sh is the default shell so this can be safely
+dnl ignored by almost everyone.  However, there are exceptions, such as
+dnl Android, where this will need to be set.
 SHELL_PATH=/bin/sh
 AC_ARG_WITH([shell],
   [AS_HELP_STRING([--with-shell=SHELL],
@@ -300,34 +300,6 @@ esac
 AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
   [Define this to be the path to the shell command interpreter.])
 
-### Use the system-wide installation of GNU FreeFont if the user requests it.
-### By default, Octave includes its own copy of the FreeSans font, which it
-### installs in its own directory for use as a fallback default font.  If this
-### configuration option is used, then do not install our own copy of the fonts
-### and assume they can be found in the provided system directory.
-SYSTEM_FREEFONT_DIR=
-AC_ARG_WITH([system-freefont],
-  [AS_HELP_STRING([--with-system-freefont=DIR],
-    [use FreeSans fonts in DIR (default: install and use internal copy)])])
-case $with_system_freefont in
-  no | "")
-    SYSTEM_FREEFONT_DIR=
-    ;;
-  yes)
-    AC_MSG_ERROR([directory argument required for --with-system-freefont])
-    ;;
-  *)
-    SYSTEM_FREEFONT_DIR=$with_system_freefont
-    ;;
-esac
-if test -n "$SYSTEM_FREEFONT_DIR"; then
-  AC_MSG_NOTICE([configuring Octave to use system fonts in $SYSTEM_FREEFONT_DIR])
-  AC_DEFINE_UNQUOTED([SYSTEM_FREEFONT_DIR], ["$SYSTEM_FREEFONT_DIR"],
-    [Define this to be the system directory containing the GNU FreeFont fonts.])
-fi
-AM_CONDITIONAL([AMCOND_INSTALL_INTERNAL_FONT_FILES],
-  [test -z "$SYSTEM_FREEFONT_DIR"])
-
 ### Determine which C++ compiler to use (we expect to find g++).
 
 AC_PROG_CXX
@@ -336,14 +308,14 @@ AC_PROG_CXXCPP
 ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no
 AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
   [AS_HELP_STRING([--enable-std-pmr-polymorphic-allocator],
-    [build libraries requiring std::pmr::polymorphic_allocator if possible. This allows more efficient transfer of arrays at the .mex file interface. That also means that all libraries including Octave headers (e.g., .oct files) must be able to compile with that C++17 feature.])],
+    [build libraries requiring std::pmr::polymorphic_allocator if possible.  This allows more efficient transfer of arrays at the .mex file interface.  That also means that all libraries including Octave headers (e.g., .oct files) must be able to compile with that C++17 feature.])],
   [case $enableval in
      yes) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes ;;
      no) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no ;;
      *) AC_MSG_ERROR([bad value $enableval for --enable-std-pmr-polymorphic-allocator]) ;;
    esac])
 
-### Check compiler capabilities.
+### Determine compiler capabilities.
 
 if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
   ## Test for flags to fully support C++17.
@@ -404,16 +376,16 @@ gl_EARLY
 
 GXX_VERSION=
 if test "$GXX" = yes; then
-  AC_MSG_CHECKING([C++ compiler version number])
-  gxx_version=`$CXX -v 2>&1 | $GREP "^.*g.. version" | \
-    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+  AC_CACHE_CHECK([g++ compiler version number],
+    [octave_cv_gxx_version],
+    [octave_cv_gxx_version=[`$CXX -v 2>&1 | $GREP "^.*g.. version" | $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`]
+  ])
 
-  AX_COMPARE_VERSION([$gxx_version], [lt], [4.1],
-    [warn_gxx_version="g++ version $gxx_version is likely to cause problems"
+  AX_COMPARE_VERSION([$octave_cv_gxx_version], [lt], [4.1],
+    [warn_gxx_version="g++ version $octave_cv_gxx_version is likely to cause problems"
      OCTAVE_CONFIGURE_WARNING([warn_gxx_version])])
 
-  GXX_VERSION=$gxx_version
-  AC_MSG_RESULT([$GXX_VERSION])
+  GXX_VERSION=$octave_cv_gxx_version
 fi
 AC_SUBST(GXX_VERSION)
 
@@ -432,16 +404,16 @@ dnl It might be different from the g++ version number.
 
 GCC_VERSION=
 if test "$GCC" = yes; then
-  AC_MSG_CHECKING([C compiler version number])
-  gcc_version=`$CC -v 2>&1 | $GREP "^.*gcc version" | \
-    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+  AC_CACHE_CHECK([gcc compiler version number],
+    [octave_cv_gcc_version],
+    [octave_cv_gcc_version=[`$CC -v 2>&1 | $GREP "^.*gcc version" | $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`]
+  ])
 
-  AX_COMPARE_VERSION([$gcc_version], [lt], [3],
-    [warn_gcc_version="gcc version $gcc_version is likely to cause problems"
+  AX_COMPARE_VERSION([$octave_cv_gcc_version], [lt], [3],
+    [warn_gcc_version="gcc version $octave_cv_gcc_version is likely to cause problems"
      OCTAVE_CONFIGURE_WARNING([warn_gcc_version])])
 
-  GCC_VERSION=$gcc_version
-  AC_MSG_RESULT([$GCC_VERSION])
+  GCC_VERSION=$octave_cv_gcc_version
 fi
 AC_SUBST(GCC_VERSION)
 
@@ -488,7 +460,7 @@ dnl Keep this check before the check for the Fortran compiler,
 dnl in case -lm is needed to compile Fortran programs.
 AC_CHECK_LIB(m, sin)
 
-### Determine the Fortran compiler and how to invoke it
+### Determine the Fortran compiler and how to invoke it.
 
 ## Prefer gfortran, but the user's F77 environment variable will override.
 AC_PROG_F77([gfortran])
@@ -512,10 +484,10 @@ AC_F77_LIBRARY_LDFLAGS
 AC_F77_DUMMY_MAIN
 AC_F77_WRAPPERS
 
-### Must appear after checks for Fortran compiler.
+## Must appear after checks for Fortran compiler.
 OCTAVE_CHECK_FORTRAN_SYMBOL_AND_CALLING_CONVENTIONS
 
-### Must appear after checks for compilers.
+## Must appear after checks for all compilers.
 OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS
 
 ### Use a 64-bit integer type for array dimensions and indexing, if possible.
@@ -569,7 +541,7 @@ AC_SUBST(OCTAVE_IDX_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
 
-### Check for pthread library
+### Check for pthread library.
 
 AX_PTHREAD
 dnl Include pthread libs and flags early in case other config tests need them.
@@ -586,7 +558,6 @@ dnl Check if glibc uses wrong stack size
 OCTAVE_CHECK_BROKEN_PTHREAD_STACKSIZE
 AM_CONDITIONAL([OCTAVE_CHECK_BROKEN_PTHREAD_STACKSIZE],
   [test $octave_cv_broken_pthread_stacksize = yes])
-
 
 ### Test whether the compiler supports OpenMP.
 dnl This is enabled by default to allow the option of using OpenMP in
@@ -620,7 +591,7 @@ if test $ENABLE_OPENMP = yes; then
   AC_DEFINE(OCTAVE_ENABLE_OPENMP, 1, [Define to 1 if OpenMP is enabled])
 fi
 
-### Start determination of shared vs. static libraries
+### Start determination of shared vs. static libraries.
 
 ## Use -static if compiling on Alpha OSF/1 1.3 systems.
 case $canonical_host_type in
@@ -660,7 +631,7 @@ AC_SUBST(STATIC_LIBS)
 
 XTRA_EXTERNAL_SH_LDFLAGS=
 case $host_os in
-  msdosmsvc | mingw*)
+  msdosmsvc | mingw* | cygwin*)
     FLIBS="$FLIBS -lkernel32"
     XTRA_EXTERNAL_SH_LDFLAGS="-Wl,liboctave/external/external.def"
   ;;
@@ -671,11 +642,10 @@ if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
   AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
 fi
 
-
 ### More configure argument checking related to linking
 
 case $host_os in
-  msdosmsvc | mingw* | AIX | BeOS | OS/2 )
+  msdosmsvc | mingw* | cygwin* | AIX | BeOS | OS/2 )
     DEFAULT_NO_UNDEFINED_LDFLAG="-no-undefined"
   ;;
   *)
@@ -684,7 +654,7 @@ case $host_os in
 esac
 AC_ARG_ENABLE([no-undefined],
   [AS_HELP_STRING([--enable-no-undefined],
-    [pass -no-undefined to libtool when linking Octave and its shared libraries. This is done by default for msdosmsvc, mingw*, AIX, BeOS, or OS/2 hosts.])],
+    [pass -no-undefined to libtool when linking Octave and its shared libraries.  This is done by default for msdosmsvc, mingw*, cygwin*, AIX, BeOS, or OS/2 hosts.])],
   [case $enableval in
      yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
      no)  NO_UNDEFINED_LDFLAG="" ;;
@@ -693,28 +663,33 @@ AC_ARG_ENABLE([no-undefined],
   [NO_UNDEFINED_LDFLAG="$DEFAULT_NO_UNDEFINED_LDFLAG"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
 
+case $host_os in
+  cygwin* )
+    DEFAULT_LINK_ALL_DEPS="yes"
+  ;;
+  *)
+    DEFAULT_LINK_ALL_DEPS="no"
+  ;;
+esac
 AC_ARG_ENABLE([link-all-dependencies],
   [AS_HELP_STRING([--enable-link-all-dependencies],
-    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems)])],
+    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems).  This is done by default for cygwin* or darwin* hosts.])],
   [case $enableval in
      yes) link_all_deps=yes ;;
      no)  link_all_deps=no ;;
      *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-dependencies])
      ;;
    esac],
-  [link_all_deps=no])
+  [link_all_deps="$DEFAULT_LINK_ALL_DEPS"])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
-### Check for BLAS and LAPACK libraries:
+### Check for BLAS and LAPACK libraries.
 
 ## Need to adjust FFLAGS to include correct integer size.
 save_FFLAGS="$FFLAGS"
 FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
-OCTAVE_BLAS_WITH_F77_FUNC([], [],
-  [ax_blas_ok=yes
-  AC_MSG_CHECKING([BLAS can be called from Fortran])
-  AC_MSG_RESULT([yes assumed for cross compilation])])
+OCTAVE_BLAS
 AX_LAPACK
 
 ## Restore FFLAGS.
@@ -725,7 +700,7 @@ if test $ax_blas_ok = no; then
   save_FFLAGS="$FFLAGS"
   FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
 
-  OCTAVE_BLAS_WITH_F77_FUNC
+  OCTAVE_BLAS
   AX_LAPACK
 
   ## Restore FFLAGS, with -ff2c if that was helpful
@@ -754,7 +729,7 @@ if test $ax_blas_ok = no; then
          save_FFLAGS="$FFLAGS"
          FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
-         OCTAVE_BLAS_WITH_F77_FUNC
+         OCTAVE_BLAS
          AX_LAPACK
 
          ## Restore FFLAGS.
@@ -782,7 +757,7 @@ if test $ax_blas_ok = no || test $ax_lapack_ok = no; then
   AC_MSG_ERROR([BLAS and LAPACK libraries are required])
 fi
 
-case $ax_blas_integer_size in
+case $ax_cv_blas_integer_size in
   4)
     HAVE_64_BIT_BLAS=no
   ;;
@@ -795,8 +770,8 @@ case $ax_blas_integer_size in
 esac
 
 OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
-if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
-  if test $ax_blas_integer_size -eq 8; then
+if test $octave_cv_sizeof_fortran_integer -ne $ax_cv_blas_integer_size; then
+  if test $ax_cv_blas_integer_size -eq 8; then
     case $F77 in
       *gfortran*)
         case $F77_INTEGER_8_FLAG in
@@ -826,8 +801,8 @@ if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
   fi
   ## We intentionally don't attempt to fix things up if the default
   ## Fortran integer size is 8 but BLAS appears to use 4-byte integers.
-  if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
-    AC_MSG_ERROR([your Fortran compiler must have an option for setting the default integer size to be the same size as your BLAS library uses ($ax_blas_integer_size bytes).  See the file INSTALL for more information.])
+  if test $octave_cv_sizeof_fortran_integer -ne $ax_cv_blas_integer_size; then
+    AC_MSG_ERROR([your Fortran compiler must have an option for setting the default integer size to be the same size as your BLAS library uses ($ax_cv_blas_integer_size bytes).  See the file INSTALL for more information.])
   fi
 fi
 AC_SUBST(F77_INTEGER_8_FLAG)
@@ -867,8 +842,9 @@ esac
 AM_CONDITIONAL([AMCOND_BUILD_EXTERNAL_LIBXERBLA],
   [test -n "$BUILD_EXTERNAL_LIBXERBLA"])
 
-### Dynamic linking is now enabled only if we are building shared
-### libs and some API for dynamic linking has been detected.
+### Set options for dynamic linking if enabled.
+dnl Options set only only if we are building shared libs and some API for
+dnl dynamic linking has been detected.
 
 dnl FIXME: A lot of the following duplicates the functionality of
 dnl code generated by the dlopen option for LT_INIT.
@@ -1375,7 +1351,68 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 #endif
 ]])
 
-### Check for the Qhull library.
+### Configure Bison as push or pull parser.
+
+ENABLE_COMMAND_LINE_PUSH_PARSER=yes
+AC_ARG_ENABLE([command-line-push-parser],
+  [AS_HELP_STRING([--disable-command-line-push-parser],
+    [don't use Bison's push parser interface in the command line REPL])],
+  [if test "$enableval" = no; then ENABLE_COMMAND_LINE_PUSH_PARSER=no; fi], [])
+if test $ENABLE_COMMAND_LINE_PUSH_PARSER = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER, 1,
+    [Define to 1 to use Bison's push parser interface in the command line REPL.])
+fi
+
+### Configure compilation of *experimental* Virtual Machine evaluator.
+
+ENABLE_VM_EVALUATOR=yes
+AC_ARG_ENABLE([vm-evaluator],
+  [AS_HELP_STRING([--disable-vm-evaluator],
+    [don't compile *experimental* virtual machine evaluator])],
+  [if test "$enableval" = no; then ENABLE_VM_EVALUATOR=no; fi], [])
+if test $ENABLE_VM_EVALUATOR = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_VM_EVALUATOR, 1,
+    [Define to 1 to build experimental Virtual Machine evaluator.])
+fi
+
+### Check for PCRE2 or PCRE regex library, requiring one to exist.
+
+have_pcre2=no
+have_pcre=no
+save_CPPLAGS="$CPPFLAGS"
+CPPFLAGS="-DPCRE2_CODE_UNIT_WIDTH=8 $CPPFLAGS"
+OCTAVE_CHECK_LIB(pcre2, PCRE2,
+  [], [pcre2.h pcre2/pcre2.h], [pcre2_compile_8], [], [],
+  [OCTAVE_CHECK_LIB_PCRE2_OK([have_pcre2=yes],
+    [AC_MSG_ERROR([PCRE2 library must be built with UTF support (--enable-utf)])])],
+  [libpcre2-8])
+CPPFLAGS="$save_CPPFLAGS"
+
+if test $have_pcre2 = no; then
+  OCTAVE_CHECK_LIB(pcre, PCRE,
+    [], [pcre.h pcre/pcre.h], [pcre_compile], [], [],
+    [OCTAVE_CHECK_LIB_PCRE_OK([have_pcre=yes],
+      [AC_MSG_ERROR([PCRE library must be built with UTF support (--enable-utf)])])],
+    [libpcre])
+fi
+
+if test $have_pcre2 = yes; then
+  AC_DEFINE(HAVE_PCRE2, 1, [Define to 1 if PCRE2 is available.])
+
+  ## Only one of PCRE2 or PCRE is used, so avoid having to define and use
+  ## both PCRE2_* and PCRE_* variables everywhere.
+
+  PCRE_CPPFLAGS="$PCRE2_CPPFLAGS"
+  PCRE_LDFLAGS="$PCRE2_LDFLAGS"
+  PCRE_LIBS="$PCRE2_LIBS"
+
+elif test $have_pcre = yes; then
+  AC_DEFINE(HAVE_PCRE, 1, [Define to 1 if PCRE is available.])
+else
+  AC_MSG_ERROR([to build Octave, you must have the PCRE or PCRE2 library and header files installed])
+fi
+
+### Check for Qhull library.
 
 QHULL_CPPFLAGS=
 QHULL_LDFLAGS=
@@ -1396,16 +1433,7 @@ AC_SUBST(QHULL_CPPFLAGS)
 AC_SUBST(QHULL_LDFLAGS)
 AC_SUBST(QHULL_LIBS)
 
-### Check for PCRE regex library.
-
-OCTAVE_CHECK_LIB(pcre, PCRE,
-  [], [pcre.h pcre/pcre.h], [pcre_compile], [], [],
-  [OCTAVE_CHECK_LIB_PCRE_OK([],
-    [AC_MSG_ERROR([PCRE library must be built with UTF support (--enable-utf)])])
-  ],
-  [libpcre], [REQUIRED])
-
-### Check for RapidJSON header only library.
+### Check for RapidJSON header-only library.
 
 check_for_rapidjson=yes
 AC_ARG_ENABLE([rapidjson],
@@ -1460,21 +1488,6 @@ fi
 
 OCTAVE_ENABLE_READLINE
 
-## Find a termlib to use.
-OCTAVE_CHECK_LIB_TERMLIB
-
-### Use push parser by default now.
-
-ENABLE_COMMAND_LINE_PUSH_PARSER=yes
-AC_ARG_ENABLE([command-line-push-parser],
-  [AS_HELP_STRING([--disable-command-line-push-parser],
-    [don't use Bison's push parser interface in the command line REPL])],
-  [if test "$enableval" = no; then ENABLE_COMMAND_LINE_PUSH_PARSER=no; fi], [])
-if test $ENABLE_COMMAND_LINE_PUSH_PARSER = yes; then
-  AC_DEFINE(OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER, 1,
-    [Define to 1 to use Bison's push parser interface in the command line REPL.])
-fi
-
 ### Check for ZLIB library.
 
 OCTAVE_CHECK_LIB(z, ZLIB,
@@ -1522,7 +1535,7 @@ if test $have_hdf5_int2float_conversions = yes; then
 fi
 
 ### Check for FFTW library.
-### Default to Fortran FFTPACK if it is not available.
+dnl Default to Fortran FFTPACK if it is not available.
 
 ## Check for FFTW header and library.
 OCTAVE_CHECK_LIB(fftw3, FFTW3,
@@ -1557,7 +1570,7 @@ else
   build_fftw_threads=no
 fi
 
-## Check for the multithreaded FFTW library.
+## Check for multithreaded FFTW library.
 ## Fallback to singlethreaded if not found or disabled.
 if test $build_fftw_threads = yes; then
   OCTAVE_CHECK_FFTW_THREADS(fftw3, fftw_plan_with_nthreads)
@@ -1600,7 +1613,7 @@ OCTAVE_CHECK_LIB(glpk, GLPK,
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 
-### Checks for cURL header and library.
+### Check for cURL library existence and functionality.
 
 save_CPPFLAGS="$CPPFLAGS"
 save_LIBS="$LIBS"
@@ -1640,7 +1653,7 @@ OCTAVE_CHECK_LIB(sndfile, sndfile,
     [AC_DEFINE(HAVE_SNDFILE, 1, [Define to 1 if sndfile is available.])],
     [warn_sndfile="sndfile library found, but does not seem to work properly; disabling audio file I/O functions"])])
 
-### Check for PortAudio
+### Check for PortAudio library.
 
 OCTAVE_CHECK_LIB(portaudio, PortAudio,
   [PortAudio library not found.  The audioplayer, audiorecorder, and audiodevinfo functions will be disabled.],
@@ -1648,7 +1661,7 @@ OCTAVE_CHECK_LIB(portaudio, PortAudio,
   [], [don't use PortAudio library, disable audio playback and recording],
   [], [portaudio-2.0])
 
-### Check for either of Graphics/ImageMagick++ libraries.
+### Check for either of GraphicsMagick++/ImageMagick++ libraries.
 
 check_magick=yes
 use_magick=no
@@ -1689,17 +1702,18 @@ if test $check_magick = yes; then
     LIBS="$MAGICK_LDFLAGS $MAGICK_LIBS $LIBS"
     AC_LANG_PUSH(C++)
     AC_CHECK_HEADER([Magick++.h], [
-      AC_CACHE_CHECK([for Magick::ColorRGB in Magick++.h],
-        [octave_cv_func_magick_colorrgb],
+      AC_CACHE_CHECK([for Magick::ColorRGB and Magick::PixelPacket in Magick++.h],
+        [octave_cv_func_magick],
         [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <Magick++.h>
           ]], [[
           Magick::ColorRGB c;
+          Magick::PixelPacket pix;
           ]])],
-          octave_cv_func_magick_colorrgb=yes,
-          octave_cv_func_magick_colorrgb=no)
+          octave_cv_func_magick=yes,
+          octave_cv_func_magick=no)
         ])
-      if test $octave_cv_func_magick_colorrgb = yes; then
+      if test $octave_cv_func_magick = yes; then
         use_magick=yes
         warn_magick=
       fi
@@ -1727,7 +1741,7 @@ AC_SUBST(MAGICK_CPPFLAGS)
 AC_SUBST(MAGICK_LDFLAGS)
 AC_SUBST(MAGICK_LIBS)
 
-### Check for X11 libraries
+### Check for X11 libraries.
 
 AC_PATH_X
 if test "$have_x" = yes; then
@@ -1875,7 +1889,7 @@ DEFAULT_TERMINAL_FONT_SIZE=10
 AC_SUBST(DEFAULT_TERMINAL_FONT)
 AC_SUBST(DEFAULT_TERMINAL_FONT_SIZE)
 
-### Check for FLTK library
+### Check for FLTK library.
 
 check_fltk=yes
 build_fltk_graphics=no
@@ -1990,7 +2004,7 @@ AC_SUBST(FLTK_CPPFLAGS)
 AC_SUBST(FLTK_LDFLAGS)
 AC_SUBST(FLTK_LIBS)
 
-### Final determination of whether OpenGL graphics can be built
+### Final determination of whether OpenGL graphics can be built.
 if test $build_qt_graphics = no && test $build_fltk_graphics = no; then
   opengl_graphics=no
 else
@@ -2016,7 +2030,35 @@ if test $opengl_graphics = yes; then
   AC_SUBST(GL2PS_LIBS)
 fi
 
-### Check for the qrupdate library
+### Use the system-wide installation of GNU FreeFont if the user requests it.
+dnl By default, Octave includes its own copy of the FreeSans font which it
+dnl installs in its own directory for use as a fallback default font.  If this
+dnl configuration option is used, then do not install our own copy of the fonts
+dnl and assume they can be found in the provided system directory.
+SYSTEM_FREEFONT_DIR=
+AC_ARG_WITH([system-freefont],
+  [AS_HELP_STRING([--with-system-freefont=DIR],
+    [use FreeSans fonts in DIR (default: install and use internal copy)])])
+case $with_system_freefont in
+  no | "")
+    SYSTEM_FREEFONT_DIR=
+    ;;
+  yes)
+    AC_MSG_ERROR([directory argument required for --with-system-freefont])
+    ;;
+  *)
+    SYSTEM_FREEFONT_DIR=$with_system_freefont
+    ;;
+esac
+if test -n "$SYSTEM_FREEFONT_DIR"; then
+  AC_MSG_NOTICE([configuring Octave to use system fonts in $SYSTEM_FREEFONT_DIR])
+  AC_DEFINE_UNQUOTED([SYSTEM_FREEFONT_DIR], ["$SYSTEM_FREEFONT_DIR"],
+    [Define this to be the system directory containing the GNU FreeFont fonts.])
+fi
+AM_CONDITIONAL([AMCOND_INSTALL_INTERNAL_FONT_FILES],
+  [test -z "$SYSTEM_FREEFONT_DIR"])
+
+### Check for qrupdate library.
 
 dnl No need to adjust FFLAGS because only link is attempted.
 dnl Must supply proper LIBS, however.
@@ -2070,11 +2112,11 @@ if test -n "$SUITESPARSECONFIG_LIBS" && test -n "$LIB_CLOCK_GETTIME"; then
   SUITESPARSECONFIG_LIBS="$SUITESPARSECONFIG_LIBS $LIB_CLOCK_GETTIME"
 fi
 
-### Reset below, after all checks for SuiteSparse libraries.
+## Save and restore LIBS after all checks for SuiteSparse libraries.
 suitesparse_save_LIBS="$LIBS"
 LIBS="$SUITESPARSECONFIG_LIBS $LIBS"
 
-### Check for AMD library
+### Check for AMD library.
 
 OCTAVE_CHECK_LIB(amd, AMD,
   [AMD library not found.  This will result in some lack of functionality for sparse matrices.],
@@ -2082,7 +2124,7 @@ OCTAVE_CHECK_LIB(amd, AMD,
   [amd_postorder],
   [], [don't use AMD library, disable some sparse matrix functionality])
 
-### Check for CAMD library
+### Check for CAMD library.
 
 OCTAVE_CHECK_LIB(camd, CAMD,
   [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
@@ -2090,7 +2132,7 @@ OCTAVE_CHECK_LIB(camd, CAMD,
   [camd_postorder],
   [], [don't use CAMD library, disable some sparse matrix functionality])
 
-### Check for COLAMD library
+### Check for COLAMD library.
 
 OCTAVE_CHECK_LIB(colamd, COLAMD,
   [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
@@ -2098,7 +2140,7 @@ OCTAVE_CHECK_LIB(colamd, COLAMD,
   [colamd],
   [], [don't use COLAMD library, disable some sparse matrix functionality])
 
-### Check for CCOLAMD library
+### Check for CCOLAMD library.
 
 OCTAVE_CHECK_LIB(ccolamd, CCOLAMD,
   [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
@@ -2107,8 +2149,8 @@ OCTAVE_CHECK_LIB(ccolamd, CCOLAMD,
   [], [don't use CCOLAMD library, disable some sparse matrix functionality])
 
 ### Check for CHOLMOD library.
-### If your cholmod library requires cblas, then you will need to configure
-### with --with-cholmod="-lcholmod -lcblas".
+dnl If your cholmod library requires cblas, then you will need to configure
+dnl with --with-cholmod="-lcholmod -lcblas".
 
 save_LIBS="$LIBS"
 LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
@@ -2119,7 +2161,7 @@ OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [], [don't use CHOLMOD library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
 
-### Check for SPQR library
+### Check for SPQR library.
 
 save_LIBS="$LIBS"
 LIBS="$CHOLMOD_LIBS $LIBS"
@@ -2130,7 +2172,7 @@ OCTAVE_CHECK_LIB(spqr, SPQR,
   [C++], [don't use SPQR library, disable some sparse matrix functionality])
 LIBS="$save_LIBS"
 
-### Check for CXSparse library
+### Check for CXSparse library.
 
 OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
@@ -2186,7 +2228,7 @@ OCTAVE_CHECK_LIB(klu, KLU,
   [klu.h suitesparse/klu.h klu/klu.h], [klu_solve],
   [], [don't use KLU library, disable some sparse matrix functionality])
 
-### SUITESPARSECONFIG_LIBS added to LIBS above.
+## Restore LIBS after all suitesparse configuration tests
 LIBS="$suitesparse_save_LIBS"
 
 ## Collections of flags.
@@ -2256,11 +2298,11 @@ if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
   LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
   LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
   if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
-    dnl Any of the following tests could determine that SUNDIALS is incompatible
-    dnl and should be disabled. In that event, they all populate the same
-    dnl variable with appropriate warning messages, and further tests should be
-    dnl skipped if a warning message has already been generated that SUNDIALS is
-    dnl disabled.
+    dnl Any of the following tests could determine that SUNDIALS is
+    dnl incompatible and should be disabled.  In that event, they all populate
+    dnl the same variable with appropriate warning messages, and further tests
+    dnl should be skipped if a warning message has already been generated that
+    dnl SUNDIALS is disabled.
     warn_sundials_disabled=
     if test -z "$warn_sundials_disabled"; then
       OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API
@@ -2282,10 +2324,10 @@ if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
-dnl Define this way instead of with an #if in oct-conf-post.h so that
+dnl Define this way instead of with an #if in oct-conf-post-private.h so that
 dnl the build features script will get the correct value.
 dnl
-dnl The test on the sunlinsol_klu.h header is a bit of a kluge.
+dnl FIXME: The test on the sunlinsol_klu.h header is a bit of a kluge.
 dnl How can we do a better job here?  Do we need to disable sundials
 dnl any tests fail, or can we fix __ode15__.cc so that it still partially
 dnl works when some things are missing (for example, KLU)?
@@ -2421,7 +2463,7 @@ do
       ## Under Win32 platform, we want JAVA_HOME to be in MSYS format; that is,
       ## without colon and backslashes, as it is also used as path separator.
       ## Use quoted paths as Java may be installed in a path with whitespaces
-      ## (e.g. C:\Program Files\Java\...).
+      ## (e.g., C:\Program Files\Java\...).
       if test -n "$JAVA_HOME"; then
         JAVA_HOME=`cd "$JAVA_HOME" && pwd`
       fi
@@ -2444,11 +2486,14 @@ do
   fi
 
   ## Check Java version is recent enough.
-  AC_MSG_CHECKING([for Java version])
-  java_version=[`"$JAVA" -version 2>&1 | $SED -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)".*/\1/p'`]
-  AC_MSG_RESULT([$java_version])
-  java_major=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
-  java_minor=[`echo $java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
+  AC_CACHE_CHECK([for Java version],
+    [octave_cv_java_version],
+    [octave_cv_java_version=[`"$JAVA" -version 2>&1 | $SED -n -e 's/^[^ ]* version[^0-9"]*"\([^"]*\)".*/\1/p'`]
+  ])
+
+  java_major=[`echo $octave_cv_java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
+  java_minor=[`echo $octave_cv_java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
+
   if test $java_major -gt 1 || (test $java_major -eq 1 && test $java_minor -ge 5); then
     :  # Version is OK.  Do nothing.
   else
@@ -2457,7 +2502,7 @@ do
   fi
 
   ## At this point Win32 systems have enough configuration data.
-  ## We assume that all appropriate variables (e.g. INCLUDE and LIB) already
+  ## We assume that all appropriate variables (e.g., INCLUDE and LIB) already
   ## contain the required paths to compile and link against JDK.
   case $host_os in
     msdosmsvc)
@@ -2495,55 +2540,59 @@ do
 
   AC_MSG_CHECKING([for $jvmlib])
 
-  if test -z "$JAVA_LDPATH"; then
-    ## Run Java to try and determine library path to libjvm.so.
-    JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_LDPATH`
-    JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | $SED -e "s/${PATH_SEPARATOR}/ /g"`
-    for dir in $JAVA_TMP_LDPATH; do
-      if test -f "$dir/$jvmlib"; then
-        JAVA_LDPATH=$dir
-        break
-      fi
-    done
-  fi
-
-  if test -z "$JAVA_LDPATH"; then
-    ## Nothing found.  Try Java again using bootpath argument.
-    JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_BOOTPATH`
-    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_TMP_LDPATH}/client ${JAVA_TMP_LDPATH}/server"
-    for dir in $JAVA_TMP_LDPATH; do
-      if test -f "$dir/$jvmlib"; then
-        JAVA_LDPATH=$dir
-        break
-      fi
-    done
-  fi
-
-  if test -z "$JAVA_LDPATH"; then
-    ## Java failed to find its own library path.  Guess wildly.
-    JAVA_TMP_LDPATH=`ls -d $JAVA_HOME/jre/lib/*/client`
-    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} `ls -d $JAVA_HOME/jre/lib/*/server`"
-    ## Add some paths that might work on Macs.
-    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/../Libraries ${JAVA_HOME}/Libraries"
-    ## Add some paths that might work on MinGW
-    JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/bin/client ${JAVA_HOME}/bin/server"
-    for dir in $JAVA_TMP_LDPATH; do
-      if test -f "$dir/$jvmlib"; then
-        JAVA_LDPATH=$dir
-        break
-      fi
-    done
-  fi
-
-  ## Verify value passed in option --with-java-libdir
-  if test -n "$JAVA_LDPATH"; then
-    if test -f "${JAVA_LDPATH}/$jvmlib"; then
-      :  # libjvm found
-    else
-      JAVA_LDPATH=""
+  AC_CACHE_VAL([octave_cv_java_ldpath],[
+    if test -z "$JAVA_LDPATH"; then
+      ## Run Java to try and determine library path to libjvm.so.
+      JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_LDPATH`
+      JAVA_TMP_LDPATH=`echo $JAVA_TMP_LDPATH | $SED -e "s/${PATH_SEPARATOR}/ /g"`
+      for dir in $JAVA_TMP_LDPATH; do
+        if test -f "$dir/$jvmlib"; then
+          JAVA_LDPATH=$dir
+          break
+        fi
+      done
     fi
-  fi
 
+    if test -z "$JAVA_LDPATH"; then
+      ## Nothing found.  Try Java again using bootpath argument.
+      JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_BOOTPATH`
+      JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_TMP_LDPATH}/client ${JAVA_TMP_LDPATH}/server"
+      for dir in $JAVA_TMP_LDPATH; do
+        if test -f "$dir/$jvmlib"; then
+          JAVA_LDPATH=$dir
+          break
+        fi
+      done
+    fi
+
+    if test -z "$JAVA_LDPATH"; then
+      ## Java failed to find its own library path.  Guess wildly.
+      JAVA_TMP_LDPATH=`ls -d $JAVA_HOME/jre/lib/*/client`
+      JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} `ls -d $JAVA_HOME/jre/lib/*/server`"
+      ## Add some paths that might work on Macs.
+      JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/../Libraries ${JAVA_HOME}/Libraries"
+      ## Add some paths that might work on MinGW
+      JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_HOME}/bin/client ${JAVA_HOME}/bin/server"
+      for dir in $JAVA_TMP_LDPATH; do
+        if test -f "$dir/$jvmlib"; then
+          JAVA_LDPATH=$dir
+          break
+        fi
+      done
+    fi
+
+    ## Verify value passed in option --with-java-libdir
+    if test -n "$JAVA_LDPATH"; then
+      if test -f "${JAVA_LDPATH}/$jvmlib"; then
+        :  # libjvm found
+      else
+        JAVA_LDPATH=""
+      fi
+    fi
+
+    octave_cv_java_ldpath=$JAVA_LDPATH
+  ])
+  JAVA_LDPATH=$octave_cv_java_ldpath
   if test -z "$JAVA_LDPATH"; then
     AC_MSG_RESULT([not found])
     warn_java="Library $jvmlib not found.  Octave will not be able to call Java methods."
@@ -2573,13 +2622,19 @@ do
   esac
 
   ## Verify jni.h include file exists.
-  JNI_PATH=`echo $JAVA_CPPFLAGS | $SED -e 's/-I//g'`
-  have_jni=no
-  for dir in $JNI_PATH; do
-    if test -f "${dir}/jni.h"; then have_jni=yes; break; fi
-  done
-  if test $have_jni = yes; then
-    AC_MSG_RESULT([$dir])
+  AC_CACHE_VAL([octave_cv_java_have_jni],[
+    JNI_PATH=`echo $JAVA_CPPFLAGS | $SED -e 's/-I//g'`
+    octave_cv_java_have_jni=no
+    for dir in $JNI_PATH; do
+      if test -f "${dir}/jni.h"; then
+        octave_cv_java_have_jni=yes
+        octave_cv_java_jni_h_path=$dir
+        break
+      fi
+    done
+  ])
+  if test $octave_cv_java_have_jni = yes; then
+    AC_MSG_RESULT([$octave_cv_java_jni_h_path])
   else
     AC_MSG_RESULT([not found])
     warn_java="Include file <jni.h> not found.  Octave will not be able to call Java methods."
@@ -2665,16 +2720,16 @@ AM_CONDITIONAL([AMCOND_ENABLE_HG_ID], [test $ENABLE_HG_ID = yes])
 install_build_logs=no
 AC_ARG_ENABLE([install-build-logs],
   [AS_HELP_STRING([--enable-install-build-logs],
-    [install build logs (i.e. config.log) with Octave])],
+    [install build logs (i.e., config.log) with Octave])],
   [if test "$enableval" = yes; then install_build_logs=yes; fi])
 AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
 
-### Determine whether libraries should be linked with visibility attributes
+### Determine whether libraries should be linked with visibility attributes.
 
-ENABLE_LIB_VISIBILITY_FLAGS=no
+ENABLE_LIB_VISIBILITY_FLAGS=yes
 AC_ARG_ENABLE(lib-visibility-flags,
-  [AS_HELP_STRING([--enable-lib-visibility-flags],
-    [Build libraries with visibility flags (don't export all symbols). This feature is experimental and should only be used for testing.])],
+  [AS_HELP_STRING([--disable-lib-visibility-flags],
+    [don't build libraries with visibility flags (export all symbols)])],
   [case $enableval in
      yes) ENABLE_LIB_VISIBILITY_FLAGS=yes ;;
      no) ENABLE_LIB_VISIBILITY_FLAGS=no ;;
@@ -2707,7 +2762,7 @@ fi
 AM_CONDITIONAL([AMCOND_LIB_VISIBILITY_FLAGS],
   [test $ENABLE_LIB_VISIBILITY_FLAGS = yes])
 
-### Set flags for symbol visibility
+### Set flags for symbol visibility.
 
 if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
   EXTERNAL_DLL_DEFS="-DEXTERNAL_DLL"
@@ -2887,13 +2942,13 @@ if test $octave_cv_gcc_has_pragma_GCC_diagnostic = yes; then
       [Define to 1 if compiler supports -Wimplicit-fallthrough warning])])
 fi
 
-### These are recommended by the gnulib bootstrap script:
+### Recommendations from the gnulib bootstrap script.
 
 GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET $LIB_CLOCK_GETTIME $LIB_CRYPTO $LIB_GETLOGIN $LIB_NANOSLEEP $LIB_SELECT $LTLIBICONV $LTLIBINTL $LTLIBTHREAD $INTL_MACOSX_LIBS"
 
-### FIXME: This is a kluge to transform $libdir/libiconv.dll.a to -liconv.
-### It would probably be better to fix gnulib to not give us an absolute
-### file name...
+## FIXME: This is a kluge to transform $libdir/libiconv.dll.a to -liconv.
+## It would probably be better to fix gnulib to not give us an absolute
+## file name...
 
 case $host_os in
   mingw*)
@@ -2911,7 +2966,9 @@ MKOCTFILE_GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET
 
 AC_SUBST(GNULIB_LINK_DEPS)
 
-BASE_LIBOCTAVE_LINK_DEPS="$CURL_LIBS $SPARSE_XLIBS $ARPACK_LIBS $QRUPDATE_LIBS $FFTW_XLIBS $LAPACK_LIBS $BLAS_LIBS $READLINE_LIBS $TERM_LIBS $LIBGLOB $PCRE_LIBS $DL_LIBS $PTHREAD_LIBS $FLIBS $LIBS"
+### Set variables for link dependencies and options.
+
+BASE_LIBOCTAVE_LINK_DEPS="$CURL_LIBS $SPARSE_XLIBS $ARPACK_LIBS $QRUPDATE_LIBS $FFTW_XLIBS $LAPACK_LIBS $BLAS_LIBS $LTLIBREADLINE $LIBGLOB $PCRE_LIBS $DL_LIBS $PTHREAD_LIBS $FLIBS $LIBS"
 
 LIBOCTAVE_LINK_DEPS="$BASE_LIBOCTAVE_LINK_DEPS $GNULIB_LINK_DEPS"
 
@@ -2999,15 +3056,16 @@ AC_SUBST(OCTAVE_GUI_LINK_DEPS)
 AC_SUBST(OCTAVE_GUI_LINK_OPTS)
 
 ##############################################################################
-### Configuration tests done
+### Configuration tests done.
 
-### Restore original compilation flags
+### Restore original compilation flags.
 CFLAGS="$original_octave_configure_CFLAGS"
 CXXFLAGS="$original_octave_configure_CXXFLAGS"
 
 ### Add footer to config.h
 
-AH_BOTTOM([#include "oct-conf-post.h"])
+AH_BOTTOM([#include "oct-conf-post-private.h"])
+AH_BOTTOM([#include "oct-conf-post-public.h"])
 
 ### Make all AC_DEFINES available to testif feature of test.m function.
 dnl This must reside at the bottom of configure.ac after all AC_DEFINES
@@ -3105,12 +3163,19 @@ AC_CONFIG_FILES([
   liboctave/octave.pc:liboctave/octave.in.pc
   libinterp/octinterp.pc:libinterp/octinterp.in.pc])
 
-dnl We use a .in.h file for oct-conf-post.h simply to copy it to the build tree
+dnl We use a .in.h file for oct-conf-post-private.h and
+dnl oct-conf-post-public.h simply to copy it to the build tree
 dnl so that we don't have to add the -I${top_srcdir} to any CPPFLAGS variables.
 
-AC_CONFIG_FILES([oct-conf-post.h-tmp:oct-conf-post.in.h])
-AC_CONFIG_COMMANDS([oct-conf-post.h],
-  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post.h-tmp oct-conf-post.h])
+AC_CONFIG_FILES([
+  oct-conf-post-private.h-tmp:oct-conf-post-private.in.h
+  oct-conf-post-public.h-tmp:oct-conf-post-public.in.h])
+
+AC_CONFIG_COMMANDS([oct-conf-post-private.h],
+  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post-private.h-tmp oct-conf-post-private.h])
+
+AC_CONFIG_COMMANDS([oct-conf-post-public.h],
+  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post-public.h-tmp oct-conf-post-public.h])
 
 OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
   liboctave/external/mk-f77-def.sh
@@ -3225,7 +3290,7 @@ Octave is now configured for $canonical_host_type
   Qt lrelease:                   $LRELEASE $LRELEASEFLAGS
   Qt qcollectiongenerator:       $QCOLLECTIONGENERATOR $QCOLLECTIONGENERATORFLAGS
   Qt qhelpgenerator:             $QHELPGENERATOR $QHELPGENERATORFLAGS
-  READLINE libraries:            $READLINE_LIBS
+  READLINE libraries:            $LIBREADLINE
   Sndfile CPPFLAGS:              $SNDFILE_CPPFLAGS
   Sndfile LDFLAGS:               $SNDFILE_LDFLAGS
   Sndfile libraries:             $SNDFILE_LIBS
@@ -3242,7 +3307,6 @@ Octave is now configured for $canonical_host_type
   SUNLINSOL KLU CPPFLAGS:        $SUNDIALS_SUNLINSOLKLU_CPPFLAGS
   SUNLINSOL KLU LDFLAGS:         $SUNDIALS_SUNLINSOLKLU_LDFLAGS
   SUNLINSOL KLU libraries:       $SUNDIALS_SUNLINSOLKLU_LIBS
-  TERM libraries:                $TERM_LIBS
   UMFPACK CPPFLAGS:              $UMFPACK_CPPFLAGS
   UMFPACK LDFLAGS:               $UMFPACK_LDFLAGS
   UMFPACK libraries:             $UMFPACK_LIBS

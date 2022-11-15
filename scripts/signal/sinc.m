@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} sinc (@var{x})
+## @deftypefn {} {@var{y} =} sinc (@var{x})
 ## Compute the sinc function.
 ##
 ## Return
@@ -36,19 +36,19 @@
 ## @end ifnottex
 ## @end deftypefn
 
-function result = sinc (x)
+function y = sinc (x)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   endif
 
-  result = ones (size (x));
+  y = ones (size (x));
 
   i = (x != 0);
 
   if (any (i(:)))
     t = pi * x(i);
-    result(i) = sin (t) ./ t;
+    y(i) = sin (t) ./ t;
   endif
 
 endfunction

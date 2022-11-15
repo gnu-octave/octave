@@ -130,6 +130,9 @@ public:
 
   string_vector map_keys (void) const { return m_map.fieldnames (); }
 
+  bool isfield (const std::string& field_name) const
+  { return m_map.isfield (field_name); }
+
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
@@ -255,6 +258,9 @@ public:
   octave_scalar_map scalar_map_value (void) const { return m_map; }
 
   string_vector map_keys (void) const { return m_map.fieldnames (); }
+
+  bool isfield (const std::string& field_name) const
+  { return m_map.isfield (field_name); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 

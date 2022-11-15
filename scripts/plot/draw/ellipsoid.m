@@ -64,20 +64,24 @@ function [xx, yy, zz] = ellipsoid (varargin)
     n = 20;
   else
     n = varargin{7};
+    if (! (isreal (n) && isscalar (n) && n > 0))
+      error ("ellipsoid: N must be a real scalar > 0");
+    endif
+    n = floor (n);
   endif
 
   theta = linspace (0, 2 * pi, n + 1);
   phi = linspace (-pi / 2, pi / 2, n + 1);
   [theta, phi] = meshgrid (theta, phi);
 
-  x = xr .* cos (phi) .* cos (theta) + xc;
-  y = yr .* cos (phi) .* sin (theta) + yc;
-  z = zr .* sin (phi) + zc;
+  xx = xr .* cos (phi) .* cos (theta) + xc;
+  yy = yr .* cos (phi) .* sin (theta) + yc;
+  zz = zr .* sin (phi) + zc;
 
   if (nargout > 0)
-    xx = x;
-    yy = y;
-    zz = z;
+    x = xx;
+    y = yy;
+    z = zz;
   else
     oldfig = [];
     if (! isempty (hax))
@@ -86,7 +90,7 @@ function [xx, yy, zz] = ellipsoid (varargin)
     unwind_protect
       hax = newplot (hax);
 
-      surf (x, y, z);
+      surf (xx, yy, zz);
     unwind_protect_cleanup
       if (! isempty (oldfig))
         set (0, "currentfigure", oldfig);
@@ -101,3 +105,10 @@ endfunction
 %! clf;
 %! ellipsoid (0, 0, 1, 2, 3, 4, 20);
 %! title ("ellipsoid()");
+
+## Test input validation
+%!error <Invalid call> ellipsoid (1,2,3,4,5)
+%!error <Invalid call> ellipsoid (1,2,3,4,5,6,7,8)
+%!error <N must be a real scalar> ellipsoid (1,2,3,4,5,6, 2i)
+%!error <N must be a real scalar> ellipsoid (1,2,3,4,5,6, ones (2,2))
+%!error <N must be a real scalar . 0> ellipsoid (1,2,3,4,5,6, -1)

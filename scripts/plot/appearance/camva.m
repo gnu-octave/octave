@@ -28,8 +28,8 @@
 ## @deftypefnx {} {} camva (@var{a})
 ## @deftypefnx {} {@var{mode} =} camva ("mode")
 ## @deftypefnx {} {} camva (@var{mode})
-## @deftypefnx {} {} camva (@var{ax}, @dots{})
-## Set or get the camera viewing angle.
+## @deftypefnx {} {} camva (@var{hax}, @dots{})
+## Get or set the camera viewing angle.
 ##
 ## The camera has a viewing angle which determines how much can be seen.  By
 ## default this is:
@@ -68,13 +68,13 @@
 ## @end example
 ##
 ## By default, these commands affect the current axis; alternatively, an axis
-## can be specified by the optional argument @var{ax}.
+## can be specified by the optional argument @var{hax}.
 ##
 ## @seealso{campos, camtarget, camup}
 ## @end deftypefn
 
 
-function p = camva (varargin)
+function a = camva (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("camva", varargin{:});
 
@@ -90,13 +90,13 @@ function p = camva (varargin)
 
   prop = "cameraviewangle";
   if (nargin == 0)
-    p = get (hax, prop);
+    a = get (hax, prop);
   elseif (nargin == 1 && isnumeric (varargin{1}) && isscalar (varargin{1}))
     set (hax, prop, varargin{1});
   elseif (nargin == 1 && ischar (varargin{1}))
     s = varargin{1};
     if (strcmp (s, "mode"))
-      p = get (hax, [prop "mode"]);
+      a = get (hax, [prop "mode"]);
     else
       set (hax, [prop "mode"], s);
     endif
@@ -151,7 +151,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-## test ax input by creating another axis
+## test hax input by creating another axis
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

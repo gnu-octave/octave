@@ -151,6 +151,8 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(zscore)
 
+@DOCSTRING(normalize)
+
 @DOCSTRING(histc)
 
 @noindent

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} roots (@var{c})
+## @deftypefn {} {@var{r} =} roots (@var{c})
 ##
 ## Compute the roots of the polynomial @var{c}.
 ##

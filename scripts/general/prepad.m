@@ -24,25 +24,25 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} prepad (@var{x}, @var{l})
-## @deftypefnx {} {} prepad (@var{x}, @var{l}, @var{c})
-## @deftypefnx {} {} prepad (@var{x}, @var{l}, @var{c}, @var{dim})
-## Prepend the scalar value @var{c} to the vector @var{x} until it is of length
+## @deftypefn  {} {@var{B} =} prepad (@var{A}, @var{l})
+## @deftypefnx {} {@var{B} =} prepad (@var{A}, @var{l}, @var{c})
+## @deftypefnx {} {@var{B} =} prepad (@var{A}, @var{l}, @var{c}, @var{dim})
+## Prepend the scalar value @var{c} to the vector @var{A} until it is of length
 ## @var{l}.  If @var{c} is not given, a value of 0 is used.
 ##
-## If @code{length (@var{x}) > @var{l}}, elements from the beginning of @var{x}
+## If @code{length (@var{A}) > @var{l}}, elements from the beginning of @var{A}
 ## are removed until a vector of length @var{l} is obtained.
 ##
-## If @var{x} is a matrix, elements are prepended or removed from each row.
+## If @var{A} is a matrix, elements are prepended or removed from each row.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## If @var{dim} is larger than the dimensions of @var{x}, the result will have
+## If @var{dim} is larger than the dimensions of @var{A}, the result will have
 ## @var{dim} dimensions.
 ## @seealso{postpad, cat, resize}
 ## @end deftypefn
 
-function y = prepad (x, l, c, dim)
+function B = prepad (A, l, c, dim)
 
   if (nargin < 2)
     print_usage ();
@@ -56,8 +56,8 @@ function y = prepad (x, l, c, dim)
     endif
   endif
 
-  nd = ndims (x);
-  sz = size (x);
+  nd = ndims (A);
+  sz = size (A);
   if (nargin < 4)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
@@ -84,14 +84,14 @@ function y = prepad (x, l, c, dim)
     ##    ml = max (numel (v1), numel (v2));
     ##    v1 = prepad (v1, ml);
     ##    v2 = prepad (v2, ml);
-    y = x;
+    B = A;
   elseif (d >= l)
     idx = repmat ({':'}, nd, 1);
     idx{dim} = d-l+1:d;
-    y = x(idx{:});
+    B = A(idx{:});
   else
     sz(dim) = l - d;
-    y = cat (dim, c(ones (sz)), x);
+    B = cat (dim, c(ones (sz)), A);
   endif
 
 endfunction

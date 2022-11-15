@@ -141,7 +141,7 @@ endfunction
 %! assert (in, [true, true, false]);
 %! assert (on, [true, false, false]);
 
-## 3D array input
+## 3-D array input
 %!test
 %! x = zeros (2, 2, 2);
 %! x(1, 1, 1) = 1;

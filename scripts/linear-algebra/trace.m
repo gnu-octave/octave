@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} trace (@var{A})
+## @deftypefn {} {@var{t} =} trace (@var{A})
 ## Compute the trace of @var{A}, the sum of the elements along the main
 ## diagonal.
 ##
@@ -32,7 +32,7 @@
 ## @seealso{eig}
 ## @end deftypefn
 
-function y = trace (A)
+function t = trace (A)
 
   if (nargin < 1)
     print_usage ();
@@ -41,11 +41,11 @@ function y = trace (A)
   if (ndims (A) > 2)
     error ("trace: only valid on 2-D objects");
   elseif (isempty (A))
-    y = 0;
+    t = 0;
   elseif (isvector (A))
-    y = A(1);
+    t = A(1);
   else
-    y = sum (diag (A));
+    t = sum (diag (A));
   endif
 
 endfunction

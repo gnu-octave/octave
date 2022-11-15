@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{t}, @var{y}] =} ode23s (@var{fun}, @var{trange}, @var{init})
-## @deftypefnx {} {[@var{t}, @var{y}] =} ode23s (@var{fun}, @var{trange}, @var{init}, @var{ode_opt})
+## @deftypefn  {} {[@var{t}, @var{y}] =} ode23s (@var{fcn}, @var{trange}, @var{init})
+## @deftypefnx {} {[@var{t}, @var{y}] =} ode23s (@var{fcn}, @var{trange}, @var{init}, @var{ode_opt})
 ## @deftypefnx {} {[@var{t}, @var{y}] =} ode23s (@dots{}, @var{par1}, @var{par2}, @dots{})
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode23s (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode23s (@dots{})
@@ -33,7 +33,7 @@
 ## Solve a set of stiff Ordinary Differential Equations (stiff ODEs) with a
 ## @nospell{Rosenbrock} method of order (2,3).
 ##
-## @var{fun} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function that defines the ODE: @code{M y' = f(t,y)}.  The
 ## function must accept two inputs where the first is time @var{t} and the
 ## second is a column vector of unknowns @var{y}.  @var{M} is a constant mass
@@ -93,7 +93,7 @@
 ## @seealso{odeset, daspk, dassl}
 ## @end deftypefn
 
-function varargout = ode23s (fun, trange, init, varargin)
+function varargout = ode23s (fcn, trange, init, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -104,7 +104,7 @@ function varargout = ode23s (fun, trange, init, varargin)
 
   if (nargin >= 4)
     if (! isstruct (varargin{1}))
-      ## varargin{1:len} are parameters for fun
+      ## varargin{1:len} are parameters for fcn
       odeopts = odeset ();
       funarguments = varargin;
     elseif (numel (varargin) > 1)
@@ -143,17 +143,21 @@ function varargout = ode23s (fun, trange, init, varargin)
   endif
   init = init(:);
 
-  if (ischar (fun))
-    if (! exist (fun))
+  if (ischar (fcn))
+    if (! exist (fcn))
       error ("Octave:invalid-input-arg",
-             ['ode23s: function "' fun '" not found']);
+             ['ode23s: function "' fcn '" not found']);
     endif
-    fun = str2func (fun);
+    fcn = str2func (fcn);
   endif
-  if (! is_function_handle (fun))
+  if (! is_function_handle (fcn))
     error ("Octave:invalid-input-arg",
-           "ode23s: FUN must be a valid function handle");
+           "ode23s: FCN must be a valid function handle");
   endif
+
+  ## FIXME: Warn user if ! isempty (funarguments)
+  ## Not a documented behavior and may be deprecated
+
 
   ## Start preprocessing, have a look which options are set in odeopts,
   ## check if an invalid or unused option is set.
@@ -184,7 +188,7 @@ function varargout = ode23s (fun, trange, init, varargin)
 
   if (isempty (odeopts.InitialStep))
     odeopts.InitialStep = odeopts.direction * ...
-                          starting_stepsize (order, fun, trange(1), init,
+                          starting_stepsize (order, fcn, trange(1), init,
                                              odeopts.AbsTol, odeopts.RelTol,
                                              strcmpi (odeopts.NormControl,
                                                       "on"),
@@ -194,7 +198,7 @@ function varargout = ode23s (fun, trange, init, varargin)
   if (! isempty (odeopts.Mass) && isnumeric (odeopts.Mass))
     havemasshandle = false;
     mass = odeopts.Mass;     # constant mass
-  elseif (isa (odeopts.Mass, "function_handle"))
+  elseif (is_function_handle (odeopts.Mass))
     havemasshandle = true;   # mass defined by a function handle
     odeopts.Mass = feval (odeopts.Mass, trange(1), init,
                           odeopts.funarguments{:});
@@ -205,25 +209,19 @@ function varargout = ode23s (fun, trange, init, varargin)
 
   ## Starting the initialization of the core solver ode23s
 
-  if (nargout == 1)
-    ## Single output requires auto-selected intermediate times,
-    ## which is obtained by NOT specifying specific solution times.
-    trange = [trange(1); trange(end)];
-    odeopts.Refine = [];  # disable Refine when single output requested
-  elseif (numel (trange) > 2)
+  if (numel (trange) > 2)
     odeopts.Refine = [];  # disable Refine when specific times requested
   endif
 
   solution = integrate_adaptive (@runge_kutta_23s, ...
-                                 order, fun, trange, init, odeopts);
+                                 order, fcn, trange, init, odeopts);
 
   ## Postprocessing, do whatever when terminating integration algorithm
   if (odeopts.haveoutputfunction)  # Cleanup plotter
     feval (odeopts.OutputFcn, [], [], "done", odeopts.funarguments{:});
   endif
   if (! isempty (odeopts.Events))   # Cleanup event function handling
-    ode_event_handler (odeopts.Events, solution.t(end), ...
-                       solution.x(end,:).', "done", odeopts.funarguments{:});
+    ode_event_handler ([], [], [], [], [], "done");
   endif
 
   ## Print additional information if option Stats is set
@@ -241,16 +239,16 @@ function varargout = ode23s (fun, trange, init, varargin)
   endif
 
   if (nargout == 2)
-    varargout{1} = solution.t;      # Time stamps are first output argument
-    varargout{2} = solution.x;      # Results are second output argument
+    varargout{1} = solution.output_t; # Time stamps are first output argument
+    varargout{2} = solution.output_x; # Results are second output argument
   elseif (nargout == 1)
-    varargout{1}.x = solution.t.';  # Time stamps saved in field x (row vector)
-    varargout{1}.y = solution.x.';  # Results are saved in field y (row vector)
+    varargout{1}.x = solution.ode_t.'; #Time stamps saved in field x (row vect.)
+    varargout{1}.y = solution.ode_x.'; #Results are saved in field y (row vect.)
     varargout{1}.solver = solver;   # Solver name is saved in field solver
     if (! isempty (odeopts.Events))
-      varargout{1}.xe = solution.event{3};  # Time info when an event occurred
-      varargout{1}.ye = solution.event{4};  # Results when an event occurred
-      varargout{1}.ie = solution.event{2};  # Index info which event occurred
+      varargout{1}.xe = solution.event{3}.'; # Time info when an event occurred
+      varargout{1}.ye = solution.event{4}.'; # Results when an event occurred
+      varargout{1}.ie = solution.event{2}.'; # Index info which event occurred
     endif
     if (strcmpi (odeopts.Stats, "on"))
       varargout{1}.stats = struct ();
@@ -263,8 +261,8 @@ function varargout = ode23s (fun, trange, init, varargin)
     endif
   elseif (nargout == 5)
     varargout = cell (1,5);
-    varargout{1} = solution.t;
-    varargout{2} = solution.x;
+    varargout{1} = solution.output_t;
+    varargout{2} = solution.output_x;
     if (! isempty (odeopts.Events))
       varargout{3} = solution.event{3};  # Time info when an event occurred
       varargout{4} = solution.event{4};  # Results when an event occurred
@@ -277,45 +275,45 @@ endfunction
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
-%! fun = @(t,y) [y(2); 10*(1-y(1)^2)*y(2)-y(1)];
+%! fcn = @(t,y) [y(2); 10*(1-y(1)^2)*y(2)-y(1)];
 %! ## Calling ode23s method
 %! tic ()
-%! [vt, vy] = ode23s (fun, [0 20], [2 0]);
+%! [vt, vy] = ode23s (fcn, [0 20], [2 0]);
 %! toc ()
 %! ## Plotting the result
 %! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
-%! fun = @(t,y) [y(2); 10*(1-y(1)^2)*y(2)-y(1)];
+%! fcn = @(t,y) [y(2); 10*(1-y(1)^2)*y(2)-y(1)];
 %! ## Calling ode23s method
 %! odeopts = odeset ("Jacobian", @(t,y) [0 1; -20*y(1)*y(2)-1, 10*(1-y(1)^2)],
 %!                   "InitialStep", 1e-3)
 %! tic ()
-%! [vt, vy] = ode23s (fun, [0 20], [2 0], odeopts);
+%! [vt, vy] = ode23s (fcn, [0 20], [2 0], odeopts);
 %! toc ()
 %! ## Plotting the result
 %! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
-%! fun = @(t,y) [y(2); 100*(1-y(1)^2)*y(2)-y(1)];
+%! fcn = @(t,y) [y(2); 100*(1-y(1)^2)*y(2)-y(1)];
 %! ## Calling ode23s method
 %! odeopts = odeset ("InitialStep", 1e-4);
 %! tic ()
-%! [vt, vy] = ode23s (fun, [0 200], [2 0]);
+%! [vt, vy] = ode23s (fcn, [0 200], [2 0]);
 %! toc ()
 %! ## Plotting the result
 %! plot (vt,vy(:,1),'-o');
 
 %!demo
 %! ## Demo function: stiff Van Der Pol equation
-%! fun = @(t,y) [y(2); 100*(1-y(1)^2)*y(2)-y(1)];
+%! fcn = @(t,y) [y(2); 100*(1-y(1)^2)*y(2)-y(1)];
 %! ## Calling ode23s method
 %! odeopts = odeset ("Jacobian", @(t,y) [0 1; -200*y(1)*y(2)-1, 100*(1-y(1)^2)],
 %!                   "InitialStep", 1e-4);
 %! tic ()
-%! [vt, vy] = ode23s (fun, [0 200], [2 0], odeopts);
+%! [vt, vy] = ode23s (fcn, [0 200], [2 0], odeopts);
 %! toc ()
 %! ## Plotting the result
 %! plot (vt,vy(:,1),'-o');
@@ -389,7 +387,8 @@ endfunction
 %!      error ('fout: step "init"');
 %!    endif
 %!  elseif (isempty (flag))
-%!    if (! isequal (size (t), [1, 1]))
+%!  # Multiple steps can be sent in one function call
+%!    if (! isequal ( size (t), size (y)))
 %!      error ('fout: step "calc"');
 %!    endif
 %!  elseif (strcmp (flag, "done"))
@@ -404,6 +403,14 @@ endfunction
 %!test  # two output arguments
 %! [t, y] = ode23s (@fpol, [0 2], [2 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-3);
+%!test  # correct number of steps with Refine
+%! [t1, y1] = ode23s (@fpol, [0 2], [2 0], odeset ("Refine", 1));
+%! [t2, y2] = ode23s (@fpol, [0 2], [2 0], odeset ("Refine", 4));
+%! [t3, y3] = ode23s (@fpol, [0 2], [2 0]); #default Refine=1
+%! s = ode23s (@fpol, [0 2], [2 0], odeset ("Refine", 4));
+%! assert (length (t1) == length (t3));
+%! assert (length (t2) == 4*length (t1) - 3);
+%! assert (length (s.x) == length (t1));
 %!test  # anonymous function instead of real function
 %! fvdp = @(t,y) [y(2); 10 * (1 - y(1)^2) * y(2) - y(1)];
 %! [t, y] = ode23s (fvdp, [0 2], [2 0]);
@@ -435,8 +442,8 @@ endfunction
 %! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
 %! sol = ode23s (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-4);
-%!test  # Details of OutputSel and Refine can't be tested
-%! opt = odeset ("OutputFcn", @fout, "OutputSel", 1, "Refine", 5);
+%!test  # Details of OutputSel can't be tested
+%! opt = odeset ("OutputFcn", @fout, "OutputSel", 1);
 %! sol = ode23s (@fpol, [0 2], [2 0], opt);
 %!test  # Stats must add further elements in sol
 %! opt = odeset ("Stats", "on");
@@ -451,6 +458,15 @@ endfunction
 %! assert (sol.ie(1), 2);
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
+%!test  # Events option, now stop integration
+%! opt = odeset ("Events", @fevn, "NormControl", "on");
+%! sol = ode23s (@fpol, [0 10], [2 0], opt);
+%! assert ([sol.ie, sol.xe, sol.ye.'],
+%!         [2.0, 9.094439, -0.996480, -14.180147], 2e-2);
+%!test  # Events option, five output arguments
+%! opt = odeset ("Events", @fevn, "NormControl", "on");
+%! [t, y, vxe, ye, vie] = ode23s (@fpol, [0 10], [2 0], opt);
+%! assert ([vie, vxe, ye], [2.0, 9.094439, -0.996480, -14.180147], 2e-2);
 %!test  # Mass option as function
 %! opt = odeset ("Mass", @fmas);
 %! sol = ode23s (@fpol, [0 2], [2 0], opt);
@@ -509,4 +525,4 @@ endfunction
 %!error <invalid time span>  ode23s (@fpol, [1 1], [3 15 1])
 %!error <INIT must be a numeric> ode23s (@fpol, [0 25], {[3 15 1]})
 %!error <INIT must be a .* vector> ode23s (@fpol, [0 25], [3 15 1; 3 15 1])
-%!error <FUN must be a valid function handle> ode23s (1, [0 25], [3 15 1])
+%!error <FCN must be a valid function handle> ode23s (1, [0 25], [3 15 1])

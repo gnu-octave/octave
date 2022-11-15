@@ -12,6 +12,7 @@
   %reldir%/NEWS.5.md \
   %reldir%/NEWS.6.md \
   %reldir%/NEWS.7.md \
+  %reldir%/NEWS.8.md \
   %reldir%/gdbinit
 
 %canon_reldir%_EXTRA_DIST += \
@@ -25,6 +26,10 @@
   %reldir%/OLD-ChangeLogs/test-ChangeLog
 
 fallback_FONT_FILES = \
+  %reldir%/fonts/FreeMono.otf \
+  %reldir%/fonts/FreeMonoBold.otf \
+  %reldir%/fonts/FreeMonoBoldOblique.otf \
+  %reldir%/fonts/FreeMonoOblique.otf \
   %reldir%/fonts/FreeSans.otf \
   %reldir%/fonts/FreeSansBold.otf \
   %reldir%/fonts/FreeSansBoldOblique.otf \

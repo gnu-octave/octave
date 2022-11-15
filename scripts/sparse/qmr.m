@@ -97,9 +97,9 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
   if (nargin >= 2 && isvector (full (b)))
 
     if (ischar (A))
-      fun = str2func (A);
-      Ax  = @(x) feval (fun, x, "notransp");
-      Atx = @(x) feval (fun, x, "transp");
+      fcn = str2func (A);
+      Ax  = @(x) feval (fcn, x, "notransp");
+      Atx = @(x) feval (fcn, x, "transp");
     elseif (is_function_handle (A))
       Ax  = @(x) feval (A, x, "notransp");
       Atx = @(x) feval (A, x, "transp");
@@ -124,9 +124,9 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       M1m1x = @(x, ignore) x;
       M1tm1x = M1m1x;
     elseif (ischar (M1))
-      fun = str2func (M1);
-      M1m1x  = @(x) feval (fun, x, "notransp");
-      M1tm1x = @(x) feval (fun, x, "transp");
+      fcn = str2func (M1);
+      M1m1x  = @(x) feval (fcn, x, "notransp");
+      M1tm1x = @(x) feval (fcn, x, "transp");
     elseif (is_function_handle (M1))
       M1m1x  = @(x) feval (M1, x, "notransp");
       M1tm1x = @(x) feval (M1, x, "transp");
@@ -141,9 +141,9 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       M2m1x = @(x, ignore) x;
       M2tm1x = M2m1x;
     elseif (ischar (M2))
-      fun = str2func (M2);
-      M2m1x  = @(x) feval (fun, x, "notransp");
-      M2tm1x = @(x) feval (fun, x, "transp");
+      fcn = str2func (M2);
+      M2m1x  = @(x) feval (fcn, x, "notransp");
+      M2tm1x = @(x) feval (fcn, x, "transp");
     elseif (is_function_handle (M2))
       M2m1x  = @(x) feval (M2, x, "notransp");
       M2tm1x = @(x) feval (M2, x, "transp");
@@ -290,7 +290,7 @@ endfunction
 %! [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 
-%!function y = afun (x, t, a)
+%!function y = afcn (x, t, a)
 %!  switch (t)
 %!    case "notransp"
 %!      y = a * x;
@@ -308,7 +308,7 @@ endfunction
 %! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
 %!
-%! [x, flag, relres, iter, resvec] = qmr (@(x, t) afun (x, t, A),
+%! [x, flag, relres, iter, resvec] = qmr (@(x, t) afcn (x, t, A),
 %!                                         b, rtol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 

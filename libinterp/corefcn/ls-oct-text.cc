@@ -270,8 +270,7 @@ load_inline_fcn (std::istream& is, const std::string& filename)
         {
           args(0) = std::string (buf);
 
-          octave::interpreter& interp
-            = octave::__get_interpreter__ ("load_inline_fcn");
+          octave::interpreter& interp = octave::__get_interpreter__ ();
 
           octave_value_list tmp = interp.feval ("inline", args, 1);
 
@@ -336,8 +335,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
     }
   else
     {
-      octave::type_info& type_info
-        = octave::__get_type_info__ ("read_text_data");
+      octave::type_info& type_info = octave::__get_type_info__ ();
 
       tc = type_info.lookup_type (typ);
     }
@@ -463,7 +461,7 @@ DEFUN (save_precision, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} save_precision ()
 @deftypefnx {} {@var{old_val} =} save_precision (@var{new_val})
-@deftypefnx {} {} save_precision (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} save_precision (@var{new_val}, "local")
 Query or set the internal variable that specifies the number of digits to
 keep when saving data in text format.
 

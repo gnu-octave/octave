@@ -1100,7 +1100,7 @@ if_cmd_list1    : expression stmt_begin opt_sep opt_list
                   {
                     OCTAVE_YYUSE ($3);
 
-                    $1->mark_braindead_shortcircuit ();
+                    parser.maybe_convert_to_braindead_shortcircuit ($1);
 
                     $$ = parser.start_if_command ($1, $4);
                   }
@@ -1112,7 +1112,7 @@ elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt
                   {
                     OCTAVE_YYUSE ($3, $6);
 
-                    $4->mark_braindead_shortcircuit ();
+                    parser.maybe_convert_to_braindead_shortcircuit ($4);
 
                     $$ = parser.make_elseif_clause ($1, $4, $7, $2);
                   }
@@ -1182,7 +1182,7 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   {
                     OCTAVE_YYUSE ($5);
 
-                    $3->mark_braindead_shortcircuit ();
+                    parser.maybe_convert_to_braindead_shortcircuit ($3);
 
                     if (! ($$ = parser.make_while_command ($1, $3, $6, $7, $2)))
                       {
@@ -2099,12 +2099,12 @@ method_decl     : stash_comment method_decl1
                   {
                     OCTAVE_YYUSE ($3);
 
-                    lexer.m_defining_func++;
+                    lexer.m_defining_fcn++;
                     lexer.m_parsed_function_name.push (false);
                   }
                   method_decl1
                   {
-                    lexer.m_defining_func--;
+                    lexer.m_defining_fcn--;
                     lexer.m_parsed_function_name.pop ();
 
                     $$ = parser.finish_classdef_external_method ($5, $2, $1);
@@ -2996,7 +2996,7 @@ OCTAVE_NAMESPACE_BEGIN
     if (base->is_constant () && limit->is_constant ()
         && (! incr || incr->is_constant ()))
       {
-        interpreter& interp = __get_interpreter__ ("finish_colon_expression");
+        interpreter& interp = __get_interpreter__ ();
 
         try
           {
@@ -3138,6 +3138,37 @@ OCTAVE_NAMESPACE_BEGIN
     int c = tok_val->column ();
 
     return maybe_compound_binary_expression (op1, op2, l, c, t);
+  }
+
+  void
+  base_parser::maybe_convert_to_braindead_shortcircuit (tree_expression*& expr)
+  {
+    if (expr->is_binary_expression ())
+      {
+        tree_binary_expression *binexp
+          = dynamic_cast<tree_binary_expression *> (expr);
+
+        tree_expression *lhs = binexp->lhs ();
+        tree_expression *rhs = binexp->rhs ();
+
+        maybe_convert_to_braindead_shortcircuit (lhs);
+        maybe_convert_to_braindead_shortcircuit (rhs);
+
+        octave_value::binary_op op_type = binexp->op_type ();
+        if (op_type == octave_value::op_el_and
+            || op_type == octave_value::op_el_or)
+          {
+            binexp->preserve_operands ();
+
+            int line = expr->line ();
+            int column = expr->column ();
+
+            delete expr;
+
+            expr = new tree_braindead_shortcircuit_binary_expression
+              (lhs, rhs, line, column, op_type);
+          }
+      }
   }
 
   // Build a boolean expression.
@@ -4271,7 +4302,7 @@ OCTAVE_NAMESPACE_BEGIN
     m_curr_fcn_depth--;
     m_function_scopes.pop ();
 
-    m_lexer.m_defining_func--;
+    m_lexer.m_defining_fcn--;
     m_lexer.m_parsed_function_name.pop ();
     m_lexer.m_looking_at_return_list = false;
     m_lexer.m_looking_at_parameter_list = false;
@@ -4838,8 +4869,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (local_fcns)
       {
-        symbol_table& symtab
-          = __get_symbol_table__ ("base_parser::finish_classdef_file");
+        symbol_table& symtab = __get_symbol_table__ ();
 
         for (tree_statement *elt : *local_fcns)
           {
@@ -5129,8 +5159,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (e->is_constant ())
       {
-        tree_evaluator& tw
-          = __get_evaluator__ ("validate_matrix_for_assignment");
+        tree_evaluator& tw = __get_evaluator__ ();
 
         octave_value ov = e->evaluate (tw);
 
@@ -5193,7 +5222,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (array_list->all_elements_are_constant ())
       {
-        interpreter& interp = __get_interpreter__ ("finish_array_list");
+        interpreter& interp = __get_interpreter__ ();
 
         try
           {
@@ -5957,7 +5986,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (! file.empty ())
       {
-        interpreter& interp = __get_interpreter__ ("get_help_from_file");
+        interpreter& interp = __get_interpreter__ ();
 
         symbol_found = true;
 
@@ -6023,7 +6052,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     int len = file.length ();
 
-    interpreter& interp = __get_interpreter__ ("load_fcn_from_file");
+    interpreter& interp = __get_interpreter__ ();
 
     dynamic_loader& dyn_loader = interp.get_dynamic_loader ();
 
@@ -6190,7 +6219,7 @@ the filename and the extension.
   source_file (const std::string& file_name, const std::string& context,
                bool verbose, bool require_file)
   {
-    interpreter& interp = __get_interpreter__ ("source_file");
+    interpreter& interp = __get_interpreter__ ();
 
     interp.source_file (file_name, context, verbose, require_file);
   }
@@ -6240,7 +6269,7 @@ context of the function that called the present function
   octave_value_list
   feval (const char *name, const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (name, args, nargout);
   }
@@ -6248,7 +6277,7 @@ context of the function that called the present function
   octave_value_list
   feval (const std::string& name, const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (name, args, nargout);
   }
@@ -6256,7 +6285,7 @@ context of the function that called the present function
   octave_value_list
   feval (octave_function *fcn, const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (fcn, args, nargout);
   }
@@ -6264,7 +6293,7 @@ context of the function that called the present function
   octave_value_list
   feval (const octave_value& val, const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (val, args, nargout);
   }
@@ -6272,7 +6301,7 @@ context of the function that called the present function
   octave_value_list
   feval (const octave_value_list& args, int nargout)
   {
-    interpreter& interp = __get_interpreter__ ("feval");
+    interpreter& interp = __get_interpreter__ ();
 
     return interp.feval (args, nargout);
   }

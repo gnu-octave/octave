@@ -68,6 +68,12 @@ function T = delaunayn (pts, varargin)
     print_usage ();
   endif
 
+  ## NOTE: varargin options input validation is performed in __delaunayn__
+  if ((! isnumeric (pts)) || (ndims (pts) > 2))
+    error ("delaunayn: input PTS must be a 2-dimensional numeric array");
+  endif
+
+  ## Perform delaunay calculation using either default or specified options
   if (isempty (varargin) || isempty (varargin{1}))
     try
       T = __delaunayn__ (pts);
@@ -82,49 +88,98 @@ function T = delaunayn (pts, varargin)
     T = __delaunayn__ (pts, varargin{:});
   endif
 
-  if (isa (pts, "single"))
-    tol = 1e3 * eps ("single");
-  else
-    tol = 1e3 * eps;
-  endif
+  ## Begin check for and removal of trivial simplices
+  if (! isequal (T, 0))  # skip trivial simplex check if no simplexes
 
-  ## Try to remove the zero volume simplices.  The volume of the i-th simplex is
-  ## given by abs(det(pts(T(i,1:end-1),:)-pts(T(i,2:end),:)))/factorial(ndim+1)
-  ## (reference http://en.wikipedia.org/wiki/Simplex).  Any simplex with a
-  ## relative volume less than some arbitrary criteria is rejected.  The
-  ## criteria we use is the volume of the simplex corresponding to an
-  ## orthogonal simplex is equal edge length all equal to the edge length of
-  ## the original simplex.  If the relative volume is 1e3*eps then the simplex
-  ## is rejected.  Note division of the two volumes means that the factor
-  ## factorial(ndim+1) is dropped.
-  [nt, nd] = size (T);
-  if (nd == 3)
-    ## 2-D case
-    np = rows (pts);
-    ptsz = [pts, zeros(np, 1)];
-    p1 = ptsz(T(:,1), :);
-    p2 = ptsz(T(:,2), :);
-    p3 = ptsz(T(:,3), :);
-    p12 = p1 - p2;
-    p23 = p2 - p3;
-    det = cross (p12, p23, 2);
-    idx = abs (det (:,3) ./ sqrt (sumsq (p12, 2))) < tol & ...
-          abs (det (:,3) ./ sqrt (sumsq (p23, 2))) < tol;
-  else
-    ## FIXME: Vectorize this for loop or convert delaunayn to .oct function
-    idx = [];
-    for i = 1:nt
-      X = pts(T(i,1:end-1),:) - pts(T(i,2:end),:);
-      if (abs (det (X)) / sqrt (sumsq (X, 2)) < tol)
-        idx(end+1) = i;
-      endif
-    endfor
-  endif
-  T(idx,:) = [];
+    if (isa (pts, "single"))
+      tol = 1e3 * eps ("single");
+    else
+      tol = 1e3 * eps;
+    endif
 
+    ## Try to remove the ~zero volume simplices.  The volume of the i-th simplex
+    ## is given by abs(det(pts(T(i,2:end),:)-pts(T(i,1),:)))/factorial(ndim+1)
+    ## (reference http://en.wikipedia.org/wiki/Simplex).  Any simplex with a
+    ## relative volume less than some arbitrary criteria is rejected.  The
+    ## criteria we use is the volume of a simplex corresponding to an
+    ## orthogonal simplex (rectangle, rectangular prism, etc.) with edge lengths
+    ## equal to the common-origin edge lengths of the original simplex.  If the
+    ## relative volume is 1e3*eps then the simplex is rejected.  Note division
+    ## of the two volumes means that the factor factorial(ndim+1) is dropped
+    ## from volume calculations.
+
+    [nt, nd] = size (T);  # nt = simplex count, nd = # of simplex points
+    dim = nd - 1;
+
+    ## Calculate common origin edge vectors for each simplex (p2-p1,p3-p1,...)
+    ## Store in 3-D array such that:
+    ## rows = nt simplexes, cols = coordinates, pages = simplex edges
+    edge_vecs =  permute (reshape (pts(T(:, 2:nd), :).', [dim, nt, dim]), ...
+                          [2, 1, 3]) - pts(T(:, 1), :, ones (1, 1, dim));
+
+    ## Calculate orthogonal simplex volumes for comparison
+    orthog_simplex_vols = sqrt (prod (sumsq (edge_vecs, 2), 3));
+
+    ## Calculate simplex volumes according to problem dimension
+    if (nd == 3)
+      ## 2-D: area = cross product of triangle edge vectors
+      vol = edge_vecs(:,1,1) .* edge_vecs(:,2,2) ...
+            - edge_vecs(:,1,2) .* edge_vecs(:,2,1);
+
+    elseif (nd == 4)
+      ## 3-D: vol = scalar triple product [a.(b x c)]
+      vol = edge_vecs(:,1,1) .* ...
+              (edge_vecs(:,2,2) .* edge_vecs(:,3,3) - ...
+                edge_vecs(:,3,2) .* edge_vecs(:,2,3)) ...
+            - edge_vecs(:,2,1) .* ...
+              (edge_vecs(:,1,2) .* edge_vecs(:,3,3) - ...
+                edge_vecs(:,3,2) .* edge_vecs(:,1,3)) ...
+            + edge_vecs(:,3,1) .* ...
+              (edge_vecs(:,1,2) .* edge_vecs(:,2,3) - ...
+                edge_vecs(:,2,2) .* edge_vecs(:,1,3));
+
+    else
+      ## 1-D and >= 4-D: simplex 'volume' proportional to det|edge_vecs|
+
+      ## FIXME: Vectorize this for n-D inputs without excessive memory impact
+      ## over __delaunayn__ itself, or move simplex checking into __delaunayn__;
+      ## perhaps with an optimized page-wise determinant.
+      ## See bug #60818 for speed/memory improvement attempts and concerns.
+      vol = zeros (nt, 1);
+
+      ## Reshape so det can operate in dim 1&2
+      edge_vecs = permute (edge_vecs, [3, 2, 1]);
+
+      ## Calculate determinant for arbitrary problem dimension
+      for ii = 1:nt
+        vol(ii) = det (edge_vecs(:, :, ii));
+      endfor
+    endif
+
+    ## Mark simplices with relative volume < tol for removal
+    idx = (abs ((vol) ./ orthog_simplex_vols)) < tol;
+
+    ## Remove trivially small simplexes from T
+    T(idx, :) = [];
+
+    ## Ensure CCW node order for consistent outward normal (bug #53397)
+    ## simplest method of maintaining positive unit normal direction is to
+    ## reverse order of two nodes; this preserves 'nice' monotonic descending
+    ## node 1 ordering.  Currently ignores 1-D cases for compatibility.
+    if (dim > 1 && any (negvol = (vol(! idx) < 0)))
+      T(negvol, [2, 3]) = T(negvol, [3, 2]);
+    endif
+
+  endif
 endfunction
 
 
+## Test 1-D input
+%!testif HAVE_QHULL
+%! assert (sortrows (sort (delaunayn ([1;2]), 2)), [1, 2]);
+%! assert (sortrows (sort (delaunayn ([1;2;3]), 2)), [1, 2; 2, 3]);
+
+## Test 2-D input
 %!testif HAVE_QHULL
 %! x = [-1, 0; 0, 1; 1, 0; 0, -1; 0, 0];
 %! assert (sortrows (sort (delaunayn (x), 2)), [1,2,5;1,4,5;2,3,5;3,4,5]);
@@ -135,7 +190,52 @@ endfunction
 %! assert (sortrows (sort (delaunayn ([x(:) y(:) z(:)]), 2)),
 %!         [1,2,3,4;1,2,4,5]);
 
-## FIXME: Need tests for delaunayn
+## 3-D test with trivial simplex removal
+%!testif HAVE_QHULL
+%! x = [0 0 0; 0 0 1; 0 1 0; 1 0 0; 0 1 1; 1 0 1; 1 1 0; 1 1 1; 0.5 0.5 0.5];
+%! T = sortrows (sort (delaunayn (x), 2));
+%! assert (rows (T), 12);
+
+## 4-D single simplex test
+%!testif HAVE_QHULL
+%! x = [0 0 0 0; 1 0 0 0; 1 1 0 0; 0 0 1 0; 0 0 0 1];
+%! T = sort (delaunayn (x), 2);
+%! assert (T, [1 2 3 4 5]);
+
+## 4-D two simplices test
+%!testif HAVE_QHULL
+%! x = [0 0 0 0; 1 0 0 0; 1 1 0 0; 0 0 1 0; 0 0 0 1; 0 0 0 2];
+%! T = sortrows (sort (delaunayn (x), 2));
+%! assert (rows (T), 2);
+%! assert (T, [1 2 3 4 5; 2 3 4 5 6]);
+
+## Test negative simplex produce positive normals
+## 2-D test
+%!testif HAVE_QHULL <*53397>
+%! x = [-1, 0; 0, 1; 1, 0; 0, -1; 0, 0];
+%! y = delaunayn (x);
+%! edges = permute (reshape (x(y(:, 2:end), :).', [2, 4, 2]), [2, 1, 3]) - ...
+%!         x(y(:, 1), :, ones (1, 1, 2));
+%! vol = edges(:,1,1) .* edges(:,2,2) - edges(:,1,2) .* edges(:,2,1);
+%! assert (all (vol >= 0));
+
+## 3-D test
+%!testif HAVE_QHULL <*53397>
+%! x = [[-1, -1, 1, 0, -1]',[-1, 1, 1, 0, -1]',[0, 0, 0, 1, 1]'];
+%! y = delaunayn (x);
+%! edges = permute (reshape (x(y(:, 2:end), :).', [3, 2, 3]), [2, 1, 3]) - ...
+%!         x(y(:, 1), :, ones (1, 1, 3));
+%! vol = edges(:,1,1) .* ...
+%!            (edges(:,2,2) .* edges(:,3,3) - edges(:,3,2) .* edges(:,2,3)) ...
+%!       - edges(:,2,1) .* ...
+%!            (edges(:,1,2) .* edges(:,3,3) - edges(:,3,2) .* edges(:,1,3)) ...
+%!       + edges(:,3,1) .* ...
+%!            (edges(:,1,2) .* edges(:,2,3) - edges(:,2,2) .* edges(:,1,3));
+%! assert (all (vol >= 0));
 
 ## Input validation tests
 %!error <Invalid call> delaunayn ()
+%!error <input PTS must be> delaunayn ("abc")
+%!error <input PTS must be> delaunayn ({1})
+%!error <input PTS must be> delaunayn (true)
+%!error <input PTS must be> delaunayn (ones (3,3,3))

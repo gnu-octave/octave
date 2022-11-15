@@ -43,9 +43,9 @@
 ##
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline function
-## @code{Afun} such that @w{@code{Afun (x, "notransp") = A * x}} and
-## @w{@code{Afun (x, "transp") = A' * x}}.  Additional parameters to
-## @code{Afun} may be passed after @var{x0}.
+## @code{Afcn} such that @w{@code{Afcn (x, "notransp") = A * x}} and
+## @w{@code{Afcn (x, "transp") = A' * x}}.  Additional parameters to
+## @code{Afcn} may be passed after @var{x0}.
 ##
 ## @item @var{b} is the right-hand side vector.  It must be a column vector
 ## with the same number of rows as @var{A}.
@@ -84,7 +84,7 @@
 ## @end itemize
 ##
 ## Any arguments which follow @var{x0} are treated as parameters, and passed in
-## an appropriate manner to any of the functions (@var{Afun} or @var{Mfun}) or
+## an appropriate manner to any of the functions (@var{Afcn} or @var{Mfcn}) or
 ## that have been given to @code{bicg}.
 ##
 ## The output parameters are:
@@ -140,13 +140,13 @@
 ## restart = 5;
 ## [M1, M2] = ilu (A);  # in this tridiag case, it corresponds to lu (A)
 ## M = M1 * M2;
-## Afun = @@(x, string) strcmp (string, "notransp") * (A * x) + ...
+## Afcn = @@(x, string) strcmp (string, "notransp") * (A * x) + ...
 ##                      strcmp (string, "transp") * (A' * x);
-## Mfun = @@(x, string) strcmp (string, "notransp") * (M \ x) + ...
+## Mfcn = @@(x, string) strcmp (string, "notransp") * (M \ x) + ...
 ##                      strcmp (string, "transp") * (M' \ x);
-## M1fun = @@(x, string) strcmp (string, "notransp") * (M1 \ x) + ...
+## M1fcn = @@(x, string) strcmp (string, "notransp") * (M1 \ x) + ...
 ##                      strcmp (string, "transp") * (M1' \ x);
-## M2fun = @@(x, string) strcmp (string, "notransp") * (M2 \ x) + ...
+## M2fcn = @@(x, string) strcmp (string, "notransp") * (M2 \ x) + ...
 ##                      strcmp (string, "transp") * (M2' \ x);
 ## @end group
 ## @end example
@@ -161,7 +161,7 @@
 ## @code{@var{A}*@var{x}} and @code{@var{A'}*@var{x}}
 ##
 ## @example
-## x = bicg (Afun, b, [], n)
+## x = bicg (Afcn, b, [], n)
 ## @end example
 ##
 ## @sc{Example 3:} @code{bicg} with a preconditioner matrix @var{M}
@@ -173,7 +173,7 @@
 ## @sc{Example 4:} @code{bicg} with a function as preconditioner
 ##
 ## @example
-## x = bicg (Afun, b, 1e-6, n, Mfun)
+## x = bicg (Afcn, b, 1e-6, n, Mfcn)
 ## @end example
 ##
 ## @sc{Example 5:} @code{bicg} with preconditioner matrices @var{M1}
@@ -186,7 +186,7 @@
 ## @sc{Example 6:} @code{bicg} with functions as preconditioners
 ##
 ## @example
-## x = bicg (Afun, b, 1e-6, n, M1fun, M2fun)
+## x = bicg (Afcn, b, 1e-6, n, M1fcn, M2fcn)
 ## @end example
 ##
 ## @sc{Example 7:} @code{bicg} with as input a function requiring an argument
@@ -207,8 +207,8 @@
 ##   endif
 ## endfunction
 ##
-## Apfun = @@(x, string, p) Ap (A, x, string, p);
-## x = bicg (Apfun, b, [], [], [], [], [], 2);
+## Apfcn = @@(x, string, p) Ap (A, x, string, p);
+## x = bicg (Apfcn, b, [], [], [], [], [], 2);
 ## @end group
 ## @end example
 ##
@@ -223,7 +223,7 @@
 function [x_min, flag, relres, iter_min, resvec] = ...
          bicg (A, b, tol = [], maxit = [], M1 = [], M2 = [], x0 = [], varargin)
 
-  [Afun, M1fun, M2fun] =  __alltohandles__ (A, b, M1, M2, "bicg");
+  [Afcn, M1fcn, M2fcn] =  __alltohandles__ (A, b, M1, M2, "bicg");
 
   [tol, maxit, x0] = __default__input__ ({1e-06, min(rows(b), 20), ...
                                           zeros(rows (b),1)}, tol, maxit, x0);
@@ -253,17 +253,17 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   iter = iter_min = 0;
   flag = 1;  # Default flag is "maximum number of iterations reached"
   resvec = zeros (maxit + 1, 1);
-  r0 = b - Afun (x, "notransp", varargin{:});  # Residual of the system
-  s0 = c - Afun (x, "transp", varargin{:});    # Res. of the "dual system"
+  r0 = b - Afcn (x, "notransp", varargin{:});  # Residual of the system
+  s0 = c - Afcn (x, "transp", varargin{:});    # Res. of the "dual system"
   resvec(1) = norm (r0, 2);
 
   try
     warning ("error", "Octave:singular-matrix", "local");
-    prec_r0 = M1fun (r0, "notransp", varargin{:});  # r0 preconditioned
+    prec_r0 = M1fcn (r0, "notransp", varargin{:});  # r0 preconditioned
     prec_s0 = s0;
-    prec_r0 = M2fun (prec_r0, "notransp", varargin{:});
-    prec_s0 = M2fun (prec_s0, "transp", varargin{:});
-    prec_s0 = M1fun (prec_s0, "transp", varargin{:});  # s0 preconditioned
+    prec_r0 = M2fcn (prec_r0, "notransp", varargin{:});
+    prec_s0 = M2fcn (prec_s0, "transp", varargin{:});
+    prec_s0 = M1fcn (prec_s0, "transp", varargin{:});  # s0 preconditioned
     p = prec_r0;  # Direction of the system
     q = prec_s0;  # Direction of the "dual system"
   catch
@@ -271,7 +271,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   end_try_catch
 
   while ((flag != 2) && (iter < maxit) && (resvec(iter+1) >= norm_b * tol))
-    v = Afun (p, "notransp", varargin{:});
+    v = Afcn (p, "notransp", varargin{:});
     prod_qv = q' * v;
     alpha = (s0' * prec_r0);
     if (abs (prod_qv) <= eps * abs (alpha))
@@ -282,18 +282,18 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     x += alpha * p;
     prod_rs = (s0' * prec_r0);  # Product between r0 and s0
     r0 -= alpha * v;
-    s0 -= conj (alpha) * Afun (q, "transp", varargin{:});
-    prec_r0 = M1fun (r0, "notransp", varargin{:});
+    s0 -= conj (alpha) * Afcn (q, "transp", varargin{:});
+    prec_r0 = M1fcn (r0, "notransp", varargin{:});
     prec_s0 = s0;
-    prec_r0 = M2fun (prec_r0, "notransp", varargin{:});
+    prec_r0 = M2fcn (prec_r0, "notransp", varargin{:});
     beta = s0' * prec_r0;
     if (abs (prod_rs) <= abs (beta))
       flag = 4;
       break;
     endif
     beta ./= prod_rs;
-    prec_s0 = M2fun (prec_s0, "transp", varargin{:});
-    prec_s0 = M1fun (prec_s0, "transp", varargin{:});
+    prec_s0 = M2fcn (prec_s0, "transp", varargin{:});
+    prec_s0 = M1fcn (prec_s0, "transp", varargin{:});
     iter += 1;
     resvec(iter+1) = norm (r0);
     if (resvec(iter+1) <= resvec(iter_min+1))
@@ -378,11 +378,11 @@ endfunction
 %!   endif
 %! endfunction
 %!
-%! Afun = @(x, string) Ap (A, x, string, 1);
-%! x = bicg (Afun, b, [], n);
+%! Afcn = @(x, string) Ap (A, x, string, 1);
+%! x = bicg (Afcn, b, [], n);
 %! x = bicg (A, b, 1e-6, n, M);
 %! x = bicg (A, b, 1e-6, n, M1, M2);
-%! function y = Mfun (M, x, string)
+%! function y = Mfcn (M, x, string)
 %!   if (strcmp (string, "notransp"))
 %!     y = M \ x;
 %!   else
@@ -390,14 +390,14 @@ endfunction
 %!   endif
 %! endfunction
 %!
-%! M1fun = @(x, string) Mfun (M, x, string);
-%! x = bicg (Afun, b, 1e-6, n, M1fun);
-%! M1fun = @(x, string) Mfun (M1, x, string);
-%! M2fun = @(x, string) Mfun (M2, x, string);
-%! x = bicg (Afun, b, 1e-6, n, M1fun, M2fun);
-%! Afun = @(x, string, p) Ap (A, x, string, p);
+%! M1fcn = @(x, string) Mfcn (M, x, string);
+%! x = bicg (Afcn, b, 1e-6, n, M1fcn);
+%! M1fcn = @(x, string) Mfcn (M1, x, string);
+%! M2fcn = @(x, string) Mfcn (M2, x, string);
+%! x = bicg (Afcn, b, 1e-6, n, M1fcn, M2fcn);
+%! Afcn = @(x, string, p) Ap (A, x, string, p);
 %! ## Solution of A^2 * x = b
-%! x = bicg (Afun, b, [], 2*n, [], [], [], 2);
+%! x = bicg (Afcn, b, [], 2*n, [], [], [], 2);
 
 %!test
 %! ## Check that all type of inputs work
@@ -405,31 +405,31 @@ endfunction
 %! b = A * ones (5, 1);
 %! M1 = diag (sqrt (diag (A)));
 %! M2 = M1;
-%! Afun = @(z, string) strcmp (string, "notransp") * (A * z) + ...
+%! Afcn = @(z, string) strcmp (string, "notransp") * (A * z) + ...
 %!                     strcmp (string, "transp") * (A' * z);
-%! M1_fun = @(z, string) strcmp (string,"notransp") * (M1 \ z) + ...
+%! M1_fcn = @(z, string) strcmp (string,"notransp") * (M1 \ z) + ...
 %!                         strcmp (string, "transp") * (M1' \ z);
-%! M2_fun = @(z, string) strcmp (string, "notransp") * (M2 \ z) + ...
+%! M2_fcn = @(z, string) strcmp (string, "notransp") * (M2 \ z) + ...
 %!                         strcmp (string, "transp") * (M2' \ z);
 %! [x, flag] = bicg (A, b);
 %! assert (flag, 0);
 %! [x, flag] = bicg (A, b, [], [], M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = bicg (A, b, [], [], M1_fun, M2_fun);
+%! [x, flag] = bicg (A, b, [], [], M1_fcn, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = bicg (A, b,[], [], M1_fun, M2);
+%! [x, flag] = bicg (A, b,[], [], M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = bicg (A, b,[], [], M1, M2_fun);
+%! [x, flag] = bicg (A, b,[], [], M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = bicg (Afun, b);
+%! [x, flag] = bicg (Afcn, b);
 %! assert (flag, 0);
-%! [x, flag] = bicg (Afun, b,[], [], M1, M2);
+%! [x, flag] = bicg (Afcn, b,[], [], M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = bicg (Afun, b,[], [], M1_fun, M2);
+%! [x, flag] = bicg (Afcn, b,[], [], M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = bicg (Afun, b,[], [], M1, M2_fun);
+%! [x, flag] = bicg (Afcn, b,[], [], M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = bicg (Afun, b,[], [], M1_fun, M2_fun);
+%! [x, flag] = bicg (Afcn, b,[], [], M1_fcn, M2_fcn);
 %! assert (flag, 0);
 
 %!test
@@ -443,7 +443,7 @@ endfunction
 %! [x, flag, relres, iter, resvec] = bicg (A, b, tol, maxit, M1, M2);
 %! assert (norm (b - A*x) / norm (b), 0, tol);
 
-%!function y = afun (x, t, a)
+%!function y = afcn (x, t, a)
 %!  switch (t)
 %!    case "notransp"
 %!      y = a * x;
@@ -461,7 +461,7 @@ endfunction
 %! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
 %!
-%! [x, flag, relres, iter, resvec] = bicg (@(x, t) afun (x, t, A),
+%! [x, flag, relres, iter, resvec] = bicg (@(x, t) afcn (x, t, A),
 %!                                         b, tol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 
@@ -516,7 +516,7 @@ endfunction
 %! assert (class (x), "single");
 
 %!test
-%!function y = Afun (x, trans)
+%!function y = Afcn (x, trans)
 %!  A = sparse (toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]));
 %!  if (strcmp (trans, "notransp"))
 %!     y = A * x;
@@ -525,7 +525,7 @@ endfunction
 %!  endif
 %!endfunction
 %!
-%! [x, flag] = bicg ("Afun", [1; 2; 2; 3]);
+%! [x, flag] = bicg ("Afcn", [1; 2; 2; 3]);
 %! assert (x, ones (4, 1), 1e-6);
 
 %!test

@@ -63,9 +63,9 @@ public:
 
   // No copying!
 
-  octave_mex_function (const octave_mex_function& fn) = delete;
+  octave_mex_function (const octave_mex_function& fcn) = delete;
 
-  octave_mex_function& operator = (const octave_mex_function& fn) = delete;
+  octave_mex_function& operator = (const octave_mex_function& fcn) = delete;
 
   ~octave_mex_function (void);
 

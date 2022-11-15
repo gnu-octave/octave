@@ -75,8 +75,7 @@ octave_user_code::~octave_user_code (void)
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (m_cmd_list)
     {
-      octave::event_manager& evmgr
-        = octave::__get_event_manager__ ("octave_user_code::~octave_user_code");
+      octave::event_manager& evmgr = octave::__get_event_manager__ ();
 
       m_cmd_list->remove_all_breakpoints (evmgr, m_file_name);
     }
@@ -410,35 +409,35 @@ octave_user_function::subfunctions (void) const
   return m_scope.subfunctions ();
 }
 
-// Find definition of final subfunction in list of subfuns:
+// Find definition of final subfunction in list of subfcns:
 //
 //  sub1>sub2>...>subN
 
 octave_value
-octave_user_function::find_subfunction (const std::string& subfuns_arg) const
+octave_user_function::find_subfunction (const std::string& subfcns_arg) const
 {
-  std::string subfuns = subfuns_arg;
+  std::string subfcns = subfcns_arg;
 
-  std::string first_fun = subfuns;
+  std::string first_fcn = subfcns;
 
-  std::size_t pos = subfuns.find ('>');
+  std::size_t pos = subfcns.find ('>');
 
   if (pos == std::string::npos)
-    subfuns = "";
+    subfcns = "";
   else
     {
-      first_fun = subfuns.substr (0, pos-1);
-      subfuns = subfuns.substr (pos+1);
+      first_fcn = subfcns.substr (0, pos-1);
+      subfcns = subfcns.substr (pos+1);
     }
 
-  octave_value ov_fcn = m_scope.find_subfunction (first_fun);
+  octave_value ov_fcn = m_scope.find_subfunction (first_fcn);
 
-  if (subfuns.empty ())
+  if (subfcns.empty ())
     return ov_fcn;
 
   octave_user_function *fcn = ov_fcn.user_function_value ();
 
-  return fcn->find_subfunction (subfuns);
+  return fcn->find_subfunction (subfcns);
 }
 
 bool
@@ -504,8 +503,8 @@ octave_user_function::accept (octave::tree_walker& tw)
 octave::tree_expression *
 octave_user_function::special_expr (void)
 {
-  assert (is_special_expr ());
-  assert (m_cmd_list->length () == 1);
+  panic_unless (is_special_expr ());
+  panic_if (m_cmd_list->length () != 1);
 
   octave::tree_statement *stmt = m_cmd_list->front ();
   return stmt->expression ();
@@ -622,8 +621,7 @@ octave_user_function::print_code_function_trailer (const std::string& prefix)
 void
 octave_user_function::restore_warning_states (void)
 {
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("octave_user_function::restore_warning_states");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   octave::tree_evaluator& tw = interp.get_evaluator ();
 
@@ -652,8 +650,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (nargin, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} nargin ()
-@deftypefnx {} {} nargin (@var{fcn})
+@deftypefn  {} {@var{n} =} nargin ()
+@deftypefnx {} {@var{n} =} nargin (@var{fcn})
 Report the number of input arguments to a function.
 
 Called from within a function, return the number of arguments passed to the
@@ -692,25 +690,25 @@ Programming Note: @code{nargin} does not work on compiled functions
 
   if (nargin == 1)
     {
-      octave_value func = args(0);
+      octave_value fcn = args(0);
 
-      if (func.is_string ())
+      if (fcn.is_string ())
         {
           symbol_table& symtab = interp.get_symbol_table ();
 
-          std::string name = func.string_value ();
-          func = symtab.find_function (name);
-          if (func.is_undefined ())
+          std::string name = fcn.string_value ();
+          fcn = symtab.find_function (name);
+          if (fcn.is_undefined ())
             error ("nargin: invalid function name: %s", name.c_str ());
         }
 
-      octave_function *fcn_val = func.function_value (true);
+      octave_function *fcn_val = fcn.function_value (true);
       if (! fcn_val)
         error ("nargin: FCN must be a string or function handle");
 
-      octave_user_function *fcn = fcn_val->user_function_value (true);
+      octave_user_function *ufcn = fcn_val->user_function_value (true);
 
-      if (! fcn)
+      if (! ufcn)
         {
           // Matlab gives up for histc, so maybe it's ok that we
           // give up sometimes too?
@@ -720,10 +718,10 @@ Programming Note: @code{nargin} does not work on compiled functions
                  type.c_str ());
         }
 
-      tree_parameter_list *m_param_list = fcn->parameter_list ();
+      tree_parameter_list *m_param_list = ufcn->parameter_list ();
 
       retval = (m_param_list ? m_param_list->length () : 0);
-      if (fcn->takes_varargs ())
+      if (ufcn->takes_varargs ())
         retval = -1 - retval;
     }
   else
@@ -741,8 +739,8 @@ Programming Note: @code{nargin} does not work on compiled functions
 
 DEFMETHOD (nargout, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} nargout ()
-@deftypefnx {} {} nargout (@var{fcn})
+@deftypefn  {} {@var{n} =} nargout ()
+@deftypefnx {} {@var{n} =} nargout (@var{fcn})
 Report the number of output arguments from a function.
 
 Called from within a function, return the number of values the caller
@@ -803,36 +801,36 @@ returns -1 for all anonymous functions.
 
   if (nargin == 1)
     {
-      octave_value func = args(0);
+      octave_value fcn = args(0);
 
-      if (func.is_string ())
+      if (fcn.is_string ())
         {
           symbol_table& symtab = interp.get_symbol_table ();
 
-          std::string name = func.string_value ();
-          func = symtab.find_function (name);
-          if (func.is_undefined ())
+          std::string name = fcn.string_value ();
+          fcn = symtab.find_function (name);
+          if (fcn.is_undefined ())
             error ("nargout: invalid function name: %s", name.c_str ());
         }
 
-      if (func.is_inline_function ())
+      if (fcn.is_inline_function ())
         return ovl (1);
 
-      if (func.is_function_handle ())
+      if (fcn.is_function_handle ())
         {
-          octave_fcn_handle *fh = func.fcn_handle_value ();
+          octave_fcn_handle *fh = fcn.fcn_handle_value ();
 
           if (fh->is_anonymous ())
             return ovl (-1);
         }
 
-      octave_function *fcn_val = func.function_value (true);
+      octave_function *fcn_val = fcn.function_value (true);
       if (! fcn_val)
         error ("nargout: FCN must be a string or function handle");
 
-      octave_user_function *fcn = fcn_val->user_function_value (true);
+      octave_user_function *ufcn = fcn_val->user_function_value (true);
 
-      if (! fcn)
+      if (! ufcn)
         {
           // Matlab gives up for histc, so maybe it's ok that we
           // give up sometimes too?
@@ -842,11 +840,11 @@ returns -1 for all anonymous functions.
                  type.c_str ());
         }
 
-      tree_parameter_list *m_ret_list = fcn->return_list ();
+      tree_parameter_list *m_ret_list = ufcn->return_list ();
 
       retval = (m_ret_list ? m_ret_list->length () : 0);
 
-      if (fcn->takes_var_return ())
+      if (ufcn->takes_var_return ())
         retval = -1 - retval;
     }
   else
@@ -869,7 +867,7 @@ DEFUN (optimize_subsasgn_calls, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} optimize_subsasgn_calls ()
 @deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})
-@deftypefnx {} {} optimize_subsasgn_calls (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val}, "local")
 Query or set the internal flag for @code{subsasgn} method call
 optimizations.
 
@@ -905,7 +903,7 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 
 DEFMETHOD (isargout, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} isargout (@var{k})
+@deftypefn {} {@var{tf} =} isargout (@var{k})
 Within a function, return a logical value indicating whether the argument
 @var{k} will be assigned to a variable on output.
 

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} gammaincinv (@var{y}, @var{a})
-## @deftypefnx {} {} gammaincinv (@var{y}, @var{a}, @var{tail})
+## @deftypefn  {} {@var{x} =} gammaincinv (@var{y}, @var{a})
+## @deftypefnx {} {@var{x} =} gammaincinv (@var{y}, @var{a}, @var{tail})
 ## Compute the inverse of the normalized incomplete gamma function.
 ##
 ## The normalized incomplete gamma function is defined as

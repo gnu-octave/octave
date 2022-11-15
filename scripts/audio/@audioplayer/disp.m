@@ -26,13 +26,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} disp (@var{player})
 ## Display the properties of the audioplayer object @var{player}.
+## @seealso{@audioplayer/audioplayer}
 ## @end deftypefn
 
 function disp (player)
-
-  if (nargin < 1)
-    print_usage ();
-  endif
 
   printf ("audioplayer object with properties:\n\n");
   for [val, prop] = __get_properties__ (player)
@@ -40,3 +37,7 @@ function disp (player)
   endfor
 
 endfunction
+
+
+## No tests possible/needed for this function
+%!assert (1)

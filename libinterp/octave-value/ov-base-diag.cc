@@ -299,7 +299,8 @@ template <typename T> inline T helper_getreal (std::complex<T> x)
 // FIXME: We really need some traits so that ad hoc hooks like this
 //        are not necessary.
 template <typename T> inline T helper_iscomplex (T) { return false; }
-template <typename T> inline T helper_iscomplex (std::complex<T>) { return true; }
+template <typename T> inline T helper_iscomplex (std::complex<T>)
+{ return true; }
 
 template <typename DMT, typename MT>
 double

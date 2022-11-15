@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} polyint (@var{p})
-## @deftypefnx {} {} polyint (@var{p}, @var{k})
+## @deftypefn  {} {@var{q} =} polyint (@var{p})
+## @deftypefnx {} {@var{q} =} polyint (@var{p}, @var{k})
 ## Return the coefficients of the integral of the polynomial whose
 ## coefficients are represented by the vector @var{p}.
 ##
@@ -34,7 +34,7 @@
 ## @seealso{polyder, polyval}
 ## @end deftypefn
 
-function retval = polyint (p, k)
+function q = polyint (p, k)
 
   if (nargin < 1)
     print_usage ();
@@ -53,7 +53,7 @@ function retval = polyint (p, k)
   lp = length (p);
 
   if (lp == 0)
-    retval = [];
+    q = [];
     return;
   endif
 
@@ -62,7 +62,7 @@ function retval = polyint (p, k)
     p = p.';
   endif
 
-  retval = [(p ./ [lp:-1:1]), k];
+  q = [(p ./ [lp:-1:1]), k];
 
 endfunction
 

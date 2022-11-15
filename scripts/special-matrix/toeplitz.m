@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} toeplitz (@var{c})
-## @deftypefnx {} {} toeplitz (@var{c}, @var{r})
+## @deftypefn  {} {@var{T} =} toeplitz (@var{c})
+## @deftypefnx {} {@var{T} =} toeplitz (@var{c}, @var{r})
 ## Return the Toeplitz matrix constructed from the first column @var{c},
 ## and optionally the first row @var{r}.
 ##
@@ -63,7 +63,7 @@
 ## @seealso{hankel}
 ## @end deftypefn
 
-function retval = toeplitz (c, r)
+function T = toeplitz (c, r)
 
   if (nargin < 1)
     print_usage ();
@@ -90,7 +90,7 @@ function retval = toeplitz (c, r)
 
   if (nr == 0 || nc == 0)
     ## Empty matrix.
-    retval = zeros (nr, nc, class (c));
+    T = zeros (nr, nc, class (c));
     return;
   endif
 
@@ -112,8 +112,8 @@ function retval = toeplitz (c, r)
     ridx = ridx(ridx > 1);
 
     ## Form matrix.
-    retval = spdiags (repmat (c(cidx),nr,1),1-cidx,nr,nc) + ...
-             spdiags (repmat (r(ridx),nr,1),ridx-1,nr,nc);
+    T = spdiags (repmat (c(cidx),nr,1),1-cidx,nr,nc) + ...
+                 spdiags (repmat (r(ridx),nr,1),ridx-1,nr,nc);
   else
     ## Concatenate data into a single column vector.
     data = [r(end:-1:2)(:); c(:)];
@@ -122,7 +122,7 @@ function retval = toeplitz (c, r)
     slices = cellslices (data, nc:-1:1, nc+nr-1:-1:nr);
 
     ## Form matrix.
-    retval = horzcat (slices{:});
+    T = horzcat (slices{:});
   endif
 
 endfunction

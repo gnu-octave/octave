@@ -130,7 +130,6 @@
 ## time step or also at intermediate time instances.  The value should be
 ## a scalar indicating the number of equally spaced time points to use
 ## within each timestep at which to return output.
-## @emph{Note}: This option is not yet implemented.
 ##
 ## @item @code{RelTol}: positive scalar
 ## Relative error tolerance.
@@ -139,7 +138,7 @@
 ## Print solver statistics after simulation.
 ##
 ## @item @code{Vectorized}: @{@qcode{"off"}@} | @qcode{"on"}
-## Specify whether @code{odefun} can be passed multiple values of the
+## Specify whether @code{odefcn} can be passed multiple values of the
 ## state at once.
 ##
 ## @end table

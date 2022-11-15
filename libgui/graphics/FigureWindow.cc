@@ -30,6 +30,7 @@
 #include <QMenu>
 
 #include "FigureWindow.h"
+#include "gui-preferences-global.h"
 
 namespace octave
 {
@@ -38,7 +39,7 @@ namespace octave
     : FigureWindowBase (xparent)
   {
     // set icon from application resources
-    setWindowIcon (QIcon (":/actions/icons/graphic_logo_Figure.png"));
+    setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)));
   }
 
   FigureWindow::~FigureWindow (void)

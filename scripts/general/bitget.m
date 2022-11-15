@@ -24,8 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{c} =} bitget (@var{A}, @var{n})
-## Return the status of bit(s) @var{n} of the unsigned integers in @var{A}.
+## @deftypefn {} {@var{b} =} bitget (@var{A}, @var{n})
+## Return the bit value at position(s) @var{n} of the unsigned integers in
+## @var{A}.
 ##
 ## The least significant bit is @var{n} = 1.
 ##
@@ -40,7 +41,7 @@
 
 ## Liberally based of the version by Kai Habel from Octave Forge
 
-function C = bitget (A, n)
+function b = bitget (A, n)
 
   if (nargin != 2)
     print_usage ();
@@ -87,7 +88,7 @@ function C = bitget (A, n)
     error ("bitget: N must be in the range [1,%d]", Amax);
   endif
 
-  C = bitand (A, bitshift (_conv (1), uint8 (n) - uint8 (1))) != _conv (0);
+  b = bitand (A, bitshift (_conv (1), uint8 (n) - uint8 (1))) != _conv (0);
 
 endfunction
 

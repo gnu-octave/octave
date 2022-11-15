@@ -132,7 +132,7 @@
 ## @seealso{axes, plot, gca, set}
 ## @end deftypefn
 
-function h = subplot (varargin)
+function hax = subplot (varargin)
 
   align_axes = false;
   replace_axes = false;
@@ -357,7 +357,7 @@ function h = subplot (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    h = hsubplot;
+    hax = hsubplot;
   endif
 
 endfunction

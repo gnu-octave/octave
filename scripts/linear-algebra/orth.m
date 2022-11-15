@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} orth (@var{A})
-## @deftypefnx {} {} orth (@var{A}, @var{tol})
+## @deftypefn  {} {@var{B} =} orth (@var{A})
+## @deftypefnx {} {@var{B} =} orth (@var{A}, @var{tol})
 ## Return an orthonormal basis of the range space of @var{A}.
 ##
 ## The dimension of the range space is taken as the number of singular values
@@ -38,14 +38,14 @@
 ## @seealso{null}
 ## @end deftypefn
 
-function retval = orth (A, tol)
+function B = orth (A, tol)
 
   if (nargin < 1)
     print_usage ();
   endif
 
   if (isempty (A))
-    retval = [];
+    B = [];
     return;
   endif
 
@@ -72,9 +72,9 @@ function retval = orth (A, tol)
   rank = sum (s > tol);
 
   if (rank > 0)
-    retval = -U(:, 1:rank);
+    B = -U(:, 1:rank);
   else
-    retval = zeros (rows, 0);
+    B = zeros (rows, 0);
   endif
 
 endfunction

@@ -136,7 +136,7 @@ public:
 
   bool is_true (void) const;
 
-  Cell cell_value (void) const { return matrix; }
+  Cell cell_value (void) const { return m_matrix; }
 
   octave_value_list list_value (void) const;
 

@@ -158,7 +158,7 @@ OCTAVE_NAMESPACE_BEGIN
     // Look in private directory corresponding to current function (if
     // any).
 
-    symbol_scope scope = __get_current_scope__ ("find_private_file");
+    symbol_scope scope = __get_current_scope__ ();
 
     octave_user_code *curr_code = scope ? scope.user_code () : nullptr;
 
@@ -210,12 +210,12 @@ OCTAVE_NAMESPACE_BEGIN
   static void
   rehash_internal (void)
   {
-    load_path& lp = __get_load_path__ ("rehash_internal");
+    load_path& lp = __get_load_path__ ();
 
     lp.update ();
 
     // Signal the GUI allowing updating the load path dialog
-    event_manager& evmgr = __get_event_manager__ ("rehash_internal");
+    event_manager& evmgr = __get_event_manager__ ();
     evmgr.update_path_dialog ();
 
     // FIXME: maybe we should rename this variable since it is being
@@ -1035,7 +1035,8 @@ OCTAVE_NAMESPACE_BEGIN
       source_file (file, "base");
   }
 
-  // FIXME: maybe we should also maintain a map to speed up this method of access.
+  // FIXME: maybe we should also maintain a map to speed up this method of
+  //        access.
 
   load_path::const_dir_info_list_iterator
   load_path::find_dir_info (const std::string& dir_arg) const
@@ -1203,20 +1204,22 @@ OCTAVE_NAMESPACE_BEGIN
   void
   load_path::read_dir_config (const std::string& dir) const
   {
+    // use canonicalized path as key
+    const std::string key = sys::canonicalize_file_name (dir);
+
     // read file with directory configuration
-    std::string conf_file = dir + sys::file_ops::dir_sep_str ()
-                            + ".oct-config";
+    const std::string
+    conf_file = key + sys::file_ops::dir_sep_str () + ".oct-config";
 
     FILE* cfile = sys::fopen (conf_file, "rb");
 
     if (! cfile)
       {
         // reset directory encoding
-        input_system& input_sys
-          = __get_input_system__ ("load_path::read_dir_config");
+        input_system& input_sys = __get_input_system__ ();
 
         std::string enc_val = "delete";
-        input_sys.set_dir_encoding (dir, enc_val);
+        input_sys.set_dir_encoding (key, enc_val);
         return;
       }
 
@@ -1256,16 +1259,14 @@ OCTAVE_NAMESPACE_BEGIN
               continue;
 
             // set encoding for this directory in input system
-            input_system& input_sys
-              = __get_input_system__ ("load_path::read_dir_config");
-            input_sys.set_dir_encoding (dir, enc_val);
+            input_system& input_sys = __get_input_system__ ();
+            input_sys.set_dir_encoding (key, enc_val);
             return;
           }
       }
 
     // reset directory encoding
-    input_system& input_sys
-      = __get_input_system__ ("load_path::read_dir_config");
+    input_system& input_sys = __get_input_system__ ();
 
     std::string enc_val = "delete";
     input_sys.set_dir_encoding (dir, enc_val);
@@ -1447,8 +1448,7 @@ OCTAVE_NAMESPACE_BEGIN
             // Skip updating if we don't know where we are, but don't
             // treat it as an error.
 
-            interpreter& interp
-              = __get_interpreter__ ("load_path::dir_info::update");
+            interpreter& interp = __get_interpreter__ ();
 
             interp.recover_from_exception ();
           }
@@ -1516,8 +1516,7 @@ OCTAVE_NAMESPACE_BEGIN
             // Skip updating if we don't know where we are but don't treat
             // it as an error.
 
-            interpreter& interp
-              = __get_interpreter__ ("load_path::dir_info::initialize");
+            interpreter& interp = __get_interpreter__ ();
 
             interp.recover_from_exception ();
           }
@@ -1799,7 +1798,8 @@ OCTAVE_NAMESPACE_BEGIN
         if (p != fcn_file_map.end ())
           {
             std::string fname
-              = sys::file_ops::concat (sys::file_ops::concat (dir, "private"), fcn);
+              = sys::file_ops::concat (sys::file_ops::concat (dir, "private"),
+                                       fcn);
 
             if (check_file_type (fname, type, p->second, fcn,
                                  "load_path::find_private_fcn"))
@@ -1965,12 +1965,12 @@ OCTAVE_NAMESPACE_BEGIN
               {
                 if (file_info_list.empty ())
                   {
-                    symbol_table& symtab
-                      = __get_symbol_table__ ("load_path::package_info::add_to_fcn_map");
+                    symbol_table& symtab = __get_symbol_table__ ();
 
                     if (symtab.is_built_in_function_name (base))
                       {
-                        std::string fcn_path = sys::file_ops::concat (dir_name, fname);
+                        std::string fcn_path = sys::file_ops::concat (dir_name,
+                                                                      fname);
 
                         warning_with_id ("Octave:shadowed-function",
                                          "function %s shadows a built-in function",
@@ -1992,7 +1992,8 @@ OCTAVE_NAMESPACE_BEGIN
                         && s_sys_path.find (old.dir_name) != std::string::npos
                         && in_path_list (s_sys_path, old.dir_name))
                       {
-                        std::string fcn_path = sys::file_ops::concat (dir_name, fname);
+                        std::string fcn_path = sys::file_ops::concat (dir_name,
+                                                                      fname);
 
                         warning_with_id ("Octave:shadowed-function",
                                          "function %s shadows a core library function",
@@ -2092,7 +2093,8 @@ OCTAVE_NAMESPACE_BEGIN
 
   void
   load_path::package_info::move_fcn_map (const std::string& dir_name,
-                                         const string_vector& fcn_files, bool at_end)
+                                         const string_vector& fcn_files,
+                                         bool at_end)
   {
     octave_idx_type len = fcn_files.numel ();
 
@@ -2446,7 +2448,8 @@ OCTAVE_NAMESPACE_BEGIN
                 sys::file_stat fs (nm);
 
                 if (fs && fs.is_dir ())
-                  retval += directory_path::path_sep_str () + genpath (nm, skip);
+                  retval += (directory_path::path_sep_str ()
+                             + genpath (nm, skip));
               }
           }
       }
@@ -2456,8 +2459,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (genpath, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} genpath (@var{dir})
-@deftypefnx {} {} genpath (@var{dir}, @var{skip}, @dots{})
+@deftypefn  {} {@var{pathstr} =} genpath (@var{dir})
+@deftypefnx {} {@var{pathstr} =} genpath (@var{dir}, @var{skipdir1}, @dots{})
 Return a path constructed from @var{dir} and all its subdirectories.
 
 The path does not include package directories (beginning with @samp{+}),
@@ -2510,8 +2513,9 @@ Reinitialize Octave's load path directory cache.
 
 DEFMETHOD (command_line_path, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} command_line_path ()
-Return the command line path variable.
+@deftypefn {} {@var{pathstr} =} command_line_path ()
+Return the path argument given to Octave at the command line when the
+interpreter was started (@env{--path @var{arg}}).
 
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
 @end deftypefn */)
@@ -2526,9 +2530,10 @@ Return the command line path variable.
 
 DEFMETHOD (restoredefaultpath, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} restoredefaultpath ()
+@deftypefn {} {@var{pathstr} =} restoredefaultpath ()
 Restore Octave's path to its initial state at startup.
 
+The re-initialized path is returned as an output.
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
 @end deftypefn */)
 {
@@ -2549,7 +2554,7 @@ Restore Octave's path to its initial state at startup.
 
 DEFMETHOD (__pathorig__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {@var{val} =} __pathorig__ ()
+@deftypefn {} {@var{str} =} __pathorig__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -2618,6 +2623,7 @@ DEFMETHOD (addpath, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} addpath (@var{dir1}, @dots{})
 @deftypefnx {} {} addpath (@var{dir1}, @dots{}, @var{option})
+@deftypefnx {} {@var{oldpath} =} addpath (@dots{})
 Add named directories to the function search path.
 
 If @var{option} is @qcode{"-begin"} or 0 (the default), prepend the directory
@@ -2755,7 +2761,8 @@ For each directory that is added, and that was not already in the path,
 
 DEFMETHOD (rmpath, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} rmpath (@var{dir1}, @dots{})
+@deftypefn  {} {} rmpath (@var{dir1}, @dots{})
+@deftypefnx {} {@var{oldpath} =} rmpath (@var{dir1}, @dots{})
 Remove @var{dir1}, @dots{} from the current function search path.
 
 In addition to accepting individual directory arguments, lists of
@@ -2815,7 +2822,7 @@ and runs it if it exists.
 DEFMETHOD (__dump_load_path__, interp, , ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __dump_load_path__ ()
-Undocumented internal function.
+Pretty print Octave path directories and the files within each directory.
 @end deftypefn */)
 {
   load_path& lp = interp.get_load_path ();

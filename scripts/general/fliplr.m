@@ -24,11 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} fliplr (@var{x})
+## @deftypefn {} {@var{B} =} fliplr (@var{A})
 ## Flip array left to right.
 ##
-## Return a copy of @var{x} with the order of the columns reversed.  In other
-## words, @var{x} is flipped left-to-right about a vertical axis.  For example:
+## Return a copy of @var{A} with the order of the columns reversed.  In other
+## words, @var{A} is flipped left-to-right about a vertical axis.  For example:
 ##
 ## @example
 ## @group
@@ -41,13 +41,13 @@
 ## @seealso{flipud, flip, rot90, rotdim}
 ## @end deftypefn
 
-function y = fliplr (x)
+function B = fliplr (A)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  y = flip (x, 2);
+  B = flip (A, 2);
 
 endfunction
 

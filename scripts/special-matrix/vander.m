@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} vander (@var{c})
-## @deftypefnx {} {} vander (@var{c}, @var{n})
+## @deftypefn  {} {@var{V} =} vander (@var{c})
+## @deftypefnx {} {@var{V} =} vander (@var{c}, @var{n})
 ## Return the @nospell{Vandermonde} matrix whose next to last column is
 ## @var{c}.
 ##
@@ -58,11 +58,9 @@
 ## @seealso{polyfit}
 ## @end deftypefn
 
-function retval = vander (c, n)
+function V = vander (c, n)
 
-  if (nargin == 1)
-    n = length (c);
-  elseif (nargin != 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -70,12 +68,18 @@ function retval = vander (c, n)
     error ("vander: polynomial C must be a vector");
   endif
 
+  if (nargin == 1)
+    n = length (c);
+  elseif (! isscalar (n))
+    error ("vander: N must be a positive scalar integer");
+  endif
+
   ## avoiding many ^s appears to be faster for n >= 100.
-  retval = zeros (length (c), n, class (c));
-  d = 1;
+  V = zeros (numel (c), n, class (c));
   c = c(:);
+  d = 1;
   for i = n:-1:1
-    retval(:,i) = d;
+    V(:,i) = d;
     d .*= c;
   endfor
 
@@ -95,5 +99,7 @@ endfunction
 %!assert (vander (2, 3), [4, 2, 1])
 %!assert (vander ([2, 3], 3), [4, 2, 1; 9, 3, 1])
 
+## Test input validation
 %!error <Invalid call> vander ()
 %!error <polynomial C must be a vector> vander ([1, 2; 3, 4])
+%!error <N must be a positive scalar integer> vander (1, [1, 2])

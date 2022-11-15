@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} strtrunc (@var{s}, @var{n})
+## @deftypefn {} {@var{s} =} strtrunc (@var{s}, @var{n})
 ## Truncate the character string @var{s} to length @var{n}.
 ##
 ## If @var{s} is a character matrix, then the number of columns is adjusted.

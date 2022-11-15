@@ -40,9 +40,9 @@ enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 DEFUN (conv2, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} conv2 (@var{A}, @var{B})
-@deftypefnx {} {} conv2 (@var{v1}, @var{v2}, @var{m})
-@deftypefnx {} {} conv2 (@dots{}, @var{shape})
+@deftypefn  {} {@var{C} =} conv2 (@var{A}, @var{B})
+@deftypefnx {} {@var{C} =} conv2 (@var{v1}, @var{v2}, @var{m})
+@deftypefnx {} {@var{C} =} conv2 (@dots{}, @var{shape})
 Return the 2-D convolution of @var{A} and @var{B}.
 
 The size of the result is determined by the optional @var{shape} argument

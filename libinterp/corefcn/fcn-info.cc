@@ -54,8 +54,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_value retval;
 
-    load_path& lp
-      = __get_load_path__ ("fcn_info::fcn_info_rep::load_private_function");
+    load_path& lp = __get_load_path__ ();
 
     std::string file_name = lp.find_private_fcn (dir_name, name);
 
@@ -98,8 +97,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     std::string dir_name;
 
-    load_path& lp
-      = __get_load_path__ ("fcn_info::fcn_info_rep::load_class_constructor");
+    load_path& lp = __get_load_path__ ();
 
     std::string file_name = lp.find_method (name, name, dir_name, package_name);
 
@@ -159,8 +157,7 @@ OCTAVE_NAMESPACE_BEGIN
       retval = load_class_constructor ();
     else
       {
-        cdef_manager& cdm
-          = __get_cdef_manager__ ("fcn_info::fcn_info_rep::load_class_method");
+        cdef_manager& cdm = __get_cdef_manager__ ();
 
         retval = cdm.find_method_symbol (name, dispatch_type);
 
@@ -168,7 +165,7 @@ OCTAVE_NAMESPACE_BEGIN
           {
             std::string dir_name;
 
-            load_path& lp = __get_load_path__ ("fcn_info::fcn_info_rep::load_class_method");
+            load_path& lp = __get_load_path__ ();
 
             std::string file_name = lp.find_method (dispatch_type, name,
                                                     dir_name);
@@ -196,8 +193,7 @@ OCTAVE_NAMESPACE_BEGIN
               {
                 // Search parent classes
 
-                symbol_table& symtab
-                  = __get_symbol_table__ ("fcn_info::fcn_info_rep::load_class_method");
+                symbol_table& symtab = __get_symbol_table__ ();
 
                 const std::list<std::string>& plist
                   = symtab.parent_classes (dispatch_type);
@@ -303,7 +299,7 @@ OCTAVE_NAMESPACE_BEGIN
             // There's a non-builtin class in the argument list.
             dispatch_type = args(i).class_name ();
 
-            symbol_table& symtab = __get_symbol_table__ ("get_dispatch_type");
+            symbol_table& symtab = __get_symbol_table__ ();
 
             for (int j = i+1; j < n; j++)
               {
@@ -356,7 +352,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     symbol_scope search_scope
       = (scope
-         ? scope : __get_current_scope__("fcn_info::fcn_info_rep::find"));
+         ? scope : __get_current_scope__ ());
 
     octave_value retval = xfind (search_scope, args);
 
@@ -366,7 +362,7 @@ OCTAVE_NAMESPACE_BEGIN
         // the last prompt or chdir, so try updating the load path and
         // searching again.
 
-        load_path& lp = __get_load_path__ ("fcn_info::fcn_info_rep::find");
+        load_path& lp = __get_load_path__ ();
 
         lp.update ();
 
@@ -525,8 +521,7 @@ OCTAVE_NAMESPACE_BEGIN
 
                             if (! dispatch_type.empty ())
                               {
-                                load_path& lp
-                                  = __get_load_path__ ("out_of_date_check");
+                                load_path& lp = __get_load_path__ ();
 
                                 file = lp.find_method (dispatch_type, nm,
                                                        dir_name, pack);
@@ -536,8 +531,7 @@ OCTAVE_NAMESPACE_BEGIN
                                     std::string s_name;
                                     std::string s_pack;
 
-                                    symbol_table& symtab
-                                      = __get_symbol_table__ ("out_of_date_check");
+                                    symbol_table& symtab = __get_symbol_table__ ();
 
                                     const std::list<std::string>& plist
                                       = symtab.parent_classes (dispatch_type);
@@ -566,16 +560,14 @@ OCTAVE_NAMESPACE_BEGIN
                             // Maybe it's an autoload?
                             if (file.empty ())
                               {
-                                tree_evaluator& tw
-                                  = __get_evaluator__ ("out_of_data_check");
+                                tree_evaluator& tw = __get_evaluator__ ();
 
                                 file = tw.lookup_autoload (nm);
                               }
 
                             if (file.empty ())
                               {
-                                load_path& lp
-                                  = __get_load_path__ ("out_of_date_check");
+                                load_path& lp = __get_load_path__ ();
                                 file = lp.find_fcn (nm, dir_name, pack);
                               }
                           }
@@ -648,8 +640,7 @@ OCTAVE_NAMESPACE_BEGIN
                     // breakpoints associated with it
                     if (clear_breakpoints)
                       {
-                        bp_table& bptab
-                          = __get_bp_table__ ("out_of_date_check");
+                        bp_table& bptab = __get_bp_table__ ();
 
                         bptab.remove_all_breakpoints_from_function (canonical_nm,
                                                                     true);
@@ -857,7 +848,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     symbol_scope search_scope
       = (scope
-         ? scope : __get_current_scope__("fcn_info::fcn_info_rep::find"));
+         ? scope : __get_current_scope__ ());
 
     octave_value retval = x_builtin_find (search_scope);
 
@@ -867,7 +858,7 @@ OCTAVE_NAMESPACE_BEGIN
         // the last prompt or chdir, so try updating the load path and
         // searching again.
 
-        load_path& lp = __get_load_path__ ("fcn_info::fcn_info_rep::builtin_find");
+        load_path& lp = __get_load_path__ ();
 
         lp.update ();
 
@@ -1017,8 +1008,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (! autoload_function.is_defined ())
       {
-        tree_evaluator& tw
-          = __get_evaluator__ ("fcn_info::fcn_info_rep::x_builtin_find");
+        tree_evaluator& tw = __get_evaluator__ ();
 
         std::string file_name = tw.lookup_autoload (name);
 
@@ -1051,8 +1041,7 @@ OCTAVE_NAMESPACE_BEGIN
       {
         std::string dir_name;
 
-        load_path& lp
-          = __get_load_path__ ("fcn_info::fcn_info_rep::find_user_function");
+        load_path& lp = __get_load_path__ ();
 
 
         std::string file_name = lp.find_fcn (name, dir_name, package_name);
@@ -1079,8 +1068,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     if (package.is_undefined ())
       {
-        cdef_manager& cdm
-          = __get_cdef_manager__ ("fcn_info::fcn_info_rep::find_package");
+        cdef_manager& cdm = __get_cdef_manager__ ();
 
         package = cdm.find_package_symbol (full_name ());
       }

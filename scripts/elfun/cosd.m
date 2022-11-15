@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} cosd (@var{x})
+## @deftypefn {} {@var{y} =} cosd (@var{x})
 ## Compute the cosine for each element of @var{x} in degrees.
 ##
 ## The function is more accurate than @code{cos} for large values of @var{x}

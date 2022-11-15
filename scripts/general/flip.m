@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} flip (@var{x})
-## @deftypefnx {} {} flip (@var{x}, @var{dim})
-## Return a copy of array @var{x} flipped across dimension @var{dim}.
+## @deftypefn  {} {@var{B} =} flip (@var{A})
+## @deftypefnx {} {@var{B} =} flip (@var{A}, @var{dim})
+## Return a copy of array @var{A} flipped across dimension @var{dim}.
 ##
 ## If @var{dim} is unspecified it defaults to the first non-singleton
 ## dimension.
@@ -59,14 +59,14 @@
 ## @seealso{fliplr, flipud, rot90, rotdim, permute, transpose}
 ## @end deftypefn
 
-function y = flip (x, dim)
+function B = flip (A, dim)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  nd = ndims (x);
-  sz = size (x);
+  nd = ndims (A);
+  sz = size (A);
   if (nargin == 1)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
@@ -75,8 +75,8 @@ function y = flip (x, dim)
   endif
 
   idx(1:max(nd, dim)) = {':'};
-  idx{dim} = size (x, dim):-1:1;
-  y = x(idx{:});
+  idx{dim} = size (A, dim):-1:1;
+  B = A(idx{:});
 
 endfunction
 

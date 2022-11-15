@@ -114,6 +114,7 @@ include classes/module.mk
 include colon-op/module.mk
 include ctor-vs-method/module.mk
 include fcn-handle/module.mk
+include file-encoding/module.mk
 include json/module.mk
 include jupyter-notebook/module.mk
 include local-functions/module.mk

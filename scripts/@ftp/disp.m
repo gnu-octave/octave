@@ -25,10 +25,6 @@
 
 function disp (obj)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   printf ("  FTP object\n");
   printf ("    host: %s\n", obj.host);
   printf ("    user: %s\n", obj.username);

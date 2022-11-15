@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#include <locale>
+
 #include "oct-cmplx.h"
 
 namespace octave
@@ -155,6 +157,94 @@ namespace octave
     extern OCTAVE_API unsigned int
     u8_validate (const std::string& who, std::string& in_string,
                  const u8_fallback_type type = U8_REPLACEMENT_CHAR);
+
+
+    template<class Facet>
+    struct
+    deletable_facet : Facet
+    {
+      template<class ...Args>
+      deletable_facet (Args&& ...args)
+      : Facet (std::forward<Args> (args)...)
+      { }
+
+      // destructor needs to be public
+      ~deletable_facet () {}
+    };
+
+    class
+    OCTAVE_API
+    codecvt_u8 : public std::codecvt<char, char, std::mbstate_t>
+    {
+    public:
+
+      // No copying!
+
+      codecvt_u8 (codecvt_u8 &) = delete;
+
+      codecvt_u8& operator = (codecvt_u8 &) = delete;
+
+      codecvt_u8 (const std::string &enc)
+      : m_enc (enc)
+      { }
+
+      virtual ~codecvt_u8 () { }
+
+      typedef char InternT;
+      typedef char ExternT;
+      typedef std::mbstate_t StateT;
+
+    private:
+
+      OCTAVE_API
+      typename std::codecvt<InternT, ExternT, StateT>::result
+      do_out (StateT& state,
+              const InternT* from, const InternT* from_end, const InternT*& from_next,
+              ExternT* to, ExternT* to_end, ExternT*& to_next) const;
+
+      OCTAVE_API
+      typename std::codecvt<InternT, ExternT, StateT>::result
+      do_in (StateT& state,
+             const ExternT* from, const ExternT* from_end, const ExternT*& from_next,
+             InternT* to, InternT* to_end, InternT*& to_next) const;
+
+      typename std::codecvt<InternT, ExternT, StateT>::result
+      do_unshift (StateT& /* state */, ExternT* to, ExternT* /* to_end */,
+                  ExternT*& to_next) const
+      {
+        // FIXME: What is the correct thing to unshift?
+        // Just reset?
+        to_next = to;
+
+        return std::codecvt<InternT, ExternT, StateT>::ok;
+      }
+
+      int do_encoding () const throw ()
+      {
+        // return 0 because UTF-8 encoding is variable length
+        return 0;
+      }
+
+      bool do_always_noconv () const throw ()
+      {
+        // return false to indicate non-identity conversion
+        return false;
+      }
+
+      OCTAVE_API int
+      do_length (StateT& state, const ExternT *src, const ExternT *end,
+                 std::size_t max) const;
+
+      int do_max_length() const throw ()
+      {
+        // For UTF-8, a maximum of 4 bytes are needed for one character.
+        return 4;
+      }
+
+      std::string m_enc;
+
+    };
+
   }
 }
 

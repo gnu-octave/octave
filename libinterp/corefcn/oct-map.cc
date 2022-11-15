@@ -498,8 +498,6 @@ octave_map::permute (const Array<int>& vec, bool inv) const
 octave_map
 octave_map::transpose (void) const
 {
-  assert (ndims () == 2);
-
   octave_map retval (m_keys);
 
   retval.m_dimensions = dim_vector (m_dimensions (1), m_dimensions (0));
@@ -614,7 +612,7 @@ octave_map::do_cat (int dim, octave_idx_type n,
   for (octave_idx_type j = 0; j < nf; j++)
     {
       retval.m_vals.push_back (Cell (rd));
-      assert (retval.m_vals[j].numel () == n);
+      error_unless (retval.m_vals[j].numel () == n);
       for (octave_idx_type i = 0; i < n; i++)
         retval.m_vals[j].xelem (i) = map_list[i].m_vals[j];
     }
@@ -984,7 +982,8 @@ octave_map::column (octave_idx_type k) const
 octave_map
 octave_map::page (octave_idx_type k) const
 {
-  static Array<octave::idx_vector> ia (dim_vector (3, 1), octave::idx_vector::colon);
+  static Array<octave::idx_vector> ia (dim_vector (3, 1),
+                                       octave::idx_vector::colon);
 
   ia(2) = k;
   return index (ia);
@@ -1032,7 +1031,7 @@ octave_map::assign (const octave::idx_vector& i, const octave_map& rhs)
           error (ee, "incompatible fields in struct assignment");
         }
 
-      assert (rhs1.m_keys.is_same (m_keys));
+      error_unless (rhs1.m_keys.is_same (m_keys));
       assign (i, rhs1);
     }
 }
@@ -1080,7 +1079,7 @@ octave_map::assign (const octave::idx_vector& i, const octave::idx_vector& j,
           error (ee, "incompatible fields in struct assignment");
         }
 
-      assert (rhs1.m_keys.is_same (m_keys));
+      error_unless (rhs1.m_keys.is_same (m_keys));
       assign (i, j, rhs1);
     }
 }
@@ -1128,7 +1127,7 @@ octave_map::assign (const Array<octave::idx_vector>& ia,
           error (ee, "incompatible fields in struct assignment");
         }
 
-      assert (rhs1.m_keys.is_same (m_keys));
+      error_unless (rhs1.m_keys.is_same (m_keys));
       assign (ia, rhs1);
     }
 }

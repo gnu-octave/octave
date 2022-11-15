@@ -29,7 +29,7 @@
 ## @deftypefnx {} {} clabel (@var{c}, @var{h}, "manual")
 ## @deftypefnx {} {} clabel (@var{c})
 ## @deftypefnx {} {} clabel (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {} {@var{h} =} clabel (@dots{})
+## @deftypefnx {} {@var{hlabels} =} clabel (@dots{})
 ## Add labels to the contours of a contour plot.
 ##
 ## The contour levels are specified by the contour matrix @var{c} which is
@@ -51,7 +51,7 @@
 ## determines the spacing between labels on a contour to be specified.  The
 ## default is 144 points, or 2 inches.
 ##
-## The optional return value @var{h} is a vector of graphics handles to
+## The optional return value @var{hlabels} is a vector of graphics handles to
 ## the text objects representing each label.
 ## The @qcode{"userdata"} property of the text objects contains the numerical
 ## value of the contour label.
@@ -69,7 +69,7 @@
 ## @seealso{contour, contourf, contour3, meshc, surfc, text}
 ## @end deftypefn
 
-function h = clabel (c, varargin)
+function hlabels = clabel (c, varargin)
 
   have_hg = false;
   have_labelspacing = false;
@@ -138,7 +138,7 @@ function h = clabel (c, varargin)
   endif
 
   if (nargout > 0)
-    h = htmp;
+    hlabels = htmp;
   endif
 
 endfunction

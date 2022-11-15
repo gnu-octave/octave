@@ -577,7 +577,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   template<typename X>
   static octave_value_list
-  xzip (const std::string& func_name, const octave_value_list& args)
+  xzip (const std::string& fcn_name, const octave_value_list& args)
   {
     const octave_idx_type nargin = args.length ();
     if (nargin < 1 || nargin > 2)
@@ -585,7 +585,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     const Array<std::string> source_patterns
       = args(0).xcellstr_value ("%s: FILES must be a character array or cellstr",
-                                func_name.c_str ());
+                                fcn_name.c_str ());
     if (nargin == 1)
       return octave_value (Cell (xzip<X> (source_patterns)));
     else // nargin == 2

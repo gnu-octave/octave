@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} ispref ("@var{group}", "@var{pref}")
-## @deftypefnx {} {} ispref ("@var{group}", @{"@var{pref1}", "@var{pref2"}, @dots{}@})
-## @deftypefnx {} {} ispref ("@var{group}")
+## @deftypefn  {} {@var{tf} =} ispref ("@var{group}", "@var{pref}")
+## @deftypefnx {} {@var{tf} =} ispref ("@var{group}", @{"@var{pref1}", "@var{pref2"}, @dots{}@})
+## @deftypefnx {} {@var{tf} =} ispref ("@var{group}")
 ## Return true if the named preference @var{pref} exists in the preference
 ## group @var{group}.
 ##
@@ -39,7 +39,7 @@
 ## @seealso{getpref, addpref, setpref, rmpref}
 ## @end deftypefn
 
-function retval = ispref (group, pref = "")
+function tf = ispref (group, pref = "")
 
   if (nargin == 0)
     print_usage ();
@@ -53,16 +53,16 @@ function retval = ispref (group, pref = "")
   endif
 
   if (nargin == 1)
-    retval = isfield (loadprefs (), group);
+    tf = isfield (loadprefs (), group);
   else
     prefs = loadprefs ();
     if (isfield (prefs, group))
-      retval = isfield (prefs.(group), pref);
+      tf = isfield (prefs.(group), pref);
     else
       if (ischar (pref))
-        retval = false;
+        tf = false;
       else
-        retval = false (size (pref));
+        tf = false (size (pref));
       endif
     endif
   endif

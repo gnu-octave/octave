@@ -534,25 +534,25 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! assert (eigs (A, k, 4.1), eigs (A, speye (n), k, 4.1), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A * x;
+%! fcn = @(x) A * x;
 %! opts.issym = 1;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, "lm", opts);
+%! d1 = eigs (fcn, n, k, "lm", opts);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A \ x;
+%! fcn = @(x) A \ x;
 %! opts.issym = 1;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, "sm", opts);
+%! d1 = eigs (fcn, n, k, "sm", opts);
 %! assert (d1, d0(k:-1:1), 1e-11);
 %!testif HAVE_ARPACK, HAVE_UMFPACK
-%! fn = @(x) (A - 4.1 * eye (n)) \ x;
+%! fcn = @(x) (A - 4.1 * eye (n)) \ x;
 %! opts.issym = 1;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, 4.1, opts);
+%! d1 = eigs (fcn, n, k, 4.1, opts);
 %! assert (d1, eigs (A, k, 4.1), 1e-11);
 %!testif HAVE_ARPACK, HAVE_UMFPACK, HAVE_CHOLMOD
 %! AA = speye (10);
-%! fn = @(x) AA * x;
+%! fcn = @(x) AA * x;
 %! opts.issym = 1;  opts.isreal = 1;
-%! assert (eigs (fn, 10, AA, 3, "lm", opts), [1; 1; 1], 10*eps);
+%! assert (eigs (fcn, 10, AA, 3, "lm", opts), [1; 1; 1], 10*eps);
 %!testif HAVE_ARPACK
 %! [v1,d1] = eigs (A, k, "lm");
 %! d1 = diag (d1);
@@ -662,19 +662,19 @@ endfunction
 %! assert (sort (imag (eigs (A, k, 4.1))),
 %!         sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A * x;
+%! fcn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, "lm", opts);
+%! d1 = eigs (fcn, n, k, "lm", opts);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A \ x;
+%! fcn = @(x) A \ x;
 %! opts.issym = 0;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, "sm", opts);
+%! d1 = eigs (fcn, n, k, "sm", opts);
 %! assert (abs (d1), d0(1:k), 1e-11);
 %!testif HAVE_ARPACK, HAVE_UMFPACK
-%! fn = @(x) (A - 4.1 * eye (n)) \ x;
+%! fcn = @(x) (A - 4.1 * eye (n)) \ x;
 %! opts.issym = 0;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, 4.1, opts);
+%! d1 = eigs (fcn, n, k, 4.1, opts);
 %! assert (abs (d1), eigs (A, k, 4.1), 1e-11);
 %!testif HAVE_ARPACK
 %! [v1,d1] = eigs (A, k, "lm");
@@ -794,19 +794,19 @@ endfunction
 %! assert (sort (imag (eigs (A, k, 4.1))),
 %!         sort (imag (eigs (A, speye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A * x;
+%! fcn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 0;
-%! d1 = eigs (fn, n, k, "lm", opts);
+%! d1 = eigs (fcn, n, k, "lm", opts);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A \ x;
+%! fcn = @(x) A \ x;
 %! opts.issym = 0;  opts.isreal = 0;
-%! d1 = eigs (fn, n, k, "sm", opts);
+%! d1 = eigs (fcn, n, k, "sm", opts);
 %! assert (abs (d1), d0(1:k), 1e-11);
 %!testif HAVE_ARPACK, HAVE_UMFPACK
-%! fn = @(x) (A - 4.1 * eye (n)) \ x;
+%! fcn = @(x) (A - 4.1 * eye (n)) \ x;
 %! opts.issym = 0;  opts.isreal = 0;
-%! d1 = eigs (fn, n, k, 4.1, opts);
+%! d1 = eigs (fcn, n, k, 4.1, opts);
 %! assert (abs (d1), eigs (A, k, 4.1), 1e-11);
 %!testif HAVE_ARPACK
 %! [v1,d1] = eigs (A, k, "lm");
@@ -1033,19 +1033,19 @@ endfunction
 %!testif HAVE_ARPACK
 %! assert (eigs (A, k, 4.1), eigs (A, eye (n), k, 4.1), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A * x;
+%! fcn = @(x) A * x;
 %! opts.issym = 1;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, "lm", opts);
+%! d1 = eigs (fcn, n, k, "lm", opts);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A \ x;
+%! fcn = @(x) A \ x;
 %! opts.issym = 1;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, "sm", opts);
+%! d1 = eigs (fcn, n, k, "sm", opts);
 %! assert (d1, d0(k:-1:1), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) (A - 4.1 * eye (n)) \ x;
+%! fcn = @(x) (A - 4.1 * eye (n)) \ x;
 %! opts.issym = 1;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, 4.1, opts);
+%! d1 = eigs (fcn, n, k, 4.1, opts);
 %! assert (d1, eigs (A, k, 4.1), 1e-11);
 %!testif HAVE_ARPACK
 %! [v1,d1] = eigs (A, k, "lm");
@@ -1156,19 +1156,19 @@ endfunction
 %! assert (sort (imag (eigs (A, k, 4.1))),
 %!         sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A * x;
+%! fcn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, "lm", opts);
+%! d1 = eigs (fcn, n, k, "lm", opts);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A \ x;
+%! fcn = @(x) A \ x;
 %! opts.issym = 0;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, "sm", opts);
+%! d1 = eigs (fcn, n, k, "sm", opts);
 %! assert (abs (d1), d0(1:k), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) (A - 4.1 * eye (n)) \ x;
+%! fcn = @(x) (A - 4.1 * eye (n)) \ x;
 %! opts.issym = 0;  opts.isreal = 1;
-%! d1 = eigs (fn, n, k, 4.1, opts);
+%! d1 = eigs (fcn, n, k, 4.1, opts);
 %! assert (abs (d1), eigs (A, k, 4.1), 1e-11);
 %!testif HAVE_ARPACK
 %! [v1,d1] = eigs (A, k, "lm");
@@ -1287,19 +1287,19 @@ endfunction
 %! assert (sort (imag (eigs (A, k, 4.1))),
 %!         sort (imag (eigs (A, eye (n), k, 4.1))), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A * x;
+%! fcn = @(x) A * x;
 %! opts.issym = 0;  opts.isreal = 0;
-%! d1 = eigs (fn, n, k, "lm", opts);
+%! d1 = eigs (fcn, n, k, "lm", opts);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) A \ x;
+%! fcn = @(x) A \ x;
 %! opts.issym = 0;  opts.isreal = 0;
-%! d1 = eigs (fn, n, k, "sm", opts);
+%! d1 = eigs (fcn, n, k, "sm", opts);
 %! assert (abs (d1), d0(1:k), 1e-11);
 %!testif HAVE_ARPACK
-%! fn = @(x) (A - 4.1 * eye (n)) \ x;
+%! fcn = @(x) (A - 4.1 * eye (n)) \ x;
 %! opts.issym = 0;  opts.isreal = 0;
-%! d1 = eigs (fn, n, k, 4.1, opts);
+%! d1 = eigs (fcn, n, k, 4.1, opts);
 %! assert (abs (d1), eigs (A, k, 4.1), 1e-11);
 %!testif HAVE_ARPACK
 %! [v1,d1] = eigs (A, k, "lm");
@@ -1452,12 +1452,12 @@ endfunction
 %!testif HAVE_ARPACK
 %! A = toeplitz ([-2, 1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
-%! Afun = @(x) A * x;
+%! Afcn = @(x) A * x;
 %! opts.v0 = (1:100)';
 %! opts.maxit = 3;
 %! opts.issym = true;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
-%! d = eigs (Afun, 100, 4, "sm", opts);
+%! d = eigs (Afcn, 100, 4, "sm", opts);
 %! assert (d(3:4), [NaN; NaN]);
 %!testif HAVE_ARPACK
 %! A = toeplitz ([-2, 1, zeros(1, 8)]);
@@ -1510,11 +1510,11 @@ endfunction
 %!testif HAVE_ARPACK
 %! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
-%! Afun = @(x) A * x;
+%! Afcn = @(x) A * x;
 %! opts.v0 = (1:100)';
 %! opts.maxit = 4;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
-%! d = eigs (Afun, 100, 4, "lm", opts);
+%! d = eigs (Afcn, 100, 4, "lm", opts);
 %! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN]);
 %!testif HAVE_ARPACK
 %! A = 1i * magic (100);
@@ -1532,12 +1532,12 @@ endfunction
 %! assert (d(9:10), [NaN+1i*NaN; NaN+1i*NaN]);
 %!testif HAVE_ARPACK
 %! A = 1i * magic (100);
-%! Afun = @(x) A * x;
+%! Afcn = @(x) A * x;
 %! opts.v0 = (1:100)';
 %! opts.maxit = 1;
 %! opts.isreal = false;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
-%! d = eigs (Afun, 100, 6, "lm", opts);
+%! d = eigs (Afcn, 100, 6, "lm", opts);
 %! assert (d(6), NaN+1i*NaN);
 %!testif HAVE_ARPACK, HAVE_CHOLMOD
 %! A = sparse (magic (10));
@@ -1567,8 +1567,8 @@ endfunction
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
-%! Afun = @(x) A * x;
-%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "LM", opts);
+%! Afcn = @(x) A * x;
+%! [Evector_f Evalues_f] = eigs (Afcn, 10, B, 4, "LM", opts);
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
@@ -1579,8 +1579,8 @@ endfunction
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
 %! [L, U, P] = lu (A);
-%! Afun = @(x) U \ (L \ (P * x));
-%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
+%! Afcn = @(x) U \ (L \ (P * x));
+%! [Evector_f Evalues_f] = eigs (Afcn, 10, B, 4, "SM", opts);
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
@@ -1591,9 +1591,9 @@ endfunction
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
-%! Afun = @(x) A * x;
+%! Afcn = @(x) A * x;
 %! opts.issym = true;
-%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "LM", opts);
+%! [Evector_f Evalues_f] = eigs (Afcn, 10, B, 4, "LM", opts);
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
@@ -1605,9 +1605,9 @@ endfunction
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
 %! [L, U, P] = lu (A);
-%! Afun = @(x) U \ (L \ (P * x));
+%! Afcn = @(x) U \ (L \ (P * x));
 %! opts.issym = true;
-%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
+%! [Evector_f Evalues_f] = eigs (Afcn, 10, B, 4, "SM", opts);
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
@@ -1617,9 +1617,9 @@ endfunction
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
-%! Afun = @(x) A * x;
+%! Afcn = @(x) A * x;
 %! opts.isreal = false;
-%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "LM", opts);
+%! [Evector_f Evalues_f] = eigs (Afcn, 10, B, 4, "LM", opts);
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
@@ -1630,9 +1630,9 @@ endfunction
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
 %! [L, U, P] = lu (A);
-%! Afun = @(x) U \ (L \ (P *x));
+%! Afcn = @(x) U \ (L \ (P *x));
 %! opts.isreal = false;
-%! [Evector_f, Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
+%! [Evector_f, Evalues_f] = eigs (Afcn, 10, B, 4, "SM", opts);
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 

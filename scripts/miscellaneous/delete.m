@@ -24,7 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} delete (@var{file})
+## @deftypefn  {} {} delete @var{file}
+## @deftypefnx {} {} delete @var{file1} @var{file2} @dots{}
+## @deftypefnx {} {} delete (@var{file})
 ## @deftypefnx {} {} delete (@var{file1}, @var{file2}, @dots{})
 ## @deftypefnx {} {} delete (@var{handle})
 ## Delete the named file or graphics handle.

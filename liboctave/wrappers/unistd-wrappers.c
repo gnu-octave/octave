@@ -380,8 +380,16 @@ octave_unlink_wrapper (const char *nm)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
   wchar_t *wnm = u8_to_wchar (nm);
+
+  // _wunlink fails on files with the read-only flag set. Try to un-set it.
+  DWORD file_attributes = GetFileAttributesW (wnm);
+  if (file_attributes != INVALID_FILE_ATTRIBUTES
+      && file_attributes & FILE_ATTRIBUTE_READONLY)
+    SetFileAttributesW (wnm, file_attributes & ~FILE_ATTRIBUTE_READONLY);
+
   int status = _wunlink (wnm);
   free ((void *) wnm);
+
   return status;
 #else
   return unlink (nm);

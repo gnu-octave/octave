@@ -51,9 +51,16 @@ namespace octave
 
   // FIXME: This is not ideal, but it avoids including
   // interpreter-private.h here and bringing in a lot of unnecessary
-  // symbols that require even more header files.
+  // symbols that require even more header files.  Since the typeinfo
+  // object is required to load a user-defined octave_value object,
+  // maybe this function should be declared in a public header file?
 
-  extern OCTINTERP_API type_info& __get_type_info__ (const std::string&);
+  extern OCTINTERP_API type_info& __get_type_info__ (void);
+
+  // For now just preserve the old interface and don't mark it as deprecated.
+  // This function is currently an internal, private function.  Additional
+  // changes may be made before version 8 is finally released.
+  inline type_info& __get_type_info__ (const std::string&) { return __get_type_info__ (); }
 }
 
 class Cell;
@@ -205,8 +212,7 @@ DEF_BTYP_TRAITS (btyp_char, char);
   tspec const std::string t::c_name (c);                                \
   tspec void t::register_type (void)                                    \
   {                                                                     \
-    octave::type_info& type_info                                        \
-      = octave::__get_type_info__ (#t "::register_type");               \
+    octave::type_info& type_info = octave::__get_type_info__ ();        \
                                                                         \
     register_type (type_info);                                          \
   }                                                                     \
@@ -302,7 +308,8 @@ public:
   virtual octave_value as_uint32 (void) const;
   virtual octave_value as_uint64 (void) const;
 
-  virtual octave_base_value * try_narrowing_conversion (void) { return nullptr; }
+  virtual octave_base_value * try_narrowing_conversion (void)
+  { return nullptr; }
 
   virtual void maybe_economize (void) { }
 
@@ -663,6 +670,8 @@ public:
 
   virtual string_vector map_keys (void) const;
 
+  virtual bool isfield (const std::string&) const;
+
   virtual std::size_t nparents (void) const;
 
   virtual std::list<std::string> parent_class_name_list (void) const;
@@ -942,8 +951,7 @@ private:
   octave::auto_shlib m_containing_dynamic_library;
 };
 
-// TRUE means to perform automatic sparse to real mutation if there
-// is memory to be saved
+OCTAVE_DEPRECATED (8, "Vsparse_auto_mutate is obsolete and is now always false")
 extern OCTINTERP_API bool Vsparse_auto_mutate;
 
 // Utility function to convert C++ arguments used in subsref/subsasgn into an

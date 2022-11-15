@@ -94,7 +94,6 @@ namespace octave
       m_in_sel (false), m_sel_beg (-1), m_sel_end (-1)
   {
     setWindowTitle (tr ("Editor: Find and Replace"));
-    setWindowIcon (QIcon (":/actions/icons/find.png"));
 
     m_search_label = new QLabel (tr ("Find &what:"));
     m_search_line_edit = new QComboBox (this);

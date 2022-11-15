@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __ghostscript__ (@var{@dots{}})
+## @deftypefn {} {[@var{gs_cmd}, @var{cleanup_cmd}] =} __ghostscript__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 

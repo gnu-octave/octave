@@ -148,8 +148,7 @@ octave_float_complex_diag_matrix::map (unary_mapper_t umap) const
       return ::imag (m_matrix);
     case umap_sqrt:
       {
-        FloatComplexColumnVector tmp = m_matrix.extract_diag ().map<FloatComplex>
-                                       (std::sqrt);
+        FloatComplexColumnVector tmp = m_matrix.extract_diag ().map<FloatComplex> (std::sqrt);
         FloatComplexDiagMatrix retval (tmp);
         retval.resize (m_matrix.rows (), m_matrix.columns ());
         return retval;

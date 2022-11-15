@@ -32,14 +32,15 @@
 // Instantiate Arrays of void *.
 
 #include "Array.h"
-#include "Array.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.
 
-extern template class Array<octave::idx_vector>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API Array<octave::idx_vector>;
 extern template class Array<octave_idx_type>;
+
+#include "Array-base.cc"
 
 NO_INSTANTIATE_ARRAY_SORT_API (void *, OCTAVE_API);
 
-INSTANTIATE_ARRAY (void *, OCTAVE_API);
+INSTANTIATE_ARRAY (void *, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);

@@ -34,6 +34,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QFontDatabase>
 #include <QHelpContentWidget>
 #include <QHelpIndexWidget>
 #if defined (HAVE_NEW_QHELPINDEXWIDGET_API) \
@@ -96,7 +97,7 @@ namespace octave
     m_help_engine->setProperty ("_q_readonly",
                                 QVariant::fromValue<bool> (true));
 
-    QString tmpdir = QDir::tempPath();
+    QString tmpdir = QString::fromStdString (sys::env::get_temp_directory ());
     m_collection
       = QString::fromStdString (sys::tempnam (tmpdir.toStdString (),
                                               "oct-qhelp-"));
@@ -417,13 +418,13 @@ namespace octave
     // Zoom
     m_tool_bar->addSeparator ();
     m_action_zoom_in
-      = add_action (rmgr.icon ("zoom-in"), tr ("Zoom in"),
+      = add_action (rmgr.icon ("view-zoom-in"), tr ("Zoom in"),
                     SLOT (zoom_in (void)), m_doc_browser, m_tool_bar);
     m_action_zoom_out
-      = add_action (rmgr.icon ("zoom-out"), tr ("Zoom out"),
+      = add_action (rmgr.icon ("view-zoom-out"), tr ("Zoom out"),
                     SLOT (zoom_out (void)), m_doc_browser, m_tool_bar);
     m_action_zoom_original
-      = add_action (rmgr.icon ("zoom-original"), tr ("Zoom original"),
+      = add_action (rmgr.icon ("view-zoom-original"), tr ("Zoom original"),
                     SLOT (zoom_original (void)), m_doc_browser, m_tool_bar);
 
     // Bookmarks (connect slots later)
@@ -995,6 +996,40 @@ namespace octave
     setOpenLinks (false);
     connect (this, &documentation_browser::anchorClicked,
              this, [=] (const QUrl& url) { handle_index_clicked (url); });
+
+    // Make sure we have access to one of the monospace fonts listed in
+    // octave.css for rendering formated code blocks
+    QStringList fonts = {"Fantasque Sans Mono", "FreeMono", "Courier New",
+                         "Cousine", "Courier"};
+
+    bool load_default_font = true;
+
+    for (int i = 0; i < fonts.size (); ++i)
+      {
+        QFont font (fonts.at (i));
+        if (font.exactMatch ())
+          {
+            load_default_font = false;
+            break;
+          }
+      }
+
+    if (load_default_font)
+      {
+        QString fonts_dir =
+          QString::fromStdString (sys::env::getenv ("OCTAVE_FONTS_DIR")
+                                  + sys::file_ops::dir_sep_str ());
+
+        QStringList default_fonts = {"FreeMono", "FreeMonoBold",
+                                     "FreeMonoBoldOblique", "FreeMonoOblique"};
+
+        for (int i = 0; i < default_fonts.size (); ++i)
+          {
+            QString fontpath =
+              fonts_dir + default_fonts.at(i) + QString (".otf");
+            QFontDatabase::addApplicationFont (fontpath);
+          }
+      }
   }
 
   void documentation_browser::handle_index_clicked (const QUrl& url,

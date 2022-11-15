@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt}, @var{err_on_invalid})
+## @deftypefn {} {[@var{options}, @var{valid}] =} __pltopt__ (@var{caller}, @var{opt}, @var{err_on_invalid})
 ##
 ## Decode plot option strings.
 ##

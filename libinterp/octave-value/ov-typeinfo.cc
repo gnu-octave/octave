@@ -645,7 +645,8 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_scalar_map retval;
 
-    int len = std::min (static_cast<int> (m_binary_ops.columns ()), m_num_types);
+    int len = std::min (static_cast<int> (m_binary_ops.columns ()),
+                        m_num_types);
 
     dim_vector tab_dims (len, len);
 
@@ -697,7 +698,8 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_scalar_map retval;
 
-    int len = std::min (static_cast<int> (m_assign_ops.columns ()), m_num_types);
+    int len = std::min (static_cast<int> (m_assign_ops.columns ()),
+                        m_num_types);
 
     dim_vector tab_dims (len, len);
 
@@ -722,7 +724,8 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_scalar_map retval;
 
-    int len = std::min (static_cast<int> (m_assignany_ops.columns ()), m_num_types);
+    int len = std::min (static_cast<int> (m_assignany_ops.columns ()),
+                        m_num_types);
 
     dim_vector tab_dims (1, len);
 
@@ -767,32 +770,28 @@ namespace octave_value_typeinfo
   int register_type (const std::string& t_name, const std::string& c_name,
                      const octave_value& val)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("register_type");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.register_type (t_name, c_name, val);
   }
 
   octave_value lookup_type (const std::string& nm)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_type");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_type (nm);
   }
 
   unary_class_op_fcn lookup_unary_class_op (octave_value::unary_op op)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_unary_class_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_unary_class_op (op);
   }
 
   unary_op_fcn lookup_unary_op (octave_value::unary_op op, int t)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_unary_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_unary_op (op, t);
   }
@@ -800,8 +799,7 @@ namespace octave_value_typeinfo
   non_const_unary_op_fcn
   lookup_non_const_unary_op (octave_value::unary_op op, int t)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_non_const_unary_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_non_const_unary_op (op, t);
   }
@@ -809,8 +807,7 @@ namespace octave_value_typeinfo
   binary_class_op_fcn
   lookup_binary_class_op (octave_value::binary_op op)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_binary_class_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_binary_class_op (op);
   }
@@ -818,8 +815,7 @@ namespace octave_value_typeinfo
   binary_op_fcn
   lookup_binary_op (octave_value::binary_op op, int t1, int t2)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_binary_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_binary_op (op, t1, t2);
   }
@@ -827,8 +823,7 @@ namespace octave_value_typeinfo
   binary_class_op_fcn
   lookup_binary_class_op (octave_value::compound_binary_op op)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_binary_class_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_binary_class_op (op);
   }
@@ -836,16 +831,14 @@ namespace octave_value_typeinfo
   binary_op_fcn
   lookup_binary_op (octave_value::compound_binary_op op, int t1, int t2)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_binary_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_binary_op (op, t1, t2);
   }
 
   cat_op_fcn lookup_cat_op (int t1, int t2)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_cat_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_cat_op (t1, t2);
   }
@@ -853,8 +846,7 @@ namespace octave_value_typeinfo
   assign_op_fcn
   lookup_assign_op (octave_value::assign_op op, int t_lhs, int t_rhs)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_assign_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_assign_op (op, t_lhs, t_rhs);
   }
@@ -862,16 +854,14 @@ namespace octave_value_typeinfo
   assignany_op_fcn
   lookup_assignany_op (octave_value::assign_op op, int t_lhs)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_assignany_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_assignany_op (op, t_lhs);
   }
 
   int lookup_pref_assign_conv (int t_lhs, int t_rhs)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_pref_assign_conv");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_pref_assign_conv (t_lhs, t_rhs);
   }
@@ -879,24 +869,21 @@ namespace octave_value_typeinfo
   octave_base_value::type_conv_fcn
   lookup_widening_op (int t, int t_result)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("lookup_widening_op");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.lookup_widening_op (t, t_result);
   }
 
   string_vector installed_type_names (void)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("installed_type_names");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.installed_type_names ();
   }
 
   octave_scalar_map installed_type_info (void)
   {
-    octave::type_info& type_info
-      = octave::__get_type_info__ ("installed_type_info");
+    octave::type_info& type_info = octave::__get_type_info__ ();
 
     return type_info.installed_type_info ();
   }
@@ -906,8 +893,8 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (typeinfo, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} typeinfo ()
-@deftypefnx {} {} typeinfo (@var{expr})
+@deftypefn  {} {@var{typestr} =} typeinfo (@var{expr})
+@deftypefnx {} {@var{cstr} =} typeinfo ()
 
 Return the type of the expression @var{expr}, as a string.
 

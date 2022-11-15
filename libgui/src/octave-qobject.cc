@@ -40,7 +40,9 @@
 // QTerminal includes
 #include "QTerminal.h"
 
-#include "command-widget.h"
+#if defined (HAVE_QSCINTILLA)
+#  include "command-widget.h"
+#endif
 #include "community-news.h"
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
@@ -313,6 +315,7 @@ namespace octave
 
             // After settings.
             config_translators ();
+            m_resource_manager.config_icon_theme ();
 
             // Initilize the shortcut-manager
             m_shortcut_manager.init_data ();
@@ -460,6 +463,7 @@ namespace octave
           = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw, *this));
         if (experimental_terminal_widget ())
           {
+#if defined (HAVE_QSCINTILLA)
             command_widget *cmd_widget
               = m_terminal_widget->get_command_widget ();
 
@@ -473,12 +477,16 @@ namespace octave
                      this, &base_qobject::interpreter_stop);
 
             connect (qt_link (), &qt_interpreter_events::interpreter_output_signal,
-                     m_terminal_widget, &terminal_dock_widget::interpreter_output);
+                     m_terminal_widget, &terminal_dock_widget::interpreter_output_signal);
 
             connect (qt_link (), &qt_interpreter_events::update_prompt_signal,
-                     m_terminal_widget, &terminal_dock_widget::update_prompt);
+                     m_terminal_widget, &terminal_dock_widget::update_prompt_signal);
+
+            connect (qt_link (), &qt_interpreter_events::new_command_line_signal,
+                     m_terminal_widget, &terminal_dock_widget::new_command_line_signal);
 
             connect_interpreter_events (cmd_widget);
+#endif
           }
         else
           {
@@ -731,7 +739,7 @@ namespace octave
   QPointer<release_notes> base_qobject::release_notes_widget (void)
   {
     if (! m_release_notes)
-      m_release_notes = QPointer<release_notes> (new release_notes ());
+      m_release_notes = QPointer<release_notes> (new release_notes (*this));
 
     return m_release_notes;
   }

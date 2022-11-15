@@ -30,8 +30,6 @@
 #include <list>
 #include <sstream>
 
-#include <pcre.h>
-
 #include "base-list.h"
 #include "oct-locbuf.h"
 #include "quit.h"
@@ -1128,8 +1126,10 @@ size) with successive @code{regexp} searches.
 %! assert (isempty (fieldnames (nm)));
 %! assert (sp, { "", "", "A", "", "E", "" });
 
-%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'), {6;[1,5,9];zeros(1,0)})
-%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
+%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'),
+%!        {6;[1,5,9];zeros(1,0)})
+%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}),
+%!        {6;[3,7];[1,9]})
 %!assert (regexp ('Strings', {'t','s'}), {2, 7})
 
 ## Test case for lookaround operators
@@ -1197,6 +1197,12 @@ size) with successive @code{regexp} searches.
 %! assert (regexp ('foo!+bar', '.\>'), [3, 4, 8]);
 %! assert (regexp ('foo!+bar\nbar!+foo', '.\>'), [3, 4, 8, 13, 14, 18]);
 %! assert (regexp ('foo!+bar\nbar!+foo', '\<\w'), [1, 6, 10, 16]);
+
+## Test "incomplete" named patterns
+%!assert <*62705> (regexpi ('<', '\(?<'), 1)
+%!assert <*62705> (regexpi ('<n>', '\(?<n\>'), 1)
+%!assert <*62705> (regexpi ('<n>', '\(?<n\>\)?'), 1)
+%!assert <62705> (regexpi ('<n>a', '\(?<n\>a\)?'), 1)
 
 ## Test input validation
 %!error regexp ('string', 'tri', 'BadArg')
@@ -1352,9 +1358,12 @@ pattern.
 %!error regexpi ('string', 'tri', 'BadArg')
 %!error regexpi ('string')
 
-%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'), {6;[1,5,9];zeros(1, 0)})
-%!assert (regexpi ({'asdfg-dfd', '-dfd-dfd-', 'qasfdfdaq'}, '-'), {6, [1,5,9], zeros(1,0)})
-%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
+%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'),
+%!        {6;[1,5,9];zeros(1, 0)})
+%!assert (regexpi ({'asdfg-dfd', '-dfd-dfd-', 'qasfdfdaq'}, '-'),
+%!        {6, [1,5,9], zeros(1,0)})
+%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}),
+%!        {6;[3,7];[1,9]})
 %!assert (regexpi ('Strings', {'t', 's'}), {2, [1, 7]})
 
 %!assert (regexpi ("\n", '\n'), 1)
@@ -1589,7 +1598,8 @@ function.
 
 ## Empty matches were broken on ARM architecture
 %!test <*52810>
-%! assert (strcmp (regexprep ("\nabc", "^(\t*)(abc)$", "$1$2", "lineanchors"), "\nabc"))
+%! assert (strcmp (regexprep ("\nabc", "^(\t*)(abc)$", "$1$2", "lineanchors"),
+%!                 "\nabc"));
 */
 
 OCTAVE_NAMESPACE_END

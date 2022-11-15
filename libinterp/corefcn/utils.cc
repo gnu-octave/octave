@@ -48,6 +48,7 @@
 #include "pathsearch.h"
 #include "quit.h"
 #include "str-vec.h"
+#include "strcase-wrappers.h"
 #include "vasprintf-wrapper.h"
 
 #include "Cell.h"
@@ -93,7 +94,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (isvarname, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isvarname (@var{name})
+@deftypefn {} {@var{tf} =} isvarname (@var{name})
 Return true if @var{name} is a valid variable name.
 
 A valid variable name is composed of letters, digits, and underscores ("_"),
@@ -614,8 +615,8 @@ If no files are found, return an empty cell array.
 
 DEFUN (file_in_path, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} file_in_path (@var{path}, @var{file})
-@deftypefnx {} {} file_in_path (@var{path}, @var{file}, "all")
+@deftypefn  {} {@var{fname} =} file_in_path (@var{path}, @var{file})
+@deftypefnx {} {@var{fname} =} file_in_path (@var{path}, @var{file}, "all")
 Return the absolute name of @var{file} if it can be found in @var{path}.
 
 The value of @var{path} should be a colon-separated list of directories in
@@ -692,7 +693,7 @@ If no files are found, return an empty cell array.
     if (! suffix.empty ())
       nm.append (suffix);
 
-    load_path& lp = __get_load_path__ ("file_in_path");
+    load_path& lp = __get_load_path__ ();
 
     return sys::env::make_absolute (lp.find_file (nm));
   }
@@ -716,7 +717,7 @@ If no files are found, return an empty cell array.
 
         if (! local_file_ok)
           {
-            load_path& lp = __get_load_path__ ("find_data_file_in_load_path");
+            load_path& lp = __get_load_path__ ();
 
             // Not directly found; search load path.
             std::string tmp = sys::env::make_absolute (lp.find_file (fname));
@@ -753,7 +754,7 @@ If no files are found, return an empty cell array.
           }
         else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
           {
-            load_path& lp = __get_load_path__ ("fcn_file_in_path");
+            load_path& lp = __get_load_path__ ();
 
             retval = lp.find_fcn_file (name.substr (0, len-2));
           }
@@ -764,7 +765,7 @@ If no files are found, return an empty cell array.
             if (pos != std::string::npos)
               fname = name.substr (0, pos);
 
-            load_path& lp = __get_load_path__ ("fcn_file_in_path");
+            load_path& lp = __get_load_path__ ();
 
             retval = lp.find_fcn_file (fname);
           }
@@ -782,7 +783,7 @@ If no files are found, return an empty cell array.
 
     if (! dir.empty ())
       {
-        load_path& lp = __get_load_path__ ("contents_file_in_path");
+        load_path& lp = __get_load_path__ ();
 
         std::string tcontents
           = sys::file_ops::concat (lp.find_dir (dir), "Contents.m");
@@ -925,7 +926,7 @@ If no files are found, return an empty cell array.
 
 DEFUN (do_string_escapes, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} do_string_escapes (@var{string})
+@deftypefn {} {@var{newstr} =} do_string_escapes (@var{string})
 Convert escape sequences in @var{string} to the characters they represent.
 
 Escape sequences begin with a leading backslash
@@ -1038,13 +1039,13 @@ Escape sequences begin with a leading backslash
 
 DEFUN (undo_string_escapes, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} undo_string_escapes (@var{s})
-Convert special characters in strings back to their escaped forms.
+@deftypefn {} {@var{newstr} =} undo_string_escapes (@var{string})
+Convert special characters in @var{string} back to their escaped forms.
 
 For example, the expression
 
 @example
-bell = "\a";
+@var{bell} = "\a";
 @end example
 
 @noindent
@@ -1070,7 +1071,7 @@ replaces the unprintable alert character with its printable representation.
   if (args.length () != 1)
     print_usage ();
 
-  std::string str = args(0).xstring_value ("undo_string_escapes: S argument must be a string");
+  std::string str = args(0).xstring_value ("undo_string_escapes: STRING argument must be a string");
 
   return ovl (undo_string_escapes (str));
 }
@@ -1099,7 +1100,7 @@ replaces the unprintable alert character with its printable representation.
 
 DEFUN (is_absolute_filename, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_absolute_filename (@var{file})
+@deftypefn {} {@var{tf} =} is_absolute_filename (@var{file})
 Return true if @var{file} is an absolute filename.
 @seealso{is_rooted_relative_filename, make_absolute_filename, isfolder}
 @end deftypefn */)
@@ -1120,7 +1121,7 @@ Return true if @var{file} is an absolute filename.
 
 DEFUN (is_rooted_relative_filename, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_rooted_relative_filename (@var{file})
+@deftypefn {} {@var{tf} =} is_rooted_relative_filename (@var{file})
 Return true if @var{file} is a rooted-relative filename.
 @seealso{is_absolute_filename, make_absolute_filename, isfolder}
 @end deftypefn */)
@@ -1141,9 +1142,8 @@ Return true if @var{file} is a rooted-relative filename.
 
 DEFUN (make_absolute_filename, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} make_absolute_filename (@var{file})
-Return the full name of @var{file} beginning from the root of the file
-system.
+@deftypefn {} {@var{abs_fname} =} make_absolute_filename (@var{file})
+Return the full name of @var{file} beginning from the root of the file system.
 
 No check is done for the existence of @var{file}.  No tilde expansion of
 @var{file} is performed.
@@ -1288,7 +1288,7 @@ a recognized error code then -1 is returned.
 
 DEFUN (errno_list, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} errno_list ()
+@deftypefn {} {@var{S} =} errno_list ()
 Return a structure containing the system-dependent errno values.
 @seealso{errno}
 @end deftypefn */)
@@ -1339,10 +1339,9 @@ Return a structure containing the system-dependent errno values.
   void get_dimensions (const octave_value& a, const char *warn_for,
                        dim_vector& dim)
   {
-    // We support dimensions to be specified by any vector, even if it's a
-    // vector of dimensions 0x1, 1x0, 1x1x0, or 1x1x6.  If the vector ends
-    // up being empty, the final dimensions end up being 0x0.
-    if (! a.dims ().isvector ())
+    // We support dimensions to be specified by a vector, even if it's empty.
+    // If the vector is empty, the final dimensions end up being 0x0.
+    if (! a.dims ().isvector () && a.dims ().numel () != 0)
       error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
 
     const Array<octave_idx_type> v = a.octave_idx_type_vector_value (true);
@@ -1491,33 +1490,6 @@ Return a structure containing the system-dependent errno values.
     return s.length ();
   }
 
-  std::size_t format (std::ostream& os, const std::string& enc, const char *fmt, ...)
-  {
-    std::size_t retval;
-
-    va_list args;
-    va_start (args, fmt);
-
-    retval = vformat (os, enc, fmt, args);
-
-    va_end (args);
-
-    return retval;
-  }
-
-  std::size_t vformat (std::ostream& os, const std::string& enc, const char *fmt,
-                  va_list args)
-  {
-    std::string s = vasprintf (fmt, args);
-
-    if (enc.compare ("utf-8"))
-      os << string::u8_to_encoding ("printf", s, enc);
-    else
-      os << s;
-
-    return s.length ();
-  }
-
   std::string vasprintf (const char *fmt, va_list args)
   {
     std::string retval;
@@ -1562,7 +1534,7 @@ Return a structure containing the system-dependent errno values.
     // Allow free access to graphics resources while the interpreter thread
     // is asleep
 
-    gh_manager& gh_mgr = __get_gh_manager__ ("sleep");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     if (do_graphics_events)
       gh_mgr.unlock ();
@@ -1628,8 +1600,8 @@ Return a structure containing the system-dependent errno values.
 
 DEFMETHOD (isindex, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} isindex (@var{ind})
-@deftypefnx {} {} isindex (@var{ind}, @var{n})
+@deftypefn  {} {@var{tf} =} isindex (@var{ind})
+@deftypefnx {} {@var{tf} =} isindex (@var{ind}, @var{n})
 Return true if @var{ind} is a valid index.
 
 Valid indices are either positive integers (although possibly of real data
@@ -1685,8 +1657,8 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 */
 
   octave_value_list
-  do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
-                     const char *fun_name, const octave_value_list& args,
+  do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
+                     const char *fcn_name, const octave_value_list& args,
                      int nargout)
   {
     octave_value_list new_args = args;
@@ -1720,7 +1692,7 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
                 dims = ccells[i].dims ();
               }
             else if (dims != ccells[i].dims ())
-              error ("%s: cell arguments must have matching sizes", fun_name);
+              error ("%s: cell arguments must have matching sizes", fcn_name);
           }
       }
 
@@ -1735,10 +1707,10 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 
         octave_quit ();
 
-        const octave_value_list tmp = fun (new_args, nargout);
+        const octave_value_list tmp = fcn (new_args, nargout);
 
         if (tmp.length () < nargout)
-          error ("%s: do_simple_cellfun: internal error", fun_name);
+          error ("%s: do_simple_cellfun: internal error", fcn_name);
 
         for (int i = 0; i < nargout; i++)
           rcells[i](j) = tmp(i);
@@ -1753,12 +1725,12 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
   }
 
   octave_value
-  do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
-                     const char *fun_name, const octave_value_list& args)
+  do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
+                     const char *fcn_name, const octave_value_list& args)
   {
     octave_value retval;
 
-    const octave_value_list tmp = do_simple_cellfun (fun, fun_name, args, 1);
+    const octave_value_list tmp = do_simple_cellfun (fcn, fcn_name, args, 1);
 
     if (tmp.length () > 0)
       retval = tmp(0);
@@ -1768,7 +1740,7 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 
 DEFUN (isstudent, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isstudent ()
+@deftypefn {} {@var{tf} =} isstudent ()
 Return true if running in the student edition of @sc{matlab}.
 
 @code{isstudent} always returns false in Octave.

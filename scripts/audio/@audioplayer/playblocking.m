@@ -26,20 +26,29 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} playblocking (@var{player})
 ## @deftypefnx {} {} playblocking (@var{player}, @var{start})
-## @deftypefnx {} {} playblocking (@var{player}, @var{limits})
-## Play audio stored in the audioplayer object @var{player} with blocking.
+## @deftypefnx {} {} playblocking (@var{player}, [@var{start}, @var{end}])
+## Play audio stored in the audioplayer object @var{player} with blocking
+## (synchronous I/O).
 ##
-## Given optional argument start, begin playing at @var{start} samples in the
-## recording.  Given a two-element vector @var{limits}, begin and end playing
-## at the number of samples specified by the elements of the vector.
+## If the optional argument @var{start} is provided, begin playing
+## @var{start} samples into the recording.
+##
+## If the optional argument @var{end} is provided, stop playing at
+## @var{end} samples into the recording.
+## @seealso{@audioplayer/play, @audioplayer/pause, @audioplayer/stop,
+## @audioplayer/audioplayer}
 ## @end deftypefn
 
-function playblocking (varargin)
+function playblocking (player, start)
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
+  if (nargin == 1)
+    __player_playblocking__ (struct (player).player);
+  else
+    __player_playblocking__ (struct (player).player, start);
   endif
 
-  __player_playblocking__ (struct (varargin{1}).player, varargin{2:end});
-
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

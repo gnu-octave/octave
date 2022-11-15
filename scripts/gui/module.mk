@@ -36,6 +36,7 @@ FCN_FILE_DIRS += \
   %reldir%/uicontrol.m \
   %reldir%/uigetdir.m \
   %reldir%/uigetfile.m \
+  %reldir%/uifigure.m \
   %reldir%/uimenu.m \
   %reldir%/uipanel.m \
   %reldir%/uipushtool.m \

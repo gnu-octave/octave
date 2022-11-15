@@ -64,6 +64,8 @@ namespace octave
     bool conditional_close (void);
 
     void update_breakpoints ();
+    void set_file_name (const QString& fileName);
+    void enable_file_watcher (bool do_enable);
 
     QString file_name (void) const { return m_file_name; }
     QString encoding (void) const { return m_encoding; }
@@ -255,7 +257,6 @@ namespace octave
   protected:
 
     void closeEvent (QCloseEvent *event);
-    void set_file_name (const QString& fileName);
 
   private:
 
@@ -275,8 +276,12 @@ namespace octave
     void update_lexer (void);
 
     void show_dialog (QDialog *dlg, bool modal);
+
   public:
+
     int check_file_modified (bool remove = false);
+    QString get_all_bookmarks (void);
+
   private:
     void do_comment_selected_text (bool comment, bool input_str = false);
     void do_indent_selected_text (bool indent);

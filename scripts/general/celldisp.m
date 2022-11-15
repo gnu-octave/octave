@@ -51,7 +51,7 @@
 ## @seealso{disp}
 ## @end deftypefn
 
-## This is ugly, but seems to be what matlab does..
+## This is ugly, but seems to be what Matlab does..
 
 function celldisp (c, name)
 

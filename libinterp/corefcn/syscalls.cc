@@ -930,7 +930,7 @@ For example:
 
 DEFUNX ("S_ISREG", FS_ISREG, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} S_ISREG (@var{mode})
+@deftypefn {} {@var{tf} =} S_ISREG (@var{mode})
 Return true if @var{mode} corresponds to a regular file.
 
 The value of @var{mode} is assumed to be returned from a call to
@@ -948,7 +948,7 @@ The value of @var{mode} is assumed to be returned from a call to
 
 DEFUNX ("S_ISDIR", FS_ISDIR, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} S_ISDIR (@var{mode})
+@deftypefn {} {@var{tf} =} S_ISDIR (@var{mode})
 Return true if @var{mode} corresponds to a directory.
 
 The value of @var{mode} is assumed to be returned from a call to
@@ -966,7 +966,7 @@ The value of @var{mode} is assumed to be returned from a call to
 
 DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} S_ISCHR (@var{mode})
+@deftypefn {} {@var{tf} =} S_ISCHR (@var{mode})
 Return true if @var{mode} corresponds to a character device.
 
 The value of @var{mode} is assumed to be returned from a call to
@@ -984,7 +984,7 @@ The value of @var{mode} is assumed to be returned from a call to
 
 DEFUNX ("S_ISBLK", FS_ISBLK, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} S_ISBLK (@var{mode})
+@deftypefn {} {@var{tf} =} S_ISBLK (@var{mode})
 Return true if @var{mode} corresponds to a block device.
 
 The value of @var{mode} is assumed to be returned from a call to
@@ -1002,7 +1002,7 @@ The value of @var{mode} is assumed to be returned from a call to
 
 DEFUNX ("S_ISFIFO", FS_ISFIFO, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} S_ISFIFO (@var{mode})
+@deftypefn {} {@var{tf} =} S_ISFIFO (@var{mode})
 Return true if @var{mode} corresponds to a fifo.
 
 The value of @var{mode} is assumed to be returned from a call to
@@ -1020,7 +1020,7 @@ The value of @var{mode} is assumed to be returned from a call to
 
 DEFUNX ("S_ISLNK", FS_ISLNK, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} S_ISLNK (@var{mode})
+@deftypefn {} {@var{tf} =} S_ISLNK (@var{mode})
 Return true if @var{mode} corresponds to a symbolic link.
 
 The value of @var{mode} is assumed to be returned from a call to
@@ -1038,7 +1038,7 @@ The value of @var{mode} is assumed to be returned from a call to
 
 DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} S_ISSOCK (@var{mode})
+@deftypefn {} {@var{tf} =} S_ISSOCK (@var{mode})
 Return true if @var{mode} corresponds to a socket.
 
 The value of @var{mode} is assumed to be returned from a call to
@@ -1056,7 +1056,7 @@ The value of @var{mode} is assumed to be returned from a call to
 
 DEFUN (gethostname, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} gethostname ()
+@deftypefn {} {@var{name} =} gethostname ()
 Return the hostname of the system where Octave is running.
 @end deftypefn */)
 {
@@ -1249,7 +1249,7 @@ WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}
 
 DEFUNX ("WIFEXITED", FWIFEXITED, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WIFEXITED (@var{status})
+@deftypefn {} {@var{tf} =} WIFEXITED (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 true if the child terminated normally.
 @seealso{waitpid, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED,
@@ -1266,7 +1266,7 @@ WSTOPSIG, WIFCONTINUED}
 
 DEFUNX ("WEXITSTATUS", FWEXITSTATUS, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WEXITSTATUS (@var{status})
+@deftypefn {} {@var{tf} =} WEXITSTATUS (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 the exit status of the child.
 
@@ -1285,7 +1285,7 @@ WSTOPSIG, WIFCONTINUED}
 
 DEFUNX ("WIFSIGNALED", FWIFSIGNALED, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WIFSIGNALED (@var{status})
+@deftypefn {} {@var{tf} =} WIFSIGNALED (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 true if the child process was terminated by a signal.
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WTERMSIG, WCOREDUMP, WIFSTOPPED,
@@ -1302,7 +1302,7 @@ WSTOPSIG, WIFCONTINUED}
 
 DEFUNX ("WTERMSIG", FWTERMSIG, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WTERMSIG (@var{status})
+@deftypefn {} {@var{tf} =} WTERMSIG (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 the number of the signal that caused the child process to terminate.
 
@@ -1321,7 +1321,7 @@ WSTOPSIG, WIFCONTINUED}
 
 DEFUNX ("WCOREDUMP", FWCOREDUMP, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WCOREDUMP (@var{status})
+@deftypefn {} {@var{tf} =} WCOREDUMP (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 true if the child produced a core dump.
 
@@ -1342,7 +1342,7 @@ WSTOPSIG, WIFCONTINUED}
 
 DEFUNX ("WIFSTOPPED", FWIFSTOPPED, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WIFSTOPPED (@var{status})
+@deftypefn {} {@var{tf} =} WIFSTOPPED (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 true if the child process was stopped by delivery of a signal.
 
@@ -1362,7 +1362,7 @@ WSTOPSIG, WIFCONTINUED}
 
 DEFUNX ("WSTOPSIG", FWSTOPSIG, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WSTOPSIG (@var{status})
+@deftypefn {} {@var{tf} =} WSTOPSIG (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 the number of the signal which caused the child to stop.
 
@@ -1381,7 +1381,7 @@ WIFSTOPPED, WIFCONTINUED}
 
 DEFUNX ("WIFCONTINUED", FWIFCONTINUED, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WIFCONTINUED (@var{status})
+@deftypefn {} {@var{tf} =} WIFCONTINUED (@var{status})
 Given @var{status} from a call to @code{waitpid}, return
 true if the child process was resumed by delivery of @code{SIGCONT}.
 @seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP,
@@ -1430,13 +1430,13 @@ const_value (const octave_value_list& args, int val)
 
 DEFUNX ("F_DUPFD", FF_DUPFD, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} F_DUPFD ()
+@deftypefn {} {@var{v} =} F_DUPFD ()
 Return the numerical value to pass to @code{fcntl} to return
 a duplicate file descriptor.
 @seealso{fcntl, F_GETFD, F_GETFL, F_SETFD, F_SETFL}
 @end deftypefn */)
 {
-  static int val = octave_f_dupfd_wrapper ();
+  static const int val = octave_f_dupfd_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_DUPFD", "F_DUPFD");
@@ -1446,13 +1446,13 @@ a duplicate file descriptor.
 
 DEFUNX ("F_GETFD", FF_GETFD, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} F_GETFD ()
+@deftypefn {} {@var{v} =} F_GETFD ()
 Return the numerical value to pass to @code{fcntl} to return
 the file descriptor flags.
 @seealso{fcntl, F_DUPFD, F_GETFL, F_SETFD, F_SETFL}
 @end deftypefn */)
 {
-  static int val = octave_f_getfd_wrapper ();
+  static const int val = octave_f_getfd_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_GETFD", "F_GETFD");
@@ -1462,13 +1462,13 @@ the file descriptor flags.
 
 DEFUNX ("F_GETFL", FF_GETFL, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} F_GETFL ()
+@deftypefn {} {@var{v} =} F_GETFL ()
 Return the numerical value to pass to @code{fcntl} to return
 the file status flags.
 @seealso{fcntl, F_DUPFD, F_GETFD, F_SETFD, F_SETFL}
 @end deftypefn */)
 {
-  static int val = octave_f_getfl_wrapper ();
+  static const int val = octave_f_getfl_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_GETFL", "F_GETFL");
@@ -1478,13 +1478,13 @@ the file status flags.
 
 DEFUNX ("F_SETFD", FF_SETFD, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} F_SETFD ()
+@deftypefn {} {@var{v} =} F_SETFD ()
 Return the numerical value to pass to @code{fcntl} to set the file
 descriptor flags.
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}
 @end deftypefn */)
 {
-  static int val = octave_f_setfd_wrapper ();
+  static const int val = octave_f_setfd_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_SETFD", "F_SETFD");
@@ -1494,13 +1494,13 @@ descriptor flags.
 
 DEFUNX ("F_SETFL", FF_SETFL, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} F_SETFL ()
+@deftypefn {} {@var{v} =} F_SETFL ()
 Return the numerical value to pass to @code{fcntl} to set the file
 status flags.
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}
 @end deftypefn */)
 {
-  static int val = octave_f_setfl_wrapper ();
+  static const int val = octave_f_setfl_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("F_SETFL", "F_SETFL");
@@ -1510,7 +1510,7 @@ status flags.
 
 DEFUNX ("O_APPEND", FO_APPEND, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_APPEND ()
+@deftypefn {} {@var{v} =} O_APPEND ()
 Return the numerical value of the @code{O_APPEND} macro.
 
 @code{O_APPEND} is file status flag that may be returned by @code{fcntl}
@@ -1520,7 +1520,7 @@ to indicate each write operation appends, or that may be passed to
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_append_wrapper ();
+  static const int val = octave_o_append_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_APPEND", "O_APPEND");
@@ -1530,7 +1530,7 @@ O_TRUNC, O_WRONLY}
 
 DEFUNX ("O_ASYNC", FO_ASYNC, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_ASYNC ()
+@deftypefn {} {@var{v} =} O_ASYNC ()
 Return the numerical value of the @code{O_ASYNC} macro.
 
 @code{O_ASYNC} is the file status flag that may be returned by
@@ -1539,7 +1539,7 @@ Return the numerical value of the @code{O_ASYNC} macro.
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_async_wrapper ();
+  static const int val = octave_o_async_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_ASYNC", "O_ASYNC");
@@ -1549,7 +1549,7 @@ O_TRUNC, O_WRONLY}
 
 DEFUNX ("O_CREAT", FO_CREAT, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_CREAT ()
+@deftypefn {} {@var{v} =} O_CREAT ()
 Return the numerical value of the @code{O_CREAT}.
 
 @code{O_CREAT} is the file status flag that may be returned by
@@ -1559,7 +1559,7 @@ exist.
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_creat_wrapper ();
+  static const int val = octave_o_creat_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_CREAT", "O_CREAT");
@@ -1569,7 +1569,7 @@ O_TRUNC, O_WRONLY}
 
 DEFUNX ("O_EXCL", FO_EXCL, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_EXCL ()
+@deftypefn {} {@var{v} =} O_EXCL ()
 Return the numerical value of the @code{O_EXCL}.
 
 @code{O_EXCL} is the file status flag that may be returned by
@@ -1578,7 +1578,7 @@ Return the numerical value of the @code{O_EXCL}.
 O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_excl_wrapper ();
+  static const int val = octave_o_excl_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_EXCL", "O_EXCL");
@@ -1588,7 +1588,7 @@ O_SYNC, O_TRUNC, O_WRONLY}
 
 DEFUNX ("O_NONBLOCK", FO_NONBLOCK, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_NONBLOCK ()
+@deftypefn {} {@var{v} =} O_NONBLOCK ()
 Return the numerical value of the @code{O_NONBLOCK}.
 
 @code{O_NONBLOCK} is the file status flag that may be returned by
@@ -1598,7 +1598,7 @@ passsed to @code{fcntl} to set non-blocking I/O.
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_nonblock_wrapper ();
+  static const int val = octave_o_nonblock_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_NONBLOCK", "O_NONBLOCK");
@@ -1608,7 +1608,7 @@ O_TRUNC, O_WRONLY}
 
 DEFUNX ("O_RDONLY", FO_RDONLY, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_RDONLY ()
+@deftypefn {} {@var{v} =} O_RDONLY ()
 Return the numerical value of the @code{O_RDONLY}.
 
 @code{O_RDONLY} is the file status flag that may be returned by
@@ -1617,7 +1617,7 @@ Return the numerical value of the @code{O_RDONLY}.
 O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_rdonly_wrapper ();
+  static const int val = octave_o_rdonly_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_RDONLY", "O_RDONLY");
@@ -1627,7 +1627,7 @@ O_TRUNC, O_WRONLY}
 
 DEFUNX ("O_RDWR", FO_RDWR, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_RDWR ()
+@deftypefn {} {@var{v} =} O_RDWR ()
 Return the numerical value of the @code{O_RDWR}.
 
 @code{O_RDWR} is the file status flag that may be returned by
@@ -1637,7 +1637,7 @@ writing.
 O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_rdwr_wrapper ();
+  static const int val = octave_o_rdwr_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_RDWR", "O_RDWR");
@@ -1647,7 +1647,7 @@ O_SYNC, O_TRUNC, O_WRONLY}
 
 DEFUNX ("O_SYNC", FO_SYNC, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_SYNC ()
+@deftypefn {} {@var{v} =} O_SYNC ()
 Return the numerical value of the @code{O_SYNC}.
 
 @code{O_SYNC} is the file status flag that may be returned by
@@ -1656,7 +1656,7 @@ Return the numerical value of the @code{O_SYNC}.
 O_RDWR, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_sync_wrapper ();
+  static const int val = octave_o_sync_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_SYNC", "O_SYNC");
@@ -1666,7 +1666,7 @@ O_RDWR, O_TRUNC, O_WRONLY}
 
 DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_TRUNC ()
+@deftypefn {} {@var{v} =} O_TRUNC ()
 Return the numerical value of the @code{O_TRUNC}.
 
 @code{O_TRUNC} is the file status flag that may be returned by
@@ -1676,7 +1676,7 @@ when writing.
 O_RDWR, O_SYNC, O_WRONLY}
 @end deftypefn */)
 {
-  static int val = octave_o_trunc_wrapper ();
+  static const int val = octave_o_trunc_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_TRUNC", "O_TRUNC");
@@ -1686,7 +1686,7 @@ O_RDWR, O_SYNC, O_WRONLY}
 
 DEFUNX ("O_WRONLY", FO_WRONLY, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} O_WRONLY ()
+@deftypefn {} {@var{v} =} O_WRONLY ()
 Return the numerical value of the @code{O_WRONLY}.
 
 @code{O_WRONLY} is the file status flag that may be returned by
@@ -1695,7 +1695,7 @@ Return the numerical value of the @code{O_WRONLY}.
 O_RDWR, O_SYNC, O_TRUNC}
 @end deftypefn */)
 {
-  static int val = octave_o_wronly_wrapper ();
+  static const int val = octave_o_wronly_wrapper ();
 
   if (val < 0)
     err_disabled_feature ("O_WRONLY", "O_WRONLY");
@@ -1705,7 +1705,7 @@ O_RDWR, O_SYNC, O_TRUNC}
 
 DEFUNX ("WNOHANG", FWNOHANG, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WNOHANG ()
+@deftypefn {} {@var{v} =} WNOHANG ()
 Return the numerical value of the @code{WNOHANG} macro.
 
 @code{WNOHANG} is the option argument that may be passed to
@@ -1719,7 +1719,7 @@ instead of waiting for a process to exit.
 
 DEFUNX ("WUNTRACED", FWUNTRACED, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WUNTRACED ()
+@deftypefn {} {@var{v} =} WUNTRACED ()
 Return the numerical value of the @code{WUNTRACED} macro.
 
 @code{WUNTRACED} is the option argument that may be passed to
@@ -1733,7 +1733,7 @@ process has stopped but is not traced via the @code{ptrace} system call
 
 DEFUNX ("WCONTINUE", FWCONTINUE, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} WCONTINUE ()
+@deftypefn {} {@var{v} =} WCONTINUE ()
 Return the numerical value of the @code{WCONTINUE} macro.
 
 @code{WCONTINUE} is the option argument that may be passed to

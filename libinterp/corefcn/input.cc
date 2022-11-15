@@ -44,6 +44,7 @@
 #include "file-ops.h"
 #include "iconv-wrappers.h"
 #include "localcharset-wrapper.h"
+#include "oct-env.h"
 #include "oct-string.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -88,11 +89,6 @@ bool octave_completion_matches_called = false;
 // TRUE if the plotting system has requested a call to drawnow at
 // the next user prompt.
 bool Vdrawnow_requested = false;
-
-// TRUE if we are recording line numbers in a source file.
-// Always true except when debugging and taking input directly from
-// the terminal.
-bool Vtrack_line_num = true;
 
 OCTAVE_NAMESPACE_BEGIN
 
@@ -183,8 +179,7 @@ OCTAVE_NAMESPACE_BEGIN
         if (pos != std::string::npos)
           base_name = base_name.substr (0, pos);
 
-        interpreter& interp
-          = __get_interpreter__ ("generate_struct_completions");
+        interpreter& interp = __get_interpreter__ ();
 
         if (interp.is_variable (base_name))
           {
@@ -377,8 +372,7 @@ OCTAVE_NAMESPACE_BEGIN
                   }
                 else
                   {
-                    input_system& input_sys
-                      = __get_input_system__ ("generate_completion");
+                    input_system& input_sys = __get_input_system__ ();
 
                     command_editor::set_completion_append_character
                       (input_sys.completion_append_char ());
@@ -396,8 +390,7 @@ OCTAVE_NAMESPACE_BEGIN
   {
     octave_quit ();
 
-    input_system& input_sys
-      = __get_input_system__ ("internal_input_event_hook_fcn");
+    input_system& input_sys = __get_input_system__ ();
 
     input_sys.run_input_event_hooks ();
 
@@ -581,8 +574,10 @@ OCTAVE_NAMESPACE_BEGIN
   std::string input_system::dir_encoding (const std::string& dir)
   {
     std::string enc = m_mfile_encoding;
+    // use canonicalized path as key
+    const std::string key = sys::canonicalize_file_name (dir);
 
-    auto enc_it = m_dir_encoding.find (load_path_dir (dir));
+    auto enc_it = m_dir_encoding.find (key);
     if (enc_it != m_dir_encoding.end ())
       enc = enc_it->second;
 
@@ -966,7 +961,8 @@ OCTAVE_NAMESPACE_BEGIN
     : m_rep (new file_reader (interp, file))
   { }
 
-  input_reader::input_reader (interpreter& interp, FILE *file, const std::string& enc)
+  input_reader::input_reader (interpreter& interp, FILE *file,
+                              const std::string& enc)
     : m_rep (new file_reader (interp, file, enc))
   { }
 
@@ -1252,13 +1248,24 @@ If @code{keyboard} is invoked without arguments, a default prompt of
 
 DEFUN (completion_matches, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} completion_matches (@var{hint})
-Generate possible completions given @var{hint}.
+@deftypefn {} {@var{completion_list} =} completion_matches ("@var{hint}")
+Generate possible word completions for Octave given the character sequence
+@var{hint}.
 
-This function is provided for the benefit of programs like Emacs which
-might be controlling Octave and handling user input.  The current
-command number is not incremented when this function is called.  This is
-a feature, not a bug.
+This function is provided for the benefit of programs like Emacs which might be
+controlling Octave and handling user input.  For example:
+
+@example
+@group
+completion_matches ("sine")
+@result{}
+sinetone
+sinewave
+@end group
+@end example
+
+Programming Note: The current command number in Octave is not incremented when
+this function is called.  This is a feature, not a bug.
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1336,7 +1343,8 @@ a feature, not a bug.
 
 DEFUN (readline_read_init_file, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} readline_read_init_file (@var{file})
+@deftypefn  {} {} readline_read_init_file ()
+@deftypefnx {} {} readline_read_init_file (@var{file})
 Read the readline library initialization file @var{file}.
 
 If @var{file} is omitted, read the default initialization file
@@ -1453,7 +1461,7 @@ DEFMETHOD (PS1, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PS1 ()
 @deftypefnx {} {@var{old_val} =} PS1 (@var{new_val})
-@deftypefnx {} {} PS1 (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} PS1 (@var{new_val}, "local")
 Query or set the primary prompt string.
 
 When executing interactively, Octave displays the primary prompt when it is
@@ -1497,7 +1505,7 @@ DEFMETHOD (PS2, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PS2 ()
 @deftypefnx {} {@var{old_val} =} PS2 (@var{new_val})
-@deftypefnx {} {} PS2 (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} PS2 (@var{new_val}, "local")
 Query or set the secondary prompt string.
 
 The secondary prompt is printed when Octave is expecting additional input to
@@ -1521,7 +1529,7 @@ DEFMETHOD (completion_append_char, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} completion_append_char ()
 @deftypefnx {} {@var{old_val} =} completion_append_char (@var{new_val})
-@deftypefnx {} {} completion_append_char (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} completion_append_char (@var{new_val}, "local")
 Query or set the internal character variable that is appended to
 successful command-line completion attempts.
 
@@ -1559,7 +1567,7 @@ Undocumented internal function.
 
 DEFMETHOD (__gud_mode__, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __gud_mode__ ()
+@deftypefn {} {@var{state} =} __gud_mode__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -1570,8 +1578,12 @@ Undocumented internal function.
 
 DEFMETHOD (__mfile_encoding__, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {@var{current_encoding} =} __mfile_encoding__ (@var{new_encoding})
-Set and query the codepage that is used for reading .m files.
+@deftypefn  {} {@var{current_encoding} =} __mfile_encoding__ ()
+@deftypefnx {} {} __mfile_encoding__ (@var{new_encoding})
+@deftypefnx {} {@var{old_encoding} =} __mfile_encoding__ (@var{new_encoding})
+Query or set the codepage that is used for reading m-files.
+
+The input and output are strings naming a particular codepage, e.g., "utf-8".
 @end deftypefn */)
 {
   input_system& input_sys = interp.get_input_system ();
@@ -1582,22 +1594,22 @@ Set and query the codepage that is used for reading .m files.
 DEFMETHOD (dir_encoding, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{current_encoding} =} dir_encoding (@var{dir})
-@deftypefnx {} {@var{prev_encoding} =} dir_encoding (@var{dir}, @var{encoding})
-@deftypefnx {} {} dir_encoding (@dots{})
-Set and query the @var{encoding} that is used for reading m-files in @var{dir}.
+@deftypefnx {} {} dir_encoding (@var{dir}, @var{new_encoding})
+@deftypefnx {} {} dir_encoding (@var{dir}, "delete")
+@deftypefnx {} {@var{old_encoding} =} dir_encoding (@var{dir}, @var{new_encoding})
+Query or set the @var{encoding} that is used for reading m-files in @var{dir}.
 
-That encoding overrides the (globally set) m-file encoding.
+The per-directory encoding overrides the (globally set) m-file encoding.
 
-The string @var{DIR} must match the form how the directory would appear in the
-load path.
+The string @var{DIR} must match how the directory would appear in the load
+path.
 
-The @var{encoding} must be a valid encoding identifier or @qcode{"delete"}.  In
-the latter case, the (globally set) m-file encoding will be used for the given
-@var{dir}.
+The @var{new_encoding} input must be a valid encoding identifier or
+@qcode{"delete"}.  In the latter case, any per-directory encoding is removed
+and the (globally set) m-file encoding will be used for the given @var{dir}.
 
-The currently or previously used encoding is returned in @var{current_encoding}
-or @var{prev_encoding}, respectively.  The output argument must be explicitly
-requested.
+The currently or previously used encoding is returned only if an output
+argument is requested.
 
 The directory encoding is automatically read from the file @file{.oct-config}
 when a new path is added to the load path (for example with @code{addpath}).
@@ -1650,7 +1662,7 @@ DEFMETHOD (auto_repeat_debug_command, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} auto_repeat_debug_command ()
 @deftypefnx {} {@var{old_val} =} auto_repeat_debug_command (@var{new_val})
-@deftypefnx {} {} auto_repeat_debug_command (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} auto_repeat_debug_command (@var{new_val}, "local")
 Query or set the internal variable that controls whether debugging
 commands are automatically repeated when the input line is empty (typing
 just @key{RET}).

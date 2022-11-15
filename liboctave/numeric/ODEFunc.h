@@ -39,22 +39,22 @@ public:
   typedef Matrix (*ODEJacFunc) (const ColumnVector&, double);
 
   ODEFunc (void)
-    : m_fun (nullptr), m_jac (nullptr), m_reset (true) { }
+    : m_fcn (nullptr), m_jac (nullptr), m_reset (true) { }
 
   ODEFunc (ODERHSFunc f)
-    : m_fun (f), m_jac (nullptr), m_reset (true) { }
+    : m_fcn (f), m_jac (nullptr), m_reset (true) { }
 
   ODEFunc (ODERHSFunc f, ODEJacFunc j)
-    : m_fun (f), m_jac (j), m_reset (true) { }
+    : m_fcn (f), m_jac (j), m_reset (true) { }
 
   ODEFunc (const ODEFunc& a)
-    : m_fun (a.m_fun), m_jac (a.m_jac), m_reset (true) { }
+    : m_fcn (a.m_fcn), m_jac (a.m_jac), m_reset (true) { }
 
   ODEFunc& operator = (const ODEFunc& a)
   {
     if (this != &a)
       {
-        m_fun = a.m_fun;
+        m_fcn = a.m_fcn;
         m_jac = a.m_jac;
         m_reset = a.m_reset;
       }
@@ -63,11 +63,11 @@ public:
 
   virtual ~ODEFunc (void) = default;
 
-  ODERHSFunc function (void) const { return m_fun; }
+  ODERHSFunc function (void) const { return m_fcn; }
 
   ODEFunc& set_function (ODERHSFunc f)
   {
-    m_fun = f;
+    m_fcn = f;
     m_reset = true;
     return *this;
   }
@@ -83,7 +83,7 @@ public:
 
 protected:
 
-  ODERHSFunc m_fun;
+  ODERHSFunc m_fcn;
   ODEJacFunc m_jac;
 
   // This variable is TRUE when this object is constructed, and also

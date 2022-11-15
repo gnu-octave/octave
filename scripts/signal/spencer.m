@@ -24,14 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} spencer (@var{x})
+## @deftypefn {} {@var{savg} =} spencer (@var{x})
 ## Return @nospell{Spencer's} 15-point moving average of each column of
 ## @var{x}.
 ## @end deftypefn
 
-function retval = spencer (x)
+function savg = spencer (x)
 
-  if (nargin < 1)
+  if (nargin != 1)
     print_usage ();
   endif
 
@@ -48,9 +48,9 @@ function retval = spencer (x)
 
   w = [-3, -6, -5, 3, 21, 46, 67, 74, 67, 46, 21, 3, -5, -6, -3] / 320;
 
-  retval = fftfilt (w, x);
-  retval = [zeros(7,c); retval(15:n,:); zeros(7,c);];
+  savg = fftfilt (w, x);
+  savg = [zeros(7,c); savg(15:n,:); zeros(7,c);];
 
-  retval = reshape (retval, xr, xc);
+  savg = reshape (savg, xr, xc);
 
 endfunction

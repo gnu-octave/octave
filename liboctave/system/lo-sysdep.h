@@ -54,6 +54,9 @@ namespace octave
     extern OCTAVE_API std::FILE *
     fopen (const std::string& name, const std::string& mode);
 
+    extern OCTAVE_API std::FILE *
+    fopen_tmp (const std::string& name, const std::string& mode);
+
     extern OCTAVE_API std::fstream
     fstream (const std::string& name,
              const std::ios::openmode mode = std::ios::in | std::ios::out);

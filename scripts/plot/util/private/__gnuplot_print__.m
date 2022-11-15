@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __gnuplot_print__ (@var{@dots{}})
+## @deftypefn {} {@var{opts} =} __gnuplot_print__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 

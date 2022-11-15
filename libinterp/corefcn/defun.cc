@@ -54,7 +54,7 @@ OCTAVE_NAMESPACE_BEGIN
 void
 print_usage (void)
 {
-  tree_evaluator& tw = __get_evaluator__ ("print_usage");
+  tree_evaluator& tw = __get_evaluator__ ();
 
   const octave_function *cur = tw.current_function ();
 
@@ -97,7 +97,7 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 
   octave_value fval (fcn);
 
-  symbol_table& symtab = __get_symbol_table__ ("install_dld_function");
+  symbol_table& symtab = __get_symbol_table__ ();
 
   symtab.install_built_in_function (name, fval);
 }
@@ -114,7 +114,7 @@ install_dld_function (octave_dld_function::meth m, const std::string& name,
 
   octave_value fval (fcn);
 
-  symbol_table& symtab = __get_symbol_table__ ("install_dld_function");
+  symbol_table& symtab = __get_symbol_table__ ();
 
   symtab.install_built_in_function (name, fval);
 }
@@ -130,7 +130,7 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 
   octave_value fval (fcn);
 
-  symbol_table& symtab = __get_symbol_table__ ("install_mex_function");
+  symbol_table& symtab = __get_symbol_table__ ();
 
   symtab.install_built_in_function (name, fval);
 }
@@ -140,7 +140,7 @@ get_current_shlib (void)
 {
   dynamic_library retval;
 
-  tree_evaluator& tw = __get_evaluator__ ("get_current_shlib");
+  tree_evaluator& tw = __get_evaluator__ ();
 
   octave_function *curr_fcn = tw.current_function ();
 

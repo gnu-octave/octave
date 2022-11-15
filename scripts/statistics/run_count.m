@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} run_count (@var{x}, @var{n})
-## @deftypefnx {} {} run_count (@var{x}, @var{n}, @var{dim})
+## @deftypefn  {} {@var{cnt} =} run_count (@var{x}, @var{n})
+## @deftypefnx {} {@var{cnt} =} run_count (@var{x}, @var{n}, @var{dim})
 ## Count the upward runs along the first non-singleton dimension of @var{x}
 ## of length 1, 2, @dots{}, @var{n}-1 and greater than or equal to @var{n}.
 ##
@@ -34,7 +34,7 @@
 ## @seealso{runlength}
 ## @end deftypefn
 
-function retval = run_count (x, n, dim)
+function cnt = run_count (x, n, dim)
 
   if (nargin < 2)
     print_usage ();
@@ -44,7 +44,7 @@ function retval = run_count (x, n, dim)
     error ("run_count: X must be a numeric vector or matrix");
   endif
 
-  if (!(isscalar (n) && n == fix (n) && n > 0))
+  if (! (isscalar (n) && n == fix (n) && n > 0))
     error ("run_count: N must be a positive integer");
   endif
 
@@ -82,16 +82,16 @@ function retval = run_count (x, n, dim)
   tmp = tmp(idx{:});
 
   sz(1) = n;
-  retval = zeros (sz);
+  cnt = zeros (sz);
   for k = 1 : (n-1)
     idx{1} = k;
-    retval(idx{:}) = sum (tmp == k);
+    cnt(idx{:}) = sum (tmp == k);
   endfor
   idx{1} = n;
-  retval(idx{:}) = sum (tmp >= n);
+  cnt(idx{:}) = sum (tmp >= n);
 
   if (dim != 1)
-    retval = ipermute (retval, perm);
+    cnt = ipermute (cnt, perm);
   endif
 
 endfunction

@@ -64,7 +64,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
 template <typename M>
 OCTAVE_API octave_idx_type
-EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
+EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n,
                        const std::string& _typ, double sigma,
                        octave_idx_type k, octave_idx_type p,
                        octave_idx_type& info, Matrix& eig_vec,
@@ -96,7 +96,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
 template <typename M>
 OCTAVE_API octave_idx_type
-EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
+EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n,
                           const std::string& _typ, double sigmar,
                           octave_idx_type k, octave_idx_type p,
                           octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -130,7 +130,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
 template <typename M>
 OCTAVE_API octave_idx_type
-EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
+EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n,
                              const std::string& _typ, Complex sigma,
                              octave_idx_type k, octave_idx_type p,
                              octave_idx_type& info, ComplexMatrix& eig_vec,

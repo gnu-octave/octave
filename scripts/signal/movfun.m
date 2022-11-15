@@ -227,29 +227,29 @@ function y = movfun (fcn, x, wlen, varargin)
 
   ## Obtain function for boundary conditions
   if (isnumeric (bc))
-    bcfunc = @replaceval_bc;
-    bcfunc (true, bc);  # initialize replaceval function with value
+    bcfcn = @replaceval_bc;
+    bcfcn (true, bc);  # initialize replaceval function with value
   else
     switch (tolower (bc))
       case "shrink"
-        bcfunc = @shrink_bc;
+        bcfcn = @shrink_bc;
 
       case "discard"
-        bcfunc = [];
+        bcfcn = [];
         C -= length (Cpre);
         Cpre = Cpos = [];
         N = length (C);
         szx(dperm(1)) = N;
 
       case "fill"
-        bcfunc = @replaceval_bc;
-        bcfunc (true, NaN);
+        bcfcn = @replaceval_bc;
+        bcfcn (true, NaN);
 
       case "same"
-        bcfunc = @same_bc;
+        bcfcn = @same_bc;
 
       case "periodic"
-        bcfunc = @periodic_bc;
+        bcfcn = @periodic_bc;
 
     endswitch
   endif
@@ -279,7 +279,7 @@ function y = movfun (fcn, x, wlen, varargin)
   ## FIXME: Is it faster with cellfun?  Don't think so, but needs testing.
   y = zeros (N, ncols, soutdim);
   parfor i = 1:ncols
-    y(:,i,:) = movfun_oncol (fcn_, x(:,i), wlen, bcfunc,
+    y(:,i,:) = movfun_oncol (fcn_, x(:,i), wlen, bcfcn,
                              slc, C, Cpre, Cpos, win, soutdim);
   endparfor
 
@@ -290,7 +290,7 @@ function y = movfun (fcn, x, wlen, varargin)
 
 endfunction
 
-function y = movfun_oncol (fcn, x, wlen, bcfunc, slcidx, C, Cpre, Cpos, win, odim)
+function y = movfun_oncol (fcn, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, win, odim)
 
   N = length (Cpre) + length (C) + length (Cpos);
   y = NA (N, odim);
@@ -300,10 +300,10 @@ function y = movfun_oncol (fcn, x, wlen, bcfunc, slcidx, C, Cpre, Cpos, win, odi
 
   ## Process boundaries
   if (! isempty (Cpre))
-    y(Cpre,:) = bcfunc (fcn, x, Cpre, win, wlen, odim);
+    y(Cpre,:) = bcfcn (fcn, x, Cpre, win, wlen, odim);
   endif
   if (! isempty (Cpos))
-    y(Cpos,:) = bcfunc (fcn, x, Cpos, win, wlen, odim);
+    y(Cpos,:) = bcfcn (fcn, x, Cpos, win, wlen, odim);
   endif
 
 endfunction

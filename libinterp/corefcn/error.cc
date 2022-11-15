@@ -76,7 +76,7 @@ static void
 error_1 (octave::execution_exception& ee, const char *id, const char *fmt,
          va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("error_1");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.error_1 (ee, id, fmt, args);
 }
@@ -85,7 +85,7 @@ OCTAVE_NORETURN
 static void
 error_1 (const char *id, const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("error_1");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.error_1 (id, fmt, args);
 }
@@ -111,7 +111,7 @@ check_state (const std::string& state)
 static void
 vwarning (const char *id, const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("warning");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.vwarning (id, fmt, args);
 }
@@ -125,10 +125,10 @@ defun_usage_message (const char *fmt, ...)
   va_end (args);
 }
 
-typedef void (*error_fun)(const char *, const char *, ...);
+typedef void (*error_fcn)(const char *, const char *, ...);
 
 static std::string
-handle_message (error_fun f, const char *id, const char *msg,
+handle_message (error_fcn f, const char *id, const char *msg,
                 const octave_value_list& args, bool have_fmt)
 {
   std::string retval;
@@ -657,7 +657,7 @@ OCTAVE_NAMESPACE_BEGIN
 
     octave_idx_type nel = ident.numel ();
 
-    assert (nel != 0);
+    panic_if (nel == 0);
 
     bool found = false;
 
@@ -689,8 +689,7 @@ OCTAVE_NAMESPACE_BEGIN
     // The warning state "all" is always supposed to remain in the list,
     // so we should always find a state, either explicitly or by using the
     // state for "all".
-
-    assert (found);
+    panic_unless (found);
 
     retval.assign ("identifier", id);
     retval.assign ("state", val);
@@ -956,7 +955,7 @@ message (const char *name, const char *fmt, ...)
 void
 vusage_with_id (const char *id, const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("warning_enabled");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.vusage (id, fmt, args);
 }
@@ -1109,7 +1108,7 @@ OCTAVE_NORETURN
 void
 vpanic (const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("vpanic");
+  octave::error_system& es = octave::__get_error_system__ ();
 
   es.vpanic (fmt, args);
 }
@@ -1255,7 +1254,6 @@ disable escape sequence expansion use a second backslash before the sequence
 @seealso{warning, lasterror}
 @end deftypefn */)
 {
-
   int nargin = args.length ();
 
   if (nargin == 0)
@@ -1816,7 +1814,7 @@ set_warning_state (const std::string& id, const std::string& state)
   args(1) = id;
   args(0) = state;
 
-  interpreter& interp = __get_interpreter__ ("set_warning_state");
+  interpreter& interp = __get_interpreter__ ();
 
   return Fwarning (interp, args, 1);
 }
@@ -1824,7 +1822,7 @@ set_warning_state (const std::string& id, const std::string& state)
 octave_value_list
 set_warning_state (const octave_value_list& args)
 {
-  interpreter& interp = __get_interpreter__ ("set_warning_state");
+  interpreter& interp = __get_interpreter__ ();
 
   return Fwarning (interp, args, 1);
 }
@@ -1832,7 +1830,7 @@ set_warning_state (const octave_value_list& args)
 int
 warning_enabled (const std::string& id)
 {
-  error_system& es = __get_error_system__ ("warning_enabled");
+  error_system& es = __get_error_system__ ();
 
   return es.warning_enabled (id);
 }
@@ -1840,7 +1838,7 @@ warning_enabled (const std::string& id)
 void
 disable_warning (const std::string& id)
 {
-  error_system& es = __get_error_system__ ("disable_warning");
+  error_system& es = __get_error_system__ ();
 
   es.disable_warning (id);
 }
@@ -2079,7 +2077,7 @@ message identifier.
 
 With one argument, set the last warning message to @var{msg}.
 
-With two arguments, also set the last message identifier.
+With two arguments, also set the last message identifier to @var{msgid}.
 @seealso{warning, lasterror, lasterr}
 @end deftypefn */)
 {
@@ -2116,7 +2114,7 @@ DEFMETHOD (beep_on_error, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} beep_on_error ()
 @deftypefnx {} {@var{old_val} =} beep_on_error (@var{new_val})
-@deftypefnx {} {} beep_on_error (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} beep_on_error (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will try
 to ring the terminal bell before printing an error message.
 
@@ -2134,7 +2132,7 @@ DEFMETHOD (debug_on_error, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_on_error ()
 @deftypefnx {} {@var{old_val} =} debug_on_error (@var{new_val})
-@deftypefnx {} {} debug_on_error (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} debug_on_error (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will try
 to enter the debugger when an error is encountered.
 
@@ -2156,7 +2154,7 @@ DEFMETHOD (debug_on_warning, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_on_warning ()
 @deftypefnx {} {@var{old_val} =} debug_on_warning (@var{new_val})
-@deftypefnx {} {} debug_on_warning (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} debug_on_warning (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will try
 to enter the debugger when a warning is encountered.
 
@@ -2174,14 +2172,9 @@ The original variable value is restored when exiting the function.
 void
 interpreter_try (unwind_protect& frame)
 {
-  error_system& es = __get_error_system__ ("interpreter_try");
+  error_system& es = __get_error_system__ ();
 
   es.interpreter_try (frame);
 }
 
 OCTAVE_NAMESPACE_END
-
-// Deprecated variables and functions.
-
-// This variable is obsolete and always has the value 0.
-int error_state = 0;

@@ -65,13 +65,13 @@ namespace octave
     return s_instance;
   }
 
-#define STATIC_LOGGER(fun) \
-  void Logger::fun (const char *fmt, ...) \
+#define STATIC_LOGGER(fcn) \
+  void Logger::fcn (const char *fmt, ...) \
   { \
     QMutexLocker lock (s_mutex); \
     va_list vl; \
     va_start (vl, fmt); \
-    instance ()->fun ## V (fmt, vl); \
+    instance ()->fcn ## V (fmt, vl); \
     va_end (vl); \
   }
 

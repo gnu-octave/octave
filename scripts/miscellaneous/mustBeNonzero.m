@@ -47,7 +47,7 @@ function mustBeNonzero (x)
       label = "input";
     endif
     bad_idx = find (tf);
-    errmsg = sprintf ("%s must be non-zero; found %d elements that were zero: indexes %s", ...
+    errmsg = sprintf ("%s must be nonzero; found %d elements that were zero: indexes %s", ...
                       label, numel (bad_idx), mat2str (bad_idx));
     error (errmsg);
   endif

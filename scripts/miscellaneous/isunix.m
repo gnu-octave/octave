@@ -24,14 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isunix ()
+## @deftypefn {} {@var{tf} =} isunix ()
 ## Return true if Octave is running on a Unix-like system and false otherwise.
 ## @seealso{ismac, ispc}
 ## @end deftypefn
 
-function retval = isunix ()
+function tf = isunix ()
 
-  retval = __octave_config_info__ ("unix");
+  tf = __octave_config_info__ ("unix");
 
 endfunction
 

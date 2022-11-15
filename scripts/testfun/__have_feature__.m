@@ -24,11 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __have_feature__ (feature)
+## @deftypefn {} {@var{tf} =} __have_feature__ (feature)
 ## Undocumented internal function.
 ## @end deftypefn
 
-function retval = __have_feature__ (feature)
+function tf = __have_feature__ (feature)
 
   if (strncmp (feature, "ENABLE_", 7))
     features = __octave_config_info__ ();
@@ -37,12 +37,12 @@ function retval = __have_feature__ (feature)
   endif
 
   if (iscellstr (feature))
-    retval = (all (isfield (features, feature))
+    tf = (all (isfield (features, feature))
               && all (cellfun (@(x) features.(x), feature)));
   elseif (ischar (feature))
-    retval = isfield (features, feature) && features.(feature);
+    tf = isfield (features, feature) && features.(feature);
   else
-    retval = false;
+    tf = false;
   endif
 
 endfunction

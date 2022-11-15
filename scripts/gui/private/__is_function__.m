@@ -24,13 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{result} =} __is_function__ (@var{func})
-## Undocumented internal function.
+## @deftypefn {} {@var{tf} =} __is_function__ (@var{fcn})
+## Return true if @var{fcn} is an m-file function, @file{.oct} or @file{.mex}
+## function, or a built-in function.
 ## @end deftypefn
 
-function result = __is_function__ (func)
+function tf = __is_function__ (fcn)
 
-  existval = exist (func);
-  result = (existval == 2 || existval == 3 || existval == 5);
+  existval = exist (fcn);
+  tf = (existval == 2 || existval == 3 || existval == 5);
 
 endfunction

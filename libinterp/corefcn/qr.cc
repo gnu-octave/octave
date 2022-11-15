@@ -116,6 +116,7 @@ DEFUN (qr, args, nargout,
 @deftypefnx {} {@var{X} =} qr (@var{A}, @var{B}) # sparse A
 @deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, 0)
+@deftypefnx {} {[@dots{}] =} qr (@dots{}, "econ")
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, "vector")
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, "matrix")
 @cindex QR factorization
@@ -249,15 +250,15 @@ approximation of @code{@var{A} \ @var{B}} to be calculated as
 @end group
 @end example
 
-If @var{A} is a sparse MxN matrix and an additional matrix @var{B} is
+If @var{A} is a sparse @nospell{MxN} matrix and an additional matrix @var{B} is
 supplied, one or two return values are possible.  If one return value @var{X}
 is requested and M < N, then @var{X} is the minimum 2-norm solution of
 @w{@code{@var{A} \ @var{B}}}.  If M >= N, @var{X} is the least squares
 approximation @w{of @code{@var{A} \ @var{B}}}.  If two return values are
 requested, @var{C} and @var{R} have the same meaning as in the dense case
-(@var{C} is dense and @var{R} is sparse).
-The version with one return parameter should be preferred because
-it uses less memory and can handle rank-deficient matrices better.
+(@var{C} is dense and @var{R} is sparse).  The version with one return
+parameter should be preferred because it uses less memory and can handle
+rank-deficient matrices better.
 
 If the final argument is the string @qcode{"vector"} then @var{P} is a
 permutation vector (of the columns of @var{A}) instead of a permutation
@@ -270,14 +271,14 @@ matrix.  In this case, the defining relationship is:
 The default, however, is to return a permutation matrix and this may be
 explicitly specified by using a final argument of @qcode{"matrix"}.
 
-If the final argument is the scalar 0 an @qcode{"economy"} factorization is
-returned.  If the original matrix @var{A} has size MxN and M > N, then the
-@qcode{"economy"} factorization will calculate just N rows in @var{R} and N
-columns in @var{Q} and omit the zeros in @var{R}.  If M @leq{} N, there is no
-difference between the economy and standard factorizations.  When calculating
-an @qcode{"economy"} factorization and @var{A} is dense, the output @var{P} is
-always a vector rather than a matrix.  If @var{A} is sparse, output
-@var{P} is a sparse permutation matrix.
+If the final argument is the scalar 0 or the string @qcode{"econ"}, an economy
+factorization is returned.  If the original matrix @var{A} has size
+@nospell{MxN} and M > N, then the economy factorization will calculate just N
+rows in @var{R} and N columns in @var{Q} and omit the zeros in @var{R}.  If M
+@leq{} N, there is no difference between the economy and standard
+factorizations.  When calculating an economy factorization and @var{A} is
+dense, the output @var{P} is always a vector rather than a matrix.  If @var{A}
+is sparse, output @var{P} is a sparse permutation matrix.
 
 Background: The QR factorization has applications in the solution of least
 squares problems
@@ -344,9 +345,14 @@ orthogonal basis of @code{span (A)}.
           std::string str = args(nargin-1).string_value ();
           if (str == "vector")
             vector_p = true;
+          else if (str == "econ")
+            {
+              economy = true;
+              have_b = (nargin > 2);
+            }
           else if (str != "matrix")
-            error ("qr: type for P must be 'matrix' or 'vector', not %s",
-                   str.c_str ());
+            error ("qr: option string must be 'econ' or 'matrix' or " \
+                   "'vector', not \"%s\"", str.c_str ());
           have_b = (nargin > 2);
         }
       else if (! args(nargin-1).is_matrix_type ())
@@ -704,45 +710,55 @@ orthogonal basis of @code{span (A)}.
 %!
 %! [q, r] = qr (a);
 %! [qe, re] = qr (a, 0);
+%! [qe2, re2] = qr (a, "econ");
 %!
 %! assert (q * r, a, sqrt (eps));
 %! assert (qe * re, a, sqrt (eps));
+%! assert (qe2 * re2, a, sqrt (eps));
 
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %!
 %! [q, r] = qr (a);
 %! [qe, re] = qr (a, 0);
+%! [qe2, re2] = qr (a, "econ");
 %!
 %! assert (q * r, a, sqrt (eps));
 %! assert (qe * re, a, sqrt (eps));
+%! assert (qe2 * re2, a, sqrt (eps));
 
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %!
 %! [q, r, p] = qr (a);  # FIXME: not giving right dimensions.
 %! [qe, re, pe] = qr (a, 0);
+%! [qe2, re2, pe2] = qr (a, "econ");
 %!
 %! assert (q * r, a * p, sqrt (eps));
 %! assert (qe * re, a(:, pe), sqrt (eps));
+%! assert (qe2 * re2, a(:, pe2), sqrt (eps));
 
 %!test
 %! a = [0, 2; 2, 1; 1, 2];
 %!
 %! [q, r] = qr (a);
 %! [qe, re] = qr (a, 0);
+%! [qe2, re2] = qr (a, "econ");
 %!
 %! assert (q * r, a, sqrt (eps));
 %! assert (qe * re, a, sqrt (eps));
+%! assert (qe2 * re2, a, sqrt (eps));
 
 %!test
 %! a = [0, 2; 2, 1; 1, 2];
 %!
 %! [q, r, p] = qr (a);
 %! [qe, re, pe] = qr (a, 0);
+%! [qe2, re2, pe2] = qr (a, "econ");
 %!
 %! assert (q * r, a * p, sqrt (eps));
 %! assert (qe * re, a(:, pe), sqrt (eps));
+%! assert (qe2 * re2, a(:, pe2), sqrt (eps));
 
 %!test
 %! a = [0, 2, 1; 2, 1, 2; 3, 1, 2];
@@ -784,13 +800,21 @@ orthogonal basis of @code{span (A)}.
 %! assert (r, re, sqrt (eps));
 %! assert (q'*b, c, sqrt (eps));
 
+## Empty matrices
 %!test
 %! assert (qr (zeros (0, 0)), zeros (0, 0))
 %! assert (qr (zeros (1, 0)), zeros (1, 0))
 %! assert (qr (zeros (0, 1)), zeros (0, 1))
 
+%!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE") <*63069>
+%! assert (qr (sparse (0, 0)), sparse (0, 0))
+%! assert (qr (sparse (1, 0)), sparse (1, 0))
+%! assert (qr (sparse (0, 1)), sparse (0, 1))
+
 %!error qr ()
 %!error qr ([1, 2; 3, 4], 0, 2)
+%!error <option string must be .*, not "foo"> qr (magic (3), "foo")
+%!error <option string must be .*, not "foo"> qr (magic (3), rand (3, 1), "foo")
 %!error <too many output arguments for dense A with B>
 %! [q, r, p] = qr (rand (3, 2), rand (3, 1));
 %!error <too many output arguments for dense A with B>
@@ -1417,14 +1441,16 @@ economized (R is square).
 %! [Q,R] = qrupdate (Q, R, single (u), single (v));
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R)-R), Inf) == 0);
-%! assert (norm (vec (Q*R - single (A) - single (u)*single (v)'), Inf) < norm (single (A))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single (A) - single (u)*single (v)'), Inf)
+%!         < norm (single (A))*1e1*eps ("single"));
 %!
 %!test
 %! [Q,R] = qr (single (Ac));
 %! [Q,R] = qrupdate (Q, R, single (uc), single (vc));
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R)-R), Inf) == 0);
-%! assert (norm (vec (Q*R - single (Ac) - single (uc)*single (vc)'), Inf) < norm (single (Ac))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single (Ac) - single (uc)*single (vc)'), Inf)
+%!         < norm (single (Ac))*1e1*eps ("single"));
 */
 
 DEFUN (qrinsert, args, ,
@@ -1599,13 +1625,15 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrinsert (Q, R, 3, single (u));
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([A(:,1:2) u A(:,3)])), Inf) < norm (single (A))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single ([A(:,1:2) u A(:,3)])), Inf)
+%!         < norm (single (A))*1e1*eps ("single"));
 %!test
 %! [Q,R] = qr (single (Ac));
 %! [Q,R] = qrinsert (Q, R, 3, single (uc));
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([Ac(:,1:2) uc Ac(:,3)])), Inf) < norm (single (Ac))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single ([Ac(:,1:2) uc Ac(:,3)])), Inf)
+%!         < norm (single (Ac))*1e1*eps ("single"));
 %!test
 %! x = single ([0.85082  0.76426  0.42883 ]);
 %!
@@ -1613,7 +1641,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
 %! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf) < norm (single (A))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf)
+%!         < norm (single (A))*1e1*eps ("single"));
 %!test
 %! x = single ([0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ]);
 %!
@@ -1621,7 +1650,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
 %! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([Ac(1:2,:);x;Ac(3:5,:)])), Inf) < norm (single (Ac))*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - single ([Ac(1:2,:);x;Ac(3:5,:)])), Inf)
+%!         < norm (single (Ac))*1e1*eps ("single"));
 */
 
 DEFUN (qrdelete, args, ,
@@ -1815,7 +1845,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3);
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
 %!
 %!test
 %! AA = single ([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1828,8 +1859,9 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3);
 %! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps ("single"));
-%!
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
+
 %!test
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
 %!               0.594638  0.425302  0.562834  0.603537;
@@ -1841,7 +1873,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3, "row");
 %! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1.5e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
 %!testif HAVE_QRUPDATE
 %! ## Same test as above but with more precicision
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
@@ -1854,7 +1887,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3, "row");
 %! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
 %!
 %!test
 %! AA = single ([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1867,7 +1901,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %! [Q,R] = qrdelete (Q, R, 3, "row");
 %! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1e1*eps ("single"));
 %! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
+%!         < norm (AA)*1e1*eps ("single"));
 */
 
 DEFUN (qrshift, args, ,

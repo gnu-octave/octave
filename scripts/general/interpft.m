@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} interpft (@var{x}, @var{n})
-## @deftypefnx {} {} interpft (@var{x}, @var{n}, @var{dim})
+## @deftypefn  {} {@var{y} =} interpft (@var{x}, @var{n})
+## @deftypefnx {} {@var{y} =} interpft (@var{x}, @var{n}, @var{dim})
 ##
 ## Fourier interpolation.
 ##
@@ -41,7 +41,7 @@
 ## @seealso{interp1}
 ## @end deftypefn
 
-function z = interpft (x, n, dim)
+function y = interpft (x, n, dim)
 
   if (nargin < 2)
     print_usage ();
@@ -70,36 +70,36 @@ function z = interpft (x, n, dim)
   m = rows (x);
 
   inc = ceil (m/n);
-  y = fft (x) / m;
+  xfft = fft (x) / m;
   k = ceil (m / 2);
   sz = size (x);
   sz(1) = n * inc - m;
 
   idx = repmat ({':'}, nd, 1);
   idx{1} = 1:k;
-  z = cat (1, y(idx{:}), zeros (sz));
+  y = cat (1, xfft(idx{:}), zeros (sz));
   idx{1} = k+1:m;
-  z = cat (1, z, y(idx{:}));
+  y = cat (1, y, xfft(idx{:}));
 
   ## When m is an even number of rows, the FFT has a single Nyquist bin.
   ## If zero-padded above, distribute the value of the Nyquist bin evenly
   ## between the new corresponding positive and negative frequency bins.
   if (sz(1) > 0 && k == m/2)
     idx{1} = n * inc - k + 1;
-    tmp = z(idx{:}) / 2;
-    z(idx{:}) = tmp;
+    tmp = y(idx{:}) / 2;
+    y(idx{:}) = tmp;
     idx{1} = k + 1;
-    z(idx{:}) = tmp;
+    y(idx{:}) = tmp;
   endif
 
-  z = n * ifft (z);
+  y = n * ifft (y);
 
   if (inc != 1)
     sz(1) = n;
-    z = inc * reshape (z(1:inc:end), sz);
+    y = inc * reshape (y(1:inc:end), sz);
   endif
 
-  z = ipermute (z, perm);
+  y = ipermute (y, perm);
 
 endfunction
 

@@ -71,7 +71,7 @@ octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
             m_data[k++] = ovl(i);
         }
 
-      assert (k == nel);
+      panic_unless (k == nel);
     }
 
 }

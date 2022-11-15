@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} cov (@var{x})
-## @deftypefnx {} {} cov (@var{x}, @var{opt})
-## @deftypefnx {} {} cov (@var{x}, @var{y})
-## @deftypefnx {} {} cov (@var{x}, @var{y}, @var{opt})
+## @deftypefn  {} {@var{c} =} cov (@var{x})
+## @deftypefnx {} {@var{c} =} cov (@var{x}, @var{opt})
+## @deftypefnx {} {@var{c} =} cov (@var{x}, @var{y})
+## @deftypefnx {} {@var{c} =} cov (@var{x}, @var{y}, @var{opt})
 ## Compute the covariance matrix.
 ##
 ## If each row of @var{x} and @var{y} is an observation, and each column is

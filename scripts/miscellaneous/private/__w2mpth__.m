@@ -64,12 +64,12 @@ endfunction
 
 ## Use single quote strings for winpaths to cope with backslashes.
 ## These tests are commented out until a better place is found (bug #44581)
-##%!test
-##%! if (ispc)
-##%!   assert (__w2mpth__ ('file.fil'), 'file.fil');
-##%!   assert (__w2mpth__ ('\file.fil'), '/file.fil');
-##%!   assert (__w2mpth__ ('G:\file.fil'), '/G/file.fil');
-##%!   assert (__w2mpth__ ('r:\subdir\file.fil'), '/r/subdir/file.fil');
-##%!   assert (__w2mpth__ ('relative\path\to\file.dat'),
-##%!                       'relative/path/to/file.dat')
-##%! endif
+%!#test
+%!# if (ispc)
+%!#   assert (__w2mpth__ ('file.fil'), 'file.fil');
+%!#   assert (__w2mpth__ ('\file.fil'), '/file.fil');
+%!#   assert (__w2mpth__ ('G:\file.fil'), '/G/file.fil');
+%!#   assert (__w2mpth__ ('r:\subdir\file.fil'), '/r/subdir/file.fil');
+%!#   assert (__w2mpth__ ('relative\path\to\file.dat'),
+%!#                       'relative/path/to/file.dat')
+%!# endif

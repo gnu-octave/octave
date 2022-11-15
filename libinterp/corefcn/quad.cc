@@ -134,7 +134,7 @@ DEFMETHODX ("quad", Fquad, interp, args, ,
 @deftypefn  {} {@var{q} =} quad (@var{f}, @var{a}, @var{b})
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})
 @deftypefnx {} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
-@deftypefnx {} {[@var{q}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})
+@deftypefnx {} {[@var{q}, @var{ier}, @var{nfev}, @var{err}] =} quad (@dots{})
 Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using
 Fortran routines from @w{@sc{quadpack}}.
 
@@ -161,7 +161,7 @@ The result of the integration is returned in @var{q}.
 @var{ier} contains an integer error code (0 indicates a successful
 integration).
 
-@var{nfun} indicates the number of function evaluations that were
+@var{nfev} indicates the number of function evaluations that were
 made.
 
 @var{err} contains an estimate of the error in the solution.
@@ -220,7 +220,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
         }
 
       octave_idx_type ier = 0;
-      octave_idx_type nfun = 0;
+      octave_idx_type nfev = 0;
       float abserr = 0.0;
       float val = 0.0;
       bool have_sing = false;
@@ -262,7 +262,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
               FloatIndefQuad iq (quad_float_user_function, bound,
                                  indef_type);
               iq.set_options (quad_opts);
-              val = iq.float_integrate (ier, nfun, abserr);
+              val = iq.float_integrate (ier, nfev, abserr);
             }
           else
             {
@@ -270,13 +270,13 @@ variable by routines @code{dblquad} and @code{triplequad}.
                 {
                   FloatDefQuad dq (quad_float_user_function, a, b, sing);
                   dq.set_options (quad_opts);
-                  val = dq.float_integrate (ier, nfun, abserr);
+                  val = dq.float_integrate (ier, nfev, abserr);
                 }
               else
                 {
                   FloatDefQuad dq (quad_float_user_function, a, b);
                   dq.set_options (quad_opts);
-                  val = dq.float_integrate (ier, nfun, abserr);
+                  val = dq.float_integrate (ier, nfev, abserr);
                 }
             }
           break;
@@ -286,7 +286,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
           break;
         }
 
-      retval = ovl (val, ier, nfun, abserr);
+      retval = ovl (val, ier, nfev, abserr);
 
     }
   else
@@ -316,7 +316,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
         }
 
       octave_idx_type ier = 0;
-      octave_idx_type nfun = 0;
+      octave_idx_type nfev = 0;
       double abserr = 0.0;
       double val = 0.0;
       bool have_sing = false;
@@ -357,7 +357,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
             {
               IndefQuad iq (quad_user_function, bound, indef_type);
               iq.set_options (quad_opts);
-              val = iq.integrate (ier, nfun, abserr);
+              val = iq.integrate (ier, nfev, abserr);
             }
           else
             {
@@ -365,13 +365,13 @@ variable by routines @code{dblquad} and @code{triplequad}.
                 {
                   DefQuad dq (quad_user_function, a, b, sing);
                   dq.set_options (quad_opts);
-                  val = dq.integrate (ier, nfun, abserr);
+                  val = dq.integrate (ier, nfev, abserr);
                 }
               else
                 {
                   DefQuad dq (quad_user_function, a, b);
                   dq.set_options (quad_opts);
-                  val = dq.integrate (ier, nfun, abserr);
+                  val = dq.integrate (ier, nfev, abserr);
                 }
             }
           break;
@@ -381,7 +381,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
           break;
         }
 
-      retval = ovl (val, ier, nfun, abserr);
+      retval = ovl (val, ier, nfev, abserr);
     }
 
   return retval;
@@ -393,17 +393,17 @@ variable by routines @code{dblquad} and @code{triplequad}.
 %!endfunction
 
 %!test
-%! [v, ier, nfun, err] = quad ("__f", 0, 5);
+%! [v, ier, nfev, err] = quad ("__f", 0, 5);
 %! assert (ier, 0);
 %! assert (v, 17.5, sqrt (eps));
-%! assert (nfun > 0);
+%! assert (nfev > 0);
 %! assert (err < sqrt (eps));
 
 %!test
-%! [v, ier, nfun, err] = quad ("__f", single (0), single (5));
+%! [v, ier, nfev, err] = quad ("__f", single (0), single (5));
 %! assert (ier, 0);
 %! assert (v, 17.5, sqrt (eps ("single")));
-%! assert (nfun > 0);
+%! assert (nfev > 0);
 %! assert (err < sqrt (eps ("single")));
 
 %!function y = __f (x)
@@ -411,43 +411,43 @@ variable by routines @code{dblquad} and @code{triplequad}.
 %!endfunction
 
 %!test
-%!  [v, ier, nfun, err] = quad ("__f", 0.001, 3);
+%!  [v, ier, nfev, err] = quad ("__f", 0.001, 3);
 %! assert (ier == 0 || ier == 1);
 %! assert (v, 1.98194120273598, sqrt (eps));
-%! assert (nfun > 0);
+%! assert (nfev > 0);
 
 %!test
-%!  [v, ier, nfun, err] = quad (@__f, 0.001, 3);
+%!  [v, ier, nfev, err] = quad (@__f, 0.001, 3);
 %! assert (ier == 0 || ier == 1);
 %! assert (v, 1.98194120273598, sqrt (eps));
-%! assert (nfun > 0);
+%! assert (nfev > 0);
 
 %!test
 %!  fstr = "x .* sin (1 ./ x) .* sqrt (abs (1 - x))";
-%!  [v, ier, nfun, err] = quad (fstr, 0.001, 3);
+%!  [v, ier, nfev, err] = quad (fstr, 0.001, 3);
 %! assert (ier == 0 || ier == 1);
 %! assert (v, 1.98194120273598, sqrt (eps));
-%! assert (nfun > 0);
+%! assert (nfev > 0);
 
 %!test
 %!  anon_fcn = @(x) x .* sin (1 ./ x) .* sqrt (abs (1 - x));
-%!  [v, ier, nfun, err] = quad (anon_fcn, 0.001, 3);
+%!  [v, ier, nfev, err] = quad (anon_fcn, 0.001, 3);
 %! assert (ier == 0 || ier == 1);
 %! assert (v, 1.98194120273598, sqrt (eps));
-%! assert (nfun > 0);
+%! assert (nfev > 0);
 
 %!test
 %!  inline_fcn = inline ("x .* sin (1 ./ x) .* sqrt (abs (1 - x))", "x");
-%!  [v, ier, nfun, err] = quad (inline_fcn, 0.001, 3);
+%!  [v, ier, nfev, err] = quad (inline_fcn, 0.001, 3);
 %! assert (ier == 0 || ier == 1);
 %! assert (v, 1.98194120273598, sqrt (eps));
-%! assert (nfun > 0);
+%! assert (nfev > 0);
 
 %!test
-%!  [v, ier, nfun, err] = quad ("__f", single (0.001), single (3));
+%!  [v, ier, nfev, err] = quad ("__f", single (0.001), single (3));
 %! assert (ier == 0 || ier == 1);
 %! assert (v, 1.98194120273598, sqrt (eps ("single")));
-%! assert (nfun > 0);
+%! assert (nfev > 0);
 
 %!error quad ()
 %!error quad ("__f", 1, 2, 3, 4, 5)

@@ -71,7 +71,7 @@ static octave_value_list
 get_output_list (error_system& es,
                  octave_idx_type count, octave_idx_type nargout,
                  const octave_value_list& inputlist,
-                 octave_value& func,
+                 octave_value& fcn,
                  octave_value& error_handler)
 {
   octave_value_list tmp;
@@ -80,14 +80,13 @@ get_output_list (error_system& es,
 
   try
     {
-      tmp = feval (func, inputlist, nargout);
+      tmp = feval (fcn, inputlist, nargout);
     }
   catch (const execution_exception& ee)
     {
       if (error_handler.is_defined ())
         {
-          interpreter& interp
-            = __get_interpreter__ ("get_output_list");
+          interpreter& interp = __get_interpreter__ ();
 
           es.save_exception (ee);
           interp.recover_from_exception ();
@@ -270,20 +269,21 @@ get_mapper_fun_options (symbol_table& symtab,
 
 DEFMETHOD (cellfun, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} cellfun (@var{name}, @var{C})
-@deftypefnx {} {} cellfun ("size", @var{C}, @var{k})
-@deftypefnx {} {} cellfun ("isclass", @var{C}, @var{class})
-@deftypefnx {} {} cellfun (@var{func}, @var{C})
-@deftypefnx {} {} cellfun (@var{func}, @var{C}, @var{D})
-@deftypefnx {} {[@var{a}, @dots{}] =} cellfun (@dots{})
-@deftypefnx {} {} cellfun (@dots{}, "ErrorHandler", @var{errfunc})
-@deftypefnx {} {} cellfun (@dots{}, "UniformOutput", @var{val})
+@deftypefn  {} {@var{A} =} cellfun ("@var{fcn}", @var{C})
+@deftypefnx {} {@var{A} =} cellfun ("size", @var{C}, @var{k})
+@deftypefnx {} {@var{A} =} cellfun ("isclass", @var{C}, @var{class})
+@deftypefnx {} {@var{A} =} cellfun (@@@var{fcn}, @var{C})
+@deftypefnx {} {@var{A} =} cellfun (@var{fcn}, @var{C})
+@deftypefnx {} {@var{A} =} cellfun (@var{fcn}, @var{C1}, @var{C2}, @dots{})
+@deftypefnx {} {[@var{A1}, @var{A2}, @dots{}] =} cellfun (@dots{})
+@deftypefnx {} {@var{A} =} cellfun (@dots{}, "ErrorHandler", @var{errfcn})
+@deftypefnx {} {@var{A} =} cellfun (@dots{}, "UniformOutput", @var{val})
 
-Evaluate the function named @var{name} on the elements of the cell array
+Evaluate the function named "@var{fcn}" on the elements of the cell array
 @var{C}.
 
 Elements in @var{C} are passed on to the named function individually.  The
-function @var{name} can be one of the functions
+function @var{fcn} can be one of the functions
 
 @table @code
 @item isempty
@@ -316,11 +316,10 @@ Return the size along the @var{k}-th dimension.
 Return 1 for elements of @var{class}.
 @end table
 
-Additionally, @code{cellfun} accepts an arbitrary function @var{func}
-in the form of an inline function, function handle, or the name of a
-function (in a character string).  The function can take one or more
-arguments, with the inputs arguments given by @var{C}, @var{D}, etc.
-Equally the function can return one or more output arguments.  For example:
+Additionally, @code{cellfun} accepts an arbitrary function @var{fcn} in the
+form of an inline function, function handle, or the name of a function (in a
+character string).  The function can take one or more arguments, with the
+inputs arguments given by @var{C1}, @var{C2}, etc.  For example:
 
 @example
 @group
@@ -329,9 +328,10 @@ cellfun ("atan2", @{1, 0@}, @{0, 1@})
 @end group
 @end example
 
-The number of output arguments of @code{cellfun} matches the number of
-output arguments of the function.  The outputs of the function will be
-collected into the output arguments of @code{cellfun} like this:
+The number of output arguments of @code{cellfun} matches the number of output
+arguments of the function and can be greater than one.  When there are multiple
+outputs of the function they will be collected into the output arguments of
+@code{cellfun} like this:
 
 @example
 @group
@@ -348,14 +348,14 @@ endfunction
 @end group
 @end example
 
-Note that per default the output argument(s) are arrays of the same size as
+Note that, per default, the output argument(s) are arrays of the same size as
 the input arguments.  Input arguments that are singleton (1x1) cells will be
 automatically expanded to the size of the other arguments.
 
-If the parameter @qcode{"UniformOutput"} is set to true (the default),
-then the function must return scalars which will be concatenated into the
-return array(s).  If @qcode{"UniformOutput"} is false, the outputs are
-concatenated into a cell array (or cell arrays).  For example:
+If the parameter @qcode{"UniformOutput"} is set to true (the default), then the
+function must return scalars which will be concatenated into the return
+array(s).  If @qcode{"UniformOutput"} is false, the outputs are concatenated
+into a cell array (or cell arrays).  For example:
 
 @example
 @group
@@ -365,17 +365,17 @@ cellfun ("tolower", @{"Foo", "Bar", "FooBar"@},
 @end group
 @end example
 
-Given the parameter @qcode{"ErrorHandler"}, then @var{errfunc} defines a
-function to call in case @var{func} generates an error.  The form of the
+Given the parameter @qcode{"ErrorHandler"}, then @var{errfcn} defines a
+function to call in case @var{fcn} generates an error.  The form of the
 function is
 
 @example
-function [@dots{}] = errfunc (@var{s}, @dots{})
+function [@dots{}] = errfcn (@var{s}, @dots{})
 @end example
 
 @noindent
-where there is an additional input argument to @var{errfunc} relative to
-@var{func}, given by @var{s}.  This is a structure with the elements
+where there is an additional input argument to @var{errfcn} relative to
+@var{fcn}, given by @var{s}.  This is a structure with the elements
 @qcode{"identifier"}, @qcode{"message"}, and @qcode{"index"} giving
 respectively the error identifier, the error message, and the index into the
 input arguments of the element that caused the error.  For example:
@@ -388,18 +388,18 @@ cellfun ("factorial", @{-1,2@}, "ErrorHandler", @@foo)
 @end group
 @end example
 
-Use @code{cellfun} intelligently.  The @code{cellfun} function is a
-useful tool for avoiding loops.  It is often used with anonymous
-function handles; however, calling an anonymous function involves an
-overhead quite comparable to the overhead of an m-file function.
-Passing a handle to a built-in function is faster, because the
-interpreter is not involved in the internal loop.  For example:
+Use @code{cellfun} intelligently.  The @code{cellfun} function is a useful tool
+for avoiding loops.  It is often used with anonymous function handles; however,
+calling an anonymous function involves an overhead quite comparable to the
+overhead of an m-file function.  Passing a handle to a built-in function is
+faster, because the interpreter is not involved in the internal loop.  For
+example:
 
 @example
 @group
-a = @{@dots{}@}
-v = cellfun (@@(x) det (x), a); # compute determinants
-v = cellfun (@@det, a); # faster
+C = @{@dots{}@}
+v = cellfun (@@(x) det (x), C); # compute determinants
+v = cellfun (@@det, C);         # 40% faster
 @end group
 @end example
 
@@ -417,11 +417,11 @@ v = cellfun (@@det, a); # faster
   octave_value_list retval;
   int nargout1 = (nargout < 1 ? 1 : nargout);
 
-  octave_value func = args(0);
+  octave_value fcn = args(0);
 
   symbol_table& symtab = interp.get_symbol_table ();
 
-  if (func.is_string ())
+  if (fcn.is_string ())
     {
       retval = try_cellfun_internal_ops<boolNDArray, NDArray> (args, nargin);
 
@@ -433,18 +433,18 @@ v = cellfun (@@det, a); # faster
       std::string name = args(0).string_value ();
 
       if (! valid_identifier (name))
-        func = get_function_handle (interp, args(0), "x");
+        fcn = get_function_handle (interp, args(0), "x");
       else
         {
-          func = symtab.find_function (name);
+          fcn = symtab.find_function (name);
 
-          if (func.is_undefined ())
+          if (fcn.is_undefined ())
             error ("cellfun: invalid function NAME: %s", name.c_str ());
         }
     }
 
-  if (! func.is_function_handle () && ! func.is_inline_function ()
-      && ! func.is_function ())
+  if (! fcn.is_function_handle () && ! fcn.is_inline_function ()
+      && ! fcn.is_function ())
     error ("cellfun: argument NAME must be a string or function handle");
 
   bool uniform_output = true;
@@ -456,7 +456,7 @@ v = cellfun (@@det, a); # faster
   // more specific function class, so this can result in fewer polymorphic
   // function calls as the function gets called for each value of the array.
   {
-    if (func.is_function_handle () || func.is_inline_function ())
+    if (fcn.is_function_handle () || fcn.is_inline_function ())
       {
         // FIXME: instead of checking for overloaded functions as we did
         // previously but is no longer possible, we could check whether
@@ -466,7 +466,7 @@ v = cellfun (@@det, a); # faster
         goto nevermind;
       }
 
-    std::string name = func.function_value () -> name ();
+    std::string name = fcn.function_value () -> name ();
     octave_value f = symtab.find_function (name);
 
     if (f.is_defined ())
@@ -489,7 +489,7 @@ v = cellfun (@@det, a); # faster
 
         // Okay, we tried, doesn't work, let's do the best we can instead
         // and avoid polymorphic calls for each element of the array.
-        func = f;
+        fcn = f;
       }
   }
 
@@ -559,7 +559,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (es, count, nargout, inputlist, func,
+            = get_output_list (es, count, nargout, inputlist, fcn,
                                error_handler);
 
           int tmp_numel = tmp.length ();
@@ -645,7 +645,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (es, count, nargout, inputlist, func,
+            = get_output_list (es, count, nargout, inputlist, fcn,
                                error_handler);
 
           if (nargout > 0 && tmp.length () < nargout)
@@ -859,19 +859,27 @@ nevermind:
 %! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!              "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## Input arguments can be of type cell arrays of character or strings
@@ -886,18 +894,26 @@ nevermind:
 %!test
 %! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, ...
 %!              "ErrorHandler", @__cellfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## Structures cannot be handled by cellfun
@@ -920,18 +936,26 @@ nevermind:
 %!test
 %! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, ...
 %!              "ErrorHandler", @__cellfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test  # Overwriting setting of "UniformOutput" true
 %! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, ...
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## Input arguments can be of type cell array of structure arrays
@@ -984,7 +1008,8 @@ nevermind:
 %!assert (cellfun ("size", {zeros([1,2,3]),1}, 2), [2,1])
 %!assert (cellfun ("size", {zeros([1,2,3]),1}, 3), [3,1])
 %!assert (cellfun (@atan2, {1,1}, {1,2}), [atan2(1,1), atan2(1,2)])
-%!assert (cellfun (@atan2, {1,1}, {1,2},"UniformOutput", false), {atan2(1,1), atan2(1,2)})
+%!assert (cellfun (@atan2, {1,1}, {1,2},"UniformOutput", false),
+%!        {atan2(1,1), atan2(1,2)})
 %!assert (cellfun (@sin, {1,2;3,4}), sin ([1,2;3,4]))
 %!assert (cellfun (@atan2, {1,1;1,1}, {1,2;1,2}), atan2 ([1,1;1,1],[1,2;1,2]))
 %!error cellfun (@factorial, {-1,3})
@@ -997,9 +1022,12 @@ nevermind:
 %! assert (c, {".d", ".h"});
 
 %!assert <*40467> (cellfun (@isreal, {1 inf nan []}), [true, true, true, true])
-%!assert <*40467> (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true})
-%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false])
-%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false})
+%!assert <*40467> (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false),
+%!                 {true, true, true, true})
+%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}),
+%!                 [false, false, false, false])
+%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false),
+%!                 {false, false, false, false})
 
 %!error cellfun (1)
 %!error cellfun ("isclass", 1)
@@ -1015,7 +1043,8 @@ nevermind:
 %!endfunction
 %!test <*58411>
 %! global __errmsg;
-%! assert (cellfun (@factorial, {1, 2, -3}, "ErrorHandler", @__errfcn), [1, 2, NaN]);
+%! assert (cellfun (@factorial, {1, 2, -3}, "ErrorHandler", @__errfcn),
+%!         [1, 2, NaN]);
 %! assert (! isempty (__errmsg));
 %! clear -global __errmsg;
 */
@@ -1026,31 +1055,38 @@ nevermind:
 
 DEFMETHOD (arrayfun, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} arrayfun (@var{func}, @var{A})
-@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A})
-@deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})
-@deftypefnx {} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{A}, @dots{})
-@deftypefnx {} {} arrayfun (@dots{}, "UniformOutput", @var{val})
-@deftypefnx {} {} arrayfun (@dots{}, "ErrorHandler", @var{errfunc})
+@deftypefn  {} {@var{B} =} arrayfun (@var{fcn}, @var{A})
+@deftypefnx {} {@var{B} =} arrayfun (@var{fcn}, @var{A1}, @var{A2}, @dots{})
+@deftypefnx {} {[@var{B1}, @var{B2}, @dots{}] =} arrayfun (@var{fcn}, @var{A}, @dots{})
+@deftypefnx {} {@var{B} =} arrayfun (@dots{}, "UniformOutput", @var{val})
+@deftypefnx {} {@var{B} =} arrayfun (@dots{}, "ErrorHandler", @var{errfcn})
 
 Execute a function on each element of an array.
 
 This is useful for functions that do not accept array arguments.  If the
-function does accept array arguments it is better to call the function
+function does accept array arguments it is @emph{better} to call the function
 directly.
 
-The first input argument @var{func} can be a string, a function
-handle, an inline function, or an anonymous function.  The input
-argument @var{A} can be a logic array, a numeric array, a string
-array, a structure array, or a cell array.  By a call of the function
-@code{arrayfun} all elements of @var{A} are passed on to the named
-function @var{func} individually.
+The first input argument @var{fcn} can be a string, a function handle, an
+inline function, or an anonymous function.  The input argument @var{A} can be a
+logical array, a numeric array, a string array, a structure array, or a cell
+array.  @code{arrayfun} passes all elements of @var{A} individually to the
+function @var{fcn} and collects the results.  The equivalent pseudo-code is
 
-The named function can also take more than two input arguments, with
-the input arguments given as third input argument @var{b}, fourth
-input argument @var{c}, @dots{}  If given more than one array input
-argument then all input arguments must have the same sizes, for
-example:
+@example
+@group
+cls = class (@var{fcn} (@var{A}(1));
+@var{B} = zeros (size (@var{A}), cls);
+for i = 1:numel (@var{A})
+  @var{B}(i) = @var{fcn} (@var{A}(i))
+endfor
+@end group
+@end example
+
+The named function can also take more than two input arguments, with the input
+arguments given as third input argument @var{A2}, fourth input argument
+@var{A2}, @dots{}  If given more than one array input argument then all input
+arguments must have the same sizes.  For example:
 
 @example
 @group
@@ -1061,10 +1097,10 @@ arrayfun (@@atan2, [1, 0], [0, 1])
 
 If the parameter @var{val} after a further string input argument
 @qcode{"UniformOutput"} is set @code{true} (the default), then the named
-function @var{func} must return a single element which then will be
-concatenated into the return value and is of type matrix.  Otherwise,
-if that parameter is set to @code{false}, then the outputs are
-concatenated in a cell array.  For example:
+function @var{fcn} must return a single element which then will be concatenated
+into the return value and is of type matrix.  Otherwise, if that parameter is
+set to @code{false}, then the outputs are concatenated in a cell array.  For
+example:
 
 @example
 @group
@@ -1078,9 +1114,8 @@ arrayfun (@@(x,y) x:y, "abc", "def", "UniformOutput", false)
 @end group
 @end example
 
-If more than one output arguments are given then the named function
-must return the number of return values that also are expected, for
-example:
+If more than one output arguments are given then the named function must return
+the number of return values that also are expected, for example:
 
 @example
 @group
@@ -1104,25 +1139,24 @@ C =
 @end group
 @end example
 
-If the parameter @var{errfunc} after a further string input argument
+If the parameter @var{errfcn} after a further string input argument
 @qcode{"ErrorHandler"} is another string, a function handle, an inline
-function, or an anonymous function, then @var{errfunc} defines a
-function to call in the case that @var{func} generates an error.
-The definition of the function must be of the form
+function, or an anonymous function, then @var{errfcn} defines a function to
+call in the case that @var{fcn} generates an error.  The definition of the
+function must be of the form
 
 @example
-function [@dots{}] = errfunc (@var{s}, @dots{})
+function [@dots{}] = errfcn (@var{s}, @dots{})
 @end example
 
 @noindent
-where there is an additional input argument to @var{errfunc}
-relative to @var{func}, given by @var{s}.  This is a structure with
-the elements @qcode{"identifier"}, @qcode{"message"}, and
-@qcode{"index"} giving, respectively, the error identifier, the error
-message, and the index of the array elements that caused the error.  The
-size of the output argument of @var{errfunc} must have the same size as the
-output argument of @var{func}, otherwise a real error is thrown.  For
-example:
+where there is an additional input argument to @var{errfcn} relative to
+@var{fcn}, given by @var{s}.  This is a structure with the elements
+@qcode{"identifier"}, @qcode{"message"}, and @qcode{"index"} giving,
+respectively, the error identifier, the error message, and the index of the
+array elements that caused the error.  The size of the output argument of
+@var{errfcn} must have the same size as the output argument of @var{fcn},
+otherwise a real error is thrown.  For example:
 
 @example
 @group
@@ -1147,22 +1181,22 @@ arrayfun (@@str2num, [1234],
   octave_value_list retval;
   int nargout1 = (nargout < 1 ? 1 : nargout);
   bool symbol_table_lookup = false;
-  octave_value func = args(0);
+  octave_value fcn = args(0);
 
   symbol_table& symtab = interp.get_symbol_table ();
 
-  if (func.is_string ())
+  if (fcn.is_string ())
     {
       // See if we can convert the string into a function.
       std::string name = args(0).string_value ();
 
       if (! valid_identifier (name))
-        func = get_function_handle (interp, args(0), "x");
+        fcn = get_function_handle (interp, args(0), "x");
       else
         {
-          func = symtab.find_function (name);
+          fcn = symtab.find_function (name);
 
-          if (func.is_undefined ())
+          if (fcn.is_undefined ())
             error_with_id ("Octave:invalid-input-arg",
                            "arrayfun: invalid function NAME: %s",
                            name.c_str ());
@@ -1171,8 +1205,8 @@ arrayfun (@@str2num, [1234],
         }
     }
 
-  if (func.is_function_handle () || func.is_inline_function ()
-      || func.is_function ())
+  if (fcn.is_function_handle () || fcn.is_inline_function ()
+      || fcn.is_function ())
     {
       // The following is an optimization because the symbol table can give a
       // more specific function class, so this can result in fewer polymorphic
@@ -1180,7 +1214,7 @@ arrayfun (@@str2num, [1234],
 
       if (! symbol_table_lookup)
         {
-          if (func.is_function_handle () || func.class_name () == "inline")
+          if (fcn.is_function_handle () || fcn.class_name () == "inline")
             {
               // FIXME: instead of checking for overloaded functions as
               // we did previously but is no longer possible, we could
@@ -1192,10 +1226,10 @@ arrayfun (@@str2num, [1234],
             }
 
           octave_value f
-            = symtab.find_function (func.function_value () -> name ());
+            = symtab.find_function (fcn.function_value () -> name ());
 
           if (f.is_defined ())
-            func = f;
+            fcn = f;
         }
 
     nevermind:
@@ -1266,7 +1300,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (es, count, nargout, inputlist, func,
+                = get_output_list (es, count, nargout, inputlist, fcn,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -1358,7 +1392,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (es, count, nargout, inputlist, func,
+                = get_output_list (es, count, nargout, inputlist, fcn,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -1537,19 +1571,27 @@ arrayfun (@@str2num, [1234],
 %! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!               "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test  # Overwriting setting of "UniformOutput" true
 %! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, ...
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## Input arguments can be of type character or strings
@@ -1565,7 +1607,8 @@ arrayfun (@@str2num, [1234],
 %!test
 %! A = arrayfun (@(x,y) cell2str (x,y), ["a", "d"], ["c", "f"], ...
 %!               "ErrorHandler", @__arrayfunerror);
-%! B = isfield (A(1), "identifier") && isfield (A(1), "message") && isfield (A(1), "index");
+%! B = isfield (A(1), "identifier") && isfield (A(1), "message") ...
+%!     && isfield (A(1), "index");
 %! assert (B, true);
 
 ## Input arguments can be of type structure
@@ -1609,18 +1652,26 @@ arrayfun (@@str2num, [1234],
 %! assert (A, {true, false});
 %!test
 %! A = arrayfun (@(x,y) num2str(x,y), {1.1, 4.2}, {3.1, 2}, "ErrorHandler", @__arrayfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test
 %! A = arrayfun (@(x,y) num2str (x,y), {1.1, 4.2}, {3.1, 2}, ...
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
-%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
-%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
-%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
-%! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))],
+%!         [true, true]);
+%! assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))],
+%!         [true, true]);
+%! assert ([(isempty (A(1).message)), (isempty (A(2).message))],
+%!         [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 */
 
@@ -1944,8 +1995,8 @@ static Cell
 do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
 {
   Cell retval;
-  assert (nd == 1 || nd == 2);
-  assert (a.ndims () == 2);
+  error_unless (nd == 1 || nd == 2);
+  error_unless (a.ndims () == 2);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;
@@ -2001,7 +2052,7 @@ Cell
 do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 {
   Cell retval;
-  assert (nd >= 1);
+  error_unless (nd >= 1);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;
@@ -2065,7 +2116,7 @@ Cell
 do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 {
   Cell retval;
-  assert (nd >= 1);
+  error_unless (nd >= 1);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;

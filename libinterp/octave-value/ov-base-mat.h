@@ -54,31 +54,32 @@ public:
   typedef MT object_type;
 
   octave_base_matrix (void)
-    : octave_base_value (), matrix (), typ (), idx_cache () { }
+    : octave_base_value (), m_matrix (), m_typ (), m_idx_cache () { }
 
   octave_base_matrix (const MT& m, const MatrixType& t = MatrixType ())
-    : octave_base_value (), matrix (m),
-      typ (t.is_known () ? new MatrixType (t) : nullptr), idx_cache ()
+    : octave_base_value (), m_matrix (m),
+      m_typ (t.is_known () ? new MatrixType (t) : nullptr), m_idx_cache ()
   {
-    if (matrix.ndims () == 0)
-      matrix.resize (dim_vector (0, 0));
+    if (m_matrix.ndims () == 0)
+      m_matrix.resize (dim_vector (0, 0));
   }
 
   octave_base_matrix (const octave_base_matrix& m)
-    : octave_base_value (), matrix (m.matrix),
-      typ (m.typ ? new MatrixType (*m.typ) : nullptr),
-      idx_cache (m.idx_cache ? new octave::idx_vector (*m.idx_cache) : nullptr)
+    : octave_base_value (), m_matrix (m.m_matrix),
+      m_typ (m.m_typ ? new MatrixType (*m.m_typ) : nullptr),
+      m_idx_cache (m.m_idx_cache ? new octave::idx_vector (*m.m_idx_cache)
+                                 : nullptr)
   { }
 
   ~octave_base_matrix (void) { clear_cached_info (); }
 
-  std::size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size (void) const { return m_matrix.byte_size (); }
 
-  octave_value squeeze (void) const { return MT (matrix.squeeze ()); }
+  octave_value squeeze (void) const { return MT (m_matrix.squeeze ()); }
 
-  octave_value full_value (void) const { return matrix; }
+  octave_value full_value (void) const { return m_matrix; }
 
-  void maybe_economize (void) { matrix.maybe_economize (); }
+  void maybe_economize (void) { m_matrix.maybe_economize (); }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -113,48 +114,48 @@ public:
 
   OCTINTERP_API void delete_elements (const octave_value_list& idx);
 
-  dim_vector dims (void) const { return matrix.dims (); }
+  dim_vector dims (void) const { return m_matrix.dims (); }
 
-  octave_idx_type numel (void) const { return matrix.numel (); }
+  octave_idx_type numel (void) const { return m_matrix.numel (); }
 
-  int ndims (void) const { return matrix.ndims (); }
+  int ndims (void) const { return m_matrix.ndims (); }
 
-  octave_idx_type nnz (void) const { return matrix.nnz (); }
+  octave_idx_type nnz (void) const { return m_matrix.nnz (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-  { return MT (matrix.reshape (new_dims)); }
+  { return MT (m_matrix.reshape (new_dims)); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-  { return MT (matrix.permute (vec, inv)); }
+  { return MT (m_matrix.permute (vec, inv)); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
-  octave_value all (int dim = 0) const { return matrix.all (dim); }
-  octave_value any (int dim = 0) const { return matrix.any (dim); }
+  octave_value all (int dim = 0) const { return m_matrix.all (dim); }
+  octave_value any (int dim = 0) const { return m_matrix.any (dim); }
 
-  MatrixType matrix_type (void) const { return typ ? *typ : MatrixType (); }
+  MatrixType matrix_type (void) const { return m_typ ? *m_typ : MatrixType (); }
   MatrixType matrix_type (const MatrixType& _typ) const;
 
   octave_value diag (octave_idx_type k = 0) const
-  { return octave_value (matrix.diag (k)); }
+  { return octave_value (m_matrix.diag (k)); }
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const
-  { return octave_value (matrix.diag (m, n)); }
+  { return octave_value (m_matrix.diag (m, n)); }
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-  { return octave_value (matrix.sort (dim, mode)); }
+  { return octave_value (m_matrix.sort (dim, mode)); }
   octave_value sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-  { return octave_value (matrix.sort (sidx, dim, mode)); }
+  { return octave_value (m_matrix.sort (sidx, dim, mode)); }
 
   sortmode issorted (sortmode mode = UNSORTED) const
-  { return matrix.issorted (mode); }
+  { return m_matrix.issorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
-  { return matrix.sort_rows_idx (mode); }
+  { return m_matrix.sort_rows_idx (mode); }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-  { return matrix.is_sorted_rows (mode); }
+  { return m_matrix.is_sorted_rows (mode); }
 
   bool is_matrix_type (void) const { return true; }
 
@@ -184,12 +185,12 @@ public:
   MT& matrix_ref (void)
   {
     clear_cached_info ();
-    return matrix;
+    return m_matrix;
   }
 
   const MT& matrix_ref (void) const
   {
-    return matrix;
+    return m_matrix;
   }
 
   OCTINTERP_API octave_value
@@ -200,27 +201,27 @@ public:
 
   // This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  const void * mex_get_data (void) const { return matrix.data (); }
+  const void * mex_get_data (void) const { return m_matrix.data (); }
 
 protected:
 
-  MT matrix;
+  MT m_matrix;
 
   octave::idx_vector set_idx_cache (const octave::idx_vector& idx) const
   {
-    delete idx_cache;
-    idx_cache = (idx ? new octave::idx_vector (idx) : nullptr);
+    delete m_idx_cache;
+    m_idx_cache = (idx ? new octave::idx_vector (idx) : nullptr);
     return idx;
   }
 
   void clear_cached_info (void) const
   {
-    delete typ; typ = nullptr;
-    delete idx_cache; idx_cache = nullptr;
+    delete m_typ; m_typ = nullptr;
+    delete m_idx_cache; m_idx_cache = nullptr;
   }
 
-  mutable MatrixType *typ;
-  mutable octave::idx_vector *idx_cache;
+  mutable MatrixType *m_typ;
+  mutable octave::idx_vector *m_idx_cache;
 
 private:
 

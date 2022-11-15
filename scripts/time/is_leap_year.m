@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} is_leap_year ()
-## @deftypefnx {} {} is_leap_year (@var{year})
+## @deftypefn  {} {@var{tf} =} is_leap_year ()
+## @deftypefnx {} {@var{tf} =} is_leap_year (@var{year})
 ## Return true if @var{year} is a leap year and false otherwise.
 ##
 ## If no year is specified, @code{is_leap_year} uses the current year.
@@ -41,14 +41,14 @@
 ## @seealso{weekday, eomday, calendar}
 ## @end deftypefn
 
-function retval = is_leap_year (year)
+function tf = is_leap_year (year)
 
   if (nargin == 0)
     t = clock ();
     year = t(1);
   endif
 
-  retval = (rem (year, 4) == 0 & rem (year, 100) != 0) | (rem (year, 400) == 0);
+  tf = (rem (year, 4) == 0 & rem (year, 100) != 0) | (rem (year, 400) == 0);
 
 endfunction
 

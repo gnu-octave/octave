@@ -113,8 +113,7 @@ load_inline_fcn (std::istream& is, bool swap, octave::mach_info::float_format,
         {
           args(0) = std::string (ctmp2);
 
-          octave::interpreter& interp
-            = octave::__get_interpreter__ ("load_inline_fcn");
+          octave::interpreter& interp = octave::__get_interpreter__ ();
 
           octave_value_list tmp_inl = interp.feval ("inline", args, 1);
 
@@ -247,8 +246,7 @@ read_binary_data (std::istream& is, bool swap,
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     error ("load: trouble reading binary file '%s'", filename.c_str ());
 
-  octave::type_info& type_info
-    = octave::__get_type_info__ ("read_binary_data");
+  octave::type_info& type_info = octave::__get_type_info__ ();
 
   // All cases except 255 kept for backwards compatibility
   switch (tmp)

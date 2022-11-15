@@ -27,18 +27,25 @@
 ## @deftypefn  {} {} record (@var{recorder})
 ## @deftypefnx {} {} record (@var{recorder}, @var{length})
 ## Record audio without blocking using the audiorecorder object
-## @var{recorder} until stopped or paused by the @var{stop} or @var{pause}
-## method.
+## @var{recorder} until paused or stopped by the @var{pause} or @var{stop}
+## methods.
 ##
 ## Given the optional argument @var{length}, record for @var{length} seconds.
+## @seealso{@audiorecorder/recordblocking, @audiorecorder/audiorecorder}
 ## @end deftypefn
 
-function record (varargin)
+function record (recorder, length)
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
+  hrecorder = struct (recorder).recorder;
+
+  if (nargin == 1)
+    __recorder_record__ (hrecorder);
+  else
+    __recorder_record__ (hrecorder, length);
   endif
 
-  __recorder_record__ (struct (varargin{1}).recorder, varargin{2:end});
-
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

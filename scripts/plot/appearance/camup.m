@@ -28,8 +28,8 @@
 ## @deftypefnx {} {} camup ([@var{x} @var{y} @var{z}])
 ## @deftypefnx {} {@var{mode} =} camup ("mode")
 ## @deftypefnx {} {} camup (@var{mode})
-## @deftypefnx {} {} camup (@var{ax}, @dots{})
-## Set or get the camera up vector.
+## @deftypefnx {} {} camup (@var{hax}, @dots{})
+## Get or set the camera up vector.
 ##
 ## By default, the camera is oriented so that ``up'' corresponds to the
 ## positive z-axis:
@@ -85,13 +85,13 @@
 ## @end example
 ##
 ## By default, these commands affect the current axis; alternatively, an axis
-## can be specified by the optional argument @var{ax}.
+## can be specified by the optional argument @var{hax}.
 ##
 ## @seealso{campos, camtarget, camva}
 ## @end deftypefn
 
 
-function p = camup (varargin)
+function up = camup (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("camup", varargin{:});
 
@@ -107,13 +107,13 @@ function p = camup (varargin)
 
   prop = "cameraupvector";
   if (nargin == 0)
-    p = get (hax, prop);
+    up = get (hax, prop);
   elseif (nargin == 1 && isnumeric (varargin{1}) && numel (varargin{1}) == 3)
     set (hax, prop, varargin{1});
   elseif (nargin == 1 && ischar (varargin{1}))
     s = varargin{1};
     if (strcmp (s, "mode"))
-      p = get (hax, [prop "mode"]);
+      up = get (hax, [prop "mode"]);
     else
       set (hax, [prop "mode"], s);
     endif
@@ -168,7 +168,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-## test ax input by creating another axis
+## test hax input by creating another axis
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

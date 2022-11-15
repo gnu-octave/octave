@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} vectorize (@var{fun})
-## Create a vectorized version of the inline function @var{fun} by
+## @deftypefn {} {@var{vfcn} =} vectorize (@var{fobj})
+## Create a vectorized version of the inline function @var{fobj} by
 ## replacing all occurrences of @code{*}, @code{/}, etc., with
 ## @code{.*}, @code{./}, etc.
 ##
@@ -35,27 +35,17 @@
 ##
 ## @example
 ## @group
-## fcn = vectorize (inline ("x^2 - 1"))
-##    @result{} fcn = f(x) = x.^2 - 1
-## quadv (fcn, 0, 3)
+## fobj = vectorize (inline ("x^2 - 1"))
+##    @result{} fobj = f(x) = x.^2 - 1
+## quadv (fobj, 0, 3)
 ##    @result{} 6
 ## @end group
 ## @end example
 ## @seealso{inline, formula, argnames}
 ## @end deftypefn
 
-## The following function was translated directly from the original C++
-## version.  Yes, it will be slow, but the use of inline functions is
-## strongly discouraged anyway, and most expressions will probably be
-## short.  It may also be buggy.  Well, don't use this object!  Use
-## function handles instead!
+function vfcn = vectorize (fobj)
 
-function fcn = vectorize (obj)
-
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  fcn = inline (__vectorize__ (obj.expr));
+  vfcn = inline (__vectorize__ (fobj.expr));
 
 endfunction

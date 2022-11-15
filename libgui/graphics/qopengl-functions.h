@@ -63,9 +63,9 @@ namespace octave
 
 #if defined (HAVE_QOPENGLFUNCTIONS_1_1)
 
-    void glAlphaFunc (GLenum func, GLclampf ref)
+    void glAlphaFunc (GLenum fcn, GLclampf ref)
     {
-      m_glfcns.glAlphaFunc (func, ref);
+      m_glfcns.glAlphaFunc (fcn, ref);
     }
 
     void glBegin (GLenum mode)
@@ -150,9 +150,9 @@ namespace octave
       m_glfcns.glDeleteTextures (n, textures);
     }
 
-    void glDepthFunc (GLenum func)
+    void glDepthFunc (GLenum fcn)
     {
-      m_glfcns.glDepthFunc (func);
+      m_glfcns.glDepthFunc (fcn);
     }
 
     void glDisable (GLenum cap)

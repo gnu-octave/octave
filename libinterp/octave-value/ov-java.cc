@@ -1265,7 +1265,8 @@ get_invoke_list (JNIEnv *jni_env, void *jobj_arg)
 }
 
 static octave_value
-convert_to_string (JNIEnv *jni_env, jobject m_java_object, bool force, char type)
+convert_to_string (JNIEnv *jni_env, jobject m_java_object, bool force,
+                   char type)
 {
   octave_value retval;
 
@@ -1274,7 +1275,8 @@ convert_to_string (JNIEnv *jni_env, jobject m_java_object, bool force, char type
       jclass_ref cls (jni_env, jni_env->FindClass ("java/lang/String"));
 
       if (jni_env->IsInstanceOf (m_java_object, cls))
-        retval = octave_value (jstring_to_string (jni_env, m_java_object), type);
+        retval = octave_value (jstring_to_string (jni_env, m_java_object),
+                               type);
       else if (force)
         {
           cls = jni_env->FindClass ("[Ljava/lang/String;");
@@ -2026,10 +2028,10 @@ initialize_java (void)
 }
 
 JNIEXPORT jboolean JNICALL
-Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring funcName,
+Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring fcnName,
                              jobjectArray argin, jobjectArray argout)
 {
-  std::string fname = jstring_to_string (env, funcName);
+  std::string fname = jstring_to_string (env, fcnName);
 
   int nargout = env->GetArrayLength (argout);
   int nargin = env->GetArrayLength (argin);
@@ -2095,8 +2097,7 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
 JNIEXPORT void JNICALL
 Java_org_octave_Octave_doEvalString (JNIEnv *env, jclass, jstring cmd)
 {
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("Java_org_octave_Octave_doEvalString");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   std::string s = jstring_to_string (env, cmd);
   int pstatus;
@@ -2366,7 +2367,8 @@ octave_java::convert_to_str_internal (bool, bool force, char type) const
   JNIEnv *current_env = thread_jni_env ();
 
   if (current_env)
-    return convert_to_string (current_env, TO_JOBJECT (to_java ()), force, type);
+    return convert_to_string (current_env, TO_JOBJECT (to_java ()), force,
+                              type);
   else
     return octave_value ("");
 
@@ -3034,10 +3036,14 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__java_init__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __java_init__ ()
-Internal function used @strong{only} when debugging Java interface.
+@deftypefn {} {@var{status} =} __java_init__ ()
+Internal function used @strong{only} when debugging the Java interface.
 
-Function will directly call initialize_java to create an instance of a JVM.
+This function will directly call @code{initialize_java} to create an instance
+of a JVM.
+
+The return variable @var{status} is 1 if the Java interface has been created,
+and 0 otherwise.
 @end deftypefn */)
 {
 #if defined (HAVE_JAVA)
@@ -3062,8 +3068,7 @@ DEFUN (__java_exit__, , ,
 @deftypefn {} {} __java_exit__ ()
 Internal function used @strong{only} when debugging Java interface.
 
-Function will directly call terminate_jvm to destroy the current JVM
-instance.
+Function will directly call terminate_jvm to destroy the current JVM instance.
 @end deftypefn */)
 {
 #if defined (HAVE_JAVA)
@@ -3334,7 +3339,7 @@ equivalent
 
 DEFUN (__java2mat__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __java2mat__ (@var{javaobj})
+@deftypefn {} {@var{mat} =} __java2mat__ (@var{javaobj})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -3372,7 +3377,7 @@ DEFUN (java_matrix_autoconversion, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} java_matrix_autoconversion ()
 @deftypefnx {} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})
-@deftypefnx {} {} java_matrix_autoconversion (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} java_matrix_autoconversion (@var{new_val}, "local")
 Query or set the internal variable that controls whether Java arrays are
 automatically converted to Octave matrices.
 
@@ -3403,7 +3408,7 @@ DEFUN (java_unsigned_autoconversion, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} java_unsigned_autoconversion ()
 @deftypefnx {} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})
-@deftypefnx {} {} java_unsigned_autoconversion (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val}, "local")
 Query or set the internal variable that controls how integer classes are
 converted when @code{java_matrix_autoconversion} is enabled.
 
@@ -3435,7 +3440,7 @@ DEFUN (debug_java, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_java ()
 @deftypefnx {} {@var{old_val} =} debug_java (@var{new_val})
-@deftypefnx {} {} debug_java (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} debug_java (@var{new_val}, "local")
 Query or set the internal variable that determines whether extra debugging
 information regarding the initialization of the JVM and any Java exceptions
 is printed.
@@ -3466,7 +3471,7 @@ The original variable value is restored when exiting the function.
 
 DEFUN (isjava, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isjava (@var{x})
+@deftypefn {} {@var{tf} =} isjava (@var{x})
 Return true if @var{x} is a Java object.
 @seealso{class, typeinfo, isa, javaObject}
 @end deftypefn */)
@@ -3494,14 +3499,22 @@ Return true if @var{x} is a Java object.
 
 ## Check we can create objects that wrap java literals
 %!testif HAVE_JAVA; usejava ("jvm") <*38821>
-%! assert (class (javaObject ("java.lang.Byte",     uint8 (1))), "java.lang.Byte");
-%! assert (class (javaObject ("java.lang.Byte",      int8 (1))), "java.lang.Byte");
-%! assert (class (javaObject ("java.lang.Short",   uint16 (1))), "java.lang.Short");
-%! assert (class (javaObject ("java.lang.Short",    int16 (1))), "java.lang.Short");
-%! assert (class (javaObject ("java.lang.Integer", uint32 (1))), "java.lang.Integer");
-%! assert (class (javaObject ("java.lang.Integer",  int32 (1))), "java.lang.Integer");
-%! assert (class (javaObject ("java.lang.Long",    uint64 (1))), "java.lang.Long");
-%! assert (class (javaObject ("java.lang.Long",     int64 (1))), "java.lang.Long");
+%! assert (class (javaObject ("java.lang.Byte",     uint8 (1))),
+%!         "java.lang.Byte");
+%! assert (class (javaObject ("java.lang.Byte",      int8 (1))),
+%!         "java.lang.Byte");
+%! assert (class (javaObject ("java.lang.Short",   uint16 (1))),
+%!         "java.lang.Short");
+%! assert (class (javaObject ("java.lang.Short",    int16 (1))),
+%!         "java.lang.Short");
+%! assert (class (javaObject ("java.lang.Integer", uint32 (1))),
+%!         "java.lang.Integer");
+%! assert (class (javaObject ("java.lang.Integer",  int32 (1))),
+%!         "java.lang.Integer");
+%! assert (class (javaObject ("java.lang.Long",    uint64 (1))),
+%!         "java.lang.Long");
+%! assert (class (javaObject ("java.lang.Long",     int64 (1))),
+%!         "java.lang.Long");
 
 ## More checks of java numeric and boolean class instances
 %!testif HAVE_JAVA; usejava ("jvm")
@@ -3559,8 +3572,10 @@ Return true if @var{x} is a Java object.
 %! assert (javaMethod ("valueOf", "java.lang.Long",    int64 (1)), 1)
 %! assert (javaMethod ("valueOf", "java.lang.Float",  single (1)), 1)
 %! assert (javaMethod ("valueOf", "java.lang.Double", double (1)), 1)
-%! assert (class (javaMethod ("valueOf", "java.math.BigDecimal", double (1))), "java.math.BigDecimal")
-%! assert (class (javaMethod ("valueOf", "java.math.BigInteger",  int64 (1))), "java.math.BigInteger")
+%! assert (class (javaMethod ("valueOf", "java.math.BigDecimal", double (1))),
+%!         "java.math.BigDecimal")
+%! assert (class (javaMethod ("valueOf", "java.math.BigInteger",  int64 (1))),
+%!         "java.math.BigInteger")
 
 ## Automatic conversion from string cell array into String[]
 %!testif HAVE_JAVA; usejava ("jvm") <*45290>

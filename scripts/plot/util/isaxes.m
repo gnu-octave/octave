@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isaxes (@var{h})
+## @deftypefn {} {@var{tf} =} isaxes (@var{h})
 ## Return true if @var{h} is an axes graphics handle and false otherwise.
 ##
 ## If @var{h} is a matrix then return a logical array which is true where the
@@ -32,16 +32,16 @@
 ## @seealso{isfigure, ishghandle, isgraphics}
 ## @end deftypefn
 
-function retval = isaxes (h)
+function tf = isaxes (h)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  retval = ishghandle (h);
+  tf = ishghandle (h);
 
-  if (any (retval))
-    retval(retval) = strcmp (get (h(retval), "type"), "axes");
+  if (any (tf))
+    tf(tf) = strcmp (get (h(tf), "type"), "axes");
   endif
 
 endfunction

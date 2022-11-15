@@ -24,12 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} prefsfile ()
+## @deftypefn {} {@var{fname} =} prefsfile ()
 ## Return the full path and name of the file containing Octave preferences.
 ## @end deftypefn
 
-function retval = prefsfile ()
+function fname = prefsfile ()
 
-  retval = [prefdir() filesep() ".octave_prefs"];
+  fname = [prefdir() filesep() ".octave_prefs"];
 
 endfunction

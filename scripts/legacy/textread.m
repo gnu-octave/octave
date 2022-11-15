@@ -266,7 +266,7 @@ function varargout = textread (filename, format = "%f", varargin)
   warning ("off", "Octave:legacy-function", "local");
   [varargout{1:max (nargout, 1)}] = strread (str, format, varargin{:});
 
-  ## Hack to concatenate/reshape numeric output into 2D array (undocumented ML)
+  ## Hack to concatenate/reshape numeric output into 2-D array (undocumented ML)
   ## In ML this only works in case of an empty format string
   if (isempty (format))
     ## Get number of fields per line.
@@ -334,7 +334,7 @@ endfunction
 %! unlink (f);
 %! assert (a, d(2:7, 1), 1e-2);
 
-## Test reading 2D matrix with empty format
+## Test reading 2-D matrix with empty format
 %!test
 %! f = tempname ();
 %! d = rand (5, 2);
@@ -455,82 +455,82 @@ endfunction
 %! unlink (f);
 
 ### Tests with format repeat count #5, nr of data lines = limiting factor
-#%!test
-#%! f = tempname ();
-#%! fid = fopen (f, "w");
-#%! fprintf (fid, "%2d\n%s\n%2dn%s", ...
-#%!                1, "a", 2, "b");
-#%! fclose (fid);
-#%! [a, b] = textread (f, "%d %s", 2);
-#%! assert (a, int32 (1));
-#%! assert (b, {"a"});
+%!#test
+%!# f = tempname ();
+%!# fid = fopen (f, "w");
+%!# fprintf (fid, "%2d\n%s\n%2dn%s", ...
+%!#                1, "a", 2, "b");
+%!# fclose (fid);
+%!# [a, b] = textread (f, "%d %s", 2);
+%!# assert (a, int32 (1));
+%!# assert (b, {"a"});
 
 ### Read multiple lines using empty format string, missing data (should be 0)
-#%!test
-#%! f = tempname ();
-#%! unlink (f);
-#%! fid = fopen (f, "w");
-#%! d = rand (1, 4);
-#%! fprintf (fid, "%f, %f, ,  %f,  %f ", d);
-#%! fclose (fid);
-#%! A = textread (f, "");
-#%! unlink (f);
-#%! assert (A, [ d(1:2) 0 d(3:4)], 1e-6);
+%!#test
+%!# f = tempname ();
+%!# unlink (f);
+%!# fid = fopen (f, "w");
+%!# d = rand (1, 4);
+%!# fprintf (fid, "%f, %f, ,  %f,  %f ", d);
+%!# fclose (fid);
+%!# A = textread (f, "");
+%!# unlink (f);
+%!# assert (A, [ d(1:2) 0 d(3:4)], 1e-6);
 
 ### Test with empty positions - ML returns 0 for empty fields
-#%!test
-#%! f = tempname ();
-#%! unlink (f);
-#%! fid = fopen (f, "w");
-#%! d = rand (1, 4);
-#%! fprintf (fid, ",2,,4\n5,,7,\n");
-#%! fclose (fid);
-#%! A = textread (f, "", "delimiter", ",");
-#%! unlink (f);
-#%! assert (A, [0 2 0 4; 5 0 7 0], 1e-6);
+%!#test
+%!# f = tempname ();
+%!# unlink (f);
+%!# fid = fopen (f, "w");
+%!# d = rand (1, 4);
+%!# fprintf (fid, ",2,,4\n5,,7,\n");
+%!# fclose (fid);
+%!# A = textread (f, "", "delimiter", ",");
+%!# unlink (f);
+%!# assert (A, [0 2 0 4; 5 0 7 0], 1e-6);
 
 ### Another test with empty format + positions, now with more incomplete lower
 ### row (must be appended with zeros to get rectangular matrix)
-#%!test
-#%! f = tempname ();
-#%! unlink (f);
-#%! fid = fopen (f, "w");
-#%! d = rand (1, 4);
-#%! fprintf (fid, ",2,,4\n5,\n");
-#%! fclose (fid);
-#%! A = textread (f, "", "delimiter", ",");
-#%! unlink (f);
-#%! assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
+%!#test
+%!# f = tempname ();
+%!# unlink (f);
+%!# fid = fopen (f, "w");
+%!# d = rand (1, 4);
+%!# fprintf (fid, ",2,,4\n5,\n");
+%!# fclose (fid);
+%!# A = textread (f, "", "delimiter", ",");
+%!# unlink (f);
+%!# assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
 
 ### Test endofline
-#%!test <*45046>
-#%! f = tempname ();
-#%! fid = fopen (f, "w");
-#%! fprintf (fid, "a\rb\rc");
-#%! fclose (fid);
-#%! ## Test EOL detection
-#%! d = textread (f, "%s");
-#%! assert (d, {"a";"b";"c"});
-#%! ## Test explicit EOL specification (bug #45046)
-#%! d = textread (f, "%s", "endofline", "\r");
-#%! assert (d, {"a"; "b"; "c"});
-#%! unlink (f);
+%!#test <*45046>
+%!# f = tempname ();
+%!# fid = fopen (f, "w");
+%!# fprintf (fid, "a\rb\rc");
+%!# fclose (fid);
+%!# ## Test EOL detection
+%!# d = textread (f, "%s");
+%!# assert (d, {"a";"b";"c"});
+%!# ## Test explicit EOL specification (bug #45046)
+%!# d = textread (f, "%s", "endofline", "\r");
+%!# assert (d, {"a"; "b"; "c"});
+%!# unlink (f);
 
 ### Properly process single-quoted EOL args
-#%!test <*46477>
-#%! f = tempname ();
-#%! fid = fopen (f, "w");
-#%! fprintf (fid, "hello, world!");
-#%! fclose (fid);
-#%! [a, b] = textread (f, "%s%s", "endofline", '\n');
-#%! assert (a{1}, "hello,");
-#%! assert (b{1}, "world!");
+%!#test <*46477>
+%!# f = tempname ();
+%!# fid = fopen (f, "w");
+%!# fprintf (fid, "hello, world!");
+%!# fclose (fid);
+%!# [a, b] = textread (f, "%s%s", "endofline", '\n');
+%!# assert (a{1}, "hello,");
+%!# assert (b{1}, "world!");
 
 ### Test input validation
-#%!error textread ()
-#%!error textread (1)
-#%!error <arguments must be strings> textread (1, "%f")
-#%!error <arguments must be strings> textread ("fname", 1)
-#%!error <missing or invalid value for> textread (file_in_loadpath ("textread.m"), "", "headerlines")
-#%!error <missing or invalid value for> textread (file_in_loadpath ("textread.m"), "", "headerlines", 'hh')
-#%!error <character value required for> textread (file_in_loadpath ("textread.m"), "%s", "endofline", true)
+%!#error textread ()
+%!#error textread (1)
+%!#error <arguments must be strings> textread (1, "%f")
+%!#error <arguments must be strings> textread ("fname", 1)
+%!#error <missing or invalid value for> textread (file_in_loadpath ("textread.m"), "", "headerlines")
+%!#error <missing or invalid value for> textread (file_in_loadpath ("textread.m"), "", "headerlines", 'hh')
+%!#error <character value required for> textread (file_in_loadpath ("textread.m"), "%s", "endofline", true)

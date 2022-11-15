@@ -294,7 +294,7 @@ function h = colorbar (varargin)
       addproperty ("tickdirection", hcb, "AxesTickdir", "in");
       ## FIXME: Matlab uses just a scalar for ticklength, but axes already
       ##        has a 2-element ticklength property which cannot be overridden.
-      ##addproperty ("ticklength", hcb, "double", 0.01);
+      ## addproperty ("ticklength", hcb, "double", 0.01);
 
       ## Add a pointer from colorbar directly to axes
       addproperty ("__axes_handle__", hcb, "handle", hax);

@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} fractdiff (@var{x}, @var{d})
+## @deftypefn {} {@var{fd} =} fractdiff (@var{x}, @var{d})
 ## Compute the fractional differences @math{(1-L)^d x} where @math{L}
 ## denotes the lag-operator and @math{d} is greater than -1.
 ## @end deftypefn

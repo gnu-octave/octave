@@ -207,11 +207,12 @@ namespace octave
     std::string
     env::do_get_temp_directory (void) const
     {
-      std::string tempd;
+      std::string tempd = do_getenv ("TMPDIR");
 
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
-      tempd = do_getenv ("TEMP");
+      if (tempd.empty ())
+        tempd = do_getenv ("TEMP");
 
       if (tempd.empty ())
         tempd = do_getenv ("TMP");
@@ -228,7 +229,8 @@ namespace octave
 
 #else
 
-      tempd = do_getenv ("TMP");
+      if (tempd.empty ())
+        tempd = do_getenv ("TMP");
 
 #if defined (P_tmpdir)
       if (tempd.empty ())

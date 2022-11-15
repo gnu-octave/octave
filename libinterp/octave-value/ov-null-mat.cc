@@ -100,7 +100,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (isnull, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} isnull (@var{x})
+@deftypefn {} {@var{tf} =} isnull (@var{x})
 Return true if @var{x} is a special null matrix, string, or single quoted
 string.
 

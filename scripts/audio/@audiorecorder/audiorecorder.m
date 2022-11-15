@@ -25,25 +25,50 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{recorder} =} audiorecorder ()
-## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
-## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
-## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz
+## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{nchannels})
+## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{nchannels}, @var{id})
+## Create an audiorecorder object recording 8-bit mono audio at 8000 Hz
 ## sample rate.
 ##
-## The optional arguments @var{fs}, @var{nbits}, @var{channels}, and @var{id}
-## specify the sample rate, bit depth, number of channels and recording
-## device id, respectively.  Device IDs may be found using the audiodevinfo
-## function.
+## The optional arguments @var{fs}, @var{nbits}, @var{nchannels}, and @var{id}
+## specify the sample rate, number of bits per sample, number of channels, and
+## recording device ID, respectively.  Device IDs may be found using the
+## @code{audiodevinfo} function.
+##
+## The list of actions for an audiorecorder object are shown below.  All
+## methods require an audiorecorder object as the first argument.
+##
+## @multitable @columnfractions 0.22 0.73
+## @headitem Method @tab Description
+## @item get @tab Read audiorecorder property values
+## @item getaudiodata @tab Return audio data as a numeric matrix
+## @item getplayer @tab Return audioplayer loaded with data from audiorecorder
+## @item isrecording @tab Return true if audiorecorder is recording
+## @item pause @tab Pause recording
+## @item play @tab Play audio stored in audiorecorder object
+## @item record @tab Record audio in audiorecorder object w/o blocking
+## @item recordblocking @tab Record audio in audiorecorder object
+## @item resume @tab Resume recording after pause
+## @item set @tab Write audiorecorder property values
+## @item stop @tab Stop recording
+## @end multitable
 ## @end deftypefn
+## @seealso{@audiorecorder/get, @audiorecorder/getaudiodata,
+## @audiorecorder/getplayer, @audiorecorder/isrecording,
+## @audiorecorder/pause, @audiorecorder/play, @audiorecorder/record,
+## @audiorecorder/recordblocking, @audioplayer/resume, @audiorecorder/set,
+## @audiorecorder/stop, audiodevinfo, @audioplayer/audioplayer, record}
 
+################################################################################
 ## FIXME: callbacks don't work properly, apparently because portaudio
 ## will execute the callbacks in a separate thread, and calling Octave
-## functions in a separate thread which is likely to cause trouble with
+## functions in a separate thread is likely to cause trouble with
 ## all of Octave's global data...
 ##
 ## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
 ##
 ## Given a function handle, use that function to process the audio.
+################################################################################
 
 function recorder = audiorecorder (varargin)
 
@@ -51,9 +76,15 @@ function recorder = audiorecorder (varargin)
     print_usage ();
   endif
 
-  if (nargin > 0 && ischar (varargin{1}))
-    varargin{1} = str2func (varargin{1});
+  ## FIXME: Prevent use of callbacks until situation is fixed.
+  if (nargin > 0 && (is_function_handle (varargin{1}) || ischar (varargin{1})))
+    error ("audiorecorder: first argument cannot be a callback function");
   endif
+  
+  ## FIXME: Uncomment when callback functions are supported.
+  ## if (nargin > 0 && ischar (varargin{1}))
+  ##   varargin{1} = str2func (varargin{1});
+  ## endif
 
   recorder.recorder = __recorder_audiorecorder__ (varargin{:});
   recorder = class (recorder, "audiorecorder");
@@ -62,6 +93,7 @@ endfunction
 
 
 %!demo
+%! ## Record 1 second of audio and play it back in two ways
 %! recorder = audiorecorder (44100, 16, 2);
 %! record (recorder, 1);
 %! pause (2);
@@ -76,67 +108,34 @@ endfunction
 
 ## Tests of audiorecorder must not actually record anything.
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
-%! recorder = audiorecorder (44100, 16, 2);
-%! data = getaudiodata (recorder, "int16");
-%! assert (strcmp (class (data), "int16"));
-%! data = getaudiodata (recorder, "int8");
-%! assert (strcmp (class (data), "int8"));
-%! data = getaudiodata (recorder, "uint8");
-%! assert (strcmp (class (data), "uint8"));
-%! assert (size (data)(1), recorder.TotalSamples);
-%! assert (size (data)(2), 2);
+## FIXME: Uncomment when callbacks are supported
+%!#function status = callback_record (sound)
+%!#  fid = fopen ("record.txt", "at");
+%!#  for index = 1:rows(sound)
+%!#    fprintf (fid, "%.4f, %.4f\n", sound(index, 1), sound(index, 2));
+%!#  endfor
+%!#  fclose (fid);
+%!#  status = 0;
+%!#endfunction
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
-%! recorder = audiorecorder ();
-%! set (recorder, {"SampleRate", "Tag", "UserData"},
-%!                {8000, "tag", [1, 2; 3, 4]});
-%! assert (recorder.SampleRate, 8000);
-%! assert (recorder.Tag, "tag");
-%! assert (recorder.UserData, [1, 2; 3, 4]);
+%!#testif HAVE_PORTAUDIO
+%!# recorder = audiorecorder (@callback_record, 44100);
+%!# unlink ("record.txt")
+%!# record (recorder);
+%!# pause (2);
+%!# stop (recorder);
+%!# s = stat ("record.txt");
+%!# assert (s.size > 0);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
-%! recorder = audiorecorder ();
-%! settable = set (recorder);
-%! settable.SampleRate = 8000;
-%! settable.Tag = "tag";
-%! settable.UserData = [1, 2; 3, 4];
-%! set (recorder, settable);
-%! assert (recorder.SampleRate, 8000);
-%! assert (recorder.Tag, "tag");
-%! assert (recorder.UserData, [1, 2; 3, 4]);
+%!#testif HAVE_PORTAUDIO
+%!# recorder = audiorecorder (@callback_record, 44100);
+%!# unlink ("record.txt")
+%!# record (recorder);
+%!# pause (2);
+%!# stop (recorder);
+%!# s = stat ("record.txt");
+%!# assert (s.size > 0);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
-%! recorder = audiorecorder ();
-%! recorder.SampleRate = 8000;
-%! recorder.Tag = "tag";
-%! recorder.UserData = [1, 2; 3, 4];
-%! properties = get (recorder, {"SampleRate", "Tag", "UserData"});
-%! assert (properties, {8000, "tag", [1, 2; 3, 4]});
-
-#%!function status = callback_record (sound)
-#%!  fid = fopen ("record.txt", "at");
-#%!  for index = 1:rows(sound)
-#%!    fprintf (fid, "%.4f, %.4f\n", sound(index, 1), sound(index, 2));
-#%!  endfor
-#%!  fclose (fid);
-#%!  status = 0;
-#%!endfunction
-
-#%!testif HAVE_PORTAUDIO
-#%! recorder = audiorecorder (@callback_record, 44100);
-#%! unlink ("record.txt")
-#%! record (recorder);
-#%! pause (2);
-#%! stop (recorder);
-#%! s = stat ("record.txt");
-#%! assert (s.size > 0);
-
-#%!testif HAVE_PORTAUDIO
-#%! recorder = audiorecorder (@callback_record, 44100);
-#%! unlink ("record.txt")
-#%! record (recorder);
-#%! pause (2);
-#%! stop (recorder);
-#%! s = stat ("record.txt");
-#%! assert (s.size > 0);
+## Test input validation
+%!error <first argument cannot be a callback> audiorecorder (@ls)
+%!error <first argument cannot be a callback> audiorecorder ("ls")

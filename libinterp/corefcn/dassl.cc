@@ -67,7 +67,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  assert (x.numel () == xdot.numel ());
+  error_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -116,7 +116,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  assert (x.numel () == xdot.numel ());
+  error_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -367,11 +367,11 @@ parameters for @code{dassl}.
 
   double tzero = out_times (0);
 
-  DAEFunc func (dassl_user_function);
+  DAEFunc fcn (dassl_user_function);
   if (dassl_jac.is_defined ())
-    func.set_jacobian_function (dassl_user_jacobian);
+    fcn.set_jacobian_function (dassl_user_jacobian);
 
-  DASSL dae (state, deriv, tzero, func);
+  DASSL dae (state, deriv, tzero, fcn);
 
   dae.set_options (dassl_opts);
 

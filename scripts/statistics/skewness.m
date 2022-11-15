@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} skewness (@var{x})
-## @deftypefnx {} {} skewness (@var{x}, @var{flag})
-## @deftypefnx {} {} skewness (@var{x}, @var{flag}, @var{dim})
+## @deftypefn  {} {@var{y} =} skewness (@var{x})
+## @deftypefnx {} {@var{y} =} skewness (@var{x}, @var{flag})
+## @deftypefnx {} {@var{y} =} skewness (@var{x}, @var{flag}, @var{dim})
 ## Compute the sample skewness of the elements of @var{x}.
 ##
 ## The sample skewness is defined as

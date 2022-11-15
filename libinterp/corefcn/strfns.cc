@@ -52,10 +52,10 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (char, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} char (@var{x})
-@deftypefnx {} {} char (@var{x}, @dots{})
-@deftypefnx {} {} char (@var{s1}, @var{s2}, @dots{})
-@deftypefnx {} {} char (@var{cell_array})
+@deftypefn  {} {@var{C} =} char (@var{A})
+@deftypefnx {} {@var{C} =} char (@var{A}, @dots{})
+@deftypefnx {} {@var{C} =} char (@var{str1}, @var{str2}, @dots{})
+@deftypefnx {} {@var{C} =} char (@var{cell_array})
 Create a string array from one or more numeric matrices, character
 matrices, or cell arrays.
 
@@ -177,10 +177,10 @@ char ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 
 DEFUN (strvcat, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} strvcat (@var{x})
-@deftypefnx {} {} strvcat (@var{x}, @dots{})
-@deftypefnx {} {} strvcat (@var{s1}, @var{s2}, @dots{})
-@deftypefnx {} {} strvcat (@var{cell_array})
+@deftypefn  {} {@var{C} =} strvcat (@var{A})
+@deftypefnx {} {@var{C} =} strvcat (@var{A}, @dots{})
+@deftypefnx {} {@var{C} =} strvcat (@var{str1}, @var{str2}, @dots{})
+@deftypefnx {} {@var{C} =} strvcat (@var{cell_array})
 Create a character array from one or more numeric matrices, character
 matrices, or cell arrays.
 
@@ -290,7 +290,7 @@ strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
 
 DEFUN (ischar, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} ischar (@var{x})
+@deftypefn {} {@var{tf} =} ischar (@var{x})
 Return true if @var{x} is a character array.
 @seealso{isfloat, isinteger, islogical, isnumeric, isstring, iscellstr, isa}
 @end deftypefn */)
@@ -319,7 +319,7 @@ Return true if @var{x} is a character array.
 */
 
 static octave_value
-do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
+do_strcmp_fcn (const octave_value& arg0, const octave_value& arg1,
                octave_idx_type n, const char *fcn_name,
                bool (*array_op) (const Array<char>&, const Array<char>&,
                                  octave_idx_type),
@@ -526,7 +526,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
 
 // These are required so that they match the same signature as strncmp
-// and strncmpi and can therefore be used in do_strcmp_fun.
+// and strncmpi and can therefore be used in do_strcmp_fcn.
 
 template <typename T, typename T_size_type>
 static bool
@@ -541,11 +541,11 @@ strcmpi_ignore_n (const T& s1, const T& s2, T_size_type)
 
 DEFUN (strcmp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} strcmp (@var{s1}, @var{s2})
-Return 1 if the character strings @var{s1} and @var{s2} are the same,
+@deftypefn {} {@var{tf} =} strcmp (@var{str1}, @var{str2})
+Return 1 if the character strings @var{str1} and @var{str2} are the same,
 and 0 otherwise.
 
-If either @var{s1} or @var{s2} is a cell array of strings, then an array
+If either @var{str1} or @var{str2} is a cell array of strings, then an array
 of the same size is returned, containing the values described above for
 every member of the cell array.  The other argument may also be a cell
 array of strings (of the same size or with only one element), char matrix
@@ -560,7 +560,7 @@ This is just the opposite of the corresponding C library function.
   if (args.length () != 2)
     print_usage ();
 
-  return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmp",
+  return ovl (do_strcmp_fcn (args(0), args(1), 0, "strcmp",
                              strcmp_ignore_n, strcmp_ignore_n));
 }
 
@@ -615,8 +615,8 @@ This is just the opposite of the corresponding C library function.
 
 DEFUN (strncmp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} strncmp (@var{s1}, @var{s2}, @var{n})
-Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2}
+@deftypefn {} {@var{tf} =} strncmp (@var{str1}, @var{str2}, @var{n})
+Return 1 if the first @var{n} characters of strings @var{str1} and @var{str2}
 are the same, and 0 otherwise.
 
 @example
@@ -626,7 +626,7 @@ strncmp ("abce", "abcd", 3)
 @end group
 @end example
 
-If either @var{s1} or @var{s2} is a cell array of strings, then an array
+If either @var{str1} or @var{str2} is a cell array of strings, then an array
 of the same size is returned, containing the values described above for
 every member of the cell array.  The other argument may also be a cell
 array of strings (of the same size or with only one element), char matrix
@@ -651,7 +651,7 @@ This is just the opposite of the corresponding C library function.
   octave_idx_type n = args(2).idx_type_value ();
 
   if (n > 0)
-    return ovl (do_strcmp_fun (args(0), args(1), n, "strncmp",
+    return ovl (do_strcmp_fcn (args(0), args(1), n, "strncmp",
                                string::strncmp,
                                string::strncmp));
   else
@@ -665,7 +665,8 @@ This is just the opposite of the corresponding C library function.
 %!assert (strncmp ("abce", {"abcd", "bca", "abc"}, 3), logical ([1, 0, 1]))
 %!assert (strncmp ("abc",  {"abcd", "bca", "abc"}, 4), logical ([0, 0, 1]))
 %!assert (strncmp ({"abcd", "bca", "abc"},"abce", 3), logical ([1, 0, 1]))
-%!assert (strncmp ({"abcd", "bca", "abc"},{"abcd", "bca", "abe"}, 3), logical ([1, 1, 0]))
+%!assert (strncmp ({"abcd", "bca", "abc"},{"abcd", "bca", "abe"}, 3),
+%!        logical ([1, 1, 0]))
 %!assert (strncmp ("abc", {"abcd", 10}, 2), logical ([1, 0]))
 
 %!assert <*54373> (strncmp ("abc", "abc", 100))
@@ -676,11 +677,11 @@ This is just the opposite of the corresponding C library function.
 
 DEFUNX ("strcmpi", Fstrcmpi, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} strcmpi (@var{s1}, @var{s2})
-Return 1 if the character strings @var{s1} and @var{s2} are the same,
+@deftypefn {} {@var{tf} =} strcmpi (@var{str1}, @var{str2})
+Return 1 if the character strings @var{str1} and @var{str2} are the same,
 disregarding case of alphabetic characters, and 0 otherwise.
 
-If either @var{s1} or @var{s2} is a cell array of strings, then an array
+If either @var{str1} or @var{str2} is a cell array of strings, then an array
 of the same size is returned, containing the values described above for
 every member of the cell array.  The other argument may also be a cell
 array of strings (of the same size or with only one element), char matrix
@@ -697,7 +698,7 @@ This is just the opposite of the corresponding C library function.
   if (args.length () != 2)
     print_usage ();
 
-  return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmpi",
+  return ovl (do_strcmp_fcn (args(0), args(1), 0, "strcmpi",
                              strcmpi_ignore_n, strcmpi_ignore_n));
 }
 
@@ -707,11 +708,11 @@ This is just the opposite of the corresponding C library function.
 
 DEFUNX ("strncmpi", Fstrncmpi, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} strncmpi (@var{s1}, @var{s2}, @var{n})
+@deftypefn {} {@var{tf} =} strncmpi (@var{str1}, @var{str2}, @var{n})
 Return 1 if the first @var{n} character of @var{s1} and @var{s2} are the
 same, disregarding case of alphabetic characters, and 0 otherwise.
 
-If either @var{s1} or @var{s2} is a cell array of strings, then an array
+If either @var{str1} or @var{str2} is a cell array of strings, then an array
 of the same size is returned, containing the values described above for
 every member of the cell array.  The other argument may also be a cell
 array of strings (of the same size or with only one element), char matrix
@@ -731,7 +732,7 @@ This is just the opposite of the corresponding C library function.
   octave_idx_type n = args(2).idx_type_value ();
 
   if (n > 0)
-    return ovl (do_strcmp_fun (args(0), args(1), n, "strncmpi",
+    return ovl (do_strcmp_fcn (args(0), args(1), n, "strncmpi",
                                string::strncmpi,
                                string::strncmpi));
   else
@@ -746,7 +747,7 @@ This is just the opposite of the corresponding C library function.
 
 DEFUN (str2double, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} str2double (@var{s})
+@deftypefn {} {@var{d} =} str2double (@var{str})
 Convert a string to a real or complex number.
 
 The string must be in one of the following formats where a and b are real
@@ -771,12 +772,12 @@ the brackets indicate optional arguments and @qcode{'d'} indicates zero or
 more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}
 are also accepted.
 
-@var{s} may be a character string, character matrix, or cell array.  For
+@var{str} may be a character string, character matrix, or cell array.  For
 character arrays the conversion is repeated for every row, and a double or
 complex array is returned.  Empty rows in @var{s} are deleted and not
 returned in the numeric array.  For cell arrays each character string
 element is processed and a double or complex array of the same dimensions as
-@var{s} is returned.
+@var{str} is returned.
 
 For unconvertible scalar or character string input @code{str2double} returns
 a NaN@.  Similarly, for character array input @code{str2double} returns a
@@ -786,8 +787,8 @@ conversion fails.  Note that numeric elements in a mixed string/numeric
 cell array are not strings and the conversion will fail for these elements
 and return NaN.
 
-@code{str2double} can replace @code{str2num}, and it avoids the security
-risk of using @code{eval} on unknown data.
+Programming Note: @code{str2double} can replace @code{str2num}, is more
+efficient, and avoids the security risk of using @code{eval} on unknown data.
 @seealso{str2num}
 @end deftypefn */)
 {
@@ -1141,7 +1142,7 @@ U+0080–U+00FF with the same value as the byte (if @var{mode} is the string
 
 DEFUN (newline, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} newline
+@deftypefn {} {@var{c} =} newline
 Return the character corresponding to a newline.
 
 This is equivalent to @qcode{"@backslashchar{}n"}.
@@ -1179,7 +1180,7 @@ line2
 
 DEFUN (list_in_columns, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})
+@deftypefn {} {@var{str} =} list_in_columns (@var{arg}, @var{width}, @var{prefix})
 Return a string containing the elements of @var{arg} listed in columns with
 an overall maximum width of @var{width} and optional prefix @var{prefix}.
 

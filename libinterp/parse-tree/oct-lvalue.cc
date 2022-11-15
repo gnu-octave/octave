@@ -237,8 +237,7 @@ namespace octave
         // could happen because there is an index is out of range
         // and we will be resizing a cell array.
 
-        interpreter& interp
-          = __get_interpreter__ ("octave_lvalue::eval_for_numel");
+        interpreter& interp = __get_interpreter__ ();
 
         interp.recover_from_exception ();
 

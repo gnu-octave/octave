@@ -36,8 +36,8 @@
 ##
 ## @item @var{A} is the matrix of the linear system and it must be square.
 ## @var{A} can be passed as a matrix, function handle, or inline
-## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
-## parameters to @code{Afun} are passed after @var{x0}.
+## function @code{Afcn} such that @code{Afcn(x) = A * x}.  Additional
+## parameters to @code{Afcn} are passed after @var{x0}.
 ##
 ## @item @var{b} is the right hand side vector.  It must be a column vector
 ## with same number of rows of @var{A}.
@@ -107,10 +107,10 @@
 ## restart = 5;
 ## [M1, M2] = ilu (A); # in this tridiag case it corresponds to chol (A)'
 ## M = M1 * M2;
-## Afun = @@(x) A * x;
-## Mfun = @@(x) M \ x;
-## M1fun = @@(x) M1 \ x;
-## M2fun = @@(x) M2 \ x;
+## Afcn = @@(x) A * x;
+## Mfcn = @@(x) M \ x;
+## M1fcn = @@(x) M1 \ x;
+## M2fcn = @@(x) M2 \ x;
 ## @end group
 ## @end example
 ##
@@ -124,7 +124,7 @@
 ## @code{@var{A} * @var{x}}
 ##
 ## @example
-## x = cgs (Afun, b, [], n)
+## x = cgs (Afcn, b, [], n)
 ## @end example
 ##
 ## @sc{Example 3:} @code{cgs} with a preconditioner matrix @var{M}
@@ -136,7 +136,7 @@
 ## @sc{Example 4:} @code{cgs} with a function as preconditioner
 ##
 ## @example
-## x = cgs (Afun, b, 1e-6, n, Mfun)
+## x = cgs (Afcn, b, 1e-6, n, Mfcn)
 ## @end example
 ##
 ## @sc{Example 5:} @code{cgs} with preconditioner matrices @var{M1}
@@ -149,7 +149,7 @@
 ## @sc{Example 6:} @code{cgs} with functions as preconditioners
 ##
 ## @example
-## x = cgs (Afun, b, 1e-6, n, M1fun, M2fun)
+## x = cgs (Afcn, b, 1e-6, n, M1fcn, M2fcn)
 ## @end example
 ##
 ## @sc{Example 7:} @code{cgs} with as input a function requiring an argument
@@ -162,8 +162,8 @@
 ##      y = A * y;
 ##    endfor
 ##  endfunction
-## Apfun = @@(x, string, p) Ap (A, x, string, p);
-## x = cgs (Apfun, b, [], [], [], [], [], 2);
+## Apfcn = @@(x, string, p) Ap (A, x, string, p);
+## x = cgs (Apfcn, b, [], [], [], [], [], 2);
 ## @end group
 ## @end example
 ##
@@ -196,7 +196,7 @@
 function [x_min, flag, relres, iter_min, resvec] = ...
          cgs (A, b, tol = [], maxit = [], M1 = [] , M2 = [], x0 = [], varargin)
 
-  [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, "cgs");
+  [Afcn, M1fcn, M2fcn] = __alltohandles__ (A, b, M1, M2, "cgs");
 
   [tol, maxit, x0] = __default__input__ ({1e-06, min( rows(b), 20), ...
                                           zeros(size (b))}, tol, maxit, x0);
@@ -224,21 +224,21 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   ## x_min approximation with the minimum residual
   ## x_pr approximation at the previous iteration (to check stagnation)
 
-  r0 = rr = u = p = b - feval (Afun, x, varargin{:});
+  r0 = rr = u = p = b - feval (Afcn, x, varargin{:});
   resvec (1) = norm (r0, 2);
   rho_1 = rr' * r0;
 
   try
     warning ("error","Octave:singular-matrix","local");
-    p_hat = feval (M1fun, p, varargin{:});
-    p_hat = feval (M2fun, p_hat, varargin {:});
+    p_hat = feval (M1fcn, p, varargin{:});
+    p_hat = feval (M2fcn, p_hat, varargin {:});
   catch
     flag = 2;
   end_try_catch
 
   while ((flag != 2) && (iter < maxit) && ...
          (resvec (iter + 1) >= tol * norm_b))
-    v = feval (Afun, p_hat, varargin{:});
+    v = feval (Afcn, p_hat, varargin{:});
     prod_tmp = (rr' * v);
     if (prod_tmp == 0)
       flag = 4;
@@ -246,10 +246,10 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     endif
     alpha = rho_1 / prod_tmp;
     q = u - alpha * v;
-    u_hat = feval(M1fun, u + q, varargin{:});
-    u_hat = feval (M2fun, u_hat, varargin{:});
+    u_hat = feval(M1fcn, u + q, varargin{:});
+    u_hat = feval (M2fcn, u_hat, varargin{:});
     x += alpha*u_hat;
-    r0 -= alpha* feval (Afun, u_hat, varargin{:});
+    r0 -= alpha* feval (Afcn, u_hat, varargin{:});
     iter += 1;
     resvec (iter + 1) = norm (r0, 2);
     if (norm (x - x_pr, 2) <= norm (x, 2) * eps) # Stagnation
@@ -270,8 +270,8 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     beta = rho_1 / rho_2;
     u = r0 + beta * q;
     p = u + beta * (q + beta * p);
-    p_hat = feval (M1fun, p, varargin {:});
-    p_hat = feval (M2fun, p_hat, varargin{:});
+    p_hat = feval (M1fcn, p, varargin {:});
+    p_hat = feval (M2fcn, p_hat, varargin{:});
   endwhile
   resvec = resvec (1: (iter + 1));
 
@@ -331,15 +331,15 @@ endfunction
 %! [M1, M2] = ilu (A + 0.1 * eye (n));
 %! M = M1 * M2;
 %! x = cgs (A, b, [], n);
-%! Afun = @(x) A * x;
-%! x = cgs (Afun, b, [], n);
+%! Afcn = @(x) A * x;
+%! x = cgs (Afcn, b, [], n);
 %! x = cgs (A, b, 1e-6, n, M);
 %! x = cgs (A, b, 1e-6, n, M1, M2);
-%! Mfun = @(z) M \ z;
-%! x = cgs (Afun, b, 1e-6, n, Mfun);
-%! M1fun = @(z) M1 \ z;
-%! M2fun = @(z) M2 \ z;
-%! x = cgs (Afun, b, 1e-6, n, M1fun, M2fun);
+%! Mfcn = @(z) M \ z;
+%! x = cgs (Afcn, b, 1e-6, n, Mfcn);
+%! M1fcn = @(z) M1 \ z;
+%! M2fcn = @(z) M2 \ z;
+%! x = cgs (Afcn, b, 1e-6, n, M1fcn, M2fcn);
 %! function y = Ap (A, x, z)
 %!   ## compute A^z * x or (A^z)' * x
 %!   y = x;
@@ -347,8 +347,8 @@ endfunction
 %!     y = A * y;
 %!   endfor
 %! endfunction
-%! Afun = @(x, p) Ap (A, x, p);
-%! x = cgs (Afun, b, [], 2*n, [], [], [], 2); # solution of A^2 * x = b
+%! Afcn = @(x, p) Ap (A, x, p);
+%! x = cgs (Afcn, b, [], 2*n, [], [], [], 2); # solution of A^2 * x = b
 
 %!demo
 %! n = 10;
@@ -375,28 +375,28 @@ endfunction
 %! M1 = diag (sqrt (diag (A)));
 %! M2 = M1;
 %! maxit = 10;
-%! Afun = @(z) A * z;
-%! M1_fun = @(z) M1 \ z;
-%! M2_fun = @(z) M2 \ z;
+%! Afcn = @(z) A * z;
+%! M1_fcn = @(z) M1 \ z;
+%! M2_fcn = @(z) M2 \ z;
 %! [x, flag] = cgs (A,b);
 %! assert (flag, 0);
 %! [x, flag] = cgs (A, b, [], maxit, M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = cgs (A, b, [], maxit, M1_fun, M2_fun);
+%! [x, flag] = cgs (A, b, [], maxit, M1_fcn, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = cgs (A, b, [], maxit, M1_fun, M2);
+%! [x, flag] = cgs (A, b, [], maxit, M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = cgs (A, b, [], maxit, M1, M2_fun);
+%! [x, flag] = cgs (A, b, [], maxit, M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = cgs (Afun, b);
+%! [x, flag] = cgs (Afcn, b);
 %! assert (flag, 0);
-%! [x, flag] = cgs (Afun, b, [], maxit, M1, M2);
+%! [x, flag] = cgs (Afcn, b, [], maxit, M1, M2);
 %! assert (flag, 0);
-%! [x, flag] = cgs (Afun, b, [], maxit, M1_fun, M2);
+%! [x, flag] = cgs (Afcn, b, [], maxit, M1_fcn, M2);
 %! assert (flag, 0);
-%! [x, flag] = cgs (Afun, b, [], maxit, M1, M2_fun);
+%! [x, flag] = cgs (Afcn, b, [], maxit, M1, M2_fcn);
 %! assert (flag, 0);
-%! [x, flag] = cgs (Afun, b, [], maxit, M1_fun, M2_fun);
+%! [x, flag] = cgs (Afcn, b, [], maxit, M1_fcn, M2_fcn);
 %! assert (flag, 0);
 
 %!shared n, A, b, tol, maxit, M
@@ -451,11 +451,11 @@ endfunction
 %! assert (class (x), "single");
 
 %!test
-%!function y = Afun (x)
+%!function y = Afcn (x)
 %!  A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
 %!  y = A * x;
 %!endfunction
-%! [x, flag] = cgs ("Afun", [1; 2; 2; 3]);
+%! [x, flag] = cgs ("Afcn", [1; 2; 2; 3]);
 %! assert (norm (b - A*x) / norm (b), 0, 1e-6);
 
 %!test

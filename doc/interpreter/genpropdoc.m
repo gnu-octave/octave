@@ -930,6 +930,15 @@ to right.";
 for the x-axis.  __modemsg__.   @xref{XREFxlim, , @w{xlim function}}.";
         s.valid = valid_2elvec;
 
+      case "xlimitmethod"
+        s.doc = "Method used to determine the x axis limits when the \
+@code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
+@qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
+value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
+objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
+margin of about 7%% of the data extent is added around the objects. \
+@xref{XREFaxis, , @w{axis function}}.";
+
       case "xlimmode"
       case "xminorgrid"
         s.doc = "Control whether minor x grid lines are displayed.";
@@ -975,6 +984,15 @@ to top.";
 for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.valid = valid_2elvec;
 
+      case "ylimitmethod"
+        s.doc = "Method used to determine the y axis limits when the \
+@code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
+@qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
+value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
+objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
+margin of about 7%% of the data extent is added around the objects. \
+@xref{XREFaxis, , @w{axis function}}.";
+
       case "ylimmode"
       case "yminorgrid"
         s.doc = "Control whether minor y grid lines are displayed.";
@@ -1012,6 +1030,15 @@ for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.doc = "Two-element vector @code{[zmin zmaz]} specifying the limits \
 for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.valid = valid_2elvec;
+
+      case "zlimitmethod"
+        s.doc = "Method used to determine the z axis limits when the \
+@code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
+@qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
+value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
+objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
+margin of about 7%% of the data extent is added around the objects. \
+@xref{XREFaxis, , @w{axis function}}.";
 
       case "zlimmode"
       case "zminorgrid"
@@ -1063,6 +1090,29 @@ plot ((1:10) * 3);\n\
         s.doc = "Control if and eventually how labels strings are interpreted \
 before rendering.\n\
 @xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
+
+      case "itemhitfcn"
+        s.doc = "Callback function which is executed when a legend item \
+is clicked.  @xref{Callbacks, , @w{Callbacks section}}.\n\
+\n\
+The callback function must have the following prototype \
+@code{fcn (hlegend, evnt)}, where @code{hlegend} is the legend object handle \
+and @code{evnt} is a structure with the following fields:\n\
+@table @code\n\
+@item Peer\n\
+Handle of the plot object to which the clicked item is associated.\n\
+@item Region\n\
+May be @qcode{\"icon\"} or @qcode{\"label\"} depending on which part of \
+the item is clicked.\n\
+@item SelectionType\n\
+One of @qcode{\"normal\"}, @qcode{\"extend\"}, @qcode{\"open\"}, or \
+@qcode{\"alt\"}. \
+@xref{XREFfigureselectiontype, , @w{Figure @qcode{\"selectiontype\"}}}.\n\
+@item Source\n\
+Handle of the legend object.\n\
+@item EventName\n\
+Name is @qcode{\"ItemHit\"}.\n\
+@end table";
 
       case "location"
         s.doc = "Control the location of the legend.";
@@ -2077,8 +2127,8 @@ function s = getstructure (objname, base = [], props = {})
     if (isempty (props))
         props = {"autoupdate", "box", "color", "edgecolor", "fontangle", ...
                  "fontname", "fontsize", "fontunits", "fontweight", ...
-                 "location", "numcolumns", "orientation", "position", ...
-                 "string", "textcolor", "title", "units"};
+                 "itemhitfcn", "location", "numcolumns", "orientation", ...
+                 "position", "string", "textcolor", "title", "units"};
     endif
   elseif (strcmp (objname, "scatter"))
     ## Make sure to get a scatter object independent of graphics toolkit

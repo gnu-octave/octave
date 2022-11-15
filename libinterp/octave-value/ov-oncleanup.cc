@@ -164,8 +164,7 @@ octave_oncleanup::call_object_destructor (void)
   frame.protect_var (quit_allowed);
   quit_allowed = false;
 
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("octave_oncleanup::call_object_destructor");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   octave::interpreter_try (frame);
 

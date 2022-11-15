@@ -24,10 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} factorial (@var{n})
+## @deftypefn {} {@var{f} =} factorial (@var{n})
 ## Return the factorial of @var{n} where @var{n} is a real non-negative
 ## integer.
 ##
+## @c FIXME: This documentation is wrong.  Apparently gamma() is used for
+## @c        calculations rather than prod().
 ## If @var{n} is a scalar, this is equivalent to @code{prod (1:@var{n})}.  For
 ## vector or matrix arguments, return the factorial of each element in the
 ## array.
@@ -39,7 +41,7 @@
 ## @seealso{prod, gamma, gammaln}
 ## @end deftypefn
 
-function x = factorial (n)
+function f = factorial (n)
 
   if (nargin < 1)
     print_usage ();
@@ -47,14 +49,14 @@ function x = factorial (n)
     error ("factorial: all N must be real non-negative integers");
   endif
 
-  x = round (gamma (n+1));
+  f = round (gamma (n+1));
 
   ## FIXME: Matlab returns an output of the same type as the input.
   ## This doesn't seem particularly worth copying--for example uint8 would
   ## saturate for n > 5.  If desired, however, the following code could be
   ## uncommented.
-  ## if (! isfloat (x))
-  ##   x = cast (x, class (n));
+  ## if (! isfloat (f))
+  ##   f = cast (f, class (n));
   ## endif
 
 endfunction

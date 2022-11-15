@@ -63,13 +63,14 @@ public:
 
   // No copying!
 
-  octave_dld_function (const octave_dld_function& fn) = delete;
+  octave_dld_function (const octave_dld_function& fcn) = delete;
 
-  octave_dld_function& operator = (const octave_dld_function& fn) = delete;
+  octave_dld_function& operator = (const octave_dld_function& fcn) = delete;
 
   ~octave_dld_function (void);
 
-  void mark_fcn_file_up_to_date (const octave::sys::time& t) { m_time_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t)
+  { m_time_checked = t; }
 
   std::string fcn_file_name (void) const;
 

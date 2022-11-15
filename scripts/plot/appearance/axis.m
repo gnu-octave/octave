@@ -83,8 +83,15 @@
 ## @item @qcode{"manual"}
 ## Fix the current axes limits.
 ##
+## @item @qcode{"tickaligned"}
+## Fix axes to the limits of the closest ticks.
+##
 ## @item @qcode{"tight"}
 ## Fix axes to the limits of the data.
+##
+## @item @qcode{"padded"}
+## Fix axes to the limits of the data plus margins of about 7% of the
+## data extent.
 ##
 ## @item @qcode{"image"}
 ## Equivalent to @qcode{"tight"} and @qcode{"equal"}.
@@ -213,8 +220,10 @@ function limits = __axis__ (ca, varargin)
       ## aspect ratio
       elseif (strcmpi (opt, "image"))
         __axis__ (ca, "equal");
-        set (ca, "plotboxaspectratiomode", "auto");
-        __do_tight_option__ (ca);
+        set (ca, "plotboxaspectratiomode", "auto", ...
+                 "xlimmode", "auto", "ylimmode", "auto", ...
+                 "zlimmode", "auto", ...
+                 "xlimitmethod", "tight", "ylimitmethod", "tight");
       elseif (strcmpi (opt, "square"))
         set (ca, "dataaspectratiomode", "auto",
                  "plotboxaspectratio", [1, 1, 1]);
@@ -280,10 +289,26 @@ function limits = __axis__ (ca, varargin)
         ## fixes the axis limits
         set (ca, "xlimmode", "manual", "ylimmode", "manual",
                  "zlimmode", "manual");
+      elseif (strcmpi (opt, "tickaligned"))
+        ## sets the axis limits to closest ticks.
+        set (ca, "xlimmode", "auto", "ylimmode", "auto", ...
+                 "zlimmode", "auto", ...
+                 "xlimitmethod", "tickaligned", ...
+                 "ylimitmethod", "tickaligned", ...
+                 "zlimitmethod", "tickaligned");
       elseif (strcmpi (opt, "tight"))
         ## sets the axis limits to the min and max of all data.
-        __do_tight_option__ (ca);
-
+        set (ca, "xlimmode", "auto", "ylimmode", "auto", ...
+                 "zlimmode", "auto", ...
+                 "xlimitmethod", "tight", "ylimitmethod", "tight",
+                 "zlimitmethod", "tight");
+      elseif (strcmpi (opt, "padded"))
+        ## sets the axis limits to the min and max of all data plus padding.
+        set (ca, "xlimmode", "auto", "ylimmode", "auto", ...
+                 "zlimmode", "auto", ...
+                 "xlimitmethod", "padded", ...
+                 "ylimitmethod", "padded", ...
+                 "zlimitmethod", "padded");
       ## visibility
       elseif (strcmpi (opt, "on"))
         set (ca, "visible", "on");
@@ -373,87 +398,6 @@ function limits = __axis__ (ca, varargin)
     endif
 
   endfor
-
-endfunction
-
-## Find the limits for axis ("tight").
-## AX should be one of "x", "y", or "z".
-function lims = __get_tight_lims__ (ca, ax)
-
-  kids = findobj (ca, "-property", [ax "data"]);
-  ## The data properties for hggroups mirror their children.
-  ## Exclude the redundant hggroup values.
-  hg_kids = findobj (kids, "type", "hggroup");
-  kids = setdiff (kids, hg_kids);
-  if (isempty (kids))
-    ## Return the current limits.
-    ## FIXME: Is this the correct thing to do?
-    lims = get (ca, [ax "lim"]);
-  else
-    data = get (kids, [ax "data"]);
-    types = get (kids, "type");
-
-    scale = get (ca, [ax "scale"]);
-    if (! iscell (data))
-      data = {data};
-    endif
-
-    ## Extend image data one pixel
-    idx = strcmp (types, "image");
-    if (any (idx) && (ax == "x" || ax == "y"))
-      imdata = data(idx);
-      px = arrayfun (@__image_pixel_size__, kids(idx), "uniformoutput", false);
-      ipx = ifelse (ax == "x", 1, 2);
-      imdata = cellfun (@(x,dx) [(min (x) - dx(ipx)), (max (x) + dx(ipx))],
-                        imdata, px, "uniformoutput", false);
-      data(idx) = imdata;
-    endif
-
-    if (strcmp (scale, "log"))
-      tmp = data;
-      data = cellfun (@(x) x(x>0), tmp, "uniformoutput", false);
-      n = cellfun ("isempty", data);
-      data(n) = cellfun (@(x) x(x<0), tmp(n), "uniformoutput", false);
-    endif
-    data = cellfun (@(x) x(isfinite (x)), data, "uniformoutput", false);
-    data = data(! cellfun ("isempty", data));
-    if (! isempty (data))
-      ## Change data from cell array of various sizes to a single column vector
-      data = cat (1, cellindexmat (data, ":"){:});
-      lims = [min(data), max(data)];
-    else
-      lims = [0, 1];
-    endif
-  endif
-
-endfunction
-
-function __do_tight_option__ (ca)
-
-  xlim = __get_tight_lims__ (ca, "x");
-  if (all (xlim == 0))
-    xlim = [-eps, +eps];
-  elseif (diff (xlim == 0))
-    xlim .*= [1-eps, 1+eps];
-  endif
-  ylim = __get_tight_lims__ (ca, "y");
-  if (all (ylim == 0))
-    ylim = [-eps, +eps];
-  elseif (diff (ylim == 0))
-    ylim .*= [1-eps, 1+eps];
-  endif
-  set (ca, "xlim", xlim, "ylim", ylim);
-  nd = __calc_dimensions__ (ca);
-  is3dview = (get (ca, "view")(2) != 90);
-  if (nd > 2 && is3dview)
-    zlim = __get_tight_lims__ (ca, "z");
-    if (all (zlim == 0))
-      zlim = [-eps, +eps];
-    elseif (diff (zlim == 0))
-      zlim .*= [1-eps, 1+eps];
-    endif
-    set (ca, "zlim", zlim);
-  endif
 
 endfunction
 
@@ -618,6 +562,38 @@ endfunction
 %! axis tight;
 %! title ('"tight" on loglog plot');
 
+%!demo
+%! clf;
+%! x = y = 0.5:0.5:12;
+%! subplot (3,1,1);
+%! plot (x, y, "-s");
+%! axis tickaligned
+%! title ("tickaligned");
+%! subplot (3,1,2);
+%! plot (x, y, "-s");
+%! axis padded
+%! title ("padded");
+%! subplot (3,1,3);
+%! plot (x, y, "-s");
+%! axis tight
+%! title ("tight");
+
+%!demo
+%! clf;
+%! x = y = 0.5:0.5:12;
+%! subplot (3,1,1);
+%! loglog (x, y, "-s");
+%! axis tickaligned
+%! title ("tickaligned");
+%! subplot (3,1,2);
+%! loglog (x, y, "-s");
+%! axis padded
+%! title ("padded");
+%! subplot (3,1,3);
+%! loglog (x, y, "-s");
+%! axis tight
+%! title ("tight");
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -651,6 +627,19 @@ endfunction
 %!   surf (Z);
 %!   axis tight;
 %!   assert (axis (), [1 49 1 29 min(Z(:)) max(Z(:))]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Test 'axis tight' remains after addition of new data
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot (1:10)
+%!   axis tight;
+%!   assert (axis (), [1 10 1 10]);
+%!   plot (1:11)
+%!   assert (axis (), [1 11 1 11]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

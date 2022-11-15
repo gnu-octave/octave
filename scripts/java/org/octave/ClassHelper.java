@@ -677,28 +677,28 @@ public class ClassHelper
       {
         if (expType.equals (Integer.TYPE) || expType.equals (Integer.class))
           {
-            return new Integer (((Number) obj).intValue ());
+            return Integer.valueOf (((Number) obj).intValue ());
           }
         else if (expType.equals (Double.TYPE) || expType.equals (Double.class))
           {
-            return new Double (((Number) obj).doubleValue ());
+            return Double.valueOf (((Number) obj).doubleValue ());
           }
         else if (expType.equals (Short.TYPE) || expType.equals (Short.class))
           {
-            return new Short (((Number) obj).shortValue ());
+            return Short.valueOf (((Number) obj).shortValue ());
           }
         else if (expType.equals (Long.TYPE) || expType.equals (Long.class))
           {
-            return new Long (((Number) obj).longValue ());
+            return Long.valueOf (((Number) obj).longValue ());
           }
         else if (expType.equals (Float.TYPE) || expType.equals (Float.class))
           {
-            return new Float (((Number) obj).floatValue ());
+            return Float.valueOf (((Number) obj).floatValue ());
           }
       }
     else if (isBooleanClass (expType))
       {
-        return new Boolean (((Number) obj).intValue () != 0);
+        return Boolean.valueOf (((Number) obj).intValue () != 0);
       }
     else if (isCharClass (expType))
       {
@@ -707,7 +707,7 @@ public class ClassHelper
           {
             throw new ClassCastException ("cannot cast " + s + " to character");
           }
-        return new Character (s.charAt (0));
+        return Character.valueOf (s.charAt (0));
       }
     else if (expType.isArray () && type.isArray ())
       {

@@ -311,7 +311,7 @@ endfunction
 %! assert (b(:,6), b(:,4));
 %! assert (b(:,7:9), zeros (9,3));
 
-## 3D test
+## 3-D test
 %!test
 %! a = zeros (9,9,9);
 %! a(5,5,5) = 1.0;

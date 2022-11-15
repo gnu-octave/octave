@@ -356,8 +356,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("save_mat_ascii_data");
+      octave::interpreter& interp = octave::__get_interpreter__ ();
 
       interp.recover_from_exception ();
 

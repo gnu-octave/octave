@@ -208,6 +208,13 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
 
   original_f = f;   # Store for error messages.
 
+  if (any (strchr (f, "hsfYD", 1)))
+    warning ("Octave:datevec:date-format-spec", ...
+             ["datevec: Format specifiers for dates should be lower case,", ...
+              " format specifiers for time should be upper case. ", ...
+              " Possible issue with 'm' (month) and 'M' (minutes)?"]);
+  endif
+
   ## Play safe with percent signs.
   f = strrep (f, "%", "%%");
 
@@ -461,3 +468,8 @@ endfunction
 %!error <multiple hour specifiers> datevec ("15:38:21.251", "HH:HH:SS")
 %!error <multiple minute specifiers> datevec ("15:38:21.251", "MM:MM:SS")
 %!error <multiple second specifiers> datevec ("15:38:21.251", "HH:SS:SS")
+%!fail ("datevec ('2015-03-31 0:00','YYYY-mm-DD HH:MM')", ...
+%!      "warning", "Format specifiers for dates should be lower case");
+%!fail ("datevec ('2015-03-31 hh:00','yyyy-mm-dd hh:MM')", ...
+%!      "warning", "format specifiers for time should be upper case");
+

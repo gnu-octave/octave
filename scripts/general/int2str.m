@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} int2str (@var{n})
+## @deftypefn {} {@var{str} =} int2str (@var{n})
 ## Convert an integer (or array of integers) to a string (or a character
 ## array).
 ##
@@ -58,7 +58,7 @@
 ## @seealso{sprintf, num2str, mat2str}
 ## @end deftypefn
 
-function retval = int2str (n)
+function str = int2str (n)
 
   if (nargin < 1)
     print_usage ();
@@ -67,10 +67,10 @@ function retval = int2str (n)
   endif
 
   if (ischar (n))
-    retval = n;
+    str = n;
     return;
   elseif (isempty (n))
-    retval = "";
+    str = "";
     return;
   endif
 
@@ -96,7 +96,7 @@ function retval = int2str (n)
   n  = permute (n, [2, 3:nd, 1]);
   fmt = [repmat(fmt, 1, nc), "\n"];
   strtmp = sprintf (fmt, n);
-  retval = strtrim (char (ostrsplit (strtmp, "\n", true)));
+  str = strtrim (char (ostrsplit (strtmp, "\n", true)));
 
 endfunction
 

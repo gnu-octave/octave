@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isbanded (@var{A}, @var{lower}, @var{upper})
+## @deftypefn {} {@var{tf} =} isbanded (@var{A}, @var{lower}, @var{upper})
 ## Return true if @var{A} is a matrix with entries confined between
 ## @var{lower} diagonals below the main diagonal and @var{upper} diagonals
 ## above the main diagonal.
@@ -33,7 +33,7 @@
 ## @seealso{isdiag, istril, istriu, bandwidth}
 ## @end deftypefn
 
-function retval = isbanded (A, lower, upper)
+function tf = isbanded (A, lower, upper)
 
   if (nargin != 3)
     print_usage ();
@@ -44,16 +44,16 @@ function retval = isbanded (A, lower, upper)
   endif
 
   if (isempty (A))
-    retval = [];
+    tf = [];
   else
-    retval = (isnumeric (A) || islogical (A)) && ndims (A) == 2;
-    if (retval)
+    tf = (isnumeric (A) || islogical (A)) && ndims (A) == 2;
+    if (tf)
       [i, j] = find (A);
       pupp = j >= i;
-      retval = all (j(pupp) - i(pupp) <= upper);
-      if (retval)
+      tf = all (j(pupp) - i(pupp) <= upper);
+      if (tf)
         plow = i >= j;
-        retval = all (i(plow) - j(plow) <= lower);
+        tf = all (i(plow) - j(plow) <= lower);
       endif
     endif
   endif

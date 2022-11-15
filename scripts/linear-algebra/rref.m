@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} rref (@var{A})
-## @deftypefnx {} {} rref (@var{A}, @var{tol})
+## @deftypefn  {} {@var{r} =} rref (@var{A})
+## @deftypefnx {} {@var{r} =} rref (@var{A}, @var{tol})
 ## @deftypefnx {} {[@var{r}, @var{k}] =} rref (@dots{})
 ## Return the reduced row echelon form of @var{A}.
 ##
@@ -89,7 +89,9 @@ function [A, k] = rref (A, tol)
       endif
     endif
   endfor
-  k = find (used);
+  if (nargout > 1)
+    k = find (used);
+  endif
 
 endfunction
 

@@ -56,7 +56,6 @@
 #include "display.h"
 #include "error.h"
 #include "event-manager.h"
-#include "file-io.h"
 #include "graphics.h"
 #include "help.h"
 #include "input.h"
@@ -237,7 +236,9 @@ DEFALIAS (exit, quit);
 DEFMETHOD (atexit, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} atexit (@var{fcn})
-@deftypefnx {} {} atexit (@var{fcn}, @var{flag})
+@deftypefnx {} {} atexit (@var{fcn}, true)
+@deftypefnx {} {} atexit (@var{fcn}, false)
+@deftypefnx {} {@var{status} =} atexit (@var{fcn}, false)
 Register a function to be called when Octave exits.
 
 For example,
@@ -268,8 +269,12 @@ atexit ("last_words", false);
 will remove the function from the list and Octave will not call
 @code{last_words} when it exits.
 
-Note that @code{atexit} only removes the first occurrence of a function
-from the list, so if a function was placed in the list multiple times with
+The optional output @var{status} is only available when unregistering a
+function.  The value is true if the unregistering was successful and false
+otherwise.
+
+Programming Note: @code{atexit} only removes the first occurrence of a function
+from the list; if a function was placed in the list multiple times with
 @code{atexit}, it must also be removed from the list multiple times.
 @seealso{quit}
 @end deftypefn */)
@@ -302,8 +307,8 @@ from the list, so if a function was placed in the list multiple times with
 
 DEFMETHOD (__traditional__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __traditional__ ()
-Undocumented internal function.
+@deftypefn {} {@var{tf} =} __traditional__ ()
+Return true if Octave was invoked with the @env{--traditional} option.
 @end deftypefn */)
 {
   return ovl (interp.traditional ());
@@ -344,7 +349,7 @@ Undocumented internal function.
                                bool verbose = false,
                                bool require_file = true)
   {
-    interpreter& interp = __get_interpreter__ ("safe_source_file");
+    interpreter& interp = __get_interpreter__ ();
 
     try
       {
@@ -2026,24 +2031,6 @@ Undocumented internal function.
       }
 
     return found;
-  }
-
-  // Remove when corresponding public deprecated function is removed.
-  void interpreter::add_atexit_function_deprecated (const std::string& fname)
-  {
-    interpreter& interp
-      = __get_interpreter__ ("interpreter::add_atexit_function");
-
-    interp.add_atexit_fcn (fname);
-  }
-
-  // Remove when corresponding public deprecated function is removed.
-  bool interpreter::remove_atexit_function_deprecated (const std::string& fname)
-  {
-    interpreter& interp
-      = __get_interpreter__ ("interpreter::remove_atexit_function");
-
-    return interp.remove_atexit_fcn (fname);
   }
 
   // What internal options get configured by --traditional.

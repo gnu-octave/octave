@@ -57,7 +57,9 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (__display_tokens__, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __display_tokens__ ()
+@deftypefn  {} {@var{val} =} __display_tokens__ ()
+@deftypefnx {} {@var{old_val} =} __display_tokens__ (@var{new_val})
+@deftypefnx {} {@var{old_val} =} __display_tokens__ (@var{new_val}, "local")
 Query or set the internal variable that determines whether Octave's
 lexer displays tokens as they are read.
 @seealso{__lexer_debug_flag__, __token_count__}
@@ -70,7 +72,7 @@ lexer displays tokens as they are read.
 
 DEFMETHOD (__token_count__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __token_count__ ()
+@deftypefn {} {@var{n} =} __token_count__ ()
 Return the number of language tokens processed since Octave startup.
 @seealso{__lexer_debug_flag__, __display_tokens__}
 @end deftypefn */)

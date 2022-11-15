@@ -1070,6 +1070,9 @@ public:
   string_vector map_keys (void) const
   { return m_rep->map_keys (); }
 
+  bool isfield (const std::string& field_name) const
+  { return m_rep->isfield (field_name); }
+
   std::size_t nparents (void) const
   { return m_rep->nparents (); }
 
@@ -1901,6 +1904,8 @@ OV_COMP_BINOP_FN (op_mul_herm)
 extern OCTINTERP_API void install_types (octave::type_info&);
 
 // Templated value extractors.
+// FIXME: would be more consistent to use panic_impossible(), rather than
+//        assert(), but including "error.h" leads to compilation errors.
 template <typename Value>
 inline Value octave_value_extract (const octave_value&)
 { assert (false); }

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{t}, @var{y}] =} ode15s (@var{fun}, @var{trange}, @var{y0})
-## @deftypefnx {} {[@var{t}, @var{y}] =} ode15s (@var{fun}, @var{trange}, @var{y0}, @var{ode_opt})
+## @deftypefn  {} {[@var{t}, @var{y}] =} ode15s (@var{fcn}, @var{trange}, @var{y0})
+## @deftypefnx {} {[@var{t}, @var{y}] =} ode15s (@var{fcn}, @var{trange}, @var{y0}, @var{ode_opt})
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode15s (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode15s (@dots{})
 ## @deftypefnx {} {} ode15s (@dots{})
@@ -35,7 +35,7 @@
 ## @code{ode15s} uses a variable step, variable order BDF (Backward
 ## Differentiation Formula) method that ranges from order 1 to 5.
 ##
-## @var{fun} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function that defines the ODE: @code{y' = f(t,y)}.  The function
 ## must accept two inputs where the first is time @var{t} and the second is a
 ## column vector of unknowns @var{y}.
@@ -91,15 +91,15 @@
 ## @seealso{decic, odeset, odeget, ode23, ode45}
 ## @end deftypefn
 
-function varargout = ode15s (fun, trange, y0, varargin)
+function varargout = ode15s (fcn, trange, y0, varargin)
 
   if (nargin < 3)
     print_usage ();
   endif
 
   solver = "ode15s";
-  ## Check fun, trange, y0, yp0
-  fun = check_default_input (fun, trange, solver, y0);
+  ## Check fcn, trange, y0, yp0
+  fcn = check_default_input (fcn, trange, solver, y0);
 
   n = numel (y0);
 
@@ -175,14 +175,14 @@ function varargout = ode15s (fun, trange, y0, varargin)
                           classes, attributes, solver);
 
   ## Mass
-  options.havemassfun    = false;
+  options.havemassfcn    = false;
   options.havestatedep   = false;
   options.havetimedep    = false;
   options.havemasssparse = false;
 
   if (! isempty (options.Mass))
     if (is_function_handle (options.Mass))
-      options.havemassfun = true;
+      options.havemassfcn = true;
       if (nargin (options.Mass) == 2)
         options.havestatedep = true;
         M = options.Mass (trange(1), y0);
@@ -216,19 +216,19 @@ function varargout = ode15s (fun, trange, y0, varargin)
   ## Jacobian
   options.havejac       = false;
   options.havejacsparse = false;
-  options.havejacfun    = false;
+  options.havejacfcn    = false;
 
   if (! isempty (options.Jacobian))
     options.havejac = true;
     if (is_function_handle (options.Jacobian))
-      options.havejacfun = true;
+      options.havejacfcn = true;
       if (nargin (options.Jacobian) == 2)
         A = options.Jacobian (trange(1), y0);
         if (! issquare (A) || rows (A) != n || ! isnumeric (A) || ! isreal (A))
           error ("Octave:invalid-input-arg",
                  'ode15s: "Jacobian" function must evaluate to a real square matrix');
         endif
-        options.havejacsparse = issparse (A);  # Jac is sparse fun
+        options.havejacsparse = issparse (A);  # Jac is sparse fcn
       else
         error ("Octave:invalid-input-arg",
                'ode15s: invalid value assigned to field "Jacobian"');
@@ -261,15 +261,15 @@ function varargout = ode15s (fun, trange, y0, varargin)
     options.havejacsparse = false;
   endif
 
-  ## If Mass or Jacobian is fun, then new Jacobian is fun
+  ## If Mass or Jacobian is fcn, then new Jacobian is fcn
   if (options.havejac)
-    if (options.havejacfun || options.havetimedep)
-      options.Jacobian = @ (t, y, yp) wrapjacfun (t, y, yp,
+    if (options.havejacfcn || options.havetimedep)
+      options.Jacobian = @ (t, y, yp) wrapjacfcn (t, y, yp,
                                                   options.Jacobian,
                                                   options.Mass,
                                                   options.havetimedep,
-                                                  options.havejacfun);
-      options.havejacfun = true;
+                                                  options.havejacfcn);
+      options.havejacfcn = true;
     else   # All matrices are constant
       if (! isempty (options.Mass))
         options.Jacobian = {[- options.Jacobian], [options.Mass]};
@@ -324,7 +324,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
   [t, y, te, ye, ie] = __ode15__ (@ (t, y, yp) wrap (t, y, yp, options.Mass,
                                                      options.havetimedep,
                                                      options.havestatedep,
-                                                     fun),
+                                                     fcn),
                                   trange, y0, yp0, options, 2);
 
   if (nargout == 2)
@@ -352,24 +352,24 @@ function varargout = ode15s (fun, trange, y0, varargin)
 
 endfunction
 
-function res = wrap (t, y, yp, Mass, havetimedep, havestatedep, fun)
+function res = wrap (t, y, yp, Mass, havetimedep, havestatedep, fcn)
 
   if (! isempty (Mass) && havestatedep)
-    res = Mass (t, y) * yp - fun (t, y);
+    res = Mass (t, y) * yp - fcn (t, y);
   elseif (! isempty (Mass) && havetimedep)
-    res = Mass (t) * yp - fun (t, y);
+    res = Mass (t) * yp - fcn (t, y);
   elseif (! isempty (Mass))
-    res = Mass * yp - fun (t, y);
+    res = Mass * yp - fcn (t, y);
   else
-    res = yp - fun (t, y);
+    res = yp - fcn (t, y);
   endif
 
 endfunction
 
-function [jac, jact] = wrapjacfun (t, y, yp, Jac, Mass,
-                                   havetimedep, havejacfun)
+function [jac, jact] = wrapjacfcn (t, y, yp, Jac, Mass,
+                                   havetimedep, havejacfcn)
 
-  if (havejacfun)
+  if (havejacfcn)
     jac = - Jac (t, y);
   else
     jac = - Jac;
@@ -388,7 +388,7 @@ endfunction
 
 %!demo
 %! ## Solve Robertson's equations with ode15s
-%! fun = @ (t, y) [-0.04*y(1) + 1e4*y(2).*y(3);
+%! fcn = @ (t, y) [-0.04*y(1) + 1e4*y(2).*y(3);
 %!                  0.04*y(1) - 1e4*y(2).*y(3) - 3e7*y(2).^2;
 %!                  y(1) + y(2) + y(3) - 1];
 %!
@@ -399,7 +399,7 @@ endfunction
 %! options = odeset ("RelTol", 1e-4, "AbsTol", [1e-6, 1e-10, 1e-6],
 %!                   "MStateDependence", "none", "Mass", M);
 %!
-%! [t, y] = ode15s (fun, tspan, y0, options);
+%! [t, y] = ode15s (fcn, tspan, y0, options);
 %!
 %! y(:,2) = 1e4 * y(:,2);
 %! figure (2);

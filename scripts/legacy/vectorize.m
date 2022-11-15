@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} vectorize (@var{fun})
+## @deftypefn {} {@var{vfcn} =} vectorize (@var{fcn})
 ## Create a vectorized version of the anonymous function or expression
-## @var{fun} by replacing all occurrences of @code{*}, @code{/}, etc.,
+## @var{fcn} by replacing all occurrences of @code{*}, @code{/}, etc.,
 ## with @code{.*}, @code{./}, etc.
 ##
 ## Note that the transformation is extremely simplistic.  Use of this
@@ -34,12 +34,7 @@
 ## version of Octave.
 ## @end deftypefn
 
-## The following function was translated directly from the original C++
-## version.  Yes, it will be slow, but its use is strongly discouraged
-## anyway, and most expressions will probably be short.  It may also be
-## buggy.  Well, don't use this function!
-
-function retval = vectorize (fun)
+function vfcn = vectorize (fcn)
 
   persistent warned = false;
   if (! warned)
@@ -52,21 +47,21 @@ function retval = vectorize (fun)
     print_usage ();
   endif
 
-  if (isa (fun, "function_handle"))
-    finfo = functions (fun);
+  if (is_function_handle (fcn))
+    finfo = functions (fcn);
     if (! strcmp (finfo.type, "anonymous"))
-      error ("vectorize: FUN must be a string or anonymous function handle");
+      error ("vectorize: FCN must be a string or anonymous function handle");
     endif
     expr = finfo.function;
     idx = index (expr, ")");
     args = expr(1:idx);
     expr = expr(idx+1:end);
     new_expr = __vectorize__ (expr);
-    retval = str2func ([args, new_expr]);
-  elseif (ischar (fun))
-    retval = __vectorize__ (fun);
+    vfcn = str2func ([args, new_expr]);
+  elseif (ischar (fcn))
+    vfcn = __vectorize__ (fcn);
   else
-    error ("vectorize: FUN must be a string or anonymous function handle");
+    error ("vectorize: FCN must be a string or anonymous function handle");
   endif
 
 endfunction
@@ -92,4 +87,4 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> vectorize ()
-%!error <FUN must be a string or anonymous function handle> vectorize (1)
+%!error <FCN must be a string or anonymous function handle> vectorize (1)

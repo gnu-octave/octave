@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} pascal (@var{n})
-## @deftypefnx {} {} pascal (@var{n}, @var{t})
+## @deftypefn  {} {@var{P} =} pascal (@var{n})
+## @deftypefnx {} {@var{P} =} pascal (@var{n}, @var{t})
 ## Return the Pascal matrix of order @var{n} if @code{@var{t} = 0}.
 ##
 ## The default value of @var{t} is 0.
@@ -45,7 +45,7 @@
 ## @seealso{chol}
 ## @end deftypefn
 
-function retval = pascal (n, t = 0)
+function P = pascal (n, t = 0)
 
   if (nargin < 1)
     print_usage ();
@@ -55,27 +55,27 @@ function retval = pascal (n, t = 0)
     error ("pascal: T must be -1, 0, 1, or 2, found %d", t);
   endif
 
-  retval = zeros (n);
+  P = zeros (n);
   if (n > 0)
-    retval(:,1) = 1;
+    P(:,1) = 1;
   endif
 
   if (t == -1)
     for j = 2:n
-      retval(j:n,j) = cumsum (retval(j-1:n-1,j-1));
+      P(j:n,j) = cumsum (P(j-1:n-1,j-1));
     endfor
   else
     for j = 2:n
-      retval(j:n,j) = -cumsum (retval(j-1:n-1,j-1));
+      P(j:n,j) = -cumsum (P(j-1:n-1,j-1));
     endfor
   endif
 
   if (t == 0)
-    retval = retval*retval';
+    P = P*P';
   elseif (t == 2)
-    retval = rot90 (retval, 3);
+    P = rot90 (P, 3);
     if (rem (n,2) != 1)
-      retval *= -1;
+      P *= -1;
     endif
   endif
 

@@ -317,7 +317,7 @@ default graphics renderer (@qcode{"qt"}) has been Qt-based, which has
 been OpenGL-based.
 
 @item RapidJSON
-A fast JSON parser/generator for C++ with both SAX/DOM style API
+A fast JSON parser/generator for C++ with both @nospell{SAX/DOM} style API
 (@url{https://rapidjson.org/}).  RapidJSON is required to read or write
 from or to JSON files with the functions @code{jsondecode} and
 @code{jsonencode}.
@@ -649,7 +649,7 @@ libraries are limited to arrays with dimensions that are smaller than
 
 @item SuiteSparse
 
-@item @sc{sundials ida}
+@item @sc{sundials @nospell{ida}}
 
 @item @sc{arpack}
 @end itemize
@@ -795,7 +795,7 @@ done
 @noindent
 Other systems may require a different solution.
 
-@item @sc{sundials ida}
+@item @sc{sundials @nospell{ida}}
 (@url{https://computing.llnl.gov/projects/sundials/ida})
 
 When configuring with @code{cmake} add the flag
@@ -884,7 +884,7 @@ installation of Octave.
 
 @itemize @bullet
 @item
-On some SCO systems, @code{info} fails to compile if
+On some @nospell{SCO} systems, @code{info} fails to compile if
 @w{@code{HAVE_TERMIOS_H}} is defined in @file{config.h}.  Simply
 removing the definition from @file{info/config.h} should allow it to
 compile.
@@ -955,8 +955,8 @@ warning: ANSI C++ prohibits conversion from `(int)'
 @noindent
 while compiling @file{sighandlers.cc}, you may need to edit some files
 in the @code{gcc} include subdirectory to add proper prototypes for
-functions there.  For example, Ultrix 4.2 needs proper declarations for
-the @code{signal} function and the @w{@code{SIG_IGN}} macro in the file
+functions there.  For example, @nospell{Ultrix} 4.2 needs proper declarations
+for the @code{signal} function and the @w{@code{SIG_IGN}} macro in the file
 @file{signal.h}.
 
 On some systems the @w{@code{SIG_IGN}} macro is defined to be something
@@ -1022,7 +1022,7 @@ subdirectory, you should either upgrade your compiler or try compiling
 with optimization turned off.
 
 @item
-On NeXT systems, if you get errors like this:
+On @nospell{NeXT} systems, if you get errors like this:
 
 @example
 @group
@@ -1065,7 +1065,7 @@ Install a different @sc{blas} library such as OpenBLAS or ATLAS to correct
 this issue.
 
 @item
-On NeXT systems, linking to @file{libsys_s.a} may fail to resolve the
+On @nospell{NeXT} systems, linking to @file{libsys_s.a} may fail to resolve the
 following functions
 
 @example

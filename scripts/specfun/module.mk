@@ -19,7 +19,6 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/nchoosek.m \
   %reldir%/nthroot.m \
   %reldir%/perms.m \
-  %reldir%/pow2.m \
   %reldir%/primes.m \
   %reldir%/reallog.m \
   %reldir%/realpow.m \

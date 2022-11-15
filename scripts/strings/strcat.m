@@ -24,9 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} strcat (@var{s1}, @var{s2}, @dots{})
-## Return a string containing all the arguments concatenated
-## horizontally.
+## @deftypefn {} {@var{str} =} strcat (@var{s1}, @var{s2}, @dots{})
+## Return a string containing all the arguments concatenated horizontally.
 ##
 ## If the arguments are cell strings, @code{strcat} returns a cell string
 ## with the individual cells concatenated.  For numerical input, each element
@@ -83,15 +82,15 @@
 ## @seealso{cstrcat, char, strvcat}
 ## @end deftypefn
 
-function st = strcat (varargin)
+function str = strcat (varargin)
 
   if (nargin == 0)
-    st = "";
+    str = "";
   elseif (nargin == 1)
     if (iscellstr (varargin{1}))
-      st = varargin{1};
+      str = varargin{1};
     elseif (isreal (varargin{1}) || ischar (varargin{1}))
-      st = char (cellstr (varargin{1}));
+      str = char (cellstr (varargin{1}));
     else
       error ("strcat: inputs must be strings or cells of strings");
     endif
@@ -118,11 +117,11 @@ function st = strcat (varargin)
     endif
 
     ## Cellfun handles everything for us.
-    st = cellfun ("horzcat", varargin{:}, uo, false);
+    str = cellfun ("horzcat", varargin{:}, uo, false);
 
     if (allchar)
       ## If all inputs were strings, return strings.
-      st = char (st);
+      str = char (str);
     endif
   endif
 

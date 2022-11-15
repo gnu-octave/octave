@@ -47,7 +47,7 @@
 
 OCTAVE_NAMESPACE_BEGIN
 
-static inline int
+static inline bool
 xisint (double x)
 {
   return (octave::math::x_nint (x) == x
@@ -66,7 +66,11 @@ xpow (const SparseMatrix& a, double b)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  if (nr == 0 || nc == 0 || nr != nc)
+  if (nr == 0 || nc == 0)
+    return SparseMatrix ();
+
+  // If we are here, A is not empty ==> A needs to be square.
+  if (nr != nc)
     error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
 
   if (! xisint (b))
@@ -97,6 +101,9 @@ xpow (const SparseMatrix& a, double b)
           double rcond = 0.0;
           MatrixType mattyp (a);
 
+          // FIXME: This causes an error if the input sparse matrix is all-zeros.
+          // That behavior is inconsistent with A ^ b when A is a full all-zeros
+          // matrix, which just returns Inf of the same size with a warning.
           atmp = a.inverse (mattyp, info, rcond, 1);
 
           if (info == -1)
@@ -105,19 +112,58 @@ xpow (const SparseMatrix& a, double b)
       else
         atmp = a;
 
+      if (atmp.nnz () == 0)  // Fast return for all-zeros matrix
+        return atmp;
+
       SparseMatrix result (atmp);
 
       btmp--;
 
-      while (btmp > 0)
+      // There are two approaches to the actual exponentiation.
+      // Exponentiation by squaring uses only a logarithmic number
+      // of multiplications but the matrices it multiplies tend to be dense
+      // towards the end.
+      // Linear multiplication uses a linear number of multiplications
+      // but one of the matrices it uses will be as sparse as the original
+      // matrix.
+      //
+      // The time to multiply fixed-size matrices is strongly affected by their
+      // sparsity. Denser matrices take much longer to multiply together.
+      // See this URL for a worked-through example:
+      // https://octave.discourse.group/t/3216/4
+      //
+      // The tradeoff is between many fast multiplications or a few slow ones.
+      //
+      // Large exponents favor the squaring technique, and sparse matrices
+      // favor linear multiplication.
+      //
+      // We calculate a threshold based on the sparsity of the input
+      // and use squaring for exponents larger than that.
+      //
+      // FIXME: Improve this threshold calculation.
+
+      uint64_t sparsity = atmp.numel () / atmp.nnz (); // reciprocal of density
+      int threshold = (sparsity >= 1000) ? 40
+                    : (sparsity >=  100) ? 20
+                    : 3;
+
+      if (btmp > threshold) // use squaring technique
         {
-          if (btmp & 1)
+          while (btmp > 0)
+            {
+              if (btmp & 1)
+                result = result * atmp;
+
+              btmp >>= 1;
+
+              if (btmp > 0)
+                atmp = atmp * atmp;
+            }
+        }
+      else // use linear multiplication
+        {
+          for (int i = 0; i < btmp; i++)
             result = result * atmp;
-
-          btmp >>= 1;
-
-          if (btmp > 0)
-            atmp = atmp * atmp;
         }
 
       retval = result;
@@ -134,7 +180,11 @@ xpow (const SparseComplexMatrix& a, double b)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  if (nr == 0 || nc == 0 || nr != nc)
+  if (nr == 0 || nc == 0)
+    return SparseMatrix ();
+
+  // If we are here, A is not empty ==> A needs to be square.
+  if (nr != nc)
     error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
 
   if (! xisint (b))
@@ -173,19 +223,41 @@ xpow (const SparseComplexMatrix& a, double b)
       else
         atmp = a;
 
+      if (atmp.nnz () == 0)  // Fast return for all-zeros matrix
+        return atmp;
+
       SparseComplexMatrix result (atmp);
 
       btmp--;
 
-      while (btmp > 0)
+      // Select multiplication sequence based on sparsity of atmp.
+      // See the long comment in xpow (const SparseMatrix& a, double b)
+      // for more details.
+      //
+      // FIXME: Improve this threshold calculation.
+
+      uint64_t sparsity = atmp.numel () / atmp.nnz (); // reciprocal of density
+      int threshold = (sparsity >= 1000) ? 40
+                    : (sparsity >=  100) ? 20
+                    : 3;
+
+      if (btmp > threshold) // use squaring technique
         {
-          if (btmp & 1)
+          while (btmp > 0)
+            {
+              if (btmp & 1)
+                result = result * atmp;
+
+              btmp >>= 1;
+
+              if (btmp > 0)
+                atmp = atmp * atmp;
+            }
+        }
+      else // use linear multiplication
+        {
+          for (int i = 0; i < btmp; i++)
             result = result * atmp;
-
-          btmp >>= 1;
-
-          if (btmp > 0)
-            atmp = atmp * atmp;
         }
 
       retval = result;
@@ -244,6 +316,30 @@ scalar_xpow (const S& a, const SM& b)
 /*
 %!assert (sparse (2) .^ [3, 4], sparse ([8, 16]))
 %!assert <47775> (sparse (2i) .^ [3, 4], sparse ([-0-8i, 16]))
+
+%!test <*63080>
+%! Z = sparse ([]);
+%! A = sparse (zeros (0, 2));
+%! B = sparse (zeros (2, 0));
+%! assert (Z ^  1, Z);
+%! assert (Z ^  0, Z);
+%! assert (Z ^ -1, Z);
+%! assert (A ^  1, Z);
+%! assert (A ^  0, Z);
+%! assert (A ^ -1, Z);
+%! assert (B ^  1, Z);
+%! assert (B ^  0, Z);
+%! assert (B ^ -1, Z);
+
+%!test <*63080>
+%! A = sparse (zeros (2, 2));
+%! assert (A ^  1, A);
+%! assert (A ^  0, sparse (eye (2, 2)));
+
+%!test <63080>
+%! A = sparse (zeros (2, 2));
+%! assert (A ^ -1, sparse (inf (2, 2)));
+
 */
 
 // -*- 1 -*-
@@ -745,5 +841,6 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 
   return result;
 }
+
 
 OCTAVE_NAMESPACE_END

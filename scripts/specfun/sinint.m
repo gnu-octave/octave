@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} sinint (@var{x})
+## @deftypefn {} {@var{y} =} sinint (@var{x})
 ## Compute the sine integral function:
 ## @tex
 ## $$

@@ -28,17 +28,55 @@
 
 #include <QWidget>
 
+#include <Qsci/qsciscintilla.h>
+
 #include "octave-qobject.h"
 #include "gui-settings.h"
 
-class QLabel;
-class QLineEdit;
-class QStrung;
-class QTextBrowser;
+class QsciScintilla;
 
 namespace octave
 {
   class base_qobject;
+  class command_widget;
+
+  class console : public QsciScintilla
+  {
+    Q_OBJECT
+
+  public:
+
+    console (command_widget *p, base_qobject& oct_qobj);
+
+  public slots:
+
+    void cursor_position_changed (int line, int col);
+
+    void text_changed (void);
+
+    void move_cursor_to_end (void);
+
+    void new_command_line (const QString& command = QString ());
+
+    void execute_command (const QString& command);
+
+  protected:
+
+    void keyPressEvent (QKeyEvent *e);
+
+  private:
+
+    void append_string (const QString& string);
+
+    void accept_command_line (void);
+
+    int m_command_position;
+    int m_cursor_position;
+    bool m_text_changed;
+    command_widget *m_command_widget;
+    QString m_last_key_string;
+
+  };
 
   class command_widget : public QWidget
   {
@@ -47,6 +85,12 @@ namespace octave
   public:
 
     command_widget (base_qobject& oct_qobj, QWidget *p);
+
+    console * get_console ( ) { return m_console; };
+
+    void init_command_prompt ();
+
+    QString prompt (void);
 
   signals:
 
@@ -59,7 +103,11 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
+    void new_command_line_signal (const QString& command = QString ());
+
   public slots:
+
+    void process_input_line (const QString& input_line);
 
     void update_prompt (const QString& prompt);
 
@@ -67,17 +115,11 @@ namespace octave
 
     void notice_settings (const gui_settings *settings);
 
-  protected slots:
-
-    void accept_input_line (void);
-
   private:
 
     bool m_incomplete_parse;
-    QLabel *m_prompt;
-    QLineEdit *m_line_edit;
-    QTextBrowser *m_output_display;
-    QColor m_input_color;
+    QString m_prompt;
+    console *m_console;
   };
 }
 

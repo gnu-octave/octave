@@ -45,6 +45,7 @@
 #include <QPrintDialog>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QSaveFile>
 #include <QStyle>
 #include <QTextBlock>
 #include <QTextCodec>
@@ -508,6 +509,9 @@ namespace octave
         update_lexer ();
       }
 
+    // set the window title to actual filename (not modified)
+    update_window_title (m_edit_area->isModified ());
+
     // update the file editor with current editing directory
     emit editor_state_changed (m_copy_available, m_is_octave_file,
                                m_edit_area->isModified ());
@@ -529,6 +533,14 @@ namespace octave
       }
 
     return true;
+  }
+
+  void file_editor_tab::enable_file_watcher (bool do_enable)
+  {
+    if (do_enable)
+      m_file_system_watcher.addPath (m_file_name);
+    else
+      m_file_system_watcher.removePath (m_file_name);
   }
 
   // We cannot create a breakpoint when the file is modified
@@ -895,7 +907,13 @@ namespace octave
     m_edit_area->setMarginsBackgroundColor (bgm);
     m_edit_area->setFoldMarginColors (bgm, fgm);
 
-    bgm = interpolate_color (bg, fg, 0.5, 0.1);
+    QColor current_line_bg
+      = settings->color_value (ed_highlight_current_line_color, mode);
+    if (current_line_bg == settings_color_no_change)
+       bgm = interpolate_color (bg, fg, 0.5, 0.1);  // It is the "auto" color
+     else
+       bgm = current_line_bg;  // Specific color given
+
     m_edit_area->setCaretLineBackgroundColor (bgm);
 
     // color indicator for highlighting all occurrences:
@@ -1026,7 +1044,7 @@ namespace octave
     if (ID != this)
       return;
 
-    if (m_edit_area->isModified () | ! valid_file_name ())
+    if (m_edit_area->isModified () || ! valid_file_name ())
       {
         save_file (m_file_name);  // save file dialog
 
@@ -1120,6 +1138,27 @@ namespace octave
                                                  (1 << marker::bookmark));
 
     m_edit_area->setCursorPosition (prevline, 0);
+  }
+
+
+  QString file_editor_tab::get_all_bookmarks ()
+  {
+    QString bmlist;
+    int line = 0;
+
+    while (line > -1)
+      {
+        line = m_edit_area->markerFindNext (line, (1 << marker::bookmark));
+        if (line > -1)
+          {
+            if (! bmlist.isEmpty ())
+              bmlist += ",";
+            bmlist += QString::number (line);
+            line++;   // search from next line, otherwise same line found again
+          }
+      }
+
+    return bmlist;
   }
 
   void file_editor_tab::remove_bookmark (const QWidget *ID)
@@ -1844,9 +1883,8 @@ namespace octave
     QApplication::restoreOverrideCursor ();
 
     m_copy_available = false;     // no selection yet available
-    set_file_name (file_to_load);
-    update_window_title (false); // window title (no modification)
     m_edit_area->setModified (false); // loaded file is not modified yet
+    set_file_name (file_to_load);
 
     update_eol_indicator ();
 
@@ -2183,7 +2221,7 @@ namespace octave
                                       bool remove_on_success,
                                       bool restore_breakpoints)
   {
-    QFile file (file_to_save);
+    QSaveFile file (file_to_save);
 
     // stop watching file
     QStringList trackedFiles = m_file_system_watcher.files ();
@@ -2207,7 +2245,7 @@ namespace octave
 
     // open the file for writing (use QIODevice::ReadWrite for avoiding
     // truncating the previous file contents)
-    if (! file.open (QIODevice::ReadWrite))
+    if (! file.open (QIODevice::WriteOnly))
       {
         // Unsuccessful, begin watching file again if it was being
         // watched previously.
@@ -2248,37 +2286,47 @@ namespace octave
 
     out.flush ();
     QApplication::restoreOverrideCursor ();
-    file.resize (file.pos());
-    file.flush ();
-    file.close ();
 
-    // file exists now
-    QFileInfo file_info = QFileInfo (file);
-    QString full_file_to_save = file_info.canonicalFilePath ();
+    // Finish writing by committing the changes to disk,
+    // where nothing is done when an error occurred while writing above
+    bool writing_ok = file.commit ();
 
-    // save filename after closing file as set_file_name starts watching again
-    set_file_name (full_file_to_save);   // make absolute
-
-    // set the window title to actual filename (not modified)
-    update_window_title (false);
-
-    // file is save -> not modified, update encoding in statusbar
-    m_edit_area->setModified (false);
-    m_enc_indicator->setText (m_encoding);
-
-    emit tab_ready_to_close ();
-
-    if (remove_on_success)
+    if (writing_ok)
       {
-        emit tab_remove_request ();
-        return;  // Don't touch member variables after removal
-      }
+        // Writing was successful: file exists now
+        QFileInfo file_info = QFileInfo (file.fileName ());
+        QString full_file_to_save = file_info.canonicalFilePath ();
 
-    // Attempt to restore the breakpoints if that is desired.
-    // This is only allowed if the tab is not closing since changing
-    // breakpoints would reopen the tab in this case.
-    if (restore_breakpoints)
-      check_restore_breakpoints ();
+        // file is save -> not modified, update encoding in statusbar
+        m_edit_area->setModified (false);
+        m_enc_indicator->setText (m_encoding);
+
+        // save filename after closing file as set_file_name starts watching again
+        set_file_name (full_file_to_save);   // make absolute
+
+        emit tab_ready_to_close ();
+
+        if (remove_on_success)
+          {
+            emit tab_remove_request ();
+            return;  // Don't touch member variables after removal
+          }
+
+        // Attempt to restore the breakpoints if that is desired.
+        // This is only allowed if the tab is not closing since changing
+        // breakpoints would reopen the tab in this case.
+        if (restore_breakpoints)
+          check_restore_breakpoints ();
+      }
+    else
+      {
+        QMessageBox::critical (nullptr,
+                               tr ("Octave Editor"),
+                               tr ("The changes could not be saved to the file\n"
+                                   "%1")
+                                   .arg (file.fileName ())
+                              );
+      }
   }
 
   void file_editor_tab::save_file_as (bool remove_on_success)

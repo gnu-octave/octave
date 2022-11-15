@@ -98,7 +98,8 @@ millerrabin (uint64_t div, uint64_t d, uint64_t r, uint64_t n)
 bool
 isprimescalar (uint64_t n)
 {
-  // Fast return for even numbers. n==2 is excluded by the time this function is called.
+  // Fast return for even numbers.
+  // n==2 is excluded by the time this function is called.
   if (! (n & 1))
     return false;
 
@@ -189,9 +190,94 @@ You should call isprime(N) instead of directly calling this function.
 %!assert (__isprimelarge__ (uint64 (2305843009213693951)), true)
 %!assert (__isprimelarge__ (uint64 (18446744073709551557)), true)
 
-%!assert (__isprimelarge__ ([uint64(12345), uint64(2147483647), uint64(2305843009213693951), uint64(18446744073709551557)]), logical ([0 1 1 1]))
+%!assert (__isprimelarge__ ([uint64(12345), uint64(2147483647), ...
+%!                           uint64(2305843009213693951), ...
+%!                           uint64(18446744073709551557)]),
+%!        logical ([0 1 1 1]))
 
 %!error <unable to convert input> (__isprimelarge__ ({'foo'; 'bar'}))
+*/
+
+
+// This function implements a fast, private GCD function
+// optimized for uint64_t.  No input validation by design.
+inline
+uint64_t
+localgcd (uint64_t a, uint64_t b)
+{
+  return (a <= b) ? ( (b % a == 0) ? a : localgcd (a, b % a) )
+                  : ( (a % b == 0) ? b : localgcd (a % b, b) );
+}
+
+// This function implements a textbook version of the Pollard Rho
+// factorization algorithm with Brent update.
+// The code is short and simple, but the math behind it is complicated.
+uint64_t
+pollardrho (uint64_t n, uint64_t c = UINT64_C (1))
+{
+  uint64_t i = UINT64_C (1), j = UINT64_C (2);  // cycle index values
+  uint64_t x = (c+1) % n;       // can also be rand () % n
+  uint64_t y = x;               // other value in the chain
+  uint64_t g = 0;               // GCD
+
+  while (true)
+    {
+      i++;
+
+      // Calculate x = mod (x^2 + c, n) without overflow.
+      x = safemultiply (x, x, n) + c;
+      if (x >= n)
+        x -= n;
+
+      // Calculate GCD (abs (x-y), n).
+      g = (x > y) ? localgcd (x - y, n) : (x < y) ? localgcd (y - x, n) : 0;
+
+      if (i == j)  // cycle detected ==> double j
+        {
+          y = x;
+          j <<= 1;
+        }
+
+      if (g == n || i > UINT64_C (1000000))  // cut losses, restart with a different c
+        return pollardrho (n, c + 2);
+
+      if (g > UINT64_C (1))  // found GCD ==> exit loop properly
+        {
+          error_unless (n % g == 0);  // theoretical possibility of GCD error
+          return g;
+        }
+    }
+}
+
+DEFUN (__pollardrho__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{x} =} __pollardrho__ (@var{n})
+Private function.  Use the Pollard Rho test to find a factor of @var{n}.
+The input @var{n} is required to be a composite 64-bit integer.
+Do not pass it a prime input!  You should call factor(@var{n}) instead
+of directly calling this function.
+
+@seealso{isprime, factor}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+  if (nargin != 1)
+    print_usage ();
+
+  octave_uint64 inp = args(0).xuint64_scalar_value
+    ("__pollardrho__: unable to convert input. Call factor() instead.");
+
+  uint64_t n = inp;
+  octave_uint64 retval = pollardrho (n);
+
+  return ovl (retval);
+}
+
+/*
+%!assert (__pollardrho__ (uint64 (78567695338254293)), uint64 (443363))
+%!assert (__pollardrho__ (1084978968791), uint64 (832957))
+
+%!error <unable to convert input> (__pollardrho__ ({'foo'; 'bar'}))
 */
 
 OCTAVE_NAMESPACE_END

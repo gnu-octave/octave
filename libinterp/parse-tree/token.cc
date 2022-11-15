@@ -29,6 +29,7 @@
 
 #include <cassert>
 
+#include "error.h"
 #include "token.h"
 
 namespace octave
@@ -95,14 +96,14 @@ namespace octave
   std::string
   token::text (void) const
   {
-    assert (m_type_tag == string_token);
+    panic_if (m_type_tag != string_token);
     return *m_tok_info.m_str;
   }
 
   octave_value
   token::number (void) const
   {
-    assert (m_type_tag == numeric_token);
+    panic_if (m_type_tag != numeric_token);
     return *m_tok_info.m_num;
   }
 
@@ -115,21 +116,21 @@ namespace octave
   token::end_tok_type
   token::ettype (void) const
   {
-    assert (m_type_tag == ettype_token);
+    panic_if (m_type_tag != ettype_token);
     return m_tok_info.m_et;
   }
 
   std::string
   token::superclass_method_name (void) const
   {
-    assert (m_type_tag == scls_name_token);
+    panic_if (m_type_tag != scls_name_token);
     return m_tok_info.m_superclass_info->m_method_name;
   }
 
   std::string
   token::superclass_class_name (void) const
   {
-    assert (m_type_tag == scls_name_token);
+    panic_if (m_type_tag != scls_name_token);
     return m_tok_info.m_superclass_info->m_class_name;
   }
 

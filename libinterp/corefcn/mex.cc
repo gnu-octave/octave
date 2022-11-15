@@ -46,8 +46,6 @@
 #include <set>
 #include <string>
 
-// Needed to instantiate Array objects with custom allocator.
-#include "Array.cc"
 #include "f77-fcn.h"
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
@@ -450,7 +448,9 @@ calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
 
 static inline void * maybe_mark_foreign (void *ptr);
 
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 static inline void maybe_disown_ptr (void *ptr);
+#endif
 
 #define VOID_MUTATION_METHOD(FCN_NAME, ARG_LIST)        \
   void FCN_NAME ARG_LIST { request_mutation (); }
@@ -489,7 +489,7 @@ public:
     mxArray *retval = m_val.as_mxArray (m_interleaved);
 
     // RETVAL is assumed to be an mxArray_matlab object.  Should we
-    // assert that condition here?
+    // error_unless that condition here?
 
     if (retval)
       {
@@ -799,9 +799,11 @@ public:
 
   GET_DATA_METHOD (mxUint64, get_uint64s, mxUINT64_CLASS, mxREAL);
 
-  GET_DATA_METHOD (mxComplexDouble, get_complex_doubles, mxDOUBLE_CLASS, mxCOMPLEX);
+  GET_DATA_METHOD (mxComplexDouble, get_complex_doubles,
+                   mxDOUBLE_CLASS, mxCOMPLEX);
 
-  GET_DATA_METHOD (mxComplexSingle, get_complex_singles, mxDOUBLE_CLASS, mxCOMPLEX);
+  GET_DATA_METHOD (mxComplexSingle, get_complex_singles,
+                   mxDOUBLE_CLASS, mxCOMPLEX);
 
 #if 0
   /* We don't have these yet. */
@@ -1558,8 +1560,8 @@ public:
 protected:
 
   mxArray_matlab (bool interleaved, mxClassID id = mxUNKNOWN_CLASS)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id), m_ndims (0),
-      m_dims (nullptr)
+    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
+      m_ndims (0), m_dims (nullptr)
   { }
 
   mxArray_matlab (bool interleaved, mxClassID id, mwSize ndims,
@@ -1609,7 +1611,8 @@ protected:
   }
 
   mxArray_matlab (bool interleaved, mxClassID id, mwSize m, mwSize n)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id), m_ndims (2),
+    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
+      m_ndims (2),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
     m_dims[0] = m;
@@ -3445,8 +3448,7 @@ public:
   {
     if (! m_fname)
       {
-        octave::tree_evaluator& tw
-          = octave::__get_evaluator__ ("mex::function_name");
+        octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
         octave_function *fcn = tw.current_function ();
 
@@ -3755,6 +3757,8 @@ maybe_mark_foreign (void *ptr)
   return ptr;
 }
 
+#if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
+
 static inline void
 maybe_disown_ptr (void *ptr)
 {
@@ -3765,6 +3769,8 @@ maybe_disown_ptr (void *ptr)
       mex_context->mark_foreign (ptr);
     }
 }
+
+#endif
 
 static inline mxArray *
 maybe_unmark_array (mxArray *ptr)
@@ -4774,6 +4780,8 @@ typedef void (*cmex_fptr) (int nlhs, mxArray **plhs, int nrhs, mxArray **prhs);
 typedef F77_RET_T (*fmex_fptr) (F77_INT& nlhs, mxArray **plhs,
                                 F77_INT& nrhs, mxArray **prhs);
 
+OCTAVE_NAMESPACE_BEGIN
+
 octave_value_list
 call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
           int nargout_arg)
@@ -4845,6 +4853,8 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
   return retval;
 }
 
+OCTAVE_NAMESPACE_END
+
 // C interface to mex functions:
 
 const char *
@@ -4888,7 +4898,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 {
   octave_value_list args = mx_to_ov_args (nargin, argin);
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexCallMATLAB");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   bool execution_error = false;
 
@@ -4985,7 +4995,7 @@ mexEvalString (const char *s)
 {
   int retval = 0;
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexEvalString");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   int parse_status;
   bool execution_error = false;
@@ -5014,7 +5024,7 @@ mexEvalStringWithTrap (const char *s)
 {
   mxArray *mx = nullptr;
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexEvalString");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   int parse_status;
   bool execution_error = false;
@@ -5152,7 +5162,7 @@ mexGetVariable (const char *space, const char *name)
 
   octave_value val;
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexGetVariable");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   if (! strcmp (space, "global"))
     val = interp.global_varval (name);
@@ -5217,7 +5227,7 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
   if (! name || name[0] == '\0')
     return 1;
 
-  octave::interpreter& interp = octave::__get_interpreter__ ("mexPutVariable");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   if (! strcmp (space, "global"))
     {
@@ -5347,7 +5357,7 @@ mexIsLocked (void)
     {
       const char *fname = mexFunctionName ();
 
-      octave::interpreter& interp = octave::__get_interpreter__ ("mexIsLocked");
+      octave::interpreter& interp = octave::__get_interpreter__ ();
 
       retval = interp.mislocked (fname);
     }
@@ -5369,7 +5379,7 @@ mexLock (void)
       else
         mex_lock_count[fname]++;
 
-      octave::interpreter& interp = octave::__get_interpreter__ ("mexLock");
+      octave::interpreter& interp = octave::__get_interpreter__ ();
 
       interp.mlock ();
     }
@@ -5411,8 +5421,7 @@ mexUnlock (void)
 
           if (count == 0)
             {
-              octave::interpreter& interp
-                = octave::__get_interpreter__ ("mexUnLock");
+              octave::interpreter& interp = octave::__get_interpreter__ ();
 
               interp.munlock (fname);
 

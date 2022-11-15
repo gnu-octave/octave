@@ -30,7 +30,7 @@
 #include <Qsci/qsciscintilla.h>
 #endif
 
-#include "gui-preferences.h"
+#include "gui-settings.h"
 #include "localcharset-wrapper.h"
 
 // Editor preferences
@@ -144,6 +144,10 @@ const gui_pref
 ed_highlight_current_line ("editor/highlightCurrentLine", QVariant (true));
 
 const gui_pref
+ed_highlight_current_line_color ("editor/highlightCurrentLineColor",
+                                 QVariant (settings_color_no_change));
+
+const gui_pref
 ed_show_white_space ("editor/show_white_space", QVariant (false));
 
 const gui_pref
@@ -198,6 +202,9 @@ ed_session_ind ("editor/saved_session_tab_index", QVariant (QStringList ()));
 
 const gui_pref
 ed_session_lines ("editor/saved_session_lines", QVariant (QStringList ()));
+
+const gui_pref
+ed_session_bookmarks ("editor/saved_session_bookmarks", QVariant (QStringList ()));
 
 // Tabs
 const QStringList

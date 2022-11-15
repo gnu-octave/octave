@@ -111,13 +111,11 @@ namespace octave
       std::shared_ptr<sparse_qr_rep> m_rep;
     };
 
-#if defined (__clang__) || defined (_WIN32)
     // extern instantiations with set visibility/export/import attribute
 
-    extern template class OCTAVE_API sparse_qr<SparseMatrix>;
+    extern template class OCTAVE_EXTERN_TEMPLATE_API sparse_qr<SparseMatrix>;
 
-    extern template class OCTAVE_API sparse_qr<SparseComplexMatrix>;
-#endif
+    extern template class OCTAVE_EXTERN_TEMPLATE_API sparse_qr<SparseComplexMatrix>;
 
     // Provide qrsolve for backward compatibility.
 

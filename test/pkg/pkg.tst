@@ -73,7 +73,9 @@
 %!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
 %!   silent_pkg_install (mfile_pkg_tgz{i});
-%!   system (["chmod -Rf u+w '" prefix "'"]);   ## FIXME: Work around bug #53578
+%!   if (isunix ())
+%!     system (["chmod -Rf u+w '" prefix "'"]);   ## FIXME: Work around bug #53578
+%!   endif
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 %!
@@ -83,7 +85,9 @@
 %!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
 %!   silent_pkg_install ("-local", mfile_pkg_tgz{i});
-%!   system (["chmod -Rf u+w '" prefix "'"]);   ## FIXME: Work around bug #53578
+%!   if (isunix)
+%!     system (["chmod -Rf u+w '" prefix "'"]);   ## FIXME: Work around bug #53578
+%!   endif
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 
@@ -111,7 +115,9 @@
 %!     pkg ("load", name);
 %!     pkg ("unload", name);
 %!   unwind_protect_cleanup
-%!     system (["chmod -Rf u+w '" prefix "'"]); ## FIXME: Work around bug #53578
+%!     if (isunix)
+%!       system (["chmod -Rf u+w '" prefix "'"]); ## FIXME: Work around bug #53578
+%!     endif
 %!     pkg ("uninstall", name);
 %!   end_unwind_protect
 %! endfor
@@ -138,7 +144,9 @@
 %! [desc, flag] = pkg ("describe", mfile_pkg_name{1});
 %! ## FIXME: this only tests that the describe command runs,
 %! ##        not that the output is in anyway correct.
-%! system (["chmod -Rf u+w '" prefix "'"]);     ## FIXME: Work around bug #53578
+%! if (isunix)
+%!   system (["chmod -Rf u+w '" prefix "'"]);     ## FIXME: Work around bug #53578
+%! endif
 %! pkg ("uninstall", mfile_pkg_name{1});
 
 ## -verbose

@@ -300,7 +300,7 @@ static inline T
 pr_max_internal (const MArray<T>& m)
 {
   // We expect a 2-d array.
-  assert (m.ndims () == 2);
+  error_unless (m.ndims () == 2);
 
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -680,7 +680,7 @@ template <typename MT>
 static inline float_display_format
 make_matrix_format (const MT& m)
 {
-  assert (m.ndims () == 2);
+  error_unless (m.ndims () == 2);
 
   if (free_format)
     return float_display_format ();
@@ -1570,7 +1570,7 @@ static inline void
 print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc,
                     bool pr_as_read_syntax)
 {
-  assert (nr == 0 || nc == 0);
+  error_unless (nr == 0 || nc == 0);
 
   if (pr_as_read_syntax)
     {
@@ -1592,7 +1592,7 @@ static inline void
 print_empty_nd_array (std::ostream& os, const dim_vector& dims,
                       bool pr_as_read_syntax)
 {
-  assert (dims.any_zero ());
+  error_unless (dims.any_zero ());
 
   if (pr_as_read_syntax)
     os << "zeros (" << dims.str (',') << ')';
@@ -2558,7 +2558,8 @@ octave_print_internal (std::ostream& os, const octave::range<double>& r,
           octave_idx_type col = 0;
           while (col < num_elem)
             {
-              octave_idx_type lim = (col + inc < num_elem ? col + inc : num_elem);
+              octave_idx_type lim = (col + inc < num_elem ? col + inc
+                                                          : num_elem);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2917,7 +2918,7 @@ octave_print_internal_template (std::ostream& os,
 }
 
 #define PRINT_INT_SCALAR_INTERNAL(TYPE)                                 \
-  OCTINTERP_API void                                                    \
+  void                                                                  \
   octave_print_internal (std::ostream& os,                              \
                          const float_display_format& fmt,               \
                          const octave_int<TYPE>& val, bool dummy)       \
@@ -3398,12 +3399,11 @@ Note that the output from @code{fdisp} always ends with a newline.
 
   std::ostream *osp = os.output_stream ();
 
-  octave_value arg = args(1);
-
-  if (osp)
-    arg.print (*osp);
-  else
+  if (! osp)
     error ("fdisp: stream FID not open for writing");
+
+  octave_value arg = args(1);
+  arg.print (*osp);
 
   return ovl ();
 }
@@ -3614,7 +3614,15 @@ set_format_style (int argc, const string_vector& argv)
       std::string arg = argv[idx++];
       std::transform (arg.begin (), arg.end (), arg.begin (), tolower);
 
-      if (arg == "short")
+      if (arg == "default")
+        {
+          format = "short";
+          init_format_state ();
+          set_output_prec (5);
+          Vcompact_format = false;
+          uppercase_format = false;
+        }
+      else if (arg == "short")
         {
           format = arg;
           init_format_state ();
@@ -3806,6 +3814,7 @@ DEFUN (format, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} format
 @deftypefnx {} {} format options
+@deftypefnx {} {} format (@var{options})
 @deftypefnx {} {[@var{format}, @var{formatspacing}, @var{uppercase}] =} format
 Reset or specify the format of the output produced by @code{disp} and Octave's
 normal echoing mechanism.
@@ -3817,13 +3826,16 @@ one of the conversion functions such as @code{single}, @code{uint8},
 
 By default, Octave displays 5 significant digits in a human readable form
 (option @samp{short}, option @samp{lowercase}, and option @samp{loose} format
-for matrices).  If @code{format} is invoked without any options, this default
-format is restored.
+for matrices).  If @code{format} is invoked without any options, or the option
+@samp{default} is specified, then this default format is restored.
 
 Valid format options for floating point numbers are listed in the following
 table.
 
 @table @code
+@item default
+Restore the default format state described above.
+
 @item short
 Fixed point format with 5 significant figures (default).
 
@@ -3859,6 +3871,7 @@ ans =
   8.1058e+15
 @end group
 @end example
+
 Optionally, the trailing @samp{g} can be split into a second argument.
 
 @item  shorteng
@@ -3972,10 +3985,12 @@ produce a more readable output with less data per page.
 @end table
 
 If @code{format} is called with multiple competing options, the rightmost one
-is used.  In case of an error the format remains unchanged.
+is used, except for @samp{default} which will override all other options.  In
+case of an error the format remains unchanged.
 
 If called with one to three output arguments, and no inputs, return the current
-format, format spacing, and uppercase preference.
+format, format spacing, and uppercase preference.  Specifying both outputs and
+inputs will produce an error.
 
 @seealso{fixed_point_format, output_precision, split_long_rows,
 print_empty_dimensions, rats}
@@ -4023,11 +4038,22 @@ print_empty_dimensions, rats}
 %!   assert (str, "3.1415927E+00\n");
 %!   new_fmt = format ();
 %!   assert (new_fmt, "longe");
-%!   ## Test resetting format
+%!   ## Test resetting format (method #1)
 %!   format compact;
 %!   [~, new_spacing] = format ();
 %!   assert (new_spacing, "compact");
 %!   format;
+%!   [new_fmt, new_spacing, new_case] = format ();
+%!   assert (new_fmt, "short");
+%!   assert (new_spacing, "loose");
+%!   assert (new_case, "lowercase");
+%!   ## Test resetting format (method #2)
+%!   format compact uppercase long e;
+%!   [new_fmt, new_spacing, new_case] = format ();
+%!   assert (new_fmt, "longe");
+%!   assert (new_spacing, "compact");
+%!   assert (new_case, "uppercase");
+%!   format ("default");
 %!   [new_fmt, new_spacing, new_case] = format ();
 %!   assert (new_fmt, "short");
 %!   assert (new_spacing, "loose");
@@ -4062,7 +4088,7 @@ DEFUN (fixed_point_format, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} fixed_point_format ()
 @deftypefnx {} {@var{old_val} =} fixed_point_format (@var{new_val})
-@deftypefnx {} {} fixed_point_format (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} fixed_point_format (@var{new_val}, "local")
 Query or set the internal variable that controls whether Octave will
 use a scaled format to print matrix values.
 
@@ -4105,7 +4131,7 @@ DEFUN (print_empty_dimensions, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} print_empty_dimensions ()
 @deftypefnx {} {@var{old_val} =} print_empty_dimensions (@var{new_val})
-@deftypefnx {} {} print_empty_dimensions (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} print_empty_dimensions (@var{new_val}, "local")
 Query or set the internal variable that controls whether the dimensions of
 empty matrices are printed along with the empty matrix symbol, @samp{[]}.
 
@@ -4136,7 +4162,7 @@ DEFUN (split_long_rows, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} split_long_rows ()
 @deftypefnx {} {@var{old_val} =} split_long_rows (@var{new_val})
-@deftypefnx {} {} split_long_rows (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} split_long_rows (@var{new_val}, "local")
 Query or set the internal variable that controls whether rows of a matrix
 may be split when displayed to a terminal window.
 

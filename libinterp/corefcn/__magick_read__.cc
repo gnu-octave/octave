@@ -1677,7 +1677,7 @@ Use @code{imwrite} instead.
 // done in Octave language), and then again for the actual reading.
 DEFUN (__magick_ping__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __magick_ping__ (@var{fname}, @var{idx})
+@deftypefn {} {@var{fmt} =} __magick_ping__ (@var{fname}, @var{idx})
 Ping image information with GraphicsMagick or ImageMagick.
 
 This is a private internal function not intended for direct use.
@@ -1910,7 +1910,7 @@ fill_exif_floats (octave_scalar_map& map, Magick::Image& img,
 
 DEFUN (__magick_finfo__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __magick_finfo__ (@var{fname})
+@deftypefn {} {@var{infostruct} =} __magick_finfo__ (@var{fname})
 Read image information with GraphicsMagick or ImageMagick.
 
 This is a private internal function not intended for direct use.
@@ -2361,7 +2361,7 @@ Use @code{imfinfo} instead.
 
 DEFUN (__magick_formats__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __magick_imformats__ (@var{formats})
+@deftypefn {} {@var{fmt_struct} =} __magick_imformats__ (@var{formats})
 Fill formats info with GraphicsMagick CoderInfo.
 
 @seealso{imfinfo, imformats, imread, imwrite}

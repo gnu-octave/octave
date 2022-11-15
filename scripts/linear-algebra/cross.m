@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} cross (@var{x}, @var{y})
-## @deftypefnx {} {} cross (@var{x}, @var{y}, @var{dim})
+## @deftypefn  {} {@var{z} =} cross (@var{x}, @var{y})
+## @deftypefnx {} {@var{z} =} cross (@var{x}, @var{y}, @var{dim})
 ## Compute the vector cross product of two 3-dimensional vectors @var{x} and
 ## @var{y}.
 ##

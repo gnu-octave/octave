@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} bitcmp (@var{A}, @var{k})
+## @deftypefn {} {@var{C} =} bitcmp (@var{A}, @var{k})
 ## Return the @var{k}-bit complement of integers in @var{A}.
 ##
 ## If @var{k} is omitted @code{k = log2 (flintmax) + 1} is assumed.

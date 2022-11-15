@@ -24,9 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} uitoggletool (@var{property}, @var{value}, @dots{})
-## @deftypefnx {} {} uitoggletool (@var{parent}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {} {@var{hui} =} uitoggletool (@dots{})
+## @deftypefn  {} {@var{hui} =} uitoggletool ()
+## @deftypefnx {} {@var{hui} =} uitoggletool (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uitoggletool (@var{parent})
+## @deftypefnx {} {@var{hui} =} uitoggletool (@var{parent}, @var{property}, @var{value}, @dots{})
 ##
 ## Create a uitoggletool object.
 ##

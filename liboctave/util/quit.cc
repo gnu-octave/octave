@@ -37,31 +37,10 @@
 
 sig_atomic_t octave_interrupt_state = 0;
 
-// DEPRECATED in Octave 6.
-// This variable should never have been public.
-sig_atomic_t octave_exception_state = 0;
-// Use this variable internally until the functions that use it can be
-// removed.
-static sig_atomic_t internal_exception_state;
-
 volatile sig_atomic_t octave_signal_caught = 0;
 
 void (*octave_signal_hook) (void) = nullptr;
 void (*octave_interrupt_hook) (void) = nullptr;
-
-// DEPRECATED in Octave 6.
-void (*octave_bad_alloc_hook) (void) = nullptr;
-
-// The octave_exception enum values were DEPRECATED in Octave 6.
-// Use these values internally until the functions that use them can be
-// removed.
-enum octave_internal_exception
-{
-  octave_internal_no_exception = 0,
-  octave_internal_exec_exception = 1,
-  octave_internal_alloc_exception = 3,
-  octave_internal_quit_exception = 4
-};
 
 namespace octave
 {
@@ -128,63 +107,5 @@ octave_handle_signal (void)
       octave_interrupt_state = -1;
 
       throw octave::interrupt_exception ();
-    }
-}
-
-// DEPRECATED in Octave 6
-void
-octave_throw_interrupt_exception (void)
-{
-  if (octave_interrupt_hook)
-    octave_interrupt_hook ();
-
-  throw octave::interrupt_exception ();
-}
-
-// DEPRECATED in Octave 6
-void
-octave_throw_execution_exception (void)
-{
-  // FIXME: would a hook function be useful here?
-
-  internal_exception_state = octave_internal_exec_exception;
-
-  throw octave::execution_exception ();
-}
-
-// DEPRECATED in Octave 6
-void
-octave_throw_bad_alloc (void)
-{
-  internal_exception_state = octave_internal_alloc_exception;
-
-  throw std::bad_alloc ();
-}
-
-// DEPRECATED in Octave 6
-void
-octave_rethrow_exception (void)
-{
-  if (octave_interrupt_state)
-    {
-      octave_interrupt_state = -1;
-
-      throw octave::interrupt_exception ();
-    }
-  else
-    {
-      switch (internal_exception_state)
-        {
-        case octave_internal_exec_exception:
-          throw octave::execution_exception ();
-          break;
-
-        case octave_internal_alloc_exception:
-          throw std::bad_alloc ();
-          break;
-
-        default:
-          break;
-        }
     }
 }

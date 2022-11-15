@@ -25,9 +25,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{h} =} gco ()
-## @deftypefnx {} {@var{h} =} gco (@var{fig})
+## @deftypefnx {} {@var{h} =} gco (@var{hfig})
 ## Return a handle to the current object of the current figure, or a handle
-## to the current object of the figure with handle @var{fig}.
+## to the current object of the figure with handle @var{hfig}.
 ##
 ## The current object of a figure is the object that was last clicked on.  It
 ## is stored in the @qcode{"CurrentObject"} property of the target figure.
@@ -46,8 +46,20 @@
 ## @seealso{gcbo, gca, gcf, gcbf, get, set}
 ## @end deftypefn
 
-function h = gco ()
+function h = gco (hfig)
 
-  h = get (get (0, "currentfigure"), "currentobject");
+  if (nargin == 1)
+    if (! isfigure (hfig))
+      error ("gco: HFIG must be a graphics handle to a figure object");
+    endif
+  else
+    hfig = get (0, "currentfigure");
+  endif
+
+  h = get (hfig, "currentobject");
 
 endfunction
+
+
+## Test input invalidation
+%!error <HFIG must be a graphics handle> gco (-1)

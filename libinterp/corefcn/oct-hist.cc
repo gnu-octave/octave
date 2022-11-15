@@ -142,8 +142,7 @@ OCTAVE_NAMESPACE_BEGIN
           {
             if (command_history::add (tmp))
               {
-                event_manager& evmgr
-                  = __get_event_manager__ ("edit_history_add_hist");
+                event_manager& evmgr = __get_event_manager__ ();
 
                 evmgr.append_history (tmp);
               }
@@ -614,7 +613,6 @@ buffer to be edited.
 @end deftypefn */)
 {
   // FIXME: should this be limited to the top-level context?
-
   if (args.length () > 2)
     print_usage ();
 
@@ -629,8 +627,8 @@ DEFMETHOD (history, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} history
 @deftypefnx {} {} history @var{opt1} @dots{}
-@deftypefnx {} {@var{h} =} history ()
-@deftypefnx {} {@var{h} =} history (@var{opt1}, @dots{})
+@deftypefnx {} {@var{H} =} history ()
+@deftypefnx {} {@var{H} =} history (@var{opt1}, @dots{})
 If invoked with no arguments, @code{history} displays a list of commands
 that you have executed.
 
@@ -821,8 +819,8 @@ this new file (if the current setting of @code{history_save} allows for this).
 
 The default value is @file{@w{@env{$DATA}}/octave/history}, where
 @w{@env{$DATA}} is the platform-specific location for (roaming) user data files
-(e.g., @w{@env{$XDG_DATA_HOME}} or, if that is not set, @file{~/.local/share} on
-Unix-like operating systems or @w{@env{%APPDATA%}} on Windows).  The default
+(e.g., @w{@env{$XDG_DATA_HOME}} or, if that is not set, @file{~/.local/share}
+on Unix-like operating systems or @w{@env{%APPDATA%}} on Windows).  The default
 value may be overridden by the environment variable @w{@env{OCTAVE_HISTFILE}}.
 
 Programming Notes:
@@ -867,7 +865,7 @@ DEFMETHOD (history_timestamp_format_string, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} history_timestamp_format_string ()
 @deftypefnx {} {@var{old_val} =} history_timestamp_format_string (@var{new_val})
-@deftypefnx {} {} history_timestamp_format_string (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} history_timestamp_format_string (@var{new_val}, "local")
 Query or set the internal variable that specifies the format string
 for the comment line that is written to the history file when Octave
 exits.
@@ -902,7 +900,7 @@ DEFUN (history_save, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} history_save ()
 @deftypefnx {} {@var{old_val} =} history_save (@var{new_val})
-@deftypefnx {} {} history_save (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} history_save (@var{new_val}, "local")
 Query or set the internal variable that controls whether commands entered
 on the command line are saved in the history file.
 

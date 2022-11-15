@@ -54,7 +54,6 @@
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
-#include "file-io.h"
 #include "help.h"
 #include "interpreter-private.h"
 #include "octave.h"
@@ -114,8 +113,7 @@ run_command_and_return_output (const std::string& cmd_str)
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
   frame.add_delete (cmd);
 
-  child_list& kids
-    = __get_child_list__ ("run_command_and_return_output");
+  child_list& kids = __get_child_list__ ();
   frame.add (&child_list::remove, kids, cmd->pid ());
 
   if (! *cmd)
@@ -342,8 +340,8 @@ find_config_info (const octave_scalar_map& m, const std::string& key)
 
 DEFUN (__octave_config_info__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __octave_config_info__ ()
-@deftypefnx {} {} __octave_config_info__ (@var{option})
+@deftypefn  {} {@var{S} =} __octave_config_info__ ()
+@deftypefnx {} {@var{S} =} __octave_config_info__ (@var{option})
 Return a structure containing configuration and installation information for
 Octave.
 
@@ -549,7 +547,6 @@ specified option.
            { "SH_LDFLAGS", build_env::SH_LDFLAGS },
            { "STATIC_LIBS", build_env::STATIC_LIBS },
            { "SUITESPARSECONFIG_LIBS", build_env::SUITESPARSECONFIG_LIBS },
-           { "TERM_LIBS", build_env::TERM_LIBS },
            { "UMFPACK_CPPFLAGS", build_env::UMFPACK_CPPFLAGS },
            { "UMFPACK_LDFLAGS", build_env::UMFPACK_LDFLAGS },
            { "UMFPACK_LIBS", build_env::UMFPACK_LIBS },

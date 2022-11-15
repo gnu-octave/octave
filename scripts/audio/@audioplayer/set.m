@@ -25,60 +25,94 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} set (@var{player}, @var{name}, @var{value})
-## @deftypefnx {} {} set (@var{player}, @var{properties})
+## @deftypefnx {} {} set (@var{player}, @var{name_cell}, @var{value_cell})
+## @deftypefnx {} {} set (@var{player}, @var{properties_struct})
 ## @deftypefnx {} {@var{properties} =} set (@var{player})
 ## Set the value of property specified by @var{name} to a given @var{value}.
 ##
 ## If @var{name} and @var{value} are cell arrays, set each property to the
-## corresponding value.  Given a structure of @var{properties} with fields
+## corresponding value.  Given a structure of properties with fields
 ## corresponding to property names, set the value of those properties to the
-## field values.  Given only the audioplayer object, return a structure of
-## settable properties.
+## corresponding field values.  Given only an audioplayer object, return a
+## structure of configurable properties (i.e., writeable properties).
+## @seealso{@audioplayer/get, @audioplayer/audioplayer}
 ## @end deftypefn
 
-function settable = set (varargin)
+function properties = set (player, varargin)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin > 3)
     print_usage ();
   endif
 
-  player = struct (varargin{1}).player;
+  hplayer = struct (player).player;
 
   if (nargin == 1)
-    settable.SampleRate = {};
-    settable.Tag = {};
-    settable.UserData = {};
+    properties = struct ("SampleRate", {{}}, "Tag", {{}}, "UserData", {{}});
   elseif (nargin == 2)
-    for [value, property] = varargin{2}
-      setproperty (player, property, value);
+    for [value, property] = varargin{1}
+      setproperty (hplayer, property, value);
     endfor
   elseif (nargin == 3)
-    if (iscell (varargin{2}))
+    if (iscell (varargin{1}))
       index = 1;
-      for property = varargin{2}
-        setproperty (player, char (property), varargin{3}{index});
+      for property = varargin{1}
+        setproperty (hplayer, char (property), varargin{2}{index});
         index += 1;
       endfor
     else
-      setproperty (player, varargin{2}, varargin{3});
+      setproperty (hplayer, varargin{1}, varargin{2});
     endif
-  else
-    error ("@audioplayer/set: wrong number of arguments to the set method");
   endif
 
 endfunction
 
 function setproperty (player, property, value)
 
-  switch (property)
-    case "SampleRate"
+  switch (lower (property))
+    case "samplerate"
       __player_set_fs__ (player, value);
-    case "Tag"
+    case "tag"
       __player_set_tag__ (player, value);
-    case "UserData"
+    case "userdata"
       __player_set_userdata__ (player, value);
     otherwise
-      error ("audioplayer: no such property or the property specified is read-only");
+      error ('@audioplayer/set: "%s" is not a valid property name or is read-only', property);
   endswitch
 
 endfunction
+
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! set (player, "SampleRate", 8800);
+%! set (player, "Tag", "mytag");
+%! ## Also test case insensitivity
+%! set (player, "USERdata", [1, 2; 3, 4]);
+%! assert (player.SampleRate, 8800);
+%! assert (player.Tag, "mytag");
+%! assert (player.UserData, [1, 2; 3, 4]);
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! set (player, {"SampleRate", "Tag", "UserData"},
+%!              {8800, "mytag", [1, 2; 3, 4]});
+%! assert (player.SampleRate, 8800);
+%! assert (player.Tag, "mytag");
+%! assert (player.UserData, [1, 2; 3, 4]);
+
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! props = set (player);
+%! props.SampleRate = 8800;
+%! props.Tag = "mytag";
+%! props.UserData = [1, 2; 3, 4];
+%! set (player, props);
+%! assert (player.SampleRate, 8800);
+%! assert (player.Tag, "mytag");
+%! assert (player.UserData, [1, 2; 3, 4]);
+
+## Test input validation
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%! player = audioplayer ([-1, 1], 44100, 8);
+%! fail ('set (player, "foobar", 1)', "not a valid property name"); 
+%! fail ('set (player, "Running", 1)', "is read-only"); 

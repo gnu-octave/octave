@@ -1306,7 +1306,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (double, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} double (@var{x})
+@deftypefn {} {@var{y} =} double (@var{x})
 Convert @var{x} to double precision type.
 @seealso{single}
 @end deftypefn */)
@@ -1350,7 +1350,7 @@ Convert @var{x} to double precision type.
 
 DEFUN (single, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} single (@var{x})
+@deftypefn {} {@var{y} =} single (@var{x})
 Convert @var{x} to single precision type.
 @seealso{double}
 @end deftypefn */)
@@ -1391,7 +1391,7 @@ Convert @var{x} to single precision type.
 
 DEFUN (int8, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} int8 (@var{x})
+@deftypefn {} {@var{y} =} int8 (@var{x})
 Convert @var{x} to 8-bit integer type.
 @seealso{uint8, int16, uint16, int32, uint32, int64, uint64}
 @end deftypefn */)
@@ -1413,7 +1413,7 @@ Convert @var{x} to 8-bit integer type.
 
 DEFUN (int16, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} int16 (@var{x})
+@deftypefn {} {@var{y} =} int16 (@var{x})
 Convert @var{x} to 16-bit integer type.
 @seealso{int8, uint8, uint16, int32, uint32, int64, uint64}
 @end deftypefn */)
@@ -1435,7 +1435,7 @@ Convert @var{x} to 16-bit integer type.
 
 DEFUN (int32, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} int32 (@var{x})
+@deftypefn {} {@var{y} =} int32 (@var{x})
 Convert @var{x} to 32-bit integer type.
 @seealso{int8, uint8, int16, uint16, uint32, int64, uint64}
 @end deftypefn */)
@@ -1457,7 +1457,7 @@ Convert @var{x} to 32-bit integer type.
 
 DEFUN (int64, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} int64 (@var{x})
+@deftypefn {} {@var{y} =} int64 (@var{x})
 Convert @var{x} to 64-bit integer type.
 @seealso{int8, uint8, int16, uint16, int32, uint32, uint64}
 @end deftypefn */)
@@ -1479,7 +1479,7 @@ Convert @var{x} to 64-bit integer type.
 
 DEFUN (uint8, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} uint8 (@var{x})
+@deftypefn {} {@var{y} =} uint8 (@var{x})
 Convert @var{x} to unsigned 8-bit integer type.
 @seealso{int8, int16, uint16, int32, uint32, int64, uint64}
 @end deftypefn */)
@@ -1501,7 +1501,7 @@ Convert @var{x} to unsigned 8-bit integer type.
 
 DEFUN (uint16, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} uint16 (@var{x})
+@deftypefn {} {@var{y} =} uint16 (@var{x})
 Convert @var{x} to unsigned 16-bit integer type.
 @seealso{int8, uint8, int16, int32, uint32, int64, uint64}
 @end deftypefn */)
@@ -1523,7 +1523,7 @@ Convert @var{x} to unsigned 16-bit integer type.
 
 DEFUN (uint32, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} uint32 (@var{x})
+@deftypefn {} {@var{y} =} uint32 (@var{x})
 Convert @var{x} to unsigned 32-bit integer type.
 @seealso{int8, uint8, int16, uint16, int32, int64, uint64}
 @end deftypefn */)
@@ -1545,7 +1545,7 @@ Convert @var{x} to unsigned 32-bit integer type.
 
 DEFUN (uint64, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} uint64 (@var{x})
+@deftypefn {} {@var{y} =} uint64 (@var{x})
 Convert @var{x} to unsigned 64-bit integer type.
 @seealso{int8, uint8, int16, uint16, int32, uint32, int64}
 @end deftypefn */)
@@ -1691,8 +1691,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
           int tthis = this->type_id ();
           int trhs = rhs.type_id ();
 
-          octave::type_info& ti
-            = octave::__get_type_info__ ("octave_value::assign");
+          octave::type_info& ti = octave::__get_type_info__ ();
 
           f = ti.lookup_assign_op (op, tthis, trhs);
         }
@@ -2495,7 +2494,7 @@ octave_value::non_const_unary_op (unary_op op)
       // Genuine.
       int t = type_id ();
 
-      octave::type_info& ti = octave::__get_type_info__ ("non_const_unary_op");
+      octave::type_info& ti = octave::__get_type_info__ ();
 
       octave::type_info::non_const_unary_op_fcn f
         = ti.lookup_non_const_unary_op (op, t);
@@ -2558,8 +2557,7 @@ octave_value::non_const_unary_op (unary_op op)
       // Only attempt to operate in-place if this variable is unshared.
       if (m_rep->count == 1)
         {
-          octave::type_info& ti
-            = octave::__get_type_info__ ("non_const_unary_op");
+          octave::type_info& ti = octave::__get_type_info__ ();
 
           f = ti.lookup_non_const_unary_op (op, t);
         }
@@ -2843,7 +2841,7 @@ OCTAVE_NAMESPACE_BEGIN
   binary_op (octave_value::binary_op op, const octave_value& v1,
              const octave_value& v2)
   {
-    type_info& ti = __get_type_info__ ("binary_op");
+    type_info& ti = __get_type_info__ ();
 
     return binary_op (ti, op, v1, v2);
   }
@@ -2937,7 +2935,7 @@ OCTAVE_NAMESPACE_BEGIN
   binary_op (octave_value::compound_binary_op op,
              const octave_value& v1, const octave_value& v2)
   {
-    type_info& ti = __get_type_info__ ("binary_op");
+    type_info& ti = __get_type_info__ ();
 
     return binary_op (ti, op, v1, v2);
   }
@@ -3024,7 +3022,7 @@ OCTAVE_NAMESPACE_BEGIN
   cat_op (const octave_value& v1, const octave_value& v2,
           const Array<octave_idx_type>& ra_idx)
   {
-    type_info& ti = __get_type_info__ ("cat_op");
+    type_info& ti = __get_type_info__ ();
 
     return cat_op (ti, v1, v2, ra_idx);
   }
@@ -3489,7 +3487,7 @@ OCTAVE_NAMESPACE_BEGIN
             tmp1(0) = base;
           }
 
-        interpreter& interp = __get_interpreter__ ("colon_op");
+        interpreter& interp = __get_interpreter__ ();
 
         symbol_table& symtab = interp.get_symbol_table ();
 
@@ -3630,7 +3628,7 @@ OCTAVE_NAMESPACE_BEGIN
   octave_value
   unary_op (octave_value::unary_op op, const octave_value& v)
   {
-    type_info& ti = __get_type_info__ ("unary_op");
+    type_info& ti = __get_type_info__ ();
 
     return unary_op (ti, op, v);
   }
@@ -3724,7 +3722,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (sizeof, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} sizeof (@var{val})
+@deftypefn {} {@var{sz} =} sizeof (@var{val})
 Return the size of @var{val} in bytes.
 @seealso{whos}
 @end deftypefn */)
@@ -3802,7 +3800,7 @@ decode_subscripts (const char *name, const octave_value& arg,
 
 DEFUN (subsref, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} subsref (@var{val}, @var{idx})
+@deftypefn {} {@var{newval} =} subsref (@var{val}, @var{idx})
 Perform the subscripted element selection operation on @var{val} according
 to the subscript specified by @var{idx}.
 
@@ -3854,7 +3852,7 @@ If @var{idx} is an empty structure array with fields @samp{type} and
 
 DEFUN (subsasgn, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} subsasgn (@var{val}, @var{idx}, @var{rhs})
+@deftypefn {} {@var{newval} =} subsasgn (@var{val}, @var{idx}, @var{rhs})
 Perform the subscripted assignment operation according to the subscript
 specified by @var{idx}.
 
@@ -3986,7 +3984,7 @@ If @var{idx} is an empty structure array with fields @samp{type} and
 
 DEFUN (is_sq_string, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_sq_string (@var{x})
+@deftypefn {} {@var{tf} =} is_sq_string (@var{x})
 Return true if @var{x} is a single-quoted character string.
 @seealso{is_dq_string, ischar}
 @end deftypefn */)
@@ -4009,7 +4007,7 @@ Return true if @var{x} is a single-quoted character string.
 
 DEFUN (is_dq_string, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} is_dq_string (@var{x})
+@deftypefn {} {@var{tf} =} is_dq_string (@var{x})
 Return true if @var{x} is a double-quoted character string.
 @seealso{is_sq_string, ischar}
 @end deftypefn */)
@@ -4034,7 +4032,7 @@ DEFUN (optimize_permutation_matrix, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} optimize_permutation_matrix ()
 @deftypefnx {} {@var{old_val} =} optimize_permutation_matrix (@var{new_val})
-@deftypefnx {} {} optimize_permutation_matrix (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} optimize_permutation_matrix (@var{new_val}, "local")
 Query or set whether a special space-efficient format is used for storing
 permutation matrices.
 
@@ -4065,7 +4063,7 @@ DEFUN (optimize_diagonal_matrix, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} optimize_diagonal_matrix ()
 @deftypefnx {} {@var{old_val} =} optimize_diagonal_matrix (@var{new_val})
-@deftypefnx {} {} optimize_diagonal_matrix (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} optimize_diagonal_matrix (@var{new_val}, "local")
 Query or set whether a special space-efficient format is used for storing
 diagonal matrices.
 
@@ -4110,7 +4108,7 @@ DEFUN (optimize_range, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} optimize_range ()
 @deftypefnx {} {@var{old_val} =} optimize_range (@var{new_val})
-@deftypefnx {} {} optimize_range (@var{new_val}, "local")
+@deftypefnx {} {@var{old_val} =} optimize_range (@var{new_val}, "local")
 Query or set whether a special space-efficient format is used for storing
 ranges.
 

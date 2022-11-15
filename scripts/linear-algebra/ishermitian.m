@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} ishermitian (@var{A})
-## @deftypefnx {} {} ishermitian (@var{A}, @var{tol})
-## @deftypefnx {} {} ishermitian (@var{A}, @qcode{"skew"})
-## @deftypefnx {} {} ishermitian (@var{A}, @qcode{"skew"}, @var{tol})
+## @deftypefn  {} {@var{tf} =} ishermitian (@var{A})
+## @deftypefnx {} {@var{tf} =} ishermitian (@var{A}, @var{tol})
+## @deftypefnx {} {@var{tf} =} ishermitian (@var{A}, @qcode{"skew"})
+## @deftypefnx {} {@var{tf} =} ishermitian (@var{A}, @qcode{"skew"}, @var{tol})
 ## Return true if @var{A} is a Hermitian or skew-Hermitian matrix within the
 ## tolerance specified by @var{tol}.
 ##
@@ -50,7 +50,7 @@
 ## @seealso{issymmetric, isdefinite}
 ## @end deftypefn
 
-function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
+function tf = ishermitian (A, skewopt = "nonskew", tol = 0)
 
   if (nargin < 1)
     print_usage ();
@@ -67,8 +67,8 @@ function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
   endif
 
   ## Validate inputs
-  retval = (isnumeric (A) || islogical (A)) && issquare (A);
-  if (! retval)
+  tf = (isnumeric (A) || islogical (A)) && issquare (A);
+  if (! tf)
     return;
   endif
 
@@ -84,26 +84,26 @@ function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
   if (strcmp (skewopt, "nonskew"))
     if (tol == 0)
       ## check for exact symmetry
-      retval = full (! any ((A != A')(:)));
+      tf = full (! any ((A != A')(:)));
     else
       if (islogical (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
         A = single (A);
       endif
       norm_x = norm (A, Inf);
-      retval = norm_x == 0 || norm (A - A', Inf) / norm_x <= tol;
+      tf = norm_x == 0 || norm (A - A', Inf) / norm_x <= tol;
     endif
   else
     ## skew-Hermitian
     if (tol == 0)
-      retval = full (! any ((A != -A')(:)));
+      tf = full (! any ((A != -A')(:)));
     else
       if (islogical (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
         A = single (A);
       endif
       norm_x = norm (A, Inf);
-      retval = norm_x == 0 || norm (A + A', Inf) / norm_x <= tol;
+      tf = norm_x == 0 || norm (A + A', Inf) / norm_x <= tol;
     endif
   endif
 

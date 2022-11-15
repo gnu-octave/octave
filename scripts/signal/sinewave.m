@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} sinewave (@var{m}, @var{n}, @var{d})
+## @deftypefn {} {@var{y} =} sinewave (@var{m}, @var{n}, @var{d})
 ## Return an @var{m}-element vector with @var{i}-th element given by
 ## @code{sin (2 * pi * (@var{i}+@var{d}-1) / @var{n})}.
 ##
@@ -33,7 +33,7 @@
 ## @seealso{sinetone}
 ## @end deftypefn
 
-function x = sinewave (m, n, d = 0)
+function y = sinewave (m, n, d = 0)
 
   if (nargin < 1)
     print_usage ();
@@ -47,7 +47,7 @@ function x = sinewave (m, n, d = 0)
     d = 0;
   endif
 
-  x = sin (((1 : m) + d - 1) * 2 * pi / n);
+  y = sin (((1 : m) + d - 1) * 2 * pi / n);
 
 endfunction
 

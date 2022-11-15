@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} magic (@var{n})
+## @deftypefn {} {@var{M} =} magic (@var{n})
 ##
 ## Create an @var{n}-by-@var{n} magic square.
 ##
@@ -36,7 +36,7 @@
 ## degenerate magic squares 1 and [].
 ## @end deftypefn
 
-function A = magic (n)
+function M = magic (n)
 
   if (nargin < 1)
     print_usage ();
@@ -46,40 +46,40 @@ function A = magic (n)
   if (n < 0)
     error ("magic: N must be non-negative");
   elseif (n < 1)
-    A = [];
+    M = [];
   elseif (mod (n, 2) == 1)
 
     shift = floor ((0:n*n-1)/n);
     c = mod ([1:n*n] - shift + (n-3)/2, n);
     r = mod ([n*n:-1:1] + 2*shift, n);
-    A(c*n+r+1) = 1:n*n;
-    A = reshape (A, n, n);
+    M(c*n+r+1) = 1:n*n;
+    M = reshape (M, n, n);
 
   elseif (mod (n, 4) == 0)
 
-    A = reshape (1:n*n, n, n)';
+    M = reshape (1:n*n, n, n)';
     I = [1:4:n, 4:4:n];
     J = fliplr (I);
-    A(I,I) = A(J,J);
+    M(I,I) = M(J,J);
     I = [2:4:n, 3:4:n];
     J = fliplr (I);
-    A(I,I) = A(J,J);
+    M(I,I) = M(J,J);
 
   elseif (mod (n, 4) == 2)
 
     m = n/2;
-    A = magic (m);
-    A = [A, A+2*m*m; A+3*m*m, A+m*m];
+    M = magic (m);
+    M = [M, M+2*m*m; M+3*m*m, M+m*m];
     k = (m-1)/2;
     if (k > 1)
       I = 1:m;
       J = [2:k, n-k+2:n];
-      A([I,I+m],J) = A([I+m,I],J);
+      M([I,I+m],J) = M([I+m,I],J);
     endif
     I = [1:k, k+2:m];
-    A([I,I+m],1) = A([I+m,I],1);
+    M([I,I+m],1) = M([I+m,I],1);
     I = k + 1;
-    A([I,I+m],I) = A([I+m,I],I);
+    M([I,I+m],I) = M([I+m,I],I);
 
   endif
 

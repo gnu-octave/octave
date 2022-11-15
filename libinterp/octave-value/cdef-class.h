@@ -214,7 +214,7 @@ namespace octave
       bool m_handle_class;
 
       // The list of super-class constructors that are called implicitly by the
-      // the classdef engine when creating an object.  These constructors are not
+      // classdef engine when creating an object.  These constructors are not
       // called explicitly by the class constructor.
 
       std::list<cdef_class> m_implicit_ctor_list;
@@ -239,7 +239,8 @@ namespace octave
 
     cdef_class (void) : cdef_meta_object () { }
 
-    cdef_class (const std::string& nm, const std::list<cdef_class>& superclasses)
+    cdef_class (const std::string& nm,
+                const std::list<cdef_class>& superclasses)
       : cdef_meta_object (new cdef_class_rep (superclasses))
     {
       get_rep ()->set_name (nm);
@@ -430,7 +431,7 @@ namespace octave
     friend OCTINTERP_API bool operator != (const cdef_class&, const cdef_class&);
     friend OCTINTERP_API bool operator < (const cdef_class&, const cdef_class&);
 
-    friend OCTINTERP_API void install_classdef (interpreter& interp);
+    friend void install_classdef (octave::interpreter& interp);
   };
 
   inline bool

@@ -273,6 +273,10 @@ namespace octave
     make_binary_op (int op, tree_expression *op1, token *tok_val,
                     tree_expression *op2);
 
+    // Maybe convert EXPR to a braindead_shortcircuit expression.
+    OCTINTERP_API void
+    maybe_convert_to_braindead_shortcircuit (tree_expression*& expr);
+
     // Build a boolean expression.
     OCTINTERP_API tree_expression *
     make_boolean_op (int op, tree_expression *op1, token *tok_val,

@@ -817,6 +817,8 @@ useful in this case.
 @opindex @code{'}
 @DOCSTRING(ctranspose)
 
+@DOCSTRING(pagectranspose)
+
 @opindex .\
 @DOCSTRING(ldivide)
 
@@ -849,6 +851,8 @@ useful in this case.
 
 @opindex @code{.'}
 @DOCSTRING(transpose)
+
+@DOCSTRING(pagetranspose)
 
 @opindex -
 @DOCSTRING(uminus)

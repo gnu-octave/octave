@@ -28,7 +28,7 @@
 ## @deftypefnx {} {} print (@var{options})
 ## @deftypefnx {} {} print (@var{filename}, @var{options})
 ## @deftypefnx {} {} print (@var{hfig}, @dots{})
-## @deftypefnx {} {@var{rgb} =} print (@qcode{"-RGBImage"}, @dots{})
+## @deftypefnx {} {@var{RGB} =} print (@qcode{"-RGBImage"}, @dots{})
 ## Format a figure for printing and either save it to a file, send it to a
 ## printer, or return an RGB image.
 ##
@@ -116,19 +116,21 @@
 ## @end group
 ## @end example
 ##
-## @item  -opengl
-## @itemx -painters
-##   Specifies whether the opengl (pixel-based) or painters (vector-based)
-## renderer is used.  This is equivalent to changing the figure's
+## @item  -image | -opengl
+## @itemx -vector | -painters
+##   Specifies whether the pixel-based renderer (@option{-image} or
+## @option{-opengl}) or vector-based renderer (@option{-vector} or
+## @option{-painters}) is used.  This is equivalent to changing the figure's
 ## @qcode{"Renderer"} property.  When the figure
 ## @nospell{@qcode{"RendererMode"}} property is @qcode{"auto"} (the default)
 ## Octave will use the @qcode{"opengl"} renderer for raster formats (e.g.,
-## JPEG) and @qcode{"painters"} for vector formats (e.g., PDF).  Those options
+## JPEG) and @qcode{"painters"} for vector formats (e.g., PDF)@.  These options
 ## are only supported for the "qt" graphics toolkit.
 ##
-## @item -svgconvert
-##   When using the @option{-painters} renderer, this enables a different
-## backend toolchain with enhanced characteristics:
+## @item -svgconvert (default)
+## @item -nosvgconvert
+##   When using the @option{-painters} renderer, this enables or disables the
+## SVG based backend toolchain with enhanced characteristics:
 ##
 ## @table @asis
 ## @item Font handling:
@@ -152,8 +154,8 @@
 ## output to be rasterized.
 ## @end table
 ##
-## Caution: @option{-svgconvert} may lead to inaccurate rendering of image
-## objects.
+## Caution: If Octave was built against Qt version earlier than 5.13,
+## @option{-svgconvert} may lead to inaccurate rendering of image objects.
 ##
 ## @item  -portrait
 ## @itemx -landscape
@@ -262,9 +264,8 @@
 ##
 ## Use @code{pdfcrop} if you don't want the surrounding page.
 ##
-## By default, PDF inherits the same limitations as PostScript.
-## For an enhanced output with complete text support and basic transparency,
-## use the @option{-svgconvert} option.
+## Caution: with @option{-nosvgconvert} option, PDF inherits the same
+## limitations as PostScript (limited set of fonts and lack of transparency).
 ##
 ##   @item  eps(2)
 ##   @itemx epsc(2)
@@ -272,7 +273,7 @@
 ##
 ## The OpenGL-based graphics toolkits always generate PostScript level 3.0.
 ## They have limited support for text unless using the @option{-svgconvert}
-## option.
+## option (the default).
 ## Limitations include using only ASCII characters (e.g., no Greek letters)
 ## and support for just three base PostScript fonts: Helvetica (the default),
 ## Times, or Courier.  Any other font will be replaced by Helvetica.
@@ -415,7 +416,7 @@
 ## @seealso{saveas, getframe, savefig, hgsave, orient, figure}
 ## @end deftypefn
 
-function rgbout = print (varargin)
+function RGB = print (varargin)
 
   opts = __print_parse_opts__ (varargin{:});
 
@@ -754,7 +755,7 @@ function rgbout = print (varargin)
       otherwise
         if (strcmp (opts.renderer, "opengl"))
           if (opts.rgb_output)
-            rgbout = __get_frame__ (opts.figure);
+            RGB = __get_frame__ (opts.figure);
           else
             compression = "none";
 
@@ -790,7 +791,7 @@ function rgbout = print (varargin)
 
     ## Avoid a redraw since the figure should not have changed
     ## FIXME: Bug #57552, marker sizes, requires that redraw be done.
-    ##set (gcf, "__modified__", "off");
+    ## set (gcf, "__modified__", "off");
 
     ## Unlink temporary files
     for n = 1:numel (opts.unlink)

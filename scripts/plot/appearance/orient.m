@@ -51,7 +51,7 @@
 ## @seealso{print, saveas}
 ## @end deftypefn
 
-function retval = orient (varargin)
+function orientation = orient (varargin)
 
   cf = [];
   if (nargin > 0 && isscalar (varargin{1}) && isfigure (varargin{1}))
@@ -73,28 +73,28 @@ function retval = orient (varargin)
     set (cf, "paperunits", "inches");  # All Matlab calculations assume inches.
 
     if (nargin == 0)
-      retval = get (cf, "paperorientation");
-      if (strcmp (retval, "portrait"))
+      orientation = get (cf, "paperorientation");
+      if (strcmp (orientation, "portrait"))
         papersize = get (cf, "papersize");
         paperposition = get (cf, "paperposition");
         if (paperposition == [0.25 0.25 (papersize - 0.5)])
-          retval = "tall";
+          orientation = "tall";
         endif
       endif
     else
-      orientation = varargin{1};
-      if (strcmpi (orientation, "landscape")
-          || strcmpi (orientation, "portrait"))
-        if (! strcmpi (get (cf, "paperorientation"), orientation))
+      paporient = varargin{1};
+      if (strcmpi (paporient, "landscape")
+          || strcmpi (paporient, "portrait"))
+        if (! strcmpi (get (cf, "paperorientation"), paporient))
           ## FIXME: with the proper listeners in place there won't be a need to
           ##        set the papersize and paperposition here.
           papersize = get (cf, "papersize");
           paperposition = get (cf, "paperposition");
-          set (cf, "paperorientation", orientation,
+          set (cf, "paperorientation", paporient,
                    "papersize", papersize([2, 1]),
                    "paperposition", paperposition([2, 1, 4, 3]));
         endif
-        if (strcmpi (orientation, "portrait"))
+        if (strcmpi (paporient, "portrait"))
           ## portrait restores the default
           ## FIXME: Should use "default" here, but Octave complains
           ##        that "paperposition" is not a default property.
@@ -104,7 +104,7 @@ function retval = orient (varargin)
           papersize = get (cf, "papersize");
           set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);
         endif
-      elseif (strcmpi (orientation, "tall"))
+      elseif (strcmpi (paporient, "tall"))
         orient ("portrait");
         papersize = get (cf, "papersize");
         set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);

@@ -99,7 +99,8 @@ octave_lazy_index::permute (const Array<int>& vec, bool inv) const
 octave_value
 octave_lazy_index::squeeze (void) const
 {
-  return octave::idx_vector (m_index.as_array ().squeeze (), m_index.extent (0));
+  return octave::idx_vector (m_index.as_array ().squeeze (),
+                             m_index.extent (0));
 }
 
 octave_value

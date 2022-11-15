@@ -84,10 +84,47 @@ global_icon_size ("toolbar_icon_size", QVariant (0));
 const gui_pref
 global_icon_theme ("use_system_icon_theme", QVariant (true));
 
-// Other
+enum
+{
+  ICON_THEME_SYSTEM = 0,
+  ICON_THEME_OCTAVE,
+  ICON_THEME_TANGO,
+  ICON_THEME_CURSORS
+}  ;
+
+const QStringList
+global_icon_paths (QStringList ()
+                        << ""
+                        << ":/icons/octave/128x128/"
+                        << ":/icons/tango/128x128/"
+                        << ":/icons/cursors/"
+                       );
+
+const gui_pref
+global_icon_theme_index ("icon_theme", QVariant (ICON_THEME_SYSTEM));
+const QStringList
+global_all_icon_themes (QStringList ()
+                        << ""
+                        << "octave"
+                        << "tango"
+                        << "cursors");
+const QStringList
+global_all_icon_theme_names (QStringList ()
+                        << "System"
+                        << "Octave"
+                        << "Tango");
 
 const gui_pref
 global_status_bar ("show_status_bar", QVariant (true));
+
+
+enum
+{
+  EXTRA_STYLE_FUSION_DARK = 0
+}  ;
+const QStringList
+global_extra_styles (QStringList ()
+                        << "Fusion-Dark");
 
 #if defined (Q_OS_MAC)
 // prevent native file dialogs on MAC by setting the default "false" and

@@ -28,7 +28,7 @@
 ## @deftypefnx {} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
 ## @deftypefnx {} {} patch ("Faces", @var{faces}, "Vertices", @var{verts}, @dots{})
-## @deftypefnx {} {} patch (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} patch (@dots{}, "@var{prop}", @var{val}, @dots{})
 ## @deftypefnx {} {} patch (@dots{}, @var{propstruct}, @dots{})
 ## @deftypefnx {} {} patch (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} patch (@dots{})
@@ -82,17 +82,11 @@ function h = patch (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
 
-  if (isempty (hax))
-    hax = gca ();
-  else
+  if (! isempty (hax))
     hax = hax(1);
-  endif
+  endif 
 
-  [htmp, failed] = __patch__ (hax, varargin{:});
-
-  if (failed)
-    print_usage ();
-  endif
+  htmp = __patch__ (hax, varargin{:});
 
   if (nargout > 0)
     h = htmp;
@@ -308,3 +302,9 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## Test input validation
+%!error <invalid color specification C> patch (1, 1, 'x')
+%!error <invalid TrueColor data C> patch (1, 1, rand (1,2,3))
+%!error <size of X, Y, and C must be equal> patch (1, 1, [1, 2])
+%!error <invalid color specification C> patch (1, 1, {1})

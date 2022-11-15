@@ -305,6 +305,7 @@ classdef Map < handle
 
       ## -*- texinfo -*-
       ## @deftypefn {} {} Map.remove (@var{keySet})
+      ## @deftypefn {} {@var{newMap) =} Map.remove (@var{keySet})
       ## Remove the list of key/value pairs specified by a cell array of keys
       ## @var{keySet} from the map.
       ##

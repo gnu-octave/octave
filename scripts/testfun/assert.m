@@ -347,8 +347,14 @@ function assert (cond, varargin)
               A_null_real = real (A);
               B_null_real = real (B);
             endif
-            exclude = errseen ...
-                      | ! isfinite (A_null_real) & ! isfinite (B_null_real);
+            if (issparse (errseen))
+              exclude = errseen ...
+                        | isnan (A_null_real) | isinf (A_null_real) ...
+                        | isnan (B_null_real) | isinf (B_null_real);
+            else
+              exclude = errseen ...
+                        | ! isfinite (A_null_real) & ! isfinite (B_null_real);
+            endif
             A_null_real(exclude) = 0;
             B_null_real(exclude) = 0;
 
@@ -358,8 +364,15 @@ function assert (cond, varargin)
             else
               A_null_imag = imag (A);
               B_null_imag = imag (B);
-              exclude = errseen ...
-                        | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
+              if (issparse (errseen))
+                exclude = errseen ...
+                          | isnan (A_null_imag) | isinf (A_null_imag) ...
+                          | isnan (B_null_imag) | isinf (B_null_imag);
+              else
+                exclude = errseen ...
+                          | ! isfinite (A_null_imag) & ! isfinite (B_null_imag);
+              endif
+
               A_null_imag(exclude) = 0;
               B_null_imag(exclude) = 0;
               A_null = complex (A_null_real, A_null_imag);

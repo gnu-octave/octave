@@ -181,8 +181,8 @@ function [text, status] = first_sentence_html (help_text, max_len)
 endfunction
 
 
-%!assert (get_first_help_sentence ('get_first_help_sentence'), ...
-%!        "Return the first sentence of a function's help text.")
+%!assert (regexp (get_first_help_sentence ('get_first_help_sentence'), ...
+%!                "Return the first sentence of a function.s help text\."))
 
 %!assert (get_first_help_sentence ('get_first_help_sentence', 28), ...
 %!        "Return the first sentence...")

@@ -361,7 +361,7 @@ bitop (const std::string& fname, const octave_value_list& args)
 
 DEFUN (bitand, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} bitand (@var{x}, @var{y})
+@deftypefn {} {@var{z} =} bitand (@var{x}, @var{y})
 Return the bitwise AND of non-negative integers.
 
 @var{x}, @var{y} must be in the range [0,intmax]
@@ -377,7 +377,7 @@ Return the bitwise AND of non-negative integers.
 
 DEFUN (bitor, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} bitor (@var{x}, @var{y})
+@deftypefn {} {@var{z} =} bitor (@var{x}, @var{y})
 Return the bitwise OR of non-negative integers @var{x} and @var{y}.
 
 @seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}
@@ -392,7 +392,7 @@ Return the bitwise OR of non-negative integers @var{x} and @var{y}.
 
 DEFUN (bitxor, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} bitxor (@var{x}, @var{y})
+@deftypefn {} {@var{z} =} bitxor (@var{x}, @var{y})
 Return the bitwise XOR of non-negative integers @var{x} and @var{y}.
 
 @seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, intmax, flintmax}
@@ -536,14 +536,13 @@ bitshift (float a, int n, int64_t mask)
 
 DEFUN (bitshift, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} bitshift (@var{a}, @var{k})
-@deftypefnx {} {} bitshift (@var{a}, @var{k}, @var{n})
-Return a @var{k} bit shift of @var{n}-digit unsigned integers in @var{a}.
+@deftypefn  {} {@var{B} =} bitshift (@var{A}, @var{k})
+@deftypefnx {} {@var{B} =} bitshift (@var{A}, @var{k}, @var{n})
+Return a @var{k} bit shift of @var{n}-digit unsigned integers in @var{A}.
 
 A positive @var{k} leads to a left shift; A negative value to a right shift.
 
-If @var{n} is omitted it defaults to 64.
-@var{n} must be in the range [1,64].
+If @var{n} is omitted it defaults to 64.  @var{n} must be in the range [1,64].
 
 @example
 @group
@@ -658,10 +657,10 @@ bitshift (10, [-2, -1, 0, 1, 2])
 
 DEFUN (flintmax, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} flintmax ()
-@deftypefnx {} {} flintmax ("double")
-@deftypefnx {} {} flintmax ("single")
-@deftypefnx {} {} flintmax (@var{var})
+@deftypefn  {} {@var{Imax} =} flintmax ()
+@deftypefnx {} {@var{Imax} =} flintmax ("double")
+@deftypefnx {} {@var{Imax} =} flintmax ("single")
+@deftypefnx {} {@var{Imax} =} flintmax (@var{var})
 Return the largest integer that can be represented consecutively in a
 floating point value.
 
@@ -726,9 +725,9 @@ flintmax (x)
 
 DEFUN (intmax, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} intmax ()
-@deftypefnx {} {} intmax ("@var{type}")
-@deftypefnx {} {} intmax (@var{var})
+@deftypefn  {} {@var{Imax} =} intmax ()
+@deftypefnx {} {@var{Imax} =} intmax ("@var{type}")
+@deftypefnx {} {@var{Imax} =} intmax (@var{var})
 Return the largest integer that can be represented by a specific integer type.
 
 The input is either a string @qcode{"@var{type}"} specifying an integer type,
@@ -840,9 +839,9 @@ intmax (x)
 
 DEFUN (intmin, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} intmin ()
-@deftypefnx {} {} intmin ("@var{type}")
-@deftypefnx {} {} intmin (@var{var})
+@deftypefn  {} {@var{Imin} =} intmin ()
+@deftypefnx {} {@var{Imin} =} intmin ("@var{type}")
+@deftypefnx {} {@var{Imin} =} intmin (@var{var})
 Return the smallest integer that can be represented by a specific integer type.
 
 The input is either a string @qcode{"@var{type}"} specifying an integer type,
@@ -954,13 +953,13 @@ intmin (x)
 
 DEFUN (sizemax, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} sizemax ()
+@deftypefn {} {@var{max_numel} =} sizemax ()
 Return the largest value allowed for the size of an array.
 
 If Octave is compiled with 64-bit indexing, the result is of class int64,
-otherwise it is of class int32.  The maximum array size is slightly
-smaller than the maximum value allowable for the relevant class as reported
-by @code{intmax}.
+otherwise it is of class int32.  The maximum array size is slightly smaller
+than the maximum value allowable for the relevant class as reported by
+@code{intmax}.
 @seealso{intmax}
 @end deftypefn */)
 {

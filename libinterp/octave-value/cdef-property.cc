@@ -55,7 +55,7 @@ namespace octave
   static bool
   is_method_executing (const octave_value& ov, const cdef_object& obj)
   {
-    tree_evaluator& tw = __get_evaluator__ ("is_method_executing");
+    tree_evaluator& tw = __get_evaluator__ ();
 
     octave_function *stack_fcn = tw.current_function ();
 

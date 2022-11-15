@@ -42,7 +42,7 @@
 #include "file-ops.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
-#include "tmpfile-wrapper.h"
+#include "oct-env.h"
 #include "unistd-wrappers.h"
 #include "unistr-wrappers.h"
 #include "unwind-prot.h"
@@ -91,7 +91,7 @@ namespace octave
     {
       bool retval = false;
 
-      gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::has_alpha");
+      gh_manager& gh_mgr = __get_gh_manager__ ();
 
       graphics_object go = gh_mgr.get_object (h);
 
@@ -295,7 +295,7 @@ namespace octave
   {
     bool retval = true;
 
-    gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::has_2D_axes");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     graphics_object go = gh_mgr.get_object (h);
 
@@ -327,7 +327,7 @@ namespace octave
   {
     std::string retval;
 
-    gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::get_title");
+    gh_manager& gh_mgr = __get_gh_manager__ ();
 
     graphics_object go = gh_mgr.get_object (h);
 
@@ -396,7 +396,9 @@ namespace octave
           gl2ps_sort = GL2PS_NO_SORT;
 
         // Use a temporary file in case an overflow happens
-        FILE *tmpf = octave_tmpfile_wrapper ();
+        std::string tmpfile (sys::tempnam (sys::env::get_temp_directory (),
+                             "oct-"));
+        FILE *tmpf = sys::fopen_tmp (tmpfile, "w+b");
 
         if (! tmpf)
           error ("gl2ps_renderer::draw: couldn't open temporary file for printing");
@@ -1329,16 +1331,20 @@ namespace octave
       std::swap (vp_lim_min(1), vp_lim_max(1));
 
     float clip_xmin
-      = do_clip ? (vp_lim_min(0) > m_xmin ? vp_lim_min(0) : m_xmin) : vp_lim_min(0);
+      = do_clip ? (vp_lim_min(0) > m_xmin ? vp_lim_min(0) : m_xmin)
+                : vp_lim_min(0);
 
     float clip_ymin
-      = do_clip ? (vp_lim_min(1) > m_ymin ? vp_lim_min(1) : m_ymin) : vp_lim_min(1);
+      = do_clip ? (vp_lim_min(1) > m_ymin ? vp_lim_min(1) : m_ymin)
+                : vp_lim_min(1);
 
     float clip_xmax
-      = do_clip ? (vp_lim_max(0) < m_xmax ? vp_lim_max(0) : m_xmax) : vp_lim_max(0);
+      = do_clip ? (vp_lim_max(0) < m_xmax ? vp_lim_max(0) : m_xmax)
+                : vp_lim_max(0);
 
     float clip_ymax
-      = do_clip ? (vp_lim_max(1) < m_ymax ? vp_lim_max(1) : m_ymax) : vp_lim_max(1);
+      = do_clip ? (vp_lim_max(1) < m_ymax ? vp_lim_max(1) : m_ymax)
+                : vp_lim_max(1);
 
     if (im_xmin < clip_xmin)
       j0 += (clip_xmin - im_xmin)/nor_dx + 1;

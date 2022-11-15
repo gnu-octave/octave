@@ -25,15 +25,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} pause (@var{recorder})
-## Pause recording with audiorecorder object @var{recorder}.
+## Pause recording for audiorecorder @var{recorder}.
+## @seealso{@audiorecorder/resume, @audiorecorder/stop,
+## @audiorecorder/audiorecorder}
 ## @end deftypefn
 
 function pause (recorder)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   __recorder_pause__ (struct (recorder).recorder);
 
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

@@ -42,7 +42,8 @@ namespace octave
     tree_colon_expression *new_ce
       = new tree_colon_expression (m_base ? m_base->dup (scope) : nullptr,
                                    m_limit ? m_limit->dup (scope) : nullptr,
-                                   m_increment ? m_increment->dup (scope) : nullptr,
+                                   m_increment ? m_increment->dup (scope)
+                                               : nullptr,
                                    line (), column ());
 
     new_ce->copy_base (*this);

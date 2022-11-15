@@ -73,8 +73,7 @@ octave_mex_function::~octave_mex_function (void)
   if (m_exit_fcn_ptr)
     (*m_exit_fcn_ptr) ();
 
-  octave::dynamic_loader& dyn_loader
-    = octave::__get_dynamic_loader__ ("~octave_mex_function");
+  octave::dynamic_loader& dyn_loader = octave::__get_dynamic_loader__ ();
 
   dyn_loader.remove_mex (m_name, m_sh_lib);
 }
@@ -91,25 +90,9 @@ octave_mex_function::time_parsed (void) const
   return m_sh_lib.time_loaded ();
 }
 
-// FIXME: shouldn't this declaration be a header file somewhere?
-extern octave_value_list
-call_mex (octave_mex_function& curr_mex_fcn, const octave_value_list& args,
-          int nargout);
-
 octave_value_list
 octave_mex_function::execute (octave::tree_evaluator& tw, int nargout,
                               const octave_value_list& args)
 {
-  octave_value_list retval;
-
-  if (args.has_magic_colon ())
-    error ("invalid use of colon in function argument list");
-
-  octave::profiler& profiler = tw.get_profiler ();
-
-  octave::profiler::enter<octave_mex_function> block (profiler, *this);
-
-  retval = call_mex (*this, args, nargout);
-
-  return retval;
+  return tw.execute_mex_function (*this, nargout, args);
 }

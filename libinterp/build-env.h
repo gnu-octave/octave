@@ -161,7 +161,6 @@ namespace octave
     extern OCTINTERP_API const char *SUNDIALS_SUNLINSOLKLU_CPPFLAGS;
     extern OCTINTERP_API const char *SUNDIALS_SUNLINSOLKLU_LDFLAGS;
     extern OCTINTERP_API const char *SUNDIALS_SUNLINSOLKLU_LIBS;
-    extern OCTINTERP_API const char *TERM_LIBS;
     extern OCTINTERP_API const char *UMFPACK_CPPFLAGS;
     extern OCTINTERP_API const char *UMFPACK_LDFLAGS;
     extern OCTINTERP_API const char *UMFPACK_LIBS;

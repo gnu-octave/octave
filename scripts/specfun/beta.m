@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} beta (@var{a}, @var{b})
+## @deftypefn {} {@var{y} =} beta (@var{a}, @var{b})
 ## Compute the Beta function for real inputs @var{a} and @var{b}.
 ##
 ## The Beta function definition is
@@ -48,7 +48,7 @@
 ## @seealso{betaln, betainc, betaincinv}
 ## @end deftypefn
 
-function retval = beta (a, b)
+function y = beta (a, b)
 
   if (nargin != 2)
     print_usage ();
@@ -60,7 +60,7 @@ function retval = beta (a, b)
     error ("beta: A and B must have consistent sizes");
   endif
 
-  retval = real (exp (gammaln (a) + gammaln (b) - gammaln (a+b)));
+  y = real (exp (gammaln (a) + gammaln (b) - gammaln (a+b)));
 
 endfunction
 

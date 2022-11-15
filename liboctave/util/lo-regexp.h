@@ -51,7 +51,7 @@ namespace octave
     regexp (const std::string& pat = "",
             const regexp::opts& opt = regexp::opts (),
             const std::string& w = "regexp")
-      : m_pattern (pat), m_options (opt), m_data (nullptr), m_named_pats (),
+      : m_pattern (pat), m_options (opt), m_code (nullptr), m_named_pats (),
         m_names (0), m_named_idx (), m_who (w)
     {
       compile_internal ();
@@ -188,6 +188,10 @@ namespace octave
       string_vector m_named_tokens;
       string_vector m_tokens;
       Matrix m_token_extents;
+
+      // FIXME: Are these values declared as double because that's what
+      // Octave interpreter functions will store?  Should they be int or
+      // size_t instead?
       double m_start;
       double m_end;
     };
@@ -225,7 +229,7 @@ namespace octave
     opts m_options;
 
     // Internal data describing the regular expression.
-    void *m_data;
+    void *m_code;
 
     string_vector m_named_pats;
     int m_names;

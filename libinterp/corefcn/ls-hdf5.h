@@ -53,7 +53,8 @@ public:
 
   ~hdf5_fstreambase () { close (); }
 
-  OCTINTERP_API hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0);
+  OCTINTERP_API hdf5_fstreambase (const char *name, int mode,
+                                  int /* prot */ = 0);
 
   OCTINTERP_API void close (void);
 

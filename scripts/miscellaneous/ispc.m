@@ -24,14 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} ispc ()
+## @deftypefn {} {@var{tf} =} ispc ()
 ## Return true if Octave is running on a Windows system and false otherwise.
 ## @seealso{isunix, ismac}
 ## @end deftypefn
 
-function retval = ispc ()
+function tf = ispc ()
 
-  retval = __octave_config_info__ ("windows");
+  tf = __octave_config_info__ ("windows");
 
 endfunction
 

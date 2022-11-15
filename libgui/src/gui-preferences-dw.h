@@ -33,32 +33,31 @@ dw_focus_follows_mouse ("DockWidgets/focus_follows_mouse", QVariant (false));
 
 const gui_pref
 dw_title_custom_style ("DockWidgets/widget_title_custom_style",
-                       QVariant (false));
+                       QVariant (true));
 
-const gui_pref dw_title_3d ("DockWidgets/widget_title_3d", QVariant (50));
+const gui_pref dw_title_3d ("DockWidgets/widget_title_3d", QVariant (20));
 
-const gui_pref
-dw_title_fg_color ("DockWidgets/title_fg_color", QVariant (QColor (0, 0, 0)));
+const gui_pref dw_title_fg_color ("DockWidgets/title_fg_color",
+                                  QVariant (QColor (0, 0, 0)));
 
 const gui_pref dw_title_fg_color_active ("DockWidgets/title_fg_color_active",
-                                         QVariant (QColor (0, 0, 0)));
+                                         QVariant (QColor (255, 255, 255)));
 
 const gui_pref dw_title_bg_color ("DockWidgets/title_bg_color",
-                                  QVariant (QColor (255, 255, 255)));
+                                  QVariant (QColor (192, 192, 192)));
 
 const gui_pref dw_title_bg_color_active ("DockWidgets/title_bg_color_active",
-                                         QVariant (QColor (192, 192, 192)));
+                                         QVariant (QColor (128, 128, 128)));
 
 const gui_pref dw_icon_set ("DockWidgets/widget_icon_set", QVariant ("NONE"));
 
-const struct { QString name; QString path; } dw_icon_set_names[]
+const QHash <QString, QString> dw_icon_set_names
   = {
       // array of possible icon sets (name, path (complete for NONE))
       // the first entry here is the default!
-      {"NONE",    ":/actions/icons/logo.png"},
-      {"GRAPHIC", ":/actions/icons/graphic_logo_"},
-      {"LETTER",  ":/actions/icons/letter_logo_"},
-      {"", ""} // end marker has empty name
+      {"NONE",    ":/icons/octave/128x128/logo.png"},
+      {"GRAPHIC", ":/icons/octave/128x128/graphic_logo_"},
+      {"LETTER",  ":/icons/octave/128x128/letter_logo_"}
     };
 
 // The following keys have to be used with .arg (objectName ())

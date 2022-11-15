@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} num2str (@var{x})
-## @deftypefnx {} {} num2str (@var{x}, @var{precision})
-## @deftypefnx {} {} num2str (@var{x}, @var{format})
+## @deftypefn  {} {@var{str} =} num2str (@var{x})
+## @deftypefnx {} {@var{str} =} num2str (@var{x}, @var{precision})
+## @deftypefnx {} {@var{str} =} num2str (@var{x}, @var{format})
 ## Convert a number (or array) to a string (or a character array).
 ##
 ## The optional second argument may either give the number of significant
@@ -78,7 +78,7 @@
 ## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
 
-function retval = num2str (x, arg)
+function str = num2str (x, arg)
 
   if (nargin < 1)
     print_usage ();
@@ -87,9 +87,9 @@ function retval = num2str (x, arg)
   endif
 
   if (ischar (x))
-    retval = x;
+    str = x;
   elseif (isempty (x))
-    retval = "";
+    str = "";
   elseif (isreal (x))
     if (nargin == 2)
       if (ischar (arg))
@@ -143,7 +143,7 @@ function retval = num2str (x, arg)
       fmt = [deblank(repmat (fmt, 1, nc)), "\n"];
     endif
     strtmp = sprintf (fmt, x);
-    retval = strtrim (char (ostrsplit (strtmp, "\n", true)));
+    str = strtrim (char (ostrsplit (strtmp, "\n", true)));
   else   # Complex matrix input
     if (nargin == 2)
       if (ischar (arg))
@@ -195,7 +195,7 @@ function retval = num2str (x, arg)
     tmp = regexprep (tmp, " +i\n", "i\n");
     tmp = regexprep (tmp, "( +)i", "i$1");
 
-    retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
+    str = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
   endif
 
 endfunction

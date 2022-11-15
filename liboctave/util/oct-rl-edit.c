@@ -134,7 +134,7 @@ octave_rl_set_screen_size (int ht, int wd)
 }
 
 void
-octave_rl_restore_terminal_state ()
+octave_rl_restore_terminal_state (void)
 {
   if (rl_deprep_term_function)
     rl_deprep_term_function ();

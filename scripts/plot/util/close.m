@@ -30,6 +30,7 @@
 ## @deftypefnx {} {} close all
 ## @deftypefnx {} {} close all hidden
 ## @deftypefnx {} {} close all force
+## @deftypefnx {} {@var{status} =} close (@dots{})
 ## Close figure window(s).
 ##
 ## When called with no arguments, close the current figure.  This is equivalent
@@ -48,6 +49,9 @@
 ## even when @qcode{"closerequestfcn"} has been altered to prevent closing the
 ## window.
 ##
+## If the optional output @var{status} is requested then Octave returns 1 if
+## the figure windows were closed successfully.
+##
 ## Implementation Note: @code{close} operates by making the handle @var{h} the
 ## current figure, and then calling the function specified by the
 ## @qcode{"closerequestfcn"} property of the figure.  By default, the function
@@ -59,7 +63,7 @@
 ## @seealso{closereq, delete}
 ## @end deftypefn
 
-function retval = close (arg1, arg2)
+function status = close (arg1, arg2)
 
   figs = [];
 
@@ -122,7 +126,7 @@ function retval = close (arg1, arg2)
   endif
 
   if (nargout > 0)
-    retval = 1;
+    status = 1;
   endif
 
 endfunction

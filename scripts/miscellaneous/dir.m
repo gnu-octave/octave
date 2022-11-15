@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} dir
-## @deftypefnx {} {} dir (@var{directory})
+## @deftypefnx {} {} dir @var{directory}
 ## @deftypefnx {} {[@var{list}] =} dir (@var{directory})
 ## Display file listing for directory @var{directory}.
 ##
@@ -79,13 +79,13 @@
 ## FIXME: This is quite slow for large directories.
 ##        Perhaps it should be converted to C++?
 
-function retval = dir (directory = ".")
+function list = dir (directory = ".")
 
   if (! ischar (directory))
     error ("dir: DIRECTORY argument must be a string");
   endif
 
-  ## Prep the retval.
+  ## Prep the list.
   info = struct (zeros (0, 1),
            {"name", "folder" "date", "bytes", "isdir", "datenum", "statinfo"});
 
@@ -150,42 +150,41 @@ function retval = dir (directory = ".")
         endif
         fn = regexprep (fn, re, '$2$3');
         info(++cnt).name = fn;
-        if (no_dir && ! strcmp (fn, "."))
-          tmpdir = ".";
-        endif
-        if (! is_same_file (last_dir, tmpdir))
-          ## Caching mechanism to speed up function
-          last_dir = tmpdir;
-          if (ispc () && strncmp (last_dir, '\\', 2))
-            ## Windows UNC network file name is used as is
-            last_absdir = last_dir;
-          else
+        if (nargout > 0)
+          if (no_dir && ! strcmp (fn, "."))
+            tmpdir = ".";
+          endif
+          if (! is_same_file (last_dir, tmpdir))
+            ## Caching mechanism to speed up function
+            last_dir = tmpdir;
             last_absdir = canonicalize_file_name (last_dir);
           endif
+          info(cnt).folder = last_absdir;
+          lt = localtime (st.mtime);
+          info(cnt).date = strftime ("%d-%b-%Y %T", lt);
+          info(cnt).bytes = st.size;
+          info(cnt).isdir = S_ISDIR (st.mode);
+          info(cnt).datenum = [lt.year + 1900, lt.mon + 1, lt.mday, ...
+                               lt.hour, lt.min, lt.sec];
+          info(cnt).statinfo = st;
         endif
-        info(cnt).folder = last_absdir;
-        lt = localtime (st.mtime);
-        info(cnt).date = strftime ("%d-%b-%Y %T", lt);
-        info(cnt).bytes = st.size;
-        info(cnt).isdir = S_ISDIR (st.mode);
-        info(cnt).datenum = [lt.year + 1900, lt.mon + 1, lt.mday, ...
-                             lt.hour, lt.min, lt.sec];
-        info(cnt).statinfo = st;
       endif
     endfor
     info((cnt+1):end) = [];  # remove any unused entries
-    ## A lot of gymnastics in order to call datenum just once.  2x speed up.
-    dvec = [info.datenum]([[1:6:end]', [2:6:end]', [3:6:end]', ...
-                           [4:6:end]', [5:6:end]', [6:6:end]']);
-    dnum = datenum (dvec);
-    ctmp = mat2cell (dnum, ones (cnt,1), 1);
-    [info.datenum] = ctmp{:};
+    if (nargout > 0)
+      ## A lot of gymnastics in order to call datenum just once.  2x speed up.
+      dvec = [info.datenum]([[1:6:end]', [2:6:end]', [3:6:end]', ...
+                             [4:6:end]', [5:6:end]', [6:6:end]']);
+      dnum = datenum (dvec);
+      ctmp = mat2cell (dnum, ones (cnt,1), 1);
+      [info.datenum] = ctmp{:};
+    endif
   endif
 
   ## Return the output arguments.
   if (nargout > 0)
     ## Return the requested structure.
-    retval = info;
+    list = info;
   elseif (numel (info) > 0)
     ## Print the structure to the screen.
     printf ("%s", list_in_columns ({info.name}));

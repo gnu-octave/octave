@@ -512,8 +512,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   if (read_mat5_tag (is, swap, type, element_length, is_small_data_element))
     return retval;                      // EOF
 
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("read_mat5_binary_element");
+  octave::interpreter& interp = octave::__get_interpreter__ ();
 
   if (type == miCOMPRESSED)
     {
@@ -913,7 +912,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         if (ov_fcn.is_defined ())
                           // XXX FCN_HANDLE: SIMPLE/SCOPED
-                          tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
+                          tc = octave_value (new octave_fcn_handle (ov_fcn,
+                                                                    fname));
                       }
                     else
                       {
@@ -940,7 +940,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         if (ov_fcn.is_defined ())
                           // XXX FCN_HANDLE: SIMPLE/SCOPED
-                          tc = octave_value (new octave_fcn_handle (ov_fcn, fname));
+                          tc = octave_value (new octave_fcn_handle (ov_fcn,
+                                                                    fname));
                         else
                           {
                             warning_with_id ("Octave:load:file-not-found",
@@ -1041,7 +1042,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               error ("load: failed to load anonymous function handle");
 
             // XXX FCN_HANDLE: ANONYMOUS
-            tc = octave_value (new octave_fcn_handle (fh->fcn_val (), local_vars));
+            tc = octave_value (new octave_fcn_handle (fh->fcn_val (),
+                                                      local_vars));
           }
         else
           error ("load: invalid function handle type");
@@ -1565,7 +1567,8 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
   if (swap)
     swap_bytes<8> (&subsys_offset, 1);
 
-  if (subsys_offset != 0x2020202020202020ULL && subsys_offset != 0ULL)
+  if (subsys_offset != UINT64_C (0x2020202020202020)
+      && subsys_offset != UINT64_C (0))
     {
       // Read the subsystem data block
       is.seekg (subsys_offset, std::ios::beg);
@@ -2703,7 +2706,8 @@ save_mat5_binary_element (std::ostream& os,
     {
       if (tc.is_inline_function () || tc.isobject ())
         {
-          std::string classname = (tc.isobject () ? tc.class_name () : "inline");
+          std::string classname = (tc.isobject () ? tc.class_name ()
+                                                  : "inline");
           std::size_t namelen = classname.length ();
 
           if (namelen > max_namelen)
@@ -2720,8 +2724,7 @@ save_mat5_binary_element (std::ostream& os,
 
       octave_map m;
 
-      octave::load_path& lp
-        = octave::__get_load_path__ ("save_mat5_binary_element");
+      octave::load_path& lp = octave::__get_load_path__ ();
 
       if (tc.isobject ()
           && lp.find_method (tc.class_name (), "saveobj") != "")

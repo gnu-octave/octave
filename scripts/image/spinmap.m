@@ -56,7 +56,7 @@ function spinmap (t = 5, inc = 2)
 
   t0 = clock ();
   while (etime (clock (), t0) < t)
-    cmap = shift (cmap, inc, 1);
+    cmap = circshift (cmap, inc, 1);
     set (gcf (), "colormap", cmap);
     drawnow ();
   endwhile

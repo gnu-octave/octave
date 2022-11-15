@@ -127,13 +127,13 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
       left_most += 1;
       x_coordinate_r(par_number) = left_most;
       max_ht = min (max_ht, level);
-      if (length (stk) > 1 && find ((shift (stk,1) - stk) == 0) > 1
+      if (length (stk) > 1 && find ((circshift (stk,1) - stk) == 0) > 1
           && stk(end,2) != stk(end-1,2))
         ## Return to the nearest branching the position to return
         ## position is the position on the stack, where should be
         ## started further search (there are two nodes which has the
         ## same parent node).
-        position = (find ((shift (stk(:,2),1) - stk(:,2)) == 0))(end) + 1;
+        position = (find ((circshift (stk(:,2),1) - stk(:,2)) == 0))(end) + 1;
         par_number_vec = stk(position:end,2);
         ## The vector of removed nodes (the content of stack form
         ## position to end).

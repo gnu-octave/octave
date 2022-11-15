@@ -28,8 +28,8 @@
 ## @deftypefnx {} {@var{cdat} =} isocolors (@var{x}, @var{y}, @var{z}, @var{c}, @var{v})
 ## @deftypefnx {} {@var{cdat} =} isocolors (@var{x}, @var{y}, @var{z}, @var{r}, @var{g}, @var{b}, @var{v})
 ## @deftypefnx {} {@var{cdat} =} isocolors (@var{r}, @var{g}, @var{b}, @var{v})
-## @deftypefnx {} {@var{cdat} =} isocolors (@dots{}, @var{p})
-## @deftypefnx {} {} isocolors (@dots{})
+## @deftypefnx {} {@var{cdat} =} isocolors (@dots{}, @var{hp})
+## @deftypefnx {} {} isocolors (@dots{}, @var{hp})
 ##
 ## Compute isosurface colors.
 ##
@@ -50,10 +50,10 @@
 ## @var{y}, @var{z} are not given then @code{meshgrid} computed values are
 ## used.
 ##
-## Optionally, a patch handle @var{p} can be given as the last input argument
+## Optionally, a patch handle @var{hp} can be given as the last input argument
 ## to all function call variations and the vertex data will be extracted
 ## from the isosurface patch object.  Finally, if no output argument is given
-## then the colors of the patch given by the patch handle @var{p} are changed.
+## then the colors of the patch given by the patch handle @var{hp} are changed.
 ##
 ## @seealso{isosurface, isonormals}
 ## @end deftypefn
@@ -97,11 +97,11 @@ function cdat = isocolors (varargin)
   endswitch
 
   if (isnumeric (vp) && columns (vp) == 3)
-    pa = [];
+    hp = [];
     v = vp;
   elseif (isgraphics (vp, "patch"))
-    pa = vp;
-    v = get (pa, "Vertices");
+    hp = vp;
+    v = get (hp, "Vertices");
   else
     error ("isocolors: last argument must be a vertex list or patch handle");
   endif
@@ -116,8 +116,8 @@ function cdat = isocolors (varargin)
   endif
 
   if (nargout == 0)
-    if (! isempty (pa))
-      set (pa, "FaceVertexCData", new_colors);
+    if (! isempty (hp))
+      set (hp, "FaceVertexCData", new_colors);
     endif
   else
     cdat = new_colors;

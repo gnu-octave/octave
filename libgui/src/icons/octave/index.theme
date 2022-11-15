@@ -1,0 +1,18 @@
+[Icon Theme]
+Name=Octave-icons
+Comment=icon theme for octave
+
+# Directory list
+Directories=scalable,128
+
+[scalable]
+Size=48
+MinSize=16
+MaxSize=512
+Type=Scalable
+
+[128x128]
+Size=128
+MinSize=16
+MaxSize=512
+Type=Scalable

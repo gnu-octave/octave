@@ -41,7 +41,7 @@ namespace octave
 
   public:
 
-    release_notes (void);
+    release_notes (base_qobject& qct_qobj);
 
     ~release_notes (void) = default;
 

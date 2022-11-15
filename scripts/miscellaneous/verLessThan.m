@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} verLessThan (@var{package}, @var{version})
+## @deftypefn {} {@var{tf} =} verLessThan (@var{package}, @var{version})
 ## Return true if the installed version of the package is less than
 ## @var{version}.
 ##
@@ -56,7 +56,7 @@
 ## @seealso{compare_versions, version, ver, pkg}
 ## @end deftypefn
 
-function retval = verLessThan (package, version)
+function tf = verLessThan (package, version)
 
   if (nargin != 2)
     print_usage ();
@@ -72,7 +72,7 @@ function retval = verLessThan (package, version)
     error ('verLessThan: package "%s" is not installed', package);
   endif
 
-  retval = compare_versions (v(idx).Version, version, "<");
+  tf = compare_versions (v(idx).Version, version, "<");
 
 endfunction
 

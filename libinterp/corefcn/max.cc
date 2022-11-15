@@ -248,7 +248,7 @@ do_minmax_body (const octave_value_list& args,
 
   octave_value_list retval (nargout > 1 ? 2 : 1);
 
-  const char *func = (ismin ? "min" : "max");
+  const char *fcn = (ismin ? "min" : "max");
 
   if (nargin == 3 || nargin == 1)
     {
@@ -259,10 +259,10 @@ do_minmax_body (const octave_value_list& args,
           dim = args(2).int_value (true) - 1;
 
           if (dim < 0)
-            error ("%s: DIM must be a valid dimension", func);
+            error ("%s: DIM must be a valid dimension", fcn);
 
           if (! args(1).isempty ())
-            warning ("%s: second argument is ignored", func);
+            warning ("%s: second argument is ignored", fcn);
         }
 
       switch (arg.builtin_type ())
@@ -290,7 +290,8 @@ do_minmax_body (const octave_value_list& args,
                     retval(0) = range.max ();
                     if (nargout > 1)
                       retval(1) = static_cast<double>
-                                  (range.increment () >= 0 ? range.numel () : 1);
+                                  (range.increment () >= 0 ? range.numel ()
+                                                           : 1);
                   }
               }
             else if (arg.issparse ())
@@ -347,7 +348,7 @@ do_minmax_body (const octave_value_list& args,
           break;
 
         default:
-          err_wrong_type_arg (func, arg);
+          err_wrong_type_arg (fcn, arg);
         }
     }
   else
@@ -424,7 +425,7 @@ do_minmax_body (const octave_value_list& args,
         //   break;
 
         default:
-          error ("%s: cannot compute %s (%s, %s)", func, func,
+          error ("%s: cannot compute %s (%s, %s)", fcn, fcn,
                  argx.type_name ().c_str (), argy.type_name ().c_str ());
         }
 
@@ -439,10 +440,10 @@ do_minmax_body (const octave_value_list& args,
 
 DEFUN (min, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} min (@var{x})
-@deftypefnx {} {} min (@var{x}, [], @var{dim})
-@deftypefnx {} {[@var{w}, @var{iw}] =} min (@var{x})
-@deftypefnx {} {} min (@var{x}, @var{y})
+@deftypefn  {} {@var{m} =} min (@var{x})
+@deftypefnx {} {@var{m} =} min (@var{x}, [], @var{dim})
+@deftypefnx {} {[@var{m}, @var{im}] =} min (@var{x})
+@deftypefnx {} {@var{m} =} min (@var{x}, @var{y})
 Find minimum values in the array @var{x}.
 
 For a vector argument, return the minimum value.  For a matrix argument,
@@ -661,10 +662,10 @@ the first index of the minimum value(s).  Thus,
 
 DEFUN (max, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} max (@var{x})
-@deftypefnx {} {} max (@var{x}, [], @var{dim})
-@deftypefnx {} {[@var{w}, @var{iw}] =} max (@var{x})
-@deftypefnx {} {} max (@var{x}, @var{y})
+@deftypefn  {} {@var{m} =} max (@var{x})
+@deftypefnx {} {@var{m} =} max (@var{x}, [], @var{dim})
+@deftypefnx {} {[@var{m}, @var{im}] =} max (@var{x})
+@deftypefnx {} {@var{m} =} max (@var{x}, @var{y})
 Find maximum values in the array @var{x}.
 
 For a vector argument, return the maximum value.  For a matrix argument,
@@ -924,7 +925,7 @@ do_cumminmax_body (const octave_value_list& args,
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  const char *func = (ismin ? "cummin" : "cummax");
+  const char *fcn = (ismin ? "cummin" : "cummax");
 
   octave_value arg = args(0);
   int dim = -1;
@@ -933,7 +934,7 @@ do_cumminmax_body (const octave_value_list& args,
       dim = args(1).int_value (true) - 1;
 
       if (dim < 0)
-        error ("%s: DIM must be a valid dimension", func);
+        error ("%s: DIM must be a valid dimension", fcn);
     }
 
   octave_value_list retval;
@@ -984,7 +985,7 @@ do_cumminmax_body (const octave_value_list& args,
       break;
 
     default:
-      err_wrong_type_arg (func, arg);
+      err_wrong_type_arg (fcn, arg);
     }
 
   return retval;
@@ -992,9 +993,9 @@ do_cumminmax_body (const octave_value_list& args,
 
 DEFUN (cummin, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} cummin (@var{x})
-@deftypefnx {} {} cummin (@var{x}, @var{dim})
-@deftypefnx {} {[@var{w}, @var{iw}] =} cummin (@var{x})
+@deftypefn  {} {@var{M} =} cummin (@var{x})
+@deftypefnx {} {@var{M} =} cummin (@var{x}, @var{dim})
+@deftypefnx {} {[@var{M}, @var{IM}] =} cummin (@var{x})
 Return the cumulative minimum values along dimension @var{dim}.
 
 If @var{dim} is unspecified it defaults to column-wise operation.  For
@@ -1012,10 +1013,10 @@ returned.
 
 @example
 @group
-[w, iw] = cummin ([5 4 6 2 3 1])
+[M, IM] = cummin ([5 4 6 2 3 1])
 @result{}
-w =  5  4  4  2  2  1
-iw = 1  2  2  4  4  6
+M =  5  4  4  2  2  1
+IM = 1  2  2  4  4  6
 @end group
 @end example
 
@@ -1047,9 +1048,9 @@ iw = 1  2  2  4  4  6
 
 DEFUN (cummax, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} cummax (@var{x})
-@deftypefnx {} {} cummax (@var{x}, @var{dim})
-@deftypefnx {} {[@var{w}, @var{iw}] =} cummax (@dots{})
+@deftypefn  {} {@var{M} =} cummax (@var{x})
+@deftypefnx {} {@var{M} =} cummax (@var{x}, @var{dim})
+@deftypefnx {} {[@var{M}, @var{IM}] =} cummax (@dots{})
 Return the cumulative maximum values along dimension @var{dim}.
 
 If @var{dim} is unspecified it defaults to column-wise operation.  For
@@ -1069,8 +1070,8 @@ returned.
 @group
 [w, iw] = cummax ([1 3 2 6 4 5])
 @result{}
-w =  1  3  3  6  6  6
-iw = 1  2  2  4  4  4
+M =  1  3  3  6  6  6
+IM = 1  2  2  4  4  4
 @end group
 @end example
 

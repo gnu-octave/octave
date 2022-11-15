@@ -103,6 +103,7 @@ COREFCN_INC = \
 
 NOINSTALL_COREFCN_INC = \
   %reldir%/interpreter-private.h \
+  %reldir%/mex-private.h \
   %reldir%/oct-hdf5.h \
   %reldir%/oct-opengl.h
 
@@ -231,6 +232,7 @@ COREFCN_SRC = \
   %reldir%/ordschur.cc \
   %reldir%/pager.cc \
   %reldir%/pinv.cc \
+  %reldir%/pow2.cc \
   %reldir%/pr-flt-fmt.cc \
   %reldir%/pr-output.cc \
   %reldir%/procstream.cc \

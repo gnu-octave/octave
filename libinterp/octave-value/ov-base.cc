@@ -98,8 +98,7 @@ std::string btyp_class_name[btyp_num_types+1] =
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
                                      "<unknown type>", "unknown");
 
-// TRUE means to perform automatic sparse to real mutation if there
-// is memory to be saved
+// DEPRECATED in Octave 8.
 bool Vsparse_auto_mutate = false;
 
 octave_base_value *
@@ -902,6 +901,12 @@ octave_base_value::map_keys (void) const
   err_wrong_type_arg ("octave_base_value::map_keys()", type_name ());
 }
 
+bool
+octave_base_value::isfield (const std::string&) const
+{
+  err_wrong_type_arg ("octave_base_value::isfield()", type_name ());
+}
+
 std::size_t
 octave_base_value::nparents (void) const
 {
@@ -1239,8 +1244,7 @@ octave_base_value::numeric_assign (const std::string& type,
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
 
-  octave::type_info& ti
-    = octave::__get_type_info__ ("octave_base_value::numeric_assign");
+  octave::type_info& ti = octave::__get_type_info__ ();
 
   octave::type_info::assign_op_fcn f
     = ti.lookup_assign_op (octave_value::op_asn_eq, t_lhs, t_rhs);
@@ -1363,7 +1367,7 @@ bool octave_base_value::s_beginning_of_line = true;
 void
 octave_base_value::indent (std::ostream& os) const
 {
-  assert (s_curr_print_indent_level >= 0);
+  panic_unless (s_curr_print_indent_level >= 0);
 
   if (s_beginning_of_line)
     {
@@ -1518,8 +1522,7 @@ make_idx_args (const std::string& type,
 bool
 called_from_builtin (void)
 {
-  octave::tree_evaluator& tw
-    = octave::__get_evaluator__ ("called_from_builtin");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
   octave_function *fcn = tw.caller_function ();
 
@@ -1554,50 +1557,5 @@ install_base_type_conversions (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_base_value, octave_char_matrix_str, string_conv);
   INSTALL_WIDENOP_TI (ti, octave_base_value, octave_cell, cell_conv);
 }
-
-DEFUN (sparse_auto_mutate, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} sparse_auto_mutate ()
-@deftypefnx {} {@var{old_val} =} sparse_auto_mutate (@var{new_val})
-@deftypefnx {} {} sparse_auto_mutate (@var{new_val}, "local")
-Query or set the internal variable that controls whether Octave will
-automatically mutate sparse matrices to full matrices to save memory.
-
-For example:
-
-@example
-@group
-s = speye (3);
-sparse_auto_mutate (false);
-s(:, 1) = 1;
-typeinfo (s)
-@result{} sparse matrix
-sparse_auto_mutate (true);
-s(1, :) = 1;
-typeinfo (s)
-@result{} matrix
-@end group
-@end example
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@end deftypefn */)
-{
-  return set_internal_variable (Vsparse_auto_mutate, args, nargout,
-                                "sparse_auto_mutate");
-}
-
-/*
-%!test
-%! s = speye (3);
-%! sparse_auto_mutate (false);
-%! s(:, 1) = 1;
-%! assert (typeinfo (s), "sparse matrix");
-%! sparse_auto_mutate (true);
-%! s(1, :) = 1;
-%! assert (typeinfo (s), "matrix");
-%! sparse_auto_mutate (false);
-*/
 
 OCTAVE_NAMESPACE_END

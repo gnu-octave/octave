@@ -12,5 +12,5 @@ EXTRA_DIST += \
   %reldir%/ltsugar.m4 \
   %reldir%/ltversion.m4 \
   %reldir%/lt~obsolete.m4 \
-  %reldir%/octave_blas_f77_func.m4 \
+  %reldir%/octave_blas.m4 \
   %reldir%/pkg.m4

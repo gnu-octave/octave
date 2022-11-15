@@ -31,6 +31,7 @@
 ## representation to the local representation.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
+## @seealso{@ftp/ascii, @ftp/ftp}
 ## @end deftypefn
 
 function binary (f)

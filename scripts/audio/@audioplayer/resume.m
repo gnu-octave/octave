@@ -26,14 +26,15 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} resume (@var{player})
 ## Resume playback for the paused audioplayer object @var{player}.
+## @seealso{@audioplayer/pause, @audioplayer/stop, @audioplayer/audioplayer}
 ## @end deftypefn
 
 function resume (player)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
   __player_resume__ (struct (player).player);
 
 endfunction
+
+
+## No tests possible for this function
+%!assert (1)

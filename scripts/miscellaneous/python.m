@@ -33,26 +33,58 @@
 ## Return output in @var{output} and optional status in @var{status}.  If
 ## @var{scriptfile} is not an absolute filename it is searched for in the
 ## current directory and then in the Octave loadpath.
+##
+## Programming Note: On UNIX systems, the script will be executed by
+## @command{python3} and on Windows by @command{python}.  You can override
+## these defaults by setting the @env{PYTHON} environment variable, for example
+## from within Octave using @code{setenv PYTHON /usr/local/bin/python3}.
+##
 ## @seealso{system, perl}
 ## @end deftypefn
 
-function [output, status] = python (scriptfile = "-c ''", varargin)
+function [output, status] = python (scriptfile, varargin)
 
-  if (ischar (scriptfile)
-      && (   (nargin == 1 && ! isempty (scriptfile))
-          || (nargin != 1 && iscellstr (varargin))))
-    if (! strcmp (scriptfile(1:2), "-c"))
+  persistent pyexec = get_python_executable ();
+
+  if (nargin < 1)
+    print_usage ();
+  endif
+
+  if (! ischar (scriptfile) || isempty (scriptfile))
+    error ("python: SCRIPTFILE must be a non-empty string");
+  endif
+  if (nargin > 1 && ! iscellstr (varargin))
+    error ("python: ARGUMENTS must be strings");
+  endif
+
+  if (numel (scriptfile) < 2 || ! strcmp (scriptfile(1:2), "-c"))
       ## Attempt to find file in loadpath.  No effect for absolute filenames.
       scriptfile = file_in_loadpath (scriptfile);
     endif
 
-    [status, output] = system (["python ", scriptfile, ...
-                                sprintf(" %s", varargin{:})]);
-  else
-    error ("python: invalid arguments");
+  [status, output] = system ([pyexec " " scriptfile, ...
+                              sprintf(" %s", varargin{:})]);
+
+endfunction
+
+function pyexec = get_python_executable ()
+
+  pyexec = getenv ("PYTHON");
+  if (isempty (pyexec))
+    ## PEP394 says Python 3 installs should all provide this command
+    pyexec = "python3";
+
+    if (ispc () && (! isunix ()))
+      ## 2020-03: Python.org installer/Anaconda do not provide python3
+      pyexec = "python";
+    endif
   endif
 
 endfunction
 
 
-%!error <invalid arguments> python (123)
+## Test input validation
+%!error <Invalid call> python ()
+%!error <SCRIPTFILE must be a non-empty string> python (123)
+%!error <SCRIPTFILE must be a non-empty string> python ("")
+%!error <ARGUMENTS must be strings> python ("pythonfile", 123)

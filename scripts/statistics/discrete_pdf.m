@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} discrete_pdf (@var{x}, @var{v}, @var{p})
+## @deftypefn {} {@var{pdf} =} discrete_pdf (@var{x}, @var{v}, @var{p})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of a univariate discrete distribution which assumes the values
 ## in @var{v} with probabilities @var{p}.

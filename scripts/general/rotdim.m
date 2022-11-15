@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} rotdim (@var{x})
-## @deftypefnx {} {} rotdim (@var{x}, @var{n})
-## @deftypefnx {} {} rotdim (@var{x}, @var{n}, @var{plane})
-## Return a copy of @var{x} with the elements rotated counterclockwise in
+## @deftypefn  {} {@var{B} =} rotdim (@var{A})
+## @deftypefnx {} {@var{B} =} rotdim (@var{A}, @var{n})
+## @deftypefnx {} {@var{B} =} rotdim (@var{A}, @var{n}, @var{plane})
+## Return a copy of @var{A} with the elements rotated counterclockwise in
 ## 90-degree increments.
 ##
 ## The second argument @var{n} is optional, and specifies how many 90-degree
@@ -63,7 +63,7 @@
 ## @seealso{rot90, fliplr, flipud, flip}
 ## @end deftypefn
 
-function y = rotdim (x, n, plane)
+function B = rotdim (A, n, plane)
 
   if (nargin < 1)
     print_usage ();
@@ -77,8 +77,8 @@ function y = rotdim (x, n, plane)
     n = 1;
   endif
 
-  nd = ndims (x);
-  sz = size (x);
+  nd = ndims (A);
+  sz = size (A);
   if (nargin < 3)
     if (nd > 2)
       ## Find the first two non-singleton dimension.
@@ -105,7 +105,7 @@ function y = rotdim (x, n, plane)
     if (! (isvector (plane) && length (plane) == 2
            && all (plane == fix (plane)) && all (plane > 0)
            && all (plane < (nd + 1)) && plane(1) != plane(2)))
-      error ("rotdim: PLANE must be a 2 element integer vector defining a valid PLANE");
+      error ("rotdim: PLANE must be a 2-element integer vector defining a valid plane");
     endif
   endif
 
@@ -114,21 +114,19 @@ function y = rotdim (x, n, plane)
     n += 4;
   endif
   if (n == 0)
-    y = x;
+    B = A;
   elseif (n == 2)
-    y = flip (flip (x, plane(1)), plane(2));
+    B = flip (flip (A, plane(1)), plane(2));
   elseif (n == 1 || n == 3)
     perm = 1:nd;
     perm(plane(1)) = plane(2);
     perm(plane(2)) = plane(1);
-    y = permute (x, perm);
+    B = permute (A, perm);
     if (n == 1)
-      y = flip (y, min (plane));
+      B = flip (B, min (plane));
     else
-      y = flip (y, max (plane));
+      B = flip (B, max (plane));
     endif
-  else
-    error ("rotdim: internal error!");
   endif
 
 endfunction

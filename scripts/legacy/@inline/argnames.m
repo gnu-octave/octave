@@ -24,18 +24,17 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} argnames (@var{fun})
+## @deftypefn {} {@var{args} =} argnames (@var{fobj})
 ## Return a cell array of character strings containing the names of the
-## arguments of the inline function @var{fun}.
-## @seealso{inline, formula, vectorize}
+## arguments of the inline function object @var{fobj}.
+##
+## Programming Note: @code{symvar (@var{fobj})} is equivalent to
+## @code{argnames (@var{fobj})}.
+## @seealso{symvar, formula, vectorize, inline}
 ## @end deftypefn
 
-function args = argnames (obj)
+function args = argnames (fobj)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  args = obj.args;
+  args = fobj.args;
 
 endfunction

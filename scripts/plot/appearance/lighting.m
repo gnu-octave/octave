@@ -94,9 +94,9 @@ function lighting (varargin)
 
   ## FIXME: This is the old, simple code.
   ##        Unfortunately, it also lights contour plots which is not desirable.
-  ##hp = findobj (hax, "type", "patch");
-  ##hs = findobj (hax, "type", "surface");
-  ##hlist = [hp(:); hs(:)];
+  ## hp = findobj (hax, "type", "patch");
+  ## hs = findobj (hax, "type", "surface");
+  ## hlist = [hp(:); hs(:)];
 
   if (isempty (hlist))
     return;

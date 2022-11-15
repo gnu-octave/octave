@@ -24,15 +24,15 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} list_primes ()
-## @deftypefnx {} {} list_primes (@var{n})
+## @deftypefn  {} {@var{p} =} list_primes ()
+## @deftypefnx {} {@var{p} =} list_primes (@var{n})
 ## List the first @var{n} primes.
 ##
 ## If @var{n} is unspecified, the first 25 primes are listed.
 ## @seealso{primes, isprime}
 ## @end deftypefn
 
-function retval = list_primes (n = 25)
+function p = list_primes (n = 25)
 
   if (! isreal (n) || ! isscalar (n))
     error ("list_primes: N must be a real scalar");
@@ -41,10 +41,10 @@ function retval = list_primes (n = 25)
   n = floor (n);
 
   if (n < 1)
-    retval = [];
+    p = [];
     return;
   elseif (n == 1)
-    retval = 2;
+    p = 2;
     return;
   endif
 
@@ -54,7 +54,7 @@ function retval = list_primes (n = 25)
     error ("list_primes: Algorithm failed.  Try primes (n*log (6*n))(1:n)");
   endif
 
-  retval = list(1:n);
+  p = list(1:n);
 
 endfunction
 

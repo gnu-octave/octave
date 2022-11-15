@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <utility>
+
 #include "Array-util.h"
 #include "oct-locbuf.h"
 #include "quit.h"
@@ -195,7 +197,7 @@ Convert linear indices to subscripts.
 
 The input @var{dims} is a dimension vector where each element is the size of
 the array in the respective dimension (@pxref{XREFsize,,@code{size}}).  The
-second input @var{ind} contains linear indies to be converted.
+second input @var{ind} contains linear indices to be converted.
 
 The outputs @var{s1}, @dots{}, @var{sN} contain the converted subscripts.
 
@@ -220,12 +222,8 @@ Consider the following 3-by-3 matrices:
 The left matrix contains the linear indices for each matrix element.  The right
 matrix shows the subscript tuples for the same matrix.
 
-The following example shows how to convert the two-dimensional indices
-@code{(2,1)} and @code{(2,3)} of a 3-by-3 matrix to linear indices with a
-single call to @code{sub2ind}.
-
 The following example shows how to convert the linear indices @code{2} and
-@code{8} in a 3-by-3 matrix into subscripts.
+@code{8} to appropriate subscripts of a 3-by-3 matrix.
 
 @example
 @group
@@ -264,12 +262,20 @@ r = ind2sub (dims, ind)
 
   octave_value_list retval;
 
-  // Redimension to provided number of subscripts.
+  int nd = (nargout == 0) ? 1 : nargout;
+
   dim_vector dv = get_dim_vector (args(0), "ind2sub").redim (nargout);
+
+  // Redim for 1 will give us a column vector but we want a row vector.
+  if (nd == 1)
+    std::swap (dv(0), dv(1));
 
   try
     {
       retval = Array<octave_value> (ind2sub (dv, args(1).index_vector ()));
+
+      if (nd == 1)
+        retval(0) = retval(1);
     }
   catch (const index_exception& ie)
     {
@@ -314,8 +320,18 @@ r = ind2sub (dims, ind)
 %! r = ind2sub ([2, 2, 2], 1:8);
 %! assert (r, 1:8);
 
+## Indexing beyond specified size (bug #62184)
+%!assert <*62184> (ind2sub (1, 2), 2)
+%!assert <*62184> (ind2sub ([3,3], 10), 10)
+%!test <*62184>
+%! [r,c] = ind2sub ([3,3], 10);
+%! assert ([r, c], [1, 4]);
+%!test <*62184>
+%! [r,c,p] = ind2sub ([3,3], 10);
+%! assert ([r, c, p], [1, 1, 2]);
+
+## Test input validation
 %!error <DIMS must contain integers> ind2sub ([2, -2], 3)
-%!error <index out of range> ind2sub ([2, 2, 2], 1:9)
 %!error <invalid index> ind2sub ([2, 2, 2], -1:8)
 */
 

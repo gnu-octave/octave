@@ -24,12 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{T} =} camtarget ()
+## @deftypefn  {} {@var{t} =} camtarget ()
 ## @deftypefnx {} {} camtarget ([@var{x} @var{y} @var{z}])
 ## @deftypefnx {} {@var{mode} =} camtarget ("mode")
 ## @deftypefnx {} {} camtarget (@var{mode})
-## @deftypefnx {} {} camtarget (@var{ax}, @dots{})
-## Set or get where the camera is pointed.
+## @deftypefnx {} {} camtarget (@var{hax}, @dots{})
+## Get or set where the camera is pointed.
 ##
 ## The camera target is a point in space where the camera is pointing.
 ## Usually, it is determined automatically based on the scene:
@@ -89,13 +89,13 @@
 ## @end example
 ##
 ## By default, these commands affect the current axis; alternatively, an axis
-## can be specified by the optional argument @var{ax}.
+## can be specified by the optional argument @var{hax}.
 ##
 ## @seealso{campos, camup, camva}
 ## @end deftypefn
 
 
-function p = camtarget (varargin)
+function t = camtarget (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("camtarget", varargin{:});
 
@@ -111,13 +111,13 @@ function p = camtarget (varargin)
 
   prop = "cameratarget";
   if (nargin == 0)
-    p = get (hax, prop);
+    t = get (hax, prop);
   elseif (nargin == 1 && isnumeric (varargin{1}) && numel (varargin{1}) == 3)
     set (hax, prop, varargin{1});
   elseif (nargin == 1 && ischar (varargin{1}))
     s = varargin{1};
     if (strcmp (s, "mode"))
-      p = get (hax, [prop "mode"]);
+      t = get (hax, [prop "mode"]);
     else
       set (hax, [prop "mode"], s);
     endif
@@ -172,7 +172,7 @@ endfunction
 %!   delete (hf);
 %! end_unwind_protect
 
-## test ax input by creating another axis
+## test hax input by creating another axis
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

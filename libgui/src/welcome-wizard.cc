@@ -37,6 +37,7 @@
   #include <windows.h>
 #endif
 
+#include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
 #include "octave-qobject.h"
 #include "welcome-wizard.h"
@@ -47,7 +48,7 @@ namespace octave
   make_octave_logo (QWidget *p = nullptr, int height = 100)
   {
     QLabel *logo = new QLabel (p);
-    QPixmap logo_pixmap (":/actions/icons/logo.png");
+    QPixmap logo_pixmap (dw_icon_set_names["NONE"]);
     logo->setPixmap (logo_pixmap.scaledToHeight (height));
     return logo;
   };

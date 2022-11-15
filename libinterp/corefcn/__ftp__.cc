@@ -82,7 +82,7 @@ Undocumented internal function
 
 DEFMETHOD (__ftp_pwd__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __ftp_pwd__ (@var{handle})
+@deftypefn {} {@var{pwd} =} __ftp_pwd__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
 {
@@ -122,7 +122,8 @@ Undocumented internal function
 
 DEFMETHOD (__ftp_dir__, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __ftp_dir__ (@var{handle})
+@deftypefn  {} {} __ftp_dir__ (@var{handle})
+@deftypefnx {} {@var{S} =} __ftp_dir__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
 {
@@ -248,7 +249,7 @@ Undocumented internal function
 
 DEFMETHOD (__ftp_mode__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __ftp_mode__ (@var{handle})
+@deftypefn {} {@var{mode} =} __ftp_mode__ (@var{handle})
 Undocumented internal function
 @end deftypefn */)
 {
@@ -345,7 +346,8 @@ Undocumented internal function
 
 DEFMETHOD (__ftp_mput__, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __ftp_mput__ (@var{handle}, @var{files})
+@deftypefn  {} {} __ftp_mput__ (@var{handle}, @var{files})
+@deftypefnx {} {@var{filelist} =} __ftp_mput__ (@var{handle}, @var{files})
 Undocumented internal function
 @end deftypefn */)
 {

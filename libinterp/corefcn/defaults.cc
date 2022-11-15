@@ -450,8 +450,9 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (OCTAVE_HOME, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} OCTAVE_HOME ()
+@deftypefn {} {@var{dir} =} OCTAVE_HOME ()
 Return the name of the top-level Octave installation directory.
+
 OCTAVE_HOME corresponds to the configuration variable @var{prefix}.
 @seealso{EXEC_PATH, IMAGE_PATH, OCTAVE_EXEC_HOME}
 @end deftypefn */)
@@ -469,11 +470,12 @@ OCTAVE_HOME corresponds to the configuration variable @var{prefix}.
 
 DEFUN (OCTAVE_EXEC_HOME, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} OCTAVE_EXEC_HOME ()
+@deftypefn {} {@var{dir} =} OCTAVE_EXEC_HOME ()
 Return the name of the top-level Octave installation directory for
-architecture-dependent files.  If not specified separately, the value
-is the same as OCTAVE_HOME@.  OCTAVE_EXEC_HOME corresponds to the
-configuration variable @var{exec_prefix}.
+architecture-dependent files.
+
+If not specified separately, the value is the same as OCTAVE_HOME@.
+OCTAVE_EXEC_HOME corresponds to the configuration variable @var{exec_prefix}.
 @seealso{EXEC_PATH, IMAGE_PATH, OCTAVE_HOME}
 @end deftypefn */)
 {
@@ -490,7 +492,7 @@ configuration variable @var{exec_prefix}.
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn {} {} OCTAVE_VERSION ()
+@deftypefn {} {@var{verstr} =} OCTAVE_VERSION ()
 Return the version number of Octave as a string.
 @seealso{ver, version}
 @end deftypefn */)

@@ -159,14 +159,14 @@ public:
 
   void print (const std::string& cmd, const std::string& term)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("OpenGL_fltk::print");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     octave::gl2ps_print (m_glfcns, gh_mgr.get_object (m_number), cmd, term);
   }
 
   uint8NDArray get_pixels (void)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("OpenGL_fltk::get_pixels");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     m_renderer.draw (gh_mgr.get_object (m_number));
 
@@ -230,7 +230,7 @@ private:
         m_glfcns.glViewport (0, 0, w (), h ());
       }
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("OpenGL_fltk::draw");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     m_renderer.draw (gh_mgr.get_object (m_number));
 
@@ -297,7 +297,7 @@ private:
 
 static void script_cb (Fl_Widget *, void *data)
 {
-  static_cast<uimenu::properties *> (data)->execute_callback ();
+  static_cast<uimenu::properties *> (data)->execute_menuselectedfcn ();
 }
 
 class fltk_uimenu
@@ -411,8 +411,7 @@ public:
 
     for (octave_idx_type ii = 0; ii < uimenu_childs.numel (); ii++)
       {
-        gh_manager& gh_mgr
-          = octave::__get_gh_manager__ ("fltk_uimenu::do_find_uimenu_children");
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
         graphics_object kidgo = gh_mgr.get_object (uimenu_childs (ii));
 
@@ -463,7 +462,7 @@ public:
       }
   }
 
-  void update_callback (uimenu::properties& uimenup)
+  void update_menuselectedfcn (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
@@ -472,7 +471,7 @@ public:
           = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
-            if (! uimenup.get_callback ().isempty ())
+            if (! uimenup.get_menuselectedfcn ().isempty ())
               item->callback (static_cast<Fl_Callback *> (script_cb),
                               static_cast<void *> (&uimenup));
             else
@@ -635,13 +634,13 @@ public:
 
     add_entry (uimenup);
     update_foregroundcolor (uimenup);
-    update_callback (uimenup);
+    update_menuselectedfcn (uimenup);
     update_accelerator (uimenup);
     update_enable (uimenup);
     update_visible (uimenup);
     update_seperator (uimenup);
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("fltk_uimenu::add_to_menu");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
@@ -687,7 +686,7 @@ public:
 
     m_menubar->clear ();
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("fltk_uimenu::add_to_menu");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
@@ -733,7 +732,7 @@ public:
     kids = find_uimenu_children (prop);
     int len = kids.numel ();
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("fltk_uimenu::remove_from_menu");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
@@ -935,7 +934,7 @@ public:
 
   void uimenu_update (const graphics_handle& gh, int id)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::uimenu_update");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     graphics_object uimenu_obj = gh_mgr.get_object (gh);
 
@@ -962,8 +961,8 @@ public:
             m_uimenu->update_accelerator (uimenup);
             break;
 
-          case uimenu::properties::ID_CALLBACK:
-            m_uimenu->update_callback (uimenup);
+          case uimenu::properties::ID_MENUSELECTEDFCN:
+            m_uimenu->update_menuselectedfcn (uimenup);
             break;
 
           case uimenu::properties::ID_CHECKED:
@@ -1155,8 +1154,7 @@ private:
         graphics_handle gh = m_fp.get_currentaxes ();
         if (gh.ok ())
           {
-            gh_manager& gh_mgr
-              = octave::__get_gh_manager__ ("plot_window::set_on_ax_obj");
+            gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
             graphics_object go = gh_mgr.get_object (gh);
 
@@ -1193,7 +1191,7 @@ private:
   void pixel2pos (const graphics_handle& ax, int px, int py, double& xx,
                   double& yy) const
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::pixel2pos");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     pixel2pos (gh_mgr.get_object (ax), px, py, xx, yy);
   }
@@ -1216,7 +1214,7 @@ private:
     Matrix kids = m_fp.get_children ();
     int len = kids.numel ();
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::pixel2axes_or_ca");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     for (int k = 0; k < len; k++)
       {
@@ -1244,7 +1242,7 @@ private:
   void pixel2status (const graphics_handle& ax, int px0, int py0,
                      int px1 = -1, int py1 = -1)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::pixel2status");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     pixel2status (gh_mgr.get_object (ax), px0, py0, px1, py1);
   }
@@ -1292,8 +1290,7 @@ private:
         Matrix pos = m_fp.map_from_boundingbox (px, py);
         m_fp.set_currentpoint (pos);
 
-        gh_manager& gh_mgr
-          = octave::__get_gh_manager__ ("plot_window::set_currentpoint");
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
         graphics_object robj = gh_mgr.get_object (m_fp.get_parent ());
 
@@ -1340,7 +1337,8 @@ private:
       return 0;
   }
 
-  octave_scalar_map format_key_event (int e_key, const char *e_text, int e_state)
+  octave_scalar_map format_key_event (int e_key, const char *e_text,
+                                      int e_state)
   {
     octave_scalar_map evt;
 
@@ -1512,7 +1510,7 @@ private:
         // See Event Propagation http://www.fltk.org/doc-1.3/events.html
         static bool key_resent_detected = false;
 
-        gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::handle");
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
         switch (event)
           {
@@ -1798,7 +1796,8 @@ private:
             case FL_RELEASE:
               if (! m_fp.get_windowbuttonupfcn ().isempty ())
                 {
-                  set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
+                  set_currentpoint (Fl::event_x (),
+                                    Fl::event_y () - menu_dy ());
                   m_fp.execute_windowbuttonupfcn ();
                 }
 
@@ -2234,7 +2233,7 @@ private:
 
   static int hnd2idx (double h)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("figure_manager::hnd2idx");
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
     graphics_object fobj = gh_mgr.get_object (h);
 

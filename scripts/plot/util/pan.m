@@ -46,7 +46,7 @@
 ## @seealso{rotate3d, zoom}
 ## @end deftypefn
 
-function h = pan (hfig, option)
+function pan (hfig, option)
 
   ## FIXME: Presumably should implement this for Matlab compatibility.
   if (nargin == 1 && nargout > 0 && isfigure (hfig))

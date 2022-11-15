@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <unistd.h>
+
 #include <algorithm>
 #include <array>
 #include <string>
@@ -38,11 +40,7 @@
 #include <QLibraryInfo>
 #include <QMessageBox>
 #include <QNetworkProxy>
-#if defined (HAVE_QSTANDARDPATHS)
-#  include <QStandardPaths>
-#else
-#  include <QDesktopServices>
-#endif
+#include <QStandardPaths>
 
 #include <QTextCodec>
 
@@ -67,7 +65,7 @@ namespace octave
 {
   resource_manager::resource_manager (void)
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
-      m_default_settings (nullptr), m_temporary_files ()
+      m_default_settings (nullptr), m_temporary_files (), m_icon_fallbacks ()
   {
     // Let gui_settings decide where to put the ini file with gui preferences
     m_default_settings
@@ -183,6 +181,52 @@ namespace octave
         gui_tr->load (language, get_gui_translation_dir ());
       }
 
+  }
+
+  void resource_manager::config_icon_theme (void)
+  {
+    m_icon_fallbacks.clear ();
+
+    int theme = global_icon_theme_index.def.toInt ();
+
+    if (m_settings)
+      {
+       // check for new and old setting and use old if required
+       if (! m_settings->contains (global_icon_theme_index.key))
+         {
+           // new pref does not exist
+           if (m_settings->value (global_icon_theme).toBool ())
+             theme = ICON_THEME_SYSTEM;
+           else
+             theme = ICON_THEME_OCTAVE;
+           m_settings->setValue (global_icon_theme_index.key, theme);  // add new
+           m_settings->remove (global_icon_theme.key); // remove deprecated key
+         }
+       else
+         {
+           // get new settings
+           theme = m_settings->value (global_icon_theme_index).toInt ();
+         }
+      }
+
+   QIcon::setThemeName (global_all_icon_themes.at (theme));
+
+   // set the required fallback search paths
+   switch (theme)
+    {
+      case ICON_THEME_SYSTEM:
+        m_icon_fallbacks << global_icon_paths.at (ICON_THEME_OCTAVE);
+        m_icon_fallbacks << global_icon_paths.at (ICON_THEME_TANGO);
+        break;
+      case ICON_THEME_TANGO:
+        m_icon_fallbacks << global_icon_paths.at (ICON_THEME_OCTAVE);
+        break;
+      case ICON_THEME_OCTAVE:
+        m_icon_fallbacks << global_icon_paths.at (ICON_THEME_TANGO);
+        break;
+    }
+
+    m_icon_fallbacks << global_icon_paths.at (ICON_THEME_CURSORS);
   }
 
   gui_settings * resource_manager::get_settings (void) const
@@ -581,19 +625,26 @@ namespace octave
     sys::env::putenv ("HTTPS_PROXY", proxy_url_str);
   }
 
-  QIcon resource_manager::icon (const QString& icon_name, bool fallback)
+  QIcon resource_manager::icon (const QString& icon_name, bool octave_only,
+                                const QString& icon_alt_name)
   {
-    // If system icon theme is not desired, take own icon files
-    if (! m_settings->value (global_icon_theme).toBool ())
-      return QIcon (":/actions/icons/" + icon_name + ".png");
+    if (octave_only)
+      return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + icon_name + ".png");
 
-    // Use system icon theme with own files as fallback except when the
-    // fallback is explicitly disabled (fallback=false)
-    if (fallback)
-      return QIcon::fromTheme (icon_name,
-                               QIcon (":/actions/icons/" + icon_name + ".png"));
-    else
-      return QIcon::fromTheme (icon_name);
+    if (QIcon::hasThemeIcon (icon_name))
+      return QIcon (QIcon::fromTheme (icon_name));
+    else if ((! icon_alt_name.isEmpty ()) && QIcon::hasThemeIcon (icon_alt_name))
+      return QIcon (QIcon::fromTheme (icon_alt_name));
+
+    for (int i = 0; i < m_icon_fallbacks.length (); i++ )
+      {
+        QString icon_file (m_icon_fallbacks.at (i) + icon_name + ".png");
+        if (QFile (icon_file).exists ())
+          return QIcon (icon_file);
+      }
+
+      //QIcon::setThemeName (current_theme);
+      return QIcon ();
   }
 
   // get a list of all available encodings
@@ -676,6 +727,7 @@ namespace octave
     combo->setMaxVisibleItems (12);
   }
 
+
   QPointer<QTemporaryFile>
   resource_manager::create_tmp_file (const QString& extension,
                                      const QString& contents)
@@ -685,8 +737,7 @@ namespace octave
       ext = QString (".") + ext;
 
     // Create octave dir within temp. dir
-    QString tmp_dir = QDir::tempPath () + QDir::separator() + "octave";
-    QDir::temp ().mkdir ("octave");
+    QString tmp_dir = QString::fromStdString (sys::env::get_temp_directory ());
 
     // Create temp. file
     QPointer<QTemporaryFile> tmp_file

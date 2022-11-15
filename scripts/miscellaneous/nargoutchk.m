@@ -49,12 +49,12 @@
 
 function msg = nargoutchk (minargs, maxargs, nargs, outtype)
 
-  ## before matlab's 2011b, nargoutchk would return an error message (just the
+  ## Before Matlab 2011b, nargoutchk would return an error message (just the
   ## message in a string).  With 2011b, it no longer returns anything, it
   ## simply gives an error if the args number is incorrect.
   ## To try to keep compatibility with both versions, check nargout and nargin
-  ## to guess if the caller is expecting a value (old syntax)
-  ## or none (new syntax).
+  ## to guess if the caller is expecting a value (old syntax) or none
+  ## (new syntax).
 
   if (nargout == 1 && (nargin == 3 || nargin == 4))
 

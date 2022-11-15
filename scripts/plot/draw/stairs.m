@@ -71,7 +71,7 @@
 ## @seealso{bar, hist, plot, stem}
 ## @end deftypefn
 
-function [xs, ys] = stairs (varargin)
+function [xstep, ystep] = stairs (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("stairs", varargin{:});
 
@@ -86,7 +86,7 @@ function [xs, ys] = stairs (varargin)
     endif
     unwind_protect
       hax = newplot (hax);
-      [htmp, xxs, yys] = __stairs__ (true, varargin{:});
+      htmp = __stairs__ (true, varargin{:});
 
       if (! ishold ())
         set (hax, "box", "on");
@@ -98,10 +98,10 @@ function [xs, ys] = stairs (varargin)
       endif
     end_unwind_protect
     if (nargout == 1)
-      xs = htmp;
+      xstep = htmp;
     endif
   else
-    [~, xs, ys] = __stairs__ (false, varargin{:});
+    [~, xstep, ystep] = __stairs__ (false, varargin{:});
   endif
 
 endfunction

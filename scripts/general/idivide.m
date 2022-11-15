@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} idivide (@var{x}, @var{y}, @var{op})
+## @deftypefn {} {@var{C} =} idivide (@var{A}, @var{B}, @var{op})
 ## Integer division with different rounding rules.
 ##
-## The standard behavior of integer division such as @code{@var{a} ./ @var{b}}
+## The standard behavior of integer division such as @code{@var{A} ./ @var{B}}
 ## is to round the result to the nearest integer.  This is not always the
 ## desired behavior and @code{idivide} permits integer element-by-element
 ## division to be performed with different treatment for the fractional
@@ -36,19 +36,19 @@
 ##
 ## @table @asis
 ## @item @qcode{"fix"}
-## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
+## Calculate @code{@var{A} ./ @var{B}} with the fractional part rounded
 ## towards zero.
 ##
 ## @item @qcode{"round"}
-## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
+## Calculate @code{@var{A} ./ @var{B}} with the fractional part rounded
 ## towards the nearest integer.
 ##
 ## @item @qcode{"floor"}
-## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
+## Calculate @code{@var{A} ./ @var{B}} with the fractional part rounded
 ## towards negative infinity.
 ##
 ## @item @qcode{"ceil"}
-## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
+## Calculate @code{@var{A} ./ @var{B}} with the fractional part rounded
 ## towards positive infinity.
 ## @end table
 ##
@@ -69,10 +69,10 @@
 ## @end group
 ## @end example
 ##
-## @seealso{ldivide, rdivide}
+## @seealso{ceil, floor, fix, round, ldivide, rdivide}
 ## @end deftypefn
 
-function z = idivide (x, y, op)
+function C = idivide (A, B, op)
 
   if (nargin < 2)
     print_usage ();
@@ -84,74 +84,74 @@ function z = idivide (x, y, op)
     op = tolower (op);
   endif
 
-  if (! isinteger (x) && ! isinteger (y))
-    error ("idivide: at least one input (X or Y) must be an integer type");
-  elseif (isinteger (x) && isinteger (y) && ! strcmp (class (x), class (y)))
-    error ("idivide: integer type of X (%s) must match integer type of Y (%s)",
-           class (x), class (y));
+  if (! isinteger (A) && ! isinteger (B))
+    error ("idivide: at least one input (A or B) must be an integer type");
+  elseif (isinteger (A) && isinteger (B) && ! strcmp (class (A), class (B)))
+    error ("idivide: integer type of A (%s) must match integer type of B (%s)",
+           class (A), class (B));
   endif
 
-  z = x ./ y;
+  C = A ./ B;
   if (strcmp (op, "fix"))
-    ## The following is an optimized version of `z -= (z .* y > x) .* sign (y)`.
-    if (isscalar (y))
-      if (y > 0)
-        z -= (z * y > x);
+    ## The following is an optimized version of `C -= (C .* B > A) .* sign (B)`.
+    if (isscalar (B))
+      if (B > 0)
+        C -= (C * B > A);
       else
-        z += (z * y > x);
+        C += (C * B > A);
       endif
     else
-      y_sel = (y > 0);
-      if (isscalar (x))
-        z(y_sel) -= (z(y_sel) .* y(y_sel) > x);
+      y_sel = (B > 0);
+      if (isscalar (A))
+        C(y_sel) -= (C(y_sel) .* B(y_sel) > A);
         y_sel = ! y_sel;
-        z(y_sel) += (z(y_sel) .* y(y_sel) > x);
+        C(y_sel) += (C(y_sel) .* B(y_sel) > A);
       else
-        z(y_sel) -= (z(y_sel) .* y(y_sel) > x(y_sel));
+        C(y_sel) -= (C(y_sel) .* B(y_sel) > A(y_sel));
         y_sel = ! y_sel;
-        z(y_sel) += (z(y_sel) .* y(y_sel) > x(y_sel));
+        C(y_sel) += (C(y_sel) .* B(y_sel) > A(y_sel));
       endif
     endif
   elseif (strcmp (op, "round"))
     return;
   elseif (strcmp (op, "floor"))
-    ## The following is an optimized version of `z -= (z .* abs (y) > sign (y) .* x)`.
-    if (isscalar (y))
-      if (y > 0)
-        z -= (z * y > x);
+    ## The following is an optimized version of `C -= (C .* abs (B) > sign (B) .* A)`.
+    if (isscalar (B))
+      if (B > 0)
+        C -= (C * B > A);
       else
-        z -= (z * y < x);
+        C -= (C * B < A);
       endif
     else
-      y_sel = (y > 0);
-      if (isscalar (x))
-        z(y_sel) -= (z(y_sel) .* y(y_sel) > x);
+      y_sel = (B > 0);
+      if (isscalar (A))
+        C(y_sel) -= (C(y_sel) .* B(y_sel) > A);
         y_sel = ! y_sel;
-        z(y_sel) -= (z(y_sel) .* y(y_sel) < x);
+        C(y_sel) -= (C(y_sel) .* B(y_sel) < A);
       else
-        z(y_sel) -= (z(y_sel) .* y(y_sel) > x(y_sel));
+        C(y_sel) -= (C(y_sel) .* B(y_sel) > A(y_sel));
         y_sel = ! y_sel;
-        z(y_sel) -= (z(y_sel) .* y(y_sel) < x(y_sel));
+        C(y_sel) -= (C(y_sel) .* B(y_sel) < A(y_sel));
       endif
     endif
   elseif (strcmp (op, "ceil"))
-    ## The following is an optimized version of `z += (z .* abs (y) < sign (y) .* x)`.
-    if (isscalar (y))
-      if (y > 0)
-        z += (z * y < x);
+    ## The following is an optimized version of `C += (C .* abs (B) < sign (B) .* A)`.
+    if (isscalar (B))
+      if (B > 0)
+        C += (C * B < A);
       else
-        z += (z * y > x);
+        C += (C * B > A);
       endif
     else
-      y_sel = (y > 0);
-      if (isscalar (x))
-        z(y_sel) += (z(y_sel) .* y(y_sel) < x);
+      y_sel = (B > 0);
+      if (isscalar (A))
+        C(y_sel) += (C(y_sel) .* B(y_sel) < A);
         y_sel = ! y_sel;
-        z(y_sel) += (z(y_sel) .* y(y_sel) > x);
+        C(y_sel) += (C(y_sel) .* B(y_sel) > A);
       else
-        z(y_sel) += (z(y_sel) .* y(y_sel) < x(y_sel));
+        C(y_sel) += (C(y_sel) .* B(y_sel) < A(y_sel));
         y_sel = ! y_sel;
-        z(y_sel) += (z(y_sel) .* y(y_sel) > x(y_sel));
+        C(y_sel) += (C(y_sel) .* B(y_sel) > A(y_sel));
       endif
     endif
   else
@@ -201,5 +201,5 @@ endfunction
 %!error idivide (uint8 (1), 2, 3)
 %!error <at least one input> idivide (1, 2)
 %!error <at least one input> idivide ({1}, 2)
-%!error <X \(int8\) must match.* Y \(uint8\)> idivide (int8 (1), uint8 (2))
+%!error <A \(int8\) must match.* B \(uint8\)> idivide (int8 (1), uint8 (2))
 %!error <unrecognized rounding type "foo"> idivide (int8 (1), 2, "foo")

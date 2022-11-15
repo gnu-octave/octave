@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} logspace (@var{a}, @var{b})
-## @deftypefnx {} {} logspace (@var{a}, @var{b}, @var{n})
-## @deftypefnx {} {} logspace (@var{a}, pi, @var{n})
+## @deftypefn  {} {@var{y} =} logspace (@var{a}, @var{b})
+## @deftypefnx {} {@var{y} =} logspace (@var{a}, @var{b}, @var{n})
+## @deftypefnx {} {@var{y} =} logspace (@var{a}, pi, @var{n})
 ## Return a row vector with @var{n} elements logarithmically spaced from
 ## @tex
 ## $10^{a}$ to $10^{b}$.
@@ -72,7 +72,7 @@
 ## @seealso{linspace}
 ## @end deftypefn
 
-function retval = logspace (a, b, n = 50)
+function y = logspace (a, b, n = 50)
 
   if (nargin < 2)
     print_usage ();
@@ -88,7 +88,7 @@ function retval = logspace (a, b, n = 50)
     b = log10 (pi);
   endif
 
-  retval = 10 .^ (linspace (a, b, npoints));
+  y = 10 .^ (linspace (a, b, npoints));
 
 endfunction
 
@@ -133,8 +133,8 @@ endfunction
 ## FIXME: These are bizarre corner cases for Matlab compatibility.  See
 ## bug #56933.  This is marked as "Won't Fix", but if linspace is updated at
 ## some point then these tests can be re-instated.
-##%!assert (logspace (-Inf, 0, 3), [0, NaN, 1])
-##%!assert (logspace (Inf, 0, 3), [Inf, NaN, 1])
+%!#assert (logspace (-Inf, 0, 3), [0, NaN, 1])
+%!#assert (logspace (Inf, 0, 3), [Inf, NaN, 1])
 
 ## Test input validation
 %!error <Invalid call> logspace ()

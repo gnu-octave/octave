@@ -112,41 +112,41 @@ public:
   octave_uint64 uint64_scalar_value () const;
 
   Matrix matrix_value (bool = false) const
-  { return Matrix (charMatrix (matrix)); }
+  { return Matrix (charMatrix (m_matrix)); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return FloatMatrix (charMatrix (matrix)); }
+  { return FloatMatrix (charMatrix (m_matrix)); }
 
   NDArray array_value (bool = false) const
-  { return NDArray (matrix); }
+  { return NDArray (m_matrix); }
 
   FloatNDArray float_array_value (bool = false) const
-  { return FloatNDArray (matrix); }
+  { return FloatNDArray (m_matrix); }
 
   Complex complex_value (bool = false) const;
 
   FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return ComplexMatrix (charMatrix (matrix)); }
+  { return ComplexMatrix (charMatrix (m_matrix)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (charMatrix (matrix)); }
+  { return FloatComplexMatrix (charMatrix (m_matrix)); }
 
   ComplexNDArray complex_array_value (bool = false) const
-  { return ComplexNDArray (matrix); }
+  { return ComplexNDArray (m_matrix); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-  { return FloatComplexNDArray (matrix); }
+  { return FloatComplexNDArray (m_matrix); }
 
   charMatrix char_matrix_value (bool = false) const
-  { return charMatrix (matrix); }
+  { return charMatrix (m_matrix); }
 
   charNDArray char_array_value (bool = false) const
-  { return matrix; }
+  { return m_matrix; }
 
   octave_value convert_to_str_internal (bool, bool, char type) const
-  { return octave_value (matrix, type); }
+  { return octave_value (m_matrix, type); }
 
   octave_value as_double (void) const;
   octave_value as_single (void) const;

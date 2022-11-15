@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{name} =} graphics_toolkit ()
-## @deftypefnx {} {@var{name} =} graphics_toolkit (@var{hlist})
+## @deftypefn  {} {@var{tkit} =} graphics_toolkit ()
+## @deftypefnx {} {@var{tkit} =} graphics_toolkit (@var{hlist})
 ## @deftypefnx {} {} graphics_toolkit (@var{name})
 ## @deftypefnx {} {} graphics_toolkit (@var{hlist}, @var{name})
 ## Query or set the default graphics toolkit which is assigned to new figures.
@@ -43,19 +43,19 @@
 ## @seealso{available_graphics_toolkits}
 ## @end deftypefn
 
-function retval = graphics_toolkit (name, hlist = [])
+function tkit = graphics_toolkit (name, hlist = [])
 
   if (nargout > 0 || nargin == 0)
-    retval = get (0, "defaultfigure__graphics_toolkit__");
+    tkit = get (0, "defaultfigure__graphics_toolkit__");
     ## Handle case where graphics_toolkit has been called before any plotting
-    if (isempty (retval))
+    if (isempty (tkit))
       toolkits = available_graphics_toolkits ();
       if (any (strcmp ("qt", toolkits)))
-        retval = "qt";
+        tkit = "qt";
       elseif (any (strcmp ("fltk", toolkits)))
-        retval = "fltk";
+        tkit = "fltk";
       elseif (! isempty (toolkits))
-        retval = toolkits{1};
+        tkit = toolkits{1};
       endif
     endif
   endif
@@ -65,7 +65,7 @@ function retval = graphics_toolkit (name, hlist = [])
   elseif (nargin == 1)
     if (all (isfigure (name)))
       hlist = name;
-      retval = get (hlist, "__graphics_toolkit__");
+      tkit = get (hlist, "__graphics_toolkit__");
       return;
     elseif (! ischar (name))
       error ("graphics_toolkit: invalid graphics toolkit NAME");

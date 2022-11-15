@@ -23,14 +23,8 @@
 ##
 ########################################################################
 
-function retval = feval (fcn, varargin)
+function retval = feval (fobj, varargin)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  fh = eval (sprintf ("@(%s) %s", strjoin (fcn.args, ","), fcn.expr));
-
-  retval = fh (varargin{:});
+  retval = fobj.fh (varargin{:});
 
 endfunction

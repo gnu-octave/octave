@@ -58,8 +58,8 @@
 
 #if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
+#  include "command-widget.h"
 #endif
-#include "command-widget.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-ed.h"
@@ -135,6 +135,8 @@ namespace octave
 
     setObjectName (gui_obj_name_main_window);
 
+    rmgr.config_icon_theme ();
+
     rmgr.update_network_settings ();
 
     // We provide specific terminal capabilities, so ensure that
@@ -170,6 +172,7 @@ namespace octave
     QApplication *qapp = m_octave_qobj.qapplication ();
 
     m_default_style = qapp->style ()->objectName ();
+    m_default_palette = qapp->palette ();
 
     gui_settings *settings = rmgr.get_settings ();
 
@@ -278,6 +281,11 @@ namespace octave
 
         connect (cmd_widget, &QTerminal::clear_command_window_request,
                  this, &main_window::handle_clear_command_window_request);
+      }
+    else
+      {
+        connect (this, &main_window::execute_command_signal,
+                 m_command_window, &terminal_dock_widget::execute_command_signal);
       }
   }
 
@@ -828,7 +836,6 @@ namespace octave
 
     // Wait for worker to suspend
     qt_link->lock ();
-
     // Close the file if opened
 #if defined (HAVE_QSCINTILLA)
     m_editor_window->handle_file_remove (o, n);
@@ -855,7 +862,7 @@ namespace octave
 
   void main_window::open_octave_packages_page (void)
   {
-    QDesktopServices::openUrl (QUrl ("https://octave.org/packages.html"));
+    QDesktopServices::openUrl (QUrl ("https://packages.octave.org/index.html"));
   }
 
   void main_window::open_contribute_page (void)
@@ -910,32 +917,28 @@ namespace octave
     if (preferred_style == global_style.def.toString ())
       preferred_style = m_default_style;
 
-    QStyle *new_style = QStyleFactory::create (preferred_style);
-    if (new_style)
-      {
-        QApplication *qapp = m_octave_qobj.qapplication ();
+    QApplication* qapp = m_octave_qobj.qapplication();
 
-        qapp->setStyle (new_style);
+    if (preferred_style == global_extra_styles.at (EXTRA_STYLE_FUSION_DARK))
+      {
+        QStyle *new_style = QStyleFactory::create (QStringLiteral("Fusion"));
+        if (new_style)
+          qapp->setStyle (new_style);
+        qapp->setPalette (getFusionDarkPalette());
+        qapp->setStyleSheet ("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+      }
+    else
+      {
+        QStyle *new_style = QStyleFactory::create (preferred_style);
+        if (new_style)
+          {
+            qapp->setPalette (m_default_palette);
+            qapp->setStyle (new_style);
+          }
       }
 
     // the widget's icons (when floating)
-    QString icon_set
-      = settings->value (dw_icon_set).toString ();
-
-    int count = 0;
-    int icon_set_found = 0; // default
-
-    while (! dw_icon_set_names[count].name.isEmpty ())
-      {
-        // while not end of data
-        if (dw_icon_set_names[count].name == icon_set)
-          {
-            // data of desired icon set found
-            icon_set_found = count;
-            break;
-          }
-        count++;
-      }
+    QString icon_set = settings->value (dw_icon_set).toString ();
 
     QString icon;
     for (auto *widget : dock_widget_list ())
@@ -944,8 +947,8 @@ namespace octave
         if (! name.isEmpty ())
           {
             // if child has a name
-            icon = dw_icon_set_names[icon_set_found].path; // prefix | octave-logo
-            if (dw_icon_set_names[icon_set_found].name != "NONE")
+            icon = dw_icon_set_names[icon_set];
+            if (icon_set != "NONE")
               icon += name + ".png"; // add widget name and ext.
             widget->setWindowIcon (QIcon (icon));
           }
@@ -1010,6 +1013,33 @@ namespace octave
     else
       QApplication::setCursorFlashTime (0);  // no flashing
 
+  }
+
+  QPalette main_window::getFusionDarkPalette()
+  {
+    QPalette darkPalette;
+    darkPalette.setColor(QPalette::Window, QColor(53, 53, 53));
+    darkPalette.setColor(QPalette::WindowText, Qt::white);
+    darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(127, 127, 127));
+    darkPalette.setColor(QPalette::Base, QColor(42, 42, 42));
+    darkPalette.setColor(QPalette::AlternateBase, QColor(66, 66, 66));
+    darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
+    darkPalette.setColor(QPalette::ToolTipText, Qt::white);
+    darkPalette.setColor(QPalette::Text, Qt::white);
+    darkPalette.setColor(QPalette::Disabled, QPalette::Text, QColor(127, 127, 127));
+    darkPalette.setColor(QPalette::Dark, QColor(35, 35, 35));
+    darkPalette.setColor(QPalette::Shadow, QColor(20, 20, 20));
+    darkPalette.setColor(QPalette::Button, QColor(53, 53, 53));
+    darkPalette.setColor(QPalette::ButtonText, Qt::white);
+    darkPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(127, 127, 127));
+    darkPalette.setColor(QPalette::BrightText, Qt::red);
+    darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
+    darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+    darkPalette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(80, 80, 80));
+    darkPalette.setColor(QPalette::HighlightedText, Qt::white);
+    darkPalette.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(127, 127, 127));
+
+    return darkPalette;
   }
 
   void main_window::prepare_to_exit (void)
@@ -1116,19 +1146,26 @@ namespace octave
 
   void main_window::execute_command_in_terminal (const QString& command)
   {
-    emit interpreter_event
-      ([=] (void)
-       {
-         // INTERPRETER THREAD
+    if (m_octave_qobj.experimental_terminal_widget ())
+      {
+        emit execute_command_signal (command);
+      }
+    else
+      {
+        emit interpreter_event
+          ([=] (void)
+           {
+             // INTERPRETER THREAD
 
-         std::string pending_input = command_editor::get_current_line ();
+             std::string pending_input = command_editor::get_current_line ();
 
-         command_editor::set_initial_input (pending_input);
-         command_editor::replace_line (command.toStdString ());
-         command_editor::redisplay ();
-         command_editor::interrupt_event_loop ();
-         command_editor::accept_line ();
-       });
+             command_editor::set_initial_input (pending_input);
+             command_editor::replace_line (command.toStdString ());
+             command_editor::redisplay ();
+             command_editor::interrupt_event_loop ();
+             command_editor::accept_line ();
+           });
+      }
 
     focus_console_after_command ();
   }
@@ -1555,24 +1592,20 @@ namespace octave
         // setting the geometry to the max. available geometry. However, on
         // X11, the available geometry (excluding task bar etc.) is equal to
         // the total geometry leading to a full screen mode without window
-        // decorations. This in turn can be avoided by reducing the max.
-        // size by a few pixels.
+        // decorations. This in turn can be avoided by explicitly adding
+        // a title bar in the window flags.
 
-        // Get available geometry for current screen.
+        // Get available geometry for current screen and set this
+        // window's geometry to it.
         QScreen *s = windowHandle ()->screen ();
         QRect av_geom = s->availableGeometry ();
+        setGeometry (av_geom);  // Set (correct) available geometry
 
-        QList<QScreen *> screen_list = QGuiApplication::screens ();
-        if (screen_list.length () > 1)
-          {
-            // If we have more than one monitor and available and total
-            // geometry are the same, reduce this too large geometry
-            QRect new_geom (av_geom.x () + 1, av_geom.y () + 1,
-                            av_geom.width ()-2, av_geom.height ()-2);
-            setGeometry (new_geom);
-          }
-        else
-          setGeometry (av_geom);  // Set (correct) available geometry
+        // Force full title bar
+        setWindowFlags(Qt::WindowTitleHint
+                       | Qt::WindowMinMaxButtonsHint
+                       | Qt::WindowSystemMenuHint
+                       | Qt::WindowCloseButtonHint);
       }
 
     if (! restoreState (settings->value (mw_state).toByteArray ()))
@@ -1781,6 +1814,7 @@ namespace octave
           });
       }
 
+    m_command_window->init_command_prompt ();
     focus_command_window ();  // make sure that the command window has focus
   }
 
@@ -2020,7 +2054,7 @@ namespace octave
 
   void main_window::construct (void)
   {
-    setWindowIcon (QIcon (":/actions/icons/logo.png"));
+    setWindowIcon (QIcon (dw_icon_set_names["NONE"]));
 
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
@@ -2592,7 +2626,7 @@ namespace octave
     m_main_tool_bar->addWidget (m_current_directory_combo_box);
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     QAction *current_dir_up
-      = m_main_tool_bar->addAction (rmgr.icon ("go-up"),
+      = m_main_tool_bar->addAction (rmgr.icon ("folder-up", false, "go-up"),
                                     tr ("One directory up"));
     QAction *current_dir_search
       = m_main_tool_bar->addAction (rmgr.icon ("folder"),

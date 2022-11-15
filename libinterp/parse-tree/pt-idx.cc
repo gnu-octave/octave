@@ -346,7 +346,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    assert (! m_args.empty ());
+    panic_if (m_args.empty ());
 
     auto p_args = m_args.begin ();
     auto p_arg_nm = m_arg_nm.begin ();

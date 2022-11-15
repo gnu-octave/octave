@@ -281,7 +281,7 @@ endfunction
 %! end_unwind_protect
 
 ## compare to Matlab R2016a output
-%!test
+%!test <61532>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   [x, y, z] = peaks ();

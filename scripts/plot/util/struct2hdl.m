@@ -395,10 +395,10 @@ endfunction
 function [h, sout] = createscatter (s, par)
 
   if (isempty (s.properties.zdata))
-    ## 2D scatter
+    ## 2-D scatter
     h = scatter (s.properties.xdata, s.properties.ydata);
   else
-    ## 3D scatter
+    ## 3-D scatter
     h = scatter3 (s.properties.xdata, s.properties.ydata, s.properties.zdata);
   endif
 
@@ -542,7 +542,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
                                "udatasource", "vdatasource", "wdatasource"});
 
   elseif (isfield (fields, "format"))
-    ##errorbar
+    ## errorbar
     form = s.properties.format;
     xdata = s.properties.xdata;
     ydata = s.properties.ydata;
@@ -606,7 +606,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
       xdata = [];
       ydata = [];
 
-      ##build x/y matrix
+      ## Build x/y matrix
       nbar = length (bargroup);
       tmp = struct ("handle", NaN, "type", "", "children", [], "special", []);
       for ii = 1:(nbar - 1)

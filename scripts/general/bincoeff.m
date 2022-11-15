@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} bincoeff (@var{n}, @var{k})
+## @deftypefn {} {@var{b} =} bincoeff (@var{n}, @var{k})
 ## Return the binomial coefficient of @var{n} and @var{k}.
 ##
 ## The binomial coefficient is defined as

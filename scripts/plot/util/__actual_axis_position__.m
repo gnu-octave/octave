@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} __actual_axis_position__ (@var{h})
-## @deftypefnx {} {} __actual_axis_position__ (@var{axis_struct})
+## @deftypefn  {} {@var{pos} =} __actual_axis_position__ (@var{h})
+## @deftypefnx {} {@var{pos} =} __actual_axis_position__ (@var{axis_struct})
 ## Undocumented internal function.
 ## @end deftypefn
 

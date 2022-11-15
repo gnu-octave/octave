@@ -33,7 +33,8 @@
 ## Two values, @var{x} and @var{y}, are within relative tolerance if
 ## @code{abs (@var{x} - @var{y}) <= @var{tol} * max (abs (@var{A}(:)))}.
 ##
-## The input @var{A} must be a floating point type (double or single).
+## The input @var{A} must be a real (non-complex) floating point type (double
+## or single).
 ##
 ## If @var{tol} is unspecified, the default tolerance is 1e-12 for double
 ## precision input or 1e-6 for single precision input.
@@ -89,7 +90,7 @@
 ## ## Inverse_Function (Function (x)) should return exactly x
 ## y = exp (log (x));
 ## D = unique ([x, y])
-## @result{} [1.0000   2.0000   3.0000   3.0000   4.0000   5.0000   5.0000]
+## @result{} [1   2   3   3   4   5   5]
 ## C = uniquetol ([x, y])
 ## @result{} [1   2   3   4   5]
 ## @end group
@@ -98,43 +99,36 @@
 ## @seealso{unique, union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
-
 function [c, ia, ic] = uniquetol (A, varargin)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  if (isempty (A))
-    c = A;
-    ia = [];
-    ic = [];
-    return;
-  endif
-
-  if (! isfloat (A) || iscomplex (A))
+  if (! (isfloat (A) && isreal (A)))
     error ("Octave:uniquetol:unsupported-type",
-           "uniquetol: A must be a double or single precision non-complex array");
+           "uniquetol: A must be a real floating point array");
   endif
 
   if (nargin == 1 || ischar (varargin{1}))
     tol = ifelse (isa (A, "double"), 1e-12, 1e-6);
-  elseif (! (isfloat (varargin{1}) && isscalar (varargin{1}))
-          || iscomplex (varargin{1}))
-    error ("Octave:uniquetol:unsupported-type",
-           "uniquetol: TOL must be a double or single precision non-complex scalar");
   else
     tol = varargin{1};
     varargin(1) = [];
+    if (! (isfloat (tol) && isreal (tol) && isscalar (tol)))
+      error ("Octave:uniquetol:unsupported-type",
+             "uniquetol: TOL must be a real floating point scalar");
+     endif
   endif
 
   if (mod (numel (varargin), 2))
-    error ("uniquetol: PROPERTY/VALUE arguments must be passed in pairs");
+    error ("uniquetol: PROPERTY/VALUE arguments must occur in pairs");
   endif
 
   by_rows = false;
   output_all_indices = false;
   data_scale = [];
+  calc_indices = nargout > 1;
 
   for k = 1:2:numel (varargin)
     if (! ischar (varargin{k}))
@@ -147,12 +141,12 @@ function [c, ia, ic] = uniquetol (A, varargin)
         error ('uniquetol: A must be a 2-D array when "ByRows" is true');
       endif
     elseif (strcmpi (varargin{k}, "OutputAllIndices"))
-      output_all_indices = logical (varargin{k+1});
+      output_all_indices = logical (varargin{k+1}) & calc_indices;
     elseif (strcmpi (varargin{k}, "DataScale"))
       data_scale = varargin{k+1}(:).';
       if (! isfloat (data_scale) || iscomplex (data_scale)
           || any (data_scale(:) < 0) || any (isnan (data_scale(:))))
-        error ("uniquetol: DataScale must be a non-NaN, positive floating point scalar or vector");
+        error ("uniquetol: DataScale must be a positive floating point scalar or vector, without NaNs");
       endif
       cols_data_scale = columns (data_scale);
       if (cols_data_scale != 1 && cols_data_scale != columns (A))
@@ -163,6 +157,25 @@ function [c, ia, ic] = uniquetol (A, varargin)
     endif
   endfor
 
+  if (isempty (A))
+    ## hack for Matlab empty input compatibility
+    sz_A = size (A);
+    if (by_rows)
+      c = A;
+      sz_A(2) = 1;
+      ia = ones (sz_A);
+      ic = ones (sz_A);
+    else
+      c = ones (0, 1, class (A));
+      if (sz_A(1) == 1)
+        c = c.';
+      endif
+      ia = ones (0, 1);
+      ic = ones (0, 1);
+    endif
+    return;
+  endif
+
   if (isempty (data_scale))
     data_scale = max (abs (A(! isinf (A))(:)));
   endif
@@ -170,43 +183,48 @@ function [c, ia, ic] = uniquetol (A, varargin)
   tol *= data_scale;
 
   if (by_rows)
+    ## Start matrix in sorted order, retain sorting and inverting indices.
+    if (calc_indices)
+      [A, srtA] = sortrows (A);
+      [~, inv_srtA] = sort (srtA);
+    else
+      A = sortrows (A);
+    endif
 
-    nr = rows (A);
-    nc = columns (A);
-    Iall = zeros (nr, 1);
-    I = NaN (nc, 1);
+    [nr, nc] = size (A);
+    I = zeros (nr, 1);
     ia = {};
-    J = NaN (nc, 1);
+    J = zeros (nr, 1);
     j = 1;
-    ii = 0;
 
     for i = 1:nr
-      if (any (Iall == i))
-        continue;
-      else
-        equ = all (abs (A - A(i,:)) <= tol, 2);
-        equ(i,1) = equ(i,1) || any (! isfinite (A(i,:)), 2);
-        sumeq = sum (equ);
-        ia_tmp = find (equ);
-        if (output_all_indices)
-          ia{end+1} = ia_tmp;
-        endif
-        Iall(ii+(1:sumeq)) = ia_tmp;
-        I(j) = ia_tmp(1);
-        J(equ) = j;
-        ii += sumeq;
-        j += 1;
+      if (J(i))
+        continue;  # row previously compared equal
       endif
+
+      Arow_i = A(i,:);
+      eq_rows = all (abs (A - Arow_i) <= tol, 2);
+      eq_rows(i,1) = eq_rows(i,1) || any (! isfinite (Arow_i), 2);
+      if (output_all_indices)
+        ia_tmp = find (eq_rows);
+        ia{end+1,1} = sort (srtA(ia_tmp));
+      else
+        ia_tmp = find (eq_rows, 1);
+      endif
+      I(j) = ia_tmp(1);
+      J(eq_rows) = j;
+      j += 1;
     endfor
 
-    I(isnan (I)) = [];
-    J(isnan (J)) = [];
+    I = I(1:j-1);
     c = A(I,:);
 
-    if (! output_all_indices)
-      ia = I(1:j-1);
+    if (calc_indices)
+      if (! output_all_indices)
+        ia = srtA(I(1:j-1));
+      endif
+      ic = J(inv_srtA);
     endif
-    ic = J;
 
   else
     isrowvec = isrow (A);
@@ -247,7 +265,7 @@ function [c, ia, ic] = uniquetol (A, varargin)
     endif
     if (output_all_indices)
       nu = cumsumue(end);
-      ia = cell (1, nu);
+      ia = cell (nu, 1);
       for k = 1:nu
         ia{k} = setdiff (sAi(cumsumue==k), findisnanA);
       endfor
@@ -256,20 +274,31 @@ function [c, ia, ic] = uniquetol (A, varargin)
     endif
 
     if (anyisnanA)
-      rowsc1 = rows (c) + (1:sum (isnanA));
+      rowsc1 = [1:sum(isnanA(:))]';
+      if (! all (isnanA))
+        rowsc1 += rows (c);
+      endif
       c(rowsc1) = NaN;
-      ia(rowsc1) = findisnanA;
       ic(isnanA) = rowsc1;
+      if (output_all_indices)
+        ia(rowsc1) = num2cell (findisnanA);
+      else
+        ia(rowsc1) = findisnanA;
+      endif
+
+      ## if numel (c) was 1, appending NaNs creates a row vector instead of
+      ## expected column vector.
+      if (isrow (c))
+        c = c.';
+      endif
     endif
 
-    ## FIXME: Matlab-compatible orientation of output
-    ## Actually, Matlab prefers row vectors (2021/03/24), but this is different
-    ## from all the other set functions which prefer column vectors.  Assume
-    ## that this is a bug in Matlab's implementation and prefer column vectors.
+    ## Matlab compatibility: Outputs are column vectors unless the input
+    ## is a row vector, in which case the output c is also a row vector.
+    ## ia and ic are always column vectors. (verified Matlab 2022a)
     if (isrowvec)
       c = c.';
     endif
-
   endif
 
 endfunction
@@ -277,14 +306,11 @@ endfunction
 
 %!assert (uniquetol ([1 1 2; 1 2 1; 1 1 2+10*eps]), [1;2])
 %!assert (uniquetol ([1 1 2; 1 0 1; 1 1 2+10*eps], "byrows", true),
-%!        [1 1 2; 1 0 1])
-%!assert (uniquetol ([]), [])
+%!        [1 0 1; 1 1 2])
 %!assert (uniquetol ([1]), [1])
 %!assert (uniquetol ([2, 1]), [1, 2]);
 %!assert (uniquetol ([1; 2]), [1; 2])
 %!assert (uniquetol ([-Inf, 1, NaN, Inf, NaN, Inf]), [-Inf, 1, Inf, NaN, NaN]);
-%!assert (uniquetol (zeros (1, 0)), zeros (1, 0));
-%!assert (uniquetol (zeros (1, 0), "byrows", true), zeros (1, 0))
 %!assert (uniquetol ([1,2,2,3,2,4], "byrows", true), [1,2,2,3,2,4])
 %!assert (uniquetol ([1,2,2,3,2,4]), [1,2,3,4])
 %!assert (uniquetol ([1,2,2,3,2,4].', "byrows", true), [1;2;3;4])
@@ -295,6 +321,12 @@ endfunction
 %!assert (uniquetol (single ([1,2,2,3,2,4])), single ([1,2,3,4]))
 %!assert (uniquetol (single ([1,2,2,3,2,4].'), "byrows", true),
 %!        single ([1;2;3;4]))
+
+## Test 2D array sorting
+%!test
+%! a = [magic(3); 2 * magic(3)];
+%! assert (uniquetol (a), [1:10,12,14,16,18]')
+%! assert (uniquetol (a, "byrows", true), sortrows (a))
 
 ## Matlab compatibility of output
 %!test
@@ -314,8 +346,8 @@ endfunction
 %! A = [2, 3, 4; 2, 3, 4];
 %! [c, ia, ic] = uniquetol (A, "byrows", true);
 %! assert (c, [2, 3, 4]);
-%! assert (A(ia,:), c);
-%! assert (c(ic,:), A);
+%! assert (ia, 1);
+%! assert (ic, [1;1]);
 
 %!test
 %! x = (2:7)'*pi;
@@ -328,7 +360,7 @@ endfunction
 %! A = [0.06, 0.21, 0.38; 0.38, 0.21, 0.39; 0.54, 0.56, 0.41; 0.46, 0.52, 0.95];
 %! B = log (exp (A));
 %! C = uniquetol ([A; B], "ByRows", true);
-%! assert (C, A);
+%! assert (C, sortrows(A), 10*eps);
 
 ## Test "DataScale" Property
 %!test
@@ -341,23 +373,128 @@ endfunction
 %! A = [.1 .2 .3 10];
 %! [C, ia, ic] = uniquetol (A, .1, "OutputAllIndices", true);
 %! assert (C, [.1, 10]);
-%! assert (ia, {(1:3)', 4});
+%! assert (ia, {(1:3)'; 4});
 %! assert (ic, [1; 1; 1; 2]);
+
+## Test NaN inputs
+%!assert (uniquetol (NaN), NaN)
+%!assert (uniquetol ([NaN NaN]), [NaN NaN])
+%!assert (uniquetol ([NaN NaN]'), [NaN NaN]')
+%!assert (uniquetol (NaN(2,2)), NaN(4,1))
+
+%!test
+%! a = [magic(3); 2 * magic(3)];
+%! a(4:5) = NaN;
+%! [c, ia, ic] = uniquetol (a);
+%! assert (c, [1:10,12,14,18, NaN, NaN]');
+%! assert (ia, [7,10,2,3,8,13,14,1,9,11,16,17,12,4,5]');
+%! assert (ic, [8,3,4,14,15,8,1,5,9,2,10,13,6,7,2,11,12,4]');
+%! [c, ia, ic] = uniquetol (single (a));
+%! assert (class (c), "single");
+%! assert (class (ia), "double");
+%! assert (class (ic), "double");
+%! [c, ia, ic] = uniquetol (a, "ByRows", true);
+%! assert (c, sortrows (a));
+%! assert (ia, [2,3,1,6,4,5]');
+%! assert (ic, [3,1,2,5,6,4]');
+%! [c, ia, ic] = uniquetol (single (a), "ByRows", true);
+%! assert (class (c), "single");
+%! assert (class (ia), "double");
+%! assert (class (ic), "double");
+%! [c, ia, ic] = uniquetol (a, "OutputAllIndices", true);
+%! assert (ia, {7;[10;15];2;[3;18];8;13;14;[1;6];9;11;16;17;12;4;5});
+%! [c, ia, ic] = uniquetol (single (a), "OutputAllIndices", true);
+%! assert (class (c), "single");
+%! assert (class (ia{1}), "double");
+%! assert (class (ic), "double");
+%! [c, ia, ic] = uniquetol (a, "OutputAllIndices", true, "ByRows", true);
+%! assert (ia, {2;3;1;6;4;5});
+%! [c, ia, ic] = uniquetol (single (a),
+%!                          "OutputAllIndices", true, "ByRows", true);
+%! assert (class (c), "single");
+%! assert (class (ia{1}), "double");
+%! assert (class (ic), "double");
+
+## Test empty input compatibility
+%!test
+%! [c, ia, ic] = uniquetol ([]);
+%! assert (c, ones (0,1));
+%! assert (ia, ones (0,1));
+%! assert (ic, ones (0,1));
+%!test
+%! [c, ia, ic] = uniquetol ([], "byrows", true);
+%! assert (c, []);
+%! assert (ia, ones (0,1));
+%! assert (ic, ones (0,1));
+%!test
+%! [c, ia, ic] = uniquetol (ones (0,1));
+%! assert (c, ones (0,1));
+%! assert (ia, ones (0,1));
+%! assert (ic, ones (0,1));
+%!test
+%! [c, ia, ic] = uniquetol (ones (0,1), "byrows", true);
+%! assert (c, ones (0,1));
+%! assert (ia, ones (0,1));
+%! assert (ic, ones (0,1));
+%!test
+%! [c, ia, ic] = uniquetol (ones (1,0));
+%! assert (c, ones (1,0));
+%! assert (ia, ones (0,1));
+%! assert (ic, ones (0,1));
+%!test
+%! [c, ia, ic] = uniquetol (ones (1,0), "byrows", true);
+%! assert (c, ones (1,0));
+%! assert (ia, 1);
+%! assert (ic, 1);
+%!test
+%! [c, ia, ic] = uniquetol (ones (1,0,2));
+%! assert (c, ones (1,0));
+%! assert (ia, ones (0,1));
+%! assert (ic, ones (0,1));
+%!test
+%! [c, ia, ic] = uniquetol (ones (0,1,2));
+%! assert (c, ones (0,1));
+%! assert (ia, ones (0,1));
+%! assert (ic, ones (0,1));
+%!test
+%! [c, ia, ic] = uniquetol (ones (1,2,0));
+%! assert (c, ones (1,0));
+%! assert (ia, ones (0,1));
+%! assert (ic, ones (0,1));
+%!test
+%! [c, ia, ic] = uniquetol (single ([]));
+%! assert (class (c), "single");
+%! assert (class (ia), "double");
+%! assert (class (ic), "double");
+%!test
+%! [c, ia, ic] = uniquetol (single ([]), "byrows", true);
+%! assert (class (c), "single");
+%! assert (class (ia), "double");
+%! assert (class (ic), "double");
+%!test
+%! [c, ia, ic] = uniquetol (single ([]), "OutputAllIndices", true);
+%! assert (class (c), "single");
+%! assert (class (ia), "double");
+%! assert (class (ic), "double");
+
 
 ## Test input validation
 %!error <Invalid call> uniquetol ()
-%!error <A must be a double or single precision> uniquetol (int8 (1))
-%!error <A must be .* non-complex> uniquetol (1i)
-%!error <TOL must be a double .* precision> uniquetol (1, int8 (1))
-%!error <TOL must be a .* scalar> uniquetol (1, [1, 2])
-%!error <TOL must be .* non-complex> uniquetol (1, 1i)
-%!error <arguments must be passed in pairs> uniquetol (1, 2, "byrows")
+%!error <A must be a real floating point array> uniquetol (int8 (1))
+%!error <A must be a real floating point array> uniquetol (1i)
+%!error <TOL must be a real floating point scalar> uniquetol (1, int8 (1))
+%!error <TOL must be a real floating point scalar> uniquetol (1, [1, 2])
+%!error <TOL must be a real floating point scalar> uniquetol (1, 1i)
+%!error <arguments must occur in pairs> uniquetol (1, 2, "byrows")
 %!error <PROPERTY must be a string> uniquetol (1, 2, 3, "bar")
 %!error <A must be a 2-D array> uniquetol (ones (2,2,2), "byrows", true)
+%!error <A must be a 2-D array> uniquetol (ones (0,1,2), "byrows", true)
+%!error <A must be a 2-D array> uniquetol (ones (1,0,2), "byrows", true)
+%!error <A must be a 2-D array> uniquetol (ones (1,2,0), "byrows", true)
 %!error <DataScale must be a .* floating point> uniquetol (1, "DataScale", '1')
-%!error <DataScale must be .* positive> uniquetol (1, "DataScale", -1)
 %!error <DataScale must be .* positive> uniquetol (1, "DataScale", 1i)
-%!error <DataScale must be a non-NaN> uniquetol (1, "DataScale", NaN)
+%!error <DataScale must be .* positive> uniquetol (1, "DataScale", -1)
+%!error <DataScale must be .* without NaNs> uniquetol (1, "DataScale", NaN)
 %!error <invalid DataScale size> uniquetol (1, "DataScale", [1 2])
 %!error <unknown property 'foo'> uniquetol (1, "foo", "bar")
 %!error <unknown property 'foo'> uniquetol (1, 2, "foo", "bar")

@@ -103,7 +103,7 @@ function movie (varargin)
   if (nargin > 1)
     n = varargin{2};
     if (! isindex (abs (n(1))))
-      error ("movie: N must be a non-zero integer");
+      error ("movie: N must be a nonzero integer");
     endif
 
     if (! isscalar (n))
@@ -249,9 +249,9 @@ endfunction
 %!error <MOV must be a frame struct array> movie ({2})
 %!error <MOV must contain at least two frames>
 %! movie (struct ("cdata", [], "colormap", []));
-%!error <N must be a non-zero integer>
+%!error <N must be a nonzero integer>
 %! movie (struct ("cdata", {[], []}, "colormap", []), 2.3);
-%!error <N must be a non-zero integer>
+%!error <N must be a nonzero integer>
 %! movie (struct ("cdata", {[], []}, "colormap", []), [2.3 -6]);
 %!error <All elements N\(2:end\) must be valid indices into the MOV struct>
 %! movie (struct ("cdata", {[], []}, "colormap", []), [1 -1]);

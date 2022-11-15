@@ -140,7 +140,8 @@ octave_classdef::subsref (const std::string& type,
         }
     }
 
-  retval = m_object.subsref (type, idx, 1, skip, octave::cdef_class (), auto_add);
+  retval = m_object.subsref (type, idx, 1, skip,
+                             octave::cdef_class (), auto_add);
 
   if (type.length () > skip && idx.size () > skip)
     retval = retval(0).next_subsref (1, type, idx, skip);
@@ -254,7 +255,7 @@ octave_classdef::xnumel (const octave_value_list& idx)
 
           // Temporarily set lvalue list of current statement to NULL, to avoid
           // using that list for the execution of the method "numel"
-          octave::interpreter& interp = octave::__get_interpreter__ ("octave_classdef::xnumel");
+          octave::interpreter& interp = octave::__get_interpreter__ ();
           octave::tree_evaluator& tw = interp.get_evaluator();
 
           octave::unwind_action act ([&tw] (const std::list<octave::octave_lvalue> *lvl)
@@ -602,21 +603,21 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (__meta_get_package__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __meta_get_package__ ()
+@deftypefn {} {@var{pkg} =} __meta_get_package__ (@var{pkg_name})
 Undocumented internal function.
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
+  std::string cname = args(0).xstring_value ("PKG_NAME must be a string");
 
   return to_ov (lookup_package (cname));
 }
 
 DEFUN (metaclass, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} metaclass (obj)
+@deftypefn {} {@var{metaclass_obj} =} metaclass (obj)
 Returns the meta.class object corresponding to the class of @var{obj}.
 @end deftypefn */)
 {
@@ -635,17 +636,17 @@ Returns the meta.class object corresponding to the class of @var{obj}.
 
 DEFUN (properties, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} properties (@var{class_name})
-@deftypefnx {} {} properties (@var{obj})
-@deftypefnx {} {@var{plist} =} properties (@dots{})
-Return or display the public properties for the named class
-@var{class_name} or classdef object @var{obj}.
+@deftypefn  {} {} properties (@var{obj})
+@deftypefnx {} {} properties (@var{class_name})
+@deftypefnx {} {@var{proplist} =} properties (@dots{})
+Display or return the public properties for the classdef object @var{obj} or
+the named class @var{class_name}.
 
-If an output value is requested, return the list of property names in a
-cell array.
+If an output value is requested, return the list of property names in a cell
+array.
 
-Programming Note: Property names are returned if the @code{GetAccess}
-attribute is public and if the @code{Hidden} attribute is false.
+Programming Note: Property names are returned if the @code{GetAccess} attribute
+is public and if the @code{Hidden} attribute is false.
 @seealso{methods}
 @end deftypefn */)
 {
@@ -721,10 +722,8 @@ attribute is public and if the @code{Hidden} attribute is false.
 
 DEFMETHOD (__methods__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} __methods__ (@var{x})
-@deftypefnx {} {} __methods__ ("classname")
-Internal function.
-
+@deftypefn  {} {@var{mtds} =} __methods__ (@var{obj})
+@deftypefnx {} {@var{mtds} =} __methods__ ("classname")
 Implements @code{methods} for Octave class objects and classnames.
 @seealso{methods}
 @end deftypefn */)
@@ -775,8 +774,3 @@ Implements @code{methods} for Octave class objects and classnames.
 
 OCTAVE_NAMESPACE_END
 
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
-*/

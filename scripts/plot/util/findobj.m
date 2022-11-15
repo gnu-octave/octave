@@ -219,7 +219,7 @@ function h = findobj (varargin)
 
   numpairs = np - 1;
   if (! isempty (logicaloperator))
-    logicaloperator = shift (logicaloperator, 1);
+    logicaloperator = circshift (logicaloperator, 1);
   endif
 
   ## Load all objects which qualify for being searched.
@@ -238,7 +238,7 @@ function h = findobj (varargin)
   if (numpairs > 0)
     match = true (numel (h), numpairs);
     for nh = 1 : numel (h)
-      p = get (h(nh));
+      p = __get__ (h(nh));
       for np = 1 : numpairs
         fields = fieldnames (p);
         fieldindex = find (strcmpi (fields, pname{np}), 1);

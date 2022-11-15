@@ -24,20 +24,16 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} formula (@var{fun})
-## Return a character string representing the inline function @var{fun}.
+## @deftypefn {} {@var{fcnstr} =} formula (@var{fobj})
+## Return a character string representing the inline function @var{fobj}.
 ##
-## Note that @code{char (@var{fun})} is equivalent to
-## @code{formula (@var{fun})}.
-## @seealso{char, argnames, inline, vectorize}
+## Programming Note: @code{char (@var{fobj})} is equivalent to
+## @code{formula (@var{fobj})}.
+## @seealso{char, argnames, vectorize, inline}
 ## @end deftypefn
 
-function expr = formula (obj)
+function fcnstr = formula (obj)
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  expr = obj.expr;
+  fcnstr = obj.expr;
 
 endfunction

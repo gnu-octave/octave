@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} acsch (@var{x})
+## @deftypefn {} {@var{y} =} acsch (@var{x})
 ## Compute the inverse hyperbolic cosecant of each element of @var{x}.
 ## @seealso{csch}
 ## @end deftypefn

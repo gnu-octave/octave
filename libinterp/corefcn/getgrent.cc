@@ -136,7 +136,7 @@ If the group name does not exist in the database, @code{getgrnam} returns 0.
 
 DEFUN (setgrent, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} setgrent ()
+@deftypefn {} {[@var{status}, @var{msg}] =} setgrent ()
 Return the internal pointer to the beginning of the group database.
 @seealso{getgrent, endgrent}
 @end deftypefn */)
@@ -154,7 +154,7 @@ Return the internal pointer to the beginning of the group database.
 
 DEFUN (endgrent, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} endgrent ()
+@deftypefn {} {[@var{status}, @var{msg}] =} endgrent ()
 Close the group database.
 @seealso{getgrent, setgrent}
 @end deftypefn */)

@@ -46,7 +46,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFUN (issparse, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} issparse (@var{x})
+@deftypefn {} {@var{tf} =} issparse (@var{x})
 Return true if @var{x} is a sparse matrix.
 @seealso{ismatrix}
 @end deftypefn */)
@@ -154,9 +154,6 @@ sprandsym, spconvert, spfun}
     print_usage ();
 
   octave_value retval;
-
-  // Temporarily disable sparse_auto_mutate if set (it's obsolete anyway).
-  unwind_protect_var<bool> restore_var (Vsparse_auto_mutate, false);
 
   if (nargin == 1)
     {

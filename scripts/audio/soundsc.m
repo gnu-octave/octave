@@ -31,7 +31,7 @@
 ## Scale the audio data @var{y} and play it at sample rate @var{fs} to the
 ## default audio device.
 ##
-## The audio signal @var{y} can be a vector or a two-column array, representing
+## The audio signal @var{y} can be a vector or a two-column array representing
 ## mono or stereo audio, respectively.
 ##
 ## If @var{fs} is not given, a default sample rate of 8000 samples per second
@@ -46,17 +46,13 @@
 ## are scaled to the range [-1, 1] instead.
 ##
 ## For more control over audio playback, use the @code{audioplayer} class.
-## @seealso{sound, record}
+## @seealso{sound, @audioplayer/audioplayer, record}
 ## @end deftypefn
 
-function soundsc (y, fs, nbits, yrange)
+function soundsc (y, fs, nbits, yrange = [])
 
   if (nargin < 1)
     print_usage ();
-  endif
-
-  if (nargin < 4)
-    yrange = [];
   endif
 
   if (nargin < 2 || isempty (fs))

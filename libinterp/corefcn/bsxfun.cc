@@ -324,7 +324,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 DEFMETHOD (bsxfun, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
+@deftypefn {} {@var{C} =} bsxfun (@var{f}, @var{A}, @var{B})
 Apply a binary function @var{f} element-by-element to two array arguments
 @var{A} and @var{B}, expanding singleton dimensions in either input argument as
 necessary.
@@ -343,16 +343,16 @@ as the other array.
   if (args.length () != 3)
     print_usage ();
 
-  octave_value func = args(0);
-  if (func.is_string ())
+  octave_value fcn = args(0);
+  if (fcn.is_string ())
     {
-      std::string name = func.string_value ();
+      std::string name = fcn.string_value ();
 
       symbol_table& symtab = interp.get_symbol_table ();
 
-      func = symtab.find_function (name);
+      fcn = symtab.find_function (name);
 
-      if (func.is_undefined ())
+      if (fcn.is_undefined ())
         error ("bsxfun: invalid function name: %s", name.c_str ());
     }
   else if (! (args(0).is_function_handle () || args(0).is_inline_function ()))
@@ -363,14 +363,14 @@ as the other array.
   const octave_value A = args(1);
   const octave_value B = args(2);
 
-  if (func.is_builtin_function ()
-      || (func.is_function_handle () && ! A.isobject () && ! B.isobject ()))
+  if (fcn.is_builtin_function ()
+      || (fcn.is_function_handle () && ! A.isobject () && ! B.isobject ()))
     {
       // This may break if the default behavior is overridden.  But if you
       // override arithmetic operators for builtin classes, you should expect
       // mayhem anyway (constant folding etc).  Querying is_overloaded() may
       // not be exactly what we need here.
-      octave_function *fcn_val = func.function_value ();
+      octave_function *fcn_val = fcn.function_value ();
       if (fcn_val)
         {
           octave_value tmp = maybe_optimized_builtin (fcn_val->name (), A, B);
@@ -414,14 +414,14 @@ as the other array.
           octave_value_list inputs (2);
           inputs(0) = A;
           inputs(1) = B;
-          retval = feval (func, inputs, 1);
+          retval = feval (fcn, inputs, 1);
         }
       else if (dvc.numel () < 1)
         {
           octave_value_list inputs (2);
           inputs(0) = A.resize (dvc);
           inputs(1) = B.resize (dvc);
-          retval = feval (func, inputs, 1);
+          retval = feval (fcn, inputs, 1);
         }
       else
         {
@@ -463,7 +463,7 @@ as the other array.
               if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
                 inputs(1) = Bc;
 
-              octave_value_list tmp = feval (func, inputs, 1);
+              octave_value_list tmp = feval (fcn, inputs, 1);
 
 #define BSXINIT(T, CLS, EXTRACTOR)                                      \
               (result_type == CLS)                                      \
@@ -719,10 +719,12 @@ as the other array.
 %!assert (bsxfun (f, a, b), a - repmat (b, [4, 1, 1]))
 %!assert (bsxfun (f, a, c), a - repmat (c, [1, 4, 1]))
 %!assert (bsxfun (f, a, d), a - repmat (d, [1, 1, 4]))
-%!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
+%!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])),
+%!        zeros ([4, 0, 4]))
 
 ## The test below is a very hard case to treat
-%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]))
+%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])),
+%!        zeros ([4, 4, 4, 4]))
 
 %!shared a, b, aa, bb
 %! ## FIXME: Set a known "good" random seed.  See bug #51779.
@@ -754,7 +756,7 @@ as the other array.
 ## Test automatic bsxfun
 %
 %!test
-%! funs = {@plus, @minus, @times, @rdivide, @ldivide, @power, @max, @min, ...
+%! fcns = {@plus, @minus, @times, @rdivide, @ldivide, @power, @max, @min, ...
 %!         @rem, @mod, @atan2, @hypot, @eq, @ne, @lt, @le, @gt, @ge, ...
 %!         @and, @or, @xor };
 %!
@@ -770,28 +772,28 @@ as the other array.
 %! x = rand (3) * 10-5;
 %! y = rand (3,1) * 10-5;
 %!
-%! for i=1:length (funs)
+%! for i=1:length (fcns)
 %!   for j = 1:length (float_types)
 %!     for k = 1:length (int_types)
 %!
-%!       fun = funs{i};
+%!       fcn = fcns{i};
 %!       f_type = float_types{j};
 %!       i_type = int_types{k};
 %!
-%!         assert (bsxfun (fun, f_type (x), i_type (y)), ...
-%!                 fun (f_type(x), i_type (y)));
-%!         assert (bsxfun (fun, f_type (y), i_type (x)), ...
-%!                 fun (f_type(y), i_type (x)));
+%!         assert (bsxfun (fcn, f_type (x), i_type (y)), ...
+%!                 fcn (f_type(x), i_type (y)));
+%!         assert (bsxfun (fcn, f_type (y), i_type (x)), ...
+%!                 fcn (f_type(y), i_type (x)));
 %!
-%!         assert (bsxfun (fun, i_type (x), i_type (y)), ...
-%!                 fun (i_type (x), i_type (y)));
-%!         assert (bsxfun (fun, i_type (y), i_type (x)), ...
-%!                 fun (i_type (y), i_type (x)));
+%!         assert (bsxfun (fcn, i_type (x), i_type (y)), ...
+%!                 fcn (i_type (x), i_type (y)));
+%!         assert (bsxfun (fcn, i_type (y), i_type (x)), ...
+%!                 fcn (i_type (y), i_type (x)));
 %!
-%!         assert (bsxfun (fun, f_type (x), f_type (y)), ...
-%!                 fun (f_type (x), f_type (y)));
-%!         assert (bsxfun (fun, f_type(y), f_type(x)), ...
-%!                 fun (f_type (y), f_type (x)));
+%!         assert (bsxfun (fcn, f_type (x), f_type (y)), ...
+%!                 fcn (f_type (x), f_type (y)));
+%!         assert (bsxfun (fcn, f_type(y), f_type(x)), ...
+%!                 fcn (f_type (y), f_type (x)));
 %!     endfor
 %!   endfor
 %! endfor
@@ -812,6 +814,33 @@ as the other array.
 %! mask(:,1:2) = false;
 %! r = bsxfun (@times, im, mask);
 %! assert (r(:,:,1), repmat (single ([0, 0, 1+i, 1+i]), [4, 1]));
+
+## automatic broadcasting with inplace times operator
+%!test <*38466>
+%! a = ones (2, 2, 2);
+%! b = 2 * ones (2, 1);
+%! a .*= b;
+%! assert (a, 2 * ones (2, 2, 2));
+
+%!test <*38466>
+%! a = ones (2, 2, 2);
+%! b = 2 * ones (1, 2);
+%! a .*= b;
+%! assert (a, 2 * ones (2, 2, 2));
+
+%!test <*38466>
+%! a = ones (2, 2, 2);
+%! b = 2 * ones (2, 2);
+%! a .*= b;
+%! assert (a, 2 * ones (2, 2, 2));
+
+%!test <*38466>
+%! a = ones (2, 2, 2);
+%! b = 2 * ones (1, 1, 2);
+%! a .*= b;
+%! assert (a, 2 * ones (2, 2, 2));
+
+%!assert (ones (2,2,2) .* ones (1,2), ones (2,2,2));
 
 */
 

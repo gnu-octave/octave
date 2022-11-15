@@ -24,12 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{x} =} fminbnd (@var{fun}, @var{a}, @var{b})
-## @deftypefnx {} {@var{x} =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
+## @deftypefn  {} {@var{x} =} fminbnd (@var{fcn}, @var{a}, @var{b})
+## @deftypefnx {} {@var{x} =} fminbnd (@var{fcn}, @var{a}, @var{b}, @var{options})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@dots{})
 ## Find a minimum point of a univariate function.
 ##
-## @var{fun} is a function handle, inline function, or string containing the
+## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function to evaluate.
 ##
 ## The starting interval is specified by @var{a} (left boundary) and @var{b}
@@ -88,10 +88,10 @@
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("fminbnd");
 
-function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
+function [x, fval, info, output] = fminbnd (fcn, a, b, options = struct ())
 
   ## Get default options if requested.
-  if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
+  if (nargin == 1 && ischar (fcn) && strcmp (fcn, "defaults"))
     x = struct ("Display", "notify", "FunValCheck", "off",
                 "MaxFunEvals", 500, "MaxIter", 500,
                 "OutputFcn", [], "TolX", 1e-4);
@@ -107,8 +107,8 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
            "fminbnd: the lower bound cannot be greater than the upper one");
   endif
 
-  if (ischar (fun))
-    fun = str2func (fun);
+  if (ischar (fcn))
+    fcn = str2func (fcn);
   endif
 
   displ = optimget (options, "Display", "notify");
@@ -119,8 +119,8 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
   maxfev = optimget (options, "MaxFunEvals", 500);
 
   if (funvalchk)
-    ## Replace fun with a guarded version.
-    fun = @(x) guarded_eval (fun, x);
+    ## Replace fcn with a guarded version.
+    fcn = @(x) guarded_eval (fcn, x);
   endif
 
   ## The default exit flag if exceeded number of iterations.
@@ -132,7 +132,7 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
   v = a + c*(b-a);
   w = x = v;
   e = 0;
-  fv = fw = fval = fun (x);
+  fv = fw = fval = fcn (x);
   nfev += 1;
 
   if (isa (a, "single") || isa (b, "single") || isa (fval, "single"))
@@ -199,7 +199,7 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
 
     ## f must not be evaluated too close to x.
     u = x + max (abs (d), tol) * (sign (d) + (d == 0));
-    fu = fun (u);
+    fu = fcn (u);
 
     niter += 1;
 
@@ -275,9 +275,9 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
 endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
-function fx = guarded_eval (fun, x)
+function fx = guarded_eval (fcn, x)
 
-  fx = fun (x);
+  fx = fcn (x);
   fx = fx(1);
   if (! isreal (fx))
     error ("Octave:fmindbnd:notreal", "fminbnd: non-real value encountered");
@@ -289,7 +289,7 @@ endfunction
 
 ## A hack for printing a formatted table
 function print_formatted_table (table)
-  printf ("\n Func-count     x          f(x)         Procedure\n");
+  printf ("\n Fcn-count     x          f(x)         Procedure\n");
   for row=table
     printf ("%5.5s        %7.7s    %8.8s\t%s\n",
             int2str (row.funccount), num2str (row.x,"%.5f"),

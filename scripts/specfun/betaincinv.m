@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} betaincinv (@var{y}, @var{a}, @var{b})
-## @deftypefnx {} {} betaincinv (@var{y}, @var{a}, @var{b}, "lower")
-## @deftypefnx {} {} betaincinv (@var{y}, @var{a}, @var{b}, "upper")
+## @deftypefn  {} {@var{x} =} betaincinv (@var{y}, @var{a}, @var{b})
+## @deftypefnx {} {@var{x} =} betaincinv (@var{y}, @var{a}, @var{b}, "lower")
+## @deftypefnx {} {@var{x} =} betaincinv (@var{y}, @var{a}, @var{b}, "upper")
 ## Compute the inverse of the normalized incomplete beta function.
 ##
 ## The normalized incomplete beta function is defined as

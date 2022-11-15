@@ -733,8 +733,8 @@ min (single (1), 0)
 
 @noindent
 where the results are respectively of types uint8, single, and single
-respectively.  This is done for Matlab compatibility.  Valid mixed operations
-are defined as follows:
+respectively.  This is done for @sc{matlab} compatibility.  Valid mixed
+operations are defined as follows:
 
 @multitable @columnfractions .2 .3 .3 .2
 @headitem @tab Mixed Operation @tab Result @tab

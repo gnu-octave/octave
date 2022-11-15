@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} issymmetric (@var{A})
-## @deftypefnx {} {} issymmetric (@var{A}, @var{tol})
-## @deftypefnx {} {} issymmetric (@var{A}, @qcode{"skew"})
-## @deftypefnx {} {} issymmetric (@var{A}, @qcode{"skew"}, @var{tol})
+## @deftypefn  {} {@var{tf} =} issymmetric (@var{A})
+## @deftypefnx {} {@var{tf} =} issymmetric (@var{A}, @var{tol})
+## @deftypefnx {} {@var{tf} =} issymmetric (@var{A}, @qcode{"skew"})
+## @deftypefnx {} {@var{tf} =} issymmetric (@var{A}, @qcode{"skew"}, @var{tol})
 ## Return true if @var{A} is a symmetric or skew-symmetric matrix within the
 ## tolerance specified by @var{tol}.
 ##
@@ -49,7 +49,7 @@
 ## @seealso{ishermitian, isdefinite}
 ## @end deftypefn
 
-function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
+function tf = issymmetric (A, skewopt = "nonskew", tol = 0)
 
   if (nargin < 1)
     print_usage ();
@@ -79,7 +79,7 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
   endif
 
   if (! issquare (A))
-    retval = false;
+    tf = false;
     return;
   endif
 
@@ -87,26 +87,26 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
   if (strcmp (skewopt, "nonskew"))
     if (tol == 0)
       ## check for exact symmetry
-      retval = full (! any ((A != A.')(:)));
+      tf = full (! any ((A != A.')(:)));
     else
       if (! isnumeric (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
         A = single (A);
       endif
       norm_x = norm (A, Inf);
-      retval = norm_x == 0 || norm (A - A.', Inf) / norm_x <= tol;
+      tf = norm_x == 0 || norm (A - A.', Inf) / norm_x <= tol;
     endif
   else
     ## skew symmetry
     if (tol == 0)
-      retval = full (! any ((A != -A.')(:)));
+      tf = full (! any ((A != -A.')(:)));
     else
       if (! isnumeric (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
         A = single (A);
       endif
       norm_x = norm (A, Inf);
-      retval = norm_x == 0 || norm (A + A.', Inf) / norm_x <= tol;
+      tf = norm_x == 0 || norm (A + A.', Inf) / norm_x <= tol;
     endif
   endif
 

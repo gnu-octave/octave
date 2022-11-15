@@ -216,9 +216,9 @@ public:
 
   // No copying!
 
-  octave_user_function (const octave_user_function& fn) = delete;
+  octave_user_function (const octave_user_function& fcn) = delete;
 
-  octave_user_function& operator = (const octave_user_function& fn) = delete;
+  octave_user_function& operator = (const octave_user_function& fcn) = delete;
 
   ~octave_user_function (void);
 

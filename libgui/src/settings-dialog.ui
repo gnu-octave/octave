@@ -2602,7 +2602,7 @@ and the shortcuts for switching to other widgets.</string>
 interference with readline key strokes.</string>
                  </property>
                  <property name="text">
-                  <string>Disable menu accelerators of main window menus when Commmand Window has focus</string>
+                  <string>Disable menu accelerators of main window menus when Command Window has focus</string>
                  </property>
                 </widget>
                </item>

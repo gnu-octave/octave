@@ -42,7 +42,7 @@ from Octave 9.
 
 ### Old release news
 
-- [Octave 7.x](etc/NEWS.8)
+- [Octave 8.x](etc/NEWS.8)
 - [Octave 7.x](etc/NEWS.7)
 - [Octave 6.x](etc/NEWS.6)
 - [Octave 5.x](etc/NEWS.5)

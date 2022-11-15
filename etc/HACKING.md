@@ -16,27 +16,27 @@ Quick start
 
 2. Clone the Octave sources:
 
-       hg clone https://www.octave.org/hg/octave
+        hg clone https://www.octave.org/hg/octave
 
 3. Change to the top-level directory of the Octave source tree and
    run the `bootstrap` script:
 
-       cd octave
-       ./bootstrap
+        cd octave
+        ./bootstrap
 
 4. Create a build directory, `cd` to it, then run `configure` and
    `make`, or `make -jX` (to run `X` simultaneous jobs):
 
-       mkdir .build
-       cd .build
-       ../configure
-       make -j2
+        mkdir .build
+        cd .build
+        ../configure
+        make -j2
 
 Requirements
 ------------
 
 We've opted to keep only the highest-level sources in the repository.
-This eases our maintenance burden, (fewer merges, etc.), but imposes
+This eases our maintenance burden (fewer merges, etc.), but imposes
 more requirements on anyone wishing to build from the just-cloned
 sources.  For example, you have to use the latest stable versions of
 the maintainer tools we depend upon.  These include:
@@ -150,7 +150,7 @@ A list of proposed projects is maintained at
 Bugs and patches
 ----------------
 
-See the file BUGS in this directory for more guidance on reporting bugs
+See the file `BUGS` in this directory for more guidance on reporting bugs
 and preparing patches.
 
 Source code directory layout
@@ -237,7 +237,6 @@ An overview of the directory layout of Octave's source files:
   - `template-inst`
        some C++ template instantiations.
 
-
 - `libgui`
      the graphical user interface of GNU Octave.
   - `graphics`
@@ -262,6 +261,7 @@ An overview of the directory layout of Octave's source files:
 - `scripts` functions written in the Octave language.
   - `@ftp`             ftp object class
   - `+containers`      container classes (Map)
+  - `+matlab`          various functions under Matlab namespace
   - `audio`            play and record sound files (system dependent)
   - `deprecated`       older deprecated functions
   - `elfun`            elementary mathematical functions
@@ -272,6 +272,7 @@ An overview of the directory layout of Octave's source files:
   - `image`            image processing
   - `io`               input/output functions
   - `java`             java/Octave interface
+  - `legacy`           functions not recommended for use, but not deprecated
   - `linear-algebra`   linear algebra
   - `miscellaneous`    stuff that doesn't fit anywhere else
   - `ode`              Ordinary Differential Equations
@@ -292,6 +293,7 @@ An overview of the directory layout of Octave's source files:
   - `strings`          character string manipulation
   - `testfun`          unit testing
   - `time`             time and date functions
+  - `web`              web-related functions
 
 - `src`
      code for the actual executables that are created.  This includes
@@ -309,18 +311,18 @@ Release Numbering
 
 Since version 5, Octave uses the following rules for release numbering:
 
-  Version Dev Phase       When
-
-  5.0.0   (experimental)  active development of Octave 5 on default branch
-  5.0.1   (pre-release)   stabilization period of Octave 5 on stable branch
-  5.0.90  (pre-release)   first release candidate for 5.1.0
-  5.0.91  (pre-release)   continued stabilization of Octave 5 on stable branch
-  6.0.0   (experimental)  active development of Octave 6 on default branch
-  5.1.0   (release)       first release of Octave 5 from stable branch
-  5.1.1   (pre-release)   bug fixing on stable branch after 5.1.0 release
-  5.2.0   (release)       second release of Octave 5 from stable branch
-  5.2.1   (pre-release)   bug fixing on stable branch after 5.2.0 release
-  ...
+    Version Dev. Phase      When
+  
+    5.0.0   (experimental)  active development of Octave 5 on default branch  
+    5.0.1   (pre-release)   stabilization period of Octave 5 on stable branch  
+    5.0.90  (pre-release)   first release candidate for 5.1.0  
+    5.0.91  (pre-release)   continued stabilization of Octave 5 on stable branch  
+    6.0.0   (experimental)  active development of Octave 6 on default branch  
+    5.1.0   (release)       first release of Octave 5 from stable branch  
+    5.1.1   (pre-release)   bug fixing on stable branch after 5.1.0 release  
+    5.2.0   (release)       second release of Octave 5 from stable branch  
+    5.2.1   (pre-release)   bug fixing on stable branch after 5.2.0 release  
+    ...     ...             ...
 
 To summarize, the first release of Octave 5 will be Octave 5.1.0 while
 development snapshots will be Octave 5.0.0 and snapshots from the
@@ -347,9 +349,9 @@ Version numbers for the liboctave, liboctinterp, and liboctgui shared
 libraries are set in the module.mk files in the top-level directory for
 each library using the variables
 
-  %canon_reldir%_%canon_reldir%_current
-  %canon_reldir%_%canon_reldir%_revision
-  %canon_reldir%_%canon_reldir%_age
+    %canon_reldir%_%canon_reldir%_current
+    %canon_reldir%_%canon_reldir%_revision
+    %canon_reldir%_%canon_reldir%_age
 
 The rules for updating these version numbers are:
 
@@ -397,7 +399,7 @@ users of your library to changes in a shared library:
     to use the new version.  Bump current, set revision and age to 0.
 
 These guidelines also appear in the GNU libtool manual, see
-https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html.
+<https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html>.
 
 Merging the default branch to stable before a release
 -----------------------------------------------------
@@ -413,68 +415,67 @@ is updated to the default branch.
    careful to avoid wiping out any changes you are currently working
    on!):
 
-       cd /path/to/octave-stable
-       hg update -C stable
+        cd /path/to/octave-stable
+        hg update -C stable
 
 2. Merge default to stable (there should never be any conflicts here;
    you are just making the stable branch be whatever is on the current
    default branch):
 
-       hg merge default
+        hg merge default
 
 3. Commit the change (replace VERSION with the correct version; it
    should be of the form MAJOR.1.0):
 
-       hg commit -m "maint: Merge default to stable to begin VERSION release process."
+        hg commit -m "maint: Merge default to stable to begin VERSION release process."
 
 4. Bump version numbers and release date in `configure.ac` for pre-release:
 
-  * Set version in AC_INIT to MAJOR.0.1
-  * OCTAVE_MAJOR_VERSION should already be correct.
-  * Set OCTAVE_MINOR_VERSION to 0.
-  * Set OCTAVE_PATCH_VERSION to 1.
-  * Set OCTAVE_RELEASE_DATE to the current date.
-  * Set the year in OCTAVE_COPYRIGHT to the current year.  The
+  * Set version in `AC_INIT` to MAJOR.0.1
+  * `OCTAVE_MAJOR_VERSION` should already be correct.
+  * Set `OCTAVE_MINOR_VERSION` to 0.
+  * Set `OCTAVE_PATCH_VERSION` to 1.
+  * Set `OCTAVE_RELEASE_DATE` to the current date.
+  * Set the year in `OCTAVE_COPYRIGHT` to the current year.  The
     copyright dates in the source files should have already been
     updated during the development cycle.  If not, that should be done
     in a separate change before the merge.
-  * OCTAVE_API_VERSION and shared library version numbers may be
+  * `OCTAVE_API_VERSION` and shared library version numbers may be
     updated in a separate changeset just prior to creating the first
     test release.
 
-       hg commit  ## Use commit message similar to the one in 8f8fab4c93ae
+        hg commit  # Use commit message similar to the one in 8f8fab4c93ae
 
 5. Update the repo in `/path/to/octave-default` to the most recent change
    on the default branch.  Ensure that there are no pending changes (be
    careful to avoid wiping out any changes you are currently working
    on!):
 
-       cd /path/to/octave-default
-       hg update -C default
+        cd /path/to/octave-default
+        hg update -C default
 
 6. Merge stable back to default (there should not be conflicts in this
    merge):
 
-       hg merge stable
-       hg commit -m "maint: Merge stable to default."
+        hg merge stable
+        hg commit -m "maint: Merge stable to default."
 
 7. Bump versions in `configure.ac` to begin active development of MAJOR+1:
 
-  * Set version in AC_INIT to MAJOR+1.0.0
-  * Set OCTAVE_MAJOR_VERSION to MAJOR+1
-  * Set OCTAVE_MINOR_VERSION to 0
-  * Set OCTAVE_PATCH_VERSION to 0
+  * Set version in `AC_INIT` to MAJOR+1.0.0
+  * Set `OCTAVE_MAJOR_VERSION` to MAJOR+1
+  * Set `OCTAVE_MINOR_VERSION` to 0
+  * Set `OCTAVE_PATCH_VERSION` to 0
 
-       hg commit  ## Use commit message similar to the one in 1455418a5c4c
+        hg commit  # Use commit message similar to the one in dc1347cab668
 
 8. Remove functions and properties deprecated in MAJOR-1 (see ecf207896f76,
    for example)
 
-9. Update NEWS file for next development cycle (see 0ec5eaabaf2c, for
+9. Update `NEWS` file for next development cycle (see 0ec5eaabaf2c, for
    example).
 
-
-################################################################################
+\################################################################################
 
 Copyright (C) 2009-2022 The Octave Project Developers
 

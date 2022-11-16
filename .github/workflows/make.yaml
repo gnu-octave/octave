@@ -197,6 +197,12 @@ jobs:
         # It looks like "gfortran" isn't working correctly unless "gcc" is
         # re-installed.
 
+        # Homebrew's Python conflicts with the Python that comes pre-installed
+        # on the GitHub runners. Some of Octave's dependencies depend on
+        # different versions of Homebrew's Python. Enforce using the ones from
+        # Homebrew to avoid errors on updates.
+        # See: https://github.com/orgs/Homebrew/discussions/3928
+
         # See also: https://formulae.brew.sh/formula/octave#default
         # The packages are listed in (alphabetically sorted) blocks:
         # The first block is for "direct" dependencies.
@@ -205,6 +211,7 @@ jobs:
         run: |
           brew update
           brew reinstall gcc
+          brew install --overwrite python@3.10 python@3.11
           brew install arpack epstool fftw fig2dev fltk fontconfig freetype \
             ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 libsndfile \
             libtool openblas pcre2 portaudio pstoedit qhull qrupdate \

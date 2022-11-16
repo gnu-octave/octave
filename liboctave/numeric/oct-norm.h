@@ -32,14 +32,6 @@
 
 #include "oct-cmplx.h"
 
-// The remaining includes can be removed when the deprecated functions
-// at the end of this file are removed.
-
-#include "dColVector.h"
-#include "dRowVector.h"
-#include "fColVector.h"
-#include "fRowVector.h"
-
 namespace octave
 {
   extern OCTAVE_API double xnorm (const ColumnVector&, double p = 2);

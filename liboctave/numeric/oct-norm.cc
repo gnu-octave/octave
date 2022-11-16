@@ -511,10 +511,6 @@ namespace octave
   template <typename MatrixT, typename VectorT, typename R>
   R svd_matrix_norm (const MatrixT& m, R p, VectorT)
   {
-    // NOTE: The octave:: namespace tags are needed for the following
-    // function calls until the deprecated inline functions are removed
-    // from oct-norm.h.
-
     R res = 0;
     if (p == 2)
       {
@@ -522,9 +518,9 @@ namespace octave
         res = fact.singular_values () (0, 0);
       }
     else if (p == 1)
-      res = octave::xcolnorms (m, static_cast<R> (1)).max ();
+      res = xcolnorms (m, static_cast<R> (1)).max ();
     else if (lo_ieee_isinf (p) && p > 1)
-      res = octave::xrownorms (m, static_cast<R> (1)).max ();
+      res = xrownorms (m, static_cast<R> (1)).max ();
     else if (p > 1)
       {
         VectorT x;
@@ -541,15 +537,11 @@ namespace octave
   template <typename MatrixT, typename VectorT, typename R>
   R matrix_norm (const MatrixT& m, R p, VectorT)
   {
-    // NOTE: The octave:: namespace tags are needed for the following
-    // function calls until the deprecated inline functions are removed
-    // from oct-norm.h.
-
     R res = 0;
     if (p == 1)
-      res = octave::xcolnorms (m, static_cast<R> (1)).max ();
+      res = xcolnorms (m, static_cast<R> (1)).max ();
     else if (lo_ieee_isinf (p) && p > 1)
-      res = octave::xrownorms (m, static_cast<R> (1)).max ();
+      res = xrownorms (m, static_cast<R> (1)).max ();
     else if (p > 1)
       {
         VectorT x;

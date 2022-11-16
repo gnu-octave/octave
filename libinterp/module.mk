@@ -176,11 +176,6 @@ BUILT_IN_DEFUN_FILES := $(OPT_HANDLERS) $(LIBINTERP_FOUND_DEFUN_FILES)
 LIBINTERP_DEFUN_FILES += \
   $(BUILT_IN_DEFUN_FILES)
 
-## FIXME: The following two variables are deprecated and should be removed
-##        in Octave version 3.12.
-DLL_CDEFS = @OCTINTERP_DLL_DEFS@
-DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
-
 ## Rules to build test files
 
 LIBINTERP_TST_FILES_SRC := $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(ULT_DIST_SRC) $(DLDFCN_SRC))

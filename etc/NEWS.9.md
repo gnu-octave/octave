@@ -19,30 +19,34 @@ major release after 9):
 
 - Functions
 
-  Function               | Replacement
-  -----------------------|------------------
+        Function               | Replacement
+        -----------------------|------------------
 
 - Properties
 
   The following property names are discouraged, but there is no fixed
   date for their removal.
 
-  Object           | Property    | Replacement
-  -----------------|-------------|------------
+        Object           | Property    | Replacement
+        -----------------|-------------|------------
 
-The following functions were deprecated in Octave 7 and have been removed
+The following features were deprecated in Octave 7 and have been removed
 from Octave 9.
 
 - Functions
 
-  Function                     | Replacement
-  -----------------------------|------------------
-  `disable_diagonal_matrix`    | `optimize_diagonal_matrix`
-  `disable_permutation_matrix` | `optimize_permutation_matrix`
-  `disable_range`              | `optimize_range`
+        Function                   | Replacement
+        ---------------------------|------------------
+        disable_diagonal_matrix    | optimize_diagonal_matrix
+        disable_permutation_matrix | optimize_permutation_matrix
+        disable_range              | optimize_range
 
-  For plot functions, the use of numbers to select line colors in
+- For plot functions, the use of numbers to select line colors in
   shorthand formats was an undocumented feature was removed from Octave 9.
+
+- The environment variable used by `mkoctfile` for linker flags is now
+  `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6
+  and has been removed.
 
 ### Old release news
 

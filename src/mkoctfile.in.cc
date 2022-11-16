@@ -356,11 +356,6 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);
 
-  // FIXME: Remove LFLAGS in Octave 9
-  vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LDFLAGS);
-  if (vars["LFLAGS"] != DEFAULT_LDFLAGS)
-    std::cerr << "mkoctfile: warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
-
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
   vars["ALL_FFLAGS"] = vars["FFLAGS"] + ' ' + vars["F77_INTEGER8_FLAG"];
@@ -888,10 +883,6 @@ main (int argc, char **sys_argv)
             {
               ++i;
 
-              // FIXME: Remove LFLAGS checking in Octave 9
-              if (argv[i] == "LFLAGS")
-                std::cerr << "mkoctfile: warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
-
               if (! var_to_print.empty ())
                 std::cerr << "mkoctfile: warning: only one '" << arg
                           << "' option will be processed" << std::endl;
@@ -1317,13 +1308,12 @@ main (int argc, char **sys_argv)
           octave_libs = "-L" + quote_path (vars["OCTLIBDIR"])
                         + ' ' + vars["OCTAVE_LIBS"];
 
-          // FIXME: Remove LFLAGS in Octave 9
           std::string cmd
             = (vars["CXXLD"] + ' ' + vars["CPPFLAGS"] + ' '
                + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
                + pass_on_options + ' ' + output_option + ' ' + objfiles + ' '
                + libfiles + ' ' + ldflags + ' ' + vars["ALL_LDFLAGS"] + ' '
-               + vars["LFLAGS"] + ' ' + octave_libs + ' '
+               + octave_libs + ' '
                + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
           int status = run_command (cmd, verbose, printonly);
@@ -1348,12 +1338,11 @@ main (int argc, char **sys_argv)
                     + ' ' + vars["OCTAVE_LIBS"];
 #endif
 
-      // FIXME: Remove LFLAGS in Octave 9
       std::string cmd
         = (vars["CXXLD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
            + pass_on_options + " -o " + octfile + ' ' + objfiles + ' '
            + libfiles + ' ' + ldflags + ' ' + vars["DL_LDFLAGS"] + ' '
-           + vars["LDFLAGS"] + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
+           + vars["LDFLAGS"] + ' ' + octave_libs + ' '
            + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
 #if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)

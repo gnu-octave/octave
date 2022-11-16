@@ -21,5 +21,3 @@
 @cindex ranges
 
 FIXME: The @code{Range} class is obsolete.
-
-@end deftypefn

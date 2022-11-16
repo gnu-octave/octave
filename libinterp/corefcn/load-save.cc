@@ -2060,13 +2060,3 @@ The original variable value is restored when exiting the function.
 }
 
 OCTAVE_NAMESPACE_END
-
-// DEPRECATED in Octave 7
-
-void
-dump_octave_core (void)
-{
-  octave::load_save_system& load_save_sys = octave::__get_load_save_system__ ();
-
-  load_save_sys.dump_octave_core ();
-}

@@ -300,22 +300,6 @@ private:
 
 public:
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  octave_value (double base, double limit, double inc)
-    : m_rep (make_range_rep_deprecated (base, inc, limit))
-  {
-    maybe_mutate ();
-  }
-
-  OCTAVE_DEPRECATED (7, "use 'octave_value (range<double>&)' instead")
-  octave_value (const Range& r, bool force_range = false)
-    : m_rep (make_range_rep_deprecated (r, force_range))
-  {
-    maybe_mutate ();
-  }
-#endif
-
   OCTINTERP_API octave_value (const octave::range<double>& r,
                               bool force_range = false);
 
@@ -551,15 +535,6 @@ public:
   {
     return m_rep->do_index_op (idx, resize_ok);
   }
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "use 'octave_value::index_op' instead")
-  octave_value do_index_op (const octave_value_list& idx,
-                            bool resize_ok = false)
-  {
-    return index_op (idx, resize_ok);
-  }
-#endif
 
   OCTINTERP_API octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
@@ -1459,26 +1434,9 @@ public:
 
   OCTINTERP_API octave_value& non_const_unary_op (unary_op op);
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "use 'octave_value::non_const_unary_op' instead")
-  octave_value& do_non_const_unary_op (unary_op op)
-  {
-    return non_const_unary_op (op);
-  }
-#endif
-
   OCTINTERP_API octave_value&
   non_const_unary_op (unary_op op, const std::string& type,
                       const std::list<octave_value_list>& idx);
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "use 'octave_value::non_const_unary_op' instead")
-  octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
-                                       const std::list<octave_value_list>& idx)
-  {
-    return non_const_unary_op (op, type, idx);
-  }
-#endif
 
   const octave_base_value& get_rep (void) const { return *m_rep; }
 
@@ -1735,87 +1693,6 @@ OCTAVE_NAMESPACE_BEGIN
   }
 
 OCTAVE_NAMESPACE_END
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "use 'octave::unary_op' instead")
-inline octave_value
-do_unary_op (octave::type_info& ti, octave_value::unary_op op,
-             const octave_value& a)
-{
-  return octave::unary_op (ti, op, a);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::unary_op' instead")
-inline octave_value
-do_unary_op (octave_value::unary_op op, const octave_value& a)
-{
-  return octave::unary_op (op, a);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
-inline octave_value
-do_binary_op (octave::type_info& ti, octave_value::binary_op op,
-              const octave_value& a, const octave_value& b)
-{
-  return octave::binary_op (ti, op, a, b);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
-inline octave_value
-do_binary_op (octave::type_info& ti, octave_value::compound_binary_op op,
-              const octave_value& a, const octave_value& b)
-{
-  return octave::binary_op (ti, op, a, b);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
-inline octave_value
-do_binary_op (octave_value::binary_op op, const octave_value& a,
-              const octave_value& b)
-{
-  return octave::binary_op (op, a, b);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::binary_op' instead")
-inline octave_value
-do_binary_op (octave_value::compound_binary_op op, const octave_value& a,
-              const octave_value& b)
-{
-  return octave::binary_op (op, a, b);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::cat_op' instead")
-inline octave_value
-do_cat_op (octave::type_info& ti, const octave_value& a,
-           const octave_value& b, const Array<octave_idx_type>& ra_idx)
-{
-  return octave::cat_op (ti, a, b, ra_idx);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::cat_op' instead")
-inline octave_value
-do_cat_op (const octave_value& a, const octave_value& b,
-           const Array<octave_idx_type>& ra_idx)
-{
-  return octave::cat_op (a, b, ra_idx);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::colon_op' instead")
-inline octave_value
-do_colon_op (const octave_value& base, const octave_value& increment,
-             const octave_value& limit, bool is_for_cmd_expr = false)
-{
-  return octave::colon_op (base, increment, limit, is_for_cmd_expr);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::colon_op' instead")
-inline octave_value
-do_colon_op (const octave_value& base, const octave_value& limit,
-             bool is_for_cmd_expr = false)
-{
-  return octave::colon_op (base, limit, is_for_cmd_expr);
-}
-#endif
 
 #define OV_UNOP_FN(name)                                \
   inline octave_value                                   \

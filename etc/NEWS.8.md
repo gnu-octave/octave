@@ -135,7 +135,6 @@ major release after 8):
   storage.  This setting was `false` by default for compatibility with
   Matlab.  Now you must manually convert to full storage when desired.
 
-
 - Properties
 
   The following property names are discouraged, but there is no fixed

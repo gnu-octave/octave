@@ -98,14 +98,4 @@ protected:
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::octave_iprocstream' instead")
-typedef octave::octave_iprocstream octave_iprocstream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::octave_oprocstream' instead")
-typedef octave::octave_oprocstream octave_oprocstream;
-
-#endif
-
 #endif

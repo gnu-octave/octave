@@ -161,17 +161,4 @@ private:
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::base_iostream' instead")
-typedef octave::base_iostream octave_base_iostream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::istream' instead")
-typedef octave::istream octave_istream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::ostream' instead")
-typedef octave::ostream octave_ostream;
-
-#endif
-
 #endif

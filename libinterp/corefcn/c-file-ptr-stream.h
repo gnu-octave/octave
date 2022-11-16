@@ -232,39 +232,4 @@ typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf>
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::i_c_file_ptr_stream' instead")
-typedef octave::i_c_file_ptr_stream i_c_file_ptr_stream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::o_c_file_ptr_stream' instead")
-typedef octave::o_c_file_ptr_stream o_c_file_ptr_stream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::io_c_file_ptr_stream' instead")
-typedef octave::io_c_file_ptr_stream io_c_file_ptr_stream;
-
-// FIXME: HAVE_ZLIB is not defined here because we do not (and should
-// not) include config.h in this header file.  We need to find a way to
-// define this interface without exposing gzFile.  Should this be a
-// private header that can only be used if included after config.h in an
-// Octave source file and not inside another header file?
-
-#  if defined (HAVE_ZLIB)
-
-OCTAVE_DEPRECATED (7, "use 'octave::i_c_zfile_ptr_stream' instead")
-typedef octave::c_file_ptr_stream<std::istream, gzFile, octave::c_zfile_ptr_buf>
-  i_c_zfile_ptr_stream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::o_c_zfile_ptr_stream' instead")
-typedef octave::c_file_ptr_stream<std::ostream, gzFile, octave::c_zfile_ptr_buf>
-  o_c_zfile_ptr_stream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::io_c_zfile_ptr_stream' instead")
-typedef octave::c_file_ptr_stream<std::iostream, gzFile, octave::c_zfile_ptr_buf>
-  io_c_zfile_ptr_stream;
-
-#  endif
-
-#endif
-
 #endif

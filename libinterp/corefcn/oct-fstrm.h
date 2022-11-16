@@ -90,11 +90,4 @@ private:
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::fstream' instead")
-typedef octave::fstream octave_fstream;
-
-#endif
-
 #endif

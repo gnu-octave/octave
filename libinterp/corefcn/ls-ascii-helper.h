@@ -44,29 +44,4 @@ read_until_newline (std::istream& is, bool keep_newline = false);
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::skip_until_newline' instead")
-inline void
-skip_until_newline (std::istream& is, bool keep_newline = false)
-{
-  return octave::skip_until_newline (is, keep_newline);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::skip_preceding_newline' instead")
-inline void
-skip_preceeding_newline (std::istream& is)
-{
-  return octave::skip_preceeding_newline (is);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::read_until_newline' instead")
-inline std::string
-read_until_newline (std::istream& is, bool keep_newline = false)
-{
-  return octave::read_until_newline (is, keep_newline);
-}
-
-#endif
-
 #endif

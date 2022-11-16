@@ -83,11 +83,4 @@ protected:
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use octave::procbuf' instead")
-typedef octave::procbuf procbuf;
-
-#endif
-
 #endif

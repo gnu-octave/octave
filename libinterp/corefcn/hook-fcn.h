@@ -213,21 +213,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "use 'octave::base_hook_function' instead")
-typedef octave::base_hook_function base_hook_function;
-
-OCTAVE_DEPRECATED (7, "use 'octave::hook_function' instead")
-typedef octave::hook_function hook_function;
-
-OCTAVE_DEPRECATED (7, "use 'octave::named_hook_function' instead")
-typedef octave::named_hook_function named_hook_function;
-
-OCTAVE_DEPRECATED (7, "use 'octave::fcn_handle_hook_function' instead")
-typedef octave::fcn_handle_hook_function fcn_handle_hook_function;
-
-OCTAVE_DEPRECATED (7, "use 'octave::hook_function_list' instead")
-typedef octave::hook_function_list hook_function_list;
-#endif
-
 #endif

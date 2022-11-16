@@ -294,7 +294,4 @@ OCTAVE_NAMESPACE_BEGIN
 
 OCTAVE_NAMESPACE_END
 
-OCTAVE_DEPRECATED (7, "use 'load_save_system::dump_octave_core' instead")
-extern OCTINTERP_API void dump_octave_core (void);
-
 #endif

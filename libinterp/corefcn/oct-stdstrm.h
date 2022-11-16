@@ -199,14 +199,4 @@ protected:
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::stdiostream' instead")
-typedef octave::stdiostream octave_stdiostream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::zstdiostream' instead")
-typedef octave::zstdiostream octave_zstdiostream;
-
-#endif
-
 #endif

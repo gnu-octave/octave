@@ -44,7 +44,6 @@ class FloatNDArray;
 class ComplexNDArray;
 class FloatComplexNDArray;
 class octave_value;
-class Range;
 
 OCTAVE_NAMESPACE_BEGIN
 

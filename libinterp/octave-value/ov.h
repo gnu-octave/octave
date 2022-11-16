@@ -36,7 +36,6 @@
 #include <memory>
 #include <map>
 
-#include "Range.h"
 #include "data-conv.h"
 #include "idx-vector.h"
 #include "mach-info.h"
@@ -287,18 +286,6 @@ public:
                               bool cache_index = false);
   OCTINTERP_API octave_value (const Array<std::string>& cellstr);
   OCTINTERP_API octave_value (const octave::idx_vector& idx, bool lazy = true);
-
-private:
-
-  // Remove when public constructors that use this function are removed.
-  static OCTINTERP_API octave_base_value *
-  make_range_rep_deprecated (double base, double inc, double limit);
-
-  // Remove when public constructors that use this function are removed.
-  static OCTINTERP_API octave_base_value *
-  make_range_rep_deprecated (const Range& r, bool force_range);
-
-public:
 
   OCTINTERP_API octave_value (const octave::range<double>& r,
                               bool force_range = false);

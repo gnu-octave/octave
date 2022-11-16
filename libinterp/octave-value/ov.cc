@@ -1073,36 +1073,6 @@ octave_value::octave_value (const Array<std::string>& cellstr)
   maybe_mutate ();
 }
 
-// Remove when public constructor that uses this function is removed.
-octave_base_value *
-octave_value::make_range_rep_deprecated (double base, double inc, double limit)
-{
-#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-
-  return dynamic_cast<octave_base_value *>
-    (new octave_legacy_range (Range (base, inc, limit)));
-
-#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#  pragma GCC diagnostic pop
-#endif
-}
-
-// Remove when public constructor that uses this function is removed.
-octave_base_value *
-octave_value::make_range_rep_deprecated (const Range& r, bool force_range)
-{
-  if (! force_range && ! r.ok ())
-    error ("invalid range");
-
-  if ((force_range || Voptimize_range))
-    return dynamic_cast<octave_base_value *> (new octave_legacy_range (r));
-  else
-    return dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
-}
-
 octave_value::octave_value (const octave::range<double>& r, bool force_range)
   : m_rep (force_range || Voptimize_range
            ? dynamic_cast<octave_base_value *> (new ov_range<double> (r))

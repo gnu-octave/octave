@@ -20,35 +20,6 @@
 @chapter Ranges
 @cindex ranges
 
-@deftypefn  {} {} Range (void)
-@deftypefnx  {} {} Range (const Range &@var{r})
-@deftypefnx  {} {} Range (double @var{b}, double @var{l})
-@deftypefnx  {} {} Range (double @var{b}, double @var{l}, double @var{i})
-@end deftypefn
+FIXME: The @code{Range} class is obsolete.
 
-@deftypefn {} double base (void) const
-@deftypefnx {} double limit (void) const
-@deftypefnx {} double inc (void) const
-@end deftypefn
-
-@deftypefn {} void set_base (double @var{b})
-@deftypefnx {} void set_limit (double @var{l})
-@deftypefnx {} void set_inc (double @var{i})
-@end deftypefn
-
-@deftypefn {} int nelem (void) const
-@end deftypefn
-
-@deftypefn {} double min (void) const
-@deftypefnx {} double max (void) const
-@end deftypefn
-
-@deftypefn {} void sort (void)
-@end deftypefn
-
-@deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const Range &@var{r})
-@deftypefnx {} {istream&} {operator >>} (istream &@var{is}, Range &@var{r})
-@end deftypefn
-
-@deftypefn {} void print_range (void)
 @end deftypefn

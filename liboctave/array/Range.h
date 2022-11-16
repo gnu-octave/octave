@@ -461,28 +461,9 @@ public:
 
   double base (void) const { return m_base; }
   double limit (void) const { return m_limit; }
-  double inc (void) const { return m_inc; }
   double increment (void) const { return m_inc; }
 
-  // We adjust the limit to be the final value, so return that.  We
-  // could introduce a new variable to store the final value separately,
-  // but it seems like that would just add confusion.  If we changed
-  // the meaning of the limit function, we would change the behavior of
-  // programs that expect limit to be the final value instead of the
-  // value of the limit when the range was created.  This problem will
-  // be fixed with the new template range class.
-  double final_value (void) const { return m_limit; }
-
   octave_idx_type numel (void) const { return m_numel; }
-
-  dim_vector dims (void) const { return dim_vector (1, m_numel); }
-
-  octave_idx_type rows (void) const { return 1; }
-
-  octave_idx_type cols (void) const { return numel (); }
-  octave_idx_type columns (void) const { return numel (); }
-
-  bool isempty (void) const { return numel () == 0; }
 
   OCTAVE_API bool all_elements_are_ints (void) const;
 
@@ -490,52 +471,6 @@ public:
 
   OCTAVE_API double min (void) const;
   OCTAVE_API double max (void) const;
-
-  OCTAVE_API void sort_internal (bool ascending = true);
-  OCTAVE_API void sort_internal (Array<octave_idx_type>& sidx, bool ascending = true);
-
-  OCTAVE_API Matrix diag (octave_idx_type k = 0) const;
-
-  OCTAVE_API Range sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
-  OCTAVE_API Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
-              sortmode mode = ASCENDING) const;
-
-  OCTAVE_API sortmode issorted (sortmode mode = ASCENDING) const;
-
-  OCTAVE_API octave_idx_type nnz (void) const;
-
-  // Support for single-index subscripting, without generating matrix cache.
-
-  OCTAVE_API double checkelem (octave_idx_type i) const;
-  OCTAVE_API double checkelem (octave_idx_type i, octave_idx_type j) const;
-
-  OCTAVE_API double elem (octave_idx_type i) const;
-  double elem (octave_idx_type /* i */, octave_idx_type j) const
-  { return elem (j); }
-
-  double operator () (octave_idx_type i) const { return elem (i); }
-  double operator () (octave_idx_type i, octave_idx_type j) const
-  { return elem (i, j); }
-
-  OCTAVE_API Array<double> index (const octave::idx_vector& i) const;
-
-  OCTAVE_API void set_base (double b);
-
-  OCTAVE_API void set_limit (double l);
-
-  OCTAVE_API void set_inc (double i);
-
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                               const Range& r);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, Range& r);
-
-  friend OCTAVE_API Range operator - (const Range& r);
-  friend OCTAVE_API Range operator + (double x, const Range& r);
-  friend OCTAVE_API Range operator + (const Range& r, double x);
-  friend OCTAVE_API Range operator - (double x, const Range& r);
-  friend OCTAVE_API Range operator - (const Range& r, double x);
-  friend OCTAVE_API Range operator * (double x, const Range& r);
-  friend OCTAVE_API Range operator * (const Range& r, double x);
 
 private:
 

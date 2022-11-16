@@ -29,18 +29,15 @@
 ## @deftypefnx {} {@var{old_val} =} sparse_auto_mutate (@var{new_val}, "local")
 ##
 ## @code{sparse_auto_mutate} is deprecated and will be removed in Octave
-## version 9.  Use @code{optimize_diagonal_matrix} instead.
+## version 10.
 ##
-## Query or set whether storing diagonal matrices in a special space-efficient
-## format is disabled.
-##
-## The default value is false.  If this option is set to true, Octave will
-## store ranges as full matrices.
-##
-## When called from inside a function with the @qcode{"local"} option, the
-## setting is changed locally for the function and any subroutines it calls.
-## The original setting is restored when exiting the function.
-## @seealso{sparse_auto_mutate, disable_permutation_matrix}
+## The @code{sparse_auto_mutate} function no longer has any effect on Octave's
+## behavior.  Previously, after calling @code{sparse_auto_mutate (true)},
+## Octave would automatically convert sparse matrices to full when a sparse
+## matrix required more memory than simply using full matrix storage.  This
+## setting was false by default for compatibility with @sc{matlab}.  Now you
+## must manually convert to full storage when desired (use @code{full}).
+## @seealso{full}
 ## @end deftypefn
 
 ## FIXME: DEPRECATED: Remove in version 10.
@@ -55,8 +52,7 @@ function retval = sparse_auto_mutate (val, opt)
   endif
 
   if (nargin == 0 || nargout > 0)
-    ## Always false now.
-    retval = false;
+    retval = false;  # Always false now.
     return;
   endif
 
@@ -67,9 +63,7 @@ function retval = sparse_auto_mutate (val, opt)
     nargin = 1;
   endif
 
-  ## Don't bother warning that "local" is invalid outside of a
-  ## function.
-
+  ## Don't bother warning that "local" is invalid outside of a function.
   if (nargin > 1)
     print_usage ();
   endif

@@ -1340,8 +1340,8 @@ endfunction
 
 %!test
 %! str = __unimplemented__ ("matlabrc");
-%! assert (str(1:71), "matlabrc is not implemented.  Octave uses the file '.octaverc' instead.");
+%! assert (regexp (str, "matlabrc is not implemented\.  Octave uses the file .\.octaverc. instead\."));
 
 %!test
 %! str = __unimplemented__ ("MException");
-%! assert (str(1:58), "The 'MException' function is not yet implemented in Octave");
+%! assert (regexp (str, "The .MException. function is not yet implemented in Octave"));

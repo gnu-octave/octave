@@ -663,12 +663,6 @@ public:
   OCTARRAY_OVERRIDABLE_FUNC_API const T * data (void) const
   { return m_slice_data; }
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "for read-only access, use 'data' method instead")
-  OCTARRAY_OVERRIDABLE_FUNC_API const T * fortran_vec (void) const
-  { return data (); }
-#endif
-
   OCTARRAY_API T * fortran_vec (void);
 
   OCTARRAY_OVERRIDABLE_FUNC_API bool is_shared (void)

@@ -208,9 +208,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "use 'octave::CollocWt' instead")
-typedef octave::CollocWt CollocWt;
-#endif
-
 #endif

@@ -168,11 +168,6 @@ public:
 
   const T * data (void) const { return Array<T>::data (); }
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "for read-only access, use 'data' method instead")
-  const T * fortran_vec (void) const { return Array<T>::data (); }
-#endif
-
   T * fortran_vec (void) { return Array<T>::fortran_vec (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const

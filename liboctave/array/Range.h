@@ -562,27 +562,4 @@ protected:
   { }
 };
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator - (const Range& r);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator + (double x, const Range& r);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator + (const Range& r, double x);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator - (double x, const Range& r);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator - (const Range& r, double x);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator * (double x, const Range& r);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator * (const Range& r, double x);
-#endif
-
 #endif

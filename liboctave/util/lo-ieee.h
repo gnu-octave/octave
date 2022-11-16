@@ -157,13 +157,6 @@ namespace octave
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 
-OCTAVE_DEPRECATED (7, "use '__lo_ieee_isfinite' instead")
-inline int __lo_ieee_finite (double x) { return __lo_ieee_isfinite (x); }
-
-OCTAVE_DEPRECATED (7, "use '__lo_ieee_float_isfinite' instead")
-inline int __lo_ieee_float_finite (float x)
-{ return __lo_ieee_float_isfinite (x); }
-
 #define lo_ieee_finite(x) lo_ieee_isfinite(x)
 
 #endif

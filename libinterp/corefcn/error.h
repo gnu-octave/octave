@@ -573,44 +573,4 @@ extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
 OCTAVE_NAMESPACE_END
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "use 'octave::defun_usage_message' instead")
-inline void defun_usage_message (const std::string& msg)
-{
-  octave::defun_usage_message (msg);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::set_warning_state' instead")
-inline octave_value_list
-set_warning_state (const std::string& id, const std::string& state)
-{
-  return octave::set_warning_state (id, state);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::set_warning_state' instead")
-inline octave_value_list set_warning_state (const octave_value_list& args)
-{
-  return octave::set_warning_state (args);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::warning_enabled' instead")
-inline int warning_enabled (const std::string& id)
-{
-  return octave::warning_enabled (id);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::disable_warning' instead")
-inline void disable_warning (const std::string& id)
-{
-  octave::disable_warning (id);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::interpreter_try' instead")
-inline void interpreter_try (octave::unwind_protect& uwp)
-{
-  octave::interpreter_try (uwp);
-}
-
-#endif
-
 #endif

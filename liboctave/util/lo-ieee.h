@@ -155,10 +155,4 @@ namespace octave
 
 #endif
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-#define lo_ieee_finite(x) lo_ieee_isfinite(x)
-
-#endif
-
 #endif

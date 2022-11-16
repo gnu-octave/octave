@@ -39,7 +39,7 @@
    OCTAVE_ATTRIBUTE_NAME in place of vendor specific attribute
    mechanisms.  As compilers evolve, the underlying implementation can
    be changed with the macro definitions below.  FIXME: Update macros
-   to use C++ standard attribute syntax when Octave moves to C++ 2011
+   to use C++ standard attribute syntax when Octave moves to C++ 2014
    standard.  */
 
 #if defined (__GNUC__)

@@ -901,17 +901,6 @@ OCTAVE_NAMESPACE_BEGIN
     last_error_stack (make_stack_map (ee.stack_info ()));
   }
 
-  // DEPRECATED in Octave 7.
-  void error_system::display_exception (const execution_exception& ee,
-                                        std::ostream& os) const
-  {
-    if (m_beep_on_error)
-      os << "\a";
-
-    ee.display (octave_diary);
-    ee.display (os);
-  }
-
   void error_system::display_exception (const execution_exception& ee) const
   {
     // FIXME: How should we handle beep_on_error?

@@ -334,13 +334,6 @@ class execution_exception;
 
     OCTINTERP_API void save_exception (const execution_exception& ee);
 
-    // FIXME
-    //#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-    OCTAVE_DEPRECATED (7, "second argument is no longer accepted")
-    OCTINTERP_API void display_exception (const execution_exception& ee,
-                                          std::ostream& os) const;
-    //#endif
-
     OCTINTERP_API void display_exception (const execution_exception& ee) const;
 
   private:

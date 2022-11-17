@@ -97,9 +97,9 @@ option to the `print` function.
 - The default state for certain graphics properties has been made
   consistent with Matlab.
 
-  Object      | Property         | Default State
-  ------------|------------------|------------
-  `figure`    | `"dockcontrols"` | `"on"`
+        Object      | Property         | Default State
+        ------------|------------------|------------
+        figure      | "dockcontrols"   | "on"
 
 - `ode45`, `ode23`, and `ode23s` have improved results for options `Events`,
   `OutputFcn`, and `Refine`, along with corrected orientation of struct
@@ -123,10 +123,10 @@ major release after 8):
 
 - Functions
 
-  Function               | Replacement
-  -----------------------|------------------
-  `shift`                | `circshift`
-  `sparse_auto_mutate`   | none (see below)
+        Function               | Replacement
+        -----------------------|------------------
+        shift                  | circshift
+        sparse_auto_mutate     | none (see below)
 
 - The `sparse_auto_mutate` function no longer has any effect on Octave's
   behavior.  Previously, after calling `sparse_auto_mutate (true)`,
@@ -140,19 +140,19 @@ major release after 8):
   The following property names are discouraged, but there is no fixed
   date for their removal.
 
-  Object           | Property    | Replacement
-  -----------------|-------------|------------
-  `uimenu`         | `label`     | `text`
-  `uimenu`         | `callback`  | `menuselectedfcn`
+        Object           | Property    | Replacement
+        -----------------|-------------|------------
+        uimenu           | label       | text
+        uimenu           | callback    | menuselectedfcn
 
 The following functions were deprecated in Octave 6 and have been removed
 from Octave 8.
 
 - Functions
 
-  Function               | Replacement
-  -----------------------|------------------
-  `runtests`             | `oruntests`
+        Function     | Replacement
+        -------------|------------
+        runtests     | oruntests
 
 - The environment variable used by `mkoctfile` for linker flags is now
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,

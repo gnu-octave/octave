@@ -1483,15 +1483,9 @@ OCTAVE_NAMESPACE_BEGIN
     // the corresponding function name.  At least try to do it without N
     // string compares.
 
-    // FIXME: .+, .-, **, and .** are deprecated but still need to be
-    // handled here until they are removed.
-
     std::size_t len = name.length ();
 
-    if (len == 3 && name == ".**")
-      // deprecated
-      return "power";
-    else if (len == 2)
+    if (len == 2)
       {
         if (name[0] == '.')
           {
@@ -1499,14 +1493,6 @@ OCTAVE_NAMESPACE_BEGIN
               {
               case '\'':
                 return "transpose";
-
-              case '+':
-                // deprecated
-                return "plus";
-
-              case '-':
-                // deprecated
-                return "minus";
 
               case '*':
                 return "times";
@@ -1545,9 +1531,6 @@ OCTAVE_NAMESPACE_BEGIN
                 break;
               }
           }
-        else if (name == "**")
-          // deprecated
-          return "mpower";
       }
     else if (len == 1)
       {
@@ -1820,10 +1803,7 @@ OCTAVE_NAMESPACE_BEGIN
 
 /*
 %!test
-%! x = {".**", "power";
-%!      ".'", "transpose";
-%!      ".+", "plus";
-%!      ".-", "minus";
+%! x = {".'", "transpose";
 %!      ".*", "times";
 %!      "./", "rdivide";
 %!      ".^", "power";
@@ -1833,7 +1813,6 @@ OCTAVE_NAMESPACE_BEGIN
 %!      ">=", "ge";
 %!      "!=", "ne";
 %!      "~=", "ne";
-%!      "**", "mpower";
 %!      "~", "not";
 %!      "!", "not";
 %!      "\'", "ctranspose";

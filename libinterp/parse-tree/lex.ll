@@ -183,28 +183,6 @@ and after the nested call.
      }                                                                  \
    while (0)
 
-#define CMD_OR_DEPRECATED_OP(PATTERN, REPLACEMENT, VERSION, TOK)        \
-   do                                                                   \
-     {                                                                  \
-       curr_lexer->lexer_debug (PATTERN);                               \
-                                                                        \
-       if (curr_lexer->looks_like_command_arg ())                       \
-         {                                                              \
-           yyless (0);                                                  \
-           curr_lexer->push_start_state (COMMAND_START);                \
-         }                                                              \
-       else                                                             \
-         {                                                              \
-           curr_lexer->warn_deprecated_operator (PATTERN, REPLACEMENT,  \
-                                                 #VERSION);             \
-           /* set COMPAT to true here to avoid warning about            \
-              compatibility since we've already warned about the        \
-              operator being deprecated.  */                            \
-           return curr_lexer->handle_op (TOK, false, true);             \
-         }                                                              \
-     }                                                                  \
-   while (0)
-
 #define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT)                           \
    do                                                                   \
      {                                                                  \
@@ -1644,13 +1622,10 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 ":"   { CMD_OR_OP (":", ':', true); }
-".+"  { CMD_OR_DEPRECATED_OP (".+", "+", 7, '+'); }
-".-"  { CMD_OR_DEPRECATED_OP (".-", "-", 7, '-'); }
 ".*"  { CMD_OR_OP (".*", EMUL, true); }
 "./"  { CMD_OR_OP ("./", EDIV, true); }
 ".\\" { CMD_OR_OP (".\\", ELEFTDIV, true); }
 ".^"  { CMD_OR_OP (".^", EPOW, true); }
-".**" { CMD_OR_DEPRECATED_OP (".**", ".^", 7, EPOW); }
 "<="  { CMD_OR_OP ("<=", EXPR_LE, true); }
 "=="  { CMD_OR_OP ("==", EXPR_EQ, true); }
 "!="  { CMD_OR_OP ("!=", EXPR_NE, false); }
@@ -1680,7 +1655,6 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 "^"   { CMD_OR_OP ("^", POW, true); }
-"**"  { CMD_OR_DEPRECATED_OP ("**", "^", 7, POW); }
 "&&"  { CMD_OR_OP ("&&", EXPR_AND_AND, true); }
 "||"  { CMD_OR_OP ("||", EXPR_OR_OR, true); }
 
@@ -1817,15 +1791,11 @@ ANY_INCLUDING_NL (.|{NL})
 "*="   { CMD_OR_OP ("*=", MUL_EQ, false); }
 "/="   { CMD_OR_OP ("/=", DIV_EQ, false); }
 "\\="  { CMD_OR_OP ("\\=", LEFTDIV_EQ, false); }
-".+="  { CMD_OR_DEPRECATED_OP (".+=", "+=", 7, ADD_EQ); }
-".-="  { CMD_OR_DEPRECATED_OP (".-=", "-=", 7, SUB_EQ); }
 ".*="  { CMD_OR_OP (".*=", EMUL_EQ, false); }
 "./="  { CMD_OR_OP ("./=", EDIV_EQ, false); }
 ".\\=" { CMD_OR_OP (".\\=", ELEFTDIV_EQ, false); }
 "^="   { CMD_OR_OP ("^=", POW_EQ, false); }
-"**="  { CMD_OR_DEPRECATED_OP ("**=", "^=", 7, POW_EQ); }
 ".^="  { CMD_OR_OP (".^=", EPOW_EQ, false); }
-".**=" { CMD_OR_DEPRECATED_OP (".**=", ".^=", 7, EPOW_EQ); }
 "&="   { CMD_OR_OP ("&=", AND_EQ, false); }
 "|="   { CMD_OR_OP ("|=", OR_EQ, false); }
 
@@ -3679,16 +3649,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       warning_with_id ("Octave:deprecated-syntax",
                        "%s; near line %d of file '%s'", msg.c_str (),
                        m_filepos.line (), m_fcn_file_full_name.c_str ());
-  }
-
-  void
-  base_lexer::warn_deprecated_operator (const std::string& deprecated_op,
-                                        const std::string& recommended_op,
-                                        const std::string& version)
-  {
-    std::string msg = "the '" + deprecated_op + "' operator was deprecated in version " + version + " and will not be allowed in a future version of Octave; please use '" + recommended_op + "' instead";
-
-    warn_deprecated_syntax (msg);
   }
 
   void

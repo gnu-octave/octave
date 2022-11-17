@@ -41,6 +41,19 @@ from Octave 9.
         disable_permutation_matrix | optimize_permutation_matrix
         disable_range              | optimize_range
 
+- Operators
+
+        Operator | Replacement
+        ---------|------------
+        .+       | +
+        .+=      | +=
+        .-       | -
+        .-=      | -=
+        **       | ^
+        **=      | ^=
+        .**      | .^
+        .**=     | .^=
+
 - For plot functions, the use of numbers to select line colors in
   shorthand formats was an undocumented feature was removed from Octave 9.
 

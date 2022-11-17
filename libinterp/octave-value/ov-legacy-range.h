@@ -31,9 +31,8 @@
 #include <cstdlib>
 
 #include <iosfwd>
+#include <memory>
 #include <string>
-
-#include "Range.h"
 
 #include "lo-mappers.h"
 #include "lo-utils.h"
@@ -44,6 +43,8 @@
 #include "ov-base.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
+
+class Range;
 
 class octave_value_list;
 
@@ -65,7 +66,7 @@ public:
 
   octave_legacy_range (const Range& r);
 
-  octave_legacy_range (const octave_legacy_range& r) = default;
+  octave_legacy_range (const octave_legacy_range& r);
 
   // No assignment.
 
@@ -102,7 +103,7 @@ public:
 
 private:
 
-  Range m_range;
+  std::unique_ptr<Range> m_range;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

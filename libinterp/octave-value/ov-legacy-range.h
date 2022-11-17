@@ -71,7 +71,7 @@ public:
 
   octave_legacy_range& operator = (const octave_legacy_range&) = delete;
 
-  ~octave_legacy_range (void) { }
+  ~octave_legacy_range (void) = default;
 
   octave_base_value * clone (void) const
   {

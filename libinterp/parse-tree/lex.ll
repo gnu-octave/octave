@@ -1066,28 +1066,6 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->m_string_text += '\v';
   }
 
-<DQ_STRING_START>(\.\.\.){S}*{NL} {
-    curr_lexer->lexer_debug ("<DQ_STRING_START>(\\.\\.\\.){S}*{NL}");
-
-    /* FIXME: Remove support for '...' continuation in Octave 9 */
-    static const char *msg = "'...' continuations in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave; please use '\\' instead";
-
-    curr_lexer->warn_deprecated_syntax (msg);
-
-    HANDLE_STRING_CONTINUATION;
-  }
-
-<DQ_STRING_START>\\{S}+{NL} {
-    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}");
-
-    /* FIXME: Remove support for WS after line continuation in Octave 9 */
-    static const char *msg = "whitespace after continuation markers in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave";
-
-    curr_lexer->warn_deprecated_syntax (msg);
-
-    HANDLE_STRING_CONTINUATION;
-  }
-
 <DQ_STRING_START>\\{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{NL}");
 
@@ -1280,17 +1258,6 @@ ANY_INCLUDING_NL (.|{NL})
 // Deprecated C preprocessor style continuation markers.
 %}
 
-\\{S}*{NL} |
-\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL} {
-    curr_lexer->lexer_debug ("\\\\{S}*{NL}|\\\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL}");
-
-    /* FIXME: Remove support for '\\' line continuation in Octave 9 */
-    static const char *msg = "using continuation marker \\ outside of double quoted strings was deprecated in version 7 and will be removed from a future version of Octave, use ... instead";
-
-    curr_lexer->warn_deprecated_syntax (msg);
-
-    curr_lexer->handle_continuation ();
-  }
 
 %{
 // End of file.

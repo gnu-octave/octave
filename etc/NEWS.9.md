@@ -54,6 +54,18 @@ from Octave 9.
         .**      | .^
         .**=     | .^=
 
+- Interpreter
+
+    * The use of `'...'` for line continuations *inside* double-quoted
+    strings has been removed.  Use `'\'` for line continuations inside strings
+    instead.
+
+    * The use of `'\'` as a line continuation *outside* of double-quoted
+    strings has been removed.  Use `'...'` for line continuations instead.
+
+    * Support for trailing whitespace after a `'\'` line continuation has been
+    removed.  Delete unnecessary trailing whitespace.
+
 - For plot functions, the use of numbers to select line colors in
   shorthand formats was an undocumented feature was removed from Octave 9.
 

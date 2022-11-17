@@ -57,12 +57,12 @@
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_legacy_range, "range", "double");
 
 octave_legacy_range::octave_legacy_range (void)
-  : octave_base_value (), range () { }
+  : octave_base_value (), m_range () { }
 
 octave_legacy_range::octave_legacy_range (const Range& r)
-  : octave_base_value (), range (r)
+  : octave_base_value (), m_range (r)
 {
-  if (range.numel () < 0 && range.numel () != -2)
+  if (m_range.numel () < 0 && m_range.numel () != -2)
     error ("invalid range");
 }
 
@@ -86,10 +86,10 @@ octave_legacy_range::try_narrowing_conversion (void)
 {
   octave_base_value *retval = nullptr;
 
-  switch (range.numel ())
+  switch (m_range.numel ())
     {
     case 1:
-      retval = new octave_scalar (range.base ());
+      retval = new octave_scalar (m_range.base ());
       break;
 
     case 0:
@@ -97,17 +97,17 @@ octave_legacy_range::try_narrowing_conversion (void)
       break;
 
     case -2:
-      retval = new octave_matrix (range.matrix_value ());
+      retval = new octave_matrix (m_range.matrix_value ());
       break;
 
     default:
       {
-        if (range.increment () == 0)
-          retval = new octave_matrix (range.matrix_value ());
+        if (m_range.increment () == 0)
+          retval = new octave_matrix (m_range.matrix_value ());
         else
           retval = new octave_range
-            (octave::range<double> (range.base (), range.increment (),
-                                    range.limit (), range.numel ()));
+            (octave::range<double> (m_range.base (), m_range.increment (),
+                                    m_range.limit (), m_range.numel ()));
       }
       break;
     }
@@ -145,9 +145,9 @@ octave_legacy_range::load_ascii (std::istream& is)
     error ("load: failed to load range constant");
 
   if (inc != 0)
-    range = Range (base, limit, inc);
+    m_range = Range (base, limit, inc);
   else
-    range = Range (base, inc, static_cast<octave_idx_type> (limit));
+    m_range = Range (base, inc, static_cast<octave_idx_type> (limit));
 
   return true;
 }
@@ -173,9 +173,9 @@ octave_legacy_range::load_binary (std::istream& is, bool swap,
   if (swap)
     swap_bytes<8> (&inc);
   if (inc != 0)
-    range = Range (bas, lim, inc);
+    m_range = Range (bas, lim, inc);
   else
-    range = Range (bas, inc, static_cast<octave_idx_type> (lim));
+    m_range = Range (bas, inc, static_cast<octave_idx_type> (lim));
 
   return true;
 }
@@ -245,14 +245,14 @@ octave_legacy_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       octave_idx_type nel;
       if (hdf5_get_scalar_attr (data_hid, H5T_NATIVE_IDX,
                                 "OCTAVE_RANGE_NELEM", &nel))
-        range = Range (rangevals[0], rangevals[2], nel);
+        m_range = Range (rangevals[0], rangevals[2], nel);
       else
         {
           if (rangevals[2] != 0)
-            range = Range (rangevals[0], rangevals[1], rangevals[2]);
+            m_range = Range (rangevals[0], rangevals[1], rangevals[2]);
           else
-            range = Range (rangevals[0], rangevals[2],
-                           static_cast<octave_idx_type> (rangevals[1]));
+            m_range = Range (rangevals[0], rangevals[2],
+                             static_cast<octave_idx_type> (rangevals[1]));
         }
     }
 

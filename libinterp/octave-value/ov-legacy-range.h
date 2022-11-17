@@ -102,7 +102,7 @@ public:
 
 private:
 
-  Range range;
+  Range m_range;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

@@ -234,7 +234,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (any (strcmp (unsupported, arg_st.devopt)))
     warning ('Octave:print:deprecated-format',
-             'print: "%s" format is no more officially supported', ...
+             'print: "%s" format is no longer officially supported',
              arg_st.devopt);
   endif
 

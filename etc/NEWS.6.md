@@ -28,7 +28,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `cbrt`: Clarify that function errors for non-real input.
 - `dsearchn.m`: Added optional distance output description (bug #61156).
 - Add Hungarian translation for project description files.
-- Document fsolve output "info" -2 (bug #61310).
+- Document `fsolve` output `"info"` -2 (bug #61310).
 
 ### Build system
 
@@ -61,7 +61,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Hold references to closure frames in anon functions if needed (bug #60237).
 - `eigs`: Prevent possible segmentation fault at exit (bug #60311).
 - Issue warning when gnuplot graphics toolkit is initialized.
-- mpoles.m: Fix detection of pole multiplicity (bug #60384).
+- `mpoles.m`: Fix detection of pole multiplicity (bug #60384).
 - Perform shutdown actions in interpreter destructor (bug #60334).
 - build: Make relocation of dependencies with Octave optional (bug #60413).
 - `qz.cc`: Return correct number of eigenvalues (bug #60357).
@@ -83,7 +83,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `logm.m`: Fix check for real negative values in complex vector (bug #60738).
 - build: Set necessary flags to allow execution on Windows Vista (bug #60746).
 - Declare base_parser destructor virtual.
-- `hist.m`: Improve handling and docstring for third parameter "norm" (bug #60783).
+- `hist.m`: Improve handling and docstring for third parameter `"norm"` (bug #60783).
 - `logm.m`: Allow tolerance in check for real negative values in complex vector (bug #60738).
 - `expm.m`, `logm.m`: Use function `isdiag` to detect if input is a diagonal matrix (bug #60738).
 - tests: Relax tolerance for some tests on macOS.
@@ -93,7 +93,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `logm.m`: Allow larger tolerance for test on macOS.
 - build: Use correct path to `octave` binary in build tree on macOS.
 - build: Fix typo in folder to libraries when building `.oct` or `.mex` files.
-- build: Set DL_LDFLAGS in the build rules for .oct or .mex files.
+- build: Set `DL_LDFLAGS` in the build rules for `.oct` or `.mex` files.
 - `rgb2ind.m`: Suppress output in test.
 - Improve documentation for `log2` function (bug #60817).
 - `ind2sub`: Fix typo in "see also" section of docstring (bug #60842).
@@ -120,8 +120,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Documentation
 
-- Improve Differential Equations chapter and example for lsode (bug #57508).
-- Clarify usage of "Depends" keyword in package `DESCRIPTION` file (bug #60053).
+- Improve Differential Equations chapter and example for `lsode` (bug #57508).
+- Clarify usage of `"Depends"` keyword in package `DESCRIPTION` file (bug #60053).
 - Add note that wildcard patterns for `save` are glob patterns (bug #60157).
 - Change example for Delaunay triangulation to match the generating code (bug #60216).
 - Document single precision issues with OpenGL graphics toolkits (bug #59418).
@@ -204,9 +204,9 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Add default value to `OCTAVE_MIPS_NAN` configure macro for cross-compiling (bug #59830).
 - tests: Function name should match file name (bug #59704).
 - Avoid build errors with Qt4 (bug #59813).
-- eigs.m: Make tests that depend on CHOLMOD conditional.
+- `eigs.m`: Make tests that depend on CHOLMOD conditional.
 - tests: Make tests that depend on CXSparse conditional.
-- build: Use `SPARSE_XCPPFLAGS` in `CPP_FLAGS` for libcorefcn (bug #59806).
+- build: Use `SPARSE_XCPPFLAGS` in `CPP_FLAGS` for `libcorefcn` (bug #59806).
 - Add test case for bug #59661.
 - `hgsave.m`: Allow test to run with qt or gnuplot graphics toolkits (bug #57241).
 
@@ -214,7 +214,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 - `embedded.cc`: Fix syntax error interpreter shutdown.
 - Update Octave Project Developers copyright for the new year.
-- Use the same comment style for copyright headers in .m files and shell scripts.
+- Use the same comment style for copyright headers in `.m` files and shell scripts.
 
 
 Summary of important user-visible changes for version 6.1.0 (2020-11-26):
@@ -256,15 +256,15 @@ Summary of important user-visible changes for version 6.1.0 (2020-11-26):
 
 - The `edit` function option `"editinplace"` now defaults to `true` and
   the option `"home"` now defaults to the empty matrix `[]`.  Files will
-  no longer be copied to the user's HOME directory for editing.  The old
+  no longer be copied to the user's `HOME` directory for editing.  The old
   behavior can be restored by setting `"editinplace"` to `false` and
   `"home"` to `"~/octave"`.
 
 - The `format` command supports two new options: `uppercase` and
-  `lowercase` (default).  With the default, print a lowercase 'e' for
-  the exponent character in scientific notation and lowercase 'a-f' for
-  the hex digits representing 10-15.  With `uppercase`, print 'E' and
-  'A-F' instead.  The previous uppercase formats, `E` and `G`, no longer
+  `lowercase` (default).  With the default, print a lowercase `'e'` for
+  the exponent character in scientific notation and lowercase `'a-f'` for
+  the hex digits representing 10-15.  With `uppercase`, print `'E'` and
+  `'A-F'` instead.  The previous uppercase formats, `E` and `G`, no longer
   control the case of the output.
 
   Additionally, the `format` command can be called with multiple options
@@ -277,15 +277,15 @@ Summary of important user-visible changes for version 6.1.0 (2020-11-26):
   one is used, and, in case of an error, the previous format remains
   unchanged.
 
-- L-value references (e.g., increment (++), decrement (--), and all
-  in-place assignment operators (+=, -=, *=, /=, etc.)) are no longer
+- L-value references (e.g., increment (`++`), decrement (`--`), and all
+  in-place assignment operators (`+=`, `-=`, `*=`, `/=`, etc.)) are no longer
   allowed in anonymous functions.
 
-- New warnings have been added about questionable uses of the colon ':'
+- New warnings have been added about questionable uses of the colon `':'`
   range operator.  Each has a new warning ID so that it can be disabled
   if desired.
 
-  >  `Octave:colon-complex-argument`   : when any arg is complex
+  >  `Octave:colon-complex-argument`   : when any arg is complex  
   >  `Octave:colon-nonscalar-argument` : when any arg is non-scalar
 
 - The `regexp` and related functions now correctly handle and *require*
@@ -296,8 +296,8 @@ Summary of important user-visible changes for version 6.1.0 (2020-11-26):
 
 - The startup file `octaverc` can now be located in the platform
   dependent location for user local configuration files (e.g.,
-  ${XDG_CONFIG_HOME}/octave/octaverc on Unix-like operating systems or
-  %APPDATA%\octave\octaverc on Windows).
+  `${XDG_CONFIG_HOME}/octave/octaverc` on Unix-like operating systems or
+  `%APPDATA%\octave\octaverc` on Windows).
 
 - `pkg describe` now lists dependencies and inverse dependencies
   (i.e., other installed packages that depend on the package in
@@ -312,7 +312,7 @@ Summary of important user-visible changes for version 6.1.0 (2020-11-26):
 
 - The command
 
-    dbstop in CLASS at METHOD
+        dbstop in CLASS at METHOD
 
   now works to set breakpoints in classdef constructors and methods.
 
@@ -407,8 +407,8 @@ Summary of important user-visible changes for version 6.1.0 (2020-11-26):
   exist as an alias until Octave version 8.1.
 
 - Inline functions created by the function `inline` are now of type
-  "inline" when interrogated with the `class` function.  In previous
-  versions of Octave, the class returned was "function_handle".  This
+  `"inline"` when interrogated with the `class` function.  In previous
+  versions of Octave, the class returned was `"function_handle"`.  This
   change is Matlab compatible.  Inline functions are deprecated in
   both Matlab and Octave and support may eventually be removed.
   Anonymous functions can be used to replace all instances of inline
@@ -480,15 +480,15 @@ major release after 6):
 
 - Functions
 
-  Function               | Replacement
-  -----------------------|------------------
-  `runtests`             | `oruntests`
+        Function         | Replacement
+        -----------------|------------------
+        runtests         | oruntests 
 
 - Properties
 
-  Object           | Property      | Value
-  -----------------|---------------|------------
-                   |               |
+        Object           | Property      | Value
+        -----------------|---------------|------------
+                         |               |
 
 - The environment variable used by `mkoctfile` for linker flags is now
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` is deprecated, and a warning
@@ -502,35 +502,35 @@ and have been removed from Octave 6.
 
 - Functions
 
-  Function             | Replacement
-  ---------------------|------------------
-  `chop`               | `sprintf` for visual results
-  `desktop`            | `isguirunning`
-  `tmpnam`             | `tempname`
-  `toascii`            | `double`
-  `java2mat`           | `__java2mat__`
+        Function         | Replacement
+        -----------------|------------------
+        chop             | sprintf for visual results
+        desktop          | isguirunning
+        tmpnam           | tempname
+        toascii          | double
+        java2mat         | __java2mat__
 
 - Properties
 
-  Object               | Property                  | Value
-  ---------------------|---------------------------|-----------------------
-  `annotation`         | `edgecolor ("rectangle")` |
-  `axes`               | `drawmode`                |
-  `figure`             | `doublebuffer`            |
-                       | `mincolormap`             |
-                       | `wvisual`                 |
-                       | `wvisualmode`             |
-                       | `xdisplay`                |
-                       | `xvisual`                 |
-                       | `xvisualmode`             |
-  `line`               | `interpreter`             |
-  `patch`              | `interpreter`             |
-  `surface`            | `interpreter`             |
-  `text`               | `fontweight`              | `"demi"` and `"light"`
-  `uibuttongroup`      | `fontweight`              | `"demi"` and `"light"`
-  `uicontrol`          | `fontweight`              | `"demi"` and `"light"`
-  `uipanel`            | `fontweight`              | `"demi"` and `"light"`
-  `uitable`            | `fontweight`              | `"demi"` and `"light"`
+        Object           | Property                  | Value
+        -----------------|---------------------------|-----------------------
+        annotation       | edgecolor ("rectangle")   |
+        axes             | drawmode                  |
+        figure           | doublebuffer              |
+                         | mincolormap               |
+                         | wvisual                   |
+                         | wvisualmode               |
+                         | xdisplay                  |
+                         | xvisual                   |
+                         | xvisualmode               |
+        line             | interpreter               |
+        patch            | interpreter               |
+        surface          | interpreter               |
+        text             | fontweight                | "demi" and "light"
+        uibuttongroup    | fontweight                | "demi" and "light"
+        uicontrol        | fontweight                | "demi" and "light"
+        uipanel          | fontweight                | "demi" and "light"
+        uitable          | fontweight                | "demi" and "light"
 
 
 ### Old release news

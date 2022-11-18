@@ -30,10 +30,10 @@ Summary of bugs fixed for version 7.3.0 (2022-11-02):
 - `canonicalize_file_name`: Trim trailing file separators from root of mapped network drive (bug #62847).
 - `imformats.m`: Fix `isa` function in return value (bug #62974).
 - `pie3`: Fix "Too many input" args error.
-- Accept negative inputs to -2^63 for `dec2bin` and `dec2hex` (bug #63089).
+- Accept negative inputs to `-2^63` for `dec2bin` and `dec2hex` (bug #63089).
 - Fix incorrect `lambda` outputs for `lsqnonneg` and `pqpnonneg` (bug #63178).
 - `addtodate.m`: Fix wrong month returned when subtracting a month from some end-of-month dates (bug #60671).
-- `var.m`: Fix some Inf and NaN inputs returning 0 instead of NaN (bug #63203)
+- `var.m`: Fix some `Inf` and `NaN` inputs returning `0` instead of `NaN` (bug #63203)
 - `var.m`: Fix automatic broadcasting error for sparse and diagonal matrix inputs with vector weighting (bug #63291).
 - `legend.m`: Fix error with `contour` plot containing `clabel`s (bug #63262).
 - `dec2bin.m`: Fix input validation (bug #63089).
@@ -49,7 +49,7 @@ Summary of bugs fixed for version 7.3.0 (2022-11-02):
 - `io.tst`: Add test case for `scanf` (bug #62723).
 - `nextpow2.m`: Add bug number tag to regression tests (bug #62947).
 - `quad2d.m`: Add BIST to cset b0e90ca8e679 (bug #62972).
-- Add test for number of methods with `classdef` in @folder (bug #62802).
+- Add test for number of methods with `classdef` in `@folder` (bug #62802).
 - Use Autoconf macro to find `egrep` executable.
 
 ### Documentation
@@ -182,8 +182,8 @@ functional form---parentheses and '=' for assignment of return values.
 
 - Calling a user-defined function with too many inputs or outputs is now
 an error.  The interpreter makes this check automatically.  If a
-function uses varargin then the check is skipped for function inputs,
-and if a function uses varargout then the check is skipped for function
+function uses `varargin` then the check is skipped for function inputs,
+and if a function uses `varargout` then the check is skipped for function
 outputs.  Input validation for functions typically begins with checking
 that the number of inputs and outputs match expectations.  Existing code
 can be simplified by removing these checks which are now done by the
@@ -212,7 +212,7 @@ or signed and the number to indicate the integer size).
 constants are limited to 16 hexadecimal digits with no automatic
 rounding or conversion to floating point values.  Note that this may
 cause problems in existing code.  For example, an expression like
-`[0x1; 0x100; 0x10000]` will be uint8 (because of the rules of
+`[0x1; 0x100; 0x10000]` will be `uint8` (because of the rules of
 concatenating integers of different sizes) with the larger values
 truncated (because of the saturation semantics of integer values).  To
 avoid these kinds of problems either: 1) declare the first integer to be
@@ -221,8 +221,8 @@ constants in array expressions with leading zeros so that they use the
 same number of digits for each value such as
 `[0x00_00_01; 0x00_01_00; 0x01_00_00]`.
 
-- The colon operator now works for integer (int8, int16, ..., uint64)
-and single data types.  However, only double ranges use a
+- The colon operator now works for integer (`int8`, `int16`, ..., `uint64`)
+and single data types.  However, only `double` ranges use a
 memory-efficient storage scheme internally.  Other data types are
 stored as ordinary arrays.
 
@@ -280,9 +280,9 @@ inputs > 1e14, it can be up to 10,000 times faster.
 that is up to 50,000 times faster for inputs > 1e14.
 
 - The `betainc` function now calculates an exact output for the
-important special cases where a or b are 1.
+important special cases where `a` or `b` are `1`.
 
-- The `whos` function now displays an additional attribute 's' when
+- The `whos` function now displays an additional attribute `'s'` when
 the variable is a sparse type.
 
 - As part of GSoC 2020, Abdallah K. Elshamy implemented the
@@ -294,10 +294,10 @@ filling Jupyter Notebooks using the Octave language kernel from Octave
 itself.  Making the evaluation of long-running Jupyter Notebooks on a
 computing server without permanent browser connection possible.
 
-- By default, the history file is now located at $DATA/octave/history,
-where $DATA is a platform dependent location for (roaming) user data
-files (e.g., ${XDG_DATA_HOME} or, if that is not set, ~/.local/share on
-Unix-like operating systems or %APPDATA% on Windows).
+- By default, the history file is now located at `$DATA/octave/history`,
+where `$DATA` is a platform dependent location for (roaming) user data
+files (e.g., `${XDG_DATA_HOME}` or, if that is not set, `~/.local/share` on
+Unix-like operating systems or `%APPDATA%` on Windows).
 
 - For Octave on Windows OS, the minimum required version of the Windows
 API is now 6.1 (Windows 7 or newer).
@@ -312,8 +312,8 @@ The real name of the "magick++" library (including any potentially
 trailing "++") needs to be set in that option now.
 
 - The `pkg update` command now accepts options that are passed to `pkg
-install` for each updated package.  Specifying @option{-local} or
-@option{-global} will restrict update checks to local or global
+install` for each updated package.  Specifying `-local` or
+`-global` will restrict update checks to local or global
 installed packages, respectively.
 
 ### Graphical User Interface
@@ -330,7 +330,7 @@ option disables keyboard shortcuts to avoid interference with readline
 key strokes in the Command Window.  Unlike versions prior to Octave 7,
 this preference now also affects the Ctrl-C/V shortcuts for copy/paste.
 
-- In command line mode, i.e. when Octave is started without the --gui option,
+- In command line mode, i.e. when Octave is started without the `--gui` option,
 the doc command now opens the GUI documentation browser as a standalone widget,
 provided that Octave was compiled with GUI support.
 
@@ -377,6 +377,7 @@ implemented for `set` commands.
 to the title displayed on the figure window which contains the plot.
 
 - Additional properties have been added to the `axes` graphics object:
+
     * `"alphamap"` (not yet implemented)
     * `"alphascale"` (not yet implemented)
     * `"colorscale"` (not yet implemented)
@@ -411,7 +412,7 @@ vectors with rows corresponding to the input coordinate matrix.
 
 - The function `dec2bin` and `dec2hex` now support negative numbers.
 
-- The function `factor` now supports uint64 inputs larger than
+- The function `factor` now supports `uint64` inputs larger than
 `flintmax`.
 
 - The function `primes` now supports char inputs.
@@ -501,11 +502,11 @@ major release after 7):
 
 - Functions
 
-  Function                     | Replacement
-  ---------------------------- |----------------------------
-  `disable_diagonal_matrix`    | `optimize_diagonal_matrix`
-  `disable_permutation_matrix` | `optimize_permutation_matrix`
-  `disable_range`              | `optimize_range`
+        Function                     | Replacement
+        ---------------------------- |----------------------------
+        disable_diagonal_matrix      | optimize_diagonal_matrix
+        disable_permutation_matrix   | optimize_permutation_matrix
+        disable_range                | optimize_range
 
   For plot functions, the use of numbers to select line colors in
   shorthand formats was an undocumented feature that is deprecated in
@@ -513,12 +514,12 @@ major release after 7):
 
 - Operators
 
-  Operator | Replacement | Description
-  ---------|-------------|------------
-  `**`     | `^`         | Matrix exponent
-  `.**`    | `.^`        | Element-by-element exponent
-  `.+`     | `+`         | Element-by-element addition
-  `.-`     | `-`         | Element-by-element subtraction
+        Operator | Replacement | Description
+        ---------|-------------|------------
+        **       | ^           | Matrix exponent
+        .**      | .^          | Element-by-element exponent
+        .+       | +           | Element-by-element addition
+        .-       | -           | Element-by-element subtraction
 
 - Interpreter
 
@@ -539,9 +540,9 @@ from Octave 8 (or whatever version is the second major release after 6):
 
 - Functions
 
-  Function               | Replacement
-  -----------------------|------------------
-  `runtests`             | `oruntests`
+        Function               | Replacement
+        -----------------------|------------------
+        runtests               | oruntests
 
 - The environment variable used by `mkoctfile` for linker flags is now
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,
@@ -555,20 +556,20 @@ and have been removed from Octave 7.
 
 - Functions
 
-  Function                 | Replacement
-  -------------------------|------------------
-  `output_max_field_width` | `output_precision`
-  `is_keyword`             | `iskeyword`
+        Function                 | Replacement
+        -------------------------|------------------
+        output_max_field_width   | output_precision
+        is_keyword               | iskeyword
 
 - Properties
 
-  Object           | Property      | Value
-  -----------------|---------------|------------
-  `text`           | `fontangle`   | `"oblique"`
-  `uibuttongroup`  | `fontangle`   | `"oblique"`
-  `uicontrol`      | `fontangle`   | `"oblique"`
-  `uipanel`        | `fontangle`   | `"oblique"`
-  `uitable`        | `fontangle`   | `"oblique"`
+        Object           | Property      | Value
+        -----------------|---------------|------------
+        text             | fontangle     | "oblique"
+        uibuttongroup    | fontangle     | "oblique"
+        uicontrol        | fontangle     | "oblique"
+        uipanel          | fontangle     | "oblique"
+        uitable          | fontangle     | "oblique"
 
 - The prototype JIT compiler has been removed from Octave.  Since it was
 first added as part of a Google Summer of Code project in 2012, no one

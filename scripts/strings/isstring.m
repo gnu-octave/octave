@@ -46,7 +46,7 @@ function tf = isstring (s)
     print_usage ();
   endif
 
-  tf = false;
+  tf = isa (s, 'string');
 
 endfunction
 
@@ -60,4 +60,3 @@ endfunction
 %!assert (isstring ({"b"}), false)
 
 %!error <Invalid call> isstring ()
-%!error isstring ("a", "b")

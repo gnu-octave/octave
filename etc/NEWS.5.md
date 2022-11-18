@@ -10,47 +10,47 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Lock amd and symbfact to avoid segmentation fault with SuiteSparse (bug #57435)
 - Fix segfault when calculating patch vertex normals (bug #57353)
 - Fix segfault in constructing patch normals for lighting (bug #57353)
-- mat2str.m: Fix for logical matrix (add `transpose`).
+- `mat2str.m`: Fix for logical matrix (add `transpose`).
 - improve file equality check for MS Windows (bug #55161)
-- ismember.m: Fix second return argument when values are complex (bug #52437)
-- findobj.m: Fix typo and correctly handle numeric properties (bug #57030)
+- `ismember.m`: Fix second return argument when values are complex (bug #52437)
+- `findobj.m`: Fix typo and correctly handle numeric properties (bug #57030)
 - Correctly display integer types with format hex (bug #56966)
 - Cast `winqueryreg` `REG_DWORD` types to `DWORD` (bug #56703)
 - Fix numerous errors in `audiowrite` / `audioread` (bug #56889)
-- print.m: Pass quoted path to `octave-svgconvert` (bug #56768)
-- dir.m: Fix occasionally returning incorrect folder field (bug #55448)
+- `print.m`: Pass quoted path to `octave-svgconvert` (bug #56768)
+- `dir.m`: Fix occasionally returning incorrect folder field (bug #55448)
 - Stop segfault when calling 3-input form of `diag` with cell arrays (bug #56711)
 - improve message for setting breakpoint in nonexistent function (bug #56157)
 - Use framebuffer object for printing invisible Qt figures on mac (bug #55268)
-- Escape backslash characters in `EPS` output (bug #56448)
+- Escape backslash characters in EPS output (bug #56448)
 - Use replacement characters to display non UTF-8 strings in figures (bug #55974)
-- inputrc: Add warning about modification (bug #56079)
-- documentation.cc (global_search): just return if query string is empty (bug #56388)
+- `inputrc`: Add warning about modification (bug #56079)
+- `documentation.cc` (global_search): just return if query string is empty (bug #56388)
 - Default (c)transpose for old style class arrays (bug #56323)
 - Always reserve at least 1 element of storage for sparse matrices (bug #56232)
 - Don't segfault at exit after reading malformed HDF5 file (bug #56149)
-- Fix pause() with no arguments called on Windows (bug #55943)
+- Fix `pause()` with no arguments called on Windows (bug #55943)
 - refactor minimum eigenvalue index search in `qp` (bug #56037)
 - qp: fix obscure corner case when calculating `qp` caused by a typo (bug #56037)
 - use `std::streampos` instead of `std::ios::streampos` (patch #9782).
 - fix `pause` and `kbhit` with glibc 2.28 end-of-file state behavior (bug #55029)
 - Fix return of left-handed vectors when inputs are complex (bug #56026)
-- waitbar.m: Fix hang when using `createcancelbtn` property (bug #55963)
-- shading.m: Fix unexpected error when multiple `hggroups` present (bug #55993)
-- dec2base.m: Correctly handle zero matrix input (bug #56005)
+- `waitbar.m`: Fix hang when using `createcancelbtn` property (bug #55963)
+- `shading.m`: Fix unexpected error when multiple `hggroups` present (bug #55993)
+- `dec2base.m`: Correctly handle zero matrix input (bug #56005)
 - eliminate duplicate graphics callback object stack (bug #55908)
 - Improve performance when closing figures (bug #55908)
 - Reduce time to process `pkg -forge list` by 30X (bug #39479)
 - Feed `fig2dev` with PDF files converted from svg (bug #55906)
 - Improve error checking for `iconv_open`.
-- poly.m: fix the fix for input of complex conjugate pairs (bug #53897)
-- mkoctfile: use the `TMPDIR` environment variable if set (bug #55814)
-- line.m: Fix creation of unwanted axes (bug #55840)
-- Accept 4-input form for quiver3 (bug #55570)
-- pkg.m: restore installing packages from zip archives (bug #55788)
-- axis.m: Fix issues with `equal` argument (bug #55619, bug #55614, bug #55574,
+- `poly.m`: fix the fix for input of complex conjugate pairs (bug #53897)
+- `mkoctfile`: use the `TMPDIR` environment variable if set (bug #55814)
+- `line.m`: Fix creation of unwanted axes (bug #55840)
+- Accept 4-input form for `quiver3` (bug #55570)
+- `pkg.m`: restore installing packages from zip archives (bug #55788)
+- `axis.m`: Fix issues with `equal` argument (bug #55619, bug #55614, bug #55574,
   bug #55514, bug #54848, bug #53724, bug #53504, bug #53336, bug #51938, bug #50356).
-- ordeig.m: Do not fail on 1x1 matrices (bug #55779)
+- `ordeig.m`: Do not fail on 1x1 matrices (bug #55779)
 
 ### GUI
 
@@ -67,9 +67,9 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - configure: prevent overlinking when SUNDIALS is disabled (bug #55956)
 - use QtCore and Qt5Gui modules instead of Qt5OpenGL (bug #55735)
 - make building with Qt4 QGLWidget work again (bug #55735)
-- build: adapt mk-qthelp.pl to changes in Texinfo 6.7.
+- build: adapt `mk-qthelp.pl` to changes in Texinfo 6.7.
 - BIST should not rely on the current directory to be writable.
-- bp-table.cc: Fix test.
+- `bp-table.cc`: Fix test.
 - maint: Make old style class tests Matlab compatible.
 - Add BIST tests for `unlink` (bug #56097)
 
@@ -77,17 +77,17 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 - fix many spelling errors (bug #57613)
 - help: improve documentation for the `startup.m` user script.
-- avoid conflict with @seealso macro in Texinfo 6.6 (bug #55952)
-- mk-doc-cache.pk: Also translate `@seealso` here. (bug #55952)
-- __makeinfo__.m: Also translate `@seealso` here (bug #55952)
-- polar.m: Document that input is expected to be in radians (bug #57052)
-- gallery.m: Fix typo in docstring for poisson (bug #56267)
+- avoid conflict with `@seealso` macro in Texinfo 6.6 (bug #55952)
+- `mk-doc-cache.pk`: Also translate `@seealso` here. (bug #55952)
+- `__makeinfo__.m`: Also translate `@seealso` here (bug #55952)
+- `polar.m`: Document that input is expected to be in radians (bug #57052)
+- `gallery.m`: Fix typo in docstring for `poisson` (bug #56267)
 - Add 1024x1024 Octave logo icon (bug #55836)
 - add `.editorconfig` for default file encoding and indentation.
-- octave.doap: Copy localized (short) description over from appdata (bug #55279)
-- org.octave.Octave.appdata.xml: Add German and French description (bug #55279)
-- languages/*.ts: updated language files (bug #55772)
-- quiver3.m: Fix texinfo typo in docstring from cset f7b10bd40045.
+- `octave.doap`: Copy localized (short) description over from appdata (bug #55279)
+- `org.octave.Octave.appdata.xml`: Add German and French description (bug #55279)
+- `languages/*.ts`: updated language files (bug #55772)
+- `quiver3.m`: Fix texinfo typo in docstring from cset f7b10bd40045.
 - doc: fix `.` Operator Index entry to build with Texinfo 6.7.
 - doc: improve example of using global variables from oct-files.
 - doc: Create en-dashes and em-dashes correctly in documentation.
@@ -152,7 +152,7 @@ See: https://www.octave.org/NEWS-5.1.html
   different results in existing code.  If it is necessary to reproduce
   the exact random integer sequence as in previous versions use
 
-  `ri = imin + floor ((imax - imin + 1) * rand ());`
+        ri = imin + floor ((imax - imin + 1) * rand ());
 
 - The function `isdefinite` now returns `true` or `false` rather than
   `-1`, `0`, or `1`.  To test for a positive semi-definite matrix (old
@@ -166,7 +166,7 @@ See: https://www.octave.org/NEWS-5.1.html
   required.  For example defining the variable `x = int8 (3)` in the
   workspace, calls like
 
-    `range = [ intmin(class(x)), intmax(class(x)) ]`
+        range = [ intmin(class(x)), intmax(class(x)) ]
 
   can in Octave 5 be simplified to `range = [ intmin(x), intmax(x) ]`.
 
@@ -177,10 +177,10 @@ See: https://www.octave.org/NEWS-5.1.html
 - A new printing device is available, `"-ddumb"`, which produces ASCII
   art for plots.  This device is only available with the gnuplot toolkit.
 
-- The `msgbox` function has changed in two respects: the default WindowStyle
+- The `msgbox` function has changed in two respects: the default `WindowStyle`
   is now `"non-modal"`, and the default interpreter for the message is now
-  `"tex"`.  Both WindowStyle and Interpreter can be controlled by passing an
-  option struct argument.
+  `"tex"`.  Both `WindowStyle` and `Interpreter` can be controlled by passing
+  an option struct argument.
 
 ### Dependencies
 
@@ -240,36 +240,36 @@ This *may* result in existing code producing different results.
 
 - `fsolve`
 
-  Option         |   New Default    | Old Default
-  ---------------|------------------|-------------
-  `FinDiffType`  |    `"forward"`   |  `"central"`
-  `MaxFunEvals`  | `100*length(x0)` |    `Inf`
-  `TolFun`       |     `1e-6`       |    `1e-7`
-  `TolX`         |     `1e-6`       |    `1e-7`
-  `Updating`     |     `"off"`      |    `"on"`
+        Option         |   New Default    | Old Default
+        ---------------|------------------|-------------
+        FinDiffType    |    "forward"     |  "central"
+        MaxFunEvals    | 100*length(x0)   |    Inf
+        TolFun         |     1e-6         |    1e-7
+        TolX           |     1e-6         |    1e-7
+        Updating       |     "off"        |    "on"
 
 - `fminsearch`
 
-  Option   | New Default | Old Default
-  ---------|-------------|------------
-  `TolFun` |   `1e-7`    |   `1e-4`
+        Option   | New Default | Old Default
+        ---------|-------------|------------
+        TolFun   |   1e-7      |   1e-4
 
 - `fminbnd`
 
-  Option         | New Default | Old Default
-  ---------------|-------------|------------
-  `MaxFunEvals`  |     `500`   |   `Inf`
-  `MaxIter`      |     `500`   |   `Inf`
-  `TolX`         |    `1e-4`   |   `1e-8`
+        Option         | New Default | Old Default
+        ---------------|-------------|------------
+        MaxFunEvals    |     500     |   Inf
+        MaxIter        |     500     |   Inf
+        TolX           |    1e-4     |   1e-8
 
 - `fminunc`
 
-  Option         |   New Default    | Old Default
-  ---------------|------------------|------------
-  `FinDiffType`  |   `"forward"`    | `"central"`
-  `MaxFunEvals`  | `100*length(x0)` |   `Inf`
-  `TolX`         |     `1e-6`       |   `1e-7`
-  `TolFun`       |     `1e-6`       |   `1e-7`
+        Option         |   New Default    | Old Default
+        ---------------|------------------|------------
+        FinDiffType    |   "forward"      | "central"
+        MaxFunEvals    | 100*length(x0)   |   Inf
+        TolX           |     1e-6         |   1e-7
+        TolFun         |     1e-6         |   1e-7
 
 
 #### Graphic objects
@@ -324,17 +324,17 @@ means they are obsolete and should not be used in any new code.
 Unlike deprecated functions, however, their removal from Octave has
 not yet been scheduled.
 
-  Function               | Replacement
-  -----------------------|------------------
-  `findstr`              | `strfind`
-  `flipdim`              | `flip`
-  `isdir`                | `isfolder` or `dir_in_loadpath`
-  `isequalwithequalnans` | `isequaln`
-  `isstr`                | `ischar`
-  `setstr`               | `char`
-  `strmatch`             | `strncmp` or `strcmp`
-  `strread`              | `textscan`
-  `textread`             | `textscan`
+        Function              | Replacement
+        ----------------------|------------------
+        findstr               | strfind
+        flipdim               | flip
+        isdir                 | isfolder or dir_in_loadpath
+        isequalwithequalnans  | isequaln
+        isstr                 | ischar
+        setstr                | char
+        strmatch              | strncmp or strcmp
+        strread               | textscan
+        textread              | textscan
 
 
 ### Deprecated functions and properties
@@ -345,20 +345,20 @@ is the second major release after 5):
 
 - Functions
 
-  Function                 | Replacement
-  -------------------------|-------------------
-  `output_max_field_width` | `output_precision`
-  `is_keyword`             | `iskeyword`
+        Function                 | Replacement
+        -------------------------|-------------------
+        output_max_field_width   | output_precision
+        is_keyword               | iskeyword
 
 - Graphics properties
 
-  Object           | Property      | Value
-  -----------------|---------------|------------
-  `text`           | `fontangle`   | `"oblique"`
-  `uibuttongroup`  | `fontangle`   | `"oblique"`
-  `uicontrol`      | `fontangle`   | `"oblique"`
-  `uipanel`        | `fontangle`   | `"oblique"`
-  `uitable`        | `fontangle`   | `"oblique"`
+        Object           | Property      | Value
+        -----------------|---------------|------------
+        text             | fontangle     | "oblique"
+        uibuttongroup    | fontangle     | "oblique"
+        uicontrol        | fontangle     | "oblique"
+        uipanel          | fontangle     | "oblique"
+        uitable          | fontangle     | "oblique"
 
 - Specifying `legend` position with a numeric argument is deprecated.
   Use a string argument instead.
@@ -375,33 +375,32 @@ and have been removed from Octave 5.
 
 - Functions
 
-  Function               | Replacement
-  -----------------------|------------------
-  `bitmax`               | `flintmax`
-  `mahalanobis`          | `mahal` in Octave Forge statistics pkg
-  `md5sum`               | `hash`
-  `octave_config_info`   | `__octave_config_info__`
-  `onenormest`           | `normest1`
-  `sleep`                | `pause`
-  `usleep`               | `pause`
-  `wavread`              | `audioread`
-  `wavwrite`             | `audiowrite`
+        Function             | Replacement
+        ---------------------|------------------
+        bitmax               | flintmax
+        mahalanobis          | mahal in Octave Forge statistics pkg
+        md5sum               | hash
+        octave_config_info   | __octave_config_info__
+        onenormest           | normest1
+        sleep                | pause
+        usleep               | pause
+        wavread              | audioread
+        wavwrite             | audiowrite
 
 - Properties
 
-  Object      | Property          | Value
-  ------------|-------------------|---------
-  `axes`      | `xaxislocation`   | `"zero"`
-              | `yaxislocation`   | `"zero"`
-  `hggroup`   | `erasemode`       |
-  `image`     | `erasemode`       |
-  `line`      | `erasemode`       |
-  `patch`     | `erasemode`       |
-  `patch`     | `normalmode`      |
-  `surface`   | `erasemode`       |
-  `surface`   | `normalmode`      |
-  `text`      | `erasemode`       |
-
+        Object      | Property          | Value
+        ------------|-------------------|---------
+        axes        | xaxislocation     | "zero"
+                    | yaxislocation     | "zero"
+        hggroup     | erasemode         |
+        image       | erasemode         |
+        line        | erasemode         |
+        patch       | erasemode         |
+        patch       | normalmode        |
+        surface     | erasemode         |
+        surface     | normalmode        |
+        text        | erasemode         |
 
 ### Alphabetical list of new functions added in 5
 

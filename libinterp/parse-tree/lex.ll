@@ -3618,21 +3618,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::warn_single_quote_string (void)
-  {
-    std::string nm = m_fcn_file_full_name;
-
-    if (nm.empty ())
-      warning_with_id ("Octave:single-quote-string",
-                       "single quote delimited string near line %d",
-                       m_filepos.line ());
-    else
-      warning_with_id ("Octave:single-quote-string",
-                       "single quote delimited string near line %d of file %s",
-                       m_filepos.line (), nm.c_str ());
-  }
-
-  void
   base_lexer::warn_language_extension (const std::string& msg)
   {
     std::string nm = m_fcn_file_full_name;

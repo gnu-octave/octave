@@ -681,8 +681,6 @@ namespace octave
 
     void maybe_warn_separator_insert (char sep);
 
-    void warn_single_quote_string (void);
-
     void warn_language_extension (const std::string& msg);
 
     void maybe_warn_language_extension_comment (char c);

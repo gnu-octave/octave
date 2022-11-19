@@ -1638,8 +1638,8 @@ ANY_INCLUDING_NL (.|{NL})
 "+" { CMD_OR_UNARY_OP ("+", '+', true); }
 "-" { CMD_OR_UNARY_OP ("-", '-', true); }
 
-"~" { CMD_OR_UNARY_OP ("~", EXPR_NOT, true); }
-"!" { CMD_OR_UNARY_OP ("!", EXPR_NOT, false); }
+"~" { CMD_OR_UNARY_OP ("~", '~', true); }
+"!" { CMD_OR_UNARY_OP ("!", '!', false); }
 
 "," {
     curr_lexer->lexer_debug (",");
@@ -2255,7 +2255,7 @@ If @var{name} is omitted, return a list of keywords.
   {
     int tok = previous_token_value ();
 
-    return (tok == '+' || tok == '-' || tok == '@'
+    return (tok == '+' || tok == '-' || tok == '@' || tok == '~' || tok == '!'
             || tok == ',' || tok == ';' || tok == '*' || tok == '/'
             || tok == ':' || tok == '=' || tok == ADD_EQ
             || tok == AND_EQ || tok == DIV_EQ || tok == EDIV
@@ -2264,7 +2264,7 @@ If @var{name} is omitted, return a list of keywords.
             || tok == EPOW || tok == EPOW_EQ || tok == EXPR_AND
             || tok == EXPR_AND_AND || tok == EXPR_EQ || tok == EXPR_GE
             || tok == EXPR_GT || tok == EXPR_LE || tok == EXPR_LT
-            || tok == EXPR_NE || tok == EXPR_NOT || tok == EXPR_OR
+            || tok == EXPR_NE || tok == EXPR_OR
             || tok == EXPR_OR_OR || tok == LEFTDIV || tok == LEFTDIV_EQ
             || tok == MUL_EQ || tok == OR_EQ || tok == POW
             || tok == POW_EQ || tok == SUB_EQ);
@@ -3555,21 +3555,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::warn_single_quote_string (void)
-  {
-    std::string nm = m_fcn_file_full_name;
-
-    if (nm.empty ())
-      warning_with_id ("Octave:single-quote-string",
-                       "single quote delimited string near line %d",
-                       m_filepos.line ());
-    else
-      warning_with_id ("Octave:single-quote-string",
-                       "single quote delimited string near line %d of file %s",
-                       m_filepos.line (), nm.c_str ());
-  }
-
-  void
   base_lexer::warn_language_extension (const std::string& msg)
   {
     std::string nm = m_fcn_file_full_name;
@@ -3650,6 +3635,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       case '+': std::cerr << "'+'\n"; break;
       case '*': std::cerr << "'*'\n"; break;
       case '/': std::cerr << "'/'\n"; break;
+      case '~': std::cerr << "'~'\n"; break;
+      case '!': std::cerr << "'!'\n"; break;
       case ADD_EQ: std::cerr << "ADD_EQ\n"; break;
       case SUB_EQ: std::cerr << "SUB_EQ\n"; break;
       case MUL_EQ: std::cerr << "MUL_EQ\n"; break;
@@ -3666,7 +3653,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
       case EXPR_AND: std::cerr << "EXPR_AND\n"; break;
       case EXPR_OR: std::cerr << "EXPR_OR\n"; break;
-      case EXPR_NOT: std::cerr << "EXPR_NOT\n"; break;
       case EXPR_LT: std::cerr << "EXPR_LT\n"; break;
       case EXPR_LE: std::cerr << "EXPR_LE\n"; break;
       case EXPR_EQ: std::cerr << "EXPR_EQ\n"; break;

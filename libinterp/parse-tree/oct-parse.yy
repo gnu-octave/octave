@@ -202,13 +202,13 @@ static void yyerror (octave::base_parser& parser, const char *s);
 }
 
 // Tokens with line and column information.
-%token <tok_val> '=' ':' '-' '+' '*' '/'
+%token <tok_val> '=' ':' '-' '+' '*' '/' '~' '!'
 %token <tok_val> '(' ')' '[' ']' '{' '}' '.' '@'
 %token <tok_val> ',' ';' '\n'
 %token <tok_val> ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ
 %token <tok_val> EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ AND_EQ OR_EQ
 %token <tok_val> EXPR_AND_AND EXPR_OR_OR
-%token <tok_val> EXPR_AND EXPR_OR EXPR_NOT
+%token <tok_val> EXPR_AND EXPR_OR
 %token <tok_val> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
 %token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV
 %token <tok_val> HERMITIAN TRANSPOSE
@@ -325,7 +325,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %left ':'
 %left '-' '+'
 %left '*' '/' LEFTDIV EMUL EDIV ELEFTDIV
-%right UNARY EXPR_NOT
+%right UNARY '~' '!'
 %left POW EPOW HERMITIAN TRANSPOSE
 %right PLUS_PLUS MINUS_MINUS
 %left '(' '.' '{'
@@ -689,7 +689,7 @@ magic_colon     : ':'
                   { $$ = parser.make_constant ($1); }
                 ;
 
-magic_tilde     : EXPR_NOT
+magic_tilde     : '~'
                   {
                     OCTAVE_YYUSE ($1);
 
@@ -798,8 +798,10 @@ oper_expr       : primary_expr
                   { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
                 | MINUS_MINUS oper_expr %prec UNARY
                   { $$ = parser.make_prefix_op (MINUS_MINUS, $2, $1); }
-                | EXPR_NOT oper_expr %prec UNARY
-                  { $$ = parser.make_prefix_op (EXPR_NOT, $2, $1); }
+                | '~' oper_expr %prec UNARY
+                  { $$ = parser.make_prefix_op ('~', $2, $1); }
+                | '!' oper_expr %prec UNARY
+                  { $$ = parser.make_prefix_op ('!', $2, $1); }
                 | '+' oper_expr %prec UNARY
                   { $$ = parser.make_prefix_op ('+', $2, $1); }
                 | '-' oper_expr %prec UNARY
@@ -888,8 +890,10 @@ power_expr      : primary_expr
                   { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
                 | MINUS_MINUS power_expr %prec POW
                   { $$ = parser.make_prefix_op (MINUS_MINUS, $2, $1); }
-                | EXPR_NOT power_expr %prec POW
-                  { $$ = parser.make_prefix_op (EXPR_NOT, $2, $1); }
+                | '~' power_expr %prec POW
+                  { $$ = parser.make_prefix_op ('~', $2, $1); }
+                | '!' power_expr %prec POW
+                  { $$ = parser.make_prefix_op ('!', $2, $1); }
                 | '+' power_expr %prec POW
                   { $$ = parser.make_prefix_op ('+', $2, $1); }
                 | '-' power_expr %prec POW
@@ -1887,7 +1891,13 @@ attr            : identifier
 
                     $$ = parser.make_classdef_attribute ($1, $3);
                   }
-                | EXPR_NOT identifier
+                | '~' identifier
+                  {
+                    OCTAVE_YYUSE ($1);
+
+                    $$ = parser.make_not_classdef_attribute ($2);
+                  }
+                | '!' identifier
                   {
                     OCTAVE_YYUSE ($1);
 
@@ -3209,7 +3219,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     switch (op)
       {
-      case EXPR_NOT:
+      case '~':
+      case '!':
         t = octave_value::op_not;
         break;
 

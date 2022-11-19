@@ -307,7 +307,7 @@ octave_rl_set_completer_word_break_characters (const char *s)
   rl_completer_word_break_characters = ss;
 }
 
-char *
+const char *
 octave_rl_get_completer_word_break_characters (void)
 {
   return rl_completer_word_break_characters;

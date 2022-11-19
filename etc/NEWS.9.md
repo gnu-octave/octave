@@ -3,6 +3,12 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 
 ### General improvements
 
+- `oruntests`: The current directory now changes to the directory
+containing the files with the tests for the duration of the test.  This
+aligns the behavior of this function with Octave's test suite.  This also
+means that the file encoding specified in the `.oct-config` file for the
+respective directory is taken into account for the tests.
+
 ### Graphical User Interface
 
 ### Graphics backend

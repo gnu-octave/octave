@@ -85,7 +85,7 @@ jobs:
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/stable
 
       - name: configure ccache
         env:
@@ -239,7 +239,7 @@ jobs:
           key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/stable
 
       - name: configure ccache
         # The cache doesn't seem to compress well on macOS. Is it already compressed?
@@ -468,7 +468,7 @@ jobs:
           key: ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.msystem }}:refs/heads/default
+            ccache:${{ matrix.os }}:${{ matrix.msystem }}:refs/heads/stable
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
@@ -707,7 +707,7 @@ jobs:
           key: ccache:${{ matrix.os }}:cygwin:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
           restore-keys: |
             ccache:${{ matrix.os }}:cygwin:${{ github.ref }}
-            ccache:${{ matrix.os }}:cygwin:refs/heads/default
+            ccache:${{ matrix.os }}:cygwin:refs/heads/stable
 
       - name: configure ccache
         run: |

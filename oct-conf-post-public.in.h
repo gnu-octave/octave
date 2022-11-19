@@ -137,6 +137,7 @@ octave_unused_parameter (const T&)
 /* API macros for liboctave */
 #if defined (OCTAVE_DLL)
 #  define OCTAVE_API OCTAVE_EXPORT
+#  define OCTAVE_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTAVE_TEMPLATE_API
 #    if defined(__MINGW32__)
@@ -155,6 +156,11 @@ octave_unused_parameter (const T&)
 #  endif
 #else
 #  define OCTAVE_API OCTAVE_IMPORT
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    define OCTAVE_EXCEPTION_API OCTAVE_IMPORT
+#  else
+#    define OCTAVE_EXCEPTION_API OCTAVE_EXPORT
+#  endif
 #  define OCTAVE_TEMPLATE_API
 #  define OCTAVE_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API
@@ -164,6 +170,7 @@ octave_unused_parameter (const T&)
 /* API macros for liboctinterp */
 #if defined (OCTINTERP_DLL)
 #  define OCTINTERP_API OCTAVE_EXPORT
+#  define OCTINTERP_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTINTERP_TEMPLATE_API
 #    if defined(__MINGW32__)
@@ -182,6 +189,11 @@ octave_unused_parameter (const T&)
 #  endif
 #else
 #  define OCTINTERP_API OCTAVE_IMPORT
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    define OCTINTERP_EXCEPTION_API OCTAVE_IMPORT
+#  else
+#    define OCTINTERP_EXCEPTION_API OCTAVE_EXPORT
+#  endif
 #  define OCTINTERP_TEMPLATE_API
 #  define OCTINTERP_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API
@@ -191,6 +203,7 @@ octave_unused_parameter (const T&)
 /* API macros for the Array class in liboctave and liboctinterp */
 #if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
 #  define OCTARRAY_API OCTAVE_EXPORT
+#  define OCTARRAY_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTARRAY_TEMPLATE_API
 #    if defined(__MINGW32__)
@@ -209,6 +222,11 @@ octave_unused_parameter (const T&)
 #  endif
 #else
 #  define OCTARRAY_API OCTAVE_IMPORT
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    define OCTARRAY_EXCEPTION_API OCTAVE_IMPORT
+#  else
+#    define OCTARRAY_EXCEPTION_API OCTAVE_EXPORT
+#  endif
 #  define OCTARRAY_TEMPLATE_API
 #  define OCTARRAY_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTARRAY_CLASS_TEMPLATE_INSTANTIATION_API
@@ -218,6 +236,7 @@ octave_unused_parameter (const T&)
 /* API macros for libinterp/graphics */
 #if defined (OCTGRAPHICS_DLL)
 #  define OCTGRAPHICS_API OCTAVE_EXPORT
+#  define OCTGRAPHICS_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTGRAPHICS_TEMPLATE_API
 #    if defined(__MINGW32__)
@@ -236,6 +255,11 @@ octave_unused_parameter (const T&)
 #  endif
 #else
 #  define OCTGRAPHICS_API OCTAVE_IMPORT
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    define OCTGRAPHICS_EXCEPTION_API OCTAVE_IMPORT
+#  else
+#    define OCTGRAPHICS_EXCEPTION_API OCTAVE_EXPORT
+#  endif
 #  define OCTGRAPHICS_TEMPLATE_API
 #  define OCTGRAPHICS_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTGRAPHICS_CLASS_TEMPLATE_INSTANTIATION_API
@@ -245,6 +269,7 @@ octave_unused_parameter (const T&)
 /* API macros for libgui */
 #if defined (OCTGUI_DLL)
 #  define OCTGUI_API OCTAVE_EXPORT
+#  define OCTGUI_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTGUI_TEMPLATE_API
 #    if defined(__MINGW32__)
@@ -263,6 +288,11 @@ octave_unused_parameter (const T&)
 #  endif
 #else
 #  define OCTGUI_API OCTAVE_IMPORT
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    define OCTGUI_EXCEPTION_API OCTAVE_IMPORT
+#  else
+#    define OCTGUI_EXCEPTION_API OCTAVE_EXPORT
+#  endif
 #  define OCTGUI_TEMPLATE_API
 #  define OCTGUI_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTGUI_CLASS_TEMPLATE_INSTANTIATION_API

@@ -41,7 +41,7 @@ namespace octave
   // Typically, this should be caught after any call to
   // octave_value_list::index_vector()
 
-  class index_exception : public execution_exception
+  class OCTAVE_EXCEPTION_API index_exception : public execution_exception
   {
   public:
 

@@ -582,9 +582,16 @@ namespace octave
       }
     else
       {
+        static char *word_break_chars = nullptr;
+
         ::octave_rl_set_completer_quote_characters ("");
 
-        return octave_rl_get_completer_word_break_characters ();
+        free (word_break_chars);
+
+        word_break_chars
+          = octave_strdup_wrapper (octave_rl_get_completer_word_break_characters ());
+
+        return word_break_chars;
       }
   }
 

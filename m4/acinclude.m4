@@ -2726,7 +2726,6 @@ dnl   GREP
 dnl   GXX
 dnl   LDFLAGS
 dnl   ac_cv_f77_compiler_gnu
-dnl   ac_top_build_prefix
 dnl   canonical_host_type
 dnl   have_msvc
 dnl
@@ -2764,9 +2763,10 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
       SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
     ;;
     *-*-darwin*)
-      DL_LDFLAGS="-bundle -undefined dynamic_lookup -bind_at_load -bundle_loader ${ac_top_build_prefix}src/octave${EXEEXT} ${LDFLAGS}"
-      dnl Contains variables that are defined and undefined at this point, so use
-      dnl appropriate quoting to defer expansion of ${bindir} and ${version}.
+      dnl Contains variables that are defined and undefined at this point,
+      dnl so use appropriate quoting to defer expansion of
+      dnl ${abs_top_builddir}, ${bindir}, and ${version}.
+      DL_LDFLAGS='-bundle -undefined dynamic_lookup -bind_at_load -bundle_loader ${abs_top_builddir}/src/octave'"${EXEEXT} ${LDFLAGS}"
       MKOCTFILE_DL_LDFLAGS='-bundle -undefined dynamic_lookup -bind_at_load -bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
       SH_LDFLAGS="-dynamiclib -single_module ${LDFLAGS}"
       case $canonical_host_type in

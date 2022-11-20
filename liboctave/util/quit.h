@@ -158,7 +158,7 @@ namespace octave
     stack_info_type m_stack_info;
   };
 
-  class exit_exception : public std::exception
+  class OCTAVE_EXCEPTION_API exit_exception : public std::exception
   {
   public:
 

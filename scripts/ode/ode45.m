@@ -364,6 +364,35 @@ endfunction
 %!    error ("fout: invalid flag <%s>", flag);
 %!  endif
 %!endfunction
+%!function stop_solve = OutputSel_test (t, y, flag, x)
+%!  ## x == 1: select y(1)
+%!  ## x == 2: select y(2)
+%!  ## x == 3: select y([1,2])
+%!  persistent y_last
+%!  if strcmp (flag, "init")
+%!    y_last = y;
+%!    if ((x == 1) || (x == 2))
+%!      assert (length (y) == 1);
+%!    elseif (x == 3)
+%!      assert (length (y) == 2);
+%!    endif
+%!  elseif strcmp (flag, "done")
+%!    y_exp = fref ().';
+%!    if (x < 3)
+%!      assert (y_last, y_exp(x), 1e-4);
+%!    else
+%!      assert (y_last, y_exp, 1e-4);
+%!    endif
+%!  else # flag == ""
+%!    y_last = y(:,end);
+%!    if ((x == 1) || (x == 2))
+%!      assert (length (t) == length (y));
+%!    else
+%!      assert (2 * length (t) == length (y(:)));
+%!    endif
+%!  endif
+%!  stop_solve = 0;
+%!endfunction
 %!
 %!test  # two output arguments
 %! [t, y] = ode45 (@fpol, [0 2], [2 0]);
@@ -453,8 +482,17 @@ endfunction
 %! opt = odeset ("NonNegative", 2);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end); sol.y(:,end)], [2; 2; 0], 0.5);
-%!test  # Details of OutputSel can't be tested
-%! opt = odeset ("OutputFcn", @fout, "OutputSel", 1);
+%!test  # OutputSel 1 (see function OutputSel_test for asserts)
+%! opt = odeset ("OutputFcn", @(t, y, flag) OutputSel_test (t, y, flag, 1), ...
+%!               "OutputSel", 1);
+%! sol = ode45 (@fpol, [0 2], [2 0], opt);
+%!test  # OutputSel 2 (see function OutputSel_test for asserts)
+%! opt = odeset ("OutputFcn", @(t, y, flag) OutputSel_test (t, y, flag, 2), ...
+%!               "OutputSel", 2);
+%! sol = ode45 (@fpol, [0 2], [2 0], opt);
+%!test  # OutputSel [1,2] (see function OutputSel_test for asserts)
+%! opt = odeset ("OutputFcn", @(t, y, flag) OutputSel_test (t, y, flag, 3), ...
+%!               "OutputSel", [1,2]);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %!test  # Stats must add further elements in sol
 %! opt = odeset ("Stats", "on");

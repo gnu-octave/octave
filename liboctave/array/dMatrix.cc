@@ -596,19 +596,24 @@ Matrix::finverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
     info = -1;
   else if (calc_cond)
     {
-      F77_INT dgecon_info = 0;
+      if (octave::math::isnan (anorm))
+        rcon = octave::numeric_limits<double>::NaN ();
+      else
+        {
+          F77_INT dgecon_info = 0;
 
-      // Now calculate the condition number for non-singular matrix.
-      char job = '1';
-      Array<F77_INT> iz (dim_vector (nc, 1));
-      F77_INT *piz = iz.fortran_vec ();
-      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nc, tmp_data, nr, anorm,
-                                 rcon, pz, piz, dgecon_info
-                                 F77_CHAR_ARG_LEN (1)));
+          // Now calculate the condition number for non-singular matrix.
+          char job = '1';
+          Array<F77_INT> iz (dim_vector (nc, 1));
+          F77_INT *piz = iz.fortran_vec ();
+          F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                     nc, tmp_data, nr, anorm,
+                                     rcon, pz, piz, dgecon_info
+                                     F77_CHAR_ARG_LEN (1)));
 
-      if (dgecon_info != 0)
-        info = -1;
+          if (dgecon_info != 0)
+            info = -1;
+        }
     }
 
   if (info == -1 && ! force)

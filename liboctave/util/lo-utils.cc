@@ -321,10 +321,11 @@ namespace octave
           }
         else
           {
-            // True error.  Reset stream to original position and pass status on.
+            // True error.
+            // Reset stream to original position, clear eof bit, pass status on.
             is.clear ();
             is.seekg (pos);
-            is.setstate (status);
+            is.setstate (status & ~std::ios_base::eofbit);
           }
       }
 

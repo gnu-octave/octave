@@ -4560,8 +4560,8 @@ namespace octave
          && (c = is.get ()) != std::istream::traits_type::eof ())       \
     tmp[n++] = static_cast<char> (c);                                   \
                                                                         \
-  if (n > 0 && c == std::istream::traits_type::eof ())                  \
-    is.clear ();                                                        \
+  if (c == std::istream::traits_type::eof ())                           \
+    is.clear (is.rdstate () & (~std::ios::failbit));                    \
                                                                         \
   tmp.resize (n)
 
@@ -4603,8 +4603,8 @@ namespace octave
                 tmp[n++] = static_cast<char> (c);                       \
             }                                                           \
                                                                         \
-          if (n > 0 && c == std::istream::traits_type::eof ())          \
-            is.clear ();                                                \
+          if (c == std::istream::traits_type::eof ())                   \
+            is.clear (is.rdstate () & (~std::ios::failbit));            \
                                                                         \
           tmp.resize (n);                                               \
         }                                                               \
@@ -4617,15 +4617,13 @@ namespace octave
 
   // This format must match a nonempty sequence of characters.
 #define BEGIN_CHAR_CLASS_CONVERSION()                                   \
-  int width = elt->width;                                               \
+  int width = (elt->width ? elt->width                                  \
+                          : std::numeric_limits<int>::max ());          \
                                                                         \
   std::string tmp;                                                      \
                                                                         \
   do                                                                    \
     {                                                                   \
-      if (! width)                                                      \
-        width = std::numeric_limits<int>::max ();                       \
-                                                                        \
       std::ostringstream buf;                                           \
                                                                         \
       std::string char_class = elt->char_class;                         \
@@ -4636,29 +4634,39 @@ namespace octave
         {                                                               \
           int chars_read = 0;                                           \
           while (is && chars_read++ < width                             \
-                 && (c = is.get ()) != std::istream::traits_type::eof () \
-                 && char_class.find (c) != std::string::npos)           \
-            buf << static_cast<char> (c);                               \
+                 && (c = is.get ()) != std::istream::traits_type::eof ()) \
+            {                                                           \
+              if (char_class.find (c) != std::string::npos)             \
+                buf << static_cast<char> (c);                           \
+              else                                                      \
+                {                                                       \
+                  is.putback (c);                                       \
+                  break;                                                \
+                }                                                       \
+            }                                                           \
         }                                                               \
       else                                                              \
         {                                                               \
           int chars_read = 0;                                           \
           while (is && chars_read++ < width                             \
-                 && (c = is.get ()) != std::istream::traits_type::eof () \
-                 && char_class.find (c) == std::string::npos)           \
-            buf << static_cast<char> (c);                               \
+                 && (c = is.get ()) != std::istream::traits_type::eof ()) \
+            {                                                           \
+              if (char_class.find (c) == std::string::npos)             \
+                buf << static_cast<char> (c);                           \
+              else                                                      \
+                {                                                       \
+                  is.putback (c);                                       \
+                  break;                                                \
+                }                                                       \
+            }                                                           \
         }                                                               \
-                                                                        \
-      if (width == std::numeric_limits<int>::max ()                     \
-          && c != std::istream::traits_type::eof ())                    \
-        is.putback (c);                                                 \
                                                                         \
       tmp = buf.str ();                                                 \
                                                                         \
       if (tmp.empty ())                                                 \
         is.setstate (std::ios::failbit);                                \
       else if (c == std::istream::traits_type::eof ())                  \
-        is.clear ();                                                    \
+        is.clear (is.rdstate () & (~std::ios::failbit));                \
                                                                         \
     }                                                                   \
   while (0)
@@ -4670,7 +4678,7 @@ namespace octave
         tmp = string::u8_from_encoding (who, tmp, encoding ());         \
       width = tmp.length ();                                            \
                                                                         \
-      if (is)                                                           \
+      if (is && width > 0)                                              \
         {                                                               \
           int i = 0;                                                    \
                                                                         \
@@ -5042,7 +5050,7 @@ namespace octave
 
                     // If it looks like we have a matching failure, then
                     // reset the failbit in the stream state.
-                    if (! is.eof () && is.rdstate () & std::ios::failbit)
+                    if (is.rdstate () & std::ios::failbit)
                       {
                         error (who, "format failed to match");
                         is.clear (is.rdstate () & (~std::ios::failbit));

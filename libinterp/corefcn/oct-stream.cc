@@ -4282,6 +4282,9 @@ namespace octave
   {
     T value = T ();
 
+    is >> std::ws;  // skip through whitespace and advance stream pointer
+    std::streampos pos = is.tellg ();
+
     switch (fmt.type)
       {
       case 'o':
@@ -4295,11 +4298,7 @@ namespace octave
 
       case 'i':
         {
-          int c1 = std::istream::traits_type::eof ();
-
-          while (is && (c1 = is.get ()) != std::istream::traits_type::eof ()
-                 && isspace (c1))
-            ; // skip whitespace
+          int c1 = is.get ();
 
           if (c1 != std::istream::traits_type::eof ())
             {
@@ -4348,18 +4347,33 @@ namespace octave
         break;
       }
 
-    // If conversion produces an integer that overflows, failbit is set but
-    // value is non-zero.  We want to treat this case as success, so clear
-    // failbit from the stream state to keep going.
-    // FIXME: Maybe set error state on octave stream as above? Matlab does
-    // *not* indicate an error message on overflow.
-    if ((is.rdstate () & std::ios::failbit) && value != T ())
-      is.clear (is.rdstate () & ~std::ios::failbit);
-
-    // Only copy the converted value if the stream is in a state where we
-    // want to continue reading.
-    if (! (is.rdstate () & std::ios::failbit))
-      *valptr = value;
+    std::ios::iostate status = is.rdstate ();
+    if (! (status & std::ios::failbit))
+      {
+        // Copy the converted value if the stream is in a good state
+        *valptr = value;
+      }
+    else
+      {
+        if (value != T ())
+          {
+            // If conversion produces an integer that overflows, failbit is set
+            // but value is non-zero.  We want to treat this case as success,
+            // so clear  failbit from the stream state to keep going.
+            // FIXME: Maybe set error state on octave stream?  Matlab does
+            // *not* indicate an error message on overflow.
+            is.clear (status & ~std::ios::failbit);
+            *valptr = value;
+          }
+        else
+          {
+            // True error.
+            // Reset stream to original position, clear eof bit, pass status on.
+            is.clear ();
+            is.seekg (pos);
+            is.setstate (status & ~std::ios_base::eofbit);
+          }
+      }
 
     return is;
   }

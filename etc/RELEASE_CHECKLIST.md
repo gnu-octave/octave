@@ -59,9 +59,9 @@ This will produce lots of whitespace changes, but no behavior changes. **Must oc
 
 Completion Date:
 
-* Grammar check documentation.
-* Spell check documentation.
-* Verify no functions missing from manual.
+* Grammar check documentation (See `doc/interpreter/doccheck/README`).
+* Spell check documentation (`make spellcheck`).
+* Verify no functions missing from manual (`make doc/interpreter/undocumented_list`).
 * Verify deprecated functions removed from "see also" links.
 * Verify all formats (Info, HTML, PDF) build correctly.
 * Review `etc/NEWS.VERSION.md` for any features which should be announced.

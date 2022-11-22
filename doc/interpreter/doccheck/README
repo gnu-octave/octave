@@ -57,16 +57,21 @@ vi doc/interpreter/arith.texi
 
   When there is no source file comment, the source file is the .txi source.
   Make corrections to the source files, *not* arith.texi which is derived.
+
+  There are generally three choices for resolving a reported misspelling:
+    
+    1. The word is misspelled and should be corrected in the source.
+    2. The word should not be checked for spelling (for example, it might be
+       a proper name such as "Lanczos").  Use the @nospell{...} macro around
+       the word in the source (See Special Cases below).
+    3. The word is valid, but Octave-specific (for example, a function name
+       such as "datenum").  These words should be added to Octave's exception
+       dictionary (see Special Cases below).
 ....
 make       # propagate changes to arith.texi
   repeat spellcheck until the words that remain are not misspellings.
 
 +Special Cases
-
-Any words remaining after all misspellings have been corrected are
-Octave-specific spellings and should be added to the Octave private dictionary.
-
-doccheck/add_to_aspell_dict misspellings
 
 Words which are misspellings, but which can't be changed in the original
 source, should be marked with the @nospell{WORD} macro.  This will cause aspell
@@ -80,6 +85,13 @@ Manchester @nospell{Centre} for Computational Mathematics.
 
 aspell will no longer report any misspellings for linalg.texi.
 
+Any words remaining after all misspellings have been corrected are
+Octave-specific spellings and should be added to the Octave private dictionary.
+The script invocation to add words to the dictionary is:
+
+doccheck/add_to_aspell_dict file_of_misspellings
+
+
 GRAMMAR:
 
 To be added
@@ -87,7 +99,7 @@ To be added
 UNDOCUMENTED FUNCTIONS:
 
 From the top-level <OCTAVE_DIR>, type 'make doc/interpreter/undocumented_list'.
-This will produce an "undocumented_list" file with any undocumented functions.
+This will produce the file "undocumented_list" with any undocumented functions.
 
 Functions which don't require an @DOCSTRING reference can be added to the list
 of exceptions at the bottom of the mk_undocumented_list script.  This is often

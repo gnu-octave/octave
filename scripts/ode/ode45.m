@@ -369,23 +369,23 @@ endfunction
 %!  ## x == 2: select y(2)
 %!  ## x == 3: select y([1,2])
 %!  persistent y_last
-%!  if strcmp (flag, "init")
+%!  if (strcmp (flag, "init"))
 %!    y_last = y;
-%!    if ((x == 1) || (x == 2))
+%!    if (x == 1 || x == 2)
 %!      assert (length (y) == 1);
 %!    elseif (x == 3)
 %!      assert (length (y) == 2);
 %!    endif
-%!  elseif strcmp (flag, "done")
+%!  elseif (strcmp (flag, "done"))
 %!    y_exp = fref ().';
 %!    if (x < 3)
 %!      assert (y_last, y_exp(x), 1e-4);
 %!    else
 %!      assert (y_last, y_exp, 1e-4);
 %!    endif
-%!  else # flag == ""
+%!  else  # flag == ""
 %!    y_last = y(:,end);
-%!    if ((x == 1) || (x == 2))
+%!    if (x == 1 || x == 2)
 %!      assert (length (t) == length (y));
 %!    else
 %!      assert (2 * length (t) == length (y(:)));
@@ -550,7 +550,7 @@ endfunction
 ## "MvPattern"
 ## "Vectorized"
 
-%!test # Check that imaginary part of solution does not get inverted
+%!test  # Check that imaginary part of solution does not get inverted
 %! sol = ode45 (@(x,y) 1, [0 1], 1i);
 %! assert (imag (sol.y), ones (size (sol.y)));
 %! [x, y] = ode45 (@(x,y) 1, [0 1], 1i, odeset ("Refine", 1));

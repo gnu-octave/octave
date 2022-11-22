@@ -893,19 +893,24 @@ FloatComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
     info = -1;
   else if (calc_cond)
     {
-      F77_INT cgecon_info = 0;
+      if (octave::math::isnan (anorm))
+        rcon = octave::numeric_limits<float>::NaN ();
+      else
+        {
+          F77_INT cgecon_info = 0;
 
-      // Now calculate the condition number for non-singular matrix.
-      char job = '1';
-      Array<float> rz (dim_vector (2 * nc, 1));
-      float *prz = rz.fortran_vec ();
-      F77_XFCN (cgecon, CGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 nc, F77_CMPLX_ARG (tmp_data), nr, anorm,
-                                 rcon, F77_CMPLX_ARG (pz), prz, cgecon_info
-                                 F77_CHAR_ARG_LEN (1)));
+          // Now calculate the condition number for non-singular matrix.
+          char job = '1';
+          Array<float> rz (dim_vector (2 * nc, 1));
+          float *prz = rz.fortran_vec ();
+          F77_XFCN (cgecon, CGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                     nc, F77_CMPLX_ARG (tmp_data), nr, anorm,
+                                     rcon, F77_CMPLX_ARG (pz), prz, cgecon_info
+                                     F77_CHAR_ARG_LEN (1)));
 
-      if (cgecon_info != 0)
-        info = -1;
+          if (cgecon_info != 0)
+            info = -1;
+        }
     }
 
   if ((info == -1 && ! force)

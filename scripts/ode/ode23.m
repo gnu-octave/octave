@@ -370,23 +370,23 @@ endfunction
 %!  ## x == 2: select y(2)
 %!  ## x == 3: select y([1,2])
 %!  persistent y_last
-%!  if strcmp (flag, "init")
+%!  if (strcmp (flag, "init"))
 %!    y_last = y;
-%!    if ((x == 1) || (x == 2))
+%!    if (x == 1 || x == 2)
 %!      assert (length (y) == 1);
 %!    elseif (x == 3)
 %!      assert (length (y) == 2);
 %!    endif
-%!  elseif strcmp (flag, "done")
+%!  elseif (strcmp (flag, "done"))
 %!    y_exp = fref ().';
 %!    if (x < 3)
 %!      assert (y_last, y_exp(x), 5e-4);
 %!    else
 %!      assert (y_last, y_exp, 5e-4);
 %!    endif
-%!  else # flag == ""
+%!  else  # flag == ""
 %!    y_last = y(:, end);
-%!    if ((x == 1) || (x == 2))
+%!    if (x == 1 || x == 2)
 %!      assert (length (t) == length (y));
 %!    else
 %!      assert (2 * length (t) == length (y(:)));
@@ -459,7 +459,7 @@ endfunction
 %! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
-%!test # hermite_cubic_interpolation
+%!test  # hermite_cubic_interpolation
 %! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
 %! [t,sol] = ode23(@(t,x)[x(2);x(1)],linspace(0,1),[1;0],opt);
 %! assert (max (abs (sol(:,1)-cosh (t))),0,1e-6);
@@ -538,7 +538,7 @@ endfunction
 ## "MvPattern"
 ## "Vectorized"
 
-%!test # Check that imaginary part of solution does not get inverted
+%!test  # Check that imaginary part of solution does not get inverted
 %! sol = ode23 (@(x,y) 1, [0 1], 1i);
 %! assert (imag (sol.y), ones (size (sol.y)));
 %! [x, y] = ode23 (@(x,y) 1, [0 1], 1i);

@@ -4505,11 +4505,16 @@ namespace octave
     {                                                                   \
       int c = std::istream::traits_type::eof ();                        \
                                                                         \
+      /* get all whitespace characters */                               \
       while (is && (c = is.get ()) != std::istream::traits_type::eof () \
              && isspace (c))                                            \
         { /* skip whitespace */ }                                       \
                                                                         \
-      if (c != std::istream::traits_type::eof ())                       \
+      if (c == std::istream::traits_type::eof ())                       \
+        /* reset failbit at eof */                                      \
+        is.clear (is.rdstate () & (~std::ios::failbit));                \
+      else                                                              \
+        /* put back non-whitespace character */                         \
         is.putback (c);                                                 \
     }                                                                   \
   while (0)

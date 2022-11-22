@@ -5071,8 +5071,8 @@ namespace octave
                     // reset the failbit in the stream state.
                     if (is.rdstate () & std::ios::failbit)
                       {
-                        error (who, "format failed to match");
                         is.clear (is.rdstate () & (~std::ios::failbit));
+                        error (who, "format failed to match");
                       }
 
                     // FIXME: is this the right thing to do?

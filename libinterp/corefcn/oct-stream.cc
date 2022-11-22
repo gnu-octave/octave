@@ -4441,17 +4441,17 @@ namespace octave
       case 'E':
       case 'G':
         {
-          int c1 = std::istream::traits_type::eof ();
+          is >> std::ws;  // skip through whitespace and advance stream pointer
+          std::streampos pos = is.tellg ();
 
-          while (is && (c1 = is.get ()) != std::istream::traits_type::eof ()
-                 && isspace (c1))
-            ; // skip whitespace
+          ref = read_value<double> (is);
 
-          if (c1 != std::istream::traits_type::eof ())
+          std::ios::iostate status = is.rdstate ();
+          if (status & std::ios::failbit)
             {
-              is.putback (c1);
-
-              ref = read_value<double> (is);
+              is.clear ();
+              is.seekg (pos);
+              is.setstate (status & ~std::ios_base::eofbit);
             }
         }
         break;

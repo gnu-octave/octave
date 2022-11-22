@@ -263,16 +263,13 @@ namespace octave
     T val = 0.0;
 
     // FIXME: resetting stream position is likely to fail unless we are
-    // reading from a file.
+    //        reading from a file.
     std::streampos pos = is.tellg ();
 
-    char c1 = ' ';
-
-    while (isspace (c1))
-      c1 = is.get ();
+    is >> std::ws;  // skip through whitespace and advance stream pointer
 
     bool neg = false;
-
+    char c1 = is.get ();
     switch (c1)
       {
       case '-':
@@ -285,6 +282,8 @@ namespace octave
           c2 = is.get ();
           if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
             val = read_inf_nan_na<T> (is, c2);
+          else if (isspace (c2))
+            is.setstate (std::ios::failbit);
           else
             {
               is.putback (c2);

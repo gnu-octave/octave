@@ -4,7 +4,7 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 ### General improvements
 
 - Octave's libraries are now built using symbol visibility by default.
-  That means that fewer symbols are exported from these libraries.
+  That means that less symbols are exported from these libraries.
   Configure with `--disable-lib-visibility-flags` to export all symbols
   (as in previous versions).
 
@@ -36,13 +36,9 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 - `Refine` option is now implemented in functions `ode45`, `ode23`,
   and `ode23s`.
 
-- Octave is now compatible with PCRE2 (UTF-8).  PCRE2 is preferred over PCRE
-  if both are installed.  Configure with `--without-pcre2` if you prefer Octave
-  to use PCRE in this case.
-
-- The GUI has a dark style and several new icons in toolbars for better
-  visibility and higher contrast.  The GUI also has a new terminal widget,
-  and comes with more fonts for the documentation browser.
+- Octave is now compatible to PCRE2 (UTF-8). PCRE2 is preferred over PCRE
+  if both are installed.  Configure with `--without-pcre2` if you prefer
+  that Octave uses PCRE in this case.
 
 ### Graphical User Interface
 
@@ -109,22 +105,6 @@ option to the `print` function.
   `OutputFcn`, and `Refine`, along with corrected orientation of struct
   outputs.
 
-- *Early notice of future breaking changes*:  Due to many user requests that
-  Octave should have a Matlab-compatible string class, there is work under way
-  to implement a string class, which will differ from a vector of characters.
-  Currently in Octave, both 'foo' and "foo" are largely interchangeable,
-  barring certain escape sequence interpretations that are present for one but
-  not another.  In future, that is likely to change as a consequence of
-  implementing Matlab-style strings.  This is required for other
-  Matlab-compatibility activities as well.
-
-  What this means for user code: If you want to treat "foo" as a character
-  vector as opposed to a string object, *and* if you intend to use a future
-  version of Matlab with string classes, then rewrite "foo" as 'foo'.  If you
-  need to retain the character vector behavior for "foo", you can continue to
-  use Octave 8 with long-term support.
-
-
 ### Alphabetical list of new functions added in Octave 8
 
 * `clearAllMemoizedCaches`
@@ -177,16 +157,6 @@ from Octave 8.
 - The environment variable used by `mkoctfile` for linker flags is now
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,
   and will be removed in a future version of Octave.
-
-Summary of bugs fixed for version 8.1.0 (YYYY-MM-DD):
-----------------------------------------------------
-
-- Improved input validation and/or output handling for `poly`, `pinv`, `patch`,
-  `fill`, `fill3`, `qp`, `datevec`, `textscan`, `sub2ind`, `qr`, `airy`,
-  `regexp`, `dec2bin`, `dec2hex`, and many others.
-- Improved performance for `complex`, `fftw`, `delaunayn`, `isfield`, `tsearch`,
-  sparse matrix exponentiation, other sparse operations, and many others.
-- Overhauled `@audiorecorder` and `@audioplayer` classes.
 
 ### Old release news
 

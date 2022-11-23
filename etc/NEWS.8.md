@@ -178,6 +178,16 @@ from Octave 8.
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,
   and will be removed in a future version of Octave.
 
+Summary of bugs fixed for version 8.1.0 (YYYY-MM-DD):
+----------------------------------------------------
+
+- Improved input validation and/or output handling for `poly`, `pinv`, `patch`,
+  `fill`, `fill3`, `qp`, `datevec`, `textscan`, `sub2ind`, `qr`, `airy`,
+  `regexp`, `dec2bin`, `dec2hex`, and many others.
+- Improved performance for `complex`, `fftw`, `delaunayn`, `isfield`, `tsearch`,
+  sparse matrix exponentiation, other sparse operations, and many others.
+- Overhauled `@audiorecorder` and `@audioplayer` classes.
+
 ### Old release news
 
 - [Octave 7.x](etc/NEWS.7)

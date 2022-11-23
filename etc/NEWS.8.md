@@ -105,6 +105,21 @@ option to the `print` function.
   `OutputFcn`, and `Refine`, along with corrected orientation of struct
   outputs.
 
+- *Early notice of future breaking changes*:  Due to many user requests that
+  Octave should have a Matlab-compatible string class, there is work under way
+  to implement a string class, which will differ from a vector of characters.
+  Currently in Octave, both 'foo' and "foo" are largely interchangeable,
+  barring certain escape sequence interpretations that are present for one but
+  not another.  In future, that is likely to change as a consequence of
+  implementing Matlab-style strings.  This is required for other
+  Matlab-compatibility activities as well.
+
+  *What this means for user code*: If you want to treat "foo" as a character
+  vector as opposed to a string object, *and* if you intend to use a future
+  version of Octave with string classes, then rewrite "foo" as 'foo'.  If you
+  need to retain the character vector behavior for "foo", you can continue to
+  use Octave 8 with long-term support.
+
 ### Alphabetical list of new functions added in Octave 8
 
 * `clearAllMemoizedCaches`

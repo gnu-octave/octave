@@ -40,11 +40,12 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
   if both are installed.  Configure with `--without-pcre2` if you prefer Octave
   to use PCRE in this case.
 
-### Graphical User Interface
-
 - The GUI has a dark style and several new icons in toolbars for better
   visibility and higher contrast.  The GUI also has a new terminal widget,
   and comes with more fonts for the documentation browser.
+
+### Graphical User Interface
+
 
 ### Graphics backend
 
@@ -117,9 +118,9 @@ option to the `print` function.
   implementing Matlab-style strings.  This is required for other
   Matlab-compatibility activities as well.
 
-  *What this means for user code*: If you want to treat "foo" as a character
+  What this means for user code: If you want to treat "foo" as a character
   vector as opposed to a string object, *and* if you intend to use a future
-  version of Octave with string classes, then rewrite "foo" as 'foo'.  If you
+  version of Matlab with string classes, then rewrite "foo" as 'foo'.  If you
   need to retain the character vector behavior for "foo", you can continue to
   use Octave 8 with long-term support.
 

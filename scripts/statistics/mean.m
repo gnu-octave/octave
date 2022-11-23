@@ -25,16 +25,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} mean (@var{x})
-## @deftypefnx {} {@var{y} =} mean (@var{x}, "all")
+## @deftypefnx {} {@var{y} =} mean (@var{x}, 'all')
 ## @deftypefnx {} {@var{y} =} mean (@var{x}, @var{dim})
-## @deftypefnx {} {@var{y} =} mean (@var{x}, @var{vecdim})
-## @deftypefnx {} {@var{y} =} mean (@dots{}, @var{outtype})
-## @deftypefnx {} {@var{y} =} mean (@dots{}, @var{nanflag})
+## @deftypefnx {} {@var{y} =} mean (@dots{}, '@var{outtype}')
+## @deftypefnx {} {@var{y} =} mean (@dots{}, '@var{nanflag}')
 ## Compute the mean of the elements of @var{x}.
 ##
 ## @itemize
 ## @item
-## If @var{x} is a vector, then @code{mean(@var{x})} returns the
+## If @var{x} is a vector, then @code{mean (@var{x})} returns the
 ## mean of the elements in @var{x} defined as
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
@@ -48,49 +47,53 @@
 ## @end example
 ##
 ## @noindent
-## where @math{N} is the length of the @var{x} vector.
+## where @math{N} is the number of elements in the @var{x} vector.
 ##
 ## @end ifnottex
 ##
 ## @item
-## If @var{x} is a matrix, then @code{mean(@var{x})} returns a row vector
-## with the mean of each columns in @var{x}.
+## If @var{x} is a matrix, then @code{mean} returns a row vector with the mean
+## of each column in @var{x}.
 ##
 ## @item
-## If @var{x} is a multidimensional array, then @code{mean(@var{x})}
-## operates along the first nonsingleton dimension of @var{x}.
+## If @var{x} is a multi-dimensional array, then @code{mean} operates along the
+## first non-singleton dimension of @var{x}.
 ## @end itemize
 ##
-## @code{mean(@var{x}, "all")} returns the mean of all the elements in @var{x}.
+## The optional input @var{dim} forces @code{mean} to operate over the
+## specified dimension(s).  @var{dim} can either be a scalar dimension or a
+## vector of non-repeating dimensions.  Dimensions must be positive integers,
+## and the mean is calculated over the array slice defined by @var{dim}.
 ##
-## @code{mean(@var{x}, @var{dim})} returns the mean along the
-## operating dimension @var{dim} of @var{x}.
+## Specifying dimension @qcode{"all"} will force @code{mean} to operate on all
+## elements of @var{x}, and is equivalent to @code{mean (@var{x}(:))}.
 ##
-## @code{mean(@var{x}, @var{vecdim})} returns the mean over the
-## dimensions specified in the vector @var{vecdim}.  For example, if @var{x}
-## is a 2-by-3-by-4 array, then @code{mean(@var{x}, [1 2])} returns a 1-by-4
-## array.  Each element of the output array is the mean of the elements on
-## the corresponding page of @var{x}.  NOTE! @var{vecdim} MUST index at least
-## N-2 dimensions of @var{x}, where @code{N = length (size (@var{x}))} and
-## N < 8.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
-## equivalent to @code{mean(@var{x}, "all")}.
+## The optional input @var{outtype} specifies the data type that is returned.
+## Valid values are:
 ##
-## @code{mean(@dots{}, @var{outtype})} returns the mean with a specified data
-## type, using any of the input arguments in the previous syntaxes.
-## @var{outtype} can be "default", "double", or "native".
+## @table @asis
+## @item @qcode{'default'} : Output is of type double, unless the input is
+## single in which case the output is of type single.
 ##
-## @code{mean(@dots{}, @var{nanflag})} specifies whether to exclude NaN values
-## from the calculation, using any of the input argument combinations in
-## previous syntaxes.  By default, NaN values are included in the calculation
-## (@var{nanflag} has the value "includenan").  To exclude NaN values, set the
-## value of @var{nanflag} to "omitnan".
+## @item @qcode{'double'} : Output is of type double.
+##
+## @item @qcode{'native'} : Output is of the same type as the input
+## (@code{class (@var{x})}), unless the input is logical in which case the
+## output is of type double.
+##
+## @end table
+##
+## The optional input @var{nanflag} specifies whether to include/exclude NaN
+## values from the calculation.  By default, NaN values are included in the
+## calculation (@var{nanflag} has the value @qcode{'includenan'}).  To exclude
+## NaN values, set the value of @var{nanflag} to @qcode{'omitnan'}.
 ##
 ## @seealso{median, mode}
 ## @end deftypefn
 
 function y = mean (x, varargin)
 
-  if (nargin < 1 || nargin > 4 || any (cellfun (@isnumeric, varargin(2:end))))
+  if (nargin < 1 || nargin > 4 || ! all (cellfun (@ischar, varargin(2:end))))
     print_usage ();
   endif
 
@@ -99,15 +102,15 @@ function y = mean (x, varargin)
   omitnan = false;
   outtype = "default";
 
-  for i = 1:length (varargin)
+  for i = 1:numel (varargin)
     if (ischar (varargin{i}))
       switch (varargin{i})
         case "all"
           all_flag = true;
-        case "omitnan"
-          omitnan = true;
         case "includenan"
           omitnan = false;
+        case "omitnan"
+          omitnan = true;
         case {"default", "double", "native"}
           outtype = varargin{i};
         otherwise
@@ -117,35 +120,35 @@ function y = mean (x, varargin)
   endfor
   varargin(cellfun (@ischar, varargin)) = [];
 
-  if (((length (varargin) == 1) && ! (isnumeric (varargin{1}))) ...
-      || (length (varargin) > 1))
+  if (((numel (varargin) == 1) && ! (isnumeric (varargin{1}))) ...
+      || (numel (varargin) > 1))
     print_usage ();
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("mean: X must be either a numeric or boolean vector or matrix");
+    error ("mean: X must be either a numeric or logical vector or matrix");
   endif
 
-  if (length (varargin) == 0)
+  if (numel (varargin) == 0)
 
     ## Single numeric input argument, no dimensions given.
     if (all_flag)
-      n = length (x(:));
+      n = numel (x(:));
       if (omitnan)
-        n = length (x(! isnan (x)));
-        x(isnan (x)) = 0;
+        idx = isnan (x);
+        n -= sum (idx(:));
+        x(idx) = 0;
       endif
       y = sum (x(:), 1) ./ n;
     else
       sz = size (x);
-      dim = find (sz > 1, 1);
-      if length (dim) == 0
-        dim = 1;
-      endif
+      ## Find the first non-singleton dimension.
+      (dim = find (sz != 1, 1)) || (dim = 1);
       n = size (x, dim);
       if (omitnan)
-        n = sum (! isnan (x), dim);
-        x(isnan (x)) = 0;
+        idx = isnan (x);
+        n = sum (! idx, dim);
+        x(idx) = 0;
       endif
       y = sum (x, dim) ./ n;
     endif
@@ -153,77 +156,79 @@ function y = mean (x, varargin)
   else
 
     ## Two numeric input arguments, dimensions given.  Note scalar is vector!
-    vecdim = varargin{1};
-    if (! (isvector (vecdim) && all (vecdim)) || any (rem (vecdim, 1)))
-      error ("mean: Dimension must be a positive integer scalar or vector");
+    dim = varargin{1};
+    if (! (isvector (dim) && all (dim)) || any (rem (dim, 1)))
+      error ("mean: DIM must be a positive integer scalar or vector");
     endif
 
-    if (isscalar (vecdim))
+    if (isscalar (dim))
 
-      n = size (x, vecdim);
+      n = size (x, dim);
       if (omitnan)
-        n = sum (! isnan (x), vecdim);
-        x(isnan (x)) = 0;
+        idx = isnan (x);
+        n = sum (! idx, dim);
+        x(idx) = 0;
       endif
-      y = sum (x, vecdim) ./ n;
+      y = sum (x, dim) ./ n;
 
     else
 
       sz = size (x);
-      ndims = length (sz);
+      ndims = numel (sz);
       misdim = [1:ndims];
 
       ## keep remaining dimensions
-      for i = 1:length (vecdim)
-        misdim(misdim == vecdim(i)) = [];
+      for i = 1:numel (dim)
+        misdim(misdim == dim(i)) = [];
       endfor
 
-      switch (length (misdim))
+      switch (numel (misdim))
         ## if all dimensions are given, compute x(:)
         case 0
-          n = length (x(:));
+          n = numel (x(:));
           if (omitnan)
-            n = length (x(! isnan (x)));
-            x(isnan (x)) = 0;
+            idx = isnan (x);
+            n -= sum (idx(:));
+            x(idx) = 0;
           endif
           y = sum (x(:), 1) ./ n;
 
         ## for 1 dimension left, return column vector
         case 1
-          x = permute (x, [misdim, vecdim]);
+          x = permute (x, [misdim, dim]);
           for i = 1:size (x, 1)
             x_vec = x(i,:,:,:,:,:,:)(:);
             if (omitnan)
               x_vec = x_vec(! isnan (x_vec));
             endif
-            y(i) = sum (x_vec, 1) ./ length (x_vec);
+            y(i) = sum (x_vec, 1) ./ numel (x_vec);
           endfor
 
         ## for 2 dimensions left, return matrix
         case 2
-          x = permute (x, [misdim, vecdim]);
+          x = permute (x, [misdim, dim]);
           for i = 1:size (x, 1)
             for j = 1:size (x, 2)
               x_vec = x(i,j,:,:,:,:,:)(:);
               if (omitnan)
                 x_vec = x_vec(! isnan (x_vec));
               endif
-              y(i,j) = sum (x_vec, 1) ./ length (x_vec);
+              y(i,j) = sum (x_vec, 1) ./ numel (x_vec);
             endfor
           endfor
 
-        ## for more that 2 dimensions left, print usage
+        ## for more than 2 dimensions left, throw error
         otherwise
-          error ("vecdim must index at least N-2 dimensions of X");
+          error ("DIM must index at least N-2 dimensions of X");
       endswitch
     endif
 
   endif
 
-  ## Convert output as requested
+  ## Convert output if requested
   switch (outtype)
     case "default"
-      ## do nothing, the operators already do the right thing
+      ## do nothing, the operators already do the right thing.
     case "double"
       y = double (y);
     case "native"
@@ -231,6 +236,8 @@ function y = mean (x, varargin)
         y = cast (y, class (x));
       endif
     otherwise
+      ## FIXME: This is unreachable code.  Valid values already
+      ##        checked in input validation.
       error ("mean: OUTTYPE '%s' not recognized", outtype);
   endswitch
 
@@ -250,21 +257,6 @@ endfunction
 %!assert (mean (logical ([1 0 1 1])), 0.75)
 %!assert (mean (single ([1 0 1 1])), single (0.75))
 %!assert (mean ([1 2], 3), [1 2])
-
-## Test input validation
-%!error <Invalid call to mean.  Correct usage is> mean ()
-%!error <Invalid call to mean.  Correct usage is> mean (1, 2, 3)
-%!error <Invalid call to mean.  Correct usage is> mean (1, 2, 3, 4)
-%!error <Invalid call to mean.  Correct usage is> mean (1, "all", 3)
-%!error <Invalid call to mean.  Correct usage is> mean (1, "b")
-%!error <Invalid call to mean.  Correct usage is> mean (1, 1, "foo")
-%!error <X must be either a numeric or boolean> mean ({1:5})
-%!error <X must be either a numeric or boolean> mean ("char")
-%!error <Dimension must be a positive integer> mean (1, ones (2,2))
-%!error <Dimension must be a positive integer> mean (1, 1.5)
-%!error <Dimension must be a positive integer> mean (1, 0)
-%!error <vecdim must index at least N-2 dimensions of X> ...
-%!  mean (repmat ([1:20;6:25], [5 2 6 3 5]), [1 2])
 
 ## Test outtype option
 %!test
@@ -324,7 +316,7 @@ endfunction
 %! assert (mean ([true false NaN], 2, "omitnan"), 0.5);
 %! assert (mean ([true false NaN], 2, "omitnan", "native"), 0.5);
 
-## Test dimension indexing with vecdim in n-dimensional arrays
+## Test dimension indexing with vecdim in N-dimensional arrays
 %!test
 %! x = repmat ([1:20;6:25], [5 2 6 3]);
 %! assert (size (mean (x, [3 2])), [10 3]);
@@ -333,7 +325,7 @@ endfunction
 %! assert (size (mean (x, [1 4 3])), [1 40]);
 %! assert (size (mean (x, [1 2 3 4])), [1 1]);
 
-## Test results with vecdim in n-dimensional arrays and "omitnan"
+## Test results with vecdim in N-dimensional arrays and "omitnan"
 %!test
 %! x = repmat ([1:20;6:25], [5 2 6 3]);
 %! m = repmat ([10.5;15.5], [5,3]);
@@ -343,3 +335,19 @@ endfunction
 %! assert (mean (x, [3 2]), m, 4e-14);
 %! m(2,3) = 15.52301255230125;
 %! assert (mean (x, [3 2], "omitnan"), m, 4e-14);
+
+## Test input validation
+%!error <Invalid call to mean.  Correct usage is> mean ()
+%!error <Invalid call to mean.  Correct usage is> mean (1, 2, 3)
+%!error <Invalid call to mean.  Correct usage is> mean (1, 2, 3, 4, 5)
+%!error <Invalid call to mean.  Correct usage is> mean (1, "all", 3)
+%!error <Invalid call to mean.  Correct usage is> mean (1, "b")
+%!error <Invalid call to mean.  Correct usage is> mean (1, 1, "foo")
+%!error <X must be either a numeric or logical> mean ({1:5})
+%!error <X must be either a numeric or logical> mean ("char")
+%!error <DIM must be a positive integer> mean (1, ones (2,2))
+%!error <DIM must be a positive integer> mean (1, 1.5)
+%!error <DIM must be a positive integer> mean (1, 0)
+%!error <DIM must index at least N-2 dimensions of X>
+%!  mean (repmat ([1:20;6:25], [5 2 6 3 5]), [1 2])
+

@@ -157,7 +157,7 @@ function y = mean (x, varargin)
 
     ## Two numeric input arguments, dimensions given.  Note scalar is vector!
     dim = varargin{1};
-    if (! (isvector (dim) && all (dim)) || any (rem (dim, 1)))
+    if (! (isvector (dim) && dim > 0 && rem (dim, 1) == 0))
       error ("mean: DIM must be a positive integer scalar or vector");
     endif
 
@@ -347,7 +347,11 @@ endfunction
 %!error <X must be either a numeric or logical> mean ("char")
 %!error <DIM must be a positive integer> mean (1, ones (2,2))
 %!error <DIM must be a positive integer> mean (1, 1.5)
+%!error <DIM must be a positive integer> mean (1, -1)
+%!error <DIM must be a positive integer> mean (1, -1.5)
 %!error <DIM must be a positive integer> mean (1, 0)
+%!error <DIM must be a positive integer> mean (1, NaN)
+%!error <DIM must be a positive integer> mean (1, Inf)
 %!error <DIM must index at least N-2 dimensions of X>
 %!  mean (repmat ([1:20;6:25], [5 2 6 3 5]), [1 2])
 

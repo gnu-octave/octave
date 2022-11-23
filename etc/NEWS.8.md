@@ -42,6 +42,11 @@ Summary of important user-visible changes for version 8 (yyyy-mm-dd):
 
 ### Graphical User Interface
 
+- The GUI has a dark style and several new icons in toolbars for better
+  visibility and higher contrast.
+
+- The GUI also has a new terminal widget, and comes with more fonts for the
+  documentation browser.
 
 ### Graphics backend
 

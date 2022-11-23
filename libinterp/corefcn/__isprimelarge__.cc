@@ -213,12 +213,12 @@ localgcd (uint64_t a, uint64_t b)
 // factorization algorithm with Brent update.
 // The code is short and simple, but the math behind it is complicated.
 uint64_t
-pollardrho (uint64_t n, uint64_t c = UINT64_C (1))
+pollardrho (uint64_t n, uint64_t c = 1)
 {
-  uint64_t i = UINT64_C (1), j = UINT64_C (2);  // cycle index values
-  uint64_t x = (c+1) % n;       // can also be rand () % n
-  uint64_t y = x;               // other value in the chain
-  uint64_t g = 0;               // GCD
+  uint64_t i = 1, j = 2;    // cycle index values
+  uint64_t x = (c+1) % n;   // can also be rand () % n
+  uint64_t y = x;           // other value in the chain
+  uint64_t g = 0;           // GCD
 
   while (true)
     {
@@ -238,10 +238,10 @@ pollardrho (uint64_t n, uint64_t c = UINT64_C (1))
           j <<= 1;
         }
 
-      if (g == n || i > UINT64_C (1000000))  // cut losses, restart with a different c
+      if (g == n || i > 1000000)  // cut losses, restart with a different c
         return pollardrho (n, c + 2);
 
-      if (g > UINT64_C (1))  // found GCD ==> exit loop properly
+      if (g > 1)  // found GCD ==> exit loop properly
         {
           error_unless (n % g == 0);  // theoretical possibility of GCD error
           return g;

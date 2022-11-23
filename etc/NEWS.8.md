@@ -121,9 +121,7 @@ option to the `print` function.
 
   *What this means for user code*: If you want to treat "foo" as a character
   vector as opposed to a string object, *and* if you intend to use a future
-  version of Octave with string classes, then rewrite "foo" as 'foo'.  If you
-  need to retain the character vector behavior for "foo", you can continue to
-  use Octave 8 with long-term support.
+  version of Octave with string classes, then rewrite "foo" as 'foo'.
 
 ### Alphabetical list of new functions added in Octave 8
 

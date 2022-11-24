@@ -4,7 +4,7 @@
 <context>
     <name>QColorDialog</name>
     <message>
-        <location filename="../../../octave-qt/qcolordialog.cpp" line="+1378"/>
+        <location filename="build_ts/octave-qt/qcolordialog.cpp" line="+1378"/>
         <source>Hu&amp;e:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -62,7 +62,7 @@
 <context>
     <name>QDialog</name>
     <message>
-        <location filename="../../../octave-qt/qdialog.cpp" line="+528"/>
+        <location filename="build_ts/octave-qt/qdialog.cpp" line="+528"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
@@ -75,7 +75,7 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../../../octave-qt/qmessagebox.cpp" line="+1936"/>
+        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="+1936"/>
         <location line="+446"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
@@ -84,7 +84,7 @@
 <context>
     <name>QErrorMessage</name>
     <message>
-        <location filename="../../../octave-qt/qerrormessage.cpp" line="+208"/>
+        <location filename="build_ts/octave-qt/qerrormessage.cpp" line="+208"/>
         <source>Debug Message:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -112,8 +112,8 @@
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../../octave-qt/qfiledialog.cpp" line="+557"/>
-        <location filename="../../../octave-qt/qfiledialog_symbian.cpp" line="+192"/>
+        <location filename="build_ts/octave-qt/qfiledialog.cpp" line="+557"/>
+        <location filename="build_ts/octave-qt/qfiledialog_symbian.cpp" line="+192"/>
         <source>Find Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -242,7 +242,7 @@ Do you want to delete it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../octave-qt/qfiledialog_win.cpp" line="+131"/>
+        <location filename="build_ts/octave-qt/qfiledialog_win.cpp" line="+131"/>
         <source>All Files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -250,7 +250,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QFileSystemModel</name>
     <message>
-        <location filename="../../../octave-qt/qfilesystemmodel.cpp" line="+763"/>
+        <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+763"/>
         <source>%1 TB</source>
         <translation type="unfinished"></translation>
     </message>
@@ -275,12 +275,13 @@ Do you want to delete it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location filename="../src/files-dock-widget.cc" line="+138"/>
+        <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+90"/>
         <source>Invalid filename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+1"/>
         <source>&lt;b&gt;The name &quot;%1&quot; can not be used.&lt;/b&gt;&lt;p&gt;Try using another name, with fewer characters or no punctuations marks.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -315,7 +316,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QFontDialog</name>
     <message>
-        <location filename="../../../octave-qt/qfontdialog.cpp" line="+183"/>
+        <location filename="build_ts/octave-qt/qfontdialog.cpp" line="+183"/>
         <source>Select Font</source>
         <translation type="unfinished"></translation>
     </message>
@@ -363,7 +364,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -416,7 +417,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QInputDialog</name>
     <message>
-        <location filename="../../../octave-qt/qinputdialog.cpp" line="+223"/>
+        <location filename="build_ts/octave-qt/qinputdialog.cpp" line="+223"/>
         <source>Enter a value:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -424,7 +425,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../../octave-qt/qmessagebox.cpp" line="-2243"/>
+        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="-2243"/>
         <source>Show Details...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -463,7 +464,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+845"/>
+        <location filename="../src/settings-dialog.cc" line="+879"/>
         <source>Difference to the default size</source>
         <translation>Lehenetsitako tamainarekiko aldea</translation>
     </message>
@@ -494,7 +495,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QPPDOptionsModel</name>
     <message>
-        <location filename="../../../octave-qt/qprintdialog_unix.cpp" line="+1238"/>
+        <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="+1238"/>
         <source>Name</source>
         <translation type="unfinished">Izena</translation>
     </message>
@@ -507,7 +508,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QPageSetupWidget</name>
     <message>
-        <location filename="../../../octave-qt/qpagesetupdialog_unix.cpp" line="+304"/>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="+304"/>
         <source>Centimeters (cm)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -530,7 +531,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QPlatformTheme</name>
     <message>
-        <location filename="../../../octave-qt/qplatformtheme.cpp" line="+710"/>
+        <location filename="build_ts/octave-qt/qplatformtheme.cpp" line="+710"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
@@ -623,14 +624,14 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QPrintDialog</name>
     <message>
-        <location filename="../../../octave-qt/qabstractprintdialog.cpp" line="+116"/>
+        <location filename="build_ts/octave-qt/qabstractprintdialog.cpp" line="+116"/>
         <location line="+13"/>
-        <location filename="../../../octave-qt/qprintdialog_win.cpp" line="+272"/>
+        <location filename="build_ts/octave-qt/qprintdialog_win.cpp" line="+272"/>
         <source>Print</source>
         <translation type="unfinished">Imprimatu</translation>
     </message>
     <message>
-        <location filename="../../../octave-qt/qpagesetupdialog_unix.cpp" line="-232"/>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="-232"/>
         <source>A0</source>
         <translation type="unfinished"></translation>
     </message>
@@ -785,7 +786,7 @@ Do you want to delete it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../octave-qt/qprintdialog_qws.cpp" line="+148"/>
+        <location filename="build_ts/octave-qt/qprintdialog_qws.cpp" line="+148"/>
         <source>File exists</source>
         <translation type="unfinished"></translation>
     </message>
@@ -965,7 +966,7 @@ Do you want to delete it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../octave-qt/qprintdialog_unix.cpp" line="-844"/>
+        <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="-844"/>
         <location line="+68"/>
         <source>&amp;Options &gt;&gt;</source>
         <translation type="unfinished"></translation>
@@ -1024,7 +1025,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../octave-qt/qprintdialog_win.cpp" line="+1"/>
+        <location filename="build_ts/octave-qt/qprintdialog_win.cpp" line="+1"/>
         <source>The &apos;From&apos; value cannot be greater than the &apos;To&apos; value.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1037,7 +1038,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QPrintPreviewDialog</name>
     <message>
-        <location filename="../../../octave-qt/qabstractpagesetupdialog.cpp" line="+68"/>
+        <location filename="build_ts/octave-qt/qabstractpagesetupdialog.cpp" line="+68"/>
         <location line="+12"/>
         <source>Page Setup</source>
         <translation type="unfinished"></translation>
@@ -1109,7 +1110,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1786"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1782"/>
         <source>copied selection to clipboard</source>
         <translation>arbelean kopiatutako aukeraketa</translation>
     </message>
@@ -1117,7 +1118,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QsciLexerBash</name>
     <message>
-        <location filename="../../../qsci/qscilexerbash.cpp" line="+203"/>
+        <location filename="build_ts/octave-qsci/qscilexerbash.cpp" line="+203"/>
         <source>Default</source>
         <translation>Lehenetsia</translation>
     </message>
@@ -1190,7 +1191,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QsciLexerBatch</name>
     <message>
-        <location filename="../../../qsci/qscilexerbatch.cpp" line="+174"/>
+        <location filename="build_ts/octave-qsci/qscilexerbatch.cpp" line="+174"/>
         <source>Default</source>
         <translation>Lehenetsia</translation>
     </message>
@@ -1233,7 +1234,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QsciLexerCPP</name>
     <message>
-        <location filename="../../../qsci/qscilexercpp.cpp" line="+364"/>
+        <location filename="build_ts/octave-qsci/qscilexercpp.cpp" line="+364"/>
         <source>Default</source>
         <translation>Lehenetsia</translation>
     </message>
@@ -1516,7 +1517,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QsciLexerDiff</name>
     <message>
-        <location filename="../../../qsci/qscilexerdiff.cpp" line="+106"/>
+        <location filename="build_ts/octave-qsci/qscilexerdiff.cpp" line="+106"/>
         <source>Default</source>
         <translation>Lehenetsia</translation>
     </message>
@@ -1579,7 +1580,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QsciLexerMatlab</name>
     <message>
-        <location filename="../../../qsci/qscilexermatlab.cpp" line="+133"/>
+        <location filename="build_ts/octave-qsci/qscilexermatlab.cpp" line="+133"/>
         <source>Default</source>
         <translation>Lehenetsia</translation>
     </message>
@@ -1627,7 +1628,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QsciLexerPerl</name>
     <message>
-        <location filename="../../../qsci/qscilexerperl.cpp" line="+328"/>
+        <location filename="build_ts/octave-qsci/qscilexerperl.cpp" line="+328"/>
         <source>Default</source>
         <translation>Lehenetsia</translation>
     </message>
@@ -1835,7 +1836,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="../../../qsci/qsciscintilla.cpp" line="+4475"/>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4475"/>
         <source>&amp;Undo</source>
         <translation>&amp;Desegin</translation>
     </message>
@@ -2064,7 +2065,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>octave::command_widget</name>
     <message>
-        <location filename="../src/command-widget.cc" line="+57"/>
+        <location filename="../src/command-widget.cc" line="+58"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2078,21 +2079,11 @@ Do you want to overwrite it?</source>
         <source>Continue</source>
         <translation type="unfinished">Jarraitu</translation>
     </message>
-    <message>
-        <location line="+2"/>
-        <source>Command Input</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Command Output</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>octave::community_news</name>
     <message>
-        <location filename="../src/community-news.cc" line="+70"/>
+        <location filename="../src/community-news.cc" line="+71"/>
         <source>Octave Community News</source>
         <translation type="unfinished">Octave komunitatearen berriak</translation>
     </message>
@@ -2100,7 +2091,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+112"/>
+        <location filename="../src/documentation.cc" line="+113"/>
         <location line="+14"/>
         <location line="+735"/>
         <source>Octave Documentation</source>
@@ -2307,7 +2298,7 @@ Invalid bookmark file?</source>
         <location line="+9"/>
         <source>The file
 %1
-is not a valid XBEL file verison 1.0.</source>
+is not a valid XBEL file version 1.0.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2319,7 +2310,7 @@ is not a valid XBEL file verison 1.0.</source>
 <context>
     <name>octave::documentation_dock_widget</name>
     <message>
-        <location filename="../src/documentation-dock-widget.cc" line="+42"/>
+        <location filename="../src/documentation-dock-widget.cc" line="+41"/>
         <source>Documentation</source>
         <translation type="unfinished">Dokumentazioa</translation>
     </message>
@@ -2382,16 +2373,16 @@ Do you want to open the preferences?</source>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+1081"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+1097"/>
         <location line="+28"/>
-        <location line="+549"/>
+        <location line="+540"/>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
         <translation type="unfinished">Octaveren editorea</translation>
     </message>
     <message>
-        <location line="-619"/>
+        <location line="-610"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -2405,7 +2396,7 @@ Izen bera duen beste fitxategi bat irekita dago editorean</translation>
         <translation type="unfinished">Atxikitako testu editorearen fitxa desagertu egin da.</translation>
     </message>
     <message>
-        <location line="+549"/>
+        <location line="+540"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -2439,7 +2430,7 @@ for write: %2.</source>
 fitxategia ezin da idatzi: %2.</translation>
     </message>
     <message>
-        <location line="+240"/>
+        <location line="+251"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Fitxategia</translation>
     </message>
@@ -2744,7 +2735,7 @@ fitxategia ezin da idatzi: %2.</translation>
         <translation type="unfinished">&amp;Ohiko neurria</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>&amp;Sort Tabs Alphabetically</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2779,7 +2770,7 @@ fitxategia ezin da idatzi: %2.</translation>
         <translation type="unfinished">&amp;Exekutatu</translation>
     </message>
     <message>
-        <location line="-2066"/>
+        <location line="-2085"/>
         <source>Save File and Run</source>
         <translation type="unfinished">Fitxategia gorde eta exekutatu</translation>
     </message>
@@ -2789,7 +2780,7 @@ fitxategia ezin da idatzi: %2.</translation>
         <translation type="unfinished">Jarraitu</translation>
     </message>
     <message>
-        <location line="+2080"/>
+        <location line="+2099"/>
         <source>Save File and Run / Continue</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2824,7 +2815,7 @@ fitxategia ezin da idatzi: %2.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+16"/>
         <source>Editor</source>
         <translation type="unfinished">Editorea</translation>
     </message>
@@ -2832,7 +2823,7 @@ fitxategia ezin da idatzi: %2.</translation>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+159"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+160"/>
         <source>line:</source>
         <translation type="unfinished">Lerroa:</translation>
     </message>
@@ -2862,11 +2853,12 @@ fitxategia ezin da idatzi: %2.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+62"/>
-        <location line="+1152"/>
+        <location line="+73"/>
+        <location line="+1179"/>
         <location line="+132"/>
-        <location line="+376"/>
-        <location line="+188"/>
+        <location line="+391"/>
+        <location line="+66"/>
+        <location line="+126"/>
         <location line="+26"/>
         <location line="+38"/>
         <location line="+38"/>
@@ -2876,13 +2868,13 @@ fitxategia ezin da idatzi: %2.</translation>
         <translation type="unfinished">Octaveren editorea</translation>
     </message>
     <message>
-        <location line="-2070"/>
+        <location line="-2116"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+828"/>
+        <location line="+855"/>
         <source>Goto line</source>
         <translation type="unfinished">Lerrora joan</translation>
     </message>
@@ -2939,13 +2931,13 @@ Modifying and saving the file might cause data loss!</source>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+39"/>
+        <location line="+38"/>
         <source>Chan&amp;ge encoding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-38"/>
-        <location line="+31"/>
+        <location line="-37"/>
+        <location line="+30"/>
         <source>&amp;Close</source>
         <translation type="unfinished">It&amp;xi</translation>
     </message>
@@ -2976,14 +2968,20 @@ Quit debugging and save?</source>
 Akasgabetzea kendu eta gorde?</translation>
     </message>
     <message>
-        <location line="+167"/>
+        <location line="+183"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation type="unfinished">%1
 fitxategia ezin da irakurtzeko ireki: %2.</translation>
     </message>
     <message>
-        <location line="+214"/>
+        <location line="+66"/>
+        <source>The changes could not be saved to the file
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+152"/>
         <source>The current encoding %1
 can not be applied.
 
@@ -3060,7 +3058,7 @@ fitxategia ezebatu edo izenez aldatu da. Berreskuratu nahi duzu?%2</translation>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+77"/>
+        <location filename="../src/files-dock-widget.cc" line="+47"/>
         <source>File Browser</source>
         <translation type="unfinished">Fitxategi-arakatzailea</translation>
     </message>
@@ -3135,35 +3133,35 @@ fitxategia ezebatu edo izenez aldatu da. Berreskuratu nahi duzu?%2</translation>
         <translation type="unfinished">Erakutsi hasiera-direktorioa</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>Set Browser Directory...</source>
         <translation type="unfinished">Nabigatzailearen direktorioa zehaztu...</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+422"/>
+        <location line="+440"/>
         <source>Find Files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-418"/>
-        <location line="+431"/>
+        <location line="-436"/>
+        <location line="+448"/>
         <source>New File...</source>
         <translation type="unfinished">Beste fitxategi bat...</translation>
     </message>
     <message>
-        <location line="-428"/>
-        <location line="+430"/>
+        <location line="-445"/>
+        <location line="+447"/>
         <source>New Directory...</source>
         <translation type="unfinished">Beste direktorio bat...</translation>
     </message>
     <message>
-        <location line="-375"/>
+        <location line="-392"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+314"/>
+        <location line="+332"/>
         <source>Open</source>
         <translation type="unfinished">Ireki</translation>
     </message>
@@ -3220,46 +3218,22 @@ fitxategia ezebatu edo izenez aldatu da. Berreskuratu nahi duzu?%2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="-356"/>
         <source>Rename...</source>
         <translation type="unfinished">Izena aldatu...</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+371"/>
         <source>Delete...</source>
         <translation type="unfinished">Ezabatu...</translation>
     </message>
     <message>
-        <location line="+117"/>
-        <source>Rename file/directory</source>
-        <translation type="unfinished">Fitxategia/direktorioa izenez aldatu</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Rename file/directory:
-</source>
-        <translation type="unfinished">Fitxategiari/direktorioari izena aldatu:
-</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>
- to: </source>
-        <translation type="unfinished">
- honakoaren ordez: </translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Rename error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="-579"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+712"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
@@ -3396,7 +3370,7 @@ Aukera horien gainean informazio gehiago aurki zenezake honakoei bisita eginda &
     </message>
     <message>
         <location line="+3"/>
-        <location filename="../src/m-editor/find-dialog.cc" line="+3"/>
+        <location filename="../src/m-editor/find-dialog.cc" line="+2"/>
         <source>Find &amp;what:</source>
         <translation type="unfinished">&amp;Bilatu:</translation>
     </message>
@@ -3492,7 +3466,7 @@ Aukera horien gainean informazio gehiago aurki zenezake honakoei bisita eginda &
     </message>
     <message>
         <location line="+179"/>
-        <location filename="../src/m-editor/find-dialog.cc" line="+179"/>
+        <location filename="../src/m-editor/find-dialog.cc" line="+173"/>
         <source>Search from end</source>
         <translation type="unfinished">Azkenetik bilatu</translation>
     </message>
@@ -3736,7 +3710,7 @@ Aukera horien gainean informazio gehiago aurki zenezake honakoei bisita eginda &
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Command History</source>
         <translation type="unfinished">Komandoen historiala</translation>
     </message>
@@ -3775,7 +3749,7 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
 <context>
     <name>octave::label_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+79"/>
+        <location filename="../src/octave-dock-widget.cc" line="+83"/>
         <source>Undock widget</source>
         <translation type="unfinished">Desakoplatu widgeta</translation>
     </message>
@@ -3788,7 +3762,7 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+658"/>
+        <location filename="../src/main-window.cc" line="+673"/>
         <source>Save Workspace As</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3798,34 +3772,34 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+204"/>
-        <location line="+1606"/>
+        <location line="+203"/>
+        <location line="+1656"/>
         <source>About Octave</source>
         <translation type="unfinished">&quot;Octave&quot;-ri buruz</translation>
     </message>
     <message>
-        <location line="-1993"/>
+        <location line="-2042"/>
         <source>Octave</source>
         <translation type="unfinished">Octave</translation>
     </message>
     <message>
-        <location line="-344"/>
+        <location line="-355"/>
         <source>Profiler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+345"/>
+        <location line="+356"/>
         <source>Are you sure you want to exit Octave?</source>
         <translation type="unfinished">Seguru zaude Octavetik irten nahi duzula?</translation>
     </message>
     <message>
-        <location line="+553"/>
-        <location line="+1513"/>
+        <location line="+575"/>
+        <location line="+1540"/>
         <source>Browse directories</source>
         <translation type="unfinished">Direktorioak arakatu</translation>
     </message>
     <message>
-        <location line="-1260"/>
+        <location line="-1280"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation type="unfinished">Octaveren fitxategiak (*.m);;Fitxategi guztiak (*)</translation>
     </message>
@@ -3858,7 +3832,7 @@ function and can not be edited.</source>
         <translation type="unfinished">Octaveren editorea</translation>
     </message>
     <message>
-        <location line="+689"/>
+        <location line="+709"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Fitxategia</translation>
     </message>
@@ -4247,12 +4221,12 @@ edo aktibatu web-konexioa azken berrikuntzak Octaveren sare ezarpen-elkarrizketa
         <translation type="unfinished">Ezkutatu widgeta</translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+84"/>
         <source>Dock widget</source>
         <translation type="unfinished">Akoplatu widgeta</translation>
     </message>
     <message>
-        <location line="+59"/>
+        <location line="+58"/>
         <source>Undock widget</source>
         <translation type="unfinished">Desakoplatu widgeta</translation>
     </message>
@@ -4260,7 +4234,7 @@ edo aktibatu web-konexioa azken berrikuntzak Octaveren sare ezarpen-elkarrizketa
 <context>
     <name>octave::octave_qscintilla</name>
     <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+298"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+297"/>
         <source>Help on</source>
         <translation type="unfinished">Laguntza honi buruz</translation>
     </message>
@@ -4294,7 +4268,7 @@ Make sure you have write access to temp. directory
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+286"/>
+        <location line="+292"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4364,7 +4338,7 @@ fitxategia ez dago. Sortu nahi duzu?</translation>
 <context>
     <name>octave::release_notes</name>
     <message>
-        <location filename="../src/release-notes.cc" line="+80"/>
+        <location filename="../src/release-notes.cc" line="+84"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation type="unfinished">%1 bertsioaren noten fitxategia hutsik dago.</translation>
     </message>
@@ -4382,7 +4356,7 @@ fitxategia ez dago. Sortu nahi duzu?</translation>
 <context>
     <name>octave::resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+442"/>
+        <location filename="../src/resource-manager.cc" line="+486"/>
         <source>The settings file
 %1
 does not exist and can not be created.
@@ -4489,7 +4463,7 @@ Octaveren ingurune grafikoa itxi egin behar da.</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-767"/>
+        <location filename="../src/settings-dialog.cc" line="-801"/>
         <source>Octave Preferences</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4501,12 +4475,12 @@ Octaveren ingurune grafikoa itxi egin behar da.</translation>
     <message>
         <location line="+16"/>
         <location line="+5"/>
-        <location line="+892"/>
+        <location line="+931"/>
         <source>System setting</source>
         <translation type="unfinished">Sistemaren hobespena</translation>
     </message>
     <message>
-        <location line="-651"/>
+        <location line="-687"/>
         <source>IBeam Cursor</source>
         <translation type="unfinished">IBeam kurtsorea</translation>
     </message>
@@ -4521,7 +4495,12 @@ Octaveren ingurune grafikoa itxi egin behar da.</translation>
         <translation type="unfinished">Azpimarra-kurtsorea</translation>
     </message>
     <message>
-        <location line="+168"/>
+        <location line="+121"/>
+        <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+63"/>
         <source>Set Octave Startup Directory</source>
         <translation type="unfinished">Octaveren hasiera-direktorioa ezarri</translation>
     </message>
@@ -4531,7 +4510,7 @@ Octaveren ingurune grafikoa itxi egin behar da.</translation>
         <translation type="unfinished">Fitxategi-arakatzailearen hasiera-direktorioa ezarri</translation>
     </message>
     <message>
-        <location line="+707"/>
+        <location line="+727"/>
         <source>Enable attribute colors</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4561,7 +4540,7 @@ Octaveren ingurune grafikoa itxi egin behar da.</translation>
         <translation type="unfinished">kurtsorea</translation>
     </message>
     <message>
-        <location filename="../src/gui-preferences-ed.h" line="+205"/>
+        <location filename="../src/gui-preferences-ed.h" line="+212"/>
         <source>Top</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4621,12 +4600,12 @@ Octaveren ingurune grafikoa itxi egin behar da.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui-preferences-global.h" line="+149"/>
+        <location filename="../src/gui-preferences-global.h" line="+186"/>
         <source>Environment Variables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui-settings.h" line="+132"/>
+        <location filename="../src/gui-settings.h" line="+133"/>
         <source>Second color mode (light/dark)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5296,7 +5275,13 @@ Aurrez zehaztutako lasterbidea ezabatuko da. Jarraitu nahi duzu?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-335"/>
+        <location line="+129"/>
+        <source>Add Shift modifier
+(allows one to enter number keys)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-464"/>
         <source>Zoom In</source>
         <translation type="unfinished">Handitu</translation>
     </message>
@@ -5457,13 +5442,7 @@ Aurrez zehaztutako lasterbidea ezabatuko da. Jarraitu nahi duzu?</translation>
         <translation type="unfinished">Sartu lasterbidea</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Add Shift modifier
-(allows to enter number keys)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+17"/>
+        <location line="+20"/>
         <source>Actual shortcut</source>
         <translation type="unfinished">Uneko lasterbidea</translation>
     </message>
@@ -5498,7 +5477,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
 <context>
     <name>octave::terminal_dock_widget</name>
     <message>
-        <location filename="../src/terminal-dock-widget.cc" line="+87"/>
+        <location filename="../src/terminal-dock-widget.cc" line="+97"/>
         <source>Command Window</source>
         <translation type="unfinished">Komandoen leihoa</translation>
     </message>
@@ -5506,7 +5485,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
 <context>
     <name>octave::variable_dock_widget</name>
     <message>
-        <location filename="../src/variable-editor.cc" line="+175"/>
+        <location filename="../src/variable-editor.cc" line="+177"/>
         <source>Dock widget</source>
         <translation type="unfinished">Akoplatu widgeta</translation>
     </message>
@@ -5516,7 +5495,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+15"/>
         <source>Undock widget</source>
         <translation type="unfinished">Desakoplatu widgeta</translation>
     </message>
@@ -5544,7 +5523,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+548"/>
+        <location line="+547"/>
         <source>Variable Editor Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5631,7 +5610,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1241"/>
+        <location line="-1240"/>
         <source>Save Variable %1 As</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5744,7 +5723,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
 <context>
     <name>octave::workspace_view</name>
     <message>
-        <location filename="../src/workspace-view.cc" line="+59"/>
+        <location filename="../src/workspace-view.cc" line="+58"/>
         <source>Workspace</source>
         <translation type="unfinished">Lan-eremua</translation>
     </message>
@@ -5833,13 +5812,13 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
     <name>settings_dialog</name>
     <message>
         <location filename="../src/settings-dialog.ui" line="+45"/>
-        <location line="+831"/>
-        <location line="+1905"/>
+        <location line="+834"/>
+        <location line="+1909"/>
         <source>General</source>
         <translation>Orokorra</translation>
     </message>
     <message>
-        <location line="-2606"/>
+        <location line="-2390"/>
         <source>Octave logo only</source>
         <translation>Octaveren logoa bakarrik</translation>
     </message>
@@ -5854,12 +5833,12 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation>Ikono grafikoak</translation>
     </message>
     <message>
-        <location line="-81"/>
+        <location line="-341"/>
         <source>Dock widget title bar</source>
         <translation>Akoplatu widgeta titulu-barrara</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+72"/>
         <source>Small</source>
         <translation>Txikia</translation>
     </message>
@@ -5869,12 +5848,12 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation>Handia</translation>
     </message>
     <message>
-        <location line="+170"/>
+        <location line="+105"/>
         <source>Custom style</source>
         <translation>Pertsonalizatutako estiloa</translation>
     </message>
     <message>
-        <location line="+190"/>
+        <location line="+237"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
         <translation>Hobespenok .octavercse hasierako fitxategiak exekutatu ondoren izango dute eragina.</translation>
     </message>
@@ -5960,22 +5939,17 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
     </message>
     <message>
         <location line="-1478"/>
-        <location line="+1859"/>
+        <location line="+1863"/>
         <source>Font</source>
         <translation>Letra-tipo mota</translation>
     </message>
     <message>
-        <location line="-1569"/>
+        <location line="-1573"/>
         <source>Show line numbers</source>
         <translation>Erakutsi lerro-zenbakiak</translation>
     </message>
     <message>
-        <location line="+152"/>
-        <source>Highlight current line</source>
-        <translation>Momentuko lerroa nabarmendu</translation>
-    </message>
-    <message>
-        <location line="-139"/>
+        <location line="+13"/>
         <source>Show whitespace</source>
         <translation>Erakutsi zuriuneak</translation>
     </message>
@@ -6016,7 +5990,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
     </message>
     <message>
         <location line="+52"/>
-        <location line="+1749"/>
+        <location line="+1753"/>
         <source>Font size</source>
         <translation>Letra-tipoaren tamaina</translation>
     </message>
@@ -6026,12 +6000,12 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation>Fitxategi-arakatzailea</translation>
     </message>
     <message>
-        <location line="-2097"/>
+        <location line="-2104"/>
         <source>Interface</source>
         <translation>Interfazea</translation>
     </message>
     <message>
-        <location line="+418"/>
+        <location line="+421"/>
         <source>Confirm before exiting</source>
         <translation>Berretsi irten aurretik</translation>
     </message>
@@ -6042,7 +6016,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation>Erakutsi egoera-barra</translation>
     </message>
     <message>
-        <location line="-630"/>
+        <location line="-677"/>
         <source>Text inactive</source>
         <translation>Testua ezgaituta</translation>
     </message>
@@ -6053,12 +6027,12 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation>Gaituta</translation>
     </message>
     <message>
-        <location line="-154"/>
+        <location line="-89"/>
         <source>Normal</source>
         <translation>Normala</translation>
     </message>
     <message>
-        <location line="+193"/>
+        <location line="+128"/>
         <source>Background inactive</source>
         <translation>Atzeko planoa ezgaituta</translation>
     </message>
@@ -6068,18 +6042,18 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation>3D</translation>
     </message>
     <message>
-        <location line="+152"/>
+        <location line="+199"/>
         <source>Octave Startup</source>
         <translation>Octaveren abiaraztea</translation>
     </message>
     <message>
         <location line="+46"/>
-        <location line="+1687"/>
+        <location line="+1691"/>
         <source>Browse</source>
         <translation>Arakatu</translation>
     </message>
     <message>
-        <location line="-886"/>
+        <location line="-890"/>
         <location line="+140"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
         <translation>Tarte finkodun letra-tipoekin ibiliko da zuzen.
@@ -6114,42 +6088,47 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation>Erakutsi korritze-barra horizontala</translation>
     </message>
     <message>
-        <location line="-960"/>
+        <location line="-963"/>
         <source>Preferences</source>
         <translation type="unfinished">Hobespenak</translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="+351"/>
         <source>(requires restart)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+355"/>
+        <location line="+73"/>
         <source>Use native file dialogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-280"/>
-        <source>Use system icon theme if available (requires restart)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+50"/>
+        <location line="-98"/>
         <source>Toolbar Icons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+179"/>
+        <location line="-224"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="-41"/>
+        <source>Dock widgets window icons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
         <source>Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+43"/>
+        <source>Icon theme (requires restart)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+380"/>
         <source>Initial working directory of Octave interpreter</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6189,7 +6168,12 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+93"/>
+        <location line="+79"/>
+        <source>Highlight current line (color adjustable below with editor styles)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
         <source>Highlight all occurrences of a word selected by a double click</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6349,12 +6333,12 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+39"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Letra-tipoa aukeratu, tamaina (lehenetsitako tamainarekiko aldea), estiloa (&lt;b&gt;l&lt;/b&gt;odia, &lt;b&gt;e&lt;/b&gt;tzana, &lt;b&gt;a&lt;/b&gt;zpimarratua), testuaren kolorea eta atzeko planoaren kolorea (azken honetan, lehenetsitako kolorearentzat magenta kolorea (255,0,255) kokapen-marka da).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="-1392"/>
+        <location line="-1399"/>
         <source>(Changing buffer size clears history)</source>
         <translation>(Bufferraren tamaina aldatzeak historiala ezabatzen du)</translation>
     </message>
@@ -6394,7 +6378,7 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+958"/>
+        <location line="+962"/>
         <source>Behavior</source>
         <translation>Portaera</translation>
     </message>
@@ -6429,12 +6413,7 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+117"/>
-        <source>Disable menu accelerators of main window menus when Commmand Window has focus</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+37"/>
+        <location line="+154"/>
         <source>Import shortcut set</source>
         <translation>Inportatu lasterbide-multzoa</translation>
     </message>
@@ -6528,12 +6507,7 @@ and the shortcuts for switching to other widgets.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2360"/>
-        <source>Icon set for dock widgets</source>
-        <translation>Aklopatutako widgetentzako ikonoak</translation>
-    </message>
-    <message>
-        <location line="+1968"/>
+        <location line="-392"/>
         <source>Synchronize Octave working directory with file browser</source>
         <translation>Sinkronizatu Octaveren lan-direktorioa fitxategi-arakatzailearekin</translation>
     </message>
@@ -6559,7 +6533,12 @@ interference with readline key strokes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+134"/>
+        <location line="+4"/>
+        <source>Disable menu accelerators of main window menus when Command Window has focus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+130"/>
         <source>Action</source>
         <translation>Ekintza</translation>
     </message>

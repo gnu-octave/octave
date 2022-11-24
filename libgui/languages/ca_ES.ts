@@ -2,9 +2,17 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ca_ES">
 <context>
+    <name>QFileSystemModel</name>
+    <message>
+        <location filename="../src/files-dock-widget.cc" line="+138"/>
+        <source>Invalid filename</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -57,7 +65,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+845"/>
+        <location filename="../src/settings-dialog.cc" line="+879"/>
         <source>Difference to the default size</source>
         <translation>Diferència amb la mida predeterminada</translation>
     </message>
@@ -151,7 +159,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1786"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1782"/>
         <source>copied selection to clipboard</source>
         <translation>selecció desada al porta-retalls</translation>
     </message>
@@ -159,7 +167,7 @@
 <context>
     <name>QsciLexerBash</name>
     <message>
-        <location filename="../../../qsci/qscilexerbash.cpp" line="+203"/>
+        <location filename="build_ts/octave-qsci/qscilexerbash.cpp" line="+203"/>
         <source>Default</source>
         <translation type="unfinished">Per defecte</translation>
     </message>
@@ -232,7 +240,7 @@
 <context>
     <name>QsciLexerBatch</name>
     <message>
-        <location filename="../../../qsci/qscilexerbatch.cpp" line="+174"/>
+        <location filename="build_ts/octave-qsci/qscilexerbatch.cpp" line="+174"/>
         <source>Default</source>
         <translation type="unfinished">Per defecte</translation>
     </message>
@@ -275,7 +283,7 @@
 <context>
     <name>QsciLexerCPP</name>
     <message>
-        <location filename="../../../qsci/qscilexercpp.cpp" line="+364"/>
+        <location filename="build_ts/octave-qsci/qscilexercpp.cpp" line="+364"/>
         <source>Default</source>
         <translation type="unfinished">Per defecte</translation>
     </message>
@@ -558,7 +566,7 @@
 <context>
     <name>QsciLexerDiff</name>
     <message>
-        <location filename="../../../qsci/qscilexerdiff.cpp" line="+106"/>
+        <location filename="build_ts/octave-qsci/qscilexerdiff.cpp" line="+106"/>
         <source>Default</source>
         <translation type="unfinished">Per defecte</translation>
     </message>
@@ -621,7 +629,7 @@
 <context>
     <name>QsciLexerMatlab</name>
     <message>
-        <location filename="../../../qsci/qscilexermatlab.cpp" line="+133"/>
+        <location filename="build_ts/octave-qsci/qscilexermatlab.cpp" line="+133"/>
         <source>Default</source>
         <translation type="unfinished">Per defecte</translation>
     </message>
@@ -669,7 +677,7 @@
 <context>
     <name>QsciLexerPerl</name>
     <message>
-        <location filename="../../../qsci/qscilexerperl.cpp" line="+328"/>
+        <location filename="build_ts/octave-qsci/qscilexerperl.cpp" line="+328"/>
         <source>Default</source>
         <translation type="unfinished">Per defecte</translation>
     </message>
@@ -877,7 +885,7 @@
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="../../../qsci/qsciscintilla.cpp" line="+4475"/>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4475"/>
         <source>&amp;Undo</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1106,7 +1114,7 @@
 <context>
     <name>octave::command_widget</name>
     <message>
-        <location filename="../src/command-widget.cc" line="+57"/>
+        <location filename="../src/command-widget.cc" line="+58"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1120,21 +1128,11 @@
         <source>Continue</source>
         <translation type="unfinished">Continua</translation>
     </message>
-    <message>
-        <location line="+2"/>
-        <source>Command Input</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Command Output</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>octave::community_news</name>
     <message>
-        <location filename="../src/community-news.cc" line="+70"/>
+        <location filename="../src/community-news.cc" line="+71"/>
         <source>Octave Community News</source>
         <translation type="unfinished">Notícies de la comunitat de l&apos;Octave</translation>
     </message>
@@ -1142,7 +1140,7 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+112"/>
+        <location filename="../src/documentation.cc" line="+113"/>
         <location line="+14"/>
         <location line="+735"/>
         <source>Octave Documentation</source>
@@ -1351,7 +1349,7 @@ Invalid bookmark file?</source>
         <location line="+9"/>
         <source>The file
 %1
-is not a valid XBEL file verison 1.0.</source>
+is not a valid XBEL file version 1.0.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1363,7 +1361,7 @@ is not a valid XBEL file verison 1.0.</source>
 <context>
     <name>octave::documentation_dock_widget</name>
     <message>
-        <location filename="../src/documentation-dock-widget.cc" line="+42"/>
+        <location filename="../src/documentation-dock-widget.cc" line="+41"/>
         <source>Documentation</source>
         <translation>Documentació</translation>
     </message>
@@ -1427,16 +1425,16 @@ Vols obrir la configuració?</translation>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+1081"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+1097"/>
         <location line="+28"/>
-        <location line="+549"/>
+        <location line="+540"/>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
         <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
-        <location line="-619"/>
+        <location line="-610"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -1450,7 +1448,7 @@ ja es troba obert a l&apos;editor</translation>
         <translation>La pestanya associada de l&apos;editor de text ha desaparegut.</translation>
     </message>
     <message>
-        <location line="+549"/>
+        <location line="+540"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -1487,7 +1485,7 @@ for write: %2.</source>
 en mode escriptura: %2.</translation>
     </message>
     <message>
-        <location line="+240"/>
+        <location line="+251"/>
         <source>&amp;File</source>
         <translation>&amp;Fitxer</translation>
     </message>
@@ -1792,7 +1790,7 @@ en mode escriptura: %2.</translation>
         <translation>Mida &amp;normal</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>&amp;Sort Tabs Alphabetically</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1827,7 +1825,7 @@ en mode escriptura: %2.</translation>
         <translation>&amp;Executa</translation>
     </message>
     <message>
-        <location line="-2066"/>
+        <location line="-2085"/>
         <source>Save File and Run</source>
         <translation>Desa el fitxer i executa</translation>
     </message>
@@ -1837,7 +1835,7 @@ en mode escriptura: %2.</translation>
         <translation type="unfinished">Continua</translation>
     </message>
     <message>
-        <location line="+2080"/>
+        <location line="+2099"/>
         <source>Save File and Run / Continue</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1872,7 +1870,7 @@ en mode escriptura: %2.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+16"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
@@ -1880,7 +1878,7 @@ en mode escriptura: %2.</translation>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+159"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+160"/>
         <source>line:</source>
         <translation>línia:</translation>
     </message>
@@ -1910,11 +1908,12 @@ en mode escriptura: %2.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+62"/>
-        <location line="+1152"/>
+        <location line="+73"/>
+        <location line="+1179"/>
         <location line="+132"/>
-        <location line="+376"/>
-        <location line="+188"/>
+        <location line="+391"/>
+        <location line="+66"/>
+        <location line="+126"/>
         <location line="+26"/>
         <location line="+38"/>
         <location line="+38"/>
@@ -1924,13 +1923,13 @@ en mode escriptura: %2.</translation>
         <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
-        <location line="-2070"/>
+        <location line="-2116"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+828"/>
+        <location line="+855"/>
         <source>Goto line</source>
         <translation>Ves a la línia</translation>
     </message>
@@ -1990,13 +1989,13 @@ Modifying and saving the file might cause data loss!</source>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+39"/>
+        <location line="+38"/>
         <source>Chan&amp;ge encoding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-38"/>
-        <location line="+31"/>
+        <location line="-37"/>
+        <location line="+30"/>
         <source>&amp;Close</source>
         <translation type="unfinished">&amp;Tanca</translation>
     </message>
@@ -2027,14 +2026,20 @@ Quit debugging and save?</source>
 Vols interrompre la depuració i desar?</translation>
     </message>
     <message>
-        <location line="+167"/>
+        <location line="+183"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>El fixer %1 no es pot obrir en mode escriptura:
 %2.</translation>
     </message>
     <message>
-        <location line="+214"/>
+        <location line="+66"/>
+        <source>The changes could not be saved to the file
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+152"/>
         <source>The current encoding %1
 can not be applied.
 
@@ -2110,7 +2115,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+77"/>
+        <location filename="../src/files-dock-widget.cc" line="+47"/>
         <source>File Browser</source>
         <translation>Explorador de fitxers</translation>
     </message>
@@ -2185,35 +2190,35 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
         <translation>Mostra el directori d&apos;inici</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>Set Browser Directory...</source>
         <translation>Estableix el directori del navegador...</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+422"/>
+        <location line="+440"/>
         <source>Find Files...</source>
         <translation>Cerca fitxers...</translation>
     </message>
     <message>
-        <location line="-418"/>
-        <location line="+431"/>
+        <location line="-436"/>
+        <location line="+448"/>
         <source>New File...</source>
         <translation>Nou fitxer...</translation>
     </message>
     <message>
-        <location line="-428"/>
-        <location line="+430"/>
+        <location line="-445"/>
+        <location line="+447"/>
         <source>New Directory...</source>
         <translation>Nou directori...</translation>
     </message>
     <message>
-        <location line="-375"/>
+        <location line="-392"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+314"/>
+        <location line="+332"/>
         <source>Open</source>
         <translation>Obre</translation>
     </message>
@@ -2270,46 +2275,22 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="-356"/>
         <source>Rename...</source>
         <translation>Reanomena...</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+371"/>
         <source>Delete...</source>
         <translation>Esborra...</translation>
     </message>
     <message>
-        <location line="+117"/>
-        <source>Rename file/directory</source>
-        <translation>Reanomena el fitxer/directori</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Rename file/directory:
-</source>
-        <translation>Reanomena el fitxer/directori:
-</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>
- to: </source>
-        <translation>
- a: </translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Rename error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="-579"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+712"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
@@ -2446,7 +2427,7 @@ Pots trobar més informació visitant &lt;a href=&quot;https://octave.org/suppor
     </message>
     <message>
         <location line="+3"/>
-        <location filename="../src/m-editor/find-dialog.cc" line="+3"/>
+        <location filename="../src/m-editor/find-dialog.cc" line="+2"/>
         <source>Find &amp;what:</source>
         <translation>&amp;Cerca:</translation>
     </message>
@@ -2542,7 +2523,7 @@ Pots trobar més informació visitant &lt;a href=&quot;https://octave.org/suppor
     </message>
     <message>
         <location line="+179"/>
-        <location filename="../src/m-editor/find-dialog.cc" line="+179"/>
+        <location filename="../src/m-editor/find-dialog.cc" line="+173"/>
         <source>Search from end</source>
         <translation>Cerca des de la fi</translation>
     </message>
@@ -2786,7 +2767,7 @@ Pots trobar més informació visitant &lt;a href=&quot;https://octave.org/suppor
         <translation>Filtra</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>Command History</source>
         <translation>Historial d&apos;ordres</translation>
     </message>
@@ -2825,7 +2806,7 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
 <context>
     <name>octave::label_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+79"/>
+        <location filename="../src/octave-dock-widget.cc" line="+83"/>
         <source>Undock widget</source>
         <translation>Desacobla el plafó</translation>
     </message>
@@ -2838,7 +2819,7 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+658"/>
+        <location filename="../src/main-window.cc" line="+673"/>
         <source>Save Workspace As</source>
         <translation>Desa l&apos;espai de treball com a</translation>
     </message>
@@ -2848,34 +2829,34 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
         <translation>Carrega un espai de treball</translation>
     </message>
     <message>
-        <location line="+204"/>
-        <location line="+1606"/>
+        <location line="+203"/>
+        <location line="+1656"/>
         <source>About Octave</source>
         <translation>Quant a l&apos;Octave</translation>
     </message>
     <message>
-        <location line="-1993"/>
+        <location line="-2042"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
     <message>
-        <location line="-344"/>
+        <location line="-355"/>
         <source>Profiler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+345"/>
+        <location line="+356"/>
         <source>Are you sure you want to exit Octave?</source>
         <translation>N&apos;estàs segur que vols sortir de l&apos;Octave?</translation>
     </message>
     <message>
-        <location line="+553"/>
-        <location line="+1513"/>
+        <location line="+575"/>
+        <location line="+1540"/>
         <source>Browse directories</source>
         <translation>Explora directoris</translation>
     </message>
     <message>
-        <location line="-1260"/>
+        <location line="-1280"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Fitxers de l&apos;Octave (*.m);;Tots els fitxers (*)</translation>
     </message>
@@ -2907,7 +2888,7 @@ function and can not be edited.</source>
         <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
-        <location line="+689"/>
+        <location line="+709"/>
         <source>&amp;File</source>
         <translation>&amp;Fitxer</translation>
     </message>
@@ -3295,12 +3276,12 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&
         <translation>Oculta el plafó</translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+84"/>
         <source>Dock widget</source>
         <translation>Acobla el plafó</translation>
     </message>
     <message>
-        <location line="+59"/>
+        <location line="+58"/>
         <source>Undock widget</source>
         <translation>Desacobla el plafó</translation>
     </message>
@@ -3308,7 +3289,7 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&
 <context>
     <name>octave::octave_qscintilla</name>
     <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+298"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+297"/>
         <source>Help on</source>
         <translation>Ajuda quant a</translation>
     </message>
@@ -3342,7 +3323,7 @@ Make sure you have write access to temp. directory
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+286"/>
+        <location line="+292"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>Fes clic a &apos;%1&apos; per substituir tots els casos de &apos;%2&apos; amb &apos;%3&apos;.</translation>
     </message>
@@ -3413,7 +3394,7 @@ no existeix. Vols crear-lo?</translation>
 <context>
     <name>octave::release_notes</name>
     <message>
-        <location filename="../src/release-notes.cc" line="+80"/>
+        <location filename="../src/release-notes.cc" line="+84"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation type="unfinished">El fitxer de notes de versió %1 està buit.</translation>
     </message>
@@ -3431,7 +3412,7 @@ no existeix. Vols crear-lo?</translation>
 <context>
     <name>octave::resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+442"/>
+        <location filename="../src/resource-manager.cc" line="+486"/>
         <source>The settings file
 %1
 does not exist and can not be created.
@@ -3539,7 +3520,7 @@ La interfície gràfica de l&apos;Octave es tancarà.</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-767"/>
+        <location filename="../src/settings-dialog.cc" line="-801"/>
         <source>Octave Preferences</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3551,12 +3532,12 @@ La interfície gràfica de l&apos;Octave es tancarà.</translation>
     <message>
         <location line="+16"/>
         <location line="+5"/>
-        <location line="+892"/>
+        <location line="+931"/>
         <source>System setting</source>
         <translation type="unfinished">Configuració de sistema</translation>
     </message>
     <message>
-        <location line="-651"/>
+        <location line="-687"/>
         <source>IBeam Cursor</source>
         <translation type="unfinished">Cursor en forma d&apos;I</translation>
     </message>
@@ -3571,7 +3552,12 @@ La interfície gràfica de l&apos;Octave es tancarà.</translation>
         <translation type="unfinished">Cursor en forma de subratllat</translation>
     </message>
     <message>
-        <location line="+168"/>
+        <location line="+121"/>
+        <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+63"/>
         <source>Set Octave Startup Directory</source>
         <translation type="unfinished">Estableix el directori d&apos;inici de l&apos;Octave</translation>
     </message>
@@ -3581,7 +3567,7 @@ La interfície gràfica de l&apos;Octave es tancarà.</translation>
         <translation type="unfinished">Estableix el directori d&apos;inici de l&apos;explorador de fitxers</translation>
     </message>
     <message>
-        <location line="+707"/>
+        <location line="+727"/>
         <source>Enable attribute colors</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3611,7 +3597,7 @@ La interfície gràfica de l&apos;Octave es tancarà.</translation>
         <translation type="unfinished">cursor</translation>
     </message>
     <message>
-        <location filename="../src/gui-preferences-ed.h" line="+205"/>
+        <location filename="../src/gui-preferences-ed.h" line="+212"/>
         <source>Top</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3671,12 +3657,12 @@ La interfície gràfica de l&apos;Octave es tancarà.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui-preferences-global.h" line="+149"/>
+        <location filename="../src/gui-preferences-global.h" line="+186"/>
         <source>Environment Variables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui-settings.h" line="+132"/>
+        <location filename="../src/gui-settings.h" line="+133"/>
         <source>Second color mode (light/dark)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4336,7 +4322,13 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-335"/>
+        <location line="+129"/>
+        <source>Add Shift modifier
+(allows one to enter number keys)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-464"/>
         <source>Zoom In</source>
         <translation>Amplia</translation>
     </message>
@@ -4512,13 +4504,7 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
         <translation>Activa la drecera en introduir-la</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Add Shift modifier
-(allows to enter number keys)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+17"/>
+        <location line="+20"/>
         <source>Actual shortcut</source>
         <translation>Drecera actual</translation>
     </message>
@@ -4553,7 +4539,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
 <context>
     <name>octave::terminal_dock_widget</name>
     <message>
-        <location filename="../src/terminal-dock-widget.cc" line="+87"/>
+        <location filename="../src/terminal-dock-widget.cc" line="+97"/>
         <source>Command Window</source>
         <translation>Finestra del terminal</translation>
     </message>
@@ -4561,7 +4547,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
 <context>
     <name>octave::variable_dock_widget</name>
     <message>
-        <location filename="../src/variable-editor.cc" line="+175"/>
+        <location filename="../src/variable-editor.cc" line="+177"/>
         <source>Dock widget</source>
         <translation>Acobla el plafó</translation>
     </message>
@@ -4571,7 +4557,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+15"/>
         <source>Undock widget</source>
         <translation>Desacobla el plafó</translation>
     </message>
@@ -4599,7 +4585,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>Edita variables.</translation>
     </message>
     <message>
-        <location line="+548"/>
+        <location line="+547"/>
         <source>Variable Editor Toolbar</source>
         <translation>Barra d&apos;eines de l&apos;editor de variables</translation>
     </message>
@@ -4686,7 +4672,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1241"/>
+        <location line="-1240"/>
         <source>Save Variable %1 As</source>
         <translation>Desa la variable %1 com a</translation>
     </message>
@@ -4799,7 +4785,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
 <context>
     <name>octave::workspace_view</name>
     <message>
-        <location filename="../src/workspace-view.cc" line="+59"/>
+        <location filename="../src/workspace-view.cc" line="+58"/>
         <source>Workspace</source>
         <translation>Espai de treball</translation>
     </message>
@@ -4888,13 +4874,13 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
     <name>settings_dialog</name>
     <message>
         <location filename="../src/settings-dialog.ui" line="+45"/>
-        <location line="+831"/>
-        <location line="+1905"/>
+        <location line="+834"/>
+        <location line="+1909"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location line="-2606"/>
+        <location line="-2390"/>
         <source>Octave logo only</source>
         <translation>Sols el logotip de l&apos;Octave</translation>
     </message>
@@ -4904,12 +4890,12 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>Icones tipogràfiques</translation>
     </message>
     <message>
-        <location line="-74"/>
+        <location line="-334"/>
         <source>Dock widget title bar</source>
         <translation>Acobla el plafó de la barra de títol</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+72"/>
         <source>Small</source>
         <translation>Petit</translation>
     </message>
@@ -4919,7 +4905,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>Gran</translation>
     </message>
     <message>
-        <location line="+170"/>
+        <location line="+105"/>
         <source>Custom style</source>
         <translation>Estil personalitzat</translation>
     </message>
@@ -4929,7 +4915,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>3D</translation>
     </message>
     <message>
-        <location line="+511"/>
+        <location line="+558"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
@@ -5116,43 +5102,38 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
     </message>
     <message>
         <location line="-123"/>
-        <location line="+1859"/>
+        <location line="+1863"/>
         <source>Font</source>
         <translation>Tipus de lletra</translation>
     </message>
     <message>
-        <location line="-1569"/>
+        <location line="-1573"/>
         <source>Show line numbers</source>
         <translation>Mostra els números de línia</translation>
     </message>
     <message>
-        <location line="+152"/>
-        <source>Highlight current line</source>
-        <translation>Ressalta la línia actual</translation>
-    </message>
-    <message>
-        <location line="-1008"/>
+        <location line="-859"/>
         <source>Interface</source>
         <translation>Interfície</translation>
     </message>
     <message>
-        <location line="+418"/>
+        <location line="+421"/>
         <source>Confirm before exiting</source>
         <translation>Confirma abans de sortir</translation>
     </message>
     <message>
-        <location line="-292"/>
+        <location line="-72"/>
         <source>Graphic icons</source>
         <translation>Icones gràfiques</translation>
     </message>
     <message>
-        <location line="+272"/>
+        <location line="+52"/>
         <location line="+439"/>
         <source>Show status bar</source>
         <translation>Mostra la barra d&apos;estat</translation>
     </message>
     <message>
-        <location line="-630"/>
+        <location line="-677"/>
         <source>Text inactive</source>
         <translation>Text inactiu</translation>
     </message>
@@ -5168,18 +5149,18 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>Fons inactiu</translation>
     </message>
     <message>
-        <location line="+171"/>
+        <location line="+218"/>
         <source>Octave Startup</source>
         <translation>Inici de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+46"/>
-        <location line="+1687"/>
+        <location line="+1691"/>
         <source>Browse</source>
         <translation>Explora</translation>
     </message>
     <message>
-        <location line="-1294"/>
+        <location line="-1298"/>
         <source>Show whitespace</source>
         <translation>Mostra els espais en blanc</translation>
     </message>
@@ -5215,7 +5196,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
     </message>
     <message>
         <location line="+52"/>
-        <location line="+1749"/>
+        <location line="+1753"/>
         <source>Font size</source>
         <translation>Mida de la lletra</translation>
     </message>
@@ -5225,12 +5206,12 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>Explorador de fitxers</translation>
     </message>
     <message>
-        <location line="-2031"/>
+        <location line="-2017"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location line="+370"/>
+        <location line="+352"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
         <translation>Aquestes configuracions s&apos;apliquen després del fitxer d&apos;inici &quot;.octaverc&quot;.</translation>
     </message>
@@ -5250,42 +5231,47 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>Nombre de caràcters a partir del qual es mostra la llista: </translation>
     </message>
     <message>
-        <location line="-1802"/>
+        <location line="-1805"/>
         <source>Preferences</source>
         <translation type="unfinished">Preferències</translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="+351"/>
         <source>(requires restart)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+355"/>
+        <location line="+73"/>
         <source>Use native file dialogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-280"/>
-        <source>Use system icon theme if available (requires restart)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+50"/>
+        <location line="-98"/>
         <source>Toolbar Icons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+179"/>
+        <location line="-224"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="-41"/>
+        <source>Dock widgets window icons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
         <source>Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+43"/>
+        <source>Icon theme (requires restart)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+380"/>
         <source>Initial working directory of Octave interpreter</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5320,7 +5306,12 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>Mida relativa respecte a la lletra de l&apos;editor </translation>
     </message>
     <message>
-        <location line="+93"/>
+        <location line="+79"/>
+        <source>Highlight current line (color adjustable below with editor styles)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
         <source>Highlight all occurrences of a word selected by a double click</source>
         <translation>Ressalta totes les coincidències de la paraula seleccionada amb doble clic</translation>
     </message>
@@ -5440,12 +5431,12 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+39"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecciona el tipus de lletra, mida (relativa a la mida per defecte), estil (&lt;b&gt;n&lt;/b&gt;egreta, &lt;b&gt;c&lt;/b&gt;ursiva, &lt;b&gt;s&lt;/b&gt;ubrallat), color i color de fons (per al color de fons, el color magenta (255,0,255) és el marcador de posició per defecte).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+65"/>
+        <location line="+62"/>
         <source>Behavior</source>
         <translation>Comportament</translation>
     </message>
@@ -5475,12 +5466,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+117"/>
-        <source>Disable menu accelerators of main window menus when Commmand Window has focus</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+37"/>
+        <location line="+154"/>
         <source>Import shortcut set</source>
         <translation>Importa el conjunt de dreceres</translation>
     </message>
@@ -5574,12 +5560,7 @@ and the shortcuts for switching to other widgets.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2360"/>
-        <source>Icon set for dock widgets</source>
-        <translation>Conjunt d&apos;icones per als plafons d&apos;acoblament</translation>
-    </message>
-    <message>
-        <location line="+1968"/>
+        <location line="-392"/>
         <source>Synchronize Octave working directory with file browser</source>
         <translation>Sincronitza el directori de treball de l&apos;Octave amb l&apos;explorador de fitxers</translation>
     </message>
@@ -5600,7 +5581,12 @@ interference with readline key strokes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+4"/>
+        <source>Disable menu accelerators of main window menus when Command Window has focus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+50"/>
         <source>Export</source>
         <translation>Exporta</translation>
     </message>

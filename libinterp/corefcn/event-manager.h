@@ -288,7 +288,9 @@ OCTAVE_NAMESPACE_BEGIN
   //! This class provides thread-safe communication between the
   //! interpreter and a GUI.
 
-  class event_manager
+  class
+  OCTINTERP_API
+  event_manager
   {
   public:
 

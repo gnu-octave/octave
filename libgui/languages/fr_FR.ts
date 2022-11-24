@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/files-dock-widget.cc" line="+138"/>
         <source>Invalid filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de fichier non valide</translation>
     </message>
 </context>
 <context>
@@ -602,7 +602,9 @@ Fichier de Marque Pages Invalide?</translation>
         <source>The file
 %1
 is not a valid XBEL file version 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier
+%1
+n&apos;est pas un fichier XBEL version 1 valide.</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1298,7 +1300,8 @@ Quitter le mode débogage et sauver?</translation>
         <location line="+66"/>
         <source>The changes could not be saved to the file
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Les modification n&apos;ont pas pu être sauvegardées dans le fichier
+%1</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -2840,7 +2843,7 @@ Le GUI d&apos;Octave doit maintenant être fermé.</translation>
     <message>
         <location line="+121"/>
         <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur pour faire ressortir la ligne courante (magenta (255,0,255) par défaut)</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -3633,7 +3636,7 @@ voulez l&apos;affecter à la présente action et le retirer de la précédente ?
         <location line="+129"/>
         <source>Add Shift modifier
 (allows one to enter number keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter la touche de modification Maj (permet d&apos;utiliser les touches de nombres)</translation>
     </message>
     <message>
         <location line="-464"/>
@@ -4466,7 +4469,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
     <message>
         <location line="-41"/>
         <source>Dock widgets window icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Icône des fenêtres</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4476,7 +4479,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
     <message>
         <location line="+43"/>
         <source>Icon theme (requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>Thème d&apos;icônes (nécessite un redémarrage)</translation>
     </message>
     <message>
         <location line="+380"/>
@@ -4521,7 +4524,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
     <message>
         <location line="+79"/>
         <source>Highlight current line (color adjustable below with editor styles)</source>
-        <translation type="unfinished"></translation>
+        <translation>Faire ressortir la ligne courante (couleur ajustable ci-dessous)</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -4858,7 +4861,7 @@ et les raccourcis pour ouvrir d&apos;autres fenêtres.</translation>
     <message>
         <location line="+6"/>
         <source>Disable global shortcuts when Command Window has focus</source>
-        <translation>Désactiver les raccourcis globaux lorsque le Fenêtre de Commandes est active</translation>
+        <translation>Désactiver les raccourcis globaux lorsque la Fenêtre de Commandes est active</translation>
     </message>
     <message>
         <location line="-392"/>
@@ -4890,7 +4893,7 @@ d&apos;interférer avec les raccourcis readline.</translation>
     <message>
         <location line="+4"/>
         <source>Disable menu accelerators of main window menus when Command Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactiver les accélérateurs de menus lorsque la Fenêtre de Commandes est active</translation>
     </message>
     <message>
         <location line="+130"/>

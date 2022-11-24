@@ -35,6 +35,7 @@ namespace octave
   class mutex;
 
   class
+  OCTAVE_API
   base_mutex
   {
   public:
@@ -84,6 +85,7 @@ namespace octave
   };
 
   class
+  OCTAVE_API
   autolock
   {
   public:

@@ -157,7 +157,7 @@ function y = mean (x, varargin)
 
     ## Two numeric input arguments, dimensions given.  Note scalar is vector!
     dim = varargin{1};
-    if (! (isvector (dim) && dim > 0 && rem (dim, 1) == 0))
+    if (! (isvector (dim) && all (dim > 0) && all (rem (dim, 1) == 0)))
       error ("mean: DIM must be a positive integer scalar or vector");
     endif
 

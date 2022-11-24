@@ -447,7 +447,7 @@ Return true if Octave is running in GUI mode and false otherwise.
 
 /*
 %!assert (islogical (isguirunning ()))
-%!error isguirunning (1)
+%!error <Invalid call> isguirunning (1)
 */
 
 DEFUN (argv, args, ,
@@ -468,6 +468,7 @@ octave --no-line-editing --silent
 If you write an executable Octave script, @code{argv} will return the list
 of arguments passed to the script.  @xref{Executable Octave Programs}, for
 an example of how to create an executable Octave script.
+@seealso{program_name, cmdline_options}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -478,14 +479,19 @@ an example of how to create an executable Octave script.
 
 /*
 %!assert (iscellstr (argv ()))
-%!error argv (1)
+%!error <Invalid call> argv (1)
 */
 
 DEFUN (cmdline_options, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{opt_struct} =} cmdline_options ()
-Return a structure containing info about the command line arguments passed to
-Octave.
+Return a structure containing detailed information about the command line
+arguments passed to Octave.
+
+Programming Note: This function provides copious amounts of information about
+Octave's parsing of command line options and may be more useful for debugging
+Octave rather than for general use.
+@seealso{argv, program_name}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -501,16 +507,23 @@ Octave.
   return ovl (opts.as_octave_value ());
 }
 
+/*
+%!assert (isstruct (cmdline_options ()))
+%!error <Invalid call> cmdline_options (1)
+*/
+
 DEFUN (program_invocation_name, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{name} =} program_invocation_name ()
-Return the name that was typed at the shell prompt to run Octave.
+Return the string that was typed at the shell prompt to run Octave.
+
+The string may include path components as well as the program filename.
 
 If executing a script from the command line (e.g., @code{octave foo.m}) or
 using an executable Octave script, the program name is set to the name of the
 script.  @xref{Executable Octave Programs}, for an example of how to create an
 executable Octave script.
-@seealso{program_name}
+@seealso{program_name, argv}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -521,15 +534,16 @@ executable Octave script.
 
 /*
 %!assert (ischar (program_invocation_name ()))
-%!error program_invocation_name (1)
+%!error <Invalid call> program_invocation_name (1)
 */
 
 DEFUN (program_name, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{name} =} program_name ()
-Return the last component of the value returned by
+Return the filename component of the value returned by
 @code{program_invocation_name}.
-@seealso{program_invocation_name}
+
+@seealso{program_invocation_name, argv}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -540,7 +554,7 @@ Return the last component of the value returned by
 
 /*
 %!assert (ischar (program_name ()))
-%!error program_name (1)
+%!error <Invalid call> program_name (1)
 */
 
 OCTAVE_NAMESPACE_END

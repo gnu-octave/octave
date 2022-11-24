@@ -65,14 +65,13 @@ shorter equivalent).
 Here is a complete list of the command line options that Octave
 accepts.
 
-
 @table @code
 
 @item --built-in-docstrings-file @var{filename}
 @cindex @sortas{options, Octave command --built-in-docstrings-file} @ @ @code{--built-in-docstrings-file @var{filename}}
 Specify the name of the file containing documentation strings for the
 built-in functions of Octave.  This value is normally correct and should
-only need to specified in extraordinary situations.
+only need to be specified in extraordinary situations.
 
 @item  --debug
 @itemx -d
@@ -84,8 +83,8 @@ probably only useful if you are actually trying to debug the parser.
 
 @item --doc-cache-file @var{filename}
 @cindex @sortas{options, Octave command --doc-cache-file} @ @ @code{--doc-cache-file @var{filename}}
-Specify the name of the doc cache file to use.  The value of @var{filename}
-specified on the command line will override any value of
+Specify the name of the documentation cache file to use.  The value of
+@var{filename} specified on the command line will override any value of
 @w{@env{OCTAVE_DOC_CACHE_FILE}} found in the environment, but not any commands
 in the system or user startup files that use the @code{doc_cache_file}
 function.
@@ -287,15 +286,16 @@ Turn on verbose output.
 Print the program version number and exit.
 
 @item @var{file}
-Execute commands from @var{file}.  Exit when done unless
-@option{--persist} is also specified.
+Execute commands from @var{file}.  Exit when done unless @option{--persist} is
+also specified.
 @end table
 
-Octave also includes several functions which return information
-about the command line, including the number of arguments and all of the
-options.
+Octave also includes several functions which return information about the
+command line, including the number of arguments and all of the options.
 
 @DOCSTRING(argv)
+
+@DOCSTRING(cmdline_options)
 
 @DOCSTRING(program_name)
 

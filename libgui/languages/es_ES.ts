@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/files-dock-widget.cc" line="+138"/>
         <source>Invalid filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de fichero no válido</translation>
     </message>
 </context>
 <context>
@@ -608,7 +608,9 @@ Invalid bookmark file?</source>
         <source>The file
 %1
 is not a valid XBEL file version 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>El fichero
+%1
+no es un fichero XBEL versión 1 válido.</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1309,7 +1311,8 @@ Quit debugging and save?</source>
         <location line="+66"/>
         <source>The changes could not be saved to the file
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Los cambios no se han podido guardar en el fichero
+%1</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -2859,7 +2862,7 @@ La interfaz gráfica de Octave se cerrará.</translation>
     <message>
         <location line="+121"/>
         <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-        <translation type="unfinished"></translation>
+        <translation>Color de la línea resaltada actual (por defecto, magenta (255,0,255))</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -3653,7 +3656,8 @@ ya se utiliza para la acción
         <location line="+129"/>
         <source>Add Shift modifier
 (allows one to enter number keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir el modificador Shift
+(permite introducir teclas numéricas)</translation>
     </message>
     <message>
         <location line="-464"/>
@@ -4487,7 +4491,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-41"/>
         <source>Dock widgets window icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Acoplar widgets de iconos de ventana</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4497,7 +4501,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+43"/>
         <source>Icon theme (requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema para los iconos (requiere reinicio)</translation>
     </message>
     <message>
         <location line="+380"/>
@@ -4542,7 +4546,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+79"/>
         <source>Highlight current line (color adjustable below with editor styles)</source>
-        <translation type="unfinished"></translation>
+        <translation>Resaltado de la línea actual (color configurable en el editor de estilos)</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -4911,7 +4915,7 @@ evitar conflictos con las combinaciones de teclas para readline.</translation>
     <message>
         <location line="+4"/>
         <source>Disable menu accelerators of main window menus when Command Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Desactivar los accesos directos al menú de la ventana principal cuando la ventana de comandos está activa</translation>
     </message>
     <message>
         <location line="+130"/>

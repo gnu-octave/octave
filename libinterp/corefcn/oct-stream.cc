@@ -4442,16 +4442,19 @@ namespace octave
       case 'G':
         {
           is >> std::ws;  // skip through whitespace and advance stream pointer
-          std::streampos pos = is.tellg ();
-
-          ref = read_value<double> (is);
-
-          std::ios::iostate status = is.rdstate ();
-          if (status & std::ios::failbit)
+          if (is.good ())
             {
-              is.clear ();
-              is.seekg (pos);
-              is.setstate (status & ~std::ios_base::eofbit);
+              std::streampos pos = is.tellg ();
+
+              ref = read_value<double> (is);
+
+              std::ios::iostate status = is.rdstate ();
+              if (status & std::ios::failbit)
+                {
+                  is.clear ();
+                  is.seekg (pos);
+                  is.setstate (status & ~std::ios_base::eofbit);
+                }
             }
         }
         break;

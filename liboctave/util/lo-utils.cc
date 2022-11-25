@@ -215,7 +215,10 @@ namespace octave
             {
               char c2 = is.get ();
               if (c2 == 'f' || c2 == 'F')
-                val = std::numeric_limits<T>::infinity ();
+                {
+                  val = std::numeric_limits<T>::infinity ();
+                  is.peek ();  // Potentially set EOF bit
+                }
               else
                 is.setstate (std::ios::failbit);
             }
@@ -231,7 +234,10 @@ namespace octave
             {
               char c2 = is.get ();
               if (c2 == 'n' || c2 == 'N')
-                val = std::numeric_limits<T>::quiet_NaN ();
+                {
+                  val = std::numeric_limits<T>::quiet_NaN ();
+                  is.peek ();  // Potentially set EOF bit
+                }
               else
                 {
                   val = numeric_limits<T>::NA ();
@@ -290,7 +296,7 @@ namespace octave
               is >> val;
             }
 
-          if (neg && ! is.fail ())
+          if (neg && ! math::isnan (val) && ! is.fail ())
             val = -val;
         }
         break;

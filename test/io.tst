@@ -514,7 +514,7 @@
 %! assert (pos, 5);
 
 ## Test NaN at EOF
-%!test <63383>
+%!test <*63383>
 %! [val, count, msg, pos] = sscanf ('2 3 n', '%f');
 %! assert (val, [2; 3]);
 %! assert (count, 2);
@@ -550,7 +550,7 @@
 %! assert (pos, 10);
 
 ## Test Inf at EOF
-%!test <63383>
+%!test <*63383>
 %! [val, count, msg, pos] = sscanf ('2 3 i', '%f');
 %! assert (val, [2; 3]);
 %! assert (count, 2);
@@ -609,6 +609,60 @@
 %! assert (val, [1; 2]);
 %! assert (count, 2);
 %! assert (msg, 'sscanf: format failed to match');
+%! assert (pos, 5);
+
+## Test '+' at EOF
+%!test <*63383>
+%! [val, count, msg, pos] = sscanf ('2 3 +', '%d');
+%! assert (val, [2; 3]);
+%! assert (count, 2);
+%! assert (msg, 'sscanf: format failed to match');
+%! assert (pos, 5);
+%! [val, count, msg, pos] = sscanf ('2 3 +', '%f');
+%! assert (val, [2; 3]);
+%! assert (count, 2);
+%! assert (msg, 'sscanf: format failed to match');
+%! assert (pos, 5);
+
+## Test '+' within string
+%!test <63383>
+%! [val, count, msg, pos] = sscanf ('1 2 + 3', '%d');
+%! assert (val, [1; 2]);
+%! assert (count, 2);
+%! assert (msg, 'sscanf: format failed to match');
+%! assert (pos, 5);
+%! [val, count, msg, pos] = sscanf ('1 2 + 3', '%f');
+%! assert (val, [1; 2]);
+%! assert (count, 2);
+%! assert (msg, 'sscanf: format failed to match');
+%! assert (pos, 5);
+
+%## Test +NA, -NA, +NAN, -NAN
+%!test <*63383>
+%! [val, count, msg, pos] = sscanf ('+NA -NA 1 +NAN -NAN', '%f');
+%! assert (val, [NA; NA; 1; NaN; NaN]);
+%! assert (count, 5);
+%! assert (msg, '');
+%! assert (pos, 20);
+%! [val, count, msg, pos] = sscanf ('-NA', '%f');
+%! assert (val, NA);
+%! assert (count, 1);
+%! assert (msg, '');
+%! assert (pos, 4);
+%! [val, count, msg, pos] = sscanf ('+NA', '%f');
+%! assert (val, NA);
+%! assert (count, 1);
+%! assert (msg, '');
+%! assert (pos, 4);
+%! [val, count, msg, pos] = sscanf ('-NaN', '%f');
+%! assert (val, NaN);
+%! assert (count, 1);
+%! assert (msg, '');
+%! assert (pos, 5);
+%! [val, count, msg, pos] = sscanf ('+NaN', '%f');
+%! assert (val, NaN);
+%! assert (count, 1);
+%! assert (msg, '');
 %! assert (pos, 5);
 
 %!test

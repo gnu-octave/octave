@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/files-dock-widget.cc" line="+138"/>
         <source>Invalid filename</source>
-        <translation type="unfinished"></translation>
+        <translation>无效的文件名</translation>
     </message>
 </context>
 <context>
@@ -1359,7 +1359,9 @@ Invalid bookmark file?</source>
         <source>The file
 %1
 is not a valid XBEL file version 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>文件
+%1
+不是合法的XBEL 1.0版本文件。</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -2054,7 +2056,8 @@ Quit debugging and save?</source>
         <location line="+66"/>
         <source>The changes could not be saved to the file
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>改动无法保存到文件
+%1</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -3596,7 +3599,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="+121"/>
         <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-        <translation type="unfinished"></translation>
+        <translation>当前行高亮显示的颜色 （品红 （255,0,255） 为自动颜色）</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -4389,7 +4392,8 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <location line="+129"/>
         <source>Add Shift modifier
 (allows one to enter number keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>添加Shift修改器
+(允许输入数字键)</translation>
     </message>
     <message>
         <location line="-464"/>
@@ -5256,7 +5260,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-41"/>
         <source>Dock widgets window icons</source>
-        <translation type="unfinished"></translation>
+        <translation>停靠组件窗口图标</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5266,7 +5270,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+43"/>
         <source>Icon theme (requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>图标样式（需要重启）</translation>
     </message>
     <message>
         <location line="+380"/>
@@ -5306,7 +5310,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+79"/>
         <source>Highlight current line (color adjustable below with editor styles)</source>
-        <translation type="unfinished"></translation>
+        <translation>高亮当前行（颜色可用下方编辑器样式调整）</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -5631,7 +5635,7 @@ interference with readline key strokes.</source>
     <message>
         <location line="+4"/>
         <source>Disable menu accelerators of main window menus when Command Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>当命令窗口获得焦点时，禁用主窗口的菜单快捷键</translation>
     </message>
     <message>
         <location line="+50"/>

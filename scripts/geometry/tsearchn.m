@@ -46,16 +46,16 @@ function [idx, p] = tsearchn (x, t, xi)
   endif
 
   if (columns (x) != columns (xi))
-    error ("columns (x) should equal columns (xi)")
-  end
+    error ("tsearchn: number of columns of X and XI must match");
+  endif
 
   if (max (t(:)) > rows (x))
-    error ("triangles should only access points in x")
-  end
+    error ("tsearchn: triangulation T must not access points outside X");
+  endif
 
   if (nargout <= 1 && columns (x) == 2)  # pass to the faster tsearch.cc
     idx = tsearch (x(:,1), x(:,2), t, xi(:,1), xi(:,2));
-    return
+    return;
   endif
 
   nt = rows (t);
@@ -88,12 +88,13 @@ function [idx, p] = tsearchn (x, t, xi)
     ## (all (b >= 0) && all (b <= 1)).  As sum (b,2) == 1, we only need to
     ## test all(b>=0).
     inside = all (b >= -1e-12, 2);  # -1e-12 instead of 0 for rounding errors
-    idx (ni (inside)) = i;
+    idx(ni(inside)) = i;
     p(ni(inside), :) = b(inside, :);
-    ni = ni (~inside);
+    ni = ni(! inside);
   endfor
 
 endfunction
+
 
 %!shared x, tri
 %! x = [-1,-1;-1,1;1,-1];
@@ -118,3 +119,10 @@ endfunction
 %! [idx, p] = tsearchn (x,tri,[1,1]);
 %! assert (idx, NaN);
 %! assert (p, [NaN, NaN, NaN]);
+
+## Test input validation
+%!error <Invalid call> tsearchn ()
+%!error <Invalid call> tsearchn (1)
+%!error <Invalid call> tsearchn (1, 2)
+%!error <number of columns of X and XI must match> tsearchn ([1,2], 3, 4)
+%!error <T must not access points outside X> tsearchn (1, 2, 3)

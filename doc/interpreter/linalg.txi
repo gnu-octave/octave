@@ -211,6 +211,8 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(kron)
 
+@DOCSTRING(tensorprod)
+
 @DOCSTRING(blkmm)
 
 @DOCSTRING(sylvester)

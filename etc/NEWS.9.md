@@ -17,6 +17,8 @@ respective directory is taken into account for the tests.
 
 ### Alphabetical list of new functions added in Octave 9
 
+* `tensorprod`
+
 ### Deprecated functions, properties, and operators
 
 The following functions and properties have been deprecated in Octave 9

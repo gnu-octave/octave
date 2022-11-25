@@ -91,7 +91,7 @@ temporary array and is faster.  When @var{X} and @var{Y} are column vectors,
 the result is equivalent to @code{@var{X}' * @var{Y}}.  Although, @code{dot}
 is defined for integer arrays, the output may differ from the expected result
 due to the limited range of integer objects.
-@seealso{cross, divergence}
+@seealso{cross, divergence, tensorprod}
 @end deftypefn */)
 {
   int nargin = args.length ();

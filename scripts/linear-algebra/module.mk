@@ -35,6 +35,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/rref.m \
   %reldir%/subspace.m \
   %reldir%/trace.m \
+  %reldir%/tensorprod.m \
   %reldir%/vech.m \
   %reldir%/vecnorm.m
 

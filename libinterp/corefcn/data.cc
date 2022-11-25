@@ -6524,7 +6524,7 @@ cumulatively from left to right:
 (@dots{}((@var{A1} * @var{A2}) * @var{A3}) * @dots{})
 @end example
 
-@seealso{times, plus, minus, rdivide, mrdivide, mldivide, mpower}
+@seealso{times, plus, minus, rdivide, mrdivide, mldivide, mpower, tensorprod}
 @end deftypefn */)
 {
   return binary_assoc_op_defun_body (octave_value::op_mul,

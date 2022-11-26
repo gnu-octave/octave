@@ -253,6 +253,8 @@ OCTAVE_NAMESPACE_BEGIN
       return m_error_system;
     }
 
+    tree_evaluator& get_evaluator (void);
+
     help_system& get_help_system (void)
     {
       return m_help_system;
@@ -297,8 +299,6 @@ OCTAVE_NAMESPACE_BEGIN
     {
       return m_symbol_table;
     }
-
-    tree_evaluator& get_evaluator (void);
 
     symbol_scope get_top_scope (void) const;
     symbol_scope get_current_scope (void) const;
@@ -586,6 +586,8 @@ OCTAVE_NAMESPACE_BEGIN
 
     error_system m_error_system;
 
+    tree_evaluator m_evaluator;
+
     help_system m_help_system;
 
     input_system m_input_system;
@@ -603,8 +605,6 @@ OCTAVE_NAMESPACE_BEGIN
     type_info m_type_info;
 
     symbol_table m_symbol_table;
-
-    tree_evaluator m_evaluator;
 
     stream_list m_stream_list;
 

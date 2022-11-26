@@ -378,6 +378,14 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
   // Essentially, what we do is compute sign, multiply absolute values
   // (as above) and impose the sign.
 
+  // But first, avoid overflow in computation of abs (min_val ()).
+
+  if (x == min_val ())
+    return y == 0 ? 0 : (y < 0 ? max_val () : min_val ());
+
+  if (y == min_val ())
+    return x == 0 ? 0 : (x < 0 ? max_val () : min_val ());
+
   uint64_t usx = octave_int_abs (x);
   uint64_t usy = octave_int_abs (y);
   bool positive = (x < 0) == (y < 0);

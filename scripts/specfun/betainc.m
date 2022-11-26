@@ -257,10 +257,10 @@ endfunction
 %! assert (betainc (0.5, 1, Inf), 1);
 
 %!test <*62329>
-%! assert (betainc (2e-20, 1, 0.5), 1e-20, -1e-15)
-%! assert (betainc (2e-5, 1, 0.5), 2e-5 / (1 + sqrt (1 - 2e-5)), -1e-15)
-%! assert (betainc (0.99, 1, 0.5, "upper"), 0.1, -1e-15)
-%! assert (betainc (0.99, 0.5, 1, "upper"), - expm1 (log (0.99)/2), -1e-15)
+%! assert (betainc (2e-20, 1, 0.5), 1e-20, -1e-15);
+%! assert (betainc (2e-5, 1, 0.5), 2e-5 / (1 + sqrt (1 - 2e-5)), -1e-15);
+%! assert (betainc (0.99, 1, 0.5, "upper"), 0.1, -1e-15);
+%! assert (betainc (0.99, 0.5, 1, "upper"), - expm1 (log (0.99)/2), -1e-15);
 
 ## Test input validation
 %!error <Invalid call> betainc ()

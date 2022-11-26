@@ -308,9 +308,9 @@ endfunction
 %!assert (uniquetol ([1 1 2; 1 0 1; 1 1 2+10*eps], "byrows", true),
 %!        [1 0 1; 1 1 2])
 %!assert (uniquetol ([1]), [1])
-%!assert (uniquetol ([2, 1]), [1, 2]);
+%!assert (uniquetol ([2, 1]), [1, 2])
 %!assert (uniquetol ([1; 2]), [1; 2])
-%!assert (uniquetol ([-Inf, 1, NaN, Inf, NaN, Inf]), [-Inf, 1, Inf, NaN, NaN]);
+%!assert (uniquetol ([-Inf, 1, NaN, Inf, NaN, Inf]), [-Inf, 1, Inf, NaN, NaN])
 %!assert (uniquetol ([1,2,2,3,2,4], "byrows", true), [1,2,2,3,2,4])
 %!assert (uniquetol ([1,2,2,3,2,4]), [1,2,3,4])
 %!assert (uniquetol ([1,2,2,3,2,4].', "byrows", true), [1;2;3;4])
@@ -325,8 +325,8 @@ endfunction
 ## Test 2D array sorting
 %!test
 %! a = [magic(3); 2 * magic(3)];
-%! assert (uniquetol (a), [1:10,12,14,16,18]')
-%! assert (uniquetol (a, "byrows", true), sortrows (a))
+%! assert (uniquetol (a), [1:10,12,14,16,18]');
+%! assert (uniquetol (a, "byrows", true), sortrows (a));
 
 ## Matlab compatibility of output
 %!test

@@ -676,8 +676,8 @@ endfunction
 %!   interp_complex = interp2 (orig, xi, yi, method{1});
 %!   interp_real = interp2 (real (orig), xi, yi, method{1});
 %!   interp_imag = interp2 (imag (orig), xi, yi, method{1});
-%!   assert (real (interp_complex), interp_real)
-%!   assert (imag (interp_complex), interp_imag)
+%!   assert (real (interp_complex), interp_real);
+%!   assert (imag (interp_complex), interp_imag);
 %! endfor
 
 %!test  # 2^n refinement form
@@ -760,7 +760,7 @@ endfunction
 %!assert (interp2 (z, [3; 3; 3], [2; 3; 1], "cubic"), [7; 9; 5], tol)
 %!test <62132>
 %! # FIXME: single column yields single row with spline interpolation (numbers are correct)
-%! assert (interp2 (z, [3; 3; 3], [2; 3; 1], "spline"), [7; 9; 5], tol)
+%! assert (interp2 (z, [3; 3; 3], [2; 3; 1], "spline"), [7; 9; 5], tol);
 
 ## Test input validation
 %!error interp2 (1, 1, 1, 1, 1, 2)    # only 5 numeric inputs

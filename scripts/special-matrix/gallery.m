@@ -440,48 +440,48 @@ function varargout = gallery (name, varargin)
   switch (tolower (name))
     case "binomial"
       error ("gallery: matrix %s not implemented", name);
-    case "cauchy"     , [varargout{1:n_out}] = cauchy      (varargin{:});
-    case "chebspec"   , [varargout{1:n_out}] = chebspec    (varargin{:});
-    case "chebvand"   , [varargout{1:n_out}] = chebvand    (varargin{:});
-    case "chow"       , [varargout{1:n_out}] = chow        (varargin{:});
-    case "circul"     , [varargout{1:n_out}] = circul      (varargin{:});
-    case "clement"    , [varargout{1:n_out}] = clement     (varargin{:});
-    case "compar"     , [varargout{1:n_out}] = compar      (varargin{:});
-    case "condex"     , [varargout{1:n_out}] = condex      (varargin{:});
-    case "cycol"      , [varargout{1:n_out}] = cycol       (varargin{:});
-    case "dorr"       , [varargout{1:n_out}] = dorr        (varargin{:});
-    case "dramadah"   , [varargout{1:n_out}] = dramadah    (varargin{:});
-    case "fiedler"    , [varargout{1:n_out}] = fiedler     (varargin{:});
-    case "forsythe"   , [varargout{1:n_out}] = forsythe    (varargin{:});
-    case "frank"      , [varargout{1:n_out}] = frank       (varargin{:});
-    case "gearmat"    , [varargout{1:n_out}] = gearmat     (varargin{:});
-    case "gcdmat"     , [varargout{1:n_out}] = gcdmat      (varargin{:});
-    case "grcar"      , [varargout{1:n_out}] = grcar       (varargin{:});
-    case "hanowa"     , [varargout{1:n_out}] = hanowa      (varargin{:});
-    case "house"      , [varargout{1:n_out}] = house       (varargin{:});
-    case "integerdata", [varargout{1:n_out}] = integerdata (varargin{:});
-    case "invhess"    , [varargout{1:n_out}] = invhess     (varargin{:});
-    case "invol"      , [varargout{1:n_out}] = invol       (varargin{:});
-    case "ipjfact"    , [varargout{1:n_out}] = ipjfact     (varargin{:});
-    case "jordbloc"   , [varargout{1:n_out}] = jordbloc    (varargin{:});
-    case "kahan"      , [varargout{1:n_out}] = kahan       (varargin{:});
-    case "kms"        , [varargout{1:n_out}] = kms         (varargin{:});
-    case "krylov"     , [varargout{1:n_out}] = krylov      (varargin{:});
-    case "lauchli"    , [varargout{1:n_out}] = lauchli     (varargin{:});
-    case "lehmer"     , [varargout{1:n_out}] = lehmer      (varargin{:});
+    case "cauchy"      , [varargout{1:n_out}] = cauchy      (varargin{:});
+    case "chebspec"    , [varargout{1:n_out}] = chebspec    (varargin{:});
+    case "chebvand"    , [varargout{1:n_out}] = chebvand    (varargin{:});
+    case "chow"        , [varargout{1:n_out}] = chow        (varargin{:});
+    case "circul"      , [varargout{1:n_out}] = circul      (varargin{:});
+    case "clement"     , [varargout{1:n_out}] = clement     (varargin{:});
+    case "compar"      , [varargout{1:n_out}] = compar      (varargin{:});
+    case "condex"      , [varargout{1:n_out}] = condex      (varargin{:});
+    case "cycol"       , [varargout{1:n_out}] = cycol       (varargin{:});
+    case "dorr"        , [varargout{1:n_out}] = dorr        (varargin{:});
+    case "dramadah"    , [varargout{1:n_out}] = dramadah    (varargin{:});
+    case "fiedler"     , [varargout{1:n_out}] = fiedler     (varargin{:});
+    case "forsythe"    , [varargout{1:n_out}] = forsythe    (varargin{:});
+    case "frank"       , [varargout{1:n_out}] = frank       (varargin{:});
+    case "gearmat"     , [varargout{1:n_out}] = gearmat     (varargin{:});
+    case "gcdmat"      , [varargout{1:n_out}] = gcdmat      (varargin{:});
+    case "grcar"       , [varargout{1:n_out}] = grcar       (varargin{:});
+    case "hanowa"      , [varargout{1:n_out}] = hanowa      (varargin{:});
+    case "house"       , [varargout{1:n_out}] = house       (varargin{:});
+    case "integerdata" , [varargout{1:n_out}] = integerdata (varargin{:});
+    case "invhess"     , [varargout{1:n_out}] = invhess     (varargin{:});
+    case "invol"       , [varargout{1:n_out}] = invol       (varargin{:});
+    case "ipjfact"     , [varargout{1:n_out}] = ipjfact     (varargin{:});
+    case "jordbloc"    , [varargout{1:n_out}] = jordbloc    (varargin{:});
+    case "kahan"       , [varargout{1:n_out}] = kahan       (varargin{:});
+    case "kms"         , [varargout{1:n_out}] = kms         (varargin{:});
+    case "krylov"      , [varargout{1:n_out}] = krylov      (varargin{:});
+    case "lauchli"     , [varargout{1:n_out}] = lauchli     (varargin{:});
+    case "lehmer"      , [varargout{1:n_out}] = lehmer      (varargin{:});
     case "leslie"
       error ("gallery: matrix %s not implemented", name);
-    case "lesp"       , [varargout{1:n_out}] = lesp        (varargin{:});
-    case "lotkin"     , [varargout{1:n_out}] = lotkin      (varargin{:});
-    case "minij"      , [varargout{1:n_out}] = minij       (varargin{:});
-    case "moler"      , [varargout{1:n_out}] = moler       (varargin{:});
-    case "neumann"    , [varargout{1:n_out}] = neumann     (varargin{:});
-    case "normaldata" , [varargout{1:n_out}] = normaldata  (varargin{:});
-    case "orthog"     , [varargout{1:n_out}] = orthog      (varargin{:});
-    case "parter"     , [varargout{1:n_out}] = parter      (varargin{:});
-    case "pei"        , [varargout{1:n_out}] = pei         (varargin{:});
-    case "poisson"    , [varargout{1:n_out}] = poisson     (varargin{:});
-    case "prolate"    , [varargout{1:n_out}] = prolate     (varargin{:});
+    case "lesp"        , [varargout{1:n_out}] = lesp        (varargin{:});
+    case "lotkin"      , [varargout{1:n_out}] = lotkin      (varargin{:});
+    case "minij"       , [varargout{1:n_out}] = minij       (varargin{:});
+    case "moler"       , [varargout{1:n_out}] = moler       (varargin{:});
+    case "neumann"     , [varargout{1:n_out}] = neumann     (varargin{:});
+    case "normaldata"  , [varargout{1:n_out}] = normaldata  (varargin{:});
+    case "orthog"      , [varargout{1:n_out}] = orthog      (varargin{:});
+    case "parter"      , [varargout{1:n_out}] = parter      (varargin{:});
+    case "pei"         , [varargout{1:n_out}] = pei         (varargin{:});
+    case "poisson"     , [varargout{1:n_out}] = poisson     (varargin{:});
+    case "prolate"     , [varargout{1:n_out}] = prolate     (varargin{:});
     case "randcolu"
       error ("gallery: matrix %s not implemented", name);
     case "randcorr"
@@ -598,8 +598,8 @@ function C = chebspec (n, k = 0)
 
   ## k = 1 case obtained from k = 0 case with one bigger n.
   switch (k)
-    case (0), # do nothing
-    case (1), n = n + 1;
+    case 0, # do nothing
+    case 1, n = n + 1;
     otherwise
       error ("gallery: K should be either 0 or 1 for chebspec matrix");
   endswitch
@@ -1204,8 +1204,8 @@ function F = frank (n, k = 0)
   F = triu (p(ones (n, 1), :) - diag (ones (n-1, 1), -1), -1);
 
   switch (k)
-    case (0), # do nothing
-    case (1), F = F(p,p)';
+    case 0, # do nothing
+    case 1, F = F(p,p)';
     otherwise
       error ("gallery: K must have a value of 0 or 1 for frank matrix");
   endswitch
@@ -1525,8 +1525,8 @@ function [A, detA] = ipjfact (n, k = 0)
   A = hankel (c, d);
 
   switch (k)
-    case (0), # do nothing
-    case (1), A = ones (n) ./ A;
+    case 0, # do nothing
+    case 1, A = ones (n) ./ A;
     otherwise
       error ("gallery: K must have a value of 0 or 1 for ipjfact matrix");
   endswitch
@@ -2487,8 +2487,8 @@ function A = smoke (n, k = 0)
   A = diag ( [w.^(1:n-1) 1] ) + diag (ones (n-1,1), 1);
 
   switch (k)
-    case (0), A(n,1) = 1;
-    case (1), # do nothing
+    case 0, A(n,1) = 1;
+    case 1, # do nothing
     otherwise,
       error ("gallery: K must have a value of 0 or 1 for smoke matrix");
   endswitch

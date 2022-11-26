@@ -1087,7 +1087,7 @@ endfunction
 function cstr = eval_context (op)
 
   ## EVAL_CONTEXT temporary evaluation context.
-  persistent ctext
+  persistent ctext;
 
   ## Variable cstr in "eval_code_helper" is newly created anyways.
   forbidden_var_names = {"__code__"};

@@ -249,28 +249,28 @@ endfunction
 %! assert (x, [0 0]', eps);
 %! assert (resid, 0, eps);
 %! assert (lambda, [-6 -5]', eps);
-%! assert (x .* lambda, [0 0]')
+%! assert (x .* lambda, [0 0]');
 
 %!test
 %! [x, resid, ~, ~, lambda] = pqpnonneg ([3 2; 2 2], [6; -5]);
 %! assert (x, [0 2.5]', eps);
 %! assert (resid, -6.25, eps);
 %! assert (lambda, [-11 0]', eps);
-%! assert (x .* lambda, [0 0]')
+%! assert (x .* lambda, [0 0]');
 
 %!test
 %! [x, resid, ~, ~, lambda] = pqpnonneg ([3 2; 2 2], [-6; 5]);
 %! assert (x, [2 0]', eps);
 %! assert (resid, -6, eps);
 %! assert (lambda, [0 -9]', eps);
-%! assert (x .* lambda, [0 0]')
+%! assert (x .* lambda, [0 0]');
 
 %!test
 %! [x, resid, ~, ~, lambda] = pqpnonneg ([3 2; 2 2], [-6; -5]);
 %! assert (x, [1 1.5]', 10*eps);
 %! assert (resid, -6.75, 10*eps);
 %! assert (lambda, [0 0]', eps);
-%! assert (x .* lambda, [0 0]')
+%! assert (x .* lambda, [0 0]');
 
 ## Test input validation
 %!error <Invalid call> pqpnonneg ()

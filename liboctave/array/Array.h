@@ -635,7 +635,7 @@ public:
   reshape (octave_idx_type nr, octave_idx_type nc) const
   { return Array<T, Alloc> (*this, dim_vector (nr, nc)); }
 
-  OCTARRAY_OVERRIDABLE_FUNC_API Array<T, Alloc> 
+  OCTARRAY_OVERRIDABLE_FUNC_API Array<T, Alloc>
   reshape (const dim_vector& new_dims) const
   { return Array<T, Alloc> (*this, new_dims); }
 

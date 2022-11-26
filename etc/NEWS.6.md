@@ -482,7 +482,7 @@ major release after 6):
 
         Function         | Replacement
         -----------------|------------------
-        runtests         | oruntests 
+        runtests         | oruntests
 
 - Properties
 

@@ -80,7 +80,7 @@ function recorder = audiorecorder (varargin)
   if (nargin > 0 && (is_function_handle (varargin{1}) || ischar (varargin{1})))
     error ("audiorecorder: first argument cannot be a callback function");
   endif
-  
+
   ## FIXME: Uncomment when callback functions are supported.
   ## if (nargin > 0 && ischar (varargin{1}))
   ##   varargin{1} = str2func (varargin{1});

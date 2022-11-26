@@ -114,5 +114,5 @@ endfunction
 ## Test input validation
 %!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! player = audioplayer ([-1, 1], 44100, 8);
-%! fail ('set (player, "foobar", 1)', "not a valid property name"); 
-%! fail ('set (player, "Running", 1)', "is read-only"); 
+%! fail ('set (player, "foobar", 1)', "not a valid property name");
+%! fail ('set (player, "Running", 1)', "is read-only");

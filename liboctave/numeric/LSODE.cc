@@ -81,7 +81,7 @@ lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
 }
 
 static F77_INT
-lsode_j (const F77_INT& neq, const double& time, double *, 
+lsode_j (const F77_INT& neq, const double& time, double *,
          const F77_INT& ml, const F77_INT& mu,
          double *pd, const F77_INT& nrowpd)
 {
@@ -102,8 +102,8 @@ lsode_j (const F77_INT& neq, const double& time, double *,
     for (F77_INT i = 0, j = mu; i <= ml; j == 0 ? i++ : j--)
       // walk down the subdiagonal in tmp_jac
       for (F77_INT k = i, l = j; k < neq && l < neq; k++, l++)
-        pd[nrowpd * l + k + mu - l] = tmp_jac (k, l);    
-      
+        pd[nrowpd * l + k + mu - l] = tmp_jac (k, l);
+
   return 0;
 }
 

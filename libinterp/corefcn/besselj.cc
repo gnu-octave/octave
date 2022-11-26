@@ -472,7 +472,7 @@ Error---no computation, algorithm termination condition not met, return
 %!# Function besseli is tested along with other bessels at the end of this file
 
 ## besseli specific BIST
-%!assert (! isinf (besseli (0, 700))) 
+%!assert (! isinf (besseli (0, 700)))
 
 */
 

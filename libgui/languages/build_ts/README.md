@@ -10,7 +10,7 @@ Before a new release of Octave, the language files  `libgui/languages/*.ts` have
 
 - `libgui/languages/build_ts/update_ts_files`
 
-which also determines the required search paths for each language. 
+which also determines the required search paths for each language.
 
 Besides source folders within `libgui`, the search path is extended by some qt and qsci files, collected in `libgui/build_ts/octave-qt` and `libgui/build_ts/octave-qsci` respectively, whenever there are no translation files for the language from Qt or QsciScintilla.
 

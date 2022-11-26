@@ -35,7 +35,7 @@
 ##
 ## If the optional argument @var{end} is provided, stop playing at
 ## @var{end} seconds into the recording.
-## @seealso{@audiorecorder/getplayer, @audioplayer/audioplayer, 
+## @seealso{@audiorecorder/getplayer, @audioplayer/audioplayer,
 ## @audiorecorder/audiorecorder}
 ## @end deftypefn
 

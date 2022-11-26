@@ -202,10 +202,12 @@ classdef MemoizedFunction < handle
 endclassdef
 
 function cache = init_cache ()
+
   cache = struct ("Inputs",      {{}},
                   "Nargout",     [],
                   "Outputs",     {{}},
                   "HitCount",    [],
                   "TotalHits",   0,
                   "TotalMisses", 0);
+
 endfunction

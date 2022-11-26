@@ -126,7 +126,7 @@ function [pf, n] = factor (q)
       ## recursion.
       if (! isprime (pr))
         pr = factor (pr);
-      end
+      endif
 
       [pf, q] = reducefactors (q, pf, pr);
       ## q is now divided by all occurrences of factor(s) pr.

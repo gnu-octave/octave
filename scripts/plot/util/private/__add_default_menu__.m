@@ -273,6 +273,7 @@ function autoscale_cb (h, ~)
 endfunction
 
 function init_mouse_tools (hf)
+
   set (hf, "__pan_mode__", struct ("Enable", "off",
                                    "Motion", "both",
                                    "FigureHandle", hf),
@@ -283,6 +284,7 @@ function init_mouse_tools (hf)
                                     "Motion", "both",
                                     "Direction", "in",
                                     "FigureHandle", hf));
+
 endfunction
 
 function guimode_cb (h, ~)

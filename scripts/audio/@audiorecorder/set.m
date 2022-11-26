@@ -117,5 +117,5 @@ endfunction
 ## Test input validation
 %!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
 %! recorder = audiorecorder ();
-%! fail ('set (recorder, "foobar", 1)', "not a valid property name"); 
-%! fail ('set (recorder, "Running", 1)', "is read-only"); 
+%! fail ('set (recorder, "foobar", 1)', "not a valid property name");
+%! fail ('set (recorder, "Running", 1)', "is read-only");

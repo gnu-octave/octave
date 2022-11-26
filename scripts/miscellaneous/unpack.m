@@ -318,6 +318,7 @@ function files = __parse_zip__ (output)
   files = char (output(2:end));
   ## Trim constant width prefix and return cell array.
   files = cellstr (files(:,14:end));
+
 endfunction
 
 function output = __parse_tar__ (output)

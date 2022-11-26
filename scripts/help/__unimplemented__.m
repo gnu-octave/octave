@@ -578,6 +578,7 @@ function txt = check_package (fcn, name, classes)
 endfunction
 
 function rlist = missing_functions ()
+
   persistent list = {
   "addboundary",
   "addcats",
@@ -659,7 +660,6 @@ function rlist = missing_functions ()
   "circumcenter",
   "circumcenters",
   "classUnderlying",
-  "clearAllMemoizedCaches",
   "clearCache",
   "clearpoints",
   "clipboard",
@@ -981,7 +981,6 @@ function rlist = missing_functions ()
   "MaximizeCommandWindow",
   "maxk",
   "memmapfile",
-  "memoize",
   "MemoizedFunction",
   "mergecats",
   "meta.abstractDetails",
@@ -1251,7 +1250,6 @@ function rlist = missing_functions ()
   "uiconfirm",
   "uidropdown",
   "uieditfield",
-  "uifigure",
   "uigauge",
   "uigetpref",
   "uiimport",
@@ -1275,7 +1273,6 @@ function rlist = missing_functions ()
   "uitree",
   "uitreenode",
   "undocheckout",
-  "uniquetol",
   "unloadlibrary",
   "unmesh",
   "unregisterallevents",

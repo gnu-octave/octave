@@ -984,8 +984,6 @@ namespace octave
     return retval;
   }
 
-
-
   //
   // The documentation browser
   //

@@ -84,7 +84,7 @@ function h = patch (varargin)
 
   if (! isempty (hax))
     hax = hax(1);
-  endif 
+  endif
 
   htmp = __patch__ (hax, varargin{:});
 

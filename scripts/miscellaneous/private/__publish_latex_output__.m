@@ -213,6 +213,7 @@ str,
 endfunction
 
 function outstr = do_section (str)
+
   outstr = sprintf ("%s\n",
 "",
 "",
@@ -220,6 +221,7 @@ function outstr = do_section (str)
 ['\addcontentsline{toc}{section}{' str '}'],
 ['\subsection*{' str '}'],
 "");
+
 endfunction
 
 function outstr = do_preformatted_code (str)

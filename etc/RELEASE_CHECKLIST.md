@@ -14,7 +14,7 @@ Please use `<strike> </strike>` to mark items below as done.
 
 ### ⚙️ Update gnulib to latest version ###
 
-Completion Date: 
+Completion Date:
 
 **Must occur first** as it could resolve existing, or create new, bug reports.  You should run `./bootstrap` in the source tree after updating to the new gnulib version.
 

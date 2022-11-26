@@ -2081,7 +2081,6 @@ javaObject ("java.math.BigDecimal", "1") ...
 @end example
 
 
-
 @node Set up the JVM
 @subsection Set up the JVM
 @cindex memory, limitations on JVM
@@ -2172,7 +2171,6 @@ ans = 12.34
 @end example
 
 @seealso{javamem}
-
 
 
 @node Java Interface Functions

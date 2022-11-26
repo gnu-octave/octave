@@ -230,6 +230,7 @@ classdef Map < handle
       else
         error ("containers.Map: incorrect number of inputs specified");
       endif
+
     endfunction
 
     function keySet = keys (this)
@@ -241,6 +242,7 @@ classdef Map < handle
 
       keySet = fieldnames (this.map).';  # compatibility requires row vector
       keySet = decode_keys (this, keySet);
+
     endfunction
 
     function valueSet = values (this, keySet)
@@ -271,6 +273,7 @@ classdef Map < handle
           end_try_catch
         endfor
       endif
+
     endfunction
 
     function tf = isKey (this, keySet)
@@ -299,6 +302,7 @@ classdef Map < handle
       endif
       keySet = encode_keys (this, keySet(in));
       tf(in) = isfield (this.map, keySet);
+
     endfunction
 
     function this = remove (this, keySet)
@@ -327,6 +331,7 @@ classdef Map < handle
       keySet = encode_keys (this, keySet(in));
       in = isfield (this.map, keySet);
       this.map = rmfield (this.map, keySet(in));
+
     endfunction
 
     function varargout = size (this, n)
@@ -359,6 +364,7 @@ classdef Map < handle
           varargout = { 1 };
         endif
       endif
+
     endfunction
 
     function len = length (this)
@@ -369,6 +375,7 @@ classdef Map < handle
       ## @end deftypefn
 
       len = double (this.Count);
+
     endfunction
 
     function tf = isempty (this)

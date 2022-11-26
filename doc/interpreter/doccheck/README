@@ -59,7 +59,7 @@ vi doc/interpreter/arith.texi
   Make corrections to the source files, *not* arith.texi which is derived.
 
   There are generally three choices for resolving a reported misspelling:
-    
+
     1. The word is misspelled and should be corrected in the source.
     2. The word should not be checked for spelling (for example, it might be
        a proper name such as "Lanczos").  Use the @nospell{...} macro around

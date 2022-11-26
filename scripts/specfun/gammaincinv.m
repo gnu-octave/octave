@@ -255,7 +255,7 @@ function x = gammaincinv (y, a, tail = "lower")
 endfunction
 
 ## subfunction: Newton's Method
-function x = newton_method (F, JF, y, a, x0, tol, maxit);
+function x = newton_method (F, JF, y, a, x0, tol, maxit)
 
   l = numel (y);
   res = -F (y, a, x0) ./ JF (a, x0);

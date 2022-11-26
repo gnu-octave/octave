@@ -236,6 +236,7 @@ classdef inputParser < handle
       endif
       this.validate_name ("Required", name);
       this.Required{end+1} = struct ("name", name, "val", val);
+
     endfunction
 
     function addOptional (this, name, def, val = inputParser.def_val)
@@ -279,6 +280,7 @@ classdef inputParser < handle
         def = {def};
       endif
       this.Optional{end+1} = struct ("name", name, "def", def, "val", val);
+
     endfunction
 
     function addParamValue (this, name, def, val = inputParser.def_val)
@@ -298,6 +300,7 @@ classdef inputParser < handle
         print_usage ();
       endif
       this.addParameter (name, def, val);
+
     endfunction
 
     function addParameter (this, name, def, varargin)
@@ -348,6 +351,7 @@ classdef inputParser < handle
       this.validate_name ("Parameter", name);
       this.Parameter.(name).def = def;
       this.Parameter.(name).val = val;
+
     endfunction
 
     function addSwitch (this, name)
@@ -376,6 +380,7 @@ classdef inputParser < handle
       endif
       this.validate_name ("Switch", name);
       this.Switch.(name).def = false;
+
     endfunction
 
     function parse (this, varargin)

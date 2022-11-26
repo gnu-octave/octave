@@ -816,8 +816,6 @@ endclassdef
 @end group
 @end example
 
-
-
 In contrast to old style classes, the @code{properties}-@code{endproperties}
 block as well as the @code{methods}-@code{endmethods} block can be used to
 define properties and methods of the class.  Because both blocks are empty,

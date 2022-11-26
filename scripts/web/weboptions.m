@@ -251,7 +251,7 @@ classdef weboptions < handle
     endfunction
 
     function f = set.CharacterEncoding (f, value)
-      if (! any (strcmpi (value, {"UTF-8", 'US-ASCII', "auto"})));
+      if (! any (strcmpi (value, {"UTF-8", 'US-ASCII', "auto"})))
         error ("weboptions: Invalid CharacterEncoding value");
       else
         f.CharacterEncoding = value;
@@ -259,7 +259,7 @@ classdef weboptions < handle
     endfunction
 
     function f = set.UserAgent (f, value)
-      if (! ischar (value) && ! isrow (value));
+      if (! ischar (value) && ! isrow (value))
         error ("weboptions: UserAgent must be a string");
       else
         f.UserAgent = value;
@@ -308,6 +308,7 @@ classdef weboptions < handle
     endfunction
 
     function f = set.HeaderFields (f, value)
+
       if (! isempty (value))
         if (! iscellstr (value) || ! ismatrix (value))
           error ("weboptions: HeaderFields must be array of strings or a cell array");
@@ -316,6 +317,7 @@ classdef weboptions < handle
         endif
       endif
       f.HeaderFields = value;
+
     endfunction
 
     function f = set.ContentType (f, value)
@@ -336,6 +338,7 @@ classdef weboptions < handle
     endfunction
 
     function f = set.RequestMethod (f, value)
+
       if (! isempty (value))
         if (! any (strcmpi (value, {"auto", "get", "put", "post",...
                                     "delete", "patch"})))
@@ -343,6 +346,7 @@ classdef weboptions < handle
         endif
       endif
       f.RequestMethod = value;
+
     endfunction
 
     function f = set.ArrayFormat (f, value)

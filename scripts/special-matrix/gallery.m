@@ -1213,6 +1213,7 @@ function F = frank (n, k = 0)
 endfunction
 
 function c = gcdmat (n)
+
   if (nargin != 1)
     error ("gallery: 1 argument is required for gcdmat matrix");
   elseif (! isscalar (n) || ! isnumeric (n) || fix (n) != n)

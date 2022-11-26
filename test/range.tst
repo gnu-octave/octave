@@ -79,9 +79,6 @@
 %!assert ([ r ; uint32(z)          ], uint32 (expect))
 %!assert ([ r ; uint64(z)          ], uint64 (expect))
 
-
-
-
 ## Test corner cases of ranges (base and limit)
 
 %!shared r, rrev, rneg

@@ -209,7 +209,7 @@ function x = betaincinv (y, a, b, tail = "lower")
 
 endfunction
 
-function x = newton_method (F, JF, x, a, b, y);
+function x = newton_method (F, JF, x, a, b, y)
 
   Bln = betaln (a, b);
   ## Exclude special values that have been already computed.

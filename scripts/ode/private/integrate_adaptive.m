@@ -218,7 +218,7 @@ function solution = integrate_adaptive (stepper, order, fcn, tspan, x0,
         iout += iadd;
         output_x(:, iout) = ode_x(:, istep);
         output_t(iout) = ode_t(istep);
-      end
+      endif
 
       ## Call OutputFcn
       if ((options.haveoutputfunction) && (iadd > 0))

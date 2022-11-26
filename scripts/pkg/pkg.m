@@ -760,7 +760,7 @@ function [local_packages, global_packages] = pkg (varargin)
       localflag = any (strcmp (varargin, "-local"));
       if (globalflag || localflag)
         if (globalflag && localflag)
-          error ("pkg: cannot specify both global and local options.")
+          error ("pkg: cannot specify both global and local options.");
         elseif (globalflag)
           [~, installed_pkgs_lst] = installed_packages (local_list, global_list);
         else

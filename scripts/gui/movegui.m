@@ -199,8 +199,7 @@ function movegui (varargin)
   endif
 
   ## Move figure
-  set (h, "units", "pixels");
-  set (h, "position", fpos);
+  set (h, "units", "pixels", "position", fpos);
   set (h, "units", units_fig);
 
 endfunction

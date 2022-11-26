@@ -23,7 +23,7 @@
 ##
 ########################################################################
 
-function fcn = check_default_input (fcn, trange, solver, y0, yp0);
+function fcn = check_default_input (fcn, trange, solver, y0, yp0)
 
   if (nargin < 4)
     print_usage ();

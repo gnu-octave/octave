@@ -125,8 +125,6 @@ namespace octave
       return retval;
     }
 
-
-
     Complex
     airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
     {

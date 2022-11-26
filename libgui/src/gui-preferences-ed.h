@@ -165,8 +165,6 @@ ed_show_toolbar ("editor/show_toolbar", QVariant (true));
 const gui_pref
 ed_show_hscroll_bar ("editor/show_hscroll_bar", QVariant (true));
 
-
-
 // Octave comment strings
 
 const gui_pref

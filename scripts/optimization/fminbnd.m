@@ -289,6 +289,7 @@ endfunction
 
 ## A hack for printing a formatted table
 function print_formatted_table (table)
+
   printf ("\n Fcn-count     x          f(x)         Procedure\n");
   for row=table
     printf ("%5.5s        %7.7s    %8.8s\t%s\n",
@@ -296,6 +297,7 @@ function print_formatted_table (table)
             num2str (row.fx,"%.6f"), row.procedure);
   endfor
   printf ("\n");
+
 endfunction
 
 ## Print either a success termination message or bad news

@@ -33,7 +33,7 @@
 ## anyway, and most expressions will probably be short.  It may also be
 ## buggy.  Well, don't use this function!
 
-function new_expr = __vectorize__ (expr);
+function new_expr = __vectorize__ (expr)
 
   new_expr = "";
 

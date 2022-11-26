@@ -451,6 +451,7 @@ function doc = parse_m_source (doc)
     endif
 
     return;
+
   endfunction
   ## Checks line of cellstring to be a paragraph line
   is_paragraph = @(cstr) is_publish_markup (cstr, 1);

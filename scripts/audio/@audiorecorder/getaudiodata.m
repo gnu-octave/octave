@@ -56,7 +56,7 @@ function data = getaudiodata (recorder, datatype)
       case "uint8"
         data = uint8 ((data + 1.0) * 0.5 * (2.0 ^ 8 - 1));
       otherwise
-        error ('@audiorecorder/getaudiodata: invalid DATATYPE "%s"', datatype)
+        error ('@audiorecorder/getaudiodata: invalid DATATYPE "%s"', datatype);
     endswitch
   endif
 

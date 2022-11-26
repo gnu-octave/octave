@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/files-dock-widget.cc" line="+138"/>
         <source>Invalid filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Dateiname</translation>
     </message>
 </context>
 <context>
@@ -1308,7 +1308,9 @@ Debuggen abbrechen und speichern?</translation>
         <location line="+66"/>
         <source>The changes could not be saved to the file
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Änderungen konnten nicht in der Datei
+%1
+gespeichert werden.</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -1562,7 +1564,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Neue Datei in
+        <translation>Neue Datei in
 </translation>
     </message>
     <message>
@@ -1642,7 +1644,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Neues Verzeichnis in
+        <translation>Neues Verzeichnis in
 </translation>
     </message>
     <message>
@@ -2853,7 +2855,7 @@ Die Octave-Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     <message>
         <location line="+121"/>
         <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-        <translation type="unfinished"></translation>
+        <translation>Farbe für hervorgehobene aktuelle Zeile (Magenta (255, 0, 255) für automatische Farbauswahl)</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -3648,7 +3650,8 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
         <location line="+129"/>
         <source>Add Shift modifier
 (allows one to enter number keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschalttaste hinzufügen
+(erlaubt die Eingabe mit Zifferntasten)</translation>
     </message>
     <message>
         <location line="-464"/>
@@ -4564,7 +4567,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="-41"/>
         <source>Dock widgets window icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Fenstericons der Dock-Widgets</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4574,7 +4577,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+43"/>
         <source>Icon theme (requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>Icon-Thema (erfordert Neustart)</translation>
     </message>
     <message>
         <location line="+380"/>
@@ -4614,7 +4617,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+79"/>
         <source>Highlight current line (color adjustable below with editor styles)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuelle Zeile hervorheben (Farbe kann unter &quot;Editor Stile&quot; angepasst werden)</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -4900,7 +4903,7 @@ Tastenkürzeln zu vermeiden.</translation>
     <message>
         <location line="+4"/>
         <source>Disable menu accelerators of main window menus when Command Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Menü-Tastenkürzel der Hauptfenster-Menüs deaktivieren, wenn Fokus in der Befehlszeile</translation>
     </message>
     <message>
         <location line="+50"/>

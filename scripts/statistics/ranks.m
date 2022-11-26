@@ -92,15 +92,15 @@ function y = ranks (x, dim, rtype = 0)
     lin = repmat ((1:rows (x))', [1, sz(2:end)]);  # linearly increasing array.
 
     switch (rtype)
-      case {0, "fractional"};
+      case {0, "fractional"}
         lin = (_competition (lin, sx, sz) + _modified (lin, sx, sz)) / 2;
-      case {1, "competition"};
+      case {1, "competition"}
         lin = _competition (lin, sx, sz);
-      case {2, "modified"};
+      case {2, "modified"}
         lin = _modified (lin, sx, sz);
-      case {3, "ordinal"};
+      case {3, "ordinal"}
         ## no processing needed here.
-      case {4, "dense"};
+      case {4, "dense"}
         lin = _dense (lin, sx, sz);
       otherwise
         if (! ischar (rtype))

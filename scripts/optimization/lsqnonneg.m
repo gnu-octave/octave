@@ -247,7 +247,7 @@ endfunction
 %! assert (resn, 0, 10*eps);
 %! assert (resid, [0 0 0]', 10*eps);
 %! assert (lambda, [0 0]', 10*eps);
-%! assert (x .* lambda, [0 0]')
+%! assert (x .* lambda, [0 0]');
 
 %!test
 %! [x, resn, resid, ~, ~, lambda] = lsqnonneg ([1 0; 0 1; 2 1], [1 -1 1]');
@@ -255,7 +255,7 @@ endfunction
 %! assert (resn, 1.2, 10*eps);
 %! assert (resid, [0.4 -1 -0.2]', 10*eps);
 %! assert (lambda, [0 -1.2]', 10*eps);
-%! assert (x .* lambda, [0 0]')
+%! assert (x .* lambda, [0 0]');
 
 %!test
 %! [x, resn, resid, ~, ~, lambda] = lsqnonneg ([1 0; 0 1; 2 1], [-1 1 -1]');
@@ -263,7 +263,7 @@ endfunction
 %! assert (resn, 3, 10*eps);
 %! assert (resid, [-1 1 -1]', 10*eps);
 %! assert (lambda, [-3 0]', 10*eps);
-%! assert (x .* lambda, [0 0]')
+%! assert (x .* lambda, [0 0]');
 
 %!test
 %! [x, resn, resid, ~, ~, lambda] = lsqnonneg ([1 0; 0 1; 2 1], [-1 -1 -3]');
@@ -271,7 +271,7 @@ endfunction
 %! assert (resn, 11, 20*eps);
 %! assert (resid, [-1 -1 -3]', 10*eps);
 %! assert (lambda, [-7 -4]', 10*eps);
-%! assert (x .* lambda, [0 0]')
+%! assert (x .* lambda, [0 0]');
 
 ## Test input validation
 %!error <Invalid call> lsqnonneg ()

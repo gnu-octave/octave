@@ -203,8 +203,8 @@ endfunction
 %! endif
 %! warning ("off", "Octave:logm:non-principal", "local");
 %! assert (expm (logm (A)), A, tol);
-%!assert (expm (logm (eye (3))), eye (3));
-%!assert (expm (logm (zeros (3))), zeros (3));
+%!assert (expm (logm (eye (3))), eye (3))
+%!assert (expm (logm (zeros (3))), zeros (3))
 
 ## Test input validation
 %!error <Invalid call> logm ()

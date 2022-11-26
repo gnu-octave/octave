@@ -32,7 +32,7 @@
 ## @end deftypefn
 
 function mem_fcn_handle = __memoize__ (fcn_handle)
-  persistent cached_mem_fcn_handle
+  persistent cached_mem_fcn_handle;
 
   if (nargin)
 

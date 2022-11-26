@@ -80,8 +80,8 @@ endfunction
 %!test
 %! x = -1:1;
 %! y = x';
-%! assert (lin2mu (x), (lin2mu (y))')
-%! assert (lin2mu (x), [0, 255, 128])
+%! assert (lin2mu (x), (lin2mu (y))');
+%! assert (lin2mu (x), [0, 255, 128]);
 
 %!assert (lin2mu ([0, 1, NaN, inf, -inf], 8), [255, 231, NaN, 128, 0])
 %!assert (lin2mu ([]), [])

@@ -55,11 +55,11 @@ endfunction
 
 
 ## Test char vector input
-%!assert (matlab.net.base64encode (1), "AQ==");
-%!assert (matlab.net.base64encode (255), "/w==");
-%!assert (matlab.net.base64encode (1:3), "AQID");
-%!assert (matlab.net.base64encode ("a"), "YQ==");
-%!assert (matlab.net.base64encode ("abcdefg"), "YWJjZGVmZw==");
+%!assert (matlab.net.base64encode (1), "AQ==")
+%!assert (matlab.net.base64encode (255), "/w==")
+%!assert (matlab.net.base64encode (1:3), "AQID")
+%!assert (matlab.net.base64encode ("a"), "YQ==")
+%!assert (matlab.net.base64encode ("abcdefg"), "YWJjZGVmZw==")
 
 ## Test input validation
 %!error <Invalid call> matlab.net.base64encode ()

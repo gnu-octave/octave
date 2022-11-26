@@ -189,7 +189,7 @@ endfunction
 %!assert (unique (perms (1:5)(:))', 1:5)
 %!assert (perms (int8 (1:4)), int8 (perms (1:4)))
 
-%!assert (sortrows (perms ("abb", "unique")), ["abb"; "bab"; "bba"]);
+%!assert (sortrows (perms ("abb", "unique")), ["abb"; "bab"; "bba"])
 %!assert (size (perms ([1 1 1 1 2 2 2 3 3], "unique")), [1260 9])
 %!assert (size (perms (int8([1 1 1 1 1 2 2 2 2 3 3 3]), "unique")), [27720 12])
 

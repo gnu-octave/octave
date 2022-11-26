@@ -593,11 +593,11 @@ endfunction
 %! [z, c, s] = normalize (magic (3), "norm", 1);
 %! assert ({z, c, s}, {magic(3)/15 , 0, [15 15 15]});
 %! [z, c, s] = normalize ([2,0,-2;0,2,0;-2,-2,2],"norm",2);
-%! assert ({z, c, s}, {[1,0,-1;0,1,0;-1,-1,1]*(sqrt(2)/2), 0, [1 1 1]*2*sqrt(2)}, eps)
+%! assert ({z, c, s}, {[1,0,-1;0,1,0;-1,-1,1]*(sqrt(2)/2), 0, [1 1 1]*2*sqrt(2)}, eps);
 %! [z, c, s] = normalize ([1 2 3], "norm", Inf);
 %! assert ({z, c, s}, {[1 2 3]/3, 0, 3}, eps);
 %! [z, c, s] = normalize (magic (3),"range",[-1 1]);
-%! assert ({z, c, s}, {[1 -1 0.6; -1 0 1; -0.6 1 -1], [5.5 5 4.5], [2.5 4 2.5]}, eps)
+%! assert ({z, c, s}, {[1 -1 0.6; -1 0 1; -0.6 1 -1], [5.5 5 4.5], [2.5 4 2.5]}, eps);
 %! [z, c, s] = normalize (magic (3),"scale","mad");
 %! assert ({z, c, s}, {[8 0.25 6; 3 1.25 7; 4 2.25 2], 0, [1 4 1]});
 %! [z, c, s] = normalize (magic (3),"scale","first");
@@ -607,11 +607,11 @@ endfunction
 %! [z, c, s] = normalize ([1,2,3], "center", 10);
 %! assert ({z, c, s}, {[-9 -8 -7], 10, 1});
 %! [z, c, s] = normalize ([1 2 3 10], "center", "mean");
-%! assert ({z, c, s}, {[-3 -2 -1 6], 4, 1})
+%! assert ({z, c, s}, {[-3 -2 -1 6], 4, 1});
 %! [z, c, s] = normalize ([1 2 3 10], "center", "median");
 %! assert ({z, c, s}, {[-1.5 -0.5 0.5 7.5], 2.5, 1});
 %! [z, c, s] = normalize (magic (3), "medianiqr");
-%! assert ({z, c, s}, {[8/5 -1 0; -2/5 0 2/5; 0 1 -8/5]*2/3, [4 5 6], [3.75 6 3.75]}, eps)
+%! assert ({z, c, s}, {[8/5 -1 0; -2/5 0 2/5; 0 1 -8/5]*2/3, [4 5 6], [3.75 6 3.75]}, eps);
 %! [z, c, s] = normalize ([1 2 Inf], 2);
 %! assert ({z, c, s}, {[NaN, NaN, NaN], Inf, NaN});
 %! [z, c, s] = normalize (Inf);

@@ -367,8 +367,8 @@ endfunction
 %!   vi_complex = interpn (v, yi, xi, zi, method{1});
 %!   vi_real = interpn (real (v), yi, xi, zi, method{1});
 %!   vi_imag = interpn (imag (v), yi, xi, zi, method{1});
-%!   assert (real (vi_complex), vi_real, 2*eps)
-%!   assert (imag (vi_complex), vi_imag, 2*eps)
+%!   assert (real (vi_complex), vi_real, 2*eps);
+%!   assert (imag (vi_complex), vi_imag, 2*eps);
 %! endfor
 
 ## Test input validation

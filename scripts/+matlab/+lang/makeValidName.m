@@ -119,9 +119,8 @@ endfunction
 %! assert (varname, "octave");
 
 ## Check for keywords
-%!test
-%! assert (matlab.lang.makeValidName ("for"), "xFor")
-%! assert (matlab.lang.makeValidName ("For"), "For")
+%!assert (matlab.lang.makeValidName ("for"), "xFor")
+%!assert (matlab.lang.makeValidName ("For"), "For")
 %!error matlab.lang.makeValidName ("for", "Prefix", "for")
 
 ## Test input validation

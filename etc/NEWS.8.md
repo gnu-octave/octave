@@ -110,18 +110,37 @@ option to the `print` function.
   `OutputFcn`, and `Refine`, along with corrected orientation of struct
   outputs.
 
+
 - *Early notice of future breaking changes*:  Due to many user requests that
   Octave should have a Matlab-compatible string class, there is work under way
-  to implement a string class, which will differ from a vector of characters.
-  Currently in Octave, both 'foo' and "foo" are largely interchangeable,
-  barring certain escape sequence interpretations that are present for one but
-  not another.  In future, that is likely to change as a consequence of
-  implementing Matlab-style strings.  This is required for other
-  Matlab-compatibility activities as well.
+  to implement a string class that will differ from a vector of characters.  In
+  Octave, single-quoted character arrays are currently compatible with Matlab,
+  but double-quoted forms are not.  Currently in Octave, both 'foo' and "foo"
+  are largely interchangeable, barring certain escape sequence interpretations
+  such as "\n" (converted to a single newline character) as opposed to '\n'
+  (two separate characters).  Matlab’s single-quoted character arrays and
+  double-quoted strings do not process backslash escape sequences, unlike many
+  other languages, and those escape sequences are instead processed by
+  individual functions such as `fprintf`.
 
-  *What this means for user code*: If you want to treat "foo" as a character
-  vector as opposed to a string object, *and* if you intend to use a future
-  version of Octave with string classes, then rewrite "foo" as 'foo'.
+  Octave's behavior is likely to change in future as a consequence of
+  implementing Matlab-style string syntax.  For example, 'foo' will remain a
+  three-element character vector, but "foo" will become a single-element string
+  object.  Some backslash escape sequences are likely to differ from their
+  current Octave behavior, but will achieve greater Matlab compatibility.  The
+  exact implementation is a work in progress, and may or may not include
+  methods of preserving backward compatibility.
+
+  *What this means for user code*: If your code currently relies on
+  double-quoted strings (e.g., "foo") representing character vectors as
+  opposed to string objects, and if you intend to update to a future version of
+  Octave incorporating the above changes, then consider replacing all
+  double-quoted strings with single-quoted strings in your code over time
+  (e.g., replace "foo" with 'foo'). Single-quoted strings are expected to
+  retain current behavior.  Further, if your code relies on backslash escape
+  sequence interpretation in double-quoted strings (except for special cases
+  like the `printf` family), that code may need to change as well.  
+
 
 ### Alphabetical list of new functions added in Octave 8
 

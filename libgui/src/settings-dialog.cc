@@ -573,7 +573,17 @@ namespace octave
 
     if (button_role == QDialogButtonBox::RejectRole
         || button_role == QDialogButtonBox::AcceptRole)
-      close ();
+      {
+        // save last settings dialog's geometry and close
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings *settings = rmgr.get_settings ();
+
+        settings->setValue (sd_last_tab.key, tabWidget->currentIndex ());
+        settings->setValue (sd_geometry.key, saveGeometry ());
+        settings->sync ();
+
+        close ();
+      }
   }
 
   void settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
@@ -1249,10 +1259,6 @@ namespace octave
     settings->setValue (sc_prevent_rl_conflicts_menu.key, cb_prevent_readline_conflicts_menu->isChecked ());
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
     scmgr.write_shortcuts (settings, closing);
-
-    // settings dialog's geometry
-    settings->setValue (sd_last_tab.key, tabWidget->currentIndex ());
-    settings->setValue (sd_geometry.key, saveGeometry ());
 
     settings->sync ();
   }

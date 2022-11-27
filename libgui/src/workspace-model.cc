@@ -44,6 +44,8 @@ namespace octave
   workspace_model::workspace_model (QObject *p)
     : QAbstractTableModel (p)
   {
+    // The header names. Use tr () again when accessing them since
+    // the translator si not yet initialized when this ctor is called
     m_columnNames.append (tr ("Name"));
     m_columnNames.append (tr ("Class"));
     m_columnNames.append (tr ("Dimension"));
@@ -92,7 +94,7 @@ namespace octave
                                int role) const
   {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return m_columnNames[section];
+      return tr (m_columnNames[section].toStdString ().data ());
     else
       return QVariant ();
   }

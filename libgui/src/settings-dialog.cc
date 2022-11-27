@@ -459,14 +459,14 @@ namespace octave
 
     int mode = settings->value (ed_color_mode).toInt ();
 
-    QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes,
+    QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()),
                                               group_box_editor_styles);
-    cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
     cb_color_mode->setChecked (mode > 0);
     cb_color_mode->setObjectName (ed_color_mode.key);
 
-    QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_styles);
-    pb_reload_default_colors->setToolTip (settings_reload_styles_tooltip);
+    QPushButton *pb_reload_default_colors = new QPushButton (tr (settings_reload_styles.toStdString ().data ()));
+    pb_reload_default_colors->setToolTip (tr (settings_reload_styles_tooltip.toStdString ().data ()));
 
     color_picker *current_line_color = new color_picker (
       settings->value (ed_highlight_current_line_color.key +
@@ -1279,16 +1279,16 @@ namespace octave
     m_ws_hide_tool_tips->setChecked
       (settings->value (ws_hide_tool_tips).toBool ());
 
-    QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes);
-    cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()));
+    cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
     cb_color_mode->setChecked (mode == 1);
     cb_color_mode->setObjectName (ws_color_mode.key);
     connect (m_ws_enable_colors, &QCheckBox::toggled,
              cb_color_mode, &QCheckBox::setEnabled);
     style_grid->addWidget (cb_color_mode, row, column);
 
-    QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_colors);
-    pb_reload_default_colors->setToolTip (settings_reload_colors_tooltip);
+    QPushButton *pb_reload_default_colors = new QPushButton (tr (settings_reload_colors.toStdString ().data ()));
+    pb_reload_default_colors->setToolTip (tr (settings_reload_colors_tooltip.toStdString ().data ()));
     connect (m_ws_enable_colors, &QCheckBox::toggled,
              pb_reload_default_colors, &QPushButton::setEnabled);
     style_grid->addWidget (pb_reload_default_colors, row+1, column++);
@@ -1406,14 +1406,14 @@ namespace octave
 
     int mode = settings->value (cs_color_mode).toInt ();
 
-    QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes);
-    cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()));
+    cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
     cb_color_mode->setChecked (mode == 1);
     cb_color_mode->setObjectName (cs_color_mode.key);
     style_grid->addWidget (cb_color_mode, 0, 0);
 
-    QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_colors);
-    pb_reload_default_colors->setToolTip (settings_reload_colors_tooltip);
+    QPushButton *pb_reload_default_colors = new QPushButton (tr (settings_reload_colors.toStdString ().data ()));
+    pb_reload_default_colors->setToolTip (tr (settings_reload_colors_tooltip.toStdString ().data ()));
     style_grid->addWidget (pb_reload_default_colors, 1, 0);
 
     int column = 1;               // column 0 is for the color mode checkbox
@@ -1512,14 +1512,14 @@ namespace octave
 
     int mode = settings->value (ve_color_mode).toInt ();
 
-    QCheckBox *cb_color_mode = new QCheckBox (settings_color_modes);
-    cb_color_mode->setToolTip (settings_color_modes_tooltip);
+    QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()));
+    cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
     cb_color_mode->setChecked (mode == 1);
     cb_color_mode->setObjectName (ve_color_mode.key);
     style_grid->addWidget (cb_color_mode, 0, 0);
 
-    QPushButton *pb_reload_default_colors = new QPushButton (settings_reload_colors);
-    pb_reload_default_colors->setToolTip (settings_reload_colors_tooltip);
+    QPushButton *pb_reload_default_colors = new QPushButton (tr (settings_reload_colors.toStdString ().data ()));
+    pb_reload_default_colors->setToolTip (tr (settings_reload_colors_tooltip.toStdString ().data ()));
     style_grid->addWidget (pb_reload_default_colors, 1, 0);
 
     int column = 1;

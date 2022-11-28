@@ -892,7 +892,7 @@ namespace octave
             else
               bg_color[i] = new color_picker (lexer->paper (styles[i]));
             bg_color[i]->setToolTip
-              (QObject::tr ("Background color, pink (255, 0, 255) means default"));
+              (QObject::tr ("Background color, magenta (255, 0, 255) means default"));
           }
         attrib_font[0+3*i] = new QCheckBox (QObject::tr ("b", "short form for bold"));
         attrib_font[1+3*i] = new QCheckBox (QObject::tr ("i", "short form for italic"));

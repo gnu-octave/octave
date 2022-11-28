@@ -1,5 +1,5 @@
 %!test <*53956>
-%! global dtor2_called dtor4_called
+%! global dtor2_called dtor4_called;
 %!
 %! dtor2_called = dtor4_called = 0;
 %! x = bug53956_class_3 ();

@@ -1367,11 +1367,11 @@ variables.
 ## This test must be wrapped in its own function or the 'clear' command will
 ## break the %!test environment.
 %!function __test_clear_no_args__ ()
-%!  global x
+%!  global x;
 %!  x = 3;
 %!  clear
 %!  assert (! exist ("x", "var"));  # x is not in the current workspace anymore
-%!  global x                        # but still lives in the global workspace
+%!  global x;                       # but still lives in the global workspace
 %!  assert (exist ("x", "var"));
 %!endfunction
 

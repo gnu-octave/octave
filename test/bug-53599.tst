@@ -1,5 +1,5 @@
 %!function rval = sggval (val)
-%!  global gval
+%!  global gval;
 %!  if (nargin == 1)
 %!    gval = val;
 %!  else
@@ -8,7 +8,7 @@
 %!endfunction
 
 %!test <*53599>
-%! global gval
+%! global gval;
 %! assert (isempty (gval))
 %! sggval (13);
 %! assert (sggval (), 13);
@@ -18,7 +18,7 @@
 %! gval = 42;
 %! assert (sggval (), []);
 %! clear gval
-%! global gval
+%! global gval;
 %! gval = 42;
 %! assert (sggval (), 42);
 %! clear -global gval;  # cleanup after test

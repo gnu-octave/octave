@@ -71,7 +71,7 @@
     </message>
     <message>
         <location line="+6"/>
-        <source>Background color, pink (255, 0, 255) means default</source>
+        <source>Background color, magenta (255, 0, 255) means default</source>
         <translation>Fono spalva; šviesi alyvinė spalva (255,0,255) nurodo, kad naudoti numatytąją spalvą</translation>
     </message>
     <message>

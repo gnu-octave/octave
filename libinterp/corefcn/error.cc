@@ -497,7 +497,7 @@ OCTAVE_NAMESPACE_BEGIN
     std::string str_id = id ? id : "";
     std::string message = format_message (fmt, args);
 
-    throw_error ("usage", id, message);
+    throw_error ("usage", str_id, message);
   }
 
   void error_system::vwarning (const char *name, const char *id,

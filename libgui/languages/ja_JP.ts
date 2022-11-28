@@ -71,7 +71,7 @@
     </message>
     <message>
         <location line="+6"/>
-        <source>Background color, pink (255, 0, 255) means default</source>
+        <source>Background color, magenta (255, 0, 255) means default</source>
         <translation>背景色，ピンク (255,0,255) が既定を意味する {255, 0, 255)?}</translation>
     </message>
     <message>

@@ -470,7 +470,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Background color, pink (255, 0, 255) means default</source>
+        <source>Background color, magenta (255, 0, 255) means default</source>
         <translation type="unfinished">Atzeko planoa, kolore magentak (255,0,255) lehenetsia esan nahi du {255, 0, 255)?}</translation>
     </message>
     <message>

@@ -476,7 +476,7 @@ Wil je die toch verwijderen?</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Background color, pink (255, 0, 255) means default</source>
+        <source>Background color, magenta (255, 0, 255) means default</source>
         <translation>Achtergrondkleur; roze (255,0,255) staat voor standaardkleur {255, 0, 255)?}</translation>
     </message>
     <message>

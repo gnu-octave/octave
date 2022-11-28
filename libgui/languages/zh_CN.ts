@@ -71,7 +71,7 @@
     </message>
     <message>
         <location line="+6"/>
-        <source>Background color, pink (255, 0, 255) means default</source>
+        <source>Background color, magenta (255, 0, 255) means default</source>
         <translation>背景颜色，粉红色 (255,0,255) 代表默认值</translation>
     </message>
     <message>

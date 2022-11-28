@@ -3640,17 +3640,17 @@ ya se utiliza para la acción
     <message>
         <location line="+79"/>
         <source>Import shortcuts from file...</source>
-        <translation>Importar accesos directos de archivo...</translation>
+        <translation>Importar atajos de teclado desde archivo...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export shortcuts to file...</source>
-        <translation>Exportar accesos directos a archivo...</translation>
+        <translation>Exportar atajos de teclado a archivo...</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to open %1 as Octave shortcut file</source>
-        <translation>Fallo al abrir %1 como fichero de accesos directos de Octave</translation>
+        <translation>Fallo al abrir %1 como fichero de atajos de teclado de Octave</translation>
     </message>
     <message>
         <location line="+129"/>
@@ -3838,14 +3838,14 @@ ya se utiliza para la acción
     <message>
         <location line="+69"/>
         <source>Overwriting Shortcuts</source>
-        <translation>Sobrescribir accesos directos</translation>
+        <translation>Sobrescribir atajos de teclado</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
-        <translation>Está a punto de sobrescribir todos los accesos directos.
-¿Le gustaría salvar el conjunto actual de accesos directos o cancelar esta acción?</translation>
+        <translation>Está a punto de sobrescribir todos los atajos de teclado.
+¿Le gustaría salvar el conjunto actual o cancelar esta acción?</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4791,17 +4791,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+154"/>
         <source>Import shortcut set</source>
-        <translation>Importar conjunto de accesos directos</translation>
+        <translation>Importar conjunto de atajos de teclado</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Export current shortcut set</source>
-        <translation>Exportar conjunto de accesos directos</translation>
+        <translation>Exportar conjunto de atajos de teclado</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Reset shortcuts to their defaults</source>
-        <translation>Restablecer accesos directos a valores predeterminados</translation>
+        <translation>Restablecer atajos de teclado a valores predeterminados</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4875,15 +4875,15 @@ Would you like to save the current shortcut set or cancel the action?</source>
 interference with readline key strokes.
 Exceptions: Ctrl-C for interrupting the interpreter
 and the shortcuts for switching to other widgets.</source>
-        <translation>Desactivar los accesos directos globales para evitar
+        <translation>Desactivar los atajos de teclado globales para evitar
 conflictos con las combinaciones de teclas para readline.
 Excepciones: Ctrl-C para la interrupción del intérprete
-y accesos directos para el cambio a otros widgets.</translation>
+y atajos para el cambio a otros widgets.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Disable global shortcuts when Command Window has focus</source>
-        <translation>Desactivar los accesos directos globales cuando el foco esté en la ventana de comandos</translation>
+        <translation>Desactivar los atajos de teclado globales cuando el foco esté en la ventana de comandos</translation>
     </message>
     <message>
         <location line="-392"/>
@@ -4893,7 +4893,7 @@ y accesos directos para el cambio a otros widgets.</translation>
     <message>
         <location line="+348"/>
         <source>Shortcuts</source>
-        <translation>Accesos directos</translation>
+        <translation>Atajos de teclado</translation>
     </message>
     <message>
         <location line="+108"/>
@@ -4909,13 +4909,13 @@ y accesos directos para el cambio a otros widgets.</translation>
         <location line="-44"/>
         <source>Disable menu accelerators in order to prevent
 interference with readline key strokes.</source>
-        <translation>Desactivar los accesos directos al menú para
-evitar conflictos con las combinaciones de teclas para readline.</translation>
+        <translation>Desactivar los atajos de teclado para evitar conflictos
+con las combinaciones de teclas de readline.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Disable menu accelerators of main window menus when Command Window has focus</source>
-        <translation>Desactivar los accesos directos al menú de la ventana principal cuando la ventana de comandos está activa</translation>
+        <translation>Desactivar los atajos de teclado de la ventana principal cuando la ventana de comandos está activa</translation>
     </message>
     <message>
         <location line="+130"/>

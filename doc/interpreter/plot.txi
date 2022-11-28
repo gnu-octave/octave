@@ -81,7 +81,7 @@ and @ref{Advanced Plotting}.
 * Multiple Plot Windows::
 * Manipulation of Plot Objects::
 * Manipulation of Plot Windows::
-* Use of the @code{interpreter} Property::
+* Use of the "interpreter" Property::
 * Printing and Saving Plots::
 * Interacting with Plots::
 * Test Plotting Functions::
@@ -745,34 +745,33 @@ figure window, call the @code{close} function.
 
 @DOCSTRING(closereq)
 
-@node Use of the @code{interpreter} Property
-@subsection Use of the @code{interpreter} Property
-@anchor{XREFinterpreterusage}
+@node Use of the "interpreter" Property
+@subsection Use of the "interpreter" Property
 
 @code{text} (such as titles, labels, legend item) and @code{axes} objects
-feature a @ref{XREFtextinterpreter,,interpreter} and
-@ref{XREFaxesticklabelinterpreter,,ticklabelinterpreter} property respectively.
-It determines the manner in which special control sequences in the text are
-rendered.
+feature an @ref{XREFtextinterpreter,,@qcode{"interpreter}} and a
+@ref{XREFaxesticklabelinterpreter,,@qcode{"ticklabelinterpreter"}} property
+respectively.  It determines the manner in which special control sequences in
+the text are rendered.
 
 The interpreter property can take three values: @qcode{"none"}, @qcode{"tex"},
 @qcode{"latex"}.
 
 @menu
-* @code{none} interpreter::
-* @code{tex} interpreter::
-* @code{latex} interpreter::
+* "none" interpreter::
+* "tex" interpreter::
+* "latex" interpreter::
 @end menu
 
-@node @code{none} interpreter
-@subsubsection @code{none} interpreter
-@anchor{XREFnoneinterpreter}
+@node "none" interpreter
+@subsubsection "none" interpreter
+
 If the interpreter is set to @qcode{"none"} then no special
 rendering occurs---the displayed text is a verbatim copy of the specified text.
 
-@node @code{tex} interpreter
-@subsubsection @code{tex} interpreter
-@anchor{XREFtexinterpreter}
+@node "tex" interpreter
+@subsubsection "tex" interpreter
+
 The @qcode{"tex"} interpreter implements a subset of @TeX{} functionality when
 rendering text.  This allows the insertion of special glyphs such as Greek
 characters or mathematical symbols.  Special characters are inserted by using
@@ -1073,9 +1072,9 @@ symbol is impossible.  While @TeX{} translates this symbol to @w{Unicode 2218}
 has chosen to follow the @TeX{} specification, but has added the additional
 symbol @code{\deg} which maps to the degree symbol (U+00B0).
 
-@node @code{latex} interpreter
-@subsubsection @code{latex} interpreter
-@anchor{XREFlatexinterpreter}
+@node "latex" interpreter
+@subsubsection "latex" interpreter
+
 The @qcode{"latex"} interpreter only works if an external @LaTeX{} tool chain
 is present.  Three binaries are needed: @code{latex}, @code{dvipng}, and
 @code{dvisvgm}.  If those binaries are installed but not on the path, one can
@@ -1267,7 +1266,6 @@ at the Octave prompt should display a three-dimensional plot.
 @node Introduction to Graphics Structures
 @subsection Introduction to Graphics Structures
 @cindex introduction to graphics structures
-@anchor{XREFgraphics structures}
 
 The graphics functions use pointers, which are of class graphics_handle, in
 order to address the data structures which control visual display.  A
@@ -1296,7 +1294,7 @@ functions @code{area}, @code{bar}, @code{barh}, @code{contour},
 @code{contourf}, @code{contour3}, @code{surfc}, @code{meshc}, @code{errorbar},
 @code{quiver}, @code{quiver3}, @code{stair}, @code{stem}, @code{stem3} each
 return a handle to a complex data structure as documented in
-@ref{XREFdatasources,,Data Sources}.
+@ref{Data Sources in Object Groups,,Data Sources}.
 
 The graphics objects are arranged in a hierarchy:
 
@@ -2301,7 +2299,7 @@ corresponding hggroup elements.
 @node Data Sources in Object Groups
 @subsubsection Data Sources in Object Groups
 @cindex data sources in object groups
-@anchor{XREFdatasources}
+
 All of the group objects contain data source parameters.  There are
 string parameters that contain an expression that is evaluated to update
 the relevant data property of the group when the @code{refreshdata}

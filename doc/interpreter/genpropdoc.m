@@ -865,7 +865,7 @@ box or \"out\".  __modemsg__.";
 
       case "ticklabelinterpreter"
         s.doc = "Control the way x/y/zticklabel properties are interpreted.\n\
-@xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
+@xref{Use of the \"interpreter\" Property, , @w{Use of the \"interpreter\" Property}}.";
 
       case "ticklength"
         s.doc = "Two-element vector @code{[2Dlen 3Dlen]} specifying the \
@@ -1089,7 +1089,7 @@ plot ((1:10) * 3);\n\
       case "interpreter"
         s.doc = "Control if and eventually how labels strings are interpreted \
 before rendering.\n\
-@xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
+@xref{Use of the \"interpreter\" Property, , @w{Use of the \"interpreter\" Property}}.";
 
       case "itemhitfcn"
         s.doc = "Callback function which is executed when a legend item \
@@ -1294,7 +1294,7 @@ and location of the text string.";
       case "interpreter"
         s.doc = "Control the way the @qcode{\"string\"} property is \
 interpreted.\n\
-@xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
+@xref{Use of the \"interpreter\" Property, , @w{Use of the \"interpreter\" Property}}.";
 
       case "linestyle"
         s.doc = "Style of the outline.  @xref{Line Styles}.";

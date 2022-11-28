@@ -2319,7 +2319,9 @@ Ongeldig bladwijzerbestand?</translation>
         <source>The file
 %1
 is not a valid XBEL file version 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand 
+        %1
+is geen geldig XBEL versie 1.0 bestand.</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -3017,7 +3019,8 @@ Debuggen afsluiten en opslaan?</translation>
         <location line="+66"/>
         <source>The changes could not be saved to the file
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>De wijzigingen konden niet worden opgeslagen in bestand
+        %1</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -4560,7 +4563,7 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location line="+121"/>
         <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleur van uitgelichte huidige regel (magenta (255,0,255) for automatic color)</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -5353,7 +5356,8 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
         <location line="+129"/>
         <source>Add Shift modifier
 (allows one to enter number keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg Shift toe
+(kan cijfertoets mee worden aangegeven)</translation>
     </message>
     <message>
         <location line="-464"/>
@@ -6186,7 +6190,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="-41"/>
         <source>Dock widgets window icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Dock widgets venster iconen</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -6196,7 +6200,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+43"/>
         <source>Icon theme (requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>Iconenthema (herstart noodzakelijk)</translation>
     </message>
     <message>
         <location line="+380"/>
@@ -6241,7 +6245,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+79"/>
         <source>Highlight current line (color adjustable below with editor styles)</source>
-        <translation type="unfinished"></translation>
+        <translation>Licht huidige regel uit (kleur beneden bij Editorstijlen instelbaar)</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -6608,7 +6612,7 @@ interference with readline key strokes.</source>
     <message>
         <location line="+4"/>
         <source>Disable menu accelerators of main window menus when Command Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel menutoetsen van hoofdvenster uit indien opdrachtvenster focus heeft</translation>
     </message>
     <message>
         <location line="+130"/>

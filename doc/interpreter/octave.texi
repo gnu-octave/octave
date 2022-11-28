@@ -118,7 +118,8 @@ modified versions.
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996-2022 The Octave Project Developers
 
-This is the sixth edition of the Octave documentation, and is consistent
+@c FIXME The next sentence needs manual updating with each major release.
+This is the eighth edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.
 
 Permission is granted to make and distribute verbatim copies of

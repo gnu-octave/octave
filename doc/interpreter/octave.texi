@@ -553,7 +553,7 @@ High-Level Plotting
 * Multiple Plot Windows::
 * Manipulation of Plot Objects::
 * Manipulation of Plot Windows::
-* Use of the @code{interpreter} Property::
+* Use of the "interpreter" Property::
 * Printing and Saving Plots::
 * Interacting with Plots::
 * Test Plotting Functions::

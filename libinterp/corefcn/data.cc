@@ -2880,8 +2880,8 @@ Example 4: number of output arguments < number of dimensions
 %!     [a, b] = size ([1, 2; 3, 4; 5, 6], [i, j]);
 %!     assert (a, dim(i));
 %!     assert (b, dim(j));
-%!   end
-%! end
+%!   endfor
+%! endfor
 
 ## Call for three arbitrary dimensions
 
@@ -2900,9 +2900,9 @@ Example 4: number of output arguments < number of dimensions
 %!       assert (a, dim(i));
 %!       assert (b, dim(j));
 %!       assert (c, dim(k));
-%!     end
-%!   end
-%! end
+%!     endfor
+%!   endfor
+%! endfor
 
 %!error <does not match number of requested dimensions>
 %! [a, b, c] = size ([1, 2; 3, 4; 5, 6], 1:4)

@@ -1942,7 +1942,7 @@ as the name of the function when reporting errors.
 %! msg1 = "textscan: 1 parameters given, but only 0 values";
 %! try
 %!   C = textscan (fid, "", "headerlines");
-%! end_try_catch;
+%! end_try_catch
 %! assert (! feof (fid));
 %! fclose (fid);
 %! unlink (f);
@@ -1954,7 +1954,7 @@ as the name of the function when reporting errors.
 %! msg1 = "textscan: HeaderLines must be numeric";
 %! try
 %!   C = textscan (fid, "", "headerlines", "hh");
-%! end_try_catch;
+%! end_try_catch
 %! fclose (fid);
 %! unlink (f);
 %! assert (msg1, lasterr);
@@ -1979,7 +1979,7 @@ as the name of the function when reporting errors.
 %! msg1 = "textscan: EndOfLine must be at most one character or '\\r\\n'";
 %! try
 %!   C = textscan (fid, "%f", "EndOfLine", "\n\r");
-%! end_try_catch;
+%! end_try_catch
 %! fclose (fid);
 %! unlink (f);
 %! assert (msg1, lasterr);
@@ -1992,7 +1992,7 @@ as the name of the function when reporting errors.
 %! msg1 = "textscan: EndOfLine must be at most one character or '\\r\\n'";
 %! try
 %!   C = textscan (fid, "%f", "EndOfLine", 33);
-%! end_try_catch;
+%! end_try_catch
 %! fclose (fid);
 %! unlink (f);
 %! assert (msg1, lasterr);

@@ -200,7 +200,7 @@
 %! assert (a.b.e.b.d.c, struct ("a", 1, "b", 2));
 
 ## test lazy copying in structs: nested assignment via function
-%!function aa = do_nest (a);
+%!function aa = do_nest (a)
 %!  aa   = a;
 %!  aa.b = a;
 %!endfunction
@@ -212,7 +212,7 @@
 %! assert (a.b.b.b, struct ("c", 1));
 
 ## test lazy copying in structs: nested assignment via function
-%!function aa = do_nest (a);
+%!function aa = do_nest (a)
 %!  aa   = a;
 %!  aa.b = a;
 %!  aa.b.c = aa;

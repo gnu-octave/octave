@@ -1,5 +1,5 @@
 %!function [raa, rbb, igaa, igbb] = sub1 (aa, bb)
-%!  global aa bb
+%!  global aa bb;
 %!  aa = 1;
 %!  raa = aa;
 %!  rbb = bb;
@@ -8,7 +8,7 @@
 %!endfunction
 
 %!test <*53579>
-%! global aa bb
+%! global aa bb;
 %! assert (isglobal ("aa"));
 %! assert (isglobal ("bb"));
 %! aa = 3;

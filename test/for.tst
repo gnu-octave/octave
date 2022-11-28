@@ -132,7 +132,7 @@
 
 %!test <*50893>
 %! cnt = 0;
-%! for k = zeros (0,3);
+%! for k = zeros (0,3)
 %!   cnt++;
 %! endfor
 %! assert (cnt, 0);
@@ -140,7 +140,7 @@
 
 %!test <*50893>
 %! cnt = 0;
-%! for k = zeros (3,0);
+%! for k = zeros (3,0)
 %!   cnt++;
 %! endfor
 %! assert (cnt, 0);
@@ -148,7 +148,7 @@
 
 %!test <*50893>
 %! cnt = 0;
-%! for k = zeros (3,0, "uint32");
+%! for k = zeros (3,0, "uint32")
 %!   cnt++;
 %! endfor
 %! assert (cnt, 0);
@@ -156,7 +156,7 @@
 
 %!test <*50893>
 %! cnt = 0;
-%! for k = cell (0,3);
+%! for k = cell (0,3)
 %!   cnt++;
 %! endfor
 %! assert (cnt, 0);

@@ -1209,9 +1209,9 @@
 %!  f_texts = {"foo\nbar\nbaz\n", "foo\rbar\rbaz\r", "foo\r\nbar\r\nbaz\r\n"};
 %!  for i = 1:numel (w_modes)
 %!    w_mode = w_modes{i};
-%!    for j = 1:numel (r_modes);
+%!    for j = 1:numel (r_modes)
 %!      r_mode = r_modes{j};
-%!      for k = 1:numel (f_texts);
+%!      for k = 1:numel (f_texts)
 %!        f_text = f_texts{k};
 %!        fname = tempname ();
 %!        fid = fopen (fname, w_mode);

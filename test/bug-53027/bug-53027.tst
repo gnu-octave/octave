@@ -1,18 +1,18 @@
 %!function load53027 (fname)
-%!  global X
+%!  global X;
 %!  X = 2;
 %!  load (fname);
 %!  assert (X, 1);
 %!endfunction
 
 %!function save53027 (fname)
-%!  global X
+%!  global X;
 %!  X = 1;
 %!  save (fname, "X");
 %!endfunction
 
 %!test <*53027>
-%! global X
+%! global X;
 %! X = 0;
 %! fname = tempname ();
 %! save53027 (fname);

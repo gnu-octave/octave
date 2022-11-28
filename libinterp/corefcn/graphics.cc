@@ -2642,7 +2642,7 @@ graphics_object::set (const Array<std::string>& pnames,
 %!   assert (get (h, "marker"), {"x"; "x"});
 %! unwind_protect_cleanup
 %!   close (hf);
-%! end_unwind_protect;
+%! end_unwind_protect
 
 %!error <set: number of graphics handles must match number of value rows>
 %! hf = figure ("visible", "off");
@@ -3619,7 +3619,7 @@ base_properties::update_handlevisibility (void)
 %!   assert (get (hf2, "currentobject"), []);
 %! unwind_protect_cleanup
 %!   close ([hf1, hf2]);
-%! end_unwind_protect;
+%! end_unwind_protect
 */
 
 /*
@@ -3637,7 +3637,7 @@ base_properties::update_handlevisibility (void)
 %!   assert (getappdata (hax, "testdata"), hax)
 %! unwind_protect_cleanup
 %!   close (hf);
-%! end_unwind_protect;
+%! end_unwind_protect
 */
 
 void
@@ -11025,7 +11025,7 @@ uicontextmenu::properties::update_beingdeleted (void)
 %!   assert (get (hf, "children"), [hctx1; hax]);
 %! unwind_protect_cleanup
 %!   close (hf);
-%! end_unwind_protect;
+%! end_unwind_protect
 */
 
 // ---------------------------------------------------------------------

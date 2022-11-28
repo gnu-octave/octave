@@ -3,8 +3,10 @@
 **Timeline** (tentative)
 
 * YYYY-MM-DD 🚀 Release Kick-off ⚽ (default branch merged to stable)
-* YYYY-MM-DD 🛠️ 1st release candidate **`VERSION`.0.90** on <https://alpha.gnu.org/gnu/octave/>
-* YYYY-MM-DD 🏁 Final Release 🎉 **`VERSION`.1.0** on <https://ftp.gnu.org/gnu/octave/>
+* YYYY-MM-DD 🛠️ 1st release candidate **`VERSION`.0.90** on
+  <https://alpha.gnu.org/gnu/octave/>
+* YYYY-MM-DD 🏁 Final Release 🎉 **`VERSION`.1.0** on
+  <https://ftp.gnu.org/gnu/octave/>
 
 Please use `<strike> </strike>` to mark items below as done.
 
@@ -12,11 +14,24 @@ Please use `<strike> </strike>` to mark items below as done.
 
 ------------------------------------------------------------
 
+### ⚙️ Update stable and default branch to new version numbers ###
+
+Completion Date:
+
+* Merge default onto stable to become the current stable release (see
+  instructions in `etc/HACKING.md`). 
+* Bump version numbers in `configure.ac` on stable branch (see
+  `etc/HACKING.md`).
+* Bump version numbers in `configure.ac` on default branch (see
+  `etc/HACKING.md`).
+
 ### ⚙️ Update gnulib to latest version ###
 
 Completion Date:
 
-**Must occur first** as it could resolve existing, or create new, bug reports.  You should run `./bootstrap` in the source tree after updating to the new gnulib version.
+**Must occur first** as it could resolve existing, or create new, bug reports.
+You should run `./bootstrap` in the source tree after updating to the new
+gnulib version.
 
 ### 📢 Call for bug reports ###
 
@@ -27,14 +42,17 @@ Completion Date:
 * Mark items that should be fixed for the release with this tag.
 * Bug overview at <https://octave.space/savannah/>.
 
-### 📢 Call for translations ###
+### 📢 Update GUI translation files ###
 
 Completion Date:
 
-* Call for updates ([Octave Discourse](https://octave.discourse.group/)) that might change GUI strings.
+* Call for updates ([Octave Discourse](https://octave.discourse.group/)) that
+  might change GUI strings.
 * String freeze date:
-* Update language translation files (`*.ts`) using scripts from Torsten.
-* Create bug report on Savannah as a centralized location for uploading files and tracking status of translations.
+* Update language translation files (`*.ts`).  See instructions in
+  `libgui/languages/build_ts/README.md`).
+* Create bug report on Savannah as a centralized location for uploading files
+  and tracking status of translations.
 * Call for translations of GUI strings on [Octave Discourse Maintainers](https://octave.discourse.group/c/maintainers/7), CC-ing the translators (see [list of translators](https://hg.savannah.gnu.org/hgweb/octave/file/tip/libgui/languages/translators)).
 * Collect translation files on Savannah bug report and push to Mercurial.
 
@@ -43,14 +61,18 @@ Completion Date:
 Completion Date:
 
 * Update copyright statements for all source controlled files.
-* Update dates in any other locations (launch message, citation, MXE files, etc.).
-* Add any new contributors to `doc/interpreter/contributors.in` who wish to be mentioned (don't add them without permission).
+* Update dates in any other locations (launch message, citation, MXE files,
+  etc.).
+* Add any new contributors to `doc/interpreter/contributors.in` who wish to be
+  mentioned (don't add them without permission).
 
 ### ✅ Style-check code base ###
 
 Completion Date:
 
-This will produce lots of whitespace changes, but no behavior changes. **Must occur after patches have been added**, since whitespace changes can prevent patches from applying.
+This will produce lots of whitespace changes, but no behavior changes. **Must
+occur after patches have been added**, since whitespace changes can prevent
+patches from applying.
 
 * [m-file style check](https://wiki.octave.org/Octave_style_guide)
 * [C++ style check](https://wiki.octave.org/C%2B%2B_style_guide)
@@ -61,11 +83,15 @@ Completion Date:
 
 * Grammar check documentation (See `doc/interpreter/doccheck/README`).
 * Spell check documentation (`make spellcheck`).
-* Verify no functions missing from manual (`make doc/interpreter/undocumented_list`).
-* Verify deprecated functions removed from "see also" links.
+* Verify no functions missing from manual
+  (`make doc/interpreter/undocumented_list`).
+* Verify deprecated functions removed from manual (`*.txi`) and from "see also"
+  links.
 * Verify all formats (Info, HTML, PDF) build correctly.
 * Review `etc/NEWS.VERSION.md` for any features which should be announced.
-* Review `__unimplemented__.m` for the latest changes to [Octave Forge](https://wiki.octave.org/Octave_Forge) packages and new Matlab functions.
+* Review `__unimplemented__.m` for the latest changes to
+  [Octave Forge](https://wiki.octave.org/Octave_Forge) packages and new Matlab
+  functions.
 * Update major version number in "`@subtitle Edition XXX`" in `octave.texi`.
 * Update `installer-files/README.html` in MXE Octave with version highlights.
 
@@ -83,22 +109,30 @@ Bug overview at <https://octave.space/savannah/>.
 
 * Verify `make check` is passing on all [buildbot combinations of OS and compilers](http://buildbot.octave.org:8010/#/waterfall) and [GitHub CI runners](https://github.com/gnu-octave/octave/actions).  Also check [test suite runs on "freshly brewed Octave for Windows"](https://github.com/gnu-octave/octave-buildbot/actions) (Kai's buildbots on octave.space).
 * Use software tools to check quality of Octave code.
-  * Check for memory leaks by compiling with `-fsanitize=undefined`, `--enable-address-sanitizer-flags`.
+  * Check for memory leaks by configuring with
+    `--enable-address-sanitizer-flags` and compiling with
+    `-fsanitize=undefined`, `-fno-omit-frame-pointer` in `CFLAGS`, `CXXFLAGS`,
+    and `LDFLAGS`.
   * Update static code analysis results.  See [PVS static analyzer - 5.0 Release](https://wiki.octave.org/PVS_static_analyzer_-_5.0_Release).
   * Use other tools such as `cppcheck`, etc.
 * Start discussion on [Octave Discourse Maintainers](https://octave.discourse.group/c/maintainers/8) about which failing tests that must be fixed and which can be declared **WON'T FIX**.
 
 ### 🛠️ Create new release candidate ###
 
-* Ensure correct version information.
-* Create hg tag in repository with release candidate version number.
+* Ensure correct version information (see "Release Numbering" in
+  `/etc/HACKING.md`).
+* Create `hg tag` in repository with release candidate version number
+  (`rc-MAJOR-MINOR-PATCH`).
 * Verify `make distcheck` passes.
 * Verify `make dist` works.
 * Create [Windows Installer](https://wiki.octave.org/Windows_Installer).
-* Upload release candidates.
-* Check [Windows Installer](https://wiki.octave.org/Windows_Installer) (executable and zip formats) against false positive detection at [virustotal.com](https://virustotal.com/).
+* Upload release candidates to <https://alpha.gnu.org/gnu/octave/>.
+* Check [Windows Installer](https://wiki.octave.org/Windows_Installer)
+  (executable and zip formats) against false positive detection at
+  [virustotal.com](https://virustotal.com/).
 * Add release candidate version to Savannah bug tracker.
-* Announce release candidate to [Octave Discourse](https://octave.discourse.group/).
+* Announce release candidate to
+  [Octave Discourse](https://octave.discourse.group/).
 
 ## 🏁 Final Release 🎉 ##
 
@@ -108,23 +142,35 @@ Bug overview at <https://octave.space/savannah/>.
 
 Completion Date:
 
-* Ensure correct version information.
-* Create hg tag in repository with release version number.
-* Update `etc/NEWS.VERSION.md` (final release date).
+* Ensure correct version information in `configure.ac` (see "Release Numbering"
+  in `/etc/HACKING.md`)
+  * Set `OCTAVE_RELEASE_DATE` to the current date.
+  * Set the year in `OCTAVE_COPYRIGHT` to the current year.
+* Create `hg tag` in repository with release candidate version number
+  (`release-VERSION-1-0`).
+* Update `etc/NEWS.VERSION.md` (final release date in Summary header).
 * Update `CITATION` (version, year, URL).
-* Update `etc/icons/org.octave.Octave.appdata.xml` (version number and release date).
-* Update Savannah bug tracker version info.
-* Update Savannah bug tracker: **OPEN** bugs marked as **WON'T FIX** should be marked as **CONFIRMED** (or more appropriate) for the final release.
-* Remove release candidate versions from Savannah.
+* Update `etc/icons/org.octave.Octave.appdata.xml` (version number and release
+  date).
+* Upload all tarballs to <https://ftp.gnu.org/gnu/octave/>.
+* Update web site files: `NEWS-VERSION.html`, `index.in`, `news.in`, and
+  `download.in`.
+* Update <https://wiki.octave.org/Release_History> page.
+* Update Savannah bug tracker version info to have new release number.
+* Update Savannah bug tracker: **OPEN** bugs marked as **WON'T FIX** should be
+  marked as **CONFIRMED** (or more appropriate) for the final release.
+* Hide release candidate versions in Savannah.
 
 ### 📢 Announce final release ###
 
 Completion Date:
 
-* Octave mailing-lists
+* Octave mailing-lists (yes, still) <help@octave.org> and <info-gnu@gnu.org>.
 * Octave web site (<https://hg.octave.org/web-octave>)
-* Steps documented in this [changeset](https://hg.octave.org/web-octave/rev/fe59d0118a2b).
-* Upload documentation (manual HTML + PDF `octave.org/doc` and version in `octave.org/.htaccess`, Doxygen `octave.org/doxygen`)
+* Steps documented in this
+  [changeset](https://hg.octave.org/web-octave/rev/fe59d0118a2b).
+* Upload documentation (manual HTML + PDF `octave.org/doc` and version in
+  `octave.org/.htaccess`, Doxygen `octave.org/doxygen`)
 * This wiki
 * Template:Release = 7.3.0
 * Template:Release Date = November 2, 2022
@@ -134,7 +180,9 @@ Completion Date:
 
 Completion Date:
 
-* Merge default onto stable to become the current stable release.
-* Ensure correct version information.
-* Remove all deprecated functions (either tagged with `OCTAVE_DEPRECATED` in C++ or in the directory `scripts/deprecated` for m-files) scheduled for deletion in "default" branch.  Check file `etc/NEWS.VERSION-2.md` for list of features that have been deprecated.
-* Create new `etc/NEWS.VERSION+1.md` file by copying `etc/NEWS.VERSION.md` and then removing text so that it is a template file with headings only.
+* Remove all deprecated functions (either tagged with `OCTAVE_DEPRECATED` in
+  C++ or in the directory `scripts/deprecated` for m-files) scheduled for
+  deletion on default branch.  Check file `etc/NEWS.VERSION-2.md` for list of
+  features that have been deprecated.
+* Create new `etc/NEWS.VERSION+1.md` file by copying `etc/NEWS.VERSION.md` and
+  then removing text so that it is a template file with headings only.

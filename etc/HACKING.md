@@ -472,8 +472,9 @@ is updated to the default branch.
 8. Remove functions and properties deprecated in MAJOR-1 (see ecf207896f76,
    for example)
 
-9. Update `NEWS` file for next development cycle (see 0ec5eaabaf2c, for
-   example).
+9. Create new `etc/NEWS.VERSION+1.md` file by copying `etc/NEWS.VERSION.md` and
+   then removing text so that it is a template file with headings only (see
+   0ec5eaabaf2c, for example).
 
 \################################################################################
 

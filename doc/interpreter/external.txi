@@ -2170,8 +2170,6 @@ ans = 12.34
 @end group
 @end example
 
-@seealso{javamem}
-
 
 @node Java Interface Functions
 @subsection Java Interface Functions

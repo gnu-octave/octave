@@ -239,7 +239,8 @@ CLEANFILES += \
   $(GENERATED_TEST_FILES)
 
 DISTCLEANFILES += \
-  fntests.log
+  fntests.log \
+  $(DIRSTAMP_FILES)
 
 clean-local: test-clean
 

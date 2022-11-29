@@ -180,11 +180,16 @@ namespace octave
 
     if (proxy)
       {
-        if (go.isa ("uicontrol")
-            && pId == uicontrol::properties::ID_STYLE)
+        if ((go.isa ("uicontrol")
+             && pId == uicontrol::properties::ID_STYLE)
+            || (go.isa ("uitable")
+                && pId == uitable::properties::ID_DATA))
           {
             // Special case: we need to recreate the control widget
             // associated with the octave graphics_object
+            // FIXME: For uitable, it would only be necessary to recreate
+            // the table widget if the type of the displayed values changes
+            // between Boolean and non-Boolean (bug #63388).
 
             finalize (go);
             initialize (go);

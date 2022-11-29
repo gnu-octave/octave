@@ -510,13 +510,6 @@ define simple_move_if_change_rule
   $(call move_if_change_rule,$@-t,$@)
 endef
 
-define cp_update_rule
-  if [ "x${srcdir}" != "x." ] && [ -f ${srcdir}/$@ ] && [ ! -f $@ ]; then \
-    cp ${srcdir}/$@ $@; \
-    touch -r ${srcdir}/$@ $@; \
-  fi
-endef
-
 define build-info-commands
   rm -f $@-t && \
   $(SED) \

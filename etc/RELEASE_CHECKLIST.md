@@ -92,7 +92,6 @@ Completion Date:
 * Review `__unimplemented__.m` for the latest changes to
   [Octave Forge](https://wiki.octave.org/Octave_Forge) packages and new Matlab
   functions.
-* Update major version number in "`@subtitle Edition XXX`" in `octave.texi`.
 * Update `installer-files/README.html` in MXE Octave with version highlights.
 
 ## 🔃 Repeat until all bugs are resolved ##
@@ -113,7 +112,9 @@ Bug overview at <https://octave.space/savannah/>.
     `--enable-address-sanitizer-flags` and compiling with
     `-fsanitize=undefined`, `-fno-omit-frame-pointer` in `CFLAGS`, `CXXFLAGS`,
     and `LDFLAGS`.
-  * Update static code analysis results.  See [PVS static analyzer - 5.0 Release](https://wiki.octave.org/PVS_static_analyzer_-_5.0_Release).
+  * Update static code analysis results.
+      * For `clang`, do `scan-build make -j<N> all` and then `scan-view`.
+      * See [PVS static analyzer - 5.0 Release](https://wiki.octave.org/PVS_static_analyzer_-_5.0_Release).
   * Use other tools such as `cppcheck`, etc.
 * Start discussion on [Octave Discourse Maintainers](https://octave.discourse.group/c/maintainers/8) about which failing tests that must be fixed and which can be declared **WON'T FIX**.
 
@@ -123,8 +124,8 @@ Bug overview at <https://octave.space/savannah/>.
   `/etc/HACKING.md`).
 * Create `hg tag` in repository with release candidate version number
   (`rc-MAJOR-MINOR-PATCH`).
-* Verify `make distcheck` passes.
 * Verify `make dist` works.
+* Verify `make distcheck` passes.
 * Create [Windows Installer](https://wiki.octave.org/Windows_Installer).
 * Upload release candidates to <https://alpha.gnu.org/gnu/octave/>.
 * Check [Windows Installer](https://wiki.octave.org/Windows_Installer)

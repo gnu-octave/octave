@@ -434,7 +434,8 @@
 ##
 ## @item Octave:LaTeX:internal-error
 ## If the @code{Octave:LaTeX:internal-error} warning is enabled, a warning is
-## printed whenever the LaTeX renderer for text in plots encounters an issue.
+## printed whenever the @LaTeX{} renderer for text in plots encounters an
+## issue.
 ## By default, the @code{Octave:LaTeX:internal-error} warning is enabled.
 ##
 ## @item Octave:unimplemented-matlab-functionality
@@ -458,5 +459,5 @@ function warning_ids ()
 endfunction
 
 
-## Mark file as being tested.  No real test needed for a documentation .m file
+## Mark file as tested.  No test needed for a documentation m-file.
 %!assert (1)

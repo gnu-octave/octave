@@ -308,7 +308,7 @@ from the list; if a function was placed in the list multiple times with
 DEFMETHOD (__traditional__, interp, , ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{tf} =} __traditional__ ()
-Return true if Octave was invoked with the @env{--traditional} option.
+Return true if Octave was invoked with the @w{@env{--traditional}} option.
 @end deftypefn */)
 {
   return ovl (interp.traditional ());

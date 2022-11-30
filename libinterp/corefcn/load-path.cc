@@ -2515,7 +2515,7 @@ DEFMETHOD (command_line_path, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{pathstr} =} command_line_path ()
 Return the path argument given to Octave at the command line when the
-interpreter was started (@env{--path @var{arg}}).
+interpreter was started (@w{@env{--path @var{arg}}}).
 
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
 @end deftypefn */)

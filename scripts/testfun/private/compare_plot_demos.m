@@ -27,7 +27,7 @@
 ## @deftypefn  {} {} compare_plot_demos ()
 ## @deftypefnx {} {} compare_plot_demos ("toolkits", @{@var{toolkit1}, @var{toolkit2}, @dots{}@})
 ##
-## Uses @code{dump_demos} and @code{html_compare_plot_demos} to produce an
+## Use @code{dump_demos} and @code{html_compare_plot_demos} to produce an
 ## html comparison of the plot demos for each of Octave's graphics toolkits.
 ##
 ## An m-file named @file{dump_plots.m} will be created in the current working

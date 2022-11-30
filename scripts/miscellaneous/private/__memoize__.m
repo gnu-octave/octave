@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{mem_fcn_handle} =} __memoize__ (@var{fcn_handle})
-## @deftypefn  {} {} __memoize__ ()
+## @deftypefnx {} {} __memoize__ ()
 ## Internal function used by @code{memoize}.
 ##
 ## @seealso{clearAllMemoizedCaches, memoize}

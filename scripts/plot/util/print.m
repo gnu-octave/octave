@@ -127,8 +127,8 @@
 ## JPEG) and @qcode{"painters"} for vector formats (e.g., PDF)@.  These options
 ## are only supported for the "qt" graphics toolkit.
 ##
-## @item -svgconvert (default)
-## @item -nosvgconvert
+## @item  -svgconvert (default)
+## @itemx -nosvgconvert
 ##   When using the @option{-painters} renderer, this enables or disables the
 ## SVG based backend toolchain with enhanced characteristics:
 ##

@@ -103,7 +103,6 @@
 ## Example #2 : return structs with memory usage information
 ##
 ## @example
-## @group
 ## [userdata, systemdata] = memory ()
 ## @result{}
 ##  userdata =
@@ -141,7 +140,6 @@
 ##
 ##          Available = 2.8147e+14
 ##          Total = 2.8147e+14
-## @end group
 ## @end example
 ##
 ## Programming Note: This function is implemented for Linux and Windows only.

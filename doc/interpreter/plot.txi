@@ -2764,7 +2764,7 @@ Data source variables.
 
 @menu
 * Customizing Toolkit Behavior::
-* Hardware vs. Software Rendering::
+* Hardware vs Software Rendering::
 * Precision issues::
 @end menu
 
@@ -2794,8 +2794,8 @@ plot (1:10)
 @end group
 @end example
 
-@node Hardware vs. Software Rendering
-@subsubsection Hardware vs. Software Rendering
+@node Hardware vs Software Rendering
+@subsubsection Hardware vs Software Rendering
 @cindex opengl rendering slow windows
 
 On Windows platforms, Octave uses software rendering for the OpenGL graphics

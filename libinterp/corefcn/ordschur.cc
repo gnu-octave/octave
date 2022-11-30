@@ -37,7 +37,7 @@ OCTAVE_NAMESPACE_BEGIN
 DEFUN (ordschur, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})
-Reorders the real Schur factorization (@var{U},@var{S}) obtained with the
+Reorder the real Schur factorization (@var{U},@var{S}) obtained with the
 @code{schur} function, so that selected eigenvalues appear in the upper left
 diagonal blocks of the quasi triangular Schur matrix.
 

@@ -27,7 +27,7 @@
 ## @deftypefn  {} {} html_compare (@var{toolkits})
 ## @deftypefnx {} {} html_compare (@var{toolkits}, @var{name}, @var{value}, @dots{})
 ##
-## Produces an html document to compare the plot demos produced by
+## Produce an html document to compare the plot demos produced by
 ## @var{toolkits}.
 ##
 ## Valid property names, and their defaults, are:

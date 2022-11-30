@@ -618,7 +618,7 @@ Undocumented internal function.
 DEFUN (metaclass, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{metaclass_obj} =} metaclass (obj)
-Returns the meta.class object corresponding to the class of @var{obj}.
+Return the meta.class object corresponding to the class of @var{obj}.
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -724,7 +724,7 @@ DEFMETHOD (__methods__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{mtds} =} __methods__ (@var{obj})
 @deftypefnx {} {@var{mtds} =} __methods__ ("classname")
-Implements @code{methods} for Octave class objects and classnames.
+Implement @code{methods} for Octave class objects and classnames.
 @seealso{methods}
 @end deftypefn */)
 {

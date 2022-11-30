@@ -48,14 +48,12 @@
 ##
 ## @item A 2-column cell array
 ## containing a file extension in the first column and a brief description in
-## the second column.
-## Example: @code{uigetfile (@{"*.ext", "My Description";"*.xyz",
-## "XYZ-Format"@})}
+## the second column.  Example:
+## @code{uigetfile (@{"*.ext", "My Description";"*.xyz", "XYZ-Format"@})}
 ##
 ## The filter string can also contain a semicolon separated list of filter
-## extensions.
-## Example: @code{uigetfile (@{"*.gif;*.png;*.jpg", "Supported Picture
-## Formats"@})}
+## extensions.  Example:
+## @code{uigetfile (@{"*.gif;*.png;*.jpg", "Supported Picture Formats"@})}
 ##
 ## @item A directory name or path name
 ## If the folder name of path name contains a trailing file separator, the

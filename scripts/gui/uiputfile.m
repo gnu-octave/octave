@@ -46,15 +46,13 @@
 ##
 ## @item @code{@{"*.ext", "My Description"@}}
 ## A 2-column cell array containing the file extension in the 1st column and
-## a brief description in the 2nd column.
-## Example: @code{uiputfile (@{"*.ext","My Description";"*.xyz",
-## "XYZ-Format"@})}
+## a brief description in the 2nd column.  Example:
+## @code{uiputfile (@{"*.ext","My Description";"*.xyz", "XYZ-Format"@})}
 ## @end table
 ##
 ## The filter string can also contain a semicolon separated list of filter
-## extensions.
-## Example: @code{uiputfile (@{"*.gif;*.png;*.jpg",
-## "Supported Picture Formats"@})}
+## extensions.  Example:
+## @code{uiputfile (@{"*.gif;*.png;*.jpg", "Supported Picture Formats"@})}
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is preselected in the GUI dialog.

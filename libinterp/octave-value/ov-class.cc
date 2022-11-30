@@ -2139,7 +2139,7 @@ octave_inline_fcn::execute (tree_evaluator& tw, int nargout,
 DEFUN (__inline_ctor__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{inline_obj} =} __inline_ctor__ (@var{prop_struct})
-Implements final construction for inline objects.
+Implement final construction for inline objects.
 @end deftypefn */)
 {
   // Input validation has already been done in input.m.

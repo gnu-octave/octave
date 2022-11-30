@@ -32,23 +32,23 @@
 ## Compute the tensor product between numeric tensors @var{A} and @var{B}.
 ##
 ## The dimensions of @var{A} and @var{B} that are contracted are defined by
-## @var{dimA} and @var{dimB}, respectively. @var{dimA} and @var{dimB} are
-## scalars or equal length vectors that define the dimensions to match up. The
-## matched dimensions of @var{A} and @var{B} must have equal lengths.
+## @var{dimA} and @var{dimB}, respectively.  @var{dimA} and @var{dimB} are
+## scalars or equal length vectors that define the dimensions to match up.
+## The matched dimensions of @var{A} and @var{B} must have equal lengths.
 ##
 ## When @var{dim} is used, it is equivalent to @var{dimA} = @var{dimB} =
 ## @var{dim}.
 ##
-## When no dimensions are specified, @var{dimA} = @var{dimB} = []. This computes
-## the outer product between @var{A} and @var{B}.
+## When no dimensions are specified, @var{dimA} = @var{dimB} = [].  This
+## computes the outer product between @var{A} and @var{B}.
 ##
 ## Using the "all" option results in the inner product between @var{A} and
-## @var{B}. This requires size(@var{A}) == size(@var{B}).
+## @var{B}.  This requires size(@var{A}) == size(@var{B}).
 ##
-## Use the property-value pair with the property name "NumDimensionsA"
-## when @var{A} has trailing singleton dimensions that should be transfered to
-## @var{C}. The specified @var{value} should be the total number of dimensions
-## of @var{A}.
+## Use the property-value pair with the property name "NumDimensionsA" when
+## @var{A} has trailing singleton dimensions that should be transfered to
+## @var{C}.  The specified @var{value} should be the total number of
+## dimensions of @var{A}.
 ##
 ## Matlab Compatibility:  Octave does not currently support the "name=value"
 ## syntax for the "NumDimensionsA" parameter.
@@ -214,8 +214,8 @@ function C = tensorprod (A, B, varargin)
   remainSizeA = sizeA(remainDimA); # Contrib. to size of C from remaining A dims
 
   ## Prepare for B (See comments for A.  Note that in principle,
-  ## prod(sizeB(dimB)) should always be equal to prod(sizeA(dimA)). May be
-  ## able to optimize further here.
+  ## prod (sizeB (dimB)) should always be equal to prod (sizeA (dimA)).  May
+  ## be able to optimize further here.
   remainDimB = setdiff (1:ndimsB, dimB);
   newDimOrderB =  [remainDimB, dimB];
   newSizeB = [prod(sizeB(remainDimB)), prod(sizeB(dimB))];

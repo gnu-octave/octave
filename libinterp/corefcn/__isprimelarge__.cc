@@ -155,8 +155,7 @@ You should call isprime(N) instead of directly calling this function.
 @seealso{isprime, factor}
 @end deftypefn */)
 {
-  int nargin = args.length ();
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   // This function is intended for internal use by isprime.m,
@@ -260,8 +259,7 @@ of directly calling this function.
 @seealso{isprime, factor}
 @end deftypefn */)
 {
-  int nargin = args.length ();
-  if (nargin != 1)
+  if (args.length () != 1)
     print_usage ();
 
   octave_uint64 inp = args(0).xuint64_scalar_value

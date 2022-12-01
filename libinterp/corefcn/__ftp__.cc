@@ -102,10 +102,8 @@ DEFMETHOD (__ftp_cwd__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
   std::string path = "";
-  if (nargin > 1)
+  if (args.length () > 1)
     path = args(1).xstring_value ("__ftp_cwd__: PATH must be a string");
 
   url_handle_manager& uhm = interp.get_url_handle_manager ();
@@ -415,13 +413,11 @@ DEFMETHOD (__ftp_mget__, interp, args, ,
 Undocumented internal function
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
   std::string file = args(1).xstring_value ("__ftp_mget__: PATTERN must be a string");
 
   std::string target;
 
-  if (nargin == 3 && ! args(2).isempty ())
+  if (args.length () == 3 && ! args(2).isempty ())
     target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string")
              + sys::file_ops::dir_sep_str ();
 

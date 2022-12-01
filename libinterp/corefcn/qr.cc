@@ -321,8 +321,8 @@ orthogonal basis of @code{span (A)}.
 
   bool economy = false;
   bool is_cmplx = false;
-  bool have_b = 0;
-  bool vector_p = 0;
+  bool have_b = false;
+  bool vector_p = false;
 
   if (arg.iscomplex ())
     is_cmplx = true;

@@ -302,8 +302,6 @@ files.
   octave::bp_table::bp_lines lines;
   std::string dummy;             // "if" condition -- only used for dbstop
 
-  int nargin = args.length ();
-
   octave::tree_evaluator& tw = interp.get_evaluator ();
 
   octave::bp_table& bptab = tw.get_bp_table ();
@@ -311,7 +309,7 @@ files.
   bptab.parse_dbfunction_params ("dbclear", args, symbol_name, class_name,
                                  lines, dummy);
 
-  if (nargin == 1 && symbol_name == "all")
+  if (args.length () == 1 && symbol_name == "all")
     {
       bptab.remove_all_breakpoints ();
       bptab.dbclear_all_signals ();

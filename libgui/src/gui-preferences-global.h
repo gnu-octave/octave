@@ -93,26 +93,29 @@ enum
 }  ;
 
 const QStringList
-global_icon_paths (QStringList ()
-                        << ""
-                        << ":/icons/octave/128x128/"
-                        << ":/icons/tango/128x128/"
-                        << ":/icons/cursors/"
-                       );
+global_icon_paths = {
+  "",
+  ":/icons/octave/128x128/",
+  ":/icons/tango/128x128/",
+  ":/icons/cursors/"
+};
 
 const gui_pref
 global_icon_theme_index ("icon_theme", QVariant (ICON_THEME_SYSTEM));
 const QStringList
-global_all_icon_themes (QStringList ()
-                        << ""
-                        << "octave"
-                        << "tango"
-                        << "cursors");
+global_all_icon_themes = {
+  "",
+  "octave",
+  "tango",
+  "cursors"
+};
+
 const QStringList
-global_all_icon_theme_names (QStringList ()
-                        << "System"
-                        << "Octave"
-                        << "Tango");
+global_all_icon_theme_names = {
+  "System",
+  "Octave",
+  "Tango"
+};
 
 const gui_pref
 global_status_bar ("show_status_bar", QVariant (true));
@@ -123,8 +126,9 @@ enum
   EXTRA_STYLE_FUSION_DARK = 0
 }  ;
 const QStringList
-global_extra_styles (QStringList ()
-                        << "Fusion-Dark");
+global_extra_styles = {
+  "Fusion-Dark"
+};
 
 #if defined (Q_OS_MAC)
 // prevent native file dialogs on MAC by setting the default "false" and
@@ -180,12 +184,12 @@ const gui_pref
 global_proxy_pass ("proxyPassword", QVariant (QString ()));
 
 const QStringList
-global_proxy_all_types (QStringList ()
-                        << "HttpProxy"
-                        << "Socks5Proxy"
-                        << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Environment Variables")
-                       );
-const QList<int>
-global_proxy_manual_types (QList<int> () << 0 << 1);
+global_proxy_all_types = {
+  "HttpProxy",
+  "Socks5Proxy",
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Environment Variables")
+};
+
+const QList<int> global_proxy_manual_types = { 0, 1 };
 
 #endif

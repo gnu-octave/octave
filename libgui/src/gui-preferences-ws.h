@@ -55,17 +55,19 @@ ws_sort_order ("workspaceview/sort_order", QVariant (Qt::AscendingOrder));
 const gui_pref
 ws_mru_list ("workspaceview/mru_list", QVariant ());
 
-const QStringList ws_columns_shown (QStringList ()
-    << QT_TRANSLATE_NOOP ("octave::workspace_view", "Class")
-    << QT_TRANSLATE_NOOP ("octave::workspace_view", "Dimension")
-    << QT_TRANSLATE_NOOP ("octave::workspace_view", "Value")
-    << QT_TRANSLATE_NOOP ("octave::workspace_view", "Attribute"));
+const QStringList ws_columns_shown = {
+  QT_TRANSLATE_NOOP ("octave::workspace_view", "Class"),
+  QT_TRANSLATE_NOOP ("octave::workspace_view", "Dimension"),
+  QT_TRANSLATE_NOOP ("octave::workspace_view", "Value"),
+  QT_TRANSLATE_NOOP ("octave::workspace_view", "Attribute")
+};
 
-const QStringList ws_columns_shown_keys (QStringList ()
-    << "workspaceview/show_class"
-    << "workspaceview/show_dimension"
-    << "workspaceview/show_value"
-    << "workspaceview/show_attribute");
+const QStringList ws_columns_shown_keys = {
+  "workspaceview/show_class",
+  "workspaceview/show_dimension",
+  "workspaceview/show_value",
+  "workspaceview/show_attribute"
+};
 
 const gui_pref
 ws_max_filter_history ("workspaceview/max_filter_history", QVariant (10));
@@ -87,9 +89,10 @@ const gui_pref ws_colors[2*ws_colors_count] =
 const QString ws_class_chars ("agp");
 
 const QStringList
-ws_color_names (QStringList ()
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "argument")
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "global")
-             << QT_TRANSLATE_NOOP ("octave::settings_dialog", "persistent"));
+ws_color_names = {
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "argument"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "global"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "persistent")
+};
 
 #endif

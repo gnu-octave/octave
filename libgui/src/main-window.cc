@@ -2170,7 +2170,7 @@ namespace octave
     base_name.replace ("___octave_amp_replacement___", "&&");
 
     // remember names with and without shortcut
-    m_hash_menu_text[menu] = QStringList () << name << base_name;
+    m_hash_menu_text[menu] = QStringList ({ name, base_name });
 
     return menu;
   }
@@ -2196,15 +2196,16 @@ namespace octave
 #if defined (HAVE_QSCINTILLA)
     // call the editor to add actions which should also be available in the
     // editor's menu and tool bar
-    QList<QAction *> shared_actions;
-    shared_actions << m_new_script_action
-                   << m_new_function_action
-                   << m_open_action
-                   << m_find_files_action
-                   << m_undo_action
-                   << m_copy_action
-                   << m_paste_action
-                   << m_select_all_action;
+    QList<QAction *> shared_actions = {
+      m_new_script_action,
+      m_new_function_action,
+      m_open_action,
+      m_find_files_action,
+      m_undo_action,
+      m_copy_action,
+      m_paste_action,
+      m_select_all_action
+    };
     m_editor_window->insert_global_actions (shared_actions);
 #endif
   }

@@ -180,7 +180,13 @@ const QString
 ed_last_comment_str ("editor/oct_last_comment_str");
 
 const QStringList
-ed_comment_strings (QStringList () << "##" << "#" << "%"<< "%%" << "%!");
+ed_comment_strings = {
+  "##",
+  "#",
+  "%",
+  "%%",
+  "%!"
+};
 
 const int ed_comment_strings_count = 5;
 
@@ -206,11 +212,12 @@ ed_session_bookmarks ("editor/saved_session_bookmarks", QVariant (QStringList ()
 
 // Tabs
 const QStringList
-ed_tab_position_names (QStringList ()
-                       << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Top")
-                       << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Bottom")
-                       << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Left")
-                       << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Right"));
+ed_tab_position_names = {
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Top"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Bottom"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Left"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Right")
+};
 
 const gui_pref
 ed_tab_position ("editor/tab_position", QVariant (QTabWidget::North));

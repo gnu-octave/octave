@@ -2903,9 +2903,7 @@ checked.  If none of those are set, the system default returned by
 @seealso{P_tmpdir, tempname, mkstemp, tmpfile}
 @end deftypefn */)
 {
-  int nargin = args.length ();
-
-  if (nargin > 0)
+  if (args.length () > 0)
     print_usage ();
 
   std::string tmpdir = sys::env::get_temp_directory ();

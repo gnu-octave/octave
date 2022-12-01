@@ -4189,7 +4189,6 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
         default:
           // FIXME: It shouldn't be possible to ever reach this.
           error ("%s: invalid class name for sparse", fcn);
-          break;
         }
 
       return retval;

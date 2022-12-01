@@ -633,7 +633,7 @@ OCTAVE_NAMESPACE_BEGIN
     ColumnVector ie, te, oldval, oldisterminal, olddir;
     Matrix output, ye;
     octave_idx_type cont = 0, temp = 0;
-    bool status = 0;
+    bool status = false;
     std::string string = "";
     ColumnVector yold = y;
 
@@ -800,7 +800,7 @@ OCTAVE_NAMESPACE_BEGIN
               ColumnVector& yold,
               const octave_idx_type num_event_args)
   {
-    bool status = 0;
+    bool status = false;
 
     octave_value_list args;
     if (num_event_args == 2)
@@ -915,7 +915,7 @@ OCTAVE_NAMESPACE_BEGIN
                     const octave_idx_type num_event_args)
   {
     realtype h = 0, tcur = 0;
-    bool status = 0;
+    bool status = false;
 
     N_Vector dky = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
 
@@ -978,7 +978,7 @@ OCTAVE_NAMESPACE_BEGIN
                   realtype tend, ColumnVector& outputsel,
                   const std::string& flag)
   {
-    bool status = 0;
+    bool status = false;
 
     octave_value_list output;
     output(2) = flag;

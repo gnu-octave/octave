@@ -116,7 +116,7 @@ if ($make_header)
 
 #include \"ovl.h\"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
@@ -148,7 +148,7 @@ $name (const octave_value_list& = octave_value_list (), int = 0);
 ";
   }
 
-  print "\nOCTAVE_NAMESPACE_END\n";
+  print "\nOCTAVE_END_NAMESPACE(octave)\n";
 
   print "\n#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)\n\n";
 
@@ -183,8 +183,9 @@ elsif ($make_source)
 #include \"symtab.h\"
 #include \"variables.h\"
 
-namespace octave
-{";
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+";
 
   @installer_functions = ();
 
@@ -322,5 +323,6 @@ namespace octave
     print "    $fcn (*this);\n"
   }
 
-  print "  }\n}\n";
+  print "  }\n";
+  print "OCTAVE_END_NAMESPACE(octave)\n";
 }

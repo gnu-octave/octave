@@ -36,7 +36,7 @@
 #include "ov.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Date and time functions.
 
@@ -520,4 +520,4 @@ datestr, datevec, calendar, weekday}
 %!error strptime ()
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -39,8 +39,8 @@ class octave_value_list;
 #include "pt-exp.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
   class tree_evaluator;
 
@@ -120,6 +120,7 @@ namespace octave
     // The original text form of this constant.
     std::string m_orig_text;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

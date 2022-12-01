@@ -48,7 +48,7 @@
 
 #include "sparse-xdiv.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // diagonal matrix by sparse matrix ops
 
@@ -588,4 +588,4 @@ install_dm_scm_ops (octave::type_info& ti)
                     octave_complex_diag_matrix, sub_scm_cdm);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

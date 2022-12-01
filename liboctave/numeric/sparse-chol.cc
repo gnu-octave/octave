@@ -41,10 +41,10 @@
 #include "sparse-chol.h"
 #include "sparse-util.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename chol_type>
     class sparse_chol<chol_type>::sparse_chol_rep
     {
@@ -568,5 +568,5 @@ namespace octave
     template OCTAVE_API SparseComplexMatrix
     chol2inv<SparseComplexMatrix> (const SparseComplexMatrix& r);
 
-  }
-}
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

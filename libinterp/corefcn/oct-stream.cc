@@ -67,8 +67,8 @@
 #include "pager.h"
 #include "utils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Programming Note: There are two very different error functions used
   // in the stream code.  When invoked with "error (...)" the member
   // function from stream or base_stream is called.  This
@@ -7718,4 +7718,5 @@ namespace octave
   {
     return octave_value (m_stderr_file);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

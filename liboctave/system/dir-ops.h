@@ -32,10 +32,10 @@
 
 #include "str-vec.h"
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     class
     OCTAVE_API
     dir_entry
@@ -105,7 +105,8 @@ namespace octave
       // If a failure occurs, this contains the system error text.
       std::string m_errmsg;
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -39,7 +39,7 @@
 #  include <rapidjson/error/en.h>
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 #if defined (HAVE_RAPIDJSON)
 
@@ -654,4 +654,4 @@ Functional BIST tests are located in test/json/jsondecode_BIST.tst
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -50,8 +50,8 @@
 #include "file-stat.h"
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   command_history *command_history::s_instance = nullptr;
 
 #if defined (USE_READLINE)
@@ -1017,4 +1017,5 @@ namespace octave
   {
     (*current_liboctave_error_handler) ("%s", s.c_str ());
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

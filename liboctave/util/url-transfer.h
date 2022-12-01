@@ -36,8 +36,8 @@
 #include "Array-fwd.h"
 #include "str-vec.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   struct weboptions
   {
     std::string UserAgent;
@@ -294,6 +294,7 @@ namespace octave
 
     std::shared_ptr<base_url_transfer> m_rep;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

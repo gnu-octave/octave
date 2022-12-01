@@ -43,8 +43,8 @@
 #include "unwind-prot.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Simple exception handling.
 
   tree_try_catch_command::~tree_try_catch_command (void)
@@ -67,4 +67,5 @@ namespace octave
     delete m_mid_comm;
     delete m_trail_comm;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

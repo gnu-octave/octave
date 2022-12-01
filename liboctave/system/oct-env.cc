@@ -65,10 +65,10 @@ Free Software Foundation, Inc.
 #  include <shlobj.h>
 #endif
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     env::env (void)
       : m_follow_symbolic_links (true), m_verbatim_pwd (true),
         m_current_directory (), m_prog_name (), m_prog_invocation_name (),
@@ -674,5 +674,6 @@ namespace octave
     {
       (*current_liboctave_error_handler) ("%s", s.c_str ());
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

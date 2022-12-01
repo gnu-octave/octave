@@ -35,7 +35,7 @@
 #  include <zlib.h>
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 class
 c_file_ptr_buf : public std::streambuf
@@ -230,7 +230,7 @@ typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf>
 
 #endif
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 

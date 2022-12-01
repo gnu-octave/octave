@@ -37,7 +37,7 @@
 
 #include <type_traits>
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // equivalent to isvector.m
 
@@ -356,4 +356,4 @@ Undocumented internal function.
 %! assert (imag (vi_complex), vi_imag);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

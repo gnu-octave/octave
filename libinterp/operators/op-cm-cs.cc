@@ -37,7 +37,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // complex matrix by complex scalar ops.
 
@@ -168,4 +168,4 @@ install_cm_cs_ops (octave::type_info& ti)
                        assign_div);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -39,8 +39,8 @@
 #include "randmtzig.h"
 #include "randpoisson.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static double xlgamma (double x)
   {
     return std::lgamma (x);
@@ -457,4 +457,5 @@ namespace octave
 
   template OCTAVE_API double rand_poisson<double> (double);
   template OCTAVE_API float rand_poisson<float> (float);
-}
+
+OCTAVE_END_NAMESPACE(octave)

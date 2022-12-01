@@ -42,8 +42,8 @@
 #include "oct-locbuf.h"
 #include "oct-shlib.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static std::unordered_map<std::string, void *> gsvd_fcn;
 
   static bool have_DGGSVD3 = false;
@@ -230,8 +230,8 @@ namespace octave
   typedef comp_ggsvd_ptr<F77_CMPLX, F77_REAL>::type cggsvd_type;
   typedef comp_ggsvd3_ptr<F77_CMPLX, F77_REAL>::type cggsvd3_type;
 
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <>
     void
     gsvd<Matrix>::ggsvd (char& jobu, char& jobv, char& jobq, F77_INT m,
@@ -693,5 +693,6 @@ namespace octave
     template class gsvd<FloatMatrix>;
     template class gsvd<ComplexMatrix>;
     template class gsvd<FloatComplexMatrix>;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

@@ -42,10 +42,10 @@
 #include "lo-sysdep.h"
 #include "str-vec.h"
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     bool
     dir_entry::open (const std::string& n)
     {
@@ -109,5 +109,6 @@ namespace octave
     {
       return octave_name_max_wrapper ();
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

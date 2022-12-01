@@ -31,11 +31,12 @@
 
 #include "octave-config.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   template <typename T> OCTAVE_API void rand_poisson (T L, octave_idx_type n, T *p);
 
   template <typename T> OCTAVE_API T rand_poisson (T L);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

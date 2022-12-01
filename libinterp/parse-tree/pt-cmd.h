@@ -35,8 +35,8 @@
 #include "pt-bp.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // A base class for commands.
 
   class tree_command : public tree
@@ -125,6 +125,7 @@ namespace octave
     tree_function_def (const octave_value& v, int l = -1, int c = -1)
       : tree_command (l, c), m_fcn (v) { }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

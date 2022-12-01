@@ -33,8 +33,8 @@
 
 #include "action-container.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   event_queue : public action_container
   {
@@ -125,6 +125,7 @@ namespace octave
     void warn_unhandled_exception (void) const;
 
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

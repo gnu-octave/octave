@@ -40,8 +40,8 @@
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Declarations (global, static, etc.).
 
   tree_decl_elt::tree_decl_elt (tree_identifier *i, tree_expression *e)
@@ -88,4 +88,5 @@ namespace octave
   {
     delete m_init_list;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

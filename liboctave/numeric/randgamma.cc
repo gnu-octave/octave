@@ -90,8 +90,8 @@ Dirichlet(a1,...,ak) for ai > 0
 #include "randgamma.h"
 #include "randmtzig.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   template <typename T> void rand_gamma (T a, octave_idx_type n, T *r)
   {
     octave_idx_type i;
@@ -133,4 +133,5 @@ namespace octave
 
   template OCTAVE_API void rand_gamma (double, octave_idx_type, double *);
   template OCTAVE_API void rand_gamma (float, octave_idx_type, float *);
-}
+
+OCTAVE_END_NAMESPACE(octave)

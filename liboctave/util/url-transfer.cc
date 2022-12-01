@@ -46,8 +46,8 @@
 #  include <curl/easy.h>
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   base_url_transfer::base_url_transfer (void)
     : m_host_or_url (), m_valid (false), m_ftp (false),
       m_ascii_mode (false), m_ok (true), m_errmsg (),
@@ -932,4 +932,4 @@ namespace octave
 
 #undef REP_CLASS
 
-}
+OCTAVE_END_NAMESPACE(octave)

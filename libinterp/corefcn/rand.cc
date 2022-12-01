@@ -43,7 +43,7 @@
 #include "utils.h"
 #include "ov-re-mat.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 /*
 %% Restore all rand* "seed" and "state" values in order, so that the
@@ -1226,4 +1226,4 @@ likely.
 %! endfor
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

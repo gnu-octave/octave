@@ -55,7 +55,7 @@
 #include "errwarn.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 #if ! defined (SHELL_PATH)
 #  define SHELL_PATH "/bin/sh"
@@ -241,4 +241,4 @@ procbuf::close (void)
 #endif
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

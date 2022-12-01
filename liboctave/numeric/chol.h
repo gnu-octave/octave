@@ -28,10 +28,10 @@
 
 #include "octave-config.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     chol
@@ -104,7 +104,8 @@ namespace octave
     template <typename T>
     OCTAVE_API T
     chol2inv (const T& r);
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

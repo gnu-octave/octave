@@ -167,7 +167,7 @@ parse_range_spec (const octave_value& range_spec,
   return stat;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFMETHOD (dlmread, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -767,4 +767,4 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

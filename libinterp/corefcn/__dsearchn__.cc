@@ -35,7 +35,7 @@
 #include "error.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (__dsearchn__, args, ,
        doc: /* -*- texinfo -*-
@@ -103,4 +103,4 @@ Undocumented internal function.
 %!assert (1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

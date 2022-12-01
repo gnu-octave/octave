@@ -30,8 +30,8 @@
 
 #include <atomic>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Encapsulates a reference counter.
 
   template <typename T>
@@ -86,6 +86,7 @@ namespace octave
 
     std::atomic<T> m_count;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -29,7 +29,7 @@
 
 #include "oct-strstrm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Position a stream at OFFSET relative to ORIGIN.
 
@@ -77,4 +77,4 @@ ostrstream::create (std::ios::openmode arg_md,
   return stream (new ostrstream (arg_md, flt_fmt, encoding));
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

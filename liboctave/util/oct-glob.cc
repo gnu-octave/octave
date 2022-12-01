@@ -51,8 +51,8 @@
 // transforms the glob_match::glob function to be glob_match::rpl_glob,
 // which is not what we want...
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static bool
   single_match_exists (const std::string& file)
   {
@@ -61,8 +61,8 @@ namespace octave
     return s.exists ();
   }
 
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     bool
     fnmatch (const string_vector& pat, const std::string& str, int fnm_flags)
     {
@@ -411,5 +411,6 @@ namespace octave
 
       return retval.sort ();
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

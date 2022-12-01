@@ -31,7 +31,7 @@
 #include "mx-defs.h"
 #include "MatrixType.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern Matrix xdiv (const Matrix& a, const Matrix& b, MatrixType& typ);
 extern ComplexMatrix xdiv (const Matrix& a, const ComplexMatrix& b,
@@ -154,7 +154,7 @@ extern FloatComplexDiagMatrix xleftdiv (const FloatDiagMatrix& a,
 extern FloatComplexDiagMatrix xleftdiv (const FloatComplexDiagMatrix& a,
                                         const FloatComplexDiagMatrix& b);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 

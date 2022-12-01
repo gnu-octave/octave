@@ -39,8 +39,8 @@ class octave_value_list;
 
 class event_manager;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class comment_list;
   class tree_command;
   class tree_evaluator;
@@ -212,6 +212,7 @@ namespace octave
     // Does this list of statements make up the body of a script?
     bool m_script_body;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

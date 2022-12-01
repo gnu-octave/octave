@@ -31,8 +31,8 @@
 #include "pt-select.h"
 #include "pt-stmt.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // If clauses.
 
   tree_if_clause::~tree_if_clause (void)
@@ -69,4 +69,5 @@ namespace octave
     delete m_lead_comm;
     delete m_trail_comm;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -44,10 +44,10 @@
 #include "lu.h"
 #include "oct-locbuf.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     // FIXME: PermMatrix::col_perm_vec returns Array<octave_idx_type>
     // but m_ipvt is an Array<octave_f77_int_type>.  This could cause
     // trouble for large arrays if octave_f77_int_type is 32-bits but
@@ -920,5 +920,6 @@ namespace octave
     template class lu<ComplexMatrix>;
 
     template class lu<FloatComplexMatrix>;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

@@ -36,8 +36,8 @@
 #include "oct-cmplx.h"
 #include "quit.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Generic any/all test functionality with arbitrary predicate.
 
   template <typename F, typename T, bool zero>
@@ -109,8 +109,8 @@ namespace octave
   template <> OCTAVE_API void write_value (std::ostream& os, const float& value);
   template <> OCTAVE_API void write_value (std::ostream& os, const FloatComplex& value);
 
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(math)
+
     extern OCTAVE_API bool int_multiply_overflow (int a, int b, int *r);
 
     extern OCTAVE_API bool
@@ -133,8 +133,9 @@ namespace octave
     int_multiply_overflow (unsigned long long int a, unsigned long long int b,
                            unsigned long long int *r);
 #endif
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 template <typename F, typename T, bool zero>

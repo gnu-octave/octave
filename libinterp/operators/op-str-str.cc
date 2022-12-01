@@ -35,7 +35,7 @@
 #include "ov-null-mat.h"
 #include "ops.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // string unary ops.
 
@@ -220,4 +220,4 @@ install_str_str_ops (octave::type_info& ti)
 
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

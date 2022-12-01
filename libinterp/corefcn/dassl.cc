@@ -46,7 +46,7 @@
 
 #include "DASSL-opts.cc"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Global pointer for user defined function required by dassl.
 static octave_value dassl_fcn;
@@ -491,4 +491,4 @@ parameters for @code{dassl}.
 %!error dassl_options ("foo", 1, 2)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

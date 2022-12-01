@@ -40,8 +40,8 @@
 #include "symscope.h"
 #include "utils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   symbol_record symbol_scope_rep::insert_local (const std::string& name)
   {
     symbol_record sym (name);
@@ -385,4 +385,5 @@ namespace octave
 
     return ppsr->localfunctions ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

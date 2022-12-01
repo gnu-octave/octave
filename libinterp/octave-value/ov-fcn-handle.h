@@ -40,7 +40,7 @@
 #include "stack-frame.h"
 #include "symscope.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class interpreter;
   class tree_evaluator;
@@ -169,7 +169,7 @@ OCTAVE_NAMESPACE_BEGIN
     std::string m_file;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 class
 OCTINTERP_API

@@ -63,8 +63,8 @@
 #include "quit.h"
 #include "svd.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Theory: norm accumulator is an object that has an accum method able
   // to handle both real and complex element, and a cast operator
   // returning the intermediate norm.  Reference: Higham, N. "Estimating
@@ -632,4 +632,5 @@ namespace octave
 
   DEFINE_COLROW_NORM_FCNS(Sparse, , double)
   DEFINE_COLROW_NORM_FCNS(SparseComplex, , double)
-}
+
+OCTAVE_END_NAMESPACE(octave)

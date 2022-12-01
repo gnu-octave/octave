@@ -93,7 +93,7 @@ bool octave_interpreter_ready = false;
 // TRUE means we've processed all the init code and we are good to go.
 bool octave_initialized = false;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (__version_info__, args, ,
        doc: /* -*- texinfo -*-
@@ -2082,4 +2082,4 @@ Return true if Octave was invoked with the @w{@env{--traditional}} option.
       }
   }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

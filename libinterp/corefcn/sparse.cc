@@ -42,7 +42,7 @@
 #include "ov-cx-sparse.h"
 #include "ov-bool-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (issparse, args, ,
        doc: /* -*- texinfo -*-
@@ -325,4 +325,4 @@ even if @var{nz} is 0.
 %!error <M, N, and NZ must be non-negative> spalloc (1, 1, -1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

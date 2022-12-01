@@ -55,10 +55,10 @@
 #include "lo-specfun.h"
 #include "mx-inlines.cc"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     static inline Complex
     bessel_return_value (const Complex& val, octave_idx_type ierr)
     {
@@ -2206,5 +2206,6 @@ namespace octave
               ? FloatComplex (std::log (-(1.0f + x)), M_PI)
               : FloatComplex (log1p (x)));
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

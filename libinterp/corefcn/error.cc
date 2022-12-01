@@ -233,7 +233,7 @@ maybe_extract_message_id (const std::string& caller,
   return have_fmt;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static octave_scalar_map
   init_warning_options (const std::string& state)
@@ -927,7 +927,7 @@ OCTAVE_NAMESPACE_BEGIN
     evmgr.display_exception (ee, m_beep_on_error);
   }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 void
 vmessage (const char *name, const char *fmt, va_list args)
@@ -1123,7 +1123,7 @@ panic (const char *fmt, ...)
   va_end (args);
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 void
 defun_usage_message (const std::string& msg)
@@ -2177,4 +2177,4 @@ interpreter_try (unwind_protect& frame)
   es.interpreter_try (frame);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

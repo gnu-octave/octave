@@ -37,10 +37,10 @@
 #include "oct-locbuf.h"
 #include "schur.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     // For real types.
 
     static F77_INT
@@ -506,5 +506,6 @@ namespace octave
     template class schur<FloatMatrix>;
 
     template class schur<Matrix>;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

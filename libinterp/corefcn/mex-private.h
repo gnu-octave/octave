@@ -28,12 +28,12 @@
 
 #include "octave-config.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern OCTINTERP_API octave_value_list
 call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
           int nargout_arg);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

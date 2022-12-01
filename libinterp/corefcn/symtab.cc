@@ -48,7 +48,7 @@
 #include "symscope.h"
 #include "symtab.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   symbol_table::symbol_table (interpreter& interp)
     : m_interpreter (interp), m_fcn_table (), m_class_precedence_table (),
@@ -848,5 +848,5 @@ updated to use some other function.
 %! assert (! strcmp (which ("bar"), ""));
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 

@@ -71,8 +71,8 @@
 
 #define MT_N 624
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Mersenne Twister.
 
   extern OCTAVE_API void init_mersenne_twister (void);
@@ -117,6 +117,7 @@ namespace octave
 
   template <> OCTAVE_API void
   rand_exponential<float> (octave_idx_type n, float *p);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

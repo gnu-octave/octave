@@ -35,7 +35,7 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // struct ops.
 
@@ -113,4 +113,4 @@ install_struct_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_matrix, octave_struct, matrix_struct);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

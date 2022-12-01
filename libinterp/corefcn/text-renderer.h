@@ -36,8 +36,8 @@
 #include "dMatrix.h"
 #include "uint8NDArray.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_text_renderer;
   class text_element;
 
@@ -237,6 +237,7 @@ namespace octave
     base_text_renderer *m_rep;
     base_text_renderer *m_latex_rep;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

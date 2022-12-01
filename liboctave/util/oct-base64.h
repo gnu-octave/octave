@@ -33,8 +33,8 @@
 #include "Array-fwd.h"
 #include "intNDArray.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   extern OCTAVE_API bool
   base64_encode (const char *inc, const std::size_t inlen, char **out);
 
@@ -43,6 +43,7 @@ namespace octave
 
   extern OCTAVE_API intNDArray<octave_uint8>
   base64_decode_bytes (const std::string& str);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

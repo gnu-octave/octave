@@ -47,7 +47,7 @@
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   octave_value
   fcn_info::fcn_info_rep::load_private_function (const std::string& dir_name)
@@ -1215,4 +1215,4 @@ recompiled.
 %!error ignore_function_time_stamp (42)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

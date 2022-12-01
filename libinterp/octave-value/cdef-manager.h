@@ -35,8 +35,8 @@
 #include "cdef-property.h"
 #include "ov-builtin.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class
@@ -159,6 +159,7 @@ namespace octave
 
     cdef_package m_meta;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

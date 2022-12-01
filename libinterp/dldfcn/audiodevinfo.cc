@@ -54,7 +54,7 @@
 #  include <portaudio.h>
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 #if defined (HAVE_PORTAUDIO)
 
@@ -2810,4 +2810,4 @@ Undocumented internal function.
 #endif
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

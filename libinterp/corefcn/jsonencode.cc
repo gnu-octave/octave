@@ -442,7 +442,7 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
 
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (jsonencode, args, ,
        doc: /* -*- texinfo -*-
@@ -671,4 +671,4 @@ Functional BIST tests are located in test/json/jsonencode_BIST.tst
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

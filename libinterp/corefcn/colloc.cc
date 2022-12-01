@@ -38,7 +38,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (colloc, args, ,
        doc: /* -*- texinfo -*-
@@ -116,4 +116,4 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

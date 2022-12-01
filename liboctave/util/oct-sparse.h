@@ -165,8 +165,8 @@
      || defined (HAVE_CXSPARSE) || defined (HAVE_SPQR)          \
      || defined (HAVE_UMFPACK))
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
 #  if defined (OCTAVE_ENABLE_64)
   typedef SuiteSparse_long suitesparse_integer;
 #  else
@@ -206,7 +206,8 @@ namespace octave
 
     return static_cast<octave_idx_type> (x);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif
 #endif

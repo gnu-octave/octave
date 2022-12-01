@@ -38,7 +38,7 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // char matrix unary ops.
 
@@ -113,4 +113,4 @@ install_chm_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_matrix, octave_char_matrix, m_chm);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

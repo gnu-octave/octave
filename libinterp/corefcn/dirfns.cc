@@ -62,7 +62,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // TRUE means we ask for confirmation before recursively removing a
 // directory tree.
@@ -783,4 +783,4 @@ The original variable value is restored when exiting the function.
                                 "confirm_recursive_rmdir");
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -54,8 +54,8 @@
 #include "pt-stmt.h"
 #include "sighandlers.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class bp_file_info
   {
   public:
@@ -1147,4 +1147,5 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

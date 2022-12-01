@@ -43,8 +43,8 @@
 #include "ov.h"
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
   class tree_classdef;
 
@@ -467,6 +467,7 @@ namespace octave
   {
     return get_rep ()->find_property (nm);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

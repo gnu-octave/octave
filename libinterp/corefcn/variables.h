@@ -36,10 +36,11 @@ class octave_value_list;
 class octave_builtin;
 class string_vector;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_identifier;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #include <limits>
 #include <string>
@@ -61,7 +62,7 @@ extern OCTINTERP_API octave_function *
 is_valid_function (const std::string&, const std::string& = "",
                    bool warn = false);
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern OCTINTERP_API int
 symbol_exist (const std::string& name, const std::string& type = "any");
@@ -104,7 +105,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 extern OCTINTERP_API std::string
 maybe_missing_function_hook (const std::string& name);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 

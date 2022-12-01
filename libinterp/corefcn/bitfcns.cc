@@ -51,8 +51,8 @@
 #include <functional>
 
 #if ! defined (HAVE_CXX_BITWISE_OP_TEMPLATES)
-namespace std
-{
+OCTAVE_BEGIN_NAMESPACE(std)
+
   template <typename T>
   struct bit_and
   {
@@ -73,10 +73,11 @@ namespace std
   public:
     T operator() (const T& op1, const T& op2) const { return (op1 ^ op2); }
   };
-}
+
+OCTAVE_END_NAMESPACE(std)
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename OP, typename T>
 octave_value
@@ -975,4 +976,4 @@ than the maximum value allowable for the relevant class as reported by
 %!error sizemax (0)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

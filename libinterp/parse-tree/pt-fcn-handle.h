@@ -43,8 +43,8 @@ class octave_value_list;
 #include "ov.h"
 #include "ov-usr-fcn.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_fcn_handle : public tree_expression
   {
   public:
@@ -166,6 +166,7 @@ namespace octave
     // Filename where the handle was defined.
     std::string m_file_name;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

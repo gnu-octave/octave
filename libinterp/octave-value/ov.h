@@ -45,12 +45,12 @@
 #include "oct-time.h"
 #include "str-vec.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class stack_frame;
   class type_info;
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 class Cell;
 class float_format;
@@ -1684,7 +1684,7 @@ private:
 
 // Non-member unary and binary operations on octave_value objects.
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   extern OCTINTERP_API octave_value
   unary_op (type_info& ti, octave_value::unary_op op,
@@ -1734,7 +1734,7 @@ OCTAVE_NAMESPACE_BEGIN
     return colon_op (base, octave_value (), limit, is_for_cmd_expr);
   }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::unary_op' instead")

@@ -33,8 +33,8 @@
 #include "dMatrix.h"
 #include "dColVector.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class OCTAVE_API CollocWt
   {
   public:
@@ -206,7 +206,8 @@ namespace octave
 
     void error (const char *msg);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::CollocWt' instead")

@@ -71,7 +71,7 @@
 #  define SHELL_PATH "/bin/sh"
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 #define STRINGIFY(s) STRINGIFY1(s)
 #define STRINGIFY1(s) #s
@@ -645,7 +645,7 @@ specified option.
 %!error __octave_config_info__ (1, 2)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)
 

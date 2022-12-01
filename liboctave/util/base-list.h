@@ -32,8 +32,8 @@
 
 #include <list>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   template <typename elt_type>
   class
   base_list
@@ -105,6 +105,7 @@ namespace octave
 
     std::list<elt_type> m_lst;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

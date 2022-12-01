@@ -58,7 +58,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Nonzero means we have already printed a message for this series of
   // SIGPIPES.  We assume that the writer will eventually give up.
@@ -639,4 +639,4 @@ The original variable value is restored when exiting the function.
 %!error sigterm_dumps_octave_core (1, 2)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

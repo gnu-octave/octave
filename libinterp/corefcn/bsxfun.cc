@@ -320,7 +320,7 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
     }
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFMETHOD (bsxfun, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -844,4 +844,4 @@ as the other array.
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

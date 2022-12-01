@@ -48,8 +48,8 @@
 #include "symscope.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class compiled_fcn_stack_frame : public stack_frame
   {
   public:
@@ -2490,4 +2490,5 @@ namespace octave
   {
     sfw.visit_scope_stack_frame (*this);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

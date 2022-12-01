@@ -58,8 +58,8 @@ extern int dlclose (void *);
 #  include "lo-sysdep.h"
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   std::list<dynamic_library> possibly_unreferenced_dynamic_libraries;
 
   void dynamic_library::delete_later (void)
@@ -447,4 +447,5 @@ namespace octave
       ("support for dynamically loaded libraries was unavailable or disabled when liboctave was built");
 #endif
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

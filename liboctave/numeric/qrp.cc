@@ -43,10 +43,10 @@
 #include "oct-locbuf.h"
 #include "qrp.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     // Specialization.
 
     template <>
@@ -348,5 +348,6 @@ namespace octave
       FloatRowVector pv (MArray<float> (pa) + 1.0f);
       return pv;
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

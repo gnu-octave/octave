@@ -31,8 +31,7 @@
 #include "dNDArray.h"
 #include "fNDArray.h"
 
-OCTAVE_NAMESPACE_BEGIN
-
+OCTAVE_BEGIN_NAMESPACE(octave)
 DEFUN (__betainc__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{y} =} __betainc__ (@var{x}, @var{a}, @var{b})
@@ -203,4 +202,4 @@ Continued fraction for incomplete beta function.
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

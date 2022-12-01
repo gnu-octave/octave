@@ -37,7 +37,7 @@
 #include "ops.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUNOP (transpose, perm_matrix)
 {
@@ -94,4 +94,4 @@ install_pm_pm_ops (octave::type_info& ti)
                       perm_matrix_to_matrix);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

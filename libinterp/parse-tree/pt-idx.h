@@ -39,8 +39,8 @@ class octave_value_list;
 #include "pt-exp.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class octave_lvalue;
   class symbol_scope;
   class tree_argument_list;
@@ -147,6 +147,7 @@ namespace octave
 
     octave_map make_arg_struct (void) const;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

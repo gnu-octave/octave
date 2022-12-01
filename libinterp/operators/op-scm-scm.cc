@@ -42,7 +42,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // unary sparse complex matrix ops.
 
@@ -213,4 +213,4 @@ install_scm_scm_ops (octave::type_info& ti)
                        octave_null_sq_str, null_assign);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

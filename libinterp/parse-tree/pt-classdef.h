@@ -40,8 +40,8 @@ class octave_value;
 
 #include <list>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class tree_arg_validation;
@@ -844,6 +844,7 @@ namespace octave
     std::string m_pack_name;
     std::string m_file_name;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

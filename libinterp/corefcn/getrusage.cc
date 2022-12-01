@@ -34,7 +34,7 @@
 #include "ov.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (getrusage, , ,
        doc: /* -*- texinfo -*-
@@ -158,4 +158,4 @@ elements @code{sec} (seconds) @code{usec} (microseconds).
 %! assert (isfield (r.utime, "usec"));
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -35,8 +35,8 @@
 #include "dim-vector.h"
 #include "oct-cmplx.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   OCTAVE_API
   fftw_planner
@@ -380,6 +380,7 @@ namespace octave
 
   extern OCTAVE_API std::string fftw_version (void);
   extern OCTAVE_API std::string fftwf_version (void);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -46,7 +46,7 @@ class FloatComplexNDArray;
 class octave_value;
 class Range;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern OCTINTERP_API octave_value xpow (double a, double b);
 extern OCTINTERP_API octave_value xpow (double a, const Matrix& b);
@@ -207,7 +207,7 @@ extern OCTINTERP_API octave_value elem_xpow (const FloatComplexNDArray& a,
 extern OCTINTERP_API octave_value elem_xpow (const FloatComplexNDArray& a,
                                              const FloatComplexNDArray& b);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 

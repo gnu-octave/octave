@@ -36,10 +36,10 @@
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <>
     OCTAVE_API octave_idx_type
     hess<Matrix>::init (const Matrix& a)
@@ -294,5 +294,6 @@ namespace octave
 
       return info;
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

@@ -52,7 +52,7 @@
 #include "unwind-prot.h"
 #include "url-handle-manager.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFMETHOD (__ftp__, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -477,4 +477,4 @@ Undocumented internal function
   return ovl ();
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -35,8 +35,8 @@
 #include "oct-lvalue.h"
 #include "ov.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   bool octave_lvalue::is_defined (void) const
   {
     return ! is_black_hole () && m_frame->is_defined (m_sym);
@@ -246,4 +246,5 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

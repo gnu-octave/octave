@@ -33,8 +33,8 @@
 
 #include "url-handle-manager.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static double
   make_handle_fraction (void)
   {
@@ -89,4 +89,5 @@ namespace octave
             (std::ceil (h.value ()) - make_handle_fraction ());
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

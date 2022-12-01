@@ -34,8 +34,8 @@
 #include "latex-text-renderer.h"
 #include "text-renderer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   text_renderer::text_renderer (void)
     : m_rep (make_ft_text_renderer ()),
       m_latex_rep (make_latex_text_renderer ())
@@ -172,4 +172,5 @@ namespace octave
         lst = empty_lst;
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

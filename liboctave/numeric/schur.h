@@ -37,10 +37,10 @@
 #include "fCMatrix.h"
 #include "fMatrix.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     schur
@@ -104,7 +104,8 @@ namespace octave
     template <typename RT, typename AT>
     extern OCTAVE_API schur<RT>
     rsf2csf (const AT& s, const AT& u);
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

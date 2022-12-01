@@ -40,8 +40,8 @@
 #include "fColVector.h"
 #include "fRowVector.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   extern OCTAVE_API double xnorm (const ColumnVector&, double p = 2);
   extern OCTAVE_API double xnorm (const RowVector&, double p = 2);
   extern OCTAVE_API double xnorm (const Matrix&, double p = 2);
@@ -85,7 +85,8 @@ namespace octave
 
   extern OCTAVE_API RowVector xcolnorms (const SparseComplexMatrix&, double p = 2);
   extern OCTAVE_API ColumnVector xrownorms (const SparseComplexMatrix&, double p = 2);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")

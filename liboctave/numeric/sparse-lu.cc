@@ -37,10 +37,10 @@
 #include "oct-spparms.h"
 #include "sparse-lu.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     // Wrappers for SuiteSparse (formerly UMFPACK) functions that have
     // different names depending on the sparse matrix data type.
     //
@@ -984,5 +984,6 @@ namespace octave
     template class OCTAVE_API sparse_lu<SparseMatrix>;
 
     template class OCTAVE_API sparse_lu<SparseComplexMatrix>;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

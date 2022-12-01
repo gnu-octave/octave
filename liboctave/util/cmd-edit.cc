@@ -52,8 +52,8 @@
 #include "oct-rl-edit.h"
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   char * do_completer_word_break_hook ();
 
   command_editor *command_editor::s_instance = nullptr;
@@ -1965,4 +1965,5 @@ namespace octave
   {
     (*current_liboctave_error_handler) ("%s", s.c_str ());
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

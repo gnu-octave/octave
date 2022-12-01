@@ -35,8 +35,8 @@
 
 class octave_function;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class
@@ -132,6 +132,7 @@ namespace octave
     static void * try_load_mex (dynamic_library& mex_file,
                                 const std::string& fcn_name, bool& have_fmex);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

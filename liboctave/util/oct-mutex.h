@@ -30,8 +30,8 @@
 
 #include <memory>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class mutex;
 
   class
@@ -135,6 +135,7 @@ namespace octave
 
     static bool is_thread (void);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

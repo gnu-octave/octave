@@ -41,8 +41,8 @@
 #include "oct-env.h"
 #include "oct-process.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   std::string
   quote_string (std::string str)
   {
@@ -528,4 +528,5 @@ namespace octave
 
     return renderer;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

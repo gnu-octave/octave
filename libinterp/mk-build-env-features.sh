@@ -43,10 +43,10 @@ cat << EOF
 #include "build-env.h"
 #include "ov.h"
 
-namespace octave
-{
-  namespace build_env
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(build_env)
+
     octave_scalar_map
     features (void)
     {
@@ -82,6 +82,7 @@ cat << EOF
 
       return m;
     }
-  };
-};
+
+OCTAVE_END_NAMESPACE(build_env)
+OCTAVE_END_NAMESPACE(octave)
 EOF

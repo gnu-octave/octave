@@ -36,8 +36,8 @@
 #include "pt-arg-list.h"
 #include "pt-assign.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Simple assignment expressions.
 
   tree_simple_assignment::tree_simple_assignment (tree_expression *le,
@@ -349,7 +349,8 @@ namespace octave
 
     return val;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 /*
 %!function varargout = f1 ()

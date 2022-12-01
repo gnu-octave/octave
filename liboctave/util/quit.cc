@@ -42,8 +42,8 @@ volatile sig_atomic_t octave_signal_caught = 0;
 void (*octave_signal_hook) (void) = nullptr;
 void (*octave_interrupt_hook) (void) = nullptr;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   std::string execution_exception::stack_trace (void) const
   {
     std::size_t nframes = m_stack_info.size ();
@@ -94,7 +94,8 @@ namespace octave
           }
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 void
 octave_handle_signal (void)

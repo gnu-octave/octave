@@ -46,7 +46,7 @@ class octave_user_function;
 #include "ovl.h"
 #include "symscope.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class interpreter;
 
@@ -228,6 +228,6 @@ OCTAVE_NAMESPACE_BEGIN
     void install_builtins (void);
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

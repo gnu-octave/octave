@@ -214,8 +214,8 @@ octave_tex_free (void *ptr, yyscan_t)
   free (ptr);
 }
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   bool text_parser_tex::init_lexer (const std::string& s)
   {
     if (! m_scanner)
@@ -252,4 +252,5 @@ namespace octave
         m_scanner = nullptr;
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

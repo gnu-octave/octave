@@ -50,10 +50,10 @@
 #include "oct-sort.h"
 #include "qr.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     qr<T>::qr (const T& q_arg, const T& r_arg)
       : m_q (q_arg), m_r (r_arg)
@@ -2102,5 +2102,6 @@ namespace octave
     template class qr<ComplexMatrix>;
 
     template class qr<FloatComplexMatrix>;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

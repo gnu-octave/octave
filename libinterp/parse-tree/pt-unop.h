@@ -37,8 +37,8 @@ class octave_value_list;
 #include "pt-exp.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
 
   // Unary expressions.
@@ -165,6 +165,7 @@ namespace octave
 
     std::string profiler_name (void) const { return "postfix " + oper (); }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

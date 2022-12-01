@@ -38,8 +38,8 @@
 #include "oct-sort.h"
 #include "range-fwd.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // For now, only define for floating point types.  However, we only
   // need range<float> as a temporary local variable in make_float_range
   // in ov.cc.
@@ -393,7 +393,8 @@ namespace octave
 
   template <> OCTAVE_API octave_idx_type range<double>::nnz (void) const;
   template <> OCTAVE_API octave_idx_type range<float>::nnz (void) const;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 class
 Range

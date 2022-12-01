@@ -38,10 +38,10 @@ extern "C"
   int octave_is_big_endian (void);
 }
 
-namespace octave
-{
-  namespace mach_info
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(mach_info)
+
     static float_format get_float_format (void)
     {
       switch (octave_get_float_format ())
@@ -122,5 +122,6 @@ namespace octave
 
       return retval;
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(mach_info)
+OCTAVE_END_NAMESPACE(octave)

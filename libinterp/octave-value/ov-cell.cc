@@ -1220,7 +1220,7 @@ octave_cell::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return retval;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (iscell, args, ,
        doc: /* -*- texinfo -*-
@@ -1427,7 +1427,7 @@ c(2,1,:)(:)
 %! assert (fieldnames (s), keys');
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 mxArray *
 octave_cell::as_mxArray (bool interleaved) const

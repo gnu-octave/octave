@@ -90,7 +90,7 @@
 #  include "gzfstream.h"
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   OCTAVE_NORETURN static
   void
@@ -2059,7 +2059,7 @@ The original variable value is restored when exiting the function.
   return load_save_sys.save_header_format_string (args, nargout);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 // DEPRECATED in Octave 7
 

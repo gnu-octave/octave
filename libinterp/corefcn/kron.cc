@@ -49,7 +49,7 @@
 #include "error.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename R, typename T>
 static MArray<T>
@@ -333,4 +333,4 @@ Since the Kronecker product is associative, this is well-defined.
 %! assert (kron (diag ([1, 2], 2), diag ([3, 4], 2)), expected);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

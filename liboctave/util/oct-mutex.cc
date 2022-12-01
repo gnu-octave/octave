@@ -36,8 +36,8 @@
 #  include <pthread.h>
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   base_mutex::lock (void)
   {
@@ -178,4 +178,5 @@ namespace octave
   }
 
   mutex::mutex (void) : m_rep (init_rep ()) { }
-}
+
+OCTAVE_END_NAMESPACE(octave)

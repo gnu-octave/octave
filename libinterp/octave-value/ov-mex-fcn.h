@@ -39,10 +39,11 @@
 class octave_value;
 class octave_value_list;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_evaluator;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 // Dynamically-linked functions.
 

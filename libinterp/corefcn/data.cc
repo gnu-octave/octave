@@ -66,7 +66,7 @@
 #include "variables.h"
 #include "xnorm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (all, args, ,
        doc: /* -*- texinfo -*-
@@ -8608,4 +8608,4 @@ dimensions of the decoded array.
 %!error <input was not valid base64> __base64_decode_bytes__ (1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

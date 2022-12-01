@@ -29,8 +29,8 @@
 #  include <inttypes.h>
 #endif
 
-#  define OCTAVE_NAMESPACE_BEGIN namespace octave {
-#  define OCTAVE_NAMESPACE_END }
+#define OCTAVE_BEGIN_NAMESPACE(name) namespace name {
+#define OCTAVE_END_NAMESPACE(name) }
 
 /* The C++ standard is evolving to allow attribute hints in a
    compiler-independent manner.  In C++ 2011 support for noreturn was

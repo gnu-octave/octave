@@ -30,8 +30,8 @@
 #include "pt-idx.h"
 #include "pt-misc.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Parameter lists.
 
   tree_parameter_list::~tree_parameter_list (void)
@@ -77,4 +77,5 @@ namespace octave
 
     return new_list;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -35,7 +35,7 @@
 
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class interpreter;
   class load_save_format;
@@ -292,7 +292,7 @@ OCTAVE_NAMESPACE_BEGIN
     int m_options;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 OCTAVE_DEPRECATED (7, "use 'load_save_system::dump_octave_core' instead")
 extern OCTINTERP_API void dump_octave_core (void);

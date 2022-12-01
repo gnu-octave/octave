@@ -39,7 +39,7 @@
 #include "pathsearch.h"
 #include "str-vec.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class
   OCTINTERP_API
@@ -583,6 +583,6 @@ OCTAVE_NAMESPACE_BEGIN
   extern std::string
   genpath (const std::string& dir, const string_vector& skip = "private");
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

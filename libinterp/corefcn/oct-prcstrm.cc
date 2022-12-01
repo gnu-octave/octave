@@ -32,7 +32,7 @@
 #include "oct-prcstrm.h"
 #include "sysdep.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 octave::stream
 octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
@@ -76,4 +76,4 @@ octave_oprocstream::~octave_oprocstream (void)
   do_close ();
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

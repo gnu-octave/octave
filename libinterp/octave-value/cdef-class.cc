@@ -60,8 +60,8 @@
 #  include <iostream>
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static octave_value
   make_fcn_handle (const octave_value& fcn, const std::string& meth_name,
                    const std::string& class_name)
@@ -1170,4 +1170,5 @@ namespace octave
   {
     return octave_value (new octave_classdef_meta (*this));
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

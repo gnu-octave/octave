@@ -34,7 +34,7 @@
 #include "settings.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   settings::settings (void)
     : m_display_tokens (false), m_token_count (0),
@@ -96,4 +96,4 @@ debug information as it processes an expression.
   return stgs.lexer_debug_flag (args, nargout);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

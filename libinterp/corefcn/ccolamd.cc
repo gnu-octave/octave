@@ -44,7 +44,7 @@
 #include "ov.h"
 #include "pager.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (ccolamd, args, nargout,
        doc: /* -*- texinfo -*-
@@ -584,4 +584,4 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
 #endif
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

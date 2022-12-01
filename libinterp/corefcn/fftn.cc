@@ -35,7 +35,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // This function should be merged with Fifft.
 
@@ -162,4 +162,4 @@ resized and padded with zeros.
   return do_fftn (args, "ifftn", 1);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

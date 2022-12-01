@@ -33,8 +33,8 @@
 #include "filepos.h"
 #include "ov.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class token
   {
   public:
@@ -207,6 +207,7 @@ namespace octave
 
     std::string m_orig_text;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

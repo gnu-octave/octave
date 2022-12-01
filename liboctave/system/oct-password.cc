@@ -46,10 +46,10 @@ err_invalid (void)
   (*current_liboctave_error_handler) ("invalid password object");
 }
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     std::string
     password::name (void) const
     {
@@ -241,5 +241,6 @@ namespace octave
       msg = NOT_SUPPORTED ("password functions");
 #endif
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

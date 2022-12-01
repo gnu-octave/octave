@@ -97,8 +97,8 @@ class octave_value_list;
 //    executed.  This pointer should only point to a parent function
 //    stack frame.
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_evaluator;
   class symbol_info_list;
   class unwind_protect;
@@ -594,6 +594,7 @@ namespace octave
     // in the call stack.
     std::string m_dispatch_class;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

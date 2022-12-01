@@ -41,8 +41,8 @@ class octave_function;
 #include "pt-walk.h"
 #include "symscope.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_evaluator;
 
   // Symbols from the symbol table.
@@ -133,6 +133,7 @@ namespace octave
 
     octave_lvalue lvalue (tree_evaluator& tw);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -31,7 +31,7 @@
 #include "error.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // This function implements the Schrage technique for modular multiplication.
 // The returned value is equivalent to "mod (a*b, modulus)"
@@ -278,4 +278,4 @@ of directly calling this function.
 %!error <unable to convert input> (__pollardrho__ ({'foo'; 'bar'}))
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

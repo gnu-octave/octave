@@ -123,8 +123,8 @@ inline int __lo_ieee_float_signbit (float x) { return std::signbit (x); }
 
 #if defined (__cplusplus)
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   template <typename T>
   struct numeric_limits
   {
@@ -151,7 +151,8 @@ namespace octave
     static float NaN (void) { return octave_Float_NaN; }
     static float Inf (void) { return octave_Float_Inf; }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif
 

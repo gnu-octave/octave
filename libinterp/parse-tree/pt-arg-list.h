@@ -38,8 +38,8 @@ class octave_value_list;
 #include "base-list.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
   class tree_evaluator;
   class tree_expression;
@@ -114,6 +114,7 @@ namespace octave
 
     bool m_simple_assign_lhs;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

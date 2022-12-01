@@ -35,7 +35,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 enum bessel_type
 {
@@ -1372,4 +1372,4 @@ Table 10.4 - j and y for various integer orders and arguments.
 %! assert (y, yt, -1e-9);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

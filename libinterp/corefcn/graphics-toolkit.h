@@ -38,8 +38,8 @@
 #include "error.h"
 #include "graphics-handle.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class graphics_object;
   class graphics_toolkit;
 
@@ -282,6 +282,7 @@ namespace octave
 
     std::shared_ptr<base_graphics_toolkit> m_rep;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -38,7 +38,7 @@
 #include "sparse-xdiv.h"
 #include "ov-re-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // scalar by sparse matrix ops.
 
@@ -146,4 +146,4 @@ install_s_sm_ops (octave::type_info& ti)
                       sparse_matrix_conv);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

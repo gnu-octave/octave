@@ -38,7 +38,7 @@
 #include "ov-typeinfo.h"
 #include "ov.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   extern void install_ops (type_info& ti);
 
@@ -763,10 +763,10 @@ OCTAVE_NAMESPACE_BEGIN
     return retval;
   }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
-namespace octave_value_typeinfo
-{
+OCTAVE_BEGIN_NAMESPACE(octave_value_typeinfo)
+
   int register_type (const std::string& t_name, const std::string& c_name,
                      const octave_value& val)
   {
@@ -887,9 +887,10 @@ namespace octave_value_typeinfo
 
     return type_info.installed_type_info ();
   }
-}
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_END_NAMESPACE(octave_value_typeinfo)
+
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFMETHOD (typeinfo, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -1031,4 +1032,4 @@ Undocumented internal function.
   return ovl (type_info.installed_type_info ());
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

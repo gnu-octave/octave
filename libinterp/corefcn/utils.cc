@@ -71,7 +71,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Return TRUE if S is a valid identifier.
 
@@ -1759,4 +1759,4 @@ Return true if running in the student edition of @sc{matlab}.
 %!error isstudent (1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -32,8 +32,8 @@
 
 #include "oct-cmplx.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   //! Octave string utility functions.
   //!
   //! This functions provide a C++ interface to most string functions
@@ -48,8 +48,8 @@ namespace octave
   //! In addition, Octave's function only return bool and do not check
   //! lexicographical order.
 
-  namespace string
-  {
+OCTAVE_BEGIN_NAMESPACE(string)
+
     //! True if strings are the same.
     //!
     //! ## Specialization for Array<char>
@@ -245,8 +245,8 @@ namespace octave
 
     };
 
-  }
-}
+OCTAVE_END_NAMESPACE(string)
+OCTAVE_END_NAMESPACE(octave)
 
 template <typename T>
 extern OCTAVE_API std::string

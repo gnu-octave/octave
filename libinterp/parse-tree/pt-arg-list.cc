@@ -39,8 +39,8 @@
 #include "pt-idx.h"
 #include "pt-pr-code.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Argument lists.
 
   tree_argument_list::~tree_argument_list (void)
@@ -149,4 +149,5 @@ namespace octave
 
     return new_list;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

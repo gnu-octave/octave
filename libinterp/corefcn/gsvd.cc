@@ -40,7 +40,7 @@
 #include "ovl.h"
 #include "ov.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename T>
 static typename math::gsvd<T>::Type
@@ -498,4 +498,4 @@ should avoid this combination.
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

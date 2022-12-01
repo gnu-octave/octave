@@ -35,8 +35,8 @@
 #include "Cell.h"
 #include "graphics-toolkit.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class OCTINTERP_API gtk_manager
   {
   public:
@@ -125,6 +125,7 @@ namespace octave
     // The list of toolkits we have actually loaded.
     std::map<std::string, graphics_toolkit> m_loaded_toolkits;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

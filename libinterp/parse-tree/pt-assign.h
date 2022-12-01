@@ -38,8 +38,8 @@ class octave_value_list;
 #include "pt-exp.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
   class octave_lvalue;
   class tree_argument_list;
@@ -181,6 +181,7 @@ namespace octave
     // True if we should not delete the lhs.
     bool m_preserve;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

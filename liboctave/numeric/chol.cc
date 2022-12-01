@@ -47,8 +47,8 @@
 #  include "qr.h"
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static Matrix
   chol2inv_internal (const Matrix& r, bool is_upper = true)
   {
@@ -235,8 +235,8 @@ namespace octave
     return retval;
   }
 
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     T
     chol2inv (const T& r)
@@ -1154,5 +1154,6 @@ namespace octave
 
     template OCTAVE_API FloatComplexMatrix
     chol2inv<FloatComplexMatrix> (const FloatComplexMatrix& r);
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

@@ -37,8 +37,8 @@
 
 #define OCTAVE_SPARSE_CONTROLS_SIZE 13
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class OCTAVE_API sparse_params
   {
   protected:
@@ -113,7 +113,8 @@ namespace octave
 
     void init_keys (void);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::sparse_params' instead")

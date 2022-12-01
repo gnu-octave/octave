@@ -36,8 +36,8 @@ class octave_value;
 #include "pt.h"
 #include "pt-eval.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
   class octave_lvalue;
 
@@ -163,6 +163,7 @@ namespace octave
     // Print result of rvalue for this expression?
     bool m_print_flag;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

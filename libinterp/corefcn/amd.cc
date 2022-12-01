@@ -46,7 +46,7 @@
 #include "ovl.h"
 #include "parse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (amd, args, nargout,
        doc: /* -*- texinfo -*-
@@ -203,4 +203,4 @@ The author of the code itself is Timothy A. Davis
 %!error amd (A2, 2)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

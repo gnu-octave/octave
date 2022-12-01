@@ -28,11 +28,12 @@
 
 #include "octave-config.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class OCTINTERP_API cdef_class;
   class OCTINTERP_API cdef_object;
   class OCTINTERP_API cdef_package;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

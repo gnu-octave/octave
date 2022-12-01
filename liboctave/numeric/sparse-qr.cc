@@ -39,10 +39,10 @@
 #include "quit.h"
 #include "sparse-qr.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
 #if defined (HAVE_CXSPARSE)
     template <typename SPARSE_T>
     class
@@ -3349,5 +3349,6 @@ namespace octave
                                                    SparseComplexMatrix>
                                              (a, b, info);
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

@@ -913,7 +913,7 @@ show_$CLASS_NAME (const std::string& keyword)
 sub emit_options_function
 {
   print <<"_END_EMIT_OPTIONS_FUNCTION_HDR_";
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN ($OPT_FCN_NAME, args, ,
        doc: /* -*- texinfo -*-
@@ -962,7 +962,7 @@ _END_EMIT_OPTIONS_FUNCTION_HDR_
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 _END_EMIT_OPTIONS_FUNCTION_BODY_
 

@@ -646,7 +646,7 @@ octave_user_function::restore_warning_states (void)
     }
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFMETHOD (nargin, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -1031,4 +1031,4 @@ element-by-element and a logical array is returned.  At the top level,
 %! assert (b, {0, 1, {-1, -1}});
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

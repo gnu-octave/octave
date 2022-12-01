@@ -32,7 +32,7 @@
 
 class octave_value;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern OCTINTERP_API octave_value
 xnorm (const octave_value& x, const octave_value& p);
@@ -46,7 +46,7 @@ xrownorms (const octave_value& x, const octave_value& p);
 extern OCTINTERP_API octave_value
 xfrobnorm (const octave_value& x);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 

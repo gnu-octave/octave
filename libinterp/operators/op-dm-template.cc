@@ -39,7 +39,7 @@
 #  include "ov-null-mat.h"
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // matrix by diag matrix ops.
 
@@ -105,4 +105,4 @@ INST_NAME (octave::type_info& ti)
 #endif
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

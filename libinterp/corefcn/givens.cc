@@ -33,7 +33,7 @@
 #include "error.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (givens, args, nargout,
        doc: /* -*- texinfo -*-
@@ -193,4 +193,4 @@ factorization.
 %!error [a,b,c] = givens (1, 1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

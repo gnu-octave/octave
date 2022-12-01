@@ -35,7 +35,7 @@
 #include "error.h"
 #include "parse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // FIXME: input 'y' is no longer necessary (2/5/2022).
 //        At some point it would be better to change all occurrences of
@@ -436,4 +436,4 @@ endfor
 %!error <A and B dimensions don't match> blkmm (ones (2,2), ones (3,3))
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

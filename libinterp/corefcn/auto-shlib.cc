@@ -32,10 +32,10 @@
 #include "auto-shlib.h"
 #include "defun-int.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 auto_shlib::auto_shlib (void)
   : dynamic_library (get_current_shlib ())
 { }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

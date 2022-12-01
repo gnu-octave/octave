@@ -30,10 +30,10 @@
 
 #include <string>
 
-namespace octave
-{
-  namespace mach_info
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(mach_info)
+
     enum float_format
     {
       // If these values change, you must also change the values
@@ -53,7 +53,8 @@ namespace octave
     OCTAVE_API float_format string_to_float_format (const std::string&);
 
     OCTAVE_API std::string float_format_as_string (float_format);
-  }
-}
+
+OCTAVE_END_NAMESPACE(mach_info)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

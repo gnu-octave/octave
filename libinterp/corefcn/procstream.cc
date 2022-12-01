@@ -31,7 +31,7 @@
 
 #include "procstream.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 procstreambase::procstreambase (const std::string& command, int mode)
 {
@@ -74,4 +74,4 @@ procstreambase::close (void)
   return status;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

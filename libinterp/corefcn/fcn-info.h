@@ -37,7 +37,7 @@
 #include "ovl.h"
 #include "symscope.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class fcn_info
   {
@@ -366,6 +366,6 @@ OCTAVE_NAMESPACE_BEGIN
   extern octave_value
   dump_function_map (const std::map<std::string, octave_value>& fcn_map);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

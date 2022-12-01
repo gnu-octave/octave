@@ -39,8 +39,8 @@
 #include "ov.h"
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // This is mainly a bootstrap class to declare the expected interface.
   // The actual base class is cdef_class_base, which is declared after
   // cdef_object, such that it can contain cdef_object objects.
@@ -711,6 +711,7 @@ namespace octave
       return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ());
     }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

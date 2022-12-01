@@ -44,7 +44,7 @@
 
 #include "quit.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static int readline_event_hook (void)
   {
@@ -879,4 +879,4 @@ Show the GUI workspace window and give it the keyboard focus.
   return ovl ();
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -33,7 +33,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (rcond, args, ,
        doc: /* -*- texinfo -*-
@@ -109,4 +109,4 @@ instead.
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

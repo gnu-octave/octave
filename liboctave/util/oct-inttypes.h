@@ -40,10 +40,10 @@
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     inline long double round (long double x)
     {
       return std::roundl (x);
@@ -53,8 +53,9 @@ namespace octave
     {
       return isnan (static_cast<double> (x));
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif
 
@@ -928,18 +929,19 @@ mod (const octave_int<T>& x, const octave_int<T>& y)
 
 // No mixed integer binary operations!
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     bool
     isnan (const octave_int<T>&)
     {
       return false;
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 // FIXME: can/should any of these be inline?
 

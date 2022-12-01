@@ -33,10 +33,11 @@
 #include "lo-array-errwarn.h"
 
 class octave_value;
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class execution_exception;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Alphabetized list of common errors and warnings.

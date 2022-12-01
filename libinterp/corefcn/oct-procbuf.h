@@ -35,7 +35,7 @@
 
 #include "c-file-ptr-stream.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 class
 procbuf : public c_file_ptr_buf
@@ -81,7 +81,7 @@ protected:
   procbuf *m_next;
 };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 

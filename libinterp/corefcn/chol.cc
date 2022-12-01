@@ -41,7 +41,7 @@
 #include "ov.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename CHOLT>
 static octave_value
@@ -1334,4 +1334,4 @@ triangular, return the Cholesky@tie{}factorization of
 %! assert (norm (R1'*R1 - single (Ac(p,p)), Inf) < 1e1*eps ("single"));
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -35,8 +35,8 @@
 #include "pr-output.h"
 #include "pt-all.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   tree_print_code::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
   {
@@ -1341,4 +1341,5 @@ namespace octave
 
     decrement_indent_level ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

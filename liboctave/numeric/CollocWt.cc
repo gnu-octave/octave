@@ -45,8 +45,8 @@
 //
 // Translated to C++ by jwe.
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Compute the first three derivatives of the node polynomial.
   //
   //                 n0     (alpha,beta)           n1
@@ -501,4 +501,5 @@ namespace octave
 
     return os;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -28,8 +28,8 @@
 
 #include "octave-config.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class filepos
   {
   public:
@@ -69,6 +69,7 @@ namespace octave
     int m_line;
     int m_column;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -31,8 +31,8 @@
 #include "pt-cmd.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Break.
 
   class tree_break_command : public tree_command
@@ -101,6 +101,7 @@ namespace octave
       tw.visit_return_command (*this);
     }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

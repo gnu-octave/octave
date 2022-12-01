@@ -41,7 +41,7 @@
 #include "ov.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 /*
 ## Restore all rand* "state" values
@@ -2072,4 +2072,4 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps ("single"));
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

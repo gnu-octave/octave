@@ -2406,7 +2406,7 @@ yyerror (octave::base_parser& parser, const char *s)
   parser.bison_error (s);
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class parse_exception : public std::runtime_error
   {
@@ -6820,4 +6820,4 @@ Undocumented internal function.
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

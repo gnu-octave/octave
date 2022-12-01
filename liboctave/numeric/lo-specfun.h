@@ -33,10 +33,10 @@
 #include "Array.h"
 #include "oct-cmplx.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     inline double acosh (double x) { return std::acosh (x); }
     inline float acosh (float x) { return std::acoshf (x); }
     inline Complex acosh (const Complex& x) { return std::acosh (x); }
@@ -353,7 +353,8 @@ namespace octave
 
     extern OCTAVE_API Complex rc_log1p (double x);
     extern OCTAVE_API FloatComplex rc_log1p (float x);
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

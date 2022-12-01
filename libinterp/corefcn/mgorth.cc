@@ -32,7 +32,7 @@
 #include "error.h"
 #include "errwarn.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename ColumnVector, typename Matrix, typename RowVector>
 static void
@@ -147,4 +147,4 @@ On exit, @var{y} is a unit vector such that:
 %! assert (a' * a, eye (5), 1e10);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

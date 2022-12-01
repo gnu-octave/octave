@@ -38,7 +38,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // matrix unary ops.
 
@@ -124,4 +124,4 @@ install_cdm_cdm_ops (octave::type_info& ti)
                       complex_diag_matrix_to_complex_matrix);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

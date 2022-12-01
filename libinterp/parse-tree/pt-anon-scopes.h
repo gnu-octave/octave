@@ -31,8 +31,8 @@
 
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // In possibly nested definitions of anonymous functions, collect
   // their scopes and the symbol records therein.
 
@@ -78,6 +78,7 @@ namespace octave
     // Other variable names.
     std::set<std::string> m_vars;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

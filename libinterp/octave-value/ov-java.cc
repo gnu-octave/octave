@@ -224,7 +224,7 @@ bool Vjava_matrix_autoconversion = false;
 bool Vjava_unsigned_autoconversion = true;
 bool Vdebug_java = false;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class JVMArgs
   {
@@ -319,7 +319,7 @@ OCTAVE_NAMESPACE_BEGIN
     std::list<std::string> m_java_opts;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 //! The java initialization directory is given by the environment variable
 //! @c OCTAVE_JAVA_DIR if defined; otherwise it is the directory of Octave's
@@ -535,12 +535,12 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
   // Declare function defined in sysdep.cc
   extern LONG
   get_regkey_value (HKEY h_rootkey, const std::string subkey,
                     const std::string name, octave_value& value);
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 static std::string
 get_jvm_lib_path_from_registry ()
@@ -3029,7 +3029,7 @@ octave_java::release (void)
 #endif
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // DEFUN blocks below must be outside of HAVE_JAVA block so that documentation
 // strings are always available, even when functions are not.
@@ -3610,4 +3610,4 @@ Return true if @var{x} is a Java object.
 %! assert (frame.isResizable ());
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

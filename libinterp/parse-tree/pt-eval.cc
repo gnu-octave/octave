@@ -73,7 +73,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Normal evaluator.
 
@@ -5552,4 +5552,4 @@ With no arguments, @code{echo} toggles the current echo state.
 %!error echo ("on", "all", "all")
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

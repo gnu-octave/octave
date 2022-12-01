@@ -31,8 +31,8 @@
 #include "graphics.h"
 #include "text-renderer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class opengl_functions;
 
   class
@@ -262,6 +262,7 @@ namespace octave
     // Indicate we are drawing for printing purpose
     bool m_printing;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

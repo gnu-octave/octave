@@ -34,8 +34,8 @@
 #include "stack-frame.h"
 #include "symrec.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class octave_lvalue
   {
   public:
@@ -107,6 +107,7 @@ namespace octave
 
     std::list<octave_value_list> m_idx;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

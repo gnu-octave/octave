@@ -48,7 +48,7 @@
 
 #include "oct-string.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (char, args, ,
        doc: /* -*- texinfo -*-
@@ -1258,4 +1258,4 @@ whos ans
 %!error <list_in_columns: WIDTH must be an integer> list_in_columns (["abc", "def"], "a")
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

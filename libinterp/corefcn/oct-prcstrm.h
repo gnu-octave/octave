@@ -38,7 +38,7 @@
 // already have classes with those names (see procstream.h).  We need to
 // find a way to resolve this naming issue.
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 class
 octave_iprocstream : public octave::stdiostream
@@ -96,7 +96,7 @@ protected:
   ~octave_oprocstream (void);
 };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 

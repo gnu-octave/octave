@@ -30,7 +30,7 @@
 
 #include "oct-shlib.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // This is a convenience class that calls the
 // octave::get_dynamic_library function automatically at construction
@@ -52,6 +52,6 @@ public:
   auto_shlib& operator = (const auto_shlib&) = default;
 };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

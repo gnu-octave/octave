@@ -36,7 +36,7 @@
 #include "ov-perm.h"
 #include "ov-cx-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // permutation matrix by sparse matrix ops
 
@@ -109,4 +109,4 @@ install_pm_scm_ops (octave::type_info& ti)
                     div_scm_pm);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -32,8 +32,8 @@
 
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_decl_command;
 
   // How to check the semantics of the code that the parse trees represent.
@@ -73,6 +73,7 @@ namespace octave
 
     OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

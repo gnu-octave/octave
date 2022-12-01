@@ -37,7 +37,7 @@
 #include "ov.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   void display_info::initialize (void)
   {
@@ -66,4 +66,4 @@ and false otherwise.
   return ovl (dpy_info.display_available ());
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

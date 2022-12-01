@@ -97,8 +97,8 @@ octave_pcre_pattern_info (const octave_pcre_code *code, int what, void *where)
 #endif
 }
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Define the maximum number of retries for a pattern
   // that possibly results in an infinite recursion.
 #define PCRE_MATCHLIMIT_MAX 10
@@ -776,4 +776,5 @@ namespace octave
     retval = rep;
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

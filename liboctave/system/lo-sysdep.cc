@@ -51,10 +51,10 @@
 #  include "unwind-prot.h"
 #endif
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     int
     system (const std::string& cmd_str)
     {
@@ -746,5 +746,6 @@ namespace octave
 
       return orig_file_name;
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

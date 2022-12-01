@@ -1710,7 +1710,7 @@ octave_scalar_struct::fast_elem_insert_self (void *where,
     return false;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (struct, args, ,
        doc: /* -*- texinfo -*-
@@ -2253,4 +2253,4 @@ The original variable value is restored when exiting the function.
                                 "print_struct_array_contents");
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

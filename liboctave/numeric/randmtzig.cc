@@ -178,8 +178,8 @@
 #  endif
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   /* ===== Mersenne Twister 32-bit generator ===== */
 
 #define MT_M 397
@@ -864,5 +864,6 @@ namespace octave
   {
     std::generate_n (p, n, [](void) { return rand_exponential<float> (); });
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 

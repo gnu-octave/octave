@@ -38,8 +38,8 @@
 #include "cdef-object.h"
 #include "ov.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class
@@ -229,6 +229,7 @@ namespace octave
 
     friend void install_classdef (octave::interpreter& interp);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

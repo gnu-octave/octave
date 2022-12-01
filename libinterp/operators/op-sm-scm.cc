@@ -39,7 +39,7 @@
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // sparse matrix by sparse complex matrix ops.
 
@@ -185,4 +185,4 @@ install_sm_scm_ops (octave::type_info& ti)
                       sparse_complex_matrix_conv);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

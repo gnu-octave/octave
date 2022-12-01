@@ -46,7 +46,7 @@
 #include "ov-re-sparse.h"
 #include "ov-bool-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // sparse bool matrix by bool ops.
 
@@ -157,4 +157,4 @@ install_sbm_b_ops (octave::type_info& ti)
                        conv_and_assign);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

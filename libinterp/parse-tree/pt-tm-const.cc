@@ -58,8 +58,8 @@ eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
   error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
 }
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void tm_row_const::cellify (void)
   {
     bool elt_changed = false;
@@ -702,7 +702,8 @@ namespace octave
 
     return octave_map::cat (-1, nrows, map_row_list);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 /*
 ## test concatenation with all zero matrices

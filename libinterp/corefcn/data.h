@@ -33,13 +33,13 @@
 class octave_value;
 class octave_value_list;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern OCTINTERP_API octave_value
 do_class_concat (const octave_value_list& ovl, const std::string& cattype,
                  int dim);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 OCTAVE_DEPRECATED (7, "use 'octave::do_class_concat' instead")

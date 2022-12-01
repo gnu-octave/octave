@@ -49,7 +49,7 @@
 #include "unwind-prot.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Canonicalize file name (keeping the path relative) if it exists.
   // Return it unmodified otherwise.
@@ -2832,4 +2832,4 @@ Pretty print Octave path directories and the files within each directory.
   return ovl ();
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

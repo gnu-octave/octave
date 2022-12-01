@@ -53,7 +53,7 @@
 #endif
 
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (ordqz, args, nargout,
        doc: /* -*- texinfo -*-
@@ -679,4 +679,4 @@ Note: The keywords are compatible with the ones from @code{qr}.
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -34,7 +34,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
@@ -571,4 +571,4 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %!error convn (rand (3), 1, 1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

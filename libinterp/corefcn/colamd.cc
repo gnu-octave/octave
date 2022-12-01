@@ -46,7 +46,7 @@
 #include "ovl.h"
 #include "pager.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // The symmetric column elimination tree code take from the Davis LDL code.
 // Copyright given elsewhere in this file.
@@ -786,4 +786,4 @@ permutations on the tree.
 %!error <is not square> etree (sprand (2, 4, .25))
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

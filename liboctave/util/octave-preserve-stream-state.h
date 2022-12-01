@@ -30,8 +30,8 @@
 
 #include <ios>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   preserve_stream_state
   {
@@ -58,6 +58,7 @@ namespace octave
     int m_owidth;
     char m_ofill;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

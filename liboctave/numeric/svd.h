@@ -30,10 +30,10 @@
 
 #include <vector>
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     OCTAVE_API
@@ -123,7 +123,8 @@ namespace octave
                   std::vector<octave_f77_int_type>& iwork,
                   octave_f77_int_type& info);
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

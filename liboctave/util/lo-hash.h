@@ -30,10 +30,10 @@
 
 #include <string>
 
-namespace octave
-{
-  namespace crypto
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(crypto)
+
     typedef void * (hash_fptr) (const char *buffer, std::size_t len, void *res);
 
     OCTAVE_API std::string
@@ -59,7 +59,8 @@ namespace octave
 
     OCTAVE_API std::string
     hash (const std::string& hash_type, const std::string& str);
-  }
-}
+
+OCTAVE_END_NAMESPACE(crypto)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

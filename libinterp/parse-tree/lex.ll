@@ -338,7 +338,7 @@ is_space_or_tab_or_eol (char c)
   return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   bool iskeyword (const std::string& s)
   {
@@ -357,7 +357,7 @@ OCTAVE_NAMESPACE_BEGIN
                   || s == "methods" || s == "properties"));
   }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 %}
 
@@ -2111,7 +2111,7 @@ display_character (char c)
       }
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (iskeyword, args, ,
        doc: /* -*- texinfo -*-
@@ -4179,4 +4179,4 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     return status;
   }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

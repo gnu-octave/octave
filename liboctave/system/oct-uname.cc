@@ -33,10 +33,10 @@
 #include "oct-uname.h"
 #include "uname-wrapper.h"
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     void
     uname::init (void)
     {
@@ -57,5 +57,6 @@ namespace octave
           m_errmsg = "";
         }
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

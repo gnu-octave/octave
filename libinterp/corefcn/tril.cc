@@ -39,7 +39,7 @@
 #include "error.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // The bulk of the work.
 template <typename T>
@@ -483,4 +483,4 @@ above another, and returned as a column vector.
 %!error triu ()
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

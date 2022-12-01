@@ -47,10 +47,10 @@
 
 #include "default-defs.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
-  namespace config
-  {
+OCTAVE_BEGIN_NAMESPACE(config)
+
     // Variables that name directories or files are substituted into source
     // files with "${prefix}/" stripped from the beginning of the string.
 
@@ -446,7 +446,8 @@ OCTAVE_NAMESPACE_BEGIN
 
       return s_site_defaults_file;
     }
-  }
+
+OCTAVE_END_NAMESPACE(config)
 
 DEFUN (OCTAVE_HOME, args, ,
        doc: /* -*- texinfo -*-
@@ -544,4 +545,4 @@ Return the (platform-specific) directory for user data.
 %!error user_data_dir (1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

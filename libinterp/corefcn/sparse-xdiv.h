@@ -36,7 +36,7 @@ class ComplexDiagMatrix;
 class SparseMatrix;
 class SparseComplexMatrix;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern Matrix xdiv (const Matrix& a, const SparseMatrix& b, MatrixType& typ);
 extern ComplexMatrix xdiv (const Matrix& a, const SparseComplexMatrix& b,
@@ -102,7 +102,7 @@ extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&,
                                      const SparseComplexMatrix&,
                                      MatrixType&);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
 

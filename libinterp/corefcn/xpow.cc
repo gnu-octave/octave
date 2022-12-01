@@ -56,7 +56,7 @@
 
 #include "bsxfun.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static void
 err_failed_diagonalization (void)
@@ -2824,4 +2824,4 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
   return result;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

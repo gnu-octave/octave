@@ -34,8 +34,8 @@
      || defined (HAVE_CHOLMOD) || defined (HAVE_COLAMD)         \
      || defined (HAVE_CXSPARSE) || defined (HAVE_UMFPACK))
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static inline void
   check_suitesparse_integer_size (void)
   {
@@ -78,6 +78,7 @@ namespace octave
 
     return reinterpret_cast<const octave_idx_type *> (i);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -231,11 +231,37 @@ namespace octave
 
   gui_settings * resource_manager::get_settings (void) const
   {
+    if (! m_settings)
+      {
+        QString msg (QT_TR_NOOP ("Octave has lost its settings.\n"
+                                 "This should not happen.\n\n"
+                                 "Please report this bug.\n\n"
+                                 "Octave GUI must be closed now."));
+
+        QMessageBox::critical (nullptr,
+                               QString (QT_TR_NOOP ("Octave Critical Error")),
+                               msg);
+        exit (1);
+      }
+
     return m_settings;
   }
 
   gui_settings * resource_manager::get_default_settings (void) const
   {
+    if (m_settings)
+      {
+        QString msg (QT_TR_NOOP ("Octave has lost its default settings.\n"
+                                 "This should not happen.\n"
+                                 "Please report this bug.\n\n"
+                                 "Octave GUI must be closed now."));
+
+        QMessageBox::critical (nullptr,
+                               QString (QT_TR_NOOP ("Octave Critical Error")),
+                               msg);
+        exit (1);
+      }
+
     return m_default_settings;
   }
 

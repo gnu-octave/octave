@@ -70,44 +70,46 @@ const gui_pref ve_colors[2*ve_colors_count] =
   {"variable_editor/color_a" + settings_color_modes_ext[1], QVariant ()}
 };
 
-const QStringList ve_color_names (QStringList ()
-    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Foreground")
-    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Background")
-    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Foreground")
-    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Background")
-    << QT_TRANSLATE_NOOP ("octave::settings_dialog", "Alternate Background"));
+const QStringList ve_color_names = {
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Foreground"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Background"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Foreground"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Background"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Alternate Background")
+};
 
-const QStringList ve_save_formats (QStringList ()
-                << "ascii"
-                << "binary"
-                << "float-binary"
-                << "hdf5"
-                << "float-hdf5"
-                << "text"
-                << "mat7-binary"
-                << "mat-binary"
-                << "mat4-binary"
-                << "zip");
+const QStringList ve_save_formats = {
+  "ascii",
+  "binary",
+  "float-binary",
+  "hdf5",
+  "float-hdf5",
+  "text",
+  "mat7-binary",
+  "mat-binary",
+  "mat4-binary",
+  "zip"
+};
 
 // The following list is a relation between save format and fiel extension.
 // The format string are case insensitive.
-const QStringList ve_save_formats_ext (QStringList ()
-                << "-ascii"         << "dat"
-                << "-hdf5"          << "h5"
-                << "-text"          << "txt"
-                << "-v7.3"          << "mat"
-                << "-7.3"           << "mat"
-                << "-v7"            << "mat"
-                << "-7"             << "mat"
-                << "-mat7-binary"   << "mat"
-                << "-v6"            << "mat"
-                << "-6"             << "mat"
-                << "-mat-binary"    << "mat"
-                << "-v4"            << "mat"
-                << "-4"             << "mat"
-                << "-mat4-binary"   << "mat"
-                << "-binary"        << "bin"    // after other fmt incl. "-binary"
-                << "-z"             << "txt.gz" // gzipped -text
-              );
+const QStringList ve_save_formats_ext = {
+  "-ascii",       "dat",
+  "-hdf5",        "h5",
+  "-text",        "txt",
+  "-v7.3",        "mat",
+  "-7.3",         "mat",
+  "-v7",          "mat",
+  "-7",           "mat",
+  "-mat7-binary", "mat",
+  "-v6",          "mat",
+  "-6",           "mat",
+  "-mat-binary",  "mat",
+  "-v4",          "mat",
+  "-4",           "mat",
+  "-mat4-binary", "mat",
+  "-binary",      "bin",   // after other fmt incl. "-binary"
+  "-z",           "txt.gz" // gzipped -text
+};
 
 #endif

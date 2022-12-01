@@ -72,11 +72,12 @@ const gui_pref cs_colors[2*cs_colors_count] =
   {"terminal/color_c" + settings_color_modes_ext[1], QVariant ()}  // default colors in light mode
 };
 const QStringList
-cs_color_names (QStringList ()
-                << QT_TRANSLATE_NOOP ("octave::settings_dialog", "foreground")
-                << QT_TRANSLATE_NOOP ("octave::settings_dialog", "background")
-                << QT_TRANSLATE_NOOP ("octave::settings_dialog", "selection")
-                << QT_TRANSLATE_NOOP ("octave::settings_dialog", "cursor"));
+cs_color_names = {
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "foreground"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "background"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "selection"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "cursor")
+};
 
 const gui_pref
 cs_focus_cmd ("terminal/focus_after_command", QVariant (false));

@@ -39,8 +39,8 @@
 
 //class dim_vector;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class OCTAVE_API rand
   {
   protected:
@@ -291,6 +291,7 @@ namespace octave
 
     OCTAVE_API void fill (octave_idx_type len, float *v, float a);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

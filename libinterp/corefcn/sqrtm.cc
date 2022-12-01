@@ -38,7 +38,7 @@
 #include "utils.h"
 #include "xnorm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename Matrix>
 static void
@@ -278,4 +278,4 @@ Mathematics, Manchester, England, January 1999.
 %! assert (err, 0);   # Yes, this one has to hold exactly
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

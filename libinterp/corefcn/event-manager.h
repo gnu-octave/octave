@@ -42,7 +42,7 @@
 class octave_value;
 class string_vector;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   typedef std::function<void (void)> fcn_callback;
   typedef std::function<void (interpreter&)> meth_callback;
@@ -794,6 +794,6 @@ OCTAVE_NAMESPACE_BEGIN
 
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

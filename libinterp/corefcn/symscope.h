@@ -46,8 +46,8 @@ class octave_user_code;
 #include "ovl.h"
 #include "symrec.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
 
   class symbol_scope_rep
@@ -725,6 +725,7 @@ namespace octave
 
     std::shared_ptr<symbol_scope_rep> m_rep;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

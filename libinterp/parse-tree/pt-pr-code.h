@@ -33,8 +33,8 @@
 
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class comment_elt;
   class comment_list;
   class tree_decl_command;
@@ -209,6 +209,7 @@ namespace octave
 
     tree_print_code (void);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -46,8 +46,8 @@
 #include "randpoisson.h"
 #include "singleton-cleanup.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   rand *rand::m_instance = nullptr;
 
   rand::rand (void)
@@ -790,4 +790,5 @@ namespace octave
 
     return;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -31,10 +31,10 @@
 #include "PermMatrix.h"
 #include "qr.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     qrp : public qr<T>
@@ -74,7 +74,8 @@ namespace octave
 
       PermMatrix m_p;
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

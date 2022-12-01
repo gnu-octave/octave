@@ -32,8 +32,8 @@
 #include "pt-colon.h"
 #include "pt-eval.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Colon expressions.
 
   tree_expression *
@@ -76,4 +76,5 @@ namespace octave
 
     return colon_op (ov_base, ov_increment, ov_limit, is_for_cmd_expr ());
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

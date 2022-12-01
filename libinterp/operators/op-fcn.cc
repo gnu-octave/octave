@@ -35,7 +35,7 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFBINOP (eq, fcn_handle, fcn_handle)
 {
@@ -60,4 +60,4 @@ install_fcn_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_ne, octave_fcn_handle, octave_fcn_handle, ne);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

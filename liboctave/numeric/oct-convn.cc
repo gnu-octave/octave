@@ -50,8 +50,8 @@
 #include "fRowVector.h"
 #include "oct-convn.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // 2d convolution with a matrix kernel.
   template <typename T, typename R>
   static void
@@ -222,4 +222,5 @@ namespace octave
   CONV_DEFS (Float, Float)
   CONV_DEFS (FloatComplex, Float)
   CONV_DEFS (FloatComplex, FloatComplex)
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -41,7 +41,7 @@
 #include "ovl.h"
 #include "ov.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static
 bool
@@ -350,4 +350,4 @@ will be unpredictable.
 %!assert (lookup ({"orange","lemon","apple"}, "potato"), 0)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

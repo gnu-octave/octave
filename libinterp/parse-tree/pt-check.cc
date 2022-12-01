@@ -32,8 +32,8 @@
 #include "ov-usr-fcn.h"
 #include "pt-all.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   tree_checker::visit_argument_list (tree_argument_list& lst)
   {
@@ -177,4 +177,5 @@ namespace octave
     else
       error ("%s: %d: %s", m_file_name.c_str (), line, msg.c_str ());
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

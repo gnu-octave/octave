@@ -35,8 +35,8 @@
 #include "pt-classdef.h"
 #include "pt-eval.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   tree_superclass_ref *
   tree_superclass_ref::dup (symbol_scope&) const
   {
@@ -316,4 +316,5 @@ namespace octave
 
     return octave_value ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

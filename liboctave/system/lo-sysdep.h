@@ -37,10 +37,10 @@
 
 class string_vector;
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     extern OCTAVE_API int system (const std::string& cmd_str);
 
     extern OCTAVE_API std::string getcwd (void);
@@ -83,7 +83,8 @@ namespace octave
     extern OCTAVE_API std::string
     get_ASCII_filename (const std::string& long_file_name,
                         const bool allow_locale = false);
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

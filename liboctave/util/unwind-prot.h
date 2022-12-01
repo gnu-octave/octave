@@ -35,8 +35,8 @@
 
 #include "action-container.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   OCTAVE_API
   unwind_protect : public action_container
@@ -349,6 +349,7 @@ namespace octave
     T& m_ref;
     T m_val;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

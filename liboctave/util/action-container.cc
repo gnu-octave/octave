@@ -30,8 +30,8 @@
 #include "action-container.h"
 #include "cmd-edit.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void action_container::run (std::size_t num)
   {
     if (num > size ())
@@ -52,4 +52,5 @@ namespace octave
           }
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

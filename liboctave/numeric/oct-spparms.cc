@@ -35,8 +35,8 @@
 #include "oct-spparms.h"
 #include "singleton-cleanup.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   sparse_params *sparse_params::s_instance = nullptr;
 
   bool sparse_params::instance_ok (void)
@@ -202,4 +202,5 @@ namespace octave
     for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
       os << prefix << m_keys(i) << ": " << m_params(i) << "\n";
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

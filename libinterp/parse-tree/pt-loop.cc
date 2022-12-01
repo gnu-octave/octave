@@ -32,8 +32,8 @@
 #include "pt-loop.h"
 #include "pt-stmt.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // While.
 
   tree_while_command::~tree_while_command (void)
@@ -64,4 +64,5 @@ namespace octave
     delete m_lead_comm;
     delete m_trail_comm;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

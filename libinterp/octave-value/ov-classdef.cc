@@ -599,7 +599,7 @@ bool octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluat
   return false;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (__meta_get_package__, args, ,
        doc: /* -*- texinfo -*-
@@ -772,5 +772,5 @@ Implement @code{methods} for Octave class objects and classnames.
   return ovl (Cell (sv));
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 

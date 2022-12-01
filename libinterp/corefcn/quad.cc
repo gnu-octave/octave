@@ -46,7 +46,7 @@
 
 #include "Quad-opts.cc"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Global pointer for user defined function required by quadrature functions.
 static octave_value quad_fcn;
@@ -459,4 +459,4 @@ variable by routines @code{dblquad} and @code{triplequad}.
 %!error quad_options (1, 2, 3)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

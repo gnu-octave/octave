@@ -32,8 +32,8 @@
 #include "comment-list.h"
 #include "error.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   comment_list *
   comment_list::dup (void) const
   {
@@ -44,4 +44,5 @@ namespace octave
 
     return new_cl;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

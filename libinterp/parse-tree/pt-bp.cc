@@ -31,8 +31,8 @@
 #include "pager.h"
 #include "pt-all.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   tree_breakpoint::visit_while_command (tree_while_command& cmd)
   {
@@ -477,4 +477,5 @@ namespace octave
     else
       panic_impossible ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

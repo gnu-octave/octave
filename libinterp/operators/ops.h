@@ -31,10 +31,11 @@
 #include "Array-util.h"
 #include "error.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class type_info;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 // Concatenation macros that enforce argument prescan
 #define CONCAT2X(x, y) x ## y

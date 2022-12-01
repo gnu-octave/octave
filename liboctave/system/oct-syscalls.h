@@ -34,10 +34,10 @@ class string_vector;
 
 #include <sys/types.h>
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     extern OCTAVE_API int dup2 (int, int);
     extern OCTAVE_API int dup2 (int, int, std::string&);
 
@@ -103,7 +103,8 @@ namespace octave
 
     extern OCTAVE_API int fcntl (int, int, long);
     extern OCTAVE_API int fcntl (int, int, long, std::string&);
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

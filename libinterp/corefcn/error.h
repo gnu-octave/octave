@@ -38,7 +38,7 @@
 
 class octave_value_list;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 class execution_exception;
 
@@ -395,7 +395,7 @@ class execution_exception;
     octave_map m_last_error_stack;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 // FIXME: should we move the following functions inside the octave
 // namespace?  If so, should the functions outside of the namespace be
@@ -544,7 +544,7 @@ error_unless (bool cond)
   error_if (! cond);
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 //! Helper function for print_usage defined in defun.cc.
 
@@ -564,6 +564,6 @@ extern OCTINTERP_API void disable_warning (const std::string& id);
 
 extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

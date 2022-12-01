@@ -33,7 +33,7 @@
 #include "ov.h"
 #include "xnorm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 octave_value xnorm (const octave_value& x, const octave_value& p)
 {
@@ -203,4 +203,4 @@ octave_value xfrobnorm (const octave_value& x)
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

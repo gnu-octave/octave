@@ -50,7 +50,7 @@ class octave_user_code;
 class octave_user_function;
 class octave_user_script;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class symbol_info_list;
   class symbol_scope;
@@ -1002,6 +1002,6 @@ OCTAVE_NAMESPACE_BEGIN
     int m_num_indices;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

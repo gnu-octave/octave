@@ -74,7 +74,7 @@
 
 #include "default-defs.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   const static char * const operators[] =
   {
@@ -1123,4 +1123,4 @@ The original variable value is restored when exiting the function.
   return help_sys.texi_macros_file (args, nargout);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

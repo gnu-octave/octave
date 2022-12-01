@@ -33,8 +33,8 @@
 #include "base64-wrappers.h"
 #include "oct-base64.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   bool
   base64_encode (const char *inc, const std::size_t inlen, char **out)
   {
@@ -121,4 +121,5 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -41,7 +41,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Password file functions.  (Why not?)
 
@@ -176,4 +176,4 @@ Close the password database.
   return ovl (static_cast<double> (status), msg);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

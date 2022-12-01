@@ -39,7 +39,7 @@
 #include "MatrixType.h"
 #include "oct-locbuf.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (matrix_type, args, ,
        doc: /* -*- texinfo -*-
@@ -578,4 +578,4 @@ LU@tie{}factorization.  Once the matrix has been factorized,
 %! assert (matrix_type (a), "Singular");
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

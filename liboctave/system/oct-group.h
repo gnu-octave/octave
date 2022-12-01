@@ -34,10 +34,10 @@
 
 #include "str-vec.h"
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     class
     OCTAVE_API
     group
@@ -115,7 +115,8 @@ namespace octave
       // to a struct group.
       group (void *p, std::string& msg);
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

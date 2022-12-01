@@ -37,7 +37,7 @@
 
 class string_vector;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class
   OCTINTERP_API
@@ -268,10 +268,10 @@ OCTAVE_NAMESPACE_BEGIN
     Array<void *> m_widening_ops;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
-namespace octave_value_typeinfo
-{
+OCTAVE_BEGIN_NAMESPACE(octave_value_typeinfo)
+
   typedef octave::type_info::unary_class_op_fcn unary_class_op_fcn;
 
   typedef octave::type_info::unary_op_fcn unary_op_fcn;
@@ -331,6 +331,7 @@ namespace octave_value_typeinfo
   extern OCTINTERP_API string_vector installed_type_names (void);
 
   extern OCTINTERP_API octave_scalar_map installed_type_info (void);
-}
+
+OCTAVE_END_NAMESPACE(octave_value_typeinfo)
 
 #endif

@@ -96,7 +96,7 @@ octave_null_sq_str::numeric_conversion_function (void) const
             octave_char_matrix_sq_str::static_type_id ());
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (isnull, args, ,
        doc: /* -*- texinfo -*-
@@ -158,4 +158,4 @@ str(7:end) = ""                # indexed deletion
 %! assert (isnull (x), false);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

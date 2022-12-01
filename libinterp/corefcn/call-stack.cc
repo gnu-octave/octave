@@ -47,7 +47,7 @@
 #include "symscope.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Use static fields for the best efficiency.
   // NOTE: C++0x will allow these two to be merged into one.
@@ -1301,4 +1301,4 @@ complex, nesting, persistent.
   return tw.do_who (argc, argv, nargout == 1, true);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

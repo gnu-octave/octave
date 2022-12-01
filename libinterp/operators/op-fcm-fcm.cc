@@ -38,7 +38,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // unary complex matrix ops.
 
@@ -353,4 +353,4 @@ install_fcm_fcm_ops (octave::type_info& ti)
                        octave_float_complex_matrix, assign_el_div);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

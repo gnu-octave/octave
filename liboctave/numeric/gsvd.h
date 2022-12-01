@@ -28,10 +28,10 @@
 
 #include "octave-config.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     OCTAVE_API
@@ -110,7 +110,8 @@ namespace octave
       T m_left_smA, m_left_smB;
       T m_right_sm;
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

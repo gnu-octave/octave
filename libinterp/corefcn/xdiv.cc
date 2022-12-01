@@ -49,7 +49,7 @@
 #include "error.h"
 #include "xdiv.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static void
 solve_singularity_warning (double rcond)
@@ -1011,4 +1011,4 @@ FloatComplexDiagMatrix
 xleftdiv (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 { return dmdm_leftdiv_impl (a, b); }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

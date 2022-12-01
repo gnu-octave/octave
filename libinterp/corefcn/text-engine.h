@@ -35,8 +35,8 @@
 #include "caseless-str.h"
 #include "dMatrix.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class text_element;
   class text_element_string;
   class text_element_symbol;
@@ -469,6 +469,7 @@ namespace octave
 
     return parser->parse (s);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

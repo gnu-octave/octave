@@ -30,8 +30,8 @@
 
 #include <string>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   process_execution_result
   {
@@ -79,6 +79,7 @@ namespace octave
 
   extern OCTINTERP_API process_execution_result
   run_command_and_return_output (const std::string& cmd_str);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

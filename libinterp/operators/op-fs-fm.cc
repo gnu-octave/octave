@@ -38,7 +38,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // scalar by matrix ops.
 
@@ -157,4 +157,4 @@ install_fs_fm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_float_scalar, octave_float_matrix, matrix_conv);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

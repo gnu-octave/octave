@@ -36,7 +36,7 @@
 
 class octave_value;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
@@ -64,7 +64,7 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 // Gets the shlib of the currently executing DLD function, if any.
 extern OCTINTERP_API dynamic_library get_current_shlib (void);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 // Some of these functions are widely used, so maybe we should avoid
 // deprecating them for now?

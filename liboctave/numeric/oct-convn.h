@@ -55,8 +55,8 @@ enum convn_type
   convn_valid
 };
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   enum convn_type
   {
     convn_full,
@@ -155,6 +155,7 @@ namespace octave
         abort ();
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

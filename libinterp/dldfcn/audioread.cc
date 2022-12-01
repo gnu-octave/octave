@@ -49,7 +49,7 @@
 #  include <sndfile.h>
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN_DLD (audioread, args, ,
            doc: /* -*- texinfo -*-
@@ -793,4 +793,4 @@ with names that start with @var{format}.
 #endif
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -37,7 +37,7 @@
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename MT>
 static octave_value
@@ -837,4 +837,4 @@ factorization from scratch.
 %!         < norm (single (Ac))*1e1*eps ("single"));
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

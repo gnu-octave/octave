@@ -39,8 +39,8 @@
 #include "lo-mappers.h"
 #include "lo-utils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   template <typename T>
   T xtfloor (T x, T ct)
   {
@@ -451,4 +451,5 @@ namespace octave
   {
     return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

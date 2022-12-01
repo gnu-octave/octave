@@ -43,8 +43,8 @@
 #include "pt-arg-list.h"
 #include "pt-mat.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_evaluator;
 
   // Evaluate tree_matrix objects and convert them to octave_value
@@ -239,6 +239,7 @@ namespace octave
     template <typename MAP>
     octave_map map_concat (void) const;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

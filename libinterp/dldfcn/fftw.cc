@@ -41,7 +41,7 @@
 #include "errwarn.h"
 #include "ov.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN_DLD (fftw, args, ,
            doc: /* -*- texinfo -*-
@@ -401,4 +401,4 @@ current process or @var{3} is used (whichever is smaller).
 %!error fftw ("threads", -3)
  */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

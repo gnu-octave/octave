@@ -31,8 +31,8 @@
 #include "sysdep.h"
 #include "oct-syscalls.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   process_execution_result
   process_execution_result::of_success (int exit_status,
                                         const std::string& stdout_output)
@@ -85,4 +85,5 @@ namespace octave
 
     return process_execution_result::of_success (cmd_status, output_buf.str ());
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

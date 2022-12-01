@@ -28,9 +28,10 @@
 
 #include "octave-config.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   template <typename T, typename ENABLE = void> class OCTAVE_API range;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

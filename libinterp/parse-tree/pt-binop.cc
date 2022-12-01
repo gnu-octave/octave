@@ -35,8 +35,8 @@
 #include "pt-eval.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Binary expressions.
 
   void
@@ -239,4 +239,5 @@ namespace octave
 
     return val;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

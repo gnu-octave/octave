@@ -51,7 +51,7 @@
 #include "smx-bm-sbm.h"
 #include "smx-sbm-bm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // sparse bool matrix by bool matrix ops.
 
@@ -184,4 +184,4 @@ install_sbm_bm_ops (octave::type_info& ti)
                        null_assign);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

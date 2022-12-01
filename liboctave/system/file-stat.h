@@ -34,10 +34,10 @@
 
 #include <sys/types.h>
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     class
     OCTAVE_API
     base_file_stat
@@ -322,7 +322,8 @@ namespace octave
 
       void update_internal (bool force = false);
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -37,8 +37,8 @@
 #include "pt-id.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
   class tree_evaluator;
   class tree_expression;
@@ -215,6 +215,7 @@ namespace octave
     // The list of variables or initializers in this declaration command.
     tree_decl_init_list *m_init_list;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

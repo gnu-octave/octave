@@ -103,7 +103,7 @@
 
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
 
@@ -1490,4 +1490,4 @@ Undocumented internal function.
   return ovl (sys::lapack_version ());
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

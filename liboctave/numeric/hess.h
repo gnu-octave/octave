@@ -30,10 +30,10 @@
 
 #include <iosfwd>
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     hess
@@ -88,7 +88,8 @@ namespace octave
     template <typename T>
     extern OCTAVE_API std::ostream&
     operator << (std::ostream& os, const hess<T>& a);
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -49,8 +49,8 @@
 #define STRINGIFY(s) STRINGIFY1(s)
 #define STRINGIFY1(s) #s
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   dynamic_loader::shlibs_list::append (const dynamic_library& shl)
   {
@@ -320,4 +320,5 @@ namespace octave
   {
     return STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION));
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

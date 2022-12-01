@@ -336,8 +336,8 @@ F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
 
 #if defined (__cplusplus)
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   inline F77_INT
   to_f77_int (octave_idx_type x)
   {
@@ -348,7 +348,8 @@ namespace octave
 
     return static_cast<F77_INT> (x);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif
 

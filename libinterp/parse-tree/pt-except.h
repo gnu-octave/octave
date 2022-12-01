@@ -32,8 +32,8 @@
 #include "pt-id.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class comment_list;
   class tree_statement_list;
 
@@ -169,6 +169,7 @@ namespace octave
     // Comment preceding END_UNWIND_PROTECT token.
     comment_list *m_trail_comm;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

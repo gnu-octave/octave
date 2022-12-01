@@ -33,7 +33,7 @@
 class octave_value;
 class octave_value_list;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class environment
   {
@@ -91,6 +91,6 @@ OCTAVE_NAMESPACE_BEGIN
     }
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

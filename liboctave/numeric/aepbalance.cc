@@ -37,16 +37,16 @@
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static inline char
   get_job (bool noperm, bool noscal)
   {
     return noperm ? (noscal ? 'N' : 'S') : (noscal ? 'P' : 'B');
   }
 
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <>
     OCTAVE_API
     aepbalance<Matrix>::aepbalance (const Matrix& a, bool noperm, bool noscal)
@@ -267,5 +267,6 @@ namespace octave
     template class aepbalance<ComplexMatrix>;
 
     template class aepbalance<FloatComplexMatrix>;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

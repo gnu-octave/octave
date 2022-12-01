@@ -43,7 +43,7 @@
 #include "oct-spparms.h"
 #include "sparse-xdiv.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static void
 solve_singularity_warning (double rcond)
@@ -636,4 +636,4 @@ xleftdiv (const ComplexDiagMatrix& d, const SparseComplexMatrix& a,
   return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

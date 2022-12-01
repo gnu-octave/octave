@@ -35,7 +35,7 @@
 
 #include "lo-specfun.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (psi, args, ,
        doc: /* -*- texinfo -*-
@@ -236,4 +236,4 @@ can have any value real or complex value.  However, for polygamma functions
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

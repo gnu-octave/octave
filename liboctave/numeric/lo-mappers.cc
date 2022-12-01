@@ -39,10 +39,10 @@
 // but now we just use std:: and explicit wrappers in C++ code so maybe
 // some of the forwarding functions can be defined inline here.
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     bool
     isna (double x)
     {
@@ -338,5 +338,6 @@ namespace octave
       return x < 0.0f ? FloatComplex (0.0f, std::sqrt (-x))
                       : FloatComplex (std::sqrt (x));
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

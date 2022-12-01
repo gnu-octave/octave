@@ -37,8 +37,8 @@
 #include "base-list.h"
 #include "str-vec.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   OCTAVE_API
   regexp
@@ -240,6 +240,7 @@ namespace octave
 
     void compile_internal (void);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

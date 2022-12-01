@@ -119,7 +119,7 @@ is_valid_function (const octave_value& arg,
   return ans;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFMETHOD (isglobal, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -1520,4 +1520,4 @@ should return an error message to be displayed.
                                 "missing_component_hook");
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

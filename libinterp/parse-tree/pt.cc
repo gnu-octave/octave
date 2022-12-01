@@ -37,8 +37,8 @@
 #include "pt-pr-code.h"
 #include "unwind-prot.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Hide the details of the string buffer so that we are less likely to
   // create a memory leak.
 
@@ -106,4 +106,5 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

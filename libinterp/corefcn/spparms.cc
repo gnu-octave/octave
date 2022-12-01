@@ -35,7 +35,7 @@
 
 #include "oct-spparms.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (spparms, args, nargout,
        doc: /* -*- texinfo -*-
@@ -202,4 +202,4 @@ longer running time.
 %!error <KEY not found> spparms ("UNKNOWN_KEY", 1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -33,8 +33,8 @@
 #include "ovl.h"
 #include "parse.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   graphics_toolkit
   gtk_manager::get_toolkit (void) const
   {
@@ -109,4 +109,5 @@ namespace octave
           }
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

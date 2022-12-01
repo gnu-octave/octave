@@ -1712,7 +1712,7 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
   return true;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFMETHOD (class, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -2146,4 +2146,4 @@ Implement final construction for inline objects.
   return octave_value (new octave_inline (args(0).map_value ()));
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

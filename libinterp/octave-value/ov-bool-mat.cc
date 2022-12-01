@@ -583,7 +583,7 @@ octave_bool_matrix::as_mxArray (bool interleaved) const
   return retval;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (logical, args, ,
        doc: /* -*- texinfo -*-
@@ -634,4 +634,4 @@ issues an error.
 %! endfor
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

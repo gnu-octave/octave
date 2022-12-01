@@ -36,7 +36,7 @@
 
 class octave_value;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class
   OCTINTERP_API
@@ -220,6 +220,6 @@ OCTAVE_NAMESPACE_BEGIN
     void add_current_time (void);
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

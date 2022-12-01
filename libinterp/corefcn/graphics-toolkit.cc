@@ -31,8 +31,8 @@
 #include "gtk-manager.h"
 #include "interpreter-private.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   base_graphics_toolkit::update (const graphics_handle& h, int id)
   {
@@ -62,4 +62,5 @@ namespace octave
 
     finalize (go);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

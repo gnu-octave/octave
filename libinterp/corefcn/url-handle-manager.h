@@ -40,8 +40,8 @@
 #include "oct-handle.h"
 #include "url-transfer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   typedef octave_handle url_handle;
 
   class OCTINTERP_API url_handle_manager
@@ -143,6 +143,7 @@ namespace octave
     // The next handle available if handle_free_list is empty.
     double m_next_handle;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

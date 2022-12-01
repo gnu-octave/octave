@@ -41,7 +41,7 @@
 #include "interpreter.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static void append_to_shell_path (const std::string& exec_path)
   {
@@ -257,4 +257,4 @@ The original variable value is restored when exiting the function.
 %!error IMAGE_PATH (1, 2)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -50,8 +50,8 @@
 #include "pt-stmt.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static bool
   is_method_executing (const octave_value& ov, const cdef_object& obj)
   {
@@ -248,4 +248,5 @@ namespace octave
 
     return false;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

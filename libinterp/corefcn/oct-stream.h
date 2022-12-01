@@ -48,8 +48,8 @@ class string_vector;
 #include "data-conv.h"
 #include "mach-info.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   // These are only needed as arguments to private functions, so they
@@ -547,6 +547,7 @@ namespace octave
     int m_stdout_file;
     int m_stderr_file;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

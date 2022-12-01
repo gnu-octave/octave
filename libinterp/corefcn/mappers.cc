@@ -37,7 +37,7 @@
 #include "error.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (abs, args, ,
        doc: /* -*- texinfo -*-
@@ -2309,4 +2309,4 @@ DEFALIAS (upper, toupper);
 
 DEFALIAS (gammaln, lgamma);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

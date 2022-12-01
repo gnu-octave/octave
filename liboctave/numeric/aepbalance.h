@@ -30,10 +30,10 @@
 
 #include <algorithm>
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename MT>
     class
     aepbalance
@@ -124,7 +124,8 @@ namespace octave
       octave_idx_type m_ihi;
       char m_job;
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

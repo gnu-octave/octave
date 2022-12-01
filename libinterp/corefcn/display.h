@@ -32,7 +32,7 @@
 
 class Matrix;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class display_info
   {
@@ -87,6 +87,6 @@ OCTAVE_NAMESPACE_BEGIN
     std::string m_msg;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

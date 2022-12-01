@@ -47,7 +47,7 @@
 
 #include "DASPK-opts.cc"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Global pointer for user defined function required by daspk.
 static octave_value daspk_fcn;
@@ -404,4 +404,4 @@ parameters for @code{daspk}.
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

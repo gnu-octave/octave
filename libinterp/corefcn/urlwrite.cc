@@ -52,7 +52,7 @@
 #include "unwind-prot.h"
 #include "url-handle-manager.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (urlwrite, args, nargout,
        doc: /* -*- texinfo -*-
@@ -357,4 +357,4 @@ Undocumented internal function.
   return ovl (content.str ());
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

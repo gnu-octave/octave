@@ -33,8 +33,8 @@
 
 // TODO: make sure that if(f->scope()) is checked if necessary
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   tree_anon_scopes::tree_anon_scopes (tree_anon_fcn_handle& anon_fh)
     : tree_walker (), m_params (), m_vars ()
   {
@@ -120,5 +120,6 @@ namespace octave
           elt->accept (*this);
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 

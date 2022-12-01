@@ -32,8 +32,8 @@
 
 #include "oct-cmplx.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   extern OCTAVE_API double xnorm (const ColumnVector&, double p = 2);
   extern OCTAVE_API double xnorm (const RowVector&, double p = 2);
   extern OCTAVE_API double xnorm (const Matrix&, double p = 2);
@@ -77,6 +77,7 @@ namespace octave
 
   extern OCTAVE_API RowVector xcolnorms (const SparseComplexMatrix&, double p = 2);
   extern OCTAVE_API ColumnVector xrownorms (const SparseComplexMatrix&, double p = 2);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -35,7 +35,7 @@
 
 #include "builtin-defun-decls.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Secondary functions for complex and real case used in ichol algorithms.
 Complex ichol_mult_complex (Complex a, Complex b)
@@ -470,4 +470,4 @@ Undocumented internal function.
 %! assert (norm (A - L*L.'), 0, 2*eps);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

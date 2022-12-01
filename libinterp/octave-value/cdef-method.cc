@@ -49,8 +49,8 @@
 #include "pt-stmt.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   OCTAVE_NORETURN static
   void
   err_method_access (const std::string& from, const cdef_method& meth)
@@ -231,4 +231,5 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

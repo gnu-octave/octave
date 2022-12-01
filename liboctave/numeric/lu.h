@@ -32,10 +32,10 @@
 
 #include "Array.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     lu
@@ -106,7 +106,8 @@ namespace octave
       // so we need a Fortran INTEGER.
       Array<octave_f77_int_type> m_ipvt;
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

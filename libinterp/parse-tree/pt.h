@@ -34,8 +34,8 @@
 
 class octave_function;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_evaluator;
   class tree_walker;
 
@@ -122,6 +122,7 @@ namespace octave
     // NULL if no breakpoint, or a breakpoint condition if there is one.
     std::string *m_bp_cond;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

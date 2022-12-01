@@ -38,7 +38,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // matrix by scalar ops.
 
@@ -150,4 +150,4 @@ install_m_s_ops (octave::type_info& ti)
   INSTALL_ASSIGNOP_TI (ti, op_div_eq, octave_matrix, octave_scalar, assign_div);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

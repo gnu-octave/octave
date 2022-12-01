@@ -38,8 +38,8 @@
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   cdef_object_rep::release (const cdef_object& obj)
   {
@@ -750,4 +750,5 @@ namespace octave
               << " object (value)" << std::endl;
 #endif
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

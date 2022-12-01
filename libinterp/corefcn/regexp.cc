@@ -44,7 +44,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Replace backslash escapes in a string with the real values.  We need
 // two special functions instead of the one in utils.cc because the set
@@ -1606,4 +1606,4 @@ function.
 %!                 "\nabc"));
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

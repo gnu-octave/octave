@@ -46,8 +46,8 @@ class octave_function;
 class octave_user_code;
 class octave_user_function;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class comment_list;
   class parse_exception;
   class tree;
@@ -96,15 +96,16 @@ namespace octave
   class tree_switch_case;
   class tree_switch_case_list;
   class tree_switch_command;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #include "ovl.h"
 
 // Nonzero means print parser debugging info (-d).
 extern int octave_debug;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_parser
   {
   private:
@@ -951,6 +952,7 @@ namespace octave
 
   extern OCTINTERP_API void
   cleanup_statement_list (tree_statement_list **lst);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

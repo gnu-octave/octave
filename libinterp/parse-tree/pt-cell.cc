@@ -36,8 +36,8 @@
 #include "pt-walk.h"
 #include "ov.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   tree_expression *
   tree_cell::dup (symbol_scope& scope) const
   {
@@ -101,4 +101,5 @@ namespace octave
 
     return octave_value (val);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

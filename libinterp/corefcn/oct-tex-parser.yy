@@ -212,8 +212,8 @@ string                  : // empty
 #  pragma GCC diagnostic pop
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   text_element*
   text_parser_tex::parse (const std::string& s)
   {
@@ -229,7 +229,8 @@ namespace octave
 
     return new text_element_string (s);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 static void
 yyerror (octave::text_parser_tex&, const char *s)

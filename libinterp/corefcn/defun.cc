@@ -48,7 +48,7 @@
 #include "variables.h"
 #include "parse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Print the usage part of the doc string of FCN (user-defined or DEFUN).
 void
@@ -163,4 +163,4 @@ get_current_shlib (void)
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

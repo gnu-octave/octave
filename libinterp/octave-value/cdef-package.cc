@@ -51,8 +51,8 @@
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   cdef_package::cdef_package_rep::install_class (const cdef_class& cls,
                                                  const std::string& nm)
@@ -199,4 +199,5 @@ namespace octave
     if (this != cdm.meta ().get_rep ())
       cdm.unregister_package (wrap ());
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

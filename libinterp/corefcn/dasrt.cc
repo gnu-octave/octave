@@ -48,7 +48,7 @@
 
 #include "DASRT-opts.cc"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Global pointers for user defined function required by dasrt.
 static octave_value dasrt_fcn;
@@ -522,4 +522,4 @@ parameters for @code{dasrt}.
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

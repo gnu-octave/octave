@@ -33,7 +33,7 @@
 #include "oct-stream.h"
 #include "c-file-ptr-stream.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename BUF_T, typename STREAM_T, typename FILE_T>
 class
@@ -197,6 +197,6 @@ protected:
 
 #endif
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -40,7 +40,7 @@
 #include "smx-cm-sm.h"
 #include "ov-re-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // complex matrix by sparse matrix ops.
 
@@ -175,4 +175,4 @@ install_cm_sm_ops (octave::type_info& ti)
 
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

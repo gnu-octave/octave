@@ -35,8 +35,8 @@
 #include "lo-error.h"
 #include "lo-sysdep.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   std::string file_info::get_line (std::size_t line) const
   {
     std::string retval;
@@ -139,4 +139,5 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

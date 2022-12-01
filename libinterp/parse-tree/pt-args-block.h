@@ -39,8 +39,8 @@
 // FIXME: We could maybe re-think the naming of some of these objects
 // before releasing a version that contains these new classes...
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_arg_size_spec
   {
   public:
@@ -285,6 +285,7 @@ namespace octave
     // Comment preceding ENDARGUMENTS token.
     comment_list *m_trail_comm;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

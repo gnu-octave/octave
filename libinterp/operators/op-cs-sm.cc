@@ -41,7 +41,7 @@
 #include "smx-cs-sm.h"
 #include "smx-sm-cs.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // complex by sparse matrix ops.
 
@@ -152,4 +152,4 @@ install_cs_sm_ops (octave::type_info& ti)
                       sparse_matrix_conv);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

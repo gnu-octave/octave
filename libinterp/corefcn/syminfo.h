@@ -37,8 +37,8 @@
 
 class octave_map;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   struct whos_parameter
   {
     char command;
@@ -123,6 +123,7 @@ namespace octave
     std::list<whos_parameter>
     parse_whos_line_format (const std::string& format) const;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

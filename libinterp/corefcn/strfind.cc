@@ -43,7 +43,7 @@
 #include "unwind-prot.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // This allows safe indexing with char.
 // In C++, char may be (and often is) signed!
@@ -521,4 +521,4 @@ strrep ("This is a test string", "is", "&%$")
 %!error <PTN and REP arguments must be strings> strrep ("A", "B", 1.0)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

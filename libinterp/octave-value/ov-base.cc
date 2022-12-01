@@ -1535,7 +1535,7 @@ called_from_builtin (void)
   return (fcn && fcn->name () == "builtin");
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 void
 install_base_type_conversions (octave::type_info& ti)
@@ -1558,4 +1558,4 @@ install_base_type_conversions (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_base_value, octave_cell, cell_conv);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

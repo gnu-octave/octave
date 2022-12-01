@@ -30,10 +30,10 @@
 
 #include "str-vec.h"
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     extern OCTAVE_API bool
     fnmatch (const string_vector& pat, const std::string& str,
              int fnmatch_flags);
@@ -43,7 +43,8 @@ namespace octave
 
     extern OCTAVE_API string_vector
     windows_glob (const string_vector&);
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

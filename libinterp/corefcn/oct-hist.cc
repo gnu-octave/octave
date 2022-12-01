@@ -70,7 +70,7 @@ Software Foundation, Inc.
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Read the edited history lines from STREAM and return them
   // one at a time.  This can read unlimited length lines.  The
@@ -925,4 +925,4 @@ history_timestamp_format_string}
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

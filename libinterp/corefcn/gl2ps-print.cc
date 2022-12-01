@@ -54,8 +54,8 @@
 #include "sysdep.h"
 #include "text-renderer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   OCTINTERP_API
   gl2ps_renderer : public opengl_renderer
@@ -1583,12 +1583,13 @@ namespace octave
     render_text (str, pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0,
                  halign, valign, props.get_rotation ());
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // If the name of the stream begins with '|', open a pipe to the command
   // named by the rest of the string.  Otherwise, write to the named file.
 
@@ -1653,4 +1654,5 @@ namespace octave
 
 #endif
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

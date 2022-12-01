@@ -45,8 +45,8 @@
 #include "lo-utils.h"
 #include "oct-inttypes.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   bool is_int_or_inf_or_nan (double x)
   {
     return math::isnan (x) || math::x_nint (x) == x;
@@ -481,8 +481,8 @@ namespace octave
     os << ')';
   }
 
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(math)
+
     bool int_multiply_overflow (int a, int b, int *r)
     {
       return octave_i_multiply_overflow_wrapper (a, b, r);
@@ -522,5 +522,5 @@ namespace octave
     }
 #endif
 
-  }
-}
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

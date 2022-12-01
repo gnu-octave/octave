@@ -41,8 +41,8 @@ class string_vector;
 
 class octave_value;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class file_info;
   class stack_frame;
   class tree_parameter_list;
@@ -50,7 +50,8 @@ namespace octave
   class tree_evaluator;
   class tree_expression;
   class tree_walker;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 class
 octave_user_code : public octave_function

@@ -30,7 +30,7 @@
 #include "defun.h"
 #include "fNDArray.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (__gammainc__, args, ,
        doc: /* -*- texinfo -*-
@@ -167,4 +167,4 @@ Continued fraction for incomplete gamma function.
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

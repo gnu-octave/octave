@@ -32,8 +32,8 @@
 #include "pt-decl.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
   class tree_identifier;
   class tree_index_expression;
@@ -113,6 +113,7 @@ namespace octave
     // 0: does not take varargs.
     int m_marked_for_varargs;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

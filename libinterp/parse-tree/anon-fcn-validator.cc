@@ -33,8 +33,8 @@
 #include "ov.h"
 #include "pt-all.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   anon_fcn_validator::anon_fcn_validator (tree_parameter_list *,
                                           tree_expression *expr)
     : m_ok (true), m_line (-1), m_column (-1), m_message ()
@@ -80,4 +80,5 @@ namespace octave
     m_message
       = "invalid use of operator " + expr.oper () + " in anonymous function";
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

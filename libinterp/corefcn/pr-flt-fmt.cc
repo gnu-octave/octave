@@ -48,7 +48,7 @@ set_output_prec (int prec)
   Voutput_precision = prec;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (output_precision, args, nargout,
        doc: /* -*- texinfo -*-
@@ -73,4 +73,4 @@ The original variable value is restored when exiting the function.
                                 "output_precision", 0, 16);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

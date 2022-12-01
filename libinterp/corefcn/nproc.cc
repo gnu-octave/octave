@@ -32,7 +32,7 @@
 #include "defun.h"
 #include "error.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (nproc, args, ,
        doc: /* -*- texinfo -*-
@@ -112,4 +112,4 @@ same as @code{current}, but overridable through the
 %!error nproc ("no_valid_option")
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

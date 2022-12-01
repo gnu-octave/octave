@@ -37,7 +37,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename Matrix>
 static octave_value
@@ -343,4 +343,4 @@ Note also that @var{U} and @var{T} are not unique.
 %! assert (U * T * U', A, 1e-14);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

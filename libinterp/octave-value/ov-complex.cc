@@ -65,8 +65,8 @@ template class octave_base_scalar<Complex>;
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex,
                                      "complex scalar", "double");
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Complain if a complex value is used as a subscript.
 
   class complex_index_exception : public index_exception
@@ -94,7 +94,8 @@ namespace octave
       return "Octave:invalid-index";
     }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)

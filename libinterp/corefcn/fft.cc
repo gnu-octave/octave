@@ -35,7 +35,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static octave_value
 do_fft (const octave_value_list& args, const char *fcn, int type)
@@ -314,4 +314,4 @@ dimension of the matrix along which the inverse FFT is performed.
 %! assert (ifft (S), s, 4*N*eps ("single"));
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

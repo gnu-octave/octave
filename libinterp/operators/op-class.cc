@@ -43,7 +43,7 @@
 #include "symtab.h"
 #include "parse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 //! Default unary class operator.
 //!
@@ -224,4 +224,4 @@ install_class_ops (octave::type_info& ti)
   ti.install_binary_class_op (octave_value::op_el_or,   oct_binop_or);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

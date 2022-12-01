@@ -34,8 +34,8 @@
 
 #include "base-list.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class OCTAVE_API child
   {
   public:
@@ -90,6 +90,7 @@ namespace octave
 
     base_list<child> m_list;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

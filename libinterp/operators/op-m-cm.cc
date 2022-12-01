@@ -44,7 +44,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // matrix by complex matrix ops.
 
@@ -187,4 +187,4 @@ install_m_cm_ops (octave::type_info& ti)
                       complex_matrix_conv);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

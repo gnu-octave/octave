@@ -30,10 +30,10 @@
 
 #include <string>
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     gepbalance
@@ -94,7 +94,8 @@ namespace octave
       OCTAVE_API octave_idx_type
       init (const T& a, const T& b, const std::string& job);
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

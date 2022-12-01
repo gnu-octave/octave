@@ -33,8 +33,8 @@
 
 #include "symtab.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class bp_table;
   class cdef_manager;
   class child_list;
@@ -111,6 +111,7 @@ namespace octave
   get_function_handle (interpreter& interp, const octave_value& arg,
                        const std::list<std::string>& parameter_names
                          = std::list<std::string> ());
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

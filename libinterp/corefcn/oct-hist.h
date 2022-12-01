@@ -34,7 +34,7 @@
 
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class interpreter;
 
@@ -114,6 +114,6 @@ OCTAVE_NAMESPACE_BEGIN
     }
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

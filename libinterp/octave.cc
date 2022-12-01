@@ -54,7 +54,7 @@
 #include "sysdep.h"
 #include "usage.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   cmdline_options::cmdline_options (void)
   {
@@ -557,4 +557,4 @@ Return the filename component of the value returned by
 %!error <Invalid call> program_name (1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

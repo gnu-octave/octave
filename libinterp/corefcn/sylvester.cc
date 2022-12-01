@@ -32,7 +32,7 @@
 #include "errwarn.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (sylvester, args, ,
        doc: /* -*- texinfo -*-
@@ -173,4 +173,4 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
 %!error <nonconformant matrices> sylvester (ones (2,2), ones (2,2), ones (3,3))
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

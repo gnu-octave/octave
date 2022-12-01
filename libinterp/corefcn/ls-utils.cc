@@ -31,7 +31,7 @@
 
 #include "ls-utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // MAX_VAL and MIN_VAL are assumed to have integral values even though
 // they are stored in doubles.
@@ -92,5 +92,5 @@ get_save_type (float /* max_val */, float /* min_val */)
   return st;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 

@@ -48,7 +48,7 @@
 using Magick::Quantum;
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 #if defined (HAVE_MAGICK)
 
@@ -2416,4 +2416,4 @@ Fill formats info with GraphicsMagick CoderInfo.
 %!assert (1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

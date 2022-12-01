@@ -1272,7 +1272,7 @@ octave_value::maybe_mutate (void)
     }
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (double, args, ,
        doc: /* -*- texinfo -*-
@@ -1535,7 +1535,7 @@ Convert @var{x} to unsigned 64-bit integer type.
 %!assert (uint64 (-2^65), uint64 (0))
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 octave_value
 octave_value::single_subsref (const std::string& type,
@@ -2656,7 +2656,7 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
     return octave_value (rhs.empty_clone ());
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   OCTAVE_NORETURN static void
   err_binary_op (const std::string& on, const std::string& tn1,
@@ -3603,7 +3603,7 @@ OCTAVE_NAMESPACE_BEGIN
     return unary_op (ti, op, v);
   }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 void
 install_types (octave::type_info& ti)
@@ -3688,7 +3688,7 @@ install_types (octave::type_info& ti)
   octave_java::register_type (ti);
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (sizeof, args, ,
        doc: /* -*- texinfo -*-
@@ -4108,4 +4108,4 @@ setting is restored when exiting the function.
 %!assert (typeinfo (__test_dr__ (false)), "matrix")
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

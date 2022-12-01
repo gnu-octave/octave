@@ -63,7 +63,7 @@ char qh_version[] = "__voronoi__.oct 2007-07-24";
 #  endif
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 #if defined (HAVE_QHULL)
 
@@ -347,4 +347,4 @@ Undocumented internal function.
 %!assert (1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

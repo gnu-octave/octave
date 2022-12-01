@@ -33,7 +33,7 @@
 #include "error.h"
 #include "oct-iostrm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Position a stream at OFFSET relative to ORIGIN.
 
@@ -97,4 +97,4 @@ ostream::create (std::ostream *arg, const std::string& n)
   return octave::stream (new ostream (arg, n));
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

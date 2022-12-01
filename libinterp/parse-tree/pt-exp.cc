@@ -35,8 +35,8 @@
 #include "ov.h"
 #include "pt-exp.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Expressions.
 
   octave_lvalue
@@ -50,4 +50,5 @@ namespace octave
   {
     return "";
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

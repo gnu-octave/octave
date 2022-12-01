@@ -36,8 +36,8 @@
 #include "ov-fcn-handle.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_hook_function
   {
   public:
@@ -211,6 +211,7 @@ namespace octave
 
     map_type m_fcn_map;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

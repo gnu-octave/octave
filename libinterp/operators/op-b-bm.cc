@@ -41,7 +41,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // bool matrix by bool ops.
 
@@ -85,4 +85,4 @@ install_b_bm_ops (octave::type_info& ti)
   INSTALL_WIDENOP_TI (ti, octave_bool, octave_bool_matrix, bool_matrix_conv);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -37,8 +37,8 @@
 
 // FIXME: is there a better name for this class?
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   action_container
   {
@@ -222,6 +222,7 @@ namespace octave
 
     virtual void add_action (elem *new_elem) = 0;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

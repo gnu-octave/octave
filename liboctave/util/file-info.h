@@ -35,8 +35,8 @@
 
 #include "oct-time.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class file_info
   {
   public:
@@ -93,6 +93,7 @@ namespace octave
     static OCTAVE_API std::vector<std::size_t>
     get_line_offsets (const std::string& buf);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

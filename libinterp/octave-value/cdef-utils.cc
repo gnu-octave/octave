@@ -38,8 +38,8 @@
 #include "ov-usr-fcn.h"
 #include "pt-eval.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   std::string
   get_base_name (const std::string& nm)
   {
@@ -402,4 +402,5 @@ namespace octave
 
     return false;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

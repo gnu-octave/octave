@@ -4780,7 +4780,7 @@ typedef void (*cmex_fptr) (int nlhs, mxArray **plhs, int nrhs, mxArray **prhs);
 typedef F77_RET_T (*fmex_fptr) (F77_INT& nlhs, mxArray **plhs,
                                 F77_INT& nrhs, mxArray **prhs);
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 octave_value_list
 call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
@@ -4853,7 +4853,7 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 // C interface to mex functions:
 

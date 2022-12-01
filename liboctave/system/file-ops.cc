@@ -57,8 +57,8 @@
 #include "str-vec.h"
 #include "unistd-wrappers.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // The following tilde-expansion code was stolen and adapted from
   // readline.
 
@@ -215,10 +215,10 @@ namespace octave
     return dirname;
   }
 
-  namespace sys
-  {
-    namespace file_ops
-    {
+OCTAVE_BEGIN_NAMESPACE(sys)
+
+OCTAVE_BEGIN_NAMESPACE(file_ops)
+
       char dev_sep_char (void)
       {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
@@ -396,7 +396,8 @@ namespace octave
 
         return retval;
       }
-    }
+
+OCTAVE_END_NAMESPACE(file_ops)
 
     int mkdir (const std::string& nm, mode_t md)
     {
@@ -866,5 +867,6 @@ namespace octave
 
       return retval;
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

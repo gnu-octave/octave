@@ -38,10 +38,10 @@
 #include "oct-locbuf.h"
 #include "quit.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <>
     OCTAVE_API octave_idx_type
     gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
@@ -321,5 +321,6 @@ namespace octave
     template class gepbalance<ComplexMatrix>;
 
     template class gepbalance<FloatComplexMatrix>;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

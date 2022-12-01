@@ -37,8 +37,8 @@ class octave_map;
 class octave_user_code;
 class octave_value_list;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_evaluator;
 
   struct bp_type
@@ -205,6 +205,7 @@ namespace octave
     bp_lines remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
                                                const std::string& fname);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

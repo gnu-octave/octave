@@ -35,7 +35,7 @@
 #include "lo-ieee.h"
 #include "lo-sysdep.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   extern OCTINTERP_API void sysdep_init (void);
 
@@ -58,6 +58,6 @@ OCTAVE_NAMESPACE_BEGIN
 
   extern OCTINTERP_API bool drive_or_unc_share (const std::string&);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

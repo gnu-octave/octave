@@ -45,7 +45,7 @@
 // Extended debugging.
 #define DEBUG_QUADCC 0
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Define the minimum size of the interval heap.
 static const int MIN_CQUAD_HEAPSIZE = 200;
@@ -2273,4 +2273,4 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
 %!error <SING.* must be .* real values> (quadcc (@sin, 0, pi, 1e-6, [ i ]))
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

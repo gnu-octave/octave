@@ -49,8 +49,8 @@
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // A list of commands to be executed.
 
   tree_statement::~tree_statement (void)
@@ -297,4 +297,5 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

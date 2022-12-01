@@ -34,12 +34,12 @@
 
 #include "str-vec.h"
 
-namespace octave
-{
-  namespace sys
-  {
-    namespace file_ops
-    {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
+OCTAVE_BEGIN_NAMESPACE(file_ops)
+
       typedef std::string (*tilde_expansion_hook) (const std::string&);
 
       // If non-null, this contains the address of a function that the
@@ -113,7 +113,8 @@ namespace octave
 
       extern OCTAVE_API std::string
       native_separator_path (const std::string& path);
-    }
+
+OCTAVE_END_NAMESPACE(file_ops)
 
     extern OCTAVE_API int
     mkdir (const std::string&, mode_t);
@@ -189,7 +190,8 @@ namespace octave
 
     extern OCTAVE_API std::string
     canonicalize_file_name (const std::string&, std::string&);
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -44,7 +44,7 @@ class octave_value_list;
 #include "stack-frame.h"
 #include "symscope.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class tree_evaluator;
   class symbol_info_list;
@@ -326,6 +326,6 @@ OCTAVE_NAMESPACE_BEGIN
     std::map<std::string, octave_value> m_global_values;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

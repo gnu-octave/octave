@@ -35,7 +35,7 @@
 
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class interpreter;
   class load_save_format;
@@ -292,6 +292,6 @@ OCTAVE_NAMESPACE_BEGIN
     int m_options;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

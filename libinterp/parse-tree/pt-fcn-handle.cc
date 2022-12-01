@@ -34,8 +34,8 @@
 #include "pt-fcn-handle.h"
 #include "stack-frame.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   tree_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax,
                           bool pr_orig_text)
@@ -103,7 +103,8 @@ namespace octave
   {
     return tw.evaluate_anon_fcn_handle (*this);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 /*
 %!function r = __f2 (f, x)

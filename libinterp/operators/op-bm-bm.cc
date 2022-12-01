@@ -51,7 +51,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // unary bool matrix ops.
 
@@ -206,4 +206,4 @@ install_bm_bm_ops (octave::type_info& ti)
                        assign_or);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

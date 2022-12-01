@@ -40,7 +40,7 @@
 #include "sparse-xdiv.h"
 #include "ov-cx-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // sparse complex matrix by complex scalar ops.
 
@@ -173,4 +173,4 @@ install_scm_cs_ops (octave::type_info& ti)
                        octave_float_complex, sgl_assign);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

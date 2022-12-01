@@ -35,8 +35,8 @@
 
 #include "str-vec.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   OCTAVE_API
   command_editor
@@ -400,6 +400,7 @@ namespace octave
 
     std::string m_initial_input;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

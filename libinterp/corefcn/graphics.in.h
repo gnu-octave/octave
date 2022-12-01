@@ -52,7 +52,7 @@
 #include "ov.h"
 #include "text-renderer.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // FIXME: maybe this should be a configure option?
 // Matlab defaults to "Helvetica", but that causes problems for many
@@ -6956,6 +6956,6 @@ OCTINTERP_API graphics_handle gca (void);
 
 OCTINTERP_API void close_all_figures (void);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

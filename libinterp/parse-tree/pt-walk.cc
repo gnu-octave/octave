@@ -29,8 +29,8 @@
 
 #include "pt-all.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void tree_walker::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
   {
     tree_parameter_list *parameter_list = afh.parameter_list ();
@@ -785,4 +785,5 @@ namespace octave
     if (body)
       body->accept (*this);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

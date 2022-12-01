@@ -38,7 +38,7 @@
 #include "ov-flt-cx-diag.h"
 #include "ov-perm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (pinv, args, ,
        doc: /* -*- texinfo -*-
@@ -223,4 +223,4 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

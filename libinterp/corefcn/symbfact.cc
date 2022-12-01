@@ -48,7 +48,7 @@
 #include "parse.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (symbfact, args, nargout,
        doc: /* -*- texinfo -*-
@@ -433,4 +433,4 @@ cleanup:
 
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

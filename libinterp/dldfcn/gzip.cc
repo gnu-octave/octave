@@ -83,7 +83,7 @@
 #  include <zlib.h>
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   //! RIIA wrapper for std::FILE*.
   //!
@@ -861,4 +861,4 @@ The optional output @var{filelist} is a list of the compressed files.
 %!test run_test_function (@test_save_to_dir)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

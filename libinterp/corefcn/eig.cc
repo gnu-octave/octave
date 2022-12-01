@@ -36,7 +36,7 @@
 #include "fEIG.h"
 #include "oct-string.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (eig, args, nargout,
        doc: /* -*- texinfo -*-
@@ -641,4 +641,4 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!  eig ([1 2 ; 2 3], [1 2 ; 2 3], [1 2 ; 2 3])
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

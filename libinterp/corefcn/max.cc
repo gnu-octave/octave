@@ -44,7 +44,7 @@
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename ArrayType>
 static octave_value_list
@@ -1101,4 +1101,4 @@ IM = 1  2  2  4  4  4
 %!error cummax (1, 2, 3)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -31,8 +31,8 @@
 class octave_user_script;
 class octave_user_function;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // No separate visitor needed
   // Base classes only, so no need to include them.
   //
@@ -257,6 +257,7 @@ namespace octave
 
     virtual void visit_classdef (tree_classdef&);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

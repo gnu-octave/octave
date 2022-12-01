@@ -46,7 +46,7 @@
 #include "defun.h"
 #include "ov.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // FIXME: this looks like trouble...
 static Matrix this_contour;
@@ -327,4 +327,4 @@ Calculate Z-level contours (isolines).
 %!assert (1)
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

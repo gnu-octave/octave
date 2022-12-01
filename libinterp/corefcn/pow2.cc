@@ -84,7 +84,7 @@ map_2_xldexp_sparse (SparseMatrix& y, const SparseMatrix& f,
     octave::err_nonconformant ("pow2", f.dims (), e.dims ());
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (pow2, args, ,
        doc: /* -*- texinfo -*-
@@ -322,4 +322,4 @@ to C/C++ standard function @code{ldexp()}.
 %!error <pow2: nonconformant arguments> pow2 (sparse ([1,2]), sparse ([3,4,5]))
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

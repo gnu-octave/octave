@@ -37,8 +37,8 @@
 #include "oct-env.h"
 #include "pathsearch.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   directory_path::directory_path (const std::string& s)
     : m_orig_path (s), m_initialized (false), m_expanded_path (),
       m_path_elements ()
@@ -128,4 +128,5 @@ namespace octave
   {
     return SEPCHAR_STR;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

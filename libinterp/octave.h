@@ -36,7 +36,7 @@
 
 class octave_value;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Command line arguments.  See also options.h.
 
@@ -385,6 +385,6 @@ OCTAVE_NAMESPACE_BEGIN
     int execute (void);
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

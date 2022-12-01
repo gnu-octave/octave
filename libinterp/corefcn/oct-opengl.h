@@ -50,8 +50,8 @@
 
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class opengl_functions
   {
   public:
@@ -458,7 +458,8 @@ namespace octave
 
 #endif
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 
 #endif

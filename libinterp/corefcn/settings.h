@@ -33,7 +33,7 @@
 class octave_value;
 class octave_value_list;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Most settings for the interpreter are stored in the classes which
   // they affect (intput_system, output_system, load_path, etc.  Some
@@ -92,6 +92,6 @@ OCTAVE_NAMESPACE_BEGIN
     bool m_lexer_debug_flag = false;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

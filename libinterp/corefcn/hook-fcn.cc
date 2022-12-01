@@ -30,8 +30,8 @@
 #include "hook-fcn.h"
 #include "parse.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   hook_function::hook_function (const octave_value& f, const octave_value& d)
   {
     if (f.is_string ())
@@ -67,4 +67,5 @@ namespace octave
 
     feval (m_fcn_handle, args, 0);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

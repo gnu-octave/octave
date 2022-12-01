@@ -45,7 +45,7 @@
 #include "ov-cx-sparse.h"
 #include "sparse-xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static inline bool
 xisint (double x)
@@ -843,4 +843,4 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 }
 
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -30,8 +30,8 @@
 #include "child-list.h"
 #include "oct-syscalls.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void child_list::remove (pid_t pid)
   {
     m_list.remove_if ([pid] (const child& oc) { return oc.m_pid == pid; });
@@ -97,4 +97,5 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

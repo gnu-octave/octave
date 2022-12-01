@@ -42,8 +42,8 @@
 #include "lo-error.h"
 #include "lo-mappers.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   OCTAVE_NORETURN static void err_invalid_range (void)
   {
     (*current_liboctave_error_handler) ("invalid range used as index");
@@ -1275,7 +1275,8 @@ namespace octave
   INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint16)
   INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint32)
   INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint64)
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 /*
 

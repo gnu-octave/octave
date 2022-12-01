@@ -52,7 +52,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static bool
   pager_event_handler (pid_t pid, int status)
@@ -753,4 +753,4 @@ The original variable value is restored when exiting the function.
   return output_sys.PAGER_FLAGS (args, nargout);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

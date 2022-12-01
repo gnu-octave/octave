@@ -34,8 +34,8 @@
 #include "pt-pr-code.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree;
   class tree_decl_command;
 
@@ -177,6 +177,7 @@ namespace octave
     // List of breakpoint conditions.
     octave_value_list m_bp_cond_list;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -32,8 +32,8 @@
 
 #include "base-list.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   extern std::string get_comment_text (void);
 
   extern char * get_comment_text_c_str (void);
@@ -109,6 +109,7 @@ namespace octave
 
     comment_list * dup (void) const;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

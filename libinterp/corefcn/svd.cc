@@ -37,7 +37,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static std::string Vsvd_driver = "gesvd";
 
@@ -462,4 +462,4 @@ in Octave has been set to @qcode{"gesvd"}.
 %! assert (V1, V3 .* z, 100*eps);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

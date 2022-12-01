@@ -33,8 +33,8 @@
 #include "pt-cmd.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_expression;
   class tree_statement_list;
 
@@ -296,6 +296,7 @@ namespace octave
     // Comment preceding ENDSWITCH token.
     comment_list *m_trail_comm;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

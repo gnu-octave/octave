@@ -90,7 +90,7 @@ bool octave_completion_matches_called = false;
 // the next user prompt.
 bool Vdrawnow_requested = false;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static std::string
   quoting_filename (const std::string& text, int, char quote)
@@ -1677,4 +1677,4 @@ The original variable value is restored when exiting the function.
   return input_sys.auto_repeat_debug_command (args, nargout);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

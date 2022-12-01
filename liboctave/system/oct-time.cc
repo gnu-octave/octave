@@ -48,10 +48,10 @@
 #include "strptime-wrapper.h"
 #include "time-wrappers.h"
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     time::time (double d)
       : m_ot_unix_time (static_cast<OCTAVE_TIME_T> (d)), m_ot_usec (0)
     {
@@ -369,5 +369,6 @@ namespace octave
 
       m_cpu = cpu_time (usr_sec, sys_sec, usr_usec, sys_usec);
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

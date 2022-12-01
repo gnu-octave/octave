@@ -38,8 +38,8 @@ class octave_user_function;
 #include "ov.h"
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope_rep;
 
   class symbol_record
@@ -238,6 +238,7 @@ namespace octave
       : m_rep (new_rep)
     { }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

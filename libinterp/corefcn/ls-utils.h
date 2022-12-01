@@ -30,7 +30,7 @@
 
 #include "data-conv.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern OCTINTERP_API save_type
 get_save_type (double max_val, double min_val);
@@ -38,6 +38,6 @@ get_save_type (double max_val, double min_val);
 extern OCTINTERP_API save_type
 get_save_type (float max_val, float min_val);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

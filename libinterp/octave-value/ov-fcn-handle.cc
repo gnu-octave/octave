@@ -84,7 +84,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 
 const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class invalid_fcn_handle : public base_fcn_handle
   {
@@ -2811,7 +2811,7 @@ OCTAVE_NAMESPACE_BEGIN
       return false;
   }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 octave_fcn_handle::octave_fcn_handle (void)
   : octave_base_value (), m_rep (new octave::invalid_fcn_handle ())
@@ -3403,7 +3403,7 @@ is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2)
     return false;
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (functions, args, ,
        doc: /* -*- texinfo -*-
@@ -3647,4 +3647,4 @@ Return true if @var{x} is a function handle.
 %! assert (__f (@(i) x(:,i), 1), [1;3]);
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

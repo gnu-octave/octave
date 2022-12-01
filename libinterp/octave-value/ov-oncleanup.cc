@@ -201,7 +201,7 @@ octave_oncleanup::call_object_destructor (void)
     }
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (onCleanup, args, ,
        doc: /* -*- texinfo -*-
@@ -235,4 +235,4 @@ For similar functionality @xref{The unwind_protect Statement}.
 %! end_unwind_protect
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

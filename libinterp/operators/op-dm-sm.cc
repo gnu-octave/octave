@@ -37,7 +37,7 @@
 
 #include "sparse-xdiv.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // diagonal matrix by sparse matrix ops
 
@@ -206,4 +206,4 @@ install_dm_sm_ops (octave::type_info& ti)
                     div_sm_dm);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

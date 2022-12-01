@@ -32,8 +32,8 @@
 #include "error.h"
 #include "pt-array-list.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   tree_array_list::~tree_array_list (void)
   {
     while (! empty ())
@@ -86,4 +86,5 @@ namespace octave
   {
     panic_impossible ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

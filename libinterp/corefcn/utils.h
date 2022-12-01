@@ -41,7 +41,7 @@ class octave_value;
 class octave_value_list;
 class string_vector;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   extern OCTINTERP_API bool valid_identifier (const char *s);
   extern OCTINTERP_API bool valid_identifier (const std::string& s);
@@ -190,6 +190,6 @@ OCTAVE_NAMESPACE_BEGIN
   do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
                      const char *fcn_name, const octave_value_list& args);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -31,8 +31,8 @@
 #include <list>
 #include <string>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   OCTAVE_API
   directory_path
@@ -100,6 +100,7 @@ namespace octave
 
     void init (void);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

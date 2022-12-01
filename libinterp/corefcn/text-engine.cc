@@ -30,8 +30,8 @@
 #include "text-engine.h"
 #include "oct-tex-symbols.cc"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   uint32_t
   text_element_symbol::get_symbol_code (void) const
   {
@@ -42,4 +42,5 @@ namespace octave
 
     return code;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

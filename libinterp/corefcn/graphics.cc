@@ -67,7 +67,7 @@
 #include "utils.h"
 #include "octave-default-image.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // forward declarations
 static octave_value xget (const graphics_handle& h, const caseless_str& name);
@@ -14768,4 +14768,4 @@ Internal function.
   return ovl (txt_renderer.get_system_fonts ());
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

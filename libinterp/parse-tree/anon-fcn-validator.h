@@ -32,8 +32,8 @@
 
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class tree_expression;
   class tree_parameter_list;
 
@@ -77,6 +77,7 @@ namespace octave
 
     void error (tree_expression& expr);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -32,10 +32,10 @@
 
 #include "pathsearch.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
-  namespace config
-  {
+OCTAVE_BEGIN_NAMESPACE(config)
+
     extern OCTINTERP_API std::string
     prepend_octave_home (const std::string& s);
 
@@ -101,8 +101,9 @@ OCTAVE_NAMESPACE_BEGIN
 
     extern OCTINTERP_API std::string local_site_defaults_file (void);
     extern OCTINTERP_API std::string site_defaults_file (void);
-  }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(config)
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -38,8 +38,8 @@
 #include "text-engine.h"
 #include "text-renderer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   base_text_renderer : public text_processor
   {
@@ -106,6 +106,7 @@ namespace octave
                           bool handle_rotation) const;
 
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

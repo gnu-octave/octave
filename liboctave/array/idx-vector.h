@@ -42,8 +42,8 @@
 #include "Sparse-fwd.h"
 #include "range-fwd.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Design rationale:
   //
   // idx_vector is a reference-counting, polymorphic pointer, that can
@@ -1030,7 +1030,8 @@ namespace octave
     idx_base_rep *m_rep;
 
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 // Provide the following typedef for backward compatibility.  Don't
 // deprecate (yet) because it is used extensively.

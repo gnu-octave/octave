@@ -301,10 +301,10 @@ gejsv_lwork<T>::optimal (char& joba, char& jobu, char& jobv,
   return lwork;
 }
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     T
     svd<T>::left_singular_matrix (void) const
@@ -866,5 +866,6 @@ namespace octave
     template class svd<ComplexMatrix>;
 
     template class svd<FloatComplexMatrix>;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)

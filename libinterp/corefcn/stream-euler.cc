@@ -53,7 +53,7 @@
 #include "error.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Coordinates of a point in C-Space (unit square mesh)
 
@@ -534,4 +534,4 @@ be defined for each grid cell by @code{[@var{TX}, @var{TY}, @var{TZ}]}.
   return streameuler3d_internal (args, "__streameuler3d__");
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

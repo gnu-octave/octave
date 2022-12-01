@@ -34,13 +34,14 @@
 #include "ov-base.h"
 #include "ov-fcn.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class cdef_object;
   class interpreter;
   class tree_evaluator;
   class type_info;
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 class
 octave_classdef : public octave_base_value

@@ -57,7 +57,7 @@
 #  include "pr-output.h"
 #endif
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // FIXME: Matlab does not produce lambda as the first output argument.
 // Compatibility problem?
@@ -953,4 +953,4 @@ compatibility with @sc{matlab}.
 %! assert (all (abs (lambda(2:4)) >= 1));
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

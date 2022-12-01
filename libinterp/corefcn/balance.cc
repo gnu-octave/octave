@@ -44,7 +44,7 @@
 #include "ovl.h"
 #include "utils.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (balance, args, nargout,
        doc: /* -*- texinfo -*-
@@ -374,4 +374,4 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

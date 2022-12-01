@@ -70,7 +70,7 @@ extern OCTINTERP_API bool octave_initialized;
 
 #include "oct-time.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class profiler;
   class child_list;
@@ -648,6 +648,6 @@ OCTAVE_NAMESPACE_BEGIN
     bool m_initialized;
   };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

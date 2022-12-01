@@ -37,10 +37,10 @@
 #include "lo-hash.h"
 #include "oct-locbuf.h"
 
-namespace octave
-{
-  namespace crypto
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(crypto)
+
     std::string
     hash (hash_fptr hash_fcn, const std::string& str, int result_buf_len)
     {
@@ -141,5 +141,6 @@ namespace octave
         (*current_liboctave_error_handler)
           ("hash function '%s' not supported", hash_type.c_str ());
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(crypto)
+OCTAVE_END_NAMESPACE(octave)

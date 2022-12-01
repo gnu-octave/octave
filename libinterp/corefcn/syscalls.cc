@@ -59,7 +59,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static octave_scalar_map
 mk_stat_map (const sys::base_file_stat& fs)
@@ -1745,4 +1745,4 @@ has been resumed by delivery of a @code{SIGCONT} signal.
   return const_value (args, sys::wcontinue ());
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

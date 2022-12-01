@@ -36,10 +36,10 @@
 #include "oct-cmplx.h"
 #include "oct-inttypes-fwd.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     extern OCTAVE_API bool isna (double x);
     extern OCTAVE_API bool isna (float x);
     extern OCTAVE_API bool isna (const Complex& x);
@@ -461,7 +461,8 @@ namespace octave
 
     extern OCTAVE_API Complex rc_sqrt (double);
     extern OCTAVE_API FloatComplex rc_sqrt (float);
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

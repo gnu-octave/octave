@@ -82,7 +82,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static void
 normalize_fopen_mode (std::string& mode, bool& use_zlib)
@@ -3331,4 +3331,4 @@ It is useful for error messages and prompts.
   return const_value ("stderr", args, streams.stderr_file ());
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

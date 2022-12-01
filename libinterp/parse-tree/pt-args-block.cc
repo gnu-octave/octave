@@ -29,8 +29,8 @@
 
 #include "pt-args-block.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   tree_args_block_validation_list::~tree_args_block_validation_list (void)
   {
     while (! empty ())
@@ -40,4 +40,5 @@ namespace octave
         erase (p);
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

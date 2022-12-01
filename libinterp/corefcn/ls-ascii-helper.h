@@ -31,7 +31,7 @@
 #include <iosfwd>
 #include <string>
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern OCTINTERP_API void
 skip_until_newline (std::istream& is, bool keep_newline = false);
@@ -42,6 +42,6 @@ skip_preceeding_newline (std::istream& is);
 extern OCTINTERP_API std::string
 read_until_newline (std::istream& is, bool keep_newline = false);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

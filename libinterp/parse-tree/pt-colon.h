@@ -36,8 +36,8 @@ class octave_value_list;
 #include "pt-exp.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
 
   // Colon expressions.
@@ -112,6 +112,7 @@ namespace octave
 
     bool m_save_base;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -40,7 +40,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // complex scalar by scalar ops.
 
@@ -159,4 +159,4 @@ install_fcs_fs_ops (octave::type_info& ti)
                          octave_float_complex_matrix);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

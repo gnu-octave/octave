@@ -3195,7 +3195,7 @@ octave_print_internal (std::ostream&, const octave_value&, bool)
   panic_impossible ();
 }
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (rats, args, ,
        doc: /* -*- texinfo -*-
@@ -4198,4 +4198,4 @@ The original variable value is restored when exiting the function.
                                 "split_long_rows");
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

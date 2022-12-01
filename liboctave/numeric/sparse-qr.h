@@ -34,10 +34,10 @@
 #include "MArray-fwd.h"
 #include "mx-fwd.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     // If the sparse matrix classes become templated on the element type
     // (i.e., sparse_matrix<double>), then it might be best to make the
     // template parameter of this class also be the element type instead
@@ -153,7 +153,8 @@ namespace octave
 
     typedef sparse_qr<SparseMatrix> SparseQR;
     typedef sparse_qr<SparseComplexMatrix> SparseComplexQR;
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

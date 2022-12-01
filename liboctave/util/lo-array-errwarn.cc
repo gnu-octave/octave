@@ -36,8 +36,8 @@
 #include "lo-array-errwarn.h"
 #include "lo-error.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Text constants used to shorten code below.
 
   static const char *error_id_nonconformant_args
@@ -301,6 +301,7 @@ namespace octave
            "matrix singular to machine precision, rcond = %g", rcond);
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 /* Tests in test/index.tst */

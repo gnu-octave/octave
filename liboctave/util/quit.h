@@ -42,8 +42,8 @@ extern "C" {
 
 #if defined (__cplusplus)
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class frame_info
   {
   public:
@@ -200,7 +200,8 @@ namespace octave
 
     const char * what (void) const noexcept { return "interrupt exception"; }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif
 

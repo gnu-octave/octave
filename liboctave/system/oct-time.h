@@ -41,10 +41,10 @@ as_double (OCTAVE_TIME_T sec, long usec)
   return (static_cast<double> (sec) + static_cast<double> (usec) / 1.0e6);
 }
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     class base_tm;
 
     class
@@ -528,7 +528,8 @@ namespace octave
       long m_nvcsw;
       long m_nivcsw;
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

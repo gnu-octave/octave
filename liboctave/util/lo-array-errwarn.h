@@ -31,8 +31,8 @@
 #include "dim-vector.h"
 #include "quit.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Exception thrown by err_invalid_index
   // This is thrown when the invalid index is detected, at which point nd and dim
   // are usually not known.  It is caught at the place they are known, where a
@@ -155,6 +155,7 @@ namespace octave
 
   extern OCTAVE_API void
   warn_singular_matrix (double rcond = 0.0);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -29,8 +29,8 @@
 
 #include "base-text-renderer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   base_text_renderer::rotate_pixels (uint8NDArray& pixels, int rot_mode) const
   {
@@ -170,4 +170,5 @@ namespace octave
           }
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

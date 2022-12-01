@@ -35,7 +35,7 @@
 #include "pager.h"
 #include "profiler.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   profiler::stats::stats (void)
     : m_time (0.0), m_calls (0), m_recursive (false),
@@ -446,4 +446,4 @@ Undocumented internal function.
     return ovl (profiler.get_flat ());
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

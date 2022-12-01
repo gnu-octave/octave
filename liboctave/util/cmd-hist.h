@@ -32,8 +32,8 @@
 
 #include "str-vec.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   OCTAVE_API
   command_history
@@ -240,6 +240,7 @@ namespace octave
     // The number of lines of history to save.
     int m_size;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

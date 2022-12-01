@@ -39,8 +39,8 @@
 #include "symscope.h"
 #include "token.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   // Is the given string a keyword?
@@ -872,6 +872,7 @@ namespace octave
 
     int fill_flex_buffer (char *buf, unsigned int max_size);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

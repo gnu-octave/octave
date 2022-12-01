@@ -42,8 +42,8 @@
 #include "variables.h"
 #include "errwarn.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Index expressions.
 
   tree_index_expression::tree_index_expression (int l, int c)
@@ -697,7 +697,8 @@ namespace octave
 
     return retval;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 /*
 %!test

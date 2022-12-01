@@ -32,8 +32,8 @@
 #include "profiler.h"
 #include "pt-unop.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Unary expressions.
 
   std::string
@@ -156,4 +156,5 @@ namespace octave
 
     return val;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

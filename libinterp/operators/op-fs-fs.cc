@@ -40,7 +40,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // scalar unary ops.
 
@@ -174,4 +174,4 @@ install_fs_fs_ops (octave::type_info& ti)
                          octave_float_matrix);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

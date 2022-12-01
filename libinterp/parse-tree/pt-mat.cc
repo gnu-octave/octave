@@ -42,8 +42,8 @@
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   octave_value
   tree_matrix::evaluate (tree_evaluator& tw, int)
   {
@@ -140,4 +140,5 @@ namespace octave
 
     return new_matrix;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

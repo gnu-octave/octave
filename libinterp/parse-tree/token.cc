@@ -32,8 +32,8 @@
 #include "error.h"
 #include "token.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   token::token (int tv, const filepos& beg_pos, const filepos& end_pos)
     : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
       m_end_pos (end_pos), m_tok_val (tv), m_type_tag (generic_token),
@@ -139,4 +139,5 @@ namespace octave
   {
     return m_orig_text;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

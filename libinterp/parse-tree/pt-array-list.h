@@ -32,8 +32,8 @@
 #include "pt-arg-list.h"
 #include "pt-exp.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
   class tree_walker;
 
@@ -84,6 +84,7 @@ namespace octave
 
     void accept (tree_walker& tw);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

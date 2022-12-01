@@ -35,8 +35,8 @@
 #include "pt-const.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // We are likely to have a lot of tree_constant objects to allocate,
   // so make the grow_size large.
 
@@ -70,4 +70,5 @@ namespace octave
 
     return new_tc;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -49,8 +49,8 @@
 #include "pager.h"
 #include "symtab.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   interpreter& __get_interpreter__ (void)
   {
     interpreter *interp = interpreter::the_interpreter ();
@@ -249,4 +249,5 @@ namespace octave
 
     return octave_value ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

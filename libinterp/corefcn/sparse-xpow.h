@@ -34,7 +34,7 @@ class SparseMatrix;
 class SparseComplexMatrix;
 class octave_value;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern octave_value xpow (const SparseMatrix& a, double b);
 extern octave_value xpow (const SparseComplexMatrix& a, double b);
@@ -60,6 +60,6 @@ extern octave_value elem_xpow (const SparseComplexMatrix& a,
 extern octave_value elem_xpow (const SparseComplexMatrix& a,
                                const SparseComplexMatrix& b);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -49,7 +49,7 @@ for now.
 #include "ov.h"
 #include "ovl.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (hash, args, ,
        doc: /* -*- texinfo -*-
@@ -242,4 +242,4 @@ hash ("md5", fileread (file));
 %!error hash ("sha512")
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

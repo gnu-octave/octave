@@ -32,7 +32,7 @@
 
 #include "oct-stream.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 class
 base_iostream : public base_stream
@@ -159,6 +159,6 @@ private:
   ostream& operator = (const ostream&) = delete;
 };
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

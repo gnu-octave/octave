@@ -30,8 +30,8 @@
 #include "error.h"
 #include "event-queue.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   event_queue_safe::warn_unhandled_exception (void) const
   {
@@ -39,4 +39,5 @@ namespace octave
              "It is a bug in Octave for this to happen.  "
              "Please help improve Octave by reporting it.");
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

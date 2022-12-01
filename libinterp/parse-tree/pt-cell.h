@@ -36,8 +36,8 @@ class octave_value_list;
 #include "pt-mat.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
   class tree_argument_list;
 
@@ -77,6 +77,7 @@ namespace octave
       tw.visit_cell (*this);
     }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -37,8 +37,8 @@ class octave_value_list;
 #include "pt-exp.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class symbol_scope;
 
   // Binary expressions.
@@ -207,6 +207,7 @@ namespace octave
     // The type of the expression.
     type m_etype;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

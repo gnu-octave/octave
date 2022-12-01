@@ -30,7 +30,7 @@
 #include "defun.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // If TRUE, use VM evaluator rather than tree walker.
 
@@ -69,4 +69,4 @@ setting is restored when exiting the function.
 #endif
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

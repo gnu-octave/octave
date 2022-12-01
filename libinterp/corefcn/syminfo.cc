@@ -40,8 +40,8 @@
 #include "pager.h"
 #include "syminfo.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void
   symbol_info::display_line (std::ostream& os,
                              const std::list<whos_parameter>& params) const
@@ -576,4 +576,5 @@ namespace octave
 
     return params;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

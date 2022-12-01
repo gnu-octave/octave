@@ -30,10 +30,10 @@
 
 #include "oct-map.h"
 
-namespace octave
-{
-  namespace build_env
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(build_env)
+
     extern OCTINTERP_API octave_scalar_map features (void);
 
     extern OCTINTERP_API const char *AMD_CPPFLAGS;
@@ -176,7 +176,8 @@ namespace octave
     extern OCTINTERP_API const char *Z_LDFLAGS;
     extern OCTINTERP_API const char *Z_LIBS;
     extern OCTINTERP_API const char *config_opts;
-  }
-}
+
+OCTAVE_END_NAMESPACE(build_env)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

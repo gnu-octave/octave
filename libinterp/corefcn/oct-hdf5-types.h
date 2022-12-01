@@ -32,11 +32,11 @@
 
 // This function only needs to be defined for C++.
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern bool check_hdf5_types (bool warn = true);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #endif
 

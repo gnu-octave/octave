@@ -37,8 +37,8 @@ class octave_value_list;
 #include "pt-binop.h"
 #include "pt-walk.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Binary expressions that can be reduced to compound operations
 
   class tree_compound_binary_expression : public tree_binary_expression
@@ -95,6 +95,7 @@ namespace octave
                                     int l = -1, int c = -1,
                                     octave_value::binary_op t
                                     = octave_value::unknown_binary_op);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -33,8 +33,8 @@
 #include "pt-eval.h"
 #include "pt-unop.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   octave_value
   tree_compound_binary_expression::evaluate (tree_evaluator& tw, int)
   {
@@ -238,4 +238,5 @@ namespace octave
 
     return ret;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

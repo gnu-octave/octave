@@ -37,7 +37,7 @@
 #include "ov-null-mat.h"
 #include "ops.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // cell ops.
 
@@ -74,4 +74,4 @@ install_cell_ops (octave::type_info& ti)
                        null_assign);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

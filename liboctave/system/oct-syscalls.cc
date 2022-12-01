@@ -44,10 +44,10 @@
 #define NOT_SUPPORTED(nm)                       \
   nm ": not supported on this system"
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     int
     dup2 (int old_fd, int new_fd)
     {
@@ -365,5 +365,6 @@ namespace octave
 
       return status;
     }
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)

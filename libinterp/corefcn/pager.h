@@ -36,7 +36,7 @@
 class octave_value;
 class octave_value_list;
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class interpreter;
   class oprocstream;
@@ -309,7 +309,7 @@ OCTAVE_NAMESPACE_BEGIN
 
   extern OCTINTERP_API std::ostream& __diary__ (void);
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)
 
 #define octave_stdout (octave::__stdout__ ())
 

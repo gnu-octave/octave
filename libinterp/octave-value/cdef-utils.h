@@ -36,8 +36,8 @@
 class octave_value;
 class Cell;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   extern OCTINTERP_API std::string
   get_base_name (const std::string& nm);
 
@@ -106,6 +106,7 @@ namespace octave
                 const std::string& meth_name = "",
                 const std::string& prop_name = "",
                 bool is_prop_set = false);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

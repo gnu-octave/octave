@@ -39,8 +39,8 @@
 #include "interpreter.h"
 #include "symrec.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   std::shared_ptr<symbol_record::symbol_record_rep>
   symbol_record::symbol_record_rep::dup (void) const
   {
@@ -59,4 +59,5 @@ namespace octave
 
     return octave_value (m);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

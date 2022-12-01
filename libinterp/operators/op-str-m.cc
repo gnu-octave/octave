@@ -35,7 +35,7 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFASSIGNOP (assign, char_matrix_str, octave_matrix)
 {
@@ -70,4 +70,4 @@ install_str_m_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_matrix, octave_char_matrix_sq_str, m_str);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

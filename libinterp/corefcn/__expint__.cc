@@ -31,7 +31,7 @@
 #include "defun.h"
 #include "fCNDArray.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (__expint__, args, ,
        doc: /* -*- texinfo -*-
@@ -173,4 +173,4 @@ Continued fraction expansion for the exponential integral.
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

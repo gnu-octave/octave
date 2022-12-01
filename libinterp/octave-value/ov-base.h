@@ -44,8 +44,8 @@
 #include "oct-hdf5-types.h"
 #include "oct-stream.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class stack_frame;
   class type_info;
 
@@ -61,7 +61,8 @@ namespace octave
   // This function is currently an internal, private function.  Additional
   // changes may be made before version 8 is finally released.
   inline type_info& __get_type_info__ (const std::string&) { return __get_type_info__ (); }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 class Cell;
 class float_display_format;

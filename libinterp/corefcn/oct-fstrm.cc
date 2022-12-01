@@ -33,7 +33,7 @@
 #include "error.h"
 #include "oct-fstrm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 stream
 fstream::create (const std::string& nm_arg, std::ios::openmode arg_md,
@@ -111,4 +111,4 @@ fstream::output_stream (void)
   return retval;
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

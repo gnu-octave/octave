@@ -36,8 +36,8 @@
 #include "oct-time.h"
 #include "oct-refcount.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   dynamic_library
   {
@@ -211,6 +211,7 @@ namespace octave
   // event_hook function.
 
   OCTAVE_API int release_unreferenced_dynamic_libraries (void);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -59,7 +59,7 @@
 #include "utils.h"
 #include "variables.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 static octave_value
 bp_lines_to_ov (const octave::bp_table::bp_lines& lines)
@@ -1207,4 +1207,4 @@ With a logical argument @var{flag}, set the state on or off.
   return ovl ();
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

@@ -31,10 +31,10 @@
 
 #include "build-env.h"
 
-namespace octave
-{
-  namespace build_env
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(build_env)
+
     const char *AMD_CPPFLAGS = %OCTAVE_CONF_AMD_CPPFLAGS%;
 
     const char *AMD_LDFLAGS = %OCTAVE_CONF_AMD_LDFLAGS%;
@@ -314,5 +314,6 @@ namespace octave
     const char *Z_LIBS = %OCTAVE_CONF_Z_LIBS%;
 
     const char *config_opts = %OCTAVE_CONF_config_opts%;
-  }
-}
+
+OCTAVE_END_NAMESPACE(build_env)
+OCTAVE_END_NAMESPACE(octave)

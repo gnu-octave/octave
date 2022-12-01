@@ -37,8 +37,8 @@
 #include "cdef-object.h"
 #include "ov.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class
   OCTINTERP_API
   cdef_method : public cdef_meta_object
@@ -227,6 +227,7 @@ namespace octave
       return dynamic_cast<const cdef_method_rep *> (cdef_object::get_rep ());
     }
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

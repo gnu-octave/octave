@@ -32,8 +32,8 @@
 #include "interpreter.h"
 #include "ov-classdef.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static octave_value
   make_fcn_handle (octave_builtin::fcn ff, const std::string& nm)
   {
@@ -946,4 +946,5 @@ namespace octave
 
     return cls.get_method (name);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

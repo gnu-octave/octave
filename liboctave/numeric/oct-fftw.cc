@@ -41,8 +41,8 @@
 #  include "nproc-wrapper.h"
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
 #if defined (HAVE_FFTW)
 
   fftw_planner *fftw_planner::s_instance = nullptr;
@@ -1153,4 +1153,5 @@ namespace octave
     return "none";
 #endif
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

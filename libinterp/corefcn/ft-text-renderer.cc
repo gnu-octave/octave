@@ -65,8 +65,8 @@
 #include "sysdep.h"
 #include "text-renderer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // FIXME: maybe issue at most one warning per glyph/font/size/weight
   //        combination.
 
@@ -1526,12 +1526,13 @@ namespace octave
 
     return m_face;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   base_text_renderer *
   make_ft_text_renderer (void)
   {
@@ -1541,4 +1542,5 @@ namespace octave
     return 0;
 #endif
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

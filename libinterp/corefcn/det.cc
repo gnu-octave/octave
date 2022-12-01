@@ -45,7 +45,7 @@
 #include "ov-flt-cx-diag.h"
 #include "ov-perm.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 #define MAYBE_CAST(VAR, CLASS)                                          \
   const CLASS *VAR = (arg.type_id () == CLASS::static_type_id ()        \
@@ -237,4 +237,4 @@ For that, use any of the condition number functions: @code{cond},
 %!error <must be a square matrix> det ([1, 2; 3, 4; 5, 6])
 */
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

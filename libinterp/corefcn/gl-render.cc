@@ -45,8 +45,8 @@
 #include "oct-opengl.h"
 #include "text-renderer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
 #if defined (HAVE_OPENGL)
 
   static int
@@ -4985,4 +4985,5 @@ namespace octave
 
 #endif
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

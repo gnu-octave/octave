@@ -30,10 +30,10 @@
 
 #include <string>
 
-namespace octave
-{
-  namespace sys
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(sys)
+
     class
     OCTAVE_API
     uname
@@ -95,7 +95,8 @@ namespace octave
 
       void init (void);
     };
-  }
-}
+
+OCTAVE_END_NAMESPACE(sys)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

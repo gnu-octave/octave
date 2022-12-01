@@ -30,10 +30,10 @@
 
 #include "Array-fwd.h"
 
-namespace octave
-{
-  namespace math
-  {
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+OCTAVE_BEGIN_NAMESPACE(math)
+
     template <typename T>
     class
     qr
@@ -114,7 +114,8 @@ namespace octave
     };
 
     extern OCTAVE_API void warn_qrupdate_once (void);
-  }
-}
+
+OCTAVE_END_NAMESPACE(math)
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

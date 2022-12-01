@@ -43,7 +43,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 
-OCTAVE_NAMESPACE_BEGIN
+OCTAVE_BEGIN_NAMESPACE(octave)
 
 // complex scalar by matrix ops.
 
@@ -156,4 +156,4 @@ install_fcs_fm_ops (octave::type_info& ti)
                          octave_complex_matrix);
 }
 
-OCTAVE_NAMESPACE_END
+OCTAVE_END_NAMESPACE(octave)

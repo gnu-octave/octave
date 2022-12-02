@@ -249,7 +249,7 @@ namespace octave
 
   gui_settings * resource_manager::get_default_settings (void) const
   {
-    if (m_settings)
+    if (! m_default_settings)
       {
         QString msg (QT_TR_NOOP ("Octave has lost its default settings.\n"
                                  "This should not happen.\n"

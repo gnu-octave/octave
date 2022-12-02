@@ -42,6 +42,28 @@
 
 namespace octave
 {
+  qt_application::qt_application (const std::string& organization_name,
+                                  const std::string& application_name,
+                                  const std::string& application_version,
+                                  int argc, char **argv)
+    : application (argc, argv)
+  {
+    if (! organization_name.empty ())
+      QCoreApplication::setOrganizationName
+        (QString::fromStdString (organization_name));
+
+    if (! application_name.empty ())
+      QCoreApplication::setApplicationName
+        (QString::fromStdString (application_name));
+
+    if (! application_version.empty ())
+      QCoreApplication::setApplicationVersion
+        (QString::fromStdString (application_version));
+
+    // This should probably happen early.
+    sysdep_init ();
+  }
+
   qt_application::qt_application (int argc, char **argv)
     : application (argc, argv)
   {

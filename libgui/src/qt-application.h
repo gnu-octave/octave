@@ -26,6 +26,8 @@
 #if ! defined (octave_qt_application_h)
 #define octave_qt_application_h 1
 
+#include <string>
+
 #include "octave.h"
 
 namespace octave
@@ -44,6 +46,11 @@ namespace octave
   class OCTGUI_API qt_application  : public application
   {
   public:
+
+    qt_application (const std::string& organization_name,
+                    const std::string& application_name,
+                    const std::string& application_version,
+                    int argc, char **argv);
 
     qt_application (int argc, char **argv);
 

@@ -65,8 +65,6 @@ namespace octave
 
     gui_settings * get_settings (void) const;
 
-    gui_settings * get_default_settings (void) const;
-
     QString get_settings_directory (void);
 
     QString get_settings_file (void);
@@ -120,8 +118,6 @@ namespace octave
     QString m_settings_file;
 
     gui_settings *m_settings;
-
-    gui_settings *m_default_settings;
 
     QList<QTemporaryFile *> m_temporary_files;
 

@@ -65,14 +65,14 @@ namespace octave
 {
   resource_manager::resource_manager (void)
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
-      m_default_settings (nullptr), m_temporary_files (), m_icon_fallbacks ()
+      m_temporary_files (), m_icon_fallbacks ()
   {
     // Location, name, and format of settings file determined by
     // settings in qt_application class construtor.
 
-    m_default_settings = new gui_settings ();
+    m_settings = new gui_settings ();
 
-    m_settings_file = m_default_settings->fileName ();
+    m_settings_file = m_settings->fileName ();
 
     QFileInfo sfile (m_settings_file);
     m_settings_directory = sfile.absolutePath ();
@@ -81,7 +81,6 @@ namespace octave
   resource_manager::~resource_manager (void)
   {
     delete m_settings;
-    delete m_default_settings;
 
     for (int i = m_temporary_files.count () - 1; i >=0; i--)
       remove_tmp_file (m_temporary_files.at (i));
@@ -206,24 +205,6 @@ namespace octave
       }
 
     return m_settings;
-  }
-
-  gui_settings * resource_manager::get_default_settings (void) const
-  {
-    if (! m_default_settings)
-      {
-        QString msg (QT_TR_NOOP ("Octave has lost its default settings.\n"
-                                 "This should not happen.\n"
-                                 "Please report this bug.\n\n"
-                                 "Octave GUI must be closed now."));
-
-        QMessageBox::critical (nullptr,
-                               QString (QT_TR_NOOP ("Octave Critical Error")),
-                               msg);
-        exit (1);
-      }
-
-    return m_default_settings;
   }
 
   QString resource_manager::get_settings_directory (void)

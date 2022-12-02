@@ -76,45 +76,6 @@ namespace octave
 
     QFileInfo sfile (m_settings_file);
     m_settings_directory = sfile.absolutePath ();
-
-    QString xdg_config_home
-      = QString::fromLocal8Bit (qgetenv ("XDG_CONFIG_HOME"));
-
-    if ((! sfile.exists ()) && xdg_config_home.isEmpty ())
-      {
-        // File does not exist yet: Look for a settings file at the old
-        // location ($HOME/.config/octave/qt-settings) for impoting all
-        // available keys into the new settings file.
-        // Do not look for an old settings file if XDG_CONFIG_HOME is set,
-        // since then a nonexistent new settings file does not necessarily
-        // indicate a first run of octave with new config file locations.
-#if defined (HAVE_QSTANDARDPATHS)
-        QString home_path
-          = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
-#else
-        QString home_path
-          = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
-#endif
-
-        QString old_settings_directory = home_path + "/.config/octave";
-        QString old_settings_file = old_settings_directory + "/qt-settings";
-
-        QFile ofile (old_settings_file);
-
-        if (ofile.exists ())
-          {
-            // Old settings file exists; create a gui_settings object related
-            // to it and copy all available keys to the new settings
-            gui_settings old_settings (old_settings_file, QSettings::IniFormat);
-
-            QStringList keys = old_settings.allKeys ();
-            for (int i = 0; i < keys.count(); i++)
-              m_default_settings->setValue (keys.at(i),
-                                            old_settings.value(keys.at(i)));
-
-            m_default_settings->sync ();  // Done, make sure keys are written
-          }
-      }
   }
 
   resource_manager::~resource_manager (void)

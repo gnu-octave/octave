@@ -39,182 +39,182 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class symbol_scope;
-  class tree_evaluator;
-  class tree_expression;
-  class tree_identifier;
+class symbol_scope;
+class tree_evaluator;
+class tree_expression;
+class tree_identifier;
 
-  // List of expressions that make up a declaration statement.
+// List of expressions that make up a declaration statement.
 
-  class tree_decl_elt
+class tree_decl_elt
+{
+public:
+
+  enum decl_type
   {
-  public:
-
-    enum decl_type
-    {
-      unknown,
-      global,
-      persistent
-    };
-
-    tree_decl_elt (tree_identifier *i, tree_expression *e = nullptr);
-
-    // No copying!
-
-    tree_decl_elt (const tree_decl_elt&) = delete;
-
-    tree_decl_elt& operator = (const tree_decl_elt&) = delete;
-
-    ~tree_decl_elt (void);
-
-    void mark_as_formal_parameter (void)
-    {
-      m_id->mark_as_formal_parameter ();
-    }
-
-    bool lvalue_ok (void) { return m_id->lvalue_ok (); }
-
-    octave_lvalue lvalue (tree_evaluator& tw)
-    {
-      return m_id->lvalue (tw);
-    }
-
-    void mark_global (void) { type = global; }
-    bool is_global (void) const { return type == global; }
-
-    void mark_persistent (void) { type = persistent; }
-    bool is_persistent (void) const { return type == persistent; }
-
-    tree_identifier * ident (void) { return m_id; }
-
-    std::string name (void) const { return m_id->name (); }
-
-    tree_expression * expression (void) { return m_expr; }
-
-    tree_decl_elt * dup (symbol_scope& scope) const;
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_decl_elt (*this);
-    }
-
-  private:
-
-    decl_type type;
-
-    // An identifier to tag with the declared property.
-    tree_identifier *m_id;
-
-    // An initializer expression (may be zero);
-    tree_expression *m_expr;
+    unknown,
+    global,
+    persistent
   };
 
-  class tree_decl_init_list : public base_list<tree_decl_elt *>
+  tree_decl_elt (tree_identifier *i, tree_expression *e = nullptr);
+
+  // No copying!
+
+  tree_decl_elt (const tree_decl_elt&) = delete;
+
+  tree_decl_elt& operator = (const tree_decl_elt&) = delete;
+
+  ~tree_decl_elt (void);
+
+  void mark_as_formal_parameter (void)
   {
-  public:
+    m_id->mark_as_formal_parameter ();
+  }
 
-    tree_decl_init_list (void) { }
+  bool lvalue_ok (void) { return m_id->lvalue_ok (); }
 
-    tree_decl_init_list (tree_decl_elt *t) { append (t); }
-
-    // No copying!
-
-    tree_decl_init_list (const tree_decl_init_list&) = delete;
-
-    tree_decl_init_list& operator = (const tree_decl_init_list&) = delete;
-
-    ~tree_decl_init_list (void)
-    {
-      while (! empty ())
-        {
-          auto p = begin ();
-          delete *p;
-          erase (p);
-        }
-    }
-
-    void mark_global (void)
-    {
-      for (tree_decl_elt *elt : *this)
-        elt->mark_global ();
-    }
-
-    void mark_persistent (void)
-    {
-      for (tree_decl_elt *elt : *this)
-        elt->mark_persistent ();
-    }
-
-    std::list<std::string> variable_names (void) const
-    {
-      std::list<std::string> retval;
-
-      for (const tree_decl_elt *elt : *this)
-        {
-          std::string nm = elt->name ();
-
-          if (! nm.empty ())
-            retval.push_back (nm);
-        }
-
-      return retval;
-    }
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_decl_init_list (*this);
-    }
-  };
-
-  // Base class for declaration commands -- global, static, etc.
-
-  class tree_decl_command : public tree_command
+  octave_lvalue lvalue (tree_evaluator& tw)
   {
-  public:
+    return m_id->lvalue (tw);
+  }
 
-    tree_decl_command (const std::string& n, int l = -1, int c = -1)
-      : tree_command (l, c), m_cmd_name (n), m_init_list (nullptr) { }
+  void mark_global (void) { type = global; }
+  bool is_global (void) const { return type == global; }
 
-    tree_decl_command (const std::string& n, tree_decl_init_list *t,
-                       int l = -1, int c = -1);
+  void mark_persistent (void) { type = persistent; }
+  bool is_persistent (void) const { return type == persistent; }
 
-    // No copying!
+  tree_identifier * ident (void) { return m_id; }
 
-    tree_decl_command (const tree_decl_command&) = delete;
+  std::string name (void) const { return m_id->name (); }
 
-    tree_decl_command& operator = (const tree_decl_command&) = delete;
+  tree_expression * expression (void) { return m_expr; }
 
-    ~tree_decl_command (void);
+  tree_decl_elt * dup (symbol_scope& scope) const;
 
-    void mark_global (void)
-    {
-      if (m_init_list)
-        m_init_list->mark_global ();
-    }
+  void accept (tree_walker& tw)
+  {
+    tw.visit_decl_elt (*this);
+  }
 
-    void mark_persistent (void)
-    {
-      if (m_init_list)
-        m_init_list->mark_persistent ();
-    }
+private:
 
-    tree_decl_init_list * initializer_list (void) { return m_init_list; }
+  decl_type type;
 
-    std::string name (void) const { return m_cmd_name; }
+  // An identifier to tag with the declared property.
+  tree_identifier *m_id;
 
-    void accept (tree_walker& tw)
-    {
-      tw.visit_decl_command (*this);
-    }
+  // An initializer expression (may be zero);
+  tree_expression *m_expr;
+};
 
-  private:
+class tree_decl_init_list : public base_list<tree_decl_elt *>
+{
+public:
 
-    // The name of this command -- global, static, etc.
-    std::string m_cmd_name;
+  tree_decl_init_list (void) { }
 
-    // The list of variables or initializers in this declaration command.
-    tree_decl_init_list *m_init_list;
-  };
+  tree_decl_init_list (tree_decl_elt *t) { append (t); }
+
+  // No copying!
+
+  tree_decl_init_list (const tree_decl_init_list&) = delete;
+
+  tree_decl_init_list& operator = (const tree_decl_init_list&) = delete;
+
+  ~tree_decl_init_list (void)
+  {
+    while (! empty ())
+      {
+        auto p = begin ();
+        delete *p;
+        erase (p);
+      }
+  }
+
+  void mark_global (void)
+  {
+    for (tree_decl_elt *elt : *this)
+      elt->mark_global ();
+  }
+
+  void mark_persistent (void)
+  {
+    for (tree_decl_elt *elt : *this)
+      elt->mark_persistent ();
+  }
+
+  std::list<std::string> variable_names (void) const
+  {
+    std::list<std::string> retval;
+
+    for (const tree_decl_elt *elt : *this)
+      {
+        std::string nm = elt->name ();
+
+        if (! nm.empty ())
+          retval.push_back (nm);
+      }
+
+    return retval;
+  }
+
+  void accept (tree_walker& tw)
+  {
+    tw.visit_decl_init_list (*this);
+  }
+};
+
+// Base class for declaration commands -- global, static, etc.
+
+class tree_decl_command : public tree_command
+{
+public:
+
+  tree_decl_command (const std::string& n, int l = -1, int c = -1)
+    : tree_command (l, c), m_cmd_name (n), m_init_list (nullptr) { }
+
+  tree_decl_command (const std::string& n, tree_decl_init_list *t,
+                     int l = -1, int c = -1);
+
+  // No copying!
+
+  tree_decl_command (const tree_decl_command&) = delete;
+
+  tree_decl_command& operator = (const tree_decl_command&) = delete;
+
+  ~tree_decl_command (void);
+
+  void mark_global (void)
+  {
+    if (m_init_list)
+      m_init_list->mark_global ();
+  }
+
+  void mark_persistent (void)
+  {
+    if (m_init_list)
+      m_init_list->mark_persistent ();
+  }
+
+  tree_decl_init_list * initializer_list (void) { return m_init_list; }
+
+  std::string name (void) const { return m_cmd_name; }
+
+  void accept (tree_walker& tw)
+  {
+    tw.visit_decl_command (*this);
+  }
+
+private:
+
+  // The name of this command -- global, static, etc.
+  std::string m_cmd_name;
+
+  // The list of variables or initializers in this declaration command.
+  tree_decl_init_list *m_init_list;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

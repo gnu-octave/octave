@@ -30,9 +30,9 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_text_renderer;
+class base_text_renderer;
 
-  extern base_text_renderer * make_ft_text_renderer (void);
+extern base_text_renderer * make_ft_text_renderer (void);
 
 OCTAVE_END_NAMESPACE(octave)
 

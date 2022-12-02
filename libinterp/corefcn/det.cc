@@ -186,7 +186,7 @@ For that, use any of the condition number functions: @code{cond},
 
               MAYBE_CAST (rep, octave_matrix);
               MatrixType mtype = (rep ? rep -> matrix_type ()
-                                      : MatrixType ());
+                                  : MatrixType ());
               DET det = m.determinant (mtype, info, rcond);
               retval(0) = (info == -1 ? 0.0 : det.value ());
               retval(1) = rcond;
@@ -213,7 +213,7 @@ For that, use any of the condition number functions: @code{cond},
 
               MAYBE_CAST (rep, octave_complex_matrix);
               MatrixType mtype = (rep ? rep -> matrix_type ()
-                                      : MatrixType ());
+                                  : MatrixType ());
               ComplexDET det = m.determinant (mtype, info, rcond);
               retval(0) = (info == -1 ? Complex (0.0) : det.value ());
               retval(1) = rcond;
@@ -230,7 +230,7 @@ For that, use any of the condition number functions: @code{cond},
 
 /*
 %!assert (det ([1, 2; 3, 4]), -2, 10*eps)
-%!assert (det (single ([1, 2; 3, 4])), single (-2), 10*eps ("single"))
+%!assert (det (single ([1, 2; 3, 4])), single (-2), 10* eps ("single"))
 %!assert (det (eye (2000)), 1)
 %!error det ()
 %!error det (1, 2)

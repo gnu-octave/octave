@@ -40,7 +40,7 @@ class string_vector;
 
 // A class holding a map field->index.  Supports reference-counting.
 class OCTINTERP_API
-octave_fields
+  octave_fields
 {
   class fields_rep : public std::map<std::string, octave_idx_type>
   {
@@ -57,13 +57,13 @@ octave_fields
 
   fields_rep *m_rep;
 
-  static fields_rep *nil_rep (void);
+  static fields_rep * nil_rep (void);
 
 public:
 
   octave_fields (void) : m_rep (nil_rep ()) { m_rep->m_count++; }
   octave_fields (const string_vector&);
-  octave_fields (const char * const *);
+  octave_fields (const char *const *);
 
   ~octave_fields (void)
   {
@@ -158,7 +158,7 @@ public:
 };
 
 class OCTINTERP_API
-octave_scalar_map
+  octave_scalar_map
 {
 public:
 
@@ -273,7 +273,7 @@ octave_value_extract<octave_scalar_map> (const octave_value& v)
 { return v.scalar_map_value (); }
 
 class OCTINTERP_API
-octave_map
+  octave_map
 {
 public:
 

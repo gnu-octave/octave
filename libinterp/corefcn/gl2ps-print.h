@@ -34,11 +34,11 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class opengl_functions;
+class opengl_functions;
 
-  extern OCTINTERP_API void
-  gl2ps_print (opengl_functions& glfcns, const graphics_object& fig,
-               const std::string& stream, const std::string& term);
+extern OCTINTERP_API void
+gl2ps_print (opengl_functions& glfcns, const graphics_object& fig,
+             const std::string& stream, const std::string& term);
 
 OCTAVE_END_NAMESPACE(octave)
 

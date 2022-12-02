@@ -36,75 +36,75 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-    class
-    OCTAVE_API
-    dir_entry
-    {
+class
+OCTAVE_API
+dir_entry
+{
 
-      // NOTE: This class cannot be used safely cross-platform (Windows) with
-      // non-ASCII characters in paths.
-      // Consider replacing the implementation using std::filesystem (C++ 17).
-      // In the meantime, consider using sys::get_dirlist instead.
+  // NOTE: This class cannot be used safely cross-platform (Windows) with
+  // non-ASCII characters in paths.
+  // Consider replacing the implementation using std::filesystem (C++ 17).
+  // In the meantime, consider using sys::get_dirlist instead.
 
-    public:
+public:
 
-      dir_entry (const std::string& n = "")
-        : m_name (n), m_dir (nullptr), m_fail (false), m_errmsg ()
+  dir_entry (const std::string& n = "")
+    : m_name (n), m_dir (nullptr), m_fail (false), m_errmsg ()
+  {
+    if (! m_name.empty ())
+      open ();
+  }
+
+  dir_entry (const dir_entry& d)
+    : m_name (d.m_name), m_dir (d.m_dir), m_fail (d.m_fail),
+      m_errmsg (d.m_errmsg)
+  { }
+
+  dir_entry& operator = (const dir_entry& d)
+  {
+    if (this != &d)
       {
-        if (! m_name.empty ())
-          open ();
+        m_name = d.m_name;
+        m_dir = d.m_dir;
+        m_fail = d.m_fail;
+        m_errmsg = d.m_errmsg;
       }
 
-      dir_entry (const dir_entry& d)
-        : m_name (d.m_name), m_dir (d.m_dir), m_fail (d.m_fail),
-          m_errmsg (d.m_errmsg)
-      { }
+    return *this;
+  }
 
-      dir_entry& operator = (const dir_entry& d)
-      {
-        if (this != &d)
-          {
-            m_name = d.m_name;
-            m_dir = d.m_dir;
-            m_fail = d.m_fail;
-            m_errmsg = d.m_errmsg;
-          }
+  ~dir_entry (void) { close (); }
 
-        return *this;
-      }
+  bool open (const std::string& = "");
 
-      ~dir_entry (void) { close (); }
+  string_vector read (void);
 
-      bool open (const std::string& = "");
+  bool close (void);
 
-      string_vector read (void);
+  bool ok (void) const { return m_dir && ! m_fail; }
 
-      bool close (void);
+  operator bool () const { return ok (); }
 
-      bool ok (void) const { return m_dir && ! m_fail; }
+  std::string error (void) const { return ok () ? "" : m_errmsg; }
 
-      operator bool () const { return ok (); }
+  static unsigned int max_name_length (void);
 
-      std::string error (void) const { return ok () ? "" : m_errmsg; }
+private:
 
-      static unsigned int max_name_length (void);
+  // Name of the directory.
+  std::string m_name;
 
-    private:
+  // A pointer to the contents of the directory.  We use void here to
+  // avoid possible conflicts with the way some systems declare the
+  // type DIR.
+  void *m_dir;
 
-      // Name of the directory.
-      std::string m_name;
+  // TRUE means the open for this directory failed.
+  bool m_fail;
 
-      // A pointer to the contents of the directory.  We use void here to
-      // avoid possible conflicts with the way some systems declare the
-      // type DIR.
-      void *m_dir;
-
-      // TRUE means the open for this directory failed.
-      bool m_fail;
-
-      // If a failure occurs, this contains the system error text.
-      std::string m_errmsg;
-    };
+  // If a failure occurs, this contains the system error text.
+  std::string m_errmsg;
+};
 
 OCTAVE_END_NAMESPACE(sys)
 OCTAVE_END_NAMESPACE(octave)

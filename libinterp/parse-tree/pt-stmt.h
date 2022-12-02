@@ -41,177 +41,177 @@ class event_manager;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class comment_list;
-  class tree_command;
-  class tree_evaluator;
-  class tree_expression;
+class comment_list;
+class tree_command;
+class tree_evaluator;
+class tree_expression;
 
-  // A statement is either a command to execute or an expression to
-  // evaluate.
+// A statement is either a command to execute or an expression to
+// evaluate.
 
-  class tree_statement : public tree
+class tree_statement : public tree
+{
+public:
+
+  tree_statement (void)
+    : m_command (nullptr), m_expression (nullptr),
+      m_comment_list (nullptr) { }
+
+  tree_statement (tree_command *c, comment_list *cl)
+    : m_command (c), m_expression (nullptr), m_comment_list (cl) { }
+
+  tree_statement (tree_expression *e, comment_list *cl)
+    : m_command (nullptr), m_expression (e), m_comment_list (cl) { }
+
+  // No copying!
+
+  tree_statement (const tree_statement&) = delete;
+
+  tree_statement& operator = (const tree_statement&) = delete;
+
+  ~tree_statement (void);
+
+  void set_print_flag (bool print_flag);
+
+  bool print_result (void);
+
+  bool is_command (void) const { return m_command != nullptr; }
+
+  bool is_expression (void) const { return m_expression != nullptr; }
+
+  void set_breakpoint (const std::string& condition);
+
+  void delete_breakpoint (void);
+
+  bool is_breakpoint (void) const;
+
+  bool is_active_breakpoint (tree_evaluator& tw) const;
+
+  std::string bp_cond () const;
+
+  int line (void) const;
+  int column (void) const;
+
+  void set_location (int l, int c);
+
+  void echo_code (const std::string& prefix);
+
+  tree_command * command (void) { return m_command; }
+
+  tree_expression * expression (void) { return m_expression; }
+
+  comment_list * comment_text (void) { return m_comment_list; }
+
+  bool is_null_statement (void) const
   {
-  public:
+    return ! (m_command || m_expression || m_comment_list);
+  }
 
-    tree_statement (void)
-      : m_command (nullptr), m_expression (nullptr),
-        m_comment_list (nullptr) { }
+  bool is_end_of_fcn_or_script (void) const;
 
-    tree_statement (tree_command *c, comment_list *cl)
-      : m_command (c), m_expression (nullptr), m_comment_list (cl) { }
+  bool is_end_of_file (void) const;
 
-    tree_statement (tree_expression *e, comment_list *cl)
-      : m_command (nullptr), m_expression (e), m_comment_list (cl) { }
+  // Allow modification of this statement.  Note that there is no
+  // checking.  If you use these, are you sure you know what you are
+  // doing?
 
-    // No copying!
+  void set_command (tree_command *c) { m_command = c; }
 
-    tree_statement (const tree_statement&) = delete;
+  void set_expression (tree_expression *e) { m_expression = e; }
 
-    tree_statement& operator = (const tree_statement&) = delete;
-
-    ~tree_statement (void);
-
-    void set_print_flag (bool print_flag);
-
-    bool print_result (void);
-
-    bool is_command (void) const { return m_command != nullptr; }
-
-    bool is_expression (void) const { return m_expression != nullptr; }
-
-    void set_breakpoint (const std::string& condition);
-
-    void delete_breakpoint (void);
-
-    bool is_breakpoint (void) const;
-
-    bool is_active_breakpoint (tree_evaluator& tw) const;
-
-    std::string bp_cond () const;
-
-    int line (void) const;
-    int column (void) const;
-
-    void set_location (int l, int c);
-
-    void echo_code (const std::string& prefix);
-
-    tree_command * command (void) { return m_command; }
-
-    tree_expression * expression (void) { return m_expression; }
-
-    comment_list * comment_text (void) { return m_comment_list; }
-
-    bool is_null_statement (void) const
-    {
-      return ! (m_command || m_expression || m_comment_list);
-    }
-
-    bool is_end_of_fcn_or_script (void) const;
-
-    bool is_end_of_file (void) const;
-
-    // Allow modification of this statement.  Note that there is no
-    // checking.  If you use these, are you sure you know what you are
-    // doing?
-
-    void set_command (tree_command *c) { m_command = c; }
-
-    void set_expression (tree_expression *e) { m_expression = e; }
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_statement (*this);
-    }
-
-  private:
-
-    // Only one of cmd or expr can be valid at once.
-
-    // Command to execute.
-    tree_command *m_command;
-
-    // Expression to evaluate.
-    tree_expression *m_expression;
-
-    // Comment associated with this statement.
-    comment_list *m_comment_list;
-  };
-
-  // A list of statements to evaluate.
-
-  class tree_statement_list : public base_list<tree_statement *>
+  void accept (tree_walker& tw)
   {
-  public:
+    tw.visit_statement (*this);
+  }
 
-    tree_statement_list (void)
-      : m_function_body (false), m_anon_function_body (false),
-        m_script_body (false) { }
+private:
 
-    tree_statement_list (tree_statement *s)
-      : m_function_body (false), m_anon_function_body (false),
-        m_script_body (false) { append (s); }
+  // Only one of cmd or expr can be valid at once.
 
-    // No copying!
+  // Command to execute.
+  tree_command *m_command;
 
-    tree_statement_list (const tree_statement_list&) = delete;
+  // Expression to evaluate.
+  tree_expression *m_expression;
 
-    tree_statement_list& operator = (const tree_statement_list&) = delete;
+  // Comment associated with this statement.
+  comment_list *m_comment_list;
+};
 
-    ~tree_statement_list (void)
-    {
-      while (! empty ())
-        {
-          auto p = begin ();
-          delete *p;
-          erase (p);
-        }
-    }
+// A list of statements to evaluate.
 
-    void mark_as_function_body (void) { m_function_body = true; }
+class tree_statement_list : public base_list<tree_statement *>
+{
+public:
 
-    void mark_as_anon_function_body (void) { m_anon_function_body = true; }
+  tree_statement_list (void)
+    : m_function_body (false), m_anon_function_body (false),
+      m_script_body (false) { }
 
-    void mark_as_script_body (void) { m_script_body = true; }
+  tree_statement_list (tree_statement *s)
+    : m_function_body (false), m_anon_function_body (false),
+      m_script_body (false) { append (s); }
 
-    bool is_function_body (void) const { return m_function_body; }
+  // No copying!
 
-    bool is_anon_function_body (void) const { return m_anon_function_body; }
+  tree_statement_list (const tree_statement_list&) = delete;
 
-    bool is_script_body (void) const { return m_script_body; }
+  tree_statement_list& operator = (const tree_statement_list&) = delete;
 
-    int set_breakpoint (int line, const std::string& condition);
+  ~tree_statement_list (void)
+  {
+    while (! empty ())
+      {
+        auto p = begin ();
+        delete *p;
+        erase (p);
+      }
+  }
 
-    void delete_breakpoint (int line);
+  void mark_as_function_body (void) { m_function_body = true; }
 
-    octave_value_list list_breakpoints (void);
+  void mark_as_anon_function_body (void) { m_anon_function_body = true; }
 
-    std::list<bp_type> breakpoints_and_conds (void);
+  void mark_as_script_body (void) { m_script_body = true; }
 
-    bp_table::bp_lines add_breakpoint (event_manager& evmgr,
-                                       const std::string& file,
-                                       const bp_table::bp_lines& lines,
-                                       const std::string& condition);
+  bool is_function_body (void) const { return m_function_body; }
 
-    bp_table::bp_lines remove_all_breakpoints (event_manager& evmgr,
-                                               const std::string& file);
+  bool is_anon_function_body (void) const { return m_anon_function_body; }
 
-    void accept (tree_walker& tw)
-    {
-      tw.visit_statement_list (*this);
-    }
+  bool is_script_body (void) const { return m_script_body; }
 
-  private:
+  int set_breakpoint (int line, const std::string& condition);
 
-    // Does this list of statements make up the body of a function?
-    bool m_function_body;
+  void delete_breakpoint (int line);
 
-    // Does this list of statements make up the body of a function?
-    bool m_anon_function_body;
+  octave_value_list list_breakpoints (void);
 
-    // Does this list of statements make up the body of a script?
-    bool m_script_body;
-  };
+  std::list<bp_type> breakpoints_and_conds (void);
+
+  bp_table::bp_lines add_breakpoint (event_manager& evmgr,
+                                     const std::string& file,
+                                     const bp_table::bp_lines& lines,
+                                     const std::string& condition);
+
+  bp_table::bp_lines remove_all_breakpoints (event_manager& evmgr,
+      const std::string& file);
+
+  void accept (tree_walker& tw)
+  {
+    tw.visit_statement_list (*this);
+  }
+
+private:
+
+  // Does this list of statements make up the body of a function?
+  bool m_function_body;
+
+  // Does this list of statements make up the body of a function?
+  bool m_anon_function_body;
+
+  // Does this list of statements make up the body of a script?
+  bool m_script_body;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

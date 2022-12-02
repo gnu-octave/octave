@@ -263,7 +263,7 @@ octave_char_matrix::map (unary_mapper_t umap) const
     case umap_ ## UMAP:                                               \
       return octave_value (m_matrix.map<TYPE, int (&) (int)> (FCN))
 
-    STRING_MAPPER (xisascii, xisascii, bool);
+      STRING_MAPPER (xisascii, xisascii, bool);
 
 #define STRING_U8_MAPPER(UMAP,FCN)                                             \
     case umap_ ## UMAP:                                                        \
@@ -295,17 +295,17 @@ octave_char_matrix::map (unary_mapper_t umap) const
                                                      : b_array);               \
       }
 
-    STRING_U8_MAPPER (xisalnum, octave_uc_is_alnum_wrapper);
-    STRING_U8_MAPPER (xisalpha, octave_uc_is_alpha_wrapper);
-    STRING_U8_MAPPER (xiscntrl, octave_uc_is_cntrl_wrapper);
-    STRING_U8_MAPPER (xisdigit, octave_uc_is_digit_wrapper);
-    STRING_U8_MAPPER (xisgraph, octave_uc_is_graph_wrapper);
-    STRING_U8_MAPPER (xislower, octave_uc_is_lower_wrapper);
-    STRING_U8_MAPPER (xisprint, octave_uc_is_print_wrapper);
-    STRING_U8_MAPPER (xispunct, octave_uc_is_punct_wrapper);
-    STRING_U8_MAPPER (xisspace, octave_uc_is_space_wrapper);
-    STRING_U8_MAPPER (xisupper, octave_uc_is_upper_wrapper);
-    STRING_U8_MAPPER (xisxdigit, octave_uc_is_xdigit_wrapper);
+      STRING_U8_MAPPER (xisalnum, octave_uc_is_alnum_wrapper);
+      STRING_U8_MAPPER (xisalpha, octave_uc_is_alpha_wrapper);
+      STRING_U8_MAPPER (xiscntrl, octave_uc_is_cntrl_wrapper);
+      STRING_U8_MAPPER (xisdigit, octave_uc_is_digit_wrapper);
+      STRING_U8_MAPPER (xisgraph, octave_uc_is_graph_wrapper);
+      STRING_U8_MAPPER (xislower, octave_uc_is_lower_wrapper);
+      STRING_U8_MAPPER (xisprint, octave_uc_is_print_wrapper);
+      STRING_U8_MAPPER (xispunct, octave_uc_is_punct_wrapper);
+      STRING_U8_MAPPER (xisspace, octave_uc_is_space_wrapper);
+      STRING_U8_MAPPER (xisupper, octave_uc_is_upper_wrapper);
+      STRING_U8_MAPPER (xisxdigit, octave_uc_is_xdigit_wrapper);
 
 #define STRING_U8_FCN(UMAP,U8_FCN,STD_FCN)                                     \
     case umap_ ## UMAP:                                                        \
@@ -335,8 +335,8 @@ octave_char_matrix::map (unary_mapper_t umap) const
                                                      : ch_array);              \
       }
 
-    STRING_U8_FCN (xtolower, octave_u8_tolower_wrapper, std::tolower);
-    STRING_U8_FCN (xtoupper, octave_u8_toupper_wrapper, std::toupper);
+      STRING_U8_FCN (xtolower, octave_u8_tolower_wrapper, std::tolower);
+      STRING_U8_FCN (xtoupper, octave_u8_toupper_wrapper, std::toupper);
 
     // For Matlab compatibility, these should work on ASCII values
     // without error or warning.

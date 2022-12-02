@@ -407,7 +407,7 @@ octave_class::subsref (const std::string& type,
                 Cell t = tmp.index (idx.front ());
 
                 retval(0) = (t.numel () == 1 ? t(0)
-                                             : octave_value (t, true));
+                             : octave_value (t, true));
 
                 // We handled two index elements, so tell
                 // next_subsref to skip both of them.
@@ -1223,7 +1223,8 @@ octave_class::load_ascii (std::istream& is)
           if (! is)
             break;
 
-          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (
+                          t2));
 
           m.assign (nm, tcell);
         }
@@ -1347,7 +1348,8 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (
+                          t2));
 
           m.assign (nm, tcell);
         }
@@ -1595,7 +1597,8 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
+      Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (
+                      t2));
 
       m.assign (dsub.name, tcell);
 
@@ -1821,7 +1824,8 @@ belongs to.
 
   octave_value obj = args(0);  // not const because of find_parent_class ()
   std::string obj_cls = obj.class_name ();
-  Array<std::string> clsnames = args(1).xcellstr_value ("isa: CLASSNAME must be a string or cell array of strings");
+  Array<std::string> clsnames = args(
+                                  1).xcellstr_value ("isa: CLASSNAME must be a string or cell array of strings");
 
   boolNDArray matches (clsnames.dims (), false);
 

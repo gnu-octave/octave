@@ -67,7 +67,7 @@ mx_leftdiv_conform (const T1& a, const T2& b, blas_trans_type blas_trans)
   if (a_nr != b_nr)
     {
       octave_idx_type a_nc = (blas_trans == blas_no_trans ? a.cols ()
-                                                          : a.rows ());
+                              : a.rows ());
       octave_idx_type b_nc = b.cols ();
 
       octave::err_nonconformant (R"(operator \)", a_nr, a_nc, b_nr, b_nc);

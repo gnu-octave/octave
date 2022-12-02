@@ -137,10 +137,11 @@ octave_value
 octave_user_code::dump (void) const
 {
   std::map<std::string, octave_value> m
-    = {{ "scope_info", m_scope ? m_scope.dump () : "0x0" },
-       { "m_file_name", m_file_name },
-       { "time_parsed", m_t_parsed },
-       { "time_checked", m_t_checked }};
+  = {{ "scope_info", m_scope ? m_scope.dump () : "0x0" },
+    { "m_file_name", m_file_name },
+    { "time_parsed", m_t_parsed },
+    { "time_checked", m_t_checked }
+  };
 
   return octave_value (m);
 }
@@ -157,9 +158,9 @@ octave_user_script::octave_user_script (void)
 { }
 
 octave_user_script::octave_user_script
-  (const std::string& fnm, const std::string& nm,
-   const octave::symbol_scope& scope, octave::tree_statement_list *cmds,
-   const std::string& ds)
+(const std::string& fnm, const std::string& nm,
+ const octave::symbol_scope& scope, octave::tree_statement_list *cmds,
+ const std::string& ds)
   : octave_user_code (fnm, nm, scope, cmds, ds)
 {
   if (m_cmd_list)
@@ -167,9 +168,9 @@ octave_user_script::octave_user_script
 }
 
 octave_user_script::octave_user_script
-  (const std::string& fnm, const std::string& nm,
-   const octave::symbol_scope& scope, const std::string& ds)
-    : octave_user_code (fnm, nm, scope, nullptr, ds)
+(const std::string& fnm, const std::string& nm,
+ const octave::symbol_scope& scope, const std::string& ds)
+  : octave_user_code (fnm, nm, scope, nullptr, ds)
 { }
 
 // We must overload the call method so that we call the proper
@@ -211,8 +212,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 // extrinsic/intrinsic state?).
 
 octave_user_function::octave_user_function
-  (const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
-   octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
+(const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
+ octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
   : octave_user_code ("", "", scope, cl, ""),
     m_param_list (pl), m_ret_list (rl),
     m_lead_comm (), m_trail_comm (),
@@ -262,7 +263,7 @@ octave_user_function::maybe_relocate_end_internal (void)
           && last_stmt->is_end_of_file ())
         {
           octave::tree_statement_list::reverse_iterator
-            next_to_last_elt = m_cmd_list->rbegin ();
+          next_to_last_elt = m_cmd_list->rbegin ();
 
           next_to_last_elt++;
 
@@ -353,10 +354,10 @@ octave_user_function::mark_as_system_fcn_file (void)
 
       static const std::string canonical_fcn_file_dir
         = octave::sys::canonicalize_file_name
-            (octave::config::fcn_file_dir ());
+          (octave::config::fcn_file_dir ());
       static const std::string fcn_file_dir
         = canonical_fcn_file_dir.empty () ? octave::config::fcn_file_dir ()
-                                          : canonical_fcn_file_dir;
+          : canonical_fcn_file_dir;
 
       if (fcn_file_dir == ff_name.substr (0, fcn_file_dir.length ()))
         m_system_fcn_file = true;
@@ -585,19 +586,20 @@ octave_value
 octave_user_function::dump (void) const
 {
   std::map<std::string, octave_value> m
-    = {{ "user_code", octave_user_code::dump () },
-       { "line", m_location_line },
-       { "col", m_location_column },
-       { "end_line", m_end_location_line },
-       { "end_col", m_end_location_column },
-       { "system_fcn_file", m_system_fcn_file },
-       { "num_named_args", m_num_named_args },
-       { "subfunction", m_subfunction },
-       { "inline_function", m_inline_function },
-       { "anonymous_function", m_anonymous_function },
-       { "nested_function", m_nested_function },
-       { "ctor_type", ctor_type_str () },
-       { "class_method", m_class_method }};
+  = {{ "user_code", octave_user_code::dump () },
+    { "line", m_location_line },
+    { "col", m_location_column },
+    { "end_line", m_end_location_line },
+    { "end_col", m_end_location_column },
+    { "system_fcn_file", m_system_fcn_file },
+    { "num_named_args", m_num_named_args },
+    { "subfunction", m_subfunction },
+    { "inline_function", m_inline_function },
+    { "anonymous_function", m_anonymous_function },
+    { "nested_function", m_nested_function },
+    { "ctor_type", ctor_type_str () },
+    { "class_method", m_class_method }
+  };
 
   return octave_value (m);
 }

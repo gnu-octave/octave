@@ -32,109 +32,109 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class mutex;
+class mutex;
 
-  class
-  OCTAVE_API
-  base_mutex
+class
+OCTAVE_API
+base_mutex
+{
+public:
+  friend class mutex;
+
+  base_mutex (void) = default;
+
+  virtual ~base_mutex (void) = default;
+
+  virtual void lock (void);
+
+  virtual void unlock (void);
+
+  virtual bool try_lock (void);
+};
+
+class
+OCTAVE_API
+mutex
+{
+public:
+  mutex (void);
+
+  mutex (const mutex& m) = default;
+
+  ~mutex (void) = default;
+
+  mutex& operator = (const mutex& m) = default;
+
+  void lock (void)
   {
-  public:
-    friend class mutex;
+    m_rep->lock ();
+  }
 
-    base_mutex (void) = default;
-
-    virtual ~base_mutex (void) = default;
-
-    virtual void lock (void);
-
-    virtual void unlock (void);
-
-    virtual bool try_lock (void);
-  };
-
-  class
-  OCTAVE_API
-  mutex
+  void unlock (void)
   {
-  public:
-    mutex (void);
+    m_rep->unlock ();
+  }
 
-    mutex (const mutex& m) = default;
-
-    ~mutex (void) = default;
-
-    mutex& operator = (const mutex& m) = default;
-
-    void lock (void)
-    {
-      m_rep->lock ();
-    }
-
-    void unlock (void)
-    {
-      m_rep->unlock ();
-    }
-
-    bool try_lock (void)
-    {
-      return m_rep->try_lock ();
-    }
-
-  protected:
-    std::shared_ptr<base_mutex> m_rep;
-  };
-
-  class
-  OCTAVE_API
-  autolock
+  bool try_lock (void)
   {
-  public:
-    autolock (const mutex& m, bool block = true)
-      : m_mutex (m), m_lock_result (false)
-    {
-      if (block)
-        {
-          m_mutex.lock ();
-          m_lock_result = true;
-        }
-      else
-        m_lock_result = m_mutex.try_lock ();
-    }
+    return m_rep->try_lock ();
+  }
 
-    // No copying.
+protected:
+  std::shared_ptr<base_mutex> m_rep;
+};
 
-    autolock (const autolock&) = delete;
-
-    autolock& operator = (const autolock&) = delete;
-
-    ~autolock (void)
-    {
-      if (m_lock_result)
-        m_mutex.unlock ();
-    }
-
-    bool ok (void) const { return m_lock_result; }
-
-    operator bool (void) const { return ok (); }
-
-  private:
-
-    mutex m_mutex;
-
-    bool m_lock_result;
-  };
-
-
-  class
-  OCTAVE_API
-  thread
+class
+OCTAVE_API
+autolock
+{
+public:
+  autolock (const mutex& m, bool block = true)
+    : m_mutex (m), m_lock_result (false)
   {
-  public:
+    if (block)
+      {
+        m_mutex.lock ();
+        m_lock_result = true;
+      }
+    else
+      m_lock_result = m_mutex.try_lock ();
+  }
 
-    static void init (void);
+  // No copying.
 
-    static bool is_thread (void);
-  };
+  autolock (const autolock&) = delete;
+
+  autolock& operator = (const autolock&) = delete;
+
+  ~autolock (void)
+  {
+    if (m_lock_result)
+      m_mutex.unlock ();
+  }
+
+  bool ok (void) const { return m_lock_result; }
+
+  operator bool (void) const { return ok (); }
+
+private:
+
+  mutex m_mutex;
+
+  bool m_lock_result;
+};
+
+
+class
+OCTAVE_API
+thread
+{
+public:
+
+  static void init (void);
+
+  static bool is_thread (void);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

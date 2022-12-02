@@ -34,77 +34,77 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  template <typename elt_type>
-  class
-  base_list
+template <typename elt_type>
+class
+base_list
+{
+public:
+
+  typedef typename std::list<elt_type>::iterator iterator;
+  typedef typename std::list<elt_type>::const_iterator const_iterator;
+
+  typedef typename std::list<elt_type>::reverse_iterator reverse_iterator;
+  typedef typename std::list<elt_type>::const_reverse_iterator
+    const_reverse_iterator;
+
+  bool empty (void) const { return m_lst.empty (); }
+
+  std::size_t size (void) const { return m_lst.size (); }
+  std::size_t length (void) const { return size (); }
+
+  iterator erase (iterator pos) { return m_lst.erase (pos); }
+
+  template <typename P>
+  void remove_if (P pred)
   {
-  public:
+    m_lst.remove_if (pred);
+  }
 
-    typedef typename std::list<elt_type>::iterator iterator;
-    typedef typename std::list<elt_type>::const_iterator const_iterator;
+  void clear (void) { m_lst.clear (); }
 
-    typedef typename std::list<elt_type>::reverse_iterator reverse_iterator;
-    typedef typename std::list<elt_type>::const_reverse_iterator
-      const_reverse_iterator;
+  iterator begin (void) { return iterator (m_lst.begin ()); }
+  const_iterator begin (void) const { return const_iterator (m_lst.begin ()); }
 
-    bool empty (void) const { return m_lst.empty (); }
+  iterator end (void) { return iterator (m_lst.end ()); }
+  const_iterator end (void) const { return const_iterator (m_lst.end ()); }
 
-    std::size_t size (void) const { return m_lst.size (); }
-    std::size_t length (void) const { return size (); }
+  reverse_iterator rbegin (void) { return reverse_iterator (m_lst.rbegin ()); }
+  const_reverse_iterator rbegin (void) const
+  { return const_reverse_iterator (m_lst.rbegin ()); }
 
-    iterator erase (iterator pos) { return m_lst.erase (pos); }
+  reverse_iterator rend (void) { return reverse_iterator (m_lst.rend ()); }
+  const_reverse_iterator rend (void) const
+  { return const_reverse_iterator (m_lst.rend ()); }
 
-    template <typename P>
-    void remove_if (P pred)
-    {
-      m_lst.remove_if (pred);
-    }
+  elt_type& front (void) { return m_lst.front (); }
+  elt_type& back (void) { return m_lst.back (); }
 
-    void clear (void) { m_lst.clear (); }
+  const elt_type& front (void) const { return m_lst.front (); }
+  const elt_type& back (void) const { return m_lst.back (); }
 
-    iterator begin (void) { return iterator (m_lst.begin ()); }
-    const_iterator begin (void) const { return const_iterator (m_lst.begin ()); }
+  void push_front (const elt_type& s) { m_lst.push_front (s); }
+  void push_back (const elt_type& s) { m_lst.push_back (s); }
 
-    iterator end (void) { return iterator (m_lst.end ()); }
-    const_iterator end (void) const { return const_iterator (m_lst.end ()); }
+  void pop_front (void) { m_lst.pop_front (); }
+  void pop_back (void) { m_lst.pop_back (); }
 
-    reverse_iterator rbegin (void) { return reverse_iterator (m_lst.rbegin ()); }
-    const_reverse_iterator rbegin (void) const
-    { return const_reverse_iterator (m_lst.rbegin ()); }
+  // For backward compatibility.
+  void append (const elt_type& s) { m_lst.push_back (s); }
 
-    reverse_iterator rend (void) { return reverse_iterator (m_lst.rend ()); }
-    const_reverse_iterator rend (void) const
-    { return const_reverse_iterator (m_lst.rend ()); }
+  base_list (void) = default;
 
-    elt_type& front (void) { return m_lst.front (); }
-    elt_type& back (void) { return m_lst.back (); }
+  base_list (const std::list<elt_type>& l) : m_lst (l) { }
 
-    const elt_type& front (void) const { return m_lst.front (); }
-    const elt_type& back (void) const { return m_lst.back (); }
+  base_list (const base_list& bl) = default;
 
-    void push_front (const elt_type& s) { m_lst.push_front (s); }
-    void push_back (const elt_type& s) { m_lst.push_back (s); }
+  base_list& operator = (const base_list& bl) = default;
 
-    void pop_front (void) { m_lst.pop_front (); }
-    void pop_back (void) { m_lst.pop_back (); }
+  virtual ~base_list (void) = default;
 
-    // For backward compatibility.
-    void append (const elt_type& s) { m_lst.push_back (s); }
+protected:
 
-    base_list (void) = default;
-
-    base_list (const std::list<elt_type>& l) : m_lst (l) { }
-
-    base_list (const base_list& bl) = default;
-
-    base_list& operator = (const base_list& bl) = default;
-
-    virtual ~base_list (void) = default;
-
-  protected:
-
-    std::list<elt_type> m_lst;
-  };
+  std::list<elt_type> m_lst;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

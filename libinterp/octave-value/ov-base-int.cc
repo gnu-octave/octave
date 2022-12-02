@@ -150,7 +150,7 @@ octave_base_int_matrix<T>::try_narrowing_conversion (void)
 
   if (this->m_matrix.numel () == 1)
     retval = new typename octave_value_int_traits<T>::scalar_type
-               (this->m_matrix (0));
+    (this->m_matrix (0));
 
   return retval;
 }
@@ -276,8 +276,8 @@ octave_base_int_matrix<MT>::as_uint64 (void) const
 template <typename T>
 std::string
 octave_base_int_matrix<T>::edit_display (const float_display_format& fmt,
-                                         octave_idx_type i,
-                                         octave_idx_type j) const
+    octave_idx_type i,
+    octave_idx_type j) const
 {
   std::ostringstream buf;
   octave_print_internal (buf, fmt, this->m_matrix(i, j));
@@ -426,8 +426,8 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
 template <typename T>
 bool
 octave_base_int_matrix<T>::save_hdf5_internal (octave_hdf5_id loc_id,
-                                               octave_hdf5_id save_type,
-                                               const char *name, bool)
+    octave_hdf5_id save_type,
+    const char *name, bool)
 {
   bool retval = false;
 
@@ -485,8 +485,8 @@ octave_base_int_matrix<T>::save_hdf5_internal (octave_hdf5_id loc_id,
 template <typename T>
 bool
 octave_base_int_matrix<T>::load_hdf5_internal (octave_hdf5_id loc_id,
-                                               octave_hdf5_id save_type,
-                                               const char *name)
+    octave_hdf5_id save_type,
+    const char *name)
 {
   bool retval = false;
 
@@ -670,8 +670,8 @@ octave_base_int_scalar<T>::as_uint64 (void) const
 template <typename ST>
 std::string
 octave_base_int_scalar<ST>::edit_display (const float_display_format& fmt,
-                                          octave_idx_type,
-                                          octave_idx_type) const
+    octave_idx_type,
+    octave_idx_type) const
 {
   std::ostringstream buf;
   octave_print_internal (buf, fmt, this->scalar);
@@ -726,8 +726,8 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
 template <typename T>
 bool
 octave_base_int_scalar<T>::save_hdf5_internal (octave_hdf5_id loc_id,
-                                               octave_hdf5_id save_type,
-                                               const char *name, bool)
+    octave_hdf5_id save_type,
+    const char *name, bool)
 {
   bool retval = false;
 
@@ -775,8 +775,8 @@ octave_base_int_scalar<T>::save_hdf5_internal (octave_hdf5_id loc_id,
 template <typename T>
 bool
 octave_base_int_scalar<T>::load_hdf5_internal (octave_hdf5_id loc_id,
-                                               octave_hdf5_id save_type,
-                                               const char *name)
+    octave_hdf5_id save_type,
+    const char *name)
 {
 #if defined (HAVE_HDF5)
 

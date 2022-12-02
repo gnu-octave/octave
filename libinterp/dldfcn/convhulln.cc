@@ -197,53 +197,53 @@ convex hull is calculated.
   octave_idx_type i = 0;
 
   FORALLfacets
-    {
-      octave_idx_type j = 0;
+  {
+    octave_idx_type j = 0;
 
-      if (! (nonsimp_seen || facet->simplicial || qh->hull_dim == 2))
-        {
-          nonsimp_seen = true;
+    if (! (nonsimp_seen || facet->simplicial || qh->hull_dim == 2))
+      {
+        nonsimp_seen = true;
 
-          if (cmd.find ("QJ") != std::string::npos)
-            // Should never happen with QJ.
-            error ("convhulln: qhull failed: option 'QJ' returned non-simplicial facet");
-        }
+        if (cmd.find ("QJ") != std::string::npos)
+          // Should never happen with QJ.
+          error ("convhulln: qhull failed: option 'QJ' returned non-simplicial facet");
+      }
 
-      if (dim == 3)
-        {
-          setT *vertices = qh_facet3vertex (qh, facet);
+    if (dim == 3)
+      {
+        setT *vertices = qh_facet3vertex (qh, facet);
 
-          vertexT *vertex, **vertexp;
+        vertexT *vertex, **vertexp;
 
-          FOREACHvertex_ (vertices)
+        FOREACHvertex_ (vertices)
+        idx(i, j++) = 1 + qh_pointid(qh, vertex->point);
+
+        qh_settempfree (qh, &vertices);
+      }
+    else
+      {
+        if (facet->toporient ^ qh_ORIENTclock)
+          {
+            vertexT *vertex, **vertexp;
+
+            FOREACHvertex_ (facet->vertices)
             idx(i, j++) = 1 + qh_pointid(qh, vertex->point);
+          }
+        else
+          {
+            vertexT *vertex, **vertexp;
 
-          qh_settempfree (qh, &vertices);
-        }
-      else
-        {
-          if (facet->toporient ^ qh_ORIENTclock)
-            {
-              vertexT *vertex, **vertexp;
+            FOREACHvertexreverse12_ (facet->vertices)
+            idx(i, j++) = 1 + qh_pointid(qh, vertex->point);
+          }
+      }
+    if (j < dim)
+      warning ("convhulln: facet %" OCTAVE_IDX_TYPE_FORMAT
+               " only has %" OCTAVE_IDX_TYPE_FORMAT
+               " vertices", i, j);
 
-              FOREACHvertex_ (facet->vertices)
-                idx(i, j++) = 1 + qh_pointid(qh, vertex->point);
-            }
-          else
-            {
-              vertexT *vertex, **vertexp;
-
-              FOREACHvertexreverse12_ (facet->vertices)
-                idx(i, j++) = 1 + qh_pointid(qh, vertex->point);
-            }
-        }
-      if (j < dim)
-        warning ("convhulln: facet %" OCTAVE_IDX_TYPE_FORMAT
-                 " only has %" OCTAVE_IDX_TYPE_FORMAT
-                 " vertices", i, j);
-
-      i++;
-    }
+    i++;
+  }
 
   // Remove extra dimension if all facets were simplicial.
 
@@ -258,28 +258,28 @@ convex hull is calculated.
       realT dist;
 
       FORALLfacets
-        {
-          if (! facet->normal)
-            continue;
+      {
+        if (! facet->normal)
+          continue;
 
-          if (facet->upperdelaunay && qh->ATinfinity)
-            continue;
+        if (facet->upperdelaunay && qh->ATinfinity)
+          continue;
 
-          facet->f.area = area = qh_facetarea (qh, facet);
-          facet->isarea = True;
+        facet->f.area = area = qh_facetarea (qh, facet);
+        facet->isarea = True;
 
-          if (qh->DELAUNAY)
-            {
-              if (facet->upperdelaunay == qh->UPPERdelaunay)
-                qh->totarea += area;
-            }
-          else
-            {
+        if (qh->DELAUNAY)
+          {
+            if (facet->upperdelaunay == qh->UPPERdelaunay)
               qh->totarea += area;
-              qh_distplane (qh, qh->interior_point, facet, &dist);
-              qh->totvol += -dist * area / qh->hull_dim;
-            }
-        }
+          }
+        else
+          {
+            qh->totarea += area;
+            qh_distplane (qh, qh->interior_point, facet, &dist);
+            qh->totvol += -dist * area / qh->hull_dim;
+          }
+      }
 
       retval(1) = octave_value (qh->totvol);
     }

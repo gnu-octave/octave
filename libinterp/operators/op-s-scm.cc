@@ -58,7 +58,7 @@ DEFBINOP (div, scalar, sparse_complex_matrix)
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (SparseComplexMatrix (1, 1, v1.scalar_value ()
-                                                  / v2.complex_value ()));
+                         / v2.complex_value ()));
   else
     {
       MatrixType typ = v2.matrix_type ();

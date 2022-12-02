@@ -1162,7 +1162,7 @@ make_complex_matrix_format (const CMT& cm)
   int x_min = (r_x_min > i_x_min ? r_x_min : i_x_min);
 
   return make_complex_matrix_format<ELT_T> (x_max, x_min, r_x_max, r_x_min,
-                                            inf_or_nan, int_or_inf_or_nan);
+         inf_or_nan, int_or_inf_or_nan);
 }
 
 template <>
@@ -2405,7 +2405,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 
     default:
       print_nd_array <ComplexNDArray, Complex, ComplexMatrix>
-                     (os, nda, pr_as_read_syntax);
+      (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2424,7 +2424,7 @@ octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
 
     default:
       print_nd_array <FloatComplexNDArray, FloatComplex, FloatComplexMatrix>
-                     (os, nda, pr_as_read_syntax);
+      (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2559,7 +2559,7 @@ octave_print_internal (std::ostream& os, const octave::range<double>& r,
           while (col < num_elem)
             {
               octave_idx_type lim = (col + inc < num_elem ? col + inc
-                                                          : num_elem);
+                                     : num_elem);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2681,7 +2681,7 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
 
     default:
       print_nd_array <charNDArray, char, charMatrix> (os, nda,
-                                                      pr_as_read_syntax);
+          pr_as_read_syntax);
       break;
     }
 }
@@ -3118,7 +3118,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                     {
                       octave_quit ();
                       os << "  ";
-                      os << typename octave_print_conv<T>::print_conv_type (page(ii,jj));
+                      os << typename octave_print_conv<T>::print_conv_type (page(ii, jj));
                     }
                   os << "\n";
                 }
@@ -3136,7 +3136,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
               for (octave_idx_type col = 0; col < n_cols; col += inc)
                 {
                   octave_idx_type lim = (col + inc < n_cols ? col + inc
-                                                            : n_cols);
+                                         : n_cols);
 
                   pr_col_num_header (os, total_width, max_width, lim, col,
                                      extra_indent);
@@ -3368,7 +3368,7 @@ formatted output in a string.
 
 DEFMETHOD (fdisp, interp, args, ,
            classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
-       doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} fdisp (@var{fid}, @var{x})
 Display the value of @var{x} on the stream @var{fid}.
 

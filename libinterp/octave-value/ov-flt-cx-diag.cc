@@ -55,7 +55,7 @@ octave_base_value::type_conv_info
 octave_float_complex_diag_matrix::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_float_complex_matrix::static_type_id ());
+         octave_float_complex_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -160,7 +160,7 @@ octave_float_complex_diag_matrix::map (unary_mapper_t umap) const
 
 bool
 octave_float_complex_diag_matrix::save_binary (std::ostream& os,
-                                               bool /* save_as_floats */)
+    bool /* save_as_floats */)
 {
 
   int32_t r = m_matrix.rows ();
@@ -185,7 +185,7 @@ octave_float_complex_diag_matrix::save_binary (std::ostream& os,
 
 bool
 octave_float_complex_diag_matrix::load_binary (std::istream& is, bool swap,
-                                               octave::mach_info::float_format fmt)
+    octave::mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;
@@ -215,7 +215,7 @@ octave_float_complex_diag_matrix::load_binary (std::istream& is, bool swap,
 
 bool
 octave_float_complex_diag_matrix::chk_valid_scalar (const octave_value& val,
-                                                    FloatComplex& x) const
+    FloatComplex& x) const
 {
   bool retval = val.is_complex_scalar () || val.is_real_scalar ();
   if (retval)

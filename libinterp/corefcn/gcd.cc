@@ -264,7 +264,7 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
 {
   octave_value retval;
   builtin_type_t btyp = btyp_mixed_numeric (a.builtin_type (),
-                                            b.builtin_type ());
+                        b.builtin_type ());
   switch (btyp)
     {
     case btyp_double:
@@ -284,14 +284,14 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
       retval = do_simple_gcd<X ## NDArray> (a, b);    \
       break
 
-    MAKE_INT_BRANCH (int8);
-    MAKE_INT_BRANCH (int16);
-    MAKE_INT_BRANCH (int32);
-    MAKE_INT_BRANCH (int64);
-    MAKE_INT_BRANCH (uint8);
-    MAKE_INT_BRANCH (uint16);
-    MAKE_INT_BRANCH (uint32);
-    MAKE_INT_BRANCH (uint64);
+      MAKE_INT_BRANCH (int8);
+      MAKE_INT_BRANCH (int16);
+      MAKE_INT_BRANCH (int32);
+      MAKE_INT_BRANCH (int64);
+      MAKE_INT_BRANCH (uint8);
+      MAKE_INT_BRANCH (uint16);
+      MAKE_INT_BRANCH (uint32);
+      MAKE_INT_BRANCH (uint64);
 
 #undef MAKE_INT_BRANCH
 
@@ -383,7 +383,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
   octave_value retval;
 
   builtin_type_t btyp = btyp_mixed_numeric (a.builtin_type (),
-                                            b.builtin_type ());
+                        b.builtin_type ());
   switch (btyp)
     {
     case btyp_double:
@@ -396,14 +396,14 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       retval = do_extended_gcd<X ## NDArray> (a, b, x, y);    \
       break
 
-    MAKE_INT_BRANCH (int8);
-    MAKE_INT_BRANCH (int16);
-    MAKE_INT_BRANCH (int32);
-    MAKE_INT_BRANCH (int64);
-    MAKE_INT_BRANCH (uint8);
-    MAKE_INT_BRANCH (uint16);
-    MAKE_INT_BRANCH (uint32);
-    MAKE_INT_BRANCH (uint64);
+      MAKE_INT_BRANCH (int8);
+      MAKE_INT_BRANCH (int16);
+      MAKE_INT_BRANCH (int32);
+      MAKE_INT_BRANCH (int64);
+      MAKE_INT_BRANCH (uint8);
+      MAKE_INT_BRANCH (uint16);
+      MAKE_INT_BRANCH (uint32);
+      MAKE_INT_BRANCH (uint64);
 
 #undef MAKE_INT_BRANCH
 

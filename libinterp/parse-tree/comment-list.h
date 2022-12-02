@@ -34,81 +34,81 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  extern std::string get_comment_text (void);
+extern std::string get_comment_text (void);
 
-  extern char * get_comment_text_c_str (void);
+extern char * get_comment_text_c_str (void);
 
-  extern void save_comment_text (const std::string& text);
+extern void save_comment_text (const std::string& text);
 
-  class
-  comment_elt
+class
+comment_elt
+{
+public:
+
+  enum comment_type
   {
-  public:
-
-    enum comment_type
-    {
-      unknown,
-      block,
-      full_line,
-      end_of_line,
-      doc_string,
-      copyright
-    };
-
-    comment_elt (const std::string& s = "", comment_type t = unknown)
-      : m_text (s), m_type (t) { }
-
-    comment_elt (const comment_elt& oc)
-      : m_text (oc.m_text), m_type (oc.m_type) { }
-
-    comment_elt& operator = (const comment_elt& oc)
-    {
-      if (this != &oc)
-        {
-          m_text = oc.m_text;
-          m_type = oc.m_type;
-        }
-
-      return *this;
-    }
-
-    std::string text (void) const { return m_text; }
-
-    comment_type type (void) const { return m_type; }
-
-    bool is_block (void) const { return m_type == block; }
-    bool is_full_line (void) const { return m_type == full_line; }
-    bool is_end_of_line (void) const { return m_type == end_of_line; }
-    bool is_doc_string (void) const { return m_type == doc_string; }
-    bool is_copyright (void) const { return m_type == copyright; }
-
-    ~comment_elt (void) = default;
-
-  private:
-
-    // The text of the comment.
-    std::string m_text;
-
-    // The type of comment.
-    comment_type m_type;
+    unknown,
+    block,
+    full_line,
+    end_of_line,
+    doc_string,
+    copyright
   };
 
-  class
-  comment_list : public base_list<comment_elt>
+  comment_elt (const std::string& s = "", comment_type t = unknown)
+    : m_text (s), m_type (t) { }
+
+  comment_elt (const comment_elt& oc)
+    : m_text (oc.m_text), m_type (oc.m_type) { }
+
+  comment_elt& operator = (const comment_elt& oc)
   {
-  public:
+    if (this != &oc)
+      {
+        m_text = oc.m_text;
+        m_type = oc.m_type;
+      }
 
-    comment_list (void) { }
+    return *this;
+  }
 
-    void append (const comment_elt& elt)
-    { base_list<comment_elt>::append (elt); }
+  std::string text (void) const { return m_text; }
 
-    void append (const std::string& s,
-                 comment_elt::comment_type t = comment_elt::unknown)
-    { append (comment_elt (s, t)); }
+  comment_type type (void) const { return m_type; }
 
-    comment_list * dup (void) const;
-  };
+  bool is_block (void) const { return m_type == block; }
+  bool is_full_line (void) const { return m_type == full_line; }
+  bool is_end_of_line (void) const { return m_type == end_of_line; }
+  bool is_doc_string (void) const { return m_type == doc_string; }
+  bool is_copyright (void) const { return m_type == copyright; }
+
+  ~comment_elt (void) = default;
+
+private:
+
+  // The text of the comment.
+  std::string m_text;
+
+  // The type of comment.
+  comment_type m_type;
+};
+
+class
+comment_list : public base_list<comment_elt>
+{
+public:
+
+  comment_list (void) { }
+
+  void append (const comment_elt& elt)
+  { base_list<comment_elt>::append (elt); }
+
+  void append (const std::string& s,
+               comment_elt::comment_type t = comment_elt::unknown)
+  { append (comment_elt (s, t)); }
+
+  comment_list * dup (void) const;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

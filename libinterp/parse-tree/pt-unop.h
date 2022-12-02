@@ -39,132 +39,132 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class symbol_scope;
+class symbol_scope;
 
-  // Unary expressions.
+// Unary expressions.
 
-  class tree_unary_expression : public tree_expression
+class tree_unary_expression : public tree_expression
+{
+protected:
+
+  tree_unary_expression (int l = -1, int c = -1,
+                         octave_value::unary_op t
+                         = octave_value::unknown_unary_op)
+    : tree_expression (l, c), m_op (nullptr), m_etype (t)  { }
+
+  tree_unary_expression (tree_expression *e, int l = -1, int c = -1,
+                         octave_value::unary_op t
+                         = octave_value::unknown_unary_op)
+    : tree_expression (l, c), m_op (e), m_etype (t) { }
+
+public:
+
+  // No copying!
+
+  tree_unary_expression (const tree_unary_expression&) = delete;
+
+  tree_unary_expression& operator = (const tree_unary_expression&) = delete;
+
+  ~tree_unary_expression (void) { delete m_op; }
+
+  bool is_unary_expression (void) const { return true; }
+
+  tree_expression * operand (void) { return m_op; }
+
+  std::string oper (void) const;
+
+  octave_value::unary_op op_type (void) const { return m_etype; }
+
+protected:
+
+  // The operand for the expression.
+  tree_expression *m_op;
+
+  // The type of the expression.
+  octave_value::unary_op m_etype;
+};
+
+// Prefix expressions.
+
+class tree_prefix_expression : public tree_unary_expression
+{
+public:
+
+  tree_prefix_expression (int l = -1, int c = -1)
+    : tree_unary_expression (l, c, octave_value::unknown_unary_op) { }
+
+  tree_prefix_expression (tree_expression *e, int l = -1, int c = -1,
+                          octave_value::unary_op t
+                          = octave_value::unknown_unary_op)
+    : tree_unary_expression (e, l, c, t) { }
+
+  // No copying!
+
+  tree_prefix_expression (const tree_prefix_expression&) = delete;
+
+  tree_prefix_expression& operator = (const tree_prefix_expression&) = delete;
+
+  ~tree_prefix_expression (void) = default;
+
+  bool rvalue_ok (void) const { return true; }
+
+  tree_expression * dup (symbol_scope& scope) const;
+
+  octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+  octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
   {
-  protected:
+    return ovl (evaluate (tw, nargout));
+  }
 
-    tree_unary_expression (int l = -1, int c = -1,
+  void accept (tree_walker& tw)
+  {
+    tw.visit_prefix_expression (*this);
+  }
+
+  std::string profiler_name (void) const { return "prefix " + oper (); }
+};
+
+// Postfix expressions.
+
+class tree_postfix_expression : public tree_unary_expression
+{
+public:
+
+  tree_postfix_expression (int l = -1, int c = -1)
+    : tree_unary_expression (l, c, octave_value::unknown_unary_op) { }
+
+  tree_postfix_expression (tree_expression *e, int l = -1, int c = -1,
                            octave_value::unary_op t
                            = octave_value::unknown_unary_op)
-      : tree_expression (l, c), m_op (nullptr), m_etype (t)  { }
+    : tree_unary_expression (e, l, c, t) { }
 
-    tree_unary_expression (tree_expression *e, int l = -1, int c = -1,
-                           octave_value::unary_op t
-                           = octave_value::unknown_unary_op)
-      : tree_expression (l, c), m_op (e), m_etype (t) { }
+  // No copying!
 
-  public:
+  tree_postfix_expression (const tree_postfix_expression&) = delete;
 
-    // No copying!
+  tree_postfix_expression& operator = (const tree_postfix_expression&) = delete;
 
-    tree_unary_expression (const tree_unary_expression&) = delete;
+  ~tree_postfix_expression (void) = default;
 
-    tree_unary_expression& operator = (const tree_unary_expression&) = delete;
+  bool rvalue_ok (void) const { return true; }
 
-    ~tree_unary_expression (void) { delete m_op; }
+  tree_expression * dup (symbol_scope& scope) const;
 
-    bool is_unary_expression (void) const { return true; }
+  octave_value evaluate (tree_evaluator&, int nargout = 1);
 
-    tree_expression * operand (void) { return m_op; }
-
-    std::string oper (void) const;
-
-    octave_value::unary_op op_type (void) const { return m_etype; }
-
-  protected:
-
-    // The operand for the expression.
-    tree_expression *m_op;
-
-    // The type of the expression.
-    octave_value::unary_op m_etype;
-  };
-
-  // Prefix expressions.
-
-  class tree_prefix_expression : public tree_unary_expression
+  octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
   {
-  public:
+    return ovl (evaluate (tw, nargout));
+  }
 
-    tree_prefix_expression (int l = -1, int c = -1)
-      : tree_unary_expression (l, c, octave_value::unknown_unary_op) { }
-
-    tree_prefix_expression (tree_expression *e, int l = -1, int c = -1,
-                            octave_value::unary_op t
-                            = octave_value::unknown_unary_op)
-      : tree_unary_expression (e, l, c, t) { }
-
-    // No copying!
-
-    tree_prefix_expression (const tree_prefix_expression&) = delete;
-
-    tree_prefix_expression& operator = (const tree_prefix_expression&) = delete;
-
-    ~tree_prefix_expression (void) = default;
-
-    bool rvalue_ok (void) const { return true; }
-
-    tree_expression * dup (symbol_scope& scope) const;
-
-    octave_value evaluate (tree_evaluator&, int nargout = 1);
-
-    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
-    {
-      return ovl (evaluate (tw, nargout));
-    }
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_prefix_expression (*this);
-    }
-
-    std::string profiler_name (void) const { return "prefix " + oper (); }
-  };
-
-  // Postfix expressions.
-
-  class tree_postfix_expression : public tree_unary_expression
+  void accept (tree_walker& tw)
   {
-  public:
+    tw.visit_postfix_expression (*this);
+  }
 
-    tree_postfix_expression (int l = -1, int c = -1)
-      : tree_unary_expression (l, c, octave_value::unknown_unary_op) { }
-
-    tree_postfix_expression (tree_expression *e, int l = -1, int c = -1,
-                             octave_value::unary_op t
-                             = octave_value::unknown_unary_op)
-      : tree_unary_expression (e, l, c, t) { }
-
-    // No copying!
-
-    tree_postfix_expression (const tree_postfix_expression&) = delete;
-
-    tree_postfix_expression& operator = (const tree_postfix_expression&) = delete;
-
-    ~tree_postfix_expression (void) = default;
-
-    bool rvalue_ok (void) const { return true; }
-
-    tree_expression * dup (symbol_scope& scope) const;
-
-    octave_value evaluate (tree_evaluator&, int nargout = 1);
-
-    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
-    {
-      return ovl (evaluate (tw, nargout));
-    }
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_postfix_expression (*this);
-    }
-
-    std::string profiler_name (void) const { return "postfix " + oper (); }
-  };
+  std::string profiler_name (void) const { return "postfix " + oper (); }
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

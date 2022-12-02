@@ -32,60 +32,60 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Encapsulates a reference counter.
+// Encapsulates a reference counter.
 
-  template <typename T>
-  class refcount
+template <typename T>
+class refcount
+{
+public:
+
+  typedef T count_type;
+
+  refcount (count_type initial_count)
+    : m_count (initial_count)
+  { }
+
+  refcount (const refcount&) = delete;
+
+  refcount& operator = (const refcount&) = delete;
+
+  ~refcount (void) = default;
+
+  // Increment/Decrement.  int is postfix.
+  count_type operator++ (void)
   {
-  public:
+    return ++m_count;
+  }
 
-    typedef T count_type;
+  count_type operator++ (int)
+  {
+    return m_count++;
+  }
 
-    refcount (count_type initial_count)
-      : m_count (initial_count)
-    { }
+  count_type operator-- (void)
+  {
+    return --m_count;
+  }
 
-    refcount (const refcount&) = delete;
+  count_type operator-- (int)
+  {
+    return m_count--;
+  }
 
-    refcount& operator = (const refcount&) = delete;
+  count_type value (void) const
+  {
+    return m_count.load ();
+  }
 
-    ~refcount (void) = default;
+  operator count_type (void) const
+  {
+    return value ();
+  }
 
-    // Increment/Decrement.  int is postfix.
-    count_type operator++ (void)
-    {
-      return ++m_count;
-    }
+private:
 
-    count_type operator++ (int)
-    {
-      return m_count++;
-    }
-
-    count_type operator-- (void)
-    {
-      return --m_count;
-    }
-
-    count_type operator-- (int)
-    {
-      return m_count--;
-    }
-
-    count_type value (void) const
-    {
-      return m_count.load ();
-    }
-
-    operator count_type (void) const
-    {
-      return value ();
-    }
-
-  private:
-
-    std::atomic<T> m_count;
-  };
+  std::atomic<T> m_count;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

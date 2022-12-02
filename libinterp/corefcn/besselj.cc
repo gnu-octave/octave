@@ -161,7 +161,8 @@ do_bessel (enum bessel_type type, const char *fcn,
 
           if (args0_is_row_vector && args1_is_col_vector)
             {
-              FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: ALPHA must be a scalar or matrix", fcn);
+              FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: ALPHA must be a scalar or matrix",
+                                      fcn);
 
               FloatComplexColumnVector cx
                 = x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fcn);
@@ -795,12 +796,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %!assert (besselj (-alpha,x), jx, 100*eps)
 %!assert (bessely (-alpha,x), yx, 100*eps)
@@ -809,12 +810,12 @@ Input validation tests
 %!assert (besselh (-alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (-alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (-alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (-alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! x *= -1;
 %! yx = -1.193199310178553861283790424 + 0.3421822624810469647226182835*I;
@@ -827,12 +828,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, odd order, positive and negative x
 %! alpha = 3;  x = 2.5;
@@ -848,12 +849,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %!assert (besselj (-alpha,x), -jx, 100*eps)
 %!assert (bessely (-alpha,x), -yx, 100*eps)
@@ -862,12 +863,12 @@ Input validation tests
 %!assert (besselh (-alpha,1,x), -(jx + I*yx), 100*eps)
 %!assert (besselh (-alpha,2,x), -(jx - I*yx), 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), -jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (-alpha,x,1), -yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (-alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), -(jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), -(jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), -jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), -yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), -(jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), -(jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! x *= -1;
 %! jx = -jx;
@@ -882,12 +883,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, fractional order, positive and negative x
 %!
@@ -904,12 +905,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! nix = 0.2119931212254662995364461998;
 %!
@@ -920,12 +921,12 @@ Input validation tests
 %!assert (besselh (-alpha,1,x), -I*(jx + I*yx), 100*eps)
 %!assert (besselh (-alpha,2,x), I*(jx - I*yx), 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (-alpha,x,1), -jx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (-alpha,x,1), nix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), -jx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), nix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! x *= -1;
 %! jx *= -I;
@@ -940,12 +941,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, even order, complex x
 %!
@@ -962,12 +963,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %!assert (besselj (-alpha,x), jx, 100*eps)
 %!assert (bessely (-alpha,x), yx, 100*eps)
@@ -976,12 +977,12 @@ Input validation tests
 %!assert (besselh (-alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (-alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (-alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (-alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, odd order, complex x
 %!
@@ -998,12 +999,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %!assert (besselj (-alpha,x), -jx, 100*eps)
 %!assert (bessely (-alpha,x), -yx, 100*eps)
@@ -1012,12 +1013,12 @@ Input validation tests
 %!assert (besselh (-alpha,1,x), -(jx + I*yx), 100*eps)
 %!assert (besselh (-alpha,2,x), -(jx - I*yx), 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), -jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (-alpha,x,1), -yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (-alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), -(jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), -(jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), -jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), -yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), -(jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), -(jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! ## Bessel functions, fractional order, complex x
 %!
@@ -1034,12 +1035,12 @@ Input validation tests
 %!assert (besselh (alpha,1,x), jx + I*yx, 100*eps)
 %!assert (besselh (alpha,2,x), jx - I*yx, 100*eps)
 %!
-%!assert (besselj (alpha,x,1), jx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (alpha,x,1), ix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (alpha,1,x,1), (jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (alpha,2,x,1), (jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (alpha,x,1), jx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (alpha,x,1), ix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (alpha,1,x,1), (jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (alpha,2,x,1), (jx - I*yx)* exp (I*x), 100*eps)
 %!
 %! nix = 0.09822388691172060573913739253 - 0.7110230642207380127317227407*I;
 %!
@@ -1050,12 +1051,12 @@ Input validation tests
 %!assert (besselh (-alpha,1,x), -I*(jx + I*yx), 100*eps)
 %!assert (besselh (-alpha,2,x), I*(jx - I*yx), 100*eps)
 %!
-%!assert (besselj (-alpha,x,1), yx*exp (-abs (imag (x))), 100*eps)
-%!assert (bessely (-alpha,x,1), -jx*exp (-abs (imag (x))), 100*eps)
-%!assert (besseli (-alpha,x,1), nix*exp (-abs (real (x))), 100*eps)
-%!assert (besselk (-alpha,x,1), kx*exp (x), 100*eps)
-%!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)*exp (-I*x), 100*eps)
-%!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)*exp (I*x), 100*eps)
+%!assert (besselj (-alpha,x,1), yx* exp (-abs (imag (x))), 100*eps)
+%!assert (bessely (-alpha,x,1), -jx* exp (-abs (imag (x))), 100*eps)
+%!assert (besseli (-alpha,x,1), nix* exp (-abs (real (x))), 100*eps)
+%!assert (besselk (-alpha,x,1), kx* exp (x), 100*eps)
+%!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)* exp (-I*x), 100*eps)
+%!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)* exp (I*x), 100*eps)
 
 Tests contributed by Robert T. Short.
 Tests are based on the properties and tables in A&S:

@@ -32,32 +32,32 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class
-  preserve_stream_state
+class
+preserve_stream_state
+{
+public:
+
+  preserve_stream_state (std::ios& s)
+    : m_stream (s), m_oflags (s.flags ()), m_oprecision (s.precision ()),
+      m_owidth (s.width ()), m_ofill (s.fill ())
+  { }
+
+  ~preserve_stream_state (void)
   {
-  public:
+    m_stream.flags (m_oflags);
+    m_stream.precision (m_oprecision);
+    m_stream.width (m_owidth);
+    m_stream.fill (m_ofill);
+  }
 
-    preserve_stream_state (std::ios& s)
-      : m_stream (s), m_oflags (s.flags ()), m_oprecision (s.precision ()),
-        m_owidth (s.width ()), m_ofill (s.fill ())
-    { }
+private:
 
-    ~preserve_stream_state (void)
-    {
-      m_stream.flags (m_oflags);
-      m_stream.precision (m_oprecision);
-      m_stream.width (m_owidth);
-      m_stream.fill (m_ofill);
-    }
-
-  private:
-
-    std::ios& m_stream;
-    std::ios::fmtflags m_oflags;
-    std::streamsize m_oprecision;
-    int m_owidth;
-    char m_ofill;
-  };
+  std::ios& m_stream;
+  std::ios::fmtflags m_oflags;
+  std::streamsize m_oprecision;
+  int m_owidth;
+  char m_ofill;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

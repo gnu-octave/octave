@@ -51,203 +51,203 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  interpreter& __get_interpreter__ (void)
-  {
-    interpreter *interp = interpreter::the_interpreter ();
+interpreter& __get_interpreter__ (void)
+{
+  interpreter *interp = interpreter::the_interpreter ();
 
-    if (! interp)
-      {
-        std::cerr << "fatal error: octave interpreter context missing" << std::endl;
-        abort ();
-      }
+  if (! interp)
+    {
+      std::cerr << "fatal error: octave interpreter context missing" << std::endl;
+      abort ();
+    }
 
-    return *interp;
-  }
+  return *interp;
+}
 
-  dynamic_loader& __get_dynamic_loader__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+dynamic_loader& __get_dynamic_loader__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_dynamic_loader ();
-  }
+  return interp.get_dynamic_loader ();
+}
 
-  error_system& __get_error_system__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+error_system& __get_error_system__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_error_system ();
-  }
+  return interp.get_error_system ();
+}
 
-  gh_manager& __get_gh_manager__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+gh_manager& __get_gh_manager__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_gh_manager ();
-  }
+  return interp.get_gh_manager ();
+}
 
-  help_system& __get_help_system__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+help_system& __get_help_system__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_help_system ();
-  }
+  return interp.get_help_system ();
+}
 
-  input_system& __get_input_system__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+input_system& __get_input_system__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_input_system ();
-  }
+  return interp.get_input_system ();
+}
 
-  output_system& __get_output_system__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+output_system& __get_output_system__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_output_system ();
-  }
+  return interp.get_output_system ();
+}
 
-  load_path& __get_load_path__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+load_path& __get_load_path__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_load_path ();
-  }
+  return interp.get_load_path ();
+}
 
-  load_save_system& __get_load_save_system__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+load_save_system& __get_load_save_system__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_load_save_system ();
-  }
+  return interp.get_load_save_system ();
+}
 
-  event_manager& __get_event_manager__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+event_manager& __get_event_manager__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_event_manager ();
-  }
+  return interp.get_event_manager ();
+}
 
-  type_info& __get_type_info__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+type_info& __get_type_info__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_type_info ();
-  }
+  return interp.get_type_info ();
+}
 
-  symbol_table& __get_symbol_table__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+symbol_table& __get_symbol_table__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_symbol_table ();
-  }
+  return interp.get_symbol_table ();
+}
 
-  symbol_scope __get_current_scope__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+symbol_scope __get_current_scope__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_current_scope ();
-  }
+  return interp.get_current_scope ();
+}
 
-  symbol_scope __require_current_scope__ (void)
-  {
-    symbol_scope scope = __get_current_scope__ ();
+symbol_scope __require_current_scope__ (void)
+{
+  symbol_scope scope = __get_current_scope__ ();
 
-    if (! scope)
-      error ("__require_current_scope__: symbol table scope missing");
+  if (! scope)
+    error ("__require_current_scope__: symbol table scope missing");
 
-    return scope;
-  }
+  return scope;
+}
 
-  tree_evaluator& __get_evaluator__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+tree_evaluator& __get_evaluator__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_evaluator ();
-  }
+  return interp.get_evaluator ();
+}
 
-  bp_table& __get_bp_table__ (void)
-  {
-    tree_evaluator& tw = __get_evaluator__ ();
+bp_table& __get_bp_table__ (void)
+{
+  tree_evaluator& tw = __get_evaluator__ ();
 
-    return tw.get_bp_table ();
-  }
+  return tw.get_bp_table ();
+}
 
-  child_list& __get_child_list__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+child_list& __get_child_list__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_child_list ();
-  }
+  return interp.get_child_list ();
+}
 
-  cdef_manager& __get_cdef_manager__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+cdef_manager& __get_cdef_manager__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_cdef_manager ();
-  }
+  return interp.get_cdef_manager ();
+}
 
-  display_info& __get_display_info__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+display_info& __get_display_info__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_display_info ();
-  }
+  return interp.get_display_info ();
+}
 
-  gtk_manager& __get_gtk_manager__ (void)
-  {
-    interpreter& interp = __get_interpreter__ ();
+gtk_manager& __get_gtk_manager__ (void)
+{
+  interpreter& interp = __get_interpreter__ ();
 
-    return interp.get_gtk_manager ();
-  }
+  return interp.get_gtk_manager ();
+}
 
-  octave_value
-  get_function_handle (interpreter& interp, const octave_value& arg,
-                       const std::string& parameter_name)
-  {
-    std::list<std::string> parameter_names;
-    parameter_names.push_back (parameter_name);
-    return get_function_handle (interp, arg, parameter_names);
-  }
+octave_value
+get_function_handle (interpreter& interp, const octave_value& arg,
+                     const std::string& parameter_name)
+{
+  std::list<std::string> parameter_names;
+  parameter_names.push_back (parameter_name);
+  return get_function_handle (interp, arg, parameter_names);
+}
 
-  // May return a function handle object, inline function object, or
-  // function object.
+// May return a function handle object, inline function object, or
+// function object.
 
-  octave_value
-  get_function_handle (interpreter& interp, const octave_value& arg,
-                       const std::list<std::string>& parameter_names)
-  {
-    if (arg.is_function_handle () || arg.is_inline_function ())
-      return arg;
-    else if (arg.is_string ())
-      {
-        std::string fstr = arg.string_value ();
+octave_value
+get_function_handle (interpreter& interp, const octave_value& arg,
+                     const std::list<std::string>& parameter_names)
+{
+  if (arg.is_function_handle () || arg.is_inline_function ())
+    return arg;
+  else if (arg.is_string ())
+    {
+      std::string fstr = arg.string_value ();
 
-        if (fstr.empty ())
-          return octave_value ();
+      if (fstr.empty ())
+        return octave_value ();
 
-        symbol_table& symtab = interp.get_symbol_table ();
+      symbol_table& symtab = interp.get_symbol_table ();
 
-        octave_value fcn = symtab.find_function (fstr);
+      octave_value fcn = symtab.find_function (fstr);
 
-        if (fcn.is_defined ())
-          return fcn;
+      if (fcn.is_defined ())
+        return fcn;
 
-        // Possibly warn here that passing the function body in a
-        // character string is discouraged.
+      // Possibly warn here that passing the function body in a
+      // character string is discouraged.
 
-        octave_value_list args (parameter_names.size () + 1);
-        octave_idx_type i = 0;
-        args(i++) = fstr;
-        for (const auto& pname : parameter_names)
-          args(i++) = pname;
+      octave_value_list args (parameter_names.size () + 1);
+      octave_idx_type i = 0;
+      args(i++) = fstr;
+      for (const auto& pname : parameter_names)
+        args(i++) = pname;
 
-        octave_value_list tmp = interp.feval ("inline", args, 1);
+      octave_value_list tmp = interp.feval ("inline", args, 1);
 
-        if (tmp.length () > 0)
-          return tmp(0);
-      }
+      if (tmp.length () > 0)
+        return tmp(0);
+    }
 
-    return octave_value ();
-  }
+  return octave_value ();
+}
 
 OCTAVE_END_NAMESPACE(octave)

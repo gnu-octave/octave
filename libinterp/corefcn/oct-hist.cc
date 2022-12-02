@@ -72,510 +72,510 @@ Software Foundation, Inc.
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Read the edited history lines from STREAM and return them
-  // one at a time.  This can read unlimited length lines.  The
-  // caller should free the storage.
+// Read the edited history lines from STREAM and return them
+// one at a time.  This can read unlimited length lines.  The
+// caller should free the storage.
 
-  static char *
-  edit_history_readline (std::fstream& stream)
+static char *
+edit_history_readline (std::fstream& stream)
+{
+  char c;
+  int line_len = 128;
+  int lindex = 0;
+  char *line = new char [line_len];
+  line[0] = '\0';
+
+  while (stream.get (c))
+    {
+      if (lindex + 2 >= line_len)
+        {
+          char *tmp_line = new char [line_len += 128];
+          strcpy (tmp_line, line);
+          delete [] line;
+          line = tmp_line;
+        }
+
+      if (c == '\n')
+        {
+          line[lindex++] = '\n';
+          line[lindex++] = '\0';
+          return line;
+        }
+      else
+        line[lindex++] = c;
+    }
+
+  if (! lindex)
+    {
+      delete [] line;
+      return nullptr;
+    }
+
+  if (lindex + 2 >= line_len)
+    {
+      char *tmp_line = new char [lindex+3];
+      strcpy (tmp_line, line);
+      delete [] line;
+      line = tmp_line;
+    }
+
+  // Finish with newline if none in file.
+
+  line[lindex++] = '\n';
+  line[lindex++] = '\0';
+  return line;
+}
+
+static void
+edit_history_add_hist (const std::string& line)
+{
+  if (! line.empty ())
+    {
+      std::string tmp = line;
+
+      int len = tmp.length ();
+
+      if (len > 0 && tmp[len-1] == '\n')
+        tmp.resize (len - 1);
+
+      if (! tmp.empty ())
+        {
+          if (command_history::add (tmp))
+            {
+              event_manager& evmgr = __get_event_manager__ ();
+
+              evmgr.append_history (tmp);
+            }
+        }
+    }
+}
+
+static bool
+get_int_arg (const octave_value& arg, int& val)
+{
+  bool ok = true;
+
+  if (arg.is_string ())
+    {
+      std::string tmp = arg.string_value ();
+
+      ok = sscanf (tmp.c_str (), "%d", &val) == 1;
+    }
+  else if (arg.isnumeric ())
+    val = arg.int_value ();
+  else
+    ok = false;
+
+  return ok;
+}
+
+static std::string
+mk_tmp_hist_file (const octave_value_list& args,
+                  bool insert_curr, const char *warn_for)
+{
+  string_vector hlist = command_history::list ();
+
+  int hist_count = hlist.numel () - 1;  // switch to zero-based indexing
+
+  // The current command line is already part of the history list by
+  // the time we get to this point.  Delete the cmd from the list when
+  // executing 'edit_history' so that it doesn't show up in the history
+  // but the actual commands performed will.
+
+  if (! insert_curr)
+    command_history::remove (hist_count);
+
+  hist_count--;  // skip last entry in history list
+
+  // If no numbers have been specified, the default is to edit the
+  // last command in the history list.
+
+  int hist_beg = hist_count;
+  int hist_end = hist_count;
+
+  bool reverse = false;
+
+  // Process options.
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      if (! get_int_arg (args(0), hist_beg)
+          || ! get_int_arg (args(1), hist_end))
+        error ("%s: arguments must be integers", warn_for);
+
+      if (hist_beg < 0)
+        hist_beg += (hist_count + 1);
+      else
+        hist_beg--;
+      if (hist_end < 0)
+        hist_end += (hist_count + 1);
+      else
+        hist_end--;
+    }
+  else if (nargin == 1)
+    {
+      if (! get_int_arg (args(0), hist_beg))
+        error ("%s: argument must be an integer", warn_for);
+
+      if (hist_beg < 0)
+        hist_beg += (hist_count + 1);
+      else
+        hist_beg--;
+
+      hist_end = hist_beg;
+    }
+
+  if (hist_beg > hist_count || hist_end > hist_count)
+    error ("%s: history specification out of range", warn_for);
+
+  if (hist_end < hist_beg)
+    {
+      std::swap (hist_end, hist_beg);
+      reverse = true;
+    }
+
+  std::string name = sys::tempnam ("", "oct-");
+
+  std::ofstream file = sys::ofstream (name.c_str (), std::ios::out);
+
+  if (! file)
+    error ("%s: couldn't open temporary file '%s'", warn_for,
+           name.c_str ());
+
+  if (reverse)
+    {
+      for (int i = hist_end; i >= hist_beg; i--)
+        file << hlist[i] << "\n";
+    }
+  else
+    {
+      for (int i = hist_beg; i <= hist_end; i++)
+        file << hlist[i] << "\n";
+    }
+
+  file.close ();
+
+  return name;
+}
+
+history_system::history_system (interpreter& interp)
+  : m_interpreter (interp), m_input_from_tmp_file (false),
+    m_timestamp_format_string (default_timestamp_format ())
+{ }
+
+void history_system::initialize (bool read_history_file)
+{
+  command_history::initialize (read_history_file, default_file (),
+                               default_size (),
+                               sys::env::getenv ("OCTAVE_HISTCONTROL"));
+
+  event_manager& evmgr = m_interpreter.get_event_manager ();
+
+  evmgr.set_history (command_history::list ());
+}
+
+void history_system::write_timestamp (void)
+{
+  sys::localtime now;
+
+  std::string timestamp = now.strftime (m_timestamp_format_string);
+
+  if (! timestamp.empty ())
+    {
+      if (command_history::add (timestamp))
+        {
+          event_manager& evmgr = m_interpreter.get_event_manager ();
+
+          evmgr.append_history (timestamp);
+        }
+    }
+}
+
+octave_value
+history_system::input_from_tmp_file (const octave_value_list& args,
+                                     int nargout)
+{
+  return set_internal_variable (m_input_from_tmp_file, args, nargout,
+                                "input_from_tmp_file");
+}
+
+octave_value
+history_system::timestamp_format_string (const octave_value_list& args,
+    int nargout)
+{
+  return set_internal_variable (m_timestamp_format_string, args, nargout,
+                                "timestamp_format_string");
+}
+
+// Display, save, or load history.  Stolen and modified from bash.
+//
+// Arg of -w FILENAME means write file, arg of -r FILENAME
+// means read file, arg of -q means don't number lines.  Arg of N
+// means only display that many items.
+
+string_vector history_system::do_history (const octave_value_list& args,
+    int nargout)
+{
+  bool numbered_output = nargout == 0;
+
+  unwind_action restore_history_filename
+  ([] (const std::string& old_filename)
   {
-    char c;
-    int line_len = 128;
-    int lindex = 0;
-    char *line = new char [line_len];
-    line[0] = '\0';
-
-    while (stream.get (c))
-      {
-        if (lindex + 2 >= line_len)
-          {
-            char *tmp_line = new char [line_len += 128];
-            strcpy (tmp_line, line);
-            delete [] line;
-            line = tmp_line;
-          }
-
-        if (c == '\n')
-          {
-            line[lindex++] = '\n';
-            line[lindex++] = '\0';
-            return line;
-          }
-        else
-          line[lindex++] = c;
-      }
-
-    if (! lindex)
-      {
-        delete [] line;
-        return nullptr;
-      }
-
-    if (lindex + 2 >= line_len)
-      {
-        char *tmp_line = new char [lindex+3];
-        strcpy (tmp_line, line);
-        delete [] line;
-        line = tmp_line;
-      }
-
-    // Finish with newline if none in file.
-
-    line[lindex++] = '\n';
-    line[lindex++] = '\0';
-    return line;
-  }
-
-  static void
-  edit_history_add_hist (const std::string& line)
-  {
-    if (! line.empty ())
-      {
-        std::string tmp = line;
-
-        int len = tmp.length ();
-
-        if (len > 0 && tmp[len-1] == '\n')
-          tmp.resize (len - 1);
-
-        if (! tmp.empty ())
-          {
-            if (command_history::add (tmp))
-              {
-                event_manager& evmgr = __get_event_manager__ ();
-
-                evmgr.append_history (tmp);
-              }
-          }
-      }
-  }
-
-  static bool
-  get_int_arg (const octave_value& arg, int& val)
-  {
-    bool ok = true;
-
-    if (arg.is_string ())
-      {
-        std::string tmp = arg.string_value ();
-
-        ok = sscanf (tmp.c_str (), "%d", &val) == 1;
-      }
-    else if (arg.isnumeric ())
-      val = arg.int_value ();
-    else
-      ok = false;
-
-    return ok;
-  }
-
-  static std::string
-  mk_tmp_hist_file (const octave_value_list& args,
-                    bool insert_curr, const char *warn_for)
-  {
-    string_vector hlist = command_history::list ();
-
-    int hist_count = hlist.numel () - 1;  // switch to zero-based indexing
-
-    // The current command line is already part of the history list by
-    // the time we get to this point.  Delete the cmd from the list when
-    // executing 'edit_history' so that it doesn't show up in the history
-    // but the actual commands performed will.
-
-    if (! insert_curr)
-      command_history::remove (hist_count);
-
-    hist_count--;  // skip last entry in history list
-
-    // If no numbers have been specified, the default is to edit the
-    // last command in the history list.
-
-    int hist_beg = hist_count;
-    int hist_end = hist_count;
-
-    bool reverse = false;
-
-    // Process options.
-
-    int nargin = args.length ();
-
-    if (nargin == 2)
-      {
-        if (! get_int_arg (args(0), hist_beg)
-            || ! get_int_arg (args(1), hist_end))
-          error ("%s: arguments must be integers", warn_for);
-
-        if (hist_beg < 0)
-          hist_beg += (hist_count + 1);
-        else
-          hist_beg--;
-        if (hist_end < 0)
-          hist_end += (hist_count + 1);
-        else
-          hist_end--;
-      }
-    else if (nargin == 1)
-      {
-        if (! get_int_arg (args(0), hist_beg))
-          error ("%s: argument must be an integer", warn_for);
-
-        if (hist_beg < 0)
-          hist_beg += (hist_count + 1);
-        else
-          hist_beg--;
-
-        hist_end = hist_beg;
-      }
-
-    if (hist_beg > hist_count || hist_end > hist_count)
-      error ("%s: history specification out of range", warn_for);
-
-    if (hist_end < hist_beg)
-      {
-        std::swap (hist_end, hist_beg);
-        reverse = true;
-      }
-
-    std::string name = sys::tempnam ("", "oct-");
-
-    std::ofstream file = sys::ofstream (name.c_str (), std::ios::out);
-
-    if (! file)
-      error ("%s: couldn't open temporary file '%s'", warn_for,
-             name.c_str ());
-
-    if (reverse)
-      {
-        for (int i = hist_end; i >= hist_beg; i--)
-          file << hlist[i] << "\n";
-      }
-    else
-      {
-        for (int i = hist_beg; i <= hist_end; i++)
-          file << hlist[i] << "\n";
-      }
-
-    file.close ();
-
-    return name;
-  }
-
-  history_system::history_system (interpreter& interp)
-    : m_interpreter (interp), m_input_from_tmp_file (false),
-      m_timestamp_format_string (default_timestamp_format ())
-  { }
-
-  void history_system::initialize (bool read_history_file)
-  {
-    command_history::initialize (read_history_file, default_file (),
-                                 default_size (),
-                                 sys::env::getenv ("OCTAVE_HISTCONTROL"));
-
-    event_manager& evmgr = m_interpreter.get_event_manager ();
-
-    evmgr.set_history (command_history::list ());
-  }
-
-  void history_system::write_timestamp (void)
-  {
-    sys::localtime now;
-
-    std::string timestamp = now.strftime (m_timestamp_format_string);
-
-    if (! timestamp.empty ())
-      {
-        if (command_history::add (timestamp))
-          {
-            event_manager& evmgr = m_interpreter.get_event_manager ();
-
-            evmgr.append_history (timestamp);
-          }
-      }
-  }
-
-  octave_value
-  history_system::input_from_tmp_file (const octave_value_list& args,
-                                       int nargout)
-  {
-    return set_internal_variable (m_input_from_tmp_file, args, nargout,
-                                  "input_from_tmp_file");
-  }
-
-  octave_value
-  history_system::timestamp_format_string (const octave_value_list& args,
-                                           int nargout)
-  {
-    return set_internal_variable (m_timestamp_format_string, args, nargout,
-                                  "timestamp_format_string");
-  }
-
-  // Display, save, or load history.  Stolen and modified from bash.
-  //
-  // Arg of -w FILENAME means write file, arg of -r FILENAME
-  // means read file, arg of -q means don't number lines.  Arg of N
-  // means only display that many items.
-
-  string_vector history_system::do_history (const octave_value_list& args,
-                                            int nargout)
-  {
-    bool numbered_output = nargout == 0;
-
-    unwind_action restore_history_filename
-      ([] (const std::string& old_filename)
-       {
-         command_history::set_file (old_filename);
-       }, command_history::file ());
-
-    string_vector hlist;
-
-    int nargin = args.length ();
-
-    // Number of history lines to show (-1 = all)
-    int limit = -1;
-
-    for (octave_idx_type i = 0; i < nargin; i++)
-      {
-        octave_value arg = args(i);
-
-        std::string option;
-
-        if (arg.is_string ())
-          option = arg.string_value ();
-        else if (arg.isnumeric ())
-          {
-            limit = arg.int_value ();
-            if (limit < 0)
-              limit = -limit;
-            continue;
-          }
-        else
-          err_wrong_type_arg ("history", arg);
-
-        event_manager& evmgr = m_interpreter.get_event_manager ();
-
-        if (option == "-r" || option == "-w" || option == "-a"
-            || option == "-n")
-          {
-            if (i < nargin - 1)
-              {
-                std::string fname
-                  = args(++i).xstring_value ("history: filename must be a string for %s option",
-                                             option.c_str ());
-
-                command_history::set_file (fname);
-              }
-            else
-              command_history::set_file (default_file ());
-
-            if (option == "-a")
-              // Append 'new' lines to file.
-              command_history::append ();
-
-            else if (option == "-w")
-              // Write entire history.
-              command_history::write ();
-
-            else if (option == "-r")
-              {
-                // Read entire file.
-                command_history::read ();
-                evmgr.set_history (command_history::list ());
-              }
-
-            else if (option == "-n")
-              {
-                // Read 'new' history from file.
-                command_history::read_range ();
-                evmgr.set_history (command_history::list ());
-              }
-
-            else
-              panic_impossible ();
-
-            return hlist;
-          }
-        else if (option == "-c")
-          {
-            command_history::clear ();
-            evmgr.clear_history ();
-          }
-        else if (option == "-q")
-          numbered_output = false;
-        else if (option == "--")
-          {
-            i++;
-            break;
-          }
-        else
-          {
-            // The last argument found in the command list that looks like
-            // an integer will be used
-            int tmp;
-
-            if (sscanf (option.c_str (), "%d", &tmp) == 1)
-              {
-                if (tmp > 0)
-                  limit = tmp;
-                else
-                  limit = -tmp;
-              }
-
-            else
-              {
-                if (option.length () > 0 && option[0] == '-')
-                  error ("history: unrecognized option '%s'", option.c_str ());
-                else
-                  error ("history: bad non-numeric arg '%s'", option.c_str ());
-              }
-          }
-      }
-
-    hlist = command_history::list (limit, numbered_output);
-
-    int len = hlist.numel ();
-
-    if (nargout == 0)
-      {
-        for (octave_idx_type i = 0; i < len; i++)
-          octave_stdout << hlist[i] << "\n";
-      }
-
-    return hlist;
-  }
-
-  void history_system::do_edit_history (const octave_value_list& args)
-  {
-    std::string name = mk_tmp_hist_file (args, false, "edit_history");
-
-    if (name.empty ())
-      return;
-
-    // Call up our favorite editor on the file of commands.
-
-    environment& env = m_interpreter.get_environment ();
-    std::string cmd = env.editor ();
-    cmd.append (R"( ")" + name + '"');
-
-    // Ignore interrupts while we are off editing commands.  Should we
-    // maybe avoid using system()?
-
-    volatile interrupt_handler old_interrupt_handler
-      = ignore_interrupts ();
-
-    int status = sys::system (cmd);
-
-    set_interrupt_handler (old_interrupt_handler);
-
-    // Check if text edition was successful.  Abort the operation
-    // in case of failure.
-    if (status != EXIT_SUCCESS)
-      error ("edit_history: text editor command failed");
-
-    // Write the commands to the history file since source_file
-    // disables command line history while it executes.
-
-    std::fstream file = sys::fstream (name.c_str (), std::ios::in);
-
-    char *line;
-    //int first = 1;
-    while ((line = edit_history_readline (file)) != nullptr)
-      {
-        // Skip blank lines.
-
-        if (line[0] == '\n')
-          {
-            delete [] line;
-            continue;
-          }
-
-        edit_history_add_hist (line);
-
-        delete [] line;
-      }
-
-    file.close ();
-
-    int(*unlink_fptr)(const std::string&) = sys::unlink;
-    unwind_action unlink_action (unlink_fptr, name);
-    unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
-
-    // FIXME: instead of sourcing a file, we should just iterate through
-    // the list of commands, parsing and executing them one at a time as
-    // if they were entered interactively.
-
-    source_file (name);
-  }
-
-  void history_system::do_run_history (const octave_value_list& args)
-  {
-    std::string name = mk_tmp_hist_file (args, false, "run_history");
-
-    if (name.empty ())
-      return;
-
-    int(*unlink_fptr)(const std::string&) = sys::unlink;
-    unwind_action unlink_action (unlink_fptr, name);
-    unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
-
-    // FIXME: instead of sourcing a file, we should just iterate through
-    // the list of commands, parsing and executing them one at a time as
-    // if they were entered interactively.
-
-    source_file (name);
-  }
-
-  std::string history_system::default_file (void)
-  {
-    std::string file;
-
-    std::string env_file = sys::env::getenv ("OCTAVE_HISTFILE");
-
-    if (! env_file.empty ())
-      file = env_file;
-
-    if (file.empty ())
-      {
-        // Default to $DATA/octave/history, where $DATA is the platform-
-        // dependent location for (roaming) user data files.
-
-        std::string user_data_dir = sys::env::get_user_data_directory ();
-
-        std::string hist_dir = user_data_dir + sys::file_ops::dir_sep_str ()
-                               + "octave";
-
-        file = sys::env::make_absolute ("history", hist_dir);
-      }
-
-
-    return file;
-  }
-
-  int history_system::default_size (void)
-  {
-    int size = 1000;
-
-    std::string env_size = sys::env::getenv ("OCTAVE_HISTSIZE");
-
-    if (! env_size.empty ())
-      {
-        int val;
-
-        if (sscanf (env_size.c_str (), "%d", &val) == 1)
-          size = (val > 0 ? val : 0);
-      }
-
-    return size;
-  }
-
-  std::string history_system::default_timestamp_format (void)
-  {
-    return
-      "# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <"
-      + sys::env::get_user_name ()
-      + '@'
-      + sys::env::get_host_name ()
-      + '>';
-  }
+    command_history::set_file (old_filename);
+  }, command_history::file ());
+
+  string_vector hlist;
+
+  int nargin = args.length ();
+
+  // Number of history lines to show (-1 = all)
+  int limit = -1;
+
+  for (octave_idx_type i = 0; i < nargin; i++)
+    {
+      octave_value arg = args(i);
+
+      std::string option;
+
+      if (arg.is_string ())
+        option = arg.string_value ();
+      else if (arg.isnumeric ())
+        {
+          limit = arg.int_value ();
+          if (limit < 0)
+            limit = -limit;
+          continue;
+        }
+      else
+        err_wrong_type_arg ("history", arg);
+
+      event_manager& evmgr = m_interpreter.get_event_manager ();
+
+      if (option == "-r" || option == "-w" || option == "-a"
+          || option == "-n")
+        {
+          if (i < nargin - 1)
+            {
+              std::string fname
+                = args(++i).xstring_value ("history: filename must be a string for %s option",
+                                           option.c_str ());
+
+              command_history::set_file (fname);
+            }
+          else
+            command_history::set_file (default_file ());
+
+          if (option == "-a")
+            // Append 'new' lines to file.
+            command_history::append ();
+
+          else if (option == "-w")
+            // Write entire history.
+            command_history::write ();
+
+          else if (option == "-r")
+            {
+              // Read entire file.
+              command_history::read ();
+              evmgr.set_history (command_history::list ());
+            }
+
+          else if (option == "-n")
+            {
+              // Read 'new' history from file.
+              command_history::read_range ();
+              evmgr.set_history (command_history::list ());
+            }
+
+          else
+            panic_impossible ();
+
+          return hlist;
+        }
+      else if (option == "-c")
+        {
+          command_history::clear ();
+          evmgr.clear_history ();
+        }
+      else if (option == "-q")
+        numbered_output = false;
+      else if (option == "--")
+        {
+          i++;
+          break;
+        }
+      else
+        {
+          // The last argument found in the command list that looks like
+          // an integer will be used
+          int tmp;
+
+          if (sscanf (option.c_str (), "%d", &tmp) == 1)
+            {
+              if (tmp > 0)
+                limit = tmp;
+              else
+                limit = -tmp;
+            }
+
+          else
+            {
+              if (option.length () > 0 && option[0] == '-')
+                error ("history: unrecognized option '%s'", option.c_str ());
+              else
+                error ("history: bad non-numeric arg '%s'", option.c_str ());
+            }
+        }
+    }
+
+  hlist = command_history::list (limit, numbered_output);
+
+  int len = hlist.numel ();
+
+  if (nargout == 0)
+    {
+      for (octave_idx_type i = 0; i < len; i++)
+        octave_stdout << hlist[i] << "\n";
+    }
+
+  return hlist;
+}
+
+void history_system::do_edit_history (const octave_value_list& args)
+{
+  std::string name = mk_tmp_hist_file (args, false, "edit_history");
+
+  if (name.empty ())
+    return;
+
+  // Call up our favorite editor on the file of commands.
+
+  environment& env = m_interpreter.get_environment ();
+  std::string cmd = env.editor ();
+  cmd.append (R"( ")" + name + '"');
+
+  // Ignore interrupts while we are off editing commands.  Should we
+  // maybe avoid using system()?
+
+  volatile interrupt_handler old_interrupt_handler
+    = ignore_interrupts ();
+
+  int status = sys::system (cmd);
+
+  set_interrupt_handler (old_interrupt_handler);
+
+  // Check if text edition was successful.  Abort the operation
+  // in case of failure.
+  if (status != EXIT_SUCCESS)
+    error ("edit_history: text editor command failed");
+
+  // Write the commands to the history file since source_file
+  // disables command line history while it executes.
+
+  std::fstream file = sys::fstream (name.c_str (), std::ios::in);
+
+  char *line;
+  //int first = 1;
+  while ((line = edit_history_readline (file)) != nullptr)
+    {
+      // Skip blank lines.
+
+      if (line[0] == '\n')
+        {
+          delete [] line;
+          continue;
+        }
+
+      edit_history_add_hist (line);
+
+      delete [] line;
+    }
+
+  file.close ();
+
+  int(*unlink_fptr)(const std::string&) = sys::unlink;
+  unwind_action unlink_action (unlink_fptr, name);
+  unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
+
+  // FIXME: instead of sourcing a file, we should just iterate through
+  // the list of commands, parsing and executing them one at a time as
+  // if they were entered interactively.
+
+  source_file (name);
+}
+
+void history_system::do_run_history (const octave_value_list& args)
+{
+  std::string name = mk_tmp_hist_file (args, false, "run_history");
+
+  if (name.empty ())
+    return;
+
+  int(*unlink_fptr)(const std::string&) = sys::unlink;
+  unwind_action unlink_action (unlink_fptr, name);
+  unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
+
+  // FIXME: instead of sourcing a file, we should just iterate through
+  // the list of commands, parsing and executing them one at a time as
+  // if they were entered interactively.
+
+  source_file (name);
+}
+
+std::string history_system::default_file (void)
+{
+  std::string file;
+
+  std::string env_file = sys::env::getenv ("OCTAVE_HISTFILE");
+
+  if (! env_file.empty ())
+    file = env_file;
+
+  if (file.empty ())
+    {
+      // Default to $DATA/octave/history, where $DATA is the platform-
+      // dependent location for (roaming) user data files.
+
+      std::string user_data_dir = sys::env::get_user_data_directory ();
+
+      std::string hist_dir = user_data_dir + sys::file_ops::dir_sep_str ()
+                             + "octave";
+
+      file = sys::env::make_absolute ("history", hist_dir);
+    }
+
+
+  return file;
+}
+
+int history_system::default_size (void)
+{
+  int size = 1000;
+
+  std::string env_size = sys::env::getenv ("OCTAVE_HISTSIZE");
+
+  if (! env_size.empty ())
+    {
+      int val;
+
+      if (sscanf (env_size.c_str (), "%d", &val) == 1)
+        size = (val > 0 ? val : 0);
+    }
+
+  return size;
+}
+
+std::string history_system::default_timestamp_format (void)
+{
+  return
+    "# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <"
+    + sys::env::get_user_name ()
+    + '@'
+    + sys::env::get_host_name ()
+    + '>';
+}
 
 DEFMETHOD (edit_history, interp, args, ,
            doc: /* -*- texinfo -*-

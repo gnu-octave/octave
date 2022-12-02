@@ -196,8 +196,10 @@ should avoid this combination.
         }
       else if (argA.iscomplex () || argB.iscomplex ())
         {
-          FloatComplexMatrix ctmpA = argA.xfloat_complex_matrix_value ("gsvd: A must be a real or complex matrix");
-          FloatComplexMatrix ctmpB = argB.xfloat_complex_matrix_value ("gsvd: B must be a real or complex matrix");
+          FloatComplexMatrix ctmpA =
+            argA.xfloat_complex_matrix_value ("gsvd: A must be a real or complex matrix");
+          FloatComplexMatrix ctmpB =
+            argB.xfloat_complex_matrix_value ("gsvd: B must be a real or complex matrix");
 
           if (ctmpA.any_element_is_inf_or_nan ())
             error ("gsvd: A cannot have Inf or NaN values");
@@ -363,8 +365,8 @@ should avoid this combination.
 
 ## A: 5x3 complex full rank, B: 3x3 complex full rank
 %!test <48807>
-%! A0 = A0 + j*randn (5, 3);
-%! B0 = diag ([1 2 4]) + j*diag ([4 -2 -1]);
+%! A0 = A0 + j* randn (5, 3);
+%! B0 = diag ([1 2 4]) + j* diag ([4 -2 -1]);
 %! A = A0;
 %! B = B0;
 %! [U, V, X, C, S] = gsvd (A, B);
@@ -402,7 +404,7 @@ should avoid this combination.
 ## now, A is 3x5
 %!test <48807>
 %! A = A0.';
-%! B0 = diag ([1 2 4 8 16]) + j*diag ([-5 4 -3 2 -1]);
+%! B0 = diag ([1 2 4 8 16]) + j* diag ([-5 4 -3 2 -1]);
 %! B = B0;
 %! [U, V, X, C, S] = gsvd (A, B);
 %! assert (C'*C + S'*S, eye (5), 5*eps);

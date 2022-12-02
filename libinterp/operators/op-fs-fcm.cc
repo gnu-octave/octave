@@ -133,7 +133,7 @@ DEFCONV (float_complex_matrix_conv, float_scalar, float_complex_matrix)
   const octave_float_scalar& v = dynamic_cast<const octave_float_scalar&> (a);
 
   return new octave_float_complex_matrix (FloatComplexMatrix
-                                            (v.float_matrix_value ()));
+                                          (v.float_matrix_value ()));
 }
 
 void

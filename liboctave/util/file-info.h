@@ -37,62 +37,62 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class file_info
-  {
-  public:
+class file_info
+{
+public:
 
-    file_info (void)
-      : m_file_buf (), m_offsets (), m_timestamp (static_cast<OCTAVE_TIME_T> (0))
-    { }
+  file_info (void)
+    : m_file_buf (), m_offsets (), m_timestamp (static_cast<OCTAVE_TIME_T> (0))
+  { }
 
-    file_info (const std::string& text, const sys::time& timestamp)
-      : m_file_buf (text), m_offsets (get_line_offsets (m_file_buf)),
-        m_timestamp (timestamp)
-    { }
+  file_info (const std::string& text, const sys::time& timestamp)
+    : m_file_buf (text), m_offsets (get_line_offsets (m_file_buf)),
+      m_timestamp (timestamp)
+  { }
 
-    file_info (const std::string& fname)
-      : m_file_buf (snarf_file (fname)),
-        m_offsets (get_line_offsets (m_file_buf)),
-        m_timestamp ()
-    { }
+  file_info (const std::string& fname)
+    : m_file_buf (snarf_file (fname)),
+      m_offsets (get_line_offsets (m_file_buf)),
+      m_timestamp ()
+  { }
 
-    file_info (const file_info&) = default;
+  file_info (const file_info&) = default;
 
-    file_info& operator = (const file_info&) = default;
+  file_info& operator = (const file_info&) = default;
 
-    ~file_info (void) = default;
+  ~file_info (void) = default;
 
-    OCTAVE_API std::string get_line (std::size_t line) const;
+  OCTAVE_API std::string get_line (std::size_t line) const;
 
-    OCTAVE_API std::deque<std::string>
-    get_lines (std::size_t line, std::size_t num_lines) const;
+  OCTAVE_API std::deque<std::string>
+  get_lines (std::size_t line, std::size_t num_lines) const;
 
-    std::size_t num_lines (void) const { return m_offsets.size (); }
+  std::size_t num_lines (void) const { return m_offsets.size (); }
 
-    std::string text (void) const { return m_file_buf; }
+  std::string text (void) const { return m_file_buf; }
 
-    std::vector<std::size_t> line_offsets (void) const { return m_offsets; }
+  std::vector<std::size_t> line_offsets (void) const { return m_offsets; }
 
-    sys::time timestamp (void) const { return m_timestamp; }
+  sys::time timestamp (void) const { return m_timestamp; }
 
-    std::size_t size (void) const { return m_file_buf.length (); }
+  std::size_t size (void) const { return m_file_buf.length (); }
 
-  private:
+private:
 
-    // File contents as a string.
-    std::string m_file_buf;
+  // File contents as a string.
+  std::string m_file_buf;
 
-    // Offsets to line beginnings.
-    std::vector<std::size_t> m_offsets;
+  // Offsets to line beginnings.
+  std::vector<std::size_t> m_offsets;
 
-    sys::time m_timestamp;
+  sys::time m_timestamp;
 
-    // Read entire file called fname and return the contents as a string
-    static OCTAVE_API std::string snarf_file (const std::string& fname);
+  // Read entire file called fname and return the contents as a string
+  static OCTAVE_API std::string snarf_file (const std::string& fname);
 
-    static OCTAVE_API std::vector<std::size_t>
-    get_line_offsets (const std::string& buf);
-  };
+  static OCTAVE_API std::vector<std::size_t>
+  get_line_offsets (const std::string& buf);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

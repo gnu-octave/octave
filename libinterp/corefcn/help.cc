@@ -76,661 +76,661 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  const static char * const operators[] =
-  {
-    "!",
-    "~",
-    "!=",
-    "~=",
-    R"(")",
-    "#",
-    "%",
-    "#{",
-    "%{",
-    "#}",
-    "%}",
-    "...",
-    "&",
-    "&&",
-    "'",
-    "(",
-    ")",
-    "*",
-    "^",
-    "+",
-    "++",
-    ",",
-    "-",
-    "--",
-    ".'",
-    ".*",
-    ".^",
-    "./",
-    "/",
-    R"(.\)",
-    R"(\)",
-    ":",
-    ";",
-    "<",
-    "<=",
-    "=",
-    "==",
-    ">",
-    ">=",
-    "[",
-    "]",
-    "|",
-    "||",
-    nullptr
-  };
+const static char *const operators[] =
+{
+  "!",
+  "~",
+  "!=",
+  "~=",
+  R"(")",
+  "#",
+  "%",
+  "#{",
+  "%{",
+  "#}",
+  "%}",
+  "...",
+  "&",
+  "&&",
+  "'",
+  "(",
+  ")",
+  "*",
+  "^",
+  "+",
+  "++",
+  ",",
+  "-",
+  "--",
+  ".'",
+  ".*",
+  ".^",
+  "./",
+  "/",
+  R"(.\)",
+  R"(\)",
+  ":",
+  ";",
+  "<",
+  "<=",
+  "=",
+  "==",
+  ">",
+  ">=",
+  "[",
+  "]",
+  "|",
+  "||",
+  nullptr
+};
 
-  const static string_vector operator_names (operators);
+const static string_vector operator_names (operators);
 
-  static bool
-  looks_like_html (const std::string& msg)
-  {
-    const std::size_t p1 = msg.find ('\n');
-    std::string t = msg.substr (0, p1);
-    // FIXME: this comparison should be case-insensitive
-    const std::size_t p2 = t.find ("<html");
+static bool
+looks_like_html (const std::string& msg)
+{
+  const std::size_t p1 = msg.find ('\n');
+  std::string t = msg.substr (0, p1);
+  // FIXME: this comparison should be case-insensitive
+  const std::size_t p2 = t.find ("<html");
 
-    return (p2 != std::string::npos);
-  }
+  return (p2 != std::string::npos);
+}
 
-  static bool
-  looks_like_texinfo (const std::string& msg, std::size_t& p1)
-  {
-    p1 = msg.find ('\n');
+static bool
+looks_like_texinfo (const std::string& msg, std::size_t& p1)
+{
+  p1 = msg.find ('\n');
 
-    std::string t = msg.substr (0, p1);
+  std::string t = msg.substr (0, p1);
 
-    if (p1 == std::string::npos)
-      p1 = 0;
+  if (p1 == std::string::npos)
+    p1 = 0;
 
-    std::size_t p2 = t.find ("-*- texinfo -*-");
+  std::size_t p2 = t.find ("-*- texinfo -*-");
 
-    return (p2 != std::string::npos);
-  }
+  return (p2 != std::string::npos);
+}
 
-  octave_value
-  help_system::built_in_docstrings_file (const octave_value_list& args,
-                                         int nargout)
-  {
-    return set_internal_variable (m_built_in_docstrings_file, args, nargout,
-                                  "built_in_docstrings_file", false);
-  }
+octave_value
+help_system::built_in_docstrings_file (const octave_value_list& args,
+                                       int nargout)
+{
+  return set_internal_variable (m_built_in_docstrings_file, args, nargout,
+                                "built_in_docstrings_file", false);
+}
 
-  octave_value
-  help_system::doc_cache_file (const octave_value_list& args, int nargout)
-  {
-    return set_internal_variable (m_doc_cache_file, args, nargout,
-                                  "doc_cache_file", false);
-  }
+octave_value
+help_system::doc_cache_file (const octave_value_list& args, int nargout)
+{
+  return set_internal_variable (m_doc_cache_file, args, nargout,
+                                "doc_cache_file", false);
+}
 
-  octave_value
-  help_system::info_file (const octave_value_list& args, int nargout)
-  {
-    return set_internal_variable (m_info_file, args, nargout,
-                                  "info_file", false);
-  }
+octave_value
+help_system::info_file (const octave_value_list& args, int nargout)
+{
+  return set_internal_variable (m_info_file, args, nargout,
+                                "info_file", false);
+}
 
-  octave_value
-  help_system::info_program (const octave_value_list& args, int nargout)
-  {
-    return set_internal_variable (m_info_program, args, nargout,
-                                  "info_program", false);
-  }
+octave_value
+help_system::info_program (const octave_value_list& args, int nargout)
+{
+  return set_internal_variable (m_info_program, args, nargout,
+                                "info_program", false);
+}
 
-  octave_value
-  help_system::makeinfo_program (const octave_value_list& args, int nargout)
-  {
-    return set_internal_variable (m_makeinfo_program, args, nargout,
-                                  "makeinfo_program", false);
-  }
+octave_value
+help_system::makeinfo_program (const octave_value_list& args, int nargout)
+{
+  return set_internal_variable (m_makeinfo_program, args, nargout,
+                                "makeinfo_program", false);
+}
 
-  octave_value
-  help_system::suppress_verbose_help_message (const octave_value_list& args,
-                                              int nargout)
-  {
-    return set_internal_variable (m_suppress_verbose_help_message, args,
-                                  nargout, "suppress_verbose_help_message");
-  }
+octave_value
+help_system::suppress_verbose_help_message (const octave_value_list& args,
+    int nargout)
+{
+  return set_internal_variable (m_suppress_verbose_help_message, args,
+                                nargout, "suppress_verbose_help_message");
+}
 
-  octave_value
-  help_system::texi_macros_file (const octave_value_list& args, int nargout)
-  {
-    return set_internal_variable (m_texi_macros_file, args, nargout,
-                                  "texi_macros_file", false);
-  }
+octave_value
+help_system::texi_macros_file (const octave_value_list& args, int nargout)
+{
+  return set_internal_variable (m_texi_macros_file, args, nargout,
+                                "texi_macros_file", false);
+}
 
-  std::string
-  help_system::raw_help (const std::string& nm, bool& symbol_found) const
-  {
-    std::string h;
-    std::string w;
-    std::string f;
+std::string
+help_system::raw_help (const std::string& nm, bool& symbol_found) const
+{
+  std::string h;
+  std::string w;
+  std::string f;
 
-    bool found;
+  bool found;
 
-    found = raw_help_from_symbol_table (nm, h, w, symbol_found);
+  found = raw_help_from_symbol_table (nm, h, w, symbol_found);
 
-    if (! found)
-      found = raw_help_from_file (nm, h, f, symbol_found);
+  if (! found)
+    found = raw_help_from_file (nm, h, f, symbol_found);
 
-    bool external_doc = h.compare (0, 12, "external-doc") == 0;
+  bool external_doc = h.compare (0, 12, "external-doc") == 0;
 
-    if (! found || external_doc)
-      {
-        std::string tmp_nm = nm;
+  if (! found || external_doc)
+    {
+      std::string tmp_nm = nm;
 
-        if (external_doc && h.length () > 12 && h[12] == ':')
-          tmp_nm = h.substr (13);
+      if (external_doc && h.length () > 12 && h[12] == ':')
+        tmp_nm = h.substr (13);
 
-        raw_help_from_docstrings_file (tmp_nm, h, symbol_found);
-      }
+      raw_help_from_docstrings_file (tmp_nm, h, symbol_found);
+    }
 
-    return h;
-  }
+  return h;
+}
 
-  std::string help_system::which (const std::string& name,
-                                  std::string& type) const
-  {
-    std::string file;
+std::string help_system::which (const std::string& name,
+                                std::string& type) const
+{
+  std::string file;
 
-    if (name.empty ())
-      return file;
-
-    type = "";
-
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-    octave_value val = symtab.find_function (name);
-
-    if (val.is_defined ())
-      {
-        octave_function *fcn = val.function_value ();
-
-        if (fcn)
-          {
-            if (fcn->is_classdef_meta ())
-              {
-                octave_classdef_meta *meta_obj
-                  = dynamic_cast<octave_classdef_meta *> (fcn);
-
-                file = meta_obj->file_name ();
-
-                if (meta_obj->is_classdef_constructor ())
-                  type = "class constructor";
-                else if (meta_obj->is_classdef_method ())
-                  type = "class method";
-                else
-                  type = "classdef meta object";
-              }
-            else
-              {
-
-                file = fcn->fcn_file_name ();
-
-                if (! file.empty ())
-                  type = val.is_user_script () ? "script" : "function";
-                else
-                  {
-                    if (fcn->is_user_function ())
-                      type = "command-line function";
-                    else
-                      {
-                        file = fcn->src_file_name ();
-                        type = "built-in function";
-                      }
-                  }
-              }
-          }
-        else
-          {
-            // We might find a file that contains only a doc string.
-
-            load_path& lp = m_interpreter.get_load_path ();
-
-            file = lp.find_fcn_file (name);
-          }
-      }
-
-    if (file.empty ())
-      {
-        // File query.
-
-        load_path& lp = m_interpreter.get_load_path ();
-
-        // For compatibility: "file." queries "file".
-        if (name.size () > 1 && name[name.size () - 1] == '.')
-          file = lp.find_file (name.substr (0, name.size () - 1));
-        else
-          file = lp.find_file (name);
-
-        file = sys::env::make_absolute (file);
-      }
-
+  if (name.empty ())
     return file;
-  }
 
-  std::string help_system::which (const std::string& name) const
-  {
-    std::string type;
+  type = "";
 
-    return which (name, type);
-  }
+  symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-  string_vector help_system::make_name_list (void) const
-  {
-    const static string_vector keywords
-      = Fiskeyword ()(0).string_vector_value ();
+  octave_value val = symtab.find_function (name);
 
-    const static int key_len = keywords.numel ();
+  if (val.is_defined ())
+    {
+      octave_function *fcn = val.function_value ();
 
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
+      if (fcn)
+        {
+          if (fcn->is_classdef_meta ())
+            {
+              octave_classdef_meta *meta_obj
+                = dynamic_cast<octave_classdef_meta *> (fcn);
 
-    const string_vector bif = symtab.built_in_function_names ();
-    const int bif_len = bif.numel ();
+              file = meta_obj->file_name ();
 
-    const string_vector cfl = symtab.cmdline_function_names ();
-    const int cfl_len = cfl.numel ();
+              if (meta_obj->is_classdef_constructor ())
+                type = "class constructor";
+              else if (meta_obj->is_classdef_method ())
+                type = "class method";
+              else
+                type = "classdef meta object";
+            }
+          else
+            {
 
-    const string_vector lcl = m_interpreter.variable_names ();
-    const int lcl_len = lcl.numel ();
+              file = fcn->fcn_file_name ();
 
-    load_path& lp = m_interpreter.get_load_path ();
+              if (! file.empty ())
+                type = val.is_user_script () ? "script" : "function";
+              else
+                {
+                  if (fcn->is_user_function ())
+                    type = "command-line function";
+                  else
+                    {
+                      file = fcn->src_file_name ();
+                      type = "built-in function";
+                    }
+                }
+            }
+        }
+      else
+        {
+          // We might find a file that contains only a doc string.
 
-    const string_vector ffl = lp.fcn_names ();
-    const int ffl_len = ffl.numel ();
+          load_path& lp = m_interpreter.get_load_path ();
 
-    const string_vector afl = m_interpreter.autoloaded_functions ();
-    const int afl_len = afl.numel ();
+          file = lp.find_fcn_file (name);
+        }
+    }
 
-    const string_vector lfl = local_functions ();
-    const int lfl_len = lfl.numel ();
+  if (file.empty ())
+    {
+      // File query.
 
-    const int total_len
-      = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len + lfl_len;
+      load_path& lp = m_interpreter.get_load_path ();
 
-    string_vector list (total_len);
+      // For compatibility: "file." queries "file".
+      if (name.size () > 1 && name[name.size () - 1] == '.')
+        file = lp.find_file (name.substr (0, name.size () - 1));
+      else
+        file = lp.find_file (name);
 
-    // Put all the symbols in one big list.
+      file = sys::env::make_absolute (file);
+    }
 
-    int j = 0;
-    int i = 0;
+  return file;
+}
 
-    for (i = 0; i < key_len; i++)
-      list[j++] = keywords[i];
+std::string help_system::which (const std::string& name) const
+{
+  std::string type;
 
-    for (i = 0; i < bif_len; i++)
-      list[j++] = bif[i];
+  return which (name, type);
+}
 
-    for (i = 0; i < cfl_len; i++)
-      list[j++] = cfl[i];
+string_vector help_system::make_name_list (void) const
+{
+  const static string_vector keywords
+    = Fiskeyword ()(0).string_vector_value ();
 
-    for (i = 0; i < lcl_len; i++)
-      list[j++] = lcl[i];
+  const static int key_len = keywords.numel ();
 
-    for (i = 0; i < ffl_len; i++)
-      list[j++] = ffl[i];
+  symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    for (i = 0; i < afl_len; i++)
-      list[j++] = afl[i];
+  const string_vector bif = symtab.built_in_function_names ();
+  const int bif_len = bif.numel ();
 
-    for (i = 0; i < lfl_len; i++)
-      list[j++] = lfl[i];
+  const string_vector cfl = symtab.cmdline_function_names ();
+  const int cfl_len = cfl.numel ();
 
-    return list;
-  }
+  const string_vector lcl = m_interpreter.variable_names ();
+  const int lcl_len = lcl.numel ();
 
-  void help_system::get_help_text (const std::string& name, std::string& text,
-                                   std::string& format) const
-  {
-    bool symbol_found = false;
-    text = raw_help (name, symbol_found);
+  load_path& lp = m_interpreter.get_load_path ();
 
-    format = "Not found";
-    if (symbol_found)
-      {
-        std::size_t idx = -1;
-        if (text.empty ())
-          {
-            format = "Not documented";
-          }
-        else if (looks_like_texinfo (text, idx))
-          {
-            format = "texinfo";
-            text.erase (0, idx);
-          }
-        else if (looks_like_html (text))
-          {
-            format = "html";
-          }
-        else
-          {
-            format = "plain text";
-          }
-      }
-  }
+  const string_vector ffl = lp.fcn_names ();
+  const int ffl_len = ffl.numel ();
 
-  void help_system::get_help_text_from_file (const std::string& fname,
-                                             std::string& text,
-                                             std::string& format) const
-  {
-    bool symbol_found = false;
+  const string_vector afl = m_interpreter.autoloaded_functions ();
+  const int afl_len = afl.numel ();
 
-    std::string f;
+  const string_vector lfl = local_functions ();
+  const int lfl_len = lfl.numel ();
 
-    raw_help_from_file (fname, text, f, symbol_found);
+  const int total_len
+    = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len + lfl_len;
 
-    format = "Not found";
-    if (symbol_found)
-      {
-        std::size_t idx = -1;
-        if (text.empty ())
-          {
-            format = "Not documented";
-          }
-        else if (looks_like_texinfo (text, idx))
-          {
-            format = "texinfo";
-            text.erase (0, idx);
-          }
-        else if (looks_like_html (text))
-          {
-            format = "html";
-          }
-        else
-          {
-            format = "plain text";
-          }
-      }
-  }
+  string_vector list (total_len);
 
-  std::string help_system::init_built_in_docstrings_file (void)
-  {
-    std::string df = sys::env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
+  // Put all the symbols in one big list.
 
-    std::string dir_sep = sys::file_ops::dir_sep_str ();
+  int j = 0;
+  int i = 0;
 
-    if (df.empty ())
-      df = config::oct_etc_dir () + dir_sep + "built-in-docstrings";
+  for (i = 0; i < key_len; i++)
+    list[j++] = keywords[i];
 
-    return df;
-  }
+  for (i = 0; i < bif_len; i++)
+    list[j++] = bif[i];
 
-  std::string help_system::init_doc_cache_file (void)
-  {
-    std::string def_file = config::prepend_octave_home (OCTAVE_DOC_CACHE_FILE);
+  for (i = 0; i < cfl_len; i++)
+    list[j++] = cfl[i];
 
-    std::string env_file = sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
+  for (i = 0; i < lcl_len; i++)
+    list[j++] = lcl[i];
 
-    return (env_file.empty () ? def_file : env_file);
-  }
+  for (i = 0; i < ffl_len; i++)
+    list[j++] = ffl[i];
 
-  std::string help_system::init_info_file (void)
-  {
-    std::string std_info_file = config::prepend_octave_home (OCTAVE_INFOFILE);
+  for (i = 0; i < afl_len; i++)
+    list[j++] = afl[i];
 
-    std::string oct_info_file = sys::env::getenv ("OCTAVE_INFO_FILE");
+  for (i = 0; i < lfl_len; i++)
+    list[j++] = lfl[i];
 
-    return (oct_info_file.empty () ? std_info_file : oct_info_file);
-  }
+  return list;
+}
 
-  std::string help_system::init_info_program (void)
-  {
-    std::string info_prog = sys::env::getenv ("OCTAVE_INFO_PROGRAM");
+void help_system::get_help_text (const std::string& name, std::string& text,
+                                 std::string& format) const
+{
+  bool symbol_found = false;
+  text = raw_help (name, symbol_found);
 
-    if (info_prog.empty ())
-      info_prog = "info";
+  format = "Not found";
+  if (symbol_found)
+    {
+      std::size_t idx = -1;
+      if (text.empty ())
+        {
+          format = "Not documented";
+        }
+      else if (looks_like_texinfo (text, idx))
+        {
+          format = "texinfo";
+          text.erase (0, idx);
+        }
+      else if (looks_like_html (text))
+        {
+          format = "html";
+        }
+      else
+        {
+          format = "plain text";
+        }
+    }
+}
 
-    return info_prog;
-  }
+void help_system::get_help_text_from_file (const std::string& fname,
+    std::string& text,
+    std::string& format) const
+{
+  bool symbol_found = false;
 
-  std::string help_system::init_texi_macros_file (void)
-  {
-    std::string def_file
-      = config::prepend_octave_home (OCTAVE_TEXI_MACROS_FILE);
+  std::string f;
 
-    std::string env_file = sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
+  raw_help_from_file (fname, text, f, symbol_found);
 
-    return (env_file.empty () ? def_file : env_file);
-  }
+  format = "Not found";
+  if (symbol_found)
+    {
+      std::size_t idx = -1;
+      if (text.empty ())
+        {
+          format = "Not documented";
+        }
+      else if (looks_like_texinfo (text, idx))
+        {
+          format = "texinfo";
+          text.erase (0, idx);
+        }
+      else if (looks_like_html (text))
+        {
+          format = "html";
+        }
+      else
+        {
+          format = "plain text";
+        }
+    }
+}
 
-  // Return a vector of all functions from this file,
-  // for use in command line auto-completion.
-  string_vector help_system::local_functions (void) const
-  {
-    string_vector retval;
+std::string help_system::init_built_in_docstrings_file (void)
+{
+  std::string df = sys::env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
 
-    tree_evaluator& tw = m_interpreter.get_evaluator ();
+  std::string dir_sep = sys::file_ops::dir_sep_str ();
 
-    octave_user_code *curr_fcn = tw.current_user_code ();
+  if (df.empty ())
+    df = config::oct_etc_dir () + dir_sep + "built-in-docstrings";
 
-    if (! curr_fcn)
-      return retval;
+  return df;
+}
 
-    // All subfunctions are listed in the top-level function of this file.
-    // If curr_fcn is a subfunction, then there must be a parent and
-    // curr_fcn will always be valid in and after executing this loop.
+std::string help_system::init_doc_cache_file (void)
+{
+  std::string def_file = config::prepend_octave_home (OCTAVE_DOC_CACHE_FILE);
 
-    while (curr_fcn->is_subfunction ())
-      {
-        symbol_scope pscope = curr_fcn->parent_fcn_scope ();
-        curr_fcn = pscope.user_code ();
-      }
+  std::string env_file = sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
-    // Get subfunctions.
-    const std::list<std::string> names = curr_fcn->subfunction_names ();
+  return (env_file.empty () ? def_file : env_file);
+}
 
-    std::size_t sz = names.size ();
-    retval.resize (sz);
+std::string help_system::init_info_file (void)
+{
+  std::string std_info_file = config::prepend_octave_home (OCTAVE_INFOFILE);
 
-    // Loop over them.
-    std::size_t i = 0;
-    for (const auto& nm : names)
-      retval(i++) = nm;
+  std::string oct_info_file = sys::env::getenv ("OCTAVE_INFO_FILE");
 
+  return (oct_info_file.empty () ? std_info_file : oct_info_file);
+}
+
+std::string help_system::init_info_program (void)
+{
+  std::string info_prog = sys::env::getenv ("OCTAVE_INFO_PROGRAM");
+
+  if (info_prog.empty ())
+    info_prog = "info";
+
+  return info_prog;
+}
+
+std::string help_system::init_texi_macros_file (void)
+{
+  std::string def_file
+    = config::prepend_octave_home (OCTAVE_TEXI_MACROS_FILE);
+
+  std::string env_file = sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
+
+  return (env_file.empty () ? def_file : env_file);
+}
+
+// Return a vector of all functions from this file,
+// for use in command line auto-completion.
+string_vector help_system::local_functions (void) const
+{
+  string_vector retval;
+
+  tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+  octave_user_code *curr_fcn = tw.current_user_code ();
+
+  if (! curr_fcn)
     return retval;
-  }
 
-  bool help_system::raw_help_from_symbol_table (const std::string& nm,
-                                                std::string& h, std::string& w,
-                                                bool& symbol_found) const
-  {
-    std::string meth_nm;
+  // All subfunctions are listed in the top-level function of this file.
+  // If curr_fcn is a subfunction, then there must be a parent and
+  // curr_fcn will always be valid in and after executing this loop.
 
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
+  while (curr_fcn->is_subfunction ())
+    {
+      symbol_scope pscope = curr_fcn->parent_fcn_scope ();
+      curr_fcn = pscope.user_code ();
+    }
 
-    octave_value val = symtab.find_function (nm);
+  // Get subfunctions.
+  const std::list<std::string> names = curr_fcn->subfunction_names ();
 
-    if (! val.is_defined ())
-      {
-        std::size_t pos = nm.rfind ('.');
+  std::size_t sz = names.size ();
+  retval.resize (sz);
 
-        if (pos != std::string::npos)
-          {
-            meth_nm = nm.substr (pos+1);
+  // Loop over them.
+  std::size_t i = 0;
+  for (const auto& nm : names)
+    retval(i++) = nm;
 
-            val = symtab.find_function (nm.substr (0, pos));
-          }
-      }
+  return retval;
+}
 
-    if (val.is_defined ())
-      {
-        octave_function *fcn = val.function_value ();
+bool help_system::raw_help_from_symbol_table (const std::string& nm,
+    std::string& h, std::string& w,
+    bool& symbol_found) const
+{
+  std::string meth_nm;
 
-        if (fcn)
-          {
-            // FCN may actually be a classdef_meta object.
+  symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-            symbol_found = true;
+  octave_value val = symtab.find_function (nm);
 
-            h = fcn->doc_string (meth_nm);
+  if (! val.is_defined ())
+    {
+      std::size_t pos = nm.rfind ('.');
 
-            w = fcn->fcn_file_name ();
+      if (pos != std::string::npos)
+        {
+          meth_nm = nm.substr (pos+1);
 
-            if (w.empty ())
-              w = fcn->is_user_function () ? "command-line function"
+          val = symtab.find_function (nm.substr (0, pos));
+        }
+    }
+
+  if (val.is_defined ())
+    {
+      octave_function *fcn = val.function_value ();
+
+      if (fcn)
+        {
+          // FCN may actually be a classdef_meta object.
+
+          symbol_found = true;
+
+          h = fcn->doc_string (meth_nm);
+
+          w = fcn->fcn_file_name ();
+
+          if (w.empty ())
+            w = fcn->is_user_function () ? "command-line function"
                 : "built-in function";
 
-            return true;
-          }
-      }
+          return true;
+        }
+    }
 
-    return false;
-  }
+  return false;
+}
 
-  bool help_system::raw_help_from_file (const std::string& nm,
-                                        std::string& h, std::string& file,
-                                        bool& symbol_found) const
-  {
-    bool retval = false;
+bool help_system::raw_help_from_file (const std::string& nm,
+                                      std::string& h, std::string& file,
+                                      bool& symbol_found) const
+{
+  bool retval = false;
 
-    h = get_help_from_file (nm, symbol_found, file);
+  h = get_help_from_file (nm, symbol_found, file);
 
-    if (h.length () > 0)
-      retval = true;
+  if (h.length () > 0)
+    retval = true;
 
-    return retval;
-  }
+  return retval;
+}
 
-  bool
-  help_system::raw_help_from_docstrings_file (const std::string& nm,
-                                              std::string& h,
-                                              bool& symbol_found) const
-  {
-    typedef std::pair<std::streampos, std::streamoff> txt_limits_type;
-    typedef std::map<std::string, txt_limits_type> help_txt_map_type;
+bool
+help_system::raw_help_from_docstrings_file (const std::string& nm,
+    std::string& h,
+    bool& symbol_found) const
+{
+  typedef std::pair<std::streampos, std::streamoff> txt_limits_type;
+  typedef std::map<std::string, txt_limits_type> help_txt_map_type;
 
-    static help_txt_map_type help_txt_map;
-    static bool initialized = false;
+  static help_txt_map_type help_txt_map;
+  static bool initialized = false;
 
-    h = "";
-    symbol_found = false;
+  h = "";
+  symbol_found = false;
 
-    // FIXME: Should we cache the timestamp of the file and reload the
-    // offsets if it changes?  Or just warn about that?  Or just ignore
-    // it, and assume it won't change?
+  // FIXME: Should we cache the timestamp of the file and reload the
+  // offsets if it changes?  Or just warn about that?  Or just ignore
+  // it, and assume it won't change?
 
-    if (! initialized)
-      {
-        std::ifstream file = sys::ifstream (m_built_in_docstrings_file.c_str (),
-                                            std::ios::in | std::ios::binary);
+  if (! initialized)
+    {
+      std::ifstream file = sys::ifstream (m_built_in_docstrings_file.c_str (),
+                                          std::ios::in | std::ios::binary);
 
-        if (! file)
-          error ("failed to open docstrings file: %s",
-                 m_built_in_docstrings_file.c_str ());
+      if (! file)
+        error ("failed to open docstrings file: %s",
+               m_built_in_docstrings_file.c_str ());
 
-        // Ignore header;
-        file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
+      // Ignore header;
+      file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
 
-        if (file.eof ())
-          error ("invalid built-in-docstrings file!");
+      if (file.eof ())
+        error ("invalid built-in-docstrings file!");
 
-        // FIXME: eliminate fixed buffer size.
-        std::size_t bufsize = 1000;
-        OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
+      // FIXME: eliminate fixed buffer size.
+      std::size_t bufsize = 1000;
+      OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
 
-        while (! file.eof ())
-          {
-            std::string name;
-            int i = 0;
-            int c;
-            while (file
-                   && (c = file.get ()) != std::istream::traits_type::eof ())
-              {
-                if (c == '\n' || c == '\r')
-                  {
-                    buf[i] = '\0';
-                    name = buf;
-                    break;
-                  }
-                else
-                  buf[i++] = c;
-              }
+      while (! file.eof ())
+        {
+          std::string name;
+          int i = 0;
+          int c;
+          while (file
+                 && (c = file.get ()) != std::istream::traits_type::eof ())
+            {
+              if (c == '\n' || c == '\r')
+                {
+                  buf[i] = '\0';
+                  name = buf;
+                  break;
+                }
+              else
+                buf[i++] = c;
+            }
 
-            // Skip @c FILENAME which is part of current DOCSTRINGS
-            // syntax.  This may disappear if a specific format for
-            // docstring files is developed.
-            while (file
-                   && (c = file.get ()) != std::istream::traits_type::eof ()
-                   && c != '\n' && c != '\r')
-              ; // skip text
+          // Skip @c FILENAME which is part of current DOCSTRINGS
+          // syntax.  This may disappear if a specific format for
+          // docstring files is developed.
+          while (file
+                 && (c = file.get ()) != std::istream::traits_type::eof ()
+                 && c != '\n' && c != '\r')
+            ; // skip text
 
-            // skip newline characters
-            while (file
-                   && (c = file.get ()) != std::istream::traits_type::eof ()
-                   && (c == '\n' || c == '\r'))
-              ; // skip text
+          // skip newline characters
+          while (file
+                 && (c = file.get ()) != std::istream::traits_type::eof ()
+                 && (c == '\n' || c == '\r'))
+            ; // skip text
 
-            file.unget ();
+          file.unget ();
 
-            // Position of beginning of help text.
-            std::streampos beg = file.tellg ();
+          // Position of beginning of help text.
+          std::streampos beg = file.tellg ();
 
-            // Skip help text.
-            file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
+          // Skip help text.
+          file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
 
-            // Position of end of help text.
-            std::streamoff len;
+          // Position of end of help text.
+          std::streamoff len;
 
-            if (! file.eof ())
+          if (! file.eof ())
+            len = file.tellg () - beg - 1;
+          else
+            {
+              file.seekg (0, file.end);
               len = file.tellg () - beg - 1;
-            else
-              {
-                file.seekg (0, file.end);
-                len = file.tellg () - beg - 1;
-                file.setstate (file.eofbit);  // reset eof flag
-              }
+              file.setstate (file.eofbit);  // reset eof flag
+            }
 
-            help_txt_map[name] = txt_limits_type (beg, len);
-          }
+          help_txt_map[name] = txt_limits_type (beg, len);
+        }
 
-        initialized = true;
-      }
+      initialized = true;
+    }
 
-    help_txt_map_type::const_iterator it = help_txt_map.find (nm);
+  help_txt_map_type::const_iterator it = help_txt_map.find (nm);
 
-    if (it != help_txt_map.end ())
-      {
-        txt_limits_type txt_limits = it->second;
+  if (it != help_txt_map.end ())
+    {
+      txt_limits_type txt_limits = it->second;
 
-        std::streampos beg = txt_limits.first;
-        std::streamoff len = txt_limits.second;
+      std::streampos beg = txt_limits.first;
+      std::streamoff len = txt_limits.second;
 
-        std::ifstream file = sys::ifstream (m_built_in_docstrings_file.c_str (),
-                                            std::ios::in | std::ios::binary);
+      std::ifstream file = sys::ifstream (m_built_in_docstrings_file.c_str (),
+                                          std::ios::in | std::ios::binary);
 
-        if (! file)
-          error ("failed to open docstrings file: %s",
-                 m_built_in_docstrings_file.c_str ());
+      if (! file)
+        error ("failed to open docstrings file: %s",
+               m_built_in_docstrings_file.c_str ());
 
-        file.seekg (beg);
+      file.seekg (beg);
 
-        std::size_t txt_len = len;
-        OCTAVE_LOCAL_BUFFER (char, buf, txt_len + 1);
+      std::size_t txt_len = len;
+      OCTAVE_LOCAL_BUFFER (char, buf, txt_len + 1);
 
-        file.read (buf, txt_len);
+      file.read (buf, txt_len);
 
-        buf[txt_len] = '\0';
+      buf[txt_len] = '\0';
 
-        h = buf;
+      h = buf;
 
-        symbol_found = true;
-      }
+      symbol_found = true;
+    }
 
-    return symbol_found;
-  }
+  return symbol_found;
+}
 
-  // FIXME: It's not likely that this does the right thing now.
+// FIXME: It's not likely that this does the right thing now.
 
-  string_vector make_name_list (void)
-  {
-    help_system& help_sys = __get_help_system__ ();
+string_vector make_name_list (void)
+{
+  help_system& help_sys = __get_help_system__ ();
 
-    return help_sys.make_name_list ();
-  }
+  return help_sys.make_name_list ();
+}
 
 DEFMETHOD (get_help_text, interp, args, ,
            doc: /* -*- texinfo -*-

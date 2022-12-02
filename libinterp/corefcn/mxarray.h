@@ -656,7 +656,7 @@ public:
   { return m_rep->get_number_of_fields (); }
 
   const char * get_field_name_by_number (int key_num) const
-  { DO_MUTABLE_METHOD (const char*, get_field_name_by_number (key_num)); }
+  { DO_MUTABLE_METHOD (const char *, get_field_name_by_number (key_num)); }
 
   int get_field_number (const char *key) const
   { DO_MUTABLE_METHOD (int, get_field_number (key)); }

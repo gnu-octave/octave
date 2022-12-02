@@ -327,7 +327,8 @@ Undocumented internal function.
       if (! args(3+arg_offset).isstruct ())
         error ("eigs: OPTS argument must be a structure");
 
-      octave_scalar_map map = args(3+arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");
+      octave_scalar_map map = args(3
+                                   +arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");
 
       octave_value tmp;
 
@@ -445,9 +446,9 @@ Undocumented internal function.
       EigsComplexFunc
       eigs_complex_fcn = [&callback] (const ComplexColumnVector& x,
                                       int& eigs_error)
-                           {
-                             return callback.eigs_complex_func (x, eigs_error);
-                           };
+      {
+        return callback.eigs_complex_func (x, eigs_error);
+      };
 
       ComplexMatrix eig_vec;
       ComplexColumnVector eig_val;
@@ -512,9 +513,9 @@ Undocumented internal function.
       EigsComplexFunc
       eigs_complex_fcn = [&callback] (const ComplexColumnVector& x,
                                       int& eigs_error)
-                           {
-                             return callback.eigs_complex_func (x, eigs_error);
-                           };
+      {
+        return callback.eigs_complex_func (x, eigs_error);
+      };
 
       // Promote real problem to a complex one.
       ComplexMatrix eig_vec;
@@ -565,9 +566,9 @@ Undocumented internal function.
   else
     {
       EigsFunc eigs_fcn = [&callback] (const ColumnVector& x, int& eigs_error)
-                            {
-                              return callback.eigs_func (x, eigs_error);
-                            };
+      {
+        return callback.eigs_func (x, eigs_error);
+      };
 
       if (symmetric)
         {

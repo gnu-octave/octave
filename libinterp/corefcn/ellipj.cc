@@ -211,7 +211,7 @@ and 16.15), Dover, 1965.
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      math::ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
+                      math::ellipj (pu[i], pm[j], sn(i, j), cn(i, j), dn(i, j), err(i, j));
 
                   return ovl (sn, cn, dn, err);
                 }
@@ -259,7 +259,7 @@ and 16.15), Dover, 1965.
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      math::ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
+                      math::ellipj (pu[i], pm[j], sn(i, j), cn(i, j), dn(i, j), err(i, j));
 
                   return ovl (sn, cn, dn, err);
                 }

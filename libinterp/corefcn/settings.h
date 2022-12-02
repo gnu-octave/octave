@@ -35,62 +35,62 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Most settings for the interpreter are stored in the classes which
-  // they affect (intput_system, output_system, load_path, etc.  Some
-  // don't really fit anywhere else.  For example, there is no single
-  // lexer or parser object, so we store settings for those things
-  // here.
+// Most settings for the interpreter are stored in the classes which
+// they affect (intput_system, output_system, load_path, etc.  Some
+// don't really fit anywhere else.  For example, there is no single
+// lexer or parser object, so we store settings for those things
+// here.
 
-  class settings
+class settings
+{
+public:
+
+  settings (void);
+
+  settings (const settings&) = delete;
+
+  settings& operator = (const settings&) = delete;
+
+  ~settings (void) = default;
+
+  octave_value display_tokens (const octave_value_list& args, int nargout);
+
+  bool display_tokens (void) const { return m_display_tokens; }
+
+  bool display_tokens (bool flag)
   {
-  public:
+    bool val = m_display_tokens;
+    m_display_tokens = flag;
+    return val;
+  }
 
-    settings (void);
+  // Read only.
+  std::size_t token_count (void) const { return m_token_count; }
 
-    settings (const settings&) = delete;
+  void increment_token_count (void) { ++m_token_count; }
 
-    settings& operator = (const settings&) = delete;
+  octave_value lexer_debug_flag (const octave_value_list& args, int nargout);
 
-    ~settings (void) = default;
+  bool lexer_debug_flag (void) const { return m_lexer_debug_flag; }
 
-    octave_value display_tokens (const octave_value_list& args, int nargout);
+  bool lexer_debug_flag (bool flag)
+  {
+    bool val = m_lexer_debug_flag;
+    m_lexer_debug_flag = flag;
+    return val;
+  }
 
-    bool display_tokens (void) const { return m_display_tokens; }
+private:
 
-    bool display_tokens (bool flag)
-    {
-      bool val = m_display_tokens;
-      m_display_tokens = flag;
-      return val;
-    }
+  // Display tokens as they are processed, for debugging.
+  bool m_display_tokens = false;
 
-    // Read only.
-    std::size_t token_count (void) const { return m_token_count; }
+  // Number of tokens processed since interpreter startup.
+  std::size_t m_token_count = 0;
 
-    void increment_token_count (void) { ++m_token_count; }
-
-    octave_value lexer_debug_flag (const octave_value_list& args, int nargout);
-
-    bool lexer_debug_flag (void) const { return m_lexer_debug_flag; }
-
-    bool lexer_debug_flag (bool flag)
-    {
-      bool val = m_lexer_debug_flag;
-      m_lexer_debug_flag = flag;
-      return val;
-    }
-
-  private:
-
-    // Display tokens as they are processed, for debugging.
-    bool m_display_tokens = false;
-
-    // Number of tokens processed since interpreter startup.
-    std::size_t m_token_count = 0;
-
-    // Internal variable for lexer debugging state.
-    bool m_lexer_debug_flag = false;
-  };
+  // Internal variable for lexer debugging state.
+  bool m_lexer_debug_flag = false;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

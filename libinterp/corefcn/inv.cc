@@ -232,10 +232,10 @@ sparse matrix if possible.
 %! assert (isa (rcond, "double"));
 
 %!assert (inv (single ([1, 2; 3, 4])), single ([-2, 1; 1.5, -0.5]),
-%!        5*eps ("single"))
+%!        5* eps ("single"))
 %!test
 %! [xinv, rcond] = inv (single ([1,2;3,4]));
-%! assert (xinv, single ([-2, 1; 1.5, -0.5]), 5*eps ("single"));
+%! assert (xinv, single ([-2, 1; 1.5, -0.5]), 5* eps ("single"));
 %! assert (isa (rcond, "single"));
 
 ## Basic test for integer inputs

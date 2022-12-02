@@ -72,7 +72,7 @@ octave_base_value::type_conv_info
 octave_bool::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_scalar::static_type_id ());
+         octave_scalar::static_type_id ());
 
 }
 

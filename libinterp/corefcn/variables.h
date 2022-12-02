@@ -38,7 +38,7 @@ class string_vector;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class tree_identifier;
+class tree_identifier;
 
 OCTAVE_END_NAMESPACE(octave)
 

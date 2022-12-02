@@ -187,7 +187,7 @@ csymamd, amd, colamd, symamd, and other related orderings.
             octave_stdout << "knobs(2): " << User_knobs(1)
                           << ", rows with > max (16,"
                           << knobs[CCOLAMD_DENSE_ROW]
-                          << "*sqrt (columns(A)))"
+                          << "* sqrt (columns(A)))"
                           << " entries removed\n";
           else
             octave_stdout << "knobs(2): " << User_knobs(1)
@@ -196,7 +196,7 @@ csymamd, amd, colamd, symamd, and other related orderings.
           if (knobs[CCOLAMD_DENSE_COL] >= 0)
             octave_stdout << "knobs(3): " << User_knobs(2)
                           << ", cols with > max (16,"
-                          << knobs[CCOLAMD_DENSE_COL] << "*sqrt (size(A)))"
+                          << knobs[CCOLAMD_DENSE_COL] << "* sqrt (size(A)))"
                           << " entries removed\n";
           else
             octave_stdout << "knobs(3): " << User_knobs(2)
@@ -446,7 +446,7 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
             octave_stdout << "knobs(1): " << User_knobs(0)
                           << ", rows/cols with > max (16,"
                           << knobs[CCOLAMD_DENSE_ROW]
-                          << "*sqrt (columns(A)))"
+                          << "* sqrt (columns(A)))"
                           << " entries removed\n";
           else
             octave_stdout << "knobs(1): " << User_knobs(0)

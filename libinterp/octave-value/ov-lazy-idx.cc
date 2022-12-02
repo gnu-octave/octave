@@ -47,7 +47,7 @@ octave_base_value::type_conv_info
 octave_lazy_index::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_matrix::static_type_id ());
+         octave_matrix::static_type_id ());
 }
 
 octave_base_value *

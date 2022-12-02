@@ -34,57 +34,57 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  tree_array_list::~tree_array_list (void)
-  {
-    while (! empty ())
-      {
-        auto p = begin ();
-        delete *p;
-        erase (p);
-      }
-  }
+tree_array_list::~tree_array_list (void)
+{
+  while (! empty ())
+    {
+      auto p = begin ();
+      delete *p;
+      erase (p);
+    }
+}
 
-  bool
-  tree_array_list::all_elements_are_constant (void) const
-  {
-    for (const tree_argument_list *elt : *this)
-      {
-        octave_quit ();
+bool
+tree_array_list::all_elements_are_constant (void) const
+{
+  for (const tree_argument_list *elt : *this)
+    {
+      octave_quit ();
 
-        if (! elt->all_elements_are_constant ())
-          return false;
-      }
+      if (! elt->all_elements_are_constant ())
+        return false;
+    }
 
-    return true;
-  }
+  return true;
+}
 
-  void
-  tree_array_list::copy_base (const tree_array_list& array_list)
-  {
-    tree_expression::copy_base (array_list);
-  }
+void
+tree_array_list::copy_base (const tree_array_list& array_list)
+{
+  tree_expression::copy_base (array_list);
+}
 
-  void
-  tree_array_list::copy_base (const tree_array_list& array_list,
-                              symbol_scope& scope)
-  {
-    for (const tree_argument_list *elt : array_list)
-      append (elt ? elt->dup (scope) : nullptr);
+void
+tree_array_list::copy_base (const tree_array_list& array_list,
+                            symbol_scope& scope)
+{
+  for (const tree_argument_list *elt : array_list)
+    append (elt ? elt->dup (scope) : nullptr);
 
-    copy_base (*this);
-  }
+  copy_base (*this);
+}
 
-  tree_expression *
-  tree_array_list::dup (symbol_scope&) const
-  {
-    panic_impossible ();
-    return nullptr;
-  }
+tree_expression *
+tree_array_list::dup (symbol_scope&) const
+{
+  panic_impossible ();
+  return nullptr;
+}
 
-  void
-  tree_array_list::accept (tree_walker&)
-  {
-    panic_impossible ();
-  }
+void
+tree_array_list::accept (tree_walker&)
+{
+  panic_impossible ();
+}
 
 OCTAVE_END_NAMESPACE(octave)

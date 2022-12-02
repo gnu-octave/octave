@@ -54,7 +54,7 @@ octave_base_value::type_conv_info
 octave_diag_matrix::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_matrix::static_type_id ());
+         octave_matrix::static_type_id ());
 }
 
 static octave_base_value *
@@ -69,8 +69,8 @@ octave_base_value::type_conv_info
 octave_diag_matrix::numeric_demotion_function (void) const
 {
   return octave_base_value::type_conv_info
-           (default_numeric_demotion_function,
-            octave_float_diag_matrix::static_type_id ());
+         (default_numeric_demotion_function,
+          octave_float_diag_matrix::static_type_id ());
 }
 
 octave_base_value *

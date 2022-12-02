@@ -181,7 +181,7 @@ hdf5_fstreambase::open_create (const char *name, int mode)
           // Check whether filename contains non-ASCII (UTF-8) characters.
           std::string::const_iterator first_non_ASCII
             = std::find_if (fname_str.begin (), fname_str.end (),
-                            [](char c) { return (c < 0 || c >= 128); });
+          [](char c) { return (c < 0 || c >= 128); });
           if (first_non_ASCII == fname_str.end ())
             {
               // No non-ASCII characters

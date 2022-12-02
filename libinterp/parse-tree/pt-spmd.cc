@@ -33,11 +33,11 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  tree_spmd_command::~tree_spmd_command (void)
-  {
-    delete m_body;
-    delete m_lead_comm;
-    delete m_trail_comm;
-  }
+tree_spmd_command::~tree_spmd_command (void)
+{
+  delete m_body;
+  delete m_lead_comm;
+  delete m_trail_comm;
+}
 
 OCTAVE_END_NAMESPACE(octave)

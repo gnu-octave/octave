@@ -199,9 +199,9 @@ documentation for @code{svd_driver} for more information on choosing a driver.
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
           math::svd<FloatMatrix> result
-            (tmp,
-             svd_type<FloatMatrix> (nargin, nargout, args, tmp),
-             svd_driver<FloatMatrix> ());
+          (tmp,
+           svd_type<FloatMatrix> (nargin, nargout, args, tmp),
+           svd_driver<FloatMatrix> ());
 
           FloatDiagMatrix sigma = result.singular_values ();
 
@@ -223,9 +223,9 @@ documentation for @code{svd_driver} for more information on choosing a driver.
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
           math::svd<FloatComplexMatrix> result
-            (ctmp,
-             svd_type<FloatComplexMatrix> (nargin, nargout, args, ctmp),
-             svd_driver<FloatComplexMatrix> ());
+          (ctmp,
+           svd_type<FloatComplexMatrix> (nargin, nargout, args, ctmp),
+           svd_driver<FloatComplexMatrix> ());
 
           FloatDiagMatrix sigma = result.singular_values ();
 
@@ -250,9 +250,9 @@ documentation for @code{svd_driver} for more information on choosing a driver.
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
           math::svd<Matrix> result
-            (tmp,
-             svd_type<Matrix> (nargin, nargout, args, tmp),
-             svd_driver<Matrix> ());
+          (tmp,
+           svd_type<Matrix> (nargin, nargout, args, tmp),
+           svd_driver<Matrix> ());
 
           DiagMatrix sigma = result.singular_values ();
 
@@ -274,9 +274,9 @@ documentation for @code{svd_driver} for more information on choosing a driver.
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
           math::svd<ComplexMatrix> result
-            (ctmp,
-             svd_type<ComplexMatrix> (nargin, nargout, args, ctmp),
-             svd_driver<ComplexMatrix> ());
+          (ctmp,
+           svd_type<ComplexMatrix> (nargin, nargout, args, ctmp),
+           svd_driver<ComplexMatrix> ());
 
           DiagMatrix sigma = result.singular_values ();
 

@@ -552,7 +552,7 @@ octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
 template <typename MT>
 bool
 octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
-                                          const octave_value& x)
+    const octave_value& x)
 {
   if (n < m_matrix.numel ())
     {

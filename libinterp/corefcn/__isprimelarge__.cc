@@ -117,11 +117,11 @@ isprimescalar (uint64_t n)
   // If it fails any, then it is composite.
   // The first 12 primes suffice to test all 64-bit integers.
   return millerrabin ( 2, d, r, n) && millerrabin ( 3, d, r, n)
-      && millerrabin ( 5, d, r, n) && millerrabin ( 7, d, r, n)
-      && millerrabin (11, d, r, n) && millerrabin (13, d, r, n)
-      && millerrabin (17, d, r, n) && millerrabin (19, d, r, n)
-      && millerrabin (23, d, r, n) && millerrabin (29, d, r, n)
-      && millerrabin (31, d, r, n) && millerrabin (37, d, r, n);
+         && millerrabin ( 5, d, r, n) && millerrabin ( 7, d, r, n)
+         && millerrabin (11, d, r, n) && millerrabin (13, d, r, n)
+         && millerrabin (17, d, r, n) && millerrabin (19, d, r, n)
+         && millerrabin (23, d, r, n) && millerrabin (29, d, r, n)
+         && millerrabin (31, d, r, n) && millerrabin (37, d, r, n);
 
   /*
   Mathematical references for the curious as to why we need only
@@ -162,7 +162,7 @@ You should call isprime(N) instead of directly calling this function.
   // so the following error handling should not be necessary. But it is
   // probably good practice for any curious users calling it directly.
   uint64NDArray vec = args(0).xuint64_array_value
-    ("__isprimelarge__: unable to convert input. Call isprime() instead.");
+                      ("__isprimelarge__: unable to convert input. Call isprime() instead.");
 
   boolNDArray retval (vec.dims(), false);
 
@@ -205,7 +205,7 @@ uint64_t
 localgcd (uint64_t a, uint64_t b)
 {
   return (a <= b) ? ( (b % a == 0) ? a : localgcd (a, b % a) )
-                  : ( (a % b == 0) ? b : localgcd (a % b, b) );
+         : ( (a % b == 0) ? b : localgcd (a % b, b) );
 }
 
 // This function implements a textbook version of the Pollard Rho
@@ -263,7 +263,7 @@ of directly calling this function.
     print_usage ();
 
   octave_uint64 inp = args(0).xuint64_scalar_value
-    ("__pollardrho__: unable to convert input. Call factor() instead.");
+                      ("__pollardrho__: unable to convert input. Call factor() instead.");
 
   uint64_t n = inp;
   octave_uint64 retval = pollardrho (n);

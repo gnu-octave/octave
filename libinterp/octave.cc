@@ -56,378 +56,378 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  cmdline_options::cmdline_options (void)
-  {
-    m_all_args.resize (1);
-    m_all_args[0] = "";
-  }
+cmdline_options::cmdline_options (void)
+{
+  m_all_args.resize (1);
+  m_all_args[0] = "";
+}
 
-  cmdline_options::cmdline_options (int argc, char **argv)
-  {
-    // Save raw program arguments.
-    m_all_args = string_vector (argv, argc);
+cmdline_options::cmdline_options (int argc, char **argv)
+{
+  // Save raw program arguments.
+  m_all_args = string_vector (argv, argc);
 
-    while (true)
-      {
-        int long_idx;
+  while (true)
+    {
+      int long_idx;
 
-        int optc = octave_getopt_long_wrapper (argc, argv, short_opts,
-                                               long_opts, &long_idx);
+      int optc = octave_getopt_long_wrapper (argc, argv, short_opts,
+                                             long_opts, &long_idx);
 
-        if (optc < 0)
+      if (optc < 0)
+        break;
+
+      switch (optc)
+        {
+        case '?':
+          // Unrecognized option.  getopt_long already printed a message about
+          // it, so we will just print the usage string and exit.
+          octave_print_terse_usage_and_exit ();
           break;
 
-        switch (optc)
-          {
-          case '?':
-            // Unrecognized option.  getopt_long already printed a message about
-            // it, so we will just print the usage string and exit.
-            octave_print_terse_usage_and_exit ();
-            break;
+        case 'H':
+          m_read_history_file = false;
+          break;
 
-          case 'H':
-            m_read_history_file = false;
-            break;
+        case 'W':
+          m_no_window_system = true;
+          break;
 
-          case 'W':
-            m_no_window_system = true;
-            break;
+        case 'V':
+          m_verbose_flag = true;
+          break;
 
-          case 'V':
-            m_verbose_flag = true;
-            break;
+        case 'd':
+          // This is the same as yydebug in parse.y.
+          octave_debug++;
+          break;
 
-          case 'd':
-            // This is the same as yydebug in parse.y.
-            octave_debug++;
-            break;
+        case 'f':
+          m_read_init_files = false;
+          m_read_site_files = false;
+          break;
 
-          case 'f':
-            m_read_init_files = false;
-            m_read_site_files = false;
-            break;
+        case 'h':
+          octave_print_verbose_usage_and_exit ();
+          break;
 
-          case 'h':
-            octave_print_verbose_usage_and_exit ();
-            break;
+        case 'i':
+          m_forced_interactive = true;
+          break;
 
-          case 'i':
-            m_forced_interactive = true;
-            break;
+        case 'p':
+          if (octave_optarg_wrapper ())
+            m_command_line_path.push_back (octave_optarg_wrapper ());
+          break;
 
-          case 'p':
-            if (octave_optarg_wrapper ())
-              m_command_line_path.push_back (octave_optarg_wrapper ());
-            break;
+        case 'q':
+          m_inhibit_startup_message = true;
+          break;
 
-          case 'q':
-            m_inhibit_startup_message = true;
-            break;
+        case 'x':
+          m_echo_commands = true;
+          break;
 
-          case 'x':
-            m_echo_commands = true;
-            break;
+        case 'v':
+          octave_print_version_and_exit ();
+          break;
 
-          case 'v':
-            octave_print_version_and_exit ();
-            break;
+        case BUILT_IN_DOCSTRINGS_FILE_OPTION:
+          if (octave_optarg_wrapper ())
+            m_docstrings_file = octave_optarg_wrapper ();;
+          break;
 
-          case BUILT_IN_DOCSTRINGS_FILE_OPTION:
-            if (octave_optarg_wrapper ())
-              m_docstrings_file = octave_optarg_wrapper ();;
-            break;
+        case DOC_CACHE_FILE_OPTION:
+          if (octave_optarg_wrapper ())
+            m_doc_cache_file = octave_optarg_wrapper ();
+          break;
 
-          case DOC_CACHE_FILE_OPTION:
-            if (octave_optarg_wrapper ())
-              m_doc_cache_file = octave_optarg_wrapper ();
-            break;
+        case EVAL_OPTION:
+          if (octave_optarg_wrapper ())
+            {
+              if (m_code_to_eval.empty ())
+                m_code_to_eval = octave_optarg_wrapper ();
+              else
+                m_code_to_eval += (std::string (" ")
+                                   + octave_optarg_wrapper ());
+            }
+          break;
 
-          case EVAL_OPTION:
-            if (octave_optarg_wrapper ())
-              {
-                if (m_code_to_eval.empty ())
-                  m_code_to_eval = octave_optarg_wrapper ();
-                else
-                  m_code_to_eval += (std::string (" ")
-                                     + octave_optarg_wrapper ());
-              }
-            break;
+        case EXEC_PATH_OPTION:
+          if (octave_optarg_wrapper ())
+            m_exec_path = octave_optarg_wrapper ();
+          break;
 
-          case EXEC_PATH_OPTION:
-            if (octave_optarg_wrapper ())
-              m_exec_path = octave_optarg_wrapper ();
-            break;
-
-          case EXPERIMENTAL_TERMINAL_WIDGET_OPTION:
+        case EXPERIMENTAL_TERMINAL_WIDGET_OPTION:
 #if defined (HAVE_QSCINTILLA)
-            m_experimental_terminal_widget = true;
+          m_experimental_terminal_widget = true;
 #endif
-            break;
+          break;
 
-          case GUI_OPTION:
-            m_gui = true;
-            break;
+        case GUI_OPTION:
+          m_gui = true;
+          break;
 
-          case IMAGE_PATH_OPTION:
-            if (octave_optarg_wrapper ())
-              m_image_path = octave_optarg_wrapper ();
-            break;
+        case IMAGE_PATH_OPTION:
+          if (octave_optarg_wrapper ())
+            m_image_path = octave_optarg_wrapper ();
+          break;
 
-          case INFO_FILE_OPTION:
-            if (octave_optarg_wrapper ())
-              m_info_file = octave_optarg_wrapper ();
-            break;
+        case INFO_FILE_OPTION:
+          if (octave_optarg_wrapper ())
+            m_info_file = octave_optarg_wrapper ();
+          break;
 
-          case INFO_PROG_OPTION:
-            if (octave_optarg_wrapper ())
-              m_info_program = octave_optarg_wrapper ();
-            break;
+        case INFO_PROG_OPTION:
+          if (octave_optarg_wrapper ())
+            m_info_program = octave_optarg_wrapper ();
+          break;
 
-          case LINE_EDITING_OPTION:
-            m_forced_line_editing = m_line_editing = true;
-            break;
+        case LINE_EDITING_OPTION:
+          m_forced_line_editing = m_line_editing = true;
+          break;
 
-          case NO_GUI_OPTION:
-            m_gui = false;
-            break;
+        case NO_GUI_OPTION:
+          m_gui = false;
+          break;
 
-          case NO_INIT_FILE_OPTION:
-            m_read_init_files = false;
-            break;
+        case NO_INIT_FILE_OPTION:
+          m_read_init_files = false;
+          break;
 
-          case NO_INIT_PATH_OPTION:
-            m_set_initial_path = false;
-            break;
+        case NO_INIT_PATH_OPTION:
+          m_set_initial_path = false;
+          break;
 
-          case NO_LINE_EDITING_OPTION:
-            m_line_editing = false;
-            break;
+        case NO_LINE_EDITING_OPTION:
+          m_line_editing = false;
+          break;
 
-          case NO_SITE_FILE_OPTION:
-            m_read_site_files = false;
-            break;
+        case NO_SITE_FILE_OPTION:
+          m_read_site_files = false;
+          break;
 
-          case PERSIST_OPTION:
-            m_persist = true;
-            break;
+        case PERSIST_OPTION:
+          m_persist = true;
+          break;
 
-          case SERVER_OPTION:
-            m_server = true;
-            break;
+        case SERVER_OPTION:
+          m_server = true;
+          break;
 
-          case TEXI_MACROS_FILE_OPTION:
-            if (octave_optarg_wrapper ())
-              m_texi_macros_file = octave_optarg_wrapper ();
-            break;
+        case TEXI_MACROS_FILE_OPTION:
+          if (octave_optarg_wrapper ())
+            m_texi_macros_file = octave_optarg_wrapper ();
+          break;
 
-          case TRADITIONAL_OPTION:
-            m_traditional = true;
-            m_persist = true;
-            break;
+        case TRADITIONAL_OPTION:
+          m_traditional = true;
+          m_persist = true;
+          break;
 
-          default:
-            // getopt_long should print a message about unrecognized options and
-            // return '?', which is handled above.  If we end up here, it is
-            // because there was an option but we forgot to handle it.
-            // That should be fatal.
-            panic_impossible ();
-            break;
-          }
-      }
+        default:
+          // getopt_long should print a message about unrecognized options and
+          // return '?', which is handled above.  If we end up here, it is
+          // because there was an option but we forgot to handle it.
+          // That should be fatal.
+          panic_impossible ();
+          break;
+        }
+    }
 
-    m_remaining_args = string_vector (argv+octave_optind_wrapper (),
-                                      argc-octave_optind_wrapper ());
-  }
+  m_remaining_args = string_vector (argv+octave_optind_wrapper (),
+                                    argc-octave_optind_wrapper ());
+}
 
-  octave_value cmdline_options::as_octave_value (void) const
-  {
-    octave_scalar_map m;
+octave_value cmdline_options::as_octave_value (void) const
+{
+  octave_scalar_map m;
 
-    m.assign ("sys_argc", sys_argc ());
-    m.assign ("sys_argv", Cell (string_vector (sys_argv ())));
-    m.assign ("echo_commands", echo_commands ());
-    m.assign ("forced_interactive", forced_interactive ());
-    m.assign ("forced_line_editing", forced_line_editing ());
-    m.assign ("gui", gui ());
-    m.assign ("inhibit_startup_message", inhibit_startup_message ());
-    m.assign ("line_editing", line_editing ());
-    m.assign ("no_window_system", no_window_system ());
-    m.assign ("persist", persist ());
-    m.assign ("read_history_file", read_history_file ());
-    m.assign ("read_init_files", read_init_files ());
-    m.assign ("read_site_files", read_site_files ());
-    m.assign ("server", server ());
-    m.assign ("set_initial_path", set_initial_path ());
-    m.assign ("traditional", traditional ());
-    m.assign ("verbose_flag", verbose_flag ());
-    m.assign ("code_to_eval", code_to_eval ());
-    m.assign ("command_line_path", string_vector (command_line_path ()));
-    m.assign ("docstrings_file", docstrings_file ());
-    m.assign ("doc_cache_file", doc_cache_file ());
-    m.assign ("exec_path", exec_path ());
-    m.assign ("image_path", image_path ());
-    m.assign ("info_file", info_file ());
-    m.assign ("info_program", info_program ());
-    m.assign ("texi_macros_file", texi_macros_file ());
-    m.assign ("all_args", Cell (all_args ()));
-    m.assign ("remaining_args", Cell (remaining_args ()));
+  m.assign ("sys_argc", sys_argc ());
+  m.assign ("sys_argv", Cell (string_vector (sys_argv ())));
+  m.assign ("echo_commands", echo_commands ());
+  m.assign ("forced_interactive", forced_interactive ());
+  m.assign ("forced_line_editing", forced_line_editing ());
+  m.assign ("gui", gui ());
+  m.assign ("inhibit_startup_message", inhibit_startup_message ());
+  m.assign ("line_editing", line_editing ());
+  m.assign ("no_window_system", no_window_system ());
+  m.assign ("persist", persist ());
+  m.assign ("read_history_file", read_history_file ());
+  m.assign ("read_init_files", read_init_files ());
+  m.assign ("read_site_files", read_site_files ());
+  m.assign ("server", server ());
+  m.assign ("set_initial_path", set_initial_path ());
+  m.assign ("traditional", traditional ());
+  m.assign ("verbose_flag", verbose_flag ());
+  m.assign ("code_to_eval", code_to_eval ());
+  m.assign ("command_line_path", string_vector (command_line_path ()));
+  m.assign ("docstrings_file", docstrings_file ());
+  m.assign ("doc_cache_file", doc_cache_file ());
+  m.assign ("exec_path", exec_path ());
+  m.assign ("image_path", image_path ());
+  m.assign ("info_file", info_file ());
+  m.assign ("info_program", info_program ());
+  m.assign ("texi_macros_file", texi_macros_file ());
+  m.assign ("all_args", Cell (all_args ()));
+  m.assign ("remaining_args", Cell (remaining_args ()));
 
-    return m;
-  }
+  return m;
+}
 
-  application *application::s_instance = nullptr;
+application *application::s_instance = nullptr;
 
-  application::application (int argc, char **argv)
-    : m_options (argc, argv)
-  {
-    init ();
-  }
+application::application (int argc, char **argv)
+  : m_options (argc, argv)
+{
+  init ();
+}
 
-  application::application (const cmdline_options& opts)
-    : m_options (opts)
-  {
-    init ();
-  }
+application::application (const cmdline_options& opts)
+  : m_options (opts)
+{
+  init ();
+}
 
-  // Note: Although the application destructor doesn't explicitly
-  // perform any actions, it can't be declared "default" in the header
-  // file if the interpreter is an incomplete type.  Providing
-  // an explicit definition of the destructor here is much simpler than
-  // including the full declaration of interpreter in the
-  // octave.h header file.
-  application::~application (void) { }
+// Note: Although the application destructor doesn't explicitly
+// perform any actions, it can't be declared "default" in the header
+// file if the interpreter is an incomplete type.  Providing
+// an explicit definition of the destructor here is much simpler than
+// including the full declaration of interpreter in the
+// octave.h header file.
+application::~application (void) { }
 
-  void
-  application::set_program_names (const std::string& pname)
-  {
-    m_program_invocation_name = pname;
+void
+application::set_program_names (const std::string& pname)
+{
+  m_program_invocation_name = pname;
 
-    std::size_t pos = pname.find_last_of (sys::file_ops::dir_sep_chars ());
+  std::size_t pos = pname.find_last_of (sys::file_ops::dir_sep_chars ());
 
-    m_program_name = (pos != std::string::npos) ? pname.substr (pos+1) : pname;
-  }
+  m_program_name = (pos != std::string::npos) ? pname.substr (pos+1) : pname;
+}
 
-  void
-  application::intern_argv (const string_vector& args)
-  {
-    octave_idx_type nargs = args.numel ();
+void
+application::intern_argv (const string_vector& args)
+{
+  octave_idx_type nargs = args.numel ();
 
-    if (nargs > 0)
-      {
-        // Skip first argument (program name).
-        nargs--;
+  if (nargs > 0)
+    {
+      // Skip first argument (program name).
+      nargs--;
 
-        m_argv.resize (nargs);
+      m_argv.resize (nargs);
 
-        for (octave_idx_type i = 0; i < nargs; i++)
-          m_argv[i] = args[i+1];
-      }
-  }
+      for (octave_idx_type i = 0; i < nargs; i++)
+        m_argv[i] = args[i+1];
+    }
+}
 
-  bool application::forced_interactive (void)
-  {
-    return s_instance ? s_instance->m_options.forced_interactive () : false;
-  }
+bool application::forced_interactive (void)
+{
+  return s_instance ? s_instance->m_options.forced_interactive () : false;
+}
 
-  // Provided for convenience.  Will be removed once we eliminate the
-  // old terminal widget.
-  bool application::experimental_terminal_widget (void) const
-  {
-    return (s_instance
-            ? s_instance->m_options.experimental_terminal_widget () : false);
-  }
+// Provided for convenience.  Will be removed once we eliminate the
+// old terminal widget.
+bool application::experimental_terminal_widget (void) const
+{
+  return (s_instance
+          ? s_instance->m_options.experimental_terminal_widget () : false);
+}
 
-  bool application::interpreter_initialized (void)
-  {
-    return m_interpreter ? m_interpreter->initialized () : false;
-  }
+bool application::interpreter_initialized (void)
+{
+  return m_interpreter ? m_interpreter->initialized () : false;
+}
 
-  interpreter& application::create_interpreter (void)
-  {
-    if (! m_interpreter)
-      m_interpreter = std::unique_ptr<interpreter> (new interpreter (this));
+interpreter& application::create_interpreter (void)
+{
+  if (! m_interpreter)
+    m_interpreter = std::unique_ptr<interpreter> (new interpreter (this));
 
-    return *m_interpreter;
-  }
+  return *m_interpreter;
+}
 
-  void application::initialize_interpreter (void)
-  {
-    if (m_interpreter)
-      m_interpreter->initialize ();
-  }
+void application::initialize_interpreter (void)
+{
+  if (m_interpreter)
+    m_interpreter->initialize ();
+}
 
-  int application::execute_interpreter (void)
-  {
-    return m_interpreter ? m_interpreter->execute () : -1;
-  }
+int application::execute_interpreter (void)
+{
+  return m_interpreter ? m_interpreter->execute () : -1;
+}
 
-  void application::delete_interpreter (void)
-  {
-    m_interpreter.reset ();
-  }
+void application::delete_interpreter (void)
+{
+  m_interpreter.reset ();
+}
 
-  void application::init (void)
-  {
-    if (s_instance)
-      throw std::runtime_error
-        ("only one Octave application object may be active");
+void application::init (void)
+{
+  if (s_instance)
+    throw std::runtime_error
+    ("only one Octave application object may be active");
 
-    s_instance = this;
+  s_instance = this;
 
-    string_vector all_args = m_options.all_args ();
+  string_vector all_args = m_options.all_args ();
 
-    set_program_names (all_args[0]);
+  set_program_names (all_args[0]);
 
-    string_vector remaining_args = m_options.remaining_args ();
+  string_vector remaining_args = m_options.remaining_args ();
 
-    std::string code_to_eval = m_options.code_to_eval ();
+  std::string code_to_eval = m_options.code_to_eval ();
 
-    m_have_script_file = ! remaining_args.empty ();
+  m_have_script_file = ! remaining_args.empty ();
 
-    m_have_eval_option_code = ! code_to_eval.empty ();
+  m_have_eval_option_code = ! code_to_eval.empty ();
 
-    if (m_have_eval_option_code && m_have_script_file)
-      {
-        std::cerr << R"(error: --eval "CODE" and script file are mutually exclusive options)" << std::endl;
+  if (m_have_eval_option_code && m_have_script_file)
+    {
+      std::cerr << R"(error: --eval "CODE" and script file are mutually exclusive options)" << std::endl;
 
-        octave_print_terse_usage_and_exit ();
-      }
+      octave_print_terse_usage_and_exit ();
+    }
 
-    if (m_options.gui ())
-      {
-        if (m_options.no_window_system ())
-          {
-            std::cerr << "error: --gui and --no-window-system are mutually exclusive options" << std::endl;
-            octave_print_terse_usage_and_exit ();
-          }
-        if (! m_options.line_editing ())
-          {
-            std::cerr << "error: --gui and --no-line-editing are mutually exclusive options" << std::endl;
-            octave_print_terse_usage_and_exit ();
-          }
-        if (m_options.server ())
-          {
-            std::cerr << "error: --gui and --server are mutually exclusive options" << std::endl;
-            octave_print_terse_usage_and_exit ();
-          }
-      }
+  if (m_options.gui ())
+    {
+      if (m_options.no_window_system ())
+        {
+          std::cerr << "error: --gui and --no-window-system are mutually exclusive options" << std::endl;
+          octave_print_terse_usage_and_exit ();
+        }
+      if (! m_options.line_editing ())
+        {
+          std::cerr << "error: --gui and --no-line-editing are mutually exclusive options" << std::endl;
+          octave_print_terse_usage_and_exit ();
+        }
+      if (m_options.server ())
+        {
+          std::cerr << "error: --gui and --server are mutually exclusive options" << std::endl;
+          octave_print_terse_usage_and_exit ();
+        }
+    }
 
-    m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
-                           && ! m_options.persist ()
-                           && ! m_options.traditional ());
+  m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
+                         && ! m_options.persist ()
+                         && ! m_options.traditional ());
 
-    // This should probably happen early.
-    sysdep_init ();
-  }
+  // This should probably happen early.
+  sysdep_init ();
+}
 
-  int cli_application::execute (void)
-  {
-    interpreter& interp = create_interpreter ();
+int cli_application::execute (void)
+{
+  interpreter& interp = create_interpreter ();
 
-    int status = interp.execute ();
+  int status = interp.execute ();
 
-    return status;
-  }
+  return status;
+}
 
 DEFUN (isguirunning, args, ,
        doc: /* -*- texinfo -*-

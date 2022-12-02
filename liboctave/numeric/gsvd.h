@@ -32,84 +32,84 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    class
-    OCTAVE_API
-    gsvd
-    {
-    public:
+template <typename T>
+class
+OCTAVE_API
+gsvd
+{
+public:
 
-      enum class Type
+  enum class Type
+  {
+    std,
+    economy,
+    sigma_only
+  };
+
+  gsvd (void) : m_sigmaA (), m_sigmaB (), m_left_smA (), m_left_smB (), m_right_sm ()
+  { }
+
+  gsvd (const T& a, const T& b,
+        gsvd::Type gsvd_type = gsvd<T>::Type::std);
+
+  gsvd (const gsvd& a)
+    : m_type (a.m_type),
+      m_sigmaA (a.m_sigmaA), m_sigmaB (a.m_sigmaB),
+      m_left_smA (a.m_left_smA), m_left_smB (a.m_left_smB), m_right_sm (a.m_right_sm)
+  { }
+
+  gsvd& operator = (const gsvd& a)
+  {
+    if (this != &a)
       {
-        std,
-        economy,
-        sigma_only
-      };
-
-      gsvd (void) : m_sigmaA (), m_sigmaB (), m_left_smA (), m_left_smB (), m_right_sm ()
-      { }
-
-      gsvd (const T& a, const T& b,
-            gsvd::Type gsvd_type = gsvd<T>::Type::std);
-
-      gsvd (const gsvd& a)
-        : m_type (a.m_type),
-          m_sigmaA (a.m_sigmaA), m_sigmaB (a.m_sigmaB),
-          m_left_smA (a.m_left_smA), m_left_smB (a.m_left_smB), m_right_sm (a.m_right_sm)
-      { }
-
-      gsvd& operator = (const gsvd& a)
-      {
-        if (this != &a)
-          {
-            m_type = a.m_type;
-            m_sigmaA = a.m_sigmaA;
-            m_sigmaB = a.m_sigmaB;
-            m_left_smA = a.m_left_smA;
-            m_left_smB = a.m_left_smB;
-            m_right_sm = a.m_right_sm;
-          }
-
-        return *this;
+        m_type = a.m_type;
+        m_sigmaA = a.m_sigmaA;
+        m_sigmaB = a.m_sigmaB;
+        m_left_smA = a.m_left_smA;
+        m_left_smB = a.m_left_smB;
+        m_right_sm = a.m_right_sm;
       }
 
-      ~gsvd (void) = default;
+    return *this;
+  }
 
-      typename T::real_matrix_type
-      singular_values_A (void) const { return m_sigmaA; }
+  ~gsvd (void) = default;
 
-      typename T::real_matrix_type
-      singular_values_B (void) const { return m_sigmaB; }
+  typename T::real_matrix_type
+  singular_values_A (void) const { return m_sigmaA; }
 
-      T left_singular_matrix_A (void) const;
-      T left_singular_matrix_B (void) const;
+  typename T::real_matrix_type
+  singular_values_B (void) const { return m_sigmaB; }
 
-      T right_singular_matrix (void) const;
+  T left_singular_matrix_A (void) const;
+  T left_singular_matrix_B (void) const;
 
-    private:
-      typedef typename T::value_type P;
-      typedef typename T::real_matrix_type real_matrix;
+  T right_singular_matrix (void) const;
 
-      void ggsvd (char& jobu, char& jobv, char& jobq, octave_f77_int_type m,
-                  octave_f77_int_type n, octave_f77_int_type p,
-                  octave_f77_int_type& k, octave_f77_int_type& l,
-                  P *tmp_dataA, octave_f77_int_type m1,
-                  P *tmp_dataB, octave_f77_int_type p1,
-                  real_matrix& alpha, real_matrix& beta,
-                  P *u, octave_f77_int_type nrow_u,
-                  P *v, octave_f77_int_type nrow_v,
-                  P *q, octave_f77_int_type nrow_q,
-                  P *work, octave_f77_int_type lwork,
-                  octave_f77_int_type *iwork,
-                  octave_f77_int_type& info);
+private:
+  typedef typename T::value_type P;
+  typedef typename T::real_matrix_type real_matrix;
 
-      //--------
+  void ggsvd (char& jobu, char& jobv, char& jobq, octave_f77_int_type m,
+              octave_f77_int_type n, octave_f77_int_type p,
+              octave_f77_int_type& k, octave_f77_int_type& l,
+              P *tmp_dataA, octave_f77_int_type m1,
+              P *tmp_dataB, octave_f77_int_type p1,
+              real_matrix& alpha, real_matrix& beta,
+              P *u, octave_f77_int_type nrow_u,
+              P *v, octave_f77_int_type nrow_v,
+              P *q, octave_f77_int_type nrow_q,
+              P *work, octave_f77_int_type lwork,
+              octave_f77_int_type *iwork,
+              octave_f77_int_type& info);
 
-      gsvd::Type m_type;
-      real_matrix m_sigmaA, m_sigmaB;
-      T m_left_smA, m_left_smB;
-      T m_right_sm;
-    };
+  //--------
+
+  gsvd::Type m_type;
+  real_matrix m_sigmaA, m_sigmaB;
+  T m_left_smA, m_left_smB;
+  T m_right_sm;
+};
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

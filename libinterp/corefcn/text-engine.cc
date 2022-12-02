@@ -32,15 +32,15 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  uint32_t
-  text_element_symbol::get_symbol_code (void) const
-  {
-    uint32_t code = invalid_code;
+uint32_t
+text_element_symbol::get_symbol_code (void) const
+{
+  uint32_t code = invalid_code;
 
-    if (0 <= m_symbol && m_symbol < num_symbol_codes)
-      code = symbol_codes[m_symbol][0];
+  if (0 <= m_symbol && m_symbol < num_symbol_codes)
+    code = symbol_codes[m_symbol][0];
 
-    return code;
-  }
+  return code;
+}
 
 OCTAVE_END_NAMESPACE(octave)

@@ -341,7 +341,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   std::string old_locale (prev_locale ? prev_locale : "");
   std::setlocale (LC_ALL, "C");
   unwind_action act
-    ([old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
+  ([old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
 
   std::string line;
 

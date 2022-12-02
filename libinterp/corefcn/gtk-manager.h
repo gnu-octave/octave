@@ -37,94 +37,94 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class OCTINTERP_API gtk_manager
+class OCTINTERP_API gtk_manager
+{
+public:
+
+  gtk_manager (void) { }
+
+  ~gtk_manager (void)
   {
-  public:
+    unload_all_toolkits ();
+  }
 
-    gtk_manager (void) { }
+  graphics_toolkit get_toolkit (void) const;
 
-    ~gtk_manager (void)
-    {
-      unload_all_toolkits ();
-    }
+  void register_toolkit (const std::string& name);
 
-    graphics_toolkit get_toolkit (void) const;
+  void unregister_toolkit (const std::string& name);
 
-    void register_toolkit (const std::string& name);
+  void load_toolkit (const graphics_toolkit& tk)
+  {
+    m_loaded_toolkits[tk.get_name ()] = tk;
+  }
 
-    void unregister_toolkit (const std::string& name);
+  void unload_toolkit (const std::string& name)
+  {
+    m_loaded_toolkits.erase (name);
+  }
 
-    void load_toolkit (const graphics_toolkit& tk)
-    {
-      m_loaded_toolkits[tk.get_name ()] = tk;
-    }
+  graphics_toolkit find_toolkit (const std::string& name) const
+  {
+    auto p = m_loaded_toolkits.find (name);
 
-    void unload_toolkit (const std::string& name)
-    {
-      m_loaded_toolkits.erase (name);
-    }
+    if (p != m_loaded_toolkits.end ())
+      return p->second;
+    else
+      return graphics_toolkit ();
+  }
 
-    graphics_toolkit find_toolkit (const std::string& name) const
-    {
-      auto p = m_loaded_toolkits.find (name);
+  Cell available_toolkits_list (void) const
+  {
+    Cell m (1, m_available_toolkits.size ());
 
-      if (p != m_loaded_toolkits.end ())
-        return p->second;
-      else
-        return graphics_toolkit ();
-    }
+    octave_idx_type i = 0;
+    for (const auto& tkit : m_available_toolkits)
+      m(i++) = tkit;
 
-    Cell available_toolkits_list (void) const
-    {
-      Cell m (1, m_available_toolkits.size ());
+    return m;
+  }
 
-      octave_idx_type i = 0;
-      for (const auto& tkit : m_available_toolkits)
-        m(i++) = tkit;
+  Cell loaded_toolkits_list (void) const
+  {
+    Cell m (1, m_loaded_toolkits.size ());
 
-      return m;
-    }
+    octave_idx_type i = 0;
+    for (const auto& nm_tkit_p : m_loaded_toolkits)
+      m(i++) = nm_tkit_p.first;
 
-    Cell loaded_toolkits_list (void) const
-    {
-      Cell m (1, m_loaded_toolkits.size ());
+    return m;
+  }
 
-      octave_idx_type i = 0;
-      for (const auto& nm_tkit_p : m_loaded_toolkits)
-        m(i++) = nm_tkit_p.first;
+  void unload_all_toolkits (void)
+  {
+    while (! m_loaded_toolkits.empty ())
+      {
+        auto p = m_loaded_toolkits.begin ();
 
-      return m;
-    }
+        std::string name = p->first;
 
-    void unload_all_toolkits (void)
-    {
-      while (! m_loaded_toolkits.empty ())
-        {
-          auto p = m_loaded_toolkits.begin ();
+        p->second.close ();
 
-          std::string name = p->first;
+        // The toolkit may have unloaded itself.  If not, we'll do it here.
+        if (m_loaded_toolkits.find (name) != m_loaded_toolkits.end ())
+          unload_toolkit (name);
+      }
+  }
 
-          p->second.close ();
+  std::string default_toolkit (void) const { return m_dtk; }
 
-          // The toolkit may have unloaded itself.  If not, we'll do it here.
-          if (m_loaded_toolkits.find (name) != m_loaded_toolkits.end ())
-            unload_toolkit (name);
-        }
-    }
+private:
 
-    std::string default_toolkit (void) const { return m_dtk; }
+  // The name of the default toolkit.
+  std::string m_dtk;
 
-  private:
+  // The list of toolkits that we know about.
+  std::set<std::string> m_available_toolkits;
 
-    // The name of the default toolkit.
-    std::string m_dtk;
-
-    // The list of toolkits that we know about.
-    std::set<std::string> m_available_toolkits;
-
-    // The list of toolkits we have actually loaded.
-    std::map<std::string, graphics_toolkit> m_loaded_toolkits;
-  };
+  // The list of toolkits we have actually loaded.
+  std::map<std::string, graphics_toolkit> m_loaded_toolkits;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

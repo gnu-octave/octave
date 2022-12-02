@@ -41,69 +41,69 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    class
-    schur
-    {
-    public:
+template <typename T>
+class
+schur
+{
+public:
 
-      schur (void) : m_schur_mat (), m_unitary_schur_mat () { }
+  schur (void) : m_schur_mat (), m_unitary_schur_mat () { }
 
-      schur (const T& a, const std::string& ord, bool calc_unitary = true)
-        : m_schur_mat (), m_unitary_schur_mat ()
+  schur (const T& a, const std::string& ord, bool calc_unitary = true)
+    : m_schur_mat (), m_unitary_schur_mat ()
+  {
+    init (a, ord, calc_unitary);
+  }
+
+  schur (const T& a, const std::string& ord, octave_f77_int_type& info,
+         bool calc_unitary = true)
+    : m_schur_mat (), m_unitary_schur_mat ()
+  {
+    info = init (a, ord, calc_unitary);
+  }
+
+  // This one should really be protected or private but we need it in
+  // rsf2csf and I don't see how to make that function a friend of
+  // this class.
+  schur (const T& s, const T& u) : m_schur_mat (s), m_unitary_schur_mat (u)
+  { }
+
+  schur (const schur& a)
+    : m_schur_mat (a.m_schur_mat),
+      m_unitary_schur_mat (a.m_unitary_schur_mat)
+  { }
+
+  schur& operator = (const schur& a)
+  {
+    if (this != &a)
       {
-        init (a, ord, calc_unitary);
+        m_schur_mat = a.m_schur_mat;
+        m_unitary_schur_mat = a.m_unitary_schur_mat;
       }
 
-      schur (const T& a, const std::string& ord, octave_f77_int_type& info,
-             bool calc_unitary = true)
-        : m_schur_mat (), m_unitary_schur_mat ()
-      {
-        info = init (a, ord, calc_unitary);
-      }
+    return *this;
+  }
 
-      // This one should really be protected or private but we need it in
-      // rsf2csf and I don't see how to make that function a friend of
-      // this class.
-      schur (const T& s, const T& u) : m_schur_mat (s), m_unitary_schur_mat (u)
-      { }
+  ~schur (void) = default;
 
-      schur (const schur& a)
-        : m_schur_mat (a.m_schur_mat),
-          m_unitary_schur_mat (a.m_unitary_schur_mat)
-      { }
+  T schur_matrix (void) const { return m_schur_mat; }
 
-      schur& operator = (const schur& a)
-      {
-        if (this != &a)
-          {
-            m_schur_mat = a.m_schur_mat;
-            m_unitary_schur_mat = a.m_unitary_schur_mat;
-          }
+  T unitary_schur_matrix (void) const { return m_unitary_schur_mat; }
 
-        return *this;
-      }
+protected:
 
-      ~schur (void) = default;
+private:
 
-      T schur_matrix (void) const { return m_schur_mat; }
+  T m_schur_mat;
+  T m_unitary_schur_mat;
 
-      T unitary_schur_matrix (void) const { return m_unitary_schur_mat; }
+  OCTAVE_API octave_f77_int_type
+  init (const T& a, const std::string& ord, bool calc_unitary);
+};
 
-    protected:
-
-    private:
-
-      T m_schur_mat;
-      T m_unitary_schur_mat;
-
-      OCTAVE_API octave_f77_int_type
-      init (const T& a, const std::string& ord, bool calc_unitary);
-    };
-
-    template <typename RT, typename AT>
-    extern OCTAVE_API schur<RT>
-    rsf2csf (const AT& s, const AT& u);
+template <typename RT, typename AT>
+extern OCTAVE_API schur<RT>
+rsf2csf (const AT& s, const AT& u);
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

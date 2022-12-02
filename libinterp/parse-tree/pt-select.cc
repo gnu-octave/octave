@@ -33,41 +33,41 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // If clauses.
+// If clauses.
 
-  tree_if_clause::~tree_if_clause (void)
-  {
-    delete m_expr;
-    delete m_list;
-    delete m_lead_comm;
-  }
+tree_if_clause::~tree_if_clause (void)
+{
+  delete m_expr;
+  delete m_list;
+  delete m_lead_comm;
+}
 
-  // If.
+// If.
 
-  tree_if_command::~tree_if_command (void)
-  {
-    delete m_list;
-    delete m_lead_comm;
-    delete m_trail_comm;
-  }
+tree_if_command::~tree_if_command (void)
+{
+  delete m_list;
+  delete m_lead_comm;
+  delete m_trail_comm;
+}
 
-  // Switch cases.
+// Switch cases.
 
-  tree_switch_case::~tree_switch_case (void)
-  {
-    delete m_label;
-    delete m_list;
-    delete m_lead_comm;
-  }
+tree_switch_case::~tree_switch_case (void)
+{
+  delete m_label;
+  delete m_list;
+  delete m_lead_comm;
+}
 
-  // Switch.
+// Switch.
 
-  tree_switch_command::~tree_switch_command (void)
-  {
-    delete m_expr;
-    delete m_list;
-    delete m_lead_comm;
-    delete m_trail_comm;
-  }
+tree_switch_command::~tree_switch_command (void)
+{
+  delete m_expr;
+  delete m_list;
+  delete m_lead_comm;
+  delete m_trail_comm;
+}
 
 OCTAVE_END_NAMESPACE(octave)

@@ -798,7 +798,7 @@ public:
                                  ww - 5 * m_status_h, hh);
 
     // See http://fltk.org/articles.php?L415+I0+T+M1000+P1
-    // for how resizable works
+                // for how resizable works
     resizable (m_resize_dummy);
 
     // FIXME: The function below is only available in FLTK >= 1.3
@@ -1523,9 +1523,9 @@ private:
               int e_key = Fl::event_key ();
               char e_text = Fl::event_text ()[0];
               key_resent_detected = (e_key == last_event_key
-                  && std::tolower (last_event_text) == std::tolower (e_text)
-                  && ((islower (last_event_text) && isupper (e_text))
-                      || (isupper (last_event_text) && islower (e_text))));
+                                     && std::tolower (last_event_text) == std::tolower (e_text)
+                                     && ((islower (last_event_text) && isupper (e_text))
+                                         || (isupper (last_event_text) && islower (e_text))));
 
               last_event_key = e_key;
               last_event_text = e_text;
@@ -1763,8 +1763,8 @@ private:
               {
                 graphics_object ax
                   = gh_mgr.get_object (pixel2axes_or_ca (Fl::event_x (),
-                                                         Fl::event_y ()
-                                                         - menu_dy ()));
+                                       Fl::event_y ()
+                                       - menu_dy ()));
                 if (ax && ax.isa ("axes"))
                   {
                     axes::properties& ap
@@ -2061,7 +2061,7 @@ private:
         idx2figprops (curr_index, fp);
 
         windows[curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3),
-                                                 fp, internal);
+            fp, internal);
       }
   }
 
@@ -2341,12 +2341,12 @@ public:
               {
               case base_properties::ID_VISIBLE:
                 figure_manager::toggle_window_visibility (ov.string_value (),
-                                                          fp.is_visible ());
+                    fp.is_visible ());
                 break;
 
               case figure::properties::ID_MENUBAR:
                 figure_manager::toggle_menubar_visibility
-                  (ov.string_value (), fp.menubar_is ("figure"));
+                (ov.string_value (), fp.menubar_is ("figure"));
                 break;
 
               case figure::properties::ID_CURRENTAXES:
@@ -2439,16 +2439,16 @@ public:
     return figure_manager::get_size (fh);
   }
 
-/*
-  double get_screen_resolution (void) const
-  {
-    // FLTK doesn't give this info.
-    return 72.0;
+  /*
+    double get_screen_resolution (void) const
+    {
+      // FLTK doesn't give this info.
+      return 72.0;
 
-    // FIXME: FLTK >= 1.3.0 could do this with Fl::screen_dpi (h, v, n)
-    // but do we need it?
-  }
-*/
+      // FIXME: FLTK >= 1.3.0 could do this with Fl::screen_dpi (h, v, n)
+      // but do we need it?
+    }
+  */
 
   Matrix get_screen_size (void) const
   {

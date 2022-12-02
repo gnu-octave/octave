@@ -41,113 +41,113 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Argument lists.
+// Argument lists.
 
-  tree_argument_list::~tree_argument_list (void)
-  {
-    while (! empty ())
-      {
-        auto p = begin ();
-        delete *p;
-        erase (p);
-      }
-  }
+tree_argument_list::~tree_argument_list (void)
+{
+  while (! empty ())
+    {
+      auto p = begin ();
+      delete *p;
+      erase (p);
+    }
+}
 
-  void
-  tree_argument_list::append (const element_type& s)
-  {
-    base_list<tree_expression *>::append (s);
+void
+tree_argument_list::append (const element_type& s)
+{
+  base_list<tree_expression *>::append (s);
 
-    if (! m_list_includes_magic_tilde && s && s->is_identifier ())
-      {
-        tree_identifier *id = dynamic_cast<tree_identifier *> (s);
-        m_list_includes_magic_tilde = id && id->is_black_hole ();
-      }
-  }
+  if (! m_list_includes_magic_tilde && s && s->is_identifier ())
+    {
+      tree_identifier *id = dynamic_cast<tree_identifier *> (s);
+      m_list_includes_magic_tilde = id && id->is_black_hole ();
+    }
+}
 
-  bool
-  tree_argument_list::all_elements_are_constant (void) const
-  {
-    for (const tree_expression *elt : *this)
-      {
-        if (! elt->is_constant ())
-          return false;
-      }
+bool
+tree_argument_list::all_elements_are_constant (void) const
+{
+  for (const tree_expression *elt : *this)
+    {
+      if (! elt->is_constant ())
+        return false;
+    }
 
-    return true;
-  }
+  return true;
+}
 
-  bool
-  tree_argument_list::is_valid_lvalue_list (void) const
-  {
-    bool retval = true;
+bool
+tree_argument_list::is_valid_lvalue_list (void) const
+{
+  bool retval = true;
 
-    for (const tree_expression *elt : *this)
-      {
-        // There is no need for a separate check for the magic "~" because it
-        // is represented by tree_black_hole, and that is derived from
-        // tree_identifier.
-        if (! (elt->is_identifier () || elt->is_index_expression ()))
-          {
-            retval = false;
-            break;
-          }
-      }
+  for (const tree_expression *elt : *this)
+    {
+      // There is no need for a separate check for the magic "~" because it
+      // is represented by tree_black_hole, and that is derived from
+      // tree_identifier.
+      if (! (elt->is_identifier () || elt->is_index_expression ()))
+        {
+          retval = false;
+          break;
+        }
+    }
 
-    return retval;
-  }
+  return retval;
+}
 
-  string_vector
-  tree_argument_list::get_arg_names (void) const
-  {
-    int len = length ();
+string_vector
+tree_argument_list::get_arg_names (void) const
+{
+  int len = length ();
 
-    string_vector retval (len);
+  string_vector retval (len);
 
-    int k = 0;
+  int k = 0;
 
-    for (tree_expression *elt : *this)
-      retval(k++) = elt->str_print_code ();
+  for (tree_expression *elt : *this)
+    retval(k++) = elt->str_print_code ();
 
-    return retval;
-  }
+  return retval;
+}
 
-  std::list<std::string>
-  tree_argument_list::variable_names (void) const
-  {
-    std::list<std::string> retval;
+std::list<std::string>
+tree_argument_list::variable_names (void) const
+{
+  std::list<std::string> retval;
 
-    for (tree_expression *elt : *this)
-      {
-        if (elt->is_identifier ())
-          {
-            tree_identifier *id = dynamic_cast<tree_identifier *> (elt);
+  for (tree_expression *elt : *this)
+    {
+      if (elt->is_identifier ())
+        {
+          tree_identifier *id = dynamic_cast<tree_identifier *> (elt);
 
-            retval.push_back (id->name ());
-          }
-        else if (elt->is_index_expression ())
-          {
-            tree_index_expression *idx_expr
-              = dynamic_cast<tree_index_expression *> (elt);
+          retval.push_back (id->name ());
+        }
+      else if (elt->is_index_expression ())
+        {
+          tree_index_expression *idx_expr
+            = dynamic_cast<tree_index_expression *> (elt);
 
-            retval.push_back (idx_expr->name ());
-          }
-      }
+          retval.push_back (idx_expr->name ());
+        }
+    }
 
-    return retval;
-  }
+  return retval;
+}
 
-  tree_argument_list *
-  tree_argument_list::dup (symbol_scope& scope) const
-  {
-    tree_argument_list *new_list = new tree_argument_list ();
+tree_argument_list *
+tree_argument_list::dup (symbol_scope& scope) const
+{
+  tree_argument_list *new_list = new tree_argument_list ();
 
-    new_list->m_simple_assign_lhs = m_simple_assign_lhs;
+  new_list->m_simple_assign_lhs = m_simple_assign_lhs;
 
-    for (const tree_expression *elt : *this)
-      new_list->append (elt ? elt->dup (scope) : nullptr);
+  for (const tree_expression *elt : *this)
+    new_list->append (elt ? elt->dup (scope) : nullptr);
 
-    return new_list;
-  }
+  return new_list;
+}
 
 OCTAVE_END_NAMESPACE(octave)

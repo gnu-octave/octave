@@ -135,7 +135,7 @@ public:
                const std::string& encoding = "utf-8",
                c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
     : tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
-       (n, f, f ? fileno (f) : -1, m, ff, encoding, cf) { }
+      (n, f, f ? fileno (f) : -1, m, ff, encoding, cf) { }
 
   static stream
   create (const std::string& n, FILE *f = nullptr,
@@ -172,7 +172,7 @@ public:
                 const std::string& encoding = "utf-8",
                 c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)
     : tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
-       (n, f, fid, m, ff, encoding, cf) { }
+      (n, f, fid, m, ff, encoding, cf) { }
 
   static stream
   create (const std::string& n, gzFile f = nullptr, int fid = 0,

@@ -196,30 +196,30 @@ Undocumented internal function.
       octave_idx_type i = 0;
 
       FORALLfacets
-        {
-          if (! facet->upperdelaunay)
-            nf++;
+      {
+        if (! facet->upperdelaunay)
+          nf++;
 
-          // Double check.  Non-simplicial facets will cause segfault below
-          if (! facet->simplicial)
-            error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
-        }
+        // Double check.  Non-simplicial facets will cause segfault below
+        if (! facet->simplicial)
+          error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
+      }
 
       Matrix simpl (nf, dim+1);
 
       FORALLfacets
-        {
-          if (! facet->upperdelaunay)
-            {
-              octave_idx_type j = 0;
+      {
+        if (! facet->upperdelaunay)
+          {
+            octave_idx_type j = 0;
 
-              FOREACHvertex_ (facet->vertices)
-                {
-                  simpl(i, j++) = 1 + qh_pointid(qh, vertex->point);
-                }
-              i++;
+            FOREACHvertex_ (facet->vertices)
+            {
+              simpl(i, j++) = 1 + qh_pointid(qh, vertex->point);
             }
-        }
+            i++;
+          }
+      }
 
       retval(0) = simpl;
     }

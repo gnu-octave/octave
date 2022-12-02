@@ -87,7 +87,7 @@ public:
         octave_idx_type i = 0;
 
         for (const auto& val : container)
-          elem(i++,0) = val;
+          elem(i++, 0) = val;
       }
   }
 

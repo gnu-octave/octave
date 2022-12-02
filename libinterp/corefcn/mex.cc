@@ -181,8 +181,8 @@ extern "C"
 
   extern OCTINTERP_API mxArray *
   mxCreateUninitNumericMatrix_interleaved (mwSize m, mwSize n,
-                                           mxClassID class_id,
-                                           mxComplexity flag);
+      mxClassID class_id,
+      mxComplexity flag);
 
   extern OCTINTERP_API mxArray *
   mxCreateSparse_interleaved (mwSize m, mwSize n, mwSize nzmax,
@@ -352,7 +352,7 @@ private:
     return ptr;
   }
 
-  void do_deallocate (void* ptr, std::size_t /*bytes*/,
+  void do_deallocate (void *ptr, std::size_t /*bytes*/,
                       std::size_t /*alignment*/)
   {
     xfree (ptr);
@@ -378,7 +378,7 @@ private:
     return ptr;
   }
 
-  void do_deallocate (void* /*ptr*/, std::size_t /*bytes*/,
+  void do_deallocate (void * /*ptr*/, std::size_t /*bytes*/,
                       std::size_t /*alignment*/)
   { }
 
@@ -596,7 +596,7 @@ public:
         m_ndims = m_val.ndims ();
 
         m_dims = static_cast<mwSize *> (mxArray::malloc (m_ndims
-                                                         * sizeof (mwSize)));
+                                        * sizeof (mwSize)));
 
         dim_vector dv = m_val.dims ();
 
@@ -2639,20 +2639,21 @@ protected:
 
     if (current_mx_memory_resource == &the_mx_deleting_memory_resource)
       {
-        octave::unwind_action act ([=] () {
+        octave::unwind_action act ([=] ()
+        {
           maybe_disown_ptr (m_pr);
           maybe_disown_ptr (m_ir);
           maybe_disown_ptr (m_jc);
         });
 
         return octave_value
-          (Sparse<ELT_T> (dv,  static_cast<octave_idx_type> (m_nzmax),
-                          ppr, m_ir, m_jc, current_mx_memory_resource));
+               (Sparse<ELT_T> (dv,  static_cast<octave_idx_type> (m_nzmax),
+                               ppr, m_ir, m_jc, current_mx_memory_resource));
       }
     else
       return octave_value
-        (Sparse<ELT_T> (dv,  static_cast<octave_idx_type> (m_nzmax),
-                        ppr, m_ir, m_jc, current_mx_memory_resource));
+             (Sparse<ELT_T> (dv,  static_cast<octave_idx_type> (m_nzmax),
+                             ppr, m_ir, m_jc, current_mx_memory_resource));
 #else
 
     // Copy data instead of allowing the octave_value object to borrow
@@ -2848,10 +2849,10 @@ public:
     : mxArray_matlab (interleaved, mxSTRUCT_CLASS, ndims, dims),
       m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
-                                                       sizeof (char *)))),
-      m_data (static_cast<mxArray **> (mxArray::calloc (m_nfields *
-                                                        get_number_of_elements (),
-                                                        sizeof (mxArray *))))
+                                      sizeof (char *)))),
+      m_data (static_cast<mxArray * *> (mxArray::calloc (m_nfields *
+                                        get_number_of_elements (),
+                                        sizeof (mxArray *))))
   {
     init (keys);
   }
@@ -2861,10 +2862,10 @@ public:
     : mxArray_matlab (interleaved, mxSTRUCT_CLASS, dv),
       m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
-                                                       sizeof (char *)))),
-      m_data (static_cast<mxArray **> (mxArray::calloc (m_nfields *
-                                                        get_number_of_elements (),
-                                                        sizeof (mxArray *))))
+                                      sizeof (char *)))),
+      m_data (static_cast<mxArray * *> (mxArray::calloc (m_nfields *
+                                        get_number_of_elements (),
+                                        sizeof (mxArray *))))
   {
     init (keys);
   }
@@ -2874,10 +2875,10 @@ public:
     : mxArray_matlab (interleaved, mxSTRUCT_CLASS, m, n),
       m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
-                                                       sizeof (char *)))),
-      m_data (static_cast<mxArray **> (mxArray::calloc (m_nfields *
-                                                        get_number_of_elements (),
-                                                        sizeof (mxArray *))))
+                                      sizeof (char *)))),
+      m_data (static_cast<mxArray * *> (mxArray::calloc (m_nfields *
+                                        get_number_of_elements (),
+                                        sizeof (mxArray *))))
   {
     init (keys);
   }
@@ -2887,10 +2888,10 @@ private:
   mxArray_struct (const mxArray_struct& val)
     : mxArray_matlab (val), m_nfields (val.m_nfields),
       m_fields (static_cast<char **> (mxArray::malloc (m_nfields
-                                                       * sizeof (char *)))),
-      m_data (static_cast<mxArray **> (mxArray::malloc (m_nfields *
-                                                        get_number_of_elements ()
-                                                        * sizeof (mxArray *))))
+                                      * sizeof (char *)))),
+      m_data (static_cast<mxArray * *> (mxArray::malloc (m_nfields *
+                                        get_number_of_elements ()
+                                        * sizeof (mxArray *))))
   {
     for (int i = 0; i < m_nfields; i++)
       m_fields[i] = mxArray::strsave (val.m_fields[i]);
@@ -2941,7 +2942,7 @@ public:
     m_nfields++;
 
     m_fields = static_cast<char **>
-      (mxRealloc (m_fields, m_nfields * sizeof (char *)));
+               (mxRealloc (m_fields, m_nfields * sizeof (char *)));
 
     if (m_fields)
       {
@@ -2953,7 +2954,7 @@ public:
 
         mxArray **new_data;
         new_data = static_cast<mxArray **>
-          (mxArray::malloc (ntot * sizeof (mxArray *)));
+                   (mxArray::malloc (ntot * sizeof (mxArray *)));
 
         if (new_data)
           {
@@ -2994,11 +2995,11 @@ public:
         int new_nfields = m_nfields - 1;
 
         char **new_fields = static_cast<char **>
-                             (mxArray::malloc (new_nfields * sizeof (char *)));
+                            (mxArray::malloc (new_nfields * sizeof (char *)));
 
         mxArray **new_data = static_cast<mxArray **>
-                              (mxArray::malloc (new_nfields * nel
-                                                * sizeof (mxArray *)));
+                             (mxArray::malloc (new_nfields * nel
+                                               * sizeof (mxArray *)));
 
         for (int i = 0; i < key_num; i++)
           new_fields[i] = m_fields[i];
@@ -3112,28 +3113,28 @@ public:
 
   mxArray_cell (bool interleaved, mwSize ndims, const mwSize *dims)
     : mxArray_matlab (interleaved, mxCELL_CLASS, ndims, dims),
-      m_data (static_cast<mxArray **> (
-              mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
+      m_data (static_cast<mxArray * *> (
+                mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }
 
   mxArray_cell (bool interleaved, const dim_vector& dv)
     : mxArray_matlab (interleaved, mxCELL_CLASS, dv),
-      m_data (static_cast<mxArray **> (
-              mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
+      m_data (static_cast<mxArray * *> (
+                mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }
 
   mxArray_cell (bool interleaved, mwSize m, mwSize n)
     : mxArray_matlab (interleaved, mxCELL_CLASS, m, n),
-      m_data (static_cast<mxArray **> (
-              mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
+      m_data (static_cast<mxArray * *> (
+                mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }
 
 private:
 
   mxArray_cell (const mxArray_cell& val)
     : mxArray_matlab (val),
-      m_data (static_cast<mxArray **> (
-              mxArray::malloc (get_number_of_elements () * sizeof (mxArray *))))
+      m_data (static_cast<mxArray * *> (
+                mxArray::malloc (get_number_of_elements () * sizeof (mxArray *))))
   {
     mwSize nel = get_number_of_elements ();
 
@@ -4037,7 +4038,7 @@ mxCreateUninitNumericArray (mwSize ndims, const mwSize *dims,
 
 mxArray *
 mxCreateUninitNumericMatrix_interleaved (mwSize m, mwSize n,
-                                         mxClassID class_id, mxComplexity flag)
+    mxClassID class_id, mxComplexity flag)
 {
   return maybe_mark_array (new mxArray (true, class_id, m, n, flag, false));
 }
@@ -4882,7 +4883,7 @@ mx_to_ov_args (int nargin, mxArray *argin[])
   // mexCallMATLAB returns.
 
   octave::unwind_protect_var<std::pmr::memory_resource *>
-    upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+  upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
 
 #endif
 
@@ -4909,10 +4910,10 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
       octave::tree_evaluator& tw = interp.get_evaluator ();
 
       octave::unwind_action act
-        ([&tw] (const std::list<octave::octave_lvalue> *lvl)
-         {
-           tw.set_lvalue_list (lvl);
-         }, tw.lvalue_list ());
+      ([&tw] (const std::list<octave::octave_lvalue> *lvl)
+      {
+        tw.set_lvalue_list (lvl);
+      }, tw.lvalue_list ());
 
       tw.set_lvalue_list (nullptr);
 
@@ -5233,13 +5234,13 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
     {
 #if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 
-    // Use allocator that doesn't free memory because Octave may mutate
-    // the value (single element mxArray -> scalar octave_value object,
-    // for example) and we need these objects to continue to exist after
-    // mexCallMATLAB returns.
+      // Use allocator that doesn't free memory because Octave may mutate
+      // the value (single element mxArray -> scalar octave_value object,
+      // for example) and we need these objects to continue to exist after
+      // mexCallMATLAB returns.
 
       octave::unwind_protect_var<std::pmr::memory_resource *>
-        upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+      upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
 #endif
 
       interp.global_assign (name, mxArray::as_octave_value (ptr));
@@ -5276,8 +5277,8 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
           // to continue to exist after mexCallMATLAB returns.
 
           octave::unwind_protect_var<std::pmr::memory_resource *>
-            upv (current_mx_memory_resource,
-                 &the_mx_preserving_memory_resource);
+          upv (current_mx_memory_resource,
+               &the_mx_preserving_memory_resource);
 #endif
 
           interp.assign (name, mxArray::as_octave_value (ptr));
@@ -5396,13 +5397,13 @@ mexSet (double handle, const char *property, mxArray *val)
   // mexCallMATLAB returns.
 
   octave::unwind_protect_var<std::pmr::memory_resource *>
-    upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+  upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
 
 #endif
 
   bool ret = octave::set_property_in_handle (handle, property,
-                                             mxArray::as_octave_value (val),
-                                             "mexSet");
+             mxArray::as_octave_value (val),
+             "mexSet");
   return (ret ? 0 : 1);
 }
 

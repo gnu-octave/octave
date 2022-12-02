@@ -37,94 +37,94 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // A base class for commands.
+// A base class for commands.
 
-  class tree_command : public tree
+class tree_command : public tree
+{
+public:
+
+  tree_command (int l = -1, int c = -1)
+    : tree (l, c) { }
+
+  // No copying!
+
+  tree_command (const tree_command&) = delete;
+
+  tree_command& operator = (const tree_command&) = delete;
+
+  virtual ~tree_command (void) = default;
+};
+
+// No-op.
+
+class tree_no_op_command : public tree_command
+{
+public:
+
+  tree_no_op_command (const std::string& cmd = "no_op", bool e = false,
+                      int l = -1, int c = -1)
+    : tree_command (l, c), m_eof (e), m_orig_cmd (cmd) { }
+
+  // No copying!
+
+  tree_no_op_command (const tree_no_op_command&) = delete;
+
+  tree_no_op_command& operator = (const tree_no_op_command&) = delete;
+
+  ~tree_no_op_command (void) = default;
+
+  void accept (tree_walker& tw)
   {
-  public:
+    tw.visit_no_op_command (*this);
+  }
 
-    tree_command (int l = -1, int c = -1)
-      : tree (l, c) { }
-
-    // No copying!
-
-    tree_command (const tree_command&) = delete;
-
-    tree_command& operator = (const tree_command&) = delete;
-
-    virtual ~tree_command (void) = default;
-  };
-
-  // No-op.
-
-  class tree_no_op_command : public tree_command
+  bool is_end_of_fcn_or_script (void) const
   {
-  public:
+    return (m_orig_cmd == "endfunction" || m_orig_cmd == "endscript");
+  }
 
-    tree_no_op_command (const std::string& cmd = "no_op", bool e = false,
-                        int l = -1, int c = -1)
-      : tree_command (l, c), m_eof (e), m_orig_cmd (cmd) { }
+  bool is_end_of_file (void) const { return m_eof; }
 
-    // No copying!
+  std::string original_command (void) { return m_orig_cmd; }
 
-    tree_no_op_command (const tree_no_op_command&) = delete;
+private:
 
-    tree_no_op_command& operator = (const tree_no_op_command&) = delete;
+  bool m_eof;
 
-    ~tree_no_op_command (void) = default;
+  std::string m_orig_cmd;
+};
 
-    void accept (tree_walker& tw)
-    {
-      tw.visit_no_op_command (*this);
-    }
+// Function definition.
 
-    bool is_end_of_fcn_or_script (void) const
-    {
-      return (m_orig_cmd == "endfunction" || m_orig_cmd == "endscript");
-    }
+class tree_function_def : public tree_command
+{
+public:
 
-    bool is_end_of_file (void) const { return m_eof; }
+  tree_function_def (octave_function *f, int l = -1, int c = -1)
+    : tree_command (l, c), m_fcn (f) { }
 
-    std::string original_command (void) { return m_orig_cmd; }
+  // No copying!
 
-  private:
+  tree_function_def (const tree_function_def&) = delete;
 
-    bool m_eof;
+  tree_function_def& operator = (const tree_function_def&) = delete;
 
-    std::string m_orig_cmd;
-  };
+  ~tree_function_def (void) = default;
 
-  // Function definition.
-
-  class tree_function_def : public tree_command
+  void accept (tree_walker& tw)
   {
-  public:
+    tw.visit_function_def (*this);
+  }
 
-    tree_function_def (octave_function *f, int l = -1, int c = -1)
-      : tree_command (l, c), m_fcn (f) { }
+  octave_value function (void) { return m_fcn; }
 
-    // No copying!
+private:
 
-    tree_function_def (const tree_function_def&) = delete;
+  octave_value m_fcn;
 
-    tree_function_def& operator = (const tree_function_def&) = delete;
-
-    ~tree_function_def (void) = default;
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_function_def (*this);
-    }
-
-    octave_value function (void) { return m_fcn; }
-
-  private:
-
-    octave_value m_fcn;
-
-    tree_function_def (const octave_value& v, int l = -1, int c = -1)
-      : tree_command (l, c), m_fcn (v) { }
-  };
+  tree_function_def (const octave_value& v, int l = -1, int c = -1)
+    : tree_command (l, c), m_fcn (v) { }
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

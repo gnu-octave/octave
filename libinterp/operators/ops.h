@@ -33,7 +33,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class type_info;
+class type_info;
 
 OCTAVE_END_NAMESPACE(octave)
 

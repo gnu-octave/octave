@@ -32,12 +32,12 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  void
-  event_queue_safe::warn_unhandled_exception (void) const
-  {
-    warning ("unhandled exception in event_queue_safe handler.  "
-             "It is a bug in Octave for this to happen.  "
-             "Please help improve Octave by reporting it.");
-  }
+void
+event_queue_safe::warn_unhandled_exception (void) const
+{
+  warning ("unhandled exception in event_queue_safe handler.  "
+           "It is a bug in Octave for this to happen.  "
+           "Please help improve Octave by reporting it.");
+}
 
 OCTAVE_END_NAMESPACE(octave)

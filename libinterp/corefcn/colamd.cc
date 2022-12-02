@@ -313,7 +313,7 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
           if (knobs[COLAMD_DENSE_ROW] >= 0)
             octave_stdout << "knobs(1): " << User_knobs (0)
                           << ", rows with > max (16,"
-                          << knobs[COLAMD_DENSE_ROW] << "*sqrt (columns(A)))"
+                          << knobs[COLAMD_DENSE_ROW] << "* sqrt (columns(A)))"
                           << " entries removed\n";
           else
             octave_stdout << "knobs(1): " << User_knobs (0)
@@ -322,7 +322,7 @@ Laboratory.  (see @url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
           if (knobs[COLAMD_DENSE_COL] >= 0)
             octave_stdout << "knobs(2): " << User_knobs (1)
                           << ", cols with > max (16,"
-                          << knobs[COLAMD_DENSE_COL] << "*sqrt (size(A)))"
+                          << knobs[COLAMD_DENSE_COL] << "* sqrt (size(A)))"
                           << " entries removed\n";
           else
             octave_stdout << "knobs(2): " << User_knobs (1)

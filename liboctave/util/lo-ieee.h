@@ -125,32 +125,32 @@ inline int __lo_ieee_float_signbit (float x) { return std::signbit (x); }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  template <typename T>
-  struct numeric_limits
-  {
-  public:
-    static T NA (void) { return static_cast<T> (0); }
-    static T NaN (void) { return static_cast<T> (0); }
-    static T Inf (void) { return static_cast<T> (0); }
-  };
+template <typename T>
+struct numeric_limits
+{
+public:
+  static T NA (void) { return static_cast<T> (0); }
+  static T NaN (void) { return static_cast<T> (0); }
+  static T Inf (void) { return static_cast<T> (0); }
+};
 
-  template <>
-  struct numeric_limits<double>
-  {
-  public:
-    static double NA (void) { return octave_NA; }
-    static double NaN (void) { return octave_NaN; }
-    static double Inf (void) { return octave_Inf; }
-  };
+template <>
+struct numeric_limits<double>
+{
+public:
+  static double NA (void) { return octave_NA; }
+  static double NaN (void) { return octave_NaN; }
+  static double Inf (void) { return octave_Inf; }
+};
 
-  template <>
-  struct numeric_limits<float>
-  {
-  public:
-    static float NA (void) { return octave_Float_NA; }
-    static float NaN (void) { return octave_Float_NaN; }
-    static float Inf (void) { return octave_Float_Inf; }
-  };
+template <>
+struct numeric_limits<float>
+{
+public:
+  static float NA (void) { return octave_Float_NA; }
+  static float NaN (void) { return octave_Float_NaN; }
+  static float Inf (void) { return octave_Float_Inf; }
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

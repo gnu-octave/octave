@@ -466,7 +466,7 @@ octave_base_diag<DMT, MT>::index_vector (bool require_integers) const
 template <typename DMT, typename MT>
 octave_value
 octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force,
-                                                    char type) const
+    char type) const
 {
   return to_dense ().convert_to_str_internal (pad, force, type);
 }
@@ -482,8 +482,8 @@ octave_base_diag<DMT, MT>::get_edit_display_format (void) const
 template <typename DMT, typename MT>
 std::string
 octave_base_diag<DMT, MT>::edit_display (const float_display_format& fmt,
-                                         octave_idx_type i,
-                                         octave_idx_type j) const
+    octave_idx_type i,
+    octave_idx_type j) const
 {
   std::ostringstream buf;
   octave_print_internal (buf, fmt, m_matrix(i, j));

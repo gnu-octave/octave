@@ -44,15 +44,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    inline long double round (long double x)
-    {
-      return std::roundl (x);
-    }
+inline long double round (long double x)
+{
+  return std::roundl (x);
+}
 
-    inline long double isnan (long double x)
-    {
-      return isnan (static_cast<double> (x));
-    }
+inline long double isnan (long double x)
+{
+  return isnan (static_cast<double> (x));
+}
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)
@@ -259,8 +259,7 @@ public:
                                                                 \
   template <typename xop>                                       \
   static OCTAVE_API bool external_mop (T, double)
-
-  OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_CMP_OPS (int64_t);
+                                                                              OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_CMP_OPS (int64_t);
   OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_CMP_OPS (uint64_t);
 
 #endif
@@ -483,10 +482,10 @@ public:
   {
     // Promotion type for multiplication (if exists).
 
-    typedef typename query_integer_type<2*sizeof (T), false>::type mptype;
+    typedef typename query_integer_type<2* sizeof (T), false>::type mptype;
 
     return octave_int_base<T>::truncate_int (static_cast<mptype> (x)
-                                             * static_cast<mptype> (y));
+           * static_cast<mptype> (y));
   }
 
   // Division with rounding to nearest.  Note that / and % are
@@ -652,7 +651,7 @@ public:
   {
     // Promotion type for multiplication (if exists).
 
-    typedef typename query_integer_type<2*sizeof (T), true>::type mptype;
+    typedef typename query_integer_type<2* sizeof (T), true>::type mptype;
 
     return octave_int_base<T>::truncate_int (static_cast<mptype> (x)
            * static_cast<mptype> (y));
@@ -933,12 +932,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    bool
-    isnan (const octave_int<T>&)
-    {
-      return false;
-    }
+template <typename T>
+bool
+isnan (const octave_int<T>&)
+{
+  return false;
+}
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)
@@ -1105,8 +1104,8 @@ bitshift (const octave_int<T>& a, int n,
   OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_OP (T, mul);          \
   OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_OP (T, div)
 
-  OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_OPS (octave_int64);
-  OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_OPS (octave_uint64);
+OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_OPS (octave_int64);
+OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_OPS (octave_uint64);
 
 #endif
 

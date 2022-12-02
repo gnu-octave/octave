@@ -341,7 +341,7 @@ octave_float_complex_matrix::load_ascii (std::istream& is)
   std::string old_locale (prev_locale ? prev_locale : "");
   std::setlocale (LC_ALL, "C");
   octave::unwind_action act
-    ([&old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
+  ([&old_locale] () { std::setlocale (LC_ALL, old_locale.c_str ()); });
 
   if (kw == "ndims")
     {
@@ -430,7 +430,7 @@ octave_float_complex_matrix::save_binary (std::ostream& os, bool)
 
 bool
 octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
-                                          octave::mach_info::float_format fmt)
+    octave::mach_info::float_format fmt)
 {
   char tmp;
   int32_t mdims;
@@ -745,48 +745,48 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
     case umap_ ## UMAP:                       \
       return octave_value (m_matrix.FCN ())
 
-    ARRAY_METHOD_MAPPER (abs, abs);
-    ARRAY_METHOD_MAPPER (isnan, isnan);
-    ARRAY_METHOD_MAPPER (isinf, isinf);
-    ARRAY_METHOD_MAPPER (isfinite, isfinite);
+      ARRAY_METHOD_MAPPER (abs, abs);
+      ARRAY_METHOD_MAPPER (isnan, isnan);
+      ARRAY_METHOD_MAPPER (isinf, isinf);
+      ARRAY_METHOD_MAPPER (isfinite, isfinite);
 
 #define ARRAY_MAPPER(UMAP, TYPE, FCN)                 \
     case umap_ ## UMAP:                               \
       return octave_value (m_matrix.map<TYPE> (FCN))
 
-    ARRAY_MAPPER (acos, FloatComplex, octave::math::acos);
-    ARRAY_MAPPER (acosh, FloatComplex, octave::math::acosh);
-    ARRAY_MAPPER (angle, float, std::arg);
-    ARRAY_MAPPER (arg, float, std::arg);
-    ARRAY_MAPPER (asin, FloatComplex, octave::math::asin);
-    ARRAY_MAPPER (asinh, FloatComplex, octave::math::asinh);
-    ARRAY_MAPPER (atan, FloatComplex, octave::math::atan);
-    ARRAY_MAPPER (atanh, FloatComplex, octave::math::atanh);
-    ARRAY_MAPPER (erf, FloatComplex, octave::math::erf);
-    ARRAY_MAPPER (erfc, FloatComplex, octave::math::erfc);
-    ARRAY_MAPPER (erfcx, FloatComplex, octave::math::erfcx);
-    ARRAY_MAPPER (erfi, FloatComplex, octave::math::erfi);
-    ARRAY_MAPPER (dawson, FloatComplex, octave::math::dawson);
-    ARRAY_MAPPER (ceil, FloatComplex, octave::math::ceil);
-    ARRAY_MAPPER (cos, FloatComplex, std::cos);
-    ARRAY_MAPPER (cosh, FloatComplex, std::cosh);
-    ARRAY_MAPPER (exp, FloatComplex, std::exp);
-    ARRAY_MAPPER (expm1, FloatComplex, octave::math::expm1);
-    ARRAY_MAPPER (fix, FloatComplex, octave::math::fix);
-    ARRAY_MAPPER (floor, FloatComplex, octave::math::floor);
-    ARRAY_MAPPER (log, FloatComplex, std::log);
-    ARRAY_MAPPER (log2, FloatComplex, octave::math::log2);
-    ARRAY_MAPPER (log10, FloatComplex, std::log10);
-    ARRAY_MAPPER (log1p, FloatComplex, octave::math::log1p);
-    ARRAY_MAPPER (round, FloatComplex, octave::math::round);
-    ARRAY_MAPPER (roundb, FloatComplex, octave::math::roundb);
-    ARRAY_MAPPER (signum, FloatComplex, octave::math::signum);
-    ARRAY_MAPPER (sin, FloatComplex, std::sin);
-    ARRAY_MAPPER (sinh, FloatComplex, std::sinh);
-    ARRAY_MAPPER (sqrt, FloatComplex, std::sqrt);
-    ARRAY_MAPPER (tan, FloatComplex, std::tan);
-    ARRAY_MAPPER (tanh, FloatComplex, std::tanh);
-    ARRAY_MAPPER (isna, bool, octave::math::isna);
+      ARRAY_MAPPER (acos, FloatComplex, octave::math::acos);
+      ARRAY_MAPPER (acosh, FloatComplex, octave::math::acosh);
+      ARRAY_MAPPER (angle, float, std::arg);
+      ARRAY_MAPPER (arg, float, std::arg);
+      ARRAY_MAPPER (asin, FloatComplex, octave::math::asin);
+      ARRAY_MAPPER (asinh, FloatComplex, octave::math::asinh);
+      ARRAY_MAPPER (atan, FloatComplex, octave::math::atan);
+      ARRAY_MAPPER (atanh, FloatComplex, octave::math::atanh);
+      ARRAY_MAPPER (erf, FloatComplex, octave::math::erf);
+      ARRAY_MAPPER (erfc, FloatComplex, octave::math::erfc);
+      ARRAY_MAPPER (erfcx, FloatComplex, octave::math::erfcx);
+      ARRAY_MAPPER (erfi, FloatComplex, octave::math::erfi);
+      ARRAY_MAPPER (dawson, FloatComplex, octave::math::dawson);
+      ARRAY_MAPPER (ceil, FloatComplex, octave::math::ceil);
+      ARRAY_MAPPER (cos, FloatComplex, std::cos);
+      ARRAY_MAPPER (cosh, FloatComplex, std::cosh);
+      ARRAY_MAPPER (exp, FloatComplex, std::exp);
+      ARRAY_MAPPER (expm1, FloatComplex, octave::math::expm1);
+      ARRAY_MAPPER (fix, FloatComplex, octave::math::fix);
+      ARRAY_MAPPER (floor, FloatComplex, octave::math::floor);
+      ARRAY_MAPPER (log, FloatComplex, std::log);
+      ARRAY_MAPPER (log2, FloatComplex, octave::math::log2);
+      ARRAY_MAPPER (log10, FloatComplex, std::log10);
+      ARRAY_MAPPER (log1p, FloatComplex, octave::math::log1p);
+      ARRAY_MAPPER (round, FloatComplex, octave::math::round);
+      ARRAY_MAPPER (roundb, FloatComplex, octave::math::roundb);
+      ARRAY_MAPPER (signum, FloatComplex, octave::math::signum);
+      ARRAY_MAPPER (sin, FloatComplex, std::sin);
+      ARRAY_MAPPER (sinh, FloatComplex, std::sinh);
+      ARRAY_MAPPER (sqrt, FloatComplex, std::sqrt);
+      ARRAY_MAPPER (tan, FloatComplex, std::tan);
+      ARRAY_MAPPER (tanh, FloatComplex, std::tanh);
+      ARRAY_MAPPER (isna, bool, octave::math::isna);
 
     default:
       return octave_base_value::map (umap);

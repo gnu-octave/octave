@@ -48,7 +48,7 @@ public:
   octave_iprocstream (const std::string& n,
                       std::ios::openmode arg_md = std::ios::in,
                       octave::mach_info::float_format flt_fmt
-                        = octave::mach_info::native_float_format (),
+                      = octave::mach_info::native_float_format (),
                       const std::string& encoding = "utf-8");
 
   // No copying!
@@ -60,7 +60,7 @@ public:
   static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
           octave::mach_info::float_format flt_fmt
-            = octave::mach_info::native_float_format (),
+          = octave::mach_info::native_float_format (),
           const std::string& encoding = "utf-8");
 
 protected:
@@ -76,7 +76,7 @@ public:
   octave_oprocstream (const std::string& n,
                       std::ios::openmode arg_md = std::ios::out,
                       octave::mach_info::float_format flt_fmt
-                        = octave::mach_info::native_float_format (),
+                      = octave::mach_info::native_float_format (),
                       const std::string& encoding = "utf-8");
 
   // No copying!
@@ -88,7 +88,7 @@ public:
   static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format flt_fmt
-            = octave::mach_info::native_float_format (),
+          = octave::mach_info::native_float_format (),
           const std::string& encoding = "utf-8");
 
 protected:

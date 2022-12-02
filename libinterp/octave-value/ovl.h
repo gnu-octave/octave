@@ -143,7 +143,7 @@ public:
 
     if (tags && len > 0 && m_names.numel () > 0)
       retval.m_names = m_names.linear_slice (offset, std::min (offset + len,
-                                                               m_names.numel ()));
+                                             m_names.numel ()));
 
     return retval;
   }
@@ -208,7 +208,7 @@ private:
 
 template<typename... OV_Args>
 inline octave_value_list
-ovl (const OV_Args&... args)
+ovl (const OV_Args& ... args)
 {
   return octave_value_list (std::initializer_list<octave_value> ({args...}));
 }

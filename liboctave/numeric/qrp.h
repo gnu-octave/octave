@@ -35,45 +35,45 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    class
-    qrp : public qr<T>
-    {
-    public:
+template <typename T>
+class
+qrp : public qr<T>
+{
+public:
 
-      typedef typename T::real_row_vector_type RV_T;
+  typedef typename T::real_row_vector_type RV_T;
 
-      typedef typename qr<T>::type type;
+  typedef typename qr<T>::type type;
 
-      qrp (void) : qr<T> (), m_p () { }
+  qrp (void) : qr<T> (), m_p () { }
 
-      OCTAVE_API qrp (const T&, type = qr<T>::std);
+  OCTAVE_API qrp (const T&, type = qr<T>::std);
 
-      qrp (const qrp& a) : qr<T> (a), m_p (a.m_p) { }
+  qrp (const qrp& a) : qr<T> (a), m_p (a.m_p) { }
 
-      qrp& operator = (const qrp& a)
+  qrp& operator = (const qrp& a)
+  {
+    if (this != &a)
       {
-        if (this != &a)
-          {
-            qr<T>::operator = (a);
-            m_p = a.m_p;
-          }
-
-        return *this;
+        qr<T>::operator = (a);
+        m_p = a.m_p;
       }
 
-      ~qrp (void) = default;
+    return *this;
+  }
 
-      OCTAVE_API void init (const T&, type = qr<T>::std);
+  ~qrp (void) = default;
 
-      PermMatrix P (void) const { return m_p; }
+  OCTAVE_API void init (const T&, type = qr<T>::std);
 
-      OCTAVE_API RV_T Pvec (void) const;
+  PermMatrix P (void) const { return m_p; }
 
-    private:
+  OCTAVE_API RV_T Pvec (void) const;
 
-      PermMatrix m_p;
-    };
+private:
+
+  PermMatrix m_p;
+};
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

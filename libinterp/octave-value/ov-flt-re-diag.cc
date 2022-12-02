@@ -54,7 +54,7 @@ octave_base_value::type_conv_info
 octave_float_diag_matrix::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_float_matrix::static_type_id ());
+         octave_float_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -232,7 +232,7 @@ octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
 
 bool
 octave_float_diag_matrix::chk_valid_scalar (const octave_value& val,
-                                            float& x) const
+    float& x) const
 {
   bool retval = val.is_real_scalar ();
   if (retval)

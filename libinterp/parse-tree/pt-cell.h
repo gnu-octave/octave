@@ -38,45 +38,45 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class symbol_scope;
-  class tree_argument_list;
+class symbol_scope;
+class tree_argument_list;
 
-  // General cells.
+// General cells.
 
-  class tree_cell : public tree_array_list
+class tree_cell : public tree_array_list
+{
+public:
+
+  tree_cell (tree_argument_list *row = nullptr, int l = -1, int c = -1)
+    : tree_array_list (row, l, c)
+  { }
+
+  // No copying!
+
+  tree_cell (const tree_cell&) = delete;
+
+  tree_cell& operator = (const tree_cell&) = delete;
+
+  ~tree_cell (void) = default;
+
+  bool iscell (void) const { return true; }
+
+  bool rvalue_ok (void) const { return true; }
+
+  tree_expression * dup (symbol_scope& scope) const;
+
+  octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+  octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
   {
-  public:
+    return ovl (evaluate (tw, nargout));
+  }
 
-    tree_cell (tree_argument_list *row = nullptr, int l = -1, int c = -1)
-      : tree_array_list (row, l, c)
-    { }
-
-    // No copying!
-
-    tree_cell (const tree_cell&) = delete;
-
-    tree_cell& operator = (const tree_cell&) = delete;
-
-    ~tree_cell (void) = default;
-
-    bool iscell (void) const { return true; }
-
-    bool rvalue_ok (void) const { return true; }
-
-    tree_expression * dup (symbol_scope& scope) const;
-
-    octave_value evaluate (tree_evaluator&, int nargout = 1);
-
-    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
-    {
-      return ovl (evaluate (tw, nargout));
-    }
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_cell (*this);
-    }
-  };
+  void accept (tree_walker& tw)
+  {
+    tw.visit_cell (*this);
+  }
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

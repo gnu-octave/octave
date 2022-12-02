@@ -115,9 +115,9 @@ Q_deq (CMK_Node *Q, octave_idx_type N, octave_idx_type& qh)
 
 // the left descendant of entry i
 #define LEFT(i)         (((i) << 1) + 1)        // = (2*(i)+1)
-// the right descendant of entry i
+                                                // the right descendant of entry i
 #define RIGHT(i)        (((i) << 1) + 2)        // = (2*(i)+2)
-// the parent of entry i
+                                                // the parent of entry i
 #define PARENT(i)       (((i) - 1) >> 1)        // = floor(((i)-1)/2)
 
 // Builds a min-heap (the root contains the smallest element).  A is an array

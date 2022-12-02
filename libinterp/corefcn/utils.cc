@@ -73,24 +73,24 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Return TRUE if S is a valid identifier.
+// Return TRUE if S is a valid identifier.
 
-  bool valid_identifier (const char *s)
-  {
-    if (! s || ! (isalpha (*s) || *s == '_'))
+bool valid_identifier (const char *s)
+{
+  if (! s || ! (isalpha (*s) || *s == '_'))
+    return false;
+
+  while (*++s != '\0')
+    if (! (isalnum (*s) || *s == '_'))
       return false;
 
-    while (*++s != '\0')
-      if (! (isalnum (*s) || *s == '_'))
-        return false;
+  return true;
+}
 
-    return true;
-  }
-
-  bool valid_identifier (const std::string& s)
-  {
-    return valid_identifier (s.c_str ());
-  }
+bool valid_identifier (const std::string& s)
+{
+  return valid_identifier (s.c_str ());
+}
 
 DEFUN (isvarname, args, ,
        doc: /* -*- texinfo -*-
@@ -131,126 +131,126 @@ and the first character must not be a digit.
 %!error isvarname ("foo", "bar")
 */
 
-  bool
-  make_valid_name (std::string& str, const make_valid_name_options& options)
-  {
-    // If `isvarname (str)`, no modifications necessary.
-    if (valid_identifier (str) && ! iskeyword (str))
-      return false;
+bool
+make_valid_name (std::string& str, const make_valid_name_options& options)
+{
+  // If `isvarname (str)`, no modifications necessary.
+  if (valid_identifier (str) && ! iskeyword (str))
+    return false;
 
-    // Change whitespace followed by lowercase letter to uppercase, except
-    // for the first
-    bool previous = false;
-    bool any_non_space = false;
+  // Change whitespace followed by lowercase letter to uppercase, except
+  // for the first
+  bool previous = false;
+  bool any_non_space = false;
+  for (char& c : str)
+    {
+      c = ((any_non_space && previous && std::isalpha (c)) ? std::toupper (c)
+           : c);
+      previous = std::isspace (c);
+      any_non_space |= (! previous);  // once true, always true
+    }
+
+  // Remove any whitespace.
+  str.erase (std::remove_if (str.begin(), str.end(),
+                             [] (unsigned char x)
+  { return std::isspace(x); }),
+  str.end());
+  if (str.empty ())
+    str = options.get_prefix ();
+
+  // Add prefix and capitalize first character, if `str` is a reserved
+  // keyword.
+  if (iskeyword (str))
+    {
+      str[0] = std::toupper (str[0]);
+      str = options.get_prefix () + str;
+    }
+
+  // Add prefix if first character is not a letter or underscore.
+  if (! std::isalpha (str[0]) && str[0] != '_')
+    str = options.get_prefix () + str;
+
+  // Replace non alphanumerics or underscores
+  if (options.get_replacement_style () == "underscore")
     for (char& c : str)
-      {
-        c = ((any_non_space && previous && std::isalpha (c)) ? std::toupper (c)
-                                                             : c);
-        previous = std::isspace (c);
-        any_non_space |= (! previous);  // once true, always true
-      }
-
-    // Remove any whitespace.
+      c = (std::isalnum (c) ? c : '_');
+  else if (options.get_replacement_style () == "delete")
     str.erase (std::remove_if (str.begin(), str.end(),
                                [] (unsigned char x)
-                                  { return std::isspace(x); }),
-               str.end());
-    if (str.empty ())
-      str = options.get_prefix ();
+    { return ! std::isalnum (x) && x != '_'; }),
+  str.end());
+  else if (options.get_replacement_style () == "hex")
+    {
+      const std::string permitted_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                          "abcdefghijklmnopqrstuvwxyz"
+                                          "_0123456789";
+      // Get the first non-permitted char.
+      std::size_t pos = str.find_first_not_of (permitted_chars);
+      // Buffer for hex string "0xFF" (+1 for null terminator).
+      char hex_str[5];
+      // Repeat until end of string.
+      while (pos != std::string::npos)
+        {
+          // Replace non-permitted char by it's hex value.
+          std::snprintf (hex_str, sizeof (hex_str), "0x%02X", str[pos]);
+          str.replace (pos, 1, hex_str);
+          // Get the next occurrence from the last position.
+          // (-1 for null terminator)
+          pos = str.find_first_not_of (permitted_chars,
+                                       pos + sizeof (hex_str) - 1);
+        }
+    }
 
-    // Add prefix and capitalize first character, if `str` is a reserved
-    // keyword.
-    if (iskeyword (str))
-      {
-        str[0] = std::toupper (str[0]);
-        str = options.get_prefix () + str;
-      }
+  return true;
+}
 
-    // Add prefix if first character is not a letter or underscore.
-    if (! std::isalpha (str[0]) && str[0] != '_')
-      str = options.get_prefix () + str;
+make_valid_name_options::make_valid_name_options
+(const octave_value_list& args)
+{
+  auto nargs = args.length ();
+  if (nargs == 0)
+    return;
 
-    // Replace non alphanumerics or underscores
-    if (options.get_replacement_style () == "underscore")
-      for (char& c : str)
-        c = (std::isalnum (c) ? c : '_');
-    else if (options.get_replacement_style () == "delete")
-      str.erase (std::remove_if (str.begin(), str.end(),
-                                 [] (unsigned char x)
-                                    { return ! std::isalnum (x) && x != '_'; }),
-                 str.end());
-    else if (options.get_replacement_style () == "hex")
-      {
-        const std::string permitted_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                            "abcdefghijklmnopqrstuvwxyz"
-                                            "_0123456789";
-        // Get the first non-permitted char.
-        std::size_t pos = str.find_first_not_of (permitted_chars);
-        // Buffer for hex string "0xFF" (+1 for null terminator).
-        char hex_str[5];
-        // Repeat until end of string.
-        while (pos != std::string::npos)
-          {
-            // Replace non-permitted char by it's hex value.
-            std::snprintf (hex_str, sizeof (hex_str), "0x%02X", str[pos]);
-            str.replace (pos, 1, hex_str);
-            // Get the next occurrence from the last position.
-            // (-1 for null terminator)
-            pos = str.find_first_not_of (permitted_chars,
-                                         pos + sizeof (hex_str) - 1);
-          }
-      }
+  // nargs = 2, 4, 6, ... permitted
+  if (nargs % 2)
+    error ("makeValidName: property/value options must occur in pairs");
 
-    return true;
-  }
-
-  make_valid_name_options::make_valid_name_options
-    (const octave_value_list& args)
+  auto str_to_lower = [] (std::string& s)
   {
-    auto nargs = args.length ();
-    if (nargs == 0)
-      return;
+    std::transform (s.begin(), s.end(), s.begin(),
+                    [] (unsigned char c)
+    { return std::tolower(c); });
+  };
 
-    // nargs = 2, 4, 6, ... permitted
-    if (nargs % 2)
-      error ("makeValidName: property/value options must occur in pairs");
-
-    auto str_to_lower = [] (std::string& s)
-                           {
-                             std::transform (s.begin(), s.end(), s.begin(),
-                                             [] (unsigned char c)
-                                                { return std::tolower(c); });
-                           };
-
-    for (auto i = 0; i < nargs; i = i + 2)
-      {
-        std::string parameter = args(i).xstring_value ("makeValidName: "
-          "option argument must be a string");
-        str_to_lower (parameter);
-        if (parameter == "replacementstyle")
-          {
-            m_replacement_style = args(i + 1).xstring_value ("makeValidName: "
-              "'ReplacementStyle' value must be a string");
-            str_to_lower (m_replacement_style);
-            if ((m_replacement_style != "underscore")
-                && (m_replacement_style != "delete")
-                && (m_replacement_style != "hex"))
-              error ("makeValidName: invalid 'ReplacementStyle' value '%s'",
-                     m_replacement_style.c_str ());
-          }
-        else if (parameter == "prefix")
-          {
-            m_prefix = args(i + 1).xstring_value ("makeValidName: "
-              "'Prefix' value must be a string");
-            if (! valid_identifier (m_prefix)
-                || iskeyword (m_prefix))
-              error ("makeValidName: invalid 'Prefix' value '%s'",
-                     m_prefix.c_str ());
-          }
-        else
-          error ("makeValidName: unknown property '%s'", parameter.c_str ());
-      }
-  }
+  for (auto i = 0; i < nargs; i = i + 2)
+    {
+      std::string parameter = args(i).xstring_value ("makeValidName: "
+                              "option argument must be a string");
+      str_to_lower (parameter);
+      if (parameter == "replacementstyle")
+        {
+          m_replacement_style = args(i + 1).xstring_value ("makeValidName: "
+                                "'ReplacementStyle' value must be a string");
+          str_to_lower (m_replacement_style);
+          if ((m_replacement_style != "underscore")
+              && (m_replacement_style != "delete")
+              && (m_replacement_style != "hex"))
+            error ("makeValidName: invalid 'ReplacementStyle' value '%s'",
+                   m_replacement_style.c_str ());
+        }
+      else if (parameter == "prefix")
+        {
+          m_prefix = args(i + 1).xstring_value ("makeValidName: "
+                                                "'Prefix' value must be a string");
+          if (! valid_identifier (m_prefix)
+              || iskeyword (m_prefix))
+            error ("makeValidName: invalid 'Prefix' value '%s'",
+                   m_prefix.c_str ());
+        }
+      else
+        error ("makeValidName: unknown property '%s'", parameter.c_str ());
+    }
+}
 
 DEFUN (__make_valid_name__, args, ,
        doc: /* -*- texinfo -*-
@@ -289,12 +289,12 @@ For more documentation, see @code{matlab.lang.makeValidName}.
     error ("makeValidName: STR must be a string or cellstr");
 }
 
-  // Return TRUE if F and G are both names for the same file.
+// Return TRUE if F and G are both names for the same file.
 
-  bool same_file (const std::string& f, const std::string& g)
-  {
-    return same_file_internal (f, g);
-  }
+bool same_file (const std::string& f, const std::string& g)
+{
+  return same_file_internal (f, g);
+}
 
 DEFUN (is_same_file, args, ,
        doc: /* -*- texinfo -*-
@@ -405,145 +405,145 @@ return true.
 %!error <arrays .* must be the same size> is_same_file ({"1", "2"}, {"1"; "2"})
 */
 
-  int almost_match (const std::string& std, const std::string& s,
-                    int min_match_len, int case_sens)
-  {
-    int stdlen = std.length ();
-    int slen = s.length ();
+int almost_match (const std::string& std, const std::string& s,
+                  int min_match_len, int case_sens)
+{
+  int stdlen = std.length ();
+  int slen = s.length ();
 
-    return (slen <= stdlen
-            && slen >= min_match_len
-            && (case_sens
-                ? (strncmp (std.c_str (), s.c_str (), slen) == 0)
-                : (octave_strncasecmp (std.c_str (), s.c_str (), slen) == 0)));
-  }
+  return (slen <= stdlen
+          && slen >= min_match_len
+          && (case_sens
+              ? (strncmp (std.c_str (), s.c_str (), slen) == 0)
+              : (octave_strncasecmp (std.c_str (), s.c_str (), slen) == 0)));
+}
 
-  // Ugh.
+// Ugh.
 
-  int keyword_almost_match (const char * const *std, int *min_len,
-                            const std::string& s,
-                            int min_toks_to_match, int max_toks)
-  {
-    int status = 0;
-    int tok_count = 0;
-    int toks_matched = 0;
+int keyword_almost_match (const char *const *std, int *min_len,
+                          const std::string& s,
+                          int min_toks_to_match, int max_toks)
+{
+  int status = 0;
+  int tok_count = 0;
+  int toks_matched = 0;
 
-    if (s.empty () || max_toks < 1)
-      return status;
-
-    char *kw = strsave (s.c_str ());
-
-    char *t = kw;
-    while (*t != '\0')
-      {
-        if (*t == '\t')
-          *t = ' ';
-        t++;
-      }
-
-    char *beg = kw;
-    while (*beg == ' ')
-      beg++;
-
-    if (*beg == '\0')
-      return status;
-
-    const char **to_match = new const char * [max_toks + 1];
-    const char * const *s1 = std;
-    const char **s2 = to_match;
-
-    if (! s1 || ! s2)
-      goto done;
-
-    s2[tok_count] = beg;
-    char *end;
-    while ((end = strchr (beg, ' ')) != nullptr)
-      {
-        *end = '\0';
-        beg = end + 1;
-
-        while (*beg == ' ')
-          beg++;
-
-        if (*beg == '\0')
-          break;
-
-        tok_count++;
-        if (tok_count >= max_toks)
-          goto done;
-
-        s2[tok_count] = beg;
-      }
-    s2[tok_count+1] = nullptr;
-
-    s2 = to_match;
-
-    for (;;)
-      {
-        if (! almost_match (*s1, *s2, min_len[toks_matched], 0))
-          goto done;
-
-        toks_matched++;
-
-        s1++;
-        s2++;
-
-        if (! *s2)
-          {
-            status = (toks_matched >= min_toks_to_match);
-            goto done;
-          }
-
-        if (! *s1)
-          goto done;
-      }
-
-  done:
-
-    delete [] kw;
-    delete [] to_match;
-
+  if (s.empty () || max_toks < 1)
     return status;
-  }
 
-  // See if the given file is in the path.
+  char *kw = strsave (s.c_str ());
 
-  std::string search_path_for_file (const std::string& path,
-                                    const string_vector& names)
-  {
-    directory_path p (path);
+  char *t = kw;
+  while (*t != '\0')
+    {
+      if (*t == '\t')
+        *t = ' ';
+      t++;
+    }
 
-    return sys::env::make_absolute (p.find_first_of (names.std_list ()));
-  }
+  char *beg = kw;
+  while (*beg == ' ')
+    beg++;
 
-  // Find all locations of the given file in the path.
+  if (*beg == '\0')
+    return status;
 
-  string_vector search_path_for_all_files (const std::string& path,
-                                           const string_vector& names)
-  {
-    directory_path p (path);
+  const char **to_match = new const char *[max_toks + 1];
+  const char *const *s1 = std;
+  const char **s2 = to_match;
 
-    string_vector sv = p.find_all_first_of (names.std_list ());
+  if (! s1 || ! s2)
+    goto done;
 
-    octave_idx_type len = sv.numel ();
+  s2[tok_count] = beg;
+  char *end;
+  while ((end = strchr (beg, ' ')) != nullptr)
+    {
+      *end = '\0';
+      beg = end + 1;
 
-    for (octave_idx_type i = 0; i < len; i++)
-      sv[i] = sys::env::make_absolute (sv[i]);
+      while (*beg == ' ')
+        beg++;
 
-    return sv;
-  }
+      if (*beg == '\0')
+        break;
 
-  static string_vector make_absolute (const string_vector& sv)
-  {
-    octave_idx_type len = sv.numel ();
+      tok_count++;
+      if (tok_count >= max_toks)
+        goto done;
 
-    string_vector retval (len);
+      s2[tok_count] = beg;
+    }
+  s2[tok_count+1] = nullptr;
 
-    for (octave_idx_type i = 0; i < len; i++)
-      retval[i] = sys::env::make_absolute (sv[i]);
+  s2 = to_match;
 
-    return retval;
-  }
+  for (;;)
+    {
+      if (! almost_match (*s1, *s2, min_len[toks_matched], 0))
+        goto done;
+
+      toks_matched++;
+
+      s1++;
+      s2++;
+
+      if (! *s2)
+        {
+          status = (toks_matched >= min_toks_to_match);
+          goto done;
+        }
+
+      if (! *s1)
+        goto done;
+    }
+
+done:
+
+  delete [] kw;
+  delete [] to_match;
+
+  return status;
+}
+
+// See if the given file is in the path.
+
+std::string search_path_for_file (const std::string& path,
+                                  const string_vector& names)
+{
+  directory_path p (path);
+
+  return sys::env::make_absolute (p.find_first_of (names.std_list ()));
+}
+
+// Find all locations of the given file in the path.
+
+string_vector search_path_for_all_files (const std::string& path,
+    const string_vector& names)
+{
+  directory_path p (path);
+
+  string_vector sv = p.find_all_first_of (names.std_list ());
+
+  octave_idx_type len = sv.numel ();
+
+  for (octave_idx_type i = 0; i < len; i++)
+    sv[i] = sys::env::make_absolute (sv[i]);
+
+  return sv;
+}
+
+static string_vector make_absolute (const string_vector& sv)
+{
+  octave_idx_type len = sv.numel ();
+
+  string_vector retval (len);
+
+  for (octave_idx_type i = 0; i < len; i++)
+    retval[i] = sys::env::make_absolute (sv[i]);
+
+  return retval;
+}
 
 DEFMETHOD (file_in_loadpath, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -573,7 +573,8 @@ If no files are found, return an empty cell array.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  string_vector names = args(0).xstring_vector_value ("file_in_loadpath: FILE argument must be a string");
+  string_vector names = args(
+                          0).xstring_vector_value ("file_in_loadpath: FILE argument must be a string");
 
   if (names.empty ())
     error ("file_in_loadpath: FILE argument must not be empty");
@@ -584,7 +585,8 @@ If no files are found, return an empty cell array.
     return ovl (sys::env::make_absolute (lp.find_first_of (names)));
   else
     {
-      std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
+      std::string opt = args(
+                          1).xstring_value ("file_in_loadpath: optional second argument must be a string");
 
       if (opt != "all")
         error (R"(file_in_loadpath: "all" is only valid second argument)");
@@ -686,243 +688,243 @@ If no files are found, return an empty cell array.
 %!error file_in_path (path (), "plot.m", "bar")
 */
 
-  std::string file_in_path (const std::string& name, const std::string& suffix)
-  {
-    std::string nm = name;
+std::string file_in_path (const std::string& name, const std::string& suffix)
+{
+  std::string nm = name;
 
-    if (! suffix.empty ())
-      nm.append (suffix);
+  if (! suffix.empty ())
+    nm.append (suffix);
 
-    load_path& lp = __get_load_path__ ();
+  load_path& lp = __get_load_path__ ();
 
-    return sys::env::make_absolute (lp.find_file (nm));
-  }
+  return sys::env::make_absolute (lp.find_file (nm));
+}
 
-  std::string find_data_file_in_load_path  (const std::string& fcn,
-                                            const std::string& file,
-                                            bool require_regular_file)
-  {
-    std::string fname = file;
+std::string find_data_file_in_load_path  (const std::string& fcn,
+    const std::string& file,
+    bool require_regular_file)
+{
+  std::string fname = file;
 
-    if (! (sys::env::absolute_pathname (fname)
-           || sys::env::rooted_relative_pathname (fname)))
-      {
-        // Load path will also search "." first, but we don't want to
-        // issue a warning if the file is found in the current directory,
-        // so do an explicit check for that.
-        sys::file_stat fs (fname);
+  if (! (sys::env::absolute_pathname (fname)
+         || sys::env::rooted_relative_pathname (fname)))
+    {
+      // Load path will also search "." first, but we don't want to
+      // issue a warning if the file is found in the current directory,
+      // so do an explicit check for that.
+      sys::file_stat fs (fname);
 
-        bool local_file_ok
-          = fs.exists () && (fs.is_reg () || ! require_regular_file);
+      bool local_file_ok
+        = fs.exists () && (fs.is_reg () || ! require_regular_file);
 
-        if (! local_file_ok)
-          {
-            load_path& lp = __get_load_path__ ();
+      if (! local_file_ok)
+        {
+          load_path& lp = __get_load_path__ ();
 
-            // Not directly found; search load path.
-            std::string tmp = sys::env::make_absolute (lp.find_file (fname));
+          // Not directly found; search load path.
+          std::string tmp = sys::env::make_absolute (lp.find_file (fname));
 
-            if (! tmp.empty ())
+          if (! tmp.empty ())
+            {
+              warn_data_file_in_path (fcn, tmp);
+
+              fname = tmp;
+            }
+        }
+    }
+
+  return fname;
+}
+
+// See if there is an function file in the path.
+// If so, return the full path to the file.
+
+std::string fcn_file_in_path (const std::string& name)
+{
+  std::string retval;
+
+  int len = name.length ();
+
+  if (len > 0)
+    {
+      if (sys::env::absolute_pathname (name))
+        {
+          sys::file_stat fs (name);
+
+          if (fs.exists () && ! fs.is_dir ())
+            retval = name;
+        }
+      else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
+        {
+          load_path& lp = __get_load_path__ ();
+
+          retval = lp.find_fcn_file (name.substr (0, len-2));
+        }
+      else
+        {
+          std::string fname = name;
+          std::size_t pos = name.find_first_of ('>');
+          if (pos != std::string::npos)
+            fname = name.substr (0, pos);
+
+          load_path& lp = __get_load_path__ ();
+
+          retval = lp.find_fcn_file (fname);
+        }
+    }
+
+  return retval;
+}
+
+// See if there is a directory called "name" in the path and if it
+// contains a Contents.m file.  If so, return the full path to this file.
+
+std::string contents_file_in_path (const std::string& dir)
+{
+  std::string retval;
+
+  if (! dir.empty ())
+    {
+      load_path& lp = __get_load_path__ ();
+
+      std::string tcontents
+        = sys::file_ops::concat (lp.find_dir (dir), "Contents.m");
+
+      sys::file_stat fs (tcontents);
+
+      if (fs.exists ())
+        retval = sys::env::make_absolute (tcontents);
+    }
+
+  return retval;
+}
+
+// Replace backslash escapes in a string with the real values.
+
+std::string do_string_escapes (const std::string& s)
+{
+  std::string retval;
+
+  std::size_t i = 0;
+  std::size_t j = 0;
+  std::size_t len = s.length ();
+
+  retval.resize (len);
+
+  while (j < len)
+    {
+      if (s[j] == '\\' && j+1 < len)
+        {
+          switch (s[++j])
+            {
+            case 'a': // alarm
+              retval[i] = '\a';
+              break;
+
+            case 'b': // backspace
+              retval[i] = '\b';
+              break;
+
+            case 'f': // formfeed
+              retval[i] = '\f';
+              break;
+
+            case 'n': // newline
+              retval[i] = '\n';
+              break;
+
+            case 'r': // carriage return
+              retval[i] = '\r';
+              break;
+
+            case 't': // horizontal tab
+              retval[i] = '\t';
+              break;
+
+            case 'v': // vertical tab
+              retval[i] = '\v';
+              break;
+
+            case '\\': // backslash
+              retval[i] = '\\';
+              break;
+
+            case '\'': // quote
+              retval[i] = '\'';
+              break;
+
+            case '"': // double quote
+              retval[i] = '"';
+              break;
+
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7': // octal input
               {
-                warn_data_file_in_path (fcn, tmp);
-
-                fname = tmp;
-              }
-          }
-      }
-
-    return fname;
-  }
-
-  // See if there is an function file in the path.
-  // If so, return the full path to the file.
-
-  std::string fcn_file_in_path (const std::string& name)
-  {
-    std::string retval;
-
-    int len = name.length ();
-
-    if (len > 0)
-      {
-        if (sys::env::absolute_pathname (name))
-          {
-            sys::file_stat fs (name);
-
-            if (fs.exists () && ! fs.is_dir ())
-              retval = name;
-          }
-        else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
-          {
-            load_path& lp = __get_load_path__ ();
-
-            retval = lp.find_fcn_file (name.substr (0, len-2));
-          }
-        else
-          {
-            std::string fname = name;
-            std::size_t pos = name.find_first_of ('>');
-            if (pos != std::string::npos)
-              fname = name.substr (0, pos);
-
-            load_path& lp = __get_load_path__ ();
-
-            retval = lp.find_fcn_file (fname);
-          }
-      }
-
-    return retval;
-  }
-
-  // See if there is a directory called "name" in the path and if it
-  // contains a Contents.m file.  If so, return the full path to this file.
-
-  std::string contents_file_in_path (const std::string& dir)
-  {
-    std::string retval;
-
-    if (! dir.empty ())
-      {
-        load_path& lp = __get_load_path__ ();
-
-        std::string tcontents
-          = sys::file_ops::concat (lp.find_dir (dir), "Contents.m");
-
-        sys::file_stat fs (tcontents);
-
-        if (fs.exists ())
-          retval = sys::env::make_absolute (tcontents);
-      }
-
-    return retval;
-  }
-
-  // Replace backslash escapes in a string with the real values.
-
-  std::string do_string_escapes (const std::string& s)
-  {
-    std::string retval;
-
-    std::size_t i = 0;
-    std::size_t j = 0;
-    std::size_t len = s.length ();
-
-    retval.resize (len);
-
-    while (j < len)
-      {
-        if (s[j] == '\\' && j+1 < len)
-          {
-            switch (s[++j])
-              {
-              case 'a': // alarm
-                retval[i] = '\a';
-                break;
-
-              case 'b': // backspace
-                retval[i] = '\b';
-                break;
-
-              case 'f': // formfeed
-                retval[i] = '\f';
-                break;
-
-              case 'n': // newline
-                retval[i] = '\n';
-                break;
-
-              case 'r': // carriage return
-                retval[i] = '\r';
-                break;
-
-              case 't': // horizontal tab
-                retval[i] = '\t';
-                break;
-
-              case 'v': // vertical tab
-                retval[i] = '\v';
-                break;
-
-              case '\\': // backslash
-                retval[i] = '\\';
-                break;
-
-              case '\'': // quote
-                retval[i] = '\'';
-                break;
-
-              case '"': // double quote
-                retval[i] = '"';
-                break;
-
-              case '0':
-              case '1':
-              case '2':
-              case '3':
-              case '4':
-              case '5':
-              case '6':
-              case '7': // octal input
-                {
-                  std::size_t k;
-                  int tmpi = s[j] - '0';
-                  for (k = j+1; k < std::min (j+3, len); k++)
-                    {
-                      int digit = s[k] - '0';
-                      if (digit < 0 || digit > 7)
-                        break;
-                      tmpi <<= 3;
-                      tmpi += digit;
-                    }
-                  retval[i] = tmpi;
-                  j = k - 1;
-                  break;
-                }
-
-              case 'x': // hex input
-                {
-                  std::size_t k;
-                  int tmpi = 0;
-                  for (k = j+1; k < std::min (j+3, len); k++)
-                    {
-                      if (! isxdigit (s[k]))
-                        break;
-
-                      tmpi <<= 4;
-                      int digit = s[k];
-                      if (digit >= 'a')
-                        tmpi += digit - 'a' + 10;
-                      else if (digit >= 'A')
-                        tmpi += digit - 'A' + 10;
-                      else
-                        tmpi += digit - '0';
-                    }
-
-                  if (k == j+1)
-                    warning (R"(malformed hex escape sequence '\x' -- converting to '\0')");
-
-                  retval[i] = tmpi;
-                  j = k - 1;
-                  break;
-                }
-
-              default:
-                warning (R"(unrecognized escape sequence '\%c' -- converting to '%c')", s[j], s[j]);
-                retval[i] = s[j];
+                std::size_t k;
+                int tmpi = s[j] - '0';
+                for (k = j+1; k < std::min (j+3, len); k++)
+                  {
+                    int digit = s[k] - '0';
+                    if (digit < 0 || digit > 7)
+                      break;
+                    tmpi <<= 3;
+                    tmpi += digit;
+                  }
+                retval[i] = tmpi;
+                j = k - 1;
                 break;
               }
-          }
-        else
-          retval[i] = s[j];
 
-        i++;
-        j++;
-      }
+            case 'x': // hex input
+              {
+                std::size_t k;
+                int tmpi = 0;
+                for (k = j+1; k < std::min (j+3, len); k++)
+                  {
+                    if (! isxdigit (s[k]))
+                      break;
 
-    retval.resize (i);
+                    tmpi <<= 4;
+                    int digit = s[k];
+                    if (digit >= 'a')
+                      tmpi += digit - 'a' + 10;
+                    else if (digit >= 'A')
+                      tmpi += digit - 'A' + 10;
+                    else
+                      tmpi += digit - '0';
+                  }
 
-    return retval;
-  }
+                if (k == j+1)
+                  warning (R"(malformed hex escape sequence '\x' -- converting to '\0')");
+
+                retval[i] = tmpi;
+                j = k - 1;
+                break;
+              }
+
+            default:
+              warning (R"(unrecognized escape sequence '\%c' -- converting to '%c')", s[j], s[j]);
+              retval[i] = s[j];
+              break;
+            }
+        }
+      else
+        retval[i] = s[j];
+
+      i++;
+      j++;
+    }
+
+  retval.resize (i);
+
+  return retval;
+}
 
 DEFUN (do_string_escapes, args, ,
        doc: /* -*- texinfo -*-
@@ -938,7 +940,8 @@ Escape sequences begin with a leading backslash
   if (args.length () != 1)
     print_usage ();
 
-  std::string str = args(0).xstring_value ("do_string_escapes: STRING argument must be of type string");
+  std::string str = args(
+                      0).xstring_value ("do_string_escapes: STRING argument must be of type string");
 
   return ovl (do_string_escapes (str));
 }
@@ -980,62 +983,62 @@ Escape sequences begin with a leading backslash
 %!warning <unrecognized escape sequence> do_string_escapes ('\G');
 */
 
-  const char * undo_string_escape (char c)
-  {
-    if (! c)
-      return "";
+const char * undo_string_escape (char c)
+{
+  if (! c)
+    return "";
 
-    switch (c)
+  switch (c)
+    {
+    case '\0':
+      return R"(\0)";
+
+    case '\a':
+      return R"(\a)";
+
+    case '\b': // backspace
+      return R"(\b)";
+
+    case '\f': // formfeed
+      return R"(\f)";
+
+    case '\n': // newline
+      return R"(\n)";
+
+    case '\r': // carriage return
+      return R"(\r)";
+
+    case '\t': // horizontal tab
+      return R"(\t)";
+
+    case '\v': // vertical tab
+      return R"(\v)";
+
+    case '\\': // backslash
+      return R"(\\)";
+
+    case '"': // double quote
+      return R"(\")";
+
+    default:
       {
-      case '\0':
-        return R"(\0)";
+        static char retval[2] {'\0', '\0'};
 
-      case '\a':
-        return R"(\a)";
-
-      case '\b': // backspace
-        return R"(\b)";
-
-      case '\f': // formfeed
-        return R"(\f)";
-
-      case '\n': // newline
-        return R"(\n)";
-
-      case '\r': // carriage return
-        return R"(\r)";
-
-      case '\t': // horizontal tab
-        return R"(\t)";
-
-      case '\v': // vertical tab
-        return R"(\v)";
-
-      case '\\': // backslash
-        return R"(\\)";
-
-      case '"': // double quote
-        return R"(\")";
-
-      default:
-        {
-          static char retval[2] {'\0', '\0'};
-
-          retval[0] = c;
-          return retval;
-        }
+        retval[0] = c;
+        return retval;
       }
-  }
+    }
+}
 
-  std::string undo_string_escapes (const std::string& s)
-  {
-    std::string retval;
+std::string undo_string_escapes (const std::string& s)
+{
+  std::string retval;
 
-    for (std::size_t i = 0; i < s.length (); i++)
-      retval.append (undo_string_escape (s[i]));
+  for (std::size_t i = 0; i < s.length (); i++)
+    retval.append (undo_string_escape (s[i]));
 
-    return retval;
-  }
+  return retval;
+}
 
 DEFUN (undo_string_escapes, args, ,
        doc: /* -*- texinfo -*-
@@ -1305,298 +1308,298 @@ Return a structure containing the system-dependent errno values.
 %!error errno_list ("foo")
 */
 
-  static void check_dimensions (octave_idx_type& nr, octave_idx_type& nc,
-                                const char *warnfor)
-  {
-    if (nr < 0 || nc < 0)
-      {
-        warning_with_id ("Octave:neg-dim-as-zero",
-                         "%s: converting negative dimension to zero", warnfor);
-
-        nr = (nr < 0) ? 0 : nr;
-        nc = (nc < 0) ? 0 : nc;
-      }
-  }
-
-  void check_dimensions (dim_vector& dim, const char *warnfor)
-  {
-    bool neg = false;
-
-    for (int i = 0; i < dim.ndims (); i++)
-      {
-        if (dim(i) < 0)
-          {
-            dim(i) = 0;
-            neg = true;
-          }
-      }
-
-    if (neg)
+static void check_dimensions (octave_idx_type& nr, octave_idx_type& nc,
+                              const char *warnfor)
+{
+  if (nr < 0 || nc < 0)
+    {
       warning_with_id ("Octave:neg-dim-as-zero",
                        "%s: converting negative dimension to zero", warnfor);
-  }
 
-  void get_dimensions (const octave_value& a, const char *warn_for,
-                       dim_vector& dim)
-  {
-    // We support dimensions to be specified by a vector, even if it's empty.
-    // If the vector is empty, the final dimensions end up being 0x0.
-    if (! a.dims ().isvector () && a.dims ().numel () != 0)
-      error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+      nr = (nr < 0) ? 0 : nr;
+      nc = (nc < 0) ? 0 : nc;
+    }
+}
 
-    const Array<octave_idx_type> v = a.octave_idx_type_vector_value (true);
-    const octave_idx_type n = v.numel ();
+void check_dimensions (dim_vector& dim, const char *warnfor)
+{
+  bool neg = false;
 
-    dim.resize (n); // even if n < 2, resize sets it back to 2
-    if (n == 0)
-      {
-        dim(0) = 0;
-        dim(1) = 0;
-      }
-    else if (n == 1)
-      {
-        dim(0) = v(0);
-        dim(1) = v(0);
-      }
-    else
+  for (int i = 0; i < dim.ndims (); i++)
+    {
+      if (dim(i) < 0)
+        {
+          dim(i) = 0;
+          neg = true;
+        }
+    }
+
+  if (neg)
+    warning_with_id ("Octave:neg-dim-as-zero",
+                     "%s: converting negative dimension to zero", warnfor);
+}
+
+void get_dimensions (const octave_value& a, const char *warn_for,
+                     dim_vector& dim)
+{
+  // We support dimensions to be specified by a vector, even if it's empty.
+  // If the vector is empty, the final dimensions end up being 0x0.
+  if (! a.dims ().isvector () && a.dims ().numel () != 0)
+    error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+
+  const Array<octave_idx_type> v = a.octave_idx_type_vector_value (true);
+  const octave_idx_type n = v.numel ();
+
+  dim.resize (n); // even if n < 2, resize sets it back to 2
+  if (n == 0)
+    {
+      dim(0) = 0;
+      dim(1) = 0;
+    }
+  else if (n == 1)
+    {
+      dim(0) = v(0);
+      dim(1) = v(0);
+    }
+  else
+    for (octave_idx_type i = 0; i < n; i++)
+      dim(i) = v(i);
+
+  check_dimensions (dim, warn_for);
+}
+
+void get_dimensions (const octave_value& a, const char *warn_for,
+                     octave_idx_type& nr, octave_idx_type& nc)
+{
+  if (a.is_scalar_type ())
+    {
+      nr = nc = a.idx_type_value (true);
+    }
+  else
+    {
+      nr = a.rows ();
+      nc = a.columns ();
+
+      if ((nr != 1 || nc != 2) && (nr != 2 || nc != 1))
+        error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+
+      Array<octave_idx_type> v = a.octave_idx_type_vector_value (true);
+      nr = v(0);
+      nc = v(1);
+    }
+
+  check_dimensions (nr, nc, warn_for);
+}
+
+void get_dimensions (const octave_value& a, const octave_value& b,
+                     const char *warn_for, octave_idx_type& nr,
+                     octave_idx_type& nc)
+{
+  nr = (a.isempty () ? 0 : a.idx_type_value (true));
+  nc = (b.isempty () ? 0 : b.idx_type_value (true));
+
+  check_dimensions (nr, nc, warn_for);
+}
+
+octave_idx_type dims_to_numel (const dim_vector& dims,
+                               const octave_value_list& idx_arg)
+{
+  octave_idx_type retval;
+
+  octave_idx_type len = idx_arg.length ();
+
+  if (len == 0)
+    retval = dims.numel ();
+  else
+    {
+      const dim_vector dv = dims.redim (len);
+      retval = 1;
+      for (octave_idx_type i = 0; i < len; i++)
+        {
+          octave_value idxi = idx_arg(i);
+          if (idxi.is_magic_colon ())
+            retval *= dv(i);
+          else if (idxi.isnumeric ())
+            retval *= idxi.numel ();
+          else
+            {
+              try
+                {
+                  idx_vector jdx = idxi.index_vector ();
+
+                  retval *= jdx.length (dv(i));
+                }
+              catch (const index_exception& ie)
+                {
+                  error ("dims_to_numel: invalid index %s", ie.what ());
+                }
+            }
+        }
+    }
+
+  return retval;
+}
+
+Matrix identity_matrix (octave_idx_type nr, octave_idx_type nc)
+{
+  Matrix m (nr, nc, 0.0);
+
+  if (nr > 0 && nc > 0)
+    {
+      octave_idx_type n = std::min (nr, nc);
+
       for (octave_idx_type i = 0; i < n; i++)
-        dim(i) = v(i);
+        m (i, i) = 1.0;
+    }
 
-    check_dimensions (dim, warn_for);
-  }
+  return m;
+}
 
-  void get_dimensions (const octave_value& a, const char *warn_for,
-                       octave_idx_type& nr, octave_idx_type& nc)
-  {
-    if (a.is_scalar_type ())
-      {
-        nr = nc = a.idx_type_value (true);
-      }
-    else
-      {
-        nr = a.rows ();
-        nc = a.columns ();
+FloatMatrix float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
+{
+  FloatMatrix m (nr, nc, 0.0);
 
-        if ((nr != 1 || nc != 2) && (nr != 2 || nc != 1))
-          error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+  if (nr > 0 && nc > 0)
+    {
+      octave_idx_type n = std::min (nr, nc);
 
-        Array<octave_idx_type> v = a.octave_idx_type_vector_value (true);
-        nr = v(0);
-        nc = v(1);
-      }
+      for (octave_idx_type i = 0; i < n; i++)
+        m (i, i) = 1.0;
+    }
 
-    check_dimensions (nr, nc, warn_for);
-  }
+  return m;
+}
 
-  void get_dimensions (const octave_value& a, const octave_value& b,
-                       const char *warn_for, octave_idx_type& nr,
-                       octave_idx_type& nc)
-  {
-    nr = (a.isempty () ? 0 : a.idx_type_value (true));
-    nc = (b.isempty () ? 0 : b.idx_type_value (true));
+std::size_t format (std::ostream& os, const char *fmt, ...)
+{
+  std::size_t retval;
 
-    check_dimensions (nr, nc, warn_for);
-  }
+  va_list args;
+  va_start (args, fmt);
 
-  octave_idx_type dims_to_numel (const dim_vector& dims,
-                                 const octave_value_list& idx_arg)
-  {
-    octave_idx_type retval;
+  retval = vformat (os, fmt, args);
 
-    octave_idx_type len = idx_arg.length ();
+  va_end (args);
 
-    if (len == 0)
-      retval = dims.numel ();
-    else
-      {
-        const dim_vector dv = dims.redim (len);
-        retval = 1;
-        for (octave_idx_type i = 0; i < len; i++)
-          {
-            octave_value idxi = idx_arg(i);
-            if (idxi.is_magic_colon ())
-              retval *= dv(i);
-            else if (idxi.isnumeric ())
-              retval *= idxi.numel ();
-            else
-              {
-                try
-                  {
-                    idx_vector jdx = idxi.index_vector ();
+  return retval;
+}
 
-                    retval *= jdx.length (dv(i));
-                  }
-                catch (const index_exception& ie)
-                  {
-                    error ("dims_to_numel: invalid index %s", ie.what ());
-                  }
-              }
-          }
-      }
+std::size_t vformat (std::ostream& os, const char *fmt, va_list args)
+{
+  std::string s = vasprintf (fmt, args);
 
-    return retval;
-  }
+  os << s;
 
-  Matrix identity_matrix (octave_idx_type nr, octave_idx_type nc)
-  {
-    Matrix m (nr, nc, 0.0);
+  return s.length ();
+}
 
-    if (nr > 0 && nc > 0)
-      {
-        octave_idx_type n = std::min (nr, nc);
+std::string vasprintf (const char *fmt, va_list args)
+{
+  std::string retval;
 
-        for (octave_idx_type i = 0; i < n; i++)
-          m (i, i) = 1.0;
-      }
+  char *result;
 
-    return m;
-  }
+  int status = octave_vasprintf_wrapper (&result, fmt, args);
 
-  FloatMatrix float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
-  {
-    FloatMatrix m (nr, nc, 0.0);
+  if (status >= 0)
+    {
+      retval = result;
+      ::free (result);
+    }
 
-    if (nr > 0 && nc > 0)
-      {
-        octave_idx_type n = std::min (nr, nc);
+  return retval;
+}
 
-        for (octave_idx_type i = 0; i < n; i++)
-          m (i, i) = 1.0;
-      }
+std::string asprintf (const char *fmt, ...)
+{
+  std::string retval;
 
-    return m;
-  }
+  va_list args;
+  va_start (args, fmt);
 
-  std::size_t format (std::ostream& os, const char *fmt, ...)
-  {
-    std::size_t retval;
+  retval = vasprintf (fmt, args);
 
-    va_list args;
-    va_start (args, fmt);
+  va_end (args);
 
-    retval = vformat (os, fmt, args);
+  return retval;
+}
 
-    va_end (args);
+// FIXME: sleep is complicated because we want it to be interruptible.
+// With the way this program handles signals, the sleep system call
+// won't respond to SIGINT.  Maybe there is a better way than
+// breaking this up into multiple shorter intervals?
 
-    return retval;
-  }
+void sleep (double seconds, bool do_graphics_events)
+{
+  if (seconds <= 0)
+    return;
 
-  std::size_t vformat (std::ostream& os, const char *fmt, va_list args)
-  {
-    std::string s = vasprintf (fmt, args);
+  // Allow free access to graphics resources while the interpreter thread
+  // is asleep
 
-    os << s;
+  gh_manager& gh_mgr = __get_gh_manager__ ();
 
-    return s.length ();
-  }
+  if (do_graphics_events)
+    gh_mgr.unlock ();
 
-  std::string vasprintf (const char *fmt, va_list args)
-  {
-    std::string retval;
+  if (math::isinf (seconds))
+    {
+      // Wait for kbhit
+      int c = -1;
+      flush_stdout ();
 
-    char *result;
+      struct timespec one_tenth = { 0, 100000000 };
 
-    int status = octave_vasprintf_wrapper (&result, fmt, args);
+      while (c < 0)
+        {
+          octave_nanosleep_wrapper (&one_tenth, nullptr);
 
-    if (status >= 0)
-      {
-        retval = result;
-        ::free (result);
-      }
+          octave_quit ();
 
-    return retval;
-  }
+          if (do_graphics_events)
+            gh_mgr.process_events ();
 
-  std::string asprintf (const char *fmt, ...)
-  {
-    std::string retval;
+          c = kbhit (false);
+        }
+    }
+  else
+    {
+      sys::time now;
+      double end_time = now.double_value () + seconds;
+      double remaining_time = seconds;
 
-    va_list args;
-    va_start (args, fmt);
+      // Split pause into 100 ms time steps to allow the execution of
+      // graphics events and interrupts.
+      struct timespec nano_laps = { 0, 100000000 };
 
-    retval = vasprintf (fmt, args);
+      while (remaining_time > 0.1)
+        {
+          octave_quit ();
 
-    va_end (args);
-
-    return retval;
-  }
-
-  // FIXME: sleep is complicated because we want it to be interruptible.
-  // With the way this program handles signals, the sleep system call
-  // won't respond to SIGINT.  Maybe there is a better way than
-  // breaking this up into multiple shorter intervals?
-
-  void sleep (double seconds, bool do_graphics_events)
-  {
-    if (seconds <= 0)
-      return;
-
-    // Allow free access to graphics resources while the interpreter thread
-    // is asleep
-
-    gh_manager& gh_mgr = __get_gh_manager__ ();
-
-    if (do_graphics_events)
-      gh_mgr.unlock ();
-
-    if (math::isinf (seconds))
-      {
-        // Wait for kbhit
-        int c = -1;
-        flush_stdout ();
-
-        struct timespec one_tenth = { 0, 100000000 };
-
-        while (c < 0)
-          {
-            octave_nanosleep_wrapper (&one_tenth, nullptr);
-
-            octave_quit ();
-
-            if (do_graphics_events)
+          if (do_graphics_events)
+            {
               gh_mgr.process_events ();
 
-            c = kbhit (false);
-          }
-      }
-    else
-      {
-        sys::time now;
-        double end_time = now.double_value () + seconds;
-        double remaining_time = seconds;
+              now.stamp ();
+              remaining_time = end_time - now.double_value ();
 
-        // Split pause into 100 ms time steps to allow the execution of
-        // graphics events and interrupts.
-        struct timespec nano_laps = { 0, 100000000 };
+              if (remaining_time < 0.1)
+                break;
+            }
 
-        while (remaining_time > 0.1)
-          {
-            octave_quit ();
+          octave_nanosleep_wrapper (&nano_laps, nullptr);
 
-            if (do_graphics_events)
-              {
-                gh_mgr.process_events ();
+          now.stamp ();
+          remaining_time = end_time - now.double_value ();
+        }
 
-                now.stamp ();
-                remaining_time = end_time - now.double_value ();
-
-                if (remaining_time < 0.1)
-                  break;
-              }
-
-            octave_nanosleep_wrapper (&nano_laps, nullptr);
-
-            now.stamp ();
-            remaining_time = end_time - now.double_value ();
-          }
-
-        if (remaining_time > 0.0)
-          {
-            nano_laps = { 0, static_cast<int> (remaining_time * 1e9) };
-            octave_nanosleep_wrapper (&nano_laps, nullptr);
-          }
-      }
-  }
+      if (remaining_time > 0.0)
+        {
+          nano_laps = { 0, static_cast<int> (remaining_time * 1e9) };
+          octave_nanosleep_wrapper (&nano_laps, nullptr);
+        }
+    }
+}
 
 DEFMETHOD (isindex, interp, args, ,
            doc: /* -*- texinfo -*-
@@ -1656,87 +1659,87 @@ character @nospell{"@backslashchar{}0"}, it will always be a valid index.
 %!error isindex (1:3, 2, 3)
 */
 
-  octave_value_list
-  do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
-                     const char *fcn_name, const octave_value_list& args,
-                     int nargout)
-  {
-    octave_value_list new_args = args;
-    octave_value_list retval;
-    int nargin = args.length ();
-    OCTAVE_LOCAL_BUFFER (bool, iscell, nargin);
-    OCTAVE_LOCAL_BUFFER (Cell, cells, nargin);
-    OCTAVE_LOCAL_BUFFER (Cell, rcells, nargout);
+octave_value_list
+do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
+                   const char *fcn_name, const octave_value_list& args,
+                   int nargout)
+{
+  octave_value_list new_args = args;
+  octave_value_list retval;
+  int nargin = args.length ();
+  OCTAVE_LOCAL_BUFFER (bool, iscell, nargin);
+  OCTAVE_LOCAL_BUFFER (Cell, cells, nargin);
+  OCTAVE_LOCAL_BUFFER (Cell, rcells, nargout);
 
-    const Cell *ccells = cells;
+  const Cell *ccells = cells;
 
-    octave_idx_type numel = 1;
-    dim_vector dims (1, 1);
+  octave_idx_type numel = 1;
+  dim_vector dims (1, 1);
 
-    for (int i = 0; i < nargin; i++)
-      {
-        octave_value arg = new_args(i);
-        iscell[i] = arg.iscell ();
+  for (int i = 0; i < nargin; i++)
+    {
+      octave_value arg = new_args(i);
+      iscell[i] = arg.iscell ();
+      if (iscell[i])
+        {
+          cells[i] = arg.cell_value ();
+          octave_idx_type n = ccells[i].numel ();
+          if (n == 1)
+            {
+              iscell[i] = false;
+              new_args(i) = ccells[i](0);
+            }
+          else if (numel == 1)
+            {
+              numel = n;
+              dims = ccells[i].dims ();
+            }
+          else if (dims != ccells[i].dims ())
+            error ("%s: cell arguments must have matching sizes", fcn_name);
+        }
+    }
+
+  for (int i = 0; i < nargout; i++)
+    rcells[i].clear (dims);
+
+  for (octave_idx_type j = 0; j < numel; j++)
+    {
+      for (int i = 0; i < nargin; i++)
         if (iscell[i])
-          {
-            cells[i] = arg.cell_value ();
-            octave_idx_type n = ccells[i].numel ();
-            if (n == 1)
-              {
-                iscell[i] = false;
-                new_args(i) = ccells[i](0);
-              }
-            else if (numel == 1)
-              {
-                numel = n;
-                dims = ccells[i].dims ();
-              }
-            else if (dims != ccells[i].dims ())
-              error ("%s: cell arguments must have matching sizes", fcn_name);
-          }
-      }
+          new_args(i) = ccells[i](j);
 
-    for (int i = 0; i < nargout; i++)
-      rcells[i].clear (dims);
+      octave_quit ();
 
-    for (octave_idx_type j = 0; j < numel; j++)
-      {
-        for (int i = 0; i < nargin; i++)
-          if (iscell[i])
-            new_args(i) = ccells[i](j);
+      const octave_value_list tmp = fcn (new_args, nargout);
 
-        octave_quit ();
+      if (tmp.length () < nargout)
+        error ("%s: do_simple_cellfun: internal error", fcn_name);
 
-        const octave_value_list tmp = fcn (new_args, nargout);
+      for (int i = 0; i < nargout; i++)
+        rcells[i](j) = tmp(i);
+    }
 
-        if (tmp.length () < nargout)
-          error ("%s: do_simple_cellfun: internal error", fcn_name);
+  retval.resize (nargout);
 
-        for (int i = 0; i < nargout; i++)
-          rcells[i](j) = tmp(i);
-      }
+  for (int i = 0; i < nargout; i++)
+    retval(i) = rcells[i];
 
-    retval.resize (nargout);
+  return retval;
+}
 
-    for (int i = 0; i < nargout; i++)
-      retval(i) = rcells[i];
+octave_value
+do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
+                   const char *fcn_name, const octave_value_list& args)
+{
+  octave_value retval;
 
-    return retval;
-  }
+  const octave_value_list tmp = do_simple_cellfun (fcn, fcn_name, args, 1);
 
-  octave_value
-  do_simple_cellfun (octave_value_list (*fcn) (const octave_value_list&, int),
-                     const char *fcn_name, const octave_value_list& args)
-  {
-    octave_value retval;
+  if (tmp.length () > 0)
+    retval = tmp(0);
 
-    const octave_value_list tmp = do_simple_cellfun (fcn, fcn_name, args, 1);
-
-    if (tmp.length () > 0)
-      retval = tmp(0);
-
-    return retval;
-  }
+  return retval;
+}
 
 DEFUN (isstudent, args, ,
        doc: /* -*- texinfo -*-

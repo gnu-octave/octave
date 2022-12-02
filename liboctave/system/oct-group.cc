@@ -51,188 +51,188 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-    std::string
-    group::name (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+std::string
+group::name (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_name;
-    }
+  return m_name;
+}
 
-    std::string
-    group::passwd (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+std::string
+group::passwd (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_passwd;
-    }
+  return m_passwd;
+}
 
-    gid_t
-    group::gid (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+gid_t
+group::gid (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_gid;
-    }
+  return m_gid;
+}
 
-    string_vector
-    group::mem (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+string_vector
+group::mem (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_mem;
-    }
+  return m_mem;
+}
 
-    group
-    group::getgrent (void)
-    {
-      std::string msg;
-      return getgrent (msg);
-    }
+group
+group::getgrent (void)
+{
+  std::string msg;
+  return getgrent (msg);
+}
 
-    group
-    group::getgrent (std::string& msg)
-    {
+group
+group::getgrent (std::string& msg)
+{
 #if defined (HAVE_GETGRENT)
-      msg = "";
-      return group (::getgrent (), msg);
+  msg = "";
+  return group (::getgrent (), msg);
 #else
-      msg = NOT_SUPPORTED ("getgrent");
-      return group ();
+  msg = NOT_SUPPORTED ("getgrent");
+  return group ();
 #endif
-    }
+}
 
-    group
-    group::getgrgid (gid_t gid)
-    {
-      std::string msg;
-      return getgrgid (gid, msg);
-    }
+group
+group::getgrgid (gid_t gid)
+{
+  std::string msg;
+  return getgrgid (gid, msg);
+}
 
-    group
-    group::getgrgid (gid_t gid, std::string& msg)
-    {
+group
+group::getgrgid (gid_t gid, std::string& msg)
+{
 #if defined (HAVE_GETGRGID)
-      msg = "";
-      return group (::getgrgid (gid), msg);
+  msg = "";
+  return group (::getgrgid (gid), msg);
 #else
-      octave_unused_parameter (gid);
+  octave_unused_parameter (gid);
 
-      msg = NOT_SUPPORTED ("getgruid");
-      return group ();
+  msg = NOT_SUPPORTED ("getgruid");
+  return group ();
 #endif
-    }
+}
 
-    group
-    group::getgrnam (const std::string& nm)
-    {
-      std::string msg;
-      return getgrnam (nm, msg);
-    }
+group
+group::getgrnam (const std::string& nm)
+{
+  std::string msg;
+  return getgrnam (nm, msg);
+}
 
-    group
-    group::getgrnam (const std::string& nm, std::string& msg)
-    {
+group
+group::getgrnam (const std::string& nm, std::string& msg)
+{
 #if defined (HAVE_GETGRNAM)
-      msg = "";
-      return group (::getgrnam (nm.c_str ()), msg);
+  msg = "";
+  return group (::getgrnam (nm.c_str ()), msg);
 #else
-      octave_unused_parameter (nm);
+  octave_unused_parameter (nm);
 
-      msg = NOT_SUPPORTED ("getgrnam");
-      return group ();
+  msg = NOT_SUPPORTED ("getgrnam");
+  return group ();
 #endif
-    }
+}
 
-    int
-    group::setgrent (void)
-    {
-      std::string msg;
-      return setgrent (msg);
-    }
+int
+group::setgrent (void)
+{
+  std::string msg;
+  return setgrent (msg);
+}
 
-    int
-    group::setgrent (std::string& msg)
-    {
+int
+group::setgrent (std::string& msg)
+{
 #if defined (HAVE_SETGRENT)
-      msg = "";
-      ::setgrent ();
-      return 0;
+  msg = "";
+  ::setgrent ();
+  return 0;
 #else
-      msg = NOT_SUPPORTED ("setgrent");
-      return -1;
+  msg = NOT_SUPPORTED ("setgrent");
+  return -1;
 #endif
-    }
+}
 
-    int
-    group::endgrent (void)
-    {
-      std::string msg;
-      return endgrent (msg);
-    }
+int
+group::endgrent (void)
+{
+  std::string msg;
+  return endgrent (msg);
+}
 
-    int
-    group::endgrent (std::string& msg)
-    {
+int
+group::endgrent (std::string& msg)
+{
 #if defined (HAVE_ENDGRENT)
-      msg = "";
-      ::endgrent ();
-      return 0;
+  msg = "";
+  ::endgrent ();
+  return 0;
 #else
-      msg = NOT_SUPPORTED ("endgrent");
-      return -1;
+  msg = NOT_SUPPORTED ("endgrent");
+  return -1;
 #endif
-    }
+}
 
-    group::group (void *p, std::string& msg)
-      : m_name (), m_passwd (), m_gid (0), m_mem (), m_valid (false)
-    {
+group::group (void *p, std::string& msg)
+  : m_name (), m_passwd (), m_gid (0), m_mem (), m_valid (false)
+{
 #if defined (HAVE_GRP_H)
-      msg = "";
+  msg = "";
 
-      if (p)
-        {
-          struct ::group *gr = static_cast<struct ::group *> (p);
+  if (p)
+    {
+      struct ::group *gr = static_cast<struct ::group *> (p);
 
-          m_name = gr->gr_name;
+      m_name = gr->gr_name;
 
 #if defined (HAVE_GR_PASSWD)
-          m_passwd = gr->gr_passwd;
+      m_passwd = gr->gr_passwd;
 #endif
 
-          m_gid = gr->gr_gid;
+      m_gid = gr->gr_gid;
 
-          // FIXME: Maybe there should be a string_vector constructor
-          //        that takes a NUL terminated list of C strings?
+      // FIXME: Maybe there should be a string_vector constructor
+      //        that takes a NUL terminated list of C strings?
 
-          const char * const *tmp = gr->gr_mem;
+      const char *const *tmp = gr->gr_mem;
 
-          int k = 0;
-          while (*tmp++)
-            k++;
+      int k = 0;
+      while (*tmp++)
+        k++;
 
-          if (k > 0)
-            {
-              tmp = gr->gr_mem;
+      if (k > 0)
+        {
+          tmp = gr->gr_mem;
 
-              m_mem.resize (k);
+          m_mem.resize (k);
 
-              for (int i = 0; i < k; i++)
-                m_mem[i] = tmp[i];
-            }
-
-          m_valid = true;
+          for (int i = 0; i < k; i++)
+            m_mem[i] = tmp[i];
         }
-#else
-      octave_unused_parameter (p);
 
-      msg = NOT_SUPPORTED ("group functions");
-#endif
+      m_valid = true;
     }
+#else
+  octave_unused_parameter (p);
+
+  msg = NOT_SUPPORTED ("group functions");
+#endif
+}
 
 OCTAVE_END_NAMESPACE(sys)
 OCTAVE_END_NAMESPACE(octave)

@@ -78,7 +78,7 @@ octave_base_value::type_conv_info
 octave_legacy_range::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_matrix::static_type_id ());
+         octave_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -106,8 +106,8 @@ octave_legacy_range::try_narrowing_conversion (void)
           retval = new octave_matrix (range.matrix_value ());
         else
           retval = new octave_range
-            (octave::range<double> (range.base (), range.increment (),
-                                    range.limit (), range.numel ()));
+          (octave::range<double> (range.base (), range.increment (),
+                                  range.limit (), range.numel ()));
       }
       break;
     }

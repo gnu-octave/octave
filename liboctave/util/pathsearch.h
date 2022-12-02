@@ -33,73 +33,73 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class
-  OCTAVE_API
-  directory_path
+class
+OCTAVE_API
+directory_path
+{
+public:
+
+  directory_path (const std::string& s = "");
+
+  directory_path (const directory_path&) = default;
+
+  directory_path& operator = (const directory_path&) = default;
+
+  ~directory_path (void) = default;
+
+  void set (const std::string& s)
   {
-  public:
+    m_initialized = false;
+    m_orig_path = s;
+    init ();
+  }
 
-    directory_path (const std::string& s = "");
+  std::list<std::string> elements (void);
 
-    directory_path (const directory_path&) = default;
+  std::list<std::string> all_directories (void);
 
-    directory_path& operator = (const directory_path&) = default;
+  std::string find_first (const std::string&);
 
-    ~directory_path (void) = default;
+  std::string find (const std::string& nm) { return find_first (nm); }
 
-    void set (const std::string& s)
-    {
-      m_initialized = false;
-      m_orig_path = s;
-      init ();
-    }
+  std::list<std::string> find_all (const std::string&);
 
-    std::list<std::string> elements (void);
+  std::string find_first_of (const std::list<std::string>& names);
 
-    std::list<std::string> all_directories (void);
+  std::list<std::string>
+  find_all_first_of (const std::list<std::string>& names);
 
-    std::string find_first (const std::string&);
+  void rehash (void)
+  {
+    m_initialized = false;
+    init ();
+  }
 
-    std::string find (const std::string& nm) { return find_first (nm); }
+  static char path_sep_char (void);
 
-    std::list<std::string> find_all (const std::string&);
+  // static void path_sep_char (char c);
 
-    std::string find_first_of (const std::list<std::string>& names);
+  static std::string path_sep_str (void);
 
-    std::list<std::string>
-    find_all_first_of (const std::list<std::string>& names);
+  static bool is_path_sep (char c) { return c == path_sep_char (); }
 
-    void rehash (void)
-    {
-      m_initialized = false;
-      init ();
-    }
+private:
 
-    static char path_sep_char (void);
+  // The colon separated list that we were given.
+  std::string m_orig_path;
 
-    // static void path_sep_char (char c);
+  // TRUE means we've unpacked the path p.
+  bool m_initialized;
 
-    static std::string path_sep_str (void);
+  // A version of the colon separate list on which we have performed
+  // tilde, variable, and possibly default path expansion.
+  std::string m_expanded_path;
 
-    static bool is_path_sep (char c) { return c == path_sep_char (); }
+  // The elements of the list.
+  std::list<std::string> m_path_elements;
 
-  private:
-
-    // The colon separated list that we were given.
-    std::string m_orig_path;
-
-    // TRUE means we've unpacked the path p.
-    bool m_initialized;
-
-    // A version of the colon separate list on which we have performed
-    // tilde, variable, and possibly default path expansion.
-    std::string m_expanded_path;
-
-    // The elements of the list.
-    std::list<std::string> m_path_elements;
-
-    void init (void);
-  };
+  void init (void);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

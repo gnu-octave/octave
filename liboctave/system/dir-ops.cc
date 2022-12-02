@@ -46,69 +46,69 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-    bool
-    dir_entry::open (const std::string& n)
+bool
+dir_entry::open (const std::string& n)
+{
+  if (! n.empty ())
+    m_name = n;
+
+  if (! m_name.empty ())
     {
-      if (! n.empty ())
-        m_name = n;
+      close ();
 
-      if (! m_name.empty ())
-        {
-          close ();
+      std::string fullname = sys::file_ops::tilde_expand (m_name);
 
-          std::string fullname = sys::file_ops::tilde_expand (m_name);
+      m_dir = octave_opendir_wrapper (fullname.c_str ());
 
-          m_dir = octave_opendir_wrapper (fullname.c_str ());
+      if (! m_dir)
+        m_errmsg = std::strerror (errno);
+    }
+  else
+    m_errmsg = "dir_entry::open: empty filename";
 
-          if (! m_dir)
-            m_errmsg = std::strerror (errno);
-        }
-      else
-        m_errmsg = "dir_entry::open: empty filename";
+  return m_dir != nullptr;
+}
 
-      return m_dir != nullptr;
+string_vector
+dir_entry::read (void)
+{
+  string_vector retval;
+
+  if (ok ())
+    {
+      std::list<std::string> dirlist;
+
+      char *fname;
+
+      while ((fname = octave_readdir_wrapper (m_dir)))
+        dirlist.push_back (fname);
+
+      retval = string_vector (dirlist);
     }
 
-    string_vector
-    dir_entry::read (void)
+  return retval;
+}
+
+bool
+dir_entry::close (void)
+{
+  bool retval = true;
+
+  if (m_dir)
     {
-      string_vector retval;
+      retval = (octave_closedir_wrapper (m_dir) == 0);
 
-      if (ok ())
-        {
-          std::list<std::string> dirlist;
-
-          char *fname;
-
-          while ((fname = octave_readdir_wrapper (m_dir)))
-            dirlist.push_back (fname);
-
-          retval = string_vector (dirlist);
-        }
-
-      return retval;
+      m_dir = nullptr;
     }
 
-    bool
-    dir_entry::close (void)
-    {
-      bool retval = true;
+  return retval;
+}
 
-      if (m_dir)
-        {
-          retval = (octave_closedir_wrapper (m_dir) == 0);
-
-          m_dir = nullptr;
-        }
-
-      return retval;
-    }
-
-    unsigned int
-    dir_entry::max_name_length (void)
-    {
-      return octave_name_max_wrapper ();
-    }
+unsigned int
+dir_entry::max_name_length (void)
+{
+  return octave_name_max_wrapper ();
+}
 
 OCTAVE_END_NAMESPACE(sys)
 OCTAVE_END_NAMESPACE(octave)

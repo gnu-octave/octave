@@ -47,15 +47,15 @@ check_hdf5_types (bool warn)
 
       if (warn && ! ok)
         warning_with_id
-          ("Octave:internal",
-           "the size of octave_hdf5_id is smaller than the size of HDF5 hid_t");
+        ("Octave:internal",
+         "the size of octave_hdf5_id is smaller than the size of HDF5 hid_t");
 
       ok = sizeof (octave_hdf5_err) >= sizeof (herr_t);
 
       if (warn && ! ok)
         warning_with_id
-          ("Octave:internal",
-           "the size of octave_hdf5_err is smaller than the size of HDF5 herr_t");
+        ("Octave:internal",
+         "the size of octave_hdf5_err is smaller than the size of HDF5 herr_t");
 #else
 
       octave_unused_parameter (warn);

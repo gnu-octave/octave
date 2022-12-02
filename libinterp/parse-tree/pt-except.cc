@@ -45,27 +45,27 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Simple exception handling.
+// Simple exception handling.
 
-  tree_try_catch_command::~tree_try_catch_command (void)
-  {
-    delete m_expr_id;
-    delete m_try_code;
-    delete m_catch_code;
-    delete m_lead_comm;
-    delete m_mid_comm;
-    delete m_trail_comm;
-  }
+tree_try_catch_command::~tree_try_catch_command (void)
+{
+  delete m_expr_id;
+  delete m_try_code;
+  delete m_catch_code;
+  delete m_lead_comm;
+  delete m_mid_comm;
+  delete m_trail_comm;
+}
 
-  // Simple exception handling.
+// Simple exception handling.
 
-  tree_unwind_protect_command::~tree_unwind_protect_command (void)
-  {
-    delete m_unwind_protect_code;
-    delete m_cleanup_code;
-    delete m_lead_comm;
-    delete m_mid_comm;
-    delete m_trail_comm;
-  }
+tree_unwind_protect_command::~tree_unwind_protect_command (void)
+{
+  delete m_unwind_protect_code;
+  delete m_cleanup_code;
+  delete m_lead_comm;
+  delete m_mid_comm;
+  delete m_trail_comm;
+}
 
 OCTAVE_END_NAMESPACE(octave)

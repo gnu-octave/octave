@@ -258,28 +258,28 @@ will be unpredictable.
 
       // PS: I learned this from data.cc
       if INT_ARRAY_LOOKUP (int8)
-      else if INT_ARRAY_LOOKUP (int16)
-      else if INT_ARRAY_LOOKUP (int32)
-      else if INT_ARRAY_LOOKUP (int64)
-      else if INT_ARRAY_LOOKUP (uint8)
-      else if INT_ARRAY_LOOKUP (uint16)
-      else if INT_ARRAY_LOOKUP (uint32)
-      else if INT_ARRAY_LOOKUP (uint64)
-      else if (table.is_char_matrix () && y.is_char_matrix ())
-        retval = do_numeric_lookup (table.char_array_value (),
-                                    y.char_array_value (),
-                                    left_inf, right_inf,
-                                    match_idx, match_bool);
-      else if (table.is_single_type () || y.is_single_type ())
-        retval = do_numeric_lookup (table.float_array_value (),
-                                    y.float_array_value (),
-                                    left_inf, right_inf,
-                                    match_idx, match_bool);
-      else
-        retval = do_numeric_lookup (table.array_value (),
-                                    y.array_value (),
-                                    left_inf, right_inf,
-                                    match_idx, match_bool);
+        else if INT_ARRAY_LOOKUP (int16)
+          else if INT_ARRAY_LOOKUP (int32)
+            else if INT_ARRAY_LOOKUP (int64)
+              else if INT_ARRAY_LOOKUP (uint8)
+                else if INT_ARRAY_LOOKUP (uint16)
+                  else if INT_ARRAY_LOOKUP (uint32)
+                    else if INT_ARRAY_LOOKUP (uint64)
+                      else if (table.is_char_matrix () && y.is_char_matrix ())
+                        retval = do_numeric_lookup (table.char_array_value (),
+                                                    y.char_array_value (),
+                                                    left_inf, right_inf,
+                                                    match_idx, match_bool);
+                      else if (table.is_single_type () || y.is_single_type ())
+                        retval = do_numeric_lookup (table.float_array_value (),
+                                                    y.float_array_value (),
+                                                    left_inf, right_inf,
+                                                    match_idx, match_bool);
+                      else
+                        retval = do_numeric_lookup (table.array_value (),
+                                                    y.array_value (),
+                                                    left_inf, right_inf,
+                                                    match_idx, match_bool);
     }
   else if (str_case)
     {

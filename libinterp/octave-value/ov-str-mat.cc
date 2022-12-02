@@ -83,12 +83,12 @@ octave_base_value::type_conv_info
 octave_char_matrix_str::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_matrix::static_type_id ());
+         octave_matrix::static_type_id ());
 }
 
 octave_value
 octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
-                                              bool resize_ok, char type)
+    bool resize_ok, char type)
 {
   octave_value retval;
 

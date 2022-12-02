@@ -39,62 +39,62 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Binary expressions that can be reduced to compound operations
+// Binary expressions that can be reduced to compound operations
 
-  class tree_compound_binary_expression : public tree_binary_expression
+class tree_compound_binary_expression : public tree_binary_expression
+{
+public:
+
+  tree_compound_binary_expression (tree_expression *a, tree_expression *b,
+                                   int l, int c,
+                                   octave_value::binary_op t,
+                                   tree_expression *ca, tree_expression *cb,
+                                   octave_value::compound_binary_op ct)
+    : tree_binary_expression (a, b, l, c, t), m_lhs (ca), m_rhs (cb),
+      m_etype (ct)
+  { }
+
+  octave_value::compound_binary_op cop_type (void) const { return m_etype; }
+
+  bool rvalue_ok (void) const { return true; }
+
+  tree_expression * clhs (void) { return m_lhs; }
+  tree_expression * crhs (void) { return m_rhs; }
+
+  octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+  octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
   {
-  public:
+    return ovl (evaluate (tw, nargout));
+  }
 
-    tree_compound_binary_expression (tree_expression *a, tree_expression *b,
-                                     int l, int c,
-                                     octave_value::binary_op t,
-                                     tree_expression *ca, tree_expression *cb,
-                                     octave_value::compound_binary_op ct)
-      : tree_binary_expression (a, b, l, c, t), m_lhs (ca), m_rhs (cb),
-        m_etype (ct)
-    { }
+  void accept (tree_walker& tw)
+  {
+    tw.visit_compound_binary_expression (*this);
+  }
 
-    octave_value::compound_binary_op cop_type (void) const { return m_etype; }
+private:
 
-    bool rvalue_ok (void) const { return true; }
+  tree_expression *m_lhs;
+  tree_expression *m_rhs;
 
-    tree_expression * clhs (void) { return m_lhs; }
-    tree_expression * crhs (void) { return m_rhs; }
+  octave_value::compound_binary_op m_etype;
 
-    octave_value evaluate (tree_evaluator&, int nargout = 1);
+  // No copying!
 
-    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
-    {
-      return ovl (evaluate (tw, nargout));
-    }
+  tree_compound_binary_expression (const tree_compound_binary_expression&) = delete;
 
-    void accept (tree_walker& tw)
-    {
-      tw.visit_compound_binary_expression (*this);
-    }
+  tree_compound_binary_expression&
+  operator = (const tree_compound_binary_expression&) = delete;
+};
 
-  private:
+// a "virtual constructor"
 
-    tree_expression *m_lhs;
-    tree_expression *m_rhs;
-
-    octave_value::compound_binary_op m_etype;
-
-    // No copying!
-
-    tree_compound_binary_expression (const tree_compound_binary_expression&) = delete;
-
-    tree_compound_binary_expression&
-    operator = (const tree_compound_binary_expression&) = delete;
-  };
-
-  // a "virtual constructor"
-
-  tree_binary_expression *
-  maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
-                                    int l = -1, int c = -1,
-                                    octave_value::binary_op t
-                                    = octave_value::unknown_binary_op);
+tree_binary_expression *
+maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
+                                  int l = -1, int c = -1,
+                                  octave_value::binary_op t
+                                  = octave_value::unknown_binary_op);
 
 OCTAVE_END_NAMESPACE(octave)
 

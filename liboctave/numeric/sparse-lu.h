@@ -38,91 +38,91 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    // If the sparse matrix classes become templated on the element type
-    // (i.e., sparse_matrix<double>), then it might be best to make the
-    // template parameter of this class also be the element type instead
-    // of the matrix type.
+// If the sparse matrix classes become templated on the element type
+// (i.e., sparse_matrix<double>), then it might be best to make the
+// template parameter of this class also be the element type instead
+// of the matrix type.
 
-    template <typename lu_type>
-    class
-    OCTAVE_API
-    sparse_lu
-    {
-    public:
+template <typename lu_type>
+class
+OCTAVE_API
+sparse_lu
+{
+public:
 
-      typedef typename lu_type::element_type lu_elt_type;
+  typedef typename lu_type::element_type lu_elt_type;
 
-      sparse_lu (void)
-        : m_L (), m_U (), m_R (), m_cond (0), m_P (), m_Q () { }
+  sparse_lu (void)
+    : m_L (), m_U (), m_R (), m_cond (0), m_P (), m_Q () { }
 
-      OCTAVE_API
-      sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
-                 bool scale = false);
+  OCTAVE_API
+  sparse_lu (const lu_type& a, const Matrix& piv_thres = Matrix (),
+             bool scale = false);
 
-      OCTAVE_API
-      sparse_lu (const lu_type& a, const ColumnVector& Qinit,
-                 const Matrix& piv_thres, bool scale = false,
-                 bool FixedQ = false, double droptol = -1.0,
-                 bool milu = false, bool udiag = false);
+  OCTAVE_API
+  sparse_lu (const lu_type& a, const ColumnVector& Qinit,
+             const Matrix& piv_thres, bool scale = false,
+             bool FixedQ = false, double droptol = -1.0,
+             bool milu = false, bool udiag = false);
 
-      sparse_lu (const sparse_lu& a)
-        : m_L (a.m_L), m_U (a.m_U), m_R (),
-          m_cond (a.m_cond), m_P (a.m_P), m_Q (a.m_Q)
-      { }
+  sparse_lu (const sparse_lu& a)
+    : m_L (a.m_L), m_U (a.m_U), m_R (),
+      m_cond (a.m_cond), m_P (a.m_P), m_Q (a.m_Q)
+  { }
 
-      sparse_lu& operator = (const sparse_lu& a)
+  sparse_lu& operator = (const sparse_lu& a)
+  {
+    if (this != &a)
       {
-        if (this != &a)
-          {
-            m_L = a.m_L;
-            m_U = a.m_U;
-            m_cond = a.m_cond;
-            m_P = a.m_P;
-            m_Q = a.m_Q;
-          }
-
-        return *this;
+        m_L = a.m_L;
+        m_U = a.m_U;
+        m_cond = a.m_cond;
+        m_P = a.m_P;
+        m_Q = a.m_Q;
       }
 
-      virtual ~sparse_lu (void) = default;
+    return *this;
+  }
 
-      lu_type L (void) const { return m_L; }
+  virtual ~sparse_lu (void) = default;
 
-      lu_type U (void) const { return m_U; }
+  lu_type L (void) const { return m_L; }
 
-      SparseMatrix R (void) const { return m_R; }
+  lu_type U (void) const { return m_U; }
 
-      OCTAVE_API lu_type Y (void) const;
+  SparseMatrix R (void) const { return m_R; }
 
-      OCTAVE_API SparseMatrix Pc (void) const;
+  OCTAVE_API lu_type Y (void) const;
 
-      OCTAVE_API SparseMatrix Pr (void) const;
+  OCTAVE_API SparseMatrix Pc (void) const;
 
-      OCTAVE_API ColumnVector Pc_vec (void) const;
+  OCTAVE_API SparseMatrix Pr (void) const;
 
-      OCTAVE_API ColumnVector Pr_vec (void) const;
+  OCTAVE_API ColumnVector Pc_vec (void) const;
 
-      OCTAVE_API PermMatrix Pc_mat (void) const;
+  OCTAVE_API ColumnVector Pr_vec (void) const;
 
-      OCTAVE_API PermMatrix Pr_mat (void) const;
+  OCTAVE_API PermMatrix Pc_mat (void) const;
 
-      const octave_idx_type * row_perm (void) const { return m_P.data (); }
+  OCTAVE_API PermMatrix Pr_mat (void) const;
 
-      const octave_idx_type * col_perm (void) const { return m_Q.data (); }
+  const octave_idx_type * row_perm (void) const { return m_P.data (); }
 
-      double rcond (void) const { return m_cond; }
+  const octave_idx_type * col_perm (void) const { return m_Q.data (); }
 
-    protected:
+  double rcond (void) const { return m_cond; }
 
-      lu_type m_L;
-      lu_type m_U;
-      SparseMatrix m_R;
+protected:
 
-      double m_cond;
+  lu_type m_L;
+  lu_type m_U;
+  SparseMatrix m_R;
 
-      MArray<octave_idx_type> m_P;
-      MArray<octave_idx_type> m_Q;
-    };
+  double m_cond;
+
+  MArray<octave_idx_type> m_P;
+  MArray<octave_idx_type> m_Q;
+};
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

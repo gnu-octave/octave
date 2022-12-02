@@ -40,8 +40,8 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class tree_evaluator;
-  class interpreter;
+class tree_evaluator;
+class interpreter;
 
 OCTAVE_END_NAMESPACE(octave)
 

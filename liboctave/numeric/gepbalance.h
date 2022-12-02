@@ -34,66 +34,66 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    class
-    gepbalance
-    {
-    public:
+template <typename T>
+class
+gepbalance
+{
+public:
 
-      typedef typename T::real_matrix_type RT;
+  typedef typename T::real_matrix_type RT;
 
-      gepbalance (void)
-        : m_balanced_mat (), m_balanced_mat2 (), m_balancing_mat (),
-          m_balancing_mat2 ()
-      { }
+  gepbalance (void)
+    : m_balanced_mat (), m_balanced_mat2 (), m_balancing_mat (),
+      m_balancing_mat2 ()
+  { }
 
-      gepbalance (const T& a, const T& b, const std::string& job)
-        : m_balanced_mat (), m_balanced_mat2 (), m_balancing_mat (),
-          m_balancing_mat2 ()
+  gepbalance (const T& a, const T& b, const std::string& job)
+    : m_balanced_mat (), m_balanced_mat2 (), m_balancing_mat (),
+      m_balancing_mat2 ()
+  {
+    init (a, b, job);
+  }
+
+  gepbalance (const gepbalance& a)
+    : m_balanced_mat (a.m_balanced_mat),
+      m_balanced_mat2 (a.m_balanced_mat2),
+      m_balancing_mat (a.m_balancing_mat),
+      m_balancing_mat2 (a.m_balancing_mat2)
+  { }
+
+  gepbalance& operator = (const gepbalance& a)
+  {
+    if (this != &a)
       {
-        init (a, b, job);
+        m_balanced_mat = a.m_balanced_mat;
+        m_balanced_mat2 = a.m_balanced_mat2;
+        m_balancing_mat = a.m_balancing_mat;
+        m_balancing_mat2 = a.m_balancing_mat2;
       }
 
-      gepbalance (const gepbalance& a)
-        : m_balanced_mat (a.m_balanced_mat),
-          m_balanced_mat2 (a.m_balanced_mat2),
-          m_balancing_mat (a.m_balancing_mat),
-          m_balancing_mat2 (a.m_balancing_mat2)
-      { }
+    return *this;
+  }
 
-      gepbalance& operator = (const gepbalance& a)
-      {
-        if (this != &a)
-          {
-            m_balanced_mat = a.m_balanced_mat;
-            m_balanced_mat2 = a.m_balanced_mat2;
-            m_balancing_mat = a.m_balancing_mat;
-            m_balancing_mat2 = a.m_balancing_mat2;
-          }
+  ~gepbalance (void) = default;
 
-        return *this;
-      }
+  T balanced_matrix (void) const { return m_balanced_mat; }
 
-      ~gepbalance (void) = default;
+  T balanced_matrix2 (void) const { return m_balanced_mat2; }
 
-      T balanced_matrix (void) const { return m_balanced_mat; }
+  RT balancing_matrix (void) const { return m_balancing_mat; }
 
-      T balanced_matrix2 (void) const { return m_balanced_mat2; }
+  RT balancing_matrix2 (void) const { return m_balancing_mat2; }
 
-      RT balancing_matrix (void) const { return m_balancing_mat; }
+private:
 
-      RT balancing_matrix2 (void) const { return m_balancing_mat2; }
+  T m_balanced_mat;
+  T m_balanced_mat2;
+  RT m_balancing_mat;
+  RT m_balancing_mat2;
 
-    private:
-
-      T m_balanced_mat;
-      T m_balanced_mat2;
-      RT m_balancing_mat;
-      RT m_balancing_mat2;
-
-      OCTAVE_API octave_idx_type
-      init (const T& a, const T& b, const std::string& job);
-    };
+  OCTAVE_API octave_idx_type
+  init (const T& a, const T& b, const std::string& job);
+};
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

@@ -34,15 +34,15 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  comment_list *
-  comment_list::dup (void) const
-  {
-    comment_list *new_cl = new comment_list ();
+comment_list *
+comment_list::dup (void) const
+{
+  comment_list *new_cl = new comment_list ();
 
-    for (const auto& elt : *this)
-      new_cl->append (elt);
+  for (const auto& elt : *this)
+    new_cl->append (elt);
 
-    return new_cl;
-  }
+  return new_cl;
+}
 
 OCTAVE_END_NAMESPACE(octave)

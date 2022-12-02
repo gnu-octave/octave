@@ -47,8 +47,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
                                      "mex function", "mex function");
 
 octave_mex_function::octave_mex_function
-  (void *fptr, bool interleaved, bool fmex, const octave::dynamic_library& shl,
-   const std::string& nm)
+(void *fptr, bool interleaved, bool fmex, const octave::dynamic_library& shl,
+ const std::string& nm)
   : octave_function (nm), m_mex_fcn_ptr (fptr), m_exit_fcn_ptr (nullptr),
     m_sh_lib (shl), m_interleaved (interleaved), m_is_fmex (fmex),
     m_is_system_fcn_file (false)
@@ -61,7 +61,7 @@ octave_mex_function::octave_mex_function
     = octave::sys::canonicalize_file_name (octave::config::oct_file_dir ());
   static const std::string oct_file_dir
     = canonical_oct_file_dir.empty () ? octave::config::oct_file_dir ()
-                                      : canonical_oct_file_dir;
+      : canonical_oct_file_dir;
 
   m_is_system_fcn_file
     = (! file_name.empty ()

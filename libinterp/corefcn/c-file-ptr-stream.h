@@ -46,7 +46,7 @@ public:
 
   typedef int (*close_fcn) (FILE *);
 
-  FILE *stdiofile (void) { return m_f; }
+  FILE * stdiofile (void) { return m_f; }
 
   c_file_ptr_buf (FILE *f, close_fcn cf = file_close)
     : std::streambuf (), m_f (f), m_cf (cf)

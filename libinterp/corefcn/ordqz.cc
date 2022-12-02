@@ -163,7 +163,7 @@ Note: The keywords are compatible with the ones from @code{qr}.
     {
       std::string opts = args(4).string_value ();
       std::for_each (opts.begin (), opts.end (),
-                     [] (char & c) { c = std::tolower (c); });
+      [] (char& c) { c = std::tolower (c); });
       if (opts == "lhp" || opts == "-")
         select_mode = LHP;
       else if (opts == "rhp" || opts == "+")
@@ -395,8 +395,8 @@ Note: The keywords are compatible with the ones from @code{qr}.
               F77_INT ihi = 2;
               F77_INT lwork = 4;
               F77_INT info = 0;
-              double * aa_vec = aa.fortran_vec ();
-              double * bb_vec = bb.fortran_vec ();
+              double *aa_vec = aa.fortran_vec ();
+              double *bb_vec = bb.fortran_vec ();
 
               F77_XFCN (dhgeqz, DHGEQZ,
                         (F77_CONST_CHAR_ARG2 (&qz_job, 1),

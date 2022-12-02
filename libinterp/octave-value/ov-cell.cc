@@ -129,7 +129,7 @@ octave_base_matrix<Cell>::fast_elem_extract (octave_idx_type n) const
 template <>
 bool
 octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
-                                            const octave_value& x)
+    const octave_value& x)
 {
   const octave_cell *xrep = dynamic_cast<const octave_cell *> (&x.get_rep ());
 
@@ -1336,10 +1336,11 @@ To convert back from a cellstr to a character array use @code{char}.
     return ovl (args(0));
   else
     {
-      string_vector s = args(0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
+      string_vector s = args(
+                          0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
 
       return ovl (s.isempty () ? Cell (octave_value (""))
-                               : Cell (s, true));
+                  : Cell (s, true));
     }
 }
 
@@ -1455,20 +1456,20 @@ octave_cell::map (unary_mapper_t umap) const
     case umap_ ## UMAP:                       \
       return m_matrix.UMAP ()
 
-    FORWARD_MAPPER (xisalnum);
-    FORWARD_MAPPER (xisalpha);
-    FORWARD_MAPPER (xisascii);
-    FORWARD_MAPPER (xiscntrl);
-    FORWARD_MAPPER (xisdigit);
-    FORWARD_MAPPER (xisgraph);
-    FORWARD_MAPPER (xislower);
-    FORWARD_MAPPER (xisprint);
-    FORWARD_MAPPER (xispunct);
-    FORWARD_MAPPER (xisspace);
-    FORWARD_MAPPER (xisupper);
-    FORWARD_MAPPER (xisxdigit);
-    FORWARD_MAPPER (xtolower);
-    FORWARD_MAPPER (xtoupper);
+      FORWARD_MAPPER (xisalnum);
+      FORWARD_MAPPER (xisalpha);
+      FORWARD_MAPPER (xisascii);
+      FORWARD_MAPPER (xiscntrl);
+      FORWARD_MAPPER (xisdigit);
+      FORWARD_MAPPER (xisgraph);
+      FORWARD_MAPPER (xislower);
+      FORWARD_MAPPER (xisprint);
+      FORWARD_MAPPER (xispunct);
+      FORWARD_MAPPER (xisspace);
+      FORWARD_MAPPER (xisupper);
+      FORWARD_MAPPER (xisxdigit);
+      FORWARD_MAPPER (xtolower);
+      FORWARD_MAPPER (xtoupper);
 
     default:
       return octave_base_value::map (umap);

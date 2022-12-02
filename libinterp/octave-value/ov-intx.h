@@ -64,7 +64,7 @@ public:
 
   OCTAVE_VALUE_INT_MATRIX_T (const Array<OCTAVE_INT_T>& nda)
     : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>
-        (intNDArray<OCTAVE_INT_T> (nda)) { }
+      (intNDArray<OCTAVE_INT_T> (nda)) { }
 
   ~OCTAVE_VALUE_INT_MATRIX_T (void) = default;
 
@@ -304,7 +304,7 @@ public:
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
     return m_idx_cache ? *m_idx_cache
-                       : set_idx_cache (octave::idx_vector (m_matrix));
+           : set_idx_cache (octave::idx_vector (m_matrix));
   }
 
   int write (octave::stream& os, int block_size,

@@ -395,7 +395,7 @@ void
 octave_base_value::convert_to_row_or_column_vector (void)
 {
   err_wrong_type_arg
-    ("octave_base_value::convert_to_row_or_column_vector ()", type_name ());
+  ("octave_base_value::convert_to_row_or_column_vector ()", type_name ());
 }
 
 void
@@ -1056,7 +1056,7 @@ octave_base_value::sort (octave_idx_type, sortmode) const
 }
 
 octave_value
-octave_base_value::sort (Array<octave_idx_type> &,
+octave_base_value::sort (Array<octave_idx_type>&,
                          octave_idx_type, sortmode) const
 {
   err_wrong_type_arg ("octave_base_value::sort ()", type_name ());
@@ -1157,18 +1157,18 @@ void
 octave_base_value::warn_load (const char *type) const
 {
   warning_with_id
-    ("Octave:load-save-unavailable",
-     "%s: loading %s files not available in this version of Octave",
-     t_name.c_str (), type);
+  ("Octave:load-save-unavailable",
+   "%s: loading %s files not available in this version of Octave",
+   t_name.c_str (), type);
 }
 
 void
 octave_base_value::warn_save (const char *type) const
 {
   warning_with_id
-    ("Octave:load-save-unavailable",
-     "%s: saving %s files not available in this version of Octave",
-     t_name.c_str (), type);
+  ("Octave:load-save-unavailable",
+   "%s: saving %s files not available in this version of Octave",
+   t_name.c_str (), type);
 }
 
 void
@@ -1199,9 +1199,10 @@ octave_value
 octave_base_value::dump (void) const
 {
   std::map<std::string, octave_value> m
-    = {{ "class", this->class_name () },
-       { "type", this->type_name () },
-       { "dims", this->dims().as_array () }};
+  = {{ "class", this->class_name () },
+    { "type", this->type_name () },
+    { "dims", this->dims().as_array () }
+  };
 
   return octave_value (m);
 }
@@ -1308,7 +1309,7 @@ octave_base_value::numeric_assign (const std::string& type,
                    && (ti.lookup_assign_op (octave_value::op_asn_eq,
                                             cf_this.type_id (), t_rhs)
                        || ti.lookup_pref_assign_conv (cf_this.type_id (),
-                                                      t_rhs) >= 0))
+                           t_rhs) >= 0))
             cf_rhs = nullptr;
 
           if (cf_rhs)

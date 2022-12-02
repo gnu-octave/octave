@@ -203,7 +203,7 @@ Undocumented internal function.
     {
       SparseMatrix sm = Ftril (args(0))(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
-               ichol_checkpivot_real> (sm, michol);
+              ichol_checkpivot_real> (sm, michol);
       return ovl (sm);
     }
   else
@@ -211,14 +211,14 @@ Undocumented internal function.
       SparseComplexMatrix sm
         = Ftril (args(0))(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
-               ichol_checkpivot_complex> (sm, michol);
+              ichol_checkpivot_complex> (sm, michol);
       return ovl (sm);
     }
 }
 
 template <typename octave_matrix_t, typename T,  T (*ichol_mult) (T, T),
           bool (*ichol_checkpivot) (T)>
-void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
+void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
               const T droptol, const std::string michol = "off")
 {
 
@@ -437,8 +437,8 @@ Undocumented internal function.
       SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();
       RowVector sm_col_norms = xcolnorms (sm_l, 1);
       ichol_t <SparseMatrix,
-               double, ichol_mult_real, ichol_checkpivot_real>
-        (sm_l, L, sm_col_norms.fortran_vec (), droptol, michol);
+              double, ichol_mult_real, ichol_checkpivot_real>
+              (sm_l, L, sm_col_norms.fortran_vec (), droptol, michol);
 
       return ovl (L);
     }
@@ -449,9 +449,9 @@ Undocumented internal function.
         = Ftril (args(0))(0).sparse_complex_matrix_value ();
       Array <Complex> cols_norm = xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
-               Complex, ichol_mult_complex, ichol_checkpivot_complex>
-               (sm_l, L, cols_norm.fortran_vec (),
-                Complex (droptol), michol);
+              Complex, ichol_mult_complex, ichol_checkpivot_complex>
+              (sm_l, L, cols_norm.fortran_vec (),
+               Complex (droptol), michol);
 
       return ovl (L);
     }

@@ -42,7 +42,7 @@ public:
 
   base_strstream (std::ios::openmode m = std::ios::out,
                   mach_info::float_format ff
-                    = mach_info::native_float_format (),
+                  = mach_info::native_float_format (),
                   const std::string& encoding = "utf-8")
     : base_stream (m, ff, encoding) { }
 

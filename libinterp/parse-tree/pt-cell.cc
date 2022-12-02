@@ -38,68 +38,68 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  tree_expression *
-  tree_cell::dup (symbol_scope& scope) const
+tree_expression *
+tree_cell::dup (symbol_scope& scope) const
+{
+  tree_cell *new_cell = new tree_cell (nullptr, line (), column ());
+
+  new_cell->copy_base (*this, scope);
+
+  return new_cell;
+}
+
+octave_value
+tree_cell::evaluate (tree_evaluator& tw, int)
+{
+  unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
   {
-    tree_cell *new_cell = new tree_cell (nullptr, line (), column ());
+    tw.set_lvalue_list (lvl);
+  }, tw.lvalue_list ());
+  tw.set_lvalue_list (nullptr);
 
-    new_cell->copy_base (*this, scope);
+  octave_idx_type nr = length ();
+  octave_idx_type nc = -1;
 
-    return new_cell;
-  }
+  Cell val;
 
-  octave_value
-  tree_cell::evaluate (tree_evaluator& tw, int)
-  {
-    unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
-                       {
-                         tw.set_lvalue_list (lvl);
-                       }, tw.lvalue_list ());
-    tw.set_lvalue_list (nullptr);
+  octave_idx_type i = 0;
 
-    octave_idx_type nr = length ();
-    octave_idx_type nc = -1;
+  for (tree_argument_list *elt : *this)
+    {
+      octave_value_list row = tw.convert_to_const_vector (elt);
 
-    Cell val;
+      if (nr == 1)
+        // Optimize the single row case.
+        val = row.cell_value ();
+      else if (nc < 0)
+        {
+          nc = row.length ();
 
-    octave_idx_type i = 0;
+          val = Cell (nr, nc);
+        }
+      else
+        {
+          octave_idx_type this_nc = row.length ();
 
-    for (tree_argument_list *elt : *this)
-      {
-        octave_value_list row = tw.convert_to_const_vector (elt);
+          if (this_nc != nc)
+            {
+              if (this_nc == 0)
+                continue;  // blank line
+              else
+                error ("number of columns must match");
+            }
+        }
 
-        if (nr == 1)
-          // Optimize the single row case.
-          val = row.cell_value ();
-        else if (nc < 0)
-          {
-            nc = row.length ();
+      for (octave_idx_type j = 0; j < nc; j++)
+        val(i, j) = row(j);
 
-            val = Cell (nr, nc);
-          }
-        else
-          {
-            octave_idx_type this_nc = row.length ();
+      i++;
+    }
 
-            if (this_nc != nc)
-              {
-                if (this_nc == 0)
-                  continue;  // blank line
-                else
-                  error ("number of columns must match");
-              }
-          }
+  if (i < nr)
+    val.resize (dim_vector (i, nc));  // there were blank rows
 
-        for (octave_idx_type j = 0; j < nc; j++)
-          val(i, j) = row(j);
-
-        i++;
-      }
-
-    if (i < nr)
-      val.resize (dim_vector (i, nc));  // there were blank rows
-
-    return octave_value (val);
-  }
+  return octave_value (val);
+}
 
 OCTAVE_END_NAMESPACE(octave)

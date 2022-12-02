@@ -137,17 +137,18 @@ static inline bool
 is_in_definition_set2d (const Cell2 X, const octave_idx_type cols,
                         const octave_idx_type rows)
 {
- return ( (((X.idx >= 0) && (X.idx < cols-1)) ||
-           ((X.idx == cols-1) && (X.fcx == 0.0))) &&
-          (((X.idy >= 0) && (X.idy < rows-1)) ||
-           ((X.idy == rows-1) && (X.fcy == 0.0))) );
+  return ( (((X.idx >= 0) && (X.idx < cols-1)) ||
+            ((X.idx == cols-1) && (X.fcx == 0.0))) &&
+           (((X.idy >= 0) && (X.idy < rows-1)) ||
+            ((X.idy == rows-1) && (X.fcy == 0.0))) );
 }
 
 static inline Vector2
 add2d (const Cell2 X, const Vector2 Y)
 {
   Vector2 Z = {X.idx + X.fcx + Y.x,
-               X.idy + X.fcy + Y.y};
+               X.idy + X.fcy + Y.y
+              };
 
   return (Z);
 }
@@ -243,7 +244,8 @@ euler2d (const octave_idx_type cols, const octave_idx_type rows,
 
       // Runge Kutta - Heun's Scheme
       const Vector2 S = {0.5 * (S0.x + S1.x),
-                         0.5 * (S0.y + S1.y)};
+                         0.5 * (S0.y + S1.y)
+                        };
       Xnxt = add2d (X0f, S);
 
       X0f = vector_to_cell2d (Xnxt);
@@ -306,7 +308,8 @@ add3d (const Cell3 X, const Vector3 Y)
 {
   Vector3 Z = {X.idx + X.fcx + Y.x,
                X.idy + X.fcy + Y.y,
-               X.idz + X.fcz + Y.z};
+               X.idz + X.fcz + Y.z
+              };
 
   return (Z);
 }
@@ -417,7 +420,8 @@ euler3d (const octave_idx_type nx, const octave_idx_type ny, const octave_idx_ty
       // Runge Kutta - Heun's Scheme
       const Vector3 S = {0.5 * (S0.x + S1.x),
                          0.5 * (S0.y + S1.y),
-                         0.5 * (S0.z + S1.z)};
+                         0.5 * (S0.z + S1.z)
+                        };
       Xnxt = add3d (X0f, S);
 
       X0f = vector_to_cell3d (Xnxt);

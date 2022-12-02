@@ -384,7 +384,7 @@ Undocumented internal function
           // FIXME: Does ascii mode need to be flagged here?
           std::ifstream ifile =
             sys::ifstream (file.c_str (),
-                                   std::ios::in | std::ios::binary);
+                           std::ios::in | std::ios::binary);
 
           if (! ifile.is_open ())
             error ("__ftp_mput__: unable to open file");
@@ -450,7 +450,7 @@ Undocumented internal function
             {
               std::ofstream ofile =
                 sys::ofstream ((target + sv(i)).c_str (),
-                                       std::ios::out | std::ios::binary);
+                               std::ios::out | std::ios::binary);
 
               if (! ofile.is_open ())
                 error ("__ftp_mget__: unable to open file");

@@ -91,35 +91,35 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
               break;
 
             case 'o': // octal input
-            {
-              bool bad_esc_seq = (j+1 >= len);
+              {
+                bool bad_esc_seq = (j+1 >= len);
 
-              bool brace = false;
-              if (! bad_esc_seq && s[++j] == '{')
-                {
-                  brace = true;
-                  j++;
-                }
+                bool brace = false;
+                if (! bad_esc_seq && s[++j] == '{')
+                  {
+                    brace = true;
+                    j++;
+                  }
 
-              int tmpi = 0;
-              std::size_t k;
-              for (k = j; k < std::min (j+3+brace, len); k++)
-                {
-                  int digit = s[k] - '0';
-                  if (digit < 0 || digit > 7)
-                    break;
-                  tmpi <<= 3;
-                  tmpi += digit;
-                }
-              if (bad_esc_seq || (brace && s[k++] != '}'))
-                {
-                  tmpi = 0;
-                  warning (R"(malformed octal escape sequence '\o' -- converting to '\0')");
-                }
-              retval[i] = tmpi;
-              j = k - 1;
-              break;
-            }
+                int tmpi = 0;
+                std::size_t k;
+                for (k = j; k < std::min (j+3+brace, len); k++)
+                  {
+                    int digit = s[k] - '0';
+                    if (digit < 0 || digit > 7)
+                      break;
+                    tmpi <<= 3;
+                    tmpi += digit;
+                  }
+                if (bad_esc_seq || (brace && s[k++] != '}'))
+                  {
+                    tmpi = 0;
+                    warning (R"(malformed octal escape sequence '\o' -- converting to '\0')");
+                  }
+                retval[i] = tmpi;
+                j = k - 1;
+                break;
+              }
 
             default:  // pass escape sequence through
               retval[i] = '\\';
@@ -194,89 +194,89 @@ do_regexp_rep_string_escapes (const std::string& s)
             case '5':
             case '6':
             case '7': // octal input
-            {
-              std::size_t k;
-              int tmpi = s[j] - '0';
-              for (k = j+1; k < std::min (j+3, len); k++)
-                {
-                  int digit = s[k] - '0';
-                  if (digit < 0 || digit > 7)
-                    break;
-                  tmpi <<= 3;
-                  tmpi += digit;
-                }
-              retval[i] = tmpi;
-              j = k - 1;
-              break;
-            }
+              {
+                std::size_t k;
+                int tmpi = s[j] - '0';
+                for (k = j+1; k < std::min (j+3, len); k++)
+                  {
+                    int digit = s[k] - '0';
+                    if (digit < 0 || digit > 7)
+                      break;
+                    tmpi <<= 3;
+                    tmpi += digit;
+                  }
+                retval[i] = tmpi;
+                j = k - 1;
+                break;
+              }
 
             case 'o': // octal input
-            {
-              bool bad_esc_seq = (j+1 >= len);
+              {
+                bool bad_esc_seq = (j+1 >= len);
 
-              bool brace = false;
-              if (! bad_esc_seq && s[++j] == '{')
-                {
-                  brace = true;
-                  j++;
-                }
+                bool brace = false;
+                if (! bad_esc_seq && s[++j] == '{')
+                  {
+                    brace = true;
+                    j++;
+                  }
 
-              int tmpi = 0;
-              std::size_t k;
-              for (k = j; k < std::min (j+3+brace, len); k++)
-                {
-                  int digit = s[k] - '0';
-                  if (digit < 0 || digit > 7)
-                    break;
-                  tmpi <<= 3;
-                  tmpi += digit;
-                }
-              if (bad_esc_seq || (brace && s[k++] != '}'))
-                {
-                  warning (R"(malformed octal escape sequence '\o' -- converting to '\0')");
-                  tmpi = 0;
-                }
-              retval[i] = tmpi;
-              j = k - 1;
-              break;
-            }
+                int tmpi = 0;
+                std::size_t k;
+                for (k = j; k < std::min (j+3+brace, len); k++)
+                  {
+                    int digit = s[k] - '0';
+                    if (digit < 0 || digit > 7)
+                      break;
+                    tmpi <<= 3;
+                    tmpi += digit;
+                  }
+                if (bad_esc_seq || (brace && s[k++] != '}'))
+                  {
+                    warning (R"(malformed octal escape sequence '\o' -- converting to '\0')");
+                    tmpi = 0;
+                  }
+                retval[i] = tmpi;
+                j = k - 1;
+                break;
+              }
 
             case 'x': // hex input
-            {
-              bool bad_esc_seq = (j+1 >= len);
+              {
+                bool bad_esc_seq = (j+1 >= len);
 
-              bool brace = false;
-              if (! bad_esc_seq && s[++j] == '{')
-                {
-                  brace = true;
-                  j++;
-                }
+                bool brace = false;
+                if (! bad_esc_seq && s[++j] == '{')
+                  {
+                    brace = true;
+                    j++;
+                  }
 
-              int tmpi = 0;
-              std::size_t k;
-              for (k = j; k < std::min (j+2+brace, len); k++)
-                {
-                  if (! isxdigit (s[k]))
-                    break;
+                int tmpi = 0;
+                std::size_t k;
+                for (k = j; k < std::min (j+2+brace, len); k++)
+                  {
+                    if (! isxdigit (s[k]))
+                      break;
 
-                  tmpi <<= 4;
-                  int digit = s[k];
-                  if (digit >= 'a')
-                    tmpi += digit - 'a' + 10;
-                  else if (digit >= 'A')
-                    tmpi += digit - 'A' + 10;
-                  else
-                    tmpi += digit - '0';
-                }
-              if (bad_esc_seq || (brace && s[k++] != '}'))
-                {
-                  warning (R"(malformed hex escape sequence '\x' -- converting to '\0')");
-                  tmpi = 0;
-                }
-              retval[i] = tmpi;
-              j = k - 1;
-              break;
-            }
+                    tmpi <<= 4;
+                    int digit = s[k];
+                    if (digit >= 'a')
+                      tmpi += digit - 'a' + 10;
+                    else if (digit >= 'A')
+                      tmpi += digit - 'A' + 10;
+                    else
+                      tmpi += digit - '0';
+                  }
+                if (bad_esc_seq || (brace && s[k++] != '}'))
+                  {
+                    warning (R"(malformed hex escape sequence '\x' -- converting to '\0')");
+                    tmpi = 0;
+                  }
+                retval[i] = tmpi;
+                j = k - 1;
+                break;
+              }
 
             // Both dollar sign (for capture buffer) and backslash are
             // passed through with their escape backslash.  The processing

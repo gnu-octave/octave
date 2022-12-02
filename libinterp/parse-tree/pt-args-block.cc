@@ -31,14 +31,14 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  tree_args_block_validation_list::~tree_args_block_validation_list (void)
-  {
-    while (! empty ())
-      {
-        auto p = begin ();
-        delete *p;
-        erase (p);
-      }
-  }
+tree_args_block_validation_list::~tree_args_block_validation_list (void)
+{
+  while (! empty ())
+    {
+      auto p = begin ();
+      delete *p;
+      erase (p);
+    }
+}
 
 OCTAVE_END_NAMESPACE(octave)

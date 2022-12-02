@@ -44,56 +44,56 @@ void (*octave_interrupt_hook) (void) = nullptr;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  std::string execution_exception::stack_trace (void) const
-  {
-    std::size_t nframes = m_stack_info.size ();
+std::string execution_exception::stack_trace (void) const
+{
+  std::size_t nframes = m_stack_info.size ();
 
-    if (nframes == 0)
-      return std::string ();
+  if (nframes == 0)
+    return std::string ();
 
-    std::ostringstream buf;
+  std::ostringstream buf;
 
-    buf << "error: called from\n";
+  buf << "error: called from\n";
 
-    for (const auto& frm : m_stack_info)
-      {
-        buf << "    " << frm.fcn_name ();
+  for (const auto& frm : m_stack_info)
+    {
+      buf << "    " << frm.fcn_name ();
 
-        int line = frm.line ();
+      int line = frm.line ();
 
-        if (line > 0)
-          {
-            buf << " at line " << line;
+      if (line > 0)
+        {
+          buf << " at line " << line;
 
-            int column = frm.column ();
+          int column = frm.column ();
 
-            if (column > 0)
-              buf << " column " << column;
-          }
+          if (column > 0)
+            buf << " column " << column;
+        }
 
-        buf << "\n";
-      }
+      buf << "\n";
+    }
 
-    return buf.str ();
-  }
+  return buf.str ();
+}
 
-  void execution_exception::display (std::ostream& os) const
-  {
-    if (! m_message.empty ())
-      {
-        os << m_err_type << ": " << m_message;
+void execution_exception::display (std::ostream& os) const
+{
+  if (! m_message.empty ())
+    {
+      os << m_err_type << ": " << m_message;
 
-        if (m_message.back () != '\n')
-          {
-            os << "\n";
+      if (m_message.back () != '\n')
+        {
+          os << "\n";
 
-            std::string st = stack_trace ();
+          std::string st = stack_trace ();
 
-            if (! st.empty ())
-              os << st;
-          }
-      }
-  }
+          if (! st.empty ())
+            os << st;
+        }
+    }
+}
 
 OCTAVE_END_NAMESPACE(octave)
 

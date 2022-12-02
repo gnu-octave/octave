@@ -42,86 +42,86 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(mach_info)
 
-    static float_format get_float_format (void)
+static float_format get_float_format (void)
+{
+  switch (octave_get_float_format ())
     {
-      switch (octave_get_float_format ())
-        {
-        case 1:
-          return flt_fmt_ieee_little_endian;
+    case 1:
+      return flt_fmt_ieee_little_endian;
 
-        case 2:
-          return flt_fmt_ieee_big_endian;
+    case 2:
+      return flt_fmt_ieee_big_endian;
 
-        default:
-          return flt_fmt_unknown;
-        }
+    default:
+      return flt_fmt_unknown;
+    }
+}
+
+static bool is_big_endian (void)
+{
+  return octave_is_big_endian ();
+}
+
+float_format native_float_format (void)
+{
+  static float_format fmt = get_float_format ();
+
+  return fmt;
+}
+
+bool words_big_endian (void)
+{
+  static bool big_endian = is_big_endian ();
+
+  return big_endian;
+}
+
+bool words_little_endian (void)
+{
+  static bool little_endian = ! is_big_endian ();
+
+  return little_endian;
+}
+
+float_format string_to_float_format (const std::string& s)
+{
+  float_format retval = flt_fmt_unknown;
+
+  if (s == "native" || s == "n")
+    retval = native_float_format ();
+  else if (s == "ieee-be" || s == "b")
+    retval = flt_fmt_ieee_big_endian;
+  else if (s == "ieee-le" || s == "l")
+    retval = flt_fmt_ieee_little_endian;
+  else if (s == "unknown")
+    retval = flt_fmt_unknown;
+  else
+    (*current_liboctave_error_handler)
+      ("invalid architecture type specified");
+
+  return retval;
+}
+
+std::string float_format_as_string (float_format flt_fmt)
+{
+  std::string retval = "unknown";
+
+  switch (flt_fmt)
+    {
+    case flt_fmt_ieee_big_endian:
+      retval = "ieee-be";
+      break;
+
+    case flt_fmt_ieee_little_endian:
+      retval = "ieee-le";
+      break;
+
+    default:
+      break;
     }
 
-    static bool is_big_endian (void)
-    {
-      return octave_is_big_endian ();
-    }
-
-    float_format native_float_format (void)
-    {
-      static float_format fmt = get_float_format ();
-
-      return fmt;
-    }
-
-    bool words_big_endian (void)
-    {
-      static bool big_endian = is_big_endian ();
-
-      return big_endian;
-    }
-
-    bool words_little_endian (void)
-    {
-      static bool little_endian = ! is_big_endian ();
-
-      return little_endian;
-    }
-
-    float_format string_to_float_format (const std::string& s)
-    {
-      float_format retval = flt_fmt_unknown;
-
-      if (s == "native" || s == "n")
-        retval = native_float_format ();
-      else if (s == "ieee-be" || s == "b")
-        retval = flt_fmt_ieee_big_endian;
-      else if (s == "ieee-le" || s == "l")
-        retval = flt_fmt_ieee_little_endian;
-      else if (s == "unknown")
-        retval = flt_fmt_unknown;
-      else
-        (*current_liboctave_error_handler)
-          ("invalid architecture type specified");
-
-      return retval;
-    }
-
-    std::string float_format_as_string (float_format flt_fmt)
-    {
-      std::string retval = "unknown";
-
-      switch (flt_fmt)
-        {
-        case flt_fmt_ieee_big_endian:
-          retval = "ieee-be";
-          break;
-
-        case flt_fmt_ieee_little_endian:
-          retval = "ieee-le";
-          break;
-
-        default:
-          break;
-        }
-
-      return retval;
-    }
+  return retval;
+}
 
 OCTAVE_END_NAMESPACE(mach_info)
 OCTAVE_END_NAMESPACE(octave)

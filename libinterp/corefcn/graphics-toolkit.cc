@@ -33,34 +33,34 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  void
-  base_graphics_toolkit::update (const graphics_handle& h, int id)
-  {
-    gh_manager& gh_mgr = __get_gh_manager__ ();
+void
+base_graphics_toolkit::update (const graphics_handle& h, int id)
+{
+  gh_manager& gh_mgr = __get_gh_manager__ ();
 
-    graphics_object go = gh_mgr.get_object (h);
+  graphics_object go = gh_mgr.get_object (h);
 
-    update (go, id);
-  }
+  update (go, id);
+}
 
-  bool
-  base_graphics_toolkit::initialize (const graphics_handle& h)
-  {
-    gh_manager& gh_mgr = __get_gh_manager__ ();
+bool
+base_graphics_toolkit::initialize (const graphics_handle& h)
+{
+  gh_manager& gh_mgr = __get_gh_manager__ ();
 
-    graphics_object go = gh_mgr.get_object (h);
+  graphics_object go = gh_mgr.get_object (h);
 
-    return initialize (go);
-  }
+  return initialize (go);
+}
 
-  void
-  base_graphics_toolkit::finalize (const graphics_handle& h)
-  {
-    gh_manager& gh_mgr = __get_gh_manager__ ();
+void
+base_graphics_toolkit::finalize (const graphics_handle& h)
+{
+  gh_manager& gh_mgr = __get_gh_manager__ ();
 
-    graphics_object go = gh_mgr.get_object (h);
+  graphics_object go = gh_mgr.get_object (h);
 
-    finalize (go);
-  }
+  finalize (go);
+}
 
 OCTAVE_END_NAMESPACE(octave)

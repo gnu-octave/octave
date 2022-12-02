@@ -38,80 +38,80 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class symbol_scope;
+class symbol_scope;
 
-  // Colon expressions.
+// Colon expressions.
 
-  class tree_colon_expression : public tree_expression
+class tree_colon_expression : public tree_expression
+{
+public:
+
+  tree_colon_expression (int l = -1, int c = -1)
+    : tree_expression (l, c), m_base (nullptr), m_limit (nullptr),
+      m_increment (nullptr), m_save_base (false) { }
+
+  tree_colon_expression (tree_expression *bas, tree_expression *lim,
+                         int l = -1, int c = -1)
+    : tree_expression (l, c), m_base (bas), m_limit (lim),
+      m_increment (nullptr), m_save_base (false) { }
+
+  tree_colon_expression (tree_expression *bas, tree_expression *lim,
+                         tree_expression *inc, int l = -1, int c = -1)
+    : tree_expression (l, c), m_base (bas), m_limit (lim),
+      m_increment (inc), m_save_base (false) { }
+
+  // No copying!
+
+  tree_colon_expression (const tree_colon_expression&) = delete;
+
+  tree_colon_expression& operator = (const tree_colon_expression&) = delete;
+
+  ~tree_colon_expression (void)
   {
-  public:
+    if (! m_save_base)
+      delete m_base;
 
-    tree_colon_expression (int l = -1, int c = -1)
-      : tree_expression (l, c), m_base (nullptr), m_limit (nullptr),
-        m_increment (nullptr), m_save_base (false) { }
+    delete m_limit;
+    delete m_increment;
+  }
 
-    tree_colon_expression (tree_expression *bas, tree_expression *lim,
-                           int l = -1, int c = -1)
-      : tree_expression (l, c), m_base (bas), m_limit (lim),
-        m_increment (nullptr), m_save_base (false) { }
+  void preserve_base (void) { m_save_base = true; }
 
-    tree_colon_expression (tree_expression *bas, tree_expression *lim,
-                           tree_expression *inc, int l = -1, int c = -1)
-      : tree_expression (l, c), m_base (bas), m_limit (lim),
-        m_increment (inc), m_save_base (false) { }
+  bool rvalue_ok (void) const { return true; }
 
-    // No copying!
+  void eval_error (const std::string& s) const;
 
-    tree_colon_expression (const tree_colon_expression&) = delete;
+  tree_expression * base (void) { return m_base; }
 
-    tree_colon_expression& operator = (const tree_colon_expression&) = delete;
+  tree_expression * limit (void) { return m_limit; }
 
-    ~tree_colon_expression (void)
-    {
-      if (! m_save_base)
-        delete m_base;
+  tree_expression * increment (void) { return m_increment; }
 
-      delete m_limit;
-      delete m_increment;
-    }
+  tree_expression * dup (symbol_scope& scope) const;
 
-    void preserve_base (void) { m_save_base = true; }
+  bool is_colon_expression (void) const { return true; }
 
-    bool rvalue_ok (void) const { return true; }
+  octave_value evaluate (tree_evaluator&, int nargout = 1);
 
-    void eval_error (const std::string& s) const;
+  octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+  {
+    return ovl (evaluate (tw, nargout));
+  }
 
-    tree_expression * base (void) { return m_base; }
+  void accept (tree_walker& tw)
+  {
+    tw.visit_colon_expression (*this);
+  }
 
-    tree_expression * limit (void) { return m_limit; }
+private:
 
-    tree_expression * increment (void) { return m_increment; }
+  // The components of the expression.
+  tree_expression *m_base;
+  tree_expression *m_limit;
+  tree_expression *m_increment;
 
-    tree_expression * dup (symbol_scope& scope) const;
-
-    bool is_colon_expression (void) const { return true; }
-
-    octave_value evaluate (tree_evaluator&, int nargout = 1);
-
-    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
-    {
-      return ovl (evaluate (tw, nargout));
-    }
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_colon_expression (*this);
-    }
-
-  private:
-
-    // The components of the expression.
-    tree_expression *m_base;
-    tree_expression *m_limit;
-    tree_expression *m_increment;
-
-    bool m_save_base;
-  };
+  bool m_save_base;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

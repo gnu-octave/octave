@@ -55,6 +55,7 @@
 #include "gui-preferences-global.h"
 #include "gui-preferences-sc.h"
 #include "gui-preferences-ve.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
 #include "ovl.h"
@@ -493,9 +494,10 @@ namespace octave
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs).toBool ())
+
+    gui_settings settings;
+
+    if (! settings.value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString name = objectName ();
@@ -1203,13 +1205,8 @@ namespace octave
   void
   variable_editor::edit_variable (const QString& name, const octave_value& val)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
     if (m_stylesheet.isEmpty ())
-      {
-        gui_settings *settings = rmgr.get_settings ();
-        notice_settings (settings);
-      }
+      notice_settings ();
 
     QDockWidget *existing_qdw = m_main->findChild<QDockWidget *> (name);
     if (existing_qdw)
@@ -1417,31 +1414,33 @@ namespace octave
   }
 
   void
-  variable_editor::notice_settings (const gui_settings *settings)
+  variable_editor::notice_settings (void)
   {
-    m_main->notice_settings (settings); // update settings in parent main win
+    gui_settings settings;
 
-    m_default_width = settings->value (ve_column_width).toInt ();
+    m_main->notice_settings (); // update settings in parent main win
 
-    m_default_height = settings->value (ve_row_height).toInt ();
+    m_default_width = settings.value (ve_column_width).toInt ();
 
-    m_alternate_rows = settings->value (ve_alternate_rows).toBool ();
+    m_default_height = settings.value (ve_row_height).toInt ();
 
-    m_use_terminal_font = settings->value (ve_use_terminal_font).toBool ();
+    m_alternate_rows = settings.value (ve_alternate_rows).toBool ();
+
+    m_use_terminal_font = settings.value (ve_use_terminal_font).toBool ();
 
     QString font_name;
     int font_size;
-    QString default_font = settings->value (global_mono_font).toString ();
+    QString default_font = settings.value (global_mono_font).toString ();
 
     if (m_use_terminal_font)
       {
-        font_name = settings->value (cs_font.key, default_font).toString ();
-        font_size = settings->value (cs_font_size).toInt ();
+        font_name = settings.value (cs_font.key, default_font).toString ();
+        font_size = settings.value (cs_font_size).toInt ();
       }
     else
       {
-        font_name = settings->value (ve_font_name.key, default_font).toString ();
-        font_size = settings->value (ve_font_size).toInt ();
+        font_name = settings.value (ve_font_name.key, default_font).toString ();
+        font_size = settings.value (ve_font_size).toInt ();
       }
 
     m_font = QFont (font_name, font_size);
@@ -1450,11 +1449,11 @@ namespace octave
 
     m_add_font_height = fm.height ();
 
-    int mode = settings->value (ve_color_mode).toInt ();
+    int mode = settings.value (ve_color_mode).toInt ();
 
     for (int i = 0; i < ve_colors_count; i++)
       {
-        QColor setting_color = settings->color_value (ve_colors[i], mode);
+        QColor setting_color = settings.color_value (ve_colors[i], mode);
         m_table_colors.replace (i, setting_color);
       }
 
@@ -1464,7 +1463,7 @@ namespace octave
 
     if (m_tool_bar)
       {
-        int size_idx = settings->value (global_icon_size).toInt ();
+        int size_idx = settings.value (global_icon_size).toInt ();
         size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
         QStyle *st = style ();

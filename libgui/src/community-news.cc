@@ -35,6 +35,7 @@
 #include "gui-utils.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
+#include "gui-settings.h"
 #include "news-reader.h"
 #include "octave-qobject.h"
 
@@ -76,11 +77,10 @@ namespace octave
     resize (win_x/2, win_y/2);
     move ((win_x - width ())/2, (win_y - height ())/2);
 
-    resource_manager& rmgr = oct_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
     QString icon;
-    QString icon_set = settings->value (dw_icon_set).toString ();
+    QString icon_set = settings.value (dw_icon_set).toString ();
     if (icon_set != "NONE")
       // No extra icon for Community news, take the one of the release notes
       icon = dw_icon_set_names[icon_set] + "ReleaseWidget.png";
@@ -92,10 +92,7 @@ namespace octave
     // FIXME: This is a news reader preference, so shouldn't it be used
     // in the news_reader object?
 
-    bool connect_to_web
-      = (settings
-         ? settings->value (nr_allow_connection).toBool ()
-         : true);
+    bool connect_to_web = settings.value (nr_allow_connection).toBool ();
 
     QThread *worker_thread = new QThread;
 

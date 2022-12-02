@@ -47,9 +47,9 @@ namespace octave
       make_window ();
   }
 
-  void documentation_dock_widget::notice_settings (const gui_settings *settings)
+  void documentation_dock_widget::notice_settings (void)
   {
-    m_docs->notice_settings (settings);
+    m_docs->notice_settings ();
   }
 
   void documentation_dock_widget::save_settings (void)

@@ -36,7 +36,6 @@
 #include <QWaitCondition>
 
 #include "dialog.h"
-#include "gui-settings.h"
 
 #include "event-manager.h"
 
@@ -303,7 +302,7 @@ namespace octave
 
     void get_named_icon_signal (const QString& name);
 
-    void settings_changed (const gui_settings *, bool);
+    void settings_changed (bool);
 
     void apply_new_settings (void);
 

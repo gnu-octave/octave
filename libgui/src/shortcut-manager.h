@@ -33,7 +33,7 @@
 #include <QTreeWidget>
 #include <QWidget>
 
-#include "gui-settings.h"
+#include "gui-preferences.h"
 
 namespace octave
 {
@@ -61,6 +61,7 @@ namespace octave
 
   };
 
+  class gui_settings;
   class base_qobject;
 
   class shortcut_manager : public QWidget
@@ -88,7 +89,7 @@ namespace octave
 
     void init_data (void);
 
-    void write_shortcuts (gui_settings *settings, bool closing);
+    void write_shortcuts (gui_settings& settings, bool closing);
 
     void set_shortcut (QAction *action, const sc_pref& scpref, bool enable = true);
 
@@ -108,7 +109,7 @@ namespace octave
 
     void init (const QString&, const sc_pref& scpref);
     void shortcut_dialog (int);
-    void import_shortcuts (gui_settings *settings);
+    void import_shortcuts (gui_settings& settings);
     void reset_default_shortcuts (void);
     bool overwrite_all_shortcuts (void);
 

@@ -50,6 +50,7 @@
 #include <QVBoxLayout>
 
 #include "gui-preferences-pd.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
 #include "set-path-dialog.h"
@@ -168,10 +169,9 @@ namespace octave
 
     setLayout (main_layout);
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    restoreGeometry (
-      settings->value(pd_geometry.key).toByteArray());
+    gui_settings settings;
+
+    restoreGeometry (settings.value(pd_geometry.key).toByteArray());
   }
 
   void set_path_dialog::update_model (void)
@@ -297,11 +297,11 @@ namespace octave
     m_path_list->scrollTo (m->index (row_count - 1));
   }
 
-  void set_path_dialog::save_settings ()
+  void set_path_dialog::save_settings (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    settings->setValue (pd_geometry.key, saveGeometry ());
+    gui_settings settings;
+
+    settings.setValue (pd_geometry.key, saveGeometry ());
   }
 
   void set_path_dialog::closeEvent (QCloseEvent *e)

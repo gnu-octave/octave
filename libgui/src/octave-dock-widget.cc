@@ -258,8 +258,7 @@ namespace octave
                  | QDockWidget::DockWidgetMovable
                  | QDockWidget::DockWidgetFloatable);
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    handle_settings (rmgr.get_settings ());
+    handle_settings ();
   }
 
   void
@@ -346,12 +345,12 @@ namespace octave
     bool vis = isVisible ();
 
     // Since floating widget has no parent, we have to read it
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
 
     if (m_main_window)
       {
-        settings->setValue (mw_state.key, m_main_window->saveState ());
+        gui_settings settings;
+
+        settings.setValue (mw_state.key, m_main_window->saveState ());
 
         // Stay window, otherwise will bounce back to window by default
         // because there is no layout information for this widget in the
@@ -360,7 +359,7 @@ namespace octave
         m_main_window->addDockWidget (Qt::BottomDockWidgetArea, this);
         m_adopted = false;
         // recover old window states, hide and re-show new added widget
-        m_main_window->restoreState (settings->value (mw_state.key).toByteArray ());
+        m_main_window->restoreState (settings.value (mw_state.key).toByteArray ());
         setFloating (false);
         // restore size using setGeometry instead of restoreGeometry
         // following this post:
@@ -374,6 +373,8 @@ namespace octave
              this, &octave_dock_widget::make_window);
     if (titleBarWidget ())
       {
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
         m_dock_action->setIcon (rmgr.icon ("widget-undock" + m_icon_color, true));
         m_dock_action->setToolTip (tr ("Undock widget"));
       }
@@ -472,28 +473,27 @@ namespace octave
   }
 
   void
-  octave_dock_widget::handle_settings (const gui_settings *settings)
+  octave_dock_widget::handle_settings (void)
   {
-    if (! settings)
-      return;
+    gui_settings settings;
 
-    m_focus_follows_mouse = settings->value (dw_focus_follows_mouse).toBool ();
+    m_focus_follows_mouse = settings.value (dw_focus_follows_mouse).toBool ();
 
     m_custom_style
-      = settings->value (dw_title_custom_style).toBool ();
+      = settings.value (dw_title_custom_style).toBool ();
 
-    m_title_3d = settings->value (dw_title_3d.key, dw_title_3d.def).toInt ();
+    m_title_3d = settings.value (dw_title_3d.key, dw_title_3d.def).toInt ();
 
     m_fg_color
-      = settings->value (dw_title_fg_color).value<QColor> ();
+      = settings.value (dw_title_fg_color).value<QColor> ();
 
     m_fg_color_active
-      = settings->value (dw_title_fg_color_active).value<QColor> ();
+      = settings.value (dw_title_fg_color_active).value<QColor> ();
 
-    m_bg_color = settings->value (dw_title_bg_color).value<QColor> ();
+    m_bg_color = settings.value (dw_title_bg_color).value<QColor> ();
 
     m_bg_color_active
-      = settings->value (dw_title_bg_color_active).value<QColor> ();
+      = settings.value (dw_title_bg_color_active).value<QColor> ();
 
     QColor bcol (m_bg_color);
     QColor bcola (m_bg_color_active);
@@ -536,7 +536,7 @@ namespace octave
       }
 
     m_recent_float_geom
-      = settings->value (dw_float_geometry.key.arg (objectName ()),
+      = settings.value (dw_float_geometry.key.arg (objectName ()),
                          default_floating_size).toRect ();
 
     adjust_to_screen (m_recent_float_geom, default_floating_size);
@@ -545,14 +545,14 @@ namespace octave
     // saveGeomety to new QRect setting (see comment for restoring size
     // of docked widgets)
     QVariant dock_geom
-      = settings->value (dw_dock_geometry.key.arg (objectName ()),
-                         default_dock_size);
+      = settings.value (dw_dock_geometry.key.arg (objectName ()),
+                        default_dock_size);
     if (dock_geom.canConvert (QMetaType::QRect))
       m_recent_dock_geom = dock_geom.toRect ();
     else
       m_recent_dock_geom = dw_dock_geometry.def.toRect ();
 
-    notice_settings (settings);  // call individual handler
+    notice_settings ();  // call individual handler
 
     set_style (false);
 
@@ -589,25 +589,22 @@ namespace octave
   {
     // save state of this dock-widget
     QString name = objectName ();
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
 
-    if (! settings)
-      return;
+    gui_settings settings;
 
     store_geometry ();
 
     // conditional needed?
     if (! m_recent_float_geom.isNull ())
-      settings->setValue (dw_float_geometry.key.arg (name), m_recent_float_geom);
+      settings.setValue (dw_float_geometry.key.arg (name), m_recent_float_geom);
 
     if (! m_recent_dock_geom.isEmpty ())
-      settings->setValue (dw_dock_geometry.key.arg (name), m_recent_dock_geom);
-    settings->setValue (dw_is_visible.key.arg (name), isVisible ()); // store visibility
-    settings->setValue (dw_is_floating.key.arg (name), isFloating ()); // store floating
-    settings->setValue (dw_is_minimized.key.arg (name), isMinimized ()); // store minimized
+      settings.setValue (dw_dock_geometry.key.arg (name), m_recent_dock_geom);
+    settings.setValue (dw_is_visible.key.arg (name), isVisible ()); // store visibility
+    settings.setValue (dw_is_floating.key.arg (name), isFloating ()); // store floating
+    settings.setValue (dw_is_minimized.key.arg (name), isMinimized ()); // store minimized
 
-    settings->sync ();
+    settings.sync ();
   }
 
   bool octave_dock_widget::eventFilter (QObject *obj, QEvent *e)

@@ -54,6 +54,7 @@
 
 #include "file-editor-tab.h"
 #include "gui-preferences-ed.h"
+#include "gui-settings.h"
 // FIXME: hardwired marker numbers?
 #include "marker.h"
 #include "octave-qobject.h"
@@ -430,20 +431,20 @@ namespace octave
       case SCLEX_MATLAB:
 #endif
         {
-          resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-          gui_settings *settings = rmgr.get_settings ();
+          gui_settings settings;
+
           int comment_string;
 
           if (comment)
             {
               // The commenting string is requested
-              if (settings->contains (ed_comment_str.key))
+              if (settings.contains (ed_comment_str.key))
                 // new version (radio buttons)
-                comment_string = settings->value (ed_comment_str).toInt ();
+                comment_string = settings.value (ed_comment_str).toInt ();
               else
                 // old version (combo box)
-                comment_string = settings->value (ed_comment_str_old.key,
-                                                  ed_comment_str.def).toInt ();
+                comment_string = settings.value (ed_comment_str_old.key,
+                                                 ed_comment_str.def).toInt ();
 
               return (QStringList (ed_comment_strings.at (comment_string)));
             }
@@ -452,7 +453,7 @@ namespace octave
               QStringList c_str;
 
               // The possible uncommenting string(s) are requested
-              comment_string = settings->value (ed_uncomment_str).toInt ();
+              comment_string = settings.value (ed_uncomment_str).toInt ();
 
               for (int i = 0; i < ed_comment_strings_count; i++)
                 {
@@ -908,9 +909,10 @@ namespace octave
         });
 
     // Disable opening a file at a breakpoint in case keyboard () is used
-    gui_settings *settings = rmgr.get_settings ();
-    bool show_dbg_file = settings->value (ed_show_dbg_file).toBool ();
-    settings->setValue (ed_show_dbg_file.key, false);
+    gui_settings settings;
+
+  bool show_dbg_file = settings.value (ed_show_dbg_file).toBool ();
+    settings.setValue (ed_show_dbg_file.key, false);
 
     // Let the interpreter execute the tmp file
     emit interpreter_event
@@ -1035,8 +1037,10 @@ namespace octave
     //       possible lines from commands at a debug prompt must be
     //       taken into consideration.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    settings->setValue (ed_show_dbg_file.key, show_dbg_file);
+    gui_settings settings;
+
+    settings.setValue (ed_show_dbg_file.key, show_dbg_file);
+
     rmgr.remove_tmp_file (tmp_file);
     rmgr.remove_tmp_file (tmp_hist);
 

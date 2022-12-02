@@ -32,7 +32,6 @@
 #include <QTableView>
 
 #include "dw-main-window.h"
-#include "gui-settings.h"
 #include "octave-dock-widget.h"
 #include "qt-interpreter-events.h"
 #include "tab-bar.h"
@@ -340,7 +339,7 @@ namespace octave
 
     void callUpdate (const QModelIndex&, const QModelIndex&);
 
-    void notice_settings (const gui_settings *);
+    void notice_settings (void);
 
     void edit_variable (const QString& name, const octave_value& val);
 

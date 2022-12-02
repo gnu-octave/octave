@@ -64,17 +64,15 @@
 namespace octave
 {
   resource_manager::resource_manager (void)
-    : m_settings_directory (), m_settings_file (), m_settings (nullptr),
+    : m_settings_directory (), m_settings_file (),
       m_temporary_files (), m_icon_fallbacks ()
   {
     // Location, name, and format of settings file determined by
     // settings in qt_application class construtor.
 
-    m_settings = new gui_settings ();
-
     check_settings ();
 
-    m_settings_file = m_settings->fileName ();
+    m_settings_file = settings.fileName ();
 
     QFileInfo sfile (m_settings_file);
     m_settings_directory = sfile.absolutePath ();
@@ -82,8 +80,6 @@ namespace octave
 
   resource_manager::~resource_manager (void)
   {
-    delete m_settings;
-
     for (int i = m_temporary_files.count () - 1; i >=0; i--)
       remove_tmp_file (m_temporary_files.at (i));
   }
@@ -111,12 +107,11 @@ namespace octave
     // FIXME: can we somehow ensure that the settings object will always
     // be initialize and valid?
 
-    if (m_settings)
-      {
-        // get the locale from the settings if already available
-        language = m_settings->value (global_language.key,
-                                      global_language.def).toString ();
-      }
+    gui_settings settings;
+
+    // get the locale from the settings if already available
+    language = settings.value (global_language.key,
+                               global_language.def).toString ();
 
     // load the translations depending on the settings
     if (language == "SYSTEM")
@@ -151,24 +146,18 @@ namespace octave
 
     int theme = global_icon_theme_index.def.toInt ();
 
-    if (m_settings)
+    gui_settings settings;
+
+    // check for new and old setting and use old if required
+    if (! settings.contains (global_icon_theme_index.key))
       {
-       // check for new and old setting and use old if required
-       if (! m_settings->contains (global_icon_theme_index.key))
-         {
-           // new pref does not exist
-           if (m_settings->value (global_icon_theme).toBool ())
-             theme = ICON_THEME_SYSTEM;
-           else
-             theme = ICON_THEME_OCTAVE;
-           m_settings->setValue (global_icon_theme_index.key, theme);  // add new
-           m_settings->remove (global_icon_theme.key); // remove deprecated key
-         }
-       else
-         {
-           // get new settings
-           theme = m_settings->value (global_icon_theme_index).toInt ();
-         }
+        // new pref does not exist
+        if (settings.value (global_icon_theme).toBool ())
+          theme = ICON_THEME_SYSTEM;
+        else
+          theme = ICON_THEME_OCTAVE;
+        settings.setValue (global_icon_theme_index.key, theme);  // add new
+        settings.remove (global_icon_theme.key); // remove deprecated key
       }
 
    QIcon::setThemeName (global_all_icon_themes.at (theme));
@@ -189,24 +178,6 @@ namespace octave
     }
 
     m_icon_fallbacks << global_icon_paths.at (ICON_THEME_CURSORS);
-  }
-
-  gui_settings * resource_manager::get_settings (void) const
-  {
-    if (! m_settings)
-      {
-        QString msg (QT_TR_NOOP ("Octave has lost its settings.\n"
-                                 "This should not happen.\n\n"
-                                 "Please report this bug.\n\n"
-                                 "Octave GUI must be closed now."));
-
-        QMessageBox::critical (nullptr,
-                               QString (QT_TR_NOOP ("Octave Critical Error")),
-                               msg);
-        exit (1);
-      }
-
-    return m_settings;
   }
 
   QString resource_manager::get_settings_directory (void)
@@ -317,24 +288,24 @@ namespace octave
 
     check_settings ();
 
+    gui_settings settings;
+
     // Write some settings that were dynamically determined at first startup
-    if (m_settings)
+
+    // Custom editor
+    if (! custom_editor.isEmpty ())
+      settings.setValue (global_custom_editor.key, custom_editor);
+
+    // Default monospace font for the terminal
+    if (def_font.count () > 1)
       {
-        // Custom editor
-        if (! custom_editor.isEmpty ())
-          m_settings->setValue (global_custom_editor.key, custom_editor);
-
-        // Default monospace font for the terminal
-        if (def_font.count () > 1)
-          {
-            m_settings->setValue (cs_font.key, def_font[0]);
-            m_settings->setValue (cs_font_size.key, def_font[1].toInt ());
-          }
-
-        // Write the default monospace font into the settings for later use by
-        // console and editor as fallbacks of their font preferences.
-        m_settings->setValue (global_mono_font.key, get_default_font_family ());
+        settings.setValue (cs_font.key, def_font[0]);
+        settings.setValue (cs_font_size.key, def_font[1].toInt ());
       }
+
+    // Write the default monospace font into the settings for later use by
+    // console and editor as fallbacks of their font preferences.
+    settings.setValue (global_mono_font.key, get_default_font_family ());
   }
 
 #if defined (HAVE_QSCINTILLA)
@@ -366,9 +337,10 @@ namespace octave
 
 #if defined (HAVE_QSCINTILLA)
   void resource_manager::read_lexer_settings (QsciLexer *lexer,
-                                              gui_settings *settings,
                                               int mode, int def)
   {
+    gui_settings settings;
+
     // Test whether the settings for lexer is already contained in the
     // given gui settings file. If yes, load them, if not copy them from the
     // default settings file.
@@ -380,13 +352,13 @@ namespace octave
 
     QString group ("Scintilla" + settings_color_modes_ext[m]);
 
-    settings->beginGroup (group);
-    settings->beginGroup (lexer->language ());
+    settings.beginGroup (group);
+    settings.beginGroup (lexer->language ());
 
-    QStringList lexer_keys = settings->allKeys ();
+    QStringList lexer_keys = settings.allKeys ();
 
-    settings->endGroup ();
-    settings->endGroup ();
+    settings.endGroup ();
+    settings.endGroup ();
 
     if (def == settings_reload_default_colors_flag || lexer_keys.count () == 0)
       {
@@ -408,9 +380,9 @@ namespace octave
 
         for (int i = 0; i < max_style; i++)
           {
-            c = settings->get_color_value (QVariant (lexer->color (styles[i])), m);
+            c = settings.get_color_value (QVariant (lexer->color (styles[i])), m);
             lexer->setColor (c, styles[i]);
-            p = settings->get_color_value (QVariant (lexer->paper (styles[i])), m);
+            p = settings.get_color_value (QVariant (lexer->paper (styles[i])), m);
             lexer->setPaper (p, styles[i]);
             dfa = copy_font_attributes (lexer->font (styles[i]), df);
             lexer->setFont (dfa, styles[i]);
@@ -423,31 +395,33 @@ namespace octave
         if (def != settings_reload_default_colors_flag)
           {
             const std::string group_str = group.toStdString ();
-            lexer->writeSettings (*settings, group_str.c_str ());
-            settings->sync ();
+            lexer->writeSettings (settings, group_str.c_str ());
+            settings.sync ();
           }
       }
     else
       {
         // Found lexer keys, read the settings
         const std::string group_str = group.toStdString ();
-        lexer->readSettings (*settings, group_str.c_str ());
+        lexer->readSettings (settings, group_str.c_str ());
       }
   }
 #endif
 
   void resource_manager::check_settings (void)
   {
-    if (m_settings->status () == QSettings::NoError)
+    gui_settings settings;
+
+    if (settings.status () == QSettings::NoError)
       {
         // Test usability (force file to be really created)
-        m_settings->setValue ("dummy", 0);
-        m_settings->sync ();
+        settings.setValue ("dummy", 0);
+        settings.sync ();
       }
 
-    if (! (QFile::exists (m_settings->fileName ())
-           && m_settings->isWritable ()
-           && m_settings->status () == QSettings::NoError))
+    if (! (QFile::exists (settings.fileName ())
+           && settings.isWritable ()
+           && settings.status () == QSettings::NoError))
       {
         QString msg
           = QString (QT_TR_NOOP ("The settings file\n%1\n"
@@ -462,17 +436,19 @@ namespace octave
         exit (1);
       }
     else
-      m_settings->remove ("dummy"); // Remove test entry
+      settings.remove ("dummy"); // Remove test entry
   }
 
   bool resource_manager::update_settings_key (const QString& old_key,
                                               const QString& new_key)
   {
-    if (m_settings->contains (old_key))
+    gui_settings settings;
+
+    if (settings.contains (old_key))
       {
-        QVariant preference = m_settings->value (old_key);
-        m_settings->setValue (new_key, preference);
-        m_settings->remove (old_key);
+        QVariant preference = settings.value (old_key);
+        settings.setValue (new_key, preference);
+        settings.remove (old_key);
         return true;
       }
 
@@ -486,9 +462,6 @@ namespace octave
 
   void resource_manager::update_network_settings (void)
   {
-    if (! m_settings)
-      return;
-
     QNetworkProxy proxy;
 
     // Assume no proxy and empty proxy data
@@ -500,11 +473,13 @@ namespace octave
     QString pass;
     QUrl proxy_url = QUrl ();
 
-    if (m_settings->value (global_use_proxy.key, global_use_proxy.def).toBool ())
+    gui_settings settings;
+
+    if (settings.value (global_use_proxy.key, global_use_proxy.def).toBool ())
       {
         // Use a proxy, collect all required information
         QString proxy_type_string
-          = m_settings->value (global_proxy_type.key, global_proxy_type.def).toString ();
+          = settings.value (global_proxy_type.key, global_proxy_type.def).toString ();
 
         // The proxy type for the Qt proxy settings
         if (proxy_type_string == "Socks5Proxy")
@@ -516,14 +491,14 @@ namespace octave
         if (proxy_type_string == "HttpProxy"
             || proxy_type_string == "Socks5Proxy")
           {
-            host = m_settings->value (global_proxy_host.key,
-                                      global_proxy_host.def).toString ();
-            port = m_settings->value (global_proxy_port.key,
-                                      global_proxy_port.def).toInt ();
-            user = m_settings->value (global_proxy_user.key,
-                                      global_proxy_user.def).toString ();
-            pass = m_settings->value (global_proxy_pass.key,
-                                      global_proxy_pass.def).toString ();
+            host = settings.value (global_proxy_host.key,
+                                   global_proxy_host.def).toString ();
+            port = settings.value (global_proxy_port.key,
+                                   global_proxy_port.def).toInt ();
+            user = settings.value (global_proxy_user.key,
+                                   global_proxy_user.def).toString ();
+            pass = settings.value (global_proxy_pass.key,
+                                   global_proxy_pass.def).toString ();
             if (proxy_type_string == "HttpProxy")
               scheme = "http";
             else if (proxy_type_string == "Socks5Proxy")
@@ -662,7 +637,9 @@ namespace octave
 
     if (enc.isEmpty ())
       {
-        enc = m_settings->value (ed_default_enc).toString ();
+        gui_settings settings;
+
+        enc = settings.value (ed_default_enc).toString ();
 
         if (enc.isEmpty ())  // still empty?
           {

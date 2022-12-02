@@ -34,8 +34,6 @@
 #include <QStringList>
 #include <QVector>
 
-#include "gui-settings.h"
-
 #include "syminfo.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
@@ -88,7 +86,7 @@ namespace octave
 
     void clear_workspace (void);
 
-    void notice_settings (const gui_settings *);
+    void notice_settings (void);
 
   private:
 

@@ -35,8 +35,6 @@
 #include <QTranslator>
 #include <QTemporaryFile>
 
-#include "gui-settings.h"
-
 namespace octave
 {
   class resource_manager : public QObject
@@ -63,8 +61,6 @@ namespace octave
                              QTranslator *gui_tr);
     void config_icon_theme (void);
 
-    gui_settings * get_settings (void) const;
-
     QString get_settings_directory (void);
 
     QString get_settings_file (void);
@@ -83,8 +79,7 @@ namespace octave
 
 #if defined (HAVE_QSCINTILLA)
     int get_valid_lexer_styles (QsciLexer *lexer, int *styles);
-    void read_lexer_settings (QsciLexer *lexer, gui_settings *settings,
-                              int mode = 0, int def = 0);
+    void read_lexer_settings (QsciLexer *lexer, int mode = 0, int def = 0);
 #endif
 
     bool update_settings_key (const QString& new_key, const QString& old_key);
@@ -116,8 +111,6 @@ namespace octave
     QString m_settings_directory;
 
     QString m_settings_file;
-
-    gui_settings *m_settings;
 
     QList<QTemporaryFile *> m_temporary_files;
 

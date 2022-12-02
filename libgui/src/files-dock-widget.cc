@@ -49,6 +49,7 @@
 #include "files-dock-widget.h"
 #include "gui-preferences-fb.h"
 #include "gui-preferences-global.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
 #include "qt-interpreter-events.h"
@@ -285,24 +286,23 @@ namespace octave
     connect (m_sync_browser_directory_action, &QAction::triggered,
              this, &files_dock_widget::do_sync_browser_directory);
 
-    gui_settings *settings = rmgr.get_settings ();
-    // FIXME: what should happen if settings is 0?
+    gui_settings settings;
 
     // Create the QFileSystemModel starting in the desired directory
     QDir startup_dir;  // take current dir
 
-    if (settings->value (fb_restore_last_dir).toBool ())
+    if (settings.value (fb_restore_last_dir).toBool ())
       {
         // restore last dir from previous session
         QStringList last_dirs
-          = settings->value (fb_mru_list.key).toStringList ();
+          = settings.value (fb_mru_list.key).toStringList ();
         if (last_dirs.length () > 0)
           startup_dir = QDir (last_dirs.at (0));  // last dir in previous session
       }
-    else if (! settings->value (fb_startup_dir).toString ().isEmpty ())
+    else if (! settings.value (fb_startup_dir).toString ().isEmpty ())
       {
         // do not restore but there is a startup dir configured
-        startup_dir = QDir (settings->value (fb_startup_dir.key).toString ());
+        startup_dir = QDir (settings.value (fb_startup_dir.key).toString ());
       }
 
     if (! startup_dir.exists ())
@@ -349,14 +349,14 @@ namespace octave
     // get sort column and order as well as column state (order and width)
 
     m_file_tree_view->sortByColumn
-      (settings->value (fb_sort_column).toInt (),
-       static_cast<Qt::SortOrder> (settings->value (fb_sort_order).toUInt ()));
+      (settings.value (fb_sort_column).toInt (),
+       static_cast<Qt::SortOrder> (settings.value (fb_sort_order).toUInt ()));
        // FIXME: use value<Qt::SortOrder> instead of static cast after
        //        dropping support of Qt 5.4
 
-    if (settings->contains (fb_column_state.key))
+    if (settings.contains (fb_column_state.key))
       m_file_tree_view->header ()->restoreState
-        (settings->value (fb_column_state.key).toByteArray ());
+        (settings.value (fb_column_state.key).toByteArray ());
 
     // Set header properties for sorting
     m_file_tree_view->header ()->setSectionsClickable (true);
@@ -364,7 +364,7 @@ namespace octave
     m_file_tree_view->header ()->setSortIndicatorShown (true);
 
     QStringList mru_dirs =
-      settings->value (fb_mru_list.key).toStringList ();
+      settings.value (fb_mru_list.key).toStringList ();
     m_current_directory->addItems (mru_dirs);
 
     m_current_directory->setEditText
@@ -430,27 +430,23 @@ namespace octave
 
   void files_dock_widget::save_settings (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-
-    if (! settings)
-      return;
+    gui_settings settings;
 
     int sort_column = m_file_tree_view->header ()->sortIndicatorSection ();
     Qt::SortOrder sort_order = m_file_tree_view->header ()->sortIndicatorOrder ();
-    settings->setValue (fb_sort_column.key, sort_column);
-    settings->setValue (fb_sort_order.key, sort_order);
-    settings->setValue (fb_column_state.key,
-                        m_file_tree_view->header ()->saveState ());
+    settings.setValue (fb_sort_column.key, sort_column);
+    settings.setValue (fb_sort_order.key, sort_order);
+    settings.setValue (fb_column_state.key,
+                       m_file_tree_view->header ()->saveState ());
 
     QStringList dirs;
     for (int i=0; i< m_current_directory->count (); i++)
       {
         dirs.append (m_current_directory->itemText (i));
       }
-    settings->setValue (fb_mru_list.key, dirs);
+    settings.setValue (fb_mru_list.key, dirs);
 
-    settings->sync ();
+    settings.sync ();
 
     octave_dock_widget::save_settings ();
 
@@ -534,9 +530,10 @@ namespace octave
             QString abs_fname = fileInfo.absoluteFilePath ();
 
             QString suffix = fileInfo.suffix ().toLower ();
-            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-            gui_settings *settings = rmgr.get_settings ();
-            QString ext = settings->value (fb_txt_file_ext).toString ();
+
+            gui_settings settings;
+
+            QString ext = settings.value (fb_txt_file_ext).toString ();
 #if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
             QStringList extensions = ext.split (";", Qt::SkipEmptyParts);
 #else
@@ -565,13 +562,12 @@ namespace octave
 
   void files_dock_widget::toggle_header (int col)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
     QString key = m_columns_shown_keys.at (col);
-    bool shown = settings->value (key, false).toBool ();
-    settings->setValue (key, ! shown);
-    settings->sync ();
+    bool shown = settings.value (key, false).toBool ();
+    settings.setValue (key, ! shown);
+    settings.sync ();
 
     switch (col)
       {
@@ -584,7 +580,7 @@ namespace octave
       case 3:
       case 4:
         // other actions depending on new settings
-        notice_settings (settings);
+        notice_settings ();
         break;
       }
   }
@@ -597,8 +593,7 @@ namespace octave
       delete m_sig_mapper;
     m_sig_mapper = new QSignalMapper (this);
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
     for (int i = 0; i < m_columns_shown.size (); i++)
       {
@@ -607,8 +602,8 @@ namespace octave
         m_sig_mapper->setMapping (action, i);
         action->setCheckable (true);
         action->setChecked
-          (settings->value (m_columns_shown_keys.at (i),
-                            m_columns_shown_defs.at (i)).toBool ());
+          (settings.value (m_columns_shown_keys.at (i),
+                           m_columns_shown_defs.at (i)).toBool ());
       }
 
     // FIXME: We could use
@@ -1007,11 +1002,13 @@ namespace octave
       }
   }
 
-  void files_dock_widget::notice_settings (const gui_settings *settings)
+  void files_dock_widget::notice_settings (void)
   {
+    gui_settings settings;
+
     // QSettings pointer is checked before emitting.
 
-    int size_idx = settings->value (global_icon_size).toInt ();
+    int size_idx = settings.value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -1021,22 +1018,22 @@ namespace octave
     // filenames are always shown, other columns can be hidden by settings
     for (int i = 0; i < 3; i++)
       m_file_tree_view->setColumnHidden (i + 1,
-                                         ! settings->value (m_columns_shown_keys.at (i),false).toBool ());
+                                         ! settings.value (m_columns_shown_keys.at (i),false).toBool ());
 
     QDir::Filters current_filter = m_file_system_model->filter ();
-    if (settings->value (m_columns_shown_keys.at (3), false).toBool ())
+    if (settings.value (m_columns_shown_keys.at (3), false).toBool ())
       m_file_system_model->setFilter (current_filter | QDir::Hidden);
     else
       m_file_system_model->setFilter (current_filter & (~QDir::Hidden));
 
     m_file_tree_view->setAlternatingRowColors
-      (settings->value (m_columns_shown_keys.at (4),true).toBool ());
+      (settings.value (m_columns_shown_keys.at (4),true).toBool ());
     m_file_tree_view->setModel (m_file_system_model);
 
     // enable the buttons to sync octave/browser dir
     // only if this is not done by default
     m_sync_octave_dir
-      = settings->value (fb_sync_octdir).toBool ();
+      = settings.value (fb_sync_octdir).toBool ();
     m_sync_octave_directory_action->setEnabled (! m_sync_octave_dir);
     m_sync_browser_directory_action->setEnabled (! m_sync_octave_dir);
 
@@ -1064,9 +1061,10 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly;
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs).toBool ())
+
+    gui_settings settings;
+
+    if (! settings.value (global_use_native_dialogs).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory (this,

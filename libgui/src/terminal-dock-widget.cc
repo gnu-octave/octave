@@ -101,16 +101,16 @@ namespace octave
 
     // Chose a reasonable size at startup in order to avoid truncated
     // startup messages
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+
+    gui_settings settings;
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings->value (global_mono_font).toString ();
+    QString default_font = settings.value (global_mono_font).toString ();
     font.setFamily
-      (settings->value (cs_font.key, default_font).toString ());
+      (settings.value (cs_font.key, default_font).toString ());
     font.setPointSize
-      (settings->value (cs_font_size).toInt ());
+      (settings.value (cs_font_size).toInt ());
 
     QFontMetrics metrics(font);
 
@@ -151,9 +151,9 @@ namespace octave
   }
 #endif
 
-  void terminal_dock_widget::notice_settings (const gui_settings *settings)
+  void terminal_dock_widget::notice_settings (void)
   {
-    emit settings_changed (settings);
+    emit settings_changed ();
   }
 
   void terminal_dock_widget::init_command_prompt ()

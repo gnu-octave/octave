@@ -35,6 +35,7 @@
 #include "news-reader.h"
 #include "octave-qobject.h"
 #include "gui-preferences-nr.h"
+#include "gui-settings.h"
 
 #include "url-transfer.h"
 #include "version.h"
@@ -68,16 +69,12 @@ namespace octave
           {
             if (m_serial >= 0)
               {
-                resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-                gui_settings *settings = rmgr.get_settings ();
+                gui_settings settings;
 
-                if (settings)
-                  {
-                    settings->setValue (nr_last_time.key,
-                                        QDateTime::currentDateTime ());
+                settings.setValue (nr_last_time.key,
+                                   QDateTime::currentDateTime ());
 
-                    settings->sync ();
-                  }
+                settings.sync ();
 
                 QString tag ("community-news-page-serial=");
 
@@ -95,13 +92,8 @@ namespace octave
 
                     if (curr_page_serial > m_serial)
                       {
-                        if (settings)
-                          {
-                            settings->setValue (nr_last_news.key,
-                                                curr_page_serial);
-
-                            settings->sync ();
-                          }
+                        settings.setValue (nr_last_news.key, curr_page_serial);
+                        settings.sync ();
                       }
                     else
                       return;

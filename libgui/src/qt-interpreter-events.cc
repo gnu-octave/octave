@@ -39,6 +39,7 @@
 
 #include "dialog.h"
 #include "gui-preferences-ed.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "qt-utils.h"
@@ -323,10 +324,9 @@ namespace octave
 
   bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    if (! settings || settings->value (ed_create_new_file).toBool ())
+    if (settings.value (ed_create_new_file).toBool ())
       return true;
 
     std::string abs_fname = sys::env::make_absolute (file);
@@ -684,10 +684,9 @@ namespace octave
   {
     QMutexLocker autolock (&m_mutex);
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    QString read_value = settings->value (key).toString ();
+    QString read_value = settings.value (key).toString ();
 
     // Some preferences need extra handling
     QString adjusted_value = gui_preference_adjust (key, value);
@@ -695,9 +694,9 @@ namespace octave
     if (! adjusted_value.isEmpty () && (read_value != adjusted_value))
       {
         // Change settings only for new, non-empty values
-        settings->setValue (key, QVariant (adjusted_value));
+        settings.setValue (key, QVariant (adjusted_value));
 
-        emit settings_changed (settings, true);   // true: changed by worker
+        emit settings_changed (true);   // true: changed by worker
       }
 
     m_result = read_value;

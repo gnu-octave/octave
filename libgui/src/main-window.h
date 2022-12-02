@@ -99,7 +99,7 @@ namespace octave
     void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
     void editor_focus_changed (bool);
 
-    void settings_changed (const gui_settings *);
+    void settings_changed (void);
     void init_terminal_size_signal (void);
     void init_window_menu (void);
     void new_file_signal (const QString&);
@@ -156,8 +156,7 @@ namespace octave
     void process_settings_dialog_request (const QString& desired_tab
                                           = QString ());
     void show_about_octave (void);
-    void notice_settings (const gui_settings *settings,
-                          bool update_by_worker = false);
+    void notice_settings (bool update_by_worker = false);
     QPalette getFusionDarkPalette();
     void prepare_to_exit (void);
     void go_to_previous_widget (void);
@@ -199,7 +198,7 @@ namespace octave
 
     void read_settings (void);
     void init_terminal_size (void);
-    void set_window_layout (gui_settings *settings);
+    void set_window_layout (void);
     void write_settings (void);
 
     void copyClipboard (void);

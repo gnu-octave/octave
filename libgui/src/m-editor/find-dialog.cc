@@ -218,8 +218,7 @@ namespace octave
 
   void find_dialog::save_settings ()
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *s = rmgr.get_settings ();
+    gui_settings settings;
 
     // Save position
     QPoint dlg_pos = pos ();
@@ -232,7 +231,7 @@ namespace octave
 
     m_last_position = QPoint (dlg_pos.x (), y);
 
-    s->setValue (ed_fdlg_pos.key, m_last_position);
+    settings.setValue (ed_fdlg_pos.key, m_last_position);
 
     // Is current search/replace text in the mru list?
     mru_update (m_search_line_edit);
@@ -242,12 +241,12 @@ namespace octave
     QStringList mru;
     for (int i = 0; i < m_search_line_edit->count (); i++)
       mru.append (m_search_line_edit->itemText (i));
-    s->setValue (ed_fdlg_search.key, mru);
+    settings.setValue (ed_fdlg_search.key, mru);
 
     mru.clear ();
     for (int i = 0; i < m_replace_line_edit->count (); i++)
       mru.append (m_replace_line_edit->itemText (i));
-    s->setValue (ed_fdlg_replace.key, mru);
+    settings.setValue (ed_fdlg_replace.key, mru);
 
     // Store dialog's options
     int opts = 0
@@ -259,29 +258,28 @@ namespace octave
                + m_whole_words_check_box->isChecked () * FIND_DLG_WORDS
                + m_backward_check_box->isChecked () * FIND_DLG_BACK
                + m_search_selection_check_box->isChecked () * FIND_DLG_SEL;
-    s->setValue (ed_fdlg_opts.key, opts);
+    settings.setValue (ed_fdlg_opts.key, opts);
 
-    s->sync ();
+    settings.sync ();
   }
 
   void find_dialog::restore_settings (QPoint ed_bottom_right)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *s = rmgr.get_settings ();
+    gui_settings settings;
 
     // Get mru lists for search and replace text
-    QStringList mru = s->value (ed_fdlg_search.key).toStringList ();
+    QStringList mru = settings.value (ed_fdlg_search.key).toStringList ();
     while (mru.length () > m_mru_length)
       mru.removeLast ();
     m_search_line_edit->addItems (mru);
 
-    mru = s->value (ed_fdlg_replace.key).toStringList ();
+    mru = settings.value (ed_fdlg_replace.key).toStringList ();
     while (mru.length () > m_mru_length)
       mru.removeLast ();
     m_replace_line_edit->addItems (mru);
 
     // Get the dialog's options
-    int opts = s->value (ed_fdlg_opts.key, ed_fdlg_opts.def).toInt ();
+    int opts = settings.value (ed_fdlg_opts.key, ed_fdlg_opts.def).toInt ();
 
     m_extension->setVisible (FIND_DLG_MORE & opts);
     m_case_check_box->setChecked (FIND_DLG_CASE & opts);
@@ -298,7 +296,7 @@ namespace octave
     QRect default_geometry (xp, yp, sizeHint ().width (), sizeHint ().height ());
 
     // Last position from settings
-    m_last_position = s->value (ed_fdlg_pos.key, QPoint (xp, yp)).toPoint ();
+    m_last_position = settings.value (ed_fdlg_pos.key, QPoint (xp, yp)).toPoint ();
     QRect last_geometry (m_last_position,
                          QSize (sizeHint ().width (), sizeHint ().height ()));
 

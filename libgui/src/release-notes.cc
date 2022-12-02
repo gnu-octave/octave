@@ -40,6 +40,7 @@
 #include "gui-utils.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
+#include "gui-settings.h"
 #include "news-reader.h"
 #include "octave-qobject.h"
 
@@ -51,11 +52,11 @@ namespace octave
     : QWidget (nullptr), m_browser (nullptr)
   {
 
-    resource_manager& rmgr = oct_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
     // The icon
-    QString icon_set = settings->value (dw_icon_set).toString ();
+    QString icon_set = settings.value (dw_icon_set).toString ();
+
     if (icon_set != "NONE")
       m_release_notes_icon = dw_icon_set_names[icon_set]
                              + "ReleaseWidget.png";

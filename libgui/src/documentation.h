@@ -37,8 +37,6 @@
 #include <QWidget>
 #include <QtHelp/QHelpEngine>
 
-#include "gui-settings.h"
-
 namespace octave
 {
   class base_qobject;
@@ -62,8 +60,8 @@ namespace octave
 
     void handle_index_clicked (const QUrl& url,
                                const QString& keyword = QString ());
-    void notice_settings (const gui_settings *settings);
-    void save_settings (gui_settings *settings);
+    void notice_settings (void);
+    void save_settings (void);
 
     //! Zooming in and out while taking care of the zoom level
     //!@{
@@ -122,7 +120,7 @@ namespace octave
 
   public slots:
 
-    void notice_settings (const gui_settings *settings);
+    void notice_settings (void);
     void save_settings (void);
 
     void copyClipboard (void);

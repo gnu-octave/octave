@@ -45,7 +45,7 @@ namespace octave
 
   public slots:
 
-    void notice_settings (const gui_settings *settings);
+    void notice_settings (void);
     void save_settings (void);
 
     void copyClipboard (void);

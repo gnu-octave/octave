@@ -44,6 +44,7 @@
 #include "event-manager.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+#include "gui-settings.h"
 #include "gui-utils.h"
 #include "input.h"
 #include "interpreter.h"
@@ -144,23 +145,25 @@ namespace octave
 
   }
 
-  void command_widget::notice_settings (const gui_settings *settings)
+  void command_widget::notice_settings (void)
   {
+    gui_settings settings;
+
     // Set terminal font:
     QFont term_font = QFont ();
     term_font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings->value (global_mono_font).toString ();
+    QString default_font = settings.value (global_mono_font).toString ();
     term_font.setFamily
-      (settings->value (cs_font.key, default_font).toString ());
+      (settings.value (cs_font.key, default_font).toString ());
     term_font.setPointSize
-      (settings->value (cs_font_size).toInt ());
+      (settings.value (cs_font_size).toInt ());
 
     m_console->setFont (term_font);
 
     // Colors
-    int mode = settings->value (cs_color_mode).toInt ();
-    QColor fgc = settings->color_value (cs_colors[0], mode);
-    QColor bgc = settings->color_value (cs_colors[1], mode);
+    int mode = settings.value (cs_color_mode).toInt ();
+    QColor fgc = settings.color_value (cs_colors[0], mode);
+    QColor bgc = settings.color_value (cs_colors[1], mode);
 
     m_console->setStyleSheet (QString ("color: %1; background-color:%2;")
                                      .arg (fgc.name ()).arg (bgc.name ()));

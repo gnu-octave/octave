@@ -33,7 +33,6 @@
 
 #include "color-picker.h"
 #include "gui-preferences-ed.h"
-#include "gui-settings.h"
 #include "ui-settings-dialog.h"
 
 class QsciLexer;
@@ -84,21 +83,21 @@ namespace octave
   private:
 
 #if defined (HAVE_QSCINTILLA)
-    void update_lexer (QsciLexer *lexer, gui_settings *settings, int mode, int def = 0);
-    void get_lexer_settings (QsciLexer *lexer, gui_settings *settings);
-    void write_lexer_settings (QsciLexer *lexer, gui_settings *settings);
+    void update_lexer (QsciLexer *lexer, int mode, int def = 0);
+    void get_lexer_settings (QsciLexer *lexer);
+    void write_lexer_settings (QsciLexer *lexer);
 #endif
 
     void write_changed_settings (bool closing);
 
-    void read_workspace_colors (gui_settings *settings);
-    void write_workspace_colors (gui_settings *settings);
+    void read_workspace_colors (void);
+    void write_workspace_colors (void);
 
-    void read_terminal_colors (gui_settings *settings);
-    void write_terminal_colors (gui_settings *settings);
+    void read_terminal_colors (void);
+    void write_terminal_colors (void);
 
-    void read_varedit_colors (gui_settings *settings);
-    void write_varedit_colors (gui_settings *settings);
+    void read_varedit_colors (void);
+    void write_varedit_colors (void);
 
     base_qobject& m_octave_qobj;
 

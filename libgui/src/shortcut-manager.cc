@@ -46,6 +46,7 @@
 #include "shortcut-manager.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-sc.h"
+#include "gui-settings.h"
 #include "error.h"
 
 namespace octave
@@ -122,10 +123,9 @@ namespace octave
 
   void shortcut_manager::init_data (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    settings->setValue (sc_main_ctrld.key, false); // reset use fo ctrl-d
+    settings.setValue (sc_main_ctrld.key, false); // reset use fo ctrl-d
 
     // actions not related to specific menus or widgets
 
@@ -309,7 +309,7 @@ namespace octave
   }
 
   // write one or all actual shortcut set(s) into a settings file
-  void shortcut_manager::write_shortcuts (gui_settings *settings,
+  void shortcut_manager::write_shortcuts (gui_settings& settings,
                                           bool closing)
   {
     bool sc_ctrld = false;
@@ -318,7 +318,7 @@ namespace octave
 
     for (int i = 0; i < m_sc.count (); i++)  // loop over all shortcuts
       {
-        settings->setValue (sc_group + "/" + m_sc.at (i).m_settings_key,
+        settings.setValue (sc_group + "/" + m_sc.at (i).m_settings_key,
                             m_sc.at (i).m_actual_sc.toString ());
         // special: check main-window for Ctrl-D (Terminal)
         if (m_sc.at (i).m_settings_key.startsWith (sc_main)
@@ -326,7 +326,7 @@ namespace octave
           sc_ctrld = true;
       }
 
-    settings->setValue (sc_main_ctrld.key, sc_ctrld);
+    settings.setValue (sc_main_ctrld.key, sc_ctrld);
 
     if (closing)
       {
@@ -334,7 +334,7 @@ namespace octave
         m_dialog = nullptr;  // make sure it is zero again
       }
 
-    settings->sync ();      // sync the settings file
+    settings.sync ();      // sync the settings file
   }
 
   void shortcut_manager::set_shortcut (QAction *action, const sc_pref& scpref,
@@ -355,9 +355,9 @@ namespace octave
 
     if (index > -1 && index < m_sc.count ())
       {
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        gui_settings *settings = rmgr.get_settings ();
-        action->setShortcut (QKeySequence (settings->sc_value (scpref)));
+        gui_settings settings;
+
+        action->setShortcut (QKeySequence (settings.sc_value (scpref)));
       }
     else
       qDebug () << "Key: " << scpref.key << " not found in m_action_hash";
@@ -371,9 +371,9 @@ namespace octave
 
     if (index > -1 && index < m_sc.count ())
       {
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        gui_settings *settings = rmgr.get_settings ();
-        sc->setKey (QKeySequence (settings->sc_value (scpref)));
+        gui_settings settings;
+
+        sc->setKey (QKeySequence (settings.sc_value (scpref)));
       }
     else
       qDebug () << "Key: " << scpref.key << " not found in m_action_hash";
@@ -524,9 +524,10 @@ namespace octave
 
         // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
         int opts = 0;  // No options by default.
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        gui_settings *settings = rmgr.get_settings ();
-        if (! settings->value (global_use_native_dialogs).toBool ())
+
+        gui_settings settings;
+
+        if (! settings.value (global_use_native_dialogs).toBool ())
           opts = QFileDialog::DontUseNativeDialog;
 
         if (action == OSC_IMPORT)
@@ -554,9 +555,9 @@ namespace octave
         else
           {
             if (action == OSC_IMPORT)
-              import_shortcuts (&osc_settings);   // import (special action)
+              import_shortcuts (osc_settings);   // import (special action)
             else if (action == OSC_EXPORT)
-              write_shortcuts (&osc_settings, false); // export, (save settings)
+              write_shortcuts (osc_settings, false); // export, (save settings)
           }
       }
     else
@@ -626,17 +627,16 @@ namespace octave
 
   void shortcut_manager::init (const QString& description, const sc_pref& sc)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    QKeySequence actual = QKeySequence (settings->sc_value (sc));
+    QKeySequence actual = QKeySequence (settings.sc_value (sc));
 
     // append the new shortcut to the list
     shortcut_t shortcut_info;
     shortcut_info.m_description = description;
     shortcut_info.m_settings_key = sc.key;
     shortcut_info.m_actual_sc = actual;
-    shortcut_info.m_default_sc = settings->sc_def_value (sc);
+    shortcut_info.m_default_sc = settings.sc_def_value (sc);
     m_sc << shortcut_info;
 
     // insert shortcut in order to check for duplicates later
@@ -649,7 +649,7 @@ namespace octave
       = sc_main_file.mid (0, sc_main_file.indexOf ('_') + 1);
     if (sc.key.startsWith (main_group_prefix)
         && actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
-      settings->setValue (sc_main_ctrld.key, true);
+      settings.setValue (sc_main_ctrld.key, true);
   }
 
   void shortcut_manager::shortcut_dialog (int index)
@@ -745,7 +745,7 @@ namespace octave
 
   // import a shortcut set from a given settings file and refresh the
   // tree view
-  void shortcut_manager::import_shortcuts (gui_settings *settings)
+  void shortcut_manager::import_shortcuts (gui_settings& settings)
   {
     for (int i = 0; i < m_sc.count (); i++)
       {
@@ -755,7 +755,7 @@ namespace octave
         shortcut_t sc = m_sc.at (i);
 
         // get new shortcut from settings and use the old one as default
-        sc.m_actual_sc = QKeySequence (settings->value (sc_group + sc.m_settings_key,sc.m_actual_sc).toString ());
+        sc.m_actual_sc = QKeySequence (settings.value (sc_group + sc.m_settings_key, sc.m_actual_sc).toString ());
 
         // replace the old with the new one
         m_sc.replace (i, sc);

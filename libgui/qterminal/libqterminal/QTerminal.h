@@ -30,13 +30,6 @@ see <https://www.gnu.org/licenses/>.
 #include <QString>
 #include <QWidget>
 
-// For now, we need to use the following #include and using statement
-// for the signal/slot macros.  Could maybe change later when using
-// Qt5-style signal/slot connections.
-#include "gui-settings.h"
-
-using octave::gui_settings;
-
 namespace octave
 {
   class base_qobject;
@@ -126,7 +119,7 @@ public slots:
 
   virtual void handleCustomContextMenuRequested (const QPoint& at);
 
-  void notice_settings (const gui_settings *settings);
+  void notice_settings (void);
 
   virtual void init_terminal_size (void) { }
 

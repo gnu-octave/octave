@@ -38,6 +38,7 @@ see <https://www.gnu.org/licenses/>.
 #include "gui-preferences-global.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-sc.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "resource-manager.h"
 
@@ -199,32 +200,31 @@ void QTerminal::doc_on_expression ()
 }
 
 void
-QTerminal::notice_settings (const gui_settings *settings)
+QTerminal::notice_settings (void)
 {
-  if (! settings)
-    return;
+  octave::gui_settings settings;
 
   // Set terminal font:
   QFont term_font = QFont ();
   term_font.setStyleHint (QFont::TypeWriter);
-  QString default_font = settings->value (global_mono_font).toString ();
+  QString default_font = settings.value (global_mono_font).toString ();
   term_font.setFamily
-    (settings->value (cs_font.key, default_font).toString ());
+    (settings.value (cs_font.key, default_font).toString ());
   term_font.setPointSize
-    (settings->value (cs_font_size).toInt ());
+    (settings.value (cs_font_size).toInt ());
   setTerminalFont (term_font);
 
   QFontMetrics metrics (term_font);
   setMinimumSize (metrics.maxWidth ()*16, metrics.height ()*3);
 
   QString cursor_type
-    = settings->value (cs_cursor).toString ();
+    = settings.value (cs_cursor).toString ();
 
   bool cursor_blinking;
-  if (settings->contains (global_cursor_blinking.key))
-    cursor_blinking = settings->value (global_cursor_blinking).toBool ();
+  if (settings.contains (global_cursor_blinking.key))
+    cursor_blinking = settings.value (global_cursor_blinking).toBool ();
   else
-    cursor_blinking = settings->value (cs_cursor_blinking).toBool ();
+    cursor_blinking = settings.value (cs_cursor_blinking).toBool ();
 
   for (int ct = IBeamCursor; ct <= UnderlineCursor; ct++)
     {
@@ -236,40 +236,40 @@ QTerminal::notice_settings (const gui_settings *settings)
     }
 
   bool cursorUseForegroundColor
-    = settings->value (cs_cursor_use_fgcol).toBool ();
+    = settings.value (cs_cursor_use_fgcol).toBool ();
 
-  int mode = settings->value (cs_color_mode).toInt ();
+  int mode = settings.value (cs_color_mode).toInt ();
 
-  setForegroundColor (settings->color_value (cs_colors[0], mode));
+  setForegroundColor (settings.color_value (cs_colors[0], mode));
 
-  setBackgroundColor (settings->color_value (cs_colors[1], mode));
+  setBackgroundColor (settings.color_value (cs_colors[1], mode));
 
-  setSelectionColor (settings->color_value (cs_colors[2], mode));
+  setSelectionColor (settings.color_value (cs_colors[2], mode));
 
   setCursorColor (cursorUseForegroundColor,
-                  settings->color_value (cs_colors[3], mode));
+                  settings.color_value (cs_colors[3], mode));
 
-  setScrollBufferSize (settings->value (cs_hist_buffer).toInt ());
+  setScrollBufferSize (settings.value (cs_hist_buffer).toInt ());
 
   // If the Copy shortcut is Ctrl+C, then the Copy action also emits
   // a signal for interrupting the current code executed by the worker.
   // If the Copy shortcut is not Ctrl+C, an extra interrupt action is
   // set up for emitting the interrupt signal.
 
-  QString sc = settings->sc_value (sc_main_edit_copy);
+  QString sc = settings.sc_value (sc_main_edit_copy);
 
   //  Dis- or enable extra interrupt action: We need an extra option when
   //  copy shortcut is not Ctrl-C or when global shortcuts (like copy) are
   //  disabled.
   bool extra_ir_action
       = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C).toString ())
-        || settings->value (sc_prevent_rl_conflicts).toBool ();
+        || settings.value (sc_prevent_rl_conflicts).toBool ();
 
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
 
   // check whether shortcut Ctrl-D is in use by the main-window
-  bool ctrld = settings->value (sc_main_ctrld).toBool ();
+  bool ctrld = settings.value (sc_main_ctrld).toBool ();
   _nop_action->setEnabled (! ctrld);
 }
 

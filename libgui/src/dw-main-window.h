@@ -28,8 +28,6 @@
 
 #include <QMainWindow>
 
-#include "gui-settings.h"
-
 namespace octave
 {
   class base_qobject;
@@ -52,7 +50,7 @@ namespace octave
 
   public slots:
 
-    void notice_settings (const gui_settings *);
+    void notice_settings (void);
 
   protected slots:
 

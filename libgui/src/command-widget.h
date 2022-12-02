@@ -31,7 +31,6 @@
 #include <Qsci/qsciscintilla.h>
 
 #include "octave-qobject.h"
-#include "gui-settings.h"
 
 class QsciScintilla;
 
@@ -113,7 +112,7 @@ namespace octave
 
     void insert_interpreter_output (const QString& msg);
 
-    void notice_settings (const gui_settings *settings);
+    void notice_settings (void);
 
   private:
 

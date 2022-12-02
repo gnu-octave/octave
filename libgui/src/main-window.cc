@@ -174,24 +174,17 @@ namespace octave
     m_default_style = qapp->style ()->objectName ();
     m_default_palette = qapp->palette ();
 
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
     bool connect_to_web = true;
     QDateTime last_checked;
     int serial = 0;
     m_active_dock = nullptr;
 
-    if (settings)
-      {
-        connect_to_web
-          = settings->value (nr_allow_connection).toBool ();
-
-        last_checked
-          = settings->value (nr_last_time).toDateTime ();
-
-        serial = settings->value (nr_last_news).toInt ();
-        m_default_encoding = settings->value (ed_default_enc).toString ();
-      }
+    connect_to_web = settings.value (nr_allow_connection).toBool ();
+    last_checked = settings.value (nr_last_time).toDateTime ();
+    serial = settings.value (nr_last_news).toInt ();
+    m_default_encoding = settings.value (ed_default_enc).toString ();
 
     QDateTime current = QDateTime::currentDateTime ();
     QDateTime one_day_ago = current.addDays (-1);
@@ -508,11 +501,10 @@ namespace octave
   {
     bool closenow = true;
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    if (settings->value (global_prompt_to_exit.key,
-                         global_prompt_to_exit.def).toBool ())
+    if (settings.value (global_prompt_to_exit.key,
+                        global_prompt_to_exit.def).toBool ())
       {
         int ans = QMessageBox::question (this, tr ("Octave"),
                                          tr ("Are you sure you want to exit Octave?"),
@@ -648,11 +640,7 @@ namespace octave
 
   void main_window::request_reload_settings (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-
-    if (settings)
-      emit settings_changed (settings);
+    emit settings_changed ();
   }
 
   void main_window::report_status_message (const QString& statusMessage)
@@ -664,9 +652,10 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs).toBool ())
+
+    gui_settings settings;
+
+    if (! settings.value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file
@@ -689,9 +678,10 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs).toBool ())
+
+    gui_settings settings;
+
+    if (! settings.value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file = file_arg;
@@ -904,15 +894,13 @@ namespace octave
                         QString::fromStdString (message));
   }
 
-  void main_window::notice_settings (const gui_settings *settings,
-                                     bool update_by_worker)
+  void main_window::notice_settings (bool update_by_worker)
   {
-    if (! settings)
-      return;
+    gui_settings settings;
 
     // Get desired style from preferences or take the default one if
     // the desired one is not found
-    QString preferred_style = settings->value (global_style).toString ();
+    QString preferred_style = settings.value (global_style).toString ();
 
     if (preferred_style == global_style.def.toString ())
       preferred_style = m_default_style;
@@ -938,7 +926,7 @@ namespace octave
       }
 
     // the widget's icons (when floating)
-    QString icon_set = settings->value (dw_icon_set).toString ();
+    QString icon_set = settings.value (dw_icon_set).toString ();
 
     QString icon;
     for (auto *widget : dock_widget_list ())
@@ -954,26 +942,26 @@ namespace octave
           }
       }
 
-    int size_idx = settings->value (global_icon_size).toInt ();
+    int size_idx = settings.value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_main_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-    if (settings->value (global_status_bar).toBool ())
+    if (settings.value (global_status_bar).toBool ())
       m_status_bar->show ();
     else
       m_status_bar->hide ();
 
     m_prevent_readline_conflicts
-      = settings->value (sc_prevent_rl_conflicts).toBool ();
+      = settings.value (sc_prevent_rl_conflicts).toBool ();
 
     m_prevent_readline_conflicts_menu
-      = settings->value (sc_prevent_rl_conflicts_menu).toBool ();
+      = settings.value (sc_prevent_rl_conflicts_menu).toBool ();
 
     m_suppress_dbg_location
-      = ! settings->value (cs_dbg_location).toBool ();
+      = ! settings.value (cs_dbg_location).toBool ();
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     rmgr.update_network_settings ();
@@ -991,7 +979,7 @@ namespace octave
 
     // Check whether some octave internal preferences have to be updated
     QString new_default_encoding
-      = settings->value (ed_default_enc).toString ();
+      = settings.value (ed_default_enc).toString ();
     // Do not update internal pref only if a) this update was not initiated
     // by the worker and b) the pref has really changes
     if (! update_by_worker && (new_default_encoding != m_default_encoding))
@@ -1003,10 +991,10 @@ namespace octave
     //       getting the cursor blink preferences from all OS environments
     bool cursor_blinking;
 
-    if (settings->contains (global_cursor_blinking.key))
-      cursor_blinking = settings->value (global_cursor_blinking).toBool ();
+    if (settings.contains (global_cursor_blinking.key))
+      cursor_blinking = settings.value (global_cursor_blinking).toBool ();
     else
-      cursor_blinking = settings->value (cs_cursor_blinking).toBool ();
+      cursor_blinking = settings.value (cs_cursor_blinking).toBool ();
 
     if (cursor_blinking)
       QApplication::setCursorFlashTime (1000);  // 1000 ms flash time
@@ -1084,9 +1072,10 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly;
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value (global_use_native_dialogs).toBool ())
+
+    gui_settings settings;
+
+    if (! settings.value (global_use_native_dialogs).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString dir
@@ -1339,10 +1328,10 @@ namespace octave
     // Open file isn't a file_editor_tab or editor function since the file
     // might be opened in an external editor.  Hence, functionality is here.
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
+
     bool is_internal = m_editor_window
-                       && ! settings->value (global_use_custom_editor.key,
+                       && ! settings.value (global_use_custom_editor.key,
                                              global_use_custom_editor.def).toBool ();
 
     // Create a NonModal message.
@@ -1358,7 +1347,7 @@ namespace octave
     fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! settings->value (global_use_native_dialogs).toBool ())
+    if (! settings.value (global_use_native_dialogs).toBool ())
       fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
     connect (fileDialog, &QFileDialog::filesSelected,
@@ -1383,9 +1372,10 @@ namespace octave
     // editor window or the main window.  The latter is chosen, if a custom
     // editor is used or qscintilla is not available
     QWidget *p = m_editor_window;
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (! p || settings->value (global_use_custom_editor.key,
+
+    gui_settings settings;
+
+    if (! p || settings.value (global_use_custom_editor.key,
                                 global_use_custom_editor.def).toBool ())
       p = this;
     QString new_name = QInputDialog::getText (p, tr ("New Function"),
@@ -1397,10 +1387,10 @@ namespace octave
         if (new_name.rightRef (2) != ".m")
           new_name.append (".m");
         // check whether new files are created without prompt
-        if (! settings->value (ed_create_new_file).toBool ())
+        if (! settings.value (ed_create_new_file).toBool ())
           {
             // no, so enable this settings and wait for end of new file loading
-            settings->setValue (ed_create_new_file.key, true);
+            settings.setValue (ed_create_new_file.key, true);
             connect (m_editor_window, SIGNAL (file_loaded_signal (void)),
                      this, SLOT (restore_create_file_setting (void)));
           }
@@ -1546,24 +1536,18 @@ namespace octave
 
   void main_window::read_settings (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    if (! settings)
-      {
-        qDebug ("Error: gui_settings pointer from resource manager is NULL.");
-        return;
-      }
-
-    set_window_layout (settings);
+    set_window_layout ();
 
     // restore the list of the last directories
-    QStringList curr_dirs = settings->value (mw_dir_list).toStringList ();
+    QStringList curr_dirs = settings.value (mw_dir_list).toStringList ();
     for (int i=0; i < curr_dirs.size (); i++)
       {
         m_current_directory_combo_box->addItem (curr_dirs.at (i));
       }
-    emit settings_changed (settings);
+
+    emit settings_changed ();
   }
 
   void main_window::init_terminal_size (void)
@@ -1571,15 +1555,17 @@ namespace octave
     emit init_terminal_size_signal ();
   }
 
-  void main_window::set_window_layout (gui_settings *settings)
+  void main_window::set_window_layout (void)
   {
+    gui_settings settings;
+
     // For resetting from some inconsistent state, first reset layout
     // without saving or showing it
     do_reset_windows (true, false);
 
     // Restore main window state and geometry from settings file or, in case
     // of an error (no pref values yet), from the default layout.
-    if (! restoreGeometry (settings->value (mw_geometry).toByteArray ()))
+    if (! restoreGeometry (settings.value (mw_geometry).toByteArray ()))
       {
         do_reset_windows (true);
         return;
@@ -1608,7 +1594,7 @@ namespace octave
                        | Qt::WindowCloseButtonHint);
       }
 
-    if (! restoreState (settings->value (mw_state).toByteArray ()))
+    if (! restoreState (settings.value (mw_state).toByteArray ()))
       {
         do_reset_windows (true);
         return;
@@ -1631,9 +1617,9 @@ namespace octave
             bool floating = false;
             bool visible = true;
 
-            floating = settings->value
+            floating = settings.value
                 (dw_is_floating.key.arg (name), dw_is_floating.def).toBool ();
-            visible = settings->value
+            visible = settings.value
                 (dw_is_visible.key.arg (name), dw_is_visible.def).toBool ();
 
             // If floating, make window from widget.
@@ -1643,8 +1629,8 @@ namespace octave
 
                 if (visible)
                   {
-                    if (settings->value (dw_is_minimized.key.arg (name),
-                                         dw_is_minimized.def).toBool ())
+                    if (settings.value (dw_is_minimized.key.arg (name),
+                                        dw_is_minimized.def).toBool ())
                       widget->showMinimized ();
                     else
                       widget->setVisible (true);
@@ -1668,24 +1654,18 @@ namespace octave
 
   void main_window::write_settings (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (! settings)
-      {
-        qDebug ("Error: gui_settings pointer from resource manager is NULL.");
-        return;
-      }
+    gui_settings settings;
 
-    settings->setValue (mw_geometry.key, saveGeometry ());
-    settings->setValue (mw_state.key, saveState ());
+    settings.setValue (mw_geometry.key, saveGeometry ());
+    settings.setValue (mw_state.key, saveState ());
     // write the list of recently used directories
     QStringList curr_dirs;
     for (int i=0; i<m_current_directory_combo_box->count (); i++)
       {
         curr_dirs.append (m_current_directory_combo_box->itemText (i));
       }
-    settings->setValue (mw_dir_list.key, curr_dirs);
-    settings->sync ();
+    settings.setValue (mw_dir_list.key, curr_dirs);
+    settings.sync ();
   }
 
   void main_window::copyClipboard (void)
@@ -1751,30 +1731,27 @@ namespace octave
   void main_window::handle_octave_ready (void)
   {
     // actions after the startup files are executed
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+
+    gui_settings settings;
 
     QDir startup_dir = QDir ();    // current octave dir after startup
 
-    if (settings)
+    if (settings.value (global_restore_ov_dir).toBool ())
       {
-        if (settings->value (global_restore_ov_dir).toBool ())
-          {
-            // restore last dir from previous session
-            QStringList curr_dirs
-              = settings->value (mw_dir_list).toStringList ();
-            if (curr_dirs.length () > 0)
-              startup_dir = QDir (curr_dirs.at (0));  // last dir prev. session
-          }
-        else if (! settings->value (global_ov_startup_dir).toString ().isEmpty ())
-          {
-            // do not restore but there is a startup dir configured
-            startup_dir
-              = QDir (settings->value (global_ov_startup_dir).toString ());
-          }
-
-        update_default_encoding (settings->value (ed_default_enc).toString ());
+        // restore last dir from previous session
+        QStringList curr_dirs
+          = settings.value (mw_dir_list).toStringList ();
+        if (curr_dirs.length () > 0)
+          startup_dir = QDir (curr_dirs.at (0));  // last dir prev. session
       }
+    else if (! settings.value (global_ov_startup_dir).toString ().isEmpty ())
+      {
+        // do not restore but there is a startup dir configured
+        startup_dir
+          = QDir (settings.value (global_ov_startup_dir).toString ());
+      }
+
+    update_default_encoding (settings.value (ed_default_enc).toString ());
 
     if (! startup_dir.exists ())
       {
@@ -1791,7 +1768,7 @@ namespace octave
         // This can not be done when the editor is created because all functions
         // must be known for the lexer's auto completion information
         m_editor_window->empty_script (true, false);
-        m_editor_window->restore_session (settings);
+        m_editor_window->restore_session ();
 #endif
       }
 
@@ -1928,9 +1905,10 @@ namespace octave
   void main_window::restore_create_file_setting (void)
   {
     // restore the new files creation setting
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    settings->setValue (ed_create_new_file.key, false);
+
+    gui_settings settings;
+
+    settings.setValue (ed_create_new_file.key, false);
     disconnect (m_editor_window, SIGNAL (file_loaded_signal (void)),
                 this, SLOT (restore_create_file_setting (void)));
   }
@@ -2072,8 +2050,9 @@ namespace octave
     connect (qApp, &QApplication::focusChanged,
              this, &main_window::focus_changed);
 
+    // Default argument requires wrapper.
     connect (this, &main_window::settings_changed,
-             this, [=] (const gui_settings *settings) { notice_settings (settings); });
+             this, [=] () { notice_settings (); });
 
     // Connections for signals from the interpreter thread where the slot
     // should be executed by the gui thread
@@ -2652,9 +2631,9 @@ namespace octave
 
   void main_window::focus_console_after_command (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (settings->value (cs_focus_cmd).toBool ())
+    gui_settings settings;
+
+    if (settings.value (cs_focus_cmd).toBool ())
       focus_command_window ();
   }
 
@@ -2902,11 +2881,10 @@ namespace octave
 
         if (save)
           {
-            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-            gui_settings *settings = rmgr.get_settings ();
+            gui_settings settings;
 
-            settings->setValue (mw_geometry.key, saveGeometry ());
-            settings->setValue (mw_state.key, saveState ());
+            settings.setValue (mw_geometry.key, saveGeometry ());
+            settings.setValue (mw_state.key, saveState ());
           }
 
         focus_command_window ();

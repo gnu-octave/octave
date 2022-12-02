@@ -65,7 +65,7 @@ namespace octave
 
   signals:
 
-    void settings_changed (const gui_settings *settings);
+    void settings_changed (void);
 
     // Note: the following four signals are
     // currently only used by the new experimental terminal widget.
@@ -80,7 +80,7 @@ namespace octave
 
   public slots:
 
-    void notice_settings (const gui_settings *settings);
+    void notice_settings (void);
 
   private:
 

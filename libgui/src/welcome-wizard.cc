@@ -39,6 +39,7 @@
 
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "welcome-wizard.h"
 
@@ -146,15 +147,12 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     rmgr.reload_settings ();
 
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    if (settings)
-      {
-        settings->setValue (nr_allow_connection.key,
-                            m_allow_web_connect_state);
+    settings.setValue (nr_allow_connection.key,
+                       m_allow_web_connect_state);
 
-        settings->sync ();
-      }
+    settings.sync ();
 
     QDialog::accept ();
   }

@@ -33,6 +33,7 @@
 
 #include "gui-settings.h"
 #include "gui-preferences-gp.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 
 #include "QtHandlesUtils.h"
@@ -55,13 +56,11 @@ annotation_dialog::init ()
 {
   ui->setupUi (this);
 
-  octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-  octave::gui_settings *settings = rmgr.get_settings ();
+  octave::gui_settings settings;
 
   // restore last geometry
-  if (settings && settings->contains (gp_annotation_geometry.key))
-    restoreGeometry (settings->value (gp_annotation_geometry).toByteArray ());
+  if (settings.contains (gp_annotation_geometry.key))
+    restoreGeometry (settings.value (gp_annotation_geometry).toByteArray ());
 
   // connect signals
   connect (ui->button_box, &QDialogButtonBox::clicked,
@@ -101,13 +100,10 @@ annotation_dialog::button_clicked (QAbstractButton *button)
   QDialogButtonBox::ButtonRole button_role
     = ui->button_box->buttonRole (button);
 
-  octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-  octave::gui_settings *settings = rmgr.get_settings ();
+  octave::gui_settings settings;
 
   // save position
-  if (settings)
-    settings->setValue (gp_annotation_geometry.key, saveGeometry ());
+  settings.setValue (gp_annotation_geometry.key, saveGeometry ());
 
   if (button_role == QDialogButtonBox::ApplyRole
       || button_role == QDialogButtonBox::AcceptRole)

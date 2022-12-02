@@ -56,6 +56,7 @@
 #include "gui-preferences-global.h"
 #include "gui-preferences-dc.h"
 #include "gui-preferences-sc.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "shortcut-manager.h"
 
@@ -180,7 +181,7 @@ namespace octave
     v_box_browser_find->addWidget (find_footer);
     browser_find->setLayout (v_box_browser_find);
 
-    notice_settings (rmgr.get_settings ());
+    notice_settings ();
 
     m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (m_findnext_shortcut, &QShortcut::activated,
@@ -603,15 +604,17 @@ namespace octave
     m_doc_browser->moveCursor (QTextCursor::Start);
   }
 
-  void documentation::notice_settings (const gui_settings *settings)
+  void documentation::notice_settings (void)
   {
+    gui_settings settings;
+
     // If m_help_engine is not defined, the objects accessed by this method
     // are not valid.  Thus, just return in this case.
     if (! m_help_engine)
       return;
 
     // Icon size in the toolbar.
-    int size_idx = settings->value (global_icon_size).toInt ();
+    int size_idx = settings.value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -633,16 +636,15 @@ namespace octave
     scmgr.set_shortcut (m_action_bookmark, sc_doc_bookmark);
 
     // Settings for the browser
-    m_doc_browser->notice_settings (settings);
+    m_doc_browser->notice_settings ();
   }
 
   void documentation::save_settings (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    m_doc_browser->save_settings (settings);
-    m_bookmarks->save_settings (settings);
+    m_doc_browser->save_settings ();
+    m_bookmarks->save_settings ();
   }
 
   void documentation::copyClipboard (void)
@@ -1039,12 +1041,14 @@ namespace octave
       QDesktopServices::openUrl (url);
   }
 
-  void documentation_browser::notice_settings (const gui_settings *settings)
+  void documentation_browser::notice_settings (void)
   {
+    gui_settings settings;
+
     // Zoom level only at startup, not when other settings have changed
     if (m_zoom_level > max_zoom_level)
       {
-        m_zoom_level = settings->value (dc_browser_zoom_level).toInt ();
+        m_zoom_level = settings.value (dc_browser_zoom_level).toInt ();
         zoomIn (m_zoom_level);
       }
   }
@@ -1057,11 +1061,13 @@ namespace octave
       return QTextBrowser::loadResource(type, url);
   }
 
-  void documentation_browser::save_settings (gui_settings *settings)
+  void documentation_browser::save_settings (void)
   {
-    settings->setValue (dc_browser_zoom_level.key, m_zoom_level);
+    gui_settings settings;
 
-    settings->sync ();
+    settings.setValue (dc_browser_zoom_level.key, m_zoom_level);
+
+    settings.sync ();
   }
 
   void documentation_browser::zoom_in (void)

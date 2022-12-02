@@ -36,10 +36,10 @@
 #include "documentation.h"
 #include "documentation-bookmarks.h"
 
-#include "gui-settings.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-dc.h"
 #include "gui-preferences-sc.h"
+#include "gui-settings.h"
 #include "octave-qtutils.h"
 #include "shortcut-manager.h"
 
@@ -58,8 +58,7 @@ namespace octave
   {
     setObjectName ("documentation_tab_bookmarks");
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
     // Setup the tree view with the bookmarks
     m_tree = new QTreeWidget (p);
@@ -89,7 +88,7 @@ namespace octave
     icon_bookmark.addPixmap (style ()->standardPixmap(QStyle::SP_FileIcon));
 
     // Setup and read the bookmarkfile
-    QFileInfo f (settings->fileName ());
+    QFileInfo f (settings.fileName ());
     QString f_path = f.absolutePath ();
     f.setFile (QDir (f_path), dc_bookmark_file);
     m_xbel_file.setFileName (f.absoluteFilePath ());
@@ -121,7 +120,7 @@ namespace octave
     m_filter->setSizePolicy (size_pol);
     m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
 
-    m_filter->addItems (settings->value (dc_bookmark_filter_mru).toStringList ());
+    m_filter->addItems (settings.value (dc_bookmark_filter_mru).toStringList ());
 
     connect (m_filter, &QComboBox::editTextChanged,
              this, &documentation_bookmarks::filter_bookmarks);
@@ -129,7 +128,7 @@ namespace octave
              this, &documentation_bookmarks::update_filter_history);
 
     m_filter_checkbox = new QCheckBox (m_filter_widget);
-    bool filter_state = settings->value (dc_bookmark_filter_active).toBool ();
+    bool filter_state = settings.value (dc_bookmark_filter_active).toBool ();
     m_filter_checkbox->setChecked (filter_state);
     filter_activate (filter_state);
 
@@ -144,7 +143,7 @@ namespace octave
     h_box_bm->setMargin (2);
     m_filter_widget->setLayout (h_box_bm);
 
-    m_filter_shown = settings->value (dc_bookmark_filter_shown).toBool ();
+    m_filter_shown = settings.value (dc_bookmark_filter_shown).toBool ();
     m_filter_widget->setVisible (m_filter_shown);
 
     // Resulting Layout of this widget
@@ -380,21 +379,23 @@ namespace octave
     m_filter_widget->setVisible (m_filter_shown);
   }
 
-  void documentation_bookmarks::save_settings (gui_settings *settings)
+  void documentation_bookmarks::save_settings (void)
   {
     // Write the bookmarks to the xbel-file
     write_bookmarks ();
 
     // Store settings
-    settings->setValue (dc_bookmark_filter_active.key, m_filter_checkbox->isChecked ());
-    settings->setValue (dc_bookmark_filter_shown.key, m_filter_shown);
+    gui_settings settings;
+
+    settings.setValue (dc_bookmark_filter_active.key, m_filter_checkbox->isChecked ());
+    settings.setValue (dc_bookmark_filter_shown.key, m_filter_shown);
 
     QStringList mru;
     for (int i = 0; i < m_filter->count (); i++)
       mru.append (m_filter->itemText (i));
-    settings->setValue (dc_bookmark_filter_mru.key, mru);
+    settings.setValue (dc_bookmark_filter_mru.key, mru);
 
-    settings->sync ();
+    settings.sync ();
   }
 
   void documentation_bookmarks::write_bookmarks (void)

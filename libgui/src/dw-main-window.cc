@@ -36,9 +36,9 @@
 #include <QMenu>
 
 #include "dw-main-window.h"
+#include "gui-preferences-sc.h"
 #include "octave-qobject.h"
 #include "shortcut-manager.h"
-#include "gui-preferences-sc.h"
 
 namespace octave
 {
@@ -76,7 +76,7 @@ namespace octave
     m_actions_list << m_switch_left_action;
     m_actions_list << m_switch_right_action;
 
-    notice_settings (rmgr.get_settings ());
+    notice_settings ();
   }
 
 
@@ -130,7 +130,7 @@ namespace octave
   }
 
   // Update the settings
-  void dw_main_window::notice_settings (const gui_settings *)
+  void dw_main_window::notice_settings (void)
   {
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
 

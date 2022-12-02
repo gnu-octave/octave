@@ -67,7 +67,7 @@ namespace octave
     void append_history (const QString& hist_entry);
     void clear_history (void);
     void save_settings (void);
-    void notice_settings (const gui_settings *);
+    void notice_settings (void);
 
   private slots:
 

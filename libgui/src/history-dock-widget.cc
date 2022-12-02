@@ -38,6 +38,7 @@
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-hw.h"
+#include "gui-settings.h"
 #include "history-dock-widget.h"
 #include "octave-qobject.h"
 
@@ -87,21 +88,17 @@ namespace octave
 
   void history_dock_widget::save_settings (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    if (! settings)
-      return;
-
-    settings->setValue (hw_filter_active.key, m_filter_checkbox->isChecked ());
-    settings->setValue (hw_filter_shown.key, m_filter_shown);
+    settings.setValue (hw_filter_active.key, m_filter_checkbox->isChecked ());
+    settings.setValue (hw_filter_shown.key, m_filter_shown);
 
     QStringList mru;
     for (int i = 0; i < m_filter->count (); i++)
       mru.append (m_filter->itemText (i));
-    settings->setValue (hw_mru_list.key, mru);
+    settings.setValue (hw_mru_list.key, mru);
 
-    settings->sync ();
+    settings.sync ();
 
     octave_dock_widget::save_settings ();
   }
@@ -330,17 +327,15 @@ namespace octave
     widget ()->setLayout (hist_layout);
 
     // Init state of the filter
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
 
-    m_filter_shown
-      = settings->value (hw_filter_shown).toBool ();
+    gui_settings settings;
+
+    m_filter_shown = settings.value (hw_filter_shown).toBool ();
     m_filter_widget->setVisible (m_filter_shown);
 
-    m_filter->addItems (settings->value (hw_mru_list).toStringList ());
+    m_filter->addItems (settings.value (hw_mru_list).toStringList ());
 
-    bool filter_state
-      = settings->value (hw_filter_active).toBool ();
+    bool filter_state = settings.value (hw_filter_active).toBool ();
     m_filter_checkbox->setChecked (filter_state);
     filter_activate (filter_state);
 
@@ -359,15 +354,17 @@ namespace octave
     m_history_list_view->setTextElideMode (Qt::ElideRight);
   }
 
-  void history_dock_widget::notice_settings (const gui_settings *settings)
+  void history_dock_widget::notice_settings (void)
   {
+    gui_settings settings;
+
     QFont font = QFont ();
 
     font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings->value (global_mono_font).toString ();
+    QString default_font = settings.value (global_mono_font).toString ();
 
-    font.setFamily (settings->value (cs_font.key, default_font).toString ());
-    font.setPointSize (settings->value (cs_font_size).toInt ());
+    font.setFamily (settings.value (cs_font.key, default_font).toString ());
+    font.setPointSize (settings.value (cs_font_size).toInt ());
 
     m_history_list_view->setFont (font);
   }

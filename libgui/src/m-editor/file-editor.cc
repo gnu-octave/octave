@@ -50,6 +50,7 @@
 #include "gui-preferences-ed.h"
 #include "gui-preferences-sc.h"
 #include "gui-preferences-global.h"
+#include "gui-settings.h"
 #include "main-window.h"
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
@@ -181,10 +182,10 @@ namespace octave
 
   void file_editor::handle_enter_debug_mode (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    QString sc_run = settings->sc_value (sc_edit_run_run_file);
-    QString sc_cont = settings->sc_value (sc_main_debug_continue);
+    gui_settings settings;
+
+    QString sc_run = settings.sc_value (sc_edit_run_run_file);
+    QString sc_cont = settings.sc_value (sc_main_debug_continue);
 
     if (sc_run == sc_cont)
       m_run_action->setShortcut (QKeySequence ());  // prevent ambiguous shortcuts
@@ -265,10 +266,10 @@ namespace octave
           return;  // not yet ready but got visibility changed signals
       }
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (settings->value (global_use_custom_editor.key,
-                         global_use_custom_editor.def).toBool ())
+    gui_settings settings;
+
+    if (settings.value (global_use_custom_editor.key,
+                        global_use_custom_editor.def).toBool ())
       return;  // do not open an empty script in the external editor
 
     bool real_visible;
@@ -318,27 +319,29 @@ namespace octave
     request_new_file ("");
   }
 
-  void file_editor::restore_session (gui_settings *settings)
+  void file_editor::restore_session (void)
   {
+    gui_settings settings;
+
     //restore previous session
-    if (! settings->value (ed_restore_session).toBool ())
+    if (! settings.value (ed_restore_session).toBool ())
       return;
 
     // get the data from the settings file
     QStringList sessionFileNames
-      = settings->value (ed_session_names).toStringList ();
+      = settings.value (ed_session_names).toStringList ();
 
     QStringList session_encodings
-      = settings->value (ed_session_enc).toStringList ();
+      = settings.value (ed_session_enc).toStringList ();
 
     QStringList session_index
-      = settings->value (ed_session_ind).toStringList ();
+      = settings.value (ed_session_ind).toStringList ();
 
     QStringList session_lines
-      = settings->value (ed_session_lines).toStringList ();
+      = settings.value (ed_session_lines).toStringList ();
 
     QStringList session_bookmarks
-      = settings->value (ed_session_bookmarks).toStringList ();
+      = settings.value (ed_session_bookmarks).toStringList ();
 
     // fill a list of the struct and sort it (depending on index)
     QList<session_data> s_data;
@@ -440,8 +443,7 @@ namespace octave
   // together with encoding and the tab index
   void file_editor::save_session (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
     QStringList fetFileNames;
     QStringList fet_encodings;
@@ -473,12 +475,13 @@ namespace octave
           }
       }
 
-    settings->setValue (ed_session_names.key, fetFileNames);
-    settings->setValue (ed_session_enc.key, fet_encodings);
-    settings->setValue (ed_session_ind.key, fet_index);
-    settings->setValue (ed_session_lines.key, fet_lines);
-    settings->setValue (ed_session_bookmarks.key, fet_bookmarks);
-    settings->sync ();
+    settings.setValue (ed_session_names.key, fetFileNames);
+    settings.setValue (ed_session_enc.key, fet_encodings);
+    settings.setValue (ed_session_ind.key, fet_index);
+    settings.setValue (ed_session_lines.key, fet_lines);
+    settings.setValue (ed_session_bookmarks.key, fet_bookmarks);
+
+    settings.sync ();
   }
 
   bool file_editor::check_closing (void)
@@ -1273,9 +1276,11 @@ namespace octave
     m_tmp_closed_files.clear ();
   }
 
-  void file_editor::notice_settings (const gui_settings *settings)
+  void file_editor::notice_settings (void)
   {
-    int size_idx = settings->value (global_icon_size).toInt ();
+    gui_settings settings;
+
+    int size_idx = settings.value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -1284,8 +1289,8 @@ namespace octave
 
     // Tab position and rotation
     QTabWidget::TabPosition pos
-      = static_cast<QTabWidget::TabPosition> (settings->value (ed_tab_position).toInt ());
-    bool rotated = settings->value (ed_tabs_rotated).toBool ();
+      = static_cast<QTabWidget::TabPosition> (settings.value (ed_tab_position).toInt ());
+    bool rotated = settings.value (ed_tabs_rotated).toBool ();
 
     m_tab_widget->setTabPosition (pos);
 
@@ -1308,7 +1313,7 @@ namespace octave
       height = is;
 
     // Calculate possibly limited width and set the elide mode
-    int chars = settings->value (ed_tabs_max_width).toInt ();
+    int chars = settings.value (ed_tabs_max_width).toInt ();
     int width = 9999;
     if (chars > 0)
       width = chars * QFontMetrics (m_tab_widget->font ()).averageCharWidth ();
@@ -1349,23 +1354,23 @@ namespace octave
     m_tab_widget->setStyleSheet (style_sheet);
 
     bool show_it;
-    show_it = settings->value (ed_show_line_numbers).toBool ();
+    show_it = settings.value (ed_show_line_numbers).toBool ();
     m_show_linenum_action->setChecked (show_it);
-    show_it = settings->value (ed_show_white_space).toBool ();
+    show_it = settings.value (ed_show_white_space).toBool ();
     m_show_whitespace_action->setChecked (show_it);
-    show_it = settings->value (ed_show_eol_chars).toBool ();
+    show_it = settings.value (ed_show_eol_chars).toBool ();
     m_show_eol_action->setChecked (show_it);
-    show_it = settings->value (ed_show_indent_guides).toBool ();
+    show_it = settings.value (ed_show_indent_guides).toBool ();
     m_show_indguide_action->setChecked (show_it);
-    show_it = settings->value (ed_long_line_marker).toBool ();
+    show_it = settings.value (ed_long_line_marker).toBool ();
     m_show_longline_action->setChecked (show_it);
 
-    show_it = settings->value (ed_show_toolbar).toBool ();
+    show_it = settings.value (ed_show_toolbar).toBool ();
     m_show_toolbar_action->setChecked (show_it);
     m_tool_bar->setVisible (show_it);
-    show_it = settings->value (ed_show_edit_status_bar).toBool ();
+    show_it = settings.value (ed_show_edit_status_bar).toBool ();
     m_show_statusbar_action->setChecked (show_it);
-    show_it = settings->value (ed_show_hscroll_bar).toBool ();
+    show_it = settings.value (ed_show_hscroll_bar).toBool ();
     m_show_hscrollbar_action->setChecked (show_it);
 
     set_shortcuts ();
@@ -1375,7 +1380,7 @@ namespace octave
       m_find_dialog->setWindowIcon (windowIcon ());
 
     // Relay signal to file editor tabs.
-    emit fetab_settings_changed (settings);
+    emit fetab_settings_changed ();
   }
 
   void file_editor::set_shortcuts (void)
@@ -1483,9 +1488,8 @@ namespace octave
     if (m_closed && visible)
       {
         m_closed = false;
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        gui_settings *settings = rmgr.get_settings ();
-        restore_session (settings);
+
+        restore_session ();
       }
 
     empty_script (false, visible);
@@ -1549,10 +1553,9 @@ namespace octave
                                        const QString& cond, int index,
                                        const QString& bookmarks)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    if (settings->value (global_use_custom_editor).toBool ())
+    if (settings.value (global_use_custom_editor).toBool ())
       {
         // Custom editor
         if (debug_pointer || breakpoint_marker)
@@ -1562,8 +1565,7 @@ namespace octave
           return;   // Custom editor called
       }
 
-    bool show_dbg_file
-      = settings->value (ed_show_dbg_file).toBool ();
+    bool show_dbg_file = settings.value (ed_show_dbg_file).toBool ();
 
     if (openFileName.isEmpty ())
       {
@@ -1677,7 +1679,7 @@ namespace octave
                     bool create_file = true;
                     QMessageBox *msgBox;
 
-                    if (! settings->value (ed_create_new_file).toBool ())
+                    if (! settings.value (ed_create_new_file).toBool ())
                       {
                         msgBox = new QMessageBox (QMessageBox::Question,
                                                   tr ("Octave Editor"),
@@ -1849,9 +1851,9 @@ namespace octave
   // handler for the close event
   void file_editor::closeEvent (QCloseEvent *e)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
-    if (settings->value (ed_hiding_closes_files).toBool ())
+    gui_settings settings;
+
+    if (settings.value (ed_hiding_closes_files).toBool ())
       {
         if (check_closing ())
           {
@@ -1931,12 +1933,11 @@ namespace octave
 
     m_tab_widget = new file_editor_tab_widget (editor_widget, this);
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
     // the mru-list and an empty array of actions
-    gui_settings *settings = rmgr.get_settings ();
-    m_mru_files = settings->value (ed_mru_file_list).toStringList ();
-    m_mru_files_encodings = settings->value (ed_mru_file_encodings)
+    gui_settings settings;
+
+    m_mru_files = settings.value (ed_mru_file_list).toStringList ();
+    m_mru_files_encodings = settings.value (ed_mru_file_encodings)
                             .toStringList ();
 
     if (m_mru_files_encodings.count () != m_mru_files.count ())
@@ -1973,6 +1974,8 @@ namespace octave
                     SLOT (request_context_edit (bool)));
 
     m_fileMenu->addSeparator ();
+
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
     m_save_action
       = add_action (m_fileMenu, rmgr.icon ("document-save"),
@@ -2493,7 +2496,7 @@ namespace octave
 
     // Signals from the file_editor or main-win non-trivial operations
     connect (this, &file_editor::fetab_settings_changed,
-             f, [=] (const gui_settings *settings) { f->notice_settings (settings); });
+             f, [=] () { f->notice_settings (); });
 
     connect (this, &file_editor::fetab_change_request,
              f, &file_editor_tab::change_editor_state);
@@ -2677,21 +2680,22 @@ namespace octave
       }
 
     // save actual mru-list in settings
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
 
-    settings->setValue (ed_mru_file_list.key,  m_mru_files);
-    settings->setValue (ed_mru_file_encodings.key,  m_mru_files_encodings);
-    settings->sync ();
+    gui_settings settings;
+
+    settings.setValue (ed_mru_file_list.key,  m_mru_files);
+    settings.setValue (ed_mru_file_encodings.key,  m_mru_files_encodings);
+
+    settings.sync ();
   }
 
   bool file_editor::call_custom_editor (const QString& file_name, int line)
   {
     // Check if the user wants to use a custom file editor.
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
 
-    if (settings->value (global_use_custom_editor.key,
+    gui_settings settings;
+
+    if (settings.value (global_use_custom_editor.key,
                          global_use_custom_editor.def).toBool ())
       {
         // use the external editor interface for handling the call
@@ -2709,12 +2713,11 @@ namespace octave
 
   void file_editor::toggle_preference (const gui_pref& preference)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+    gui_settings settings;
 
-    bool old = settings->value (preference).toBool ();
-    settings->setValue (preference.key, ! old);
-    notice_settings (settings);
+    bool old = settings.value (preference).toBool ();
+    settings.setValue (preference.key, ! old);
+    notice_settings ();
   }
 
   // Function for closing the files in a removed directory

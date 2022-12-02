@@ -31,7 +31,6 @@
 #include <QMouseEvent>
 #include <QToolButton>
 
-#include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
 namespace octave
@@ -126,13 +125,13 @@ namespace octave
 
     virtual void handle_visibility (bool visible);
 
-    virtual void notice_settings (const gui_settings *) { }
+    virtual void notice_settings (void) { }
 
     virtual void save_settings (void);
 
     void init_window_menu_entry (void);
 
-    void handle_settings (const gui_settings *);
+    void handle_settings (void);
 
     void handle_active_dock_changed (octave_dock_widget *, octave_dock_widget *);
 

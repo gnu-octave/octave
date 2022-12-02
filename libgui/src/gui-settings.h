@@ -38,6 +38,10 @@ namespace octave
 
   public:
 
+    gui_settings (QObject *parent = nullptr)
+      : QSettings (parent)
+    { }
+
     gui_settings (const QString& file_name, QSettings::Format format,
                   QObject *parent = nullptr)
       : QSettings (file_name, format, parent)

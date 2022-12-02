@@ -113,8 +113,6 @@ namespace octave
     QString m_settings_file;
 
     QList<QTemporaryFile *> m_temporary_files;
-
-    QStringList m_icon_fallbacks;
   };
 }
 

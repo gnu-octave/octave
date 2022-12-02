@@ -118,6 +118,9 @@ global_all_icon_theme_names = {
 };
 
 const gui_pref
+global_icon_fallbacks ("icon_fallbacks", QVariant (QStringList ()));
+
+const gui_pref
 global_status_bar ("show_status_bar", QVariant (true));
 
 

@@ -560,9 +560,7 @@ namespace octave
           }
       }
     else
-      {
-        import_shortcuts (nullptr);
-      }
+      reset_default_shortcuts ();
 
     return true;
   }
@@ -745,27 +743,54 @@ namespace octave
     m_dialog->exec ();
   }
 
-  // import a shortcut set from a given settings file or reset to
-  // the defaults (settings = 0) and refresh the tree view
+  // import a shortcut set from a given settings file and refresh the
+  // tree view
   void shortcut_manager::import_shortcuts (gui_settings *settings)
   {
     for (int i = 0; i < m_sc.count (); i++)
       {
         // update the list of all shortcuts
-        shortcut_t sc = m_sc.at (i);           // make a copy
 
-        if (settings)
-          sc.m_actual_sc = QKeySequence (         // get new shortcut from settings
-                                         settings->value (sc_group + sc.m_settings_key,sc.m_actual_sc).
-                                         toString ());       // and use the old one as default
-        else
-          sc.m_actual_sc = QKeySequence (sc.m_default_sc); // get default shortcut
+        // make a copy
+        shortcut_t sc = m_sc.at (i);
 
-        m_sc.replace (i, sc);                  // replace the old with the new one
+        // get new shortcut from settings and use the old one as default
+        sc.m_actual_sc = QKeySequence (settings->value (sc_group + sc.m_settings_key,sc.m_actual_sc).toString ());
+
+        // replace the old with the new one
+        m_sc.replace (i, sc);
 
         // update the tree view
-        QTreeWidgetItem *tree_item = m_index_item_hash[i]; // get related tree item
-        tree_item->setText (2, sc.m_actual_sc.toString ()); // display new shortcut
+        // get related tree item
+        QTreeWidgetItem *tree_item = m_index_item_hash[i];
+
+        // display new shortcut
+        tree_item->setText (2, sc.m_actual_sc.toString ());
+      }
+  }
+
+  // reset to the defaults and refresh the tree view
+  void shortcut_manager::reset_default_shortcuts (void)
+  {
+    for (int i = 0; i < m_sc.count (); i++)
+      {
+        // update the list of all shortcuts
+
+        // make a copy
+        shortcut_t sc = m_sc.at (i);
+
+        // get default shortcut
+        sc.m_actual_sc = QKeySequence (sc.m_default_sc);
+
+        // replace the old with the new one
+        m_sc.replace (i, sc);
+
+        // update the tree view
+        // get related tree item
+        QTreeWidgetItem *tree_item = m_index_item_hash[i];
+
+        // display new shortcut
+        tree_item->setText (2, sc.m_actual_sc.toString ());
       }
   }
 

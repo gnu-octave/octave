@@ -109,6 +109,7 @@ namespace octave
     void init (const QString&, const sc_pref& scpref);
     void shortcut_dialog (int);
     void import_shortcuts (gui_settings *settings);
+    void reset_default_shortcuts (void);
     bool overwrite_all_shortcuts (void);
 
     class shortcut_t

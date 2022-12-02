@@ -42,51 +42,51 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Declarations (global, static, etc.).
+// Declarations (global, static, etc.).
 
-  tree_decl_elt::tree_decl_elt (tree_identifier *i, tree_expression *e)
-    : type (unknown), m_id (i), m_expr (e)
-  {
-    if (! m_id)
-      error ("tree_decl_elt: invalid ID");
-  }
+tree_decl_elt::tree_decl_elt (tree_identifier *i, tree_expression *e)
+  : type (unknown), m_id (i), m_expr (e)
+{
+  if (! m_id)
+    error ("tree_decl_elt: invalid ID");
+}
 
-  tree_decl_elt::~tree_decl_elt (void)
-  {
-    delete m_id;
-    delete m_expr;
-  }
+tree_decl_elt::~tree_decl_elt (void)
+{
+  delete m_id;
+  delete m_expr;
+}
 
-  tree_decl_elt *
-  tree_decl_elt::dup (symbol_scope& scope) const
-  {
-    return new tree_decl_elt (m_id->dup (scope),
-                              m_expr ? m_expr->dup (scope) : nullptr);
-  }
+tree_decl_elt *
+tree_decl_elt::dup (symbol_scope& scope) const
+{
+  return new tree_decl_elt (m_id->dup (scope),
+                            m_expr ? m_expr->dup (scope) : nullptr);
+}
 
-  // Initializer lists for declaration statements.
+// Initializer lists for declaration statements.
 
-  // Declaration commands (global, static).
+// Declaration commands (global, static).
 
-  tree_decl_command::tree_decl_command (const std::string& n,
-                                        tree_decl_init_list *t, int l, int c)
-    : tree_command (l, c), m_cmd_name (n), m_init_list (t)
-  {
-    if (t)
-      {
-        if (m_cmd_name == "global")
-          mark_global ();
-        else if (m_cmd_name == "persistent")
-          mark_persistent ();
-        else
-          error ("tree_decl_command: unknown decl type: %s",
-                 m_cmd_name.c_str ());
-      }
-  }
+tree_decl_command::tree_decl_command (const std::string& n,
+                                      tree_decl_init_list *t, int l, int c)
+  : tree_command (l, c), m_cmd_name (n), m_init_list (t)
+{
+  if (t)
+    {
+      if (m_cmd_name == "global")
+        mark_global ();
+      else if (m_cmd_name == "persistent")
+        mark_persistent ();
+      else
+        error ("tree_decl_command: unknown decl type: %s",
+               m_cmd_name.c_str ());
+    }
+}
 
-  tree_decl_command::~tree_decl_command (void)
-  {
-    delete m_init_list;
-  }
+tree_decl_command::~tree_decl_command (void)
+{
+  delete m_init_list;
+}
 
 OCTAVE_END_NAMESPACE(octave)

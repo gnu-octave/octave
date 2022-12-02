@@ -50,197 +50,197 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-    std::string
-    password::name (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+std::string
+password::name (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_name;
-    }
+  return m_name;
+}
 
-    std::string
-    password::passwd (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+std::string
+password::passwd (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_passwd;
-    }
+  return m_passwd;
+}
 
-    uid_t
-    password::uid (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+uid_t
+password::uid (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_uid;
-    }
+  return m_uid;
+}
 
-    gid_t
-    password::gid (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+gid_t
+password::gid (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_gid;
-    }
+  return m_gid;
+}
 
-    std::string
-    password::gecos (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+std::string
+password::gecos (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_gecos;
-    }
+  return m_gecos;
+}
 
-    std::string
-    password::dir (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+std::string
+password::dir (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_dir;
-    }
+  return m_dir;
+}
 
-    std::string
-    password::shell (void) const
-    {
-      if (! ok ())
-        err_invalid ();
+std::string
+password::shell (void) const
+{
+  if (! ok ())
+    err_invalid ();
 
-      return m_shell;
-    }
+  return m_shell;
+}
 
-    password
-    password::getpwent (void)
-    {
-      std::string msg;
-      return getpwent (msg);
-    }
+password
+password::getpwent (void)
+{
+  std::string msg;
+  return getpwent (msg);
+}
 
-    password
-    password::getpwent (std::string& msg)
-    {
+password
+password::getpwent (std::string& msg)
+{
 #if defined HAVE_GETPWENT
-      msg = "";
-      return password (::getpwent (), msg);
+  msg = "";
+  return password (::getpwent (), msg);
 #else
-      msg = NOT_SUPPORTED ("getpwent");
-      return password ();
+  msg = NOT_SUPPORTED ("getpwent");
+  return password ();
 #endif
-    }
+}
 
-    password
-    password::getpwuid (uid_t uid)
-    {
-      std::string msg;
-      return getpwuid (uid, msg);
-    }
+password
+password::getpwuid (uid_t uid)
+{
+  std::string msg;
+  return getpwuid (uid, msg);
+}
 
-    password
-    password::getpwuid (uid_t uid, std::string& msg)
-    {
+password
+password::getpwuid (uid_t uid, std::string& msg)
+{
 #if defined (HAVE_GETPWUID)
-      msg = "";
-      return password (::getpwuid (uid), msg);
+  msg = "";
+  return password (::getpwuid (uid), msg);
 #else
-      octave_unused_parameter (uid);
+  octave_unused_parameter (uid);
 
-      msg = NOT_SUPPORTED ("getpwuid");
-      return password ();
+  msg = NOT_SUPPORTED ("getpwuid");
+  return password ();
 #endif
-    }
+}
 
-    password
-    password::getpwnam (const std::string& nm)
-    {
-      std::string msg;
-      return getpwnam (nm, msg);
-    }
+password
+password::getpwnam (const std::string& nm)
+{
+  std::string msg;
+  return getpwnam (nm, msg);
+}
 
-    password
-    password::getpwnam (const std::string& nm, std::string& msg)
-    {
+password
+password::getpwnam (const std::string& nm, std::string& msg)
+{
 #if defined (HAVE_GETPWNAM)
-      msg = "";
-      return password (::getpwnam (nm.c_str ()), msg);
+  msg = "";
+  return password (::getpwnam (nm.c_str ()), msg);
 #else
-      octave_unused_parameter (nm);
+  octave_unused_parameter (nm);
 
-      msg = NOT_SUPPORTED ("getpwnam");
-      return password ();
+  msg = NOT_SUPPORTED ("getpwnam");
+  return password ();
 #endif
-    }
+}
 
-    int
-    password::setpwent (void)
-    {
-      std::string msg;
-      return setpwent (msg);
-    }
+int
+password::setpwent (void)
+{
+  std::string msg;
+  return setpwent (msg);
+}
 
-    int
-    password::setpwent (std::string& msg)
-    {
+int
+password::setpwent (std::string& msg)
+{
 #if defined (HAVE_SETPWENT)
-      msg = "";
-      ::setpwent ();
-      return 0;
+  msg = "";
+  ::setpwent ();
+  return 0;
 #else
-      msg = NOT_SUPPORTED ("setpwent");
-      return -1;
+  msg = NOT_SUPPORTED ("setpwent");
+  return -1;
 #endif
-    }
+}
 
-    int
-    password::endpwent (void)
-    {
-      std::string msg;
-      return endpwent (msg);
-    }
+int
+password::endpwent (void)
+{
+  std::string msg;
+  return endpwent (msg);
+}
 
-    int
-    password::endpwent (std::string& msg)
-    {
+int
+password::endpwent (std::string& msg)
+{
 #if defined (HAVE_ENDPWENT)
-      msg = "";
-      ::endpwent ();
-      return 0;
+  msg = "";
+  ::endpwent ();
+  return 0;
 #else
-      msg = NOT_SUPPORTED ("endpwent");
-      return -1;
+  msg = NOT_SUPPORTED ("endpwent");
+  return -1;
 #endif
-    }
+}
 
-    password::password (void *p, std::string& msg)
-      : m_name (), m_passwd (), m_uid (0), m_gid (0), m_gecos (),
-        m_dir (), m_shell (), m_valid (false)
-    {
+password::password (void *p, std::string& msg)
+  : m_name (), m_passwd (), m_uid (0), m_gid (0), m_gecos (),
+    m_dir (), m_shell (), m_valid (false)
+{
 #if defined (HAVE_PWD_H)
-      msg = "";
+  msg = "";
 
-      if (p)
-        {
-          struct ::passwd *pw = static_cast<struct ::passwd *> (p);
+  if (p)
+    {
+      struct ::passwd *pw = static_cast<struct ::passwd *> (p);
 
-          m_name = pw->pw_name;
-          m_passwd = pw->pw_passwd;
-          m_uid = pw->pw_uid;
-          m_gid = pw->pw_gid;
-          m_gecos = pw->pw_gecos;
-          m_dir = pw->pw_dir;
-          m_shell = pw->pw_shell;
+      m_name = pw->pw_name;
+      m_passwd = pw->pw_passwd;
+      m_uid = pw->pw_uid;
+      m_gid = pw->pw_gid;
+      m_gecos = pw->pw_gecos;
+      m_dir = pw->pw_dir;
+      m_shell = pw->pw_shell;
 
-          m_valid = true;
-        }
-#else
-      octave_unused_parameter (p);
-
-      msg = NOT_SUPPORTED ("password functions");
-#endif
+      m_valid = true;
     }
+#else
+  octave_unused_parameter (p);
+
+  msg = NOT_SUPPORTED ("password functions");
+#endif
+}
 
 OCTAVE_END_NAMESPACE(sys)
 OCTAVE_END_NAMESPACE(octave)

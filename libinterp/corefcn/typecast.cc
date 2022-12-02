@@ -54,7 +54,7 @@ get_vec_dims (const dim_vector& old_dims, octave_idx_type n)
 template <typename ArrayType>
 static void
 get_data_and_bytesize (const ArrayType& array,
-                       const void *& data,
+                       const void *&data,
                        octave_idx_type& byte_size,
                        dim_vector& old_dims,
                        unwind_protect& frame)
@@ -256,13 +256,13 @@ typecast (@var{x}, "uint8")
         retval = reinterpret_int_copy<uint8NDArray> (data, byte_size, old_dims);
       else if (numclass == "uint16")
         retval = reinterpret_int_copy<uint16NDArray> (data, byte_size,
-                                                      old_dims);
+                 old_dims);
       else if (numclass == "uint32")
         retval = reinterpret_int_copy<uint32NDArray> (data, byte_size,
-                                                      old_dims);
+                 old_dims);
       else if (numclass == "uint64")
         retval = reinterpret_int_copy<uint64NDArray> (data, byte_size,
-                                                      old_dims);
+                 old_dims);
     }
   else if (numclass == "single")
     retval = reinterpret_copy<FloatNDArray> (data, byte_size, old_dims);
@@ -270,7 +270,7 @@ typecast (@var{x}, "uint8")
     retval = reinterpret_copy<NDArray> (data, byte_size, old_dims);
   else if (numclass == "single complex")
     retval = reinterpret_copy<FloatComplexNDArray> (data, byte_size,
-                                                    old_dims);
+             old_dims);
   else if (numclass == "double complex")
     retval = reinterpret_copy<ComplexNDArray> (data, byte_size, old_dims);
 

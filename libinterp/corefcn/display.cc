@@ -39,19 +39,19 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  void display_info::initialize (void)
-  {
-    int avail = 0;
+void display_info::initialize (void)
+{
+  int avail = 0;
 
-    const char *msg
-      = octave_get_display_info (nullptr, &m_ht, &m_wd, &m_dp,
-                                 &m_rx, &m_ry, &avail);
+  const char *msg
+    = octave_get_display_info (nullptr, &m_ht, &m_wd, &m_dp,
+                               &m_rx, &m_ry, &avail);
 
-    m_dpy_avail = avail;
+  m_dpy_avail = avail;
 
-    if (msg)
-      m_msg = msg;
-  }
+  if (msg)
+    m_msg = msg;
+}
 
 DEFMETHOD (have_window_system, interp, , ,
            doc: /* -*- texinfo -*-

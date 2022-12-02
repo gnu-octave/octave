@@ -143,38 +143,38 @@ octave_hdf5_id ov_range<octave_uint64>::hdf5_save_type = 0;
 #endif
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<double>,
-                                              "double_range", "double");
+    "double_range", "double");
 
 // For now, disable all but ov_range<double>.
 
 #if 0
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<float>,
-                                              "float_range", "single");
+    "float_range", "single");
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int8>,
-                                              "int8_range", "int8");
+    "int8_range", "int8");
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int16>,
-                                              "int16_range", "int16");
+    "int16_range", "int16");
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int32>,
-                                              "int32_range", "int32");
+    "int32_range", "int32");
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int64>,
-                                              "int64_range", "int64");
+    "int64_range", "int64");
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint8>,
-                                              "uint8_range", "uint8");
+    "uint8_range", "uint8");
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint16>,
-                                              "uint16_range", "uint16");
+    "uint16_range", "uint16");
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint32>,
-                                              "uint32_range", "uint32");
+    "uint32_range", "uint32");
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint64>,
-                                              "uint64_range", "uint64");
+    "uint64_range", "uint64");
 
 #endif
 
@@ -196,7 +196,7 @@ ov_range<T>::numeric_conversion_function (void) const
   typedef typename octave_value_range_traits<T>::matrix_type ov_mx_type;
 
   return octave_base_value::type_conv_info
-    (default_numeric_conversion_function<T>, ov_mx_type::static_type_id ());
+         (default_numeric_conversion_function<T>, ov_mx_type::static_type_id ());
 }
 
 template <typename T>

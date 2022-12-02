@@ -338,16 +338,16 @@ F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  inline F77_INT
-  to_f77_int (octave_idx_type x)
-  {
-    if (x < std::numeric_limits<F77_INT>::min ()
-        || x > std::numeric_limits<F77_INT>::max ())
-      (*current_liboctave_error_handler)
-        ("integer dimension or index out of range for Fortran INTEGER type");
+inline F77_INT
+to_f77_int (octave_idx_type x)
+{
+  if (x < std::numeric_limits<F77_INT>::min ()
+      || x > std::numeric_limits<F77_INT>::max ())
+    (*current_liboctave_error_handler)
+      ("integer dimension or index out of range for Fortran INTEGER type");
 
-    return static_cast<F77_INT> (x);
-  }
+  return static_cast<F77_INT> (x);
+}
 
 OCTAVE_END_NAMESPACE(octave)
 

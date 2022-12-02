@@ -144,8 +144,8 @@ xpow (const SparseMatrix& a, double b)
 
       uint64_t sparsity = atmp.numel () / atmp.nnz (); // reciprocal of density
       int threshold = (sparsity >= 1000) ? 40
-                    : (sparsity >=  100) ? 20
-                    : 3;
+                      : (sparsity >=  100) ? 20
+                      : 3;
 
       if (btmp > threshold) // use squaring technique
         {
@@ -238,8 +238,8 @@ xpow (const SparseComplexMatrix& a, double b)
 
       uint64_t sparsity = atmp.numel () / atmp.nnz (); // reciprocal of density
       int threshold = (sparsity >= 1000) ? 40
-                    : (sparsity >=  100) ? 20
-                    : 3;
+                      : (sparsity >=  100) ? 20
+                      : 3;
 
       if (btmp > threshold) // use squaring technique
         {
@@ -566,7 +566,7 @@ done:
             {
               octave_quit ();
               result.xelem (a.ridx (i), j) = std::pow (a.data (i),
-                                                       b(a.ridx (i), j));
+                                             b(a.ridx (i), j));
             }
         }
       result.maybe_compress (true);
@@ -770,7 +770,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
 
           if (xisint (btmp))
             result.xelem (a.ridx (i), j) = std::pow (a.data (i),
-                                                     static_cast<int> (btmp));
+                                           static_cast<int> (btmp));
           else
             result.xelem (a.ridx (i), j) = std::pow (a.data (i), btmp);
         }
@@ -834,7 +834,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
         {
           octave_quit ();
           result.xelem (a.ridx (i), j) = std::pow (a.data (i),
-                                                   b(a.ridx (i), j));
+                                         b(a.ridx (i), j));
         }
     }
   result.maybe_compress (true);

@@ -50,7 +50,7 @@ octave_fields::octave_fields (const string_vector& fields)
     (*m_rep)[fields(i)] = i;
 }
 
-octave_fields::octave_fields (const char * const *fields)
+octave_fields::octave_fields (const char *const *fields)
   : m_rep (new fields_rep)
 {
   octave_idx_type n = 0;
@@ -167,7 +167,7 @@ octave_fields::fieldnames (void) const
 }
 
 octave_scalar_map::octave_scalar_map
-  (const std::map<std::string, octave_value>& m)
+(const std::map<std::string, octave_value>& m)
 {
   std::size_t sz = m.size ();
   m_vals.resize (sz);

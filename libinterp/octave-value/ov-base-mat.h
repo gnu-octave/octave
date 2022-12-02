@@ -68,7 +68,7 @@ public:
     : octave_base_value (), m_matrix (m.m_matrix),
       m_typ (m.m_typ ? new MatrixType (*m.m_typ) : nullptr),
       m_idx_cache (m.m_idx_cache ? new octave::idx_vector (*m.m_idx_cache)
-                                 : nullptr)
+                   : nullptr)
   { }
 
   ~octave_base_matrix (void) { clear_cached_info (); }

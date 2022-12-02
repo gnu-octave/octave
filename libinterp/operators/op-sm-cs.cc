@@ -72,7 +72,7 @@ DEFBINOP (ldiv, sparse_matrix, complex)
 
   if (v1.rows () == 1 && v1.columns () == 1)
     return octave_value (SparseComplexMatrix (1, 1, v2.complex_value ()
-                                                  / v1.scalar_value ()));
+                         / v1.scalar_value ()));
   else
     {
       MatrixType typ = v1.matrix_type ();

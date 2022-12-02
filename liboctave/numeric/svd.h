@@ -34,95 +34,95 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    class
-    OCTAVE_API
-    svd
-    {
-    public:
+template <typename T>
+class
+OCTAVE_API
+svd
+{
+public:
 
-      typedef typename T::real_diag_matrix_type DM_T;
+  typedef typename T::real_diag_matrix_type DM_T;
 
-      enum class Type
+  enum class Type
+  {
+    std,
+    economy,
+    sigma_only
+  };
+
+  enum class Driver
+  {
+    GESVD,
+    GESDD,
+    GEJSV
+  };
+
+  svd (void)
+    : m_type (), m_driver (), m_left_sm (), m_sigma (), m_right_sm ()
+  { }
+
+  svd (const T& a, svd::Type type = svd::Type::std,
+       svd::Driver driver = svd::Driver::GESVD);
+
+  svd (const svd& a)
+    : m_type (a.m_type), m_driver (a.m_driver), m_left_sm (a.m_left_sm),
+      m_sigma (a.m_sigma), m_right_sm (a.m_right_sm)
+  { }
+
+  svd& operator = (const svd& a)
+  {
+    if (this != &a)
       {
-        std,
-        economy,
-        sigma_only
-      };
-
-      enum class Driver
-      {
-        GESVD,
-        GESDD,
-        GEJSV
-      };
-
-      svd (void)
-        : m_type (), m_driver (), m_left_sm (), m_sigma (), m_right_sm ()
-      { }
-
-      svd (const T& a, svd::Type type = svd::Type::std,
-           svd::Driver driver = svd::Driver::GESVD);
-
-      svd (const svd& a)
-        : m_type (a.m_type), m_driver (a.m_driver), m_left_sm (a.m_left_sm),
-          m_sigma (a.m_sigma), m_right_sm (a.m_right_sm)
-      { }
-
-      svd& operator = (const svd& a)
-      {
-        if (this != &a)
-          {
-            m_type = a.m_type;
-            m_left_sm = a.m_left_sm;
-            m_sigma = a.m_sigma;
-            m_right_sm = a.m_right_sm;
-            m_driver = a.m_driver;
-          }
-
-        return *this;
+        m_type = a.m_type;
+        m_left_sm = a.m_left_sm;
+        m_sigma = a.m_sigma;
+        m_right_sm = a.m_right_sm;
+        m_driver = a.m_driver;
       }
 
-      ~svd (void) = default;
+    return *this;
+  }
 
-      T left_singular_matrix (void) const;
+  ~svd (void) = default;
 
-      DM_T singular_values (void) const { return m_sigma; }
+  T left_singular_matrix (void) const;
 
-      T right_singular_matrix (void) const;
+  DM_T singular_values (void) const { return m_sigma; }
 
-    private:
+  T right_singular_matrix (void) const;
 
-      typedef typename T::element_type P;
-      typedef typename DM_T::element_type DM_P;
+private:
 
-      svd::Type m_type;
-      svd::Driver m_driver;
+  typedef typename T::element_type P;
+  typedef typename DM_T::element_type DM_P;
 
-      T m_left_sm;
-      DM_T m_sigma;
-      T m_right_sm;
+  svd::Type m_type;
+  svd::Driver m_driver;
 
-      void gesvd (char& jobu, char& jobv, octave_f77_int_type m,
-                  octave_f77_int_type n, P *tmp_data, octave_f77_int_type m1,
-                  DM_P *s_vec, P *u, P *vt, octave_f77_int_type nrow_vt1,
-                  std::vector<P>& work, octave_f77_int_type& lwork,
-                  octave_f77_int_type& info);
+  T m_left_sm;
+  DM_T m_sigma;
+  T m_right_sm;
 
-      void gesdd (char& jobz, octave_f77_int_type m, octave_f77_int_type n,
-                  P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
-                  P *vt, octave_f77_int_type nrow_vt1, std::vector<P>& work,
-                  octave_f77_int_type& lwork, octave_f77_int_type *iwork,
-                  octave_f77_int_type& info);
+  void gesvd (char& jobu, char& jobv, octave_f77_int_type m,
+              octave_f77_int_type n, P *tmp_data, octave_f77_int_type m1,
+              DM_P *s_vec, P *u, P *vt, octave_f77_int_type nrow_vt1,
+              std::vector<P>& work, octave_f77_int_type& lwork,
+              octave_f77_int_type& info);
 
-      void gejsv (char& joba, char& jobu, char& jobv, char& jobr, char& jobt,
-                  char& jobp, octave_f77_int_type m, octave_f77_int_type n,
-                  P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
-                  P *v, octave_f77_int_type nrow_v1, std::vector<P>& work,
-                  octave_f77_int_type& lwork,
-                  std::vector<octave_f77_int_type>& iwork,
-                  octave_f77_int_type& info);
-    };
+  void gesdd (char& jobz, octave_f77_int_type m, octave_f77_int_type n,
+              P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
+              P *vt, octave_f77_int_type nrow_vt1, std::vector<P>& work,
+              octave_f77_int_type& lwork, octave_f77_int_type *iwork,
+              octave_f77_int_type& info);
+
+  void gejsv (char& joba, char& jobu, char& jobv, char& jobr, char& jobt,
+              char& jobp, octave_f77_int_type m, octave_f77_int_type n,
+              P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
+              P *v, octave_f77_int_type nrow_v1, std::vector<P>& work,
+              octave_f77_int_type& lwork,
+              std::vector<octave_f77_int_type>& iwork,
+              octave_f77_int_type& info);
+};
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

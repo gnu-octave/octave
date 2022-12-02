@@ -39,90 +39,90 @@ class octave_map;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  struct whos_parameter
-  {
-    char command;
-    char modifier;
-    int parameter_length;
-    int first_parameter_length;
-    int balance;
-    std::string text;
-    std::string line;
-  };
+struct whos_parameter
+{
+  char command;
+  char modifier;
+  int parameter_length;
+  int first_parameter_length;
+  int balance;
+  std::string text;
+  std::string line;
+};
 
-  class
-  OCTINTERP_API
-  symbol_info
-  {
-  public:
+class
+OCTINTERP_API
+symbol_info
+{
+public:
 
-    symbol_info (const std::string& name, const octave_value& value,
-                 bool is_formal, bool is_global, bool is_persistent)
-      : m_name (name), m_value (value), m_is_complex (value.iscomplex ()),
-        m_is_sparse (value.issparse ()), m_is_formal (is_formal),
-        m_is_global (is_global), m_is_persistent (is_persistent)
-    { }
+  symbol_info (const std::string& name, const octave_value& value,
+               bool is_formal, bool is_global, bool is_persistent)
+    : m_name (name), m_value (value), m_is_complex (value.iscomplex ()),
+      m_is_sparse (value.issparse ()), m_is_formal (is_formal),
+      m_is_global (is_global), m_is_persistent (is_persistent)
+  { }
 
-    std::string name (void) const { return m_name; }
+  std::string name (void) const { return m_name; }
 
-    octave_value value (void) const { return m_value; }
+  octave_value value (void) const { return m_value; }
 
-    bool is_complex (void) const { return m_is_complex; }
+  bool is_complex (void) const { return m_is_complex; }
 
-    bool is_sparse (void) const { return m_is_sparse; }
+  bool is_sparse (void) const { return m_is_sparse; }
 
-    bool is_formal (void) const { return m_is_formal; }
+  bool is_formal (void) const { return m_is_formal; }
 
-    bool is_global (void) const { return m_is_global; }
+  bool is_global (void) const { return m_is_global; }
 
-    bool is_persistent (void) const { return m_is_persistent; }
+  bool is_persistent (void) const { return m_is_persistent; }
 
-    void display_line (std::ostream& os,
-                       const std::list<whos_parameter>& params) const;
-  private:
+  void display_line (std::ostream& os,
+                     const std::list<whos_parameter>& params) const;
+private:
 
-    std::string m_name;
-    octave_value m_value;
-    bool m_is_complex;
-    bool m_is_sparse;
-    bool m_is_formal;
-    bool m_is_global;
-    bool m_is_persistent;
-  };
+  std::string m_name;
+  octave_value m_value;
+  bool m_is_complex;
+  bool m_is_sparse;
+  bool m_is_formal;
+  bool m_is_global;
+  bool m_is_persistent;
+};
 
-  class
-  OCTINTERP_API
-  symbol_info_list : public base_list<symbol_info>
-  {
-  public:
+class
+OCTINTERP_API
+symbol_info_list : public base_list<symbol_info>
+{
+public:
 
-    symbol_info_list (void) = default;
+  symbol_info_list (void) = default;
 
-    symbol_info_list (const symbol_info_list&) = default;
+  symbol_info_list (const symbol_info_list&) = default;
 
-    symbol_info_list& operator = (const symbol_info_list&) = default;
+  symbol_info_list& operator = (const symbol_info_list&) = default;
 
-    ~symbol_info_list (void) = default;
+  ~symbol_info_list (void) = default;
 
-    octave_value varval (const std::string& name) const;
+  octave_value varval (const std::string& name) const;
 
-    std::list<std::string> names (void) const;
+  std::list<std::string> names (void) const;
 
-    octave_map map_value (const std::string& caller_function_name,
-                          int nesting_level) const;
+  octave_map map_value (const std::string& caller_function_name,
+                        int nesting_level) const;
 
-    // Print a line of information for a given symbol.
-    void print_descriptor (std::ostream& os,
-                           const std::list<whos_parameter> params) const;
+  // Print a line of information for a given symbol.
+  void print_descriptor (std::ostream& os,
+                         const std::list<whos_parameter> params) const;
 
-    void display (std::ostream& os, const std::string& format) const;
+  void display (std::ostream& os, const std::string& format) const;
 
-    // Parse FORMAT, and return a parameter list,
-    // containing all information needed to print the given
-    // attributes of the symbols.
-    std::list<whos_parameter>
-    parse_whos_line_format (const std::string& format) const;
-  };
+  // Parse FORMAT, and return a parameter list,
+  // containing all information needed to print the given
+  // attributes of the symbols.
+  std::list<whos_parameter>
+  parse_whos_line_format (const std::string& format) const;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -120,10 +120,10 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
   // Restore current distribution on any exit.
   unwind_action restore_distribution
-    ([] (const std::string& old_distribution)
-     {
-       rand::distribution (old_distribution);
-     }, rand::distribution ());
+  ([] (const std::string& old_distribution)
+  {
+    rand::distribution (old_distribution);
+  }, rand::distribution ());
 
   rand::distribution (distribution);
 
@@ -1069,7 +1069,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randp ("state", 12);
 %!   for a = [5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
-%!     x = randp (a(1)*ones (100_000, 1), 100_000, 1);
+%!     x = randp (a(1)* ones (100_000, 1), 100_000, 1);
 %!     assert (min (x) >= 0);   # *** Please report this!!! ***
 %!     assert (mean (x), a(1), a(2));
 %!     assert (var (x), a(1), 0.02*a(1));
@@ -1098,7 +1098,7 @@ classes.
 %!   ## statistical tests may fail occasionally.
 %!   randp ("seed", 12);
 %!   for a = [5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
-%!     x = randp (a(1)*ones (100_000, 1), 100_000, 1);
+%!     x = randp (a(1)* ones (100_000, 1), 100_000, 1);
 %!     assert (min (x) >= 0);   # *** Please report this!!! ***
 %!     assert (mean (x), a(1), a(2));
 %!     assert (var (x), a(1), 0.02*a(1));

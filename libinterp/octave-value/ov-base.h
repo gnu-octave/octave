@@ -46,21 +46,21 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class stack_frame;
-  class type_info;
+class stack_frame;
+class type_info;
 
-  // FIXME: This is not ideal, but it avoids including
-  // interpreter-private.h here and bringing in a lot of unnecessary
-  // symbols that require even more header files.  Since the typeinfo
-  // object is required to load a user-defined octave_value object,
-  // maybe this function should be declared in a public header file?
+// FIXME: This is not ideal, but it avoids including
+// interpreter-private.h here and bringing in a lot of unnecessary
+// symbols that require even more header files.  Since the typeinfo
+// object is required to load a user-defined octave_value object,
+// maybe this function should be declared in a public header file?
 
-  extern OCTINTERP_API type_info& __get_type_info__ (void);
+extern OCTINTERP_API type_info& __get_type_info__ (void);
 
-  // For now just preserve the old interface and don't mark it as deprecated.
-  // This function is currently an internal, private function.  Additional
-  // changes may be made before version 8 is finally released.
-  inline type_info& __get_type_info__ (const std::string&) { return __get_type_info__ (); }
+// For now just preserve the old interface and don't mark it as deprecated.
+// This function is currently an internal, private function.  Additional
+// changes may be made before version 8 is finally released.
+inline type_info& __get_type_info__ (const std::string&) { return __get_type_info__ (); }
 
 OCTAVE_END_NAMESPACE(octave)
 
@@ -239,7 +239,7 @@ octave_base_value
 {
 public:
 
-  typedef octave_base_value * (*type_conv_fcn) (const octave_base_value&);
+  typedef octave_base_value *(*type_conv_fcn) (const octave_base_value&);
 
   // type conversion, including result type information
   class type_conv_info

@@ -54,454 +54,454 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  static bool
-  pager_event_handler (pid_t pid, int status)
-  {
-    bool retval = false;
+static bool
+pager_event_handler (pid_t pid, int status)
+{
+  bool retval = false;
 
-    if (pid > 0)
-      {
-        if (sys::wifexited (status) || sys::wifsignaled (status))
-          {
-            // Avoid warning() since that will put us back in the pager,
-            // which would be bad news.
+  if (pid > 0)
+    {
+      if (sys::wifexited (status) || sys::wifsignaled (status))
+        {
+          // Avoid warning() since that will put us back in the pager,
+          // which would be bad news.
 
-            std::cerr << "warning: connection to external pager lost (pid = "
-                      << pid << ')' << std::endl;
-            std::cerr << "warning: flushing pending output (please wait)"
-                      << std::endl;
+          std::cerr << "warning: connection to external pager lost (pid = "
+                    << pid << ')' << std::endl;
+          std::cerr << "warning: flushing pending output (please wait)"
+                    << std::endl;
 
-            // Request removal of this PID from the list of child
-            // processes.
+          // Request removal of this PID from the list of child
+          // processes.
 
-            retval = true;
-          }
-      }
+          retval = true;
+        }
+    }
 
-    return retval;
-  }
+  return retval;
+}
 
-  // Assume our terminal wraps long lines.
+// Assume our terminal wraps long lines.
 
-  static bool
-  more_than_a_screenful (const char *s, int len)
-  {
-    if (s)
-      {
-        int available_rows = command_editor::terminal_rows () - 2;
+static bool
+more_than_a_screenful (const char *s, int len)
+{
+  if (s)
+    {
+      int available_rows = command_editor::terminal_rows () - 2;
 
-        int cols = command_editor::terminal_cols ();
+      int cols = command_editor::terminal_cols ();
 
-        int count = 0;
+      int count = 0;
 
-        int chars_this_line = 0;
+      int chars_this_line = 0;
 
-        for (int i = 0; i < len; i++)
-          {
-            if (*s++ == '\n')
-              {
-                count += chars_this_line / cols + 1;
-                chars_this_line = 0;
-              }
-            else
-              chars_this_line++;
-          }
+      for (int i = 0; i < len; i++)
+        {
+          if (*s++ == '\n')
+            {
+              count += chars_this_line / cols + 1;
+              chars_this_line = 0;
+            }
+          else
+            chars_this_line++;
+        }
 
-        if (count > available_rows)
+      if (count > available_rows)
+        return true;
+    }
+
+  return false;
+}
+
+static std::string default_pager (void)
+{
+  std::string pager_binary = sys::env::getenv ("PAGER");
+
+  if (pager_binary.empty ())
+    pager_binary = config::default_pager ();
+
+  return pager_binary;
+}
+
+int
+pager_buf::sync (void)
+{
+  output_system& output_sys = __get_output_system__ ();
+
+  char *buf = pbase ();
+
+  int len = pptr () - buf;
+
+  if (output_sys.sync (buf, len))
+    {
+      flush_current_contents_to_diary ();
+
+      seekoff (0, std::ios::beg);
+    }
+
+  return 0;
+}
+
+void
+pager_buf::flush_current_contents_to_diary (void)
+{
+  char *buf = pbase () + m_diary_skip;
+
+  std::size_t len = pptr () - buf;
+
+  octave_diary.write (buf, len);
+
+  m_diary_skip = 0;
+}
+
+void
+pager_buf::set_diary_skip (void)
+{
+  m_diary_skip = pptr () - pbase ();
+}
+
+int
+diary_buf::sync (void)
+{
+  output_system& output_sys = __get_output_system__ ();
+
+  std::ofstream& external_diary_file = output_sys.external_diary_file ();
+
+  if (output_sys.write_to_diary_file () && external_diary_file)
+    {
+      char *buf = pbase ();
+
+      int len = pptr () - buf;
+
+      if (len > 0)
+        external_diary_file.write (buf, len);
+    }
+
+  seekoff (0, std::ios::beg);
+
+  return 0;
+}
+
+pager_stream::pager_stream (void) : std::ostream (nullptr), m_pb (nullptr)
+{
+  m_pb = new pager_buf ();
+  rdbuf (m_pb);
+  setf (unitbuf);
+}
+
+pager_stream::~pager_stream (void)
+{
+  flush ();
+  delete m_pb;
+}
+
+std::ostream& pager_stream::stream (void)
+{
+  return *this;
+}
+
+void pager_stream::flush_current_contents_to_diary (void)
+{
+  if (m_pb)
+    m_pb->flush_current_contents_to_diary ();
+}
+
+void pager_stream::set_diary_skip (void)
+{
+  if (m_pb)
+    m_pb->set_diary_skip ();
+}
+
+// Reinitialize the pager buffer to avoid hanging on to large internal
+// buffers when they might not be needed.  This function should only be
+// called when the pager is not in use.  For example, just before
+// getting command-line input.
+
+void pager_stream::reset (void)
+{
+  delete m_pb;
+  m_pb = new pager_buf ();
+  rdbuf (m_pb);
+  setf (unitbuf);
+}
+
+diary_stream::diary_stream (void) : std::ostream (nullptr), m_db (nullptr)
+{
+  m_db = new diary_buf ();
+  rdbuf (m_db);
+  setf (unitbuf);
+}
+
+diary_stream::~diary_stream (void)
+{
+  flush ();
+  delete m_db;
+}
+
+std::ostream& diary_stream::stream (void)
+{
+  return *this;
+}
+
+// Reinitialize the diary buffer to avoid hanging on to large internal
+// buffers when they might not be needed.  This function should only be
+// called when the pager is not in use.  For example, just before
+// getting command-line input.
+
+void diary_stream::reset (void)
+{
+  delete m_db;
+  m_db = new diary_buf ();
+  rdbuf (m_db);
+  setf (unitbuf);
+}
+
+void flush_stdout (void)
+{
+  output_system& output_sys = __get_output_system__ ();
+
+  output_sys.flush_stdout ();
+}
+
+output_system::output_system (interpreter& interp)
+  : m_interpreter (interp), m_pager_stream (), m_diary_stream (),
+    m_external_pager (nullptr), m_external_diary_file (),
+    m_diary_file_name ("diary"), m_PAGER (default_pager ()),
+    m_PAGER_FLAGS (), m_page_output_immediately (false),
+    m_page_screen_output (false), m_write_to_diary_file (false),
+    m_really_flush_to_pager (false), m_flushing_output_to_pager (false)
+{ }
+
+octave_value output_system::PAGER (const octave_value_list& args,
+                                   int nargout)
+{
+  return set_internal_variable (m_PAGER, args, nargout, "PAGER", false);
+}
+
+octave_value output_system::PAGER_FLAGS (const octave_value_list& args,
+    int nargout)
+{
+  return set_internal_variable (m_PAGER_FLAGS, args, nargout,
+                                "PAGER_FLAGS", false);
+}
+
+octave_value
+output_system::page_output_immediately (const octave_value_list& args,
+                                        int nargout)
+{
+  return set_internal_variable (m_page_output_immediately, args, nargout,
+                                "page_output_immediately");
+}
+
+octave_value
+output_system::page_screen_output (const octave_value_list& args,
+                                   int nargout)
+{
+  return set_internal_variable (m_page_screen_output, args, nargout,
+                                "page_screen_output");
+}
+
+std::string output_system::pager_command (void) const
+{
+  std::string cmd = m_PAGER;
+
+  if (! (cmd.empty () || m_PAGER_FLAGS.empty ()))
+    cmd += ' ' + m_PAGER_FLAGS;
+
+  return cmd;
+}
+
+void output_system::reset (void)
+{
+  flush_stdout ();
+
+  m_pager_stream.reset ();
+  m_diary_stream.reset ();
+}
+
+void output_system::flush_stdout (void)
+{
+  if (! m_flushing_output_to_pager)
+    {
+      unwind_protect_var<bool> restore_var1 (m_really_flush_to_pager);
+      unwind_protect_var<bool> restore_var2 (m_flushing_output_to_pager);
+
+      m_really_flush_to_pager = true;
+      m_flushing_output_to_pager = true;
+
+      std::ostream& pager_ostream = m_pager_stream.stream ();
+
+      pager_ostream.flush ();
+
+      clear_external_pager ();
+    }
+}
+
+void output_system::close_diary (void)
+{
+  // Try to flush the current buffer to the diary now, so that things
+  // like
+  //
+  // function foo ()
+  //   diary on;
+  //   ...
+  //   diary off;
+  // endfunction
+  //
+  // will do the right thing.
+
+  m_pager_stream.flush_current_contents_to_diary ();
+
+  if (m_external_diary_file.is_open ())
+    {
+      octave_diary.flush ();
+      m_external_diary_file.close ();
+    }
+}
+
+void output_system::open_diary (void)
+{
+  close_diary ();
+
+  // If there is pending output in the pager buf, it should not go
+  // into the diary file.
+
+  m_pager_stream.set_diary_skip ();
+
+  m_external_diary_file.open (m_diary_file_name.c_str (), std::ios::app);
+
+  if (! m_external_diary_file)
+    error ("diary: can't open diary file '%s'", m_diary_file_name.c_str ());
+}
+
+bool output_system::sync (const char *buf, int len)
+{
+  // FIXME: The following seems to be a bit of a mess.
+
+  if (m_interpreter.server_mode ()
+      || ! m_interpreter.interactive ()
+      || application::forced_interactive ()
+      || m_really_flush_to_pager
+      || (m_page_screen_output && m_page_output_immediately)
+      || ! m_page_screen_output)
+    {
+      bool bypass_pager = (m_interpreter.server_mode ()
+                           || ! m_interpreter.interactive ()
+                           || application::forced_interactive ()
+                           || ! m_page_screen_output
+                           || (m_really_flush_to_pager
+                               && m_page_screen_output
+                               && ! m_page_output_immediately
+                               && ! more_than_a_screenful (buf, len)));
+
+      if (len > 0)
+        {
+          do_sync (buf, len, bypass_pager);
+
           return true;
-      }
-
-    return false;
-  }
-
-  static std::string default_pager (void)
-  {
-    std::string pager_binary = sys::env::getenv ("PAGER");
-
-    if (pager_binary.empty ())
-      pager_binary = config::default_pager ();
-
-    return pager_binary;
-  }
-
-  int
-  pager_buf::sync (void)
-  {
-    output_system& output_sys = __get_output_system__ ();
-
-    char *buf = pbase ();
-
-    int len = pptr () - buf;
-
-    if (output_sys.sync (buf, len))
-      {
-        flush_current_contents_to_diary ();
-
-        seekoff (0, std::ios::beg);
-      }
-
-    return 0;
-  }
-
-  void
-  pager_buf::flush_current_contents_to_diary (void)
-  {
-    char *buf = pbase () + m_diary_skip;
-
-    std::size_t len = pptr () - buf;
-
-    octave_diary.write (buf, len);
-
-    m_diary_skip = 0;
-  }
-
-  void
-  pager_buf::set_diary_skip (void)
-  {
-    m_diary_skip = pptr () - pbase ();
-  }
-
-  int
-  diary_buf::sync (void)
-  {
-    output_system& output_sys = __get_output_system__ ();
-
-    std::ofstream& external_diary_file = output_sys.external_diary_file ();
-
-    if (output_sys.write_to_diary_file () && external_diary_file)
-      {
-        char *buf = pbase ();
-
-        int len = pptr () - buf;
-
-        if (len > 0)
-          external_diary_file.write (buf, len);
-      }
-
-    seekoff (0, std::ios::beg);
-
-    return 0;
-  }
-
-  pager_stream::pager_stream (void) : std::ostream (nullptr), m_pb (nullptr)
-  {
-    m_pb = new pager_buf ();
-    rdbuf (m_pb);
-    setf (unitbuf);
-  }
-
-  pager_stream::~pager_stream (void)
-  {
-    flush ();
-    delete m_pb;
-  }
-
-  std::ostream& pager_stream::stream (void)
-  {
-    return *this;
-  }
-
-  void pager_stream::flush_current_contents_to_diary (void)
-  {
-    if (m_pb)
-      m_pb->flush_current_contents_to_diary ();
-  }
-
-  void pager_stream::set_diary_skip (void)
-  {
-    if (m_pb)
-      m_pb->set_diary_skip ();
-  }
-
-  // Reinitialize the pager buffer to avoid hanging on to large internal
-  // buffers when they might not be needed.  This function should only be
-  // called when the pager is not in use.  For example, just before
-  // getting command-line input.
-
-  void pager_stream::reset (void)
-  {
-    delete m_pb;
-    m_pb = new pager_buf ();
-    rdbuf (m_pb);
-    setf (unitbuf);
-  }
-
-  diary_stream::diary_stream (void) : std::ostream (nullptr), m_db (nullptr)
-  {
-    m_db = new diary_buf ();
-    rdbuf (m_db);
-    setf (unitbuf);
-  }
-
-  diary_stream::~diary_stream (void)
-  {
-    flush ();
-    delete m_db;
-  }
-
-  std::ostream& diary_stream::stream (void)
-  {
-    return *this;
-  }
-
-  // Reinitialize the diary buffer to avoid hanging on to large internal
-  // buffers when they might not be needed.  This function should only be
-  // called when the pager is not in use.  For example, just before
-  // getting command-line input.
-
-  void diary_stream::reset (void)
-  {
-    delete m_db;
-    m_db = new diary_buf ();
-    rdbuf (m_db);
-    setf (unitbuf);
-  }
-
-  void flush_stdout (void)
-  {
-    output_system& output_sys = __get_output_system__ ();
-
-    output_sys.flush_stdout ();
-  }
-
-  output_system::output_system (interpreter& interp)
-    : m_interpreter (interp), m_pager_stream (), m_diary_stream (),
-      m_external_pager (nullptr), m_external_diary_file (),
-      m_diary_file_name ("diary"), m_PAGER (default_pager ()),
-      m_PAGER_FLAGS (), m_page_output_immediately (false),
-      m_page_screen_output (false), m_write_to_diary_file (false),
-      m_really_flush_to_pager (false), m_flushing_output_to_pager (false)
-  { }
-
-  octave_value output_system::PAGER (const octave_value_list& args,
-                                     int nargout)
-  {
-    return set_internal_variable (m_PAGER, args, nargout, "PAGER", false);
-  }
-
-  octave_value output_system::PAGER_FLAGS (const octave_value_list& args,
-                                           int nargout)
-  {
-    return set_internal_variable (m_PAGER_FLAGS, args, nargout,
-                                  "PAGER_FLAGS", false);
-  }
-
-  octave_value
-  output_system::page_output_immediately (const octave_value_list& args,
-                                          int nargout)
-  {
-    return set_internal_variable (m_page_output_immediately, args, nargout,
-                                  "page_output_immediately");
-  }
-
-  octave_value
-  output_system::page_screen_output (const octave_value_list& args,
-                                     int nargout)
-  {
-    return set_internal_variable (m_page_screen_output, args, nargout,
-                                  "page_screen_output");
-  }
-
-  std::string output_system::pager_command (void) const
-  {
-    std::string cmd = m_PAGER;
-
-    if (! (cmd.empty () || m_PAGER_FLAGS.empty ()))
-      cmd += ' ' + m_PAGER_FLAGS;
-
-    return cmd;
-  }
-
-  void output_system::reset (void)
-  {
-    flush_stdout ();
-
-    m_pager_stream.reset ();
-    m_diary_stream.reset ();
-  }
-
-  void output_system::flush_stdout (void)
-  {
-    if (! m_flushing_output_to_pager)
-      {
-        unwind_protect_var<bool> restore_var1 (m_really_flush_to_pager);
-        unwind_protect_var<bool> restore_var2 (m_flushing_output_to_pager);
-
-        m_really_flush_to_pager = true;
-        m_flushing_output_to_pager = true;
-
-        std::ostream& pager_ostream = m_pager_stream.stream ();
-
-        pager_ostream.flush ();
-
-        clear_external_pager ();
-      }
-  }
-
-  void output_system::close_diary (void)
-  {
-    // Try to flush the current buffer to the diary now, so that things
-    // like
-    //
-    // function foo ()
-    //   diary on;
-    //   ...
-    //   diary off;
-    // endfunction
-    //
-    // will do the right thing.
-
-    m_pager_stream.flush_current_contents_to_diary ();
-
-    if (m_external_diary_file.is_open ())
-      {
-        octave_diary.flush ();
-        m_external_diary_file.close ();
-      }
-  }
-
-  void output_system::open_diary (void)
-  {
-    close_diary ();
-
-    // If there is pending output in the pager buf, it should not go
-    // into the diary file.
-
-    m_pager_stream.set_diary_skip ();
-
-    m_external_diary_file.open (m_diary_file_name.c_str (), std::ios::app);
-
-    if (! m_external_diary_file)
-      error ("diary: can't open diary file '%s'", m_diary_file_name.c_str ());
-  }
-
-  bool output_system::sync (const char *buf, int len)
-  {
-    // FIXME: The following seems to be a bit of a mess.
-
-    if (m_interpreter.server_mode ()
-        || ! m_interpreter.interactive ()
-        || application::forced_interactive ()
-        || m_really_flush_to_pager
-        || (m_page_screen_output && m_page_output_immediately)
-        || ! m_page_screen_output)
-      {
-        bool bypass_pager = (m_interpreter.server_mode ()
-                             || ! m_interpreter.interactive ()
-                             || application::forced_interactive ()
-                             || ! m_page_screen_output
-                             || (m_really_flush_to_pager
-                                 && m_page_screen_output
-                                 && ! m_page_output_immediately
-                                 && ! more_than_a_screenful (buf, len)));
-
-        if (len > 0)
-          {
-            do_sync (buf, len, bypass_pager);
-
-            return true;
-          }
-      }
-
-    return false;
-  }
-
-  void output_system::clear_external_pager (void)
-  {
-    if (m_external_pager)
-      {
-        child_list& kids = m_interpreter.get_child_list ();
-
-        kids.remove (m_external_pager->pid ());
-
-        delete m_external_pager;
-        m_external_pager = nullptr;
-      }
-  }
-
-  void output_system::start_external_pager (void)
-  {
-    if (m_external_pager)
-      return;
-
-    std::string pgr = pager_command ();
-
-    if (! pgr.empty ())
-      {
-        m_external_pager = new oprocstream (pgr.c_str ());
-
-        child_list& kids = m_interpreter.get_child_list ();
-
-        kids.insert (m_external_pager->pid (),
-                     pager_event_handler);
-      }
-  }
-
-  void output_system::do_sync (const char *msg, int len, bool bypass_pager)
-  {
-    if (msg && len > 0)
-      {
-        if (bypass_pager)
-          {
-            if (m_interpreter.server_mode ())
-              {
-                event_manager& evmgr = m_interpreter.get_event_manager ();
-
-                evmgr.interpreter_output (std::string (msg, len));
-              }
-            else
-              {
-                std::cout.write (msg, len);
-                std::cout.flush ();
-              }
-          }
-        else
-          {
-            start_external_pager ();
-
-            if (m_external_pager)
-              {
-                if (m_external_pager->good ())
-                  {
-                    m_external_pager->write (msg, len);
-
-                    m_external_pager->flush ();
+        }
+    }
+
+  return false;
+}
+
+void output_system::clear_external_pager (void)
+{
+  if (m_external_pager)
+    {
+      child_list& kids = m_interpreter.get_child_list ();
+
+      kids.remove (m_external_pager->pid ());
+
+      delete m_external_pager;
+      m_external_pager = nullptr;
+    }
+}
+
+void output_system::start_external_pager (void)
+{
+  if (m_external_pager)
+    return;
+
+  std::string pgr = pager_command ();
+
+  if (! pgr.empty ())
+    {
+      m_external_pager = new oprocstream (pgr.c_str ());
+
+      child_list& kids = m_interpreter.get_child_list ();
+
+      kids.insert (m_external_pager->pid (),
+                   pager_event_handler);
+    }
+}
+
+void output_system::do_sync (const char *msg, int len, bool bypass_pager)
+{
+  if (msg && len > 0)
+    {
+      if (bypass_pager)
+        {
+          if (m_interpreter.server_mode ())
+            {
+              event_manager& evmgr = m_interpreter.get_event_manager ();
+
+              evmgr.interpreter_output (std::string (msg, len));
+            }
+          else
+            {
+              std::cout.write (msg, len);
+              std::cout.flush ();
+            }
+        }
+      else
+        {
+          start_external_pager ();
+
+          if (m_external_pager)
+            {
+              if (m_external_pager->good ())
+                {
+                  m_external_pager->write (msg, len);
+
+                  m_external_pager->flush ();
 
 #if defined (EPIPE)
-                    if (errno == EPIPE)
-                      m_external_pager->setstate (std::ios::failbit);
+                  if (errno == EPIPE)
+                    m_external_pager->setstate (std::ios::failbit);
 #endif
-                  }
-                else
-                  {
-                    // FIXME: something is not right with the
-                    // pager.  If it died then we should receive a
-                    // signal for that.  If there is some other problem,
-                    // then what?
-                  }
-              }
-            else
-              {
-                std::cout.write (msg, len);
-                std::cout.flush ();
-              }
-          }
-      }
-  }
+                }
+              else
+                {
+                  // FIXME: something is not right with the
+                  // pager.  If it died then we should receive a
+                  // signal for that.  If there is some other problem,
+                  // then what?
+                }
+            }
+          else
+            {
+              std::cout.write (msg, len);
+              std::cout.flush ();
+            }
+        }
+    }
+}
 
-  std::ostream& __stdout__ (void)
-  {
-    output_system& output_sys = __get_output_system__ ();
+std::ostream& __stdout__ (void)
+{
+  output_system& output_sys = __get_output_system__ ();
 
-    return output_sys.__stdout__ ();
-  }
+  return output_sys.__stdout__ ();
+}
 
-  std::ostream& __diary__ (void)
-  {
-    output_system& output_sys = __get_output_system__ ();
+std::ostream& __diary__ (void)
+{
+  output_system& output_sys = __get_output_system__ ();
 
-    return output_sys.__diary__ ();
-  }
+  return output_sys.__diary__ ();
+}
 
 DEFMETHOD (diary, interp, args, nargout,
            doc: /* -*- texinfo -*-

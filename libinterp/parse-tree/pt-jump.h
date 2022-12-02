@@ -33,74 +33,74 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Break.
+// Break.
 
-  class tree_break_command : public tree_command
+class tree_break_command : public tree_command
+{
+public:
+
+  tree_break_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
+
+  // No copying!
+
+  tree_break_command (const tree_break_command&) = delete;
+
+  tree_break_command& operator = (const tree_break_command&) = delete;
+
+  ~tree_break_command (void) = default;
+
+  void accept (tree_walker& tw)
   {
-  public:
+    tw.visit_break_command (*this);
+  }
+};
 
-    tree_break_command (int l = -1, int c = -1)
-      : tree_command (l, c) { }
+// Continue.
 
-    // No copying!
+class tree_continue_command : public tree_command
+{
+public:
 
-    tree_break_command (const tree_break_command&) = delete;
+  tree_continue_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
 
-    tree_break_command& operator = (const tree_break_command&) = delete;
+  // No copying!
 
-    ~tree_break_command (void) = default;
+  tree_continue_command (const tree_continue_command&) = delete;
 
-    void accept (tree_walker& tw)
-    {
-      tw.visit_break_command (*this);
-    }
-  };
+  tree_continue_command& operator = (const tree_continue_command&) = delete;
 
-  // Continue.
+  ~tree_continue_command (void) = default;
 
-  class tree_continue_command : public tree_command
+  void accept (tree_walker& tw)
   {
-  public:
+    tw.visit_continue_command (*this);
+  }
+};
 
-    tree_continue_command (int l = -1, int c = -1)
-      : tree_command (l, c) { }
+// Return.
 
-    // No copying!
+class tree_return_command : public tree_command
+{
+public:
 
-    tree_continue_command (const tree_continue_command&) = delete;
+  tree_return_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
 
-    tree_continue_command& operator = (const tree_continue_command&) = delete;
+  // No copying!
 
-    ~tree_continue_command (void) = default;
+  tree_return_command (const tree_return_command&) = delete;
 
-    void accept (tree_walker& tw)
-    {
-      tw.visit_continue_command (*this);
-    }
-  };
+  tree_return_command& operator = (const tree_return_command&) = delete;
 
-  // Return.
+  ~tree_return_command (void) = default;
 
-  class tree_return_command : public tree_command
+  void accept (tree_walker& tw)
   {
-  public:
-
-    tree_return_command (int l = -1, int c = -1)
-      : tree_command (l, c) { }
-
-    // No copying!
-
-    tree_return_command (const tree_return_command&) = delete;
-
-    tree_return_command& operator = (const tree_return_command&) = delete;
-
-    ~tree_return_command (void) = default;
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_return_command (*this);
-    }
-  };
+    tw.visit_return_command (*this);
+  }
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

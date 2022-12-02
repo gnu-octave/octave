@@ -118,7 +118,7 @@ Continued fraction for incomplete beta function.
               alpha_j = ((aj + j - 1) * (aj + bj + j -1) * (bj - j) * j)
                         / ((aj + 2 * j - 1) * (aj + 2 * j - 1)) * x2;
               beta_j = aj + 2 * j + ((j * (bj - j)) / (aj + 2 * j - 1)
-                       - ((aj + j) * (aj + bj + j)) / (aj + 2 * j + 1)) * xj;
+                                     - ((aj + j) * (aj + bj + j)) / (aj + 2 * j + 1)) * xj;
               j++;
             }
 
@@ -189,7 +189,7 @@ Continued fraction for incomplete beta function.
               alpha_j = ((aj + j - 1) * (aj + bj + j - 1) * (bj - j) * j)
                         / ((aj + 2 * j - 1) * (aj + 2 * j - 1)) * x2;
               beta_j = aj + 2 * j + ((j * (bj - j)) / (aj + 2 * j - 1)
-                       - ((aj + j) * (aj + bj + j)) / (aj + 2 * j + 1)) * xj;
+                                     - ((aj + j) * (aj + bj + j)) / (aj + 2 * j + 1)) * xj;
               j++;
             }
 

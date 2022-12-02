@@ -34,49 +34,49 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  extern OCTAVE_API double xnorm (const ColumnVector&, double p = 2);
-  extern OCTAVE_API double xnorm (const RowVector&, double p = 2);
-  extern OCTAVE_API double xnorm (const Matrix&, double p = 2);
-  extern OCTAVE_API double xfrobnorm (const Matrix&);
+extern OCTAVE_API double xnorm (const ColumnVector&, double p = 2);
+extern OCTAVE_API double xnorm (const RowVector&, double p = 2);
+extern OCTAVE_API double xnorm (const Matrix&, double p = 2);
+extern OCTAVE_API double xfrobnorm (const Matrix&);
 
-  extern OCTAVE_API double xnorm (const ComplexColumnVector&, double p = 2);
-  extern OCTAVE_API double xnorm (const ComplexRowVector&, double p = 2);
-  extern OCTAVE_API double xnorm (const ComplexMatrix&, double p = 2);
-  extern OCTAVE_API double xfrobnorm (const ComplexMatrix&);
+extern OCTAVE_API double xnorm (const ComplexColumnVector&, double p = 2);
+extern OCTAVE_API double xnorm (const ComplexRowVector&, double p = 2);
+extern OCTAVE_API double xnorm (const ComplexMatrix&, double p = 2);
+extern OCTAVE_API double xfrobnorm (const ComplexMatrix&);
 
-  extern OCTAVE_API float xnorm (const FloatColumnVector&, float p = 2);
-  extern OCTAVE_API float xnorm (const FloatRowVector&, float p = 2);
-  extern OCTAVE_API float xnorm (const FloatMatrix&, float p = 2);
-  extern OCTAVE_API float xfrobnorm (const FloatMatrix&);
+extern OCTAVE_API float xnorm (const FloatColumnVector&, float p = 2);
+extern OCTAVE_API float xnorm (const FloatRowVector&, float p = 2);
+extern OCTAVE_API float xnorm (const FloatMatrix&, float p = 2);
+extern OCTAVE_API float xfrobnorm (const FloatMatrix&);
 
-  extern OCTAVE_API float xnorm (const FloatComplexColumnVector&, float p = 2);
-  extern OCTAVE_API float xnorm (const FloatComplexRowVector&, float p = 2);
-  extern OCTAVE_API float xnorm (const FloatComplexMatrix&, float p = 2);
-  extern OCTAVE_API float xfrobnorm (const FloatComplexMatrix&);
+extern OCTAVE_API float xnorm (const FloatComplexColumnVector&, float p = 2);
+extern OCTAVE_API float xnorm (const FloatComplexRowVector&, float p = 2);
+extern OCTAVE_API float xnorm (const FloatComplexMatrix&, float p = 2);
+extern OCTAVE_API float xfrobnorm (const FloatComplexMatrix&);
 
-  extern OCTAVE_API double xnorm (const SparseMatrix&, double p = 2);
-  extern OCTAVE_API double xfrobnorm (const SparseMatrix&);
+extern OCTAVE_API double xnorm (const SparseMatrix&, double p = 2);
+extern OCTAVE_API double xfrobnorm (const SparseMatrix&);
 
-  extern OCTAVE_API double xnorm (const SparseComplexMatrix&, double p = 2);
-  extern OCTAVE_API double xfrobnorm (const SparseComplexMatrix&);
+extern OCTAVE_API double xnorm (const SparseComplexMatrix&, double p = 2);
+extern OCTAVE_API double xfrobnorm (const SparseComplexMatrix&);
 
-  extern OCTAVE_API RowVector xcolnorms (const Matrix&, double p = 2);
-  extern OCTAVE_API ColumnVector xrownorms (const Matrix&, double p = 2);
+extern OCTAVE_API RowVector xcolnorms (const Matrix&, double p = 2);
+extern OCTAVE_API ColumnVector xrownorms (const Matrix&, double p = 2);
 
-  extern OCTAVE_API RowVector xcolnorms (const ComplexMatrix&, double p = 2);
-  extern OCTAVE_API ColumnVector xrownorms (const ComplexMatrix&, double p = 2);
+extern OCTAVE_API RowVector xcolnorms (const ComplexMatrix&, double p = 2);
+extern OCTAVE_API ColumnVector xrownorms (const ComplexMatrix&, double p = 2);
 
-  extern OCTAVE_API FloatRowVector xcolnorms (const FloatMatrix&, float p = 2);
-  extern OCTAVE_API FloatColumnVector xrownorms (const FloatMatrix&, float p = 2);
+extern OCTAVE_API FloatRowVector xcolnorms (const FloatMatrix&, float p = 2);
+extern OCTAVE_API FloatColumnVector xrownorms (const FloatMatrix&, float p = 2);
 
-  extern OCTAVE_API FloatRowVector xcolnorms (const FloatComplexMatrix&, float p = 2);
-  extern OCTAVE_API FloatColumnVector xrownorms (const FloatComplexMatrix&, float p = 2);
+extern OCTAVE_API FloatRowVector xcolnorms (const FloatComplexMatrix&, float p = 2);
+extern OCTAVE_API FloatColumnVector xrownorms (const FloatComplexMatrix&, float p = 2);
 
-  extern OCTAVE_API RowVector xcolnorms (const SparseMatrix&, double p = 2);
-  extern OCTAVE_API ColumnVector xrownorms (const SparseMatrix&, double p = 2);
+extern OCTAVE_API RowVector xcolnorms (const SparseMatrix&, double p = 2);
+extern OCTAVE_API ColumnVector xrownorms (const SparseMatrix&, double p = 2);
 
-  extern OCTAVE_API RowVector xcolnorms (const SparseComplexMatrix&, double p = 2);
-  extern OCTAVE_API ColumnVector xrownorms (const SparseComplexMatrix&, double p = 2);
+extern OCTAVE_API RowVector xcolnorms (const SparseComplexMatrix&, double p = 2);
+extern OCTAVE_API ColumnVector xrownorms (const SparseComplexMatrix&, double p = 2);
 
 OCTAVE_END_NAMESPACE(octave)
 

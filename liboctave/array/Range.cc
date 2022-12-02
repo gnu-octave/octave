@@ -41,415 +41,415 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  template <typename T>
-  T xtfloor (T x, T ct)
-  {
-    // C---------FLOOR(X) is the largest integer algebraically less than
-    // C         or equal to X; that is, the unfuzzy FLOOR function.
+template <typename T>
+T xtfloor (T x, T ct)
+{
+  // C---------FLOOR(X) is the largest integer algebraically less than
+  // C         or equal to X; that is, the unfuzzy FLOOR function.
 
-    //  DINT (X) = X - DMOD (X, 1.0);
-    //  FLOOR (X) = DINT (X) - DMOD (2.0 + DSIGN (1.0, X), 3.0);
+  //  DINT (X) = X - DMOD (X, 1.0);
+  //  FLOOR (X) = DINT (X) - DMOD (2.0 + DSIGN (1.0, X), 3.0);
 
-    // C---------Hagerty's FL5 function follows...
+  // C---------Hagerty's FL5 function follows...
 
-    T q = 1;
+  T q = 1;
 
-    if (x < 0)
-      q = 1 - ct;
+  if (x < 0)
+    q = 1 - ct;
 
-    T rmax = q / (2 - ct);
+  T rmax = q / (2 - ct);
 
-    T t1 = 1 + std::floor (x);
-    t1 = (ct / q) * (t1 < 0 ? -t1 : t1);
-    t1 = (rmax < t1 ? rmax : t1);
-    t1 = (ct > t1 ? ct : t1);
-    t1 = std::floor (x + t1);
+  T t1 = 1 + std::floor (x);
+  t1 = (ct / q) * (t1 < 0 ? -t1 : t1);
+  t1 = (rmax < t1 ? rmax : t1);
+  t1 = (ct > t1 ? ct : t1);
+  t1 = std::floor (x + t1);
 
-    if (x <= 0 || (t1 - x) < rmax)
-      return t1;
-    else
-      return t1 - 1;
-  }
+  if (x <= 0 || (t1 - x) < rmax)
+    return t1;
+  else
+    return t1 - 1;
+}
 
-  template <typename T>
-  bool xteq (T u, T v, T ct = 3 * std::numeric_limits<T>::epsilon ())
-  {
-    T tu = std::abs (u);
-    T tv = std::abs (v);
+template <typename T>
+bool xteq (T u, T v, T ct = 3 * std::numeric_limits<T>::epsilon ())
+{
+  T tu = std::abs (u);
+  T tv = std::abs (v);
 
-    return std::abs (u - v) < ((tu > tv ? tu : tv) * ct);
-  }
+  return std::abs (u - v) < ((tu > tv ? tu : tv) * ct);
+}
 
-  template <typename T>
-  octave_idx_type xnumel_internal (T base, T limit, T inc)
-  {
-    octave_idx_type retval = -1;
-    if (! math::isfinite (base) || ! math::isfinite (inc)
-        || math::isnan (limit))
-      retval = -2;
-    else if (math::isinf (limit)
-             && ((inc > 0 && limit > 0)
-                 || (inc < 0 && limit < 0)))
-      retval = std::numeric_limits<octave_idx_type>::max () - 1;
-    else if (inc == 0
-             || (limit > base && inc < 0)
-             || (limit < base && inc > 0))
-      {
-        retval = 0;
-      }
-    else
-      {
-        T ct = 3 * std::numeric_limits<T>::epsilon ();
+template <typename T>
+octave_idx_type xnumel_internal (T base, T limit, T inc)
+{
+  octave_idx_type retval = -1;
+  if (! math::isfinite (base) || ! math::isfinite (inc)
+      || math::isnan (limit))
+    retval = -2;
+  else if (math::isinf (limit)
+           && ((inc > 0 && limit > 0)
+               || (inc < 0 && limit < 0)))
+    retval = std::numeric_limits<octave_idx_type>::max () - 1;
+  else if (inc == 0
+           || (limit > base && inc < 0)
+           || (limit < base && inc > 0))
+    {
+      retval = 0;
+    }
+  else
+    {
+      T ct = 3 * std::numeric_limits<T>::epsilon ();
 
-        T tmp = xtfloor ((limit - base + inc) / inc, ct);
+      T tmp = xtfloor ((limit - base + inc) / inc, ct);
 
-        octave_idx_type n_elt
-          = (tmp > 0 ? static_cast<octave_idx_type> (tmp) : 0);
+      octave_idx_type n_elt
+        = (tmp > 0 ? static_cast<octave_idx_type> (tmp) : 0);
 
-        // If the final element that we would compute for the range is
-        // equal to the limit of the range, or is an adjacent floating
-        // point number, accept it.  Otherwise, try a range with one
-        // fewer element.  If that fails, try again with one more
-        // element.
-        //
-        // I'm not sure this is very good, but it seems to work better
-        // than just using tfloor as above.  For example, without it,
-        // the expression 1.8:0.05:1.9 fails to produce the expected
-        // result of [1.8, 1.85, 1.9].
+      // If the final element that we would compute for the range is
+      // equal to the limit of the range, or is an adjacent floating
+      // point number, accept it.  Otherwise, try a range with one
+      // fewer element.  If that fails, try again with one more
+      // element.
+      //
+      // I'm not sure this is very good, but it seems to work better
+      // than just using tfloor as above.  For example, without it,
+      // the expression 1.8:0.05:1.9 fails to produce the expected
+      // result of [1.8, 1.85, 1.9].
 
-        if (! xteq (base + (n_elt - 1) * inc, limit))
-          {
-            if (xteq (base + (n_elt - 2) * inc, limit))
-              n_elt--;
-            else if (xteq (base + n_elt * inc, limit))
-              n_elt++;
-          }
+      if (! xteq (base + (n_elt - 1) * inc, limit))
+        {
+          if (xteq (base + (n_elt - 2) * inc, limit))
+            n_elt--;
+          else if (xteq (base + n_elt * inc, limit))
+            n_elt++;
+        }
 
-        retval = (n_elt < std::numeric_limits<octave_idx_type>::max () - 1
-                  ? n_elt : -1);
-      }
+      retval = (n_elt < std::numeric_limits<octave_idx_type>::max () - 1
+                ? n_elt : -1);
+    }
 
-    return retval;
-  }
+  return retval;
+}
 
-  template <typename T>
-  bool xall_elements_are_ints (T base, T inc, T final_val, octave_idx_type nel)
-  {
-    // If the range is empty or NaN then there are no elements so there
-    // can be no int elements.
-    if (nel == 0 || math::isnan (final_val))
-      return false;
-
-    // If the base and increment are ints, all elements will be
-    // integers.
-    if (math::nint_big (base) == base && math::nint_big (inc) == inc)
-      return true;
-
-    // If the range has only one element, then the base needs to be an
-    // integer.
-    if (nel == 1 && math::nint_big (base))
-      return true;
-
+template <typename T>
+bool xall_elements_are_ints (T base, T inc, T final_val, octave_idx_type nel)
+{
+  // If the range is empty or NaN then there are no elements so there
+  // can be no int elements.
+  if (nel == 0 || math::isnan (final_val))
     return false;
-  }
 
-  template <typename T>
-  T
-  xfinal_value (T base, T limit, T inc, octave_idx_type nel)
-  {
-    T retval = T (0);
+  // If the base and increment are ints, all elements will be
+  // integers.
+  if (math::nint_big (base) == base && math::nint_big (inc) == inc)
+    return true;
 
-    if (nel <= 1)
-      return base;
+  // If the range has only one element, then the base needs to be an
+  // integer.
+  if (nel == 1 && math::nint_big (base))
+    return true;
 
-    // If increment is 0, then numel should also be zero.
+  return false;
+}
 
-    retval = base + (nel - 1) * inc;
+template <typename T>
+T
+xfinal_value (T base, T limit, T inc, octave_idx_type nel)
+{
+  T retval = T (0);
 
-    // On some machines (x86 with extended precision floating point
-    // arithmetic, for example) it is possible that we can overshoot
-    // the limit by approximately the machine precision even though
-    // we were very careful in our calculation of the number of
-    // elements.  Therefore, we clip the result to the limit if it
-    // overshoots.
+  if (nel <= 1)
+    return base;
 
-    // NOTE: The test also includes equality (>= limit) to have
-    // expressions such as -5:1:-0 result in a -0 endpoint.
+  // If increment is 0, then numel should also be zero.
 
-    if ((inc > T (0) && retval >= limit) || (inc < T (0) && retval <= limit))
-      retval = limit;
+  retval = base + (nel - 1) * inc;
 
-    // If all elements are integers, then ensure the final value is.
-    // Note that we pass the preliminary computed final value to
-    // xall_elements_are_ints, but it only checks whether that value is
-    // NaN.
+  // On some machines (x86 with extended precision floating point
+  // arithmetic, for example) it is possible that we can overshoot
+  // the limit by approximately the machine precision even though
+  // we were very careful in our calculation of the number of
+  // elements.  Therefore, we clip the result to the limit if it
+  // overshoots.
 
-    if (xall_elements_are_ints (base, inc, retval, nel))
-      retval = std::round (retval);
+  // NOTE: The test also includes equality (>= limit) to have
+  // expressions such as -5:1:-0 result in a -0 endpoint.
 
-    return retval;
-  }
+  if ((inc > T (0) && retval >= limit) || (inc < T (0) && retval <= limit))
+    retval = limit;
 
-  template <typename T>
-  void
-  xinit (T base, T limit, T inc, bool reverse, T& final_val,
-         octave_idx_type& nel)
-  {
-    // Catch obvious NaN ranges.
-    if (math::isnan (base) || math::isnan (limit) || math::isnan (inc))
-      {
-        final_val = numeric_limits<T>::NaN ();
-        nel = 1;
-        return;
-      }
+  // If all elements are integers, then ensure the final value is.
+  // Note that we pass the preliminary computed final value to
+  // xall_elements_are_ints, but it only checks whether that value is
+  // NaN.
 
-    // Floating point numbers are always signed
-    if (reverse)
-      inc = -inc;
+  if (xall_elements_are_ints (base, inc, retval, nel))
+    retval = std::round (retval);
 
-    // Catch empty ranges.
-    if (inc == 0
-        || (limit < base && inc > 0)
-        || (limit > base && inc < 0))
-      {
-        nel = 0;
-        return;
-      }
+  return retval;
+}
 
-    // The following case also catches Inf values for increment when
-    // there will be only one element.
+template <typename T>
+void
+xinit (T base, T limit, T inc, bool reverse, T& final_val,
+       octave_idx_type& nel)
+{
+  // Catch obvious NaN ranges.
+  if (math::isnan (base) || math::isnan (limit) || math::isnan (inc))
+    {
+      final_val = numeric_limits<T>::NaN ();
+      nel = 1;
+      return;
+    }
 
-    if ((limit <= base && base + inc < limit)
-        || (limit >= base && base + inc > limit))
-      {
-        final_val = base;
-        nel = 1;
-        return;
-      }
+  // Floating point numbers are always signed
+  if (reverse)
+    inc = -inc;
 
-    // Any other calculations with Inf will give us either a NaN range
-    // or an infinite nember of elements.
+  // Catch empty ranges.
+  if (inc == 0
+      || (limit < base && inc > 0)
+      || (limit > base && inc < 0))
+    {
+      nel = 0;
+      return;
+    }
 
-    T dnel = (limit - base) / inc;
-    if (math::isnan (dnel))
-      {
-        nel = 1;
-        final_val = numeric_limits<T>::NaN ();
-        return;
-      }
+  // The following case also catches Inf values for increment when
+  // there will be only one element.
 
-    if (dnel > 0 && math::isinf (dnel))
-      {
-        // FIXME: Should this be an immediate error?
-        nel = std::numeric_limits<octave_idx_type>::max ();
+  if ((limit <= base && base + inc < limit)
+      || (limit >= base && base + inc > limit))
+    {
+      final_val = base;
+      nel = 1;
+      return;
+    }
 
-        // FIXME: Will this do the right thing in all cases?
-        final_val = xfinal_value (base, limit, inc, nel);
+  // Any other calculations with Inf will give us either a NaN range
+  // or an infinite nember of elements.
 
-        return;
-      }
+  T dnel = (limit - base) / inc;
+  if (math::isnan (dnel))
+    {
+      nel = 1;
+      final_val = numeric_limits<T>::NaN ();
+      return;
+    }
 
-    // Now that we have handled all the special cases, we can compute
-    // the number of elements and the final value in a way that attempts
-    // to avoid rounding errors as much as possible.
+  if (dnel > 0 && math::isinf (dnel))
+    {
+      // FIXME: Should this be an immediate error?
+      nel = std::numeric_limits<octave_idx_type>::max ();
 
-    nel = xnumel_internal (base, limit, inc);
-    final_val = xfinal_value (base, limit, inc, nel);
-  }
+      // FIXME: Will this do the right thing in all cases?
+      final_val = xfinal_value (base, limit, inc, nel);
 
-  template <typename T>
-  void
-  xinit (const octave_int<T>& base, const octave_int<T>& limit,
-         const octave_int<T>& inc, bool reverse,
-         octave_int<T>& final_val, octave_idx_type& nel)
-  {
-    // We need an integer division that is truncating decimals instead
-    // of rounding.  So, use underlying C++ types instead of
-    // octave_int<T>.
+      return;
+    }
 
-    // FIXME: The numerator might underflow or overflow. Add checks for
-    // that.
-    if (reverse)
-      {
-        nel = ((inc == octave_int<T> (0)
-                || (limit > base && inc > octave_int<T> (0))
-                || (limit < base && inc < octave_int<T> (0)))
-               ? 0
-               : (base.value () - limit.value () + inc.value ())
-                 / inc.value ());
+  // Now that we have handled all the special cases, we can compute
+  // the number of elements and the final value in a way that attempts
+  // to avoid rounding errors as much as possible.
 
-        final_val = base - (nel - 1) * inc;
-      }
-    else
-      {
-        nel = ((inc == octave_int<T> (0)
-                || (limit > base && inc < octave_int<T> (0))
-                || (limit < base && inc > octave_int<T> (0)))
-               ? 0
-               : (limit.value () - base.value () + inc.value ())
-                 / inc.value ());
+  nel = xnumel_internal (base, limit, inc);
+  final_val = xfinal_value (base, limit, inc, nel);
+}
 
-        final_val = base + (nel - 1) * inc;
-      }
-  }
+template <typename T>
+void
+xinit (const octave_int<T>& base, const octave_int<T>& limit,
+       const octave_int<T>& inc, bool reverse,
+       octave_int<T>& final_val, octave_idx_type& nel)
+{
+  // We need an integer division that is truncating decimals instead
+  // of rounding.  So, use underlying C++ types instead of
+  // octave_int<T>.
 
-  template <typename T>
-  bool
-  xis_storable (T base, T limit, octave_idx_type nel)
-  {
-    return ! (nel > 1 && (math::isinf (base) || math::isinf (limit)));
-  }
+  // FIXME: The numerator might underflow or overflow. Add checks for
+  // that.
+  if (reverse)
+    {
+      nel = ((inc == octave_int<T> (0)
+              || (limit > base && inc > octave_int<T> (0))
+              || (limit < base && inc < octave_int<T> (0)))
+             ? 0
+             : (base.value () - limit.value () + inc.value ())
+             / inc.value ());
 
-  template <>
-  bool
-  range<double>::all_elements_are_ints (void) const
-  {
-    return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
-  }
+      final_val = base - (nel - 1) * inc;
+    }
+  else
+    {
+      nel = ((inc == octave_int<T> (0)
+              || (limit > base && inc < octave_int<T> (0))
+              || (limit < base && inc > octave_int<T> (0)))
+             ? 0
+             : (limit.value () - base.value () + inc.value ())
+             / inc.value ());
 
-  template <>
-  bool
-  range<float>::all_elements_are_ints (void) const
-  {
-    return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
-  }
+      final_val = base + (nel - 1) * inc;
+    }
+}
 
-  template <>
-  void
-  range<double>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <typename T>
+bool
+xis_storable (T base, T limit, octave_idx_type nel)
+{
+  return ! (nel > 1 && (math::isinf (base) || math::isinf (limit)));
+}
 
-  template <>
-  void
-  range<float>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+bool
+range<double>::all_elements_are_ints (void) const
+{
+  return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
+}
 
-  // For now, only define for float and double.
+template <>
+bool
+range<float>::all_elements_are_ints (void) const
+{
+  return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
+}
+
+template <>
+void
+range<double>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
+
+template <>
+void
+range<float>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
+
+// For now, only define for float and double.
 
 #if 0
 
-  template <>
-  void
-  range<octave_int8>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+void
+range<octave_int8>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
 
-  template <>
-  void
-  range<octave_int16>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+void
+range<octave_int16>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
 
-  template <>
-  void
-  range<octave_int32>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+void
+range<octave_int32>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
 
-  template <>
-  void
-  range<octave_int64>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+void
+range<octave_int64>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
 
-  template <>
-  void
-  range<octave_uint8>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+void
+range<octave_uint8>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
 
-  template <>
-  void
-  range<octave_uint16>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+void
+range<octave_uint16>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
 
-  template <>
-  void
-  range<octave_uint32>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+void
+range<octave_uint32>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
 
-  template <>
-  void
-  range<octave_uint64>::init (void)
-  {
-    xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-  }
+template <>
+void
+range<octave_uint64>::init (void)
+{
+  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
+}
 
 #endif
 
-  template <>
-  bool
-  range<double>::is_storable (void) const
-  {
-    return xis_storable (m_base, m_limit, m_numel);
-  }
+template <>
+bool
+range<double>::is_storable (void) const
+{
+  return xis_storable (m_base, m_limit, m_numel);
+}
 
-  template <>
-  bool
-  range<float>::is_storable (void) const
-  {
-    return xis_storable (m_base, m_limit, m_numel);
-  }
+template <>
+bool
+range<float>::is_storable (void) const
+{
+  return xis_storable (m_base, m_limit, m_numel);
+}
 
-  template <typename T>
-  octave_idx_type
-  xnnz (T base, T limit, T inc, T final_val, octave_idx_type nel)
-  {
-    // Note that the order of the following checks matters.
+template <typename T>
+octave_idx_type
+xnnz (T base, T limit, T inc, T final_val, octave_idx_type nel)
+{
+  // Note that the order of the following checks matters.
 
-    // If there are no elements, there can be no non-zero elements.
-    if (nel == 0)
-      return 0;
+  // If there are no elements, there can be no non-zero elements.
+  if (nel == 0)
+    return 0;
 
-    // All elements have the same sign, hence there are no zeros.
-    if ((base > 0 && limit > 0) || (base < 0 && limit < 0))
-      return nel;
+  // All elements have the same sign, hence there are no zeros.
+  if ((base > 0 && limit > 0) || (base < 0 && limit < 0))
+    return nel;
 
-    // All elements are equal (inc = 0) but we know from the previous
-    // condition that they are not positive or negative, therefore all
-    // elements are zero.
-    if (inc == 0)
-      return 0;
+  // All elements are equal (inc = 0) but we know from the previous
+  // condition that they are not positive or negative, therefore all
+  // elements are zero.
+  if (inc == 0)
+    return 0;
 
-    // Exactly one zero at beginning or end of range.
-    if (base == 0 || final_val == 0)
-      return nel - 1;
-
-    // Range crosses negative/positive without hitting zero.
-    // FIXME: Is this test sufficiently tolerant or do we need to be
-    // more careful?
-    if (math::mod (-base, inc) != 0)
-      return nel;
-
-    // Range crosses negative/positive and hits zero.
+  // Exactly one zero at beginning or end of range.
+  if (base == 0 || final_val == 0)
     return nel - 1;
-  }
 
-  template <>
-  octave_idx_type
-  range<double>::nnz (void) const
-  {
-    return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
-  }
+  // Range crosses negative/positive without hitting zero.
+  // FIXME: Is this test sufficiently tolerant or do we need to be
+  // more careful?
+  if (math::mod (-base, inc) != 0)
+    return nel;
 
-  template <>
-  octave_idx_type
-  range<float>::nnz (void) const
-  {
-    return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
-  }
+  // Range crosses negative/positive and hits zero.
+  return nel - 1;
+}
+
+template <>
+octave_idx_type
+range<double>::nnz (void) const
+{
+  return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
+}
+
+template <>
+octave_idx_type
+range<float>::nnz (void) const
+{
+  return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
+}
 
 OCTAVE_END_NAMESPACE(octave)

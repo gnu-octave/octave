@@ -54,7 +54,7 @@ SUCH DAMAGE.
 #include "octave-config.h"
 
 typedef enum
-{
+  {
   mxUNKNOWN_CLASS = 0,
   mxCELL_CLASS,
   mxSTRUCT_CLASS,
@@ -76,7 +76,7 @@ typedef enum
 mxClassID;
 
 typedef enum
-{
+  {
   mxREAL = 0,
   mxCOMPLEX = 1
 }

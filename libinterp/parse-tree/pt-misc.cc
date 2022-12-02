@@ -32,50 +32,50 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Parameter lists.
+// Parameter lists.
 
-  tree_parameter_list::~tree_parameter_list (void)
-  {
-    while (! empty ())
-      {
-        auto p = begin ();
-        delete *p;
-        erase (p);
-      }
-  }
+tree_parameter_list::~tree_parameter_list (void)
+{
+  while (! empty ())
+    {
+      auto p = begin ();
+      delete *p;
+      erase (p);
+    }
+}
 
-  void
-  tree_parameter_list::mark_as_formal_parameters (void)
-  {
-    for (tree_decl_elt *elt : *this)
-      elt->mark_as_formal_parameter ();
-  }
+void
+tree_parameter_list::mark_as_formal_parameters (void)
+{
+  for (tree_decl_elt *elt : *this)
+    elt->mark_as_formal_parameter ();
+}
 
-  std::list<std::string>
-  tree_parameter_list::variable_names (void) const
-  {
-    std::list<std::string> retval;
+std::list<std::string>
+tree_parameter_list::variable_names (void) const
+{
+  std::list<std::string> retval;
 
-    for (tree_decl_elt *elt : *this)
-      retval.push_back (elt->name ());
+  for (tree_decl_elt *elt : *this)
+    retval.push_back (elt->name ());
 
-    if (m_marked_for_varargs)
-      retval.push_back (varargs_symbol_name ());
+  if (m_marked_for_varargs)
+    retval.push_back (varargs_symbol_name ());
 
-    return retval;
-  }
+  return retval;
+}
 
-  tree_parameter_list *
-  tree_parameter_list::dup (symbol_scope& scope) const
-  {
-    tree_parameter_list *new_list = new tree_parameter_list (m_in_or_out);
+tree_parameter_list *
+tree_parameter_list::dup (symbol_scope& scope) const
+{
+  tree_parameter_list *new_list = new tree_parameter_list (m_in_or_out);
 
-    new_list->m_marked_for_varargs = m_marked_for_varargs;
+  new_list->m_marked_for_varargs = m_marked_for_varargs;
 
-    for (const tree_decl_elt *elt : *this)
-      new_list->append (elt->dup (scope));
+  for (const tree_decl_elt *elt : *this)
+    new_list->append (elt->dup (scope));
 
-    return new_list;
-  }
+  return new_list;
+}
 
 OCTAVE_END_NAMESPACE(octave)

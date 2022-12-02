@@ -34,85 +34,85 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class symbol_scope;
-  class tree_identifier;
-  class tree_index_expression;
+class symbol_scope;
+class tree_identifier;
+class tree_index_expression;
 
-  // Parameter lists.  Used to hold the list of input and output
-  // parameters in a function definition.  Elements are identifiers
-  // only.
+// Parameter lists.  Used to hold the list of input and output
+// parameters in a function definition.  Elements are identifiers
+// only.
 
-  class tree_parameter_list : public base_list<tree_decl_elt *>
+class tree_parameter_list : public base_list<tree_decl_elt *>
+{
+public:
+
+  enum in_or_out
   {
-  public:
-
-    enum in_or_out
-    {
-      in = 1,
-      out = 2
-    };
-
-    tree_parameter_list (in_or_out io)
-      : m_in_or_out (io), m_marked_for_varargs (0)
-    { }
-
-    tree_parameter_list (in_or_out io, tree_decl_elt *t)
-      : m_in_or_out (io), m_marked_for_varargs (0)
-    {
-      append (t);
-    }
-
-    tree_parameter_list (in_or_out io, tree_identifier *id)
-      : m_in_or_out (io), m_marked_for_varargs (0)
-    {
-      append (new tree_decl_elt (id));
-    }
-
-    // No copying!
-
-    tree_parameter_list (const tree_parameter_list&) = delete;
-
-    tree_parameter_list& operator = (const tree_parameter_list&) = delete;
-
-    ~tree_parameter_list (void);
-
-    void mark_as_formal_parameters (void);
-
-    void mark_varargs (void) { m_marked_for_varargs = 1; }
-
-    void mark_varargs_only (void) { m_marked_for_varargs = -1; }
-
-    bool takes_varargs (void) const { return m_marked_for_varargs != 0; }
-
-    bool varargs_only (void) { return (m_marked_for_varargs < 0); }
-
-    bool is_input_list (void) const { return m_in_or_out == in; }
-
-    bool is_output_list (void) const { return m_in_or_out == out; }
-
-    std::list<std::string> variable_names (void) const;
-
-    std::string varargs_symbol_name (void) const
-    {
-      return m_in_or_out == in ? "varargin" : "varargout";
-    }
-
-    tree_parameter_list * dup (symbol_scope& scope) const;
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_parameter_list (*this);
-    }
-
-  private:
-
-    in_or_out m_in_or_out;
-
-    // 1: takes varargs
-    // -1: takes varargs only
-    // 0: does not take varargs.
-    int m_marked_for_varargs;
+    in = 1,
+    out = 2
   };
+
+  tree_parameter_list (in_or_out io)
+    : m_in_or_out (io), m_marked_for_varargs (0)
+  { }
+
+  tree_parameter_list (in_or_out io, tree_decl_elt *t)
+    : m_in_or_out (io), m_marked_for_varargs (0)
+  {
+    append (t);
+  }
+
+  tree_parameter_list (in_or_out io, tree_identifier *id)
+    : m_in_or_out (io), m_marked_for_varargs (0)
+  {
+    append (new tree_decl_elt (id));
+  }
+
+  // No copying!
+
+  tree_parameter_list (const tree_parameter_list&) = delete;
+
+  tree_parameter_list& operator = (const tree_parameter_list&) = delete;
+
+  ~tree_parameter_list (void);
+
+  void mark_as_formal_parameters (void);
+
+  void mark_varargs (void) { m_marked_for_varargs = 1; }
+
+  void mark_varargs_only (void) { m_marked_for_varargs = -1; }
+
+  bool takes_varargs (void) const { return m_marked_for_varargs != 0; }
+
+  bool varargs_only (void) { return (m_marked_for_varargs < 0); }
+
+  bool is_input_list (void) const { return m_in_or_out == in; }
+
+  bool is_output_list (void) const { return m_in_or_out == out; }
+
+  std::list<std::string> variable_names (void) const;
+
+  std::string varargs_symbol_name (void) const
+  {
+    return m_in_or_out == in ? "varargin" : "varargout";
+  }
+
+  tree_parameter_list * dup (symbol_scope& scope) const;
+
+  void accept (tree_walker& tw)
+  {
+    tw.visit_parameter_list (*this);
+  }
+
+private:
+
+  in_or_out m_in_or_out;
+
+  // 1: takes varargs
+  // -1: takes varargs only
+  // 0: does not take varargs.
+  int m_marked_for_varargs;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

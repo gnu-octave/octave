@@ -44,162 +44,162 @@ extern "C" {
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class frame_info
+class frame_info
+{
+public:
+
+  frame_info (void) = default;
+
+  frame_info (const std::string& file_name, const std::string& fcn_name,
+              int line, int column)
+    : m_file_name (file_name), m_fcn_name (fcn_name), m_line (line),
+      m_column (column)
+  { }
+
+  frame_info (const frame_info&) = default;
+
+  frame_info& operator = (const frame_info&) = default;
+
+  ~frame_info (void) = default;
+
+  std::string file_name (void) const { return m_file_name; }
+
+  std::string fcn_name (void) const { return m_fcn_name; }
+
+  int line (void) const { return m_line; }
+
+  int column (void) const { return m_column; }
+
+private:
+
+  std::string m_file_name;
+
+  std::string m_fcn_name;
+
+  int m_line;
+
+  int m_column;
+};
+
+inline bool operator == (const frame_info& a, const frame_info& b)
+{
+  return (a.file_name () == b.file_name ()
+          && a.fcn_name () == b.fcn_name ()
+          && a.line () == b.line ()
+          && a.column () == b.column ());
+}
+
+class OCTAVE_EXCEPTION_API execution_exception : public std::runtime_error
+{
+public:
+
+  typedef std::list<frame_info> stack_info_type;
+
+  execution_exception (const std::string& err_type = "error",
+                       const std::string& id = "",
+                       const std::string& message = "unspecified error",
+                       const stack_info_type& stack_info = stack_info_type ())
+    : runtime_error (message), m_err_type (err_type), m_id (id),
+      m_message (message), m_stack_info (stack_info)
+  { }
+
+  execution_exception (const execution_exception&) = default;
+
+  execution_exception& operator = (const execution_exception&) = default;
+
+  ~execution_exception (void) = default;
+
+  void set_err_type (const std::string& et)
   {
-  public:
-
-    frame_info (void) = default;
-
-    frame_info (const std::string& file_name, const std::string& fcn_name,
-                int line, int column)
-      : m_file_name (file_name), m_fcn_name (fcn_name), m_line (line),
-        m_column (column)
-    { }
-
-    frame_info (const frame_info&) = default;
-
-    frame_info& operator = (const frame_info&) = default;
-
-    ~frame_info (void) = default;
-
-    std::string file_name (void) const { return m_file_name; }
-
-    std::string fcn_name (void) const { return m_fcn_name; }
-
-    int line (void) const { return m_line; }
-
-    int column (void) const { return m_column; }
-
-  private:
-
-    std::string m_file_name;
-
-    std::string m_fcn_name;
-
-    int m_line;
-
-    int m_column;
-  };
-
-  inline bool operator == (const frame_info& a, const frame_info& b)
-  {
-    return (a.file_name () == b.file_name ()
-            && a.fcn_name () == b.fcn_name ()
-            && a.line () == b.line ()
-            && a.column () == b.column ());
+    m_err_type = et;
   }
 
-  class OCTAVE_EXCEPTION_API execution_exception : public std::runtime_error
+  std::string err_type (void) const { return m_err_type; }
+
+  virtual std::string stack_trace (void) const;
+
+  void set_identifier (const std::string& id)
   {
-  public:
+    m_id = id;
+  }
 
-    typedef std::list<frame_info> stack_info_type;
+  virtual std::string identifier (void) const { return m_id; }
 
-    execution_exception (const std::string& err_type = "error",
-                         const std::string& id = "",
-                         const std::string& message = "unspecified error",
-                         const stack_info_type& stack_info = stack_info_type ())
-      : runtime_error (message), m_err_type (err_type), m_id (id),
-        m_message (message), m_stack_info (stack_info)
-    { }
-
-    execution_exception (const execution_exception&) = default;
-
-    execution_exception& operator = (const execution_exception&) = default;
-
-    ~execution_exception (void) = default;
-
-    void set_err_type (const std::string& et)
-    {
-      m_err_type = et;
-    }
-
-    std::string err_type (void) const { return m_err_type; }
-
-    virtual std::string stack_trace (void) const;
-
-    void set_identifier (const std::string& id)
-    {
-      m_id = id;
-    }
-
-    virtual std::string identifier (void) const { return m_id; }
-
-    void set_message (const std::string& msg)
-    {
-      m_message = msg;
-    }
-
-    std::string message (void) const { return m_message; }
-
-    // Provided for std::exception interface.
-    const char * what (void) const noexcept { return m_message.c_str (); }
-
-    virtual stack_info_type stack_info (void) const
-    {
-      return m_stack_info;
-    }
-
-    void set_stack_info (const stack_info_type& stack_info)
-    {
-      m_stack_info = stack_info;
-    }
-
-    virtual void display (std::ostream& os) const;
-
-  private:
-
-    std::string m_err_type;
-
-    std::string m_id;
-
-    std::string m_message;
-
-    stack_info_type m_stack_info;
-  };
-
-  class OCTAVE_EXCEPTION_API exit_exception : public std::exception
+  void set_message (const std::string& msg)
   {
-  public:
+    m_message = msg;
+  }
 
-    exit_exception (int exit_status = 0, bool safe_to_return = false)
-      : std::exception (), m_exit_status (exit_status),
-        m_safe_to_return (safe_to_return)
-    { }
+  std::string message (void) const { return m_message; }
 
-    exit_exception (const exit_exception&) = default;
+  // Provided for std::exception interface.
+  const char * what (void) const noexcept { return m_message.c_str (); }
 
-    exit_exception& operator = (exit_exception&) = default;
-
-    ~exit_exception (void) = default;
-
-    const char * what (void) const noexcept { return "exit exception"; }
-
-    int exit_status (void) const { return m_exit_status; }
-
-    bool safe_to_return (void) const { return m_safe_to_return; }
-
-  private:
-
-    int m_exit_status;
-
-    bool m_safe_to_return;
-  };
-
-  class interrupt_exception : public std::exception
+  virtual stack_info_type stack_info (void) const
   {
-  public:
+    return m_stack_info;
+  }
 
-    interrupt_exception (void) = default;
+  void set_stack_info (const stack_info_type& stack_info)
+  {
+    m_stack_info = stack_info;
+  }
 
-    interrupt_exception (const interrupt_exception&) = default;
+  virtual void display (std::ostream& os) const;
 
-    interrupt_exception& operator = (const interrupt_exception&) = default;
+private:
 
-    ~interrupt_exception (void) = default;
+  std::string m_err_type;
 
-    const char * what (void) const noexcept { return "interrupt exception"; }
-  };
+  std::string m_id;
+
+  std::string m_message;
+
+  stack_info_type m_stack_info;
+};
+
+class OCTAVE_EXCEPTION_API exit_exception : public std::exception
+{
+public:
+
+  exit_exception (int exit_status = 0, bool safe_to_return = false)
+    : std::exception (), m_exit_status (exit_status),
+      m_safe_to_return (safe_to_return)
+  { }
+
+  exit_exception (const exit_exception&) = default;
+
+  exit_exception& operator = (exit_exception&) = default;
+
+  ~exit_exception (void) = default;
+
+  const char * what (void) const noexcept { return "exit exception"; }
+
+  int exit_status (void) const { return m_exit_status; }
+
+  bool safe_to_return (void) const { return m_safe_to_return; }
+
+private:
+
+  int m_exit_status;
+
+  bool m_safe_to_return;
+};
+
+class interrupt_exception : public std::exception
+{
+public:
+
+  interrupt_exception (void) = default;
+
+  interrupt_exception (const interrupt_exception&) = default;
+
+  interrupt_exception& operator = (const interrupt_exception&) = default;
+
+  ~interrupt_exception (void) = default;
+
+  const char * what (void) const noexcept { return "interrupt exception"; }
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

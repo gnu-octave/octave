@@ -1014,7 +1014,7 @@ expanded even when the template string is defined with single quotes.
   char type = (fmt_arg.is_sq_string () ? '\'' : '"');
 
   retval(0) = (result.empty () ? octave_value (charMatrix (1, 0), type)
-                               : octave_value (result, type));
+               : octave_value (result, type));
 
   return retval;
 }
@@ -1169,8 +1169,8 @@ character to be read is returned in @var{pos}.
       octave_idx_type count = 0;
 
       Array<double> size = (nargin == 3) ? args(2).vector_value ()
-                                         : Array<double> (dim_vector (1, 1),
-                                                          lo_ieee_inf_value ());
+                           : Array<double> (dim_vector (1, 1),
+                                            lo_ieee_inf_value ());
 
       octave_value tmp = os.scanf (args(1), size, count, who);
 

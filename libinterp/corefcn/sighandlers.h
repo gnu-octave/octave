@@ -42,44 +42,44 @@ Free Software Foundation, Inc.
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // This type must match the typedef in signal-wrappers.h.
-  typedef void sig_handler (int);
+// This type must match the typedef in signal-wrappers.h.
+typedef void sig_handler (int);
 
-  struct interrupt_handler
-  {
-    sig_handler *int_handler;
-    sig_handler *brk_handler;
-  };
+struct interrupt_handler
+{
+  sig_handler *int_handler;
+  sig_handler *brk_handler;
+};
 
-  // Nonzero means we have already printed a message for this series of
-  // SIGPIPES.  We assume that the writer will eventually give up.
-  extern int pipe_handler_error_count;
+// Nonzero means we have already printed a message for this series of
+// SIGPIPES.  We assume that the writer will eventually give up.
+extern int pipe_handler_error_count;
 
-  // TRUE means we can be interrupted.
-  extern OCTINTERP_API bool can_interrupt;
+// TRUE means we can be interrupted.
+extern OCTINTERP_API bool can_interrupt;
 
-  extern OCTINTERP_API sig_handler *
-  set_signal_handler (int sig, sig_handler *h,
-                      bool restart_syscalls = true);
+extern OCTINTERP_API sig_handler *
+set_signal_handler (int sig, sig_handler *h,
+                    bool restart_syscalls = true);
 
-  extern OCTINTERP_API sig_handler *
-  set_signal_handler (const char *signame, sig_handler *h,
-                      bool restart_syscalls = true);
+extern OCTINTERP_API sig_handler *
+set_signal_handler (const char *signame, sig_handler *h,
+                    bool restart_syscalls = true);
 
-  extern OCTINTERP_API void install_signal_handlers (void);
+extern OCTINTERP_API void install_signal_handlers (void);
 
-  extern OCTINTERP_API void respond_to_pending_signals (void);
+extern OCTINTERP_API void respond_to_pending_signals (void);
 
-  extern OCTINTERP_API interrupt_handler catch_interrupts (void);
+extern OCTINTERP_API interrupt_handler catch_interrupts (void);
 
-  extern OCTINTERP_API interrupt_handler ignore_interrupts (void);
+extern OCTINTERP_API interrupt_handler ignore_interrupts (void);
 
-  extern OCTINTERP_API interrupt_handler
-  set_interrupt_handler (const volatile interrupt_handler& h,
-                         bool restart_syscalls = true);
+extern OCTINTERP_API interrupt_handler
+set_interrupt_handler (const volatile interrupt_handler& h,
+                       bool restart_syscalls = true);
 
-  // TRUE means we should try to enter the debugger on SIGINT.
-  extern OCTINTERP_API bool Vdebug_on_interrupt;
+// TRUE means we should try to enter the debugger on SIGINT.
+extern OCTINTERP_API bool Vdebug_on_interrupt;
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -46,8 +46,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class stack_frame;
-  class type_info;
+class stack_frame;
+class type_info;
 
 OCTAVE_END_NAMESPACE(octave)
 
@@ -1631,53 +1631,53 @@ private:
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  extern OCTINTERP_API octave_value
-  unary_op (type_info& ti, octave_value::unary_op op,
-            const octave_value& a);
+extern OCTINTERP_API octave_value
+unary_op (type_info& ti, octave_value::unary_op op,
+          const octave_value& a);
 
-  extern OCTINTERP_API octave_value
-  unary_op (octave_value::unary_op op, const octave_value& a);
+extern OCTINTERP_API octave_value
+unary_op (octave_value::unary_op op, const octave_value& a);
 
-  extern OCTINTERP_API octave_value
-  binary_op (type_info& ti, octave_value::binary_op op,
-             const octave_value& a, const octave_value& b);
+extern OCTINTERP_API octave_value
+binary_op (type_info& ti, octave_value::binary_op op,
+           const octave_value& a, const octave_value& b);
 
-  extern OCTINTERP_API octave_value
-  binary_op (type_info& ti, octave_value::compound_binary_op op,
-             const octave_value& a, const octave_value& b);
+extern OCTINTERP_API octave_value
+binary_op (type_info& ti, octave_value::compound_binary_op op,
+           const octave_value& a, const octave_value& b);
 
-  extern OCTINTERP_API octave_value
-  binary_op (octave_value::binary_op op, const octave_value& a,
-             const octave_value& b);
+extern OCTINTERP_API octave_value
+binary_op (octave_value::binary_op op, const octave_value& a,
+           const octave_value& b);
 
-  extern OCTINTERP_API octave_value
-  binary_op (octave_value::compound_binary_op op, const octave_value& a,
-             const octave_value& b);
+extern OCTINTERP_API octave_value
+binary_op (octave_value::compound_binary_op op, const octave_value& a,
+           const octave_value& b);
 
-  extern OCTINTERP_API octave_value
-  cat_op (type_info& ti, const octave_value& a,
-          const octave_value& b, const Array<octave_idx_type>& ra_idx);
+extern OCTINTERP_API octave_value
+cat_op (type_info& ti, const octave_value& a,
+        const octave_value& b, const Array<octave_idx_type>& ra_idx);
 
-  extern OCTINTERP_API octave_value
-  cat_op (const octave_value& a, const octave_value& b,
-          const Array<octave_idx_type>& ra_idx);
+extern OCTINTERP_API octave_value
+cat_op (const octave_value& a, const octave_value& b,
+        const Array<octave_idx_type>& ra_idx);
 
-  extern OCTINTERP_API octave_value
-  colon_op (const octave_value& base, const octave_value& increment,
-            const octave_value& limit, bool is_for_cmd_expr = false);
+extern OCTINTERP_API octave_value
+colon_op (const octave_value& base, const octave_value& increment,
+          const octave_value& limit, bool is_for_cmd_expr = false);
 
-  inline octave_value
-  colon_op (const octave_value& base, const octave_value& limit,
-            bool is_for_cmd_expr = false)
-  {
-    // Note, we need to pass an undefined octave_value object instead of
-    // octave_value (1.0) so that we can properly detect the
-    // two-argument case and correctly pass just two arguments to any
-    // user-defined function that is provided if either base or limit is
-    // an object.
+inline octave_value
+colon_op (const octave_value& base, const octave_value& limit,
+          bool is_for_cmd_expr = false)
+{
+  // Note, we need to pass an undefined octave_value object instead of
+  // octave_value (1.0) so that we can properly detect the
+  // two-argument case and correctly pass just two arguments to any
+  // user-defined function that is provided if either base or limit is
+  // an object.
 
-    return colon_op (base, octave_value (), limit, is_for_cmd_expr);
-  }
+  return colon_op (base, octave_value (), limit, is_for_cmd_expr);
+}
 
 OCTAVE_END_NAMESPACE(octave)
 

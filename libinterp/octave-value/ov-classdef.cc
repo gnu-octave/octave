@@ -259,9 +259,9 @@ octave_classdef::xnumel (const octave_value_list& idx)
           octave::tree_evaluator& tw = interp.get_evaluator();
 
           octave::unwind_action act ([&tw] (const std::list<octave::octave_lvalue> *lvl)
-                            {
-                              tw.set_lvalue_list (lvl);
-                            }, tw.lvalue_list ());
+          {
+            tw.set_lvalue_list (lvl);
+          }, tw.lvalue_list ());
           tw.set_lvalue_list (nullptr);
 
           octave_value_list lv = meth.execute (args, 1, true, "numel");
@@ -473,8 +473,8 @@ std::string octave_classdef_meta::file_name (void) const
 
 octave_value_list
 octave_classdef_superclass_ref::execute (octave::tree_evaluator& tw,
-                                         int nargout,
-                                         const octave_value_list& idx)
+    int nargout,
+    const octave_value_list& idx)
 {
   octave_value_list retval;
 
@@ -579,7 +579,7 @@ octave_classdef_superclass_ref::execute (octave::tree_evaluator& tw,
 }
 
 bool octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluator& tw,
-                                                            const std::string& nm)
+    const std::string& nm)
 {
   octave_function *of = tw.current_function ();
 

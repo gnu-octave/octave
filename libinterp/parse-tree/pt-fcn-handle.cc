@@ -36,73 +36,73 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  void
-  tree_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax,
-                          bool pr_orig_text)
-  {
-    print_raw (os, pr_as_read_syntax, pr_orig_text);
-  }
+void
+tree_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax,
+                        bool pr_orig_text)
+{
+  print_raw (os, pr_as_read_syntax, pr_orig_text);
+}
 
-  void
-  tree_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
-                              bool pr_orig_text)
-  {
-    os << ((pr_as_read_syntax || pr_orig_text) ? "@" : "") << m_name;
-  }
+void
+tree_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
+                            bool pr_orig_text)
+{
+  os << ((pr_as_read_syntax || pr_orig_text) ? "@" : "") << m_name;
+}
 
-  tree_expression *
-  tree_fcn_handle::dup (symbol_scope&) const
-  {
-    tree_fcn_handle *new_fh = new tree_fcn_handle (m_name, line (), column ());
+tree_expression *
+tree_fcn_handle::dup (symbol_scope&) const
+{
+  tree_fcn_handle *new_fh = new tree_fcn_handle (m_name, line (), column ());
 
-    new_fh->copy_base (*this);
+  new_fh->copy_base (*this);
 
-    return new_fh;
-  }
+  return new_fh;
+}
 
-  octave_value
-  tree_fcn_handle::evaluate (tree_evaluator& tw, int)
-  {
-    return tw.make_fcn_handle (m_name);
-  }
+octave_value
+tree_fcn_handle::evaluate (tree_evaluator& tw, int)
+{
+  return tw.make_fcn_handle (m_name);
+}
 
-  tree_anon_fcn_handle::~tree_anon_fcn_handle (void)
-  {
-    delete m_parameter_list;
-    delete m_expression;
-  }
+tree_anon_fcn_handle::~tree_anon_fcn_handle (void)
+{
+  delete m_parameter_list;
+  delete m_expression;
+}
 
-  tree_expression *
-  tree_anon_fcn_handle::dup (symbol_scope&) const
-  {
-    tree_parameter_list *param_list = parameter_list ();
-    tree_expression *expr = expression ();
+tree_expression *
+tree_anon_fcn_handle::dup (symbol_scope&) const
+{
+  tree_parameter_list *param_list = parameter_list ();
+  tree_expression *expr = expression ();
 
-    symbol_scope af_scope = m_scope;
-    symbol_scope af_parent_scope = m_parent_scope;
+  symbol_scope af_scope = m_scope;
+  symbol_scope af_parent_scope = m_parent_scope;
 
-    symbol_scope new_scope;
+  symbol_scope new_scope;
 
-    if (af_scope)
-      new_scope = af_scope.dup ();
+  if (af_scope)
+    new_scope = af_scope.dup ();
 
-    // FIXME: if new scope is nullptr, then we are in big trouble here...
+  // FIXME: if new scope is nullptr, then we are in big trouble here...
 
-    tree_anon_fcn_handle *new_afh = new
-      tree_anon_fcn_handle (param_list ? param_list->dup (new_scope) : nullptr,
-                            expr ? expr->dup (new_scope) : nullptr,
-                            new_scope, af_parent_scope, line (), column ());
+  tree_anon_fcn_handle *new_afh = new
+  tree_anon_fcn_handle (param_list ? param_list->dup (new_scope) : nullptr,
+                        expr ? expr->dup (new_scope) : nullptr,
+                        new_scope, af_parent_scope, line (), column ());
 
-    new_afh->copy_base (*this);
+  new_afh->copy_base (*this);
 
-    return new_afh;
-  }
+  return new_afh;
+}
 
-  octave_value
-  tree_anon_fcn_handle::evaluate (tree_evaluator& tw, int)
-  {
-    return tw.evaluate_anon_fcn_handle (*this);
-  }
+octave_value
+tree_anon_fcn_handle::evaluate (tree_evaluator& tw, int)
+{
+  return tw.evaluate_anon_fcn_handle (*this);
+}
 
 OCTAVE_END_NAMESPACE(octave)
 

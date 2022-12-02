@@ -37,349 +37,349 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class
-  OCTAVE_API
-  fftw_planner
+class
+OCTAVE_API
+fftw_planner
+{
+protected:
+
+  fftw_planner (void);
+
+public:
+
+  // No copying!
+
+  fftw_planner (const fftw_planner&) = delete;
+
+  fftw_planner& operator = (const fftw_planner&) = delete;
+
+  ~fftw_planner (void);
+
+  enum FftwMethod
   {
-  protected:
-
-    fftw_planner (void);
-
-  public:
-
-    // No copying!
-
-    fftw_planner (const fftw_planner&) = delete;
-
-    fftw_planner& operator = (const fftw_planner&) = delete;
-
-    ~fftw_planner (void);
-
-    enum FftwMethod
-    {
-      UNKNOWN = -1,
-      ESTIMATE,
-      MEASURE,
-      PATIENT,
-      EXHAUSTIVE,
-      HYBRID
-    };
-
-    static bool instance_ok (void);
-
-    static void *
-    create_plan (int dir, const int rank, const dim_vector& dims,
-                 octave_idx_type howmany, octave_idx_type stride,
-                 octave_idx_type dist, const Complex *in,
-                 Complex *out)
-    {
-      return instance_ok ()
-        ? s_instance->do_create_plan (dir, rank, dims, howmany, stride,
-                                      dist, in, out)
-        : nullptr;
-    }
-
-    static void *
-    create_plan (const int rank, const dim_vector& dims,
-                 octave_idx_type howmany, octave_idx_type stride,
-                 octave_idx_type dist, const double *in, Complex *out)
-    {
-      return instance_ok ()
-        ? s_instance->do_create_plan (rank, dims, howmany, stride, dist,
-                                      in, out)
-        : nullptr;
-    }
-
-    static FftwMethod method (void)
-    {
-      static FftwMethod dummy;
-
-      return instance_ok () ? s_instance->do_method () : dummy;
-    }
-
-    static FftwMethod method (FftwMethod meth)
-    {
-      static FftwMethod dummy;
-
-      return instance_ok () ? s_instance->do_method (meth) : dummy;
-    }
-
-    static void threads (int nt);
-
-    static int threads (void)
-    {
-      return instance_ok () ? s_instance->m_nthreads : 0;
-    }
-
-  private:
-
-    static fftw_planner *s_instance;
-
-    static void cleanup_instance (void)
-    { delete s_instance; s_instance = nullptr; }
-
-    void *
-    do_create_plan (int dir, const int rank, const dim_vector& dims,
-                    octave_idx_type howmany, octave_idx_type stride,
-                    octave_idx_type dist, const Complex *in,
-                    Complex *out);
-
-    void *
-    do_create_plan (const int rank, const dim_vector& dims,
-                    octave_idx_type howmany, octave_idx_type stride,
-                    octave_idx_type dist, const double *in, Complex *out);
-
-    FftwMethod do_method (void);
-
-    FftwMethod do_method (FftwMethod meth);
-
-    FftwMethod m_meth;
-
-    // FIXME: perhaps this should be split into two classes?
-
-    // Plan for fft and ifft of complex values
-    void *m_plan[2];
-
-    // dist
-    octave_idx_type m_d[2];
-
-    // stride
-    octave_idx_type m_s[2];
-
-    // rank
-    int m_r[2];
-
-    // howmany
-    octave_idx_type m_h[2];
-
-    // dims
-    dim_vector m_n[2];
-
-    bool m_simd_align[2];
-    bool m_inplace[2];
-
-    // Plan for fft of real values
-    void *m_rplan;
-
-    // dist
-    octave_idx_type m_rd;
-
-    // stride
-    octave_idx_type m_rs;
-
-    // rank
-    int m_rr;
-
-    // howmany
-    octave_idx_type m_rh;
-
-    // dims
-    dim_vector m_rn;
-
-    bool m_rsimd_align;
-
-    // number of threads.  Always 1 unless compiled with multi-threading
-    // support.
-    int m_nthreads;
+    UNKNOWN = -1,
+    ESTIMATE,
+    MEASURE,
+    PATIENT,
+    EXHAUSTIVE,
+    HYBRID
   };
 
-  class
-  OCTAVE_API
-  float_fftw_planner
+  static bool instance_ok (void);
+
+  static void *
+  create_plan (int dir, const int rank, const dim_vector& dims,
+               octave_idx_type howmany, octave_idx_type stride,
+               octave_idx_type dist, const Complex *in,
+               Complex *out)
   {
-  protected:
+    return instance_ok ()
+           ? s_instance->do_create_plan (dir, rank, dims, howmany, stride,
+                                         dist, in, out)
+           : nullptr;
+  }
 
-    float_fftw_planner (void);
+  static void *
+  create_plan (const int rank, const dim_vector& dims,
+               octave_idx_type howmany, octave_idx_type stride,
+               octave_idx_type dist, const double *in, Complex *out)
+  {
+    return instance_ok ()
+           ? s_instance->do_create_plan (rank, dims, howmany, stride, dist,
+                                         in, out)
+           : nullptr;
+  }
 
-  public:
+  static FftwMethod method (void)
+  {
+    static FftwMethod dummy;
 
-    // No copying!
+    return instance_ok () ? s_instance->do_method () : dummy;
+  }
 
-    float_fftw_planner (const float_fftw_planner&) = delete;
+  static FftwMethod method (FftwMethod meth)
+  {
+    static FftwMethod dummy;
 
-    float_fftw_planner&
-      operator = (const float_fftw_planner&) = delete;
+    return instance_ok () ? s_instance->do_method (meth) : dummy;
+  }
 
-    ~float_fftw_planner (void);
+  static void threads (int nt);
 
-    enum FftwMethod
-    {
-      UNKNOWN = -1,
-      ESTIMATE,
-      MEASURE,
-      PATIENT,
-      EXHAUSTIVE,
-      HYBRID
-    };
+  static int threads (void)
+  {
+    return instance_ok () ? s_instance->m_nthreads : 0;
+  }
 
-    static bool instance_ok (void);
+private:
 
-    static void *
-    create_plan (int dir, const int rank, const dim_vector& dims,
-                 octave_idx_type howmany, octave_idx_type stride,
-                 octave_idx_type dist, const FloatComplex *in,
-                 FloatComplex *out)
-    {
-      return instance_ok ()
-        ? s_instance->do_create_plan (dir, rank, dims, howmany, stride,
-                                      dist, in, out)
-        : nullptr;
-    }
+  static fftw_planner *s_instance;
 
-    static void *
-    create_plan (const int rank, const dim_vector& dims,
-                 octave_idx_type howmany, octave_idx_type stride,
-                 octave_idx_type dist, const float *in, FloatComplex *out)
-    {
-      return instance_ok ()
-        ? s_instance->do_create_plan (rank, dims, howmany, stride, dist,
-                                      in, out)
-        : nullptr;
-    }
+  static void cleanup_instance (void)
+  { delete s_instance; s_instance = nullptr; }
 
-    static FftwMethod method (void)
-    {
-      static FftwMethod dummy;
+  void *
+  do_create_plan (int dir, const int rank, const dim_vector& dims,
+                  octave_idx_type howmany, octave_idx_type stride,
+                  octave_idx_type dist, const Complex *in,
+                  Complex *out);
 
-      return instance_ok () ? s_instance->do_method () : dummy;
-    }
+  void *
+  do_create_plan (const int rank, const dim_vector& dims,
+                  octave_idx_type howmany, octave_idx_type stride,
+                  octave_idx_type dist, const double *in, Complex *out);
 
-    static FftwMethod method (FftwMethod meth)
-    {
-      static FftwMethod dummy;
+  FftwMethod do_method (void);
 
-      return instance_ok () ? s_instance->do_method (meth) : dummy;
-    }
+  FftwMethod do_method (FftwMethod meth);
 
-    static void threads (int nt);
+  FftwMethod m_meth;
 
-    static int threads (void)
-    {
-      return instance_ok () ? s_instance->m_nthreads : 0;
-    }
+  // FIXME: perhaps this should be split into two classes?
 
-  private:
+  // Plan for fft and ifft of complex values
+  void *m_plan[2];
 
-    static float_fftw_planner *s_instance;
+  // dist
+  octave_idx_type m_d[2];
 
-    static void cleanup_instance (void)
-    { delete s_instance; s_instance = nullptr; }
+  // stride
+  octave_idx_type m_s[2];
 
-    void *
-    do_create_plan (int dir, const int rank, const dim_vector& dims,
-                    octave_idx_type howmany, octave_idx_type stride,
-                    octave_idx_type dist, const FloatComplex *in,
-                    FloatComplex *out);
+  // rank
+  int m_r[2];
 
-    void *
-    do_create_plan (const int rank, const dim_vector& dims,
-                    octave_idx_type howmany, octave_idx_type stride,
-                    octave_idx_type dist, const float *in, FloatComplex *out);
+  // howmany
+  octave_idx_type m_h[2];
 
-    FftwMethod do_method (void);
+  // dims
+  dim_vector m_n[2];
 
-    FftwMethod do_method (FftwMethod meth);
+  bool m_simd_align[2];
+  bool m_inplace[2];
 
-    FftwMethod m_meth;
+  // Plan for fft of real values
+  void *m_rplan;
 
-    // FIXME: perhaps this should be split into two classes?
+  // dist
+  octave_idx_type m_rd;
 
-    // Plan for fft and ifft of complex values
-    void *m_plan[2];
+  // stride
+  octave_idx_type m_rs;
 
-    // dist
-    octave_idx_type m_d[2];
+  // rank
+  int m_rr;
 
-    // stride
-    octave_idx_type m_s[2];
+  // howmany
+  octave_idx_type m_rh;
 
-    // rank
-    int m_r[2];
+  // dims
+  dim_vector m_rn;
 
-    // howmany
-    octave_idx_type m_h[2];
+  bool m_rsimd_align;
 
-    // dims
-    dim_vector m_n[2];
+  // number of threads.  Always 1 unless compiled with multi-threading
+  // support.
+  int m_nthreads;
+};
 
-    bool m_simd_align[2];
-    bool m_inplace[2];
+class
+OCTAVE_API
+float_fftw_planner
+{
+protected:
 
-    // Plan for fft of real values
-    void *m_rplan;
+  float_fftw_planner (void);
 
-    // dist
-    octave_idx_type m_rd;
+public:
 
-    // stride
-    octave_idx_type m_rs;
+  // No copying!
 
-    // rank
-    int m_rr;
+  float_fftw_planner (const float_fftw_planner&) = delete;
 
-    // howmany
-    octave_idx_type m_rh;
+  float_fftw_planner&
+  operator = (const float_fftw_planner&) = delete;
 
-    // dims
-    dim_vector m_rn;
+  ~float_fftw_planner (void);
 
-    bool m_rsimd_align;
-
-    // number of threads.  Always 1 unless compiled with multi-threading
-    // support.
-    int m_nthreads;
+  enum FftwMethod
+  {
+    UNKNOWN = -1,
+    ESTIMATE,
+    MEASURE,
+    PATIENT,
+    EXHAUSTIVE,
+    HYBRID
   };
 
-  class
-  OCTAVE_API
-  fftw
+  static bool instance_ok (void);
+
+  static void *
+  create_plan (int dir, const int rank, const dim_vector& dims,
+               octave_idx_type howmany, octave_idx_type stride,
+               octave_idx_type dist, const FloatComplex *in,
+               FloatComplex *out)
   {
-  public:
+    return instance_ok ()
+           ? s_instance->do_create_plan (dir, rank, dims, howmany, stride,
+                                         dist, in, out)
+           : nullptr;
+  }
 
-    fftw (void) = delete;
+  static void *
+  create_plan (const int rank, const dim_vector& dims,
+               octave_idx_type howmany, octave_idx_type stride,
+               octave_idx_type dist, const float *in, FloatComplex *out)
+  {
+    return instance_ok ()
+           ? s_instance->do_create_plan (rank, dims, howmany, stride, dist,
+                                         in, out)
+           : nullptr;
+  }
 
-    // No copying.
+  static FftwMethod method (void)
+  {
+    static FftwMethod dummy;
 
-    fftw (const fftw&) = delete;
+    return instance_ok () ? s_instance->do_method () : dummy;
+  }
 
-    fftw& operator = (const fftw&) = delete;
+  static FftwMethod method (FftwMethod meth)
+  {
+    static FftwMethod dummy;
 
-    static int fft (const double *in, Complex *out, std::size_t npts,
-                    std::size_t nsamples = 1, octave_idx_type stride = 1,
-                    octave_idx_type dist = -1);
-    static int fft (const Complex *in, Complex *out, std::size_t npts,
-                    std::size_t nsamples = 1, octave_idx_type stride = 1,
-                    octave_idx_type dist = -1);
-    static int ifft (const Complex *in, Complex *out, std::size_t npts,
-                     std::size_t nsamples = 1, octave_idx_type stride = 1,
-                     octave_idx_type dist = -1);
+    return instance_ok () ? s_instance->do_method (meth) : dummy;
+  }
 
-    static int fftNd (const double *, Complex *, const int, const dim_vector&);
-    static int fftNd (const Complex *, Complex *, const int,
-                      const dim_vector&);
-    static int ifftNd (const Complex *, Complex *, const int,
-                       const dim_vector&);
+  static void threads (int nt);
 
-    static int fft (const float *in, FloatComplex *out, std::size_t npts,
-                    std::size_t nsamples = 1, octave_idx_type stride = 1,
-                    octave_idx_type dist = -1);
-    static int fft (const FloatComplex *in, FloatComplex *out, std::size_t npts,
-                    std::size_t nsamples = 1, octave_idx_type stride = 1,
-                    octave_idx_type dist = -1);
-    static int ifft (const FloatComplex *in, FloatComplex *out, std::size_t npts,
-                     std::size_t nsamples = 1, octave_idx_type stride = 1,
-                     octave_idx_type dist = -1);
+  static int threads (void)
+  {
+    return instance_ok () ? s_instance->m_nthreads : 0;
+  }
 
-    static int fftNd (const float *, FloatComplex *, const int,
-                      const dim_vector&);
-    static int fftNd (const FloatComplex *, FloatComplex *, const int,
-                      const dim_vector&);
-    static int ifftNd (const FloatComplex *, FloatComplex *, const int,
-                       const dim_vector&);
-  };
+private:
 
-  extern OCTAVE_API std::string fftw_version (void);
-  extern OCTAVE_API std::string fftwf_version (void);
+  static float_fftw_planner *s_instance;
+
+  static void cleanup_instance (void)
+  { delete s_instance; s_instance = nullptr; }
+
+  void *
+  do_create_plan (int dir, const int rank, const dim_vector& dims,
+                  octave_idx_type howmany, octave_idx_type stride,
+                  octave_idx_type dist, const FloatComplex *in,
+                  FloatComplex *out);
+
+  void *
+  do_create_plan (const int rank, const dim_vector& dims,
+                  octave_idx_type howmany, octave_idx_type stride,
+                  octave_idx_type dist, const float *in, FloatComplex *out);
+
+  FftwMethod do_method (void);
+
+  FftwMethod do_method (FftwMethod meth);
+
+  FftwMethod m_meth;
+
+  // FIXME: perhaps this should be split into two classes?
+
+  // Plan for fft and ifft of complex values
+  void *m_plan[2];
+
+  // dist
+  octave_idx_type m_d[2];
+
+  // stride
+  octave_idx_type m_s[2];
+
+  // rank
+  int m_r[2];
+
+  // howmany
+  octave_idx_type m_h[2];
+
+  // dims
+  dim_vector m_n[2];
+
+  bool m_simd_align[2];
+  bool m_inplace[2];
+
+  // Plan for fft of real values
+  void *m_rplan;
+
+  // dist
+  octave_idx_type m_rd;
+
+  // stride
+  octave_idx_type m_rs;
+
+  // rank
+  int m_rr;
+
+  // howmany
+  octave_idx_type m_rh;
+
+  // dims
+  dim_vector m_rn;
+
+  bool m_rsimd_align;
+
+  // number of threads.  Always 1 unless compiled with multi-threading
+  // support.
+  int m_nthreads;
+};
+
+class
+OCTAVE_API
+fftw
+{
+public:
+
+  fftw (void) = delete;
+
+  // No copying.
+
+  fftw (const fftw&) = delete;
+
+  fftw& operator = (const fftw&) = delete;
+
+  static int fft (const double *in, Complex *out, std::size_t npts,
+                  std::size_t nsamples = 1, octave_idx_type stride = 1,
+                  octave_idx_type dist = -1);
+  static int fft (const Complex *in, Complex *out, std::size_t npts,
+                  std::size_t nsamples = 1, octave_idx_type stride = 1,
+                  octave_idx_type dist = -1);
+  static int ifft (const Complex *in, Complex *out, std::size_t npts,
+                   std::size_t nsamples = 1, octave_idx_type stride = 1,
+                   octave_idx_type dist = -1);
+
+  static int fftNd (const double *, Complex *, const int, const dim_vector&);
+  static int fftNd (const Complex *, Complex *, const int,
+                    const dim_vector&);
+  static int ifftNd (const Complex *, Complex *, const int,
+                     const dim_vector&);
+
+  static int fft (const float *in, FloatComplex *out, std::size_t npts,
+                  std::size_t nsamples = 1, octave_idx_type stride = 1,
+                  octave_idx_type dist = -1);
+  static int fft (const FloatComplex *in, FloatComplex *out, std::size_t npts,
+                  std::size_t nsamples = 1, octave_idx_type stride = 1,
+                  octave_idx_type dist = -1);
+  static int ifft (const FloatComplex *in, FloatComplex *out, std::size_t npts,
+                   std::size_t nsamples = 1, octave_idx_type stride = 1,
+                   octave_idx_type dist = -1);
+
+  static int fftNd (const float *, FloatComplex *, const int,
+                    const dim_vector&);
+  static int fftNd (const FloatComplex *, FloatComplex *, const int,
+                    const dim_vector&);
+  static int ifftNd (const FloatComplex *, FloatComplex *, const int,
+                     const dim_vector&);
+};
+
+extern OCTAVE_API std::string fftw_version (void);
+extern OCTAVE_API std::string fftwf_version (void);
 
 OCTAVE_END_NAMESPACE(octave)
 

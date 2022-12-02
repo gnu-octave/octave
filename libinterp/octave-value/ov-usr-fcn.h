@@ -43,13 +43,13 @@ class octave_value;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class file_info;
-  class stack_frame;
-  class tree_parameter_list;
-  class tree_statement_list;
-  class tree_evaluator;
-  class tree_expression;
-  class tree_walker;
+class file_info;
+class stack_frame;
+class tree_parameter_list;
+class tree_statement_list;
+class tree_evaluator;
+class tree_expression;
+class tree_walker;
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -40,9 +40,9 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class stack_frame;
-  class tree_evaluator;
-  class tree_walker;
+class stack_frame;
+class tree_evaluator;
+class tree_walker;
 
 OCTAVE_END_NAMESPACE(octave)
 

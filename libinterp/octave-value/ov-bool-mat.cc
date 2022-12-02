@@ -82,7 +82,7 @@ octave_base_value::type_conv_info
 octave_bool_matrix::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_matrix::static_type_id ());
+         octave_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -160,7 +160,7 @@ octave_bool_matrix::float_complex_value (bool) const
 
 octave_value
 octave_bool_matrix::convert_to_str_internal (bool pad, bool force,
-                                             char type) const
+    char type) const
 {
   octave_value tmp = octave_value (array_value ());
   return tmp.convert_to_str (pad, force, type);

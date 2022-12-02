@@ -219,7 +219,7 @@ octave_base_scalar<ST>::fast_elem_extract (octave_idx_type n) const
 template <typename ST>
 bool
 octave_base_scalar<ST>::fast_elem_insert_self (void *where,
-                                               builtin_type_t btyp) const
+    builtin_type_t btyp) const
 {
 
   // Don't use builtin_type () here to avoid an extra VM call.

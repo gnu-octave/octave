@@ -504,9 +504,9 @@ Undocumented internal function.
       Array<Complex> rows_norm = xrownorms (sm);
 
       ilu_crout <SparseComplexMatrix, Complex> (sm_l, sm_u, L, U,
-                                                cols_norm.fortran_vec (),
-                                                rows_norm.fortran_vec (),
-                                                Complex (droptol), milu);
+          cols_norm.fortran_vec (),
+          rows_norm.fortran_vec (),
+          Complex (droptol), milu);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
 
@@ -974,8 +974,8 @@ Undocumented internal function.
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
 
       ilu_tp <SparseComplexMatrix, Complex>
-              (sm, L, U, nnz_u, nnz_l, rc_norm.fortran_vec (), perm,
-               Complex (droptol), Complex (thresh), milu, udiag);
+      (sm, L, U, nnz_u, nnz_l, rc_norm.fortran_vec (), perm,
+       Complex (droptol), Complex (thresh), milu, udiag);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
       if (milu == "row")

@@ -38,205 +38,205 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_text_renderer;
-  class text_element;
+class base_text_renderer;
+class text_element;
 
-  class
-  OCTINTERP_API
-  text_renderer
+class
+OCTINTERP_API
+text_renderer
+{
+public:
+
+  text_renderer (void);
+
+  // No copying!
+
+  text_renderer (const text_renderer&) = delete;
+
+  text_renderer& operator = (const text_renderer&) = delete;
+
+  ~text_renderer (void);
+
+  bool ok (void) const;
+
+  Matrix get_extent (text_element *elt, double rotation = 0.0);
+
+  Matrix get_extent (const std::string& txt, double rotation = 0.0,
+                     const caseless_str& interpreter = "tex");
+
+  void set_anti_aliasing (bool val);
+
+  void set_font (const std::string& name, const std::string& weight,
+                 const std::string& angle, double size);
+
+  octave_map get_system_fonts (void);
+
+  void set_color (const Matrix& c);
+
+  void text_to_pixels (const std::string& txt,
+                       uint8NDArray& pxls, Matrix& bbox,
+                       int halign, int valign, double rotation = 0.0,
+                       const caseless_str& interpreter = "tex",
+                       bool handle_rotation = true);
+
+  class font
   {
   public:
 
-    text_renderer (void);
+    font (void)
+      : m_name (), m_weight (), m_angle (), m_size (0)
+    { }
 
-    // No copying!
+    font (const std::string& nm, const std::string& wt,
+          const std::string& ang, double sz)
+      : m_name (nm), m_weight (wt), m_angle (ang), m_size (sz)
+    { }
 
-    text_renderer (const text_renderer&) = delete;
+    font (const font& ft)
+      : m_name (ft.m_name), m_weight (ft.m_weight), m_angle (ft.m_angle),
+        m_size (ft.m_size)
+    { }
 
-    text_renderer& operator = (const text_renderer&) = delete;
+    ~font (void) = default;
 
-    ~text_renderer (void);
-
-    bool ok (void) const;
-
-    Matrix get_extent (text_element *elt, double rotation = 0.0);
-
-    Matrix get_extent (const std::string& txt, double rotation = 0.0,
-                       const caseless_str& interpreter = "tex");
-
-    void set_anti_aliasing (bool val);
-
-    void set_font (const std::string& name, const std::string& weight,
-                   const std::string& angle, double size);
-
-    octave_map get_system_fonts (void);
-
-    void set_color (const Matrix& c);
-
-    void text_to_pixels (const std::string& txt,
-                         uint8NDArray& pxls, Matrix& bbox,
-                         int halign, int valign, double rotation = 0.0,
-                         const caseless_str& interpreter = "tex",
-                         bool handle_rotation = true);
-
-    class font
+    font& operator = (const font& ft)
     {
-    public:
+      if (&ft != this)
+        {
+          m_name = ft.m_name;
+          m_weight = ft.m_weight;
+          m_angle = ft.m_angle;
+          m_size = ft.m_size;
+        }
 
-      font (void)
-        : m_name (), m_weight (), m_angle (), m_size (0)
-      { }
+      return *this;
+    }
 
-      font (const std::string& nm, const std::string& wt,
-            const std::string& ang, double sz)
-        : m_name (nm), m_weight (wt), m_angle (ang), m_size (sz)
-      { }
+    std::string get_name (void) const { return m_name; }
 
-      font (const font& ft)
-        : m_name (ft.m_name), m_weight (ft.m_weight), m_angle (ft.m_angle),
-          m_size (ft.m_size)
-      { }
+    std::string get_weight (void) const { return m_weight; }
 
-      ~font (void) = default;
+    std::string get_angle (void) const { return m_angle; }
 
-      font& operator = (const font& ft)
-      {
-        if (&ft != this)
-          {
-            m_name = ft.m_name;
-            m_weight = ft.m_weight;
-            m_angle = ft.m_angle;
-            m_size = ft.m_size;
-          }
+    double get_size (void) const { return m_size; }
 
-        return *this;
-      }
+  protected:
 
-      std::string get_name (void) const { return m_name; }
+    std::string m_name;
+    std::string m_weight;
+    std::string m_angle;
+    double m_size;
+  };
 
-      std::string get_weight (void) const { return m_weight; }
+  // Container for substrings after parsing.
 
-      std::string get_angle (void) const { return m_angle; }
+  class string
+  {
+  public:
 
-      double get_size (void) const { return m_size; }
+    string (const std::string& s, font& f, const double x, const double y)
+      : m_str (s), m_family (f.get_name ()), m_fnt (f), m_x (x), m_y (y),
+        m_z (0.0), m_xdata (), m_code (0), m_color (Matrix (1, 3, 0.0)),
+        m_svg_element ()
+    { }
 
-    protected:
+    string (const string& s)
+      : m_str (s.m_str), m_family (s.m_family), m_fnt (s.m_fnt), m_x (s.m_x),
+        m_y (s.m_y), m_z (s.m_z), m_xdata (s.m_xdata), m_code (s.m_code),
+        m_color (s.m_color), m_svg_element (s.m_svg_element)
+    { }
 
-      std::string m_name;
-      std::string m_weight;
-      std::string m_angle;
-      double m_size;
-    };
+    ~string (void) = default;
 
-    // Container for substrings after parsing.
-
-    class string
+    string& operator = (const string& s)
     {
-    public:
+      if (&s != this)
+        {
+          m_str = s.m_str;
+          m_family = s.m_family;
+          m_fnt = s.m_fnt;
+          m_x = s.m_x;
+          m_y = s.m_y;
+          m_z = s.m_z;
+          m_xdata = s.m_xdata;
+          m_code = s.m_code;
+          m_color = s.m_color;
+        }
 
-      string (const std::string& s, font& f, const double x, const double y)
-        : m_str (s), m_family (f.get_name ()), m_fnt (f), m_x (x), m_y (y),
-          m_z (0.0), m_xdata (), m_code (0), m_color (Matrix (1, 3, 0.0)),
-          m_svg_element ()
-      { }
+      return *this;
+    }
 
-      string (const string& s)
-        : m_str (s.m_str), m_family (s.m_family), m_fnt (s.m_fnt), m_x (s.m_x),
-          m_y (s.m_y), m_z (s.m_z), m_xdata (s.m_xdata), m_code (s.m_code),
-          m_color (s.m_color), m_svg_element (s.m_svg_element)
-      { }
+    void set_string (const std::string& s) { m_str = s; }
 
-      ~string (void) = default;
+    std::string get_string (void) const { return m_str; }
 
-      string& operator = (const string& s)
-      {
-        if (&s != this)
-          {
-            m_str = s.m_str;
-            m_family = s.m_family;
-            m_fnt = s.m_fnt;
-            m_x = s.m_x;
-            m_y = s.m_y;
-            m_z = s.m_z;
-            m_xdata = s.m_xdata;
-            m_code = s.m_code;
-            m_color = s.m_color;
-          }
+    std::string get_name (void) const { return m_fnt.get_name (); }
 
-        return *this;
-      }
+    std::string get_family (void) const { return m_family; }
 
-      void set_string (const std::string& s) { m_str = s; }
+    void set_family (const std::string& nm) { m_family = nm; }
 
-      std::string get_string (void) const { return m_str; }
+    std::string get_weight (void) const { return m_fnt.get_weight (); }
 
-      std::string get_name (void) const { return m_fnt.get_name (); }
+    std::string get_angle (void) const { return m_fnt.get_angle (); }
 
-      std::string get_family (void) const { return m_family; }
+    double get_size (void) const { return m_fnt.get_size (); }
 
-      void set_family (const std::string& nm) { m_family = nm; }
+    void set_x (const double x) { m_x = x; }
 
-      std::string get_weight (void) const { return m_fnt.get_weight (); }
+    double get_x (void) const { return m_x; }
 
-      std::string get_angle (void) const { return m_fnt.get_angle (); }
+    void set_xdata (const std::vector<double>& x) { m_xdata = x; }
 
-      double get_size (void) const { return m_fnt.get_size (); }
+    std::vector<double> get_xdata (void) const { return m_xdata; }
 
-      void set_x (const double x) { m_x = x; }
+    void set_y (const double y) { m_y = y; }
 
-      double get_x (void) const { return m_x; }
+    double get_y (void) const { return m_y; }
 
-      void set_xdata (const std::vector<double>& x) { m_xdata = x; }
+    void set_z (const double z) { m_z = z; }
 
-      std::vector<double> get_xdata (void) const { return m_xdata; }
+    double get_z (void) const { return m_z; }
 
-      void set_y (const double y) { m_y = y; }
+    void set_code (const uint32_t code) { m_code = code; }
 
-      double get_y (void) const { return m_y; }
+    uint32_t get_code (void) const { return m_code; }
 
-      void set_z (const double z) { m_z = z; }
+    void set_svg_element (const std::string& svg) { m_svg_element = svg; }
 
-      double get_z (void) const { return m_z; }
+    std::string get_svg_element (void) const { return m_svg_element; }
 
-      void set_code (const uint32_t code) { m_code = code; }
+    void set_color (const uint8NDArray& c)
+    {
+      m_color(0) = static_cast<double> (c(0)) / 255;
+      m_color(1) = static_cast<double> (c(1)) / 255;
+      m_color(2) = static_cast<double> (c(2)) / 255;
+    }
 
-      uint32_t get_code (void) const { return m_code; }
-
-      void set_svg_element (const std::string& svg) { m_svg_element = svg; }
-
-      std::string get_svg_element (void) const { return m_svg_element; }
-
-      void set_color (const uint8NDArray& c)
-      {
-        m_color(0) = static_cast<double> (c(0)) / 255;
-        m_color(1) = static_cast<double> (c(1)) / 255;
-        m_color(2) = static_cast<double> (c(2)) / 255;
-      }
-
-      Matrix get_color (void) const { return m_color; }
-
-    private:
-
-      std::string m_str;
-      std::string m_family;
-      font m_fnt;
-      double m_x, m_y, m_z;
-      std::vector<double> m_xdata;
-      uint32_t m_code;
-      Matrix m_color;
-      std::string m_svg_element;
-    };
-
-    void text_to_strlist (const std::string& txt,
-                          std::list<string>& lst, Matrix& box,
-                          int halign, int valign, double rotation = 0.0,
-                          const caseless_str& interpreter = "tex");
+    Matrix get_color (void) const { return m_color; }
 
   private:
 
-    base_text_renderer *m_rep;
-    base_text_renderer *m_latex_rep;
+    std::string m_str;
+    std::string m_family;
+    font m_fnt;
+    double m_x, m_y, m_z;
+    std::vector<double> m_xdata;
+    uint32_t m_code;
+    Matrix m_color;
+    std::string m_svg_element;
   };
+
+  void text_to_strlist (const std::string& txt,
+                        std::list<string>& lst, Matrix& box,
+                        int halign, int valign, double rotation = 0.0,
+                        const caseless_str& interpreter = "tex");
+
+private:
+
+  base_text_renderer *m_rep;
+  base_text_renderer *m_latex_rep;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

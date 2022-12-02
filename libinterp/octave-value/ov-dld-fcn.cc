@@ -44,8 +44,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dld_function,
                                      "dynamically-linked function");
 
 octave_dld_function::octave_dld_function
-  (octave_builtin::fcn ff, const octave::dynamic_library& shl,
-   const std::string& nm, const std::string& ds)
+(octave_builtin::fcn ff, const octave::dynamic_library& shl,
+ const std::string& nm, const std::string& ds)
   : octave_builtin (ff, nm, ds), m_sh_lib (shl)
 {
   mark_fcn_file_up_to_date (time_parsed ());
@@ -56,7 +56,7 @@ octave_dld_function::octave_dld_function
     = octave::sys::canonicalize_file_name (octave::config::oct_file_dir ());
   static const std::string oct_file_dir
     = canonical_oct_file_dir.empty () ? octave::config::oct_file_dir ()
-                                      : canonical_oct_file_dir;
+      : canonical_oct_file_dir;
 
   m_system_fcn_file
     = (! file_name.empty ()
@@ -64,8 +64,8 @@ octave_dld_function::octave_dld_function
 }
 
 octave_dld_function::octave_dld_function
-  (octave_builtin::meth mm, const octave::dynamic_library& shl,
-   const std::string& nm, const std::string& ds)
+(octave_builtin::meth mm, const octave::dynamic_library& shl,
+ const std::string& nm, const std::string& ds)
   : octave_builtin (mm, nm, ds), m_sh_lib (shl)
 {
   mark_fcn_file_up_to_date (time_parsed ());
@@ -76,7 +76,7 @@ octave_dld_function::octave_dld_function
     = octave::sys::canonicalize_file_name (octave::config::oct_file_dir ());
   static const std::string oct_file_dir
     = canonical_oct_file_dir.empty () ? octave::config::oct_file_dir ()
-                                      : canonical_oct_file_dir;
+      : canonical_oct_file_dir;
 
   m_system_fcn_file
     = (! file_name.empty ()

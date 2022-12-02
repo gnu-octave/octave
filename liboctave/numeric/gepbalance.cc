@@ -42,285 +42,285 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <>
-    OCTAVE_API octave_idx_type
-    gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
-                              const std::string& balance_job)
+template <>
+OCTAVE_API octave_idx_type
+gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
+                          const std::string& balance_job)
+{
+  F77_INT n = to_f77_int (a.cols ());
+
+  if (a.rows () != n)
+    (*current_liboctave_error_handler)
+      ("GEPBALANCE requires square matrix");
+
+  if (a.dims () != b.dims ())
+    err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
+
+  F77_INT info;
+  F77_INT ilo;
+  F77_INT ihi;
+
+  OCTAVE_LOCAL_BUFFER (double, plscale, n);
+  OCTAVE_LOCAL_BUFFER (double, prscale, n);
+  OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
+
+  m_balanced_mat = a;
+  double *p_balanced_mat = m_balanced_mat.fortran_vec ();
+  m_balanced_mat2 = b;
+  double *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
+
+  char job = balance_job[0];
+
+  F77_XFCN (dggbal, DGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             n, p_balanced_mat, n, p_balanced_mat2,
+                             n, ilo, ihi, plscale, prscale, pwork, info
+                             F77_CHAR_ARG_LEN  (1)));
+
+  m_balancing_mat = Matrix (n, n, 0.0);
+  m_balancing_mat2 = Matrix (n, n, 0.0);
+  for (F77_INT i = 0; i < n; i++)
     {
-      F77_INT n = to_f77_int (a.cols ());
-
-      if (a.rows () != n)
-        (*current_liboctave_error_handler)
-          ("GEPBALANCE requires square matrix");
-
-      if (a.dims () != b.dims ())
-        err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
-
-      F77_INT info;
-      F77_INT ilo;
-      F77_INT ihi;
-
-      OCTAVE_LOCAL_BUFFER (double, plscale, n);
-      OCTAVE_LOCAL_BUFFER (double, prscale, n);
-      OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
-
-      m_balanced_mat = a;
-      double *p_balanced_mat = m_balanced_mat.fortran_vec ();
-      m_balanced_mat2 = b;
-      double *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
-
-      char job = balance_job[0];
-
-      F77_XFCN (dggbal, DGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 n, p_balanced_mat, n, p_balanced_mat2,
-                                 n, ilo, ihi, plscale, prscale, pwork, info
-                                 F77_CHAR_ARG_LEN  (1)));
-
-      m_balancing_mat = Matrix (n, n, 0.0);
-      m_balancing_mat2 = Matrix (n, n, 0.0);
-      for (F77_INT i = 0; i < n; i++)
-        {
-          octave_quit ();
-          m_balancing_mat.elem (i, i) = 1.0;
-          m_balancing_mat2.elem (i, i) = 1.0;
-        }
-
-      double *p_balancing_mat = m_balancing_mat.fortran_vec ();
-      double *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
-
-      // first left
-      F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 F77_CONST_CHAR_ARG2 ("L", 1),
-                                 n, ilo, ihi, plscale, prscale,
-                                 n, p_balancing_mat, n, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      // then right
-      F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 F77_CONST_CHAR_ARG2 ("R", 1),
-                                 n, ilo, ihi, plscale, prscale,
-                                 n, p_balancing_mat2, n, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      return info;
+      octave_quit ();
+      m_balancing_mat.elem (i, i) = 1.0;
+      m_balancing_mat2.elem (i, i) = 1.0;
     }
 
-    template <>
-    OCTAVE_API octave_idx_type
-    gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
-                                   const std::string& balance_job)
+  double *p_balancing_mat = m_balancing_mat.fortran_vec ();
+  double *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
+
+  // first left
+  F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             F77_CONST_CHAR_ARG2 ("L", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+
+  // then right
+  F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             F77_CONST_CHAR_ARG2 ("R", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat2, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+
+  return info;
+}
+
+template <>
+OCTAVE_API octave_idx_type
+gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
+                               const std::string& balance_job)
+{
+  F77_INT n = to_f77_int (a.cols ());
+
+  if (a.rows () != n)
+    (*current_liboctave_error_handler)
+      ("FloatGEPBALANCE requires square matrix");
+
+  if (a.dims () != b.dims ())
+    err_nonconformant ("FloatGEPBALANCE",
+                       n, n, b.rows(), b.cols());
+
+  F77_INT info;
+  F77_INT ilo;
+  F77_INT ihi;
+
+  OCTAVE_LOCAL_BUFFER (float, plscale, n);
+  OCTAVE_LOCAL_BUFFER (float, prscale, n);
+  OCTAVE_LOCAL_BUFFER (float, pwork, 6 * n);
+
+  m_balanced_mat = a;
+  float *p_balanced_mat = m_balanced_mat.fortran_vec ();
+  m_balanced_mat2 = b;
+  float *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
+
+  char job = balance_job[0];
+
+  F77_XFCN (sggbal, SGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             n, p_balanced_mat, n, p_balanced_mat2,
+                             n, ilo, ihi, plscale, prscale, pwork, info
+                             F77_CHAR_ARG_LEN  (1)));
+
+  m_balancing_mat = FloatMatrix (n, n, 0.0);
+  m_balancing_mat2 = FloatMatrix (n, n, 0.0);
+  for (F77_INT i = 0; i < n; i++)
     {
-      F77_INT n = to_f77_int (a.cols ());
-
-      if (a.rows () != n)
-        (*current_liboctave_error_handler)
-          ("FloatGEPBALANCE requires square matrix");
-
-      if (a.dims () != b.dims ())
-        err_nonconformant ("FloatGEPBALANCE",
-                           n, n, b.rows(), b.cols());
-
-      F77_INT info;
-      F77_INT ilo;
-      F77_INT ihi;
-
-      OCTAVE_LOCAL_BUFFER (float, plscale, n);
-      OCTAVE_LOCAL_BUFFER (float, prscale, n);
-      OCTAVE_LOCAL_BUFFER (float, pwork, 6 * n);
-
-      m_balanced_mat = a;
-      float *p_balanced_mat = m_balanced_mat.fortran_vec ();
-      m_balanced_mat2 = b;
-      float *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
-
-      char job = balance_job[0];
-
-      F77_XFCN (sggbal, SGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 n, p_balanced_mat, n, p_balanced_mat2,
-                                 n, ilo, ihi, plscale, prscale, pwork, info
-                                 F77_CHAR_ARG_LEN  (1)));
-
-      m_balancing_mat = FloatMatrix (n, n, 0.0);
-      m_balancing_mat2 = FloatMatrix (n, n, 0.0);
-      for (F77_INT i = 0; i < n; i++)
-        {
-          octave_quit ();
-          m_balancing_mat.elem (i, i) = 1.0;
-          m_balancing_mat2.elem (i, i) = 1.0;
-        }
-
-      float *p_balancing_mat = m_balancing_mat.fortran_vec ();
-      float *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
-
-      // first left
-      F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 F77_CONST_CHAR_ARG2 ("L", 1),
-                                 n, ilo, ihi, plscale, prscale,
-                                 n, p_balancing_mat, n, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      // then right
-      F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 F77_CONST_CHAR_ARG2 ("R", 1),
-                                 n, ilo, ihi, plscale, prscale,
-                                 n, p_balancing_mat2, n, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      return info;
+      octave_quit ();
+      m_balancing_mat.elem (i, i) = 1.0;
+      m_balancing_mat2.elem (i, i) = 1.0;
     }
 
-    template <>
-    OCTAVE_API octave_idx_type
-    gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
-                                     const ComplexMatrix& b,
-                                     const std::string& balance_job)
+  float *p_balancing_mat = m_balancing_mat.fortran_vec ();
+  float *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
+
+  // first left
+  F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             F77_CONST_CHAR_ARG2 ("L", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+
+  // then right
+  F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             F77_CONST_CHAR_ARG2 ("R", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat2, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+
+  return info;
+}
+
+template <>
+OCTAVE_API octave_idx_type
+gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
+                                 const ComplexMatrix& b,
+                                 const std::string& balance_job)
+{
+  F77_INT n = to_f77_int (a.cols ());
+
+  if (a.rows () != n)
+    (*current_liboctave_error_handler)
+      ("ComplexGEPBALANCE requires square matrix");
+
+  if (a.dims () != b.dims ())
+    err_nonconformant ("ComplexGEPBALANCE",
+                       n, n, b.rows(), b.cols());
+
+  F77_INT info;
+  F77_INT ilo;
+  F77_INT ihi;
+
+  OCTAVE_LOCAL_BUFFER (double, plscale, n);
+  OCTAVE_LOCAL_BUFFER (double, prscale,  n);
+  OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
+
+  m_balanced_mat = a;
+  Complex *p_balanced_mat = m_balanced_mat.fortran_vec ();
+  m_balanced_mat2 = b;
+  Complex *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
+
+  char job = balance_job[0];
+
+  F77_XFCN (zggbal, ZGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             n, F77_DBLE_CMPLX_ARG (p_balanced_mat),
+                             n, F77_DBLE_CMPLX_ARG (p_balanced_mat2),
+                             n, ilo, ihi, plscale, prscale, pwork, info
+                             F77_CHAR_ARG_LEN (1)));
+
+  m_balancing_mat = Matrix (n, n, 0.0);
+  m_balancing_mat2 = Matrix (n, n, 0.0);
+  for (F77_INT i = 0; i < n; i++)
     {
-      F77_INT n = to_f77_int (a.cols ());
-
-      if (a.rows () != n)
-        (*current_liboctave_error_handler)
-          ("ComplexGEPBALANCE requires square matrix");
-
-      if (a.dims () != b.dims ())
-        err_nonconformant ("ComplexGEPBALANCE",
-                           n, n, b.rows(), b.cols());
-
-      F77_INT info;
-      F77_INT ilo;
-      F77_INT ihi;
-
-      OCTAVE_LOCAL_BUFFER (double, plscale, n);
-      OCTAVE_LOCAL_BUFFER (double, prscale,  n);
-      OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
-
-      m_balanced_mat = a;
-      Complex *p_balanced_mat = m_balanced_mat.fortran_vec ();
-      m_balanced_mat2 = b;
-      Complex *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
-
-      char job = balance_job[0];
-
-      F77_XFCN (zggbal, ZGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 n, F77_DBLE_CMPLX_ARG (p_balanced_mat),
-                                 n, F77_DBLE_CMPLX_ARG (p_balanced_mat2),
-                                 n, ilo, ihi, plscale, prscale, pwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-
-      m_balancing_mat = Matrix (n, n, 0.0);
-      m_balancing_mat2 = Matrix (n, n, 0.0);
-      for (F77_INT i = 0; i < n; i++)
-        {
-          octave_quit ();
-          m_balancing_mat.elem (i, i) = 1.0;
-          m_balancing_mat2.elem (i, i) = 1.0;
-        }
-
-      double *p_balancing_mat = m_balancing_mat.fortran_vec ();
-      double *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
-
-      // first left
-      F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 F77_CONST_CHAR_ARG2 ("L", 1),
-                                 n, ilo, ihi, plscale, prscale,
-                                 n, p_balancing_mat, n, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      // then right
-      F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 F77_CONST_CHAR_ARG2 ("R", 1),
-                                 n, ilo, ihi, plscale, prscale,
-                                 n, p_balancing_mat2, n, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      return info;
+      octave_quit ();
+      m_balancing_mat.elem (i, i) = 1.0;
+      m_balancing_mat2.elem (i, i) = 1.0;
     }
 
-    template <>
-    OCTAVE_API octave_idx_type
-    gepbalance<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
-                                          const FloatComplexMatrix& b,
-                                          const std::string& balance_job)
+  double *p_balancing_mat = m_balancing_mat.fortran_vec ();
+  double *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
+
+  // first left
+  F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             F77_CONST_CHAR_ARG2 ("L", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+
+  // then right
+  F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             F77_CONST_CHAR_ARG2 ("R", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat2, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+
+  return info;
+}
+
+template <>
+OCTAVE_API octave_idx_type
+gepbalance<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
+                                      const FloatComplexMatrix& b,
+                                      const std::string& balance_job)
+{
+  F77_INT n = to_f77_int (a.cols ());
+
+  if (a.rows () != n)
     {
-      F77_INT n = to_f77_int (a.cols ());
-
-      if (a.rows () != n)
-        {
-          (*current_liboctave_error_handler)
-            ("FloatComplexGEPBALANCE requires square matrix");
-          return -1;
-        }
-
-      if (a.dims () != b.dims ())
-        err_nonconformant ("FloatComplexGEPBALANCE",
-                           n, n, b.rows(), b.cols());
-
-      F77_INT info;
-      F77_INT ilo;
-      F77_INT ihi;
-
-      OCTAVE_LOCAL_BUFFER (float, plscale, n);
-      OCTAVE_LOCAL_BUFFER (float, prscale, n);
-      OCTAVE_LOCAL_BUFFER (float, pwork, 6 * n);
-
-      m_balanced_mat = a;
-      FloatComplex *p_balanced_mat = m_balanced_mat.fortran_vec ();
-      m_balanced_mat2 = b;
-      FloatComplex *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
-
-      char job = balance_job[0];
-
-      F77_XFCN (cggbal, CGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 n, F77_CMPLX_ARG (p_balanced_mat),
-                                 n, F77_CMPLX_ARG (p_balanced_mat2),
-                                 n, ilo, ihi, plscale, prscale, pwork, info
-                                 F77_CHAR_ARG_LEN (1)));
-
-      m_balancing_mat = FloatMatrix (n, n, 0.0);
-      m_balancing_mat2 = FloatMatrix (n, n, 0.0);
-      for (F77_INT i = 0; i < n; i++)
-        {
-          octave_quit ();
-          m_balancing_mat.elem (i, i) = 1.0;
-          m_balancing_mat2.elem (i, i) = 1.0;
-        }
-
-      float *p_balancing_mat = m_balancing_mat.fortran_vec ();
-      float *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
-
-      // first left
-      F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 F77_CONST_CHAR_ARG2 ("L", 1),
-                                 n, ilo, ihi, plscale, prscale,
-                                 n, p_balancing_mat, n, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      // then right
-      F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 F77_CONST_CHAR_ARG2 ("R", 1),
-                                 n, ilo, ihi, plscale, prscale,
-                                 n, p_balancing_mat2, n, info
-                                 F77_CHAR_ARG_LEN (1)
-                                 F77_CHAR_ARG_LEN (1)));
-
-      return info;
+      (*current_liboctave_error_handler)
+        ("FloatComplexGEPBALANCE requires square matrix");
+      return -1;
     }
 
-    // Instantiations we need.
+  if (a.dims () != b.dims ())
+    err_nonconformant ("FloatComplexGEPBALANCE",
+                       n, n, b.rows(), b.cols());
 
-    template class gepbalance<Matrix>;
+  F77_INT info;
+  F77_INT ilo;
+  F77_INT ihi;
 
-    template class gepbalance<FloatMatrix>;
+  OCTAVE_LOCAL_BUFFER (float, plscale, n);
+  OCTAVE_LOCAL_BUFFER (float, prscale, n);
+  OCTAVE_LOCAL_BUFFER (float, pwork, 6 * n);
 
-    template class gepbalance<ComplexMatrix>;
+  m_balanced_mat = a;
+  FloatComplex *p_balanced_mat = m_balanced_mat.fortran_vec ();
+  m_balanced_mat2 = b;
+  FloatComplex *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
 
-    template class gepbalance<FloatComplexMatrix>;
+  char job = balance_job[0];
+
+  F77_XFCN (cggbal, CGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             n, F77_CMPLX_ARG (p_balanced_mat),
+                             n, F77_CMPLX_ARG (p_balanced_mat2),
+                             n, ilo, ihi, plscale, prscale, pwork, info
+                             F77_CHAR_ARG_LEN (1)));
+
+  m_balancing_mat = FloatMatrix (n, n, 0.0);
+  m_balancing_mat2 = FloatMatrix (n, n, 0.0);
+  for (F77_INT i = 0; i < n; i++)
+    {
+      octave_quit ();
+      m_balancing_mat.elem (i, i) = 1.0;
+      m_balancing_mat2.elem (i, i) = 1.0;
+    }
+
+  float *p_balancing_mat = m_balancing_mat.fortran_vec ();
+  float *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
+
+  // first left
+  F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             F77_CONST_CHAR_ARG2 ("L", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+
+  // then right
+  F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+                             F77_CONST_CHAR_ARG2 ("R", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat2, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+
+  return info;
+}
+
+// Instantiations we need.
+
+template class gepbalance<Matrix>;
+
+template class gepbalance<FloatMatrix>;
+
+template class gepbalance<ComplexMatrix>;
+
+template class gepbalance<FloatComplexMatrix>;
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

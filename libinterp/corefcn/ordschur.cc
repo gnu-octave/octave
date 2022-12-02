@@ -82,7 +82,8 @@ is in the upper left corner, by doing:
   if (args.length () != 3)
     print_usage ();
 
-  const Array<octave_idx_type> sel_arg = args(2).xoctave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");
+  const Array<octave_idx_type> sel_arg = args(
+      2).xoctave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");
 
   const octave_idx_type sel_n = sel_arg.numel ();
 

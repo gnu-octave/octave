@@ -35,91 +35,91 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  bool
-  base64_encode (const char *inc, const std::size_t inlen, char **out)
-  {
-    bool ret = false;
+bool
+base64_encode (const char *inc, const std::size_t inlen, char **out)
+{
+  bool ret = false;
 
-    std::ptrdiff_t outlen = octave_base64_encode_alloc_wrapper (inc, inlen, out);
+  std::ptrdiff_t outlen = octave_base64_encode_alloc_wrapper (inc, inlen, out);
 
-    if (! out)
-      {
-        if (outlen == 0 && inlen != 0)
-          (*current_liboctave_error_handler)
-            ("base64_encode: input array too large");
-        else
-          (*current_liboctave_error_handler)
-            ("base64_encode: memory allocation error");
-      }
-    else
-      ret = true;
-
-    return ret;
-  }
-
-  Array<double>
-  base64_decode (const std::string& str)
-  {
-    Array<double> retval;
-
-    double *out;
-    std::ptrdiff_t outlen;
-
-    bool ok
-      = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
-                                            reinterpret_cast<char **> (&out),
-                                            &outlen);
-
-    if (! ok)
-      (*current_liboctave_error_handler)
-        ("base64_decode: input was not valid base64");
-
-    if (! out)
-      (*current_liboctave_error_handler)
-        ("base64_decode: memory allocation error");
-
-    if ((outlen % (sizeof (double) / sizeof (char))) != 0)
-      {
-        ::free (out);
+  if (! out)
+    {
+      if (outlen == 0 && inlen != 0)
         (*current_liboctave_error_handler)
-          ("base64_decode: incorrect input size");
-      }
-    else
-      {
-        octave_idx_type len = (outlen * sizeof (char)) / sizeof (double);
-        retval.resize (dim_vector (1, len));
-        std::copy (out, out + len, retval.fortran_vec ());
-        ::free (out);
-      }
+          ("base64_encode: input array too large");
+      else
+        (*current_liboctave_error_handler)
+          ("base64_encode: memory allocation error");
+    }
+  else
+    ret = true;
 
-    return retval;
-  }
+  return ret;
+}
 
-  intNDArray<octave_uint8>
-  base64_decode_bytes (const std::string& str)
-  {
-    intNDArray<octave_uint8> retval;
+Array<double>
+base64_decode (const std::string& str)
+{
+  Array<double> retval;
 
-    char *out;
-    std::ptrdiff_t outlen;
+  double *out;
+  std::ptrdiff_t outlen;
 
-    bool ok
-      = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
-                                            &out, &outlen);
+  bool ok
+    = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
+                                          reinterpret_cast<char **> (&out),
+                                          &outlen);
 
-    if (! ok)
+  if (! ok)
+    (*current_liboctave_error_handler)
+      ("base64_decode: input was not valid base64");
+
+  if (! out)
+    (*current_liboctave_error_handler)
+      ("base64_decode: memory allocation error");
+
+  if ((outlen % (sizeof (double) / sizeof (char))) != 0)
+    {
+      ::free (out);
       (*current_liboctave_error_handler)
-        ("base64_decode: input was not valid base64");
+        ("base64_decode: incorrect input size");
+    }
+  else
+    {
+      octave_idx_type len = (outlen * sizeof (char)) / sizeof (double);
+      retval.resize (dim_vector (1, len));
+      std::copy (out, out + len, retval.fortran_vec ());
+      ::free (out);
+    }
 
-    if (! out)
-      (*current_liboctave_error_handler)
-        ("base64_decode: memory allocation error");
+  return retval;
+}
 
-    retval.resize (dim_vector (1, outlen));
-    std::copy (out, out + outlen, retval.fortran_vec ());
-    ::free (out);
+intNDArray<octave_uint8>
+base64_decode_bytes (const std::string& str)
+{
+  intNDArray<octave_uint8> retval;
 
-    return retval;
-  }
+  char *out;
+  std::ptrdiff_t outlen;
+
+  bool ok
+    = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
+                                          &out, &outlen);
+
+  if (! ok)
+    (*current_liboctave_error_handler)
+      ("base64_decode: input was not valid base64");
+
+  if (! out)
+    (*current_liboctave_error_handler)
+      ("base64_decode: memory allocation error");
+
+  retval.resize (dim_vector (1, outlen));
+  std::copy (out, out + outlen, retval.fortran_vec ());
+  ::free (out);
+
+  return retval;
+}
 
 OCTAVE_END_NAMESPACE(octave)

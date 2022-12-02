@@ -309,7 +309,7 @@ octave_base_value::type_conv_info
 octave_magic_uint::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conv_fcn,
-                                            octave_scalar::static_type_id ());
+         octave_scalar::static_type_id ());
 }
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_int, "magic_int",
@@ -319,5 +319,5 @@ octave_base_value::type_conv_info
 octave_magic_int::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conv_fcn,
-                                            octave_scalar::static_type_id ());
+         octave_scalar::static_type_id ());
 }

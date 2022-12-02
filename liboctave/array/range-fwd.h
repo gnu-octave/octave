@@ -30,7 +30,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  template <typename T, typename ENABLE = void> class OCTAVE_API range;
+template <typename T, typename ENABLE = void> class OCTAVE_API range;
 
 OCTAVE_END_NAMESPACE(octave)
 

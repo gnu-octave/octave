@@ -34,9 +34,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-    extern OCTAVE_API std::string blas_version (void);
+extern OCTAVE_API std::string blas_version (void);
 
-    extern OCTAVE_API std::string lapack_version (void);
+extern OCTAVE_API std::string lapack_version (void);
 
 OCTAVE_END_NAMESPACE(sys)
 OCTAVE_END_NAMESPACE(octave)

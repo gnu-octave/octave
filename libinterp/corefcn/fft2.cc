@@ -235,7 +235,7 @@ of @var{B} is treated separately.
 %! s = kron (sx', sy);
 %! S = fft2 (s);
 %! answer = kron (fft (sx)', fft (sy));
-%! assert (S, answer, 4*M*N*eps ("single"));
+%! assert (S, answer, 4*M*N* eps ("single"));
 
 ## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 ##         Comalco Research and Technology
@@ -257,7 +257,7 @@ of @var{B} is treated separately.
 %! answer = kron (sx', sy);
 %! s = ifft2 (S);
 %!
-%! assert (s, answer, 30*eps ("single"));
+%! assert (s, answer, 30* eps ("single"));
 */
 
 OCTAVE_END_NAMESPACE(octave)

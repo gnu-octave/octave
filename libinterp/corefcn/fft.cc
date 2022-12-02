@@ -296,7 +296,7 @@ dimension of the matrix along which the inverse FFT is performed.
 %! answer(n+1) = N/2;
 %! answer(N-n+1) = N/2;
 %!
-%! assert (S, answer, 4*N*eps ("single"));
+%! assert (S, answer, 4*N* eps ("single"));
 
 ## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 ##         Comalco Research and Technology
@@ -311,7 +311,7 @@ dimension of the matrix along which the inverse FFT is performed.
 %! S(n+1) = N/2;
 %! S(N-n+1) = N/2;
 %!
-%! assert (ifft (S), s, 4*N*eps ("single"));
+%! assert (ifft (S), s, 4*N* eps ("single"));
 */
 
 OCTAVE_END_NAMESPACE(octave)

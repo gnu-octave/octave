@@ -36,10 +36,10 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class cdef_object;
-  class interpreter;
-  class tree_evaluator;
-  class type_info;
+class cdef_object;
+class interpreter;
+class tree_evaluator;
+class type_info;
 
 OCTAVE_END_NAMESPACE(octave)
 

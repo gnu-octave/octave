@@ -405,9 +405,9 @@ as the other array.
 
       for (octave_idx_type i = 0; i < nd; i++)
         dvc(i) = (dva(i) < 1 ? dva(i)
-                             : (dvb(i) < 1 ? dvb(i)
-                                           : (dva(i) > dvb(i) ? dva(i)
-                                                              : dvb(i))));
+                  : (dvb(i) < 1 ? dvb(i)
+                     : (dva(i) > dvb(i) ? dva(i)
+                        : dvb(i))));
 
       if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
         {
@@ -512,19 +512,19 @@ as the other array.
                             }
                         }
                       else if BSXINIT(boolNDArray, "logical", bool)
-                      else if BSXINIT(int8NDArray, "int8", int8)
-                      else if BSXINIT(int16NDArray, "int16", int16)
-                      else if BSXINIT(int32NDArray, "int32", int32)
-                      else if BSXINIT(int64NDArray, "int64", int64)
-                      else if BSXINIT(uint8NDArray, "uint8", uint8)
-                      else if BSXINIT(uint16NDArray, "uint16", uint16)
-                      else if BSXINIT(uint32NDArray, "uint32", uint32)
-                      else if BSXINIT(uint64NDArray, "uint64", uint64)
-                      else
-                        {
-                          C = tmp(0);
-                          C = C.resize (dvc);
-                        }
+                        else if BSXINIT(int8NDArray, "int8", int8)
+                          else if BSXINIT(int16NDArray, "int16", int16)
+                            else if BSXINIT(int32NDArray, "int32", int32)
+                              else if BSXINIT(int64NDArray, "int64", int64)
+                                else if BSXINIT(uint8NDArray, "uint8", uint8)
+                                  else if BSXINIT(uint16NDArray, "uint16", uint16)
+                                    else if BSXINIT(uint32NDArray, "uint32", uint32)
+                                      else if BSXINIT(uint64NDArray, "uint64", uint64)
+                                        else
+                                          {
+                                            C = tmp(0);
+                                            C = C.resize (dvc);
+                                          }
                     }
                   else  // Skip semi-fast path for sparse matrices
                     {
@@ -551,7 +551,7 @@ as the other array.
                           result_ComplexNDArray
                             = ComplexNDArray (result_NDArray);
                           result_ComplexNDArray.insert
-                            (tmp(0).complex_array_value (), ra_idx);
+                          (tmp(0).complex_array_value (), ra_idx);
                           have_NDArray = false;
                           have_ComplexNDArray = true;
                         }
@@ -566,13 +566,13 @@ as the other array.
                         }
                       else if (tmp(0).isreal ())
                         result_FloatNDArray.insert
-                          (tmp(0).float_array_value (), ra_idx);
+                        (tmp(0).float_array_value (), ra_idx);
                       else
                         {
                           result_FloatComplexNDArray
                             = FloatComplexNDArray (result_FloatNDArray);
                           result_FloatComplexNDArray.insert
-                            (tmp(0).float_complex_array_value (), ra_idx);
+                          (tmp(0).float_complex_array_value (), ra_idx);
                           have_FloatNDArray = false;
                           have_FloatComplexNDArray = true;
                         }
@@ -592,18 +592,18 @@ as the other array.
                     }
 
                   else if BSXLOOP(ComplexNDArray, "double", complex)
-                  else if BSXLOOP(FloatComplexNDArray, "single", float_complex)
-                  else if BSXLOOP(boolNDArray, "logical", bool)
-                  else if BSXLOOP(int8NDArray, "int8", int8)
-                  else if BSXLOOP(int16NDArray, "int16", int16)
-                  else if BSXLOOP(int32NDArray, "int32", int32)
-                  else if BSXLOOP(int64NDArray, "int64", int64)
-                  else if BSXLOOP(uint8NDArray, "uint8", uint8)
-                  else if BSXLOOP(uint16NDArray, "uint16", uint16)
-                  else if BSXLOOP(uint32NDArray, "uint32", uint32)
-                  else if BSXLOOP(uint64NDArray, "uint64", uint64)
-                  else
-                    C = cat_op (C, tmp(0), ra_idx);
+                    else if BSXLOOP(FloatComplexNDArray, "single", float_complex)
+                      else if BSXLOOP(boolNDArray, "logical", bool)
+                        else if BSXLOOP(int8NDArray, "int8", int8)
+                          else if BSXLOOP(int16NDArray, "int16", int16)
+                            else if BSXLOOP(int32NDArray, "int32", int32)
+                              else if BSXLOOP(int64NDArray, "int64", int64)
+                                else if BSXLOOP(uint8NDArray, "uint8", uint8)
+                                  else if BSXLOOP(uint16NDArray, "uint16", uint16)
+                                    else if BSXLOOP(uint32NDArray, "uint32", uint32)
+                                      else if BSXLOOP(uint64NDArray, "uint64", uint64)
+                                        else
+                                          C = cat_op (C, tmp(0), ra_idx);
                 }
             }
 
@@ -612,20 +612,20 @@ as the other array.
             retval(0) = result_ ## T;
 
           if BSXEND(NDArray)
-          else if BSXEND(ComplexNDArray)
-          else if BSXEND(FloatNDArray)
-          else if BSXEND(FloatComplexNDArray)
-          else if BSXEND(boolNDArray)
-          else if BSXEND(int8NDArray)
-          else if BSXEND(int16NDArray)
-          else if BSXEND(int32NDArray)
-          else if BSXEND(int64NDArray)
-          else if BSXEND(uint8NDArray)
-          else if BSXEND(uint16NDArray)
-          else if BSXEND(uint32NDArray)
-          else if BSXEND(uint64NDArray)
-          else
-            retval(0) = C;
+            else if BSXEND(ComplexNDArray)
+              else if BSXEND(FloatNDArray)
+                else if BSXEND(FloatComplexNDArray)
+                  else if BSXEND(boolNDArray)
+                    else if BSXEND(int8NDArray)
+                      else if BSXEND(int16NDArray)
+                        else if BSXEND(int32NDArray)
+                          else if BSXEND(int64NDArray)
+                            else if BSXEND(uint8NDArray)
+                              else if BSXEND(uint16NDArray)
+                                else if BSXEND(uint32NDArray)
+                                  else if BSXEND(uint64NDArray)
+                                    else
+                                      retval(0) = C;
         }
     }
 

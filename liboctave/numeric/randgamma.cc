@@ -92,46 +92,46 @@ Dirichlet(a1,...,ak) for ai > 0
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  template <typename T> void rand_gamma (T a, octave_idx_type n, T *r)
-  {
-    octave_idx_type i;
-    /* If a < 1, start by generating gamma (1+a) */
-    const T d = (a < 1. ? 1.+a : a) - 1./3.;
-    const T c = 1./std::sqrt (9.*d);
+template <typename T> void rand_gamma (T a, octave_idx_type n, T *r)
+{
+  octave_idx_type i;
+  /* If a < 1, start by generating gamma (1+a) */
+  const T d = (a < 1. ? 1.+a : a) - 1./3.;
+  const T c = 1./std::sqrt (9.*d);
 
-    /* Handle invalid cases */
-    if (a <= 0 || lo_ieee_isinf (a))
-      {
-        for (i=0; i < n; i++)
-          r[i] = numeric_limits<T>::NaN ();
-        return;
-      }
+  /* Handle invalid cases */
+  if (a <= 0 || lo_ieee_isinf (a))
+    {
+      for (i=0; i < n; i++)
+        r[i] = numeric_limits<T>::NaN ();
+      return;
+    }
 
-    for (i=0; i < n; i++)
-      {
-        T x, xsq, v, u;
-      restart:
-        x = rand_normal<T> ();
-        v = (1+c*x);
-        v *= (v*v);
-        if (v <= 0)
-          goto restart; /* rare, so don't bother moving up */
-        u = rand_uniform<T> ();
-        xsq = x*x;
-        if (u >= 1.-0.0331*xsq*xsq && std::log (u) >= 0.5*xsq + d*(1-v+std::log (v)))
-          goto restart;
-        r[i] = d*v;
-      }
-    if (a < 1)
-      {
-        /* Use gamma(a) = gamma(1+a)*U^(1/a) */
-        /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
-        for (i = 0; i < n; i++)
-          r[i] *= exp (-rand_exponential<T> () / a);
-      }
-  }
+  for (i=0; i < n; i++)
+    {
+      T x, xsq, v, u;
+    restart:
+      x = rand_normal<T> ();
+      v = (1+c*x);
+      v *= (v*v);
+      if (v <= 0)
+        goto restart; /* rare, so don't bother moving up */
+      u = rand_uniform<T> ();
+      xsq = x*x;
+      if (u >= 1.-0.0331*xsq*xsq && std::log (u) >= 0.5*xsq + d*(1-v+std::log (v)))
+        goto restart;
+      r[i] = d*v;
+    }
+  if (a < 1)
+    {
+      /* Use gamma(a) = gamma(1+a)*U^(1/a) */
+      /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
+      for (i = 0; i < n; i++)
+        r[i] *= exp (-rand_exponential<T> () / a);
+    }
+}
 
-  template OCTAVE_API void rand_gamma (double, octave_idx_type, double *);
-  template OCTAVE_API void rand_gamma (float, octave_idx_type, float *);
+template OCTAVE_API void rand_gamma (double, octave_idx_type, double *);
+template OCTAVE_API void rand_gamma (float, octave_idx_type, float *);
 
 OCTAVE_END_NAMESPACE(octave)

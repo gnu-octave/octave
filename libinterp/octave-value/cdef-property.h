@@ -40,146 +40,146 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+class
+OCTINTERP_API
+cdef_property : public cdef_meta_object
+{
+  friend class cdef_class;
+
+private:
+
   class
-  OCTINTERP_API
-  cdef_property : public cdef_meta_object
+  cdef_property_rep : public cdef_meta_object_rep
   {
-    friend class cdef_class;
-
-  private:
-
-    class
-    cdef_property_rep : public cdef_meta_object_rep
-    {
-    public:
-
-      cdef_property_rep (void) : cdef_meta_object_rep () { }
-
-      cdef_property_rep& operator = (const cdef_property_rep& p) = delete;
-
-      ~cdef_property_rep (void) = default;
-
-      cdef_object_rep * copy (void) const
-      {
-        return new cdef_property_rep (*this);
-      }
-
-      bool is_property (void) const { return true; }
-
-      std::string get_name (void) const { return get("Name").string_value (); }
-
-      void set_name (const std::string& nm) { put ("Name", nm); }
-
-      bool is_constant (void) const { return get("Constant").bool_value (); }
-
-      octave_value get_value (bool do_check_access = true,
-                              const std::string& who = "") const;
-
-      octave_value get_value (const cdef_object& obj,
-                              bool do_check_access = true,
-                              const std::string& who = "") const;
-
-      void set_value (cdef_object& obj, const octave_value& val,
-                      bool do_check_access = true,
-                      const std::string& who = "");
-
-      OCTINTERP_API bool check_get_access (void) const;
-
-      OCTINTERP_API bool check_set_access (void) const;
-
-    private:
-      cdef_property_rep (const cdef_property_rep& p)
-        : cdef_meta_object_rep (p)
-      { }
-
-      OCTINTERP_API bool is_recursive_set (const cdef_object& obj) const;
-
-      cdef_property wrap (void)
-      {
-        m_count++;
-        return cdef_property (this);
-      }
-
-      OCTINTERP_API OCTAVE_NORETURN
-      void err_property_access (const std::string& from,
-                                bool is_set = false) const;
-    };
-
   public:
 
-    cdef_property (void) : cdef_meta_object () { }
+    cdef_property_rep (void) : cdef_meta_object_rep () { }
 
-    cdef_property (const std::string& nm)
-      : cdef_meta_object (new cdef_property_rep ())
+    cdef_property_rep& operator = (const cdef_property_rep& p) = delete;
+
+    ~cdef_property_rep (void) = default;
+
+    cdef_object_rep * copy (void) const
     {
-      get_rep ()->set_name (nm);
+      return new cdef_property_rep (*this);
     }
 
-    cdef_property (const cdef_property& prop) : cdef_meta_object (prop) { }
+    bool is_property (void) const { return true; }
 
-    cdef_property (const cdef_object& obj)
-      : cdef_meta_object (obj)
-    {
-      // This should never happen...
-      if (! is_property ())
-        error ("internal error: invalid assignment from %s to meta.property object",
-               class_name ().c_str ());
-    }
+    std::string get_name (void) const { return get("Name").string_value (); }
 
-    cdef_property& operator = (const cdef_property& prop)
-    {
-      cdef_object::operator = (prop);
+    void set_name (const std::string& nm) { put ("Name", nm); }
 
-      return *this;
-    }
-
-    ~cdef_property (void) = default;
-
-    octave_value get_value (const cdef_object& obj, bool do_check_access = true,
-                            const std::string& who = "") const
-    {
-      return get_rep ()->get_value (obj, do_check_access, who);
-    }
+    bool is_constant (void) const { return get("Constant").bool_value (); }
 
     octave_value get_value (bool do_check_access = true,
-                            const std::string& who = "") const
-    {
-      return get_rep ()->get_value (do_check_access, who);
-    }
+                            const std::string& who = "") const;
+
+    octave_value get_value (const cdef_object& obj,
+                            bool do_check_access = true,
+                            const std::string& who = "") const;
 
     void set_value (cdef_object& obj, const octave_value& val,
                     bool do_check_access = true,
-                    const std::string& who = "")
-    {
-      get_rep ()->set_value (obj, val, do_check_access, who);
-    }
+                    const std::string& who = "");
 
-    bool check_get_access (void) const
-    {
-      return get_rep ()->check_get_access ();
-    }
+    OCTINTERP_API bool check_get_access (void) const;
 
-    bool check_set_access (void) const
-    {
-      return get_rep ()->check_set_access ();
-    }
-
-    std::string get_name (void) const { return get_rep ()->get_name (); }
-
-    bool is_constant (void) const { return get_rep ()->is_constant (); }
+    OCTINTERP_API bool check_set_access (void) const;
 
   private:
+    cdef_property_rep (const cdef_property_rep& p)
+      : cdef_meta_object_rep (p)
+    { }
 
-    cdef_property_rep * get_rep (void)
+    OCTINTERP_API bool is_recursive_set (const cdef_object& obj) const;
+
+    cdef_property wrap (void)
     {
-      return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ());
+      m_count++;
+      return cdef_property (this);
     }
 
-    const cdef_property_rep * get_rep (void) const
-    {
-      return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ());
-    }
+    OCTINTERP_API OCTAVE_NORETURN
+    void err_property_access (const std::string& from,
+                              bool is_set = false) const;
   };
+
+public:
+
+  cdef_property (void) : cdef_meta_object () { }
+
+  cdef_property (const std::string& nm)
+    : cdef_meta_object (new cdef_property_rep ())
+  {
+    get_rep ()->set_name (nm);
+  }
+
+  cdef_property (const cdef_property& prop) : cdef_meta_object (prop) { }
+
+  cdef_property (const cdef_object& obj)
+    : cdef_meta_object (obj)
+  {
+    // This should never happen...
+    if (! is_property ())
+      error ("internal error: invalid assignment from %s to meta.property object",
+             class_name ().c_str ());
+  }
+
+  cdef_property& operator = (const cdef_property& prop)
+  {
+    cdef_object::operator = (prop);
+
+    return *this;
+  }
+
+  ~cdef_property (void) = default;
+
+  octave_value get_value (const cdef_object& obj, bool do_check_access = true,
+                          const std::string& who = "") const
+  {
+    return get_rep ()->get_value (obj, do_check_access, who);
+  }
+
+  octave_value get_value (bool do_check_access = true,
+                          const std::string& who = "") const
+  {
+    return get_rep ()->get_value (do_check_access, who);
+  }
+
+  void set_value (cdef_object& obj, const octave_value& val,
+                  bool do_check_access = true,
+                  const std::string& who = "")
+  {
+    get_rep ()->set_value (obj, val, do_check_access, who);
+  }
+
+  bool check_get_access (void) const
+  {
+    return get_rep ()->check_get_access ();
+  }
+
+  bool check_set_access (void) const
+  {
+    return get_rep ()->check_set_access ();
+  }
+
+  std::string get_name (void) const { return get_rep ()->get_name (); }
+
+  bool is_constant (void) const { return get_rep ()->is_constant (); }
+
+private:
+
+  cdef_property_rep * get_rep (void)
+  {
+    return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ());
+  }
+
+  const cdef_property_rep * get_rep (void) const
+  {
+    return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ());
+  }
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

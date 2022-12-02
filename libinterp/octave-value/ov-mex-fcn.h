@@ -41,7 +41,7 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class tree_evaluator;
+class tree_evaluator;
 
 OCTAVE_END_NAMESPACE(octave)
 

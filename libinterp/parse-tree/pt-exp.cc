@@ -37,18 +37,18 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Expressions.
+// Expressions.
 
-  octave_lvalue
-  tree_expression::lvalue (tree_evaluator&)
-  {
-    error ("invalid lvalue function called in expression");
-  }
+octave_lvalue
+tree_expression::lvalue (tree_evaluator&)
+{
+  error ("invalid lvalue function called in expression");
+}
 
-  std::string
-  tree_expression::original_text (void) const
-  {
-    return "";
-  }
+std::string
+tree_expression::original_text (void) const
+{
+  return "";
+}
 
 OCTAVE_END_NAMESPACE(octave)

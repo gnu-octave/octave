@@ -81,7 +81,7 @@ DEFCONV (sparse_bool_matrix_conv, bool, sparse_bool_matrix)
   const octave_bool& v = dynamic_cast<const octave_bool&> (a);
 
   return new octave_sparse_bool_matrix
-    (SparseBoolMatrix (1, 1, v.bool_value ()));
+         (SparseBoolMatrix (1, 1, v.bool_value ()));
 }
 
 void

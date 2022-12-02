@@ -92,7 +92,7 @@ public:
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
     return m_idx_cache ? *m_idx_cache
-                       : set_idx_cache (octave::idx_vector (m_matrix));
+           : set_idx_cache (octave::idx_vector (m_matrix));
   }
 
   builtin_type_t builtin_type (void) const { return btyp_bool; }

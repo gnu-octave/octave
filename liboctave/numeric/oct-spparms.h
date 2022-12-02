@@ -39,80 +39,80 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class OCTAVE_API sparse_params
+class OCTAVE_API sparse_params
+{
+protected:
+
+  sparse_params (void)
+    : m_params (OCTAVE_SPARSE_CONTROLS_SIZE),
+      m_keys (OCTAVE_SPARSE_CONTROLS_SIZE)
   {
-  protected:
+    init_keys ();
+    do_defaults ();
+  }
 
-    sparse_params (void)
-      : m_params (OCTAVE_SPARSE_CONTROLS_SIZE),
-        m_keys (OCTAVE_SPARSE_CONTROLS_SIZE)
-    {
-      init_keys ();
-      do_defaults ();
-    }
+public:
 
-  public:
+  sparse_params (const sparse_params&) = default;
 
-    sparse_params (const sparse_params&) = default;
+  sparse_params& operator = (const sparse_params&) = default;
 
-    sparse_params& operator = (const sparse_params&) = default;
+  ~sparse_params (void) = default;
 
-    ~sparse_params (void) = default;
+  static bool instance_ok (void);
 
-    static bool instance_ok (void);
+  static void defaults (void);
 
-    static void defaults (void);
+  static void tight (void);
 
-    static void tight (void);
+  static string_vector get_keys (void);
 
-    static string_vector get_keys (void);
+  static ColumnVector get_vals (void);
 
-    static ColumnVector get_vals (void);
+  static bool set_vals (const Array<double>& vals);
 
-    static bool set_vals (const Array<double>& vals);
+  static bool set_key (const std::string& key, const double& val);
 
-    static bool set_key (const std::string& key, const double& val);
+  static double get_key (const std::string& key);
 
-    static double get_key (const std::string& key);
+  static double get_bandden (void);
 
-    static double get_bandden (void);
+  static void print_info (std::ostream& os, const std::string& prefix);
 
-    static void print_info (std::ostream& os, const std::string& prefix);
+private:
 
-  private:
+  ColumnVector m_params;
 
-    ColumnVector m_params;
+  string_vector m_keys;
 
-    string_vector m_keys;
+  static sparse_params *s_instance;
 
-    static sparse_params *s_instance;
+  static void cleanup_instance (void)
+  {
+    delete s_instance;
+    s_instance = nullptr;
+  }
 
-    static void cleanup_instance (void)
-    {
-      delete s_instance;
-      s_instance = nullptr;
-    }
+  void do_defaults (void);
 
-    void do_defaults (void);
+  void do_tight (void);
 
-    void do_tight (void);
+  string_vector do_get_keys (void) const { return m_keys; }
 
-    string_vector do_get_keys (void) const { return m_keys; }
+  ColumnVector do_get_vals (void) const { return m_params; }
 
-    ColumnVector do_get_vals (void) const { return m_params; }
+  bool do_set_vals (const Array<double>& vals);
 
-    bool do_set_vals (const Array<double>& vals);
+  bool do_set_key (const std::string& key, const double& val);
 
-    bool do_set_key (const std::string& key, const double& val);
+  double do_get_key (const std::string& key);
 
-    double do_get_key (const std::string& key);
+  double do_get_bandden (void);
 
-    double do_get_bandden (void);
+  void do_print_info (std::ostream& os, const std::string& prefix) const;
 
-    void do_print_info (std::ostream& os, const std::string& prefix) const;
-
-    void init_keys (void);
-  };
+  void init_keys (void);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

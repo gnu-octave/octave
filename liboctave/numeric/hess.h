@@ -34,60 +34,60 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    class
-    hess
-    {
-    public:
+template <typename T>
+class
+hess
+{
+public:
 
-      hess (void)
-        : m_hess_mat (), m_unitary_hess_mat ()
-      { }
+  hess (void)
+    : m_hess_mat (), m_unitary_hess_mat ()
+  { }
 
-      hess (const T& a)
-        : m_hess_mat (), m_unitary_hess_mat ()
+  hess (const T& a)
+    : m_hess_mat (), m_unitary_hess_mat ()
+  {
+    init (a);
+  }
+
+  hess (const T& a, octave_idx_type& info)
+    : m_hess_mat (), m_unitary_hess_mat ()
+  {
+    info = init (a);
+  }
+
+  hess (const hess& a)
+    : m_hess_mat (a.m_hess_mat), m_unitary_hess_mat (a.m_unitary_hess_mat)
+  { }
+
+  hess& operator = (const hess& a)
+  {
+    if (this != &a)
       {
-        init (a);
+        m_hess_mat = a.m_hess_mat;
+        m_unitary_hess_mat = a.m_unitary_hess_mat;
       }
 
-      hess (const T& a, octave_idx_type& info)
-        : m_hess_mat (), m_unitary_hess_mat ()
-      {
-        info = init (a);
-      }
+    return *this;
+  }
 
-      hess (const hess& a)
-        : m_hess_mat (a.m_hess_mat), m_unitary_hess_mat (a.m_unitary_hess_mat)
-      { }
+  ~hess (void) = default;
 
-      hess& operator = (const hess& a)
-      {
-        if (this != &a)
-          {
-            m_hess_mat = a.m_hess_mat;
-            m_unitary_hess_mat = a.m_unitary_hess_mat;
-          }
+  T hess_matrix (void) const { return m_hess_mat; }
 
-        return *this;
-      }
+  T unitary_hess_matrix (void) const { return m_unitary_hess_mat; }
 
-      ~hess (void) = default;
+private:
 
-      T hess_matrix (void) const { return m_hess_mat; }
+  T m_hess_mat;
+  T m_unitary_hess_mat;
 
-      T unitary_hess_matrix (void) const { return m_unitary_hess_mat; }
+  OCTAVE_API octave_idx_type init (const T& a);
+};
 
-    private:
-
-      T m_hess_mat;
-      T m_unitary_hess_mat;
-
-      OCTAVE_API octave_idx_type init (const T& a);
-    };
-
-    template <typename T>
-    extern OCTAVE_API std::ostream&
-    operator << (std::ostream& os, const hess<T>& a);
+template <typename T>
+extern OCTAVE_API std::ostream&
+operator << (std::ostream& os, const hess<T>& a);
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

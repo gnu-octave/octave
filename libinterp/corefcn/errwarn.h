@@ -35,7 +35,7 @@
 class octave_value;
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class execution_exception;
+class execution_exception;
 
 OCTAVE_END_NAMESPACE(octave)
 

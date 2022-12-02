@@ -276,7 +276,7 @@ permutation information.
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
               math::sparse_lu<SparseComplexMatrix> fact (m, Qinit, thresh,
-                                                         false, true);
+                  false, true);
 
               if (nargout < 2)
                 retval(0) = fact.Y ();
@@ -778,19 +778,19 @@ factorization from scratch.
 
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu (single (A));
-%! [L,U] = luupdate (L,U,P*single (u), single (v));
+%! [L,U] = luupdate (L,U,P* single (u), single (v));
 %! assert (norm (vec (tril (L)-L), Inf) == 0);
 %! assert (norm (vec (triu (U)-U), Inf) == 0);
-%! assert (norm (vec (P'*L*U - single (A) - single (u)*single (v).'), Inf)
-%!         < norm (single (A))*1e1*eps ("single"));
+%! assert (norm (vec (P'*L*U - single (A) - single (u)* single (v).'), Inf)
+%!         < norm (single (A))*1e1* eps ("single"));
 %!
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu (single (Ac));
-%! [L,U] = luupdate (L,U,P*single (uc),single (vc));
+%! [L,U] = luupdate (L,U,P* single (uc),single (vc));
 %! assert (norm (vec (tril (L)-L), Inf) == 0);
 %! assert (norm (vec (triu (U)-U), Inf) == 0);
-%! assert (norm (vec (P'*L*U - single (Ac) - single (uc)*single (vc).'), Inf)
-%!         < norm (single (Ac))*1e1*eps ("single"));
+%! assert (norm (vec (P'*L*U - single (Ac) - single (uc)* single (vc).'), Inf)
+%!         < norm (single (Ac))*1e1* eps ("single"));
 
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu (A);
@@ -825,16 +825,16 @@ factorization from scratch.
 %! [L,U,P] = luupdate (L,U,P,single (u),single (v));
 %! assert (norm (vec (tril (L)-L), Inf) == 0);
 %! assert (norm (vec (triu (U)-U), Inf) == 0);
-%! assert (norm (vec (P'*L*U - single (A) - single (u)*single (v).'), Inf)
-%!         < norm (single (A))*1e1*eps ("single"));
+%! assert (norm (vec (P'*L*U - single (A) - single (u)* single (v).'), Inf)
+%!         < norm (single (A))*1e1* eps ("single"));
 %!
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu (single (Ac));
 %! [L,U,P] = luupdate (L,U,P,single (uc),single (vc));
 %! assert (norm (vec (tril (L)-L), Inf) == 0);
 %! assert (norm (vec (triu (U)-U), Inf) == 0);
-%! assert (norm (vec (P'*L*U - single (Ac) - single (uc)*single (vc).'), Inf)
-%!         < norm (single (Ac))*1e1*eps ("single"));
+%! assert (norm (vec (P'*L*U - single (Ac) - single (uc)* single (vc).'), Inf)
+%!         < norm (single (Ac))*1e1* eps ("single"));
 */
 
 OCTAVE_END_NAMESPACE(octave)

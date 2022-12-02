@@ -34,31 +34,31 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(crypto)
 
-    typedef void * (hash_fptr) (const char *buffer, std::size_t len, void *res);
+typedef void *(hash_fptr) (const char *buffer, std::size_t len, void *res);
 
-    OCTAVE_API std::string
-    hash (hash_fptr hash_fcn, const std::string& str, int result_buf_len);
+OCTAVE_API std::string
+hash (hash_fptr hash_fcn, const std::string& str, int result_buf_len);
 
-    OCTAVE_API int md2_digest_size (void);
-    OCTAVE_API int md4_digest_size (void);
-    OCTAVE_API int md5_digest_size (void);
-    OCTAVE_API int sha1_digest_size (void);
-    OCTAVE_API int sha224_digest_size (void);
-    OCTAVE_API int sha256_digest_size (void);
-    OCTAVE_API int sha384_digest_size (void);
-    OCTAVE_API int sha512_digest_size (void);
+OCTAVE_API int md2_digest_size (void);
+OCTAVE_API int md4_digest_size (void);
+OCTAVE_API int md5_digest_size (void);
+OCTAVE_API int sha1_digest_size (void);
+OCTAVE_API int sha224_digest_size (void);
+OCTAVE_API int sha256_digest_size (void);
+OCTAVE_API int sha384_digest_size (void);
+OCTAVE_API int sha512_digest_size (void);
 
-    OCTAVE_API std::string md2_hash (const std::string& str);
-    OCTAVE_API std::string md4_hash (const std::string& str);
-    OCTAVE_API std::string md5_hash (const std::string& str);
-    OCTAVE_API std::string sha1_hash (const std::string& str);
-    OCTAVE_API std::string sha224_hash (const std::string& str);
-    OCTAVE_API std::string sha256_hash (const std::string& str);
-    OCTAVE_API std::string sha384_hash (const std::string& str);
-    OCTAVE_API std::string sha512_hash (const std::string& str);
+OCTAVE_API std::string md2_hash (const std::string& str);
+OCTAVE_API std::string md4_hash (const std::string& str);
+OCTAVE_API std::string md5_hash (const std::string& str);
+OCTAVE_API std::string sha1_hash (const std::string& str);
+OCTAVE_API std::string sha224_hash (const std::string& str);
+OCTAVE_API std::string sha256_hash (const std::string& str);
+OCTAVE_API std::string sha384_hash (const std::string& str);
+OCTAVE_API std::string sha512_hash (const std::string& str);
 
-    OCTAVE_API std::string
-    hash (const std::string& hash_type, const std::string& str);
+OCTAVE_API std::string
+hash (const std::string& hash_type, const std::string& str);
 
 OCTAVE_END_NAMESPACE(crypto)
 OCTAVE_END_NAMESPACE(octave)

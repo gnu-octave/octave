@@ -42,132 +42,132 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
-  class tree_evaluator;
+class interpreter;
+class tree_evaluator;
 
-  // Function handles.
+// Function handles.
 
-  class base_fcn_handle
+class base_fcn_handle
+{
+public:
+
+  base_fcn_handle (const std::string& name = "",
+                   const std::string& file = "")
+    : m_name (name), m_file (file)
+  { }
+
+  base_fcn_handle (const base_fcn_handle&) = default;
+
+  virtual ~base_fcn_handle (void) = default;
+
+  virtual base_fcn_handle * clone (void) const = 0;
+
+  virtual std::string type (void) const = 0;
+
+  virtual bool is_internal (void) const { return false; }
+
+  virtual bool is_simple (void) const { return false; }
+
+  virtual bool is_scoped (void) const { return false; }
+
+  virtual bool is_nested (void) const { return false; }
+
+  virtual bool is_nested (const std::shared_ptr<stack_frame>&) const
   {
-  public:
+    return false;
+  }
 
-    base_fcn_handle (const std::string& name = "",
-                     const std::string& file = "")
-      : m_name (name), m_file (file)
-    { }
+  virtual bool is_weak_nested (void) const { return false; }
 
-    base_fcn_handle (const base_fcn_handle&) = default;
+  virtual bool is_class_simple (void) const { return false; }
 
-    virtual ~base_fcn_handle (void) = default;
+  virtual bool is_anonymous (void) const { return false; }
 
-    virtual base_fcn_handle * clone (void) const = 0;
+  virtual bool is_weak_anonymous (void) const { return false; }
 
-    virtual std::string type (void) const = 0;
+  virtual octave_value make_weak_nested_handle (void) const;
 
-    virtual bool is_internal (void) const { return false; }
+  virtual octave_value make_weak_anonymous_handle (void) const;
 
-    virtual bool is_simple (void) const { return false; }
+  std::string fcn_name (void) const { return m_name; }
 
-    virtual bool is_scoped (void) const { return false; }
+  std::string file (void) const { return m_file; }
 
-    virtual bool is_nested (void) const { return false; }
+  octave_value_list
+  subsref (const std::string& type, const std::list<octave_value_list>& idx,
+           int nargout);
 
-    virtual bool is_nested (const std::shared_ptr<stack_frame>&) const
-    {
-      return false;
-    }
+  virtual octave_value_list
+  call (int nargout, const octave_value_list& args) = 0;
 
-    virtual bool is_weak_nested (void) const { return false; }
+  // FIXME: These must go away.  They don't do the right thing for
+  // scoping or overloads.
+  virtual octave_function * function_value (bool = false)
+  {
+    return nullptr;
+  }
 
-    virtual bool is_class_simple (void) const { return false; }
+  virtual octave_user_function * user_function_value (bool = false)
+  {
+    return nullptr;
+  }
 
-    virtual bool is_anonymous (void) const { return false; }
+  virtual octave_value fcn_val (void) { return octave_value (); }
 
-    virtual bool is_weak_anonymous (void) const { return false; }
+  virtual octave_value workspace (void) const { return octave_value (); }
 
-    virtual octave_value make_weak_nested_handle (void) const;
+  // Should be const.
+  virtual octave_scalar_map info (void) { return octave_scalar_map (); }
 
-    virtual octave_value make_weak_anonymous_handle (void) const;
+  virtual void set_dispatch_class (const std::string& /*class_name*/) { }
 
-    std::string fcn_name (void) const { return m_name; }
+  virtual std::string get_dispatch_class (void) const { return ""; }
 
-    std::string file (void) const { return m_file; }
+  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-    octave_value_list
-    subsref (const std::string& type, const std::list<octave_value_list>& idx,
-             int nargout);
+  virtual bool save_ascii (std::ostream& os);
 
-    virtual octave_value_list
-    call (int nargout, const octave_value_list& args) = 0;
+  virtual bool load_ascii (std::istream& is);
 
-    // FIXME: These must go away.  They don't do the right thing for
-    // scoping or overloads.
-    virtual octave_function * function_value (bool = false)
-    {
-      return nullptr;
-    }
+  virtual bool save_binary (std::ostream& os, bool save_as_floats);
 
-    virtual octave_user_function * user_function_value (bool = false)
-    {
-      return nullptr;
-    }
+  virtual bool load_binary (std::istream& is, bool swap,
+                            mach_info::float_format fmt);
 
-    virtual octave_value fcn_val (void) { return octave_value (); }
+  virtual bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                          bool save_as_floats);
 
-    virtual octave_value workspace (void) const { return octave_value (); }
+  virtual bool load_hdf5 (octave_hdf5_id& group_hid,
+                          octave_hdf5_id& space_hid,
+                          octave_hdf5_id& type_hid);
 
-    // Should be const.
-    virtual octave_scalar_map info (void) { return octave_scalar_map (); }
+  virtual void print_raw (std::ostream&, bool /*pr_as_read_syntax*/,
+                          int /*current_print_indent_level*/) const
+  { }
 
-    virtual void set_dispatch_class (const std::string& /*class_name*/) { }
+  // Function handles are printed without a newline by default.
+  virtual bool print_as_scalar (void) const { return true; }
 
-    virtual std::string get_dispatch_class (void) const { return ""; }
+  virtual bool
+  set_fcn (const std::string& /*octaveroot*/, const std::string& /*fpath*/)
+  {
+    return false;
+  }
 
-    octave_value convert_to_str_internal (bool pad, bool force, char type) const;
+protected:
 
-    virtual bool save_ascii (std::ostream& os);
+  void warn_load (const char *file_type) const;
+  void warn_save (const char *file_type) const;
 
-    virtual bool load_ascii (std::istream& is);
+  void unimplemented (const char *op, const char *fmt) const;
 
-    virtual bool save_binary (std::ostream& os, bool save_as_floats);
+  // The name of the handle, not including the "@", or the text of the
+  // anonymous function.
+  std::string m_name;
 
-    virtual bool load_binary (std::istream& is, bool swap,
-                              mach_info::float_format fmt);
-
-    virtual bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                            bool save_as_floats);
-
-    virtual bool load_hdf5 (octave_hdf5_id& group_hid,
-                            octave_hdf5_id& space_hid,
-                            octave_hdf5_id& type_hid);
-
-    virtual void print_raw (std::ostream&, bool /*pr_as_read_syntax*/,
-                            int /*current_print_indent_level*/) const
-    { }
-
-    // Function handles are printed without a newline by default.
-    virtual bool print_as_scalar (void) const { return true; }
-
-    virtual bool
-    set_fcn (const std::string& /*octaveroot*/, const std::string& /*fpath*/)
-    {
-      return false;
-    }
-
-  protected:
-
-    void warn_load (const char *file_type) const;
-    void warn_save (const char *file_type) const;
-
-    void unimplemented (const char *op, const char *fmt) const;
-
-    // The name of the handle, not including the "@", or the text of the
-    // anonymous function.
-    std::string m_name;
-
-    // The name of the file where the named function was defined.
-    std::string m_file;
-  };
+  // The name of the file where the named function was defined.
+  std::string m_file;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 
@@ -219,7 +219,7 @@ public:
   octave_fcn_handle (const octave_value& fcn,
                      const octave::stack_frame::local_vars_map& local_vars,
                      const std::shared_ptr<octave::stack_frame>& closure_frames
-                       = std::shared_ptr<octave::stack_frame> ());
+                     = std::shared_ptr<octave::stack_frame> ());
 
   octave_fcn_handle (octave::base_fcn_handle *rep);
 

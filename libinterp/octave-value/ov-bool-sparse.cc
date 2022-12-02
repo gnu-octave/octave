@@ -70,7 +70,7 @@ octave_base_value::type_conv_info
 octave_sparse_bool_matrix::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_sparse_matrix::static_type_id ());
+         octave_sparse_matrix::static_type_id ());
 }
 
 double
@@ -101,7 +101,7 @@ octave_sparse_bool_matrix::complex_value (bool) const
 
 octave_value
 octave_sparse_bool_matrix::convert_to_str_internal (bool pad, bool force,
-                                                    char type) const
+    char type) const
 {
   octave_value tmp = octave_value (array_value ());
   return tmp.convert_to_str (pad, force, type);

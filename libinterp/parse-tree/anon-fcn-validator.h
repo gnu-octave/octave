@@ -34,49 +34,49 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class tree_expression;
-  class tree_parameter_list;
+class tree_expression;
+class tree_parameter_list;
 
-  // How to check the semantics of the code that the parse trees represent.
+// How to check the semantics of the code that the parse trees represent.
 
-  class anon_fcn_validator : public tree_walker
-  {
-  public:
+class anon_fcn_validator : public tree_walker
+{
+public:
 
-    anon_fcn_validator (tree_parameter_list *, tree_expression *expr);
+  anon_fcn_validator (tree_parameter_list *, tree_expression *expr);
 
-    // No copying!
+  // No copying!
 
-    anon_fcn_validator (const anon_fcn_validator&) = delete;
+  anon_fcn_validator (const anon_fcn_validator&) = delete;
 
-    anon_fcn_validator& operator = (const anon_fcn_validator&) = delete;
+  anon_fcn_validator& operator = (const anon_fcn_validator&) = delete;
 
-    ~anon_fcn_validator (void) = default;
+  ~anon_fcn_validator (void) = default;
 
-    void visit_postfix_expression (tree_postfix_expression&);
+  void visit_postfix_expression (tree_postfix_expression&);
 
-    void visit_prefix_expression (tree_prefix_expression&);
+  void visit_prefix_expression (tree_prefix_expression&);
 
-    void visit_multi_assignment (tree_multi_assignment&);
+  void visit_multi_assignment (tree_multi_assignment&);
 
-    void visit_simple_assignment (tree_simple_assignment&);
+  void visit_simple_assignment (tree_simple_assignment&);
 
-    bool ok (void) const { return m_ok; }
+  bool ok (void) const { return m_ok; }
 
-    int line (void) const { return m_line; }
-    int column (void) const { return m_column; }
+  int line (void) const { return m_line; }
+  int column (void) const { return m_column; }
 
-    std::string message (void) const { return m_message; }
+  std::string message (void) const { return m_message; }
 
-  private:
+private:
 
-    bool m_ok;
-    int m_line;
-    int m_column;
-    std::string m_message;
+  bool m_ok;
+  int m_line;
+  int m_column;
+  std::string m_message;
 
-    void error (tree_expression& expr);
-  };
+  void error (tree_expression& expr);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -36,69 +36,69 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class octave_lvalue
-  {
-  public:
+class octave_lvalue
+{
+public:
 
-    octave_lvalue (const symbol_record& sr,
-                   const std::shared_ptr<stack_frame>& frame)
-      : m_sym (sr), m_frame (frame), m_black_hole (false),
-        m_type (), m_idx ()
-    { }
+  octave_lvalue (const symbol_record& sr,
+                 const std::shared_ptr<stack_frame>& frame)
+    : m_sym (sr), m_frame (frame), m_black_hole (false),
+      m_type (), m_idx ()
+  { }
 
-    octave_lvalue (const octave_lvalue&) = default;
+  octave_lvalue (const octave_lvalue&) = default;
 
-    octave_lvalue& operator = (const octave_lvalue&) = delete;
+  octave_lvalue& operator = (const octave_lvalue&) = delete;
 
-    ~octave_lvalue (void) = default;
+  ~octave_lvalue (void) = default;
 
-    bool is_black_hole (void) const { return m_black_hole; }
+  bool is_black_hole (void) const { return m_black_hole; }
 
-    void mark_black_hole (void) { m_black_hole = true; }
+  void mark_black_hole (void) { m_black_hole = true; }
 
-    bool is_defined (void) const;
+  bool is_defined (void) const;
 
-    bool is_undefined (void) const;
+  bool is_undefined (void) const;
 
-    bool isstruct (void) const { return value().isstruct (); }
+  bool isstruct (void) const { return value().isstruct (); }
 
-    void define (const octave_value& v);
+  void define (const octave_value& v);
 
-    void assign (octave_value::assign_op, const octave_value&);
+  void assign (octave_value::assign_op, const octave_value&);
 
-    octave_idx_type numel (void) const;
+  octave_idx_type numel (void) const;
 
-    void set_index (const std::string& t,
-                    const std::list<octave_value_list>& i);
+  void set_index (const std::string& t,
+                  const std::list<octave_value_list>& i);
 
-    void clear_index (void) { m_type = ""; m_idx.clear (); }
+  void clear_index (void) { m_type = ""; m_idx.clear (); }
 
-    std::string index_type (void) const { return m_type; }
+  std::string index_type (void) const { return m_type; }
 
-    bool index_is_empty (void) const;
+  bool index_is_empty (void) const;
 
-    bool index_is_colon (void) const;
+  bool index_is_colon (void) const;
 
-    void unary_op (octave_value::unary_op op);
+  void unary_op (octave_value::unary_op op);
 
-    octave_value value (void) const;
+  octave_value value (void) const;
 
-  private:
+private:
 
-    octave_value
-    eval_for_numel (const std::string& type,
-                    const std::list<octave_value_list>& idx) const;
+  octave_value
+  eval_for_numel (const std::string& type,
+                  const std::list<octave_value_list>& idx) const;
 
-    symbol_record m_sym;
+  symbol_record m_sym;
 
-    std::shared_ptr<stack_frame> m_frame;
+  std::shared_ptr<stack_frame> m_frame;
 
-    bool m_black_hole;
+  bool m_black_hole;
 
-    std::string m_type;
+  std::string m_type;
 
-    std::list<octave_value_list> m_idx;
-  };
+  std::list<octave_value_list> m_idx;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

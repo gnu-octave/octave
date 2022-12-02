@@ -33,235 +33,235 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class opengl_functions;
+class opengl_functions;
 
-  class
-  OCTINTERP_API
-  opengl_renderer
+class
+OCTINTERP_API
+opengl_renderer
+{
+public:
+
+  opengl_renderer (opengl_functions& glfcns);
+
+  // No copying!
+
+  opengl_renderer (const opengl_renderer&) = delete;
+
+  opengl_renderer& operator = (const opengl_renderer&) = delete;
+
+  virtual ~opengl_renderer (void) = default;
+
+  opengl_functions& get_opengl_functions (void) const { return m_glfcns; }
+
+  virtual void draw (const graphics_object& go, bool toplevel = true);
+
+  // The following version of the draw method is not declared virtual
+  // because no derived class overrides it.
+
+  void draw (const Matrix& hlist, bool toplevel = false);
+
+  virtual void set_viewport (int w, int h);
+  virtual void set_device_pixel_ratio (double dpr) { m_devpixratio = dpr; }
+  virtual Matrix get_viewport_scaled (void) const;
+  virtual graphics_xform get_transform (void) const { return m_xform; }
+  virtual uint8NDArray get_pixels (int width, int height);
+
+  virtual void draw_zoom_box (int width, int height,
+                              int x1, int y1, int x2, int y2,
+                              const Matrix& overlaycolor,
+                              double overlayalpha,
+                              const Matrix& bordercolor,
+                              double borderalpha, double borderwidth);
+
+  virtual void finish (void);
+
+protected:
+
+  virtual void draw_figure (const figure::properties& props);
+  virtual void draw_axes (const axes::properties& props);
+  virtual void draw_line (const line::properties& props);
+  virtual void draw_surface (const surface::properties& props);
+  virtual void draw_patch (const patch::properties& props);
+  virtual void draw_scatter (const scatter::properties& props);
+  virtual void draw_light (const light::properties& props);
+  virtual void draw_hggroup (const hggroup::properties& props);
+  virtual void draw_text (const text::properties& props);
+  virtual void draw_text_background (const text::properties& props,
+                                     bool do_rotate = false);
+  virtual void draw_image (const image::properties& props);
+  virtual void draw_uipanel (const uipanel::properties& props,
+                             const graphics_object& go);
+  virtual void draw_uibuttongroup (const uibuttongroup::properties& props,
+                                   const graphics_object& go);
+  virtual void init_gl_context (bool enhanced, const Matrix& backgroundColor);
+  virtual void setup_opengl_transformation (const axes::properties& props);
+
+  virtual void set_clipbox (double x1, double x2, double y1, double y2,
+                            double z1, double z2);
+  virtual void set_clipping (bool on);
+  virtual void set_font (const base_properties& props);
+  virtual void set_color (const Matrix& c);
+  virtual void set_interpreter (const caseless_str& interp)
   {
-  public:
+    m_interpreter = interp;
+  }
+  virtual void set_linewidth (float w);
+  virtual void set_linestyle (const std::string& s, bool stipple = false,
+                              double linewidth = 0.5);
+  virtual void set_linecap (const std::string&) { };
+  virtual void set_linejoin (const std::string&) { };
+  virtual void set_polygon_offset (bool on, float offset = 0.0f);
+  virtual void set_selecting (bool on)
+  {
+    m_selecting = on;
+  }
 
-    opengl_renderer (opengl_functions& glfcns);
+  virtual void init_marker (const std::string& m, double size, float width);
+  virtual void change_marker (const std::string& m, double size);
+  virtual void end_marker (void);
+  virtual void draw_marker (double x, double y, double z,
+                            const Matrix& lc, const Matrix& fc,
+                            const double la = 1.0, const double fa = 1.0);
 
-    // No copying!
+  virtual void text_to_pixels (const std::string& txt,
+                               uint8NDArray& pixels,
+                               Matrix& bbox,
+                               int halign = 0, int valign = 0,
+                               double rotation = 0.0);
 
-    opengl_renderer (const opengl_renderer&) = delete;
+  virtual void text_to_strlist (const std::string& txt,
+                                std::list<text_renderer::string>& lst,
+                                Matrix& bbox,
+                                int halign = 0, int valign = 0,
+                                double rotation = 0.0);
 
-    opengl_renderer& operator = (const opengl_renderer&) = delete;
+  virtual Matrix render_text (const std::string& txt,
+                              double x, double y, double z,
+                              int halign, int valign, double rotation = 0.0);
 
-    virtual ~opengl_renderer (void) = default;
+  virtual void render_grid (const double linewidth,
+                            const std::string& gridstyle,
+                            const Matrix& gridcolor, const double gridalpha,
+                            const Matrix& ticks, double lim1, double lim2,
+                            double p1, double p1N, double p2, double p2N,
+                            int xyz, bool is_3D);
 
-    opengl_functions& get_opengl_functions (void) const { return m_glfcns; }
+  virtual void render_tickmarks (const Matrix& ticks,
+                                 double lim1, double lim2,
+                                 double p1, double p1N, double p2, double p2N,
+                                 double dx, double dy, double dz,
+                                 int xyz, bool doubleside);
 
-    virtual void draw (const graphics_object& go, bool toplevel = true);
+  virtual void render_ticktexts (const Matrix& ticks,
+                                 const string_vector& ticklabels,
+                                 double lim1, double lim2,
+                                 double p1, double p2,
+                                 int xyz, int ha, int va,
+                                 int& wmax, int& hmax);
 
-    // The following version of the draw method is not declared virtual
-    // because no derived class overrides it.
+  virtual void draw_zoom_rect (int x1, int y1, int x2, int y2);
 
-    void draw (const Matrix& hlist, bool toplevel = false);
+  //--------
 
-    virtual void set_viewport (int w, int h);
-    virtual void set_device_pixel_ratio (double dpr) { m_devpixratio = dpr; }
-    virtual Matrix get_viewport_scaled (void) const;
-    virtual graphics_xform get_transform (void) const { return m_xform; }
-    virtual uint8NDArray get_pixels (int width, int height);
+  opengl_functions& m_glfcns;
 
-    virtual void draw_zoom_box (int width, int height,
-                                int x1, int y1, int x2, int y2,
-                                const Matrix& overlaycolor,
-                                double overlayalpha,
-                                const Matrix& bordercolor,
-                                double borderalpha, double borderwidth);
+  // axis limits in model scaled coordinate
+  double m_xmin, m_xmax;
+  double m_ymin, m_ymax;
+  double m_zmin, m_zmax;
 
-    virtual void finish (void);
+  // Factor used for translating Octave pixels to actual device pixels
+  double m_devpixratio;
 
-  protected:
+  // axes transformation data
+  graphics_xform m_xform;
 
-    virtual void draw_figure (const figure::properties& props);
-    virtual void draw_axes (const axes::properties& props);
-    virtual void draw_line (const line::properties& props);
-    virtual void draw_surface (const surface::properties& props);
-    virtual void draw_patch (const patch::properties& props);
-    virtual void draw_scatter (const scatter::properties& props);
-    virtual void draw_light (const light::properties& props);
-    virtual void draw_hggroup (const hggroup::properties& props);
-    virtual void draw_text (const text::properties& props);
-    virtual void draw_text_background (const text::properties& props,
-                                       bool do_rotate = false);
-    virtual void draw_image (const image::properties& props);
-    virtual void draw_uipanel (const uipanel::properties& props,
-                               const graphics_object& go);
-    virtual void draw_uibuttongroup (const uibuttongroup::properties& props,
-                                     const graphics_object& go);
-    virtual void init_gl_context (bool enhanced, const Matrix& backgroundColor);
-    virtual void setup_opengl_transformation (const axes::properties& props);
+private:
 
-    virtual void set_clipbox (double x1, double x2, double y1, double y2,
-                              double z1, double z2);
-    virtual void set_clipping (bool on);
-    virtual void set_font (const base_properties& props);
-    virtual void set_color (const Matrix& c);
-    virtual void set_interpreter (const caseless_str& interp)
-    {
-      m_interpreter = interp;
-    }
-    virtual void set_linewidth (float w);
-    virtual void set_linestyle (const std::string& s, bool stipple = false,
-                                double linewidth = 0.5);
-    virtual void set_linecap (const std::string&) { };
-    virtual void set_linejoin (const std::string&) { };
-    virtual void set_polygon_offset (bool on, float offset = 0.0f);
-    virtual void set_selecting (bool on)
-    {
-      m_selecting = on;
-    }
+  class patch_tessellator;
 
-    virtual void init_marker (const std::string& m, double size, float width);
-    virtual void change_marker (const std::string& m, double size);
-    virtual void end_marker (void);
-    virtual void draw_marker (double x, double y, double z,
-                              const Matrix& lc, const Matrix& fc,
-                              const double la = 1.0, const double fa = 1.0);
+  void init_maxlights (void);
 
-    virtual void text_to_pixels (const std::string& txt,
-                                 uint8NDArray& pixels,
-                                 Matrix& bbox,
-                                 int halign = 0, int valign = 0,
-                                 double rotation = 0.0);
+  std::string get_string (unsigned int id) const;
 
-    virtual void text_to_strlist (const std::string& txt,
-                                  std::list<text_renderer::string>& lst,
-                                  Matrix& bbox,
-                                  int halign = 0, int valign = 0,
-                                  double rotation = 0.0);
+  bool is_nan_or_inf (double x, double y, double z) const
+  {
+    return (math::isnan (x) || math::isnan (y)
+            || math::isnan (z)
+            || math::isinf (x) || math::isinf (y)
+            || math::isinf (z));
+  }
 
-    virtual Matrix render_text (const std::string& txt,
-                                double x, double y, double z,
-                                int halign, int valign, double rotation = 0.0);
+  uint8_t clip_code (double x, double y, double z) const
+  {
+    return ((x < m_xmin ? 1 : 0)
+            | (x > m_xmax ? 1 : 0) << 1
+            | (y < m_ymin ? 1 : 0) << 2
+            | (y > m_ymax ? 1 : 0) << 3
+            | (z < m_zmin ? 1 : 0) << 4
+            | (z > m_zmax ? 1 : 0) << 5
+            | (is_nan_or_inf (x, y, z) ? 0 : 1) << 6);
+  }
 
-    virtual void render_grid (const double linewidth,
-                              const std::string& gridstyle,
-                              const Matrix& gridcolor, const double gridalpha,
-                              const Matrix& ticks, double lim1, double lim2,
-                              double p1, double p1N, double p2, double p2N,
-                              int xyz, bool is_3D);
+  void render_text (uint8NDArray pixels, Matrix bbox,
+                    double x, double y, double z, double rotation);
 
-    virtual void render_tickmarks (const Matrix& ticks,
-                                   double lim1, double lim2,
-                                   double p1, double p1N, double p2, double p2N,
-                                   double dx, double dy, double dz,
-                                   int xyz, bool doubleside);
+  void set_normal (int bfl_mode, const NDArray& n, int j, int i);
 
-    virtual void render_ticktexts (const Matrix& ticks,
-                                   const string_vector& ticklabels,
-                                   double lim1, double lim2,
-                                   double p1, double p2,
-                                   int xyz, int ha, int va,
-                                   int& wmax, int& hmax);
+  void set_ortho_coordinates (void);
 
-    virtual void draw_zoom_rect (int x1, int y1, int x2, int y2);
+  void restore_previous_coordinates (void);
 
-    //--------
+  double points_to_pixels (const double val) const;
 
-    opengl_functions& m_glfcns;
+  unsigned int make_marker_list (const std::string& m, double size,
+                                 bool filled) const;
 
-    // axis limits in model scaled coordinate
-    double m_xmin, m_xmax;
-    double m_ymin, m_ymax;
-    double m_zmin, m_zmax;
+  void draw_axes_planes (const axes::properties& props);
+  void draw_axes_boxes (const axes::properties& props);
 
-    // Factor used for translating Octave pixels to actual device pixels
-    double m_devpixratio;
+  void draw_axes_grids (const axes::properties& props);
+  void draw_axes_x_grid (const axes::properties& props);
+  void draw_axes_y_grid (const axes::properties& props);
+  void draw_axes_z_grid (const axes::properties& props);
 
-    // axes transformation data
-    graphics_xform m_xform;
+  void draw_axes_children (const axes::properties& props);
 
-  private:
+  void draw_all_lights (const base_properties& props,
+                        std::list<graphics_object>& obj_list);
 
-    class patch_tessellator;
+  void draw_texture_image (const octave_value cdata,
+                           Matrix x, Matrix y, bool ortho = false);
 
-    void init_maxlights (void);
+  //--------
 
-    std::string get_string (unsigned int id) const;
+  // The graphics m_toolkit associated with the figure being rendered.
+  graphics_toolkit m_toolkit;
 
-    bool is_nan_or_inf (double x, double y, double z) const
-    {
-      return (math::isnan (x) || math::isnan (y)
-              || math::isnan (z)
-              || math::isinf (x) || math::isinf (y)
-              || math::isinf (z));
-    }
+  // Z projection limits in windows coordinate
+  double m_xZ1, m_xZ2;
 
-    uint8_t clip_code (double x, double y, double z) const
-    {
-      return ((x < m_xmin ? 1 : 0)
-              | (x > m_xmax ? 1 : 0) << 1
-              | (y < m_ymin ? 1 : 0) << 2
-              | (y > m_ymax ? 1 : 0) << 3
-              | (z < m_zmin ? 1 : 0) << 4
-              | (z > m_zmax ? 1 : 0) << 5
-              | (is_nan_or_inf (x, y, z) ? 0 : 1) << 6);
-    }
+  // call lists identifiers for markers
+  unsigned int m_marker_id, m_filled_marker_id;
 
-    void render_text (uint8NDArray pixels, Matrix bbox,
-                      double x, double y, double z, double rotation);
+  // camera information for primitive sorting and lighting
+  ColumnVector m_camera_pos, m_camera_dir, m_view_vector;
 
-    void set_normal (int bfl_mode, const NDArray& n, int j, int i);
+  // interpreter to be used by text_to_pixels
+  caseless_str m_interpreter;
 
-    void set_ortho_coordinates (void);
+  text_renderer m_txt_renderer;
 
-    void restore_previous_coordinates (void);
+  // light object present and visible
+  unsigned int m_current_light;
+  unsigned int m_max_lights;
 
-    double points_to_pixels (const double val) const;
+  // Indicate we are drawing for selection purpose
+  bool m_selecting;
 
-    unsigned int make_marker_list (const std::string& m, double size,
-                                   bool filled) const;
-
-    void draw_axes_planes (const axes::properties& props);
-    void draw_axes_boxes (const axes::properties& props);
-
-    void draw_axes_grids (const axes::properties& props);
-    void draw_axes_x_grid (const axes::properties& props);
-    void draw_axes_y_grid (const axes::properties& props);
-    void draw_axes_z_grid (const axes::properties& props);
-
-    void draw_axes_children (const axes::properties& props);
-
-    void draw_all_lights (const base_properties& props,
-                          std::list<graphics_object>& obj_list);
-
-    void draw_texture_image (const octave_value cdata,
-                             Matrix x, Matrix y, bool ortho = false);
-
-    //--------
-
-    // The graphics m_toolkit associated with the figure being rendered.
-    graphics_toolkit m_toolkit;
-
-    // Z projection limits in windows coordinate
-    double m_xZ1, m_xZ2;
-
-    // call lists identifiers for markers
-    unsigned int m_marker_id, m_filled_marker_id;
-
-    // camera information for primitive sorting and lighting
-    ColumnVector m_camera_pos, m_camera_dir, m_view_vector;
-
-    // interpreter to be used by text_to_pixels
-    caseless_str m_interpreter;
-
-    text_renderer m_txt_renderer;
-
-    // light object present and visible
-    unsigned int m_current_light;
-    unsigned int m_max_lights;
-
-    // Indicate we are drawing for selection purpose
-    bool m_selecting;
-
-    // Indicate we are drawing for printing purpose
-    bool m_printing;
-  };
+  // Indicate we are drawing for printing purpose
+  bool m_printing;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

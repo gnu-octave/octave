@@ -39,174 +39,174 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class symbol_scope;
+class symbol_scope;
 
-  // Binary expressions.
+// Binary expressions.
 
-  class tree_binary_expression : public tree_expression
+class tree_binary_expression : public tree_expression
+{
+public:
+
+  tree_binary_expression (int l = -1, int c = -1,
+                          octave_value::binary_op t
+                          = octave_value::unknown_binary_op)
+    : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr), m_etype (t),
+      m_preserve_operands (false)
+  { }
+
+  tree_binary_expression (tree_expression *a, tree_expression *b,
+                          int l = -1, int c = -1,
+                          octave_value::binary_op t
+                          = octave_value::unknown_binary_op)
+    : tree_expression (l, c), m_lhs (a), m_rhs (b), m_etype (t),
+      m_preserve_operands (false)
+  { }
+
+  // No copying!
+
+  tree_binary_expression (const tree_binary_expression&) = delete;
+
+  tree_binary_expression& operator = (const tree_binary_expression&) = delete;
+
+  ~tree_binary_expression (void)
   {
-  public:
+    if (! m_preserve_operands)
+      {
+        delete m_lhs;
+        delete m_rhs;
+      }
+  }
 
-    tree_binary_expression (int l = -1, int c = -1,
-                            octave_value::binary_op t
-                            = octave_value::unknown_binary_op)
-      : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr), m_etype (t),
-        m_preserve_operands (false)
-    { }
+  void preserve_operands (void) { m_preserve_operands = true; }
 
-    tree_binary_expression (tree_expression *a, tree_expression *b,
-                            int l = -1, int c = -1,
-                            octave_value::binary_op t
-                            = octave_value::unknown_binary_op)
-      : tree_expression (l, c), m_lhs (a), m_rhs (b), m_etype (t),
-        m_preserve_operands (false)
-    { }
+  bool is_binary_expression (void) const { return true; }
 
-    // No copying!
+  bool rvalue_ok (void) const { return true; }
 
-    tree_binary_expression (const tree_binary_expression&) = delete;
+  std::string oper (void) const;
 
-    tree_binary_expression& operator = (const tree_binary_expression&) = delete;
+  octave_value::binary_op op_type (void) const { return m_etype; }
 
-    ~tree_binary_expression (void)
-    {
-      if (! m_preserve_operands)
-        {
-          delete m_lhs;
-          delete m_rhs;
-        }
-    }
+  tree_expression * lhs (void) { return m_lhs; }
+  tree_expression * rhs (void) { return m_rhs; }
 
-    void preserve_operands (void) { m_preserve_operands = true; }
+  tree_expression * dup (symbol_scope& scope) const;
 
-    bool is_binary_expression (void) const { return true; }
+  octave_value evaluate (tree_evaluator&, int nargout = 1);
 
-    bool rvalue_ok (void) const { return true; }
+  octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+  {
+    return ovl (evaluate (tw, nargout));
+  }
 
-    std::string oper (void) const;
+  void accept (tree_walker& tw)
+  {
+    tw.visit_binary_expression (*this);
+  }
 
-    octave_value::binary_op op_type (void) const { return m_etype; }
+  std::string profiler_name (void) const { return "binary " + oper (); }
 
-    tree_expression * lhs (void) { return m_lhs; }
-    tree_expression * rhs (void) { return m_rhs; }
+  void matlab_style_short_circuit_warning (const char *op);
 
-    tree_expression * dup (symbol_scope& scope) const;
+protected:
 
-    octave_value evaluate (tree_evaluator&, int nargout = 1);
+  // The operands for the expression.
+  tree_expression *m_lhs;
+  tree_expression *m_rhs;
 
-    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
-    {
-      return ovl (evaluate (tw, nargout));
-    }
+private:
 
-    void accept (tree_walker& tw)
-    {
-      tw.visit_binary_expression (*this);
-    }
+  // The type of the expression.
+  octave_value::binary_op m_etype;
 
-    std::string profiler_name (void) const { return "binary " + oper (); }
+  // If TRUE, don't delete m_lhs and m_rhs in destructor;
+  bool m_preserve_operands;
+};
 
-    void matlab_style_short_circuit_warning (const char *op);
+class tree_braindead_shortcircuit_binary_expression
+  : public tree_binary_expression
+{
+public:
 
-  protected:
+  tree_braindead_shortcircuit_binary_expression (tree_expression *a,
+      tree_expression *b,
+      int l, int c,
+      octave_value::binary_op t)
+    : tree_binary_expression (a, b, l, c, t)
+  { }
 
-    // The operands for the expression.
-    tree_expression *m_lhs;
-    tree_expression *m_rhs;
+  // No copying!
 
-  private:
+  tree_braindead_shortcircuit_binary_expression
+  (const tree_braindead_shortcircuit_binary_expression&) = delete;
 
-    // The type of the expression.
-    octave_value::binary_op m_etype;
+  tree_braindead_shortcircuit_binary_expression&
+  operator = (const tree_braindead_shortcircuit_binary_expression&) = delete;
 
-    // If TRUE, don't delete m_lhs and m_rhs in destructor;
-    bool m_preserve_operands;
+  ~tree_braindead_shortcircuit_binary_expression (void) = default;
+
+  tree_expression * dup (symbol_scope& scope) const;
+
+  octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+  using tree_binary_expression::evaluate_n;
+};
+
+// Boolean expressions.
+
+class tree_boolean_expression : public tree_binary_expression
+{
+public:
+
+  enum type
+  {
+    unknown,
+    bool_and,
+    bool_or
   };
 
-  class tree_braindead_shortcircuit_binary_expression
-    : public tree_binary_expression
+  tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
+    : tree_binary_expression (l, c), m_etype (t) { }
+
+  tree_boolean_expression (tree_expression *a, tree_expression *b,
+                           int l = -1, int c = -1, type t = unknown)
+    : tree_binary_expression (a, b, l, c), m_etype (t) { }
+
+  // No copying!
+
+  tree_boolean_expression (const tree_boolean_expression&) = delete;
+
+  tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
+
+  ~tree_boolean_expression (void) = default;
+
+  bool is_boolean_expression (void) const { return true; }
+
+  bool rvalue_ok (void) const { return true; }
+
+  std::string oper (void) const;
+
+  type op_type (void) const { return m_etype; }
+
+  tree_expression * dup (symbol_scope& scope) const;
+
+  octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+  octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
   {
-  public:
+    return ovl (evaluate (tw, nargout));
+  }
 
-    tree_braindead_shortcircuit_binary_expression (tree_expression *a,
-                                                   tree_expression *b,
-                                                   int l, int c,
-                                                   octave_value::binary_op t)
-      : tree_binary_expression (a, b, l, c, t)
-    { }
-
-    // No copying!
-
-    tree_braindead_shortcircuit_binary_expression
-      (const tree_braindead_shortcircuit_binary_expression&) = delete;
-
-    tree_braindead_shortcircuit_binary_expression&
-    operator = (const tree_braindead_shortcircuit_binary_expression&) = delete;
-
-    ~tree_braindead_shortcircuit_binary_expression (void) = default;
-
-    tree_expression * dup (symbol_scope& scope) const;
-
-    octave_value evaluate (tree_evaluator&, int nargout = 1);
-
-    using tree_binary_expression::evaluate_n;
-  };
-
-  // Boolean expressions.
-
-  class tree_boolean_expression : public tree_binary_expression
+  void accept (tree_walker& tw)
   {
-  public:
+    tw.visit_boolean_expression (*this);
+  }
 
-    enum type
-    {
-      unknown,
-      bool_and,
-      bool_or
-    };
+private:
 
-    tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
-      : tree_binary_expression (l, c), m_etype (t) { }
-
-    tree_boolean_expression (tree_expression *a, tree_expression *b,
-                             int l = -1, int c = -1, type t = unknown)
-      : tree_binary_expression (a, b, l, c), m_etype (t) { }
-
-    // No copying!
-
-    tree_boolean_expression (const tree_boolean_expression&) = delete;
-
-    tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
-
-    ~tree_boolean_expression (void) = default;
-
-    bool is_boolean_expression (void) const { return true; }
-
-    bool rvalue_ok (void) const { return true; }
-
-    std::string oper (void) const;
-
-    type op_type (void) const { return m_etype; }
-
-    tree_expression * dup (symbol_scope& scope) const;
-
-    octave_value evaluate (tree_evaluator&, int nargout = 1);
-
-    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
-    {
-      return ovl (evaluate (tw, nargout));
-    }
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_boolean_expression (*this);
-    }
-
-  private:
-
-    // The type of the expression.
-    type m_etype;
-  };
+  // The type of the expression.
+  type m_etype;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

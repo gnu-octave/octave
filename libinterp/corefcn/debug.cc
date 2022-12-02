@@ -190,7 +190,7 @@ debug_on_interrupt}
       if (symbol_name != "")
         {
           retmap = bptab.add_breakpoints_in_function (symbol_name, class_name,
-                                                      lines, condition);
+                   lines, condition);
           retval = bp_lines_to_ov (retmap);
         }
     }
@@ -395,17 +395,17 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
     }
   else
     {
-/*
-      if (tw.in_debug_repl ())
-        {
-          octave_user_code *dbg_fcn = tw.get_user_code ();
-          if (dbg_fcn)
-            {
-              symbol_name = dbg_fcn->name ();
-              fcn_list(0) = symbol_name;
-            }
-        }
-*/
+      /*
+            if (tw.in_debug_repl ())
+              {
+                octave_user_code *dbg_fcn = tw.get_user_code ();
+                if (dbg_fcn)
+                  {
+                    symbol_name = dbg_fcn->name ();
+                    fcn_list(0) = symbol_name;
+                  }
+              }
+      */
 
       bp_list = bptab.get_breakpoint_list (fcn_list);
     }

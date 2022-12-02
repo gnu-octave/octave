@@ -32,40 +32,40 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  hook_function::hook_function (const octave_value& f, const octave_value& d)
-  {
-    if (f.is_string ())
-      {
-        std::string name = f.string_value ();
+hook_function::hook_function (const octave_value& f, const octave_value& d)
+{
+  if (f.is_string ())
+    {
+      std::string name = f.string_value ();
 
-        m_rep = std::shared_ptr<base_hook_function> (new named_hook_function (name, d));
-      }
-    else if (f.is_function_handle ())
-      {
-        m_rep = std::shared_ptr<base_hook_function> (new fcn_handle_hook_function (f, d));
-      }
-    else
-      error ("invalid hook function");
-  }
+      m_rep = std::shared_ptr<base_hook_function> (new named_hook_function (name, d));
+    }
+  else if (f.is_function_handle ())
+    {
+      m_rep = std::shared_ptr<base_hook_function> (new fcn_handle_hook_function (f, d));
+    }
+  else
+    error ("invalid hook function");
+}
 
-  void named_hook_function::eval (const octave_value_list& initial_args)
-  {
-    octave_value_list args = initial_args;
+void named_hook_function::eval (const octave_value_list& initial_args)
+{
+  octave_value_list args = initial_args;
 
-    if (m_data.is_defined ())
-      args.append (m_data);
+  if (m_data.is_defined ())
+    args.append (m_data);
 
-    feval (m_name, args, 0);
-  }
+  feval (m_name, args, 0);
+}
 
-  void fcn_handle_hook_function::eval (const octave_value_list& initial_args)
-  {
-    octave_value_list args = initial_args;
+void fcn_handle_hook_function::eval (const octave_value_list& initial_args)
+{
+  octave_value_list args = initial_args;
 
-    if (m_data.is_defined ())
-      args.append (m_data);
+  if (m_data.is_defined ())
+    args.append (m_data);
 
-    feval (m_fcn_handle, args, 0);
-  }
+  feval (m_fcn_handle, args, 0);
+}
 
 OCTAVE_END_NAMESPACE(octave)

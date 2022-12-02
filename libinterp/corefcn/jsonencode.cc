@@ -418,10 +418,10 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
     // "Octave:classdef-to-struct" warning and re-enable it.
     {
       octave::unwind_action restore_warning_state
-        ([] (const octave_value_list& old_warning_state)
-         {
-           octave::set_warning_state (old_warning_state);
-         }, octave::set_warning_state ("Octave:classdef-to-struct", "off"));
+      ([] (const octave_value_list& old_warning_state)
+      {
+        octave::set_warning_state (old_warning_state);
+      }, octave::set_warning_state ("Octave:classdef-to-struct", "off"));
 
       encode_struct (writer, obj.scalar_map_value ().getfield ("map"),
                      ConvertInfAndNaN);
@@ -429,10 +429,10 @@ encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
   else if (obj.isobject ())
     {
       octave::unwind_action restore_warning_state
-        ([] (const octave_value_list& old_warning_state)
-         {
-           octave::set_warning_state (old_warning_state);
-         }, octave::set_warning_state ("Octave:classdef-to-struct", "off"));
+      ([] (const octave_value_list& old_warning_state)
+      {
+        octave::set_warning_state (old_warning_state);
+      }, octave::set_warning_state ("Octave:classdef-to-struct", "off"));
 
       encode_struct (writer, obj.scalar_map_value (), ConvertInfAndNaN);
     }
@@ -625,8 +625,8 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
     {
 # if defined (HAVE_RAPIDJSON_PRETTYWRITER)
       rapidjson::PrettyWriter<rapidjson::StringBuffer, rapidjson::UTF8<>,
-                              rapidjson::UTF8<>, rapidjson::CrtAllocator,
-                              rapidjson::kWriteNanAndInfFlag> writer (json);
+                rapidjson::UTF8<>, rapidjson::CrtAllocator,
+                rapidjson::kWriteNanAndInfFlag> writer (json);
       writer.SetIndent (' ', 2);
       encode (writer, args(0), ConvertInfAndNaN);
 # endif
@@ -634,8 +634,8 @@ jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
   else
     {
       rapidjson::Writer<rapidjson::StringBuffer, rapidjson::UTF8<>,
-                        rapidjson::UTF8<>, rapidjson::CrtAllocator,
-                        rapidjson::kWriteNanAndInfFlag> writer (json);
+                rapidjson::UTF8<>, rapidjson::CrtAllocator,
+                rapidjson::kWriteNanAndInfFlag> writer (json);
       encode (writer, args(0), ConvertInfAndNaN);
     }
 

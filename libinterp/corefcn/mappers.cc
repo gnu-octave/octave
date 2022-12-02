@@ -197,8 +197,8 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %!test <49091>
 %! re = single (2.99822295029797);
 %! im = single (pi/2);
-%! assert (acosh (single (10i)), re + i*im, 5*eps ("single"));
-%! assert (acosh (single (-10i)), re - i*im, 5*eps ("single"));
+%! assert (acosh (single (10i)), re + i*im, 5* eps ("single"));
+%! assert (acosh (single (-10i)), re - i*im, 5* eps ("single"));
 
 ## Test large magnitude arguments (bug #45507)
 ## Test fails with older versions of libm, solution is to upgrade.
@@ -275,13 +275,13 @@ arg (3 + 4i)
 %!test
 %! if (ismac ())
 %!   ## Avoid failing for a MacOS feature
-%!   assert (arg (single (-1)), single (pi), 2*eps (single (1)));
+%!   assert (arg (single (-1)), single (pi), 2* eps (single (1)));
 %! else
 %!   assert (arg (single (-1)), single (pi));
 %! endif
 %!assert (arg (single (-i)), single (-pi/2))
 %!assert (arg (single ([1, i; -1, -i])),
-%!        single ([0, pi/2; pi, -pi/2]), 2e1*eps ("single"))
+%!        single ([0, pi/2; pi, -pi/2]), 2e1* eps ("single"))
 
 %!error arg ()
 %!error arg (1, 2)
@@ -678,7 +678,7 @@ erf (z) = --------- *  | e^(-t^2) dt
 
 /*
 %!test
-%! a = -1i*sqrt (-1/(6.4187*6.4187));
+%! a = -1i* sqrt (-1/(6.4187*6.4187));
 %! assert (erf (a), erf (real (a)));
 
 %!test
@@ -690,7 +690,7 @@ erf (z) = --------- *  | e^(-t^2) dt
 %! assert (erfinv (v), x, 1.e-10);
 
 %!test
-%! a = -1i*sqrt (single (-1/(6.4187*6.4187)));
+%! a = -1i* sqrt (single (-1/(6.4187*6.4187)));
 %! assert (erf (a), erf (real (a)));
 
 %!test
@@ -819,7 +819,7 @@ $1 - {\rm erf} (z)$.
 
 /*
 %!test
-%! a = -1i*sqrt (-1/(6.4187*6.4187));
+%! a = -1i* sqrt (-1/(6.4187*6.4187));
 %! assert (erfc (a), erfc (real (a)));
 
 %!error erfc ()
@@ -1157,7 +1157,7 @@ loss of precision.  The final result is then
 
 /*
 %!test
-%! a = -1i*sqrt (-1/(6.4187*6.4187));
+%! a = -1i* sqrt (-1/(6.4187*6.4187));
 %! assert (gamma (a), gamma (real (a)));
 
 %!test
@@ -1166,7 +1166,7 @@ loss of precision.  The final result is then
 %! assert (gamma (x), v, sqrt (eps));
 
 %!test
-%! a = single (-1i*sqrt (-1/(6.4187*6.4187)));
+%! a = single (-1i* sqrt (-1/(6.4187*6.4187)));
 %! assert (gamma (a), gamma (real (a)));
 
 %!test
@@ -1685,7 +1685,7 @@ can be used in Octave.
 
 /*
 %!test
-%! a = -1i*sqrt (-1/(6.4187*6.4187));
+%! a = -1i* sqrt (-1/(6.4187*6.4187));
 %! assert (gammaln (a), gammaln (real (a)));
 
 %!test
@@ -1694,7 +1694,7 @@ can be used in Octave.
 %! assert (gammaln (x), log (v), sqrt (eps));
 
 %!test
-%! a = single (-1i*sqrt (-1/(6.4187*6.4187)));
+%! a = single (-1i* sqrt (-1/(6.4187*6.4187)));
 %! assert (gammaln (a), gammaln (real (a)));
 
 %!test
@@ -1740,7 +1740,7 @@ To compute the matrix logarithm, @pxref{Linear Algebra}.
 
 %!assert (log (single ([1, e, e^2])), single ([0, 1, 2]), sqrt (eps ("single")))
 %!assert (log (single ([-0.5, -1.5, -2.5])),
-%!        single (log ([0.5, 1.5, 2.5]) + pi*1i), 4*eps ("single"))
+%!        single (log ([0.5, 1.5, 2.5]) + pi*1i), 4* eps ("single"))
 
 %!error log ()
 %!error log (1, 2)

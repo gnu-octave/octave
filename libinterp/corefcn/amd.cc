@@ -132,7 +132,8 @@ The author of the code itself is Timothy A. Davis
   AMD_NAME (_defaults) (Control);
   if (nargin > 1)
     {
-      octave_scalar_map arg1 = args(1).xscalar_map_value ("amd: OPTS argument must be a scalar structure");
+      octave_scalar_map arg1 = args(
+                                 1).xscalar_map_value ("amd: OPTS argument must be a scalar structure");
 
       octave_value tmp;
 
@@ -158,7 +159,7 @@ The author of the code itself is Timothy A. Davis
   SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
 
   octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P, Control,
-                                              Info);
+                           Info);
 
   if (result == AMD_OUT_OF_MEMORY)
     error ("amd: out of memory");

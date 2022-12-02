@@ -46,148 +46,148 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  static int readline_event_hook (void)
-  {
-    event_manager& evmgr = __get_event_manager__ ();
+static int readline_event_hook (void)
+{
+  event_manager& evmgr = __get_event_manager__ ();
 
-    evmgr.process_events ();
+  evmgr.process_events ();
 
-    return 0;
-  }
+  return 0;
+}
 
-  void interpreter_events::display_exception (const execution_exception& ee,
-                                              bool beep)
-  {
-    if (beep)
-      std::cerr << "\a";
+void interpreter_events::display_exception (const execution_exception& ee,
+    bool beep)
+{
+  if (beep)
+    std::cerr << "\a";
 
-    ee.display (std::cerr);
-  }
+  ee.display (std::cerr);
+}
 
-  event_manager::event_manager (interpreter& interp)
-    : m_event_queue_mutex (new mutex ()), m_gui_event_queue (),
-      m_debugging (false), m_link_enabled (true),
-      m_interpreter (interp), m_instance (new interpreter_events ()),
-      m_qt_event_handlers ()
-  {
-    push_event_queue ();
-    command_editor::add_event_hook (readline_event_hook);
-  }
+event_manager::event_manager (interpreter& interp)
+  : m_event_queue_mutex (new mutex ()), m_gui_event_queue (),
+    m_debugging (false), m_link_enabled (true),
+    m_interpreter (interp), m_instance (new interpreter_events ()),
+    m_qt_event_handlers ()
+{
+  push_event_queue ();
+  command_editor::add_event_hook (readline_event_hook);
+}
 
-  event_manager::~event_manager (void)
-  {
-    delete m_event_queue_mutex;
-  }
+event_manager::~event_manager (void)
+{
+  delete m_event_queue_mutex;
+}
 
-  // Programming Note: It is possible to disable the link without deleting
-  // the connection.  This allows it to be temporarily disabled.  But if
-  // the link is removed, we also set the link_enabled flag to false
-  // because if there is no link, it can't be enabled.  Also, access to
-  // instance is only protected by a check on the link_enabled flag.
+// Programming Note: It is possible to disable the link without deleting
+// the connection.  This allows it to be temporarily disabled.  But if
+// the link is removed, we also set the link_enabled flag to false
+// because if there is no link, it can't be enabled.  Also, access to
+// instance is only protected by a check on the link_enabled flag.
 
-  void
-  event_manager::connect_link (const std::shared_ptr<interpreter_events>& obj)
-  {
-    if (! obj)
-      disable ();
+void
+event_manager::connect_link (const std::shared_ptr<interpreter_events>& obj)
+{
+  if (! obj)
+    disable ();
 
-    m_instance = obj;
-  }
+  m_instance = obj;
+}
 
-  bool event_manager::enable (void)
-  {
-    bool retval = m_link_enabled;
+bool event_manager::enable (void)
+{
+  bool retval = m_link_enabled;
 
-    if (m_instance)
-      m_link_enabled = true;
-    else
-      warning ("event_manager: must have connected link to enable");
+  if (m_instance)
+    m_link_enabled = true;
+  else
+    warning ("event_manager: must have connected link to enable");
 
-    return retval;
-  }
+  return retval;
+}
 
-  void event_manager::process_events (bool disable_flag)
-  {
-    if (enabled ())
-      {
-        if (disable_flag)
-          disable ();
+void event_manager::process_events (bool disable_flag)
+{
+  if (enabled ())
+    {
+      if (disable_flag)
+        disable ();
 
-        m_event_queue_mutex->lock ();
-        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
-        m_event_queue_mutex->unlock ();
+      m_event_queue_mutex->lock ();
+      std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+      m_event_queue_mutex->unlock ();
 
-        evq->run ();
-      }
-  }
+      evq->run ();
+    }
+}
 
-  void event_manager::discard_events (void)
-  {
-    if (enabled ())
-      {
-        m_event_queue_mutex->lock ();
-        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
-        m_event_queue_mutex->unlock ();
+void event_manager::discard_events (void)
+{
+  if (enabled ())
+    {
+      m_event_queue_mutex->lock ();
+      std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+      m_event_queue_mutex->unlock ();
 
-        evq->discard ();
-      }
-  }
+      evq->discard ();
+    }
+}
 
-  void event_manager::push_event_queue (void)
-  {
-    std::shared_ptr<event_queue> evq (new event_queue ());
-    m_gui_event_queue.push (evq);
-  }
+void event_manager::push_event_queue (void)
+{
+  std::shared_ptr<event_queue> evq (new event_queue ());
+  m_gui_event_queue.push (evq);
+}
 
-  void event_manager::pop_event_queue (void)
-  {
-    // FIXME: Should we worry about the possibility of events remaining
-    // in the queue when we pop back to the previous queue?  If so, then
-    // we will probably want to push them on to the front of the
-    // previous queue so they will be executed before any other events
-    // that were in the previous queue.  This case could happen if
-    // graphics callback functions were added to the event queue during a
-    // debug session just after a dbcont command was added but before it
-    // executed and brought us here, for example.
+void event_manager::pop_event_queue (void)
+{
+  // FIXME: Should we worry about the possibility of events remaining
+  // in the queue when we pop back to the previous queue?  If so, then
+  // we will probably want to push them on to the front of the
+  // previous queue so they will be executed before any other events
+  // that were in the previous queue.  This case could happen if
+  // graphics callback functions were added to the event queue during a
+  // debug session just after a dbcont command was added but before it
+  // executed and brought us here, for example.
 
-    std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
-    m_gui_event_queue.pop ();
-  }
+  std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+  m_gui_event_queue.pop ();
+}
 
-  void event_manager::post_event (const fcn_callback& fcn)
-  {
-    if (enabled ())
-      {
-        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
-        evq->add (fcn);
-      }
-  }
+void event_manager::post_event (const fcn_callback& fcn)
+{
+  if (enabled ())
+    {
+      std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+      evq->add (fcn);
+    }
+}
 
-  void event_manager::post_event (const meth_callback& meth)
-  {
-    if (enabled ())
-      {
-        std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
-        evq->add (std::bind (meth, std::ref (m_interpreter)));
-      }
-  }
+void event_manager::post_event (const meth_callback& meth)
+{
+  if (enabled ())
+    {
+      std::shared_ptr<event_queue> evq = m_gui_event_queue.top ();
+      evq->add (std::bind (meth, std::ref (m_interpreter)));
+    }
+}
 
-  void event_manager::set_workspace (void)
-  {
-    if (enabled ())
-      {
-        tree_evaluator& tw = m_interpreter.get_evaluator ();
+void event_manager::set_workspace (void)
+{
+  if (enabled ())
+    {
+      tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-        m_instance->set_workspace (tw.at_top_level (), m_debugging,
+      m_instance->set_workspace (tw.at_top_level (), m_debugging,
                                  tw.get_symbol_info (), true);
-      }
-  }
+    }
+}
 
-  void event_manager::set_history (void)
-  {
-    if (enabled ())
-      m_instance->set_history (command_history::list ());
-  }
+void event_manager::set_history (void)
+{
+  if (enabled ())
+    m_instance->set_history (command_history::list ());
+}
 
 // FIXME: Should the following function be __event_manager_desktop__
 // with the desktop function implemented in a .m file, similar to the

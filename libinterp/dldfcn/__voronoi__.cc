@@ -195,9 +195,9 @@ Undocumented internal function.
   // of the RowVector objects used to collect them.
 
   FORALLfacets
-    {
-      facet->seen = false;
-    }
+  {
+    facet->seen = false;
+  }
 
   OCTAVE_LOCAL_BUFFER (octave_idx_type, ni, num_voronoi_regions);
   for (octave_idx_type i = 0; i < num_voronoi_regions; i++)
@@ -206,33 +206,33 @@ Undocumented internal function.
   k = 0;
 
   FORALLvertices
+  {
+    if (qh->hull_dim == 3)
+      qh_order_vertexneighbors (qh, vertex);
+
+    bool infinity_seen = false;
+
+    facetT *neighbor, * *neighborp;
+
+    FOREACHneighbor_ (vertex)
     {
-      if (qh->hull_dim == 3)
-        qh_order_vertexneighbors (qh, vertex);
-
-      bool infinity_seen = false;
-
-      facetT *neighbor, **neighborp;
-
-      FOREACHneighbor_ (vertex)
+      if (neighbor->upperdelaunay)
         {
-          if (neighbor->upperdelaunay)
+          if (! infinity_seen)
             {
-              if (! infinity_seen)
-                {
-                  infinity_seen = true;
-                  ni[k]++;
-                }
-            }
-          else
-            {
-              neighbor->seen = true;
+              infinity_seen = true;
               ni[k]++;
             }
         }
-
-      k++;
+      else
+        {
+          neighbor->seen = true;
+          ni[k]++;
+        }
     }
+
+    k++;
+  }
 
   // If Qhull finds fewer regions than points, we will pad the end
   // of the at_inf and C arrays so that they always contain at least
@@ -263,66 +263,66 @@ Undocumented internal function.
   // for the cells.
 
   FORALLfacets
-    {
-      facet->seen = false;
-    }
+  {
+    facet->seen = false;
+  }
 
   octave_idx_type i = 0;
   k = 0;
 
   FORALLvertices
+  {
+    if (qh->hull_dim == 3)
+      qh_order_vertexneighbors (qh, vertex);
+
+    bool infinity_seen = false;
+
+    octave_idx_type idx = qh_pointid (qh, vertex->point);
+
+    octave_idx_type num_vertices = ni[k++];
+
+    // Qhull seems to sometimes produces regions with a single
+    // vertex.  Is that a bug?  How can a region have just one
+    // vertex?  Let's skip it.
+
+    if (num_vertices == 1)
+      continue;
+
+    RowVector facet_list (num_vertices);
+
+    octave_idx_type m = 0;
+
+    facetT *neighbor, * *neighborp;
+
+    FOREACHneighbor_(vertex)
     {
-      if (qh->hull_dim == 3)
-        qh_order_vertexneighbors (qh, vertex);
-
-      bool infinity_seen = false;
-
-      octave_idx_type idx = qh_pointid (qh, vertex->point);
-
-      octave_idx_type num_vertices = ni[k++];
-
-      // Qhull seems to sometimes produces regions with a single
-      // vertex.  Is that a bug?  How can a region have just one
-      // vertex?  Let's skip it.
-
-      if (num_vertices == 1)
-        continue;
-
-      RowVector facet_list (num_vertices);
-
-      octave_idx_type m = 0;
-
-      facetT *neighbor, **neighborp;
-
-      FOREACHneighbor_(vertex)
+      if (neighbor->upperdelaunay)
         {
-          if (neighbor->upperdelaunay)
+          if (! infinity_seen)
             {
-              if (! infinity_seen)
-                {
-                  infinity_seen = true;
-                  facet_list(m++) = 1;
-                  at_inf(idx) = true;
-                }
-            }
-          else
-            {
-              if (! neighbor->seen)
-                {
-                  i++;
-                  for (octave_idx_type d = 0; d < dim; d++)
-                    F(i,d) = neighbor->center[d];
-
-                  neighbor->seen = true;
-                  neighbor->visitid = i;
-                }
-
-              facet_list(m++) = neighbor->visitid + 1;
+              infinity_seen = true;
+              facet_list(m++) = 1;
+              at_inf(idx) = true;
             }
         }
+      else
+        {
+          if (! neighbor->seen)
+            {
+              i++;
+              for (octave_idx_type d = 0; d < dim; d++)
+                F(i, d) = neighbor->center[d];
 
-      C(idx) = facet_list;
+              neighbor->seen = true;
+              neighbor->visitid = i;
+            }
+
+          facet_list(m++) = neighbor->visitid + 1;
+        }
     }
+
+    C(idx) = facet_list;
+  }
 
   retval = ovl (F, C, at_inf);
 

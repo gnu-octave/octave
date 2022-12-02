@@ -168,44 +168,44 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 #  if defined (OCTAVE_ENABLE_64)
-  typedef SuiteSparse_long suitesparse_integer;
+typedef SuiteSparse_long suitesparse_integer;
 #  else
-  typedef int suitesparse_integer;
+typedef int suitesparse_integer;
 #  endif
 
-  extern OCTAVE_API suitesparse_integer *
-  to_suitesparse_intptr (octave_idx_type *i);
+extern OCTAVE_API suitesparse_integer *
+to_suitesparse_intptr (octave_idx_type *i);
 
-  extern const OCTAVE_API suitesparse_integer *
-  to_suitesparse_intptr (const octave_idx_type *i);
+extern const OCTAVE_API suitesparse_integer *
+to_suitesparse_intptr (const octave_idx_type *i);
 
-  extern OCTAVE_API octave_idx_type *
-  to_octave_idx_type_ptr (suitesparse_integer *i);
+extern OCTAVE_API octave_idx_type *
+to_octave_idx_type_ptr (suitesparse_integer *i);
 
-  extern const OCTAVE_API octave_idx_type *
-  to_octave_idx_type_ptr (const suitesparse_integer *i);
+extern const OCTAVE_API octave_idx_type *
+to_octave_idx_type_ptr (const suitesparse_integer *i);
 
-  inline octave_idx_type
-  from_suitesparse_long (SuiteSparse_long x)
-  {
-    if (x < std::numeric_limits<octave_idx_type>::min ()
-        || x > std::numeric_limits<octave_idx_type>::max ())
-      (*current_liboctave_error_handler)
-        ("integer dimension or index out of range for Octave's indexing type");
+inline octave_idx_type
+from_suitesparse_long (SuiteSparse_long x)
+{
+  if (x < std::numeric_limits<octave_idx_type>::min ()
+      || x > std::numeric_limits<octave_idx_type>::max ())
+    (*current_liboctave_error_handler)
+      ("integer dimension or index out of range for Octave's indexing type");
 
-    return static_cast<octave_idx_type> (x);
-  }
+  return static_cast<octave_idx_type> (x);
+}
 
-  inline octave_idx_type
-  from_size_t (std::size_t x)
-  {
-    // std::size_t is guaranteed to be unsigned
-    if (x > std::numeric_limits<octave_idx_type>::max ())
-      (*current_liboctave_error_handler)
-        ("integer dimension or index out of range for Octave's index type");
+inline octave_idx_type
+from_size_t (std::size_t x)
+{
+  // std::size_t is guaranteed to be unsigned
+  if (x > std::numeric_limits<octave_idx_type>::max ())
+    (*current_liboctave_error_handler)
+      ("integer dimension or index out of range for Octave's index type");
 
-    return static_cast<octave_idx_type> (x);
-  }
+  return static_cast<octave_idx_type> (x);
+}
 
 OCTAVE_END_NAMESPACE(octave)
 

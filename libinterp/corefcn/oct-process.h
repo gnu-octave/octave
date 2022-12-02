@@ -32,53 +32,53 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class
-  process_execution_result
-  {
-  public:
+class
+process_execution_result
+{
+public:
 
-    process_execution_result (void)
-      : m_status (-1), m_err_msg (), m_exit_status (-1), m_stdout_output ()
-    { }
+  process_execution_result (void)
+    : m_status (-1), m_err_msg (), m_exit_status (-1), m_stdout_output ()
+  { }
 
-    process_execution_result (int status, int exit_status,
-                              const std::string& stdout_output,
-                              const std::string& err_msg)
-      : m_status (status), m_err_msg (err_msg), m_exit_status (exit_status),
-        m_stdout_output (stdout_output)
-    { }
+  process_execution_result (int status, int exit_status,
+                            const std::string& stdout_output,
+                            const std::string& err_msg)
+    : m_status (status), m_err_msg (err_msg), m_exit_status (exit_status),
+      m_stdout_output (stdout_output)
+  { }
 
-    static OCTINTERP_API process_execution_result
-    of_success (int exit_status, const std::string& stdout_output);
+  static OCTINTERP_API process_execution_result
+  of_success (int exit_status, const std::string& stdout_output);
 
-    static OCTINTERP_API process_execution_result
-    of_error (int status, const std::string& err_msg);
+  static OCTINTERP_API process_execution_result
+  of_error (int status, const std::string& err_msg);
 
-    int status (void) const { return m_status; }
+  int status (void) const { return m_status; }
 
-    int exit_status (void) const { return m_exit_status; }
+  int exit_status (void) const { return m_exit_status; }
 
-    std::string err_msg (void) const { return m_err_msg; }
+  std::string err_msg (void) const { return m_err_msg; }
 
-    std::string stdout_output (void) const { return m_stdout_output; }
+  std::string stdout_output (void) const { return m_stdout_output; }
 
-  private:
+private:
 
-    // Launch status of the process, 0 for success, nonzero for error.
-    int m_status;
+  // Launch status of the process, 0 for success, nonzero for error.
+  int m_status;
 
-    // Error message if executing command failed.
-    std::string m_err_msg;
+  // Error message if executing command failed.
+  std::string m_err_msg;
 
-    // Exit status of the process.
-    int m_exit_status;
+  // Exit status of the process.
+  int m_exit_status;
 
-    // Collected stdout output of the process.
-    std::string m_stdout_output;
-  };
+  // Collected stdout output of the process.
+  std::string m_stdout_output;
+};
 
-  extern OCTINTERP_API process_execution_result
-  run_command_and_return_output (const std::string& cmd_str);
+extern OCTINTERP_API process_execution_result
+run_command_and_return_output (const std::string& cmd_str);
 
 OCTAVE_END_NAMESPACE(octave)
 

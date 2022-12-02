@@ -43,115 +43,115 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  static void append_to_shell_path (const std::string& exec_path)
-  {
-    // FIXME: should there be a way to remove a previous setting from
-    // PATH?
+static void append_to_shell_path (const std::string& exec_path)
+{
+  // FIXME: should there be a way to remove a previous setting from
+  // PATH?
 
-    if (exec_path.empty ())
-      return;
+  if (exec_path.empty ())
+    return;
 
-    // FIXME: should we really be modifying PATH in the environment?
+  // FIXME: should we really be modifying PATH in the environment?
 
-    std::string shell_path = sys::env::getenv ("PATH");
+  std::string shell_path = sys::env::getenv ("PATH");
 
-    if (shell_path.empty ())
-      sys::env::putenv ("PATH", exec_path);
-    else
-      {
-        // If PATH doesn't already have exec_path, append it.
-        // FIXME: should we search for the elements individually, and
-        // only append those that are missing?
+  if (shell_path.empty ())
+    sys::env::putenv ("PATH", exec_path);
+  else
+    {
+      // If PATH doesn't already have exec_path, append it.
+      // FIXME: should we search for the elements individually, and
+      // only append those that are missing?
 
-        std::string path_sep = directory_path::path_sep_str ();
+      std::string path_sep = directory_path::path_sep_str ();
 
-        if (shell_path.find (exec_path) == std::string::npos)
-          sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
-      }
-  }
+      if (shell_path.find (exec_path) == std::string::npos)
+        sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
+    }
+}
 
-  octave_value
-  environment::editor (const octave_value_list& args, int nargout)
-  {
-    return set_internal_variable (m_editor, args, nargout, "EDITOR", false);
-  }
+octave_value
+environment::editor (const octave_value_list& args, int nargout)
+{
+  return set_internal_variable (m_editor, args, nargout, "EDITOR", false);
+}
 
 
-  octave_value
-  environment::exec_path (const octave_value_list& args, int nargout)
-  {
-    octave_value retval
-      = set_internal_variable (m_exec_path, args, nargout, "EXEC_PATH", false);
+octave_value
+environment::exec_path (const octave_value_list& args, int nargout)
+{
+  octave_value retval
+    = set_internal_variable (m_exec_path, args, nargout, "EXEC_PATH", false);
 
-    append_to_shell_path (m_exec_path);
+  append_to_shell_path (m_exec_path);
 
-    return retval;
-  }
+  return retval;
+}
 
-  std::string environment::exec_path (const std::string& path)
-  {
-    std::string old_val = set (m_exec_path, path);
+std::string environment::exec_path (const std::string& path)
+{
+  std::string old_val = set (m_exec_path, path);
 
-    append_to_shell_path (m_exec_path);
+  append_to_shell_path (m_exec_path);
 
-    return old_val;
-  }
+  return old_val;
+}
 
-  octave_value
-  environment::image_path (const octave_value_list& args, int nargout)
-  {
-    return set_internal_variable (m_image_path, args, nargout, "IMAGE_PATH",
-                                  false);
-  }
+octave_value
+environment::image_path (const octave_value_list& args, int nargout)
+{
+  return set_internal_variable (m_image_path, args, nargout, "IMAGE_PATH",
+                                false);
+}
 
-  std::string environment::init_editor (void)
-  {
-    std::string retval = "emacs";
+std::string environment::init_editor (void)
+{
+  std::string retval = "emacs";
 
-    std::string env_editor = sys::env::getenv ("EDITOR");
+  std::string env_editor = sys::env::getenv ("EDITOR");
 
-    if (! env_editor.empty ())
-      retval = env_editor;
+  if (! env_editor.empty ())
+    retval = env_editor;
 
-    return retval;
-  }
+  return retval;
+}
 
-  std::string environment::init_exec_path (void)
-  {
-    std::string exec_path = sys::env::getenv ("OCTAVE_EXEC_PATH");
+std::string environment::init_exec_path (void)
+{
+  std::string exec_path = sys::env::getenv ("OCTAVE_EXEC_PATH");
 
-    std::string path_sep = directory_path::path_sep_str ();
+  std::string path_sep = directory_path::path_sep_str ();
 
-    if (exec_path.empty ())
-      exec_path = (config::local_ver_arch_lib_dir () + path_sep
-                   + config::local_api_arch_lib_dir () + path_sep
-                   + config::local_arch_lib_dir () + path_sep
-                   + config::arch_lib_dir () + path_sep
-                   + config::bin_dir ());
+  if (exec_path.empty ())
+    exec_path = (config::local_ver_arch_lib_dir () + path_sep
+                 + config::local_api_arch_lib_dir () + path_sep
+                 + config::local_arch_lib_dir () + path_sep
+                 + config::arch_lib_dir () + path_sep
+                 + config::bin_dir ());
 
-    append_to_shell_path (exec_path);
+  append_to_shell_path (exec_path);
 
-    return exec_path;
-  }
+  return exec_path;
+}
 
-  std::string environment::init_image_path (void)
-  {
-    std::string image_path = ".";
+std::string environment::init_image_path (void)
+{
+  std::string image_path = ".";
 
-    std::string path_sep = directory_path::path_sep_str ();
+  std::string path_sep = directory_path::path_sep_str ();
 
-    std::string env_path = sys::env::getenv ("OCTAVE_IMAGE_PATH");
+  std::string env_path = sys::env::getenv ("OCTAVE_IMAGE_PATH");
 
-    if (! env_path.empty ())
-      image_path += path_sep + env_path;
+  if (! env_path.empty ())
+    image_path += path_sep + env_path;
 
-    std::string gen_path = genpath (config::image_dir (), "");
+  std::string gen_path = genpath (config::image_dir (), "");
 
-    if (! gen_path.empty ())
-      image_path += path_sep + gen_path;
+  if (! gen_path.empty ())
+    image_path += path_sep + gen_path;
 
-    return image_path;
-  }
+  return image_path;
+}
 
 DEFMETHOD (EDITOR, interp, args, nargout,
            doc: /* -*- texinfo -*-

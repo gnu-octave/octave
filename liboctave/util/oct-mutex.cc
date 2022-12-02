@@ -38,145 +38,145 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  void
-  base_mutex::lock (void)
-  {
-    (*current_liboctave_error_handler) ("mutex not supported on this platform");
-  }
+void
+base_mutex::lock (void)
+{
+  (*current_liboctave_error_handler) ("mutex not supported on this platform");
+}
 
-  void
-  base_mutex::unlock (void)
-  {
-    (*current_liboctave_error_handler) ("mutex not supported on this platform");
-  }
+void
+base_mutex::unlock (void)
+{
+  (*current_liboctave_error_handler) ("mutex not supported on this platform");
+}
 
-  bool
-  base_mutex::try_lock (void)
-  {
-    (*current_liboctave_error_handler) ("mutex not supported on this platform");
+bool
+base_mutex::try_lock (void)
+{
+  (*current_liboctave_error_handler) ("mutex not supported on this platform");
 
-    return false;
-  }
+  return false;
+}
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-  class
-  w32_mutex : public base_mutex
+class
+w32_mutex : public base_mutex
+{
+public:
+  w32_mutex (void)
+    : base_mutex ()
   {
-  public:
-    w32_mutex (void)
-      : base_mutex ()
-    {
-      InitializeCriticalSection (&cs);
-    }
-
-    ~w32_mutex (void)
-    {
-      DeleteCriticalSection (&cs);
-    }
-
-    void lock (void)
-    {
-      EnterCriticalSection (&cs);
-    }
-
-    void unlock (void)
-    {
-      LeaveCriticalSection (&cs);
-    }
-
-    bool try_lock (void)
-    {
-      return (TryEnterCriticalSection (&cs) != 0);
-    }
-
-  private:
-    CRITICAL_SECTION cs;
-  };
-
-  static DWORD thread_id = 0;
-
-  void
-  thread::init (void)
-  {
-    thread_id = GetCurrentThreadId ();
+    InitializeCriticalSection (&cs);
   }
 
-  bool
-  thread::is_thread (void)
+  ~w32_mutex (void)
   {
-    return (GetCurrentThreadId () == thread_id);
+    DeleteCriticalSection (&cs);
   }
+
+  void lock (void)
+  {
+    EnterCriticalSection (&cs);
+  }
+
+  void unlock (void)
+  {
+    LeaveCriticalSection (&cs);
+  }
+
+  bool try_lock (void)
+  {
+    return (TryEnterCriticalSection (&cs) != 0);
+  }
+
+private:
+  CRITICAL_SECTION cs;
+};
+
+static DWORD thread_id = 0;
+
+void
+thread::init (void)
+{
+  thread_id = GetCurrentThreadId ();
+}
+
+bool
+thread::is_thread (void)
+{
+  return (GetCurrentThreadId () == thread_id);
+}
 
 #elif defined (HAVE_PTHREAD_H)
 
-  class
-  pthread_mutex : public base_mutex
+class
+pthread_mutex : public base_mutex
+{
+public:
+  pthread_mutex (void)
+    : base_mutex (), m_pm ()
   {
-  public:
-    pthread_mutex (void)
-      : base_mutex (), m_pm ()
-    {
-      pthread_mutexattr_t attr;
+    pthread_mutexattr_t attr;
 
-      pthread_mutexattr_init (&attr);
-      pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE);
-      pthread_mutex_init (&m_pm, &attr);
-      pthread_mutexattr_destroy (&attr);
-    }
-
-    ~pthread_mutex (void)
-    {
-      pthread_mutex_destroy (&m_pm);
-    }
-
-    void lock (void)
-    {
-      pthread_mutex_lock (&m_pm);
-    }
-
-    void unlock (void)
-    {
-      pthread_mutex_unlock (&m_pm);
-    }
-
-    bool try_lock (void)
-    {
-      return (pthread_mutex_trylock (&m_pm) == 0);
-    }
-
-  private:
-    pthread_mutex_t m_pm;
-  };
-
-  static pthread_t thread_id = 0;
-
-  void
-  thread::init (void)
-  {
-    thread_id = pthread_self ();
+    pthread_mutexattr_init (&attr);
+    pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init (&m_pm, &attr);
+    pthread_mutexattr_destroy (&attr);
   }
 
-  bool
-  thread::is_thread (void)
+  ~pthread_mutex (void)
   {
-    return (pthread_equal (thread_id, pthread_self ()) != 0);
+    pthread_mutex_destroy (&m_pm);
   }
+
+  void lock (void)
+  {
+    pthread_mutex_lock (&m_pm);
+  }
+
+  void unlock (void)
+  {
+    pthread_mutex_unlock (&m_pm);
+  }
+
+  bool try_lock (void)
+  {
+    return (pthread_mutex_trylock (&m_pm) == 0);
+  }
+
+private:
+  pthread_mutex_t m_pm;
+};
+
+static pthread_t thread_id = 0;
+
+void
+thread::init (void)
+{
+  thread_id = pthread_self ();
+}
+
+bool
+thread::is_thread (void)
+{
+  return (pthread_equal (thread_id, pthread_self ()) != 0);
+}
 
 #endif
 
-  static base_mutex *
-  init_rep (void)
-  {
+static base_mutex *
+init_rep (void)
+{
 #if defined (OCTAVE_USE_WINDOWS_API)
-    return new w32_mutex ();
+  return new w32_mutex ();
 #elif defined (HAVE_PTHREAD_H)
-    return new pthread_mutex ();
+  return new pthread_mutex ();
 #else
-    return new base_mutex ();
+  return new base_mutex ();
 #endif
-  }
+}
 
-  mutex::mutex (void) : m_rep (init_rep ()) { }
+mutex::mutex (void) : m_rep (init_rep ()) { }
 
 OCTAVE_END_NAMESPACE(octave)

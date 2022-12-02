@@ -406,7 +406,8 @@ Comment.
           if (! value_arg.is_scalar_type ())
             error ("audiowrite: Quality value must be a scalar");
 
-          double value = value_arg.xdouble_value ("audiowrite: Quality value must be a numeric scalar between 0 and 100");
+          double value =
+            value_arg.xdouble_value ("audiowrite: Quality value must be a numeric scalar between 0 and 100");
 
           if (math::isnan (value) || value < 0 || value > 100)
             error ("audiowrite: Quality value must be a number between 0 and 100");

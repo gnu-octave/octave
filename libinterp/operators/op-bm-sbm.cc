@@ -82,7 +82,7 @@ DEFCONV (sparse_bool_matrix_conv, bool_matrix, sparse_bool_matrix)
 {
   const octave_bool_matrix& v = dynamic_cast<const octave_bool_matrix&> (a);
   return new octave_sparse_bool_matrix
-    (SparseBoolMatrix (v.bool_matrix_value ()));
+         (SparseBoolMatrix (v.bool_matrix_value ()));
 }
 
 DEFNDASSIGNOP_FN (assign, bool_matrix, sparse_bool_matrix, bool_array, assign)

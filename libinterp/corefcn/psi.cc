@@ -105,15 +105,15 @@ can have any value real or complex value.  However, for polygamma functions
         {
           FLOAT_BRANCH(double, Complex, complex_, Complex)
           else FLOAT_BRANCH(single, FloatComplex, float_complex_, FloatComplex)
-          else
-            error ("psi: Z must be a floating point");
+            else
+              error ("psi: Z must be a floating point");
         }
       else
         {
-          FLOAT_BRANCH(double, , , double)
+          FLOAT_BRANCH(double,,, double)
           else FLOAT_BRANCH(single, Float, float_, float)
-          else
-            error ("psi: Z must be a floating point");
+            else
+              error ("psi: Z must be a floating point");
         }
 
 #undef FLOAT_BRANCH
@@ -142,10 +142,10 @@ can have any value real or complex value.  However, for polygamma functions
           retval = psi_z;                                               \
         }
 
-      FLOAT_BRANCH(double, , , double)
+      FLOAT_BRANCH(double,,, double)
       else FLOAT_BRANCH(single, Float, float_, float)
-      else
-        error ("psi: Z must be a floating point for polygamma (K > 0)");
+        else
+          error ("psi: Z must be a floating point for polygamma (K > 0)");
 
 #undef FLOAT_BRANCH
     }

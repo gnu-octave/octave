@@ -67,33 +67,33 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex,
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Complain if a complex value is used as a subscript.
+// Complain if a complex value is used as a subscript.
 
-  class complex_index_exception : public index_exception
+class complex_index_exception : public index_exception
+{
+public:
+
+  complex_index_exception (const std::string& value)
+    : index_exception (value)
   {
-  public:
+    // Virtual, but the one we want to call is defined in this class.
+    update_message ();
+  }
 
-    complex_index_exception (const std::string& value)
-      : index_exception (value)
-    {
-      // Virtual, but the one we want to call is defined in this class.
-      update_message ();
-    }
+  ~complex_index_exception (void) = default;
 
-    ~complex_index_exception (void) = default;
+  void update_message (void)
+  {
+    set_message (expression ()
+                 + ": subscripts must be real (forgot to initialize i or j?)");
+  }
 
-    void update_message (void)
-    {
-      set_message (expression ()
-                   + ": subscripts must be real (forgot to initialize i or j?)");
-    }
-
-    // ID of error to throw.
-    const char * err_id (void) const
-    {
-      return "Octave:invalid-index";
-    }
-  };
+  // ID of error to throw.
+  const char * err_id (void) const
+  {
+    return "Octave:invalid-index";
+  }
+};
 
 OCTAVE_END_NAMESPACE(octave)
 
@@ -507,46 +507,46 @@ octave_complex::map (unary_mapper_t umap) const
     case umap_ ## UMAP:                       \
       return octave_value (FCN (scalar))
 
-    SCALAR_MAPPER (abs, std::abs);
-    SCALAR_MAPPER (acos, octave::math::acos);
-    SCALAR_MAPPER (acosh, octave::math::acosh);
-    SCALAR_MAPPER (angle, std::arg);
-    SCALAR_MAPPER (arg, std::arg);
-    SCALAR_MAPPER (asin, octave::math::asin);
-    SCALAR_MAPPER (asinh, octave::math::asinh);
-    SCALAR_MAPPER (atan, octave::math::atan);
-    SCALAR_MAPPER (atanh, octave::math::atanh);
-    SCALAR_MAPPER (erf, octave::math::erf);
-    SCALAR_MAPPER (erfc, octave::math::erfc);
-    SCALAR_MAPPER (erfcx, octave::math::erfcx);
-    SCALAR_MAPPER (erfi, octave::math::erfi);
-    SCALAR_MAPPER (dawson, octave::math::dawson);
-    SCALAR_MAPPER (ceil, octave::math::ceil);
-    SCALAR_MAPPER (conj, std::conj);
-    SCALAR_MAPPER (cos, std::cos);
-    SCALAR_MAPPER (cosh, std::cosh);
-    SCALAR_MAPPER (exp, std::exp);
-    SCALAR_MAPPER (expm1, octave::math::expm1);
-    SCALAR_MAPPER (fix, octave::math::fix);
-    SCALAR_MAPPER (floor, octave::math::floor);
-    SCALAR_MAPPER (imag, std::imag);
-    SCALAR_MAPPER (log, std::log);
-    SCALAR_MAPPER (log2, octave::math::log2);
-    SCALAR_MAPPER (log10, std::log10);
-    SCALAR_MAPPER (log1p, octave::math::log1p);
-    SCALAR_MAPPER (real, std::real);
-    SCALAR_MAPPER (round, octave::math::round);
-    SCALAR_MAPPER (roundb, octave::math::roundb);
-    SCALAR_MAPPER (signum, octave::math::signum);
-    SCALAR_MAPPER (sin, std::sin);
-    SCALAR_MAPPER (sinh, std::sinh);
-    SCALAR_MAPPER (sqrt, std::sqrt);
-    SCALAR_MAPPER (tan, std::tan);
-    SCALAR_MAPPER (tanh, std::tanh);
-    SCALAR_MAPPER (isfinite, octave::math::isfinite);
-    SCALAR_MAPPER (isinf, octave::math::isinf);
-    SCALAR_MAPPER (isna, octave::math::isna);
-    SCALAR_MAPPER (isnan, octave::math::isnan);
+      SCALAR_MAPPER (abs, std::abs);
+      SCALAR_MAPPER (acos, octave::math::acos);
+      SCALAR_MAPPER (acosh, octave::math::acosh);
+      SCALAR_MAPPER (angle, std::arg);
+      SCALAR_MAPPER (arg, std::arg);
+      SCALAR_MAPPER (asin, octave::math::asin);
+      SCALAR_MAPPER (asinh, octave::math::asinh);
+      SCALAR_MAPPER (atan, octave::math::atan);
+      SCALAR_MAPPER (atanh, octave::math::atanh);
+      SCALAR_MAPPER (erf, octave::math::erf);
+      SCALAR_MAPPER (erfc, octave::math::erfc);
+      SCALAR_MAPPER (erfcx, octave::math::erfcx);
+      SCALAR_MAPPER (erfi, octave::math::erfi);
+      SCALAR_MAPPER (dawson, octave::math::dawson);
+      SCALAR_MAPPER (ceil, octave::math::ceil);
+      SCALAR_MAPPER (conj, std::conj);
+      SCALAR_MAPPER (cos, std::cos);
+      SCALAR_MAPPER (cosh, std::cosh);
+      SCALAR_MAPPER (exp, std::exp);
+      SCALAR_MAPPER (expm1, octave::math::expm1);
+      SCALAR_MAPPER (fix, octave::math::fix);
+      SCALAR_MAPPER (floor, octave::math::floor);
+      SCALAR_MAPPER (imag, std::imag);
+      SCALAR_MAPPER (log, std::log);
+      SCALAR_MAPPER (log2, octave::math::log2);
+      SCALAR_MAPPER (log10, std::log10);
+      SCALAR_MAPPER (log1p, octave::math::log1p);
+      SCALAR_MAPPER (real, std::real);
+      SCALAR_MAPPER (round, octave::math::round);
+      SCALAR_MAPPER (roundb, octave::math::roundb);
+      SCALAR_MAPPER (signum, octave::math::signum);
+      SCALAR_MAPPER (sin, std::sin);
+      SCALAR_MAPPER (sinh, std::sinh);
+      SCALAR_MAPPER (sqrt, std::sqrt);
+      SCALAR_MAPPER (tan, std::tan);
+      SCALAR_MAPPER (tanh, std::tanh);
+      SCALAR_MAPPER (isfinite, octave::math::isfinite);
+      SCALAR_MAPPER (isinf, octave::math::isinf);
+      SCALAR_MAPPER (isna, octave::math::isna);
+      SCALAR_MAPPER (isnan, octave::math::isnan);
 
     // Special cases for Matlab compatibility.
     case umap_xtolower:

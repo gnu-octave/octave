@@ -32,70 +32,70 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  void child_list::remove (pid_t pid)
-  {
-    m_list.remove_if ([pid] (const child& oc) { return oc.m_pid == pid; });
-  }
+void child_list::remove (pid_t pid)
+{
+  m_list.remove_if ([pid] (const child& oc) { return oc.m_pid == pid; });
+}
 
-  void child_list::child_list::insert (pid_t pid, child::child_event_handler f)
-  {
-    m_list.append (child (pid, f));
-  }
+void child_list::child_list::insert (pid_t pid, child::child_event_handler f)
+{
+  m_list.append (child (pid, f));
+}
 
-  void child_list::reap (void)
-  {
-    // Mark the record for PID invalid.
+void child_list::reap (void)
+{
+  // Mark the record for PID invalid.
 
-    for (auto& oc : m_list)
-      {
-        // The call to the child::child_event_handler might
-        // invalidate the iterator (for example, by calling
-        // child_list::remove), so we increment the iterator
-        // here.
+  for (auto& oc : m_list)
+    {
+      // The call to the child::child_event_handler might
+      // invalidate the iterator (for example, by calling
+      // child_list::remove), so we increment the iterator
+      // here.
 
-        if (oc.m_have_status)
-          {
-            oc.m_have_status = 0;
+      if (oc.m_have_status)
+        {
+          oc.m_have_status = 0;
 
-            child::child_event_handler f = oc.m_handler;
+          child::child_event_handler f = oc.m_handler;
 
-            if (f && f (oc.m_pid, oc.m_status))
-              oc.m_pid = -1;
-          }
-      }
+          if (f && f (oc.m_pid, oc.m_status))
+            oc.m_pid = -1;
+        }
+    }
 
-    // Remove PIDs that have completed above.
-    remove (-1);
-  }
+  // Remove PIDs that have completed above.
+  remove (-1);
+}
 
-  // Wait on our children and record any changes in their status.
+// Wait on our children and record any changes in their status.
 
-  bool child_list::wait (void)
-  {
-    bool retval = false;
+bool child_list::wait (void)
+{
+  bool retval = false;
 
-    for (auto& oc : m_list)
-      {
-        pid_t pid = oc.m_pid;
+  for (auto& oc : m_list)
+    {
+      pid_t pid = oc.m_pid;
 
-        if (pid > 0)
-          {
-            int status;
+      if (pid > 0)
+        {
+          int status;
 
-            if (sys::waitpid (pid, &status, sys::wnohang ()) > 0)
-              {
-                oc.m_have_status = 1;
+          if (sys::waitpid (pid, &status, sys::wnohang ()) > 0)
+            {
+              oc.m_have_status = 1;
 
-                oc.m_status = status;
+              oc.m_status = status;
 
-                retval = true;
+              retval = true;
 
-                break;
-              }
-          }
-      }
+              break;
+            }
+        }
+    }
 
-    return retval;
-  }
+  return retval;
+}
 
 OCTAVE_END_NAMESPACE(octave)

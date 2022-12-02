@@ -36,76 +36,76 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    class
-    lu
-    {
-    public:
+template <typename T>
+class
+lu
+{
+public:
 
-      typedef typename T::column_vector_type VT;
-      typedef typename T::element_type ELT_T;
+  typedef typename T::column_vector_type VT;
+  typedef typename T::element_type ELT_T;
 
-      lu (void)
-        : m_a_fact (), m_L (), m_ipvt () { }
+  lu (void)
+    : m_a_fact (), m_L (), m_ipvt () { }
 
-      OCTAVE_API lu (const T& a);
+  OCTAVE_API lu (const T& a);
 
-      lu (const lu& a)
-        : m_a_fact (a.m_a_fact), m_L (a.m_L), m_ipvt (a.m_ipvt) { }
+  lu (const lu& a)
+    : m_a_fact (a.m_a_fact), m_L (a.m_L), m_ipvt (a.m_ipvt) { }
 
-      OCTAVE_API lu (const T& l, const T& u, const PermMatrix& p);
+  OCTAVE_API lu (const T& l, const T& u, const PermMatrix& p);
 
-      lu& operator = (const lu& a)
+  lu& operator = (const lu& a)
+  {
+    if (this != &a)
       {
-        if (this != &a)
-          {
-            m_a_fact = a.m_a_fact;
-            m_L = a.m_L;
-            m_ipvt = a.m_ipvt;
-          }
-
-        return *this;
+        m_a_fact = a.m_a_fact;
+        m_L = a.m_L;
+        m_ipvt = a.m_ipvt;
       }
 
-      virtual ~lu (void) = default;
+    return *this;
+  }
 
-      OCTAVE_API bool packed (void) const;
+  virtual ~lu (void) = default;
 
-      OCTAVE_API void unpack (void);
+  OCTAVE_API bool packed (void) const;
 
-      OCTAVE_API T L (void) const;
+  OCTAVE_API void unpack (void);
 
-      OCTAVE_API T U (void) const;
+  OCTAVE_API T L (void) const;
 
-      OCTAVE_API T Y (void) const;
+  OCTAVE_API T U (void) const;
 
-      OCTAVE_API PermMatrix P (void) const;
+  OCTAVE_API T Y (void) const;
 
-      OCTAVE_API ColumnVector P_vec (void) const;
+  OCTAVE_API PermMatrix P (void) const;
 
-      OCTAVE_API bool regular (void) const;
+  OCTAVE_API ColumnVector P_vec (void) const;
 
-      OCTAVE_API void update (const VT& u, const VT& v);
+  OCTAVE_API bool regular (void) const;
 
-      OCTAVE_API void update (const T& u, const T& v);
+  OCTAVE_API void update (const VT& u, const VT& v);
 
-      OCTAVE_API void update_piv (const VT& u, const VT& v);
+  OCTAVE_API void update (const T& u, const T& v);
 
-      OCTAVE_API void update_piv (const T& u, const T& v);
+  OCTAVE_API void update_piv (const VT& u, const VT& v);
 
-    protected:
+  OCTAVE_API void update_piv (const T& u, const T& v);
 
-      // The result of getp is passed to other Octave Matrix functions,
-      // so we use octave_idx_type.
-      OCTAVE_API Array<octave_idx_type> getp (void) const;
+protected:
 
-      T m_a_fact;
-      T m_L;
+  // The result of getp is passed to other Octave Matrix functions,
+  // so we use octave_idx_type.
+  OCTAVE_API Array<octave_idx_type> getp (void) const;
 
-      // This is internal storage that is passed to Fortran,
-      // so we need a Fortran INTEGER.
-      Array<octave_f77_int_type> m_ipvt;
-    };
+  T m_a_fact;
+  T m_L;
+
+  // This is internal storage that is passed to Fortran,
+  // so we need a Fortran INTEGER.
+  Array<octave_f77_int_type> m_ipvt;
+};
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

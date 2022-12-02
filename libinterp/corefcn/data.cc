@@ -96,7 +96,7 @@ If the optional argument @var{dim} is supplied, work along dimension @var{dim}.
     print_usage ();
 
   int dim = (nargin == 1 ? -1
-                         : args(1).xint_value ("all: DIM must be an integer")-1);
+             : args(1).xint_value ("all: DIM must be an integer")-1);
 
   if (dim < -1)
     error ("all: invalid dimension argument = %d", dim + 1);
@@ -161,7 +161,7 @@ any (eye (2, 4), 2)
     print_usage ();
 
   int dim = (nargin == 1 ? -1
-                         : args(1).xint_value ("any: DIM must be an integer")-1);
+             : args(1).xint_value ("any: DIM must be an integer")-1);
 
   if (dim < -1)
     error ("any: invalid dimension argument = %d", dim + 1);
@@ -2048,8 +2048,8 @@ concatenate the arrays without the overhead of a function call.
 ## Test concatenation with all zero matrices
 %!test
 %! warning ("off", "Octave:num-to-str", "local");
-%! assert (horzcat ("", 65*ones (1,10)), "AAAAAAAAAA");
-%! assert (horzcat (65*ones (1,10), ""), "AAAAAAAAAA");
+%! assert (horzcat ("", 65* ones (1,10)), "AAAAAAAAAA");
+%! assert (horzcat (65* ones (1,10), ""), "AAAAAAAAAA");
 
 %!assert (class (horzcat (int64 (1), int64 (1))), "int64")
 %!assert (class (horzcat (int64 (1), int32 (1))), "int64")
@@ -3566,7 +3566,7 @@ complex ([1, 2], [3, 4])
                       for (octave_idx_type i = im_val.cidx (j);
                            i < im_val.cidx (j + 1); i++)
                         result.data (im_val.ridx (i) + off)
-                          += Complex (0, im_val.data (i));
+                        += Complex (0, im_val.data (i));
                     }
                 }
               retval = octave_value (new octave_sparse_complex_matrix (result));
@@ -3589,7 +3589,7 @@ complex ([1, 2], [3, 4])
                       for (octave_idx_type i = re_val.cidx (j);
                            i < re_val.cidx (j + 1); i++)
                         result.data (re_val.ridx (i) + off)
-                          += re_val.data (i);
+                        += re_val.data (i);
                     }
                 }
               retval = octave_value (new octave_sparse_complex_matrix (result));
@@ -6272,7 +6272,7 @@ compute the norms of each column and return a row vector.
 %!assert (norm (x,0), single (5))
 %!assert (norm (x,1), single (20))
 %!assert (norm (x,2), single (10))
-%!assert (norm (x,3), single (8.24257059961711), -4*eps ("single"))
+%!assert (norm (x,3), single (8.24257059961711), -4* eps ("single"))
 %!assert (norm (x,Inf), single (7))
 %!assert (norm (x,-Inf), single (1))
 %!assert (norm (x,"inf"), single (7))
@@ -6280,7 +6280,7 @@ compute the norms of each column and return a row vector.
 %!assert (norm (x,"fro"), single (10), -eps ("single"))
 %!assert (norm (x), single (10))
 %!assert (norm (single ([1e38, 1])), single (1e38))
-%!assert (norm (single ([3+4i, 3-4i, sqrt(31)])), single (9), -4*eps ("single"))
+%!assert (norm (single ([3+4i, 3-4i, sqrt(31)])), single (9), -4* eps ("single"))
 %!shared m
 %! m = single (magic (4));
 %!assert (norm (m,1), single (34))
@@ -8431,17 +8431,17 @@ Encode a double matrix or array @var{x} into the base64 format string
 
       MAKE_INT_BRANCH(int8)
       else MAKE_INT_BRANCH(int16)
-      else MAKE_INT_BRANCH(int32)
-      else MAKE_INT_BRANCH(int64)
-      else MAKE_INT_BRANCH(uint8)
-      else MAKE_INT_BRANCH(uint16)
-      else MAKE_INT_BRANCH(uint32)
-      else MAKE_INT_BRANCH(uint64)
+        else MAKE_INT_BRANCH(int32)
+          else MAKE_INT_BRANCH(int64)
+            else MAKE_INT_BRANCH(uint8)
+              else MAKE_INT_BRANCH(uint16)
+                else MAKE_INT_BRANCH(uint32)
+                  else MAKE_INT_BRANCH(uint64)
 
 #undef MAKE_INT_BRANCH
 
-      else
-        panic_impossible ();
+                    else
+                      panic_impossible ();
     }
   else if (args(0).is_single_type ())
     {

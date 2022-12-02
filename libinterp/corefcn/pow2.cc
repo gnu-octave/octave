@@ -60,7 +60,7 @@ map_2_xldexp (Array<T>& y, const Array<T>& f, const Array<T>& e)
 
 void
 map_2_xldexp_sparse (SparseMatrix& y, const SparseMatrix& f,
-                                      const SparseMatrix& e)
+                     const SparseMatrix& e)
 {
   if (e.numel () == 1)
     {
@@ -126,7 +126,7 @@ to C/C++ standard function @code{ldexp()}.
           // The C++ standard does not define exp2 for complex arguments.
           // Therefore call `2.^x`.
           octave_value retval = octave::binary_op (octave_value::op_el_pow,
-                                                   2, args(0));
+                                2, args(0));
 
           // Preserve sparse datatype, but even for sparse input fill-up
           // is unavoidable `2^0 == 1` thus cast only.

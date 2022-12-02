@@ -121,7 +121,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   for (octave_idx_type num = 0; num < x_num; num++)
     {
       octave_idx_type x_offset = (x_stride == 1) ? num * x_len
-                         : num + (num / x_stride) * x_stride * (x_len - 1);
+                                 : num + (num / x_stride) * x_stride * (x_len - 1);
 
       octave_idx_type si_offset = num * si_len;
 
@@ -190,7 +190,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 {
                   octave_idx_type lo = u * num_inner;
                   octave_idx_type hi = (lo + num_inner < num_execs-1)
-                                     ? lo + num_inner : num_execs-1;
+                                       ? lo + num_inner : num_execs-1;
 
                   // Inner loop, no interruption
                   for (octave_idx_type j = lo; j <= hi; j++)
@@ -218,7 +218,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 {
                   octave_idx_type lo = u * num_inner;
                   octave_idx_type hi = (lo + num_inner < num_execs-1)
-                                     ? lo + num_inner : num_execs-1;
+                                       ? lo + num_inner : num_execs-1;
 
                   // Inner loop, no interruption
                   for (octave_idx_type j = lo; j <= hi; j++)

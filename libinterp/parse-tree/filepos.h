@@ -30,45 +30,45 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class filepos
+class filepos
+{
+public:
+
+  filepos (void) : m_line (0), m_column (0) { }
+
+  filepos (int l, int c) : m_line (l), m_column (c) { }
+
+  filepos (const filepos&) = default;
+
+  filepos& operator = (const filepos&) = default;
+
+  ~filepos (void) = default;
+
+  operator bool () { return m_line > 0 && m_column > 0; }
+
+  void line (int l) { m_line = l; }
+  void column (int c) { m_column = c; }
+
+  int line (void) const { return m_line; }
+  int column (void) const { return m_column; }
+
+  void increment_line (int val = 1) { m_line += val; }
+  void increment_column (int val = 1) { m_column += val; }
+
+  void decrement_line (int val = 1) { m_line -= val; }
+  void decrement_column (int val = 1) { m_column -= val; }
+
+  void next_line (void)
   {
-  public:
+    m_line++;
+    m_column = 1;
+  }
 
-    filepos (void) : m_line (0), m_column (0) { }
+private:
 
-    filepos (int l, int c) : m_line (l), m_column (c) { }
-
-    filepos (const filepos&) = default;
-
-    filepos& operator = (const filepos&) = default;
-
-    ~filepos (void) = default;
-
-    operator bool () { return m_line > 0 && m_column > 0; }
-
-    void line (int l) { m_line = l; }
-    void column (int c) { m_column = c; }
-
-    int line (void) const { return m_line; }
-    int column (void) const { return m_column; }
-
-    void increment_line (int val = 1) { m_line += val; }
-    void increment_column (int val = 1) { m_column += val; }
-
-    void decrement_line (int val = 1) { m_line -= val; }
-    void decrement_column (int val = 1) { m_column -= val; }
-
-    void next_line (void)
-    {
-      m_line++;
-      m_column = 1;
-    }
-
-  private:
-
-    int m_line;
-    int m_column;
-  };
+  int m_line;
+  int m_column;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

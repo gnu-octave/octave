@@ -70,8 +70,8 @@ public:
     if (! warned)
       {
         warning_with_id
-          ("Octave:gnuplot-graphics",
-           "using the gnuplot graphics toolkit is discouraged\n\
+        ("Octave:gnuplot-graphics",
+         "using the gnuplot graphics toolkit is discouraged\n\
 \n\
 The gnuplot graphics toolkit is not actively maintained and has a number\n\
 of limitations that are unlikely to be fixed.  Communication with gnuplot\n\

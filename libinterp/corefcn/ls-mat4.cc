@@ -320,7 +320,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             read_mat_binary_data (is, ctmp, prec, 1, swap, flt_fmt);
 
             SparseComplexMatrix smc = SparseComplexMatrix (data, r, c,
-                                                           nr_new, nc_new);
+                                      nr_new, nc_new);
 
             tc = (order ? smc.transpose () : smc);
           }
@@ -372,7 +372,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
             for (octave_idx_type j = 0; j < nc; j++)
               for (octave_idx_type i = 0; i < nr; i++)
-                ctmp (i,j) = Complex (re(i,j), im(i,j));
+                ctmp (i, j) = Complex (re(i, j), im(i, j));
 
             tc = (order ? ctmp.transpose () : ctmp);
           }

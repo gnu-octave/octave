@@ -248,7 +248,7 @@ octave_perm_matrix::index_vector (bool require_integers) const
 
 octave_value
 octave_perm_matrix::convert_to_str_internal (bool pad, bool force,
-                                             char type) const
+    char type) const
 {
   return to_dense ().convert_to_str_internal (pad, force, type);
 }
@@ -380,7 +380,7 @@ octave_perm_matrix::save_binary (std::ostream& os, bool)
   os.write (reinterpret_cast<char *> (&colp), 1);
   const Array<octave_idx_type>& col_perm = m_matrix.col_perm_vec ();
   os.write (reinterpret_cast<const char *> (col_perm.data ()),
-                                            col_perm.byte_size ());
+            col_perm.byte_size ());
 
   return true;
 }
@@ -493,7 +493,7 @@ octave_base_value::type_conv_info
 octave_perm_matrix::numeric_conversion_function (void) const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_matrix::static_type_id ());
+         octave_matrix::static_type_id ());
 }
 
 // FIXME: This is duplicated from octave_base_matrix<T>.  Could

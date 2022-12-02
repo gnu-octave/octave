@@ -305,29 +305,29 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-    template <typename T>
-    T
-    svd<T>::left_singular_matrix (void) const
-    {
-      if (m_type == svd::Type::sigma_only)
-        (*current_liboctave_error_handler)
-          ("svd: U not computed because type == svd::sigma_only");
+template <typename T>
+T
+svd<T>::left_singular_matrix (void) const
+{
+  if (m_type == svd::Type::sigma_only)
+    (*current_liboctave_error_handler)
+      ("svd: U not computed because type == svd::sigma_only");
 
-      return m_left_sm;
-    }
+  return m_left_sm;
+}
 
-    template <typename T>
-    T
-    svd<T>::right_singular_matrix (void) const
-    {
-      if (m_type == svd::Type::sigma_only)
-        (*current_liboctave_error_handler)
-          ("svd: V not computed because type == svd::sigma_only");
+template <typename T>
+T
+svd<T>::right_singular_matrix (void) const
+{
+  if (m_type == svd::Type::sigma_only)
+    (*current_liboctave_error_handler)
+      ("svd: V not computed because type == svd::sigma_only");
 
-      return m_right_sm;
-    }
+  return m_right_sm;
+}
 
-    // GESVD specializations
+// GESVD specializations
 
 #define GESVD_REAL_STEP(f, F)                                   \
   F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobu, 1),              \
@@ -348,83 +348,83 @@ OCTAVE_BEGIN_NAMESPACE(math)
                    F77_CHAR_ARG_LEN (1)                 \
                    F77_CHAR_ARG_LEN (1)))
 
-    // DGESVD
-    template<>
-    OCTAVE_API void
-    svd<Matrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
-                        double *tmp_data, F77_INT m1, double *s_vec,
-                        double *u, double *vt, F77_INT nrow_vt1,
-                        std::vector<double>& work, F77_INT& lwork,
-                        F77_INT& info)
-    {
-      GESVD_REAL_STEP (dgesvd, DGESVD);
+// DGESVD
+template<>
+OCTAVE_API void
+svd<Matrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
+                    double *tmp_data, F77_INT m1, double *s_vec,
+                    double *u, double *vt, F77_INT nrow_vt1,
+                    std::vector<double>& work, F77_INT& lwork,
+                    F77_INT& info)
+{
+  GESVD_REAL_STEP (dgesvd, DGESVD);
 
-      lwork = static_cast<F77_INT> (work[0]);
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0]);
+  work.reserve (lwork);
 
-      GESVD_REAL_STEP (dgesvd, DGESVD);
-    }
+  GESVD_REAL_STEP (dgesvd, DGESVD);
+}
 
-    // SGESVD
-    template<>
-    OCTAVE_API void
-    svd<FloatMatrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
-                             float *tmp_data, F77_INT m1, float *s_vec,
-                             float *u, float *vt, F77_INT nrow_vt1,
-                             std::vector<float>& work, F77_INT& lwork,
-                             F77_INT& info)
-    {
-      GESVD_REAL_STEP (sgesvd, SGESVD);
+// SGESVD
+template<>
+OCTAVE_API void
+svd<FloatMatrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
+                         float *tmp_data, F77_INT m1, float *s_vec,
+                         float *u, float *vt, F77_INT nrow_vt1,
+                         std::vector<float>& work, F77_INT& lwork,
+                         F77_INT& info)
+{
+  GESVD_REAL_STEP (sgesvd, SGESVD);
 
-      lwork = static_cast<F77_INT> (work[0]);
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0]);
+  work.reserve (lwork);
 
-      GESVD_REAL_STEP (sgesvd, SGESVD);
-    }
+  GESVD_REAL_STEP (sgesvd, SGESVD);
+}
 
-    // ZGESVD
-    template<>
-    OCTAVE_API void
-    svd<ComplexMatrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
-                               Complex *tmp_data, F77_INT m1, double *s_vec,
-                               Complex *u, Complex *vt, F77_INT nrow_vt1,
-                               std::vector<Complex>& work, F77_INT& lwork,
-                               F77_INT& info)
-    {
-      std::vector<double> rwork (5 * std::max (m, n));
+// ZGESVD
+template<>
+OCTAVE_API void
+svd<ComplexMatrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
+                           Complex *tmp_data, F77_INT m1, double *s_vec,
+                           Complex *u, Complex *vt, F77_INT nrow_vt1,
+                           std::vector<Complex>& work, F77_INT& lwork,
+                           F77_INT& info)
+{
+  std::vector<double> rwork (5 * std::max (m, n));
 
-      GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
+  GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
 
-      lwork = static_cast<F77_INT> (work[0].real ());
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0].real ());
+  work.reserve (lwork);
 
-      GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
-    }
+  GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
+}
 
-    // CGESVD
-    template<>
-    OCTAVE_API void
-    svd<FloatComplexMatrix>::gesvd (char& jobu, char& jobv, F77_INT m,
-                                    F77_INT n, FloatComplex *tmp_data,
-                                    F77_INT m1, float *s_vec, FloatComplex *u,
-                                    FloatComplex *vt, F77_INT nrow_vt1,
-                                    std::vector<FloatComplex>& work,
-                                    F77_INT& lwork, F77_INT& info)
-    {
-      std::vector<float> rwork (5 * std::max (m, n));
+// CGESVD
+template<>
+OCTAVE_API void
+svd<FloatComplexMatrix>::gesvd (char& jobu, char& jobv, F77_INT m,
+                                F77_INT n, FloatComplex *tmp_data,
+                                F77_INT m1, float *s_vec, FloatComplex *u,
+                                FloatComplex *vt, F77_INT nrow_vt1,
+                                std::vector<FloatComplex>& work,
+                                F77_INT& lwork, F77_INT& info)
+{
+  std::vector<float> rwork (5 * std::max (m, n));
 
-      GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
+  GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
 
-      lwork = static_cast<F77_INT> (work[0].real ());
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0].real ());
+  work.reserve (lwork);
 
-      GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
-    }
+  GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
+}
 
 #undef GESVD_REAL_STEP
 #undef GESVD_COMPLEX_STEP
 
-    // GESDD specializations
+// GESDD specializations
 
 #define GESDD_REAL_STEP(f, F)                                           \
     F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&jobz, 1),                    \
@@ -441,100 +441,100 @@ OCTAVE_BEGIN_NAMESPACE(math)
                      rwork.data (), iwork, info                 \
                      F77_CHAR_ARG_LEN (1)))
 
-    // DGESDD
-    template<>
-    OCTAVE_API void
-    svd<Matrix>::gesdd (char& jobz, F77_INT m, F77_INT n, double *tmp_data,
-                        F77_INT m1, double *s_vec, double *u, double *vt,
-                        F77_INT nrow_vt1, std::vector<double>& work,
-                        F77_INT& lwork, F77_INT *iwork, F77_INT& info)
-    {
-      GESDD_REAL_STEP (dgesdd, DGESDD);
+// DGESDD
+template<>
+OCTAVE_API void
+svd<Matrix>::gesdd (char& jobz, F77_INT m, F77_INT n, double *tmp_data,
+                    F77_INT m1, double *s_vec, double *u, double *vt,
+                    F77_INT nrow_vt1, std::vector<double>& work,
+                    F77_INT& lwork, F77_INT *iwork, F77_INT& info)
+{
+  GESDD_REAL_STEP (dgesdd, DGESDD);
 
-      lwork = static_cast<F77_INT> (work[0]);
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0]);
+  work.reserve (lwork);
 
-      GESDD_REAL_STEP (dgesdd, DGESDD);
-    }
+  GESDD_REAL_STEP (dgesdd, DGESDD);
+}
 
-    // SGESDD
-    template<>
-    OCTAVE_API void
-    svd<FloatMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n, float *tmp_data,
-                             F77_INT m1, float *s_vec, float *u, float *vt,
-                             F77_INT nrow_vt1, std::vector<float>& work,
-                             F77_INT& lwork, F77_INT *iwork, F77_INT& info)
-    {
-      GESDD_REAL_STEP (sgesdd, SGESDD);
+// SGESDD
+template<>
+OCTAVE_API void
+svd<FloatMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n, float *tmp_data,
+                         F77_INT m1, float *s_vec, float *u, float *vt,
+                         F77_INT nrow_vt1, std::vector<float>& work,
+                         F77_INT& lwork, F77_INT *iwork, F77_INT& info)
+{
+  GESDD_REAL_STEP (sgesdd, SGESDD);
 
-      lwork = static_cast<F77_INT> (work[0]);
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0]);
+  work.reserve (lwork);
 
-      GESDD_REAL_STEP (sgesdd, SGESDD);
-    }
+  GESDD_REAL_STEP (sgesdd, SGESDD);
+}
 
-    // ZGESDD
-    template<>
-    OCTAVE_API void
-    svd<ComplexMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n,
-                               Complex *tmp_data, F77_INT m1, double *s_vec,
-                               Complex *u, Complex *vt, F77_INT nrow_vt1,
-                               std::vector<Complex>& work, F77_INT& lwork,
-                               F77_INT *iwork, F77_INT& info)
-    {
+// ZGESDD
+template<>
+OCTAVE_API void
+svd<ComplexMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n,
+                           Complex *tmp_data, F77_INT m1, double *s_vec,
+                           Complex *u, Complex *vt, F77_INT nrow_vt1,
+                           std::vector<Complex>& work, F77_INT& lwork,
+                           F77_INT *iwork, F77_INT& info)
+{
 
-      F77_INT min_mn = std::min (m, n);
-      F77_INT max_mn = std::max (m, n);
+  F77_INT min_mn = std::min (m, n);
+  F77_INT max_mn = std::max (m, n);
 
-      F77_INT lrwork;
-      if (jobz == 'N')
-        lrwork = 7*min_mn;
-      else
-        lrwork = min_mn * std::max (5*min_mn+5, 2*max_mn+2*min_mn+1);
+  F77_INT lrwork;
+  if (jobz == 'N')
+    lrwork = 7*min_mn;
+  else
+    lrwork = min_mn * std::max (5*min_mn+5, 2*max_mn+2*min_mn+1);
 
-      std::vector<double> rwork (lrwork);
+  std::vector<double> rwork (lrwork);
 
-      GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
+  GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
 
-      lwork = static_cast<F77_INT> (work[0].real ());
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0].real ());
+  work.reserve (lwork);
 
-      GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
-    }
+  GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
+}
 
-    // CGESDD
-    template<>
-    OCTAVE_API void
-    svd<FloatComplexMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n,
-                                    FloatComplex *tmp_data, F77_INT m1,
-                                    float *s_vec, FloatComplex *u,
-                                    FloatComplex *vt, F77_INT nrow_vt1,
-                                    std::vector<FloatComplex>& work,
-                                    F77_INT& lwork, F77_INT *iwork,
-                                    F77_INT& info)
-    {
-      F77_INT min_mn = std::min (m, n);
-      F77_INT max_mn = std::max (m, n);
+// CGESDD
+template<>
+OCTAVE_API void
+svd<FloatComplexMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n,
+                                FloatComplex *tmp_data, F77_INT m1,
+                                float *s_vec, FloatComplex *u,
+                                FloatComplex *vt, F77_INT nrow_vt1,
+                                std::vector<FloatComplex>& work,
+                                F77_INT& lwork, F77_INT *iwork,
+                                F77_INT& info)
+{
+  F77_INT min_mn = std::min (m, n);
+  F77_INT max_mn = std::max (m, n);
 
-      F77_INT lrwork;
-      if (jobz == 'N')
-        lrwork = 7*min_mn;
-      else
-        lrwork = min_mn * std::max (5*min_mn+5, 2*max_mn+2*min_mn+1);
-      std::vector<float> rwork (lrwork);
+  F77_INT lrwork;
+  if (jobz == 'N')
+    lrwork = 7*min_mn;
+  else
+    lrwork = min_mn * std::max (5*min_mn+5, 2*max_mn+2*min_mn+1);
+  std::vector<float> rwork (lrwork);
 
-      GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
+  GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
 
-      lwork = static_cast<F77_INT> (work[0].real ());
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0].real ());
+  work.reserve (lwork);
 
-      GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
-    }
+  GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
+}
 
 #undef GESDD_REAL_STEP
 #undef GESDD_COMPLEX_STEP
 
-    // GEJSV specializations
+// GEJSV specializations
 
 #define GEJSV_REAL_STEP(f, F)                                         \
     F77_XFCN (f, F, (F77_CONST_CHAR_ARG2 (&joba, 1),                  \
@@ -571,301 +571,301 @@ OCTAVE_BEGIN_NAMESPACE(math)
                      F77_CHAR_ARG_LEN (1)                         \
                      F77_CHAR_ARG_LEN (1)))
 
-    // DGEJSV
-    template<>
-    void
-    svd<Matrix>::gejsv (char& joba, char& jobu, char& jobv,
-                        char& jobr, char& jobt, char& jobp,
-                        F77_INT m, F77_INT n,
-                        P *tmp_data, F77_INT m1, DM_P *s_vec, P *u,
-                        P *v, F77_INT nrow_v1, std::vector<P>& work,
-                        F77_INT& lwork, std::vector<F77_INT>& iwork,
-                        F77_INT& info)
-    {
-      lwork = gejsv_lwork<Matrix>::optimal (joba, jobu, jobv, m, n);
-      work.reserve (lwork);
+// DGEJSV
+template<>
+void
+svd<Matrix>::gejsv (char& joba, char& jobu, char& jobv,
+                    char& jobr, char& jobt, char& jobp,
+                    F77_INT m, F77_INT n,
+                    P *tmp_data, F77_INT m1, DM_P *s_vec, P *u,
+                    P *v, F77_INT nrow_v1, std::vector<P>& work,
+                    F77_INT& lwork, std::vector<F77_INT>& iwork,
+                    F77_INT& info)
+{
+  lwork = gejsv_lwork<Matrix>::optimal (joba, jobu, jobv, m, n);
+  work.reserve (lwork);
 
-      GEJSV_REAL_STEP (dgejsv, DGEJSV);
-    }
+  GEJSV_REAL_STEP (dgejsv, DGEJSV);
+}
 
-    // SGEJSV
-    template<>
-    void
-    svd<FloatMatrix>::gejsv (char& joba, char& jobu, char& jobv,
-                             char& jobr, char& jobt, char& jobp,
-                             F77_INT m, F77_INT n,
-                             P *tmp_data, F77_INT m1, DM_P *s_vec, P *u,
-                             P *v, F77_INT nrow_v1, std::vector<P>& work,
-                             F77_INT& lwork, std::vector<F77_INT>& iwork,
-                             F77_INT& info)
-    {
-      lwork = gejsv_lwork<FloatMatrix>::optimal (joba, jobu, jobv, m, n);
-      work.reserve (lwork);
+// SGEJSV
+template<>
+void
+svd<FloatMatrix>::gejsv (char& joba, char& jobu, char& jobv,
+                         char& jobr, char& jobt, char& jobp,
+                         F77_INT m, F77_INT n,
+                         P *tmp_data, F77_INT m1, DM_P *s_vec, P *u,
+                         P *v, F77_INT nrow_v1, std::vector<P>& work,
+                         F77_INT& lwork, std::vector<F77_INT>& iwork,
+                         F77_INT& info)
+{
+  lwork = gejsv_lwork<FloatMatrix>::optimal (joba, jobu, jobv, m, n);
+  work.reserve (lwork);
 
-      GEJSV_REAL_STEP (sgejsv, SGEJSV);
-    }
+  GEJSV_REAL_STEP (sgejsv, SGEJSV);
+}
 
-    // ZGEJSV
-    template<>
-    void
-    svd<ComplexMatrix>::gejsv (char& joba, char& jobu, char& jobv,
-                               char& jobr, char& jobt, char& jobp,
-                               F77_INT m, F77_INT n,
-                               P *tmp_data, F77_INT m1, DM_P *s_vec, P *u,
-                               P *v, F77_INT nrow_v1, std::vector<P>& work,
-                               F77_INT& lwork, std::vector<F77_INT>& iwork,
-                               F77_INT& info)
-    {
-      F77_INT lrwork = -1;          // work space size query
-      std::vector<double> rwork (1);
-      work.reserve (2);
+// ZGEJSV
+template<>
+void
+svd<ComplexMatrix>::gejsv (char& joba, char& jobu, char& jobv,
+                           char& jobr, char& jobt, char& jobp,
+                           F77_INT m, F77_INT n,
+                           P *tmp_data, F77_INT m1, DM_P *s_vec, P *u,
+                           P *v, F77_INT nrow_v1, std::vector<P>& work,
+                           F77_INT& lwork, std::vector<F77_INT>& iwork,
+                           F77_INT& info)
+{
+  F77_INT lrwork = -1;          // work space size query
+  std::vector<double> rwork (1);
+  work.reserve (2);
 
-      GEJSV_COMPLEX_STEP (zgejsv, ZGEJSV, F77_DBLE_CMPLX_ARG);
+  GEJSV_COMPLEX_STEP (zgejsv, ZGEJSV, F77_DBLE_CMPLX_ARG);
 
-      lwork = static_cast<F77_INT> (work[0].real ());
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0].real ());
+  work.reserve (lwork);
 
-      lrwork = static_cast<F77_INT> (rwork[0]);
-      rwork.reserve (lrwork);
+  lrwork = static_cast<F77_INT> (rwork[0]);
+  rwork.reserve (lrwork);
 
-      F77_INT liwork = static_cast<F77_INT> (iwork[0]);
-      iwork.reserve (liwork);
+  F77_INT liwork = static_cast<F77_INT> (iwork[0]);
+  iwork.reserve (liwork);
 
-      GEJSV_COMPLEX_STEP (zgejsv, ZGEJSV, F77_DBLE_CMPLX_ARG);
-    }
+  GEJSV_COMPLEX_STEP (zgejsv, ZGEJSV, F77_DBLE_CMPLX_ARG);
+}
 
-    // CGEJSV
-    template<>
-    void
-    svd<FloatComplexMatrix>::gejsv (char& joba, char& jobu, char& jobv,
-                                    char& jobr, char& jobt, char& jobp,
-                                    F77_INT m, F77_INT n, P *tmp_data,
-                                    F77_INT m1, DM_P *s_vec, P *u, P *v,
-                                    F77_INT nrow_v1, std::vector<P>& work,
-                                    F77_INT& lwork,
-                                    std::vector<F77_INT>& iwork, F77_INT& info)
-    {
-      F77_INT lrwork = -1;          // work space size query
-      std::vector<float> rwork (1);
-      work.reserve (2);
+// CGEJSV
+template<>
+void
+svd<FloatComplexMatrix>::gejsv (char& joba, char& jobu, char& jobv,
+                                char& jobr, char& jobt, char& jobp,
+                                F77_INT m, F77_INT n, P *tmp_data,
+                                F77_INT m1, DM_P *s_vec, P *u, P *v,
+                                F77_INT nrow_v1, std::vector<P>& work,
+                                F77_INT& lwork,
+                                std::vector<F77_INT>& iwork, F77_INT& info)
+{
+  F77_INT lrwork = -1;          // work space size query
+  std::vector<float> rwork (1);
+  work.reserve (2);
 
-      GEJSV_COMPLEX_STEP (cgejsv, CGEJSV, F77_CMPLX_ARG);
+  GEJSV_COMPLEX_STEP (cgejsv, CGEJSV, F77_CMPLX_ARG);
 
-      lwork = static_cast<F77_INT> (work[0].real ());
-      work.reserve (lwork);
+  lwork = static_cast<F77_INT> (work[0].real ());
+  work.reserve (lwork);
 
-      lrwork = static_cast<F77_INT> (rwork[0]);
-      rwork.reserve (lrwork);
+  lrwork = static_cast<F77_INT> (rwork[0]);
+  rwork.reserve (lrwork);
 
-      F77_INT liwork = static_cast<F77_INT> (iwork[0]);
-      iwork.reserve (liwork);
+  F77_INT liwork = static_cast<F77_INT> (iwork[0]);
+  iwork.reserve (liwork);
 
-      GEJSV_COMPLEX_STEP (cgejsv, CGEJSV, F77_CMPLX_ARG);
-    }
+  GEJSV_COMPLEX_STEP (cgejsv, CGEJSV, F77_CMPLX_ARG);
+}
 
 #undef GEJSV_REAL_STEP
 #undef GEJSV_COMPLEX_STEP
 
-    template<typename T>
-    svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
-      : m_type (type), m_driver (driver), m_left_sm (), m_sigma (),
-        m_right_sm ()
+template<typename T>
+svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
+  : m_type (type), m_driver (driver), m_left_sm (), m_sigma (),
+    m_right_sm ()
+{
+  F77_INT info;
+
+  F77_INT m = to_f77_int (a.rows ());
+  F77_INT n = to_f77_int (a.cols ());
+
+  if (m == 0 || n == 0)
     {
-      F77_INT info;
-
-      F77_INT m = to_f77_int (a.rows ());
-      F77_INT n = to_f77_int (a.cols ());
-
-      if (m == 0 || n == 0)
-        {
-          switch (m_type)
-            {
-            case svd::Type::std:
-              m_left_sm = T (m, m, 0);
-              for (F77_INT i = 0; i < m; i++)
-                m_left_sm.xelem (i, i) = 1;
-              m_sigma = DM_T (m, n);
-              m_right_sm = T (n, n, 0);
-              for (F77_INT i = 0; i < n; i++)
-                m_right_sm.xelem (i, i) = 1;
-              break;
-
-            case svd::Type::economy:
-              m_left_sm = T (m, 0, 0);
-              m_sigma = DM_T (0, 0);
-              m_right_sm = T (n, 0, 0);
-              break;
-
-            case svd::Type::sigma_only:
-            default:
-              m_sigma = DM_T (0, 1);
-              break;
-            }
-          return;
-        }
-
-      T atmp = a;
-      P *tmp_data = atmp.fortran_vec ();
-
-      F77_INT min_mn = (m < n ? m : n);
-
-      char jobu = 'A';
-      char jobv = 'A';
-
-      F77_INT ncol_u = m;
-      F77_INT nrow_vt = n;
-      F77_INT nrow_s = m;
-      F77_INT ncol_s = n;
-
       switch (m_type)
         {
+        case svd::Type::std:
+          m_left_sm = T (m, m, 0);
+          for (F77_INT i = 0; i < m; i++)
+            m_left_sm.xelem (i, i) = 1;
+          m_sigma = DM_T (m, n);
+          m_right_sm = T (n, n, 0);
+          for (F77_INT i = 0; i < n; i++)
+            m_right_sm.xelem (i, i) = 1;
+          break;
+
         case svd::Type::economy:
-          jobu = jobv = 'S';
-          ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
+          m_left_sm = T (m, 0, 0);
+          m_sigma = DM_T (0, 0);
+          m_right_sm = T (n, 0, 0);
           break;
 
         case svd::Type::sigma_only:
-
-          // Note:  for this case, both jobu and jobv should be 'N', but there
-          // seems to be a bug in dgesvd from Lapack V2.0.  To demonstrate the
-          // bug, set both jobu and jobv to 'N' and find the singular values of
-          // [eye(3), eye(3)].  The result is [-sqrt(2), -sqrt(2), -sqrt(2)].
-          //
-          // For Lapack 3.0, this problem seems to be fixed.
-
-          jobu = jobv = 'N';
-          ncol_u = nrow_vt = 1;
-          break;
-
         default:
+          m_sigma = DM_T (0, 1);
           break;
         }
-
-      if (! (jobu == 'N' || jobu == 'O'))
-        m_left_sm.resize (m, ncol_u);
-
-      P *u = m_left_sm.fortran_vec ();
-
-      m_sigma.resize (nrow_s, ncol_s);
-      DM_P *s_vec = m_sigma.fortran_vec ();
-
-      if (! (jobv == 'N' || jobv == 'O'))
-        {
-          if (m_driver == svd::Driver::GEJSV)
-            m_right_sm.resize (n, nrow_vt);
-          else
-            m_right_sm.resize (nrow_vt, n);
-        }
-
-      P *vt = m_right_sm.fortran_vec ();
-
-      // Query _GESVD for the correct dimension of WORK.
-
-      F77_INT lwork = -1;
-
-      std::vector<P> work (1);
-
-      const F77_INT f77_int_one = static_cast<F77_INT> (1);
-      F77_INT m1 = std::max (m, f77_int_one);
-      F77_INT nrow_vt1 = std::max (nrow_vt, f77_int_one);
-
-      if (m_driver == svd::Driver::GESVD)
-        gesvd (jobu, jobv, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,
-               work, lwork, info);
-      else if (m_driver == svd::Driver::GESDD)
-        {
-          assert (jobu == jobv);
-          char jobz = jobu;
-
-          std::vector<F77_INT> iwork (8 * std::min (m, n));
-
-          gesdd (jobz, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,
-                 work, lwork, iwork.data (), info);
-        }
-      else if (m_driver == svd::Driver::GEJSV)
-        {
-          bool transposed = false;
-          if (n > m)
-            {
-              // GEJSV only accepts m >= n, thus we need to transpose here
-              transposed = true;
-
-              std::swap (m, n);
-              m1 = std::max (m, f77_int_one);
-              nrow_vt1 = std::max (n, f77_int_one);  // we have m > n
-              if (m_type == svd::Type::sigma_only)
-                nrow_vt1 = 1;
-              std::swap (jobu, jobv);
-
-              atmp = atmp.hermitian ();
-              tmp_data = atmp.fortran_vec ();
-
-              // Swap pointers of U and V.
-              u  = m_right_sm.fortran_vec ();
-              vt = m_left_sm.fortran_vec ();
-            }
-
-          // translate jobu and jobv from gesvd to gejsv.
-          std::unordered_map<char, std::string> job_svd2jsv;
-          job_svd2jsv['A'] = "FJ";
-          job_svd2jsv['S'] = "UV";
-          job_svd2jsv['O'] = "WW";
-          job_svd2jsv['N'] = "NN";
-          jobu = job_svd2jsv[jobu][0];
-          jobv = job_svd2jsv[jobv][1];
-
-          char joba = 'F';  // 'F': most conservative
-          char jobr = 'R';  // 'R' is recommended.
-          char jobt = 'N';  // or 'T', but that requires U and V appear together
-          char jobp = 'N';  // use 'P' if denormal is poorly implemented.
-
-          std::vector<F77_INT> iwork (std::max<F77_INT> (m + 3*n, 1));
-
-          gejsv (joba, jobu, jobv, jobr, jobt, jobp, m, n, tmp_data, m1,
-                 s_vec, u, vt, nrow_vt1, work, lwork, iwork, info);
-
-          if (iwork[2] == 1)
-            (*current_liboctave_warning_with_id_handler)
-              ("Octave:convergence", "svd: (driver: GEJSV) "
-               "Denormal occurred, possible loss of accuracy.");
-
-          if (info < 0)
-            (*current_liboctave_error_handler)
-              ("svd: (driver: GEJSV) Illegal argument at #%d",
-               static_cast<int> (-info));
-          else if (info > 0)
-            (*current_liboctave_warning_with_id_handler)
-              ("Octave:convergence", "svd: (driver: GEJSV) "
-               "Fail to converge within max sweeps, "
-               "possible inaccurate result.");
-
-          if (transposed)  // put things that need to transpose back here
-            std::swap (m, n);
-        }
-      else
-        (*current_liboctave_error_handler) ("svd: unknown driver");
-
-      // LAPACK can return -0 which is a small problem (bug #55710).
-      for (octave_idx_type i = 0; i < m_sigma.diag_length (); i++)
-        {
-          if (! m_sigma.dgxelem (i))
-            m_sigma.dgxelem (i) = DM_P (0);
-        }
-
-      // GESVD and GESDD return VT instead of V, GEJSV return V.
-      if (! (jobv == 'N' || jobv == 'O') && (m_driver != svd::Driver::GEJSV))
-        m_right_sm = m_right_sm.hermitian ();
+      return;
     }
 
-    // Instantiations we need.
+  T atmp = a;
+  P *tmp_data = atmp.fortran_vec ();
 
-    template class svd<Matrix>;
+  F77_INT min_mn = (m < n ? m : n);
 
-    template class svd<FloatMatrix>;
+  char jobu = 'A';
+  char jobv = 'A';
 
-    template class svd<ComplexMatrix>;
+  F77_INT ncol_u = m;
+  F77_INT nrow_vt = n;
+  F77_INT nrow_s = m;
+  F77_INT ncol_s = n;
 
-    template class svd<FloatComplexMatrix>;
+  switch (m_type)
+    {
+    case svd::Type::economy:
+      jobu = jobv = 'S';
+      ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
+      break;
+
+    case svd::Type::sigma_only:
+
+      // Note:  for this case, both jobu and jobv should be 'N', but there
+      // seems to be a bug in dgesvd from Lapack V2.0.  To demonstrate the
+      // bug, set both jobu and jobv to 'N' and find the singular values of
+      // [eye(3), eye(3)].  The result is [-sqrt(2), -sqrt(2), -sqrt(2)].
+      //
+      // For Lapack 3.0, this problem seems to be fixed.
+
+      jobu = jobv = 'N';
+      ncol_u = nrow_vt = 1;
+      break;
+
+    default:
+      break;
+    }
+
+  if (! (jobu == 'N' || jobu == 'O'))
+    m_left_sm.resize (m, ncol_u);
+
+  P *u = m_left_sm.fortran_vec ();
+
+  m_sigma.resize (nrow_s, ncol_s);
+  DM_P *s_vec = m_sigma.fortran_vec ();
+
+  if (! (jobv == 'N' || jobv == 'O'))
+    {
+      if (m_driver == svd::Driver::GEJSV)
+        m_right_sm.resize (n, nrow_vt);
+      else
+        m_right_sm.resize (nrow_vt, n);
+    }
+
+  P *vt = m_right_sm.fortran_vec ();
+
+  // Query _GESVD for the correct dimension of WORK.
+
+  F77_INT lwork = -1;
+
+  std::vector<P> work (1);
+
+  const F77_INT f77_int_one = static_cast<F77_INT> (1);
+  F77_INT m1 = std::max (m, f77_int_one);
+  F77_INT nrow_vt1 = std::max (nrow_vt, f77_int_one);
+
+  if (m_driver == svd::Driver::GESVD)
+    gesvd (jobu, jobv, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,
+           work, lwork, info);
+  else if (m_driver == svd::Driver::GESDD)
+    {
+      assert (jobu == jobv);
+      char jobz = jobu;
+
+      std::vector<F77_INT> iwork (8 * std::min (m, n));
+
+      gesdd (jobz, m, n, tmp_data, m1, s_vec, u, vt, nrow_vt1,
+             work, lwork, iwork.data (), info);
+    }
+  else if (m_driver == svd::Driver::GEJSV)
+    {
+      bool transposed = false;
+      if (n > m)
+        {
+          // GEJSV only accepts m >= n, thus we need to transpose here
+          transposed = true;
+
+          std::swap (m, n);
+          m1 = std::max (m, f77_int_one);
+          nrow_vt1 = std::max (n, f77_int_one);  // we have m > n
+          if (m_type == svd::Type::sigma_only)
+            nrow_vt1 = 1;
+          std::swap (jobu, jobv);
+
+          atmp = atmp.hermitian ();
+          tmp_data = atmp.fortran_vec ();
+
+          // Swap pointers of U and V.
+          u  = m_right_sm.fortran_vec ();
+          vt = m_left_sm.fortran_vec ();
+        }
+
+      // translate jobu and jobv from gesvd to gejsv.
+      std::unordered_map<char, std::string> job_svd2jsv;
+      job_svd2jsv['A'] = "FJ";
+      job_svd2jsv['S'] = "UV";
+      job_svd2jsv['O'] = "WW";
+      job_svd2jsv['N'] = "NN";
+      jobu = job_svd2jsv[jobu][0];
+      jobv = job_svd2jsv[jobv][1];
+
+      char joba = 'F';  // 'F': most conservative
+      char jobr = 'R';  // 'R' is recommended.
+      char jobt = 'N';  // or 'T', but that requires U and V appear together
+      char jobp = 'N';  // use 'P' if denormal is poorly implemented.
+
+      std::vector<F77_INT> iwork (std::max<F77_INT> (m + 3*n, 1));
+
+      gejsv (joba, jobu, jobv, jobr, jobt, jobp, m, n, tmp_data, m1,
+             s_vec, u, vt, nrow_vt1, work, lwork, iwork, info);
+
+      if (iwork[2] == 1)
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:convergence", "svd: (driver: GEJSV) "
+           "Denormal occurred, possible loss of accuracy.");
+
+      if (info < 0)
+        (*current_liboctave_error_handler)
+          ("svd: (driver: GEJSV) Illegal argument at #%d",
+           static_cast<int> (-info));
+      else if (info > 0)
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:convergence", "svd: (driver: GEJSV) "
+           "Fail to converge within max sweeps, "
+           "possible inaccurate result.");
+
+      if (transposed)  // put things that need to transpose back here
+        std::swap (m, n);
+    }
+  else
+    (*current_liboctave_error_handler) ("svd: unknown driver");
+
+  // LAPACK can return -0 which is a small problem (bug #55710).
+  for (octave_idx_type i = 0; i < m_sigma.diag_length (); i++)
+    {
+      if (! m_sigma.dgxelem (i))
+        m_sigma.dgxelem (i) = DM_P (0);
+    }
+
+  // GESVD and GESDD return VT instead of V, GEJSV return V.
+  if (! (jobv == 'N' || jobv == 'O') && (m_driver != svd::Driver::GEJSV))
+    m_right_sm = m_right_sm.hermitian ();
+}
+
+// Instantiations we need.
+
+template class svd<Matrix>;
+
+template class svd<FloatMatrix>;
+
+template class svd<ComplexMatrix>;
+
+template class svd<FloatComplexMatrix>;
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

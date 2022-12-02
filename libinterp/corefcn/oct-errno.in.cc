@@ -276,7 +276,7 @@ octave_errno::octave_errno (void)
 
     // Others (duplicates are OK).
 
-@SYSDEP_ERRNO_LIST@
+    @SYSDEP_ERRNO_LIST@
 
     { nullptr, 0 },
   };
@@ -322,7 +322,7 @@ int
 octave_errno::do_lookup (const std::string& name)
 {
   return (m_errno_tbl.find (name) != m_errno_tbl.end ()) ? m_errno_tbl[name]
-                                                         : -1;
+         : -1;
 }
 
 octave_scalar_map

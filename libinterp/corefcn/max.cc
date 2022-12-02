@@ -291,12 +291,12 @@ do_minmax_body (const octave_value_list& args,
                     if (nargout > 1)
                       retval(1) = static_cast<double>
                                   (range.increment () >= 0 ? range.numel ()
-                                                           : 1);
+                                   : 1);
                   }
               }
             else if (arg.issparse ())
               retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim,
-                                                       ismin);
+                       ismin);
             else
               retval = do_minmax_red_op<NDArray> (arg, nargout, dim, ismin);
 
@@ -307,10 +307,10 @@ do_minmax_body (const octave_value_list& args,
           {
             if (arg.issparse ())
               retval = do_minmax_red_op<SparseComplexMatrix> (arg, nargout, dim,
-                                                              ismin);
+                       ismin);
             else
               retval = do_minmax_red_op<ComplexNDArray> (arg, nargout, dim,
-                                                         ismin);
+                       ismin);
           }
           break;
 
@@ -320,7 +320,7 @@ do_minmax_body (const octave_value_list& args,
 
         case btyp_float_complex:
           retval = do_minmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
-                                                          ismin);
+                   ismin);
           break;
 
         case btyp_char:
@@ -332,14 +332,14 @@ do_minmax_body (const octave_value_list& args,
           retval = do_minmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
           break;
 
-        MAKE_INT_BRANCH (int8);
-        MAKE_INT_BRANCH (int16);
-        MAKE_INT_BRANCH (int32);
-        MAKE_INT_BRANCH (int64);
-        MAKE_INT_BRANCH (uint8);
-        MAKE_INT_BRANCH (uint16);
-        MAKE_INT_BRANCH (uint32);
-        MAKE_INT_BRANCH (uint64);
+          MAKE_INT_BRANCH (int8);
+          MAKE_INT_BRANCH (int16);
+          MAKE_INT_BRANCH (int32);
+          MAKE_INT_BRANCH (int64);
+          MAKE_INT_BRANCH (uint8);
+          MAKE_INT_BRANCH (uint16);
+          MAKE_INT_BRANCH (uint32);
+          MAKE_INT_BRANCH (uint64);
 
 #undef MAKE_INT_BRANCH
 
@@ -385,7 +385,7 @@ do_minmax_body (const octave_value_list& args,
                  && (argy.issparse () || argy.is_scalar_type ()))
                 || (argy.issparse () && argx.is_scalar_type ()))
               retval = do_minmax_bin_op<SparseComplexMatrix> (argx, argy,
-                                                              ismin);
+                       ismin);
             else
               retval = do_minmax_bin_op<ComplexNDArray> (argx, argy, ismin);
           }
@@ -408,14 +408,14 @@ do_minmax_body (const octave_value_list& args,
           retval = do_minmax_bin_op<X ## NDArray> (argx, argy, ismin); \
           break;
 
-        MAKE_INT_BRANCH (int8);
-        MAKE_INT_BRANCH (int16);
-        MAKE_INT_BRANCH (int32);
-        MAKE_INT_BRANCH (int64);
-        MAKE_INT_BRANCH (uint8);
-        MAKE_INT_BRANCH (uint16);
-        MAKE_INT_BRANCH (uint32);
-        MAKE_INT_BRANCH (uint64);
+          MAKE_INT_BRANCH (int8);
+          MAKE_INT_BRANCH (int16);
+          MAKE_INT_BRANCH (int32);
+          MAKE_INT_BRANCH (int64);
+          MAKE_INT_BRANCH (uint8);
+          MAKE_INT_BRANCH (uint16);
+          MAKE_INT_BRANCH (uint32);
+          MAKE_INT_BRANCH (uint64);
 
 #undef MAKE_INT_BRANCH
 
@@ -947,7 +947,7 @@ do_cumminmax_body (const octave_value_list& args,
 
     case btyp_complex:
       retval = do_cumminmax_red_op<ComplexNDArray> (arg, nargout, dim,
-                                                    ismin);
+               ismin);
       break;
 
     case btyp_float:
@@ -956,7 +956,7 @@ do_cumminmax_body (const octave_value_list& args,
 
     case btyp_float_complex:
       retval = do_cumminmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
-                                                         ismin);
+               ismin);
       break;
 
 #define MAKE_INT_BRANCH(X)                                                   \
@@ -978,7 +978,7 @@ do_cumminmax_body (const octave_value_list& args,
     case btyp_bool:
       {
         retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim,
-                                                   ismin);
+                 ismin);
         if (retval.length () > 0)
           retval(0) = retval(0).bool_array_value ();
       }

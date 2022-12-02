@@ -34,127 +34,127 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Unary expressions.
+// Unary expressions.
 
-  std::string
-  tree_unary_expression::oper (void) const
-  {
-    return octave_value::unary_op_as_string (m_etype);
-  }
+std::string
+tree_unary_expression::oper (void) const
+{
+  return octave_value::unary_op_as_string (m_etype);
+}
 
-  // Prefix expressions.
+// Prefix expressions.
 
-  tree_expression *
-  tree_prefix_expression::dup (symbol_scope& scope) const
-  {
-    tree_prefix_expression *new_pe
-      = new tree_prefix_expression (m_op ? m_op->dup (scope) : nullptr,
-                                    line (), column (), m_etype);
+tree_expression *
+tree_prefix_expression::dup (symbol_scope& scope) const
+{
+  tree_prefix_expression *new_pe
+    = new tree_prefix_expression (m_op ? m_op->dup (scope) : nullptr,
+                                  line (), column (), m_etype);
 
-    new_pe->copy_base (*this);
+  new_pe->copy_base (*this);
 
-    return new_pe;
-  }
+  return new_pe;
+}
 
-  octave_value
-  tree_prefix_expression::evaluate (tree_evaluator& tw, int)
-  {
-    octave_value val;
+octave_value
+tree_prefix_expression::evaluate (tree_evaluator& tw, int)
+{
+  octave_value val;
 
-    if (m_op)
-      {
-        if (m_etype == octave_value::op_incr
-            || m_etype == octave_value::op_decr)
-          {
-            octave_lvalue op_ref = m_op->lvalue (tw);
+  if (m_op)
+    {
+      if (m_etype == octave_value::op_incr
+          || m_etype == octave_value::op_decr)
+        {
+          octave_lvalue op_ref = m_op->lvalue (tw);
 
-            profiler::enter<tree_prefix_expression>
+          profiler::enter<tree_prefix_expression>
+          block (tw.get_profiler (), *this);
+
+          op_ref.unary_op (m_etype);
+
+          val = op_ref.value ();
+        }
+      else
+        {
+          octave_value op_val = m_op->evaluate (tw);
+
+          if (op_val.is_defined ())
+            {
+              profiler::enter<tree_prefix_expression>
               block (tw.get_profiler (), *this);
 
-            op_ref.unary_op (m_etype);
+              // Attempt to do the operation in-place if it is unshared
+              // (a temporary expression).
+              if (op_val.get_count () == 1)
+                val = op_val.non_const_unary_op (m_etype);
+              else
+                {
+                  interpreter& interp = tw.get_interpreter ();
 
-            val = op_ref.value ();
-          }
-        else
-          {
-            octave_value op_val = m_op->evaluate (tw);
+                  type_info& ti = interp.get_type_info ();
 
-            if (op_val.is_defined ())
-              {
-                profiler::enter<tree_prefix_expression>
-                  block (tw.get_profiler (), *this);
+                  val = unary_op (ti, m_etype, op_val);
+                }
+            }
+        }
+    }
 
-                // Attempt to do the operation in-place if it is unshared
-                // (a temporary expression).
-                if (op_val.get_count () == 1)
-                  val = op_val.non_const_unary_op (m_etype);
-                else
-                  {
-                    interpreter& interp = tw.get_interpreter ();
+  return val;
+}
 
-                    type_info& ti = interp.get_type_info ();
+// Postfix expressions.
 
-                    val = unary_op (ti, m_etype, op_val);
-                  }
-              }
-          }
-      }
+tree_expression *
+tree_postfix_expression::dup (symbol_scope& scope) const
+{
+  tree_postfix_expression *new_pe
+    = new tree_postfix_expression (m_op ? m_op->dup (scope) : nullptr,
+                                   line (), column (), m_etype);
 
-    return val;
-  }
+  new_pe->copy_base (*this);
 
-  // Postfix expressions.
+  return new_pe;
+}
 
-  tree_expression *
-  tree_postfix_expression::dup (symbol_scope& scope) const
-  {
-    tree_postfix_expression *new_pe
-      = new tree_postfix_expression (m_op ? m_op->dup (scope) : nullptr,
-                                     line (), column (), m_etype);
+octave_value
+tree_postfix_expression::evaluate (tree_evaluator& tw, int)
+{
+  octave_value val;
 
-    new_pe->copy_base (*this);
+  if (m_op)
+    {
+      if (m_etype == octave_value::op_incr
+          || m_etype == octave_value::op_decr)
+        {
+          octave_lvalue ref = m_op->lvalue (tw);
 
-    return new_pe;
-  }
+          val = ref.value ();
 
-  octave_value
-  tree_postfix_expression::evaluate (tree_evaluator& tw, int)
-  {
-    octave_value val;
+          profiler::enter<tree_postfix_expression>
+          block (tw.get_profiler (), *this);
 
-    if (m_op)
-      {
-        if (m_etype == octave_value::op_incr
-            || m_etype == octave_value::op_decr)
-          {
-            octave_lvalue ref = m_op->lvalue (tw);
+          ref.unary_op (m_etype);
+        }
+      else
+        {
+          octave_value op_val = m_op->evaluate (tw);
 
-            val = ref.value ();
-
-            profiler::enter<tree_postfix_expression>
+          if (op_val.is_defined ())
+            {
+              profiler::enter<tree_postfix_expression>
               block (tw.get_profiler (), *this);
 
-            ref.unary_op (m_etype);
-          }
-        else
-          {
-            octave_value op_val = m_op->evaluate (tw);
+              interpreter& interp = tw.get_interpreter ();
 
-            if (op_val.is_defined ())
-              {
-                profiler::enter<tree_postfix_expression>
-                  block (tw.get_profiler (), *this);
+              type_info& ti = interp.get_type_info ();
 
-                interpreter& interp = tw.get_interpreter ();
+              val = unary_op (ti, m_etype, op_val);
+            }
+        }
+    }
 
-                type_info& ti = interp.get_type_info ();
-
-                val = unary_op (ti, m_etype, op_val);
-              }
-          }
-      }
-
-    return val;
-  }
+  return val;
+}
 
 OCTAVE_END_NAMESPACE(octave)

@@ -34,45 +34,45 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class tree_decl_command;
+class tree_decl_command;
 
-  // How to check the semantics of the code that the parse trees represent.
+// How to check the semantics of the code that the parse trees represent.
 
-  class tree_checker : public tree_walker
-  {
-  public:
+class tree_checker : public tree_walker
+{
+public:
 
-    tree_checker (void)
-      : m_do_lvalue_check (false), m_file_name () { }
+  tree_checker (void)
+    : m_do_lvalue_check (false), m_file_name () { }
 
-    // No copying!
+  // No copying!
 
-    tree_checker (const tree_checker&) = delete;
+  tree_checker (const tree_checker&) = delete;
 
-    tree_checker& operator = (const tree_checker&) = delete;
+  tree_checker& operator = (const tree_checker&) = delete;
 
-    ~tree_checker (void) = default;
+  ~tree_checker (void) = default;
 
-    void visit_argument_list (tree_argument_list&);
+  void visit_argument_list (tree_argument_list&);
 
-    void visit_simple_for_command (tree_simple_for_command&);
+  void visit_simple_for_command (tree_simple_for_command&);
 
-    void visit_complex_for_command (tree_complex_for_command&);
+  void visit_complex_for_command (tree_complex_for_command&);
 
-    void visit_multi_assignment (tree_multi_assignment&);
+  void visit_multi_assignment (tree_multi_assignment&);
 
-    void visit_simple_assignment (tree_simple_assignment&);
+  void visit_simple_assignment (tree_simple_assignment&);
 
-    void visit_try_catch_command (tree_try_catch_command&);
+  void visit_try_catch_command (tree_try_catch_command&);
 
-  private:
+private:
 
-    bool m_do_lvalue_check;
+  bool m_do_lvalue_check;
 
-    std::string m_file_name;
+  std::string m_file_name;
 
-    OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
-  };
+  OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

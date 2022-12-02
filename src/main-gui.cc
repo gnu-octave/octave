@@ -50,6 +50,7 @@
 #include "octave-build-info.h"
 #include "qt-application.h"
 #include "sysdep.h"
+#include "version.h"
 
 static void
 check_hg_versions (void)
@@ -127,7 +128,8 @@ main (int argc, char **argv)
 
   octave::sys::env::set_program_name (argv[0]);
 
-  octave::qt_application app (argc, argv);
+  octave::qt_application app ("octave", "octave-gui", OCTAVE_VERSION,
+                              argc, argv);
 
   return app.execute ();
 }

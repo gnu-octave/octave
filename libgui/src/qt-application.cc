@@ -27,6 +27,10 @@
 #  include "config.h"
 #endif
 
+#include <QCoreApplication>
+#include <QSettings>
+#include <QString>
+
 #include "main-window.h"
 #include "octave-qobject.h"
 #include "qt-application.h"
@@ -59,6 +63,9 @@ namespace octave
     if (! application_version.empty ())
       QCoreApplication::setApplicationVersion
         (QString::fromStdString (application_version));
+
+    // FIXME: Is there a better place for this?
+    QSettings::setDefaultFormat (QSettings::IniFormat);
 
     // This should probably happen early.
     sysdep_init ();

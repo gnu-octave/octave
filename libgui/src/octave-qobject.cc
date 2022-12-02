@@ -208,11 +208,6 @@ namespace octave
     QTextCodec::setCodecForLocale (QTextCodec::codecForName ("UTF-8"));
 #endif
 
-    // Initialize global Qt application metadata.
-
-    QCoreApplication::setApplicationName ("GNU Octave");
-    QCoreApplication::setApplicationVersion (OCTAVE_VERSION);
-
     // Register octave_value_list for connecting thread crossing signals.
 
     qRegisterMetaType<octave_value_list> ("octave_value_list");

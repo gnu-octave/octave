@@ -67,10 +67,10 @@ namespace octave
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
       m_default_settings (nullptr), m_temporary_files (), m_icon_fallbacks ()
   {
-    // Let gui_settings decide where to put the ini file with gui preferences
-    m_default_settings
-      = new gui_settings (QSettings::IniFormat, QSettings::UserScope,
-                          "octave", "octave-gui");
+    // Location, name, and format of settings file determined by
+    // settings in qt_application class construtor.
+
+    m_default_settings = new gui_settings ();
 
     m_settings_file = m_default_settings->fileName ();
 

@@ -150,13 +150,13 @@ namespace octave
 
     if (index.isValid () && index.column () == 0)
       {
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings settings;
 
-        menu.addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+        menu.addAction (settings.icon ("edit-copy"), tr ("Copy"), this,
                         &history_dock_widget::handle_contextmenu_copy);
         menu.addAction (tr ("Evaluate"), this,
                         &history_dock_widget::handle_contextmenu_evaluate);
-        menu.addAction (rmgr.icon ("document-new"), tr ("Create script"), this,
+        menu.addAction (settings.icon ("document-new"), tr ("Create script"), this,
                         &history_dock_widget::handle_contextmenu_create_script);
       }
     if (m_filter_shown)

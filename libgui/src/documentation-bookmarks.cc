@@ -321,11 +321,11 @@ namespace octave
 
     if (m_ctx_menu_item)
       {
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings settings;
 
         menu.addAction (tr ("&Open"), this, &documentation_bookmarks::open);
         menu.addAction (tr ("&Rename"), this, &documentation_bookmarks::edit);
-        menu.addAction (rmgr.icon ("window-close"), tr ("Remo&ve"),
+        menu.addAction (settings.icon ("window-close"), tr ("Remo&ve"),
                         this, &documentation_bookmarks::remove);
         menu.addSeparator ();
       }

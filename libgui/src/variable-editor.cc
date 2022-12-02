@@ -114,9 +114,10 @@ namespace octave
     m_prev_geom = QRect (0, 0, 0, 0);
 
     QHBoxLayout *h_layout = m_title_widget->findChild<QHBoxLayout *> ();
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    gui_settings settings;
     m_fullscreen_action
-      = new QAction (rmgr.icon ("view-fullscreen", false), "", this);
+      = new QAction (settings.icon ("view-fullscreen", false), "", this);
     m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
     QToolButton *fullscreen_button = new QToolButton (m_title_widget);
     fullscreen_button->setDefaultAction (m_fullscreen_action);
@@ -149,8 +150,8 @@ namespace octave
         if (m_full_screen)
           {
             setGeometry (m_prev_geom);
-            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-            m_fullscreen_action->setIcon (rmgr.icon ("view-fullscreen", false));
+            gui_settings settings;
+            m_fullscreen_action->setIcon (settings.icon ("view-fullscreen", false));
             m_full_screen = false;
           }
         m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
@@ -208,12 +209,12 @@ namespace octave
   void
   variable_dock_widget::change_fullscreen (void)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
     if (! m_full_screen)
       {
         m_prev_floating = isFloating ();
-        m_fullscreen_action->setIcon (rmgr.icon ("view-restore", false));
+        m_fullscreen_action->setIcon (settings.icon ("view-restore", false));
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr ("Restore geometry"));
         else
@@ -233,7 +234,7 @@ namespace octave
       }
     else
       {
-        m_fullscreen_action->setIcon (rmgr.icon ("view-fullscreen", false));
+        m_fullscreen_action->setIcon (settings.icon ("view-fullscreen", false));
         setGeometry (m_prev_geom);
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr (UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP));
@@ -644,31 +645,31 @@ namespace octave
   variable_editor_view::add_edit_actions (QMenu *menu,
                                           const QString& qualifier_string)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
-    menu->addAction (rmgr.icon ("edit-cut"),
+    menu->addAction (settings.icon ("edit-cut"),
                      tr ("Cut") + qualifier_string,
                      this, &variable_editor_view::cutClipboard);
 
-    menu->addAction (rmgr.icon ("edit-copy"),
+    menu->addAction (settings.icon ("edit-copy"),
                      tr ("Copy") + qualifier_string,
                      this, &variable_editor_view::copyClipboard);
 
-    menu->addAction (rmgr.icon ("edit-paste"),
+    menu->addAction (settings.icon ("edit-paste"),
                      tr ("Paste"),
                      this, &variable_editor_view::pasteClipboard);
 
     menu->addSeparator ();
 
-    menu->addAction (rmgr.icon ("edit-delete"),
+    menu->addAction (settings.icon ("edit-delete"),
                      tr ("Clear") + qualifier_string,
                      this, &variable_editor_view::clearContent);
 
-    menu->addAction (rmgr.icon ("edit-delete"),
+    menu->addAction (settings.icon ("edit-delete"),
                      tr ("Delete") + qualifier_string,
                      this, &variable_editor_view::delete_selected);
 
-    menu->addAction (rmgr.icon ("document-new"),
+    menu->addAction (settings.icon ("document-new"),
                      tr ("Variable from Selection"),
                      this, &variable_editor_view::createVariable);
   }
@@ -1663,22 +1664,23 @@ namespace octave
 
     m_tool_bar->setWindowTitle (tr ("Variable Editor Toolbar"));
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
-    m_save_action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
-                                         this, SLOT (save ()));
+    m_save_action = add_tool_bar_button (settings.icon ("document-save"),
+                                         tr ("Save"), this, SLOT (save ()));
     addAction (m_save_action);
     m_save_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     m_save_action->setStatusTip(tr("Save variable to a file"));
 
-    QAction *action = new QAction (rmgr.icon ("document-save-as"), tr ("Save in format ..."), m_tool_bar);
+    QAction *action = new QAction (settings.icon ("document-save-as"),
+                                   tr ("Save in format ..."), m_tool_bar);
 
     QToolButton *save_tool_button = new HoverToolButton (m_tool_bar);
     save_tool_button->setDefaultAction (action);
 
     save_tool_button->setText (tr ("Save in format ..."));
     save_tool_button->setToolTip (tr("Save variable to a file in different format"));
-    save_tool_button->setIcon (rmgr.icon ("document-save-as"));
+    save_tool_button->setIcon (settings.icon ("document-save-as"));
     save_tool_button->setPopupMode (QToolButton::InstantPopup);
 
     QMenu *save_menu = new ReturnFocusMenu (save_tool_button);
@@ -1697,15 +1699,15 @@ namespace octave
 
     m_tool_bar->addSeparator ();
 
-    action = add_tool_bar_button (rmgr.icon ("edit-cut"), tr ("Cut"),
+    action = add_tool_bar_button (settings.icon ("edit-cut"), tr ("Cut"),
                                   this, SLOT (cutClipboard ()));
     action->setStatusTip(tr("Cut data to clipboard"));
 
-    action = add_tool_bar_button (rmgr.icon ("edit-copy"), tr ("Copy"),
+    action = add_tool_bar_button (settings.icon ("edit-copy"), tr ("Copy"),
                                   this, SLOT (copyClipboard ()));
     action->setStatusTip(tr("Copy data to clipboard"));
 
-    action = add_tool_bar_button (rmgr.icon ("edit-paste"), tr ("Paste"),
+    action = add_tool_bar_button (settings.icon ("edit-paste"), tr ("Paste"),
                                   this, SLOT (pasteClipboard ()));
     action->setStatusTip(tr("Paste clipboard into variable data"));
 
@@ -1715,14 +1717,15 @@ namespace octave
     // QAction *print_action; /icons/fileprint.png
     // m_tool_bar->addSeparator ();
 
-    action = new QAction (rmgr.icon ("plot-xy-curve"), tr ("Plot"), m_tool_bar);
+    action = new QAction (settings.icon ("plot-xy-curve"), tr ("Plot"),
+                          m_tool_bar);
     action->setToolTip (tr ("Plot Selected Data"));
     QToolButton *plot_tool_button = new HoverToolButton (m_tool_bar);
     plot_tool_button->setDefaultAction (action);
 
     plot_tool_button->setText (tr ("Plot"));
     plot_tool_button->setToolTip (tr ("Plot selected data"));
-    plot_tool_button->setIcon (rmgr.icon ("plot-xy-curve"));
+    plot_tool_button->setIcon (settings.icon ("plot-xy-curve"));
 
     plot_tool_button->setPopupMode (QToolButton::InstantPopup);
 
@@ -1738,7 +1741,7 @@ namespace octave
 
     m_tool_bar->addSeparator ();
 
-    action = add_tool_bar_button (rmgr.icon ("go-up"), tr ("Up"), this,
+    action = add_tool_bar_button (settings.icon ("go-up"), tr ("Up"), this,
                                   SLOT (levelUp ()));
     action->setStatusTip(tr("Go one level up in variable hierarchy"));
 

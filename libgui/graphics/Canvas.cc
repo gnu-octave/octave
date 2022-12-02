@@ -43,6 +43,7 @@
 #include "qt-graphics-toolkit.h"
 
 #include "annotation-dialog.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 
@@ -77,9 +78,9 @@ namespace octave
   QCursor
   Canvas::make_cursor (const QString& name, int hot_x, int hot_y)
   {
-    octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
-    QIcon icon = rmgr.icon (name);
+    QIcon icon = settings.icon (name);
 
     return QCursor (icon.pixmap (22, 22), hot_x, hot_y);
   }

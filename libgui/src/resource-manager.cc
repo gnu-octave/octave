@@ -48,6 +48,7 @@
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "resource-manager.h"
 #include "variable-editor.h"
@@ -137,48 +138,6 @@ namespace octave
         gui_tr->load (language, get_gui_translation_dir ());
       }
 
-  }
-
-  void resource_manager::config_icon_theme (void)
-  {
-    int theme = global_icon_theme_index.def.toInt ();
-
-    gui_settings settings;
-
-    // check for new and old setting and use old if required
-    if (! settings.contains (global_icon_theme_index.key))
-      {
-        // new pref does not exist
-        if (settings.value (global_icon_theme).toBool ())
-          theme = ICON_THEME_SYSTEM;
-        else
-          theme = ICON_THEME_OCTAVE;
-        settings.setValue (global_icon_theme_index.key, theme);  // add new
-        settings.remove (global_icon_theme.key); // remove deprecated key
-      }
-
-   QIcon::setThemeName (global_all_icon_themes.at (theme));
-
-   QStringList icon_fallbacks;
-
-   // set the required fallback search paths
-   switch (theme)
-    {
-      case ICON_THEME_SYSTEM:
-        icon_fallbacks << global_icon_paths.at (ICON_THEME_OCTAVE);
-        icon_fallbacks << global_icon_paths.at (ICON_THEME_TANGO);
-        break;
-      case ICON_THEME_TANGO:
-        icon_fallbacks << global_icon_paths.at (ICON_THEME_OCTAVE);
-        break;
-      case ICON_THEME_OCTAVE:
-        icon_fallbacks << global_icon_paths.at (ICON_THEME_TANGO);
-        break;
-    }
-
-    icon_fallbacks << global_icon_paths.at (ICON_THEME_CURSORS);
-
-    settings.setValue (global_icon_fallbacks.key, icon_fallbacks);
   }
 
   QString resource_manager::get_settings_directory (void)
@@ -566,33 +525,6 @@ namespace octave
     sys::env::putenv ("HTTP_PROXY", proxy_url_str);
     sys::env::putenv ("https_proxy", proxy_url_str);
     sys::env::putenv ("HTTPS_PROXY", proxy_url_str);
-  }
-
-  QIcon resource_manager::icon (const QString& icon_name, bool octave_only,
-                                const QString& icon_alt_name)
-  {
-    if (octave_only)
-      return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + icon_name + ".png");
-
-    if (QIcon::hasThemeIcon (icon_name))
-      return QIcon (QIcon::fromTheme (icon_name));
-    else if ((! icon_alt_name.isEmpty ()) && QIcon::hasThemeIcon (icon_alt_name))
-      return QIcon (QIcon::fromTheme (icon_alt_name));
-
-    gui_settings settings;
-
-    QStringList icon_fallbacks
-      = settings.value (global_icon_fallbacks.key).toStringList ();
-
-    for (int i = 0; i < icon_fallbacks.length (); i++ )
-      {
-        QString icon_file (icon_fallbacks.at (i) + icon_name + ".png");
-        if (QFile (icon_file).exists ())
-          return QIcon (icon_file);
-      }
-
-      //QIcon::setThemeName (current_theme);
-      return QIcon ();
   }
 
   // get a list of all available encodings

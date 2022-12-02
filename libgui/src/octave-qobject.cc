@@ -46,6 +46,7 @@
 #include "community-news.h"
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
+#include "gui-settings.h"
 #include "history-dock-widget.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
@@ -310,7 +311,10 @@ namespace octave
 
             // After settings.
             config_translators ();
-            m_resource_manager.config_icon_theme ();
+
+            gui_settings settings;
+
+            settings.config_icon_theme ();
 
             // Initilize the shortcut-manager
             m_shortcut_manager.init_data ();

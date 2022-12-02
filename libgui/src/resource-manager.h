@@ -27,7 +27,6 @@
 #define octave_resource_manager_h 1
 
 #include <QComboBox>
-#include <QIcon>
 #include <QPointer>
 #if defined (HAVE_QSCINTILLA)
 #  include <Qsci/qscilexer.h>
@@ -59,7 +58,6 @@ namespace octave
 
     void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
                              QTranslator *gui_tr);
-    void config_icon_theme (void);
 
     QString get_settings_directory (void);
 
@@ -87,9 +85,6 @@ namespace octave
     bool is_first_run (void) const;
 
     void update_network_settings (void);
-
-    QIcon icon (const QString& icon_name, bool octave_only = false,
-                const QString& icon_alt_name = QString ());
 
     void get_codecs (QStringList *codecs);
 

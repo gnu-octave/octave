@@ -227,20 +227,21 @@ namespace octave
     QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_current_directory->setSizePolicy (sizePol);
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
     QAction *directory_up_action
-      = new QAction (rmgr.icon ("folder-up", false, "go-up"), "", m_navigation_tool_bar);
+      = new QAction (settings.icon ("folder-up", false, "go-up"), "",
+                     m_navigation_tool_bar);
     directory_up_action->setToolTip (tr ("One directory up"));
 
     m_sync_browser_directory_action
-      = new QAction (rmgr.icon ("go-first"), tr ("Show Octave directory"),
+      = new QAction (settings.icon ("go-first"), tr ("Show Octave directory"),
                      m_navigation_tool_bar);
     m_sync_browser_directory_action->setToolTip (tr ("Go to current Octave directory"));
     m_sync_browser_directory_action->setEnabled (false);
 
     m_sync_octave_directory_action
-      = new QAction (rmgr.icon ("go-last"), tr ("Set Octave directory"),
+      = new QAction (settings.icon ("go-last"), tr ("Set Octave directory"),
                      m_navigation_tool_bar);
     m_sync_octave_directory_action->setToolTip (tr ("Set Octave directory to current browser directory"));
     m_sync_octave_directory_action->setEnabled (false);
@@ -248,7 +249,7 @@ namespace octave
     QToolButton *popdown_button = new QToolButton ();
     popdown_button->setToolTip (tr ("Actions on current directory"));
     QMenu *popdown_menu = new QMenu ();
-    popdown_menu->addAction (rmgr.icon ("user-home"),
+    popdown_menu->addAction (settings.icon ("user-home"),
                              tr ("Show Home Directory"), this,
                              SLOT (popdownmenu_home (bool)));
     popdown_menu->addAction (m_sync_browser_directory_action);
@@ -256,22 +257,23 @@ namespace octave
     popdown_button->setMenu (popdown_menu);
     popdown_button->setPopupMode (QToolButton::InstantPopup);
     popdown_button->setDefaultAction (
-        new QAction (rmgr.icon ("folder-settings", false, "applications-system"),
-        "", m_navigation_tool_bar));
+        new QAction (settings.icon ("folder-settings", false,
+                                    "applications-system"),
+                     "", m_navigation_tool_bar));
 
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (rmgr.icon ("folder"),
+    popdown_menu->addAction (settings.icon ("folder"),
                              tr ("Set Browser Directory..."),
                              this, &files_dock_widget::popdownmenu_search_dir);
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (rmgr.icon ("edit-find"),
+    popdown_menu->addAction (settings.icon ("edit-find"),
                              tr ("Find Files..."),
                              this, &files_dock_widget::popdownmenu_findfiles);
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (rmgr.icon ("document-new"),
+    popdown_menu->addAction (settings.icon ("document-new"),
                              tr ("New File..."),
                              this, &files_dock_widget::popdownmenu_newfile);
-    popdown_menu->addAction (rmgr.icon ("folder-new"),
+    popdown_menu->addAction (settings.icon ("folder-new"),
                              tr ("New Directory..."),
                              this, &files_dock_widget::popdownmenu_newdir);
 
@@ -285,8 +287,6 @@ namespace octave
              this, &files_dock_widget::do_sync_octave_directory);
     connect (m_sync_browser_directory_action, &QAction::triggered,
              this, &files_dock_widget::do_sync_browser_directory);
-
-    gui_settings settings;
 
     // Create the QFileSystemModel starting in the desired directory
     QDir startup_dir;  // take current dir
@@ -650,10 +650,10 @@ namespace octave
                                 | QItemSelectionModel::Rows);
           }
 
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings settings;
 
         // construct the context menu depending on item
-        menu.addAction (rmgr.icon ("document-open"), tr ("Open"),
+        menu.addAction (settings.icon ("document-open"), tr ("Open"),
                         this, &files_dock_widget::contextmenu_open);
 
         if (info.isDir ())
@@ -670,7 +670,7 @@ namespace octave
                         this, &files_dock_widget::contextmenu_copy_selection);
 
         if (info.isFile () && info.suffix () == "m")
-          menu.addAction (rmgr.icon ("media-playback-start"), tr ("Run"),
+          menu.addAction (settings.icon ("media-playback-start"), tr ("Run"),
                           this, &files_dock_widget::contextmenu_run);
 
         if (info.isFile ())
@@ -680,7 +680,7 @@ namespace octave
         if (info.isDir ())
           {
             menu.addSeparator ();
-            menu.addAction (rmgr.icon ("go-first"), tr ("Set Current Directory"),
+            menu.addAction (settings.icon ("go-first"), tr ("Set Current Directory"),
                             this, &files_dock_widget::contextmenu_setcurrentdir);
 
             QMenu *add_path_menu = menu.addMenu (tr ("Add to Path"));
@@ -699,21 +699,21 @@ namespace octave
 
             menu.addSeparator ();
 
-            menu.addAction (rmgr.icon ("edit-find"), tr ("Find Files..."),
+            menu.addAction (settings.icon ("edit-find"), tr ("Find Files..."),
                             this, &files_dock_widget::contextmenu_findfiles);
           }
 
         menu.addSeparator ();
         menu.addAction (m_rename_action);
-        menu.addAction (rmgr.icon ("edit-delete"), tr ("Delete..."),
+        menu.addAction (settings.icon ("edit-delete"), tr ("Delete..."),
                         this, &files_dock_widget::contextmenu_delete);
 
         if (info.isDir ())
           {
             menu.addSeparator ();
-            menu.addAction (rmgr.icon ("document-new"), tr ("New File..."),
+            menu.addAction (settings.icon ("document-new"), tr ("New File..."),
                             this, &files_dock_widget::contextmenu_newfile);
-            menu.addAction (rmgr.icon ("folder-new"), tr ("New Directory..."),
+            menu.addAction (settings.icon ("folder-new"), tr ("New Directory..."),
                             this, &files_dock_widget::contextmenu_newdir);
           }
 

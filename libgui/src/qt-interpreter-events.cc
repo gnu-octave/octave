@@ -438,8 +438,9 @@ namespace octave
   {
     QMutexLocker autolock (&m_mutex);
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    m_result = QVariant::fromValue (rmgr.icon (name));
+    gui_settings settings;
+
+    m_result = QVariant::fromValue (settings.icon (name));
 
     wake_all ();
   }

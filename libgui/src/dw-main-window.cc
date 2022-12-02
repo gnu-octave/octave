@@ -37,6 +37,7 @@
 
 #include "dw-main-window.h"
 #include "gui-preferences-sc.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "shortcut-manager.h"
 
@@ -46,19 +47,19 @@ namespace octave
   dw_main_window::dw_main_window (base_qobject& oct_qobj, QWidget *p)
     : QMainWindow (p), m_octave_qobj (oct_qobj)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
     // Adding the actions for closing the dock widgets
     m_close_action
-      = add_action (nullptr, rmgr.icon ("window-close", false),
+      = add_action (nullptr, settings.icon ("window-close", false),
                     tr ("&Close"), SLOT (request_close ()), this);
 
     m_close_all_action
-      = add_action (nullptr, rmgr.icon ("window-close", false),
+      = add_action (nullptr, settings.icon ("window-close", false),
                     tr ("Close &All"), SLOT (request_close_all ()), this);
 
     m_close_others_action
-      = add_action (nullptr, rmgr.icon ("window-close", false),
+      = add_action (nullptr, settings.icon ("window-close", false),
                     tr ("Close &Other"), SLOT (request_close_other ()), this);
 
     m_switch_left_action

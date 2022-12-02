@@ -73,13 +73,13 @@ namespace octave
           }
       }
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
     // the custom (extra) title bar of the widget
     m_title_widget = new QWidget ();
 
     m_dock_action = new QAction
-      (rmgr.icon ("widget-undock", true), "", this);
+      (settings.icon ("widget-undock", true), "", this);
     m_dock_action->setToolTip (tr ("Undock widget"));
     m_dock_button = new QToolButton (m_title_widget);
     m_dock_button->setDefaultAction (m_dock_action);
@@ -87,7 +87,7 @@ namespace octave
     m_dock_button->setIconSize (QSize (m_icon_size, m_icon_size));
 
     m_close_action = new QAction
-      (rmgr.icon ("widget-close", true), "", this);
+      (settings.icon ("widget-close", true), "", this);
     m_close_action->setToolTip (tr ("Close widget"));
     m_close_button = new QToolButton (m_title_widget);
     m_close_button->setDefaultAction (m_close_action);
@@ -314,8 +314,9 @@ namespace octave
     // adjust the (un)dock icon
     if (titleBarWidget ())
       {
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        m_dock_action->setIcon (rmgr.icon ("widget-dock" + m_icon_color, true));
+        gui_settings settings;
+
+        m_dock_action->setIcon (settings.icon ("widget-dock" + m_icon_color, true));
         m_dock_action->setToolTip (tr ("Dock widget"));
       }
     else
@@ -342,14 +343,14 @@ namespace octave
   void
   octave_dock_widget::make_widget (bool)
   {
+    gui_settings settings;
+
     bool vis = isVisible ();
 
     // Since floating widget has no parent, we have to read it
 
     if (m_main_window)
       {
-        gui_settings settings;
-
         settings.setValue (mw_state.key, m_main_window->saveState ());
 
         // Stay window, otherwise will bounce back to window by default
@@ -373,9 +374,7 @@ namespace octave
              this, &octave_dock_widget::make_window);
     if (titleBarWidget ())
       {
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-        m_dock_action->setIcon (rmgr.icon ("widget-undock" + m_icon_color, true));
+        m_dock_action->setIcon (settings.icon ("widget-undock" + m_icon_color, true));
         m_dock_action->setToolTip (tr ("Undock widget"));
       }
     else
@@ -587,10 +586,10 @@ namespace octave
   void
   octave_dock_widget::save_settings (void)
   {
+    gui_settings settings;
+
     // save state of this dock-widget
     QString name = objectName ();
-
-    gui_settings settings;
 
     store_geometry ();
 
@@ -802,13 +801,14 @@ namespace octave
     QString full_close_icon = "widget-close" + icon_col;
     if (titleBarWidget ())
       {
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings settings;
+
         titleBarWidget ()->setStyleSheet (css_foreground + css_background);
         css_button = QString ("QToolButton {background: transparent; border: 0px;}");
         m_dock_button->setStyleSheet (css_button);
         m_close_button->setStyleSheet (css_button);
-        m_dock_action->setIcon (rmgr.icon (full_dock_icon, true));
-        m_close_action->setIcon (rmgr.icon (full_close_icon, true));
+        m_dock_action->setIcon (settings.icon (full_dock_icon, true));
+        m_close_action->setIcon (settings.icon (full_close_icon, true));
       }
     else
       {

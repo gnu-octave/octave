@@ -157,14 +157,16 @@ namespace octave
     QToolButton *forward_button = new QToolButton (find_footer);
     forward_button->setText (tr ("Search forward"));
     forward_button->setToolTip (tr ("Search forward"));
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    forward_button->setIcon (rmgr.icon ("go-down"));
+
+    gui_settings settings;
+
+    forward_button->setIcon (settings.icon ("go-down"));
     connect (forward_button, &QToolButton::pressed,
              this, [=] () { find (); });
     QToolButton *backward_button = new QToolButton (find_footer);
     backward_button->setText (tr ("Search backward"));
     backward_button->setToolTip (tr ("Search backward"));
-    backward_button->setIcon (rmgr.icon ("go-up"));
+    backward_button->setIcon (settings.icon ("go-up"));
     connect (backward_button, &QToolButton::pressed,
              this, &documentation::find_backward);
     QHBoxLayout *h_box_find_footer = new QHBoxLayout (find_footer);
@@ -349,13 +351,14 @@ namespace octave
   void documentation::construct_tool_bar (void)
   {
     // Home, Previous, Next
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
+
     m_action_go_home
-      = add_action (rmgr.icon ("go-home"), tr ("Go home"), SLOT (home (void)),
+      = add_action (settings.icon ("go-home"), tr ("Go home"), SLOT (home (void)),
                     m_doc_browser, m_tool_bar);
 
     m_action_go_prev
-      = add_action (rmgr.icon ("go-previous"), tr ("Go back"),
+      = add_action (settings.icon ("go-previous"), tr ("Go back"),
                     SLOT (backward (void)), m_doc_browser, m_tool_bar);
     m_action_go_prev->setEnabled (false);
 
@@ -370,7 +373,7 @@ namespace octave
     m_tool_bar->addWidget (popdown_button_prev_pages);
 
     m_action_go_next
-      = add_action (rmgr.icon ("go-next"), tr ("Go forward"),
+      = add_action (settings.icon ("go-next"), tr ("Go forward"),
                     SLOT (forward (void)), m_doc_browser, m_tool_bar);
     m_action_go_next->setEnabled (false);
 
@@ -413,26 +416,26 @@ namespace octave
     // Find
     m_tool_bar->addSeparator ();
     m_action_find
-      = add_action (rmgr.icon ("edit-find"), tr ("Find"),
+      = add_action (settings.icon ("edit-find"), tr ("Find"),
                     SLOT (activate_find (void)), this, m_tool_bar);
 
     // Zoom
     m_tool_bar->addSeparator ();
     m_action_zoom_in
-      = add_action (rmgr.icon ("view-zoom-in"), tr ("Zoom in"),
+      = add_action (settings.icon ("view-zoom-in"), tr ("Zoom in"),
                     SLOT (zoom_in (void)), m_doc_browser, m_tool_bar);
     m_action_zoom_out
-      = add_action (rmgr.icon ("view-zoom-out"), tr ("Zoom out"),
+      = add_action (settings.icon ("view-zoom-out"), tr ("Zoom out"),
                     SLOT (zoom_out (void)), m_doc_browser, m_tool_bar);
     m_action_zoom_original
-      = add_action (rmgr.icon ("view-zoom-original"), tr ("Zoom original"),
+      = add_action (settings.icon ("view-zoom-original"), tr ("Zoom original"),
                     SLOT (zoom_original (void)), m_doc_browser, m_tool_bar);
 
     // Bookmarks (connect slots later)
     m_tool_bar->addSeparator ();
     m_action_bookmark
-      = add_action (rmgr.icon ("bookmark-new"), tr ("Bookmark current page"),
-                    nullptr, nullptr, m_tool_bar);
+      = add_action (settings.icon ("bookmark-new"),
+                    tr ("Bookmark current page"), nullptr, nullptr, m_tool_bar);
   }
 
   void documentation::global_search (void)

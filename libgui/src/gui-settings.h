@@ -26,6 +26,8 @@
 #if ! defined (octave_gui_settings_h)
 #define octave_gui_settings_h 1
 
+#include <QIcon>
+#include <QString>
 #include <QSettings>
 
 #include "gui-preferences.h"
@@ -123,6 +125,18 @@ namespace octave
 
     QKeySequence sc_def_value (const sc_pref& pref) const;
 
+    // Both config_icon_theme and icon could be global functions instead
+    // of member functions.  But at least for the icon function,
+    // defining it as a member function means that we can create a
+    // single gui_settings object and access multiple icon objects
+    // rather than having to create a separate settings object each time
+    // that an icon is needed.  OTOH, creating the base QSettings object
+    // is supposed to be fast, so that may not matter.  Hmm.
+
+    void config_icon_theme (void);
+
+    QIcon icon (const QString& icon_name, bool octave_only = false,
+                const QString& icon_alt_name = QString ());
   };
 
 }

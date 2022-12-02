@@ -276,7 +276,7 @@ QTerminal::notice_settings (void)
 void
 QTerminal::construct (octave::base_qobject& oct_qobj)
 {
-  octave::resource_manager& rmgr = oct_qobj.get_resource_manager ();
+  octave::gui_settings settings;
 
   // context menu
   setContextMenuPolicy (Qt::CustomContextMenu);
@@ -284,11 +284,11 @@ QTerminal::construct (octave::base_qobject& oct_qobj)
   _contextMenu = new QMenu (this);
 
   _copy_action
-    = _contextMenu->addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+    = _contextMenu->addAction (settings.icon ("edit-copy"), tr ("Copy"), this,
                                SLOT (copyClipboard ()));
 
   _paste_action
-    = _contextMenu->addAction (rmgr.icon ("edit-paste"), tr ("Paste"), this,
+    = _contextMenu->addAction (settings.icon ("edit-paste"), tr ("Paste"), this,
                                SLOT (pasteClipboard ()));
 
   _contextMenu->addSeparator ();

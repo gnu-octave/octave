@@ -977,7 +977,7 @@ namespace octave
     QObject *fileEditorTab = sender ();
     if (fileEditorTab)
       {
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings settings;
 
         for (int i = 0; i < m_tab_widget->count (); i++)
           {
@@ -990,7 +990,7 @@ namespace octave
                 m_current_tab_modified = modified;
 
                 if (modified)
-                  m_tab_widget->setTabIcon (i, rmgr.icon ("document-save"));
+                  m_tab_widget->setTabIcon (i, settings.icon ("document-save"));
                 else
                   m_tab_widget->setTabIcon (i, QIcon ());
               }
@@ -1934,6 +1934,7 @@ namespace octave
     m_tab_widget = new file_editor_tab_widget (editor_widget, this);
 
     // the mru-list and an empty array of actions
+
     gui_settings settings;
 
     m_mru_files = settings.value (ed_mru_file_list).toStringList ();
@@ -1975,36 +1976,34 @@ namespace octave
 
     m_fileMenu->addSeparator ();
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
     m_save_action
-      = add_action (m_fileMenu, rmgr.icon ("document-save"),
+      = add_action (m_fileMenu, settings.icon ("document-save"),
                     tr ("&Save File"), SLOT (request_save_file (bool)));
 
     m_save_as_action
-      = add_action (m_fileMenu, rmgr.icon ("document-save-as"),
+      = add_action (m_fileMenu, settings.icon ("document-save-as"),
                     tr ("Save File &As..."),
                     SLOT (request_save_file_as (bool)));
 
     m_fileMenu->addSeparator ();
 
     m_close_action
-      = add_action (m_fileMenu, rmgr.icon ("window-close", false),
+      = add_action (m_fileMenu, settings.icon ("window-close", false),
                     tr ("&Close"), SLOT (request_close_file (bool)));
 
     m_close_all_action
-      = add_action (m_fileMenu, rmgr.icon ("window-close", false),
+      = add_action (m_fileMenu, settings.icon ("window-close", false),
                     tr ("Close All"), SLOT (request_close_all_files (bool)));
 
     m_close_others_action
-      = add_action (m_fileMenu, rmgr.icon ("window-close", false),
+      = add_action (m_fileMenu, settings.icon ("window-close", false),
                     tr ("Close Other Files"),
                     SLOT (request_close_other_files (bool)));
 
     m_fileMenu->addSeparator ();
 
     m_print_action
-      = add_action (m_fileMenu, rmgr.icon ("document-print"),
+      = add_action (m_fileMenu, settings.icon ("document-print"),
                     tr ("Print..."), SLOT (request_print_file (bool)));
 
     // edit menu (undo, copy, paste and select all later via main window)
@@ -2012,19 +2011,19 @@ namespace octave
     m_edit_menu = add_menu (m_menu_bar, tr ("&Edit"));
 
     m_redo_action
-      = add_action (m_edit_menu, rmgr.icon ("edit-redo"),
+      = add_action (m_edit_menu, settings.icon ("edit-redo"),
                     tr ("&Redo"), SLOT (request_redo (bool)));
     m_redo_action->setEnabled (false);
 
     m_edit_menu->addSeparator ();
 
     m_cut_action
-      = add_action (m_edit_menu, rmgr.icon ("edit-cut"),
+      = add_action (m_edit_menu, settings.icon ("edit-cut"),
                     tr ("Cu&t"), SLOT (request_cut (bool)));
     m_cut_action->setEnabled (false);
 
     m_find_action
-      = add_action (m_edit_menu, rmgr.icon ("edit-find-replace"),
+      = add_action (m_edit_menu, settings.icon ("edit-find-replace"),
                     tr ("&Find and Replace..."), SLOT (request_find (bool)));
 
     m_find_next_action
@@ -2176,12 +2175,12 @@ namespace octave
     m_edit_menu->addSeparator ();
 
     m_preferences_action
-      = add_action (m_edit_menu, rmgr.icon ("preferences-system"),
+      = add_action (m_edit_menu, settings.icon ("preferences-system"),
                     tr ("&Preferences..."),
                     SLOT (request_preferences (bool)));
 
     m_styles_preferences_action
-      = add_action (m_edit_menu, rmgr.icon ("preferences-system"),
+      = add_action (m_edit_menu, settings.icon ("preferences-system"),
                     tr ("&Styles Preferences..."),
                     SLOT (request_styles_preferences (bool)));
 
@@ -2236,16 +2235,16 @@ namespace octave
     view_menu->addSeparator ();
 
     m_zoom_in_action
-      = add_action (view_menu, rmgr.icon ("view-zoom-in"), tr ("Zoom &In"),
+      = add_action (view_menu, settings.icon ("view-zoom-in"), tr ("Zoom &In"),
                     SLOT (zoom_in (bool)));
 
     m_zoom_out_action
-      = add_action (view_menu, rmgr.icon ("view-zoom-out"), tr ("Zoom &Out"),
-                    SLOT (zoom_out (bool)));
+      = add_action (view_menu, settings.icon ("view-zoom-out"),
+                    tr ("Zoom &Out"), SLOT (zoom_out (bool)));
 
     m_zoom_normal_action
-      = add_action (view_menu, rmgr.icon ("view-zoom-original"), tr ("&Normal Size"),
-                    SLOT (zoom_normal (bool)));
+      = add_action (view_menu, settings.icon ("view-zoom-original"),
+                    tr ("&Normal Size"), SLOT (zoom_normal (bool)));
 
     view_menu->addSeparator ();
 
@@ -2261,22 +2260,22 @@ namespace octave
     m_debug_menu = add_menu (m_menu_bar, tr ("&Debug"));
 
     m_toggle_breakpoint_action
-      = add_action (m_debug_menu, rmgr.icon ("bp-toggle"),
+      = add_action (m_debug_menu, settings.icon ("bp-toggle"),
                     tr ("Toggle &Breakpoint"),
                     SLOT (request_toggle_breakpoint (bool)));
 
     m_next_breakpoint_action
-      = add_action (m_debug_menu, rmgr.icon ("bp-next"),
+      = add_action (m_debug_menu, settings.icon ("bp-next"),
                     tr ("&Next Breakpoint"),
                     SLOT (request_next_breakpoint (bool)));
 
     m_previous_breakpoint_action
-      = add_action (m_debug_menu, rmgr.icon ("bp-prev"),
+      = add_action (m_debug_menu, settings.icon ("bp-prev"),
                     tr ("Pre&vious Breakpoint"),
                     SLOT (request_previous_breakpoint (bool)));
 
     m_remove_all_breakpoints_action
-      = add_action (m_debug_menu, rmgr.icon ("bp-rm-all"),
+      = add_action (m_debug_menu, settings.icon ("bp-rm-all"),
                     tr ("&Remove All Breakpoints"),
                     SLOT (request_remove_breakpoint (bool)));
 
@@ -2290,7 +2289,7 @@ namespace octave
 
     m_run_action
       = add_action (_run_menu,
-                    rmgr.icon ("system-run"),
+                    settings.icon ("system-run"),
                     tr ("Save File and Run / Continue"),
                     SLOT (request_run_file (bool)));
 

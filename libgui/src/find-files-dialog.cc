@@ -57,18 +57,16 @@ namespace octave
   find_files_dialog::find_files_dialog (QWidget *p, base_qobject& oct_qobj)
     : QDialog (p), m_octave_qobj (oct_qobj)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
     setWindowTitle (tr ("Find Files"));
-    setWindowIcon (rmgr.icon ("edit-find"));
+    setWindowIcon (settings.icon ("edit-find"));
 
     m_dir_iterator = nullptr;
 
     m_timer = new QTimer (this);
     connect (m_timer, &QTimer::timeout,
              this, &find_files_dialog::look_for_files);
-
-    gui_settings settings;
 
     QLabel *file_name_label = new QLabel (tr ("Named:"));
     m_file_name_edit = new QLineEdit;

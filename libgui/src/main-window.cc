@@ -135,7 +135,9 @@ namespace octave
 
     setObjectName (gui_obj_name_main_window);
 
-    rmgr.config_icon_theme ();
+    gui_settings settings;
+
+    settings.config_icon_theme ();
 
     rmgr.update_network_settings ();
 
@@ -173,8 +175,6 @@ namespace octave
 
     m_default_style = qapp->style ()->objectName ();
     m_default_palette = qapp->palette ();
-
-    gui_settings settings;
 
     bool connect_to_web = true;
     QDateTime last_checked;
@@ -2195,10 +2195,10 @@ namespace octave
 
     construct_new_menu (file_menu);
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
     m_open_action = add_action (
-                      file_menu, rmgr.icon ("document-open"), tr ("Open..."),
+                      file_menu, settings.icon ("document-open"), tr ("Open..."),
                       SLOT (request_open_file (void)), this);
     m_open_action->setToolTip (tr ("Open an existing file in editor"));
 
@@ -2240,10 +2240,10 @@ namespace octave
   {
     QMenu *new_menu = p->addMenu (tr ("New"));
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
     m_new_script_action = add_action (
-          new_menu, rmgr.icon ("document-new"), tr ("New Script"),
+          new_menu, settings.icon ("document-new"), tr ("New Script"),
           SLOT (request_new_script (void)), this);
 
     m_new_function_action = add_action (
@@ -2261,20 +2261,21 @@ namespace octave
 
     QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
+
     m_undo_action
-      = edit_menu->addAction (rmgr.icon ("edit-undo"), tr ("Undo"));
+      = edit_menu->addAction (settings.icon ("edit-undo"), tr ("Undo"));
     m_undo_action->setShortcutContext (Qt::ApplicationShortcut);
 
     edit_menu->addSeparator ();
 
     m_copy_action
-      = edit_menu->addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+      = edit_menu->addAction (settings.icon ("edit-copy"), tr ("Copy"), this,
                               &main_window::copyClipboard);
     m_copy_action->setShortcutContext (Qt::ApplicationShortcut);
 
     m_paste_action
-      = edit_menu->addAction (rmgr.icon ("edit-paste"), tr ("Paste"), this,
+      = edit_menu->addAction (settings.icon ("edit-paste"), tr ("Paste"), this,
                               &main_window::pasteClipboard);
     m_paste_action->setShortcutContext (Qt::ApplicationShortcut);
 
@@ -2290,7 +2291,7 @@ namespace octave
     edit_menu->addSeparator ();
 
     m_find_files_action
-      = edit_menu->addAction (rmgr.icon ("edit-find"), tr ("Find Files..."));
+      = edit_menu->addAction (settings.icon ("edit-find"), tr ("Find Files..."));
 
     edit_menu->addSeparator ();
 
@@ -2309,7 +2310,7 @@ namespace octave
       = edit_menu->addAction (tr ("Set Path"));
 
     m_preferences_action
-      = edit_menu->addAction (rmgr.icon ("preferences-system"),
+      = edit_menu->addAction (settings.icon ("preferences-system"),
                               tr ("Preferences..."));
 
     connect (m_find_files_action, &QAction::triggered,
@@ -2347,8 +2348,9 @@ namespace octave
                                                     const QString& item,
                                                     const char *member)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    QAction *action = add_action (m_debug_menu, rmgr.icon (QString (icon)),
+    gui_settings settings;
+
+    QAction *action = add_action (m_debug_menu, settings.icon (QString (icon)),
                                   item, member);
 
     action->setEnabled (false);
@@ -2604,12 +2606,14 @@ namespace octave
     // need to delete these upon destroying this main_window.
     m_main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
     m_main_tool_bar->addWidget (m_current_directory_combo_box);
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    gui_settings settings;
+
     QAction *current_dir_up
-      = m_main_tool_bar->addAction (rmgr.icon ("folder-up", false, "go-up"),
+      = m_main_tool_bar->addAction (settings.icon ("folder-up", false, "go-up"),
                                     tr ("One directory up"));
     QAction *current_dir_search
-      = m_main_tool_bar->addAction (rmgr.icon ("folder"),
+      = m_main_tool_bar->addAction (settings.icon ("folder"),
                                     tr ("Browse directories"));
 
     connect (m_current_directory_combo_box, SIGNAL (activated (const QString&)),

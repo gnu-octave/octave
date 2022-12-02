@@ -72,6 +72,8 @@ namespace octave
 
     m_settings = new gui_settings ();
 
+    check_settings ();
+
     m_settings_file = m_settings->fileName ();
 
     QFileInfo sfile (m_settings_file);
@@ -313,7 +315,7 @@ namespace octave
           custom_editor = QString::fromStdString (env_default_editor);
       }
 
-    set_settings (m_settings_file);
+    check_settings ();
 
     // Write some settings that were dynamically determined at first startup
     if (m_settings)
@@ -434,11 +436,8 @@ namespace octave
   }
 #endif
 
-  void resource_manager::set_settings (const QString& file)
+  void resource_manager::check_settings (void)
   {
-    delete m_settings;
-    m_settings = new gui_settings (file, QSettings::IniFormat);
-
     if (m_settings->status () == QSettings::NoError)
       {
         // Test usability (force file to be really created)

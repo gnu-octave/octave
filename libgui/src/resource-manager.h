@@ -87,8 +87,6 @@ namespace octave
                               int mode = 0, int def = 0);
 #endif
 
-    void set_settings (const QString& file);
-
     bool update_settings_key (const QString& new_key, const QString& old_key);
 
     bool is_first_run (void) const;
@@ -103,6 +101,8 @@ namespace octave
     void combo_encoding (QComboBox *combo, const QString& current = QString ());
 
   private:
+
+    void check_settings (void);
 
     /*!
      * Copys the attributes bold, italic and underline from QFont

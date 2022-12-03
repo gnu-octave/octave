@@ -4579,7 +4579,7 @@ DEFUN (ones, args, ,
 @deftypefnx {} {@var{val} =} ones (@var{m}, @var{n})
 @deftypefnx {} {@var{val} =} ones (@var{m}, @var{n}, @var{k}, @dots{})
 @deftypefnx {} {@var{val} =} ones ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{val} =} ones (@dots{}, "@var{like}", @var{var})
+@deftypefnx {} {@var{val} =} ones (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{val} =} ones (@dots{}, @var{class})
 Return a matrix or N-dimensional array whose elements are all 1.
 
@@ -4672,7 +4672,7 @@ DEFUN (zeros, args, ,
 @deftypefnx {} {@var{val} =} zeros (@var{m}, @var{n})
 @deftypefnx {} {@var{val} =} zeros (@var{m}, @var{n}, @var{k}, @dots{})
 @deftypefnx {} {@var{val} =} zeros ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{val} =} zeros (@dots{}, "@var{like}", @var{var})
+@deftypefnx {} {@var{val} =} zeros (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{val} =} zeros (@dots{}, @var{class})
 Return a matrix or N-dimensional array whose elements are all 0.
 
@@ -4820,7 +4820,7 @@ DEFUN (NaN, args, ,
 @deftypefnx {} {@var{val} =} NaN (@var{n})
 @deftypefnx {} {@var{val} =} NaN (@var{n}, @var{m})
 @deftypefnx {} {@var{val} =} NaN (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} NaN (@dots{}, "@var{like}", @var{var})
+@deftypefnx {} {@var{val} =} NaN (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{val} =} NaN (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the IEEE symbol NaN (Not a Number).
@@ -5226,7 +5226,7 @@ DEFUN (NA, args, ,
 @deftypefnx {} {@var{val} =} NA (@var{n})
 @deftypefnx {} {@var{val} =} NA (@var{n}, @var{m})
 @deftypefnx {} {@var{val} =} NA (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} NA (@dots{}, "@var{like}", @var{var})
+@deftypefnx {} {@var{val} =} NA (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{val} =} NA (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the special constant used to designate missing values.
@@ -5265,7 +5265,7 @@ DEFUN (false, args, ,
 @deftypefn  {} {@var{val} =} false (@var{x})
 @deftypefnx {} {@var{val} =} false (@var{n}, @var{m})
 @deftypefnx {} {@var{val} =} false (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} false (@dots{}, "@var{like}", @var{var})
+@deftypefnx {} {@var{val} =} false (@dots{}, "like", @var{var})
 Return a matrix or N-dimensional array whose elements are all logical 0.
 
 If invoked with a single scalar integer argument, return a square
@@ -5300,7 +5300,7 @@ DEFUN (true, args, ,
 @deftypefn  {} {@var{val} =} true (@var{x})
 @deftypefnx {} {@var{val} =} true (@var{n}, @var{m})
 @deftypefnx {} {@var{val} =} true (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} true (@dots{}, "@var{like}", @var{var})
+@deftypefnx {} {@var{val} =} true (@dots{}, "like", @var{var})
 Return a matrix or N-dimensional array whose elements are all logical 1.
 
 If invoked with a single scalar integer argument, return a square

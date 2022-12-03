@@ -91,7 +91,7 @@ namespace octave
     // get environment variable for the locale dir (e.g. from run-octave)
     std::string dldir = sys::env::getenv ("OCTAVE_LOCALE_DIR");
     if (dldir.empty ())
-      dldir = config::oct_locale_dir (); // env-var empty, load the default location
+      dldir = config::oct_locale_dir ();  // env-var empty, load the default location
     return QString::fromStdString (dldir);
   }
 
@@ -130,11 +130,11 @@ namespace octave
       {
         // load the translation files depending on the given locale name
         loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
-        if (! loaded) // try lower case
+        if (! loaded)  // try lower case
           qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
 
         loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
-        if (! loaded) // try lower case
+        if (! loaded)  // try lower case
           qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
 
         gui_tr->load (language, get_gui_translation_dir ());
@@ -386,19 +386,20 @@ namespace octave
            && settings.status () == QSettings::NoError))
       {
         QString msg
-          = QString (QT_TR_NOOP ("The settings file\n%1\n"
-                                 "does not exist and can not be created.\n"
-                                 "Make sure you have read and write permissions to\n%2\n\n"
+          = QString (QT_TR_NOOP ("Error %1 creating the settings file\n%2\n"
+                                 "Make sure you have read and write permissions to\n%3\n\n"
                                  "Octave GUI must be closed now."));
 
         QMessageBox::critical (nullptr,
                                QString (QT_TR_NOOP ("Octave Critical Error")),
-                               msg.arg (get_settings_file ()).arg (get_settings_directory ()));
+                               msg.arg (settings.status ())
+                                  .arg (get_settings_file ())
+                                  .arg (get_settings_directory ()));
 
         exit (1);
       }
     else
-      settings.remove ("dummy"); // Remove test entry
+      settings.remove ("dummy");  // Remove test entry
   }
 
   bool resource_manager::update_settings_key (const QString& old_key,

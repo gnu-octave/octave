@@ -36,6 +36,8 @@
 #  include <vector>
 #  include <locale>
 #  include <codecvt>
+#  include <windows.h>
+#  include <versionhelpers.h>
 #endif
 
 #include "liboctave-build-info.h"
@@ -105,6 +107,20 @@ wmain (int argc, wchar_t **wargv)
     argv[i_arg] = &argv_str[i_arg][0];
   argv[argc] = nullptr;
 
+  unsigned int old_console_codepage = 0;
+  unsigned int old_console_output_codepage = 0;
+
+  if (IsWindows7OrGreater ())
+    {
+      // save old console input and output codepages
+      old_console_codepage = GetConsoleCP ();
+      old_console_output_codepage = GetConsoleOutputCP ();
+
+      // set console input and output codepages to UTF-8
+      SetConsoleCP (65001);
+      SetConsoleOutputCP (65001);
+    }
+
 #else
 int
 main (int argc, char **argv)
@@ -118,5 +134,18 @@ main (int argc, char **argv)
 
   octave::cli_application app (argc, argv);
 
-  return app.execute ();
+  int ret = app.execute ();
+
+#if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
+  if (IsWindows7OrGreater ())
+    {
+      // restore previous console input and output codepages
+      if (old_console_codepage)
+        SetConsoleCP (old_console_codepage);
+      if (old_console_output_codepage)
+        SetConsoleOutputCP (old_console_output_codepage);
+    }
+#endif
+
+  return ret;
 }

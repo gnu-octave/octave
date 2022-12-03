@@ -143,8 +143,7 @@ main (int argc, char **argv)
 
   octave::sys::env::set_program_name (argv[0]);
 
-  octave::qt_application app ("octave", "octave-gui", OCTAVE_VERSION,
-                              argc, argv);
+  octave::qt_application app (argc, argv);
 
   int ret = app.execute ();
 

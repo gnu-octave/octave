@@ -72,6 +72,8 @@ namespace octave
 
     check_settings ();
 
+    gui_settings settings;
+
     m_settings_file = settings.fileName ();
 
     QFileInfo sfile (m_settings_file);

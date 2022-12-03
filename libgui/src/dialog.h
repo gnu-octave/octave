@@ -44,15 +44,13 @@ typedef QList<float> QFloatList;
 
 namespace octave
 {
-  class base_qobject;
-
   class QUIWidgetCreator : public QObject
   {
     Q_OBJECT
 
   public:
 
-    QUIWidgetCreator (base_qobject& oct_qobj);
+    QUIWidgetCreator (void);
 
     ~QUIWidgetCreator (void) = default;
 
@@ -148,8 +146,6 @@ namespace octave
 
   private:
 
-    base_qobject& m_octave_qobj;
-
     int m_dialog_result;
     QString m_dialog_button;
 
@@ -176,7 +172,7 @@ namespace octave
 
   public:
 
-    MessageDialog (base_qobject& oct_qobj, const QString& message,
+    MessageDialog (const QString& message,
                    const QString& title, const QString& icon,
                    const QStringList& button, const QString& defbutton,
                    const QStringList& role);
@@ -201,7 +197,7 @@ namespace octave
 
   public:
 
-    ListDialog (base_qobject& oct_qobj, const QStringList& list,
+    ListDialog (const QStringList& list,
                 const QString& mode, int width, int height,
                 const QList<int>& initial, const QString& name,
                 const QStringList& prompt, const QString& ok_string,
@@ -236,7 +232,7 @@ namespace octave
 
   public:
 
-    InputDialog (base_qobject& oct_qobj, const QStringList& prompt,
+    InputDialog (const QStringList& prompt,
                  const QString& title, const QFloatList& nr,
                  const QFloatList& nc, const QStringList& defaults);
 
@@ -261,7 +257,7 @@ namespace octave
 
   public:
 
-    FileDialog (base_qobject& oct_qobj, const QStringList& filters,
+    FileDialog (const QStringList& filters,
                 const QString& title, const QString& filename,
                 const QString& dirname, const QString& multimode);
 

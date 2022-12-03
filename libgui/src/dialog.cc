@@ -44,13 +44,12 @@
 #include "dialog.h"
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 
 namespace octave
 {
-  QUIWidgetCreator::QUIWidgetCreator (base_qobject& oct_qobj)
-    : QObject (), m_octave_qobj (oct_qobj), m_dialog_result (-1),
-      m_dialog_button (), m_string_list (), m_list_index (), m_path_name ()
+  QUIWidgetCreator::QUIWidgetCreator ()
+    : QObject (), m_dialog_result (-1), m_dialog_button (),
+      m_string_list (), m_list_index (), m_path_name ()
   {
     connect (this, &QUIWidgetCreator::create_dialog,
              this, &QUIWidgetCreator::handle_create_dialog);
@@ -181,8 +180,7 @@ namespace octave
                                                const QStringList& role)
   {
     MessageDialog *message_dialog
-      = new MessageDialog (m_octave_qobj, message, title, icon,
-                           button, defbutton, role);
+      = new MessageDialog (message, title, icon, button, defbutton, role);
 
     connect (message_dialog, &MessageDialog::buttonClicked,
              this, &QUIWidgetCreator::dialog_button_clicked);
@@ -233,7 +231,7 @@ namespace octave
                                                  const QString& cancel_string)
   {
     ListDialog *list_dialog
-      = new ListDialog (m_octave_qobj, list, mode, wd, ht, initial,
+      = new ListDialog (list, mode, wd, ht, initial,
                         name, prompt, ok_string, cancel_string);
 
     connect (list_dialog, &ListDialog::finish_selection,
@@ -265,7 +263,7 @@ namespace octave
                                                     const QStringList& defaults)
   {
     InputDialog *input_dialog
-      = new InputDialog (m_octave_qobj, prompt, title, nr, nc, defaults);
+      = new InputDialog (prompt, title, nr, nc, defaults);
 
     connect (input_dialog, &InputDialog::finish_input,
              this, &QUIWidgetCreator::input_finished);
@@ -293,8 +291,7 @@ namespace octave
                                                    const QString& multimode)
   {
     FileDialog *file_dialog
-      = new FileDialog (m_octave_qobj, filters, title, filename,
-                        dirname, multimode);
+      = new FileDialog (filters, title, filename, dirname, multimode);
 
     connect (file_dialog, &FileDialog::finish_input,
              this, &QUIWidgetCreator::filedialog_finished);
@@ -317,7 +314,7 @@ namespace octave
     wake_all ();
   }
 
-  MessageDialog::MessageDialog (base_qobject&, const QString& message,
+  MessageDialog::MessageDialog (const QString& message,
                                 const QString& title, const QString& qsicon,
                                 const QStringList& qsbutton,
                                 const QString& defbutton,
@@ -389,7 +386,7 @@ namespace octave
       }
   }
 
-  ListDialog::ListDialog (base_qobject&, const QStringList& list,
+  ListDialog::ListDialog (const QStringList& list,
                           const QString& mode, int wd, int ht,
                           const QList<int>& initial, const QString& title,
                           const QStringList& prompt,
@@ -525,7 +522,7 @@ namespace octave
     buttonOk_clicked ();
   }
 
-  InputDialog::InputDialog (base_qobject&, const QStringList& prompt,
+  InputDialog::InputDialog (const QStringList& prompt,
                             const QString& title, const QFloatList& nr,
                             const QFloatList& nc, const QStringList& defaults)
     : QDialog ()
@@ -619,8 +616,7 @@ namespace octave
     buttonCancel_clicked ();
   }
 
-  FileDialog::FileDialog (base_qobject& oct_qobj,
-                          const QStringList& name_filters,
+  FileDialog::FileDialog (const QStringList& name_filters,
                           const QString& title, const QString& filename,
                           const QString& dirname, const QString& multimode)
     : QFileDialog ()

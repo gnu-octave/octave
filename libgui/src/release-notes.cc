@@ -48,7 +48,7 @@
 
 namespace octave
 {
-  release_notes::release_notes (base_qobject& oct_qobj)
+  release_notes::release_notes (void)
     : QWidget (nullptr), m_browser (nullptr)
   {
 

@@ -738,7 +738,7 @@ namespace octave
   QPointer<release_notes> base_qobject::release_notes_widget (void)
   {
     if (! m_release_notes)
-      m_release_notes = QPointer<release_notes> (new release_notes (*this));
+      m_release_notes = QPointer<release_notes> (new release_notes ());
 
     return m_release_notes;
   }

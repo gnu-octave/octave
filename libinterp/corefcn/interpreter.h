@@ -28,7 +28,6 @@
 
 #include "octave-config.h"
 
-#include <atomic>
 #include <map>
 #include <set>
 #include <stack>
@@ -67,7 +66,7 @@ extern OCTINTERP_API bool quit_allowed;
 extern OCTINTERP_API bool octave_interpreter_ready;
 
 // TRUE means we've processed all the init code and we are good to go.
-extern OCTINTERP_API std::atomic<bool> octave_initialized;
+extern OCTINTERP_API bool octave_initialized;
 
 #include "oct-time.h"
 

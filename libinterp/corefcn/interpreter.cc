@@ -91,7 +91,7 @@ bool quit_allowed = true;
 bool octave_interpreter_ready = false;
 
 // TRUE means we've processed all the init code and we are good to go.
-std::atomic<bool> octave_initialized{false};
+bool octave_initialized = false;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -1950,7 +1950,7 @@ void interpreter::recover_from_exception (void)
 
   can_interrupt = true;
   octave_interrupt_state = 0;
-  octave_signal_caught = false;
+  octave_signal_caught = 0;
   octave_restore_signal_mask ();
   catch_interrupts ();
 }

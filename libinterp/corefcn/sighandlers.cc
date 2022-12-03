@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <atomic>
 #include <csignal>
 #include <cstdlib>
 
@@ -65,7 +66,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 int pipe_handler_error_count = 0;
 
 // TRUE means we can be interrupted.
-bool can_interrupt = false;
+std::atomic<bool> can_interrupt{false};
 
 // TRUE means we should try to enter the debugger on SIGINT.
 bool Vdebug_on_interrupt = false;
@@ -82,7 +83,7 @@ static bool Vsigquit_dumps_octave_core = true;
 static bool Vsigterm_dumps_octave_core = true;
 
 // List of signals we have caught since last call to signal_handler.
-static bool *signals_caught = nullptr;
+static std::atomic<bool> *signals_caught = nullptr;
 
 static void
 my_friendly_exit (int sig, bool save_vars = true)
@@ -194,10 +195,10 @@ respond_to_pending_signals (void)
 
   for (int sig = 0; sig < octave_num_signals (); sig++)
     {
-      if (signals_caught[sig])
-        {
-          signals_caught[sig] = false;
+      bool expected = true;
 
+      if (signals_caught[sig].compare_exchange_strong (expected, false))
+        {
           if ((have_sigchld && sig == sigchld)
               || (have_sigcld && sig == sigcld))
             {
@@ -223,9 +224,22 @@ respond_to_pending_signals (void)
               // FIXME: is this really needed?  Does it do anything
               // useful now?
 
-              if (pipe_handler_error_count++ > 100
-                  && octave_interrupt_state >= 0)
-                octave_interrupt_state++;
+              const int curr_pipe_handler_error_count = pipe_handler_error_count++;
+
+              if (curr_pipe_handler_error_count > 100)
+                {
+                  sig_atomic_t curr_interrupt_state
+                  = octave_interrupt_state.load();
+
+                  sig_atomic_t new_interrupt_state;
+
+                  do
+                    new_interrupt_state = curr_interrupt_state + 1;
+                  while (curr_interrupt_state >= 0 &&
+                     ! octave_interrupt_state.compare_exchange_weak
+                     (curr_interrupt_state, new_interrupt_state));
+                }
+
             }
           else if (have_sighup && sig == sighup)
             my_friendly_exit (sighup, Vsighup_dumps_octave_core);
@@ -276,7 +290,7 @@ generic_sig_handler (int sig)
   // signal watcher thread so it should probably be more careful about
   // how it accesses global objects.
 
-  octave_signal_caught = 1;
+  octave_signal_caught = true;
 
   signals_caught[sig] = true;
 
@@ -296,7 +310,7 @@ generic_sig_handler (int sig)
 
       if (can_interrupt)
         {
-          octave_signal_caught = 1;
+          octave_signal_caught = true;
           octave_interrupt_state++;
         }
     }
@@ -365,7 +379,7 @@ void
 install_signal_handlers (void)
 {
   if (! signals_caught)
-    signals_caught = new bool [octave_num_signals ()];
+    signals_caught = new std::atomic<bool> [octave_num_signals ()];
 
   for (int i = 0; i < octave_num_signals (); i++)
     signals_caught[i] = false;

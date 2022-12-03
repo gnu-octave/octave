@@ -28,7 +28,6 @@
 
 #include "octave-config.h"
 
-#include <atomic>
 #include <cstddef>
 #include <functional>
 
@@ -39,22 +38,6 @@
 // FIXME: is there a better name for this class?
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
-OCTAVE_BEGIN_NAMESPACE(util)
-
-template <typename T>
-struct atomic_traits
-{
-  typedef T type;
-};
-
-template <typename T>
-struct atomic_traits<std::atomic<T>>
-{
-  typedef T type;
-};
-
-OCTAVE_END_NAMESPACE(util)
 
 class
 action_container
@@ -123,8 +106,7 @@ public:
 
   private:
 
-    T *m_ptr;
-    typename util::atomic_traits<T>::type m_val;
+    T *m_ptr, m_val;
   };
 
   // Deletes a class allocated using new.

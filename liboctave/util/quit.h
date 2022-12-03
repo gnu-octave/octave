@@ -30,6 +30,7 @@
 
 /* The signal header is just needed for the sig_atomic_t type.  */
 #if defined (__cplusplus)
+#  include <atomic>
 #  include <csignal>
 #  include <iosfwd>
 #  include <list>
@@ -223,9 +224,14 @@ octave_exception
     0: no interrupt pending
   < 0: handling interrupt
 */
-extern OCTAVE_API sig_atomic_t octave_interrupt_state;
 
-extern OCTAVE_API volatile sig_atomic_t octave_signal_caught;
+#if defined (__cplusplus)
+
+extern OCTAVE_API std::atomic<int> octave_interrupt_state;
+
+extern OCTAVE_API volatile std::atomic<bool> octave_signal_caught;
+
+#endif
 
 extern OCTAVE_API void octave_handle_signal (void);
 
@@ -233,27 +239,19 @@ extern OCTAVE_API void octave_handle_signal (void);
 
 inline void octave_quit (void)
 {
-  if (octave_signal_caught)
-    {
-      octave_signal_caught = 0;
-      octave_handle_signal ();
-    }
+  bool expected = true;
+
+  if (octave_signal_caught.compare_exchange_strong (expected, false))
+    octave_handle_signal ();
 }
 
 #define OCTAVE_QUIT octave_quit ()
 
 #else
 
-#define OCTAVE_QUIT                             \
-  do                                            \
-    {                                           \
-      if (octave_signal_caught)                 \
-        {                                       \
-          octave_signal_caught = 0;             \
-          octave_handle_signal ();              \
-        }                                       \
-    }                                           \
-  while (0)
+extern OCTAVE_API void octave_quit_c (void);
+#define OCTAVE_QUIT octave_quit_c ()
+
 #endif
 
 /* The following macros are obsolete.  Interrupting immediately by

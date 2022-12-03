@@ -785,7 +785,7 @@ gnu_readline::do_interrupt (bool arg)
 void
 gnu_readline::do_handle_interrupt_signal (void)
 {
-  octave_signal_caught = 0;
+  octave_signal_caught = false;
   octave_interrupt_state = 0;
 
   ::octave_rl_recover_from_interrupt ();

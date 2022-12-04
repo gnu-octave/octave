@@ -36,9 +36,8 @@
 
 struct gui_pref
 {
-  gui_pref (const QString& key_arg, const QVariant& def_arg,
-            const bool ignore_arg = false)
-    : key (key_arg), def (def_arg), ignore (ignore_arg)
+  gui_pref (const QString& key_arg, const QVariant& def_arg)
+    : key (key_arg), def (def_arg)
   { }
 
   // No copying!
@@ -51,7 +50,6 @@ struct gui_pref
 
   const QString key;   // the key name
   const QVariant def;  // the default value
-  const bool ignore;   // when true, ignore, i.e. always take default
 };
 
 // The version for shortcuts, where the default value is stored as a

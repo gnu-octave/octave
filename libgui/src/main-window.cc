@@ -111,7 +111,9 @@ namespace octave
   {
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
-    if (rmgr.is_first_run ())
+    gui_settings settings;
+
+    if (! settings.value (global_skip_welcome_wizard).toBool ())
       {
         // Before wizard.
         m_octave_qobj.config_translators ();
@@ -121,21 +123,21 @@ namespace octave
         if (welcomeWizard.exec () == QDialog::Rejected)
           exit (1);
 
+        settings.setValue (global_skip_welcome_wizard.key, QVariant (true));
+
         // Install settings file.
-        rmgr.reload_settings ();
+        settings.reload ();
       }
     else
       {
         // Get settings file.
-        rmgr.reload_settings ();
+        settings.reload ();
 
         // After settings.
         m_octave_qobj.config_translators ();
       }
 
     setObjectName (gui_obj_name_main_window);
-
-    gui_settings settings;
 
     settings.config_icon_theme ();
 

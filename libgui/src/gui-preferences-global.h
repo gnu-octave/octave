@@ -34,6 +34,9 @@ const QString gui_obj_name_main_window = "MainWindow";
 
 // Global preferences
 
+const gui_pref
+global_skip_welcome_wizard ("global_skip_welcome_wizard", false);
+
 // Get the default monospaced font
 #if defined (Q_OS_WIN)
 const QString global_font_family = "Courier";

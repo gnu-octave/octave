@@ -307,12 +307,12 @@ namespace octave
         else
           {
             // Get settings file.
-            m_resource_manager.reload_settings ();
+            gui_settings settings;
+
+            settings.reload ();
 
             // After settings.
             config_translators ();
-
-            gui_settings settings;
 
             settings.config_icon_theme ();
 

@@ -144,10 +144,9 @@ namespace octave
   {
     // Create default settings file.
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    rmgr.reload_settings ();
-
     gui_settings settings;
+
+    settings.reload ();
 
     settings.setValue (nr_allow_connection.key,
                        m_allow_web_connect_state);
@@ -157,7 +156,7 @@ namespace octave
     QDialog::accept ();
   }
 
-  initial_page::initial_page (base_qobject& oct_qobj, welcome_wizard *wizard)
+  initial_page::initial_page (base_qobject&, welcome_wizard *wizard)
     : QWidget (wizard),
       m_title (new QLabel (tr ("Welcome to Octave!"), this)),
       m_message (new QLabel (this)),
@@ -169,7 +168,7 @@ namespace octave
     ft.setPointSize (20);
     m_title->setFont (ft);
 
-    resource_manager& rmgr = oct_qobj.get_resource_manager ();
+    gui_settings settings;
 
     m_message->setText
       (tr ("<html><body>\n"
@@ -177,7 +176,7 @@ namespace octave
            "Click 'Next' to create a configuration file and launch Octave.</p>\n"
            "<p>The configuration file is stored in<br>%1.</p>\n"
            "</body></html>").
-       arg (rmgr.get_settings_file ()));
+       arg (settings.file_name ()));
     m_message->setWordWrap (true);
     m_message->setMinimumWidth (400);
 

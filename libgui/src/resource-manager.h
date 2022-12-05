@@ -59,21 +59,11 @@ namespace octave
     void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
                              QTranslator *gui_tr);
 
-    QString get_settings_directory (void);
-
-    QString get_settings_file (void);
-
-    QString get_default_font_family (void);
-
-    QStringList get_default_font (void);
-
     QPointer<QTemporaryFile>
     create_tmp_file (const QString& extension = QString (),
                      const QString& contents = QString ());
 
     void remove_tmp_file (QPointer<QTemporaryFile> tmp_file);
-
-    void reload_settings (void);
 
 #if defined (HAVE_QSCINTILLA)
     int get_valid_lexer_styles (QsciLexer *lexer, int *styles);
@@ -81,8 +71,6 @@ namespace octave
 #endif
 
     bool update_settings_key (const QString& new_key, const QString& old_key);
-
-    bool is_first_run (void) const;
 
     void update_network_settings (void);
 
@@ -92,8 +80,6 @@ namespace octave
 
   private:
 
-    void check_settings (void);
-
     /*!
      * Copys the attributes bold, italic and underline from QFont
      * @p attr to the font @p base and returns the result without
@@ -102,10 +88,6 @@ namespace octave
      * @param base QFont with desired family and size
     */
     QFont copy_font_attributes (const QFont& attr, const QFont& base) const;
-
-    QString m_settings_directory;
-
-    QString m_settings_file;
 
     QList<QTemporaryFile *> m_temporary_files;
   };

@@ -27,15 +27,37 @@
 #  include "config.h"
 #endif
 
+#include <cmath>
+
 #include <QApplication>
 #include <QFile>
+#include <QFileInfo>
+#include <QFontComboBox>
+#include <QFontDatabase>
+#include <QMessageBox>
 #include <QSettings>
+#include <QString>
+#include <QStringList>
 
+#include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
 
+#include "oct-env.h"
+
 namespace octave
 {
+  QString gui_settings::file_name (void) const
+  {
+    return fileName ();
+  }
+
+  QString gui_settings::directory_name (void) const
+  {
+    QFileInfo sfile (fileName ());
+
+    return sfile.absolutePath ();
+  }
 
   QColor gui_settings::get_color_value (const QVariant& def, int mode) const
   {
@@ -174,5 +196,151 @@ namespace octave
 
       //QIcon::setThemeName (current_theme);
       return QIcon ();
+  }
+
+  QString gui_settings::get_default_font_family (void)
+  {
+    QString default_family;
+
+    // Get all available fixed width fonts via a font combobox
+    QFontComboBox font_combo_box;
+    font_combo_box.setFontFilters (QFontComboBox::MonospacedFonts);
+    QStringList fonts;
+
+    for (int index = 0; index < font_combo_box.count(); index++)
+      fonts << font_combo_box.itemText(index);
+
+#if defined (Q_OS_MAC)
+    // Use hard coded default on macOS, since selection of fixed width
+    // default font is unreliable (see bug #59128).
+    // Test for macOS default fixed width font
+    if (fonts.contains (global_mono_font.def.toString ()))
+      default_family = global_mono_font.def.toString ();
+#endif
+
+    // If default font is still empty (on all other platforms or
+    // if macOS default font is not available): use QFontDatabase
+    if (default_family.isEmpty ())
+      {
+        // Get the system's default monospaced font
+        QFont fixed_font = QFontDatabase::systemFont (QFontDatabase::FixedFont);
+        default_family = fixed_font.defaultFamily ();
+
+        // Since this might be unreliable, test all available fixed width fonts
+        if (! fonts.contains (default_family))
+          {
+            // Font returned by QFontDatabase is not in fixed fonts list.
+            // Fallback: take first from this list
+            default_family = fonts[0];
+          }
+      }
+
+    // Test env variable which has preference
+    std::string env_default_family = sys::env::getenv ("OCTAVE_DEFAULT_FONT");
+    if (! env_default_family.empty ())
+      default_family = QString::fromStdString (env_default_family);
+
+    return default_family;
+  }
+
+  QStringList gui_settings::get_default_font (void)
+  {
+    QString default_family = get_default_font_family ();
+
+    // determine the fefault font size of the system
+    // FIXME: QApplication::font () does not return the monospace font,
+    //        but the size should be probably near to the monospace font
+    QFont font = QApplication::font ();
+
+    int font_size = font.pointSize ();
+    if (font_size == -1)
+      font_size = static_cast <int> (std::floor(font.pointSizeF ()));
+
+    // check for valid font size, otherwise take default 10
+    QString default_font_size = "10";
+    if (font_size > 0)
+      default_font_size = QString::number (font_size);
+
+    std::string env_default_font_size
+      = sys::env::getenv ("OCTAVE_DEFAULT_FONT_SIZE");
+
+    if (! env_default_font_size.empty ())
+      default_font_size = QString::fromStdString (env_default_font_size);
+
+    QStringList result;
+    result << default_family;
+    result << default_font_size;
+    return result;
+  }
+
+  void gui_settings::reload (void)
+  {
+    // Declare some empty options, which may be set at first startup for
+    // writing them into the newly created settings file
+    QString custom_editor;
+    QStringList def_font;
+
+    // Check whether the settings file does not yet exist
+    if (! QFile::exists (file_name ()))
+      {
+        // Get the default font (for terminal)
+        def_font = get_default_font ();
+
+        // Get a custom editor defined as env variable
+        std::string env_default_editor
+          = sys::env::getenv ("OCTAVE_DEFAULT_EDITOR");
+
+        if (! env_default_editor.empty ())
+          custom_editor = QString::fromStdString (env_default_editor);
+      }
+
+    check ();
+
+    // Write some settings that were dynamically determined at first startup
+
+    // Custom editor
+    if (! custom_editor.isEmpty ())
+      setValue (global_custom_editor.key, custom_editor);
+
+    // Default monospace font for the terminal
+    if (def_font.count () > 1)
+      {
+        setValue (cs_font.key, def_font[0]);
+        setValue (cs_font_size.key, def_font[1].toInt ());
+      }
+
+    // Write the default monospace font into the settings for later use by
+    // console and editor as fallbacks of their font preferences.
+    setValue (global_mono_font.key, get_default_font_family ());
+  }
+
+  void gui_settings::check (void)
+  {
+    if (status () == QSettings::NoError)
+      {
+        // Test usability (force file to be really created)
+        setValue ("dummy", 0);
+        sync ();
+      }
+
+    if (! (QFile::exists (file_name ())
+           && isWritable ()
+           && status () == QSettings::NoError))
+      {
+        QString msg
+          = QString (QT_TR_NOOP ("Error %1 creating the settings file\n%2\n"
+                                 "Make sure you have read and write permissions to\n%3\n\n"
+                                 "Octave GUI must be closed now."));
+
+        QMessageBox::critical (nullptr,
+                               QString (QT_TR_NOOP ("Octave Critical Error")),
+                               msg.arg (status ())
+                                  .arg (file_name ())
+                                  .arg (directory_name ()));
+
+        exit (1);
+      }
+    else
+      remove ("dummy");  // Remove test entry
   }
 }

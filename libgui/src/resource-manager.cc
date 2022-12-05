@@ -35,10 +35,7 @@
 
 #include <QDir>
 #include <QFile>
-#include <QFontComboBox>
-#include <QFontDatabase>
 #include <QLibraryInfo>
-#include <QMessageBox>
 #include <QNetworkProxy>
 #include <QStandardPaths>
 
@@ -59,26 +56,12 @@
 #include "oct-env.h"
 
 #include "defaults.h"
-#include "error.h"
-#include "help.h"
 
 namespace octave
 {
   resource_manager::resource_manager (void)
-    : m_settings_directory (), m_settings_file (), m_temporary_files ()
-  {
-    // Location, name, and format of settings file determined by
-    // settings in qt_application class construtor.
-
-    check_settings ();
-
-    gui_settings settings;
-
-    m_settings_file = settings.fileName ();
-
-    QFileInfo sfile (m_settings_file);
-    m_settings_directory = sfile.absolutePath ();
-  }
+    : m_temporary_files ()
+  { }
 
   resource_manager::~resource_manager (void)
   {
@@ -142,134 +125,6 @@ namespace octave
 
   }
 
-  QString resource_manager::get_settings_directory (void)
-  {
-    return m_settings_directory;
-  }
-
-  QString resource_manager::get_settings_file (void)
-  {
-    return m_settings_file;
-  }
-
-  QString resource_manager::get_default_font_family (void)
-  {
-    QString default_family;
-
-    // Get all available fixed width fonts via a font combobox
-    QFontComboBox font_combo_box;
-    font_combo_box.setFontFilters (QFontComboBox::MonospacedFonts);
-    QStringList fonts;
-
-    for (int index = 0; index < font_combo_box.count(); index++)
-      fonts << font_combo_box.itemText(index);
-
-#if defined (Q_OS_MAC)
-    // Use hard coded default on macOS, since selection of fixed width
-    // default font is unreliable (see bug #59128).
-    // Test for macOS default fixed width font
-    if (fonts.contains (global_mono_font.def.toString ()))
-      default_family = global_mono_font.def.toString ();
-#endif
-
-    // If default font is still empty (on all other platforms or
-    // if macOS default font is not available): use QFontDatabase
-    if (default_family.isEmpty ())
-      {
-        // Get the system's default monospaced font
-        QFont fixed_font = QFontDatabase::systemFont (QFontDatabase::FixedFont);
-        default_family = fixed_font.defaultFamily ();
-
-        // Since this might be unreliable, test all available fixed width fonts
-        if (! fonts.contains (default_family))
-          {
-            // Font returned by QFontDatabase is not in fixed fonts list.
-            // Fallback: take first from this list
-            default_family = fonts[0];
-          }
-      }
-
-    // Test env variable which has preference
-    std::string env_default_family = sys::env::getenv ("OCTAVE_DEFAULT_FONT");
-    if (! env_default_family.empty ())
-      default_family = QString::fromStdString (env_default_family);
-
-    return default_family;
-  }
-
-  QStringList resource_manager::get_default_font (void)
-  {
-    QString default_family = get_default_font_family ();
-
-    // determine the fefault font size of the system
-    // FIXME: QApplication::font () does not return the monospace font,
-    //        but the size should be probably near to the monospace font
-    QFont font = QApplication::font ();
-
-    int font_size = font.pointSize ();
-    if (font_size == -1)
-      font_size = static_cast <int> (std::floor(font.pointSizeF ()));
-
-    // check for valid font size, otherwise take default 10
-    QString default_font_size = "10";
-    if (font_size > 0)
-      default_font_size = QString::number (font_size);
-
-    std::string env_default_font_size
-      = sys::env::getenv ("OCTAVE_DEFAULT_FONT_SIZE");
-
-    if (! env_default_font_size.empty ())
-      default_font_size = QString::fromStdString (env_default_font_size);
-
-    QStringList result;
-    result << default_family;
-    result << default_font_size;
-    return result;
-  }
-
-  void resource_manager::reload_settings (void)
-  {
-    // Declare some empty options, which may be set at first startup for
-    // writing them into the newly created settings file
-    QString custom_editor;
-    QStringList def_font;
-
-    // Check whether the settings file does not yet exist
-    if (! QFile::exists (m_settings_file))
-      {
-        // Get the default font (for terminal)
-        def_font = get_default_font ();
-
-        // Get a custom editor defined as env variable
-        std::string env_default_editor
-          = sys::env::getenv ("OCTAVE_DEFAULT_EDITOR");
-
-        if (! env_default_editor.empty ())
-          custom_editor = QString::fromStdString (env_default_editor);
-      }
-
-    check_settings ();
-
-    gui_settings settings;
-
-    // Write some settings that were dynamically determined at first startup
-
-    // Custom editor
-    if (! custom_editor.isEmpty ())
-      settings.setValue (global_custom_editor.key, custom_editor);
-
-    // Default monospace font for the terminal
-    if (def_font.count () > 1)
-      {
-        settings.setValue (cs_font.key, def_font[0]);
-        settings.setValue (cs_font_size.key, def_font[1].toInt ());
-      }
-
-    // Write the default monospace font into the settings for later use by
-    // console and editor as fallbacks of their font preferences.
-    settings.setValue (global_mono_font.key, get_default_font_family ());
-  }
-
 #if defined (HAVE_QSCINTILLA)
   int resource_manager::get_valid_lexer_styles (QsciLexer *lexer, int *styles)
   {
@@ -330,7 +185,7 @@ namespace octave
         //               and convert the color by inverting the lightness
 
         // Get the default font
-        QStringList def_font = get_default_font ();
+        QStringList def_font = settings.get_default_font ();
         QFont df (def_font[0], def_font[1].toInt ());
         QFont dfa = copy_font_attributes (lexer->defaultFont (), df);
         lexer->setDefaultFont (dfa);
@@ -370,38 +225,6 @@ namespace octave
   }
 #endif
 
-  void resource_manager::check_settings (void)
-  {
-    gui_settings settings;
-
-    if (settings.status () == QSettings::NoError)
-      {
-        // Test usability (force file to be really created)
-        settings.setValue ("dummy", 0);
-        settings.sync ();
-      }
-
-    if (! (QFile::exists (settings.fileName ())
-           && settings.isWritable ()
-           && settings.status () == QSettings::NoError))
-      {
-        QString msg
-          = QString (QT_TR_NOOP ("Error %1 creating the settings file\n%2\n"
-                                 "Make sure you have read and write permissions to\n%3\n\n"
-                                 "Octave GUI must be closed now."));
-
-        QMessageBox::critical (nullptr,
-                               QString (QT_TR_NOOP ("Octave Critical Error")),
-                               msg.arg (settings.status ())
-                                  .arg (get_settings_file ())
-                                  .arg (get_settings_directory ()));
-
-        exit (1);
-      }
-    else
-      settings.remove ("dummy");  // Remove test entry
-  }
-
   bool resource_manager::update_settings_key (const QString& old_key,
                                               const QString& new_key)
   {
@@ -416,11 +239,6 @@ namespace octave
       }
 
     return false;
-  }
-
-  bool resource_manager::is_first_run (void) const
-  {
-    return ! QFile::exists (m_settings_file);
   }
 
   void resource_manager::update_network_settings (void)

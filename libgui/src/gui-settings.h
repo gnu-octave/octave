@@ -40,6 +40,9 @@ namespace octave
 
   public:
 
+    // Location, name, and format of settings file determined by
+    // settings in qt_application class construtor.
+
     gui_settings (QObject *parent = nullptr)
       : QSettings (parent)
     { }
@@ -63,6 +66,10 @@ namespace octave
     gui_settings& operator = (const gui_settings&) = delete;
 
     ~gui_settings (void) = default;
+
+    QString file_name (void) const;
+
+    QString directory_name (void) const;
 
     using QSettings::value;
 
@@ -122,18 +129,30 @@ namespace octave
 
     QKeySequence sc_def_value (const sc_pref& pref) const;
 
-    // Both config_icon_theme and icon could be global functions instead
-    // of member functions.  But at least for the icon function,
-    // defining it as a member function means that we can create a
-    // single gui_settings object and access multiple icon objects
-    // rather than having to create a separate settings object each time
-    // that an icon is needed.  OTOH, creating the base QSettings object
-    // is supposed to be fast, so that may not matter.  Hmm.
+    // config_icon_theme, icon, get_default_font_family,
+    // get_default_font, and possibly reload and check could be global
+    // functions instead of member functions.  But at least for the icon
+    // function, defining it as a member function means that we can
+    // create a single gui_settings object and access multiple icon
+    // objects rather than having to create a separate settings object
+    // each time that an icon is needed.  OTOH, creating the base
+    // QSettings object is supposed to be fast, so that may not matter.
+    // Hmm.
 
     void config_icon_theme (void);
 
     QIcon icon (const QString& icon_name, bool octave_only = false,
                 const QString& icon_alt_name = QString ());
+
+    QString get_default_font_family (void);
+
+    QStringList get_default_font (void);
+
+    void reload (void);
+
+  private:
+
+    void check (void);
   };
 
 }

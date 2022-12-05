@@ -75,6 +75,9 @@ namespace octave
 
     QVariant value (const gui_pref& pref) const
     {
+      if (pref.ignore)
+        return pref.def;  // ignore the current pref and always use default
+
       return value (pref.key, pref.def);
     }
 

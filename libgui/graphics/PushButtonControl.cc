@@ -34,14 +34,11 @@
 #include "Container.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 namespace octave
 {
 
   PushButtonControl *
-  PushButtonControl::create (octave::base_qobject& oct_qobj,
-                             octave::interpreter& interp,
+  PushButtonControl::create (octave::interpreter& interp,
                              const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
@@ -51,18 +48,17 @@ namespace octave
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new PushButtonControl (oct_qobj, interp, go,
+          return new PushButtonControl (interp, go,
                                         new QPushButton (container));
       }
 
     return nullptr;
   }
 
-  PushButtonControl::PushButtonControl (octave::base_qobject& oct_qobj,
-                                        octave::interpreter& interp,
+  PushButtonControl::PushButtonControl (octave::interpreter& interp,
                                         const graphics_object& go,
                                         QPushButton *btn)
-    : ButtonControl (oct_qobj, interp, go, btn)
+    : ButtonControl (interp, go, btn)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 

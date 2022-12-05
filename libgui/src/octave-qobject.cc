@@ -177,7 +177,7 @@ namespace octave
       m_argv (m_app_context.sys_argv ()),
       m_qapplication (new octave_qapplication (m_argc, m_argv)),
       m_resource_manager (),
-      m_shortcut_manager (*this),
+      m_shortcut_manager (),
       m_qt_tr (new QTranslator ()),
       m_gui_tr (new QTranslator ()),
       m_qsci_tr (new QTranslator ()),
@@ -730,7 +730,7 @@ namespace octave
   {
     if (! m_community_news)
       m_community_news
-        = QPointer<community_news> (new community_news (*this, serial));
+        = QPointer<community_news> (new community_news (serial));
 
     return m_community_news;
   }

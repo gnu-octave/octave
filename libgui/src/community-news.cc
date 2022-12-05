@@ -37,26 +37,23 @@
 #include "gui-preferences-nr.h"
 #include "gui-settings.h"
 #include "news-reader.h"
-#include "octave-qobject.h"
 
 namespace octave
 {
-  community_news::community_news (base_qobject& oct_qobj, int serial)
+  community_news::community_news (int serial)
     : QWidget (nullptr), m_browser (nullptr)
   {
-    construct (oct_qobj, "https://octave.org", "community-news.html", serial);
+    construct ("https://octave.org", "community-news.html", serial);
   }
 
-  community_news::community_news (base_qobject& oct_qobj, QWidget *parent,
-                                  const QString& base_url, const QString& page,
-                                  int serial)
+  community_news::community_news (QWidget *parent, const QString& base_url,
+                                  const QString& page, int serial)
     : QWidget (parent), m_browser (nullptr)
   {
-    construct (oct_qobj, base_url, page, serial);
+    construct (base_url, page, serial);
   }
 
-  void community_news::construct (base_qobject& oct_qobj,
-                                  const QString& base_url, const QString& page,
+  void community_news::construct (const QString& base_url, const QString& page,
                                   int serial)
   {
     m_browser = new QTextBrowser (this);
@@ -96,8 +93,8 @@ namespace octave
 
     QThread *worker_thread = new QThread;
 
-    news_reader *reader = new news_reader (oct_qobj, base_url, page,
-                                           serial, connect_to_web);
+    news_reader *reader
+      = new news_reader (base_url, page, serial, connect_to_web);
 
     reader->moveToThread (worker_thread);
 

@@ -30,7 +30,6 @@
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -42,12 +41,12 @@ namespace octave
     Q_OBJECT
 
   public:
-    PushTool (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    PushTool (octave::interpreter& interp,
               const graphics_object& go, QAction *action);
     ~PushTool (void);
 
     static PushTool *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
   protected:

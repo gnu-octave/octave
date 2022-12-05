@@ -31,14 +31,11 @@
 
 #include "ToolBarButton.cc"
 
-#include "octave-qobject.h"
-
 namespace octave
 {
 
   PushTool *
-  PushTool::create (octave::base_qobject& oct_qobj,
-                    octave::interpreter& interp, const graphics_object& go)
+  PushTool::create (octave::interpreter& interp, const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
 
@@ -47,17 +44,16 @@ namespace octave
         QWidget *parentWidget = parent->qWidget<QWidget> ();
 
         if (parentWidget)
-          return new PushTool (oct_qobj, interp, go,
+          return new PushTool (interp, go,
                                new QAction (parentWidget));
       }
 
     return nullptr;
   }
 
-  PushTool::PushTool (octave::base_qobject& oct_qobj,
-                      octave::interpreter& interp,
+  PushTool::PushTool (octave::interpreter& interp,
                       const graphics_object& go, QAction *action)
-    : ToolBarButton<uipushtool> (oct_qobj, interp, go, action)
+    : ToolBarButton<uipushtool> (interp, go, action)
   {
     connect (action, &QAction::triggered, this, &PushTool::clicked);
   }

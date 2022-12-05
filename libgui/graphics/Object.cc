@@ -32,7 +32,6 @@
 
 #include "Object.h"
 #include "QtHandlesUtils.h"
-#include "octave-qobject.h"
 #include "qt-graphics-toolkit.h"
 
 #include "graphics.h"
@@ -41,10 +40,10 @@
 namespace octave
 {
 
-  Object::Object (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Object::Object (octave::interpreter& interp,
                   const graphics_object& go, QObject *obj)
-    : QObject (), m_octave_qobj (oct_qobj), m_interpreter (interp),
-      m_go (go), m_handle (go.get_handle ()), m_qobject (nullptr)
+    : QObject (), m_interpreter (interp), m_go (go),
+      m_handle (go.get_handle ()), m_qobject (nullptr)
   {
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 

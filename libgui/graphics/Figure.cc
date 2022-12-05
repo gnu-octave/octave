@@ -110,19 +110,19 @@ namespace octave
   }
 
   Figure *
-  Figure::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Figure::create (octave::interpreter& interp,
                   const graphics_object& go)
   {
-    return new Figure (oct_qobj, interp, go, new FigureWindow ());
+    return new Figure (interp, go, new FigureWindow ());
   }
 
-  Figure::Figure (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Figure::Figure (octave::interpreter& interp,
                   const graphics_object& go, FigureWindow *win)
-    : Object (oct_qobj, interp, go, win), m_blockUpdates (false),
+    : Object (interp, go, win), m_blockUpdates (false),
       m_figureToolBar (nullptr), m_menuBar (nullptr), m_innerRect (),
       m_outerRect (), m_previousHeight (0), m_resizable (true)
   {
-    m_container = new Container (win, oct_qobj, interp);
+    m_container = new Container (win, interp);
     win->setCentralWidget (m_container);
 
     connect (m_container, QOverload<const octave::fcn_callback&>::of (&Container::interpreter_event),

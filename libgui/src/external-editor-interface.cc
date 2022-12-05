@@ -33,13 +33,11 @@
 #include "external-editor-interface.h"
 #include "gui-settings.h"
 #include "gui-preferences-global.h"
-#include "octave-qobject.h"
 
 namespace octave
 {
-  external_editor_interface::external_editor_interface (QWidget *p,
-                                                        base_qobject& oct_qobj)
-    : QWidget (p), m_octave_qobj (oct_qobj)
+  external_editor_interface::external_editor_interface (QWidget *p)
+    : QWidget (p)
   { }
 
   // Calling the external editor

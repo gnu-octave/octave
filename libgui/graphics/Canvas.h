@@ -43,7 +43,6 @@ class octave_value_list;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -82,9 +81,8 @@ namespace octave
     virtual QWidget * qWidget (void) = 0;
 
     static Canvas *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_handle& handle, QWidget *parent,
-            const std::string& name);
+    create (octave::interpreter& interp, const graphics_handle& handle,
+            QWidget *parent, const std::string& name);
 
     virtual uint8NDArray getPixels (void) { return do_getPixels (m_handle); };
 
@@ -118,10 +116,8 @@ namespace octave
                            const graphics_handle& handle) = 0;
 
   protected:
-    Canvas (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_handle& handle)
-      : m_octave_qobj (oct_qobj),
-        m_interpreter (interp),
+    Canvas (octave::interpreter& interp, const graphics_handle& handle)
+      : m_interpreter (interp),
         m_handle (handle),
         m_redrawBlocked (false),
         m_mouseMode (NoMode),
@@ -153,7 +149,7 @@ namespace octave
                         std::vector<std::string> omit = std::vector<std::string> ());
 
   protected:
-    octave::base_qobject& m_octave_qobj;
+
     octave::interpreter& m_interpreter;
 
   private:

@@ -33,7 +33,6 @@
 
 #include "gui-preferences-ws.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 #include "workspace-model.h"
 
 #include "syminfo.h"

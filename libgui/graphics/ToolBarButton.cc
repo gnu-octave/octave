@@ -34,16 +34,14 @@
 
 #include "ToolBarButton.h"
 #include "QtHandlesUtils.h"
-#include "octave-qobject.h"
 #include "gui-preferences-global.h"
 
 namespace octave
 {
   template <typename T>
-  ToolBarButton<T>::ToolBarButton (octave::base_qobject& oct_qobj,
-                                   octave::interpreter& interp,
+  ToolBarButton<T>::ToolBarButton (octave::interpreter& interp,
                                    const graphics_object& go, QAction *action)
-    : Object (oct_qobj, interp, go, action), m_separator (nullptr)
+    : Object (interp, go, action), m_separator (nullptr)
   {
     typename T::properties& tp = properties<T> ();
 

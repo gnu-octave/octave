@@ -50,11 +50,10 @@ namespace octave
 #  endif
 #endif
 
-  GLCanvas::GLCanvas (octave::base_qobject& oct_qobj,
-                      octave::interpreter& interp,
+  GLCanvas::GLCanvas (octave::interpreter& interp,
                       const graphics_handle& gh, QWidget *xparent)
     : OCTAVE_QT_OPENGL_WIDGET (OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS xparent),
-      Canvas (oct_qobj, interp, gh), m_glfcns (), m_renderer (m_glfcns)
+      Canvas (interp, gh), m_glfcns (), m_renderer (m_glfcns)
   {
     setFocusPolicy (Qt::ClickFocus);
     setFocus ();

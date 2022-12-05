@@ -48,8 +48,6 @@
 #include "Table.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 #include "graphics.h"
 #include "interpreter.h"
 #include "oct-map.h"
@@ -436,7 +434,7 @@ namespace octave
   }
 
   Table *
-  Table::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Table::create (octave::interpreter& interp,
                  const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
@@ -446,15 +444,15 @@ namespace octave
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new Table (oct_qobj, interp, go, new QTableWidget (container));
+          return new Table (interp, go, new QTableWidget (container));
       }
 
     return 0;
   }
 
-  Table::Table (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Table::Table (octave::interpreter& interp,
                 const graphics_object& go, QTableWidget *tableWidget)
-    : Object (oct_qobj, interp, go, tableWidget), m_tableWidget (tableWidget),
+    : Object (interp, go, tableWidget), m_tableWidget (tableWidget),
       m_curData (), m_blockUpdates (false)
   {
     qObject ()->setObjectName ("UItable");

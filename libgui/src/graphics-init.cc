@@ -32,7 +32,6 @@
 #include <QThread>
 
 #include "graphics-init.h"
-#include "octave-qobject.h"
 #include "qt-graphics-toolkit.h"
 #include "QtHandlesUtils.h"
 
@@ -42,7 +41,7 @@
 
 namespace octave
 {
-  void graphics_init (interpreter& interp, base_qobject& oct_qobj)
+  void graphics_init (interpreter& interp)
   {
 #if defined (HAVE_QT_GRAPHICS)
 
@@ -54,7 +53,7 @@ namespace octave
 
     gh_mgr.enable_event_processing (true);
 
-    qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp, oct_qobj);
+    qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp);
 
     if (QThread::currentThread ()
         != QApplication::instance ()->thread ())

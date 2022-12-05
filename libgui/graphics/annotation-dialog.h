@@ -32,11 +32,6 @@
 
 #include "ovl.h"
 
-namespace octave
-{
-  class base_qobject;
-}
-
 namespace Ui
 {
   class annotation_dialog;
@@ -46,8 +41,7 @@ class annotation_dialog : public QDialog
 {
   Q_OBJECT
 public:
-  annotation_dialog (octave::base_qobject& oct_qobj, QWidget *parent,
-                     const octave_value_list& pr);
+  annotation_dialog (QWidget *parent, const octave_value_list& pr);
   ~annotation_dialog ();
 
   octave_value_list get_properties () const;
@@ -64,7 +58,6 @@ private:
   void get_gui_props ();
   void set_gui_props ();
 
-  octave::base_qobject& m_octave_qobj;
   Ui::annotation_dialog *ui;
   octave_value_list props;
 };

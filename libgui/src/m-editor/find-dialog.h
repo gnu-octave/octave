@@ -79,7 +79,6 @@ class QPushButton;
 
 namespace octave
 {
-  class base_qobject;
   class file_editor;
 
   class find_dialog : public QDialog
@@ -88,7 +87,7 @@ namespace octave
 
   public:
 
-    find_dialog (base_qobject& oct_qobj, octave_dock_widget *ed, QWidget *p);
+    find_dialog (octave_dock_widget *ed, QWidget *p);
 
     //! Set dialog visible or not and storing the new visibility state
     void set_visible (bool visible);
@@ -121,8 +120,6 @@ namespace octave
     void replace_all (void);
 
   private:
-
-    base_qobject& m_octave_qobj;
 
     //! Save position and the search options in the given settings
     void save_settings ();

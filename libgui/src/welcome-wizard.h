@@ -32,25 +32,21 @@
 
 namespace octave
 {
-  class base_qobject;
-
   class welcome_wizard : public QDialog
   {
     Q_OBJECT
 
   public:
 
-    typedef QWidget *(*page_creator_fptr) (base_qobject&, welcome_wizard *);
+    typedef QWidget *(*page_creator_fptr) (welcome_wizard *);
 
-    welcome_wizard (base_qobject& oct_qobj, QWidget *parent = nullptr);
+    welcome_wizard (QWidget *parent = nullptr);
 
     ~welcome_wizard (void) = default;
 
     void adjust_size (void);
 
   private:
-
-    base_qobject& m_octave_qobj;
 
     QList<page_creator_fptr> m_page_ctor_list;
     QList<page_creator_fptr>::iterator m_page_list_iterator;
@@ -77,14 +73,14 @@ namespace octave
 
   public:
 
-    initial_page (base_qobject& oct_qobj, welcome_wizard *wizard);
+    initial_page (welcome_wizard *wizard);
 
     ~initial_page (void) = default;
 
     static QWidget *
-    create (base_qobject& oct_qobj, welcome_wizard *wizard)
+    create (welcome_wizard *wizard)
     {
-      return new initial_page (oct_qobj, wizard);
+      return new initial_page (wizard);
     }
 
   private:
@@ -103,14 +99,14 @@ namespace octave
 
   public:
 
-    setup_community_news (base_qobject& oct_qobj, welcome_wizard *wizard);
+    setup_community_news (welcome_wizard *wizard);
 
     ~setup_community_news (void) = default;
 
     static QWidget *
-    create (base_qobject& oct_qobj, welcome_wizard *wizard)
+    create (welcome_wizard *wizard)
     {
-      return new setup_community_news (oct_qobj, wizard);
+      return new setup_community_news (wizard);
     }
 
   private:
@@ -132,14 +128,14 @@ namespace octave
 
   public:
 
-    final_page (base_qobject& oct_qobj, welcome_wizard *wizard);
+    final_page (welcome_wizard *wizard);
 
     ~final_page (void) = default;
 
     static QWidget *
-    create (base_qobject& oct_qobj, welcome_wizard *wizard)
+    create (welcome_wizard *wizard)
     {
-      return new final_page (oct_qobj, wizard);
+      return new final_page (wizard);
     }
 
   private:

@@ -82,7 +82,7 @@ namespace octave
 
             emit ready ();
 
-            graphics_init (interp, m_octave_qobj);
+            graphics_init (interp);
 
             // Start executing commands in the command window.
 

@@ -116,10 +116,9 @@ namespace octave
     w->setPalette (p);
   }
 
-  BaseControl::BaseControl (octave::base_qobject& oct_qobj,
-                            octave::interpreter& interp,
+  BaseControl::BaseControl (octave::interpreter& interp,
                             const graphics_object& go, QWidget *w)
-    : Object (oct_qobj, interp, go, w), m_normalizedFont (false),
+    : Object (interp, go, w), m_normalizedFont (false),
       m_keyPressHandlerDefined (false)
   {
     qObject ()->setObjectName ("UIControl");

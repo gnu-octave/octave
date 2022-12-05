@@ -51,7 +51,6 @@
 
 namespace octave
 {
-  class base_qobject;
 }
 
 namespace octave
@@ -59,7 +58,7 @@ namespace octave
   class GLCanvas : public OCTAVE_QT_OPENGL_WIDGET, public Canvas
   {
   public:
-    GLCanvas (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    GLCanvas (octave::interpreter& interp,
               const graphics_handle& handle, QWidget *parent);
     ~GLCanvas (void);
 

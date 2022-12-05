@@ -35,7 +35,6 @@ class QWidget;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -47,12 +46,12 @@ namespace octave
     Q_OBJECT
 
   public:
-    Menu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    Menu (octave::interpreter& interp,
           const graphics_object& go, QAction *action, Object *parent);
     ~Menu (void);
 
     static Menu *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
     Container * innerContainer (void) { return nullptr; }

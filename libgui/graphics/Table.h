@@ -34,7 +34,6 @@ class QTableWidgetItem;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -48,7 +47,7 @@ namespace octave
     Q_OBJECT
 
   public:
-    Table (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    Table (octave::interpreter& interp,
            const graphics_object& go, QTableWidget *tableWidget);
     ~Table (void);
 
@@ -57,7 +56,7 @@ namespace octave
     bool eventFilter (QObject *watched, QEvent *event);
 
     static Table *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
   protected:

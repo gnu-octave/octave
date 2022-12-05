@@ -42,7 +42,6 @@
 #include <QVBoxLayout>
 #include <QtCore>
 
-#include "octave-qobject.h"
 #include "shortcut-manager.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-sc.h"
@@ -110,8 +109,7 @@ namespace octave
   }
 
 
-  shortcut_manager::shortcut_manager (base_qobject& oct_qobj)
-    : m_octave_qobj (oct_qobj)
+  shortcut_manager::shortcut_manager (void)
   {
     setObjectName ("Shortcut_Manager");
 

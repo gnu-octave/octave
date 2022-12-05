@@ -32,7 +32,6 @@ class QLabel;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -42,12 +41,12 @@ namespace octave
   class TextControl : public BaseControl
   {
   public:
-    TextControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    TextControl (octave::interpreter& interp,
                  const graphics_object& go, QLabel *label);
     ~TextControl (void);
 
     static TextControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
   protected:

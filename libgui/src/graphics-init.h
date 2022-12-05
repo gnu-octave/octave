@@ -34,9 +34,7 @@ namespace octave
 {
   class interpreter;
 
-  class base_qobject;
-
-  extern void graphics_init (interpreter& interp, base_qobject& oct_qobj);
+  extern void graphics_init (interpreter& interp);
 }
 
 #endif

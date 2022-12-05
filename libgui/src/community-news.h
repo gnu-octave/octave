@@ -33,17 +33,15 @@ class QTextBrowser;
 
 namespace octave
 {
-  class base_qobject;
-
   class community_news : public QWidget
   {
     Q_OBJECT
 
   public:
 
-    community_news (base_qobject& oct_qobj, int serial);
+    community_news (int serial);
 
-    community_news (base_qobject& oct_qobj, QWidget *parent = nullptr,
+    community_news (QWidget *parent = nullptr,
                     const QString& base_url = "https://octave.org",
                     const QString& page = "community-news.html",
                     int serial = -1);
@@ -58,8 +56,7 @@ namespace octave
 
   private:
 
-    void construct (base_qobject& oct_qobj, const QString& base_url,
-                    const QString& page, int serial);
+    void construct (const QString& base_url, const QString& page, int serial);
 
     QTextBrowser *m_browser;
   };

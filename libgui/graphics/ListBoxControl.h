@@ -34,7 +34,6 @@ class QModelIndex;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -46,13 +45,12 @@ namespace octave
     Q_OBJECT
 
   public:
-    ListBoxControl (octave::base_qobject& oct_qobj,
-                    octave::interpreter& interp, const graphics_object& go,
+    ListBoxControl (octave::interpreter& interp, const graphics_object& go,
                     QListWidget *list);
     ~ListBoxControl (void);
 
     static ListBoxControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
   protected:

@@ -904,9 +904,9 @@ namespace octave
       m_find_dialog->close ();
 
     if (isFloating ())
-      m_find_dialog = new find_dialog (m_octave_qobj, this, this);
+      m_find_dialog = new find_dialog (this, this);
     else
-      m_find_dialog = new find_dialog (m_octave_qobj, this, parentWidget ());
+      m_find_dialog = new find_dialog (this, parentWidget ());
 
     // Add required actions
     m_find_dialog->addAction (m_find_next_action);

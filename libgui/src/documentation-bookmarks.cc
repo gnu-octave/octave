@@ -28,7 +28,10 @@
 #endif
 
 #include <QCompleter>
+#include <QDir>
+#include <QFileInfo>
 #include <QMenu>
+#include <QMessageBox>
 #include <QShortcut>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -49,12 +52,10 @@
 
 namespace octave
 {
-  documentation_bookmarks::documentation_bookmarks (
-                      documentation *doc, documentation_browser *browser,
-                      base_qobject& oct_qobj, QWidget *p)
-    : QWidget (p),
-      m_doc (doc), m_browser (browser), m_octave_qobj (oct_qobj),
-      m_ctx_menu_item (nullptr)
+  documentation_bookmarks::documentation_bookmarks (documentation *doc,
+                                                    documentation_browser *browser,
+                                                    QWidget *p)
+    : QWidget (p), m_doc (doc), m_browser (browser), m_ctx_menu_item (nullptr)
   {
     setObjectName ("documentation_tab_bookmarks");
 

@@ -45,7 +45,6 @@
 #include "QtHandlesUtils.h"
 #include "qt-graphics-toolkit.h"
 
-#include "octave-qobject.h"
 #include "octave-qtutils.h"
 
 #include "interpreter.h"
@@ -100,8 +99,7 @@ namespace octave
   }
 
   ButtonGroup *
-  ButtonGroup::create (octave::base_qobject& oct_qobj,
-                       octave::interpreter& interp, const graphics_object& go)
+  ButtonGroup::create (octave::interpreter& interp, const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
 
@@ -112,7 +110,7 @@ namespace octave
         if (container)
           {
             QFrame *frame = new QFrame (container);
-            return new ButtonGroup (oct_qobj, interp, go,
+            return new ButtonGroup (interp, go,
                                     new QButtonGroup (frame), frame);
           }
       }
@@ -120,11 +118,10 @@ namespace octave
     return nullptr;
   }
 
-  ButtonGroup::ButtonGroup (octave::base_qobject& oct_qobj,
-                            octave::interpreter& interp,
+  ButtonGroup::ButtonGroup (octave::interpreter& interp,
                             const graphics_object& go,
                             QButtonGroup *buttongroup, QFrame *frame)
-    : Object (oct_qobj, interp, go, frame), m_hiddenbutton (nullptr),
+    : Object (interp, go, frame), m_hiddenbutton (nullptr),
       m_container (nullptr), m_title (nullptr), m_blockUpdates (false)
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
@@ -144,7 +141,7 @@ namespace octave
     m_hiddenbutton->hide ();
     m_buttongroup->addButton (m_hiddenbutton);
 
-    m_container = new Container (frame, oct_qobj, interp);
+    m_container = new Container (frame, interp);
     m_container->canvas (m_handle);
 
     connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),

@@ -32,7 +32,6 @@ class QPushButton;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -42,13 +41,12 @@ namespace octave
   class ToggleButtonControl : public ButtonControl
   {
   public:
-    ToggleButtonControl (octave::base_qobject& oct_qobj,
-                         octave::interpreter& interp,
+    ToggleButtonControl (octave::interpreter& interp,
                          const graphics_object& go, QPushButton *box);
     ~ToggleButtonControl (void);
 
     static ToggleButtonControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
   protected:

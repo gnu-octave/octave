@@ -62,7 +62,6 @@ namespace octave
   };
 
   class gui_settings;
-  class base_qobject;
 
   class shortcut_manager : public QWidget
   {
@@ -77,7 +76,7 @@ namespace octave
       OSC_DEFAULT = 2
     };
 
-    shortcut_manager (base_qobject& oct_qobj);
+    shortcut_manager (void);
 
     // No copying!
 
@@ -156,8 +155,6 @@ namespace octave
       QKeySequence m_actual_sc;
       QKeySequence m_default_sc;
     };
-
-    base_qobject& m_octave_qobj;
 
     QList<shortcut_t> m_sc;
     QHash<QString, int> m_shortcut_hash;

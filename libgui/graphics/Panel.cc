@@ -39,8 +39,6 @@
 #include "Panel.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 #include "graphics.h"
 #include "interpreter.h"
 
@@ -93,7 +91,7 @@ namespace octave
   }
 
   Panel *
-  Panel::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Panel::create (octave::interpreter& interp,
                  const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
@@ -103,15 +101,15 @@ namespace octave
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new Panel (oct_qobj, interp, go, new QFrame (container));
+          return new Panel (interp, go, new QFrame (container));
       }
 
     return nullptr;
   }
 
-  Panel::Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Panel::Panel (octave::interpreter& interp,
                 const graphics_object& go, QFrame *frame)
-    : Object (oct_qobj, interp, go, frame), m_container (nullptr),
+    : Object (interp, go, frame), m_container (nullptr),
       m_title (nullptr), m_blockUpdates (false),
       m_previous_bbox (Matrix (1, 4, 0))
   {
@@ -128,7 +126,7 @@ namespace octave
     setupPalette (pp, pal);
     frame->setPalette (pal);
 
-    m_container = new Container (frame, oct_qobj, interp);
+    m_container = new Container (frame, interp);
     m_container->canvas (m_handle);
 
     connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),

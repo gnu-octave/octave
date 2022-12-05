@@ -100,7 +100,7 @@ namespace octave
       m_file_browser_window (nullptr),
       m_editor_window (nullptr),
       m_workspace_window (nullptr),
-      m_external_editor (new external_editor_interface (this, m_octave_qobj)),
+      m_external_editor (new external_editor_interface (this)),
       m_active_editor (m_external_editor), m_settings_dlg (nullptr),
       m_find_files_dlg (nullptr), m_set_path_dlg (nullptr),
       m_clipboard (QApplication::clipboard ()),
@@ -118,7 +118,7 @@ namespace octave
         // Before wizard.
         m_octave_qobj.config_translators ();
 
-        welcome_wizard welcomeWizard (m_octave_qobj);
+        welcome_wizard welcomeWizard;
 
         if (welcomeWizard.exec () == QDialog::Rejected)
           exit (1);
@@ -1802,7 +1802,7 @@ namespace octave
     if (m_set_path_dlg)  // m_set_path_dlg is a guarded pointer!
       return;
 
-    m_set_path_dlg = new set_path_dialog (this, m_octave_qobj);
+    m_set_path_dlg = new set_path_dialog (this);
 
     m_set_path_dlg->setModal (false);
     m_set_path_dlg->setAttribute (Qt::WA_DeleteOnClose);
@@ -1838,7 +1838,7 @@ namespace octave
 
     if (! m_find_files_dlg)
       {
-        m_find_files_dlg = new find_files_dialog (this, m_octave_qobj);
+        m_find_files_dlg = new find_files_dialog (this);
 
         connect (m_find_files_dlg, &find_files_dialog::finished,
                  this, &main_window::find_files_finished);

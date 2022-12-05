@@ -32,14 +32,11 @@
 #include "CheckBoxControl.h"
 #include "Container.h"
 
-#include "octave-qobject.h"
-
 namespace octave
 {
 
   CheckBoxControl *
-  CheckBoxControl::create (octave::base_qobject& oct_qobj,
-                           octave::interpreter& interp,
+  CheckBoxControl::create (octave::interpreter& interp,
                            const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
@@ -49,17 +46,16 @@ namespace octave
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new CheckBoxControl (oct_qobj, interp, go,
+          return new CheckBoxControl (interp, go,
                                       new QCheckBox (container));
       }
 
     return nullptr;
   }
 
-  CheckBoxControl::CheckBoxControl (octave::base_qobject& oct_obj,
-                                    octave::interpreter& interp,
+  CheckBoxControl::CheckBoxControl (octave::interpreter& interp,
                                     const graphics_object& go, QCheckBox *box)
-    : ButtonControl (oct_obj, interp, go, box)
+    : ButtonControl (interp, go, box)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 

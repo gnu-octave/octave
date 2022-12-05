@@ -52,7 +52,6 @@
 #include "interpreter-qobject.h"
 #include "led-indicator.h"
 #include "octave-dock-widget.h"
-#include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "set-path-dialog.h"
 #include "terminal-dock-widget.h"
@@ -65,6 +64,7 @@ namespace octave
 {
   class interpreter;
 
+  class base_qobject;
   class settings_dialog;
 
   //! Represents the main window.

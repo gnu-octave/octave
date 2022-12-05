@@ -51,7 +51,6 @@
 
 #include "gui-preferences-pd.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 #include "octave-qtutils.h"
 #include "set-path-dialog.h"
 #include "set-path-model.h"
@@ -60,8 +59,8 @@
 
 namespace octave
 {
-  set_path_dialog::set_path_dialog (QWidget *parent, base_qobject& oct_qobj)
-    : QDialog (parent), m_octave_qobj (oct_qobj)
+  set_path_dialog::set_path_dialog (QWidget *parent)
+    : QDialog (parent)
   {
     setWindowTitle (tr ("Set Path"));
 

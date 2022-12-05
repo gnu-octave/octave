@@ -34,14 +34,11 @@
 #include "Container.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 namespace octave
 {
 
   ToggleButtonControl *
-  ToggleButtonControl::create (octave::base_qobject& oct_qobj,
-                               octave::interpreter& interp,
+  ToggleButtonControl::create (octave::interpreter& interp,
                                const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
@@ -51,18 +48,17 @@ namespace octave
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new ToggleButtonControl (oct_qobj, interp, go,
+          return new ToggleButtonControl (interp, go,
                                           new QPushButton (container));
       }
 
     return nullptr;
   }
 
-  ToggleButtonControl::ToggleButtonControl (octave::base_qobject& oct_qobj,
-                                            octave::interpreter& interp,
+  ToggleButtonControl::ToggleButtonControl (octave::interpreter& interp,
                                             const graphics_object& go,
                                             QPushButton *btn)
-    : ButtonControl (oct_qobj, interp, go, btn)
+    : ButtonControl (interp, go, btn)
   {
     Object *parent = parentObject (interp, go);
     ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);

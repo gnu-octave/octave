@@ -33,14 +33,11 @@
 #include "TextControl.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 namespace octave
 {
 
   TextControl *
-  TextControl::create (octave::base_qobject& oct_qobj,
-                       octave::interpreter& interp, const graphics_object& go)
+  TextControl::create (octave::interpreter& interp, const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
 
@@ -49,16 +46,15 @@ namespace octave
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new TextControl (oct_qobj, interp, go, new QLabel (container));
+          return new TextControl (interp, go, new QLabel (container));
       }
 
     return nullptr;
   }
 
-  TextControl::TextControl (octave::base_qobject& oct_qobj,
-                            octave::interpreter& interp,
+  TextControl::TextControl (octave::interpreter& interp,
                             const graphics_object& go, QLabel *label)
-    : BaseControl (oct_qobj, interp, go, label)
+    : BaseControl (interp, go, label)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 

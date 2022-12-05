@@ -33,7 +33,6 @@ class QIcon;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -46,7 +45,7 @@ namespace octave
   class ToolBarButton : public Object
   {
   public:
-    ToolBarButton (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    ToolBarButton (octave::interpreter& interp,
                    const graphics_object& go, QAction *action);
     ~ToolBarButton (void);
 

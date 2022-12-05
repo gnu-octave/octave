@@ -35,11 +35,6 @@
 
 namespace octave
 {
-  class base_qobject;
-}
-
-namespace octave
-{
 
   DECLARE_GENERICEVENTNOTIFY_SENDER(ContainerBase, QWidget);
 
@@ -50,8 +45,7 @@ namespace octave
     Q_OBJECT
 
   public:
-    Container (QWidget *parent, octave::base_qobject& oct_qobj,
-               octave::interpreter& interp);
+    Container (QWidget *parent, octave::interpreter& interp);
     ~Container (void);
 
     Canvas * canvas (const graphics_handle& handle, bool create = true);
@@ -81,7 +75,6 @@ namespace octave
     void resizeEvent (QResizeEvent *event);
 
   private:
-    octave::base_qobject& m_octave_qobj;
     octave::interpreter& m_interpreter;
     Canvas *m_canvas;
   };

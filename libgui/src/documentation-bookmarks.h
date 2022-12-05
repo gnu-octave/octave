@@ -28,16 +28,14 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFile>
 #include <QTreeWidget>
 #include <QXmlStreamWriter>
 
 #include "documentation.h"
-#include "octave-qobject.h"
-
 
 namespace octave
 {
-  class base_qobject;
   class documentation;
 
   class documentation_bookmarks : public QWidget
@@ -46,9 +44,9 @@ namespace octave
 
   public:
 
-    documentation_bookmarks (
-      documentation *doc, documentation_browser *browser,
-      base_qobject& oct_qobj, QWidget *p = nullptr);
+    documentation_bookmarks (documentation *doc,
+                             documentation_browser *browser,
+                             QWidget *p = nullptr);
 
     ~documentation_bookmarks (void) = default;
 
@@ -103,7 +101,6 @@ namespace octave
 
     documentation *m_doc;
     documentation_browser *m_browser;
-    base_qobject& m_octave_qobj;
 
     QComboBox *m_filter;
     QTreeWidget *m_tree;

@@ -34,17 +34,13 @@
 #include "gui-settings.h"
 #include "gui-preferences-gp.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 
 #include "QtHandlesUtils.h"
 #include "annotation-dialog.h"
 #include "ui-annotation-dialog.h"
 
-using namespace octave;
-
-annotation_dialog::annotation_dialog (octave::base_qobject& oct_qobj,
-                                      QWidget *p, const octave_value_list& pr):
-  QDialog (p), m_octave_qobj (oct_qobj), ui (new Ui::annotation_dialog)
+annotation_dialog::annotation_dialog (QWidget *p, const octave_value_list& pr):
+  QDialog (p), ui (new Ui::annotation_dialog)
 {
   props = pr;
 
@@ -160,7 +156,7 @@ annotation_dialog::get_gui_props ()
                      ui->cb_font_bold->isChecked () ? "bold" : "normal"));
   props.append (ovl ("fontangle",
                      ui->cb_font_italic->isChecked () ? "italic" : "normal"));
-  props.append (ovl ("color", Utils::toRgb (ui->btn_color->palette ().
+  props.append (ovl ("color", octave::Utils::toRgb (ui->btn_color->palette ().
                      color (QPalette::Button))));
 
   // FIXME: only "none" linestyle is selectable, change the code bellow
@@ -245,7 +241,7 @@ annotation_dialog::set_gui_props ()
         {
           QColor color;
           if (props(1*i +1).is_matrix_type ())
-            color = Utils::fromRgb (props(2*i +1).matrix_value ());
+            color = octave::Utils::fromRgb (props(2*i +1).matrix_value ());
           else
             color.setNamedColor (props(2*i +1).string_value ().c_str ());
 

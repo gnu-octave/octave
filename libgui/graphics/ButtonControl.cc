@@ -40,11 +40,10 @@
 namespace octave
 {
 
-  ButtonControl::ButtonControl (octave::base_qobject& oct_qobj,
-                                octave::interpreter& interp,
+  ButtonControl::ButtonControl (octave::interpreter& interp,
                                 const graphics_object& go,
                                 QAbstractButton *btn)
-    : BaseControl (oct_qobj, interp, go, btn), m_blockCallback (false)
+    : BaseControl (interp, go, btn), m_blockCallback (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 

@@ -42,7 +42,6 @@
 #include "QtHandlesUtils.h"
 
 #include "gui-preferences-global.h"
-#include "octave-qobject.h"
 
 namespace octave
 {
@@ -69,7 +68,7 @@ namespace octave
   }
 
   ToolBar *
-  ToolBar::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  ToolBar::create (octave::interpreter& interp,
                    const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
@@ -79,16 +78,16 @@ namespace octave
         QWidget *parentWidget = parent->qWidget<QWidget> ();
 
         if (parentWidget)
-          return new ToolBar (oct_qobj, interp, go,
+          return new ToolBar (interp, go,
                               new QToolBar (parentWidget));
       }
 
     return nullptr;
   }
 
-  ToolBar::ToolBar (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  ToolBar::ToolBar (octave::interpreter& interp,
                     const graphics_object& go, QToolBar *bar)
-    : Object (oct_qobj, interp, go, bar), m_empty (nullptr), m_figure (nullptr)
+    : Object (interp, go, bar), m_empty (nullptr), m_figure (nullptr)
   {
     uitoolbar::properties& tp = properties<uitoolbar> ();
 

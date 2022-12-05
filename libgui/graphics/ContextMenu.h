@@ -35,7 +35,6 @@ class QMenu;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -47,12 +46,12 @@ namespace octave
     Q_OBJECT
 
   public:
-    ContextMenu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    ContextMenu (octave::interpreter& interp,
                  const graphics_object& go, QMenu *menu);
     ~ContextMenu (void);
 
     static ContextMenu *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
     static void executeAt (octave::interpreter& interp,

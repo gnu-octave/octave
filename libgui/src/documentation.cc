@@ -265,8 +265,7 @@ namespace octave
                  this, &documentation::filter_update_history);
 
         // Bookmarks (own class)
-        m_bookmarks
-          = new documentation_bookmarks (this, m_doc_browser, m_octave_qobj, navi);
+        m_bookmarks = new documentation_bookmarks (this, m_doc_browser, navi);
         navi->addTab (m_bookmarks, tr ("Bookmarks"));
 
         connect (m_action_bookmark, &QAction::triggered,

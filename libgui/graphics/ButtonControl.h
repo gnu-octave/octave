@@ -32,7 +32,6 @@ class QAbstractButton;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -44,7 +43,7 @@ namespace octave
     Q_OBJECT
 
   public:
-    ButtonControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    ButtonControl (octave::interpreter& interp,
                    const graphics_object& go, QAbstractButton *btn);
     ~ButtonControl (void);
 

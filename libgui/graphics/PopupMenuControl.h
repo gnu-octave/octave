@@ -32,7 +32,6 @@ class QComboBox;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -44,13 +43,12 @@ namespace octave
     Q_OBJECT
 
   public:
-    PopupMenuControl (octave::base_qobject& oct_qobj,
-                      octave::interpreter& interp, const graphics_object& go,
+    PopupMenuControl (octave::interpreter& interp, const graphics_object& go,
                       QComboBox *box);
     ~PopupMenuControl (void);
 
     static PopupMenuControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
   protected:

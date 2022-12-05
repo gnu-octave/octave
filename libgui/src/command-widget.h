@@ -30,7 +30,11 @@
 
 #include <Qsci/qsciscintilla.h>
 
-#include "octave-qobject.h"
+// FIXME: We need the following header for the fcn_callback and
+// meth_callback typedefs.  Maybe it would be better to declare those in
+// a separate file because inclding "event-manager.h" pulls in a lot of
+// other unnecessary declarations.
+#include "event-manager.h"
 
 class QsciScintilla;
 

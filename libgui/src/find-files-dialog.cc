@@ -50,12 +50,11 @@
 #include "gui-preferences-global.h"
 #include "gui-preferences-ff.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 
 namespace octave
 {
-  find_files_dialog::find_files_dialog (QWidget *p, base_qobject& oct_qobj)
-    : QDialog (p), m_octave_qobj (oct_qobj)
+  find_files_dialog::find_files_dialog (QWidget *p)
+    : QDialog (p)
   {
     gui_settings settings;
 

@@ -32,7 +32,6 @@ class QCheckBox;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -42,13 +41,12 @@ namespace octave
   class CheckBoxControl : public ButtonControl
   {
   public:
-    CheckBoxControl (octave::base_qobject& oct_qobj,
-                     octave::interpreter& interp, const graphics_object& go,
+    CheckBoxControl (octave::interpreter& interp, const graphics_object& go,
                      QCheckBox *box);
     ~CheckBoxControl (void);
 
     static CheckBoxControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
   protected:

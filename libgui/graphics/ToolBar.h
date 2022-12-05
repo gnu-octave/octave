@@ -33,7 +33,6 @@ class QToolBar;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -47,12 +46,12 @@ namespace octave
     Q_OBJECT
 
   public:
-    ToolBar (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    ToolBar (octave::interpreter& interp,
              const graphics_object& go, QToolBar *bar);
     ~ToolBar (void);
 
     static ToolBar *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
     Container * innerContainer (void) { return nullptr; }

@@ -33,7 +33,6 @@ class QLabel;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -45,7 +44,7 @@ namespace octave
   class Panel : public Object
   {
   public:
-    Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    Panel (octave::interpreter& interp,
            const graphics_object& go, QFrame *frame);
     ~Panel (void);
 
@@ -54,7 +53,7 @@ namespace octave
     bool eventFilter (QObject *watched, QEvent *event);
 
     static Panel *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+    create (octave::interpreter& interp,
             const graphics_object& go);
 
     void do_connections (const QObject *receiver,

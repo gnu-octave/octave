@@ -42,7 +42,6 @@
 #include "gui-preferences-nr.h"
 #include "gui-settings.h"
 #include "news-reader.h"
-#include "octave-qobject.h"
 
 #include "defaults.h"
 

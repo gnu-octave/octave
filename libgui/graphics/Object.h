@@ -37,7 +37,6 @@ class QWidget;
 
 namespace octave
 {
-  class base_qobject;
   class interpreter;
 }
 
@@ -52,8 +51,8 @@ namespace octave
     Q_OBJECT
 
   public:
-    Object (octave::base_qobject& qobj, octave::interpreter& interp,
-            const graphics_object& go, QObject *obj = nullptr);
+    Object (octave::interpreter& interp, const graphics_object& go,
+            QObject *obj = nullptr);
 
     virtual ~Object (void);
 
@@ -136,7 +135,6 @@ namespace octave
 
   protected:
 
-    octave::base_qobject& m_octave_qobj;
     octave::interpreter& m_interpreter;
 
     // Store the graphics object directly so that it will exist when

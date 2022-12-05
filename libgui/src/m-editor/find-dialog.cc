@@ -84,14 +84,12 @@
 #include "gui-preferences-ed.h"
 #include "gui-utils.h"
 #include "resource-manager.h"
-#include "octave-qobject.h"
 
 namespace octave
 {
-  find_dialog::find_dialog (base_qobject& oct_qobj,
-                            octave_dock_widget *ed, QWidget *p)
-    : QDialog (p), m_octave_qobj (oct_qobj), m_editor (ed),
-      m_in_sel (false), m_sel_beg (-1), m_sel_end (-1)
+  find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
+    : QDialog (p), m_editor (ed), m_in_sel (false),
+      m_sel_beg (-1), m_sel_end (-1)
   {
     setWindowTitle (tr ("Editor: Find and Replace"));
 

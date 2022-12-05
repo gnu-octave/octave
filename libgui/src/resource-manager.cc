@@ -33,6 +33,7 @@
 #include <array>
 #include <string>
 
+#include <QApplication>
 #include <QDir>
 #include <QFile>
 #include <QLibraryInfo>
@@ -46,7 +47,6 @@
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 #include "resource-manager.h"
 #include "variable-editor.h"
 #include "workspace-model.h"

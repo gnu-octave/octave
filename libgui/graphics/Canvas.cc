@@ -44,7 +44,6 @@
 
 #include "annotation-dialog.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 
 #include "builtin-defun-decls.h"
@@ -870,7 +869,7 @@ namespace octave
 
                 octave_value_list props = ovl ("textbox", bb);
 
-                annotation_dialog anno_dlg (m_octave_qobj, w, props);
+                annotation_dialog anno_dlg (w, props);
 
                 if (anno_dlg.exec () == QDialog::Accepted)
                   {
@@ -1087,12 +1086,12 @@ namespace octave
   }
 
   Canvas *
-  Canvas::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Canvas::create (octave::interpreter& interp,
                   const graphics_handle& handle, QWidget *parent,
                   const std::string& /* name */)
   {
     // Only OpenGL
-    return new GLCanvas (oct_qobj, interp, handle, parent);
+    return new GLCanvas (interp, handle, parent);
   }
 
 }

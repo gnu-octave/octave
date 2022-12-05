@@ -33,16 +33,13 @@
 #include "QtHandlesUtils.h"
 #include "qt-graphics-toolkit.h"
 
-#include "octave-qobject.h"
-
 #include "interpreter.h"
 
 namespace octave
 {
 
   ContextMenu *
-  ContextMenu::create (octave::base_qobject& oct_qobj,
-                       octave::interpreter& interp, const graphics_object& go)
+  ContextMenu::create (octave::interpreter& interp, const graphics_object& go)
   {
     Object *xparent = parentObject (interp, go);
 
@@ -50,16 +47,15 @@ namespace octave
       {
         QWidget *w = xparent->qWidget<QWidget> ();
 
-        return new ContextMenu (oct_qobj, interp, go, new QMenu (w));
+        return new ContextMenu (interp, go, new QMenu (w));
       }
 
     return nullptr;
   }
 
-  ContextMenu::ContextMenu (octave::base_qobject& oct_qobj,
-                            octave::interpreter& interp,
+  ContextMenu::ContextMenu (octave::interpreter& interp,
                             const graphics_object& go, QMenu *xmenu)
-    : Object (oct_qobj, interp, go, xmenu)
+    : Object (interp, go, xmenu)
   {
     xmenu->setAutoFillBackground (true);
 

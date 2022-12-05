@@ -34,14 +34,11 @@
 #include "TextEdit.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 namespace octave
 {
 
   EditControl *
-  EditControl::create (octave::base_qobject& oct_qobj,
-                       octave::interpreter& interp, const graphics_object& go)
+  EditControl::create (octave::interpreter& interp, const graphics_object& go)
   {
     Object *parent = parentObject (interp, go);
 
@@ -54,10 +51,10 @@ namespace octave
             uicontrol::properties& up = Utils::properties<uicontrol> (go);
 
             if ((up.get_max () - up.get_min ()) > 1)
-              return new EditControl (oct_qobj, interp, go,
+              return new EditControl (interp, go,
                                       new TextEdit (container));
             else
-              return new EditControl (oct_qobj, interp, go,
+              return new EditControl (interp, go,
                                       new QLineEdit (container));
           }
       }
@@ -65,10 +62,9 @@ namespace octave
     return nullptr;
   }
 
-  EditControl::EditControl (octave::base_qobject& oct_qobj,
-                            octave::interpreter& interp,
+  EditControl::EditControl (octave::interpreter& interp,
                             const graphics_object& go, QLineEdit *edit)
-    : BaseControl (oct_qobj, interp, go, edit), m_multiLine (false),
+    : BaseControl (interp, go, edit), m_multiLine (false),
       m_textChanged (false)
   {
     init (edit);
@@ -101,10 +97,9 @@ namespace octave
              this, &EditControl::returnPressed);
   }
 
-  EditControl::EditControl (octave::base_qobject& oct_qobj,
-                            octave::interpreter& interp,
+  EditControl::EditControl (octave::interpreter& interp,
                             const graphics_object& go, TextEdit *edit)
-    : BaseControl (oct_qobj, interp, go, edit), m_multiLine (true),
+    : BaseControl (interp, go, edit), m_multiLine (true),
       m_textChanged (false)
   {
     init (edit);

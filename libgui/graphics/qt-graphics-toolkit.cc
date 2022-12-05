@@ -57,8 +57,6 @@
 #include "ToolBar.h"
 #include "qt-graphics-toolkit.h"
 
-#include "octave-qobject.h"
-
 #include "event-manager.h"
 #include "graphics.h"
 #include "interpreter.h"
@@ -98,10 +96,8 @@ namespace octave
     return "";
   }
 
-  qt_graphics_toolkit::qt_graphics_toolkit (octave::interpreter& interp,
-                                            octave::base_qobject& oct_qobj)
-    : QObject (), base_graphics_toolkit ("qt"), m_interpreter (interp),
-      m_octave_qobj (oct_qobj)
+  qt_graphics_toolkit::qt_graphics_toolkit (octave::interpreter& interp)
+    : QObject (), base_graphics_toolkit ("qt"), m_interpreter (interp)
   {
     // Implemented with a signal/slot connection in order to properly
     // cross from the interpreter thread (where requests to create
@@ -412,47 +408,47 @@ namespace octave
     Object *obj = nullptr;
 
     if (go.isa ("figure"))
-      obj = Figure::create (m_octave_qobj, m_interpreter, go);
+      obj = Figure::create (m_interpreter, go);
     else if (go.isa ("uicontrol"))
       {
         uicontrol::properties& up =
           Utils::properties<uicontrol> (go);
 
         if (up.style_is ("pushbutton"))
-          obj = PushButtonControl::create (m_octave_qobj, m_interpreter, go);
+          obj = PushButtonControl::create (m_interpreter, go);
         else if (up.style_is ("edit"))
-          obj = EditControl::create (m_octave_qobj, m_interpreter, go);
+          obj = EditControl::create (m_interpreter, go);
         else if (up.style_is ("checkbox"))
-          obj = CheckBoxControl::create (m_octave_qobj, m_interpreter, go);
+          obj = CheckBoxControl::create (m_interpreter, go);
         else if (up.style_is ("radiobutton"))
-          obj = RadioButtonControl::create (m_octave_qobj, m_interpreter, go);
+          obj = RadioButtonControl::create (m_interpreter, go);
         else if (up.style_is ("togglebutton"))
-          obj = ToggleButtonControl::create (m_octave_qobj, m_interpreter, go);
+          obj = ToggleButtonControl::create (m_interpreter, go);
         else if (up.style_is ("text"))
-          obj = TextControl::create (m_octave_qobj, m_interpreter, go);
+          obj = TextControl::create (m_interpreter, go);
         else if (up.style_is ("popupmenu"))
-          obj = PopupMenuControl::create (m_octave_qobj, m_interpreter, go);
+          obj = PopupMenuControl::create (m_interpreter, go);
         else if (up.style_is ("slider"))
-          obj = SliderControl::create (m_octave_qobj, m_interpreter, go);
+          obj = SliderControl::create (m_interpreter, go);
         else if (up.style_is ("listbox"))
-          obj = ListBoxControl::create (m_octave_qobj, m_interpreter, go);
+          obj = ListBoxControl::create (m_interpreter, go);
       }
     else if (go.isa ("uibuttongroup"))
-      obj = ButtonGroup::create (m_octave_qobj, m_interpreter, go);
+      obj = ButtonGroup::create (m_interpreter, go);
     else if (go.isa ("uipanel"))
-      obj = Panel::create (m_octave_qobj, m_interpreter, go);
+      obj = Panel::create (m_interpreter, go);
     else if (go.isa ("uimenu"))
-      obj = Menu::create (m_octave_qobj, m_interpreter, go);
+      obj = Menu::create (m_interpreter, go);
     else if (go.isa ("uicontextmenu"))
-      obj = ContextMenu::create (m_octave_qobj, m_interpreter, go);
+      obj = ContextMenu::create (m_interpreter, go);
     else if (go.isa ("uitable"))
-      obj = Table::create (m_octave_qobj, m_interpreter, go);
+      obj = Table::create (m_interpreter, go);
     else if (go.isa ("uitoolbar"))
-      obj = ToolBar::create (m_octave_qobj, m_interpreter, go);
+      obj = ToolBar::create (m_interpreter, go);
     else if (go.isa ("uipushtool"))
-      obj = PushTool::create (m_octave_qobj, m_interpreter, go);
+      obj = PushTool::create (m_interpreter, go);
     else if (go.isa ("uitoggletool"))
-      obj = ToggleTool::create (m_octave_qobj, m_interpreter, go);
+      obj = ToggleTool::create (m_interpreter, go);
     else
       qWarning ("qt_graphics_toolkit::create_object: unsupported type '%s'",
                 go.type ().c_str ());

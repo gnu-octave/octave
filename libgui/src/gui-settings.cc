@@ -135,27 +135,32 @@ namespace octave
 
   void gui_settings::config_icon_theme (void)
   {
-    int theme = global_icon_theme_index.def.toInt ();
+    int theme_index;
 
-    // check for new and old setting and use old if required
-    if (! contains (global_icon_theme_index.key))
+    if (contains (global_icon_theme_index.key))
+      theme_index = value (global_icon_theme_index).toInt ();
+    else
       {
-        // new pref does not exist
+        // New pref does not exist.  Use old if required.  Add new and
+        // remove deprecated key.
+
         if (value (global_icon_theme).toBool ())
-          theme = ICON_THEME_SYSTEM;
+          theme_index = ICON_THEME_SYSTEM;
         else
-          theme = ICON_THEME_OCTAVE;
-        setValue (global_icon_theme_index.key, theme);  // add new
-        remove (global_icon_theme.key); // remove deprecated key
+          theme_index = ICON_THEME_OCTAVE;
+
+        setValue (global_icon_theme_index.key, theme_index);
+        remove (global_icon_theme.key);
       }
 
-   QIcon::setThemeName (global_all_icon_themes.at (theme));
+    QIcon::setThemeName (global_all_icon_themes.at (theme_index));
 
-   QStringList icon_fallbacks;
+    QStringList icon_fallbacks;
 
-   // set the required fallback search paths
-   switch (theme)
-    {
+    // Set the required fallback search paths.
+
+    switch (theme_index)
+      {
       case ICON_THEME_SYSTEM:
         icon_fallbacks << global_icon_paths.at (ICON_THEME_OCTAVE);
         icon_fallbacks << global_icon_paths.at (ICON_THEME_TANGO);
@@ -166,7 +171,7 @@ namespace octave
       case ICON_THEME_OCTAVE:
         icon_fallbacks << global_icon_paths.at (ICON_THEME_TANGO);
         break;
-    }
+      }
 
     icon_fallbacks << global_icon_paths.at (ICON_THEME_CURSORS);
 

@@ -32,8 +32,7 @@
 #include "gui-utils.h"
 #include "led-indicator.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   led_indicator::led_indicator (led_state initial_state, QWidget *p)
     : QLabel (p)
@@ -77,4 +76,4 @@ namespace octave
     return style;
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

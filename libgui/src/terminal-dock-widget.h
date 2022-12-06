@@ -32,8 +32,8 @@
 
 class QTerminal;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class command_widget;
   class base_qobject;
 
@@ -89,6 +89,7 @@ namespace octave
     // FIXME!!!  Maybe my_term should just be derived from QTerminal?
     QWidget *m_terminal;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -48,8 +48,8 @@
 #include "gui-preferences-sc.h"
 #include "error.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // enter_shortcut:
   // class derived from QLineEdit for directly entering key sequences which
 
@@ -107,7 +107,6 @@ namespace octave
     else
       m_shift_modifier = false; // the shortcut has to be written as text
   }
-
 
   shortcut_manager::shortcut_manager (base_qobject& oct_qobj)
     : m_octave_qobj (oct_qobj)
@@ -299,7 +298,6 @@ namespace octave
     // help
     init (tr ("Help on Keyword"), sc_edit_help_help_keyword);
     init (tr ("Document on Keyword"), sc_edit_help_doc_keyword);
-
 
     // Documentation browser
     init (tr ("Go to Homepage"), sc_doc_go_home);
@@ -796,4 +794,5 @@ namespace octave
 
     return false; // abort the import
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

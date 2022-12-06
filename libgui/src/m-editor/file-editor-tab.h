@@ -43,8 +43,8 @@
 
 class octave_value_list;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class file_editor;
 
@@ -346,6 +346,7 @@ namespace octave
 
     breakpoint_info m_breakpoint_info;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

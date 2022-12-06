@@ -37,8 +37,8 @@ class QStatusBar;
 class QTableView;
 class QTimer;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class find_files_dialog : public QDialog
@@ -94,6 +94,7 @@ namespace octave
     QDirIterator *m_dir_iterator;
     QStatusBar *m_status_bar;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

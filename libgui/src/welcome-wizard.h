@@ -30,8 +30,8 @@
 #include <QDialog>
 #include <QLabel>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class welcome_wizard : public QDialog
@@ -70,7 +70,6 @@ namespace octave
     void accept (void);
   };
 
-
   class initial_page : public QWidget
   {
     Q_OBJECT
@@ -95,7 +94,6 @@ namespace octave
     QPushButton *m_next;
     QPushButton *m_cancel;
   };
-
 
   class setup_community_news : public QWidget
   {
@@ -125,7 +123,6 @@ namespace octave
     QPushButton *m_cancel;
   };
 
-
   class final_page : public QWidget
   {
     Q_OBJECT
@@ -152,6 +149,7 @@ namespace octave
     QPushButton *m_finish;
     QPushButton *m_cancel;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

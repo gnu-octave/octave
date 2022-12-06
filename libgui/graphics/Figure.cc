@@ -65,8 +65,7 @@
 #include "builtin-defun-decls.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   DECLARE_GENERICEVENTNOTIFY_SENDER(MenuBar, QMenuBar);
 
@@ -144,7 +143,6 @@ namespace octave
     win->setMenuBar (m_menuBar);
     m_menuBar->addReceiver (this);
     m_menuBar->setStyleSheet (m_menuBar->styleSheet () + global_menubar_style);
-
 
     // Status bar
     m_statusBar = win->statusBar ();
@@ -905,4 +903,4 @@ namespace octave
       w->setMouseTracking (true);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

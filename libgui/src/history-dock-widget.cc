@@ -45,8 +45,8 @@
 
 #include "error.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   history_dock_widget::history_dock_widget (QWidget *p, base_qobject& oct_qobj)
     : octave_dock_widget ("HistoryDockWidget", p, oct_qobj)
   {
@@ -372,4 +372,4 @@ namespace octave
     m_history_list_view->setFont (font);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

@@ -44,8 +44,8 @@
 #include "gui-preferences-global.h"
 #include "octave-qobject.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static QIcon makeEmptyIcon (void)
   {
     QPixmap pix (16, 16);
@@ -96,7 +96,6 @@ namespace octave
     bar->setMovable (false);
     bar->setVisible (tp.is_visible ());
     bar->setStyleSheet (bar->styleSheet () + global_toolbar_style);
-
 
     m_empty = addEmptyAction (bar);
 
@@ -187,4 +186,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

@@ -33,8 +33,8 @@
 
 #include "octave-txt-lexer.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   QString octave_txt_lexer::description (int style) const
   {
     if (style == 0)
@@ -52,6 +52,7 @@ namespace octave
   {
     return "text";
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -28,8 +28,8 @@
 
 #include "ToolBarButton.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class interpreter;
 
@@ -54,6 +54,6 @@ namespace octave
     void triggered (bool checked);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

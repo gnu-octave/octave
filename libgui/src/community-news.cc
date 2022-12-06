@@ -38,8 +38,8 @@
 #include "news-reader.h"
 #include "octave-qobject.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   community_news::community_news (base_qobject& oct_qobj, int serial)
     : QWidget (nullptr), m_browser (nullptr)
   {
@@ -136,4 +136,4 @@ namespace octave
     activateWindow ();
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

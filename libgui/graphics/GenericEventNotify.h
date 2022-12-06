@@ -32,8 +32,7 @@ class QEvent;
 class QObject;
 class QWidget;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class GenericEventNotifyReceiver;
 
@@ -86,6 +85,8 @@ namespace octave
       r->eventNotifyAfter (obj, evt);
   }
 
+OCTAVE_END_NAMESPACE(octave)
+
 #define DECLARE_GENERICEVENTNOTIFY_SENDER(T,B) \
 class T : public B, public GenericEventNotifySender \
 { \
@@ -102,7 +103,5 @@ public: \
       return result; \
     } \
 }
-
-};
 
 #endif

@@ -33,8 +33,7 @@
 
 #include "octave-qobject.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   ToggleTool *
   ToggleTool::create (octave::base_qobject& oct_qobj,
@@ -96,4 +95,4 @@ namespace octave
     emit gh_callback_event (m_handle, "clickedcallback");
   }
 
-};
+OCTAVE_END_NAMESPACE(octave);

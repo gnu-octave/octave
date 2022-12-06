@@ -31,8 +31,7 @@
 
 #include "TextEdit.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   void
   TextEdit::focusOutEvent (QFocusEvent *xevent)
@@ -53,4 +52,4 @@ namespace octave
       emit returnPressed ();
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

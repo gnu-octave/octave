@@ -32,8 +32,8 @@
 
 #include "tab-bar.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   //
   // Reimplemented QTabbar
   //
@@ -283,4 +283,4 @@ namespace octave
       setCurrentIndex (i);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

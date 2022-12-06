@@ -29,8 +29,8 @@
 #include <QString>
 #include <QWidget>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class external_editor_interface : public QWidget
@@ -67,6 +67,7 @@ namespace octave
 
     base_qobject& m_octave_qobj;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

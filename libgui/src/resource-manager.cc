@@ -61,8 +61,8 @@
 #include "error.h"
 #include "help.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   resource_manager::resource_manager (void)
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
       m_default_settings (nullptr), m_temporary_files (), m_icon_fallbacks ()
@@ -753,7 +753,6 @@ namespace octave
     combo->setMaxVisibleItems (12);
   }
 
-
   QPointer<QTemporaryFile>
   resource_manager::create_tmp_file (const QString& extension,
                                      const QString& contents)
@@ -791,4 +790,5 @@ namespace octave
         m_temporary_files.removeAll (tmp_file);
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

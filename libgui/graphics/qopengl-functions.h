@@ -32,8 +32,8 @@
 #  include <QOpenGLFunctions_1_1>
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // If we don't have QOPENGLFUNCTIONS_1_1, then we will default to
   // calling OpenGL functions directly through the base
   // opengl_functions class.
@@ -452,6 +452,7 @@ namespace octave
 
 #endif
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

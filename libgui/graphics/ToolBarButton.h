@@ -31,8 +31,8 @@
 class QAction;
 class QIcon;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class interpreter;
 
@@ -57,6 +57,6 @@ namespace octave
     QIcon get_icon (const std::string& name);
   };
 
-};
+OCTAVE_END_NAMESPACE(octave);
 
 #endif

@@ -33,13 +33,12 @@
 #include "event-manager.h"
 #include "graphics.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 }
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   DECLARE_GENERICEVENTNOTIFY_SENDER(ContainerBase, QWidget);
 
@@ -86,6 +85,6 @@ namespace octave
     Canvas *m_canvas;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -51,8 +51,8 @@
 #include "gui-preferences-ff.h"
 #include "octave-qobject.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   find_files_dialog::find_files_dialog (QWidget *p, base_qobject& oct_qobj)
     : QDialog (p), m_octave_qobj (oct_qobj)
   {
@@ -411,4 +411,5 @@ namespace octave
 
     return match;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

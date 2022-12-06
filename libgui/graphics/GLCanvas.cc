@@ -35,8 +35,8 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
 #if defined (HAVE_QOPENGLWIDGET)
 #  define OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS
 #else
@@ -320,4 +320,5 @@ namespace octave
   {
     doneCurrent ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

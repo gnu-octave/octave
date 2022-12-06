@@ -37,8 +37,8 @@
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class workspace_view : public octave_dock_widget
@@ -128,6 +128,7 @@ namespace octave
     QWidget *m_filter_widget;
     bool m_filter_shown;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

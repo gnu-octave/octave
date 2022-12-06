@@ -43,8 +43,8 @@
 #include "octave-qobject.h"
 #include "terminal-dock-widget.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   terminal_dock_widget::terminal_dock_widget (QWidget *p,
                                               base_qobject& oct_qobj)
     : octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
@@ -167,4 +167,5 @@ namespace octave
 #endif
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

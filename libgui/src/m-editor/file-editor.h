@@ -44,8 +44,8 @@
 #include "find-dialog.h"
 #include "tab-bar.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class file_editor;
 
@@ -497,6 +497,7 @@ namespace octave
     // List of data on temporarily closed files for later reloading.
     QList<removed_file_data> m_tmp_closed_files;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

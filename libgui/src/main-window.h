@@ -61,8 +61,8 @@
 
 class octave_value;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class settings_dialog;
@@ -440,6 +440,7 @@ namespace octave
 
     QString m_file_encoding;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

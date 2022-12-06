@@ -37,8 +37,8 @@
 
 #include "gui-settings.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class resource_manager : public QObject
   {
     Q_OBJECT
@@ -127,6 +127,7 @@ namespace octave
 
     QStringList m_icon_fallbacks;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

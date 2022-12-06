@@ -34,9 +34,8 @@
 #include "documentation.h"
 #include "octave-qobject.h"
 
+OCTAVE_BEGIN_NAMESPACE(octave)
 
-namespace octave
-{
   class base_qobject;
   class documentation;
 
@@ -120,6 +119,6 @@ namespace octave
     QFile m_xbel_file;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

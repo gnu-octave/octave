@@ -42,8 +42,8 @@
 #include "octave-qobject.h"
 #include "welcome-wizard.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static QLabel *
   make_octave_logo (QWidget *p = nullptr, int height = 100)
   {
@@ -386,4 +386,5 @@ namespace octave
     connect (m_finish, &QPushButton::clicked, wizard, &welcome_wizard::accept);
     connect (m_cancel, &QPushButton::clicked, wizard, &welcome_wizard::reject);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

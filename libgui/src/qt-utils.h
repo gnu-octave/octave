@@ -31,8 +31,8 @@
 #include <QFontMetrics>
 #include <QList>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   template <typename T>
   inline QList<T>
   std_list_to_qt_list (const std::list<T>& lst)
@@ -64,6 +64,7 @@ namespace octave
     return fm.width (text, len);
 #endif
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -42,8 +42,8 @@
 #include "interpreter.h"
 #include "load-path.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   set_path_model::set_path_model (QObject *p)
     : QAbstractListModel (p)
   {
@@ -322,4 +322,5 @@ namespace octave
     emit dataChanged (QAbstractListModel::index (0, 0),
                       QAbstractListModel::index (numel-1, 0));
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

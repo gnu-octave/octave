@@ -32,8 +32,7 @@
 
 #include "gui-settings.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   QColor gui_settings::get_color_value (const QVariant& def, int mode) const
   {

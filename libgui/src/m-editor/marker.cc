@@ -31,8 +31,8 @@
 
 #include "marker.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   marker::marker (QsciScintilla *area, int original_linenr,
                   editor_markers type, int editor_linenr,
                   const QString& condition)
@@ -164,5 +164,6 @@ namespace octave
           }
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 #endif

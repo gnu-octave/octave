@@ -30,8 +30,8 @@
 
 class QRadioButton;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class interpreter;
 
@@ -51,6 +51,6 @@ namespace octave
     void update (int pId);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

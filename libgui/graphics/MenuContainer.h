@@ -28,8 +28,7 @@
 
 class QWidget;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class MenuContainer
   {
@@ -37,6 +36,6 @@ namespace octave
     virtual QWidget * menu (void) = 0;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

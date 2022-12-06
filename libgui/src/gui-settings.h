@@ -26,12 +26,14 @@
 #if ! defined (octave_gui_settings_h)
 #define octave_gui_settings_h 1
 
+#include "octave-config.h"
+
 #include <QSettings>
 
 #include "gui-preferences.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class gui_settings : public QSettings
   {
     Q_OBJECT
@@ -121,7 +123,7 @@ namespace octave
 
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 // Some constants used in the preferences of several widgets and therefore
 // defined globally here

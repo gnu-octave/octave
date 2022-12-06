@@ -63,8 +63,8 @@
 #include "variable-editor-model.h"
 #include "variable-editor.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Code reuse functions
 
   static QSignalMapper *
@@ -476,7 +476,6 @@ namespace octave
         });
   }
 
-
   // Perform saving the variable after desired format is determined
   void
   variable_editor_stack::do_save (const QString& format, const QString& save_opts)
@@ -524,7 +523,6 @@ namespace octave
           Fsave (interp, octave_value_list (str_list));
         });
   }
-
 
   // Custom editable variable table view
 
@@ -1033,7 +1031,6 @@ namespace octave
           }
       }
   }
-
 
   // Gadgets for focus restoration
 
@@ -1785,4 +1782,4 @@ namespace octave
     m_tool_bar->setEnabled (false);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

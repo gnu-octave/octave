@@ -35,8 +35,8 @@
 
 class QsciScintilla;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class command_widget;
 
@@ -121,6 +121,7 @@ namespace octave
     QString m_prompt;
     console *m_console;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

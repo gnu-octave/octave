@@ -44,8 +44,8 @@
 
 #include "octave-dock-widget.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   //!  Dock widget to display files in the current directory.
@@ -234,6 +234,7 @@ namespace octave
     QList <QVariant> m_columns_shown_defs;
     QSignalMapper *m_sig_mapper;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

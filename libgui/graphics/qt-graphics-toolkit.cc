@@ -73,8 +73,7 @@
 # define OCTAVE_PTR_SCALAR uint64_scalar_value
 //#endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static std::string
   toolkitObjectProperty (const graphics_object& go)
@@ -510,4 +509,5 @@ namespace octave
 
     gh_mgr.post_set (h, nm, value, notify_toolkit, redraw_figure);
   }
-};
+
+OCTAVE_END_NAMESPACE(octave);

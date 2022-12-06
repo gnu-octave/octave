@@ -31,8 +31,8 @@
 
 class QTextBrowser;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class release_notes : public QWidget
@@ -54,6 +54,7 @@ namespace octave
     QTextBrowser *m_browser;
     QString m_release_notes_icon;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

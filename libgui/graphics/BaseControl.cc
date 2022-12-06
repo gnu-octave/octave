@@ -39,8 +39,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static void
   updatePalette (const uicontrol::properties& props, QWidget *w)
@@ -340,4 +339,4 @@ namespace octave
     return Object::eventFilter (watched, xevent);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

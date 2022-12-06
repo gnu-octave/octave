@@ -31,8 +31,8 @@
 #include "event-manager.h"
 #include "graphics.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
   class base_qobject;
 
@@ -122,6 +122,7 @@ namespace octave
 
     octave::base_qobject& m_octave_qobj;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

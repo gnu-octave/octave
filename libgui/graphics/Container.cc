@@ -38,8 +38,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   Container::Container (QWidget *xparent, octave::base_qobject& oct_qobj,
                         octave::interpreter& interp)
@@ -185,4 +184,5 @@ namespace octave
           }
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

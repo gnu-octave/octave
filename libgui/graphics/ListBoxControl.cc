@@ -37,8 +37,7 @@
 
 #include "octave-qobject.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static void
   updateSelection (QListWidget *list, const Matrix& value)
@@ -287,4 +286,5 @@ namespace octave
         return BaseControl::eventFilter (watched, e) || override_return;
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

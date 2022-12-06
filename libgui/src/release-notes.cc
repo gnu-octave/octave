@@ -45,8 +45,8 @@
 
 #include "defaults.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   release_notes::release_notes (base_qobject& oct_qobj)
     : QWidget (nullptr), m_browser (nullptr)
   {
@@ -88,7 +88,6 @@ namespace octave
       news = (tr ("The release notes file '%1' cannot be read.")
               . arg (QString::fromStdString (news_file)));
 
-
     m_browser = new QTextBrowser (this);
     m_browser->setText (news);
 
@@ -120,4 +119,4 @@ namespace octave
     activateWindow ();
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

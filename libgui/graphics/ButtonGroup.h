@@ -34,8 +34,8 @@ class QFrame;
 class QLabel;
 class QRadioButton;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class interpreter;
 
@@ -82,6 +82,6 @@ namespace octave
     bool m_blockUpdates;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

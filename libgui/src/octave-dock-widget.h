@@ -34,8 +34,8 @@
 #include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class main_window;
 
@@ -183,6 +183,7 @@ namespace octave
     QRect m_recent_dock_geom;
     bool m_waiting_for_mouse_button_release;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

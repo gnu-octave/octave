@@ -32,8 +32,8 @@ class QListWidget;
 class QListWidgetItem;
 class QModelIndex;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class interpreter;
 
@@ -66,6 +66,6 @@ namespace octave
     bool m_selectionChanged;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

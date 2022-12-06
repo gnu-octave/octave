@@ -31,8 +31,8 @@
 #include <QList>
 #include <QStringList>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class find_files_model : public QAbstractListModel
   {
     Q_OBJECT
@@ -68,6 +68,7 @@ namespace octave
     QStringList m_columnNames;
     int m_sortorder;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -32,8 +32,7 @@
 
 class QString;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class Object;
 
@@ -66,6 +65,6 @@ namespace octave
     Object *m_object;
   };
 
-};
+OCTAVE_END_NAMESPACE(octave);
 
 #endif

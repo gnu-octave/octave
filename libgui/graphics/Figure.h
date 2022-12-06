@@ -37,8 +37,8 @@ class QMainWindow;
 class QToolBar;
 class QScreen;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class interpreter;
 
@@ -142,6 +142,6 @@ namespace octave
     bool m_resizable;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

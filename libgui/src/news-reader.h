@@ -29,8 +29,8 @@
 #include <QObject>
 #include <QString>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class news_reader : public QObject
@@ -65,6 +65,7 @@ namespace octave
     int m_serial;
     bool m_connect_to_web;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

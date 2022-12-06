@@ -30,8 +30,7 @@
 
 class QMutex;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class Logger
   {
@@ -53,6 +52,6 @@ namespace octave
     void debugV (const char *fmt, va_list arg);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -47,8 +47,8 @@
 #include "octave-dock-widget.h"
 #include "octave-qobject.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   label_dock_widget::label_dock_widget (QWidget *p, base_qobject& oct_qobj)
     : QDockWidget (p), m_octave_qobj (oct_qobj),
       m_default_float_button (nullptr), m_default_close_button (nullptr)
@@ -135,7 +135,6 @@ namespace octave
     setTitleBarWidget (m_title_widget);
     setWindowTitle (title);
   }
-
 
   static QString
   qdockwidget_css (const QString& close_icon, const QString& close_tooltip,
@@ -517,7 +516,6 @@ namespace octave
     else
       m_icon_color_active = "";
 
-
     int x, y, w, h;
     QGuiApplication::primaryScreen ()->availableGeometry ().getRect (&x, &y, &w, &h);
     QRect default_floating_size = QRect (x+16, y+32, w/3, h/2);
@@ -856,4 +854,5 @@ namespace octave
     rmgr.update_settings_key ("Dockwidgets/title_fg_color_active",
                               dw_title_fg_color_active.key);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

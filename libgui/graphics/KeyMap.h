@@ -28,14 +28,13 @@
 
 #include <string>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   namespace KeyMap
   {
     std::string qKeyToKeyString (int key);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

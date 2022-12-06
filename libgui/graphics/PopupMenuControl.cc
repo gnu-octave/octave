@@ -36,8 +36,7 @@
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   PopupMenuControl *
   PopupMenuControl::create (octave::base_qobject& oct_qobj,
@@ -151,4 +150,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

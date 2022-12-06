@@ -95,8 +95,8 @@
 #include "utils.h"
 #include "version.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   //! A file_editor_tab object consists of a text area and three left margins.
   //! The first holds breakpoints, bookmarks, and the debug program counter.
   //! The second holds line numbers.  The third holds "fold" marks, to hide
@@ -597,7 +597,6 @@ namespace octave
       }
   }
 
-
   void file_editor_tab::update_lexer (void)
   {
     // Create a new lexer
@@ -702,7 +701,6 @@ namespace octave
         delete lexer;
       }
   }
-
 
   // Update settings, which are lexer related and have to be updated
   // when
@@ -841,7 +839,6 @@ namespace octave
                          for (octave_idx_type i = 0; i < bfl.numel (); i++)
                            api_entries.append (QString::fromStdString (bfl[i]));
                        }
-
 
                      if (octave_functions)
                        {
@@ -1139,7 +1136,6 @@ namespace octave
 
     m_edit_area->setCursorPosition (prevline, 0);
   }
-
 
   QString file_editor_tab::get_all_bookmarks ()
   {
@@ -2861,7 +2857,6 @@ namespace octave
 
   }
 
-
   void file_editor_tab::auto_margin_width (void)
   {
     m_edit_area->setMarginWidth (2, "1" + QString::number (m_edit_area->lines ()));
@@ -3298,6 +3293,7 @@ namespace octave
 
     return QString ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -36,8 +36,7 @@
 
 #include "octave-qobject.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   EditControl *
   EditControl::create (octave::base_qobject& oct_qobj,
@@ -311,4 +310,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

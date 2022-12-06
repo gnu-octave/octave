@@ -32,8 +32,8 @@
 
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 }
 

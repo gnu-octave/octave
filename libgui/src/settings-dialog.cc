@@ -70,8 +70,7 @@
 #include "variable-editor.h"
 #include "workspace-model.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   settings_dialog::settings_dialog (QWidget *p, base_qobject& oct_qobj,
                                     const QString& desired_tab)
@@ -318,7 +317,6 @@ namespace octave
         m_rb_uncomment_strings[i]->setChecked ( 1 << i & selected_uncomment_string);
         layout_uncomment_strings->addWidget (m_rb_uncomment_strings[i]);
       }
-
 
     combo_eol_mode->setCurrentIndex (settings->value (ed_default_eol_mode).toInt ());
     editor_auto_ind_checkbox->setChecked (settings->value (ed_auto_indent).toBool ());
@@ -1616,4 +1614,5 @@ namespace octave
 
     settings->sync ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -30,8 +30,8 @@
 
 #include "gui-settings.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class dw_main_window : public QMainWindow
@@ -90,6 +90,6 @@ namespace octave
     QList<QAction *> m_actions_list;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

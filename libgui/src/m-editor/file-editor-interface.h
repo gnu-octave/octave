@@ -33,8 +33,8 @@
 #include "gui-settings.h"
 #include "octave-dock-widget.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class file_editor_interface : public octave_dock_widget
@@ -101,6 +101,7 @@ namespace octave
                                     int index = -1,
                                     const QString& bookmarks = QString ()) = 0;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

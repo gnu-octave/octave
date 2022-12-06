@@ -39,8 +39,8 @@ class QListView;
 class QVBoxLayout;
 class QHBoxLayout;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class set_path_dialog : public QDialog
@@ -114,6 +114,7 @@ namespace octave
     QPushButton *m_move_down_button;
     QPushButton *m_remove_button;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

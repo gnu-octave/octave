@@ -31,8 +31,7 @@
 #include <QColor>
 #include <QRect>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   /*!
       Deterimine an alternative color to @p col1 with less contrast
@@ -56,7 +55,6 @@ namespace octave
   interpolate_color (const QColor& col1, const QColor& col2,
                      double fs, double fv);
 
-
   /*!
       Get the screen geometry of the actual screen.
 
@@ -66,7 +64,6 @@ namespace octave
 
   extern OCTGUI_API void
   get_screen_geometry (int& width, int& height);
-
 
   /*!
       Adjust geometry to be completely on a screen
@@ -78,6 +75,7 @@ namespace octave
   */
   extern OCTGUI_API void
   adjust_to_screen (QRect& actual_geometry, const QRect& default_geometry);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

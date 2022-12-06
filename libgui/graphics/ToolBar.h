@@ -31,8 +31,8 @@
 class QAction;
 class QToolBar;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class interpreter;
 
@@ -67,6 +67,6 @@ namespace octave
     Figure *m_figure;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

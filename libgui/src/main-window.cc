@@ -90,8 +90,8 @@
 #include "syminfo.h"
 #include "version.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   main_window::main_window (base_qobject& oct_qobj)
     : QMainWindow (), m_octave_qobj (oct_qobj),
       m_status_bar (nullptr),
@@ -2912,4 +2912,5 @@ namespace octave
         focus_command_window ();
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

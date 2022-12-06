@@ -35,8 +35,8 @@
 #include "gui-preferences-global.h"
 #include "octave-qobject.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   external_editor_interface::external_editor_interface (QWidget *p,
                                                         base_qobject& oct_qobj)
     : QWidget (p), m_octave_qobj (oct_qobj)
@@ -78,7 +78,6 @@ namespace octave
 
     return started_ok;
   }
-
 
   // Slots for the several signals for invoking the editor
 
@@ -128,4 +127,5 @@ namespace octave
 
     return editor;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

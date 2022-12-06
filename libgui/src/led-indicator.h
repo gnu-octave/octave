@@ -28,8 +28,7 @@
 
 #include <QLabel>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class led_indicator: public QLabel
   {
@@ -56,6 +55,7 @@ namespace octave
     QString style_sheet (const QColor& col);
 
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -39,8 +39,8 @@
 
 #include "gui-settings.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
   class documentation;
   class documentation_bookmarks;
@@ -92,7 +92,6 @@ namespace octave
       max_zoom_level = 10
     };
   };
-
 
   //! The documentation main class derived from QSplitter
 
@@ -204,6 +203,6 @@ namespace octave
     QAction *m_action_zoom_original;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

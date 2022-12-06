@@ -34,27 +34,27 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  FigureWindow::FigureWindow (QWidget *xparent)
-    : FigureWindowBase (xparent)
-  {
-    // set icon from application resources
-    setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)));
-  }
+FigureWindow::FigureWindow (QWidget *xparent)
+: FigureWindowBase (xparent)
+{
+  // set icon from application resources
+  setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)));
+}
 
-  FigureWindow::~FigureWindow (void)
-  { }
+FigureWindow::~FigureWindow (void)
+{ }
 
-  QMenu *
-  FigureWindow::createPopupMenu (void)
-  {
-    // For the time being, disable menubar/toolbar popup menu
-    return nullptr;
-  }
+QMenu *
+FigureWindow::createPopupMenu (void)
+{
+  // For the time being, disable menubar/toolbar popup menu
+  return nullptr;
+}
 
-  void FigureWindow::showEvent (QShowEvent *ev)
-  {
-    QMainWindow::showEvent (ev);
-    emit figureWindowShown();
-  }
+void FigureWindow::showEvent (QShowEvent *ev)
+{
+  QMainWindow::showEvent (ev);
+  emit figureWindowShown();
+}
 
 OCTAVE_END_NAMESPACE(octave)

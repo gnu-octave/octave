@@ -32,123 +32,123 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
+class base_qobject;
 
-  class welcome_wizard : public QDialog
+class welcome_wizard : public QDialog
+{
+  Q_OBJECT
+
+public:
+
+  typedef QWidget *(*page_creator_fptr) (base_qobject&, welcome_wizard *);
+
+  welcome_wizard (base_qobject& oct_qobj, QWidget *parent = nullptr);
+
+  ~welcome_wizard (void) = default;
+
+  void adjust_size (void);
+
+private:
+
+  base_qobject& m_octave_qobj;
+
+  QList<page_creator_fptr> m_page_ctor_list;
+  QList<page_creator_fptr>::iterator m_page_list_iterator;
+  QWidget *m_current_page;
+  bool m_allow_web_connect_state;
+  int m_max_height;
+  int m_max_width;
+
+public slots:
+
+  void handle_web_connect_option (int state);
+
+  void show_page (void);
+  void previous_page (void);
+  void next_page (void);
+
+  void accept (void);
+};
+
+class initial_page : public QWidget
+{
+  Q_OBJECT
+
+public:
+
+  initial_page (base_qobject& oct_qobj, welcome_wizard *wizard);
+
+  ~initial_page (void) = default;
+
+  static QWidget *
+  create (base_qobject& oct_qobj, welcome_wizard *wizard)
   {
-    Q_OBJECT
+    return new initial_page (oct_qobj, wizard);
+  }
 
-  public:
+private:
 
-    typedef QWidget *(*page_creator_fptr) (base_qobject&, welcome_wizard *);
+  QLabel *m_title;
+  QLabel *m_message;
+  QLabel *m_logo;
+  QPushButton *m_next;
+  QPushButton *m_cancel;
+};
 
-    welcome_wizard (base_qobject& oct_qobj, QWidget *parent = nullptr);
+class setup_community_news : public QWidget
+{
+  Q_OBJECT
 
-    ~welcome_wizard (void) = default;
+public:
 
-    void adjust_size (void);
+  setup_community_news (base_qobject& oct_qobj, welcome_wizard *wizard);
 
-  private:
+  ~setup_community_news (void) = default;
 
-    base_qobject& m_octave_qobj;
-
-    QList<page_creator_fptr> m_page_ctor_list;
-    QList<page_creator_fptr>::iterator m_page_list_iterator;
-    QWidget *m_current_page;
-    bool m_allow_web_connect_state;
-    int m_max_height;
-    int m_max_width;
-
-  public slots:
-
-    void handle_web_connect_option (int state);
-
-    void show_page (void);
-    void previous_page (void);
-    void next_page (void);
-
-    void accept (void);
-  };
-
-  class initial_page : public QWidget
+  static QWidget *
+  create (base_qobject& oct_qobj, welcome_wizard *wizard)
   {
-    Q_OBJECT
+    return new setup_community_news (oct_qobj, wizard);
+  }
 
-  public:
+private:
 
-    initial_page (base_qobject& oct_qobj, welcome_wizard *wizard);
+  QLabel *m_title;
+  QLabel *m_message;
+  QCheckBox *m_checkbox;
+  QLabel *m_checkbox_message;
+  QLabel *m_logo;
+  QPushButton *m_previous;
+  QPushButton *m_next;
+  QPushButton *m_cancel;
+};
 
-    ~initial_page (void) = default;
+class final_page : public QWidget
+{
+  Q_OBJECT
 
-    static QWidget *
-    create (base_qobject& oct_qobj, welcome_wizard *wizard)
-    {
-      return new initial_page (oct_qobj, wizard);
-    }
+public:
 
-  private:
+  final_page (base_qobject& oct_qobj, welcome_wizard *wizard);
 
-    QLabel *m_title;
-    QLabel *m_message;
-    QLabel *m_logo;
-    QPushButton *m_next;
-    QPushButton *m_cancel;
-  };
+  ~final_page (void) = default;
 
-  class setup_community_news : public QWidget
+  static QWidget *
+  create (base_qobject& oct_qobj, welcome_wizard *wizard)
   {
-    Q_OBJECT
+    return new final_page (oct_qobj, wizard);
+  }
 
-  public:
+private:
 
-    setup_community_news (base_qobject& oct_qobj, welcome_wizard *wizard);
-
-    ~setup_community_news (void) = default;
-
-    static QWidget *
-    create (base_qobject& oct_qobj, welcome_wizard *wizard)
-    {
-      return new setup_community_news (oct_qobj, wizard);
-    }
-
-  private:
-
-    QLabel *m_title;
-    QLabel *m_message;
-    QCheckBox *m_checkbox;
-    QLabel *m_checkbox_message;
-    QLabel *m_logo;
-    QPushButton *m_previous;
-    QPushButton *m_next;
-    QPushButton *m_cancel;
-  };
-
-  class final_page : public QWidget
-  {
-    Q_OBJECT
-
-  public:
-
-    final_page (base_qobject& oct_qobj, welcome_wizard *wizard);
-
-    ~final_page (void) = default;
-
-    static QWidget *
-    create (base_qobject& oct_qobj, welcome_wizard *wizard)
-    {
-      return new final_page (oct_qobj, wizard);
-    }
-
-  private:
-
-    QLabel *m_title;
-    QLabel *m_message;
-    QLabel *m_logo;
-    QLabel *m_links;
-    QPushButton *m_previous;
-    QPushButton *m_finish;
-    QPushButton *m_cancel;
-  };
+  QLabel *m_title;
+  QLabel *m_message;
+  QLabel *m_logo;
+  QLabel *m_links;
+  QPushButton *m_previous;
+  QPushButton *m_finish;
+  QPushButton *m_cancel;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

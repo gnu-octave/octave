@@ -33,47 +33,47 @@ class QWidget;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class TextEdit;
+class TextEdit;
 
-  class EditControl : public BaseControl
-  {
-    Q_OBJECT
+class EditControl : public BaseControl
+{
+  Q_OBJECT
 
-  public:
-    EditControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-                 const graphics_object& go, QLineEdit *edit);
+public:
+  EditControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+               const graphics_object& go, QLineEdit *edit);
 
-    EditControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-                 const graphics_object& go, TextEdit *edit);
+  EditControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+               const graphics_object& go, TextEdit *edit);
 
-    ~EditControl (void);
+  ~EditControl (void);
 
-    static EditControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static EditControl *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private:
-    void init (QLineEdit *edit, bool callBase = false);
-    void init (TextEdit *edit, bool callBase = false);
-    void initCommon (QWidget *widget);
-    bool updateSingleLine (int pId);
-    bool updateMultiLine (int pId);
+private:
+  void init (QLineEdit *edit, bool callBase = false);
+  void init (TextEdit *edit, bool callBase = false);
+  void initCommon (QWidget *widget);
+  bool updateSingleLine (int pId);
+  bool updateMultiLine (int pId);
 
-  private slots:
-    void textChanged (void);
-    void editingFinished (void);
-    void returnPressed (void);
+private slots:
+  void textChanged (void);
+  void editingFinished (void);
+  void returnPressed (void);
 
-  private:
-    bool m_multiLine;
-    bool m_textChanged;
-  };
+private:
+  bool m_multiLine;
+  bool m_textChanged;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

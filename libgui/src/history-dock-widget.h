@@ -37,75 +37,75 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
+class base_qobject;
 
-  class history_dock_widget : public octave_dock_widget
-  {
-    Q_OBJECT
+class history_dock_widget : public octave_dock_widget
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    history_dock_widget (QWidget *parent, base_qobject& oct_qobj);
+  history_dock_widget (QWidget *parent, base_qobject& oct_qobj);
 
-    ~history_dock_widget (void) = default;
+  ~history_dock_widget (void) = default;
 
-  signals:
+signals:
 
-    //! Signal emitted whenever the user double-clicks a command in the
-    //! history.
+  //! Signal emitted whenever the user double-clicks a command in the
+  //! history.
 
-    void command_double_clicked (const QString& command);
+  void command_double_clicked (const QString& command);
 
-    //! Signal emitted whenever the user selects commands and chooses
-    //! "Create script" from the popup menu.
+  //! Signal emitted whenever the user selects commands and chooses
+  //! "Create script" from the popup menu.
 
-    void command_create_script (const QString& commands);
+  void command_create_script (const QString& commands);
 
-  public slots:
+public slots:
 
-    void set_history (const QStringList& hist);
-    void append_history (const QString& hist_entry);
-    void clear_history (void);
-    void save_settings (void);
-    void notice_settings (const gui_settings *);
+  void set_history (const QStringList& hist);
+  void append_history (const QString& hist_entry);
+  void clear_history (void);
+  void save_settings (void);
+  void notice_settings (const gui_settings *);
 
-  private slots:
+private slots:
 
-    void update_filter_history (void);
-    void filter_activate (bool enable);
+  void update_filter_history (void);
+  void filter_activate (bool enable);
 
-    void ctxMenu (const QPoint& pos);
-    void handle_double_click (QModelIndex modelIndex);
-    void handle_contextmenu_copy (bool flag);
-    void handle_contextmenu_evaluate (bool flag);
-    void handle_contextmenu_create_script (bool flag);
-    void handle_contextmenu_filter (void);
+  void ctxMenu (const QPoint& pos);
+  void handle_double_click (QModelIndex modelIndex);
+  void handle_contextmenu_copy (bool flag);
+  void handle_contextmenu_evaluate (bool flag);
+  void handle_contextmenu_create_script (bool flag);
+  void handle_contextmenu_filter (void);
 
-    void copyClipboard (void);
-    void pasteClipboard (void);
-    void selectAll (void);
+  void copyClipboard (void);
+  void pasteClipboard (void);
+  void selectAll (void);
 
-    virtual void handle_visibility (bool visible);
+  virtual void handle_visibility (bool visible);
 
-  private:
+private:
 
-    void construct (void);
-    void set_filter_focus (bool focus);
+  void construct (void);
+  void set_filter_focus (bool focus);
 
-    QListView *m_history_list_view;
-    QSortFilterProxyModel m_sort_filter_proxy_model;
+  QListView *m_history_list_view;
+  QSortFilterProxyModel m_sort_filter_proxy_model;
 
-    //! Stores the current history_model.
+  //! Stores the current history_model.
 
-    QStringListModel *m_history_model;
+  QStringListModel *m_history_model;
 
-    QCheckBox *m_filter_checkbox;
-    QComboBox *m_filter;
-    QWidget *m_filter_widget;
-    bool m_filter_shown;
+  QCheckBox *m_filter_checkbox;
+  QComboBox *m_filter;
+  QWidget *m_filter_widget;
+  bool m_filter_shown;
 
-    enum { MaxFilterHistory = 10 };
-  };
+  enum { MaxFilterHistory = 10 };
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -30,22 +30,22 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class TextEdit : public QTextEdit
-  {
-    Q_OBJECT
+class TextEdit : public QTextEdit
+{
+  Q_OBJECT
 
-  public:
-    TextEdit (QWidget *xparent) : QTextEdit (xparent) { }
-    ~TextEdit (void) = default;
+public:
+  TextEdit (QWidget *xparent) : QTextEdit (xparent) { }
+  ~TextEdit (void) = default;
 
-  signals:
-    void editingFinished (void);
-    void returnPressed (void);
+signals:
+  void editingFinished (void);
+  void returnPressed (void);
 
-  protected:
-    void focusOutEvent (QFocusEvent *event);
-    void keyPressEvent (QKeyEvent *event);
-  };
+protected:
+  void focusOutEvent (QFocusEvent *event);
+  void keyPressEvent (QKeyEvent *event);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

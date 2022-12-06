@@ -32,24 +32,24 @@ class QCheckBox;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class CheckBoxControl : public ButtonControl
-  {
-  public:
-    CheckBoxControl (octave::base_qobject& oct_qobj,
-                     octave::interpreter& interp, const graphics_object& go,
-                     QCheckBox *box);
-    ~CheckBoxControl (void);
+class CheckBoxControl : public ButtonControl
+{
+public:
+  CheckBoxControl (octave::base_qobject& oct_qobj,
+                   octave::interpreter& interp, const graphics_object& go,
+                   QCheckBox *box);
+  ~CheckBoxControl (void);
 
-    static CheckBoxControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static CheckBoxControl *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
-  };
+protected:
+  void update (int pId);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

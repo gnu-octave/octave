@@ -32,31 +32,31 @@ class QAbstractSlider;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class SliderControl : public BaseControl
-  {
-    Q_OBJECT
+class SliderControl : public BaseControl
+{
+  Q_OBJECT
 
-  public:
-    SliderControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-                   const graphics_object& go, QAbstractSlider *slider);
-    ~SliderControl (void);
+public:
+  SliderControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                 const graphics_object& go, QAbstractSlider *slider);
+  ~SliderControl (void);
 
-    static SliderControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static SliderControl *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private slots:
-    void valueChanged (int ival);
+private slots:
+  void valueChanged (int ival);
 
-  private:
-    bool m_blockUpdates;
-  };
+private:
+  bool m_blockUpdates;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

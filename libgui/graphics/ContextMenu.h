@@ -35,36 +35,36 @@ class QMenu;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class ContextMenu : public Object, public MenuContainer
-  {
-    Q_OBJECT
+class ContextMenu : public Object, public MenuContainer
+{
+  Q_OBJECT
 
-  public:
-    ContextMenu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-                 const graphics_object& go, QMenu *menu);
-    ~ContextMenu (void);
+public:
+  ContextMenu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+               const graphics_object& go, QMenu *menu);
+  ~ContextMenu (void);
 
-    static ContextMenu *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static ContextMenu *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-    static void executeAt (octave::interpreter& interp,
-                           const base_properties& props, const QPoint& pt);
+  static void executeAt (octave::interpreter& interp,
+                         const base_properties& props, const QPoint& pt);
 
-    Container * innerContainer (void) { return nullptr; }
+  Container * innerContainer (void) { return nullptr; }
 
-    QWidget * menu (void);
+  QWidget * menu (void);
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private slots:
-    void aboutToShow (void);
-    void aboutToHide (void);
-  };
+private slots:
+  void aboutToShow (void);
+  void aboutToHide (void);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

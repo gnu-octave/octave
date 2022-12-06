@@ -31,40 +31,40 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
+class base_qobject;
 
-  class news_reader : public QObject
-  {
-    Q_OBJECT
+class news_reader : public QObject
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    news_reader (base_qobject& oct_qobj, const QString& base_url,
-                 const QString& page, int serial = -1,
-                 bool connect_to_web = false)
-      : QObject (), m_octave_qobj (oct_qobj), m_base_url (base_url),
-        m_page (page), m_serial (serial), m_connect_to_web (connect_to_web)
-    { }
+  news_reader (base_qobject& oct_qobj, const QString& base_url,
+               const QString& page, int serial = -1,
+               bool connect_to_web = false)
+    : QObject (), m_octave_qobj (oct_qobj), m_base_url (base_url),
+      m_page (page), m_serial (serial), m_connect_to_web (connect_to_web)
+  { }
 
-  signals:
+signals:
 
-    void display_news_signal (const QString& news);
+  void display_news_signal (const QString& news);
 
-    void finished (void);
+  void finished (void);
 
-  public slots:
+public slots:
 
-    void process (void);
+  void process (void);
 
-  private:
+private:
 
-    base_qobject& m_octave_qobj;
+  base_qobject& m_octave_qobj;
 
-    QString m_base_url;
-    QString m_page;
-    int m_serial;
-    bool m_connect_to_web;
-  };
+  QString m_base_url;
+  QString m_page;
+  int m_serial;
+  bool m_connect_to_web;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

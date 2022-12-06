@@ -30,11 +30,11 @@ class QWidget;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class MenuContainer
-  {
-  public:
-    virtual QWidget * menu (void) = 0;
-  };
+class MenuContainer
+{
+public:
+  virtual QWidget * menu (void) = 0;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

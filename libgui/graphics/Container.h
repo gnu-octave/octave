@@ -35,55 +35,55 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
+class base_qobject;
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  DECLARE_GENERICEVENTNOTIFY_SENDER(ContainerBase, QWidget);
+DECLARE_GENERICEVENTNOTIFY_SENDER(ContainerBase, QWidget);
 
-  class Canvas;
+class Canvas;
 
-  class Container : public ContainerBase
-  {
-    Q_OBJECT
+class Container : public ContainerBase
+{
+  Q_OBJECT
 
-  public:
-    Container (QWidget *parent, octave::base_qobject& oct_qobj,
-               octave::interpreter& interp);
-    ~Container (void);
+public:
+  Container (QWidget *parent, octave::base_qobject& oct_qobj,
+             octave::interpreter& interp);
+  ~Container (void);
 
-    Canvas * canvas (const graphics_handle& handle, bool create = true);
+  Canvas * canvas (const graphics_handle& handle, bool create = true);
 
-  signals:
+signals:
 
-    void interpreter_event (const octave::fcn_callback& fcn);
-    void interpreter_event (const octave::meth_callback& meth);
+  void interpreter_event (const octave::fcn_callback& fcn);
+  void interpreter_event (const octave::meth_callback& meth);
 
-    void gh_callback_event (const graphics_handle& h, const std::string& name);
+  void gh_callback_event (const graphics_handle& h, const std::string& name);
 
-    void gh_callback_event (const graphics_handle& h, const std::string& name,
-                            const octave_value& data);
+  void gh_callback_event (const graphics_handle& h, const std::string& name,
+                          const octave_value& data);
 
-    void gh_set_event (const graphics_handle& h, const std::string& name,
-                       const octave_value& value);
+  void gh_set_event (const graphics_handle& h, const std::string& name,
+                     const octave_value& value);
 
-    void gh_set_event (const graphics_handle& h, const std::string& name,
-                       const octave_value& value, bool notify_toolkit);
+  void gh_set_event (const graphics_handle& h, const std::string& name,
+                     const octave_value& value, bool notify_toolkit);
 
-    void gh_set_event (const graphics_handle& h, const std::string& name,
-                       const octave_value& value, bool notify_toolkit,
-                       bool redraw_figure);
+  void gh_set_event (const graphics_handle& h, const std::string& name,
+                     const octave_value& value, bool notify_toolkit,
+                     bool redraw_figure);
 
-  protected:
-    void childEvent (QChildEvent *event);
-    void resizeEvent (QResizeEvent *event);
+protected:
+  void childEvent (QChildEvent *event);
+  void resizeEvent (QResizeEvent *event);
 
-  private:
-    octave::base_qobject& m_octave_qobj;
-    octave::interpreter& m_interpreter;
-    Canvas *m_canvas;
-  };
+private:
+  octave::base_qobject& m_octave_qobj;
+  octave::interpreter& m_interpreter;
+  Canvas *m_canvas;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

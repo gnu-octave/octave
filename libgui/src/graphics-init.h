@@ -32,11 +32,11 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
+class base_qobject;
 
-  class base_qobject;
+extern void graphics_init (interpreter& interp, base_qobject& oct_qobj);
 
-  extern void graphics_init (interpreter& interp, base_qobject& oct_qobj);
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

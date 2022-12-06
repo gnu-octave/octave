@@ -34,37 +34,37 @@ class QModelIndex;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class ListBoxControl : public BaseControl
-  {
-    Q_OBJECT
+class ListBoxControl : public BaseControl
+{
+  Q_OBJECT
 
-  public:
-    ListBoxControl (octave::base_qobject& oct_qobj,
-                    octave::interpreter& interp, const graphics_object& go,
-                    QListWidget *list);
-    ~ListBoxControl (void);
+public:
+  ListBoxControl (octave::base_qobject& oct_qobj,
+                  octave::interpreter& interp, const graphics_object& go,
+                  QListWidget *list);
+  ~ListBoxControl (void);
 
-    static ListBoxControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static ListBoxControl *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
-    bool eventFilter (QObject *watched, QEvent *e);
-    void sendSelectionChange ();
+protected:
+  void update (int pId);
+  bool eventFilter (QObject *watched, QEvent *e);
+  void sendSelectionChange ();
 
-  private slots:
-    void itemSelectionChanged (void);
-    void itemActivated (const QModelIndex&);
-    void itemPressed (QListWidgetItem *);
+private slots:
+  void itemSelectionChanged (void);
+  void itemActivated (const QModelIndex&);
+  void itemPressed (QListWidgetItem *);
 
-  private:
-    bool m_blockCallback;
-    bool m_selectionChanged;
-  };
+private:
+  bool m_blockCallback;
+  bool m_selectionChanged;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

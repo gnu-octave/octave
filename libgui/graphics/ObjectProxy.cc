@@ -39,123 +39,123 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  ObjectProxy::ObjectProxy (Object *obj)
-    : QObject (), m_object (nullptr)
-  {
-    init (obj);
-  }
+ObjectProxy::ObjectProxy (Object *obj)
+: QObject (), m_object (nullptr)
+{
+  init (obj);
+}
 
-  void
-  ObjectProxy::init (Object *obj)
-  {
-    if (obj != m_object)
-      {
-        if (m_object)
-          {
-            disconnect (this, &ObjectProxy::sendUpdate,
-                        m_object, &Object::slotUpdate);
-            disconnect (this, &ObjectProxy::sendRedraw,
-                        m_object, &Object::slotRedraw);
-            disconnect (this, &ObjectProxy::sendShow,
-                        m_object, &Object::slotShow);
-          }
+void
+ObjectProxy::init (Object *obj)
+{
+  if (obj != m_object)
+    {
+      if (m_object)
+        {
+          disconnect (this, &ObjectProxy::sendUpdate,
+                      m_object, &Object::slotUpdate);
+          disconnect (this, &ObjectProxy::sendRedraw,
+                      m_object, &Object::slotRedraw);
+          disconnect (this, &ObjectProxy::sendShow,
+                      m_object, &Object::slotShow);
+        }
 
-        m_object = obj;
+      m_object = obj;
 
-        if (m_object)
-          {
-            connect (this, &ObjectProxy::sendUpdate,
-                     m_object, &Object::slotUpdate);
-            connect (this, &ObjectProxy::sendRedraw,
-                     m_object, &Object::slotRedraw);
-            connect (this, &ObjectProxy::sendShow,
-                     m_object, &Object::slotShow);
-          }
-      }
-  }
+      if (m_object)
+        {
+          connect (this, &ObjectProxy::sendUpdate,
+                   m_object, &Object::slotUpdate);
+          connect (this, &ObjectProxy::sendRedraw,
+                   m_object, &Object::slotRedraw);
+          connect (this, &ObjectProxy::sendShow,
+                   m_object, &Object::slotShow);
+        }
+    }
+}
 
-  void
-  ObjectProxy::setObject (Object *obj)
-  {
-    // Eventually destroy previous Object
-    if (m_object)
-      finalize ();
+void
+ObjectProxy::setObject (Object *obj)
+{
+  // Eventually destroy previous Object
+  if (m_object)
+    finalize ();
 
-    init (obj);
-  }
+  init (obj);
+}
 
-  void
-  ObjectProxy::update (int pId)
-  {
-    emit sendUpdate (pId);
-  }
+void
+ObjectProxy::update (int pId)
+{
+  emit sendUpdate (pId);
+}
 
-  void
-  ObjectProxy::finalize (void)
-  {
-    if (! m_object)
-      error ("ObjectProxy::finalize: invalid GUI Object");
+void
+ObjectProxy::finalize (void)
+{
+  if (! m_object)
+    error ("ObjectProxy::finalize: invalid GUI Object");
 
-    Qt::ConnectionType t = Qt::BlockingQueuedConnection;
+  Qt::ConnectionType t = Qt::BlockingQueuedConnection;
 
-    if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
-      t = Qt::DirectConnection;
+  if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
+    t = Qt::DirectConnection;
 
-    if (! QMetaObject::invokeMethod (m_object, "slotFinalize", t))
-      error ("ObjectProxy::finalize: unable to delete GUI Object");
-  }
+  if (! QMetaObject::invokeMethod (m_object, "slotFinalize", t))
+    error ("ObjectProxy::finalize: unable to delete GUI Object");
+}
 
-  void
-  ObjectProxy::redraw (void)
-  {
-    emit sendRedraw ();
-  }
+void
+ObjectProxy::redraw (void)
+{
+  emit sendRedraw ();
+}
 
-  void
-  ObjectProxy::show (void)
-  {
-    emit sendShow ();
-  }
+void
+ObjectProxy::show (void)
+{
+  emit sendShow ();
+}
 
-  void
-  ObjectProxy::print (const QString& file_cmd, const QString& term)
-  {
-    if (! m_object)
-      error ("ObjectProxy::print: invalid GUI Object");
+void
+ObjectProxy::print (const QString& file_cmd, const QString& term)
+{
+  if (! m_object)
+    error ("ObjectProxy::print: invalid GUI Object");
 
-    Qt::ConnectionType t = Qt::BlockingQueuedConnection;
+  Qt::ConnectionType t = Qt::BlockingQueuedConnection;
 
-    if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
-      t = Qt::DirectConnection;
+  if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
+    t = Qt::DirectConnection;
 
-    if (! QMetaObject::invokeMethod (m_object, "slotPrint", t,
-                                     Q_ARG (QString, file_cmd),
-                                     Q_ARG (QString, term)))
-      error ("ObjectProxy::print: unable to print figure");
-  }
+  if (! QMetaObject::invokeMethod (m_object, "slotPrint", t,
+                                   Q_ARG (QString, file_cmd),
+                                   Q_ARG (QString, term)))
+    error ("ObjectProxy::print: unable to print figure");
+}
 
-  uint8NDArray
-  ObjectProxy::get_pixels (void)
-  {
-    if (! m_object)
-      error ("ObjectProxy::finalize: invalid GUI Object");
+uint8NDArray
+ObjectProxy::get_pixels (void)
+{
+  if (! m_object)
+    error ("ObjectProxy::finalize: invalid GUI Object");
 
-    uint8NDArray retval;
+  uint8NDArray retval;
 
-    // The ObjectProxy is generally ran from the interpreter thread
-    // while the actual Figure (Object) lives in the gui thread.  The
-    // following ensures synchronous execution of the Figure method and
-    // allows retrieving a return value.
+  // The ObjectProxy is generally ran from the interpreter thread
+  // while the actual Figure (Object) lives in the gui thread.  The
+  // following ensures synchronous execution of the Figure method and
+  // allows retrieving a return value.
 
-    Qt::ConnectionType t = Qt::BlockingQueuedConnection;
+  Qt::ConnectionType t = Qt::BlockingQueuedConnection;
 
-    if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
-      t = Qt::DirectConnection;
+  if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
+    t = Qt::DirectConnection;
 
-    QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
-                               Q_RETURN_ARG (uint8NDArray, retval));
+  QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
+                             Q_RETURN_ARG (uint8NDArray, retval));
 
-    return retval;
-  }
+  return retval;
+}
 
 OCTAVE_END_NAMESPACE(octave);

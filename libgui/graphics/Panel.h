@@ -33,42 +33,42 @@ class QLabel;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class Container;
+class Container;
 
-  class Panel : public Object
-  {
-  public:
-    Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-           const graphics_object& go, QFrame *frame);
-    ~Panel (void);
+class Panel : public Object
+{
+public:
+  Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+         const graphics_object& go, QFrame *frame);
+  ~Panel (void);
 
-    Container * innerContainer (void) { return m_container; }
+  Container * innerContainer (void) { return m_container; }
 
-    bool eventFilter (QObject *watched, QEvent *event);
+  bool eventFilter (QObject *watched, QEvent *event);
 
-    static Panel *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static Panel *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-    void do_connections (const QObject *receiver,
-                         const QObject *emitter = nullptr);
+  void do_connections (const QObject *receiver,
+                       const QObject *emitter = nullptr);
 
-  protected:
-    void update (int pId);
-    void redraw (void);
+protected:
+  void update (int pId);
+  void redraw (void);
 
-  private:
-    void updateLayout (void);
+private:
+  void updateLayout (void);
 
-  private:
-    Container *m_container;
-    QLabel *m_title;
-    bool m_blockUpdates;
-    Matrix m_previous_bbox;
-  };
+private:
+  Container *m_container;
+  QLabel *m_title;
+  bool m_blockUpdates;
+  Matrix m_previous_bbox;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -35,50 +35,50 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  PushTool *
-  PushTool::create (octave::base_qobject& oct_qobj,
-                    octave::interpreter& interp, const graphics_object& go)
-  {
-    Object *parent = parentObject (interp, go);
+PushTool *
+PushTool::create (octave::base_qobject& oct_qobj,
+                  octave::interpreter& interp, const graphics_object& go)
+{
+  Object *parent = parentObject (interp, go);
 
-    if (parent)
-      {
-        QWidget *parentWidget = parent->qWidget<QWidget> ();
+  if (parent)
+    {
+      QWidget *parentWidget = parent->qWidget<QWidget> ();
 
-        if (parentWidget)
-          return new PushTool (oct_qobj, interp, go,
-                               new QAction (parentWidget));
-      }
+      if (parentWidget)
+        return new PushTool (oct_qobj, interp, go,
+                             new QAction (parentWidget));
+    }
 
-    return nullptr;
-  }
+  return nullptr;
+}
 
-  PushTool::PushTool (octave::base_qobject& oct_qobj,
-                      octave::interpreter& interp,
-                      const graphics_object& go, QAction *action)
-    : ToolBarButton<uipushtool> (oct_qobj, interp, go, action)
-  {
-    connect (action, &QAction::triggered, this, &PushTool::clicked);
-  }
+PushTool::PushTool (octave::base_qobject& oct_qobj,
+                    octave::interpreter& interp,
+                    const graphics_object& go, QAction *action)
+  : ToolBarButton<uipushtool> (oct_qobj, interp, go, action)
+{
+  connect (action, &QAction::triggered, this, &PushTool::clicked);
+}
 
-  PushTool::~PushTool (void)
-  { }
+PushTool::~PushTool (void)
+{ }
 
-  void
-  PushTool::update (int pId)
-  {
-    switch (pId)
-      {
-      default:
-        ToolBarButton<uipushtool>::update (pId);
-        break;
-      }
-  }
+void
+PushTool::update (int pId)
+{
+  switch (pId)
+    {
+    default:
+      ToolBarButton<uipushtool>::update (pId);
+      break;
+    }
+}
 
-  void
-  PushTool::clicked (void)
-  {
-    emit gh_callback_event (m_handle, "clickedcallback");
-  }
+void
+PushTool::clicked (void)
+{
+  emit gh_callback_event (m_handle, "clickedcallback");
+}
 
 OCTAVE_END_NAMESPACE(octave);

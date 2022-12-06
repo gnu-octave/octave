@@ -32,24 +32,24 @@ class QPushButton;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class ToggleButtonControl : public ButtonControl
-  {
-  public:
-    ToggleButtonControl (octave::base_qobject& oct_qobj,
-                         octave::interpreter& interp,
-                         const graphics_object& go, QPushButton *box);
-    ~ToggleButtonControl (void);
+class ToggleButtonControl : public ButtonControl
+{
+public:
+  ToggleButtonControl (octave::base_qobject& oct_qobj,
+                       octave::interpreter& interp,
+                       const graphics_object& go, QPushButton *box);
+  ~ToggleButtonControl (void);
 
-    static ToggleButtonControl *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static ToggleButtonControl *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
-  };
+protected:
+  void update (int pId);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

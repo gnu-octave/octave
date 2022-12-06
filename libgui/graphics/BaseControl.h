@@ -33,29 +33,29 @@ class QObject;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class BaseControl : public Object
-  {
-  public:
-    BaseControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-                 const graphics_object& go, QWidget *w);
-    ~BaseControl (void);
+class BaseControl : public Object
+{
+public:
+  BaseControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+               const graphics_object& go, QWidget *w);
+  ~BaseControl (void);
 
-    Container * innerContainer (void) { return nullptr; }
+  Container * innerContainer (void) { return nullptr; }
 
-    bool eventFilter (QObject *watched, QEvent *e);
+  bool eventFilter (QObject *watched, QEvent *e);
 
-  protected:
-    void init (QWidget *w, bool callBase = false);
-    void redraw (void);
-    void update (int pId);
+protected:
+  void init (QWidget *w, bool callBase = false);
+  void redraw (void);
+  void update (int pId);
 
-  private:
-    bool m_normalizedFont;
-    bool m_keyPressHandlerDefined;
-  };
+private:
+  bool m_normalizedFont;
+  bool m_keyPressHandlerDefined;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -42,35 +42,35 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  qt_application::qt_application (int argc, char **argv)
-    : application (argc, argv)
-  {
-    // This should probably happen early.
-    sysdep_init ();
-  }
+qt_application::qt_application (int argc, char **argv)
+: application (argc, argv)
+{
+  // This should probably happen early.
+  sysdep_init ();
+}
 
-  bool qt_application::start_gui_p (void) const
-  {
-    // Note: this function is not needed if using the experimental
-    // terminal widget, so return a dummy value of false in that case.
+bool qt_application::start_gui_p (void) const
+{
+  // Note: this function is not needed if using the experimental
+  // terminal widget, so return a dummy value of false in that case.
 
-    return experimental_terminal_widget () ? false : m_options.gui ();
-  }
+  return experimental_terminal_widget () ? false : m_options.gui ();
+}
 
-  int qt_application::execute (void)
-  {
-    octave_block_interrupt_signal ();
+int qt_application::execute (void)
+{
+  octave_block_interrupt_signal ();
 
-    set_application_id ();
+  set_application_id ();
 
-    // Create and show main window.
+  // Create and show main window.
 
-    // Note: the second argument is ignored if using the new terminal
-    // widget.
+  // Note: the second argument is ignored if using the new terminal
+  // widget.
 
-    base_qobject qt_interface (*this, start_gui_p ());
+  base_qobject qt_interface (*this, start_gui_p ());
 
-    return qt_interface.exec ();
-  }
+  return qt_interface.exec ();
+}
 
 OCTAVE_END_NAMESPACE(octave)

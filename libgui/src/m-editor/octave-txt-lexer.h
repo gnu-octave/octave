@@ -31,18 +31,18 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class octave_txt_lexer : public QsciLexer
-  {
-    Q_OBJECT
+class octave_txt_lexer : public QsciLexer
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    virtual const char * language (void) const;
+  virtual const char * language (void) const;
 
-    virtual const char * lexer (void) const;
+  virtual const char * lexer (void) const;
 
-    virtual QString description (int style) const;
-  };
+  virtual QString description (int style) const;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -33,37 +33,37 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  template <typename T>
-  inline QList<T>
-  std_list_to_qt_list (const std::list<T>& lst)
-  {
+template <typename T>
+inline QList<T>
+std_list_to_qt_list (const std::list<T>& lst)
+{
 #if defined (HAVE_QLIST_ITERATOR_CONSTRUCTOR)
-    return QList<T> (lst.begin (), lst.end ());
+  return QList<T> (lst.begin (), lst.end ());
 #else
-    return QList<T>::fromStdList (lst);
+  return QList<T>::fromStdList (lst);
 #endif
-  }
+}
 
-  inline int
-  qt_fontmetrics_horizontal_advance (const QFontMetrics& fm, QChar ch)
-  {
+inline int
+qt_fontmetrics_horizontal_advance (const QFontMetrics& fm, QChar ch)
+{
 #if defined (HAVE_QFONTMETRICS_HORIZONTAL_ADVANCE)
-    return fm.horizontalAdvance (ch);
+  return fm.horizontalAdvance (ch);
 #else
-    return fm.width (ch);
+  return fm.width (ch);
 #endif
-  }
+}
 
-  inline int
-  qt_fontmetrics_horizontal_advance (const QFontMetrics& fm,
-                                     const QString& text, int len = -1)
-  {
+inline int
+qt_fontmetrics_horizontal_advance (const QFontMetrics& fm,
+                                   const QString& text, int len = -1)
+{
 #if defined (HAVE_QFONTMETRICS_HORIZONTAL_ADVANCE)
-    return fm.horizontalAdvance (text, len);
+  return fm.horizontalAdvance (text, len);
 #else
-    return fm.width (text, len);
+  return fm.width (text, len);
 #endif
-  }
+}
 
 OCTAVE_END_NAMESPACE(octave)
 

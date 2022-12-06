@@ -30,29 +30,29 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class ToggleTool : public ToolBarButton<uitoggletool>
-  {
-    Q_OBJECT
+class ToggleTool : public ToolBarButton<uitoggletool>
+{
+  Q_OBJECT
 
-  public:
-    ToggleTool (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-                const graphics_object& go,
-                QAction *action);
-    ~ToggleTool (void);
+public:
+  ToggleTool (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+              const graphics_object& go,
+              QAction *action);
+  ~ToggleTool (void);
 
-    static ToggleTool *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static ToggleTool *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private slots:
-    void triggered (bool checked);
-  };
+private slots:
+  void triggered (bool checked);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

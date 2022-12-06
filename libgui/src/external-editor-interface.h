@@ -31,42 +31,42 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
+class base_qobject;
 
-  class external_editor_interface : public QWidget
-  {
-    Q_OBJECT
+class external_editor_interface : public QWidget
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    external_editor_interface (QWidget *main_win, base_qobject& oct_qobj);
+  external_editor_interface (QWidget *main_win, base_qobject& oct_qobj);
 
-    ~external_editor_interface (void) = default;
+  ~external_editor_interface (void) = default;
 
-  signals:
+signals:
 
-    void request_settings_dialog (const QString&);
+  void request_settings_dialog (const QString&);
 
-  public slots:
+public slots:
 
-    bool call_custom_editor (const QString& file = QString (), int line = -1);
+  bool call_custom_editor (const QString& file = QString (), int line = -1);
 
-    void request_open_file (const QString& fileName,
-                            const QString& encoding = QString (),
-                            int line = -1, bool debug_pointer = false,
-                            bool breakpoint_marker = false, bool insert = true,
-                            const QString& cond = "");
+  void request_open_file (const QString& fileName,
+                          const QString& encoding = QString (),
+                          int line = -1, bool debug_pointer = false,
+                          bool breakpoint_marker = false, bool insert = true,
+                          const QString& cond = "");
 
-    void request_new_file (const QString&);
+  void request_new_file (const QString&);
 
-    void handle_edit_file_request (const QString& file);
+  void handle_edit_file_request (const QString& file);
 
-  private:
+private:
 
-    QString external_editor (void);
+  QString external_editor (void);
 
-    base_qobject& m_octave_qobj;
-  };
+  base_qobject& m_octave_qobj;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -32,25 +32,25 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  DECLARE_GENERICEVENTNOTIFY_SENDER(FigureWindowBase, QMainWindow);
+DECLARE_GENERICEVENTNOTIFY_SENDER(FigureWindowBase, QMainWindow);
 
-  class FigureWindow : public FigureWindowBase
-  {
-    Q_OBJECT
+class FigureWindow : public FigureWindowBase
+{
+  Q_OBJECT
 
-  public:
-    explicit FigureWindow (QWidget *parent = nullptr);
-    ~FigureWindow (void);
+public:
+  explicit FigureWindow (QWidget *parent = nullptr);
+  ~FigureWindow (void);
 
-    QMenu * createPopupMenu (void);
+  QMenu * createPopupMenu (void);
 
-  protected:
-    void showEvent(QShowEvent *ev);
+protected:
+  void showEvent(QShowEvent *ev);
 
-  signals:
-    void figureWindowShown();
+signals:
+  void figureWindowShown();
 
-  };
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -34,28 +34,28 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class color_picker : public QPushButton
-  {
-    Q_OBJECT
+class color_picker : public QPushButton
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    color_picker (QColor color = QColor (0, 0, 0), QWidget *parent = nullptr);
+  color_picker (QColor color = QColor (0, 0, 0), QWidget *parent = nullptr);
 
-    QColor color (void) const { return m_color; }
+  QColor color (void) const { return m_color; }
 
-    void set_color (QColor new_color);
+  void set_color (QColor new_color);
 
-  private slots:
+private slots:
 
-    void select_color (void);
+  void select_color (void);
 
-  private:
+private:
 
-    virtual void update_button (void);
+  virtual void update_button (void);
 
-    QColor m_color;
-  };
+  QColor m_color;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

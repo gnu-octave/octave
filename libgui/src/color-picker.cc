@@ -34,51 +34,51 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Constructor with initial color as parameter
-  color_picker::color_picker (QColor old_color, QWidget *p)
-    : QPushButton (p)
-  {
-    m_color = old_color;
-    setFlat (true);
-    setFocusPolicy (Qt::NoFocus);  // no focus, would change the color
-    update_button ();
-    connect (this, &color_picker::clicked, this, &color_picker::select_color);
-  }
+// Constructor with initial color as parameter
+color_picker::color_picker (QColor old_color, QWidget *p)
+: QPushButton (p)
+{
+  m_color = old_color;
+  setFlat (true);
+  setFocusPolicy (Qt::NoFocus);  // no focus, would change the color
+  update_button ();
+  connect (this, &color_picker::clicked, this, &color_picker::select_color);
+}
 
-  // Slot for button clicked: select a new color using QColorDialog
-  void color_picker::select_color (void)
-  {
-    QColor new_color = QColorDialog::getColor (m_color);
+// Slot for button clicked: select a new color using QColorDialog
+void color_picker::select_color (void)
+{
+  QColor new_color = QColorDialog::getColor (m_color);
 
-    if (new_color.isValid () && new_color != m_color)
-      {
-        m_color = new_color;
-        update_button ();
-      }
-  }
+  if (new_color.isValid () && new_color != m_color)
+    {
+      m_color = new_color;
+      update_button ();
+    }
+}
 
-  // Set the color of the button
-  void color_picker::set_color (QColor new_color)
-  {
-    m_color = new_color;
-    update_button ();
-  }
+// Set the color of the button
+void color_picker::set_color (QColor new_color)
+{
+  m_color = new_color;
+  update_button ();
+}
 
-  // Draw the button with the actual color (using a stylesheet)
-  void color_picker::update_button (void)
-  {
-    // Is this the right place to look for a "foreground" color that would
-    // provide a reasonable border for the color swatches?
-    QWidget *p = parentWidget ();
+// Draw the button with the actual color (using a stylesheet)
+void color_picker::update_button (void)
+{
+  // Is this the right place to look for a "foreground" color that would
+  // provide a reasonable border for the color swatches?
+  QWidget *p = parentWidget ();
 
-    QString bordercolor
-      = (p ? p->palette ().text ().color ().name () : QString ("#000000"));
+  QString bordercolor
+    = (p ? p->palette ().text ().color ().name () : QString ("#000000"));
 
-    setStyleSheet (QString ("background-color: %1; border: 1px solid %2;")
-                   .arg (m_color.name ())
-                   .arg (bordercolor));
+  setStyleSheet (QString ("background-color: %1; border: 1px solid %2;")
+                 .arg (m_color.name ())
+                 .arg (bordercolor));
 
-    repaint ();
-  }
+  repaint ();
+}
 
 OCTAVE_END_NAMESPACE(octave)

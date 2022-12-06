@@ -33,41 +33,41 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class find_files_model : public QAbstractListModel
-  {
-    Q_OBJECT
+class find_files_model : public QAbstractListModel
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    find_files_model (QObject *p = nullptr);
+  find_files_model (QObject *p = nullptr);
 
-    ~find_files_model (void) = default;
+  ~find_files_model (void) = default;
 
-    void clear (void);
+  void clear (void);
 
-    void addFile (const QFileInfo& info);
+  void addFile (const QFileInfo& info);
 
-    int rowCount (const QModelIndex& p = QModelIndex ()) const;
+  int rowCount (const QModelIndex& p = QModelIndex ()) const;
 
-    int columnCount (const QModelIndex& p = QModelIndex ()) const;
+  int columnCount (const QModelIndex& p = QModelIndex ()) const;
 
-    QVariant data (const QModelIndex& idx, int role) const;
+  QVariant data (const QModelIndex& idx, int role) const;
 
-    QVariant headerData (int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole) const;
+  QVariant headerData (int section, Qt::Orientation orientation,
+                       int role = Qt::DisplayRole) const;
 
-    void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
+  void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
 
-    QFileInfo fileInfo (const QModelIndex& p) const;
+  QFileInfo fileInfo (const QModelIndex& p) const;
 
-    QIcon fileIcon (const QModelIndex& p) const;
+  QIcon fileIcon (const QModelIndex& p) const;
 
-  private:
+private:
 
-    QList<QFileInfo> m_files;
-    QStringList m_columnNames;
-    int m_sortorder;
-  };
+  QList<QFileInfo> m_files;
+  QStringList m_columnNames;
+  int m_sortorder;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

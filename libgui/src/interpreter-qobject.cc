@@ -38,166 +38,166 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  interpreter_qobject::interpreter_qobject (base_qobject& oct_qobj)
-    : QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
-  { }
+interpreter_qobject::interpreter_qobject (base_qobject& oct_qobj)
+: QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
+{ }
 
-  void interpreter_qobject::execute (void)
-  {
-    // The Octave application context owns the interpreter.
+void interpreter_qobject::execute (void)
+{
+  // The Octave application context owns the interpreter.
 
-    qt_application& app_context = m_octave_qobj.app_context ();
+  qt_application& app_context = m_octave_qobj.app_context ();
 
-    interpreter& interp = app_context.create_interpreter ();
+  interpreter& interp = app_context.create_interpreter ();
 
-    event_manager& evmgr = interp.get_event_manager ();
+  event_manager& evmgr = interp.get_event_manager ();
 
-    evmgr.connect_link (m_octave_qobj.get_qt_interpreter_events ());
-    evmgr.install_qt_event_handlers (m_octave_qobj.get_qt_interpreter_events ());
-    evmgr.enable ();
+  evmgr.connect_link (m_octave_qobj.get_qt_interpreter_events ());
+  evmgr.install_qt_event_handlers (m_octave_qobj.get_qt_interpreter_events ());
+  evmgr.enable ();
 
-    int exit_status = 0;
+  int exit_status = 0;
 
-    try
-      {
-        // Final initialization.
+  try
+    {
+      // Final initialization.
 
-        interp.initialize ();
+      interp.initialize ();
 
-        if (app_context.start_gui_p ()
-            && ! m_octave_qobj.experimental_terminal_widget ())
-          {
-            input_system& input_sys = interp.get_input_system ();
+      if (app_context.start_gui_p ()
+          && ! m_octave_qobj.experimental_terminal_widget ())
+        {
+          input_system& input_sys = interp.get_input_system ();
 
-            input_sys.PS1 (">> ");
-            input_sys.PS2 ("");
-          }
+          input_sys.PS1 (">> ");
+          input_sys.PS2 ("");
+        }
 
-        if (interp.initialized ())
-          {
-            // The interpreter should be completely ready at this point so let
-            // the GUI know.
+      if (interp.initialized ())
+        {
+          // The interpreter should be completely ready at this point so let
+          // the GUI know.
 
-            m_interpreter = &interp;
+          m_interpreter = &interp;
 
-            emit ready ();
+          emit ready ();
 
-            graphics_init (interp, m_octave_qobj);
+          graphics_init (interp, m_octave_qobj);
 
-            // Start executing commands in the command window.
+          // Start executing commands in the command window.
 
-            exit_status = interp.execute ();
-          }
-      }
-    catch (const exit_exception& xe)
-      {
-        exit_status = xe.exit_status ();
-      }
+          exit_status = interp.execute ();
+        }
+    }
+  catch (const exit_exception& xe)
+    {
+      exit_status = xe.exit_status ();
+    }
 
-    // FIXME: The following comment doesn't seem to make sense now.
+  // FIXME: The following comment doesn't seem to make sense now.
 
-    // Signal that the interpreter is done executing code in the
-    // main REPL, from script files, or command line eval arguments.
-    // By using a signal here, we give the GUI a chance to process
-    // any pending events, then signal that it is safe to shutdown
-    // the interpreter.  Our notification here allows the GUI to
-    // insert the request to shutdown the interpreter in the event
-    // queue after any other pending signals.  The application
-    // context owns the interpreter and will be responsible for
-    // deleting it later, when the application object destructor is
-    // executed.
+  // Signal that the interpreter is done executing code in the
+  // main REPL, from script files, or command line eval arguments.
+  // By using a signal here, we give the GUI a chance to process
+  // any pending events, then signal that it is safe to shutdown
+  // the interpreter.  Our notification here allows the GUI to
+  // insert the request to shutdown the interpreter in the event
+  // queue after any other pending signals.  The application
+  // context owns the interpreter and will be responsible for
+  // deleting it later, when the application object destructor is
+  // executed.
 
-    emit shutdown_finished (exit_status);
-  }
+  emit shutdown_finished (exit_status);
+}
 
-  void interpreter_qobject::interpreter_event (const fcn_callback& fcn)
-  {
-    if (! m_interpreter)
-      return;
+void interpreter_qobject::interpreter_event (const fcn_callback& fcn)
+{
+  if (! m_interpreter)
+    return;
 
-    event_manager& evmgr = m_interpreter->get_event_manager ();
+  event_manager& evmgr = m_interpreter->get_event_manager ();
 
-    evmgr.post_event (fcn);
-  }
+  evmgr.post_event (fcn);
+}
 
-  void interpreter_qobject::interpreter_event (const meth_callback& meth)
-  {
-    if (! m_interpreter)
-      return;
+void interpreter_qobject::interpreter_event (const meth_callback& meth)
+{
+  if (! m_interpreter)
+    return;
 
-    event_manager& evmgr = m_interpreter->get_event_manager ();
+  event_manager& evmgr = m_interpreter->get_event_manager ();
 
-    evmgr.post_event (meth);
-  }
+  evmgr.post_event (meth);
+}
 
-  void interpreter_qobject::interrupt (void)
-  {
-    if (! m_interpreter)
-      return;
+void interpreter_qobject::interrupt (void)
+{
+  if (! m_interpreter)
+    return;
 
-    // The following is a direct function call across threads.
-    // We need to ensure that it uses thread-safe functions.
+  // The following is a direct function call across threads.
+  // We need to ensure that it uses thread-safe functions.
 
-    m_interpreter->interrupt ();
-  }
+  m_interpreter->interrupt ();
+}
 
-  void interpreter_qobject::pause (void)
-  {
-    // FIXME: Should we make this action work with the old terminal
-    // widget?
+void interpreter_qobject::pause (void)
+{
+  // FIXME: Should we make this action work with the old terminal
+  // widget?
 
-    if (m_octave_qobj.experimental_terminal_widget ())
-      {
-        if (! m_interpreter)
-          return;
+  if (m_octave_qobj.experimental_terminal_widget ())
+    {
+      if (! m_interpreter)
+        return;
 
-        // The following is a direct function call across threads.
-        // We need to ensure that it uses thread-safe functions.
+      // The following is a direct function call across threads.
+      // We need to ensure that it uses thread-safe functions.
 
-        m_interpreter->pause ();
-      }
-  }
+      m_interpreter->pause ();
+    }
+}
 
-  void interpreter_qobject::stop (void)
-  {
-    // FIXME: Should we make this action work with the old terminal
-    // widget?
+void interpreter_qobject::stop (void)
+{
+  // FIXME: Should we make this action work with the old terminal
+  // widget?
 
-    if (m_octave_qobj.experimental_terminal_widget ())
-      {
-        if (! m_interpreter)
-          return;
+  if (m_octave_qobj.experimental_terminal_widget ())
+    {
+      if (! m_interpreter)
+        return;
 
-        // The following is a direct function call across threads.
-        // We need to ensure that it uses thread-safe functions.
+      // The following is a direct function call across threads.
+      // We need to ensure that it uses thread-safe functions.
 
-        m_interpreter->stop ();
-      }
-  }
+      m_interpreter->stop ();
+    }
+}
 
-  void interpreter_qobject::resume (void)
-  {
-    // FIXME: Should we make this action work with the old terminal
-    // widget?
+void interpreter_qobject::resume (void)
+{
+  // FIXME: Should we make this action work with the old terminal
+  // widget?
 
-    if (m_octave_qobj.experimental_terminal_widget ())
-      {
-        // FIXME: This action should only be available when the
-        // interpreter is paused.
+  if (m_octave_qobj.experimental_terminal_widget ())
+    {
+      // FIXME: This action should only be available when the
+      // interpreter is paused.
 
-        interpreter_event
-          ([=] (interpreter& interp)
-          {
-            // INTERPRETER THREAD
+      interpreter_event
+        ([=] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
 
-            interp.resume ();
-          });
-      }
-  }
+          interp.resume ();
+        });
+    }
+}
 
-  qt_interpreter_events *interpreter_qobject::qt_link (void)
-  {
-    return m_octave_qobj.qt_link ();
-  }
+qt_interpreter_events *interpreter_qobject::qt_link (void)
+{
+  return m_octave_qobj.qt_link ();
+}
 
 OCTAVE_END_NAMESPACE(octave)

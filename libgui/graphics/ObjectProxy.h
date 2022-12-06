@@ -34,36 +34,36 @@ class QString;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class Object;
+class Object;
 
-  class ObjectProxy : public QObject
-  {
-    Q_OBJECT
+class ObjectProxy : public QObject
+{
+  Q_OBJECT
 
-  public:
-    ObjectProxy (Object *obj = nullptr);
+public:
+  ObjectProxy (Object *obj = nullptr);
 
-    void update (int pId);
-    void finalize (void);
-    void redraw (void);
-    void show (void);
-    void print (const QString& file_cmd, const QString& term);
-    uint8NDArray get_pixels (void);
+  void update (int pId);
+  void finalize (void);
+  void redraw (void);
+  void show (void);
+  void print (const QString& file_cmd, const QString& term);
+  uint8NDArray get_pixels (void);
 
-    Object * object (void) { return m_object; }
-    void setObject (Object *obj);
+  Object * object (void) { return m_object; }
+  void setObject (Object *obj);
 
-  signals:
-    void sendUpdate (int pId);
-    void sendRedraw (void);
-    void sendShow (void);
+signals:
+  void sendUpdate (int pId);
+  void sendRedraw (void);
+  void sendShow (void);
 
-  private:
-    void init (Object *obj);
+private:
+  void init (Object *obj);
 
-  private:
-    Object *m_object;
-  };
+private:
+  Object *m_object;
+};
 
 OCTAVE_END_NAMESPACE(octave);
 

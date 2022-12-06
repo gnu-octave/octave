@@ -51,54 +51,54 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
+class base_qobject;
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class GLCanvas : public OCTAVE_QT_OPENGL_WIDGET, public Canvas
-  {
-  public:
-    GLCanvas (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-              const graphics_handle& handle, QWidget *parent);
-    ~GLCanvas (void);
+class GLCanvas : public OCTAVE_QT_OPENGL_WIDGET, public Canvas
+{
+public:
+  GLCanvas (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_handle& handle, QWidget *parent);
+  ~GLCanvas (void);
 
-    void initializeGL (void);
+  void initializeGL (void);
 
-    void draw (const graphics_handle& handle);
-    uint8NDArray  do_getPixels (const graphics_handle& handle);
-    void do_print (const QString& file_cmd, const QString& term,
-                   const graphics_handle& handle);
-    void drawZoomBox (const QPoint& p1, const QPoint& p2);
-    void resize (int /* x */, int /* y */,
-                 int /* width */, int /* height */) { }
-    graphics_object selectFromAxes (const graphics_object& ax,
-                                    const QPoint& pt);
-    QWidget * qWidget (void) { return this; }
+  void draw (const graphics_handle& handle);
+  uint8NDArray  do_getPixels (const graphics_handle& handle);
+  void do_print (const QString& file_cmd, const QString& term,
+                 const graphics_handle& handle);
+  void drawZoomBox (const QPoint& p1, const QPoint& p2);
+  void resize (int /* x */, int /* y */,
+               int /* width */, int /* height */) { }
+  graphics_object selectFromAxes (const graphics_object& ax,
+                                  const QPoint& pt);
+  QWidget * qWidget (void) { return this; }
 
-  protected:
-    void paintGL (void);
-    void mouseDoubleClickEvent (QMouseEvent *event);
-    void mouseMoveEvent (QMouseEvent *event);
-    void mousePressEvent (QMouseEvent *event);
-    void mouseReleaseEvent (QMouseEvent *event);
-    void wheelEvent (QWheelEvent *event);
-    void keyPressEvent (QKeyEvent *event);
-    void keyReleaseEvent (QKeyEvent *event);
+protected:
+  void paintGL (void);
+  void mouseDoubleClickEvent (QMouseEvent *event);
+  void mouseMoveEvent (QMouseEvent *event);
+  void mousePressEvent (QMouseEvent *event);
+  void mouseReleaseEvent (QMouseEvent *event);
+  void wheelEvent (QWheelEvent *event);
+  void keyPressEvent (QKeyEvent *event);
+  void keyReleaseEvent (QKeyEvent *event);
 
-  private:
+private:
 
-    bool begin_rendering (void);
-    void end_rendering (void);
+  bool begin_rendering (void);
+  void end_rendering (void);
 
-    octave::qopengl_functions m_glfcns;
-    octave::opengl_renderer m_renderer;
+  octave::qopengl_functions m_glfcns;
+  octave::opengl_renderer m_renderer;
 
 #  if defined (HAVE_QT_OFFSCREEN)
-    QOpenGLContext m_os_context;
-    QOffscreenSurface m_os_surface;
+  QOpenGLContext m_os_context;
+  QOffscreenSurface m_os_surface;
 #  endif
-  };
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -35,40 +35,40 @@ class QWidget;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-  class interpreter;
+class base_qobject;
+class interpreter;
 
-  class Menu : public Object, public MenuContainer
-  {
-    Q_OBJECT
+class Menu : public Object, public MenuContainer
+{
+  Q_OBJECT
 
-  public:
-    Menu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-          const graphics_object& go, QAction *action, Object *parent);
-    ~Menu (void);
+public:
+  Menu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+        const graphics_object& go, QAction *action, Object *parent);
+  ~Menu (void);
 
-    static Menu *
-    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-            const graphics_object& go);
+  static Menu *
+  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+          const graphics_object& go);
 
-    Container * innerContainer (void) { return nullptr; }
+  Container * innerContainer (void) { return nullptr; }
 
-    QWidget * menu (void);
+  QWidget * menu (void);
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private slots:
-    void actionTriggered (void);
-    void actionHovered (void);
+private slots:
+  void actionTriggered (void);
+  void actionHovered (void);
 
-  private:
-    void updateSiblingPositions (void);
+private:
+  void updateSiblingPositions (void);
 
-  private:
-    QWidget *m_parent;
-    QAction *m_separator;
-  };
+private:
+  QWidget *m_parent;
+  QAction *m_separator;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

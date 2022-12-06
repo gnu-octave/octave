@@ -47,76 +47,76 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  release_notes::release_notes (base_qobject& oct_qobj)
-    : QWidget (nullptr), m_browser (nullptr)
-  {
+release_notes::release_notes (base_qobject& oct_qobj)
+: QWidget (nullptr), m_browser (nullptr)
+{
 
-    resource_manager& rmgr = oct_qobj.get_resource_manager ();
-    gui_settings *settings = rmgr.get_settings ();
+  resource_manager& rmgr = oct_qobj.get_resource_manager ();
+  gui_settings *settings = rmgr.get_settings ();
 
-    // The icon
-    QString icon_set = settings->value (dw_icon_set).toString ();
-    if (icon_set != "NONE")
-      m_release_notes_icon = dw_icon_set_names[icon_set]
-                             + "ReleaseWidget.png";
-    else
-      m_release_notes_icon = dw_icon_set_names[icon_set];
+  // The icon
+  QString icon_set = settings->value (dw_icon_set).toString ();
+  if (icon_set != "NONE")
+    m_release_notes_icon = dw_icon_set_names[icon_set]
+      + "ReleaseWidget.png";
+  else
+    m_release_notes_icon = dw_icon_set_names[icon_set];
 
-    std::string news_file = config::oct_etc_dir () + "/NEWS";
+  std::string news_file = config::oct_etc_dir () + "/NEWS";
 
-    QString news;
+  QString news;
 
-    QFile *file = new QFile (QString::fromStdString (news_file));
-    if (file->open (QFile::ReadOnly))
-      {
-        QTextStream *stream = new QTextStream (file);
-        news = stream->readAll ();
-        if (! news.isEmpty ())
-          {
-            // Convert '<', '>' which would be interpreted as HTML
-            news.replace ("<", "&lt;");
-            news.replace (">", "&gt;");
-            // Add HTML tags for pre-formatted text
-            news.prepend ("<pre>");
-            news.append ("</pre>");
-          }
-        else
-          news = (tr ("The release notes file '%1' is empty.")
-                  . arg (QString::fromStdString (news_file)));
-      }
-    else
-      news = (tr ("The release notes file '%1' cannot be read.")
-              . arg (QString::fromStdString (news_file)));
+  QFile *file = new QFile (QString::fromStdString (news_file));
+  if (file->open (QFile::ReadOnly))
+    {
+      QTextStream *stream = new QTextStream (file);
+      news = stream->readAll ();
+      if (! news.isEmpty ())
+        {
+          // Convert '<', '>' which would be interpreted as HTML
+          news.replace ("<", "&lt;");
+          news.replace (">", "&gt;");
+          // Add HTML tags for pre-formatted text
+          news.prepend ("<pre>");
+          news.append ("</pre>");
+        }
+      else
+        news = (tr ("The release notes file '%1' is empty.")
+                . arg (QString::fromStdString (news_file)));
+    }
+  else
+    news = (tr ("The release notes file '%1' cannot be read.")
+            . arg (QString::fromStdString (news_file)));
 
-    m_browser = new QTextBrowser (this);
-    m_browser->setText (news);
+  m_browser = new QTextBrowser (this);
+  m_browser->setText (news);
 
-    QVBoxLayout *vlayout = new QVBoxLayout;
-    vlayout->addWidget (m_browser);
+  QVBoxLayout *vlayout = new QVBoxLayout;
+  vlayout->addWidget (m_browser);
 
-    setLayout (vlayout);
-    setWindowTitle (tr ("Octave Release Notes"));
+  setLayout (vlayout);
+  setWindowTitle (tr ("Octave Release Notes"));
 
-    m_browser->document ()->adjustSize ();
+  m_browser->document ()->adjustSize ();
 
-    int win_x, win_y;
-    get_screen_geometry (win_x, win_y);
+  int win_x, win_y;
+  get_screen_geometry (win_x, win_y);
 
-    resize (win_x*2/5, win_y*2/3);
-    move (20, 20);  // move to the top left corner
-  }
+  resize (win_x*2/5, win_y*2/3);
+  move (20, 20);  // move to the top left corner
+}
 
-  void release_notes::display (void)
-  {
-    if (! isVisible ())
-      show ();
-    else if (isMinimized ())
-      showNormal ();
+void release_notes::display (void)
+{
+  if (! isVisible ())
+    show ();
+  else if (isMinimized ())
+    showNormal ();
 
-    setWindowIcon (QIcon (m_release_notes_icon));
+  setWindowIcon (QIcon (m_release_notes_icon));
 
-    raise ();
-    activateWindow ();
-  }
+  raise ();
+  activateWindow ();
+}
 
 OCTAVE_END_NAMESPACE(octave)

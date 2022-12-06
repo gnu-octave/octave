@@ -33,14 +33,12 @@
 #include "ovl.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+class base_qobject;
+OCTAVE_END_NAMESPACE(octave)
 
-  class base_qobject;
-}
-
-namespace Ui
-{
-  class annotation_dialog;
-}
+OCTAVE_BEGIN_NAMESPACE(Ui)
+class annotation_dialog;
+OCTAVE_END_NAMESPACE(Ui)
 
 class annotation_dialog : public QDialog
 {

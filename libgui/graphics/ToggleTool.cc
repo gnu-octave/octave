@@ -35,64 +35,64 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  ToggleTool *
-  ToggleTool::create (octave::base_qobject& oct_qobj,
-                      octave::interpreter& interp, const graphics_object& go)
-  {
-    Object *parent = parentObject (interp, go);
+ToggleTool *
+ToggleTool::create (octave::base_qobject& oct_qobj,
+                    octave::interpreter& interp, const graphics_object& go)
+{
+  Object *parent = parentObject (interp, go);
 
-    if (parent)
-      {
-        QWidget *parentWidget = parent->qWidget<QWidget> ();
+  if (parent)
+    {
+      QWidget *parentWidget = parent->qWidget<QWidget> ();
 
-        if (parentWidget)
-          return new ToggleTool (oct_qobj, interp, go,
-                                 new QAction (parentWidget));
-      }
+      if (parentWidget)
+        return new ToggleTool (oct_qobj, interp, go,
+                               new QAction (parentWidget));
+    }
 
-    return nullptr;
-  }
+  return nullptr;
+}
 
-  ToggleTool::ToggleTool (octave::base_qobject& oct_qobj,
-                          octave::interpreter& interp,
-                          const graphics_object& go, QAction *action)
-    : ToolBarButton<uitoggletool> (oct_qobj, interp, go, action)
-  {
-    uitoggletool::properties& tp = properties<uitoggletool> ();
+ToggleTool::ToggleTool (octave::base_qobject& oct_qobj,
+                        octave::interpreter& interp,
+                        const graphics_object& go, QAction *action)
+  : ToolBarButton<uitoggletool> (oct_qobj, interp, go, action)
+{
+  uitoggletool::properties& tp = properties<uitoggletool> ();
 
-    action->setCheckable (true);
-    action->setChecked (tp.is_state ());
+  action->setCheckable (true);
+  action->setChecked (tp.is_state ());
 
-    connect (action, &QAction::toggled, this, &ToggleTool::triggered);
-  }
+  connect (action, &QAction::toggled, this, &ToggleTool::triggered);
+}
 
-  ToggleTool::~ToggleTool (void)
-  { }
+ToggleTool::~ToggleTool (void)
+{ }
 
-  void
-  ToggleTool::update (int pId)
-  {
-    uitoggletool::properties& tp = properties<uitoggletool> ();
-    QAction *action = qWidget<QAction> ();
+void
+ToggleTool::update (int pId)
+{
+  uitoggletool::properties& tp = properties<uitoggletool> ();
+  QAction *action = qWidget<QAction> ();
 
-    switch (pId)
-      {
-      case uitoggletool::properties::ID_STATE:
-        action->setChecked (tp.is_state ());
-        break;
+  switch (pId)
+    {
+    case uitoggletool::properties::ID_STATE:
+      action->setChecked (tp.is_state ());
+      break;
 
-      default:
-        ToolBarButton<uitoggletool>::update (pId);
-        break;
-      }
-  }
+    default:
+      ToolBarButton<uitoggletool>::update (pId);
+      break;
+    }
+}
 
-  void
-  ToggleTool::triggered (bool checked)
-  {
-    emit gh_set_event (m_handle, "state", checked, false);
-    emit gh_callback_event (m_handle, checked ? "oncallback" : "offcallback");
-    emit gh_callback_event (m_handle, "clickedcallback");
-  }
+void
+ToggleTool::triggered (bool checked)
+{
+  emit gh_set_event (m_handle, "state", checked, false);
+  emit gh_callback_event (m_handle, checked ? "oncallback" : "offcallback");
+  emit gh_callback_event (m_handle, "clickedcallback");
+}
 
 OCTAVE_END_NAMESPACE(octave);

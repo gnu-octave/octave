@@ -30,31 +30,31 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class led_indicator: public QLabel
-  {
-    Q_OBJECT
+class led_indicator: public QLabel
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    enum led_state
+  enum led_state
     {
       LED_STATE_NO = -1,
       LED_STATE_INACTIVE,
       LED_STATE_ACTIVE
     };
 
-    led_indicator (led_state initial_state = LED_STATE_INACTIVE,
-                   QWidget *parent = 0);
+  led_indicator (led_state initial_state = LED_STATE_INACTIVE,
+                 QWidget *parent = 0);
 
-  public slots:
+public slots:
 
-    void set_state (led_state state);
+  void set_state (led_state state);
 
-  private:
+private:
 
-    QString style_sheet (const QColor& col);
+  QString style_sheet (const QColor& col);
 
-  };
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

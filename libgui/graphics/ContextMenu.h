@@ -37,10 +37,6 @@ namespace octave
 {
   class base_qobject;
   class interpreter;
-}
-
-namespace octave
-{
 
   class ContextMenu : public Object, public MenuContainer
   {

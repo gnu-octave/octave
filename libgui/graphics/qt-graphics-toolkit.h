@@ -35,10 +35,7 @@ namespace octave
 {
   class interpreter;
   class base_qobject;
-}
 
-namespace octave
-{
   class Object;
   class ObjectProxy;
 

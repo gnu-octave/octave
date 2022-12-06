@@ -41,10 +41,6 @@ namespace octave
 {
   class base_qobject;
   class interpreter;
-}
-
-namespace octave
-{
 
   enum MouseMode
   {

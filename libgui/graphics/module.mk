@@ -31,6 +31,8 @@ DIRSTAMP_FILES += \
 libgraphics_MOC = \
   $(OCTAVE_GUI_GRAPHICS_MOC)
 
+libgraphics_MOC_H = $(libgraphics_MOC:.cc=.h)
+
 libgraphics_UI = \
   %reldir%/annotation-dialog.ui
 
@@ -149,6 +151,7 @@ libgui_CLEANFILES += \
   $(GRAPHICS_OCT_FILES) \
   $(GRAPHICS_PKG_ADD_FILE) \
   $(libgraphics_MOC) \
+  $(libgraphics_MOC_H) \
   $(libgraphics_UI_H)
 
 endif

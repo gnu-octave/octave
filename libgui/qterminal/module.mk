@@ -115,6 +115,9 @@ OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_UNIX_MOC = \
 %canon_reldir%_libqterminal_la_MOC += \
   $(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_UNIX_MOC)
 
+%canon_reldir%_libqterminal_la_MOC_H = \
+  $(%canon_reldir%_libqterminal_la_MOC:.cc=.h)
+
 $(OCTAVE_GUI_QTERMINAL_LIBQTERMINAL_UNIX_MOC): | %reldir%/libqterminal/unix/$(octave_dirstamp)
 
 DIRSTAMP_FILES += \
@@ -124,4 +127,6 @@ endif
 
 noinst_LTLIBRARIES += %reldir%/libqterminal.la
 
-libgui_CLEANFILES += $(%canon_reldir%_libqterminal_la_MOC)
+libgui_CLEANFILES += \
+  $(%canon_reldir%_libqterminal_la_MOC) \
+  $(%canon_reldir%_libqterminal_la_MOC_H)

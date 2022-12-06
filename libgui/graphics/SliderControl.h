@@ -33,10 +33,6 @@ class QAbstractSlider;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class SliderControl : public BaseControl
   {

@@ -33,10 +33,6 @@ class QPushButton;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class PushButtonControl : public ButtonControl
   {

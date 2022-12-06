@@ -40,10 +40,6 @@ class QScreen;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   enum MouseMode
   {

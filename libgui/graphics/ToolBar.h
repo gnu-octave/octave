@@ -34,10 +34,6 @@ class QToolBar;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class Figure;
 

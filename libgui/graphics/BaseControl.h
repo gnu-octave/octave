@@ -34,10 +34,6 @@ class QObject;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class BaseControl : public Object
   {

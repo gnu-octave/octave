@@ -36,10 +36,6 @@ class QMenu;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class ContextMenu : public Object, public MenuContainer
   {

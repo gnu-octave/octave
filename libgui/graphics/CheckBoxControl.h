@@ -33,10 +33,6 @@ class QCheckBox;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class CheckBoxControl : public ButtonControl
   {

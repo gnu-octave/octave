@@ -31,10 +31,6 @@
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class PushTool : public ToolBarButton<uipushtool>
   {

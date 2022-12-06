@@ -38,10 +38,6 @@ class QWidget;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class Container;
   class ObjectProxy;

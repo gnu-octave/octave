@@ -34,10 +34,7 @@
 namespace octave
 {
   class interpreter;
-}
 
-namespace octave
-{
   class Object;
   class ObjectProxy;
 

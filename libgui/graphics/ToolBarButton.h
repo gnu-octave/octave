@@ -34,10 +34,6 @@ class QIcon;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class Container;
 

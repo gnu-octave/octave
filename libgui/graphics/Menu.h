@@ -36,10 +36,6 @@ class QWidget;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class Menu : public Object, public MenuContainer
   {

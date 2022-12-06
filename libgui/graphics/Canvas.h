@@ -44,10 +44,6 @@ class octave_value_list;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class Canvas : public QObject
   {

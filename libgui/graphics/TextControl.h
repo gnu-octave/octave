@@ -33,10 +33,6 @@ class QLabel;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class TextControl : public BaseControl
   {

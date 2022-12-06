@@ -33,10 +33,6 @@ class QAbstractButton;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class ButtonControl : public BaseControl
   {

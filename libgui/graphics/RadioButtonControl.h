@@ -33,10 +33,6 @@ class QRadioButton;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class RadioButtonControl : public ButtonControl
   {

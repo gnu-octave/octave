@@ -35,10 +35,6 @@ class QModelIndex;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class ListBoxControl : public BaseControl
   {

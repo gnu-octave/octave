@@ -34,10 +34,6 @@ class QWidget;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class TextEdit;
 

@@ -33,10 +33,6 @@ class QComboBox;
 namespace octave
 {
   class interpreter;
-}
-
-namespace octave
-{
 
   class PopupMenuControl : public BaseControl
   {

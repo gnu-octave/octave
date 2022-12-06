@@ -91,6 +91,11 @@ define moc-command
   mv $@-t $@
 endef
 
+define moc-h-command
+  $(SED) -e 's/OCTAVE_BEGIN_NAMESPACE *(\([^)]*\))/namespace \1 {/' \
+         -e 's/OCTAVE_END_NAMESPACE *([^)]*)/}/' $< > $@
+endef
+
 define rcc-command
   rm -f $@-t $@ && \
   ( echo "#if defined (HAVE_CONFIG_H)"; \
@@ -104,7 +109,12 @@ define rcc-command
   mv $@-t $@
 endef
 
-moc-%.cc: %.h
+.PRECIOUS: moc-%.h
+
+moc-%.h: %.h
+	$(AM_V_GEN)$(moc-h-command)
+
+moc-%.cc: moc-%.h
 	$(AM_V_GEN)$(moc-command)
 
 ui-%.h: %.ui

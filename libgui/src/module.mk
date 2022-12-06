@@ -450,6 +450,8 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   $(octave_gui_MOC) \
   $(octave_gui_RC)
 
+octave_gui_MOC_H = $(octave_gui_MOC:.cc=.h)
+
 %canon_reldir%_%canon_reldir%_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(FT2_CPPFLAGS) \
@@ -481,5 +483,6 @@ libgui_EXTRA_DIST += \
 
 libgui_CLEANFILES += \
   $(octave_gui_MOC) \
+  $(octave_gui_MOC_H) \
   $(octave_gui_UI_H) \
   $(octave_gui_RC)

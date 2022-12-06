@@ -40,280 +40,280 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class community_news;
-  class main_window;
-  class qt_application;
-  class qt_interpreter_events;
-  class release_notes;
+class community_news;
+class main_window;
+class qt_application;
+class qt_interpreter_events;
+class release_notes;
 
-  //! This class is a simple wrapper around QApplication so that we can
-  //! reimplement QApplication::notify.  The octave_qapplication object
-  //! should behave identically to a QApplication object except that it
-  //! overrides the notify method so we can handle forward Octave
-  //! execution_exception exceptions from the GUI thread to the
-  //! interpreter thread.
+//! This class is a simple wrapper around QApplication so that we can
+//! reimplement QApplication::notify.  The octave_qapplication object
+//! should behave identically to a QApplication object except that it
+//! overrides the notify method so we can handle forward Octave
+//! execution_exception exceptions from the GUI thread to the
+//! interpreter thread.
 
-  class octave_qapplication : public QApplication
+class octave_qapplication : public QApplication
+{
+  Q_OBJECT
+
+public:
+
+  octave_qapplication (int& argc, char **argv)
+    : QApplication (argc, argv)
+  { }
+
+  virtual bool notify (QObject *receiver, QEvent *e) override;
+
+  ~octave_qapplication (void) { };
+
+signals:
+
+  void interpreter_event (const fcn_callback& fcn);
+  void interpreter_event (const meth_callback& meth);
+};
+
+//! Container for windows that may be created from the command line or
+//! docked with the main GUI window.  Any of these windows that are
+//! created in command line mode will be adopted by the main window if
+//! it is opened from the command line.  Any that are undocked from
+//! the main window will remain open if control returns to the command
+//! line.
+
+class base_qobject;
+class documentation_dock_widget;
+class file_editor_interface;
+class files_dock_widget;
+class history_dock_widget;
+class terminal_dock_widget;
+class variable_editor;
+class workspace_model;
+class workspace_view;
+
+//! Base class for Octave interfaces that use Qt.  There are two
+//! classes derived from this one.  One provides a command-line
+//! interface that may use Qt graphics and another provides the
+//! full GUI experience.
+
+class base_qobject : public QObject
+{
+  Q_OBJECT
+
+public:
+
+  // Note: the GUI_APP argument is not needed with the new
+  // experimental terminal widget.
+  base_qobject (qt_application& app_context, bool gui_app = false);
+
+  ~base_qobject (void);
+
+  void config_translators (void);
+
+  void start_main_thread (void);
+
+  int exec (void);
+
+  // The Octave application context.
+  qt_application& app_context (void) { return m_app_context; }
+
+  // The Qt QApplication.
+  QApplication * qapplication (void) { return m_qapplication; };
+
+  // Provided for convenience.  Will be removed once we eliminate the
+  // old terminal widget.
+  bool experimental_terminal_widget (void) const;
+
+  // Provided for convenience.
+  bool gui_running (void) const;
+
+  bool have_terminal_window (void) const
   {
-    Q_OBJECT
+    return ! m_terminal_widget.isNull ();
+  }
 
-  public:
-
-    octave_qapplication (int& argc, char **argv)
-      : QApplication (argc, argv)
-    { }
-
-    virtual bool notify (QObject *receiver, QEvent *e) override;
-
-    ~octave_qapplication (void) { };
-
-  signals:
-
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
-  };
-
-  //! Container for windows that may be created from the command line or
-  //! docked with the main GUI window.  Any of these windows that are
-  //! created in command line mode will be adopted by the main window if
-  //! it is opened from the command line.  Any that are undocked from
-  //! the main window will remain open if control returns to the command
-  //! line.
-
-  class base_qobject;
-  class documentation_dock_widget;
-  class file_editor_interface;
-  class files_dock_widget;
-  class history_dock_widget;
-  class terminal_dock_widget;
-  class variable_editor;
-  class workspace_model;
-  class workspace_view;
-
-  //! Base class for Octave interfaces that use Qt.  There are two
-  //! classes derived from this one.  One provides a command-line
-  //! interface that may use Qt graphics and another provides the
-  //! full GUI experience.
-
-  class base_qobject : public QObject
+  main_window * get_main_window (void)
   {
-    Q_OBJECT
+    return m_main_window;
+  }
 
-  public:
+  resource_manager& get_resource_manager (void)
+  {
+    return m_resource_manager;
+  }
 
-    // Note: the GUI_APP argument is not needed with the new
-    // experimental terminal widget.
-    base_qobject (qt_application& app_context, bool gui_app = false);
+  shortcut_manager& get_shortcut_manager (void)
+  {
+    return m_shortcut_manager;
+  }
 
-    ~base_qobject (void);
+  std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events (void)
+  {
+    return m_qt_interpreter_events;
+  }
 
-    void config_translators (void);
+  qt_interpreter_events * qt_link (void)
+  {
+    return m_qt_interpreter_events.get ();
+  }
 
-    void start_main_thread (void);
+  interpreter_qobject * interpreter_qobj (void)
+  {
+    return m_interpreter_qobj;
+  }
 
-    int exec (void);
+  workspace_model * get_workspace_model (void)
+  {
+    return m_workspace_model;
+  }
 
-    // The Octave application context.
-    qt_application& app_context (void) { return m_app_context; }
+  QPointer<terminal_dock_widget>
+  terminal_widget (main_window *mw = nullptr);
 
-    // The Qt QApplication.
-    QApplication * qapplication (void) { return m_qapplication; };
+  QPointer<documentation_dock_widget>
+  documentation_widget (main_window *mw = nullptr);
 
-    // Provided for convenience.  Will be removed once we eliminate the
-    // old terminal widget.
-    bool experimental_terminal_widget (void) const;
+  QPointer<files_dock_widget>
+  file_browser_widget (main_window *mw = nullptr);
 
-    // Provided for convenience.
-    bool gui_running (void) const;
+  QPointer<history_dock_widget>
+  history_widget (main_window *mw = nullptr);
 
-    bool have_terminal_window (void) const
-    {
-      return ! m_terminal_widget.isNull ();
-    }
+  QPointer<workspace_view>
+  workspace_widget (main_window *mw = nullptr);
 
-    main_window * get_main_window (void)
-    {
-      return m_main_window;
-    }
+  // FIXME: The file_editor_interface needs to be a proper generic
+  // interface for all editors (internal and external) for this to
+  // work properly.
+  QPointer<file_editor_interface>
+  editor_widget (main_window *mw = nullptr);
 
-    resource_manager& get_resource_manager (void)
-    {
-      return m_resource_manager;
-    }
+  QPointer<variable_editor>
+  variable_editor_widget (main_window *mw = nullptr);
 
-    shortcut_manager& get_shortcut_manager (void)
-    {
-      return m_shortcut_manager;
-    }
+  QPointer<community_news> community_news_widget (int serial = -1);
 
-    std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events (void)
-    {
-      return m_qt_interpreter_events;
-    }
+  QPointer<release_notes> release_notes_widget (void);
 
-    qt_interpreter_events * qt_link (void)
-    {
-      return m_qt_interpreter_events.get ();
-    }
+  QThread * main_thread (void) { return m_main_thread; }
 
-    interpreter_qobject * interpreter_qobj (void)
-    {
-      return m_interpreter_qobj;
-    }
+  // Declared virtual so that a derived class may redefine this
+  // method.
 
-    workspace_model * get_workspace_model (void)
-    {
-      return m_workspace_model;
-    }
+  virtual bool confirm_shutdown (void);
 
-    QPointer<terminal_dock_widget>
-    terminal_widget (main_window *mw = nullptr);
+  bool is_gui_app (void) const { return m_gui_app; }
 
-    QPointer<documentation_dock_widget>
-    documentation_widget (main_window *mw = nullptr);
+  template <typename T> void connect_interpreter_events (T *widget)
+  {
+    connect (widget, QOverload<const fcn_callback&>::of (&T::interpreter_event),
+             this, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
 
-    QPointer<files_dock_widget>
-    file_browser_widget (main_window *mw = nullptr);
+    connect (widget, QOverload<const meth_callback&>::of (&T::interpreter_event),
+             this, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
+  }
 
-    QPointer<history_dock_widget>
-    history_widget (main_window *mw = nullptr);
+public slots:
 
-    QPointer<workspace_view>
-    workspace_widget (main_window *mw = nullptr);
+  void execute_command (const QString& command);
 
-    // FIXME: The file_editor_interface needs to be a proper generic
-    // interface for all editors (internal and external) for this to
-    // work properly.
-    QPointer<file_editor_interface>
-    editor_widget (main_window *mw = nullptr);
+  // Note: START_GUI and CLOSE_GUI don't currently perform any work
+  // with the old terminal widget.
+  void start_gui (bool gui_app);
+  void close_gui (void);
 
-    QPointer<variable_editor>
-    variable_editor_widget (main_window *mw = nullptr);
+  void show_terminal_window (void);
 
-    QPointer<community_news> community_news_widget (int serial = -1);
+  void show_documentation_window (const QString& file);
 
-    QPointer<release_notes> release_notes_widget (void);
+  void show_file_browser_window (void);
 
-    QThread * main_thread (void) { return m_main_thread; }
+  void show_command_history_window (void);
 
-    // Declared virtual so that a derived class may redefine this
-    // method.
+  void show_workspace_window (void);
 
-    virtual bool confirm_shutdown (void);
+  void show_variable_editor_window (const QString& name,
+                                    const octave_value& value);
 
-    bool is_gui_app (void) const { return m_gui_app; }
+  void handle_variable_editor_update (void);
 
-    template <typename T> void connect_interpreter_events (T *widget)
-    {
-      connect (widget, QOverload<const fcn_callback&>::of (&T::interpreter_event),
-               this, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
+  void show_community_news (int serial);
 
-      connect (widget, QOverload<const meth_callback&>::of (&T::interpreter_event),
-               this, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
-    }
+  void show_release_notes (void);
 
-  public slots:
+  void interpreter_ready (void);
 
-    void execute_command (const QString& command);
+  void interpreter_event (const fcn_callback& fcn);
 
-    // Note: START_GUI and CLOSE_GUI don't currently perform any work
-    // with the old terminal widget.
-    void start_gui (bool gui_app);
-    void close_gui (void);
+  void interpreter_event (const meth_callback& meth);
 
-    void show_terminal_window (void);
+  void interpreter_interrupt (void);
 
-    void show_documentation_window (const QString& file);
+  // Note: these currently only work with the new experimental
+  // terminal widget.
+  void interpreter_pause (void);
+  void interpreter_stop (void);
+  void interpreter_resume (void);
 
-    void show_file_browser_window (void);
+  void copy_image_to_clipboard (const QString& file, bool remove_file);
 
-    void show_command_history_window (void);
+protected:
 
-    void show_workspace_window (void);
+  qt_application& m_app_context;
 
-    void show_variable_editor_window (const QString& name,
-                                      const octave_value& value);
+  // Use these to ensure that argc and argv exist for as long as the
+  // QApplication object.
 
-    void handle_variable_editor_update (void);
+  int m_argc;
+  char **m_argv;
 
-    void show_community_news (int serial);
+  octave_qapplication *m_qapplication;
 
-    void show_release_notes (void);
+  resource_manager m_resource_manager;
 
-    void interpreter_ready (void);
+  shortcut_manager m_shortcut_manager;
 
-    void interpreter_event (const fcn_callback& fcn);
+  QTranslator *m_qt_tr;
+  QTranslator *m_gui_tr;
+  QTranslator *m_qsci_tr;
 
-    void interpreter_event (const meth_callback& meth);
+  bool m_translators_installed;
 
-    void interpreter_interrupt (void);
+  std::shared_ptr<qt_interpreter_events> m_qt_interpreter_events;
 
-    // Note: these currently only work with the new experimental
-    // terminal widget.
-    void interpreter_pause (void);
-    void interpreter_stop (void);
-    void interpreter_resume (void);
+  interpreter_qobject *m_interpreter_qobj;
 
-    void copy_image_to_clipboard (const QString& file, bool remove_file);
+  QThread *m_main_thread;
 
-  protected:
+  bool m_gui_app;
 
-    qt_application& m_app_context;
+  bool m_interpreter_ready;
 
-    // Use these to ensure that argc and argv exist for as long as the
-    // QApplication object.
+  workspace_model *m_workspace_model;
 
-    int m_argc;
-    char **m_argv;
+  // Dock widgets that may be used from the command line.  They are
+  // adopted by the desktop (main window) if it is also started from
+  // the command line.
 
-    octave_qapplication *m_qapplication;
+  QPointer<terminal_dock_widget> m_terminal_widget;
 
-    resource_manager m_resource_manager;
+  QPointer<documentation_dock_widget> m_documentation_widget;
 
-    shortcut_manager m_shortcut_manager;
+  QPointer<files_dock_widget> m_file_browser_widget;
 
-    QTranslator *m_qt_tr;
-    QTranslator *m_gui_tr;
-    QTranslator *m_qsci_tr;
+  QPointer<history_dock_widget> m_history_widget;
 
-    bool m_translators_installed;
+  QPointer<workspace_view> m_workspace_widget;
 
-    std::shared_ptr<qt_interpreter_events> m_qt_interpreter_events;
+  QPointer<file_editor_interface> m_editor_widget;
 
-    interpreter_qobject *m_interpreter_qobj;
+  QPointer<variable_editor> m_variable_editor_widget;
 
-    QThread *m_main_thread;
+  QPointer<community_news> m_community_news;
 
-    bool m_gui_app;
+  QPointer<release_notes> m_release_notes;
 
-    bool m_interpreter_ready;
-
-    workspace_model *m_workspace_model;
-
-    // Dock widgets that may be used from the command line.  They are
-    // adopted by the desktop (main window) if it is also started from
-    // the command line.
-
-    QPointer<terminal_dock_widget> m_terminal_widget;
-
-    QPointer<documentation_dock_widget> m_documentation_widget;
-
-    QPointer<files_dock_widget> m_file_browser_widget;
-
-    QPointer<history_dock_widget> m_history_widget;
-
-    QPointer<workspace_view> m_workspace_widget;
-
-    QPointer<file_editor_interface> m_editor_widget;
-
-    QPointer<variable_editor> m_variable_editor_widget;
-
-    QPointer<community_news> m_community_news;
-
-    QPointer<release_notes> m_release_notes;
-
-    main_window *m_main_window;
-  };
+  main_window *m_main_window;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

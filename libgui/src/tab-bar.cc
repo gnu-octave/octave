@@ -34,253 +34,253 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  //
-  // Reimplemented QTabbar
-  //
+//
+// Reimplemented QTabbar
+//
 
-  tab_bar::tab_bar (QWidget *p)
-    : QTabBar (p), m_context_menu (new QMenu (this))
-  { }
+tab_bar::tab_bar (QWidget *p)
+: QTabBar (p), m_context_menu (new QMenu (this))
+{ }
 
-  void tab_bar::set_rotated (int rotated)
-  {
-    m_rotated = rotated;
-  }
+void tab_bar::set_rotated (int rotated)
+{
+  m_rotated = rotated;
+}
 
-  // slots for tab navigation
-  void tab_bar::switch_left_tab (void)
-  {
-    switch_tab (-1);
-  }
+// slots for tab navigation
+void tab_bar::switch_left_tab (void)
+{
+  switch_tab (-1);
+}
 
-  void tab_bar::switch_right_tab (void)
-  {
-    switch_tab (1);
-  }
+void tab_bar::switch_right_tab (void)
+{
+  switch_tab (1);
+}
 
-  void tab_bar::move_tab_left (void)
-  {
-    switch_tab (-1, true);
-  }
+void tab_bar::move_tab_left (void)
+{
+  switch_tab (-1, true);
+}
 
-  void tab_bar::move_tab_right (void)
-  {
-    switch_tab (1, true);
-  }
+void tab_bar::move_tab_right (void)
+{
+  switch_tab (1, true);
+}
 
-  void tab_bar::switch_tab (int direction, bool movetab)
-  {
-    int tabs = count ();
+void tab_bar::switch_tab (int direction, bool movetab)
+{
+  int tabs = count ();
 
-    if (tabs < 2)
-      return;
+  if (tabs < 2)
+    return;
 
-    int old_pos = currentIndex ();
-    int new_pos = currentIndex () + direction;
+  int old_pos = currentIndex ();
+  int new_pos = currentIndex () + direction;
 
-    if (new_pos < 0 || new_pos >= tabs)
-      new_pos = new_pos - direction*tabs;
+  if (new_pos < 0 || new_pos >= tabs)
+    new_pos = new_pos - direction*tabs;
 
-    if (movetab)
-      {
-        moveTab (old_pos, new_pos);
-        setCurrentIndex (old_pos);
-        setCurrentIndex (new_pos);
-      }
-    else
+  if (movetab)
+    {
+      moveTab (old_pos, new_pos);
+      setCurrentIndex (old_pos);
       setCurrentIndex (new_pos);
-  }
+    }
+  else
+    setCurrentIndex (new_pos);
+}
 
-  void tab_bar::sort_tabs_alph (void)
-  {
-    QString current_title = tabText (currentIndex ());
-    int tab_with_focus = 0;
+void tab_bar::sort_tabs_alph (void)
+{
+  QString current_title = tabText (currentIndex ());
+  int tab_with_focus = 0;
 
-    // Get all tab title and sort
-    QStringList tab_texts;
+  // Get all tab title and sort
+  QStringList tab_texts;
 
-    for (int i = 0; i < count (); i++)
-      tab_texts.append (tabText (i));
+  for (int i = 0; i < count (); i++)
+    tab_texts.append (tabText (i));
 
-    tab_texts.sort ();
+  tab_texts.sort ();
 
-    // Move tab into the order of the generated string list
-    for (int title = 0; title < tab_texts.count (); title++)
-      {
-        // Target tab is same as place of title in QStringList.
-        // Find index of next title in string list, leaving out the
-        // tabs (or titles) that were already moved.
-        for (int tab = title; tab < count (); tab++)
-          {
-            if (tabText (tab) == tab_texts.at (title))
-              {
-                // Index of next tile found, so move tab into next position
-                moveTab (tab, title);
+  // Move tab into the order of the generated string list
+  for (int title = 0; title < tab_texts.count (); title++)
+    {
+      // Target tab is same as place of title in QStringList.
+      // Find index of next title in string list, leaving out the
+      // tabs (or titles) that were already moved.
+      for (int tab = title; tab < count (); tab++)
+        {
+          if (tabText (tab) == tab_texts.at (title))
+            {
+              // Index of next tile found, so move tab into next position
+              moveTab (tab, title);
 
-                if (tab_texts.at (title) == current_title)
-                  tab_with_focus = title;
+              if (tab_texts.at (title) == current_title)
+                tab_with_focus = title;
 
-                break;
-              }
-          }
-      }
+              break;
+            }
+        }
+    }
 
-    setCurrentIndex (tab_with_focus);
-  }
+  setCurrentIndex (tab_with_focus);
+}
 
-  // The following two functions are reimplemented for allowing rotated
-  // tabs and are based on this answer on stack overflow:
-  // https://stackoverflow.com/a/50579369
+// The following two functions are reimplemented for allowing rotated
+// tabs and are based on this answer on stack overflow:
+// https://stackoverflow.com/a/50579369
 
-  // Reimplemented size hint allowing rotated tabs
-  QSize tab_bar::tabSizeHint (int idx) const
-  {
-    QSize s = QTabBar::tabSizeHint (idx);
-    if (m_rotated)
+// Reimplemented size hint allowing rotated tabs
+QSize tab_bar::tabSizeHint (int idx) const
+{
+  QSize s = QTabBar::tabSizeHint (idx);
+  if (m_rotated)
+    s.transpose();
+
+  return s;
+}
+
+// Reimplemented paint event allowing rotated tabs
+void tab_bar::paintEvent(QPaintEvent *e)
+{
+  // Just process the original event if not rotated
+  if (! m_rotated)
+    return QTabBar::paintEvent (e);
+
+  // Process the event for rotated tabs
+  QStylePainter painter (this);
+  QStyleOptionTab opt;
+
+  for (int idx = 0; idx < count(); idx++)
+    {
+      initStyleOption (&opt, idx);
+      painter.drawControl (QStyle::CE_TabBarTabShape, opt);
+      painter.save ();
+
+      QSize s = opt.rect.size();
       s.transpose();
+      QRect rect (QPoint (), s);
+      rect.moveCenter (opt.rect.center ());
+      opt.rect = rect;
 
-    return s;
-  }
+      QPoint p = tabRect (idx).center ();
+      painter.translate (p);
+      painter.rotate (-m_rotated*90);
+      painter.translate (-p);
+      painter.drawControl (QStyle::CE_TabBarTabLabel, opt);
+      painter.restore ();
+    }
+}
 
-  // Reimplemented paint event allowing rotated tabs
-  void tab_bar::paintEvent(QPaintEvent *e)
-  {
-    // Just process the original event if not rotated
-    if (! m_rotated)
-      return QTabBar::paintEvent (e);
+// Reimplement mouse event for filtering out the desired mouse clicks
+void tab_bar::mousePressEvent (QMouseEvent *me)
+{
+  QPoint click_pos;
+  int clicked_idx = -1;
 
-    // Process the event for rotated tabs
-    QStylePainter painter (this);
-    QStyleOptionTab opt;
+  // detect the tab where the click occurred
+  for (int i = 0; i < count (); i++)
+    {
+      click_pos = mapToGlobal (me->pos ());
+      if (tabRect (i).contains (mapFromGlobal (click_pos)))
+        {
+          clicked_idx = i;
+          break;
+        }
+    }
 
-    for (int idx = 0; idx < count(); idx++)
-      {
-        initStyleOption (&opt, idx);
-        painter.drawControl (QStyle::CE_TabBarTabShape, opt);
-        painter.save ();
+  // If a tab was clicked
+  if (clicked_idx >= 0)
+    {
+      int current_idx = currentIndex ();
+      int current_count = count ();
 
-        QSize s = opt.rect.size();
-        s.transpose();
-        QRect rect (QPoint (), s);
-        rect.moveCenter (opt.rect.center ());
-        opt.rect = rect;
+      // detect the mouse click
+      if ((me->type () == QEvent::MouseButtonDblClick
+           && me->button() == Qt::LeftButton)
+          || (me->type () != QEvent::MouseButtonDblClick
+              && me->button() == Qt::MiddleButton))
+        {
+          // Middle click or double click -> close the tab
+          // Make the clicked tab the current one and close it
+          setCurrentIndex (clicked_idx);
+          emit close_current_tab_signal (true);
+          // Was the closed tab before or after the previously current tab?
+          // According to the result, use previous index or reduce it by one
+          if (current_idx - clicked_idx > 0)
+            setCurrentIndex (current_idx - 1);
+          else if (current_idx - clicked_idx < 0)
+            setCurrentIndex (current_idx);
+        }
+      else if (me->type () != QEvent::MouseButtonDblClick
+               && me->button() == Qt::RightButton)
+        {
+          // Right click, show context menu
+          setCurrentIndex (clicked_idx);
 
-        QPoint p = tabRect (idx).center ();
-        painter.translate (p);
-        painter.rotate (-m_rotated*90);
-        painter.translate (-p);
-        painter.drawControl (QStyle::CE_TabBarTabLabel, opt);
-        painter.restore ();
-      }
-  }
+          // Fill context menu with actions for selecting current tabs
+          m_ctx_actions = m_context_menu->actions (); // Copy of basic actions
+          QMenu ctx_menu;                             // The menu actually used
+          connect (&ctx_menu, &QMenu::triggered,
+                   this, &tab_bar::ctx_menu_activated);
 
-  // Reimplement mouse event for filtering out the desired mouse clicks
-  void tab_bar::mousePressEvent (QMouseEvent *me)
-  {
-    QPoint click_pos;
-    int clicked_idx = -1;
+          for (int i = count () - 1; i >= 0; i--)
+            {
+              // Prepend an action for each tab
+              QAction *a = new QAction (tabIcon (i), tabText (i), &ctx_menu);
+              m_ctx_actions.prepend (a);
+            }
+          // Add all actions to our menu
+          ctx_menu.insertActions (nullptr, m_ctx_actions);
 
-    // detect the tab where the click occurred
-    for (int i = 0; i < count (); i++)
-      {
-        click_pos = mapToGlobal (me->pos ());
-        if (tabRect (i).contains (mapFromGlobal (click_pos)))
-          {
-            clicked_idx = i;
-            break;
-          }
-      }
-
-    // If a tab was clicked
-    if (clicked_idx >= 0)
-      {
-        int current_idx = currentIndex ();
-        int current_count = count ();
-
-        // detect the mouse click
-        if ((me->type () == QEvent::MouseButtonDblClick
-             && me->button() == Qt::LeftButton)
-            || (me->type () != QEvent::MouseButtonDblClick
-                && me->button() == Qt::MiddleButton))
-          {
-            // Middle click or double click -> close the tab
-            // Make the clicked tab the current one and close it
-            setCurrentIndex (clicked_idx);
-            emit close_current_tab_signal (true);
-            // Was the closed tab before or after the previously current tab?
-            // According to the result, use previous index or reduce it by one
-            if (current_idx - clicked_idx > 0)
-              setCurrentIndex (current_idx - 1);
-            else if (current_idx - clicked_idx < 0)
+          if (! ctx_menu.exec (click_pos))
+            {
+              // No action selected, back to previous tab
               setCurrentIndex (current_idx);
-          }
-        else if (me->type () != QEvent::MouseButtonDblClick
-                 && me->button() == Qt::RightButton)
-          {
-            // Right click, show context menu
-            setCurrentIndex (clicked_idx);
+            }
+          else if (count () < current_count)
+            {
+              // A tab was closed:
+              // Was the possibly only closed tab before or after the
+              // previously current tab? According to the result, use previous
+              // index or reduce it by one.  Also prevent using a too large
+              // index if other or all files were closed.
+              int new_idx = count () - 1;
+              if (new_idx > 0)
+                {
+                  if (current_idx - clicked_idx > 0)
+                    new_idx = current_idx - 1;
+                  else if (current_idx - clicked_idx < 0)
+                    new_idx = current_idx;
+                }
+              if (new_idx >= 0)
+                setCurrentIndex (new_idx);
+            }
+        }
+      else
+        {
+          // regular handling of the mouse event
+          QTabBar::mousePressEvent (me);
+        }
+    }
+  else
+    {
+      // regular handling of the mouse event
+      QTabBar::mousePressEvent (me);
+    }
+}
 
-            // Fill context menu with actions for selecting current tabs
-            m_ctx_actions = m_context_menu->actions (); // Copy of basic actions
-            QMenu ctx_menu;                             // The menu actually used
-            connect (&ctx_menu, &QMenu::triggered,
-                     this, &tab_bar::ctx_menu_activated);
-
-            for (int i = count () - 1; i >= 0; i--)
-              {
-                // Prepend an action for each tab
-                QAction *a = new QAction (tabIcon (i), tabText (i), &ctx_menu);
-                m_ctx_actions.prepend (a);
-              }
-            // Add all actions to our menu
-            ctx_menu.insertActions (nullptr, m_ctx_actions);
-
-            if (! ctx_menu.exec (click_pos))
-              {
-                // No action selected, back to previous tab
-                setCurrentIndex (current_idx);
-              }
-            else if (count () < current_count)
-              {
-                // A tab was closed:
-                // Was the possibly only closed tab before or after the
-                // previously current tab? According to the result, use previous
-                // index or reduce it by one.  Also prevent using a too large
-                // index if other or all files were closed.
-                int new_idx = count () - 1;
-                if (new_idx > 0)
-                  {
-                    if (current_idx - clicked_idx > 0)
-                      new_idx = current_idx - 1;
-                    else if (current_idx - clicked_idx < 0)
-                      new_idx = current_idx;
-                  }
-                if (new_idx >= 0)
-                  setCurrentIndex (new_idx);
-              }
-          }
-        else
-          {
-            // regular handling of the mouse event
-            QTabBar::mousePressEvent (me);
-          }
-      }
-    else
-      {
-        // regular handling of the mouse event
-        QTabBar::mousePressEvent (me);
-      }
-  }
-
-  // Slot if a menu entry in the context menu is activated
-  void tab_bar::ctx_menu_activated (QAction *a)
-  {
-    // If the index of the activated action is in the range of
-    // the current tabs, set the related current tab. The basic actions
-    // are handled by the editor
-    int i = m_ctx_actions.indexOf (a);
-    if ((i > -1) && (i < count ()))
-      setCurrentIndex (i);
-  }
+// Slot if a menu entry in the context menu is activated
+void tab_bar::ctx_menu_activated (QAction *a)
+{
+  // If the index of the activated action is in the range of
+  // the current tabs, set the related current tab. The basic actions
+  // are handled by the editor
+  int i = m_ctx_actions.indexOf (a);
+  if ((i > -1) && (i < count ()))
+    setCurrentIndex (i);
+}
 
 OCTAVE_END_NAMESPACE(octave)

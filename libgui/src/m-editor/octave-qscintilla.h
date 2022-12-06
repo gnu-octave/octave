@@ -38,123 +38,123 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
+class base_qobject;
 
-  class octave_qscintilla : public QsciScintilla
-  {
-    Q_OBJECT
+class octave_qscintilla : public QsciScintilla
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    octave_qscintilla (QWidget *p, base_qobject& oct_qobj);
+  octave_qscintilla (QWidget *p, base_qobject& oct_qobj);
 
-    ~octave_qscintilla (void) = default;
+  ~octave_qscintilla (void) = default;
 
-    enum
+  enum
     {
       ST_NONE = 0,
       ST_LINE_COMMENT,
       ST_BLOCK_COMMENT
     };
 
-    virtual void contextMenuEvent (QContextMenuEvent *e);
-    virtual void setCursorPosition (int line, int col);
+  virtual void contextMenuEvent (QContextMenuEvent *e);
+  virtual void setCursorPosition (int line, int col);
 
-    void context_help_doc (bool);
-    void context_edit (void);
-    void context_run (void);
-    void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
-    bool get_actual_word (void);
-    void clear_selection_markers (void);
-    QString eol_string (void);
-    void get_current_position (int *pos, int *line, int *col);
-    QStringList comment_string (bool comment = true);
-    int get_style (int pos = -1);
-    int is_style_comment (int pos = -1);
-    void smart_indent (bool do_smart_indent, int do_auto_close,
-                       int line, int ind_char_width);
+  void context_help_doc (bool);
+  void context_edit (void);
+  void context_run (void);
+  void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
+  bool get_actual_word (void);
+  void clear_selection_markers (void);
+  QString eol_string (void);
+  void get_current_position (int *pos, int *line, int *col);
+  QStringList comment_string (bool comment = true);
+  int get_style (int pos = -1);
+  int is_style_comment (int pos = -1);
+  void smart_indent (bool do_smart_indent, int do_auto_close,
+                     int line, int ind_char_width);
 
-    void smart_indent_line_or_selected_text (int lineFrom, int lineTo);
+  void smart_indent_line_or_selected_text (int lineFrom, int lineTo);
 
-    void set_word_selection (const QString& word = QString ());
+  void set_word_selection (const QString& word = QString ());
 
-    void show_selection_markers (int l1, int c1, int l2, int c2);
+  void show_selection_markers (int l1, int c1, int l2, int c2);
 
-    void set_selection_marker_color (const QColor& c);
+  void set_selection_marker_color (const QColor& c);
 
-    void replace_all (const QString& o_str, const QString& n_str,
-                      bool re, bool cs, bool wo);
+  void replace_all (const QString& o_str, const QString& n_str,
+                    bool re, bool cs, bool wo);
 
-  signals:
+signals:
 
-    void update_rowcol_indicator_signal (int line, int col);
-    void execute_command_in_terminal_signal (const QString&);
-    void create_context_menu_signal (QMenu *);
-    void context_menu_edit_signal (const QString&);
-    void qsci_has_focus_signal (bool);
-    void status_update (bool, bool);
-    void show_doc_signal (const QString&);
-    void context_menu_break_condition_signal (int);
-    void context_menu_break_once (int);
-    void ctx_menu_run_finished_signal (bool, int, QTemporaryFile *,
-                                       QTemporaryFile *, bool, bool);
-    void focus_console_after_command_signal (void);
+  void update_rowcol_indicator_signal (int line, int col);
+  void execute_command_in_terminal_signal (const QString&);
+  void create_context_menu_signal (QMenu *);
+  void context_menu_edit_signal (const QString&);
+  void qsci_has_focus_signal (bool);
+  void status_update (bool, bool);
+  void show_doc_signal (const QString&);
+  void context_menu_break_condition_signal (int);
+  void context_menu_break_once (int);
+  void ctx_menu_run_finished_signal (bool, int, QTemporaryFile *,
+                                     QTemporaryFile *, bool, bool);
+  void focus_console_after_command_signal (void);
 
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
+  void interpreter_event (const fcn_callback& fcn);
+  void interpreter_event (const meth_callback& meth);
 
-  public slots:
+public slots:
 
-    void handle_enter_debug_mode (void);
-    void handle_exit_debug_mode (void);
+  void handle_enter_debug_mode (void);
+  void handle_exit_debug_mode (void);
 
-  private slots:
+private slots:
 
-    void ctx_menu_run_finished (bool, int, QTemporaryFile *, QTemporaryFile *,
-                                bool, bool);
+  void ctx_menu_run_finished (bool, int, QTemporaryFile *, QTemporaryFile *,
+                              bool, bool);
 
-    void contextmenu_help (bool);
-    void contextmenu_doc (bool);
-    void contextmenu_help_doc (bool);
-    void contextmenu_edit (bool);
-    void contextmenu_run (bool);
-    void contextmenu_run_temp_error (void);
+  void contextmenu_help (bool);
+  void contextmenu_doc (bool);
+  void contextmenu_help_doc (bool);
+  void contextmenu_edit (bool);
+  void contextmenu_run (bool);
+  void contextmenu_run_temp_error (void);
 
-    void contextmenu_break_condition (bool);
-    void contextmenu_break_once (const QPoint&);
+  void contextmenu_break_condition (bool);
+  void contextmenu_break_once (const QPoint&);
 
-    void text_changed (void);
-    void cursor_position_changed (int, int);
+  void text_changed (void);
+  void cursor_position_changed (int, int);
 
-  protected:
+protected:
 
-    void focusInEvent (QFocusEvent *focusEvent);
+  void focusInEvent (QFocusEvent *focusEvent);
 
-    void show_replace_action_tooltip (void);
+  void show_replace_action_tooltip (void);
 
-    bool event (QEvent *e);
+  bool event (QEvent *e);
 
-    void keyPressEvent (QKeyEvent *e);
+  void keyPressEvent (QKeyEvent *e);
 
-    void dragEnterEvent (QDragEnterEvent *e);
+  void dragEnterEvent (QDragEnterEvent *e);
 
-  private:
+private:
 
-    void auto_close (int auto_endif, int l,
-                     const QString& line, QString& first_word);
+  void auto_close (int auto_endif, int l,
+                   const QString& line, QString& first_word);
 
-    base_qobject& m_octave_qobj;
+  base_qobject& m_octave_qobj;
 
-    bool m_debug_mode;
+  bool m_debug_mode;
 
-    QString m_word_at_cursor;
+  QString m_word_at_cursor;
 
-    QString m_selection;
-    QString m_selection_replacement;
-    int m_selection_line;
-    int m_selection_col;
-    int m_indicator_id;
-  };
+  QString m_selection;
+  QString m_selection_replacement;
+  int m_selection_line;
+  int m_selection_col;
+  int m_indicator_id;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

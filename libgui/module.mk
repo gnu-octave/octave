@@ -92,7 +92,7 @@ define moc-command
 endef
 
 define moc-h-command
-  $(SED) -e 's/OCTAVE_BEGIN_NAMESPACE *(\([^)]*\))/namespace \1 {/' \
+$(SED) -e 's/OCTAVE_BEGIN_NAMESPACE *(\([^)]*\))/namespace \1 {/' \
          -e 's/OCTAVE_END_NAMESPACE *([^)]*)/}/' $< > $@
 endef
 

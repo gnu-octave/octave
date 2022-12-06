@@ -41,16 +41,16 @@ typedef QList<int> QIntList;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class marker : public QObject
-  {
-    Q_OBJECT
+class marker : public QObject
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    // List of all marker types
-    // If multiple markers are on the same line, the first one listed
-    // is drawn at the back, so big ones should be first.
-    enum editor_markers
+  // List of all marker types
+  // If multiple markers are on the same line, the first one listed
+  // is drawn at the back, so big ones should be first.
+  enum editor_markers
     {
       breakpoint,
       cond_break,
@@ -61,51 +61,51 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       selection
     };
 
-    marker (QsciScintilla *edit_area, int original_linenr,
-            editor_markers marker_type, const QString& condition = "");
+  marker (QsciScintilla *edit_area, int original_linenr,
+          editor_markers marker_type, const QString& condition = "");
 
-    marker (QsciScintilla *edit_area, int original_linenr,
-            editor_markers marker_type, int editor_linenr,
-            const QString& condition = "");
+  marker (QsciScintilla *edit_area, int original_linenr,
+          editor_markers marker_type, int editor_linenr,
+          const QString& condition = "");
 
-    ~marker (void) = default;
+  ~marker (void) = default;
 
-    const QString& get_cond (void) const { return m_condition; }
+  const QString& get_cond (void) const { return m_condition; }
 
-    void set_cond (const QString& cond) { m_condition = cond; }
+  void set_cond (const QString& cond) { m_condition = cond; }
 
-  signals:
+signals:
 
-    void request_remove (int original_linenr);
+  void request_remove (int original_linenr);
 
-  public slots:
+public slots:
 
-    void handle_remove_via_original_linenr (int original_linenr);
-    void handle_request_remove_via_editor_linenr (int editor_linenr);
-    void handle_remove (void);
-    void handle_find_translation (int original_linenr, int& editor_linenr,
-                                  marker*& bp);
-    void handle_find_just_before (int linenr, int& original_linenr,
-                                  int& editor_linenr);
-    void handle_find_just_after (int linenr, int& original_linenr,
-                                 int& editor_linenr);
-    /*  void handle_lines_changed (void);*/
-    void handle_marker_line_deleted (int mhandle);
-    void handle_marker_line_undeleted (int mhandle);
-    void handle_report_editor_linenr (QIntList& lines, QStringList& conditions);
+  void handle_remove_via_original_linenr (int original_linenr);
+  void handle_request_remove_via_editor_linenr (int editor_linenr);
+  void handle_remove (void);
+  void handle_find_translation (int original_linenr, int& editor_linenr,
+                                marker*& bp);
+  void handle_find_just_before (int linenr, int& original_linenr,
+                                int& editor_linenr);
+  void handle_find_just_after (int linenr, int& original_linenr,
+                               int& editor_linenr);
+  /*  void handle_lines_changed (void);*/
+  void handle_marker_line_deleted (int mhandle);
+  void handle_marker_line_undeleted (int mhandle);
+  void handle_report_editor_linenr (QIntList& lines, QStringList& conditions);
 
-  private:
+private:
 
-    void construct (QsciScintilla *edit_area, int original_linenr,
-                    editor_markers marker_type, int editor_linenr,
-                    const QString& condition);
+  void construct (QsciScintilla *edit_area, int original_linenr,
+                  editor_markers marker_type, int editor_linenr,
+                  const QString& condition);
 
-    QsciScintilla *m_edit_area;
-    int m_original_linenr;
-    editor_markers m_marker_type;
-    int m_mhandle;
-    QString m_condition;
-  };
+  QsciScintilla *m_edit_area;
+  int m_original_linenr;
+  editor_markers m_marker_type;
+  int m_mhandle;
+  QString m_condition;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

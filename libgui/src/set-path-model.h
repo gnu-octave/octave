@@ -36,71 +36,71 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class set_path_model : public QAbstractListModel
-  {
-    Q_OBJECT
+class set_path_model : public QAbstractListModel
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    set_path_model (QObject *p = nullptr);
+  set_path_model (QObject *p = nullptr);
 
-    ~set_path_model (void) = default;
+  ~set_path_model (void) = default;
 
-    void clear (void);
+  void clear (void);
 
-    void add_dir (const QString& p);
+  void add_dir (const QString& p);
 
-    void rm_dir (const QModelIndexList& indices);
+  void rm_dir (const QModelIndexList& indices);
 
-    void move_dir_up (const QModelIndexList& indices);
+  void move_dir_up (const QModelIndexList& indices);
 
-    void move_dir_down (const QModelIndexList& indices);
+  void move_dir_down (const QModelIndexList& indices);
 
-    void move_dir_top (const QModelIndexList& indices);
+  void move_dir_top (const QModelIndexList& indices);
 
-    void move_dir_bottom (const QModelIndexList& indices);
+  void move_dir_bottom (const QModelIndexList& indices);
 
-    std::string to_string (void);
+  std::string to_string (void);
 
-    // Overloaded Qt methods
+  // Overloaded Qt methods
 
-    void model_to_path (void);
+  void model_to_path (void);
 
-    int rowCount (const QModelIndex& p = QModelIndex ()) const;
+  int rowCount (const QModelIndex& p = QModelIndex ()) const;
 
-    QVariant data (const QModelIndex& idx, int role) const;
+  QVariant data (const QModelIndex& idx, int role) const;
 
-  signals:
+signals:
 
-    void update_data_signal (const QStringList& dirs);
+  void update_data_signal (const QStringList& dirs);
 
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
+  void interpreter_event (const fcn_callback& fcn);
+  void interpreter_event (const meth_callback& meth);
 
-  public slots:
+public slots:
 
-    void path_to_model (void);
+  void path_to_model (void);
 
-    void save (void);
+  void save (void);
 
-    void revert (void);
+  void revert (void);
 
-    void revert_last (void);
+  void revert_last (void);
 
-  private slots:
+private slots:
 
-    void update_data (const QStringList& dirs);
+  void update_data (const QStringList& dirs);
 
-  private:
+private:
 
-    QStringList m_dirs;
+  QStringList m_dirs;
 
-    QStringList m_orig_dirs;
+  QStringList m_orig_dirs;
 
-    QStringList m_last_dirs;
+  QStringList m_last_dirs;
 
-    bool m_revertible;
-  };
+  bool m_revertible;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -32,25 +32,25 @@ class QMutex;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class Logger
-  {
-  public:
-    static void debug (const char *fmt, ...);
+class Logger
+{
+public:
+  static void debug (const char *fmt, ...);
 
-  private:
-    bool m_debugEnabled;
+private:
+  bool m_debugEnabled;
 
-    static Logger *s_instance;
-    static QMutex *s_mutex;
+  static Logger *s_instance;
+  static QMutex *s_mutex;
 
-  private:
-    Logger (void);
-    ~Logger (void);
+private:
+  Logger (void);
+  ~Logger (void);
 
-    static Logger * instance (void);
+  static Logger * instance (void);
 
-    void debugV (const char *fmt, va_list arg);
-  };
+  void debugV (const char *fmt, va_list arg);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

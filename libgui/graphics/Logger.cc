@@ -37,53 +37,53 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  Logger *Logger::s_instance = nullptr;
-  QMutex *Logger::s_mutex = nullptr;
+Logger *Logger::s_instance = nullptr;
+QMutex *Logger::s_mutex = nullptr;
 
-  Logger::Logger (void)
-    : m_debugEnabled (false)
-  {
-    QProcessEnvironment pe (QProcessEnvironment::systemEnvironment ());
+Logger::Logger (void)
+  : m_debugEnabled (false)
+{
+  QProcessEnvironment pe (QProcessEnvironment::systemEnvironment ());
 
-    if (pe.value ("QTHANDLES_DEBUG", "0") != "0")
-      m_debugEnabled = true;
+  if (pe.value ("QTHANDLES_DEBUG", "0") != "0")
+    m_debugEnabled = true;
+}
+
+Logger::~Logger (void)
+{ }
+
+Logger *
+Logger::instance (void)
+{
+  if (! s_instance)
+    {
+      s_instance = new Logger ();
+      s_mutex = new QMutex ();
+    }
+
+  return s_instance;
+}
+
+#define STATIC_LOGGER(fcn)                      \
+  void Logger::fcn (const char *fmt, ...)       \
+  {                                             \
+    QMutexLocker lock (s_mutex);                \
+    va_list vl;                                 \
+    va_start (vl, fmt);                         \
+    instance ()->fcn ## V (fmt, vl);            \
+    va_end (vl);                                \
   }
 
-  Logger::~Logger (void)
-  { }
+STATIC_LOGGER (debug)
 
-  Logger *
-  Logger::instance (void)
-  {
-    if (! s_instance)
-      {
-        s_instance = new Logger ();
-        s_mutex = new QMutex ();
-      }
-
-    return s_instance;
-  }
-
-#define STATIC_LOGGER(fcn) \
-  void Logger::fcn (const char *fmt, ...) \
-  { \
-    QMutexLocker lock (s_mutex); \
-    va_list vl; \
-    va_start (vl, fmt); \
-    instance ()->fcn ## V (fmt, vl); \
-    va_end (vl); \
-  }
-
-  STATIC_LOGGER (debug)
-
-  void
-  Logger::debugV (const char *fmt, va_list arg)
-  {
-    if (m_debugEnabled)
-      {
-        vfprintf (stderr, fmt, arg);
-        fprintf (stderr, "\n");
-      }
-  }
+void
+Logger::debugV (const char *fmt, va_list arg)
+{
+  if (m_debugEnabled)
+    {
+      vfprintf (stderr, fmt, arg);
+      fprintf (stderr, "\n");
+    }
+}
 
 OCTAVE_END_NAMESPACE(octave)

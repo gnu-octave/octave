@@ -38,52 +38,52 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Subclassed QTabBar for usable tab-bar, rotated tabs and
-  // reimplemented mouse event
+// Subclassed QTabBar for usable tab-bar, rotated tabs and
+// reimplemented mouse event
 
-  class tab_bar : public QTabBar
-  {
-    Q_OBJECT
+class tab_bar : public QTabBar
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    tab_bar (QWidget *p);
+  tab_bar (QWidget *p);
 
-    ~tab_bar (void) = default;
+  ~tab_bar (void) = default;
 
-    void set_rotated (int rotated);
-    QMenu * get_context_menu (void) { return m_context_menu; };
-    QSize tabSizeHint (int idx) const;
+  void set_rotated (int rotated);
+  QMenu * get_context_menu (void) { return m_context_menu; };
+  QSize tabSizeHint (int idx) const;
 
-  signals:
+signals:
 
-    void close_current_tab_signal (bool);
+  void close_current_tab_signal (bool);
 
-  public slots:
+public slots:
 
-    void switch_left_tab (void);
-    void switch_right_tab (void);
-    void move_tab_left (void);
-    void move_tab_right (void);
-    void sort_tabs_alph (void);
+  void switch_left_tab (void);
+  void switch_right_tab (void);
+  void move_tab_left (void);
+  void move_tab_right (void);
+  void sort_tabs_alph (void);
 
-  private slots:
+private slots:
 
-    void ctx_menu_activated (QAction *a);
+  void ctx_menu_activated (QAction *a);
 
-  protected:
+protected:
 
-    void paintEvent(QPaintEvent *e);
-    void mousePressEvent(QMouseEvent *event);
+  void paintEvent(QPaintEvent *e);
+  void mousePressEvent(QMouseEvent *event);
 
-  private:
+private:
 
-    void switch_tab (int direction, bool movetab = false);
+  void switch_tab (int direction, bool movetab = false);
 
-    QMenu *m_context_menu;
-    QList <QAction *> m_ctx_actions;
-    int m_rotated;
-  };
+  QMenu *m_context_menu;
+  QList <QAction *> m_ctx_actions;
+  int m_rotated;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 
